@@ -1,3 +1,16 @@
+## [3.31.0-rc.2](https://github.com/kiva/ui/compare/v3.31.0-rc.1...v3.31.0-rc.2) (2025-09-16)
+
+### 🐛 Bugfixes
+
+* apply initial code for setting goals ([f5d8691](https://github.com/kiva/ui/commit/f5d86911aa12c19cac41eaa9e18f0bd21ec31257))
+* correct pas through of user preferences to update function ([00f048e](https://github.com/kiva/ui/commit/00f048e29d37fac65dd8b84ef4700f908afca168))
+* createUserPreference import ([18253c2](https://github.com/kiva/ui/commit/18253c27c46c9cb39b023cd857b6b4adc4cb0a34))
+* emit variable in LendingStats ([5783e3e](https://github.com/kiva/ui/commit/5783e3e14161019cbd04d60789ec3a7f8aa97233))
+* implement correct util library import ([215ac18](https://github.com/kiva/ui/commit/215ac187c316c7a2a8cb0c927b65d67406ea6fea))
+* no gtm with pii optout ([c679058](https://github.com/kiva/ui/commit/c679058f4c6aba246665973581949731b8cb16ac))
+* remove redudant try catch block ([a714c34](https://github.com/kiva/ui/commit/a714c3441bb82aca77d9ca3a9780e98485926b1f))
+* update code to handle update vs create ([8dc9a47](https://github.com/kiva/ui/commit/8dc9a47aaa47aea628c66c227bebfbe6128e1020))
+
 ## [3.31.0-rc.1](https://github.com/kiva/ui/compare/v3.30.0...v3.31.0-rc.1) (2025-09-15)
 
 ### 🎉 New Features
