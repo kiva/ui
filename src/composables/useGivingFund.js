@@ -1,8 +1,3 @@
-// import {
-// 	ref,
-// 	computed,
-// 	onMounted,
-// } from 'vue';
 import logFormatter from '#src/util/logFormatter';
 // eslint-disable-next-line max-len
 import myGivingFundParticipationDonations from '#src/graphql/query/portfolio/myGivingFundParticipationDonations.graphql';

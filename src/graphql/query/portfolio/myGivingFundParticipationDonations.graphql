@@ -8,10 +8,8 @@ query MyGivingFundParticipationDonations($filter: GivingFundParticipationFilterI
 		date
 		givingFund {
 		  id
-		  amountDonated
 		  owner {
 			id
-			name
 		  }
 		}
 		id
