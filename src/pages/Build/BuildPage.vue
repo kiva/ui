@@ -24,11 +24,6 @@
 			<p>
 				Check out our <a href="https://gateway.production.kiva.org/graphql"> GraphQL API methods</a>.
 			</p>
-			<h2>Share your app </h2>
-			<p>
-				Let the world experience microlending through
-				<a href="http://pages.kiva.org/apps">the applications you've built</a>!
-			</p>
 			<h2>Discussion</h2>
 			<p>
 				Here are recent topics from our developer forum.
