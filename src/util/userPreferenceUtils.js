@@ -57,8 +57,8 @@ export const createUserPreferences = async (apollo, newPreferences) => {
  */
 export const updateUserPreferences = async (apollo, userPreferences, parsedPreferences, newPreferences) => {
 	try {
-		const preferences = JSON.stringify({ ...parsedPreferences, ...newPreferences });
-
+		const mergedPreferences = { ...parsedPreferences, ...newPreferences };
+		const preferences = JSON.stringify(mergedPreferences);
 		return await apollo.mutate({
 			mutation: updateUserPreferencesMutation,
 			variables: {
