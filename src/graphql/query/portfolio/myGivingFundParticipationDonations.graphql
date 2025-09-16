@@ -1,0 +1,21 @@
+query MyGivingFundParticipationDonations($filter: GivingFundParticipationFilterInput, $offset: Int = 0, $limit: Int = 10) {
+  my {
+	id
+	givingFundParticipation(filter: $filter, offset: $offset, limit: $limit) {
+	  totalCount
+	  values {
+		amountDonated
+		date
+		givingFund {
+		  id
+		  amountDonated
+		  owner {
+			id
+			name
+		  }
+		}
+		id
+	  }
+	}
+  }
+}
