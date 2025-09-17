@@ -32,6 +32,9 @@
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
 				:is-next-steps-exp="isNextStepsExp"
+				:total-loans="totalLoans"
+				:user-goal="userGoal"
+				@store-goals-preferences="storeGoalPreferences"
 			/>
 		</section>
 		<section v-else-if="isHeroEnabled" class="tw-mt-4">
@@ -189,6 +192,7 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
+import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -356,6 +360,13 @@ export default {
 		visibleUpdates() {
 			const updates = Array.isArray(this.mergedUpdates) ? this.mergedUpdates.slice(0, this.displayedCount) : [];
 			return updates;
+		},
+		userGoal() {
+			const preferences = this.userInfo?.userPreferences ?? null;
+			if (!preferences) return false;
+			const parsedPreferences = JSON.parse(preferences.preferences);
+			const existingGoals = parsedPreferences?.goals || [];
+			return existingGoals.length ? existingGoals[0] : null;
 		},
 	},
 	methods: {
@@ -601,6 +612,34 @@ export default {
 			this.handleSelectedLoan({ loanId: payload?.id });
 			this.showBPSideSheet = true;
 			this.showNextSteps = showNextSteps;
+		},
+		async storeGoalPreferences(newPreferences) {
+			const existingPreferences = this.userInfo?.userPreferences ?? null;
+			if (!existingPreferences) {
+				await createUserPreferences(
+					this.apollo,
+					{ goals: {} }
+				);
+			}
+			const parsedPreferences = existingPreferences ? JSON.parse(existingPreferences.preferences) : {};
+			const existingGoals = parsedPreferences?.goals || [];
+			const goalIndex = existingGoals.findIndex(goal => goal.goalName === newPreferences.goalName);
+			if (goalIndex !== -1) {
+				const goalToUpdate = { ...newPreferences };
+				delete goalToUpdate.dateStarted;
+				existingGoals[goalIndex] = { ...existingGoals[goalIndex], ...goalToUpdate };
+			} else {
+				existingGoals.push(newPreferences);
+			}
+			if (this.userInfo.userPreferences) {
+				await updateUserPreferences(
+					this.apollo,
+					existingPreferences,
+					parsedPreferences,
+					{ goals: existingGoals }
+				);
+				this.$showTipMsg('Your goal was saved successfully!', { type: 'success' });
+			}
 		}
 	},
 	async mounted() {

@@ -154,7 +154,7 @@ export default (config, globalOneTrustEvent) => {
 				if (config.enableGA && !optout && !piiOptout) {
 					OneTrust.InsertHtml('', 'head', insertGoogleAnalytics, null, 'C0004');
 				}
-				if (config.enableGTM && !optout) {
+				if (config.enableGTM && !optout && !piiOptout) {
 					OneTrust.InsertHtml('', 'head', insertGTM, null, 'C0004');
 				}
 			}
@@ -189,7 +189,7 @@ export default (config, globalOneTrustEvent) => {
 			if (config.enableSnowplow) {
 				insertSnowplow();
 			}
-			if (config.enableGTM && !optout) {
+			if (config.enableGTM && !optout && !piiOptout) {
 				insertGTM();
 			}
 			if (config.enableHotjar && !optout) {

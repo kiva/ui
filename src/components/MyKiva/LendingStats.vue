@@ -1,61 +1,23 @@
 <template>
-	<div v-if="!hasLoans" class="tw-mb-2">
+	<div class="tw-mb-2">
 		<h3 class="tw-text-primary tw-mb-1">
-			Your impact starts here
+			{{ title }}
 		</h3>
 		<p class="tw-text-base">
-			Recommended for you
-		</p>
-	</div>
-	<div v-else class="tw-mb-2">
-		<h3 class="tw-text-primary tw-mb-1">
-			Ready to grow your impact?
-		</h3>
-		<p class="tw-text-base">
-			Next steps for you based on your lending history
+			{{ description }}
 		</p>
 	</div>
 	<div
 		ref="loanRegionsElement"
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': !userLentToAllRegions }"
 	>
-		<div
-			v-if="isNextStepsExp"
-			class="card-container goal-card-bg"
-		>
-			<div>
-				<span
-					class="
-						tw-inline-flex tw-items-center tw-gap-1
-						tw-mb-2 tw-rounded
-						tw-bg-eco-green-1 tw-px-1.5 tw-py-1"
-					title="Your lending reach"
-				>
-					<KvMaterialIcon
-						class="tw-w-2 tw-h-2 tw-shrink-0"
-						:icon="mdiCheckCircleOutline"
-					/>
-					<span class="tw-text-primary tw-font-medium tw-align-middle" style="font-size: 0.875rem;">
-						My goal
-					</span>
-				</span>
-			</div>
-			<div class="tw-flex tw-flex-col tw-grow tw-min-h-0">
-				<div class="tw-mx-auto">
-					<GoalCardCareImg />
-				</div>
-				<h3>Set your first giving goal!</h3>
-				<p class="tw-text-small tw-pb-2">
-					How many more people will you help this year?
-				</p>
-				<KvButton
-					v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
-					@click="emit('open-goal-modal')"
-				>
-					Set a goal
-				</KvButton>
-			</div>
-		</div>
+		<GoalCard
+			v-if="isNextStepsExp && !userLentToAllRegions"
+			:hero-tiered-achievements="heroTieredAchievements"
+			:hero-slides="heroSlides"
+			:user-goal="userGoal"
+			@open-goal-modal="showGoalModal = true"
+		/>
 		<div
 			v-if="!userLentToAllRegions"
 			class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col"
@@ -153,7 +115,7 @@
 				</div>
 			</div>
 		</div>
-		<template v-if="!isNextStepsExp">
+		<template v-if="!isNextStepsExp || (!!userGoal && userLentToAllRegions)">
 			<div v-if="!userLentToAllRegions" class="card-container tw-shrink-0">
 				<MyKivaCard
 					class="kiva-card tw-h-full"
@@ -182,18 +144,29 @@
 				:slides="allRegionsLentSlides"
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
+				:user-goal="userGoal"
 			/>
 		</template>
+		<GoalSettingModal
+			:show="showGoalModal"
+			:total-loans="totalLoans"
+			:categories-loan-count="categoriesLoanCount"
+			@close-goal-modal="showGoalModal = false"
+			@set-goal="setGoal"
+		/>
 	</div>
 </template>
 <script setup>
 import {
-	computed, ref, onUnmounted, onMounted,
+	computed,
 	inject,
+	onMounted,
+	onUnmounted,
+	ref,
 } from 'vue';
 import { useRouter } from 'vue-router';
-import { KvMaterialIcon, KvCheckbox, KvButton } from '@kiva/kv-components';
-import { mdiArrowTopRight, mdiCheckCircleOutline } from '@mdi/js';
+import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
+import { mdiArrowTopRight } from '@mdi/js';
 
 import useBadgeData from '#src/composables/useBadgeData';
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
@@ -211,7 +184,8 @@ import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 import StatsCardBg from '#src/assets/images/my-kiva/stats-card-bg.png';
-import GoalCardCareImg from '#src/assets/images/my-kiva/goal-card-care.svg';
+import GoalCard from '#src/components/MyKiva/GoalCard';
+import GoalSettingModal from './GoalSettingModal';
 
 const { delayUntilVisible } = useDelayUntilVisible();
 
@@ -221,7 +195,10 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const {
 	getTopCategoryWithLoans,
 	getLoanFindingUrl,
+	getAllCategoryLoanCounts,
 } = useBadgeData();
+
+const emit = defineEmits(['store-goals-preferences']);
 
 const props = defineProps({
 	/**
@@ -264,6 +241,14 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	totalLoans: {
+		type: Number,
+		default: 0,
+	},
+	userGoal: {
+		type: Object,
+		default: null,
+	}
 });
 
 const interval = ref(null);
@@ -271,13 +256,12 @@ const loanRegionsElement = ref(null);
 const topCategory = ref(getTopCategoryWithLoans(props.heroTieredAchievements));
 const topCategoryUrl = ref(getLoanFindingUrl(topCategory.value?.category, router.currentRoute.value));
 const topCategoryLoansForCardCarousel = ref(topCategory.value?.loans?.slice(0, 3) || []);
+const showGoalModal = ref(false);
 
 const totalRegions = computed(() => props.regionsData.length);
 const loanRegions = computed(() => props.regionsData.filter(region => region.hasLoans).length);
 const showTagIcon = computed(() => !!topCategory.value);
 const hasLoans = computed(() => props.loans.length > 0);
-
-const emit = defineEmits(['open-goal-modal']);
 
 const regionImages = {
 	Africa,
@@ -402,6 +386,27 @@ const allRegionsLentSlides = computed(() => {
 		}];
 });
 
+const categoriesLoanCount = computed(() => getAllCategoryLoanCounts(props.heroTieredAchievements));
+
+const title = computed(() => {
+	if (!hasLoans.value) return 'Your impact starts here';
+	if (props.isNextStepsExp) return 'Make a difference today';
+
+	return 'Ready to grow your impact?';
+});
+
+const description = computed(() => {
+	if (!hasLoans.value) return 'Recommended for you';
+	if (props.isNextStepsExp) return 'How many more people will you help this year?';
+
+	return 'Next steps for you based on your lending history';
+});
+
+const setGoal = preferences => {
+	emit('store-goals-preferences', preferences);
+	showGoalModal.value = false;
+};
+
 onMounted(() => {
 	delayUntilVisible(() => {
 		setTimeout(() => {
@@ -467,23 +472,4 @@ onUnmounted(() => {
 	@apply tw-hidden;
 }
 
-.goal-card-bg {
-	@apply tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
-		tw-overflow-hidden tw-bg-white tw-shrink-0;
-}
-
-.goal-card-bg::before {
-	content: '';
-	width: 400px;
-	height: 500px;
-	background: url('/static/src/assets/images/my-kiva/goal-card-bg.jpg') lightgray;
-	transform: rotate(17deg);
-	left: 40%;
-
-	@apply tw-absolute tw-bg-cover tw-bg-center tw-bg-no-repeat tw-z-base tw-right-0 tw-bg-blend-overlay;
-}
-
-.goal-card-bg > * {
-	@apply tw-relative tw-z-1;
-}
 </style>

@@ -602,6 +602,25 @@ export default function useBadgeData() {
 		}
 	};
 
+	/**
+	 * Get all categories loan count with totalProgressToAchievement
+	 *
+	 * @param tieredLendingAchievements The tiered lending achievements with loans
+	 * @returns An object mapping category IDs to their loan counts
+	 */
+	const getAllCategoryLoanCounts = tieredLendingAchievements => {
+		return tieredLendingAchievements?.reduce((acc, curr) => {
+			acc[curr.id] = curr.totalProgressToAchievement ?? 0;
+			return acc;
+		}, {}) ?? {
+			[ID_WOMENS_EQUALITY]: 0,
+			[ID_US_ECONOMIC_EQUALITY]: 0,
+			[ID_BASIC_NEEDS]: 0,
+			[ID_CLIMATE_ACTION]: 0,
+			[ID_REFUGEE_EQUALITY]: 0,
+		};
+	};
+
 	return {
 		badgeAchievementData,
 		badgeContentfulData,
@@ -629,5 +648,6 @@ export default function useBadgeData() {
 		getLevelCaption,
 		getJourneysByLoan,
 		getTopCategoryWithLoans,
+		getAllCategoryLoanCounts,
 	};
 }

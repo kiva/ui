@@ -1,5 +1,10 @@
 <template>
-	<async-portfolio-section @visible="fetchAsyncData" data-testid="lending-insights" class="!tw-bg-eco-green-4">
+	<async-portfolio-section
+		v-if="!isPercentileByYearExp"
+		@visible="fetchAsyncData"
+		data-testid="lending-insights"
+		class="!tw-bg-eco-green-4"
+	>
 		<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-white tw-text-center md:tw-text-left">
 			Your lending insights
 		</h2>
@@ -24,19 +29,19 @@
 					/>
 				</router-link>
 				<!-- <button
-					class="tw-text-link"
-					@click="loanLightboxVisible = true"
-					v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
-				>
-					Details
-				</button>
-				<kv-lightbox
-					:visible="loanLightboxVisible"
-					title="Loan count"
-					@lightbox-closed="loanLightboxVisible = false"
-				>
-					<loan-count-over-time-figure />
-				</kv-lightbox> -->
+                    class="tw-text-link"
+                    @click="loanLightboxVisible = true"
+                    v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
+                >
+                    Details
+                </button>
+                <kv-lightbox
+                    :visible="loanLightboxVisible"
+                    title="Loan count"
+                    @lightbox-closed="loanLightboxVisible = false"
+                >
+                    <loan-count-over-time-figure />
+                </kv-lightbox> -->
 			</div>
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder
@@ -82,15 +87,116 @@
 			</div>
 		</kv-grid>
 	</async-portfolio-section>
+	<!-- To-Do: Remove v-else version when experiment is over -->
+	<async-portfolio-section
+		v-else
+		@visible="fetchAsyncData"
+		data-testid="lending-insights"
+		class="!tw-bg-eco-green-1"
+	>
+		<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
+			Lending insights
+		</h2>
+		<kv-grid as="dl" class="stats-container-exp">
+			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
+				<dt v-show="!loading" class="stat-value">
+					{{ amountLent }}
+				</dt>
+				<dd class="stat-def">
+					Total amount lent
+				</dd>
+				<router-link
+					class="stat-link"
+					to="/portfolio/loans"
+					v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
+				>
+					My loans
+					<kv-material-icon
+						class="tw-ml-0.5 tw-w-2 tw-h-2"
+						:icon="mdiArrowRight"
+					/>
+				</router-link>
+				<!-- <button
+					class="tw-text-link"
+					@click="loanLightboxVisible = true"
+					v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
+				>
+					Details
+				</button>
+				<kv-lightbox
+					:visible="loanLightboxVisible"
+					title="Loan count"
+					@lightbox-closed="loanLightboxVisible = false"
+				>
+					<loan-count-over-time-figure />
+				</kv-lightbox> -->
+			</div>
+			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 tw-bg-eco-green-3 tw-rounded">
+				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
+				<dt v-show="!loading" class="stat-value">
+					{{ percentile }}
+				</dt>
+				<dd class="stat-def">
+					Lending percentile
+				</dd>
+			</div>
+			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+				<kv-loading-placeholder
+					v-if="loading"
+					class="stat-placeholder"
+					style="width: 4rem;"
+				/>
+				<dd v-else class="stat-value">
+					{{ $filters.numeral(numberOfLoans, '0,0') }}
+				</dd>
+				<dt class="stat-def">
+					Loans made
+				</dt>
+			</div>
+			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 4rem;" />
+				<dt v-show="!loading" class="stat-value">
+					{{ countryCount }}
+				</dt>
+				<dd class="stat-def">
+					Countries supported
+				</dd>
+				<router-link
+					class="stat-link"
+					to="/portfolio/lending-stats"
+					v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
+				>
+					Lending stats
+					<kv-material-icon
+						class="tw-ml-0.5 tw-w-2 tw-h-2"
+						:icon="mdiArrowRight"
+					/>
+				</router-link>
+			</div>
+		</kv-grid>
+		<div
+			class="tw-flex tw-items-center tw-justify-center tw-pt-1 tw-whitespace-nowrap"
+		>
+			<kv-material-icon
+				class="tw-w-2 tw-h-2 tw-flex-shrink-0"
+				:icon="mdiClockOutline"
+			/>
+			<p class="tw-pl-0.5 tw-font-normal tw-text-small tw-flex-shrink-0">
+				{{ daysUntilDeadline }} days to make contribution this year
+			</p>
+		</div>
+	</async-portfolio-section>
 </template>
 
 <script>
 import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import getCacheKey from '#src/util/getCacheKey';
-import { mdiArrowRight } from '@mdi/js';
+import { mdiArrowRight, mdiClockOutline } from '@mdi/js';
 // import LoanCountOverTimeFigure from './LoanCountOverTimeFigure';
 import { KvGrid, KvLoadingPlaceholder, KvMaterialIcon } from '@kiva/kv-components';
+import { differenceInCalendarDays } from 'date-fns';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 export default {
@@ -121,7 +227,16 @@ export default {
 			percentile: 0,
 			numberOfLoans: 0,
 			mdiArrowRight,
+			mdiClockOutline,
 		};
+	},
+	computed: {
+		// For days until a specific future date
+		daysUntilDeadline() {
+			const today = new Date();
+			const deadline = new Date(today.getFullYear(), 11, 31); // December 31st of current year
+			return differenceInCalendarDays(deadline, today);
+		}
 	},
 	methods: {
 		fetchAsyncData() {
@@ -166,6 +281,10 @@ export default {
 .stats-container {
 	background-color: rgb(255 255 255 / 5%);
 	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center;
+}
+
+.stats-container-exp {
+	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center tw-bg-eco-green-4;
 }
 
 .stat-placeholder {
