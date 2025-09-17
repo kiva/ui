@@ -125,7 +125,9 @@ const getContentfulKey = category => {
 };
 
 const ctaHref = computed(() => {
-	return `lend-category-beta?header=${getContentfulKey(props.userGoal?.category)}`;
+	const string = `Your goal: Support ${props.userGoal?.target || 'X'} ${getContentfulKey(props.userGoal?.category)}`;
+	const encodedString = encodeURIComponent(string);
+	return `lend-category-beta?header=${encodedString}`;
 });
 
 const achievementGoalImg = computed(() => {
