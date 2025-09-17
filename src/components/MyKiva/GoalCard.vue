@@ -139,7 +139,7 @@ const getGoalCategoryUrl = category => {
 const ctaHref = computed(() => {
 	const string = `Your goal: Support ${props.userGoal?.target} ${getGoalCategoryUrl(props.userGoal?.category)}`;
 	const encodedString = encodeURIComponent(string);
-	return `lend-category-beta?header=${encodedString}`;
+	return `/lend-category-beta?header=${encodedString}`;
 });
 
 const achievementGoalImg = computed(() => {
