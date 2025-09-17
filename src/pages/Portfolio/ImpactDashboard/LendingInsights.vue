@@ -96,7 +96,7 @@
 	>
 		<div class="tw-flex tw-items-center tw-justify-end tw-gap-3 tw-mb-3 md:tw-mb-2">
 			<div
-				class="tw-inline-flex tw-px-1 tw-items-center
+				class="tw-inline-flex tw-px-1 tw-py-0.5 tw-items-center
 					tw-rounded-sm tw-bg-brand-100 tw-border tw-border-brand-200"
 			>
 				<star-shine class="tw-flex-shrink-0" />
