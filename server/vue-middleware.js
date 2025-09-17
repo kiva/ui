@@ -3,6 +3,7 @@ import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import Bowser from 'bowser';
 import cookie from 'cookie';
+import { HOME_PAGE_EXPERIMENT_HEADER, VARY_HEADER } from '../src/util/experiment/fastlyExperimentUtils.js';
 import vueWorkerPool from './vue-worker-pool.js';
 import vueRender from './vue-render.js';
 import protectedRoutes from './util/protectedRoutes.js';
@@ -95,6 +96,20 @@ export default function createMiddleware({ config, vite }) {
 			// If not simulating CDN, check Fastly header
 			: req.get('Fastly-Noted-Logged-In') === 'true';
 
+		let forceHeader = false;
+		const { headers } = req;
+		// We currently support running one and only one experiment at a time on cached pages
+		// The experiment is named "home page" but can be used for any page and experiment
+		const homePageHeader = headers[HOME_PAGE_EXPERIMENT_HEADER.toLowerCase()]; // Node lowercases header keys
+
+		// Handle a single home page experiment
+		if (homePageHeader) {
+			forceHeader = true;
+			res.setHeader(VARY_HEADER, headers.vary
+				? `${headers.vary}, ${HOME_PAGE_EXPERIMENT_HEADER}`
+				: HOME_PAGE_EXPERIMENT_HEADER);
+		}
+
 		// Setup rendering context
 		const context = {
 			url: req.url,
@@ -106,6 +121,7 @@ export default function createMiddleware({ config, vite }) {
 			locale: req.locale,
 			device,
 			cdnNotedLoggedIn,
+			forceHeader,
 		};
 
 		// set html response headers

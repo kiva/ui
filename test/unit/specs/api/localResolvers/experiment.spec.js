@@ -449,7 +449,7 @@ describe('experiment.js', () => {
 			expect(result).toEqual(Experiment({ id: EXP_ID, version: undefined }));
 			expect(getActiveExperiments).toHaveBeenCalledTimes(1);
 			expect(getExperimentSetting).toHaveBeenCalledTimes(1);
-			expect(getForcedAssignment).toHaveBeenCalledWith(cookieStore, route, EXP_ID, experiment);
+			expect(getForcedAssignment).toHaveBeenCalledWith(cookieStore, route, EXP_ID, experiment, undefined);
 			expect(calculateHash).toHaveBeenCalledTimes(1);
 			expect(assignVersionForLoginId).toHaveBeenCalledTimes(1);
 			expect(getLoginId).toHaveBeenCalledTimes(1);

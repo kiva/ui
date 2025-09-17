@@ -3,6 +3,7 @@ import { getCookieHeader } from './util/cookies.js';
 import initCache from './util/initCache.js';
 import { info } from './util/log.js';
 import getGqlPossibleTypes from './util/getGqlPossibleTypes.js';
+import { HOME_PAGE_EXPERIMENT_HEADER, VARY_HEADER } from '../src/util/experiment/fastlyExperimentUtils.js';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -53,6 +54,7 @@ export default async function render({
 			headers: {
 				Cookie: getCookieHeader(context.cookies),
 				'Fastly-Top-Url': context.url,
+				...(context.forceHeader && { [`${VARY_HEADER}`]: HOME_PAGE_EXPERIMENT_HEADER })
 			},
 		}) : html;
 

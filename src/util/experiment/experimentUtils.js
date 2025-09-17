@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import logFormatter from '#src/util/logFormatter';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import Alea from './Alea';
-import { HOME_PAGE_EXPERIMENT_HEADER, HOME_PAGE_EXPERIMENT_KEY } from './fastlyExperimentUtils';
+import { HOME_PAGE_EXPERIMENT_KEY } from './fastlyExperimentUtils';
 
 /**
  * The name of the cookie for storing assignments
@@ -275,10 +275,10 @@ export const setCookieAssignments = (cookieStore, assignments) => {
  * @param {Object} route The initial route resolved by the Vue router
  * @param {string} id The ID of the assignment to check
  * @param {Object} experimentSetting The experiment settings
- * @param {Object} The headers of the request
+ * @param {boolean} should force the new header experiment if was setted by fastly header
  * @returns The forced experiment assignment
  */
-export const getForcedAssignment = (cookieStore, route, id, experimentSetting, headers = {}) => {
+export const getForcedAssignment = (cookieStore, route, id, experimentSetting, forceHeader = false) => {
 	// Get previous cookie assignment
 	const cookieAssignment = getCookieAssignments(cookieStore)[id];
 	const cookieQueryForced = !!cookieAssignment?.queryForced;
@@ -287,10 +287,9 @@ export const getForcedAssignment = (cookieStore, route, id, experimentSetting, h
 	let headerForced = false;
 	let forcedVersion = cookieAssignment?.version;
 
-	const homePageHeader = headers?.[HOME_PAGE_EXPERIMENT_HEADER.toLowerCase()];
-	if (id === HOME_PAGE_EXPERIMENT_KEY && homePageHeader) {
+	if (forceHeader && id === HOME_PAGE_EXPERIMENT_KEY) {
 		headerForced = true;
-		forcedVersion = homePageHeader;
+		forcedVersion = 'b';
 	} else {
 		// Look through setuiab assignments
 		const setuiabQuery = route?.query?.setuiab;

@@ -16,9 +16,10 @@ import logFormatter from '#src/util/logFormatter';
  *
  * @param {Object} param0.cookieStore The cookie mixin
  * @param {Object} param0.route The initial route resolved by the Vue router
+ * @param {boolean} param0.forceHeader Force new navigation header
  * @returns {Object} The local resolvers
  */
-export default ({ cookieStore, route }) => {
+export default ({ cookieStore, route, forceHeader }) => {
 	if (!cookieStore) {
 		return {};
 	}
@@ -33,10 +34,9 @@ export default ({ cookieStore, route }) => {
 				 * @param {String} param1.id The ID of the experiment
 				 * @param {Object} param2.cache The Apollo cache
 				 * @param {Object} param2.client The Apollo client
-				 * @param {Object} param2.headers The Request headers
 				 * @returns The active experiment assignment
 				 */
-				async experiment(_, { id = '' }, { cache, client, headers }) {
+				async experiment(_, { id = '' }, { cache, client }) {
 					// Get the list of active experiments
 					const activeExperiments = await getActiveExperiments(cache, client);
 					if (!activeExperiments?.length) {
@@ -57,9 +57,14 @@ export default ({ cookieStore, route }) => {
 						return Experiment({ id });
 					}
 
-					console.log('HP - incoming headers in resolver: ', JSON.stringify(headers));
 					// Get forced assignment if there's an assignment in "setuiab" query string param or "uiab" cookie
-					const forcedAssignment = getForcedAssignment(cookieStore, route, id, experimentSetting, headers);
+					const forcedAssignment = getForcedAssignment(
+						cookieStore,
+						route,
+						id,
+						experimentSetting,
+						forceHeader
+					);
 
 					// Create initial current assignment object
 					let currentAssignment = { ...(forcedAssignment || { id }) };
