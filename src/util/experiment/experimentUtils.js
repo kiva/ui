@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import logFormatter from '#src/util/logFormatter';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import Alea from './Alea';
+import { HOME_PAGE_EXPERIMENT_HEADER, HOME_PAGE_EXPERIMENT_KEY } from './fastlyExperimentUtils';
 
 /**
  * The name of the cookie for storing assignments
@@ -274,26 +275,34 @@ export const setCookieAssignments = (cookieStore, assignments) => {
  * @param {Object} route The initial route resolved by the Vue router
  * @param {string} id The ID of the assignment to check
  * @param {Object} experimentSetting The experiment settings
+ * @param {Object} The headers of the request
  * @returns The forced experiment assignment
  */
-export const getForcedAssignment = (cookieStore, route, id, experimentSetting) => {
+export const getForcedAssignment = (cookieStore, route, id, experimentSetting, headers = {}) => {
 	// Get previous cookie assignment
 	const cookieAssignment = getCookieAssignments(cookieStore)[id];
 	const cookieQueryForced = !!cookieAssignment?.queryForced;
 
 	let queryForced;
+	let headerForced = false;
 	let forcedVersion = cookieAssignment?.version;
 
-	// Look through setuiab assignments
-	const setuiabQuery = route?.query?.setuiab;
-	// Route query param will be an array if more than one instance in URL
-	const setuiab = typeof setuiabQuery === 'string' ? [setuiabQuery] : (setuiabQuery ?? []);
-	for (let i = 0; i < setuiab.length; i += 1) {
-		const forcedExp = setuiab[i]?.split('.') ?? [];
-		if (forcedExp[0] === id) {
-			queryForced = !!forcedExp[1];
-			forcedVersion = (queryForced && encodeURIComponent(forcedExp[1])) || forcedVersion;
-			break;
+	const homePageHeader = headers?.[HOME_PAGE_EXPERIMENT_HEADER.toLowerCase()];
+	if (id === HOME_PAGE_EXPERIMENT_KEY && homePageHeader) {
+		headerForced = true;
+		forcedVersion = homePageHeader;
+	} else {
+		// Look through setuiab assignments
+		const setuiabQuery = route?.query?.setuiab;
+		// Route query param will be an array if more than one instance in URL
+		const setuiab = typeof setuiabQuery === 'string' ? [setuiabQuery] : (setuiabQuery ?? []);
+		for (let i = 0; i < setuiab.length; i += 1) {
+			const forcedExp = setuiab[i]?.split('.') ?? [];
+			if (forcedExp[0] === id) {
+				queryForced = !!forcedExp[1];
+				forcedVersion = (queryForced && encodeURIComponent(forcedExp[1])) || forcedVersion;
+				break;
+			}
 		}
 	}
 
@@ -305,6 +314,7 @@ export const getForcedAssignment = (cookieStore, route, id, experimentSetting) =
 			...experimentSetting,
 			version: forcedVersion,
 			...(forcedHash && { hash: forcedHash }),
+			...(headerForced && { headerForced }),
 			queryForced: queryForced || cookieQueryForced,
 		};
 	}

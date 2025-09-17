@@ -33,9 +33,10 @@ export default ({ cookieStore, route }) => {
 				 * @param {String} param1.id The ID of the experiment
 				 * @param {Object} param2.cache The Apollo cache
 				 * @param {Object} param2.client The Apollo client
+				 * @param {Object} param2.headers The Request headers
 				 * @returns The active experiment assignment
 				 */
-				async experiment(_, { id = '' }, { cache, client }) {
+				async experiment(_, { id = '' }, { cache, client, headers }) {
 					// Get the list of active experiments
 					const activeExperiments = await getActiveExperiments(cache, client);
 					if (!activeExperiments?.length) {
@@ -56,8 +57,9 @@ export default ({ cookieStore, route }) => {
 						return Experiment({ id });
 					}
 
+					console.log('HP - incoming headers in resolver: ', JSON.stringify(headers));
 					// Get forced assignment if there's an assignment in "setuiab" query string param or "uiab" cookie
-					const forcedAssignment = getForcedAssignment(cookieStore, route, id, experimentSetting);
+					const forcedAssignment = getForcedAssignment(cookieStore, route, id, experimentSetting, headers);
 
 					// Create initial current assignment object
 					let currentAssignment = { ...(forcedAssignment || { id }) };
@@ -67,19 +69,23 @@ export default ({ cookieStore, route }) => {
 					const population = experimentSetting?.population ?? 1;
 
 					// Get new experiment assignment if:
+					// - Assignment is not Fastly header forced (new assignment and setting cookie not needed)
 					// - Assignment is forced via the "setuiab" query string param
 					// - Version is undefined (current assignment wasn't forced)
 					// - Hash changed (distribution or population changed for cookie assignments)
 					// - Population changed and previous forced version undefined or cookie assignment unassigned
-					if (currentAssignment.queryForced
-						|| typeof currentAssignment.version === 'undefined'
-						|| hash !== currentAssignment.hash
-						|| (
-							population !== currentAssignment.population
-								&& (
-									typeof currentAssignment.version === 'undefined'
-										|| currentAssignment.version === 'unassigned'
-								)
+					if (
+						!currentAssignment.headerForced
+						&& (currentAssignment.queryForced
+							|| typeof currentAssignment.version === 'undefined'
+							|| hash !== currentAssignment.hash
+							|| (
+								population !== currentAssignment.population
+									&& (
+										typeof currentAssignment.version === 'undefined'
+											|| currentAssignment.version === 'unassigned'
+									)
+							)
 						)
 					) {
 						// Get new assignment with updated props
