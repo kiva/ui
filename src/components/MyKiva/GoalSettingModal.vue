@@ -1,6 +1,7 @@
 <template>
 	<KvLightbox
 		class="goal-setting-lightbox"
+		:title="title"
 		:visible="show"
 		@lightbox-closed="closeLightbox"
 	>
@@ -15,6 +16,7 @@
 			:selected-category="selectedCategory"
 			:selected-category-loan-count="selectedCategoryLoanCount"
 			@category-selected="handleCategorySelected"
+			@number-changed="handleNumberChanged"
 		/>
 		<template #controls>
 			<div class="tw-flex tw-justify-end tw-gap-2">
@@ -132,6 +134,7 @@ const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const emit = defineEmits(['close-goal-modal', 'set-goal']);
 const selectedCategory = ref(categories[0]);
+const selectedGoalNumber = ref(0);
 
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
 const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
@@ -149,19 +152,32 @@ const handleCategorySelected = categoryId => {
 	selectedCategory.value = categories[categoryIdx];
 };
 
+const handleNumberChanged = number => {
+	selectedGoalNumber.value = number;
+};
+
 const ctaCopy = computed(() => {
 	return formStep.value === 1 ? 'Continue' : 'Set my goal';
 });
 
-const handleClick = goalNumber => {
+const handleClick = () => {
 	if (formStep.value === 1) {
 		formStep.value += 1;
 		$kvTrackEvent('portfolio', 'click', 'goal-setting-continue');
 	} else {
-		$kvTrackEvent('portfolio', 'click', 'set-goal-amount', goalNumber);
+		$kvTrackEvent('portfolio', 'click', 'set-goal-amount', selectedGoalNumber.value);
+		const currentYear = new Date().getFullYear();
+		const categorySelected = selectedCategory.value?.title || 'all';
+		const goalName = `goal-${categorySelected}-${currentYear}`;
+		const target = selectedGoalNumber.value;
+		const dateStarted = new Date().toISOString();
+		const status = 'in-progress';
 		emit('set-goal', {
-			category: selectedCategory.value,
-			goalNumber,
+			goalName,
+			category: categorySelected,
+			target,
+			dateStarted,
+			status,
 		});
 	}
 };
@@ -177,7 +193,6 @@ const title = computed(() => {
 	if (selectedCategory.value?.title) {
 		return `How many more loans to ${selectedCategory.value?.title} will you support this year?`;
 	}
-
 	return 'How many more people will you support this year?';
 });
 

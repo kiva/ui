@@ -49,6 +49,8 @@ const MAX_COUNT = 50;
 const MIN_COUNT = 0;
 const IMAGE_WIDTH = 64;
 
+const $kvTrackEvent = inject('$kvTrackEvent');
+
 const props = defineProps({
 	selectedCategoryLoanCount: {
 		type: Number,
@@ -60,7 +62,7 @@ const props = defineProps({
 	}
 });
 
-const $kvTrackEvent = inject('$kvTrackEvent');
+const emit = defineEmits(['number-changed']);
 
 const count = ref(props.selectedCategoryLoanCount || 0);
 
@@ -68,12 +70,14 @@ const incrementCount = () => {
 	if (count.value >= MAX_COUNT) return;
 	count.value += 1;
 	$kvTrackEvent('portfolio', 'modify-goal-amount', 'increase-goal');
+	emit('number-changed', count.value);
 };
 
 const decrementCount = () => {
 	if (MIN_COUNT >= count.value) return;
 	count.value -= 1;
 	$kvTrackEvent('portfolio', 'modify-goal-amount', 'decrease-goal');
+	emit('number-changed', count.value);
 };
 
 onMounted(() => {
