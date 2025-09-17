@@ -49,6 +49,7 @@
 					<KvButton
 						class="tw-flex-grow"
 						v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
+						:href="ctaHref"
 					>
 						Continue
 					</KvButton>
@@ -122,6 +123,10 @@ const getContentfulKey = category => {
 		default: return category;
 	}
 };
+
+const ctaHref = computed(() => {
+	return `lend-category-beta?header=${getContentfulKey(props.userGoal?.category)}`;
+});
 
 const achievementGoalImg = computed(() => {
 	const contentfulCategory = getContentfulKey(props.userGoal?.category) || '';
