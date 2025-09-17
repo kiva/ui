@@ -92,7 +92,7 @@
 		v-else
 		@visible="fetchAsyncData"
 		data-testid="lending-insights"
-		class="!tw-bg-eco-green-1"
+		class="!tw-bg-white"
 	>
 		<div class="tw-flex tw-items-center tw-justify-end tw-gap-3 tw-mb-3 md:tw-mb-2">
 			<div
