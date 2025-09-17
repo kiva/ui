@@ -105,9 +105,6 @@ export default function createMiddleware({ config, vite }) {
 		// Handle a single home page experiment
 		if (homePageHeader) {
 			forceHeader = true;
-			res.setHeader(VARY_HEADER, headers.vary
-				? `${headers.vary}, ${HOME_PAGE_EXPERIMENT_HEADER}`
-				: HOME_PAGE_EXPERIMENT_HEADER);
 		}
 
 		// Setup rendering context
