@@ -9,9 +9,9 @@
 			<span
 				:class="{'tw-absolute tw-top-1 tw-left-1': userHasGoal}"
 				class="
-              tw-inline-flex tw-items-center tw-gap-1
-              tw-mb-2 tw-rounded-md
-              tw-bg-eco-green-1 tw-px-1.5 tw-py-1"
+					tw-inline-flex tw-items-center tw-gap-1
+					tw-mb-2 tw-rounded-md
+					tw-bg-eco-green-1 tw-px-1.5 tw-py-1"
 				title="Your lending reach"
 			>
 				<KvMaterialIcon
@@ -96,7 +96,7 @@ const props = defineProps({
 
 defineEmits(['open-goal-modal']);
 
-// Placeholder for current progress, replace with actual progress data when available
+// TODO: MP-2065
 const currentGoalProgress = computed(() => 3);
 
 const loansToReachGoal = computed(() => props.userGoal?.target || 0);
@@ -143,8 +143,8 @@ const achievementGoalImg = computed(() => {
 <style lang="postcss" scoped>
 
 .card-container {
-  @apply tw-w-full tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
-    tw-overflow-hidden tw-bg-white tw-shrink-0 tw-gap-1;
+	@apply tw-w-full tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
+		tw-overflow-hidden tw-bg-white tw-shrink-0 tw-gap-1;
 
 	@screen md {
 		width: 336px;

@@ -393,7 +393,7 @@ const handleChange = interaction => {
 const isCustomCard = slide => !!slide?.isCustomCard;
 
 const showGoalCard = idx => {
-	return !!props.userGoal && idx === 0;
+	return props.inLendingStats && !!props.userGoal && idx === 0;
 };
 
 </script>

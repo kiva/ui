@@ -12,7 +12,7 @@
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': !userLentToAllRegions }"
 	>
 		<GoalCard
-			v-if="!userLentToAllRegions"
+			v-if="isNextStepsExp && !userLentToAllRegions"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:hero-slides="heroSlides"
 			:user-goal="userGoal"
@@ -472,23 +472,4 @@ onUnmounted(() => {
 	@apply tw-hidden;
 }
 
-.goal-card-bg {
-	@apply tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
-		tw-overflow-hidden tw-bg-white tw-shrink-0;
-}
-
-.goal-card-bg::before {
-	content: '';
-	width: 400px;
-	height: 500px;
-	background: url('/static/src/assets/images/my-kiva/goal-card-bg.jpg') lightgray;
-	transform: rotate(17deg);
-	left: 40%;
-
-	@apply tw-absolute tw-bg-cover tw-bg-center tw-bg-no-repeat tw-z-base tw-right-0 tw-bg-blend-overlay;
-}
-
-.goal-card-bg > * {
-	@apply tw-relative tw-z-1;
-}
 </style>

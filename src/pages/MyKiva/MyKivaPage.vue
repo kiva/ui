@@ -185,7 +185,7 @@ export default {
 				'EXP-MP-1984-Sept2025'
 			);
 			this.isLendingStatsExp = lendingStatsExpData.version === 'b';
-			this.isNextStepsExp = nextStepsExpData.version !== 'b';
+			this.isNextStepsExp = nextStepsExpData.version === 'b';
 			this.fetchMyKivaData();
 			const achievementsResult = this.apollo.readQuery({
 				query: userAchievementProgressQuery
