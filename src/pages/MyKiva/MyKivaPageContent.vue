@@ -33,6 +33,7 @@
 				:hero-tiered-achievements="heroTieredAchievements"
 				:is-next-steps-exp="isNextStepsExp"
 				:total-loans="totalLoans"
+				:user-goal="userGoal"
 				@store-goals-preferences="storeGoalPreferences"
 			/>
 		</section>
@@ -360,6 +361,13 @@ export default {
 			const updates = Array.isArray(this.mergedUpdates) ? this.mergedUpdates.slice(0, this.displayedCount) : [];
 			return updates;
 		},
+		userGoal() {
+			const preferences = this.userInfo?.userPreferences ?? null;
+			if (!preferences) return false;
+			const parsedPreferences = JSON.parse(preferences.preferences);
+			const existingGoals = parsedPreferences?.goals || [];
+			return existingGoals.length ? existingGoals[0] : null;
+		},
 	},
 	methods: {
 		handleShowNavigation() {
@@ -606,9 +614,15 @@ export default {
 			this.showNextSteps = showNextSteps;
 		},
 		async storeGoalPreferences(newPreferences) {
-			const existingPreferences = this.userInfo.userPreferences;
+			const existingPreferences = this.userInfo?.userPreferences ?? null;
+			if (!existingPreferences) {
+				await createUserPreferences(
+					this.apollo,
+					{ goals: {} }
+				);
+			}
 			const parsedPreferences = existingPreferences ? JSON.parse(existingPreferences.preferences) : {};
-			const existingGoals = parsedPreferences.goals || [];
+			const existingGoals = parsedPreferences?.goals || [];
 			const goalIndex = existingGoals.findIndex(goal => goal.goalName === newPreferences.goalName);
 			if (goalIndex !== -1) {
 				const goalToUpdate = { ...newPreferences };
@@ -624,13 +638,7 @@ export default {
 					parsedPreferences,
 					{ goals: existingGoals }
 				);
-			} else {
-				await createUserPreferences(
-					this.apollo,
-					existingPreferences,
-					parsedPreferences,
-					{ goals: existingGoals }
-				);
+				this.$showTipMsg('Your goal was saved successfully!', { type: 'success' });
 			}
 		}
 	},

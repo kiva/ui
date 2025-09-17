@@ -191,7 +191,7 @@ export default {
 				query: userAchievementProgressQuery
 			});
 			this.heroTieredAchievements = achievementsResult.userAchievementProgress?.tieredLendingAchievements ?? [];
-			if ((this.isHeroEnabled && !this.isLendingStatsExp) || this.userLentToAllRegions) {
+			if ((this.isHeroEnabled && !this.isLendingStatsExp) || this.userLentToAllRegions || this.isNextStepsExp) {
 				const contentfulChallengeResult = this.apollo.readQuery({
 					query: contentfulEntriesQuery,
 					variables: { contentType: 'challenge', limit: 200 }

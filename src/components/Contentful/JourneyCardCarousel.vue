@@ -22,8 +22,14 @@
 				#[`slide${index}`]
 				:key="index"
 			>
+				<GoalCard
+					v-if="showGoalCard(index)"
+					:hero-tiered-achievements="heroTieredAchievements"
+					:hero-slides="slides"
+					:user-goal="userGoal"
+				/>
 				<MyKivaCard
-					v-if="isCustomCard(slide)"
+					v-else-if="isCustomCard(slide)"
 					class="kiva-card"
 					:title="slide.title"
 					:show-cta-icon="true"
@@ -82,6 +88,7 @@ import useBadgeData from '#src/composables/useBadgeData';
 import { KvCarousel } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
+import GoalCard from '#src/components/MyKiva/GoalCard';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
@@ -136,6 +143,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	userGoal: {
+		type: Object,
+		default: () => ({}),
+	}
 });
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
@@ -380,6 +391,10 @@ const handleChange = interaction => {
 };
 
 const isCustomCard = slide => !!slide?.isCustomCard;
+
+const showGoalCard = idx => {
+	return props.inLendingStats && !!props.userGoal && idx === 0;
+};
 
 </script>
 
