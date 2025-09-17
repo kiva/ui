@@ -115,7 +115,7 @@ import {
 	ref,
 	inject,
 } from 'vue';
-import ManagementCard from '#src/components/GivingFunds/ManagmentCard';
+import ManagementCard from '#src/components/GivingFunds/ManagementCard';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import {
 	KvButton,

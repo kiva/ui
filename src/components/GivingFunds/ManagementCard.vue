@@ -159,7 +159,6 @@ import {
 } from '@kiva/kv-components';
 import useGivingFund from '#src/composables/useGivingFund';
 import useIsMobile from '#src/composables/useIsMobile';
-// import logFormatter from '#src/util/logFormatter';
 import numeral from 'numeral';
 
 const props = defineProps({
