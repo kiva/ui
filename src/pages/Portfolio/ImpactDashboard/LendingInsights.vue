@@ -94,21 +94,35 @@
 		data-testid="lending-insights"
 		class="!tw-bg-eco-green-1"
 	>
-		<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
-			Lending insights
-		</h2>
-		<div>
-			<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
-				2025
-			</h2>
-			<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
-				Lifetime
-			</h2>
-			<div class="tw-flex tw-rounded tw-bg-brand-100 tw-border tw-border-brand-200">
-				<star-shine class="tw-h-full tw-w-full tw-flex-shrink-0" />
-				<p class="tw-font-normal tw-flex-shrink-0">
+		<div class="tw-flex tw-items-center tw-justify-end tw-gap-3 tw-mb-3 md:tw-mb-2">
+			<div
+				class="tw-inline-flex tw-px-1 tw-items-center
+					tw-rounded-sm tw-bg-brand-100 tw-border tw-border-brand-200"
+			>
+				<star-shine class="tw-flex-shrink-0" />
+				<p class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0">
 					Filter by year now live
 				</p>
+			</div>
+		</div>
+		<div class="tw-flex tw-items-center tw-justify-between">
+			<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
+				Lending insights
+			</h2>
+			<div class="tw-flex tw-items-center tw-gap-2">
+				<!-- To-Do: Functionality work regarding YTD and lifetime tab column (MP-1858) -->
+				<h2
+					class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4
+					tw-text-center md:tw-text-left hover:tw-underline hover:tw-decoration-2"
+				>
+					2025
+				</h2>
+				<h2
+					class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4
+					tw-text-center md:tw-text-left hover:tw-underline hover:tw-decoration-2"
+				>
+					Lifetime
+				</h2>
 			</div>
 		</div>
 		<kv-grid as="dl" class="stats-container-exp">
