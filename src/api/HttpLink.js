@@ -63,7 +63,7 @@ export default ({
 		},
 		// eslint-disable-next-line max-len
 		(!apolloBatching ? new HttpLink(stellateOptions) : new BatchHttpLink(stellateOptions)), // function returns TRUE use this
-		(!apolloBatching ? new HttpLink(options) : new BatchHttpLink(options)), // function returns FALSE use this
+		new HttpLink(options), // function returns FALSE use this
 	);
 
 	return link;
