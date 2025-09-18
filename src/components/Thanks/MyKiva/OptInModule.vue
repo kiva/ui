@@ -54,12 +54,11 @@
 
 <script setup>
 import { computed, inject, ref } from 'vue';
-import { KvButton, KvUserAvatar } from '@kiva/kv-components';
+import { getKivaImageUrl, KvButton, KvUserAvatar } from '@kiva/kv-components';
 import useIsMobile from '#src/composables/useIsMobile';
 import {
 	MOBILE_BREAKPOINT,
 } from '#src/composables/useBadgeModal';
-import { getKivaImageUrl } from '#src/util/imageUtils';
 import useOptIn from '#src/composables/useOptIn';
 import OptInNotification from './OptInNotification';
 
