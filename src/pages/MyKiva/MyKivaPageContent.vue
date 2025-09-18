@@ -366,12 +366,17 @@ export default {
 			if (!preferences) return false;
 			const parsedPreferences = JSON.parse(preferences.preferences);
 			const existingGoals = parsedPreferences?.goals || [];
-			const goal = existingGoals.length ? existingGoals[0] : null;
+			let goal = existingGoals.length ? existingGoals[0] : null;
+			// eslint-disable-next-line max-len
 			const achievementProgress = this.heroTieredAchievements.find(ach => ach.id === goal?.category)?.totalProgressToAchievement ?? 0;
-			return {
-				...goal,
-				currentProgress: (achievementProgress - (goal?.currentLoanCount || 0)),
-			};
+			if (goal) {
+				goal = {
+					...goal,
+					currentProgress: (achievementProgress - (goal?.currentLoanCount || 0)),
+				};
+			}
+
+			return goal;
 		},
 	},
 	methods: {
