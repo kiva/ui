@@ -40,7 +40,7 @@ import { readBoolSetting } from '#src/util/settingsUtils';
 import { splitAchievements, filterAchievementData, getOneLoanAwayAchievement } from '#src/util/atbAchievementUtils';
 
 const BASKET_LIMIT_SIZE_FOR_EXP = 3;
-const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
+const PHOTO_PATH = 'https://www.kiva.org/img/';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 const apollo = inject('apollo');

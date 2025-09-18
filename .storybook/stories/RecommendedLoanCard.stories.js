@@ -14,8 +14,8 @@ const queryResult = {
 					}
 				},
 				image: {
-					default: "https://www-dev-kiva-org-0.freetls.fastly.net/img/w480h300/d5ad26cd7acc24317edc1c04c6250074.jpg",
-					retina: "https://www-dev-kiva-org-0.freetls.fastly.net/img/w960h600/d5ad26cd7acc24317edc1c04c6250074.jpg"
+					default: "https://www.kiva.org/img/w480h300/d5ad26cd7acc24317edc1c04c6250074.webp",
+					retina: "https://www.kiva.org/img/w960h600/d5ad26cd7acc24317edc1c04c6250074.webp"
 				},
 				name: "Microloan Foundation Malawi",
 				sector: {

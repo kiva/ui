@@ -34,7 +34,7 @@ const theme = create({
 
 	brandTitle: 'Kiva.org',
 	brandUrl: '/',
-	brandImage: '//www-kiva-org.global.ssl.fastly.net/cms/kiva_logo_2.png',
+	brandImage: '//www.kiva.org/cms/kiva_logo_2.png',
 });
 
 addons.setConfig({
