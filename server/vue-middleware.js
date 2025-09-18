@@ -104,7 +104,7 @@ export default function createMiddleware({ config, vite }) {
 
 		// Handle a single home page experiment
 		if (homePageHeader) {
-			forceHeader = true;
+			forceHeader = homePageHeader;
 		}
 
 		// Setup rendering context
