@@ -368,11 +368,16 @@ export default {
 			const existingGoals = parsedPreferences?.goals || [];
 			let goal = existingGoals.length ? existingGoals[0] : null;
 			// eslint-disable-next-line max-len
-			const achievementProgress = this.heroTieredAchievements.find(ach => ach.id === goal?.category)?.totalProgressToAchievement ?? 0;
+			let loanTotal = this.heroTieredAchievements.find(ach => ach.id === goal?.category)?.totalProgressToAchievement ?? 0;
+			if (!loanTotal && goal?.category === 'all') {
+				loanTotal = this.heroTieredAchievements
+					.reduce((sum, ach) => sum + (ach?.totalProgressToAchievement || 0), 0);
+			}
+
 			if (goal) {
 				goal = {
 					...goal,
-					currentProgress: (achievementProgress - (goal?.currentLoanCount || 0)),
+					currentProgress: (loanTotal - (goal?.loanTotalAtStart || 0)),
 				};
 			}
 

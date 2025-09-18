@@ -180,14 +180,14 @@ const handleClick = () => {
 		const target = selectedGoalNumber.value;
 		const dateStarted = new Date().toISOString();
 		const status = 'in-progress';
-		const currentLoanCount = selectedCategory.value?.loanCount || 0;
+		const loanTotalAtStart = selectedCategory.value?.loanCount || 0;
 		emit('set-goal', {
 			goalName,
 			category: categorySelected,
 			target,
 			dateStarted,
 			status,
-			currentLoanCount,
+			loanTotalAtStart,
 		});
 	}
 };

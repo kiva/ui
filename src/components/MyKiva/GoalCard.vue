@@ -136,14 +136,17 @@ const getContentfulKey = category => {
 const achievementGoalImg = computed(() => {
 	const contentfulCategory = getContentfulKey(props.userGoal?.category) || '';
 	if (!contentfulCategory) return '';
-	const key = `my-kiva-${contentfulCategory}-journey`;
+	const key = `my-kiva-${'women'}-journey`;
 
 	const richText = props.heroSlides.find(slide => slide?.fields?.key === key);
-	const formattedRichText = formatRichTextContent(richText);
+	let backgroundImage = null;
+	if (richText) {
+		const formattedRichText = formatRichTextContent(richText);
 
-	const backgroundImage = formattedRichText?.richText?.content.find(
-		item => item.nodeType === 'embedded-asset-block' && item.data?.target?.fields?.file?.url
-	);
+		backgroundImage = formattedRichText?.richText?.content.find(
+			item => item.nodeType === 'embedded-asset-block' && item.data?.target?.fields?.file?.url
+		);
+	}
 
 	return backgroundImage?.data?.target?.fields?.file?.url || '';
 });
