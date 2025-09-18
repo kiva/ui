@@ -49,6 +49,7 @@
 					<KvButton
 						class="tw-flex-grow"
 						v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
+						@click="handleContinueClick"
 					>
 						Continue
 					</KvButton>
@@ -71,7 +72,7 @@
 
 <script setup>
 
-import { computed } from 'vue';
+import { computed, onMounted, inject } from 'vue';
 import {
 	KvMaterialIcon, KvButton, KvProgressBar
 } from '@kiva/kv-components';
@@ -101,6 +102,8 @@ const props = defineProps({
 });
 
 defineEmits(['open-goal-modal']);
+
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const currentGoalProgress = computed(() => props.userGoal?.currentProgress || 0);
 
@@ -143,6 +146,14 @@ const achievementGoalImg = computed(() => {
 	);
 
 	return backgroundImage?.data?.target?.fields?.file?.url || '';
+});
+
+const handleContinueClick = () => {
+	$kvTrackEvent('portfolio', 'click', 'continue-towards-goal');
+};
+
+onMounted(() => {
+	$kvTrackEvent('portfolio', 'view', 'goal-set', props.userGoal?.category, currentGoalProgress.value);
 });
 
 </script>
