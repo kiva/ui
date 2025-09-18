@@ -115,7 +115,7 @@
 					class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4
 					tw-text-center md:tw-text-left hover:tw-underline hover:tw-decoration-2"
 				>
-					2025
+					{{ yearToDate }}
 				</h2>
 				<h2
 					class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4
@@ -266,6 +266,10 @@ export default {
 			const today = new Date();
 			const deadline = new Date(today.getFullYear(), 11, 31); // December 31st of current year
 			return differenceInCalendarDays(deadline, today);
+		},
+		yearToDate() {
+			const currentYear = new Date().getFullYear();
+			return currentYear;
 		}
 	},
 	methods: {
