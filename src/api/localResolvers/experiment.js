@@ -16,7 +16,7 @@ import logFormatter from '#src/util/logFormatter';
  *
  * @param {Object} param0.cookieStore The cookie mixin
  * @param {Object} param0.route The initial route resolved by the Vue router
- * @param {boolean} param0.forceHeader Force new navigation header
+ * @param {boolean|string} param0.forceHeader Force new navigation header
  * @returns {Object} The local resolvers
  */
 export default ({ cookieStore, route, forceHeader }) => {
