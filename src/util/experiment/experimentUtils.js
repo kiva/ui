@@ -275,7 +275,7 @@ export const setCookieAssignments = (cookieStore, assignments) => {
  * @param {Object} route The initial route resolved by the Vue router
  * @param {string} id The ID of the assignment to check
  * @param {Object} experimentSetting The experiment settings
- * @param {boolean} should force the new header experiment if was setted by fastly header
+ * @param {boolean|string} should force the new header experiment if was setted by fastly header otherwise false
  * @returns The forced experiment assignment
  */
 export const getForcedAssignment = (cookieStore, route, id, experimentSetting, forceHeader = false) => {
@@ -289,7 +289,7 @@ export const getForcedAssignment = (cookieStore, route, id, experimentSetting, f
 
 	if (forceHeader && id === HOME_PAGE_EXPERIMENT_KEY) {
 		headerForced = true;
-		forcedVersion = 'b';
+		forcedVersion = forceHeader;
 	} else {
 		// Look through setuiab assignments
 		const setuiabQuery = route?.query?.setuiab;

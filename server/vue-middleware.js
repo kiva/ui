@@ -96,17 +96,6 @@ export default function createMiddleware({ config, vite }) {
 			// If not simulating CDN, check Fastly header
 			: req.get('Fastly-Noted-Logged-In') === 'true';
 
-		let forceHeader = false;
-		const { headers } = req;
-		// We currently support running one and only one experiment at a time on cached pages
-		// The experiment is named "home page" but can be used for any page and experiment
-		const homePageHeader = headers[HOME_PAGE_EXPERIMENT_HEADER.toLowerCase()]; // Node lowercases header keys
-
-		// Handle a single home page experiment
-		if (homePageHeader) {
-			forceHeader = homePageHeader;
-		}
-
 		// Setup rendering context
 		const context = {
 			url: req.url,
@@ -118,7 +107,7 @@ export default function createMiddleware({ config, vite }) {
 			locale: req.locale,
 			device,
 			cdnNotedLoggedIn,
-			forceHeader,
+			forceHeader: req.headers[HOME_PAGE_EXPERIMENT_HEADER.toLowerCase()],
 		};
 
 		// set html response headers
