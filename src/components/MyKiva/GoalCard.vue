@@ -78,6 +78,12 @@ import {
 import { mdiCheckCircleOutline } from '@mdi/js';
 import { formatRichTextContent } from '#src/util/contentfulUtils';
 import GoalCardCareImg from '#src/assets/images/my-kiva/goal-card-care.svg';
+import {
+	ID_BASIC_NEEDS,
+	ID_REFUGEE_EQUALITY,
+	ID_US_ECONOMIC_EQUALITY,
+	ID_WOMENS_EQUALITY
+} from '#src/composables/useBadgeData';
 
 const props = defineProps({
 	heroSlides: {
@@ -96,8 +102,7 @@ const props = defineProps({
 
 defineEmits(['open-goal-modal']);
 
-// TODO: MP-2065
-const currentGoalProgress = computed(() => 3);
+const currentGoalProgress = computed(() => props.userGoal?.currentProgress || 0);
 
 const loansToReachGoal = computed(() => props.userGoal?.target || 0);
 
@@ -113,12 +118,14 @@ const title = computed(() => {
 
 const getContentfulKey = category => {
 	switch (category) {
-		case 'us-economic-equality':
+		case ID_US_ECONOMIC_EQUALITY:
 			return 'us-equality';
-		case 'basic-needs':
+		case ID_BASIC_NEEDS:
 			return 'fundamental-needs';
-		case 'refugees':
+		case ID_REFUGEE_EQUALITY:
 			return 'refugee-equality';
+		case ID_WOMENS_EQUALITY:
+			return 'women';
 		default: return category;
 	}
 };

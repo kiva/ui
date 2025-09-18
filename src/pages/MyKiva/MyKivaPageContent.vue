@@ -366,7 +366,12 @@ export default {
 			if (!preferences) return false;
 			const parsedPreferences = JSON.parse(preferences.preferences);
 			const existingGoals = parsedPreferences?.goals || [];
-			return existingGoals.length ? existingGoals[0] : null;
+			const goal = existingGoals.length ? existingGoals[0] : null;
+			const achievementProgress = this.heroTieredAchievements.find(ach => ach.id === goal?.category)?.totalProgressToAchievement ?? 0;
+			return {
+				...goal,
+				currentProgress: (achievementProgress - (goal?.currentLoanCount || 0)),
+			};
 		},
 	},
 	methods: {
@@ -618,7 +623,7 @@ export default {
 			if (!existingPreferences) {
 				await createUserPreferences(
 					this.apollo,
-					{ goals: {} }
+					{ goals: [] }
 				);
 			}
 			const parsedPreferences = existingPreferences ? JSON.parse(existingPreferences.preferences) : {};
