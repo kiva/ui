@@ -270,11 +270,3 @@ onMounted(() => {
 	fetchUserId();
 });
 </script>
-
-<style lang="postcss" scoped>
-.utility-menu-link {
-	@apply tw-block tw-p-1.5 hover:tw-bg-secondary tw-text-primary hover:tw-text-action-highlight tw-font-medium;
-	@apply tw-no-underline active:tw-no-underline;
-	@apply visited:tw-no-underline hover:tw-no-underline focus:tw-no-underline;
-}
-</style>
