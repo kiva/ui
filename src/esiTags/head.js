@@ -59,6 +59,7 @@ export default async function renderESIHead({
 	const {
 		config,
 		kivaUserAgent,
+		forceHeader,
 	} = context;
 	const { topUrl } = context.esi;
 	const topUrlObj = new URL(topUrl, `${config.transport}://${config.host}`);
@@ -72,6 +73,7 @@ export default async function renderESIHead({
 		userAgent: kivaUserAgent,
 		uri: config.graphqlUri,
 		types: config.graphqlPossibleTypes,
+		forceHeader,
 	});
 
 	// Set the visitor id cookie before other cookies or requests

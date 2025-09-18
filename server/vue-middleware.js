@@ -3,6 +3,7 @@ import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import Bowser from 'bowser';
 import cookie from 'cookie';
+import { HOME_PAGE_EXPERIMENT_HEADER } from '../src/util/experiment/fastlyExperimentUtils.js';
 import vueWorkerPool from './vue-worker-pool.js';
 import vueRender from './vue-render.js';
 import protectedRoutes from './util/protectedRoutes.js';
@@ -106,6 +107,7 @@ export default function createMiddleware({ config, vite }) {
 			locale: req.locale,
 			device,
 			cdnNotedLoggedIn,
+			forceHeader: req.headers[HOME_PAGE_EXPERIMENT_HEADER.toLowerCase()],
 		};
 
 		// set html response headers

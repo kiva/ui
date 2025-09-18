@@ -104,6 +104,7 @@ const props = defineProps({
 defineEmits(['open-goal-modal']);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
+const router = useRouter();
 
 const currentGoalProgress = computed(() => props.userGoal?.currentProgress || 0);
 
@@ -133,6 +134,24 @@ const getContentfulKey = category => {
 	}
 };
 
+const getGoalCategoryUrl = category => {
+	switch (category) {
+		case 'us-economic-equality':
+			return 'U.S. entrepreneurs';
+		case 'basic-needs':
+			return 'loans for basic needs';
+		case 'eco-friendly':
+			return 'eco-friendly loans';
+		default: return category;
+	}
+};
+
+const ctaHref = computed(() => {
+	const string = `Your goal: Support ${props.userGoal?.target} ${getGoalCategoryUrl(props.userGoal?.category)}`;
+	const encodedString = encodeURIComponent(string);
+	return `/lend/filter?header=${encodedString}`;
+});
+
 const achievementGoalImg = computed(() => {
 	const contentfulCategory = getContentfulKey(props.userGoal?.category) || '';
 	if (!contentfulCategory) return '';
@@ -153,6 +172,7 @@ const achievementGoalImg = computed(() => {
 
 const handleContinueClick = () => {
 	$kvTrackEvent('portfolio', 'click', 'continue-towards-goal');
+	router.push(ctaHref.value);
 };
 
 onMounted(() => {

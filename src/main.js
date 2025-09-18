@@ -22,6 +22,7 @@ export default async function createApp({
 	router,
 	cdnNotedLoggedIn = false,
 	isServer = false,
+	forceHeader = false,
 } = {}) {
 	const renderConfig = {
 		cdnNotedLoggedIn,
@@ -74,6 +75,7 @@ export default async function createApp({
 		fetch,
 		userAgent: kivaUserAgent,
 		route,
+		forceHeader
 	});
 
 	if (!useCDNCaching || !isServer) {
