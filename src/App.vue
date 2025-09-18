@@ -71,7 +71,7 @@ export default {
 				{
 					property: 'og:image',
 					vmid: 'og:image',
-					content: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-og-image.jpg'
+					content: 'https://www.kiva.org/cms/kiva-og-image.jpg'
 				},
 				{ property: 'og:image:width', vmid: 'og:image:width', content: '1200' },
 				{ property: 'og:image:height', vmid: 'og:image:height', content: '630' },
@@ -109,7 +109,7 @@ export default {
 				{
 					name: 'twitter:image',
 					vmid: 'twitter:image',
-					content: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-ogtwitter-image.jpg'
+					content: 'https://www.kiva.org/cms/kiva-ogtwitter-image.jpg'
 				},
 			]),
 			link: [

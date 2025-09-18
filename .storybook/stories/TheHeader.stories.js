@@ -15,7 +15,7 @@ const loggedIn = {
 			image: {
 				id: 726677,
 				url:
-					"https://www-dev-kiva-org.freetls.fastly.net/img/s140/726677.jpg",
+					"https://www.kiva.org/img/s140/726677.webp",
 			},
 		},
 		team: null,
