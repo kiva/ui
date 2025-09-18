@@ -45,8 +45,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { mdiAccountCircle } from '@mdi/js';
-import { KvLoadingPlaceholder, KvMaterialIcon } from '@kiva/kv-components';
-import { isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
+import { isLegacyPlaceholderAvatar, KvLoadingPlaceholder, KvMaterialIcon } from '@kiva/kv-components';
 
 const { profilePicId } = defineProps({
 	isUserDataLoading: {
