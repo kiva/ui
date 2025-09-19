@@ -27,6 +27,7 @@
 				@continue-clicked="handleContinue"
 				class="tw-mb-2.5"
 			/>
+			<GoalCompleted class="tw-mb-2.5" />
 			<JourneyGeneralPrompt
 				v-if="showJourneyModule"
 				:loans="loans"
@@ -84,6 +85,7 @@ import {
 	inject,
 } from 'vue';
 import confetti from 'canvas-confetti';
+import GoalCompleted from '#src/components/Thanks/SingleVersion/GoalCompleted';
 import LoanComment from '#src/components/Thanks/SingleVersion/LoanComment';
 import OptInModule from '#src/components/Thanks/SingleVersion/OptInModule';
 import KivaCards from '#src/components/Thanks/SingleVersion/KivaCards';

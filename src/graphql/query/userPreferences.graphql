@@ -1,0 +1,8 @@
+query userPreferencesQuery {
+  my {
+    userPreferences {
+      id
+      preferences
+    }
+  }
+}
