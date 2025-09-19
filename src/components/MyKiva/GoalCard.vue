@@ -156,7 +156,7 @@ const ctaHref = computed(() => {
 const achievementGoalImg = computed(() => {
 	const contentfulCategory = getContentfulKey(props.userGoal?.category) || '';
 	if (!contentfulCategory) return '';
-	const key = `my-kiva-${'women'}-journey`;
+	const key = `my-kiva-${contentfulCategory}-journey`;
 
 	const richText = props.heroSlides.find(slide => slide?.fields?.key === key);
 	let backgroundImage = null;
