@@ -178,7 +178,7 @@ import AsyncMyKivaSection from '#src/pages/MyKiva/AsyncMyKivaSection';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
-import useBadgeData from '#src/composables/useBadgeData';
+import useBadgeData, { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import LatestBlogCarousel from '#src/components/MyKiva/LatestBlogCarousel';
 import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
@@ -366,7 +366,21 @@ export default {
 			if (!preferences) return false;
 			const parsedPreferences = JSON.parse(preferences.preferences);
 			const existingGoals = parsedPreferences?.goals || [];
-			return existingGoals.length ? existingGoals[0] : null;
+			let goal = existingGoals.length ? existingGoals[0] : null;
+			// eslint-disable-next-line max-len
+			let loanTotal = this.heroTieredAchievements.find(ach => ach.id === goal?.category)?.totalProgressToAchievement ?? 0;
+			if (!loanTotal && goal?.category === ID_SUPPORT_ALL) {
+				loanTotal = this.totalLoans;
+			}
+
+			if (goal) {
+				goal = {
+					...goal,
+					currentProgress: (loanTotal - (goal?.loanTotalAtStart || 0)),
+				};
+			}
+
+			return goal;
 		},
 	},
 	methods: {
@@ -618,7 +632,7 @@ export default {
 			if (!existingPreferences) {
 				await createUserPreferences(
 					this.apollo,
-					{ goals: {} }
+					{ goals: [] }
 				);
 			}
 			const parsedPreferences = existingPreferences ? JSON.parse(existingPreferences.preferences) : {};

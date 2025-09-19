@@ -89,11 +89,12 @@ export default {
 				const isHeroEnabled = readBoolSetting(heroCarouselUiSetting, 'data.general.uiConfigSetting.value');
 				const myKivaStatsExp = result[3];
 				const isMyKivaStatsExp = myKivaStatsExp?.data?.experiment?.version === 'b';
+				const isMyKivaNextStepsExp = result[4]?.data?.experiment?.version !== 'b';
 				const statsResult = result[1]?.data || {};
 				const countryFacets = statsResult.lend?.countryFacets ?? [];
 				const countriesLentTo = statsResult.my?.lendingStats?.countriesLentTo ?? [];
 				const { userLentToAllRegions } = getRegionsWithLoanStatus(countryFacets, countriesLentTo);
-				if ((isHeroEnabled && !isMyKivaStatsExp) || userLentToAllRegions) {
+				if ((isHeroEnabled && !isMyKivaStatsExp) || userLentToAllRegions || isMyKivaNextStepsExp) {
 					return Promise.all([
 						client.query({
 							query: contentfulEntriesQuery,
