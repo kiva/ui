@@ -85,6 +85,7 @@ import {
 	ID_US_ECONOMIC_EQUALITY,
 	ID_WOMENS_EQUALITY
 } from '#src/composables/useBadgeData';
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
 	heroSlides: {

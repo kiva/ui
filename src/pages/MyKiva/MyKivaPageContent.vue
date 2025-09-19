@@ -370,8 +370,7 @@ export default {
 			// eslint-disable-next-line max-len
 			let loanTotal = this.heroTieredAchievements.find(ach => ach.id === goal?.category)?.totalProgressToAchievement ?? 0;
 			if (!loanTotal && goal?.category === 'all') {
-				loanTotal = this.heroTieredAchievements
-					.reduce((sum, ach) => sum + (ach?.totalProgressToAchievement || 0), 0);
+				loanTotal = this.totalLoans;
 			}
 
 			if (goal) {
