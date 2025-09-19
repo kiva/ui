@@ -47,7 +47,8 @@ import {
 	ID_CLIMATE_ACTION,
 	ID_REFUGEE_EQUALITY,
 	ID_US_ECONOMIC_EQUALITY,
-	ID_WOMENS_EQUALITY
+	ID_WOMENS_EQUALITY,
+	ID_SUPPORT_ALL,
 } from '#src/composables/useBadgeData';
 import womenImg from '#src/assets/images/my-kiva/goal-setting/women.svg?url';
 import refugeesImg from '#src/assets/images/my-kiva/goal-setting/refugees.svg?url';
@@ -133,7 +134,7 @@ const categories = [
 		customImage: supportAllImg,
 		loanCount: props.totalLoans,
 		title: null,
-		badgeId: null,
+		badgeId: ID_SUPPORT_ALL,
 	}
 ];
 
@@ -175,7 +176,7 @@ const handleClick = () => {
 	} else {
 		$kvTrackEvent('portfolio', 'click', 'set-goal-amount', selectedGoalNumber.value);
 		const currentYear = new Date().getFullYear();
-		const categorySelected = selectedCategory.value?.badgeId || 'all';
+		const categorySelected = selectedCategory.value?.badgeId;
 		const goalName = `goal-${categorySelected}-${currentYear}`;
 		const target = selectedGoalNumber.value;
 		const dateStarted = new Date().toISOString();

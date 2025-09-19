@@ -19,6 +19,7 @@ export const ID_US_ECONOMIC_EQUALITY = 'us-economic-equality';
 export const ID_CLIMATE_ACTION = 'climate-action';
 export const ID_REFUGEE_EQUALITY = 'refugee-equality';
 export const ID_BASIC_NEEDS = 'basic-needs';
+export const ID_SUPPORT_ALL = 'support-all';
 export const FILTERS = {
 	[ID_WOMENS_EQUALITY]: { gender: ['female'] },
 	[ID_US_ECONOMIC_EQUALITY]: { country: ['PR', 'US'] },
