@@ -98,7 +98,9 @@
 			/>
 		</section>
 		<section class="tw-mb-4">
-			<h3>My achievements</h3>
+			<h3 id="my-achievements">
+				My achievements
+			</h3>
 			<BadgesSection
 				class="tw-mt-2"
 				:badge-data="badgeData"
