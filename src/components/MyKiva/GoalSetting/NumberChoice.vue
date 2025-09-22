@@ -52,7 +52,7 @@ const IMAGE_WIDTH = 64;
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const props = defineProps({
-	selectedCategoryLoanCount: {
+	selectedGoalNumber: {
 		type: Number,
 		default: 0,
 	},
@@ -64,7 +64,7 @@ const props = defineProps({
 
 const emit = defineEmits(['number-changed']);
 
-const count = ref(props.selectedCategoryLoanCount || 0);
+const count = ref(props.selectedGoalNumber || 0);
 
 const incrementCount = () => {
 	if (count.value >= MAX_COUNT) return;
