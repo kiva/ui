@@ -197,7 +197,7 @@ onMounted(() => {
 	content: '';
 	width: 400px;
 	height: 500px;
-	background: url('/static/src/assets/images/my-kiva/goal-card-bg.jpg') lightgray;
+	background: url('/src/assets/images/my-kiva/goal-card-bg.jpg') lightgray;
 	transform: rotate(17deg);
 	left: 40%;
 

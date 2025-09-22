@@ -362,11 +362,12 @@ export default {
 			return updates;
 		},
 		userGoal() {
-			const preferences = this.userInfo?.userPreferences ?? null;
-			if (!preferences) return false;
-			const parsedPreferences = JSON.parse(preferences.preferences);
+			const preferences = this.userInfo?.userPreferences?.preferences ?? null;
+			const parsedPreferences = preferences ? JSON.parse(preferences) : {};
 			const existingGoals = parsedPreferences?.goals || [];
-			let goal = existingGoals.length ? existingGoals[0] : null;
+			if (!existingGoals.length) return null;
+
+			let goal = existingGoals[0];
 			// eslint-disable-next-line max-len
 			let loanTotal = this.heroTieredAchievements.find(ach => ach.id === goal?.category)?.totalProgressToAchievement ?? 0;
 			if (!loanTotal && goal?.category === ID_SUPPORT_ALL) {
@@ -635,7 +636,7 @@ export default {
 					{ goals: [] }
 				);
 			}
-			const parsedPreferences = existingPreferences ? JSON.parse(existingPreferences.preferences) : {};
+			const parsedPreferences = existingPreferences ? JSON.parse(existingPreferences?.preferences || '{}') : {};
 			const existingGoals = parsedPreferences?.goals || [];
 			const goalIndex = existingGoals.findIndex(goal => goal.goalName === newPreferences.goalName);
 			if (goalIndex !== -1) {
