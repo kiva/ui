@@ -31,7 +31,7 @@ import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
-import gql from 'graphql-tag';
+import { gql } from 'graphql-tag';
 
 const LENDING_STATS_EXP_KEY = 'mykiva_lending_stats';
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
