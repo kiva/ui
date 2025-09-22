@@ -64,7 +64,7 @@ const props = defineProps({
 
 const emit = defineEmits(['number-changed']);
 
-const count = ref(props.selectedGoalNumber || 0);
+const count = ref(props.selectedGoalNumber > MAX_COUNT ? MAX_COUNT : props.selectedGoalNumber);
 
 const incrementCount = () => {
 	if (count.value >= MAX_COUNT) return;

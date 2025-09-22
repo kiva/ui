@@ -159,6 +159,9 @@ const handleCategorySelected = categoryId => {
 	const categoryIdx = categoryId - 1;
 	$kvTrackEvent('portfolio', 'select', 'choose-goal-category', categories[categoryIdx]?.eventProp);
 	selectedCategory.value = categories[categoryIdx];
+	selectedGoalNumber.value = categories[categoryIdx]?.loanCount > MAX_GOAL_LOANS
+		? MAX_GOAL_LOANS
+		: categories[categoryIdx]?.loanCount;
 };
 
 const handleNumberChanged = number => {
