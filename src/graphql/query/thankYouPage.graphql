@@ -1,0 +1,50 @@
+query thankYouPageQuery {
+  my {
+    id
+	userPreferences {
+      id
+      preferences
+    }
+	lendingStats {
+      partnersLentTo {
+        missionStatement
+      }
+    }
+	transactions(
+      filter: {
+        category: loan
+      }
+    ) {
+      values {
+        category
+        amount
+        effectiveTime
+        type
+        createTime
+        loan {
+          id
+          name
+          gender
+          image {
+            id
+            hash
+          }
+          geocode {
+            country {
+              id
+              name
+              isoCode
+            }
+          }
+          tags
+          ... on LoanPartner {
+            themes
+          }
+          sector {
+            id
+          }
+        }
+      }
+    }
+  }
+}

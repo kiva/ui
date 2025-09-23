@@ -8,9 +8,20 @@
 	>
 		<KvLoadingPlaceholder v-if="isLoading" class="!tw-h-9 !tw-rounded" />
 		<template v-else>
-			<div style="padding-bottom:350px">
-				<h3>You completed your goal!</h3>
-				<h3>By supporting {{ goalTarget }} {{ goalString }} you're making real change.</h3>
+			<div class="tw-space-y-12">
+				<div>
+					<h3>You completed your goal!</h3>
+					<h3>By supporting {{ goalTarget }} {{ goalString }} you're making real change.</h3>
+				</div>
+				<div class="tw-relative">
+					<BgRays v-show="!isLoading" style="top: -50px;" />
+					<BadgeContainer :show-shine="true">
+						<HighFive
+							alt="Hi five icon"
+							style="width: 250px; height: 250px;"
+						/>
+					</BadgeContainer>
+				</div>
 			</div>
 			<div class="tw-font-medium">
 				See progress towards all your impact goals
@@ -27,13 +38,17 @@ import {
 	computed,
 	inject,
 } from 'vue';
+import { useRouter } from 'vue-router';
 import { mdiArrowRight } from '@mdi/js';
 import {
 	KvMaterialIcon,
 	KvButton,
 	KvLoadingPlaceholder
 } from '@kiva/kv-components';
-import { useRouter } from 'vue-router';
+
+import HighFive from '#src/assets/images/thanks-page/hi-five.svg';
+import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
+import BgRays from '#src/components/Thanks/BgRays';
 
 import {
 	ID_WOMENS_EQUALITY,
