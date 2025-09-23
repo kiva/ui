@@ -14,7 +14,7 @@
 			:categories="categories"
 			:pre-selected-category="selectedCategory.id"
 			:selected-category="selectedCategory"
-			:selected-category-loan-count="selectedCategoryLoanCount"
+			:selected-goal-number="selectedGoalNumber"
 			@category-selected="handleCategorySelected"
 			@number-changed="handleNumberChanged"
 		/>
@@ -47,7 +47,8 @@ import {
 	ID_CLIMATE_ACTION,
 	ID_REFUGEE_EQUALITY,
 	ID_US_ECONOMIC_EQUALITY,
-	ID_WOMENS_EQUALITY
+	ID_WOMENS_EQUALITY,
+	ID_SUPPORT_ALL,
 } from '#src/composables/useBadgeData';
 import womenImg from '#src/assets/images/my-kiva/goal-setting/women.svg?url';
 import refugeesImg from '#src/assets/images/my-kiva/goal-setting/refugees.svg?url';
@@ -55,6 +56,8 @@ import climateActionImg from '#src/assets/images/my-kiva/goal-setting/climate-ac
 import usEntrepreneursImg from '#src/assets/images/my-kiva/goal-setting/us-entrepreneurs.svg?url';
 import basicNeedsImg from '#src/assets/images/my-kiva/goal-setting/basic-needs.svg?url';
 import supportAllImg from '#src/assets/images/my-kiva/goal-setting/support-all.svg?url';
+
+const MAX_GOAL_LOANS = 50;
 
 const props = defineProps({
 	show: {
@@ -81,6 +84,7 @@ const categories = [
 		customImage: womenImg,
 		loanCount: props.categoriesLoanCount?.[ID_WOMENS_EQUALITY],
 		title: 'women',
+		badgeId: ID_WOMENS_EQUALITY,
 	},
 	{
 		id: '2',
@@ -90,6 +94,7 @@ const categories = [
 		customImage: refugeesImg,
 		loanCount: props.categoriesLoanCount?.[ID_REFUGEE_EQUALITY],
 		title: 'refugees',
+		badgeId: ID_REFUGEE_EQUALITY,
 	},
 	{
 		id: '3',
@@ -99,6 +104,7 @@ const categories = [
 		customImage: climateActionImg,
 		loanCount: props.categoriesLoanCount?.[ID_CLIMATE_ACTION],
 		title: 'climate action',
+		badgeId: ID_CLIMATE_ACTION,
 	},
 	{
 		id: '4',
@@ -108,6 +114,7 @@ const categories = [
 		customImage: usEntrepreneursImg,
 		loanCount: props.categoriesLoanCount?.[ID_US_ECONOMIC_EQUALITY],
 		title: 'US entrepreneurs',
+		badgeId: ID_US_ECONOMIC_EQUALITY,
 	},
 	{
 		id: '5',
@@ -117,6 +124,7 @@ const categories = [
 		customImage: basicNeedsImg,
 		loanCount: props.categoriesLoanCount?.[ID_BASIC_NEEDS],
 		title: 'basic needs',
+		badgeId: ID_BASIC_NEEDS,
 	},
 	{
 		id: '6',
@@ -126,6 +134,7 @@ const categories = [
 		customImage: supportAllImg,
 		loanCount: props.totalLoans,
 		title: null,
+		badgeId: ID_SUPPORT_ALL,
 	}
 ];
 
@@ -134,7 +143,7 @@ const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const emit = defineEmits(['close-goal-modal', 'set-goal']);
 const selectedCategory = ref(categories[0]);
-const selectedGoalNumber = ref(0);
+const selectedGoalNumber = ref(categories[0].loanCount > MAX_GOAL_LOANS ? MAX_GOAL_LOANS : categories[0].loanCount);
 
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
 const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
@@ -150,6 +159,9 @@ const handleCategorySelected = categoryId => {
 	const categoryIdx = categoryId - 1;
 	$kvTrackEvent('portfolio', 'select', 'choose-goal-category', categories[categoryIdx]?.eventProp);
 	selectedCategory.value = categories[categoryIdx];
+	selectedGoalNumber.value = categories[categoryIdx]?.loanCount > MAX_GOAL_LOANS
+		? MAX_GOAL_LOANS
+		: categories[categoryIdx]?.loanCount;
 };
 
 const handleNumberChanged = number => {
@@ -167,24 +179,22 @@ const handleClick = () => {
 	} else {
 		$kvTrackEvent('portfolio', 'click', 'set-goal-amount', selectedGoalNumber.value);
 		const currentYear = new Date().getFullYear();
-		const categorySelected = selectedCategory.value?.title || 'all';
+		const categorySelected = selectedCategory.value?.badgeId;
 		const goalName = `goal-${categorySelected}-${currentYear}`;
 		const target = selectedGoalNumber.value;
 		const dateStarted = new Date().toISOString();
 		const status = 'in-progress';
+		const loanTotalAtStart = selectedCategory.value?.loanCount || 0;
 		emit('set-goal', {
 			goalName,
 			category: categorySelected,
 			target,
 			dateStarted,
 			status,
+			loanTotalAtStart,
 		});
 	}
 };
-
-const selectedCategoryLoanCount = computed(() => {
-	return selectedCategory.value?.loanCount || 0;
-});
 
 const title = computed(() => {
 	if (formStep.value === 1) {

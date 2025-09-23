@@ -49,7 +49,7 @@
 					<KvButton
 						class="tw-flex-grow"
 						v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
-						:href="ctaHref"
+						@click="handleContinueClick"
 					>
 						Continue
 					</KvButton>
@@ -72,13 +72,20 @@
 
 <script setup>
 
-import { computed } from 'vue';
+import { computed, onMounted, inject } from 'vue';
 import {
 	KvMaterialIcon, KvButton, KvProgressBar
 } from '@kiva/kv-components';
 import { mdiCheckCircleOutline } from '@mdi/js';
 import { formatRichTextContent } from '#src/util/contentfulUtils';
 import GoalCardCareImg from '#src/assets/images/my-kiva/goal-card-care.svg';
+import {
+	ID_BASIC_NEEDS,
+	ID_REFUGEE_EQUALITY,
+	ID_US_ECONOMIC_EQUALITY,
+	ID_WOMENS_EQUALITY
+} from '#src/composables/useBadgeData';
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
 	heroSlides: {
@@ -97,8 +104,10 @@ const props = defineProps({
 
 defineEmits(['open-goal-modal']);
 
-// TODO: MP-2065
-const currentGoalProgress = computed(() => 3);
+const $kvTrackEvent = inject('$kvTrackEvent');
+const router = useRouter();
+
+const currentGoalProgress = computed(() => props.userGoal?.currentProgress || 0);
 
 const loansToReachGoal = computed(() => props.userGoal?.target || 0);
 
@@ -114,12 +123,14 @@ const title = computed(() => {
 
 const getContentfulKey = category => {
 	switch (category) {
-		case 'us-economic-equality':
+		case ID_US_ECONOMIC_EQUALITY:
 			return 'us-equality';
-		case 'basic-needs':
+		case ID_BASIC_NEEDS:
 			return 'fundamental-needs';
-		case 'refugees':
+		case ID_REFUGEE_EQUALITY:
 			return 'refugee-equality';
+		case ID_WOMENS_EQUALITY:
+			return 'women';
 		default: return category;
 	}
 };
@@ -148,13 +159,25 @@ const achievementGoalImg = computed(() => {
 	const key = `my-kiva-${contentfulCategory}-journey`;
 
 	const richText = props.heroSlides.find(slide => slide?.fields?.key === key);
-	const formattedRichText = formatRichTextContent(richText);
+	let backgroundImage = null;
+	if (richText) {
+		const formattedRichText = formatRichTextContent(richText);
 
-	const backgroundImage = formattedRichText?.richText?.content.find(
-		item => item.nodeType === 'embedded-asset-block' && item.data?.target?.fields?.file?.url
-	);
+		backgroundImage = formattedRichText?.richText?.content.find(
+			item => item.nodeType === 'embedded-asset-block' && item.data?.target?.fields?.file?.url
+		);
+	}
 
 	return backgroundImage?.data?.target?.fields?.file?.url || '';
+});
+
+const handleContinueClick = () => {
+	$kvTrackEvent('portfolio', 'click', 'continue-towards-goal');
+	router.push(ctaHref.value);
+};
+
+onMounted(() => {
+	$kvTrackEvent('portfolio', 'view', 'goal-set', props.userGoal?.category, currentGoalProgress.value);
 });
 
 </script>
@@ -174,7 +197,7 @@ const achievementGoalImg = computed(() => {
 	content: '';
 	width: 400px;
 	height: 500px;
-	background: url('/static/src/assets/images/my-kiva/goal-card-bg.jpg') lightgray;
+	background: url('/src/assets/images/my-kiva/goal-card-bg.jpg') lightgray;
 	transform: rotate(17deg);
 	left: 40%;
 

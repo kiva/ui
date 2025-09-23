@@ -9,7 +9,7 @@ export default merge(base, {
 		},
 		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',
 		host: 'localhost',
-		photoPath: 'https://www-kiva-org.freetls.fastly.net/img/',
+		photoPath: 'https://www.kiva.org/img/',
 		publicPath: '/',
 	},
 	server: {

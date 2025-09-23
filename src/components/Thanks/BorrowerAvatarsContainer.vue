@@ -23,12 +23,11 @@
 </template>
 
 <script setup>
-import { KvUserAvatar } from '@kiva/kv-components';
+import { getKivaImageUrl, KvUserAvatar } from '@kiva/kv-components';
 import useIsMobile from '#src/composables/useIsMobile';
 import {
 	MOBILE_BREAKPOINT,
 } from '#src/composables/useBadgeModal';
-import { getKivaImageUrl } from '#src/util/imageUtils';
 import { inject } from 'vue';
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
