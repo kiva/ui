@@ -208,7 +208,7 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client) {
+		preFetch(config, client, { route }) {
 			return Promise.all([
 				client.query({
 					query: experimentAssignmentQuery,
@@ -220,13 +220,14 @@ export default {
 					variables: { id: COMBO_PAGE_REDIRECT_EXP_KEY }
 				}),
 			]).then(([recommendationsExp, userInfo, redirectExp]) => {
+				const query = route?.query ?? {};
 				const useRecommendations = recommendationsExp?.data?.experiment?.version === 'b';
 				const userId = userInfo?.data?.my?.userAccount?.id || null;
 				const isRedirectExp = redirectExp?.data?.experiment?.version === 'b';
 
 				// Redirect to /lend-category-beta if redirect experiment is active
 				if (isRedirectExp) {
-					return Promise.reject({ path: '/lend-category-beta' });
+					return Promise.reject({ path: '/lend-category-beta', query });
 				}
 
 				return Promise.all([
