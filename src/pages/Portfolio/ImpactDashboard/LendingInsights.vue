@@ -273,18 +273,19 @@ export default {
 			currentTab: 'ytd',
 			stats: {
 				ytd: {
+					percentileThreshold: 0,
+					yearlyPercentile: 0,
+					nextPercentileThreshold: 0, // amount needed to reach next percentile group
+					percentileNext25: 0, // moving to next percentile group
+					numberOfLoans: 0, // TO-DO: define
+					countryCount: 0, // TO-DO: define
 					amountLent: 0,
-					percentile: 0,
-					lendMoreAmount: 0,
-					nextPercentileGroup: 0,
-					numberOfLoans: 0,
-					countryCount: 0,
 				},
 				lifetime: {
 					amountLent: 0,
 					percentile: 0,
-					lendMoreAmount: 0,
-					nextPercentileGroup: 0,
+					nextPercentileThreshold: 0, // amount needed to reach next percentile group
+					percentileNext25: 0, // moving to next percentile group
 					numberOfLoans: 0,
 					countryCount: 0,
 				},
@@ -304,11 +305,12 @@ export default {
 			const currentYear = new Date().getFullYear();
 			return currentYear;
 		},
+		// YTD stats
 		currentYearAmountLent() {
 			return numeral(this.stats.ytd.amountLent).format('$0,0[.]00');
 		},
 		currentYearPercentile() {
-			return numeral(this.stats.ytd.percentile).format('0o');
+			return numeral(this.stats.ytd.yearlyPercentile).format('0o');
 		},
 		currentYearNumberOfLoans() {
 			return numeral(this.stats.ytd.numberOfLoans).format('0,0');
@@ -317,11 +319,12 @@ export default {
 			return numeral(this.stats.ytd.countryCount).format('0,0');
 		},
 		currentYearLendMoreAmount() {
-			return numeral(this.stats.ytd.lendMoreAmount).format('$0,0[.]00');
+			return numeral(this.stats.ytd.nextPercentileThreshold).format('$0,0[.]00');
 		},
 		currentYearNextPercentileGroup() {
-			return numeral(this.stats.ytd.nextPercentileGroup).format('0o');
+			return numeral(this.stats.ytd.percentileNext25).format('0o');
 		},
+		// Lifetime stats
 		lifetimeAmountLent() {
 			return numeral(this.stats.lifetime.amountLent).format('$0,0[.]00');
 		},
@@ -335,10 +338,10 @@ export default {
 			return numeral(this.stats.lifetime.countryCount).format('0,0');
 		},
 		lifetimeLendMoreAmount() {
-			return numeral(this.stats.lifetime.lendMoreAmount).format('$0,0[.]00');
+			return numeral(this.stats.lifetime.nextPercentileThreshold).format('$0,0[.]00');
 		},
 		lifetimeNextPercentileGroup() {
-			return numeral(this.stats.lifetime.nextPercentileGroup).format('0o');
+			return numeral(this.stats.lifetime.percentileNext25).format('0o');
 		},
 	},
 	methods: {
@@ -364,16 +367,34 @@ export default {
 								amount_of_loans
 								number_of_loans
 							}
+							lend {
+            					percentilePerYear {
+                				nextPercentileThreshold
+               	 				percentile
+                				percentileNext25
+                				threshold
+            				}
 						}
 					}`
 				}).then(({ data }) => {
 					this.loading = false;
+
+					// Lifetime stats
 					this.countryCount = data?.my?.lendingStats?.lentTo?.countries?.totalCount ?? 0;
 					this.percentile = numeral(data?.my?.lendingStats?.amountLentPercentile ?? 0).format('0o');
 					this.numberOfLoans = data?.my?.userStats?.number_of_loans ?? 0;
 
 					const amountOfLoans = numeral(data?.my?.userStats?.amount_of_loans ?? 0);
 					this.amountLent = amountOfLoans.format('$0,0[.]00');
+
+					// YTD stats
+					const percentilePerYear = data?.my?.lend?.percentilePerYear;
+					if (percentilePerYear) {
+						this.stats.ytd.nextPercentileThreshold = percentilePerYear.nextPercentileThreshold ?? 0;
+						this.stats.ytd.yearlyPercentile = percentilePerYear.percentile ?? 0;
+						this.stats.ytd.percentileNext25 = percentilePerYear.percentileNext25 ?? 0;
+						this.stats.ytd.percentileThreshold = percentilePerYear.threshold ?? 0;
+					}
 				}).finally(() => {
 					this.loadingPromise = null;
 				});
@@ -410,8 +431,7 @@ export default {
 }
 
 .tab-header {
-	@apply tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-cursor-pointer
-	tw-text-center md:tw-text-left;
+	@apply tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left;
 }
 
 @screen md {
