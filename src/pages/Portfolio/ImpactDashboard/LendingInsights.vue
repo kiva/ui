@@ -411,7 +411,7 @@ export default {
 
 .tab-header {
 	@apply tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-cursor-pointer
-	tw-text-center md:tw-text-left hover:tw-underline hover:tw-decoration-2;
+	tw-text-center md:tw-text-left;
 }
 
 @screen md {
