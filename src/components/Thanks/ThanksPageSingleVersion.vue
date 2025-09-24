@@ -27,7 +27,14 @@
 				@continue-clicked="handleContinue"
 				class="tw-mb-2.5"
 			/>
-			<GoalCompleted class="tw-mb-2.5" />
+			<GoalCompleted
+				v-if="currentGoalAchieved"
+				:active-goal="activeGoal"
+				:current-goal-achieved="currentGoalAchieved"
+				:get-goal-display-name="getGoalDisplayName"
+				:loading="goalDataLoading"
+				class="tw-mb-2.5"
+			/>
 			<JourneyGeneralPrompt
 				v-if="showJourneyModule"
 				:loans="loans"
@@ -155,12 +162,10 @@ const showReceipt = ref(false);
 const router = useRouter();
 
 const {
-	basicNeedsGoalAchieved,
-	climateActionGoalAchieved,
-	refugeeSupportGoalAchieved,
-	usEntrepreneursGoalAchieved,
-	userPreferencesData,
-	womenGoalAchieved,
+	activeGoal,
+	currentGoalAchieved,
+	getGoalDisplayName,
+	loading: goalDataLoading,
 } = useGoalData(apollo, props.loans);
 
 const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));

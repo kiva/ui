@@ -1,27 +1,33 @@
 <template>
 	<div
-		class="tw-rounded md:tw-rounded-xl tw-bg-white
-			tw-shadow-lg tw-px-3 md:tw-px-8
-			tw-py-4 tw-flex tw-flex-col
-			tw-gap-2 print:tw-hidden tw-items-center
-			tw-text-center tw-overflow-hidden tw-relative"
+		class="
+			tw-rounded md:tw-rounded-xl tw-bg-white
+			tw-shadow-lg tw-px-3 md:tw-px-8 tw-py-4
+			tw-flex tw-flex-col tw-gap-2 print:tw-hidden
+			tw-items-center tw-text-center tw-overflow-hidden tw-relative"
 	>
-		<KvLoadingPlaceholder v-if="isLoading" class="!tw-h-9 !tw-rounded" />
+		<KvLoadingPlaceholder v-if="loading" class="!tw-h-9 !tw-rounded" />
 		<template v-else>
-			<div class="tw-space-y-12">
+			<div
+				v-if="activeGoal && currentGoalAchieved"
+				class="tw-space-y-12"
+			>
 				<div>
 					<h3>You completed your goal!</h3>
-					<h3>By supporting {{ goalTarget }} {{ goalString }} you're making real change.</h3>
+					<h3>
+						By supporting {{ activeGoal.target }} {{ goalDisplayName }} you're making real change.
+					</h3>
 				</div>
 				<div class="tw-relative">
-					<BgRays v-show="!isLoading" style="top: -50px;" />
+					<BgRays style="top: -50px;" />
 					<BadgeContainer :show-shine="true">
-						<HighFive
-							alt="Hi five icon"
-							style="width: 250px; height: 250px;"
-						/>
+						<HighFive alt="Hi five icon" style="width: 250px; height: 250px;" />
 					</BadgeContainer>
 				</div>
+			</div>
+			<div v-else class="tw-space-y-12">
+				<h3>No active goal completed yet.</h3>
+				<p>Keep supporting loans to achieve your impact goals!</p>
 			</div>
 			<div class="tw-font-medium">
 				See progress towards all your impact goals
@@ -33,57 +39,48 @@
 		</template>
 	</div>
 </template>
+
 <script setup>
-import {
-	computed,
-	inject,
-} from 'vue';
+import { computed, inject } from 'vue';
 import { useRouter } from 'vue-router';
 import { mdiArrowRight } from '@mdi/js';
 import {
 	KvMaterialIcon,
 	KvButton,
-	KvLoadingPlaceholder
+	KvLoadingPlaceholder,
 } from '@kiva/kv-components';
 
 import HighFive from '#src/assets/images/thanks-page/hi-five.svg';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
 import BgRays from '#src/components/Thanks/BgRays';
 
-import {
-	ID_WOMENS_EQUALITY,
-	ID_US_ECONOMIC_EQUALITY,
-	ID_CLIMATE_ACTION,
-	ID_REFUGEE_EQUALITY,
-	ID_BASIC_NEEDS,
-	ID_EQUITY,
-} from '#src/composables/useBadgeData';
-
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const props = defineProps({
-	goalCategory: {
-		type: String,
-		default: '',
+	activeGoal: {
+		type: Object,
+		default: null,
 	},
-	goalTarget: {
-		type: Number,
-		default: 0,
+	currentGoalAchieved: {
+		type: Boolean,
+		default: false,
+	},
+	getGoalDisplayName: {
+		type: Function,
+		required: true,
+	},
+	loading: {
+		type: Boolean,
+		default: false,
 	},
 });
 
 const router = useRouter();
 
-const goalString = computed(() => {
-	const goalMap = {
-		[ID_BASIC_NEEDS]: 'basic needs loans',
-		[ID_CLIMATE_ACTION]: 'eco-friendly loans',
-		[ID_EQUITY]: 'equity loans',
-		[ID_REFUGEE_EQUALITY]: 'refugees',
-		[ID_US_ECONOMIC_EQUALITY]: 'U.S. entrepreneurs',
-		[ID_WOMENS_EQUALITY]: 'women',
-	};
-	return goalMap[props.goalCategory] || 'loans';
+const goalDisplayName = computed(() => {
+	return props.activeGoal?.category
+		? props.getGoalDisplayName(props.activeGoal.category)
+		: 'loans';
 });
 
 const handleContinue = () => {
@@ -97,12 +94,10 @@ const handleContinue = () => {
 	);
 	router?.push('/mykiva#my-achievements');
 };
-
 </script>
 
 <style lang="postcss" scoped>
 .continue-button :deep(span) {
 	@apply tw-flex;
 }
-
 </style>
