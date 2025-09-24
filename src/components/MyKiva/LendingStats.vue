@@ -147,7 +147,6 @@
 				:hero-tiered-achievements="heroTieredAchievements"
 				:user-goal="userGoal"
 				:is-goal-complete="isGoalComplete"
-				:user-lent-to-all-regions="userLentToAllRegions"
 			/>
 		</template>
 		<GoalSettingModal

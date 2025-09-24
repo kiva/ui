@@ -152,10 +152,6 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	userLentToAllRegions: {
-		type: Boolean,
-		default: false,
-	},
 });
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
@@ -405,7 +401,7 @@ const isCustomCard = slide => !!slide?.isCustomCard;
 const showGoalCard = idx => {
 	if (!props.inLendingStats) return false;
 
-	return !!props.userGoal && idx === 0 && (props.isGoalComplete && !props.userLentToAllRegions);
+	return !!props.userGoal && idx === 0 && !props.isGoalComplete;
 };
 
 </script>
