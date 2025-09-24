@@ -2,71 +2,77 @@
 	<div
 		class="card-container"
 		:class="{
-			'goal-card-bg': !userHasGoal,
+			'goal-card-bg': !userHasGoal && isGoalComplete,
 		}"
 	>
-		<div :class="{'tw-mx-auto tw-relative achievement-card-bg': userHasGoal}">
-			<span
-				:class="{'tw-absolute tw-top-1 tw-left-1': userHasGoal}"
-				class="
-					tw-inline-flex tw-items-center tw-gap-1
-					tw-mb-2 tw-rounded-md
-					tw-bg-eco-green-1 tw-px-1.5 tw-py-1"
-				title="Your lending reach"
-			>
-				<KvMaterialIcon
-					class="tw-w-2 tw-h-2 tw-shrink-0"
-					:icon="mdiCheckCircleOutline"
-				/>
-				<span class="tw-text-primary tw-font-medium tw-align-middle" style="font-size: 0.875rem;">
-					My goal
-				</span>
-			</span>
-			<img
-				v-if="userHasGoal"
-				:src="achievementGoalImg"
-				class="tw-rounded tw-w-full tw-h-full tw-object-cover tw-object-top"
-			>
-		</div>
-		<div class="tw-flex tw-flex-col" :class="{'tw-gap-1': userHasGoal}">
-			<div v-if="!userHasGoal" class="tw-mx-auto">
-				<GoalCardCareImg />
-			</div>
-			<h3>{{ title }}</h3>
-			<template v-if="userHasGoal">
-				<div class="tw-flex tw-items-baseline tw-gap-3">
-					<div>
-						<h5 class="tw-mb-1">
-							{{ currentGoalProgress }} / {{ loansToReachGoal }} Loans
-						</h5>
-						<kv-progress-bar
-							style="width: 98px;"
-							aria-label="Percent the loan has funded"
-							:value="currentGoalProgress"
-							:max="loansToReachGoal"
-						/>
-					</div>
-					<KvButton
-						class="tw-flex-grow"
-						v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
-						@click="handleContinueClick"
-					>
-						Continue
-					</KvButton>
-				</div>
-			</template>
-			<template v-else>
-				<p class="tw-text-small tw-pb-2">
-					How many more people will you help this year?
-				</p>
-				<KvButton
-					v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
-					@click="$emit('open-goal-modal')"
+		<template v-if="isGoalComplete">
+			<!-- Change with goal complete component from MP-2014 -->
+			<p>Goal is complete</p>
+		</template>
+		<template v-else>
+			<div :class="{'tw-mx-auto tw-relative achievement-card-bg': userHasGoal}">
+				<span
+					:class="{'tw-absolute tw-top-1 tw-left-1': userHasGoal}"
+					class="
+						tw-inline-flex tw-items-center tw-gap-1
+						tw-mb-2 tw-rounded-md
+						tw-bg-eco-green-1 tw-px-1.5 tw-py-1"
+					title="Your lending reach"
 				>
-					Set a goal
-				</KvButton>
-			</template>
-		</div>
+					<KvMaterialIcon
+						class="tw-w-2 tw-h-2 tw-shrink-0"
+						:icon="mdiCheckCircleOutline"
+					/>
+					<span class="tw-text-primary tw-font-medium tw-align-middle" style="font-size: 0.875rem;">
+						My goal
+					</span>
+				</span>
+				<img
+					v-if="userHasGoal"
+					:src="achievementGoalImg"
+					class="tw-rounded tw-w-full tw-h-full tw-object-cover tw-object-top"
+				>
+			</div>
+			<div class="tw-flex tw-flex-col" :class="{'tw-gap-1': userHasGoal}">
+				<div v-if="!userHasGoal" class="tw-mx-auto">
+					<GoalCardCareImg />
+				</div>
+				<h3>{{ title }}</h3>
+				<template v-if="userHasGoal">
+					<div class="tw-flex tw-items-baseline tw-gap-3">
+						<div>
+							<h5 class="tw-mb-1">
+								{{ currentGoalProgress }} / {{ loansToReachGoal }} Loans
+							</h5>
+							<kv-progress-bar
+								style="width: 98px;"
+								aria-label="Percent the loan has funded"
+								:value="currentGoalProgress"
+								:max="loansToReachGoal"
+							/>
+						</div>
+						<KvButton
+							class="tw-flex-grow"
+							v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
+							@click="handleContinueClick"
+						>
+							Continue
+						</KvButton>
+					</div>
+				</template>
+				<template v-else>
+					<p class="tw-text-small tw-pb-2">
+						How many more people will you help this year?
+					</p>
+					<KvButton
+						v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
+						@click="$emit('open-goal-modal')"
+					>
+						Set a goal
+					</KvButton>
+				</template>
+			</div>
+		</template>
 	</div>
 </template>
 
@@ -99,7 +105,11 @@ const props = defineProps({
 	userGoal: {
 		type: Object,
 		default: () => ({}),
-	}
+	},
+	isGoalComplete: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 defineEmits(['open-goal-modal']);

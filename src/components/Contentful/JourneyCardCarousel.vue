@@ -27,6 +27,7 @@
 					:hero-tiered-achievements="heroTieredAchievements"
 					:hero-slides="slides"
 					:user-goal="userGoal"
+					:is-goal-complete="isGoalComplete"
 				/>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
@@ -146,7 +147,11 @@ const props = defineProps({
 	userGoal: {
 		type: Object,
 		default: () => ({}),
-	}
+	},
+	isGoalComplete: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
@@ -246,9 +251,11 @@ const orderedSlides = computed(() => {
 	}
 
 	if (props.slidesNumber) {
-		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
+		const slidesNumber = props.isGoalComplete && props.inLendingStats ? props.slidesNumber + 1 : props.slidesNumber;
+		sortedSlides = sortedSlides.slice(0, slidesNumber);
 	}
-	if (props.inLendingStats) {
+
+	if (props.inLendingStats && !props.isGoalComplete) {
 		const customCard = props.slides.find(slide => slide.isCustomCard);
 		sortedSlides[props.slidesNumber - 1] = customCard;
 	}
