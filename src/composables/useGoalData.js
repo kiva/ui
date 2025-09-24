@@ -3,20 +3,28 @@ import { inject, ref, computed } from 'vue';
 import thankYouPageQuery from '#src/graphql/query/thankYouPage.graphql';
 import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 
+import {
+	ID_WOMENS_EQUALITY,
+	ID_US_ECONOMIC_EQUALITY,
+	ID_CLIMATE_ACTION,
+	ID_REFUGEE_EQUALITY,
+	ID_BASIC_NEEDS,
+} from '#src/composables/useBadgeData';
+
 const CATEGORY_TAG_MAP = {
-	basic_needs: ['basic_needs'],
-	climate_action: ['climate_action'],
-	refugee_support: ['refugee_support'],
-	us_entrepreneurs: ['us_entrepreneurs'],
-	women: ['women', '#Woman-Owned Business'],
+	[ID_BASIC_NEEDS]: ['basic_needs'],
+	[ID_CLIMATE_ACTION]: ['climate_action'],
+	[ID_REFUGEE_EQUALITY]: ['refugee_support'],
+	[ID_US_ECONOMIC_EQUALITY]: ['us_entrepreneurs'],
+	[ID_WOMENS_EQUALITY]: ['women', '#Woman-Owned Business'],
 };
 
 const GOAL_DISPLAY_MAP = {
-	basic_needs: 'basic needs loans',
-	climate_action: 'eco-friendly loans',
-	refugee_support: 'refugees',
-	us_entrepreneurs: 'U.S. entrepreneurs',
-	women: 'women',
+	[ID_BASIC_NEEDS]: 'basic needs loans',
+	[ID_CLIMATE_ACTION]: 'eco-friendly loans',
+	[ID_REFUGEE_EQUALITY]: 'refugees',
+	[ID_US_ECONOMIC_EQUALITY]: 'U.S. entrepreneurs',
+	[ID_WOMENS_EQUALITY]: 'women',
 };
 
 function getGoalDisplayName(category) {
