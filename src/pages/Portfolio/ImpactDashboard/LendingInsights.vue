@@ -110,18 +110,20 @@
 				Lending insights
 			</h2>
 			<div class="tw-flex tw-items-center tw-gap-2">
-				<kv-tab
-					class="tab-header" :for-panel="currentTab === 'ytd'" @click="setActiveTab('ytd')"
-					v-kv-track-event="['portfolio', 'click', 'stats-YTD']"
-				>
-					{{ yearToDate }}
-				</kv-tab>
-				<kv-tab
-					class="tab-header" :for-panel="currentTab === 'lifetime'" @click="setActiveTab('lifetime')"
-					v-kv-track-event="['portfolio', 'click', 'stats-Lifetime']"
-				>
-					Lifetime
-				</kv-tab>
+				<kv-tabs>
+					<kv-tab
+						class="tab-header" :for-panel="isYTDActive" @click="setActiveTab('ytd')"
+						v-kv-track-event="['portfolio', 'click', 'stats-YTD']"
+					>
+						{{ yearToDate }}
+					</kv-tab>
+					<kv-tab
+						class="tab-header" :for-panel="isLifetimeActive" @click="setActiveTab('lifetime')"
+						v-kv-track-event="['portfolio', 'click', 'stats-Lifetime']"
+					>
+						Lifetime
+					</kv-tab>
+				</kv-tabs>
 			</div>
 		</div>
 		<!-- Total amount lent -->
@@ -241,7 +243,9 @@ import numeral from 'numeral';
 import getCacheKey from '#src/util/getCacheKey';
 import { mdiArrowRight, mdiClockOutline } from '@mdi/js';
 // import LoanCountOverTimeFigure from './LoanCountOverTimeFigure';
-import { KvGrid, KvLoadingPlaceholder, KvMaterialIcon } from '@kiva/kv-components';
+import {
+	KvGrid, KvLoadingPlaceholder, KvMaterialIcon, KvTab, KvTabs,
+} from '@kiva/kv-components';
 import { differenceInCalendarDays } from 'date-fns';
 import StarShine from '#src/assets/icons/inline/star_shine.svg';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
@@ -255,6 +259,8 @@ export default {
 		KvGrid,
 		KvLoadingPlaceholder,
 		KvMaterialIcon,
+		KvTab,
+		KvTabs,
 		StarShine,
 		// LoanCountOverTimeFigure,
 	},
@@ -279,7 +285,7 @@ export default {
 					percentileNext25: 0, // moving to next percentile group
 					numberOfLoans: 0, // TO-DO: define
 					countryCount: 0, // TO-DO: define
-					amountLent: 0,
+					amountLent: 0, // TO-DO: define
 				},
 				lifetime: {
 					amountLent: 0,
@@ -304,6 +310,12 @@ export default {
 		yearToDate() {
 			const currentYear = new Date().getFullYear();
 			return currentYear;
+		},
+		isYTDActive() {
+			return this.currentTab === 'ytd';
+		},
+		isLifetimeActive() {
+			return this.currentTab === 'lifetime';
 		},
 		// YTD stats
 		currentYearAmountLent() {
