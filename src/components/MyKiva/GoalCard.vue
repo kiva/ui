@@ -2,7 +2,7 @@
 	<div
 		class="card-container"
 		:class="{
-			'goal-card-bg': !userHasGoal && isGoalComplete,
+			'goal-card-bg': !userHasGoal,
 		}"
 	>
 		<template v-if="isGoalComplete">
