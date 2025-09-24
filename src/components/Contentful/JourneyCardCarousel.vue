@@ -152,6 +152,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	userLentToAllRegions: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
@@ -251,8 +255,7 @@ const orderedSlides = computed(() => {
 	}
 
 	if (props.slidesNumber) {
-		const slidesNumber = props.isGoalComplete && props.inLendingStats ? props.slidesNumber + 1 : props.slidesNumber;
-		sortedSlides = sortedSlides.slice(0, slidesNumber);
+		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
 	}
 
 	if (props.inLendingStats && !props.isGoalComplete) {
@@ -400,7 +403,9 @@ const handleChange = interaction => {
 const isCustomCard = slide => !!slide?.isCustomCard;
 
 const showGoalCard = idx => {
-	return props.inLendingStats && !!props.userGoal && idx === 0;
+	if (!props.inLendingStats) return false;
+
+	return !!props.userGoal && idx === 0 && (props.isGoalComplete && !props.userLentToAllRegions);
 };
 
 </script>

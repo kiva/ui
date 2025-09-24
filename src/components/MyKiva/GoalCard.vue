@@ -7,7 +7,7 @@
 	>
 		<template v-if="isGoalComplete">
 			<!-- Change with goal complete component from MP-2014 -->
-			<p>Goal is complete</p>
+			<p>Goal Complete Component</p>
 		</template>
 		<template v-else>
 			<div :class="{'tw-mx-auto tw-relative achievement-card-bg': userHasGoal}">

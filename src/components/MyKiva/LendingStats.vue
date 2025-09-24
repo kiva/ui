@@ -12,10 +12,11 @@
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': !userLentToAllRegions }"
 	>
 		<GoalCard
-			v-if="isNextStepsExp && !userLentToAllRegions && !isGoalComplete"
+			v-if="isNextStepsExp && !userLentToAllRegions"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:hero-slides="heroSlides"
 			:user-goal="userGoal"
+			:is-goal-complete="isGoalComplete"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<div
@@ -146,6 +147,7 @@
 				:hero-tiered-achievements="heroTieredAchievements"
 				:user-goal="userGoal"
 				:is-goal-complete="isGoalComplete"
+				:user-lent-to-all-regions="userLentToAllRegions"
 			/>
 		</template>
 		<GoalSettingModal
