@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue';
+import { inject, ref, computed } from 'vue';
 
 import thankYouPageQuery from '#src/graphql/query/thankYouPage.graphql';
 import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
@@ -32,13 +32,12 @@ function getCategoriesForTag(tag) {
 /**
  * Vue composable for loading and managing user goal data
  *
- * @param {Object} apollo - Apollo Client instance
  * @param {Array} loans - List of loans to count toward goals
- * @param {Function} showTipMsg - Function to show messages
  * @returns Goal data and utilities
  */
-export default async function useGoalData(apollo, loans, showTipMsg) {
-	if (!apollo) throw new Error('ApolloClient is required');
+export default async function useGoalData(loans) {
+	const apollo = inject('apollo');
+	const showTipMsg = inject('$showTipMsg');
 
 	const loading = ref(true);
 	const goalState = ref({});

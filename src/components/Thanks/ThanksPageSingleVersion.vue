@@ -113,7 +113,6 @@ import { setGuestAssignmentCookie } from '#src/util/myKivaUtils';
 const EVENT_CATEGORY = 'post-checkout';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
-const apollo = inject('apollo');
 const cookieStore = inject('cookieStore');
 
 const props = defineProps({
@@ -166,7 +165,7 @@ const {
 	currentGoalAchieved,
 	getGoalDisplayName,
 	loading: goalDataLoading,
-} = useGoalData(apollo, props.loans);
+} = useGoalData(props.loans);
 
 const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));
 
