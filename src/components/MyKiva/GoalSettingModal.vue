@@ -1,7 +1,7 @@
 <template>
 	<KvLightbox
 		class="goal-setting-lightbox"
-		:title="title"
+		title=""
 		:visible="show"
 		@lightbox-closed="closeLightbox"
 	>
