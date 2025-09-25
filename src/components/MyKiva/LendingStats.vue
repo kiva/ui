@@ -12,11 +12,10 @@
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': !userLentToAllRegions }"
 	>
 		<GoalCard
-			v-if="isNextStepsExp && !userLentToAllRegions && !isGoalComplete"
+			v-if="isNextStepsExp && !userLentToAllRegions && !userGoal.isComplete"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:hero-slides="heroSlides"
 			:user-goal="userGoal"
-			:is-goal-complete="isGoalComplete"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<div
@@ -116,7 +115,7 @@
 				</div>
 			</div>
 		</div>
-		<template v-if="!isNextStepsExp || (!!userGoal && userLentToAllRegions)">
+		<template v-if="!isNextStepsExp || (!!userGoal.goalName && userLentToAllRegions)">
 			<div v-if="!userLentToAllRegions" class="card-container tw-shrink-0">
 				<MyKivaCard
 					class="kiva-card tw-h-full"
@@ -146,7 +145,6 @@
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
 				:user-goal="userGoal"
-				:is-goal-complete="isGoalComplete"
 			/>
 		</template>
 		<GoalSettingModal
@@ -249,11 +247,7 @@ const props = defineProps({
 	},
 	userGoal: {
 		type: Object,
-		default: null,
-	},
-	isGoalComplete: {
-		type: Boolean,
-		default: false,
+		default: () => ({}),
 	},
 });
 

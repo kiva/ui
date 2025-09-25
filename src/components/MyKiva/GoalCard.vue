@@ -100,10 +100,6 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
-	isGoalComplete: {
-		type: Boolean,
-		default: false,
-	},
 });
 
 defineEmits(['open-goal-modal']);
