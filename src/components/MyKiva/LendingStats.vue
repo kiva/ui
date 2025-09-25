@@ -11,13 +11,28 @@
 		ref="loanRegionsElement"
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': !userLentToAllRegions }"
 	>
-		<GoalCard
-			v-if="isNextStepsExp && !userLentToAllRegions && !userGoal.isComplete"
-			:hero-tiered-achievements="heroTieredAchievements"
-			:hero-slides="heroSlides"
-			:user-goal="userGoal"
-			@open-goal-modal="showGoalModal = true"
-		/>
+		<template v-if="isNextStepsExp">
+			<div v-if="userGoal?.isComplete" class="card-container tw-shrink-0">
+				<JourneyCardCarousel
+					class="carousel"
+					user-in-homepage
+					in-lending-stats
+					:disable-drag="true"
+					:lender="lender"
+					:slides-number="1"
+					:slides="allRegionsLentSlides"
+					:hero-contentful-data="heroContentfulData"
+					:hero-tiered-achievements="heroTieredAchievements"
+					:user-goal="userGoal"
+				/>
+			</div>
+			<GoalCard
+				v-else
+				:hero-slides="heroSlides"
+				:user-goal="userGoal"
+				@open-goal-modal="showGoalModal = true"
+			/>
+		</template>
 		<div
 			v-if="!userLentToAllRegions"
 			class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col"
@@ -115,7 +130,7 @@
 				</div>
 			</div>
 		</div>
-		<template v-if="!isNextStepsExp || (!!userGoal.goalName && userLentToAllRegions)">
+		<template v-if="!isNextStepsExp || (!!userGoal && userLentToAllRegions)">
 			<div v-if="!userLentToAllRegions" class="card-container tw-shrink-0">
 				<MyKivaCard
 					class="kiva-card tw-h-full"
@@ -247,7 +262,7 @@ const props = defineProps({
 	},
 	userGoal: {
 		type: Object,
-		default: () => ({}),
+		default: undefined,
 	},
 });
 
@@ -466,6 +481,10 @@ onUnmounted(() => {
 	@screen md {
 		height: 191px;
 	}
+}
+
+.carousel, .carousel > :deep(section), .carousel > :deep(section > div) {
+	@apply tw-h-full;
 }
 
 .carousel > :deep(section > .kv-carousel__controls) {

@@ -11,6 +11,9 @@
 			:embla-options="{
 				loop: false,
 				align: 'start',
+				...(props.disableDrag && {
+					watchDrag: false,
+				}),
 			}"
 			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
@@ -147,6 +150,10 @@ const props = defineProps({
 	userGoal: {
 		type: Object,
 		default: () => ({}),
+	},
+	disableDrag: {
+		type: Boolean,
+		default: false,
 	},
 });
 
