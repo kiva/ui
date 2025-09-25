@@ -104,10 +104,7 @@ const loansToReachGoal = computed(() => props.userGoal?.target || 0);
 const userHasGoal = computed(() => !!props.userGoal);
 
 const title = computed(() => {
-	if (userHasGoal.value) {
-		return 'Works towards your goal';
-	}
-
+	if (userHasGoal.value) return 'Work towards your goal';
 	return 'Set your first impact goal!';
 });
 
@@ -117,8 +114,8 @@ const getContentfulKey = category => {
 			return 'us-equality';
 		case 'basic-needs':
 			return 'fundamental-needs';
-		case 'refugees':
-			return 'refugee-equality';
+		case 'womens-equality':
+			return 'women';
 		default: return category;
 	}
 };

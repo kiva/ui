@@ -105,7 +105,7 @@ export default function useGoalData(loans) {
 	async function storeGoalPreferences(updates) {
 		if (!userPreferences.value) {
 			await createUserPreferences(apollo, { goals: [] });
-			userPreferences.value = await loadPreferences(); // Reload after create
+			await loadPreferences(); // Reload after create
 		}
 		const parsedPrefs = JSON.parse(userPreferences.value.preferences || '{}');
 		const goals = parsedPrefs.goals || [];
