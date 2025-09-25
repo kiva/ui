@@ -167,6 +167,7 @@ import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql
 
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import useContentful from '#src/composables/useContentful';
+import useGoalData from '#src/composables/useGoalData';
 
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
@@ -194,7 +195,6 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -282,6 +282,10 @@ export default {
 			type: Boolean,
 			default: false,
 		}
+	},
+	setup(props) {
+		const { storeGoalPreferences } = useGoalData(props.loans);
+		return { storeGoalPreferences };
 	},
 	data() {
 		const { getMostRecentBlogPost } = useContentful(this.apollo);
@@ -615,34 +619,6 @@ export default {
 			this.showBPSideSheet = true;
 			this.showNextSteps = showNextSteps;
 		},
-		async storeGoalPreferences(newPreferences) {
-			const existingPreferences = this.userInfo?.userPreferences ?? null;
-			if (!existingPreferences) {
-				await createUserPreferences(
-					this.apollo,
-					{ goals: {} }
-				);
-			}
-			const parsedPreferences = existingPreferences ? JSON.parse(existingPreferences.preferences) : {};
-			const existingGoals = parsedPreferences?.goals || [];
-			const goalIndex = existingGoals.findIndex(goal => goal.goalName === newPreferences.goalName);
-			if (goalIndex !== -1) {
-				const goalToUpdate = { ...newPreferences };
-				delete goalToUpdate.dateStarted;
-				existingGoals[goalIndex] = { ...existingGoals[goalIndex], ...goalToUpdate };
-			} else {
-				existingGoals.push(newPreferences);
-			}
-			if (this.userInfo.userPreferences) {
-				await updateUserPreferences(
-					this.apollo,
-					existingPreferences,
-					parsedPreferences,
-					{ goals: existingGoals }
-				);
-				this.$showTipMsg('Your goal was saved successfully!', { type: 'success' });
-			}
-		}
 	},
 	async mounted() {
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');

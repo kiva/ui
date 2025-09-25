@@ -86,10 +86,10 @@
 
 <script setup>
 import {
-	ref,
 	computed,
-	onMounted,
 	inject,
+	onMounted,
+	ref,
 } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -164,6 +164,7 @@ const {
 	activeGoal,
 	currentGoalAchieved,
 	getGoalDisplayName,
+	runComposable: runGoalComposable,
 	loading: goalDataLoading,
 } = useGoalData(props.loans);
 
@@ -251,7 +252,8 @@ const handleContinue = () => {
 	}
 };
 
-onMounted(() => {
+onMounted(async () => {
+	await runGoalComposable();
 	showConfetti();
 	const isOptInLoan = showOptInModule.value && props.loans.length > 0;
 	const isOptInDonate = showOptInModule.value && onlyDonations.value;

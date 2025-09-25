@@ -76,6 +76,7 @@ const categories = [
 	{
 		id: '1',
 		name: 'Women',
+		category: ID_WOMENS_EQUALITY,
 		description: 'Open doors for women around the world',
 		eventProp: 'women',
 		customImage: womenImg,
@@ -85,6 +86,7 @@ const categories = [
 	{
 		id: '2',
 		name: 'Refugees',
+		category: ID_REFUGEE_EQUALITY,
 		description: 'Transform the future for refugees',
 		eventProp: 'refugees',
 		customImage: refugeesImg,
@@ -94,6 +96,7 @@ const categories = [
 	{
 		id: '3',
 		name: 'Climate Action',
+		category: ID_CLIMATE_ACTION,
 		description: 'Support the front lines of the climate crisis',
 		eventProp: 'climate',
 		customImage: climateActionImg,
@@ -103,6 +106,7 @@ const categories = [
 	{
 		id: '4',
 		name: 'U.S. Entrepreneurs',
+		category: ID_US_ECONOMIC_EQUALITY,
 		description: 'Support small businesses in the U.S.',
 		eventProp: 'us-entrepreneur',
 		customImage: usEntrepreneursImg,
@@ -112,6 +116,7 @@ const categories = [
 	{
 		id: '5',
 		name: 'Basic Needs',
+		category: ID_BASIC_NEEDS,
 		description: 'Clean water, healthcare, and sanitation',
 		eventProp: 'basic-needs',
 		customImage: basicNeedsImg,
@@ -121,6 +126,7 @@ const categories = [
 	{
 		id: '6',
 		name: 'Support All',
+		category: 'all',
 		description: 'Every loan makes real change',
 		eventProp: 'help-everyone',
 		customImage: supportAllImg,
@@ -167,7 +173,7 @@ const handleClick = () => {
 	} else {
 		$kvTrackEvent('portfolio', 'click', 'set-goal-amount', selectedGoalNumber.value);
 		const currentYear = new Date().getFullYear();
-		const categorySelected = selectedCategory.value?.title || 'all';
+		const categorySelected = selectedCategory.value?.category;
 		const goalName = `goal-${categorySelected}-${currentYear}`;
 		const target = selectedGoalNumber.value;
 		const dateStarted = new Date().toISOString();

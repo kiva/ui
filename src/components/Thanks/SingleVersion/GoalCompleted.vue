@@ -9,7 +9,6 @@
 		<KvLoadingPlaceholder v-if="loading" class="!tw-h-9 !tw-rounded" />
 		<template v-else>
 			<div
-				v-if="activeGoal && currentGoalAchieved"
 				class="tw-space-y-12"
 			>
 				<div>
@@ -24,10 +23,6 @@
 						<HighFive alt="Hi five icon" style="width: 250px; height: 250px;" />
 					</BadgeContainer>
 				</div>
-			</div>
-			<div v-else class="tw-space-y-12">
-				<h3>No active goal completed yet.</h3>
-				<p>Keep supporting loans to achieve your impact goals!</p>
 			</div>
 			<div class="tw-font-medium">
 				See progress towards all your impact goals

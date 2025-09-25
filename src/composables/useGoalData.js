@@ -1,14 +1,18 @@
-import { inject, ref, computed } from 'vue';
+import {
+	computed,
+	inject,
+	ref,
+} from 'vue';
 
 import thankYouPageQuery from '#src/graphql/query/thankYouPage.graphql';
 import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 
 import {
-	ID_WOMENS_EQUALITY,
-	ID_US_ECONOMIC_EQUALITY,
+	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
 	ID_REFUGEE_EQUALITY,
-	ID_BASIC_NEEDS,
+	ID_US_ECONOMIC_EQUALITY,
+	ID_WOMENS_EQUALITY
 } from '#src/composables/useBadgeData';
 
 const CATEGORY_TAG_MAP = {
@@ -43,9 +47,8 @@ function getCategoriesForTag(tag) {
  * @param {Array} loans - List of loans to count toward goals
  * @returns Goal data and utilities
  */
-export default async function useGoalData(loans) {
+export default function useGoalData(loans) {
 	const apollo = inject('apollo');
-	const showTipMsg = inject('$showTipMsg');
 
 	const loading = ref(true);
 	const goalState = ref({});
@@ -59,7 +62,6 @@ export default async function useGoalData(loans) {
 			return prefsData ? JSON.parse(prefsData.preferences || '{}') : {};
 		} catch (error) {
 			console.error('Failed to load preferences:', error);
-			showTipMsg('Error loading goals. Please try again.', { type: 'error' });
 			return {};
 		}
 	}
@@ -86,8 +88,8 @@ export default async function useGoalData(loans) {
 		const currentYear = new Date().getFullYear();
 		loans
 			.filter(
-				loan => loan.postedDate
-				&& new Date(loan.postedDate).getFullYear() >= currentYear
+				loan => loan.disbursalDate
+				&& new Date(loan.disbursalDate).getFullYear() >= currentYear
 			)
 			.forEach(loan => {
 				(loan.tags || []).forEach(tag => {
@@ -100,20 +102,6 @@ export default async function useGoalData(loans) {
 			});
 	}
 
-	const activeGoal = computed(
-		() => Object.values(goalState.value).find(goal => goal.status === 'in-progress') || null
-	);
-
-	const achievements = computed(() => {
-		return Object.fromEntries(
-			Object.entries(goalState.value).map(([category, goal]) => [category, goal.count >= goal.target])
-		);
-	});
-
-	const currentGoalAchieved = computed(() => {
-		return activeGoal.value ? achievements.value[activeGoal.value.category] : false;
-	});
-
 	async function storeGoalPreferences(updates) {
 		if (!userPreferences.value) {
 			await createUserPreferences(apollo, { goals: [] });
@@ -125,33 +113,37 @@ export default async function useGoalData(loans) {
 		if (goalIndex !== -1) goals[goalIndex] = { ...goals[goalIndex], ...updates };
 		else goals.push(updates);
 		await updateUserPreferences(apollo, userPreferences.value, parsedPrefs, { goals });
-		showTipMsg('Your goal was saved successfully!', { type: 'success' });
-		// Refresh local state after update
-		initializeGoalState({ goals });
+		initializeGoalState({ goals }); // Refresh local state after update
 	}
 
-	const parsedPrefs = await loadPreferences();
-	initializeGoalState(parsedPrefs);
-	countLoansTowardGoals();
+	const activeGoal = computed(
+		() => Object.values(goalState.value).find(goal => goal.status === 'in-progress') || null
+	);
 
-	// Auto-update if active goal achieved
-	if (currentGoalAchieved.value && activeGoal.value) {
-		await storeGoalPreferences({
-			goalName: activeGoal.value.goalName,
-			dateStarted: activeGoal.value.dateStarted,
-			status: 'completed',
-		});
+	const currentGoalAchieved = computed(() => activeGoal.value?.count >= activeGoal.value?.target);
+
+	async function runComposable() {
+		loading.value = true;
+		const parsedPrefs = await loadPreferences();
+		initializeGoalState(parsedPrefs);
+		countLoansTowardGoals();
+		// Auto-update if active goal achieved
+		if (currentGoalAchieved.value && activeGoal.value) {
+			await storeGoalPreferences({
+				goalName: activeGoal.value.goalName,
+				dateStarted: activeGoal.value.dateStarted,
+				status: 'completed',
+			});
+		}
+		loading.value = false;
 	}
-
-	loading.value = false;
 
 	return {
-		goalState,
 		activeGoal,
 		currentGoalAchieved,
-		achievements,
 		loading,
-		storeGoalPreferences,
 		getGoalDisplayName,
+		runComposable,
+		storeGoalPreferences,
 	};
 }
