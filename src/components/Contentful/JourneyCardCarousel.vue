@@ -262,8 +262,25 @@ const orderedSlides = computed(() => {
 	return sortedSlides;
 });
 
+const optimizeContentfulUrl = baseUrl => {
+	if (!baseUrl) return '';
+
+	// journey card dimensions: responsive sizing
+	const width = isMobile.value ? 320 : 336;
+	const height = isMobile.value ? 340 : 382;
+
+	// check if it's a Contentful URL
+	const isContentfulUrl = baseUrl.includes('images.ctfassets.net')
+		|| baseUrl.includes('assets.contentful.com');
+	if (!isContentfulUrl) {
+		return baseUrl;
+	}
+	return `${baseUrl}?w=${width}&h=${height}&fm=webp&q=80`;
+};
+
 const getMediaImgUrl = media => {
-	return media?.data?.target?.fields?.contentLight?.[0]?.fields?.file?.url || '';
+	const baseUrl = media?.data?.target?.fields?.contentLight?.[0]?.fields?.file?.url || '';
+	return optimizeContentfulUrl(baseUrl);
 };
 
 const backgroundImg = slide => {
@@ -287,7 +304,8 @@ const backgroundImg = slide => {
 	const backgroundImage = richTextContent.find(
 		item => item.nodeType === 'embedded-asset-block' && item.data?.target?.fields?.file?.url
 	);
-	return backgroundImage?.data?.target?.fields?.file?.url || '';
+	const baseUrl = backgroundImage?.data?.target?.fields?.file?.url || '';
+	return optimizeContentfulUrl(baseUrl);
 };
 
 const title = slide => {
