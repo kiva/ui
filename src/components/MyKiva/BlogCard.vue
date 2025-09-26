@@ -8,7 +8,7 @@
 	>
 		<div
 			class="tw-bg-cover tw-bg-center tw-rounded-t"
-			:style="`background-image: url('${image}'); height: 55%; width: 100%;`"
+			:style="`background-image: url('${optimizedImageUrl}'); height: 55%; width: 100%;`"
 		></div>
 
 		<div class="tw-pt-2 tw-pl-2 tw-flex tw-whitespace-nowrap tw-w-full">
@@ -64,6 +64,22 @@ const props = defineProps({
 		type: String,
 		required: true,
 	},
+});
+
+const optimizedImageUrl = computed(() => {
+	if (!props.image) return '';
+
+	// blog card dimensions: w:336px, h:55% = ~185px
+	const width = 336;
+	const height = 185;
+
+	// check if it's a Contentful URL
+	const isContentfulUrl = props.image.includes('images.ctfassets.net')
+		|| props.image.includes('assets.contentful.com');
+	if (!isContentfulUrl) {
+		return props.image;
+	}
+	return `${props.image}?w=${width}&h=${height}&fm=webp&q=80`;
 });
 
 const formattedDate = computed(() => {
