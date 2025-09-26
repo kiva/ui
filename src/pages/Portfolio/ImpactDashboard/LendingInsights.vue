@@ -87,7 +87,7 @@
 			</div>
 		</kv-grid>
 	</async-portfolio-section>
-	<!-- To-Do: Remove v-else version when experiment is over -->
+	<!-- To-Do: Remove aspects of v-else version when experiment is over -->
 	<async-portfolio-section
 		v-else
 		@visible="fetchAsyncData"
@@ -110,29 +110,31 @@
 				Lending insights
 			</h2>
 			<div class="tw-flex tw-items-center tw-gap-2">
-				<!-- To-Do: Functionality work regarding YTD and lifetime tab column (MP-1858) -->
-				<h2
-					class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4
-					tw-text-center md:tw-text-left hover:tw-underline hover:tw-decoration-2"
-				>
-					2025
-				</h2>
-				<h2
-					class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4
-					tw-text-center md:tw-text-left hover:tw-underline hover:tw-decoration-2"
-				>
-					Lifetime
-				</h2>
+				<kv-tabs>
+					<kv-tab
+						class="tab-header" :for-panel="isYTDActive" @click="setActiveTab('ytd')"
+						v-kv-track-event="['portfolio', 'click', 'stats-YTD']"
+					>
+						{{ yearToDate }}
+					</kv-tab>
+					<kv-tab
+						class="tab-header" :for-panel="isLifetimeActive" @click="setActiveTab('lifetime')"
+						v-kv-track-event="['portfolio', 'click', 'stats-Lifetime']"
+					>
+						Lifetime
+					</kv-tab>
+				</kv-tabs>
 			</div>
 		</div>
+		<!-- Total amount lent -->
 		<kv-grid as="dl" class="stats-container-exp">
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
 				<dt v-show="!loading" class="stat-value">
-					{{ amountLent }}
+					{{ currentTab === 'ytd' ? currentYearAmountLent : lifetimeAmountLent }}
 				</dt>
 				<dd class="stat-def">
-					Total amount lent
+					{{ currentTab === 'ytd' ? `Total amount lent in ${yearToDate}` : 'Total amount lent' }}
 				</dd>
 				<router-link
 					class="stat-link"
@@ -160,15 +162,32 @@
 					<loan-count-over-time-figure />
 				</kv-lightbox> -->
 			</div>
+			<!-- Lending percentile -->
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 tw-bg-eco-green-3 tw-rounded">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
 				<dt v-show="!loading" class="stat-value">
-					{{ percentile }}
+					{{ currentTab === 'ytd' ? currentYearPercentile : lifetimePercentile }}
 				</dt>
 				<dd class="stat-def">
-					Lending percentile
+					{{ currentTab === 'ytd' ? 'Lending percentile this year' : 'Lending percentile' }}
 				</dd>
+				<!-- To-Do: Connect amount of money needed to reach next percentile group
+				<router-link
+					class="stat-link"
+					to="/lend-category-beta"
+					v-kv-track-event="['lending', 'click', '']"
+				>
+					{{ currentTab === 'ytd' ? currentYearLendMoreAmount : lifetimeLendMoreAmount }}
+					more to reach top
+					{{ currentTab === 'ytd' ? currentYearNextPercentileGroup : lifetimeNextPercentileGroup }}
+					<kv-material-icon
+						class="tw-ml-0.5 tw-w-2 tw-h-2"
+						:icon="mdiArrowRight"
+					/>
+				</router-link>
+				-->
 			</div>
+			<!-- Loans made -->
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder
 					v-if="loading"
@@ -176,16 +195,17 @@
 					style="width: 4rem;"
 				/>
 				<dd v-else class="stat-value">
-					{{ $filters.numeral(numberOfLoans, '0,0') }}
+					{{ currentTab === 'ytd' ? currentYearNumberOfLoans : lifetimeNumberOfLoans }}
 				</dd>
 				<dt class="stat-def">
 					Loans made
 				</dt>
 			</div>
+			<!-- Countries supported -->
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 4rem;" />
 				<dt v-show="!loading" class="stat-value">
-					{{ countryCount }}
+					{{ currentTab === 'ytd' ? currentYearCountryCount : lifetimeCountryCount }}
 				</dt>
 				<dd class="stat-def">
 					Countries supported
@@ -223,7 +243,9 @@ import numeral from 'numeral';
 import getCacheKey from '#src/util/getCacheKey';
 import { mdiArrowRight, mdiClockOutline } from '@mdi/js';
 // import LoanCountOverTimeFigure from './LoanCountOverTimeFigure';
-import { KvGrid, KvLoadingPlaceholder, KvMaterialIcon } from '@kiva/kv-components';
+import {
+	KvGrid, KvLoadingPlaceholder, KvMaterialIcon, KvTab, KvTabs,
+} from '@kiva/kv-components';
 import { differenceInCalendarDays } from 'date-fns';
 import StarShine from '#src/assets/icons/inline/star_shine.svg';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
@@ -237,6 +259,8 @@ export default {
 		KvGrid,
 		KvLoadingPlaceholder,
 		KvMaterialIcon,
+		KvTab,
+		KvTabs,
 		StarShine,
 		// LoanCountOverTimeFigure,
 	},
@@ -252,10 +276,26 @@ export default {
 			loadingPromise: null,
 			donationLightboxVisible: false,
 			// loanLightboxVisible: false,
-			countryCount: 0,
-			amountLent: 0,
-			percentile: 0,
-			numberOfLoans: 0,
+			currentTab: 'ytd',
+			stats: {
+				ytd: {
+					percentileThreshold: 0,
+					yearlyPercentile: 0,
+					nextPercentileThreshold: 0, // amount needed to reach next percentile group
+					percentileNext25: 0, // moving to next percentile group
+					numberOfLoans: 0, // TO-DO: define
+					countryCount: 0, // TO-DO: define
+					amountLent: 0, // TO-DO: define
+				},
+				lifetime: {
+					amountLent: 0,
+					percentile: 0,
+					nextPercentileThreshold: 0, // amount needed to reach next percentile group
+					percentileNext25: 0, // moving to next percentile group
+					numberOfLoans: 0,
+					countryCount: 0,
+				},
+			},
 			mdiArrowRight,
 			mdiClockOutline,
 		};
@@ -266,9 +306,60 @@ export default {
 			const today = new Date();
 			const deadline = new Date(today.getFullYear(), 11, 31); // December 31st of current year
 			return differenceInCalendarDays(deadline, today);
-		}
+		},
+		yearToDate() {
+			const currentYear = new Date().getFullYear();
+			return currentYear;
+		},
+		isYTDActive() {
+			return this.currentTab === 'ytd';
+		},
+		isLifetimeActive() {
+			return this.currentTab === 'lifetime';
+		},
+		// YTD stats
+		currentYearAmountLent() {
+			return numeral(this.stats.ytd.amountLent).format('$0,0[.]00');
+		},
+		currentYearPercentile() {
+			return numeral(this.stats.ytd.yearlyPercentile).format('0o');
+		},
+		currentYearNumberOfLoans() {
+			return numeral(this.stats.ytd.numberOfLoans).format('0,0');
+		},
+		currentYearCountryCount() {
+			return numeral(this.stats.ytd.countryCount).format('0,0');
+		},
+		currentYearLendMoreAmount() {
+			return numeral(this.stats.ytd.nextPercentileThreshold).format('$0,0[.]00');
+		},
+		currentYearNextPercentileGroup() {
+			return numeral(this.stats.ytd.percentileNext25).format('0o');
+		},
+		// Lifetime stats
+		lifetimeAmountLent() {
+			return numeral(this.stats.lifetime.amountLent).format('$0,0[.]00');
+		},
+		lifetimePercentile() {
+			return numeral(this.stats.lifetime.percentile).format('0o');
+		},
+		lifetimeNumberOfLoans() {
+			return numeral(this.stats.lifetime.numberOfLoans).format('0,0');
+		},
+		lifetimeCountryCount() {
+			return numeral(this.stats.lifetime.countryCount).format('0,0');
+		},
+		lifetimeLendMoreAmount() {
+			return numeral(this.stats.lifetime.nextPercentileThreshold).format('$0,0[.]00');
+		},
+		lifetimeNextPercentileGroup() {
+			return numeral(this.stats.lifetime.percentileNext25).format('0o');
+		},
 	},
 	methods: {
+		setActiveTab(tab) {
+			this.currentTab = tab;
+		},
 		fetchAsyncData() {
 			if (this.loading && !this.loadingPromise) {
 				this.loadingPromise = this.apollo.query({
@@ -288,16 +379,34 @@ export default {
 								amount_of_loans
 								number_of_loans
 							}
+							lend {
+            					percentilePerYear {
+                				nextPercentileThreshold
+               	 				percentile
+                				percentileNext25
+                				threshold
+            				}
 						}
 					}`
 				}).then(({ data }) => {
 					this.loading = false;
+
+					// Lifetime stats
 					this.countryCount = data?.my?.lendingStats?.lentTo?.countries?.totalCount ?? 0;
 					this.percentile = numeral(data?.my?.lendingStats?.amountLentPercentile ?? 0).format('0o');
 					this.numberOfLoans = data?.my?.userStats?.number_of_loans ?? 0;
 
 					const amountOfLoans = numeral(data?.my?.userStats?.amount_of_loans ?? 0);
 					this.amountLent = amountOfLoans.format('$0,0[.]00');
+
+					// YTD stats
+					const percentilePerYear = data?.my?.lend?.percentilePerYear;
+					if (percentilePerYear) {
+						this.stats.ytd.nextPercentileThreshold = percentilePerYear.nextPercentileThreshold ?? 0;
+						this.stats.ytd.yearlyPercentile = percentilePerYear.percentile ?? 0;
+						this.stats.ytd.percentileNext25 = percentilePerYear.percentileNext25 ?? 0;
+						this.stats.ytd.percentileThreshold = percentilePerYear.threshold ?? 0;
+					}
 				}).finally(() => {
 					this.loadingPromise = null;
 				});
@@ -331,6 +440,10 @@ export default {
 
 .stat-link {
 	@apply tw-inline-flex tw-justify-center tw-items-center tw-text-eco-green-2 tw-font-medium;
+}
+
+.tab-header {
+	@apply tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left;
 }
 
 @screen md {
