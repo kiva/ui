@@ -8,6 +8,7 @@ query thankYouPageQuery {
 	lendingStats {
 	  id
       partnersLentTo {
+		id
         missionStatement
       }
     }
