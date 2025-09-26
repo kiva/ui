@@ -79,6 +79,7 @@ export default function useGoalData(loans) {
 					count: 0,
 					dateStarted: goal.dateStarted,
 					goalName: goal.goalName,
+					category: goal.category,
 				};
 			});
 	}
@@ -132,6 +133,8 @@ export default function useGoalData(loans) {
 			await storeGoalPreferences({
 				goalName: activeGoal.value.goalName,
 				dateStarted: activeGoal.value.dateStarted,
+				target: activeGoal.value.target,
+				count: activeGoal.value.count,
 				status: 'completed',
 			});
 		}

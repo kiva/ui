@@ -73,9 +73,8 @@ const props = defineProps({
 const router = useRouter();
 
 const goalDisplayName = computed(() => {
-	return props.activeGoal?.category
-		? props.getGoalDisplayName(props.activeGoal.category)
-		: 'loans';
+	const category = props.activeGoal?.category || '';
+	return category ? props.getGoalDisplayName(category) : 'loans';
 });
 
 const handleContinue = () => {
