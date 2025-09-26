@@ -6,15 +6,15 @@
 		<!-- Set of image sources -->
 		<template v-if="sourceSizes.length > 0">
 			<template v-for="(image, index) in sourceSizes" :key="index">
-				<!-- browser supports webp -->
+				<!-- browser supports avif -->
 				<source
 					:media="'('+image.media+')'"
-					type="image/webp"
+					type="image/avif"
 					:srcset="`
-					${buildUrl(image.width * 2, image.height * 2)}${crop}&fm=webp&q=65 2x,
-					${buildUrl(image.width, image.height)}${crop}&fm=webp&q=80 1x`"
+					${buildUrl(image.width * 2, image.height * 2)}${crop}&fm=avif&q=65&fl=progressive 2x,
+					${buildUrl(image.width, image.height)}${crop}&fm=avif&q=80&fl=progressive 1x`"
 				>
-				<!-- browser doesn't support webp -->
+				<!-- browser doesn't support avif -->
 				<source
 					:media="'('+image.media+')'"
 					:srcset="`
@@ -33,12 +33,12 @@
 
 		<!-- Single image -->
 		<template v-if="sourceSizes.length === 0">
-			<!-- browser supports webp -->
+			<!-- browser supports avif -->
 			<source
-				type="image/webp"
+				type="image/avif"
 				:srcset="`
-					${buildUrl(width * 2, height * 2)}&fm=webp&q=65 2x,
-					${buildUrl(width, height)}&fm=webp&q=80 1x`"
+					${buildUrl(width * 2, height * 2)}&fm=avif&q=65&fl=progressive 2x,
+					${buildUrl(width, height)}&fm=avif&q=80&fl=progressive 1x`"
 			>
 			<!-- browser doesn't support webp or browser doesn't support picture element -->
 			<img
