@@ -1,0 +1,19 @@
+query thankYouPageQuery($publicId: String) {
+  my {
+    id
+	userPreferences {
+      id
+      preferences
+    }
+	loans {
+	  totalCount
+	}
+  }
+  userAchievementProgress(publicId: $publicId) {
+    id
+    tieredLendingAchievements {
+      id
+      totalProgressToAchievement
+    }
+  }
+}
