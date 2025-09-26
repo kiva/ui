@@ -1,52 +1,19 @@
-query thankYouPageQuery {
+query thankYouPageQuery($publicId: String) {
   my {
     id
 	userPreferences {
       id
       preferences
     }
-	lendingStats {
-	  id
-      partnersLentTo {
-		id
-        missionStatement
-      }
-    }
-	transactions(
-      filter: {
-        category: loan
-      }
-    ) {
-      values {
-        category
-        amount
-        effectiveTime
-        type
-        createTime
-        loan {
-          id
-          name
-          gender
-          image {
-            id
-            hash
-          }
-          geocode {
-            country {
-              id
-              name
-              isoCode
-            }
-          }
-          tags
-          ... on LoanPartner {
-            themes
-          }
-          sector {
-            id
-          }
-        }
-      }
+	loans {
+	  totalCount
+	}
+  }
+  userAchievementProgress(publicId: $publicId) {
+    id
+    tieredLendingAchievements {
+      id
+      totalProgressToAchievement
     }
   }
 }

@@ -269,7 +269,7 @@ const determineNextStepsExpEnabled = () => {
 
 onMounted(async () => {
 	determineNextStepsExpEnabled();
-	await runGoalComposable();
+	if (isNextStepsExpEnabled.value) await runGoalComposable();
 	showConfetti();
 	const isOptInLoan = showOptInModule.value && props.loans.length > 0;
 	const isOptInDonate = showOptInModule.value && onlyDonations.value;

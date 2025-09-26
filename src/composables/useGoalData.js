@@ -11,8 +11,9 @@ import {
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
 	ID_REFUGEE_EQUALITY,
+	ID_SUPPORT_ALL,
 	ID_US_ECONOMIC_EQUALITY,
-	ID_WOMENS_EQUALITY
+	ID_WOMENS_EQUALITY,
 } from '#src/composables/useBadgeData';
 
 const CATEGORY_TAG_MAP = {
@@ -53,11 +54,15 @@ export default function useGoalData(loans) {
 	const loading = ref(true);
 	const goalState = ref({});
 	const userPreferences = ref(null);
+	const totalLoans = ref(0);
+	const heroTieredAchievements = ref([]);
 
 	async function loadPreferences() {
 		try {
 			const response = await apollo.query({ query: thankYouPageQuery });
 			const prefsData = response.data?.my?.userPreferences || null;
+			totalLoans.value = response.data?.my?.loans?.totalCount ?? 0;
+			heroTieredAchievements.value = response?.data?.userAchievementProgress?.tieredLendingAchievements ?? [];
 			userPreferences.value = prefsData;
 			return prefsData ? JSON.parse(prefsData.preferences || '{}') : {};
 		} catch (error) {
@@ -121,7 +126,15 @@ export default function useGoalData(loans) {
 		() => Object.values(goalState.value).find(goal => goal.status === 'in-progress') || null
 	);
 
-	const currentGoalAchieved = computed(() => activeGoal.value?.count >= activeGoal.value?.target);
+	const totalGoalCount = computed(() => {
+		let loanTotal = heroTieredAchievements.value.find(
+			ach => ach.id === activeGoal.value?.category
+		)?.totalProgressToAchievement ?? 0;
+		if (!loanTotal && activeGoal.value?.category === ID_SUPPORT_ALL) loanTotal = totalLoans.value;
+		return loanTotal;
+	});
+
+	const currentGoalAchieved = computed(() => totalGoalCount.value >= activeGoal.value?.target);
 
 	async function runComposable() {
 		loading.value = true;
@@ -129,7 +142,7 @@ export default function useGoalData(loans) {
 		initializeGoalState(parsedPrefs);
 		countLoansTowardGoals();
 		// Auto-update if active goal achieved
-		if (currentGoalAchieved.value && activeGoal.value) {
+		if (!currentGoalAchieved.value && activeGoal.value) {
 			await storeGoalPreferences({
 				goalName: activeGoal.value.goalName,
 				dateStarted: activeGoal.value.dateStarted,
