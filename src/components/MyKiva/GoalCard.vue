@@ -81,7 +81,6 @@ import { formatRichTextContent } from '#src/util/contentfulUtils';
 import GoalCardCareImg from '#src/assets/images/my-kiva/goal-card-care.svg';
 import {
 	ID_BASIC_NEEDS,
-	ID_REFUGEE_EQUALITY,
 	ID_US_ECONOMIC_EQUALITY,
 	ID_WOMENS_EQUALITY
 } from '#src/composables/useBadgeData';

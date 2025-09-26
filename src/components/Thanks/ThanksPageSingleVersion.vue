@@ -28,7 +28,7 @@
 				class="tw-mb-2.5"
 			/>
 			<GoalCompleted
-				v-if="currentGoalAchieved"
+				v-if="isNextStepsExpEnabled && currentGoalAchieved"
 				:active-goal="activeGoal"
 				:current-goal-achieved="currentGoalAchieved"
 				:get-goal-display-name="getGoalDisplayName"
@@ -36,7 +36,7 @@
 				class="tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
-				v-if="showJourneyModule"
+				v-if="!isNextStepsExpEnabled && showJourneyModule"
 				:loans="loans"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
@@ -108,11 +108,14 @@ import ControlModule from '#src/components/Thanks/SingleVersion/ControlModule';
 import JourneyGeneralPrompt from '#src/components/Thanks/SingleVersion/JourneyGeneralPrompt';
 import BadgeMilestone from '#src/components/Thanks/SingleVersion/BadgeMilestone';
 import useGoalData from '#src/composables/useGoalData';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { setGuestAssignmentCookie } from '#src/util/myKivaUtils';
 
 const EVENT_CATEGORY = 'post-checkout';
+const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
+const apollo = inject('apollo');
 const cookieStore = inject('cookieStore');
 
 const props = defineProps({
@@ -155,6 +158,7 @@ const props = defineProps({
 });
 
 const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
+const isNextStepsExpEnabled = ref(false);
 const receiptSection = ref(null);
 const showGuestAccountModal = ref(false);
 const showReceipt = ref(false);
@@ -252,7 +256,19 @@ const handleContinue = () => {
 	}
 };
 
+const determineNextStepsExpEnabled = () => {
+	const nextStepsExpData = trackExperimentVersion(
+		apollo,
+		$kvTrackEvent,
+		'event-tracking',
+		NEXT_STEPS_EXP_KEY,
+		'EXP-MP-1984-Sept2025'
+	);
+	isNextStepsExpEnabled.value = nextStepsExpData.version === 'b';
+};
+
 onMounted(async () => {
+	determineNextStepsExpEnabled();
 	await runGoalComposable();
 	showConfetti();
 	const isOptInLoan = showOptInModule.value && props.loans.length > 0;
