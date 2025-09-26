@@ -12,10 +12,11 @@
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': !userLentToAllRegions }"
 	>
 		<GoalCard
-			v-if="isNextStepsExp && !userLentToAllRegions"
+			v-if="isNextStepsExp && !userLentToAllRegions && !isGoalComplete"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:hero-slides="heroSlides"
 			:user-goal="userGoal"
+			:is-goal-complete="isGoalComplete"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<div
@@ -145,6 +146,7 @@
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
 				:user-goal="userGoal"
+				:is-goal-complete="isGoalComplete"
 			/>
 		</template>
 		<GoalSettingModal
@@ -248,7 +250,11 @@ const props = defineProps({
 	userGoal: {
 		type: Object,
 		default: null,
-	}
+	},
+	isGoalComplete: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const interval = ref(null);

@@ -206,8 +206,6 @@
 
 <script>
 import _throttle from 'lodash/throttle';
-import { isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
-
 import { mdiDotsHorizontalCircle } from '@mdi/js';
 import { gql } from 'graphql-tag';
 import { createIntersectionObserver } from '#src/util/observerUtils';
@@ -216,7 +214,7 @@ import WhySpecial from '#src/components/BorrowerProfile/WhySpecial';
 import clickOutside from '#src/plugins/click-outside';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import {
-	KvCarousel, KvMaterialIcon, KvLoadingPlaceholder, KvLightbox, KvRadio, KvButton
+	isLegacyPlaceholderAvatar, KvCarousel, KvMaterialIcon, KvLoadingPlaceholder, KvLightbox, KvRadio, KvButton
 } from '@kiva/kv-components';
 import kivaKUrl from '#src/assets/images/kiva_k.svg?url';
 

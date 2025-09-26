@@ -55,8 +55,8 @@ export default [
 		__typename: 'LoanPartner',
 		image: {
 			id: 3838911,
-			default: 'https://www-dev-kiva-org.freetls.fastly.net/img/w480h300/9673d0722a7675b9b8d11f90849d9b44.jpg',
-			retina: 'https://www-dev-kiva-org.freetls.fastly.net/img/w960h600/9673d0722a7675b9b8d11f90849d9b44.jpg',
+			default: 'https://www.kiva.org/img/w480h300/9673d0722a7675b9b8d11f90849d9b44.webp',
+			retina: 'https://www.kiva.org/img/w960h600/9673d0722a7675b9b8d11f90849d9b44.webp',
 			hash: '9673d0722a7675b9b8d11f90849d9b44',
 			__typename: 'Image'
 		},
@@ -119,8 +119,8 @@ export default [
 		__typename: 'LoanPartner',
 		image: {
 			id: 3833986,
-			default: 'https://www-dev-kiva-org.freetls.fastly.net/img/w480h300/6638894152e5ea6f0e65423b7b6cd9bb.jpg',
-			retina: 'https://www-dev-kiva-org.freetls.fastly.net/img/w960h600/6638894152e5ea6f0e65423b7b6cd9bb.jpg',
+			default: 'https://www.kiva.org/img/w480h300/6638894152e5ea6f0e65423b7b6cd9bb.webp',
+			retina: 'https://www.kiva.org/img/w960h600/6638894152e5ea6f0e65423b7b6cd9bb.webp',
 			hash: '6638894152e5ea6f0e65423b7b6cd9bb',
 			__typename: 'Image'
 		},
@@ -180,8 +180,8 @@ export default [
 		__typename: 'LoanPartner',
 		image: {
 			id: 3844433,
-			default: 'https://www-dev-kiva-org.freetls.fastly.net/img/w480h300/131e7cc9d0de32daad20d90b3a39c8a8.jpg',
-			retina: 'https://www-dev-kiva-org.freetls.fastly.net/img/w960h600/131e7cc9d0de32daad20d90b3a39c8a8.jpg',
+			default: 'https://www.kiva.org/img/w480h300/131e7cc9d0de32daad20d90b3a39c8a8.webp',
+			retina: 'https://www.kiva.org/img/w960h600/131e7cc9d0de32daad20d90b3a39c8a8.webp',
 			hash: '131e7cc9d0de32daad20d90b3a39c8a8',
 			__typename: 'Image'
 		},

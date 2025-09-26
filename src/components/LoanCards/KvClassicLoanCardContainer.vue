@@ -60,7 +60,7 @@ import loanActivitiesQuery from '#src/graphql/query/loanActivities.graphql';
 import _isEqual from 'lodash/isEqual';
 import { KvClassicLoanCard, KvUserAvatar } from '@kiva/kv-components';
 
-const PHOTO_PATH = 'https://www-kiva-org.freetls.fastly.net/img/';
+const PHOTO_PATH = 'https://www.kiva.org/img/';
 
 const loanQuery = gql`
 	${loanCardFieldsExtendedFragment}

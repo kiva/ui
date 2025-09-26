@@ -1,5 +1,5 @@
 import { gql } from 'graphql-tag';
-import { isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
+import { isLegacyPlaceholderAvatar } from '@kiva/kv-components';
 
 export const userAvatarFragment = gql`fragment UserAvatar on My {
 	id

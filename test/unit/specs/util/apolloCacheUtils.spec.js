@@ -143,7 +143,7 @@ describe('apolloCacheUtils', () => {
 				},
 				'Image:5956218': {
 					id: 5956218,
-					url: 'https://www-kiva-org-0.freetls.fastly.net/img/s100/4e245f4ed473f4c825ad5e4849d673c9.jpg',
+					url: 'https://www.kiva.org/img/s100/4e245f4ed473f4c825ad5e4849d673c9.webp',
 					__typename: 'Image',
 				}
 			};

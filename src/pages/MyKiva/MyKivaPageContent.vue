@@ -34,6 +34,7 @@
 				:is-next-steps-exp="isNextStepsExp"
 				:total-loans="totalLoans"
 				:user-goal="userGoal"
+				:is-goal-complete="isGoalComplete"
 				@store-goals-preferences="storeGoalPreferences"
 			/>
 		</section>
@@ -181,7 +182,7 @@ import AsyncMyKivaSection from '#src/pages/MyKiva/AsyncMyKivaSection';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
-import useBadgeData from '#src/composables/useBadgeData';
+import useBadgeData, { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import LatestBlogCarousel from '#src/components/MyKiva/LatestBlogCarousel';
 import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
@@ -368,11 +369,29 @@ export default {
 			return updates;
 		},
 		userGoal() {
-			const preferences = this.userInfo?.userPreferences ?? null;
-			if (!preferences) return false;
-			const parsedPreferences = JSON.parse(preferences.preferences);
+			const preferences = this.userInfo?.userPreferences?.preferences ?? null;
+			const parsedPreferences = preferences ? JSON.parse(preferences) : {};
 			const existingGoals = parsedPreferences?.goals || [];
-			return existingGoals.length ? existingGoals[0] : null;
+			if (!existingGoals.length) return null;
+
+			let goal = existingGoals[0];
+			// eslint-disable-next-line max-len
+			let loanTotal = this.heroTieredAchievements.find(ach => ach.id === goal?.category)?.totalProgressToAchievement ?? 0;
+			if (!loanTotal && goal?.category === ID_SUPPORT_ALL) {
+				loanTotal = this.totalLoans;
+			}
+
+			if (goal) {
+				goal = {
+					...goal,
+					currentProgress: (loanTotal - (goal?.loanTotalAtStart || 0)),
+				};
+			}
+
+			return goal;
+		},
+		isGoalComplete() {
+			return this.userGoal && (this.userGoal?.currentProgress >= this.userGoal?.target);
 		},
 	},
 	methods: {

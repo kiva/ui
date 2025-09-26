@@ -1,10 +1,14 @@
 import { userAvatarData } from '#src/esiTags/globalData/userAvatar';
-import { isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
+import { isLegacyPlaceholderAvatar } from '@kiva/kv-components';
 
 // Mock isLegacyPlaceholderAvatar
-vi.mock('#src/util/imageUtils', () => ({
-	isLegacyPlaceholderAvatar: vi.fn()
-}));
+vi.mock('@kiva/kv-components', async () => {
+	const actual = await vi.importActual('@kiva/kv-components');
+	return {
+		...actual,
+		isLegacyPlaceholderAvatar: vi.fn()
+	};
+});
 
 describe('userAvatarData', () => {
 	it('returns correct CSS vars for normal avatar', () => {

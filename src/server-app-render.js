@@ -35,6 +35,7 @@ export default async function renderPage({
 		device,
 		ssrManifest,
 		template,
+		forceHeader,
 	} = context;
 
 	// Create a new router instance. This will set the initial route and potentially redirect or 404.
@@ -61,6 +62,7 @@ export default async function renderPage({
 		kivaUserAgent,
 		router,
 		isServer: true,
+		forceHeader,
 	});
 
 	try {
