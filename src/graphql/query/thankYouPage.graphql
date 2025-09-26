@@ -6,6 +6,7 @@ query thankYouPageQuery {
       preferences
     }
 	lendingStats {
+	  id
       partnersLentTo {
         missionStatement
       }
