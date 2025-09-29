@@ -8,7 +8,7 @@
 	>
 		<kv-contentful-img
 			class="tw-w-full tw-h-full tw-object-cover"
-			:contentful-src="props.statusCard ? optimizedImageUrl : contentfulSrc"
+			:contentful-src="statusCard ? optimizedImageUrl : contentfulSrc"
 			fallback-format="jpg"
 			fit="fill"
 			:alt="contentfulAlt"
