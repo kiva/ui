@@ -9,9 +9,9 @@
 			<span
 				:class="{'tw-absolute tw-top-1 tw-left-1': userHasGoal}"
 				class="
-					tw-inline-flex tw-items-center tw-gap-1
-					tw-mb-2 tw-rounded-md
-					tw-bg-eco-green-1 tw-px-1.5 tw-py-1"
+						tw-inline-flex tw-items-center tw-gap-1
+						tw-mb-2 tw-rounded-md
+						tw-bg-eco-green-1 tw-px-1.5 tw-py-1"
 				title="Your lending reach"
 			>
 				<KvMaterialIcon
@@ -99,7 +99,11 @@ const props = defineProps({
 	userGoal: {
 		type: Object,
 		default: () => ({}),
-	}
+	},
+	isGoalComplete: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 defineEmits(['open-goal-modal']);

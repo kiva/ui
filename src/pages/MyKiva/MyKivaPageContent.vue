@@ -34,6 +34,7 @@
 				:is-next-steps-exp="isNextStepsExp"
 				:total-loans="totalLoans"
 				:user-goal="userGoal"
+				:is-goal-complete="isGoalComplete"
 				@store-goals-preferences="storeGoalPreferences"
 			/>
 		</section>
@@ -382,6 +383,9 @@ export default {
 			}
 
 			return goal;
+		},
+		isGoalComplete() {
+			return this.userGoal && (this.userGoal?.currentProgress >= this.userGoal?.target);
 		},
 	},
 	methods: {
