@@ -14,7 +14,7 @@
 				<div>
 					<h3>You completed your goal!</h3>
 					<h3>
-						By supporting {{ activeGoal.target }} {{ goalDisplayName }} you're making real change.
+						By supporting {{ currentGoal.target }} {{ goalDisplayName }} you're making real change.
 					</h3>
 				</div>
 				<div class="tw-relative">
@@ -52,7 +52,7 @@ import BgRays from '#src/components/Thanks/BgRays';
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const props = defineProps({
-	activeGoal: {
+	currentGoal: {
 		type: Object,
 		default: null,
 	},
@@ -73,7 +73,7 @@ const props = defineProps({
 const router = useRouter();
 
 const goalDisplayName = computed(() => {
-	const category = props.activeGoal?.category || '';
+	const category = props.currentGoal?.category || '';
 	return category ? props.getGoalDisplayName(category) : 'loans';
 });
 

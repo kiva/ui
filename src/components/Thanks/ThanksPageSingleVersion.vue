@@ -29,7 +29,7 @@
 			/>
 			<GoalCompleted
 				v-if="isNextStepsExpEnabled && currentGoalAchieved"
-				:active-goal="activeGoal"
+				:current-goal="currentGoal"
 				:current-goal-achieved="currentGoalAchieved"
 				:get-goal-display-name="getGoalDisplayName"
 				:loading="goalDataLoading"
@@ -165,7 +165,7 @@ const showReceipt = ref(false);
 const router = useRouter();
 
 const {
-	activeGoal,
+	currentGoal,
 	currentGoalAchieved,
 	getGoalDisplayName,
 	runComposable: runGoalComposable,

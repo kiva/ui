@@ -1,4 +1,4 @@
-query thankYouPageQuery($publicId: String) {
+query useGoalDataQuery($publicId: String) {
   my {
     id
 	userPreferences {

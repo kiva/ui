@@ -4,8 +4,9 @@ import {
 	ref,
 } from 'vue';
 
-import thankYouPageQuery from '#src/graphql/query/thankYouPage.graphql';
+import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
+import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 
 import {
 	ID_BASIC_NEEDS,
@@ -16,30 +17,17 @@ import {
 	ID_WOMENS_EQUALITY,
 } from '#src/composables/useBadgeData';
 
-const CATEGORY_TAG_MAP = {
-	[ID_BASIC_NEEDS]: ['basic_needs'],
-	[ID_CLIMATE_ACTION]: ['climate_action'],
-	[ID_REFUGEE_EQUALITY]: ['refugee_support'],
-	[ID_US_ECONOMIC_EQUALITY]: ['us_entrepreneurs'],
-	[ID_WOMENS_EQUALITY]: ['women', '#Woman-Owned Business'],
-};
-
 const GOAL_DISPLAY_MAP = {
 	[ID_BASIC_NEEDS]: 'basic needs loans',
 	[ID_CLIMATE_ACTION]: 'eco-friendly loans',
 	[ID_REFUGEE_EQUALITY]: 'refugees',
+	[ID_SUPPORT_ALL]: 'loans',
 	[ID_US_ECONOMIC_EQUALITY]: 'U.S. entrepreneurs',
 	[ID_WOMENS_EQUALITY]: 'women',
 };
 
 function getGoalDisplayName(category) {
 	return GOAL_DISPLAY_MAP[category] || 'loans';
-}
-
-function getCategoriesForTag(tag) {
-	return Object.entries(CATEGORY_TAG_MAP)
-		.filter(([, tags]) => tags.includes(tag))
-		.map(([category]) => category);
 }
 
 /**
@@ -52,66 +40,43 @@ export default function useGoalData(loans) {
 	const apollo = inject('apollo');
 
 	const loading = ref(true);
-	const goalState = ref({});
+	const currentGoal = ref(null);
 	const userPreferences = ref(null);
-	const totalLoans = ref(0);
-	const heroTieredAchievements = ref([]);
+	const overallProgress = ref([]);
 
-	async function loadPreferences() {
+	async function loadPreferences(fetchPolicy = 'cache-first') {
 		try {
-			const response = await apollo.query({ query: thankYouPageQuery });
+			const response = await apollo.query({ query: useGoalDataQuery, fetchPolicy });
 			const prefsData = response.data?.my?.userPreferences || null;
-			totalLoans.value = response.data?.my?.loans?.totalCount ?? 0;
-			heroTieredAchievements.value = response?.data?.userAchievementProgress?.tieredLendingAchievements ?? [];
 			userPreferences.value = prefsData;
 			return prefsData ? JSON.parse(prefsData.preferences || '{}') : {};
 		} catch (error) {
 			console.error('Failed to load preferences:', error);
-			return {};
 		}
 	}
 
-	// Initialize goal state from parsed prefs (filter current year, set counts to 0)
-	function initializeGoalState(parsedPrefs) {
-		const currentYear = new Date().getFullYear();
-		const goals = parsedPrefs.goals || [];
-		goals
-			.filter(goal => new Date(goal.dateStarted).getFullYear() >= currentYear)
-			.forEach(goal => {
-				goalState.value[goal.category] = {
-					target: goal.target,
-					status: goal.status,
-					count: 0,
-					dateStarted: goal.dateStarted,
-					goalName: goal.goalName,
-					category: goal.category,
-				};
+	const loadGoalProgress = async () => {
+		try {
+			const loanIds = loans.map(loan => loan.id);
+			const response = await apollo.query({
+				query: postCheckoutAchievementsQuery,
+				variables: { loanIds }
 			});
-	}
+			overallProgress.value = response?.data?.postCheckoutAchivements?.overallProgress || [];
+		} catch (error) {
+			console.error('Failed to load goal progress:', error);
+		}
+	};
 
-	// Count loans toward goals (only current-year loans)
-	function countLoansTowardGoals() {
-		const currentYear = new Date().getFullYear();
-		loans
-			.filter(
-				loan => loan.disbursalDate
-				&& new Date(loan.disbursalDate).getFullYear() >= currentYear
-			)
-			.forEach(loan => {
-				(loan.tags || []).forEach(tag => {
-					getCategoriesForTag(tag).forEach(category => {
-						if (goalState.value[category]) {
-							goalState.value[category].count += 1;
-						}
-					});
-				});
-			});
+	function setGoalState(parsedPrefs) {
+		const goals = parsedPrefs.goals || [];
+		currentGoal.value = { ...goals[0] };
 	}
 
 	async function storeGoalPreferences(updates) {
 		if (!userPreferences.value) {
 			await createUserPreferences(apollo, { goals: [] });
-			await loadPreferences(); // Reload after create
+			await loadPreferences('network-only'); // Reload after create
 		}
 		const parsedPrefs = JSON.parse(userPreferences.value.preferences || '{}');
 		const goals = parsedPrefs.goals || [];
@@ -119,35 +84,31 @@ export default function useGoalData(loans) {
 		if (goalIndex !== -1) goals[goalIndex] = { ...goals[goalIndex], ...updates };
 		else goals.push(updates);
 		await updateUserPreferences(apollo, userPreferences.value, parsedPrefs, { goals });
-		initializeGoalState({ goals }); // Refresh local state after update
+		setGoalState({ goals }); // Refresh local state after update
 	}
 
-	const activeGoal = computed(
-		() => Object.values(goalState.value).find(goal => goal.status === 'in-progress') || null
-	);
-
-	const totalGoalCount = computed(() => {
-		let loanTotal = heroTieredAchievements.value.find(
-			ach => ach.id === activeGoal.value?.category
-		)?.totalProgressToAchievement ?? 0;
-		if (!loanTotal && activeGoal.value?.category === ID_SUPPORT_ALL) loanTotal = totalLoans.value;
-		return loanTotal;
+	const goalProgress = computed(() => {
+		const currentProgress = overallProgress.value.find(
+			entry => entry.achievementId === currentGoal.value?.category
+		);
+		return (currentProgress?.contributionLoanIds || []).length;
 	});
 
-	const currentGoalAchieved = computed(() => totalGoalCount.value >= activeGoal.value?.target);
+	const currentGoalActive = computed(() => currentGoal.value.status === 'in-progress');
+	const currentGoalAchieved = computed(() => goalProgress.value >= currentGoal.value?.target);
 
 	async function runComposable() {
 		loading.value = true;
+		await loadGoalProgress();
 		const parsedPrefs = await loadPreferences();
-		initializeGoalState(parsedPrefs);
-		countLoansTowardGoals();
+		setGoalState(parsedPrefs);
 		// Auto-update if active goal achieved
-		if (!currentGoalAchieved.value && activeGoal.value) {
+		if (currentGoal.value && currentGoalAchieved.value) {
 			await storeGoalPreferences({
-				goalName: activeGoal.value.goalName,
-				dateStarted: activeGoal.value.dateStarted,
-				target: activeGoal.value.target,
-				count: activeGoal.value.count,
+				goalName: currentGoal.value.goalName,
+				dateStarted: currentGoal.value.dateStarted,
+				target: currentGoal.value.target,
+				count: currentGoal.value.count,
 				status: 'completed',
 			});
 		}
@@ -155,8 +116,9 @@ export default function useGoalData(loans) {
 	}
 
 	return {
-		activeGoal,
+		currentGoal,
 		currentGoalAchieved,
+		currentGoalActive,
 		loading,
 		getGoalDisplayName,
 		runComposable,
