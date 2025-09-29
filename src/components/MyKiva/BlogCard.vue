@@ -69,7 +69,7 @@ const props = defineProps({
 
 const optimizedImageUrl = computed(() => {
 	if (!props.image) return '';
-	return optimizeContentfulUrl(props.image, 336, 200);
+	return optimizeContentfulUrl(props.image, 336);
 });
 
 const formattedDate = computed(() => {

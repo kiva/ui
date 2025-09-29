@@ -74,7 +74,7 @@ export default {
 		},
 		optimizedImageUrl() {
 			if (this.statusCard) {
-				return optimizeContentfulUrl(this.contentfulSrc, 336, 92);
+				return optimizeContentfulUrl(this.contentfulSrc, 336);
 			}
 			return this.contentfulSrc;
 		},

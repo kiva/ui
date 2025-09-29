@@ -156,8 +156,8 @@ describe('imageUtils.js', () => {
 
 describe('optimizeContentfulUrl', () => {
 	it.each([
-		[336, 200, 'BlogCard dimensions'],
-		[336, 92, 'HeroBackground dimensions'],
+		[336, undefined, 'BlogCard dimensions'],
+		[336, undefined, 'HeroBackground dimensions'],
 		[336, undefined, 'JourneyCardCarousel dimensions (width only)'],
 	])('returns optimized URL with width=%i, height=%s (%s)', (width, height) => {
 		const baseUrl = 'https://images.ctfassets.net/image.jpg';
