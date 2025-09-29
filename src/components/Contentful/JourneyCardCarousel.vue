@@ -265,9 +265,7 @@ const orderedSlides = computed(() => {
 const optimizeContentfulUrl = baseUrl => {
 	if (!baseUrl) return '';
 
-	// journey card dimensions: responsive sizing
-	const width = isMobile.value ? 320 : 336;
-	const height = isMobile.value ? 340 : 382;
+	const width = 336;
 
 	// check if it's a Contentful URL
 	const isContentfulUrl = baseUrl.includes('images.ctfassets.net')
@@ -275,7 +273,7 @@ const optimizeContentfulUrl = baseUrl => {
 	if (!isContentfulUrl) {
 		return baseUrl;
 	}
-	return `${baseUrl}?w=${width}&h=${height}&fm=webp&q=80`;
+	return `${baseUrl}?w=${width}&fm=webp&q=80`;
 };
 
 const getMediaImgUrl = media => {

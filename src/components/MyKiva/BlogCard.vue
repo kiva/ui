@@ -69,9 +69,9 @@ const props = defineProps({
 const optimizedImageUrl = computed(() => {
 	if (!props.image) return '';
 
-	// blog card dimensions: w:336px, h:55% = ~185px
+	// blog card dimensions: w:336px, h:55% = ~200px
 	const width = 336;
-	const height = 185;
+	const height = 200;
 
 	// check if it's a Contentful URL
 	const isContentfulUrl = props.image.includes('images.ctfassets.net')
