@@ -40,6 +40,7 @@
 
 <script setup>
 import { computed } from 'vue';
+import { optimizeContentfulUrl } from '#src/util/imageUtils';
 
 const emit = defineEmits(['track']);
 
@@ -68,18 +69,7 @@ const props = defineProps({
 
 const optimizedImageUrl = computed(() => {
 	if (!props.image) return '';
-
-	// blog card dimensions: w:336px, h:55% = ~200px
-	const width = 336;
-	const height = 200;
-
-	// check if it's a Contentful URL
-	const isContentfulUrl = props.image.includes('images.ctfassets.net')
-		|| props.image.includes('assets.contentful.com');
-	if (!isContentfulUrl) {
-		return props.image;
-	}
-	return `${props.image}?w=${width}&h=${height}&fm=webp&q=80`;
+	return optimizeContentfulUrl(props.image, 336, 200);
 });
 
 const formattedDate = computed(() => {

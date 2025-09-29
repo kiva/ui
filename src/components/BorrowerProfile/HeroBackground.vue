@@ -8,7 +8,7 @@
 	>
 		<kv-contentful-img
 			class="tw-w-full tw-h-full tw-object-cover"
-			:contentful-src="contentfulSrc"
+			:contentful-src="props.statusCard ? optimizedImageUrl : contentfulSrc"
 			fallback-format="jpg"
 			fit="fill"
 			:alt="contentfulAlt"
@@ -22,6 +22,7 @@
 <script>
 import { gql } from 'graphql-tag';
 import { KvContentfulImg } from '@kiva/kv-components';
+import { optimizeContentfulUrl } from '#src/util/imageUtils';
 
 export default {
 	name: 'HeroBackground',
@@ -33,6 +34,10 @@ export default {
 		loanId: {
 			type: Number,
 			default: 0,
+		},
+		statusCard: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {
@@ -66,6 +71,12 @@ export default {
 		},
 		countryKey() {
 			return `bp-hero-country-${this.isoCode.toLowerCase()}`;
+		},
+		optimizedImageUrl() {
+			if (this.statusCard) {
+				return optimizeContentfulUrl(this.contentfulSrc, 336, 92);
+			}
+			return this.contentfulSrc;
 		},
 	},
 	apollo: {
