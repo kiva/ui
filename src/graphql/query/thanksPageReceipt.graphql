@@ -85,7 +85,6 @@ query checkoutReceipt($checkoutId: Int!, $visitorId: String) {
 								reservedAmount
 							}
 							distributionModel
-							disbursalDate
 							unreservedAmount @client
 							inPfp
 							gender
