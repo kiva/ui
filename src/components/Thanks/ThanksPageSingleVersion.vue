@@ -36,7 +36,7 @@
 				class="tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
-				v-if="!isNextStepsExpEnabled && showJourneyModule"
+				v-if="!currentGoalAchieved && showJourneyModule"
 				:loans="loans"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
