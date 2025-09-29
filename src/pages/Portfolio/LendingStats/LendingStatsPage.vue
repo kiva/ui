@@ -99,6 +99,24 @@ import useBadgeData from '#src/composables/useBadgeData';
 import BadgesSection from './BadgesSection';
 import StatsSection from './StatsSection';
 
+const convertToNumberOrString = value => {
+	const num = Number(value);
+
+	if (!Number.isNaN(num) && value !== '') {
+		return num;
+	}
+
+	return value;
+};
+
+const checkFilterKey = (data, objectStat) => {
+	if (!parseInt(data[0], 10)) {
+		return objectStat.name;
+	}
+
+	return objectStat.id;
+};
+
 export default {
 	name: 'LendingStatsPage',
 	components: {
@@ -135,24 +153,38 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			const countriesWhereKivaDoesntWork = data?.general?.excluded_countries?.value ?? '';
+			/* eslint-disable max-len */
+			const activitiesWhereKivaDoesntWork = (data?.general?.excluded_activities?.value ?? '').split(',').map(item => item.replaceAll('"', '')).map(item => convertToNumberOrString(item));
+			const partnersWhereKivaDoesntWork = (data?.general?.excluded_partners?.value ?? '').split(',').map(item => item.replaceAll('"', '')).map(item => convertToNumberOrString(item));
+			const sectorsWhereKivaDoesntWork = (data?.general?.excluded_sectors?.value ?? '').split(',').map(item => item.replaceAll('"', '')).map(item => convertToNumberOrString(item));
+			/* eslint-enable max-len */
+
 			// reduce array of country objects to country property without using lodash
 			const countriesReduced = (data?.lend?.countryFacets ?? []).map(country => country.country);
-			// eslint-disable-next-line max-len
+			const activitiesData = data?.general?.kivaStats?.activities ?? [];
+			const partnersData = data?.general?.partners?.values ?? [];
+			const sectorsData = data?.general?.kivaStats?.sectors ?? [];
+
+			/* eslint-disable max-len */
 			const filteredCountries = countriesReduced.filter(country => !countriesWhereKivaDoesntWork.includes(country.isoCode));
+			const filteredActivities = activitiesData.filter(activity => !activitiesWhereKivaDoesntWork.includes(checkFilterKey(activitiesWhereKivaDoesntWork, activity)));
+			const filteredPartners = partnersData.filter(partner => !partnersWhereKivaDoesntWork.includes(checkFilterKey(partnersWhereKivaDoesntWork, partner)));
+			const filteredSectors = sectorsData.filter(sector => !sectorsWhereKivaDoesntWork.includes(checkFilterKey(sectorsWhereKivaDoesntWork, sector)));
+			/* eslint-enable max-len */
 
 			const allCountries = _sortBy(filteredCountries, 'name');
 			this.countriesLentTo = _sortBy(data?.my?.lendingStats?.countriesLentTo ?? [], 'name');
 			this.countriesNotLentTo = _differenceBy(allCountries, this.countriesLentTo, 'isoCode');
 
-			const allSectors = _sortBy(data?.general?.kivaStats?.sectors ?? [], 'name');
+			const allSectors = _sortBy(filteredSectors, 'name');
 			this.sectorsLentTo = _sortBy(data?.my?.lendingStats?.sectorsLentTo ?? [], 'name');
 			this.sectorsNotLentTo = _differenceBy(allSectors, this.sectorsLentTo, 'id');
 
-			const allActivities = _sortBy(data?.general?.kivaStats?.activities ?? [], 'name');
+			const allActivities = _sortBy(filteredActivities, 'name');
 			this.activitiesLentTo = _sortBy(data?.my?.lendingStats?.activitiesLentTo, 'name');
 			this.activitiesNotLentTo = _differenceBy(allActivities, this.activitiesLentTo, 'id');
 
-			const allPartners = _sortBy(data?.general?.partners?.values ?? [], 'name');
+			const allPartners = _sortBy(filteredPartners, 'name');
 			this.partnersLentTo = _sortBy(data?.my?.lendingStats?.partnersLentTo, 'name');
 			this.partnersNotLentTo = _differenceBy(allPartners, this.partnersLentTo, 'id');
 
