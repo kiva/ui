@@ -1,4 +1,6 @@
-import { checkAvifSupport, checkWebpSupport, preloadImage } from '#src/util/imageUtils';
+import {
+	checkAvifSupport, checkWebpSupport, preloadImage, optimizeContentfulUrl
+} from '#src/util/imageUtils';
 
 describe('imageUtils.js', () => {
 	let originalImage;
@@ -149,5 +151,30 @@ describe('imageUtils.js', () => {
 			expect(global.Image).toHaveBeenCalledTimes(1);
 			expect(mockImg.src).toBe(testSrc);
 		});
+	});
+});
+
+describe('optimizeContentfulUrl', () => {
+	it.each([
+		[336, 200, 'BlogCard dimensions'],
+		[336, 92, 'HeroBackground dimensions'],
+		[336, undefined, 'JourneyCardCarousel dimensions (width only)'],
+	])('returns optimized URL with width=%i, height=%s (%s)', (width, height) => {
+		const baseUrl = 'https://images.ctfassets.net/image.jpg';
+		const optimizedUrl = optimizeContentfulUrl(baseUrl, width, height);
+
+		const expectedParams = new URLSearchParams();
+		expectedParams.set('w', width);
+		if (height) expectedParams.set('h', height);
+		expectedParams.set('fm', 'webp');
+		expectedParams.set('q', '80');
+
+		expect(optimizedUrl).toBe(`${baseUrl}?${expectedParams.toString()}`);
+	});
+
+	it('returns original URL for non-Contentful images', () => {
+		const baseUrl = 'https://example.com/image.jpg';
+		const optimizedUrl = optimizeContentfulUrl(baseUrl, 100, 100);
+		expect(optimizedUrl).toBe('https://example.com/image.jpg');
 	});
 });
