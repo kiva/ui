@@ -1,11 +1,19 @@
 <template>
 	<div>
 		<div class="tw-flex tw-justify-center tw-items-center tw-gap-3.5 tw-mb-5">
-			<button class="tw-flex tw-shadow tw-rounded-full tw-p-0.5" @click="decrementCount">
+			<button
+				class="tw-flex tw-shadow tw-rounded-full tw-p-0.5"
+				:class="{ 'tw-invisible': count <= MIN_COUNT }"
+				@click="decrementCount"
+			>
 				<KvMaterialIcon class="tw-w-3 tw-h-3" :icon="mdiMinus" />
 			</button>
 			<span class="tw-text-jumbo">{{ count }}</span>
-			<button class="tw-flex tw-shadow tw-rounded-full tw-p-0.5" @click="incrementCount">
+			<button
+				class="tw-flex tw-shadow tw-rounded-full tw-p-0.5"
+				:class="{ 'tw-invisible': count >= MAX_COUNT }"
+				@click="incrementCount"
+			>
 				<KvMaterialIcon class="tw-w-3 tw-h-3" :icon="mdiPlus" />
 			</button>
 		</div>
