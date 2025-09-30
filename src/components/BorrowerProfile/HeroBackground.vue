@@ -14,7 +14,7 @@
 			:alt="contentfulAlt"
 			:width="statusCard ? 336 : 1024"
 			:height="statusCard ? 92 : 320"
-			:source-sizes="currentSourceSizes"
+			:source-sizes="statusCard ? [] : currentSourceSizes"
 		/>
 	</div>
 </template>
@@ -68,9 +68,6 @@ export default {
 	},
 	computed: {
 		currentSourceSizes() {
-			if (this.statusCard) {
-				return this.sourceSizes.filter(size => size.media === 'status-card');
-			}
 			return this.sourceSizes.filter(size => size.media !== 'status-card');
 		},
 		cityKey() {
