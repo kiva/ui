@@ -36,7 +36,7 @@ function getGoalDisplayName(category) {
  * @param {Array} loans - List of loans to count toward goals
  * @returns Goal data and utilities
  */
-export default function useGoalData(loans) {
+export default function useGoalData({ loans, totalLoanCount }) {
 	const apollo = inject('apollo');
 
 	const loading = ref(true);
@@ -62,7 +62,7 @@ export default function useGoalData(loans) {
 				query: postCheckoutAchievementsQuery,
 				variables: { loanIds }
 			});
-			overallProgress.value = response?.data?.postCheckoutAchivements?.overallProgress || [];
+			overallProgress.value = response?.data?.postCheckoutAchievements?.overallProgress || [];
 		} catch (error) {
 			console.error('Failed to load goal progress:', error);
 		}
@@ -88,6 +88,7 @@ export default function useGoalData(loans) {
 	}
 
 	const goalProgress = computed(() => {
+		if (currentGoal.value?.category === ID_SUPPORT_ALL) return totalLoanCount;
 		const currentProgress = overallProgress.value.find(
 			entry => entry.achievementId === currentGoal.value?.category
 		);

@@ -24,7 +24,6 @@
 			>
 				<GoalCard
 					v-if="showGoalCard(index)"
-					:hero-tiered-achievements="heroTieredAchievements"
 					:hero-slides="slides"
 					:user-goal="userGoal"
 					:is-goal-complete="isGoalComplete"

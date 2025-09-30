@@ -13,7 +13,6 @@
 	>
 		<GoalCard
 			v-if="isNextStepsExp && !userLentToAllRegions && !isGoalComplete"
-			:hero-tiered-achievements="heroTieredAchievements"
 			:hero-slides="heroSlides"
 			:user-goal="userGoal"
 			:is-goal-complete="isGoalComplete"

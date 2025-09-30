@@ -91,10 +91,6 @@ const props = defineProps({
 		type: Array,
 		default: () => [],
 	},
-	heroTieredAchievements: {
-		type: Array,
-		default: () => [],
-	},
 	userGoal: {
 		type: Object,
 		default: () => ({}),

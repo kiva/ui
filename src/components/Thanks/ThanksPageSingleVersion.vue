@@ -155,6 +155,10 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
+	totalLoanCount: {
+		type: Number,
+		default: 0,
+	},
 });
 
 const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
@@ -170,7 +174,7 @@ const {
 	getGoalDisplayName,
 	runComposable: runGoalComposable,
 	loading: goalDataLoading,
-} = useGoalData(props.loans);
+} = useGoalData({ loans: props.loans, totalLoanCount: props.totalLoanCount });
 
 const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));
 
