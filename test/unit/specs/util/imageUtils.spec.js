@@ -155,17 +155,12 @@ describe('imageUtils.js', () => {
 });
 
 describe('optimizeContentfulUrl', () => {
-	it.each([
-		[336, undefined, 'BlogCard dimensions'],
-		[336, undefined, 'HeroBackground dimensions'],
-		[336, undefined, 'JourneyCardCarousel dimensions (width only)'],
-	])('returns optimized URL with width=%i, height=%s (%s)', (width, height) => {
+	it('returns optimized URL with width only', () => {
 		const baseUrl = 'https://images.ctfassets.net/image.jpg';
-		const optimizedUrl = optimizeContentfulUrl(baseUrl, width, height);
+		const optimizedUrl = optimizeContentfulUrl(baseUrl, 336);
 
 		const expectedParams = new URLSearchParams();
-		expectedParams.set('w', width);
-		if (height) expectedParams.set('h', height);
+		expectedParams.set('w', '336');
 		expectedParams.set('fm', 'webp');
 		expectedParams.set('q', '80');
 

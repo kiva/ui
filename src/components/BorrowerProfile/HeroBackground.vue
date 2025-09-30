@@ -8,13 +8,13 @@
 	>
 		<kv-contentful-img
 			class="tw-w-full tw-h-full tw-object-cover"
-			:contentful-src="statusCard ? optimizedImageUrl : contentfulSrc"
+			:contentful-src="contentfulSrc"
 			fallback-format="jpg"
 			fit="fill"
 			:alt="contentfulAlt"
-			:width="1024"
-			:height="320"
-			:source-sizes="sourceSizes"
+			:width="statusCard ? 336 : 1024"
+			:height="statusCard ? 92 : 320"
+			:source-sizes="currentSourceSizes"
 		/>
 	</div>
 </template>
@@ -22,7 +22,6 @@
 <script>
 import { gql } from 'graphql-tag';
 import { KvContentfulImg } from '@kiva/kv-components';
-import { optimizeContentfulUrl } from '#src/util/imageUtils';
 
 export default {
 	name: 'HeroBackground',
@@ -59,10 +58,21 @@ export default {
 					height: 320,
 					media: 'min-width: 734px' // medium
 				},
+				{ // status card mode
+					width: 336,
+					height: 92,
+					media: 'status-card',
+				},
 			],
 		};
 	},
 	computed: {
+		currentSourceSizes() {
+			if (this.statusCard) {
+				return this.sourceSizes.filter(size => size.media === 'status-card');
+			}
+			return this.sourceSizes.filter(size => size.media !== 'status-card');
+		},
 		cityKey() {
 			return `${this.stateKey}-${this.city.toLowerCase()}`;
 		},
@@ -71,12 +81,6 @@ export default {
 		},
 		countryKey() {
 			return `bp-hero-country-${this.isoCode.toLowerCase()}`;
-		},
-		optimizedImageUrl() {
-			if (this.statusCard) {
-				return optimizeContentfulUrl(this.contentfulSrc, 336);
-			}
-			return this.contentfulSrc;
 		},
 	},
 	apollo: {
