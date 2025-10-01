@@ -1,3 +1,28 @@
+## [3.32.0-rc.2](https://github.com/kiva/ui/compare/v3.32.0-rc.1...v3.32.0-rc.2) (2025-10-01)
+
+### 🎉 New Features
+
+* add complete goal card to lending stats ([468fdb9](https://github.com/kiva/ui/commit/468fdb99f6b23a658ecd624304235a12d0f3659f))
+* fetch all donations to a fund past limit ([bdb5612](https://github.com/kiva/ui/commit/bdb5612edbd084c04cc8571255d172f83a1b3e2a))
+* portfolio lending stats exclusions ([#6292](https://github.com/kiva/ui/issues/6292)) ([7b534ec](https://github.com/kiva/ui/commit/7b534ec4eed349a942015b66998670218efa5c22))
+
+### 🐛 Bugfixes
+
+* avatar menu width and other menus not opening in tablet ([0e3b1d6](https://github.com/kiva/ui/commit/0e3b1d6156a5c6343ad963303942adec3896bff1))
+* goal card bg condition ([9cdae5b](https://github.com/kiva/ui/commit/9cdae5b37d20a57469ad6b5df8cadd9f44417fb0))
+* if user lent to all regions, show 3 achievement cards in lending stats carousel ([ea9777b](https://github.com/kiva/ui/commit/ea9777b04af42421df504ce3a66e807a0a8c687f))
+* remove goal complete from goal card ([9d2c004](https://github.com/kiva/ui/commit/9d2c004bad258e544ed09f29f8d371cb9c4fef9d))
+* removing unnecessary lent to all regions condition in lending stats carousel ([6d8f9c9](https://github.com/kiva/ui/commit/6d8f9c942fbeb4a1b75006ac52e22f776878bb4b))
+* update gf routes in prep for rollout ([933dbc0](https://github.com/kiva/ui/commit/933dbc0e2a711c748fd3cbd4cb5f02497fa328d8))
+* use jpeg image instead of webp to match node-canvas support ([43a7654](https://github.com/kiva/ui/commit/43a76547f7129c37b2af14de5321aa1bfc721a53))
+* use standard jpg extension ([96b151b](https://github.com/kiva/ui/commit/96b151beb58ba30c3406830b1b3c48b7e3b76eec))
+
+### 🧹 Chores
+
+* kv components update ([#6287](https://github.com/kiva/ui/issues/6287)) ([8962316](https://github.com/kiva/ui/commit/8962316f377e70b4225de67adb8cb733a4141423))
+* kv components update ([#6293](https://github.com/kiva/ui/issues/6293)) ([4ff0a98](https://github.com/kiva/ui/commit/4ff0a987ddd4805b267d11796bbf925aa10e00df))
+* update aws cred handling for build/deploy stage ([bb97b58](https://github.com/kiva/ui/commit/bb97b58315ebe7b37ca0eb71bffb65af2a41701b))
+
 ## [3.32.0-rc.1](https://github.com/kiva/ui/compare/v3.31.0...v3.32.0-rc.1) (2025-09-24)
 
 ### 🎉 New Features
