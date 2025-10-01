@@ -75,7 +75,7 @@
 					<!-- Email or Lender Kiva Card -->
 					<div v-if="cardType === 'email' || cardType === 'lender'">
 						<p class="tw-text-small tw-mb-1" data-testid="basket-kiva-card-info-1">
-							Scheduled to be sent  {{ deliveryDate }} for {{ recipientName }} {{ recipientEmail }}
+							Scheduled to be sent {{ deliveryDate }} for {{ recipientName }} {{ recipientEmail }}
 						</p>
 					</div>
 				</div>
