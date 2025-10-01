@@ -161,7 +161,9 @@ async function drawLegacy(loanData) {
 
 		// Borrower Image
 		await trace('borrower-image', async () => {
-			const borrowerImg = await trace('loadImage', async () => loadImage(loanData.image.retina));
+			// Use jpeg version of image as webp is not supported by node-canvas
+			const jpegUrl = loanData?.image?.retina?.replace('webp', 'jpeg') ?? loanData?.image?.retina;
+			const borrowerImg = await trace('loadImage', async () => loadImage(jpegUrl));
 			ctx.drawImage(borrowerImg, 0, 0, cardWidth, cardWidth * borrowerImgAspectRatio);
 		});
 
@@ -222,7 +224,9 @@ async function drawClassic(loanData) {
 
 		// Borrower Image
 		await trace('borrower-image', async () => {
-			const borrowerImg = await trace('loadImage', async () => loadImage(loanData.image.retina));
+			// Use jpeg version of image as webp is not supported by node-canvas
+			const jpegUrl = loanData?.image?.retina?.replace('webp', 'jpeg') ?? loanData?.image?.retina;
+			const borrowerImg = await trace('loadImage', async () => loadImage(jpegUrl));
 			ctx.save();
 			// eslint-disable-next-line max-len
 			roundRect(ctx, borrowerImgMargin, borrowerImgMargin, borrowerImgWidth, borrowerImgHeight, 16 * classicResizeFactor);
