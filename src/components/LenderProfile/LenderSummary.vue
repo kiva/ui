@@ -55,6 +55,7 @@
 					>
 						Send message
 					</kv-button>
+					<!-- eslint-disable max-len -->
 					<kv-button
 						class="tw-w-full lg:tw-w-auto"
 						variant="secondary"
