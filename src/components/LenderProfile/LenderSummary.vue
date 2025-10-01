@@ -58,7 +58,7 @@
 					<kv-button
 						class="tw-w-full lg:tw-w-auto"
 						variant="secondary"
-						:href="`/gifts/kiva-cards?handle=${publicId}#/lender`"
+						:href="`/gifts/kiva-cards-beta/buy?recipient=${publicId}&for=${lenderName}&source=lender-profile`"
 						v-kv-track-event="[
 							'lender-profile',
 							'click',
