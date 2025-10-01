@@ -20,10 +20,12 @@ import experimentSettingQuery from '#src/graphql/query/experimentSetting.graphql
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import CookieStore from '#src/util/cookieStore';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import { HOME_PAGE_EXPERIMENT_KEY } from '#src/util/experiment/fastlyExperimentUtils';
 import { runManyTimesAndCompare } from '../../../helpers/runAndCompare';
 import clearDocumentCookies from '../../../setup/clearDocumentCookies';
 
 const MOCK_UUID = '123456789';
+const homePageExpSetting = { name: 'HomePage', distribution: { a: 0.5, b: 0.5 }, population: 1 };
 vi.mock('uuid', () => ({ v4: () => MOCK_UUID }));
 
 describe('experimentUtils.js', () => {
@@ -953,6 +955,67 @@ describe('experimentUtils.js', () => {
 				version: 'a',
 				hash: hash2,
 				queryForced: false
+			});
+		});
+
+		it(`should get forced assignment for "${HOME_PAGE_EXPERIMENT_KEY}" from query string`, () => {
+			const cookieStore = new CookieStore({ uiab: `${HOME_PAGE_EXPERIMENT_KEY}` });
+			const result = getForcedAssignment(
+				cookieStore,
+				{ query: { setuiab: `${HOME_PAGE_EXPERIMENT_KEY}.variant` } },
+				HOME_PAGE_EXPERIMENT_KEY,
+				homePageExpSetting,
+			);
+
+			expect(result).toEqual({
+				...homePageExpSetting,
+				version: 'variant',
+				queryForced: true,
+			});
+		});
+
+		it(
+			`should get forced assignment from Fastly header for "${HOME_PAGE_EXPERIMENT_KEY}" over query string`,
+			() => {
+				const cookieStore = new CookieStore({ uiab: `${HOME_PAGE_EXPERIMENT_KEY}` });
+				const result = getForcedAssignment(
+					cookieStore,
+					{ query: { setuiab: `${HOME_PAGE_EXPERIMENT_KEY}.variant` } },
+					HOME_PAGE_EXPERIMENT_KEY,
+					homePageExpSetting,
+					'a'
+				);
+
+				expect(result).toEqual({
+					...homePageExpSetting,
+					version: 'a',
+					headerForced: true,
+					queryForced: false,
+				});
+			}
+		);
+
+		it(`should get forced assignment from Fastly header for "${HOME_PAGE_EXPERIMENT_KEY}" over cookie`, () => {
+			const hash1 = 1753809093;
+			const hash2 = 424;
+
+			const cookieStore = new CookieStore({
+				uiab: `${HOME_PAGE_EXPERIMENT_KEY}:a:${hash1}:0.5:true|fake:a:${hash2}:0.1:false`
+			});
+			const result = getForcedAssignment(
+				cookieStore,
+				{},
+				HOME_PAGE_EXPERIMENT_KEY,
+				homePageExpSetting,
+				'variant'
+			);
+
+			expect(result).toEqual({
+				...homePageExpSetting,
+				hash: hash1,
+				version: 'variant',
+				headerForced: true,
+				queryForced: true,
 			});
 		});
 	});

@@ -42,8 +42,8 @@
 		},
 		"image": {
 			"id": 4947325,
-			"url": "https://www-dev-kiva-org-0.freetls.fastly.net/img/s150/aa895120425465e8437e08e69c72218b.jpg",
-			"url_2x": "https://www-dev-kiva-org-0.freetls.fastly.net/img/s300/aa895120425465e8437e08e69c72218b.jpg",
+			"url": "https://www.kiva.org/img/s150/aa895120425465e8437e08e69c72218b.webp",
+			"url_2x": "https://www.kiva.org/img/s300/aa895120425465e8437e08e69c72218b.webp",
 			"__typename": "Image"
 		},
 		"sponsor_name": "Urwego Bank",

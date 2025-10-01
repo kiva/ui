@@ -36,7 +36,7 @@ const args = {
 			lender: {
 				image: {
 					id: 726677,
-					url: "https://www-dev-kiva-org.freetls.fastly.net/img/s140/726677.jpg",
+					url: "https://www.kiva.org/img/s140/726677.webp",
 				},
 			},
 			isBorrower: false,

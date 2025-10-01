@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { getKivaImageUrl } from '#src/util/imageUtils';
+import { getKivaImageUrl } from '@kiva/kv-components';
 
 export default {
 	name: 'MultiBorrowerImage',

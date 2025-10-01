@@ -1,81 +1,153 @@
-import { getKivaImageUrl, isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
+import { checkAvifSupport, checkWebpSupport, preloadImage } from '#src/util/imageUtils';
 
 describe('imageUtils.js', () => {
-	describe('getKivaImageUrl()', () => {
-		it('Returns the url for a Kiva image passed on the passed-in options', () => {
-			expect(getKivaImageUrl({
-				width: 40,
-				hash: '123abc',
-			})).toBe(
-				'/w40/123abc.jpg'
-			);
-			expect(getKivaImageUrl({
-				square: 40,
-				hash: '123abc',
-			})).toBe(
-				'/s40/123abc.jpg'
-			);
-			expect(getKivaImageUrl({
-				width: 50,
-				height: 20,
-				hash: 'abc123',
-			})).toBe(
-				'/w50h20/abc123.jpg'
-			);
-			expect(getKivaImageUrl({
-				width: 30,
-				height: 10,
-				faceZoom: 50,
-				hash: '1a2b3c'
-			})).toBe(
-				'/w30h10fz50/1a2b3c.jpg'
-			);
-			expect(getKivaImageUrl({
-				square: 100,
-				faceZoom: 35,
-				hash: '123abc',
-			})).toBe(
-				'/s100fz35/123abc.jpg'
-			);
-			expect(getKivaImageUrl({
-				base: 'https://www.kiva.org/img/',
-				width: 30,
-				height: 10,
-				faceZoom: 60,
-				hash: 'a1b2c3'
-			})).toBe(
-				'https://www.kiva.org/img/w30h10fz60/a1b2c3.jpg'
-			);
+	let originalImage;
+
+	beforeEach(() => {
+		// Save original Image constructor
+		originalImage = global.Image;
+		// Create a mock Image constructor
+		global.Image = vi.fn();
+	});
+
+	afterEach(() => {
+		// Restore original Image constructor
+		global.Image = originalImage;
+		vi.clearAllMocks();
+	});
+
+	describe('checkWebpSupport', () => {
+		it('resolves to true when webp image loads successfully with valid dimensions', async () => {
+			const mockImg = {
+				onload: null,
+				onerror: null,
+				width: 1,
+				height: 1,
+				src: ''
+			};
+			global.Image.mockImplementation(() => mockImg);
+
+			const promise = checkWebpSupport();
+
+			// Simulate successful load
+			mockImg.onload();
+
+			const result = await promise;
+			expect(result).toBe(true);
+			expect(mockImg.src).toContain('data:image/webp;base64,');
 		});
 
-		it('Returns an empty string if any required options are missing', () => {
-			expect(getKivaImageUrl({ width: 40 })).toBe('');
-			expect(getKivaImageUrl({ height: 40 })).toBe('');
-			expect(getKivaImageUrl({ faceZoom: 40 })).toBe('');
-			expect(getKivaImageUrl({ hash: '123abc' })).toBe('');
-			expect(getKivaImageUrl({})).toBe('');
+		it('resolves to false when webp image loads but has invalid dimensions', async () => {
+			const mockImg = {
+				onload: null,
+				onerror: null,
+				width: 0,
+				height: 0,
+				src: ''
+			};
+			global.Image.mockImplementation(() => mockImg);
+
+			const promise = checkWebpSupport();
+
+			// Simulate load with invalid dimensions
+			mockImg.onload();
+
+			const result = await promise;
+			expect(result).toBe(false);
+		});
+
+		it('resolves to false when webp image fails to load', async () => {
+			const mockImg = {
+				onload: null,
+				onerror: null,
+				width: 1,
+				height: 1,
+				src: ''
+			};
+			global.Image.mockImplementation(() => mockImg);
+
+			const promise = checkWebpSupport();
+
+			// Simulate error
+			mockImg.onerror();
+
+			const result = await promise;
+			expect(result).toBe(false);
 		});
 	});
-	describe('isLegacyPlaceholderAvatar()', () => {
-		it('Returns if not legacy placeholder avatar', () => {
-			expect(isLegacyPlaceholderAvatar('123abc.jpg')).toBe(false);
-			expect(isLegacyPlaceholderAvatar(null)).toBe(false);
-			expect(isLegacyPlaceholderAvatar(undefined)).toBe(false);
-			expect(isLegacyPlaceholderAvatar('123abc')).toBe(false);
-			expect(isLegacyPlaceholderAvatar(12344)).toBe(false);
+
+	describe('checkAvifSupport', () => {
+		it('resolves to true when avif image loads successfully with valid dimensions', async () => {
+			const mockImg = {
+				onload: null,
+				onerror: null,
+				width: 1,
+				height: 1,
+				src: ''
+			};
+			global.Image.mockImplementation(() => mockImg);
+
+			const promise = checkAvifSupport();
+
+			// Simulate successful load
+			mockImg.onload();
+
+			const result = await promise;
+			expect(result).toBe(true);
+			expect(mockImg.src).toContain('data:image/avif;base64,');
 		});
 
-		it('Returns if legacy placeholder avatar', () => {
-			expect(isLegacyPlaceholderAvatar('726677.jpg')).toBe(true);
-			expect(isLegacyPlaceholderAvatar('315726.jpg')).toBe(true);
-			expect(isLegacyPlaceholderAvatar('726677.svg')).toBe(true);
-			expect(isLegacyPlaceholderAvatar('315726.svg')).toBe(true);
-			expect(isLegacyPlaceholderAvatar('726677')).toBe(true);
-			expect(isLegacyPlaceholderAvatar('315726')).toBe(true);
-			expect(isLegacyPlaceholderAvatar(726677)).toBe(true);
-			expect(isLegacyPlaceholderAvatar(315726)).toBe(true);
-			expect(isLegacyPlaceholderAvatar('4d844ac2c0b77a8a522741b908ea5c32')).toBe(true);
-			expect(isLegacyPlaceholderAvatar('4d844ac2c0b77a8a522741b908ea5c32.jpg')).toBe(true);
+		it('resolves to false when avif image loads but has invalid dimensions', async () => {
+			const mockImg = {
+				onload: null,
+				onerror: null,
+				width: 0,
+				height: 0,
+				src: ''
+			};
+			global.Image.mockImplementation(() => mockImg);
+
+			const promise = checkAvifSupport();
+
+			// Simulate load with invalid dimensions
+			mockImg.onload();
+
+			const result = await promise;
+			expect(result).toBe(false);
+		});
+
+		it('resolves to false when avif image fails to load', async () => {
+			const mockImg = {
+				onload: null,
+				onerror: null,
+				width: 1,
+				height: 1,
+				src: ''
+			};
+			global.Image.mockImplementation(() => mockImg);
+
+			const promise = checkAvifSupport();
+
+			// Simulate error
+			mockImg.onerror();
+
+			const result = await promise;
+			expect(result).toBe(false);
+		});
+	});
+
+	describe('preloadImage', () => {
+		it('creates a new Image instance and sets the src', () => {
+			const mockImg = {
+				src: ''
+			};
+			global.Image.mockImplementation(() => mockImg);
+
+			const testSrc = 'https://example.com/image.jpg';
+			preloadImage(testSrc);
+
+			expect(global.Image).toHaveBeenCalledTimes(1);
+			expect(mockImg.src).toBe(testSrc);
 		});
 	});
 });

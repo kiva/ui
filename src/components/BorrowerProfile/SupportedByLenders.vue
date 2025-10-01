@@ -21,8 +21,7 @@
 </template>
 
 <script>
-import { isLegacyPlaceholderAvatar } from '#src/util/imageUtils';
-import { KvUserAvatar } from '@kiva/kv-components';
+import { isLegacyPlaceholderAvatar, KvUserAvatar } from '@kiva/kv-components';
 
 export default {
 	name: 'SupportedByLenders',

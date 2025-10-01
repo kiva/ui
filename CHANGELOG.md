@@ -1,3 +1,91 @@
+## [3.32.0-rc.2](https://github.com/kiva/ui/compare/v3.32.0-rc.1...v3.32.0-rc.2) (2025-10-01)
+
+### 🎉 New Features
+
+* add complete goal card to lending stats ([468fdb9](https://github.com/kiva/ui/commit/468fdb99f6b23a658ecd624304235a12d0f3659f))
+* fetch all donations to a fund past limit ([bdb5612](https://github.com/kiva/ui/commit/bdb5612edbd084c04cc8571255d172f83a1b3e2a))
+* portfolio lending stats exclusions ([#6292](https://github.com/kiva/ui/issues/6292)) ([7b534ec](https://github.com/kiva/ui/commit/7b534ec4eed349a942015b66998670218efa5c22))
+
+### 🐛 Bugfixes
+
+* avatar menu width and other menus not opening in tablet ([0e3b1d6](https://github.com/kiva/ui/commit/0e3b1d6156a5c6343ad963303942adec3896bff1))
+* goal card bg condition ([9cdae5b](https://github.com/kiva/ui/commit/9cdae5b37d20a57469ad6b5df8cadd9f44417fb0))
+* if user lent to all regions, show 3 achievement cards in lending stats carousel ([ea9777b](https://github.com/kiva/ui/commit/ea9777b04af42421df504ce3a66e807a0a8c687f))
+* remove goal complete from goal card ([9d2c004](https://github.com/kiva/ui/commit/9d2c004bad258e544ed09f29f8d371cb9c4fef9d))
+* removing unnecessary lent to all regions condition in lending stats carousel ([6d8f9c9](https://github.com/kiva/ui/commit/6d8f9c942fbeb4a1b75006ac52e22f776878bb4b))
+* update gf routes in prep for rollout ([933dbc0](https://github.com/kiva/ui/commit/933dbc0e2a711c748fd3cbd4cb5f02497fa328d8))
+* use jpeg image instead of webp to match node-canvas support ([43a7654](https://github.com/kiva/ui/commit/43a76547f7129c37b2af14de5321aa1bfc721a53))
+* use standard jpg extension ([96b151b](https://github.com/kiva/ui/commit/96b151beb58ba30c3406830b1b3c48b7e3b76eec))
+
+### 🧹 Chores
+
+* kv components update ([#6287](https://github.com/kiva/ui/issues/6287)) ([8962316](https://github.com/kiva/ui/commit/8962316f377e70b4225de67adb8cb733a4141423))
+* kv components update ([#6293](https://github.com/kiva/ui/issues/6293)) ([4ff0a98](https://github.com/kiva/ui/commit/4ff0a987ddd4805b267d11796bbf925aa10e00df))
+* update aws cred handling for build/deploy stage ([bb97b58](https://github.com/kiva/ui/commit/bb97b58315ebe7b37ca0eb71bffb65af2a41701b))
+
+## [3.32.0-rc.1](https://github.com/kiva/ui/compare/v3.31.0...v3.32.0-rc.1) (2025-09-24)
+
+### 🎉 New Features
+
+* added callouts ([1abd7d3](https://github.com/kiva/ui/commit/1abd7d355571be34e0e9ccba4985e9cfd6836387))
+* changed background color ([183aec3](https://github.com/kiva/ui/commit/183aec32445df4801ad28b7016b337cff2a44073))
+* handle support all card image ([99ce2c7](https://github.com/kiva/ui/commit/99ce2c7b90c8cfbd1eb829d23dbba5a27a0526ba))
+* header updates ([2debe7a](https://github.com/kiva/ui/commit/2debe7aafffc04d44fb85fd5d386b276a57f2a1d))
+* revised implementation; added YTD/lifetime tab column ([61b563e](https://github.com/kiva/ui/commit/61b563efb9cc3c9c78a638f07ab805a7f3ae7d1a))
+* show card with goal status ([54ae104](https://github.com/kiva/ui/commit/54ae10469e91cf37a420f030cfe111044afaf058))
+* store current loan in category and calculate goal card progress ([760fba8](https://github.com/kiva/ui/commit/760fba81a9a008898e886e1b598e3e985f3b4366))
+
+### 🐛 Bugfixes
+
+* [MP-2046] - bug, persist header value (PR fdb) ([8924cf4](https://github.com/kiva/ui/commit/8924cf448c727ecd03a60e00ff99a54abefdbb50))
+* [MP-2046] - clean code ([18b78ce](https://github.com/kiva/ui/commit/18b78ce3cfb8d1eaca6972c61f03700e943d5803))
+* [MP-2046] - clean code ([a9b762c](https://github.com/kiva/ui/commit/a9b762c43ae39511667f6a0f965c7322985515fc))
+* [MP-2046] - dont set 'HOME_PAGE_EXPERIMENT' header because it's not cached ([eadfab6](https://github.com/kiva/ui/commit/eadfab603a1bb13f8a4c5b8c444a7243155e3d99))
+* [MP-2046] - eslint ([3ec5bfe](https://github.com/kiva/ui/commit/3ec5bfe065e97a6dfe0d4d0ad83359637aab3e36))
+* [MP-2046] - PR fdb & tests P1 ([883f9be](https://github.com/kiva/ui/commit/883f9be77834053e9af17601c0a80cf5bcd409af))
+* [MP-2046] - sync experiment header handler with CPS ([bea3653](https://github.com/kiva/ui/commit/bea3653a83afdc4edbe29afeabe563b0d82c8af4))
+* [MP-2046] - sync experiment header handler with CPS: Draft v1.0 ([55889ee](https://github.com/kiva/ui/commit/55889eefeaf61ad3b5fda330a0aa6c8311483d5f))
+* [MP-2046] - tests P2 ([6a335f8](https://github.com/kiva/ui/commit/6a335f86b2e8cbc3bc86572c13fca920b2972e60))
+* add custom header to cta for combo page ([93ce126](https://github.com/kiva/ui/commit/93ce1263bf6c777a548cb0c2c8280ae34f6e68b7))
+* add leading dash to url ([e122563](https://github.com/kiva/ui/commit/e122563a78b69f596706f3e7fb0dd3a6b428f664))
+* cleanup unused fields and imports ([ed0e682](https://github.com/kiva/ui/commit/ed0e682e192b56f938120cb599b41ea8ad8a4fb0))
+* contentful category key ([0c3c664](https://github.com/kiva/ui/commit/0c3c664f48449b4553d21029a3ab1c475951beff))
+* corrected padding and alignment ([3f8ed13](https://github.com/kiva/ui/commit/3f8ed13508f07f2a3aa5713fab5f9f3aeb4deb3f))
+* empty preferences use case, default number for goal and background image issue ([7034302](https://github.com/kiva/ui/commit/70343027961905635ac42adae7fca7cc532e0d6a))
+* fetch and calculate my donations against a given fund ([3157bff](https://github.com/kiva/ui/commit/3157bff4ecda6f4aa446363717d75995646802d6))
+* goal card showing in more ways to help carousel ([89c3cbc](https://github.com/kiva/ui/commit/89c3cbcf8685c5ba915664ac4610ee56b98fdf94))
+* improve string url formation ([7741834](https://github.com/kiva/ui/commit/7741834ae0550fc92c6415a4110a0fb731d4b3bd))
+* lbc redirect query bug ([43e938b](https://github.com/kiva/ui/commit/43e938bfaf0de510bba124349063a5360c57c979))
+* loan count on goal set variable naming ([b090c5f](https://github.com/kiva/ui/commit/b090c5fd0fc1c580da80f64183e71c4822c7dc4c))
+* make header dynamic to target goal ([5f0a950](https://github.com/kiva/ui/commit/5f0a950982f1afc336795fa8036bd69a673976ca))
+* missing tracking events in goal card ([a2982d2](https://github.com/kiva/ui/commit/a2982d2faab359be1bc21fe85dc1da897afe33af))
+* mykiva padding fix ([b939137](https://github.com/kiva/ui/commit/b9391372d7bc927bc5f1853d78d3fc73405d8fd4))
+* reverse count ref in number choice and correct gql import ([9ef62bf](https://github.com/kiva/ui/commit/9ef62bf9c3f55b0049aed8766b69296c831a3198))
+* router error and total loans for support all category ([cc011f4](https://github.com/kiva/ui/commit/cc011f427bf02051307ae61d4b13add356ed3d28))
+* show fundraising meter for active funds, improve visibilty checks ([3bced17](https://github.com/kiva/ui/commit/3bced173fe329eaf883d94333f32a7fcb968907b))
+* solve conflicts ([1e76750](https://github.com/kiva/ui/commit/1e76750a221e747d314df1c4d7d41d907e3b8d51))
+* store goal ([4395694](https://github.com/kiva/ui/commit/43956948c66f311ea92b096d0389f98b653ce20b))
+* update management component name, remove unused import ([ced692e](https://github.com/kiva/ui/commit/ced692e01bc7c907f2021ed9e873fc2c9a0987eb))
+
+### 🏎️ Performance Improvements
+
+* only allow batching for stellate ([56da56d](https://github.com/kiva/ui/commit/56da56dd03906149f8e21853ec8758e3f5b6bad7))
+* use webp for kiva image urls ([acccf58](https://github.com/kiva/ui/commit/acccf58536a1bec37172407a5b14bb98d474d247))
+
+### 🪚 Refactors
+
+* use getKivaImageUrl from kv-components ([1678968](https://github.com/kiva/ui/commit/1678968db367536333945c8aedfc50b91eff3111))
+* use isLegacyPlaceholderAvatar from kv-components ([f30e958](https://github.com/kiva/ui/commit/f30e95881c95cb3f42369659b7e2b338f5d556c2))
+* user goal logic ([c22cbea](https://github.com/kiva/ui/commit/c22cbea91231d5968f1dc8e19b6c150b95c5b4e8))
+
+### 🔍 Tests
+
+* add tests for imageUtils methods ([638d614](https://github.com/kiva/ui/commit/638d614500b40fbb9b8cd6c8d43db91b384940f0))
+
+### 🧹 Chores
+
+* **deps:** install kv-components v6.55.1 and kv-shop v3.3.38 ([5a72671](https://github.com/kiva/ui/commit/5a72671dedd1865efbf91a6138a02366c93b6545))
+
 ## [3.31.0](https://github.com/kiva/ui/compare/v3.30.0...v3.31.0) (2025-09-16)
 
 ### 🎉 New Features

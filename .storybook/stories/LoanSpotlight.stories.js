@@ -16,8 +16,8 @@ const loanHorizontal = {
 	},
 	image: {
 		id: 4854968,
-		default: "https://www-dev-kiva-org-0.freetls.fastly.net/img/w520h390/908f90aaffcfb81085c7338ad9318cdd.jpg",
-		retina: "https://www-dev-kiva-org-0.freetls.fastly.net/img/w1040h780/908f90aaffcfb81085c7338ad9318cdd.jpg"
+		default: "https://www.kiva.org/img/w520h390/908f90aaffcfb81085c7338ad9318cdd.webp",
+		retina: "https://www.kiva.org/img/w1040h780/908f90aaffcfb81085c7338ad9318cdd.webp"
 	}
 }
 
@@ -34,8 +34,8 @@ const loanVertical = {
 	},
 	image: {
 		id: 4848710,
-		default: "https://www-dev-kiva-org.freetls.fastly.net/img/w520h390/965a9b447b84def27a8878f29c501252.jpg",
-		retina: "https://www-dev-kiva-org.freetls.fastly.net/img/w1040h780/965a9b447b84def27a8878f29c501252.jpg"
+		default: "https://www.kiva.org/img/w520h390/965a9b447b84def27a8878f29c501252.webp",
+		retina: "https://www.kiva.org/img/w1040h780/965a9b447b84def27a8878f29c501252.webp"
 	}
 }
 
@@ -51,8 +51,8 @@ const loanAverage = {
 	},
 	image: {
 		id: 4850338,
-		"default": "https://www-dev-kiva-org-0.freetls.fastly.net/img/w520h390/9812ee5ad81803cfe79d30fc2b4c9527.jpg",
-		"retina": "https://www-dev-kiva-org-0.freetls.fastly.net/img/w1040h780/9812ee5ad81803cfe79d30fc2b4c9527.jpg"
+		"default": "https://www.kiva.org/img/w520h390/9812ee5ad81803cfe79d30fc2b4c9527.webp",
+		"retina": "https://www.kiva.org/img/w1040h780/9812ee5ad81803cfe79d30fc2b4c9527.webp"
 	}
 }
 
