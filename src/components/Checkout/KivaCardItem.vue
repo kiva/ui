@@ -2,26 +2,10 @@
 	<div class="basket-item-wrapper tw-flex tw-flex-col md:tw-flex-row tw-pb-5">
 		<div class="tw-hidden md:tw-block tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
 			<div class="kiva-card-icon" data-testid="basket-kiva-card-image-container">
-				<!-- Print Kiva Card -->
 				<img
-					v-if="cardType == 'print'"
-					alt="print-kiva-card"
+					alt="Kiva Card"
 					class="card-preview tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
-					:src="kivaCardPrintPreview"
-				>
-				<!-- Postal Kiva Card -->
-				<img
-					v-if="cardType == 'postal'"
-					alt="postal-kiva-card"
-					class="card-preview tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
-					:src="kivaCardPostalPreview"
-				>
-				<!-- Email or Lender Kiva Card -->
-				<img
-					v-if="cardType === 'email' || cardType === 'lender'"
-					alt="email-kiva-card"
-					class="card-preview tw-w-12 lg:tw-w-13 tw-h-12 lg:tw-h-13 tw-rounded"
-					:src="kivaCardEmailPreview"
+					:src="kivaCardPreview"
 				>
 			</div>
 		</div>
@@ -74,10 +58,7 @@
 					<!-- Print Kiva Card -->
 					<div v-if="cardType == 'print'">
 						<p class="tw-text-small tw-mb-1" data-testid="basket-kiva-card-info-1">
-							Available after checkout
-						</p>
-						<p class="tw-text-small tw-mb-1" v-if="recipientName" data-testid="basket-kiva-card-info-2">
-							For {{ recipientName }}
+							Available after checkout for {{ recipientName }}
 						</p>
 					</div>
 					<!-- Postal Kiva Card -->
@@ -94,10 +75,7 @@
 					<!-- Email or Lender Kiva Card -->
 					<div v-if="cardType === 'email' || cardType === 'lender'">
 						<p class="tw-text-small tw-mb-1" data-testid="basket-kiva-card-info-1">
-							Scheduled to be sent  {{ deliveryDate }}
-						</p>
-						<p class="tw-text-small tw-mb-1" data-testid="basket-kiva-card-info-2">
-							For {{ recipientName }} {{ recipientEmail }}
+							Scheduled to be sent {{ deliveryDate }} for {{ recipientName }} {{ recipientEmail }}
 						</p>
 					</div>
 				</div>
@@ -133,9 +111,7 @@ import { mdiPencil } from '@mdi/js';
 import LoanPrice from '#src/components/Checkout/LoanPrice';
 import RemoveBasketItem from '#src/components/Checkout/RemoveBasketItem';
 import { KvMaterialIcon } from '@kiva/kv-components';
-import kivaCardPrintPreview from '#src/assets/images/checkout/kiva_card_print_preview.jpg';
-import kivaCardPostalPreview from '#src/assets/images/checkout/kiva_card_postal_preview.jpg';
-import kivaCardEmailPreview from '#src/assets/images/checkout/kiva_card_email_preview.jpg';
+import kivaCardPreview from '#src/assets/images/checkout/kiva_card_preview.png';
 
 export default {
 	name: 'KivaCardItem',
@@ -165,9 +141,7 @@ export default {
 			mdiPencil,
 			quantity: this.kivaCard.quantity,
 			idsInGroup: this.kivaCard.idsInGroup,
-			kivaCardPrintPreview,
-			kivaCardPostalPreview,
-			kivaCardEmailPreview,
+			kivaCardPreview,
 		};
 	},
 	computed: {
