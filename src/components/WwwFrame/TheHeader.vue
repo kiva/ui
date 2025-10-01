@@ -563,9 +563,7 @@
 </template>
 
 <script>
-import {
-	defineAsyncComponent, watch
-} from 'vue';
+import { defineAsyncComponent } from 'vue';
 import {
 	hasLentBeforeCookie,
 	hasDepositBeforeCookie,
