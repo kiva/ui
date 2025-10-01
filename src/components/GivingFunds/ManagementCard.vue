@@ -201,7 +201,7 @@ const {
 	getDonationTotalsForFund,
 } = useGivingFund(apollo);
 
-const givingFundRootPath = ref('/gf-beta');
+const givingFundRootPath = ref('/gf');
 
 const myDonationTotals = ref(0);
 

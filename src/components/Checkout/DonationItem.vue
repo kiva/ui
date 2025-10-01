@@ -248,6 +248,10 @@ export default {
 			type: Number,
 			default: 0
 		},
+		kivaCardsCount: {
+			type: Number,
+			default: 0
+		},
 		loanReservationTotal: {
 			type: Number,
 			default: 0,
@@ -289,6 +293,9 @@ export default {
 		hasLoans() {
 			return this.loanCount > 0;
 		},
+		hasKivaCards() {
+			return this.kivaCardsCount > 0;
+		},
 		serverAmount() {
 			return numeral(this.donation.price).format('$0,0.00');
 		},
@@ -302,6 +309,10 @@ export default {
 			return 'Donate to Kiva';
 		},
 		basketDonationTagline() {
+			if (this.hasKivaCards && !this.hasLoans) {
+				// eslint-disable-next-line max-len
+				return '100% of your Kiva Card money goes to the people you support — we never take a fee. As a nonprofit, we rely on donations to advance our mission.';
+			}
 			const loanSupport = this.hasLoans ? 'your loan supports' : 'loans support';
 			// eslint-disable-next-line max-len
 			return `100% of ${loanSupport} borrowers — we never take a fee. As a nonprofit, we rely on donations to advance our mission of expanding financial access.`;

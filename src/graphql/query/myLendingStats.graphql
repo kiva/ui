@@ -56,6 +56,18 @@ query myLendingStats {
 			key
 			value
 		}
+		excluded_activities: uiConfigSetting(key: "excluded_activities") {
+			key
+			value
+		}
+		excluded_partners: uiConfigSetting(key: "excluded_partners") {
+			key
+			value
+		}
+		excluded_sectors: uiConfigSetting(key: "excluded_sectors") {
+			key
+			value
+		}
 		kivaStats {
 			sectors {
 				id
