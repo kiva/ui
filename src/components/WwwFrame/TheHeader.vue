@@ -840,13 +840,6 @@ export default {
 			hasDepositBefore,
 		});
 
-		watch(
-			() => this.$refs.newExpHeader?.menuOpen,
-			menuOpen => {
-				document.body.style.overflow = this.isMobile && menuOpen ? 'hidden' : '';
-			}
-		);
-
 		this.throttledDetermineIfMobile = _throttle(() => {
 			this.determineIfMobile();
 		}, 200);
