@@ -290,7 +290,7 @@ const backgroundImg = slide => {
 		item => item.nodeType === 'embedded-asset-block' && item.data?.target?.fields?.file?.url
 	);
 	const baseUrl = backgroundImage?.data?.target?.fields?.file?.url || '';
-	return optimizeContentfulUrl(baseUrl);
+	return optimizeContentfulUrl(baseUrl, 336);
 };
 
 const title = slide => {

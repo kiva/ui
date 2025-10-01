@@ -58,11 +58,6 @@ export default {
 					height: 320,
 					media: 'min-width: 734px' // medium
 				},
-				{ // status card mode
-					width: 336,
-					height: 92,
-					media: 'status-card',
-				},
 			],
 		};
 	},
