@@ -55,7 +55,7 @@
 					>
 						Send message
 					</kv-button>
-					<!-- eslint-disable-next-line max-len -->
+					<!-- eslint-disable max-len -->
 					<kv-button
 						class="tw-w-full lg:tw-w-auto"
 						variant="secondary"
@@ -68,6 +68,7 @@
 					>
 						Send a Kiva Card
 					</kv-button>
+					<!-- eslint-enable max-len -->
 				</div>
 			</div>
 		</div>
