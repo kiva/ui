@@ -451,7 +451,7 @@ export default {
 						}
 					}`
 				}).then(({ data }) => {
-					const ytdAmount = parseInt(data?.my?.lendingStats?.loanStatsByYear?.[0]?.amount ?? 0, 10);
+					const ytdAmount = parseInt(data?.my?.lendingStats?.loanStatsByYear?.amount ?? 0, 10);
 					return this.apollo.query({
 						query: gql`query percentileData($amount: Int!) {
     						lend {
@@ -472,15 +472,16 @@ export default {
 					const percentileData = percentileStatsData?.lend?.percentilePerYear;
 
 					this.currentYearPercentile = numeral(percentileData?.percentile ?? 0).format('0o');
-					this.percentileNext25 = numeral(percentileData?.percentileNext25 ?? 0).format('0%');
+					this.percentileNext25 = `${numeral(percentileData?.percentileNext25 ?? 0).format('0')}%`;
 					// eslint-disable-next-line max-len
 					this.nextPercentileThreshold = numeral(percentileData?.nextPercentileThreshold ?? 0).format('$0,0[.]00');
 
-					const yearlyAmountOfLoans = numeral(lendingStatsData?.loanStatsByYear?.[0]?.amount ?? 0);
+					// eslint-disable-next-line max-len
+					const yearlyAmountOfLoans = numeral(lendingStatsData?.my?.lendingStats?.loanStatsByYear?.amount ?? 0);
 					this.currentYearAmountLent = yearlyAmountOfLoans.format('$0,0[.]00');
 
-					this.currentYearCountryCount = lendingStatsData?.countriesLentToByYear ?? 0;
-					this.currentYearNumberOfLoans = lendingStatsData?.loanStatsByYear?.[0]?.count ?? 0;
+					this.currentYearCountryCount = lendingStatsData?.my?.lendingStats?.countriesLentToByYear ?? 0;
+					this.currentYearNumberOfLoans = lendingStatsData?.my?.lendingStats?.loanStatsByYear?.count ?? 0;
 
 					/* To-Do: Uncomment when needed
 					const yearlyThreshold = numeral(data?.my?.lend?.percentilePerYear?.threshold ?? 0);
