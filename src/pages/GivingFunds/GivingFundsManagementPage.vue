@@ -17,7 +17,7 @@
 							variant="primary"
 							:href="`#`"
 							@click.prevent="isCreateFundLightboxVisible = true"
-							v-kv-track-event="['giving-funds', 'click', 'Create a new fund', 'create-new-fund']"
+							v-kv-track-event="['giving-funds', 'click', 'Create a new fund']"
 						>
 							Create a new fund
 						</kv-button>
@@ -99,7 +99,7 @@
 								variant="primary"
 								:href="`#`"
 								@click.prevent="isCreateFundLightboxVisible = true"
-								v-kv-track-event="['giving-funds', 'click', 'Create a new fund', 'create-new-fund']"
+								v-kv-track-event="['giving-funds', 'click', 'Create a new fund']"
 							>
 								Create a new fund
 							</kv-button>
