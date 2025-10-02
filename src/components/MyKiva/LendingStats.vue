@@ -11,14 +11,28 @@
 		ref="loanRegionsElement"
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': !userLentToAllRegions }"
 	>
-		<GoalCard
-			v-if="isNextStepsExp && !userLentToAllRegions && !isGoalComplete"
-			:hero-tiered-achievements="heroTieredAchievements"
-			:hero-slides="heroSlides"
-			:user-goal="userGoal"
-			:is-goal-complete="isGoalComplete"
-			@open-goal-modal="showGoalModal = true"
-		/>
+		<template v-if="isNextStepsExp && !userLentToAllRegions">
+			<GoalCard
+				v-if="!userGoal?.isComplete"
+				:hero-slides="heroSlides"
+				:user-goal="userGoal"
+				@open-goal-modal="showGoalModal = true"
+			/>
+			<div v-else class="card-container tw-shrink-0">
+				<JourneyCardCarousel
+					class="carousel carousel-single"
+					user-in-homepage
+					in-lending-stats
+					:disable-drag="true"
+					:lender="lender"
+					:slides-number="1"
+					:slides="heroSlides"
+					:hero-contentful-data="heroContentfulData"
+					:hero-tiered-achievements="heroTieredAchievements"
+					:user-goal="userGoal"
+				/>
+			</div>
+		</template>
 		<div
 			v-if="!userLentToAllRegions"
 			class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col"
@@ -116,39 +130,19 @@
 				</div>
 			</div>
 		</div>
-		<template v-if="!isNextStepsExp || (!!userGoal && userLentToAllRegions)">
-			<div v-if="!userLentToAllRegions" class="card-container tw-shrink-0">
-				<MyKivaCard
-					class="kiva-card tw-h-full"
-					primary-cta-variant="primary"
-					title-color="tw-text-action-highlight"
-					:bg-image="StatsCardBg"
-					card-content-classes="tw-pb-1 tw-px-1"
-					:loans="topCategoryLoansForCardCarousel"
-					:is-full-width-primary-cta="true"
-					:is-title-font-sans="true"
-					:primary-cta-text="cardCtaText"
-					:show-cta-icon="true"
-					:show-tag-icon="showTagIcon"
-					:tag-text="cardTagText"
-					:title="cardTitle"
-					@primary-cta-clicked="goToTopCategory"
-				/>
-			</div>
-			<JourneyCardCarousel
-				v-else
-				class="carousel"
-				user-in-homepage
-				in-lending-stats
-				:lender="lender"
-				:slides-number="3"
-				:slides="allRegionsLentSlides"
-				:hero-contentful-data="heroContentfulData"
-				:hero-tiered-achievements="heroTieredAchievements"
-				:user-goal="userGoal"
-				:is-goal-complete="isGoalComplete"
-			/>
-		</template>
+		<JourneyCardCarousel
+			v-else
+			class="carousel"
+			user-in-homepage
+			in-lending-stats
+			:lender="lender"
+			:slides-number="3"
+			:slides="heroSlides"
+			:hero-contentful-data="heroContentfulData"
+			:hero-tiered-achievements="heroTieredAchievements"
+			:user-goal="userGoal"
+			@open-goal-modal="showGoalModal = true"
+		/>
 		<GoalSettingModal
 			v-if="isNextStepsExp"
 			:show="showGoalModal"
@@ -183,10 +177,8 @@ import NorthAmerica from '#src/assets/images/my-kiva/North America.png';
 import Oceania from '#src/assets/images/my-kiva/Oceania.png';
 import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 
-import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
-import StatsCardBg from '#src/assets/images/my-kiva/stats-card-bg.png';
 import GoalCard from '#src/components/MyKiva/GoalCard';
 import GoalSettingModal from './GoalSettingModal';
 
@@ -196,8 +188,6 @@ const router = useRouter();
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const {
-	getTopCategoryWithLoans,
-	getLoanFindingUrl,
 	getAllCategoryLoanCounts,
 } = useBadgeData();
 
@@ -250,24 +240,16 @@ const props = defineProps({
 	},
 	userGoal: {
 		type: Object,
-		default: null,
-	},
-	isGoalComplete: {
-		type: Boolean,
-		default: false,
+		default: undefined,
 	},
 });
 
 const interval = ref(null);
 const loanRegionsElement = ref(null);
-const topCategory = ref(getTopCategoryWithLoans(props.heroTieredAchievements));
-const topCategoryUrl = ref(getLoanFindingUrl(topCategory.value?.category, router.currentRoute.value));
-const topCategoryLoansForCardCarousel = ref(topCategory.value?.loans?.slice(0, 3) || []);
 const showGoalModal = ref(false);
 
 const totalRegions = computed(() => props.regionsData.length);
 const loanRegions = computed(() => props.regionsData.filter(region => region.hasLoans).length);
-const showTagIcon = computed(() => !!topCategory.value);
 const hasLoans = computed(() => props.loans.length > 0);
 
 const regionImages = {
@@ -304,59 +286,6 @@ const formattedPendingRegions = computed(() => {
 	return `${formattedNames.slice(0, -1).join(', ')}, and ${formattedNames[formattedNames.length - 1]}`;
 });
 
-const cardTitle = computed(() => {
-	if (topCategory.value) {
-		let targetText = '';
-		if (topCategory.value?.loansCount > 1) {
-			switch (topCategory.value?.target) {
-				case 'woman':
-					targetText = 'women';
-					break;
-				case 'person':
-					targetText = 'people';
-					break;
-				default:
-					targetText = `${topCategory.value?.target}s`;
-			}
-		} else {
-			targetText = topCategory.value?.target;
-		}
-		return `You've funded ${topCategory.value?.loansCount} ${targetText}!`;
-	}
-	return 'Give women an equal opportunity to succeed.';
-});
-
-const cardCtaText = computed(() => {
-	if (topCategory.value?.target) {
-		return `Support another ${topCategory.value?.target}`;
-	}
-	return 'Fund a Woman';
-});
-
-const cardTagText = computed(() => {
-	if (topCategory.value?.category) {
-		let categoryText = '';
-		switch (topCategory.value.category) {
-			case 'us-economic-equality':
-				categoryText = 'Kiva US';
-				break;
-			case 'climate-action':
-				categoryText = 'Climate';
-				break;
-			case 'refugee-equality':
-				categoryText = 'Refugees';
-				break;
-			case 'basic-needs':
-				categoryText = 'Basic Needs';
-				break;
-			default:
-				categoryText = 'Women';
-		}
-		return `Your top category: ${categoryText}`;
-	}
-	return 'Recommended: Loans to Women';
-});
-
 const handleRecommendRegionClick = region => {
 	$kvTrackEvent(
 		'event-tracking',
@@ -367,31 +296,8 @@ const handleRecommendRegionClick = region => {
 	router.push(`/lend/filter?country=${region?.countries.join(',')}`);
 };
 
-const goToTopCategory = () => {
-	$kvTrackEvent(
-		'event-tracking',
-		'click',
-		'top-category-recommendation',
-		topCategory.value ? topCategory.value?.category : 'empty-state'
-	);
-	const route = topCategory.value ? topCategoryUrl.value : '/lend-by-category/women';
-	router.push(route);
-};
-
 // Local checked state for fade effect
 const checkedArr = ref(props.regionsData.map(() => false));
-const allRegionsLentSlides = computed(() => {
-	return [...props.heroSlides,
-		{
-			title: cardTitle.value,
-			ctaText: cardCtaText.value,
-			loans: topCategoryLoansForCardCarousel.value,
-			tagText: cardTagText.value,
-			showTagIcon: showTagIcon.value,
-			primaryCta: goToTopCategory,
-			isCustomCard: true,
-		}];
-});
 
 const categoriesLoanCount = computed(() => getAllCategoryLoanCounts(props.heroTieredAchievements));
 
@@ -475,8 +381,11 @@ onUnmounted(() => {
 	}
 }
 
-.carousel > :deep(section > .kv-carousel__controls) {
-	@apply tw-hidden;
+.carousel-single > :deep(section > div > div) {
+	@apply !tw-min-w-full;
 }
 
+.carousel, .carousel > :deep(section), .carousel > :deep(section > div) {
+	@apply tw-h-full;
+}
 </style>

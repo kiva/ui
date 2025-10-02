@@ -11,6 +11,9 @@
 			:embla-options="{
 				loop: false,
 				align: 'start',
+				...(props.disableDrag && {
+					watchDrag: false,
+				}),
 			}"
 			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
@@ -24,10 +27,9 @@
 			>
 				<GoalCard
 					v-if="showGoalCard(index)"
-					:hero-tiered-achievements="heroTieredAchievements"
 					:hero-slides="slides"
 					:user-goal="userGoal"
-					:is-goal-complete="isGoalComplete"
+					@open-goal-modal="$emit('open-goal-modal')"
 				/>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
@@ -106,7 +108,7 @@ const {
 	getJourneysByLoan,
 } = useBadgeData(apollo);
 
-const emit = defineEmits(['update-journey']);
+const emit = defineEmits(['update-journey', 'open-goal-modal']);
 
 const props = defineProps({
 	userInfo: {
@@ -149,7 +151,7 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
-	isGoalComplete: {
+	disableDrag: {
 		type: Boolean,
 		default: false,
 	},
@@ -182,6 +184,12 @@ const isNonBadgeSlide = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
 	return !defaultBadges.includes(richTextUiSettingsData.achievementKey);
 };
+
+const shouldShowGoalCard = computed(() => {
+	if (!props.inLendingStats) return false;
+
+	return !props.userGoal || !props.userGoal?.isComplete;
+});
 
 const orderedSlides = computed(() => {
 	const achievementSlides = [];
@@ -251,13 +259,13 @@ const orderedSlides = computed(() => {
 		];
 	}
 
-	if (props.slidesNumber) {
-		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
+	if (shouldShowGoalCard.value) {
+		// Add empty slide at start for goal card
+		sortedSlides.unshift({});
 	}
 
-	if (props.inLendingStats && !props.isGoalComplete) {
-		const customCard = props.slides.find(slide => slide.isCustomCard);
-		sortedSlides[props.slidesNumber - 1] = customCard;
+	if (props.slidesNumber) {
+		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
 	}
 
 	return sortedSlides;
@@ -404,7 +412,7 @@ const isCustomCard = slide => !!slide?.isCustomCard;
 const showGoalCard = idx => {
 	if (!props.inLendingStats) return false;
 
-	return !!props.userGoal && idx === 0 && !props.isGoalComplete;
+	return idx === 0 && shouldShowGoalCard.value;
 };
 
 </script>

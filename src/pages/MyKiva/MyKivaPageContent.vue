@@ -22,7 +22,7 @@
 			:user-balance="userBalance"
 			:lending-stats="lendingStats"
 		/>
-		<section v-if="isLendingStatsExp || isNextStepsExp" class="tw-mt-4">
+		<section v-if="isNextStepsExp" class="tw-mt-4">
 			<LendingStats
 				:regions-data="lendingStats.regionsData"
 				:user-lent-to-all-regions="userLentToAllRegions"
@@ -34,7 +34,6 @@
 				:is-next-steps-exp="isNextStepsExp"
 				:total-loans="totalLoans"
 				:user-goal="userGoal"
-				:is-goal-complete="isGoalComplete"
 				@store-goals-preferences="storeGoalPreferences"
 			/>
 		</section>
@@ -271,10 +270,6 @@ export default {
 			type: Array,
 			default: () => [],
 		},
-		isLendingStatsExp: {
-			type: Boolean,
-			default: false,
-		},
 		isNextStepsExp: {
 			type: Boolean,
 			default: false,
@@ -382,16 +377,16 @@ export default {
 			}
 
 			if (goal) {
+				const currentProgress = loanTotal - (goal?.loanTotalAtStart || 0);
+				const isComplete = currentProgress >= (goal?.target || 0);
 				goal = {
 					...goal,
-					currentProgress: (loanTotal - (goal?.loanTotalAtStart || 0)),
+					currentProgress,
+					isComplete,
 				};
 			}
 
 			return goal;
-		},
-		isGoalComplete() {
-			return this.userGoal && (this.userGoal?.currentProgress >= this.userGoal?.target);
 		},
 	},
 	methods: {
