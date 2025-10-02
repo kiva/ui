@@ -18,6 +18,13 @@ import {
 } from 'vue';
 import { loanCardComputedProperties, KvLoanCallouts, KvLoadingPlaceholder } from '@kiva/kv-components';
 
+defineProps({
+	enableAiLoanPills: {
+		type: Boolean,
+		default: () => false,
+	},
+});
+
 const borrowerProfile = inject('borrowerProfile');
 
 const loan = computed(() => borrowerProfile?.loan?.value ?? undefined);

@@ -92,6 +92,7 @@
 				:title="recommendedLoansTitle"
 				:loans="recommendedLoans"
 				:user-balance="userBalance"
+				:enable-ai-loan-pills="enableAiLoanPills"
 				@add-to-basket="trackCategory($event, 'recommended')"
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails($event)"
@@ -142,6 +143,7 @@
 			:show-side-sheet="showBPSideSheet"
 			:show-next-steps="showNextSteps"
 			:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
+			:enable-ai-loan-pills="enableAiLoanPills"
 			@add-to-basket="addToBasket"
 			@go-to-link="goToLink"
 			@close-side-sheet="handleCloseSideSheet"
@@ -280,7 +282,11 @@ export default {
 		userLentToAllRegions: {
 			type: Boolean,
 			default: false,
-		}
+		},
+		enableAiLoanPills: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		const { getMostRecentBlogPost } = useContentful(this.apollo);
