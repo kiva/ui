@@ -12,15 +12,16 @@
 						<template #icon>
 							<kv-pulsing-dot />
 						</template>
-						Active Fundraiser
+						Active fundraiser
 					</kv-pill>
 					<!-- eslint-enable max-len -->
 					<h2 class="tw-mb-1">
-						{{ fund?.campaign?.category?.name }}
+						{{ getFundTargetDisplayNounFromName(fund?.campaign?.category?.name) }}
 					</h2>
 					<!--  eslint-disable max-len -->
 					<p v-if="fund?.campaign?.lendingStats?.totalLivesTouched">
-						This fund has helped {{ fund?.campaign?.lendingStats?.totalLivesTouched }} people to date
+						You've helped support {{ fund?.campaign?.lendingStats?.totalLivesTouched }}
+						{{ getFundTargetSupportedPeoplePhraseFromName(fund?.campaign?.category?.name) }}.
 					</p>
 					<!-- eslint-enable max-len -->
 					<p v-else>
@@ -134,11 +135,11 @@
 					<div class="tw-flex tw-justify-between tw-mt-1">
 						<div class="tw-text-small">
 							<!-- eslint-disable-next-line max-len -->
-							<strong>{{ daysRemaining }}</strong> remaining
+							<strong>{{ numeral(currentGoalTargetInfo?.participation?.amount || 0).format('$0,0') }}</strong> raised
 						</div>
 						<div class="tw-text-small">
 							<!-- eslint-disable-next-line max-len -->
-							<strong>{{ numeral(currentGoalTargetInfo?.participation?.amount || 0).format('$0,0') }}</strong> raised
+							<strong>{{ daysRemaining }}</strong> remaining
 						</div>
 					</div>
 				</div>
@@ -150,7 +151,7 @@
 				:href="`${givingFundRootPath}/${fund.id}?action=start-fundraiser`"
 				target="_blank"
 				variant="secondary"
-				v-kv-track-event="['giving-funds', 'click', 'Start a fundraiser', fund.id]"
+				v-kv-track-event="['giving-funds', 'click', 'start-a-new-fundraiser', fund.id]"
 			>
 				+ Start a fundraiser and invite others to join
 			</KvButton>
@@ -199,6 +200,8 @@ const { isMobile } = useIsMobile();
 
 const {
 	getDonationTotalsForFund,
+	getFundTargetDisplayNounFromName,
+	getFundTargetSupportedPeoplePhraseFromName,
 } = useGivingFund(apollo);
 
 const givingFundRootPath = ref('/gf');
