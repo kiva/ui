@@ -6,7 +6,7 @@
 					<div class="tw-py-2 md:tw-py-3 tw-flex tw-flex-col md:tw-flex-row tw-justify-between">
 						<div>
 							<h1 class="tw-mb-1 tw-break-words">
-								Your Giving Funds
+								Your giving funds
 							</h1>
 							<p>
 								Start a fund, support a cause, and invite others to join.
@@ -17,15 +17,17 @@
 							variant="primary"
 							:href="`#`"
 							@click.prevent="isCreateFundLightboxVisible = true"
-							v-kv-track-event="['giving-funds', 'click', 'Start a new fund']"
+							v-kv-track-event="['giving-funds', 'click', 'Create a new fund']"
 						>
-							Start a new fund
+							Create a new fund
 						</kv-button>
+						<!-- eslint-disable max-len -->
 						<kv-lightbox
 							:visible="isCreateFundLightboxVisible"
-							title="Choose your impact area"
+							:title="hasAllFundTypes ? 'You already have funds for all available causes!' : 'Choose your impact area'"
 							@lightbox-closed="isCreateFundLightboxVisible = false"
 						>
+							<!-- eslint-enable max-len -->
 							<p
 								v-if="!hasAllFundTypes"
 								class="tw-pb-2"
@@ -33,14 +35,14 @@
 								Select the cause you want to support with your fund.
 							</p>
 							<p v-else class="tw-text-center">
-								You have created funds for all available causes.<br>
-								Please contact support if you would like to create another fund.
+								<!-- eslint-disable-next-line max-len -->
+								You can boost your impact by donating more to an existing fund or setting a new fundraising goal. Please contact support if you would like to create another fund.
 							</p>
 							<kv-impact-vertical-selector
 								v-if="!creatingFund && !hasAllFundTypes"
 								:category-list="orderedGivingFundCategories"
 								:hidden-categories="usersGivingFundCategoryIds"
-								@category-selected="selectedCategoryId = $event"
+								@category-selected="selectImpactArea($event)"
 							/>
 							<div
 								v-else-if="creatingFund && !hasAllFundTypes"
@@ -89,16 +91,17 @@
 							<h2
 								class="tw-mb-4"
 							>
-								Start a fund and invite others<br class="tw-hidden md:tw-inline"> to support your cause.
+								<!-- eslint-disable-next-line -->
+								Start a new fund and invite others<br class="tw-hidden md:tw-inline"> to support your cause.
 							</h2>
 
 							<kv-button
 								variant="primary"
 								:href="`#`"
 								@click.prevent="isCreateFundLightboxVisible = true"
-								v-kv-track-event="['giving-funds', 'click', 'Start a new fund']"
+								v-kv-track-event="['giving-funds', 'click', 'Create a new fund']"
 							>
-								Start a new fund
+								Create a new fund
 							</kv-button>
 						</div>
 					</kv-card-frame>
@@ -134,6 +137,7 @@ import myGivingFundsQuery from '#src/graphql/query/portfolio/myGivingFunds.graph
 import userIdQuery from '#src/graphql/query/userId.graphql';
 
 const apollo = inject('apollo');
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const loading = ref(true);
 const givingFundsInfo = ref({});
@@ -262,6 +266,16 @@ const fetchUserId = async () => {
 	} catch (error) {
 		logFormatter(`Error fetching userId: ${error}`, 'error');
 	}
+};
+
+const selectImpactArea = categoryId => {
+	$kvTrackEvent(
+		'giving-funds',
+		'click',
+		'impact-area-selection',
+		categoryId,
+	);
+	selectedCategoryId.value = categoryId;
 };
 
 onMounted(() => {
