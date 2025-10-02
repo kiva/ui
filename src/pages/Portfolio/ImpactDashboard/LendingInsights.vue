@@ -106,7 +106,7 @@
 			</div>
 		</div>
 		<div>
-			<kv-tabs @tab-changed="setActiveTab">
+			<kv-tabs @tab-changed="setActiveTab" :active-tab="currentTab">
 				<template #tabNav>
 					<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
 						Lending insights
@@ -170,7 +170,7 @@
 								<dd class="stat-def">
 									Lending percentile this year
 								</dd>
-
+								<!-- To-Do: Values are mismatched
 								<router-link
 									class="stat-link"
 									to="/lend-category-beta"
@@ -184,6 +184,7 @@
 										:icon="mdiArrowRight"
 									/>
 								</router-link>
+								-->
 							</div>
 							<!-- Loans made -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
