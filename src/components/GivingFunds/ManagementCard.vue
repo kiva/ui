@@ -35,7 +35,7 @@
 						:href="`${givingFundRootPath}/${fund.id}?action=donate`"
 						target="_blank"
 						variant="secondary"
-						v-kv-track-event="['giving-funds', 'click', 'Donate']"
+						v-kv-track-event="['giving-funds', 'click', 'donate', fund.id]"
 					>
 						Donate
 					</KvButton>
@@ -55,7 +55,7 @@
 									"
 									:href="`${givingFundRootPath}/${fund.id}`"
 									target="_blank"
-									v-kv-track-event="['giving-funds', 'click', 'menu', 'view-giving-fund']"
+									v-kv-track-event="['giving-funds', 'click', 'menu', 'view-giving-fund', fund.id]"
 								>
 									<kv-material-icon :icon="mdiPartyPopper" />
 									<span style="padding-top: 0.15rem;">View giving fund</span>
@@ -68,7 +68,7 @@
 									"
 									:href="`${givingFundRootPath}/${fund.id}?action=edit`"
 									target="_blank"
-									v-kv-track-event="['giving-funds', 'click', 'menu', 'edit-fund']"
+									v-kv-track-event="['giving-funds', 'click', 'menu', 'edit-fund', fund.id]"
 								>
 									<kv-material-icon :icon="mdiSquareEditOutline" />
 									<span style="padding-top: 0.15rem;">Edit fund</span>
@@ -82,7 +82,7 @@
 									"
 									:href="`${givingFundRootPath}/${fund.id}?action=share`"
 									target="_blank"
-									v-kv-track-event="['giving-funds', 'click', 'menu', 'share-fund']"
+									v-kv-track-event="['giving-funds', 'click', 'menu', 'share-fund', fund.id]"
 								>
 									<kv-material-icon :icon="mdiExportVariant" />
 									<span style="padding-top: 0.15rem;">Share fund</span>
@@ -110,9 +110,9 @@
 							Total donations
 						</p>
 					</div>
-					<div v-if="fund?.campaign?.lendingStats?.totalLent">
+					<div v-if="fund?.realTimeStats?.totalAmountLent">
 						<h2>
-							{{ numeral(fund?.campaign?.lendingStats?.totalLent).format('$0,0') }}
+							{{ numeral(fund?.realTimeStats?.totalAmountLent).format('$0,0') }}
 						</h2>
 						<p class="tw-text-small tw-text-gray-500">
 							Total fund impact
@@ -164,7 +164,7 @@
 				:href="`${givingFundRootPath}/${fund.id}?action=donate`"
 				target="_blank"
 				variant="secondary"
-				v-kv-track-event="['giving-funds', 'click', 'Donate']"
+				v-kv-track-event="['giving-funds', 'click', 'donate', fund.id]"
 			>
 				Donate
 			</KvButton>
