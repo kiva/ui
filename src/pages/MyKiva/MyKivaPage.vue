@@ -14,6 +14,7 @@
 			:is-lending-stats-exp="isLendingStatsExp"
 			:is-next-steps-exp="isNextStepsExp"
 			:user-lent-to-all-regions="userLentToAllRegions"
+			:enable-ai-loan-pills="enableAILoanPills"
 		/>
 	</www-page>
 </template>
@@ -32,6 +33,7 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import { gql } from 'graphql-tag';
+import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 
 const LENDING_STATS_EXP_KEY = 'mykiva_lending_stats';
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
@@ -55,6 +57,7 @@ const getRegionsWithLoanStatus = (countryFacets, countriesLentTo) => {
 export default {
 	name: 'MyKivaPage',
 	inject: ['apollo', 'cookieStore'],
+	mixins: [aiLoanPillsTest],
 	components: {
 		MyKivaPageContent,
 		WwwPage,

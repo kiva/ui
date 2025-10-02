@@ -38,6 +38,7 @@
 						:use-full-width="true"
 						:user-balance="userBalance"
 						:custom-href="getCustomHref($router, loan.id)"
+						:enable-ai-loan-pills="enableAiLoanPills"
 						@add-to-basket="addToBasket"
 						@show-cart-modal="showCartModal"
 						@show-loan-details="showLoanDetails"
@@ -67,6 +68,7 @@
 				:user-balance="userBalance"
 				:loan-search-state="flssLoanSearch"
 				:page-limit="loanSearchState.pageLimit"
+				:enable-ai-loan-pills="enableAiLoanPills"
 				@add-to-basket="addToBasket"
 				@mouseenter="$emit('mouse-enter-loan-card', $event)"
 			/>
@@ -112,6 +114,10 @@ export default {
 			default: false
 		},
 		enableAlmostFundedRow: {
+			type: Boolean,
+			default: false
+		},
+		enableAiLoanPills: {
 			type: Boolean,
 			default: false
 		},
