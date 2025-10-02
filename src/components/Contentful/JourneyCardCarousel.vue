@@ -412,7 +412,7 @@ const isCustomCard = slide => !!slide?.isCustomCard;
 const showGoalCard = idx => {
 	if (!props.inLendingStats) return false;
 
-	return idx === 0 && (!props.userGoal || !props.userGoal?.isComplete);
+	return idx === 0 && shouldShowGoalCard.value;
 };
 
 </script>
