@@ -90,6 +90,7 @@ import { KvCarousel } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import GoalCard from '#src/components/MyKiva/GoalCard';
+import { optimizeContentfulUrl } from '#src/util/imageUtils';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
@@ -263,7 +264,8 @@ const orderedSlides = computed(() => {
 });
 
 const getMediaImgUrl = media => {
-	return media?.data?.target?.fields?.contentLight?.[0]?.fields?.file?.url || '';
+	const baseUrl = media?.data?.target?.fields?.contentLight?.[0]?.fields?.file?.url || '';
+	return optimizeContentfulUrl(baseUrl, 336);
 };
 
 const backgroundImg = slide => {
@@ -287,7 +289,8 @@ const backgroundImg = slide => {
 	const backgroundImage = richTextContent.find(
 		item => item.nodeType === 'embedded-asset-block' && item.data?.target?.fields?.file?.url
 	);
-	return backgroundImage?.data?.target?.fields?.file?.url || '';
+	const baseUrl = backgroundImage?.data?.target?.fields?.file?.url || '';
+	return optimizeContentfulUrl(baseUrl, 336);
 };
 
 const title = slide => {
