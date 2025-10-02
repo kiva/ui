@@ -11,7 +11,6 @@
 			:hero-tiered-achievements="heroTieredAchievements"
 			:lending-stats="lendingStats"
 			:transactions="transactions"
-			:is-lending-stats-exp="isLendingStatsExp"
 			:is-next-steps-exp="isNextStepsExp"
 			:user-lent-to-all-regions="userLentToAllRegions"
 		/>
@@ -33,7 +32,6 @@ import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import { gql } from 'graphql-tag';
 
-const LENDING_STATS_EXP_KEY = 'mykiva_lending_stats';
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 
 const getRegionsWithLoanStatus = (countryFacets, countriesLentTo) => {
@@ -65,7 +63,6 @@ export default {
 			heroSlides: [],
 			heroTieredAchievements: [],
 			isHeroEnabled: false,
-			isLendingStatsExp: false,
 			isNextStepsExp: false,
 			lender: null,
 			lendingStats: {},
@@ -82,7 +79,6 @@ export default {
 				client.query({ query: myKivaQuery }),
 				client.query({ query: lendingStatsQuery }),
 				client.query({ query: uiConfigSettingQuery, variables: { key: MY_KIVA_HERO_ENABLE_KEY } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: LENDING_STATS_EXP_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: NEXT_STEPS_EXP_KEY } }),
 				client.query({ query: userAchievementProgressQuery }),
 			]).then(result => {
@@ -172,13 +168,6 @@ export default {
 				}
 			});
 			this.isHeroEnabled = readBoolSetting(uiSettingsQueryResult, 'general.uiConfigSetting.value');
-			const lendingStatsExpData = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'event-tracking',
-				LENDING_STATS_EXP_KEY,
-				'EXP-MP-1729-Jul2025'
-			);
 			const nextStepsExpData = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
@@ -186,14 +175,13 @@ export default {
 				NEXT_STEPS_EXP_KEY,
 				'EXP-MP-1984-Sept2025'
 			);
-			this.isLendingStatsExp = lendingStatsExpData.version === 'b';
 			this.isNextStepsExp = nextStepsExpData.version === 'b';
 			this.fetchMyKivaData();
 			const achievementsResult = this.apollo.readQuery({
 				query: userAchievementProgressQuery
 			});
 			this.heroTieredAchievements = achievementsResult.userAchievementProgress?.tieredLendingAchievements ?? [];
-			if ((this.isHeroEnabled && !this.isLendingStatsExp) || this.userLentToAllRegions || this.isNextStepsExp) {
+			if (this.isHeroEnabled || this.userLentToAllRegions || this.isNextStepsExp) {
 				const contentfulChallengeResult = this.apollo.readQuery({
 					query: contentfulEntriesQuery,
 					variables: { contentType: 'challenge', limit: 200 }

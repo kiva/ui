@@ -525,29 +525,6 @@ export default function useBadgeData() {
 	};
 
 	/**
-	 * Redesign to work with userAchievementProgressWithLoans.tieredLendingAchievements
-	 *
-	 * @param tieredLendingAchievements The tiered lending achievements with loans
-	 * @returns The top category with loans
-	 */
-	const getTopCategoryWithLoans = tieredLendingAchievements => {
-		const categories = tieredLendingAchievements.map(c => {
-			return {
-				category: c.id,
-				loansCount: c.totalProgressToAchievement ?? 0,
-				loans: c.loanPurchases?.map(purchase => purchase.loan).filter(loan => loan != null) ?? [],
-				target: CATEGORY_TARGETS[c.id] ?? '',
-			};
-		}).filter(c => c.loansCount > 0); // Only include categories with loans
-
-		categories.sort((a, b) => b.loansCount - a.loansCount);
-		if (categories.length > 0) {
-			return categories[0];
-		}
-		return null;
-	};
-
-	/**
 	 * Get badge headline
 	 *
 	 * @param badge The badge to filter loans by
@@ -648,7 +625,6 @@ export default function useBadgeData() {
 		isBadgeKeyValid,
 		getLevelCaption,
 		getJourneysByLoan,
-		getTopCategoryWithLoans,
 		getAllCategoryLoanCounts,
 	};
 }

@@ -22,7 +22,7 @@
 			:user-balance="userBalance"
 			:lending-stats="lendingStats"
 		/>
-		<section v-if="isLendingStatsExp || isNextStepsExp" class="tw-mt-4">
+		<section v-if="isNextStepsExp" class="tw-mt-4">
 			<LendingStats
 				:regions-data="lendingStats.regionsData"
 				:user-lent-to-all-regions="userLentToAllRegions"
@@ -267,10 +267,6 @@ export default {
 		transactions: {
 			type: Array,
 			default: () => [],
-		},
-		isLendingStatsExp: {
-			type: Boolean,
-			default: false,
 		},
 		isNextStepsExp: {
 			type: Boolean,

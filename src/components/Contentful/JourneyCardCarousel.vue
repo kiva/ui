@@ -27,10 +27,9 @@
 			>
 				<GoalCard
 					v-if="showGoalCard(index)"
-					:hero-tiered-achievements="heroTieredAchievements"
 					:hero-slides="slides"
 					:user-goal="userGoal"
-					:is-goal-complete="userGoal.isComplete"
+					@open-goal-modal="$emit('open-goal-modal')"
 				/>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
@@ -109,7 +108,7 @@ const {
 	getJourneysByLoan,
 } = useBadgeData(apollo);
 
-const emit = defineEmits(['update-journey']);
+const emit = defineEmits(['update-journey', 'open-goal-modal']);
 
 const props = defineProps({
 	userInfo: {
@@ -186,6 +185,12 @@ const isNonBadgeSlide = slide => {
 	return !defaultBadges.includes(richTextUiSettingsData.achievementKey);
 };
 
+const shouldShowGoalCard = computed(() => {
+	if (!props.inLendingStats) return false;
+
+	return !props.userGoal || !props.userGoal?.isComplete;
+});
+
 const orderedSlides = computed(() => {
 	const achievementSlides = [];
 	let loanJourneys = [];
@@ -254,13 +259,13 @@ const orderedSlides = computed(() => {
 		];
 	}
 
-	if (props.slidesNumber) {
-		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
+	if (shouldShowGoalCard.value) {
+		// Add empty slide at start for goal card
+		sortedSlides.unshift({});
 	}
 
-	if (props.inLendingStats && !props.userGoal.isComplete) {
-		const customCard = props.slides.find(slide => slide.isCustomCard);
-		sortedSlides[props.slidesNumber - 1] = customCard;
+	if (props.slidesNumber) {
+		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
 	}
 
 	return sortedSlides;
@@ -407,7 +412,7 @@ const isCustomCard = slide => !!slide?.isCustomCard;
 const showGoalCard = idx => {
 	if (!props.inLendingStats) return false;
 
-	return !!props.userGoal && idx === 0 && !props.userGoal.isComplete;
+	return idx === 0 && (!props.userGoal || !props.userGoal?.isComplete);
 };
 
 </script>
