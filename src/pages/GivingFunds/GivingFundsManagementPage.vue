@@ -8,7 +8,7 @@
 							<h1 class="tw-mb-1 tw-break-words">
 								Your giving funds
 							</h1>
-							<p>
+							<p class="tw-mb-1 md:tw-mb-0">
 								Start a fund, support a cause, and invite others to join.
 							</p>
 						</div>
@@ -16,7 +16,7 @@
 							v-if="givingFundsEntries?.length"
 							variant="primary"
 							:href="`#`"
-							@click.prevent="isCreateFundLightboxVisible = true"
+							@click.prevent="openCreateFundLightbox"
 							v-kv-track-event="['giving-funds', 'click', 'Create a new fund']"
 						>
 							Create a new fund
@@ -25,7 +25,7 @@
 						<kv-lightbox
 							:visible="isCreateFundLightboxVisible"
 							:title="hasAllFundTypes ? 'You already have funds for all available causes!' : 'Choose your impact area'"
-							@lightbox-closed="isCreateFundLightboxVisible = false"
+							@lightbox-closed="closeCreateFundLightbox"
 						>
 							<!-- eslint-enable max-len -->
 							<p
@@ -59,7 +59,7 @@
 									:state="selectedCategoryId ? '' : 'disabled'"
 									variant="primary"
 									@click.prevent="createNewFund"
-									v-kv-track-event="['giving-funds', 'click', 'Continue (created fund submit)']"
+									v-kv-track-event="['giving-funds', 'submit', 'create-new-fund', selectedCategoryId]"
 								>
 									Continue
 								</kv-button>
@@ -233,6 +233,24 @@ const fetchGivingFundLoanCategories = async () => {
 	}
 };
 
+const openCreateFundLightbox = () => {
+	isCreateFundLightboxVisible.value = true;
+	$kvTrackEvent(
+		'giving-funds',
+		'show',
+		'impact-selection-modal',
+	);
+};
+
+const closeCreateFundLightbox = () => {
+	isCreateFundLightboxVisible.value = false;
+	$kvTrackEvent(
+		'giving-funds',
+		'hide',
+		'impact-selection-modal',
+	);
+};
+
 const createNewFund = async () => {
 	if (!selectedCategoryId.value) {
 		logFormatter('No category selected for new giving fund', 'error');
@@ -247,6 +265,12 @@ const createNewFund = async () => {
 		});
 		// open the new fund in a new tab after creation
 		if (newFundResponse?.id) {
+			$kvTrackEvent(
+				'giving-funds',
+				'succeed',
+				'create-new-fund',
+				newFundResponse.id,
+			);
 			window.open(`${givingFundRootPath.value}/${newFundResponse.id}`, '_blank');
 		}
 	} catch (error) {
@@ -254,7 +278,7 @@ const createNewFund = async () => {
 	}
 	fetchGivingFundData();
 	creatingFund.value = false;
-	isCreateFundLightboxVisible.value = false;
+	closeCreateFundLightbox();
 };
 
 const fetchUserId = async () => {

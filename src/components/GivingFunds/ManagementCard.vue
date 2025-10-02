@@ -55,9 +55,10 @@
 									"
 									:href="`${givingFundRootPath}/${fund.id}`"
 									target="_blank"
-									v-kv-track-event="['giving-funds', 'click', 'View giving fund']"
+									v-kv-track-event="['giving-funds', 'click', 'menu', 'view-giving-fund']"
 								>
-									View giving fund
+									<kv-material-icon :icon="mdiPartyPopper" />
+									<span style="padding-top: 0.15rem;">View giving fund</span>
 								</a>
 							</li>
 							<li class="tw-border-b tw-border-gray-100">
@@ -67,9 +68,10 @@
 									"
 									:href="`${givingFundRootPath}/${fund.id}?action=edit`"
 									target="_blank"
-									v-kv-track-event="['giving-funds', 'click', 'Edit fund']"
+									v-kv-track-event="['giving-funds', 'click', 'menu', 'edit-fund']"
 								>
-									Edit fund
+									<kv-material-icon :icon="mdiSquareEditOutline" />
+									<span style="padding-top: 0.15rem;">Edit fund</span>
 								</a>
 							</li>
 							<li class="tw-border-b tw-border-gray-100">
@@ -80,9 +82,10 @@
 									"
 									:href="`${givingFundRootPath}/${fund.id}?action=share`"
 									target="_blank"
-									v-kv-track-event="['giving-funds', 'click', 'Share fund']"
+									v-kv-track-event="['giving-funds', 'click', 'menu', 'share-fund']"
 								>
-									Share fund
+									<kv-material-icon :icon="mdiExportVariant" />
+									<span style="padding-top: 0.15rem;">Share fund</span>
 								</a>
 							</li>
 						</ul>
@@ -171,6 +174,11 @@
 
 <script setup>
 import {
+	mdiExportVariant,
+	mdiPartyPopper,
+	mdiSquareEditOutline,
+} from '@mdi/js';
+import {
 	computed,
 	onMounted,
 	ref,
@@ -179,6 +187,7 @@ import {
 import {
 	KvButton,
 	KvCardFrame,
+	KvMaterialIcon,
 	KvPill,
 	KvProgressBar,
 	KvPulsingDot,
@@ -254,9 +263,10 @@ onMounted(async () => {
 
 <style lang="postcss" scoped>
 .utility-menu-link {
-	@apply tw-block tw-p-1.5 hover:tw-bg-secondary tw-text-primary hover:tw-text-action-highlight tw-font-medium;
-	@apply tw-no-underline active:tw-no-underline;
-	@apply visited:tw-no-underline hover:tw-no-underline focus:tw-no-underline;
+  @apply tw-flex tw-items-center tw-gap-1 tw-cursor-pointer;
+  @apply tw-py-1 tw-px-1.5 hover:tw-bg-secondary tw-text-primary hover:tw-text-action-highlight tw-font-medium;
+  @apply tw-no-underline active:tw-no-underline;
+  @apply visited:tw-no-underline hover:tw-no-underline focus:tw-no-underline;
 }
 
 .min-meter-width {
