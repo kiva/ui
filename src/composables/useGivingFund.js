@@ -107,7 +107,7 @@ export default function useGivingFund(apollo) {
 			case 'women':
 			case 'refugees':
 			case 'U.S. entrepreneurs':
-				return '';
+				return categoryName;
 			default:
 				return 'people';
 		}

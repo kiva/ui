@@ -17,7 +17,7 @@
 							variant="primary"
 							:href="`#`"
 							@click.prevent="isCreateFundLightboxVisible = true"
-							v-kv-track-event="['giving-funds', 'click', 'Start a new fund']"
+							v-kv-track-event="['giving-funds', 'click', 'Create a new fund', 'create-new-fund']"
 						>
 							Create a new fund
 						</kv-button>
@@ -42,7 +42,7 @@
 								v-if="!creatingFund && !hasAllFundTypes"
 								:category-list="orderedGivingFundCategories"
 								:hidden-categories="usersGivingFundCategoryIds"
-								@category-selected="selectedCategoryId = $event"
+								@category-selected="selectImpactArea($event)"
 							/>
 							<div
 								v-else-if="creatingFund && !hasAllFundTypes"
@@ -99,7 +99,7 @@
 								variant="primary"
 								:href="`#`"
 								@click.prevent="isCreateFundLightboxVisible = true"
-								v-kv-track-event="['giving-funds', 'click', 'Start a new fund']"
+								v-kv-track-event="['giving-funds', 'click', 'Create a new fund', 'create-new-fund']"
 							>
 								Create a new fund
 							</kv-button>
@@ -137,6 +137,7 @@ import myGivingFundsQuery from '#src/graphql/query/portfolio/myGivingFunds.graph
 import userIdQuery from '#src/graphql/query/userId.graphql';
 
 const apollo = inject('apollo');
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const loading = ref(true);
 const givingFundsInfo = ref({});
@@ -265,6 +266,16 @@ const fetchUserId = async () => {
 	} catch (error) {
 		logFormatter(`Error fetching userId: ${error}`, 'error');
 	}
+};
+
+const selectImpactArea = categoryId => {
+	$kvTrackEvent(
+		'giving-funds',
+		'click',
+		'impact-area-selection',
+		categoryId,
+	);
+	selectedCategoryId.value = categoryId;
 };
 
 onMounted(() => {

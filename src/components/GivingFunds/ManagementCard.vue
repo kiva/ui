@@ -151,7 +151,7 @@
 				:href="`${givingFundRootPath}/${fund.id}?action=start-fundraiser`"
 				target="_blank"
 				variant="secondary"
-				v-kv-track-event="['giving-funds', 'click', 'Start a fundraiser', fund.id]"
+				v-kv-track-event="['giving-funds', 'click', 'start-a-new-fundraiser', fund.id]"
 			>
 				+ Start a fundraiser and invite others to join
 			</KvButton>
