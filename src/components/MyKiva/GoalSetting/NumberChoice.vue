@@ -54,7 +54,7 @@ import { mdiPlus, mdiMinus } from '@mdi/js';
 import { KvMaterialIcon, KvCardFrame } from '@kiva/kv-components';
 
 const MAX_COUNT = 50;
-const MIN_COUNT = 0;
+const MIN_COUNT = 1;
 const IMAGE_WIDTH = 64;
 
 const $kvTrackEvent = inject('$kvTrackEvent');
