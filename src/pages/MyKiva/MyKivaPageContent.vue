@@ -99,7 +99,9 @@
 			/>
 		</section>
 		<section class="tw-mb-4">
-			<h3>My achievements</h3>
+			<h3 id="my-achievements">
+				My achievements
+			</h3>
 			<BadgesSection
 				class="tw-mt-2"
 				:badge-data="badgeData"
@@ -192,8 +194,8 @@ import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
-import logReadQueryError from '#src/util/logReadQueryError';
 import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
+import logReadQueryError from '#src/util/logReadQueryError';
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -627,18 +629,10 @@ export default {
 			this.showBPSideSheet = false;
 			this.handleSelectedLoan({ loanId: undefined });
 		},
-		showLoanDetails(payload, showNextSteps = false) {
-			this.handleSelectedLoan({ loanId: payload?.id });
-			this.showBPSideSheet = true;
-			this.showNextSteps = showNextSteps;
-		},
 		async storeGoalPreferences(newPreferences) {
 			const existingPreferences = this.userInfo?.userPreferences ?? null;
 			if (!existingPreferences) {
-				await createUserPreferences(
-					this.apollo,
-					{ goals: [] }
-				);
+				await createUserPreferences(this.apollo, { goals: [] });
 			}
 			const parsedPreferences = existingPreferences ? JSON.parse(existingPreferences?.preferences || '{}') : {};
 			const existingGoals = parsedPreferences?.goals || [];
@@ -659,7 +653,12 @@ export default {
 				);
 				this.$showTipMsg('Your goal was saved successfully!', { type: 'success' });
 			}
-		}
+		},
+		showLoanDetails(payload, showNextSteps = false) {
+			this.handleSelectedLoan({ loanId: payload?.id });
+			this.showBPSideSheet = true;
+			this.showNextSteps = showNextSteps;
+		},
 	},
 	async mounted() {
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');

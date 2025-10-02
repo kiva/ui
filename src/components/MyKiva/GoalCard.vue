@@ -81,7 +81,6 @@ import { formatRichTextContent } from '#src/util/contentfulUtils';
 import GoalCardCareImg from '#src/assets/images/my-kiva/goal-card-care.svg';
 import {
 	ID_BASIC_NEEDS,
-	ID_REFUGEE_EQUALITY,
 	ID_US_ECONOMIC_EQUALITY,
 	ID_WOMENS_EQUALITY
 } from '#src/composables/useBadgeData';
@@ -89,10 +88,6 @@ import { useRouter } from 'vue-router';
 
 const props = defineProps({
 	heroSlides: {
-		type: Array,
-		default: () => [],
-	},
-	heroTieredAchievements: {
 		type: Array,
 		default: () => [],
 	},
@@ -118,10 +113,7 @@ const loansToReachGoal = computed(() => props.userGoal?.target || 0);
 const userHasGoal = computed(() => !!props.userGoal);
 
 const title = computed(() => {
-	if (userHasGoal.value) {
-		return 'Works towards your goal';
-	}
-
+	if (userHasGoal.value) return 'Work towards your goal';
 	return 'Set your first impact goal!';
 });
 
@@ -131,8 +123,6 @@ const getContentfulKey = category => {
 			return 'us-equality';
 		case ID_BASIC_NEEDS:
 			return 'fundamental-needs';
-		case ID_REFUGEE_EQUALITY:
-			return 'refugee-equality';
 		case ID_WOMENS_EQUALITY:
 			return 'women';
 		default: return category;
