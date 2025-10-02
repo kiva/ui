@@ -268,7 +268,7 @@ const createNewFund = async () => {
 			$kvTrackEvent(
 				'giving-funds',
 				'succeed',
-				'create-new-fund',
+				'new-fund-created',
 				newFundResponse.id,
 			);
 			window.open(`${givingFundRootPath.value}/${newFundResponse.id}`, '_blank');
