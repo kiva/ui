@@ -150,6 +150,7 @@
 			/>
 		</template>
 		<GoalSettingModal
+			v-if="isNextStepsExp"
 			:show="showGoalModal"
 			:total-loans="totalLoans"
 			:categories-loan-count="categoriesLoanCount"

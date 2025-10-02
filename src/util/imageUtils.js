@@ -45,3 +45,28 @@ export function preloadImage(src) {
 	const img = new Image();
 	img.src = src;
 }
+
+/**
+ * Optimize Contentful image URL
+ *
+ * @param {string} baseUrl - image src to preload
+ * @param {number} width - desired image width
+ * @param {number} height - desired image height
+ */
+export function optimizeContentfulUrl(baseUrl, width = null, height = null) {
+	if (!baseUrl) return '';
+
+	// check if it's a Contentful URL
+	const isContentfulUrl = baseUrl.includes('images.ctfassets.net')
+		|| baseUrl.includes('assets.contentful.com');
+	if (!isContentfulUrl) {
+		return baseUrl;
+	}
+	const params = new URLSearchParams();
+	if (width) params.set('w', width);
+	if (height) params.set('h', height);
+	params.set('fm', 'webp');
+	params.set('q', '80');
+
+	return `${baseUrl}?${params.toString()}`;
+}
