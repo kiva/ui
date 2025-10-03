@@ -172,7 +172,7 @@
 									Lending percentile this year
 								</dd>
 								<router-link
-									v-if="nextPercentileMsg"
+									v-if="nextPercentileMsg && currentYearPercentile < 99"
 									class="stat-link"
 									to="/lend-category-beta"
 									v-kv-track-event="['portfolio', 'click', `${currentYearPercentile}-percentile`]"
@@ -183,6 +183,13 @@
 										:icon="mdiArrowRight"
 									/>
 								</router-link>
+								<span
+									v-else-if="currentYearPercentile === 99"
+									class="stat-link tw-text-eco-green-2 tw-font-medium"
+									style="display: inline-flex; align-items: center;"
+								>
+									Thank you!
+								</span>
 							</div>
 							<!-- Loans made -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
