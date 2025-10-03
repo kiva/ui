@@ -14,6 +14,7 @@
 			:is-adding="isAdding"
 			:loan-id="selectedLoanId"
 			:show-next-steps="showNextSteps"
+			:enable-ai-loan-pills="enableAiLoanPills"
 			@add-to-basket="addToBasket"
 		/>
 	</KvSideSheet>
@@ -64,6 +65,10 @@ const props = defineProps({
 	widthDimensions: {
 		type: Object,
 		default: () => {}
+	},
+	enableAiLoanPills: {
+		type: Boolean,
+		default: false
 	},
 });
 

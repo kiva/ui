@@ -22,7 +22,7 @@
 			:user-balance="userBalance"
 			:lending-stats="lendingStats"
 		/>
-		<section v-if="isLendingStatsExp || isNextStepsExp" class="tw-mt-4">
+		<section v-if="isNextStepsExp" class="tw-mt-4">
 			<LendingStats
 				:regions-data="lendingStats.regionsData"
 				:user-lent-to-all-regions="userLentToAllRegions"
@@ -34,7 +34,6 @@
 				:is-next-steps-exp="isNextStepsExp"
 				:total-loans="totalLoans"
 				:user-goal="userGoal"
-				:is-goal-complete="isGoalComplete"
 				@store-goals-preferences="storeGoalPreferences"
 			/>
 		</section>
@@ -92,6 +91,7 @@
 				:title="recommendedLoansTitle"
 				:loans="recommendedLoans"
 				:user-balance="userBalance"
+				:enable-ai-loan-pills="enableAiLoanPills"
 				@add-to-basket="trackCategory($event, 'recommended')"
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails($event)"
@@ -142,6 +142,7 @@
 			:show-side-sheet="showBPSideSheet"
 			:show-next-steps="showNextSteps"
 			:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
+			:enable-ai-loan-pills="enableAiLoanPills"
 			@add-to-basket="addToBasket"
 			@go-to-link="goToLink"
 			@close-side-sheet="handleCloseSideSheet"
@@ -269,10 +270,6 @@ export default {
 			type: Array,
 			default: () => [],
 		},
-		isLendingStatsExp: {
-			type: Boolean,
-			default: false,
-		},
 		isNextStepsExp: {
 			type: Boolean,
 			default: false,
@@ -280,7 +277,11 @@ export default {
 		userLentToAllRegions: {
 			type: Boolean,
 			default: false,
-		}
+		},
+		enableAiLoanPills: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		const { getMostRecentBlogPost } = useContentful(this.apollo);
@@ -376,16 +377,16 @@ export default {
 			}
 
 			if (goal) {
+				const currentProgress = loanTotal - (goal?.loanTotalAtStart || 0);
+				const isComplete = currentProgress >= (goal?.target || 0);
 				goal = {
 					...goal,
-					currentProgress: (loanTotal - (goal?.loanTotalAtStart || 0)),
+					currentProgress,
+					isComplete,
 				};
 			}
 
 			return goal;
-		},
-		isGoalComplete() {
-			return this.userGoal && (this.userGoal?.currentProgress >= this.userGoal?.target);
 		},
 	},
 	methods: {

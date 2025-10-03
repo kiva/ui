@@ -31,6 +31,7 @@
 							:use-full-width="true"
 							:show-tags="true"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
+							:enable-ai-loan-pills="enableAiLoanPills"
 							@updating-totals="$emit('updating-totals', $event)"
 							@add-to-basket="addToBasket(index)"
 							class="tw-h-full"
@@ -58,6 +59,10 @@ export default {
 	emits: ['updating-totals', 'refreshtotals'],
 	props: {
 		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false
+		},
+		enableAiLoanPills: {
 			type: Boolean,
 			default: false
 		},

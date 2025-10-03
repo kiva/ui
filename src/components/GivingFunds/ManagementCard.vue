@@ -12,15 +12,16 @@
 						<template #icon>
 							<kv-pulsing-dot />
 						</template>
-						Active Fundraiser
+						Active fundraiser
 					</kv-pill>
 					<!-- eslint-enable max-len -->
 					<h2 class="tw-mb-1">
-						{{ fund?.campaign?.category?.name }}
+						{{ getFundTargetDisplayNounFromName(fund?.campaign?.category?.name) }}
 					</h2>
 					<!--  eslint-disable max-len -->
 					<p v-if="fund?.campaign?.lendingStats?.totalLivesTouched">
-						This fund has helped {{ fund?.campaign?.lendingStats?.totalLivesTouched }} people to date
+						You've helped support {{ fund?.campaign?.lendingStats?.totalLivesTouched }}
+						{{ getFundTargetSupportedPeoplePhraseFromName(fund?.campaign?.category?.name) }}.
 					</p>
 					<!-- eslint-enable max-len -->
 					<p v-else>
@@ -34,7 +35,7 @@
 						:href="`${givingFundRootPath}/${fund.id}?action=donate`"
 						target="_blank"
 						variant="secondary"
-						v-kv-track-event="['giving-funds', 'click', 'Donate']"
+						v-kv-track-event="['giving-funds', 'click', 'donate', fund.id]"
 					>
 						Donate
 					</KvButton>
@@ -54,9 +55,10 @@
 									"
 									:href="`${givingFundRootPath}/${fund.id}`"
 									target="_blank"
-									v-kv-track-event="['giving-funds', 'click', 'View giving fund']"
+									v-kv-track-event="['giving-funds', 'click', 'menu', 'view-giving-fund', fund.id]"
 								>
-									View giving fund
+									<kv-material-icon :icon="mdiPartyPopper" />
+									<span style="padding-top: 0.15rem;">View giving fund</span>
 								</a>
 							</li>
 							<li class="tw-border-b tw-border-gray-100">
@@ -66,9 +68,10 @@
 									"
 									:href="`${givingFundRootPath}/${fund.id}?action=edit`"
 									target="_blank"
-									v-kv-track-event="['giving-funds', 'click', 'Edit fund']"
+									v-kv-track-event="['giving-funds', 'click', 'menu', 'edit-fund', fund.id]"
 								>
-									Edit fund
+									<kv-material-icon :icon="mdiSquareEditOutline" />
+									<span style="padding-top: 0.15rem;">Edit fund</span>
 								</a>
 							</li>
 							<li class="tw-border-b tw-border-gray-100">
@@ -79,9 +82,10 @@
 									"
 									:href="`${givingFundRootPath}/${fund.id}?action=share`"
 									target="_blank"
-									v-kv-track-event="['giving-funds', 'click', 'Share fund']"
+									v-kv-track-event="['giving-funds', 'click', 'menu', 'share-fund', fund.id]"
 								>
-									Share fund
+									<kv-material-icon :icon="mdiExportVariant" />
+									<span style="padding-top: 0.15rem;">Share fund</span>
 								</a>
 							</li>
 						</ul>
@@ -106,9 +110,9 @@
 							Total donations
 						</p>
 					</div>
-					<div v-if="fund?.campaign?.lendingStats?.totalLent">
+					<div v-if="fund?.realTimeStats?.totalAmountLent">
 						<h2>
-							{{ numeral(fund?.campaign?.lendingStats?.totalLent).format('$0,0') }}
+							{{ numeral(fund?.realTimeStats?.totalAmountLent).format('$0,0') }}
 						</h2>
 						<p class="tw-text-small tw-text-gray-500">
 							Total fund impact
@@ -134,11 +138,11 @@
 					<div class="tw-flex tw-justify-between tw-mt-1">
 						<div class="tw-text-small">
 							<!-- eslint-disable-next-line max-len -->
-							<strong>{{ daysRemaining }}</strong> remaining
+							<strong>{{ numeral(currentGoalTargetInfo?.participation?.amount || 0).format('$0,0') }}</strong> raised
 						</div>
 						<div class="tw-text-small">
 							<!-- eslint-disable-next-line max-len -->
-							<strong>{{ numeral(currentGoalTargetInfo?.participation?.amount || 0).format('$0,0') }}</strong> raised
+							<strong>{{ daysRemaining }}</strong> remaining
 						</div>
 					</div>
 				</div>
@@ -150,7 +154,7 @@
 				:href="`${givingFundRootPath}/${fund.id}?action=start-fundraiser`"
 				target="_blank"
 				variant="secondary"
-				v-kv-track-event="['giving-funds', 'click', 'Start a fundraiser', fund.id]"
+				v-kv-track-event="['giving-funds', 'click', 'start-a-new-fundraiser', fund.id]"
 			>
 				+ Start a fundraiser and invite others to join
 			</KvButton>
@@ -160,7 +164,7 @@
 				:href="`${givingFundRootPath}/${fund.id}?action=donate`"
 				target="_blank"
 				variant="secondary"
-				v-kv-track-event="['giving-funds', 'click', 'Donate']"
+				v-kv-track-event="['giving-funds', 'click', 'donate', fund.id]"
 			>
 				Donate
 			</KvButton>
@@ -170,6 +174,11 @@
 
 <script setup>
 import {
+	mdiExportVariant,
+	mdiPartyPopper,
+	mdiSquareEditOutline,
+} from '@mdi/js';
+import {
 	computed,
 	onMounted,
 	ref,
@@ -178,6 +187,7 @@ import {
 import {
 	KvButton,
 	KvCardFrame,
+	KvMaterialIcon,
 	KvPill,
 	KvProgressBar,
 	KvPulsingDot,
@@ -199,6 +209,8 @@ const { isMobile } = useIsMobile();
 
 const {
 	getDonationTotalsForFund,
+	getFundTargetDisplayNounFromName,
+	getFundTargetSupportedPeoplePhraseFromName,
 } = useGivingFund(apollo);
 
 const givingFundRootPath = ref('/gf');
@@ -251,9 +263,10 @@ onMounted(async () => {
 
 <style lang="postcss" scoped>
 .utility-menu-link {
-	@apply tw-block tw-p-1.5 hover:tw-bg-secondary tw-text-primary hover:tw-text-action-highlight tw-font-medium;
-	@apply tw-no-underline active:tw-no-underline;
-	@apply visited:tw-no-underline hover:tw-no-underline focus:tw-no-underline;
+  @apply tw-flex tw-items-center tw-gap-1 tw-cursor-pointer;
+  @apply tw-py-1 tw-px-1.5 hover:tw-bg-secondary tw-text-primary hover:tw-text-action-highlight tw-font-medium;
+  @apply tw-no-underline active:tw-no-underline;
+  @apply visited:tw-no-underline hover:tw-no-underline focus:tw-no-underline;
 }
 
 .min-meter-width {

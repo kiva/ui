@@ -5,7 +5,7 @@
 			'goal-card-bg': !userHasGoal,
 		}"
 	>
-		<div :class="{'tw-mx-auto tw-relative achievement-card-bg': userHasGoal}">
+		<div :class="{'tw-mx-auto tw-relative tw-mb-1 achievement-card-bg': userHasGoal}">
 			<span
 				:class="{'tw-absolute tw-top-1 tw-left-1': userHasGoal}"
 				class="
@@ -92,17 +92,9 @@ const props = defineProps({
 		type: Array,
 		default: () => [],
 	},
-	heroTieredAchievements: {
-		type: Array,
-		default: () => [],
-	},
 	userGoal: {
 		type: Object,
-		default: () => ({}),
-	},
-	isGoalComplete: {
-		type: Boolean,
-		default: false,
+		default: undefined,
 	},
 });
 
@@ -187,10 +179,9 @@ onMounted(() => {
 </script>
 
 <style lang="postcss" scoped>
-
 .card-container {
 	@apply tw-w-full tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
-		tw-overflow-hidden tw-bg-white tw-shrink-0 tw-gap-1;
+		tw-overflow-hidden tw-bg-white tw-shrink-0;
 
 	@screen md {
 		width: 336px;
