@@ -23,7 +23,7 @@
 						/>
 						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
 						<lending-insights
-							:is-percentile-by-year-exp="isPercentileByYearExp"
+							:is-percentile-by-year-exp-enabled="isPercentileByYearExpEnabled"
 						/>
 						<your-donations />
 						<LoanCards
@@ -115,7 +115,7 @@ export default {
 			loans: [],
 			filteredLoans: [],
 			showLoanFootnote: false,
-			isPercentileByYearExp: false
+			isPercentileByYearExpEnabled: false
 		};
 	},
 	mixins: [badgeGoalMixin],
@@ -191,7 +191,7 @@ export default {
 			PERCENTILE_BY_YEAR_EXP_KEY,
 			'EXP-MP-1847-Aug2025'
 		);
-		this.isPercentileByYearExp = percentileByYearExpData.version === 'b';
+		this.isPercentileByYearExpEnabled = percentileByYearExpData.version === 'b';
 	},
 	async mounted() {
 		if (!this.showMyKivaPage) {
