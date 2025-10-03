@@ -89,8 +89,34 @@ export default function useGivingFund(apollo) {
 		return totalDonated;
 	};
 
+	const getFundTargetDisplayNounFromName = categoryName => {
+		if (!categoryName) return null;
+		switch (categoryName) {
+			case 'climate-threatened people':
+				return 'climate action';
+			case 'U.S. entrepreneurs':
+				return 'U.S. small businesses';
+			default:
+				return categoryName;
+		}
+	};
+
+	const getFundTargetSupportedPeoplePhraseFromName = categoryName => {
+		if (!categoryName) return null;
+		switch (categoryName) {
+			case 'women':
+			case 'refugees':
+			case 'U.S. entrepreneurs':
+				return categoryName;
+			default:
+				return 'people';
+		}
+	};
+
 	return {
 		fetchGivingFundDonationData,
 		getDonationTotalsForFund,
+		getFundTargetDisplayNounFromName,
+		getFundTargetSupportedPeoplePhraseFromName,
 	};
 }

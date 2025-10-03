@@ -165,6 +165,10 @@ export default {
 			type: String,
 			default: '',
 		},
+		enableAiLoanPills: {
+			type: Boolean,
+			default: false
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin],

@@ -2,7 +2,9 @@
 	<div class="tw--mx-2 tw-bg-secondary">
 		<div class="tw-px-4 tw-py-2">
 			<SideSheetHeader />
-			<SideSheetLoanTags />
+			<SideSheetLoanTags
+				:enable-ai-loan-pills="enableAiLoanPills"
+			/>
 			<LoanProgress
 				:loading="loading"
 				:loan-status="loanStatus"
@@ -121,6 +123,10 @@ export default {
 			default: () => []
 		},
 		showNextSteps: {
+			type: Boolean,
+			default: false
+		},
+		enableAiLoanPills: {
 			type: Boolean,
 			default: false
 		},
