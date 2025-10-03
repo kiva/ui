@@ -185,8 +185,7 @@
 								</router-link>
 								<span
 									v-else-if="currentYearPercentile === 99"
-									class="stat-link tw-text-eco-green-2 tw-font-medium"
-									style="display: inline-flex; align-items: center;"
+									class="stat-link tw-text-eco-green-2 tw-font-medium tw-inline-flex tw-items-center"
 								>
 									Thank you!
 								</span>
