@@ -1,6 +1,6 @@
 <template>
 	<async-portfolio-section
-		v-if="!isPercentileByYearExp"
+		v-if="!isPercentileByYearExpEnabled"
 		@visible="fetchLifetimeStats"
 		data-testid="lending-insights"
 		class="!tw-bg-eco-green-4"
@@ -128,8 +128,9 @@
 				</template>
 				<template #tabPanels>
 					<kv-tab-panel id="ytd">
-						<!-- Total amount lent -->
+						<!-- Current year Panel -->
 						<kv-grid as="dl" class="stats-container-exp">
+							<!-- Total amount lent -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 								<kv-loading-placeholder
 									v-if="loading"
@@ -165,20 +166,18 @@
 									style="width: 7rem;"
 								/>
 								<dt v-show="!loading" class="stat-value">
-									{{ currentYearPercentile }}
+									{{ formattedCurrentYearPercentile }}
 								</dt>
 								<dd class="stat-def">
 									Lending percentile this year
 								</dd>
 								<router-link
-									v-if="nextPercentileGroup !== 100"
+									v-if="nextPercentileMsg"
 									class="stat-link"
 									to="/lend-category-beta"
-									v-kv-track-event="['lending', 'click', 'next-percentile-group']"
+									v-kv-track-event="['portfolio', 'click', `${currentYearPercentile}-percentile`]"
 								>
-									{{ nextPercentileThreshold }}
-									more to reach top
-									{{ nextPercentileGroup }}
+									{{ nextPercentileMsg }}
 									<kv-material-icon
 										class="tw-ml-0.5 tw-w-2 tw-h-2"
 										:icon="mdiArrowRight"
@@ -227,7 +226,7 @@
 						</kv-grid>
 					</kv-tab-panel>
 					<kv-tab-panel id="lifetime">
-						<!-- Total amount lent -->
+						<!-- Lifetime Panel -->
 						<kv-grid as="dl" class="stats-container-exp">
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 								<kv-loading-placeholder
@@ -357,7 +356,7 @@ export default {
 		// LoanCountOverTimeFigure,
 	},
 	props: {
-		isPercentileByYearExp: {
+		isPercentileByYearExpEnabled: {
 			type: Boolean,
 			default: false
 		}
@@ -373,9 +372,9 @@ export default {
 			currentYearAmountLent: 0,
 			currentYearCountryCount: 0,
 			currentYearNumberOfLoans: 0,
-			currentYearPercentile: 0,
-			nextPercentileThreshold: 0, // amount needed to reach next percentile group
-			nextPercentileGroup: 0,
+			formattedCurrentYearPercentile: '',
+			currentYearPercentile: null,
+			nextPercentileMsg: '',
 			threshold: 0, // amount needed to be within percentile group
 			lifetimeAmountLent: 0,
 			lifetimeCountryCount: 0,
@@ -399,6 +398,13 @@ export default {
 	methods: {
 		setActiveTab(tab) {
 			this.currentTab = tab;
+			if (tab === 'ytd' || tab === 0) {
+				this.$kvTrackEvent(
+					'portfolio',
+					'show',
+					`${this.currentYearPercentile}-percentile`,
+				);
+			}
 		},
 		fetchLifetimeStats() {
 			if (this.loading && !this.lifetimeLoadingPromise) {
@@ -451,7 +457,10 @@ export default {
 						}
 					}`
 				}).then(({ data }) => {
-					const ytdAmount = parseInt(data?.my?.lendingStats?.loanStatsByYear?.amount ?? 0, 10);
+					const ytdAmount = parseInt(
+						numeral(data?.my?.lendingStats?.loanStatsByYear?.amount ?? 0).value(),
+						10
+					);
 					return this.apollo.query({
 						query: gql`query percentileData($amount: Int!) {
     						lend {
@@ -469,21 +478,29 @@ export default {
 					});
 				}).then(({ lendingStatsData, percentileStatsData }) => {
 					this.loading = false;
-					const percentileData = percentileStatsData?.lend?.percentilePerYear;
+					const percentileData = percentileStatsData?.lend?.percentilePerYear || {};
+					this.currentYearPercentile = percentileData.percentile ?? 0;
+					this.formattedCurrentYearPercentile = numeral(this.currentYearPercentile).format('0o');
 
-					this.currentYearPercentile = numeral(percentileData?.percentile ?? 0).format('0o');
 					const updatedPercentile = () => {
-						const currentPercentileGroup = percentileData?.percentile ?? 0;
-						if (currentPercentileGroup !== 100) {
-							const calculatedPercentile = currentPercentileGroup + 1;
-							return numeral(calculatedPercentile).format('0o');
+						const current = percentileData.percentile ?? 0;
+						const next25 = percentileData.percentileNext25;
+						let nextPercentile = current < 99 ? current + 1 : 99;
+						let nextThreshold = '$25';
+
+						if (current === next25 && percentileData.threshold && percentileData.nextPercentileThreshold) {
+							nextThreshold = numeral(percentileData.nextPercentileThreshold - percentileData.threshold)
+								.format('$0,0[.]00');
+						} else if (nextPercentile < next25) {
+							nextPercentile = next25;
 						}
-						return this.currentYearPercentile;
+
+						return nextPercentile === 99
+							? ''
+							: `${nextThreshold} more to reach ${numeral(nextPercentile).format('0o')} percentile`;
 					};
 
-					this.nextPercentileGroup = updatedPercentile();
-					// eslint-disable-next-line max-len
-					this.nextPercentileThreshold = numeral(percentileData?.nextPercentileThreshold ?? 0).format('$0,0[.]00');
+					this.nextPercentileMsg = updatedPercentile();
 
 					// eslint-disable-next-line max-len
 					const yearlyAmountOfLoans = numeral(lendingStatsData?.my?.lendingStats?.loanStatsByYear?.amount ?? 0);
@@ -512,6 +529,18 @@ export default {
 				});
 			}
 		},
+	},
+	mounted() {
+		this.unwatch = this.$watch('currentYearPercentile', newVal => {
+			if (this.currentTab === 'ytd' && newVal !== null) {
+				this.$kvTrackEvent(
+					'portfolio',
+					'show',
+					`${newVal}-percentile`,
+				);
+				this.unwatch();
+			}
+		});
 	},
 };
 </script>
