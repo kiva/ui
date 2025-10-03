@@ -170,21 +170,20 @@
 								<dd class="stat-def">
 									Lending percentile this year
 								</dd>
-								<!-- To-Do: Values are mismatched
 								<router-link
+									v-if="nextPercentileGroup !== 100"
 									class="stat-link"
 									to="/lend-category-beta"
 									v-kv-track-event="['lending', 'click', 'next-percentile-group']"
 								>
 									{{ nextPercentileThreshold }}
 									more to reach top
-									{{ percentileNext25 }}
+									{{ nextPercentileGroup }}
 									<kv-material-icon
 										class="tw-ml-0.5 tw-w-2 tw-h-2"
 										:icon="mdiArrowRight"
 									/>
 								</router-link>
-								-->
 							</div>
 							<!-- Loans made -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
@@ -376,7 +375,7 @@ export default {
 			currentYearNumberOfLoans: 0,
 			currentYearPercentile: 0,
 			nextPercentileThreshold: 0, // amount needed to reach next percentile group
-			percentileNext25: 0, // moving to next percentile group
+			nextPercentileGroup: 0,
 			threshold: 0, // amount needed to be within percentile group
 			lifetimeAmountLent: 0,
 			lifetimeCountryCount: 0,
@@ -473,7 +472,16 @@ export default {
 					const percentileData = percentileStatsData?.lend?.percentilePerYear;
 
 					this.currentYearPercentile = numeral(percentileData?.percentile ?? 0).format('0o');
-					this.percentileNext25 = `${numeral(percentileData?.percentileNext25 ?? 0).format('0')}%`;
+					const updatedPercentile = () => {
+						const currentPercentileGroup = percentileData?.percentile ?? 0;
+						if (currentPercentileGroup !== 100) {
+							const calculatedPercentile = currentPercentileGroup + 1;
+							return numeral(calculatedPercentile).format('0o');
+						}
+						return this.currentYearPercentile;
+					};
+
+					this.nextPercentileGroup = updatedPercentile();
 					// eslint-disable-next-line max-len
 					this.nextPercentileThreshold = numeral(percentileData?.nextPercentileThreshold ?? 0).format('$0,0[.]00');
 
@@ -536,6 +544,10 @@ export default {
 
 .tab-header {
 	@apply tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left;
+}
+
+:deep(.kv-tabs) {
+	@apply tw-gap-x-2 md:tw-gap-x-3 lg:tw-gap-x-4;
 }
 
 @screen md {
