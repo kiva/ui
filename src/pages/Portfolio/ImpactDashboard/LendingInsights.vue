@@ -516,10 +516,11 @@ export default {
 					this.currentYearCountryCount = lendingStatsData?.my?.lendingStats?.countriesLentToByYear ?? 0;
 					this.currentYearNumberOfLoans = lendingStatsData?.my?.lendingStats?.loanStatsByYear?.count ?? 0;
 
-					/* To-Do: Uncomment when needed
-					const yearlyThreshold = numeral(data?.my?.lend?.percentilePerYear?.threshold ?? 0);
-					this.threshold = yearlyThreshold.format('$0,0[.]00');
-					*/
+					this.$kvTrackEvent(
+						'portfolio',
+						'show',
+						`${this.currentYearPercentile}-percentile`,
+					);
 				}).finally(() => {
 					this.loadingPromise = null;
 				});
@@ -536,18 +537,6 @@ export default {
 				});
 			}
 		},
-	},
-	mounted() {
-		this.unwatch = this.$watch('currentYearPercentile', newVal => {
-			if (this.currentTab === 'ytd' && newVal !== null) {
-				this.$kvTrackEvent(
-					'portfolio',
-					'show',
-					`${newVal}-percentile`,
-				);
-				this.unwatch();
-			}
-		});
 	},
 };
 </script>
