@@ -484,7 +484,7 @@ export default {
 
 					const updatedPercentile = () => {
 						const current = percentileData.percentile ?? 0;
-						const next25 = percentileData.percentileNext25;
+						const next25 = percentileData.percentileNext25 ?? 0;
 						let nextPercentile = current < 99 ? current + 1 : 99;
 						let nextThreshold = '$25';
 
@@ -492,7 +492,7 @@ export default {
 							nextThreshold = numeral(percentileData.nextPercentileThreshold - percentileData.threshold)
 								.format('$0,0[.]00');
 						} else if (nextPercentile < next25) {
-							nextPercentile = next25;
+							nextPercentile = parseInt(next25, 10);
 						}
 
 						return nextPercentile === 99
