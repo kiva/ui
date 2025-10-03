@@ -32,7 +32,7 @@
 								v-if="!hasAllFundTypes"
 								class="tw-pb-2"
 							>
-								Select the cause you want to support with your fund.
+								Select the cause you want your fund to support.
 							</p>
 							<p v-else class="tw-text-center">
 								<!-- eslint-disable-next-line max-len -->
