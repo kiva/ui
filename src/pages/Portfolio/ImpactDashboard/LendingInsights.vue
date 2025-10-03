@@ -106,7 +106,7 @@
 			</div>
 		</div>
 		<div>
-			<kv-tabs @tab-changed="setActiveTab">
+			<kv-tabs @tab-changed="setActiveTab" :active-tab="currentTab">
 				<template #tabNav>
 					<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
 						Lending insights
@@ -170,15 +170,15 @@
 								<dd class="stat-def">
 									Lending percentile this year
 								</dd>
-
 								<router-link
+									v-if="nextPercentileGroup !== 100"
 									class="stat-link"
 									to="/lend-category-beta"
 									v-kv-track-event="['lending', 'click', 'next-percentile-group']"
 								>
 									{{ nextPercentileThreshold }}
 									more to reach top
-									{{ percentileNext25 }}
+									{{ nextPercentileGroup }}
 									<kv-material-icon
 										class="tw-ml-0.5 tw-w-2 tw-h-2"
 										:icon="mdiArrowRight"
@@ -375,7 +375,7 @@ export default {
 			currentYearNumberOfLoans: 0,
 			currentYearPercentile: 0,
 			nextPercentileThreshold: 0, // amount needed to reach next percentile group
-			percentileNext25: 0, // moving to next percentile group
+			nextPercentileGroup: 0,
 			threshold: 0, // amount needed to be within percentile group
 			lifetimeAmountLent: 0,
 			lifetimeCountryCount: 0,
@@ -451,7 +451,7 @@ export default {
 						}
 					}`
 				}).then(({ data }) => {
-					const ytdAmount = parseInt(data?.my?.lendingStats?.loanStatsByYear?.[0]?.amount ?? 0, 10);
+					const ytdAmount = parseInt(data?.my?.lendingStats?.loanStatsByYear?.amount ?? 0, 10);
 					return this.apollo.query({
 						query: gql`query percentileData($amount: Int!) {
     						lend {
@@ -472,15 +472,25 @@ export default {
 					const percentileData = percentileStatsData?.lend?.percentilePerYear;
 
 					this.currentYearPercentile = numeral(percentileData?.percentile ?? 0).format('0o');
-					this.percentileNext25 = numeral(percentileData?.percentileNext25 ?? 0).format('0%');
+					const updatedPercentile = () => {
+						const currentPercentileGroup = percentileData?.percentile ?? 0;
+						if (currentPercentileGroup !== 100) {
+							const calculatedPercentile = currentPercentileGroup + 1;
+							return numeral(calculatedPercentile).format('0o');
+						}
+						return this.currentYearPercentile;
+					};
+
+					this.nextPercentileGroup = updatedPercentile();
 					// eslint-disable-next-line max-len
 					this.nextPercentileThreshold = numeral(percentileData?.nextPercentileThreshold ?? 0).format('$0,0[.]00');
 
-					const yearlyAmountOfLoans = numeral(lendingStatsData?.loanStatsByYear?.[0]?.amount ?? 0);
+					// eslint-disable-next-line max-len
+					const yearlyAmountOfLoans = numeral(lendingStatsData?.my?.lendingStats?.loanStatsByYear?.amount ?? 0);
 					this.currentYearAmountLent = yearlyAmountOfLoans.format('$0,0[.]00');
 
-					this.currentYearCountryCount = lendingStatsData?.countriesLentToByYear ?? 0;
-					this.currentYearNumberOfLoans = lendingStatsData?.loanStatsByYear?.[0]?.count ?? 0;
+					this.currentYearCountryCount = lendingStatsData?.my?.lendingStats?.countriesLentToByYear ?? 0;
+					this.currentYearNumberOfLoans = lendingStatsData?.my?.lendingStats?.loanStatsByYear?.count ?? 0;
 
 					/* To-Do: Uncomment when needed
 					const yearlyThreshold = numeral(data?.my?.lend?.percentilePerYear?.threshold ?? 0);
@@ -534,6 +544,10 @@ export default {
 
 .tab-header {
 	@apply tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left;
+}
+
+:deep(.kv-tabs) {
+	@apply tw-gap-x-2 md:tw-gap-x-3 lg:tw-gap-x-4;
 }
 
 @screen md {
