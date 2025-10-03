@@ -79,7 +79,7 @@
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
 				<dt v-show="!loading" class="stat-value">
-					{{ percentile }}
+					{{ lifetimePercentile }}
 				</dt>
 				<dd class="stat-def">
 					Lending percentile
