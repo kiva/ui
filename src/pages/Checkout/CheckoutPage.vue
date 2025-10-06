@@ -1062,6 +1062,7 @@ export default {
 									`Failed: ${error.message.substring(0, 40)}...`
 								);
 								Sentry.captureMessage(`Add to Basket: ${error.message}`);
+								this.refreshTotals();
 							} catch (e) {
 							// no-op
 							}
