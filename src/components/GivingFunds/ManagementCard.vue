@@ -55,7 +55,7 @@
 									"
 									:href="`${givingFundRootPath}/${fund.id}`"
 									target="_blank"
-									v-kv-track-event="['giving-funds', 'click', 'menu', 'view-giving-fund', fund.id]"
+									v-kv-track-event="['giving-funds', 'click', 'menu', 'view-giving-fund']"
 								>
 									<kv-material-icon :icon="mdiPartyPopper" />
 									<span style="padding-top: 0.15rem;">View giving fund</span>
@@ -68,7 +68,7 @@
 									"
 									:href="`${givingFundRootPath}/${fund.id}?action=edit`"
 									target="_blank"
-									v-kv-track-event="['giving-funds', 'click', 'menu', 'edit-fund', fund.id]"
+									v-kv-track-event="['giving-funds', 'click', 'menu', 'edit-fund']"
 								>
 									<kv-material-icon :icon="mdiSquareEditOutline" />
 									<span style="padding-top: 0.15rem;">Edit fund</span>
@@ -82,7 +82,7 @@
 									"
 									:href="`${givingFundRootPath}/${fund.id}?action=share`"
 									target="_blank"
-									v-kv-track-event="['giving-funds', 'click', 'menu', 'share-fund', fund.id]"
+									v-kv-track-event="['giving-funds', 'click', 'menu', 'share-fund']"
 								>
 									<kv-material-icon :icon="mdiExportVariant" />
 									<span style="padding-top: 0.15rem;">Share fund</span>
