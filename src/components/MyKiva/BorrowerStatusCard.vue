@@ -44,7 +44,7 @@
 			</div>
 		</div>
 		<div class="tw-top-0 tw-h-full tw-w-full tw-overflow-hidden tw-rounded-t tw-flex tw-flex-col">
-			<HeroBackground style="height: 92px;" class="!tw-block" :loan-id="loan.id" />
+			<HeroBackground style="height: 92px;" :status-card="true" class="!tw-block" :loan-id="loan.id" />
 			<div
 				class="tw-flex tw-justify-center tw-gap-1 md:tw-gap-3 tw-flex-col md:tw-flex-row tw-px-1.5 md:tw-px-2.5
 					md:tw-pb-1.5 tw-flex-grow tw-pb-1.5"

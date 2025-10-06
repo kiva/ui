@@ -4,7 +4,6 @@ query MyGivingFunds {
     givingFunds {
       totalCount
       values {
-        amountDonated
         campaign {
           campaignPromoFundId
           category {
@@ -56,6 +55,16 @@ query MyGivingFunds {
           id
           name
         }
+		realTimeStats {
+			id
+			lenderId
+			lentTo {
+				borrowers {
+					totalCount
+				}
+			}
+			totalAmountLent
+		}
 		totalParticipants
       }
     }

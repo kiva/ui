@@ -12,9 +12,9 @@
 			fallback-format="jpg"
 			fit="fill"
 			:alt="contentfulAlt"
-			:width="1024"
-			:height="320"
-			:source-sizes="sourceSizes"
+			:width="statusCard ? 336 : 1024"
+			:height="statusCard ? 92 : 320"
+			:source-sizes="statusCard ? [] : sourceSizes"
 		/>
 	</div>
 </template>
@@ -33,6 +33,10 @@ export default {
 		loanId: {
 			type: Number,
 			default: 0,
+		},
+		statusCard: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {

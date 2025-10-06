@@ -563,9 +563,7 @@
 </template>
 
 <script>
-import {
-	defineAsyncComponent, watch
-} from 'vue';
+import { defineAsyncComponent } from 'vue';
 import {
 	hasLentBeforeCookie,
 	hasDepositBeforeCookie,
@@ -839,13 +837,6 @@ export default {
 			hasLentBefore,
 			hasDepositBefore,
 		});
-
-		watch(
-			() => this.$refs.newExpHeader?.menuOpen,
-			menuOpen => {
-				document.body.style.overflow = this.isMobile && menuOpen ? 'hidden' : '';
-			}
-		);
 
 		this.throttledDetermineIfMobile = _throttle(() => {
 			this.determineIfMobile();

@@ -8,7 +8,7 @@
 	>
 		<div
 			class="tw-bg-cover tw-bg-center tw-rounded-t"
-			:style="`background-image: url('${image}'); height: 55%; width: 100%;`"
+			:style="`background-image: url('${optimizedImageUrl}'); height: 55%; width: 100%;`"
 		></div>
 
 		<div class="tw-pt-2 tw-pl-2 tw-flex tw-whitespace-nowrap tw-w-full">
@@ -40,6 +40,7 @@
 
 <script setup>
 import { computed } from 'vue';
+import { optimizeContentfulUrl } from '#src/util/imageUtils';
 
 const emit = defineEmits(['track']);
 
@@ -64,6 +65,11 @@ const props = defineProps({
 		type: String,
 		required: true,
 	},
+});
+
+const optimizedImageUrl = computed(() => {
+	if (!props.image) return '';
+	return optimizeContentfulUrl(props.image, 336);
 });
 
 const formattedDate = computed(() => {

@@ -42,6 +42,7 @@
 					:data-testid="`basket-donation-${index}`"
 					:donation="donation"
 					:loan-count="loans.length"
+					:kiva-cards-count="kivaCards.length"
 					:loan-reservation-total="loanReservationTotal"
 					@refreshtotals="$emit('refreshtotals')"
 					@updating-totals="$emit('updating-totals', $event)"
