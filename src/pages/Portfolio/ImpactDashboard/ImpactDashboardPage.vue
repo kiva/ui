@@ -61,7 +61,7 @@ import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { getIsMyKivaEnabled, hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+// import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
 import {
@@ -184,14 +184,14 @@ export default {
 			this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
 		}
 
-		const percentileByYearExpData = trackExperimentVersion(
+		/* const percentileByYearExpData = trackExperimentVersion(
 			this.apollo,
 			this.$kvTrackEvent,
 			'event-tracking',
 			PERCENTILE_BY_YEAR_EXP_KEY,
 			'EXP-MP-1847-Aug2025'
-		);
-		this.isPercentileByYearExpEnabled = percentileByYearExpData.version === 'b';
+		); */
+		this.isPercentileByYearExpEnabled = true; // percentileByYearExpData.version === 'b';
 	},
 	async mounted() {
 		if (!this.showMyKivaPage) {
