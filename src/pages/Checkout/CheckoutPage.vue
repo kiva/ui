@@ -1062,6 +1062,9 @@ export default {
 									`Failed: ${error.message.substring(0, 40)}...`
 								);
 								Sentry.captureMessage(`Add to Basket: ${error.message}`);
+								if (error?.extensions?.code === 'not_all_shared_added') {
+									this.getUpsellModuleData(loanId);
+								}
 								this.refreshTotals();
 							} catch (e) {
 							// no-op
