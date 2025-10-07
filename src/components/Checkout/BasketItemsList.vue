@@ -85,7 +85,8 @@ export default {
 					id: 0,
 					isTip: false,
 					isUserEdited: false,
-					price: '0.00'
+					price: '0.00',
+					metadata: null
 				}
 			]
 		},
