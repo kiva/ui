@@ -139,7 +139,7 @@ export default {
 				return val.replace('(', '');
 			}
 
-			const asYouTypeFormatter = new AsYouType(this.selectedCountry.code);
+			const asYouTypeFormatter = new AsYouType(this.selectedCountry?.code);
 			return asYouTypeFormatter.input(val);
 		},
 		onInputCountry() {
