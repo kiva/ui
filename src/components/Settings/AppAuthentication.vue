@@ -177,12 +177,14 @@ export default {
 				this.$router.push('/settings/security/mfa'); // return to MFA settings page
 				this.lightboxVisible = false;
 			}
-			this.enrollmentError = '';
-			this.barcodeURI = '';
-			this.secret = '';
-			this.step = 0;
-			this.userVerificationCode = '';
-			this.verificationError = '';
+			setTimeout(() => {
+				this.enrollmentError = '';
+				this.barcodeURI = '';
+				this.secret = '';
+				this.step = 0;
+				this.userVerificationCode = '';
+				this.verificationError = '';
+			}, 300); // Allow time for lightbox to close before resetting state
 		},
 		confirmRecoveryCode() {
 			this.recoveryCode = '';
@@ -228,7 +230,8 @@ export default {
 				this.fetchingEnrollment = false;
 			}).catch(err => {
 				console.error(err);
-				this.enrollmentError = 'There was an error. Please refresh the page and try again.';
+				// eslint-disable-next-line max-len
+				this.enrollmentError = err?.[0]?.message || 'There was an error. Please refresh the page and try again.';
 				this.fetchingEnrollment = false;
 				try {
 					Sentry.captureException(err?.[0]?.extensions?.exception || err);
