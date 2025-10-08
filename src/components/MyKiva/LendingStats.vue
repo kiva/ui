@@ -12,10 +12,12 @@
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': !userLentToAllRegions }"
 	>
 		<GoalCard
-			v-if="isNextStepsExp && !userLentToAllRegions && !isGoalComplete"
+			v-if="isNextStepsExp && !userLentToAllRegions && !currentGoalAchieved"
 			:hero-slides="heroSlides"
-			:user-goal="userGoal"
-			:is-goal-complete="isGoalComplete"
+			:user-goal="currentGoal"
+			:is-goal-complete="currentGoalAchieved"
+			:loading="goalProgressLoading"
+			:goal-progress="goalProgress"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<div
@@ -115,7 +117,7 @@
 				</div>
 			</div>
 		</div>
-		<template v-if="!isNextStepsExp || (!!userGoal && userLentToAllRegions)">
+		<template v-if="!isNextStepsExp || (!!currentGoal && userLentToAllRegions)">
 			<div v-if="!userLentToAllRegions" class="card-container tw-shrink-0">
 				<MyKivaCard
 					class="kiva-card tw-h-full"
@@ -144,8 +146,8 @@
 				:slides="allRegionsLentSlides"
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
-				:user-goal="userGoal"
-				:is-goal-complete="isGoalComplete"
+				:user-goal="currentGoal"
+				:is-goal-complete="currentGoalAchieved"
 			/>
 		</template>
 		<GoalSettingModal
@@ -186,6 +188,7 @@ import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 import StatsCardBg from '#src/assets/images/my-kiva/stats-card-bg.png';
 import GoalCard from '#src/components/MyKiva/GoalCard';
+import useGoalData from '#src/composables/useGoalData';
 import GoalSettingModal from './GoalSettingModal';
 
 const { delayUntilVisible } = useDelayUntilVisible();
@@ -246,14 +249,6 @@ const props = defineProps({
 		type: Number,
 		default: 0,
 	},
-	userGoal: {
-		type: Object,
-		default: null,
-	},
-	isGoalComplete: {
-		type: Boolean,
-		default: false,
-	},
 });
 
 const interval = ref(null);
@@ -278,6 +273,14 @@ const regionImages = {
 	Oceania,
 	'South America': SouthAmerica,
 };
+
+const {
+	runComposable: runGoalComposable,
+	loading: goalProgressLoading,
+	currentGoal,
+	currentGoalAchieved,
+	goalProgress,
+} = useGoalData({ loans: props.loans, totalLoanCount: props.totalLoans });
 
 const regionImageSource = region => (regionImages[region?.name] || '');
 
@@ -437,6 +440,10 @@ onMounted(() => {
 			? 'empty-states-no-regions'
 			: (props.userLentToAllRegions ? 'lent-to-all-regions' : 'regions-lent-to')
 	);
+
+	if (props.isNextStepsExp) {
+		runGoalComposable();
+	}
 });
 
 onUnmounted(() => {
