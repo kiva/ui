@@ -1,3 +1,17 @@
+## [3.34.0-rc.2](https://github.com/kiva/ui/compare/v3.34.0-rc.1...v3.34.0-rc.2) (2025-10-08)
+
+### 🎉 New Features
+
+* ai loans test added ([#6321](https://github.com/kiva/ui/issues/6321)) ([2ba7962](https://github.com/kiva/ui/commit/2ba79627f56a9741180208d7bb20a7c12e454407))
+
+### 🐛 Bugfixes
+
+* add tracking to card link ([fd06f88](https://github.com/kiva/ui/commit/fd06f8818825309715054363ac392e380775e4c9))
+* ensure countries not lent to gets correct assignment ([35ce306](https://github.com/kiva/ui/commit/35ce30602cb8ad6d9652d06a80ae07c3b875f03f))
+* gf donation hide edit for mobile ([b46c2d1](https://github.com/kiva/ui/commit/b46c2d110d323051640ffee41c3f5d40c8926bcc))
+* terms of use copy edits and highlighted changes ([8ecd508](https://github.com/kiva/ui/commit/8ecd5084714eca2f8f20feb35685f35786d4669a))
+* various gf fixes ([c5f29d1](https://github.com/kiva/ui/commit/c5f29d17ab4ca15879728485d5f5cf29304ab441))
+
 ## [3.34.0-rc.1](https://github.com/kiva/ui/compare/v3.33.0...v3.34.0-rc.1) (2025-10-08)
 
 ### 🎉 New Features
