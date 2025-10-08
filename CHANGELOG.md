@@ -1,3 +1,18 @@
+## [3.34.0-rc.1](https://github.com/kiva/ui/compare/v3.33.0...v3.34.0-rc.1) (2025-10-08)
+
+### 🎉 New Features
+
+* change display of donation item if they are tagged with metadata ([942f390](https://github.com/kiva/ui/commit/942f390da9f0ce260de24595c6d8fbf699851d63))
+
+### 🐛 Bugfixes
+
+* get new upsell loan when full loan amount was not added to the basket ([9ce2280](https://github.com/kiva/ui/commit/9ce22801c2b1b3b8b43e9d8409907ca06fbad543))
+* guard against failed live loan image fetch, allow render of card without image ([e440475](https://github.com/kiva/ui/commit/e440475bf40b1efdffca7204d4516ff9ec74221c))
+* refresh totals for other basket errors in upsell module ([342e1a1](https://github.com/kiva/ui/commit/342e1a1d34b2330f1f17ba021ce7ce464d5fe562))
+* resolve errors in mfa page ([30e8597](https://github.com/kiva/ui/commit/30e8597c15fd9333ce8152553523be430a71acf6))
+* spelling line 155 ([07b7904](https://github.com/kiva/ui/commit/07b790416f74a084d4dc22db7e8f860c008de593))
+* terms of use updates with updated giving fund information ([8a60dc8](https://github.com/kiva/ui/commit/8a60dc85f49916d1c4b854ad07c89678003988b3))
+
 ## [3.33.0](https://github.com/kiva/ui/compare/v3.32.0...v3.33.0) (2025-10-06)
 
 ### 🎉 New Features
