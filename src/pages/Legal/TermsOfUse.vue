@@ -152,7 +152,7 @@
 					<svg class="icon arrow"><use xlink:href="#icon-small-chevron" xmlns:xlink="http://www.w3.org/1999/xlink" /></svg>
 					<p>
 						<strong>Basically,</strong><br>
-						Again, lending on Kiva is risky! That means you should only lend money that you can afford to lose. Once you've made a loan, you can't cancel it, and Kiva doesnt guarantee that it will be repaid. You also won't earn interest on Kiva loans.
+						Again, lending on Kiva is risky! That means you should only lend money that you can afford to lose. Once you've made a loan, you can't cancel it, and Kiva doesn't guarantee that it will be repaid. You also won't earn interest on Kiva loans.
 					</p>
 				</div>
 			</div>
