@@ -39,6 +39,7 @@
 						:user-balance="userBalance"
 						:custom-href="getCustomHref($router, loan.id)"
 						:enable-ai-loan-pills="enableAiLoanPills"
+						:ai-pills="loan.aiPills"
 						@add-to-basket="addToBasket"
 						@show-cart-modal="showCartModal"
 						@show-loan-details="showLoanDetails"
