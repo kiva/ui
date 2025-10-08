@@ -131,7 +131,13 @@
 				md:tw-mt-0"
 			>
 				<div
-					v-show="!editDonation"
+					v-show="isCampaignDonation"
+					class="tw-hidden md:tw-block tw-text-right"
+				>
+					{{ formattedAmount }}
+				</div>
+				<div
+					v-show="!editDonation && !isCampaignDonation"
 					class="tw-hidden md:tw-block tw-text-right"
 				>
 					<button
@@ -157,7 +163,10 @@
 						/>
 					</button>
 				</div>
-				<div v-show="editDonation" class="small-12 columns donation-amount-input-wrapper">
+				<div
+					v-show="editDonation && !isCampaignDonation"
+					class="small-12 columns donation-amount-input-wrapper"
+				>
 					<kv-text-input
 						class="donation-amount-input"
 						data-testid="basket-donation-edit-input"
