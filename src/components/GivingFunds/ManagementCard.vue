@@ -18,6 +18,7 @@
 					<h2 class="tw-mb-1">
 						<a
 							class="tw-no-underline tw-text-primary hover:tw-text-action"
+							v-kv-track-event="['giving-funds', 'click', 'management-card-title']"
 							:href="`${givingFundRootPath}/${fund.id}`"
 							target="_blank"
 						>
