@@ -802,16 +802,6 @@ export default {
 		);
 
 		this.isNavUpdateExp = navExperiment?.version === 'b';
-
-		const countriesNotLentToExperiment = trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'lend-menu',
-			COUNTRIES_NOT_LENT_TO_EXP,
-			'EXP-MP-1824-Aug2025',
-		);
-
-		this.isCountriesNotLentToExp = countriesNotLentToExperiment?.version === 'b';
 	},
 	mounted() {
 		const { version } = this.apollo.readFragment({
@@ -844,6 +834,16 @@ export default {
 
 		this.determineIfMobile();
 		window.addEventListener('resize', this.throttledDetermineIfMobile);
+
+		const countriesNotLentToExperiment = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'lend-menu',
+			COUNTRIES_NOT_LENT_TO_EXP,
+			'EXP-MP-1824-Aug2025',
+		);
+
+		this.isCountriesNotLentToExp = countriesNotLentToExperiment?.version === 'b';
 	},
 	beforeUnmount() {
 		window.removeEventListener('resize', this.throttledDetermineIfMobile);
