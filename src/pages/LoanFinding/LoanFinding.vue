@@ -147,7 +147,6 @@ import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.g
 import flssLoansQueryExtended from '#src/graphql/query/flssLoansQueryExtended.graphql';
 import loanRecommendationsQueryExtended from '#src/graphql/query/loanRecommendationsExtendedQuery.graphql';
 import userInfoQuery from '#src/graphql/query/userInfo.graphql';
-import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 
 const prefetchedFlssVariables = {
 	pageLimit: 4,
@@ -179,7 +178,7 @@ export default {
 		QuickFiltersSection,
 		WwwPage,
 	},
-	mixins: [retryAfterExpiredBasket, fiveDollarsTest, borrowerProfileExpMixin, aiLoanPillsTest],
+	mixins: [retryAfterExpiredBasket, fiveDollarsTest, borrowerProfileExpMixin],
 	head() {
 		return {
 			title: 'Make a loan, change a life | Loans by category',

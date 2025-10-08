@@ -4,6 +4,7 @@
 			<SideSheetHeader />
 			<SideSheetLoanTags
 				:enable-ai-loan-pills="enableAiLoanPills"
+				:ai-loan-pills="aiPills"
 			/>
 			<LoanProgress
 				:loading="loading"
@@ -76,7 +77,7 @@ import { useRouter } from 'vue-router';
 import { KvLendCta } from '@kiva/kv-components';
 import useBorrowerProfileData from '#src/composables/useBorrowerProfileData';
 import logFormatter from '#src/util/logFormatter';
-
+import { fetchAiLoanPills } from '#src/util/aiLoanPIillsUtils';
 import { addMonths, differenceInWeeks } from 'date-fns';
 import { FUNDRAISING } from '#src/api/fixtures/LoanStatusEnum';
 import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
@@ -144,6 +145,17 @@ export default {
 		const borrowerProfile = useBorrowerProfileData(apollo, cookieStore);
 		// Provide borrower profile data to child components
 		provide('borrowerProfile', borrowerProfile);
+
+		const aiPills = [];
+		if (props.enableAiLoanPills) {
+			fetchAiLoanPills(apollo, [props.loanId]).then(result => {
+				const pills = result?.[0].pills ?? [];
+				const labeledPills = pills.map(pill => ({
+					label: pill,
+				}));
+				aiPills.push(...labeledPills);
+			});
+		}
 
 		const inPfp = computed(() => borrowerProfile.inPfp.value);
 		const loan = computed(() => borrowerProfile.loan.value);
@@ -226,6 +238,7 @@ export default {
 			userBalance,
 			weeksToRepay,
 			loanStatus,
+			aiPills,
 		};
 	}
 };
