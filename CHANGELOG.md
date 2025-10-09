@@ -1,3 +1,29 @@
+## [3.34.0](https://github.com/kiva/ui/compare/v3.33.0...v3.34.0) (2025-10-09)
+
+### 🎉 New Features
+
+* ai loans test added ([#6321](https://github.com/kiva/ui/issues/6321)) ([2ba7962](https://github.com/kiva/ui/commit/2ba79627f56a9741180208d7bb20a7c12e454407))
+* change display of donation item if they are tagged with metadata ([942f390](https://github.com/kiva/ui/commit/942f390da9f0ce260de24595c6d8fbf699851d63))
+
+### 🐛 Bugfixes
+
+* add tracking to card link ([fd06f88](https://github.com/kiva/ui/commit/fd06f8818825309715054363ac392e380775e4c9))
+* ensure countries not lent to gets correct assignment ([35ce306](https://github.com/kiva/ui/commit/35ce30602cb8ad6d9652d06a80ae07c3b875f03f))
+* get new upsell loan when full loan amount was not added to the basket ([9ce2280](https://github.com/kiva/ui/commit/9ce22801c2b1b3b8b43e9d8409907ca06fbad543))
+* gf donation hide edit for mobile ([b46c2d1](https://github.com/kiva/ui/commit/b46c2d110d323051640ffee41c3f5d40c8926bcc))
+* guard against failed live loan image fetch, allow render of card without image ([e440475](https://github.com/kiva/ui/commit/e440475bf40b1efdffca7204d4516ff9ec74221c))
+* refresh totals for other basket errors in upsell module ([342e1a1](https://github.com/kiva/ui/commit/342e1a1d34b2330f1f17ba021ce7ce464d5fe562))
+* resolve errors in mfa page ([30e8597](https://github.com/kiva/ui/commit/30e8597c15fd9333ce8152553523be430a71acf6))
+* spelling line 155 ([07b7904](https://github.com/kiva/ui/commit/07b790416f74a084d4dc22db7e8f860c008de593))
+* terms of use copy edits and highlighted changes ([8ecd508](https://github.com/kiva/ui/commit/8ecd5084714eca2f8f20feb35685f35786d4669a))
+* terms of use updates with updated giving fund information ([8a60dc8](https://github.com/kiva/ui/commit/8a60dc85f49916d1c4b854ad07c89678003988b3))
+* various gf fixes ([c5f29d1](https://github.com/kiva/ui/commit/c5f29d17ab4ca15879728485d5f5cf29304ab441))
+
+### 🧹 Chores
+
+* **release:** 3.34.0-rc.1 [skip ci] ([fdafd2b](https://github.com/kiva/ui/commit/fdafd2bc285b09500225ac9681616f47970c7ea9))
+* **release:** 3.34.0-rc.2 [skip ci] ([e53f7b5](https://github.com/kiva/ui/commit/e53f7b515f83fd7009841168fd1c8173eb52bc68)), closes [#6321](https://github.com/kiva/ui/issues/6321)
+
 ## [3.34.0-rc.2](https://github.com/kiva/ui/compare/v3.34.0-rc.1...v3.34.0-rc.2) (2025-10-08)
 
 ### 🎉 New Features
