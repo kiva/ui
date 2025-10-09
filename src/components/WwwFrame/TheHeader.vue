@@ -653,7 +653,7 @@ export default {
 			trusteeId: null,
 			userId: null,
 			isNavUpdateExp: false,
-			isCountriesNotLentToExp: null,
+			isCountriesNotLentToExp: false,
 			throttledDetermineIfMobile: null,
 		};
 	},
@@ -737,11 +737,8 @@ export default {
 			}
 			return this.basketCount;
 		},
-		countriesNotLentToEnabled() {
-			return !!this.userId && this.isCountriesNotLentToExp;
-		},
 		countriesNotLentToUrl() {
-			return this.countriesNotLentToEnabled
+			return this.isCountriesNotLentToExp
 				? '/lend/filter?countries-not-lent-to=true'
 				: '/lend/countries-not-lent';
 		},
@@ -835,15 +832,15 @@ export default {
 		this.determineIfMobile();
 		window.addEventListener('resize', this.throttledDetermineIfMobile);
 
-		const countriesNotLentToExperiment = trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'lend-menu',
-			COUNTRIES_NOT_LENT_TO_EXP,
-			'EXP-MP-1824-Aug2025',
-		);
-
-		this.isCountriesNotLentToExp = countriesNotLentToExperiment?.version === 'b';
+		if (!this.isVisitor) {
+			this.isCountriesNotLentToExp = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'lend-menu',
+				COUNTRIES_NOT_LENT_TO_EXP,
+				'EXP-MP-1824-Aug2025',
+			)?.version === 'b';
+		}
 	},
 	beforeUnmount() {
 		window.removeEventListener('resize', this.throttledDetermineIfMobile);
