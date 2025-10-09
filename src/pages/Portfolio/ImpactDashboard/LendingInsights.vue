@@ -108,23 +108,28 @@
 		<div>
 			<kv-tabs @tab-changed="setActiveTab" :active-tab="currentTab">
 				<template #tabNav>
-					<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
-						Lending insights
-					</h2>
-					<kv-tab
-						for-panel="ytd"
-						class="tab-header"
-						v-kv-track-event="['portfolio', 'click', 'stats-YTD']"
-					>
-						{{ yearToDate }}
-					</kv-tab>
-					<kv-tab
-						for-panel="lifetime"
-						class="tab-header"
-						v-kv-track-event="['portfolio', 'click', 'stats-Lifetime']"
-					>
-						Lifetime
-					</kv-tab>
+					<div class="tw-flex tw-items-center tw-justify-between tw-w-full">
+						<!-- eslint-disable-next-line max-len -->
+						<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
+							Lending insights
+						</h2>
+						<div class="tw-flex tw-gap-x-2.5 md:tw-gap-x-5 lg:tw-gap-x-6">
+							<kv-tab
+								for-panel="ytd"
+								class="tab-header"
+								v-kv-track-event="['portfolio', 'click', 'stats-YTD']"
+							>
+								{{ yearToDate }}
+							</kv-tab>
+							<kv-tab
+								for-panel="lifetime"
+								class="tab-header"
+								v-kv-track-event="['portfolio', 'click', 'stats-Lifetime']"
+							>
+								Lifetime
+							</kv-tab>
+						</div>
+					</div>
 				</template>
 				<template #tabPanels>
 					<kv-tab-panel id="ytd">
@@ -185,7 +190,8 @@
 								</router-link>
 								<span
 									v-else-if="currentYearPercentile === 99"
-									class="stat-link tw-text-eco-green-2 tw-font-medium tw-inline-flex tw-items-center"
+									class="stat-link tw-text-eco-green-2 tw-font-medium
+										tw-inline-flex tw-items-center"
 								>
 									Thank you!
 								</span>
@@ -568,10 +574,6 @@ export default {
 
 .tab-header {
 	@apply tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left;
-}
-
-:deep(.kv-tabs) {
-	@apply tw-gap-x-2 md:tw-gap-x-3 lg:tw-gap-x-4;
 }
 
 @screen md {
