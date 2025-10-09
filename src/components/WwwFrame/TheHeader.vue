@@ -784,7 +784,12 @@ export default {
 					},
 				});
 			},
-		}
+		},
+		{
+			query: experimentAssignmentQuery,
+			preFetchVariables: () => ({ id: COUNTRIES_NOT_LENT_TO_EXP }),
+			preFetch: true,
+		},
 	],
 	created() {
 		this.isBasketLoading = this.$renderConfig?.useCDNCaching ?? false;
@@ -799,6 +804,16 @@ export default {
 		);
 
 		this.isNavUpdateExp = navExperiment?.version === 'b';
+
+		if (!this.isVisitor) {
+			this.isCountriesNotLentToExp = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'lend-menu',
+				COUNTRIES_NOT_LENT_TO_EXP,
+				'EXP-MP-1824-Aug2025',
+			)?.version === 'b';
+		}
 	},
 	mounted() {
 		const { version } = this.apollo.readFragment({
@@ -831,16 +846,6 @@ export default {
 
 		this.determineIfMobile();
 		window.addEventListener('resize', this.throttledDetermineIfMobile);
-
-		if (!this.isVisitor) {
-			this.isCountriesNotLentToExp = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'lend-menu',
-				COUNTRIES_NOT_LENT_TO_EXP,
-				'EXP-MP-1824-Aug2025',
-			)?.version === 'b';
-		}
 	},
 	beforeUnmount() {
 		window.removeEventListener('resize', this.throttledDetermineIfMobile);
