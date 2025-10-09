@@ -26,7 +26,7 @@
 								</h2>
 							</div>
 							<div
-								v-show="!editDonation"
+								v-show="!editDonation && !isCampaignDonation"
 								class="md:tw-hidden"
 							>
 								<button
@@ -72,6 +72,12 @@
 									/>
 								</button>
 							</div>
+							<div
+								v-show="isCampaignDonation"
+								class="md:tw-hidden"
+							>
+								{{ formattedAmount }}
+							</div>
 						</div>
 						<div class="tw-block md:tw-hidden tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
 							<img
@@ -94,7 +100,16 @@
 								{{ basketDonationTagline }}
 							</p>
 						</div>
+						<a
+							href="/lp/giving-fund#social-funds-rtc-12"
+							v-if="isCampaignDonation"
+							class="tw-text-base tw-text-link" target="_blank" rel="noopener"
+							v-kv-track-event="['basket', 'click', 'giving-fund-info-link']"
+						>
+							Learn more about giving funds
+						</a>
 						<button
+							v-else
 							class="tw-flex tw-items-center tw-text-base tw-text-link"
 							data-testid="basket-donation-info-lightbox"
 							@click="triggerDefaultLightbox"
@@ -122,7 +137,13 @@
 				md:tw-mt-0"
 			>
 				<div
-					v-show="!editDonation"
+					v-show="isCampaignDonation"
+					class="tw-hidden md:tw-block tw-text-right"
+				>
+					{{ formattedAmount }}
+				</div>
+				<div
+					v-show="!editDonation && !isCampaignDonation"
 					class="tw-hidden md:tw-block tw-text-right"
 				>
 					<button
@@ -148,7 +169,10 @@
 						/>
 					</button>
 				</div>
-				<div v-show="editDonation" class="small-12 columns donation-amount-input-wrapper">
+				<div
+					v-show="editDonation && !isCampaignDonation"
+					class="small-12 columns donation-amount-input-wrapper"
+				>
 					<kv-text-input
 						class="donation-amount-input"
 						data-testid="basket-donation-edit-input"
@@ -287,6 +311,9 @@ export default {
 		},
 	},
 	computed: {
+		isCampaignDonation() {
+			return !!this.donation?.metadata?.campaignId;
+		},
 		donationTitle() {
 			return 'Donation to Kiva';
 		},
@@ -303,12 +330,18 @@ export default {
 			return numeral(this.amount).format('$0,0.00');
 		},
 		basketDonationHeader() {
+			if (this.isCampaignDonation) {
+				return 'Donate to a giving fund';
+			}
 			if (this.hasLoans) {
 				return `Help cover the cost of your loan${this.loanCount > 1 ? 's' : ''}`;
 			}
 			return 'Donate to Kiva';
 		},
 		basketDonationTagline() {
+			if (this.isCampaignDonation) {
+				return 'Your donation will be lent out to a critical impact area.';
+			}
 			if (this.hasKivaCards && !this.hasLoans) {
 				// eslint-disable-next-line max-len
 				return '100% of your Kiva Card money goes to the people you support — we never take a fee. As a nonprofit, we rely on donations to advance our mission.';

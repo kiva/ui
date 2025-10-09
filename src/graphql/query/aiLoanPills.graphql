@@ -1,0 +1,8 @@
+query GetLoanPills($loanIds: [Int!]!) {
+  getLoanPills(loanIds: $loanIds) {
+    values {
+      loanId
+      pills
+    }
+  }
+}

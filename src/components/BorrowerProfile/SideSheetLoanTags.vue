@@ -3,7 +3,7 @@
 		<KvLoadingPlaceholder v-if="loading" class="!tw-w-1/2 tw-mx-auto tw-mt-1 tw-h-3" />
 		<KvLoanCallouts
 			v-else
-			:callouts="loanCallouts"
+			:callouts="visibleCallouts"
 			:add-bg-color="false"
 			class="loan-callouts"
 		/>
@@ -18,10 +18,14 @@ import {
 } from 'vue';
 import { loanCardComputedProperties, KvLoanCallouts, KvLoadingPlaceholder } from '@kiva/kv-components';
 
-defineProps({
+const props = defineProps({
 	enableAiLoanPills: {
 		type: Boolean,
 		default: () => false,
+	},
+	aiLoanPills: {
+		type: Array,
+		default: () => ([]),
 	},
 });
 
@@ -39,6 +43,12 @@ const computedPropertiesVariables = reactive({
 });
 
 const { loanCallouts } = loanCardComputedProperties(computedPropertiesVariables);
+
+const visibleCallouts = computed(() => {
+	return props.enableAiLoanPills && props.aiLoanPills.length
+		? props.aiLoanPills
+		: loanCallouts.value;
+});
 </script>
 
 <style lang="postcss" scoped>
