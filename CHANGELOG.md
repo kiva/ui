@@ -1,3 +1,10 @@
+## [3.35.1-rc.1](https://github.com/kiva/ui/compare/v3.35.0...v3.35.1-rc.1) (2025-10-10)
+
+### 🐛 Bugfixes
+
+* ensure countries not lent works on client side assignment ([d261473](https://github.com/kiva/ui/commit/d2614732b7cc5aebbeeebaeddd56fbaa3cd483e6))
+* mobile links not working in header experiment ([0fd9e0e](https://github.com/kiva/ui/commit/0fd9e0e2eb5ec5dc1393007201c139e2c90ee810))
+
 ## [3.35.0](https://github.com/kiva/ui/compare/v3.34.0...v3.35.0) (2025-10-10)
 
 ### 🎉 New Features
