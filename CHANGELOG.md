@@ -1,3 +1,18 @@
+## [3.35.0](https://github.com/kiva/ui/compare/v3.34.0...v3.35.0) (2025-10-10)
+
+### 🎉 New Features
+
+* new header tracking events ([26eb79b](https://github.com/kiva/ui/commit/26eb79b5bd7a03e12f2dfadb0aacc5d901c8402e))
+
+### 🐛 Bugfixes
+
+* adjust how countries not lent to exp set ([3a1b599](https://github.com/kiva/ui/commit/3a1b59991be2674e3d67206c3b28cd3ef3802673))
+* fix assignment for nav ([1dd0a47](https://github.com/kiva/ui/commit/1dd0a47372b3e497f4a4e3680be6ddb716b7dea5))
+
+### 🧹 Chores
+
+* **release:** 3.35.0-rc.1 [skip ci] ([efb42c9](https://github.com/kiva/ui/commit/efb42c95f9a7c48de0b2f0e479e8d69e8cde9679))
+
 ## [3.35.0-rc.1](https://github.com/kiva/ui/compare/v3.34.0...v3.35.0-rc.1) (2025-10-10)
 
 ### 🎉 New Features
