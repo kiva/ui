@@ -839,10 +839,12 @@ export default {
 			this.isCountriesNotLentToExp = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
-				'lend-menu',
+				'Lending',
 				COUNTRIES_NOT_LENT_TO_EXP,
 				'EXP-MP-1824-Aug2025',
 			)?.version === 'b';
+		} else {
+			this.isCountriesNotLentToExp = false;
 		}
 	},
 	beforeUnmount() {
