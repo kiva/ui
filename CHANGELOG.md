@@ -1,3 +1,10 @@
+## [3.35.1-rc.2](https://github.com/kiva/ui/compare/v3.35.1-rc.1...v3.35.1-rc.2) (2025-10-10)
+
+### 🐛 Bugfixes
+
+* make category consistent for analytics ([6479bdb](https://github.com/kiva/ui/commit/6479bdb3fce6bd08adcaf130569e7aeed2392226))
+* show lend menu for guest ([16c8c15](https://github.com/kiva/ui/commit/16c8c1584dbc88bc90a72f24f28fa42cd3b89ed3))
+
 ## [3.35.1-rc.1](https://github.com/kiva/ui/compare/v3.35.0...v3.35.1-rc.1) (2025-10-10)
 
 ### 🐛 Bugfixes
