@@ -678,6 +678,13 @@ export default {
 		this.fetchRecommendedLoans();
 		this.fetchMoreWaysToHelpData();
 		this.loadInitialBasketItems();
+
+		const queryLoanId = this.$router.currentRoute?.value?.query?.loanId ?? null;
+
+		if (queryLoanId) {
+			this.selectedLoan = { id: Number(queryLoanId) };
+			this.showBPSideSheet = true;
+		}
 	},
 };
 </script>
