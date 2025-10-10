@@ -143,25 +143,28 @@
 							</span>
 						</router-link>
 
-						<transition name="kvfastfade">
-							<div
-								v-show="isLendMenuVisible"
-								class="
+						<!-- Ensure countries not lent to experiment assignment is loaded before rendering -->
+						<template v-if="isCountriesNotLentToExp !== null">
+							<transition name="kvfastfade">
+								<div
+									v-show="isLendMenuVisible"
+									class="
 									tw-absolute tw-left-0 tw-right-0 tw-top-8 md:tw-top-9 tw-z-dropdown
 									tw-bg-primary tw-border-b tw-border-tertiary"
-								data-testid="header-lend-dropdown-list"
-								style="margin-top: 1px;"
-							>
-								<kv-page-container>
-									<the-lend-menu
-										ref="lendMenu"
-										:countries-not-lent-to-url="countriesNotLentToUrl"
-										@pointerenter="onLendMenuPointerEnter"
-										@pointerleave="onLendMenuPointerLeave"
-									/>
-								</kv-page-container>
-							</div>
-						</transition>
+									data-testid="header-lend-dropdown-list"
+									style="margin-top: 1px;"
+								>
+									<kv-page-container>
+										<the-lend-menu
+											ref="lendMenu"
+											:countries-not-lent-to-url="countriesNotLentToUrl"
+											@pointerenter="onLendMenuPointerEnter"
+											@pointerleave="onLendMenuPointerLeave"
+										/>
+									</kv-page-container>
+								</div>
+							</transition>
+						</template>
 
 						<!-- Search -->
 						<div
@@ -653,7 +656,7 @@ export default {
 			trusteeId: null,
 			userId: null,
 			isNavUpdateExp: false,
-			isCountriesNotLentToExp: false,
+			isCountriesNotLentToExp: null,
 			throttledDetermineIfMobile: null,
 		};
 	},
@@ -785,11 +788,6 @@ export default {
 				});
 			},
 		},
-		{
-			query: experimentAssignmentQuery,
-			preFetchVariables: () => ({ id: COUNTRIES_NOT_LENT_TO_EXP }),
-			preFetch: true,
-		},
 	],
 	created() {
 		this.isBasketLoading = this.$renderConfig?.useCDNCaching ?? false;
@@ -804,16 +802,6 @@ export default {
 		);
 
 		this.isNavUpdateExp = navExperiment?.version === 'b';
-
-		if (!this.isVisitor) {
-			this.isCountriesNotLentToExp = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'lend-menu',
-				COUNTRIES_NOT_LENT_TO_EXP,
-				'EXP-MP-1824-Aug2025',
-			)?.version === 'b';
-		}
 	},
 	mounted() {
 		const { version } = this.apollo.readFragment({
@@ -846,6 +834,16 @@ export default {
 
 		this.determineIfMobile();
 		window.addEventListener('resize', this.throttledDetermineIfMobile);
+
+		if (!this.isVisitor) {
+			this.isCountriesNotLentToExp = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'lend-menu',
+				COUNTRIES_NOT_LENT_TO_EXP,
+				'EXP-MP-1824-Aug2025',
+			)?.version === 'b';
+		}
 	},
 	beforeUnmount() {
 		window.removeEventListener('resize', this.throttledDetermineIfMobile);
