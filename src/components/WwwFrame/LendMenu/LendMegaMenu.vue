@@ -21,7 +21,7 @@
 		>
 			<kv-grid style="grid-template-columns: repeat(18, minmax(0, 1fr));">
 				<!-- categories -->
-				<div class="tw-col-span-7" ref="categories">
+				<div class="tw-col-span-7 tw-z-1" ref="categories">
 					<h2 class="tw-text-base tw-mb-2">
 						Categories
 					</h2>
@@ -121,9 +121,16 @@
 									</li>
 									<li>
 										<a
-											:href="countriesNotLentToUrl"
+											@click="clickCountriesNotLentTo"
 											v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
-											class="lend-menu-link tw-text-primary tw-text-left tw-py-1 tw-inline-block"
+											class="
+												lend-menu-link
+												tw-text-primary
+												tw-text-left
+												tw-py-1
+												tw-inline-block
+												tw-cursor-pointer
+											"
 										>
 											Countries I haven't lent to
 										</a>
@@ -314,7 +321,10 @@ export default {
 		},
 		trackMgLinkClick() {
 			this.$kvTrackEvent('TopNav', 'click-Lend-Menu-Monthly-Good', 'Lend-monthly');
-		}
+		},
+		clickCountriesNotLentTo() {
+			window.location.pathname = this.countriesNotLentToUrl;
+		},
 	},
 };
 </script>

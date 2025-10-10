@@ -143,28 +143,25 @@
 							</span>
 						</router-link>
 
-						<!-- Ensure countries not lent to experiment assignment is loaded before rendering -->
-						<template v-if="isCountriesNotLentToExp !== null">
-							<transition name="kvfastfade">
-								<div
-									v-show="isLendMenuVisible"
-									class="
-									tw-absolute tw-left-0 tw-right-0 tw-top-8 md:tw-top-9 tw-z-dropdown
-									tw-bg-primary tw-border-b tw-border-tertiary"
-									data-testid="header-lend-dropdown-list"
-									style="margin-top: 1px;"
-								>
-									<kv-page-container>
-										<the-lend-menu
-											ref="lendMenu"
-											:countries-not-lent-to-url="countriesNotLentToUrl"
-											@pointerenter="onLendMenuPointerEnter"
-											@pointerleave="onLendMenuPointerLeave"
-										/>
-									</kv-page-container>
-								</div>
-							</transition>
-						</template>
+						<transition name="kvfastfade">
+							<div
+								v-show="isLendMenuVisible"
+								class="
+								tw-absolute tw-left-0 tw-right-0 tw-top-8 md:tw-top-9 tw-z-dropdown
+								tw-bg-primary tw-border-b tw-border-tertiary"
+								data-testid="header-lend-dropdown-list"
+								style="margin-top: 1px;"
+							>
+								<kv-page-container>
+									<the-lend-menu
+										ref="lendMenu"
+										:countries-not-lent-to-url="countriesNotLentToUrl"
+										@pointerenter="onLendMenuPointerEnter"
+										@pointerleave="onLendMenuPointerLeave"
+									/>
+								</kv-page-container>
+							</div>
+						</transition>
 
 						<!-- Search -->
 						<div
@@ -656,7 +653,7 @@ export default {
 			trusteeId: null,
 			userId: null,
 			isNavUpdateExp: false,
-			isCountriesNotLentToExp: null,
+			isCountriesNotLentToExp: false,
 			throttledDetermineIfMobile: null,
 		};
 	},
@@ -843,8 +840,6 @@ export default {
 				COUNTRIES_NOT_LENT_TO_EXP,
 				'EXP-MP-1824-Aug2025',
 			)?.version === 'b';
-		} else {
-			this.isCountriesNotLentToExp = false;
 		}
 	},
 	beforeUnmount() {
