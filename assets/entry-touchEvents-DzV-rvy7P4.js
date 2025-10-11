@@ -1,0 +1,1 @@
+function a(r){[...document.body.children].forEach(t=>t.addEventListener("touchstart",r))}function e(r){[...document.body.children].forEach(t=>t.removeEventListener("touchstart",r))}function c(r,t){const n=Array.isArray(t)?t:[t];for(let o=0;o<n.length;o+=1)if(n[o]===r.target||n[o].contains(r.target))return!0;return!1}export{a,c as i,e as o};
