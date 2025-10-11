@@ -120,7 +120,7 @@
 										</span>
 									</li>
 									<li>
-										<a
+										<span
 											@click="clickCountriesNotLentTo"
 											v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
 											class="
@@ -133,7 +133,7 @@
 											"
 										>
 											Countries I haven't lent to
-										</a>
+										</span>
 									</li>
 								</ul>
 							</div>
