@@ -170,6 +170,7 @@ import { mdiArrowRight } from '@mdi/js';
 import {
 	KvLoadingPlaceholder, KvMaterialIcon, KvTab, KvTabPanel, KvTabs
 } from '@kiva/kv-components';
+import countriesNotLentToExpMixin from '#src/plugins/countries-not-lent-to-exp-mixin';
 import CountryList from './CountryList';
 import SearchList from './SearchList';
 
@@ -218,10 +219,6 @@ export default {
 			type: Boolean,
 			default: true,
 		},
-		countriesNotLentToUrl: {
-			type: String,
-			default: '/lend/countries-not-lent',
-		},
 		isUserDataLoading: {
 			type: Boolean,
 			default: false,
@@ -231,6 +228,7 @@ export default {
 			default: false,
 		},
 	},
+	mixins: [countriesNotLentToExpMixin],
 	data() {
 		return {
 			mgHighlightInNavVersion: null,
