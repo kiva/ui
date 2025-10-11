@@ -1,3 +1,10 @@
+## [3.35.1-rc.3](https://github.com/kiva/ui/compare/v3.35.1-rc.2...v3.35.1-rc.3) (2025-10-11)
+
+### 🐛 Bugfixes
+
+* change anchors to spans ([88fc98a](https://github.com/kiva/ui/commit/88fc98ab7905b656a6eacb1d6506d65de3eb48a0))
+* use click event instead of href ([30baa85](https://github.com/kiva/ui/commit/30baa850c78c452228d1372169d928f9acaa5e1c))
+
 ## [3.35.1-rc.2](https://github.com/kiva/ui/compare/v3.35.1-rc.1...v3.35.1-rc.2) (2025-10-10)
 
 ### 🐛 Bugfixes
