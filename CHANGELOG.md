@@ -1,3 +1,50 @@
+## [3.35.1-rc.3](https://github.com/kiva/ui/compare/v3.35.1-rc.2...v3.35.1-rc.3) (2025-10-11)
+
+### 🐛 Bugfixes
+
+* change anchors to spans ([88fc98a](https://github.com/kiva/ui/commit/88fc98ab7905b656a6eacb1d6506d65de3eb48a0))
+* use click event instead of href ([30baa85](https://github.com/kiva/ui/commit/30baa850c78c452228d1372169d928f9acaa5e1c))
+
+## [3.35.1-rc.2](https://github.com/kiva/ui/compare/v3.35.1-rc.1...v3.35.1-rc.2) (2025-10-10)
+
+### 🐛 Bugfixes
+
+* make category consistent for analytics ([6479bdb](https://github.com/kiva/ui/commit/6479bdb3fce6bd08adcaf130569e7aeed2392226))
+* show lend menu for guest ([16c8c15](https://github.com/kiva/ui/commit/16c8c1584dbc88bc90a72f24f28fa42cd3b89ed3))
+
+## [3.35.1-rc.1](https://github.com/kiva/ui/compare/v3.35.0...v3.35.1-rc.1) (2025-10-10)
+
+### 🐛 Bugfixes
+
+* ensure countries not lent works on client side assignment ([d261473](https://github.com/kiva/ui/commit/d2614732b7cc5aebbeeebaeddd56fbaa3cd483e6))
+* mobile links not working in header experiment ([0fd9e0e](https://github.com/kiva/ui/commit/0fd9e0e2eb5ec5dc1393007201c139e2c90ee810))
+
+## [3.35.0](https://github.com/kiva/ui/compare/v3.34.0...v3.35.0) (2025-10-10)
+
+### 🎉 New Features
+
+* new header tracking events ([26eb79b](https://github.com/kiva/ui/commit/26eb79b5bd7a03e12f2dfadb0aacc5d901c8402e))
+
+### 🐛 Bugfixes
+
+* adjust how countries not lent to exp set ([3a1b599](https://github.com/kiva/ui/commit/3a1b59991be2674e3d67206c3b28cd3ef3802673))
+* fix assignment for nav ([1dd0a47](https://github.com/kiva/ui/commit/1dd0a47372b3e497f4a4e3680be6ddb716b7dea5))
+
+### 🧹 Chores
+
+* **release:** 3.35.0-rc.1 [skip ci] ([efb42c9](https://github.com/kiva/ui/commit/efb42c95f9a7c48de0b2f0e479e8d69e8cde9679))
+
+## [3.35.0-rc.1](https://github.com/kiva/ui/compare/v3.34.0...v3.35.0-rc.1) (2025-10-10)
+
+### 🎉 New Features
+
+* new header tracking events ([26eb79b](https://github.com/kiva/ui/commit/26eb79b5bd7a03e12f2dfadb0aacc5d901c8402e))
+
+### 🐛 Bugfixes
+
+* adjust how countries not lent to exp set ([3a1b599](https://github.com/kiva/ui/commit/3a1b59991be2674e3d67206c3b28cd3ef3802673))
+* fix assignment for nav ([1dd0a47](https://github.com/kiva/ui/commit/1dd0a47372b3e497f4a4e3680be6ddb716b7dea5))
+
 ## [3.34.0](https://github.com/kiva/ui/compare/v3.33.0...v3.34.0) (2025-10-09)
 
 ### 🎉 New Features

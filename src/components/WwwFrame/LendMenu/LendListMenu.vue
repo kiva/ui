@@ -149,13 +149,13 @@
 							<span class="tw-block tw-py-1 tw-text-tertiary">Saved searches</span>
 						</li>
 						<li>
-							<a
-								:href="countriesNotLentToUrl"
-								class="lend-link tw-text-primary"
+							<span
+								@click="clickCountriesNotLentTo"
+								class="lend-link tw-text-primary tw-cursor-pointer"
 								v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
 							>
 								Countries I haven't lent to
-							</a>
+							</span>
 						</li>
 					</ul>
 				</kv-tab-panel>
@@ -170,6 +170,7 @@ import { mdiArrowRight } from '@mdi/js';
 import {
 	KvLoadingPlaceholder, KvMaterialIcon, KvTab, KvTabPanel, KvTabs
 } from '@kiva/kv-components';
+import countriesNotLentToExpMixin from '#src/plugins/countries-not-lent-to-exp-mixin';
 import CountryList from './CountryList';
 import SearchList from './SearchList';
 
@@ -218,10 +219,6 @@ export default {
 			type: Boolean,
 			default: true,
 		},
-		countriesNotLentToUrl: {
-			type: String,
-			default: '/lend/countries-not-lent',
-		},
 		isUserDataLoading: {
 			type: Boolean,
 			default: false,
@@ -231,6 +228,7 @@ export default {
 			default: false,
 		},
 	},
+	mixins: [countriesNotLentToExpMixin],
 	data() {
 		return {
 			mgHighlightInNavVersion: null,
@@ -263,7 +261,10 @@ export default {
 		},
 		trackMgLinkClick() {
 			this.$kvTrackEvent('TopNav', 'click-Lend-Menu-Monthly-Good', 'Lend-monthly');
-		}
+		},
+		clickCountriesNotLentTo() {
+			window.location.pathname = this.countriesNotLentToUrl;
+		},
 	},
 };
 </script>
