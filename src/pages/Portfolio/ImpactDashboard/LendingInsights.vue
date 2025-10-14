@@ -131,7 +131,7 @@
 						<!-- Current year Panel -->
 						<kv-grid as="dl" class="stats-container-exp lg:!tw-px-4 lg:!tw-py-1.4 md:!tw-pr-4">
 							<!-- Total amount lent -->
-							<div class="secondary-card tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 								<kv-loading-placeholder
 									v-if="loading"
 									class="stat-placeholder"
@@ -157,7 +157,7 @@
 							</div>
 							<!-- Lending percentile -->
 							<div
-								class="main-ytd-card tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-5
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-5
 										tw-bg-eco-green-3 tw-rounded tw-px-4 tw-py-2 md:!tw-py-1.5 md:!tw-px-3"
 							>
 								<kv-loading-placeholder
@@ -191,7 +191,7 @@
 								</span>
 							</div>
 							<!-- Loans made -->
-							<div class="secondary-card tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
+							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
 								<kv-loading-placeholder
 									v-if="loading"
 									class="stat-placeholder"
@@ -205,7 +205,7 @@
 								</dt>
 							</div>
 							<!-- Countries supported -->
-							<div class="secondary-card tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
+							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
 								<kv-loading-placeholder
 									v-if="loading"
 									class="stat-placeholder"
