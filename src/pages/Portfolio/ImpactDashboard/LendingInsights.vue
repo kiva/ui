@@ -129,7 +129,7 @@
 				<template #tabPanels>
 					<kv-tab-panel id="ytd">
 						<!-- Current year Panel -->
-						<kv-grid as="dl" class="stats-container-exp">
+						<kv-grid as="dl" class="stats-container-exp lg:!tw-px-4 lg:!tw-py-1.4 md:!tw-pr-4">
 							<!-- Total amount lent -->
 							<div class="secondary-card tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 								<kv-loading-placeholder
@@ -158,7 +158,7 @@
 							<!-- Lending percentile -->
 							<div
 								class="main-ytd-card tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-5
-										tw-bg-eco-green-3 tw-rounded"
+										tw-bg-eco-green-3 tw-rounded tw-px-4 tw-py-2 md:!tw-py-1.5 md:!tw-px-3"
 							>
 								<kv-loading-placeholder
 									v-if="loading"
@@ -574,22 +574,10 @@ export default {
 	@apply tw-gap-x-2 md:tw-gap-x-3 lg:tw-gap-x-4;
 }
 
-.main-ytd-card {
-	padding: 1rem 2rem;
-}
-
 @screen md {
 	.stat-placeholder {
 		height: 44px;
 		margin-bottom: 10.5px;
-	}
-
-	.stats-container-exp {
-		padding-right: 2rem;
-	}
-
-	.main-ytd-card {
-		padding: 0.75rem 2rem;
 	}
 }
 
@@ -599,10 +587,6 @@ export default {
 		@apply tw-h-6;
 	}
 
-	.stats-container-exp {
-		padding: 0.75rem 2rem;
-	}
-
 	.stat-def,
 	.stat-link {
 		font-size: 0.875rem;
@@ -610,10 +594,6 @@ export default {
 
 	.stat-link span {
 		@apply tw-w-3.5 tw-h-2;
-	}
-
-	.main-ytd-card {
-		padding: 0.75rem 1.5rem;
 	}
 }
 </style>
