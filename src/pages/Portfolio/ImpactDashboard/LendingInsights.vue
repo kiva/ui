@@ -131,7 +131,7 @@
 						<!-- Current year Panel -->
 						<kv-grid as="dl" class="stats-container-exp">
 							<!-- Total amount lent -->
-							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+							<div class="secondary-card tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 								<kv-loading-placeholder
 									v-if="loading"
 									class="stat-placeholder"
@@ -157,7 +157,7 @@
 							</div>
 							<!-- Lending percentile -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3
+								class="main-ytd-card tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-5
 										tw-bg-eco-green-3 tw-rounded"
 							>
 								<kv-loading-placeholder
@@ -165,7 +165,7 @@
 									class="stat-placeholder"
 									style="width: 7rem;"
 								/>
-								<dt v-show="!loading" class="stat-value">
+								<dt v-show="!loading" class="stat-value" style="color: white;">
 									{{ formattedCurrentYearPercentile }}
 								</dt>
 								<dd class="stat-def">
@@ -179,7 +179,7 @@
 								>
 									{{ nextPercentileMsg }}
 									<kv-material-icon
-										class="tw-ml-0.5 tw-w-2 tw-h-2"
+										class="tw-ml-0.5 tw-w-3.5 tw-h-2"
 										:icon="mdiArrowRight"
 									/>
 								</router-link>
@@ -191,7 +191,7 @@
 								</span>
 							</div>
 							<!-- Loans made -->
-							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+							<div class="secondary-card tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
 								<kv-loading-placeholder
 									v-if="loading"
 									class="stat-placeholder"
@@ -205,7 +205,7 @@
 								</dt>
 							</div>
 							<!-- Countries supported -->
-							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+							<div class="secondary-card tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
 								<kv-loading-placeholder
 									v-if="loading"
 									class="stat-placeholder"
@@ -547,7 +547,7 @@ export default {
 }
 
 .stats-container-exp {
-	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center tw-bg-eco-green-4;
+	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center tw-bg-eco-green-4 tw-items-center;
 }
 
 .stat-placeholder {
@@ -574,10 +574,22 @@ export default {
 	@apply tw-gap-x-2 md:tw-gap-x-3 lg:tw-gap-x-4;
 }
 
+.main-ytd-card {
+	padding: 1rem 2rem;
+}
+
 @screen md {
 	.stat-placeholder {
 		height: 44px;
 		margin-bottom: 10.5px;
+	}
+
+	.stats-container-exp {
+		padding-right: 2rem;
+	}
+
+	.main-ytd-card {
+		padding: 0.75rem 2rem;
 	}
 }
 
@@ -585,6 +597,28 @@ export default {
 	.stat-placeholder {
 		margin-bottom: 11.5px;
 		@apply tw-h-6;
+	}
+
+	.stats-container-exp {
+		padding: 0.75rem 2rem;
+	}
+
+	.stat-link span {
+		@apply tw-w-3.5 tw-h-2;
+	}
+
+	.main-ytd-card {
+		padding: 0.75rem 1.5rem;
+		.stat-link {
+			font-size: 0.875rem;
+		}
+	}
+
+	.secondary-card {
+		.stat-def,
+		.stat-link {
+			font-size: 0.875rem;
+		}
 	}
 }
 </style>
