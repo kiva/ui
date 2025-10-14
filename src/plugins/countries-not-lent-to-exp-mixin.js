@@ -20,6 +20,6 @@ export default {
 		this.isCountriesNotLentToExp = this.apollo.readFragment({
 			id: `Experiment:${COUNTRIES_NOT_LENT_TO_EXP}`,
 			fragment: experimentVersionFragment,
-		})?.version === 'b' ?? {};
+		})?.version === 'b' ?? false;
 	},
 };
