@@ -9,7 +9,6 @@
 			:favorites="favoritesCount"
 			:user-id="userId"
 			:is-channels-loading="isChannelsLoading"
-			:countries-not-lent-to-url="countriesNotLentToUrl"
 			:is-regions-loading="isRegionsLoading"
 			:is-user-data-loading="isUserDataLoading"
 			:show-m-g-upsell-link="showMGUpsellLink"
@@ -23,7 +22,6 @@
 			:favorites="favoritesCount"
 			:user-id="userId"
 			:is-channels-loading="isChannelsLoading"
-			:countries-not-lent-to-url="countriesNotLentToUrl"
 			:is-regions-loading="isRegionsLoading"
 			:is-user-data-loading="isUserDataLoading"
 			:show-m-g-upsell-link="showMGUpsellLink"
@@ -86,12 +84,6 @@ export default {
 			isUserDataLoading: false,
 			showMGUpsellLink: false,
 		};
-	},
-	props: {
-		countriesNotLentToUrl: {
-			type: String,
-			default: '/lend/countries-not-lent',
-		},
 	},
 	apollo: {
 		query: pageQuery,
