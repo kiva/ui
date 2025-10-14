@@ -129,7 +129,7 @@
 				<template #tabPanels>
 					<kv-tab-panel id="ytd">
 						<!-- Current year Panel -->
-						<kv-grid as="dl" class="stats-container-exp lg:!tw-px-4 lg:!tw-py-1.4 md:!tw-pr-4">
+						<kv-grid as="dl" class="stats-container-exp lg:!tw-px-4 lg:!tw-py-1.5 md:!tw-pr-4">
 							<!-- Total amount lent -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 								<kv-loading-placeholder
@@ -589,7 +589,7 @@ export default {
 
 	.stat-def,
 	.stat-link {
-		font-size: 0.875rem;
+		@apply tw-text-small
 	}
 
 	.stat-link span {
