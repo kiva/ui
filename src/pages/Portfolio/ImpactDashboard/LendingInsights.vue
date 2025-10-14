@@ -165,7 +165,7 @@
 									class="stat-placeholder"
 									style="width: 7rem;"
 								/>
-								<dt v-show="!loading" class="stat-value" style="color: white;">
+								<dt v-show="!loading" class="stat-value !tw-text-white">
 									{{ formattedCurrentYearPercentile }}
 								</dt>
 								<dd class="stat-def">
