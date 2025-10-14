@@ -149,13 +149,13 @@
 							<span class="tw-block tw-py-1 tw-text-tertiary">Saved searches</span>
 						</li>
 						<li>
-							<span
-								@click="clickCountriesNotLentTo"
-								class="lend-link tw-text-primary tw-cursor-pointer"
+							<a
+								:href="countriesNotLentToUrl"
+								class="lend-link tw-text-primary"
 								v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
 							>
 								Countries I haven't lent to
-							</span>
+							</a>
 						</li>
 					</ul>
 				</kv-tab-panel>
@@ -261,9 +261,6 @@ export default {
 		},
 		trackMgLinkClick() {
 			this.$kvTrackEvent('TopNav', 'click-Lend-Menu-Monthly-Good', 'Lend-monthly');
-		},
-		clickCountriesNotLentTo() {
-			window.location.pathname = this.countriesNotLentToUrl;
 		},
 	},
 };

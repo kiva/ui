@@ -142,7 +142,10 @@
 				<template #tabPanels>
 					<kv-tab-panel id="ytd" class="tw--mt-2">
 						<!-- Current year Panel -->
-						<kv-grid as="dl" class="stats-container-exp">
+						<kv-grid
+							as="dl" class="stats-container-exp tw-items-center
+											lg:!tw-px-4 lg:!tw-py-1.5 md:!tw-pr-4"
+						>
 							<!-- Total amount lent -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 								<kv-loading-placeholder
@@ -154,7 +157,7 @@
 									{{ currentYearAmountLent }}
 								</dt>
 								<dd class="stat-def">
-									Total amount lent in {{ yearToDate }}
+									Total amount lent
 								</dd>
 								<router-link
 									class="stat-link"
@@ -170,15 +173,15 @@
 							</div>
 							<!-- Lending percentile -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3
-										tw-bg-eco-green-3 tw-rounded"
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-5
+										tw-bg-eco-green-3 tw-rounded tw-px-4 tw-py-2 md:!tw-py-1.5 md:!tw-px-3"
 							>
 								<kv-loading-placeholder
 									v-if="loading"
 									class="stat-placeholder"
 									style="width: 7rem;"
 								/>
-								<dt v-show="!loading" class="stat-value">
+								<dt v-show="!loading" class="stat-value !tw-text-white">
 									{{ formattedCurrentYearPercentile }}
 								</dt>
 								<dd class="stat-def">
@@ -192,7 +195,7 @@
 								>
 									{{ nextPercentileMsg }}
 									<kv-material-icon
-										class="tw-ml-0.5 tw-w-2 tw-h-2"
+										class="tw-ml-0.5 tw-w-3.5 tw-h-2"
 										:icon="mdiArrowRight"
 									/>
 								</router-link>
@@ -205,7 +208,7 @@
 								</span>
 							</div>
 							<!-- Loans made -->
-							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
 								<kv-loading-placeholder
 									v-if="loading"
 									class="stat-placeholder"
@@ -219,7 +222,7 @@
 								</dt>
 							</div>
 							<!-- Countries supported -->
-							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
 								<kv-loading-placeholder
 									v-if="loading"
 									class="stat-placeholder"
@@ -597,6 +600,17 @@ export default {
 	.stat-placeholder {
 		margin-bottom: 11.5px;
 		@apply tw-h-6;
+	}
+
+	#kv-tab-panel-ytd {
+		.stat-def,
+		.stat-link {
+			@apply tw-text-small
+		}
+
+		.stat-link span {
+			@apply tw-w-3.5 tw-h-2;
+		}
 	}
 }
 </style>

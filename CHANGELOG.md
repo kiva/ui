@@ -1,3 +1,34 @@
+## [3.35.1](https://github.com/kiva/ui/compare/v3.35.0...v3.35.1) (2025-10-14)
+
+### 🐛 Bugfixes
+
+* change anchors to spans ([88fc98a](https://github.com/kiva/ui/commit/88fc98ab7905b656a6eacb1d6506d65de3eb48a0))
+* cleanup to friday pr ([2ccaa25](https://github.com/kiva/ui/commit/2ccaa2594688957392ee7da4ba4a06d9a14c95fc))
+* ensure countries not lent works on client side assignment ([d261473](https://github.com/kiva/ui/commit/d2614732b7cc5aebbeeebaeddd56fbaa3cd483e6))
+* fallback boolean ([c1bd601](https://github.com/kiva/ui/commit/c1bd6016b81b275cbd63ae3432a70b68f3831b4a))
+* make category consistent for analytics ([6479bdb](https://github.com/kiva/ui/commit/6479bdb3fce6bd08adcaf130569e7aeed2392226))
+* missing tracking events in header experiment ([5266dac](https://github.com/kiva/ui/commit/5266dac0df63a1f778c878f5e2df93a0c032f6c1))
+* mobile links not working in header experiment ([0fd9e0e](https://github.com/kiva/ui/commit/0fd9e0e2eb5ec5dc1393007201c139e2c90ee810))
+* show lend menu for guest ([16c8c15](https://github.com/kiva/ui/commit/16c8c1584dbc88bc90a72f24f28fa42cd3b89ed3))
+* use click event instead of href ([30baa85](https://github.com/kiva/ui/commit/30baa850c78c452228d1372169d928f9acaa5e1c))
+* use mixin pattern instead to get around issue from build ([a5cdc06](https://github.com/kiva/ui/commit/a5cdc0619fbd4ef9ad70df3fd92155615aa73625))
+
+### 🧹 Chores
+
+* **release:** 3.35.1-rc.1 [skip ci] ([c40c9f6](https://github.com/kiva/ui/commit/c40c9f698d7bf740b59c63c8ddb0fc4c132d1239))
+* **release:** 3.35.1-rc.2 [skip ci] ([ee41d8e](https://github.com/kiva/ui/commit/ee41d8eabfcb85bd9a7b4be90705fc3015c67874))
+* **release:** 3.35.1-rc.3 [skip ci] ([0e237f9](https://github.com/kiva/ui/commit/0e237f919524bd000a1c78b6432c3b143ebff23b))
+* **release:** 3.35.1-rc.4 [skip ci] ([ca65d14](https://github.com/kiva/ui/commit/ca65d14f4c688ffa93cb5f7f52c1686248e5c575))
+
+## [3.35.1-rc.4](https://github.com/kiva/ui/compare/v3.35.1-rc.3...v3.35.1-rc.4) (2025-10-14)
+
+### 🐛 Bugfixes
+
+* cleanup to friday pr ([2ccaa25](https://github.com/kiva/ui/commit/2ccaa2594688957392ee7da4ba4a06d9a14c95fc))
+* fallback boolean ([c1bd601](https://github.com/kiva/ui/commit/c1bd6016b81b275cbd63ae3432a70b68f3831b4a))
+* missing tracking events in header experiment ([5266dac](https://github.com/kiva/ui/commit/5266dac0df63a1f778c878f5e2df93a0c032f6c1))
+* use mixin pattern instead to get around issue from build ([a5cdc06](https://github.com/kiva/ui/commit/a5cdc0619fbd4ef9ad70df3fd92155615aa73625))
+
 ## [3.35.1-rc.3](https://github.com/kiva/ui/compare/v3.35.1-rc.2...v3.35.1-rc.3) (2025-10-11)
 
 ### 🐛 Bugfixes
