@@ -1,3 +1,12 @@
+## [3.35.1-rc.4](https://github.com/kiva/ui/compare/v3.35.1-rc.3...v3.35.1-rc.4) (2025-10-14)
+
+### 🐛 Bugfixes
+
+* cleanup to friday pr ([2ccaa25](https://github.com/kiva/ui/commit/2ccaa2594688957392ee7da4ba4a06d9a14c95fc))
+* fallback boolean ([c1bd601](https://github.com/kiva/ui/commit/c1bd6016b81b275cbd63ae3432a70b68f3831b4a))
+* missing tracking events in header experiment ([5266dac](https://github.com/kiva/ui/commit/5266dac0df63a1f778c878f5e2df93a0c032f6c1))
+* use mixin pattern instead to get around issue from build ([a5cdc06](https://github.com/kiva/ui/commit/a5cdc0619fbd4ef9ad70df3fd92155615aa73625))
+
 ## [3.35.1-rc.3](https://github.com/kiva/ui/compare/v3.35.1-rc.2...v3.35.1-rc.3) (2025-10-11)
 
 ### 🐛 Bugfixes
