@@ -141,7 +141,7 @@
 									{{ currentYearAmountLent }}
 								</dt>
 								<dd class="stat-def">
-									Total amount lent in {{ yearToDate }}
+									Total amount lent
 								</dd>
 								<router-link
 									class="stat-link"
@@ -603,23 +603,17 @@ export default {
 		padding: 0.75rem 2rem;
 	}
 
+	.stat-def,
+	.stat-link {
+		font-size: 0.875rem;
+	}
+
 	.stat-link span {
 		@apply tw-w-3.5 tw-h-2;
 	}
 
 	.main-ytd-card {
 		padding: 0.75rem 1.5rem;
-
-		.stat-link {
-			font-size: 0.875rem;
-		}
-	}
-
-	.secondary-card {
-		.stat-def,
-		.stat-link {
-			font-size: 0.875rem;
-		}
 	}
 }
 </style>
