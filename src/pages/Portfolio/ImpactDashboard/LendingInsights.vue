@@ -582,6 +582,7 @@ export default {
 
 .tab-header {
 	@apply tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left;
+
 	font-size: 17px;
 	font-weight: 621;
 }
