@@ -33,7 +33,7 @@ import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import { gql } from 'graphql-tag';
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
-import loanCardCarouselQuery from '#src/graphql/query/mykiva/loanCardCarousel.graphql';
+import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 
@@ -88,7 +88,7 @@ export default {
 				client.query({ query: experimentAssignmentQuery, variables: { id: NEXT_STEPS_EXP_KEY } }),
 				client.query({ query: userAchievementProgressQuery }),
 				loanId
-					? client.query({ query: loanCardCarouselQuery, variables: { loanId: Number(loanId) } })
+					? client.query({ query: borrowerProfileSideSheetQuery, variables: { loanId: Number(loanId) } })
 					: Promise.resolve(null),
 			]).then(result => {
 				const heroCarouselUiSetting = result[2];
@@ -126,7 +126,7 @@ export default {
 				const lendingStatsQueryResult = this.apollo.readQuery({ query: lendingStatsQuery });
 				const loanId = this.$router.currentRoute?.value?.query?.loanId ?? null;
 				const bpSidesheetLoan = loanId ? this.apollo.readQuery({
-					query: loanCardCarouselQuery,
+					query: borrowerProfileSideSheetQuery,
 					variables: { loanId: Number(loanId) }
 				}) : null;
 				this.userInfo = myKivaQueryResult.my ?? {};
