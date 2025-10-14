@@ -129,7 +129,10 @@
 				<template #tabPanels>
 					<kv-tab-panel id="ytd">
 						<!-- Current year Panel -->
-						<kv-grid as="dl" class="stats-container-exp lg:!tw-px-4 lg:!tw-py-1.5 md:!tw-pr-4">
+						<kv-grid
+							as="dl" class="stats-container-exp tw-items-center
+											lg:!tw-px-4 lg:!tw-py-1.5 md:!tw-pr-4"
+						>
 							<!-- Total amount lent -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 								<kv-loading-placeholder
@@ -547,7 +550,7 @@ export default {
 }
 
 .stats-container-exp {
-	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center tw-bg-eco-green-4 tw-items-center;
+	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center tw-bg-eco-green-4;
 }
 
 .stat-placeholder {
@@ -587,13 +590,15 @@ export default {
 		@apply tw-h-6;
 	}
 
-	.stat-def,
-	.stat-link {
-		@apply tw-text-small
-	}
+	#kv-tab-panel-ytd {
+		.stat-def,
+		.stat-link {
+			@apply tw-text-small
+		}
 
-	.stat-link span {
-		@apply tw-w-3.5 tw-h-2;
+		.stat-link span {
+			@apply tw-w-3.5 tw-h-2;
+		}
 	}
 }
 </style>
