@@ -7,7 +7,10 @@
 		</h1>
 
 		<p class="tw-text-h3">
-			(Last updated Oct 8th, 2025)
+			(Last updated Oct 8th, 2025)*
+		</p>
+		<p class="light">
+			<em>*Substantive changes from the prior version will generally be highlighted below for at least one month.</em>
 		</p>
 
 		<div class="row summary-row">
@@ -31,7 +34,7 @@
 		<div class="row summary-row">
 			<div class="small-12 xlarge-8 columns">
 				<p>
-					This Agreement supersedes any previous agreement to which you and Kiva may have been bound (provided that if you are a Borrower, Trustee, Lending Partner, Lender or donor who has a separate written agreement with Kiva, the terms of that separate agreement will control with respect to any provision that conflicts with this Agreement). This Agreement may be modified by Kiva in its sole discretion from time to time and such modifications shall automatically become part of this Agreement and shall be effective once posted by Kiva on the Website (as indicated by the posted update date). Your participation in the Program and use of the Website will be subject to any such modifications. You should review the Website and this Agreement from time to time for any modifications. If you do not agree with any such modifications, you must immediately terminate your registered Kiva account, if any, as outlined in Section 7 below, and please immediately stop participating in the Program and accessing and using the Website.
+					This Agreement supersedes any previous agreement to which you and Kiva may have been bound (provided that if you are a Borrower, Trustee, Lending Partner, Lender or donor who has a separate written agreement with Kiva, the terms of that separate agreement will control with respect to any provision that conflicts with this Agreement). This Agreement may be modified by Kiva in its sole discretion from time to time and such modifications shall automatically become part of this Agreement and shall be effective once posted by Kiva on the Website (as indicated by the posted update date). Your participation in the Program and use of the Website will be subject to any such modifications. You should review the Website and this Agreement from time to time for any modifications. If you do not agree with any such modifications, you must immediately terminate your registered Kiva account, if any, as outlined in Section 7 below, and immediately stop participating in the Program and accessing and using the Website.
 				</p>
 			</div>
 
@@ -85,10 +88,10 @@
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
 					<p>
-						You may participate in the Program, by creating an online account on the Website registered to your email address, or by using a guest checkout feature, as described below in Section 1.3. If you participate via Kiva's mobile app, you may not have access to all Website features and functionality through the app; however, you can access all your account settings, functionality, and information about your lending history through Kiva's website at kiva.org. You may use the Website to fund loans from your Kiva account, to donate funds to Kiva for the purpose of lending, and/or to donate to Kiva's operations. All transactions between Lenders and Borrowers or Lending Partners (“Loans”) must be conducted through a Kiva account, using guest checkout. All amounts deposited in your Kiva account must be lent through the Website and/or donated to Kiva. The funds you have available in your Kiva account which are freely available to be lent or donated – whether deposited from your personal funds, value from a Kiva Card (as defined below in Section 1.10), or repayments on previously made Loans – are referred to as your "Kiva Credit."
+						You may participate in the Program by creating an online account on the Website registered to your email address, or by using a guest checkout feature, as described below in Section 1.3. If you participate via Kiva's mobile app, you may not have access to all Website features and functionality through the app; however, you can access all your account settings, functionality, and information about your lending history through Kiva's website at kiva.org. You may use the Website to fund loans from your Kiva account, <span class="tw-bg-caution tw-text-black">to donate funds to Kiva for the purpose of lending</span>, and/or to donate to Kiva's operations. All transactions between Lenders and Borrowers or Lending Partners must be conducted through a Kiva account, except when using guest checkout. All amounts deposited in your Kiva account must be lent through the Website and/or donated to Kiva. The funds you have available in your Kiva account which are freely available to be lent or donated – whether deposited from your personal funds, value from a Kiva Card (as defined below in Section 1.10), or repayments on previously made Loans – are referred to as your "Kiva Credit."
 					</p>
 					<p>
-						The following paragraphs describe the two main ways to support loans to Borrowers on the Website.  A User who wishes to donate money (eligible for tax deduction in the United States) that Kiva will use to fund loans may do so via a "Donate-to-Lend Page" as described in Section 1.1.  Money donated through a Donate-to-Lend Page is permanently donated to Kiva and will not be repaid to the User's Kiva account.  Alternatively, a User who wishes to select individual loans to fund, with the possibility of receiving loan repayments to the User's account, may do so via Kiva's lending program described in Section 1.2.
+						<span class="tw-bg-caution tw-text-black">The following paragraphs describe the two main ways to support loans to Borrowers on the Website.  A User who wishes to donate money (eligible for tax deduction in the United States) that Kiva will use to fund loans may do so via a "Donate-to-Lend Page" as described in Section 1.1.  Money donated through a Donate-to-Lend Page is permanently donated to Kiva and will not be repaid to the User's Kiva account.  Alternatively, a User who wishes to select individual loans to fund, with the possibility of receiving loan repayments to the User's account, may do so via Kiva's lending program described in Section 1.2.</span>
 					</p>
 				</div>
 
@@ -96,7 +99,7 @@
 					<svg class="icon arrow"><use xlink:href="#icon-small-chevron" xmlns:xlink="http://www.w3.org/1999/xlink" /></svg>
 					<p>
 						<strong>Basically,</strong><br>
-						<span>You have to create an account to lend or donate on Kiva, unless you check out as a guest. Money added to your account is called "Kiva Credit" and it must be used to make loans on Kiva or donate to Kiva. You can direct funds toward Kiva loans in different ways, including donations to Kiva that will be used for lending, as well as loans that are eligible to be repaid to your account.</span>
+						<span>You have to create an account to lend or donate on Kiva, unless you check out as a guest. Money added to your account is called "Kiva Credit" and it must be used to make loans on Kiva or donate to Kiva. <span class="tw-bg-caution tw-text-black">You can direct funds toward Kiva loans in different ways, including donations to Kiva that will be used for lending, as well as loans that are eligible to be repaid to your account.</span></span>
 					</p>
 				</div>
 			</div>
@@ -104,19 +107,19 @@
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
 					<p>
-						<strong>1.1<span class="long-tab"></span>Donating to Kiva for the Purpose of Lending.</strong> From time to time Kiva may offer a feature that allows Users to create pages where they and other Users can donate funds to Kiva for the purpose of lending to Borrowers (“Donate-to-Lend Pages”).  Money donated through a Donate-to-Lend Page is permanently donated to Kiva as a tax-exempt eligible donation (in the United States).  Kiva will then apply the aggregated donated funds toward loans meeting the criteria designated on the Donate-to-Lend Page.  Users who donate through a Donate-to-Lend Page will not have the ability to select individual Lending Partners or Borrowers to receive the money, although Kiva may share information with the donors about the loans that have received the money.  Repayments from the loans supported by a Donate-to-Lend Page will continue to be re-lent indefinitely, provided that (a) Kiva may use a portion of the money repaid each month to help fund Kiva's operations; and (b) Kiva reserves the right, in its sole discretion and at any time, to discontinue relending from a Donate-to-Lend Page and apply the money toward other purposes in line with its charitable mission.  More information about the amounts that will be used for supporting Kiva's operations can be found in the respective Donate-to-Lend Page's FAQs.
+						<span class="tw-bg-caution tw-text-black"><strong>1.1<span class="long-tab"></span>Donating to Kiva for the Purpose of Lending.</strong> From time to time Kiva may offer a feature that allows Users to create pages where they and other Users can donate funds to Kiva for the purpose of lending to Borrowers (“Donate-to-Lend Pages”).  Money donated through a Donate-to-Lend Page is permanently donated to Kiva as a tax-exempt eligible donation (in the United States).  Kiva will then apply the aggregated donated funds toward loans meeting the criteria designated on the Donate-to-Lend Page.  Users who donate through a Donate-to-Lend Page will not have the ability to select individual Lending Partners or Borrowers to receive the money, although Kiva may share information with the donors about the loans that have received the money.  Repayments from the loans supported by a Donate-to-Lend Page will continue to be re-lent indefinitely, provided that (a) Kiva may use a portion of the money repaid each month to help fund Kiva's operations; and (b) Kiva reserves the right, in its sole discretion and at any time, to discontinue relending from a Donate-to-Lend Page and apply the money toward other purposes in line with its charitable mission.  More information about the amounts that will be used for supporting Kiva's operations can be found in the respective Donate-to-Lend Page's FAQs.</span>
 					</p>
 
 					<p>
-						If you have a Kiva account, you understand and agree that funds donated through a Donate-to-Lend Page WILL NOT be credited toward or otherwise reflected in your Kiva account.  Repayments on the loans supported by these donations will not be shown in your account or repaid to you in any way.  Furthermore, donations made through a Donate-to-Lend Page are not eligible for any promotions that may be advertised by Kiva from time to time in connection with lending or donating directly to Kiva's operations.
+						<span class="tw-bg-caution tw-text-black">If you have a Kiva account, you understand and agree that funds donated through a Donate-to-Lend Page WILL NOT be credited toward or otherwise reflected in your Kiva account.  Repayments on the loans supported by these donations will not be shown in your account or repaid to you in any way.  Furthermore, donations made through a Donate-to-Lend Page are not eligible for any promotions that may be advertised by Kiva from time to time in connection with lending or donating directly to Kiva's operations.</span>
 					</p>
 				</div>
 
 				<div class="small-12 xlarge-4 columns">
 					<svg class="icon arrow"><use xlink:href="#icon-small-chevron" xmlns:xlink="http://www.w3.org/1999/xlink" /></svg>
 					<p>
-						<strong>Basically,</strong><br>
-						<span>If you donate money to Kiva through a Donate-to-Lend Page, Kiva will use your donation to fund loans.  You will not be able to choose which specific loans to fund, and you will not receive any repayments.  The money will be re-lent to other borrowers as it is repaid, although Kiva will use a portion of each repayment to fund its operations.</span>
+						<span class="tw-bg-caution tw-text-black"><strong>Basically,</strong></span><br>
+						<span class="tw-bg-caution tw-text-black">If you donate money to Kiva through a Donate-to-Lend Page, Kiva will use your donation to fund loans.  You will not be able to choose which specific loans to fund, and you will not receive any repayments.  The money will be re-lent to other borrowers as it is repaid, although Kiva will use a portion of each repayment to fund its operations.</span>
 					</p>
 				</div>
 			</div>
@@ -353,7 +356,7 @@
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
 					<p>
-						From time to time, Kiva may offer a guest checkout feature that allows you to make one or more Loans or donations through the Website without creating a Kiva account. If you make a Loan or donation through a guest checkout feature, you will need to provide your email address, and you will still be subject to Kiva's Terms of Use and Privacy Policy. You agree that Kiva may contact you via email at the email address you provide when checking out as a guest. You understand and agree that you will not be able to receive or withdraw amounts corresponding to Loan repayments if you do not have a Kiva account. From time to time, Kiva may allow you to “claim” your guest Loan(s) or view your guest donations by enabling you to finish creating a Kiva account associated with the email address you provided when checking out as a guest. Kiva reserves the right to set time limits on when you must finish creating your Kiva account in order to claim a guest Loan or donation. You agree that Kiva shall have sole discretion to use as Kiva sees fit any and all funds that are repaid on any Loan you make as a guest and do not later claim within the time period set by Kiva.
+						From time to time, Kiva may offer a guest checkout feature that allows you to make one or more Loans <span class="tw-bg-caution tw-text-black">or donations</span> through the Website without creating a Kiva account. If you make a Loan <span class="tw-bg-caution tw-text-black">or donation</span> through a guest checkout feature, you will need to provide your email address, and you will still be subject to Kiva's Terms of Use and Privacy Policy. You agree that Kiva may contact you via email at the email address you provide when checking out as a guest. You understand and agree that you will not be able to receive or withdraw amounts corresponding to Loan repayments if you do not have a Kiva account. From time to time, Kiva may allow you to “claim” your guest Loan(s) <span class="tw-bg-caution tw-text-black">or view your guest donations</span> by enabling you to finish creating a Kiva account associated with the email address you provided when checking out as a guest. Kiva reserves the right to set time limits on when you must finish creating your Kiva account in order to claim a guest Loan <span class="tw-bg-caution tw-text-black">or donation</span>. You agree that Kiva shall have sole discretion to use as Kiva sees fit any and all funds that are repaid on any Loan you make as a guest and do not later claim within the time period set by Kiva.
 					</p>
 				</div>
 
@@ -361,7 +364,7 @@
 					<svg class="icon arrow"><use xlink:href="#icon-small-chevron" xmlns:xlink="http://www.w3.org/1999/xlink" /></svg>
 					<p>
 						<span><strong>Basically,</strong></span><br>
-						<span>Kiva may allow you to lend or donate without a Kiva account. If you choose to lend as a guest, you will need to provide an email address, and Kiva may let you finish creating an account linked to your email address later. If you do not later create an account, you won't be able to receive loan repayments, and Kiva will decide what to do with any repayments on your guest loan.</span>
+						<span>Kiva may allow you to lend <span class="tw-bg-caution tw-text-black">or donate</span> without a Kiva account. If you choose to lend as a guest, you will need to provide an email address, and Kiva may let you finish creating an account linked to your email address later. If you do not later create an account, you won't be able to receive loan repayments, and Kiva will decide what to do with any repayments on your guest loan.</span>
 					</p>
 				</div>
 			</div>
@@ -373,7 +376,7 @@
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
 					<p>
-						In the event that you make a Loan or a donation and your payment does not clear (e.g., an eCheck does not validly deliver to Kiva the full Loan or donation amount, or your payment provider reverses a payment originally intended for Kiva), you agree that Kiva may, in its sole discretion, (i) offset the insufficiently funded amount against your Kiva Credit if your account contains it, or (ii) if you do not deposit Kiva Credit sufficient to cover the shortfall, close your account.
+						In the event that you make a Loan <span class="tw-bg-caution tw-text-black">or a donation</span> and your payment does not clear (e.g., an eCheck does not validly deliver to Kiva the full Loan <span class="tw-bg-caution tw-text-black">or donation</span> amount, or your payment provider reverses a payment originally intended for Kiva), you agree that Kiva may, in its sole discretion, (i) offset the insufficiently funded amount against your Kiva Credit if your account contains it, or (ii) if you do not deposit Kiva Credit sufficient to cover the shortfall, close your account.
 					</p>
 				</div>
 
@@ -381,19 +384,19 @@
 					<svg class="icon arrow"><use xlink:href="#icon-small-chevron" xmlns:xlink="http://www.w3.org/1999/xlink" /></svg>
 					<p>
 						<strong>Basically,</strong><br>
-						If you try to make a loan or donation and your payment doesn't clear, we can cover it with Kiva credit from your account (if you have any), or close your account if you do not deposit the necessary credit.
+						If you try to make a loan <span class="tw-bg-caution tw-text-black">or donation</span> and your payment doesn't clear, we can cover it with Kiva credit from your account (if you have any), or close your account if you do not deposit the necessary credit.
 					</p>
 				</div>
 			</div>
 
 			<p>
-				<strong>1.8<span class="long-tab"></span>Subscriptions.</strong>
+				<strong>1.5<span class="long-tab"></span>Subscriptions.</strong>
 			</p>
 
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
 					<p>
-						Kiva offers Lenders the ability to sign up for subscriptions, including but not limited to (a) periodic automated deposits of funds to your Kiva account (“Auto Deposits”) which you can log into your account to lend or donate, and/or (b) periodic automated deposits of funds to your Kiva account that are automatically lent via Kiva's Auto-Lending feature once your account contains sufficient funds to make a Loan (“Subscription Lending”). Subscription Lending products offered from time to time may include, but are not limited to, “Monthly Good”. If you sign up for Auto Deposit or Subscription Lending, you authorize Kiva to initiate a deposit of funds from your designated payment method to your Kiva account in the amount and frequency specified in your account settings, and to charge you for an optional donation to Kiva's operations in the amount you designate, until such time as you cancel your subscription through your account settings. If you sign up for Subscription Lending, you authorize Kiva to Auto-Lend funds from your account as described in Section 1.2 above.
+						Kiva offers Lenders the ability to sign up for subscriptions, including but not limited to (a) periodic automated deposits of funds to your Kiva account (“Auto Deposits”) which you can log into your account to lend <span class="tw-bg-caution tw-text-black">or donate</span>, and/or (b) periodic automated deposits of funds to your Kiva account that are automatically lent via Kiva's Auto-Lending feature once your account contains sufficient funds to make a Loan (“Subscription Lending”). Subscription Lending products offered from time to time may include, but are not limited to, “Monthly Good”. If you sign up for Auto Deposit or Subscription Lending, you authorize Kiva to initiate a deposit of funds from your designated payment method to your Kiva account in the amount and frequency specified in your account settings, and to charge you for an optional donation to Kiva's operations in the amount you designate, until such time as you cancel your subscription through your account settings. If you sign up for Subscription Lending, you authorize Kiva to Auto-Lend funds from your account as described in Section 1.2 above.
 					</p>
 				</div>
 
@@ -413,7 +416,7 @@
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
 					<p>
-						You understand that Kiva is a non-profit public benefit corporation. Kiva has received exemption with the Internal Revenue Service as an organization that qualifies as a public charity under Section 501(c)(3) of the Internal Revenue Code of 1986, as amended from time to time. Funds you donate through a Donate-to-Lend Page as described in Section 1.1 and/or funds you donate to Kiva's operations are eligible for tax deductibility in the United States. You acknowledge, however, that making a Loan directly from your Kiva account as described in Section 1.2 or via guest checkout does not constitute a charitable donation, and therefore you are not eligible to receive a tax deduction for any Loans made to a Borrower through the Website. For avoidance of doubt, if you sign up for Auto Deposit or Subscription Lending (see Section 1.5), the funds automatically deposited to your account will be not be eligible for tax deductibility unless and until you donate them to Kiva. You also understand that you are solely responsible for determining the proper tax treatment for any Loan you make through the Website and the Program. Kiva has not and will not provide any tax or legal advice to you in connection with any Loan you might make. This Agreement does not attempt to define the tax implications of participating in the Program. If you participate in the Program, you should consult with your own accountants, tax advisors and legal advisors.
+						You understand that Kiva is a non-profit public benefit corporation. Kiva has received exemption with the Internal Revenue Service as an organization that qualifies as a public charity under Section 501(c)(3) of the Internal Revenue Code of 1986, as amended from time to time. <span class="tw-bg-caution tw-text-black">Funds you donate through a Donate-to-Lend Page as described in Section 1.1</span> and/or funds you donate to Kiva's operations are eligible for tax deductibility in the United States. You acknowledge, however, that making a Loan directly from your Kiva account as described in Section 1.2 or via guest checkout does not constitute a charitable donation, and therefore you are not eligible to receive a tax deduction for any Loans made to a Borrower through the Website. For avoidance of doubt, if you sign up for Auto Deposit or Subscription Lending (see Section 1.5), the funds automatically deposited to your account will be not be eligible for tax deductibility unless and until you donate them to Kiva. You also understand that you are solely responsible for determining the proper tax treatment for any Loan you make through the Website and the Program. Kiva has not and will not provide any tax or legal advice to you in connection with any Loan you might make. This Agreement does not attempt to define the tax implications of participating in the Program. If you participate in the Program, you should consult with your own accountants, tax advisors and legal advisors.
 					</p>
 				</div>
 
@@ -450,12 +453,13 @@
 			</div>
 
 			<p>
-				<strong>1.8<span class="long-tab"></span>User Account Inactivity</strong>
+				<strong>1.8<span class="long-tab"></span>User Account Inactivity, Disposal of Funds, and Account Closure.</strong>
 			</p>
+
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
 					<p>
-						<strong>Instructions for Auto-Donation of Funds to Kiva or Auto-Withdrawal Return of Funds to User; Potential Escheatment of Funds.</strong> Kiva welcomes its Users' active participation in the Kiva Program. However, there may be occasions when a User becomes "inactive" for an extended period of time – i.e., a User does not log in to his or her Kiva account (or otherwise indicate to Kiva a desire to keep the account active – for example, through a phone or email communication with Kiva or by taking advantage of embedded response features, such as a click-response button in an email or other electronic communication from Kiva) or there are no credits/withdrawals made to such User's account (including lending and repayment activity from both manual and Auto-Loans). Therefore, Kiva has implemented a Website feature pursuant to which you may instruct Kiva in advance as to how you wish any remaining payments owed to you to be handled in the event your account were to become inactive for a period of 24 or more consecutive months – namely, whether in such a case of User inactivity, you (i) wish to automatically donate such funds to Kiva's general operating expenses to further Kiva's philanthropic mission or (ii) wish for Kiva to pay any amounts owed to you via Kiva's standard account withdrawal process. In addition, in such cases of User inactivity, Kiva may elect to automatically terminate the inactive User account.
+						Kiva welcomes its Users' active participation in the Kiva Program. However, there may be occasions when a User becomes "inactive" for an extended period of time – i.e., a User does not log in to his or her Kiva account (or otherwise indicate to Kiva a desire to keep the account active – for example, through a phone or email communication with Kiva or by taking advantage of embedded response features, such as a click-response button in an email or other electronic communication from Kiva) or there are no credits/withdrawals made to such User's account (including lending and repayment activity from both manual and Auto-Loans). Therefore, Kiva has implemented a Website feature pursuant to which you may instruct Kiva in advance as to how you wish any remaining payments owed to you to be handled in the event your account were to become inactive for a period of 24 or more consecutive months – namely, whether in such a case of User inactivity, you (i) wish to automatically donate such funds to Kiva's general operating expenses to further Kiva's philanthropic mission or (ii) wish for Kiva to pay any amounts owed to you via Kiva's standard account withdrawal process. In addition, in such cases of User inactivity, Kiva may elect to automatically terminate the inactive User account.
 					</p>
 
 					<p>
@@ -569,7 +573,7 @@
 					</p>
 
 					<p>
-						In consideration of your use of the Website or participation in the Program, you agree to (a) provide accurate, current and complete information about you as may be prompted by any registration forms on the Website ("Registration Data"); (b) maintain the security of your password and identification (including by not using the same login and password for the Website as you use with other sites); (c) maintain and promptly update the Registration Data, and any other information you provide to Kiva, to keep it accurate, current and complete; and (d) be fully responsible for all use of your account and for any actions that take place using your account, including but not limited to lending activity and withdrawals, whether due to your authorizing someone else to use your Kiva account, your sharing of your login credentials with any third party, or your actions otherwise resulting in your login credentials being used by a third party. You agree not to impersonate any person or entity. You will promptly report to Kiva any violation of this Agreement by others of which you become aware, including any access of your Kiva account without your permission. Reporting such access is the best way of preventing further fraudulent access to your Kiva account. For errors regarding your account activity other than unauthorized access to your account, you may also contact Kiva to investigate your complaint or questions.
+						In consideration of your use of the Website or participation in the Program, you agree to (a) provide accurate, current and complete information about you as may be prompted by any registration forms on the Website ("Registration Data"); (b) maintain the security of your password and identification <span class="tw-bg-caution tw-text-black">(including by not using the same login and password for the Website as you use with other sites)</span>; (c) maintain and promptly update the Registration Data, and any other information you provide to Kiva, to keep it accurate, current and complete; and (d) be fully responsible for all use of your account and for any actions that take place using your account, including but not limited to lending activity and withdrawals, whether due to your authorizing someone else to use your Kiva account, your sharing of your login credentials with any third party, or your actions otherwise resulting in your login credentials being used by a third party. You agree not to impersonate any person or entity. You will promptly report to Kiva any violation of this Agreement by others of which you become aware, including any access of your Kiva account without your permission. Reporting such access is the best way of preventing further fraudulent access to your Kiva account. For errors regarding your account activity other than unauthorized access to your account, you may also contact Kiva to investigate your complaint or questions.
 					</p>
 				</div>
 

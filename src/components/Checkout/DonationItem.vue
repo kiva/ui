@@ -26,7 +26,7 @@
 								</h2>
 							</div>
 							<div
-								v-show="!editDonation"
+								v-show="!editDonation && !isCampaignDonation"
 								class="md:tw-hidden"
 							>
 								<button
@@ -71,6 +71,12 @@
 										:icon="mdiPencil"
 									/>
 								</button>
+							</div>
+							<div
+								v-show="isCampaignDonation"
+								class="md:tw-hidden"
+							>
+								{{ formattedAmount }}
 							</div>
 						</div>
 						<div class="tw-block md:tw-hidden tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
@@ -131,7 +137,13 @@
 				md:tw-mt-0"
 			>
 				<div
-					v-show="!editDonation"
+					v-show="isCampaignDonation"
+					class="tw-hidden md:tw-block tw-text-right"
+				>
+					{{ formattedAmount }}
+				</div>
+				<div
+					v-show="!editDonation && !isCampaignDonation"
 					class="tw-hidden md:tw-block tw-text-right"
 				>
 					<button
@@ -157,7 +169,10 @@
 						/>
 					</button>
 				</div>
-				<div v-show="editDonation" class="small-12 columns donation-amount-input-wrapper">
+				<div
+					v-show="editDonation && !isCampaignDonation"
+					class="small-12 columns donation-amount-input-wrapper"
+				>
 					<kv-text-input
 						class="donation-amount-input"
 						data-testid="basket-donation-edit-input"

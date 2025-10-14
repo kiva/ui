@@ -195,6 +195,7 @@ import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
+import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -578,8 +579,14 @@ export default {
 				userId,
 				origin: 'web:my_kiva_page',
 				limit: 15
-			}).then(result => {
-				this.recommendedLoans = result?.loans ?? [];
+			}).then(async result => {
+				let processedLoans = result?.loans ?? [];
+				if (this.enableAiLoanPills) {
+					const loanIds = getLoansIds(processedLoans);
+					const aiLoansPills = await fetchAiLoanPills(this.apollo, loanIds);
+					processedLoans = addAiPillsToLoans(processedLoans, aiLoansPills);
+				}
+				this.recommendedLoans = processedLoans;
 			}).catch(e => {
 				logReadQueryError(e, 'MyKivaPage fetchRecommendedLoans');
 			});

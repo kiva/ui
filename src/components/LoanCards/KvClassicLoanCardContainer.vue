@@ -27,6 +27,7 @@
 			:combined-activities="combinedActivities"
 			:error-msg="errorMsg"
 			:custom-href="customHref"
+			:custom-callouts="customCallouts"
 			@toggle-bookmark="toggleBookmark"
 			@jump-filter-page="jumpFilterPage"
 			@add-to-basket="addToBasket"
@@ -169,6 +170,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		aiPills: {
+			type: Array,
+			default: () => ([])
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin],
@@ -275,6 +280,18 @@ export default {
 				tagsData,
 				themesData
 			};
+
+			if (this.showAiLoanPills) {
+				this.loan = {
+					...this.loan,
+					activity: {},
+					sector: {},
+					tags: [],
+					themes: [],
+					tagsData: [],
+					themesData: [],
+				};
+			}
 
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
 			this.basketCount = result.data?.shop?.nonTrivialItemCount || 0;
@@ -535,6 +552,16 @@ export default {
 		},
 		borrowerImageUrl() {
 			return this.loan?.image?.url ?? '';
+		},
+		showAiLoanPills() {
+			return this.enableAiLoanPills && this.aiPills && this.aiPills.length > 0;
+		},
+		customCallouts() {
+			const callouts = [];
+			if (this.showAiLoanPills) {
+				callouts.push(...this.aiPills);
+			}
+			return callouts;
 		},
 	}
 };

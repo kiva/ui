@@ -12,11 +12,18 @@
 						<template #icon>
 							<kv-pulsing-dot />
 						</template>
-						Active fundraiser
+						Active fundraising goal
 					</kv-pill>
 					<!-- eslint-enable max-len -->
 					<h2 class="tw-mb-1">
-						{{ getFundTargetDisplayNounFromName(fund?.campaign?.category?.name) }}
+						<a
+							class="tw-no-underline tw-text-primary hover:tw-text-action"
+							v-kv-track-event="['giving-funds', 'click', 'management-card-title']"
+							:href="`${givingFundRootPath}/${fund.id}`"
+							target="_blank"
+						>
+							{{ getFundTargetDisplayNounFromName(fund?.campaign?.category?.name) }}
+						</a>
 					</h2>
 					<!--  eslint-disable max-len -->
 					<p v-if="fund?.campaign?.lendingStats?.totalLivesTouched">
@@ -156,7 +163,7 @@
 				variant="secondary"
 				v-kv-track-event="['giving-funds', 'click', 'start-a-new-fundraiser', fund.id]"
 			>
-				+ Start a fundraiser and invite others to join
+				+ Add a fundraising goal and invite others
 			</KvButton>
 			<KvButton
 				v-if="isMobile"
