@@ -1,6 +1,6 @@
 <template>
 	<async-portfolio-section
-		v-if="isPercentileByYearExpEnabled"
+		v-if="!isPercentileByYearExpEnabled"
 		@visible="fetchLifetimeStats"
 		data-testid="lending-insights"
 		class="!tw-bg-eco-green-4"
@@ -582,6 +582,7 @@ export default {
 
 .tab-header {
 	@apply tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left tw-text-base tw-font-medium;
+
 	font-weight: 621;
 }
 
