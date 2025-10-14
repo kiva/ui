@@ -128,7 +128,7 @@
 								Lifetime
 							</kv-tab>
 							<div
-								class="tw-hidden lg:tw-inline-flex tw-px-1 tw-py-0.5 tw-items-center -tw-mt-1
+								class="tw-hidden lg:tw-inline-flex tw-px-1 tw-py-0.5 tw-items-center tw--mt-1
 								tw-rounded-sm tw-bg-brand-100 tw-border tw-border-brand-200"
 							>
 								<star-shine class="tw-flex-shrink-0 tw-flex tw-items-center" />
@@ -140,7 +140,7 @@
 					</div>
 				</template>
 				<template #tabPanels>
-					<kv-tab-panel id="ytd" class="-tw-mt-2">
+					<kv-tab-panel id="ytd" class="tw--mt-2">
 						<!-- Current year Panel -->
 						<kv-grid
 							as="dl" class="stats-container-exp tw-items-center
@@ -248,7 +248,7 @@
 							</div>
 						</kv-grid>
 					</kv-tab-panel>
-					<kv-tab-panel id="lifetime" class="-tw-mt-2">
+					<kv-tab-panel id="lifetime" class="tw--mt-2">
 						<!-- Lifetime Panel -->
 						<kv-grid as="dl" class="stats-container-exp">
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
