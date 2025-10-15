@@ -1,3 +1,40 @@
+## [3.36.0-rc.1](https://github.com/kiva/ui/compare/v3.35.1...v3.36.0-rc.1) (2025-10-15)
+
+### 🎉 New Features
+
+* [MP-1855] - working with percentile year experiment (force enabled) ([0678645](https://github.com/kiva/ui/commit/06786455808a58e40e89bb004ef5e8038f4d291f))
+* deeplink to funded borrower side sheet in my kiva ([27b8981](https://github.com/kiva/ui/commit/27b89818b1d484ce44e36be69b1ef39f5d508c5b))
+* fixed alignment (better match to design mocks) ([c9ae60a](https://github.com/kiva/ui/commit/c9ae60a0f6b8001b78f76b5424189ee789a97f7e))
+* header alignment fix ([dd2d16a](https://github.com/kiva/ui/commit/dd2d16a310dab469c8d282b7743b8e3f74d4516b))
+* kv-components update with latest navbar fixes ([8317d7a](https://github.com/kiva/ui/commit/8317d7aea0137abf3985d8ade18f34e5fc1fbfd2))
+* revert ([87fbc13](https://github.com/kiva/ui/commit/87fbc132e0ca955343bec4354e8c425fb5dd9e32))
+* reverted edits ([eaff5ff](https://github.com/kiva/ui/commit/eaff5ffbc7d91f992ec565d569276a0936147191))
+* revised header css styling ([9571ca5](https://github.com/kiva/ui/commit/9571ca53630432a7037513efc737aee27594aacf))
+
+### 🐛 Bugfixes
+
+* [MP-2119] - clean code ([ba651dc](https://github.com/kiva/ui/commit/ba651dcbe68a82a9734922f4dc7e4039db8fecd7))
+* [MP-2119] - clean code ([aa621fb](https://github.com/kiva/ui/commit/aa621fb694c8a91c8b75a6eb8f3396809e160c48))
+* [MP-2119] - Fix some minor UI miss matchings from original design ([32b2bcf](https://github.com/kiva/ui/commit/32b2bcfb1ddcbe9cb1bdccd069df95f2b179115f))
+* [MP-2119] - PR feedback remove changes for old "lifetime" panel ([a1c439d](https://github.com/kiva/ui/commit/a1c439d22147712dd373243a744d5b7e1c62a78d))
+* [MP-2119] - PR feedback use tw classes instead of custom styles ([5dd53b5](https://github.com/kiva/ui/commit/5dd53b5bc8b9d177a0a25bd356315cfcda71d5aa))
+* [MP-2119] - PR feedback use tw classes instead of custom styles ([0c96be4](https://github.com/kiva/ui/commit/0c96be4d8e94053acdcbe7e0d3d73a2283ad27c3))
+* [MP-2119] - PR feedback use tw classes instead of custom styles ([c3fcf42](https://github.com/kiva/ui/commit/c3fcf42ad319864764106d2ef2b9ce647ab2c3d4))
+* [MP-2119] - revert remove {{ yearToDate }} value from header ([529d3d6](https://github.com/kiva/ui/commit/529d3d617ce03b852520a23b64b6bad5eb2127ef))
+* [MP-2142] - done Show loader while percentile data is loading ([23bd905](https://github.com/kiva/ui/commit/23bd905244433b8bc07ea0b1985f6f50e90648af))
+* [MP-2142] - first alternative loader per number ([b833e5d](https://github.com/kiva/ui/commit/b833e5d55e2bf3cb6353cea515726089e179d810))
+* [MP-2142] - missed change ([560a7da](https://github.com/kiva/ui/commit/560a7da80eeec3ec2f6cd9aa1efc13e0549f49de))
+* [MP-2142] - PR feedback ([4197f4d](https://github.com/kiva/ui/commit/4197f4df67da79cb1005361e4a25083781589786))
+* don't remove all mfa automatically ([c5e28dd](https://github.com/kiva/ui/commit/c5e28ddb94e81c91cc4b1f2bc809dfeeb3db396a))
+* eslint fix and fixed flag ([5ac0909](https://github.com/kiva/ui/commit/5ac09094ad30cc39b4ee7ca2e35795dde53113ec))
+* eslint warning fix ([8bf2b99](https://github.com/kiva/ui/commit/8bf2b99fd041872da8255c0bc773e4dfe66a8746))
+* hide phone mfa since it doesn't work ([70d5d26](https://github.com/kiva/ui/commit/70d5d262975fcaeb899804f83c96f66c45a63a99))
+* lint error ([5e43e28](https://github.com/kiva/ui/commit/5e43e28d25cb2eb95198523beaf2526e9c9ed01c))
+* negative margin syntax ([e0b3346](https://github.com/kiva/ui/commit/e0b3346a1906baa30128292ec43fe2b1a7a6b8cf))
+* replace new query to bp query ([3b2ffc9](https://github.com/kiva/ui/commit/3b2ffc9748c8243930d08f0b7705f911cf269fe8))
+* resolve issue with mfa page loading when no mfa applied ([2ec23e0](https://github.com/kiva/ui/commit/2ec23e0aaebf92be976e82f6d594acdded368862))
+* revert redirect ([bc4fabe](https://github.com/kiva/ui/commit/bc4fabe82d7a2568bbd1407bdac78fee3f2b4b9d))
+
 ## [3.35.1](https://github.com/kiva/ui/compare/v3.35.0...v3.35.1) (2025-10-14)
 
 ### 🐛 Bugfixes

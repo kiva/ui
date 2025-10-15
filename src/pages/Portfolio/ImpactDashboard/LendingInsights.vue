@@ -94,13 +94,13 @@
 		data-testid="lending-insights"
 		class="!tw-bg-white"
 	>
-		<div class="tw-flex tw-items-center tw-justify-end tw-gap-3 tw-mb-3 md:tw-mb-2">
+		<div class="tw-flex tw-items-center tw-justify-end tw-gap-3 tw-mb-3 md:tw-mb-2 lg:tw-hidden">
 			<div
 				class="tw-inline-flex tw-px-1 tw-py-0.5 tw-items-center
 					tw-rounded-sm tw-bg-brand-100 tw-border tw-border-brand-200"
 			>
-				<star-shine class="tw-flex-shrink-0" />
-				<p class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0">
+				<star-shine class="tw-flex-shrink-0 tw-flex tw-items-center" />
+				<p class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0">
 					Filter by year now live
 				</p>
 			</div>
@@ -108,36 +108,52 @@
 		<div>
 			<kv-tabs @tab-changed="setActiveTab" :active-tab="currentTab">
 				<template #tabNav>
-					<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
-						Lending insights
-					</h2>
-					<kv-tab
-						for-panel="ytd"
-						class="tab-header"
-						v-kv-track-event="['portfolio', 'click', 'stats-YTD']"
-					>
-						{{ yearToDate }}
-					</kv-tab>
-					<kv-tab
-						for-panel="lifetime"
-						class="tab-header"
-						v-kv-track-event="['portfolio', 'click', 'stats-Lifetime']"
-					>
-						Lifetime
-					</kv-tab>
+					<div class="tw-flex tw-items-center tw-justify-between tw-w-full md:tw-flex-col md:tw-items-start">
+						<h2 class="tw-text-h3 tw-mb-1 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
+							Lending insights
+						</h2>
+						<div class="tw-flex tw-gap-x-2 tw-items-center">
+							<kv-tab
+								for-panel="ytd"
+								class="tab-header"
+								v-kv-track-event="['portfolio', 'click', 'stats-YTD']"
+							>
+								{{ yearToDate }}
+							</kv-tab>
+							<kv-tab
+								for-panel="lifetime"
+								class="tab-header"
+								v-kv-track-event="['portfolio', 'click', 'stats-Lifetime']"
+							>
+								Lifetime
+							</kv-tab>
+							<div
+								class="tw-hidden lg:tw-inline-flex tw-px-1 tw-py-0.5 tw-items-center tw--mt-1
+								tw-rounded-sm tw-bg-brand-100 tw-border tw-border-brand-200"
+							>
+								<star-shine class="tw-flex-shrink-0 tw-flex tw-items-center" />
+								<p class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0">
+									Filter by year now live
+								</p>
+							</div>
+						</div>
+					</div>
 				</template>
 				<template #tabPanels>
-					<kv-tab-panel id="ytd">
+					<kv-tab-panel id="ytd" class="tw--mt-2">
 						<!-- Current year Panel -->
-						<kv-grid as="dl" class="stats-container-exp">
+						<kv-loading-placeholder
+							v-if="loading"
+							class="tw-mt-1 tw-h-4.5 tw-mx-auto tw-mb-0.5 ytd-loader !tw-rounded"
+						/>
+						<kv-grid
+							v-else
+							as="dl" class="stats-container-exp tw-items-center
+											lg:!tw-px-4 lg:!tw-py-1.5 md:!tw-pr-4"
+						>
 							<!-- Total amount lent -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
-								<kv-loading-placeholder
-									v-if="loading"
-									class="stat-placeholder"
-									style="width: 7rem;"
-								/>
-								<dt v-show="!loading" class="stat-value">
+								<dt class="stat-value">
 									{{ currentYearAmountLent }}
 								</dt>
 								<dd class="stat-def">
@@ -157,15 +173,10 @@
 							</div>
 							<!-- Lending percentile -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3
-										tw-bg-eco-green-3 tw-rounded"
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-5
+										tw-bg-eco-green-3 tw-rounded tw-px-4 tw-py-2 md:!tw-py-1.5 md:!tw-px-3"
 							>
-								<kv-loading-placeholder
-									v-if="loading"
-									class="stat-placeholder"
-									style="width: 7rem;"
-								/>
-								<dt v-show="!loading" class="stat-value">
+								<dt class="stat-value !tw-text-white">
 									{{ formattedCurrentYearPercentile }}
 								</dt>
 								<dd class="stat-def">
@@ -179,25 +190,21 @@
 								>
 									{{ nextPercentileMsg }}
 									<kv-material-icon
-										class="tw-ml-0.5 tw-w-2 tw-h-2"
+										class="tw-ml-0.5 tw-w-3.5 tw-h-2"
 										:icon="mdiArrowRight"
 									/>
 								</router-link>
 								<span
 									v-else-if="currentYearPercentile === 99"
-									class="stat-link tw-text-eco-green-2 tw-font-medium tw-inline-flex tw-items-center"
+									class="stat-link tw-text-eco-green-2 tw-font-medium
+										tw-inline-flex tw-items-center"
 								>
 									Thank you!
 								</span>
 							</div>
 							<!-- Loans made -->
-							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
-								<kv-loading-placeholder
-									v-if="loading"
-									class="stat-placeholder"
-									style="width: 4rem;"
-								/>
-								<dd v-else class="stat-value">
+							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
+								<dd class="stat-value">
 									{{ currentYearNumberOfLoans }}
 								</dd>
 								<dt class="stat-def">
@@ -205,13 +212,8 @@
 								</dt>
 							</div>
 							<!-- Countries supported -->
-							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
-								<kv-loading-placeholder
-									v-if="loading"
-									class="stat-placeholder"
-									style="width: 4rem;"
-								/>
-								<dt v-show="!loading" class="stat-value">
+							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
+								<dt class="stat-value">
 									{{ currentYearCountryCount }}
 								</dt>
 								<dd class="stat-def">
@@ -231,7 +233,7 @@
 							</div>
 						</kv-grid>
 					</kv-tab-panel>
-					<kv-tab-panel id="lifetime">
+					<kv-tab-panel id="lifetime" class="tw--mt-2">
 						<!-- Lifetime Panel -->
 						<kv-grid as="dl" class="stats-container-exp">
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
@@ -413,7 +415,8 @@ export default {
 			}
 		},
 		fetchLifetimeStats() {
-			if (this.loading && !this.lifetimeLoadingPromise) {
+			if (!this.lifetimeLoadingPromise) {
+				this.loading = true;
 				this.lifetimeLoadingPromise = this.apollo.query({
 					query: gql`query lendingInsights {
 						my {
@@ -434,7 +437,6 @@ export default {
 						}
 					}`
 				}).then(({ data }) => {
-					this.loading = false;
 					const amountOfLoans = numeral(data?.my?.userStats?.amount_of_loans ?? 0);
 
 					this.lifetimeAmountLent = amountOfLoans.format('$0,0[.]00');
@@ -442,6 +444,7 @@ export default {
 					this.lifetimeNumberOfLoans = data?.my?.userStats?.number_of_loans ?? 0;
 					this.lifetimePercentile = numeral(data?.my?.lendingStats?.amountLentPercentile ?? 0).format('0o');
 				}).finally(() => {
+					this.loading = false;
 					this.lifetimeLoadingPromise = null;
 				});
 			}
@@ -450,18 +453,18 @@ export default {
 			if (this.loading && !this.loadingPromise) {
 				this.loadingPromise = this.apollo.query({
 					query: gql`query lendingInsights {
-						my {
-							id
-							lendingStats {
+							my {
 								id
-								loanStatsByYear {
-									amount
-									count
+								lendingStats {
+									id
+									loanStatsByYear {
+										amount
+										count
+									}
+									countriesLentToByYear
 								}
-								countriesLentToByYear
 							}
-						}
-					}`
+						}`
 				}).then(({ data }) => {
 					const ytdAmount = parseInt(
 						numeral(data?.my?.lendingStats?.loanStatsByYear?.amount ?? 0).value(),
@@ -469,21 +472,20 @@ export default {
 					);
 					return this.apollo.query({
 						query: gql`query percentileData($amount: Int!) {
-    						lend {
-       							 percentilePerYear(amount: $amount) {
-            						nextPercentileThreshold
-            						percentile
-           		 					percentileNext25
-            						threshold
-       							 }
-   							 }
-						}`,
+								lend {
+									percentilePerYear(amount: $amount) {
+										nextPercentileThreshold
+										percentile
+										percentileNext25
+										threshold
+									}
+								}
+							}`,
 						variables: { amount: ytdAmount }
 					}).then(({ data: percentileStatsData }) => {
 						return { lendingStatsData: data, percentileStatsData };
 					});
 				}).then(({ lendingStatsData, percentileStatsData }) => {
-					this.loading = false;
 					const percentileData = percentileStatsData?.lend?.percentilePerYear || {};
 					this.currentYearPercentile = percentileData.percentile ?? 0;
 					this.formattedCurrentYearPercentile = numeral(this.currentYearPercentile).format('0o');
@@ -521,6 +523,7 @@ export default {
 						`${this.currentYearPercentile}-percentile`,
 					);
 				}).finally(() => {
+					this.loading = false;
 					this.loadingPromise = null;
 				});
 			}
@@ -528,10 +531,9 @@ export default {
 		fetchStats() {
 			if (this.loading && !this.loadingPromise) {
 				this.loadingPromise = Promise.all([
+					this.fetchCurrentYearStats(),
 					this.fetchLifetimeStats(),
-					this.fetchCurrentYearStats()
 				]).finally(() => {
-					this.loading = false;
 					this.loadingPromise = null;
 				});
 			}
@@ -567,11 +569,13 @@ export default {
 }
 
 .tab-header {
-	@apply tw-mb-3 md:tw-mb-2 tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left;
+	@apply tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left tw-text-base tw-font-medium;
+
+	font-weight: 621;
 }
 
-:deep(.kv-tabs) {
-	@apply tw-gap-x-2 md:tw-gap-x-3 lg:tw-gap-x-4;
+.ytd-loader {
+	height: 31.5rem;
 }
 
 @screen md {
@@ -579,12 +583,31 @@ export default {
 		height: 44px;
 		margin-bottom: 10.5px;
 	}
+
+	.ytd-loader {
+		height: 20.4rem;
+	}
 }
 
 @screen lg {
 	.stat-placeholder {
 		margin-bottom: 11.5px;
-		@apply tw-h-6;
+		@apply tw-h-4;
+	}
+
+	.ytd-loader {
+		height: 9.5rem;
+	}
+
+	#kv-tab-panel-ytd {
+		.stat-def,
+		.stat-link {
+			@apply tw-text-small
+		}
+
+		.stat-link span {
+			@apply tw-w-3.5 tw-h-2;
+		}
 	}
 }
 </style>
