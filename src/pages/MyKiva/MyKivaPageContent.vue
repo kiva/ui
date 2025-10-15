@@ -35,7 +35,7 @@
 				:total-loans="totalLoans"
 				:user-goal="userGoal"
 				:is-goal-complete="isGoalComplete"
-				@store-goals-preferences="storeGoalPreferences"
+				@store-goals-preferences="createGoal"
 			/>
 		</section>
 		<section v-else-if="isHeroEnabled" class="tw-mt-4">
@@ -194,8 +194,9 @@ import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
-import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
+
+import useGoalData from '#src/composables/useGoalData';
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -292,6 +293,7 @@ export default {
 			fetchContentfulData,
 			getLoanFindingUrl,
 		} = useBadgeData(this.apollo);
+		const { storeGoalPrefereces } = useGoalData({ loans: this.loans, totalLoanCount: this.totalLoans });
 
 		return {
 			badgeData,
@@ -321,6 +323,7 @@ export default {
 			updatesLoading: true,
 			updatesOffset: 3,
 			showNextSteps: false,
+			storeGoalPrefereces,
 		};
 	},
 	computed: {
@@ -629,29 +632,12 @@ export default {
 			this.showBPSideSheet = false;
 			this.handleSelectedLoan({ loanId: undefined });
 		},
-		async storeGoalPreferences(newPreferences) {
-			const existingPreferences = this.userInfo?.userPreferences ?? null;
-			if (!existingPreferences) {
-				await createUserPreferences(this.apollo, { goals: [] });
-			}
-			const parsedPreferences = existingPreferences ? JSON.parse(existingPreferences?.preferences || '{}') : {};
-			const existingGoals = parsedPreferences?.goals || [];
-			const goalIndex = existingGoals.findIndex(goal => goal.goalName === newPreferences.goalName);
-			if (goalIndex !== -1) {
-				const goalToUpdate = { ...newPreferences };
-				delete goalToUpdate.dateStarted;
-				existingGoals[goalIndex] = { ...existingGoals[goalIndex], ...goalToUpdate };
-			} else {
-				existingGoals.push(newPreferences);
-			}
-			if (this.userInfo.userPreferences) {
-				await updateUserPreferences(
-					this.apollo,
-					existingPreferences,
-					parsedPreferences,
-					{ goals: existingGoals }
-				);
+		async createGoal(newGoal) {
+			try {
+				await storeGoalPreferences(newGoal);
 				this.$showTipMsg('Your goal was saved successfully!', { type: 'success' });
+			} catch (e) {
+				this.$showTipMsg('There was an error saving your goal. Please try again.');
 			}
 		},
 		showLoanDetails(payload, showNextSteps = false) {

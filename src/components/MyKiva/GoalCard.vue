@@ -2,10 +2,11 @@
 	<div
 		class="card-container"
 		:class="{
-			'goal-card-bg': !userHasGoal,
+			'goal-card-bg': !userHasGoal && !loading,
 		}"
 	>
-		<div :class="{'tw-mx-auto tw-relative achievement-card-bg': userHasGoal}">
+		<kv-loading-placeholder v-if="loading" class="achievement-card-bg" />
+		<div v-else :class="{'tw-mx-auto tw-relative achievement-card-bg': userHasGoal}">
 			<span
 				:class="{'tw-absolute tw-top-1 tw-left-1': userHasGoal}"
 				class="
@@ -29,22 +30,29 @@
 			>
 		</div>
 		<div class="tw-flex tw-flex-col" :class="{'tw-gap-1': userHasGoal}">
-			<div v-if="!userHasGoal" class="tw-mx-auto">
+			<div v-if="!userHasGoal && !loading" class="tw-mx-auto">
 				<GoalCardCareImg />
 			</div>
-			<h3>{{ title }}</h3>
+			<h3 v-if="!loading">
+				{{ title }}
+			</h3>
+			<kv-loading-placeholder v-else class="!tw-h-3 tw-w-full tw-max-w-16 tw-mb-1" />
 			<template v-if="userHasGoal">
-				<div class="tw-flex tw-items-baseline tw-gap-3">
-					<div>
+				<div class="tw-flex tw-items-end tw-gap-3">
+					<div v-if="!loading">
 						<h5 class="tw-mb-1">
-							{{ currentGoalProgress }} / {{ loansToReachGoal }} Loans
+							{{ goalProgress }} / {{ loansToReachGoal }} Loans
 						</h5>
 						<kv-progress-bar
 							style="width: 98px;"
 							aria-label="Percent the loan has funded"
-							:value="currentGoalProgress"
+							:value="goalProgress"
 							:max="loansToReachGoal"
 						/>
+					</div>
+					<div v-else>
+						<kv-loading-placeholder class="!tw-h-2 !tw-w-8 tw-mb-1" />
+						<kv-loading-placeholder class="!tw-h-1.5 tw-w-13 tw-max-w-sm" />
 					</div>
 					<KvButton
 						class="tw-flex-grow"
@@ -56,15 +64,18 @@
 				</div>
 			</template>
 			<template v-else>
-				<p class="tw-text-small tw-pb-2">
+				<p v-if="!loading" class="tw-text-small tw-pb-2">
 					How many more people will you help this year?
 				</p>
+				<kv-loading-placeholder v-else class="!tw-h-1 tw-mb-1" />
 				<KvButton
+					v-if="!loading"
 					v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
 					@click="$emit('open-goal-modal')"
 				>
 					Set a goal
 				</KvButton>
+				<kv-loading-placeholder v-else class="!tw-h-4 tw-mb-1" />
 			</template>
 		</div>
 	</div>
@@ -74,7 +85,7 @@
 
 import { computed, onMounted, inject } from 'vue';
 import {
-	KvMaterialIcon, KvButton, KvProgressBar
+	KvMaterialIcon, KvButton, KvProgressBar, KvLoadingPlaceholder
 } from '@kiva/kv-components';
 import { mdiCheckCircleOutline } from '@mdi/js';
 import { formatRichTextContent } from '#src/util/contentfulUtils';
@@ -99,6 +110,14 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	loading: {
+		type: Boolean,
+		default: false,
+	},
+	goalProgress: {
+		type: Number,
+		default: 0,
+	},
 });
 
 defineEmits(['open-goal-modal']);
@@ -106,11 +125,9 @@ defineEmits(['open-goal-modal']);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
-const currentGoalProgress = computed(() => props.userGoal?.currentProgress || 0);
-
 const loansToReachGoal = computed(() => props.userGoal?.target || 0);
 
-const userHasGoal = computed(() => !!props.userGoal);
+const userHasGoal = computed(() => !!props.userGoal?.category);
 
 const title = computed(() => {
 	if (userHasGoal.value) return 'Work towards your goal';
@@ -171,7 +188,7 @@ const handleContinueClick = () => {
 };
 
 onMounted(() => {
-	$kvTrackEvent('portfolio', 'view', 'goal-set', props.userGoal?.category, currentGoalProgress.value);
+	$kvTrackEvent('portfolio', 'view', 'goal-set', props.userGoal?.category, props.goalProgress);
 });
 
 </script>

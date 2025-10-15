@@ -109,6 +109,7 @@ export default function useGoalData({ loans, totalLoanCount }) {
 		currentGoalAchieved,
 		currentGoalActive,
 		loading,
+		goalProgress,
 		getGoalDisplayName,
 		runComposable,
 		storeGoalPreferences,
