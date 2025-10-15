@@ -157,7 +157,7 @@
 									{{ currentYearAmountLent }}
 								</dt>
 								<dd class="stat-def">
-									Total amount lent
+									Total amount lent in {{ yearToDate }}
 								</dd>
 								<router-link
 									class="stat-link"
