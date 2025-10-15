@@ -179,7 +179,7 @@
 								<kv-loading-placeholder
 									v-if="loading"
 									class="stat-placeholder"
-									style="width: 7rem;"
+									style="width: 7rem; height: 2rem;"
 								/>
 								<dt v-show="!loading" class="stat-value !tw-text-white">
 									{{ formattedCurrentYearPercentile }}
@@ -187,8 +187,13 @@
 								<dd class="stat-def">
 									Lending percentile this year
 								</dd>
+								<kv-loading-placeholder
+									v-if="loading"
+									class="stat-placeholder"
+									style="width: 11rem; height: 1rem;"
+								/>
 								<router-link
-									v-if="nextPercentileMsg && currentYearPercentile < 99"
+									v-if="!loading && nextPercentileMsg && currentYearPercentile < 99"
 									class="stat-link"
 									to="/lend-category-beta"
 									v-kv-track-event="['portfolio', 'click', `${currentYearPercentile}-percentile`]"
@@ -430,7 +435,8 @@ export default {
 			}
 		},
 		fetchLifetimeStats() {
-			if (this.loading && !this.lifetimeLoadingPromise) {
+			if (!this.lifetimeLoadingPromise) {
+				this.loading = true;
 				this.lifetimeLoadingPromise = this.apollo.query({
 					query: gql`query lendingInsights {
 						my {
@@ -451,7 +457,6 @@ export default {
 						}
 					}`
 				}).then(({ data }) => {
-					this.loading = false;
 					const amountOfLoans = numeral(data?.my?.userStats?.amount_of_loans ?? 0);
 
 					this.lifetimeAmountLent = amountOfLoans.format('$0,0[.]00');
@@ -459,6 +464,7 @@ export default {
 					this.lifetimeNumberOfLoans = data?.my?.userStats?.number_of_loans ?? 0;
 					this.lifetimePercentile = numeral(data?.my?.lendingStats?.amountLentPercentile ?? 0).format('0o');
 				}).finally(() => {
+					this.loading = false;
 					this.lifetimeLoadingPromise = null;
 				});
 			}
@@ -467,18 +473,18 @@ export default {
 			if (this.loading && !this.loadingPromise) {
 				this.loadingPromise = this.apollo.query({
 					query: gql`query lendingInsights {
-						my {
-							id
-							lendingStats {
+							my {
 								id
-								loanStatsByYear {
-									amount
-									count
+								lendingStats {
+									id
+									loanStatsByYear {
+										amount
+										count
+									}
+									countriesLentToByYear
 								}
-								countriesLentToByYear
 							}
-						}
-					}`
+						}`
 				}).then(({ data }) => {
 					const ytdAmount = parseInt(
 						numeral(data?.my?.lendingStats?.loanStatsByYear?.amount ?? 0).value(),
@@ -486,21 +492,20 @@ export default {
 					);
 					return this.apollo.query({
 						query: gql`query percentileData($amount: Int!) {
-    						lend {
-       							 percentilePerYear(amount: $amount) {
-            						nextPercentileThreshold
-            						percentile
-           		 					percentileNext25
-            						threshold
-       							 }
-   							 }
-						}`,
+								lend {
+									percentilePerYear(amount: $amount) {
+										nextPercentileThreshold
+										percentile
+										percentileNext25
+										threshold
+									}
+								}
+							}`,
 						variables: { amount: ytdAmount }
 					}).then(({ data: percentileStatsData }) => {
 						return { lendingStatsData: data, percentileStatsData };
 					});
 				}).then(({ lendingStatsData, percentileStatsData }) => {
-					this.loading = false;
 					const percentileData = percentileStatsData?.lend?.percentilePerYear || {};
 					this.currentYearPercentile = percentileData.percentile ?? 0;
 					this.formattedCurrentYearPercentile = numeral(this.currentYearPercentile).format('0o');
@@ -538,6 +543,7 @@ export default {
 						`${this.currentYearPercentile}-percentile`,
 					);
 				}).finally(() => {
+					this.loading = false;
 					this.loadingPromise = null;
 				});
 			}
@@ -545,10 +551,9 @@ export default {
 		fetchStats() {
 			if (this.loading && !this.loadingPromise) {
 				this.loadingPromise = Promise.all([
+					this.fetchCurrentYearStats(),
 					this.fetchLifetimeStats(),
-					this.fetchCurrentYearStats()
 				]).finally(() => {
-					this.loading = false;
 					this.loadingPromise = null;
 				});
 			}
