@@ -106,7 +106,7 @@
 			</div>
 		</div>
 		<div>
-			<kv-tabs @tab-changed="setActiveTab" :active-tab="currentTab">
+			<kv-tabs @tab-changed="setActiveTab">
 				<template #tabNav>
 					<div class="tw-flex tw-items-center tw-justify-between tw-w-full md:tw-flex-col md:tw-items-start">
 						<h2 class="tw-text-h3 tw-mb-1 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
@@ -148,8 +148,7 @@
 						/>
 						<kv-grid
 							v-else
-							as="dl" class="stats-container-exp tw-items-center
-											lg:!tw-px-4 lg:!tw-py-1.5 md:!tw-pr-4"
+							as="dl" class="stats-container-exp md:!tw-pr-4"
 						>
 							<!-- Total amount lent -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
@@ -262,15 +261,15 @@
 							</div>
 							<!-- Lending percentile -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3
-									tw-bg-eco-green-3 tw-rounded"
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 tw-h-full
+									tw-bg-eco-green-3 tw-rounded tw-px-4 tw-py-2 md:!tw-py-1.5 md:!tw-px-3"
 							>
 								<kv-loading-placeholder
 									v-if="loading"
 									class="stat-placeholder"
 									style="width: 7rem;"
 								/>
-								<dt v-show="!loading" class="stat-value">
+								<dt v-show="!loading" class="stat-value !tw-text-white">
 									{{ lifetimePercentile }}
 								</dt>
 								<dd class="stat-def">
@@ -376,7 +375,6 @@ export default {
 			lifetimeLoadingPromise: null,
 			donationLightboxVisible: false,
 			// loanLightboxVisible: false,
-			currentTab: 'ytd',
 			currentYearAmountLent: 0,
 			currentYearCountryCount: 0,
 			currentYearNumberOfLoans: 0,
@@ -405,7 +403,6 @@ export default {
 	},
 	methods: {
 		setActiveTab(tab) {
-			this.currentTab = tab;
 			if (tab === 'ytd' || tab === 0) {
 				this.$kvTrackEvent(
 					'portfolio',
@@ -549,7 +546,7 @@ export default {
 }
 
 .stats-container-exp {
-	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center tw-bg-eco-green-4;
+	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-2.5 tw-rounded tw-text-center tw-bg-eco-green-4 tw-items-center;
 }
 
 .stat-placeholder {
@@ -557,15 +554,15 @@ export default {
 }
 
 .stat-value {
-	@apply tw-text-h2 tw-text-eco-green-2;
+	@apply tw-text-h2 tw-text-eco-green-2 tw-pb-0.5;
 }
 
 .stat-def {
-	@apply tw-text-base tw-mb-0.5 tw-text-white;
+	@apply tw-text-small tw-mb-0.5 tw-text-white;
 }
 
 .stat-link {
-	@apply tw-inline-flex tw-justify-center tw-items-center tw-text-eco-green-2 tw-font-medium;
+	@apply tw-inline-flex tw-justify-center tw-items-center tw-text-eco-green-2 tw-font-medium tw-text-small;
 }
 
 .tab-header {
