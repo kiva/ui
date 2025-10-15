@@ -138,7 +138,9 @@ export default {
 				};
 				this.loans = myKivaQueryResult.my?.loans?.values ?? [];
 				if (bpSidesheetLoan?.lend?.loan) {
-					this.loans = [bpSidesheetLoan.lend.loan, ...this.loans];
+					const bpLoanId = bpSidesheetLoan.lend.loan.id;
+					const filteredLoans = this.loans.filter(loan => loan.id !== bpLoanId);
+					this.loans = [bpSidesheetLoan.lend.loan, ...filteredLoans];
 				}
 				this.totalLoans = myKivaQueryResult.my?.loans?.totalCount ?? 0;
 				const countryFacets = lendingStatsQueryResult.lend?.countryFacets ?? [];
