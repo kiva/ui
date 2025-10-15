@@ -1,4 +1,4 @@
-query useGoalDataQuery($loanIds: [Int!]!) {
+query useGoalDataQuery {
   my {
     id
 	userPreferences {
@@ -7,14 +7,6 @@ query useGoalDataQuery($loanIds: [Int!]!) {
     }
 	loans {
 	  totalCount
-	}
-  }
-  postCheckoutAchievements(loanIds: $loanIds) {
-	allTimeProgress {
-		achievementId
-        totalProgress
-        currentTier
-        completed
 	}
   }
 }

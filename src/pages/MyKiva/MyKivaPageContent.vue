@@ -33,8 +33,6 @@
 				:hero-tiered-achievements="heroTieredAchievements"
 				:is-next-steps-exp="isNextStepsExp"
 				:total-loans="totalLoans"
-				:user-goal="userGoal"
-				:is-goal-complete="isGoalComplete"
 				@store-goals-preferences="createGoal"
 			/>
 		</section>
@@ -293,7 +291,7 @@ export default {
 			fetchContentfulData,
 			getLoanFindingUrl,
 		} = useBadgeData(this.apollo);
-		const { storeGoalPrefereces } = useGoalData({ loans: this.loans, totalLoanCount: this.totalLoans });
+		const { storeGoalPreferences } = useGoalData({ loans: this.loans, totalLoanCount: this.totalLoans });
 
 		return {
 			badgeData,
@@ -323,7 +321,7 @@ export default {
 			updatesLoading: true,
 			updatesOffset: 3,
 			showNextSteps: false,
-			storeGoalPrefereces,
+			storeGoalPreferences,
 		};
 	},
 	computed: {
@@ -634,7 +632,7 @@ export default {
 		},
 		async createGoal(newGoal) {
 			try {
-				await storeGoalPreferences(newGoal);
+				await this.storeGoalPreferences(newGoal);
 				this.$showTipMsg('Your goal was saved successfully!', { type: 'success' });
 			} catch (e) {
 				this.$showTipMsg('There was an error saving your goal. Please try again.');

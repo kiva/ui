@@ -5,6 +5,8 @@ import {
 } from 'vue';
 
 import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
+import useGoalDataProgressQuery from '#src/graphql/query/useGoalDataProgress.graphql';
+import logFormatter from '#src/util/logFormatter';
 import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 
 import {
@@ -45,14 +47,27 @@ export default function useGoalData({ loans, totalLoanCount }) {
 
 	async function loadPreferences(fetchPolicy = 'cache-first') {
 		try {
-			const loanIds = loans.map(loan => loan.id);
-			const response = await apollo.query({ query: useGoalDataQuery, variables: { loanIds }, fetchPolicy });
+			const response = await apollo.query({ query: useGoalDataQuery, fetchPolicy });
 			const prefsData = response.data?.my?.userPreferences || null;
-			allTimeProgress.value = response?.data?.postCheckoutAchievements?.allTimeProgress || [];
 			userPreferences.value = prefsData;
 			return prefsData ? JSON.parse(prefsData.preferences || '{}') : {};
 		} catch (error) {
-			console.error('Failed to load preferences:', error);
+			logFormatter(error, 'Failed to load preferences');
+			return null;
+		}
+	}
+
+	async function loadProgress(fetchPolicy = 'cache-first') {
+		try {
+			const loanIds = loans.map(loan => loan.id);
+			const response = await apollo.query({
+				query: useGoalDataProgressQuery, variables: { loanIds }, fetchPolicy
+			});
+			allTimeProgress.value = response?.data?.postCheckoutAchievements?.allTimeProgress || [];
+			return true;
+		} catch (error) {
+			logFormatter(error, 'Failed to load progress');
+			return null;
 		}
 	}
 
@@ -90,6 +105,7 @@ export default function useGoalData({ loans, totalLoanCount }) {
 	async function runComposable() {
 		loading.value = true;
 		const parsedPrefs = await loadPreferences();
+		await loadProgress();
 		setGoalState(parsedPrefs);
 		// Auto-update if active goal achieved
 		if (currentGoal.value && currentGoalAchieved.value) {
