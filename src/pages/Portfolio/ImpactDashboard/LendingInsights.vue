@@ -92,15 +92,18 @@
 		v-else
 		@visible="fetchStats"
 		data-testid="lending-insights"
-		class="!tw-bg-white"
+		class="!tw-bg-white !tw-py-5 !tw-mb-3"
 	>
-		<div class="tw-flex tw-items-center tw-justify-end tw-gap-3 tw-mb-3 md:tw-mb-2 lg:tw-hidden">
+		<div class="tw-flex tw-items-center tw-justify-end tw-gap-3 tw-mb-1 md:tw-mb-2 lg:tw-hidden">
 			<div
 				class="tw-inline-flex tw-px-1 tw-py-0.5 tw-items-center
 					tw-rounded-sm tw-bg-brand-100 tw-border tw-border-brand-200"
 			>
 				<star-shine class="tw-flex-shrink-0 tw-flex tw-items-center" />
-				<p class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0">
+				<p
+					class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0"
+					style="line-height: normal;"
+				>
 					Filter by year now live
 				</p>
 			</div>
@@ -132,7 +135,10 @@
 								tw-rounded-sm tw-bg-brand-100 tw-border tw-border-brand-200"
 							>
 								<star-shine class="tw-flex-shrink-0 tw-flex tw-items-center" />
-								<p class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0">
+								<p
+									class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0"
+									style="line-height: normal;"
+								>
 									Filter by year now live
 								</p>
 							</div>
@@ -327,7 +333,7 @@
 				class="tw-w-2 tw-h-2 tw-flex-shrink-0"
 				:icon="mdiClockOutline"
 			/>
-			<p class="tw-pl-0.5 tw-font-normal tw-text-small tw-flex-shrink-0">
+			<p class="tw-pl-0.5 tw-font-normal md:tw-text-small tw-flex-shrink-0">
 				{{ daysUntilDeadline }} days to make contribution this year
 			</p>
 		</div>
@@ -558,15 +564,21 @@ export default {
 }
 
 .stat-def {
-	@apply tw-text-small tw-mb-0.5 tw-text-white;
+	@apply tw-mb-0.5 tw-text-white;
+}
+
+@screen md {
+	.stat-def, .stat-link {
+		@apply tw-text-small;
+	}
 }
 
 .stat-link {
-	@apply tw-inline-flex tw-justify-center tw-items-center tw-text-eco-green-2 tw-font-medium tw-text-small;
+	@apply tw-inline-flex tw-justify-center tw-items-center tw-text-eco-green-2 tw-font-medium;
 }
 
 .tab-header {
-	@apply tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left tw-text-base tw-font-medium;
+	@apply tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left tw-text-base tw-font-medium tw-mb-1;
 
 	font-weight: 621;
 }
