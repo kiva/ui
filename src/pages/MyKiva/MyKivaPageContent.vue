@@ -62,7 +62,7 @@
 				@badge-clicked="handleBadgeTileClicked"
 			/>
 		</section>
-		<section class="tw-my-4">
+		<section id="mykiva-borrower-carousel" class="tw-my-4">
 			<MyKivaBorrowerCarousel
 				:basket-items="basketItems"
 				:is-adding="isAdding"
