@@ -142,18 +142,18 @@
 				<template #tabPanels>
 					<kv-tab-panel id="ytd" class="tw--mt-2">
 						<!-- Current year Panel -->
+						<kv-loading-placeholder
+							v-if="loading"
+							class="stat-placeholder ytd-loader !tw-rounded"
+						/>
 						<kv-grid
+							v-else
 							as="dl" class="stats-container-exp tw-items-center
 											lg:!tw-px-4 lg:!tw-py-1.5 md:!tw-pr-4"
 						>
 							<!-- Total amount lent -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
-								<kv-loading-placeholder
-									v-if="loading"
-									class="stat-placeholder"
-									style="width: 7rem;"
-								/>
-								<dt v-show="!loading" class="stat-value">
+								<dt class="stat-value">
 									{{ currentYearAmountLent }}
 								</dt>
 								<dd class="stat-def">
@@ -176,24 +176,14 @@
 								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-5
 										tw-bg-eco-green-3 tw-rounded tw-px-4 tw-py-2 md:!tw-py-1.5 md:!tw-px-3"
 							>
-								<kv-loading-placeholder
-									v-if="loading"
-									class="stat-placeholder"
-									style="width: 7rem; height: 2rem;"
-								/>
-								<dt v-show="!loading" class="stat-value !tw-text-white">
+								<dt class="stat-value !tw-text-white">
 									{{ formattedCurrentYearPercentile }}
 								</dt>
 								<dd class="stat-def">
 									Lending percentile this year
 								</dd>
-								<kv-loading-placeholder
-									v-if="loading"
-									class="stat-placeholder"
-									style="width: 11rem; height: 1rem;"
-								/>
 								<router-link
-									v-if="!loading && nextPercentileMsg && currentYearPercentile < 99"
+									v-if="nextPercentileMsg && currentYearPercentile < 99"
 									class="stat-link"
 									to="/lend-category-beta"
 									v-kv-track-event="['portfolio', 'click', `${currentYearPercentile}-percentile`]"
@@ -214,12 +204,7 @@
 							</div>
 							<!-- Loans made -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
-								<kv-loading-placeholder
-									v-if="loading"
-									class="stat-placeholder"
-									style="width: 4rem;"
-								/>
-								<dd v-else class="stat-value">
+								<dd class="stat-value">
 									{{ currentYearNumberOfLoans }}
 								</dd>
 								<dt class="stat-def">
@@ -228,12 +213,7 @@
 							</div>
 							<!-- Countries supported -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
-								<kv-loading-placeholder
-									v-if="loading"
-									class="stat-placeholder"
-									style="width: 4rem;"
-								/>
-								<dt v-show="!loading" class="stat-value">
+								<dt class="stat-value">
 									{{ currentYearCountryCount }}
 								</dt>
 								<dd class="stat-def">
@@ -594,17 +574,29 @@ export default {
 	font-weight: 621;
 }
 
+.ytd-loader {
+	height: 31.5rem;
+}
+
 @screen md {
 	.stat-placeholder {
 		height: 44px;
 		margin-bottom: 10.5px;
+	}
+
+	.ytd-loader {
+		height: 20.4rem;
 	}
 }
 
 @screen lg {
 	.stat-placeholder {
 		margin-bottom: 11.5px;
-		@apply tw-h-6;
+		@apply tw-h-4;
+	}
+
+	.ytd-loader {
+		height: 8rem;
 	}
 
 	#kv-tab-panel-ytd {
