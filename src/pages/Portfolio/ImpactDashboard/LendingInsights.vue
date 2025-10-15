@@ -142,22 +142,22 @@
 				<template #tabPanels>
 					<kv-tab-panel id="ytd" class="tw--mt-2">
 						<!-- Current year Panel -->
+						<kv-loading-placeholder
+							v-if="loading"
+							class="tw-mt-1 tw-h-4.5 tw-mx-auto tw-mb-0.5 ytd-loader !tw-rounded"
+						/>
 						<kv-grid
+							v-else
 							as="dl" class="stats-container-exp tw-items-center
 											lg:!tw-px-4 lg:!tw-py-1.5 md:!tw-pr-4"
 						>
 							<!-- Total amount lent -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
-								<kv-loading-placeholder
-									v-if="loading"
-									class="stat-placeholder"
-									style="width: 7rem;"
-								/>
-								<dt v-show="!loading" class="stat-value">
+								<dt class="stat-value">
 									{{ currentYearAmountLent }}
 								</dt>
 								<dd class="stat-def">
-									Total amount lent
+									Total amount lent in {{ yearToDate }}
 								</dd>
 								<router-link
 									class="stat-link"
@@ -176,12 +176,7 @@
 								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-5
 										tw-bg-eco-green-3 tw-rounded tw-px-4 tw-py-2 md:!tw-py-1.5 md:!tw-px-3"
 							>
-								<kv-loading-placeholder
-									v-if="loading"
-									class="stat-placeholder"
-									style="width: 7rem;"
-								/>
-								<dt v-show="!loading" class="stat-value !tw-text-white">
+								<dt class="stat-value !tw-text-white">
 									{{ formattedCurrentYearPercentile }}
 								</dt>
 								<dd class="stat-def">
@@ -209,12 +204,7 @@
 							</div>
 							<!-- Loans made -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
-								<kv-loading-placeholder
-									v-if="loading"
-									class="stat-placeholder"
-									style="width: 4rem;"
-								/>
-								<dd v-else class="stat-value">
+								<dd class="stat-value">
 									{{ currentYearNumberOfLoans }}
 								</dd>
 								<dt class="stat-def">
@@ -223,12 +213,7 @@
 							</div>
 							<!-- Countries supported -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
-								<kv-loading-placeholder
-									v-if="loading"
-									class="stat-placeholder"
-									style="width: 4rem;"
-								/>
-								<dt v-show="!loading" class="stat-value">
+								<dt class="stat-value">
 									{{ currentYearCountryCount }}
 								</dt>
 								<dd class="stat-def">
@@ -430,7 +415,8 @@ export default {
 			}
 		},
 		fetchLifetimeStats() {
-			if (this.loading && !this.lifetimeLoadingPromise) {
+			if (!this.lifetimeLoadingPromise) {
+				this.loading = true;
 				this.lifetimeLoadingPromise = this.apollo.query({
 					query: gql`query lendingInsights {
 						my {
@@ -451,7 +437,6 @@ export default {
 						}
 					}`
 				}).then(({ data }) => {
-					this.loading = false;
 					const amountOfLoans = numeral(data?.my?.userStats?.amount_of_loans ?? 0);
 
 					this.lifetimeAmountLent = amountOfLoans.format('$0,0[.]00');
@@ -459,6 +444,7 @@ export default {
 					this.lifetimeNumberOfLoans = data?.my?.userStats?.number_of_loans ?? 0;
 					this.lifetimePercentile = numeral(data?.my?.lendingStats?.amountLentPercentile ?? 0).format('0o');
 				}).finally(() => {
+					this.loading = false;
 					this.lifetimeLoadingPromise = null;
 				});
 			}
@@ -467,18 +453,18 @@ export default {
 			if (this.loading && !this.loadingPromise) {
 				this.loadingPromise = this.apollo.query({
 					query: gql`query lendingInsights {
-						my {
-							id
-							lendingStats {
+							my {
 								id
-								loanStatsByYear {
-									amount
-									count
+								lendingStats {
+									id
+									loanStatsByYear {
+										amount
+										count
+									}
+									countriesLentToByYear
 								}
-								countriesLentToByYear
 							}
-						}
-					}`
+						}`
 				}).then(({ data }) => {
 					const ytdAmount = parseInt(
 						numeral(data?.my?.lendingStats?.loanStatsByYear?.amount ?? 0).value(),
@@ -486,21 +472,20 @@ export default {
 					);
 					return this.apollo.query({
 						query: gql`query percentileData($amount: Int!) {
-    						lend {
-       							 percentilePerYear(amount: $amount) {
-            						nextPercentileThreshold
-            						percentile
-           		 					percentileNext25
-            						threshold
-       							 }
-   							 }
-						}`,
+								lend {
+									percentilePerYear(amount: $amount) {
+										nextPercentileThreshold
+										percentile
+										percentileNext25
+										threshold
+									}
+								}
+							}`,
 						variables: { amount: ytdAmount }
 					}).then(({ data: percentileStatsData }) => {
 						return { lendingStatsData: data, percentileStatsData };
 					});
 				}).then(({ lendingStatsData, percentileStatsData }) => {
-					this.loading = false;
 					const percentileData = percentileStatsData?.lend?.percentilePerYear || {};
 					this.currentYearPercentile = percentileData.percentile ?? 0;
 					this.formattedCurrentYearPercentile = numeral(this.currentYearPercentile).format('0o');
@@ -538,6 +523,7 @@ export default {
 						`${this.currentYearPercentile}-percentile`,
 					);
 				}).finally(() => {
+					this.loading = false;
 					this.loadingPromise = null;
 				});
 			}
@@ -545,10 +531,9 @@ export default {
 		fetchStats() {
 			if (this.loading && !this.loadingPromise) {
 				this.loadingPromise = Promise.all([
+					this.fetchCurrentYearStats(),
 					this.fetchLifetimeStats(),
-					this.fetchCurrentYearStats()
 				]).finally(() => {
-					this.loading = false;
 					this.loadingPromise = null;
 				});
 			}
@@ -589,17 +574,29 @@ export default {
 	font-weight: 621;
 }
 
+.ytd-loader {
+	height: 31.5rem;
+}
+
 @screen md {
 	.stat-placeholder {
 		height: 44px;
 		margin-bottom: 10.5px;
+	}
+
+	.ytd-loader {
+		height: 20.4rem;
 	}
 }
 
 @screen lg {
 	.stat-placeholder {
 		margin-bottom: 11.5px;
-		@apply tw-h-6;
+		@apply tw-h-4;
+	}
+
+	.ytd-loader {
+		height: 9.5rem;
 	}
 
 	#kv-tab-panel-ytd {
