@@ -596,7 +596,7 @@ export default {
 	}
 
 	.ytd-loader {
-		height: 8rem;
+		height: 9.5rem;
 	}
 
 	#kv-tab-panel-ytd {
