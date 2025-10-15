@@ -99,17 +99,20 @@
 								<p class="tw-mb-2">
 									{{ cardSubhead }}
 								</p>
-								<h3 class="tw-mb-2">
-									Text message or phone call
-								</h3>
-								<p class="tw-mb-2">
-									Receive a code via text message on your mobile device.
-								</p>
-								<kv-button
-									:to="`/settings/security/mfa/phone?first=${!isMfaActive}`"
-								>
-									Use text message or phone call
-								</kv-button>
+								<!-- Phone verification disabled since not currently functional -->
+								<template v-if="false">
+									<h3 class="tw-mb-2">
+										Text message or phone call
+									</h3>
+									<p class="tw-mb-2">
+										Receive a code via text message on your mobile device.
+									</p>
+									<kv-button
+										:to="`/settings/security/mfa/phone?first=${!isMfaActive}`"
+									>
+										Use text message or phone call
+									</kv-button>
+								</template>
 							</div>
 
 							<div class="two-step-verification__sub-section">
