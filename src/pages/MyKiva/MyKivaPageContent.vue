@@ -189,6 +189,7 @@ import LendingStats from '#src/components/MyKiva/LendingStats';
 import BailoutChips from '#src/components/MyKiva/BailoutChips';
 
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
+import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 
 import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
@@ -209,7 +210,7 @@ const repaymentOptions = ['loan_repayment', 'direct_loan_repayment'];
 
 export default {
 	name: 'MyKivaPageContent',
-	mixins: [borrowerProfileExpMixin],
+	mixins: [borrowerProfileExpMixin, smoothScrollMixin],
 	components: {
 		AsyncMyKivaSection,
 		BadgesSection,
@@ -680,6 +681,13 @@ export default {
 		this.loadInitialBasketItems();
 
 		const queryLoanId = this.$router.currentRoute?.value?.query?.loanId ?? null;
+		const urlHash = this.$router.currentRoute?.value?.hash;
+
+		if (urlHash) {
+			const elementToScrollTo = document.querySelector(urlHash);
+			const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 10 ?? 0;
+			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+		}
 
 		if (queryLoanId) {
 			this.selectedLoan = { id: Number(queryLoanId) };
