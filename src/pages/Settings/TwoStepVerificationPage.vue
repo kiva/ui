@@ -242,7 +242,8 @@ export default {
 					// If all of the user's recovery codes are not active, then their MFA setup was interrupted.
 					// To fix that, we need to delete their recovery code, which can only be done by turning
 					// off (resetting) their MFA. Once that's complete, we need to gather their MFA enrollments again.
-					if (authEnrollments.filter(e => e.authenticator_type === 'recovery-code').every(e => !e.active)) {
+					const recoveryCodes = authEnrollments.filter(e => e.authenticator_type === 'recovery-code');
+					if (recoveryCodes.length && recoveryCodes.every(e => !e.active)) {
 						return this.turnOffMfa()
 							.then(() => this.gatherMfaEnrollments());
 					}
