@@ -6,7 +6,6 @@ import {
 
 import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
-import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 
 import {
 	ID_BASIC_NEEDS,
@@ -42,12 +41,14 @@ export default function useGoalData({ loans, totalLoanCount }) {
 	const loading = ref(true);
 	const currentGoal = ref(null);
 	const userPreferences = ref(null);
-	const overallProgress = ref([]);
+	const allTimeProgress = ref([]);
 
 	async function loadPreferences(fetchPolicy = 'cache-first') {
 		try {
-			const response = await apollo.query({ query: useGoalDataQuery, fetchPolicy });
+			const loanIds = loans.map(loan => loan.id);
+			const response = await apollo.query({ query: useGoalDataQuery, variables: { loanIds }, fetchPolicy });
 			const prefsData = response.data?.my?.userPreferences || null;
+			allTimeProgress.value = response?.data?.postCheckoutAchievements?.allTimeProgress || [];
 			userPreferences.value = prefsData;
 			return prefsData ? JSON.parse(prefsData.preferences || '{}') : {};
 		} catch (error) {
@@ -55,20 +56,8 @@ export default function useGoalData({ loans, totalLoanCount }) {
 		}
 	}
 
-	const loadGoalProgress = async () => {
-		try {
-			const loanIds = loans.map(loan => loan.id);
-			const response = await apollo.query({
-				query: postCheckoutAchievementsQuery,
-				variables: { loanIds }
-			});
-			overallProgress.value = response?.data?.postCheckoutAchievements?.overallProgress || [];
-		} catch (error) {
-			console.error('Failed to load goal progress:', error);
-		}
-	};
-
 	function setGoalState(parsedPrefs) {
+		if (!parsedPrefs) return;
 		const goals = parsedPrefs.goals || [];
 		currentGoal.value = { ...goals[0] };
 	}
@@ -89,10 +78,10 @@ export default function useGoalData({ loans, totalLoanCount }) {
 
 	const goalProgress = computed(() => {
 		if (currentGoal.value?.category === ID_SUPPORT_ALL) return totalLoanCount;
-		const currentProgress = overallProgress.value.find(
+		const currentProgress = allTimeProgress.value.find(
 			entry => entry.achievementId === currentGoal.value?.category
 		);
-		return (currentProgress?.contributionLoanIds || []).length;
+		return (currentProgress?.totalProgress || 0);
 	});
 
 	const currentGoalActive = computed(() => currentGoal.value.status === 'in-progress');
@@ -100,7 +89,6 @@ export default function useGoalData({ loans, totalLoanCount }) {
 
 	async function runComposable() {
 		loading.value = true;
-		await loadGoalProgress();
 		const parsedPrefs = await loadPreferences();
 		setGoalState(parsedPrefs);
 		// Auto-update if active goal achieved

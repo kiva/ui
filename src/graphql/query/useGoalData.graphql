@@ -1,4 +1,4 @@
-query useGoalDataQuery($publicId: String) {
+query useGoalDataQuery($loanIds: [Int!]!) {
   my {
     id
 	userPreferences {
@@ -9,11 +9,12 @@ query useGoalDataQuery($publicId: String) {
 	  totalCount
 	}
   }
-  userAchievementProgress(publicId: $publicId) {
-    id
-    tieredLendingAchievements {
-      id
-      totalProgressToAchievement
-    }
+  postCheckoutAchievements(loanIds: $loanIds) {
+	allTimeProgress {
+		achievementId
+        totalProgress
+        currentTier
+        completed
+	}
   }
 }
