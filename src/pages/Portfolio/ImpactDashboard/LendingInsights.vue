@@ -92,21 +92,24 @@
 		v-else
 		@visible="fetchStats"
 		data-testid="lending-insights"
-		class="!tw-bg-white"
+		class="!tw-bg-white !tw-py-5 !tw-mb-3"
 	>
-		<div class="tw-flex tw-items-center tw-justify-end tw-gap-3 tw-mb-3 md:tw-mb-2 lg:tw-hidden">
+		<div class="tw-flex tw-items-center tw-justify-end tw-gap-3 tw-mb-1 md:tw-mb-2 lg:tw-hidden">
 			<div
 				class="tw-inline-flex tw-px-1 tw-py-0.5 tw-items-center
 					tw-rounded-sm tw-bg-brand-100 tw-border tw-border-brand-200"
 			>
 				<star-shine class="tw-flex-shrink-0 tw-flex tw-items-center" />
-				<p class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0">
+				<p
+					class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0"
+					style="line-height: normal;"
+				>
 					Filter by year now live
 				</p>
 			</div>
 		</div>
 		<div>
-			<kv-tabs @tab-changed="setActiveTab" :active-tab="currentTab">
+			<kv-tabs @tab-changed="setActiveTab">
 				<template #tabNav>
 					<div class="tw-flex tw-items-center tw-justify-between tw-w-full md:tw-flex-col md:tw-items-start">
 						<h2 class="tw-text-h3 tw-mb-1 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
@@ -132,7 +135,10 @@
 								tw-rounded-sm tw-bg-brand-100 tw-border tw-border-brand-200"
 							>
 								<star-shine class="tw-flex-shrink-0 tw-flex tw-items-center" />
-								<p class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0">
+								<p
+									class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0"
+									style="line-height: normal;"
+								>
 									Filter by year now live
 								</p>
 							</div>
@@ -148,8 +154,7 @@
 						/>
 						<kv-grid
 							v-else
-							as="dl" class="stats-container-exp tw-items-center
-											lg:!tw-px-4 lg:!tw-py-1.5 md:!tw-pr-4"
+							as="dl" class="stats-container-exp md:!tw-pr-4"
 						>
 							<!-- Total amount lent -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
@@ -262,15 +267,15 @@
 							</div>
 							<!-- Lending percentile -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3
-									tw-bg-eco-green-3 tw-rounded"
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 tw-h-full
+									tw-bg-eco-green-3 tw-rounded tw-px-4 tw-py-2 md:!tw-py-1.5 md:!tw-px-3"
 							>
 								<kv-loading-placeholder
 									v-if="loading"
 									class="stat-placeholder"
 									style="width: 7rem;"
 								/>
-								<dt v-show="!loading" class="stat-value">
+								<dt v-show="!loading" class="stat-value !tw-text-white">
 									{{ lifetimePercentile }}
 								</dt>
 								<dd class="stat-def">
@@ -328,7 +333,7 @@
 				class="tw-w-2 tw-h-2 tw-flex-shrink-0"
 				:icon="mdiClockOutline"
 			/>
-			<p class="tw-pl-0.5 tw-font-normal tw-text-small tw-flex-shrink-0">
+			<p class="tw-pl-0.5 tw-font-normal md:tw-text-small tw-flex-shrink-0">
 				{{ daysUntilDeadline }} days to make contribution this year
 			</p>
 		</div>
@@ -376,7 +381,6 @@ export default {
 			lifetimeLoadingPromise: null,
 			donationLightboxVisible: false,
 			// loanLightboxVisible: false,
-			currentTab: 'ytd',
 			currentYearAmountLent: 0,
 			currentYearCountryCount: 0,
 			currentYearNumberOfLoans: 0,
@@ -405,7 +409,6 @@ export default {
 	},
 	methods: {
 		setActiveTab(tab) {
-			this.currentTab = tab;
 			if (tab === 'ytd' || tab === 0) {
 				this.$kvTrackEvent(
 					'portfolio',
@@ -549,7 +552,7 @@ export default {
 }
 
 .stats-container-exp {
-	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center tw-bg-eco-green-4;
+	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-2.5 tw-rounded tw-text-center tw-bg-eco-green-4 tw-items-center;
 }
 
 .stat-placeholder {
@@ -557,11 +560,17 @@ export default {
 }
 
 .stat-value {
-	@apply tw-text-h2 tw-text-eco-green-2;
+	@apply tw-text-h2 tw-text-eco-green-2 tw-pb-0.5;
 }
 
 .stat-def {
-	@apply tw-text-base tw-mb-0.5 tw-text-white;
+	@apply tw-mb-0.5 tw-text-white;
+}
+
+@screen md {
+	.stat-def, .stat-link {
+		@apply tw-text-small;
+	}
 }
 
 .stat-link {
@@ -569,7 +578,7 @@ export default {
 }
 
 .tab-header {
-	@apply tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left tw-text-base tw-font-medium;
+	@apply tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left tw-text-base tw-font-medium tw-mb-1;
 
 	font-weight: 621;
 }
