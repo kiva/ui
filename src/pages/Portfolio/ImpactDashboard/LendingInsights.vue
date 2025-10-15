@@ -144,7 +144,7 @@
 						<!-- Current year Panel -->
 						<kv-loading-placeholder
 							v-if="loading"
-							class="stat-placeholder ytd-loader !tw-rounded"
+							class="tw-mt-1 tw-h-4.5 tw-mx-auto tw-mb-0.5 ytd-loader !tw-rounded"
 						/>
 						<kv-grid
 							v-else
