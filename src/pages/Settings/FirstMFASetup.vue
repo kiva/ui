@@ -5,7 +5,7 @@
 		</p>
 		<kv-button
 			class="tw-w-full"
-			:to="`/ui-login?doneUrl=${encodeURIComponent('/login?authLevel=mfa&doneUrl=settings/security/mfa')}`"
+			:to="`/ui-login?doneUrl=${encodeURIComponent('/login?authLevel=mfa&doneUrl=settings/security')}`"
 		>
 			Continue
 		</kv-button>

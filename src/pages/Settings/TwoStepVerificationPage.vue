@@ -236,10 +236,10 @@ export default {
 					const authEnrollments = result.data.my.authenticatorEnrollments;
 					this.lastLoginTime = result.data.my.lastLoginTimestamp;
 
-					// If the user has a recovery code that is not active, then their initial MFA setup was interrupted.
+					// If all of the user's recovery codes are not active, then their MFA setup was interrupted.
 					// To fix that, we need to delete their recovery code, which can only be done by turning
 					// off (resetting) their MFA. Once that's complete, we need to gather their MFA enrollments again.
-					if (authEnrollments.some(e => !e.active && e.authenticator_type === 'recovery-code')) {
+					if (authEnrollments.filter(e => e.authenticator_type === 'recovery-code').every(e => !e.active)) {
 						return this.turnOffMfa()
 							.then(() => this.gatherMfaEnrollments());
 					}
