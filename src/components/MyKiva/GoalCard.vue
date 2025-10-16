@@ -104,11 +104,7 @@ const props = defineProps({
 	},
 	userGoal: {
 		type: Object,
-		default: () => ({}),
-	},
-	isGoalComplete: {
-		type: Boolean,
-		default: false,
+		default: undefined,
 	},
 	loading: {
 		type: Boolean,
@@ -194,10 +190,9 @@ onMounted(() => {
 </script>
 
 <style lang="postcss" scoped>
-
 .card-container {
 	@apply tw-w-full tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
-		tw-overflow-hidden tw-bg-white tw-shrink-0 tw-gap-1;
+		tw-overflow-hidden tw-bg-white tw-shrink-0;
 
 	@screen md {
 		width: 336px;

@@ -99,17 +99,20 @@
 								<p class="tw-mb-2">
 									{{ cardSubhead }}
 								</p>
-								<h3 class="tw-mb-2">
-									Text message or phone call
-								</h3>
-								<p class="tw-mb-2">
-									Receive a code via text message on your mobile device.
-								</p>
-								<kv-button
-									:to="`/settings/security/mfa/phone?first=${!isMfaActive}`"
-								>
-									Use text message or phone call
-								</kv-button>
+								<!-- Phone verification disabled since not currently functional -->
+								<template v-if="false">
+									<h3 class="tw-mb-2">
+										Text message or phone call
+									</h3>
+									<p class="tw-mb-2">
+										Receive a code via text message on your mobile device.
+									</p>
+									<kv-button
+										:to="`/settings/security/mfa/phone?first=${!isMfaActive}`"
+									>
+										Use text message or phone call
+									</kv-button>
+								</template>
 							</div>
 
 							<div class="two-step-verification__sub-section">
@@ -236,10 +239,11 @@ export default {
 					const authEnrollments = result.data.my.authenticatorEnrollments;
 					this.lastLoginTime = result.data.my.lastLoginTimestamp;
 
-					// If the user has a recovery code that is not active, then their initial MFA setup was interrupted.
+					// If all of the user's recovery codes are not active, then their MFA setup was interrupted.
 					// To fix that, we need to delete their recovery code, which can only be done by turning
 					// off (resetting) their MFA. Once that's complete, we need to gather their MFA enrollments again.
-					if (authEnrollments.some(e => !e.active && e.authenticator_type === 'recovery-code')) {
+					const recoveryCodes = authEnrollments.filter(e => e.authenticator_type === 'recovery-code');
+					if (recoveryCodes.length && recoveryCodes.every(e => !e.active)) {
 						return this.turnOffMfa()
 							.then(() => this.gatherMfaEnrollments());
 					}

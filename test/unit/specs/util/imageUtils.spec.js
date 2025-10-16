@@ -1,4 +1,6 @@
-import { checkAvifSupport, checkWebpSupport, preloadImage } from '#src/util/imageUtils';
+import {
+	checkAvifSupport, checkWebpSupport, preloadImage, optimizeContentfulUrl
+} from '#src/util/imageUtils';
 
 describe('imageUtils.js', () => {
 	let originalImage;
@@ -149,5 +151,25 @@ describe('imageUtils.js', () => {
 			expect(global.Image).toHaveBeenCalledTimes(1);
 			expect(mockImg.src).toBe(testSrc);
 		});
+	});
+});
+
+describe('optimizeContentfulUrl', () => {
+	it('returns optimized URL with width only', () => {
+		const baseUrl = 'https://images.ctfassets.net/image.jpg';
+		const optimizedUrl = optimizeContentfulUrl(baseUrl, 336);
+
+		const expectedParams = new URLSearchParams();
+		expectedParams.set('w', '336');
+		expectedParams.set('fm', 'webp');
+		expectedParams.set('q', '80');
+
+		expect(optimizedUrl).toBe(`${baseUrl}?${expectedParams.toString()}`);
+	});
+
+	it('returns original URL for non-Contentful images', () => {
+		const baseUrl = 'https://example.com/image.jpg';
+		const optimizedUrl = optimizeContentfulUrl(baseUrl, 100, 100);
+		expect(optimizedUrl).toBe('https://example.com/image.jpg');
 	});
 });

@@ -42,6 +42,7 @@
 					:data-testid="`basket-donation-${index}`"
 					:donation="donation"
 					:loan-count="loans.length"
+					:kiva-cards-count="kivaCards.length"
 					:loan-reservation-total="loanReservationTotal"
 					@refreshtotals="$emit('refreshtotals')"
 					@updating-totals="$emit('updating-totals', $event)"
@@ -84,7 +85,8 @@ export default {
 					id: 0,
 					isTip: false,
 					isUserEdited: false,
-					price: '0.00'
+					price: '0.00',
+					metadata: null
 				}
 			]
 		},

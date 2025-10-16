@@ -147,15 +147,14 @@
 							<div
 								v-show="isLendMenuVisible"
 								class="
-									tw-absolute tw-left-0 tw-right-0 tw-top-8 md:tw-top-9 tw-z-dropdown
-									tw-bg-primary tw-border-b tw-border-tertiary"
+								tw-absolute tw-left-0 tw-right-0 tw-top-8 md:tw-top-9 tw-z-dropdown
+								tw-bg-primary tw-border-b tw-border-tertiary"
 								data-testid="header-lend-dropdown-list"
 								style="margin-top: 1px;"
 							>
 								<kv-page-container>
 									<the-lend-menu
 										ref="lendMenu"
-										:countries-not-lent-to-url="countriesNotLentToUrl"
 										@pointerenter="onLendMenuPointerEnter"
 										@pointerleave="onLendMenuPointerLeave"
 									/>
@@ -563,9 +562,7 @@
 </template>
 
 <script>
-import {
-	defineAsyncComponent, watch
-} from 'vue';
+import { defineAsyncComponent } from 'vue';
 import {
 	hasLentBeforeCookie,
 	hasDepositBeforeCookie,
@@ -596,12 +593,12 @@ import {
 } from '@kiva/kv-components';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import countriesNotLentToExpMixin, { COUNTRIES_NOT_LENT_TO_EXP } from '#src/plugins/countries-not-lent-to-exp-mixin';
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 const NAV_UPDATE_EXP_KEY = 'home_page'; // Key aligns with key used in Fastly experimentation for cached CPS pages
-const COUNTRIES_NOT_LENT_TO_EXP = 'combo_page_countries_not_lent_to';
 
 export default {
 	name: 'TheHeader',
@@ -625,7 +622,7 @@ export default {
 		cookieStore: { default: null },
 		kvAuth0: { default: null },
 	},
-	mixins: [addToBasketExpMixin, myKivaHomePageMixin],
+	mixins: [addToBasketExpMixin, myKivaHomePageMixin, countriesNotLentToExpMixin],
 	data() {
 		return {
 			aboutMenuId: 'about-header-dropdown',
@@ -655,7 +652,7 @@ export default {
 			trusteeId: null,
 			userId: null,
 			isNavUpdateExp: false,
-			isCountriesNotLentToExp: null,
+			isCountriesNotLentToExp: false,
 			throttledDetermineIfMobile: null,
 		};
 	},
@@ -739,14 +736,6 @@ export default {
 			}
 			return this.basketCount;
 		},
-		countriesNotLentToEnabled() {
-			return !!this.userId && this.isCountriesNotLentToExp;
-		},
-		countriesNotLentToUrl() {
-			return this.countriesNotLentToEnabled
-				? '/lend/filter?countries-not-lent-to=true'
-				: '/lend/countries-not-lent';
-		},
 	},
 	apollo: [
 		{
@@ -789,7 +778,7 @@ export default {
 					},
 				});
 			},
-		}
+		},
 	],
 	created() {
 		this.isBasketLoading = this.$renderConfig?.useCDNCaching ?? false;
@@ -804,16 +793,6 @@ export default {
 		);
 
 		this.isNavUpdateExp = navExperiment?.version === 'b';
-
-		const countriesNotLentToExperiment = trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'lend-menu',
-			COUNTRIES_NOT_LENT_TO_EXP,
-			'EXP-MP-1824-Aug2025',
-		);
-
-		this.isCountriesNotLentToExp = countriesNotLentToExperiment?.version === 'b';
 	},
 	mounted() {
 		const { version } = this.apollo.readFragment({
@@ -840,19 +819,22 @@ export default {
 			hasDepositBefore,
 		});
 
-		watch(
-			() => this.$refs.newExpHeader?.menuOpen,
-			menuOpen => {
-				document.body.style.overflow = this.isMobile && menuOpen ? 'hidden' : '';
-			}
-		);
-
 		this.throttledDetermineIfMobile = _throttle(() => {
 			this.determineIfMobile();
 		}, 200);
 
 		this.determineIfMobile();
 		window.addEventListener('resize', this.throttledDetermineIfMobile);
+
+		if (!this.isVisitor) {
+			this.isCountriesNotLentToExp = trackExperimentVersion(
+				this.apollo,
+				this.$kvTrackEvent,
+				'Lending',
+				COUNTRIES_NOT_LENT_TO_EXP,
+				'EXP-MP-1824-Aug2025',
+			)?.version === 'b';
+		}
 	},
 	beforeUnmount() {
 		window.removeEventListener('resize', this.throttledDetermineIfMobile);

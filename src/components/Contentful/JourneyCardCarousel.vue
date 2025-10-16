@@ -11,6 +11,9 @@
 			:embla-options="{
 				loop: false,
 				align: 'start',
+				...(props.disableDrag && {
+					watchDrag: false,
+				}),
 			}"
 			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
@@ -26,7 +29,7 @@
 					v-if="showGoalCard(index)"
 					:hero-slides="slides"
 					:user-goal="userGoal"
-					:is-goal-complete="isGoalComplete"
+					@open-goal-modal="$emit('open-goal-modal')"
 				/>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
@@ -89,6 +92,7 @@ import { KvCarousel } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import GoalCard from '#src/components/MyKiva/GoalCard';
+import { optimizeContentfulUrl } from '#src/util/imageUtils';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
@@ -104,7 +108,7 @@ const {
 	getJourneysByLoan,
 } = useBadgeData(apollo);
 
-const emit = defineEmits(['update-journey']);
+const emit = defineEmits(['update-journey', 'open-goal-modal']);
 
 const props = defineProps({
 	userInfo: {
@@ -147,7 +151,7 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
-	isGoalComplete: {
+	disableDrag: {
 		type: Boolean,
 		default: false,
 	},
@@ -180,6 +184,12 @@ const isNonBadgeSlide = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
 	return !defaultBadges.includes(richTextUiSettingsData.achievementKey);
 };
+
+const shouldShowGoalCard = computed(() => {
+	if (!props.inLendingStats) return false;
+
+	return !props.userGoal || !props.userGoal?.isComplete;
+});
 
 const orderedSlides = computed(() => {
 	const achievementSlides = [];
@@ -249,20 +259,21 @@ const orderedSlides = computed(() => {
 		];
 	}
 
-	if (props.slidesNumber) {
-		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
+	if (shouldShowGoalCard.value) {
+		// Add empty slide at start for goal card
+		sortedSlides.unshift({});
 	}
 
-	if (props.inLendingStats && !props.isGoalComplete) {
-		const customCard = props.slides.find(slide => slide.isCustomCard);
-		sortedSlides[props.slidesNumber - 1] = customCard;
+	if (props.slidesNumber) {
+		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
 	}
 
 	return sortedSlides;
 });
 
 const getMediaImgUrl = media => {
-	return media?.data?.target?.fields?.contentLight?.[0]?.fields?.file?.url || '';
+	const baseUrl = media?.data?.target?.fields?.contentLight?.[0]?.fields?.file?.url || '';
+	return optimizeContentfulUrl(baseUrl, 336);
 };
 
 const backgroundImg = slide => {
@@ -286,7 +297,8 @@ const backgroundImg = slide => {
 	const backgroundImage = richTextContent.find(
 		item => item.nodeType === 'embedded-asset-block' && item.data?.target?.fields?.file?.url
 	);
-	return backgroundImage?.data?.target?.fields?.file?.url || '';
+	const baseUrl = backgroundImage?.data?.target?.fields?.file?.url || '';
+	return optimizeContentfulUrl(baseUrl, 336);
 };
 
 const title = slide => {
@@ -400,7 +412,7 @@ const isCustomCard = slide => !!slide?.isCustomCard;
 const showGoalCard = idx => {
 	if (!props.inLendingStats) return false;
 
-	return !!props.userGoal && idx === 0 && !props.isGoalComplete;
+	return idx === 0 && shouldShowGoalCard.value;
 };
 
 </script>

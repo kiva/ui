@@ -2,7 +2,10 @@
 	<div class="tw--mx-2 tw-bg-secondary">
 		<div class="tw-px-4 tw-py-2">
 			<SideSheetHeader />
-			<SideSheetLoanTags />
+			<SideSheetLoanTags
+				:enable-ai-loan-pills="enableAiLoanPills"
+				:ai-loan-pills="aiPills"
+			/>
 			<LoanProgress
 				:loading="loading"
 				:loan-status="loanStatus"
@@ -74,7 +77,7 @@ import { useRouter } from 'vue-router';
 import { KvLendCta } from '@kiva/kv-components';
 import useBorrowerProfileData from '#src/composables/useBorrowerProfileData';
 import logFormatter from '#src/util/logFormatter';
-
+import { fetchAiLoanPills } from '#src/util/aiLoanPIillsUtils';
 import { addMonths, differenceInWeeks } from 'date-fns';
 import { FUNDRAISING } from '#src/api/fixtures/LoanStatusEnum';
 import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
@@ -124,6 +127,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		enableAiLoanPills: {
+			type: Boolean,
+			default: false
+		},
 	},
 	setup(props, { emit }) {
 		const apollo = inject('apollo');
@@ -138,6 +145,17 @@ export default {
 		const borrowerProfile = useBorrowerProfileData(apollo, cookieStore);
 		// Provide borrower profile data to child components
 		provide('borrowerProfile', borrowerProfile);
+
+		const aiPills = [];
+		if (props.enableAiLoanPills) {
+			fetchAiLoanPills(apollo, [props.loanId]).then(result => {
+				const pills = result?.[0].pills ?? [];
+				const labeledPills = pills.map(pill => ({
+					label: pill,
+				}));
+				aiPills.push(...labeledPills);
+			});
+		}
 
 		const inPfp = computed(() => borrowerProfile.inPfp.value);
 		const loan = computed(() => borrowerProfile.loan.value);
@@ -220,6 +238,7 @@ export default {
 			userBalance,
 			weeksToRepay,
 			loanStatus,
+			aiPills,
 		};
 	}
 };

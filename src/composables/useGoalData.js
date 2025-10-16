@@ -61,8 +61,11 @@ export default function useGoalData({ loans, totalLoanCount }) {
 		try {
 			const loanIds = loans.map(loan => loan.id);
 			const response = await apollo.query({
-				query: useGoalDataProgressQuery, variables: { loanIds }, fetchPolicy
+				query: useGoalDataProgressQuery,
+				variables: { loanIds },
+				fetchPolicy
 			});
+			console.log('response', response);
 			allTimeProgress.value = response?.data?.postCheckoutAchievements?.allTimeProgress || [];
 			return true;
 		} catch (error) {
@@ -124,8 +127,8 @@ export default function useGoalData({ loans, totalLoanCount }) {
 		currentGoal,
 		currentGoalAchieved,
 		currentGoalActive,
-		loading,
 		goalProgress,
+		loading,
 		getGoalDisplayName,
 		runComposable,
 		storeGoalPreferences,

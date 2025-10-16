@@ -22,7 +22,7 @@
 			:user-balance="userBalance"
 			:lending-stats="lendingStats"
 		/>
-		<section v-if="isLendingStatsExp || isNextStepsExp" class="tw-mt-4">
+		<section v-if="isNextStepsExp" class="tw-mt-4">
 			<LendingStats
 				:regions-data="lendingStats.regionsData"
 				:user-lent-to-all-regions="userLentToAllRegions"
@@ -33,7 +33,8 @@
 				:hero-tiered-achievements="heroTieredAchievements"
 				:is-next-steps-exp="isNextStepsExp"
 				:total-loans="totalLoans"
-				@store-goals-preferences="createGoal"
+				:user-goal="userGoal"
+				@store-goals-preferences="storeGoalPreferences"
 			/>
 		</section>
 		<section v-else-if="isHeroEnabled" class="tw-mt-4">
@@ -61,7 +62,7 @@
 				@badge-clicked="handleBadgeTileClicked"
 			/>
 		</section>
-		<section class="tw-my-4">
+		<section id="mykiva-borrower-carousel" class="tw-my-4">
 			<MyKivaBorrowerCarousel
 				:basket-items="basketItems"
 				:is-adding="isAdding"
@@ -90,6 +91,7 @@
 				:title="recommendedLoansTitle"
 				:loans="recommendedLoans"
 				:user-balance="userBalance"
+				:enable-ai-loan-pills="enableAiLoanPills"
 				@add-to-basket="trackCategory($event, 'recommended')"
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails($event)"
@@ -142,6 +144,7 @@
 			:show-side-sheet="showBPSideSheet"
 			:show-next-steps="showNextSteps"
 			:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
+			:enable-ai-loan-pills="enableAiLoanPills"
 			@add-to-basket="addToBasket"
 			@go-to-link="goToLink"
 			@close-side-sheet="handleCloseSideSheet"
@@ -188,13 +191,19 @@ import LendingStats from '#src/components/MyKiva/LendingStats';
 import BailoutChips from '#src/components/MyKiva/BailoutChips';
 
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
+import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 
 import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
+<<<<<<< HEAD
 
 import useGoalData from '#src/composables/useGoalData';
+=======
+import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
+import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
+>>>>>>> 3d50141b47e1c86638310a99b08c9b89aef5238e
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -208,7 +217,7 @@ const repaymentOptions = ['loan_repayment', 'direct_loan_repayment'];
 
 export default {
 	name: 'MyKivaPageContent',
-	mixins: [borrowerProfileExpMixin],
+	mixins: [borrowerProfileExpMixin, smoothScrollMixin],
 	components: {
 		AsyncMyKivaSection,
 		BadgesSection,
@@ -270,10 +279,6 @@ export default {
 			type: Array,
 			default: () => [],
 		},
-		isLendingStatsExp: {
-			type: Boolean,
-			default: false,
-		},
 		isNextStepsExp: {
 			type: Boolean,
 			default: false,
@@ -281,7 +286,11 @@ export default {
 		userLentToAllRegions: {
 			type: Boolean,
 			default: false,
-		}
+		},
+		enableAiLoanPills: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		const { getMostRecentBlogPost } = useContentful(this.apollo);
@@ -379,16 +388,16 @@ export default {
 			}
 
 			if (goal) {
+				const currentProgress = loanTotal - (goal?.loanTotalAtStart || 0);
+				const isComplete = currentProgress >= (goal?.target || 0);
 				goal = {
 					...goal,
-					currentProgress: (loanTotal - (goal?.loanTotalAtStart || 0)),
+					currentProgress,
+					isComplete,
 				};
 			}
 
 			return goal;
-		},
-		isGoalComplete() {
-			return this.userGoal && (this.userGoal?.currentProgress >= this.userGoal?.target);
 		},
 	},
 	methods: {
@@ -580,8 +589,14 @@ export default {
 				userId,
 				origin: 'web:my_kiva_page',
 				limit: 15
-			}).then(result => {
-				this.recommendedLoans = result?.loans ?? [];
+			}).then(async result => {
+				let processedLoans = result?.loans ?? [];
+				if (this.enableAiLoanPills) {
+					const loanIds = getLoansIds(processedLoans);
+					const aiLoansPills = await fetchAiLoanPills(this.apollo, loanIds);
+					processedLoans = addAiPillsToLoans(processedLoans, aiLoansPills);
+				}
+				this.recommendedLoans = processedLoans;
 			}).catch(e => {
 				logReadQueryError(e, 'MyKivaPage fetchRecommendedLoans');
 			});
@@ -653,6 +668,20 @@ export default {
 		this.fetchRecommendedLoans();
 		this.fetchMoreWaysToHelpData();
 		this.loadInitialBasketItems();
+
+		const queryLoanId = this.$router.currentRoute?.value?.query?.loanId ?? null;
+		const urlHash = this.$router.currentRoute?.value?.hash;
+
+		if (urlHash) {
+			const elementToScrollTo = document.querySelector(urlHash);
+			const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 10 ?? 0;
+			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+		}
+
+		if (queryLoanId) {
+			this.selectedLoan = { id: Number(queryLoanId) };
+			this.showBPSideSheet = true;
+		}
 	},
 };
 </script>

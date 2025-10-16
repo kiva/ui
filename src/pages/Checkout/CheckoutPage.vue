@@ -270,6 +270,7 @@
 				>
 					<empty-basket-carousel
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:enable-ai-loan-pills="enableAILoanPills"
 						@updating-totals="setUpdatingTotals"
 						@refreshtotals="refreshTotals"
 					/>
@@ -333,6 +334,7 @@ import { removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
 import { KvLoadingPlaceholder, KvPageContainer, KvButton } from '@kiva/kv-components';
 import { fetchPostCheckoutAchievements, getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
+import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
@@ -395,7 +397,7 @@ export default {
 		FtdsDisclaimer,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
-	mixins: [checkoutUtils, fiveDollarsTest],
+	mixins: [checkoutUtils, fiveDollarsTest, aiLoanPillsTest],
 	head: {
 		title: 'Checkout'
 	},
@@ -1060,6 +1062,10 @@ export default {
 									`Failed: ${error.message.substring(0, 40)}...`
 								);
 								Sentry.captureMessage(`Add to Basket: ${error.message}`);
+								if (error?.extensions?.code === 'not_all_shared_added') {
+									this.getUpsellModuleData(loanId);
+								}
+								this.refreshTotals();
 							} catch (e) {
 							// no-op
 							}

@@ -161,8 +161,14 @@ async function drawLegacy(loanData) {
 
 		// Borrower Image
 		await trace('borrower-image', async () => {
-			const borrowerImg = await trace('loadImage', async () => loadImage(loanData.image.retina));
-			ctx.drawImage(borrowerImg, 0, 0, cardWidth, cardWidth * borrowerImgAspectRatio);
+			// Use jpeg version of image as webp is not supported by node-canvas
+			const jpgUrl = loanData?.image?.retina?.replace('webp', 'jpg') ?? loanData?.image?.retina;
+			try {
+				const borrowerImg = await trace('loadImage', async () => loadImage(jpgUrl));
+				ctx.drawImage(borrowerImg, 0, 0, cardWidth, cardWidth * borrowerImgAspectRatio);
+			} catch (error) {
+				console.error('Error loading image:', error);
+			}
 		});
 
 		// Add a border around everything
@@ -222,13 +228,19 @@ async function drawClassic(loanData) {
 
 		// Borrower Image
 		await trace('borrower-image', async () => {
-			const borrowerImg = await trace('loadImage', async () => loadImage(loanData.image.retina));
-			ctx.save();
-			// eslint-disable-next-line max-len
-			roundRect(ctx, borrowerImgMargin, borrowerImgMargin, borrowerImgWidth, borrowerImgHeight, 16 * classicResizeFactor);
-			ctx.clip();
-			ctx.drawImage(borrowerImg, borrowerImgMargin, borrowerImgMargin, borrowerImgWidth, borrowerImgHeight);
-			ctx.restore();
+			// Use jpeg version of image as webp is not supported by node-canvas
+			const jpgUrl = loanData?.image?.retina?.replace('webp', 'jpg') ?? loanData?.image?.retina;
+			try {
+				const borrowerImg = await trace('loadImage', async () => loadImage(jpgUrl));
+				ctx.save();
+				// eslint-disable-next-line max-len
+				roundRect(ctx, borrowerImgMargin, borrowerImgMargin, borrowerImgWidth, borrowerImgHeight, 16 * classicResizeFactor);
+				ctx.clip();
+				ctx.drawImage(borrowerImg, borrowerImgMargin, borrowerImgMargin, borrowerImgWidth, borrowerImgHeight);
+				ctx.restore();
+			} catch (error) {
+				console.error('Error loading image:', error);
+			}
 		});
 
 		// Borrower country

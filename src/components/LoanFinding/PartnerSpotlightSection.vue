@@ -20,6 +20,7 @@
 			:loans="loans"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
 			:user-balance="userBalance"
+			:enable-ai-loan-pills="enableAiLoanPills"
 			@add-to-basket="$emit('add-to-basket', $event)"
 			@show-cart-modal="showCartModal"
 			@show-loan-details="showLoanDetails"
@@ -68,6 +69,10 @@ export default {
 		userBalance: {
 			type: String,
 			default: undefined
+		},
+		enableAiLoanPills: {
+			type: Boolean,
+			default: false
 		},
 	},
 	computed: {

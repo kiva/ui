@@ -11,9 +11,9 @@
 			:hero-tiered-achievements="heroTieredAchievements"
 			:lending-stats="lendingStats"
 			:transactions="transactions"
-			:is-lending-stats-exp="isLendingStatsExp"
 			:is-next-steps-exp="isNextStepsExp"
 			:user-lent-to-all-regions="userLentToAllRegions"
+			:enable-ai-loan-pills="enableAILoanPills"
 		/>
 	</www-page>
 </template>
@@ -32,8 +32,9 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import { gql } from 'graphql-tag';
+import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
+import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 
-const LENDING_STATS_EXP_KEY = 'mykiva_lending_stats';
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 
 const getRegionsWithLoanStatus = (countryFacets, countriesLentTo) => {
@@ -55,6 +56,7 @@ const getRegionsWithLoanStatus = (countryFacets, countriesLentTo) => {
 export default {
 	name: 'MyKivaPage',
 	inject: ['apollo', 'cookieStore'],
+	mixins: [aiLoanPillsTest],
 	components: {
 		MyKivaPageContent,
 		WwwPage,
@@ -65,7 +67,6 @@ export default {
 			heroSlides: [],
 			heroTieredAchievements: [],
 			isHeroEnabled: false,
-			isLendingStatsExp: false,
 			isNextStepsExp: false,
 			lender: null,
 			lendingStats: {},
@@ -77,14 +78,18 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client) {
+		preFetch(config, client, { route }) {
+			const loanId = route?.query?.loanId ?? null;
+
 			return Promise.all([
 				client.query({ query: myKivaQuery }),
 				client.query({ query: lendingStatsQuery }),
 				client.query({ query: uiConfigSettingQuery, variables: { key: MY_KIVA_HERO_ENABLE_KEY } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: LENDING_STATS_EXP_KEY } }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: NEXT_STEPS_EXP_KEY } }),
 				client.query({ query: userAchievementProgressQuery }),
+				loanId
+					? client.query({ query: borrowerProfileSideSheetQuery, variables: { loanId: Number(loanId) } })
+					: Promise.resolve(null),
 			]).then(result => {
 				const heroCarouselUiSetting = result[2];
 				const isHeroEnabled = readBoolSetting(heroCarouselUiSetting, 'data.general.uiConfigSetting.value');
@@ -119,6 +124,11 @@ export default {
 			try {
 				const myKivaQueryResult = this.apollo.readQuery({ query: myKivaQuery });
 				const lendingStatsQueryResult = this.apollo.readQuery({ query: lendingStatsQuery });
+				const loanId = this.$router.currentRoute?.value?.query?.loanId ?? null;
+				const bpSidesheetLoan = loanId ? this.apollo.readQuery({
+					query: borrowerProfileSideSheetQuery,
+					variables: { loanId: Number(loanId) }
+				}) : null;
 				this.userInfo = myKivaQueryResult.my ?? {};
 				this.lender = myKivaQueryResult.my?.lender ?? null;
 				this.lender = {
@@ -127,6 +137,11 @@ export default {
 					inviterName: this.userInfo.userAccount?.inviterName ?? null,
 				};
 				this.loans = myKivaQueryResult.my?.loans?.values ?? [];
+				if (bpSidesheetLoan?.lend?.loan) {
+					const bpLoanId = bpSidesheetLoan.lend.loan.id;
+					const filteredLoans = this.loans.filter(loan => loan.id !== bpLoanId);
+					this.loans = [bpSidesheetLoan.lend.loan, ...filteredLoans];
+				}
 				this.totalLoans = myKivaQueryResult.my?.loans?.totalCount ?? 0;
 				const countryFacets = lendingStatsQueryResult.lend?.countryFacets ?? [];
 				const regionCounts = new Map();
@@ -172,13 +187,6 @@ export default {
 				}
 			});
 			this.isHeroEnabled = readBoolSetting(uiSettingsQueryResult, 'general.uiConfigSetting.value');
-			const lendingStatsExpData = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'event-tracking',
-				LENDING_STATS_EXP_KEY,
-				'EXP-MP-1729-Jul2025'
-			);
 			const nextStepsExpData = trackExperimentVersion(
 				this.apollo,
 				this.$kvTrackEvent,
@@ -186,14 +194,13 @@ export default {
 				NEXT_STEPS_EXP_KEY,
 				'EXP-MP-1984-Sept2025'
 			);
-			this.isLendingStatsExp = lendingStatsExpData.version === 'b';
 			this.isNextStepsExp = nextStepsExpData.version === 'b';
 			this.fetchMyKivaData();
 			const achievementsResult = this.apollo.readQuery({
 				query: userAchievementProgressQuery
 			});
 			this.heroTieredAchievements = achievementsResult.userAchievementProgress?.tieredLendingAchievements ?? [];
-			if ((this.isHeroEnabled && !this.isLendingStatsExp) || this.userLentToAllRegions || this.isNextStepsExp) {
+			if (this.isHeroEnabled || this.userLentToAllRegions || this.isNextStepsExp) {
 				const contentfulChallengeResult = this.apollo.readQuery({
 					query: contentfulEntriesQuery,
 					variables: { contentType: 'challenge', limit: 200 }
