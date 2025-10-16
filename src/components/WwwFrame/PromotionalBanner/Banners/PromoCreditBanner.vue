@@ -8,6 +8,23 @@
 		&nbsp;
 	</div>
 	<div
+		v-else-if="isUpcCampaign && partnerName"
+		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
+		data-testid="upc-campaign-banner"
+	>
+		<a
+			:href="upcCampaignLink"
+			class="
+					tw-text-white
+					hover:tw-text-white
+					active:tw-text-white visited:tw-text-white focus:tw-text-white"
+			data-testid="impact-dashboard-promo-banner"
+			v-kv-track-event="['TopNav','click-Promo','UPC Campaign Banner']"
+		>
+			You have Kiva credit from {{ partnerName }} to lend
+		</a>
+	</div>
+	<div
 		v-else-if="isFromImpactDashboard"
 		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
 		data-testid="lending-reward-banner-impact-dashboard"
@@ -138,9 +155,18 @@ const promoCampaignInfo = gql`
 					displayName
 				}
 				managedAccount {
+					campaignInfo {
+						campaignPromoFundId
+						upc
+					}
 					id
 					managementType
 					pageId
+					strategicPartner {
+						id
+						partnerName
+						partnerContentfulPage
+					}
 				}
 			}
 		}
@@ -204,11 +230,17 @@ export default {
 			// return the impact dashboard link with additional query params
 			return `${this.$route.query?.fromContext}?${new URLSearchParams(queryParams).toString()}`;
 		},
+		isUpcCampaign() {
+			return this.promoCampaignData?.managedAccount?.campaignInfo?.upc ?? false;
+		},
 		isFromImpactDashboard() {
 			return isFromImpactDashboard(this.$route);
 		},
 		creditAvailable() {
 			return this.priorityBasketCredit?.available ?? null;
+		},
+		partnerName() {
+			return this.promoCampaignData?.managedAccount?.strategicPartner?.partnerName ?? null;
 		},
 		promoFundId() {
 			const promoCampaignIdFallback = this.promoCampaignData?.promoFund?.id ?? null;
@@ -220,6 +252,15 @@ export default {
 		},
 		managedAccountPageId() {
 			return this.promoCampaignData?.managedAccount?.pageId ?? null;
+		},
+		upcCampaignLink() {
+			const partnerPage = this.promoCampaignData?.managedAccount?.strategicPartner?.partnerContentfulPage ?? null;
+			const upcCode = this.promoCampaignData?.managedAccount?.campaignInfo?.upc ?? null;
+			if (!partnerPage || !upcCode) {
+				return null;
+			}
+			// return the upc campaign link
+			return `/impact-dashboard/${partnerPage}/upc/${upcCode}`;
 		},
 	},
 	methods: {
