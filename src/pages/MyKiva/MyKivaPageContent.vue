@@ -169,6 +169,7 @@ import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql
 
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import useContentful from '#src/composables/useContentful';
+import useGoalData from '#src/composables/useGoalData';
 
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
@@ -197,13 +198,8 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
-<<<<<<< HEAD
 
-import useGoalData from '#src/composables/useGoalData';
-=======
-import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
->>>>>>> 3d50141b47e1c86638310a99b08c9b89aef5238e
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
