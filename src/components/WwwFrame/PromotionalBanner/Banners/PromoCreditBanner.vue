@@ -8,7 +8,7 @@
 		&nbsp;
 	</div>
 	<div
-		v-else-if="isUpcCampaign && partnerName"
+		v-else-if="isUpcCampaign && partnerName && upcCampaignLink"
 		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
 		data-testid="upc-campaign-banner"
 	>
