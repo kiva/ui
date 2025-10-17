@@ -183,7 +183,6 @@ export default {
 
 				const myGivingFundsQueryResult = this.apollo.readQuery({ query: myGivingFundsQuery });
 				this.myGivingFunds = myGivingFundsQueryResult.my?.givingFunds ?? {};
-				console.log('giving', this.myGivingFunds);
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');
 			}
