@@ -188,6 +188,8 @@ import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 
 import useBadgeData from '#src/composables/useBadgeData';
+import useGoalData from '#src/composables/useGoalData';
+
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
 
 import Africa from '#src/assets/images/my-kiva/Africa.png';
@@ -202,8 +204,9 @@ import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 import GoalCard from '#src/components/MyKiva/GoalCard';
-import useGoalData from '#src/composables/useGoalData';
+
 import GoalSettingModal from './GoalSettingModal';
+import MyKivaCard from './MyKivaCard';
 
 const { delayUntilVisible } = useDelayUntilVisible();
 
