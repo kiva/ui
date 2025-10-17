@@ -149,14 +149,13 @@ export default {
 			return format(parseISO(this.kivaCard.kivaCardObject.recipient.scheduledDeliveryDate), 'MM/dd/yyyy');
 		},
 		formedEditUrl() {
-			let giftId = '';
+			const params = new URLSearchParams();
 
-			for (let i = 0; i < this.idsInGroup.length; i += 1) {
-				giftId += `gift_ids[${i}]=${this.idsInGroup[i]}&`;
-			}
+			this.idsInGroup.forEach((id, index) => {
+				params.append(`gift_ids[${index}]`, id);
+			});
 
-			const formedEditURL = `/gifts/kiva-cards/?${giftId}#/${this.cardType}`;
-			return formedEditURL;
+			return `/gifts/kiva-cards?${params.toString()}`;
 		}
 	},
 	methods: {
