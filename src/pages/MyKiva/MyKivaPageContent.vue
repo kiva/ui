@@ -22,6 +22,11 @@
 			:user-balance="userBalance"
 			:lending-stats="lendingStats"
 		/>
+		<section v-if="myGivingFunds && myGivingFunds.totalCount > 0" class="tw-mt-4">
+			<MyGivingFundsCard
+				:count="myGivingFunds.totalCount"
+			/>
+		</section>
 		<section v-if="isNextStepsExp" class="tw-mt-4">
 			<LendingStats
 				:regions-data="lendingStats.regionsData"
@@ -176,6 +181,7 @@ import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
+import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';
 import AsyncMyKivaSection from '#src/pages/MyKiva/AsyncMyKivaSection';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
@@ -224,6 +230,7 @@ export default {
 		LendingCategorySection,
 		MyKivaBorrowerCarousel,
 		MyKivaContainer,
+		MyGivingFundsCard,
 		MyKivaHero,
 		MyKivaNavigation,
 		MyKivaProfile,
@@ -283,6 +290,10 @@ export default {
 		enableAiLoanPills: {
 			type: Boolean,
 			default: false
+		},
+		myGivingFunds: {
+			type: Object,
+			default: null,
 		},
 	},
 	data() {

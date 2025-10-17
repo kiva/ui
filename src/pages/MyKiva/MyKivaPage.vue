@@ -14,6 +14,7 @@
 			:is-next-steps-exp="isNextStepsExp"
 			:user-lent-to-all-regions="userLentToAllRegions"
 			:enable-ai-loan-pills="enableAILoanPills"
+			:my-giving-funds="myGivingFunds"
 		/>
 	</www-page>
 </template>
@@ -37,6 +38,7 @@ import userAchievementProgressQuery from '#src/graphql/query/userAchievementProg
 import { gql } from 'graphql-tag';
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
+import myGivingFundsQuery from '#src/graphql/query/portfolio/myGivingFunds.graphql';
 
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 
@@ -78,6 +80,7 @@ export default {
 			transactions: [],
 			userInfo: {},
 			userLentToAllRegions: false,
+			myGivingFunds: {},
 		};
 	},
 	apollo: {
@@ -93,6 +96,7 @@ export default {
 				loanId
 					? client.query({ query: borrowerProfileSideSheetQuery, variables: { loanId: Number(loanId) } })
 					: Promise.resolve(null),
+				client.query({ query: myGivingFundsQuery }),
 			]).then(result => {
 				const heroCarouselUiSetting = result[2];
 				const isHeroEnabled = readBoolSetting(heroCarouselUiSetting, 'data.general.uiConfigSetting.value');
@@ -176,6 +180,9 @@ export default {
 					regionsData,
 				};
 				this.transactions = myKivaQueryResult.my?.transactions?.values ?? [];
+
+				const myGivingFundsQueryResult = this.apollo.readQuery({ query: myGivingFundsQuery });
+				this.myGivingFunds = myGivingFundsQueryResult.my?.givingFunds ?? {};
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');
 			}

@@ -23,6 +23,11 @@
 						/>
 						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
 						<lending-insights />
+						<my-giving-funds-card
+							v-if="myGivingFundsCount && myGivingFundsCount > 0"
+							:count="myGivingFundsCount"
+							class="md:tw-mb-3 tw-mb-0.5"
+						/>
 						<your-donations />
 						<LoanCards
 							v-if="filteredLoans.length > 0"
@@ -60,12 +65,15 @@ import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { getIsMyKivaEnabled, hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
+import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';
+
 import {
 	PAYING_BACK,
 	FUNDED,
 	FUNDRAISING,
 	RAISED
 } from '#src/api/fixtures/LoanStatusEnum';
+import myGivingFundsQuery from '#src/graphql/query/portfolio/myGivingFunds.graphql';
 import AccountOverview from './AccountOverview';
 import AccountUpdates from './AccountUpdates';
 import DistributionGraphs from './DistributionGraphs';
@@ -89,6 +97,7 @@ export default {
 		KvGrid,
 		KvPageContainer,
 		LendingInsights,
+		MyGivingFundsCard,
 		TheMyKivaSecondaryMenu,
 		ThePortfolioTertiaryMenu,
 		WwwPage,
@@ -109,12 +118,16 @@ export default {
 			loans: [],
 			filteredLoans: [],
 			showLoanFootnote: false,
+			myGivingFundsCount: 0,
 		};
 	},
 	mixins: [badgeGoalMixin],
 	apollo: {
 		preFetch(config, client) {
-			return client.query({ query: portfolioQuery });
+			return Promise.all([
+				client.query({ query: portfolioQuery }),
+				client.query({ query: myGivingFundsQuery }),
+			]);
 		},
 	},
 	methods: {
@@ -173,6 +186,9 @@ export default {
 			this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
 			this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
 		}
+
+		const myGivingFundsQueryResult = this.apollo.readQuery({ query: myGivingFundsQuery });
+		this.myGivingFundsCount = myGivingFundsQueryResult.my?.givingFunds?.totalCount ?? 0;
 	},
 	async mounted() {
 		if (!this.showMyKivaPage) {
