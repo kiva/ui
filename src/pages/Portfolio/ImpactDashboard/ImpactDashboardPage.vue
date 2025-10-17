@@ -25,6 +25,11 @@
 						<lending-insights
 							:is-percentile-by-year-exp-enabled="isPercentileByYearExpEnabled"
 						/>
+						<my-giving-funds-card
+							v-if="myGivingFundsCount && myGivingFundsCount > 0"
+							:count="myGivingFundsCount"
+							class="md:tw-mb-3 tw-mb-0.5"
+						/>
 						<your-donations />
 						<LoanCards
 							v-if="filteredLoans.length > 0"
@@ -64,12 +69,15 @@ import { getIsMyKivaEnabled, hasLoanFunFactFootnote } from '#src/util/myKivaUtil
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
+import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';
+
 import {
 	PAYING_BACK,
 	FUNDED,
 	FUNDRAISING,
 	RAISED
 } from '#src/api/fixtures/LoanStatusEnum';
+import myGivingFundsQuery from '#src/graphql/query/portfolio/myGivingFunds.graphql';
 import AccountOverview from './AccountOverview';
 import AccountUpdates from './AccountUpdates';
 import DistributionGraphs from './DistributionGraphs';
@@ -95,6 +103,7 @@ export default {
 		KvGrid,
 		KvPageContainer,
 		LendingInsights,
+		MyGivingFundsCard,
 		TheMyKivaSecondaryMenu,
 		ThePortfolioTertiaryMenu,
 		WwwPage,
@@ -115,7 +124,8 @@ export default {
 			loans: [],
 			filteredLoans: [],
 			showLoanFootnote: false,
-			isPercentileByYearExpEnabled: false
+			isPercentileByYearExpEnabled: false,
+			myGivingFundsCount: 0,
 		};
 	},
 	mixins: [badgeGoalMixin],
@@ -124,6 +134,7 @@ export default {
 			return Promise.all([
 				client.query({ query: portfolioQuery }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: PERCENTILE_BY_YEAR_EXP_KEY } }),
+				client.query({ query: myGivingFundsQuery }),
 			]);
 		},
 	},
@@ -192,6 +203,9 @@ export default {
 			'EXP-MP-1847-Aug2025'
 		);
 		this.isPercentileByYearExpEnabled = percentileByYearExpData.version === 'b';
+
+		const myGivingFundsQueryResult = this.apollo.readQuery({ query: myGivingFundsQuery });
+		this.myGivingFundsCount = myGivingFundsQueryResult.my?.givingFunds?.totalCount ?? 0;
 	},
 	async mounted() {
 		if (!this.showMyKivaPage) {
