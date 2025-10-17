@@ -599,6 +599,27 @@ export default function useBadgeData() {
 		};
 	};
 
+	/**
+	 * Check if all achievements are completed
+	 *
+	 * @param badges The badges to check
+	 * @returns Whether all achievements are completed
+	 */
+
+	const allAchievementsCompleted = badges => {
+		if (!badges?.length) {
+			return false;
+		}
+
+		return badges.every(badge => {
+			const tiers = badge?.achievementData?.tiers;
+			if (tiers?.length) {
+				return tiers.every(tier => !!tier.completedDate);
+			}
+			return false;
+		});
+	};
+
 	return {
 		badgeAchievementData,
 		badgeContentfulData,
@@ -626,5 +647,6 @@ export default function useBadgeData() {
 		getLevelCaption,
 		getJourneysByLoan,
 		getAllCategoryLoanCounts,
+		allAchievementsCompleted,
 	};
 }

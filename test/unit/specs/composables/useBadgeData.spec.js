@@ -815,4 +815,66 @@ describe('useBadgeData.js', () => {
 			expect(getAllCategoryLoanCounts(tieredLendingAchievements)).toEqual(expected);
 		});
 	});
+
+	describe('allAchievementsCompleted', () => {
+		const { allAchievementsCompleted } = useBadgeData();
+
+		it('should return false if badges is undefined or empty', () => {
+			expect(allAchievementsCompleted(undefined)).toBe(false);
+			expect(allAchievementsCompleted([])).toBe(false);
+		});
+
+		it('should return true if all tiers in all badges are completed', () => {
+			const badges = [
+				{
+					achievementData: {
+						tiers: [
+							{ completedDate: '2024-10-22T18:49:21Z' },
+							{ completedDate: '2024-10-23T18:49:21Z' }
+						]
+					}
+				},
+				{
+					achievementData: {
+						tiers: [
+							{ completedDate: '2024-10-24T18:49:21Z' }
+						]
+					}
+				}
+			];
+			expect(allAchievementsCompleted(badges)).toBe(true);
+		});
+
+		it('should return false if any tier in any badge is not completed', () => {
+			const badges = [
+				{
+					achievementData: {
+						tiers: [
+							{ completedDate: '2024-10-22T18:49:21Z' },
+							{ completedDate: null }
+						]
+					}
+				},
+				{
+					achievementData: {
+						tiers: [
+							{ completedDate: '2024-10-24T18:49:21Z' }
+						]
+					}
+				}
+			];
+			expect(allAchievementsCompleted(badges)).toBe(false);
+		});
+
+		it('should return false if a badge has no tiers', () => {
+			const badges = [
+				{
+					achievementData: {
+						tiers: []
+					}
+				}
+			];
+			expect(allAchievementsCompleted(badges)).toBe(false);
+		});
+	});
 });
