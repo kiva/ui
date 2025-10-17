@@ -701,8 +701,7 @@ export default {
 		}
 
 		if (queryLoanId) {
-			this.selectedLoan = { id: Number(queryLoanId) };
-			this.showBPSideSheet = true;
+			this.showLoanDetails({ id: Number(queryLoanId) }, true);
 		}
 	},
 };

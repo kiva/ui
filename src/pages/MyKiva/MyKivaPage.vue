@@ -28,7 +28,10 @@ import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import uiConfigSettingQuery from '#src/graphql/query/uiConfigSetting.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import {
+	handleSetuiabAndExperimentTracking,
+	getExperimentEnabledFromCache
+} from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
@@ -195,14 +198,9 @@ export default {
 				}
 			});
 			this.isHeroEnabled = readBoolSetting(uiSettingsQueryResult, 'general.uiConfigSetting.value');
-			const nextStepsExpData = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'event-tracking',
-				NEXT_STEPS_EXP_KEY,
-				'EXP-MP-1984-Sept2025'
-			);
-			this.isNextStepsExp = nextStepsExpData.version === 'b';
+
+			this.isNextStepsExp = getExperimentEnabledFromCache(this.apollo, NEXT_STEPS_EXP_KEY);
+
 			this.fetchMyKivaData();
 			const achievementsResult = this.apollo.readQuery({
 				query: userAchievementProgressQuery
@@ -227,7 +225,15 @@ export default {
 			logReadQueryError(e, 'MyKivaPage myKivaPrefetch');
 		}
 	},
-	mounted() {
+	async mounted() {
+		this.isNextStepsExp = await handleSetuiabAndExperimentTracking({
+			apollo: this.apollo,
+			trackEvent: this.$kvTrackEvent,
+			route: this.$route,
+			experimentKey: NEXT_STEPS_EXP_KEY,
+			trackingAction: 'EXP-MP-1984-Sept2025',
+		});
+
 		try {
 			this.apollo.watchQuery({
 				query: gql`
