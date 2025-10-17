@@ -13,9 +13,11 @@
 	>
 		<template v-if="isNextStepsExp && !userLentToAllRegions">
 			<GoalCard
-				v-if="!userGoal?.isComplete"
+				v-if="userGoalAchieved"
 				:hero-slides="heroSlides"
 				:user-goal="userGoal"
+				:loading="goalProgressLoading"
+				:goal-progress="goalProgress"
 				@open-goal-modal="showGoalModal = true"
 			/>
 			<div v-else class="card-container tw-shrink-0">
@@ -130,19 +132,39 @@
 				</div>
 			</div>
 		</div>
-		<JourneyCardCarousel
-			v-else
-			class="carousel"
-			user-in-homepage
-			in-lending-stats
-			:lender="lender"
-			:slides-number="3"
-			:slides="heroSlides"
-			:hero-contentful-data="heroContentfulData"
-			:hero-tiered-achievements="heroTieredAchievements"
-			:user-goal="userGoal"
-			@open-goal-modal="showGoalModal = true"
-		/>
+		<template v-if="!isNextStepsExp || (!!userGoal && userLentToAllRegions)">
+			<div v-if="!userLentToAllRegions" class="card-container tw-shrink-0">
+				<MyKivaCard
+					class="kiva-card tw-h-full"
+					primary-cta-variant="primary"
+					title-color="tw-text-action-highlight"
+					:bg-image="StatsCardBg"
+					card-content-classes="tw-pb-1 tw-px-1"
+					:loans="topCategoryLoansForCardCarousel"
+					:is-full-width-primary-cta="true"
+					:is-title-font-sans="true"
+					:primary-cta-text="cardCtaText"
+					:show-cta-icon="true"
+					:show-tag-icon="showTagIcon"
+					:tag-text="cardTagText"
+					:title="cardTitle"
+					@primary-cta-clicked="goToTopCategory"
+				/>
+			</div>
+			<JourneyCardCarousel
+				v-else
+				class="carousel"
+				user-in-homepage
+				in-lending-stats
+				:lender="lender"
+				:slides-number="3"
+				:slides="allRegionsLentSlides"
+				:hero-contentful-data="heroContentfulData"
+				:hero-tiered-achievements="heroTieredAchievements"
+				:user-goal="userGoal"
+				@open-goal-modal="showGoalModal = true"
+			/>
+		</template>
 		<GoalSettingModal
 			v-if="isNextStepsExp"
 			:show="showGoalModal"
@@ -166,6 +188,8 @@ import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 
 import useBadgeData from '#src/composables/useBadgeData';
+import useGoalData from '#src/composables/useGoalData';
+
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
 
 import Africa from '#src/assets/images/my-kiva/Africa.png';
@@ -180,7 +204,9 @@ import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 import GoalCard from '#src/components/MyKiva/GoalCard';
+
 import GoalSettingModal from './GoalSettingModal';
+import MyKivaCard from './MyKivaCard';
 
 const { delayUntilVisible } = useDelayUntilVisible();
 
@@ -262,6 +288,14 @@ const regionImages = {
 	Oceania,
 	'South America': SouthAmerica,
 };
+
+const {
+	runComposable: runGoalComposable,
+	loading: goalProgressLoading,
+	userGoal,
+	userGoalAchieved,
+	goalProgress,
+} = useGoalData({ loans: props.loans, totalLoanCount: props.totalLoans });
 
 const regionImageSource = region => (regionImages[region?.name] || '');
 
@@ -345,6 +379,10 @@ onMounted(() => {
 			? 'empty-states-no-regions'
 			: (props.userLentToAllRegions ? 'lent-to-all-regions' : 'regions-lent-to')
 	);
+
+	if (props.isNextStepsExp) {
+		runGoalComposable();
+	}
 });
 
 onUnmounted(() => {

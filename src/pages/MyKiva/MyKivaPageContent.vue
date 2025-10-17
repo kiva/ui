@@ -104,7 +104,9 @@
 			/>
 		</section>
 		<section class="tw-mb-4">
-			<h3>My achievements</h3>
+			<h3 id="my-achievements">
+				My achievements
+			</h3>
 			<BadgesSection
 				class="tw-mt-2"
 				:badge-data="badgeData"
@@ -172,6 +174,7 @@ import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql
 
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import useContentful from '#src/composables/useContentful';
+import useGoalData from '#src/composables/useGoalData';
 
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
@@ -201,7 +204,7 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
+
 import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
 
 const IMPACT_THRESHOLD = 25;
@@ -304,6 +307,7 @@ export default {
 			fetchContentfulData,
 			getLoanFindingUrl,
 		} = useBadgeData(this.apollo);
+		const { storeGoalPreferences } = useGoalData({ loans: this.loans, totalLoanCount: this.totalLoans });
 
 		return {
 			badgeData,
@@ -333,6 +337,7 @@ export default {
 			updatesLoading: true,
 			updatesOffset: 3,
 			showNextSteps: false,
+			storeGoalPreferences,
 		};
 	},
 	computed: {
@@ -647,39 +652,19 @@ export default {
 			this.showBPSideSheet = false;
 			this.handleSelectedLoan({ loanId: undefined });
 		},
+		async createGoal(newGoal) {
+			try {
+				await this.storeGoalPreferences(newGoal);
+				this.$showTipMsg('Your goal was saved successfully!', { type: 'success' });
+			} catch (e) {
+				this.$showTipMsg('There was an error saving your goal. Please try again.');
+			}
+		},
 		showLoanDetails(payload, showNextSteps = false) {
 			this.handleSelectedLoan({ loanId: payload?.id });
 			this.showBPSideSheet = true;
 			this.showNextSteps = showNextSteps;
 		},
-		async storeGoalPreferences(newPreferences) {
-			const existingPreferences = this.userInfo?.userPreferences ?? null;
-			if (!existingPreferences) {
-				await createUserPreferences(
-					this.apollo,
-					{ goals: [] }
-				);
-			}
-			const parsedPreferences = existingPreferences ? JSON.parse(existingPreferences?.preferences || '{}') : {};
-			const existingGoals = parsedPreferences?.goals || [];
-			const goalIndex = existingGoals.findIndex(goal => goal.goalName === newPreferences.goalName);
-			if (goalIndex !== -1) {
-				const goalToUpdate = { ...newPreferences };
-				delete goalToUpdate.dateStarted;
-				existingGoals[goalIndex] = { ...existingGoals[goalIndex], ...goalToUpdate };
-			} else {
-				existingGoals.push(newPreferences);
-			}
-			if (this.userInfo.userPreferences) {
-				await updateUserPreferences(
-					this.apollo,
-					existingPreferences,
-					parsedPreferences,
-					{ goals: existingGoals }
-				);
-				this.$showTipMsg('Your goal was saved successfully!', { type: 'success' });
-			}
-		}
 	},
 	async mounted() {
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
