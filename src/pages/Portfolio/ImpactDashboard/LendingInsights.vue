@@ -351,12 +351,19 @@ import {
 } from '@kiva/kv-components';
 import { differenceInCalendarDays } from 'date-fns';
 import StarShine from '#src/assets/icons/inline/star_shine.svg';
+import {
+	handleSetuiabAndExperimentTracking,
+	getExperimentEnabledFromCache
+} from '#src/util/experiment/experimentUtils';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
+
+const PERCENTILE_BY_YEAR_EXP_KEY = 'portfolio_year_percentile';
 
 export default {
 	name: 'LendingInsights',
 	serverCacheKey: () => getCacheKey('LendingInsights'),
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		AsyncPortfolioSection,
 		KvGrid,
@@ -367,12 +374,6 @@ export default {
 		KvTabPanel,
 		StarShine,
 		// LoanCountOverTimeFigure,
-	},
-	props: {
-		isPercentileByYearExpEnabled: {
-			type: Boolean,
-			default: false
-		}
 	},
 	data() {
 		return {
@@ -394,7 +395,21 @@ export default {
 			lifetimePercentile: 0,
 			mdiArrowRight,
 			mdiClockOutline,
+			isPercentileByYearExpEnabled: undefined,
 		};
+	},
+	apollo: {
+		query: experimentAssignmentQuery,
+		preFetch: true,
+		preFetchVariables() {
+			return { id: PERCENTILE_BY_YEAR_EXP_KEY };
+		},
+		variables() {
+			return { id: PERCENTILE_BY_YEAR_EXP_KEY };
+		},
+		result({ data }) {
+			this.isPercentileByYearExpEnabled = data?.experiment?.version === 'b';
+		},
 	},
 	computed: {
 		daysUntilDeadline() {
@@ -542,6 +557,21 @@ export default {
 			}
 		},
 	},
+	created() {
+		this.isPercentileByYearExpEnabled = getExperimentEnabledFromCache(
+			this.apollo,
+			PERCENTILE_BY_YEAR_EXP_KEY
+		);
+	},
+	async mounted() {
+		this.isPercentileByYearExpEnabled = await handleSetuiabAndExperimentTracking({
+			apollo: this.apollo,
+			trackEvent: this.$kvTrackEvent,
+			route: this.$route,
+			experimentKey: PERCENTILE_BY_YEAR_EXP_KEY,
+			trackingAction: 'EXP-MP-1847-Aug2025',
+		});
+	}
 };
 </script>
 
