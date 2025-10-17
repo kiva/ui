@@ -150,7 +150,7 @@ export default {
 		},
 		formedEditUrl() {
 			const params = new URLSearchParams();
-			
+
 			this.idsInGroup.forEach((id, index) => {
 				params.append(`gift_ids[${index}]`, id);
 			});
