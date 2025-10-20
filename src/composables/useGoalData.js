@@ -37,18 +37,20 @@ function getGoalDisplayName(category) {
  * @param {Array} loans - List of loans to count toward goals
  * @returns Goal data and utilities
  */
-export default function useGoalData({ loans, totalLoanCount }) {
+export default function useGoalData({ loans }) {
 	const apollo = inject('apollo');
 
-	const loading = ref(true);
-	const currentGoal = ref(null);
-	const userPreferences = ref(null);
 	const allTimeProgress = ref([]);
+	const loading = ref(true);
+	const totalLoanCount = ref(null);
+	const userGoal = ref(null);
+	const userPreferences = ref(null);
 
 	async function loadPreferences(fetchPolicy = 'cache-first') {
 		try {
 			const response = await apollo.query({ query: useGoalDataQuery, fetchPolicy });
 			const prefsData = response.data?.my?.userPreferences || null;
+			totalLoanCount.value = response.data?.my?.loans?.totalCount || 0;
 			userPreferences.value = prefsData;
 			return prefsData ? JSON.parse(prefsData.preferences || '{}') : {};
 		} catch (error) {
@@ -65,7 +67,6 @@ export default function useGoalData({ loans, totalLoanCount }) {
 				variables: { loanIds },
 				fetchPolicy
 			});
-			console.log('response', response);
 			allTimeProgress.value = response?.data?.postCheckoutAchievements?.allTimeProgress || [];
 			return true;
 		} catch (error) {
@@ -77,7 +78,7 @@ export default function useGoalData({ loans, totalLoanCount }) {
 	function setGoalState(parsedPrefs) {
 		if (!parsedPrefs) return;
 		const goals = parsedPrefs.goals || [];
-		currentGoal.value = { ...goals[0] };
+		userGoal.value = { ...goals[0] };
 	}
 
 	async function storeGoalPreferences(updates) {
@@ -85,7 +86,7 @@ export default function useGoalData({ loans, totalLoanCount }) {
 			await createUserPreferences(apollo, { goals: [] });
 			await loadPreferences('network-only'); // Reload after create
 		}
-		const parsedPrefs = JSON.parse(userPreferences.value.preferences || '{}');
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		const goals = parsedPrefs.goals || [];
 		const goalIndex = goals.findIndex(g => g.goalName === updates.goalName);
 		if (goalIndex !== -1) goals[goalIndex] = { ...goals[goalIndex], ...updates };
@@ -95,15 +96,14 @@ export default function useGoalData({ loans, totalLoanCount }) {
 	}
 
 	const goalProgress = computed(() => {
-		if (currentGoal.value?.category === ID_SUPPORT_ALL) return totalLoanCount;
+		if (userGoal.value?.category === ID_SUPPORT_ALL) return totalLoanCount.value || 0;
 		const currentProgress = allTimeProgress.value.find(
-			entry => entry.achievementId === currentGoal.value?.category
+			entry => entry.achievementId === userGoal.value?.category
 		);
 		return (currentProgress?.totalProgress || 0);
 	});
 
-	const currentGoalActive = computed(() => currentGoal.value.status === 'in-progress');
-	const currentGoalAchieved = computed(() => goalProgress.value >= currentGoal.value?.target);
+	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
 
 	async function runComposable() {
 		loading.value = true;
@@ -111,12 +111,12 @@ export default function useGoalData({ loans, totalLoanCount }) {
 		await loadProgress();
 		setGoalState(parsedPrefs);
 		// Auto-update if active goal achieved
-		if (currentGoal.value && currentGoalAchieved.value) {
+		if (userGoal.value && userGoalAchieved.value) {
 			await storeGoalPreferences({
-				goalName: currentGoal.value.goalName,
-				dateStarted: currentGoal.value.dateStarted,
-				target: currentGoal.value.target,
-				count: currentGoal.value.count,
+				goalName: userGoal.value.goalName,
+				dateStarted: userGoal.value.dateStarted,
+				target: userGoal.value.target,
+				count: userGoal.value.count,
 				status: 'completed',
 			});
 		}
@@ -124,9 +124,8 @@ export default function useGoalData({ loans, totalLoanCount }) {
 	}
 
 	return {
-		currentGoal,
-		currentGoalAchieved,
-		currentGoalActive,
+		userGoal,
+		userGoalAchieved,
 		goalProgress,
 		loading,
 		getGoalDisplayName,

@@ -296,7 +296,7 @@ export default {
 			fetchContentfulData,
 			getLoanFindingUrl,
 		} = useBadgeData(this.apollo);
-		const { storeGoalPreferences } = useGoalData({ loans: this.loans, totalLoanCount: this.totalLoans });
+		const { storeGoalPreferences } = useGoalData({ loans: this.loans });
 
 		return {
 			badgeData,

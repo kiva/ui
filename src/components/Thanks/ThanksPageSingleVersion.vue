@@ -28,15 +28,15 @@
 				class="tw-mb-2.5"
 			/>
 			<GoalCompleted
-				v-if="isNextStepsExpEnabled && currentGoalAchieved"
-				:current-goal="currentGoal"
-				:current-goal-achieved="currentGoalAchieved"
+				v-if="isNextStepsExpEnabled && userGoalAchieved"
+				:current-goal="userGoal"
+				:current-goal-achieved="userGoalAchieved"
 				:get-goal-display-name="getGoalDisplayName"
 				:loading="goalDataLoading"
 				class="tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
-				v-if="!currentGoalAchieved && showJourneyModule"
+				v-if="!userGoalAchieved && showJourneyModule"
 				:loans="loans"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
@@ -169,12 +169,12 @@ const showReceipt = ref(false);
 const router = useRouter();
 
 const {
-	currentGoal,
-	currentGoalAchieved,
+	userGoal,
+	userGoalAchieved,
 	getGoalDisplayName,
 	runComposable: runGoalComposable,
 	loading: goalDataLoading,
-} = useGoalData({ loans: props.loans, totalLoanCount: props.totalLoanCount });
+} = useGoalData({ loans: props.loans });
 
 const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));
 

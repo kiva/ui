@@ -295,7 +295,7 @@ const {
 	userGoal,
 	userGoalAchieved,
 	goalProgress,
-} = useGoalData({ loans: props.loans, totalLoanCount: props.totalLoans });
+} = useGoalData({ loans: props.loans });
 
 const regionImageSource = region => (regionImages[region?.name] || '');
 
