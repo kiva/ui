@@ -32,6 +32,7 @@
 					:hero-contentful-data="heroContentfulData"
 					:hero-tiered-achievements="heroTieredAchievements"
 					:user-goal="userGoal"
+					@open-goal-modal="showGoalModal = true"
 				/>
 			</div>
 		</template>

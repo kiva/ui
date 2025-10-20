@@ -97,10 +97,11 @@ export default function useGoalData({ loans }) {
 
 	const goalProgress = computed(() => {
 		if (userGoal.value?.category === ID_SUPPORT_ALL) return totalLoanCount.value || 0;
-		const currentProgress = allTimeProgress.value.find(
+		const totalProgress = allTimeProgress.value.find(
 			entry => entry.achievementId === userGoal.value?.category
 		);
-		return (currentProgress?.totalProgress || 0);
+		const adjustedProgress = totalProgress - (userGoal.value?.loanTotalAtStart || 0);
+		return (adjustedProgress?.totalProgress || 0);
 	});
 
 	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
