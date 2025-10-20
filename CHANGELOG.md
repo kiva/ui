@@ -1,3 +1,24 @@
+## [3.37.0-rc.1](https://github.com/kiva/ui/compare/v3.36.0...v3.37.0-rc.1) (2025-10-20)
+
+### 🎉 New Features
+
+* add gf management cards to portfolio and mykiva ([0b03fc0](https://github.com/kiva/ui/commit/0b03fc00d7df14bfe9cf6917d1f0fec816642418))
+* smooth scrolling to borrower carousel to improve user experience ([c65fdc5](https://github.com/kiva/ui/commit/c65fdc599c9d911cfc0a3b9b35bde6335f12eb0f))
+* update kiva card edit url ([847f232](https://github.com/kiva/ui/commit/847f2324cf2790c006f3e48f5306ddf435860109))
+
+### 🐛 Bugfixes
+
+* accidental space ([576c390](https://github.com/kiva/ui/commit/576c3909bd9e919efaeade8104f4a31c9d8bf04b))
+* add anchor to borrower carousel and fix duplicate loans in carousel when deeplink is present ([a23d5b7](https://github.com/kiva/ui/commit/a23d5b7477e82354683684fbf4d634c1f02d9067))
+* ensure campaignLink is set before showing it ([b79c653](https://github.com/kiva/ui/commit/b79c6533d4064626f2eb6a506f2edadfc5563968))
+* ensure next steps appear in sidesheet for deeplink funded borrower ([47095ab](https://github.com/kiva/ui/commit/47095ab5bd65153e952315287898b12b691b416f))
+* exp pattern that works with latest ui app ([0f0687f](https://github.com/kiva/ui/commit/0f0687fe415663a42a5f964caef94cffcb3d6f35))
+* more minor changes, mostly mobile ([608ea62](https://github.com/kiva/ui/commit/608ea62f21c580bc4484703a123001650f13def3))
+* remove console log ([df6731b](https://github.com/kiva/ui/commit/df6731be986209f1a36ba9bf2378b3ba1e4ecec3))
+* setup new upc campaign destination url if a upc is applied to basket ([f8307d0](https://github.com/kiva/ui/commit/f8307d0535335efdc54fc4a46ccdaf4f2df21a7c))
+* update kv-components with latest fixes ([280f88d](https://github.com/kiva/ui/commit/280f88dd3fa6b806509155165f4d7b5b8932a290))
+* update percentile components to more closely match mocks ([ed94f96](https://github.com/kiva/ui/commit/ed94f96638c4d617c421790a815f18ef99d3a8da))
+
 ## [3.36.0](https://github.com/kiva/ui/compare/v3.35.1...v3.36.0) (2025-10-15)
 
 ### 🎉 New Features
