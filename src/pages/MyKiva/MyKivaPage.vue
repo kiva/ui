@@ -1,7 +1,6 @@
 <template>
 	<www-page main-class="tw-bg-secondary tw-overflow-hidden tw-relative" class="tw-relative">
 		<my-kiva-page-content
-			:is-hero-enabled="isHeroEnabled"
 			:user-info="userInfo"
 			:lender="lender"
 			:loans="loans"
@@ -11,7 +10,6 @@
 			:hero-tiered-achievements="heroTieredAchievements"
 			:lending-stats="lendingStats"
 			:transactions="transactions"
-			:is-next-steps-exp="isNextStepsExp"
 			:user-lent-to-all-regions="userLentToAllRegions"
 			:enable-ai-loan-pills="enableAILoanPills"
 			:my-giving-funds="myGivingFunds"
@@ -20,18 +18,11 @@
 </template>
 
 <script>
-import { readBoolSetting } from '#src/util/settingsUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { CONTENTFUL_CAROUSEL_KEY, MY_KIVA_HERO_ENABLE_KEY } from '#src/util/myKivaUtils';
+import { CONTENTFUL_CAROUSEL_KEY } from '#src/util/myKivaUtils';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
-import uiConfigSettingQuery from '#src/graphql/query/uiConfigSetting.graphql';
-import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-import {
-	handleSetuiabAndExperimentTracking,
-	getExperimentEnabledFromCache
-} from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
@@ -39,20 +30,6 @@ import { gql } from 'graphql-tag';
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import myGivingFundsQuery from '#src/graphql/query/portfolio/myGivingFunds.graphql';
-
-const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
-
-const getRegionsWithLoanStatus = (countryFacets, countriesLentTo) => {
-	const allRegions = [
-		...new Set(countryFacets.map(facet => facet.country?.region).filter(Boolean))
-	];
-	const regionsWithLoanStatus = allRegions.map(region => {
-		const hasLoans = countriesLentTo.some(item => item?.region === region);
-		return { name: region, hasLoans };
-	});
-	const userLentToAllRegions = regionsWithLoanStatus.filter(region => region?.hasLoans).every(Boolean) || false;
-	return { userLentToAllRegions };
-};
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -71,8 +48,6 @@ export default {
 			heroContentfulData: [],
 			heroSlides: [],
 			heroTieredAchievements: [],
-			isHeroEnabled: false,
-			isNextStepsExp: false,
 			lender: null,
 			lendingStats: {},
 			loans: [],
@@ -84,44 +59,26 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client, { route }) {
+		preFetch(_, client, { route }) {
 			const loanId = route?.query?.loanId ?? null;
 
 			return Promise.all([
 				client.query({ query: myKivaQuery }),
 				client.query({ query: lendingStatsQuery }),
-				client.query({ query: uiConfigSettingQuery, variables: { key: MY_KIVA_HERO_ENABLE_KEY } }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: NEXT_STEPS_EXP_KEY } }),
 				client.query({ query: userAchievementProgressQuery }),
 				loanId
 					? client.query({ query: borrowerProfileSideSheetQuery, variables: { loanId: Number(loanId) } })
 					: Promise.resolve(null),
 				client.query({ query: myGivingFundsQuery }),
-			]).then(result => {
-				const heroCarouselUiSetting = result[2];
-				const isHeroEnabled = readBoolSetting(heroCarouselUiSetting, 'data.general.uiConfigSetting.value');
-				const myKivaStatsExp = result[3];
-				const isMyKivaStatsExp = myKivaStatsExp?.data?.experiment?.version === 'b';
-				const isMyKivaNextStepsExp = result[4]?.data?.experiment?.version !== 'b';
-				const statsResult = result[1]?.data || {};
-				const countryFacets = statsResult.lend?.countryFacets ?? [];
-				const countriesLentTo = statsResult.my?.lendingStats?.countriesLentTo ?? [];
-				const { userLentToAllRegions } = getRegionsWithLoanStatus(countryFacets, countriesLentTo);
-				if ((isHeroEnabled && !isMyKivaStatsExp) || userLentToAllRegions || isMyKivaNextStepsExp) {
-					return Promise.all([
-						client.query({
-							query: contentfulEntriesQuery,
-							variables: { contentType: 'carousel', contentKey: CONTENTFUL_CAROUSEL_KEY },
-						}),
-						client.query({
-							query: contentfulEntriesQuery,
-							variables: { contentType: 'challenge', limit: 200 }
-						}),
-					]).catch(error => {
-						logReadQueryError(error, 'myKivaPage Hero Data Prefetch');
-					});
-				}
-			}).catch(error => {
+				client.query({
+					query: contentfulEntriesQuery,
+					variables: { contentType: 'carousel', contentKey: CONTENTFUL_CAROUSEL_KEY },
+				}),
+				client.query({
+					query: contentfulEntriesQuery,
+					variables: { contentType: 'challenge', limit: 200 }
+				}),
+			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
 			});
 		},
@@ -190,49 +147,29 @@ export default {
 	},
 	created() {
 		try {
-			const uiSettingsQueryResult = this.apollo.readQuery({
-				query: uiConfigSettingQuery,
-				variables: {
-					key: MY_KIVA_HERO_ENABLE_KEY,
-				}
-			});
-			this.isHeroEnabled = readBoolSetting(uiSettingsQueryResult, 'general.uiConfigSetting.value');
-
-			this.isNextStepsExp = getExperimentEnabledFromCache(this.apollo, NEXT_STEPS_EXP_KEY);
-
 			this.fetchMyKivaData();
 			const achievementsResult = this.apollo.readQuery({
 				query: userAchievementProgressQuery
 			});
 			this.heroTieredAchievements = achievementsResult.userAchievementProgress?.tieredLendingAchievements ?? [];
-			if (this.isHeroEnabled || this.userLentToAllRegions || this.isNextStepsExp) {
-				const contentfulChallengeResult = this.apollo.readQuery({
-					query: contentfulEntriesQuery,
-					variables: { contentType: 'challenge', limit: 200 }
-				});
-				const slidesResult = this.apollo.readQuery({
-					query: contentfulEntriesQuery,
-					variables: {
-						contentType: 'carousel',
-						contentKey: CONTENTFUL_CAROUSEL_KEY,
-					}
-				});
-				this.heroSlides = slidesResult.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
-				this.heroContentfulData = contentfulChallengeResult.contentful?.entries?.items ?? [];
-			}
+			const contentfulChallengeResult = this.apollo.readQuery({
+				query: contentfulEntriesQuery,
+				variables: { contentType: 'challenge', limit: 200 }
+			});
+			const slidesResult = this.apollo.readQuery({
+				query: contentfulEntriesQuery,
+				variables: {
+					contentType: 'carousel',
+					contentKey: CONTENTFUL_CAROUSEL_KEY,
+				}
+			});
+			this.heroSlides = slidesResult.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
+			this.heroContentfulData = contentfulChallengeResult.contentful?.entries?.items ?? [];
 		} catch (e) {
-			logReadQueryError(e, 'MyKivaPage myKivaPrefetch');
+			logReadQueryError(e, 'MyKivaPage created');
 		}
 	},
-	async mounted() {
-		this.isNextStepsExp = await handleSetuiabAndExperimentTracking({
-			apollo: this.apollo,
-			trackEvent: this.$kvTrackEvent,
-			route: this.$route,
-			experimentKey: NEXT_STEPS_EXP_KEY,
-			trackingAction: 'EXP-MP-1984-Sept2025',
-		});
-
+	mounted() {
 		try {
 			this.apollo.watchQuery({
 				query: gql`
