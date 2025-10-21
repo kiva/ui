@@ -13,6 +13,7 @@ import {
 	getForcedAssignment,
 	getLoginId,
 	assignAllActiveExperiments,
+	handleSetuiabAndExperimentTracking,
 } from '#src/util/experiment/experimentUtils';
 import * as Alea from '#src/util/experiment/Alea';
 import experimentIdsQuery from '#src/graphql/query/experimentIds.graphql';
@@ -1112,6 +1113,282 @@ describe('experimentUtils.js', () => {
 				query: experimentAssignmentQuery,
 				variables: { id: 'b' }
 			});
+		});
+	});
+
+	describe('handleSetuiabAndExperimentTracking', () => {
+		const experimentKey = 'test-experiment';
+		const trackingAction = 'test-action';
+
+		it('should not query when setuiab is not present in route', async () => {
+			const mockTrackEvent = vi.fn();
+			const mockApollo = {
+				query: vi.fn(),
+				readFragment: vi.fn().mockReturnValue({ version: 'control' })
+			};
+			const route = { query: {} };
+
+			const result = await handleSetuiabAndExperimentTracking({
+				apollo: mockApollo,
+				trackEvent: mockTrackEvent,
+				route,
+				experimentKey,
+				trackingAction,
+			});
+
+			expect(mockApollo.query).not.toHaveBeenCalled();
+			expect(mockApollo.readFragment).toHaveBeenCalledWith({
+				id: `Experiment:${experimentKey}`,
+				fragment: experimentVersionFragment
+			});
+			expect(mockTrackEvent).toHaveBeenCalledWith(
+				'event-tracking',
+				trackingAction,
+				'control',
+				undefined
+			);
+			expect(result).toBe(false);
+		});
+
+		it('should query when setuiab is present in route', async () => {
+			const mockTrackEvent = vi.fn();
+			const mockApollo = {
+				query: vi.fn().mockResolvedValue({
+					data: {
+						experiment: {
+							version: 'b'
+						}
+					}
+				}),
+				readFragment: vi.fn().mockReturnValue({ version: 'control' })
+			};
+			const route = { query: { setuiab: 'test-experiment.b' } };
+
+			const result = await handleSetuiabAndExperimentTracking({
+				apollo: mockApollo,
+				trackEvent: mockTrackEvent,
+				route,
+				experimentKey,
+				trackingAction,
+			});
+
+			expect(mockApollo.query).toHaveBeenCalledWith({
+				query: experimentAssignmentQuery,
+				variables: { id: experimentKey },
+				fetchPolicy: 'network-only'
+			});
+			expect(mockApollo.readFragment).toHaveBeenCalledWith({
+				id: `Experiment:${experimentKey}`,
+				fragment: experimentVersionFragment
+			});
+			expect(mockTrackEvent).toHaveBeenCalledWith(
+				'event-tracking',
+				trackingAction,
+				'control',
+				undefined
+			);
+			expect(result).toBe(true);
+		});
+
+		it('should return true when assignment data version is "b"', async () => {
+			const mockTrackEvent = vi.fn();
+			const mockApollo = {
+				query: vi.fn().mockResolvedValue({
+					data: {
+						experiment: {
+							version: 'b'
+						}
+					}
+				}),
+				readFragment: vi.fn().mockReturnValue({ version: 'a' })
+			};
+			const route = { query: { setuiab: 'test' } };
+
+			const result = await handleSetuiabAndExperimentTracking({
+				apollo: mockApollo,
+				trackEvent: mockTrackEvent,
+				route,
+				experimentKey,
+				trackingAction,
+			});
+
+			expect(result).toBe(true);
+		});
+
+		it('should return false when assignment data version is not "b"', async () => {
+			const mockTrackEvent = vi.fn();
+			const mockApollo = {
+				query: vi.fn().mockResolvedValue({
+					data: {
+						experiment: {
+							version: 'a'
+						}
+					}
+				}),
+				readFragment: vi.fn().mockReturnValue({ version: 'control' })
+			};
+			const route = { query: { setuiab: 'test' } };
+
+			const result = await handleSetuiabAndExperimentTracking({
+				apollo: mockApollo,
+				trackEvent: mockTrackEvent,
+				route,
+				experimentKey,
+				trackingAction,
+			});
+
+			expect(result).toBe(false);
+		});
+
+		it('should return true when cached experiment version is "b"', async () => {
+			const mockTrackEvent = vi.fn();
+			const mockApollo = {
+				query: vi.fn(),
+				readFragment: vi.fn().mockReturnValue({ version: 'b' })
+			};
+			const route = { query: {} };
+
+			const result = await handleSetuiabAndExperimentTracking({
+				apollo: mockApollo,
+				trackEvent: mockTrackEvent,
+				route,
+				experimentKey,
+				trackingAction,
+			});
+
+			expect(result).toBe(true);
+		});
+
+		it('should handle query error and continue with cached assignment', async () => {
+			const mockTrackEvent = vi.fn();
+			const mockApollo = {
+				query: vi.fn().mockRejectedValue(new Error('Network error')),
+				readFragment: vi.fn().mockReturnValue({ version: 'control' })
+			};
+			const route = { query: { setuiab: 'test' } };
+
+			const result = await handleSetuiabAndExperimentTracking({
+				apollo: mockApollo,
+				trackEvent: mockTrackEvent,
+				route,
+				experimentKey,
+				trackingAction,
+			});
+
+			expect(mockApollo.query).toHaveBeenCalled();
+			expect(mockTrackEvent).toHaveBeenCalledWith(
+				'event-tracking',
+				trackingAction,
+				'control',
+				undefined
+			);
+			expect(result).toBe(false);
+		});
+
+		it('should handle undefined route', async () => {
+			const mockTrackEvent = vi.fn();
+			const mockApollo = {
+				query: vi.fn(),
+				readFragment: vi.fn().mockReturnValue({ version: 'a' })
+			};
+
+			const result = await handleSetuiabAndExperimentTracking({
+				apollo: mockApollo,
+				trackEvent: mockTrackEvent,
+				route: undefined,
+				experimentKey,
+				trackingAction,
+			});
+
+			expect(mockApollo.query).not.toHaveBeenCalled();
+			expect(mockTrackEvent).toHaveBeenCalled();
+			expect(result).toBe(false);
+		});
+
+		it('should handle undefined experiment version', async () => {
+			const mockTrackEvent = vi.fn();
+			const mockApollo = {
+				query: vi.fn(),
+				readFragment: vi.fn().mockReturnValue({ version: undefined })
+			};
+			const route = { query: {} };
+
+			const result = await handleSetuiabAndExperimentTracking({
+				apollo: mockApollo,
+				trackEvent: mockTrackEvent,
+				route,
+				experimentKey,
+				trackingAction,
+			});
+
+			expect(mockTrackEvent).not.toHaveBeenCalled();
+			expect(result).toBe(false);
+		});
+
+		it('should handle unassigned experiment version', async () => {
+			const mockTrackEvent = vi.fn();
+			const mockApollo = {
+				query: vi.fn(),
+				readFragment: vi.fn().mockReturnValue({ version: 'unassigned' })
+			};
+			const route = { query: {} };
+
+			const result = await handleSetuiabAndExperimentTracking({
+				apollo: mockApollo,
+				trackEvent: mockTrackEvent,
+				route,
+				experimentKey,
+				trackingAction,
+			});
+
+			expect(mockTrackEvent).not.toHaveBeenCalled();
+			expect(result).toBe(false);
+		});
+
+		it('should prioritize assignment data over cached experiment version', async () => {
+			const mockTrackEvent = vi.fn();
+			const mockApollo = {
+				query: vi.fn().mockResolvedValue({
+					data: {
+						experiment: {
+							version: 'a'
+						}
+					}
+				}),
+				readFragment: vi.fn().mockReturnValue({ version: 'b' })
+			};
+			const route = { query: { setuiab: 'test' } };
+
+			const result = await handleSetuiabAndExperimentTracking({
+				apollo: mockApollo,
+				trackEvent: mockTrackEvent,
+				route,
+				experimentKey,
+				trackingAction,
+			});
+
+			expect(result).toBe(false); // assignment data version 'a' takes priority
+		});
+
+		it('should handle empty assignment data', async () => {
+			const mockTrackEvent = vi.fn();
+			const mockApollo = {
+				query: vi.fn().mockResolvedValue({
+					data: {}
+				}),
+				readFragment: vi.fn().mockReturnValue({ version: 'b' })
+			};
+			const route = { query: { setuiab: 'test' } };
+
+			const result = await handleSetuiabAndExperimentTracking({
+				apollo: mockApollo,
+				trackEvent: mockTrackEvent,
+				route,
+				experimentKey,
+				trackingAction,
+			});
+
+			expect(result).toBe(true); // falls back to cached version 'b'
 		});
 	});
 });
