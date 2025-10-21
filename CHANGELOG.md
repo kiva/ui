@@ -1,3 +1,21 @@
+## [3.37.0-rc.2](https://github.com/kiva/ui/compare/v3.37.0-rc.1...v3.37.0-rc.2) (2025-10-21)
+
+### 🎉 New Features
+
+* setup query and data processing for contributed to funds ([8f11789](https://github.com/kiva/ui/commit/8f1178907162541b277bdf09d37e26e06b592587))
+
+### 🐛 Bugfixes
+
+* add paginated fetching to contributed donation entries and fund aggregation ([1c5d945](https://github.com/kiva/ui/commit/1c5d945259abad7e7ef86a3a86bcae44c01f9b95))
+* class for suppressing hj ([37987c6](https://github.com/kiva/ui/commit/37987c660f74186505696b08ca1b7b38fd861a1a))
+* cleanup lock file ([7d207bd](https://github.com/kiva/ui/commit/7d207bd6f3a1f8521c1e7801026a55f7f1ebd176))
+* convert lending insights to composition api and use working exp pattern ([89deb7c](https://github.com/kiva/ui/commit/89deb7cff65998b8e215bffc4363cac625e0c920))
+* convert lending stats in composition api and remove unneeded code ([3b81ef2](https://github.com/kiva/ui/commit/3b81ef20f9f5e7eebc2ffe21f94ab0390e6fd92d))
+* correct owner prop spelling ([7d74729](https://github.com/kiva/ui/commit/7d7472933f79d510ed2f09764b6979a3f4d428c7))
+* hide owner operations on contributed fund cards ([f180d6f](https://github.com/kiva/ui/commit/f180d6f830c4be514da1b9192fa294053f2c5316))
+* only remove email for lender card type ([d5a8326](https://github.com/kiva/ui/commit/d5a8326b37e1c5959afe1895c91cd3085a024287))
+* remove email from kiva card checkout ([4b91f7c](https://github.com/kiva/ui/commit/4b91f7c0fb3bdd38d0e567206997dd4f30f67deb))
+
 ## [3.37.0-rc.1](https://github.com/kiva/ui/compare/v3.36.0...v3.37.0-rc.1) (2025-10-20)
 
 ### 🎉 New Features
