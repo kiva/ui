@@ -127,7 +127,7 @@
 							<management-card
 								v-for="(fund, i) in contributedFundsEntries"
 								class="tw-mb-2"
-								:hide-onwer-operations="true"
+								:hide-owner-operations="true"
 								:key="`management-card-${i}`"
 								:fund="fund"
 							/>
