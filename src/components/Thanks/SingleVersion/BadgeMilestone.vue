@@ -119,7 +119,7 @@ const showEqualityBadge = computed(() => props.isGuest || props.onlyKivaCardsAnd
 // eslint-disable-next-line max-len
 const showBadgeModule = computed(() => showEqualityBadge.value || !!props.badgeAchievedIds.length || props.achievementsCompleted);
 
-const loansCount = computed(() => 0);
+const loansCount = computed(() => props.loans?.length ?? 0);
 
 const moduleTitle = computed(() => {
 	let title = '';
