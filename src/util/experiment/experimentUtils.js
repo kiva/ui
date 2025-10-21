@@ -227,25 +227,6 @@ export function trackExperimentVersion(client, trackEvent, category, key, action
 }
 
 /**
- * Gets the experiment enabled status from the Apollo cache
- *
- * @param {ApolloClient} apollo The Apollo client
- * @param {string} experimentKey The experiment key
- * @returns {boolean} True if the experiment version is 'b', false otherwise
- */
-export function getExperimentEnabledFromCache(apollo, experimentKey) {
-	try {
-		const result = apollo.readQuery({
-			query: experimentAssignmentQuery,
-			variables: { id: experimentKey }
-		});
-		return result?.experiment?.version === 'b';
-	} catch (error) {
-		return false;
-	}
-}
-
-/**
  * Handles experiment assignment refresh for setuiab query parameter and tracks the result
  *
  * @param {Object} options Configuration object

@@ -27,7 +27,7 @@
 				:count="myGivingFunds.totalCount"
 			/>
 		</section>
-		<section v-if="isNextStepsExp" class="tw-mt-4">
+		<section class="tw-mt-4">
 			<LendingStats
 				:regions-data="lendingStats.regionsData"
 				:user-lent-to-all-regions="userLentToAllRegions"
@@ -36,35 +36,9 @@
 				:lender="lender"
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
-				:is-next-steps-exp="isNextStepsExp"
 				:total-loans="totalLoans"
 				:user-goal="userGoal"
 				@store-goals-preferences="storeGoalPreferences"
-			/>
-		</section>
-		<section v-else-if="isHeroEnabled" class="tw-mt-4">
-			<h3
-				v-if="userInHomepage"
-				class="tw-mb-2"
-			>
-				Looking for your next step?
-			</h3>
-			<JourneyCardCarousel
-				:hero-contentful-data="heroContentfulData"
-				:hero-tiered-achievements="heroTieredAchievements"
-				:lender="lender"
-				:slides-number="3"
-				:slides="heroSlides"
-				:user-in-homepage="userInHomepage"
-				:user-info="userInfo"
-				@update-journey="updateJourney"
-			/>
-		</section>
-		<section v-if="!allBadgesCompleted && !isHeroEnabled">
-			<BadgeTile
-				:user-info="userInfo"
-				:badges-data="badgeData"
-				@badge-clicked="handleBadgeTileClicked"
 			/>
 		</section>
 		<section id="mykiva-borrower-carousel" class="tw-my-4">
@@ -174,7 +148,6 @@ import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import useContentful from '#src/composables/useContentful';
 
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
-import BadgeTile from '#src/components/MyKiva/BadgeTile';
 import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
@@ -220,7 +193,6 @@ export default {
 	components: {
 		AsyncMyKivaSection,
 		BadgesSection,
-		BadgeTile,
 		BorrowerSideSheetWrapper,
 		JournalUpdatesCarousel,
 		JourneyCardCarousel,
@@ -239,10 +211,6 @@ export default {
 		BailoutChips,
 	},
 	props: {
-		isHeroEnabled: {
-			type: Boolean,
-			default: false,
-		},
 		userInfo: {
 			type: Object,
 			default: () => ({}),
@@ -278,10 +246,6 @@ export default {
 		transactions: {
 			type: Array,
 			default: () => [],
-		},
-		isNextStepsExp: {
-			type: Boolean,
-			default: false,
 		},
 		userLentToAllRegions: {
 			type: Boolean,
@@ -406,9 +370,6 @@ export default {
 		handleShowNavigation() {
 			this.showNavigation = true;
 			this.$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
-		},
-		handleBadgeTileClicked(selectedTier) {
-			this.$router.push(this.getLoanFindingUrl(selectedTier.badge.id, this.$router.currentRoute.value));
 		},
 		handleBadgeSectionClicked(badge) {
 			if (!badge.hasStarted) {
