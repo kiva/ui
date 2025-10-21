@@ -28,20 +28,6 @@
 						:icon="mdiArrowRight"
 					/>
 				</router-link>
-				<!-- <button
-                    class="tw-text-link"
-                    @click="loanLightboxVisible = true"
-                    v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
-                >
-                    Details
-                </button>
-                <kv-lightbox
-                    :visible="loanLightboxVisible"
-                    title="Loan count"
-                    @lightbox-closed="loanLightboxVisible = false"
-                >
-                    <loan-count-over-time-figure />
-                </kv-lightbox> -->
 			</div>
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder
@@ -92,21 +78,24 @@
 		v-else
 		@visible="fetchStats"
 		data-testid="lending-insights"
-		class="!tw-bg-white"
+		class="!tw-bg-white !tw-py-5 !tw-mb-3"
 	>
-		<div class="tw-flex tw-items-center tw-justify-end tw-gap-3 tw-mb-3 md:tw-mb-2 lg:tw-hidden">
+		<div class="tw-flex tw-items-center tw-justify-end tw-gap-3 tw-mb-1 md:tw-mb-2 lg:tw-hidden">
 			<div
 				class="tw-inline-flex tw-px-1 tw-py-0.5 tw-items-center
 					tw-rounded-sm tw-bg-brand-100 tw-border tw-border-brand-200"
 			>
 				<star-shine class="tw-flex-shrink-0 tw-flex tw-items-center" />
-				<p class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0">
+				<p
+					class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0"
+					style="line-height: normal;"
+				>
 					Filter by year now live
 				</p>
 			</div>
 		</div>
 		<div>
-			<kv-tabs @tab-changed="setActiveTab" :active-tab="currentTab">
+			<kv-tabs @tab-changed="setActiveTab">
 				<template #tabNav>
 					<div class="tw-flex tw-items-center tw-justify-between tw-w-full md:tw-flex-col md:tw-items-start">
 						<h2 class="tw-text-h3 tw-mb-1 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
@@ -132,7 +121,10 @@
 								tw-rounded-sm tw-bg-brand-100 tw-border tw-border-brand-200"
 							>
 								<star-shine class="tw-flex-shrink-0 tw-flex tw-items-center" />
-								<p class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0">
+								<p
+									class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0"
+									style="line-height: normal;"
+								>
 									Filter by year now live
 								</p>
 							</div>
@@ -148,8 +140,7 @@
 						/>
 						<kv-grid
 							v-else
-							as="dl" class="stats-container-exp tw-items-center
-											lg:!tw-px-4 lg:!tw-py-1.5 md:!tw-pr-4"
+							as="dl" class="stats-container-exp md:!tw-pr-4"
 						>
 							<!-- Total amount lent -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
@@ -262,15 +253,15 @@
 							</div>
 							<!-- Lending percentile -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3
-									tw-bg-eco-green-3 tw-rounded"
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 tw-h-full
+									tw-bg-eco-green-3 tw-rounded tw-px-4 tw-py-2 md:!tw-py-1.5 md:!tw-px-3"
 							>
 								<kv-loading-placeholder
 									v-if="loading"
 									class="stat-placeholder"
 									style="width: 7rem;"
 								/>
-								<dt v-show="!loading" class="stat-value">
+								<dt v-show="!loading" class="stat-value !tw-text-white">
 									{{ lifetimePercentile }}
 								</dt>
 								<dd class="stat-def">
@@ -328,218 +319,227 @@
 				class="tw-w-2 tw-h-2 tw-flex-shrink-0"
 				:icon="mdiClockOutline"
 			/>
-			<p class="tw-pl-0.5 tw-font-normal tw-text-small tw-flex-shrink-0">
+			<p class="tw-pl-0.5 tw-font-normal md:tw-text-small tw-flex-shrink-0">
 				{{ daysUntilDeadline }} days to make contribution this year
 			</p>
 		</div>
 	</async-portfolio-section>
 </template>
 
-<script>
+<script setup>
 import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import getCacheKey from '#src/util/getCacheKey';
 import { mdiArrowRight, mdiClockOutline } from '@mdi/js';
-// import LoanCountOverTimeFigure from './LoanCountOverTimeFigure';
 import {
 	KvGrid, KvLoadingPlaceholder, KvMaterialIcon, KvTab, KvTabs, KvTabPanel,
 } from '@kiva/kv-components';
 import { differenceInCalendarDays } from 'date-fns';
 import StarShine from '#src/assets/icons/inline/star_shine.svg';
+import { handleSetuiabAndExperimentTracking } from '#src/util/experiment/experimentUtils';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import {
+	ref,
+	computed,
+	inject,
+} from 'vue';
+import { useRoute } from 'vue-router';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
-export default {
+const PERCENTILE_BY_YEAR_EXP_KEY = 'portfolio_year_percentile';
+
+defineOptions({
 	name: 'LendingInsights',
 	serverCacheKey: () => getCacheKey('LendingInsights'),
-	inject: ['apollo'],
-	components: {
-		AsyncPortfolioSection,
-		KvGrid,
-		KvLoadingPlaceholder,
-		KvMaterialIcon,
-		KvTab,
-		KvTabs,
-		KvTabPanel,
-		StarShine,
-		// LoanCountOverTimeFigure,
-	},
-	props: {
-		isPercentileByYearExpEnabled: {
-			type: Boolean,
-			default: false
-		}
-	},
-	data() {
-		return {
-			loading: true,
-			loadingPromise: null,
-			lifetimeLoadingPromise: null,
-			donationLightboxVisible: false,
-			// loanLightboxVisible: false,
-			currentTab: 'ytd',
-			currentYearAmountLent: 0,
-			currentYearCountryCount: 0,
-			currentYearNumberOfLoans: 0,
-			formattedCurrentYearPercentile: '',
-			currentYearPercentile: null,
-			nextPercentileMsg: '',
-			threshold: 0, // amount needed to be within percentile group
-			lifetimeAmountLent: 0,
-			lifetimeCountryCount: 0,
-			lifetimeNumberOfLoans: 0,
-			lifetimePercentile: 0,
-			mdiArrowRight,
-			mdiClockOutline,
-		};
-	},
-	computed: {
-		daysUntilDeadline() {
-			const today = new Date();
-			const deadline = new Date(today.getFullYear(), 11, 31); // December 31st of current year
-			return differenceInCalendarDays(deadline, today);
-		},
-		yearToDate() {
-			const currentYear = new Date().getFullYear();
-			return currentYear;
-		},
-	},
-	methods: {
-		setActiveTab(tab) {
-			this.currentTab = tab;
-			if (tab === 'ytd' || tab === 0) {
-				this.$kvTrackEvent(
-					'portfolio',
-					'show',
-					`${this.currentYearPercentile}-percentile`,
-				);
-			}
-		},
-		fetchLifetimeStats() {
-			if (!this.lifetimeLoadingPromise) {
-				this.loading = true;
-				this.lifetimeLoadingPromise = this.apollo.query({
-					query: gql`query lendingInsights {
-						my {
-							id
-							lendingStats {
-								id
-								amountLentPercentile
-								lentTo {
-									countries {
-										totalCount
-									}
-								}
-							}
-							userStats {
-								amount_of_loans
-								number_of_loans
-							}
-						}
-					}`
-				}).then(({ data }) => {
-					const amountOfLoans = numeral(data?.my?.userStats?.amount_of_loans ?? 0);
+});
 
-					this.lifetimeAmountLent = amountOfLoans.format('$0,0[.]00');
-					this.lifetimeCountryCount = data?.my?.lendingStats?.lentTo?.countries?.totalCount ?? 0;
-					this.lifetimeNumberOfLoans = data?.my?.userStats?.number_of_loans ?? 0;
-					this.lifetimePercentile = numeral(data?.my?.lendingStats?.amountLentPercentile ?? 0).format('0o');
-				}).finally(() => {
-					this.loading = false;
-					this.lifetimeLoadingPromise = null;
-				});
-			}
-		},
-		fetchCurrentYearStats() {
-			if (this.loading && !this.loadingPromise) {
-				this.loadingPromise = this.apollo.query({
-					query: gql`query lendingInsights {
-							my {
-								id
-								lendingStats {
-									id
-									loanStatsByYear {
-										amount
-										count
-									}
-									countriesLentToByYear
-								}
-							}
-						}`
-				}).then(({ data }) => {
-					const ytdAmount = parseInt(
-						numeral(data?.my?.lendingStats?.loanStatsByYear?.amount ?? 0).value(),
-						10
-					);
-					return this.apollo.query({
-						query: gql`query percentileData($amount: Int!) {
-								lend {
-									percentilePerYear(amount: $amount) {
-										nextPercentileThreshold
-										percentile
-										percentileNext25
-										threshold
-									}
-								}
-							}`,
-						variables: { amount: ytdAmount }
-					}).then(({ data: percentileStatsData }) => {
-						return { lendingStatsData: data, percentileStatsData };
-					});
-				}).then(({ lendingStatsData, percentileStatsData }) => {
-					const percentileData = percentileStatsData?.lend?.percentilePerYear || {};
-					this.currentYearPercentile = percentileData.percentile ?? 0;
-					this.formattedCurrentYearPercentile = numeral(this.currentYearPercentile).format('0o');
+const apollo = inject('apollo');
+const route = useRoute();
+const $kvTrackEvent = inject('$kvTrackEvent');
 
-					const updatedPercentile = () => {
-						const current = percentileData.percentile ?? 0;
-						const next25 = percentileData.percentileNext25 ?? 0;
-						let nextPercentile = current < 99 ? current + 1 : 99;
-						let nextThreshold = '$25';
+// Data properties
+const loading = ref(true);
+const loadingPromise = ref(null);
+const lifetimeLoadingPromise = ref(null);
+const currentYearAmountLent = ref(0);
+const currentYearCountryCount = ref(0);
+const currentYearNumberOfLoans = ref(0);
+const formattedCurrentYearPercentile = ref('');
+const currentYearPercentile = ref(null);
+const nextPercentileMsg = ref('');
+const lifetimeAmountLent = ref(0);
+const lifetimeCountryCount = ref(0);
+const lifetimeNumberOfLoans = ref(0);
+const lifetimePercentile = ref(0);
+const isPercentileByYearExpEnabled = ref(undefined);
 
-						if (current === next25 && percentileData.threshold && percentileData.nextPercentileThreshold) {
-							nextThreshold = numeral(percentileData.nextPercentileThreshold - percentileData.threshold)
-								.format('$0,0[.]00');
-						} else if (nextPercentile < next25) {
-							nextPercentile = parseInt(next25, 10);
-						}
+// Computed properties
+const daysUntilDeadline = computed(() => {
+	const today = new Date();
+	const deadline = new Date(today.getFullYear(), 11, 31);
+	return differenceInCalendarDays(deadline, today);
+});
 
-						return nextPercentile === 99
-							? ''
-							: `${nextThreshold} more to reach ${numeral(nextPercentile).format('0o')} percentile`;
-					};
+const yearToDate = computed(() => {
+	const currentYear = new Date().getFullYear();
+	return currentYear;
+});
 
-					this.nextPercentileMsg = updatedPercentile();
-
-					// eslint-disable-next-line max-len
-					const yearlyAmountOfLoans = numeral(lendingStatsData?.my?.lendingStats?.loanStatsByYear?.amount ?? 0);
-					this.currentYearAmountLent = yearlyAmountOfLoans.format('$0,0[.]00');
-
-					this.currentYearCountryCount = lendingStatsData?.my?.lendingStats?.countriesLentToByYear ?? 0;
-					this.currentYearNumberOfLoans = lendingStatsData?.my?.lendingStats?.loanStatsByYear?.count ?? 0;
-
-					this.$kvTrackEvent(
-						'portfolio',
-						'show',
-						`${this.currentYearPercentile}-percentile`,
-					);
-				}).finally(() => {
-					this.loading = false;
-					this.loadingPromise = null;
-				});
-			}
-		},
-		fetchStats() {
-			if (this.loading && !this.loadingPromise) {
-				this.loadingPromise = Promise.all([
-					this.fetchCurrentYearStats(),
-					this.fetchLifetimeStats(),
-				]).finally(() => {
-					this.loadingPromise = null;
-				});
-			}
-		},
-	},
+// Methods
+const setActiveTab = tab => {
+	if (tab === 'ytd' || tab === 0) {
+		$kvTrackEvent(
+			'portfolio',
+			'show',
+			`${currentYearPercentile.value}-percentile`,
+		);
+	}
 };
+
+const fetchLifetimeStats = () => {
+	if (!lifetimeLoadingPromise.value) {
+		loading.value = true;
+		lifetimeLoadingPromise.value = apollo.query({
+			query: gql`query lendingInsights {
+				my {
+					id
+					lendingStats {
+						id
+						amountLentPercentile
+						lentTo {
+							countries {
+								totalCount
+							}
+						}
+					}
+					userStats {
+						amount_of_loans
+						number_of_loans
+					}
+				}
+			}`
+		}).then(({ data }) => {
+			const amountOfLoans = numeral(data?.my?.userStats?.amount_of_loans ?? 0);
+
+			lifetimeAmountLent.value = amountOfLoans.format('$0,0[.]00');
+			lifetimeCountryCount.value = data?.my?.lendingStats?.lentTo?.countries?.totalCount ?? 0;
+			lifetimeNumberOfLoans.value = data?.my?.userStats?.number_of_loans ?? 0;
+			lifetimePercentile.value = numeral(data?.my?.lendingStats?.amountLentPercentile ?? 0).format('0o');
+		}).finally(() => {
+			loading.value = false;
+			lifetimeLoadingPromise.value = null;
+		});
+	}
+};
+
+const fetchCurrentYearStats = () => {
+	if (loading.value && !loadingPromise.value) {
+		loadingPromise.value = apollo.query({
+			query: gql`query lendingInsights {
+					my {
+						id
+						lendingStats {
+							id
+							loanStatsByYear {
+								amount
+								count
+							}
+							countriesLentToByYear
+						}
+					}
+				}`
+		}).then(({ data }) => {
+			const ytdAmount = parseInt(
+				numeral(data?.my?.lendingStats?.loanStatsByYear?.amount ?? 0).value(),
+				10
+			);
+			return apollo.query({
+				query: gql`query percentileData($amount: Int!) {
+						lend {
+							percentilePerYear(amount: $amount) {
+								nextPercentileThreshold
+								percentile
+								percentileNext25
+								threshold
+							}
+						}
+					}`,
+				variables: { amount: ytdAmount }
+			}).then(({ data: percentileStatsData }) => {
+				return { lendingStatsData: data, percentileStatsData };
+			});
+		}).then(({ lendingStatsData, percentileStatsData }) => {
+			const percentileData = percentileStatsData?.lend?.percentilePerYear || {};
+			currentYearPercentile.value = percentileData.percentile ?? 0;
+			formattedCurrentYearPercentile.value = numeral(currentYearPercentile.value).format('0o');
+
+			const updatedPercentile = () => {
+				const current = percentileData.percentile ?? 0;
+				const next25 = percentileData.percentileNext25 ?? 0;
+				let nextPercentile = current < 99 ? current + 1 : 99;
+				let nextThreshold = '$25';
+
+				if (current === next25 && percentileData.threshold && percentileData.nextPercentileThreshold) {
+					nextThreshold = numeral(percentileData.nextPercentileThreshold - percentileData.threshold)
+						.format('$0,0[.]00');
+				} else if (nextPercentile < next25) {
+					nextPercentile = parseInt(next25, 10);
+				}
+
+				return nextPercentile === 99
+					? ''
+					: `${nextThreshold} more to reach ${numeral(nextPercentile).format('0o')} percentile`;
+			};
+
+			nextPercentileMsg.value = updatedPercentile();
+
+			const yearlyAmountOfLoans = numeral(lendingStatsData?.my?.lendingStats?.loanStatsByYear?.amount ?? 0);
+			currentYearAmountLent.value = yearlyAmountOfLoans.format('$0,0[.]00');
+
+			currentYearCountryCount.value = lendingStatsData?.my?.lendingStats?.countriesLentToByYear ?? 0;
+			currentYearNumberOfLoans.value = lendingStatsData?.my?.lendingStats?.loanStatsByYear?.count ?? 0;
+
+			$kvTrackEvent(
+				'portfolio',
+				'show',
+				`${currentYearPercentile.value}-percentile`,
+			);
+		}).finally(() => {
+			loading.value = false;
+			loadingPromise.value = null;
+		});
+	}
+};
+
+const fetchStats = () => {
+	if (loading.value && !loadingPromise.value) {
+		loadingPromise.value = Promise.all([
+			fetchCurrentYearStats(),
+			fetchLifetimeStats(),
+		]).finally(() => {
+			loadingPromise.value = null;
+		});
+	}
+};
+
+if (typeof window === 'undefined') {
+	apollo.query({
+		query: experimentAssignmentQuery,
+		variables: { id: PERCENTILE_BY_YEAR_EXP_KEY }
+	}).then(({ data }) => {
+		isPercentileByYearExpEnabled.value = data?.experiment?.version === 'b';
+	});
+} else {
+	handleSetuiabAndExperimentTracking({
+		apollo,
+		trackEvent: $kvTrackEvent,
+		route,
+		experimentKey: PERCENTILE_BY_YEAR_EXP_KEY,
+		trackingAction: 'EXP-MP-1847-Aug2025',
+	}).then(isEnabled => {
+		isPercentileByYearExpEnabled.value = isEnabled;
+	});
+}
 </script>
 
 <style lang="postcss" scoped>
@@ -549,7 +549,7 @@ export default {
 }
 
 .stats-container-exp {
-	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center tw-bg-eco-green-4;
+	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-2.5 tw-rounded tw-text-center tw-bg-eco-green-4 tw-items-center;
 }
 
 .stat-placeholder {
@@ -557,11 +557,17 @@ export default {
 }
 
 .stat-value {
-	@apply tw-text-h2 tw-text-eco-green-2;
+	@apply tw-text-h2 tw-text-eco-green-2 tw-pb-0.5;
 }
 
 .stat-def {
-	@apply tw-text-base tw-mb-0.5 tw-text-white;
+	@apply tw-mb-0.5 tw-text-white;
+}
+
+@screen md {
+	.stat-def, .stat-link {
+		@apply tw-text-small;
+	}
 }
 
 .stat-link {
@@ -569,7 +575,7 @@ export default {
 }
 
 .tab-header {
-	@apply tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left tw-text-base tw-font-medium;
+	@apply tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left tw-text-base tw-font-medium tw-mb-1;
 
 	font-weight: 621;
 }

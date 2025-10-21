@@ -227,6 +227,53 @@ export function trackExperimentVersion(client, trackEvent, category, key, action
 }
 
 /**
+ * Handles experiment assignment refresh for setuiab query parameter and tracks the result
+ *
+ * @param {Object} options Configuration object
+ * @param {ApolloClient} options.apollo The Apollo client
+ * @param {Function} options.trackEvent The tracking function to call (usually this.$kvTrackEvent)
+ * @param {Object} options.route The Vue route object
+ * @param {string} options.experimentKey The experiment key
+ * @param {string} options.trackingAction The tracking action parameter
+ * @returns {Promise<Object>} Promise that resolves with the experiment assignment data
+ */
+export async function handleSetuiabAndExperimentTracking({
+	apollo,
+	trackEvent,
+	route,
+	experimentKey,
+	trackingAction,
+}) {
+	let assignmentData = null;
+
+	if (route?.query?.setuiab) {
+		try {
+			const { data } = await apollo.query({
+				query: experimentAssignmentQuery,
+				variables: { id: experimentKey },
+				fetchPolicy: 'network-only'
+			});
+
+			assignmentData = data;
+		} catch (error) {
+			// Continue with existing assignment from cache
+		}
+	}
+
+	// Track experiment version (always happens after assignment processing)
+	const exp = trackExperimentVersion(
+		apollo,
+		trackEvent,
+		'event-tracking',
+		experimentKey,
+		trackingAction
+	);
+
+	// Return combined result
+	return (assignmentData?.experiment?.version ?? exp?.version) === 'b';
+}
+
+/**
  * Calculates a hash representation of an experiment
  *
  * @param {Object} experiment The experiment setting

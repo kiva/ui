@@ -68,7 +68,7 @@
 									<span style="padding-top: 0.15rem;">View giving fund</span>
 								</a>
 							</li>
-							<li class="tw-border-b tw-border-gray-100">
+							<li v-if="!hideOwnerOperations" class="tw-border-b tw-border-gray-100">
 								<a
 									class="
 										utility-menu-link
@@ -156,7 +156,7 @@
 			</div>
 
 			<KvButton
-				v-if="!actionableGoal"
+				v-if="!actionableGoal && !hideOwnerOperations"
 				class="tw-w-full tw-mt-3"
 				:href="`${givingFundRootPath}/${fund.id}?action=start-fundraiser`"
 				target="_blank"
@@ -208,6 +208,10 @@ const props = defineProps({
 	fund: {
 		type: Object,
 		required: true,
+	},
+	hideOwnerOperations: {
+		type: Boolean,
+		default: false,
 	},
 });
 

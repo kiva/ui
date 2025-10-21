@@ -1,3 +1,42 @@
+## [3.37.0-rc.2](https://github.com/kiva/ui/compare/v3.37.0-rc.1...v3.37.0-rc.2) (2025-10-21)
+
+### 🎉 New Features
+
+* setup query and data processing for contributed to funds ([8f11789](https://github.com/kiva/ui/commit/8f1178907162541b277bdf09d37e26e06b592587))
+
+### 🐛 Bugfixes
+
+* add paginated fetching to contributed donation entries and fund aggregation ([1c5d945](https://github.com/kiva/ui/commit/1c5d945259abad7e7ef86a3a86bcae44c01f9b95))
+* class for suppressing hj ([37987c6](https://github.com/kiva/ui/commit/37987c660f74186505696b08ca1b7b38fd861a1a))
+* cleanup lock file ([7d207bd](https://github.com/kiva/ui/commit/7d207bd6f3a1f8521c1e7801026a55f7f1ebd176))
+* convert lending insights to composition api and use working exp pattern ([89deb7c](https://github.com/kiva/ui/commit/89deb7cff65998b8e215bffc4363cac625e0c920))
+* convert lending stats in composition api and remove unneeded code ([3b81ef2](https://github.com/kiva/ui/commit/3b81ef20f9f5e7eebc2ffe21f94ab0390e6fd92d))
+* correct owner prop spelling ([7d74729](https://github.com/kiva/ui/commit/7d7472933f79d510ed2f09764b6979a3f4d428c7))
+* hide owner operations on contributed fund cards ([f180d6f](https://github.com/kiva/ui/commit/f180d6f830c4be514da1b9192fa294053f2c5316))
+* only remove email for lender card type ([d5a8326](https://github.com/kiva/ui/commit/d5a8326b37e1c5959afe1895c91cd3085a024287))
+* remove email from kiva card checkout ([4b91f7c](https://github.com/kiva/ui/commit/4b91f7c0fb3bdd38d0e567206997dd4f30f67deb))
+
+## [3.37.0-rc.1](https://github.com/kiva/ui/compare/v3.36.0...v3.37.0-rc.1) (2025-10-20)
+
+### 🎉 New Features
+
+* add gf management cards to portfolio and mykiva ([0b03fc0](https://github.com/kiva/ui/commit/0b03fc00d7df14bfe9cf6917d1f0fec816642418))
+* smooth scrolling to borrower carousel to improve user experience ([c65fdc5](https://github.com/kiva/ui/commit/c65fdc599c9d911cfc0a3b9b35bde6335f12eb0f))
+* update kiva card edit url ([847f232](https://github.com/kiva/ui/commit/847f2324cf2790c006f3e48f5306ddf435860109))
+
+### 🐛 Bugfixes
+
+* accidental space ([576c390](https://github.com/kiva/ui/commit/576c3909bd9e919efaeade8104f4a31c9d8bf04b))
+* add anchor to borrower carousel and fix duplicate loans in carousel when deeplink is present ([a23d5b7](https://github.com/kiva/ui/commit/a23d5b7477e82354683684fbf4d634c1f02d9067))
+* ensure campaignLink is set before showing it ([b79c653](https://github.com/kiva/ui/commit/b79c6533d4064626f2eb6a506f2edadfc5563968))
+* ensure next steps appear in sidesheet for deeplink funded borrower ([47095ab](https://github.com/kiva/ui/commit/47095ab5bd65153e952315287898b12b691b416f))
+* exp pattern that works with latest ui app ([0f0687f](https://github.com/kiva/ui/commit/0f0687fe415663a42a5f964caef94cffcb3d6f35))
+* more minor changes, mostly mobile ([608ea62](https://github.com/kiva/ui/commit/608ea62f21c580bc4484703a123001650f13def3))
+* remove console log ([df6731b](https://github.com/kiva/ui/commit/df6731be986209f1a36ba9bf2378b3ba1e4ecec3))
+* setup new upc campaign destination url if a upc is applied to basket ([f8307d0](https://github.com/kiva/ui/commit/f8307d0535335efdc54fc4a46ccdaf4f2df21a7c))
+* update kv-components with latest fixes ([280f88d](https://github.com/kiva/ui/commit/280f88dd3fa6b806509155165f4d7b5b8932a290))
+* update percentile components to more closely match mocks ([ed94f96](https://github.com/kiva/ui/commit/ed94f96638c4d617c421790a815f18ef99d3a8da))
+
 ## [3.36.0](https://github.com/kiva/ui/compare/v3.35.1...v3.36.0) (2025-10-15)
 
 ### 🎉 New Features
