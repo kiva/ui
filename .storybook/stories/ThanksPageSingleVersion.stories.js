@@ -261,3 +261,23 @@ export const AllTransactionTypes = story({
 	badgesAchieved: [mockTieredBadge],
 	myKivaEnabled: true,
 });
+
+export const allAchievementsCompleted = story({
+	isGuest: false,
+	isOptedIn: true,
+	lender: mockLender,
+	loans: [mockLoans[0]],
+	receipt: receiptWithSingleLoan,
+	myKivaEnabled: true,
+	achievementsCompleted: true,
+});
+
+export const allAchievementsCompletedNotOptedIn = story({
+	isGuest: false,
+	isOptedIn: false,
+	lender: mockLender,
+	loans: [mockLoans[0]],
+	receipt: receiptWithSingleLoan,
+	myKivaEnabled: true,
+	achievementsCompleted: true,
+});

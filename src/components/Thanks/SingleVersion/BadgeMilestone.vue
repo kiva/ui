@@ -12,7 +12,7 @@
 			<div class="tw-relative">
 				<BgRays v-show="!isLoading" style="top: -50px;" />
 				<BadgeContainer :show-shine="true">
-					<AchievementsCompletedImg
+					<Globe
 						v-if="achievementsCompleted && !onlyKivaCardsAndDonations"
 					/>
 					<img
@@ -59,7 +59,7 @@ import {
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
 import BorrowerAvatarsContainer from '#src/components/Thanks/BorrowerAvatarsContainer';
 import BgRays from '#src/components/Thanks/BgRays';
-import AchievementsCompletedImg from '#src/assets/images/thanks-page/achievements-completed.svg';
+import Globe from '#src/assets/inline-svgs/thanks/globe.svg';
 
 const emit = defineEmits(['continue-clicked']);
 

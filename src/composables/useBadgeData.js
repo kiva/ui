@@ -605,7 +605,6 @@ export default function useBadgeData() {
 	 * @param badges The badges to check
 	 * @returns Whether all achievements are completed
 	 */
-
 	const allAchievementsCompleted = badges => {
 		if (!badges?.length) {
 			return false;
