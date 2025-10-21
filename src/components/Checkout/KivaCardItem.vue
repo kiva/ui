@@ -75,7 +75,12 @@
 					<!-- Email or Lender Kiva Card -->
 					<div v-if="cardType === 'email' || cardType === 'lender'">
 						<p class="tw-text-small tw-mb-1" data-testid="basket-kiva-card-info-1">
-							Scheduled to be sent {{ deliveryDate }} for {{ recipientName }}
+							<template v-if="cardType === 'email'">
+								Scheduled to be sent {{ deliveryDate }} for {{ recipientName }} at {{ recipientEmail }}
+							</template>
+							<template v-else>
+								Scheduled to be sent {{ deliveryDate }} for {{ recipientName }}
+							</template>
 						</p>
 					</div>
 				</div>
@@ -131,6 +136,7 @@ export default {
 		return {
 			cardType: this.kivaCard.kivaCardObject.deliveryType,
 			recipientName: this.kivaCard.kivaCardObject.recipient.name,
+			recipientEmail: this.kivaCard.kivaCardObject.recipient.email,
 			mailingFirstName: this.kivaCard.kivaCardObject.mailingInfo.firstName,
 			mailingLastName: this.kivaCard.kivaCardObject.mailingInfo.lastName,
 			mailingStreet: this.kivaCard.kivaCardObject.mailingInfo.address,
