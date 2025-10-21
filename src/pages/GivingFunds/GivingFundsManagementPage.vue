@@ -105,6 +105,33 @@
 							</kv-button>
 						</div>
 					</kv-card-frame>
+
+					<div v-if="contributedFundIds.length" class="tw-mt-4">
+						<div>
+							<h1 class="tw-mb-1 tw-break-words">
+								Giving funds you joined
+							</h1>
+							<p class="tw-mb-3">
+								Support other people’s funds and see your collective impact grow.
+							</p>
+						</div>
+
+						<kv-loading-placeholder
+							v-if="loadingContributedFunds"
+							class="tw-rounded tw-mb-2 tw-w-full" :style="{ height: '150px' }"
+						/>
+
+						<div
+							v-else-if="contributedFundsEntries?.length"
+						>
+							<management-card
+								v-for="(fund, i) in contributedFundsEntries"
+								class="tw-mb-2"
+								:key="`management-card-${i}`"
+								:fund="fund"
+							/>
+						</div>
+					</div>
 				</div>
 			</KvGrid>
 		</KvPageContainer>
@@ -132,6 +159,7 @@ import {
 } from '@kiva/kv-components';
 import { addGivingFund } from '@kiva/kv-shop';
 import logFormatter from '#src/util/logFormatter';
+import useGivingFund from '#src/composables/useGivingFund';
 import loanCategories from '#src/graphql/query/loanCategories.graphql';
 import myGivingFundsQuery from '#src/graphql/query/portfolio/myGivingFunds.graphql';
 import userIdQuery from '#src/graphql/query/userId.graphql';
@@ -139,10 +167,19 @@ import userIdQuery from '#src/graphql/query/userId.graphql';
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 
+const {
+	getDedupedFundsContributedToEntries,
+	getFundsContributedToIds,
+} = useGivingFund(apollo);
+
 const loading = ref(true);
+const loadingContributedFunds = ref(true);
+const contributedFundIds = ref([]);
+const contributedFundsEntries = ref([]);
 const givingFundsInfo = ref({});
 const givingFundsTotalCount = ref(0);
 const givingFundsEntries = ref([]);
+const myGivingFundsEntryIds = ref([]);
 const isCreateFundLightboxVisible = ref(false);
 const givingFundCategories = ref([]);
 const givingFundRootPath = ref('/gf');
@@ -187,6 +224,7 @@ const fetchGivingFundData = async () => {
 		givingFundsInfo.value = response?.data?.my?.givingFunds;
 		givingFundsTotalCount.value = response?.data?.my?.givingFunds?.totalCount;
 		givingFundsEntries.value = response?.data?.my?.givingFunds?.values ?? [];
+		myGivingFundsEntryIds.value = givingFundsEntries.value.map(fund => fund.id);
 		loading.value = false;
 	} catch (error) {
 		logFormatter(`Error fetching giving fund data: ${error}`, 'error');
@@ -302,9 +340,19 @@ const selectImpactArea = categoryId => {
 	selectedCategoryId.value = categoryId;
 };
 
-onMounted(() => {
+onMounted(async () => {
 	fetchGivingFundData();
 	fetchGivingFundLoanCategories();
-	fetchUserId();
+	await fetchUserId();
+	contributedFundIds.value = await getFundsContributedToIds(userId.value);
+	if (contributedFundIds.value.length) {
+		try {
+			// get full giving fund data for each contributed fund id
+			contributedFundsEntries.value = await getDedupedFundsContributedToEntries(contributedFundIds.value);
+		} catch (error) {
+			logFormatter(`Error fetching contributed giving fund data: ${error}`, 'error');
+		}
+		loadingContributedFunds.value = false;
+	}
 });
 </script>

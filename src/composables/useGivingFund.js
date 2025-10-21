@@ -1,6 +1,7 @@
 import logFormatter from '#src/util/logFormatter';
 // eslint-disable-next-line max-len
 import myGivingFundParticipationDonations from '#src/graphql/query/portfolio/myGivingFundParticipationDonations.graphql';
+import myGivingFundParticipationFull from '#src/graphql/query/portfolio/myGivingFundParticipationFull.graphql';
 
 export default function useGivingFund(apollo) {
 	const DEFAULT_LIMIT = 20;
@@ -33,6 +34,26 @@ export default function useGivingFund(apollo) {
 		} catch (error) {
 			logFormatter(`Error fetching giving fund donation data: ${error}`, 'error');
 		}
+	};
+
+	const getFundsContributedToIds = async (ownerId = null) => {
+		const fundIds = [];
+		await fetchGivingFundDonationData({}, 40).then(data => {
+			// extract unique fund ids from donation data
+			if (data?.givingFundParticipation?.totalCount) {
+				// filter out funds without owner or owned by current user
+				const fitleredDonations = data.givingFundParticipation?.values?.filter(donation => {
+					return donation?.givingFund?.owner?.id && donation?.givingFund?.owner?.id !== parseInt(ownerId, 10);
+				});
+				// extract unique fund ids
+				fitleredDonations.forEach(donation => {
+					if (!fundIds.includes(donation.givingFund?.id)) {
+						fundIds.push(donation.givingFund?.id);
+					}
+				});
+			}
+		});
+		return fundIds;
 	};
 
 	const getTotalDonatedForSingleOffset = async (fundId, offset) => {
@@ -89,6 +110,57 @@ export default function useGivingFund(apollo) {
 		return totalDonated;
 	};
 
+	/**
+	 * Generic Fetch method for Full Donation Participation Data
+	 */
+	const fetchFullGivingFundDonationData = async (fundIds = [], limit = DEFAULT_LIMIT, offset = 0) => {
+		const variables = {
+			// default is 10, increasing to 20 to reduce need to fetch more
+			limit,
+			offset,
+		};
+		// if we have fundIds, add to variables
+		if (fundIds.length) {
+			variables.filter = {
+				fundIds,
+			};
+		}
+
+		try {
+			const response = await apollo.query({
+				query: myGivingFundParticipationFull,
+				fetchPolicy: 'network-only',
+				variables,
+			});
+
+			// return query result
+			return response?.data?.my ?? {};
+		} catch (error) {
+			logFormatter(`Error fetching giving fund donation data: ${error}`, 'error');
+		}
+	};
+
+	const getDedupedFundsContributedToEntries = async (fundIds = []) => {
+		const retrievedFundIds = [];
+		const dedupedFunds = [];
+		await fetchFullGivingFundDonationData(fundIds, 40).then(data => {
+			if (data?.givingFundParticipation?.totalCount) {
+				// map donation entry to fund entries
+				const contributedFunds = data?.givingFundParticipation?.values?.map(entry => {
+					return entry?.givingFund;
+				}) ?? [];
+				// extract unique funds
+				contributedFunds.forEach(givingFund => {
+					if (!retrievedFundIds.includes(givingFund?.id)) {
+						retrievedFundIds.push(givingFund?.id);
+						dedupedFunds.push(givingFund);
+					}
+				});
+			}
+		});
+		return dedupedFunds;
+	};
+
 	const getFundTargetDisplayNounFromName = categoryName => {
 		if (!categoryName) return null;
 		switch (categoryName) {
@@ -114,8 +186,11 @@ export default function useGivingFund(apollo) {
 	};
 
 	return {
+		fetchFullGivingFundDonationData,
 		fetchGivingFundDonationData,
+		getDedupedFundsContributedToEntries,
 		getDonationTotalsForFund,
+		getFundsContributedToIds,
 		getFundTargetDisplayNounFromName,
 		getFundTargetSupportedPeoplePhraseFromName,
 	};
