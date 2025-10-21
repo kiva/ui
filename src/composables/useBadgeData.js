@@ -610,8 +610,8 @@ export default function useBadgeData() {
 		if (!badges?.length) {
 			return false;
 		}
-
-		return badges.every(badge => {
+		const tieredBadges = badges.filter(badge => badge?.achievementData?.tiers?.length);
+		return tieredBadges.every(badge => {
 			const tiers = badge?.achievementData?.tiers;
 			if (tiers?.length) {
 				return tiers.every(tier => !!tier.completedDate);

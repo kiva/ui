@@ -865,16 +865,5 @@ describe('useBadgeData.js', () => {
 			];
 			expect(allAchievementsCompleted(badges)).toBe(false);
 		});
-
-		it('should return false if a badge has no tiers', () => {
-			const badges = [
-				{
-					achievementData: {
-						tiers: []
-					}
-				}
-			];
-			expect(allAchievementsCompleted(badges)).toBe(false);
-		});
 	});
 });

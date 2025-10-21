@@ -12,8 +12,11 @@
 			<div class="tw-relative">
 				<BgRays v-show="!isLoading" style="top: -50px;" />
 				<BadgeContainer :show-shine="true">
+					<AchievementsCompletedImg
+						v-if="achievementsCompleted && !onlyKivaCardsAndDonations"
+					/>
 					<img
-						v-if="badgeImageUrl"
+						v-else-if="badgeImageUrl"
 						:src="badgeImageUrl"
 						alt="Badge"
 						style="height: 250px; width: 250px;"
@@ -56,6 +59,7 @@ import {
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
 import BorrowerAvatarsContainer from '#src/components/Thanks/BorrowerAvatarsContainer';
 import BgRays from '#src/components/Thanks/BgRays';
+import AchievementsCompletedImg from '#src/assets/images/thanks-page/achievements-completed.svg';
 
 const emit = defineEmits(['continue-clicked']);
 
@@ -87,7 +91,11 @@ const props = defineProps({
 	kivaCardsModuleShown: {
 		type: Boolean,
 		default: false,
-	}
+	},
+	achievementsCompleted: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const apollo = inject('apollo');
@@ -108,14 +116,20 @@ const isLoading = computed(() => !badgeDataAchieved.value);
 
 const showEqualityBadge = computed(() => props.isGuest || props.onlyKivaCardsAndDonations);
 
-const showBadgeModule = computed(() => showEqualityBadge.value || !!props.badgeAchievedIds.length);
+// eslint-disable-next-line max-len
+const showBadgeModule = computed(() => showEqualityBadge.value || !!props.badgeAchievedIds.length || props.achievementsCompleted);
 
-const loansCount = computed(() => props.loans?.length ?? 0);
+const loansCount = computed(() => 0);
 
 const moduleTitle = computed(() => {
 	let title = '';
 	if (props.isOptedIn && !props.kivaCardsModuleShown) {
 		title += 'Thank you!<br />';
+	}
+
+	if (props.achievementsCompleted && !props.onlyKivaCardsAndDonations) {
+		title += 'Stay up to date with your lending history, stats, and more!';
+		return title;
 	}
 
 	if (!loansCount.value) {
