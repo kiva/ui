@@ -38,8 +38,6 @@
 						:use-full-width="true"
 						:user-balance="userBalance"
 						:custom-href="getCustomHref($router, loan.id)"
-						:enable-ai-loan-pills="enableAiLoanPills"
-						:ai-pills="loan.aiPills"
 						@add-to-basket="addToBasket"
 						@show-cart-modal="showCartModal"
 						@show-loan-details="showLoanDetails"
@@ -69,7 +67,6 @@
 				:user-balance="userBalance"
 				:loan-search-state="flssLoanSearch"
 				:page-limit="loanSearchState.pageLimit"
-				:enable-ai-loan-pills="enableAiLoanPills"
 				@add-to-basket="addToBasket"
 				@mouseenter="$emit('mouse-enter-loan-card', $event)"
 			/>
@@ -87,7 +84,6 @@ import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanC
 import KvPagination from '#src/components/Kv/KvPagination';
 import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
-import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
 import EmptyState from './EmptyState';
 
 export default {
@@ -116,10 +112,6 @@ export default {
 			default: false
 		},
 		enableAlmostFundedRow: {
-			type: Boolean,
-			default: false
-		},
-		enableAiLoanPills: {
 			type: Boolean,
 			default: false
 		},
@@ -172,20 +164,11 @@ export default {
 			FLSS_ORIGIN_LEND_BY_CATEGORY
 		);
 
-		let processedLoans = loans;
-		if (this.enableAiLoanPills) {
-			processedLoans = await this.assignAiLoanPillsToLoans(loans);
-		}
-		this.loans = processedLoans;
+		this.loans = loans;
 		this.totalCount = totalCount;
 		this.backupLoans = this.loans.slice(3);
 	},
 	methods: {
-		async assignAiLoanPillsToLoans(loans) {
-			const loanIds = getLoansIds(loans);
-			const aiLoansPills = await fetchAiLoanPills(this.apollo, loanIds);
-			return addAiPillsToLoans(loans, aiLoansPills);
-		},
 		addToBasket(payload) {
 			this.$emit('add-to-basket', payload);
 		},
@@ -224,11 +207,7 @@ export default {
 			this.totalCount = totalCount;
 			if (loans.length > 0) {
 				this.emptyState = false;
-				let processedLoans = loans;
-				if (this.enableAiLoanPills) {
-					processedLoans = await this.assignAiLoanPillsToLoans(loans);
-				}
-				this.loans = processedLoans;
+				this.loans = loans;
 			} else {
 				this.emptyState = true;
 				this.loans = this.backupLoans;
@@ -338,11 +317,7 @@ export default {
 				{ ...this.flssLoanSearch, ...this.loanSearchState },
 				FLSS_ORIGIN_LEND_BY_CATEGORY
 			);
-			let processedLoans = loans;
-			if (this.enableAiLoanPills) {
-				processedLoans = await this.assignAiLoanPillsToLoans(loans);
-			}
-			this.loans = processedLoans;
+			this.loans = loans;
 		},
 		showLoanDetails(payload) {
 			this.$emit('show-loan-details', payload);

@@ -7,6 +7,7 @@
 				:is-guest="isGuest"
 				:number-of-badges="numberOfBadges"
 				:only-donations="onlyDonations"
+				:achievements-completed="achievementsCompleted"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
 			<KivaCards
@@ -16,7 +17,7 @@
 				@view-pdf-clicked="scrollToReceipt"
 			/>
 			<BadgeMilestone
-				v-if="showBadgeModule"
+				v-if="showBadgeModule || achievementsCompleted"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
 				:badge-achieved-ids="badgeAchievedIds"
@@ -24,11 +25,12 @@
 				:loans="loans"
 				:loan-comment-module-shown="showLoanComment"
 				:kiva-cards-module-shown="showKivaCardsModule"
+				:achievements-completed="achievementsCompleted"
 				@continue-clicked="handleContinue"
 				class="tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
-				v-if="showJourneyModule"
+				v-if="showJourneyModule && !achievementsCompleted"
 				:loans="loans"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
@@ -138,6 +140,10 @@ const props = defineProps({
 	guestUsername: {
 		type: String,
 		default: '',
+	},
+	achievementsCompleted: {
+		type: Boolean,
+		default: false,
 	},
 });
 
