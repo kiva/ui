@@ -104,9 +104,18 @@ export default {
 				};
 				this.loans = myKivaQueryResult.my?.loans?.values ?? [];
 				this.sidesheetLoan = bpSidesheetLoan?.lend?.loan ?? { id: 0 };
-				const isSideSheetLoanInLoans = this.loans.find(loan => loan?.id === this.sidesheetLoan.id);
+				const isSideSheetLoanInLoans = this.loans.some(loan => loan?.id === this.sidesheetLoan.id);
 				if (!isSideSheetLoanInLoans && this.sidesheetLoan.id) {
 					this.loans = [this.sidesheetLoan, ...this.loans];
+				} else if (this.sidesheetLoan.id) {
+					// Ensure sidesheet loan is first in the list if already present
+					const loanIndex = this.loans.findIndex(item => item.id === this.sidesheetLoan.id);
+					const processedLoans = [...this.loans];
+					const [removedLoan] = processedLoans.splice(loanIndex, 1);
+					if (removedLoan) {
+						processedLoans.unshift(removedLoan);
+					}
+					this.loans = processedLoans;
 				}
 
 				this.totalLoans = myKivaQueryResult.my?.loans?.totalCount ?? 0;
