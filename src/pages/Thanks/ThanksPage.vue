@@ -14,11 +14,7 @@
 				:badges-achieved="badgesAchieved"
 				:my-kiva-enabled="myKivaExperimentEnabled"
 				:guest-username="guestUsername"
-<<<<<<< HEAD
-				:total-loan-count="totalLoanCount"
-=======
 				:achievements-completed="achievementsCompleted"
->>>>>>> 3ac68069b5e01cb5ec259fcb378dc267f34981ce
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
