@@ -13,6 +13,7 @@
 			:user-lent-to-all-regions="userLentToAllRegions"
 			:enable-ai-loan-pills="enableAILoanPills"
 			:my-giving-funds="myGivingFunds"
+			:sidesheet-loan="sidesheetLoan"
 		/>
 	</www-page>
 </template>
@@ -56,6 +57,7 @@ export default {
 			userInfo: {},
 			userLentToAllRegions: false,
 			myGivingFunds: {},
+			sidesheetLoan: {},
 		};
 	},
 	apollo: {
@@ -101,11 +103,12 @@ export default {
 					inviterName: this.userInfo.userAccount?.inviterName ?? null,
 				};
 				this.loans = myKivaQueryResult.my?.loans?.values ?? [];
-				if (bpSidesheetLoan?.lend?.loan) {
-					const bpLoanId = bpSidesheetLoan.lend.loan.id;
-					const filteredLoans = this.loans.filter(loan => loan.id !== bpLoanId);
-					this.loans = [bpSidesheetLoan.lend.loan, ...filteredLoans];
+				this.sidesheetLoan = bpSidesheetLoan?.lend?.loan ?? { id: 0 };
+				const isSideSheetLoanInLoans = this.loans.find(loan => loan?.id === this.sidesheetLoan.id);
+				if (!isSideSheetLoanInLoans && this.sidesheetLoan.id) {
+					this.loans = [this.sidesheetLoan, ...this.loans];
 				}
+
 				this.totalLoans = myKivaQueryResult.my?.loans?.totalCount ?? 0;
 				const countryFacets = lendingStatsQueryResult.lend?.countryFacets ?? [];
 				const regionCounts = new Map();

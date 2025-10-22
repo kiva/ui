@@ -259,6 +259,10 @@ export default {
 			type: Object,
 			default: null,
 		},
+		sidesheetLoan: {
+			type: Object,
+			default: () => ({}),
+		},
 	},
 	data() {
 		const { getMostRecentBlogPost } = useContentful(this.apollo);
@@ -605,6 +609,11 @@ export default {
 			} : null)).filter(Boolean);
 		},
 		handleCloseSideSheet() {
+			const queryParams = { ...this.$router.currentRoute?.value?.query };
+			delete queryParams.loanId;
+			const routerData = this.$router.resolve({ ...this.$router.currentRoute.value, query: queryParams });
+			window.history.pushState({}, '', routerData?.fullPath);
+
 			this.showBPSideSheet = false;
 			this.handleSelectedLoan({ loanId: undefined });
 		},
@@ -642,17 +651,7 @@ export default {
 			}
 		}
 	},
-	async mounted() {
-		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
-		fireHotJarEvent('my_kiva_viewed');
-		this.fetchBlogCards();
-		this.fetchAchievementData(this.apollo);
-		this.fetchContentfulData(this.apollo);
-		this.fetchRecommendedLoans();
-		this.fetchMoreWaysToHelpData();
-		this.loadInitialBasketItems();
-
-		const queryLoanId = this.$router.currentRoute?.value?.query?.loanId ?? null;
+	mounted() {
 		const urlHash = this.$router.currentRoute?.value?.hash;
 
 		if (urlHash) {
@@ -661,9 +660,18 @@ export default {
 			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
 		}
 
-		if (queryLoanId) {
-			this.showLoanDetails({ id: Number(queryLoanId) }, true);
+		if (this.sidesheetLoan?.id) {
+			this.showLoanDetails({ id: Number(this.sidesheetLoan.id) }, true);
 		}
+
+		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
+		fireHotJarEvent('my_kiva_viewed');
+		this.fetchBlogCards();
+		this.fetchAchievementData(this.apollo);
+		this.fetchContentfulData(this.apollo);
+		this.fetchRecommendedLoans();
+		this.fetchMoreWaysToHelpData();
+		this.loadInitialBasketItems();
 	},
 };
 </script>
