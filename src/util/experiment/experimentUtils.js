@@ -227,53 +227,6 @@ export function trackExperimentVersion(client, trackEvent, category, key, action
 }
 
 /**
- * Handles experiment assignment refresh for setuiab query parameter and tracks the result
- *
- * @param {Object} options Configuration object
- * @param {ApolloClient} options.apollo The Apollo client
- * @param {Function} options.trackEvent The tracking function to call (usually this.$kvTrackEvent)
- * @param {Object} options.route The Vue route object
- * @param {string} options.experimentKey The experiment key
- * @param {string} options.trackingAction The tracking action parameter
- * @returns {Promise<Object>} Promise that resolves with the experiment assignment data
- */
-export async function handleSetuiabAndExperimentTracking({
-	apollo,
-	trackEvent,
-	route,
-	experimentKey,
-	trackingAction,
-}) {
-	let assignmentData = null;
-
-	if (route?.query?.setuiab) {
-		try {
-			const { data } = await apollo.query({
-				query: experimentAssignmentQuery,
-				variables: { id: experimentKey },
-				fetchPolicy: 'network-only'
-			});
-
-			assignmentData = data;
-		} catch (error) {
-			// Continue with existing assignment from cache
-		}
-	}
-
-	// Track experiment version (always happens after assignment processing)
-	const exp = trackExperimentVersion(
-		apollo,
-		trackEvent,
-		'event-tracking',
-		experimentKey,
-		trackingAction
-	);
-
-	// Return combined result
-	return (assignmentData?.experiment?.version ?? exp?.version) === 'b';
-}
-
-/**
  * Calculates a hash representation of an experiment
  *
  * @param {Object} experiment The experiment setting
@@ -328,7 +281,6 @@ export const setCookieAssignments = (cookieStore, assignments) => {
 export const getForcedAssignment = (cookieStore, route, id, experimentSetting, forceHeader = false) => {
 	// Get previous cookie assignment
 	const cookieAssignment = getCookieAssignments(cookieStore)[id];
-	const cookieQueryForced = !!cookieAssignment?.queryForced;
 
 	let queryForced;
 	let headerForced = false;
@@ -361,7 +313,7 @@ export const getForcedAssignment = (cookieStore, route, id, experimentSetting, f
 			version: forcedVersion,
 			...(forcedHash && { hash: forcedHash }),
 			...(headerForced && { headerForced }),
-			queryForced: queryForced || cookieQueryForced,
+			queryForced: !!queryForced,
 		};
 	}
 };
@@ -398,4 +350,132 @@ export const assignAllActiveExperiments = async apollo => {
 	return Promise.all((activeExperiments ?? []).map(id => {
 		return apollo.query({ query: experimentAssignmentQuery, variables: { id } });
 	}));
+};
+
+/**
+ * Evicts an experiment from the Apollo cache if setuiab query param is present
+ * This forces the experiment resolver to re-run with the current route
+ *
+ * @param {Object} apollo The Apollo client
+ * @param {Object} route The Vue route object
+ * @param {string} experimentKey The experiment key to evict
+ */
+export const evictExperimentCacheIfForced = (apollo, route, experimentKey) => {
+	// Check if setuiab query param is present
+	if (route?.query?.setuiab) {
+		// Evict the cached experiment to force re-assignment
+		apollo.cache.evict({
+			id: `Experiment:${experimentKey}`,
+		});
+		apollo.cache.gc();
+	}
+};
+
+/**
+ * Gets the initial experiment version from cookie or Apollo cache synchronously
+ * This prevents pop-in by providing an immediate value before any async query completes
+ *
+ * @param {CookieStore} cookieStore The cookie store
+ * @param {ApolloClient} apollo The Apollo client (optional, will fall back if no cookie)
+ * @param {string} experimentKey The experiment key
+ * @returns {string|undefined} The experiment version from cookie/cache, or undefined if not found
+ */
+export const getInitialExperimentVersion = (cookieStore, apollo, experimentKey) => {
+	// First check cookie - this will exist if setuiab was used for assignment
+	const assignments = getCookieAssignments(cookieStore);
+	const cookieVersion = assignments[experimentKey]?.version;
+	if (cookieVersion) {
+		return cookieVersion;
+	}
+
+	// Fall back to Apollo cache (populated by preFetch during SSR) if no cookie
+	if (apollo) {
+		try {
+			const experiment = apollo.readFragment({
+				id: `Experiment:${experimentKey}`,
+				fragment: experimentVersionFragment,
+			});
+			if (experiment?.version) {
+				return experiment.version;
+			}
+		} catch (e) {
+			// Cache miss is expected, return undefined
+		}
+	}
+
+	return undefined;
+};
+
+/**
+ * Queries for an experiment assignment, evicting cache if setuiab is present
+ * Returns a promise that resolves with the experiment version ('a', 'b', etc.)
+ *
+ * @param {Object} apollo The Apollo client
+ * @param {Object} route The Vue route object
+ * @param {string} experimentKey The experiment key to query
+ * @returns {Promise<Object>} Promise that resolves with the experiment data
+ */
+export const queryExperimentAssignment = (apollo, route, experimentKey) => {
+	// Evict cached experiment if setuiab query param is present
+	evictExperimentCacheIfForced(apollo, route, experimentKey);
+
+	// Query for experiment assignment (will respect setuiab query param via resolver)
+	return apollo.query({
+		query: experimentAssignmentQuery,
+		variables: { id: experimentKey },
+	});
+};
+
+/**
+ * Initializes an experiment assignment by reading from cookie/Apollo cache synchronously,
+ * then optionally querying for the latest assignment if setuiab query param is present.
+ * This prevents pop-in by setting an initial value immediately.
+ *
+ * @param {Object} cookieStore CookieStore instance
+ * @param {Object} apollo Apollo client instance
+ * @param {Object} route Vue Router route object
+ * @param {string} experimentKey The experiment key to initialize
+ * @param {Function} callback Function called with version ('a', 'b', etc.) when updated
+ * @param {Function} trackEvent The tracking function to call (usually this.$kvTrackEvent)
+ * @param {string} action The tracking action parameter (optional, defaults to experimentKey)
+ * @param {string} category The tracking category (optional, defaults to 'event-tracking')
+ * @returns {string|undefined} Initial version from cookie/cache
+ */
+export const initializeExperiment = (
+	cookieStore,
+	apollo,
+	route,
+	experimentKey,
+	callback,
+	trackEvent = null,
+	action = null,
+	category = 'event-tracking'
+) => {
+	// Get initial experiment value from cookie or Apollo cache to prevent pop-in
+	const initialVersion = getInitialExperimentVersion(cookieStore, apollo, experimentKey);
+
+	// Set initial value immediately (prevents pop-in)
+	if (callback) {
+		callback(initialVersion);
+	}
+
+	// Only query for experiment assignment if setuiab query param is present (to force re-assignment)
+	if (route?.query?.setuiab) {
+		queryExperimentAssignment(apollo, route, experimentKey)
+			.then(({ data }) => {
+				if (callback) {
+					callback(data?.experiment?.version);
+				}
+
+				// Track experiment version if trackEvent function is provided
+				if (trackEvent) {
+					trackExperimentVersion(apollo, trackEvent, category, experimentKey, action);
+				}
+			});
+	} else if (trackEvent) {
+		// No query needed, just track the cached version
+		trackExperimentVersion(apollo, trackEvent, category, experimentKey, action);
+	}
+
+	return initialVersion;
 };
