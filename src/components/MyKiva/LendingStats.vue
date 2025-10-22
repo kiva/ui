@@ -309,31 +309,32 @@ export default {
 			NEXT_STEPS_EXP_KEY,
 			version => {
 				this.isNextStepsExpEnabled = version === 'b';
-
-				if (this.isNextStepsExpEnabled && !this.userLentToAllRegions) {
-					// Check region boxes when component comes into view
-					const { delayUntilVisible } = useDelayUntilVisible();
-					delayUntilVisible(() => {
-						setTimeout(() => {
-							let currentIdx = 0;
-							this.interval = setInterval(() => {
-								currentIdx = this.regionsData.findIndex(
-									(region, i) => region.hasLoans && !this.checkedArr[i] && i >= currentIdx
-								);
-								if (currentIdx !== -1) {
-									this.checkedArr[currentIdx] = true;
-									currentIdx += 1;
-								} else {
-									clearInterval(this.interval);
-								}
-							}, 200);
-						}, 800);
-					}, [this.$refs.loanRegionsElement]);
-				}
 			},
 			this.$kvTrackEvent,
 			'EXP-MP-1984-Sept2025',
 		);
+	},
+	mounted() {
+		if (this.isNextStepsExpEnabled && !this.userLentToAllRegions) {
+			// Check region boxes when component comes into view
+			const { delayUntilVisible } = useDelayUntilVisible();
+			delayUntilVisible(() => {
+				setTimeout(() => {
+					let currentIdx = 0;
+					this.interval = setInterval(() => {
+						currentIdx = this.regionsData.findIndex(
+							(region, i) => region.hasLoans && !this.checkedArr[i] && i >= currentIdx
+						);
+						if (currentIdx !== -1) {
+							this.checkedArr[currentIdx] = true;
+							currentIdx += 1;
+						} else {
+							clearInterval(this.interval);
+						}
+					}, 200);
+				}, 800);
+			}, [this.$refs.loanRegionsElement]);
+		}
 	},
 	beforeUnmount() {
 		if (this.interval) clearInterval(this.interval);
