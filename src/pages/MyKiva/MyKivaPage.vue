@@ -103,7 +103,11 @@ export default {
 					inviterName: this.userInfo.userAccount?.inviterName ?? null,
 				};
 				this.loans = myKivaQueryResult.my?.loans?.values ?? [];
-				this.sidesheetLoan = bpSidesheetLoan?.lend?.loan ?? {};
+				this.sidesheetLoan = bpSidesheetLoan?.lend?.loan ?? { id: 0 };
+				const isSideSheetLoanInLoans = this.loans.find(loan => loan?.id === this.sidesheetLoan.id);
+				if (!isSideSheetLoanInLoans && this.sidesheetLoan.id) {
+					this.loans = [this.sidesheetLoan, ...this.loans];
+				}
 
 				this.totalLoans = myKivaQueryResult.my?.loans?.totalCount ?? 0;
 				const countryFacets = lendingStatsQueryResult.lend?.countryFacets ?? [];
