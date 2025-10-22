@@ -53,7 +53,7 @@
 							tw-w-full"
 						>
 							<li
-								v-for="(region, idx) in props.regionsData"
+								v-for="(region, idx) in regionsData"
 								:key="region.name"
 								class="tw-flex tw-items-center tw-min-w-0 tw-overflow-hidden tw-w-full"
 							>
@@ -162,21 +162,14 @@
 	</div>
 </template>
 
-<script setup>
-import {
-	computed,
-	inject,
-	onUnmounted,
-	ref,
-} from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+<script>
 import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 
 import useBadgeData from '#src/composables/useBadgeData';
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
-import { handleSetuiabAndExperimentTracking } from '#src/util/experiment/experimentUtils';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 
 import Africa from '#src/assets/images/my-kiva/Africa.png';
 import Asia from '#src/assets/images/my-kiva/Asia.png';
@@ -192,180 +185,189 @@ import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel'
 import GoalCard from '#src/components/MyKiva/GoalCard';
 import GoalSettingModal from './GoalSettingModal';
 
-const { delayUntilVisible } = useDelayUntilVisible();
-
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 
-const router = useRouter();
-const route = useRoute();
-const apollo = inject('apollo');
-const $kvTrackEvent = inject('$kvTrackEvent');
-
-const {
-	getAllCategoryLoanCounts,
-} = useBadgeData();
-
-const emit = defineEmits(['store-goals-preferences']);
-
-const props = defineProps({
-	regionsData: {
-		type: Array,
-		default: () => [],
-		required: true,
+export default {
+	name: 'LendingStats',
+	components: {
+		GlobeSearchIcon,
+		JourneyCardCarousel,
+		GoalCard,
+		GoalSettingModal,
+		KvCheckbox,
+		KvMaterialIcon,
 	},
-	loans: {
-		type: Array,
-		default: () => ([]),
-		required: true,
+	inject: ['apollo', 'cookieStore'],
+	props: {
+		regionsData: {
+			type: Array,
+			default: () => [],
+			required: true,
+		},
+		loans: {
+			type: Array,
+			default: () => ([]),
+			required: true,
+		},
+		userLentToAllRegions: {
+			type: Boolean,
+			default: false,
+		},
+		heroSlides: {
+			type: Array,
+			default: () => [],
+		},
+		lender: {
+			type: Object,
+			default: () => ({}),
+		},
+		heroContentfulData: {
+			type: Object,
+			default: () => ({}),
+		},
+		heroTieredAchievements: {
+			type: Object,
+			default: () => ({}),
+		},
+		totalLoans: {
+			type: Number,
+			default: 0,
+		},
+		userGoal: {
+			type: Object,
+			default: undefined,
+		},
 	},
-	userLentToAllRegions: {
-		type: Boolean,
-		default: false,
+	emits: ['store-goals-preferences'],
+	apollo: {
+		preFetch(_config, client) {
+			return client.query({
+				query: experimentAssignmentQuery,
+				variables: { id: NEXT_STEPS_EXP_KEY },
+			});
+		},
 	},
-	heroSlides: {
-		type: Array,
-		default: () => [],
+	data() {
+		return {
+			mdiArrowTopRight,
+			interval: null,
+			showGoalModal: false,
+			isNextStepsExpEnabled: undefined,
+			checkedArr: this.regionsData.map(() => false),
+		};
 	},
-	lender: {
-		type: Object,
-		default: () => ({}),
+	computed: {
+		totalRegions() {
+			return this.regionsData.length;
+		},
+		loanRegions() {
+			return this.regionsData.filter(region => region.hasLoans).length;
+		},
+		hasLoans() {
+			return this.loans.length > 0;
+		},
+		pillHeader() {
+			if (this.totalRegions === 0) return '';
+			if (this.loanRegions === 0) return 'Make a global impact';
+			return `${this.loanRegions}/${this.totalRegions} Regions supported`;
+		},
+		pendingRegions() {
+			return this.regionsData.filter(region => !region.hasLoans)
+				.sort((a, b) => b.count - a.count)
+				.slice(0, 2);
+		},
+		formattedPendingRegions() {
+			const regions = this.pendingRegions;
+			if (!regions || regions.length === 0) return '';
+			const formattedNames = regions.map(region => `<span class="tw-font-medium">
+				${region.name === 'Middle East' ? 'the Middle East' : region.name}
+				</span>`);
+			if (formattedNames.length === 1) return formattedNames[0];
+			if (formattedNames.length === 2) return `${formattedNames[0]} and ${formattedNames[1]}`;
+			return `${formattedNames.slice(0, -1).join(', ')}, and ${formattedNames[formattedNames.length - 1]}`;
+		},
+		categoriesLoanCount() {
+			const { getAllCategoryLoanCounts } = useBadgeData();
+			return getAllCategoryLoanCounts(this.heroTieredAchievements);
+		},
+		title() {
+			if (!this.hasLoans) return 'Your impact starts here';
+			if (this.isNextStepsExpEnabled) return 'Make a difference today';
+			return 'Ready to grow your impact?';
+		},
+		description() {
+			if (!this.hasLoans) return 'Recommended for you';
+			if (this.isNextStepsExpEnabled) return 'How many more people will you help this year?';
+			return 'Next steps for you based on your lending history';
+		},
 	},
-	heroContentfulData: {
-		type: Object,
-		default: () => ({}),
+	created() {
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			NEXT_STEPS_EXP_KEY,
+			version => {
+				this.isNextStepsExpEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-1984-Sept2025',
+		);
 	},
-	heroTieredAchievements: {
-		type: Object,
-		default: () => ({}),
-	},
-	totalLoans: {
-		type: Number,
-		default: 0,
-	},
-	userGoal: {
-		type: Object,
-		default: undefined,
-	},
-});
-
-const interval = ref(null);
-const loanRegionsElement = ref(null);
-const showGoalModal = ref(false);
-const isNextStepsExpEnabled = ref(undefined);
-
-const totalRegions = computed(() => props.regionsData.length);
-const loanRegions = computed(() => props.regionsData.filter(region => region.hasLoans).length);
-const hasLoans = computed(() => props.loans.length > 0);
-
-const regionImages = {
-	Africa,
-	Asia,
-	'Central America': CentralAmerica,
-	'Eastern Europe': EasternEurope,
-	'Middle East': MiddleEast,
-	'North America': NorthAmerica,
-	Oceania,
-	'South America': SouthAmerica,
-};
-
-const regionImageSource = region => (regionImages[region?.name] || '');
-
-const pillHeader = computed(() => {
-	if (totalRegions.value === 0) return '';
-	if (loanRegions.value === 0) return 'Make a global impact';
-	return `${loanRegions.value}/${totalRegions.value} Regions supported`;
-});
-
-const pendingRegions = computed(() => {
-	return props.regionsData.filter(region => !region.hasLoans).sort((a, b) => b.count - a.count).slice(0, 2);
-});
-
-const formattedPendingRegions = computed(() => {
-	const regions = pendingRegions.value;
-	if (!regions || regions.length === 0) return '';
-	const formattedNames = regions.map(region => `<span class="tw-font-medium">
-		${region.name === 'Middle East' ? 'the Middle East' : region.name}
-		</span>`);
-	if (formattedNames.length === 1) return formattedNames[0];
-	if (formattedNames.length === 2) return `${formattedNames[0]} and ${formattedNames[1]}`;
-	return `${formattedNames.slice(0, -1).join(', ')}, and ${formattedNames[formattedNames.length - 1]}`;
-});
-
-const handleRecommendRegionClick = region => {
-	$kvTrackEvent(
-		'event-tracking',
-		'click',
-		!props.loans.length ? 'empty-state-region-recommendation' : 'region-recommendation',
-		region?.name
-	);
-	router.push(`/lend/filter?country=${region?.countries.join(',')}`);
-};
-
-// Local checked state for fade effect
-const checkedArr = ref(props.regionsData.map(() => false));
-
-const categoriesLoanCount = computed(() => getAllCategoryLoanCounts(props.heroTieredAchievements));
-
-const title = computed(() => {
-	if (!hasLoans.value) return 'Your impact starts here';
-	if (isNextStepsExpEnabled.value) return 'Make a difference today';
-
-	return 'Ready to grow your impact?';
-});
-
-const description = computed(() => {
-	if (!hasLoans.value) return 'Recommended for you';
-	if (isNextStepsExpEnabled.value) return 'How many more people will you help this year?';
-
-	return 'Next steps for you based on your lending history';
-});
-
-const setGoal = preferences => {
-	emit('store-goals-preferences', preferences);
-	showGoalModal.value = false;
-};
-
-if (typeof window === 'undefined') {
-	apollo.query({
-		query: experimentAssignmentQuery,
-		variables: { id: NEXT_STEPS_EXP_KEY }
-	}).then(({ data }) => {
-		isNextStepsExpEnabled.value = data?.experiment?.version === 'b';
-	});
-} else {
-	handleSetuiabAndExperimentTracking({
-		apollo,
-		trackEvent: $kvTrackEvent,
-		route,
-		experimentKey: NEXT_STEPS_EXP_KEY,
-		trackingAction: 'EXP-MP-1984-Sept2025',
-	}).then(isEnabled => {
-		isNextStepsExpEnabled.value = isEnabled;
-
-		if (isNextStepsExpEnabled.value && !props.userLentToAllRegions) {
+	mounted() {
+		if (this.isNextStepsExpEnabled && !this.userLentToAllRegions) {
 			// Check region boxes when component comes into view
+			const { delayUntilVisible } = useDelayUntilVisible();
 			delayUntilVisible(() => {
 				setTimeout(() => {
 					let currentIdx = 0;
-					interval.value = setInterval(() => {
-						currentIdx = props.regionsData
-							.findIndex((region, i) => region.hasLoans && !checkedArr.value[i] && i >= currentIdx);
+					this.interval = setInterval(() => {
+						currentIdx = this.regionsData.findIndex(
+							(region, i) => region.hasLoans && !this.checkedArr[i] && i >= currentIdx
+						);
 						if (currentIdx !== -1) {
-							checkedArr.value[currentIdx] = true;
+							this.checkedArr[currentIdx] = true;
 							currentIdx += 1;
 						} else {
-							clearInterval(interval.value);
+							clearInterval(this.interval);
 						}
 					}, 200);
 				}, 800);
-			}, [loanRegionsElement.value]);
+			}, [this.$refs.loanRegionsElement]);
 		}
-	});
-}
-
-onUnmounted(() => {
-	if (interval.value) clearInterval(interval.value);
-});
+	},
+	beforeUnmount() {
+		if (this.interval) clearInterval(this.interval);
+	},
+	methods: {
+		regionImageSource(region) {
+			const regionImages = {
+				Africa,
+				Asia,
+				'Central America': CentralAmerica,
+				'Eastern Europe': EasternEurope,
+				'Middle East': MiddleEast,
+				'North America': NorthAmerica,
+				Oceania,
+				'South America': SouthAmerica,
+			};
+			return regionImages[region?.name] || '';
+		},
+		handleRecommendRegionClick(region) {
+			this.$kvTrackEvent(
+				'event-tracking',
+				'click',
+				!this.loans.length ? 'empty-state-region-recommendation' : 'region-recommendation',
+				region?.name
+			);
+			this.$router.push(`/lend/filter?country=${region?.countries.join(',')}`);
+		},
+		setGoal(preferences) {
+			this.$emit('store-goals-preferences', preferences);
+			this.showGoalModal = false;
+		},
+	},
+};
 </script>
 
 <style lang="postcss" scoped>
