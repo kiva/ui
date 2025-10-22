@@ -11,7 +11,7 @@
 		ref="loanRegionsElement"
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': isNextStepsExpEnabled && !userLentToAllRegions }"
 	>
-		<template v-if="isNextStepsExp && !userLentToAllRegions">
+		<template v-if="isNextStepsExpEnabled && !userLentToAllRegions">
 			<div class="card-container tw-shrink-0">
 				<JourneyCardCarousel
 					class="carousel carousel-single"
