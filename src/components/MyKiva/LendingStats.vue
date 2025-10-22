@@ -334,7 +334,6 @@ if (typeof window === 'undefined') {
 		variables: { id: NEXT_STEPS_EXP_KEY }
 	}).then(async ({ data }) => {
 		isNextStepsExpEnabled.value = data?.experiment?.version === 'b';
-		if (isNextStepsExpEnabled.value) await runGoalComposable();
 	});
 } else {
 	handleSetuiabAndExperimentTracking({
