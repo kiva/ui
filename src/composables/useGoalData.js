@@ -99,9 +99,9 @@ export default function useGoalData({ loans }) {
 		if (userGoal.value?.category === ID_SUPPORT_ALL) return totalLoanCount.value || 0;
 		const totalProgress = allTimeProgress.value.find(
 			entry => entry.achievementId === userGoal.value?.category
-		);
+		)?.totalProgress || 0;
 		const adjustedProgress = totalProgress - (userGoal.value?.loanTotalAtStart || 0);
-		return (adjustedProgress?.totalProgress || 0);
+		return Math.max(adjustedProgress, 0);
 	});
 
 	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
