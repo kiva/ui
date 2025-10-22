@@ -372,16 +372,38 @@ export const evictExperimentCacheIfForced = (apollo, route, experimentKey) => {
 };
 
 /**
- * Gets the initial experiment version from the cookie synchronously
- * This prevents pop-in by providing an immediate value before the async query completes
+ * Gets the initial experiment version from cookie or Apollo cache synchronously
+ * This prevents pop-in by providing an immediate value before any async query completes
  *
  * @param {CookieStore} cookieStore The cookie store
+ * @param {ApolloClient} apollo The Apollo client (optional, will fall back if no cookie)
  * @param {string} experimentKey The experiment key
- * @returns {string|undefined} The experiment version from cookie, or undefined if not found
+ * @returns {string|undefined} The experiment version from cookie/cache, or undefined if not found
  */
-export const getInitialExperimentVersion = (cookieStore, experimentKey) => {
+export const getInitialExperimentVersion = (cookieStore, apollo, experimentKey) => {
+	// First check cookie - this will exist if setuiab was used for assignment
 	const assignments = getCookieAssignments(cookieStore);
-	return assignments[experimentKey]?.version;
+	const cookieVersion = assignments[experimentKey]?.version;
+	if (cookieVersion) {
+		return cookieVersion;
+	}
+
+	// Fall back to Apollo cache (populated by preFetch during SSR) if no cookie
+	if (apollo) {
+		try {
+			const experiment = apollo.readFragment({
+				id: `Experiment:${experimentKey}`,
+				fragment: experimentVersionFragment,
+			});
+			if (experiment?.version) {
+				return experiment.version;
+			}
+		} catch (e) {
+			// Cache miss is expected, return undefined
+		}
+	}
+
+	return undefined;
 };
 
 /**
@@ -405,8 +427,8 @@ export const queryExperimentAssignment = (apollo, route, experimentKey) => {
 };
 
 /**
- * Initializes an experiment assignment by reading from cookie synchronously,
- * then querying for the latest assignment asynchronously.
+ * Initializes an experiment assignment by reading from cookie/Apollo cache synchronously,
+ * then optionally querying for the latest assignment if setuiab query param is present.
  * This prevents pop-in by setting an initial value immediately.
  *
  * @param {Object} cookieStore CookieStore instance
@@ -417,7 +439,7 @@ export const queryExperimentAssignment = (apollo, route, experimentKey) => {
  * @param {Function} trackEvent The tracking function to call (usually this.$kvTrackEvent)
  * @param {string} action The tracking action parameter (optional, defaults to experimentKey)
  * @param {string} category The tracking category (optional, defaults to 'event-tracking')
- * @returns {string|undefined} Initial version from cookie
+ * @returns {string|undefined} Initial version from cookie/cache
  */
 export const initializeExperiment = (
 	cookieStore,
@@ -429,26 +451,31 @@ export const initializeExperiment = (
 	action = null,
 	category = 'event-tracking'
 ) => {
-	// Get initial experiment value from cookie to prevent pop-in
-	const initialVersion = getInitialExperimentVersion(cookieStore, experimentKey);
+	// Get initial experiment value from cookie or Apollo cache to prevent pop-in
+	const initialVersion = getInitialExperimentVersion(cookieStore, apollo, experimentKey);
 
 	// Set initial value immediately (prevents pop-in)
 	if (callback) {
 		callback(initialVersion);
 	}
 
-	// Query for experiment assignment (evicts cache if setuiab is present)
-	queryExperimentAssignment(apollo, route, experimentKey)
-		.then(({ data }) => {
-			if (callback) {
-				callback(data?.experiment?.version);
-			}
+	// Only query for experiment assignment if setuiab query param is present (to force re-assignment)
+	if (route?.query?.setuiab) {
+		queryExperimentAssignment(apollo, route, experimentKey)
+			.then(({ data }) => {
+				if (callback) {
+					callback(data?.experiment?.version);
+				}
 
-			// Track experiment version if trackEvent function is provided
-			if (trackEvent) {
-				trackExperimentVersion(apollo, trackEvent, category, experimentKey, action);
-			}
-		});
+				// Track experiment version if trackEvent function is provided
+				if (trackEvent) {
+					trackExperimentVersion(apollo, trackEvent, category, experimentKey, action);
+				}
+			});
+	} else if (trackEvent) {
+		// No query needed, just track the cached version
+		trackExperimentVersion(apollo, trackEvent, category, experimentKey, action);
+	}
 
 	return initialVersion;
 };
