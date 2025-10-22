@@ -268,6 +268,15 @@ onMounted(() => {
 	);
 
 	setGuestAssignmentCookie(cookieStore, props.myKivaEnabled, props.isGuest);
+
+	// Track if all achievements have been earned
+	if (props.achievementsCompleted) {
+		$kvTrackEvent(
+			'post-checkout',
+			'view',
+			'all-achievements-earned',
+		);
+	}
 });
 </script>
 
