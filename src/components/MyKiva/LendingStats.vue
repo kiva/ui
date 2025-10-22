@@ -332,8 +332,9 @@ if (typeof window === 'undefined') {
 	apollo.query({
 		query: experimentAssignmentQuery,
 		variables: { id: NEXT_STEPS_EXP_KEY }
-	}).then(({ data }) => {
+	}).then(async ({ data }) => {
 		isNextStepsExpEnabled.value = data?.experiment?.version === 'b';
+		if (isNextStepsExpEnabled.value) await runGoalComposable();
 	});
 } else {
 	handleSetuiabAndExperimentTracking({
@@ -342,10 +343,10 @@ if (typeof window === 'undefined') {
 		route,
 		experimentKey: NEXT_STEPS_EXP_KEY,
 		trackingAction: 'EXP-MP-1984-Sept2025',
-	}).then(isEnabled => {
+	}).then(async isEnabled => {
 		isNextStepsExpEnabled.value = isEnabled;
 
-		if (isNextStepsExpEnabled.value) runGoalComposable();
+		if (isNextStepsExpEnabled.value) await runGoalComposable();
 
 		if (isNextStepsExpEnabled.value && !props.userLentToAllRegions) {
 			// Check region boxes when component comes into view
