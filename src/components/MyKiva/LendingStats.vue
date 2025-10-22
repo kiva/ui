@@ -12,25 +12,20 @@
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': !userLentToAllRegions }"
 	>
 		<template v-if="isNextStepsExp && !userLentToAllRegions">
-			<GoalCard
-				v-if="userGoalAchieved"
-				:hero-slides="heroSlides"
-				:user-goal="userGoal"
-				:loading="goalProgressLoading"
-				:goal-progress="goalProgress"
-				@open-goal-modal="showGoalModal = true"
-			/>
-			<div v-else class="card-container tw-shrink-0">
+			<div class="card-container tw-shrink-0">
 				<JourneyCardCarousel
 					class="carousel carousel-single"
 					user-in-homepage
 					in-lending-stats
 					:disable-drag="true"
+					:goal-progress-loading="goalProgressLoading"
+					:goal-progress="goalProgress"
+					:hero-contentful-data="heroContentfulData"
+					:hero-tiered-achievements="heroTieredAchievements"
 					:lender="lender"
 					:slides-number="1"
 					:slides="heroSlides"
-					:hero-contentful-data="heroContentfulData"
-					:hero-tiered-achievements="heroTieredAchievements"
+					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
 					@open-goal-modal="showGoalModal = true"
 				/>
@@ -204,7 +199,6 @@ import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
-import GoalCard from '#src/components/MyKiva/GoalCard';
 
 import GoalSettingModal from './GoalSettingModal';
 import MyKivaCard from './MyKivaCard';
@@ -213,12 +207,6 @@ const { delayUntilVisible } = useDelayUntilVisible();
 
 const router = useRouter();
 const $kvTrackEvent = inject('$kvTrackEvent');
-
-const {
-	getAllCategoryLoanCounts,
-} = useBadgeData();
-
-const emit = defineEmits(['store-goals-preferences']);
 
 const props = defineProps({
 	/**
@@ -265,11 +253,20 @@ const props = defineProps({
 		type: Number,
 		default: 0,
 	},
-	userGoal: {
-		type: Object,
-		default: undefined,
-	},
 });
+
+const {
+	getAllCategoryLoanCounts,
+} = useBadgeData();
+
+const {
+	goalProgress,
+	loading: goalProgressLoading,
+	runComposable: runGoalComposable,
+	storeGoalPreferences,
+	userGoal,
+	userGoalAchieved,
+} = useGoalData({ loans: props.loans });
 
 const interval = ref(null);
 const loanRegionsElement = ref(null);
@@ -289,14 +286,6 @@ const regionImages = {
 	Oceania,
 	'South America': SouthAmerica,
 };
-
-const {
-	runComposable: runGoalComposable,
-	loading: goalProgressLoading,
-	userGoal,
-	userGoalAchieved,
-	goalProgress,
-} = useGoalData({ loans: props.loans });
 
 const regionImageSource = region => (regionImages[region?.name] || '');
 
@@ -339,19 +328,17 @@ const categoriesLoanCount = computed(() => getAllCategoryLoanCounts(props.heroTi
 const title = computed(() => {
 	if (!hasLoans.value) return 'Your impact starts here';
 	if (props.isNextStepsExp) return 'Make a difference today';
-
 	return 'Ready to grow your impact?';
 });
 
 const description = computed(() => {
 	if (!hasLoans.value) return 'Recommended for you';
 	if (props.isNextStepsExp) return 'How many more people will you help this year?';
-
 	return 'Next steps for you based on your lending history';
 });
 
-const setGoal = preferences => {
-	emit('store-goals-preferences', preferences);
+const setGoal = async preferences => {
+	await storeGoalPreferences(preferences);
 	showGoalModal.value = false;
 };
 

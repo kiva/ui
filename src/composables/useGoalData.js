@@ -125,12 +125,12 @@ export default function useGoalData({ loans }) {
 	}
 
 	return {
-		userGoal,
-		userGoalAchieved,
+		getGoalDisplayName,
 		goalProgress,
 		loading,
-		getGoalDisplayName,
 		runComposable,
 		storeGoalPreferences,
+		userGoal,
+		userGoalAchieved,
 	};
 }

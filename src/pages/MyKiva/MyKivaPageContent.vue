@@ -33,8 +33,6 @@
 				:hero-tiered-achievements="heroTieredAchievements"
 				:is-next-steps-exp="isNextStepsExp"
 				:total-loans="totalLoans"
-				:user-goal="userGoal"
-				@store-goals-preferences="storeGoalPreferences"
 			/>
 		</section>
 		<section v-else-if="isHeroEnabled" class="tw-mt-4">
@@ -164,12 +162,13 @@
 </template>
 
 <script>
+import { inject } from 'vue';
+
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import useContentful from '#src/composables/useContentful';
-import useGoalData from '#src/composables/useGoalData';
 
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import BadgeTile from '#src/components/MyKiva/BadgeTile';
@@ -183,7 +182,7 @@ import AsyncMyKivaSection from '#src/pages/MyKiva/AsyncMyKivaSection';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
-import useBadgeData, { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
+import useBadgeData from '#src/composables/useBadgeData';
 import LatestBlogCarousel from '#src/components/MyKiva/LatestBlogCarousel';
 import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
@@ -288,26 +287,29 @@ export default {
 			default: false
 		},
 	},
-	data() {
-		const { getMostRecentBlogPost } = useContentful(this.apollo);
+	setup() {
+		const apollo = inject('apollo');
+		const { getMostRecentBlogPost } = useContentful(apollo);
 		const {
 			badgeData,
 			fetchAchievementData,
 			fetchContentfulData,
 			getLoanFindingUrl,
-		} = useBadgeData(this.apollo);
-		const { storeGoalPreferences } = useGoalData({ loans: this.loans });
-
+		} = useBadgeData(apollo);
 		return {
 			badgeData,
-			blogCards: [],
-			blogCategories,
-			CONTENTFUL_MORE_WAYS_KEY,
-			displayedCount: 3,
 			fetchAchievementData,
 			fetchContentfulData,
 			getLoanFindingUrl,
 			getMostRecentBlogPost,
+		};
+	},
+	data() {
+		return {
+			blogCards: [],
+			blogCategories,
+			CONTENTFUL_MORE_WAYS_KEY,
+			displayedCount: 3,
 			hideBottomGradient: false,
 			isEarnedSectionModal: false,
 			isFirstLoad: true,
@@ -320,13 +322,12 @@ export default {
 			showBPSideSheet: false,
 			showJourneySideSheet: false,
 			showNavigation: false,
+			showNextSteps: false,
 			state: STATE_JOURNEY,
 			transactionsTypes: [],
 			updatesLimit: 15,
 			updatesLoading: true,
 			updatesOffset: 3,
-			showNextSteps: false,
-			storeGoalPreferences,
 		};
 	},
 	computed: {
@@ -369,31 +370,6 @@ export default {
 		visibleUpdates() {
 			const updates = Array.isArray(this.mergedUpdates) ? this.mergedUpdates.slice(0, this.displayedCount) : [];
 			return updates;
-		},
-		userGoal() {
-			const preferences = this.userInfo?.userPreferences?.preferences ?? null;
-			const parsedPreferences = preferences ? JSON.parse(preferences) : {};
-			const existingGoals = parsedPreferences?.goals || [];
-			if (!existingGoals.length) return null;
-
-			let goal = existingGoals[0];
-			// eslint-disable-next-line max-len
-			let loanTotal = this.heroTieredAchievements.find(ach => ach.id === goal?.category)?.totalProgressToAchievement ?? 0;
-			if (!loanTotal && goal?.category === ID_SUPPORT_ALL) {
-				loanTotal = this.totalLoans;
-			}
-
-			if (goal) {
-				const currentProgress = loanTotal - (goal?.loanTotalAtStart || 0);
-				const isComplete = currentProgress >= (goal?.target || 0);
-				goal = {
-					...goal,
-					currentProgress,
-					isComplete,
-				};
-			}
-
-			return goal;
 		},
 	},
 	methods: {
@@ -640,14 +616,6 @@ export default {
 		handleCloseSideSheet() {
 			this.showBPSideSheet = false;
 			this.handleSelectedLoan({ loanId: undefined });
-		},
-		async createGoal(newGoal) {
-			try {
-				await this.storeGoalPreferences(newGoal);
-				this.$showTipMsg('Your goal was saved successfully!', { type: 'success' });
-			} catch (e) {
-				this.$showTipMsg('There was an error saving your goal. Please try again.');
-			}
 		},
 		showLoanDetails(payload, showNextSteps = false) {
 			this.handleSelectedLoan({ loanId: payload?.id });

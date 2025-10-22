@@ -27,7 +27,9 @@
 			>
 				<GoalCard
 					v-if="showGoalCard(index)"
+					:goal-progress="goalProgress"
 					:hero-slides="slides"
+					:loading="goalProgressLoading"
 					:user-goal="userGoal"
 					@open-goal-modal="$emit('open-goal-modal')"
 				/>
@@ -151,7 +153,19 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
+	userGoalAchieved: {
+		type: Boolean,
+		default: false,
+	},
 	disableDrag: {
+		type: Boolean,
+		default: false,
+	},
+	goalProgress: {
+		type: Number,
+		default: 0,
+	},
+	goalProgressLoading: {
 		type: Boolean,
 		default: false,
 	},
@@ -187,8 +201,7 @@ const isNonBadgeSlide = slide => {
 
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
-
-	return !props.userGoal || !props.userGoal?.isComplete;
+	return !props.userGoal || !props.userGoalAchieved;
 });
 
 const orderedSlides = computed(() => {
