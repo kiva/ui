@@ -22,7 +22,12 @@
 			:user-balance="userBalance"
 			:lending-stats="lendingStats"
 		/>
-		<section v-if="isNextStepsExp" class="tw-mt-4">
+		<section v-if="myGivingFunds && myGivingFunds.totalCount > 0" class="tw-mt-4">
+			<MyGivingFundsCard
+				:count="myGivingFunds.totalCount"
+			/>
+		</section>
+		<section class="tw-mt-4">
 			<LendingStats
 				:regions-data="lendingStats.regionsData"
 				:user-lent-to-all-regions="userLentToAllRegions"
@@ -31,33 +36,7 @@
 				:lender="lender"
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
-				:is-next-steps-exp="isNextStepsExp"
 				:total-loans="totalLoans"
-			/>
-		</section>
-		<section v-else-if="isHeroEnabled" class="tw-mt-4">
-			<h3
-				v-if="userInHomepage"
-				class="tw-mb-2"
-			>
-				Looking for your next step?
-			</h3>
-			<JourneyCardCarousel
-				:hero-contentful-data="heroContentfulData"
-				:hero-tiered-achievements="heroTieredAchievements"
-				:lender="lender"
-				:slides-number="3"
-				:slides="heroSlides"
-				:user-in-homepage="userInHomepage"
-				:user-info="userInfo"
-				@update-journey="updateJourney"
-			/>
-		</section>
-		<section v-if="!allBadgesCompleted && !isHeroEnabled">
-			<BadgeTile
-				:user-info="userInfo"
-				:badges-data="badgeData"
-				@badge-clicked="handleBadgeTileClicked"
 			/>
 		</section>
 		<section id="mykiva-borrower-carousel" class="tw-my-4">
@@ -171,13 +150,13 @@ import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import useContentful from '#src/composables/useContentful';
 
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
-import BadgeTile from '#src/components/MyKiva/BadgeTile';
 import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
+import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';
 import AsyncMyKivaSection from '#src/pages/MyKiva/AsyncMyKivaSection';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
@@ -216,7 +195,6 @@ export default {
 	components: {
 		AsyncMyKivaSection,
 		BadgesSection,
-		BadgeTile,
 		BorrowerSideSheetWrapper,
 		JournalUpdatesCarousel,
 		JourneyCardCarousel,
@@ -226,6 +204,7 @@ export default {
 		LendingCategorySection,
 		MyKivaBorrowerCarousel,
 		MyKivaContainer,
+		MyGivingFundsCard,
 		MyKivaHero,
 		MyKivaNavigation,
 		MyKivaProfile,
@@ -234,10 +213,6 @@ export default {
 		BailoutChips,
 	},
 	props: {
-		isHeroEnabled: {
-			type: Boolean,
-			default: false,
-		},
 		userInfo: {
 			type: Object,
 			default: () => ({}),
@@ -274,10 +249,6 @@ export default {
 			type: Array,
 			default: () => [],
 		},
-		isNextStepsExp: {
-			type: Boolean,
-			default: false,
-		},
 		userLentToAllRegions: {
 			type: Boolean,
 			default: false,
@@ -285,6 +256,14 @@ export default {
 		enableAiLoanPills: {
 			type: Boolean,
 			default: false
+		},
+		myGivingFunds: {
+			type: Object,
+			default: null,
+		},
+		sidesheetLoan: {
+			type: Object,
+			default: () => ({}),
 		},
 	},
 	setup() {
@@ -376,9 +355,6 @@ export default {
 		handleShowNavigation() {
 			this.showNavigation = true;
 			this.$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
-		},
-		handleBadgeTileClicked(selectedTier) {
-			this.$router.push(this.getLoanFindingUrl(selectedTier.badge.id, this.$router.currentRoute.value));
 		},
 		handleBadgeSectionClicked(badge) {
 			if (!badge.hasStarted) {
@@ -614,6 +590,11 @@ export default {
 			} : null)).filter(Boolean);
 		},
 		handleCloseSideSheet() {
+			const queryParams = { ...this.$router.currentRoute?.value?.query };
+			delete queryParams.loanId;
+			const routerData = this.$router.resolve({ ...this.$router.currentRoute.value, query: queryParams });
+			window.history.pushState({}, '', routerData?.fullPath);
+
 			this.showBPSideSheet = false;
 			this.handleSelectedLoan({ loanId: undefined });
 		},
@@ -623,17 +604,7 @@ export default {
 			this.showNextSteps = showNextSteps;
 		},
 	},
-	async mounted() {
-		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
-		fireHotJarEvent('my_kiva_viewed');
-		this.fetchBlogCards();
-		this.fetchAchievementData(this.apollo);
-		this.fetchContentfulData(this.apollo);
-		this.fetchRecommendedLoans();
-		this.fetchMoreWaysToHelpData();
-		this.loadInitialBasketItems();
-
-		const queryLoanId = this.$router.currentRoute?.value?.query?.loanId ?? null;
+	mounted() {
 		const urlHash = this.$router.currentRoute?.value?.hash;
 
 		if (urlHash) {
@@ -642,10 +613,18 @@ export default {
 			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
 		}
 
-		if (queryLoanId) {
-			this.selectedLoan = { id: Number(queryLoanId) };
-			this.showBPSideSheet = true;
+		if (this.sidesheetLoan?.id) {
+			this.showLoanDetails({ id: Number(this.sidesheetLoan.id) }, true);
 		}
+
+		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
+		fireHotJarEvent('my_kiva_viewed');
+		this.fetchBlogCards();
+		this.fetchAchievementData(this.apollo);
+		this.fetchContentfulData(this.apollo);
+		this.fetchRecommendedLoans();
+		this.fetchMoreWaysToHelpData();
+		this.loadInitialBasketItems();
 	},
 };
 </script>

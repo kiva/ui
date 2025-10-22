@@ -14,7 +14,11 @@
 				:badges-achieved="badgesAchieved"
 				:my-kiva-enabled="myKivaExperimentEnabled"
 				:guest-username="guestUsername"
+<<<<<<< HEAD
 				:total-loan-count="totalLoanCount"
+=======
+				:achievements-completed="achievementsCompleted"
+>>>>>>> 3ac68069b5e01cb5ec259fcb378dc267f34981ce
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -206,6 +210,8 @@ import { fetchGoals } from '#src/util/teamsUtil';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
 import { getIsMyKivaEnabled, fetchPostCheckoutAchievements, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
 import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
+import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
+import useBadgeData from '#src/composables/useBadgeData';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
@@ -299,6 +305,7 @@ export default {
 			thanksSingleVersionEnabled: false,
 			SINGLE_VERSION_VIEW,
 			guestUsername: '',
+			achievementsCompleted: false,
 		};
 	},
 	apollo: {
@@ -306,6 +313,7 @@ export default {
 			return Promise.all([
 				client.query({ query: thanksPageQuery }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
+				client.query({ query: userAchievementProgressQuery }),
 			]).then(() => {
 				const transactionId = route?.query?.kiva_transaction_id
 					? numeral(route?.query.kiva_transaction_id).value()
@@ -492,15 +500,30 @@ export default {
 			return V2_VIEW;
 		},
 	},
+	setup() {
+		const { allAchievementsCompleted } = useBadgeData();
+
+		return {
+			allAchievementsCompleted,
+		};
+	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
 		let data = {};
 		let receiptData = {};
+		let userAchievements = {};
 
 		try {
 			data = this.apollo.readQuery({
 				query: thanksPageQuery,
 			});
+
+			userAchievements = this.apollo.readQuery({
+				query: userAchievementProgressQuery,
+			});
+
+			const achievements = userAchievements?.userAchievementProgress?.tieredLendingAchievements ?? [];
+			this.achievementsCompleted = this.allAchievementsCompleted(achievements);
 		} catch (e) {
 			logReadQueryError(e, 'Thanks page readQuery failed');
 		}

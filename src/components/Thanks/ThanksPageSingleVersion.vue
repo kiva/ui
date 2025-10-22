@@ -7,6 +7,7 @@
 				:is-guest="isGuest"
 				:number-of-badges="numberOfBadges"
 				:only-donations="onlyDonations"
+				:achievements-completed="achievementsCompleted"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
 			<KivaCards
@@ -16,7 +17,7 @@
 				@view-pdf-clicked="scrollToReceipt"
 			/>
 			<BadgeMilestone
-				v-if="showBadgeModule"
+				v-if="showBadgeModule || achievementsCompleted"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
 				:badge-achieved-ids="badgeAchievedIds"
@@ -24,19 +25,19 @@
 				:loans="loans"
 				:loan-comment-module-shown="showLoanComment"
 				:kiva-cards-module-shown="showKivaCardsModule"
+				:achievements-completed="achievementsCompleted"
 				@continue-clicked="handleContinue"
 				class="tw-mb-2.5"
 			/>
 			<GoalCompleted
 				v-if="isNextStepsExpEnabled && userGoalAchieved"
 				:current-goal="userGoal"
-				:current-goal-achieved="userGoalAchieved"
 				:get-goal-display-name="getGoalDisplayName"
 				:loading="goalDataLoading"
 				class="tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
-				v-if="!userGoalAchieved && showJourneyModule"
+				v-if="showJourneyModule && !userGoalAchieved && !achievementsCompleted"
 				:loans="loans"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
@@ -155,9 +156,9 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
-	totalLoanCount: {
-		type: Number,
-		default: 0,
+	achievementsCompleted: {
+		type: Boolean,
+		default: false,
 	},
 });
 
@@ -298,6 +299,15 @@ onMounted(async () => {
 		userType.value,
 	);
 	setGuestAssignmentCookie(cookieStore, props.myKivaEnabled, props.isGuest);
+
+	// Track if all achievements have been earned
+	if (props.achievementsCompleted) {
+		$kvTrackEvent(
+			'post-checkout',
+			'view',
+			'all-achievements-earned',
+		);
+	}
 });
 </script>
 

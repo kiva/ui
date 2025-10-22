@@ -56,10 +56,6 @@ const props = defineProps({
 		type: Object,
 		default: null,
 	},
-	currentGoalAchieved: {
-		type: Boolean,
-		default: false,
-	},
 	getGoalDisplayName: {
 		type: Function,
 		required: true,
