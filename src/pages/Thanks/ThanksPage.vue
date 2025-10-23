@@ -14,6 +14,7 @@
 				:badges-achieved="badgesAchieved"
 				:my-kiva-enabled="myKivaExperimentEnabled"
 				:guest-username="guestUsername"
+				:achievements-completed="achievementsCompleted"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -205,6 +206,8 @@ import { fetchGoals } from '#src/util/teamsUtil';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
 import { getIsMyKivaEnabled, fetchPostCheckoutAchievements, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
 import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
+import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
+import useBadgeData from '#src/composables/useBadgeData';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
@@ -271,6 +274,7 @@ export default {
 		return {
 			lender: {},
 			loans: [],
+			totalLoanCount: 0,
 			receipt: null,
 			isMonthlyGoodSubscriber: false,
 			hasModernSub: false,
@@ -297,6 +301,7 @@ export default {
 			thanksSingleVersionEnabled: false,
 			SINGLE_VERSION_VIEW,
 			guestUsername: '',
+			achievementsCompleted: false,
 		};
 	},
 	apollo: {
@@ -304,6 +309,7 @@ export default {
 			return Promise.all([
 				client.query({ query: thanksPageQuery }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
+				client.query({ query: userAchievementProgressQuery }),
 			]).then(() => {
 				const transactionId = route?.query?.kiva_transaction_id
 					? numeral(route?.query.kiva_transaction_id).value()
@@ -490,15 +496,30 @@ export default {
 			return V2_VIEW;
 		},
 	},
+	setup() {
+		const { allAchievementsCompleted } = useBadgeData();
+
+		return {
+			allAchievementsCompleted,
+		};
+	},
 	created() {
 		// Retrieve and apply Page level data + experiment state
 		let data = {};
 		let receiptData = {};
+		let userAchievements = {};
 
 		try {
 			data = this.apollo.readQuery({
 				query: thanksPageQuery,
 			});
+
+			userAchievements = this.apollo.readQuery({
+				query: userAchievementProgressQuery,
+			});
+
+			const achievements = userAchievements?.userAchievementProgress?.tieredLendingAchievements ?? [];
+			this.achievementsCompleted = this.allAchievementsCompleted(achievements);
 		} catch (e) {
 			logReadQueryError(e, 'Thanks page readQuery failed');
 		}
@@ -607,8 +628,8 @@ export default {
 		userHasLentBefore(hasLentBefore);
 		userHasDepositBefore(hasDepositBefore);
 
-		const totalLoans = data?.my?.loans?.totalCount ?? 0;
-		const isFirstLoan = this.loans.length && totalLoans === this.loans.length;
+		this.totalLoanCount = data?.my?.loans?.totalCount ?? 0;
+		const isFirstLoan = this.loans.length && this.totalLoanCount === this.loans.length;
 		this.isFirstLoan = isFirstLoan;
 		const hasDirectLoan = this.loans.findIndex(loan => loan.distributionModel === 'direct') > -1;
 		const hasCoreLoan = this.loans.findIndex(loan => loan.distributionModel === 'fieldPartner') > -1;

@@ -6,7 +6,7 @@
 					{{ title }}
 				</h2>
 				<BorrowerAvatarsContainer
-					v-if="loansToDisplay.length"
+					v-if="loansToDisplay.length && !props.achievementsCompleted"
 					:loans="loansToDisplay"
 					show-large-avatars
 				/>
@@ -70,7 +70,11 @@ const props = defineProps({
 	onlyDonations: {
 		type: Boolean,
 		default: false,
-	}
+	},
+	achievementsCompleted: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const apollo = inject('apollo');
@@ -84,7 +88,7 @@ const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const { updateCommunicationSettings, updateVisitorEmailOptIn } = useOptIn(apollo);
 
 const title = computed(() => {
-	if (props.onlyDonations) {
+	if (props.onlyDonations || props.achievementsCompleted) {
 		return 'Thank you!';
 	}
 	if (!props.loans.length) {
@@ -106,7 +110,7 @@ const description = computed(() => {
 	if (props.onlyDonations) {
 		return 'Want to hear how your donation is changing real lives?';
 	}
-	if (props.loans.length) {
+	if (props.loans.length && !props.achievementsCompleted) {
 		// eslint-disable-next-line max-len
 		return `Want to hear how you're impacting ${props.loans[0]?.name}'s life and more ways to help people like them?`;
 	}

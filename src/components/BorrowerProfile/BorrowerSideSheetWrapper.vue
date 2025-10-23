@@ -6,6 +6,7 @@
 		:show-headline-border="true"
 		:visible="showSideSheet"
 		:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
+		:is-animated="isAnimated"
 		@go-to-link="goToLink"
 		@side-sheet-closed="handleCloseSideSheet"
 	>
@@ -69,6 +70,10 @@ const props = defineProps({
 	enableAiLoanPills: {
 		type: Boolean,
 		default: false
+	},
+	isAnimated: {
+		type: Boolean,
+		default: true
 	},
 });
 
