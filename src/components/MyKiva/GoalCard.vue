@@ -36,7 +36,7 @@
 			<h3 v-if="!loading">
 				{{ title }}
 			</h3>
-			<kv-loading-placeholder v-else class="!tw-h-3 tw-w-full tw-max-w-16 tw-mb-1" />
+			<kv-loading-placeholder v-else class="!tw-h-3 tw-w-full tw-max-w-16 tw-my-1" />
 			<template v-if="userHasGoal">
 				<div class="tw-flex tw-items-end tw-gap-3">
 					<div v-if="!loading">
