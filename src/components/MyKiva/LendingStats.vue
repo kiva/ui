@@ -350,6 +350,7 @@ export default {
 				runComposable,
 			} = useGoalData({
 				loans: this.loans,
+				apollo: this.apollo,
 			});
 			this.goalProgressLoading = true;
 			await runComposable();
@@ -385,6 +386,7 @@ export default {
 				storeGoalPreferences,
 			} = useGoalData({
 				loans: this.loans,
+				apollo: this.apollo,
 			});
 			await storeGoalPreferences(preferences);
 			this.showGoalModal = false;

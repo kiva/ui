@@ -34,11 +34,13 @@ function getGoalDisplayName(category) {
 /**
  * Vue composable for loading and managing user goal data
  *
- * @param {Array} loans - List of loans to count toward goals
+ * @param {Object} options - Configuration options
+ * @param {Array} options.loans - List of loans to count toward goals
+ * @param {Object} options.apollo - Apollo client instance (optional, will use inject if not provided)
  * @returns Goal data and utilities
  */
-export default function useGoalData({ loans }) {
-	const apollo = inject('apollo');
+export default function useGoalData({ loans, apollo: apolloParam }) {
+	const apollo = apolloParam || inject('apollo');
 
 	const allTimeProgress = ref([]);
 	const loading = ref(true);
