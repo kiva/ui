@@ -1,3 +1,18 @@
+## [3.38.0-rc.2](https://github.com/kiva/ui/compare/v3.38.0-rc.1...v3.38.0-rc.2) (2025-10-23)
+
+### 🐛 Bugfixes
+
+* margin above loader ([63c2cba](https://github.com/kiva/ui/commit/63c2cba297aa2dc27fd5e453b51c1d900fac4ef0))
+* minor css fixes on goal card ([45e6a49](https://github.com/kiva/ui/commit/45e6a4931434eb77759728fb9781b32a91fecd2b))
+* resolve general loading issues after last merge ([b3f557b](https://github.com/kiva/ui/commit/b3f557b4a7c12178cb9e39975ea5e45ddd16d2e9))
+* resolve issue where unset goal card wasn't same height has container in desktop ([c746b20](https://github.com/kiva/ui/commit/c746b2027ad2e41333ac7aaafe36af669e84c486))
+* sidesheet bug on dev ([#6373](https://github.com/kiva/ui/issues/6373)) ([97f1096](https://github.com/kiva/ui/commit/97f10966ce48c5c3a01bd77f1bf68d3483bda09f))
+* simple flag for disabling goal card in carousel ([44b8c76](https://github.com/kiva/ui/commit/44b8c762ab06e2fda5aa4f580a85b77b5c0ce63e))
+
+### 🧹 Chores
+
+* kv-components header fixes ([84f7d62](https://github.com/kiva/ui/commit/84f7d62d049f3b5b49dc3eef0864645529dc5a55))
+
 ## [3.38.0-rc.1](https://github.com/kiva/ui/compare/v3.37.0...v3.38.0-rc.1) (2025-10-23)
 
 ### 🎉 New Features
