@@ -675,11 +675,11 @@ export default {
 	width: 100% !important;
 	min-height: 100vh;
 
-	@media (min-width: 768px) {
+	@media (width >= 768px) {
 		width: 50% !important;
     }
 
-	@media (min-width: 1280px) {
+	@media (width >= 1280px) {
 		width: 600px !important;
     }
 }
