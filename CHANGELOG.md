@@ -1,3 +1,64 @@
+## [3.38.0](https://github.com/kiva/ui/compare/v3.37.0...v3.38.0) (2025-10-23)
+
+### 🎉 New Features
+
+* add preliminary work for MP-2014 ([18d45dc](https://github.com/kiva/ui/commit/18d45dc2e892a5b178d348e5b2691571adcaedda))
+* all achievements thank you page ([#6363](https://github.com/kiva/ui/issues/6363)) ([3272ead](https://github.com/kiva/ui/commit/3272eada25d9b5cf93e39fb6e40609dc878cb0cb))
+* load goal card loan progress using composable ([119b605](https://github.com/kiva/ui/commit/119b605f3b5d69f004c14b6b6cf683eb200b4f00))
+* server side rendering in mykiva sidesheet ([#6372](https://github.com/kiva/ui/issues/6372)) ([96b4e1f](https://github.com/kiva/ui/commit/96b4e1f6877b66489b1154ddd428cb2aad643fac))
+* tracking event added on ty page ([#6366](https://github.com/kiva/ui/issues/6366)) ([8a016fc](https://github.com/kiva/ui/commit/8a016fc358b9da50c528832d8b6ed7f1b7c27ccd))
+
+### 🐛 Bugfixes
+
+* add adjustedTotal with loantotalAtStart ([e61b3fc](https://github.com/kiva/ui/commit/e61b3fcc5498841cde09bc3c9dc8d144ef579967))
+* add id to my query ([dd833b8](https://github.com/kiva/ui/commit/dd833b88b64fb66c2571c93f545ce2c3a664a114))
+* add id to thankyouPage lending stats query ([03794b2](https://github.com/kiva/ui/commit/03794b27488fea0e23d6ad7c14f886531bb5d8d4))
+* add id to thankyouPage partnerLentTo query ([93fdee1](https://github.com/kiva/ui/commit/93fdee11a01a0d213fa2be7f60d9b288242ea0a9))
+* add totalLoansCount as prop ([942707d](https://github.com/kiva/ui/commit/942707d40400b54419d040828ac37b55d7925df4))
+* allow apollo to be passed to composable ([6794eb6](https://github.com/kiva/ui/commit/6794eb6aa7c4f050603313bd3c13a3441a27364c))
+* apply all PR revisions so far ([70d7c22](https://github.com/kiva/ui/commit/70d7c224a15dc141199c279ee6bca64ddc9820f8))
+* apply compoable refactor ([da17dcb](https://github.com/kiva/ui/commit/da17dcb8f3bf910aaaded99a6239f977f1dafe80))
+* apply full useGoalData composability ([323a041](https://github.com/kiva/ui/commit/323a0416b4ee47414cb16570d793169f4051759e))
+* apply major composable refactorization ([21ac78f](https://github.com/kiva/ui/commit/21ac78f1148f38e82c2a30cc51a74ae6df4ea1dd))
+* apply Pr review ([bc986e6](https://github.com/kiva/ui/commit/bc986e671b7b27b8143a281a9c4442980ef13c5a))
+* apply runComposable to both sides of if/else ([52afa14](https://github.com/kiva/ui/commit/52afa148fe08e925a8a7982c2febc9bd07ca220e))
+* experiment pattern that works for compiled app on server render ([04e735c](https://github.com/kiva/ui/commit/04e735c6b535bcd25d04827ee1e2c72a57cf5ff6))
+* goalDisplayName ([99e827c](https://github.com/kiva/ui/commit/99e827cd8610e49d59942fb8442fa78cbad03dc4))
+* goalProgress calculation ([874757f](https://github.com/kiva/ui/commit/874757f29b680c30b10ba67d29c0e1692638adab))
+* image import after userBadgeData const usage ([f53bed9](https://github.com/kiva/ui/commit/f53bed9e49f78ba0df7e4a4e52c455a02efc54b0))
+* implement preliminary allTimeProgress ([1bc86a2](https://github.com/kiva/ui/commit/1bc86a2c399acc46a052d93557e49a4c74fa0717))
+* implement ThanksPage conditional experiment toggling ([fbc45df](https://github.com/kiva/ui/commit/fbc45dfeec37e863d4146b192285c3966551c1f8))
+* import ([2882967](https://github.com/kiva/ui/commit/28829674a6c95ed2fb9054f3f6b1b7bf8d1e056b))
+* margin above loader ([63c2cba](https://github.com/kiva/ui/commit/63c2cba297aa2dc27fd5e453b51c1d900fac4ef0))
+* minor css fixes on goal card ([45e6a49](https://github.com/kiva/ui/commit/45e6a4931434eb77759728fb9781b32a91fecd2b))
+* minor tweaks to ty page ([c22ca08](https://github.com/kiva/ui/commit/c22ca0803df7a0a225b0caf8c0a4cca31c88fbfd))
+* missing case for cache fallback, other unit test cleanup ([4d948d6](https://github.com/kiva/ui/commit/4d948d6c2a6506ac4dcc5dff68cec109b75193f3))
+* move checkbox selection for regions to mounted ([191d56d](https://github.com/kiva/ui/commit/191d56d3725a963d346fc91ff40c219129e5dfe0))
+* my kiva prefetched loan position fixed ([#6369](https://github.com/kiva/ui/issues/6369)) ([3ac6806](https://github.com/kiva/ui/commit/3ac68069b5e01cb5ec259fcb378dc267f34981ce))
+* mykiva bp side sheet fixed for prefetched loan ([#6368](https://github.com/kiva/ui/issues/6368)) ([e2f47e4](https://github.com/kiva/ui/commit/e2f47e4b17b3ef721d26671dc4a41b81bc1f607f))
+* one remaining merge conflict ([68ad374](https://github.com/kiva/ui/commit/68ad374cbe55c7e70c0958ebdd8c3aebb85a57eb))
+* re-use useBadgeData consts ([4aed6da](https://github.com/kiva/ui/commit/4aed6da574551dd5aa715364c45d15a068ceec34))
+* remove merge conflict ([62ce2dc](https://github.com/kiva/ui/commit/62ce2dc2e97178d3bbe3db593f96ed40bcd90f42))
+* rename currentGoal to userGoal ([671683d](https://github.com/kiva/ui/commit/671683d7c0b3ed798f966361b110bec0beb6e41f))
+* resolve general loading issues after last merge ([b3f557b](https://github.com/kiva/ui/commit/b3f557b4a7c12178cb9e39975ea5e45ddd16d2e9))
+* resolve issue where unset goal card wasn't same height has container in desktop ([c746b20](https://github.com/kiva/ui/commit/c746b2027ad2e41333ac7aaafe36af669e84c486))
+* revert disbursalDate on graphql query ([6e11a9a](https://github.com/kiva/ui/commit/6e11a9a8a00dc295213430a1e4e2b516fd1ce79c))
+* revert previous code change ([52d0da6](https://github.com/kiva/ui/commit/52d0da6df0a69c0f977a3ba64e104448508bc2e0))
+* revert template conditional in ThanksPageSingleVersion ([975c290](https://github.com/kiva/ui/commit/975c2900a882b5d1a67a7dbe0ae6d2169b509c06))
+* separate loadProgress from loadPreferences ([b4205d9](https://github.com/kiva/ui/commit/b4205d9172a45727eea7d57f10c2e20c4dad6a96))
+* sidesheet bug on dev ([#6373](https://github.com/kiva/ui/issues/6373)) ([97f1096](https://github.com/kiva/ui/commit/97f10966ce48c5c3a01bd77f1bf68d3483bda09f))
+* simple flag for disabling goal card in carousel ([44b8c76](https://github.com/kiva/ui/commit/44b8c762ab06e2fda5aa4f580a85b77b5c0ce63e))
+* simplify injections ([3491b27](https://github.com/kiva/ui/commit/3491b27dce6dd0428a060aa0ce0c9f8aa7611173))
+* template variable misname ([0c8db3d](https://github.com/kiva/ui/commit/0c8db3ded12d08d6295c1fcf398c4393e5cb25e6))
+* update kv-components with latest header exp fixes ([e041d2f](https://github.com/kiva/ui/commit/e041d2fdae2aa675f0f614dc8972c1adbc65d3a3))
+* update library version ([e86c41e](https://github.com/kiva/ui/commit/e86c41e1d15ee84eed0a98a436c56100d7b3c814))
+
+### 🧹 Chores
+
+* kv-components header fixes ([84f7d62](https://github.com/kiva/ui/commit/84f7d62d049f3b5b49dc3eef0864645529dc5a55))
+* **release:** 3.38.0-rc.1 [skip ci] ([1841188](https://github.com/kiva/ui/commit/1841188050c27ee33a8d66819a9a4d70f2d7d753)), closes [#6363](https://github.com/kiva/ui/issues/6363) [#6372](https://github.com/kiva/ui/issues/6372) [#6366](https://github.com/kiva/ui/issues/6366) [#6369](https://github.com/kiva/ui/issues/6369) [#6368](https://github.com/kiva/ui/issues/6368)
+* **release:** 3.38.0-rc.2 [skip ci] ([cd6e3f8](https://github.com/kiva/ui/commit/cd6e3f8d504f7902d1c1b6c9c9d00bbda44d62e2)), closes [#6373](https://github.com/kiva/ui/issues/6373)
+
 ## [3.38.0-rc.2](https://github.com/kiva/ui/compare/v3.38.0-rc.1...v3.38.0-rc.2) (2025-10-23)
 
 ### 🐛 Bugfixes
