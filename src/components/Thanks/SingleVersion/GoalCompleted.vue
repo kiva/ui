@@ -18,8 +18,8 @@
 					</h3>
 				</div>
 				<div class="tw-relative">
-					<BgRays style="top: -50px;" />
-					<BadgeContainer :show-shine="true">
+					<BgRays style="top: -90px;" />
+					<BadgeContainer :show-shine="true" style="top: -50px">
 						<HighFive alt="Hi five icon" style="width: 250px; height: 250px;" />
 					</BadgeContainer>
 				</div>

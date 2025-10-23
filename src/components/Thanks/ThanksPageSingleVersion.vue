@@ -16,8 +16,15 @@
 				class="tw-mb-2.5"
 				@view-pdf-clicked="scrollToReceipt"
 			/>
+			<GoalCompleted
+				v-if="isNextStepsExpEnabled && userGoalAchieved"
+				:current-goal="userGoal"
+				:get-goal-display-name="getGoalDisplayName"
+				:loading="goalDataLoading"
+				class="tw-mb-2.5"
+			/>
 			<BadgeMilestone
-				v-if="showBadgeModule || achievementsCompleted"
+				v-else-if="showBadgeModule || achievementsCompleted"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
 				:badge-achieved-ids="badgeAchievedIds"
@@ -27,13 +34,6 @@
 				:kiva-cards-module-shown="showKivaCardsModule"
 				:achievements-completed="achievementsCompleted"
 				@continue-clicked="handleContinue"
-				class="tw-mb-2.5"
-			/>
-			<GoalCompleted
-				v-if="isNextStepsExpEnabled && userGoalAchieved"
-				:current-goal="userGoal"
-				:get-goal-display-name="getGoalDisplayName"
-				:loading="goalDataLoading"
 				class="tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
