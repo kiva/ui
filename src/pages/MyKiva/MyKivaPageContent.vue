@@ -122,6 +122,7 @@
 			:show-next-steps="showNextSteps"
 			:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
 			:enable-ai-loan-pills="enableAiLoanPills"
+			:is-animated="animatedSideSheet"
 			@add-to-basket="addToBasket"
 			@go-to-link="goToLink"
 			@close-side-sheet="handleCloseSideSheet"
@@ -307,6 +308,7 @@ export default {
 			updatesLimit: 15,
 			updatesLoading: true,
 			updatesOffset: 3,
+			animatedSideSheet: true,
 		};
 	},
 	computed: {
@@ -598,11 +600,17 @@ export default {
 			this.showBPSideSheet = false;
 			this.handleSelectedLoan({ loanId: undefined });
 		},
-		showLoanDetails(payload, showNextSteps = false) {
+		showLoanDetails(payload, showNextSteps = false, isAnimated = true) {
 			this.handleSelectedLoan({ loanId: payload?.id });
 			this.showBPSideSheet = true;
 			this.showNextSteps = showNextSteps;
+			this.animatedSideSheet = isAnimated;
 		},
+	},
+	created() {
+		if (this.sidesheetLoan?.id) {
+			this.showLoanDetails({ id: Number(this.sidesheetLoan.id) }, true, false);
+		}
 	},
 	mounted() {
 		const urlHash = this.$router.currentRoute?.value?.hash;
@@ -611,10 +619,6 @@ export default {
 			const elementToScrollTo = document.querySelector(urlHash);
 			const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 10 ?? 0;
 			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
-		}
-
-		if (this.sidesheetLoan?.id) {
-			this.showLoanDetails({ id: Number(this.sidesheetLoan.id) }, true);
 		}
 
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
