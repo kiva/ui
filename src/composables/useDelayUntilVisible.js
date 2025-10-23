@@ -1,4 +1,4 @@
-import { ref, onUnmounted } from 'vue';
+import { ref } from 'vue';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 
 export default () => {
@@ -21,11 +21,11 @@ export default () => {
 		}
 	};
 
-	onUnmounted(() => {
+	const disconnect = () => {
 		if (observer.value) {
 			observer.value.disconnect();
 		}
-	});
+	};
 
-	return { delayUntilVisible };
+	return { delayUntilVisible, disconnect };
 };
