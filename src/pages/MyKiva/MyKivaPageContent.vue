@@ -607,11 +607,6 @@ export default {
 			this.animatedSideSheet = isAnimated;
 		},
 	},
-	created() {
-		if (this.sidesheetLoan?.id) {
-			this.showLoanDetails({ id: Number(this.sidesheetLoan.id) }, true, false);
-		}
-	},
 	mounted() {
 		const urlHash = this.$router.currentRoute?.value?.hash;
 
@@ -619,6 +614,10 @@ export default {
 			const elementToScrollTo = document.querySelector(urlHash);
 			const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 10 ?? 0;
 			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+		}
+
+		if (this.sidesheetLoan?.id) {
+			this.showLoanDetails({ id: Number(this.sidesheetLoan.id) }, true, false);
 		}
 
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
