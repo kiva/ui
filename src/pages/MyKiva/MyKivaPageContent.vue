@@ -37,8 +37,6 @@
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
 				:total-loans="totalLoans"
-				:user-goal="userGoal"
-				@store-goals-preferences="storeGoalPreferences"
 			/>
 		</section>
 		<section id="mykiva-borrower-carousel" class="tw-my-4">
@@ -78,7 +76,9 @@
 			/>
 		</section>
 		<section class="tw-mb-4">
-			<h3>My achievements</h3>
+			<h3 id="my-achievements">
+				My achievements
+			</h3>
 			<BadgesSection
 				class="tw-mt-2"
 				:badge-data="badgeData"
@@ -142,6 +142,8 @@
 </template>
 
 <script>
+import { inject } from 'vue';
+
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 
@@ -160,7 +162,7 @@ import AsyncMyKivaSection from '#src/pages/MyKiva/AsyncMyKivaSection';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
 import MyKivaStats from '#src/components/MyKiva/MyKivaStats';
-import useBadgeData, { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
+import useBadgeData from '#src/composables/useBadgeData';
 import LatestBlogCarousel from '#src/components/MyKiva/LatestBlogCarousel';
 import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
@@ -175,7 +177,7 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
+
 import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
 
 const IMPACT_THRESHOLD = 25;
@@ -265,25 +267,29 @@ export default {
 			default: () => ({}),
 		},
 	},
-	data() {
-		const { getMostRecentBlogPost } = useContentful(this.apollo);
+	setup() {
+		const apollo = inject('apollo');
+		const { getMostRecentBlogPost } = useContentful(apollo);
 		const {
 			badgeData,
 			fetchAchievementData,
 			fetchContentfulData,
 			getLoanFindingUrl,
-		} = useBadgeData(this.apollo);
-
+		} = useBadgeData(apollo);
 		return {
 			badgeData,
-			blogCards: [],
-			blogCategories,
-			CONTENTFUL_MORE_WAYS_KEY,
-			displayedCount: 3,
 			fetchAchievementData,
 			fetchContentfulData,
 			getLoanFindingUrl,
 			getMostRecentBlogPost,
+		};
+	},
+	data() {
+		return {
+			blogCards: [],
+			blogCategories,
+			CONTENTFUL_MORE_WAYS_KEY,
+			displayedCount: 3,
 			hideBottomGradient: false,
 			isEarnedSectionModal: false,
 			isFirstLoad: true,
@@ -296,12 +302,12 @@ export default {
 			showBPSideSheet: false,
 			showJourneySideSheet: false,
 			showNavigation: false,
+			showNextSteps: false,
 			state: STATE_JOURNEY,
 			transactionsTypes: [],
 			updatesLimit: 15,
 			updatesLoading: true,
 			updatesOffset: 3,
-			showNextSteps: false,
 			animatedSideSheet: true,
 		};
 	},
@@ -345,31 +351,6 @@ export default {
 		visibleUpdates() {
 			const updates = Array.isArray(this.mergedUpdates) ? this.mergedUpdates.slice(0, this.displayedCount) : [];
 			return updates;
-		},
-		userGoal() {
-			const preferences = this.userInfo?.userPreferences?.preferences ?? null;
-			const parsedPreferences = preferences ? JSON.parse(preferences) : {};
-			const existingGoals = parsedPreferences?.goals || [];
-			if (!existingGoals.length) return null;
-
-			let goal = existingGoals[0];
-			// eslint-disable-next-line max-len
-			let loanTotal = this.heroTieredAchievements.find(ach => ach.id === goal?.category)?.totalProgressToAchievement ?? 0;
-			if (!loanTotal && goal?.category === ID_SUPPORT_ALL) {
-				loanTotal = this.totalLoans;
-			}
-
-			if (goal) {
-				const currentProgress = loanTotal - (goal?.loanTotalAtStart || 0);
-				const isComplete = currentProgress >= (goal?.target || 0);
-				goal = {
-					...goal,
-					currentProgress,
-					isComplete,
-				};
-			}
-
-			return goal;
 		},
 	},
 	methods: {
@@ -625,34 +606,6 @@ export default {
 			this.showNextSteps = showNextSteps;
 			this.animatedSideSheet = isAnimated;
 		},
-		async storeGoalPreferences(newPreferences) {
-			const existingPreferences = this.userInfo?.userPreferences ?? null;
-			if (!existingPreferences) {
-				await createUserPreferences(
-					this.apollo,
-					{ goals: [] }
-				);
-			}
-			const parsedPreferences = existingPreferences ? JSON.parse(existingPreferences?.preferences || '{}') : {};
-			const existingGoals = parsedPreferences?.goals || [];
-			const goalIndex = existingGoals.findIndex(goal => goal.goalName === newPreferences.goalName);
-			if (goalIndex !== -1) {
-				const goalToUpdate = { ...newPreferences };
-				delete goalToUpdate.dateStarted;
-				existingGoals[goalIndex] = { ...existingGoals[goalIndex], ...goalToUpdate };
-			} else {
-				existingGoals.push(newPreferences);
-			}
-			if (this.userInfo.userPreferences) {
-				await updateUserPreferences(
-					this.apollo,
-					existingPreferences,
-					parsedPreferences,
-					{ goals: existingGoals }
-				);
-				this.$showTipMsg('Your goal was saved successfully!', { type: 'success' });
-			}
-		}
 	},
 	created() {
 		if (this.sidesheetLoan?.id) {
@@ -667,10 +620,6 @@ export default {
 			const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 10 ?? 0;
 			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
 		}
-
-		// if (this.sidesheetLoan?.id) {
-		// 	this.showLoanDetails({ id: Number(this.sidesheetLoan.id) }, true);
-		// }
 
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 		fireHotJarEvent('my_kiva_viewed');

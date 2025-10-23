@@ -274,6 +274,7 @@ export default {
 		return {
 			lender: {},
 			loans: [],
+			totalLoanCount: 0,
 			receipt: null,
 			isMonthlyGoodSubscriber: false,
 			hasModernSub: false,
@@ -627,8 +628,8 @@ export default {
 		userHasLentBefore(hasLentBefore);
 		userHasDepositBefore(hasDepositBefore);
 
-		const totalLoans = data?.my?.loans?.totalCount ?? 0;
-		const isFirstLoan = this.loans.length && totalLoans === this.loans.length;
+		this.totalLoanCount = data?.my?.loans?.totalCount ?? 0;
+		const isFirstLoan = this.loans.length && this.totalLoanCount === this.loans.length;
 		this.isFirstLoan = isFirstLoan;
 		const hasDirectLoan = this.loans.findIndex(loan => loan.distributionModel === 'direct') > -1;
 		const hasCoreLoan = this.loans.findIndex(loan => loan.distributionModel === 'fieldPartner') > -1;

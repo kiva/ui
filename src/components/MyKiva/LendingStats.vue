@@ -12,24 +12,22 @@
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': isNextStepsExpEnabled && !userLentToAllRegions }"
 	>
 		<template v-if="isNextStepsExpEnabled && !userLentToAllRegions">
-			<GoalCard
-				v-if="!userGoal?.isComplete"
-				:hero-slides="heroSlides"
-				:user-goal="userGoal"
-				@open-goal-modal="showGoalModal = true"
-			/>
-			<div v-else class="card-container tw-shrink-0">
+			<div class="card-container tw-shrink-0">
 				<JourneyCardCarousel
 					class="carousel carousel-single"
 					user-in-homepage
 					in-lending-stats
 					:disable-drag="true"
+					:goal-progress-loading="goalProgressLoading"
+					:goal-progress="goalProgress"
+					:hero-contentful-data="heroContentfulData"
+					:hero-tiered-achievements="heroTieredAchievements"
 					:lender="lender"
 					:slides-number="1"
 					:slides="heroSlides"
-					:hero-contentful-data="heroContentfulData"
-					:hero-tiered-achievements="heroTieredAchievements"
+					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
+					@open-goal-modal="showGoalModal = true"
 				/>
 			</div>
 			<div class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col">
@@ -167,6 +165,8 @@ import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 
 import useBadgeData from '#src/composables/useBadgeData';
+import useGoalData from '#src/composables/useGoalData';
+
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
@@ -182,7 +182,7 @@ import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
-import GoalCard from '#src/components/MyKiva/GoalCard';
+
 import GoalSettingModal from './GoalSettingModal';
 
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
@@ -192,7 +192,6 @@ export default {
 	components: {
 		GlobeSearchIcon,
 		JourneyCardCarousel,
-		GoalCard,
 		GoalSettingModal,
 		KvCheckbox,
 		KvMaterialIcon,
@@ -233,10 +232,6 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		userGoal: {
-			type: Object,
-			default: undefined,
-		},
 	},
 	emits: ['store-goals-preferences'],
 	apollo: {
@@ -254,6 +249,10 @@ export default {
 			showGoalModal: false,
 			isNextStepsExpEnabled: undefined,
 			checkedArr: this.regionsData.map(() => false),
+			goalProgress: 0,
+			goalProgressLoading: false,
+			userGoal: null,
+			userGoalAchieved: false,
 		};
 	},
 	computed: {
@@ -307,8 +306,11 @@ export default {
 			this.apollo,
 			this.$route,
 			NEXT_STEPS_EXP_KEY,
-			version => {
+			async version => {
 				this.isNextStepsExpEnabled = version === 'b';
+				if (this.isNextStepsExpEnabled) {
+					await this.loadGoalData();
+				}
 			},
 			this.$kvTrackEvent,
 			'EXP-MP-1984-Sept2025',
@@ -340,6 +342,23 @@ export default {
 		if (this.interval) clearInterval(this.interval);
 	},
 	methods: {
+		async loadGoalData() {
+			const {
+				goalProgress,
+				userGoal,
+				userGoalAchieved,
+				runComposable,
+			} = useGoalData({
+				loans: this.loans,
+				apollo: this.apollo,
+			});
+			this.goalProgressLoading = true;
+			await runComposable();
+			this.goalProgress = goalProgress.value;
+			this.userGoal = userGoal.value;
+			this.userGoalAchieved = userGoalAchieved.value;
+			this.goalProgressLoading = false;
+		},
 		regionImageSource(region) {
 			const regionImages = {
 				Africa,
@@ -362,8 +381,14 @@ export default {
 			);
 			this.$router.push(`/lend/filter?country=${region?.countries.join(',')}`);
 		},
-		setGoal(preferences) {
-			this.$emit('store-goals-preferences', preferences);
+		async setGoal(preferences) {
+			const {
+				storeGoalPreferences,
+			} = useGoalData({
+				loans: this.loans,
+				apollo: this.apollo,
+			});
+			await storeGoalPreferences(preferences);
 			this.showGoalModal = false;
 		},
 	},
