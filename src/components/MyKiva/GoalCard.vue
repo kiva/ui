@@ -156,7 +156,7 @@ const getCategoryHeader = category => {
 			return 'women';
 		case ID_REFUGEE_EQUALITY:
 			return 'refugees';
-		default: return category;
+		default: return 'loans';
 	}
 };
 
