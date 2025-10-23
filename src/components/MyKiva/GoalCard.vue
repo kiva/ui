@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="card-container"
+		class="card-container tw-h-full"
 		:class="{
 			'goal-card-bg': !userHasGoal && !loading,
 		}"
@@ -29,7 +29,7 @@
 				class="tw-rounded tw-w-full tw-h-full tw-object-cover tw-object-top"
 			>
 		</div>
-		<div class="tw-flex tw-flex-col" :class="{'tw-gap-1': userHasGoal}">
+		<div class="tw-flex tw-flex-col tw-grow" :class="{'tw-gap-1': userHasGoal}">
 			<div v-if="!userHasGoal && !loading" class="tw-mx-auto">
 				<GoalCardCareImg />
 			</div>
@@ -64,7 +64,7 @@
 				</div>
 			</template>
 			<template v-else>
-				<p v-if="!loading" class="tw-text-small tw-pb-2">
+				<p v-if="!loading" class="tw-text-small tw-pb-2 tw-grow">
 					How many more people will you help this year?
 				</p>
 				<kv-loading-placeholder v-else class="!tw-h-1 tw-mb-1" />
