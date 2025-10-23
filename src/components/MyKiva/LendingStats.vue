@@ -256,7 +256,7 @@ export default {
 			isNextStepsExpEnabled: undefined,
 			checkedArr: this.regionsData.map(() => false),
 			goalProgress: 0,
-			goalProgressLoading: false,
+			goalProgressLoading: true,
 			userGoal: null,
 			userGoalAchieved: false,
 		};
@@ -361,7 +361,6 @@ export default {
 				loans: this.loans,
 				apollo: this.apollo,
 			});
-			this.goalProgressLoading = true;
 			await runComposable();
 			this.goalProgress = goalProgress.value;
 			this.userGoal = userGoal.value;
