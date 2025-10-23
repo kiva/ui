@@ -25,6 +25,7 @@
 					:lender="lender"
 					:slides-number="1"
 					:slides="heroSlides"
+					:user-goal-enabled="isNextStepsExpEnabled"
 					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
 					@open-goal-modal="showGoalModal = true"
@@ -141,12 +142,16 @@
 			class="carousel"
 			user-in-homepage
 			in-lending-stats
+			:goal-progress-loading="goalProgressLoading"
+			:goal-progress="goalProgress"
+			:hero-contentful-data="heroContentfulData"
+			:hero-tiered-achievements="heroTieredAchievements"
 			:lender="lender"
 			:slides-number="3"
 			:slides="heroSlides"
-			:hero-contentful-data="heroContentfulData"
-			:hero-tiered-achievements="heroTieredAchievements"
-			:user-goal="isNextStepsExpEnabled ? userGoal : { isComplete: true }"
+			:user-goal-enabled="isNextStepsExpEnabled"
+			:user-goal-achieved="userGoalAchieved"
+			:user-goal="userGoal"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<GoalSettingModal
@@ -246,6 +251,7 @@ export default {
 		return {
 			mdiArrowTopRight,
 			interval: null,
+			disconnectRegionWatcher: null,
 			showGoalModal: false,
 			isNextStepsExpEnabled: undefined,
 			checkedArr: this.regionsData.map(() => false),
@@ -308,18 +314,19 @@ export default {
 			NEXT_STEPS_EXP_KEY,
 			async version => {
 				this.isNextStepsExpEnabled = version === 'b';
-				if (this.isNextStepsExpEnabled) {
-					await this.loadGoalData();
-				}
 			},
 			this.$kvTrackEvent,
 			'EXP-MP-1984-Sept2025',
 		);
 	},
-	mounted() {
+	async mounted() {
+		if (this.isNextStepsExpEnabled && typeof window !== 'undefined') {
+			await this.loadGoalData();
+		}
+
 		if (this.isNextStepsExpEnabled && !this.userLentToAllRegions) {
 			// Check region boxes when component comes into view
-			const { delayUntilVisible } = useDelayUntilVisible();
+			const { delayUntilVisible, disconnect } = useDelayUntilVisible();
 			delayUntilVisible(() => {
 				setTimeout(() => {
 					let currentIdx = 0;
@@ -336,10 +343,12 @@ export default {
 					}, 200);
 				}, 800);
 			}, [this.$refs.loanRegionsElement]);
+			this.disconnectRegionWatcher = disconnect;
 		}
 	},
 	beforeUnmount() {
 		if (this.interval) clearInterval(this.interval);
+		if (this.disconnectRegionWatcher) this.disconnectRegionWatcher();
 	},
 	methods: {
 		async loadGoalData() {
@@ -389,6 +398,7 @@ export default {
 				apollo: this.apollo,
 			});
 			await storeGoalPreferences(preferences);
+			await this.loadGoalData();
 			this.showGoalModal = false;
 		},
 	},

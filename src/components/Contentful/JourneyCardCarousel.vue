@@ -149,6 +149,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	userGoalEnabled: {
+		type: Boolean,
+		default: false,
+	},
 	userGoal: {
 		type: Object,
 		default: () => ({}),
@@ -201,7 +205,7 @@ const isNonBadgeSlide = slide => {
 
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
-	return !props.userGoal || !props.userGoalAchieved;
+	return props.userGoalEnabled && (!props.userGoal || !props.userGoalAchieved);
 });
 
 const orderedSlides = computed(() => {
