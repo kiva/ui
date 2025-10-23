@@ -143,7 +143,8 @@ const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const emit = defineEmits(['close-goal-modal', 'set-goal']);
 const selectedCategory = ref(categories[0]);
-const selectedGoalNumber = ref(categories[0].loanCount > MAX_GOAL_LOANS ? MAX_GOAL_LOANS : categories[0].loanCount);
+// eslint-disable-next-line max-len
+const selectedGoalNumber = ref(categories[0].loanCount > MAX_GOAL_LOANS ? MAX_GOAL_LOANS : (categories[0].loanCount || 1));
 
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
 const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
@@ -161,7 +162,7 @@ const handleCategorySelected = categoryId => {
 	selectedCategory.value = categories[categoryIdx];
 	selectedGoalNumber.value = categories[categoryIdx]?.loanCount > MAX_GOAL_LOANS
 		? MAX_GOAL_LOANS
-		: categories[categoryIdx]?.loanCount;
+		: (categories[categoryIdx]?.loanCount || 1);
 };
 
 const handleNumberChanged = number => {
