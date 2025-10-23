@@ -90,10 +90,12 @@ import {
 import { mdiCheckCircleOutline } from '@mdi/js';
 import { formatRichTextContent } from '#src/util/contentfulUtils';
 import GoalCardCareImg from '#src/assets/images/my-kiva/goal-card-care.svg';
-import {
+import useBadgeData, {
 	ID_BASIC_NEEDS,
+	ID_CLIMATE_ACTION,
+	ID_REFUGEE_EQUALITY,
 	ID_US_ECONOMIC_EQUALITY,
-	ID_WOMENS_EQUALITY
+	ID_WOMENS_EQUALITY,
 } from '#src/composables/useBadgeData';
 import { useRouter } from 'vue-router';
 
@@ -121,10 +123,10 @@ defineEmits(['open-goal-modal']);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
+const { getLoanFindingUrl } = useBadgeData();
+
 const loansToReachGoal = computed(() => props.userGoal?.target || 0);
-
 const userHasGoal = computed(() => !!props.userGoal?.category);
-
 const title = computed(() => {
 	if (userHasGoal.value) return 'Work towards your goal';
 	return 'Set your first impact goal!';
@@ -142,39 +144,42 @@ const getContentfulKey = category => {
 	}
 };
 
-const getGoalCategoryUrl = category => {
+const getCategoryHeader = category => {
 	switch (category) {
-		case 'us-economic-equality':
+		case ID_US_ECONOMIC_EQUALITY:
 			return 'U.S. entrepreneurs';
-		case 'basic-needs':
+		case ID_BASIC_NEEDS:
 			return 'loans for basic needs';
-		case 'eco-friendly':
+		case ID_CLIMATE_ACTION:
 			return 'eco-friendly loans';
-		default: return category;
+		case ID_WOMENS_EQUALITY:
+			return 'women';
+		case ID_REFUGEE_EQUALITY:
+			return 'refugees';
+		default: return 'loans';
 	}
 };
 
 const ctaHref = computed(() => {
-	const string = `Your goal: Support ${props.userGoal?.target} ${getGoalCategoryUrl(props.userGoal?.category)}`;
-	const encodedString = encodeURIComponent(string);
-	return `/lend/filter?header=${encodedString}`;
+	const categoryHeader = getCategoryHeader(props.userGoal?.category);
+	const string = `Your goal: Support ${props.userGoal?.target} ${categoryHeader}`;
+	const encodedHeader = encodeURIComponent(string);
+	const loanFindingUrl = getLoanFindingUrl(props.userGoal?.category, router.currentRoute.value);
+	return `${loanFindingUrl}?header=${encodedHeader}`;
 });
 
 const achievementGoalImg = computed(() => {
 	const contentfulCategory = getContentfulKey(props.userGoal?.category) || '';
 	if (!contentfulCategory) return '';
 	const key = `my-kiva-${contentfulCategory}-journey`;
-
 	const richText = props.heroSlides.find(slide => slide?.fields?.key === key);
 	let backgroundImage = null;
 	if (richText) {
 		const formattedRichText = formatRichTextContent(richText);
-
 		backgroundImage = formattedRichText?.richText?.content.find(
 			item => item.nodeType === 'embedded-asset-block' && item.data?.target?.fields?.file?.url
 		);
 	}
-
 	return backgroundImage?.data?.target?.fields?.file?.url || '';
 });
 
