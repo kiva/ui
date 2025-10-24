@@ -125,7 +125,7 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 			});
 			$kvTrackEvent(
 				location,
-				'anual-goal-complete',
+				'annual-goal-complete',
 				userGoal.value.category,
 				userGoal.value.target
 			);
