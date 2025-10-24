@@ -672,15 +672,19 @@ export default {
 }
 
 :deep(.bp-sidesheet-wrapper > div) {
-	max-width: 100% !important;
+	width: 100% !important;
 	min-height: 100vh;
 
-	@screen md {
-		max-width: 50% !important;
-	}
+	@media (width >= 768px) {
+		width: 50% !important;
+    }
 
-	@screen xl {
-		max-width: 600px !important;
-	}
+	@media (width >= 1280px) {
+		width: 600px !important;
+    }
+}
+
+:deep(.bp-sidesheet-wrapper #sidesheet-content) {
+	min-height: 33vh;
 }
 </style>
