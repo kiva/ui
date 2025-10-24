@@ -111,7 +111,7 @@
 		</section>
 		<BorrowerSideSheetWrapper
 			v-if="showBPSideSheet"
-			:class="{ 'bp-sidesheet-wrapper': sideSheetClasses }"
+			class="bp-sidesheet-wrapper"
 			:basket-items="basketItems"
 			:is-adding="isAdding"
 			:kv-track-function="$kvTrackEvent"
@@ -310,7 +310,6 @@ export default {
 			updatesLoading: true,
 			updatesOffset: 3,
 			animatedSideSheet: true,
-			sideSheetClasses: false,
 		};
 	},
 	computed: {
@@ -611,12 +610,10 @@ export default {
 	},
 	created() {
 		if (this.sidesheetLoan?.id) {
-			this.sideSheetClasses = true;
 			this.showLoanDetails({ id: Number(this.sidesheetLoan.id) }, true, false);
 		}
 	},
 	mounted() {
-		this.sideSheetClasses = false;
 		const urlHash = this.$router.currentRoute?.value?.hash;
 
 		if (urlHash) {
@@ -685,9 +682,5 @@ export default {
 	@media (width >= 1280px) {
 		width: 600px !important;
     }
-}
-
-:deep(.bp-sidesheet-wrapper #sidesheet-content) {
-	min-height: 100vh;
 }
 </style>
