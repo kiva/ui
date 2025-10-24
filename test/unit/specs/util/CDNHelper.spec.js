@@ -19,6 +19,15 @@ describe('CDNHelper', () => {
 			expect(helper.tags.has('bar')).toBe(true);
 		});
 
+		it('handles non-array input gracefully', () => {
+			const initialSize = helper.tags.size;
+			helper.addTags('not-an-array');
+			helper.addTags(null);
+			helper.addTags(undefined);
+			helper.addTags({ tag: 'object' });
+			expect(helper.tags.size).toBe(initialSize);
+		});
+
 		it('returns this for chaining', () => {
 			const result = helper.addTags(['baz']);
 			expect(result).toBe(helper);

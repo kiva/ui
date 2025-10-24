@@ -134,6 +134,19 @@ describe('loanChannelUtils.js', () => {
 			expect(spyFetchLoanChannel).toHaveBeenCalledTimes(1);
 			expect(apollo.query).toHaveBeenCalledTimes(0);
 		});
+
+		it('should handle apollo query errors', async () => {
+			apollo.query.mockResolvedValueOnce({
+				data: null,
+				errors: [new Error('Query failed')]
+			});
+
+			const result = await preFetchChannel(apollo, mockQueryMap, 'asd', mockLoanQueryVars);
+
+			// Query was called and returned error response (line 63 coverage)
+			expect(apollo.query).toHaveBeenCalledTimes(1);
+			expect(result.errors).toBeDefined();
+		});
 	});
 
 	describe('getCachedChannel', () => {
@@ -184,6 +197,18 @@ describe('loanChannelUtils.js', () => {
 
 			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
 		});
+
+		it('should handle apollo readQuery errors', () => {
+			apollo.readQuery.mockImplementationOnce(() => {
+				throw new Error('Read query failed');
+			});
+
+			const result = getCachedChannel(apollo, mockQueryMap, 'asd', mockLoanQueryVars);
+
+			// Error should be caught and logged (line 86)
+			expect(apollo.readQuery).toHaveBeenCalledTimes(1);
+			expect(result).toBeUndefined();
+		});
 	});
 
 	describe('getLoanChannel', () => {
@@ -231,6 +256,19 @@ describe('loanChannelUtils.js', () => {
 			const expectedFilters = { gender: 'female', extra: 'asd' };
 
 			expect(spyGetLoanChannel).toHaveBeenCalledWith(apollo, expectedFilters, mockLoanQueryVars);
+		});
+
+		it('should handle apollo query errors', async () => {
+			apollo.query.mockResolvedValueOnce({
+				data: null,
+				errors: [new Error('Query failed')]
+			});
+
+			const result = await getLoanChannel(apollo, mockQueryMap, 'asd', mockLoanQueryVars);
+
+			// Query was called and returned error response (line 111 coverage)
+			expect(apollo.query).toHaveBeenCalledTimes(1);
+			expect(result.errors).toBeDefined();
 		});
 	});
 
@@ -322,6 +360,17 @@ describe('loanChannelUtils.js', () => {
 			watchCallback(mockLoanQueryVars);
 
 			expect(observer.setVariables).toHaveBeenCalledTimes(1);
+		});
+
+		it('should handle null observer', () => {
+			const apolloNull = { watchQuery: vi.fn(() => null) };
+			const next = vi.fn();
+
+			const result = watchChannelQuery(apolloNull, mockQueryMap, 'asd', mockLoanQueryVars, next, watch);
+
+			// If observer is null, function returns undefined (line 133)
+			expect(result).toBeUndefined();
+			expect(watch).not.toHaveBeenCalled();
 		});
 	});
 });

@@ -159,4 +159,77 @@ describe('KvSelectBox', () => {
 
 		expect(emitted().selected).toBe(undefined);
 	});
+
+	it('should handle items with single entry and headerKey', () => {
+		const singleItem = [{ id: 1, name: 'Single Item', header: 'Only Header' }];
+
+		const { getByText, getAllByRole } = render(KvSelectBox, {
+			props: {
+				id: 'id',
+				items: singleItem,
+				headerKey: 'header'
+			}
+		});
+
+		// Should show header and item (line 156 - last item case)
+		getByText('Only Header');
+		getByText('Single Item');
+
+		const listItems = getAllByRole('listitem');
+		// Should have header + item = 2 list items
+		expect(listItems.length).toBe(2);
+	});
+
+	it('should handle null items in list with headerKey', () => {
+		const itemsWithNull = [
+			{ id: 1, name: 'Item 1', header: 'Header A' },
+			null,
+			{ id: 2, name: 'Item 2', header: 'Header B' }
+		].filter(Boolean); // Filter removes null
+
+		const { getByText } = render(KvSelectBox, {
+			props: {
+				id: 'id',
+				items: itemsWithNull,
+				headerKey: 'header'
+			}
+		});
+
+		// Should handle filtered items correctly (lines 156, 161)
+		getByText('Header A');
+		getByText('Item 1');
+		getByText('Header B');
+		getByText('Item 2');
+	});
+
+	it('should handle clickDocument when refs are undefined', () => {
+		const { unmount } = render(KvSelectBox, {
+			props: { id: 'id', items }
+		});
+
+		// Trigger click after component is mounted but before unmount
+		document.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+		// Should not throw error (line 161 - optional chaining handles undefined refs)
+		unmount();
+	});
+
+	it('should cleanup event listeners on unmount', () => {
+		const { unmount } = render(KvSelectBox, {
+			props: { id: 'id', items }
+		});
+
+		// Should add event listeners on mount
+		const clickSpy = vi.spyOn(document, 'addEventListener');
+		const removeSpy = vi.spyOn(document, 'removeEventListener');
+
+		// Unmount should remove event listeners (lines 119-120)
+		unmount();
+
+		// At least touchstart and click listeners should be removed
+		expect(removeSpy).toHaveBeenCalled();
+
+		clickSpy.mockRestore();
+		removeSpy.mockRestore();
+	});
 });

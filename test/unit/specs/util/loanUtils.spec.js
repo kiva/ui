@@ -6,9 +6,84 @@ import {
 	TOP_UP_CAMPAIGN,
 	BASE_CAMPAIGN,
 	getCustomHref,
+	isLoanFundraising,
+	formatWhySpecial,
+	toParagraphs,
+	isMatchAtRisk,
+	readLoanData,
+	watchLoanData,
+	watchLoanCardData,
+	readLoanFragment,
+	queryLoanData,
+	isLessThan25,
+	isBetween25And50,
+	isBetween25And500,
 } from '#src/util/loanUtils';
 
 describe('loanUtils.js', () => {
+	describe('isLoanFundraising', () => {
+		it('should return false if loan status is not fundraising', () => {
+			const loan = { status: 'funded' };
+			expect(isLoanFundraising(loan)).toBe(false);
+		});
+
+		it('should return false if loan amount equals funded amount', () => {
+			const loan = {
+				status: 'fundraising',
+				loanAmount: '1000.00',
+				loanFundraisingInfo: {
+					fundedAmount: '1000.00',
+					reservedAmount: '0.00'
+				}
+			};
+			expect(isLoanFundraising(loan)).toBe(false);
+		});
+
+		it('should return false if loan amount is less than or equal to funded + reserved', () => {
+			const loan = {
+				status: 'fundraising',
+				loanAmount: '1000.00',
+				loanFundraisingInfo: {
+					fundedAmount: '900.00',
+					reservedAmount: '100.00'
+				}
+			};
+			expect(isLoanFundraising(loan)).toBe(false);
+		});
+
+		it('should return true if loan is fundraising and has unreserved amount', () => {
+			const loan = {
+				status: 'fundraising',
+				loanAmount: '1000.00',
+				loanFundraisingInfo: {
+					fundedAmount: '500.00',
+					reservedAmount: '100.00'
+				}
+			};
+			expect(isLoanFundraising(loan)).toBe(true);
+		});
+	});
+
+	describe('formatWhySpecial', () => {
+		it('should format why special text with lowercase first letter', () => {
+			const result = formatWhySpecial('It helps a woman entrepreneur');
+			expect(result).toBe('This loan is special because it helps a woman entrepreneur');
+		});
+
+		it('should return empty string if whySpecial is empty', () => {
+			expect(formatWhySpecial('')).toBe('');
+		});
+
+		it('should return empty string if whySpecial is undefined', () => {
+			expect(formatWhySpecial()).toBe('');
+		});
+
+		it('should handle leading/trailing whitespace in whySpecial', () => {
+			const result = formatWhySpecial(' It helps a refugee ');
+			expect(result).toBe('This loan is special because It helps a refugee');
+		});
+	});
+
 	describe('getDropdownPriceArray', () => {
 		const unreservedAmount = 2000;
 		const minAmount = 25;
@@ -517,6 +592,389 @@ describe('loanUtils.js', () => {
 				query: { loanId: '789' }
 			});
 			expect(result).toBe(resolvedHref);
+		});
+	});
+
+	describe('toParagraphs', () => {
+		it('should convert newlines to paragraph array', () => {
+			const text = 'Line 1\nLine 2\nLine 3';
+			const result = toParagraphs(text);
+			expect(result).toEqual(['Line 1', 'Line 2', 'Line 3']);
+		});
+
+		it('should handle carriage returns', () => {
+			const text = 'Line 1\rLine 2\rLine 3';
+			const result = toParagraphs(text);
+			expect(result).toEqual(['Line 1', 'Line 2', 'Line 3']);
+		});
+
+		it('should handle HTML br tags', () => {
+			const text = 'Line 1<br>Line 2<br/>Line 3<br />Line 4';
+			const result = toParagraphs(text);
+			expect(result).toEqual(['Line 1', 'Line 2', 'Line 3', 'Line 4']);
+		});
+
+		it('should handle multiple consecutive newlines', () => {
+			const text = 'Paragraph 1\n\n\nParagraph 2';
+			const result = toParagraphs(text);
+			expect(result).toEqual(['Paragraph 1', 'Paragraph 2']);
+		});
+
+		it('should convert non-string input to string', () => {
+			const result = toParagraphs(12345);
+			expect(result).toEqual(['12345']);
+		});
+	});
+
+	describe('isMatchAtRisk', () => {
+		it('should return false if loan has no matchingText', () => {
+			const loan = {
+				status: 'fundraising',
+				loanAmount: '1000.00',
+				loanFundraisingInfo: { fundedAmount: '500.00', reservedAmount: '0.00' }
+			};
+			expect(isMatchAtRisk(loan)).toBe(false);
+		});
+
+		it('should return false if loan is null', () => {
+			expect(isMatchAtRisk(null)).toBe(false);
+		});
+
+		it('should return true when remaining amount is less than match amount', () => {
+			const loan = {
+				matchingText: 'Match text',
+				matchRatio: 1,
+				loanAmount: '100.00',
+				loanFundraisingInfo: { fundedAmount: '60.00', reservedAmount: '0.00' }
+			};
+			// Remaining: 40, Match amount: (1 * 25) + 25 = 50, 40 < 50 = true
+			expect(isMatchAtRisk(loan)).toBe(true);
+		});
+
+		it('should return false when remaining amount is greater than match amount', () => {
+			const loan = {
+				matchingText: 'Match text',
+				matchRatio: 1,
+				loanAmount: '1000.00',
+				loanFundraisingInfo: { fundedAmount: '500.00', reservedAmount: '0.00' }
+			};
+			expect(isMatchAtRisk(loan)).toBe(false);
+		});
+
+		it('should handle matchRatio in calculation', () => {
+			const loan = {
+				matchingText: 'Match text',
+				matchRatio: 2,
+				loanAmount: '150.00',
+				loanFundraisingInfo: { fundedAmount: '70.00', reservedAmount: '0.00' }
+			};
+			// Remaining: 80, Match amount: (2 * 25) + 25 = 75, 80 > 75 = false
+			expect(isMatchAtRisk(loan)).toBe(false);
+		});
+	});
+
+	describe('readLoanData', () => {
+		it('should read loan data from Apollo cache', () => {
+			const mockApollo = {
+				readQuery: vi.fn().mockReturnValue({ loan: { id: 123 } })
+			};
+			const mockCookieStore = { get: vi.fn().mockReturnValue('basket123') };
+			const mockQuery = { query: 'LOAN_QUERY' };
+
+			const result = readLoanData({
+				apollo: mockApollo,
+				cookieStore: mockCookieStore,
+				loanId: 123,
+				loanQuery: mockQuery
+			});
+
+			expect(result).toEqual({ loan: { id: 123 } });
+			expect(mockApollo.readQuery).toHaveBeenCalledWith({
+				query: mockQuery,
+				variables: { basketId: 'basket123', loanId: 123 }
+			});
+		});
+
+		it('should return null when readQuery throws error', () => {
+			const mockApollo = {
+				readQuery: vi.fn().mockImplementation(() => { throw new Error('Cache miss'); })
+			};
+			const mockCookieStore = { get: vi.fn().mockReturnValue('basket123') };
+
+			const result = readLoanData({
+				apollo: mockApollo,
+				cookieStore: mockCookieStore,
+				loanId: 123,
+				loanQuery: { query: 'LOAN_QUERY' }
+			});
+
+			expect(result).toBeNull();
+		});
+	});
+
+	describe('queryLoanData', () => {
+		it('should query loan data from Apollo', () => {
+			const mockApollo = {
+				query: vi.fn().mockResolvedValue({ data: { loan: { id: 456 } } })
+			};
+			const mockCookieStore = { get: vi.fn().mockReturnValue('basket456') };
+			const mockQuery = { query: 'LOAN_QUERY' };
+
+			queryLoanData({
+				apollo: mockApollo,
+				cookieStore: mockCookieStore,
+				loanId: 456,
+				loanQuery: mockQuery
+			});
+
+			expect(mockApollo.query).toHaveBeenCalledWith({
+				query: mockQuery,
+				variables: { basketId: 'basket456', loanId: 456 }
+			});
+		});
+	});
+
+	describe('watchLoanData', () => {
+		it('should setup Apollo watchQuery with subscription', () => {
+			const mockCallback = vi.fn();
+			const mockSubscribe = vi.fn(handlers => {
+				// Simulate immediate result
+				handlers.next({ data: { loan: { id: 789 } } });
+				return { unsubscribe: vi.fn() };
+			});
+			const mockQueryObserver = { subscribe: mockSubscribe };
+			const mockApollo = {
+				watchQuery: vi.fn().mockReturnValue(mockQueryObserver)
+			};
+			const mockCookieStore = { get: vi.fn().mockReturnValue('basket789') };
+			const mockQuery = { query: 'LOAN_QUERY' };
+
+			const result = watchLoanData({
+				apollo: mockApollo,
+				cookieStore: mockCookieStore,
+				loanId: 789,
+				loanQuery: mockQuery,
+				callback: mockCallback
+			});
+
+			expect(mockApollo.watchQuery).toHaveBeenCalledWith({
+				query: mockQuery,
+				variables: { basketId: 'basket789', loanId: 789 }
+			});
+			expect(result.queryObserver).toBe(mockQueryObserver);
+			expect(mockCallback).toHaveBeenCalledWith({ data: { loan: { id: 789 } } });
+		});
+
+		it('should handle errors in watchQuery subscription', () => {
+			const mockCallback = vi.fn();
+			const mockSubscribe = vi.fn(handlers => {
+				handlers.error(new Error('Watch error'));
+				return { unsubscribe: vi.fn() };
+			});
+			const mockQueryObserver = { subscribe: mockSubscribe };
+			const mockApollo = { watchQuery: vi.fn().mockReturnValue(mockQueryObserver) };
+			const mockCookieStore = { get: vi.fn().mockReturnValue('basket999') };
+
+			watchLoanData({
+				apollo: mockApollo,
+				cookieStore: mockCookieStore,
+				loanId: 999,
+				loanQuery: { query: 'LOAN_QUERY' },
+				callback: mockCallback
+			});
+
+			expect(mockCallback).toHaveBeenCalledWith({ error: expect.any(Error) });
+		});
+
+		it('should return both queryObserver and subscription', () => {
+			const mockCallback = vi.fn();
+			const mockUnsubscribe = vi.fn();
+			const mockSubscription = { unsubscribe: mockUnsubscribe };
+			const mockSubscribe = vi.fn(handlers => {
+				handlers.next({ data: { loan: { id: 111 } } });
+				return mockSubscription;
+			});
+			const mockQueryObserver = { subscribe: mockSubscribe };
+			const mockApollo = { watchQuery: vi.fn().mockReturnValue(mockQueryObserver) };
+			const mockCookieStore = { get: vi.fn().mockReturnValue('basket111') };
+
+			const result = watchLoanData({
+				apollo: mockApollo,
+				cookieStore: mockCookieStore,
+				loanId: 111,
+				loanQuery: { query: 'LOAN_QUERY' },
+				callback: mockCallback
+			});
+
+			expect(result.queryObserver).toBe(mockQueryObserver);
+			expect(result.subscription).toBe(mockSubscription);
+		});
+	});
+
+	describe('watchLoanCardData', () => {
+		it('should setup Apollo watchQuery for loan card', () => {
+			const mockCallback = vi.fn();
+			const mockSubscribe = vi.fn(handlers => {
+				handlers.next({ data: { loanCard: { id: 222 } } });
+				return { unsubscribe: vi.fn() };
+			});
+			const mockQueryObserver = { subscribe: mockSubscribe };
+			const mockApollo = { watchQuery: vi.fn().mockReturnValue(mockQueryObserver) };
+			const mockQuery = { query: 'LOAN_CARD_QUERY' };
+
+			const result = watchLoanCardData({
+				apollo: mockApollo,
+				loanId: 222,
+				loanCardQuery: mockQuery,
+				callback: mockCallback,
+				publicId: 'user-pub-id'
+			});
+
+			expect(mockApollo.watchQuery).toHaveBeenCalledWith({
+				query: mockQuery,
+				variables: {
+					loanId: 222,
+					publicId: 'user-pub-id'
+				}
+			});
+			expect(result).toBe(mockQueryObserver);
+			expect(mockCallback).toHaveBeenCalledWith({ data: { loanCard: { id: 222 } } });
+		});
+
+		it('should handle errors in loan card watchQuery', () => {
+			const mockCallback = vi.fn();
+			const mockSubscribe = vi.fn(handlers => {
+				handlers.error(new Error('Loan card watch error'));
+				return { unsubscribe: vi.fn() };
+			});
+			const mockQueryObserver = { subscribe: mockSubscribe };
+			const mockApollo = { watchQuery: vi.fn().mockReturnValue(mockQueryObserver) };
+
+			watchLoanCardData({
+				apollo: mockApollo,
+				loanId: 333,
+				loanCardQuery: { query: 'LOAN_CARD_QUERY' },
+				callback: mockCallback,
+				publicId: null
+			});
+
+			expect(mockCallback).toHaveBeenCalledWith({ error: expect.any(Error) });
+		});
+	});
+
+	describe('readLoanFragment', () => {
+		it('should read LoanPartner fragment from cache', () => {
+			const mockFragment = { query: 'FRAGMENT' };
+			const mockApollo = {
+				readFragment: vi.fn().mockReturnValue({ id: 444, type: 'LoanPartner' })
+			};
+
+			const result = readLoanFragment({
+				apollo: mockApollo,
+				loanId: 444,
+				fragment: mockFragment,
+				publicId: 'pub-444'
+			});
+
+			expect(result).toEqual({ id: 444, type: 'LoanPartner' });
+			expect(mockApollo.readFragment).toHaveBeenCalledWith({
+				id: 'LoanPartner:444',
+				publicId: 'pub-444',
+				fragment: mockFragment
+			});
+		});
+
+		it('should fallback to LoanDirect fragment when LoanPartner throws', () => {
+			const mockFragment = { query: 'FRAGMENT' };
+			const mockApollo = {
+				readFragment: vi.fn()
+					.mockImplementationOnce(() => { throw new Error('Not found'); })
+					.mockReturnValueOnce({ id: 555, type: 'LoanDirect' })
+			};
+
+			const result = readLoanFragment({
+				apollo: mockApollo,
+				loanId: 555,
+				fragment: mockFragment,
+				publicId: null
+			});
+
+			expect(result).toEqual({ id: 555, type: 'LoanDirect' });
+			expect(mockApollo.readFragment).toHaveBeenCalledTimes(2);
+		});
+
+		it('should return null when both fragments throw errors', () => {
+			const mockFragment = { query: 'FRAGMENT' };
+			const mockApollo = {
+				readFragment: vi.fn()
+					.mockImplementationOnce(() => { throw new Error('Not found'); })
+					.mockReturnValueOnce(null)
+			};
+
+			const result = readLoanFragment({
+				apollo: mockApollo,
+				loanId: 666,
+				fragment: mockFragment,
+				publicId: null
+			});
+
+			// Returns null from the directFragment attempt
+			expect(result).toBeNull();
+			expect(mockApollo.readFragment).toHaveBeenCalledTimes(2);
+		});
+	});
+
+	describe('isLessThan25', () => {
+		it('should return true when amount is less than 25 and greater than 0', () => {
+			expect(isLessThan25(24.99)).toBe(true);
+			expect(isLessThan25(10)).toBe(true);
+			expect(isLessThan25(0.01)).toBe(true);
+		});
+
+		it('should return false when amount is 25 or greater', () => {
+			expect(isLessThan25(25)).toBe(false);
+			expect(isLessThan25(100)).toBe(false);
+		});
+
+		it('should return false when amount is 0 or negative', () => {
+			expect(isLessThan25(0)).toBe(false);
+			expect(isLessThan25(-5)).toBe(false);
+		});
+	});
+
+	describe('isBetween25And50', () => {
+		it('should return true when amount is between 25 and 50 inclusive', () => {
+			expect(isBetween25And50(25.01)).toBe(true);
+			expect(isBetween25And50(35)).toBe(true);
+			expect(isBetween25And50(50)).toBe(true);
+		});
+
+		it('should return false when amount is 25 or less', () => {
+			expect(isBetween25And50(25)).toBe(false);
+			expect(isBetween25And50(10)).toBe(false);
+		});
+
+		it('should return false when amount is greater than 50', () => {
+			expect(isBetween25And50(50.01)).toBe(false);
+			expect(isBetween25And50(100)).toBe(false);
+		});
+	});
+
+	describe('isBetween25And500', () => {
+		it('should return true when amount is between 25 and 500 exclusive of 500', () => {
+			expect(isBetween25And500(25)).toBe(true);
+			expect(isBetween25And500(250)).toBe(true);
+			expect(isBetween25And500(499.99)).toBe(true);
+		});
+
+		it('should return false when amount is less than 25', () => {
+			expect(isBetween25And500(24.99)).toBe(false);
+			expect(isBetween25And500(10)).toBe(false);
+		});
+
+		it('should return false when amount is 500 or greater', () => {
+			expect(isBetween25And500(500)).toBe(false);
+			expect(isBetween25And500(1000)).toBe(false);
 		});
 	});
 });

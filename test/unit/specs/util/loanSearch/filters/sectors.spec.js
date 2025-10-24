@@ -4,6 +4,21 @@ import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchDat
 
 describe('sectors.js', () => {
 	describe('sectors', () => {
+		describe('getOptions', () => {
+			it('should return transformed sectors', () => {
+				const filteredFacets = { sectors: [{ key: 1, value: 100 }] };
+				const result = sectors.getOptions(mockAllFacets, filteredFacets);
+
+				expect(result).toEqual(expect.any(Array));
+			});
+
+			it('should handle empty filtered facets', () => {
+				const result = sectors.getOptions(mockAllFacets, { sectors: [] });
+
+				expect(result).toEqual(expect.any(Array));
+			});
+		});
+
 		describe('getFilterChips', () => {
 			it('should handle undefined', () => {
 				expect(sectors.getFilterChips({}, mockAllFacets)).toEqual([]);
@@ -15,6 +30,12 @@ describe('sectors.js', () => {
 				const expected = [mockAllFacets.sectorFacets[0]];
 
 				expect(result).toEqual(expected);
+			});
+
+			it('should handle sector not found in facets', () => {
+				const result = sectors.getFilterChips({ sectorId: [999] }, mockAllFacets);
+
+				expect(result).toEqual([undefined]);
 			});
 		});
 
@@ -89,6 +110,16 @@ describe('sectors.js', () => {
 				const result = sectors.getQueryFromFilter(state, FLSS_QUERY_TYPE);
 
 				expect(result).toEqual({});
+			});
+		});
+
+		describe('getSavedSearch', () => {
+			it('should return sector from state', () => {
+				const state = { sectorId: [1, 2] };
+
+				const result = sectors.getSavedSearch(state);
+
+				expect(result).toEqual({ sector: [1, 2] });
 			});
 		});
 
@@ -178,6 +209,31 @@ describe('sectors.js', () => {
 			const result = transformSectors(mockFilteredSectors, mockAllSectors);
 
 			expect(result).toEqual(mockTransformedSectors);
+		});
+
+		it('should skip sectors not found in allSectors', () => {
+			const mockFilteredSectors = [
+				{ key: 99, value: 5 },
+				{ key: 2, value: 3 },
+			];
+
+			const mockAllSectors = [
+				{ id: 2, name: 'd' },
+			];
+
+			const result = transformSectors(mockFilteredSectors, mockAllSectors);
+
+			expect(result).toEqual([mockBSector()]);
+		});
+
+		it('should handle undefined allSectors parameter', () => {
+			const mockFilteredSectors = [
+				{ key: 2, value: 3 },
+			];
+
+			const result = transformSectors(mockFilteredSectors);
+
+			expect(result).toEqual([]);
 		});
 	});
 });
