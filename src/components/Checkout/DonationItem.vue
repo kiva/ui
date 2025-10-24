@@ -78,9 +78,8 @@
 							>
 								{{ formattedAmount }}
 								<button
-									class="donation-amount tw-flex-none tw-align-middle"
-									data-testid="basket-donation-edit-button-mobile-pencil"
-									v-kv-track-event="['basket', 'Edit Donation']"
+									class="tw-flex-none tw-align-middle"
+									v-kv-track-event="['basket', 'click', 'remove-giving-fund-donation']"
 									@click="removeGivingFundDonation"
 									title="Remove giving fund donation"
 								>
@@ -158,9 +157,8 @@
 				>
 					{{ formattedAmount }}
 					<button
-						class="donation-amount tw-flex-none tw-align-middle"
-						data-testid="basket-donation-edit-button-mobile-pencil"
-						v-kv-track-event="['basket', 'Edit Donation']"
+						class="tw-flex-none tw-align-middle"
+						v-kv-track-event="['basket', 'click', 'remove-giving-fund-donation']"
 						@click="removeGivingFundDonation"
 						title="Remove giving fund donation"
 					>
