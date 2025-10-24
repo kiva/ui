@@ -1,6 +1,3 @@
-import {
-	describe, it, expect, beforeEach, vi
-} from 'vitest';
 import * as mockTrace from '#server/util/mockTrace';
 import createMiddleware from '#server/vue-middleware';
 import * as vueRender from '#server/vue-render';

@@ -27,4 +27,34 @@ describe('SearchEngine', () => {
 		await searchPromise;
 		expect(finished).toBe(true);
 	});
+
+	it('should initialize with data when provided to constructor', async () => {
+		const data = [
+			{ label: 'Apple', keywords: ['fruit'] },
+			{ label: 'Banana', keywords: ['fruit'] },
+		];
+		const engineWithData = new SearchEngine(data);
+
+		// Should be able to search immediately
+		const results = await engineWithData.search('App');
+		expect(results.length).toBeGreaterThan(0);
+		expect(results[0].label).toBe('Apple');
+	});
+
+	it('should handle empty data array in constructor', () => {
+		const emptyEngine = new SearchEngine([]);
+		expect(emptyEngine).toBeDefined();
+	});
+
+	it('should reset with new data after initialization', async () => {
+		const initialData = [{ label: 'Orange', keywords: ['fruit'] }];
+		const newData = [{ label: 'Carrot', keywords: ['vegetable'] }];
+
+		const testEngine = new SearchEngine(initialData);
+		testEngine.reset(newData);
+
+		const results = await testEngine.search('Carrot');
+		expect(results.length).toBeGreaterThan(0);
+		expect(results[0].label).toBe('Carrot');
+	});
 });

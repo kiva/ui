@@ -185,4 +185,98 @@ describe('getLoanUse', () => {
 		expectUse({ ...directLoanDefaultsV2, maxLength: 20 }, defaultDirectUseV2);
 		expectUse({ ...directLoanDefaultsV2, maxLength: 6 }, '$1,800 to Test Borrower helps buy pr...');
 	});
+
+	it('handles edge cases with normalizeUseV2 when use starts with name', () => {
+		// Version 2 - use starts with name and has extra spaces
+		expectUse(
+			{ ...loanDefaultsV2, use: 'Test Borrower   to expand business.' },
+			'$1,800 helps Test Borrower to expand business.'
+		);
+
+		// Version 2 Direct - use starts with name and has extra spaces
+		expectUse(
+			{ ...directLoanDefaultsV2, use: 'Test Borrower   buy supplies.' },
+			'$1,800 to Test Borrower helps buy supplies.'
+		);
+
+		// Version 2 - use exactly matches name with nothing after (empty string after trim)
+		expectUse(
+			{ ...loanDefaultsV2, use: 'Test Borrower' },
+			'$1,800 helps Test Borrower '
+		);
+
+		// Version 2 Direct - use exactly matches name with nothing after (empty string after trim)
+		expectUse(
+			{ ...directLoanDefaultsV2, use: 'Test Borrower' },
+			'$1,800 to Test Borrower helps '
+		);
+	});
+
+	it('handles non-string input types for use and name', () => {
+		// Version 1 - non-string use
+		expectUse({ ...loanDefaults, use: 123 }, 'A loan of $1,800 helps ');
+		expectUse({ ...loanDefaults, use: {} }, 'A loan of $1,800 helps ');
+		expectUse({ ...loanDefaults, use: [] }, 'A loan of $1,800 helps ');
+
+		// Version 1 - non-string name
+		expectUse({ ...loanDefaults, name: 123 }, defaultUse);
+		expectUse({ ...loanDefaults, name: {} }, defaultUse);
+		expectUse({ ...loanDefaults, name: [] }, defaultUse);
+
+		// Version 2 - non-string use
+		expectUse({ ...loanDefaultsV2, use: 123 }, '$1,800 helps Test Borrower ');
+		expectUse({ ...loanDefaultsV2, use: {} }, '$1,800 helps Test Borrower ');
+
+		// Version 2 - non-string name
+		expectUse({ ...loanDefaultsV2, name: 123 }, '$1,800 helps 123 to buy produce.');
+		expectUse({ ...loanDefaultsV2, name: {} }, '$1,800 helps [object Object] to buy produce.');
+	});
+
+	it('handles edge cases with empty or whitespace strings', () => {
+		// Version 1 - whitespace-only use
+		expectUse({ ...loanDefaults, use: '   ' }, 'A loan of $1,800 helps    ');
+
+		// Version 2 - whitespace-only use
+		expectUse({ ...loanDefaultsV2, use: '   ' }, '$1,800 helps Test Borrower    ');
+
+		// Version 2 - empty name
+		expectUse({ ...loanDefaultsV2, name: '' }, '$1,800 helps  to buy produce.');
+	});
+
+	it('handles distribution model edge cases for version 2', () => {
+		// Version 2 with undefined distributionModel (should use else branch, not direct)
+		expectUse({ ...loanDefaultsV2, distributionModel: undefined }, defaultUseV2);
+
+		// Version 2 with null distributionModel (should use else branch, not direct)
+		expectUse({ ...loanDefaultsV2, distributionModel: null }, defaultUseV2);
+
+		// Version 2 with 'fieldPartner' explicitly (should use else branch, not direct)
+		expectUse({ ...loanDefaultsV2, distributionModel: 'fieldPartner' }, defaultUseV2);
+
+		// Version 2 with unknown distributionModel (should use else branch, not direct)
+		expectUse({ ...loanDefaultsV2, distributionModel: 'unknown' }, defaultUseV2);
+
+		// Version 2 Direct with various statuses to cover all branches
+		expectUse({ ...directLoanDefaultsV2, status: 'fundraising' }, '$1,800 to Test Borrower helps buy produce.');
+		expectUse({ ...directLoanDefaultsV2, status: 'completed' }, '$1,800 to Test Borrower helped buy produce.');
+	});
+
+	it('handles zero and negative loan amounts', () => {
+		// Version 1 with zero loan amount returns empty string
+		expectUse({ ...loanDefaults, loanAmount: '0' }, '');
+		expectUse({ ...loanDefaults, loanAmount: 0 }, '');
+		expectUse({ ...loanDefaults, loanAmount: '0.00' }, '');
+
+		// Version 2 with zero loan amount returns empty string
+		expectUse({ ...loanDefaultsV2, loanAmount: '0' }, '');
+		expectUse({ ...loanDefaultsV2, loanAmount: 0 }, '');
+
+		// Version 2 Direct with zero loan amount returns empty string
+		expectUse({ ...directLoanDefaultsV2, loanAmount: '0' }, '');
+
+		// Negative amounts continue through but with empty amount string
+		expectUse({ ...loanDefaults, loanAmount: '-100' }, 'A loan of  helps to buy produce.');
+		expectUse({ ...loanDefaultsV2, loanAmount: '-100' }, ' helps Test Borrower to buy produce.');
+		expectUse({ ...directLoanDefaultsV2, loanAmount: '-100' }, ' to Test Borrower helps buy produce.');
+	});
 });

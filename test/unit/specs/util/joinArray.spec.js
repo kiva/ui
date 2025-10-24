@@ -27,4 +27,21 @@ describe('joinArray.js', () => {
 			joinArray('Not Array');
 		}).toThrow('Passed value is not of array type.');
 	});
+
+	test('Should handle array with two items', () => {
+		expect(joinArray(['First', 'Second'])).toEqual('First and Second');
+	});
+
+	test('Should handle array with two items and custom conjunction', () => {
+		expect(joinArray(['First', 'Second'], 'or')).toEqual('First or Second');
+	});
+
+	test('Should handle null conjunction as falsy (no conjunction)', () => {
+		expect(joinArray(testArray, null)).toEqual('First Item, Second Item, Third Item, Fourth Item');
+	});
+
+	test('Should handle undefined conjunction as default "and"', () => {
+		// undefined uses default parameter 'and'
+		expect(joinArray(testArray, undefined)).toEqual('First Item, Second Item, Third Item and Fourth Item');
+	});
 });
