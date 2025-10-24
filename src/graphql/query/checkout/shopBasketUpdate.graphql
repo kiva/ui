@@ -98,6 +98,9 @@ query shopBasketUpdate($basketId: String) {
 					... on Donation {
 						isTip
 						isUserEdited
+						metadata {
+							campaignId
+						}
 					}
 					... on KivaCard {
 						id
