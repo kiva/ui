@@ -77,19 +77,19 @@ const count = ref(props.selectedGoalNumber || 0);
 const incrementCount = () => {
 	if (count.value >= MAX_COUNT) return;
 	count.value += 1;
-	$kvTrackEvent('portfolio', 'modify-goal-amount', 'increase-goal');
+	$kvTrackEvent('portfolio', 'modify-goal-amount', 'increase-goal', undefined, count.value);
 	emit('number-changed', count.value);
 };
 
 const decrementCount = () => {
 	if (MIN_COUNT >= count.value) return;
 	count.value -= 1;
-	$kvTrackEvent('portfolio', 'modify-goal-amount', 'decrease-goal');
+	$kvTrackEvent('portfolio', 'modify-goal-amount', 'decrease-goal', undefined, count.value);
 	emit('number-changed', count.value);
 };
 
 onMounted(() => {
-	$kvTrackEvent('portfolio', 'show', 'view-goal-number', count.value);
+	$kvTrackEvent('portfolio', 'show', 'view-goal-number', undefined, count.value);
 });
 
 </script>
