@@ -21,6 +21,11 @@ describe('SimpleQueue', () => {
 		expect(queue.peek()).toEqual(1);
 	});
 
+	it('returns undefined when peeking an empty queue', () => {
+		const emptyQueue = new SimpleQueue();
+		expect(emptyQueue.peek()).toBeUndefined();
+	});
+
 	it('returns a value of 1, when removing the 1 item from the queue', () => {
 		expect(queue.remove()).toEqual(1);
 	});

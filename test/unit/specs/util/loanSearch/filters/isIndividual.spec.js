@@ -10,6 +10,22 @@ import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchDat
 
 describe('isIndividual.js', () => {
 	describe('isIndividual', () => {
+		describe('getOptions', () => {
+			it('should return transformed isIndividual options', () => {
+				const result = isIndividual.getOptions(mockAllFacets);
+
+				expect(result).toEqual(expect.any(Array));
+				expect(result.length).toBeGreaterThan(0);
+			});
+
+			it('should return default options even with empty facets', () => {
+				const result = isIndividual.getOptions({});
+
+				expect(result).toEqual(expect.any(Array));
+				expect(result.length).toBe(2); // Individual and Group options
+			});
+		});
+
 		describe('getFilterChips', () => {
 			it('should handle undefined', () => {
 				expect(isIndividual.getFilterChips({}, mockAllFacets)).toEqual([]);
@@ -29,6 +45,32 @@ describe('isIndividual.js', () => {
 		describe('getRemovedFacet', () => {
 			it('should remove facet', () => {
 				expect(isIndividual.getRemovedFacet()).toEqual({ isIndividual: null });
+			});
+		});
+
+		describe('getSavedSearch', () => {
+			it('should return isGroup null when isIndividual is null', () => {
+				const state = { isIndividual: null };
+
+				const result = isIndividual.getSavedSearch(state);
+
+				expect(result).toEqual({ isGroup: null });
+			});
+
+			it('should return isGroup true when isIndividual is false', () => {
+				const state = { isIndividual: false };
+
+				const result = isIndividual.getSavedSearch(state);
+
+				expect(result).toEqual({ isGroup: true });
+			});
+
+			it('should return isGroup false when isIndividual is true', () => {
+				const state = { isIndividual: true };
+
+				const result = isIndividual.getSavedSearch(state);
+
+				expect(result).toEqual({ isGroup: false });
 			});
 		});
 
@@ -98,6 +140,49 @@ describe('isIndividual.js', () => {
 			it('should return filters', () => {
 				expect(isIndividual.getFlssFilter({ isIndividual: false }))
 					.toEqual({ isIndividual: { eq: false } });
+			});
+
+			it('should return filters for true value', () => {
+				expect(isIndividual.getFlssFilter({ isIndividual: true }))
+					.toEqual({ isIndividual: { eq: true } });
+			});
+
+			it('should handle undefined isIndividual', () => {
+				expect(isIndividual.getFlssFilter({ isIndividual: undefined })).toEqual({});
+			});
+		});
+
+		describe('getQueryFromFilter edge cases', () => {
+			it('should return empty object when isIndividual is null', () => {
+				const state = { isIndividual: null };
+
+				const result = isIndividual.getQueryFromFilter(state, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({});
+			});
+
+			it('should return empty object when isIndividual is undefined', () => {
+				const state = {};
+
+				const result = isIndividual.getQueryFromFilter(state, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({});
+			});
+
+			it('should handle isIndividual true', () => {
+				const state = { isIndividual: true };
+
+				const result = isIndividual.getQueryFromFilter(state, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ isGroup: 'false' });
+			});
+		});
+
+		describe('getFilterChips edge cases', () => {
+			it('should return chips for isIndividual true', () => {
+				const result = isIndividual.getFilterChips({ isIndividual: true }, mockAllFacets);
+
+				expect(result).toEqual([{ name: 'Individual', __typename: 'IsIndividual' }]);
 			});
 		});
 	});

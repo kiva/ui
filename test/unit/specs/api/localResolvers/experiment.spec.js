@@ -51,6 +51,16 @@ vi.mock('#src/util/experiment/experimentUtils', async () => {
 });
 
 describe('experiment.js', () => {
+	it('should return empty object when cookieStore is not provided', () => {
+		const result = expResolverFactory({ cookieStore: null });
+		expect(result).toEqual({});
+	});
+
+	it('should return empty object when cookieStore is undefined', () => {
+		const result = expResolverFactory({});
+		expect(result).toEqual({});
+	});
+
 	describe('Query.experiment', () => {
 		let consoleWarnSpy;
 

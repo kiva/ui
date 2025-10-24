@@ -33,6 +33,14 @@ describe('queryParamUtils.js', () => {
 		it('should return false', () => {
 			expect(hasExcludedQueryParams({ test: [] })).toBe(false);
 		});
+
+		it('should handle empty query object', () => {
+			expect(hasExcludedQueryParams({})).toBe(false);
+		});
+
+		it('should handle multiple excluded params', () => {
+			expect(hasExcludedQueryParams({ city_state: [], loanTags: [], test: [] })).toBe(true);
+		});
 	});
 
 	describe('convertQueryToFilters', () => {
@@ -115,6 +123,27 @@ describe('queryParamUtils.js', () => {
 			updateQueryParams({ a: 'a', b: 'b' }, router, FLSS_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledTimes(0);
+		});
+
+		it('should catch and ignore cancelled navigation errors', async () => {
+			const cancelledError = {
+				type: 8 // NavigationFailureType.cancelled
+			};
+			const router = {
+				currentRoute: { value: { name: 'name', query: {} } },
+				push: vi.fn().mockReturnValue(Promise.reject(cancelledError)),
+			};
+
+			// Call the function and wait for promise to settle
+			updateQueryParams({}, router, FLSS_QUERY_TYPE);
+
+			// Wait for microtasks to complete
+			await new Promise(resolve => {
+				setTimeout(() => resolve(), 0);
+			});
+
+			// Should not throw - the error was caught
+			expect(router.push).toHaveBeenCalled();
 		});
 	});
 });

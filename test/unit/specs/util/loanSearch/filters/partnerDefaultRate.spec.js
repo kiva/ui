@@ -81,5 +81,26 @@ describe('partnerDefaultRate.js', () => {
 					.toEqual({ partnerDefaultRate: { range: { gte: 1, lte: 2 } } });
 			});
 		});
+
+		describe('getSavedSearch', () => {
+			it('should return defaultRate object', () => {
+				const state = { partnerDefaultRate: { min: 0, max: 3 } };
+				const result = partnerDefaultRate.getSavedSearch(state);
+				expect(result).toEqual({ defaultRate: { min: 0, max: 3 } });
+			});
+
+			it('should return null when partnerDefaultRate is null', () => {
+				const state = { partnerDefaultRate: null };
+				const result = partnerDefaultRate.getSavedSearch(state);
+				expect(result).toEqual({ defaultRate: null });
+			});
+		});
+
+		describe('getOptions', () => {
+			it('should return min, max, and step', () => {
+				const result = partnerDefaultRate.getOptions();
+				expect(result).toEqual({ min: MIN, max: MAX, step: 0.001 });
+			});
+		});
 	});
 });

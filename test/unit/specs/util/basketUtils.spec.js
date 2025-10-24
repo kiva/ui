@@ -29,6 +29,22 @@ describe('basketUtils', () => {
 			expect(cookieStore.set).not.toHaveBeenCalled();
 			expect(result).toBeUndefined();
 		});
+
+		it('handles null data from mutation', async () => {
+			const apollo = { mutate: vi.fn().mockResolvedValue({ data: null }) };
+			const cookieStore = { set: vi.fn() };
+			const result = await createNewBasket({ apollo, cookieStore });
+			expect(cookieStore.set).not.toHaveBeenCalled();
+			expect(result).toBeUndefined();
+		});
+
+		it('handles undefined data.shop.createBasket', async () => {
+			const apollo = { mutate: vi.fn().mockResolvedValue({ data: { shop: { createBasket: undefined } } }) };
+			const cookieStore = { set: vi.fn() };
+			const result = await createNewBasket({ apollo, cookieStore });
+			expect(cookieStore.set).not.toHaveBeenCalled();
+			expect(result).toBeUndefined();
+		});
 	});
 
 	describe('hasBasketExpired', () => {
@@ -66,6 +82,17 @@ describe('basketUtils', () => {
 			handleInvalidBasketForDonation({ cookieStore, donationAmount: 5, navigateToCheckout: true });
 
 			expect(cookieStore.remove).toHaveBeenCalledWith('kvbskt', { path: '/', secure: true });
+			expect(cookieStore.set).toHaveBeenCalledWith('kvatbamt', expectedCookieValue);
+			expect(reloadSpy).toHaveBeenCalled();
+		});
+
+		it('defaults navigateToCheckout to false when not provided', () => {
+			const cookieStore = { remove: vi.fn(), set: vi.fn() };
+			const reloadSpy = vi.spyOn(window.location, 'reload').mockImplementation(() => {});
+			const expectedCookieValue = JSON.stringify({ donationAmount: 10, navigateToCheckout: false });
+
+			handleInvalidBasketForDonation({ cookieStore, donationAmount: 10 });
+
 			expect(cookieStore.set).toHaveBeenCalledWith('kvatbamt', expectedCookieValue);
 			expect(reloadSpy).toHaveBeenCalled();
 		});
@@ -113,11 +140,77 @@ describe('basketUtils', () => {
 			expect(result).toEqual({ data: 'ok' });
 		});
 
+		it('logs errors when data.errors exists', async () => {
+			const mockLogFormatter = vi.spyOn(logFormatter, 'default').mockImplementation(() => ({}));
+			const errors = [new Error('error1'), new Error('error2')];
+			const apollo = { mutate: vi.fn().mockResolvedValue({ data: { ok: true }, errors }) };
+			const result = await setDonationAmount({ apollo, donationAmount: 5 });
+			expect(mockLogFormatter).toHaveBeenCalledTimes(2);
+			expect(mockLogFormatter).toHaveBeenCalledWith(errors[0], 'error');
+			expect(mockLogFormatter).toHaveBeenCalledWith(errors[1], 'error');
+			expect(result).toEqual({ data: { ok: true }, errors });
+		});
+
 		it('logs error if apollo.mutate throws', async () => {
 			const mockLogFormatter = vi.spyOn(logFormatter, 'default').mockImplementation(() => ({}));
 			const apollo = { mutate: vi.fn().mockRejectedValue(new Error('fail')) };
 			await setDonationAmount({ apollo, donationAmount: 5 });
 			expect(mockLogFormatter).toBeCalledWith(expect.any(Error), 'error');
+		});
+	});
+
+	describe('setLendAmount error logging', () => {
+		beforeEach(() => {
+			vi.mock('@sentry/vue');
+		});
+
+		it('logs errors to Sentry when mutation has errors', async () => {
+			const mockLogFormatter = vi.spyOn(logFormatter, 'default').mockImplementation(() => ({}));
+			const error = new Error('mutation failed');
+			const apollo = { mutate: vi.fn().mockResolvedValue({ errors: [error] }) };
+
+			await expect(setLendAmount({ amount: 25, apollo, loanId: 123 })).rejects.toBeDefined();
+
+			expect(mockLogFormatter).toHaveBeenCalledWith(error, 'error');
+		});
+
+		it('handles Sentry error gracefully when capturing exception fails', async () => {
+			const mockLogFormatter = vi.spyOn(logFormatter, 'default').mockImplementation(() => ({}));
+			const error = new Error('mutation failed');
+			const apollo = { mutate: vi.fn().mockResolvedValue({ errors: [error] }) };
+
+			// Mock Sentry to throw an error
+			const { withScope } = await import('@sentry/vue');
+			vi.mocked(withScope).mockImplementation(() => {
+				throw new Error('Sentry error');
+			});
+
+			// Should not throw despite Sentry error
+			await expect(setLendAmount({ amount: 25, apollo, loanId: 123 })).rejects.toBeDefined();
+
+			expect(mockLogFormatter).toHaveBeenCalledWith(error, 'error');
+		});
+
+		it('handles array of errors when mutation is rejected', async () => {
+			const mockLogFormatter = vi.spyOn(logFormatter, 'default').mockImplementation(() => ({}));
+			const errors = [new Error('error1'), new Error('error2')];
+			const apollo = { mutate: vi.fn().mockRejectedValue(errors) };
+
+			await expect(setLendAmount({ amount: 25, apollo, loanId: 123 })).rejects.toBe(errors);
+
+			expect(mockLogFormatter).toHaveBeenCalledTimes(2);
+			expect(mockLogFormatter).toHaveBeenCalledWith(errors[0], 'error');
+			expect(mockLogFormatter).toHaveBeenCalledWith(errors[1], 'error');
+		});
+
+		it('handles single error when mutation is rejected', async () => {
+			const mockLogFormatter = vi.spyOn(logFormatter, 'default').mockImplementation(() => ({}));
+			const error = new Error('single error');
+			const apollo = { mutate: vi.fn().mockRejectedValue(error) };
+
+			await expect(setLendAmount({ amount: 25, apollo, loanId: 123 })).rejects.toBe(error);
+
+			expect(mockLogFormatter).toHaveBeenCalledWith(error, 'error');
 		});
 	});
 });

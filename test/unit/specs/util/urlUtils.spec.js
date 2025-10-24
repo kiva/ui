@@ -106,5 +106,25 @@ describe('urlUtils.js', () => {
 		it('should return false for URL that is included', () => {
 			expect(isExcludedUrl([''], ['fgh'], 'fgh')).toBe(false);
 		});
+
+		it('should match wildcard patterns in deny list', () => {
+			expect(isExcludedUrl(['/lend/*'], [], '/lend/123')).toBe(true);
+			expect(isExcludedUrl(['/lend/*'], [], '/lend/filter')).toBe(true);
+			expect(isExcludedUrl(['/lend/*'], [], '/borrow')).toBe(false);
+		});
+
+		it('should match wildcard patterns in allow list', () => {
+			expect(isExcludedUrl([], ['/lend/*'], '/lend/123')).toBe(false);
+			expect(isExcludedUrl([], ['/lend/*'], '/lend/filter')).toBe(false);
+			expect(isExcludedUrl([], ['/lend/*'], '/borrow')).toBe(true);
+		});
+
+		it('should handle wildcard that does not match fragment', () => {
+			expect(isExcludedUrl(['/checkout/*'], [], '/lend/123')).toBe(false);
+		});
+
+		it('should prioritize allow list over deny list', () => {
+			expect(isExcludedUrl(['/lend/123'], ['/lend/*'], '/lend/123')).toBe(false);
+		});
 	});
 });

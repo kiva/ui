@@ -33,6 +33,22 @@ describe('lenderRepaymentTerms.js', () => {
 			});
 		});
 
+		describe('getSavedSearch', () => {
+			it('should return null when lenderRepaymentTerm is undefined', () => {
+				const result = lenderRepaymentTerms.getSavedSearch({});
+
+				expect(result).toEqual({ lenderTerm: null });
+			});
+
+			it('should return lenderTerm when lenderRepaymentTerm exists', () => {
+				const state = { lenderRepaymentTerm: { min: 0, max: 8, __typename: 'MinMaxRange' } };
+
+				const result = lenderRepaymentTerms.getSavedSearch(state);
+
+				expect(result).toEqual({ lenderTerm: { min: 0, max: 8 } });
+			});
+		});
+
 		describe('getValidatedSearchState', () => {
 			it('should handle undefined', () => {
 				const result = lenderRepaymentTerms.getValidatedSearchState({}, mockAllFacets, FLSS_QUERY_TYPE);
@@ -127,6 +143,31 @@ describe('lenderRepaymentTerms.js', () => {
 					value: lenderRepaymentTermValueMap[MORE_THAN_TWO_YEARS_KEY]
 				},
 			]);
+		});
+	});
+
+	describe('getOptions', () => {
+		it('should return transformed options', () => {
+			const result = lenderRepaymentTerms.getOptions();
+			expect(result.length).toBe(4);
+			expect(result[0].name).toBe(EIGHT_MONTHS_KEY);
+		});
+	});
+
+	describe('showSavedSearch', () => {
+		it('should return true when lenderRepaymentTerm is set', () => {
+			const result = lenderRepaymentTerms.showSavedSearch({ lenderRepaymentTerm: { min: 0, max: 8 } });
+			expect(result).toBe(true);
+		});
+
+		it('should return false when lenderRepaymentTerm is null', () => {
+			const result = lenderRepaymentTerms.showSavedSearch({ lenderRepaymentTerm: null });
+			expect(result).toBe(false);
+		});
+
+		it('should return false when lenderRepaymentTerm is undefined', () => {
+			const result = lenderRepaymentTerms.showSavedSearch({});
+			expect(result).toBe(false);
 		});
 	});
 });

@@ -99,6 +99,14 @@ describe('myKivaUtils.js', () => {
 
 			expect(result).toBe(false);
 		});
+
+		it('should return false for loan with missing geocode data', () => {
+			expect(hasLoanFunFactFootnote({})).toBe(false);
+			expect(hasLoanFunFactFootnote({ geocode: null })).toBe(false);
+			expect(hasLoanFunFactFootnote({ geocode: { country: null } })).toBe(false);
+			expect(hasLoanFunFactFootnote(null)).toBe(false);
+			expect(hasLoanFunFactFootnote(undefined)).toBe(false);
+		});
 	});
 
 	describe('fetchPostCheckoutAchievements', () => {
@@ -306,6 +314,25 @@ describe('myKivaUtils.js', () => {
 		it('should not throw if cookieStore is undefined', () => {
 			apolloMock.readFragment.mockReturnValue({ version: 'b' });
 			expect(() => getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, true, undefined)).not.toThrow();
+		});
+
+		it('should handle when readFragment returns null', () => {
+			apolloMock.readFragment.mockReturnValue(null);
+			cookieStoreMock.get.mockReturnValue(undefined);
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, true, cookieStoreMock);
+			expect(result).toBe(false);
+			expect($kvTrackEventMock).toHaveBeenCalledWith(
+				'event-tracking',
+				'EXP-MP-1235-Jan2025',
+				undefined
+			);
+		});
+
+		it('should handle when readFragment returns undefined', () => {
+			apolloMock.readFragment.mockReturnValue(undefined);
+			cookieStoreMock.get.mockReturnValue(undefined);
+			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, true, cookieStoreMock);
+			expect(result).toBe(false);
 		});
 	});
 });

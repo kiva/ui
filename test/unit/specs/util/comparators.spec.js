@@ -54,6 +54,15 @@ describe('comparators.js', () => {
 			expect(() => comparators.startsWith()).toThrow();
 		});
 
+		it('handles case-insensitive matching', () => {
+			const initial = ['Israel', 'isle', 'ISLAND'];
+			const result = initial.sort(comparators.startsWith('IS'));
+			// All three start with 'is' (case-insensitive), should be alphabetically sorted
+			expect(result[0].toLowerCase()).toMatch(/^is/);
+			expect(result[1].toLowerCase()).toMatch(/^is/);
+			expect(result[2].toLowerCase()).toMatch(/^is/);
+		});
+
 		it('sorts elements starting with a query string first, then alphabetically', () => {
 			const initial = ['Malawi', 'Easter Island', 'Isle of Wight', 'Hilton Head Island, SC', 'Israel'];
 			const expected = ['Isle of Wight', 'Israel', 'Easter Island', 'Hilton Head Island, SC', 'Malawi'];

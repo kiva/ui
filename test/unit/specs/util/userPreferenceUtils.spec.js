@@ -1,7 +1,4 @@
 import {
-	describe, it, expect, vi
-} from 'vitest';
-import {
 	createUserPreferences,
 	updateUserPreferences,
 	createUserPreferencesMutation,
@@ -58,6 +55,20 @@ describe('userPreferenceUtils.ts', () => {
 				variables: { preferences: JSON.stringify(preferences) },
 			});
 		});
+
+		it('should handle errors when creating user preferences', async () => {
+			const { default: logReadQueryError } = await import('#src/util/logReadQueryError');
+			const error = new Error('Create failed');
+			const apolloMock = {
+				mutate: vi.fn().mockRejectedValueOnce(error)
+			};
+			const preferences = { test: 'test' };
+
+			const result = await createUserPreferences(apolloMock, preferences);
+
+			expect(result).toBeUndefined();
+			expect(logReadQueryError).toHaveBeenCalledWith(error, 'userPreferenceUtils createUserPreferencesMutation');
+		});
 	});
 
 	describe('updateUserPreferences', () => {
@@ -86,6 +97,24 @@ describe('userPreferenceUtils.ts', () => {
 					preferences: JSON.stringify({ test: 'test', new: 'new' }),
 				},
 			});
+		});
+
+		it('should handle errors when updating user preferences', async () => {
+			const { default: logReadQueryError } = await import('#src/util/logReadQueryError');
+			const error = new Error('Update failed');
+			const apolloMock = {
+				mutate: vi.fn().mockRejectedValueOnce(error)
+			};
+
+			const result = await updateUserPreferences(
+				apolloMock,
+				userPreferenceDataMock.my.userPreference,
+				{ test: 'test' },
+				{ new: 'new' },
+			);
+
+			expect(result).toBeUndefined();
+			expect(logReadQueryError).toHaveBeenCalledWith(error, 'userPreferenceUtils updateUserPreferencesMutation');
 		});
 	});
 });

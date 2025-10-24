@@ -32,6 +32,28 @@ describe('filterUtils.js', () => {
 				{ name: 'c', title: 'CC', value: 'c' }
 			]);
 		});
+
+		it('should use original object when displayMap value is falsy', () => {
+			const options = [{ name: 'a' }];
+			const order = ['a'];
+			const map = { A: null };
+
+			const result = transformRadioGroupOptions(options, order, map);
+
+			expect(result).toEqual([
+				{ name: 'a', title: { name: 'a' }, value: 'a' }
+			]);
+		});
+
+		it('should handle missing capitalizedOrder in sort', () => {
+			const options = [{ name: 'b' }, { name: 'a' }];
+			const order = null;
+			const map = { A: 'AA', B: 'BB' };
+
+			const result = transformRadioGroupOptions(options, order, map);
+
+			expect(result).toEqual([]);
+		});
 	});
 
 	describe('getFilterKeyFromValue', () => {
@@ -143,6 +165,10 @@ describe('filterUtils.js', () => {
 			expect(getDisplayedNumber(4.001, false, undefined, '.001')).toBe('4.001');
 			expect(getDisplayedNumber(4.0011, false, undefined, '.001')).toBe('4.001');
 			expect(getDisplayedNumber(4.0016, false, undefined, '.001')).toBe('4.002');
+		});
+
+		it('should handle percentage with step that has no decimal part', () => {
+			expect(getDisplayedNumber(0.05, true, '%', 1)).toBe('5%');
 		});
 	});
 });

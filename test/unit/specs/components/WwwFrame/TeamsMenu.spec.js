@@ -165,4 +165,86 @@ describe('TeamsMenu', () => {
 		const allMyTeams = queryByText('View all my teams');
 		expect(allMyTeams.getAttribute('href')).toBe('/teams/my-teams');
 	});
+
+	it('should handle empty teams data', () => {
+		const props = {
+			teams: {}
+		};
+		const { container } = renderTeamsMenu(props);
+
+		// Should render the link but without dropdown
+		const teamsLink = container.querySelector('[data-testid="header-lending-teams"]');
+		expect(teamsLink).toBeTruthy();
+
+		// Should not show dropdown when teams are empty
+		const dropdown = container.querySelector('[data-testid="header-lending-teams-dropdown-list"]');
+		expect(dropdown).toBeFalsy();
+	});
+
+	it('should handle null teams prop', () => {
+		const props = {
+			teams: null
+		};
+		const { container } = renderTeamsMenu(props);
+
+		// Should still render without errors
+		const teamsLink = container.querySelector('[data-testid="header-lending-teams"]');
+		expect(teamsLink).toBeTruthy();
+	});
+
+	it('should handle undefined teams values', () => {
+		const props = {
+			teams: {
+				totalCount: 1,
+				values: undefined
+			}
+		};
+		const { container } = renderTeamsMenu(props);
+
+		// Should render link but computed teamsData should be empty
+		const teamsLink = container.querySelector('[data-testid="header-lending-teams"]');
+		expect(teamsLink).toBeTruthy();
+	});
+
+	it('should handle null teams values', () => {
+		const props = {
+			teams: {
+				totalCount: 1,
+				values: null
+			}
+		};
+		const { container } = renderTeamsMenu(props);
+
+		// Should render link but computed teamsData should be empty (line 105)
+		const teamsLink = container.querySelector('[data-testid="header-lending-teams"]');
+		expect(teamsLink).toBeTruthy();
+
+		// teamsData should be empty array due to nullish coalescing
+		const dropdown = container.querySelector('[data-testid="header-lending-teams-dropdown-list"]');
+		expect(dropdown).toBeTruthy(); // Dropdown shows because totalCount is 1
+	});
+
+	it('should handle team with missing teamPublicId', () => {
+		const props = {
+			teams: {
+				totalCount: 1,
+				values: [
+					{
+						id: 1,
+						team: {
+							id: 1,
+							name: 'Team Without Public ID'
+							// teamPublicId is missing
+						}
+					}
+				]
+			}
+		};
+		const { queryByText } = renderTeamsMenu(props);
+
+		// Should render My Team's activity link even with null teamPublicId (line 105)
+		const activity = queryByText("My Team's activity");
+		expect(activity).toBeTruthy();
+		expect(activity.getAttribute('href')).toBe('/team/null');
+	});
 });

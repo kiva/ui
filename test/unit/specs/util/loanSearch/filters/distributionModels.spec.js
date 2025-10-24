@@ -159,4 +159,83 @@ describe('distributionModels.js', () => {
 			]);
 		});
 	});
+
+	describe('getSavedSearch', () => {
+		it('should return mapped enum value for FIELDPARTNER', () => {
+			const result = distributionModels.getSavedSearch({ distributionModel: 'FIELDPARTNER' });
+			expect(result).toEqual({ distributionModel: 'fieldPartner' });
+		});
+
+		it('should return mapped enum value for DIRECT', () => {
+			const result = distributionModels.getSavedSearch({ distributionModel: 'DIRECT' });
+			expect(result).toEqual({ distributionModel: 'direct' });
+		});
+
+		it('should handle null distributionModel', () => {
+			const result = distributionModels.getSavedSearch({ distributionModel: null });
+			expect(result).toEqual({ distributionModel: undefined });
+		});
+	});
+
+	describe('getOptions', () => {
+		it('should return empty array when no facets', () => {
+			expect(distributionModels.getOptions({})).toEqual([]);
+		});
+
+		it('should transform distribution model facets', () => {
+			const allFacets = {
+				distributionModelFacets: [
+					{ name: FIELDPARTNER_KEY },
+					{ name: DIRECT_KEY }
+				]
+			};
+			const result = distributionModels.getOptions(allFacets);
+			expect(result.length).toBe(2);
+			expect(result[0].title).toBe('Partner');
+			expect(result[1].title).toBe('Direct');
+		});
+
+		it('should handle undefined distributionModelFacets', () => {
+			const allFacets = { distributionModelFacets: undefined };
+			const result = distributionModels.getOptions(allFacets);
+			expect(result).toEqual([]);
+		});
+	});
+
+	describe('getValidatedSearchState', () => {
+		it('should handle null loanSearchState.distributionModel', () => {
+			// Line 80 - optional chaining with null distributionModel
+			const loanSearchState = { distributionModel: null };
+			const allFacets = { distributionModels: ['DIRECT', 'FIELDPARTNER'] };
+
+			const result = distributionModels.getValidatedSearchState(loanSearchState, allFacets);
+
+			expect(result).toEqual({ distributionModel: null });
+		});
+	});
+
+	describe('showSavedSearch', () => {
+		it('should return true when distributionModel is set', () => {
+			const result = distributionModels.showSavedSearch({ distributionModel: 'DIRECT' });
+			expect(result).toBe(true);
+		});
+
+		it('should return false when distributionModel is null', () => {
+			const result = distributionModels.showSavedSearch({ distributionModel: null });
+			// Line 60: !!null -> false
+			expect(result).toBe(false);
+		});
+
+		it('should return false when distributionModel is undefined', () => {
+			const result = distributionModels.showSavedSearch({});
+			// Line 60: !!undefined -> false
+			expect(result).toBe(false);
+		});
+
+		it('should return false when distributionModel is empty string', () => {
+			const result = distributionModels.showSavedSearch({ distributionModel: '' });
+			// Line 60: !!'' -> false (covers line 59-60 branches)
+			expect(result).toBe(false);
+		});
+	});
 });

@@ -464,4 +464,65 @@ describe('loan.js', () => {
 			});
 		});
 	});
+
+	describe('LoanBasic.fullLoanUse', () => {
+		function testFullLoanUse({ loan, args, expected }) {
+			const { resolvers } = loanResolverFactory();
+			const result = resolvers.LoanPartner.fullLoanUse(loan, args);
+			expect(result).toBe(expected);
+		}
+
+		it('Returns full loan use text', () => {
+			testFullLoanUse({
+				loan: {
+					anonymizationLevel: 'none',
+					borrowerCount: 1,
+					loanAmount: '1000.00',
+					name: 'John',
+					status: 'fundraising',
+					use: 'to buy supplies',
+				},
+				args: { maxLength: 100 },
+				expected: 'A loan of $1,000 helps to buy supplies',
+			});
+		});
+
+		it('Returns empty string when required fields are missing', () => {
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+			testFullLoanUse({
+				loan: {
+					anonymizationLevel: 'none',
+					borrowerCount: 1,
+					loanAmount: '1000.00',
+					// Missing 'name', 'status', 'use'
+				},
+				args: { maxLength: 100 },
+				expected: '',
+			});
+
+			expect(consoleErrorSpy).toHaveBeenCalled();
+			consoleErrorSpy.mockRestore();
+		});
+
+		it('Handles missing args parameter', () => {
+			testFullLoanUse({
+				loan: {
+					anonymizationLevel: 'none',
+					borrowerCount: 1,
+					loanAmount: '1000.00',
+					name: 'John',
+					status: 'fundraising',
+					use: 'to buy supplies',
+				},
+				args: null,
+				expected: 'A loan of $1,000 helps to buy supplies',
+			});
+		});
+
+		it('Exports the same resolver for LoanDirect and LoanPartner', () => {
+			const { resolvers } = loanResolverFactory();
+			expect(resolvers.LoanDirect.fullLoanUse).toBe(resolvers.LoanPartner.fullLoanUse);
+		});
+	});
 });

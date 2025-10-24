@@ -84,5 +84,26 @@ describe('partnerAvgProfitability.js', () => {
 					.toEqual({ partnerAvgProfitability: { range: { gte: 1, lte: 2 } } });
 			});
 		});
+
+		describe('getSavedSearch', () => {
+			it('should return profitability object', () => {
+				const state = { partnerAvgProfitability: { min: 10, max: 50 } };
+				const result = partnerAvgProfitability.getSavedSearch(state);
+				expect(result).toEqual({ profitability: { min: 10, max: 50 } });
+			});
+
+			it('should return null when partnerAvgProfitability is null', () => {
+				const state = { partnerAvgProfitability: null };
+				const result = partnerAvgProfitability.getSavedSearch(state);
+				expect(result).toEqual({ profitability: null });
+			});
+		});
+
+		describe('getOptions', () => {
+			it('should return min, max, and step', () => {
+				const result = partnerAvgProfitability.getOptions();
+				expect(result).toEqual({ min: MIN, max: MAX, step: 1 });
+			});
+		});
 	});
 });

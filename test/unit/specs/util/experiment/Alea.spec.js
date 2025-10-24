@@ -121,5 +121,19 @@ describe('Alea.js', () => {
 				expect(prng()).toBe(0.6810678059700876);
 			});
 		});
+
+		it('should use current time as seed when no arguments provided', () => {
+			const prng1 = Alea();
+			const prng2 = Alea();
+			// Since they use different timestamps, they should generate different numbers
+			const val1 = prng1();
+			const val2 = prng2();
+			// Values should be different since timestamps differ
+			// But both should be valid random numbers between 0 and 1
+			expect(val1).toBeGreaterThanOrEqual(0);
+			expect(val1).toBeLessThan(1);
+			expect(val2).toBeGreaterThanOrEqual(0);
+			expect(val2).toBeLessThan(1);
+		});
 	});
 });

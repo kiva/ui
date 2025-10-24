@@ -298,5 +298,94 @@ describe('flssUtils.js', () => {
 				fetchPolicy: 'network-only',
 			});
 		});
+
+		it('should handle apollo query errors gracefully', async () => {
+			const apolloWithError = { query: vi.fn().mockRejectedValue(new Error('Network error')) };
+			const data = await fetchRecommendedLoans(apolloWithError);
+			expect(data).toBeUndefined();
+		});
+	});
+
+	describe('error handling', () => {
+		it('fetchFacets should handle apollo query errors', async () => {
+			const apolloWithError = { query: vi.fn().mockRejectedValue(new Error('Query failed')) };
+			const data = await fetchFacets(apolloWithError);
+			expect(data).toBeUndefined();
+		});
+
+		it('fetchCategories should handle apollo query errors', async () => {
+			const apolloWithError = { query: vi.fn().mockRejectedValue(new Error('Query failed')) };
+			const data = await fetchCategories(apolloWithError);
+			expect(data).toBeUndefined();
+		});
+
+		it('fetchLoans should handle apollo query errors', async () => {
+			const apolloWithError = { query: vi.fn().mockRejectedValue(new Error('Query failed')) };
+			const data = await fetchLoans(apolloWithError, {});
+			expect(data).toBeUndefined();
+		});
+
+		it('fetchLoanChannel should handle apollo query errors', async () => {
+			const apolloWithError = { query: vi.fn().mockRejectedValue(new Error('Query failed')) };
+			const data = await fetchLoanChannel(apolloWithError, {}, {
+				ids: [], offset: 0, limit: 5
+			});
+			expect(data).toBeUndefined();
+		});
+
+		it('getCachedLoanChannel should handle readQuery errors', () => {
+			const apolloWithError = {
+				readQuery: vi.fn().mockImplementation(() => {
+					throw new Error('Cache miss');
+				})
+			};
+			const data = getCachedLoanChannel(apolloWithError, {}, {
+				ids: [], offset: 0, limit: 5
+			});
+			expect(data).toBeUndefined();
+		});
+
+		it('watchLoanChannel should handle watchQuery errors', () => {
+			const apolloWithError = {
+				watchQuery: vi.fn().mockImplementation(() => {
+					throw new Error('Watch failed');
+				})
+			};
+			const data = watchLoanChannel(apolloWithError, {}, {
+				ids: [], offset: 0, limit: 5
+			});
+			expect(data).toBeUndefined();
+		});
+	});
+
+	describe('getLoanChannelVariables edge cases', () => {
+		it('should handle missing origin and use default', () => {
+			const queryMap = { sector: [1] };
+			const loanQueryVars = {
+				ids: [],
+				offset: 0,
+				limit: 5,
+				basketId: 'test'
+			};
+
+			const vars = getLoanChannelVariables(queryMap, loanQueryVars);
+
+			expect(vars.origin).toBe('web:no-context');
+		});
+
+		it('should use provided origin from loanQueryVars', () => {
+			const queryMap = { sector: [1] };
+			const loanQueryVars = {
+				ids: [],
+				offset: 0,
+				limit: 5,
+				basketId: 'test',
+				origin: 'web:custom-context'
+			};
+
+			const vars = getLoanChannelVariables(queryMap, loanQueryVars);
+
+			expect(vars.origin).toBe('web:custom-context');
+		});
 	});
 });

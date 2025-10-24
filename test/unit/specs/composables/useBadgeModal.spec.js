@@ -5,6 +5,7 @@ import useBadgeModal,
 	BADGE_SHAPE_ARCH,
 	BADGE_SHAPE_OVAL,
 	BADGE_SHAPE_CIRCLE,
+	BADGE_SHAPE_EQUITY,
 	getBadgeShape,
 } from '#src/composables/useBadgeModal';
 import {
@@ -13,6 +14,7 @@ import {
 	ID_CLIMATE_ACTION,
 	ID_REFUGEE_EQUALITY,
 	ID_BASIC_NEEDS,
+	ID_EQUITY,
 } from '#src/composables/useBadgeData';
 import { badgeNoProgress } from '../../fixtures/tieredLendingAchievementDataMock';
 
@@ -48,6 +50,28 @@ describe('useBadgeModal.js', () => {
 
 			expect(results).toEqual([2, 0, 1, 0, 1, 0, 1]);
 		});
+
+		it('should wrap to MIN_POSITION when randomPosition increment exceeds MAX_POSITION', () => {
+			// Test ID that produces a scenario where tier index 2 would generate position 2,
+			// same as the previous tier's position, triggering increment to 3 which wraps to 0
+			const { getTierPositions } = useBadgeModal({ ...badgeNoProgress, id: 'test-0' });
+
+			const results = getTierPositions();
+
+			expect(results).toEqual([1, 2, 0, 1, 0, 2, 1]);
+		});
+
+		it('should return empty array when badge has no tiers', () => {
+			const badgeWithNoTiers = {
+				...badgeNoProgress,
+				achievementData: {}
+			};
+			const { getTierPositions } = useBadgeModal(badgeWithNoTiers);
+
+			const results = getTierPositions();
+
+			expect(results).toEqual([]);
+		});
 	});
 
 	describe('getBadgeShape', () => {
@@ -69,6 +93,14 @@ describe('useBadgeModal.js', () => {
 
 		it('should return expected shape for basic-needs', () => {
 			expect(getBadgeShape(ID_BASIC_NEEDS)).toEqual(BADGE_SHAPE_CIRCLE);
+		});
+
+		it('should return expected shape for equity', () => {
+			expect(getBadgeShape(ID_EQUITY)).toEqual(BADGE_SHAPE_EQUITY);
+		});
+
+		it('should return circle shape for unknown badge', () => {
+			expect(getBadgeShape('unknown-badge-id')).toEqual(BADGE_SHAPE_CIRCLE);
 		});
 	});
 });
