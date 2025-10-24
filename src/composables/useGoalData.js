@@ -41,6 +41,7 @@ function getGoalDisplayName(category) {
  */
 export default function useGoalData({ loans, apollo: apolloParam }) {
 	const apollo = apolloParam || inject('apollo');
+	const $kvTrackEvent = inject('$kvTrackEvent');
 
 	const allTimeProgress = ref([]);
 	const loading = ref(true);
@@ -108,13 +109,13 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 
 	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
 
-	async function runComposable() {
+	async function runComposable(location = 'thanks') {
 		loading.value = true;
 		const parsedPrefs = await loadPreferences();
 		await loadProgress();
 		setGoalState(parsedPrefs);
 		// Auto-update if active goal achieved
-		if (userGoal.value && userGoalAchieved.value) {
+		if (userGoal.value && userGoalAchieved.value && userGoal.value.status !== 'completed') {
 			await storeGoalPreferences({
 				goalName: userGoal.value.goalName,
 				dateStarted: userGoal.value.dateStarted,
@@ -122,6 +123,12 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 				count: userGoal.value.count,
 				status: 'completed',
 			});
+			$kvTrackEvent(
+				location,
+				'anual-goal-complete',
+				userGoal.value.category,
+				userGoal.value.target
+			);
 		}
 		loading.value = false;
 	}
