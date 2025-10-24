@@ -16,6 +16,21 @@ import {
 
 describe('regions.js', () => {
 	describe('regions', () => {
+		describe('getOptions', () => {
+			it('should return transformed ISO codes', () => {
+				const filteredFacets = { isoCodes: [{ key: 'US', value: 100 }] };
+				const result = regions.getOptions(mockAllFacets, filteredFacets);
+
+				expect(result).toEqual(expect.any(Array));
+			});
+
+			it('should handle empty facets', () => {
+				const result = regions.getOptions({}, { isoCodes: [] });
+
+				expect(result).toEqual([]);
+			});
+		});
+
 		describe('getFilterChips', () => {
 			it('should handle undefined', () => {
 				expect(regions.getFilterChips({}, mockAllFacets)).toEqual([]);
@@ -27,6 +42,12 @@ describe('regions.js', () => {
 				const expected = [mockAllFacets.countryFacets[0].country];
 
 				expect(result).toEqual(expected);
+			});
+
+			it('should handle country not found in facets', () => {
+				const result = regions.getFilterChips({ countryIsoCode: ['ZZ'] }, mockAllFacets);
+
+				expect(result).toEqual([undefined]);
 			});
 		});
 
@@ -89,6 +110,16 @@ describe('regions.js', () => {
 				const result = regions.getQueryFromFilter(state, FLSS_QUERY_TYPE);
 
 				expect(result).toEqual({ country: 'US,CA' });
+			});
+		});
+
+		describe('getSavedSearch', () => {
+			it('should return country from state', () => {
+				const state = { countryIsoCode: ['US', 'CA'] };
+
+				const result = regions.getSavedSearch(state);
+
+				expect(result).toEqual({ country: ['US', 'CA'] });
 			});
 		});
 
@@ -283,6 +314,14 @@ describe('regions.js', () => {
 			);
 
 			expect(getUpdatedRegions([southAmerica], [middleEast])).toEqual([middleEast, updatedSouthAmerica]);
+		});
+
+		it('should default to nextRegions when regions is undefined', () => {
+			const nextRegions = [mockTransformedMiddleEast(), mockTransformedSouthAmerica()];
+
+			const result = getUpdatedRegions(undefined, nextRegions);
+
+			expect(result).toEqual(nextRegions);
 		});
 	});
 });

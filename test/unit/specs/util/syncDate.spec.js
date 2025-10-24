@@ -103,4 +103,33 @@ describe('syncDate.js', () => {
 			expect(Date.UTC()).toBe(NaN);
 		});
 	});
+
+	it('Handles error events during syncing', () => {
+		// Force an error by triggering the error callback
+		return new Promise(resolve => {
+			mocks.on.mockImplementation((event, callback) => {
+				if (event === 'error') {
+					setTimeout(() => callback(new Error('Test sync error')), 10);
+				}
+			});
+			syncDate().then(() => {
+				expect(mocks.off).toHaveBeenCalledWith('error');
+				resolve();
+			});
+		});
+	});
+
+	it('Should not sync if offset already exists and within 10 minutes', () => {
+		const nineMinutes = 9 * 60 * 1000;
+		store2.set('timesync.lastSyncTime', realNow() - nineMinutes);
+		// Simulate offset already being set (no need to restore)
+		mocks.offset = 5000;
+
+		return syncDate().then(() => {
+			// Expect timesync.sync() not to have been called
+			expect(mocks.sync.mock.calls.length).toBe(0);
+			// Offset should remain unchanged
+			expect(mocks.offset).toBe(5000);
+		});
+	});
 });
