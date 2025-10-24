@@ -83,7 +83,7 @@
 
 <script setup>
 
-import { computed, onMounted, inject } from 'vue';
+import { computed, watch, inject } from 'vue';
 import {
 	KvMaterialIcon, KvButton, KvProgressBar, KvLoadingPlaceholder
 } from '@kiva/kv-components';
@@ -188,10 +188,11 @@ const handleContinueClick = () => {
 	router.push(ctaHref.value);
 };
 
-onMounted(() => {
-	$kvTrackEvent('portfolio', 'view', 'goal-set', props.userGoal?.category, props.goalProgress);
+watch(() => props.userGoal, (newVal, oldVal) => {
+	if (newVal?.target && newVal !== oldVal) {
+		$kvTrackEvent('portfolio', 'show', 'goal-set', newVal.category, newVal.target);
+	}
 });
-
 </script>
 
 <style lang="postcss" scoped>
