@@ -77,6 +77,22 @@
 								class="md:tw-hidden"
 							>
 								{{ formattedAmount }}
+								<button
+									class="donation-amount tw-flex-none tw-align-middle"
+									data-testid="basket-donation-edit-button-mobile-pencil"
+									v-kv-track-event="['basket', 'Edit Donation']"
+									@click="removeGivingFundDonation"
+									title="Remove giving fund donation"
+								>
+									<kv-material-icon
+										role="img"
+										aria-label="Remove giving fund donation"
+										title="Remove giving fund donation"
+										class="tw-w-2 tw-h-2 tw-ml-1"
+										name="close"
+										:icon="mdiClose"
+									/>
+								</button>
 							</div>
 						</div>
 						<div class="tw-block md:tw-hidden tw-flex-none md:tw-mr-3 lg:tw-mr-4.5">
@@ -141,6 +157,22 @@
 					class="tw-hidden md:tw-block tw-text-right"
 				>
 					{{ formattedAmount }}
+					<button
+						class="donation-amount tw-flex-none tw-align-middle"
+						data-testid="basket-donation-edit-button-mobile-pencil"
+						v-kv-track-event="['basket', 'Edit Donation']"
+						@click="removeGivingFundDonation"
+						title="Remove giving fund donation"
+					>
+						<kv-material-icon
+							role="img"
+							aria-label="Remove giving fund donation"
+							title="Remove giving fund donation"
+							class="tw-w-2 tw-h-2 tw-ml-1"
+							name="close"
+							:icon="mdiClose"
+						/>
+					</button>
 				</div>
 				<div
 					v-show="!editDonation && !isCampaignDonation"
@@ -240,7 +272,7 @@
 
 <script>
 import numeral from 'numeral';
-import { mdiPencil, mdiArrowRight } from '@mdi/js';
+import { mdiPencil, mdiArrowRight, mdiClose } from '@mdi/js';
 import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
 import HowKivaUsesDonation from '#src/components/Checkout/HowKivaUsesDonation';
 import DonationNudgeLightbox from '#src/components/Checkout/DonationNudge/DonationNudgeLightbox';
@@ -296,6 +328,7 @@ export default {
 			donationDetailsLink: 'Learn how Kiva uses your donation',
 			mdiPencil,
 			mdiArrowRight,
+			mdiClose,
 			leafHeartUrl,
 		};
 	},
@@ -359,6 +392,10 @@ export default {
 			this.amount = numeral(amount).format('0.00');
 			this.updateDonation();
 		},
+		removeGivingFundDonation() {
+			this.amount = numeral(0).format('0.00');
+			this.updateDonation('');
+		},
 		enterEditDonation() {
 			if (this.hasLoans) {
 				this.openNudgeLightbox();
@@ -372,14 +409,18 @@ export default {
 		lightboxClosed() {
 			this.defaultLbVisible = false;
 		},
-		updateDonation() {
+		updateDonation(metadata = null) {
+			// this will clear metadata if it exists
+			// used when removing giving fund donations, essentially turning them into regular donations
+			// with amount 0
 			this.editDonation = false;
 			this.$emit('updating-totals', true);
 			this.apollo.mutate({
 				mutation: updateDonation,
 				variables: {
 					price: numeral(this.amount).format('0.00'),
-					isTip: this.donation.isTip
+					isTip: this.donation.isTip,
+					metadata
 				}
 			}).then(data => {
 				if (data.errors) {
