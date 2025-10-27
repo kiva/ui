@@ -1,8 +1,8 @@
 <template>
 	<div
-		class="card-container tw-h-full"
+		class="card-container tw-h-full goal-card-bg"
 		:class="{
-			'goal-card-bg': !userHasGoal && !loading,
+			'hide-bg': userHasGoal || loading,
 		}"
 	>
 		<kv-loading-placeholder v-if="loading" class="achievement-card-bg" />
@@ -214,6 +214,10 @@ watch(() => props.userGoal, (newVal, oldVal) => {
 	left: 40%;
 
 	@apply tw-absolute tw-bg-cover tw-bg-center tw-bg-no-repeat tw-z-base tw-right-0 tw-bg-blend-overlay;
+}
+
+.hide-bg::before {
+	@apply tw-opacity-0;
 }
 
 .goal-card-bg > * {
