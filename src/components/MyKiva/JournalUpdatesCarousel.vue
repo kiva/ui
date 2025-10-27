@@ -4,7 +4,7 @@
 			Updates
 		</h3>
 		<KvCarousel
-			class="tw-w-full updates-carousel tw-overflow-visible"
+			class="tw-w-full updates-carousel"
 			:key="updates.length"
 			:multiple-slides-visible="true"
 			slides-to-scroll="visible"
