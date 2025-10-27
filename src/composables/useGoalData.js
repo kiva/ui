@@ -109,7 +109,7 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 
 	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
 
-	async function runComposable(location = 'thanks') {
+	async function runComposable(category = 'post-checkout') {
 		loading.value = true;
 		const parsedPrefs = await loadPreferences();
 		await loadProgress();
@@ -124,7 +124,8 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 				status: 'completed',
 			});
 			$kvTrackEvent(
-				location,
+				category,
+				'show',
 				'annual-goal-complete',
 				userGoal.value.category,
 				userGoal.value.target
