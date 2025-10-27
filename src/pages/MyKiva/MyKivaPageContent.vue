@@ -656,7 +656,7 @@ export default {
 }
 
 #recommended-loans :deep(.kv-carousel) {
-	@apply !tw-w-full !tw-overflow-visible;
+	@apply !tw-w-full;
 }
 
 #recommended-loans :deep(.kv-carousel__controls) {
