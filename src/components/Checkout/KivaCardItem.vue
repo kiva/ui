@@ -63,7 +63,7 @@
 					</div>
 					<!-- Postal Kiva Card -->
 					<div v-if="cardType == 'postal'">
-						<p class="tw-text-small tw-mb-1" data-testid="basket-kiva-card-info-1">
+						<p class="tw-text-small tw-mb-1 data-hj-suppress" data-testid="basket-kiva-card-info-1">
 							{{ mailingFirstName }}
 							{{ mailingLastName }}
 							{{ mailingStreet }}
@@ -75,7 +75,13 @@
 					<!-- Email or Lender Kiva Card -->
 					<div v-if="cardType === 'email' || cardType === 'lender'">
 						<p class="tw-text-small tw-mb-1" data-testid="basket-kiva-card-info-1">
-							Scheduled to be sent {{ deliveryDate }} for {{ recipientName }} {{ recipientEmail }}
+							<template v-if="cardType === 'email'">
+								<!-- eslint-disable-next-line max-len -->
+								Scheduled to be sent {{ deliveryDate }} for {{ recipientName }} at <span class="data-hj-suppress">{{ recipientEmail }}</span>
+							</template>
+							<template v-else>
+								Scheduled to be sent {{ deliveryDate }} for {{ recipientName }}
+							</template>
 						</p>
 					</div>
 				</div>

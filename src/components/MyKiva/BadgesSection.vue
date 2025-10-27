@@ -1,7 +1,7 @@
 <template>
 	<KvCarousel
 		ref="carousel"
-		class="badges-carousel tw-w-full tw-overflow-visible"
+		class="badges-carousel tw-w-full"
 		:multiple-slides-visible="true"
 		:slide-max-width="singleSlideWidth"
 		slides-to-scroll="visible"

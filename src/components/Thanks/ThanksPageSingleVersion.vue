@@ -7,6 +7,7 @@
 				:is-guest="isGuest"
 				:number-of-badges="numberOfBadges"
 				:only-donations="onlyDonations"
+				:achievements-completed="achievementsCompleted"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
 			<KivaCards
@@ -15,8 +16,15 @@
 				class="tw-mb-2.5"
 				@view-pdf-clicked="scrollToReceipt"
 			/>
+			<GoalCompleted
+				v-if="isNextStepsExpEnabled && userGoalAchieved"
+				:current-goal="userGoal"
+				:get-goal-display-name="getGoalDisplayName"
+				:loading="goalDataLoading"
+				class="tw-mb-2.5"
+			/>
 			<BadgeMilestone
-				v-if="showBadgeModule"
+				v-else-if="showBadgeModule || achievementsCompleted"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
 				:badge-achieved-ids="badgeAchievedIds"
@@ -24,11 +32,12 @@
 				:loans="loans"
 				:loan-comment-module-shown="showLoanComment"
 				:kiva-cards-module-shown="showKivaCardsModule"
+				:achievements-completed="achievementsCompleted"
 				@continue-clicked="handleContinue"
 				class="tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
-				v-if="showJourneyModule"
+				v-if="showJourneyModule && !userGoalAchieved && !achievementsCompleted"
 				:loans="loans"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
@@ -78,12 +87,20 @@
 
 <script setup>
 import {
-	ref,
 	computed,
-	onMounted,
 	inject,
+	onMounted,
+	ref,
 } from 'vue';
+import { useRouter } from 'vue-router';
+
 import confetti from 'canvas-confetti';
+import _orderBy from 'lodash/orderBy';
+
+import { KvLightbox } from '@kiva/kv-components';
+
+import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
+import GoalCompleted from '#src/components/Thanks/SingleVersion/GoalCompleted';
 import LoanComment from '#src/components/Thanks/SingleVersion/LoanComment';
 import OptInModule from '#src/components/Thanks/SingleVersion/OptInModule';
 import KivaCards from '#src/components/Thanks/SingleVersion/KivaCards';
@@ -91,15 +108,15 @@ import AccountReceiptShare from '#src/components/Thanks/SingleVersion/AccountRec
 import ControlModule from '#src/components/Thanks/SingleVersion/ControlModule';
 import JourneyGeneralPrompt from '#src/components/Thanks/SingleVersion/JourneyGeneralPrompt';
 import BadgeMilestone from '#src/components/Thanks/SingleVersion/BadgeMilestone';
-import GuestAccountCreation from '#src/components/Forms/GuestAccountCreation';
-import { KvLightbox } from '@kiva/kv-components';
-import { useRouter } from 'vue-router';
-import _orderBy from 'lodash/orderBy';
+import useGoalData from '#src/composables/useGoalData';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { setGuestAssignmentCookie } from '#src/util/myKivaUtils';
 
 const EVENT_CATEGORY = 'post-checkout';
+const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
+const apollo = inject('apollo');
 const cookieStore = inject('cookieStore');
 
 const props = defineProps({
@@ -139,13 +156,26 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
+	achievementsCompleted: {
+		type: Boolean,
+		default: false,
+	},
 });
 
+const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
+const isNextStepsExpEnabled = ref(false);
 const receiptSection = ref(null);
+const showGuestAccountModal = ref(false);
 const showReceipt = ref(false);
 const router = useRouter();
-const showGuestAccountModal = ref(false);
-const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
+
+const {
+	userGoal,
+	userGoalAchieved,
+	getGoalDisplayName,
+	runComposable: runGoalComposable,
+	loading: goalDataLoading,
+} = useGoalData({ loans: props.loans });
 
 const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));
 
@@ -181,9 +211,9 @@ const hasTeamAttributedPartnerLoan = computed(
 
 const showOptInModule = computed(() => !props.isOptedIn);
 const showKivaCardsModule = computed(() => !!printableKivaCards.value.length);
-const showBadgeModule = computed(() => {
-	return props.myKivaEnabled && (numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value);
-});
+const showBadgeModule = computed(() => (
+	props.myKivaEnabled && (numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value)
+));
 const showJourneyModule = computed(() => props.myKivaEnabled && !showBadgeModule.value);
 const showControlModule = computed(() => !props.myKivaEnabled);
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
@@ -210,7 +240,6 @@ const scrollToReceipt = () => {
 
 const handleContinue = () => {
 	const CLICK_EVENT_ACTION = 'click';
-
 	if (props.isGuest) {
 		showGuestAccountModal.value = true;
 		$kvTrackEvent(
@@ -228,18 +257,28 @@ const handleContinue = () => {
 			userType.value,
 			numberOfBadges.value,
 		);
-
 		router?.push(props.myKivaEnabled ? '/mykiva' : '/portfolio');
 	}
 };
 
-onMounted(() => {
-	showConfetti();
+const determineNextStepsExpEnabled = () => {
+	const nextStepsExpData = trackExperimentVersion(
+		apollo,
+		$kvTrackEvent,
+		'event-tracking',
+		NEXT_STEPS_EXP_KEY,
+		'EXP-MP-1984-Sept2025'
+	);
+	isNextStepsExpEnabled.value = nextStepsExpData.version === 'b';
+};
 
+onMounted(async () => {
+	determineNextStepsExpEnabled();
+	if (isNextStepsExpEnabled.value) await runGoalComposable();
+	showConfetti();
 	const isOptInLoan = showOptInModule.value && props.loans.length > 0;
 	const isOptInDonate = showOptInModule.value && onlyDonations.value;
 	const badgeNotEarned = onlyKivaCardsAndDonations.value && !showControlModule.value;
-
 	const analyticsModuleOrder = [
 		isOptInLoan ? 'optInLoan' : '',
 		isOptInDonate ? 'optInDonate' : '',
@@ -253,15 +292,22 @@ onMounted(() => {
 		'drawerOrderConfirmation',
 		'drawerShare',
 	].filter(s => !!s).join('-');
-
 	$kvTrackEvent(
 		EVENT_CATEGORY,
 		'view',
 		analyticsModuleOrder,
 		userType.value,
 	);
-
 	setGuestAssignmentCookie(cookieStore, props.myKivaEnabled, props.isGuest);
+
+	// Track if all achievements have been earned
+	if (props.achievementsCompleted) {
+		$kvTrackEvent(
+			'post-checkout',
+			'view',
+			'all-achievements-earned',
+		);
+	}
 });
 </script>
 

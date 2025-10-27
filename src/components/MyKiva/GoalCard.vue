@@ -1,11 +1,12 @@
 <template>
 	<div
-		class="card-container"
+		class="card-container tw-h-full goal-card-bg"
 		:class="{
-			'goal-card-bg': !userHasGoal,
+			'hide-bg': userHasGoal || loading,
 		}"
 	>
-		<div :class="{'tw-mx-auto tw-relative tw-mb-1 achievement-card-bg': userHasGoal}">
+		<kv-loading-placeholder v-if="loading" class="achievement-card-bg" />
+		<div v-else :class="{'tw-mx-auto tw-relative achievement-card-bg': userHasGoal}">
 			<span
 				:class="{'tw-absolute tw-top-1 tw-left-1': userHasGoal}"
 				class="
@@ -28,23 +29,30 @@
 				class="tw-rounded tw-w-full tw-h-full tw-object-cover tw-object-top"
 			>
 		</div>
-		<div class="tw-flex tw-flex-col" :class="{'tw-gap-1': userHasGoal}">
-			<div v-if="!userHasGoal" class="tw-mx-auto">
+		<div class="tw-flex tw-flex-col tw-grow tw-pt-0.5" :class="{'tw-gap-1': userHasGoal}">
+			<div v-if="!userHasGoal && !loading" class="tw-mx-auto">
 				<GoalCardCareImg />
 			</div>
-			<h3>{{ title }}</h3>
+			<h3 v-if="!loading">
+				{{ title }}
+			</h3>
+			<kv-loading-placeholder v-else class="!tw-h-3 tw-w-full tw-max-w-16 tw-my-1" />
 			<template v-if="userHasGoal">
-				<div class="tw-flex tw-items-baseline tw-gap-3">
-					<div>
+				<div class="tw-flex tw-items-end tw-gap-3 tw-grow">
+					<div v-if="!loading">
 						<h5 class="tw-mb-1">
-							{{ currentGoalProgress }} / {{ loansToReachGoal }} Loans
+							{{ goalProgress }} / {{ loansToReachGoal }} Loans
 						</h5>
 						<kv-progress-bar
 							style="width: 98px;"
 							aria-label="Percent the loan has funded"
-							:value="currentGoalProgress"
+							:value="goalProgress"
 							:max="loansToReachGoal"
 						/>
+					</div>
+					<div v-else>
+						<kv-loading-placeholder class="!tw-h-2 !tw-w-8 tw-mb-1" />
+						<kv-loading-placeholder class="!tw-h-1.5 tw-w-13 tw-max-w-sm" />
 					</div>
 					<KvButton
 						class="tw-flex-grow"
@@ -56,15 +64,18 @@
 				</div>
 			</template>
 			<template v-else>
-				<p class="tw-text-small tw-pb-2">
+				<p v-if="!loading" class="tw-text-small tw-pb-2 tw-grow">
 					How many more people will you help this year?
 				</p>
+				<kv-loading-placeholder v-else class="!tw-h-1 tw-mb-1" />
 				<KvButton
+					v-if="!loading"
 					v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
 					@click="$emit('open-goal-modal')"
 				>
 					Set a goal
 				</KvButton>
+				<kv-loading-placeholder v-else class="!tw-h-4 tw-mb-1" />
 			</template>
 		</div>
 	</div>
@@ -72,18 +83,19 @@
 
 <script setup>
 
-import { computed, onMounted, inject } from 'vue';
+import { computed, watch, inject } from 'vue';
 import {
-	KvMaterialIcon, KvButton, KvProgressBar
+	KvMaterialIcon, KvButton, KvProgressBar, KvLoadingPlaceholder
 } from '@kiva/kv-components';
 import { mdiCheckCircleOutline } from '@mdi/js';
 import { formatRichTextContent } from '#src/util/contentfulUtils';
 import GoalCardCareImg from '#src/assets/images/my-kiva/goal-card-care.svg';
-import {
+import useBadgeData, {
 	ID_BASIC_NEEDS,
+	ID_CLIMATE_ACTION,
 	ID_REFUGEE_EQUALITY,
 	ID_US_ECONOMIC_EQUALITY,
-	ID_WOMENS_EQUALITY
+	ID_WOMENS_EQUALITY,
 } from '#src/composables/useBadgeData';
 import { useRouter } from 'vue-router';
 
@@ -96,6 +108,14 @@ const props = defineProps({
 		type: Object,
 		default: undefined,
 	},
+	loading: {
+		type: Boolean,
+		default: false,
+	},
+	goalProgress: {
+		type: Number,
+		default: 0,
+	},
 });
 
 defineEmits(['open-goal-modal']);
@@ -103,17 +123,12 @@ defineEmits(['open-goal-modal']);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
-const currentGoalProgress = computed(() => props.userGoal?.currentProgress || 0);
+const { getLoanFindingUrl } = useBadgeData();
 
 const loansToReachGoal = computed(() => props.userGoal?.target || 0);
-
-const userHasGoal = computed(() => !!props.userGoal);
-
+const userHasGoal = computed(() => !!props.userGoal?.category);
 const title = computed(() => {
-	if (userHasGoal.value) {
-		return 'Works towards your goal';
-	}
-
+	if (userHasGoal.value) return 'Work towards your goal';
 	return 'Set your first impact goal!';
 });
 
@@ -123,47 +138,48 @@ const getContentfulKey = category => {
 			return 'us-equality';
 		case ID_BASIC_NEEDS:
 			return 'fundamental-needs';
-		case ID_REFUGEE_EQUALITY:
-			return 'refugee-equality';
 		case ID_WOMENS_EQUALITY:
 			return 'women';
 		default: return category;
 	}
 };
 
-const getGoalCategoryUrl = category => {
+const getCategoryHeader = category => {
 	switch (category) {
-		case 'us-economic-equality':
+		case ID_US_ECONOMIC_EQUALITY:
 			return 'U.S. entrepreneurs';
-		case 'basic-needs':
+		case ID_BASIC_NEEDS:
 			return 'loans for basic needs';
-		case 'eco-friendly':
+		case ID_CLIMATE_ACTION:
 			return 'eco-friendly loans';
-		default: return category;
+		case ID_WOMENS_EQUALITY:
+			return 'women';
+		case ID_REFUGEE_EQUALITY:
+			return 'refugees';
+		default: return 'loans';
 	}
 };
 
 const ctaHref = computed(() => {
-	const string = `Your goal: Support ${props.userGoal?.target} ${getGoalCategoryUrl(props.userGoal?.category)}`;
-	const encodedString = encodeURIComponent(string);
-	return `/lend/filter?header=${encodedString}`;
+	const categoryHeader = getCategoryHeader(props.userGoal?.category);
+	const string = `Your goal: Support ${props.userGoal?.target} ${categoryHeader}`;
+	const encodedHeader = encodeURIComponent(string);
+	const loanFindingUrl = getLoanFindingUrl(props.userGoal?.category, router.currentRoute.value);
+	return `${loanFindingUrl}?header=${encodedHeader}`;
 });
 
 const achievementGoalImg = computed(() => {
 	const contentfulCategory = getContentfulKey(props.userGoal?.category) || '';
 	if (!contentfulCategory) return '';
 	const key = `my-kiva-${contentfulCategory}-journey`;
-
 	const richText = props.heroSlides.find(slide => slide?.fields?.key === key);
 	let backgroundImage = null;
 	if (richText) {
 		const formattedRichText = formatRichTextContent(richText);
-
 		backgroundImage = formattedRichText?.richText?.content.find(
 			item => item.nodeType === 'embedded-asset-block' && item.data?.target?.fields?.file?.url
 		);
 	}
-
 	return backgroundImage?.data?.target?.fields?.file?.url || '';
 });
 
@@ -172,10 +188,11 @@ const handleContinueClick = () => {
 	router.push(ctaHref.value);
 };
 
-onMounted(() => {
-	$kvTrackEvent('portfolio', 'view', 'goal-set', props.userGoal?.category, currentGoalProgress.value);
+watch(() => props.userGoal, (newVal, oldVal) => {
+	if (newVal?.target && newVal !== oldVal) {
+		$kvTrackEvent('portfolio', 'show', 'goal-set', newVal.category, newVal.target);
+	}
 });
-
 </script>
 
 <style lang="postcss" scoped>
@@ -192,11 +209,15 @@ onMounted(() => {
 	content: '';
 	width: 400px;
 	height: 500px;
-	background: url('/src/assets/images/my-kiva/goal-card-bg.jpg') lightgray;
+	background: url('/src/assets/images/my-kiva/goal-card-bg.png') lightgray;
 	transform: rotate(17deg);
 	left: 40%;
 
 	@apply tw-absolute tw-bg-cover tw-bg-center tw-bg-no-repeat tw-z-base tw-right-0 tw-bg-blend-overlay;
+}
+
+.hide-bg::before {
+	@apply tw-opacity-0;
 }
 
 .goal-card-bg > * {

@@ -13,8 +13,10 @@ import {
 	getForcedAssignment,
 	getLoginId,
 	assignAllActiveExperiments,
-	handleSetuiabAndExperimentTracking,
-	getExperimentEnabledFromCache,
+	getInitialExperimentVersion,
+	queryExperimentAssignment,
+	evictExperimentCacheIfForced,
+	initializeExperiment,
 } from '#src/util/experiment/experimentUtils';
 import * as Alea from '#src/util/experiment/Alea';
 import experimentIdsQuery from '#src/graphql/query/experimentIds.graphql';
@@ -124,6 +126,23 @@ describe('experimentUtils.js', () => {
 			const result = getExperimentSettingCached(client, key);
 
 			expect(result).toEqual(mockSettings);
+			expect(client.readQuery).toHaveBeenCalledWith({
+				query: experimentSettingQuery,
+				variables: { key }
+			});
+		});
+
+		it('should handle error and return empty object', () => {
+			const key = 'asd';
+			const client = {
+				readQuery: vi.fn().mockImplementation(() => {
+					throw new Error('Cache read error');
+				})
+			};
+
+			const result = getExperimentSettingCached(client, key);
+
+			expect(result).toEqual({});
 			expect(client.readQuery).toHaveBeenCalledWith({
 				query: experimentSettingQuery,
 				variables: { key }
@@ -617,6 +636,19 @@ describe('experimentUtils.js', () => {
 				expect(['control', 'variant']).toContain(assignVersionForLoginId(key, data, loginId));
 				expect(spyAlea).toHaveBeenCalledTimes(1);
 			});
+
+			it('should use weight without population multiplier when population is undefined', () => {
+				const data = { distribution: { a: 0.3, b: 0.7 } };
+				delete data.population;
+
+				spyAlea.mockReturnValueOnce(() => 0.3);
+				expect(assignVersionForLoginId(key, data, loginId)).toBe('a');
+				expect(spyAlea).toHaveBeenCalledTimes(1);
+
+				spyAlea.mockReturnValueOnce(() => 0.31);
+				expect(assignVersionForLoginId(key, data, loginId)).toBe('b');
+				expect(spyAlea).toHaveBeenCalledTimes(2);
+			});
 		});
 
 		describe('original pseudo random number generator', () => {
@@ -645,6 +677,25 @@ describe('experimentUtils.js', () => {
 			});
 			expect(trackEvent).toHaveBeenCalledTimes(0);
 			expect(result).toBe(data);
+		});
+
+		it('should handle null fragment result', () => {
+			const client = {
+				readFragment: vi.fn().mockReturnValue(null),
+			};
+			const trackEvent = vi.fn();
+			const key = 'asd';
+			const category = 'category';
+			const action = 'action';
+
+			const result = trackExperimentVersion(client, trackEvent, category, key, action);
+
+			expect(client.readFragment).toHaveBeenCalledWith({
+				id: `Experiment:${key}`,
+				fragment: experimentVersionFragment
+			});
+			expect(trackEvent).toHaveBeenCalledTimes(0);
+			expect(result).toEqual({});
 		});
 
 		it('should not call track event for unassigned version', () => {
@@ -754,6 +805,17 @@ describe('experimentUtils.js', () => {
 
 		it('should generate a different hash when the control changes', () => {
 			expect(calculateHash(base)).not.toBe(calculateHash(changedControl));
+		});
+
+		it('should handle undefined experiment parameter', () => {
+			const hash1 = calculateHash();
+			const hash2 = calculateHash(undefined);
+			const hash3 = calculateHash(null);
+
+			// All should produce the same hash since they default to {}
+			expect(hash1).toBe(hash2);
+			expect(hash1).toBe(hash3);
+			expect(typeof hash1).toBe('number');
 		});
 	});
 
@@ -947,7 +1009,7 @@ describe('experimentUtils.js', () => {
 				...experimentSetting,
 				version: 'variant',
 				hash: hash1,
-				queryForced: true
+				queryForced: false // queryForced is only true with active query param, not from cookie
 			});
 
 			result = getForcedAssignment(cookieStore, '', 'qwe', experimentSetting);
@@ -957,6 +1019,36 @@ describe('experimentUtils.js', () => {
 				version: 'a',
 				hash: hash2,
 				queryForced: false
+			});
+		});
+
+		it('should respect new query param even when cookie has queryForced=true', () => {
+			const hash = 1753809052;
+			// Cookie has queryForced=true from previous setuiab, but no active query param now
+			const cookieStore = new CookieStore({ uiab: `asd:variant:${hash}:0.5:true` });
+
+			const result = getForcedAssignment(cookieStore, { query: {} }, 'asd', experimentSetting);
+
+			expect(result).toEqual({
+				...experimentSetting,
+				version: 'variant',
+				hash,
+				queryForced: false // Should be false since there's no active query param
+			});
+		});
+
+		it('should set queryForced=true only with active setuiab query param', () => {
+			const hash = 1753809052;
+			const cookieStore = new CookieStore({ uiab: `asd:a:${hash}:0.5:false` });
+			const route = { query: { setuiab: 'asd.b' } };
+
+			const result = getForcedAssignment(cookieStore, route, 'asd', experimentSetting);
+
+			expect(result).toEqual({
+				...experimentSetting,
+				version: 'b',
+				hash,
+				queryForced: true // Should be true because of active query param
 			});
 		});
 
@@ -1017,8 +1109,17 @@ describe('experimentUtils.js', () => {
 				hash: hash1,
 				version: 'variant',
 				headerForced: true,
-				queryForced: true,
+				queryForced: false, // queryForced is only true with active query param, not from cookie
 			});
+		});
+
+		it('should handle setuiab array with undefined/null values', () => {
+			const cookieStore = new CookieStore();
+			const route = { query: { setuiab: [undefined, null, 'asd.x'] } };
+
+			const result = getForcedAssignment(cookieStore, route, 'asd', experimentSetting);
+
+			expect(result).toEqual({ ...experimentSetting, version: 'x', queryForced: true });
 		});
 	});
 
@@ -1115,425 +1216,592 @@ describe('experimentUtils.js', () => {
 				variables: { id: 'b' }
 			});
 		});
-	});
 
-	describe('getExperimentEnabledFromCache', () => {
-		const experimentKey = 'test-experiment';
-
-		it('should return true when experiment version is "b"', () => {
-			const mockApollo = {
-				readQuery: vi.fn().mockReturnValue({
-					experiment: {
-						version: 'b'
-					}
-				})
+		it('should handle errors when getting active experiments', async () => {
+			const mockError = new Error('Cache error');
+			const apollo = {
+				cache: {
+					readQuery: vi.fn().mockImplementation(() => {
+						throw mockError;
+					})
+				},
+				query: vi.fn().mockImplementation(() => Promise.reject(mockError))
 			};
 
-			const result = getExperimentEnabledFromCache(mockApollo, experimentKey);
+			await assignAllActiveExperiments(apollo);
 
-			expect(mockApollo.readQuery).toHaveBeenCalledWith({
-				query: experimentAssignmentQuery,
-				variables: { id: experimentKey }
-			});
-			expect(result).toBe(true);
-		});
-
-		it('should return false when experiment version is "a"', () => {
-			const mockApollo = {
-				readQuery: vi.fn().mockReturnValue({
-					experiment: {
-						version: 'a'
-					}
-				})
-			};
-
-			const result = getExperimentEnabledFromCache(mockApollo, experimentKey);
-
-			expect(mockApollo.readQuery).toHaveBeenCalledWith({
-				query: experimentAssignmentQuery,
-				variables: { id: experimentKey }
-			});
-			expect(result).toBe(false);
-		});
-
-		it('should return false when experiment version is "control"', () => {
-			const mockApollo = {
-				readQuery: vi.fn().mockReturnValue({
-					experiment: {
-						version: 'control'
-					}
-				})
-			};
-
-			const result = getExperimentEnabledFromCache(mockApollo, experimentKey);
-
-			expect(result).toBe(false);
-		});
-
-		it('should return false when experiment version is undefined', () => {
-			const mockApollo = {
-				readQuery: vi.fn().mockReturnValue({
-					experiment: {
-						version: undefined
-					}
-				})
-			};
-
-			const result = getExperimentEnabledFromCache(mockApollo, experimentKey);
-
-			expect(result).toBe(false);
-		});
-
-		it('should return false when experiment is undefined', () => {
-			const mockApollo = {
-				readQuery: vi.fn().mockReturnValue({
-					experiment: undefined
-				})
-			};
-
-			const result = getExperimentEnabledFromCache(mockApollo, experimentKey);
-
-			expect(result).toBe(false);
-		});
-
-		it('should return false when readQuery returns null', () => {
-			const mockApollo = {
-				readQuery: vi.fn().mockReturnValue(null)
-			};
-
-			const result = getExperimentEnabledFromCache(mockApollo, experimentKey);
-
-			expect(result).toBe(false);
-		});
-
-		it('should return false when readQuery throws an error', () => {
-			const mockApollo = {
-				readQuery: vi.fn().mockImplementation(() => {
-					throw new Error('Cache miss');
-				})
-			};
-
-			const result = getExperimentEnabledFromCache(mockApollo, experimentKey);
-
-			expect(mockApollo.readQuery).toHaveBeenCalledWith({
-				query: experimentAssignmentQuery,
-				variables: { id: experimentKey }
-			});
-			expect(result).toBe(false);
-		});
-
-		it('should return false when experiment data is empty object', () => {
-			const mockApollo = {
-				readQuery: vi.fn().mockReturnValue({})
-			};
-
-			const result = getExperimentEnabledFromCache(mockApollo, experimentKey);
-
-			expect(result).toBe(false);
-		});
-
-		it('should return false when version is "unassigned"', () => {
-			const mockApollo = {
-				readQuery: vi.fn().mockReturnValue({
-					experiment: {
-						version: 'unassigned'
-					}
-				})
-			};
-
-			const result = getExperimentEnabledFromCache(mockApollo, experimentKey);
-
-			expect(result).toBe(false);
-		});
-
-		it('should return false when version is empty string', () => {
-			const mockApollo = {
-				readQuery: vi.fn().mockReturnValue({
-					experiment: {
-						version: ''
-					}
-				})
-			};
-
-			const result = getExperimentEnabledFromCache(mockApollo, experimentKey);
-
-			expect(result).toBe(false);
+			expect(apollo.cache.readQuery).toHaveBeenCalledTimes(1);
+			// getActiveExperiments will try async query when cache fails
+			expect(apollo.query).toHaveBeenCalledWith({ query: experimentIdsQuery });
 		});
 	});
 
-	describe('handleSetuiabAndExperimentTracking', () => {
-		const experimentKey = 'test-experiment';
-		const trackingAction = 'test-action';
+	describe('getInitialExperimentVersion', () => {
+		afterEach(clearDocumentCookies);
 
-		it('should not query when setuiab is not present in route', async () => {
-			const mockTrackEvent = vi.fn();
-			const mockApollo = {
-				query: vi.fn(),
-				readFragment: vi.fn().mockReturnValue({ version: 'control' })
+		it('should return undefined when no cookie and no apollo cache exists', () => {
+			const cookieStore = new CookieStore();
+			const apollo = null;
+			const experimentKey = 'test_experiment';
+
+			const result = getInitialExperimentVersion(cookieStore, apollo, experimentKey);
+
+			expect(result).toBe(undefined);
+		});
+
+		it('should return undefined when experiment is not in cookie and no apollo', () => {
+			const cookieStore = new CookieStore({ uiab: 'other_exp:a:123:0.5' });
+			const apollo = null;
+			const experimentKey = 'test_experiment';
+
+			const result = getInitialExperimentVersion(cookieStore, apollo, experimentKey);
+
+			expect(result).toBe(undefined);
+		});
+
+		it('should return version from cookie when cookie exists', () => {
+			const experimentKey = 'test_experiment';
+			const cookieStore = new CookieStore({ uiab: `${experimentKey}:b:123:0.5` });
+			const apollo = null;
+
+			const result = getInitialExperimentVersion(cookieStore, apollo, experimentKey);
+
+			expect(result).toBe('b');
+		});
+
+		it('should return correct version when multiple experiments in cookie', () => {
+			const experimentKey = 'test_experiment';
+			const cookieValue = `other:a:456:0.3|${experimentKey}:b:123:0.5|another:c:789:0.8`;
+			const cookieStore = new CookieStore({ uiab: cookieValue });
+			const apollo = null;
+
+			const result = getInitialExperimentVersion(cookieStore, apollo, experimentKey);
+
+			expect(result).toBe('b');
+		});
+
+		it('should return unassigned version from cookie', () => {
+			const experimentKey = 'test_experiment';
+			const cookieStore = new CookieStore({ uiab: `${experimentKey}:unassigned:123:0.5` });
+			const apollo = null;
+
+			const result = getInitialExperimentVersion(cookieStore, apollo, experimentKey);
+
+			expect(result).toBe('unassigned');
+		});
+
+		it('should return version from apollo cache when no cookie exists', () => {
+			const experimentKey = 'test_experiment';
+			const cookieStore = new CookieStore();
+			const apollo = {
+				readFragment: vi.fn().mockReturnValue({ version: 'a' }),
+			};
+
+			const result = getInitialExperimentVersion(cookieStore, apollo, experimentKey);
+
+			expect(result).toBe('a');
+			expect(apollo.readFragment).toHaveBeenCalledWith({
+				id: `Experiment:${experimentKey}`,
+				fragment: experimentVersionFragment,
+			});
+		});
+
+		it('should prefer cookie over apollo cache', () => {
+			const experimentKey = 'test_experiment';
+			const cookieStore = new CookieStore({ uiab: `${experimentKey}:b:123:0.5` });
+			const apollo = {
+				readFragment: vi.fn().mockReturnValue({ version: 'a' }),
+			};
+
+			const result = getInitialExperimentVersion(cookieStore, apollo, experimentKey);
+
+			expect(result).toBe('b');
+			// Apollo cache should not be checked when cookie exists
+			expect(apollo.readFragment).not.toHaveBeenCalled();
+		});
+
+		it('should handle apollo cache miss gracefully', () => {
+			const experimentKey = 'test_experiment';
+			const cookieStore = new CookieStore();
+			const apollo = {
+				readFragment: vi.fn().mockReturnValue(null),
+			};
+
+			const result = getInitialExperimentVersion(cookieStore, apollo, experimentKey);
+
+			expect(result).toBe(undefined);
+		});
+
+		it('should handle apollo cache error gracefully', () => {
+			const experimentKey = 'test_experiment';
+			const cookieStore = new CookieStore();
+			const apollo = {
+				readFragment: vi.fn().mockImplementation(() => {
+					throw new Error('Cache read error');
+				}),
+			};
+
+			const result = getInitialExperimentVersion(cookieStore, apollo, experimentKey);
+
+			expect(result).toBe(undefined);
+		});
+
+		it('should handle apollo cache with undefined version', () => {
+			const experimentKey = 'test_experiment';
+			const cookieStore = new CookieStore();
+			const apollo = {
+				readFragment: vi.fn().mockReturnValue({ version: undefined }),
+			};
+
+			const result = getInitialExperimentVersion(cookieStore, apollo, experimentKey);
+
+			expect(result).toBe(undefined);
+		});
+	});
+
+	describe('evictExperimentCacheIfForced', () => {
+		it('should not evict cache when no setuiab query param', () => {
+			const apollo = {
+				cache: {
+					evict: vi.fn(),
+					gc: vi.fn(),
+				}
 			};
 			const route = { query: {} };
+			const experimentKey = 'test_experiment';
 
-			const result = await handleSetuiabAndExperimentTracking({
-				apollo: mockApollo,
-				trackEvent: mockTrackEvent,
-				route,
-				experimentKey,
-				trackingAction,
-			});
+			evictExperimentCacheIfForced(apollo, route, experimentKey);
 
-			expect(mockApollo.query).not.toHaveBeenCalled();
-			expect(mockApollo.readFragment).toHaveBeenCalledWith({
-				id: `Experiment:${experimentKey}`,
-				fragment: experimentVersionFragment
-			});
-			expect(mockTrackEvent).toHaveBeenCalledWith(
-				'event-tracking',
-				trackingAction,
-				'control',
-				undefined
-			);
-			expect(result).toBe(false);
+			expect(apollo.cache.evict).not.toHaveBeenCalled();
+			expect(apollo.cache.gc).not.toHaveBeenCalled();
 		});
 
-		it('should query when setuiab is present in route', async () => {
-			const mockTrackEvent = vi.fn();
-			const mockApollo = {
-				query: vi.fn().mockResolvedValue({
-					data: {
-						experiment: {
-							version: 'b'
-						}
-					}
-				}),
-				readFragment: vi.fn().mockReturnValue({ version: 'control' })
+		it('should evict cache when setuiab query param is present', () => {
+			const apollo = {
+				cache: {
+					evict: vi.fn(),
+					gc: vi.fn(),
+				}
 			};
-			const route = { query: { setuiab: 'test-experiment.b' } };
+			const route = { query: { setuiab: 'test_experiment.b' } };
+			const experimentKey = 'test_experiment';
 
-			const result = await handleSetuiabAndExperimentTracking({
-				apollo: mockApollo,
-				trackEvent: mockTrackEvent,
-				route,
-				experimentKey,
-				trackingAction,
+			evictExperimentCacheIfForced(apollo, route, experimentKey);
+
+			expect(apollo.cache.evict).toHaveBeenCalledWith({
+				id: `Experiment:${experimentKey}`,
 			});
+			expect(apollo.cache.gc).toHaveBeenCalled();
+		});
 
-			expect(mockApollo.query).toHaveBeenCalledWith({
+		it('should evict cache when setuiab is for different experiment', () => {
+			const apollo = {
+				cache: {
+					evict: vi.fn(),
+					gc: vi.fn(),
+				}
+			};
+			const route = { query: { setuiab: 'other_experiment.a' } };
+			const experimentKey = 'test_experiment';
+
+			evictExperimentCacheIfForced(apollo, route, experimentKey);
+
+			expect(apollo.cache.evict).toHaveBeenCalledWith({
+				id: `Experiment:${experimentKey}`,
+			});
+			expect(apollo.cache.gc).toHaveBeenCalled();
+		});
+
+		it('should handle undefined route', () => {
+			const apollo = {
+				cache: {
+					evict: vi.fn(),
+					gc: vi.fn(),
+				}
+			};
+			const experimentKey = 'test_experiment';
+
+			evictExperimentCacheIfForced(apollo, undefined, experimentKey);
+
+			expect(apollo.cache.evict).not.toHaveBeenCalled();
+			expect(apollo.cache.gc).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('queryExperimentAssignment', () => {
+		it('should call apollo.query with correct parameters', async () => {
+			const apollo = {
+				cache: {
+					evict: vi.fn(),
+					gc: vi.fn(),
+				},
+				query: vi.fn().mockResolvedValue({
+					data: { experiment: { version: 'b' } }
+				}),
+			};
+			const route = { query: {} };
+			const experimentKey = 'test_experiment';
+
+			const result = await queryExperimentAssignment(apollo, route, experimentKey);
+
+			expect(apollo.query).toHaveBeenCalledWith({
 				query: experimentAssignmentQuery,
 				variables: { id: experimentKey },
-				fetchPolicy: 'network-only'
 			});
-			expect(mockApollo.readFragment).toHaveBeenCalledWith({
+			expect(result.data.experiment.version).toBe('b');
+		});
+
+		it('should evict cache when setuiab is present', async () => {
+			const apollo = {
+				cache: {
+					evict: vi.fn(),
+					gc: vi.fn(),
+				},
+				query: vi.fn().mockResolvedValue({
+					data: { experiment: { version: 'a' } }
+				}),
+			};
+			const route = { query: { setuiab: 'test_experiment.a' } };
+			const experimentKey = 'test_experiment';
+
+			await queryExperimentAssignment(apollo, route, experimentKey);
+
+			expect(apollo.cache.evict).toHaveBeenCalledWith({
 				id: `Experiment:${experimentKey}`,
-				fragment: experimentVersionFragment
 			});
-			expect(mockTrackEvent).toHaveBeenCalledWith(
-				'event-tracking',
-				trackingAction,
-				'control',
-				undefined
+			expect(apollo.cache.gc).toHaveBeenCalled();
+			expect(apollo.query).toHaveBeenCalledWith({
+				query: experimentAssignmentQuery,
+				variables: { id: experimentKey },
+			});
+		});
+
+		it('should not evict cache when setuiab is not present', async () => {
+			const apollo = {
+				cache: {
+					evict: vi.fn(),
+					gc: vi.fn(),
+				},
+				query: vi.fn().mockResolvedValue({
+					data: { experiment: { version: 'b' } }
+				}),
+			};
+			const route = { query: {} };
+			const experimentKey = 'test_experiment';
+
+			await queryExperimentAssignment(apollo, route, experimentKey);
+
+			expect(apollo.cache.evict).not.toHaveBeenCalled();
+			expect(apollo.cache.gc).not.toHaveBeenCalled();
+			expect(apollo.query).toHaveBeenCalledWith({
+				query: experimentAssignmentQuery,
+				variables: { id: experimentKey },
+			});
+		});
+
+		it('should return promise from apollo.query', async () => {
+			const mockData = { data: { experiment: { version: 'a' } } };
+			const apollo = {
+				cache: {
+					evict: vi.fn(),
+					gc: vi.fn(),
+				},
+				query: vi.fn().mockResolvedValue(mockData),
+			};
+			const route = { query: {} };
+			const experimentKey = 'test_experiment';
+
+			const result = await queryExperimentAssignment(apollo, route, experimentKey);
+
+			expect(result).toBe(mockData);
+		});
+	});
+
+	describe('initializeExperiment', () => {
+		it('should call callback immediately with initial version from cookie', () => {
+			const cookieStore = new CookieStore({ uiab: 'test_exp:b:123:0.5' });
+			const apollo = {
+				cache: { evict: vi.fn(), gc: vi.fn() },
+				query: vi.fn().mockResolvedValue({ data: { experiment: { version: 'b' } } }),
+				readFragment: vi.fn().mockReturnValue({ version: 'b' }),
+			};
+			const route = { query: {} };
+			const callback = vi.fn();
+
+			const result = initializeExperiment(cookieStore, apollo, route, 'test_exp', callback);
+
+			expect(result).toBe('b');
+			expect(callback).toHaveBeenCalledWith('b');
+		});
+
+		it('should call callback with undefined if no cookie exists', () => {
+			const cookieStore = new CookieStore({});
+			const apollo = {
+				cache: { evict: vi.fn(), gc: vi.fn() },
+				query: vi.fn().mockResolvedValue({ data: { experiment: { version: 'a' } } }),
+				readFragment: vi.fn().mockReturnValue(null), // No cache hit
+			};
+			const route = { query: {} };
+			const callback = vi.fn();
+
+			const result = initializeExperiment(cookieStore, apollo, route, 'test_exp', callback);
+
+			expect(result).toBeUndefined();
+			expect(callback).toHaveBeenCalledWith(undefined);
+		});
+
+		it('should only call callback once when no setuiab query param', async () => {
+			const cookieStore = new CookieStore({ uiab: 'test_exp:a:123:0.5' });
+			const apollo = {
+				cache: { evict: vi.fn(), gc: vi.fn() },
+				query: vi.fn().mockResolvedValue({ data: { experiment: { version: 'b' } } }),
+				readFragment: vi.fn().mockReturnValue({ version: 'a' }),
+			};
+			const route = { query: {} };
+			const callback = vi.fn();
+
+			initializeExperiment(cookieStore, apollo, route, 'test_exp', callback);
+
+			// Should only be called once with cookie value, no async query
+			expect(callback).toHaveBeenCalledTimes(1);
+			expect(callback).toHaveBeenCalledWith('a');
+			expect(apollo.query).not.toHaveBeenCalled();
+		});
+
+		it('should call callback twice when setuiab query param is present', async () => {
+			const cookieStore = new CookieStore({ uiab: 'test_exp:a:123:0.5' });
+			const apollo = {
+				cache: { evict: vi.fn(), gc: vi.fn() },
+				query: vi.fn().mockResolvedValue({ data: { experiment: { version: 'b' } } }),
+				readFragment: vi.fn().mockReturnValue({ version: 'b' }),
+			};
+			const route = { query: { setuiab: 'test_exp.b' } };
+			const callback = vi.fn();
+
+			initializeExperiment(cookieStore, apollo, route, 'test_exp', callback);
+
+			// Wait for promise to resolve
+			await vi.waitFor(() => expect(callback).toHaveBeenCalledTimes(2));
+
+			expect(callback).toHaveBeenNthCalledWith(1, 'a');
+			expect(callback).toHaveBeenNthCalledWith(2, 'b');
+			expect(apollo.query).toHaveBeenCalled();
+		});
+
+		it('should not query for experiment assignment when no setuiab param', () => {
+			const cookieStore = new CookieStore({});
+			const apollo = {
+				cache: { evict: vi.fn(), gc: vi.fn() },
+				query: vi.fn().mockResolvedValue({ data: { experiment: { version: 'a' } } }),
+				readFragment: vi.fn().mockReturnValue({ version: 'a' }),
+			};
+			const route = { query: {} };
+
+			initializeExperiment(cookieStore, apollo, route, 'test_exp', vi.fn());
+
+			expect(apollo.query).not.toHaveBeenCalled();
+		});
+
+		it('should query for experiment assignment when setuiab param is present', () => {
+			const cookieStore = new CookieStore({});
+			const apollo = {
+				cache: { evict: vi.fn(), gc: vi.fn() },
+				query: vi.fn().mockResolvedValue({ data: { experiment: { version: 'a' } } }),
+				readFragment: vi.fn().mockReturnValue({ version: 'a' }),
+			};
+			const route = { query: { setuiab: 'test_exp.a' } };
+
+			initializeExperiment(cookieStore, apollo, route, 'test_exp', vi.fn());
+
+			expect(apollo.query).toHaveBeenCalledWith({
+				query: experimentAssignmentQuery,
+				variables: { id: 'test_exp' },
+			});
+		});
+
+		it('should evict cache if setuiab is present', () => {
+			const cookieStore = new CookieStore({ uiab: 'test_exp:a:123:0.5' });
+			const apollo = {
+				cache: { evict: vi.fn(), gc: vi.fn() },
+				query: vi.fn().mockResolvedValue({ data: { experiment: { version: 'b' } } }),
+				readFragment: vi.fn().mockReturnValue({ version: 'b' }),
+			};
+			const route = { query: { setuiab: 'test_exp.b' } };
+
+			initializeExperiment(cookieStore, apollo, route, 'test_exp', vi.fn());
+
+			expect(apollo.cache.evict).toHaveBeenCalledWith({ id: 'Experiment:test_exp' });
+			expect(apollo.cache.gc).toHaveBeenCalled();
+		});
+
+		it('should work without callback', async () => {
+			const cookieStore = new CookieStore({ uiab: 'test_exp:a:123:0.5' });
+			const apollo = {
+				cache: { evict: vi.fn(), gc: vi.fn() },
+				query: vi.fn().mockResolvedValue({ data: { experiment: { version: 'b' } } }),
+				readFragment: vi.fn().mockReturnValue({ version: 'a' }),
+			};
+			const route = { query: {} };
+
+			const result = initializeExperiment(cookieStore, apollo, route, 'test_exp');
+
+			expect(result).toBe('a');
+			// Should not query when no setuiab param
+			expect(apollo.query).not.toHaveBeenCalled();
+		});
+
+		it('should handle callback being called with different versions when setuiab is present', async () => {
+			const cookieStore = new CookieStore({ uiab: 'test_exp:control:123:0.5' });
+			const apollo = {
+				cache: { evict: vi.fn(), gc: vi.fn() },
+				query: vi.fn().mockResolvedValue({ data: { experiment: { version: 'variant' } } }),
+				readFragment: vi.fn().mockReturnValue({ version: 'variant' }),
+			};
+			const route = { query: { setuiab: 'test_exp.variant' } };
+			const callback = vi.fn();
+
+			initializeExperiment(cookieStore, apollo, route, 'test_exp', callback);
+
+			// Wait for promise to resolve
+			await vi.waitFor(() => expect(callback).toHaveBeenCalledTimes(2));
+
+			expect(callback).toHaveBeenNthCalledWith(1, 'control');
+			expect(callback).toHaveBeenNthCalledWith(2, 'variant');
+		});
+
+		it('should not call trackEvent when trackEvent is not provided', async () => {
+			const cookieStore = new CookieStore({ uiab: 'test_exp:a:123:0.5' });
+			const readFragment = vi.fn().mockReturnValue({ version: 'a' });
+			const apollo = {
+				cache: { evict: vi.fn(), gc: vi.fn() },
+				query: vi.fn().mockResolvedValue({ data: { experiment: { version: 'a' } } }),
+				readFragment,
+			};
+			const route = { query: {} };
+			const callback = vi.fn();
+
+			initializeExperiment(cookieStore, apollo, route, 'test_exp', callback);
+
+			// Should only be called once (no async query without setuiab)
+			expect(callback).toHaveBeenCalledTimes(1);
+
+			// readFragment should not be called if trackEvent is not provided
+			expect(readFragment).not.toHaveBeenCalled();
+		});
+
+		it('should call trackExperimentVersion when trackEvent is provided and no setuiab', () => {
+			const cookieStore = new CookieStore({ uiab: 'test_exp:a:123:0.5' });
+			const readFragment = vi.fn().mockReturnValue({ version: 'a' });
+			const trackEvent = vi.fn();
+			const apollo = {
+				cache: { evict: vi.fn(), gc: vi.fn() },
+				query: vi.fn().mockResolvedValue({ data: { experiment: { version: 'a' } } }),
+				readFragment,
+			};
+			const route = { query: {} };
+			const callback = vi.fn();
+
+			initializeExperiment(cookieStore, apollo, route, 'test_exp', callback, trackEvent);
+
+			// Should track immediately without async query
+			expect(readFragment).toHaveBeenCalledWith({
+				id: 'Experiment:test_exp',
+				fragment: experimentVersionFragment,
+			});
+			expect(trackEvent).toHaveBeenCalledWith('event-tracking', 'test_exp', 'a', undefined);
+			expect(apollo.query).not.toHaveBeenCalled();
+		});
+
+		it('should call trackExperimentVersion with custom action when provided', () => {
+			const cookieStore = new CookieStore({ uiab: 'test_exp:b:123:0.5' });
+			const readFragment = vi.fn().mockReturnValue({ version: 'b' });
+			const trackEvent = vi.fn();
+			const apollo = {
+				cache: { evict: vi.fn(), gc: vi.fn() },
+				query: vi.fn().mockResolvedValue({ data: { experiment: { version: 'b' } } }),
+				readFragment,
+			};
+			const route = { query: {} };
+			const callback = vi.fn();
+			const customAction = 'custom-action';
+
+			initializeExperiment(cookieStore, apollo, route, 'test_exp', callback, trackEvent, customAction);
+
+			// Should track immediately without async query
+			expect(trackEvent).toHaveBeenCalledWith('event-tracking', customAction, 'b', undefined);
+		});
+
+		it('should call trackExperimentVersion with custom category when provided', () => {
+			const cookieStore = new CookieStore({ uiab: 'test_exp:b:123:0.5' });
+			const readFragment = vi.fn().mockReturnValue({ version: 'b' });
+			const trackEvent = vi.fn();
+			const apollo = {
+				cache: { evict: vi.fn(), gc: vi.fn() },
+				query: vi.fn().mockResolvedValue({ data: { experiment: { version: 'b' } } }),
+				readFragment,
+			};
+			const route = { query: {} };
+			const callback = vi.fn();
+			const customAction = 'custom-action';
+			const customCategory = 'custom-category';
+
+			initializeExperiment(
+				cookieStore,
+				apollo,
+				route,
+				'test_exp',
+				callback,
+				trackEvent,
+				customAction,
+				customCategory
 			);
-			expect(result).toBe(true);
+
+			// Should track immediately without async query
+			expect(trackEvent).toHaveBeenCalledWith(customCategory, customAction, 'b', undefined);
 		});
 
-		it('should return true when assignment data version is "b"', async () => {
-			const mockTrackEvent = vi.fn();
-			const mockApollo = {
-				query: vi.fn().mockResolvedValue({
-					data: {
-						experiment: {
-							version: 'b'
-						}
-					}
-				}),
-				readFragment: vi.fn().mockReturnValue({ version: 'a' })
-			};
-			const route = { query: { setuiab: 'test' } };
-
-			const result = await handleSetuiabAndExperimentTracking({
-				apollo: mockApollo,
-				trackEvent: mockTrackEvent,
-				route,
-				experimentKey,
-				trackingAction,
-			});
-
-			expect(result).toBe(true);
-		});
-
-		it('should return false when assignment data version is not "b"', async () => {
-			const mockTrackEvent = vi.fn();
-			const mockApollo = {
-				query: vi.fn().mockResolvedValue({
-					data: {
-						experiment: {
-							version: 'a'
-						}
-					}
-				}),
-				readFragment: vi.fn().mockReturnValue({ version: 'control' })
-			};
-			const route = { query: { setuiab: 'test' } };
-
-			const result = await handleSetuiabAndExperimentTracking({
-				apollo: mockApollo,
-				trackEvent: mockTrackEvent,
-				route,
-				experimentKey,
-				trackingAction,
-			});
-
-			expect(result).toBe(false);
-		});
-
-		it('should return true when cached experiment version is "b"', async () => {
-			const mockTrackEvent = vi.fn();
-			const mockApollo = {
-				query: vi.fn(),
-				readFragment: vi.fn().mockReturnValue({ version: 'b' })
+		it('should not call trackEvent for unassigned version', () => {
+			const cookieStore = new CookieStore({ uiab: 'test_exp:unassigned:123:0.5' });
+			const readFragment = vi.fn().mockReturnValue({ version: 'unassigned' });
+			const trackEvent = vi.fn();
+			const apollo = {
+				cache: { evict: vi.fn(), gc: vi.fn() },
+				query: vi.fn().mockResolvedValue({ data: { experiment: { version: 'unassigned' } } }),
+				readFragment,
 			};
 			const route = { query: {} };
+			const callback = vi.fn();
 
-			const result = await handleSetuiabAndExperimentTracking({
-				apollo: mockApollo,
-				trackEvent: mockTrackEvent,
-				route,
-				experimentKey,
-				trackingAction,
+			initializeExperiment(cookieStore, apollo, route, 'test_exp', callback, trackEvent);
+
+			expect(readFragment).toHaveBeenCalledWith({
+				id: 'Experiment:test_exp',
+				fragment: experimentVersionFragment,
 			});
-
-			expect(result).toBe(true);
+			// trackEvent should not be called for unassigned version
+			expect(trackEvent).not.toHaveBeenCalled();
 		});
 
-		it('should handle query error and continue with cached assignment', async () => {
-			const mockTrackEvent = vi.fn();
-			const mockApollo = {
-				query: vi.fn().mockRejectedValue(new Error('Network error')),
-				readFragment: vi.fn().mockReturnValue({ version: 'control' })
-			};
-			const route = { query: { setuiab: 'test' } };
-
-			const result = await handleSetuiabAndExperimentTracking({
-				apollo: mockApollo,
-				trackEvent: mockTrackEvent,
-				route,
-				experimentKey,
-				trackingAction,
-			});
-
-			expect(mockApollo.query).toHaveBeenCalled();
-			expect(mockTrackEvent).toHaveBeenCalledWith(
-				'event-tracking',
-				trackingAction,
-				'control',
-				undefined
-			);
-			expect(result).toBe(false);
-		});
-
-		it('should handle undefined route', async () => {
-			const mockTrackEvent = vi.fn();
-			const mockApollo = {
-				query: vi.fn(),
-				readFragment: vi.fn().mockReturnValue({ version: 'a' })
-			};
-
-			const result = await handleSetuiabAndExperimentTracking({
-				apollo: mockApollo,
-				trackEvent: mockTrackEvent,
-				route: undefined,
-				experimentKey,
-				trackingAction,
-			});
-
-			expect(mockApollo.query).not.toHaveBeenCalled();
-			expect(mockTrackEvent).toHaveBeenCalled();
-			expect(result).toBe(false);
-		});
-
-		it('should handle undefined experiment version', async () => {
-			const mockTrackEvent = vi.fn();
-			const mockApollo = {
-				query: vi.fn(),
-				readFragment: vi.fn().mockReturnValue({ version: undefined })
+		it('should not call trackEvent for undefined version', () => {
+			const cookieStore = new CookieStore({});
+			const readFragment = vi.fn().mockReturnValue({ version: undefined });
+			const trackEvent = vi.fn();
+			const apollo = {
+				cache: { evict: vi.fn(), gc: vi.fn() },
+				query: vi.fn().mockResolvedValue({ data: { experiment: { version: undefined } } }),
+				readFragment,
 			};
 			const route = { query: {} };
+			const callback = vi.fn();
 
-			const result = await handleSetuiabAndExperimentTracking({
-				apollo: mockApollo,
-				trackEvent: mockTrackEvent,
-				route,
-				experimentKey,
-				trackingAction,
+			initializeExperiment(cookieStore, apollo, route, 'test_exp', callback, trackEvent);
+
+			expect(readFragment).toHaveBeenCalledWith({
+				id: 'Experiment:test_exp',
+				fragment: experimentVersionFragment,
 			});
-
-			expect(mockTrackEvent).not.toHaveBeenCalled();
-			expect(result).toBe(false);
-		});
-
-		it('should handle unassigned experiment version', async () => {
-			const mockTrackEvent = vi.fn();
-			const mockApollo = {
-				query: vi.fn(),
-				readFragment: vi.fn().mockReturnValue({ version: 'unassigned' })
-			};
-			const route = { query: {} };
-
-			const result = await handleSetuiabAndExperimentTracking({
-				apollo: mockApollo,
-				trackEvent: mockTrackEvent,
-				route,
-				experimentKey,
-				trackingAction,
-			});
-
-			expect(mockTrackEvent).not.toHaveBeenCalled();
-			expect(result).toBe(false);
-		});
-
-		it('should prioritize assignment data over cached experiment version', async () => {
-			const mockTrackEvent = vi.fn();
-			const mockApollo = {
-				query: vi.fn().mockResolvedValue({
-					data: {
-						experiment: {
-							version: 'a'
-						}
-					}
-				}),
-				readFragment: vi.fn().mockReturnValue({ version: 'b' })
-			};
-			const route = { query: { setuiab: 'test' } };
-
-			const result = await handleSetuiabAndExperimentTracking({
-				apollo: mockApollo,
-				trackEvent: mockTrackEvent,
-				route,
-				experimentKey,
-				trackingAction,
-			});
-
-			expect(result).toBe(false); // assignment data version 'a' takes priority
-		});
-
-		it('should handle empty assignment data', async () => {
-			const mockTrackEvent = vi.fn();
-			const mockApollo = {
-				query: vi.fn().mockResolvedValue({
-					data: {}
-				}),
-				readFragment: vi.fn().mockReturnValue({ version: 'b' })
-			};
-			const route = { query: { setuiab: 'test' } };
-
-			const result = await handleSetuiabAndExperimentTracking({
-				apollo: mockApollo,
-				trackEvent: mockTrackEvent,
-				route,
-				experimentKey,
-				trackingAction,
-			});
-
-			expect(result).toBe(true); // falls back to cached version 'b'
+			// trackEvent should not be called for undefined version
+			expect(trackEvent).not.toHaveBeenCalled();
 		});
 	});
 });

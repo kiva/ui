@@ -1,0 +1,10 @@
+query useGoalDataQuery($loanIds: [Int!]!) {
+  postCheckoutAchievements(loanIds: $loanIds) {
+	allTimeProgress {
+		achievementId
+        totalProgress
+        currentTier
+        completed
+	}
+  }
+}

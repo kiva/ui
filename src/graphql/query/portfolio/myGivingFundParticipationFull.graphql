@@ -1,0 +1,78 @@
+query MyGivingFundParticipationFull($filter: GivingFundParticipationFilterInput, $offset: Int = 0, $limit: Int = 10) {
+  my {
+	id
+	givingFundParticipation(filter: $filter, offset: $offset, limit: $limit) {
+	  totalCount
+	  values {
+		id
+		amountDonated
+		date
+		givingFund {
+			id
+			amountDonated
+			campaign {
+				campaignPromoFundId
+				category {
+					contentfulEntry {
+						entry
+					}
+					name
+					description
+					id
+				}
+			}
+			currentAmountDonated
+			display {
+				ctaTitle
+				ctaDescription
+			}
+			goals {
+				totalCount
+				values {
+					id
+					status
+					targets {
+						values {
+							... on FundraiserTarget {
+								participation {
+									amount
+									totalCount
+								}
+								status
+								targetAmount
+								type
+							}
+						}
+					}
+					startDate
+					endDate
+					cta {
+						description
+						title
+					}
+				}
+			}
+			lendingStats {
+				totalLent
+				totalLivesTouched
+			}
+			owner {
+				id
+				name
+			}
+			realTimeStats {
+				id
+				lenderId
+				lentTo {
+					borrowers {
+						totalCount
+					}
+				}
+				totalAmountLent
+			}
+		  	totalParticipants
+		}
+	  }
+	}
+  }
+}

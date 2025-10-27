@@ -5,7 +5,7 @@
 		</h2>
 		<KvCarousel
 			:slide-max-width="singleSlideWidth"
-			class="blog-card-carousel tw-w-full tw-overflow-visible"
+			class="blog-card-carousel tw-w-full"
 			:embla-options="{
 				loop: false,
 				align: 'start',

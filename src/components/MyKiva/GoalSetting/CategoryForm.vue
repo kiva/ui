@@ -8,9 +8,7 @@
 
 <script setup>
 import { KvImpactVerticalSelector } from '@kiva/kv-components';
-import {
-	defineProps, defineEmits, onMounted, inject
-} from 'vue';
+import { defineProps, defineEmits } from 'vue';
 
 defineProps({
 	categories: {
@@ -23,12 +21,5 @@ defineProps({
 	},
 });
 
-const $kvTrackEvent = inject('$kvTrackEvent');
-
 defineEmits(['category-selected']);
-
-onMounted(() => {
-	$kvTrackEvent('portfolio', 'show', 'view-goal-categories');
-});
-
 </script>

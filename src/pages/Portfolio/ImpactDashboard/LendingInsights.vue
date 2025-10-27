@@ -28,20 +28,6 @@
 						:icon="mdiArrowRight"
 					/>
 				</router-link>
-				<!-- <button
-                    class="tw-text-link"
-                    @click="loanLightboxVisible = true"
-                    v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
-                >
-                    Details
-                </button>
-                <kv-lightbox
-                    :visible="loanLightboxVisible"
-                    title="Loan count"
-                    @lightbox-closed="loanLightboxVisible = false"
-                >
-                    <loan-count-over-time-figure />
-                </kv-lightbox> -->
 			</div>
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder
@@ -345,25 +331,19 @@ import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import getCacheKey from '#src/util/getCacheKey';
 import { mdiArrowRight, mdiClockOutline } from '@mdi/js';
-// import LoanCountOverTimeFigure from './LoanCountOverTimeFigure';
 import {
 	KvGrid, KvLoadingPlaceholder, KvMaterialIcon, KvTab, KvTabs, KvTabPanel,
 } from '@kiva/kv-components';
 import { differenceInCalendarDays } from 'date-fns';
 import StarShine from '#src/assets/icons/inline/star_shine.svg';
-import {
-	handleSetuiabAndExperimentTracking,
-	getExperimentEnabledFromCache
-} from '#src/util/experiment/experimentUtils';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 const PERCENTILE_BY_YEAR_EXP_KEY = 'portfolio_year_percentile';
 
 export default {
 	name: 'LendingInsights',
-	serverCacheKey: () => getCacheKey('LendingInsights'),
-	inject: ['apollo', 'cookieStore'],
 	components: {
 		AsyncPortfolioSection,
 		KvGrid,
@@ -373,54 +353,60 @@ export default {
 		KvTabs,
 		KvTabPanel,
 		StarShine,
-		// LoanCountOverTimeFigure,
 	},
+	inject: ['apollo', 'cookieStore'],
+	serverCacheKey: () => getCacheKey('LendingInsights'),
 	data() {
 		return {
+			mdiArrowRight,
+			mdiClockOutline,
 			loading: true,
 			loadingPromise: null,
 			lifetimeLoadingPromise: null,
-			donationLightboxVisible: false,
-			// loanLightboxVisible: false,
 			currentYearAmountLent: 0,
 			currentYearCountryCount: 0,
 			currentYearNumberOfLoans: 0,
 			formattedCurrentYearPercentile: '',
 			currentYearPercentile: null,
 			nextPercentileMsg: '',
-			threshold: 0, // amount needed to be within percentile group
 			lifetimeAmountLent: 0,
 			lifetimeCountryCount: 0,
 			lifetimeNumberOfLoans: 0,
 			lifetimePercentile: 0,
-			mdiArrowRight,
-			mdiClockOutline,
 			isPercentileByYearExpEnabled: undefined,
 		};
-	},
-	apollo: {
-		query: experimentAssignmentQuery,
-		preFetch: true,
-		preFetchVariables() {
-			return { id: PERCENTILE_BY_YEAR_EXP_KEY };
-		},
-		variables() {
-			return { id: PERCENTILE_BY_YEAR_EXP_KEY };
-		},
-		result({ data }) {
-			this.isPercentileByYearExpEnabled = data?.experiment?.version === 'b';
-		},
 	},
 	computed: {
 		daysUntilDeadline() {
 			const today = new Date();
-			const deadline = new Date(today.getFullYear(), 11, 31); // December 31st of current year
+			const deadline = new Date(today.getFullYear(), 11, 31);
 			return differenceInCalendarDays(deadline, today);
 		},
 		yearToDate() {
 			const currentYear = new Date().getFullYear();
 			return currentYear;
 		},
+	},
+	apollo: {
+		preFetch(_config, client) {
+			return client.query({
+				query: experimentAssignmentQuery,
+				variables: { id: PERCENTILE_BY_YEAR_EXP_KEY },
+			});
+		},
+	},
+	created() {
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			PERCENTILE_BY_YEAR_EXP_KEY,
+			version => {
+				this.isPercentileByYearExpEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-1847-Aug2025',
+		);
 	},
 	methods: {
 		setActiveTab(tab) {
@@ -471,18 +457,18 @@ export default {
 			if (this.loading && !this.loadingPromise) {
 				this.loadingPromise = this.apollo.query({
 					query: gql`query lendingInsights {
-							my {
+						my {
+							id
+							lendingStats {
 								id
-								lendingStats {
-									id
-									loanStatsByYear {
-										amount
-										count
-									}
-									countriesLentToByYear
+								loanStatsByYear {
+									amount
+									count
 								}
+								countriesLentToByYear
 							}
-						}`
+						}
+					}`
 				}).then(({ data }) => {
 					const ytdAmount = parseInt(
 						numeral(data?.my?.lendingStats?.loanStatsByYear?.amount ?? 0).value(),
@@ -490,15 +476,15 @@ export default {
 					);
 					return this.apollo.query({
 						query: gql`query percentileData($amount: Int!) {
-								lend {
-									percentilePerYear(amount: $amount) {
-										nextPercentileThreshold
-										percentile
-										percentileNext25
-										threshold
-									}
+							lend {
+								percentilePerYear(amount: $amount) {
+									nextPercentileThreshold
+									percentile
+									percentileNext25
+									threshold
 								}
-							}`,
+							}
+						}`,
 						variables: { amount: ytdAmount }
 					}).then(({ data: percentileStatsData }) => {
 						return { lendingStatsData: data, percentileStatsData };
@@ -528,8 +514,8 @@ export default {
 
 					this.nextPercentileMsg = updatedPercentile();
 
-					// eslint-disable-next-line max-len
-					const yearlyAmountOfLoans = numeral(lendingStatsData?.my?.lendingStats?.loanStatsByYear?.amount ?? 0);
+					const yearlyAmount = lendingStatsData?.my?.lendingStats?.loanStatsByYear?.amount ?? 0;
+					const yearlyAmountOfLoans = numeral(yearlyAmount);
 					this.currentYearAmountLent = yearlyAmountOfLoans.format('$0,0[.]00');
 
 					this.currentYearCountryCount = lendingStatsData?.my?.lendingStats?.countriesLentToByYear ?? 0;
@@ -557,21 +543,6 @@ export default {
 			}
 		},
 	},
-	created() {
-		this.isPercentileByYearExpEnabled = getExperimentEnabledFromCache(
-			this.apollo,
-			PERCENTILE_BY_YEAR_EXP_KEY
-		);
-	},
-	async mounted() {
-		this.isPercentileByYearExpEnabled = await handleSetuiabAndExperimentTracking({
-			apollo: this.apollo,
-			trackEvent: this.$kvTrackEvent,
-			route: this.$route,
-			experimentKey: PERCENTILE_BY_YEAR_EXP_KEY,
-			trackingAction: 'EXP-MP-1847-Aug2025',
-		});
-	}
 };
 </script>
 
