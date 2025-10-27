@@ -361,7 +361,7 @@ export default {
 				loans: this.loans,
 				apollo: this.apollo,
 			});
-			await runComposable();
+			await runComposable('portfolio');
 			this.goalProgress = goalProgress.value;
 			this.userGoal = userGoal.value;
 			this.userGoalAchieved = userGoalAchieved.value;
