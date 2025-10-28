@@ -163,61 +163,30 @@ describe('useDelayUntilVisible.js', () => {
 		});
 	});
 
-	it('should disconnect observer on unmount when observer exists', async () => {
-		let unmountCallback;
-		vi.resetModules();
-		vi.doMock('vue', () => ({
-			ref: value => ({ value }),
-			onUnmounted: callback => {
-				unmountCallback = callback;
-			}
-		}));
+	it('should disconnect observer when disconnect method is called', () => {
+		mockCreateIntersectionObserver.mockReturnValue(mockObserver);
 
-		// Re-import after mocking
-		vi.doMock('#src/util/observerUtils', () => ({
-			createIntersectionObserver: vi.fn().mockReturnValue(mockObserver)
-		}));
-
-		const { default: useDelayUntilVisibleMocked } = await import('#src/composables/useDelayUntilVisible');
-		const { delayUntilVisible } = useDelayUntilVisibleMocked();
+		const { delayUntilVisible, disconnect } = useDelayUntilVisible();
 		const mockCallback = vi.fn();
 		const mockElements = [{ id: 'element1' }];
 
 		delayUntilVisible(mockCallback, mockElements);
 
-		// Trigger unmount
-		unmountCallback();
+		// Call disconnect method
+		disconnect();
 
 		expect(mockObserver.disconnect).toHaveBeenCalledTimes(1);
-
-		vi.doUnmock('vue');
-		vi.doUnmock('#src/util/observerUtils');
 	});
 
-	it('should handle unmount when observer is null', async () => {
-		let unmountCallback;
-		vi.resetModules();
-		vi.doMock('vue', () => ({
-			ref: value => ({ value }),
-			onUnmounted: callback => {
-				unmountCallback = callback;
-			}
-		}));
+	it('should handle disconnect when observer is null', () => {
+		mockCreateIntersectionObserver.mockReturnValue(null);
 
-		vi.doMock('#src/util/observerUtils', () => ({
-			createIntersectionObserver: vi.fn().mockReturnValue(null)
-		}));
-
-		const { default: useDelayUntilVisibleMocked } = await import('#src/composables/useDelayUntilVisible');
-		const { delayUntilVisible } = useDelayUntilVisibleMocked();
+		const { delayUntilVisible, disconnect } = useDelayUntilVisible();
 		const mockCallback = vi.fn();
 
 		delayUntilVisible(mockCallback);
 
-		// Trigger unmount - should not throw
-		expect(() => unmountCallback()).not.toThrow();
-
-		vi.doUnmock('vue');
-		vi.doUnmock('#src/util/observerUtils');
+		// Call disconnect - should not throw
+		expect(() => disconnect()).not.toThrow();
 	});
 });
