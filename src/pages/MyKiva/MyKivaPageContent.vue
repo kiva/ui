@@ -660,7 +660,7 @@ export default {
 }
 
 #recommended-loans :deep(.kv-carousel__controls) {
-	@apply !tw-hidden md:!tw-flex !tw-justify-start !tw-mt-2;
+	@apply !tw-hidden md:!tw-flex !tw-justify-end !tw-mb-2;
 }
 
 #recommended-loans :deep(.kv-carousel__controls) div {

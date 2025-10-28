@@ -16,7 +16,7 @@
 					</p>
 				</div>
 			</div>
-			<kv-carousel
+			<KvCarousel
 				class="tw-w-full tw-overflow-hidden tw-mt-1 tw-pb-2 tw-px-1 tw-pt-1"
 				id="customizedCarousel"
 				:key="loans.length"
@@ -24,6 +24,7 @@
 				slides-to-scroll="visible"
 				:slide-max-width="singleSlideWidth"
 				:embla-options="{ loop: false }"
+				:controls-top-right="true"
 			>
 				<template v-for="(loan, index) in loans" #[`slide${index}`] :key="loanCardKey(index)">
 					<kv-classic-loan-card-container
@@ -51,7 +52,7 @@
 						:loan-search-state="loanSearchState"
 					/>
 				</template>
-			</kv-carousel>
+			</KvCarousel>
 		</div>
 	</div>
 </template>
