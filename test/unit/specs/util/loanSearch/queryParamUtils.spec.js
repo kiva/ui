@@ -3,6 +3,14 @@ import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
 import filterConfig from '#src/util/loanSearch/filterConfig';
 import { mockState, mockAllFacets } from '../../../fixtures/mockLoanSearchData';
 
+// Mock vue-router functions
+vi.mock('vue-router', () => ({
+	isNavigationFailure: vi.fn((error, type) => error?.type === type),
+	NavigationFailureType: {
+		cancelled: 8
+	}
+}));
+
 vi.mock('#src/util/loanSearch/filterConfig', () => ({
 	default: {
 		config: {
@@ -134,13 +142,14 @@ describe('queryParamUtils.js', () => {
 				push: vi.fn().mockReturnValue(Promise.reject(cancelledError)),
 			};
 
-			// Call the function and wait for promise to settle
+			// Call updateQueryParams - it should handle the rejected promise internally
 			updateQueryParams({}, router, FLSS_QUERY_TYPE);
 
-			// Wait for microtasks to complete
-			await new Promise(resolve => {
-				setTimeout(() => resolve(), 0);
+			// Wait for any microtasks to complete
+			const waitForPromise = new Promise(resolve => {
+				setTimeout(() => resolve(), 10);
 			});
+			await waitForPromise;
 
 			// Should not throw - the error was caught
 			expect(router.push).toHaveBeenCalled();
