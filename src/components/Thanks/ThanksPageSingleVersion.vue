@@ -17,7 +17,7 @@
 				@view-pdf-clicked="scrollToReceipt"
 			/>
 			<GoalCompleted
-				v-if="isNextStepsExpEnabled && userGoalAchieved"
+				v-if="showGoalCompletedModule"
 				:current-goal="userGoal"
 				:get-goal-display-name="getGoalDisplayName"
 				:loading="goalDataLoading"
@@ -37,7 +37,7 @@
 				class="tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
-				v-if="showJourneyModule && !userGoalAchieved && !achievementsCompleted"
+				v-if="showJourneyModule"
 				:loans="loans"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
@@ -212,9 +212,11 @@ const hasTeamAttributedPartnerLoan = computed(
 const showOptInModule = computed(() => !props.isOptedIn);
 const showKivaCardsModule = computed(() => !!printableKivaCards.value.length);
 const showBadgeModule = computed(() => (
-	props.myKivaEnabled && (numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value)
+	props.myKivaEnabled && (numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value) && !isNextStepsExpEnabled.value
 ));
-const showJourneyModule = computed(() => props.myKivaEnabled && !showBadgeModule.value);
+const showGoalCompletedModule = computed(() => isNextStepsExpEnabled.value && userGoalAchieved.value);
+const showJourneyModule = computed(() => props.myKivaEnabled && !showBadgeModule.value
+	&& !props.achievementsCompleted && (!goalDataLoading.value && !userGoalAchieved.value));
 const showControlModule = computed(() => !props.myKivaEnabled);
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
 
