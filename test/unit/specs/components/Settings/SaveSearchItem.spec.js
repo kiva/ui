@@ -1,7 +1,4 @@
 import { render } from '@testing-library/vue';
-import {
-	describe, it, expect, vi
-} from 'vitest';
 import SaveSearchItem from '#src/components/Settings/SaveSearchItem';
 
 const mockSavedSearch = {

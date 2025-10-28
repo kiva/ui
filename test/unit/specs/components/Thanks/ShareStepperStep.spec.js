@@ -1,7 +1,4 @@
 import { render } from '@testing-library/vue';
-import {
-	describe, it, expect, vi, beforeEach
-} from 'vitest';
 import ShareStepperStep from '#src/components/Thanks/ShareStepperStep';
 
 // Mock child components

@@ -1,7 +1,4 @@
 import { render } from '@testing-library/vue';
-import {
-	describe, it, expect, vi, beforeEach
-} from 'vitest';
 import KivaCardRedemption from '#src/components/Checkout/KivaCardRedemption';
 
 // Mock GraphQL mutations

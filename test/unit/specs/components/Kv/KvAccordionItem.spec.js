@@ -1,9 +1,6 @@
 import {
 	render, fireEvent
 } from '@testing-library/vue';
-import {
-	describe, expect, it
-} from 'vitest';
 import KvAccordionItem from '#src/components/Kv/KvAccordionItem';
 
 describe('KvAccordionItem.vue', () => {

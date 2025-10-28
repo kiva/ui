@@ -1,6 +1,3 @@
-import {
-	describe, it, expect, vi, beforeEach,
-} from 'vitest';
 import { render, waitFor } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import RemoveBasketItem from '#src/components/Checkout/RemoveBasketItem';

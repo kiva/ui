@@ -1,9 +1,6 @@
 import {
 	render, fireEvent
 } from '@testing-library/vue';
-import {
-	describe, expect, it, vi
-} from 'vitest';
 import KvExpandableQuestion from '#src/components/Kv/KvExpandableQuestion';
 
 // Mock $route

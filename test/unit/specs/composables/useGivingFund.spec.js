@@ -1,6 +1,3 @@
-import {
-	describe, it, expect, vi, beforeEach,
-} from 'vitest';
 import { render, waitFor } from '@testing-library/vue';
 import useGivingFund from '#src/composables/useGivingFund';
 

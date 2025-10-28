@@ -1,6 +1,3 @@
-import {
-	describe, it, expect
-} from 'vitest';
 import loanChannelQueryMapMixin from '#src/plugins/loan-channel-query-map';
 
 describe('loan-channel-query-map', () => {

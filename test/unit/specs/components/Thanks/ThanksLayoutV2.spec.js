@@ -1,7 +1,4 @@
 import { render, fireEvent } from '@testing-library/vue';
-import {
-	describe, it, expect, vi, beforeEach
-} from 'vitest';
 import ThanksLayoutV2 from '#src/components/Thanks/ThanksLayoutV2';
 
 // Mock child components

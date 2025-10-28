@@ -1,6 +1,3 @@
-import {
-	describe, expect, it, vi
-} from 'vitest';
 import { render } from '@testing-library/vue';
 import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 

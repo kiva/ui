@@ -1,6 +1,3 @@
-import {
-	describe, it, expect, vi, beforeEach
-} from 'vitest';
 import fiveDollarsTestMixin, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 

@@ -1,9 +1,6 @@
 import {
 	render, fireEvent
 } from '@testing-library/vue';
-import {
-	describe, expect, it
-} from 'vitest';
 import KvMultiCodeBlock from '#src/components/Kv/KvMultiCodeBlock';
 
 describe('KvMultiCodeBlock.vue', () => {

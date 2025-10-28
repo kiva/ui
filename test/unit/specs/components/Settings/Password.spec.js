@@ -1,7 +1,4 @@
 import { render, fireEvent } from '@testing-library/vue';
-import {
-	describe, it, expect, vi, beforeEach
-} from 'vitest';
 import { nextTick } from 'vue';
 import Password from '#src/components/Settings/Password';
 

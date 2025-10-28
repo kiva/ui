@@ -1,6 +1,3 @@
-import {
-	describe, expect, it, vi, beforeEach
-} from 'vitest';
 import { render } from '@testing-library/vue';
 import KvPopper from '#src/components/Kv/KvPopper';
 

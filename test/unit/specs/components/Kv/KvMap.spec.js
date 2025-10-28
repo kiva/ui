@@ -1,6 +1,3 @@
-import {
-	describe, expect, it, vi, beforeEach
-} from 'vitest';
 import { render } from '@testing-library/vue';
 import KvMap from '#src/components/Kv/KvMap';
 

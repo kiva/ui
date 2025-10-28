@@ -1,6 +1,3 @@
-import {
-	describe, expect, it, vi, beforeEach, afterEach
-} from 'vitest';
 import { render } from '@testing-library/vue';
 import KvCarousel from '#src/components/Kv/KvCarousel';
 

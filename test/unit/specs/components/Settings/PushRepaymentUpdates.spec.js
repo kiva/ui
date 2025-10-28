@@ -1,7 +1,4 @@
 import { render } from '@testing-library/vue';
-import {
-	describe, it, expect, vi
-} from 'vitest';
 import PushRepaymentUpdates from '#src/components/Settings/PushRepaymentUpdates';
 
 // Mock the push notifications manager

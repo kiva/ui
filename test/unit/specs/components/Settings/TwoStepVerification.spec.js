@@ -1,7 +1,4 @@
 import { render } from '@testing-library/vue';
-import {
-	describe, it, expect, vi, beforeEach
-} from 'vitest';
 import { nextTick } from 'vue';
 import TwoStepVerification from '#src/components/Settings/TwoStepVerification';
 

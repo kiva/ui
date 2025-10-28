@@ -1,7 +1,4 @@
 import { render } from '@testing-library/vue';
-import {
-	vi, describe, it, expect, beforeEach
-} from 'vitest';
 import LendCta from '#src/components/BorrowerProfile/LendCta';
 
 // Mock child components

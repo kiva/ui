@@ -1,7 +1,4 @@
 import { render } from '@testing-library/vue';
-import {
-	describe, it, expect, vi
-} from 'vitest';
 import BasketVerification from '#src/components/Checkout/BasketVerification';
 
 const global = {

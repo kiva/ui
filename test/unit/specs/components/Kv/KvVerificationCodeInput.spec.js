@@ -1,9 +1,6 @@
 import {
 	render, fireEvent
 } from '@testing-library/vue';
-import {
-	describe, expect, it
-} from 'vitest';
 import KvVerificationCodeInput from '#src/components/Kv/KvVerificationCodeInput';
 
 describe('KvVerificationCodeInput.vue', () => {

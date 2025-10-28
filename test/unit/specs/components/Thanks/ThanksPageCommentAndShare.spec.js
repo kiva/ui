@@ -1,7 +1,4 @@
 import { render, fireEvent } from '@testing-library/vue';
-import {
-	describe, it, expect, vi, beforeEach
-} from 'vitest';
 import ThanksPageCommentAndShare from '#src/components/Thanks/ThanksPageCommentAndShare';
 
 // Mock dependencies

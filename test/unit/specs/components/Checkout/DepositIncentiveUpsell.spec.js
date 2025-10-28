@@ -1,7 +1,4 @@
 import { render } from '@testing-library/vue';
-import {
-	describe, it, expect, vi, beforeEach
-} from 'vitest';
 import DepositIncentiveUpsell from '#src/components/Checkout/DepositIncentiveUpsell';
 
 const mockLoans = [

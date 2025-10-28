@@ -1,9 +1,6 @@
 import {
 	render
 } from '@testing-library/vue';
-import {
-	describe, expect, it
-} from 'vitest';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 
 describe('KvExpandable.vue', () => {

@@ -1,7 +1,4 @@
 import { render, waitFor } from '@testing-library/vue';
-import {
-	vi, describe, it, expect, beforeEach
-} from 'vitest';
 import FundedBorrowerProfile from '#src/components/BorrowerProfile/FundedBorrowerProfile';
 
 // Mock child components
