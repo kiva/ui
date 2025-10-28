@@ -118,6 +118,3 @@ describe('KvDropdown.vue', () => {
 		expect(KvDropdown.props.controller.type).toBe(String);
 	});
 });
-
-
-

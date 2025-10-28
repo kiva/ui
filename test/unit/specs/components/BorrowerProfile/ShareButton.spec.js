@@ -785,7 +785,7 @@ describe('ShareButton.vue', () => {
 	describe('Methods', () => {
 		describe('closeLightbox', () => {
 			it('has closeLightbox method that emits event', () => {
-				const closeLightbox = ShareButton.methods.closeLightbox;
+				const { closeLightbox } = ShareButton.methods;
 				const mockEmit = vi.fn();
 				const context = { $emit: mockEmit };
 

@@ -24,7 +24,6 @@ vi.mock('#src/components/Kv/KvExpandable', () => ({
 }));
 
 // Mock loan utils
-let mockToParagraphs;
 vi.mock('#src/util/loanUtils', () => ({
 	toParagraphs: vi.fn(text => {
 		if (!text) return [];

@@ -190,4 +190,3 @@ describe('Password.vue', () => {
 		expect(paragraph.textContent).toContain('Clicking this button');
 	});
 });
-
