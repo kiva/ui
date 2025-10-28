@@ -33,6 +33,10 @@ describe('teamsUtil.js', () => {
 			expect(teamCategoryFriendlyName('AlumniGroups')).toBe('Alumni Groups');
 			expect(teamCategoryFriendlyName('Businesses')).toBe('Businesses');
 			expect(teamCategoryFriendlyName('Clubs')).toBe('Clubs');
+			expect(teamCategoryFriendlyName('CollegesUniversities')).toBe('Colleges/Universities');
+			expect(teamCategoryFriendlyName('CommonInterest')).toBe('Common Interest');
+			expect(teamCategoryFriendlyName('FieldPartnerFans')).toBe('Field Partner Fans');
+			expect(teamCategoryFriendlyName('ReligiousCongregations')).toBe('Religious Congregations');
 		});
 
 		it('should return undefined for an invalid category value', () => {
@@ -41,13 +45,6 @@ describe('teamsUtil.js', () => {
 
 		it('should return "All Categories" for empty string', () => {
 			expect(teamCategoryFriendlyName('')).toBe('-- All Categories --');
-		});
-
-		it('should handle all category values', () => {
-			expect(teamCategoryFriendlyName('CollegesUniversities')).toBe('Colleges/Universities');
-			expect(teamCategoryFriendlyName('CommonInterest')).toBe('Common Interest');
-			expect(teamCategoryFriendlyName('FieldPartnerFans')).toBe('Field Partner Fans');
-			expect(teamCategoryFriendlyName('ReligiousCongregations')).toBe('Religious Congregations');
 		});
 	});
 
