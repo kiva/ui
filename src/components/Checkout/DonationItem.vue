@@ -87,7 +87,7 @@
 										role="img"
 										aria-label="Remove giving fund donation"
 										title="Remove giving fund donation"
-										class="tw-w-2 tw-h-2 tw-ml-1"
+										class="tw-w-2 tw-h-2 tw-ml-1 tw-mt-0.5"
 										name="close"
 										:icon="mdiClose"
 									/>
@@ -166,7 +166,7 @@
 							role="img"
 							aria-label="Remove giving fund donation"
 							title="Remove giving fund donation"
-							class="tw-w-2 tw-h-2 tw-ml-1"
+							class="tw-w-2 tw-h-2 tw-ml-1 tw-mt-0.5"
 							name="close"
 							:icon="mdiClose"
 						/>
@@ -392,7 +392,7 @@ export default {
 		},
 		removeGivingFundDonation() {
 			this.amount = numeral(0).format('0.00');
-			this.updateDonation('');
+			this.updateDonation(true);
 		},
 		enterEditDonation() {
 			if (this.hasLoans) {
@@ -407,7 +407,7 @@ export default {
 		lightboxClosed() {
 			this.defaultLbVisible = false;
 		},
-		updateDonation(metadata = null) {
+		updateDonation(clearMetadata = false) {
 			// this will clear metadata if it exists
 			// used when removing giving fund donations, essentially turning them into regular donations
 			// with amount 0
@@ -418,7 +418,7 @@ export default {
 				variables: {
 					price: numeral(this.amount).format('0.00'),
 					isTip: this.donation.isTip,
-					metadata
+					clearMetadata,
 				}
 			}).then(data => {
 				if (data.errors) {

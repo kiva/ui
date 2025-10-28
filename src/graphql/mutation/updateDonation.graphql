@@ -1,10 +1,10 @@
-mutation updateDonation($price: Money!, $isTip: Boolean!, $basketId: String, $metadata: String) {
+mutation updateDonation($price: Money!, $isTip: Boolean!, $basketId: String, $clearMetadata: Boolean = false) {
 	shop (basketId: $basketId) {
 		id
 		updateDonation (donation: {
 			price: $price,
 			isTip: $isTip,
-			metadata: $metadata
+			clearMetadata: $clearMetadata
 		})
 		{
 			id
