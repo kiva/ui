@@ -139,7 +139,7 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 			environment: 'happy-dom',
 			setupFiles: ['./test/unit/setup.js'],
 			coverage: {
-				provider: 'istanbul',
+				provider: 'v8',
 				reporters: ['json', 'html'],
 				reportsDirectory: './test/unit/coverage',
 				include: [
