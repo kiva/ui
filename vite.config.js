@@ -137,6 +137,7 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 		test: {
 			globals: true,
 			environment: 'happy-dom',
+			pool: 'threads',
 			setupFiles: ['./test/unit/setup.js'],
 			coverage: {
 				provider: 'v8',
