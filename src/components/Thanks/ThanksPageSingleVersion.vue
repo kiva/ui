@@ -109,14 +109,11 @@ import ControlModule from '#src/components/Thanks/SingleVersion/ControlModule';
 import JourneyGeneralPrompt from '#src/components/Thanks/SingleVersion/JourneyGeneralPrompt';
 import BadgeMilestone from '#src/components/Thanks/SingleVersion/BadgeMilestone';
 import useGoalData from '#src/composables/useGoalData';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { setGuestAssignmentCookie } from '#src/util/myKivaUtils';
 
 const EVENT_CATEGORY = 'post-checkout';
-const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
-const apollo = inject('apollo');
 const cookieStore = inject('cookieStore');
 
 const props = defineProps({
@@ -160,10 +157,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	isNextStepsExpEnabled: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
-const isNextStepsExpEnabled = ref(false);
 const receiptSection = ref(null);
 const showGuestAccountModal = ref(false);
 const showReceipt = ref(false);
@@ -212,12 +212,13 @@ const hasTeamAttributedPartnerLoan = computed(
 const showOptInModule = computed(() => !props.isOptedIn);
 const showKivaCardsModule = computed(() => !!printableKivaCards.value.length);
 const showBadgeModule = computed(() => (
-	props.myKivaEnabled && (numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value) && !isNextStepsExpEnabled.value
+	props.myKivaEnabled && (numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value) && !props.isNextStepsExpEnabled
 ));
-const showGoalCompletedModule = computed(() => isNextStepsExpEnabled.value && userGoalAchieved.value);
+const showGoalCompletedModule = computed(() => props.isNextStepsExpEnabled
+	&& (goalDataLoading.value || userGoalAchieved.value));
 const showJourneyModule = computed(() => props.myKivaEnabled && !showBadgeModule.value
-	&& !props.achievementsCompleted && (!goalDataLoading.value && !userGoalAchieved.value));
-const showControlModule = computed(() => !props.myKivaEnabled && !isNextStepsExpEnabled.value);
+	&& !props.achievementsCompleted && !goalDataLoading.value && !userGoalAchieved.value);
+const showControlModule = computed(() => !props.myKivaEnabled && !props.isNextStepsExpEnabled);
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
 
 const showConfetti = () => {
@@ -263,20 +264,8 @@ const handleContinue = () => {
 	}
 };
 
-const determineNextStepsExpEnabled = () => {
-	const nextStepsExpData = trackExperimentVersion(
-		apollo,
-		$kvTrackEvent,
-		'event-tracking',
-		NEXT_STEPS_EXP_KEY,
-		'EXP-MP-1984-Sept2025'
-	);
-	isNextStepsExpEnabled.value = nextStepsExpData.version === 'b';
-};
-
 onMounted(async () => {
-	determineNextStepsExpEnabled();
-	if (isNextStepsExpEnabled.value) await runGoalComposable();
+	if (props.isNextStepsExpEnabled) await runGoalComposable();
 	showConfetti();
 	const isOptInLoan = showOptInModule.value && props.loans.length > 0;
 	const isOptInDonate = showOptInModule.value && onlyDonations.value;
