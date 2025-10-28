@@ -734,7 +734,7 @@ export default {
 				'EXP-MP-1984-Sept2025'
 			);
 
-			this.isNextStepsExpEnabled = nextStepsExpData.version !== 'b';
+			this.isNextStepsExpEnabled = nextStepsExpData.version === 'b';
 		}
 	}
 };
