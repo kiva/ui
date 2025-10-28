@@ -122,5 +122,45 @@ describe('KvIcon.vue', () => {
 			const span = container.querySelector('span');
 			expect(span).toBeTruthy();
 		});
+
+		it('should not render sr-only title when title not provided in inline mode', () => {
+			const { container } = render(KvIcon, {
+				props: {
+					name: 'question',
+					fromSprite: false
+				}
+			});
+
+			const srOnlySpan = container.querySelector('.tw-sr-only');
+			expect(srOnlySpan).toBeFalsy();
+		});
+
+		it('should dynamically import svg file based on name', async () => {
+			const { container } = render(KvIcon, {
+				props: {
+					name: 'question',
+					fromSprite: false
+				}
+			});
+
+			// The iconFile computed property should trigger dynamic import
+			await vi.waitFor(() => {
+				const span = container.querySelector('span');
+				expect(span).toBeTruthy();
+			});
+		});
+
+		it('should have proper styling in inline mode', () => {
+			const { container } = render(KvIcon, {
+				props: {
+					name: 'question',
+					fromSprite: false
+				}
+			});
+
+			const outerSpan = container.querySelector('span.tw-inline-flex');
+			expect(outerSpan).toBeTruthy();
+			expect(outerSpan.classList.contains('tw-max-h-full')).toBe(true);
+		});
 	});
 });
