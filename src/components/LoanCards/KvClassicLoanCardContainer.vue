@@ -292,7 +292,12 @@ export default {
 					tagsData: [],
 					themesData: [],
 					backupFields: {
+						activity: this.loan.activity,
+						sector: this.loan.sector,
+						tags: this.loan.tags,
 						themes: this.loan.themes,
+						tagsData,
+						themesData
 					}
 				};
 			}
