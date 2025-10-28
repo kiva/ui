@@ -154,6 +154,7 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 					'./src/plugins/index.js',
 					'./src/router/',
 					'./src/util/animation',
+					'./src/util/siteThemes.js',
 					...coverageConfigDefaults.exclude,
 				]
 			}
