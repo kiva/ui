@@ -65,6 +65,7 @@
 		<section class="tw-my-4">
 			<LendingCategorySection
 				id="recommended-loans"
+				controls-top-right
 				:title="recommendedLoansTitle"
 				:loans="recommendedLoans"
 				:user-balance="userBalance"
@@ -660,7 +661,7 @@ export default {
 }
 
 #recommended-loans :deep(.kv-carousel__controls) {
-	@apply !tw-hidden md:!tw-flex !tw-justify-end !tw-mb-2;
+	@apply !tw-hidden md:!tw-flex !tw-justify-end !tw-mt-2;
 }
 
 #recommended-loans :deep(.kv-carousel__controls) div {
