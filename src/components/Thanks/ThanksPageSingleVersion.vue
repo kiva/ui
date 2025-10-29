@@ -216,10 +216,10 @@ const showBadgeModule = computed(() => (
 ));
 const showGoalCompletedModule = computed(() => props.isNextStepsExpEnabled
 	&& (goalDataLoading.value || userGoalAchieved.value));
-const showJourneyModule = computed(() => props.myKivaEnabled && !showBadgeModule.value
-	&& !props.achievementsCompleted && !goalDataLoading.value && !userGoalAchieved.value);
+const showJourneyModule = computed(() => props.myKivaEnabled && !showBadgeModule.value && !props.achievementsCompleted
+	&& (!props.isNextStepsExpEnabled || (!goalDataLoading.value && !userGoalAchieved.value)));
 const showControlModule = computed(() => !props.myKivaEnabled
-	&& !props.isNextStepsExpEnabled && !goalDataLoading.value);
+	|| (!props.isNextStepsExpEnabled && !goalDataLoading.value));
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
 
 const showConfetti = () => {
