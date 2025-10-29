@@ -193,7 +193,7 @@ watch(visibleBadges, (newSlides, oldSlides) => {
 }
 
 .badges-carousel :deep(.kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
+	@apply tw-hidden md:tw-flex tw-mt-2;
 }
 
 .badges-carousel :deep(.kv-carousel__controls) div {

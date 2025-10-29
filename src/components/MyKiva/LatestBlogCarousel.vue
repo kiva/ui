@@ -1,6 +1,9 @@
 <template>
 	<div>
-		<h2 class="tw-text-h3 tw-mb-4">
+		<h2
+			class="tw-text-h3 tw-mb-4"
+			:class="{ 'tw-absolute tw-pt-2': controlsTopRight}"
+		>
 			Impact in action
 		</h2>
 		<KvCarousel
@@ -63,7 +66,7 @@ function trackBlogCard(card) {
 <style lang="postcss" scoped>
 
 .blog-card-carousel :deep(.kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
+	@apply tw-hidden md:tw-flex tw-justify-end tw-mt-2;
 }
 
 .blog-card-carousel :deep(.kv-carousel__controls) div {

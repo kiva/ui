@@ -28,7 +28,6 @@
 					:user-goal-enabled="isNextStepsExpEnabled"
 					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
-					:controls-top-right="controlsTopRight"
 					@open-goal-modal="showGoalModal = true"
 				/>
 			</div>
@@ -153,7 +152,6 @@
 			:user-goal-enabled="isNextStepsExpEnabled"
 			:user-goal-achieved="userGoalAchieved"
 			:user-goal="userGoal"
-			:controls-top-right="controlsTopRight"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<GoalSettingModal
@@ -238,10 +236,6 @@ export default {
 		totalLoans: {
 			type: Number,
 			default: 0,
-		},
-		controlsTopRight: {
-			type: Boolean,
-			default: false,
 		},
 	},
 	emits: ['store-goals-preferences'],

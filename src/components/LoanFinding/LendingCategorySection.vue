@@ -217,10 +217,6 @@ export default {
 	@apply tw-visible;
 }
 
-#customizedCarousel :deep(.kv-carousel__controls) button {
-	@apply tw-border-0;
-}
-
 #customizedCarousel :deep(.kv-carousel__controls) button span {
 	@apply tw-invisible;
 }
@@ -263,10 +259,6 @@ export default {
 
 	#customizedCarousel :deep(div:first-child) > div > div.loan-card-active-hover a picture {
 		@apply tw-rounded-t;
-	}
-
-	#customizedCarousel :deep(.kv-carousel__controls) button {
-		@apply tw-border-2;
 	}
 
 	#customizedCarousel :deep(.kv-carousel__controls) button span {

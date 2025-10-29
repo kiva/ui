@@ -1,6 +1,6 @@
 <template>
-	<div v-if="updates.length > 0">
-		<h3 class="tw-mt-4 tw-mb-2">
+	<div v-if="updates">
+		<h3 :class="{ 'tw-absolute tw-pt-2': controlsTopRight, 'tw-mt-4 tw-mb-2': !controlsTopRight }">
 			Updates
 		</h3>
 		<KvCarousel
@@ -226,7 +226,7 @@ watch(
 
 <style lang="postcss" scoped>
 .updates-carousel :deep(.kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
+	@apply tw-hidden md:tw-flex tw-justify-end tw-mt-2;
 }
 
 .updates-carousel :deep(.kv-carousel__controls) div {

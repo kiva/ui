@@ -29,7 +29,6 @@
 		</section>
 		<section class="tw-mt-4">
 			<LendingStats
-				controls-top-right
 				:regions-data="lendingStats.regionsData"
 				:user-lent-to-all-regions="userLentToAllRegions"
 				:hero-slides="heroSlides"
@@ -67,8 +66,8 @@
 		</section>
 		<section class="tw-my-4">
 			<LendingCategorySection
-				id="recommended-loans"
 				controls-top-right
+				id="recommended-loans"
 				:title="recommendedLoansTitle"
 				:loans="recommendedLoans"
 				:user-balance="userBalance"
@@ -80,7 +79,7 @@
 			/>
 		</section>
 		<section class="tw-mb-4">
-			<h3 id="my-achievements">
+			<h3 id="my-achievements" class="tw-absolute tw-pt-2">
 				My achievements
 			</h3>
 			<BadgesSection
@@ -103,7 +102,9 @@
 			/>
 		</section>
 		<section v-if="moreWaysToHelpSlides.length" class="tw-my-4">
-			<h3>More ways to help</h3>
+			<h3 class="tw-absolute tw-pt-2">
+				More ways to help
+			</h3>
 			<JourneyCardCarousel
 				class="tw-mt-2"
 				controls-top-right
