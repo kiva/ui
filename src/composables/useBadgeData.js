@@ -296,7 +296,7 @@ export default function useBadgeData() {
 	 */
 	const getLoanFindingUrl = (badgeId, currentRoute) => {
 		const FILTER_PAGE = '/lend/filter';
-		const CATEGORY_PAGE = `/lend-by-category/${CATEGORIES[badgeId]}`;
+		const CATEGORY_PAGE = `/lend-by-category/${CATEGORIES[badgeId] || ''}`;
 		const routePath = currentRoute?.path;
 
 		if (routePath === CATEGORY_PAGE) {
