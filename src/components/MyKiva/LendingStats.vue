@@ -259,6 +259,7 @@ export default {
 			goalProgressLoading: true,
 			userGoal: null,
 			userGoalAchieved: false,
+			storeGoalPreferencesFn: null
 		};
 	},
 	computed: {
@@ -357,6 +358,7 @@ export default {
 				userGoal,
 				userGoalAchieved,
 				runComposable,
+				storeGoalPreferences,
 			} = useGoalData({
 				loans: this.loans,
 				apollo: this.apollo,
@@ -366,6 +368,9 @@ export default {
 			this.userGoal = userGoal.value;
 			this.userGoalAchieved = userGoalAchieved.value;
 			this.goalProgressLoading = false;
+			this.storeGoalPreferencesFn = async updates => {
+				await storeGoalPreferences(updates);
+			};
 		},
 		regionImageSource(region) {
 			const regionImages = {
@@ -390,13 +395,7 @@ export default {
 			this.$router.push(`/lend/filter?country=${region?.countries.join(',')}`);
 		},
 		async setGoal(preferences) {
-			const {
-				storeGoalPreferences,
-			} = useGoalData({
-				loans: this.loans,
-				apollo: this.apollo,
-			});
-			await storeGoalPreferences(preferences);
+			await this.storeGoalPreferencesFn(preferences);
 			await this.loadGoalData();
 			this.showGoalModal = false;
 		},

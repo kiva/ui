@@ -218,7 +218,8 @@ const showGoalCompletedModule = computed(() => props.isNextStepsExpEnabled
 	&& (goalDataLoading.value || userGoalAchieved.value));
 const showJourneyModule = computed(() => props.myKivaEnabled && !showBadgeModule.value
 	&& !props.achievementsCompleted && !goalDataLoading.value && !userGoalAchieved.value);
-const showControlModule = computed(() => !props.myKivaEnabled && !showGoalCompletedModule.value);
+const showControlModule = computed(() => !props.myKivaEnabled
+	&& !props.isNextStepsExpEnabled && !goalDataLoading.value);
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
 
 const showConfetti = () => {
