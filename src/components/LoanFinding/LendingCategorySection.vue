@@ -1,8 +1,8 @@
 <template>
-	<div class="tw-w-full">
+	<div class="tw-w-full tw-pt-2">
 		<div class="tw-mx-auto tw-px-0 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 			<!-- eslint-disable-next-line max-len -->
-			<div class="tw-flex tw-flex-col lg:tw-flex-row tw-justify-between tw-items-end lg:tw-items-center tw-px-2.5 md:tw-px-0">
+			<div class="tw-absolute tw-justify-between tw-items-end lg:tw-items-center tw-px-2.5 md:tw-px-0">
 				<div class="tw-w-full lg:tw-w-auto">
 					<div class="tw-flex tw-items-center">
 						<img v-if="titleIcon" :src="titleIcon" class="tw-mr-1 tw-w-4">
@@ -24,7 +24,7 @@
 				slides-to-scroll="visible"
 				:slide-max-width="singleSlideWidth"
 				:embla-options="{ loop: false }"
-				:controls-top-right="true"
+				controls-top-right
 			>
 				<template v-for="(loan, index) in loans" #[`slide${index}`] :key="loanCardKey(index)">
 					<kv-classic-loan-card-container
@@ -59,10 +59,10 @@
 
 <script>
 import _throttle from 'lodash/throttle';
+import { KvCarousel } from '@kiva/kv-components';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
 import { getCustomHref } from '#src/util/loanUtils';
-import { KvCarousel } from '@kiva/kv-components';
 import ViewMoreCard from './ViewMoreCard';
 
 export default {
