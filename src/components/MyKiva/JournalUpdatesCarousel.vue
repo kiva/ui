@@ -10,6 +10,7 @@
 			slides-to-scroll="visible"
 			:slide-max-width="singleSlideWidth"
 			:embla-options="{ loop: false, startIndex: carouselIndex }"
+			:controls-top-right="controlsTopRight"
 			@interact-carousel="interactCarousel"
 		>
 			<template v-for="(update, index) in updates" #[`slide${index}`] :key="update.id">
@@ -115,6 +116,10 @@ const props = defineProps({
 		default: 0,
 	},
 	updatesLoading: {
+		type: Boolean,
+		default: false,
+	},
+	controlsTopRight: {
 		type: Boolean,
 		default: false,
 	},

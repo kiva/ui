@@ -2,6 +2,7 @@
 	<KvCarousel
 		ref="carousel"
 		class="badges-carousel tw-w-full"
+		:controls-top-right="controlsTopRight"
 		:multiple-slides-visible="true"
 		:slide-max-width="singleSlideWidth"
 		slides-to-scroll="visible"
@@ -89,6 +90,10 @@ const props = defineProps({
 	selectedJourney: {
 		type: String,
 		default: ''
+	},
+	controlsTopRight: {
+		type: Boolean,
+		default: false,
 	},
 });
 

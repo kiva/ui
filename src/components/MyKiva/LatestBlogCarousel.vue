@@ -4,6 +4,7 @@
 			Impact in action
 		</h2>
 		<KvCarousel
+			:controls-top-right="controlsTopRight"
 			:slide-max-width="singleSlideWidth"
 			class="blog-card-carousel tw-w-full"
 			:embla-options="{
@@ -39,6 +40,10 @@ defineProps({
 	blogCards: {
 		type: Array,
 		required: true,
+	},
+	controlsTopRight: {
+		type: Boolean,
+		default: false,
 	},
 });
 
