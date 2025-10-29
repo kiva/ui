@@ -54,18 +54,18 @@
 		</p>
 
 		<p>
-			<a href="#participation-in-the-program">1. Participation in the Program</a><br>
+			<a href="#participation">1. Participation in the Program</a><br>
 			<a href="#acceptable-use">2. Acceptable Use</a><br>
 			<a href="#proprietary-rights">3. Proprietary Rights</a><br>
-			<a href="#disclaimers-limitation-of-liability">4. Disclaimers; Limitation of Liability</a><br>
-			<a href="#governing-law-resolution-of-disputes-arbitration-and-waivers">5. Governing Law; Resolution of Disputes; Arbitration and Waivers</a><br>
+			<a href="#disclaimers">4. Disclaimers; Limitation of Liability</a><br>
+			<a href="#disputes">5. Governing Law; Resolution of Disputes; Arbitration and Waivers</a><br>
 			<a href="#indemnity">6. Indemnity</a><br>
-			<a href="#term-termination">7. Term; Termination </a><br>
-			<a href="#entire-agreement-severability-assignment">8. Entire Agreement; Severability; Assignment</a>
+			<a href="#termination">7. Term; Termination </a><br>
+			<a href="#agreement">8. Entire Agreement; Severability; Assignment</a>
 		</p>
 
 		<section>
-			<h2 id="participation-in-the-program">
+			<h2 id="participation">
 				1. Participation in the Program
 			</h2>
 
@@ -783,7 +783,7 @@
 		</section>
 
 		<section>
-			<h2 id="disclaimers-limitation-of-liability">
+			<h2 id="disclaimers">
 				4. Disclaimers; Limitation of Liability
 			</h2>
 
@@ -849,7 +849,7 @@
 		</section>
 
 		<section>
-			<h2 id="governing-law-resolution-of-disputes-arbitration-and-waivers">
+			<h2 id="disputes">
 				5. Governing Law; Resolution of Disputes; Arbitration and Waivers
 			</h2>
 
@@ -901,7 +901,7 @@
 		</section>
 
 		<section>
-			<h2 id="term-termination">
+			<h2 id="termination">
 				7. Term; Termination
 			</h2>
 
@@ -925,7 +925,7 @@
 		</section>
 
 		<section id="final-section-padding-termsofuse">
-			<h2 id="entire-agreement-severability-assignment">
+			<h2 id="agreement">
 				8. Entire Agreement; Severability; Assignment
 			</h2>
 
