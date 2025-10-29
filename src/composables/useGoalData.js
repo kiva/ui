@@ -44,7 +44,7 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 	const $kvTrackEvent = inject('$kvTrackEvent');
 
 	const allTimeProgress = ref([]);
-	const loading = ref(false);
+	const loading = ref(true);
 	const totalLoanCount = ref(null);
 	const userGoal = ref(null);
 	const userPreferences = ref(null);
@@ -85,7 +85,7 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 	}
 
 	async function storeGoalPreferences(updates) {
-		if (!userPreferences.value) {
+		if (!userPreferences.value?.id) {
 			await createUserPreferences(apollo, { goals: [] });
 			await loadPreferences('network-only'); // Reload after create
 		}
