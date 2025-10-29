@@ -28,3 +28,7 @@ npm-debug.log*
 .config.env
 config.env
 jsconfig.json
+
+# stryker temp files
+.stryker-tmp
+stryker.log

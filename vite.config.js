@@ -1,7 +1,7 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite';
-import { coverageConfigDefaults } from 'vitest/config'
+import { coverageConfigDefaults, defaultExclude } from 'vitest/config'
 import vue from '@vitejs/plugin-vue';
 import { GitRevisionPlugin } from 'git-revision-webpack-plugin';
 import graphQLLoader from 'vite-plugin-graphql-loader';
@@ -139,6 +139,10 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 			environment: 'happy-dom',
 			pool: 'threads',
 			setupFiles: ['./test/unit/setup.js'],
+			exclude: [
+				'**/.stryker-tmp/**',
+				...defaultExclude,
+			],
 			coverage: {
 				provider: 'v8',
 				reporters: ['json', 'html'],
