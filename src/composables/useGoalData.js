@@ -44,7 +44,7 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 	const $kvTrackEvent = inject('$kvTrackEvent');
 
 	const allTimeProgress = ref([]);
-	const loading = ref(true);
+	const loading = ref(false);
 	const totalLoanCount = ref(null);
 	const userGoal = ref(null);
 	const userPreferences = ref(null);
