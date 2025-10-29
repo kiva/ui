@@ -1,7 +1,7 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import LoanSearchRadioGroupFilter, { ALL_LOANS_TITLE }
-	from '#src/components/Lend/LoanSearch/LoanSearchRadioGroupFilter';
+	from '../../../../../../src/components/Lend/LoanSearch/LoanSearchRadioGroupFilter';
 import { globalOptions } from '../../../../specUtils';
 
 const getOptions = (isObject = false, isBoolean = false) => [...Array(4)].map((_c, i) => ({

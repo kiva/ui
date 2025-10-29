@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import CookieStore from '#src/util/cookieStore';
+import CookieStore from '../../../../src/util/cookieStore';
 import clearDocumentCookies from '../../setup/clearDocumentCookies';
 
 describe('cookieStore.js', () => {

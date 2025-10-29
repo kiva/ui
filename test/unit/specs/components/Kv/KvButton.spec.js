@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/vue';
-import KvButton from '#src/components/Kv/KvButton';
+import KvButton from '../../../../../src/components/Kv/KvButton';
 
 describe('KvButton.vue', () => {
 	it('renders a button element by default', () => {

@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import FtdsDisclaimer from '#src/components/Checkout/FtdsDisclaimer';
+import FtdsDisclaimer from '../../../../../src/components/Checkout/FtdsDisclaimer';
 
 describe('FtdsDisclaimer', () => {
 	const createComponent = (props = {}) => {

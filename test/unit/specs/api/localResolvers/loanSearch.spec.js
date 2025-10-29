@@ -1,4 +1,4 @@
-import loanSearchFactory from '#src/api/localResolvers/loanSearch';
+import loanSearchFactory from '../../../../../src/api/localResolvers/loanSearch';
 
 describe('loanSearch.js', () => {
 	describe('defaults', () => {

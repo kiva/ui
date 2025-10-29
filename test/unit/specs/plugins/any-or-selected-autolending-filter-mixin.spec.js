@@ -1,4 +1,4 @@
-import filterMixin from '#src/plugins/any-or-selected-autolending-filter-mixin';
+import filterMixin from '../../../../src/plugins/any-or-selected-autolending-filter-mixin';
 
 describe('any-or-selected-autolending-filter-mixin.js', () => {
 	describe('getValues', () => {

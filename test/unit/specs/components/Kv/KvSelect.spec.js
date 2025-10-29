@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvSelect from '#src/components/Kv/KvSelect';
+import KvSelect from '../../../../../src/components/Kv/KvSelect';
 
 describe('KvSelect.vue', () => {
 	it('exports a valid Vue component', () => {

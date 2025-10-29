@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import MonthlyGoodModule from '#src/components/Categories/MonthlyGoodModule';
+import MonthlyGoodModule from '../../../../../src/components/Categories/MonthlyGoodModule';
 
 // Mock KvResponsiveImage
 vi.mock('#src/components/Kv/KvResponsiveImage', () => ({

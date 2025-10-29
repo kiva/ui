@@ -1,4 +1,4 @@
-import createContentfulPreviewLink from '#src/api/ContentfulPreviewLink';
+import createContentfulPreviewLink from '../../../../src/api/ContentfulPreviewLink';
 
 vi.mock('@apollo/client/core/index', () => ({
 	ApolloLink: vi.fn(handler => ({ handler, request: handler }))

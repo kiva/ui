@@ -1,4 +1,4 @@
-import formValidate from '#src/plugins/formValidate';
+import formValidate from '../../../../src/plugins/formValidate';
 
 describe('formValidate.js', () => {
 	let component;

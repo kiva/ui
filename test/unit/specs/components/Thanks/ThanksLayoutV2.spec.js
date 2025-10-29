@@ -1,5 +1,5 @@
 import { render, fireEvent } from '@testing-library/vue';
-import ThanksLayoutV2 from '#src/components/Thanks/ThanksLayoutV2';
+import ThanksLayoutV2 from '../../../../../src/components/Thanks/ThanksLayoutV2';
 
 // Mock child components
 vi.mock('#src/components/Kv/KvIconButton', () => ({

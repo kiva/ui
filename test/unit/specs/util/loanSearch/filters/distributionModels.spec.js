@@ -3,8 +3,8 @@ import distributionModels, {
 	DIRECT_KEY,
 	FIELDPARTNER_KEY,
 	distributionModelDisplayMap
-} from '#src/util/loanSearch/filters/distributionModels';
-import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+} from '../../../../../../src/util/loanSearch/filters/distributionModels';
+import { FLSS_QUERY_TYPE } from '../../../../../../src/util/loanSearch/filterUtils';
 import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchData';
 
 describe('distributionModels.js', () => {

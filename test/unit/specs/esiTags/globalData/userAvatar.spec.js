@@ -1,4 +1,4 @@
-import { userAvatarData } from '#src/esiTags/globalData/userAvatar';
+import { userAvatarData } from '../../../../../src/esiTags/globalData/userAvatar';
 import { isLegacyPlaceholderAvatar } from '@kiva/kv-components';
 
 // Mock isLegacyPlaceholderAvatar

@@ -1,4 +1,4 @@
-import { isContentfulQuery } from '#src/util/contentful/isContentfulQuery';
+import { isContentfulQuery } from '../../../../../src/util/contentful/isContentfulQuery';
 
 describe('isContentfulQuery', () => {
 	it('should return true for valid Contentful query', () => {

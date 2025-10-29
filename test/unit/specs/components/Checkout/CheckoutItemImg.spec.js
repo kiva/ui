@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import { createRouter, createMemoryHistory } from 'vue-router';
-import CheckoutItemImg from '#src/components/Checkout/CheckoutItemImg';
+import CheckoutItemImg from '../../../../../src/components/Checkout/CheckoutItemImg';
 
 // Mock kv-track-event directive
 const mockTrackEvent = vi.fn();

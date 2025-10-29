@@ -1,5 +1,5 @@
 import { render, fireEvent } from '@testing-library/vue';
-import KvRangeMinMaxSlider from '#src/components/Kv/KvRangeMinMaxSlider';
+import KvRangeMinMaxSlider from '../../../../../src/components/Kv/KvRangeMinMaxSlider';
 
 describe('KvRangeMinMaxSlider', () => {
 	it('should render defaults', () => {

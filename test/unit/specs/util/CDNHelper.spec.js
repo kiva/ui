@@ -1,4 +1,4 @@
-import CDNHelper from '#src/util/CDNHelper';
+import CDNHelper from '../../../../src/util/CDNHelper';
 
 describe('CDNHelper', () => {
 	let helper;

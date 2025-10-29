@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import LoanMatcher from '#src/components/Checkout/LoanMatcher';
+import LoanMatcher from '../../../../../src/components/Checkout/LoanMatcher';
 
 describe('LoanMatcher', () => {
 	const createComponent = (props = {}) => {

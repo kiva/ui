@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvDefaultWrapper from '#src/components/Kv/KvDefaultWrapper';
+import KvDefaultWrapper from '../../../../../src/components/Kv/KvDefaultWrapper';
 import { KvPageContainer } from '@kiva/kv-components';
 
 describe('KvDefaultWrapper.vue', () => {

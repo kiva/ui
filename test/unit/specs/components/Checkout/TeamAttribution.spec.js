@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import TeamAttribution from '#src/components/Checkout/TeamAttribution';
+import TeamAttribution from '../../../../../src/components/Checkout/TeamAttribution';
 import basketLoanTeams from '../../../fixtures/BasketLoanTeams.json';
 import { globalOptions } from '../../../specUtils';
 

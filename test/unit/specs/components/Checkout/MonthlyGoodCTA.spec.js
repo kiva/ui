@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import MonthlyGoodCTA from '#src/components/Checkout/MonthlyGoodCTA';
+import MonthlyGoodCTA from '../../../../../src/components/Checkout/MonthlyGoodCTA';
 
 const global = {
 	mocks: {

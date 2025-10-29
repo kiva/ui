@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
+import KvResponsiveImage from '../../../../../src/components/Kv/KvResponsiveImage';
 
 // Mock checkScreenDensity utilities
 vi.mock('#src/util/checkScreenDensity', () => ({

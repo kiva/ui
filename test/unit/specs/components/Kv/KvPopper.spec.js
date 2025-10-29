@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvPopper from '#src/components/Kv/KvPopper';
+import KvPopper from '../../../../../src/components/Kv/KvPopper';
 
 // Mock touchEvents utilities
 vi.mock('#src/util/touchEvents', () => ({

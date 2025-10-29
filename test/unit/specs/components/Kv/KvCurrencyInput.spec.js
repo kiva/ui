@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
+import KvCurrencyInput from '../../../../../src/components/Kv/KvCurrencyInput';
 
 // Mock numeral.js
 vi.mock('numeral', () => ({

@@ -17,14 +17,14 @@ import {
 	queryExperimentAssignment,
 	evictExperimentCacheIfForced,
 	initializeExperiment,
-} from '#src/util/experiment/experimentUtils';
-import * as Alea from '#src/util/experiment/Alea';
-import experimentIdsQuery from '#src/graphql/query/experimentIds.graphql';
-import experimentSettingQuery from '#src/graphql/query/experimentSetting.graphql';
-import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
-import CookieStore from '#src/util/cookieStore';
-import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-import { HOME_PAGE_EXPERIMENT_KEY } from '#src/util/experiment/fastlyExperimentUtils';
+} from '../../../../../src/util/experiment/experimentUtils';
+import * as Alea from '../../../../../src/util/experiment/Alea';
+import experimentIdsQuery from '../../../../../src/graphql/query/experimentIds.graphql';
+import experimentSettingQuery from '../../../../../src/graphql/query/experimentSetting.graphql';
+import experimentVersionFragment from '../../../../../src/graphql/fragments/experimentVersion.graphql';
+import CookieStore from '../../../../../src/util/cookieStore';
+import experimentAssignmentQuery from '../../../../../src/graphql/query/experimentAssignment.graphql';
+import { HOME_PAGE_EXPERIMENT_KEY } from '../../../../../src/util/experiment/fastlyExperimentUtils';
 import { runManyTimesAndCompare } from '../../../helpers/runAndCompare';
 import clearDocumentCookies from '../../../setup/clearDocumentCookies';
 

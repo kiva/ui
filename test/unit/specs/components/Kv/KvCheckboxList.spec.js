@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import KvCheckboxList from '#src/components/Kv/KvCheckboxList';
+import KvCheckboxList from '../../../../../src/components/Kv/KvCheckboxList';
 
 const items = [...Array(4)].map((_, i) => ({ value: `${i}`, title: `Option ${i}` }));
 

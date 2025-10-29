@@ -4,8 +4,8 @@ import {
 	transformRadioGroupOptions,
 	getFilterKeyFromValue,
 	getDisplayedNumber,
-} from '#src/util/loanSearch/filterUtils';
-import { lenderRepaymentTermValueMap, EIGHT_MONTHS_KEY } from '#src/util/loanSearch/filters/lenderRepaymentTerms';
+} from '../../../../../src/util/loanSearch/filterUtils';
+import { lenderRepaymentTermValueMap, EIGHT_MONTHS_KEY } from '../../../../../src/util/loanSearch/filters/lenderRepaymentTerms';
 
 describe('filterUtils.js', () => {
 	describe('transformRadioGroupOptions', () => {

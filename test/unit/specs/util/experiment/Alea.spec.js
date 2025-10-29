@@ -1,4 +1,4 @@
-import Alea, { Mash } from '#src/util/experiment/Alea';
+import Alea, { Mash } from '../../../../../src/util/experiment/Alea';
 import { runManyTimes, runManyTimesAndCompare } from '../../../helpers/runAndCompare';
 
 describe('Alea.js', () => {

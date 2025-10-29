@@ -1,5 +1,5 @@
-import isMatchable from '#src/util/loanSearch/filters/isMatchable';
-import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+import isMatchable from '../../../../../../src/util/loanSearch/filters/isMatchable';
+import { FLSS_QUERY_TYPE } from '../../../../../../src/util/loanSearch/filterUtils';
 import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchData';
 
 describe('isMatchable.js', () => {

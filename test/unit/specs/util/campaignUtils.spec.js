@@ -4,7 +4,7 @@ import {
 	applyRedemptionCode,
 	validateQueryParams,
 	getPromoFromBasket,
-} from '#src/util/campaignUtils';
+} from '../../../../src/util/campaignUtils';
 
 describe('campaignUtils.js', () => {
 	describe('applyLendingReward', () => {

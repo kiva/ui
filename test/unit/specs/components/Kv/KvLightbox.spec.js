@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvLightbox from '#src/components/Kv/KvLightbox';
+import KvLightbox from '../../../../../src/components/Kv/KvLightbox';
 
 // Mock vue-focus-lock
 vi.mock('vue-focus-lock', () => {

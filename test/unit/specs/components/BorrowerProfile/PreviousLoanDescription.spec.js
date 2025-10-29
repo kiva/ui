@@ -1,6 +1,6 @@
 import { render, waitFor } from '@testing-library/vue';
-import PreviousLoanDescription from '#src/components/BorrowerProfile/PreviousLoanDescription';
-import * as loanUtils from '#src/util/loanUtils';
+import PreviousLoanDescription from '../../../../../src/components/BorrowerProfile/PreviousLoanDescription';
+import * as loanUtils from '../../../../../src/util/loanUtils';
 
 // Mock child components
 vi.mock('@kiva/kv-components', () => ({

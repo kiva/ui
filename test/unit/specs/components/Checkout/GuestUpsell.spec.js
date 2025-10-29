@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import GuestUpsell from '#src/components/Checkout/GuestUpsell';
+import GuestUpsell from '../../../../../src/components/Checkout/GuestUpsell';
 
 // Mock GuestAccountCreation component
 vi.mock('#src/components/Forms/GuestAccountCreation', () => ({

@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvFrequentlyAskedQuestions from '#src/components/Kv/KvFrequentlyAskedQuestions';
+import KvFrequentlyAskedQuestions from '../../../../../src/components/Kv/KvFrequentlyAskedQuestions';
 
 // Mock child components
 const KvExpandableQuestion = {

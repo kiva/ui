@@ -1,4 +1,4 @@
-import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
+import badgeGoalMixin from '../../../../src/plugins/badge-goal-mixin';
 
 vi.mock('#src/util/injectionCheck', () => ({
 	default: vi.fn()

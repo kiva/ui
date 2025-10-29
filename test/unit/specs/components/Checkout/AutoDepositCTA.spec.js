@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import AutoDepositCTA from '#src/components/Checkout/AutoDepositCTA';
+import AutoDepositCTA from '../../../../../src/components/Checkout/AutoDepositCTA';
 
 const global = {
 	provide: {

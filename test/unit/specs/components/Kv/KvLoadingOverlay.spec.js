@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
+import KvLoadingOverlay from '../../../../../src/components/Kv/KvLoadingOverlay';
 
 describe('KvLoadingOverlay.vue', () => {
 	it('renders a loading overlay container', () => {

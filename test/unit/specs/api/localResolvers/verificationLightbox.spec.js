@@ -1,4 +1,4 @@
-import createVerificationLightboxResolver from '#src/api/localResolvers/verificationLightbox';
+import createVerificationLightboxResolver from '../../../../../src/api/localResolvers/verificationLightbox';
 
 describe('verificationLightbox resolver', () => {
 	let resolver;

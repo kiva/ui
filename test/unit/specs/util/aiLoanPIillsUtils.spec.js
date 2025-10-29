@@ -1,5 +1,5 @@
-import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
-import logReadQueryError from '#src/util/logReadQueryError';
+import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '../../../../src/util/aiLoanPIillsUtils';
+import logReadQueryError from '../../../../src/util/logReadQueryError';
 
 vi.mock('#src/util/logReadQueryError');
 

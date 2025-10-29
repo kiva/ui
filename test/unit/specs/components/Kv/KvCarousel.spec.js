@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvCarousel from '#src/components/Kv/KvCarousel';
+import KvCarousel from '../../../../../src/components/Kv/KvCarousel';
 
 // Mock lodash throttle
 vi.mock('lodash/throttle', () => ({

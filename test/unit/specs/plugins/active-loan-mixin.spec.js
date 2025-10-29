@@ -1,4 +1,4 @@
-import activeLoanMixin from '#src/plugins/active-loan-mixin';
+import activeLoanMixin from '../../../../src/plugins/active-loan-mixin';
 
 // Mock the GraphQL mutation
 vi.mock('#src/graphql/mutation/updateActiveLoan.graphql', () => ({

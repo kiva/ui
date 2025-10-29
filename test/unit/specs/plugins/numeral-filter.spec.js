@@ -1,4 +1,4 @@
-import numeralFilter from '#src/plugins/numeral-filter';
+import numeralFilter from '../../../../src/plugins/numeral-filter';
 
 describe('numeral-filter.js', () => {
 	it('should format number with default format', () => {

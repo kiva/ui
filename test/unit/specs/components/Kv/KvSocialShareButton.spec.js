@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
+import KvSocialShareButton from '../../../../../src/components/Kv/KvSocialShareButton';
 
 describe('KvSocialShareButton.vue', () => {
 	const defaultProps = {

@@ -7,9 +7,9 @@ import {
 	getLoginId,
 	getCookieAssignments,
 	setCookieAssignments,
-} from '#src/util/experiment/experimentUtils';
-import expResolverFactory from '#src/api/localResolvers/experiment';
-import Experiment from '#src/api/fixtures/Experiment';
+} from '../../../../../src/util/experiment/experimentUtils';
+import expResolverFactory from '../../../../../src/api/localResolvers/experiment';
+import Experiment from '../../../../../src/api/fixtures/Experiment';
 
 const EXP_ID = 'test_experiment';
 

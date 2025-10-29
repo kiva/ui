@@ -1,4 +1,4 @@
-import getCategoryName from '#src/util/categoryUtils';
+import getCategoryName from '../../../../src/util/categoryUtils';
 
 describe('categoryUtils.js', () => {
 	describe('getCategoryName', () => {

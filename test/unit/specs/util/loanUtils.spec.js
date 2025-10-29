@@ -18,7 +18,7 @@ import {
 	isLessThan25,
 	isBetween25And50,
 	isBetween25And500,
-} from '#src/util/loanUtils';
+} from '../../../../src/util/loanUtils';
 
 describe('loanUtils.js', () => {
 	describe('isLoanFundraising', () => {

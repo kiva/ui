@@ -1,4 +1,4 @@
-import * as comparators from '#src/util/comparators';
+import * as comparators from '../../../../src/util/comparators';
 
 describe('comparators.js', () => {
 	describe('abc', () => {

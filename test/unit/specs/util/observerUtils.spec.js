@@ -1,7 +1,7 @@
 import {
 	checkIntersectionObserverSupport,
 	createIntersectionObserver,
-} from '#src/util/observerUtils';
+} from '../../../../src/util/observerUtils';
 
 describe('observerUtils.js', () => {
 	describe('checkIntersectionObserverSupport', () => {

@@ -1,8 +1,8 @@
 import { render, waitFor } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import LendButton from '#src/components/LoanCards/Buttons/LendButton';
+import LendButton from '../../../../../../src/components/LoanCards/Buttons/LendButton';
 import * as Sentry from '@sentry/vue';
-import * as basketUtils from '#src/util/basketUtils';
+import * as basketUtils from '../../../../../../src/util/basketUtils';
 
 // Mock dependencies
 vi.mock('@sentry/vue', () => ({

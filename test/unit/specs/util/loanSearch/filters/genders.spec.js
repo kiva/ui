@@ -4,8 +4,8 @@ import genders, {
 	FEMALE_KEY,
 	NON_BINARY_KEY,
 	genderDisplayMap
-} from '#src/util/loanSearch/filters/genders';
-import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+} from '../../../../../../src/util/loanSearch/filters/genders';
+import { FLSS_QUERY_TYPE } from '../../../../../../src/util/loanSearch/filterUtils';
 import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchData';
 
 describe('genders.js', () => {

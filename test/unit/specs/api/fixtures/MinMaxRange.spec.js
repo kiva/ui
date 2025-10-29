@@ -3,7 +3,7 @@ import MinMaxRange, {
 	getInputRange,
 	getSearchableRange,
 	rangesAreEqual,
-} from '#src/api/fixtures/MinMaxRange';
+} from '../../../../../src/api/fixtures/MinMaxRange';
 
 describe('MinMaxRange.js', () => {
 	describe('MinMaxRange constructor', () => {

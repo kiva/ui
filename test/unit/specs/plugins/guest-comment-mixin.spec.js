@@ -1,7 +1,7 @@
 import guestCommentMixin, {
 	GUEST_COMMENT_COMMENT,
 	GUEST_COMMENT_LOANID
-} from '#src/plugins/guest-comment-mixin';
+} from '../../../../src/plugins/guest-comment-mixin';
 
 // Mock the dependencies
 vi.mock('#src/util/logFormatter', () => ({

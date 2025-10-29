@@ -1,6 +1,6 @@
 import { render, waitFor } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import RemoveBasketItem from '#src/components/Checkout/RemoveBasketItem';
+import RemoveBasketItem from '../../../../../src/components/Checkout/RemoveBasketItem';
 
 describe('RemoveBasketItem', () => {
 	let mockApollo;

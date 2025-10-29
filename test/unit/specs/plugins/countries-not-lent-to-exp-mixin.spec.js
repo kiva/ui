@@ -1,4 +1,4 @@
-import countriesNotLentToExpMixin, { COUNTRIES_NOT_LENT_TO_EXP } from '#src/plugins/countries-not-lent-to-exp-mixin';
+import countriesNotLentToExpMixin, { COUNTRIES_NOT_LENT_TO_EXP } from '../../../../src/plugins/countries-not-lent-to-exp-mixin';
 
 vi.mock('#src/graphql/fragments/experimentVersion.graphql', () => ({
 	default: 'experimentVersionFragment'

@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import { createRouter, createMemoryHistory } from 'vue-router';
-import MyKivaButton from '#src/components/WwwFrame/Header/MyKivaButton';
+import MyKivaButton from '../../../../../../src/components/WwwFrame/Header/MyKivaButton';
 
 // Mock kv-components
 vi.mock('@kiva/kv-components', () => ({

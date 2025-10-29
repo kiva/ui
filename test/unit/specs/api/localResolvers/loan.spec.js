@@ -1,5 +1,5 @@
 import { add, formatISO } from 'date-fns';
-import loanResolverFactory from '#src/api/localResolvers/loan';
+import loanResolverFactory from '../../../../../src/api/localResolvers/loan';
 
 describe('loan.js', () => {
 	describe('LoanBasic.fundraisingPercent', () => {

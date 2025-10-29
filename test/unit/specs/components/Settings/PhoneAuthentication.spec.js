@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import PhoneAuthentication from '#src/components/Settings/PhoneAuthentication';
+import PhoneAuthentication from '../../../../../src/components/Settings/PhoneAuthentication';
 
 // Mock components
 vi.mock('@kiva/kv-components', () => ({

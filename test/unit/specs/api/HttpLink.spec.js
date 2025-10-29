@@ -1,7 +1,7 @@
 import { BatchHttpLink } from '@apollo/client/link/batch-http/index';
 import { HttpLink } from '@apollo/client/link/http/index';
 import { split } from '@apollo/client/core/index';
-import createHttpLink from '#src/api/HttpLink';
+import createHttpLink from '../../../../src/api/HttpLink';
 
 vi.mock('@apollo/client/link/batch-http/index');
 vi.mock('@apollo/client/link/http/index');

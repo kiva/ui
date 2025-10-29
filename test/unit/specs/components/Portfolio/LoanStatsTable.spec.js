@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/vue';
-import LoanStatsTable from '#src/components/Portfolio/LoanStatsTable';
+import LoanStatsTable from '../../../../../src/components/Portfolio/LoanStatsTable';
 
 // Mock @kiva/kv-components
 vi.mock('@kiva/kv-components', () => ({

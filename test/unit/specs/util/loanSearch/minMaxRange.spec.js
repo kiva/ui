@@ -1,4 +1,4 @@
-import { createMinMaxRange, getMinMaxRangeFilter, getMinMaxRangeQueryParam } from '#src/util/loanSearch/minMaxRange';
+import { createMinMaxRange, getMinMaxRangeFilter, getMinMaxRangeQueryParam } from '../../../../../src/util/loanSearch/minMaxRange';
 
 describe('minMaxRange.js', () => {
 	describe('createMinMaxRange', () => {

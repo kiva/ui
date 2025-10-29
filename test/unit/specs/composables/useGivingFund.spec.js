@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/vue';
-import useGivingFund from '#src/composables/useGivingFund';
+import useGivingFund from '../../../../src/composables/useGivingFund';
 
 // Mock dependencies
 vi.mock('#src/util/logFormatter');

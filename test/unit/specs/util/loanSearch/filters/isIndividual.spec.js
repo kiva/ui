@@ -4,8 +4,8 @@ import isIndividual, {
 	INDIVIDUAL_KEY,
 	GROUP_KEY,
 	isIndividualDisplayMap
-} from '#src/util/loanSearch/filters/isIndividual';
-import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+} from '../../../../../../src/util/loanSearch/filters/isIndividual';
+import { FLSS_QUERY_TYPE } from '../../../../../../src/util/loanSearch/filterUtils';
 import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchData';
 
 describe('isIndividual.js', () => {

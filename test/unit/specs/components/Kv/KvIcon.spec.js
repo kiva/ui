@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/vue';
-import KvIcon from '#src/components/Kv/KvIcon';
+import KvIcon from '../../../../../src/components/Kv/KvIcon';
 
 describe('KvIcon.vue', () => {
 	describe('fromSprite mode', () => {

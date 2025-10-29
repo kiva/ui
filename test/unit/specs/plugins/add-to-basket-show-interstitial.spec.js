@@ -1,4 +1,4 @@
-import addToBasketShowInterstitialMixin from '#src/plugins/add-to-basket-show-interstitial';
+import addToBasketShowInterstitialMixin from '../../../../src/plugins/add-to-basket-show-interstitial';
 
 vi.mock('#src/util/injectionCheck', () => ({
 	default: vi.fn()

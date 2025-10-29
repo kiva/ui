@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import TheBrowserCheck from '#src/components/WwwFrame/TheBrowserCheck';
+import TheBrowserCheck from '../../../../../src/components/WwwFrame/TheBrowserCheck';
 
 // Mock KvAlert
 vi.mock('#src/components/Kv/KvAlert', () => ({

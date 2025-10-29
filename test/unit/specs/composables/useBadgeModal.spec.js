@@ -7,7 +7,7 @@ import useBadgeModal,
 	BADGE_SHAPE_CIRCLE,
 	BADGE_SHAPE_EQUITY,
 	getBadgeShape,
-} from '#src/composables/useBadgeModal';
+} from '../../../../src/composables/useBadgeModal';
 import {
 	ID_WOMENS_EQUALITY,
 	ID_US_ECONOMIC_EQUALITY,
@@ -15,7 +15,7 @@ import {
 	ID_REFUGEE_EQUALITY,
 	ID_BASIC_NEEDS,
 	ID_EQUITY,
-} from '#src/composables/useBadgeData';
+} from '../../../../src/composables/useBadgeData';
 import { badgeNoProgress } from '../../fixtures/tieredLendingAchievementDataMock';
 
 vi.mock('vue', () => ({

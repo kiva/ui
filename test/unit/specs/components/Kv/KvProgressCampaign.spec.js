@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvProgressCampaign from '#src/components/Kv/KvProgressCampaign';
+import KvProgressCampaign from '../../../../../src/components/Kv/KvProgressCampaign';
 import numeral from 'numeral';
 
 describe('KvProgressCampaign', () => {

@@ -3,7 +3,7 @@ import {
 	updateUserPreferences,
 	createUserPreferencesMutation,
 	updateUserPreferencesMutation,
-} from '#src/util/userPreferenceUtils';
+} from '../../../../src/util/userPreferenceUtils';
 
 vi.mock('#src/util/logReadQueryError');
 

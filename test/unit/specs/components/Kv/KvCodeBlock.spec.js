@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvCodeBlock from '#src/components/Kv/KvCodeBlock';
+import KvCodeBlock from '../../../../../src/components/Kv/KvCodeBlock';
 
 describe('KvCodeBlock.vue', () => {
 	it('exports a valid Vue component', () => {

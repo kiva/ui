@@ -1,6 +1,6 @@
-import { promoBannerData } from '#src/esiTags/globalData/promoBanners';
-import { isFromImpactDashboard, hasPromoSession } from '#src/util/promoCredit';
-import { activePromoBanner, showBannerForPromo } from '#src/util/globalPromoBanner';
+import { promoBannerData } from '../../../../../src/esiTags/globalData/promoBanners';
+import { isFromImpactDashboard, hasPromoSession } from '../../../../../src/util/promoCredit';
+import { activePromoBanner, showBannerForPromo } from '../../../../../src/util/globalPromoBanner';
 
 vi.mock('#src/util/promoCredit', async importOriginal => {
 	const mod = await importOriginal();

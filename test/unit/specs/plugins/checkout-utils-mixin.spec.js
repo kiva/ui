@@ -1,4 +1,4 @@
-import checkoutUtilsMixin from '#src/plugins/checkout-utils-mixin';
+import checkoutUtilsMixin from '../../../../src/plugins/checkout-utils-mixin';
 
 vi.mock('#src/util/logFormatter', () => ({
 	default: vi.fn()

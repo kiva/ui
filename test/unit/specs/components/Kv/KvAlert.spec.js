@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import KvAlert from '#src/components/Kv/KvAlert';
+import KvAlert from '../../../../../src/components/Kv/KvAlert';
 
 describe('KvAlert.vue', () => {
 	it('renders alert with default success variant', () => {

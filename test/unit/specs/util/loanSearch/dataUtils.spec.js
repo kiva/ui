@@ -3,11 +3,11 @@ import {
 	runLoansQuery,
 	fetchLoanFacets,
 	runRecommendationsQuery
-} from '#src/util/loanSearch/dataUtils';
-import * as flssUtils from '#src/util/flssUtils';
-import loanFacetsQuery from '#src/graphql/query/loanFacetsQuery.graphql';
-import loanEnumsQuery from '#src/graphql/query/loanEnumsQuery.graphql';
-import { getFlssFilters, FLSS_ORIGIN_NOT_SPECIFIED } from '#src/util/flssUtils';
+} from '../../../../../src/util/loanSearch/dataUtils';
+import * as flssUtils from '../../../../../src/util/flssUtils';
+import loanFacetsQuery from '../../../../../src/graphql/query/loanFacetsQuery.graphql';
+import loanEnumsQuery from '../../../../../src/graphql/query/loanEnumsQuery.graphql';
+import { getFlssFilters, FLSS_ORIGIN_NOT_SPECIFIED } from '../../../../../src/util/flssUtils';
 import { mockState } from '../../../fixtures/mockLoanSearchData';
 
 describe('dataUtils.js', () => {

@@ -1,4 +1,4 @@
-import timeLeftMixin from '#src/plugins/loan/time-left-mixin';
+import timeLeftMixin from '../../../../../src/plugins/loan/time-left-mixin';
 
 describe('time-left-mixin.js', () => {
 	let context;

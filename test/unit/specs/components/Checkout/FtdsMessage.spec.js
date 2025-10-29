@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import FtdsMessage from '#src/components/Checkout/FtdsMessage';
+import FtdsMessage from '../../../../../src/components/Checkout/FtdsMessage';
 
 // Mock the sparkle SVG import
 vi.mock('#src/assets/images/checkout/ftds_sparkle.svg?url', () => ({

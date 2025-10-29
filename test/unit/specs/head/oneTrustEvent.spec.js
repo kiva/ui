@@ -1,4 +1,4 @@
-import oneTrustGlobalEvent from '#src/head/oneTrustEvent';
+import oneTrustGlobalEvent from '../../../../src/head/oneTrustEvent';
 
 describe('oneTrustGlobalEvent', () => {
 	let dispatchEventSpy;

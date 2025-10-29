@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import SaveSearchItem from '#src/components/Settings/SaveSearchItem';
+import SaveSearchItem from '../../../../../src/components/Settings/SaveSearchItem';
 
 const mockSavedSearch = {
 	id: 123,

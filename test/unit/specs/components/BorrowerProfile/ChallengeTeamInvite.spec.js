@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import ChallengeTeamInvite from '#src/components/BorrowerProfile/ChallengeTeamInvite';
+import ChallengeTeamInvite from '../../../../../src/components/BorrowerProfile/ChallengeTeamInvite';
 import { KvUserAvatar } from '@kiva/kv-components';
 import { globalOptions } from '../../../specUtils';
 

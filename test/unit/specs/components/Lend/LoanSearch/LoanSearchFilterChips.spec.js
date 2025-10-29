@@ -1,7 +1,7 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import LoanSearchFilterChips from '#src/components/Lend/LoanSearch/LoanSearchFilterChips';
-import filterConfig from '#src/util/loanSearch/filterConfig';
+import LoanSearchFilterChips from '../../../../../../src/components/Lend/LoanSearch/LoanSearchFilterChips';
+import filterConfig from '../../../../../../src/util/loanSearch/filterConfig';
 import { mockState, mockAllFacets } from '../../../../fixtures/mockLoanSearchData';
 import { globalOptions } from '../../../../specUtils';
 

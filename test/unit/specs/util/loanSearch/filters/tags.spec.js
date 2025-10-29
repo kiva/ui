@@ -1,5 +1,5 @@
-import tags, { transformTagName, transformTags } from '#src/util/loanSearch/filters/tags';
-import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+import tags, { transformTagName, transformTags } from '../../../../../../src/util/loanSearch/filters/tags';
+import { FLSS_QUERY_TYPE } from '../../../../../../src/util/loanSearch/filterUtils';
 import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchData';
 
 describe('tags.js', () => {

@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvLoadingParagraph from '#src/components/Kv/KvLoadingParagraph';
+import KvLoadingParagraph from '../../../../../src/components/Kv/KvLoadingParagraph';
 
 describe('KvLoadingParagraph.vue', () => {
 	it('renders a loading paragraph container', () => {

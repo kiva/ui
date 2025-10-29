@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvCharityNavigator from '#src/components/Kv/KvCharityNavigator';
+import KvCharityNavigator from '../../../../../src/components/Kv/KvCharityNavigator';
 
 describe('KvCharityNavigator.vue', () => {
 	it('exports a valid Vue component', () => {

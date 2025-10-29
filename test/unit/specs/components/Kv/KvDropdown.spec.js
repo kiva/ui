@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvDropdown from '#src/components/Kv/KvDropdown';
+import KvDropdown from '../../../../../src/components/Kv/KvDropdown';
 
 // Mock Popper.js
 vi.mock('popper.js', () => ({

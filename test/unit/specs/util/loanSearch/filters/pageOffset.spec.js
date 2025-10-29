@@ -1,6 +1,6 @@
-import pageOffset from '#src/util/loanSearch/filters/pageOffset';
-import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
-import { getDefaultLoanSearchState } from '#src/api/localResolvers/loanSearch';
+import pageOffset from '../../../../../../src/util/loanSearch/filters/pageOffset';
+import { FLSS_QUERY_TYPE } from '../../../../../../src/util/loanSearch/filterUtils';
+import { getDefaultLoanSearchState } from '../../../../../../src/api/localResolvers/loanSearch';
 import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchData';
 
 describe('pageOffset.js', () => {

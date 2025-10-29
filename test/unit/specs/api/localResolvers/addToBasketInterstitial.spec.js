@@ -1,4 +1,4 @@
-import createAddToBasketInterstitialResolver from '#src/api/localResolvers/addToBasketInterstitial';
+import createAddToBasketInterstitialResolver from '../../../../../src/api/localResolvers/addToBasketInterstitial';
 
 describe('addToBasketInterstitial resolver', () => {
 	let resolver;

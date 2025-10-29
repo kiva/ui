@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import KvCheckbox from '#src/components/Kv/KvCheckbox';
+import KvCheckbox from '../../../../../src/components/Kv/KvCheckbox';
 
 describe('KvCheckbox.vue', () => {
 	it('renders with required id prop', () => {

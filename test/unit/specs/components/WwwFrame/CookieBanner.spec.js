@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import CookieBanner from '#src/components/WwwFrame/CookieBanner';
+import CookieBanner from '../../../../../src/components/WwwFrame/CookieBanner';
 
 // Mock KvButton
 vi.mock('#src/components/Kv/KvButton', () => ({

@@ -1,5 +1,5 @@
-import themes, { transformThemes } from '#src/util/loanSearch/filters/themes';
-import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+import themes, { transformThemes } from '../../../../../../src/util/loanSearch/filters/themes';
+import { FLSS_QUERY_TYPE } from '../../../../../../src/util/loanSearch/filterUtils';
 import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchData';
 
 describe('themes.js', () => {

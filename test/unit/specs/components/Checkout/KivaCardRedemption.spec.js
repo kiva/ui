@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KivaCardRedemption from '#src/components/Checkout/KivaCardRedemption';
+import KivaCardRedemption from '../../../../../src/components/Checkout/KivaCardRedemption';
 
 // Mock GraphQL mutations
 const mockAddCreditByType = vi.fn();

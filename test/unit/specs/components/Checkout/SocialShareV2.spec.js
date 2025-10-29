@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import SocialShareV2 from '#src/components/Checkout/SocialShareV2';
+import SocialShareV2 from '../../../../../src/components/Checkout/SocialShareV2';
 
 // Mock KvBlueskyIcon
 vi.mock('@kiva/kv-components', () => ({

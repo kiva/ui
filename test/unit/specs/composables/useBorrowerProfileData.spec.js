@@ -1,6 +1,6 @@
 import { render, waitFor } from '@testing-library/vue';
-import useBorrowerProfileData from '#src/composables/useBorrowerProfileData';
-import { watchLoanData } from '#src/util/loanUtils';
+import useBorrowerProfileData from '../../../../src/composables/useBorrowerProfileData';
+import { watchLoanData } from '../../../../src/util/loanUtils';
 
 // Mock dependencies
 vi.mock('#src/util/logFormatter', () => ({

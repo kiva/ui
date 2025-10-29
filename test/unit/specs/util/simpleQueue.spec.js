@@ -1,4 +1,4 @@
-import SimpleQueue from '#src/util/simpleQueue';
+import SimpleQueue from '../../../../src/util/simpleQueue';
 
 describe('SimpleQueue', () => {
 	const queue = new SimpleQueue();

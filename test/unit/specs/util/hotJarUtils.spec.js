@@ -1,4 +1,4 @@
-import { setHotJarUserAttributes, fireHotJarEvent } from '#src/util/hotJarUtils';
+import { setHotJarUserAttributes, fireHotJarEvent } from '../../../../src/util/hotJarUtils';
 
 describe('hotJarUtils.js', () => {
 	let mockHj;

@@ -1,5 +1,5 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
-import { applyStateToCache, findIndexWithSameKeyField, mergeStateObjects } from '#src/util/apolloCacheUtils';
+import { applyStateToCache, findIndexWithSameKeyField, mergeStateObjects } from '../../../../src/util/apolloCacheUtils';
 
 describe('apolloCacheUtils', () => {
 	describe('applyStateToCache (integration with ApolloClient)', () => {

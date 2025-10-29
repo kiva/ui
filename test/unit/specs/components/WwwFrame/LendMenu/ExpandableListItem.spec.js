@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import ExpandableListItem from '#src/components/WwwFrame/LendMenu/ExpandableListItem';
+import ExpandableListItem from '../../../../../../src/components/WwwFrame/LendMenu/ExpandableListItem';
 
 // Mock KvExpandable
 vi.mock('#src/components/Kv/KvExpandable', () => ({

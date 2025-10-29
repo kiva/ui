@@ -1,4 +1,4 @@
-import { splitAchievements, filterAchievementData, getOneLoanAwayAchievement } from '#src/util/atbAchievementUtils';
+import { splitAchievements, filterAchievementData, getOneLoanAwayAchievement } from '../../../../src/util/atbAchievementUtils';
 
 vi.mock('#src/util/achievementUtils', () => ({ defaultBadges: [101, 102, 103] }));
 

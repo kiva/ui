@@ -1,4 +1,4 @@
-import categoryRowArrowsVisibleMixin from '#src/plugins/category-row-arrows-visible-mixin';
+import categoryRowArrowsVisibleMixin from '../../../../src/plugins/category-row-arrows-visible-mixin';
 
 describe('category-row-arrows-visible-mixin.js', () => {
 	let context;

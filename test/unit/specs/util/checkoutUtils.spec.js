@@ -3,7 +3,7 @@ import {
 	formatTransactionData,
 	myFTDQuery,
 	removeCredit
-} from '#src/util/checkoutUtils';
+} from '../../../../src/util/checkoutUtils';
 
 vi.mock('numeral');
 

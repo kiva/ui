@@ -1,4 +1,4 @@
-import { metaGlobReader } from '#src/util/importHelpers';
+import { metaGlobReader } from '../../../../src/util/importHelpers';
 
 describe('importHelpers', () => {
 	describe('metaGlobReader', () => {

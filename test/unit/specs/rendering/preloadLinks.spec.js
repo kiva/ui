@@ -1,4 +1,4 @@
-import { renderPreloadLink, renderPreloadLinks } from '#src/rendering/preloadLinks';
+import { renderPreloadLink, renderPreloadLinks } from '../../../../src/rendering/preloadLinks';
 
 describe('renderPreloadLink', () => {
 	it('renders modulepreload link for .js files', () => {

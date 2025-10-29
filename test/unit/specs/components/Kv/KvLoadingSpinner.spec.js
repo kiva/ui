@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import KvLoadingSpinner from '../../../../../src/components/Kv/KvLoadingSpinner';
 
 describe('KvLoadingSpinner.vue', () => {
 	it('renders the loading spinner', () => {

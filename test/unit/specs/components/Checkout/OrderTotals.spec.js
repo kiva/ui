@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import OrderTotals from '#src/components/Checkout/OrderTotals';
+import OrderTotals from '../../../../../src/components/Checkout/OrderTotals';
 
 const mockTotals = {
 	itemTotal: '100.00',

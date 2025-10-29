@@ -1,6 +1,6 @@
-import partnerAvgProfitability, { MIN, MAX } from '#src/util/loanSearch/filters/partnerAvgProfitability';
-import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
-import { createMinMaxRange } from '#src/util/loanSearch/minMaxRange';
+import partnerAvgProfitability, { MIN, MAX } from '../../../../../../src/util/loanSearch/filters/partnerAvgProfitability';
+import { FLSS_QUERY_TYPE } from '../../../../../../src/util/loanSearch/filterUtils';
+import { createMinMaxRange } from '../../../../../../src/util/loanSearch/minMaxRange';
 import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchData';
 
 describe('partnerAvgProfitability.js', () => {

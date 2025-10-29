@@ -1,4 +1,4 @@
-import unbounceEventMixin from '#src/plugins/unbounce-event-mixin';
+import unbounceEventMixin from '../../../../src/plugins/unbounce-event-mixin';
 
 // Mock the dependencies
 vi.mock('#src/util/logReadQueryError', () => ({

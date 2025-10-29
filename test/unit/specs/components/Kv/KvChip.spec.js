@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import KvChip from '#src/components/Kv/KvChip';
+import KvChip from '../../../../../src/components/Kv/KvChip';
 
 describe('KvChip.vue', () => {
 	it('renders with required title prop', () => {

@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvCauseSelector from '#src/components/Kv/KvCauseSelector';
+import KvCauseSelector from '../../../../../src/components/Kv/KvCauseSelector';
 
 // Mock change-case
 vi.mock('change-case', () => ({

@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/vue';
-import ShareButton from '#src/components/BorrowerProfile/ShareButton';
+import ShareButton from '../../../../../src/components/BorrowerProfile/ShareButton';
 
 // Mock child components
 vi.mock('#src/components/Kv/KvSocialShareButton', () => ({

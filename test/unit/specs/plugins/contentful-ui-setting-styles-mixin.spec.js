@@ -1,4 +1,4 @@
-import contentfulUiSettingStylesMixin from '#src/plugins/contentful-ui-setting-styles-mixin';
+import contentfulUiSettingStylesMixin from '../../../../src/plugins/contentful-ui-setting-styles-mixin';
 
 describe('contentful-ui-setting-styles-mixin.js', () => {
 	let context;

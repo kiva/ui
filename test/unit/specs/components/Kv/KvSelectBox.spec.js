@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import KvSelectBox, { NO_RESULTS } from '#src/components/Kv/KvSelectBox';
+import KvSelectBox, { NO_RESULTS } from '../../../../../src/components/Kv/KvSelectBox';
 
 const items = [...Array(20)].map((_, i) => ({ id: i, name: `Item ${20 - i + 1}`, header: `Header ${i % 5}` }));
 

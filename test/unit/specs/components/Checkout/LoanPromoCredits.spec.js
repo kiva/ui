@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import LoanPromoCredits from '#src/components/Checkout/LoanPromoCredits';
+import LoanPromoCredits from '../../../../../src/components/Checkout/LoanPromoCredits';
 
 describe('LoanPromoCredits', () => {
 	it('should display promo credit amount', () => {

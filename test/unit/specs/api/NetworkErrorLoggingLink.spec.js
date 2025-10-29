@@ -1,4 +1,4 @@
-import createNetworkErrorLoggingLink from '#src/api/NetworkErrorLoggingLink';
+import createNetworkErrorLoggingLink from '../../../../src/api/NetworkErrorLoggingLink';
 
 vi.mock('@apollo/client/link/error/index', () => ({
 	onError: vi.fn(handler => ({ handler, errorHandler: handler }))

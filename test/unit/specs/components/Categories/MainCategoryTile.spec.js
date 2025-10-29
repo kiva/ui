@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import MainCategoryTile from '#src/components/Categories/MainCategoryTile';
+import MainCategoryTile from '../../../../../src/components/Categories/MainCategoryTile';
 
 // Mock KvResponsiveImage
 vi.mock('#src/components/Kv/KvResponsiveImage', () => ({

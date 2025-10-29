@@ -1,4 +1,4 @@
-import renderCssVariables from '#src/rendering/cssVariables';
+import renderCssVariables from '../../../../src/rendering/cssVariables';
 
 describe('renderCssVariables', () => {
 	it('renders a style tag with CSS variables and no prefix', () => {

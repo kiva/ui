@@ -1,5 +1,5 @@
-import aiLoanPillsMixin, { AI_LOAN_PILLS_EXP_KEY } from '#src/plugins/ai-loan-pills-mixin';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import aiLoanPillsMixin, { AI_LOAN_PILLS_EXP_KEY } from '../../../../src/plugins/ai-loan-pills-mixin';
+import { trackExperimentVersion } from '../../../../src/util/experiment/experimentUtils';
 
 vi.mock('#src/util/experiment/experimentUtils');
 

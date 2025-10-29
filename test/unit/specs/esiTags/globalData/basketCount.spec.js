@@ -1,4 +1,4 @@
-import { basketCountData } from '#src/esiTags/globalData/basketCount';
+import { basketCountData } from '../../../../../src/esiTags/globalData/basketCount';
 
 describe('basketCountData', () => {
 	it('returns correct CSS vars for normal basket', () => {

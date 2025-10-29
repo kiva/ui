@@ -1,4 +1,4 @@
-import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
+import loanGroupCategoriesMixin from '../../../../src/plugins/loan-group-categories';
 
 describe('loan-group-categories', () => {
 	describe('data', () => {

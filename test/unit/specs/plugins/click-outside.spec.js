@@ -1,4 +1,4 @@
-import clickOutside from '#src/plugins/click-outside';
+import clickOutside from '../../../../src/plugins/click-outside';
 
 describe('click-outside.js', () => {
 	let mockElement;

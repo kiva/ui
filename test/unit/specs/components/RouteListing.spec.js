@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
-import RouteListing from '#src/pages/UiSiteMap/RouteListing';
-import routes from '#src/router/routes';
+import RouteListing from '../../../../src/pages/UiSiteMap/RouteListing';
+import routes from '../../../../src/router/routes';
 import { createRouter, createWebHistory } from 'vue-router';
 import byTextContent from '../../helpers/byTextContent';
 

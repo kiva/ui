@@ -1,5 +1,5 @@
 import { render, fireEvent } from '@testing-library/vue';
-import TwoStepFaq from '#src/components/Settings/TwoStepFaq';
+import TwoStepFaq from '../../../../../src/components/Settings/TwoStepFaq';
 
 const global = {
 	stubs: {

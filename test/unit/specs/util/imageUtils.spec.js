@@ -1,6 +1,6 @@
 import {
 	checkAvifSupport, checkWebpSupport, preloadImage, optimizeContentfulUrl
-} from '#src/util/imageUtils';
+} from '../../../../src/util/imageUtils';
 
 describe('imageUtils.js', () => {
 	let originalImage;

@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/vue';
-import ThanksPageDonationOnly from '#src/components/Thanks/ThanksPageDonationOnly';
+import ThanksPageDonationOnly from '../../../../../src/components/Thanks/ThanksPageDonationOnly';
 
 // Mock dependencies
 vi.mock('#src/util/urlUtils', () => ({

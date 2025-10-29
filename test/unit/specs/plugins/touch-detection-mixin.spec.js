@@ -1,4 +1,4 @@
-import touchDetectionMixin from '#src/plugins/touch-detection-mixin';
+import touchDetectionMixin from '../../../../src/plugins/touch-detection-mixin';
 
 describe('touch-detection-mixin.js', () => {
 	let mockWindow;

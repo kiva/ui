@@ -1,6 +1,6 @@
-import kvAnalytics from '#src/plugins/kv-analytics-plugin';
-import LoanReservation from '#src/components/Checkout/LoanReservation';
-import numeralFilter from '#src/plugins/numeral-filter';
+import kvAnalytics from '../../../../../src/plugins/kv-analytics-plugin';
+import LoanReservation from '../../../../../src/components/Checkout/LoanReservation';
+import numeralFilter from '../../../../../src/plugins/numeral-filter';
 import { render } from '@testing-library/vue';
 
 const Time = new Date(); // creates a new date/time based on now

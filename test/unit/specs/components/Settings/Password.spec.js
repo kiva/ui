@@ -1,6 +1,6 @@
 import { render, fireEvent } from '@testing-library/vue';
 import { nextTick } from 'vue';
-import Password from '#src/components/Settings/Password';
+import Password from '../../../../../src/components/Settings/Password';
 
 const mockUserEmail = 'test@example.com';
 

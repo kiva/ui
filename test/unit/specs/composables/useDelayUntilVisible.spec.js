@@ -1,5 +1,5 @@
-import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
-import * as observerUtils from '#src/util/observerUtils';
+import useDelayUntilVisible from '../../../../src/composables/useDelayUntilVisible';
+import * as observerUtils from '../../../../src/util/observerUtils';
 
 vi.mock('#src/util/observerUtils');
 

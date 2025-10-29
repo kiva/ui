@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/vue';
-import LoanSpotlight from '#src/components/Categories/LoanSpotlight';
+import LoanSpotlight from '../../../../../src/components/Categories/LoanSpotlight';
 
 // Mock toParagraphs utility
 vi.mock('#src/util/loanUtils', () => ({

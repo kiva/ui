@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-import useCDNHeaders from '#src/composables/useCDNHeaders';
+import useCDNHeaders from '../../../../src/composables/useCDNHeaders';
 
 describe('useCDNHeaders (client-side)', () => {
 	it('does nothing on client', () => {

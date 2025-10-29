@@ -1,4 +1,4 @@
-import testDelayedGlobalLibrary from '#src/util/timeoutUtils';
+import testDelayedGlobalLibrary from '../../../../src/util/timeoutUtils';
 
 describe('timeoutUtils.js', () => {
 	beforeEach(() => {

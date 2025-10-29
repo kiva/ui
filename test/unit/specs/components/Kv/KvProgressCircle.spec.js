@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
+import KvProgressCircle from '../../../../../src/components/Kv/KvProgressCircle';
 
 describe('KvProgressCircle', () => {
 	it('should render with basic props', () => {

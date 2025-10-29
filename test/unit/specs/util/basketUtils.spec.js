@@ -1,6 +1,6 @@
-import createNewBasketMutation from '#src/graphql/mutation/shopCreateNewBsket.graphql';
-import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
-import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
+import createNewBasketMutation from '../../../../src/graphql/mutation/shopCreateNewBsket.graphql';
+import updateDonation from '../../../../src/graphql/mutation/updateDonation.graphql';
+import updateLoanReservation from '../../../../src/graphql/mutation/updateLoanReservation.graphql';
 import {
 	createNewBasket,
 	hasBasketExpired,
@@ -8,8 +8,8 @@ import {
 	handleInvalidBasketForDonation,
 	setLendAmount,
 	setDonationAmount,
-} from '#src/util/basketUtils';
-import * as logFormatter from '#src/util/logFormatter';
+} from '../../../../src/util/basketUtils';
+import * as logFormatter from '../../../../src/util/logFormatter';
 
 describe('basketUtils', () => {
 	describe('createNewBasket', () => {

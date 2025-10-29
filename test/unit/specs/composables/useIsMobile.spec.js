@@ -1,4 +1,4 @@
-import useIsMobile from '#src/composables/useIsMobile';
+import useIsMobile from '../../../../src/composables/useIsMobile';
 
 vi.mock('vue', () => ({
 	onBeforeMount: callback => { callback(); },

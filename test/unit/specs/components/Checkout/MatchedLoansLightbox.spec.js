@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import MatchedLoansLightbox from '#src/components/Checkout/MatchedLoansLightbox';
+import MatchedLoansLightbox from '../../../../../src/components/Checkout/MatchedLoansLightbox';
 
 // Mock @kiva/kv-components
 vi.mock('@kiva/kv-components', () => ({

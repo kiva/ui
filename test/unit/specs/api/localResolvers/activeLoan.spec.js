@@ -1,4 +1,4 @@
-import createActiveLoanResolver from '#src/api/localResolvers/activeLoan';
+import createActiveLoanResolver from '../../../../../src/api/localResolvers/activeLoan';
 
 describe('activeLoan resolver', () => {
 	let resolver;

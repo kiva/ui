@@ -1,4 +1,4 @@
-import createNetworkErrorRetryLink from '#src/api/NetworkErrorRetryLink';
+import createNetworkErrorRetryLink from '../../../../src/api/NetworkErrorRetryLink';
 
 vi.mock('@apollo/client/link/retry/index', () => ({
 	RetryLink: vi.fn(function MockRetryLink(config) {

@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvCarouselSlide from '#src/components/Kv/KvCarouselSlide';
+import KvCarouselSlide from '../../../../../src/components/Kv/KvCarouselSlide';
 
 describe('KvCarouselSlide.vue', () => {
 	it('exports a valid Vue component', () => {

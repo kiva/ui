@@ -1,4 +1,4 @@
-import radioMixin from '#src/plugins/any-or-selected-autolending-radio-mixin';
+import radioMixin from '../../../../src/plugins/any-or-selected-autolending-radio-mixin';
 
 describe('any-or-selected-autolending-radio-mixin.js', () => {
 	let context;

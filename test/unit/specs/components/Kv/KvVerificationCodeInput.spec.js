@@ -1,7 +1,7 @@
 import {
 	render, fireEvent
 } from '@testing-library/vue';
-import KvVerificationCodeInput from '#src/components/Kv/KvVerificationCodeInput';
+import KvVerificationCodeInput from '../../../../../src/components/Kv/KvVerificationCodeInput';
 
 describe('KvVerificationCodeInput.vue', () => {
 	it('exports a valid Vue component', () => {

@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/vue';
-import FundedBorrowerProfile from '#src/components/BorrowerProfile/FundedBorrowerProfile';
+import FundedBorrowerProfile from '../../../../../src/components/BorrowerProfile/FundedBorrowerProfile';
 
 // Mock child components
 vi.mock('#src/components/Kv/KvLoadingSpinner', () => ({

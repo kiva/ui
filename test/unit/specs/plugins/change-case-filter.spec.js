@@ -1,4 +1,4 @@
-import changeCaseFilter from '#src/plugins/change-case-filter';
+import changeCaseFilter from '../../../../src/plugins/change-case-filter';
 
 describe('change-case-filter.js', () => {
 	it('should use noCase as default when no type provided', () => {

@@ -1,5 +1,5 @@
-import CookieStore from '#src/util/cookieStore';
-import parseSPCookie from '#src/util/parseSPCookie';
+import CookieStore from '../../../../src/util/cookieStore';
+import parseSPCookie from '../../../../src/util/parseSPCookie';
 
 describe('parseSPCookie.js', () => {
 	it('returns the user id and session id from the Snowplow cookie', () => {

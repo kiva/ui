@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvContentfulImg from '#src/components/Kv/KvContentfulImg';
+import KvContentfulImg from '../../../../../src/components/Kv/KvContentfulImg';
 
 describe('KvContentfulImg.vue', () => {
 	it('exports a valid Vue component', () => {

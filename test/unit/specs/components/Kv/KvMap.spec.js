@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvMap from '#src/components/Kv/KvMap';
+import KvMap from '../../../../../src/components/Kv/KvMap';
 
 // Mock global window properties
 global.L = undefined;

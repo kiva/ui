@@ -1,4 +1,4 @@
-import percentRaisedMixin from '#src/plugins/loan/percent-raised-mixin';
+import percentRaisedMixin from '../../../../../src/plugins/loan/percent-raised-mixin';
 
 describe('percent-raised-mixin.js', () => {
 	let context;

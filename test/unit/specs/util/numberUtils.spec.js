@@ -1,4 +1,4 @@
-import { isNumber } from '#src/util/numberUtils';
+import { isNumber } from '../../../../src/util/numberUtils';
 
 describe('numberUtils.js', () => {
 	describe('isNumber', () => {

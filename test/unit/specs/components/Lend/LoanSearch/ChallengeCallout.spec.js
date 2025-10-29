@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import ChallengeCallout from '#src/components/Lend/LoanSearch/ChallengeCallout';
+import ChallengeCallout from '../../../../../../src/components/Lend/LoanSearch/ChallengeCallout';
 import { globalOptions } from '../../../../specUtils';
 
 const teamName = 'Team Test';

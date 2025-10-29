@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import BuildPageWrapper from '#src/components/Build/BuildPageWrapper';
+import BuildPageWrapper from '../../../../../src/components/Build/BuildPageWrapper';
 
 // Mock KvDefaultWrapper
 vi.mock('#src/components/Kv/KvDefaultWrapper', () => ({

@@ -1,7 +1,7 @@
 import {
 	render, fireEvent
 } from '@testing-library/vue';
-import KvExpandableQuestion from '#src/components/Kv/KvExpandableQuestion';
+import KvExpandableQuestion from '../../../../../src/components/Kv/KvExpandableQuestion';
 
 // Mock $route
 const mockRoute = {

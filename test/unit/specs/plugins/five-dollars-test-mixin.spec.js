@@ -1,5 +1,5 @@
-import fiveDollarsTestMixin, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import fiveDollarsTestMixin, { FIVE_DOLLARS_NOTES_EXP } from '../../../../src/plugins/five-dollars-test-mixin';
+import { trackExperimentVersion } from '../../../../src/util/experiment/experimentUtils';
 
 // Mock the experimentUtils
 vi.mock('#src/util/experiment/experimentUtils', () => ({

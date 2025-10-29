@@ -1,4 +1,4 @@
-import CDNHelper from '#src/util/CDNHelper';
+import CDNHelper from '../../../../src/util/CDNHelper';
 
 vi.mock('#src/util/CDNHelper');
 

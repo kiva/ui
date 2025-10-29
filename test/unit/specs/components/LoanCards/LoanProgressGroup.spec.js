@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import LoanProgressGroup from '#src/components/LoanCards/LoanProgressGroup';
+import LoanProgressGroup from '../../../../../src/components/LoanCards/LoanProgressGroup';
 
 describe('LoanProgressGroup', () => {
 	it('should display default message', () => {

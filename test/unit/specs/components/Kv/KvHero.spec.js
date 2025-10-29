@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvHero from '#src/components/Kv/KvHero';
+import KvHero from '../../../../../src/components/Kv/KvHero';
 
 describe('KvHero.vue', () => {
 	it('exports a valid Vue component', () => {

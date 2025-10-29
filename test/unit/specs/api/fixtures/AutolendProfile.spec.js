@@ -2,7 +2,7 @@ import AutolendProfile, {
 	getCacheableProfile,
 	getInputProfile,
 	profilesAreEqual,
-} from '#src/api/fixtures/AutolendProfile';
+} from '../../../../../src/api/fixtures/AutolendProfile';
 
 describe('AutolendProfile.js', () => {
 	describe('AutolendProfile constructor', () => {

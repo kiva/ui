@@ -1,4 +1,4 @@
-import { queryAllPartners } from '#src/util/autoLendingUtils';
+import { queryAllPartners } from '../../../../src/util/autoLendingUtils';
 import _sortBy from 'lodash/sortBy';
 
 const createResult = count => (Array.from({ length: count }, (_, i) => ({ name: `${i}` })));

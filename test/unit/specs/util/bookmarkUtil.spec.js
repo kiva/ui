@@ -1,4 +1,4 @@
-import bookmarkLoan from '#src/util/bookmarkUtil';
+import bookmarkLoan from '../../../../src/util/bookmarkUtil';
 
 describe('bookmarkUtil', () => {
 	describe('bookmarkLoan', () => {

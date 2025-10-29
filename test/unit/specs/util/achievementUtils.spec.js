@@ -1,7 +1,7 @@
 import {
 	missingMilestones,
 	defaultBadges,
-} from '#src/util/achievementUtils';
+} from '../../../../src/util/achievementUtils';
 
 const sampleAPIMilestoneProgress = [
 	{

@@ -1,6 +1,6 @@
-import trackTransactionEvent from '#src/util/trackTransactionEvent';
-import parseGACookie from '#src/util/parseGACookie';
-import parseSPCookie from '#src/util/parseSPCookie';
+import trackTransactionEvent from '../../../../src/util/trackTransactionEvent';
+import parseGACookie from '../../../../src/util/parseGACookie';
+import parseSPCookie from '../../../../src/util/parseSPCookie';
 
 vi.mock('#src/util/parseGACookie');
 vi.mock('#src/util/parseSPCookie');

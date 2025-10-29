@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import TheHeader from '#src/components/WwwFrame/TheHeader';
+import TheHeader from '../../../../../src/components/WwwFrame/TheHeader';
 
 import { emptyComponent, globalOptions } from '../../../specUtils';
 

@@ -1,4 +1,4 @@
-import useContentful from '#src/composables/useContentful';
+import useContentful from '../../../../src/composables/useContentful';
 
 vi.mock('#src/util/logReadQueryError');
 

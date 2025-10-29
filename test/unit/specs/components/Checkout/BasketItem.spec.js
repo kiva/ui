@@ -1,7 +1,7 @@
-import BasketItem from '#src/components/Checkout/BasketItem';
+import BasketItem from '../../../../../src/components/Checkout/BasketItem';
 import { render, within } from '@testing-library/vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import routes from '#src/router/routes';
+import routes from '../../../../../src/router/routes';
 import loanReservation from '../../../fixtures/MatchedPromoLoanReservation.json';
 import basketLoanTeams from '../../../fixtures/BasketLoanTeams.json';
 import { emptyComponent, globalOptions } from '../../../specUtils';

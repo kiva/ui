@@ -1,5 +1,5 @@
-import keywordSearch from '#src/util/loanSearch/filters/keywordSearch';
-import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+import keywordSearch from '../../../../../../src/util/loanSearch/filters/keywordSearch';
+import { FLSS_QUERY_TYPE } from '../../../../../../src/util/loanSearch/filterUtils';
 import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchData';
 
 describe('keywordSearch.js', () => {

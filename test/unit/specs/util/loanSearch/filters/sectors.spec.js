@@ -1,5 +1,5 @@
-import sectors, { transformSectors } from '#src/util/loanSearch/filters/sectors';
-import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+import sectors, { transformSectors } from '../../../../../../src/util/loanSearch/filters/sectors';
+import { FLSS_QUERY_TYPE } from '../../../../../../src/util/loanSearch/filterUtils';
 import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchData';
 
 describe('sectors.js', () => {

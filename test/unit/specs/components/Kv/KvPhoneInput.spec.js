@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvPhoneInput from '#src/components/Kv/KvPhoneInput';
+import KvPhoneInput from '../../../../../src/components/Kv/KvPhoneInput';
 
 // Mock libphonenumber-js
 vi.mock('libphonenumber-js', () => ({

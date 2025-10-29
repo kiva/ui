@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import CheckoutHolidayPromo from '#src/components/Checkout/CheckoutHolidayPromo';
+import CheckoutHolidayPromo from '../../../../../src/components/Checkout/CheckoutHolidayPromo';
 
 // Mock GraphQL mutation
 vi.mock('#src/graphql/mutation/shopAddOnePrintKivaCard.graphql', () => ({

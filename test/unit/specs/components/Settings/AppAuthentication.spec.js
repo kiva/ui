@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import AppAuthentication from '#src/components/Settings/AppAuthentication';
+import AppAuthentication from '../../../../../src/components/Settings/AppAuthentication';
 
 // Mock components
 vi.mock('@kiva/kv-components', () => ({

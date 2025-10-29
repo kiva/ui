@@ -1,7 +1,7 @@
 import { render } from '@testing-library/vue';
-import { TIP, WARNING, ERROR } from '#src/api/fixtures/FlashMessageTypeEnum';
-import TheTipMessage from '#src/components/WwwFrame/TheTipMessage';
-import CookieStore from '#src/util/cookieStore';
+import { TIP, WARNING, ERROR } from '../../../../../src/api/fixtures/FlashMessageTypeEnum';
+import TheTipMessage from '../../../../../src/components/WwwFrame/TheTipMessage';
+import CookieStore from '../../../../../src/util/cookieStore';
 
 function renderTipMessage(tipMessage, flashMessages) {
 	return render(TheTipMessage, {

@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvSectionModalLoader, { LOADING_LABEL } from '#src/components/Kv/KvSectionModalLoader';
+import KvSectionModalLoader, { LOADING_LABEL } from '../../../../../src/components/Kv/KvSectionModalLoader';
 
 describe('KvSectionModalLoader', () => {
 	it('should hide loader by default', () => {

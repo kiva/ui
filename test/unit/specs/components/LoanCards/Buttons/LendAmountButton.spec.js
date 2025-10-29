@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import LendAmountButton from '#src/components/LoanCards/Buttons/LendAmountButton';
+import LendAmountButton from '../../../../../../src/components/LoanCards/Buttons/LendAmountButton';
 import { globalOptions } from '../../../../specUtils';
 
 describe('LendAmountButton', () => {

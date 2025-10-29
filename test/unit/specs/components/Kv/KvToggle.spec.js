@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import KvToggle from '#src/components/Kv/KvToggle';
+import KvToggle from '../../../../../src/components/Kv/KvToggle';
 
 describe('KvToggle.vue', () => {
 	it('renders with required id prop', () => {

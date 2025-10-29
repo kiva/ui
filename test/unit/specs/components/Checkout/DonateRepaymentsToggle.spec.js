@@ -1,6 +1,6 @@
 import { render, waitFor } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import DonateRepaymentsToggle from '#src/components/Checkout/DonateRepaymentsToggle';
+import DonateRepaymentsToggle from '../../../../../src/components/Checkout/DonateRepaymentsToggle';
 
 // Mock @kiva/kv-components
 vi.mock('@kiva/kv-components', () => ({
@@ -24,38 +24,6 @@ vi.mock('@kiva/kv-components', () => ({
 		props: ['visible', 'title'],
 		emits: ['lightbox-closed']
 	}
-}));
-
-// Mock lodash
-vi.mock('lodash/get', () => ({
-	default: (obj, path) => {
-		const keys = path.split('.');
-		return keys.reduce((result, key) => result?.[key], obj);
-	}
-}));
-
-vi.mock('lodash/filter', () => ({
-	default: (arr, predicate) => arr.filter(item => {
-		if (typeof predicate === 'object') {
-			return Object.keys(predicate).every(key => item[key] === predicate[key]);
-		}
-		return predicate(item);
-	})
-}));
-
-vi.mock('lodash/forEach', () => ({
-	default: (collection, iteratee) => {
-		if (Array.isArray(collection)) {
-			collection.forEach(iteratee);
-		}
-	}
-}));
-
-// Mock numeral
-vi.mock('numeral', () => ({
-	default: value => ({
-		value: () => parseFloat(value) || 0
-	})
 }));
 
 // Mock GraphQL queries

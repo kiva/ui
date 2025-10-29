@@ -1,5 +1,5 @@
-import { handleApolloErrors, preFetchApolloQuery, preFetchAll } from '#src/util/apolloPreFetch';
-import logFormatter from '#src/util/logFormatter';
+import { handleApolloErrors, preFetchApolloQuery, preFetchAll } from '../../../../src/util/apolloPreFetch';
+import logFormatter from '../../../../src/util/logFormatter';
 
 vi.mock('#src/util/logFormatter', () => ({ default: vi.fn() }));
 

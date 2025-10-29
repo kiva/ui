@@ -1,4 +1,4 @@
-import routes from '#src/router/routes';
+import routes from '../../../../../src/router/routes';
 
 const beforeEnterGuard = routes.find(route => route.path === '/register/social').beforeEnter;
 

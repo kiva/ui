@@ -1,4 +1,4 @@
-import usingTouchResolver from '#src/api/localResolvers/usingTouch';
+import usingTouchResolver from '../../../../../src/api/localResolvers/usingTouch';
 
 describe('usingTouch.js', () => {
 	let resolver;

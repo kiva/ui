@@ -1,7 +1,7 @@
 import { render } from '@testing-library/vue';
-import TeamsMenu from '#src/components/WwwFrame/Header/TeamsMenu';
-import CookieStore from '#src/util/cookieStore';
-import { MockKvAuth0 } from '#src/util/KvAuth0';
+import TeamsMenu from '../../../../../src/components/WwwFrame/Header/TeamsMenu';
+import CookieStore from '../../../../../src/util/cookieStore';
+import { MockKvAuth0 } from '../../../../../src/util/KvAuth0';
 
 const user = {
 	my: {

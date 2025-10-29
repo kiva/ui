@@ -1,4 +1,4 @@
-import createSnowplowSessionLink from '#src/api/SnowplowSessionLink';
+import createSnowplowSessionLink from '../../../../src/api/SnowplowSessionLink';
 
 vi.mock('@apollo/client/link/context/index', () => ({
 	setContext: vi.fn(handler => ({ handler, contextHandler: handler }))

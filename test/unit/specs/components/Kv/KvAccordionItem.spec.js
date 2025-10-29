@@ -1,7 +1,7 @@
 import {
 	render, fireEvent
 } from '@testing-library/vue';
-import KvAccordionItem from '#src/components/Kv/KvAccordionItem';
+import KvAccordionItem from '../../../../../src/components/Kv/KvAccordionItem';
 
 describe('KvAccordionItem.vue', () => {
 	it('exports a valid Vue component', () => {

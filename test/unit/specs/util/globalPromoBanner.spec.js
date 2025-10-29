@@ -5,7 +5,7 @@ import {
 	activePromoBanner,
 	inactivePromoBanners,
 	globalBannerDenyList
-} from '#src/util/globalPromoBanner';
+} from '../../../../src/util/globalPromoBanner';
 import { add, sub } from 'date-fns';
 
 const oneYearAgo = sub(new Date(), { years: 1 }).toISOString();

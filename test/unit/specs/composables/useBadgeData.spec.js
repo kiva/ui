@@ -14,8 +14,8 @@ import useBadgeData, {
 	ID_2BB,
 	FILTERS,
 	CATEGORIES,
-} from '#src/composables/useBadgeData';
-import { defaultBadges } from '#src/util/achievementUtils';
+} from '../../../../src/composables/useBadgeData';
+import { defaultBadges } from '../../../../src/util/achievementUtils';
 import {
 	achievementData,
 	contentfulData,

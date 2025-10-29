@@ -1,7 +1,7 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import SearchBar from '#src/components/WwwFrame/SearchBar';
-import suggestionsQuery from '#src/graphql/query/loanSearchSuggestions.graphql';
+import SearchBar from '../../../../../src/components/WwwFrame/SearchBar';
+import suggestionsQuery from '../../../../../src/graphql/query/loanSearchSuggestions.graphql';
 import byTextContent from '../../../helpers/byTextContent';
 
 const suggestions = [

@@ -1,5 +1,5 @@
-import useTipMessage from '#src/composables/useTipMessage';
-import logFormatter from '#src/util/logFormatter';
+import useTipMessage from '../../../../src/composables/useTipMessage';
+import logFormatter from '../../../../src/util/logFormatter';
 
 vi.mock('#src/util/logFormatter');
 

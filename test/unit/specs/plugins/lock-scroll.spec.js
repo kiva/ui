@@ -1,4 +1,4 @@
-import lockScrollMixin from '#src/plugins/lock-scroll';
+import lockScrollMixin from '../../../../src/plugins/lock-scroll';
 
 describe('lock-scroll.js', () => {
 	let mockDocument;

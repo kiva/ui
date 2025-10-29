@@ -3,8 +3,8 @@ import {
 	getEnumNameFromQueryParam,
 	getBooleanValueFromQueryParam,
 	getMinMaxRangeFromQueryParam,
-} from '#src/util/loanSearch/queryParseUtils';
-import { createMinMaxRange } from '#src/util/loanSearch/minMaxRange';
+} from '../../../../../src/util/loanSearch/queryParseUtils';
+import { createMinMaxRange } from '../../../../../src/util/loanSearch/minMaxRange';
 import { mockAllFacets } from '../../../fixtures/mockLoanSearchData';
 
 describe('queryParseUtils.js', () => {

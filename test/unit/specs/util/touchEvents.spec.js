@@ -1,4 +1,4 @@
-import { onBodyTouchstart, offBodyTouchstart, isTargetElement } from '#src/util/touchEvents';
+import { onBodyTouchstart, offBodyTouchstart, isTargetElement } from '../../../../src/util/touchEvents';
 
 describe('touchEvents', () => {
 	let originalBody;

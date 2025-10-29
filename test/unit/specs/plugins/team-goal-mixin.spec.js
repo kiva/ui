@@ -1,4 +1,4 @@
-import teamGoalMixin from '#src/plugins/team-goal-mixin';
+import teamGoalMixin from '../../../../src/plugins/team-goal-mixin';
 
 describe('team-goal-mixin.js', () => {
 	let component;

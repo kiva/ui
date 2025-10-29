@@ -1,5 +1,5 @@
 import { defineAsyncComponent } from 'vue';
-import getDeepComponents from '#src/util/getDeepComponents';
+import getDeepComponents from '../../../../src/util/getDeepComponents';
 
 const ComponentA = { name: 'ComponentA' };
 

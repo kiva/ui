@@ -1,6 +1,6 @@
 import { render, waitFor } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import LoanPrice from '#src/components/Checkout/LoanPrice';
+import LoanPrice from '../../../../../src/components/Checkout/LoanPrice';
 
 // Mock @kiva/kv-components
 vi.mock('@kiva/kv-components', () => ({

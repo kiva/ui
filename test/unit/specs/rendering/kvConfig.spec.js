@@ -1,5 +1,5 @@
-import renderConfigGlobal from '#src/rendering/kvConfig';
-import renderGlobals from '#src/rendering/globals';
+import renderConfigGlobal from '../../../../src/rendering/kvConfig';
+import renderGlobals from '../../../../src/rendering/globals';
 
 vi.mock('#src/rendering/globals', () => ({
 	default: vi.fn().mockReturnValue('<script>window.__KV_CONFIG__ = {};</script>')

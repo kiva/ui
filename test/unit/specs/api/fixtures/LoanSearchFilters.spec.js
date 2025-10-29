@@ -3,7 +3,7 @@ import LoanSearchFilters, {
 	getInputFilters,
 	getSearchableFilters,
 	filtersAreEqual,
-} from '#src/api/fixtures/LoanSearchFilters';
+} from '../../../../../src/api/fixtures/LoanSearchFilters';
 
 describe('LoanSearchFilters.js', () => {
 	describe('LoanSearchFilters constructor', () => {

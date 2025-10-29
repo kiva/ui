@@ -1,4 +1,4 @@
-import apolloPlugin from '#src/plugins/apollo-plugin';
+import apolloPlugin from '../../../../src/plugins/apollo-plugin';
 
 describe('apollo-plugin', () => {
 	let app;

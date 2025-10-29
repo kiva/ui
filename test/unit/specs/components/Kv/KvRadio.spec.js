@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import KvRadio from '#src/components/Kv/KvRadio';
+import KvRadio from '../../../../../src/components/Kv/KvRadio';
 
 describe('KvRadio.vue', () => {
 	it('renders with required props', () => {

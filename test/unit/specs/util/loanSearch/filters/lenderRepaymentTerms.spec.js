@@ -6,9 +6,9 @@ import lenderRepaymentTerms, {
 	MORE_THAN_TWO_YEARS_KEY,
 	lenderRepaymentTermDisplayMap,
 	lenderRepaymentTermValueMap,
-} from '#src/util/loanSearch/filters/lenderRepaymentTerms';
-import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
-import { createMinMaxRange } from '#src/util/loanSearch/minMaxRange';
+} from '../../../../../../src/util/loanSearch/filters/lenderRepaymentTerms';
+import { FLSS_QUERY_TYPE } from '../../../../../../src/util/loanSearch/filterUtils';
+import { createMinMaxRange } from '../../../../../../src/util/loanSearch/minMaxRange';
 import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchData';
 
 describe('lenderRepaymentTerms.js', () => {

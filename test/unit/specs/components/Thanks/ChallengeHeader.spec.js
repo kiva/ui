@@ -1,4 +1,4 @@
-import ChallengeHeader from '#src/components/Thanks/ChallengeHeader';
+import ChallengeHeader from '../../../../../src/components/Thanks/ChallengeHeader';
 import { render } from '@testing-library/vue';
 import { globalOptions } from '../../../specUtils';
 

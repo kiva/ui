@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvProgressBar from '#src/components/Kv/KvProgressBar';
+import KvProgressBar from '../../../../../src/components/Kv/KvProgressBar';
 
 describe('KvProgressBar.vue', () => {
 	it('exports a valid Vue component', () => {

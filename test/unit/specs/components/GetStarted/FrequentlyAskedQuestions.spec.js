@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import FrequentlyAskedQuestions from '#src/components/GetStarted/FrequentlyAskedQuestions';
+import FrequentlyAskedQuestions from '../../../../../src/components/GetStarted/FrequentlyAskedQuestions';
 
 // Mock KvExpandableQuestion
 vi.mock('#src/components/Kv/KvExpandableQuestion', () => ({

@@ -1,5 +1,5 @@
 /* eslint-disable no-template-curly-in-string */
-import fillTemplate from '#src/rendering/fillTemplate';
+import fillTemplate from '../../../../src/rendering/fillTemplate';
 
 describe('fillTemplate', () => {
 	it('replaces a single variable in the template', () => {

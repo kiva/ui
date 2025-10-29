@@ -1,7 +1,7 @@
 import {
 	render, fireEvent
 } from '@testing-library/vue';
-import KvMultiCodeBlock from '#src/components/Kv/KvMultiCodeBlock';
+import KvMultiCodeBlock from '../../../../../src/components/Kv/KvMultiCodeBlock';
 
 describe('KvMultiCodeBlock.vue', () => {
 	const mockCode = [

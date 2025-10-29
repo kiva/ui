@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import ShareStepperStep from '#src/components/Thanks/ShareStepperStep';
+import ShareStepperStep from '../../../../../src/components/Thanks/ShareStepperStep';
 
 // Mock child components
 vi.mock('#src/components/Kv/KvIcon', () => ({

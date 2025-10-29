@@ -1,5 +1,5 @@
-import { setDonationAmount, setLendAmount } from '#src/util/basketUtils';
-import retryBasketMixin from '#src/plugins/retry-after-expired-basket-mixin';
+import { setDonationAmount, setLendAmount } from '../../../../src/util/basketUtils';
+import retryBasketMixin from '../../../../src/plugins/retry-after-expired-basket-mixin';
 
 // Mock the dependencies
 vi.mock('#src/util/basketUtils', () => ({

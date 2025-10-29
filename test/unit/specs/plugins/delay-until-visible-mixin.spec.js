@@ -1,5 +1,5 @@
-import delayUntilVisibleMixin from '#src/plugins/delay-until-visible-mixin';
-import * as observerUtils from '#src/util/observerUtils';
+import delayUntilVisibleMixin from '../../../../src/plugins/delay-until-visible-mixin';
+import * as observerUtils from '../../../../src/util/observerUtils';
 
 vi.mock('#src/util/observerUtils', () => ({
 	createIntersectionObserver: vi.fn()

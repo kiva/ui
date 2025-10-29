@@ -2,8 +2,8 @@ import regions, {
 	transformIsoCodes,
 	getCountryIsoCodesFromQueryParam,
 	getUpdatedRegions
-} from '#src/util/loanSearch/filters/regions';
-import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+} from '../../../../../../src/util/loanSearch/filters/regions';
+import { FLSS_QUERY_TYPE } from '../../../../../../src/util/loanSearch/filterUtils';
 import {
 	mockTransformedRegions,
 	mockAllFacets,

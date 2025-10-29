@@ -6,9 +6,9 @@ import {
 	checkGuestAssignmentCookie,
 	GUEST_ASSIGNMENT_COOKIE,
 	setMyKivaRedirectCookie,
-} from '#src/util/myKivaUtils';
-import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
-import logReadQueryError from '#src/util/logReadQueryError';
+} from '../../../../src/util/myKivaUtils';
+import postCheckoutAchievementsQuery from '../../../../src/graphql/query/postCheckoutAchievements.graphql';
+import logReadQueryError from '../../../../src/util/logReadQueryError';
 
 vi.mock('#src/util/logReadQueryError');
 

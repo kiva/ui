@@ -1,4 +1,4 @@
-import getMonthsCount from '#src/util/dateUtils';
+import getMonthsCount from '../../../../src/util/dateUtils';
 
 describe('dateUtils.js', () => {
 	const startTimestamp = 1674172800000; // Start subscription on Jan 20th

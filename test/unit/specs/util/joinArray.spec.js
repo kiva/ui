@@ -1,6 +1,6 @@
 import {
 	joinArray
-} from '#src/util/joinArray';
+} from '../../../../src/util/joinArray';
 
 const testArray = ['First Item', 'Second Item', 'Third Item', 'Fourth Item'];
 describe('joinArray.js', () => {

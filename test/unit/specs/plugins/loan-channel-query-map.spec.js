@@ -1,4 +1,4 @@
-import loanChannelQueryMapMixin from '#src/plugins/loan-channel-query-map';
+import loanChannelQueryMapMixin from '../../../../src/plugins/loan-channel-query-map';
 
 describe('loan-channel-query-map', () => {
 	describe('data', () => {

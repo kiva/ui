@@ -1,4 +1,4 @@
-import { getFullUrl, isCCPage, isExcludedUrl } from '#src/util/urlUtils';
+import { getFullUrl, isCCPage, isExcludedUrl } from '../../../../src/util/urlUtils';
 
 describe('urlUtils.js', () => {
 	describe('getFullUrl', () => {

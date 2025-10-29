@@ -1,6 +1,6 @@
-import partnerDefaultRate, { MIN, MAX } from '#src/util/loanSearch/filters/partnerDefaultRate';
-import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
-import { createMinMaxRange } from '#src/util/loanSearch/minMaxRange';
+import partnerDefaultRate, { MIN, MAX } from '../../../../../../src/util/loanSearch/filters/partnerDefaultRate';
+import { FLSS_QUERY_TYPE } from '../../../../../../src/util/loanSearch/filterUtils';
+import { createMinMaxRange } from '../../../../../../src/util/loanSearch/minMaxRange';
 import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchData';
 
 describe('partnerDefaultRate.js', () => {

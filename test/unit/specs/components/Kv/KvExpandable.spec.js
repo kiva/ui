@@ -1,7 +1,7 @@
 import {
 	render
 } from '@testing-library/vue';
-import KvExpandable from '#src/components/Kv/KvExpandable';
+import KvExpandable from '../../../../../src/components/Kv/KvExpandable';
 
 describe('KvExpandable.vue', () => {
 	it('exports a valid Vue component', () => {

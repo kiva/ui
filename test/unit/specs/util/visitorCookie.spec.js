@@ -1,4 +1,4 @@
-import setVisitorIdCookie from '#src/util/visitorCookie';
+import setVisitorIdCookie from '../../../../src/util/visitorCookie';
 
 // Mock uuid to return a predictable value
 const MOCK_UUID = 'mock-uuid-1234';

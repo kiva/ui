@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/vue';
-import braintreeDropinErrorMixin from '#src/plugins/braintree-dropin-error-mixin';
+import braintreeDropinErrorMixin from '../../../../src/plugins/braintree-dropin-error-mixin';
 
 vi.mock('@sentry/vue', () => ({
 	captureException: vi.fn()

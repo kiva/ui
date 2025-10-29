@@ -1,6 +1,6 @@
 import { setContext } from '@apollo/client/link/context/index';
-import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
-import createExperimentIdLink from '#src/api/ExperimentIdLink';
+import experimentVersionFragment from '../../../../src/graphql/fragments/experimentVersion.graphql';
+import createExperimentIdLink from '../../../../src/api/ExperimentIdLink';
 
 vi.mock('@apollo/client/link/context/index');
 

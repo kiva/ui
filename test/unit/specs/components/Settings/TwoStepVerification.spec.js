@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import { nextTick } from 'vue';
-import TwoStepVerification from '#src/components/Settings/TwoStepVerification';
+import TwoStepVerification from '../../../../../src/components/Settings/TwoStepVerification';
 
 let mockQuery;
 let mockShowTipMsg;

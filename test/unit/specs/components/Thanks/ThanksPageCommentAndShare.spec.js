@@ -1,5 +1,5 @@
 import { render, fireEvent } from '@testing-library/vue';
-import ThanksPageCommentAndShare from '#src/components/Thanks/ThanksPageCommentAndShare';
+import ThanksPageCommentAndShare from '../../../../../src/components/Thanks/ThanksPageCommentAndShare';
 
 // Mock dependencies
 vi.mock('#src/util/urlUtils', () => ({

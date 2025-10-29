@@ -1,6 +1,6 @@
-import { getIsMyKivaEnabled } from '#src/util/myKivaUtils';
-import { readBoolSetting } from '#src/util/settingsUtils';
-import myKivaHomepageMixin from '#src/plugins/my-kiva-homepage-mixin';
+import { getIsMyKivaEnabled } from '../../../../src/util/myKivaUtils';
+import { readBoolSetting } from '../../../../src/util/settingsUtils';
+import myKivaHomepageMixin from '../../../../src/plugins/my-kiva-homepage-mixin';
 
 vi.mock('#src/util/myKivaUtils', () => ({
 	getIsMyKivaEnabled: vi.fn(),

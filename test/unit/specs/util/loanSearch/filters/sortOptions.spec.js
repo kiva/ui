@@ -1,5 +1,5 @@
-import sortOptions, { visibleFLSSSortOptions, formatSortOptions } from '#src/util/loanSearch/filters/sortOptions';
-import { STANDARD_QUERY_TYPE, FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+import sortOptions, { visibleFLSSSortOptions, formatSortOptions } from '../../../../../../src/util/loanSearch/filters/sortOptions';
+import { STANDARD_QUERY_TYPE, FLSS_QUERY_TYPE } from '../../../../../../src/util/loanSearch/filterUtils';
 import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchData';
 
 describe('sortOptions.js', () => {

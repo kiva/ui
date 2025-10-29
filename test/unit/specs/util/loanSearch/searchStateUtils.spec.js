@@ -1,8 +1,8 @@
-import { updateSearchState, getValidatedSearchState, createSavedSearch } from '#src/util/loanSearch/searchStateUtils';
-import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
-import updateLoanSearchMutation from '#src/graphql/mutation/updateLoanSearchState.graphql';
-import createSavedSearchMutation from '#src/graphql/mutation/createSavedSearch.graphql';
-import filterConfig from '#src/util/loanSearch/filterConfig';
+import { updateSearchState, getValidatedSearchState, createSavedSearch } from '../../../../../src/util/loanSearch/searchStateUtils';
+import { FLSS_QUERY_TYPE } from '../../../../../src/util/loanSearch/filterUtils';
+import updateLoanSearchMutation from '../../../../../src/graphql/mutation/updateLoanSearchState.graphql';
+import createSavedSearchMutation from '../../../../../src/graphql/mutation/createSavedSearch.graphql';
+import filterConfig from '../../../../../src/util/loanSearch/filterConfig';
 import { mockAllFacets, savedSearchParams } from '../../../fixtures/mockLoanSearchData';
 
 vi.mock('#src/util/loanSearch/filterConfig', () => ({

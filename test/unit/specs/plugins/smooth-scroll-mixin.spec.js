@@ -1,4 +1,4 @@
-import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
+import smoothScrollMixin from '../../../../src/plugins/smooth-scroll-mixin';
 
 describe('smooth-scroll-mixin.js', () => {
 	let mockWindow;

@@ -1,5 +1,5 @@
-import partners, { transformPartners } from '#src/util/loanSearch/filters/partners';
-import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
+import partners, { transformPartners } from '../../../../../../src/util/loanSearch/filters/partners';
+import { FLSS_QUERY_TYPE } from '../../../../../../src/util/loanSearch/filterUtils';
 import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchData';
 
 describe('partners.js', () => {

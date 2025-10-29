@@ -1,4 +1,4 @@
-import { shouldShowAppInstallPrompt, renderAppInstallPrompt } from '#src/util/appInstallPrompt';
+import { shouldShowAppInstallPrompt, renderAppInstallPrompt } from '../../../../src/util/appInstallPrompt';
 
 describe('shouldShowAppInstallPrompt', () => {
 	const allowedRoutes = [

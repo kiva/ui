@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import LoanList from '#src/components/Portfolio/LoanList';
+import LoanList from '../../../../../src/components/Portfolio/LoanList';
 
 // Mock @kiva/kv-components
 vi.mock('@kiva/kv-components', () => ({

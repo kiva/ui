@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import SubscriptionsSettingsCards from '#src/components/Settings/SubscriptionsSettingsCards';
+import SubscriptionsSettingsCards from '../../../../../src/components/Settings/SubscriptionsSettingsCards';
 
 let mockMutate;
 let mockShowTipMsg;

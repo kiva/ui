@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
+import KvSettingsCard from '../../../../../src/components/Kv/KvSettingsCard';
 
 describe('KvSettingsCard.vue', () => {
 	it('exports a valid Vue component', () => {

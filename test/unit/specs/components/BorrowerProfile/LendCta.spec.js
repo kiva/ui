@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import LendCta from '#src/components/BorrowerProfile/LendCta';
+import LendCta from '../../../../../src/components/BorrowerProfile/LendCta';
 
 // Mock child components
 vi.mock('#src/components/BorrowerProfile/JumpLinks', () => ({

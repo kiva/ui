@@ -1,6 +1,6 @@
-import { readBoolSetting } from '#src/util/settingsUtils';
-import useMyKivaHome from '#src/composables/useMyKivaHome';
-import { getIsMyKivaEnabled } from '#src/util/myKivaUtils';
+import { readBoolSetting } from '../../../../src/util/settingsUtils';
+import useMyKivaHome from '../../../../src/composables/useMyKivaHome';
+import { getIsMyKivaEnabled } from '../../../../src/util/myKivaUtils';
 import { render, waitFor } from '@testing-library/vue';
 
 // Mock the dependencies

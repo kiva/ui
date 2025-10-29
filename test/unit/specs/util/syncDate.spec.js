@@ -5,7 +5,7 @@ import {
 	reset,
 	setDelay,
 } from 'timesync';
-import syncDate from '#src/util/syncDate';
+import syncDate from '../../../../src/util/syncDate';
 
 vi.mock('timesync');
 

@@ -1,6 +1,6 @@
 // @vitest-environment node
-import useCDNHeaders, { getCDNHelper } from '#src/composables/useCDNHeaders';
-import CDNHelper from '#src/util/CDNHelper';
+import useCDNHeaders, { getCDNHelper } from '../../../../src/composables/useCDNHeaders';
+import CDNHelper from '../../../../src/util/CDNHelper';
 
 describe('useCDNHeaders (server-side)', () => {
 	afterEach(() => {

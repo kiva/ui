@@ -1,7 +1,7 @@
 import * as mockTrace from '#server/util/mockTrace';
 import createMiddleware from '#server/vue-middleware';
 import * as vueRender from '#server/vue-render';
-import { HOME_PAGE_EXPERIMENT_HEADER } from '#src/util/experiment/fastlyExperimentUtils';
+import { HOME_PAGE_EXPERIMENT_HEADER } from '../../../../src/util/experiment/fastlyExperimentUtils';
 
 describe('vue-middleware.js', () => {
 	let req; let res; let next; let config; let vite; let middleware;

@@ -8,13 +8,13 @@ import {
 	getCachedLoanChannel,
 	watchLoanChannel,
 	fetchRecommendedLoans,
-} from '#src/util/flssUtils';
-import flssLoanQuery from '#src/graphql/query/flssLoansQuery.graphql';
-import flssLoanFacetsQuery from '#src/graphql/query/flssLoanFacetsQuery.graphql';
-import flssLoanChannelQuery from '#src/graphql/query/flssLoanChannel.graphql';
-import categoryListFlssQuery from '#src/graphql/query/loanFinding/categoryListFlss.graphql';
-import filterConfig from '#src/util/loanSearch/filterConfig';
-import loanRecommendationsQuery from '#src/graphql/query/loanRecommendationsQuery.graphql';
+} from '../../../../src/util/flssUtils';
+import flssLoanQuery from '../../../../src/graphql/query/flssLoansQuery.graphql';
+import flssLoanFacetsQuery from '../../../../src/graphql/query/flssLoanFacetsQuery.graphql';
+import flssLoanChannelQuery from '../../../../src/graphql/query/flssLoanChannel.graphql';
+import categoryListFlssQuery from '../../../../src/graphql/query/loanFinding/categoryListFlss.graphql';
+import filterConfig from '../../../../src/util/loanSearch/filterConfig';
+import loanRecommendationsQuery from '../../../../src/graphql/query/loanRecommendationsQuery.graphql';
 
 vi.mock('#src/util/loanSearch/filterConfig', () => ({
 	default: {

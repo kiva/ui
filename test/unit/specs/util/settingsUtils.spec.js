@@ -1,6 +1,6 @@
 import {
 	readJSONSetting, hashCode, readBoolSetting, readDateSetting
-} from '#src/util/settingsUtils';
+} from '../../../../src/util/settingsUtils';
 
 describe('settingsUtils.js', () => {
 	describe('readJSONSetting', () => {

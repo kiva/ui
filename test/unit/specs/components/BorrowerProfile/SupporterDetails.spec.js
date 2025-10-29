@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/vue';
-import SupporterDetails from '#src/components/BorrowerProfile/SupporterDetails';
+import SupporterDetails from '../../../../../src/components/BorrowerProfile/SupporterDetails';
 
 // Mock child components
 vi.mock('#src/components/BorrowerProfile/BorrowerImage', () => ({
@@ -105,7 +105,7 @@ describe('SupporterDetails.vue', () => {
 	});
 
 	describe('Computed Properties', () => {
-		describe('borrowerImageAspect', () => {
+		describe('	', () => {
 			it('returns 1 when not mobile', () => {
 				const { container } = render(SupporterDetails, {
 					props: {

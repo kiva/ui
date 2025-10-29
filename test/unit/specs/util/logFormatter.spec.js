@@ -1,4 +1,4 @@
-import logFormatter from '#src/util/logFormatter';
+import logFormatter from '../../../../src/util/logFormatter';
 
 describe('logFormatter.js', () => {
 	let consoleSpy;

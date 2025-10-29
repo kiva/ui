@@ -3,7 +3,7 @@ import LoanSearchCriteria, {
 	getInputCriteria,
 	getSearchableCriteria,
 	criteriaAreEqual,
-} from '#src/api/fixtures/LoanSearchCriteria';
+} from '../../../../../src/api/fixtures/LoanSearchCriteria';
 
 describe('LoanSearchCriteria.js', () => {
 	describe('LoanSearchCriteria constructor', () => {

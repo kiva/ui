@@ -1,4 +1,4 @@
-import KvAuth0, { KIVA_ID_KEY, LAST_LOGIN_KEY, USED_MFA_KEY } from '#src/util/KvAuth0';
+import KvAuth0, { KIVA_ID_KEY, LAST_LOGIN_KEY, USED_MFA_KEY } from '../../../../src/util/KvAuth0';
 
 function getKvAuth0WithFACookie(cookieValue, checkFakeAuth = true, domain = 'login.dev.kiva.org') {
 	return new KvAuth0({

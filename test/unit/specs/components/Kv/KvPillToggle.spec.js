@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import KvPillToggle from '#src/components/Kv/KvPillToggle';
+import KvPillToggle from '../../../../../src/components/Kv/KvPillToggle';
 
 describe('KvPillToggle.vue', () => {
 	const defaultOptions = [

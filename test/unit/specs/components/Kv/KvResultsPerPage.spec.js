@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import KvResultsPerPage, { defaultOptions } from '#src/components/Kv/KvResultsPerPage';
+import KvResultsPerPage, { defaultOptions } from '../../../../../src/components/Kv/KvResultsPerPage';
 
 global.scrollTo = vi.fn();
 

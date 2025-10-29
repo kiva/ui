@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/vue';
-import LoanFilterBar from '#src/components/Portfolio/LoanFilterBar';
+import LoanFilterBar from '../../../../../src/components/Portfolio/LoanFilterBar';
 
 // Mock @kiva/kv-components
 vi.mock('@kiva/kv-components', () => ({

@@ -1,4 +1,4 @@
-import renderDocumentCookies from '#src/rendering/documentCookies';
+import renderDocumentCookies from '../../../../src/rendering/documentCookies';
 
 describe('renderDocumentCookies', () => {
 	it('renders a script tag with document.cookie assignments', () => {

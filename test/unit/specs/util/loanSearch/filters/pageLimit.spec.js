@@ -1,6 +1,6 @@
-import pageLimit from '#src/util/loanSearch/filters/pageLimit';
-import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
-import { getDefaultLoanSearchState } from '#src/api/localResolvers/loanSearch';
+import pageLimit from '../../../../../../src/util/loanSearch/filters/pageLimit';
+import { FLSS_QUERY_TYPE } from '../../../../../../src/util/loanSearch/filterUtils';
+import { getDefaultLoanSearchState } from '../../../../../../src/api/localResolvers/loanSearch';
 import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchData';
 
 describe('pageLimit.js', () => {

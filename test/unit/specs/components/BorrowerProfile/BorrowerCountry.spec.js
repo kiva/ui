@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import BorrowerCountry from '#src/components/BorrowerProfile/BorrowerCountry';
+import BorrowerCountry from '../../../../../src/components/BorrowerProfile/BorrowerCountry';
 
 // Mock components
 vi.mock('@kiva/kv-components', () => ({

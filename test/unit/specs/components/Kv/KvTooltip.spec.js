@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvTooltip from '#src/components/Kv/KvTooltip';
+import KvTooltip from '../../../../../src/components/Kv/KvTooltip';
 
 // Mock @kiva/kv-tokens
 vi.mock('@kiva/kv-tokens', async importOriginal => {

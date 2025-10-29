@@ -1,4 +1,4 @@
-import basketModalMixin from '#src/plugins/basket-modal-mixin';
+import basketModalMixin from '../../../../src/plugins/basket-modal-mixin';
 
 describe('basket-modal-mixin.js', () => {
 	describe('data', () => {

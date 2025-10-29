@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/vue';
-import UpdateDetails from '#src/components/BorrowerProfile/UpdateDetails';
+import UpdateDetails from '../../../../../src/components/BorrowerProfile/UpdateDetails';
 
 // Mock DOMPurify
 vi.mock('dompurify', () => ({

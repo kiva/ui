@@ -1,4 +1,4 @@
-import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
+import addToBasketExpMixin from '../../../../src/plugins/add-to-basket-exp-mixin';
 
 vi.mock('#src/util/logReadQueryError', () => ({
 	default: vi.fn()

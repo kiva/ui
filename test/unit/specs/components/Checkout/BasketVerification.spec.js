@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import BasketVerification from '#src/components/Checkout/BasketVerification';
+import BasketVerification from '../../../../../src/components/Checkout/BasketVerification';
 
 const global = {
 	provide: {

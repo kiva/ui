@@ -1,4 +1,4 @@
-import tipMessagePlugin from '#src/plugins/tip-message-plugin';
+import tipMessagePlugin from '../../../../src/plugins/tip-message-plugin';
 
 vi.mock('#src/util/injectionCheck', () => ({
 	default: vi.fn()

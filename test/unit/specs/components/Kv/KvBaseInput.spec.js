@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvBaseInput from '#src/components/Kv/KvBaseInput';
+import KvBaseInput from '../../../../../src/components/Kv/KvBaseInput';
 
 describe('KvBaseInput.vue', () => {
 	describe('text input type', () => {

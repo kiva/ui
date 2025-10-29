@@ -1,4 +1,4 @@
-import socialSharingMixin from '#src/plugins/social-sharing-mixin';
+import socialSharingMixin from '../../../../src/plugins/social-sharing-mixin';
 
 vi.mock('#src/util/urlUtils', () => ({
 	getFullUrl: vi.fn()

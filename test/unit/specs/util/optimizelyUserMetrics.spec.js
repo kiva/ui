@@ -8,8 +8,8 @@ import {
 	buildUserDataGlobal,
 	hasLentBeforeCookie,
 	hasDepositBeforeCookie,
-} from '#src/util/optimizelyUserMetrics';
-import thanksPageQuery from '#src/graphql/query/thanksPage.graphql';
+} from '../../../../src/util/optimizelyUserMetrics';
+import thanksPageQuery from '../../../../src/graphql/query/thanksPage.graphql';
 
 describe('optimizelyUserMetrics', () => {
 	afterEach(() => {

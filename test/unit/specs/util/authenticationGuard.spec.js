@@ -1,4 +1,4 @@
-import { authenticationGuard, checkLastLoginTime } from '#src/util/authenticationGuard';
+import { authenticationGuard, checkLastLoginTime } from '../../../../src/util/authenticationGuard';
 
 vi.mock('@sentry/vue', () => ({
 	withScope: vi.fn(),

@@ -1,4 +1,4 @@
-import activities from '#src/util/loanSearch/filters/activities';
+import activities from '../../../../../../src/util/loanSearch/filters/activities';
 
 describe('activities.js', () => {
 	describe('activities', () => {

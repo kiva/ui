@@ -1,5 +1,5 @@
-import setBasketCookie from '#src/util/basketCookie';
-import { createNewBasket, hasBasketExpired } from '#src/util/basketUtils';
+import setBasketCookie from '../../../../src/util/basketCookie';
+import { createNewBasket, hasBasketExpired } from '../../../../src/util/basketUtils';
 
 vi.mock('#src/util/basketUtils', () => ({
 	createNewBasket: vi.fn(),

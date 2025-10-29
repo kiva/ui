@@ -1,5 +1,5 @@
-import CookieStore from '#src/util/cookieStore';
-import parseGACookie from '#src/util/parseGACookie';
+import CookieStore from '../../../../src/util/cookieStore';
+import parseGACookie from '../../../../src/util/parseGACookie';
 
 describe('parseGACookie.js', () => {
 	it('returns the campaign, campaign content, gclid, medium, and source from the GA cookie', () => {

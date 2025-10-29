@@ -1,4 +1,4 @@
-import loanCallouts from '#src/util/loanCallouts';
+import loanCallouts from '../../../../src/util/loanCallouts';
 import mockLoanData from '../../fixtures/mockLoanData';
 
 const loan = {

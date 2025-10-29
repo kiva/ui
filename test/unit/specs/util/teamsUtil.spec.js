@@ -4,7 +4,7 @@ import {
 	fetchTeams,
 	fetchLeaderboard,
 	fetchGoals,
-} from '#src/util/teamsUtil';
+} from '../../../../src/util/teamsUtil';
 
 describe('teamsUtil.js', () => {
 	describe('teamCategories', () => {

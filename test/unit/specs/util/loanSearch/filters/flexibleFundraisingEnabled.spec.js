@@ -5,7 +5,7 @@ import flexibleFundraisingEnabled, {
 	valueMap,
 	facetsKey,
 	typeName,
-} from '#src/util/loanSearch/filters/flexibleFundraisingEnabled';
+} from '../../../../../../src/util/loanSearch/filters/flexibleFundraisingEnabled';
 
 describe('flexibleFundraisingEnabled.js', () => {
 	describe('default', () => {

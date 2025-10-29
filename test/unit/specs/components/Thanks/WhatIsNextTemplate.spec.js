@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/vue';
-import WhatIsNextTemplate from '#src/components/Thanks/WhatIsNextTemplate';
+import WhatIsNextTemplate from '../../../../../src/components/Thanks/WhatIsNextTemplate';
 
 // Mock confetti
 vi.mock('canvas-confetti', () => ({

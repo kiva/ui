@@ -1,4 +1,4 @@
-import { expand, collapse } from '#src/util/expander';
+import { expand, collapse } from '../../../../src/util/expander';
 
 describe('expander.js', () => {
 	let mockElement;

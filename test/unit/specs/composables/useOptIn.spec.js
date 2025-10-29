@@ -1,5 +1,5 @@
-import useOptIn from '#src/composables/useOptIn';
-import logReadQueryError from '#src/util/logReadQueryError';
+import useOptIn from '../../../../src/composables/useOptIn';
+import logReadQueryError from '../../../../src/util/logReadQueryError';
 
 vi.mock('#src/util/logReadQueryError');
 

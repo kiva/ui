@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import HowKivaUsesDonation from '#src/components/Checkout/HowKivaUsesDonation';
+import HowKivaUsesDonation from '../../../../../src/components/Checkout/HowKivaUsesDonation';
 
 // Mock SVG imports
 vi.mock('#src/assets/images/support.svg?url', () => ({ default: '/mock-support.svg' }));

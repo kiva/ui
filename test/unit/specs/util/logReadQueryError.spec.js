@@ -1,5 +1,5 @@
-import logReadQueryError from '#src/util/logReadQueryError';
-import logFormatter from '#src/util/logFormatter';
+import logReadQueryError from '../../../../src/util/logReadQueryError';
+import logFormatter from '../../../../src/util/logFormatter';
 
 vi.mock('#src/util/logFormatter', () => ({
 	default: vi.fn()

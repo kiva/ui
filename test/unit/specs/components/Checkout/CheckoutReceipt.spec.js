@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import CheckoutReceipt from '#src/components/Checkout/CheckoutReceipt';
+import CheckoutReceipt from '../../../../../src/components/Checkout/CheckoutReceipt';
 
 // Mock child components
 const KvIcon = {

@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import KvPagination from '#src/components/Kv/KvPagination';
+import KvPagination from '../../../../../src/components/Kv/KvPagination';
 
 global.scrollTo = vi.fn();
 

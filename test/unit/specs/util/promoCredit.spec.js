@@ -1,4 +1,4 @@
-import { isFromImpactDashboard, bonusBalance, hasPromoSession } from '#src/util/promoCredit';
+import { isFromImpactDashboard, bonusBalance, hasPromoSession } from '../../../../src/util/promoCredit';
 
 describe('promoCredit', () => {
 	describe('isFromImpactDashboard', () => {

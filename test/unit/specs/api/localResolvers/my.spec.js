@@ -1,6 +1,6 @@
-import myResolverFactory from '#src/api/localResolvers/my';
-import CookieStore from '#src/util/cookieStore';
-import { MockKvAuth0 } from '#src/util/KvAuth0';
+import myResolverFactory from '../../../../../src/api/localResolvers/my';
+import CookieStore from '../../../../../src/util/cookieStore';
+import { MockKvAuth0 } from '../../../../../src/util/KvAuth0';
 import clearDocumentCookies from '../../../setup/clearDocumentCookies';
 
 describe('my.js', () => {

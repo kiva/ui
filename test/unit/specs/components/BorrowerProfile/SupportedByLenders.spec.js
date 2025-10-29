@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/vue';
-import SupportedByLenders from '#src/components/BorrowerProfile/SupportedByLenders';
+import SupportedByLenders from '../../../../../src/components/BorrowerProfile/SupportedByLenders';
 
 const participants = {
 	values: [

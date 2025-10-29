@@ -1,5 +1,5 @@
 import { setContext } from '@apollo/client/link/context/index';
-import createAuth0Link from '#src/api/Auth0Link';
+import createAuth0Link from '../../../../src/api/Auth0Link';
 
 vi.mock('@apollo/client/link/context/index');
 

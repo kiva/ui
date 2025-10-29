@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/vue';
-import AddToBasketInterstitial from '#src/components/Lightboxes/AddToBasketInterstitial';
+import AddToBasketInterstitial from '../../../../../src/components/Lightboxes/AddToBasketInterstitial';
 
 // Mock store2
 vi.mock('store2', () => ({

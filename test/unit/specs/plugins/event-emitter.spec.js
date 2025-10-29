@@ -1,4 +1,4 @@
-import emitter from '#src/plugins/event-emitter';
+import emitter from '../../../../src/plugins/event-emitter';
 
 describe('event-emitter.js', () => {
 	it('should export a mitt emitter instance', () => {

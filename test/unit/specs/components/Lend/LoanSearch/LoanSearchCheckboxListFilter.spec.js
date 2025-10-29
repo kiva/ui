@@ -1,7 +1,7 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import LoanSearchCheckboxListFilter from '#src/components/Lend/LoanSearch/LoanSearchCheckboxListFilter';
-import { getCheckboxLabel } from '#src/util/loanSearch/filterUtils';
+import LoanSearchCheckboxListFilter from '../../../../../../src/components/Lend/LoanSearch/LoanSearchCheckboxListFilter';
+import { getCheckboxLabel } from '../../../../../../src/util/loanSearch/filterUtils';
 import { globalOptions } from '../../../../specUtils';
 
 const getOptions = disabled => [...Array(4)].map((_c, i) => ({

@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvHamburgerIcon from '#src/components/Kv/KvHamburgerIcon';
+import KvHamburgerIcon from '../../../../../src/components/Kv/KvHamburgerIcon';
 
 describe('KvHamburgerIcon.vue', () => {
 	it('renders three layer elements', () => {

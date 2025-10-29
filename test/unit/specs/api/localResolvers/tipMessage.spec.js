@@ -1,4 +1,4 @@
-import tipMessageResolver from '#src/api/localResolvers/tipMessage';
+import tipMessageResolver from '../../../../../src/api/localResolvers/tipMessage';
 
 describe('tipMessage.js', () => {
 	let resolver;

@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import KvIconButton from '#src/components/Kv/KvIconButton';
+import KvIconButton from '../../../../../src/components/Kv/KvIconButton';
 
 describe('KvIconButton.vue', () => {
 	it('renders with default slot content', () => {

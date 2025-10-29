@@ -1,6 +1,6 @@
-import CDNHelper from '#src/util/CDNHelper';
-import { getCDNHelper } from '#src/composables/useCDNHeaders';
-import getCDNHeaders from '#src/rendering/cdnHeaders';
+import CDNHelper from '../../../../src/util/CDNHelper';
+import { getCDNHelper } from '../../../../src/composables/useCDNHeaders';
+import getCDNHeaders from '../../../../src/rendering/cdnHeaders';
 
 // Helper to mock getCDNHelper
 vi.mock('#src/composables/useCDNHeaders', { spy: true });
