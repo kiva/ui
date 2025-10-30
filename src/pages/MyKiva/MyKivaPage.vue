@@ -14,6 +14,7 @@
 			:enable-ai-loan-pills="enableAILoanPills"
 			:my-giving-funds="myGivingFunds"
 			:sidesheet-loan="sidesheetLoan"
+			:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 		/>
 	</www-page>
 </template>
@@ -31,6 +32,10 @@ import { gql } from 'graphql-tag';
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import myGivingFundsQuery from '#src/graphql/query/portfolio/myGivingFunds.graphql';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import { initializeExperiment } from '#src/util/experiment/experimentUtils';
+
+const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -58,6 +63,7 @@ export default {
 			userLentToAllRegions: false,
 			myGivingFunds: {},
 			sidesheetLoan: {},
+			isNextStepsExpEnabled: undefined,
 		};
 	},
 	apollo: {
@@ -79,6 +85,10 @@ export default {
 				client.query({
 					query: contentfulEntriesQuery,
 					variables: { contentType: 'challenge', limit: 200 }
+				}),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: NEXT_STEPS_EXP_KEY },
 				}),
 			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
@@ -180,6 +190,18 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'MyKivaPage created');
 		}
+
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			NEXT_STEPS_EXP_KEY,
+			async version => {
+				this.isNextStepsExpEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-1984-Sept2025',
+		);
 	},
 	mounted() {
 		try {

@@ -39,8 +39,7 @@ function getGoalDisplayName(category) {
  * @param {Object} options.apollo - Apollo client instance (optional, will use inject if not provided)
  * @returns Goal data and utilities
  */
-export default function useGoalData({ loans, apollo: apolloParam }) {
-	const apollo = apolloParam || inject('apollo');
+export default function useGoalData({ apollo }) {
 	const $kvTrackEvent = inject('$kvTrackEvent');
 
 	const allTimeProgress = ref([]);
@@ -63,16 +62,15 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 		}
 	}
 
-	async function loadProgress(fetchPolicy = 'cache-first') {
+	async function loadProgress(loans) {
 		try {
 			const loanIds = loans.map(loan => loan.id);
 			const response = await apollo.query({
 				query: useGoalDataProgressQuery,
 				variables: { loanIds },
-				fetchPolicy
+				fetchPolicy: 'cache-first',
 			});
-			allTimeProgress.value = response?.data?.postCheckoutAchievements?.allTimeProgress || [];
-			return true;
+			return response?.data?.postCheckoutAchievements?.allTimeProgress || [];
 		} catch (error) {
 			logFormatter(error, 'Failed to load progress');
 			return null;
@@ -101,6 +99,7 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 
 	const goalProgress = computed(() => {
 		if (userGoal.value?.category === ID_SUPPORT_ALL) return totalLoanCount.value || 0;
+
 		const totalProgress = allTimeProgress.value.find(
 			entry => entry.achievementId === userGoal.value?.category
 		)?.totalProgress || 0;
@@ -130,10 +129,18 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 		}
 	};
 
-	async function loadGoalData() {
+	const getProgressByLoan = async loan => {
+		const result = await loadProgress([loan]);
+		const totalProgress = result.find(
+			entry => entry.achievementId === userGoal.value?.category
+		)?.totalProgress || 0;
+		return totalProgress;
+	};
+
+	async function loadGoalData(loans = []) {
 		loading.value = true;
 		const parsedPrefs = await loadPreferences();
-		await loadProgress();
+		allTimeProgress.value = await loadProgress(loans);
 		setGoalState(parsedPrefs);
 		loading.value = false;
 	}
@@ -148,5 +155,6 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 		userGoalAchieved,
 		userGoalAchievedNow,
 		checkCompletedGoal,
+		getProgressByLoan,
 	};
 }
