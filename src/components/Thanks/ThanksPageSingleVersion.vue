@@ -211,7 +211,7 @@ const showGoalCompletedModule = computed(() => {
 	return props.isNextStepsExpEnabled && (!goalDataInitialized.value || goalDataLoading.value || userGoalAchievedNow.value);
 });
 const showJourneyModule = computed(() => {
-	if (props.achievementsCompleted) return false;
+	if (props.achievementsCompleted || (props.isNextStepsExpEnabled && !goalDataInitialized.value)) return false;
 	// If experiment enabled, wait for initialization and loading to complete
 	if (props.isNextStepsExpEnabled) return goalDataInitialized.value && !goalDataLoading.value && !userGoalAchievedNow.value;
 	// If experiment disabled, show journey module immediately
