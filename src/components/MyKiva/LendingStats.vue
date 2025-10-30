@@ -239,7 +239,6 @@ export default {
 			default: false
 		},
 	},
-	emits: ['store-goals-preferences'],
 	data() {
 		return {
 			mdiArrowTopRight,

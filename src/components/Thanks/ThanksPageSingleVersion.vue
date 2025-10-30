@@ -167,6 +167,10 @@ const {
 	loading: goalDataLoading,
 } = useGoalData({ apollo });
 
+// Initialize goalDataInitialized to track if we've loaded goal data
+// This prevents flash of journey module before loading completes
+const goalDataInitialized = ref(false);
+
 const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));
 
 // Guests and transactions without loans should see the fallback equity version of the badge module
@@ -200,8 +204,20 @@ const hasTeamAttributedPartnerLoan = computed(
 const showOptInModule = computed(() => !props.isOptedIn);
 const showKivaCardsModule = computed(() => !!printableKivaCards.value.length);
 const showBadgeModule = computed(() => (numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value));
-const showGoalCompletedModule = computed(() => props.isNextStepsExpEnabled && (goalDataLoading.value || userGoalAchievedNow.value));
-const showJourneyModule = computed(() => !props.achievementsCompleted && (!props.isNextStepsExpEnabled || (!goalDataLoading.value && !userGoalAchievedNow.value)));
+const showGoalCompletedModule = computed(() => {
+	// Show goal module when experiment is enabled AND either:
+	// - We haven't initialized yet (show loader)
+	// - We're still loading (show loader)
+	// - User achieved their goal (show completion)
+	return props.isNextStepsExpEnabled && (!goalDataInitialized.value || goalDataLoading.value || userGoalAchievedNow.value);
+});
+const showJourneyModule = computed(() => {
+	if (props.achievementsCompleted || (props.isNextStepsExpEnabled && !goalDataInitialized.value)) return false;
+	// If experiment enabled, wait for initialization and loading to complete
+	if (props.isNextStepsExpEnabled) return goalDataInitialized.value && !goalDataLoading.value && !userGoalAchievedNow.value;
+	// If experiment disabled, show journey module immediately
+	return true;
+});
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
 /* eslint-enable max-len */
 
@@ -252,6 +268,7 @@ onMounted(async () => {
 	if (props.isNextStepsExpEnabled) {
 		await loadGoalData(props.loans);
 		await checkCompletedGoal();
+		goalDataInitialized.value = true;
 	}
 	showConfetti();
 	const isOptInLoan = showOptInModule.value && props.loans.length > 0;
