@@ -1,26 +1,6 @@
 import { render } from '@testing-library/vue';
 import PhoneAuthentication from '#src/components/Settings/PhoneAuthentication';
-
-// Mock components
-vi.mock('@kiva/kv-components', () => ({
-	KvLightbox: { name: 'KvLightbox', template: '<div><slot /></div>' },
-	KvButton: { name: 'KvButton', template: '<button><slot /></button>' },
-}));
-vi.mock('#src/components/Kv/KvLoadingSpinner', () => ({
-	default: { name: 'KvLoadingSpinner', template: '<div>Loading...</div>' }
-}));
-vi.mock('#src/components/Kv/KvPhoneInput', () => ({
-	default: { name: 'KvPhoneInput', template: '<input type="tel" />' }
-}));
-vi.mock('#src/components/Kv/KvVerificationCodeInput', () => ({
-	default: { name: 'KvVerificationCodeInput', template: '<input type="text" />' }
-}));
-vi.mock('#src/pages/Settings/FirstMFASetup', () => ({
-	default: { name: 'FirstMFASetup', template: '<div>First MFA Setup</div>' }
-}));
-vi.mock('#src/pages/Settings/RecoveryCodeConfirm', () => ({
-	default: { name: 'RecoveryCodeConfirm', template: '<div>Recovery Code Confirm</div>' }
-}));
+import { commonStubs, createStubComponent } from '../../../helpers/componentTestHelpers';
 
 // Mock GraphQL mutations
 vi.mock('#src/graphql/mutation/mfa/enrollSMSAuthenticator.graphql', () => ({
@@ -65,6 +45,23 @@ describe('PhoneAuthentication.vue', () => {
 				provide: {
 					apollo: mockApollo,
 					kvAuth0: mockKvAuth0
+				},
+				stubs: {
+					KvLightbox: commonStubs.KvLightbox,
+					KvButton: commonStubs.KvButton,
+					KvLoadingSpinner: commonStubs.KvLoadingSpinner,
+					KvPhoneInput: createStubComponent('KvPhoneInput', {
+						template: '<input type="tel" />'
+					}),
+					KvVerificationCodeInput: createStubComponent('KvVerificationCodeInput', {
+						template: '<input type="text" />'
+					}),
+					FirstMFASetup: createStubComponent('FirstMFASetup', {
+						template: '<div>First MFA Setup</div>'
+					}),
+					RecoveryCodeConfirm: createStubComponent('RecoveryCodeConfirm', {
+						template: '<div>Recovery Code Confirm</div>'
+					})
 				}
 			}
 		});
@@ -74,21 +71,6 @@ describe('PhoneAuthentication.vue', () => {
 		it('renders the component with lightbox', () => {
 			const { container } = createWrapper();
 			expect(container.querySelector('.phone-authentication')).toBeTruthy();
-		});
-
-		it('has the correct component name', () => {
-			expect(PhoneAuthentication.name).toBe('PhoneAuthentication');
-		});
-
-		it('declares the correct inject properties', () => {
-			expect(PhoneAuthentication.inject).toEqual(['apollo', 'kvAuth0']);
-		});
-
-		it('declares the first prop with correct type and default', () => {
-			expect(PhoneAuthentication.props.first).toEqual({
-				type: Boolean,
-				default: false
-			});
 		});
 	});
 

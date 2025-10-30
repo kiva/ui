@@ -1,27 +1,10 @@
 import { render, waitFor } from '@testing-library/vue';
 import LoanSpotlight from '#src/components/Categories/LoanSpotlight';
+import { commonStubs, createStubComponent } from '../../../helpers/componentTestHelpers';
 
 // Mock toParagraphs utility
 vi.mock('#src/util/loanUtils', () => ({
 	toParagraphs: vi.fn(text => [text])
-}));
-
-// Mock KvResponsiveImage
-vi.mock('#src/components/Kv/KvResponsiveImage', () => ({
-	default: {
-		name: 'KvResponsiveImage',
-		template: '<img :alt="alt" />',
-		props: ['images', 'loading', 'alt']
-	}
-}));
-
-// Mock KvLoadingParagraph
-vi.mock('#src/components/Kv/KvLoadingParagraph', () => ({
-	default: {
-		name: 'KvLoadingParagraph',
-		template: '<div class="loading-paragraph"></div>',
-		props: ['style']
-	}
 }));
 
 // Mock KvButton and KvLoadingPlaceholder from @kiva/kv-components
@@ -90,19 +73,24 @@ describe('LoanSpotlight', () => {
 				fallbackCategorySlug: 'women',
 				...props
 			},
-			global: {
-				provide: {
-					apollo: apolloOverride || mockApollo,
-					cookieStore: mockCookieStore
-				},
-				directives: {
-					kvTrackEvent: mockKvTrackEvent
-				}
+		global: {
+			provide: {
+				apollo: apolloOverride || mockApollo,
+				cookieStore: mockCookieStore
+			},
+			directives: {
+				kvTrackEvent: mockKvTrackEvent
+			},
+			stubs: {
+				KvResponsiveImage: commonStubs.KvResponsiveImage,
+				KvLoadingParagraph: createStubComponent('KvLoadingParagraph', {
+					template: '<div class="loading-paragraph"></div>',
+					props: ['style']
+				})
 			}
-		});
-	};
-
-	it('should have the correct component name', () => {
+		}
+	});
+	};	it('should have the correct component name', () => {
 		expect(LoanSpotlight.name).toBe('LoanSpotlight');
 	});
 

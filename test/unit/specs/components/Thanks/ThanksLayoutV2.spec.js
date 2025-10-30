@@ -1,33 +1,8 @@
 import { render, fireEvent } from '@testing-library/vue';
 import ThanksLayoutV2 from '#src/components/Thanks/ThanksLayoutV2';
+import { commonStubs, createStubComponent } from '../../../helpers/componentTestHelpers';
 
-// Mock child components
-vi.mock('#src/components/Kv/KvIconButton', () => ({
-	default: {
-		name: 'KvIconButton',
-		template: `<button class="mock-kv-icon-button" :class="$attrs.class" @click="$emit('click')">
-			<slot name="icon-left" /><slot /><slot name="icon-right" />
-		</button>`,
-		props: ['aria-controls', 'aria-expanded']
-	}
-}));
-
-vi.mock('#src/components/Kv/KvIcon', () => ({
-	default: {
-		name: 'KvIcon',
-		template: '<span class="mock-kv-icon"><slot /></span>',
-		props: ['name', 'class', 'fromSprite']
-	}
-}));
-
-vi.mock('#src/components/Kv/KvExpandable', () => ({
-	default: {
-		name: 'KvExpandable',
-		template: '<div class="mock-kv-expandable"><slot /></div>'
-	}
-}));
-
-// Mock lodash throttle
+// Mock lodash throttle - keep this as it's a utility, not a component
 vi.mock('lodash/throttle', () => ({
 	default: vi.fn(fn => fn)
 }));
@@ -47,6 +22,16 @@ const renderComponent = (props = {}, slots = {}) => {
 		global: {
 			mocks: {
 				$kvTrackEvent: mockKvTrackEvent
+			},
+			stubs: {
+				KvIconButton: createStubComponent('KvIconButton', {
+					template: `<button :class="$attrs.class" @click="$emit('click')">
+						<slot name="icon-left" /><slot /><slot name="icon-right" />
+					</button>`,
+					props: ['aria-controls', 'aria-expanded']
+				}),
+				KvIcon: commonStubs.KvIcon,
+				KvExpandable: commonStubs.KvExpandable
 			}
 		}
 	});

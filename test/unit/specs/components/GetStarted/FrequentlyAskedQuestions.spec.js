@@ -1,14 +1,6 @@
 import { render } from '@testing-library/vue';
 import FrequentlyAskedQuestions from '#src/components/GetStarted/FrequentlyAskedQuestions';
-
-// Mock KvExpandableQuestion
-vi.mock('#src/components/Kv/KvExpandableQuestion', () => ({
-	default: {
-		name: 'KvExpandableQuestion',
-		props: ['title', 'content', 'id', 'analyticsCategory', 'class'],
-		template: '<div class="kv-expandable-question" :id="id"><h4>{{ title }}</h4><div v-html="content"></div></div>'
-	}
-}));
+import { createStubComponent } from '../../../helpers/componentTestHelpers';
 
 describe('FrequentlyAskedQuestions', () => {
 	const renderComponent = () => {
@@ -18,15 +10,19 @@ describe('FrequentlyAskedQuestions', () => {
 					$filters: {
 						changeCase: str => str.toLowerCase().replace(/\s+/g, '-')
 					}
+				},
+				stubs: {
+					KvExpandableQuestion: createStubComponent('KvExpandableQuestion', {
+						props: ['title', 'content', 'id', 'analyticsCategory', 'class'],
+						template: `<div class="kv-expandable-question" :id="id">
+							<h4>{{ title }}</h4>
+							<div v-html="content"></div>
+						</div>`
+					})
 				}
 			}
 		});
 	};
-
-	// Component structure tests
-	it('should have the correct component name', () => {
-		expect(FrequentlyAskedQuestions.name).toBe('FrequentlyAskedQuestions');
-	});
 
 	it('should render wrapper with correct classes and id', () => {
 		const { container } = renderComponent();

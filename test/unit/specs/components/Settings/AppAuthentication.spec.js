@@ -1,30 +1,15 @@
 import { render } from '@testing-library/vue';
 import AppAuthentication from '#src/components/Settings/AppAuthentication';
+import {
+	commonStubs,
+	createStubComponent,
+	createMockApollo,
+	createMockKvAuth0,
+	createMockRouter,
+	testComponentStructure
+} from '../../../helpers/componentTestHelpers';
 
-// Mock components
-vi.mock('@kiva/kv-components', () => ({
-	KvButton: { name: 'KvButton', template: '<button><slot /></button>' }
-}));
-vi.mock('#src/components/Kv/KvLightbox', () => ({
-	default: { name: 'KvLightbox', template: '<div><slot /></div>' }
-}));
-vi.mock('#src/components/Kv/KvLoadingSpinner', () => ({
-	default: { name: 'KvLoadingSpinner', template: '<div>Loading...</div>' }
-}));
-vi.mock('#src/components/Kv/KvVerificationCodeInput', () => ({
-	default: { name: 'KvVerificationCodeInput', template: '<input type="text" />' }
-}));
-vi.mock('#src/pages/Settings/FirstMFASetup', () => ({
-	default: { name: 'FirstMFASetup', template: '<div>First MFA Setup</div>' }
-}));
-vi.mock('#src/pages/Settings/RecoveryCodeConfirm', () => ({
-	default: { name: 'RecoveryCodeConfirm', template: '<div>Recovery Code Confirm</div>' }
-}));
-vi.mock('qrcode.vue', () => ({
-	default: { name: 'VueQrcode', template: '<div>QR Code</div>' }
-}));
-
-// Mock GraphQL mutations
+// Mock GraphQL mutations - these are imports, not components, so vi.mock is appropriate here
 vi.mock('#src/graphql/mutation/mfa/enrollOTPAuthenticator.graphql', () => ({
 	default: 'enrollOTPAuthenticatorMutation'
 }));
@@ -38,17 +23,9 @@ describe('AppAuthentication.vue', () => {
 	let mockRouter;
 
 	beforeEach(() => {
-		mockApollo = {
-			mutate: vi.fn()
-		};
-		mockKvAuth0 = {
-			enabled: true,
-			checkSession: vi.fn(() => Promise.resolve()),
-			getMfaManagementToken: vi.fn(() => Promise.resolve('mock-token'))
-		};
-		mockRouter = {
-			push: vi.fn()
-		};
+		mockApollo = createMockApollo();
+		mockKvAuth0 = createMockKvAuth0();
+		mockRouter = createMockRouter();
 	});
 
 	const createWrapper = (props = {}) => {
@@ -61,23 +38,47 @@ describe('AppAuthentication.vue', () => {
 				provide: {
 					apollo: mockApollo,
 					kvAuth0: mockKvAuth0
+				},
+				stubs: {
+					KvButton: commonStubs.KvButton,
+					KvLightbox: commonStubs.KvLightbox,
+					KvLoadingSpinner: commonStubs.KvLoadingSpinner,
+					KvVerificationCodeInput: createStubComponent('KvVerificationCodeInput', {
+						template: '<input type="text" />'
+					}),
+					FirstMFASetup: createStubComponent('FirstMFASetup', {
+						template: '<div>First MFA Setup</div>'
+					}),
+					RecoveryCodeConfirm: createStubComponent('RecoveryCodeConfirm', {
+						template: '<div>Recovery Code Confirm</div>'
+					}),
+					VueQrcode: createStubComponent('VueQrcode', {
+						template: '<div>QR Code</div>'
+					})
 				}
 			}
 		});
 	};
 
+	// Consolidated structure tests
+	testComponentStructure(AppAuthentication, {
+		name: 'AppAuthentication',
+		inject: ['apollo', 'kvAuth0'],
+		components: [
+			'FirstMFASetup',
+			'KvButton',
+			'KvLightbox',
+			'KvLoadingSpinner',
+			'KvVerificationCodeInput',
+			'RecoveryCodeConfirm',
+			'VueQrcode'
+		]
+	});
+
 	describe('Component Structure', () => {
 		it('renders the component', () => {
 			const { container } = createWrapper();
 			expect(container.querySelector('.app-authentication')).toBeTruthy();
-		});
-
-		it('has the correct component name', () => {
-			expect(AppAuthentication.name).toBe('AppAuthentication');
-		});
-
-		it('declares the correct inject properties', () => {
-			expect(AppAuthentication.inject).toEqual(['apollo', 'kvAuth0']);
 		});
 
 		it('declares the first prop with correct type and default', () => {

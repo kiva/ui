@@ -1,13 +1,6 @@
 import { render } from '@testing-library/vue';
 import GuestUpsell from '#src/components/Checkout/GuestUpsell';
-
-// Mock GuestAccountCreation component
-vi.mock('#src/components/Forms/GuestAccountCreation', () => ({
-	default: {
-		name: 'GuestAccountCreation',
-		template: '<div data-testid="mock-guest-account-creation">Guest Account Creation</div>'
-	}
-}));
+import { createStubComponent } from '../../../helpers/componentTestHelpers';
 
 describe('GuestUpsell.vue', () => {
 	const mockKvTrackEvent = vi.fn();
@@ -24,6 +17,11 @@ describe('GuestUpsell.vue', () => {
 			global: {
 				mocks: {
 					$kvTrackEvent: mockKvTrackEvent
+				},
+				stubs: {
+					GuestAccountCreation: createStubComponent('GuestAccountCreation', {
+						template: '<div data-testid="mock-guest-account-creation">Guest Account Creation</div>'
+					})
 				}
 			}
 		});

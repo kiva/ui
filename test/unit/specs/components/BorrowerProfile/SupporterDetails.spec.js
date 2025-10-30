@@ -1,22 +1,6 @@
 import { render, waitFor } from '@testing-library/vue';
 import SupporterDetails from '#src/components/BorrowerProfile/SupporterDetails';
-
-// Mock child components
-vi.mock('#src/components/BorrowerProfile/BorrowerImage', () => ({
-	default: {
-		name: 'BorrowerImage',
-		template: '<img data-testid="borrower-image" />',
-		props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
-	}
-}));
-
-vi.mock('#src/components/Kv/KvTooltip', () => ({
-	default: {
-		name: 'KvTooltip',
-		template: '<div data-testid="kv-tooltip"><slot /></div>',
-		props: ['controller', 'theme']
-	}
-}));
+import { commonStubs, createStubComponent } from '../../../helpers/componentTestHelpers';
 
 // Mock SVG import
 vi.mock('#src/assets/images/kiva_k.svg?url', () => ({
@@ -115,6 +99,11 @@ describe('SupporterDetails.vue', () => {
 					},
 					global: {
 						stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -144,6 +133,11 @@ describe('SupporterDetails.vue', () => {
 					},
 					global: {
 						stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -171,6 +165,11 @@ describe('SupporterDetails.vue', () => {
 					},
 					global: {
 						stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -194,6 +193,11 @@ describe('SupporterDetails.vue', () => {
 					},
 					global: {
 						stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -218,6 +222,11 @@ describe('SupporterDetails.vue', () => {
 					},
 					global: {
 						stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -240,6 +249,11 @@ describe('SupporterDetails.vue', () => {
 					},
 					global: {
 						stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -265,6 +279,11 @@ describe('SupporterDetails.vue', () => {
 					},
 					global: {
 						stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -288,6 +307,11 @@ describe('SupporterDetails.vue', () => {
 					},
 					global: {
 						stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -311,6 +335,11 @@ describe('SupporterDetails.vue', () => {
 					},
 					global: {
 						stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -342,6 +371,11 @@ describe('SupporterDetails.vue', () => {
 					},
 					global: {
 						stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -372,6 +406,11 @@ describe('SupporterDetails.vue', () => {
 					},
 					global: {
 						stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -402,6 +441,11 @@ describe('SupporterDetails.vue', () => {
 					},
 					global: {
 						stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -430,6 +474,11 @@ describe('SupporterDetails.vue', () => {
 					},
 					global: {
 						stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -454,6 +503,11 @@ describe('SupporterDetails.vue', () => {
 					},
 					global: {
 						stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -480,6 +534,11 @@ describe('SupporterDetails.vue', () => {
 				},
 				global: {
 					stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 						'router-link': {
 							template: '<a><slot /></a>',
 							props: ['to']
@@ -502,6 +561,11 @@ describe('SupporterDetails.vue', () => {
 				},
 				global: {
 					stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 						'router-link': {
 							template: '<a><slot /></a>',
 							props: ['to']
@@ -524,6 +588,11 @@ describe('SupporterDetails.vue', () => {
 				},
 				global: {
 					stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 						'router-link': {
 							template: '<a><slot /></a>',
 							props: ['to']
@@ -548,6 +617,11 @@ describe('SupporterDetails.vue', () => {
 				},
 				global: {
 					stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 						'router-link': {
 							template: '<a><slot /></a>',
 							props: ['to']
@@ -571,6 +645,11 @@ describe('SupporterDetails.vue', () => {
 				},
 				global: {
 					stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 						'router-link': {
 							template: '<a><slot /></a>',
 							props: ['to']
@@ -600,6 +679,11 @@ describe('SupporterDetails.vue', () => {
 				},
 				global: {
 					stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 						'router-link': {
 							template: '<a><slot /></a>',
 							props: ['to']
@@ -638,6 +722,11 @@ describe('SupporterDetails.vue', () => {
 				},
 				global: {
 					stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 						'router-link': {
 							template: '<a><slot /></a>',
 							props: ['to']
@@ -664,6 +753,11 @@ describe('SupporterDetails.vue', () => {
 				},
 				global: {
 					stubs: {
+						BorrowerImage: createStubComponent('BorrowerImage', {
+							template: '<img data-testid="borrower-image" />',
+							props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+						}),
+						KvTooltip: commonStubs.KvTooltip,
 						'router-link': {
 							template: '<a><slot /></a>',
 							props: ['to']

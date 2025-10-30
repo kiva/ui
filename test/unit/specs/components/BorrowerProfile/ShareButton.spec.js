@@ -1,41 +1,41 @@
 import { render, waitFor } from '@testing-library/vue';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
-
-// Mock child components
-vi.mock('#src/components/Kv/KvSocialShareButton', () => ({
-	default: {
-		name: 'KvSocialShareButton',
-		template: '<div data-testid="social-share-button"><slot name="modal-content" /></div>',
-		props: [
-			'modalTitle',
-			'shareMessage',
-			'shareUrl',
-			'variant',
-			'utmCampaign',
-			'utmContent',
-			'openLightbox',
-			'loanId',
-			'trackingCategory'
-		]
-	}
-}));
-
-vi.mock('@kiva/kv-components', () => ({
-	KvMaterialIcon: {
-		name: 'KvMaterialIcon',
-		template: '<span></span>',
-		props: ['icon']
-	}
-}));
+import { createStubComponent } from '../../../helpers/componentTestHelpers';
 
 // Mock graphql-tag
-vi.mock('graphql-tag', () => ({
-	gql: vi.fn(strings => strings[0])
-}));
+vi.mock('graphql-tag', () => {
+	const mockGql = vi.fn(strings => strings[0]);
+	return {
+		default: mockGql,
+		gql: mockGql
+	};
+});
 
 describe('ShareButton.vue', () => {
 	let mockApollo;
 	let mockRoute;
+
+	// Shared stubs for all tests
+	const componentStubs = {
+		KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+			template: '<div data-testid="social-share-button"><slot name="modal-content" /></div>',
+			props: [
+				'modalTitle',
+				'shareMessage',
+				'shareUrl',
+				'variant',
+				'utmCampaign',
+				'utmContent',
+				'openLightbox',
+				'loanId',
+				'trackingCategory'
+			]
+		}),
+		KvMaterialIcon: createStubComponent('KvMaterialIcon', {
+			template: '<span></span>',
+			props: ['icon']
+		})
+	};
 
 	beforeEach(() => {
 		mockApollo = {
@@ -112,11 +112,6 @@ describe('ShareButton.vue', () => {
 				}
 			});
 		});
-
-		it('registers the expected components', () => {
-			expect(ShareButton.components).toHaveProperty('KvSocialShareButton');
-			expect(ShareButton.components).toHaveProperty('KvMaterialIcon');
-		});
 	});
 
 	describe('Initial State', () => {
@@ -138,6 +133,7 @@ describe('ShareButton.vue', () => {
 					campaign: 'test-campaign'
 				},
 				global: {
+					stubs: componentStubs,
 					provide: {
 						apollo: mockApollo,
 						cookieStore: {}
@@ -170,6 +166,7 @@ describe('ShareButton.vue', () => {
 					campaign: 'test-campaign'
 				},
 				global: {
+					stubs: componentStubs,
 					provide: {
 						apollo: mockApollo,
 						cookieStore: {}
@@ -200,6 +197,7 @@ describe('ShareButton.vue', () => {
 						pfpMinLenders: 10
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -227,6 +225,7 @@ describe('ShareButton.vue', () => {
 						pfpMinLenders: 0
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -259,6 +258,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -284,6 +284,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -316,6 +317,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -341,6 +343,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -375,6 +378,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -402,6 +406,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -434,6 +439,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -466,6 +472,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -496,6 +503,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -521,6 +529,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -549,6 +558,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -575,6 +585,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -604,6 +615,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -629,6 +641,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -657,6 +670,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -682,6 +696,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -711,6 +726,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -737,6 +753,7 @@ describe('ShareButton.vue', () => {
 						openLightbox: true
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -762,6 +779,7 @@ describe('ShareButton.vue', () => {
 						campaign: 'test-campaign'
 					},
 					global: {
+						stubs: componentStubs,
 						provide: {
 							apollo: mockApollo,
 							cookieStore: {}
@@ -804,6 +822,7 @@ describe('ShareButton.vue', () => {
 					campaign: 'test-campaign'
 				},
 				global: {
+					stubs: componentStubs,
 					provide: {
 						apollo: mockApollo,
 						cookieStore: {}
@@ -827,6 +846,7 @@ describe('ShareButton.vue', () => {
 					campaign: 'test-campaign'
 				},
 				global: {
+					stubs: componentStubs,
 					provide: {
 						apollo: mockApollo,
 						cookieStore: {}
@@ -851,6 +871,7 @@ describe('ShareButton.vue', () => {
 					isPortfolio: true
 				},
 				global: {
+					stubs: componentStubs,
 					provide: {
 						apollo: mockApollo,
 						cookieStore: {}

@@ -26,38 +26,6 @@ vi.mock('@kiva/kv-components', () => ({
 	}
 }));
 
-// Mock lodash
-vi.mock('lodash/get', () => ({
-	default: (obj, path) => {
-		const keys = path.split('.');
-		return keys.reduce((result, key) => result?.[key], obj);
-	}
-}));
-
-vi.mock('lodash/filter', () => ({
-	default: (arr, predicate) => arr.filter(item => {
-		if (typeof predicate === 'object') {
-			return Object.keys(predicate).every(key => item[key] === predicate[key]);
-		}
-		return predicate(item);
-	})
-}));
-
-vi.mock('lodash/forEach', () => ({
-	default: (collection, iteratee) => {
-		if (Array.isArray(collection)) {
-			collection.forEach(iteratee);
-		}
-	}
-}));
-
-// Mock numeral
-vi.mock('numeral', () => ({
-	default: value => ({
-		value: () => parseFloat(value) || 0
-	})
-}));
-
 // Mock GraphQL queries
 vi.mock('#src/graphql/query/checkout/initializeCheckout.graphql', () => ({
 	default: 'initializeCheckoutQuery'

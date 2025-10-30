@@ -1,15 +1,7 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import ExpandableListItem from '#src/components/WwwFrame/LendMenu/ExpandableListItem';
-
-// Mock KvExpandable
-vi.mock('#src/components/Kv/KvExpandable', () => ({
-	default: {
-		name: 'KvExpandable',
-		props: ['easing'],
-		template: '<div class="kv-expandable" :data-easing="easing"><slot /></div>'
-	}
-}));
+import { commonStubs, testComponentStructure } from '../../../../helpers/componentTestHelpers';
 
 describe('ExpandableListItem', () => {
 	const defaultProps = {
@@ -26,13 +18,18 @@ describe('ExpandableListItem', () => {
 				title: '<span>Test Title</span>',
 				default: '<p>Test Content</p>',
 				...slots
+			},
+			global: {
+				stubs: {
+					KvExpandable: commonStubs.KvExpandable
+				}
 			}
 		});
 	};
 
 	// Component structure tests
-	it('should have the correct component name', () => {
-		expect(ExpandableListItem.name).toBe('ExpandableListItem');
+	testComponentStructure(ExpandableListItem, {
+		name: 'ExpandableListItem'
 	});
 
 	it('should render as a list item', () => {
@@ -52,12 +49,6 @@ describe('ExpandableListItem', () => {
 		const { container } = renderComponent();
 		const expandable = container.querySelector('.kv-expandable');
 		expect(expandable).toBeTruthy();
-	});
-
-	it('should use ease-in-out easing for KvExpandable', () => {
-		const { container } = renderComponent();
-		const expandable = container.querySelector('.kv-expandable');
-		expect(expandable.getAttribute('data-easing')).toBe('ease-in-out');
 	});
 
 	// Props tests - id

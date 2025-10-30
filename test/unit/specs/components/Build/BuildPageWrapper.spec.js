@@ -1,33 +1,23 @@
 import { render } from '@testing-library/vue';
 import BuildPageWrapper from '#src/components/Build/BuildPageWrapper';
-
-// Mock KvDefaultWrapper
-vi.mock('#src/components/Kv/KvDefaultWrapper', () => ({
-	default: {
-		name: 'KvDefaultWrapper',
-		template: '<div class="kv-default-wrapper"><slot /></div>'
-	}
-}));
-
-// Mock @kiva/kv-components
-vi.mock('@kiva/kv-components', () => ({
-	KvGrid: {
-		name: 'KvGrid',
-		template: '<div class="kv-grid"><slot /></div>'
-	}
-}));
+import { createStubComponent } from '../../../helpers/componentTestHelpers';
 
 describe('BuildPageWrapper', () => {
 	const renderComponent = (options = {}) => {
 		return render(BuildPageWrapper, {
-			...options
+			...options,
+			global: {
+				stubs: {
+					KvDefaultWrapper: createStubComponent('KvDefaultWrapper', {
+						template: '<div class="kv-default-wrapper"><slot /></div>'
+					}),
+					KvGrid: createStubComponent('KvGrid', {
+						template: '<div class="kv-grid"><slot /></div>'
+					})
+				}
+			}
 		});
 	};
-
-	// Component structure tests
-	it('should have the correct component name', () => {
-		expect(BuildPageWrapper.name).toBe('BuildPageWrapper');
-	});
 
 	it('should render KvDefaultWrapper', () => {
 		const { container } = renderComponent();

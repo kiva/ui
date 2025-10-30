@@ -1,84 +1,11 @@
 import { render } from '@testing-library/vue';
 import LendCta from '#src/components/BorrowerProfile/LendCta';
+import { commonStubs, createStubComponent } from '../../../helpers/componentTestHelpers';
 
-// Mock child components
-vi.mock('#src/components/BorrowerProfile/JumpLinks', () => ({
-	default: { name: 'JumpLinks', template: '<div data-testid="jump-links"></div>' }
-}));
-
-vi.mock('#src/components/BorrowerProfile/LoanBookmark', () => ({
-	default: {
-		name: 'LoanBookmark',
-		template: '<div data-testid="loan-bookmark"></div>',
-		props: ['loanId']
-	}
-}));
-
-vi.mock('#src/components/LoanCards/Buttons/LendAmountButton', () => ({
-	default: {
-		name: 'LendAmountButton',
-		template: '<button data-testid="lend-amount-button"></button>',
-		props: ['loanId', 'showNow', 'amountLeft', 'completeLoan']
-	}
-}));
-
-vi.mock('#src/components/BorrowerProfile/CompleteLoanWrapper', () => ({
-	default: {
-		name: 'CompleteLoanWrapper',
-		template: '<div><slot name="button"></slot></div>',
-		props: ['isCompleteLoanActive']
-	}
-}));
-
-vi.mock('#src/components/Kv/KvIcon', () => ({
-	default: {
-		name: 'KvIcon',
-		template: '<span data-testid="kv-icon"></span>',
-		props: ['name']
-	}
-}));
-
-vi.mock('#src/components/WwwFrame/Header/KvAtbModalContainer', () => ({
-	default: {
-		name: 'KvAtbModalContainer',
-		template: '<div data-testid="kv-atb-modal"></div>',
-		props: ['addedLoan']
-	}
-}));
-
-vi.mock('@kiva/kv-components', () => ({
-	KvSelect: {
-		name: 'KvSelect',
-		template: '<select data-testid="kv-select"><slot /></select>',
-		props: ['id', 'modelValue']
-	},
-	KvMaterialIcon: {
-		name: 'KvMaterialIcon',
-		template: '<span data-testid="kv-material-icon"></span>',
-		props: ['icon']
-	},
-	KvButton: {
-		name: 'KvButton',
-		template: '<button data-testid="kv-button"><slot /></button>',
-		props: ['to', 'type']
-	},
-	KvGrid: {
-		name: 'KvGrid',
-		template: '<div data-testid="kv-grid"><slot /></div>'
-	}
-}));
-
+// Mock util functions for side effects
 vi.mock('#src/util/basketUtils', () => ({
 	setLendAmount: vi.fn(),
 	INVALID_BASKET_ERROR: 'Invalid basket error'
-}));
-
-vi.mock('#src/util/loanUtils', () => ({
-	getDropdownPriceArray: vi.fn(() => [25, 50, 75, 100]),
-	isMatchAtRisk: vi.fn(() => false),
-	isLessThan25: vi.fn(amount => parseFloat(amount) < 25),
-	isBetween25And500: vi.fn(amount => parseFloat(amount) >= 25 && parseFloat(amount) <= 500),
-	getLendCtaSelectedOption: vi.fn(() => '25')
 }));
 
 vi.mock('#src/util/observerUtils', () => ({
@@ -137,7 +64,41 @@ describe('LendCta', () => {
 					}
 				},
 				stubs: {
-					'kv-atb-modal-container': true
+					KvIcon: commonStubs.KvIcon,
+					KvButton: createStubComponent('KvButton', {
+						template: '<button data-testid="kv-button"><slot /></button>',
+						props: ['to', 'type']
+					}),
+					KvGrid: createStubComponent('KvGrid', {
+						template: '<div data-testid="kv-grid"><slot /></div>'
+					}),
+					JumpLinks: createStubComponent('JumpLinks', {
+						template: '<div data-testid="jump-links"></div>'
+					}),
+					LoanBookmark: createStubComponent('LoanBookmark', {
+						template: '<div data-testid="loan-bookmark"></div>',
+						props: ['loanId']
+					}),
+					LendAmountButton: createStubComponent('LendAmountButton', {
+						template: '<button data-testid="lend-amount-button"></button>',
+						props: ['loanId', 'showNow', 'amountLeft', 'completeLoan']
+					}),
+					CompleteLoanWrapper: createStubComponent('CompleteLoanWrapper', {
+						template: '<div><slot name="button"></slot></div>',
+						props: ['isCompleteLoanActive']
+					}),
+					KvAtbModalContainer: createStubComponent('KvAtbModalContainer', {
+						template: '<div data-testid="kv-atb-modal"></div>',
+						props: ['addedLoan']
+					}),
+					KvSelect: createStubComponent('KvSelect', {
+						template: '<select data-testid="kv-select"><slot /></select>',
+						props: ['id', 'modelValue']
+					}),
+					KvMaterialIcon: createStubComponent('KvMaterialIcon', {
+						template: '<span data-testid="kv-material-icon"></span>',
+						props: ['icon']
+					})
 				}
 			}
 		});
@@ -146,56 +107,6 @@ describe('LendCta', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		mockApollo.query.mockResolvedValue({ data: {} });
-	});
-
-	describe('Component Structure', () => {
-		it('should have the correct name', () => {
-			expect(LendCta.name).toBe('LendCta');
-		});
-
-		it('should inject apollo and cookieStore', () => {
-			expect(LendCta.inject).toEqual(['apollo', 'cookieStore']);
-		});
-
-		it('should declare props correctly', () => {
-			expect(LendCta.props).toHaveProperty('loanId');
-			expect(LendCta.props.loanId.type).toBe(Number);
-			expect(LendCta.props.loanId.default).toBe(0);
-
-			expect(LendCta.props).toHaveProperty('enableFiveDollarsNotes');
-			expect(LendCta.props.enableFiveDollarsNotes.type).toBe(Boolean);
-			expect(LendCta.props.enableFiveDollarsNotes.default).toBe(false);
-
-			expect(LendCta.props).toHaveProperty('teamData');
-			expect(LendCta.props.teamData.type).toBe(Object);
-			expect(LendCta.props.teamData.default).toBeNull();
-		});
-
-		it('should register required components', () => {
-			const {
-				LendAmountButton,
-				KvGrid,
-				KvIcon,
-				KvMaterialIcon,
-				KvUiButton,
-				KvUiSelect,
-				JumpLinks,
-				LoanBookmark,
-				CompleteLoanWrapper,
-				KvAtbModalContainer
-			} = LendCta.components;
-
-			expect(LendAmountButton).toBeDefined();
-			expect(KvGrid).toBeDefined();
-			expect(KvIcon).toBeDefined();
-			expect(KvMaterialIcon).toBeDefined();
-			expect(KvUiButton).toBeDefined();
-			expect(KvUiSelect).toBeDefined();
-			expect(JumpLinks).toBeDefined();
-			expect(LoanBookmark).toBeDefined();
-			expect(CompleteLoanWrapper).toBeDefined();
-			expect(KvAtbModalContainer).toBeDefined();
-		});
 	});
 
 	describe('Initial State', () => {

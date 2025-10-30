@@ -1,5 +1,6 @@
 import { render, waitFor } from '@testing-library/vue';
 import UpdateDetails from '#src/components/BorrowerProfile/UpdateDetails';
+import { createStubComponent } from '../../../helpers/componentTestHelpers';
 
 // Mock DOMPurify
 vi.mock('dompurify', () => ({
@@ -24,15 +25,6 @@ vi.mock('date-fns', () => ({
 		return 'January 15, 2024';
 	}),
 	parseISO: vi.fn(dateString => new Date(dateString))
-}));
-
-// Mock KvSocialShareButton
-vi.mock('#src/components/Kv/KvSocialShareButton', () => ({
-	default: {
-		name: 'KvSocialShareButton',
-		template: '<button data-testid="social-share-button"><slot /></button>',
-		props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
-	}
 }));
 
 describe('UpdateDetails.vue', () => {
@@ -94,6 +86,12 @@ describe('UpdateDetails.vue', () => {
 						subject: 'Update Subject'
 					},
 					global: {
+						stubs: {
+							KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+								template: '<button data-testid="social-share-button"><slot /></button>',
+								props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
+							})
+						},
 						mocks: {
 							$route: mockRoute
 						},
@@ -117,6 +115,12 @@ describe('UpdateDetails.vue', () => {
 						subject: 'Update Subject'
 					},
 					global: {
+						stubs: {
+							KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+								template: '<button data-testid="social-share-button"><slot /></button>',
+								props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
+							})
+						},
 						mocks: {
 							$route: mockRoute
 						},
@@ -140,6 +144,12 @@ describe('UpdateDetails.vue', () => {
 						subject: 'Update Subject'
 					},
 					global: {
+						stubs: {
+							KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+								template: '<button data-testid="social-share-button"><slot /></button>',
+								props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
+							})
+						},
 						mocks: {
 							$route: mockRoute
 						},
@@ -165,6 +175,12 @@ describe('UpdateDetails.vue', () => {
 						subject: 'Update Subject'
 					},
 					global: {
+						stubs: {
+							KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+								template: '<button data-testid="social-share-button"><slot /></button>',
+								props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
+							})
+						},
 						mocks: {
 							$route: mockRoute
 						},
@@ -191,6 +207,12 @@ describe('UpdateDetails.vue', () => {
 						subject: 'Update Subject'
 					},
 					global: {
+						stubs: {
+							KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+								template: '<button data-testid="social-share-button"><slot /></button>',
+								props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
+							})
+						},
 						mocks: {
 							$route: mockRoute
 						},
@@ -216,6 +238,12 @@ describe('UpdateDetails.vue', () => {
 						index: 1
 					},
 					global: {
+						stubs: {
+							KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+								template: '<button data-testid="social-share-button"><slot /></button>',
+								props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
+							})
+						},
 						mocks: {
 							$route: mockRoute
 						},
@@ -237,6 +265,12 @@ describe('UpdateDetails.vue', () => {
 						index: 1
 					},
 					global: {
+						stubs: {
+							KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+								template: '<button data-testid="social-share-button"><slot /></button>',
+								props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
+							})
+						},
 						mocks: {
 							$route: mockRoute
 						},
@@ -259,6 +293,12 @@ describe('UpdateDetails.vue', () => {
 						index: 1
 					},
 					global: {
+						stubs: {
+							KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+								template: '<button data-testid="social-share-button"><slot /></button>',
+								props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
+							})
+						},
 						mocks: {
 							$route: mockRoute
 						},
@@ -283,6 +323,12 @@ describe('UpdateDetails.vue', () => {
 					subject: 'Update Subject'
 				},
 				global: {
+					stubs: {
+						KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+							template: '<button data-testid="social-share-button"><slot /></button>',
+							props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
+						})
+					},
 					mocks: {
 						$route: mockRoute
 					},
@@ -318,6 +364,12 @@ describe('UpdateDetails.vue', () => {
 					index: 1
 				},
 				global: {
+					stubs: {
+						KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+							template: '<button data-testid="social-share-button"><slot /></button>',
+							props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
+						})
+					},
 					mocks: {
 						$route: mockRoute
 					},
@@ -342,6 +394,12 @@ describe('UpdateDetails.vue', () => {
 					index: 1
 				},
 				global: {
+					stubs: {
+						KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+							template: '<button data-testid="social-share-button"><slot /></button>',
+							props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
+						})
+					},
 					mocks: {
 						$route: mockRoute
 					},
@@ -364,6 +422,12 @@ describe('UpdateDetails.vue', () => {
 					index: 1
 				},
 				global: {
+					stubs: {
+						KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+							template: '<button data-testid="social-share-button"><slot /></button>',
+							props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
+						})
+					},
 					mocks: {
 						$route: mockRoute
 					},
@@ -385,6 +449,12 @@ describe('UpdateDetails.vue', () => {
 					index: 3
 				},
 				global: {
+					stubs: {
+						KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+							template: '<button data-testid="social-share-button"><slot /></button>',
+							props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
+						})
+					},
 					mocks: {
 						$route: mockRoute
 					},
@@ -406,6 +476,12 @@ describe('UpdateDetails.vue', () => {
 					index: 1
 				},
 				global: {
+					stubs: {
+						KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+							template: '<button data-testid="social-share-button"><slot /></button>',
+							props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
+						})
+					},
 					mocks: {
 						$route: mockRoute
 					},
@@ -427,6 +503,12 @@ describe('UpdateDetails.vue', () => {
 					index: 1
 				},
 				global: {
+					stubs: {
+						KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+							template: '<button data-testid="social-share-button"><slot /></button>',
+							props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
+						})
+					},
 					mocks: {
 						$route: mockRoute
 					},
@@ -449,6 +531,12 @@ describe('UpdateDetails.vue', () => {
 					index: 1
 				},
 				global: {
+					stubs: {
+						KvSocialShareButton: createStubComponent('KvSocialShareButton', {
+							template: '<button data-testid="social-share-button"><slot /></button>',
+							props: ['modalTitle', 'shareMessage', 'shareUrl', 'variant', 'utmCampaign']
+						})
+					},
 					mocks: {
 						$route: mockRoute
 					},

@@ -1,27 +1,10 @@
 import { render } from '@testing-library/vue';
 import MainCategoryTile from '#src/components/Categories/MainCategoryTile';
-
-// Mock KvResponsiveImage
-vi.mock('#src/components/Kv/KvResponsiveImage', () => ({
-	default: {
-		name: 'KvResponsiveImage',
-		template: '<img :alt="alt" />',
-		props: ['images', 'loading', 'alt']
-	}
-}));
-
-// Mock router
-const mockRouterLink = {
-	name: 'RouterLink',
-	template: '<a :href="to"><slot /></a>',
-	props: ['to']
-};
-
-// Mock tracking directive
-const mockKvTrackEvent = {
-	mounted: vi.fn(),
-	updated: vi.fn()
-};
+import {
+	commonStubs,
+	testComponentStructure,
+	testPropValidation
+} from '../../../helpers/componentTestHelpers';
 
 describe('MainCategoryTile', () => {
 	const renderComponent = (props = {}) => {
@@ -37,17 +20,25 @@ describe('MainCategoryTile', () => {
 			},
 			global: {
 				components: {
-					RouterLink: mockRouterLink
+					// RouterLink needed for navigation functionality
+					RouterLink: commonStubs.RouterLink
+				},
+				stubs: {
+					// KvResponsiveImage: complex responsive logic not needed for tile testing
+					KvResponsiveImage: commonStubs.KvResponsiveImage
 				},
 				directives: {
-					kvTrackEvent: mockKvTrackEvent
+					kvTrackEvent: {
+						mounted: vi.fn(),
+						updated: vi.fn()
+					}
 				}
 			}
 		});
 	};
 
-	it('should have the correct component name', () => {
-		expect(MainCategoryTile.name).toBe('MainCategoryTile');
+	testComponentStructure(MainCategoryTile, {
+		name: 'MainCategoryTile'
 	});
 
 	describe('tileSize prop', () => {
@@ -55,13 +46,12 @@ describe('MainCategoryTile', () => {
 			expect(MainCategoryTile.props.tileSize.default).toBe('small');
 		});
 
-		it('should validate tileSize prop', () => {
-			const { validator } = MainCategoryTile.props.tileSize;
-			expect(validator('small')).toBe(true);
-			expect(validator('medium')).toBe(true);
-			expect(validator('large')).toBe(true);
-			expect(validator('invalid')).toBe(false);
-		});
+		testPropValidation(
+			MainCategoryTile,
+			'tileSize',
+			['small', 'medium', 'large'],
+			['invalid', 'tiny', 'huge']
+		);
 	});
 
 	describe('large tile', () => {

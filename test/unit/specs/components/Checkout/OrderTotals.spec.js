@@ -1,5 +1,10 @@
 import { render } from '@testing-library/vue';
 import OrderTotals from '#src/components/Checkout/OrderTotals';
+import {
+	commonStubs,
+	createStubComponent,
+	testComponentStructure
+} from '../../../helpers/componentTestHelpers';
 
 const mockTotals = {
 	itemTotal: '100.00',
@@ -22,20 +27,40 @@ const global = {
 		$kvTrackEvent: vi.fn(),
 	},
 	stubs: {
-		KvTooltip: {
-			name: 'KvTooltip',
-			props: ['controller'],
-			template: '<div class="kv-tooltip"><slot /></div>',
-		},
-		DonationItem: {
-			name: 'DonationItem',
+		// Stub complex child components to isolate OrderTotals testing:
+		// - KvTooltip: has KvPopper/KvThemeProvider dependencies
+		// - DonationItem: 481-line complex component, not needed for OrderTotals logic
+		KvTooltip: commonStubs.KvTooltip,
+		DonationItem: createStubComponent('DonationItem', {
 			props: ['donation', 'orderTotalVariant', 'loanCount', 'loanReservationTotal'],
-			template: '<div class="donation-item"></div>',
-		},
+			template: '<div class="donation-item"></div>'
+		}),
 	},
 };
 
 describe('OrderTotals.vue', () => {
+	// Consolidated structure tests
+	testComponentStructure(OrderTotals, {
+		name: 'OrderTotals',
+		props: ['totals', 'promoFund', 'openLightbox'],
+		computed: [
+			'showRemoveKivaCredit',
+			'showApplyKivaCredit',
+			'showKivaCredit',
+			'kivaCredit',
+			'itemTotal',
+			'creditAmountNeeded',
+			'hasRedemptionCode',
+			'hasUPCCode',
+			'hasBonusCredit',
+			'showPromoCreditTotal'
+		],
+		data: {
+			promoOptOutLightboxVisible: false,
+			donateItemExperimentVersion: 'a'
+		}
+	});
+
 	it('renders order totals container', () => {
 		const { container } = render(OrderTotals, {
 			props: {
@@ -48,72 +73,6 @@ describe('OrderTotals.vue', () => {
 
 		const wrapper = container.querySelector('.tw-mb-1');
 		expect(wrapper).toBeTruthy();
-	});
-
-	it('has name property', () => {
-		expect(OrderTotals.name).toBe('OrderTotals');
-	});
-
-	it('accepts totals prop', () => {
-		expect(OrderTotals.props.totals).toBeDefined();
-		expect(OrderTotals.props.totals.type).toBe(Object);
-	});
-
-	it('accepts promoFund prop', () => {
-		expect(OrderTotals.props.promoFund).toBeDefined();
-		expect(OrderTotals.props.promoFund.type).toBe(Object);
-	});
-
-	it('accepts openLightbox prop', () => {
-		expect(OrderTotals.props.openLightbox).toBeDefined();
-		expect(OrderTotals.props.openLightbox.type).toBe(Function);
-	});
-
-	it('has data properties', () => {
-		const component = new OrderTotals.constructor();
-		const data = OrderTotals.data.call(component);
-		expect(data.promoOptOutLightboxVisible).toBe(false);
-		expect(data.donateItemExperimentVersion).toBe('a');
-	});
-
-	it('has showRemoveKivaCredit computed property', () => {
-		expect(OrderTotals.computed.showRemoveKivaCredit).toBeDefined();
-	});
-
-	it('has showApplyKivaCredit computed property', () => {
-		expect(OrderTotals.computed.showApplyKivaCredit).toBeDefined();
-	});
-
-	it('has showKivaCredit computed property', () => {
-		expect(OrderTotals.computed.showKivaCredit).toBeDefined();
-	});
-
-	it('has kivaCredit computed property', () => {
-		expect(OrderTotals.computed.kivaCredit).toBeDefined();
-	});
-
-	it('has itemTotal computed property', () => {
-		expect(OrderTotals.computed.itemTotal).toBeDefined();
-	});
-
-	it('has creditAmountNeeded computed property', () => {
-		expect(OrderTotals.computed.creditAmountNeeded).toBeDefined();
-	});
-
-	it('has hasRedemptionCode computed property', () => {
-		expect(OrderTotals.computed.hasRedemptionCode).toBeDefined();
-	});
-
-	it('has hasUPCCode computed property', () => {
-		expect(OrderTotals.computed.hasUPCCode).toBeDefined();
-	});
-
-	it('has hasBonusCredit computed property', () => {
-		expect(OrderTotals.computed.hasBonusCredit).toBeDefined();
-	});
-
-	it('has showPromoCreditTotal computed property', () => {
-		expect(OrderTotals.computed.showPromoCreditTotal).toBeDefined();
 	});
 
 	it('renders Order Total when promo credit is shown', () => {

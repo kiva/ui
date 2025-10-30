@@ -1,29 +1,8 @@
 import { render } from '@testing-library/vue';
 import LoanList from '#src/components/Portfolio/LoanList';
+import { commonStubs, createStubComponent, testComponentStructure } from '../../../helpers/componentTestHelpers';
 
-// Mock @kiva/kv-components
-vi.mock('@kiva/kv-components', () => ({
-	KvFlag: {
-		name: 'KvFlag',
-		template: '<span class="kv-flag"></span>',
-		props: ['country']
-	},
-	KvLoadingPlaceholder: {
-		name: 'KvLoadingPlaceholder',
-		template: '<div class="kv-loading-placeholder"></div>'
-	}
-}));
-
-// Mock PaidAmountModal
-vi.mock('#src/components/Portfolio/PaidAmountModal', () => ({
-	default: {
-		name: 'PaidAmountModal',
-		template: '<div class="paid-amount-modal">{{ amount }}</div>',
-		props: ['amount']
-	}
-}));
-
-// Mock loan status enums
+// Mock loan status enums - keep this as it's a data fixture, not a component
 vi.mock('#src/api/fixtures/LoanStatusEnum', () => ({
 	DEFAULTED: 'defaulted',
 	ENDED: 'ended',
@@ -102,16 +81,27 @@ describe('LoanList', () => {
 				},
 				directives: {
 					'kv-track-event': () => {}
+				},
+				stubs: {
+					KvFlag: createStubComponent('KvFlag', {
+						template: '<span class="kv-flag"></span>',
+						props: ['country']
+					}),
+					KvLoadingPlaceholder: commonStubs.KvLoadingPlaceholder,
+					PaidAmountModal: createStubComponent('PaidAmountModal', {
+						template: '<div class="paid-amount-modal">{{ amount }}</div>',
+						props: ['amount']
+					})
 				}
 			}
 		});
 	};
 
-	describe('Component Structure', () => {
-		it('should have the correct component name', () => {
-			expect(LoanList.name).toBe('LoanList');
-		});
+	testComponentStructure(LoanList, {
+		name: 'LoanList'
+	});
 
+	describe('Component Structure', () => {
 		it('should render table headers', () => {
 			const { container } = createComponent();
 			expect(container.textContent).toContain('Loan details');

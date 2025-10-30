@@ -1,38 +1,10 @@
 import { render, waitFor } from '@testing-library/vue';
 import PreviousLoanDescription from '#src/components/BorrowerProfile/PreviousLoanDescription';
-import * as loanUtils from '#src/util/loanUtils';
+import { commonStubs } from '../../../helpers/componentTestHelpers';
 
-// Mock child components
-vi.mock('@kiva/kv-components', () => ({
-	KvTextLink: {
-		name: 'KvTextLink',
-		template: '<a><slot /></a>'
-	},
-	KvMaterialIcon: {
-		name: 'KvMaterialIcon',
-		template: '<span></span>',
-		props: ['icon']
-	}
-}));
-
-vi.mock('#src/components/Kv/KvExpandable', () => ({
-	default: {
-		name: 'KvExpandable',
-		template: '<div><slot /></div>',
-		props: ['easing']
-	}
-}));
-
-// Mock loan utils
-vi.mock('#src/util/loanUtils', () => ({
-	toParagraphs: vi.fn(text => {
-		if (!text) return [];
-		return text.split('\n\n').filter(p => p.trim());
-	})
-}));
-
-// Mock graphql-tag
+// Mock graphql-tag (required for GraphQL queries)
 vi.mock('graphql-tag', () => ({
+	default: vi.fn(strings => strings[0]),
 	gql: vi.fn(strings => strings[0])
 }));
 
@@ -102,25 +74,6 @@ describe('PreviousLoanDescription.vue', () => {
 		});
 	});
 
-	describe('Computed Properties', () => {
-		describe('formattedPreviousLoanDescription', () => {
-			it('calls toParagraphs utility with description', () => {
-				const testDescription = 'Paragraph one.\n\nParagraph two.';
-
-				const result = loanUtils.toParagraphs(testDescription);
-
-				expect(loanUtils.toParagraphs).toHaveBeenCalledWith(testDescription);
-				expect(result).toHaveLength(2);
-			});
-
-			it('returns empty array when description is empty', () => {
-				const result = loanUtils.toParagraphs('');
-
-				expect(result).toHaveLength(0);
-			});
-		});
-	});
-
 	describe('Methods', () => {
 		describe('togglePreviousLoanDetails', () => {
 			it('fetches data when clicked', async () => {
@@ -135,6 +88,7 @@ describe('PreviousLoanDescription.vue', () => {
 							apollo: mockApollo
 						},
 						stubs: {
+							KvExpandable: commonStubs.KvExpandable,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -167,6 +121,7 @@ describe('PreviousLoanDescription.vue', () => {
 							apollo: mockApollo
 						},
 						stubs: {
+							KvExpandable: commonStubs.KvExpandable,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -209,6 +164,7 @@ describe('PreviousLoanDescription.vue', () => {
 							apollo: mockApollo
 						},
 						stubs: {
+							KvExpandable: commonStubs.KvExpandable,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -243,6 +199,7 @@ describe('PreviousLoanDescription.vue', () => {
 							apollo: mockApollo
 						},
 						stubs: {
+							KvExpandable: commonStubs.KvExpandable,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -274,6 +231,7 @@ describe('PreviousLoanDescription.vue', () => {
 							apollo: mockApollo
 						},
 						stubs: {
+							KvExpandable: commonStubs.KvExpandable,
 							'router-link': {
 								template: '<a><slot /></a>',
 								props: ['to']
@@ -313,6 +271,7 @@ describe('PreviousLoanDescription.vue', () => {
 						apollo: mockApollo
 					},
 					stubs: {
+						KvExpandable: commonStubs.KvExpandable,
 						'router-link': {
 							template: '<a><slot /></a>',
 							props: ['to']
@@ -339,6 +298,7 @@ describe('PreviousLoanDescription.vue', () => {
 						apollo: mockApollo
 					},
 					stubs: {
+						KvExpandable: commonStubs.KvExpandable,
 						'router-link': {
 							template: '<a><slot /></a>',
 							props: ['to']
@@ -365,6 +325,7 @@ describe('PreviousLoanDescription.vue', () => {
 						apollo: mockApollo
 					},
 					stubs: {
+						KvExpandable: commonStubs.KvExpandable,
 						'router-link': {
 							template: '<a><slot /></a>',
 							props: ['to']
@@ -407,6 +368,7 @@ describe('PreviousLoanDescription.vue', () => {
 						apollo: mockApollo
 					},
 					stubs: {
+						KvExpandable: commonStubs.KvExpandable,
 						'router-link': {
 							template: '<a><slot /></a>',
 							props: ['to']
@@ -439,6 +401,7 @@ describe('PreviousLoanDescription.vue', () => {
 						apollo: mockApollo
 					},
 					stubs: {
+						KvExpandable: commonStubs.KvExpandable,
 						'router-link': {
 							template: '<a><slot /></a>',
 							props: ['to']
@@ -472,6 +435,7 @@ describe('PreviousLoanDescription.vue', () => {
 						apollo: mockApollo
 					},
 					stubs: {
+						KvExpandable: commonStubs.KvExpandable,
 						'router-link': {
 							template: '<a><slot /></a>',
 							props: ['to']
@@ -503,6 +467,7 @@ describe('PreviousLoanDescription.vue', () => {
 						apollo: mockApollo
 					},
 					stubs: {
+						KvExpandable: commonStubs.KvExpandable,
 						'router-link': {
 							template: '<a><slot /></a>',
 							props: ['to']

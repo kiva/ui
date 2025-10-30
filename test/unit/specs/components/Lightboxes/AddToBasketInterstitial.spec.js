@@ -1,7 +1,8 @@
 import { render, waitFor } from '@testing-library/vue';
 import AddToBasketInterstitial from '#src/components/Lightboxes/AddToBasketInterstitial';
+import { commonStubs, createStubComponent, testComponentStructure } from '../../../helpers/componentTestHelpers';
 
-// Mock store2
+// Mock store2 - external dependency
 vi.mock('store2', () => ({
 	default: vi.fn((key, value) => {
 		if (value !== undefined) {
@@ -11,80 +12,9 @@ vi.mock('store2', () => ({
 	})
 }));
 
-// Mock lodash functions
-vi.mock('lodash/filter', () => ({
-	default: vi.fn(arr => arr || [])
-}));
-
-vi.mock('lodash/find', () => ({
-	default: vi.fn(arr => (arr && arr[0]) || {})
-}));
-
-vi.mock('lodash/get', () => ({
-	default: vi.fn((obj, path, defaultValue) => {
-		// Return empty array for basket items, or default value
-		if (path === 'shop.basket.items.values') return [];
-		if (path === 'shop.basket.totals.loanReservationTotal') return '0.00';
-		return defaultValue;
-	})
-}));
-
-// Mock getCacheKey
+// Mock getCacheKey - utility function
 vi.mock('#src/util/getCacheKey', () => ({
 	default: vi.fn(() => 'cache-key')
-}));
-
-// Mock KvButton, KvCheckbox, KvLightbox, KvLoadingSpinner
-vi.mock('#src/components/Kv/KvButton', () => ({
-	default: {
-		name: 'KvButton',
-		template: '<button><slot /></button>',
-		props: ['to']
-	}
-}));
-
-vi.mock('#src/components/Kv/KvCheckbox', () => ({
-	default: {
-		name: 'KvCheckbox',
-		template: '<input type="checkbox" :checked="checked" @change="$emit(\'update\', $event.target.checked)" />',
-		props: ['id', 'checked'],
-		emits: ['update']
-	}
-}));
-
-vi.mock('#src/components/Kv/KvLightbox', () => ({
-	default: {
-		name: 'KvLightbox',
-		template: '<div class="lightbox" v-if="visible"><slot /><slot name="controls" /></div>',
-		props: ['visible', 'title'],
-		emits: ['lightbox-closed']
-	}
-}));
-
-vi.mock('#src/components/Kv/KvLoadingSpinner', () => ({
-	default: {
-		name: 'KvLoadingSpinner',
-		template: '<div class="loading-spinner"></div>'
-	}
-}));
-
-// Mock LoanReservation component
-vi.mock('#src/components/Checkout/LoanReservation', () => ({
-	default: {
-		name: 'LoanReservation',
-		template: '<div class="loan-reservation"></div>',
-		props: ['isExpiringSoon', 'isFunded', 'expiryTime']
-	}
-}));
-
-// Mock LYML component
-vi.mock('#src/components/LoansYouMightLike/LymlContainer', () => ({
-	default: {
-		name: 'LYML',
-		template: '<div class="lyml"></div>',
-		props: ['basketedLoans', 'targetLoan', 'visible'],
-		emits: ['add-to-basket', 'processing-add-to-basket', 'no-rec-loans-found']
-	}
 }));
 
 // Mock tracking directive
@@ -158,13 +88,28 @@ describe('AddToBasketInterstitial', () => {
 						numeral: vi.fn(value => value.toString())
 					},
 					$kvTrackEvent: vi.fn()
+				},
+				stubs: {
+					KvButton: commonStubs.KvButton,
+					KvCheckbox: commonStubs.KvCheckbox,
+					KvLightbox: commonStubs.KvLightbox,
+					KvLoadingSpinner: commonStubs.KvLoadingSpinner,
+					LoanReservation: createStubComponent('LoanReservation', {
+						template: '<div class="loan-reservation"></div>',
+						props: ['isExpiringSoon', 'isFunded', 'expiryTime']
+					}),
+					LYML: createStubComponent('LYML', {
+						template: '<div class="lyml"></div>',
+						props: ['basketedLoans', 'targetLoan', 'visible'],
+						emits: ['add-to-basket', 'processing-add-to-basket', 'no-rec-loans-found']
+					})
 				}
 			}
 		});
 	};
 
-	it('should have the correct component name', () => {
-		expect(AddToBasketInterstitial.name).toBe('AddToBasketInterstitial');
+	testComponentStructure(AddToBasketInterstitial, {
+		name: 'AddToBasketInterstitial'
 	});
 
 	describe('props and data', () => {

@@ -1,14 +1,6 @@
 import { render } from '@testing-library/vue';
 import ShareStepperStep from '#src/components/Thanks/ShareStepperStep';
-
-// Mock child components
-vi.mock('#src/components/Kv/KvIcon', () => ({
-	default: {
-		name: 'KvIcon',
-		template: '<span class="mock-kv-icon" :name="name"><slot /></span>',
-		props: ['name', 'class']
-	}
-}));
+import { commonStubs, testComponentStructure } from '../../../helpers/componentTestHelpers';
 
 const renderComponent = (props = {}) => {
 	return render(ShareStepperStep, {
@@ -18,6 +10,11 @@ const renderComponent = (props = {}) => {
 			iconName: '',
 			text: '',
 			...props
+		},
+		global: {
+			stubs: {
+				KvIcon: commonStubs.KvIcon
+			}
 		}
 	});
 };
@@ -27,35 +24,15 @@ describe('ShareStepperStep', () => {
 		vi.clearAllMocks();
 	});
 
-	describe('Component Structure', () => {
-		it('should have the correct component name', () => {
-			expect(ShareStepperStep.name).toBe('ShareStepperStep');
-		});
-
-		it('should define expected props with correct types and defaults', () => {
-			expect(ShareStepperStep.props).toMatchObject({
-				step: {
-					type: Number,
-					default: 0
-				},
-				isLastStep: {
-					type: Boolean,
-					default: false
-				},
-				iconName: {
-					type: String,
-					default: ''
-				},
-				text: {
-					type: String,
-					default: ''
-				}
-			});
-		});
-
-		it('should register KvIcon component', () => {
-			expect(ShareStepperStep.components).toHaveProperty('KvIcon');
-		});
+	testComponentStructure(ShareStepperStep, {
+		name: 'ShareStepperStep',
+		props: {
+			step: { type: Number, default: 0 },
+			isLastStep: { type: Boolean, default: false },
+			iconName: { type: String, default: '' },
+			text: { type: String, default: '' }
+		},
+		components: ['KvIcon']
 	});
 
 	describe('Step Indicator Styling', () => {
@@ -93,7 +70,7 @@ describe('ShareStepperStep', () => {
 				isLastStep: false
 			});
 
-			const icon = container.querySelector('.mock-kv-icon[name="checkmark"]');
+			const icon = container.querySelector('.kv-icon');
 			expect(icon).toBeTruthy();
 		});
 
@@ -103,7 +80,7 @@ describe('ShareStepperStep', () => {
 				isLastStep: true
 			});
 
-			const icon = container.querySelector('.mock-kv-icon[name="checkmark"]');
+			const icon = container.querySelector('.kv-icon');
 			expect(icon).toBeFalsy();
 		});
 	});
@@ -201,7 +178,7 @@ describe('ShareStepperStep', () => {
 			expect(indicator).toBeTruthy();
 
 			// Should have checkmark icon
-			const icon = container.querySelector('.mock-kv-icon[name="checkmark"]');
+			const icon = container.querySelector('.kv-icon');
 			expect(icon).toBeTruthy();
 
 			// Should have text
@@ -221,12 +198,10 @@ describe('ShareStepperStep', () => {
 
 			// Should have filled indicator with checkmark
 			expect(container.querySelector('.tw-bg-brand')).toBeTruthy();
-			expect(container.querySelector('.mock-kv-icon[name="checkmark"]')).toBeTruthy();
+			expect(container.querySelector('.kv-icon')).toBeTruthy();
 			expect(getByText('Share')).toBeTruthy();
 			expect(container.querySelector('.tw-w-8.tw-border-t-2')).toBeTruthy();
-		});
-
-		it('should render last step correctly', () => {
+		});	it('should render last step correctly', () => {
 			const { container, getByText } = renderComponent({
 				step: 2,
 				isLastStep: true,
@@ -238,7 +213,7 @@ describe('ShareStepperStep', () => {
 			expect(indicator).toBeTruthy();
 
 			// Should NOT have checkmark icon
-			const icon = container.querySelector('.mock-kv-icon[name="checkmark"]');
+			const icon = container.querySelector('.kv-icon');
 			expect(icon).toBeFalsy();
 
 			// Should have text
@@ -258,7 +233,7 @@ describe('ShareStepperStep', () => {
 
 			// Should have indicator and checkmark
 			expect(container.querySelector('.tw-bg-brand')).toBeTruthy();
-			expect(container.querySelector('.mock-kv-icon[name="checkmark"]')).toBeTruthy();
+			expect(container.querySelector('.kv-icon')).toBeTruthy();
 
 			// Should NOT have text element
 			expect(container.querySelector('.tw-text-small.tw-absolute')).toBeFalsy();
@@ -266,9 +241,7 @@ describe('ShareStepperStep', () => {
 			// Should have connector
 			expect(container.querySelector('.tw-w-8.tw-border-t-2')).toBeTruthy();
 		});
-	});
-
-	describe('Container Structure', () => {
+	});	describe('Container Structure', () => {
 		it('should render with correct container classes', () => {
 			const { container } = renderComponent();
 

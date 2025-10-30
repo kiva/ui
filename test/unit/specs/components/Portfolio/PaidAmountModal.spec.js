@@ -2,19 +2,6 @@ import { render, waitFor } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import PaidAmountModal from '#src/components/Portfolio/PaidAmountModal';
 
-// Mock numeral
-vi.mock('numeral', () => ({
-	default: value => ({
-		format: formatString => {
-			const num = parseFloat(value);
-			if (formatString === '0,0.00') {
-				return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-			}
-			return num.toString();
-		}
-	})
-}));
-
 // Mock @kiva/kv-components
 vi.mock('@kiva/kv-components', () => ({
 	KvLightbox: {

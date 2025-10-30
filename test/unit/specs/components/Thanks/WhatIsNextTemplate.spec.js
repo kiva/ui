@@ -1,74 +1,13 @@
 import { render, waitFor } from '@testing-library/vue';
 import WhatIsNextTemplate from '#src/components/Thanks/WhatIsNextTemplate';
+import { commonStubs, createStubComponent } from '../../../helpers/componentTestHelpers';
 
-// Mock confetti
+// Mock canvas-confetti - keep this as it's a library, not a component
 vi.mock('canvas-confetti', () => ({
 	default: vi.fn()
 }));
 
-// Mock child components
-vi.mock('#src/components/Kv/KvExpandable', () => ({
-	default: {
-		name: 'KvExpandable',
-		template: '<div class="kv-expandable" v-show="true"><slot /></div>',
-		props: ['easing']
-	}
-}));
-
-vi.mock('#src/components/Checkout/CheckoutReceipt', () => ({
-	default: {
-		name: 'CheckoutReceipt',
-		template: '<div class="checkout-receipt">Receipt</div>',
-		props: ['lender', 'receipt']
-	}
-}));
-
-vi.mock('#src/components/Checkout/SocialShareV2', () => ({
-	default: {
-		name: 'SocialShareV2',
-		template: '<div class="social-share-v2">Share</div>',
-		props: ['lender', 'loans']
-	}
-}));
-
-vi.mock('#src/components/BorrowerProfile/BorrowerImage', () => ({
-	default: {
-		name: 'BorrowerImage',
-		template: '<img class="borrower-image" :alt="alt" />',
-		props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
-	}
-}));
-
-vi.mock('#src/components/Forms/GuestAccountCreation', () => ({
-	default: {
-		name: 'GuestAccountCreation',
-		template: '<div class="guest-account-creation">Create Account</div>',
-		props: ['eventCategory', 'eventLabel', 'guestUsername']
-	}
-}));
-
-vi.mock('#src/components/Thanks/AnimatedSparkles', () => ({
-	default: {
-		name: 'AnimatedSparkles',
-		template: '<div class="animated-sparkles"></div>'
-	}
-}));
-
-// Mock @kiva/kv-components
-vi.mock('@kiva/kv-components', () => ({
-	KvButton: {
-		name: 'KvButton',
-		template: '<button class="kv-button" @click="$emit(\'click\')"><slot /></button>',
-		props: ['to', 'variant']
-	},
-	KvMaterialIcon: {
-		name: 'KvMaterialIcon',
-		template: '<span class="kv-material-icon" :class="$attrs.class"></span>',
-		props: ['icon']
-	}
-}));
-
-// Mock smooth-scroll-mixin
+// Mock smooth-scroll-mixin - keep this as it's a plugin/mixin
 vi.mock('#src/plugins/smooth-scroll-mixin', () => ({
 	default: {
 		methods: {
@@ -77,7 +16,7 @@ vi.mock('#src/plugins/smooth-scroll-mixin', () => ({
 	}
 }));
 
-// Mock logFormatter
+// Mock logFormatter - keep this as it's a utility
 vi.mock('#src/util/logFormatter', () => ({
 	default: vi.fn()
 }));
@@ -133,6 +72,29 @@ describe('WhatIsNextTemplate', () => {
 				},
 				directives: {
 					'kv-track-event': () => {}
+				},
+				stubs: {
+					KvExpandable: commonStubs.KvExpandable,
+					CheckoutReceipt: createStubComponent('CheckoutReceipt', {
+						props: ['lender', 'receipt']
+					}),
+					SocialShareV2: createStubComponent('SocialShareV2', {
+						props: ['lender', 'loans']
+					}),
+					BorrowerImage: createStubComponent('BorrowerImage', {
+						props: ['alt', 'aspectRatio', 'defaultImage', 'hash', 'images']
+					}),
+					GuestAccountCreation: createStubComponent('GuestAccountCreation', {
+						props: ['eventCategory', 'eventLabel', 'guestUsername'],
+						template: '<div class="guest-account-creation"><slot /></div>'
+					}),
+					AnimatedSparkles: createStubComponent('AnimatedSparkles', {
+						template: '<div class="animated-sparkles"><slot /></div>'
+					}),
+					KvButton: commonStubs.KvButton,
+					KvMaterialIcon: createStubComponent('KvMaterialIcon', {
+						props: ['icon']
+					})
 				}
 			}
 		});
@@ -154,21 +116,6 @@ describe('WhatIsNextTemplate', () => {
 			expect(receipt).toBeDefined();
 			expect(optedIn).toBeDefined();
 			expect(guestUsername).toBeDefined();
-		});
-
-		it('should register required components', () => {
-			const {
-				KvExpandable, CheckoutReceipt, SocialShareV2, BorrowerImage,
-				GuestAccountCreation, AnimatedSparkles, KvButton, KvMaterialIcon
-			} = WhatIsNextTemplate.components;
-			expect(KvExpandable).toBeDefined();
-			expect(CheckoutReceipt).toBeDefined();
-			expect(SocialShareV2).toBeDefined();
-			expect(BorrowerImage).toBeDefined();
-			expect(GuestAccountCreation).toBeDefined();
-			expect(AnimatedSparkles).toBeDefined();
-			expect(KvButton).toBeDefined();
-			expect(KvMaterialIcon).toBeDefined();
 		});
 	});
 

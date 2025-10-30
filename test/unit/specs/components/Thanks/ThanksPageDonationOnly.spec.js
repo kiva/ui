@@ -1,5 +1,10 @@
 import { render, waitFor } from '@testing-library/vue';
 import ThanksPageDonationOnly from '#src/components/Thanks/ThanksPageDonationOnly';
+import {
+	commonStubs,
+	createMockApollo,
+	createGlobalConfig
+} from '../../../helpers/componentTestHelpers';
 
 // Mock dependencies
 vi.mock('#src/util/urlUtils', () => ({
@@ -12,15 +17,6 @@ vi.mock('#src/util/urlUtils', () => ({
 
 vi.mock('#src/util/contentfulUtils', () => ({
 	formatContentGroupsFlat: vi.fn(() => ({}))
-}));
-
-// Mock child components
-vi.mock('#src/components/Kv/KvIcon', () => ({
-	default: {
-		name: 'KvIcon',
-		template: '<span class="kv-icon" :title="title"><slot /></span>',
-		props: ['name', 'title']
-	}
 }));
 
 // Mock @kiva/kv-components
@@ -117,11 +113,8 @@ describe('ThanksPageDonationOnly', () => {
 					cookieStore: {}
 				},
 				stubs: {
-					RouterLink: {
-						name: 'RouterLink',
-						template: '<a :href="to"><slot /></a>',
-						props: ['to']
-					}
+					RouterLink: commonStubs.RouterLink,
+					KvIcon: commonStubs.KvIcon
 				},
 				directives: {
 					'kv-track-event': () => {}
@@ -139,16 +132,6 @@ describe('ThanksPageDonationOnly', () => {
 			const { monthlyDonationAmount, showDafThanks } = ThanksPageDonationOnly.props;
 			expect(monthlyDonationAmount).toBeDefined();
 			expect(showDafThanks).toBeDefined();
-		});
-
-		it('should register required components', () => {
-			const {
-				KvIcon, KvMaterialIcon, KvPageContainer, KvGrid
-			} = ThanksPageDonationOnly.components;
-			expect(KvIcon).toBeDefined();
-			expect(KvMaterialIcon).toBeDefined();
-			expect(KvPageContainer).toBeDefined();
-			expect(KvGrid).toBeDefined();
 		});
 	});
 

@@ -1,18 +1,17 @@
 import { render } from '@testing-library/vue';
 import BorrowerCountry from '#src/components/BorrowerProfile/BorrowerCountry';
+import { createStubComponent } from '../../../helpers/componentTestHelpers';
 
 // Mock components
 vi.mock('@kiva/kv-components', () => ({
 	KvLoadingPlaceholder: {
 		name: 'KvLoadingPlaceholder',
 		template: '<div>Loading...</div>'
+	},
+	KvButton: {
+		name: 'KvButton',
+		template: '<button><slot /></button>'
 	}
-}));
-vi.mock('#src/components/Kv/KvMap', () => ({
-	default: { name: 'KvMap', template: '<div>Map</div>' }
-}));
-vi.mock('#src/components/BorrowerProfile/CountryInfo', () => ({
-	default: { name: 'CountryInfo', template: '<div>Country Info</div>' }
 }));
 vi.mock('#src/util/logReadQueryError', () => ({
 	default: vi.fn()
@@ -39,6 +38,14 @@ describe('BorrowerCountry.vue', () => {
 				provide: {
 					apollo: mockApollo,
 					cookieStore: mockCookieStore
+				},
+				stubs: {
+					KvMap: createStubComponent('KvMap', {
+						template: '<div>Map</div>'
+					}),
+					CountryInfo: createStubComponent('CountryInfo', {
+						template: '<div>Country Info</div>'
+					})
 				}
 			}
 		});
@@ -58,12 +65,6 @@ describe('BorrowerCountry.vue', () => {
 				type: Number,
 				default: 0
 			});
-		});
-
-		it('declares all required components', () => {
-			expect(BorrowerCountry.components.CountryInfo).toBeDefined();
-			expect(BorrowerCountry.components.KvLoadingPlaceholder).toBeDefined();
-			expect(BorrowerCountry.components.KvMap).toBeDefined();
 		});
 	});
 

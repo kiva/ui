@@ -1,6 +1,10 @@
 import { render } from '@testing-library/vue';
 import { nextTick } from 'vue';
 import TwoStepVerification from '#src/components/Settings/TwoStepVerification';
+import {
+	commonStubs,
+	testComponentStructure
+} from '../../../helpers/componentTestHelpers';
 
 let mockQuery;
 let mockShowTipMsg;
@@ -28,25 +32,27 @@ const getGlobal = () => ({
 		$showTipMsg: mockShowTipMsg,
 	},
 	stubs: {
-		KvSettingsCard: {
-			name: 'KvSettingsCard',
-			props: ['title', 'class'],
-			template: '<div class="kv-settings-card"><h2>{{ title }}</h2><div><slot name="content" /></div></div>',
-		},
-		KvLoadingPlaceholder: {
-			name: 'KvLoadingPlaceholder',
-			props: ['class', 'style'],
-			template: '<span class="kv-loading-placeholder"></span>',
-		},
-		KvButton: {
-			name: 'KvButton',
-			props: ['to'],
-			template: '<a :href="to"><slot /></a>',
-		},
+		// Stub components that need it:
+		// - KvSettingsCard: simple wrapper, but stubbing avoids CSS class conflicts in tests
+		// - KvLoadingPlaceholder: external from @kiva/kv-components
+		// - KvButton: uses router-link which needs router setup
+		KvSettingsCard: commonStubs.KvSettingsCard,
+		KvLoadingPlaceholder: commonStubs.KvLoadingPlaceholder,
+		KvButton: commonStubs.KvButton,
 	},
 });
 
 describe('TwoStepVerification.vue', () => {
+	// Consolidated structure tests
+	testComponentStructure(TwoStepVerification, {
+		name: 'TwoStepVerification',
+		computed: ['MFAStatus'],
+		data: {
+			isMFAActive: false,
+			isLoading: true
+		}
+	});
+
 	it('renders title', () => {
 		const { getByText } = render(TwoStepVerification, { global: getGlobal() });
 		expect(getByText('2-Step verification')).toBeTruthy();
@@ -55,20 +61,6 @@ describe('TwoStepVerification.vue', () => {
 	it('renders description', () => {
 		const { getByText } = render(TwoStepVerification, { global: getGlobal() });
 		expect(getByText(/Protect your Kiva account with an extra layer of security/)).toBeTruthy();
-	});
-
-	it('has name property', () => {
-		expect(TwoStepVerification.name).toBe('TwoStepVerification');
-	});
-
-	it('has data properties', () => {
-		const data = TwoStepVerification.data.call({});
-		expect(data.isMFAActive).toBe(false);
-		expect(data.isLoading).toBe(true);
-	});
-
-	it('has MFAStatus computed property', () => {
-		expect(TwoStepVerification.computed.MFAStatus).toBeDefined();
 	});
 
 	it('has mounted lifecycle hook', () => {

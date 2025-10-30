@@ -1,14 +1,6 @@
 import { render } from '@testing-library/vue';
 import TheBrowserCheck from '#src/components/WwwFrame/TheBrowserCheck';
-
-// Mock KvAlert
-vi.mock('#src/components/Kv/KvAlert', () => ({
-	default: {
-		name: 'KvAlert',
-		props: ['variant'],
-		template: '<div class="kv-alert" :data-variant="variant"><slot /></div>'
-	}
-}));
+import { commonStubs, testComponentStructure } from '../../../helpers/componentTestHelpers';
 
 describe('TheBrowserCheck', () => {
 	const renderComponent = (deviceData = {}) => {
@@ -16,14 +8,17 @@ describe('TheBrowserCheck', () => {
 			global: {
 				provide: {
 					device: deviceData
+				},
+				stubs: {
+					KvAlert: commonStubs.KvAlert
 				}
 			}
 		});
 	};
 
-	// Component structure tests
-	it('should have the correct component name', () => {
-		expect(TheBrowserCheck.name).toBe('TheBrowserCheck');
+	testComponentStructure(TheBrowserCheck, {
+		name: 'TheBrowserCheck',
+		components: ['KvAlert']
 	});
 
 	// Internet Explorer detection tests

@@ -1,15 +1,8 @@
 import { render } from '@testing-library/vue';
 import CookieBanner from '#src/components/WwwFrame/CookieBanner';
+import { commonStubs, testComponentStructure } from '../../../helpers/componentTestHelpers';
 
-// Mock KvButton
-vi.mock('#src/components/Kv/KvButton', () => ({
-	default: {
-		name: 'KvButton',
-		template: '<button><slot /></button>'
-	}
-}));
-
-// Mock getCacheKey
+// Mock getCacheKey - utility function, appropriate for vi.mock
 vi.mock('#src/util/getCacheKey', () => ({
 	default: vi.fn(() => 'CookieBanner-key')
 }));
@@ -39,15 +32,19 @@ describe('CookieBanner', () => {
 					$appConfig: appConfig
 				},
 				stubs: {
+					// KvButton uses router-link, needs stub
+					KvButton: commonStubs.KvButton,
 					transition: false
 				}
 			}
 		});
 	};
 
-	// Component structure tests
-	it('should have the correct component name', () => {
-		expect(CookieBanner.name).toBe('CookieBanner');
+	// Consolidated component structure tests
+	testComponentStructure(CookieBanner, {
+		name: 'CookieBanner',
+		methods: ['handleClickClose'],
+		components: ['KvButton']
 	});
 
 	it('should not show banner initially when cookie exists', () => {
@@ -63,29 +60,6 @@ describe('CookieBanner', () => {
 
 		// Verify cookie was checked
 		expect(mockCookieStore.get).toHaveBeenCalledWith('kvgdpr');
-	});
-
-	it('should have banner rendering logic', () => {
-		// Verify component has rendering logic
-		expect(CookieBanner.name).toBe('CookieBanner');
-		expect(CookieBanner.mounted).toBeDefined();
-	});
-
-	// Content tests - verify component structure
-	it('should have cookie message in component definition', () => {
-		// Component has the expected template structure
-		expect(CookieBanner).toBeDefined();
-		expect(CookieBanner.components.KvButton).toBeDefined();
-	});
-
-	// Button tests - verify component has button
-	it('should have KvButton component registered', () => {
-		expect(CookieBanner.components.KvButton).toBeDefined();
-	});
-
-	// Click interaction tests - verify methods exist
-	it('should have handleClickClose method', () => {
-		expect(CookieBanner.methods.handleClickClose).toBeDefined();
 	});
 
 	// Cookie management tests

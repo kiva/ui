@@ -1,87 +1,9 @@
 import { render, waitFor } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import LoanPrice from '#src/components/Checkout/LoanPrice';
+import { createStubComponent } from '../../../helpers/componentTestHelpers';
 
-// Mock @kiva/kv-components
-vi.mock('@kiva/kv-components', () => ({
-	KvSelect: {
-		name: 'KvSelect',
-		template: `<select
-			:id="id"
-			:class="classAttr"
-			:value="modelValue"
-			@change="handleChange"
-		><slot /></select>`,
-		props: ['modelValue', 'id', 'class'],
-		emits: ['update:model-value'],
-		computed: {
-			classAttr() {
-				return this.class;
-			}
-		},
-		methods: {
-			handleChange(event) {
-				this.$emit('update:model-value', event.target.value);
-			}
-		}
-	}
-}));
-
-// Mock RemoveBasketItem component
-vi.mock('#src/components/Checkout/RemoveBasketItem', () => ({
-	default: {
-		name: 'RemoveBasketItem',
-		template: '<button class="remove-basket-item" @click="$emit(\'refreshtotals\')">Remove</button>',
-		props: ['loanId', 'idsInGroup', 'type'],
-		emits: ['refreshtotals', 'updating-totals']
-	}
-}));
-
-// Mock lodash
-vi.mock('lodash/forEach', () => ({
-	default: (collection, iteratee) => {
-		if (Array.isArray(collection)) {
-			collection.forEach(iteratee);
-		}
-	}
-}));
-
-// Mock numeral
-vi.mock('numeral', () => ({
-	default: value => ({
-		format: format => {
-			const num = parseFloat(String(value).replace(/,/g, ''));
-			if (Number.isNaN(num)) return '0';
-			if (format === '0,0') {
-				return num.toLocaleString('en-US', { maximumFractionDigits: 0 });
-			}
-			if (format === '0.00') {
-				return num.toFixed(2);
-			}
-			return String(num);
-		},
-		value: () => {
-			const num = parseFloat(String(value).replace(/,/g, ''));
-			return Number.isNaN(num) ? 0 : num;
-		}
-	})
-}));
-
-// Mock loanUtils
-vi.mock('#src/util/loanUtils', () => ({
-	getDropdownPriceArrayCheckout: (remainingAmount, minAmount, enableFiveDollars, isLoggedIn) => {
-		const prices = [];
-		const increment = enableFiveDollars && isLoggedIn ? 5 : minAmount;
-
-		for (let i = increment; i <= remainingAmount && i <= 500; i += increment) {
-			prices.push(i.toLocaleString('en-US', { maximumFractionDigits: 0 }));
-		}
-
-		return prices;
-	}
-}));
-
-// Mock GraphQL mutations
+// Mock GraphQL mutations (required - these are not executable code)
 vi.mock('#src/graphql/mutation/updateLoanReservation.graphql', () => ({
 	default: 'updateLoanReservationQuery'
 }));
@@ -95,6 +17,13 @@ describe('LoanPrice', () => {
 	let mockShowTipMsg;
 	let mockCloseTipMsg;
 	let mockKvTrackEvent;
+
+	// Create stub for RemoveBasketItem component
+	const RemoveBasketItem = createStubComponent('RemoveBasketItem', {
+		template: '<button class="remove-basket-item" @click="$emit(\'refreshtotals\')">Remove</button>',
+		props: ['loanId', 'idsInGroup', 'type'],
+		emits: ['refreshtotals', 'updating-totals']
+	});
 
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -129,16 +58,15 @@ describe('LoanPrice', () => {
 					$showTipMsg: mockShowTipMsg,
 					$closeTipMsg: mockCloseTipMsg,
 					$kvTrackEvent: mockKvTrackEvent
+				},
+				stubs: {
+					RemoveBasketItem
 				}
 			}
 		});
 	};
 
 	describe('Component Structure', () => {
-		it('should have the correct component name', () => {
-			expect(LoanPrice.name).toBe('LoanPrice');
-		});
-
 		it('should render dropdown when price > 24', async () => {
 			const { container } = createComponent({ price: '25' });
 			const select = container.querySelector('.loan-price-select');

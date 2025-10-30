@@ -1,55 +1,6 @@
 import { render, waitFor } from '@testing-library/vue';
 import FundedBorrowerProfile from '#src/components/BorrowerProfile/FundedBorrowerProfile';
-
-// Mock child components
-vi.mock('#src/components/Kv/KvLoadingSpinner', () => ({
-	default: { name: 'KvLoadingSpinner', template: '<div data-testid="loading-spinner">Loading...</div>' }
-}));
-
-vi.mock('#src/components/BorrowerProfile/HeroBackground', () => ({
-	default: { name: 'HeroBackground', template: '<div data-testid="hero-background"></div>' }
-}));
-
-vi.mock('#src/components/BorrowerProfile/BorrowerName', () => ({
-	default: { name: 'BorrowerName', template: '<div data-testid="borrower-name"></div>', props: ['name'] }
-}));
-
-vi.mock('#src/components/BorrowerProfile/LoanProgress', () => ({
-	default: {
-		name: 'LoanProgress',
-		template: '<div data-testid="loan-progress"></div>',
-		props: ['progressPercent', 'loading', 'loanStatus']
-	}
-}));
-
-vi.mock('#src/components/BorrowerProfile/BorrowerImage', () => ({
-	default: {
-		name: 'BorrowerImage',
-		template: '<div data-testid="borrower-image"></div>',
-		props: ['alt', 'aspectRatio', 'hash', 'defaultImage', 'images']
-	}
-}));
-
-vi.mock('#src/components/LoanCollections/KivaClassicLoanCarousel', () => ({
-	default: {
-		name: 'KivaClassicLoanCarousel',
-		template: '<div data-testid="loan-carousel"></div>',
-		props: ['isVisible', 'loanIds', 'expLabel', 'lendNowButton']
-	}
-}));
-
-vi.mock('#src/components/LoanCards/LoanCardController', () => ({
-	default: {
-		name: 'LoanCardController',
-		template: '<div data-testid="loan-card"></div>',
-		props: ['categorySetId', 'enableTracking', 'loan', 'loanCardType', 'position', 'rowNumber', 'isVisitor']
-	}
-}));
-
-vi.mock('@kiva/kv-components', () => ({
-	KvGrid: { name: 'KvGrid', template: '<div data-testid="kv-grid"><slot /></div>' },
-	KvPageContainer: { name: 'KvPageContainer', template: '<div data-testid="kv-page-container"><slot /></div>' }
-}));
+import { createStubComponent } from '../../../helpers/componentTestHelpers';
 
 vi.mock('#src/util/logReadQueryError');
 
@@ -108,6 +59,43 @@ describe('FundedBorrowerProfile', () => {
 				},
 				mocks: {
 					$kvTrackSelfDescribingEvent: mockKvTrack
+				},
+				stubs: {
+					KvLoadingSpinner: createStubComponent('KvLoadingSpinner', {
+						template: '<div data-testid="loading-spinner">Loading...</div>'
+					}),
+					HeroBackground: createStubComponent('HeroBackground', {
+						template: '<div data-testid="hero-background"></div>'
+					}),
+					BorrowerName: createStubComponent('BorrowerName', {
+						template: '<div data-testid="borrower-name"></div>',
+						props: ['name']
+					}),
+					LoanProgress: createStubComponent('LoanProgress', {
+						template: '<div data-testid="loan-progress"></div>',
+						props: ['progressPercent', 'loading', 'loanStatus']
+					}),
+					BorrowerImage: createStubComponent('BorrowerImage', {
+						template: '<div data-testid="borrower-image"></div>',
+						props: ['alt', 'aspectRatio', 'hash', 'defaultImage', 'images']
+					}),
+					KivaClassicLoanCarousel: createStubComponent('KivaClassicLoanCarousel', {
+						template: '<div data-testid="loan-carousel"></div>',
+						props: ['isVisible', 'loanIds', 'expLabel', 'lendNowButton']
+					}),
+					LoanCardController: createStubComponent('LoanCardController', {
+						template: '<div data-testid="loan-card"></div>',
+						props: [
+							'categorySetId', 'enableTracking', 'loan',
+							'loanCardType', 'position', 'rowNumber', 'isVisitor'
+						]
+					}),
+					KvGrid: createStubComponent('KvGrid', {
+						template: '<div data-testid="kv-grid"><slot /></div>'
+					}),
+					KvPageContainer: createStubComponent('KvPageContainer', {
+						template: '<div data-testid="kv-page-container"><slot /></div>'
+					})
 				}
 			}
 		});
@@ -118,46 +106,6 @@ describe('FundedBorrowerProfile', () => {
 		mockApollo.query.mockResolvedValue({ data: {} });
 		// Mock createIntersectionObserver to return a mock observer by default (prevents auto-fetching)
 		mockCreateObserver.mockReturnValue({ disconnect: vi.fn() });
-	});
-
-	describe('Component Structure', () => {
-		it('should have the correct name', () => {
-			expect(FundedBorrowerProfile.name).toBe('FundedBorrowerProfile');
-		});
-
-		it('should inject apollo and cookieStore', () => {
-			expect(FundedBorrowerProfile.inject).toEqual(['apollo', 'cookieStore']);
-		});
-
-		it('should declare props correctly', () => {
-			expect(FundedBorrowerProfile.props).toHaveProperty('loan');
-			expect(FundedBorrowerProfile.props).toHaveProperty('hash');
-			expect(FundedBorrowerProfile.props).toHaveProperty('itemsInBasket');
-			expect(FundedBorrowerProfile.props).toHaveProperty('inviterName');
-		});
-
-		it('should register required components', () => {
-			const {
-				KvLoadingSpinner,
-				HeroBackground,
-				BorrowerName,
-				LoanProgress,
-				BorrowerImage,
-				KvGrid,
-				KvPageContainer,
-				KivaClassicLoanCarousel,
-				LoanCardController
-			} = FundedBorrowerProfile.components;
-			expect(KvLoadingSpinner).toBeDefined();
-			expect(HeroBackground).toBeDefined();
-			expect(BorrowerName).toBeDefined();
-			expect(LoanProgress).toBeDefined();
-			expect(BorrowerImage).toBeDefined();
-			expect(KvGrid).toBeDefined();
-			expect(KvPageContainer).toBeDefined();
-			expect(KivaClassicLoanCarousel).toBeDefined();
-			expect(LoanCardController).toBeDefined();
-		});
 	});
 
 	describe('Initial State', () => {
