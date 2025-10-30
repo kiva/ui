@@ -37,19 +37,12 @@
 				class="tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
-				v-if="showJourneyModule"
+				v-else-if="showJourneyModule"
 				:loans="loans"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
 				@continue-as-guest="handleContinue"
 				class="tw-mb-2.5"
-			/>
-			<ControlModule
-				v-if="showControlModule"
-				:is-opted-in="isOptedIn"
-				:only-kiva-cards="onlyKivaCards"
-				@continue="handleContinue"
-				class="print:tw-hidden tw-mb-2.5"
 			/>
 			<LoanComment
 				v-if="showLoanComment"
@@ -105,7 +98,6 @@ import LoanComment from '#src/components/Thanks/SingleVersion/LoanComment';
 import OptInModule from '#src/components/Thanks/SingleVersion/OptInModule';
 import KivaCards from '#src/components/Thanks/SingleVersion/KivaCards';
 import AccountReceiptShare from '#src/components/Thanks/SingleVersion/AccountReceiptShare';
-import ControlModule from '#src/components/Thanks/SingleVersion/ControlModule';
 import JourneyGeneralPrompt from '#src/components/Thanks/SingleVersion/JourneyGeneralPrompt';
 import BadgeMilestone from '#src/components/Thanks/SingleVersion/BadgeMilestone';
 import useGoalData from '#src/composables/useGoalData';
@@ -145,10 +137,6 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
-	myKivaEnabled: {
-		type: Boolean,
-		default: false,
-	},
 	guestUsername: {
 		type: String,
 		default: '',
@@ -171,7 +159,7 @@ const router = useRouter();
 
 const {
 	userGoal,
-	userGoalAchieved,
+	userGoalAchievedNow,
 	getGoalDisplayName,
 	loadGoalData,
 	checkCompletedGoal,
@@ -193,9 +181,6 @@ const onlyDonations = computed(() => (
 const printableKivaCards = computed(() => (props.receipt?.items?.values ?? [])
 	.filter(item => item.basketItemType === 'kiva_card' && item.kivaCardObject?.deliveryType === 'print'));
 
-const onlyKivaCards = computed(() => (props.receipt?.items?.values ?? [])
-	.every(item => item.basketItemType === 'kiva_card'));
-
 const onlyKivaCardsAndDonations = computed(() => (props.receipt?.items?.values ?? [])
 	.every(item => ['kiva_card', 'donation'].includes(item.basketItemType)));
 
@@ -210,18 +195,14 @@ const hasTeamAttributedPartnerLoan = computed(
 	() => loanForComment.value?.distributionModel === 'fieldPartner' && !!loanForComment.value?.team?.name
 );
 
+/* eslint-disable max-len */
 const showOptInModule = computed(() => !props.isOptedIn);
 const showKivaCardsModule = computed(() => !!printableKivaCards.value.length);
-const showBadgeModule = computed(() => (
-	props.myKivaEnabled && (numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value) && !props.isNextStepsExpEnabled
-));
-const showGoalCompletedModule = computed(() => props.isNextStepsExpEnabled
-	&& (goalDataLoading.value || userGoalAchieved.value));
-const showJourneyModule = computed(() => props.myKivaEnabled && !showBadgeModule.value && !props.achievementsCompleted
-	&& (!props.isNextStepsExpEnabled || (!goalDataLoading.value && !userGoalAchieved.value)));
-const showControlModule = computed(() => !props.myKivaEnabled
-	|| (!props.isNextStepsExpEnabled && !goalDataLoading.value));
+const showBadgeModule = computed(() => (numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value));
+const showGoalCompletedModule = computed(() => props.isNextStepsExpEnabled && (goalDataLoading.value || userGoalAchievedNow.value));
+const showJourneyModule = computed(() => !props.achievementsCompleted && (!props.isNextStepsExpEnabled || (!goalDataLoading.value && !userGoalAchievedNow.value)));
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
+/* eslint-enable max-len */
 
 const showConfetti = () => {
 	confetti({
@@ -262,7 +243,7 @@ const handleContinue = () => {
 			userType.value,
 			numberOfBadges.value,
 		);
-		router?.push(props.myKivaEnabled ? '/mykiva' : '/portfolio');
+		router?.push('/mykiva');
 	}
 };
 
@@ -274,7 +255,7 @@ onMounted(async () => {
 	showConfetti();
 	const isOptInLoan = showOptInModule.value && props.loans.length > 0;
 	const isOptInDonate = showOptInModule.value && onlyDonations.value;
-	const badgeNotEarned = onlyKivaCardsAndDonations.value && !showControlModule.value;
+	const badgeNotEarned = onlyKivaCardsAndDonations.value;
 	const analyticsModuleOrder = [
 		isOptInLoan ? 'optInLoan' : '',
 		isOptInDonate ? 'optInDonate' : '',
@@ -282,7 +263,6 @@ onMounted(async () => {
 		showKivaCardsModule.value ? 'kivaCard' : '',
 		showBadgeModule.value && !onlyKivaCardsAndDonations.value ? 'journeyBadgeEarned' : '',
 		showJourneyModule.value || badgeNotEarned ? 'journeyBadgeNotEarned' : '',
-		showControlModule.value ? 'journeyGeneral' : '',
 		showLoanComment.value ? 'commenting' : '',
 		props.isGuest ? 'drawerCreateAccount' : '',
 		'drawerOrderConfirmation',
@@ -294,7 +274,7 @@ onMounted(async () => {
 		analyticsModuleOrder,
 		userType.value,
 	);
-	setGuestAssignmentCookie(cookieStore, props.myKivaEnabled, props.isGuest);
+	setGuestAssignmentCookie(cookieStore, true, props.isGuest);
 
 	// Track if all achievements have been earned
 	if (props.achievementsCompleted) {
