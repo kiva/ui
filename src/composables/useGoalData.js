@@ -68,7 +68,6 @@ export default function useGoalData({ apollo }) {
 			const response = await apollo.query({
 				query: useGoalDataProgressQuery,
 				variables: { loanIds },
-				fetchPolicy: 'cache-first',
 			});
 			return response?.data?.postCheckoutAchievements?.allTimeProgress || [];
 		} catch (error) {
