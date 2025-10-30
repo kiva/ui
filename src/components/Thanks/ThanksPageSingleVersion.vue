@@ -173,7 +173,8 @@ const {
 	userGoal,
 	userGoalAchieved,
 	getGoalDisplayName,
-	runComposable: runGoalComposable,
+	loadGoalData,
+	checkCompletedGoal,
 	loading: goalDataLoading,
 } = useGoalData({ loans: props.loans });
 
@@ -266,7 +267,10 @@ const handleContinue = () => {
 };
 
 onMounted(async () => {
-	if (props.isNextStepsExpEnabled) await runGoalComposable();
+	if (props.isNextStepsExpEnabled) {
+		await loadGoalData();
+		await checkCompletedGoal();
+	}
 	showConfetti();
 	const isOptInLoan = showOptInModule.value && props.loans.length > 0;
 	const isOptInDonate = showOptInModule.value && onlyDonations.value;
