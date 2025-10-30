@@ -56,7 +56,6 @@
 					</div>
 					<KvButton
 						class="tw-flex-grow"
-						v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
 						@click="handleContinueClick"
 					>
 						Continue
