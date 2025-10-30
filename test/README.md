@@ -8,20 +8,20 @@ Components should be tested in a user-centric way. We use Testing Library to mim
 - https://testing-library.com/docs/guiding-principles/
 - https://testing-library.com/docs/queries/about#priority
 
-As much as possible business logic and data fetching should be separated from vue components, allowing business logic and presentation to be tested independently. Most tests should use Jest (fast). If the data mocking is very complex or if the behavior being tested spans multiple pages, then it makes more sense to use Cypress (slow).
+As much as possible business logic and data fetching should be separated from vue components, allowing business logic and presentation to be tested independently. Most tests should use Vitest (fast). If the data mocking is very complex or if the behavior being tested spans multiple pages, then it makes more sense to use Cypress (slow).
 
-## Jest (unit testing)
+## Vitest (unit testing)
 
-Jest is excellent for unit testing, and can be used for testing everything from basic functions to full vue components.
+Vitest is excellent for unit testing, and can be used for testing everything from basic functions to full vue components.
 
 > **NOTE:** When testing vue components, use the user-event library to simulate user events like clicks and keyboard presses instead of the fireEvent utility. Read "Simulating user events" for more info.
 
-- [Jest docs](https://jestjs.io/docs/using-matchers)
+- [Vitest docs](https://vitest.dev/api/)
 - [Vue testing library](https://testing-library.com/docs/vue-testing-library/intro)
 - [Simulating user events](https://testing-library.com/docs/user-event/intro/)
 - [Mocking graphql queries/mutations](https://github.com/mike-gibson/mock-apollo-client/tree/release/0.x)
 
-### Running Jest
+### Running Vitest
 
 All tests
 ```
@@ -37,7 +37,7 @@ npm run unit -- RouteListing
 
 Cypress runs in a full browser, simulating a user interacting with the page.
 
-> **NOTE:** Cypress tests are slower than Jest tests because they have to wait for pages to load in a real environment, so use Cypress tests sparingly.
+> **NOTE:** Cypress tests are slower than Vitest tests because they have to wait for pages to load in a real environment, so use Cypress tests sparingly.
 
 > **NOTE:** Cypress has built-in commands for finding elements on the page, but tests will be more robust if the Testing Library findBy* commands are used instead. Please read the Cypress testing library docs before writing tests.
 
