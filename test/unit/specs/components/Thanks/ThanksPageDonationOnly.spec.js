@@ -1,10 +1,6 @@
 import { render, waitFor } from '@testing-library/vue';
 import ThanksPageDonationOnly from '#src/components/Thanks/ThanksPageDonationOnly';
-import {
-	commonStubs,
-	createMockApollo,
-	createGlobalConfig
-} from '../../../helpers/componentTestHelpers';
+import { commonStubs } from '../../../helpers/componentTestHelpers';
 
 // Mock dependencies
 vi.mock('#src/util/urlUtils', () => ({

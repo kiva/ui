@@ -73,23 +73,23 @@ describe('LoanSpotlight', () => {
 				fallbackCategorySlug: 'women',
 				...props
 			},
-		global: {
-			provide: {
-				apollo: apolloOverride || mockApollo,
-				cookieStore: mockCookieStore
-			},
-			directives: {
-				kvTrackEvent: mockKvTrackEvent
-			},
-			stubs: {
-				KvResponsiveImage: commonStubs.KvResponsiveImage,
-				KvLoadingParagraph: createStubComponent('KvLoadingParagraph', {
-					template: '<div class="loading-paragraph"></div>',
-					props: ['style']
-				})
+			global: {
+				provide: {
+					apollo: apolloOverride || mockApollo,
+					cookieStore: mockCookieStore
+				},
+				directives: {
+					kvTrackEvent: mockKvTrackEvent
+				},
+				stubs: {
+					KvResponsiveImage: commonStubs.KvResponsiveImage,
+					KvLoadingParagraph: createStubComponent('KvLoadingParagraph', {
+						template: '<div class="loading-paragraph"></div>',
+						props: ['style']
+					})
+				}
 			}
-		}
-	});
+		});
 	};	it('should have the correct component name', () => {
 		expect(LoanSpotlight.name).toBe('LoanSpotlight');
 	});
