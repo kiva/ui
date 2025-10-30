@@ -12,7 +12,6 @@
 				:receipt="receipt"
 				:monthly-donation-amount="monthlyDonationAmount"
 				:badges-achieved="badgesAchieved"
-				:my-kiva-enabled="myKivaExperimentEnabled"
 				:guest-username="guestUsername"
 				:achievements-completed="achievementsCompleted"
 				:is-next-steps-exp-enabled="isNextStepsExpEnabled"

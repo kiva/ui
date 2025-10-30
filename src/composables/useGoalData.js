@@ -48,6 +48,7 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 	const totalLoanCount = ref(null);
 	const userGoal = ref(null);
 	const userPreferences = ref(null);
+	const userGoalAchievedNow = ref(false);
 
 	async function loadPreferences(fetchPolicy = 'cache-first') {
 		try {
@@ -125,6 +126,7 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 				userGoal.value.category,
 				userGoal.value.target
 			);
+			userGoalAchievedNow.value = true;
 		}
 	};
 
@@ -144,6 +146,7 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 		storeGoalPreferences,
 		userGoal,
 		userGoalAchieved,
+		userGoalAchievedNow,
 		checkCompletedGoal,
 	};
 }
