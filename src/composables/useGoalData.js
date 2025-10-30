@@ -109,12 +109,7 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 
 	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
 
-	async function runComposable(category = 'post-checkout') {
-		loading.value = true;
-		const parsedPrefs = await loadPreferences();
-		await loadProgress();
-		setGoalState(parsedPrefs);
-		// Auto-update if active goal achieved
+	const checkCompletedGoal = async (category = 'post-checkout') => {
 		if (userGoal.value && userGoalAchieved.value && userGoal.value.status !== 'completed') {
 			await storeGoalPreferences({
 				goalName: userGoal.value.goalName,
@@ -131,6 +126,13 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 				userGoal.value.target
 			);
 		}
+	};
+
+	async function loadGoalData() {
+		loading.value = true;
+		const parsedPrefs = await loadPreferences();
+		await loadProgress();
+		setGoalState(parsedPrefs);
 		loading.value = false;
 	}
 
@@ -138,9 +140,10 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 		getGoalDisplayName,
 		goalProgress,
 		loading,
-		runComposable,
+		loadGoalData,
 		storeGoalPreferences,
 		userGoal,
 		userGoalAchieved,
+		checkCompletedGoal,
 	};
 }
