@@ -15,6 +15,7 @@
 				:progress-percent="fundraisingPercent"
 				:time-left="timeLeft"
 				:loan-id="loanId"
+				:hide-view-profile-links="true"
 				class="tw-mt-2 tw-mb-3"
 				:class="{ '!tw-mb-1.5': showNextSteps }"
 				data-testid="bp-summary-progress"

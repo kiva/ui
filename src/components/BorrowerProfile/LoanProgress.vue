@@ -34,6 +34,14 @@
 						<p class="tw-text-h4 tw-text-secondary tw-block">
 							100% funded
 						</p>
+						<p v-if="!hideViewProfileLinks" class="tw-text-h4 tw-text-action tw-block">
+							<router-link
+								:to="`/lend-classic/${routeId}?minimal=false`"
+								v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
+							>
+								View the full borrower profile
+							</router-link>
+						</p>
 					</div>
 				</div>
 			</div>
@@ -45,6 +53,14 @@
 					<p class="tw-text-h4 tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
 						{{ progressPercentRounded }} funded
 					</p>
+					<p v-if="!hideViewProfileLinks" class="tw-text-h4 tw-text-action tw-block">
+						<router-link
+							:to="`/lend-classic/${routeId}?minimal=false`"
+							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
+						>
+							View the full borrower profile
+						</router-link>
+					</p>
 				</div>
 			</div>
 			<div v-else-if="loanStatus === 'inactive'">
@@ -54,6 +70,14 @@
 				<div class="md:tw-flex tw-gap-2">
 					<p class="tw-text-h4 tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
 						{{ progressPercentRounded }} funded
+					</p>
+					<p v-if="!hideViewProfileLinks" class="tw-text-h4 tw-text-action tw-block">
+						<router-link
+							:to="`/lend-classic/${routeId}?minimal=false`"
+							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
+						>
+							View the full borrower profile
+						</router-link>
 					</p>
 				</div>
 			</div>
@@ -156,6 +180,10 @@ export default {
 		loanId: {
 			type: Number,
 			default: 0
+		},
+		hideViewProfileLinks: {
+			type: Boolean,
+			default: false
 		}
 	},
 	computed: {
