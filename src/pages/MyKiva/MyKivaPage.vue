@@ -196,7 +196,7 @@ export default {
 			this.apollo,
 			this.$route,
 			NEXT_STEPS_EXP_KEY,
-			async version => {
+			version => {
 				this.isNextStepsExpEnabled = version === 'b';
 			},
 			this.$kvTrackEvent,
