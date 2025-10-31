@@ -1,6 +1,6 @@
 import _throttle from 'lodash/throttle';
 import kvTokensPrimitives from '@kiva/kv-tokens';
-import { onBeforeMount, onBeforeUnmount, ref } from 'vue';
+import { onUnmounted, onMounted, ref } from 'vue';
 
 /**
  * Returns whether the viewport is mobile
@@ -17,12 +17,12 @@ export default breakpoint => {
 
 	const checkIsMobileThrottled = _throttle(checkIsMobile, 100);
 
-	onBeforeMount(() => {
+	onMounted(() => {
 		checkIsMobile();
 		window.addEventListener('resize', checkIsMobileThrottled);
 	});
 
-	onBeforeUnmount(() => {
+	onUnmounted(() => {
 		window.removeEventListener('resize', checkIsMobileThrottled);
 	});
 
