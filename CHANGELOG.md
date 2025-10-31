@@ -1,3 +1,12 @@
+## [3.39.0-rc.2](https://github.com/kiva/ui/compare/v3.39.0-rc.1...v3.39.0-rc.2) (2025-10-31)
+
+### 🐛 Bugfixes
+
+* prevent journey modal pop-in ([9cfebfa](https://github.com/kiva/ui/commit/9cfebfa6c5fa66d3ad22d2d3d188ed2d9538b977))
+* remove unneeded event ([d95959a](https://github.com/kiva/ui/commit/d95959a2f18ab9df337343275e743b7f19f5af63))
+* resolve issue with race condition in ty page ([fab1398](https://github.com/kiva/ui/commit/fab1398fa2b33d85f676c1d600ab14a40177fa93))
+* update package for new nav analytics tweaks ([b4ab597](https://github.com/kiva/ui/commit/b4ab597ac346430fb25cad5948b3325b787ef59a))
+
 ## [3.39.0-rc.1](https://github.com/kiva/ui/compare/v3.38.0...v3.39.0-rc.1) (2025-10-30)
 
 ### 🎉 New Features
