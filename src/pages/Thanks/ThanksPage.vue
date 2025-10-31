@@ -208,7 +208,7 @@ import { getIsMyKivaEnabled, fetchPostCheckoutAchievements, MY_KIVA_FOR_ALL_USER
 import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import useBadgeData from '#src/composables/useBadgeData';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
@@ -308,10 +308,11 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client, { cookieStore, route }) {
+		preFetch(_config, client, { cookieStore, route }) {
 			return Promise.all([
 				client.query({ query: thanksPageQuery }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
+				client.query({ query: experimentAssignmentQuery, variables: { id: NEXT_STEPS_EXP_KEY } }),
 				client.query({ query: userAchievementProgressQuery }),
 			]).then(() => {
 				const transactionId = route?.query?.kiva_transaction_id
@@ -696,10 +697,17 @@ export default {
 			}
 		}
 
-		// Track Impact Goals Experiment
-		if (this.thanksSingleVersionEnabled) {
-			this.determineNextStepsExpEnabled();
-		}
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			NEXT_STEPS_EXP_KEY,
+			async version => {
+				this.isNextStepsExpEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-1984-Sept2025',
+		);
 
 		// Track may challenge page view
 		if (this.showMayChallengeHeader) {
@@ -724,18 +732,7 @@ export default {
 			// When this is true, it will override all logic and show the thanks page v2
 			this.jumpToGuestUpsell = true;
 		},
-		determineNextStepsExpEnabled() {
-			const nextStepsExpData = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'event-tracking',
-				NEXT_STEPS_EXP_KEY,
-				'EXP-MP-1984-Sept2025'
-			);
-
-			this.isNextStepsExpEnabled = nextStepsExpData.version === 'b';
-		}
-	}
+	},
 };
 
 </script>

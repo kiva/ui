@@ -97,8 +97,11 @@ export default function useGoalData({ apollo }) {
 	}
 
 	const goalProgress = computed(() => {
-		if (userGoal.value?.category === ID_SUPPORT_ALL) return totalLoanCount.value || 0;
-
+		if (userGoal.value?.category === ID_SUPPORT_ALL) {
+			const currentTotal = totalLoanCount.value || 0;
+			const startTotal = userGoal.value?.loanTotalAtStart || 0;
+			return Math.max(currentTotal - startTotal, 0);
+		}
 		const totalProgress = allTimeProgress.value.find(
 			entry => entry.achievementId === userGoal.value?.category
 		)?.totalProgress || 0;

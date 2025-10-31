@@ -62,10 +62,6 @@ query thanksPage {
 			key
 			value
 		}
-		mykiva_next_steps: uiExperimentSetting(key: "mykiva_next_steps") {
-			key
-			value
-		}
 	}
 	mySubscriptions(includeDisabled: false) {
 		values {
