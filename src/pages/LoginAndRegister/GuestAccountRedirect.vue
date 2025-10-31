@@ -5,6 +5,7 @@
 <script>
 import { gql } from 'graphql-tag';
 import { GUEST_COMMENT_COMMENT, GUEST_COMMENT_LOANID } from '#src/plugins/guest-comment-mixin';
+import parseGivingFundCookie from '#src/util/givingFundUtils';
 
 export default {
 	name: 'GuestAccountRedirect',
@@ -29,12 +30,25 @@ export default {
 
 				// Redirect to /checkout if there are items in the basket
 				// Redirect to loan page if there is a pending guest comment
+				// Redirect to giving fund if there is a giving fund cookie
 				// Otherwise /portfolio
 				let path = '';
 				if (data?.shop?.nonTrivialItemCount > 0) {
 					path = '/checkout';
 				} else if (cookieStore.get(GUEST_COMMENT_COMMENT) && cookieStore.get(GUEST_COMMENT_LOANID)) {
 					path = `/lend/${cookieStore.get(GUEST_COMMENT_LOANID)}`;
+				} else if (cookieStore.get('newGuestGivingFund')) {
+					// get giving fund info from cookie
+					const guestGivingFundCookie = cookieStore.get('newGuestGivingFund');
+					const givingFundData = parseGivingFundCookie(guestGivingFundCookie);
+					// use fundId to build url
+					if (givingFundData?.fundId) {
+						path = `/gf/${givingFundData.fundId}`;
+					}
+					// apply optional action query param
+					if (givingFundData?.action) {
+						query.action = givingFundData.action;
+					}
 				} else {
 					path = '/portfolio';
 				}
