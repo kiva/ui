@@ -105,6 +105,7 @@ import { setGuestAssignmentCookie } from '#src/util/myKivaUtils';
 
 const EVENT_CATEGORY = 'post-checkout';
 
+const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const cookieStore = inject('cookieStore');
 
@@ -164,7 +165,7 @@ const {
 	loadGoalData,
 	checkCompletedGoal,
 	loading: goalDataLoading,
-} = useGoalData({ loans: props.loans });
+} = useGoalData({ apollo });
 
 // Initialize goalDataInitialized to track if we've loaded goal data
 // This prevents flash of journey module before loading completes
@@ -265,7 +266,7 @@ const handleContinue = () => {
 
 onMounted(async () => {
 	if (props.isNextStepsExpEnabled) {
-		await loadGoalData();
+		await loadGoalData(props.loans);
 		await checkCompletedGoal();
 		goalDataInitialized.value = true;
 	}
