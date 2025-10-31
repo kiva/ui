@@ -17,7 +17,7 @@
 			}"
 			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
-			class="journey-card-carousel tw-w-full tw-overflow-visible"
+			class="journey-card-carousel tw-w-full"
 			@change="handleChange"
 		>
 			<template

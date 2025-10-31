@@ -82,6 +82,7 @@ const loanQuery = gql`
 	lend {
 		loan(id: $loanId) {
 			id
+			gender
 			...loanCardFieldsExtended
 		}
 		loanThemeFilter {
@@ -290,6 +291,14 @@ export default {
 					themes: [],
 					tagsData: [],
 					themesData: [],
+					backupFields: {
+						activity: this.loan.activity,
+						sector: this.loan.sector,
+						tags: this.loan.tags,
+						themes: this.loan.themes,
+						tagsData,
+						themesData
+					}
 				};
 			}
 
@@ -496,12 +505,14 @@ export default {
 			this.isAnimating = false;
 		},
 		formatAddedLoan() {
+			const themes = this.loan?.backupFields?.themes || this.loan?.themes || [];
+
 			const addedLoan = {
 				id: this.loan?.id,
 				name: this.loan?.name ?? '',
 				gender: this.loan?.gender ?? '',
 				borrowerCount: this.loan?.borrowerCount ?? 1,
-				themes: this.loan?.themes ?? [],
+				themes,
 				basketSize: this.basketCount,
 			};
 			this.$emit('show-cart-modal', addedLoan);

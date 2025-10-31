@@ -65,8 +65,8 @@
 		</p>
 
 		<section>
-			<h2>
-				<a name="participation"></a>1. Participation in the Program
+			<h2 id="participation">
+				1. Participation in the Program
 			</h2>
 
 			<div class="row summary-row">
@@ -106,7 +106,7 @@
 
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
-					<p>
+					<p id="donating-to-kiva-for-the-purpose-of-lending">
 						<span class="tw-bg-caution tw-text-black"><strong>1.1<span class="long-tab"></span>Donating to Kiva for the Purpose of Lending.</strong> From time to time Kiva may offer a feature that allows Users to create pages where they and other Users can donate funds to Kiva for the purpose of lending to Borrowers (“Donate-to-Lend Pages”).  Money donated through a Donate-to-Lend Page is permanently donated to Kiva as a tax-exempt eligible donation (in the United States).  Kiva will then apply the aggregated donated funds toward loans meeting the criteria designated on the Donate-to-Lend Page.  Users who donate through a Donate-to-Lend Page will not have the ability to select individual Lending Partners or Borrowers to receive the money, although Kiva may share information with the donors about the loans that have received the money.  Repayments from the loans supported by a Donate-to-Lend Page will continue to be re-lent indefinitely, provided that (a) Kiva may use a portion of the money repaid each month to help fund Kiva's operations; and (b) Kiva reserves the right, in its sole discretion and at any time, to discontinue relending from a Donate-to-Lend Page and apply the money toward other purposes in line with its charitable mission.  More information about the amounts that will be used for supporting Kiva's operations can be found in the respective Donate-to-Lend Page's FAQs.</span>
 					</p>
 
@@ -126,7 +126,7 @@
 
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
-					<p>
+					<p id="lending-your-own-funds">
 						<strong>1.2<span class="long-tab"></span>Lending Your Own Funds.</strong> In contrast to the donation-for-lending feature described above in Section 1.1, the Website also enables Users to lend their own funds toward posted fundraising requests, with eligibility to receive repayments (each, a “Loan”). When you make one or more Loans through the Website, you are referred to in these Terms of Use as a “Lender.” By making a Loan through the Website, whether manually or via Kiva's Auto-Lending feature (as defined below), you are instructing Kiva to apply your Kiva Credit to fund a Borrower and/or Lending Partner through the Website. Technically speaking, there is no direct contractual relationship between you and the Lending Partners or Borrowers designated to receive your funds, and Kiva may, in certain circumstances, be considered the "lender" on your behalf when you make Loans on the Website.
 					</p>
 
@@ -349,7 +349,7 @@
 				</div>
 			</div>
 
-			<p>
+			<p id="guest-checkout">
 				<strong>1.3<span class="long-tab"></span>Guest Checkout</strong>
 			</p>
 
@@ -369,7 +369,7 @@
 				</div>
 			</div>
 
-			<p>
+			<p id="insufficient-funds">
 				<strong>1.4<span class="long-tab"></span>Insufficient Funds.</strong>
 			</p>
 
@@ -389,7 +389,7 @@
 				</div>
 			</div>
 
-			<p>
+			<p id="subscriptions">
 				<strong>1.5<span class="long-tab"></span>Subscriptions.</strong>
 			</p>
 
@@ -409,7 +409,7 @@
 				</div>
 			</div>
 
-			<p>
+			<p id="tax-deductibility">
 				<strong>1.6<span class="long-tab"></span>Tax Deductibility.</strong>
 			</p>
 
@@ -432,7 +432,7 @@
 				</div>
 			</div>
 
-			<p>
+			<p id="loan-records">
 				<strong>1.7<span class="long-tab"></span>Loan Records.</strong>
 			</p>
 
@@ -452,7 +452,7 @@
 				</div>
 			</div>
 
-			<p>
+			<p id="user-account-inactivity-disposal-of-funds-and-account-closure">
 				<strong>1.8<span class="long-tab"></span>User Account Inactivity, Disposal of Funds, and Account Closure.</strong>
 			</p>
 
@@ -492,7 +492,7 @@
 				</div>
 			</div>
 
-			<p>
+			<p id="promotional-products">
 				<strong>1.9<span class="long-tab"></span>Promotional Products.</strong>
 			</p>
 
@@ -515,7 +515,7 @@
 				</div>
 			</div>
 
-			<p>
+			<p id="kiva-cards">
 				<strong>1.10<span class="long-tab"></span>Kiva Cards.</strong>
 			</p>
 
@@ -537,13 +537,13 @@
 		</section>
 
 		<section>
-			<h2>
-				<a name="acceptable-use"></a>2. Acceptable Use
+			<h2 id="acceptable-use">
+				2. Acceptable Use
 			</h2>
 
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
-					<p>
+					<p id="appropriate-conduct">
 						<strong>2.1<span class="long-tab"></span>Appropriate Conduct.</strong> You may access and use the Website for your personal, non-commercial use in connection with the Program (provided that Borrowers may promote their businesses on their Loan profile pages). The Website may not be accessed or used by you in connection with any other endeavors – commercial or otherwise – except as previously approved in writing by an authorized representative of Kiva. Your access and use of the Website and participation in the Program shall be in strict compliance with this Agreement, including, without limitation, Kiva's Privacy Policy, all other procedures and guidelines set forth on the Website and as part of the Program, as well as applicable law. Only authorized Lending Partners and authorized Borrowers may seek Loans on the Website or otherwise through the Program (provided that you may apply to become an authorized Borrower through Kiva’s formal application process). Kiva has the right to investigate and take appropriate legal action (including, without limitation, civil, criminal and injunctive redress) against any illegal and/or unauthorized uses of the Website or exploitations of the Program, including collecting or harvesting (whether or not by automated scripts) the name, email address or any other personal or confidential information of any User, Lending Partner, Borrower or any other person by electronic or other means for any reason, including, without limitation, the purpose of sending unsolicited email and unauthorized framing of or linking to the Website.
 					</p>
 
@@ -568,7 +568,7 @@
 
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
-					<p>
+					<p id="safety-and-security">
 						<strong>2.2<span class="long-tab"></span>Safety and Security.</strong> To protect your own safety and well-being, you agree to take prudent safeguards and precautions in your participation in the Program, including without limitation in your interaction with other Users, whether offline or online. Kiva strongly recommends that you do not post any personal contact information (for example, personal email addresses, personal phone numbers or home addresses) and use your discretion if any person (a) requests to communicate outside of the Website (for example, by email, phone or in-person), (b) requests money, goods or any similar type of assistance other than through an official Loan request on the Website, (c) asks for assistance with personal transactions (for example, depositing funds and shipping merchandise), or (d) requests your personal contact information or financial information. You agree never to share (i) your credit card number or bank information, (ii) Social Security Number or government-issued identification numbers (for example, driver's license number) or (iii) mother's maiden name or other private information that can be used to access your financial information. As with any interaction, keep in mind that it is always possible for people to misrepresent themselves.
 					</p>
 
@@ -588,7 +588,7 @@
 
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
-					<p>
+					<p id="kiva-api">
 						<strong>2.3<span class="long-tab"></span>Kiva API.</strong> The Kiva API is a service that Kiva provides to allow third parties to develop and offer applications, services and features using information from the Website and Program (“Third Party Applications”). Third Party Applications are not created or maintained by Kiva but by third parties. These third parties’ terms of service and privacy policies govern your use of Third Party Applications. Any authorization you give to any third party or Third Party Application to access your account information and/or take actions on your behalf does not relieve you of any of your responsibilities under this Agreement. Kiva gives no guarantees or warranties with respect to any Third Party Application and is not responsible for your use of or inability to use any Third Party Application, including without limitation the content, accuracy, reliability or security of Third Party Applications or the privacy practices or other policies of third parties.
 					</p>
 				</div>
@@ -604,7 +604,7 @@
 
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
-					<p>
+					<p id="kiva-resources-independent-kiva-events">
 						<strong>2.4<span class="long-tab"></span>Kiva Resources; Independent Kiva Events.</strong> Kiva does not review, approve, endorse, advise, or provide organizational oversight of Kiva-themed clubs and/or events established or held by persons who are not Kiva employees or formal volunteers. For example, educators and students might form independent school Kiva clubs or hold Kiva-themed lessons, and Users might host Kiva-themed events in their communities. While Kiva makes resources available, such as event ideas, Kiva in a box, Kiva U Toolkits, and lesson plans (collectively, the “Resources”), individuals and groups that use the Resources do not have any official affiliation with Kiva. Although Kiva does not provide direct oversight or guidance to Kiva-themed clubs, groups, and/or events, you agree to uphold Kiva’s values at all meetings and events, and in any promotion of your club, group or event. This means that you will promote an environment where all group members and/or event attendees are treated with respect, and are not discriminated against based on factors such as race, ethnicity, religion, gender or gender identity, sexual orientation, age, national origin, disability, or socioeconomic status.
 					</p>
 
@@ -628,13 +628,13 @@
 		</section>
 
 		<section>
-			<h2>
-				<a name="proprietary-rights"></a>3. Proprietary Rights
+			<h2 id="proprietary-rights">
+				3. Proprietary Rights
 			</h2>
 
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
-					<p>
+					<p id="rights-in-content-on-the-website">
 						<strong>3.1<span class="long-tab"></span>Rights in Content on the Website.</strong> "Kiva," the "Kiva" logo and other Kiva graphics, logos, designs, page headers, button icons, scripts, names and branding are trademarks, service marks or trade dress of Kiva (collectively, "Kiva Marks"). Kiva Marks may not be used, including, without limitation, as part of trademarks or domain names, in connection with any product or service in any manner that is likely to cause confusion and may not be copied, imitated, or used, in whole or in part, without the prior written permission of Kiva. Kiva or its licensors own and retain all proprietary rights in the Program, the Website and all content, material and information posted, uploaded, transmitted or otherwise shared by Kiva thereon (collectively, "Content"). The Website and Program contain the copyrighted material, trademarks and other proprietary information of Kiva and its licensors. You may display and make limited copies of the Content (other than the Kiva Marks) for your personal, non-commercial use in connection with your participation in the Program (except as provided herein), but you may not alter, modify, publish, distribute, publicly display or sell any Content or other such proprietary information, or otherwise copy, transmit or use any Content or other such proprietary information without the express, prior written permission of Kiva. In addition, to the extent you receive information from Kiva, its Lending Partners, Trustees, or Borrowers with respect to any Borrower, and that information is later removed from the Website (including, without limitation, due to the Loan delinquency or default of a particular Borrower or the sensitive nature of particular Borrower profiles), you may not further disclose or otherwise provide such information to another party in a way that allows a personal identification of such Borrower, if such Borrower (either directly or through the corresponding Lending Partner, Trustee, or Kiva) has opted to have his or her identity withheld on the Website.
 					</p>
 				</div>
@@ -684,7 +684,7 @@
 
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
-					<p>
+					<p id="notices-of-infringement">
 						<strong>3.2<span class="long-tab"></span>Notices of Infringement.</strong> To file a notice of infringing material on the Website, please provide a notification containing the following details:
 					</p>
 
@@ -767,7 +767,7 @@
 
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
-					<p>
+					<p id="third-party-content-and-sites">
 						<strong>3.3<span class="long-tab"></span>Third Party Content and Sites.</strong> The Website contains (or you may be sent through the Website) links to other web sites ("Third Party Sites"), as well as content, information, images, photographs, pictures and materials (including, without limitation, text, graphics, designs, music, sound, video, information and software) belonging to or originating from third parties ("Third Party Content"). Such Third Party Sites and Third Party Content are not investigated, monitored or checked for accuracy, appropriateness, or completeness by Kiva, and Kiva is not responsible for any Third Party Sites accessed through the Website or any Third Party Content posted, uploaded, transmitted or otherwise shared on the Website, including without limitation the content, accuracy, offensiveness, opinions, reliability or policies of or contained in the Third Party Sites or the Third Party Content. Inclusion of or linking to any Third Party Site or any Third Party Content does not imply approval or endorsement thereof by Kiva. If you decide to leave the Website and access a Third Party Site, you do so at your own risk and you should be aware that Kiva’s terms and policies no longer govern. You should review the applicable terms and policies, including privacy and data gathering practices, of any site to which you navigate from the Website.
 					</p>
 				</div>
@@ -783,8 +783,8 @@
 		</section>
 
 		<section>
-			<h2>
-				<a name="disclaimers"></a>4. Disclaimers; Limitation of Liability
+			<h2 id="disclaimers">
+				4. Disclaimers; Limitation of Liability
 			</h2>
 
 			<div class="row summary-row">
@@ -849,8 +849,8 @@
 		</section>
 
 		<section>
-			<h2>
-				<a name="disputes"></a>5. Governing Law; Resolution of Disputes; Arbitration and Waivers
+			<h2 id="disputes">
+				5. Governing Law; Resolution of Disputes; Arbitration and Waivers
 			</h2>
 
 			<div class="row summary-row">
@@ -879,8 +879,8 @@
 		</section>
 
 		<section>
-			<h2>
-				<a name="indemnity"></a>6. Indemnity
+			<h2 id="indemnity">
+				6. Indemnity
 			</h2>
 
 			<div class="row summary-row">
@@ -901,8 +901,8 @@
 		</section>
 
 		<section>
-			<h2>
-				<a name="termination"></a>7. Term; Termination
+			<h2 id="termination">
+				7. Term; Termination
 			</h2>
 
 			<div class="row summary-row">
@@ -925,8 +925,8 @@
 		</section>
 
 		<section id="final-section-padding-termsofuse">
-			<h2>
-				<a name="agreement"></a>8. Entire Agreement; Severability; Assignment
+			<h2 id="agreement">
+				8. Entire Agreement; Severability; Assignment
 			</h2>
 
 			<div class="row summary-row">
@@ -964,6 +964,16 @@ export default {
 	head: {
 		title: 'Terms Of Use'
 	},
+	mounted() {
+		// check for hash and scroll to it
+		const { hash } = this.$route;
+		if (hash) {
+			const element = document.querySelector(hash);
+			if (element) {
+				element.scrollIntoView();
+			}
+		}
+	}
 };
 </script>
 

@@ -166,6 +166,7 @@
 </template>
 
 <script>
+import { inject } from 'vue';
 import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 
@@ -255,10 +256,7 @@ export default {
 			showGoalModal: false,
 			isNextStepsExpEnabled: undefined,
 			checkedArr: this.regionsData.map(() => false),
-			goalProgress: 0,
-			goalProgressLoading: false,
-			userGoal: null,
-			userGoalAchieved: false,
+			goalProgressLoading: true,
 		};
 	},
 	computed: {
@@ -319,9 +317,35 @@ export default {
 			'EXP-MP-1984-Sept2025',
 		);
 	},
+	setup(props) {
+		const apollo = inject('apollo');
+
+		const {
+			goalProgress,
+			userGoal,
+			userGoalAchieved,
+			loadGoalData,
+			storeGoalPreferences,
+			checkCompletedGoal,
+		} = useGoalData({
+			loans: props.loans,
+			apollo,
+		});
+
+		return {
+			goalProgress,
+			userGoal,
+			userGoalAchieved,
+			loadGoalData,
+			storeGoalPreferences,
+			checkCompletedGoal,
+		};
+	},
 	async mounted() {
 		if (this.isNextStepsExpEnabled && typeof window !== 'undefined') {
 			await this.loadGoalData();
+			await this.checkCompletedGoal('portfolio');
+			this.goalProgressLoading = false;
 		}
 
 		if (this.isNextStepsExpEnabled && !this.userLentToAllRegions) {
@@ -351,23 +375,6 @@ export default {
 		if (this.disconnectRegionWatcher) this.disconnectRegionWatcher();
 	},
 	methods: {
-		async loadGoalData() {
-			const {
-				goalProgress,
-				userGoal,
-				userGoalAchieved,
-				runComposable,
-			} = useGoalData({
-				loans: this.loans,
-				apollo: this.apollo,
-			});
-			this.goalProgressLoading = true;
-			await runComposable();
-			this.goalProgress = goalProgress.value;
-			this.userGoal = userGoal.value;
-			this.userGoalAchieved = userGoalAchieved.value;
-			this.goalProgressLoading = false;
-		},
 		regionImageSource(region) {
 			const regionImages = {
 				Africa,
@@ -391,13 +398,7 @@ export default {
 			this.$router.push(`/lend/filter?country=${region?.countries.join(',')}`);
 		},
 		async setGoal(preferences) {
-			const {
-				storeGoalPreferences,
-			} = useGoalData({
-				loans: this.loans,
-				apollo: this.apollo,
-			});
-			await storeGoalPreferences(preferences);
+			await this.storeGoalPreferences(preferences);
 			await this.loadGoalData();
 			this.showGoalModal = false;
 		},

@@ -1,8 +1,8 @@
 <template>
 	<div
-		class="card-container tw-h-full"
+		class="card-container tw-h-full goal-card-bg"
 		:class="{
-			'goal-card-bg': !userHasGoal && !loading,
+			'hide-bg': userHasGoal || loading,
 		}"
 	>
 		<kv-loading-placeholder v-if="loading" class="achievement-card-bg" />
@@ -56,7 +56,6 @@
 					</div>
 					<KvButton
 						class="tw-flex-grow"
-						v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
 						@click="handleContinueClick"
 					>
 						Continue
@@ -83,17 +82,19 @@
 
 <script setup>
 
-import { computed, onMounted, inject } from 'vue';
+import { computed, watch, inject } from 'vue';
 import {
 	KvMaterialIcon, KvButton, KvProgressBar, KvLoadingPlaceholder
 } from '@kiva/kv-components';
 import { mdiCheckCircleOutline } from '@mdi/js';
 import { formatRichTextContent } from '#src/util/contentfulUtils';
 import GoalCardCareImg from '#src/assets/images/my-kiva/goal-card-care.svg';
-import {
+import useBadgeData, {
 	ID_BASIC_NEEDS,
+	ID_CLIMATE_ACTION,
+	ID_REFUGEE_EQUALITY,
 	ID_US_ECONOMIC_EQUALITY,
-	ID_WOMENS_EQUALITY
+	ID_WOMENS_EQUALITY,
 } from '#src/composables/useBadgeData';
 import { useRouter } from 'vue-router';
 
@@ -121,10 +122,10 @@ defineEmits(['open-goal-modal']);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
+const { getLoanFindingUrl } = useBadgeData();
+
 const loansToReachGoal = computed(() => props.userGoal?.target || 0);
-
 const userHasGoal = computed(() => !!props.userGoal?.category);
-
 const title = computed(() => {
 	if (userHasGoal.value) return 'Work towards your goal';
 	return 'Set your first impact goal!';
@@ -142,39 +143,42 @@ const getContentfulKey = category => {
 	}
 };
 
-const getGoalCategoryUrl = category => {
+const getCategoryHeader = category => {
 	switch (category) {
-		case 'us-economic-equality':
+		case ID_US_ECONOMIC_EQUALITY:
 			return 'U.S. entrepreneurs';
-		case 'basic-needs':
+		case ID_BASIC_NEEDS:
 			return 'loans for basic needs';
-		case 'eco-friendly':
+		case ID_CLIMATE_ACTION:
 			return 'eco-friendly loans';
-		default: return category;
+		case ID_WOMENS_EQUALITY:
+			return 'women';
+		case ID_REFUGEE_EQUALITY:
+			return 'refugees';
+		default: return 'loans';
 	}
 };
 
 const ctaHref = computed(() => {
-	const string = `Your goal: Support ${props.userGoal?.target} ${getGoalCategoryUrl(props.userGoal?.category)}`;
-	const encodedString = encodeURIComponent(string);
-	return `/lend/filter?header=${encodedString}`;
+	const categoryHeader = getCategoryHeader(props.userGoal?.category);
+	const string = `Your goal: Support ${props.userGoal?.target} ${categoryHeader}`;
+	const encodedHeader = encodeURIComponent(string);
+	const loanFindingUrl = getLoanFindingUrl(props.userGoal?.category, router.currentRoute.value);
+	return `${loanFindingUrl}?header=${encodedHeader}`;
 });
 
 const achievementGoalImg = computed(() => {
 	const contentfulCategory = getContentfulKey(props.userGoal?.category) || '';
 	if (!contentfulCategory) return '';
 	const key = `my-kiva-${contentfulCategory}-journey`;
-
 	const richText = props.heroSlides.find(slide => slide?.fields?.key === key);
 	let backgroundImage = null;
 	if (richText) {
 		const formattedRichText = formatRichTextContent(richText);
-
 		backgroundImage = formattedRichText?.richText?.content.find(
 			item => item.nodeType === 'embedded-asset-block' && item.data?.target?.fields?.file?.url
 		);
 	}
-
 	return backgroundImage?.data?.target?.fields?.file?.url || '';
 });
 
@@ -183,10 +187,11 @@ const handleContinueClick = () => {
 	router.push(ctaHref.value);
 };
 
-onMounted(() => {
-	$kvTrackEvent('portfolio', 'view', 'goal-set', props.userGoal?.category, props.goalProgress);
+watch(() => props.userGoal, (newVal, oldVal) => {
+	if (newVal?.target && newVal !== oldVal) {
+		$kvTrackEvent('portfolio', 'show', 'goal-set', newVal.category, newVal.target);
+	}
 });
-
 </script>
 
 <style lang="postcss" scoped>
@@ -203,11 +208,15 @@ onMounted(() => {
 	content: '';
 	width: 400px;
 	height: 500px;
-	background: url('/src/assets/images/my-kiva/goal-card-bg.jpg') lightgray;
+	background: url('/src/assets/images/my-kiva/goal-card-bg.png') lightgray;
 	transform: rotate(17deg);
 	left: 40%;
 
 	@apply tw-absolute tw-bg-cover tw-bg-center tw-bg-no-repeat tw-z-base tw-right-0 tw-bg-blend-overlay;
+}
+
+.hide-bg::before {
+	@apply tw-opacity-0;
 }
 
 .goal-card-bg > * {

@@ -41,12 +41,14 @@ function getGoalDisplayName(category) {
  */
 export default function useGoalData({ loans, apollo: apolloParam }) {
 	const apollo = apolloParam || inject('apollo');
+	const $kvTrackEvent = inject('$kvTrackEvent');
 
 	const allTimeProgress = ref([]);
 	const loading = ref(true);
 	const totalLoanCount = ref(null);
 	const userGoal = ref(null);
 	const userPreferences = ref(null);
+	const userGoalAchievedNow = ref(false);
 
 	async function loadPreferences(fetchPolicy = 'cache-first') {
 		try {
@@ -84,7 +86,7 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 	}
 
 	async function storeGoalPreferences(updates) {
-		if (!userPreferences.value) {
+		if (!userPreferences.value?.id) {
 			await createUserPreferences(apollo, { goals: [] });
 			await loadPreferences('network-only'); // Reload after create
 		}
@@ -108,13 +110,8 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 
 	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
 
-	async function runComposable() {
-		loading.value = true;
-		const parsedPrefs = await loadPreferences();
-		await loadProgress();
-		setGoalState(parsedPrefs);
-		// Auto-update if active goal achieved
-		if (userGoal.value && userGoalAchieved.value) {
+	const checkCompletedGoal = async (category = 'post-checkout') => {
+		if (userGoal.value && userGoalAchieved.value && userGoal.value.status !== 'completed') {
 			await storeGoalPreferences({
 				goalName: userGoal.value.goalName,
 				dateStarted: userGoal.value.dateStarted,
@@ -122,7 +119,22 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 				count: userGoal.value.count,
 				status: 'completed',
 			});
+			$kvTrackEvent(
+				category,
+				'show',
+				'annual-goal-complete',
+				userGoal.value.category,
+				userGoal.value.target
+			);
+			userGoalAchievedNow.value = true;
 		}
+	};
+
+	async function loadGoalData() {
+		loading.value = true;
+		const parsedPrefs = await loadPreferences();
+		await loadProgress();
+		setGoalState(parsedPrefs);
 		loading.value = false;
 	}
 
@@ -130,9 +142,11 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 		getGoalDisplayName,
 		goalProgress,
 		loading,
-		runComposable,
+		loadGoalData,
 		storeGoalPreferences,
 		userGoal,
 		userGoalAchieved,
+		userGoalAchievedNow,
+		checkCompletedGoal,
 	};
 }

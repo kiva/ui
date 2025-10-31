@@ -56,7 +56,7 @@
 			<div class="carousel-container">
 				<KvCarousel
 					ref="carousel"
-					class="borrower-carousel tw-w-full tw-overflow-visible"
+					class="borrower-carousel tw-w-full"
 					:multiple-slides-visible="true"
 					:slide-max-width="'336px'"
 					:embla-options="{ loop: false, align: 'center'}"

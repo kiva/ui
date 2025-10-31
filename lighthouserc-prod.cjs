@@ -30,7 +30,6 @@ module.exports = {
 				'categories:accessibility': 'warn',
 				'categories:best-practices': 'warn',
 				'categories:performance': 'warn',
-				'categories:pwa': 'warn',
 				'categories:seo': 'warn',
 			}
 		},

@@ -12,9 +12,9 @@
 				:receipt="receipt"
 				:monthly-donation-amount="monthlyDonationAmount"
 				:badges-achieved="badgesAchieved"
-				:my-kiva-enabled="myKivaExperimentEnabled"
 				:guest-username="guestUsername"
 				:achievements-completed="achievementsCompleted"
+				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -208,11 +208,13 @@ import { getIsMyKivaEnabled, fetchPostCheckoutAchievements, MY_KIVA_FOR_ALL_USER
 import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import useBadgeData from '#src/composables/useBadgeData';
+import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 const TY_SINGLE_VERSION_KEY = 'general.single_version_enable.value';
+const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 
 // Thanks views
 const DONATION_ONLY_VIEW = 'donation_only';
@@ -302,13 +304,15 @@ export default {
 			SINGLE_VERSION_VIEW,
 			guestUsername: '',
 			achievementsCompleted: false,
+			isNextStepsExpEnabled: false,
 		};
 	},
 	apollo: {
-		preFetch(config, client, { cookieStore, route }) {
+		preFetch(_config, client, { cookieStore, route }) {
 			return Promise.all([
 				client.query({ query: thanksPageQuery }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: 'share_ask_copy' } }),
+				client.query({ query: experimentAssignmentQuery, variables: { id: NEXT_STEPS_EXP_KEY } }),
 				client.query({ query: userAchievementProgressQuery }),
 			]).then(() => {
 				const transactionId = route?.query?.kiva_transaction_id
@@ -693,6 +697,18 @@ export default {
 			}
 		}
 
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			NEXT_STEPS_EXP_KEY,
+			async version => {
+				this.isNextStepsExpEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-1984-Sept2025',
+		);
+
 		// Track may challenge page view
 		if (this.showMayChallengeHeader) {
 			this.$kvTrackEvent('post-checkout', 'show', 'may-challenge-header', this.isGuest ? 'guest' : 'signed-in');
@@ -716,7 +732,7 @@ export default {
 			// When this is true, it will override all logic and show the thanks page v2
 			this.jumpToGuestUpsell = true;
 		},
-	}
+	},
 };
 
 </script>

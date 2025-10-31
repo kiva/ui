@@ -1,3 +1,58 @@
+## [3.39.0-rc.2](https://github.com/kiva/ui/compare/v3.39.0-rc.1...v3.39.0-rc.2) (2025-10-31)
+
+### 🐛 Bugfixes
+
+* prevent journey modal pop-in ([9cfebfa](https://github.com/kiva/ui/commit/9cfebfa6c5fa66d3ad22d2d3d188ed2d9538b977))
+* remove unneeded event ([d95959a](https://github.com/kiva/ui/commit/d95959a2f18ab9df337343275e743b7f19f5af63))
+* resolve issue with race condition in ty page ([fab1398](https://github.com/kiva/ui/commit/fab1398fa2b33d85f676c1d600ab14a40177fa93))
+* update package for new nav analytics tweaks ([b4ab597](https://github.com/kiva/ui/commit/b4ab597ac346430fb25cad5948b3325b787ef59a))
+
+## [3.39.0-rc.1](https://github.com/kiva/ui/compare/v3.38.0...v3.39.0-rc.1) (2025-10-30)
+
+### 🎉 New Features
+
+* add evet tracking to goal completed ([9bf76d3](https://github.com/kiva/ui/commit/9bf76d3d3bade3fc998ccb1404edfd1c51066733))
+* reduce goal card bg image size ([e4c8473](https://github.com/kiva/ui/commit/e4c84736c67cd6cb71da2662f2fa908947b98045))
+* remove gf donation in checkout ([7af82b1](https://github.com/kiva/ui/commit/7af82b17c2d6bbbcd8a988e27e8b63ff43e04af7))
+* side sheet sizes fix ([#6379](https://github.com/kiva/ui/issues/6379)) ([607200a](https://github.com/kiva/ui/commit/607200a080f2f10af00d93ed7589402352165e3d))
+* sidesheet styling tweaks on created ([#6381](https://github.com/kiva/ui/issues/6381)) ([a7e5597](https://github.com/kiva/ui/commit/a7e559731e289e50892f04a12bf6d1d7c2429bb4))
+* upgrade lighthouse to v0.15.x ([5288ccc](https://github.com/kiva/ui/commit/5288ccc08a71c833f75584a6d09787e951406f89))
+* usegoaldata composable refactor for flexibility ([#6403](https://github.com/kiva/ui/issues/6403)) ([27f3430](https://github.com/kiva/ui/commit/27f343064697b6496e0a374cf1c2e12b5f0c627c))
+
+### 🐛 Bugfixes
+
+* add next steps flag to control module conditions ([6ee8ceb](https://github.com/kiva/ui/commit/6ee8cebc9185521afeab6c6a8bf9087a23e6ddef))
+* adjust impact goal analytics on mykiva ([5abfab9](https://github.com/kiva/ui/commit/5abfab9279cf37d9bd2be270c3652a455a166fbd))
+* ai pills loan card fields backup ([#6395](https://github.com/kiva/ui/issues/6395)) ([d6cbee2](https://github.com/kiva/ui/commit/d6cbee2514a1732ff7e27254621d54e5ccea5779))
+* all achievements tracking was always firing ([ea65c32](https://github.com/kiva/ui/commit/ea65c32c1aea9515a741db7d8c090eee0ba65076))
+* apply proper KvTrack event names ([83b3ffd](https://github.com/kiva/ui/commit/83b3ffd7dd0dcbf5f2b539879698ad6913710646))
+* calling create user preferences when already has and control module waiting on loading ([d9a05cd](https://github.com/kiva/ui/commit/d9a05cdf04669251e60436cca75c6e9ce28afd65))
+* cleaned up composable tests ([dbae931](https://github.com/kiva/ui/commit/dbae931fb5013345b22dd57b1e3020fc8346a17b))
+* cleanup for ty page especially for goals ([c9b0cc1](https://github.com/kiva/ui/commit/c9b0cc19093e4fce81e4b46ba91f887e4a3edd17))
+* default header category ([d4ff2ee](https://github.com/kiva/ui/commit/d4ff2ee042d3f0f413bba6419a81fd7f174e42dd))
+* ensure goal card loading at server render ([d79d428](https://github.com/kiva/ui/commit/d79d428af3cfa6c19c97491f258515997f3ae6ca))
+* get next steps flag before loading thanks page modules ([a5081e1](https://github.com/kiva/ui/commit/a5081e1acf55049a9625551cd94e3b5710fe8d01))
+* goalCard button filtering ([cad0d83](https://github.com/kiva/ui/commit/cad0d8318f8241270935c5637265c1f4932d53d7))
+* handling modules with computed and adding next steps flag to badge modules logic ([6321edd](https://github.com/kiva/ui/commit/6321eddeb6cd6bed1fe2ceb1e35596eb080e4d21))
+* implement new clearMetadata param on update donation mutation and gf item ([0b1d9e2](https://github.com/kiva/ui/commit/0b1d9e25b2b1593e2c484d8d990e0985c113f3ad))
+* isNextSteps control version was not showing modules ([ae0dcca](https://github.com/kiva/ui/commit/ae0dcca43dc01e57ba64bd318df7f4aaeeb716e8))
+* issues with journey module and control module ([f90ea5f](https://github.com/kiva/ui/commit/f90ea5f7da0e6a978d8310b1b6d3747ef289d60f))
+* load goal card bg image and hide it conditionally ([415ea54](https://github.com/kiva/ui/commit/415ea549854b8acbb6f0b49ce06d1423902a5a2e))
+* lowest goal of 1 loan ([89f5a84](https://github.com/kiva/ui/commit/89f5a8455948e33b2c15505fecf1d690b7c56cfb))
+* next step version check ([43642e0](https://github.com/kiva/ui/commit/43642e0433a7f8aa4dd1518a093b851a24753ec6))
+* preserve prior jumplink anchor names in case they are used elsewhere ([16d83b6](https://github.com/kiva/ui/commit/16d83b6b6730a1cc5774a7b2457fbb0fd8af14cf))
+* redirect to filter page if no category for impact goal ([d2eaaab](https://github.com/kiva/ui/commit/d2eaaabbdfdf7e471ea44f90cd829cc79e80b747))
+* remove bleed from MyKiva carousels ([33476bf](https://github.com/kiva/ui/commit/33476bf07f4358e0a0adce9f2f6dd9ddaf1c3d96))
+* remove old goal card bg ([11691ea](https://github.com/kiva/ui/commit/11691ea4e16e816d2434a1cf116768b5602c6925))
+* set empty string when there is not a category for an impact goal ([a5c20c8](https://github.com/kiva/ui/commit/a5c20c8e1ca6cd7baaf46016f151018e26729a8b))
+* side sheet ssr fixed ([#6376](https://github.com/kiva/ui/issues/6376)) ([8a5f11a](https://github.com/kiva/ui/commit/8a5f11a41301880553ef49b29857630a8dd06ad0))
+* sidesheet min height update ([#6383](https://github.com/kiva/ui/issues/6383)) ([7d0f9d7](https://github.com/kiva/ui/commit/7d0f9d7d38f665346af32e612647d1e6a70dee02))
+* tracking events on remove gf donation ([5c04264](https://github.com/kiva/ui/commit/5c0426438bc849821329eff57915bb38bcf5e8c0))
+* ty page race condition when compiled ([b01a204](https://github.com/kiva/ui/commit/b01a204bd9346944ce7349953cb21208955d36ac))
+* update index anchors and add new id anchors for subsections + mounted action to scroll to them ([b4beaf9](https://github.com/kiva/ui/commit/b4beaf9731155bc785cd386d286bd27e21869e4c))
+* update nav shared component ([e3b98e8](https://github.com/kiva/ui/commit/e3b98e8932c02f6df8367da3895952d805f4661e))
+* update package for side sheet cta ([72ec181](https://github.com/kiva/ui/commit/72ec181f446b1dcff3ce47d5c465d15e16013d73))
+
 ## [3.38.0](https://github.com/kiva/ui/compare/v3.37.0...v3.38.0) (2025-10-23)
 
 ### 🎉 New Features

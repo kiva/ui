@@ -827,19 +827,15 @@ describe('useBadgeData.js', () => {
 		it('should return true if all tiers in all badges are completed', () => {
 			const badges = [
 				{
-					achievementData: {
-						tiers: [
-							{ completedDate: '2024-10-22T18:49:21Z' },
-							{ completedDate: '2024-10-23T18:49:21Z' }
-						]
-					}
+					tiers: [
+						{ completedDate: '2024-10-22T18:49:21Z' },
+						{ completedDate: '2024-10-23T18:49:21Z' }
+					]
 				},
 				{
-					achievementData: {
-						tiers: [
-							{ completedDate: '2024-10-24T18:49:21Z' }
-						]
-					}
+					tiers: [
+						{ completedDate: '2024-10-24T18:49:21Z' }
+					]
 				}
 			];
 			expect(allAchievementsCompleted(badges)).toBe(true);
@@ -848,22 +844,435 @@ describe('useBadgeData.js', () => {
 		it('should return false if any tier in any badge is not completed', () => {
 			const badges = [
 				{
-					achievementData: {
-						tiers: [
-							{ completedDate: '2024-10-22T18:49:21Z' },
-							{ completedDate: null }
-						]
-					}
+					tiers: [
+						{ completedDate: '2024-10-22T18:49:21Z' },
+						{ completedDate: null }
+					]
 				},
 				{
+					tiers: [
+						{ completedDate: '2024-10-24T18:49:21Z' }
+					]
+				}
+			];
+			expect(allAchievementsCompleted(badges)).toBe(false);
+		});
+
+		it('should return true if badges have empty tiers array', () => {
+			const badges = [
+				{
+					tiers: []
+				}
+			];
+			// Empty tiers array passes .every() check, returning true
+			expect(allAchievementsCompleted(badges)).toBe(true);
+		});
+
+		it('should filter out badges without tiers array', () => {
+			const badges = [
+				{
+					tiers: [
+						{ completedDate: '2024-10-22T18:49:21Z' }
+					]
+				},
+				{
+					// No tiers property
+				}
+			];
+			expect(allAchievementsCompleted(badges)).toBe(true);
+		});
+	});
+
+	describe('fetchAchievementData', () => {
+		it('should fetch achievement data and set badgeAchievementData', async () => {
+			const mockAchievementData = {
+				userAchievementProgress: {
+					lendingAchievements: [{ id: 'achievement1' }],
+					tieredLendingAchievements: [{ id: 'achievement2' }]
+				}
+			};
+
+			const apolloMock = {
+				query: vi.fn().mockResolvedValue({ data: mockAchievementData })
+			};
+
+			const { fetchAchievementData, badgeAchievementData } = useBadgeData();
+
+			await fetchAchievementData(apolloMock);
+
+			expect(apolloMock.query).toHaveBeenCalledWith({
+				query: expect.anything(),
+				variables: { publicId: null }
+			});
+
+			await vi.waitFor(() => {
+				expect(badgeAchievementData.value).toEqual([
+					{ id: 'achievement1' },
+					{ id: 'achievement2' }
+				]);
+			});
+		});
+
+		it('should fetch achievement data with publicId when provided', async () => {
+			const mockAchievementData = {
+				userAchievementProgress: {
+					lendingAchievements: [],
+					tieredLendingAchievements: []
+				}
+			};
+
+			const apolloMock = {
+				query: vi.fn().mockResolvedValue({ data: mockAchievementData })
+			};
+
+			const { fetchAchievementData } = useBadgeData();
+
+			await fetchAchievementData(apolloMock, 'user123');
+
+			expect(apolloMock.query).toHaveBeenCalledWith({
+				query: expect.anything(),
+				variables: { publicId: 'user123' }
+			});
+		});
+
+		it('should handle errors when fetching achievement data', async () => {
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+			const apolloMock = {
+				query: vi.fn().mockRejectedValue(new Error('Network error'))
+			};
+
+			const { fetchAchievementData, badgeAchievementData } = useBadgeData();
+
+			await fetchAchievementData(apolloMock);
+
+			expect(badgeAchievementData.value).toBeUndefined();
+
+			consoleErrorSpy.mockRestore();
+		});
+	});
+
+	describe('fetchContentfulData', () => {
+		it('should fetch contentful data and set badgeContentfulData', async () => {
+			const mockContentfulData = {
+				contentful: {
+					entries: {
+						items: [
+							{
+								fields: {
+									key: 'basic-needs-level-1',
+									levelName: '1',
+									challengeName: 'Basic needs',
+									badgeImage: {
+										fields: {
+											file: {
+												url: '//images.ctfassets.net/test.svg'
+											}
+										}
+									},
+									shareFact: 'Test fact',
+									shareFactFootnote: 'Test footnote',
+									shareFactUrl: 'https://test.com'
+								}
+							}
+						]
+					}
+				}
+			};
+
+			const apolloMock = {
+				query: vi.fn().mockResolvedValue({ data: mockContentfulData })
+			};
+
+			const { fetchContentfulData, badgeContentfulData } = useBadgeData();
+
+			await fetchContentfulData(apolloMock);
+
+			expect(apolloMock.query).toHaveBeenCalledWith({
+				query: expect.anything(),
+				variables: {
+					contentType: 'challenge',
+					limit: 200
+				}
+			});
+
+			await vi.waitFor(() => {
+				expect(badgeContentfulData.value).toEqual([
+					{
+						id: 'basic-needs',
+						level: 1,
+						levelName: '1',
+						challengeName: 'Basic needs',
+						imageUrl: '//images.ctfassets.net/test.svg',
+						shareFact: 'Test fact',
+						shareFactFootnote: 'Test footnote',
+						shareFactUrl: 'https://test.com'
+					}
+				]);
+			});
+		});
+
+		it('should handle errors when fetching contentful data', async () => {
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+			const apolloMock = {
+				query: vi.fn().mockRejectedValue(new Error('Network error'))
+			};
+
+			const { fetchContentfulData, badgeContentfulData } = useBadgeData();
+
+			await fetchContentfulData(apolloMock);
+
+			expect(badgeContentfulData.value).toBeUndefined();
+
+			consoleErrorSpy.mockRestore();
+		});
+	});
+
+	describe('getContentfulLevelData', () => {
+		it('should return cleaned up contentful data', () => {
+			const { getContentfulLevelData } = useBadgeData();
+			const entry = {
+				fields: {
+					key: 'basic-needs-level-1',
+					levelName: '1',
+					challengeName: 'Basic needs',
+					badgeImage: {
+						fields: {
+							file: {
+								url: '//images.ctfassets.net/test.svg'
+							}
+						}
+					},
+					shareFact: 'Test fact',
+					shareFactFootnote: 'Test footnote',
+					shareFactUrl: 'https://test.com'
+				}
+			};
+
+			expect(getContentfulLevelData(entry)).toEqual({
+				id: 'basic-needs',
+				level: 1,
+				levelName: '1',
+				challengeName: 'Basic needs',
+				imageUrl: '//images.ctfassets.net/test.svg',
+				shareFact: 'Test fact',
+				shareFactFootnote: 'Test footnote',
+				shareFactUrl: 'https://test.com'
+			});
+		});
+
+		it('should handle missing optional fields with defaults', () => {
+			const { getContentfulLevelData } = useBadgeData();
+			const entry = {
+				fields: {
+					key: 'test-level-2'
+				}
+			};
+
+			expect(getContentfulLevelData(entry)).toEqual({
+				id: 'test',
+				level: 2,
+				levelName: '',
+				challengeName: '',
+				imageUrl: '',
+				shareFact: '',
+				shareFactFootnote: '',
+				shareFactUrl: ''
+			});
+		});
+
+		it('should handle undefined entry', () => {
+			const { getContentfulLevelData } = useBadgeData();
+
+			expect(getContentfulLevelData(undefined)).toEqual({
+				id: '',
+				level: 0,
+				levelName: '',
+				challengeName: '',
+				imageUrl: '',
+				shareFact: '',
+				shareFactFootnote: '',
+				shareFactUrl: ''
+			});
+		});
+	});
+
+	describe('getLevelCaption', () => {
+		const { getLevelCaption } = useBadgeData();
+
+		it('should return "One" for level 1', () => {
+			expect(getLevelCaption({ level: 1 })).toBe('One');
+		});
+
+		it('should return "Two" for level 2', () => {
+			expect(getLevelCaption({ level: 2 })).toBe('Two');
+		});
+
+		it('should return "Three" for level 3', () => {
+			expect(getLevelCaption({ level: 3 })).toBe('Three');
+		});
+
+		it('should return "Four" for level 4', () => {
+			expect(getLevelCaption({ level: 4 })).toBe('Four');
+		});
+
+		it('should return "Five" for level 5', () => {
+			expect(getLevelCaption({ level: 5 })).toBe('Five');
+		});
+
+		it('should return "Six" for level 6', () => {
+			expect(getLevelCaption({ level: 6 })).toBe('Six');
+		});
+
+		it('should return "Seven" for level 7', () => {
+			expect(getLevelCaption({ level: 7 })).toBe('Seven');
+		});
+
+		it('should return "Eight" for level 8', () => {
+			expect(getLevelCaption({ level: 8 })).toBe('Eight');
+		});
+
+		it('should return "Nine" for level 9', () => {
+			expect(getLevelCaption({ level: 9 })).toBe('Nine');
+		});
+
+		it('should return "Ten" for level 10', () => {
+			expect(getLevelCaption({ level: 10 })).toBe('Ten');
+		});
+
+		it('should return the numeric level for levels beyond 10', () => {
+			expect(getLevelCaption({ level: 11 })).toBe(11);
+			expect(getLevelCaption({ level: 100 })).toBe(100);
+		});
+
+		it('should return undefined for missing level', () => {
+			expect(getLevelCaption({})).toBeUndefined();
+		});
+	});
+
+	describe('getCompletedBadges with tiers', () => {
+		it('should return completed badges with tier data', () => {
+			const { getCompletedBadges } = useBadgeData();
+			const badges = [
+				{
+					id: 'badge1',
 					achievementData: {
 						tiers: [
-							{ completedDate: '2024-10-24T18:49:21Z' }
+							{ level: 1, completedDate: '2024-10-22T18:49:21Z' },
+							{ level: 2, completedDate: '2024-10-23T18:49:21Z' },
+							{ level: 3, completedDate: null }
 						]
 					}
 				}
 			];
-			expect(allAchievementsCompleted(badges)).toBe(false);
+
+			expect(getCompletedBadges(badges)).toEqual([
+				{
+					id: 'badge1',
+					achievementData: {
+						tiers: [
+							{ level: 1, completedDate: '2024-10-22T18:49:21Z' },
+							{ level: 2, completedDate: '2024-10-23T18:49:21Z' },
+							{ level: 3, completedDate: null }
+						]
+					},
+					earnedAtDate: '2024-10-22T18:49:21Z',
+					level: 1
+				},
+				{
+					id: 'badge1',
+					achievementData: {
+						tiers: [
+							{ level: 1, completedDate: '2024-10-22T18:49:21Z' },
+							{ level: 2, completedDate: '2024-10-23T18:49:21Z' },
+							{ level: 3, completedDate: null }
+						]
+					},
+					earnedAtDate: '2024-10-23T18:49:21Z',
+					level: 2
+				}
+			]);
+		});
+
+		it('should handle mixed badges with tiers and milestoneProgress', () => {
+			const { getCompletedBadges } = useBadgeData();
+			const badges = [
+				{
+					id: 'badge1',
+					achievementData: {
+						tiers: [
+							{ level: 1, completedDate: '2024-10-22T18:49:21Z' }
+						]
+					}
+				},
+				{
+					id: 'badge2',
+					achievementData: {
+						milestoneProgress: [
+							{ earnedAtDate: '2024-10-23T18:49:21Z' }
+						]
+					}
+				}
+			];
+
+			const result = getCompletedBadges(badges);
+			expect(result).toHaveLength(2);
+			expect(result[0].level).toBe(1);
+			expect(result[1].level).toBe(0);
+		});
+	});
+
+	describe('combineBadgeData', () => {
+		it('should return empty array when achievement data is empty', () => {
+			const { combineBadgeData } = useBadgeData();
+			expect(combineBadgeData([], [{ id: 'test' }])).toEqual([]);
+		});
+
+		it('should return empty array when contentful data is empty', () => {
+			const { combineBadgeData } = useBadgeData();
+			expect(combineBadgeData([{ id: 'test' }], [])).toEqual([]);
+		});
+
+		it('should handle UTC date formatting in milestone progress', () => {
+			const { combineBadgeData } = useBadgeData();
+			const mockAchievementData = [{
+				id: 'test',
+				description: 'Test badge',
+				totalProgressToAchievement: 1,
+				tiers: [],
+				milestoneProgress: [
+					{ earnedAtDate: '2024-10-22T18:49:21Z[UTC]' }
+				]
+			}];
+			const mockContentfulData = [{
+				id: 'test',
+				level: 1,
+				challengeName: 'Test',
+				levelName: '1'
+			}];
+
+			const result = combineBadgeData(mockAchievementData, mockContentfulData);
+			expect(result[0].achievementData.milestoneProgress[0].earnedAtDate).toBe('2024-10-22T18:49:21Z');
+		});
+
+		it('should handle UTC date formatting in tier completed dates', () => {
+			const { combineBadgeData } = useBadgeData();
+			const mockAchievementData = [{
+				id: 'test',
+				description: 'Test badge',
+				totalProgressToAchievement: 1,
+				tiers: [
+					{ target: 1, completedDate: '2024-10-22T18:49:21Z[UTC]' }
+				]
+			}];
+			const mockContentfulData = [{
+				id: 'test',
+				level: 1,
+				challengeName: 'Test',
+				levelName: '1'
+			}];
+
+			const result = combineBadgeData(mockAchievementData, mockContentfulData);
+			expect(result[0].achievementData.tiers[0].completedDate).toBe('2024-10-22T18:49:21Z');
 		});
 	});
 });

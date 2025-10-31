@@ -20,7 +20,7 @@
 		/>
 		<template #controls>
 			<div class="tw-flex tw-justify-end tw-gap-2">
-				<KvButton v-if="formStep === 2" variant="secondary" @click="formStep -= 1">
+				<KvButton v-if="formStep === 2" variant="secondary" @click="clickBack">
 					Back
 				</KvButton>
 				<KvButton @click="handleClick">
@@ -39,6 +39,7 @@ import {
 	defineAsyncComponent,
 	computed,
 	inject,
+	watch,
 } from 'vue';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import useIsMobile from '#src/composables/useIsMobile';
@@ -143,7 +144,8 @@ const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const emit = defineEmits(['close-goal-modal', 'set-goal']);
 const selectedCategory = ref(categories[0]);
-const selectedGoalNumber = ref(categories[0].loanCount > MAX_GOAL_LOANS ? MAX_GOAL_LOANS : categories[0].loanCount);
+// eslint-disable-next-line max-len
+const selectedGoalNumber = ref(categories[0].loanCount > MAX_GOAL_LOANS ? MAX_GOAL_LOANS : (categories[0].loanCount || 1));
 
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
 const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
@@ -157,15 +159,24 @@ const contentComponent = computed(() => {
 
 const handleCategorySelected = categoryId => {
 	const categoryIdx = categoryId - 1;
-	$kvTrackEvent('portfolio', 'select', 'choose-goal-category', categories[categoryIdx]?.eventProp);
 	selectedCategory.value = categories[categoryIdx];
 	selectedGoalNumber.value = categories[categoryIdx]?.loanCount > MAX_GOAL_LOANS
 		? MAX_GOAL_LOANS
-		: categories[categoryIdx]?.loanCount;
+		: (categories[categoryIdx]?.loanCount || 1);
+
+	// Only track when modal is open, not on pageload
+	if (props.show) {
+		$kvTrackEvent('portfolio', 'click', 'choose-goal-category', categories[categoryIdx]?.eventProp);
+	}
 };
 
 const handleNumberChanged = number => {
 	selectedGoalNumber.value = number;
+};
+
+const clickBack = () => {
+	formStep.value -= 1;
+	$kvTrackEvent('portfolio', 'click', 'goals-back');
 };
 
 const ctaCopy = computed(() => {
@@ -177,9 +188,9 @@ const handleClick = () => {
 		formStep.value += 1;
 		$kvTrackEvent('portfolio', 'click', 'goal-setting-continue');
 	} else {
-		$kvTrackEvent('portfolio', 'click', 'set-goal-amount', selectedGoalNumber.value);
-		const currentYear = new Date().getFullYear();
 		const categorySelected = selectedCategory.value?.badgeId;
+		$kvTrackEvent('portfolio', 'click', 'set-goal-amount', categorySelected, selectedGoalNumber.value);
+		const currentYear = new Date().getFullYear();
 		const goalName = `goal-${categorySelected}-${currentYear}`;
 		const target = selectedGoalNumber.value;
 		const dateStarted = new Date().toISOString();
@@ -218,6 +229,14 @@ const closeLightbox = () => {
 		resetForm();
 	}, 300);
 };
+
+watch(() => props.show, (newVal, oldVal) => {
+	if (newVal === true && oldVal === false) {
+		$kvTrackEvent('portfolio', 'show', 'view-goal-categories');
+	} else if (newVal === false && oldVal === true) {
+		$kvTrackEvent('portfolio', 'click', 'close-goals');
+	}
+});
 </script>
 
 <style lang="postcss" scoped>
