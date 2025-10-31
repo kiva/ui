@@ -41,6 +41,7 @@
 		</section>
 		<section id="mykiva-borrower-carousel" class="tw-my-4">
 			<MyKivaBorrowerCarousel
+				controls-top-right
 				:basket-items="basketItems"
 				:is-adding="isAdding"
 				:loans="loans"
@@ -54,6 +55,7 @@
 			<AsyncMyKivaSection @visible="fetchInitialUpdates">
 				<JournalUpdatesCarousel
 					v-if="!updatesLoading && visibleUpdates.length"
+					controls-top-right
 					:updates="visibleUpdates"
 					:lender="lender"
 					:total-updates="totalUpdates"
@@ -64,6 +66,7 @@
 		</section>
 		<section class="tw-my-4">
 			<LendingCategorySection
+				controls-top-right
 				id="recommended-loans"
 				:title="recommendedLoansTitle"
 				:loans="recommendedLoans"
@@ -76,11 +79,12 @@
 			/>
 		</section>
 		<section class="tw-mb-4">
-			<h3 id="my-achievements">
+			<h3 id="my-achievements" class="tw-absolute tw-pt-2">
 				My achievements
 			</h3>
 			<BadgesSection
 				class="tw-mt-2"
+				controls-top-right
 				:badge-data="badgeData"
 				:selected-journey="selectedJourney"
 				@badge-clicked="handleBadgeSectionClicked"
@@ -98,9 +102,12 @@
 			/>
 		</section>
 		<section v-if="moreWaysToHelpSlides.length" class="tw-my-4">
-			<h3>More ways to help</h3>
+			<h3 class="tw-absolute tw-pt-2">
+				More ways to help
+			</h3>
 			<JourneyCardCarousel
 				class="tw-mt-2"
+				controls-top-right
 				:slides="moreWaysToHelpSlides"
 				:lender="lender"
 				:user-in-homepage="userInHomepage"
@@ -129,7 +136,7 @@
 			@close-side-sheet="handleCloseSideSheet"
 		/>
 		<section v-if="blogCards.length" class="tw-my-4">
-			<LatestBlogCarousel :blog-cards="blogCards" />
+			<LatestBlogCarousel controls-top-right :blog-cards="blogCards" />
 		</section>
 	</MyKivaContainer>
 	<section class="tw-mt-4 tw-bg-white tw-py-4">
@@ -660,7 +667,7 @@ export default {
 }
 
 #recommended-loans :deep(.kv-carousel__controls) {
-	@apply !tw-hidden md:!tw-flex !tw-justify-start !tw-mt-2;
+	@apply !tw-hidden md:!tw-flex !tw-justify-end !tw-mt-2;
 }
 
 #recommended-loans :deep(.kv-carousel__controls) div {

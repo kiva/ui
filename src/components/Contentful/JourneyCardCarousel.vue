@@ -15,6 +15,7 @@
 					watchDrag: false,
 				}),
 			}"
+			:controls-top-right="controlsTopRight"
 			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
 			class="journey-card-carousel tw-w-full"
@@ -170,6 +171,10 @@ const props = defineProps({
 		default: 0,
 	},
 	goalProgressLoading: {
+		type: Boolean,
+		default: false,
+	},
+	controlsTopRight: {
 		type: Boolean,
 		default: false,
 	},
@@ -436,7 +441,7 @@ const showGoalCard = idx => {
 
 <style lang="postcss" scoped>
 :deep(.journey-card-carousel > .kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
+	@apply tw-hidden md:tw-flex tw-justify-end tw-mt-2;
 }
 
 :deep(.journey-card-carousel > .kv-carousel__controls) div {

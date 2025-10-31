@@ -2,6 +2,7 @@
 	<KvCarousel
 		ref="carousel"
 		class="badges-carousel tw-w-full"
+		:controls-top-right="controlsTopRight"
 		:multiple-slides-visible="true"
 		:slide-max-width="singleSlideWidth"
 		slides-to-scroll="visible"
@@ -89,6 +90,10 @@ const props = defineProps({
 	selectedJourney: {
 		type: String,
 		default: ''
+	},
+	controlsTopRight: {
+		type: Boolean,
+		default: false,
 	},
 });
 
@@ -188,7 +193,7 @@ watch(visibleBadges, (newSlides, oldSlides) => {
 }
 
 .badges-carousel :deep(.kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
+	@apply tw-hidden md:tw-flex tw-mt-2;
 }
 
 .badges-carousel :deep(.kv-carousel__controls) div {

@@ -1,8 +1,14 @@
 <template>
-	<div class="tw-w-full">
+	<div class="tw-w-full" :class="{ 'tw-pt-2': controlsTopRight }">
 		<div class="tw-mx-auto tw-px-0 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 			<!-- eslint-disable-next-line max-len -->
-			<div class="tw-flex tw-flex-col lg:tw-flex-row tw-justify-between tw-items-end lg:tw-items-center tw-px-2.5 md:tw-px-0">
+			<div
+				class="tw-justify-between tw-items-end lg:tw-items-center tw-px-2.5 md:tw-px-0"
+				:class="{
+					'tw-absolute tw-pt-2': controlsTopRight,
+					'tw-flex tw-flex-col lg:tw-flex-row': !controlsTopRight
+				}"
+			>
 				<div class="tw-w-full lg:tw-w-auto">
 					<div class="tw-flex tw-items-center">
 						<img v-if="titleIcon" :src="titleIcon" class="tw-mr-1 tw-w-4">
@@ -16,7 +22,7 @@
 					</p>
 				</div>
 			</div>
-			<kv-carousel
+			<KvCarousel
 				class="tw-w-full tw-overflow-hidden tw-mt-1 tw-pb-2 tw-px-1 tw-pt-1"
 				id="customizedCarousel"
 				:key="loans.length"
@@ -24,6 +30,7 @@
 				slides-to-scroll="visible"
 				:slide-max-width="singleSlideWidth"
 				:embla-options="{ loop: false }"
+				:controls-top-right="controlsTopRight"
 			>
 				<template v-for="(loan, index) in loans" #[`slide${index}`] :key="loanCardKey(index)">
 					<kv-classic-loan-card-container
@@ -51,17 +58,17 @@
 						:loan-search-state="loanSearchState"
 					/>
 				</template>
-			</kv-carousel>
+			</KvCarousel>
 		</div>
 	</div>
 </template>
 
 <script>
 import _throttle from 'lodash/throttle';
+import { KvCarousel } from '@kiva/kv-components';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
 import { getCustomHref } from '#src/util/loanUtils';
-import { KvCarousel } from '@kiva/kv-components';
 import ViewMoreCard from './ViewMoreCard';
 
 export default {
@@ -129,6 +136,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		controlsTopRight: {
+			type: Boolean,
+			default: false
+		}
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [addToBasketExpMixin],
@@ -206,10 +217,6 @@ export default {
 	@apply tw-visible;
 }
 
-#customizedCarousel :deep(.kv-carousel__controls) button {
-	@apply tw-border-0;
-}
-
 #customizedCarousel :deep(.kv-carousel__controls) button span {
 	@apply tw-invisible;
 }
@@ -252,10 +259,6 @@ export default {
 
 	#customizedCarousel :deep(div:first-child) > div > div.loan-card-active-hover a picture {
 		@apply tw-rounded-t;
-	}
-
-	#customizedCarousel :deep(.kv-carousel__controls) button {
-		@apply tw-border-2;
 	}
 
 	#customizedCarousel :deep(.kv-carousel__controls) button span {

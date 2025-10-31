@@ -60,6 +60,7 @@
 					:multiple-slides-visible="true"
 					:slide-max-width="'336px'"
 					:embla-options="{ loop: false, align: 'center'}"
+					:controls-top-right="controlsTopRight"
 					@change="onInteractCarousel"
 				>
 					<template v-for="(loan, index) in filteredLoans" #[`slide${index+1}`] :key="loan.id || index">
@@ -189,6 +190,10 @@ const props = defineProps({
 		default: () => ([]),
 	},
 	isAdding: {
+		type: Boolean,
+		default: false
+	},
+	controlsTopRight: {
 		type: Boolean,
 		default: false
 	},
