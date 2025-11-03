@@ -8,7 +8,9 @@ export default function parseGivingFundCookie(cookieString) {
 		return {};
 	}
 
-	const [fundId, uiv, action] = cookieString.split('|');
+	// Decode the cookie value in case it's URL-encoded (e.g., %7C becomes |)
+	const decodedCookieString = decodeURIComponent(cookieString);
+	const [fundId, uiv, action] = decodedCookieString.split('|');
 
 	return {
 		fundId: fundId || null,
