@@ -157,9 +157,9 @@ const isFirstLoan = computed(() => {
 		&& basketCount.value === 1;
 });
 
-const isLoanGoal = computed(() => loanGoalProgress.value > 0);
+const isLoanGoal = computed(() => loanGoalProgress.value > 0 && userGoal.value?.status === 'in-progress');
 
-const isCompletingGoal = computed(() => goalProgress.value >= userGoal.value?.target);
+const isCompletingGoal = computed(() => isLoanGoal.value && goalProgress.value >= userGoal.value?.target);
 
 const updateTierTable = () => {
 	contributingAchievements.value.forEach(achievement => {
