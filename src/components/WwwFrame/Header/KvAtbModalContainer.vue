@@ -234,6 +234,12 @@ watch(addedLoan, async () => {
 		if (props.isNextStepsExpEnabled) {
 			await loadGoalData(loansInBasket.value);
 			loanGoalProgress.value = await getProgressByLoan(addedLoan.value);
+			if (isCompletingGoal.value) {
+				oneLoanAwayFilteredUrl.value = '';
+				oneLoanAwayCategory.value = '';
+				const goalTarget = userGoal.value?.target;
+				oneAwayText.value = `${goalTarget - 1} of ${goalTarget}`;
+			}
 		}
 	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
 		modalVisible.value = true;
