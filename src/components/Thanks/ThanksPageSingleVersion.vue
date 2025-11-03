@@ -169,7 +169,7 @@ const {
 
 // Initialize goalDataInitialized to track if we've loaded goal data
 // This prevents flash of journey module before loading completes
-const goalDataInitialized = ref(false);
+const goalDataInitialized = ref(!props.isNextStepsExpEnabled);
 
 const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));
 

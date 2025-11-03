@@ -2,10 +2,6 @@ query thanksPage {
 	hasEverLoggedIn @client
 	my {
 		id
-		autoDeposit {
-			id
-			isSubscriber
-		}
 		teams {
 			values {
 				id
@@ -40,36 +36,5 @@ query thanksPage {
 			lenderNews
 			loanUpdates
 		}
-	}
-	general {
-		shareAskCopy: uiExperimentSetting(key: "share_ask_copy") {
-			key
-			value
-		}
-		ftd_message_enable: uiConfigSetting(key: "ftd_message_enable") {
-			key
-			value
-		}
-		ftd_message_amount: uiConfigSetting(key: "ftd_message_amount") {
-			key
-			value
-		}
-		single_version_enable: uiConfigSetting(key: "thanks_page_single_version_enable") {
-			key
-			value
-		}
-		my_kiva_all_users: uiConfigSetting(key: "my_kiva_all_users_enable") {
-			key
-			value
-		}
-	}
-	mySubscriptions(includeDisabled: false) {
-		values {
-			id
-			enabled
-		}
-	}
-	contentful {
-		entries(contentType: "page", contentKey: "thanks")
 	}
 }

@@ -11,7 +11,6 @@
 			<span class="tw-text-jumbo">{{ count }}</span>
 			<button
 				class="tw-flex tw-shadow tw-rounded-full tw-p-0.5"
-				:class="{ 'tw-invisible': count >= MAX_COUNT }"
 				@click="incrementCount"
 			>
 				<KvMaterialIcon class="tw-w-3 tw-h-3" :icon="mdiPlus" />
@@ -53,7 +52,6 @@ import { ref, onMounted, inject } from 'vue';
 import { mdiPlus, mdiMinus } from '@mdi/js';
 import { KvMaterialIcon, KvCardFrame } from '@kiva/kv-components';
 
-const MAX_COUNT = 50;
 const MIN_COUNT = 1;
 const IMAGE_WIDTH = 64;
 
@@ -75,7 +73,6 @@ const emit = defineEmits(['number-changed']);
 const count = ref(props.selectedGoalNumber || 0);
 
 const incrementCount = () => {
-	if (count.value >= MAX_COUNT) return;
 	count.value += 1;
 	$kvTrackEvent('portfolio', 'modify-goal-amount', 'increase-goal', undefined, count.value);
 	emit('number-changed', count.value);
