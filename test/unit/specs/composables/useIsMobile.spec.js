@@ -44,8 +44,8 @@ describe('useIsMobile.js', () => {
 
 		vi.resetModules();
 		vi.doMock('vue', () => ({
-			onBeforeMount: callback => { callback(); },
-			onBeforeUnmount: () => {},
+			onMounted: callback => { callback(); },
+			onUnmounted: () => {},
 			ref: value => ({ value })
 		}));
 
@@ -66,8 +66,8 @@ describe('useIsMobile.js', () => {
 
 		vi.resetModules();
 		vi.doMock('vue', () => ({
-			onBeforeMount: callback => { callback(); },
-			onBeforeUnmount: callback => { unmountCallback = callback; },
+			onMounted: callback => { callback(); },
+			onUnmounted: callback => { unmountCallback = callback; },
 			ref: value => ({ value })
 		}));
 
