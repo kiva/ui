@@ -2,12 +2,14 @@ import logFormatter from '#src/util/logFormatter';
 // eslint-disable-next-line max-len
 import myGivingFundParticipationDonations from '#src/graphql/query/portfolio/myGivingFundParticipationDonations.graphql';
 import myGivingFundParticipationFull from '#src/graphql/query/portfolio/myGivingFundParticipationFull.graphql';
+import myGivingFundsQuery from '#src/graphql/query/portfolio/myGivingFunds.graphql';
+import myGivingFundsCountQuery from '#src/graphql/query/portfolio/myGivingFundsCount.graphql';
 
 export default function useGivingFund(apollo) {
 	const DEFAULT_LIMIT = 20;
 
 	/**
-	 * Util method to generate offests for paginated fetching
+	 * Util method to generate offsets for paginated fetching
 	 */
 	const generateOffsets = (totalDonationEntryCount, limit) => {
 		// return empty array if total count is less than or equal to limit
@@ -21,6 +23,36 @@ export default function useGivingFund(apollo) {
 		// create an array of offsets to fetch
 		const offsets = Array.from({ length: fetchesNeeded }, (_, i) => (i + 1) * limit);
 		return offsets;
+	};
+
+	/**
+	 * Get a users Giving Fund Data
+	 */
+	const fetchMyGivingFundsData = async () => {
+		try {
+			const response = await apollo.query({
+				query: myGivingFundsQuery,
+				fetchPolicy: 'network-only',
+			});
+			return response?.data?.my ?? {};
+		} catch (error) {
+			logFormatter(`Error fetching giving fund data: ${error}`, 'error');
+		}
+	};
+
+	/**
+	 * Get the number of Giving Funds a user has
+	 */
+	const fetchMyGivingFundsCount = async () => {
+		try {
+			const response = await apollo.query({
+				query: myGivingFundsCountQuery,
+				fetchPolicy: 'network-only',
+			});
+			return response?.data?.my ?? {};
+		} catch (error) {
+			logFormatter(`Error fetching giving fund data: ${error}`, 'error');
+		}
 	};
 
 	/**
@@ -80,11 +112,11 @@ export default function useGivingFund(apollo) {
 					});
 				}
 				// filter out funds without owner or owned by current user
-				const fitleredDonations = donationEntries?.filter(donation => {
+				const filteredDonations = donationEntries?.filter(donation => {
 					return donation?.givingFund?.owner?.id && donation?.givingFund?.owner?.id !== parseInt(ownerId, 10);
 				});
 				// extract unique fund ids
-				fitleredDonations.forEach(donation => {
+				filteredDonations.forEach(donation => {
 					if (!fundIds.includes(donation.givingFund?.id)) {
 						fundIds.push(donation.givingFund?.id);
 					}
@@ -245,6 +277,8 @@ export default function useGivingFund(apollo) {
 	};
 
 	return {
+		fetchMyGivingFundsCount,
+		fetchMyGivingFundsData,
 		fetchFullGivingFundDonationData,
 		fetchGivingFundDonationData,
 		getDedupedFundsContributedToEntries,
