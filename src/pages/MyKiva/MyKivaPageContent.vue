@@ -285,13 +285,13 @@ export default {
 
 		const {
 			getFundsContributedToIds,
-			fetchMyGivingFundsData,
+			fetchMyGivingFundsCount,
 		} = useGivingFund(apollo);
 
 		return {
 			badgeData,
 			getFundsContributedToIds,
-			fetchMyGivingFundsData,
+			fetchMyGivingFundsCount,
 			fetchAchievementData,
 			fetchContentfulData,
 			getLoanFindingUrl,
@@ -646,12 +646,12 @@ export default {
 		this.fetchMoreWaysToHelpData();
 		this.loadInitialBasketItems();
 
-		this.fetchMyGivingFundsData()
+		this.fetchMyGivingFundsCount()
 			.then(response => {
 				this.myGivingFundsCount = response.givingFunds.totalCount;
 			})
 			.catch(error => {
-				logReadQueryError(error, 'MyKivaPageContent fetchMyGivingFundsData');
+				logReadQueryError(error, 'MyKivaPageContent fetchMyGivingFundsCount');
 			});
 		this.getFundsContributedToIds(parseInt(this.userInfo?.id, 10) || null)
 			.then(fundIds => {

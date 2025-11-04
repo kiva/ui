@@ -158,12 +158,12 @@ export default {
 
 		const {
 			getFundsContributedToIds,
-			fetchMyGivingFundsData,
+			fetchMyGivingFundsCount,
 		} = useGivingFund(apollo);
 
 		return {
 			getFundsContributedToIds,
-			fetchMyGivingFundsData,
+			fetchMyGivingFundsCount,
 		};
 	},
 	created() {
@@ -203,12 +203,12 @@ export default {
 			this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
 		}
 
-		this.fetchMyGivingFundsData()
+		this.fetchMyGivingFundsCount()
 			.then(response => {
 				this.myGivingFundsCount = response.givingFunds.totalCount;
 			})
 			.catch(error => {
-				logReadQueryError(error, 'MyKivaPageContent fetchMyGivingFundsData');
+				logReadQueryError(error, 'MyKivaPageContent fetchMyGivingFundsCount');
 			});
 		this.getFundsContributedToIds(parseInt(userData?.id, 10) || null)
 			.then(fundIds => {
