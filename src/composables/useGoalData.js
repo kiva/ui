@@ -27,8 +27,18 @@ const GOAL_DISPLAY_MAP = {
 	[ID_WOMENS_EQUALITY]: 'women',
 };
 
-function getGoalDisplayName(category) {
-	return GOAL_DISPLAY_MAP[category] || 'loans';
+const GOAL_1_DISPLAY_MAP = {
+	[ID_BASIC_NEEDS]: 'basic needs loan',
+	[ID_CLIMATE_ACTION]: 'eco-friendly loan',
+	[ID_REFUGEE_EQUALITY]: 'refugee',
+	[ID_SUPPORT_ALL]: 'loan',
+	[ID_US_ECONOMIC_EQUALITY]: 'U.S. entrepreneur',
+	[ID_WOMENS_EQUALITY]: 'woman',
+};
+
+function getGoalDisplayName(target, category) {
+	if (!target || target > 1) return GOAL_DISPLAY_MAP[category] || 'loans';
+	return GOAL_1_DISPLAY_MAP[category] || 'loan';
 }
 
 /**
