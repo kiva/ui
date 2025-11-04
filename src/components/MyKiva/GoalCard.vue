@@ -143,24 +143,40 @@ const getContentfulKey = category => {
 	}
 };
 
-const getCategoryHeader = category => {
-	switch (category) {
-		case ID_US_ECONOMIC_EQUALITY:
-			return 'U.S. entrepreneurs';
-		case ID_BASIC_NEEDS:
-			return 'loans for basic needs';
-		case ID_CLIMATE_ACTION:
-			return 'eco-friendly loans';
-		case ID_WOMENS_EQUALITY:
-			return 'women';
-		case ID_REFUGEE_EQUALITY:
-			return 'refugees';
-		default: return 'loans';
+const getCategoryHeader = (category, target) => {
+	if (!target || target > 1) {
+		switch (category) {
+			case ID_US_ECONOMIC_EQUALITY:
+				return 'U.S. entrepreneurs';
+			case ID_BASIC_NEEDS:
+				return 'loans for basic needs';
+			case ID_CLIMATE_ACTION:
+				return 'eco-friendly loans';
+			case ID_WOMENS_EQUALITY:
+				return 'women';
+			case ID_REFUGEE_EQUALITY:
+				return 'refugees';
+			default: return 'loans';
+		}
+	} else {
+		switch (category) {
+			case ID_US_ECONOMIC_EQUALITY:
+				return 'U.S. entrepreneur';
+			case ID_BASIC_NEEDS:
+				return 'loan for basic needs';
+			case ID_CLIMATE_ACTION:
+				return 'eco-friendly loan';
+			case ID_WOMENS_EQUALITY:
+				return 'woman';
+			case ID_REFUGEE_EQUALITY:
+				return 'refugee';
+			default: return 'loan';
+		}
 	}
 };
 
 const ctaHref = computed(() => {
-	const categoryHeader = getCategoryHeader(props.userGoal?.category);
+	const categoryHeader = getCategoryHeader(props.userGoal?.category, props.userGoal?.target);
 	const string = `Your goal: Support ${props.userGoal?.target} ${categoryHeader}`;
 	const encodedHeader = encodeURIComponent(string);
 	const loanFindingUrl = getLoanFindingUrl(props.userGoal?.category, router.currentRoute.value);
