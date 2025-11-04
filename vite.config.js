@@ -141,7 +141,7 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 			setupFiles: ['./test/unit/setup.js'],
 			coverage: {
 				provider: 'v8',
-				reporters: ['json', 'html'],
+				reporter: ['text-summary', 'json', 'json-summary', 'html'],
 				reportsDirectory: './test/unit/coverage',
 				include: [
 					'src/**',
