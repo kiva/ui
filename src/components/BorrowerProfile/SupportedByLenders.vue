@@ -10,7 +10,11 @@
 				:lender-name="lender.name"
 				:lender-image-url="lender.image.url"
 				is-small
-				:class="{ 'tw--ml-1': i > 0, 'challenge-avatar': isChallenge }"
+				:class="{
+					'tw--ml-1': i > 0,
+					'tw-w-3 tw-h-3': !isChallenge,
+					'tw-w-4 tw-h-4': isChallenge
+				}"
 				:style="{ 'z-index': participationLendersDisplayed.length - i }"
 			/>
 		</div>
@@ -76,15 +80,3 @@ export default {
 	},
 };
 </script>
-
-<style scoped lang="postcss">
-.challenge-avatar {
-	@apply tw-w-4;
-}
-
-.challenge-avatar :deep(div,)
-.challenge-avatar :deep(img),
-.challenge-avatar :deep(.loading-placeholder) {
-	@apply !tw-w-4 !tw-h-4;
-}
-</style>

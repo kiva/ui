@@ -12,7 +12,7 @@
 						:lender-name="shareLenderName"
 						:lender-image-url="shareLenderImage"
 						is-small
-						class="challenge-avatar md:tw-w-4 md:tw-h-4 tw-flex tw-items-center"
+						class="tw-w-3 tw-h-3 md:tw-w-4 md:tw-h-4 tw-flex tw-items-center"
 					/>
 					<p class="tw-text-lg data-hj-suppress">
 						{{ headerCallout }} <a
@@ -97,10 +97,6 @@ export default {
 
 .container {
 	@apply md:tw-pt-3 tw-px-0 md:tw-px-4 lg:tw-px-8;
-}
-
-.challenge-avatar :deep(img), .challenge-avatar :deep(.loading-placeholder ) {
-	@apply md:!tw-w-4 md:!tw-h-4;
 }
 
 .toast-container :deep(.tw-bg-secondary) {

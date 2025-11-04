@@ -30,7 +30,7 @@
 			</p>
 			<div class="tw-flex tw-items-center tw-gap-1">
 				<kv-user-avatar
-					class="user-avatar"
+					class="tw-w-4 tw-h-4"
 					v-if="authorImageUrl"
 					:lender-name="authorName"
 					:lender-image-url="authorImageUrl"
@@ -108,13 +108,5 @@ export default {
 
 .loan-activity-overlay {
 	background: linear-gradient(90deg, rgb(245 245 245 / 0%) 0%, rgb(245 245 245 / 100%) 70%);
-}
-
-.user-avatar {
-	@apply tw-w-4;
-}
-
-.user-avatar :deep(img), .user-avatar :deep(.loading-placeholder) {
-	@apply !tw-w-4 !tw-h-4;
 }
 </style>

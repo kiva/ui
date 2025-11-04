@@ -36,7 +36,7 @@
 		<div ref="bubble" class="tw-absolute tw-right-3 tw-z-modal">
 			<kv-user-avatar
 				v-show="addToBasketExpEnabled && showBubble"
-				class="loan-image tw-rounded-full"
+				class="loan-image tw-rounded-full tw-w-6 tw-h-6"
 				:style="bubbleStyle"
 				:lender-name="borrowerName"
 				:lender-image-url="borrowerImageUrl"
