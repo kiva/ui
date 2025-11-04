@@ -13,8 +13,11 @@
 				:key="loan.id"
 				:lender-name="loan?.name"
 				:lender-image-url="loan?.image?.url"
-				class="avatar tw-rounded-full tw-shadow tw-w-auto"
-				:class="{'smaller-borrower-avatar' : loansToDisplay.length > 2 && index !== 1 }"
+				class="tw-shadow tw-border-2 tw-border-white tw-box-content"
+				:class="{
+					'tw-w-4.5 tw-h-4.5 md:tw-w-6 md:tw-h-6': loansToDisplay.length <= 2 || index === 1,
+					'tw-w-[30px] tw-h-[30px]' : loansToDisplay.length > 2 && index !== 1
+				}"
 				:style="{
 					zIndex: index === 1 ? 2 : 1,
 					marginRight: loansToDisplay.length > 2 && index === 0 ? '-18px' : '0',
@@ -58,15 +61,6 @@ const notificationMsg = computed(() => {
 </script>
 
 <style lang="postcss" scoped>
-
-.avatar :deep(img), .avatar :deep(.loading-placeholder) {
-	@apply !tw-w-4.5 !tw-h-4.5 md:!tw-h-6 md:!tw-w-6 tw-border-2 tw-border-white;
-}
-
-.smaller-borrower-avatar, .smaller-borrower-avatar :deep(img), .smaller-borrower-avatar :deep(.loading-placeholder) {
-	height: 30px !important;
-	width: 30px !important;
-}
 
 .message {
 	@media screen and (width <= 398px) {

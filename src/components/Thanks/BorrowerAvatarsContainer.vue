@@ -5,11 +5,12 @@
 			:key="loan.id"
 			:lender-name="loan?.name"
 			:lender-image-url="getLoanImageUrl(loan)"
-			class="tw-rounded-full tw-shadow"
+			class="tw-shadow tw-border-white tw-box-content"
 			:class="{
-				'borrower-image': showLargeAvatars,
-				'tw-border-white tw-border-2 tw-w-auto': !showLargeAvatars,
-				'smaller-borrower-avatar': !showLargeAvatars && loans.length > 2 && index !== 1,
+				'borrower-image tw-border-4': showLargeAvatars,
+				'tw-border-2': !showLargeAvatars,
+				'tw-w-4.5 tw-h-4.5': !showLargeAvatars && index !== 1 && loans.length > 2,
+				'tw-w-6 tw-h-6': !showLargeAvatars && (index === 1 || loans.length <=2),
 				'centered-borrower-image' : showLargeAvatars && index === 1 && loans.length === 3,
 				'single-pair-loans': showLargeAvatars && loans.length < 3
 			}"
@@ -94,11 +95,6 @@ const getLoanImageUrl = loan => {
 </script>
 
 <style lang="postcss" scoped>
-.smaller-borrower-avatar :deep(img), .smaller-borrower-avatar :deep(.loading-placeholder) {
-	height: 36px;
-	width: 36px;
-}
-
 /* For large avatars */
 .borrower-container {
 	animation: fadein ease-in 1s;
@@ -119,7 +115,7 @@ const getLoanImageUrl = loan => {
 	}
 }
 
-.borrower-image, .borrower-image :deep(img), .borrower-image :deep(.loading-placeholder) {
+.borrower-image {
 	width: 124px !important;
 	height: 124px !important;
 
@@ -129,7 +125,7 @@ const getLoanImageUrl = loan => {
 	}
 }
 
-.single-pair-loans, .single-pair-loans :deep(img), .single-pair-loans :deep(.loading-placeholder) {
+.single-pair-loans {
 	width: 148px !important;
 	height: 148px !important;
 
@@ -139,7 +135,7 @@ const getLoanImageUrl = loan => {
 	}
 }
 
-.centered-borrower-image, .centered-borrower-image :deep(img), .centered-borrower-image :deep(.loading-placeholder) {
+.centered-borrower-image {
 	width: 164px !important;
 	height: 160px !important;
 
@@ -148,9 +144,4 @@ const getLoanImageUrl = loan => {
 		height: 200px !important;
 	}
 }
-
-.borrower-image :deep(img), .centered-borrower-image :deep(img) {
-	@apply tw-border-4 tw-border-white;
-}
-
 </style>
