@@ -1,3 +1,30 @@
+## [3.40.0](https://github.com/kiva/ui/compare/v3.39.0...v3.40.0) (2025-11-04)
+
+### 🎉 New Features
+
+* atb modal for goals ([#6407](https://github.com/kiva/ui/issues/6407)) ([1e34db1](https://github.com/kiva/ui/commit/1e34db11032728a3d146c5b1c8a29f367192d213))
+* introduce handling for guest created gf cookie, redirect back to fund after claiming account ([f57f231](https://github.com/kiva/ui/commit/f57f231448bd220212cc3e6ae4bd95afbbc7cfd0))
+
+### 🐛 Bugfixes
+
+* add hide profile links prop to LoanProgress ([74566a3](https://github.com/kiva/ui/commit/74566a313ac0818fb202fc550b11754b4e3ec5b0))
+* default goal setting to 5 loans ([f0a7214](https://github.com/kiva/ui/commit/f0a7214595a0c9e1a41977d897cc180103ddb904))
+* ensure cookies set with nuxt useCookie are decoded properly before using their value ([16e5749](https://github.com/kiva/ui/commit/16e5749dd193e680deebbee7138a723497723ef6))
+* goals atb modal tweaks ([#6416](https://github.com/kiva/ui/issues/6416)) ([f6f7534](https://github.com/kiva/ui/commit/f6f7534c1cbd0bfe4702053aaca46fafad640c3a))
+* let's try using mounted for is mobile ([a066f26](https://github.com/kiva/ui/commit/a066f2649f8398088fdaa201866518fa7fd9c1da))
+* prevent duplicate set goal event ([2fa8598](https://github.com/kiva/ui/commit/2fa85985398fe57677242a9f6f1cc17ab924c619))
+* remove 50 loan max from goal setting ([34db3b8](https://github.com/kiva/ui/commit/34db3b81b0d454be11002b5179b966f809786105))
+* remove text ([92b6028](https://github.com/kiva/ui/commit/92b602856439a507d4591ca510ff399b019eeb1d))
+* resolve race condition in goals control experience and general ty cleanup ([d289e2c](https://github.com/kiva/ui/commit/d289e2c3114d4669a8df062a519c5af07ad308f7))
+* status in is goal conditions ([#6415](https://github.com/kiva/ui/issues/6415)) ([3ba3a38](https://github.com/kiva/ui/commit/3ba3a3845ea1d03e5b3fb45e5b4e2d3c8f2c8a69))
+* support all always showed as completed after creation ([70d4960](https://github.com/kiva/ui/commit/70d4960c2ff1ed7760b34338e2085cc733d0a364))
+* unit test mock ([2f758fa](https://github.com/kiva/ui/commit/2f758fad3823baceaba937e27608e4698847143c))
+* update package for more nav event fixes ([1c9df57](https://github.com/kiva/ui/commit/1c9df5739d7e9b7ca7e524faa9b16443eca9c14d))
+
+### 🧹 Chores
+
+* **release:** 3.40.0-rc.1 [skip ci] ([b098c15](https://github.com/kiva/ui/commit/b098c150e77c0eeec50c97817ddfac458067dba4)), closes [#6407](https://github.com/kiva/ui/issues/6407) [#6416](https://github.com/kiva/ui/issues/6416) [#6415](https://github.com/kiva/ui/issues/6415)
+
 ## [3.40.0-rc.1](https://github.com/kiva/ui/compare/v3.39.0...v3.40.0-rc.1) (2025-11-04)
 
 ### 🎉 New Features
