@@ -1,5 +1,8 @@
 <template>
-	<KvAtbModalContainer :added-loan="addedLoan" />
+	<KvAtbModalContainer
+		:added-loan="addedLoan"
+		:is-next-steps-exp-enabled="isNextStepsExpEnabled"
+	/>
 	<MyKivaNavigation
 		:visible="showNavigation"
 		:user-info="userInfo"
@@ -37,6 +40,7 @@
 				:hero-contentful-data="heroContentfulData"
 				:hero-tiered-achievements="heroTieredAchievements"
 				:total-loans="totalLoans"
+				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 			/>
 		</section>
 		<section id="mykiva-borrower-carousel" class="tw-my-4">
@@ -266,6 +270,10 @@ export default {
 		sidesheetLoan: {
 			type: Object,
 			default: () => ({}),
+		},
+		isNextStepsExpEnabled: {
+			type: Boolean,
+			default: false
 		},
 	},
 	setup() {

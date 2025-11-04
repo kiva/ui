@@ -58,8 +58,6 @@ import usEntrepreneursImg from '#src/assets/images/my-kiva/goal-setting/us-entre
 import basicNeedsImg from '#src/assets/images/my-kiva/goal-setting/basic-needs.svg?url';
 import supportAllImg from '#src/assets/images/my-kiva/goal-setting/support-all.svg?url';
 
-const MAX_GOAL_LOANS = 50;
-
 const props = defineProps({
 	show: {
 		type: Boolean,
@@ -144,8 +142,7 @@ const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const emit = defineEmits(['close-goal-modal', 'set-goal']);
 const selectedCategory = ref(categories[0]);
-// eslint-disable-next-line max-len
-const selectedGoalNumber = ref(categories[0].loanCount > MAX_GOAL_LOANS ? MAX_GOAL_LOANS : (categories[0].loanCount || 1));
+const selectedGoalNumber = ref(5); // Default goals to 5 loans for initial MVP
 
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
 const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
@@ -160,9 +157,7 @@ const contentComponent = computed(() => {
 const handleCategorySelected = categoryId => {
 	const categoryIdx = categoryId - 1;
 	selectedCategory.value = categories[categoryIdx];
-	selectedGoalNumber.value = categories[categoryIdx]?.loanCount > MAX_GOAL_LOANS
-		? MAX_GOAL_LOANS
-		: (categories[categoryIdx]?.loanCount || 1);
+	selectedGoalNumber.value = 5; // Default goals to 5 loans for initial MVP
 
 	// Only track when modal is open, not on pageload
 	if (props.show) {

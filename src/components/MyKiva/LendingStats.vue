@@ -174,8 +174,6 @@ import useBadgeData from '#src/composables/useBadgeData';
 import useGoalData from '#src/composables/useGoalData';
 
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
-import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 
 import Africa from '#src/assets/images/my-kiva/Africa.png';
 import Asia from '#src/assets/images/my-kiva/Asia.png';
@@ -190,8 +188,6 @@ import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 
 import GoalSettingModal from './GoalSettingModal';
-
-const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 
 export default {
 	name: 'LendingStats',
@@ -238,14 +234,9 @@ export default {
 			type: Number,
 			default: 0,
 		},
-	},
-	emits: ['store-goals-preferences'],
-	apollo: {
-		preFetch(_config, client) {
-			return client.query({
-				query: experimentAssignmentQuery,
-				variables: { id: NEXT_STEPS_EXP_KEY },
-			});
+		isNextStepsExpEnabled: {
+			type: Boolean,
+			default: false
 		},
 	},
 	data() {
@@ -254,7 +245,6 @@ export default {
 			interval: null,
 			disconnectRegionWatcher: null,
 			showGoalModal: false,
-			isNextStepsExpEnabled: undefined,
 			checkedArr: this.regionsData.map(() => false),
 			goalProgressLoading: true,
 		};
@@ -304,20 +294,7 @@ export default {
 			return 'Next steps for you based on your lending history';
 		},
 	},
-	created() {
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
-			NEXT_STEPS_EXP_KEY,
-			async version => {
-				this.isNextStepsExpEnabled = version === 'b';
-			},
-			this.$kvTrackEvent,
-			'EXP-MP-1984-Sept2025',
-		);
-	},
-	setup(props) {
+	setup() {
 		const apollo = inject('apollo');
 
 		const {
@@ -327,10 +304,7 @@ export default {
 			loadGoalData,
 			storeGoalPreferences,
 			checkCompletedGoal,
-		} = useGoalData({
-			loans: props.loans,
-			apollo,
-		});
+		} = useGoalData({ apollo });
 
 		return {
 			goalProgress,
@@ -342,8 +316,8 @@ export default {
 		};
 	},
 	async mounted() {
-		if (this.isNextStepsExpEnabled && typeof window !== 'undefined') {
-			await this.loadGoalData();
+		if (this.isNextStepsExpEnabled) {
+			await this.loadGoalData(this.loans);
 			await this.checkCompletedGoal('portfolio');
 			this.goalProgressLoading = false;
 		}
