@@ -1,8 +1,8 @@
 import useIsMobile from '#src/composables/useIsMobile';
 
 vi.mock('vue', () => ({
-	onBeforeMount: callback => { callback(); },
-	onBeforeUnmount: () => { },
+	onMounted: callback => { callback(); },
+	onUnmounted: () => { },
 	ref: value => ({ value })
 }));
 

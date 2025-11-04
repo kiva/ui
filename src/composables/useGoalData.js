@@ -27,8 +27,18 @@ const GOAL_DISPLAY_MAP = {
 	[ID_WOMENS_EQUALITY]: 'women',
 };
 
-function getGoalDisplayName(category) {
-	return GOAL_DISPLAY_MAP[category] || 'loans';
+const GOAL_1_DISPLAY_MAP = {
+	[ID_BASIC_NEEDS]: 'basic needs loan',
+	[ID_CLIMATE_ACTION]: 'eco-friendly loan',
+	[ID_REFUGEE_EQUALITY]: 'refugee',
+	[ID_SUPPORT_ALL]: 'loan',
+	[ID_US_ECONOMIC_EQUALITY]: 'U.S. entrepreneur',
+	[ID_WOMENS_EQUALITY]: 'woman',
+};
+
+function getGoalDisplayName(target, category) {
+	if (!target || target > 1) return GOAL_DISPLAY_MAP[category] || 'loans';
+	return GOAL_1_DISPLAY_MAP[category] || 'loan';
 }
 
 /**
@@ -39,8 +49,7 @@ function getGoalDisplayName(category) {
  * @param {Object} options.apollo - Apollo client instance (optional, will use inject if not provided)
  * @returns Goal data and utilities
  */
-export default function useGoalData({ loans, apollo: apolloParam }) {
-	const apollo = apolloParam || inject('apollo');
+export default function useGoalData({ apollo }) {
 	const $kvTrackEvent = inject('$kvTrackEvent');
 
 	const allTimeProgress = ref([]);
@@ -48,6 +57,7 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 	const totalLoanCount = ref(null);
 	const userGoal = ref(null);
 	const userPreferences = ref(null);
+	const userGoalAchievedNow = ref(false);
 
 	async function loadPreferences(fetchPolicy = 'cache-first') {
 		try {
@@ -62,16 +72,14 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 		}
 	}
 
-	async function loadProgress(fetchPolicy = 'cache-first') {
+	async function loadProgress(loans) {
 		try {
 			const loanIds = loans.map(loan => loan.id);
 			const response = await apollo.query({
 				query: useGoalDataProgressQuery,
 				variables: { loanIds },
-				fetchPolicy
 			});
-			allTimeProgress.value = response?.data?.postCheckoutAchievements?.allTimeProgress || [];
-			return true;
+			return response?.data?.postCheckoutAchievements?.allTimeProgress || [];
 		} catch (error) {
 			logFormatter(error, 'Failed to load progress');
 			return null;
@@ -85,7 +93,7 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 	}
 
 	async function storeGoalPreferences(updates) {
-		if (!userPreferences.value) {
+		if (!userPreferences.value?.id) {
 			await createUserPreferences(apollo, { goals: [] });
 			await loadPreferences('network-only'); // Reload after create
 		}
@@ -99,7 +107,11 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 	}
 
 	const goalProgress = computed(() => {
-		if (userGoal.value?.category === ID_SUPPORT_ALL) return totalLoanCount.value || 0;
+		if (userGoal.value?.category === ID_SUPPORT_ALL) {
+			const currentTotal = totalLoanCount.value || 0;
+			const startTotal = userGoal.value?.loanTotalAtStart || 0;
+			return Math.max(currentTotal - startTotal, 0);
+		}
 		const totalProgress = allTimeProgress.value.find(
 			entry => entry.achievementId === userGoal.value?.category
 		)?.totalProgress || 0;
@@ -109,12 +121,7 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 
 	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
 
-	async function runComposable(category = 'post-checkout') {
-		loading.value = true;
-		const parsedPrefs = await loadPreferences();
-		await loadProgress();
-		setGoalState(parsedPrefs);
-		// Auto-update if active goal achieved
+	const checkCompletedGoal = async (category = 'post-checkout') => {
 		if (userGoal.value && userGoalAchieved.value && userGoal.value.status !== 'completed') {
 			await storeGoalPreferences({
 				goalName: userGoal.value.goalName,
@@ -130,7 +137,23 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 				userGoal.value.category,
 				userGoal.value.target
 			);
+			userGoalAchievedNow.value = true;
 		}
+	};
+
+	const getProgressByLoan = async loan => {
+		const result = await loadProgress([loan]);
+		const totalProgress = result.find(
+			entry => entry.achievementId === userGoal.value?.category
+		)?.totalProgress || 0;
+		return totalProgress;
+	};
+
+	async function loadGoalData(loans = []) {
+		loading.value = true;
+		const parsedPrefs = await loadPreferences();
+		allTimeProgress.value = await loadProgress(loans);
+		setGoalState(parsedPrefs);
 		loading.value = false;
 	}
 
@@ -138,9 +161,12 @@ export default function useGoalData({ loans, apollo: apolloParam }) {
 		getGoalDisplayName,
 		goalProgress,
 		loading,
-		runComposable,
+		loadGoalData,
 		storeGoalPreferences,
 		userGoal,
 		userGoalAchieved,
+		userGoalAchievedNow,
+		checkCompletedGoal,
+		getProgressByLoan,
 	};
 }

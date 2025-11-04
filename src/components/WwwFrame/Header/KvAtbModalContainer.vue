@@ -12,6 +12,8 @@
 		:milestones-number="contributingAchievements.length"
 		:milestones-progress="milestonesProgress"
 		:has-ever-logged-in="hasEverLoggedIn"
+		:is-loan-goal="isLoanGoal"
+		:is-completing-goal="isCompletingGoal"
 		@close-redirect="handleRedirect"
 		@reset-modal="resetModal"
 	/>
@@ -38,6 +40,7 @@ import useBadgeData, {
 import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import { splitAchievements, filterAchievementData, getOneLoanAwayAchievement } from '#src/util/atbAchievementUtils';
+import useGoalData from '#src/composables/useGoalData';
 
 const BASKET_LIMIT_SIZE_FOR_EXP = 3;
 const PHOTO_PATH = 'https://www.kiva.org/img/';
@@ -58,9 +61,20 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
+	isNextStepsExpEnabled: {
+		type: Boolean,
+		default: false
+	},
 });
 
 const { addedLoan } = toRefs(props);
+
+const {
+	userGoal,
+	goalProgress,
+	loadGoalData,
+	getProgressByLoan,
+} = useGoalData({ apollo });
 
 const myKivaExperimentEnabled = ref(false);
 const userData = ref({});
@@ -76,6 +90,7 @@ const tierTable = ref({});
 const milestonesProgress = ref({});
 const hasEverLoggedIn = ref(false);
 const basketTotal = ref(0);
+const loanGoalProgress = ref(0);
 
 const basketCount = computed(() => {
 	return addedLoan.value?.basketSize ?? 0;
@@ -124,10 +139,12 @@ const fetchBasketData = async () => {
 	});
 };
 
-const loansIdsInBasket = computed(() => {
+const loansInBasket = computed(() => {
 	// eslint-disable-next-line no-underscore-dangle
-	return basketData.value.filter(item => item.__typename === 'LoanReservation').map(item => item.id);
+	return basketData.value.filter(item => item.__typename === 'LoanReservation') ?? [];
 });
+
+const loansIdsInBasket = computed(() => loansInBasket.value.map(item => item.id));
 
 const showBasedOnUserBalance = computed(() => {
 	const userBalance = Math.floor(userData.value?.my?.userAccount?.balance ?? 0);
@@ -139,6 +156,10 @@ const isFirstLoan = computed(() => {
 		&& ((isGuest.value && !hasEverLoggedIn.value) || (!isGuest.value && !userData.value?.my?.loans?.totalCount))
 		&& basketCount.value === 1;
 });
+
+const isLoanGoal = computed(() => loanGoalProgress.value > 0 && userGoal.value?.status === 'in-progress');
+
+const isCompletingGoal = computed(() => isLoanGoal.value && goalProgress.value >= userGoal.value?.target);
 
 const updateTierTable = () => {
 	contributingAchievements.value.forEach(achievement => {
@@ -210,6 +231,16 @@ watch(addedLoan, async () => {
 	if (myKivaExperimentEnabled.value && !isGuest.value) {
 		await fetchBasketData();
 		fetchPostCheckoutAchievements(loansIdsInBasket.value);
+		if (props.isNextStepsExpEnabled) {
+			await loadGoalData(loansInBasket.value);
+			loanGoalProgress.value = await getProgressByLoan(addedLoan.value);
+			if (isCompletingGoal.value) {
+				oneLoanAwayFilteredUrl.value = '';
+				oneLoanAwayCategory.value = '';
+				const goalTarget = userGoal.value?.target;
+				oneAwayText.value = `${goalTarget - 1} of ${goalTarget}`;
+			}
+		}
 	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
 		modalVisible.value = true;
 	}

@@ -22,7 +22,6 @@ manifest.forEach(report => {
 			accessibilityScore: report?.summary?.accessibility,
 			bestPracticesScore: report?.summary?.['best-practices'],
 			seoScore: report?.summary?.seo,
-			pwaScore: report?.summary?.pwa,
 			runDuration: body?.timing?.total,
 			runIsMedianResult: report?.isRepresentativeRun,
 			lighthouseVersion: body?.lighthouseVersion,

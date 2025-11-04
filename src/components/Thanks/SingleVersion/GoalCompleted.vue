@@ -70,7 +70,7 @@ const router = useRouter();
 
 const goalDisplayName = computed(() => {
 	const category = props.currentGoal?.category || '';
-	return category ? props.getGoalDisplayName(category) : 'loans';
+	return category ? props.getGoalDisplayName(props.currentGoal?.target, category) : 'loans';
 });
 
 const handleContinue = () => {

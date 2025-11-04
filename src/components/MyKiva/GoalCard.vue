@@ -56,7 +56,6 @@
 					</div>
 					<KvButton
 						class="tw-flex-grow"
-						v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
 						@click="handleContinueClick"
 					>
 						Continue
@@ -189,7 +188,8 @@ const handleContinueClick = () => {
 };
 
 watch(() => props.userGoal, (newVal, oldVal) => {
-	if (newVal?.target && newVal !== oldVal) {
+	// Only track when a new goal is created (oldVal had no category, newVal has one)
+	if (newVal?.target && newVal?.category && !oldVal?.category) {
 		$kvTrackEvent('portfolio', 'show', 'goal-set', newVal.category, newVal.target);
 	}
 });
