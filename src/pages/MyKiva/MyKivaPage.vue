@@ -12,7 +12,6 @@
 			:transactions="transactions"
 			:user-lent-to-all-regions="userLentToAllRegions"
 			:enable-ai-loan-pills="enableAILoanPills"
-			:my-giving-funds="myGivingFunds"
 			:sidesheet-loan="sidesheetLoan"
 			:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 		/>
@@ -31,7 +30,6 @@ import userAchievementProgressQuery from '#src/graphql/query/userAchievementProg
 import { gql } from 'graphql-tag';
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
-import myGivingFundsQuery from '#src/graphql/query/portfolio/myGivingFunds.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 
@@ -61,7 +59,6 @@ export default {
 			transactions: [],
 			userInfo: {},
 			userLentToAllRegions: false,
-			myGivingFunds: {},
 			sidesheetLoan: {},
 			isNextStepsExpEnabled: undefined,
 		};
@@ -77,7 +74,6 @@ export default {
 				loanId
 					? client.query({ query: borrowerProfileSideSheetQuery, variables: { loanId: Number(loanId) } })
 					: Promise.resolve(null),
-				client.query({ query: myGivingFundsQuery }),
 				client.query({
 					query: contentfulEntriesQuery,
 					variables: { contentType: 'carousel', contentKey: CONTENTFUL_CAROUSEL_KEY },
@@ -159,9 +155,6 @@ export default {
 					regionsData,
 				};
 				this.transactions = myKivaQueryResult.my?.transactions?.values ?? [];
-
-				const myGivingFundsQueryResult = this.apollo.readQuery({ query: myGivingFundsQuery });
-				this.myGivingFunds = myGivingFundsQueryResult.my?.givingFunds ?? {};
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');
 			}
@@ -225,6 +218,6 @@ export default {
 		} catch (error) {
 			logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
 		}
-	}
+	},
 };
 </script>

@@ -25,7 +25,8 @@
 						<lending-insights />
 						<my-giving-funds-card
 							v-if="myGivingFundsCount && myGivingFundsCount > 0"
-							:count="myGivingFundsCount"
+							:my-funds-count="myGivingFundsCount"
+							:contributed-funds-count="numberOfFundsContributedTo"
 							class="md:tw-mb-3 tw-mb-0.5"
 						/>
 						<your-donations />
@@ -55,6 +56,8 @@
 </template>
 
 <script>
+import { inject } from 'vue';
+
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
@@ -66,6 +69,8 @@ import { getIsMyKivaEnabled, hasLoanFunFactFootnote } from '#src/util/myKivaUtil
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
 import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';
+import useGivingFund from '#src/composables/useGivingFund';
+import logReadQueryError from '#src/util/logReadQueryError';
 
 import {
 	PAYING_BACK,
@@ -73,7 +78,7 @@ import {
 	FUNDRAISING,
 	RAISED
 } from '#src/api/fixtures/LoanStatusEnum';
-import myGivingFundsQuery from '#src/graphql/query/portfolio/myGivingFunds.graphql';
+
 import AccountOverview from './AccountOverview';
 import AccountUpdates from './AccountUpdates';
 import DistributionGraphs from './DistributionGraphs';
@@ -109,25 +114,23 @@ export default {
 	},
 	data() {
 		return {
+			allowedTeams: [],
+			filteredLoans: [],
+			loans: [],
+			myGivingFundsCount: 0,
+			numberOfFundsContributedTo: 0,
 			post: null,
+			showLoanFootnote: false,
+			showMyKivaPage: false,
 			showTeamChallenge: false,
 			teamsChallengeEnable: false,
-			allowedTeams: [],
 			userPreferences: null,
-			showMyKivaPage: false,
-			loans: [],
-			filteredLoans: [],
-			showLoanFootnote: false,
-			myGivingFundsCount: 0,
 		};
 	},
 	mixins: [badgeGoalMixin],
 	apollo: {
 		preFetch(config, client) {
-			return Promise.all([
-				client.query({ query: portfolioQuery }),
-				client.query({ query: myGivingFundsQuery }),
-			]);
+			return client.query({ query: portfolioQuery });
 		},
 	},
 	methods: {
@@ -149,6 +152,19 @@ export default {
 				this.post = data?.contentful?.blogPosts?.items?.[0]?.fields ?? null;
 			});
 		},
+	},
+	setup() {
+		const apollo = inject('apollo');
+
+		const {
+			getFundsContributedToIds,
+			fetchMyGivingFundsData,
+		} = useGivingFund(apollo);
+
+		return {
+			getFundsContributedToIds,
+			fetchMyGivingFundsData,
+		};
 	},
 	created() {
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
@@ -187,8 +203,20 @@ export default {
 			this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
 		}
 
-		const myGivingFundsQueryResult = this.apollo.readQuery({ query: myGivingFundsQuery });
-		this.myGivingFundsCount = myGivingFundsQueryResult.my?.givingFunds?.totalCount ?? 0;
+		this.fetchMyGivingFundsData()
+			.then(response => {
+				this.myGivingFundsCount = response.givingFunds.totalCount;
+			})
+			.catch(error => {
+				logReadQueryError(error, 'MyKivaPageContent fetchMyGivingFundsData');
+			});
+		this.getFundsContributedToIds(parseInt(userData?.id, 10) || null)
+			.then(fundIds => {
+				this.numberOfFundsContributedTo = fundIds.length;
+			})
+			.catch(error => {
+				logReadQueryError(error, 'MyKivaPageContent getFundsContributedToIds');
+			});
 	},
 	async mounted() {
 		if (!this.showMyKivaPage) {

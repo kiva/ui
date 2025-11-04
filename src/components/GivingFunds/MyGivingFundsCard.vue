@@ -1,7 +1,7 @@
 <template>
 	<div class="tw-rounded tw-bg-white tw-p-2 giving-fund-card">
 		<h3>Check in on your giving funds</h3>
-		<p class="tw-my-2 tw-font-medium tw-line-clamp-1">
+		<p class="tw-my-2 tw-font-medium">
 			{{ textCopy }}
 		</p>
 		<KvButton
@@ -33,19 +33,29 @@ import {
 } from 'vue';
 
 const props = defineProps({
-	count: {
+	myFundsCount: {
+		type: Number,
+		required: true,
+	},
+	contributedFundsCount: {
 		type: Number,
 		required: true,
 	},
 });
 
-const { count } = toRefs(props);
+const { myFundsCount, contributedFundsCount } = toRefs(props);
 
 const textCopy = computed(() => {
-	if (count.value === 1) {
-		return 'You have 1 fund making an impact.';
+	let copy = `You have ${myFundsCount.value} ${
+		myFundsCount.value === 1 ? 'fund' : 'funds'
+	} making an impact`;
+
+	if (contributedFundsCount.value > 0) {
+		copy += ` and have contributed to ${contributedFundsCount.value} ${
+			contributedFundsCount.value === 1 ? 'fund' : 'funds'
+		}`;
 	}
-	return `You have ${count.value} funds making an impact.`;
+	return `${copy}.`;
 });
 </script>
 
