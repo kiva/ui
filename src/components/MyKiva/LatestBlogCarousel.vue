@@ -1,8 +1,7 @@
 <template>
 	<div>
 		<h2
-			class="tw-text-h3 tw-mb-4"
-			:class="{ 'tw-absolute tw-pt-2': controlsTopRight}"
+			class="tw-absolute tw-text-h3 tw-mb-4 tw-pt-2"
 		>
 			Impact in action
 		</h2>

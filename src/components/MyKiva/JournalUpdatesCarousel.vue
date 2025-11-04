@@ -1,6 +1,6 @@
 <template>
-	<div v-if="updates">
-		<h3 :class="{ 'tw-absolute tw-pt-2': controlsTopRight, 'tw-mt-4 tw-mb-2': !controlsTopRight }">
+	<div v-if="updates.length > 0">
+		<h3 class="tw-absolute tw-pt-2">
 			Updates
 		</h3>
 		<KvCarousel
