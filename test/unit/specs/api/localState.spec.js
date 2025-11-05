@@ -1,10 +1,5 @@
 import { initState, setLocalState } from '#src/api/localState';
 
-// Mock lodash merge
-vi.mock('lodash/merge', () => ({
-	default: vi.fn((...args) => Object.assign({}, ...args)),
-}));
-
 // Mock the glob import
 vi.mock('#src/api/localResolvers/*.js', () => ({}));
 
