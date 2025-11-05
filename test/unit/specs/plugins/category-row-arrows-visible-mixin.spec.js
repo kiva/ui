@@ -1,179 +1,105 @@
 import categoryRowArrowsVisibleMixin from '#src/plugins/category-row-arrows-visible-mixin';
 
 describe('category-row-arrows-visible-mixin.js', () => {
-	let context;
-	let checkArrowsVisible;
-
-	beforeEach(() => {
-		context = {};
-
-		// Helper to call mixin method
-		checkArrowsVisible = () => {
-			return categoryRowArrowsVisibleMixin.methods.categoryRowArrowsVisible.call(context);
+	/**
+	 * Test helper to set up the DOM environment and run the mixin method
+	 * @param {Object} options - Configuration for the test environment
+	 * @param {boolean} options.hasWindow - Whether window should exist
+	 * @param {boolean} options.hasDocument - Whether document should exist
+	 * @param {boolean} options.hasElement - Whether the arrow element should be found
+	 * @param {string} options.displayValue - The display CSS value to return
+	 * @returns {Object} Test result with result value and mock functions
+	 */
+	const runTest = ({
+		hasWindow = true,
+		hasDocument = true,
+		hasElement = true,
+		displayValue = 'block'
+	} = {}) => {
+		const mockElement = {};
+		const mockGetComputedStyle = vi.fn().mockReturnValue({ display: displayValue });
+		const mockDocument = {
+			querySelector: vi.fn().mockReturnValue(hasElement ? mockElement : null)
 		};
-	});
+
+		vi.stubGlobal('window', hasWindow ? { getComputedStyle: mockGetComputedStyle } : undefined);
+		vi.stubGlobal('document', hasDocument ? mockDocument : undefined);
+
+		const result = categoryRowArrowsVisibleMixin.methods.categoryRowArrowsVisible.call({});
+
+		vi.unstubAllGlobals();
+
+		return {
+			result, mockDocument, mockGetComputedStyle, mockElement
+		};
+	};
 
 	describe('categoryRowArrowsVisible', () => {
 		it('should return true when window is undefined', () => {
-			vi.stubGlobal('window', undefined);
-			vi.stubGlobal('document', undefined);
-
-			const result = checkArrowsVisible();
+			const { result } = runTest({ hasWindow: false, hasDocument: false });
 
 			expect(result).toBe(true);
-
-			vi.unstubAllGlobals();
 		});
 
 		it('should return true when document is undefined', () => {
-			vi.stubGlobal('window', {});
-			vi.stubGlobal('document', undefined);
-
-			const result = checkArrowsVisible();
+			const { result } = runTest({ hasDocument: false });
 
 			expect(result).toBe(true);
-
-			vi.unstubAllGlobals();
 		});
 
 		it('should return true when arrow element is not found', () => {
-			const mockDocument = {
-				querySelector: vi.fn().mockReturnValue(null)
-			};
-
-			vi.stubGlobal('window', {});
-			vi.stubGlobal('document', mockDocument);
-
-			const result = checkArrowsVisible();
+			const { result, mockDocument } = runTest({ hasElement: false });
 
 			expect(result).toBe(true);
 			expect(mockDocument.querySelector).toHaveBeenCalledWith('.arrow.right-arrow');
-
-			vi.unstubAllGlobals();
 		});
 
 		it('should return false when arrow display is none', () => {
-			const mockElement = {};
-			const mockGetComputedStyle = vi.fn().mockReturnValue({
-				display: 'none'
+			const {
+				result, mockDocument, mockGetComputedStyle, mockElement
+			} = runTest({
+				displayValue: 'none'
 			});
-			const mockDocument = {
-				querySelector: vi.fn().mockReturnValue(mockElement)
-			};
-
-			vi.stubGlobal('window', {
-				getComputedStyle: mockGetComputedStyle
-			});
-			vi.stubGlobal('document', mockDocument);
-
-			const result = checkArrowsVisible();
 
 			expect(result).toBe(false);
 			expect(mockDocument.querySelector).toHaveBeenCalledWith('.arrow.right-arrow');
 			expect(mockGetComputedStyle).toHaveBeenCalledWith(mockElement);
-
-			vi.unstubAllGlobals();
 		});
 
 		it('should return true when arrow display is not none', () => {
-			const mockElement = {};
-			const mockGetComputedStyle = vi.fn().mockReturnValue({
-				display: 'block'
+			const {
+				result, mockDocument, mockGetComputedStyle, mockElement
+			} = runTest({
+				displayValue: 'block'
 			});
-			const mockDocument = {
-				querySelector: vi.fn().mockReturnValue(mockElement)
-			};
-
-			vi.stubGlobal('window', {
-				getComputedStyle: mockGetComputedStyle
-			});
-			vi.stubGlobal('document', mockDocument);
-
-			const result = checkArrowsVisible();
 
 			expect(result).toBe(true);
 			expect(mockDocument.querySelector).toHaveBeenCalledWith('.arrow.right-arrow');
 			expect(mockGetComputedStyle).toHaveBeenCalledWith(mockElement);
-
-			vi.unstubAllGlobals();
 		});
 
 		it('should handle display value of inline', () => {
-			const mockElement = {};
-			const mockGetComputedStyle = vi.fn().mockReturnValue({
-				display: 'inline'
-			});
-			const mockDocument = {
-				querySelector: vi.fn().mockReturnValue(mockElement)
-			};
-
-			vi.stubGlobal('window', {
-				getComputedStyle: mockGetComputedStyle
-			});
-			vi.stubGlobal('document', mockDocument);
-
-			const result = checkArrowsVisible();
+			const { result } = runTest({ displayValue: 'inline' });
 
 			expect(result).toBe(true);
-
-			vi.unstubAllGlobals();
 		});
 
 		it('should handle display value of flex', () => {
-			const mockElement = {};
-			const mockGetComputedStyle = vi.fn().mockReturnValue({
-				display: 'flex'
-			});
-			const mockDocument = {
-				querySelector: vi.fn().mockReturnValue(mockElement)
-			};
-
-			vi.stubGlobal('window', {
-				getComputedStyle: mockGetComputedStyle
-			});
-			vi.stubGlobal('document', mockDocument);
-
-			const result = checkArrowsVisible();
+			const { result } = runTest({ displayValue: 'flex' });
 
 			expect(result).toBe(true);
-
-			vi.unstubAllGlobals();
 		});
 
 		it('should handle display value of inline-block', () => {
-			const mockElement = {};
-			const mockGetComputedStyle = vi.fn().mockReturnValue({
-				display: 'inline-block'
-			});
-			const mockDocument = {
-				querySelector: vi.fn().mockReturnValue(mockElement)
-			};
-
-			vi.stubGlobal('window', {
-				getComputedStyle: mockGetComputedStyle
-			});
-			vi.stubGlobal('document', mockDocument);
-
-			const result = checkArrowsVisible();
+			const { result } = runTest({ displayValue: 'inline-block' });
 
 			expect(result).toBe(true);
-
-			vi.unstubAllGlobals();
 		});
 
 		it('should use correct selector for arrow element', () => {
-			const mockDocument = {
-				querySelector: vi.fn().mockReturnValue(null)
-			};
-
-			vi.stubGlobal('window', {});
-			vi.stubGlobal('document', mockDocument);
-
-			checkArrowsVisible();
+			const { mockDocument } = runTest({ hasElement: false });
 
 			expect(mockDocument.querySelector).toHaveBeenCalledWith('.arrow.right-arrow');
-
-			vi.unstubAllGlobals();
 		});
 	});
 });
