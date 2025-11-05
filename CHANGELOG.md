@@ -1,3 +1,16 @@
+## [3.41.0-rc.1](https://github.com/kiva/ui/compare/v3.40.1...v3.41.0-rc.1) (2025-11-05)
+
+### 🎉 New Features
+
+* added count of giving funds contributed to on card in mykiva and portfolio page ([cdd7d3d](https://github.com/kiva/ui/commit/cdd7d3d073e862079446fb0bb843e64f7de69a18))
+* modal copy update ([#6420](https://github.com/kiva/ui/issues/6420)) ([ae3f197](https://github.com/kiva/ui/commit/ae3f197b6cfc2285af1771133a0187eefd0b607f))
+
+### 🐛 Bugfixes
+
+* change giving fund count query ([603a983](https://github.com/kiva/ui/commit/603a983ac9a57843e2f8a7078a6eae67d61acce0))
+* check for element for badge shine ([35c0413](https://github.com/kiva/ui/commit/35c0413549484182a198fb7dd6fabe059bb85d62))
+* optional chaining ([1340115](https://github.com/kiva/ui/commit/1340115494bdcd159ad50bf4bd401872b17216a5))
+
 ## [3.40.1](https://github.com/kiva/ui/compare/v3.40.0...v3.40.1) (2025-11-05)
 
 ### 🐛 Bugfixes
