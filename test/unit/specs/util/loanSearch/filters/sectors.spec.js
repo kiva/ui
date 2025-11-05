@@ -32,10 +32,19 @@ describe('sectors.js', () => {
 				expect(result).toEqual(expected);
 			});
 
-			it('should handle sector not found in facets', () => {
+			it('should filter out sector not found in facets', () => {
 				const result = sectors.getFilterChips({ sectorId: [999] }, mockAllFacets);
 
-				expect(result).toEqual([undefined]);
+				expect(result).toEqual([]);
+			});
+
+			it('should filter out invalid sectors but keep valid ones', () => {
+				const result = sectors.getFilterChips({ sectorId: [1, 999, 2] }, mockAllFacets);
+
+				expect(result).toEqual([
+					mockAllFacets.sectorFacets[0],
+					mockAllFacets.sectorFacets[1]
+				]);
 			});
 		});
 
