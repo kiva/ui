@@ -1,3 +1,9 @@
+## [3.40.1-rc.1](https://github.com/kiva/ui/compare/v3.40.0...v3.40.1-rc.1) (2025-11-04)
+
+### 🐛 Bugfixes
+
+* add 1 target edgecase to getGoalDisplayName ([796974f](https://github.com/kiva/ui/commit/796974f8c7cba304f066176d470b7d4c3e116ad9))
+
 ## [3.40.0](https://github.com/kiva/ui/compare/v3.39.0...v3.40.0) (2025-11-04)
 
 ### 🎉 New Features
