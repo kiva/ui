@@ -442,15 +442,24 @@ export default [
 			if (!hash || to?.query?.goTo) return next();
 
 			const hashValue = hash.slice(1);
-			const url = new URL(href);
-			url.searchParams.set('goTo', hashValue);
-			url.hash = '';
+			const [goTo, hashQueryString] = hashValue.split('?');
 
+			const newQuery = { ...to.query, goTo };
+			if (hashQueryString) {
+				hashQueryString.split('&').forEach(pair => {
+					const [key, value] = pair.split('=');
+					if (key) newQuery[decodeURIComponent(key)] = value ? decodeURIComponent(value) : '';
+				});
+			}
+
+			const url = new URL(href);
+			url.hash = '';
+			url.search = new URLSearchParams(newQuery).toString();
 			window.history.replaceState(null, '', url.toString());
 
 			next({
 				path: to.path,
-				query: { ...to.query, goTo: hashValue },
+				query: newQuery,
 				replace: true, // avoids duplicate history entries
 			});
 		}
