@@ -109,8 +109,13 @@ describe('createApolloClient', () => {
 		mockFetch = vi.fn();
 	});
 
-	it('should create an Apollo client with all required configuration', () => {
-		const client = createApolloClient({
+	/**
+	 * Helper to create Apollo client with custom configuration overrides
+	 * @param {Object} overrides - Optional overrides for the default configuration
+	 * @returns {Object} The created Apollo client
+	 */
+	const createClient = (overrides = {}) => {
+		const defaultConfig = {
 			appConfig: mockAppConfig,
 			cookieStore: mockCookieStore,
 			kvAuth0: mockKvAuth0,
@@ -119,24 +124,20 @@ describe('createApolloClient', () => {
 			userAgent: 'Test/1.0',
 			fetch: mockFetch,
 			route: mockRoute,
-			forceHeader: 'test-header',
-		});
+		};
+
+		return createApolloClient({ ...defaultConfig, ...overrides });
+	};
+
+	it('should create an Apollo client with all required configuration', () => {
+		const client = createClient({ forceHeader: 'test-header' });
 
 		expect(client).toBeDefined();
 		expect(client.config).toBeDefined();
 	});
 
 	it('should create InMemoryCache with possibleTypes and typePolicies', () => {
-		createApolloClient({
-			appConfig: mockAppConfig,
-			cookieStore: mockCookieStore,
-			kvAuth0: mockKvAuth0,
-			types: mockTypes,
-			uri: 'https://api.test/graphql',
-			userAgent: 'Test/1.0',
-			fetch: mockFetch,
-			route: mockRoute,
-		});
+		createClient();
 
 		expect(vi.mocked(InMemoryCache)).toHaveBeenCalledWith({
 			possibleTypes: mockTypes,
@@ -152,17 +153,7 @@ describe('createApolloClient', () => {
 	});
 
 	it('should initialize local state with correct parameters', () => {
-		createApolloClient({
-			appConfig: mockAppConfig,
-			cookieStore: mockCookieStore,
-			kvAuth0: mockKvAuth0,
-			types: mockTypes,
-			uri: 'https://api.test/graphql',
-			userAgent: 'Test/1.0',
-			fetch: mockFetch,
-			route: mockRoute,
-			forceHeader: 'test-header',
-		});
+		createClient({ forceHeader: 'test-header' });
 
 		expect(vi.mocked(initState)).toHaveBeenCalledWith({
 			appConfig: mockAppConfig,
@@ -174,16 +165,7 @@ describe('createApolloClient', () => {
 	});
 
 	it('should create Apollo link chain in correct order', () => {
-		createApolloClient({
-			appConfig: mockAppConfig,
-			cookieStore: mockCookieStore,
-			kvAuth0: mockKvAuth0,
-			types: mockTypes,
-			uri: 'https://api.test/graphql',
-			userAgent: 'Test/1.0',
-			fetch: mockFetch,
-			route: mockRoute,
-		});
+		createClient();
 
 		expect(vi.mocked(SnowplowSessionLink)).toHaveBeenCalledWith({ cookieStore: mockCookieStore });
 		expect(vi.mocked(ExperimentIdLink)).toHaveBeenCalledWith({ cookieStore: mockCookieStore });
@@ -214,16 +196,7 @@ describe('createApolloClient', () => {
 		const appConfigWithoutBatching = { ...mockAppConfig };
 		delete appConfigWithoutBatching.apolloBatching;
 
-		createApolloClient({
-			appConfig: appConfigWithoutBatching,
-			cookieStore: mockCookieStore,
-			kvAuth0: mockKvAuth0,
-			types: mockTypes,
-			uri: 'https://api.test/graphql',
-			userAgent: 'Test/1.0',
-			fetch: mockFetch,
-			route: mockRoute,
-		});
+		createClient({ appConfig: appConfigWithoutBatching });
 
 		expect(vi.mocked(HttpLinkCreator)).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -233,20 +206,8 @@ describe('createApolloClient', () => {
 	});
 
 	it('should respect apolloBatching false when explicitly set', () => {
-		const appConfigWithBatchingFalse = {
-			...mockAppConfig,
-			apolloBatching: false,
-		};
-
-		createApolloClient({
-			appConfig: appConfigWithBatchingFalse,
-			cookieStore: mockCookieStore,
-			kvAuth0: mockKvAuth0,
-			types: mockTypes,
-			uri: 'https://api.test/graphql',
-			userAgent: 'Test/1.0',
-			fetch: mockFetch,
-			route: mockRoute,
+		createClient({
+			appConfig: { ...mockAppConfig, apolloBatching: false },
 		});
 
 		expect(vi.mocked(HttpLinkCreator)).toHaveBeenCalledWith(
@@ -257,16 +218,7 @@ describe('createApolloClient', () => {
 	});
 
 	it('should create ApolloClient with correct default options', () => {
-		createApolloClient({
-			appConfig: mockAppConfig,
-			cookieStore: mockCookieStore,
-			kvAuth0: mockKvAuth0,
-			types: mockTypes,
-			uri: 'https://api.test/graphql',
-			userAgent: 'Test/1.0',
-			fetch: mockFetch,
-			route: mockRoute,
-		});
+		createClient();
 
 		expect(vi.mocked(ApolloClient)).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -287,16 +239,7 @@ describe('createApolloClient', () => {
 	});
 
 	it('should set resolvers from initState', () => {
-		createApolloClient({
-			appConfig: mockAppConfig,
-			cookieStore: mockCookieStore,
-			kvAuth0: mockKvAuth0,
-			types: mockTypes,
-			uri: 'https://api.test/graphql',
-			userAgent: 'Test/1.0',
-			fetch: mockFetch,
-			route: mockRoute,
-		});
+		createClient();
 
 		expect(vi.mocked(ApolloClient)).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -306,16 +249,7 @@ describe('createApolloClient', () => {
 	});
 
 	it('should set default local state on creation', () => {
-		createApolloClient({
-			appConfig: mockAppConfig,
-			cookieStore: mockCookieStore,
-			kvAuth0: mockKvAuth0,
-			types: mockTypes,
-			uri: 'https://api.test/graphql',
-			userAgent: 'Test/1.0',
-			fetch: mockFetch,
-			route: mockRoute,
-		});
+		createClient();
 
 		expect(vi.mocked(setLocalState)).toHaveBeenCalledWith(
 			{
@@ -328,32 +262,14 @@ describe('createApolloClient', () => {
 	});
 
 	it('should register onResetStore callback', () => {
-		const client = createApolloClient({
-			appConfig: mockAppConfig,
-			cookieStore: mockCookieStore,
-			kvAuth0: mockKvAuth0,
-			types: mockTypes,
-			uri: 'https://api.test/graphql',
-			userAgent: 'Test/1.0',
-			fetch: mockFetch,
-			route: mockRoute,
-		});
+		const client = createClient();
 
 		expect(client.onResetStore).toHaveBeenCalled();
 		expect(client.resetStoreCallback).toBeDefined();
 	});
 
 	it('should call setLocalState when store is reset', () => {
-		const client = createApolloClient({
-			appConfig: mockAppConfig,
-			cookieStore: mockCookieStore,
-			kvAuth0: mockKvAuth0,
-			types: mockTypes,
-			uri: 'https://api.test/graphql',
-			userAgent: 'Test/1.0',
-			fetch: mockFetch,
-			route: mockRoute,
-		});
+		const client = createClient();
 
 		// Clear the initial call
 		vi.mocked(setLocalState).mockClear();
@@ -372,14 +288,9 @@ describe('createApolloClient', () => {
 	});
 
 	it('should handle minimal configuration', () => {
-		const client = createApolloClient({
+		const client = createClient({
 			appConfig: {},
-			cookieStore: mockCookieStore,
-			kvAuth0: mockKvAuth0,
 			types: {},
-			uri: 'https://api.test/graphql',
-			userAgent: 'Test/1.0',
-			fetch: mockFetch,
 			route: {},
 		});
 
@@ -388,16 +299,7 @@ describe('createApolloClient', () => {
 	});
 
 	it('should pass undefined values to NetworkErrorRetryLink when config missing', () => {
-		createApolloClient({
-			appConfig: {},
-			cookieStore: mockCookieStore,
-			kvAuth0: mockKvAuth0,
-			types: mockTypes,
-			uri: 'https://api.test/graphql',
-			userAgent: 'Test/1.0',
-			fetch: mockFetch,
-			route: mockRoute,
-		});
+		createClient({ appConfig: {} });
 
 		expect(vi.mocked(NetworkErrorRetryLink)).toHaveBeenCalledWith({
 			activateRetry: undefined,
@@ -406,16 +308,7 @@ describe('createApolloClient', () => {
 	});
 
 	it('should pass undefined forceHeader to initState when not provided', () => {
-		createApolloClient({
-			appConfig: mockAppConfig,
-			cookieStore: mockCookieStore,
-			kvAuth0: mockKvAuth0,
-			types: mockTypes,
-			uri: 'https://api.test/graphql',
-			userAgent: 'Test/1.0',
-			fetch: mockFetch,
-			route: mockRoute,
-		});
+		createClient();
 
 		expect(vi.mocked(initState)).toHaveBeenCalledWith(
 			expect.objectContaining({
