@@ -1,25 +1,11 @@
-import numeral from 'numeral';
 import {
 	formatTransactionData,
 	myFTDQuery,
 	removeCredit
 } from '#src/util/checkoutUtils';
 
-vi.mock('numeral');
-
 describe('checkoutUtils.js', () => {
 	describe('formatTransactionData', () => {
-		beforeEach(() => {
-			vi.clearAllMocks();
-			// Setup numeral mock to return chainable methods
-			const mockNumeralInstance = {
-				format: vi.fn().mockReturnValue('0.00'),
-				add: vi.fn().mockReturnThis(),
-				value: vi.fn().mockReturnValue(0)
-			};
-			numeral.mockReturnValue(mockNumeralInstance);
-		});
-
 		it('should format transaction data with loans only', () => {
 			const loans = [
 				{ __typename: 'Loan', id: 1, price: '25.00' },
@@ -28,7 +14,6 @@ describe('checkoutUtils.js', () => {
 
 			const result = formatTransactionData(123, loans, [], [], {});
 
-			// transactionId is processed by numeral().value()
 			expect(result.transactionId).toBeDefined();
 			expect(result.loanCount).toBe(2);
 			expect(result.loans).toHaveLength(2);
@@ -112,13 +97,6 @@ describe('checkoutUtils.js', () => {
 		});
 
 		it('should calculate loan and donation totals correctly', () => {
-			const mockNumeralInstance = {
-				format: vi.fn().mockReturnValue('80.00'),
-				add: vi.fn().mockReturnThis(),
-				value: vi.fn().mockReturnValue(80)
-			};
-			numeral.mockReturnValue(mockNumeralInstance);
-
 			const loans = [{ __typename: 'Loan', id: 1, price: '50.00' }];
 			const donations = [{
 				__typename: 'Donation', id: 'don1', price: '30.00', isTip: true
@@ -128,7 +106,6 @@ describe('checkoutUtils.js', () => {
 
 			expect(result.loanCount).toBe(1);
 			expect(result.isFTD).toBe(false);
-			expect(numeral).toHaveBeenCalled();
 		});
 
 		it('should compile payment type with credit needed', () => {
@@ -354,16 +331,6 @@ describe('checkoutUtils.js', () => {
 	});
 
 	describe('formatTransactionData edge cases', () => {
-		beforeEach(() => {
-			vi.clearAllMocks();
-			const mockNumeralInstance = {
-				format: vi.fn().mockReturnValue('0.00'),
-				add: vi.fn().mockReturnThis(),
-				value: vi.fn().mockReturnValue(0)
-			};
-			numeral.mockReturnValue(mockNumeralInstance);
-		});
-
 		it('should handle combination of all payment types', () => {
 			const totals = {
 				creditAmountNeeded: '25.00',
