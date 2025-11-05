@@ -1,6 +1,3 @@
-import {
-	describe, it, expect, vi, beforeEach
-} from 'vitest';
 import autolendingResolver from '#src/api/localResolvers/autolending';
 import bothProfilesQuery from '#src/graphql/query/autolending/bothProfiles.graphql';
 import serverProfileQuery from '#src/graphql/query/autolending/profileFromServer.graphql';
