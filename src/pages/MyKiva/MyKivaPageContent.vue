@@ -25,9 +25,10 @@
 			:user-balance="userBalance"
 			:lending-stats="lendingStats"
 		/>
-		<section v-if="myGivingFunds && myGivingFunds.totalCount > 0" class="tw-mt-4">
+		<section v-if="myGivingFundsCount > 0" class="tw-mt-4">
 			<MyGivingFundsCard
-				:count="myGivingFunds.totalCount"
+				:my-funds-count="myGivingFundsCount"
+				:contributed-funds-count="numberOfFundsContributedTo"
 			/>
 		</section>
 		<section class="tw-mt-4">
@@ -161,6 +162,7 @@ import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql
 
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import useContentful from '#src/composables/useContentful';
+import useGivingFund from '#src/composables/useGivingFund';
 
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
@@ -189,7 +191,6 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
-
 import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
 
 const IMPACT_THRESHOLD = 25;
@@ -270,10 +271,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		myGivingFunds: {
-			type: Object,
-			default: null,
-		},
 		sidesheetLoan: {
 			type: Object,
 			default: () => ({}),
@@ -292,8 +289,16 @@ export default {
 			fetchContentfulData,
 			getLoanFindingUrl,
 		} = useBadgeData(apollo);
+
+		const {
+			getFundsContributedToIds,
+			fetchMyGivingFundsCount,
+		} = useGivingFund(apollo);
+
 		return {
 			badgeData,
+			getFundsContributedToIds,
+			fetchMyGivingFundsCount,
 			fetchAchievementData,
 			fetchContentfulData,
 			getLoanFindingUrl,
@@ -302,6 +307,7 @@ export default {
 	},
 	data() {
 		return {
+			animatedSideSheet: true,
 			blogCards: [],
 			blogCategories,
 			CONTENTFUL_MORE_WAYS_KEY,
@@ -311,6 +317,8 @@ export default {
 			isFirstLoad: true,
 			loanUpdates: [],
 			moreWaysToHelpSlides: [],
+			myGivingFundsCount: 0,
+			numberOfFundsContributedTo: 0,
 			realTotalUpdates: 0,
 			recommendedLoans: Array(6).fill({ id: 0 }),
 			selectedBadgeData: null,
@@ -324,7 +332,6 @@ export default {
 			updatesLimit: 15,
 			updatesLoading: true,
 			updatesOffset: 3,
-			animatedSideSheet: true,
 		};
 	},
 	computed: {
@@ -645,6 +652,21 @@ export default {
 		this.fetchRecommendedLoans();
 		this.fetchMoreWaysToHelpData();
 		this.loadInitialBasketItems();
+
+		this.fetchMyGivingFundsCount()
+			.then(response => {
+				this.myGivingFundsCount = response.givingFunds.totalCount;
+			})
+			.catch(error => {
+				logReadQueryError(error, 'MyKivaPageContent fetchMyGivingFundsCount');
+			});
+		this.getFundsContributedToIds(parseInt(this.userInfo?.id, 10) || null)
+			.then(fundIds => {
+				this.numberOfFundsContributedTo = fundIds.length;
+			})
+			.catch(error => {
+				logReadQueryError(error, 'MyKivaPageContent getFundsContributedToIds');
+			});
 	},
 };
 </script>

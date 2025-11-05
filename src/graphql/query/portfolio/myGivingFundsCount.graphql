@@ -1,0 +1,8 @@
+query MyGivingFundsCount {
+  my {
+	id
+    givingFunds {
+      totalCount
+    }
+  }
+}

@@ -91,11 +91,10 @@ import { formatRichTextContent } from '#src/util/contentfulUtils';
 import GoalCardCareImg from '#src/assets/images/my-kiva/goal-card-care.svg';
 import useBadgeData, {
 	ID_BASIC_NEEDS,
-	ID_CLIMATE_ACTION,
-	ID_REFUGEE_EQUALITY,
 	ID_US_ECONOMIC_EQUALITY,
 	ID_WOMENS_EQUALITY,
 } from '#src/composables/useBadgeData';
+import useGoalData from '#src/composables/useGoalData';
 import { useRouter } from 'vue-router';
 
 const props = defineProps({
@@ -123,6 +122,7 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
 const { getLoanFindingUrl } = useBadgeData();
+const { getGoalDisplayName } = useGoalData({});
 
 const loansToReachGoal = computed(() => props.userGoal?.target || 0);
 const userHasGoal = computed(() => !!props.userGoal?.category);
@@ -143,24 +143,8 @@ const getContentfulKey = category => {
 	}
 };
 
-const getCategoryHeader = category => {
-	switch (category) {
-		case ID_US_ECONOMIC_EQUALITY:
-			return 'U.S. entrepreneurs';
-		case ID_BASIC_NEEDS:
-			return 'loans for basic needs';
-		case ID_CLIMATE_ACTION:
-			return 'eco-friendly loans';
-		case ID_WOMENS_EQUALITY:
-			return 'women';
-		case ID_REFUGEE_EQUALITY:
-			return 'refugees';
-		default: return 'loans';
-	}
-};
-
 const ctaHref = computed(() => {
-	const categoryHeader = getCategoryHeader(props.userGoal?.category);
+	const categoryHeader = getGoalDisplayName(props.userGoal?.target, props.userGoal?.category);
 	const string = `Your goal: Support ${props.userGoal?.target} ${categoryHeader}`;
 	const encodedHeader = encodeURIComponent(string);
 	const loanFindingUrl = getLoanFindingUrl(props.userGoal?.category, router.currentRoute.value);

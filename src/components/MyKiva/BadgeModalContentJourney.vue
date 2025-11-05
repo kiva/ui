@@ -3,7 +3,7 @@
 		<div v-if="journeyLoans.length" class="tw-flex tw-space-x-1 tw-items-center tw-pb-0.5 tw-pl-1">
 			<div class="tw-flex">
 				<KvUserAvatar
-					class="avatar tw-border-white tw-rounded-full tw-border-2"
+					class="tw-border-white tw-border-2 tw-w-4 tw-h-4"
 					:key="loan.id"
 					v-for="(loan, index) in journeyLoans.slice(0, 3)"
 					:lender-name="loan.name"
@@ -298,9 +298,5 @@ onUnmounted(() => {
 
 .badge-mobile:not(:last-of-type) {
 	@apply tw-mb-1.5;
-}
-
-.avatar :deep(img), .avatar :deep(.loading-placeholder ) {
-	@apply !tw-w-4 !tw-h-4;
 }
 </style>
