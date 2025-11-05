@@ -1,9 +1,3 @@
-// Mock the module before importing
-vi.mock('#src/util/getCacheKey', async () => {
-	const actual = await vi.importActual('#src/util/getCacheKey');
-	return actual;
-});
-
 describe('getCacheKey', () => {
 	it('should include commit hash in cache key', async () => {
 		global.UI_COMMIT = 'abc123def456';
