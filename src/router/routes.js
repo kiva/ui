@@ -434,6 +434,25 @@ export default [
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
+		},
+		beforeEnter(to, from, next) {
+			if (typeof window === 'undefined') return next();
+
+			const { hash, href } = window.location;
+			if (!hash || to?.query?.goTo) return next();
+
+			const hashValue = hash.slice(1);
+			const url = new URL(href);
+			url.searchParams.set('goTo', hashValue);
+			url.hash = '';
+
+			window.history.replaceState(null, '', url.toString());
+
+			next({
+				path: to.path,
+				query: { ...to.query, goTo: hashValue },
+				replace: true, // avoids duplicate history entries
+			});
 		}
 	},
 	{
