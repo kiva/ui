@@ -127,8 +127,8 @@ const categories = [
 	},
 	{
 		id: '6',
-		name: 'Support All',
-		description: 'Every loan makes real change',
+		name: 'Choose as I go',
+		description: 'Support a variety of borrowers',
 		eventProp: 'help-everyone',
 		customImage: supportAllImg,
 		loanCount: props.totalLoans,
@@ -204,7 +204,7 @@ const handleClick = () => {
 
 const title = computed(() => {
 	if (formStep.value === 1) {
-		return 'Choose one of Kiva’s key impact areas';
+		return 'Choose your impact goal category';
 	}
 	if (selectedCategory.value?.title) {
 		return `How many more loans to ${selectedCategory.value?.title} will you support this year?`;
