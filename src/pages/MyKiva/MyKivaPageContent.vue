@@ -629,11 +629,10 @@ export default {
 		}
 	},
 	mounted() {
-		const urlHash = this.$router.currentRoute?.value?.hash;
-
-		if (urlHash) {
-			const elementToScrollTo = document.querySelector(urlHash);
-			const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 10 ?? 0;
+		const sectionId = this.$route?.query?.goTo || '';
+		if (sectionId) {
+			const elementToScrollTo = document.querySelector(`#${sectionId}`);
+			const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 30 ?? 0;
 			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
 		}
 
