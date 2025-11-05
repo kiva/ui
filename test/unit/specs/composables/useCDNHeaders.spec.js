@@ -1,6 +1,3 @@
-import {
-	describe, it, expect, vi, beforeEach, afterEach
-} from 'vitest';
 import CDNHelper from '#src/util/CDNHelper';
 
 vi.mock('#src/util/CDNHelper');

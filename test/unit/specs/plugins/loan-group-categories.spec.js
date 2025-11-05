@@ -1,6 +1,3 @@
-import {
-	describe, it, expect
-} from 'vitest';
 import loanGroupCategoriesMixin from '#src/plugins/loan-group-categories';
 
 describe('loan-group-categories', () => {
