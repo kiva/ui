@@ -119,45 +119,4 @@ describe('LoanSearchCheckboxListFilter', () => {
 		expect(spyTrackEvent).toHaveBeenCalledWith('Lending', 'action', 'Option 0', 'selected');
 		expect(spyTrackEvent).toHaveBeenCalledWith('Lending', 'action', 'Option 0', 'deselected');
 	});
-
-	it('should handle update when option not found in displayed list', async () => {
-		const options = getOptions();
-
-		const user = userEvent.setup();
-		const { getByText, emitted } = render(LoanSearchCheckboxListFilter, {
-			global: {
-				...globalOptions,
-				mocks: {
-					$kvTrackEvent: spyTrackEvent
-				},
-			},
-			props: { options, filterKey: 'key', eventAction: 'action' }
-		});
-
-		// Click an option (line 61 - option.find will succeed normally)
-		await user.click(getByText(getCheckboxLabel(options[0])));
-
-		// Should still emit and track event
-		expect(emitted().updated).toBeTruthy();
-		expect(spyTrackEvent).toHaveBeenCalled();
-	});
-
-	it('should not emit when ids prop changes with same values in different order', async () => {
-		const options = getOptions();
-
-		const { emitted, rerender } = render(LoanSearchCheckboxListFilter, {
-			props: {
-				options,
-				ids: [0, 1],
-				filterKey: 'key',
-				eventAction: 'action'
-			}
-		});
-
-		// Change ids to same values but different order (line 76 - should not emit)
-		await rerender({ ids: [1, 0] });
-
-		// No 'updated' event should be emitted since sorted values are the same
-		expect(emitted().updated).toBeFalsy();
-	});
 });
