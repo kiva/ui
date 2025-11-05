@@ -108,8 +108,8 @@ const handleShine = () => {
 		secondShine.value.$el.classList.remove('animate');
 
 		setTimeout(() => {
-			firstShine.value.$el.classList.add('animate');
-			secondShine.value.$el.classList.add('animate');
+			firstShine.value?.$el.classList.add('animate');
+			secondShine.value?.$el.classList.add('animate');
 		}, 10);
 	}
 };

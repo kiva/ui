@@ -1,3 +1,22 @@
+## [3.41.1-rc.1](https://github.com/kiva/ui/compare/v3.41.0...v3.41.1-rc.1) (2025-11-05)
+
+### 🐛 Bugfixes
+
+* also add chaining to setTimeout ([2b9e495](https://github.com/kiva/ui/commit/2b9e495e111953f75907f68fc9b96a78973e4f79))
+* implement getGoalDisplayName in GoalCard ([d3e530e](https://github.com/kiva/ui/commit/d3e530e1fe5ef30ff562e280243c2d69710d492f))
+* remove apollo injection ([68656b0](https://github.com/kiva/ui/commit/68656b02dbf7899a6e713e33a14d4071b591b0bd))
+* update GoalCard setHeader for ComboPage ([8a9986a](https://github.com/kiva/ui/commit/8a9986a1e57afdd881e52f6a0f4c12439ea02ac1))
+* use 3.5 instead of [30px] ([a462146](https://github.com/kiva/ui/commit/a462146b8211f6bcabae5776aec182a70f618c62))
+
+### 🪚 Refactors
+
+* apply sizing styles to KvUserAvatar ([fba85ff](https://github.com/kiva/ui/commit/fba85ff91f5ba57db6f700c4806905d73087b4a6))
+* remove unused Thanks/MyKiva/OptInModule ([071ef4e](https://github.com/kiva/ui/commit/071ef4e614a58214bae5a884619ff8c7e4518ac7))
+
+### 🧹 Chores
+
+* **deps:** update to latest kv-ui-elements ([ff0c45d](https://github.com/kiva/ui/commit/ff0c45d13930d209bf0722c8847e62347395b8e1))
+
 ## [3.41.0](https://github.com/kiva/ui/compare/v3.40.1...v3.41.0) (2025-11-05)
 
 ### 🎉 New Features
