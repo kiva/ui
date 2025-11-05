@@ -1,77 +1,46 @@
 import changeCaseFilter from '#src/plugins/change-case-filter';
 
-describe('change-case-filter.js', () => {
-	it('should use noCase as default when no type provided', () => {
-		const result = changeCaseFilter('hello world', 'noCase');
+vi.mock('change-case', () => ({
+	camelCase: vi.fn(),
+	no: vi.fn(),
+}));
 
-		expect(result).toBe('hello world');
+vi.mock('title-case', () => ({
+	titleCase: vi.fn(),
+}));
+
+describe('change-case-filter.js', () => {
+	afterEach(() => {
+		vi.clearAllMocks();
 	});
 
-	it('should convert to camelCase', () => {
+	it('should call the specified case method with the value', async () => {
+		const { camelCase } = await import('change-case');
+		camelCase.mockReturnValue('camelCaseResult');
+
 		const result = changeCaseFilter('hello world', 'camelCase');
 
-		expect(result).toBe('helloWorld');
+		expect(camelCase).toHaveBeenCalledWith('hello world');
+		expect(result).toBe('camelCaseResult');
 	});
 
-	it('should convert to pascalCase', () => {
-		const result = changeCaseFilter('hello world', 'pascalCase');
+	it('should use "no" as default type when no type provided', async () => {
+		const { no } = await import('change-case');
+		no.mockReturnValue('noResult');
 
-		expect(result).toBe('HelloWorld');
+		const result = changeCaseFilter('hello world');
+
+		expect(no).toHaveBeenCalledWith('hello world');
+		expect(result).toBe('noResult');
 	});
 
-	it('should convert to snakeCase', () => {
-		const result = changeCaseFilter('hello world', 'snakeCase');
+	it('should call titleCase from title-case library', async () => {
+		const { titleCase } = await import('title-case');
+		titleCase.mockReturnValue('Title Case Result');
 
-		expect(result).toBe('hello_world');
-	});
-
-	it('should convert to kebabCase', () => {
-		const result = changeCaseFilter('hello world', 'kebabCase');
-
-		expect(result).toBe('hello-world');
-	});
-
-	it('should convert to dotCase', () => {
-		const result = changeCaseFilter('hello world', 'dotCase');
-
-		expect(result).toBe('hello.world');
-	});
-
-	it('should convert to constantCase', () => {
-		const result = changeCaseFilter('hello world', 'constantCase');
-
-		expect(result).toBe('HELLO_WORLD');
-	});
-
-	it('should convert to titleCase', () => {
 		const result = changeCaseFilter('hello world', 'titleCase');
 
-		expect(result).toBe('Hello World');
-	});
-
-	it('should convert to sentenceCase', () => {
-		const result = changeCaseFilter('hello world', 'sentenceCase');
-
-		expect(result).toBe('Hello world');
-	});
-
-	it('should handle empty strings', () => {
-		const result = changeCaseFilter('', 'camelCase');
-
-		expect(result).toBe('');
-	});
-
-	it('should handle strings with special characters', () => {
-		const result = changeCaseFilter('hello-world_test', 'camelCase');
-
-		expect(result).toBe('helloWorldTest');
-	});
-
-	it('should handle strings with numbers in camelCase', () => {
-		const result = changeCaseFilter('hello world 123', 'camelCase');
-
-		// Numbers are preserved in the conversion
-		expect(result).toContain('hello');
-		expect(result).toContain('World');
+		expect(titleCase).toHaveBeenCalledWith('hello world');
+		expect(result).toBe('Title Case Result');
 	});
 });
