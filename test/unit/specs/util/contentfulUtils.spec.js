@@ -854,7 +854,6 @@ describe('contentfulUtils.js', () => {
 
 			const result = formatButton(buttonData);
 
-			// Line 115: formatButton function
 			expect(result).toEqual({
 				description: 'Click me',
 				label: 'Submit',
@@ -896,7 +895,6 @@ describe('contentfulUtils.js', () => {
 
 			const result = formatBackground(backgroundData);
 
-			// Line 190: formatBackground function
 			expect(result).toEqual({
 				key: 'bg-key',
 				name: 'Hero Background',
@@ -939,7 +937,6 @@ describe('contentfulUtils.js', () => {
 
 			const result = formatCarousel(carouselData);
 
-			// Line 206: formatCarousel function
 			expect(result.key).toBe('carousel-1');
 			expect(result.slidesToShow).toBe(3);
 			expect(result.slides).toBeDefined();
@@ -979,7 +976,6 @@ describe('contentfulUtils.js', () => {
 
 			const result = formatStoryCard(storyCardData);
 
-			// Line 226: formatStoryCard function
 			expect(result).toEqual({
 				backgroundMedia: { url: 'https://example.com/bg.jpg', title: 'Background' },
 				cardTitle: 'Our Impact',
@@ -1003,7 +999,6 @@ describe('contentfulUtils.js', () => {
 
 			const result = formatStoryCard(storyCardData);
 
-			// Line 226: alignment ?? 'center' - default value
 			expect(result.alignment).toBe('center');
 		});
 	});
@@ -1024,7 +1019,6 @@ describe('contentfulUtils.js', () => {
 
 			const result = formatGlobalPromoBanner(bannerData);
 
-			// Line 246: formatGlobalPromoBanner function
 			expect(result.bannerName).toBe('Holiday Banner');
 			expect(result.startDate).toBe('2024-12-01');
 			expect(result.endDate).toBe('2024-12-31');
@@ -1044,7 +1038,6 @@ describe('contentfulUtils.js', () => {
 
 			const result = formatContentType(richTextData, 'richTextContent');
 
-			// Line 380: richTextContent case
 			expect(result.contentType).toBe('richTextContent');
 			expect(result.key).toBe('rich-text-key');
 		});
@@ -1059,7 +1052,6 @@ describe('contentfulUtils.js', () => {
 
 			const result = formatContentType(backgroundData, 'background');
 
-			// Line 385: background case
 			expect(result.contentType).toBe('background');
 			expect(result.backgroundColor).toBe('#FFFFFF');
 		});
@@ -1074,7 +1066,6 @@ describe('contentfulUtils.js', () => {
 
 			const result = formatContentType(buttonData, 'button');
 
-			// Line 390: button case
 			expect(result.contentType).toBe('button');
 			expect(result.label).toBe('Click Me');
 			expect(result.webLink).toBe('https://example.com');
@@ -1090,7 +1081,6 @@ describe('contentfulUtils.js', () => {
 
 			const result = formatContentType(storyCardData, 'storyCard');
 
-			// Line 395: storyCard case
 			expect(result.contentType).toBe('storyCard');
 			expect(result.cardTitle).toBe('My Story');
 		});
@@ -1106,7 +1096,6 @@ describe('contentfulUtils.js', () => {
 
 			const result = formatContentType(carouselData, 'carousel');
 
-			// Line 400: carousel case (returning formatCarousel result with contentType)
 			expect(result.contentType).toBe('carousel');
 			expect(result.key).toBe('carousel-key');
 			expect(result.slidesToShow).toBe(3);
@@ -1119,7 +1108,6 @@ describe('contentfulUtils.js', () => {
 
 			const result = formatContentType(unknownData, 'unknownType');
 
-			// Line 405: default case
 			expect(result.error).toBe('Unrecognized Content Type');
 		});
 	});
@@ -1141,7 +1129,6 @@ describe('contentfulUtils.js', () => {
 
 			const result = formatContentGroupsFlat(contentGroups);
 
-			// Line 315: formatContentGroupsFlat function
 			expect(result).toBeDefined();
 			expect(result.featured).toBeDefined();
 			expect(result.featured.key).toBe('group-1');
@@ -1158,7 +1145,6 @@ describe('contentfulUtils.js', () => {
 
 			const result = formatContentGroupsFlat(invalidEntries);
 
-			// Line 315: cleanedContentGroups.push with error
 			// When entry is not a content group, it pushes error to cleanedContentGroups
 			// but doesn't add to contentGroupsFlat, so result should be empty
 			expect(result).toBeDefined();
