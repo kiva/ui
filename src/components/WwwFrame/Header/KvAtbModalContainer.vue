@@ -202,10 +202,8 @@ const fetchPostCheckoutAchievements = async loanIds => {
 			const { target } = oneLoanAwayAchievement;
 			oneAwayText.value = `${target - 1} of ${target}`;
 			showModalContent.value = true;
-			modalVisible.value = true;
 		} else if ((basketSize < BASKET_LIMIT_SIZE_FOR_EXP || achievementReached) && showBasedOnUserBalance.value) {
 			showModalContent.value = !!contributingAchievements.value.length;
-			modalVisible.value = true;
 		}
 		updateTierTable();
 	}).catch(e => {
@@ -241,6 +239,7 @@ watch(addedLoan, async () => {
 				oneAwayText.value = `${goalTarget - 1} of ${goalTarget}`;
 			}
 		}
+		modalVisible.value = true;
 	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
 		modalVisible.value = true;
 	}
