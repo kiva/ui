@@ -103,7 +103,7 @@ const solidComponent = computed(() => {
 });
 
 const handleShine = () => {
-	if (firstShine.value.$el && secondShine.value.$el) {
+	if (firstShine.value?.$el && secondShine.value?.$el) {
 		firstShine.value.$el.classList.remove('animate');
 		secondShine.value.$el.classList.remove('animate');
 
