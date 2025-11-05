@@ -8,14 +8,6 @@ vi.mock('@apollo/client/link/retry/index', () => ({
 }));
 
 describe('NetworkErrorRetryLink.js', () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-	});
-
-	afterEach(() => {
-		vi.clearAllMocks();
-	});
-
 	it('should create a RetryLink with default config', () => {
 		const link = createNetworkErrorRetryLink({});
 

@@ -10,8 +10,6 @@ describe('trackTransactionEvent.js', () => {
 	let mockCookieStore;
 
 	beforeEach(() => {
-		vi.clearAllMocks();
-
 		mockApolloClient = {
 			mutate: vi.fn().mockResolvedValue({ data: {} })
 		};

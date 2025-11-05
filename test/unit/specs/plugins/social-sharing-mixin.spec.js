@@ -35,8 +35,6 @@ describe('social-sharing-mixin.js', () => {
 			shareLink: 'https://www.kiva.org/lend/1234',
 			copyStatus: null
 		};
-
-		vi.clearAllMocks();
 	});
 
 	afterEach(() => {

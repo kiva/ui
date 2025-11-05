@@ -8,7 +8,6 @@ describe('localState.js', () => {
 	let mockOptions;
 
 	beforeEach(() => {
-		vi.clearAllMocks();
 		mockCache = {
 			writeQuery: vi.fn(),
 			readQuery: vi.fn(),

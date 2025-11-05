@@ -18,12 +18,6 @@ describe('delay-until-visible-mixin.js', () => {
 			$el: document.createElement('div'),
 			delayUntilVisibleObserver: null
 		};
-
-		vi.clearAllMocks();
-	});
-
-	afterEach(() => {
-		vi.clearAllMocks();
 	});
 
 	describe('data', () => {

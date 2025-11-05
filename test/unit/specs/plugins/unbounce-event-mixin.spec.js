@@ -45,8 +45,8 @@ describe('unbounce-event-mixin.js', () => {
 	});
 
 	afterEach(() => {
-		vi.unstubAllGlobals();
-		vi.clearAllMocks();
+		// vi.unstubAllGlobals();
+		// vi.clearAllMocks();
 	});
 
 	describe('mounted', () => {

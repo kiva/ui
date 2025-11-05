@@ -57,7 +57,6 @@ describe('borrower-profile-exp-mixin', () => {
 	};
 
 	beforeEach(() => {
-		vi.clearAllMocks();
 		const fbqMock = vi.fn();
 		global.window = {
 			open: vi.fn(),

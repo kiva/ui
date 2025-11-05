@@ -33,12 +33,6 @@ describe('authenticationGuard.js', () => {
 			enabled: true,
 			isMfaAuthenticated: vi.fn()
 		};
-
-		vi.clearAllMocks();
-	});
-
-	afterEach(() => {
-		vi.clearAllMocks();
 	});
 
 	describe('checkLastLoginTime', () => {

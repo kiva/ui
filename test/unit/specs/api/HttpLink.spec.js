@@ -17,9 +17,6 @@ describe('HttpLink', () => {
 		mockBatchHttpLink = 'mockBatchHttpLink';
 		mockSplitFn = null;
 
-		// Clear all mock calls from previous tests
-		vi.clearAllMocks();
-
 		HttpLink.mockImplementation(() => mockHttpLink);
 		BatchHttpLink.mockImplementation(() => mockBatchHttpLink);
 		split.mockImplementation((fn, trueBranch, falseBranch) => {
@@ -116,6 +113,10 @@ describe('HttpLink', () => {
 	});
 
 	describe('Stellate configuration', () => {
+		beforeEach(() => {
+			vi.clearAllMocks();
+		});
+
 		it('should use stellate URI when stellateGraphqlUri is provided', () => {
 			createHttpLink({
 				uri: 'https://api.kiva.org/graphql',

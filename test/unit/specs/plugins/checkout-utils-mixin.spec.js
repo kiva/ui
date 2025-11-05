@@ -54,13 +54,8 @@ describe('checkout-utils-mixin.js', () => {
 			$showTipMsg: vi.fn()
 		};
 
-		vi.clearAllMocks();
 		delete window.location;
 		window.location = { href: '' };
-	});
-
-	afterEach(() => {
-		vi.clearAllMocks();
 	});
 
 	describe('validateBasket', () => {

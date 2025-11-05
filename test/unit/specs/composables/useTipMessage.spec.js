@@ -13,7 +13,6 @@ describe('useTipMessage.js', () => {
 		};
 		const composable = useTipMessage(mockApollo);
 		showTipMsgFn = composable.$showTipMsg;
-		vi.clearAllMocks();
 	});
 
 	it('should call apollo mutate with message only', () => {

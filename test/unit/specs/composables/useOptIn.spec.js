@@ -12,7 +12,6 @@ describe('useOptIn.js', () => {
 			mutate: vi.fn(),
 		};
 		composable = useOptIn(mockApollo);
-		vi.clearAllMocks();
 	});
 
 	describe('updateCommunicationSettings', () => {

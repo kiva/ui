@@ -34,12 +34,6 @@ describe('tip-message-plugin.js', () => {
 				mixinMethods = config.methods;
 			})
 		};
-
-		vi.clearAllMocks();
-	});
-
-	afterEach(() => {
-		vi.clearAllMocks();
 	});
 
 	describe('plugin installation', () => {

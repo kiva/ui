@@ -43,12 +43,6 @@ describe('guest-comment-mixin.js', () => {
 			$showTipMsg: vi.fn(),
 			submitComment: guestCommentMixin.methods.submitComment
 		};
-
-		vi.clearAllMocks();
-	});
-
-	afterEach(() => {
-		vi.clearAllMocks();
 	});
 
 	describe('constants', () => {

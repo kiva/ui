@@ -32,12 +32,6 @@ describe('add-to-basket-exp-mixin.js', () => {
 			$emit: vi.fn(),
 			enableAddToBasketExp: false
 		};
-
-		vi.clearAllMocks();
-	});
-
-	afterEach(() => {
-		vi.clearAllMocks();
 	});
 
 	describe('inject', () => {

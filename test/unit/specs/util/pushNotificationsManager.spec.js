@@ -49,7 +49,6 @@ describe('pushNotificationsManager', () => {
 		// Restore original navigator and fetch
 		global.navigator = originalNavigator;
 		global.fetch = originalFetch;
-		vi.clearAllMocks();
 	});
 
 	describe('registerServiceWorker', () => {

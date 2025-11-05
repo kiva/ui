@@ -11,7 +11,6 @@ describe('five-dollars-test-mixin', () => {
 	let mockKvTrackEvent;
 
 	beforeEach(() => {
-		vi.clearAllMocks();
 		mockApollo = {};
 		mockKvTrackEvent = vi.fn();
 	});

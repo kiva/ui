@@ -42,8 +42,6 @@ describe('retry-after-expired-basket-mixin.js', () => {
 			$showTipMsg: vi.fn(),
 			$emit: vi.fn()
 		};
-
-		vi.clearAllMocks();
 	});
 
 	afterEach(() => {

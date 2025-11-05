@@ -14,12 +14,6 @@ describe('any-or-selected-autolending-radio-mixin.js', () => {
 			radioKey: 'testFilter',
 			$emit: vi.fn()
 		};
-
-		vi.clearAllMocks();
-	});
-
-	afterEach(() => {
-		vi.clearAllMocks();
 	});
 
 	describe('props', () => {

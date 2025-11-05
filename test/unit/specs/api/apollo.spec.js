@@ -77,8 +77,6 @@ describe('createApolloClient', () => {
 	let mockFetch;
 
 	beforeEach(() => {
-		vi.clearAllMocks();
-
 		mockAppConfig = {
 			apolloNetworkErrorRetryActive: true,
 			apolloNetworkErrorRetryAttempts: 3,

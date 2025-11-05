@@ -35,7 +35,6 @@ describe('useBorrowerProfileData.js', () => {
 			}
 		};
 		watchLoanData.mockReturnValue(mockWatchedQuery);
-		vi.clearAllMocks();
 	});
 
 	describe('initialization', () => {
