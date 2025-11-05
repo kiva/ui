@@ -121,7 +121,6 @@ describe('activities.js', () => {
 
 				const result = activities.getValidatedSearchState(loanSearchState, allFacets);
 
-				// Line 42: filter callback that checks includes() for each activityId
 				expect(result).toEqual({ activityId: [1, 2, 3] });
 				expect(result.activityId.length).toBe(3);
 			});
@@ -177,7 +176,6 @@ describe('activities.js', () => {
 
 				const result = activities.getValidatedSearchState(loanSearchState, allFacets);
 
-				// Line 42: filter runs on empty array, returns empty
 				expect(result).toEqual({ activityId: [] });
 			});
 
@@ -241,7 +239,6 @@ describe('activities.js', () => {
 
 				const result = activities.getFilterFromQuery(query, allFacets);
 
-				// Line 42-44: getFilterFromQuery calls getIdsFromQueryParam to convert query string
 				expect(result.activityId).toEqual([1, 2, 3]);
 			});
 

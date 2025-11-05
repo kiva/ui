@@ -552,7 +552,6 @@ describe('useBadgeData.js', () => {
 
 			const result = getCompletedBadges(badges);
 
-			// Lines 411-414: forEach over tiers, push badges with completedDate
 			expect(result).toHaveLength(2);
 			expect(result[0]).toEqual({
 				id: 'test-badge',
@@ -610,7 +609,6 @@ describe('useBadgeData.js', () => {
 
 			const { completedBadges } = useBadgeData(mockApollo);
 
-			// Line 442-449: completedBadges computed property
 			// Computed should be defined and reactive
 			expect(completedBadges).toBeDefined();
 			expect(completedBadges.value).toBeDefined();
@@ -631,7 +629,6 @@ describe('useBadgeData.js', () => {
 
 			const { completedBadges } = useBadgeData(mockApollo);
 
-			// Lines 443-445: handling empty badge data
 			expect(completedBadges.value).toEqual([]);
 		});
 
@@ -642,7 +639,6 @@ describe('useBadgeData.js', () => {
 
 			const { completedBadges } = useBadgeData(mockApollo);
 
-			// Line 442: completedBadges is a computed property
 			expect(completedBadges).toHaveProperty('value');
 			expect(Array.isArray(completedBadges.value)).toBe(true);
 		});
@@ -654,7 +650,6 @@ describe('useBadgeData.js', () => {
 
 			const { completedBadges, getCompletedBadges } = useBadgeData(mockApollo);
 
-			// Lines 443-445: completedBadges uses getCompletedBadges internally
 			expect(getCompletedBadges).toBeDefined();
 			expect(typeof getCompletedBadges).toBe('function');
 
@@ -669,7 +664,6 @@ describe('useBadgeData.js', () => {
 
 			const { completedBadges } = useBadgeData(mockApollo);
 
-			// Line 445: sorting logic in completedBadges computed
 			const result = completedBadges.value;
 			expect(Array.isArray(result)).toBe(true);
 		});

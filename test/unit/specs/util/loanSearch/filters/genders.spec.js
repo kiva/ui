@@ -145,19 +145,16 @@ describe('genders.js', () => {
 
 			it('should return false when gender is null', () => {
 				const result = genders.showSavedSearch({ gender: null });
-				// Line 46: !!null -> false
 				expect(result).toBe(false);
 			});
 
 			it('should return false when gender is undefined', () => {
 				const result = genders.showSavedSearch({});
-				// Line 46: !!undefined -> false
 				expect(result).toBe(false);
 			});
 
 			it('should return false when gender is empty string', () => {
 				const result = genders.showSavedSearch({ gender: '' });
-				// Line 46: !!'' -> false (covers the uncovered branch)
 				expect(result).toBe(false);
 			});
 		});

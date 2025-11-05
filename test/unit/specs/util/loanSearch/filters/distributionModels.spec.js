@@ -222,19 +222,19 @@ describe('distributionModels.js', () => {
 
 		it('should return false when distributionModel is null', () => {
 			const result = distributionModels.showSavedSearch({ distributionModel: null });
-			// Line 60: !!null -> false
+
 			expect(result).toBe(false);
 		});
 
 		it('should return false when distributionModel is undefined', () => {
 			const result = distributionModels.showSavedSearch({});
-			// Line 60: !!undefined -> false
+
 			expect(result).toBe(false);
 		});
 
 		it('should return false when distributionModel is empty string', () => {
 			const result = distributionModels.showSavedSearch({ distributionModel: '' });
-			// Line 60: !!'' -> false (covers line 59-60 branches)
+
 			expect(result).toBe(false);
 		});
 	});

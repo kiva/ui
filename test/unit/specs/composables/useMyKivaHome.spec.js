@@ -203,8 +203,6 @@ describe('useMyKivaHome.js', () => {
 		});
 		readBoolSetting.mockReturnValue(true);
 
-		// Line 20: userData.value = data?.my ?? null;
-		// Line 21: myKivaFlagEnabled.value = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 		const composable = useMyKivaHome(mockApollo, mockKvTrackEvent, mockCookieStore);
 
 		expect(composable.homePagePath).toBeDefined();
@@ -217,7 +215,6 @@ describe('useMyKivaHome.js', () => {
 		});
 		readBoolSetting.mockReturnValue(false);
 
-		// Line 20: userData.value = data?.my ?? null; (data is undefined)
 		const composable = useMyKivaHome(mockApollo, mockKvTrackEvent, mockCookieStore);
 
 		expect(composable.homePagePath.value).toBe('/');
@@ -232,7 +229,6 @@ describe('useMyKivaHome.js', () => {
 		});
 		readBoolSetting.mockReturnValue(true);
 
-		// Line 20: userData.value = data?.my ?? null; (my is null)
 		const composable = useMyKivaHome(mockApollo, mockKvTrackEvent, mockCookieStore);
 
 		expect(composable).toBeDefined();
@@ -496,7 +492,6 @@ describe('useMyKivaHome.js', () => {
 
 			render(TestComponent);
 
-			// Lines 17-23, 36-39: onMounted async operations
 			await waitFor(() => {
 				expect(mockApollo.query).toHaveBeenCalledWith({
 					query: 'myKivaForAllUsersQuery'
