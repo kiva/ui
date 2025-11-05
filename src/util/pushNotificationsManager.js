@@ -20,7 +20,7 @@ export function registerServiceWorker() {
 											return response.json();
 										})
 										.then(data => {
-											if (!data.success) {
+											if (data.success) {
 												resolve();
 											} else {
 												fetchFail();

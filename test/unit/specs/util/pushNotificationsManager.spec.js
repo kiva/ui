@@ -54,10 +54,9 @@ describe('pushNotificationsManager', () => {
 
 	describe('registerServiceWorker', () => {
 		it('should register service worker successfully', async () => {
-			// Note: registerServiceWorker resolves when data.success is FALSE
 			global.fetch = vi.fn(() => Promise.resolve({
 				ok: true,
-				json: () => Promise.resolve({ success: false }),
+				json: () => Promise.resolve({ success: true }),
 			}));
 
 			await registerServiceWorker();
@@ -71,7 +70,7 @@ describe('pushNotificationsManager', () => {
 		it('should subscribe to push notifications', async () => {
 			global.fetch = vi.fn(() => Promise.resolve({
 				ok: true,
-				json: () => Promise.resolve({ success: false }),
+				json: () => Promise.resolve({ success: true }),
 			}));
 
 			await registerServiceWorker();
@@ -83,7 +82,7 @@ describe('pushNotificationsManager', () => {
 		it('should send endpoint to server', async () => {
 			global.fetch = vi.fn(() => Promise.resolve({
 				ok: true,
-				json: () => Promise.resolve({ success: false }),
+				json: () => Promise.resolve({ success: true }),
 			}));
 
 			await registerServiceWorker();
@@ -94,10 +93,10 @@ describe('pushNotificationsManager', () => {
 			);
 		});
 
-		it('should resolve when server returns success false', async () => {
+		it('should resolve when server returns success true', async () => {
 			global.fetch = vi.fn(() => Promise.resolve({
 				ok: true,
-				json: () => Promise.resolve({ success: false }),
+				json: () => Promise.resolve({ success: true }),
 			}));
 
 			const result = await registerServiceWorker();
@@ -118,11 +117,10 @@ describe('pushNotificationsManager', () => {
 			expect(mockSubscription.unsubscribe).toHaveBeenCalled();
 		});
 
-		it('should unsubscribe and throw error when response success is true', async () => {
-			// Note: The logic is inverted - success: true triggers an error
+		it('should unsubscribe and throw error when response success is false', async () => {
 			global.fetch = vi.fn(() => Promise.resolve({
 				ok: true,
-				json: () => Promise.resolve({ success: true }),
+				json: () => Promise.resolve({ success: false }),
 			}));
 
 			await expect(registerServiceWorker()).rejects.toThrow(
