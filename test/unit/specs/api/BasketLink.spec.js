@@ -19,12 +19,6 @@ describe('BasketLink.js', () => {
 		};
 
 		mockForward = vi.fn(op => op);
-
-		vi.clearAllMocks();
-	});
-
-	afterEach(() => {
-		vi.clearAllMocks();
 	});
 
 	it('should create an ApolloLink', () => {

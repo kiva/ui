@@ -12,7 +12,6 @@ describe('braintree-dropin-error-mixin.js', () => {
 	let processError;
 
 	beforeEach(() => {
-		vi.clearAllMocks();
 		mockShowTipMsg = vi.fn();
 		mockKvTrackEvent = vi.fn();
 
@@ -30,6 +29,10 @@ describe('braintree-dropin-error-mixin.js', () => {
 				response
 			);
 		};
+	});
+
+	afterEach(() => {
+		vi.clearAllMocks();
 	});
 
 	describe('processBraintreeDropInError', () => {

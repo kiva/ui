@@ -8,7 +8,7 @@ vi.mock('web-vitals', () => ({
 }));
 
 describe('webVitals.js', () => {
-	beforeEach(async () => {
+	afterEach(async () => {
 		vi.clearAllMocks();
 	});
 

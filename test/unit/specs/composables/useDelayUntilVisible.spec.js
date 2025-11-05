@@ -15,10 +15,6 @@ describe('useDelayUntilVisible.js', () => {
 		vi.spyOn(observerUtils, 'createIntersectionObserver').mockImplementation(mockCreateIntersectionObserver);
 	});
 
-	afterEach(() => {
-		vi.clearAllMocks();
-	});
-
 	it('should create intersection observer with provided elements and callback', () => {
 		mockCreateIntersectionObserver.mockReturnValue(mockObserver);
 

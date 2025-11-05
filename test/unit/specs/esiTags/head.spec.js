@@ -108,9 +108,6 @@ describe('renderESIHead', () => {
 	let mockKvAuth0;
 
 	beforeEach(() => {
-		// Reset all mocks
-		vi.clearAllMocks();
-
 		// Setup mock cookie store
 		mockCookieStore = {
 			get: vi.fn(key => {
@@ -137,6 +134,10 @@ describe('renderESIHead', () => {
 
 		mockFetch = vi.fn();
 		mockKvAuth0 = {};
+	});
+
+	afterEach(() => {
+		vi.clearAllMocks();
 	});
 
 	it('should render ESI head HTML successfully', async () => {

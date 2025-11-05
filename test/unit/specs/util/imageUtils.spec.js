@@ -15,7 +15,6 @@ describe('imageUtils.js', () => {
 	afterEach(() => {
 		// Restore original Image constructor
 		global.Image = originalImage;
-		vi.clearAllMocks();
 	});
 
 	describe('checkWebpSupport', () => {

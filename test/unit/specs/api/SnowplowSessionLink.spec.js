@@ -11,12 +11,6 @@ describe('SnowplowSessionLink.js', () => {
 		mockCookieStore = {
 			get: vi.fn()
 		};
-
-		vi.clearAllMocks();
-	});
-
-	afterEach(() => {
-		vi.clearAllMocks();
 	});
 
 	it('should create a context link', () => {

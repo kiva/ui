@@ -54,10 +54,6 @@ describe('kv-analytics-plugin', () => {
 		};
 	});
 
-	afterEach(() => {
-		vi.clearAllMocks();
-	});
-
 	describe('plugin installation', () => {
 		it('should install plugin on app', () => {
 			expect(() => {

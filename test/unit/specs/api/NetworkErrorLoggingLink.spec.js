@@ -14,8 +14,6 @@ describe('NetworkErrorLoggingLink.js', () => {
 	beforeEach(async () => {
 		const logFormatter = await import('#src/util/logFormatter');
 		mockLogFormatter = logFormatter.default;
-
-		vi.clearAllMocks();
 	});
 
 	afterEach(() => {

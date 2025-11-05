@@ -27,7 +27,9 @@ describe('my-kiva-homepage-mixin.js', () => {
 			$kvTrackEvent: vi.fn(),
 			redirectToMyKivaHomepage: false
 		};
+	});
 
+	afterEach(() => {
 		vi.clearAllMocks();
 	});
 

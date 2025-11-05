@@ -37,12 +37,6 @@ describe('add-to-basket-show-interstitial.js', () => {
 			apollo: mockApollo,
 			basketInterstitialState: {}
 		};
-
-		vi.clearAllMocks();
-	});
-
-	afterEach(() => {
-		vi.clearAllMocks();
 	});
 
 	describe('data', () => {

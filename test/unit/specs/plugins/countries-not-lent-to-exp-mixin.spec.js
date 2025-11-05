@@ -18,12 +18,6 @@ describe('countries-not-lent-to-exp-mixin.js', () => {
 			cookieStore: {},
 			isCountriesNotLentToExp: false
 		};
-
-		vi.clearAllMocks();
-	});
-
-	afterEach(() => {
-		vi.clearAllMocks();
 	});
 
 	describe('exports', () => {

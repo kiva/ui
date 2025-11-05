@@ -6,8 +6,6 @@ describe('head/script.js', () => {
 	let originalWindow;
 
 	beforeEach(() => {
-		vi.clearAllMocks();
-
 		// Save originals
 		originalDocument = global.document;
 		originalWindow = global.window;

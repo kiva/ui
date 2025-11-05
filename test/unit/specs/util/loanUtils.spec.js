@@ -393,7 +393,6 @@ describe('loanUtils.js', () => {
 		});
 
 		afterEach(() => {
-			vi.clearAllMocks();
 			vi.useRealTimers();
 		});
 

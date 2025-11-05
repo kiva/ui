@@ -33,12 +33,6 @@ describe('useMyKivaHome.js', () => {
 
 		mockKvTrackEvent = vi.fn();
 		mockCookieStore = {};
-
-		vi.clearAllMocks();
-	});
-
-	afterEach(() => {
-		vi.clearAllMocks();
 	});
 
 	it('should call Apollo query on mount', () => {
@@ -355,6 +349,10 @@ describe('useMyKivaHome.js', () => {
 
 	// Tests with component mounting to properly test onMounted lifecycle
 	describe('with component context', () => {
+		afterEach(() => {
+			vi.clearAllMocks();
+		});
+
 		it('should redirect to /mykiva when flag is enabled and user has id', async () => {
 			mockApollo.query.mockResolvedValue({
 				data: {

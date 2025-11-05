@@ -6,10 +6,6 @@ vi.mock('#src/util/logFormatter', () => ({
 }));
 
 describe('logReadQueryError', () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-	});
-
 	it('should log error with query type and stack trace', () => {
 		const error = new Error('Test error');
 		const queryType = 'userQuery';

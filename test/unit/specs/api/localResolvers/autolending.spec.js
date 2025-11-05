@@ -51,8 +51,6 @@ describe('autolending.js', () => {
 	let resolver;
 
 	beforeEach(() => {
-		vi.clearAllMocks();
-
 		// Simple cache mock that tracks writeQuery calls
 		const cacheData = {};
 		cache = {

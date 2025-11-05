@@ -5,7 +5,6 @@ describe('category-row-arrows-visible-mixin.js', () => {
 	let checkArrowsVisible;
 
 	beforeEach(() => {
-		vi.clearAllMocks();
 		context = {};
 
 		// Helper to call mixin method
