@@ -35,23 +35,23 @@
 					{ width: 96, viewSize: 1024 }
 				]"
 			/>
-			<div
+			<svg
 				v-else-if="!anonymousSupporterCard && !hash"
 				class="
 					tw-w-full
-					tw-rounded
-					tw-flex
-					tw-items-center
-					tw-justify-center
 					tw-h-[120px] md:tw-h-[84px] xl:tw-h-12
-					tw-text-h1"
+					tw-p-4 md:tw-p-1 xl:tw-p-1.5
+					tw-rounded
+					tw-font-serif"
 				:class="randomizedUserClass"
+				fill="currentColor"
+				viewBox="0 0 27 27"
 			>
 				<!-- First Letter of lender name -->
-				<span class="tw-pt-1">
+				<text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle">
 					{{ lenderNameFirstLetter }}
-				</span>
-			</div>
+				</text>
+			</svg>
 			<div
 				v-else
 				class="
