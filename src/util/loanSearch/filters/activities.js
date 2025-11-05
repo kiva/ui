@@ -21,11 +21,13 @@ export default {
 	showSavedSearch: () => (false),
 	getFilterChips: (loanSearchState, allFacets) => {
 		if (loanSearchState.activityId?.length) {
-			return loanSearchState.activityId.map(activityId => {
-				return allFacets.activityFacets?.find(facet => {
-					return facet.id === activityId;
-				});
-			});
+			return loanSearchState.activityId
+				.map(activityId => {
+					return allFacets.activityFacets?.find(facet => {
+						return facet.id === activityId;
+					});
+				})
+				.filter(x => x); // Remove undefined/null values
 		}
 		return [];
 	},

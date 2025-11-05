@@ -32,10 +32,20 @@ describe('tags.js', () => {
 				expect(result).toEqual(expected);
 			});
 
-			it('should handle tag not found in facets', () => {
+			it('should filter out tag not found in facets', () => {
 				const result = tags.getFilterChips({ tagId: [999] }, mockAllFacets);
 
-				expect(result).toEqual([{ name: '' }]);
+				expect(result).toEqual([]);
+			});
+
+			it('should filter out invalid tags but keep valid ones', () => {
+				const result = tags.getFilterChips({ tagId: [1, 999, 2] }, mockAllFacets);
+
+				const expected = [
+					{ ...mockAllFacets.tagFacets[0], name: 'Tag 1' },
+					{ ...mockAllFacets.tagFacets[1], name: 'Tag 2' }
+				];
+				expect(result).toEqual(expected);
 			});
 		});
 

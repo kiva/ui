@@ -32,10 +32,19 @@ describe('themes.js', () => {
 				expect(result).toEqual(expected);
 			});
 
-			it('should handle theme not found in facets', () => {
+			it('should filter out theme not found in facets', () => {
 				const result = themes.getFilterChips({ themeId: [999] }, mockAllFacets);
 
-				expect(result).toEqual([undefined]);
+				expect(result).toEqual([]);
+			});
+
+			it('should filter out invalid themes but keep valid ones', () => {
+				const result = themes.getFilterChips({ themeId: [1, 999, 2] }, mockAllFacets);
+
+				expect(result).toEqual([
+					{ id: 1, name: 'Theme 1', __typename: 'LoanThemeFilter' },
+					{ id: 2, name: 'Theme 2', __typename: 'LoanThemeFilter' }
+				]);
 			});
 		});
 
@@ -136,14 +145,21 @@ describe('themes.js', () => {
 				expect(result).toEqual({ theme: ['Theme 1', 'Theme 2'] });
 			});
 
-			it('should handle themes not in facets', () => {
+			it('should filter out themes not in facets', () => {
 				const state = { themeId: [999] };
 				const limitedFacets = {
 					themeFacets: [{ id: 1, name: 'Theme 1' }]
 				};
 
-				// This will throw when trying to access .name on undefined
-				expect(() => themes.getSavedSearch(state, limitedFacets)).toThrow();
+				const result = themes.getSavedSearch(state, limitedFacets);
+				expect(result).toEqual({ theme: [] });
+			});
+
+			it('should filter out invalid themes but keep valid ones in saved search', () => {
+				const state = { themeId: [1, 999, 2] };
+
+				const result = themes.getSavedSearch(state, mockAllFacets);
+				expect(result).toEqual({ theme: ['Theme 1', 'Theme 2'] });
 			});
 		});
 

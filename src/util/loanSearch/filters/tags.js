@@ -57,14 +57,18 @@ export default {
 	showSavedSearch: loanSearchState => loanSearchState.tagId.length > 0,
 	getFilterChips: (loanSearchState, allFacets) => {
 		if (loanSearchState.tagId?.length) {
-			return loanSearchState.tagId.map(id => {
-				const tagFacet = allFacets.tagFacets?.find(facet => facet.id === id);
-
-				return {
-					...tagFacet,
-					name: transformTagName(tagFacet?.name)
-				};
-			});
+			return loanSearchState.tagId
+				.map(id => {
+					const tagFacet = allFacets.tagFacets?.find(facet => facet.id === id);
+					if (!tagFacet) {
+						return null; // Filter out invalid tags
+					}
+					return {
+						...tagFacet,
+						name: transformTagName(tagFacet.name)
+					};
+				})
+				.filter(x => x); // Remove null values
 		}
 		return [];
 	},

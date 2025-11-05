@@ -69,9 +69,11 @@ export default {
 	showSavedSearch: loanSearchState => loanSearchState.partnerId.length > 0,
 	getFilterChips: (loanSearchState, allFacets) => {
 		if (loanSearchState.partnerId?.length) {
-			const partnerFacets = loanSearchState.partnerId.map(id => {
-				return allFacets.partnerFacets?.find(f => f.id === id);
-			});
+			const partnerFacets = loanSearchState.partnerId
+				.map(id => {
+					return allFacets.partnerFacets?.find(f => f.id === id);
+				})
+				.filter(x => x); // Remove undefined/null values
 			return partnerFacets;
 		}
 		return [];

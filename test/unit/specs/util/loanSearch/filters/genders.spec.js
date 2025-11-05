@@ -38,10 +38,10 @@ describe('genders.js', () => {
 				expect(result).toEqual(expected);
 			});
 
-			it('should handle gender not found in facets', () => {
+			it('should filter out gender not found in facets', () => {
 				const result = genders.getFilterChips({ gender: 'unknown' }, mockAllFacets);
 
-				expect(result).toEqual([{ name: undefined, __typename: 'Gender' }]);
+				expect(result).toEqual([]);
 			});
 		});
 

@@ -44,7 +44,7 @@ describe('activities.js', () => {
 				expect(result).toEqual([]);
 			});
 
-			it('should handle activity not found in facets', () => {
+			it('should filter out activity not found in facets', () => {
 				const loanSearchState = { activityId: [999] };
 				const allFacets = {
 					activityFacets: [
@@ -55,7 +55,24 @@ describe('activities.js', () => {
 
 				const result = activities.getFilterChips(loanSearchState, allFacets);
 
-				expect(result).toEqual([undefined]);
+				expect(result).toEqual([]);
+			});
+
+			it('should filter out invalid activities but keep valid ones', () => {
+				const loanSearchState = { activityId: [1, 999, 2] };
+				const allFacets = {
+					activityFacets: [
+						{ id: 1, name: 'Agriculture' },
+						{ id: 2, name: 'Education' }
+					]
+				};
+
+				const result = activities.getFilterChips(loanSearchState, allFacets);
+
+				expect(result).toEqual([
+					{ id: 1, name: 'Agriculture' },
+					{ id: 2, name: 'Education' }
+				]);
 			});
 		});
 

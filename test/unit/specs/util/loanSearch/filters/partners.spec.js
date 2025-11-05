@@ -32,10 +32,19 @@ describe('partners.js', () => {
 				expect(result).toEqual([mockAllFacets.partnerFacets[0]]);
 			});
 
-			it('should handle partner not found in facets', () => {
+			it('should filter out partner not found in facets', () => {
 				const result = partners.getFilterChips({ partnerId: [999] }, mockAllFacets);
 
-				expect(result).toEqual([undefined]);
+				expect(result).toEqual([]);
+			});
+
+			it('should filter out invalid partners but keep valid ones', () => {
+				const result = partners.getFilterChips({ partnerId: [1, 999, 2] }, mockAllFacets);
+
+				expect(result).toEqual([
+					mockAllFacets.partnerFacets[0],
+					mockAllFacets.partnerFacets[1]
+				]);
 			});
 		});
 

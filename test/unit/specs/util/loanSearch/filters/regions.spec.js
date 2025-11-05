@@ -44,10 +44,20 @@ describe('regions.js', () => {
 				expect(result).toEqual(expected);
 			});
 
-			it('should handle country not found in facets', () => {
+			it('should filter out country not found in facets', () => {
 				const result = regions.getFilterChips({ countryIsoCode: ['ZZ'] }, mockAllFacets);
 
-				expect(result).toEqual([undefined]);
+				expect(result).toEqual([]);
+			});
+
+			it('should filter out invalid countries but keep valid ones', () => {
+				const result = regions.getFilterChips({ countryIsoCode: ['US', 'ZZ', 'CA'] }, mockAllFacets);
+
+				const expected = [
+					mockAllFacets.countryFacets[0].country,
+					mockAllFacets.countryFacets[1].country
+				];
+				expect(result).toEqual(expected);
 			});
 		});
 

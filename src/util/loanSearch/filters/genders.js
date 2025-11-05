@@ -47,8 +47,11 @@ export default {
 	getFilterChips: (loanSearchState, allFacets) => {
 		if (loanSearchState.gender) {
 			const genderFacet = allFacets.genderFacets?.find(f => f.name === loanSearchState.gender);
+			if (!genderFacet) {
+				return []; // Filter out invalid gender
+			}
 			return [{
-				name: genderDisplayMap[genderFacet?.name.toUpperCase()],
+				name: genderDisplayMap[genderFacet.name.toUpperCase()],
 				__typename: 'Gender'
 			}];
 		}
