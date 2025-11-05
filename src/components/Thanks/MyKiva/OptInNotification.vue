@@ -16,7 +16,7 @@
 				class="tw-shadow tw-border-2 tw-border-white tw-box-content"
 				:class="{
 					'tw-w-4.5 tw-h-4.5 md:tw-w-6 md:tw-h-6': loansToDisplay.length <= 2 || index === 1,
-					'tw-w-[30px] tw-h-[30px]' : loansToDisplay.length > 2 && index !== 1
+					'tw-w-3.5 tw-h-3.5' : loansToDisplay.length > 2 && index !== 1
 				}"
 				:style="{
 					zIndex: index === 1 ? 2 : 1,
