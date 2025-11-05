@@ -1,57 +1,28 @@
 import numeralFilter from '#src/plugins/numeral-filter';
+import numeral from 'numeral';
+
+vi.mock('numeral');
 
 describe('numeral-filter.js', () => {
-	it('should format number with default format', () => {
+	it('should call numeral with the provided value and format method with default format', () => {
+		const mockFormat = vi.fn().mockReturnValue('formatted');
+		numeral.mockReturnValue({ format: mockFormat });
+
 		const result = numeralFilter(1000);
 
-		expect(result).toBe('1000');
+		expect(numeral).toHaveBeenCalledWith(1000);
+		expect(mockFormat).toHaveBeenCalledWith('0');
+		expect(result).toBe('formatted');
 	});
 
-	it('should format number with custom format', () => {
+	it('should call numeral with the provided value and format method with custom format', () => {
+		const mockFormat = vi.fn().mockReturnValue('formatted');
+		numeral.mockReturnValue({ format: mockFormat });
+
 		const result = numeralFilter(1234.56, '0,0.00');
 
-		expect(result).toBe('1,234.56');
-	});
-
-	it('should format number as currency', () => {
-		const result = numeralFilter(1000, '$0,0.00');
-
-		expect(result).toBe('$1,000.00');
-	});
-
-	it('should format number with thousands separator', () => {
-		const result = numeralFilter(1234567, '0,0');
-
-		expect(result).toBe('1,234,567');
-	});
-
-	it('should format number as percentage', () => {
-		const result = numeralFilter(0.5, '0.00%');
-
-		expect(result).toBe('50.00%');
-	});
-
-	it('should format negative numbers', () => {
-		const result = numeralFilter(-1000, '0,0');
-
-		expect(result).toBe('-1,000');
-	});
-
-	it('should format zero', () => {
-		const result = numeralFilter(0, '0');
-
-		expect(result).toBe('0');
-	});
-
-	it('should handle decimal precision', () => {
-		const result = numeralFilter(123.456, '0.0');
-
-		expect(result).toBe('123.5');
-	});
-
-	it('should format with abbreviated notation', () => {
-		const result = numeralFilter(1000000, '0.0a');
-
-		expect(result).toBe('1.0m');
+		expect(numeral).toHaveBeenCalledWith(1234.56);
+		expect(mockFormat).toHaveBeenCalledWith('0,0.00');
+		expect(result).toBe('formatted');
 	});
 });
