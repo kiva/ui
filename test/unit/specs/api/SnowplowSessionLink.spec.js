@@ -4,20 +4,6 @@ vi.mock('@apollo/client/link/context/index', () => ({
 	setContext: vi.fn(handler => ({ handler, contextHandler: handler }))
 }));
 
-vi.mock('lodash/set', () => ({
-	default: vi.fn((obj, path, value) => {
-		const result = { ...obj };
-		const keys = path.split('.');
-		let current = result;
-		for (let i = 0; i < keys.length - 1; i += 1) {
-			if (!current[keys[i]]) current[keys[i]] = {};
-			current = current[keys[i]];
-		}
-		current[keys[keys.length - 1]] = value;
-		return result;
-	})
-}));
-
 describe('SnowplowSessionLink.js', () => {
 	let mockCookieStore;
 
