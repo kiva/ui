@@ -7,7 +7,7 @@
 		<KvUserAvatar
 			:lender-name="loanName"
 			:lender-image-url="loanImageUrl"
-			class="tw-mx-auto"
+			class="tw-mx-auto tw-w-6 tw-h-6"
 		/>
 		<h2	class="tw-mt-1 tw-mb-3 tw-text-center" style="line-height: 1.25;">
 			Tell others why you love this loan to <span class="data-hj-suppress">{{ loanName }}</span>

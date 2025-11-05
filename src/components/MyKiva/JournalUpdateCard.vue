@@ -25,7 +25,7 @@
 				/>
 				<KvUserAvatar
 					v-else
-					class="kiva-logo lg:tw-w-8"
+					class="tw-w-6 tw-h-6 lg:tw-w-8 lg:tw-h-8"
 				/>
 			</div>
 			<div class="tw-flex tw-flex-col tw-items-start">
@@ -230,9 +230,3 @@ const useFunds = () => {
 };
 
 </script>
-
-<style lang="postcss" scoped>
-	.kiva-logo:deep(div:first-child) {
-		@apply tw-w-6 tw-h-6 lg:tw-w-8 lg:tw-h-8;
-	}
-</style>
