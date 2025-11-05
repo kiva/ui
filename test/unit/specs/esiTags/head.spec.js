@@ -1,25 +1,113 @@
 import renderESIHead from '#src/esiTags/head';
+import createApolloClient from '#src/api/apollo';
+import renderCssVariables from '#src/rendering/cssVariables';
+import renderDocumentCookies from '#src/rendering/documentCookies';
+import { renderOptInExternals } from '#src/rendering/externals';
+import renderGlobals from '#src/rendering/globals';
+import { shouldShowAppInstallPrompt, renderAppInstallPrompt } from '#src/util/appInstallPrompt';
+import setBasketCookie from '#src/util/basketCookie';
+import { assignAllActiveExperiments } from '#src/util/experiment/experimentUtils';
+import { setUserDataCookies } from '#src/util/optimizelyUserMetrics';
+import setVisitorIdCookie from '#src/util/visitorCookie';
+
+// Mock Apollo client with default query responses
+const mockApollo = {
+	query: vi.fn(({ query }) => {
+		const queryString = query.loc?.source?.body || '';
+
+		if (queryString.includes('esiHead')) {
+			return Promise.resolve({
+				data: {
+					contentful: {
+						entries: [],
+					},
+					my: {
+						id: 'user123',
+						userAccount: {
+							firstName: 'Test',
+							lastName: 'User',
+						},
+						promoBalance: {
+							available: '10.00',
+						},
+					},
+					shop: {
+						id: 'basket123',
+						basketCount: 2,
+						hasPromo: true,
+					},
+				},
+			});
+		}
+
+		if (queryString.includes('hasEverLoggedIn')) {
+			return Promise.resolve({
+				data: {
+					my: {
+						userAccount: {
+							hasEverLoggedIn: true,
+						},
+					},
+				},
+			});
+		}
+
+		return Promise.resolve({ data: {} });
+	}),
+	cache: {
+		extract: vi.fn(() => ({ test: 'apollo-state' })),
+	},
+};
 
 // Mock dependencies
-vi.mock('#src/api/apollo');
-vi.mock('#src/rendering/cssVariables');
-vi.mock('#src/rendering/documentCookies');
-vi.mock('#src/rendering/externals');
-vi.mock('#src/rendering/globals');
-vi.mock('#src/util/appInstallPrompt');
-vi.mock('#src/util/basketCookie');
-vi.mock('#src/util/experiment/experimentUtils');
-vi.mock('#src/util/optimizelyUserMetrics');
-vi.mock('#src/util/visitorCookie');
+vi.mock('#src/api/apollo', () => ({
+	default: vi.fn(() => mockApollo),
+}));
+
+vi.mock('#src/rendering/cssVariables', () => ({
+	default: vi.fn(() => '<style>css-vars</style>'),
+}));
+
+vi.mock('#src/rendering/documentCookies', () => ({
+	default: vi.fn(() => '<script>cookies</script>'),
+}));
+
+vi.mock('#src/rendering/externals', () => ({
+	renderOptInExternals: vi.fn(() => '<script>externals</script>'),
+}));
+
+vi.mock('#src/rendering/globals', () => ({
+	default: vi.fn(() => '<script>globals</script>'),
+}));
+
+vi.mock('#src/util/appInstallPrompt', () => ({
+	shouldShowAppInstallPrompt: vi.fn(async () => true),
+	renderAppInstallPrompt: vi.fn(() => '<div>app-install</div>'),
+}));
+
+vi.mock('#src/util/basketCookie', () => ({
+	default: vi.fn(async () => {}),
+}));
+
+vi.mock('#src/util/experiment/experimentUtils', () => ({
+	assignAllActiveExperiments: vi.fn(async () => {}),
+}));
+
+vi.mock('#src/util/optimizelyUserMetrics', () => ({
+	setUserDataCookies: vi.fn(async () => {}),
+}));
+
+vi.mock('#src/util/visitorCookie', () => ({
+	default: vi.fn(),
+}));
 
 describe('renderESIHead', () => {
 	let mockCookieStore;
 	let mockContext;
 	let mockFetch;
 	let mockKvAuth0;
-	let mockApollo;
 
-	beforeEach(async () => {
+	beforeEach(() => {
 		// Reset all mocks
 		vi.clearAllMocks();
 
@@ -49,91 +137,6 @@ describe('renderESIHead', () => {
 
 		mockFetch = vi.fn();
 		mockKvAuth0 = {};
-
-		// Setup mock Apollo client
-		mockApollo = {
-			query: vi.fn(),
-			cache: {
-				extract: vi.fn(() => ({ test: 'apollo-state' })),
-			},
-		};
-
-		// Mock apollo module
-		const apolloModule = await import('#src/api/apollo');
-		apolloModule.default = vi.fn(() => mockApollo);
-
-		// Mock rendering modules
-		const cssVariablesModule = await import('#src/rendering/cssVariables');
-		cssVariablesModule.default = vi.fn(() => '<style>css-vars</style>');
-
-		const documentCookiesModule = await import('#src/rendering/documentCookies');
-		documentCookiesModule.default = vi.fn(() => '<script>cookies</script>');
-
-		const externalsModule = await import('#src/rendering/externals');
-		externalsModule.renderOptInExternals = vi.fn(() => '<script>externals</script>');
-
-		const globalsModule = await import('#src/rendering/globals');
-		globalsModule.default = vi.fn(() => '<script>globals</script>');
-
-		const appInstallModule = await import('#src/util/appInstallPrompt');
-		appInstallModule.shouldShowAppInstallPrompt = vi.fn(async () => true);
-		appInstallModule.renderAppInstallPrompt = vi.fn(() => '<div>app-install</div>');
-
-		const basketCookieModule = await import('#src/util/basketCookie');
-		basketCookieModule.default = vi.fn(async () => {});
-
-		const experimentModule = await import('#src/util/experiment/experimentUtils');
-		experimentModule.assignAllActiveExperiments = vi.fn(async () => {});
-
-		const optimizelyModule = await import('#src/util/optimizelyUserMetrics');
-		optimizelyModule.setUserDataCookies = vi.fn(async () => {});
-
-		const visitorCookieModule = await import('#src/util/visitorCookie');
-		visitorCookieModule.default = vi.fn();
-
-		// Setup default Apollo query responses
-		mockApollo.query.mockImplementation(({ query }) => {
-			const queryString = query.loc?.source?.body || '';
-
-			if (queryString.includes('esiHead')) {
-				return Promise.resolve({
-					data: {
-						contentful: {
-							entries: [],
-						},
-						my: {
-							id: 'user123',
-							userAccount: {
-								firstName: 'Test',
-								lastName: 'User',
-							},
-							promoBalance: {
-								available: '10.00',
-							},
-						},
-						shop: {
-							id: 'basket123',
-							basketCount: 2,
-							hasPromo: true,
-						},
-					},
-				});
-			}
-
-			if (queryString.includes('hasEverLoggedIn')) {
-				return Promise.resolve({
-					data: {
-						my: {
-							userAccount: {
-								hasEverLoggedIn: true,
-							},
-						},
-					},
-				});
-			}
-
-			return Promise.resolve({ data: {} });
-		});
 	});
 
 	it('should render ESI head HTML successfully', async () => {
@@ -150,8 +153,6 @@ describe('renderESIHead', () => {
 	});
 
 	it('should initialize Apollo client with correct configuration', async () => {
-		const createApolloClient = (await import('#src/api/apollo')).default;
-
 		await renderESIHead({
 			cookieStore: mockCookieStore,
 			context: mockContext,
@@ -172,8 +173,6 @@ describe('renderESIHead', () => {
 	});
 
 	it('should set visitor ID cookie', async () => {
-		const setVisitorIdCookie = (await import('#src/util/visitorCookie')).default;
-
 		await renderESIHead({
 			cookieStore: mockCookieStore,
 			context: mockContext,
@@ -185,8 +184,6 @@ describe('renderESIHead', () => {
 	});
 
 	it('should set basket cookie', async () => {
-		const setBasketCookie = (await import('#src/util/basketCookie')).default;
-
 		await renderESIHead({
 			cookieStore: mockCookieStore,
 			context: mockContext,
@@ -233,8 +230,6 @@ describe('renderESIHead', () => {
 	});
 
 	it('should set user data cookies', async () => {
-		const { setUserDataCookies } = await import('#src/util/optimizelyUserMetrics');
-
 		await renderESIHead({
 			cookieStore: mockCookieStore,
 			context: mockContext,
@@ -246,10 +241,6 @@ describe('renderESIHead', () => {
 	});
 
 	it('should assign all active experiments', async () => {
-		const { assignAllActiveExperiments } = await import(
-			'#src/util/experiment/experimentUtils'
-		);
-
 		await renderESIHead({
 			cookieStore: mockCookieStore,
 			context: mockContext,
@@ -261,8 +252,6 @@ describe('renderESIHead', () => {
 	});
 
 	it('should check app install prompt status', async () => {
-		const { shouldShowAppInstallPrompt } = await import('#src/util/appInstallPrompt');
-
 		await renderESIHead({
 			cookieStore: mockCookieStore,
 			context: mockContext,
@@ -279,8 +268,6 @@ describe('renderESIHead', () => {
 	});
 
 	it('should render document cookies', async () => {
-		const renderDocumentCookies = (await import('#src/rendering/documentCookies')).default;
-
 		await renderESIHead({
 			cookieStore: mockCookieStore,
 			context: mockContext,
@@ -292,8 +279,6 @@ describe('renderESIHead', () => {
 	});
 
 	it('should render opt-in externals', async () => {
-		const { renderOptInExternals } = await import('#src/rendering/externals');
-
 		await renderESIHead({
 			cookieStore: mockCookieStore,
 			context: mockContext,
@@ -305,7 +290,6 @@ describe('renderESIHead', () => {
 	});
 
 	it('should render app install prompt when shown', async () => {
-		const { renderAppInstallPrompt, shouldShowAppInstallPrompt } = await import('#src/util/appInstallPrompt');
 		shouldShowAppInstallPrompt.mockResolvedValue(true);
 
 		await renderESIHead({
@@ -319,7 +303,6 @@ describe('renderESIHead', () => {
 	});
 
 	it('should render app install prompt when not shown', async () => {
-		const { renderAppInstallPrompt, shouldShowAppInstallPrompt } = await import('#src/util/appInstallPrompt');
 		shouldShowAppInstallPrompt.mockResolvedValue(false);
 
 		await renderESIHead({
@@ -333,8 +316,6 @@ describe('renderESIHead', () => {
 	});
 
 	it('should render globals with Apollo state', async () => {
-		const renderGlobals = (await import('#src/rendering/globals')).default;
-
 		await renderESIHead({
 			cookieStore: mockCookieStore,
 			context: mockContext,
@@ -348,8 +329,6 @@ describe('renderESIHead', () => {
 	});
 
 	it('should render CSS variables with user data', async () => {
-		const renderCssVariables = (await import('#src/rendering/cssVariables')).default;
-
 		await renderESIHead({
 			cookieStore: mockCookieStore,
 			context: mockContext,
@@ -435,12 +414,6 @@ describe('renderESIHead', () => {
 	});
 
 	it('should execute async operations in parallel', async () => {
-		const { shouldShowAppInstallPrompt } = await import('#src/util/appInstallPrompt');
-		const { setUserDataCookies } = await import('#src/util/optimizelyUserMetrics');
-		const { assignAllActiveExperiments } = await import(
-			'#src/util/experiment/experimentUtils'
-		);
-
 		// Mock to track call order
 		const callOrder = [];
 		shouldShowAppInstallPrompt.mockImplementation(async () => {
@@ -484,7 +457,6 @@ describe('renderESIHead', () => {
 	});
 
 	it('should handle force header option', async () => {
-		const createApolloClient = (await import('#src/api/apollo')).default;
 		const contextWithForceHeader = {
 			...mockContext,
 			forceHeader: true,
