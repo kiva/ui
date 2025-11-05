@@ -3,7 +3,7 @@
 		<h3
 			v-if="hasActiveLoans"
 			v-html="title"
-			class="tw-mt-4 tw-mb-2"
+			class="tw-absolute tw-pt-2"
 		></h3>
 		<div v-if="hasActiveLoans" class="tw-relative">
 			<KvTabs
@@ -348,7 +348,7 @@ onBeforeUnmount(() => {
 }
 
 .borrower-carousel :deep(.kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
+	@apply tw-hidden md:tw-flex tw-justify-end tw-mt-2;
 }
 
 .borrower-carousel :deep(.kv-carousel__controls) div {

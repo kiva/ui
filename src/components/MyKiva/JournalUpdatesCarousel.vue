@@ -1,5 +1,5 @@
 <template>
-	<div v-if="updates.length > 0">
+	<div v-if="updates.length > 0" class="tw-pt-4">
 		<h3 class="tw-absolute tw-pt-2">
 			Updates
 		</h3>
