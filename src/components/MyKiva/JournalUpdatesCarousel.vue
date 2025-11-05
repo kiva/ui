@@ -1,6 +1,6 @@
 <template>
-	<div v-if="updates.length > 0">
-		<h3 class="tw-mt-4 tw-mb-2">
+	<div v-if="updates.length > 0" class="tw-pt-4">
+		<h3 class="tw-absolute tw-pt-2">
 			Updates
 		</h3>
 		<KvCarousel
@@ -10,6 +10,7 @@
 			slides-to-scroll="visible"
 			:slide-max-width="singleSlideWidth"
 			:embla-options="{ loop: false, startIndex: carouselIndex }"
+			:controls-top-right="controlsTopRight"
 			@interact-carousel="interactCarousel"
 		>
 			<template v-for="(update, index) in updates" #[`slide${index}`] :key="update.id">
@@ -118,6 +119,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	controlsTopRight: {
+		type: Boolean,
+		default: false,
+	},
 
 });
 
@@ -221,7 +226,7 @@ watch(
 
 <style lang="postcss" scoped>
 .updates-carousel :deep(.kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
+	@apply tw-hidden md:tw-flex tw-justify-end tw-mt-2;
 }
 
 .updates-carousel :deep(.kv-carousel__controls) div {

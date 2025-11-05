@@ -1,9 +1,12 @@
 <template>
 	<div>
-		<h2 class="tw-text-h3 tw-mb-4">
+		<h2
+			class="tw-absolute tw-text-h3 tw-mb-4 tw-pt-2"
+		>
 			Impact in action
 		</h2>
 		<KvCarousel
+			:controls-top-right="controlsTopRight"
 			:slide-max-width="singleSlideWidth"
 			class="blog-card-carousel tw-w-full"
 			:embla-options="{
@@ -40,6 +43,10 @@ defineProps({
 		type: Array,
 		required: true,
 	},
+	controlsTopRight: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
@@ -58,7 +65,7 @@ function trackBlogCard(card) {
 <style lang="postcss" scoped>
 
 .blog-card-carousel :deep(.kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
+	@apply tw-hidden md:tw-flex tw-justify-end tw-mt-2;
 }
 
 .blog-card-carousel :deep(.kv-carousel__controls) div {

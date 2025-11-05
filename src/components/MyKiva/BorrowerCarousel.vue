@@ -3,7 +3,7 @@
 		<h3
 			v-if="hasActiveLoans"
 			v-html="title"
-			class="tw-mt-4 tw-mb-2"
+			class="tw-absolute tw-pt-2"
 		></h3>
 		<div v-if="hasActiveLoans" class="tw-relative">
 			<KvTabs
@@ -60,6 +60,7 @@
 					:multiple-slides-visible="true"
 					:slide-max-width="'336px'"
 					:embla-options="{ loop: false, align: 'center'}"
+					:controls-top-right="controlsTopRight"
 					@change="onInteractCarousel"
 				>
 					<template v-for="(loan, index) in filteredLoans" #[`slide${index+1}`] :key="loan.id || index">
@@ -189,6 +190,10 @@ const props = defineProps({
 		default: () => ([]),
 	},
 	isAdding: {
+		type: Boolean,
+		default: false
+	},
+	controlsTopRight: {
 		type: Boolean,
 		default: false
 	},
@@ -343,7 +348,7 @@ onBeforeUnmount(() => {
 }
 
 .borrower-carousel :deep(.kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
+	@apply tw-hidden md:tw-flex tw-justify-end tw-mt-2;
 }
 
 .borrower-carousel :deep(.kv-carousel__controls) div {
