@@ -1,14 +1,8 @@
 <template>
-	<div class="tw-w-full" :class="{ 'tw-pt-2': controlsTopRight }">
+	<div class="tw-w-full">
 		<div class="tw-mx-auto tw-px-0 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 			<!-- eslint-disable-next-line max-len -->
-			<div
-				class="tw-justify-between tw-items-end lg:tw-items-center tw-px-2.5 md:tw-px-0"
-				:class="{
-					'tw-absolute tw-pt-2': controlsTopRight,
-					'tw-flex tw-flex-col lg:tw-flex-row': !controlsTopRight
-				}"
-			>
+			<div class="tw-flex tw-flex-col lg:tw-flex-row tw-justify-between tw-items-end lg:tw-items-center tw-px-2.5 md:tw-px-0">
 				<div class="tw-w-full lg:tw-w-auto">
 					<div class="tw-flex tw-items-center">
 						<img v-if="titleIcon" :src="titleIcon" class="tw-mr-1 tw-w-4">
@@ -23,9 +17,9 @@
 				</div>
 			</div>
 			<KvCarousel
-				class="tw-w-full tw-overflow-hidden tw-mt-1 tw-pb-2 tw-px-1 tw-pt-1"
 				id="customizedCarousel"
 				:key="loans.length"
+				:class="{ 'tw--mt-4': controlsTopRight }"
 				:multiple-slides-visible="true"
 				slides-to-scroll="visible"
 				:slide-max-width="singleSlideWidth"
@@ -69,6 +63,7 @@ import { KvCarousel } from '@kiva/kv-components';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
 import { getCustomHref } from '#src/util/loanUtils';
+import useBreakpoints from '#src/composables/useBreakpoints';
 import ViewMoreCard from './ViewMoreCard';
 
 export default {
@@ -150,24 +145,25 @@ export default {
 			getCustomHref,
 		};
 	},
+	setup() {
+		const { isMedium, isLarge } = useBreakpoints();
+
+		return {
+			isMedium, isLarge
+		};
+	},
 	computed: {
 		isLargeCard() {
 			return this.perStep === 2;
 		},
 		singleSlideWidth() {
-			if (this.windowWidth <= 733) {
-				return '100%';
+			if (this.isLarge) {
+				return 'calc((100% - 32px) / 3)';
 			}
-			if (this.windowWidth > 733 && this.windowWidth < 1024) {
-				return '328px';
+			if (this.isMedium) {
+				return '336px';
 			}
-			if (this.windowWidth >= 1024) {
-				if (this.isLargeCard) {
-					return '512px';
-				}
-				return '328px';
-			}
-			return '336px';
+			return '90%';
 		},
 		totalLoans() {
 			return this.loans.length;
@@ -198,76 +194,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="postcss" scoped>
-#customizedCarousel {
-	@apply tw-px-0;
-}
-
-#customizedCarousel :deep(.kv-carousel__controls) {
-	@apply tw-justify-center;
-	@apply tw-w-16;
-	@apply tw-mx-auto;
-	@apply tw-rounded-xl;
-
-	box-shadow: 0 2px 5px 2px rgb(0 0 0 / 18%);
-}
-
-#customizedCarousel :deep(.kv-carousel__controls) div {
-	@apply tw-visible;
-}
-
-#customizedCarousel :deep(.kv-carousel__controls) button span {
-	@apply tw-invisible;
-}
-
-#customizedCarousel :deep(.kv-carousel__controls) button:first-child span::after {
-	@apply tw-visible;
-	@apply tw-text-h3;
-	@apply tw-rotate-180;
-
-	content: '\2794';
-}
-
-#customizedCarousel :deep(.kv-carousel__controls) button:nth-child(3) span::before {
-	@apply tw-visible;
-	@apply tw-text-h3;
-
-	content: '\2794';
-}
-
-#customizedCarousel :deep(div:first-child) div div div,
-#customizedCarousel :deep(div:first-child) > div > div.loan-card-active-hover a picture {
-	@apply tw-rounded-none;
-}
-
-@screen md {
-	#customizedCarousel {
-		@apply tw-px-1;
-	}
-
-	#customizedCarousel :deep(.kv-carousel__controls) {
-		@apply tw-w-full;
-		@apply tw-rounded-none;
-
-		box-shadow: none;
-	}
-
-	#customizedCarousel :deep(div:first-child) div div div {
-		@apply tw-rounded;
-	}
-
-	#customizedCarousel :deep(div:first-child) > div > div.loan-card-active-hover a picture {
-		@apply tw-rounded-t;
-	}
-
-	#customizedCarousel :deep(.kv-carousel__controls) button span {
-		@apply tw-visible;
-	}
-
-	#customizedCarousel :deep(.kv-carousel__controls) button:first-child span::after,
-	#customizedCarousel :deep(.kv-carousel__controls) button:nth-child(3) span::before {
-		content: '';
-	}
-}
-</style>

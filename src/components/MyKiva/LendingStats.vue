@@ -9,9 +9,9 @@
 	</div>
 	<div
 		ref="loanRegionsElement"
-		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': isNextStepsExpEnabled && !userLentToAllRegions }"
+		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperience }"
 	>
-		<template v-if="isNextStepsExpEnabled && !userLentToAllRegions">
+		<template v-if="showRegionExperience">
 			<div class="card-container tw-shrink-0">
 				<JourneyCardCarousel
 					class="carousel carousel-single"
@@ -139,9 +139,10 @@
 		</template>
 		<JourneyCardCarousel
 			v-else
-			class="carousel"
+			class="carousel tw--mt-6"
 			user-in-homepage
 			in-lending-stats
+			controls-top-right
 			:goal-progress-loading="goalProgressLoading"
 			:goal-progress="goalProgress"
 			:hero-contentful-data="heroContentfulData"
@@ -250,6 +251,9 @@ export default {
 		};
 	},
 	computed: {
+		showRegionExperience() {
+			return this.isNextStepsExpEnabled && !this.userLentToAllRegions;
+		},
 		totalRegions() {
 			return this.regionsData.length;
 		},
@@ -322,7 +326,7 @@ export default {
 			this.goalProgressLoading = false;
 		}
 
-		if (this.isNextStepsExpEnabled && !this.userLentToAllRegions) {
+		if (this.showRegionExperience) {
 			// Check region boxes when component comes into view
 			const { delayUntilVisible, disconnect } = useDelayUntilVisible();
 			delayUntilVisible(() => {
@@ -413,7 +417,11 @@ export default {
 	@apply !tw-min-w-full;
 }
 
-.carousel, .carousel > :deep(section), .carousel > :deep(section > div) {
+.carousel, .carousel > :deep(section), .carousel > :deep(section > div:first-of-type) {
 	@apply tw-h-full;
+}
+
+.carousel :deep(.kv-carousel__controls) {
+	@apply lg:tw-hidden;
 }
 </style>

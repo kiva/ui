@@ -186,17 +186,3 @@ watch(visibleBadges, (newSlides, oldSlides) => {
 	}
 }, { immediate: true, deep: true });
 </script>
-
-<style lang="postcss" scoped>
-.badges-carousel :deep(div:first-child) {
-	@apply tw-gap-2;
-}
-
-.badges-carousel :deep(.kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-mt-2;
-}
-
-.badges-carousel :deep(.kv-carousel__controls) div {
-	@apply tw-invisible tw-mx-0 tw-w-2;
-}
-</style>
