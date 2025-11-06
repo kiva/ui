@@ -1,3 +1,35 @@
+## [3.42.0-rc.1](https://github.com/kiva/ui/compare/v3.41.1...v3.42.0-rc.1) (2025-11-06)
+
+### 🎉 New Features
+
+* transform hash to query param before entering route ([6923f16](https://github.com/kiva/ui/commit/6923f1676f0e0c908020c83a73d16de9011aef00))
+
+### 🐛 Bugfixes
+
+* add controlsTopRight prop to all relevant components ([b572c61](https://github.com/kiva/ui/commit/b572c618200edbf75ac8c617aec9c512b5ebbb4a))
+* add controlsTopRight styling to BorrowerCarousel ([d039b3f](https://github.com/kiva/ui/commit/d039b3f59128fb303807866ae3511cc0b53f8839))
+* add missing ending newline ([f99a4f4](https://github.com/kiva/ui/commit/f99a4f470b47a8b5f2a36d8a8b9c833273c7d643))
+* append extra params when hash is present ([4c661d7](https://github.com/kiva/ui/commit/4c661d7252f1e1f8e33505ce753bdd704b1b53ef))
+* apply style fixes to remaining MyKiva components ([4b9163e](https://github.com/kiva/ui/commit/4b9163ec800a59bcf555a3b54e749d891b5c49b7))
+* atb modal race condition ([#6427](https://github.com/kiva/ui/issues/6427)) ([06604b9](https://github.com/kiva/ui/commit/06604b9c443090fd85739c4ae2d5f0516e61e9ec))
+* blah ([d0f6a77](https://github.com/kiva/ui/commit/d0f6a771d9fdbe040bd0ff3ccdb81ad56647c6cb))
+* improve controls/title aligment ([fd9fdd0](https://github.com/kiva/ui/commit/fd9fdd0c3e79e166b55d87406783474db3ce907b))
+* let's try this again... ([00fdd48](https://github.com/kiva/ui/commit/00fdd488eb44a7d47efc83f4dc513a130ba9098d))
+* npm ci ([2c3f068](https://github.com/kiva/ui/commit/2c3f068a1dcef08ae7cdbcb9ca7d4ea2b3a25627))
+* package-lock rebuild ([bfca6c7](https://github.com/kiva/ui/commit/bfca6c76b0624b5ef7538c77407d36a48f98240e))
+* package-lock.json from main branch ([5babf73](https://github.com/kiva/ui/commit/5babf7357b7d02215a16c5050f996bb86a4569fc))
+* place caorusel controls top right ([bbd8187](https://github.com/kiva/ui/commit/bbd818733c0d03c4bafdfa768e64e09976dc75ab))
+* propify controlsTopRight fully ([7d5b6a3](https://github.com/kiva/ui/commit/7d5b6a3f7f9cf9481d6fbcd44fd6ecdd8d1f5926))
+* remove unnecessary :class code ([c9a8940](https://github.com/kiva/ui/commit/c9a8940b3d2188c766eb514566d636714436eb48))
+* replacing anchor for param to redirect users to borrowers carousel in my kiva ([8f3ae89](https://github.com/kiva/ui/commit/8f3ae896781b973786a94fc6a6ba9a399f85210e))
+* revert @kiva/kv-components for stable build ([b8f908c](https://github.com/kiva/ui/commit/b8f908c2e76399d780f668979f5d1b4ac288c398))
+* revert lock file ([c02ce90](https://github.com/kiva/ui/commit/c02ce9092c8a2f7c6413cca89345309c91c4e630))
+* try updating lock file ([a820cc3](https://github.com/kiva/ui/commit/a820cc33808f580e58beb2445c0187963dc17040))
+* update package to latest ([e36e346](https://github.com/kiva/ui/commit/e36e3469907c438c0fbc178eaea6d3f389fe25d7))
+* upgrade @kiva/kv-components ([ade857e](https://github.com/kiva/ui/commit/ade857e2edb33a5cb7edf7ea7e2a25558bba9842))
+* use svg to vertical-center letter in lender avatars ([93ae0d8](https://github.com/kiva/ui/commit/93ae0d89694cb44988c0748645448fd93d27567d))
+* whatever man ([0600de9](https://github.com/kiva/ui/commit/0600de9a4881a282eb77f0cd3a8ec5b01b780575))
+
 ## [3.41.1](https://github.com/kiva/ui/compare/v3.41.0...v3.41.1) (2025-11-05)
 
 ### 🐛 Bugfixes
