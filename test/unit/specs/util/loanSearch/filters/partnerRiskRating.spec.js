@@ -81,5 +81,43 @@ describe('partnerRiskRating.js', () => {
 					.toEqual({ partnerRiskRating: { range: { gte: 1, lte: 2 } } });
 			});
 		});
+
+		describe('getSavedSearch', () => {
+			it('should return riskRating object', () => {
+				const state = { partnerRiskRating: { min: 0, max: 4 } };
+				const result = partnerRiskRating.getSavedSearch(state);
+				expect(result).toEqual({ riskRating: { min: 0, max: 4 } });
+			});
+
+			it('should return null when partnerRiskRating is null', () => {
+				const state = { partnerRiskRating: null };
+				const result = partnerRiskRating.getSavedSearch(state);
+				expect(result).toEqual({ riskRating: null });
+			});
+		});
+
+		describe('getOptions', () => {
+			it('should return min, max, and step', () => {
+				const result = partnerRiskRating.getOptions();
+				expect(result).toEqual({ min: MIN, max: MAX, step: 0.5 });
+			});
+		});
+
+		describe('showSavedSearch', () => {
+			it('should return true when partnerRiskRating is set', () => {
+				const result = partnerRiskRating.showSavedSearch({ partnerRiskRating: { min: 1, max: 2 } });
+				expect(result).toBe(true);
+			});
+
+			it('should return false when partnerRiskRating is null', () => {
+				const result = partnerRiskRating.showSavedSearch({ partnerRiskRating: null });
+				expect(result).toBe(false);
+			});
+
+			it('should return false when partnerRiskRating is undefined', () => {
+				const result = partnerRiskRating.showSavedSearch({});
+				expect(result).toBe(false);
+			});
+		});
 	});
 });

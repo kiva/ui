@@ -39,7 +39,7 @@ jobs:
     - name: Run Lint
       run: npm run lint
     - name: Run Unit Tests
-      run: npm run unit
+      run: npm run unit-coverage
     - name: Merge test coverage reports
       run: npm run coverage:merge
     - name: Coveralls

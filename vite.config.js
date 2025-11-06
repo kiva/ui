@@ -137,10 +137,11 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 		test: {
 			globals: true,
 			environment: 'happy-dom',
+			pool: 'threads',
 			setupFiles: ['./test/unit/setup.js'],
 			coverage: {
-				provider: 'istanbul',
-				reporters: ['json', 'html'],
+				provider: 'v8',
+				reporter: ['text-summary', 'json', 'json-summary', 'html'],
 				reportsDirectory: './test/unit/coverage',
 				include: [
 					'src/**',
@@ -154,6 +155,7 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 					'./src/plugins/index.js',
 					'./src/router/',
 					'./src/util/animation',
+					'./src/util/siteThemes.js',
 					...coverageConfigDefaults.exclude,
 				]
 			}

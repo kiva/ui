@@ -190,6 +190,13 @@ describe('dataUtils.js', () => {
 			expect(apollo.query).toHaveBeenCalledWith(apolloEnumsVariables);
 		});
 
+		it('should handle error gracefully', async () => {
+			const apollo = { query: vi.fn(() => Promise.reject(new Error('Query failed'))) };
+			const data = await fetchLoanFacets(apollo);
+
+			expect(data).toBeUndefined();
+		});
+
 		it('should handle undefined', async () => {
 			const dataObj = { data: { } };
 			const apollo = { query: vi.fn(() => Promise.resolve(dataObj)) };
@@ -270,6 +277,152 @@ describe('dataUtils.js', () => {
 				activityIds: [1],
 				activityNames: ['TEST ACTIVITY'],
 			});
+		});
+
+		it('should handle partial data with empty facets', async () => {
+			const dataObj = {
+				data: {
+					lend: {
+						countryFacets: [],
+						sector: [],
+						loanThemeFilter: [],
+						tag: [],
+						activity: []
+					},
+					general: { partners: { values: [] } },
+					genderOptions: { enumValues: [] },
+					flssSorts: { enumValues: [] },
+					standardSorts: { enumValues: [] },
+					distributionModelOptions: { enumValues: [] }
+				}
+			};
+			const apollo = { query: vi.fn(() => Promise.resolve(dataObj)) };
+			const data = await fetchLoanFacets(apollo);
+
+			expect(data.sectorFacets).toEqual([]);
+			expect(data.partnerFacets).toEqual([]);
+			expect(data.themeFacets).toEqual([]);
+			expect(data.genders).toEqual([]);
+		});
+	});
+
+	describe('runFacetsQueries edge cases', () => {
+		it('should handle null facets response', async () => {
+			const spyFetchFacets = vi.spyOn(flssUtils, 'fetchFacets')
+				.mockResolvedValue(null);
+
+			const apollo = {};
+			const result = await runFacetsQueries(apollo, {});
+
+			expect(result).toEqual({
+				isoCodes: [],
+				themes: [],
+				sectors: [],
+				tags: []
+			});
+
+			spyFetchFacets.mockRestore();
+		});
+
+		it('should handle facets with missing nested properties', async () => {
+			const spyFetchFacets = vi.spyOn(flssUtils, 'fetchFacets')
+				.mockResolvedValue({
+					isoCodes: {},
+					themes: { facets: {} },
+					sectors: null,
+					tags: undefined
+				});
+
+			const apollo = {};
+			const result = await runFacetsQueries(apollo, {});
+
+			expect(result).toEqual({
+				isoCodes: [],
+				themes: [],
+				sectors: [],
+				tags: []
+			});
+
+			spyFetchFacets.mockRestore();
+		});
+	});
+
+	describe('runLoansQuery edge cases', () => {
+		it('should filter out null loans from results', async () => {
+			const spyFetchLoans = vi.spyOn(flssUtils, 'fetchLoans')
+				.mockResolvedValue({
+					values: [{ id: 1 }, null, { id: 2 }, null, { id: 3 }],
+					totalCount: 5
+				});
+
+			const apollo = {};
+			const result = await runLoansQuery(apollo, mockState, 'web:test');
+
+			expect(result.loans).toEqual([{ id: 1 }, { id: 2 }, { id: 3 }]);
+			expect(result.totalCount).toBe(5);
+
+			spyFetchLoans.mockRestore();
+		});
+
+		it('should handle null response from fetchLoans', async () => {
+			const spyFetchLoans = vi.spyOn(flssUtils, 'fetchLoans')
+				.mockResolvedValue(null);
+
+			const apollo = {};
+			const result = await runLoansQuery(apollo, mockState, 'web:test');
+
+			expect(result).toEqual({ loans: [], totalCount: 0 });
+
+			spyFetchLoans.mockRestore();
+		});
+	});
+
+	describe('runRecommendationsQuery edge cases', () => {
+		it('should filter out null loans from recommendations', async () => {
+			const spyFetchRecommended = vi.spyOn(flssUtils, 'fetchRecommendedLoans')
+				.mockResolvedValue({
+					values: [{ id: 10 }, null, { id: 20 }],
+					totalCount: 3
+				});
+
+			const apollo = {};
+			const result = await runRecommendationsQuery(apollo, { userId: 123 });
+
+			expect(result.loans).toEqual([{ id: 10 }, { id: 20 }]);
+			expect(result.totalCount).toBe(3);
+
+			spyFetchRecommended.mockRestore();
+		});
+
+		it('should handle null response from fetchRecommendedLoans', async () => {
+			const spyFetchRecommended = vi.spyOn(flssUtils, 'fetchRecommendedLoans')
+				.mockResolvedValue(null);
+
+			const apollo = {};
+			const result = await runRecommendationsQuery(apollo, {});
+
+			expect(result).toEqual({ loans: [], totalCount: 0 });
+
+			spyFetchRecommended.mockRestore();
+		});
+
+		it('should use default parameters when options not provided', async () => {
+			const spyFetchRecommended = vi.spyOn(flssUtils, 'fetchRecommendedLoans')
+				.mockResolvedValue({ values: [], totalCount: 0 });
+
+			const apollo = {};
+			await runRecommendationsQuery(apollo);
+
+			expect(spyFetchRecommended).toHaveBeenCalledWith(
+				apollo,
+				FLSS_ORIGIN_NOT_SPECIFIED,
+				null,
+				'personalized',
+				null,
+				null
+			);
+
+			spyFetchRecommended.mockRestore();
 		});
 	});
 });

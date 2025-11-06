@@ -4,6 +4,19 @@ import { MockKvAuth0 } from '#src/util/KvAuth0';
 import clearDocumentCookies from '../../../setup/clearDocumentCookies';
 
 describe('my.js', () => {
+	describe('myResolverFactory', () => {
+		it('should return empty object when cookieStore is not provided', () => {
+			const result = myResolverFactory({ cookieStore: null, kvAuth0: MockKvAuth0 });
+			expect(result).toEqual({});
+		});
+
+		it('should return empty object when kvAuth0 is not provided', () => {
+			const cookieStore = new CookieStore({});
+			const result = myResolverFactory({ cookieStore, kvAuth0: null });
+			expect(result).toEqual({});
+		});
+	});
+
 	describe('Query.hasEverLoggedIn', () => {
 		function testHasEverLoggedIn(expected, {
 			context = {},
@@ -47,6 +60,22 @@ describe('my.js', () => {
 		});
 		it('Returns false by default in all other cases', () => {
 			testHasEverLoggedIn(false);
+		});
+	});
+
+	describe('My.lastLoginTimestamp', () => {
+		it('should return last login timestamp from kvAuth0', () => {
+			const mockTimestamp = 1234567890;
+			const kvAuth0 = {
+				getLastLogin: vi.fn().mockReturnValue(mockTimestamp)
+			};
+			const cookieStore = { get: vi.fn() };
+			const { resolvers } = myResolverFactory({ cookieStore, kvAuth0 });
+
+			const result = resolvers.My.lastLoginTimestamp();
+
+			expect(result).toBe(mockTimestamp);
+			expect(kvAuth0.getLastLogin).toHaveBeenCalledTimes(1);
 		});
 	});
 });

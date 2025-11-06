@@ -96,6 +96,33 @@ describe('apollo-plugin', () => {
 		expect(result).not.toHaveBeenCalled();
 	});
 
+	it('handles readQuery errors gracefully and continues with watchQuery', () => {
+		const result = vi.fn();
+		const error = new Error('Cache read error');
+		ctx.$options = {
+			inject: { apollo: {}, cookieStore: {} },
+			apollo: {
+				query: { definitions: [{ name: { value: 'TestQuery' } }] },
+				preFetch: true,
+				result
+			}
+		};
+		ctx.$watch = vi.fn();
+		ctx.cookieStore = { get: vi.fn() };
+		ctx.$route = { query: {} };
+		ctx.apollo = {
+			readQuery: vi.fn(() => { throw error; }),
+			watchQuery: vi.fn(() => ({ subscribe: vi.fn() }))
+		};
+		global.window = {};
+
+		// Should not throw despite readQuery error
+		expect(() => mixin.created.call(ctx)).not.toThrow();
+
+		// Should still set up watchQuery despite cache error
+		expect(ctx.apollo.watchQuery).toHaveBeenCalled();
+	});
+
 	it('sets up observer and $watch in browser', () => {
 		const result = vi.fn();
 		ctx.$options = {
@@ -161,5 +188,87 @@ describe('apollo-plugin', () => {
 		mixin.created.call(ctx);
 		expect(result1).toHaveBeenCalledWith({ data: { foo: 'bar' } });
 		expect(result2).toHaveBeenCalledWith({ data: 456 });
+	});
+
+	it('should skip observer setup when window is not defined', () => {
+		const result = vi.fn();
+		ctx.$options = {
+			inject: { apollo: {}, cookieStore: {} },
+			apollo: {
+				query: 'Q',
+				preFetch: false,
+				variables: () => ({}),
+				result
+			}
+		};
+		ctx.cookieStore = { get: vi.fn() };
+		ctx.$route = { query: {} };
+		ctx.apollo = {
+			readQuery: vi.fn(),
+			watchQuery: vi.fn()
+		};
+		ctx.$watch = vi.fn();
+		global.window = undefined;
+
+		mixin.created.call(ctx);
+
+		expect(ctx.apollo.watchQuery).not.toHaveBeenCalled();
+		expect(ctx.$watch).not.toHaveBeenCalled();
+	});
+
+	it('should include basketId in preFetchVariables when present', () => {
+		const result = vi.fn();
+		const preFetchVariables = vi.fn(() => ({ foo: 'bar' }));
+		ctx.$options = {
+			inject: { apollo: {}, cookieStore: {} },
+			apollo: {
+				query: 'Q',
+				preFetch: true,
+				preFetchVariables,
+				result
+			}
+		};
+		ctx.$watch = vi.fn();
+		ctx.cookieStore = { get: vi.fn(() => 'basket123') };
+		ctx.$route = { query: {} };
+		ctx.apollo = {
+			readQuery: vi.fn(() => ({ data: 'test' })),
+			watchQuery: vi.fn(() => ({ subscribe: vi.fn() }))
+		};
+		mixin.created.call(ctx);
+		expect(ctx.apollo.readQuery).toHaveBeenCalledWith({
+			query: 'Q',
+			variables: { basketId: 'basket123', foo: 'bar' }
+		});
+	});
+
+	it('should include basketId in watchQuery variables when present', () => {
+		const result = vi.fn();
+		ctx.$options = {
+			inject: { apollo: {}, cookieStore: {} },
+			apollo: {
+				query: 'Q',
+				preFetch: false,
+				variables: () => ({ foo: 'bar' }),
+				result
+			}
+		};
+		ctx.cookieStore = { get: vi.fn(() => 'basket456') };
+		ctx.$route = { query: {} };
+		const subscribe = vi.fn();
+		ctx.apollo = {
+			readQuery: vi.fn(),
+			watchQuery: vi.fn(() => ({
+				subscribe,
+				setVariables: vi.fn()
+			}))
+		};
+		ctx.$watch = vi.fn();
+		global.window = {};
+		mixin.created.call(ctx);
+		expect(ctx.apollo.watchQuery).toHaveBeenCalledWith({
+			query: 'Q',
+			variables: { basketId: 'basket456', foo: 'bar' }
+		});
 	});
 });

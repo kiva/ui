@@ -4,6 +4,23 @@ import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchDat
 
 describe('partners.js', () => {
 	describe('partners', () => {
+		describe('getOptions', () => {
+			it('should return transformed partners', () => {
+				const result = partners.getOptions(mockAllFacets);
+
+				expect(result.length).toBeGreaterThan(0);
+				expect(result[0]).toHaveProperty('id');
+				expect(result[0]).toHaveProperty('name');
+				expect(result[0]).toHaveProperty('region');
+			});
+
+			it('should handle empty facets', () => {
+				const result = partners.getOptions({});
+
+				expect(result).toEqual([]);
+			});
+		});
+
 		describe('getFilterChips', () => {
 			it('should handle undefined', () => {
 				expect(partners.getFilterChips({}, mockAllFacets)).toEqual([]);
@@ -13,6 +30,21 @@ describe('partners.js', () => {
 				const result = partners.getFilterChips({ partnerId: [1] }, mockAllFacets);
 
 				expect(result).toEqual([mockAllFacets.partnerFacets[0]]);
+			});
+
+			it('should filter out partner not found in facets', () => {
+				const result = partners.getFilterChips({ partnerId: [999] }, mockAllFacets);
+
+				expect(result).toEqual([]);
+			});
+
+			it('should filter out invalid partners but keep valid ones', () => {
+				const result = partners.getFilterChips({ partnerId: [1, 999, 2] }, mockAllFacets);
+
+				expect(result).toEqual([
+					mockAllFacets.partnerFacets[0],
+					mockAllFacets.partnerFacets[1]
+				]);
 			});
 		});
 
@@ -92,6 +124,16 @@ describe('partners.js', () => {
 			});
 		});
 
+		describe('getSavedSearch', () => {
+			it('should return partner from state', () => {
+				const state = { partnerId: [1, 2] };
+
+				const result = partners.getSavedSearch(state);
+
+				expect(result).toEqual({ partner: [1, 2] });
+			});
+		});
+
 		describe('getFlssFilter', () => {
 			it('should handle missing', () => {
 				expect(partners.getFlssFilter({})).toEqual({});
@@ -128,6 +170,41 @@ describe('partners.js', () => {
 					region: 'Africa'
 				},
 			]);
+		});
+
+		it('should handle partners with no countries', () => {
+			const partnerList = [
+				{ id: 1, name: 'Partner 1', countries: null },
+				{ id: 2, name: 'Partner 2', countries: [] },
+			];
+
+			const result = transformPartners(partnerList);
+
+			expect(result).toEqual([
+				{ id: 1, name: 'Partner 1', region: '' },
+				{ id: 2, name: 'Partner 2', region: '' },
+			]);
+		});
+
+		it('should handle partners with region not in order array', () => {
+			const partnerList = [
+				{ id: 1, name: 'Zebra', countries: [{ region: 'UNKNOWN REGION' }] },
+				{ id: 2, name: 'Apple', countries: [{ region: 'UNKNOWN REGION' }] },
+			];
+
+			const result = transformPartners(partnerList);
+
+			// Should sort by name when regions are the same
+			expect(result).toEqual([
+				{ id: 2, name: 'Apple', region: 'UNKNOWN REGION' },
+				{ id: 1, name: 'Zebra', region: 'UNKNOWN REGION' },
+			]);
+		});
+
+		it('should handle empty partners array', () => {
+			const result = transformPartners([]);
+
+			expect(result).toEqual([]);
 		});
 	});
 });

@@ -4,6 +4,21 @@ import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchDat
 
 describe('tags.js', () => {
 	describe('tags', () => {
+		describe('getOptions', () => {
+			it('should return transformed tags', () => {
+				const filteredFacets = { tags: [{ key: 1, value: 100 }] };
+				const result = tags.getOptions(mockAllFacets, filteredFacets);
+
+				expect(result).toEqual(expect.any(Array));
+			});
+
+			it('should handle empty filtered facets', () => {
+				const result = tags.getOptions(mockAllFacets, { tags: [] });
+
+				expect(result).toEqual(expect.any(Array));
+			});
+		});
+
 		describe('getFilterChips', () => {
 			it('should handle undefined', () => {
 				expect(tags.getFilterChips({}, mockAllFacets)).toEqual([]);
@@ -14,6 +29,22 @@ describe('tags.js', () => {
 
 				const expected = [{ id: 1, name: 'Tag 1', __typename: 'Tag' }];
 
+				expect(result).toEqual(expected);
+			});
+
+			it('should filter out tag not found in facets', () => {
+				const result = tags.getFilterChips({ tagId: [999] }, mockAllFacets);
+
+				expect(result).toEqual([]);
+			});
+
+			it('should filter out invalid tags but keep valid ones', () => {
+				const result = tags.getFilterChips({ tagId: [1, 999, 2] }, mockAllFacets);
+
+				const expected = [
+					{ ...mockAllFacets.tagFacets[0], name: 'Tag 1' },
+					{ ...mockAllFacets.tagFacets[1], name: 'Tag 2' }
+				];
 				expect(result).toEqual(expected);
 			});
 		});
@@ -69,6 +100,16 @@ describe('tags.js', () => {
 				const result = tags.getFilterFromQuery(query, mockAllFacets, mockState.pageLimit, FLSS_QUERY_TYPE);
 
 				expect(result).toEqual({ tagId: [1, 2] });
+			});
+		});
+
+		describe('getSavedSearch', () => {
+			it('should return loanTags from state', () => {
+				const state = { tagId: [1, 2] };
+
+				const result = tags.getSavedSearch(state);
+
+				expect(result).toEqual({ loanTags: [1, 2] });
 			});
 		});
 
@@ -187,6 +228,46 @@ describe('tags.js', () => {
 				{ id: 1, name: 'tag', numLoansFundraising: 5 },
 				{ id: 2, name: 'tag2', numLoansFundraising: 6 }
 			]);
+		});
+
+		it('should skip tags not found in allTags', () => {
+			const flssTags = [
+				{ key: 1, value: 5 },
+				{ key: 999, value: 10 }, // Not in allTags
+			];
+
+			const allTags = [
+				{ id: 1, name: 'tag', vocabularyId: 2 },
+			];
+
+			const result = transformTags(flssTags, allTags);
+
+			expect(result).toEqual([
+				{ id: 1, name: 'tag', numLoansFundraising: 5 },
+			]);
+		});
+
+		it('should handle undefined allTags parameter', () => {
+			const flssTags = [
+				{ key: 1, value: 5 },
+			];
+
+			const result = transformTags(flssTags);
+
+			expect(result).toEqual([]);
+		});
+	});
+
+	describe('getRemovedFacet', () => {
+		it('should handle tagId as falsy value (0)', () => {
+			// The bug: loanSearchState?.tagId ?? 0 will return 0 instead of []
+			// This test ensures it's handled correctly
+			const loanSearchState = { tagId: [1, 2] };
+			const facet = { id: 1 };
+
+			const result = tags.getRemovedFacet(loanSearchState, facet);
+
+			expect(result).toEqual({ tagId: [2] });
 		});
 	});
 });

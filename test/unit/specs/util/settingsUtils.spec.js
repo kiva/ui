@@ -1,4 +1,6 @@
-import { readJSONSetting, hashCode, readBoolSetting } from '#src/util/settingsUtils';
+import {
+	readJSONSetting, hashCode, readBoolSetting, readDateSetting
+} from '#src/util/settingsUtils';
 
 describe('settingsUtils.js', () => {
 	describe('readJSONSetting', () => {
@@ -93,6 +95,35 @@ describe('settingsUtils.js', () => {
 			expect(readBoolSetting({
 				booleanKey: true
 			}, 'booleanKey')).toEqual(true);
+		});
+	});
+
+	describe('readDateSetting', () => {
+		it('returns null when value is undefined or missing', () => {
+			expect(readDateSetting({}, 'missingKey')).toBeNull();
+			expect(readDateSetting({ key: undefined }, 'key')).toBeNull();
+		});
+
+		it('returns null when value is null', () => {
+			expect(readDateSetting({ dateKey: null }, 'dateKey')).toBeNull();
+		});
+
+		it('returns null when value is empty string', () => {
+			expect(readDateSetting({ dateKey: '' }, 'dateKey')).toBeNull();
+		});
+
+		it('parses a valid date string', () => {
+			const dateString = '2023-01-15T10:00:00';
+			const result = readDateSetting({ dateKey: dateString }, 'dateKey');
+			expect(result).toBeInstanceOf(Date);
+			expect(result.getFullYear()).toBe(2023);
+		});
+
+		it('cleans quotes and slashes from date strings', () => {
+			const dateStringWithQuotes = '"2023-01-15T10:00:00"';
+			const result = readDateSetting({ dateKey: dateStringWithQuotes }, 'dateKey');
+			expect(result).toBeInstanceOf(Date);
+			expect(result.getFullYear()).toBe(2023);
 		});
 	});
 });

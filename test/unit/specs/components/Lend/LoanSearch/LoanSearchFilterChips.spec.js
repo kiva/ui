@@ -22,10 +22,6 @@ vi.mock('#src/util/loanSearch/filterConfig', () => ({
 }));
 
 describe('LoanSearchFilterChips', () => {
-	afterEach(() => {
-		vi.clearAllMocks();
-	});
-
 	it('should handle missing props', () => {
 		render(LoanSearchFilterChips, {
 		});
@@ -44,6 +40,7 @@ describe('LoanSearchFilterChips', () => {
 	});
 
 	it('should call filterConfig and render state', () => {
+		vi.clearAllMocks();
 		const { getByText } = render(LoanSearchFilterChips, {
 			props: {
 				loanSearchState: mockState,

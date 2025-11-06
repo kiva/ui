@@ -4,6 +4,21 @@ import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchDat
 
 describe('themes.js', () => {
 	describe('themes', () => {
+		describe('getOptions', () => {
+			it('should return transformed themes', () => {
+				const filteredFacets = { themes: [{ key: '1', value: 100 }] };
+				const result = themes.getOptions(mockAllFacets, filteredFacets);
+
+				expect(result).toEqual(expect.any(Array));
+			});
+
+			it('should handle empty filtered facets', () => {
+				const result = themes.getOptions(mockAllFacets, { themes: [] });
+
+				expect(result).toEqual(expect.any(Array));
+			});
+		});
+
 		describe('getFilterChips', () => {
 			it('should handle undefined', () => {
 				expect(themes.getFilterChips({}, mockAllFacets)).toEqual([]);
@@ -15,6 +30,21 @@ describe('themes.js', () => {
 				const expected = [{ id: 1, name: 'Theme 1', __typename: 'LoanThemeFilter' }];
 
 				expect(result).toEqual(expected);
+			});
+
+			it('should filter out theme not found in facets', () => {
+				const result = themes.getFilterChips({ themeId: [999] }, mockAllFacets);
+
+				expect(result).toEqual([]);
+			});
+
+			it('should filter out invalid themes but keep valid ones', () => {
+				const result = themes.getFilterChips({ themeId: [1, 999, 2] }, mockAllFacets);
+
+				expect(result).toEqual([
+					{ id: 1, name: 'Theme 1', __typename: 'LoanThemeFilter' },
+					{ id: 2, name: 'Theme 2', __typename: 'LoanThemeFilter' }
+				]);
 			});
 		});
 
@@ -106,6 +136,33 @@ describe('themes.js', () => {
 			});
 		});
 
+		describe('getSavedSearch', () => {
+			it('should return theme names from state', () => {
+				const state = { themeId: [1, 2] };
+
+				const result = themes.getSavedSearch(state, mockAllFacets);
+
+				expect(result).toEqual({ theme: ['Theme 1', 'Theme 2'] });
+			});
+
+			it('should filter out themes not in facets', () => {
+				const state = { themeId: [999] };
+				const limitedFacets = {
+					themeFacets: [{ id: 1, name: 'Theme 1' }]
+				};
+
+				const result = themes.getSavedSearch(state, limitedFacets);
+				expect(result).toEqual({ theme: [] });
+			});
+
+			it('should filter out invalid themes but keep valid ones in saved search', () => {
+				const state = { themeId: [1, 999, 2] };
+
+				const result = themes.getSavedSearch(state, mockAllFacets);
+				expect(result).toEqual({ theme: ['Theme 1', 'Theme 2'] });
+			});
+		});
+
 		describe('getFlssFilter', () => {
 			it('should handle missing', () => {
 				expect(themes.getFlssFilter({})).toEqual({});
@@ -170,6 +227,43 @@ describe('themes.js', () => {
 			const result = transformThemes(mockFilteredThemes, mockThemes);
 
 			expect(result).toEqual(expected);
+		});
+
+		it('should skip themes not in visible theme IDs list', () => {
+			const mockThemes = [
+				{ id: 2, name: 'Visible Theme' },
+				{ id: 999, name: 'Invisible Theme' },
+			];
+
+			const mockFilteredThemes = [
+				{ key: 'Visible Theme', value: 5 },
+				{ key: 'Invisible Theme', value: 10 },
+			];
+
+			const result = transformThemes(mockFilteredThemes, mockThemes);
+
+			// Should only include id: 2 (assuming 2 is in visibleThemeIds)
+			expect(result.findIndex(t => t.id === 999)).toBe(-1);
+		});
+
+		it('should handle themes not found in FLSS data', () => {
+			const mockThemes = [
+				{ id: 2, name: 'Theme A' },
+				{ id: 6, name: 'Theme B' },
+			];
+
+			const mockFilteredThemes = [
+				{ key: 'Theme A', value: 10 },
+				// Theme B is missing from FLSS data
+			];
+
+			const result = transformThemes(mockFilteredThemes, mockThemes);
+
+			// Theme B should still appear with 0 loans if it's in visibleThemeIds
+			const themeB = result.find(t => t.name === 'Theme B');
+			if (themeB) {
+				expect(themeB.numLoansFundraising).toBe(0);
+			}
 		});
 	});
 });

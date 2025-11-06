@@ -52,6 +52,12 @@ describe('countryUtils.js', () => {
 			const mappedName = isoToCountryName('MS', mockTransformedMiddleEast().countries);
 			expect(mappedName).toBe(null);
 		});
+
+		it('should return null when countryList is empty or undefined', () => {
+			expect(isoToCountryName('JO', [])).toBe(null);
+			expect(isoToCountryName('JO', undefined)).toBe(null);
+			expect(isoToCountryName('JO')).toBe(null);
+		});
 	});
 
 	describe('mapIsoCodesToCountryNames', () => {
