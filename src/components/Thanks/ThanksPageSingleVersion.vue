@@ -150,7 +150,7 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	thanksPageEntrypointEnable: {
+	thanksPageGoalsEntrypointEnable: {
 		type: Boolean,
 		default: false,
 	},
