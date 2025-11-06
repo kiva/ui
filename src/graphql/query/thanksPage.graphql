@@ -37,4 +37,10 @@ query thanksPage {
 			loanUpdates
 		}
 	}
+	general {
+		thankyou_page_goals_enable: uiConfigSetting(key: "thankyou_page_goals_enable") {
+			key
+			value
+		}
+	}
 }

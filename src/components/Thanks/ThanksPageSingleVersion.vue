@@ -150,6 +150,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	thanksPageEntrypointEnable: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));

@@ -12,6 +12,7 @@
 				:guest-username="guestUsername"
 				:achievements-completed="achievementsCompleted"
 				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
+				:thanks-page-entrypoint-enabled="thanksPageEntrypointEnable"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -98,11 +99,13 @@ import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVers
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import useBadgeData from '#src/composables/useBadgeData';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
+import { readBoolSetting } from '#src/util/settingsUtils';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
+const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 
 // Thanks views
 const DONATION_ONLY_VIEW = 'donation_only';
@@ -165,6 +168,7 @@ export default {
 			guestUsername: '',
 			achievementsCompleted: false,
 			isNextStepsExpEnabled: false,
+			thanksPageEntrypointEnable: false,
 		};
 	},
 	apollo: {
@@ -294,6 +298,7 @@ export default {
 
 			const achievements = userAchievements?.userAchievementProgress?.tieredLendingAchievements ?? [];
 			this.achievementsCompleted = this.allAchievementsCompleted(achievements);
+			this.thanksPageEntrypointEnable = readBoolSetting(data, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`);
 		} catch (e) {
 			logReadQueryError(e, 'Thanks page readQuery failed');
 		}
