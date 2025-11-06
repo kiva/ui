@@ -298,7 +298,7 @@ export default {
 
 			const achievements = userAchievements?.userAchievementProgress?.tieredLendingAchievements ?? [];
 			this.achievementsCompleted = this.allAchievementsCompleted(achievements);
-			this.thanksPageGoalsEntrypointEnable = readBoolSetting(data, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`); // eslint-disable-line max-len
+			this.thanksPageGoalsEntrypointEnable = readBoolSetting(data, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
 		} catch (e) {
 			logReadQueryError(e, 'Thanks page readQuery failed');
 		}
