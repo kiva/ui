@@ -58,6 +58,7 @@ export default function useGoalData({ apollo }) {
 	const userGoal = ref(null);
 	const userPreferences = ref(null);
 	const userGoalAchievedNow = ref(false);
+	const goalCurrentLoanCount = ref(0); // Tracks loans toward "Support All" goal
 
 	async function loadPreferences(fetchPolicy = 'cache-first') {
 		try {
@@ -143,10 +144,22 @@ export default function useGoalData({ apollo }) {
 
 	const getProgressByLoan = async loan => {
 		const result = await loadProgress([loan]);
+		if (userGoal.value?.category === ID_SUPPORT_ALL) {
+			goalCurrentLoanCount.value += 1;
+			return goalCurrentLoanCount.value;
+		}
+
 		const totalProgress = result.find(
 			entry => entry.achievementId === userGoal.value?.category
 		)?.totalProgress || 0;
 		return totalProgress;
+	};
+
+	const setCurrentLoanCount = loansCount => {
+		const currentTotal = totalLoanCount.value || 0;
+		const startTotal = userGoal.value?.loanTotalAtStart || 0;
+
+		goalCurrentLoanCount.value = Math.max(currentTotal - startTotal, 0) + loansCount;
 	};
 
 	async function loadGoalData(loans = []) {
@@ -154,6 +167,11 @@ export default function useGoalData({ apollo }) {
 		const parsedPrefs = await loadPreferences();
 		allTimeProgress.value = await loadProgress(loans);
 		setGoalState(parsedPrefs);
+		if (userGoal.value?.category === ID_SUPPORT_ALL && !goalCurrentLoanCount.value) {
+			// Reducing counter by 1 because loans already has the added loan
+			setCurrentLoanCount(loans.length - 1);
+		}
+
 		loading.value = false;
 	}
 
