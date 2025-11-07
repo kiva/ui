@@ -84,11 +84,11 @@
 			/>
 		</section>
 		<section class="tw-mb-4">
-			<h3 id="my-achievements" class="tw-absolute tw-pt-2">
+			<h3 id="my-achievements">
 				My achievements
 			</h3>
 			<BadgesSection
-				class="tw-mt-2"
+				class="tw--mt-4"
 				controls-top-right
 				:badge-data="badgeData"
 				:selected-journey="selectedJourney"
@@ -107,11 +107,11 @@
 			/>
 		</section>
 		<section v-if="moreWaysToHelpSlides.length" class="tw-my-4">
-			<h3 class="tw-absolute tw-pt-2">
+			<h3>
 				More ways to help
 			</h3>
 			<JourneyCardCarousel
-				class="tw-mt-2"
+				class="tw--mt-4"
 				controls-top-right
 				:slides="moreWaysToHelpSlides"
 				:lender="lender"
@@ -695,16 +695,12 @@ export default {
 	@apply !tw-w-full;
 }
 
-#recommended-loans :deep(.kv-carousel__controls) {
-	@apply !tw-hidden md:!tw-flex !tw-justify-end !tw-mt-2;
+:deep(.kv-carousel > div:first-child) {
+	@apply tw-gap-2;
 }
 
-#recommended-loans :deep(.kv-carousel__controls) div {
-	@apply !tw-invisible !tw-mx-0 !tw-w-2;
-}
-
-#recommended-loans :deep(.kv-carousel > div:first-child) {
-	@apply !tw-gap-2;
+:deep(.kv-carousel__controls) {
+	@apply tw-hidden md:tw-flex;
 }
 
 :deep(.bp-sidesheet-wrapper > div) {

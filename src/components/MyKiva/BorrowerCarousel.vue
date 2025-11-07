@@ -3,7 +3,7 @@
 		<h3
 			v-if="hasActiveLoans"
 			v-html="title"
-			class="tw-absolute tw-pt-2"
+			class="tw-mt-4 tw-mb-2"
 		></h3>
 		<div v-if="hasActiveLoans" class="tw-relative">
 			<KvTabs
@@ -57,15 +57,16 @@
 				<KvCarousel
 					ref="carousel"
 					class="borrower-carousel tw-w-full"
+					:class="{ 'tw--mt-6': controlsTopRight }"
 					:multiple-slides-visible="true"
-					:slide-max-width="'336px'"
+					:slide-max-width="singleSlideWidth"
 					:embla-options="{ loop: false, align: 'center'}"
 					:controls-top-right="controlsTopRight"
 					@change="onInteractCarousel"
 				>
 					<template v-for="(loan, index) in filteredLoans" #[`slide${index+1}`] :key="loan.id || index">
 						<BorrowerStatusCard
-							class="tw-h-full"
+							class="tw-h-full !tw-w-full"
 							:loan="loan"
 							:open-what-is-next="openWhatIsNext"
 							:show-menu="showMenu"
@@ -147,6 +148,7 @@ import {
 import LoanCommentModal from '#src/pages/Portfolio/ImpactDashboard/LoanCommentModal';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import useBreakpoints from '#src/composables/useBreakpoints';
 import BorrowerStatusCard from './BorrowerStatusCard';
 
 const SHARE_CAMPAIGN = 'social_share_portfolio';
@@ -203,6 +205,8 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 
 const router = useRouter();
 
+const { isMedium, isLarge } = useBreakpoints();
+
 const { loans, totalLoans } = toRefs(props);
 
 const carousel = ref(null);
@@ -248,6 +252,16 @@ const inPfp = computed(() => loanForMenu.value?.inPfp ?? false);
 const pfpMinLenders = computed(() => loanForMenu.value?.pfpMinLenders ?? 0);
 
 const numLenders = computed(() => loanForMenu.value?.lenders?.numLenders ?? 0);
+
+const singleSlideWidth = computed(() => {
+	if (isLarge.value) {
+		return 'calc((100% - 32px) / 3)';
+	}
+	if (isMedium.value) {
+		return '336px';
+	}
+	return '90%';
+});
 
 const handleResize = () => {
 	windowWidth.value = window.innerWidth;
@@ -345,18 +359,6 @@ onBeforeUnmount(() => {
 <style lang="postcss" scoped>
 .carousel-container :deep(section > div:first-child) {
 	max-width: 100%;
-}
-
-.borrower-carousel :deep(.kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-justify-end tw-mt-2;
-}
-
-.borrower-carousel :deep(.kv-carousel__controls) div {
-	@apply tw-invisible tw-mx-0 tw-w-2;
-}
-
-.borrower-carousel :deep(div:first-child) {
-	@apply tw-gap-2;
 }
 
 :deep(.tabs) div[role=tablist] {
