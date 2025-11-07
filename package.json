@@ -179,7 +179,7 @@
 		"eslint-plugin-vitest-globals": "^1.5.0",
 		"eslint-plugin-vue": "^9.26.0",
 		"git-revision-webpack-plugin": "^5.0.0",
-		"happy-dom": "^17.4.4",
+		"happy-dom": "^20.0.10",
 		"hard-source-webpack-plugin-fixed-hashbug": "^0.13.2",
 		"html-minifier": "^4.0.0",
 		"husky": "^5.2.0",
