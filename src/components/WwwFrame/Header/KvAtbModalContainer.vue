@@ -36,6 +36,7 @@ import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchiev
 import { KvAtbModal } from '@kiva/kv-components';
 import useBadgeData, {
 	CATEGORY_TARGETS,
+	ID_SUPPORT_ALL,
 } from '#src/composables/useBadgeData';
 import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
 import { readBoolSetting } from '#src/util/settingsUtils';
@@ -157,12 +158,13 @@ const isFirstLoan = computed(() => {
 		&& basketCount.value === 1;
 });
 
-const isLoanGoal = computed(() => {
-	// eslint-disable-next-line max-len
-	return loanGoalProgress.value > 0 && userGoal.value?.status === 'in-progress' && goalProgress.value <= userGoal.value?.target;
-});
+// eslint-disable-next-line max-len
+const currentGoalProgress = computed(() => (userGoal.value?.category === ID_SUPPORT_ALL ? loanGoalProgress.value : goalProgress.value));
 
-const isCompletingGoal = computed(() => isLoanGoal.value && goalProgress.value === userGoal.value?.target);
+// eslint-disable-next-line max-len
+const isLoanGoal = computed(() => loanGoalProgress.value > 0 && userGoal.value?.status === 'in-progress' && currentGoalProgress.value <= userGoal.value?.target);
+
+const isCompletingGoal = computed(() => isLoanGoal.value && currentGoalProgress.value === userGoal.value?.target);
 
 const updateTierTable = () => {
 	contributingAchievements.value.forEach(achievement => {
