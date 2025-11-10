@@ -140,5 +140,68 @@ describe('optimizelyUserMetrics', () => {
 			expect(result.viewer.publicProfile).toBe(true);
 			expect(result.loans).toEqual([{ id: 1 }]);
 		});
+
+		it('handles readQuery errors gracefully', () => {
+			const currentRoute = { query: { kiva_transaction_id: '456' } };
+			const cookieStore = { get: vi.fn().mockReturnValue('visitor-id') };
+			const apolloClient = {
+				readQuery: vi.fn().mockImplementation(() => {
+					throw new Error('Query not in cache');
+				})
+			};
+			const result = buildUserDataGlobal(currentRoute, cookieStore, apolloClient);
+			// Should return object with null/empty values when query fails
+			expect(result.viewer.userId).toBeUndefined();
+			expect(result.loans).toEqual([]);
+		});
+
+		it('handles missing shop receipt data', () => {
+			const currentRoute = { query: { kiva_transaction_id: '789' } };
+			const cookieStore = { get: vi.fn().mockReturnValue(null) };
+			const apolloClient = {
+				readQuery: vi.fn().mockReturnValue({
+					my: {
+						userAccount: {
+							id: 2,
+							firstName: 'C',
+							lastName: 'D',
+							public: false
+						}
+					},
+					shop: null
+				})
+			};
+			const result = buildUserDataGlobal(currentRoute, cookieStore, apolloClient);
+			expect(result.viewer.userId).toBe(2);
+			expect(result.loans).toEqual([]);
+		});
+
+		it('filters out non-loan items correctly', () => {
+			const currentRoute = { query: { kiva_transaction_id: '999' } };
+			const cookieStore = { get: vi.fn().mockReturnValue('v-id') };
+			const apolloClient = {
+				readQuery: vi.fn().mockReturnValue({
+					my: {
+						userAccount: {
+							id: 3, firstName: 'E', lastName: 'F', public: true
+						}
+					},
+					shop: {
+						receipt: {
+							items: {
+								values: [
+									{ basketItemType: 'loan_reservation', loan: { id: 10 } },
+									{ basketItemType: 'donation' },
+									{ basketItemType: 'loan_reservation', loan: { id: 20 } },
+									{ basketItemType: 'kiva_card' }
+								]
+							}
+						}
+					}
+				})
+			};
+			const result = buildUserDataGlobal(currentRoute, cookieStore, apolloClient);
+			expect(result.loans).toEqual([{ id: 10 }, { id: 20 }]);
+		});
 	});
 });

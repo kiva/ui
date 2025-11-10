@@ -4,8 +4,9 @@
 			Impact in action
 		</h2>
 		<KvCarousel
+			:controls-top-right="controlsTopRight"
 			:slide-max-width="singleSlideWidth"
-			class="blog-card-carousel tw-w-full"
+			class="blog-card-carousel tw-w-full tw--mt-8"
 			:embla-options="{
 				loop: false,
 				align: 'start',
@@ -30,8 +31,7 @@
 import { KvCarousel } from '@kiva/kv-components';
 import BlogCard from '#src/components/MyKiva/BlogCard';
 import { inject, computed } from 'vue';
-import useIsMobile from '#src/composables/useIsMobile';
-import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
+import useBreakpoints from '#src/composables/useBreakpoints';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -40,15 +40,22 @@ defineProps({
 		type: Array,
 		required: true,
 	},
+	controlsTopRight: {
+		type: Boolean,
+		default: false,
+	},
 });
 
-const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
+const { isMedium, isLarge } = useBreakpoints();
 
 const singleSlideWidth = computed(() => {
-	if (isMobile.value) {
-		return '90%';
+	if (isLarge.value) {
+		return 'calc((100% - 32px) / 3)';
 	}
-	return '336px';
+	if (isMedium.value) {
+		return '336px';
+	}
+	return '90%';
 });
 
 function trackBlogCard(card) {
@@ -56,19 +63,6 @@ function trackBlogCard(card) {
 }
 </script>
 <style lang="postcss" scoped>
-
-.blog-card-carousel :deep(.kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
-}
-
-.blog-card-carousel :deep(.kv-carousel__controls) div {
-	@apply tw-invisible tw-mx-0 tw-w-2;
-}
-
-.blog-card-carousel:deep(div:first-child) {
-	@apply tw-gap-2 lg:tw-gap-4;
-}
-
 .slide-gradient {
 	background: linear-gradient(0deg, rgb(0 0 0 / 100%) 0%, rgb(0 0 0 / 100%) 28%, rgb(0 0 0 / 0%) 100%);
 }

@@ -152,11 +152,13 @@ export default {
 	showSavedSearch: loanSearchState => loanSearchState.countryIsoCode.length > 0,
 	getFilterChips: (loanSearchState, allFacets) => {
 		if (loanSearchState.countryIsoCode?.length) {
-			return loanSearchState.countryIsoCode.map(iso => {
-				return allFacets.countryFacets?.find(facet => {
-					return facet.country.isoCode === iso;
-				})?.country;
-			});
+			return loanSearchState.countryIsoCode
+				.map(iso => {
+					return allFacets.countryFacets?.find(facet => {
+						return facet.country.isoCode === iso;
+					})?.country;
+				})
+				.filter(x => x); // Remove undefined/null values
 		}
 		return [];
 	},

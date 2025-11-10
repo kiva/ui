@@ -45,11 +45,13 @@ export default {
 	showSavedSearch: loanSearchState => loanSearchState.sectorId.length > 0,
 	getFilterChips: (loanSearchState, allFacets) => {
 		if (loanSearchState.sectorId?.length) {
-			return loanSearchState.sectorId.map(sectorId => {
-				return allFacets.sectorFacets?.find(facet => {
-					return facet.id === sectorId;
-				});
-			});
+			return loanSearchState.sectorId
+				.map(sectorId => {
+					return allFacets.sectorFacets?.find(facet => {
+						return facet.id === sectorId;
+					});
+				})
+				.filter(x => x); // Remove undefined/null values
 		}
 		return [];
 	},

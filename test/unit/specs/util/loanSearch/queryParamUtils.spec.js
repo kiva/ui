@@ -3,6 +3,14 @@ import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
 import filterConfig from '#src/util/loanSearch/filterConfig';
 import { mockState, mockAllFacets } from '../../../fixtures/mockLoanSearchData';
 
+// Mock vue-router functions
+vi.mock('vue-router', () => ({
+	isNavigationFailure: vi.fn((error, type) => error?.type === type),
+	NavigationFailureType: {
+		cancelled: 8
+	}
+}));
+
 vi.mock('#src/util/loanSearch/filterConfig', () => ({
 	default: {
 		config: {
@@ -32,6 +40,14 @@ describe('queryParamUtils.js', () => {
 
 		it('should return false', () => {
 			expect(hasExcludedQueryParams({ test: [] })).toBe(false);
+		});
+
+		it('should handle empty query object', () => {
+			expect(hasExcludedQueryParams({})).toBe(false);
+		});
+
+		it('should handle multiple excluded params', () => {
+			expect(hasExcludedQueryParams({ city_state: [], loanTags: [], test: [] })).toBe(true);
 		});
 	});
 
@@ -115,6 +131,28 @@ describe('queryParamUtils.js', () => {
 			updateQueryParams({ a: 'a', b: 'b' }, router, FLSS_QUERY_TYPE);
 
 			expect(router.push).toHaveBeenCalledTimes(0);
+		});
+
+		it('should catch and ignore cancelled navigation errors', async () => {
+			const cancelledError = {
+				type: 8 // NavigationFailureType.cancelled
+			};
+			const router = {
+				currentRoute: { value: { name: 'name', query: {} } },
+				push: vi.fn().mockReturnValue(Promise.reject(cancelledError)),
+			};
+
+			// Call updateQueryParams - it should handle the rejected promise internally
+			updateQueryParams({}, router, FLSS_QUERY_TYPE);
+
+			// Wait for any microtasks to complete
+			const waitForPromise = new Promise(resolve => {
+				setTimeout(() => resolve(), 10);
+			});
+			await waitForPromise;
+
+			// Should not throw - the error was caught
+			expect(router.push).toHaveBeenCalled();
 		});
 	});
 });

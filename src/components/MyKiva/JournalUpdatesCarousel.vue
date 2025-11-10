@@ -5,11 +5,13 @@
 		</h3>
 		<KvCarousel
 			class="tw-w-full updates-carousel"
+			:class="{ 'tw--mt-6': controlsTopRight }"
 			:key="updates.length"
 			:multiple-slides-visible="true"
 			slides-to-scroll="visible"
 			:slide-max-width="singleSlideWidth"
 			:embla-options="{ loop: false, startIndex: carouselIndex }"
+			:controls-top-right="controlsTopRight"
 			@interact-carousel="interactCarousel"
 		>
 			<template v-for="(update, index) in updates" #[`slide${index}`] :key="update.id">
@@ -118,7 +120,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-
+	controlsTopRight: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const cookieStore = inject('cookieStore');
@@ -218,17 +223,3 @@ watch(
 	{ deep: true },
 );
 </script>
-
-<style lang="postcss" scoped>
-.updates-carousel :deep(.kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
-}
-
-.updates-carousel :deep(.kv-carousel__controls) div {
-	@apply tw-invisible tw-mx-0 tw-w-2;
-}
-
-.updates-carousel :deep(div:first-child) {
-	@apply tw-gap-2;
-}
-</style>

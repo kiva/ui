@@ -1,6 +1,13 @@
 /* eslint-disable max-len */
 import {
 	buildDynamicString,
+	formatButton,
+	formatBackground,
+	formatCarousel,
+	formatStoryCard,
+	formatGlobalPromoBanner,
+	formatContentGroupsFlat,
+	formatContentType,
 	formatGenericContentBlock,
 	formatMediaAssetArray,
 	formatResponsiveImageSet,
@@ -43,6 +50,12 @@ describe('contentfulUtils.js', () => {
 				[5]
 			)).toBe('There is no split key');
 		});
+
+		it('returns empty string when sourceString is not a string', () => {
+			expect(buildDynamicString(null, '{value}', [5])).toBe('');
+			expect(buildDynamicString(undefined, '{value}', [5])).toBe('');
+			expect(buildDynamicString(123, '{value}', [5])).toBe('');
+		});
 	});
 
 	describe('formatUiSetting', () => {
@@ -62,6 +75,12 @@ describe('contentfulUtils.js', () => {
 	describe('formatMediaAssetArray', () => {
 		test('should return an array of media assets', () => {
 			expect(formatMediaAssetArray(responsiveImageSetRaw.fields.images)).toMatchObject(expect.any(Array));
+		});
+
+		test('should return empty array for null or undefined input', () => {
+			expect(formatMediaAssetArray(null)).toEqual([]);
+			expect(formatMediaAssetArray(undefined)).toEqual([]);
+			expect(formatMediaAssetArray([])).toEqual([]);
 		});
 	});
 
@@ -814,6 +833,352 @@ describe('contentfulUtils.js', () => {
 
 		test('should return flattened page, layout, and content group data', () => {
 			expect(processPageContentFlat(adPageRawNoSettings)).toMatchObject(pageLevelLayoutAndContentGroups);
+		});
+	});
+
+	describe('formatButton', () => {
+		it('should format button with all fields', () => {
+			const buttonData = {
+				fields: {
+					description: 'Click me',
+					label: 'Submit',
+					style: 'primary',
+					subHeadline: 'Take action',
+					webLink: 'https://example.com',
+					deepLink: 'app://example',
+					analyticsClickEvent: 'button_click',
+					webClickEventName: 'web_click',
+					filter: { type: 'gender', value: 'female' }
+				}
+			};
+
+			const result = formatButton(buttonData);
+
+			expect(result).toEqual({
+				description: 'Click me',
+				label: 'Submit',
+				style: 'primary',
+				subHeadline: 'Take action',
+				webLink: 'https://example.com',
+				deepLink: 'app://example',
+				analyticsClickEvent: 'button_click',
+				webClickEventName: 'web_click',
+				filter: { type: 'gender', value: 'female' }
+			});
+		});
+
+		it('should handle missing fields', () => {
+			const buttonData = { fields: {} };
+
+			const result = formatButton(buttonData);
+
+			expect(result.label).toBeUndefined();
+			expect(result.webLink).toBeUndefined();
+		});
+	});
+
+	describe('formatBackground', () => {
+		it('should format background with all fields', () => {
+			const backgroundData = {
+				fields: {
+					key: 'bg-key',
+					name: 'Hero Background',
+					backgroundColor: '#ffffff',
+					backgroundMedia: {
+						fields: {
+							url: 'https://example.com/image.jpg',
+							title: 'Background Image'
+						}
+					}
+				}
+			};
+
+			const result = formatBackground(backgroundData);
+
+			expect(result).toEqual({
+				key: 'bg-key',
+				name: 'Hero Background',
+				backgroundColor: '#ffffff',
+				backgroundMedia: {
+					url: 'https://example.com/image.jpg',
+					title: 'Background Image'
+				}
+			});
+		});
+
+		it('should handle missing backgroundMedia', () => {
+			const backgroundData = {
+				fields: {
+					key: 'bg-key',
+					name: 'Simple Background'
+				}
+			};
+
+			const result = formatBackground(backgroundData);
+
+			expect(result.backgroundMedia).toBeUndefined();
+		});
+	});
+
+	describe('formatCarousel', () => {
+		it('should format carousel with slides', () => {
+			const carouselData = {
+				fields: {
+					key: 'carousel-1',
+					slides: [
+						{
+							sys: { contentType: { sys: { id: 'genericContentBlock' } } },
+							fields: { key: 'slide-1', name: 'Slide 1' }
+						}
+					],
+					slidesToShow: 3
+				}
+			};
+
+			const result = formatCarousel(carouselData);
+
+			expect(result.key).toBe('carousel-1');
+			expect(result.slidesToShow).toBe(3);
+			expect(result.slides).toBeDefined();
+		});
+
+		it('should handle empty slides', () => {
+			const carouselData = {
+				fields: {
+					key: 'carousel-empty',
+					slides: []
+				}
+			};
+
+			const result = formatCarousel(carouselData);
+
+			expect(result.slides).toBeDefined();
+		});
+	});
+
+	describe('formatStoryCard', () => {
+		it('should format story card with all fields', () => {
+			const storyCardData = {
+				fields: {
+					backgroundMedia: {
+						fields: { url: 'https://example.com/bg.jpg', title: 'Background' }
+					},
+					cardTitle: 'Our Impact',
+					cardContent: 'Making a difference...',
+					footer: 'Learn more',
+					key: 'story-1',
+					theme: 'light',
+					alignment: 'left',
+					link: 'https://example.com',
+					analyticsClickEvent: 'story_click'
+				}
+			};
+
+			const result = formatStoryCard(storyCardData);
+
+			expect(result).toEqual({
+				backgroundMedia: { url: 'https://example.com/bg.jpg', title: 'Background' },
+				cardTitle: 'Our Impact',
+				cardContent: 'Making a difference...',
+				footer: 'Learn more',
+				key: 'story-1',
+				theme: 'light',
+				alignment: 'left',
+				link: 'https://example.com',
+				analyticsClickEvent: 'story_click'
+			});
+		});
+
+		it('should default alignment to center when not provided', () => {
+			const storyCardData = {
+				fields: {
+					key: 'story-no-alignment',
+					cardTitle: 'Legacy Story'
+				}
+			};
+
+			const result = formatStoryCard(storyCardData);
+
+			expect(result.alignment).toBe('center');
+		});
+	});
+
+	describe('formatGlobalPromoBanner', () => {
+		it('should format global promo banner', () => {
+			const bannerData = {
+				fields: {
+					bannerName: 'Holiday Banner',
+					richText: { content: [] },
+					startDate: '2024-12-01',
+					endDate: '2024-12-31',
+					active: true,
+					iconKey: 'gift',
+					hiddenUrls: ['/excluded']
+				}
+			};
+
+			const result = formatGlobalPromoBanner(bannerData);
+
+			expect(result.bannerName).toBe('Holiday Banner');
+			expect(result.startDate).toBe('2024-12-01');
+			expect(result.endDate).toBe('2024-12-31');
+			expect(result.active).toBe(true);
+			expect(result.iconKey).toBe('gift');
+		});
+	});
+
+	describe('formatContentType', () => {
+		it('should format richTextContent type', () => {
+			const richTextData = {
+				fields: {
+					key: 'rich-text-key',
+					richText: { content: [] }
+				}
+			};
+
+			const result = formatContentType(richTextData, 'richTextContent');
+
+			expect(result.contentType).toBe('richTextContent');
+			expect(result.key).toBe('rich-text-key');
+		});
+
+		it('should format background type', () => {
+			const backgroundData = {
+				fields: {
+					key: 'background-key',
+					backgroundColor: '#FFFFFF'
+				}
+			};
+
+			const result = formatContentType(backgroundData, 'background');
+
+			expect(result.contentType).toBe('background');
+			expect(result.backgroundColor).toBe('#FFFFFF');
+		});
+
+		it('should format button type', () => {
+			const buttonData = {
+				fields: {
+					label: 'Click Me',
+					webLink: 'https://example.com'
+				}
+			};
+
+			const result = formatContentType(buttonData, 'button');
+
+			expect(result.contentType).toBe('button');
+			expect(result.label).toBe('Click Me');
+			expect(result.webLink).toBe('https://example.com');
+		});
+
+		it('should format storyCard type', () => {
+			const storyCardData = {
+				fields: {
+					key: 'story-key',
+					cardTitle: 'My Story'
+				}
+			};
+
+			const result = formatContentType(storyCardData, 'storyCard');
+
+			expect(result.contentType).toBe('storyCard');
+			expect(result.cardTitle).toBe('My Story');
+		});
+
+		it('should format carousel type', () => {
+			const carouselData = {
+				fields: {
+					key: 'carousel-key',
+					slides: [],
+					slidesToShow: 3
+				}
+			};
+
+			const result = formatContentType(carouselData, 'carousel');
+
+			expect(result.contentType).toBe('carousel');
+			expect(result.key).toBe('carousel-key');
+			expect(result.slidesToShow).toBe(3);
+		});
+
+		it('should return error for unrecognized content type', () => {
+			const unknownData = {
+				fields: { key: 'unknown' }
+			};
+
+			const result = formatContentType(unknownData, 'unknownType');
+
+			expect(result.error).toBe('Unrecognized Content Type');
+		});
+	});
+
+	describe('formatContentGroupsFlat', () => {
+		it('should process content groups and flatten them', () => {
+			const contentGroups = [
+				{
+					sys: { contentType: { sys: { id: 'contentGroup' } } },
+					fields: {
+						key: 'group-1',
+						name: 'Main Content',
+						type: 'featured',
+						title: 'Featured Items',
+						contents: []
+					}
+				}
+			];
+
+			const result = formatContentGroupsFlat(contentGroups);
+
+			expect(result).toBeDefined();
+			expect(result.featured).toBeDefined();
+			expect(result.featured.key).toBe('group-1');
+			expect(result.featured.name).toBe('Main Content');
+		});
+
+		it('should handle non-content-group entries with error', () => {
+			const invalidEntries = [
+				{
+					sys: { contentType: { sys: { id: 'genericContentBlock' } } },
+					fields: { key: 'invalid' }
+				}
+			];
+
+			const result = formatContentGroupsFlat(invalidEntries);
+
+			// When entry is not a content group, it pushes error to cleanedContentGroups
+			// but doesn't add to contentGroupsFlat, so result should be empty
+			expect(result).toBeDefined();
+			expect(Object.keys(result).length).toBe(0);
+		});
+
+		it('should handle content group with media', () => {
+			const contentGroupsWithMedia = [
+				{
+					sys: { contentType: { sys: { id: 'contentGroup' } } },
+					fields: {
+						key: 'group-with-media',
+						name: 'Media Group',
+						media: [
+							{
+								fields: {
+									title: 'Test Image',
+									file: {
+										url: '//example.com/image.jpg',
+										contentType: 'image/jpeg'
+									}
+								}
+							}
+						],
+						contents: []
+					}
+				}
+			];
+
+			const result = formatContentGroupsFlat(contentGroupsWithMedia);
+
+			expect(result.groupWithMedia).toBeDefined();
+			expect(result.groupWithMedia.media).toBeDefined();
+			expect(result.groupWithMedia.media.length).toBeGreaterThan(0);
 		});
 	});
 });

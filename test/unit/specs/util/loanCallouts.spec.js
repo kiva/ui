@@ -174,4 +174,15 @@ describe('loanCallouts', () => {
 
 		expect(result).toEqual(['Agriculture']);
 	});
+
+	it('should not add tag if random tag already exists in callouts', () => {
+		const result = loanCallouts({
+			...loan,
+			activity: { name: 'asd' },
+			sector: { name: 'asd' },
+			tags: ['#asd']
+		});
+
+		expect(result).toEqual(['asd']);
+	});
 });

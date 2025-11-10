@@ -36,6 +36,7 @@ import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchiev
 import { KvAtbModal } from '@kiva/kv-components';
 import useBadgeData, {
 	CATEGORY_TARGETS,
+	ID_SUPPORT_ALL,
 } from '#src/composables/useBadgeData';
 import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
 import { readBoolSetting } from '#src/util/settingsUtils';
@@ -157,9 +158,13 @@ const isFirstLoan = computed(() => {
 		&& basketCount.value === 1;
 });
 
-const isLoanGoal = computed(() => loanGoalProgress.value > 0 && userGoal.value?.status === 'in-progress');
+// eslint-disable-next-line max-len
+const currentGoalProgress = computed(() => (userGoal.value?.category === ID_SUPPORT_ALL ? loanGoalProgress.value : goalProgress.value));
 
-const isCompletingGoal = computed(() => isLoanGoal.value && goalProgress.value >= userGoal.value?.target);
+// eslint-disable-next-line max-len
+const isLoanGoal = computed(() => loanGoalProgress.value > 0 && userGoal.value?.status === 'in-progress' && currentGoalProgress.value <= userGoal.value?.target);
+
+const isCompletingGoal = computed(() => isLoanGoal.value && currentGoalProgress.value === userGoal.value?.target);
 
 const updateTierTable = () => {
 	contributingAchievements.value.forEach(achievement => {
@@ -180,6 +185,25 @@ const newAchievementReached = () => {
 };
 
 const fetchPostCheckoutAchievements = async loanIds => {
+	const { id: addedLoanId, basketSize } = addedLoan.value;
+
+	if (props.isNextStepsExpEnabled) {
+		await loadGoalData(loansInBasket.value);
+		loanGoalProgress.value = await getProgressByLoan(addedLoan.value);
+		if (isLoanGoal.value && basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
+			const userTarget = userGoal.value?.target || 0;
+			if (userTarget - currentGoalProgress.value === 1) {
+				const loanUrl = getLoanFindingUrl(userGoal.value?.category, router.currentRoute.value);
+				oneLoanAwayFilteredUrl.value = !loanUrl ? router.currentRoute.value.path : loanUrl;
+				oneLoanAwayCategory.value = CATEGORY_TARGETS[userGoal.value?.category];
+				oneAwayText.value = `${userTarget - 1} of ${userTarget}`;
+			}
+			showModalContent.value = true;
+			modalVisible.value = true;
+			return;
+		}
+	}
+
 	await apollo.query({
 		query: postCheckoutAchievementsQuery,
 		variables: { loanIds }
@@ -189,7 +213,6 @@ const fetchPostCheckoutAchievements = async loanIds => {
 		const { contributingLoanAchievements, nonContributingAchievements } = splitAchievements(loanAchievements, tierTable.value);
 		contributingAchievements.value = [...contributingLoanAchievements];
 
-		const { id: addedLoanId, basketSize } = addedLoan.value;
 		const filteredAchievementsData = filterAchievementData(nonContributingAchievements, badgeAchievementData.value);
 		// eslint-disable-next-line max-len
 		const oneLoanAwayAchievement = getOneLoanAwayAchievement(addedLoanId, filteredAchievementsData, loanAchievements);
@@ -231,16 +254,6 @@ watch(addedLoan, async () => {
 	if (myKivaExperimentEnabled.value && !isGuest.value) {
 		await fetchBasketData();
 		fetchPostCheckoutAchievements(loansIdsInBasket.value);
-		if (props.isNextStepsExpEnabled) {
-			await loadGoalData(loansInBasket.value);
-			loanGoalProgress.value = await getProgressByLoan(addedLoan.value);
-			if (isCompletingGoal.value) {
-				oneLoanAwayFilteredUrl.value = '';
-				oneLoanAwayCategory.value = '';
-				const goalTarget = userGoal.value?.target;
-				oneAwayText.value = `${goalTarget - 1} of ${goalTarget}`;
-			}
-		}
 	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
 		modalVisible.value = true;
 	}

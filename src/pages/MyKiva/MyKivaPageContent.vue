@@ -46,6 +46,8 @@
 		</section>
 		<section id="mykiva-borrower-carousel" class="tw-my-4">
 			<MyKivaBorrowerCarousel
+				v-if="clientRendered"
+				controls-top-right
 				:basket-items="basketItems"
 				:is-adding="isAdding"
 				:loans="loans"
@@ -59,6 +61,7 @@
 			<AsyncMyKivaSection @visible="fetchInitialUpdates">
 				<JournalUpdatesCarousel
 					v-if="!updatesLoading && visibleUpdates.length"
+					controls-top-right
 					:updates="visibleUpdates"
 					:lender="lender"
 					:total-updates="totalUpdates"
@@ -67,8 +70,9 @@
 				/>
 			</AsyncMyKivaSection>
 		</section>
-		<section class="tw-my-4">
+		<section v-if="clientRendered" class="tw-my-4">
 			<LendingCategorySection
+				controls-top-right
 				id="recommended-loans"
 				:title="recommendedLoansTitle"
 				:loans="recommendedLoans"
@@ -85,7 +89,8 @@
 				My achievements
 			</h3>
 			<BadgesSection
-				class="tw-mt-2"
+				class="tw--mt-4"
+				controls-top-right
 				:badge-data="badgeData"
 				:selected-journey="selectedJourney"
 				@badge-clicked="handleBadgeSectionClicked"
@@ -103,9 +108,12 @@
 			/>
 		</section>
 		<section v-if="moreWaysToHelpSlides.length" class="tw-my-4">
-			<h3>More ways to help</h3>
+			<h3>
+				More ways to help
+			</h3>
 			<JourneyCardCarousel
-				class="tw-mt-2"
+				class="tw--mt-4"
+				controls-top-right
 				:slides="moreWaysToHelpSlides"
 				:lender="lender"
 				:user-in-homepage="userInHomepage"
@@ -134,7 +142,7 @@
 			@close-side-sheet="handleCloseSideSheet"
 		/>
 		<section v-if="blogCards.length" class="tw-my-4">
-			<LatestBlogCarousel :blog-cards="blogCards" />
+			<LatestBlogCarousel controls-top-right :blog-cards="blogCards" />
 		</section>
 	</MyKivaContainer>
 	<section class="tw-mt-4 tw-bg-white tw-py-4">
@@ -325,6 +333,7 @@ export default {
 			updatesLimit: 15,
 			updatesLoading: true,
 			updatesOffset: 3,
+			clientRendered: false,
 		};
 	},
 	computed: {
@@ -629,11 +638,12 @@ export default {
 		}
 	},
 	mounted() {
-		const urlHash = this.$router.currentRoute?.value?.hash;
+		this.clientRendered = true;
 
-		if (urlHash) {
-			const elementToScrollTo = document.querySelector(urlHash);
-			const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 10 ?? 0;
+		const sectionId = this.$route?.query?.goTo || '';
+		if (sectionId) {
+			const elementToScrollTo = document.querySelector(`#${sectionId}`);
+			const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 30 ?? 0;
 			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
 		}
 
@@ -689,16 +699,12 @@ export default {
 	@apply !tw-w-full;
 }
 
-#recommended-loans :deep(.kv-carousel__controls) {
-	@apply !tw-hidden md:!tw-flex !tw-justify-start !tw-mt-2;
+:deep(.kv-carousel > div:first-child) {
+	@apply tw-gap-2;
 }
 
-#recommended-loans :deep(.kv-carousel__controls) div {
-	@apply !tw-invisible !tw-mx-0 !tw-w-2;
-}
-
-#recommended-loans :deep(.kv-carousel > div:first-child) {
-	@apply !tw-gap-2;
+:deep(.kv-carousel__controls) {
+	@apply tw-hidden md:tw-flex;
 }
 
 :deep(.bp-sidesheet-wrapper > div) {

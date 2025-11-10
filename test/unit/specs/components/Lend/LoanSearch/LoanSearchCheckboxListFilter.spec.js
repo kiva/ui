@@ -14,10 +14,7 @@ describe('LoanSearchCheckboxListFilter', () => {
 	let spyTrackEvent;
 	beforeEach(() => {
 		spyTrackEvent = vi.fn();
-		vi.clearAllMocks();
 	});
-
-	afterEach(vi.restoreAllMocks);
 
 	it('should display items', () => {
 		const options = getOptions();

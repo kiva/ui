@@ -16,14 +16,15 @@
 					</p>
 				</div>
 			</div>
-			<kv-carousel
-				class="tw-w-full tw-overflow-hidden tw-mt-1 tw-pb-2 tw-px-1 tw-pt-1"
+			<KvCarousel
 				id="customizedCarousel"
 				:key="loans.length"
+				:class="{ 'tw--mt-4': controlsTopRight }"
 				:multiple-slides-visible="true"
 				slides-to-scroll="visible"
 				:slide-max-width="singleSlideWidth"
 				:embla-options="{ loop: false }"
+				:controls-top-right="controlsTopRight"
 			>
 				<template v-for="(loan, index) in loans" #[`slide${index}`] :key="loanCardKey(index)">
 					<kv-classic-loan-card-container
@@ -51,17 +52,18 @@
 						:loan-search-state="loanSearchState"
 					/>
 				</template>
-			</kv-carousel>
+			</KvCarousel>
 		</div>
 	</div>
 </template>
 
 <script>
 import _throttle from 'lodash/throttle';
+import { KvCarousel } from '@kiva/kv-components';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
 import { getCustomHref } from '#src/util/loanUtils';
-import { KvCarousel } from '@kiva/kv-components';
+import useBreakpoints from '#src/composables/useBreakpoints';
 import ViewMoreCard from './ViewMoreCard';
 
 export default {
@@ -129,6 +131,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		controlsTopRight: {
+			type: Boolean,
+			default: false
+		}
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [addToBasketExpMixin],
@@ -139,24 +145,25 @@ export default {
 			getCustomHref,
 		};
 	},
+	setup() {
+		const { isMedium, isLarge } = useBreakpoints();
+
+		return {
+			isMedium, isLarge
+		};
+	},
 	computed: {
 		isLargeCard() {
 			return this.perStep === 2;
 		},
 		singleSlideWidth() {
-			if (this.windowWidth <= 733) {
-				return '100%';
+			if (this.isLarge) {
+				return 'calc((100% - 32px) / 3)';
 			}
-			if (this.windowWidth > 733 && this.windowWidth < 1024) {
-				return '328px';
+			if (this.isMedium) {
+				return '336px';
 			}
-			if (this.windowWidth >= 1024) {
-				if (this.isLargeCard) {
-					return '512px';
-				}
-				return '328px';
-			}
-			return '336px';
+			return '90%';
 		},
 		totalLoans() {
 			return this.loans.length;
@@ -187,84 +194,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="postcss" scoped>
-#customizedCarousel {
-	@apply tw-px-0;
-}
-
-#customizedCarousel :deep(.kv-carousel__controls) {
-	@apply tw-justify-center;
-	@apply tw-w-16;
-	@apply tw-mx-auto;
-	@apply tw-rounded-xl;
-
-	box-shadow: 0 2px 5px 2px rgb(0 0 0 / 18%);
-}
-
-#customizedCarousel :deep(.kv-carousel__controls) div {
-	@apply tw-visible;
-}
-
-#customizedCarousel :deep(.kv-carousel__controls) button {
-	@apply tw-border-0;
-}
-
-#customizedCarousel :deep(.kv-carousel__controls) button span {
-	@apply tw-invisible;
-}
-
-#customizedCarousel :deep(.kv-carousel__controls) button:first-child span::after {
-	@apply tw-visible;
-	@apply tw-text-h3;
-	@apply tw-rotate-180;
-
-	content: '\2794';
-}
-
-#customizedCarousel :deep(.kv-carousel__controls) button:nth-child(3) span::before {
-	@apply tw-visible;
-	@apply tw-text-h3;
-
-	content: '\2794';
-}
-
-#customizedCarousel :deep(div:first-child) div div div,
-#customizedCarousel :deep(div:first-child) > div > div.loan-card-active-hover a picture {
-	@apply tw-rounded-none;
-}
-
-@screen md {
-	#customizedCarousel {
-		@apply tw-px-1;
-	}
-
-	#customizedCarousel :deep(.kv-carousel__controls) {
-		@apply tw-w-full;
-		@apply tw-rounded-none;
-
-		box-shadow: none;
-	}
-
-	#customizedCarousel :deep(div:first-child) div div div {
-		@apply tw-rounded;
-	}
-
-	#customizedCarousel :deep(div:first-child) > div > div.loan-card-active-hover a picture {
-		@apply tw-rounded-t;
-	}
-
-	#customizedCarousel :deep(.kv-carousel__controls) button {
-		@apply tw-border-2;
-	}
-
-	#customizedCarousel :deep(.kv-carousel__controls) button span {
-		@apply tw-visible;
-	}
-
-	#customizedCarousel :deep(.kv-carousel__controls) button:first-child span::after,
-	#customizedCarousel :deep(.kv-carousel__controls) button:nth-child(3) span::before {
-		content: '';
-	}
-}
-</style>

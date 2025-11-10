@@ -41,6 +41,7 @@ export const CATEGORY_TARGETS = {
 	[ID_CLIMATE_ACTION]: 'person',
 	[ID_REFUGEE_EQUALITY]: 'refugee',
 	[ID_BASIC_NEEDS]: 'person',
+	[ID_SUPPORT_ALL]: 'person',
 };
 
 const COUNTRIES_ISO_CODE = ['PR', 'US'];

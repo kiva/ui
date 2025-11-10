@@ -57,9 +57,11 @@ export default {
 	showSavedSearch: loanSearchState => loanSearchState.themeId.length > 0,
 	getFilterChips: (loanSearchState, allFacets) => {
 		if (loanSearchState.themeId?.length) {
-			return loanSearchState.themeId.map(id => {
-				return allFacets.themeFacets?.find(facet => facet.id === id);
-			});
+			return loanSearchState.themeId
+				.map(id => {
+					return allFacets.themeFacets?.find(facet => facet.id === id);
+				})
+				.filter(x => x); // Remove undefined/null values
 		}
 		return [];
 	},
@@ -67,7 +69,10 @@ export default {
 		themeId: [...(loanSearchState?.themeId ?? []).filter(id => facet?.id !== id)]
 	}),
 	getSavedSearch: (loanSearchState, allFacets) => ({
-		theme: loanSearchState?.themeId.map(themeId => allFacets.themeFacets.find(t => t.id === themeId).name)
+		theme: loanSearchState?.themeId
+			.map(themeId => allFacets.themeFacets.find(t => t.id === themeId))
+			.filter(x => x)
+			.map(t => t.name)
 	}),
 	getFlssFilter: loanSearchState => ({
 		...(loanSearchState?.themeId?.length && { themeId: { any: loanSearchState.themeId } })

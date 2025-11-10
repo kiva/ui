@@ -183,10 +183,6 @@ watch(() => props.userGoal, (newVal, oldVal) => {
 .card-container {
 	@apply tw-w-full tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
 		tw-overflow-hidden tw-bg-white tw-shrink-0;
-
-	@screen md {
-		width: 336px;
-	}
 }
 
 .goal-card-bg::before {
@@ -211,9 +207,5 @@ watch(() => props.userGoal, (newVal, oldVal) => {
 .achievement-card-bg {
 	width: 100%;
 	height: 236px;
-
-	@screen md {
-		width: 304px;
-	}
 }
 </style>

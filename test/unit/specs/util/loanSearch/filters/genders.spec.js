@@ -10,6 +10,21 @@ import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchDat
 
 describe('genders.js', () => {
 	describe('genders', () => {
+		describe('getOptions', () => {
+			it('should return transformed gender options', () => {
+				const result = genders.getOptions(mockAllFacets);
+
+				expect(result).toEqual(expect.any(Array));
+				expect(result.length).toBeGreaterThan(0);
+			});
+
+			it('should handle empty facets', () => {
+				const result = genders.getOptions({});
+
+				expect(result).toEqual([]);
+			});
+		});
+
 		describe('getFilterChips', () => {
 			it('should handle undefined', () => {
 				expect(genders.getFilterChips({}, mockAllFacets)).toEqual([]);
@@ -21,6 +36,12 @@ describe('genders.js', () => {
 				const expected = [{ name: 'Women', __typename: 'Gender' }];
 
 				expect(result).toEqual(expected);
+			});
+
+			it('should filter out gender not found in facets', () => {
+				const result = genders.getFilterChips({ gender: 'unknown' }, mockAllFacets);
+
+				expect(result).toEqual([]);
 			});
 		});
 
@@ -49,6 +70,14 @@ describe('genders.js', () => {
 				const result = genders.getValidatedSearchState(state, mockAllFacets, FLSS_QUERY_TYPE);
 
 				expect(result).toEqual({ gender: null });
+			});
+
+			it('should return valid gender in lowercase', () => {
+				const state = { gender: 'female' };
+
+				const result = genders.getValidatedSearchState(state, mockAllFacets, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({ gender: 'female' });
 			});
 		});
 
@@ -98,6 +127,38 @@ describe('genders.js', () => {
 			});
 		});
 
+		describe('getSavedSearch', () => {
+			it('should return gender from state', () => {
+				const state = { gender: 'female' };
+
+				const result = genders.getSavedSearch(state);
+
+				expect(result).toEqual({ gender: 'female' });
+			});
+		});
+
+		describe('showSavedSearch', () => {
+			it('should return true when gender is set', () => {
+				const result = genders.showSavedSearch({ gender: 'female' });
+				expect(result).toBe(true);
+			});
+
+			it('should return false when gender is null', () => {
+				const result = genders.showSavedSearch({ gender: null });
+				expect(result).toBe(false);
+			});
+
+			it('should return false when gender is undefined', () => {
+				const result = genders.showSavedSearch({});
+				expect(result).toBe(false);
+			});
+
+			it('should return false when gender is empty string', () => {
+				const result = genders.showSavedSearch({ gender: '' });
+				expect(result).toBe(false);
+			});
+		});
+
 		describe('getFlssFilter', () => {
 			it('should handle missing', () => {
 				expect(genders.getFlssFilter({})).toEqual({});
@@ -109,6 +170,32 @@ describe('genders.js', () => {
 
 			it('should return filters', () => {
 				expect(genders.getFlssFilter({ gender: 'female' })).toEqual({ gender: { any: 'female' } });
+			});
+
+			it('should handle null gender', () => {
+				expect(genders.getFlssFilter({ gender: null })).toEqual({});
+			});
+
+			it('should handle undefined gender', () => {
+				expect(genders.getFlssFilter({ gender: undefined })).toEqual({});
+			});
+		});
+
+		describe('getQueryFromFilter edge cases', () => {
+			it('should return empty object when gender is null', () => {
+				const state = { gender: null };
+
+				const result = genders.getQueryFromFilter(state, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({});
+			});
+
+			it('should return empty object when gender is undefined', () => {
+				const state = {};
+
+				const result = genders.getQueryFromFilter(state, FLSS_QUERY_TYPE);
+
+				expect(result).toEqual({});
 			});
 		});
 	});

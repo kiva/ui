@@ -114,6 +114,34 @@ describe('apolloPreFetch', () => {
 			client.query.mockRejectedValue(err);
 			await expect(preFetchApolloQuery(config, client, args)).rejects.toThrow('fail');
 		});
+
+		it('calls client.query without basketId if cookieStore is not provided', async () => {
+			const config = {
+				query: dummyQuery,
+				preFetchVariables: () => ({ foo: 'bar' }),
+			};
+			const argsWithoutCookie = {};
+			const expectedResult = { data: 1 };
+			client.query.mockResolvedValue(expectedResult);
+			await preFetchApolloQuery(config, client, argsWithoutCookie);
+			expect(client.query).toHaveBeenCalledWith({
+				query: dummyQuery,
+				variables: { foo: 'bar' },
+				fetchPolicy: 'network-only',
+			});
+		});
+
+		it('uses empty object for variables if preFetchVariables is not provided', async () => {
+			const config = { query: dummyQuery };
+			const argsWithoutCookie = {};
+			client.query.mockResolvedValue({ data: 1 });
+			await preFetchApolloQuery(config, client, argsWithoutCookie);
+			expect(client.query).toHaveBeenCalledWith({
+				query: dummyQuery,
+				variables: {},
+				fetchPolicy: 'network-only',
+			});
+		});
 	});
 
 	describe('preFetchAll', () => {

@@ -434,6 +434,34 @@ export default [
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
+		},
+		beforeEnter(to, from, next) {
+			if (typeof window === 'undefined') return next();
+
+			const { hash, href } = window.location;
+			if (!hash || to?.query?.goTo) return next();
+
+			const hashValue = hash.slice(1);
+			const [goTo, hashQueryString] = hashValue.split('?');
+
+			const newQuery = { ...to.query, goTo };
+			if (hashQueryString) {
+				hashQueryString.split('&').forEach(pair => {
+					const [key, value] = pair.split('=');
+					if (key) newQuery[decodeURIComponent(key)] = value ? decodeURIComponent(value) : '';
+				});
+			}
+
+			const url = new URL(href);
+			url.hash = '';
+			url.search = new URLSearchParams(newQuery).toString();
+			window.history.replaceState(null, '', url.toString());
+
+			next({
+				path: to.path,
+				query: newQuery,
+				replace: true, // avoids duplicate history entries
+			});
 		}
 	},
 	{

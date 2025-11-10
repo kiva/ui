@@ -15,6 +15,7 @@
 					watchDrag: false,
 				}),
 			}"
+			:controls-top-right="controlsTopRight"
 			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
 			class="journey-card-carousel tw-w-full"
@@ -84,8 +85,7 @@ import {
 	inject,
 } from 'vue';
 import { useRouter } from 'vue-router';
-import useIsMobile from '#src/composables/useIsMobile';
-import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
+import useBreakpoints from '#src/composables/useBreakpoints';
 import { formatUiSetting } from '#src/util/contentfulUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
@@ -173,9 +173,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	controlsTopRight: {
+		type: Boolean,
+		default: false,
+	},
 });
 
-const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
+const { isMobile, isMedium, isLarge } = useBreakpoints();
 const currentIndex = ref(0);
 const isSharingModalVisible = ref(false);
 
@@ -407,10 +411,13 @@ const goToSecondaryCtaUrl = slide => {
 };
 
 const singleSlideWidth = computed(() => {
-	if (isMobile.value) {
-		return '90%';
+	if (isLarge.value) {
+		return 'calc((100% - 32px) / 3)';
 	}
-	return '336px';
+	if (isMedium.value) {
+		return '336px';
+	}
+	return '90%';
 });
 
 const handleChange = interaction => {
@@ -435,14 +442,6 @@ const showGoalCard = idx => {
 </script>
 
 <style lang="postcss" scoped>
-:deep(.journey-card-carousel > .kv-carousel__controls) {
-	@apply tw-hidden md:tw-flex tw-justify-start tw-mt-2;
-}
-
-:deep(.journey-card-carousel > .kv-carousel__controls) div {
-	@apply tw-invisible tw-mx-0 tw-w-2;
-}
-
 .kiva-card :deep(h2) {
 	font-size: 22px !important;
 }
