@@ -46,6 +46,7 @@
 		</section>
 		<section id="mykiva-borrower-carousel" class="tw-my-4">
 			<MyKivaBorrowerCarousel
+				v-if="clientRendered"
 				controls-top-right
 				:basket-items="basketItems"
 				:is-adding="isAdding"
@@ -69,7 +70,7 @@
 				/>
 			</AsyncMyKivaSection>
 		</section>
-		<section class="tw-my-4">
+		<section v-if="clientRendered" class="tw-my-4">
 			<LendingCategorySection
 				controls-top-right
 				id="recommended-loans"
@@ -332,6 +333,7 @@ export default {
 			updatesLimit: 15,
 			updatesLoading: true,
 			updatesOffset: 3,
+			clientRendered: false,
 		};
 	},
 	computed: {
@@ -636,6 +638,8 @@ export default {
 		}
 	},
 	mounted() {
+		this.clientRendered = true;
+
 		const sectionId = this.$route?.query?.goTo || '';
 		if (sectionId) {
 			const elementToScrollTo = document.querySelector(`#${sectionId}`);
