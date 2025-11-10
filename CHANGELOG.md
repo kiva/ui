@@ -1,3 +1,56 @@
+## [3.42.0-rc.2](https://github.com/kiva/ui/compare/v3.42.0-rc.1...v3.42.0-rc.2) (2025-11-10)
+
+### 🎉 New Features
+
+* ty page goals entrypoint flag ([#6431](https://github.com/kiva/ui/issues/6431)) ([3e81fec](https://github.com/kiva/ui/commit/3e81fecc3ce595a9317e3d77b98fef0a7219f650))
+
+### 🐛 Bugfixes
+
+* avoid atb modal goal message after adding loans target ([#6432](https://github.com/kiva/ui/issues/6432)) ([430621d](https://github.com/kiva/ui/commit/430621d4af28e9000fbbc8d6fa5630c97eef45f1))
+* ensure all added loans count toward support all category in atb goal ([9c97eef](https://github.com/kiva/ui/commit/9c97eef0057b0eabafc432aa98fa6d9056553799))
+* handle window.Promise being undefined ([7b2bd40](https://github.com/kiva/ui/commit/7b2bd40743cb9db67c5afe8dbb978588519e6ddc))
+* mobile kiva card link ([954d2bd](https://github.com/kiva/ui/commit/954d2bd9a392dc79705854113a4b0b2d3ed70e24))
+* remove null/undefined values from search filters ([a2ed1c0](https://github.com/kiva/ui/commit/a2ed1c0a7f9c13d068ac9e107dbe7a522bc7a384))
+* resolve on push notification subscription success, not failure ([ce46de7](https://github.com/kiva/ui/commit/ce46de768fa0b96d2e73fe10aaa9736932105dc8))
+* resolve peak issue with mykiva carousel and other tweaks ([41e1fe0](https://github.com/kiva/ui/commit/41e1fe0513a0585c6bc044c934f0b505e35e3cec))
+
+### 📚 Documentation Changes
+
+* replace jest with vitest ([6f7b4e9](https://github.com/kiva/ui/commit/6f7b4e9f7c1941abd67a65600f15bbb6b996b715))
+
+### 🔍 Tests
+
+* add tests for uncovered JS lines ([b34eac7](https://github.com/kiva/ui/commit/b34eac748379f47c046e43af0edda85b3f726b30))
+* adjust useDelayUntilVisible test for changes ([9e301f6](https://github.com/kiva/ui/commit/9e301f6360fe0be977e6b11b749c02e18f5f08b0))
+* change change-case-filter test to only test filter behavior ([741dddd](https://github.com/kiva/ui/commit/741dddd74f95cc896cd8ff527f15c60f5954257f))
+* change numeral-filter test to only test filter behavior ([023d082](https://github.com/kiva/ui/commit/023d082eeb92aca3623f934a12b4ed447978ff52))
+* cleanup clearAllMocks calls ([974d6bb](https://github.com/kiva/ui/commit/974d6bbf888f4f9f18036817277585100db7ddf2))
+* disallow importing from vitest ([598b0ab](https://github.com/kiva/ui/commit/598b0ab077ecffa370aaabc6822d2c97d0922850))
+* first pass generating simple tests for uncovered code ([deb0948](https://github.com/kiva/ui/commit/deb09483d6aeca02b94af51e446457d2720c2fbe))
+* handle uncaught promise rejection in queryParamUtils test ([a7d815a](https://github.com/kiva/ui/commit/a7d815a98ef2e181d5a8c2c9f980f66a0a8b9ba9))
+* ignore coverage for siteThemes ([129190f](https://github.com/kiva/ui/commit/129190fc0edb84aa968669c121ec54f5ec62113b))
+* refactor category-row-arrows-visible-mixin test with runner method ([5cc0761](https://github.com/kiva/ui/commit/5cc0761c8b3517fe50f0f157a187c3fb1798ce64))
+* refactor common apollo setup code into helper method ([1aaffe3](https://github.com/kiva/ui/commit/1aaffe3df5f5f801072698f578f2b6fd99dce65d))
+* refactor head test mocks ([e95ed38](https://github.com/kiva/ui/commit/e95ed38aeff31050b26942f07097b6a43249f962))
+* remove comments referencing source lines ([522e016](https://github.com/kiva/ui/commit/522e01638ea4d68c580e0bd8c1dc865b2bd00b1f))
+* remove invalid test ([e054b89](https://github.com/kiva/ui/commit/e054b891f224c1b22eea2dba37aeb897be22b683))
+* remove new component tests ([926bb1a](https://github.com/kiva/ui/commit/926bb1a19b204a345f10b468c31420f20cbf81cd))
+* remove redundant mock ([0138311](https://github.com/kiva/ui/commit/0138311737768dea956716576d842ecc2f240883))
+* remove redundant teamsUtil test ([d01e392](https://github.com/kiva/ui/commit/d01e392fc013ce7fc7ab9fb479afe33fe29b93c0))
+* remove redundant test suite ([4cef3e6](https://github.com/kiva/ui/commit/4cef3e6bf635bd17c6f140b84ff750d5ac8b4889))
+* remove tests for hard-coded values ([83e868b](https://github.com/kiva/ui/commit/83e868bc131b305e72548581758311c005c7bdec))
+* remove uneeded component tests ([e57d113](https://github.com/kiva/ui/commit/e57d11372c6ad0d2313858209985eb664f3ee5b9))
+* remove unneccessary lodash mocking ([9cb4e60](https://github.com/kiva/ui/commit/9cb4e604f67d686de25d4144913d6703e9ab8e8d))
+* remove unneccessary numeral mock ([8b5c817](https://github.com/kiva/ui/commit/8b5c81741cfce1c8300a99ab5e5fe00c0a3954ab))
+* update useIsMobile mocks ([728393a](https://github.com/kiva/ui/commit/728393a29a3566dbce9dfeed21e24cf77439b771))
+* use separate script for unit test run with coverage ([7ff2959](https://github.com/kiva/ui/commit/7ff2959a1443eebb35cf90837a435554bb68c141))
+* use thread pool for faster test execution ([cc06c8a](https://github.com/kiva/ui/commit/cc06c8a3471d6bed77ef1f10710525ed1bf65833))
+* use v8 coverage ([3063ca8](https://github.com/kiva/ui/commit/3063ca84bdc250ddcb5a294218309f2254161c81))
+
+### 🧹 Chores
+
+* **deps-dev:** bump happy-dom from 17.4.4 to 20.0.10 ([b3cf4cb](https://github.com/kiva/ui/commit/b3cf4cb1f98e9e0bd285da716582845ebea8db4e))
+
 ## [3.42.0-rc.1](https://github.com/kiva/ui/compare/v3.41.1...v3.42.0-rc.1) (2025-11-06)
 
 ### 🎉 New Features
