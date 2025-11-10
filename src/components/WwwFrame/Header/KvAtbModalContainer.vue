@@ -185,6 +185,25 @@ const newAchievementReached = () => {
 };
 
 const fetchPostCheckoutAchievements = async loanIds => {
+	const { id: addedLoanId, basketSize } = addedLoan.value;
+
+	if (props.isNextStepsExpEnabled) {
+		await loadGoalData(loansInBasket.value);
+		loanGoalProgress.value = await getProgressByLoan(addedLoan.value);
+		if (isLoanGoal.value && basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
+			const userTarget = userGoal.value?.target || 0;
+			if (userTarget - currentGoalProgress.value === 1) {
+				const loanUrl = getLoanFindingUrl(userGoal.value?.category, router.currentRoute.value);
+				oneLoanAwayFilteredUrl.value = !loanUrl ? router.currentRoute.value.path : loanUrl;
+				oneLoanAwayCategory.value = CATEGORY_TARGETS[userGoal.value?.category];
+				oneAwayText.value = `${userTarget - 1} of ${userTarget}`;
+			}
+			showModalContent.value = true;
+			modalVisible.value = true;
+			return;
+		}
+	}
+
 	await apollo.query({
 		query: postCheckoutAchievementsQuery,
 		variables: { loanIds }
@@ -194,7 +213,6 @@ const fetchPostCheckoutAchievements = async loanIds => {
 		const { contributingLoanAchievements, nonContributingAchievements } = splitAchievements(loanAchievements, tierTable.value);
 		contributingAchievements.value = [...contributingLoanAchievements];
 
-		const { id: addedLoanId, basketSize } = addedLoan.value;
 		const filteredAchievementsData = filterAchievementData(nonContributingAchievements, badgeAchievementData.value);
 		// eslint-disable-next-line max-len
 		const oneLoanAwayAchievement = getOneLoanAwayAchievement(addedLoanId, filteredAchievementsData, loanAchievements);
@@ -207,8 +225,10 @@ const fetchPostCheckoutAchievements = async loanIds => {
 			const { target } = oneLoanAwayAchievement;
 			oneAwayText.value = `${target - 1} of ${target}`;
 			showModalContent.value = true;
+			modalVisible.value = true;
 		} else if ((basketSize < BASKET_LIMIT_SIZE_FOR_EXP || achievementReached) && showBasedOnUserBalance.value) {
 			showModalContent.value = !!contributingAchievements.value.length;
+			modalVisible.value = true;
 		}
 		updateTierTable();
 	}).catch(e => {
@@ -234,17 +254,6 @@ watch(addedLoan, async () => {
 	if (myKivaExperimentEnabled.value && !isGuest.value) {
 		await fetchBasketData();
 		fetchPostCheckoutAchievements(loansIdsInBasket.value);
-		if (props.isNextStepsExpEnabled) {
-			await loadGoalData(loansInBasket.value);
-			loanGoalProgress.value = await getProgressByLoan(addedLoan.value);
-			if (isCompletingGoal.value) {
-				oneLoanAwayFilteredUrl.value = '';
-				oneLoanAwayCategory.value = '';
-				const goalTarget = userGoal.value?.target;
-				oneAwayText.value = `${goalTarget - 1} of ${goalTarget}`;
-			}
-		}
-		modalVisible.value = true;
 	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
 		modalVisible.value = true;
 	}
