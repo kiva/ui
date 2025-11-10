@@ -1,3 +1,10 @@
+## [3.42.0-rc.3](https://github.com/kiva/ui/compare/v3.42.0-rc.2...v3.42.0-rc.3) (2025-11-10)
+
+### 🐛 Bugfixes
+
+* basket limit for atb modal goals ([#6436](https://github.com/kiva/ui/issues/6436)) ([f0ccb5c](https://github.com/kiva/ui/commit/f0ccb5c125f59ea50b0e6e57cc29a426bfbc0093))
+* ensure carousels get rendered on client to reduce pop-in on dynamic card widths ([a064278](https://github.com/kiva/ui/commit/a064278147d0c4d4de6e1cad306ac8ff6e44b43a))
+
 ## [3.42.0-rc.2](https://github.com/kiva/ui/compare/v3.42.0-rc.1...v3.42.0-rc.2) (2025-11-10)
 
 ### 🎉 New Features
