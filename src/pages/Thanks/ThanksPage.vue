@@ -12,7 +12,7 @@
 				:guest-username="guestUsername"
 				:achievements-completed="achievementsCompleted"
 				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
-				:thanks-page-goals-entrypoint-enabled="thanksPageGoalsEntrypointEnable"
+				:thanks-page-goals-entrypoint-enable="thanksPageGoalsEntrypointEnable"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
