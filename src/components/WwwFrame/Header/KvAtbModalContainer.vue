@@ -207,39 +207,36 @@ const fetchPostCheckoutAchievements = async loanIds => {
 		}
 	}
 
-	if (!showAtbGoalMsg) {
-		await apollo.query({
-			query: postCheckoutAchievementsQuery,
-			variables: { loanIds }
-		}).then(({ data }) => {
-			const loanAchievements = data.postCheckoutAchievements?.overallProgress ?? [];
-			// eslint-disable-next-line max-len
-			const { contributingLoanAchievements, nonContributingAchievements } = splitAchievements(loanAchievements, tierTable.value);
-			contributingAchievements.value = [...contributingLoanAchievements];
+	await apollo.query({
+		query: postCheckoutAchievementsQuery,
+		variables: { loanIds }
+	}).then(({ data }) => {
+		const loanAchievements = data.postCheckoutAchievements?.overallProgress ?? [];
+		// eslint-disable-next-line max-len
+		const { contributingLoanAchievements, nonContributingAchievements } = splitAchievements(loanAchievements, tierTable.value);
+		contributingAchievements.value = [...contributingLoanAchievements];
 
-			// eslint-disable-next-line max-len
-			const filteredAchievementsData = filterAchievementData(nonContributingAchievements, badgeAchievementData.value);
-			// eslint-disable-next-line max-len
-			const oneLoanAwayAchievement = getOneLoanAwayAchievement(addedLoanId, filteredAchievementsData, loanAchievements);
-			const achievementReached = newAchievementReached();
+		const filteredAchievementsData = filterAchievementData(nonContributingAchievements, badgeAchievementData.value);
+		// eslint-disable-next-line max-len
+		const oneLoanAwayAchievement = getOneLoanAwayAchievement(addedLoanId, filteredAchievementsData, loanAchievements);
+		const achievementReached = newAchievementReached();
 
-			if (oneLoanAwayAchievement?.id && !isFirstLoan.value && !achievementReached) {
-				const loanUrl = getLoanFindingUrl(oneLoanAwayAchievement.id, router.currentRoute.value);
-				oneLoanAwayFilteredUrl.value = !loanUrl ? router.currentRoute.value.path : loanUrl;
-				oneLoanAwayCategory.value = CATEGORY_TARGETS[oneLoanAwayAchievement.id];
-				const { target } = oneLoanAwayAchievement;
-				oneAwayText.value = `${target - 1} of ${target}`;
-				showModalContent.value = true;
-				modalVisible.value = true;
-			} else if ((basketSize < BASKET_LIMIT_SIZE_FOR_EXP || achievementReached) && showBasedOnUserBalance.value) {
-				showModalContent.value = !!contributingAchievements.value.length;
-				modalVisible.value = true;
-			}
-			updateTierTable();
-		}).catch(e => {
-			logFormatter(e, 'Modal ATB Post Checkout Achievements Query');
-		});
-	}
+		if (oneLoanAwayAchievement?.id && !isFirstLoan.value && !achievementReached) {
+			const loanUrl = getLoanFindingUrl(oneLoanAwayAchievement.id, router.currentRoute.value);
+			oneLoanAwayFilteredUrl.value = !loanUrl ? router.currentRoute.value.path : loanUrl;
+			oneLoanAwayCategory.value = CATEGORY_TARGETS[oneLoanAwayAchievement.id];
+			const { target } = oneLoanAwayAchievement;
+			oneAwayText.value = `${target - 1} of ${target}`;
+			showModalContent.value = true;
+			modalVisible.value = true;
+		} else if ((basketSize < BASKET_LIMIT_SIZE_FOR_EXP || achievementReached) && showBasedOnUserBalance.value) {
+			showModalContent.value = !!contributingAchievements.value.length;
+			modalVisible.value = true;
+		}
+		updateTierTable();
+	}).catch(e => {
+		logFormatter(e, 'Modal ATB Post Checkout Achievements Query');
+	});
 };
 
 const fetchAchievementFromBasket = async () => {
