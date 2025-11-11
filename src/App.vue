@@ -17,8 +17,6 @@ import { metaGlobReader } from '#src/util/importHelpers';
 
 const faviconsGlob = import.meta.glob('./assets/images/favicons/*.*', { eager: true });
 const favicons = metaGlobReader(faviconsGlob, './assets/images/favicons/');
-const fontsGlob = import.meta.glob('./assets/fonts/*.*', { eager: true, query: '?url' });
-const fonts = metaGlobReader(fontsGlob, './assets/fonts/');
 
 export default {
 	name: 'App',
@@ -123,25 +121,25 @@ export default {
 				// Fonts in format woff2nt'
 				{
 					rel: 'preload',
-					href: fonts('PostGrotesk-Medium.woff2'),
+					href: 'https://www.kiva.org/kvui/PostGrotesk-Medium.woff2',
 					crossorigin: 'anonymous',
 					as: 'font'
 				},
 				{
 					rel: 'preload',
-					href: fonts('PostGrotesk-MediumItalic.woff2'),
+					href: 'https://www.kiva.org/kvui/PostGrotesk-MediumItalic.woff2',
 					crossorigin: 'anonymous',
 					as: 'font'
 				},
 				{
 					rel: 'preload',
-					href: fonts('PostGrotesk-Book.woff2'),
+					href: 'https://www.kiva.org/kvui/PostGrotesk-Book.woff2',
 					crossorigin: 'anonymous',
 					as: 'font'
 				},
 				{
 					rel: 'preload',
-					href: fonts('PostGrotesk-BookItalic.woff2'),
+					href: 'https://www.kiva.org/kvui/PostGrotesk-BookItalic.woff2',
 					crossorigin: 'anonymous',
 					as: 'font'
 				},
