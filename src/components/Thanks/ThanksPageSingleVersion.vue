@@ -16,6 +16,12 @@
 				class="tw-mb-2.5"
 				@view-pdf-clicked="scrollToReceipt"
 			/>
+			<GoalEntrypoint
+				v-if="thanksPageGoalsEntrypointEnable"
+				:loading="goalDataLoading"
+				:is-thanks-page="showGoalCompletedModule"
+				class="tw-mb-2.5"
+			/>
 			<GoalCompleted
 				v-if="showGoalCompletedModule"
 				:current-goal="userGoal"
@@ -100,6 +106,7 @@ import KivaCards from '#src/components/Thanks/SingleVersion/KivaCards';
 import AccountReceiptShare from '#src/components/Thanks/SingleVersion/AccountReceiptShare';
 import JourneyGeneralPrompt from '#src/components/Thanks/SingleVersion/JourneyGeneralPrompt';
 import BadgeMilestone from '#src/components/Thanks/SingleVersion/BadgeMilestone';
+import GoalEntrypoint from '#src/components/Thanks/SingleVersion/GoalEntrypoint';
 import useGoalData from '#src/composables/useGoalData';
 import { setGuestAssignmentCookie } from '#src/util/myKivaUtils';
 
