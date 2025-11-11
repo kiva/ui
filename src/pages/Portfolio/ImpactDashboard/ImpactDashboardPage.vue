@@ -24,7 +24,7 @@
 						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
 						<lending-insights />
 						<my-giving-funds-card
-							v-if="myGivingFundsCount && myGivingFundsCount > 0"
+							v-if="myGivingFundsCount > 0 || numberOfFundsContributedTo > 0"
 							:my-funds-count="myGivingFundsCount"
 							:contributed-funds-count="numberOfFundsContributedTo"
 							class="md:tw-mb-3 tw-mb-0.5"

@@ -25,7 +25,7 @@
 			:user-balance="userBalance"
 			:lending-stats="lendingStats"
 		/>
-		<section v-if="myGivingFundsCount > 0" class="tw-mt-4">
+		<section v-if="myGivingFundsCount > 0 || numberOfFundsContributedTo > 0" class="tw-mt-4">
 			<MyGivingFundsCard
 				:my-funds-count="myGivingFundsCount"
 				:contributed-funds-count="numberOfFundsContributedTo"

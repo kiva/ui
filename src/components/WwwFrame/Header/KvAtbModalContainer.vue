@@ -186,13 +186,16 @@ const newAchievementReached = () => {
 
 const fetchPostCheckoutAchievements = async loanIds => {
 	const { id: addedLoanId, basketSize } = addedLoan.value;
+	let showAtbGoalMsg = false;
 
 	if (props.isNextStepsExpEnabled) {
 		await loadGoalData(loansInBasket.value);
 		loanGoalProgress.value = await getProgressByLoan(addedLoan.value);
-		if (isLoanGoal.value && basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
-			const userTarget = userGoal.value?.target || 0;
-			if (userTarget - currentGoalProgress.value === 1) {
+		const userTarget = userGoal.value?.target || 0;
+		const isOneLoanAwayFromGoal = userTarget - currentGoalProgress.value === 1;
+		showAtbGoalMsg = isLoanGoal.value && (basketSize < BASKET_LIMIT_SIZE_FOR_EXP || isOneLoanAwayFromGoal);
+		if (showAtbGoalMsg) {
+			if (isOneLoanAwayFromGoal) {
 				const loanUrl = getLoanFindingUrl(userGoal.value?.category, router.currentRoute.value);
 				oneLoanAwayFilteredUrl.value = !loanUrl ? router.currentRoute.value.path : loanUrl;
 				oneLoanAwayCategory.value = CATEGORY_TARGETS[userGoal.value?.category];
