@@ -277,6 +277,7 @@ export default {
 	watch: {
 		'$route.params.id': {
 			handler() {
+				this.isLoading = true;
 				this.fetchSummaryCardData();
 			}
 		}
