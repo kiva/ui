@@ -683,7 +683,7 @@ export default {
 	@apply tw-p-2 tw--m-2;
 }
 
-.page-container :deep(> div > div > *) {
+.page-container :deep(> div > div > *), #mykiva-journal-updates :deep(> section) {
 	@apply tw-overflow-visible lg:tw-overflow-hidden;
 }
 
