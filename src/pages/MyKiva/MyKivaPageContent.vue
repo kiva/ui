@@ -691,6 +691,10 @@ export default {
 	@apply tw-overflow-visible;
 }
 
+:deep(.kv-carousel > div:first-child) {
+	@apply tw-gap-2 lg:tw-gap-4;
+}
+
 :deep(#recommended-loans #customizedCarousel div:first-child div div div) {
 	@apply !tw-rounded;
 }
