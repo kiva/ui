@@ -242,32 +242,44 @@ export default {
 			return this.countryName;
 		}
 	},
-	async mounted() {
-		this.$kvTrackEvent(
-			'Borrower profile',
-			'borrower profile status',
-			this.status
-		);
+	methods: {
+		async fetchSummaryCardData() {
+			this.$kvTrackEvent(
+				'Borrower profile',
+				'borrower profile status',
+				this.status
+			);
 
-		const { data } = await this.apollo.query({ query: mountQuery, variables: { loanId: this.loanId } });
-		const loan = data?.lend?.loan;
-		this.inPfp = loan?.inPfp ?? false;
-		this.pfpMinLenders = loan?.pfpMinLenders ?? 0;
-		this.numLenders = loan?.lenders?.totalCount ?? 0;
-		this.activityName = loan?.activity?.name ?? '';
-		this.countryName = loan?.geocode?.country?.name ?? '';
-		this.fundraisingPercent = loan?.fundraisingPercent ?? 0;
-		this.timeLeft = loan?.fundraisingTimeLeft ?? '';
-		this.unreservedAmount = loan?.unreservedAmount ?? '0';
-		this.distributionModel = loan?.distributionModel ?? '';
-		this.city = loan?.geocode?.city ?? '';
-		this.state = loan?.geocode?.state ?? '';
-		// If all shares are reserved in baskets, set the fundraising meter to 100%
-		if (this.unreservedAmount === '0') {
-			this.fundraisingPercent = 1;
+			const { data } = await this.apollo.query({ query: mountQuery, variables: { loanId: this.loanId } });
+			const loan = data?.lend?.loan;
+			this.inPfp = loan?.inPfp ?? false;
+			this.pfpMinLenders = loan?.pfpMinLenders ?? 0;
+			this.numLenders = loan?.lenders?.totalCount ?? 0;
+			this.activityName = loan?.activity?.name ?? '';
+			this.countryName = loan?.geocode?.country?.name ?? '';
+			this.fundraisingPercent = loan?.fundraisingPercent ?? 0;
+			this.timeLeft = loan?.fundraisingTimeLeft ?? '';
+			this.unreservedAmount = loan?.unreservedAmount ?? '0';
+			this.distributionModel = loan?.distributionModel ?? '';
+			this.city = loan?.geocode?.city ?? '';
+			this.state = loan?.geocode?.state ?? '';
+			// If all shares are reserved in baskets, set the fundraising meter to 100%
+			if (this.unreservedAmount === '0') {
+				this.fundraisingPercent = 1;
+			}
+			this.totalComments = loan?.comments?.totalCount ?? 0;
+			this.isLoading = false;
 		}
-		this.totalComments = loan?.comments?.totalCount ?? 0;
-		this.isLoading = false;
+	},
+	mounted() {
+		this.fetchSummaryCardData();
+	},
+	watch: {
+		'$route.params.id': {
+			handler() {
+				this.fetchSummaryCardData();
+			}
+		}
 	},
 	apollo: {
 		query: preFetchQuery,
