@@ -16,12 +16,6 @@
 				class="tw-mb-2.5"
 				@view-pdf-clicked="scrollToReceipt"
 			/>
-			<GoalEntrypoint
-				v-if="thanksPageGoalsEntrypointEnable"
-				:loading="goalDataLoading"
-				:is-thanks-page="showGoalCompletedModule"
-				class="tw-mb-2.5"
-			/>
 			<GoalCompleted
 				v-if="showGoalCompletedModule"
 				:current-goal="userGoal"
@@ -40,6 +34,12 @@
 				:kiva-cards-module-shown="showKivaCardsModule"
 				:achievements-completed="achievementsCompleted"
 				@continue-clicked="handleContinue"
+				class="tw-mb-2.5"
+			/>
+			<GoalEntrypoint
+				v-if="thanksPageGoalsEntrypointEnable && !isGuest"
+				:loading="goalDataLoading"
+				:current-goal="userGoal"
 				class="tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt

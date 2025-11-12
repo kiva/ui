@@ -1,5 +1,6 @@
 <template>
 	<div
+		v-if="isEmptyGoal"
 		class="
 			tw-rounded md:tw-rounded-xl tw-bg-white
 			tw-shadow-lg tw-p-2.5 tw-py-2.5 md:tw-px-2.5 md:tw-py-4
@@ -14,7 +15,7 @@
 			/>
 
 			<h2
-				class="tw-px-4 lg:tw-px-0"
+				class="tw-px-4 lg:tw-px-7"
 				style="line-height: 125%;"
 				v-html="titleText"
 			>
@@ -33,12 +34,15 @@
 				v-else
 				class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-2 tw-my-1"
 			>
-				<GoalSelector />
 				<GoalSelector
-					:selected="true"
-					highlighted-text="More Impact"
+					v-for="(option, index) in goalOptions"
+					:key="index"
+					:loans-number="option.loansNumber"
+					:option-text="option.optionText"
+					:selected="option.selected"
+					:highlighted-text="option.highlightedText"
+					@click="updateOptionSelection(index)"
 				/>
-				<GoalSelector />
 			</div>
 
 			<KvButton
@@ -63,7 +67,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { mdiPencilOutline } from '@mdi/js';
 import {
 	KvMaterialIcon,
@@ -75,29 +79,54 @@ import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
 import GoalSelector from '#src/components/Thanks/SingleVersion/GoalSelector';
 
 const props = defineProps({
+	/**
+	 * Whether the component is in a loading state
+	 */
 	loading: {
 		type: Boolean,
 		default: false,
 	},
-	isThanksPage: {
-		type: Boolean,
-		default: true,
+	/**
+	 * The current goal data
+	 */
+	currentGoal: {
+		type: Object,
+		default: null,
 	},
 });
 
+const isThanksPage = ref(false);
+
+const goalOptions = ref([
+	{ loansNumber: 3, optionText: 'Start strong', selected: false },
+	{
+		loansNumber: 4, highlightedText: 'Recommended', optionText: 'Extra mile', selected: true,
+	},
+	{ loansNumber: 5, optionText: 'Trailblazing!', selected: false },
+]);
+
+const isEmptyGoal = computed(() => Object.keys(props.currentGoal || {}).length === 0);
+
 const titleText = computed(() => {
-	return props.isThanksPage
+	return isThanksPage.value
 		? 'Thank you!'
-		: 'Last year, you helped <span class="tw-text-eco-green-3">2 women</span> shape their futures!';
+		: 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
 });
 
 const subtitleText = computed(() => {
-	return props.isThanksPage
+	return isThanksPage.value
 		? 'Your 2026 commitment means more lives transformed!'
 		: 'How many loans will you make this year?';
 });
 
-const buttonText = computed(() => (props.isThanksPage ? 'Track my progress' : 'Set 2026 goal'));
+const buttonText = computed(() => (isThanksPage.value ? 'Track my progress' : 'Set 2026 goal'));
+
+const updateOptionSelection = selectedIndex => {
+	goalOptions.value = goalOptions.value.map((option, index) => ({
+		...option,
+		selected: index === selectedIndex,
+	}));
+};
 </script>
 
 <style lang="postcss" scoped>
