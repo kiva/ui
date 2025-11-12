@@ -160,7 +160,7 @@
 </template>
 
 <script>
-import { inject } from 'vue';
+import { inject, nextTick } from 'vue';
 
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
@@ -644,12 +644,15 @@ export default {
 	mounted() {
 		this.clientRendered = true;
 
-		const sectionId = this.$route?.query?.goTo || '';
-		if (sectionId) {
-			const elementToScrollTo = document.querySelector(`#${sectionId}`);
-			const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 30 ?? 0;
-			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
-		}
+		// Ensure clientRendered is true before attempting to scroll to section
+		nextTick(() => {
+			const sectionId = this.$route?.query?.goTo || '';
+			if (sectionId) {
+				const elementToScrollTo = document.querySelector(`#${sectionId}`);
+				const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 30 ?? 0;
+				this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+			}
+		});
 
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 		fireHotJarEvent('my_kiva_viewed');
