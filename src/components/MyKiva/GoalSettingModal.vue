@@ -76,6 +76,10 @@ const props = defineProps({
 		type: Number,
 		default: 0,
 	},
+	isThanksPage: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const { numberOfLoans } = toRefs(props);
@@ -168,7 +172,12 @@ const handleCategorySelected = categoryId => {
 
 	// Only track when modal is open, not on pageload
 	if (props.show) {
-		$kvTrackEvent('portfolio', 'click', 'choose-goal-category', categories[categoryIdx]?.eventProp);
+		$kvTrackEvent(
+			props.isThanksPage ? 'post-checkout' : 'portfolio',
+			'click',
+			'choose-goal-category',
+			categories[categoryIdx]?.eventProp
+		);
 	}
 };
 
@@ -179,7 +188,11 @@ const handleNumberChanged = number => {
 const clickBack = () => {
 	selectedGoalNumber.value = numberOfLoans.value ? numberOfLoans.value : 5;
 	formStep.value -= 1;
-	$kvTrackEvent('portfolio', 'click', 'goals-back');
+	$kvTrackEvent(
+		props.isThanksPage ? 'post-checkout' : 'portfolio',
+		'click',
+		'goals-back'
+	);
 };
 
 const ctaCopy = computed(() => {
@@ -189,10 +202,21 @@ const ctaCopy = computed(() => {
 const handleClick = () => {
 	if (formStep.value === 1) {
 		formStep.value += 1;
-		$kvTrackEvent('portfolio', 'click', 'goal-setting-continue');
+		$kvTrackEvent(
+			props.isThanksPage ? 'post-checkout' : 'portfolio',
+			'click',
+			'goal-setting-continue'
+		);
 	} else {
 		const categorySelected = selectedCategory.value?.badgeId;
-		$kvTrackEvent('portfolio', 'click', 'set-goal-amount', categorySelected, selectedGoalNumber.value);
+		$kvTrackEvent(
+			props.isThanksPage ? 'post-checkout' : 'portfolio',
+			'click',
+			props.isThanksPage ? 'set-annual-goal' : 'set-goal-amount',
+			categorySelected,
+			selectedGoalNumber.value
+		);
+
 		const currentYear = new Date().getFullYear();
 		const goalName = `goal-${categorySelected}-${currentYear}`;
 		const target = selectedGoalNumber.value;
@@ -235,9 +259,17 @@ const closeLightbox = () => {
 
 watch(() => props.show, (newVal, oldVal) => {
 	if (newVal === true && oldVal === false) {
-		$kvTrackEvent('portfolio', 'show', 'view-goal-categories');
+		$kvTrackEvent(
+			props.isThanksPage ? 'post-checkout' : 'portfolio',
+			'show',
+			'view-goal-categories'
+		);
 	} else if (newVal === false && oldVal === true) {
-		$kvTrackEvent('portfolio', 'click', 'close-goals');
+		$kvTrackEvent(
+			props.isThanksPage ? 'post-checkout' : 'portfolio',
+			'click',
+			'close-goals'
+		);
 	}
 });
 

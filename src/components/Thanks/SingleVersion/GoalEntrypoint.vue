@@ -55,7 +55,7 @@
 				v-if="!isThanksPage"
 				variant="ghost"
 				class="edit-goal-button tw-w-full"
-				@click="showGoalModal = true"
+				@click="editGoal"
 			>
 				Edit goal category
 				<KvMaterialIcon
@@ -69,6 +69,7 @@
 			:total-loans="totalLoans"
 			:categories-loan-count="categoriesLoanCount"
 			:number-of-loans="selectedTarget"
+			:is-thanks-page="true"
 			@close-goal-modal="showGoalModal = false"
 			@set-goal="setGoal"
 		/>
@@ -76,7 +77,12 @@
 </template>
 
 <script setup>
-import { computed, ref, inject } from 'vue';
+import {
+	computed,
+	ref,
+	inject,
+	onMounted,
+} from 'vue';
 import { useRouter } from 'vue-router';
 import { mdiPencilOutline } from '@mdi/js';
 import {
@@ -92,6 +98,7 @@ import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import useGoalData from '#src/composables/useGoalData';
 
 const apollo = inject('apollo');
+const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
 const {
@@ -152,17 +159,34 @@ const categoriesLoanCount = computed(() => {
 	return getAllCategoryLoanCounts(props.tieredAchievements);
 });
 
+const selectedTarget = computed(() => {
+	const selectedOption = goalOptions.value.find(option => option.selected);
+	return selectedOption.loansNumber;
+});
+
 const updateOptionSelection = selectedIndex => {
 	goalOptions.value = goalOptions.value.map((option, index) => ({
 		...option,
 		selected: index === selectedIndex,
 	}));
+
+	const trackingProperties = ['same-as-last-year', 'a-little-more', 'double'];
+	$kvTrackEvent(
+		'post-checkout',
+		'click',
+		'set-goal-amount',
+		trackingProperties[selectedIndex]
+	);
 };
 
-const selectedTarget = computed(() => {
-	const selectedOption = goalOptions.value.find(option => option.selected);
-	return selectedOption.loansNumber;
-});
+const editGoal = () => {
+	showGoalModal.value = true;
+	$kvTrackEvent(
+		'post-checkout',
+		'click',
+		'edit-goal-category'
+	);
+};
 
 const setGoal = async preferences => {
 	await storeGoalPreferences(preferences);
@@ -172,7 +196,7 @@ const setGoal = async preferences => {
 
 const handleContinue = () => {
 	if (isThanksPage.value) {
-		router.push('/mykiva#my-achievements');
+		router.push('/mykiva');
 	} else {
 		const currentYear = new Date().getFullYear();
 		const goalName = `goal-${ID_WOMENS_EQUALITY}-${currentYear}`;
@@ -190,8 +214,24 @@ const handleContinue = () => {
 		};
 
 		setGoal(preferences);
+
+		$kvTrackEvent(
+			'post-checkout',
+			'click',
+			'set-annual-goal',
+			ID_WOMENS_EQUALITY,
+			selectedTarget.value
+		);
 	}
 };
+
+onMounted(() => {
+	$kvTrackEvent(
+		'post-checkout',
+		'view',
+		'set-annual-goal'
+	);
+});
 </script>
 
 <style lang="postcss" scoped>
