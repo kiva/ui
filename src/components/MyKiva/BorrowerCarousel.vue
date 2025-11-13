@@ -255,7 +255,7 @@ const numLenders = computed(() => loanForMenu.value?.lenders?.numLenders ?? 0);
 
 const singleSlideWidth = computed(() => {
 	if (isLarge.value) {
-		return 'calc((100% - 32px) / 3)';
+		return 'calc((100% - 64px) / 3)';
 	}
 	if (isMedium.value) {
 		return '336px';

@@ -158,7 +158,7 @@ export default {
 		},
 		singleSlideWidth() {
 			if (this.isLarge) {
-				return 'calc((100% - 32px) / 3)';
+				return 'calc((100% - 64px) / 3)';
 			}
 			if (this.isMedium) {
 				return '336px';
