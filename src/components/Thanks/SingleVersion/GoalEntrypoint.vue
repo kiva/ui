@@ -9,7 +9,7 @@
 		<KvLoadingPlaceholder v-if="loading" class="!tw-h-9 !tw-rounded" />
 		<template v-else>
 			<HandsPlant
-				v-if="!isThanksPage"
+				v-if="!isGoalSetOnThanksPage"
 				class="lg:tw-mb-1 tw-w-10 lg:tw-w-auto"
 			/>
 
@@ -25,7 +25,7 @@
 			</div>
 
 			<ThumbUp
-				v-if="isThanksPage"
+				v-if="isGoalSetOnThanksPage"
 				class="tw-w-16 tw-h-16 lg:tw-w-auto lg:tw-h-auto"
 			/>
 
@@ -52,7 +52,7 @@
 			</KvButton>
 
 			<KvButton
-				v-if="!isThanksPage"
+				v-if="!isGoalSetOnThanksPage"
 				variant="ghost"
 				class="edit-goal-button tw-w-full"
 				@click="editGoal"
@@ -129,7 +129,7 @@ const props = defineProps({
 	},
 });
 
-const isThanksPage = ref(false);
+const isGoalSetOnThanksPage = ref(false);
 const showGoalModal = ref(false);
 
 const goalOptions = ref([
@@ -141,18 +141,18 @@ const goalOptions = ref([
 ]);
 
 const titleText = computed(() => {
-	return isThanksPage.value
+	return isGoalSetOnThanksPage.value
 		? 'Thank you!'
 		: 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
 });
 
 const subtitleText = computed(() => {
-	return isThanksPage.value
+	return isGoalSetOnThanksPage.value
 		? 'Your 2026 commitment means more lives transformed!'
 		: 'How many loans will you make this year?';
 });
 
-const buttonText = computed(() => (isThanksPage.value ? 'Track my progress' : 'Set 2026 goal'));
+const buttonText = computed(() => (isGoalSetOnThanksPage.value ? 'Track my progress' : 'Set 2026 goal'));
 
 const categoriesLoanCount = computed(() => {
 	const { getAllCategoryLoanCounts } = useBadgeData();
@@ -190,12 +190,12 @@ const editGoal = () => {
 
 const setGoal = async preferences => {
 	await storeGoalPreferences(preferences);
-	isThanksPage.value = true;
+	isGoalSetOnThanksPage.value = true;
 	showGoalModal.value = false;
 };
 
 const handleContinue = () => {
-	if (isThanksPage.value) {
+	if (isGoalSetOnThanksPage.value) {
 		router.push('/mykiva');
 		$kvTrackEvent(
 			'post-checkout',
