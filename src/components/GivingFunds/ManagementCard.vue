@@ -34,7 +34,7 @@
 						"
 						:href="`${givingFundRootPath}/${fund.id}?action=share`"
 						target="_blank"
-						v-kv-track-event="['giving-funds', 'click', 'menu', 'share-fund']"
+						v-kv-track-event="['giving-funds', 'click', 'share-fund', fund.id]"
 					>
 						<KvMaterialIcon
 							:icon="mdiExportVariant"
