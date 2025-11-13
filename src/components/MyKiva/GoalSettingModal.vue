@@ -40,6 +40,7 @@ import {
 	computed,
 	inject,
 	watch,
+	toRefs,
 } from 'vue';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import useIsMobile from '#src/composables/useIsMobile';
@@ -70,8 +71,14 @@ const props = defineProps({
 	categoriesLoanCount: {
 		type: Object,
 		default: () => ({}),
-	}
+	},
+	numberOfLoans: {
+		type: Number,
+		default: 0,
+	},
 });
+
+const { numberOfLoans } = toRefs(props);
 
 const formStep = ref(1);
 const categories = [
@@ -142,7 +149,8 @@ const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const emit = defineEmits(['close-goal-modal', 'set-goal']);
 const selectedCategory = ref(categories[0]);
-const selectedGoalNumber = ref(5); // Default goals to 5 loans for initial MVP
+// eslint-disable-next-line max-len
+const selectedGoalNumber = ref(numberOfLoans.value ? numberOfLoans.value : 5); // Default goals to 5 loans for initial MVP
 
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
 const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
@@ -157,7 +165,6 @@ const contentComponent = computed(() => {
 const handleCategorySelected = categoryId => {
 	const categoryIdx = categoryId - 1;
 	selectedCategory.value = categories[categoryIdx];
-	selectedGoalNumber.value = 5; // Default goals to 5 loans for initial MVP
 
 	// Only track when modal is open, not on pageload
 	if (props.show) {
@@ -170,6 +177,7 @@ const handleNumberChanged = number => {
 };
 
 const clickBack = () => {
+	selectedGoalNumber.value = numberOfLoans.value ? numberOfLoans.value : 5;
 	formStep.value -= 1;
 	$kvTrackEvent('portfolio', 'click', 'goals-back');
 };
@@ -230,6 +238,12 @@ watch(() => props.show, (newVal, oldVal) => {
 		$kvTrackEvent('portfolio', 'show', 'view-goal-categories');
 	} else if (newVal === false && oldVal === true) {
 		$kvTrackEvent('portfolio', 'click', 'close-goals');
+	}
+});
+
+watch(numberOfLoans, newVal => {
+	if (newVal) {
+		selectedGoalNumber.value = newVal;
 	}
 });
 </script>

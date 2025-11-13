@@ -1,6 +1,5 @@
 <template>
 	<div
-		v-if="isEmptyGoal"
 		class="
 			tw-rounded md:tw-rounded-xl tw-bg-white
 			tw-shadow-lg tw-p-2.5 tw-py-2.5 md:tw-px-2.5 md:tw-py-4
@@ -47,6 +46,7 @@
 
 			<KvButton
 				class="tw-w-full tw-mt-1.5"
+				@click="handleContinue"
 			>
 				{{ buttonText }}
 			</KvButton>
@@ -55,6 +55,7 @@
 				v-if="!isThanksPage"
 				variant="ghost"
 				class="edit-goal-button tw-w-full"
+				@click="showGoalModal = true"
 			>
 				Edit goal category
 				<KvMaterialIcon
@@ -63,20 +64,39 @@
 				/>
 			</KvButton>
 		</template>
+		<GoalSettingModal
+			:show="showGoalModal"
+			:total-loans="totalLoans"
+			:categories-loan-count="categoriesLoanCount"
+			:number-of-loans="selectedTarget"
+			@close-goal-modal="showGoalModal = false"
+			@set-goal="setGoal"
+		/>
 	</div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, inject } from 'vue';
+import { useRouter } from 'vue-router';
 import { mdiPencilOutline } from '@mdi/js';
 import {
 	KvMaterialIcon,
 	KvButton,
 	KvLoadingPlaceholder,
 } from '@kiva/kv-components';
+import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.svg';
 import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
 import GoalSelector from '#src/components/Thanks/SingleVersion/GoalSelector';
+import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
+import useGoalData from '#src/composables/useGoalData';
+
+const apollo = inject('apollo');
+const router = useRouter();
+
+const {
+	storeGoalPreferences,
+} = useGoalData({ apollo });
 
 const props = defineProps({
 	/**
@@ -87,15 +107,23 @@ const props = defineProps({
 		default: false,
 	},
 	/**
-	 * The current goal data
+	 * total number of loans made by the user
 	 */
-	currentGoal: {
-		type: Object,
-		default: null,
+	totalLoans: {
+		type: Number,
+		default: 0,
+	},
+	/**
+	 * Tiered achievements data
+	 */
+	tieredAchievements: {
+		type: Array,
+		default: () => ([]),
 	},
 });
 
 const isThanksPage = ref(false);
+const showGoalModal = ref(false);
 
 const goalOptions = ref([
 	{ loansNumber: 3, optionText: 'Start strong', selected: false },
@@ -104,8 +132,6 @@ const goalOptions = ref([
 	},
 	{ loansNumber: 5, optionText: 'Trailblazing!', selected: false },
 ]);
-
-const isEmptyGoal = computed(() => Object.keys(props.currentGoal || {}).length === 0);
 
 const titleText = computed(() => {
 	return isThanksPage.value
@@ -121,11 +147,50 @@ const subtitleText = computed(() => {
 
 const buttonText = computed(() => (isThanksPage.value ? 'Track my progress' : 'Set 2026 goal'));
 
+const categoriesLoanCount = computed(() => {
+	const { getAllCategoryLoanCounts } = useBadgeData();
+	return getAllCategoryLoanCounts(props.tieredAchievements);
+});
+
 const updateOptionSelection = selectedIndex => {
 	goalOptions.value = goalOptions.value.map((option, index) => ({
 		...option,
 		selected: index === selectedIndex,
 	}));
+};
+
+const selectedTarget = computed(() => {
+	const selectedOption = goalOptions.value.find(option => option.selected);
+	return selectedOption.loansNumber;
+});
+
+const setGoal = async preferences => {
+	await storeGoalPreferences(preferences);
+	isThanksPage.value = true;
+	showGoalModal.value = false;
+};
+
+const handleContinue = () => {
+	if (isThanksPage.value) {
+		router.push('/mykiva#my-achievements');
+	} else {
+		const currentYear = new Date().getFullYear();
+		const goalName = `goal-${ID_WOMENS_EQUALITY}-${currentYear}`;
+		const target = selectedTarget.value;
+		const dateStarted = new Date().toISOString();
+		const status = 'in-progress';
+		const loanTotalAtStart = categoriesLoanCount?.value?.[ID_WOMENS_EQUALITY] || 0;
+		const preferences = {
+			goalName,
+			category: ID_WOMENS_EQUALITY,
+			target,
+			dateStarted,
+			status,
+			loanTotalAtStart,
+		};
+
+		setGoal(preferences);
+	}
 };
 </script>
 
