@@ -35,6 +35,8 @@
 		</section>
 		<section v-if="clientRendered" class="!tw-mt-2">
 			<LendingStats
+				:lending-stats="lendingStats"
+				:user-info="userInfo"
 				:regions-data="lendingStats.regionsData"
 				:user-lent-to-all-regions="userLentToAllRegions"
 				:hero-slides="heroSlides"

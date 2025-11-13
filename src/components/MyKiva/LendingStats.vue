@@ -23,6 +23,8 @@
 					:hero-contentful-data="heroContentfulData"
 					:hero-tiered-achievements="heroTieredAchievements"
 					:lender="lender"
+					:loans="loans"
+					:user-info="userInfo"
 					:slides-number="1"
 					:slides="heroSlides"
 					:user-goal-enabled="isNextStepsExpEnabled"
@@ -148,6 +150,8 @@
 			:hero-contentful-data="heroContentfulData"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:lender="lender"
+			:loans="loans"
+			:user-info="userInfo"
 			:slides-number="3"
 			:slides="heroSlides"
 			:user-goal-enabled="isNextStepsExpEnabled"
@@ -201,6 +205,10 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	props: {
+		userInfo: {
+			type: Object,
+			default: () => ({}),
+		},
 		regionsData: {
 			type: Array,
 			default: () => [],

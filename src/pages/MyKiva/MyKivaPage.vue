@@ -101,7 +101,18 @@ export default {
 					query: borrowerProfileSideSheetQuery,
 					variables: { loanId: Number(loanId) }
 				}) : null;
-				this.userInfo = myKivaQueryResult.my ?? {};
+				const myKivaData = myKivaQueryResult.my ?? {};
+				const communicationSettings = myKivaData.communicationSettings ?? {};
+				const isOptedIn = !!(
+					communicationSettings.lenderNews
+					&& communicationSettings.loanUpdates
+					&& !communicationSettings.globalUnsubscribed
+				);
+				this.userInfo = {
+					...myKivaData,
+					communicationSettings,
+					isOptedIn,
+				};
 				this.lender = myKivaQueryResult.my?.lender ?? null;
 				this.lender = {
 					...this.lender,
