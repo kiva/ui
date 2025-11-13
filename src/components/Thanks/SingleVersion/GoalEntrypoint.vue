@@ -197,6 +197,11 @@ const setGoal = async preferences => {
 const handleContinue = () => {
 	if (isThanksPage.value) {
 		router.push('/mykiva');
+		$kvTrackEvent(
+			'post-checkout',
+			'click',
+			'go-to-mykiva'
+		);
 	} else {
 		const currentYear = new Date().getFullYear();
 		const goalName = `goal-${ID_WOMENS_EQUALITY}-${currentYear}`;
