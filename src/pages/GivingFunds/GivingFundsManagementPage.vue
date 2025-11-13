@@ -41,7 +41,9 @@
 							<kv-impact-vertical-selector
 								v-if="!creatingFund && !hasAllFundTypes"
 								:category-list="orderedGivingFundCategories"
-								:hidden-categories="usersGivingFundCategoryIds"
+								:existing-categories="usersGivingFundCategoryIds"
+								existing-category-message="You've already set up this fund"
+								use-compact-card="true"
 								@category-selected="selectImpactArea($event)"
 							/>
 							<div
@@ -61,7 +63,7 @@
 									@click.prevent="createNewFund"
 									v-kv-track-event="['giving-funds', 'submit', 'create-new-fund', selectedCategoryId]"
 								>
-									Continue
+									{{ modalButtonCopy }}
 								</kv-button>
 							</template>
 						</kv-lightbox>
@@ -290,9 +292,33 @@ const closeCreateFundLightbox = () => {
 	);
 };
 
+const existingFundIdForSelectedImpactArea = computed(() => {
+	// extract the existing fund id from givingFundsEntries based on selectedCategoryId
+	const existingFund = givingFundsEntries.value.find(fund => {
+		return fund?.campaign?.category?.id === selectedCategoryId.value;
+	});
+	return existingFund ? existingFund.id : null;
+});
+
+const modalButtonCopy = computed(() => {
+	if (existingFundIdForSelectedImpactArea.value) {
+		return 'View your fund';
+	}
+	return 'Continue';
+});
+
 const createNewFund = async () => {
 	if (!selectedCategoryId.value) {
 		logFormatter('No category selected for new giving fund', 'error');
+		return;
+	}
+	if (existingFundIdForSelectedImpactArea?.value) {
+		// If fund already exists for selected impact area, navigate to it
+		window.open(
+			`${givingFundRootPath.value}/${existingFundIdForSelectedImpactArea.value}`,
+			'_blank'
+		);
+		closeCreateFundLightbox();
 		return;
 	}
 	try {

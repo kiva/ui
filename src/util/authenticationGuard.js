@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/vue';
 import authenticationQuery from '#src/graphql/query/authenticationQuery.graphql';
+import logFormatter from './logFormatter';
 
 const isServer = typeof window === 'undefined';
 
@@ -86,6 +87,20 @@ export function authenticationGuard({ route, apolloClient, kvAuth0 }) {
 			}).then(({ data }) => {
 				if (!data.my) {
 					throw new Error('api.authenticationRequired');
+				}
+				// Check if the user ID from the GraphQL response matches the Auth0 session user ID
+				const graphqlUserId = data.my.id;
+				const auth0UserId = kvAuth0.getKivaId();
+				if (graphqlUserId && String(graphqlUserId) !== String(auth0UserId)) {
+					// eslint-disable-next-line max-len
+					const errorMessage = `User ID mismatch: GraphQL user ID (${graphqlUserId}) does not match Auth0 user ID (${auth0UserId})`;
+					logFormatter(errorMessage, 'error', { authentication_guard: 'user_id_mismatch' });
+					if (!isServer) {
+						Sentry.withScope(scope => {
+							scope.setTag('authentication_guard', 'user_id_mismatch');
+							Sentry.captureMessage(errorMessage);
+						});
+					}
 				}
 				// Route requires active login
 				if (activeRequired && !checkLastLoginTime(data, 'activeLoginDuration', 3600)) {
