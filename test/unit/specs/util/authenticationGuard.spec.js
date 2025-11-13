@@ -1,8 +1,14 @@
+import * as Sentry from '@sentry/vue';
 import { authenticationGuard, checkLastLoginTime } from '#src/util/authenticationGuard';
+import logFormatter from '#src/util/logFormatter';
 
 vi.mock('@sentry/vue', () => ({
 	withScope: vi.fn(),
 	captureMessage: vi.fn()
+}));
+
+vi.mock('#src/util/logFormatter', () => ({
+	default: vi.fn()
 }));
 
 vi.mock('#src/graphql/query/authenticationQuery.graphql', () => ({
@@ -13,8 +19,12 @@ describe('authenticationGuard.js', () => {
 	let mockRoute;
 	let mockApolloClient;
 	let mockKvAuth0;
+	let mockSetTag;
+	let mockSentryScope;
 
 	beforeEach(() => {
+		vi.clearAllMocks();
+
 		mockRoute = {
 			fullPath: '/lend/1234',
 			path: '/lend/1234',
@@ -31,8 +41,16 @@ describe('authenticationGuard.js', () => {
 
 		mockKvAuth0 = {
 			enabled: true,
-			isMfaAuthenticated: vi.fn()
+			isMfaAuthenticated: vi.fn(),
+			getKivaId: vi.fn()
 		};
+
+		// Setup Sentry mocking
+		mockSetTag = vi.fn();
+		mockSentryScope = {
+			setTag: mockSetTag
+		};
+		Sentry.withScope.mockImplementation(callback => callback(mockSentryScope));
 	});
 
 	describe('checkLastLoginTime', () => {
@@ -430,5 +448,87 @@ describe('authenticationGuard.js', () => {
 				}
 			});
 		});
+
+		async function setupUserIdMismatchTest({ graphqlUserId, auth0UserId }) {
+			mockRoute.matched[0].meta.authenticationRequired = true;
+			mockKvAuth0.getKivaId = vi.fn().mockReturnValue(auth0UserId);
+			mockApolloClient.query.mockResolvedValue({
+				data: {
+					my: {
+						id: graphqlUserId,
+						lastLoginTimestamp: Date.now()
+					}
+				}
+			});
+
+			await authenticationGuard({
+				route: mockRoute,
+				apolloClient: mockApolloClient,
+				kvAuth0: mockKvAuth0
+			});
+		}
+
+		function expectUserIdMismatchLogged({ graphqlUserId, auth0UserId }) {
+			// eslint-disable-next-line max-len
+			const expectedMessage = `User ID mismatch: GraphQL user ID (${graphqlUserId}) does not match Auth0 user ID (${auth0UserId})`;
+			expect(logFormatter).toHaveBeenCalledWith(
+				expectedMessage,
+				'error',
+				{ authentication_guard: 'user_id_mismatch' }
+			);
+			expect(Sentry.withScope).toHaveBeenCalled();
+			expect(mockSetTag).toHaveBeenCalledWith('authentication_guard', 'user_id_mismatch');
+			expect(Sentry.captureMessage).toHaveBeenCalledWith(expectedMessage);
+		}
+
+		function expectUserIdMismatchNotLogged() {
+			expect(logFormatter).not.toHaveBeenCalled();
+			expect(Sentry.withScope).not.toHaveBeenCalled();
+			expect(mockSetTag).not.toHaveBeenCalled();
+			expect(Sentry.captureMessage).not.toHaveBeenCalled();
+		}
+
+		it(
+			'should log error and send tagged message to Sentry when data.my.id does not match logged in user id',
+			async () => {
+				const graphqlUserId = 67890;
+				const auth0UserId = 12345;
+				await setupUserIdMismatchTest({ graphqlUserId, auth0UserId });
+				expectUserIdMismatchLogged({ graphqlUserId, auth0UserId });
+			}
+		);
+
+		it(
+			'should log error and send tagged message to Sentry when user not logged in',
+			async () => {
+				const graphqlUserId = 67890;
+				const auth0UserId = undefined;
+				await setupUserIdMismatchTest({ graphqlUserId, auth0UserId });
+				expectUserIdMismatchLogged({ graphqlUserId, auth0UserId });
+			}
+		);
+
+		it(
+			'should not log error when user IDs match',
+			async () => {
+				const userId = 67890;
+				await setupUserIdMismatchTest({
+					graphqlUserId: userId,
+					auth0UserId: userId
+				});
+				expectUserIdMismatchNotLogged();
+			}
+		);
+
+		it(
+			'should not log error when user IDs match (string vs number)',
+			async () => {
+				await setupUserIdMismatchTest({
+					graphqlUserId: '67890',
+					auth0UserId: 67890
+				});
+				expectUserIdMismatchNotLogged();
+			}
+		);
 	});
 });
