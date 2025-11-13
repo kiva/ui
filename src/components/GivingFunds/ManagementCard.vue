@@ -1,19 +1,15 @@
 <template>
-	<kv-card-frame>
+	<kv-card-frame class="tw-overflow-hidden tw-border tw-border-gray-200">
 		<div class="tw-p-2">
-			<div class="tw-flex tw-justify-between">
-				<div>
-					<!--  eslint-disable max-len -->
-					<kv-pill
-						v-if="actionableGoal"
-						bg-class="tw-bg-gray-100"
-						rounded-class="tw-rounded-full"
-					>
-						<template #icon>
-							<kv-pulsing-dot />
-						</template>
-						Active fundraising goal
-					</kv-pill>
+			<div class="tw-flex tw-justify-between tw-mb-3">
+				<div class="tw-flex tw-items-center tw-gap-1">
+					<!-- eslint-disable-next-line vue/html-self-closing -->
+					<img
+						v-if="categoryIconUrl"
+						:src="categoryIconUrl"
+						:alt="`Icon for ${fund?.campaign?.category?.name} giving fund category`"
+						class="tw-w-6 tw-h-6 tw-mr-2 tw-inline-block"
+					/>
 					<!-- eslint-enable max-len -->
 					<h2 class="tw-mb-1">
 						<a
@@ -25,85 +21,38 @@
 							{{ getFundTargetDisplayNounFromName(fund?.campaign?.category?.name) }}
 						</a>
 					</h2>
-					<!--  eslint-disable max-len -->
-					<p v-if="fund?.campaign?.lendingStats?.totalLivesTouched">
-						You've helped support {{ fund?.campaign?.lendingStats?.totalLivesTouched }}
-						{{ getFundTargetSupportedPeoplePhraseFromName(fund?.campaign?.category?.name) }}.
-					</p>
-					<!-- eslint-enable max-len -->
-					<p v-else>
-						{{ fund?.campaign?.category?.description }}
-					</p>
 				</div>
 
 				<div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-right tw-gap-1.5">
-					<KvButton
-						v-if="!isMobile"
-						:href="`${givingFundRootPath}/${fund.id}?action=donate`"
+					<a
+						class="
+							tw-rounded-full tw-flex tw-justify-center tw-items-center tw-border-tertiary
+							tw-border tw-border-solid tw-bg-white
+							tw-w-5 tw-h-5 md:tw-w-5 md:tw-h-5
+							tw-shrink-0 tw-cursor-pointer
+							hover:tw-text-action hover:tw-border-action
+						"
+						:href="`${givingFundRootPath}/${fund.id}?action=share`"
 						target="_blank"
-						variant="secondary"
-						v-kv-track-event="['giving-funds', 'click', 'donate', fund.id]"
+						v-kv-track-event="['giving-funds', 'click', 'menu', 'share-fund']"
 					>
-						Donate
-					</KvButton>
-					<kv-utility-menu
-						analytics-category="giving-funds"
-						menu-position="right-aligned"
-						button-radius-class="tw-rounded"
-						button-size="medium"
-						button-border-class="tw-border tw-border-primary"
-					>
-						<ul>
-							<li class="tw-border-b tw-border-gray-100">
-								<a
-									class="
-										utility-menu-link
-										tw-rounded-t
-									"
-									:href="`${givingFundRootPath}/${fund.id}`"
-									target="_blank"
-									v-kv-track-event="['giving-funds', 'click', 'menu', 'view-giving-fund']"
-								>
-									<kv-material-icon :icon="mdiPartyPopper" />
-									<span style="padding-top: 0.15rem;">View giving fund</span>
-								</a>
-							</li>
-							<li v-if="!hideOwnerOperations" class="tw-border-b tw-border-gray-100">
-								<a
-									class="
-										utility-menu-link
-									"
-									:href="`${givingFundRootPath}/${fund.id}?action=edit`"
-									target="_blank"
-									v-kv-track-event="['giving-funds', 'click', 'menu', 'edit-fund']"
-								>
-									<kv-material-icon :icon="mdiSquareEditOutline" />
-									<span style="padding-top: 0.15rem;">Edit fund</span>
-								</a>
-							</li>
-							<li class="tw-border-b tw-border-gray-100">
-								<a
-									class="
-										utility-menu-link
-										tw-rounded-b
-									"
-									:href="`${givingFundRootPath}/${fund.id}?action=share`"
-									target="_blank"
-									v-kv-track-event="['giving-funds', 'click', 'menu', 'share-fund']"
-								>
-									<kv-material-icon :icon="mdiExportVariant" />
-									<span style="padding-top: 0.15rem;">Share fund</span>
-								</a>
-							</li>
-						</ul>
-					</kv-utility-menu>
+						<KvMaterialIcon
+							:icon="mdiExportVariant"
+							class="tw-w-3 tw-h-3"
+						/>
+					</a>
 				</div>
 			</div>
 
-			<div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-between">
+			<div
+				class="
+					tw-flex tw-flex-col-reverse md:tw-flex-row
+					tw-justify-between
+				"
+			>
 				<div
 					v-if="fund?.currentAmountDonated > 0"
-					class="tw-flex tw-gap-3 tw-mt-3 tw-flex-wrap"
+					class="tw-flex tw-gap-3 tw-flex-wrap"
 				>
 					<div>
 						<h2>{{ numeral(myDonationTotals).format('$0,0') }}</h2>
@@ -133,47 +82,82 @@
 					</div>
 				</div>
 
+				<!-- eslint-disable-next-line vue/html-self-closing -->
+				<hr
+					v-if="actionableGoal"
+					class="tw-my-3 md:tw-my-0 tw-border-gray-300"
+				/>
+
 				<div
 					v-if="actionableGoal"
-					class="tw-mt-3 md:tw-mt-0 md:tw-ml-4 md:tw-self-end min-meter-width"
+					class="
+						min-meter-width
+						md:tw-ml-4
+						md:tw-self-end
+						tw-bg-secondary tw-p-2 tw-rounded-md
+					"
 				>
+					<div class="tw-flex tw-justify-between">
+						<div
+							v-if="actionableGoal"
+							class="tw-flex tw-items-center tw-gap-1 tw-mb-0.5 tw-text-small tw-font-medium"
+						>
+							<kv-pulsing-dot />
+							<span class="tw-inline-flex" style="margin-top: 0.125rem;">Active fundraiser</span>
+						</div>
+
+						<div class="tw-inline-block tw-text-small" style="margin-top: 0.125rem;">
+							Ends {{ goalEndDate }}
+						</div>
+					</div>
 					<kv-progress-bar
-						class="tw-mt-1"
+						class="progess-bar-override tw-mt-1"
 						aria-label="Percent the fundraiser has raised towards their goal"
 						:value="progressPercentage"
 					/>
 					<div class="tw-flex tw-justify-between tw-mt-1">
-						<div class="tw-text-small">
+						<div class="">
 							<!-- eslint-disable-next-line max-len -->
-							<strong>{{ numeral(currentGoalTargetInfo?.participation?.amount || 0).format('$0,0') }}</strong> raised
+							<strong class="tw-text-brand">{{ numeral(currentGoalTargetInfo?.participation?.amount || 0).format('$0,0') }}</strong> raised
 						</div>
-						<div class="tw-text-small">
-							<!-- eslint-disable-next-line max-len -->
-							<strong>{{ daysRemaining }}</strong> remaining
+						<div class="tw-text-secondary">
+							{{ numeral(currentGoalTargetInfo?.targetAmount || 0).format('$0,0') }}
 						</div>
 					</div>
 				</div>
 			</div>
+		</div>
 
+		<div class="tw-flex tw-flex-col-reverse md:tw-flex-row tw-p-2 tw-gap-2 tw-justify-end tw-bg-gray-100">
+			<div class="tw-flex tw-gap-2">
+				<KvButton
+					v-if="!actionableGoal && !hideOwnerOperations"
+					class="tw-grow md:tw-grow-0"
+					:href="`${givingFundRootPath}/${fund.id}?action=start-fundraiser`"
+					target="_blank"
+					variant="ghost"
+					v-kv-track-event="['giving-funds', 'click', 'start-a-new-fundraiser', fund.id]"
+				>
+					Add fundraiser
+				</KvButton>
+				<KvButton
+					class="tw-grow md:tw-grow-0"
+					:href="`${givingFundRootPath}/${fund.id}?action=donate`"
+					target="_blank"
+					variant="ghost"
+					v-kv-track-event="['giving-funds', 'click', 'donate', fund.id]"
+				>
+					Donate
+				</KvButton>
+			</div>
 			<KvButton
-				v-if="!actionableGoal && !hideOwnerOperations"
-				class="tw-w-full tw-mt-3"
-				:href="`${givingFundRootPath}/${fund.id}?action=start-fundraiser`"
+				class="tw-w-full md:tw-w-auto"
+				:href="`${givingFundRootPath}/${fund.id}`"
 				target="_blank"
-				variant="secondary"
-				v-kv-track-event="['giving-funds', 'click', 'start-a-new-fundraiser', fund.id]"
+				variant="primary"
+				v-kv-track-event="['giving-funds', 'click', 'view-giving-fund', fund.id]"
 			>
-				+ Add a fundraising goal and invite others
-			</KvButton>
-			<KvButton
-				v-if="isMobile"
-				class="tw-w-full tw-mt-2"
-				:href="`${givingFundRootPath}/${fund.id}?action=donate`"
-				target="_blank"
-				variant="secondary"
-				v-kv-track-event="['giving-funds', 'click', 'donate', fund.id]"
-			>
-				Donate
+				View fund
 			</KvButton>
 		</div>
 	</kv-card-frame>
@@ -182,8 +166,6 @@
 <script setup>
 import {
 	mdiExportVariant,
-	mdiPartyPopper,
-	mdiSquareEditOutline,
 } from '@mdi/js';
 import {
 	computed,
@@ -195,13 +177,11 @@ import {
 	KvButton,
 	KvCardFrame,
 	KvMaterialIcon,
-	KvPill,
 	KvProgressBar,
 	KvPulsingDot,
-	KvUtilityMenu,
 } from '@kiva/kv-components';
+import { format } from 'date-fns';
 import useGivingFund from '#src/composables/useGivingFund';
-import useIsMobile from '#src/composables/useIsMobile';
 import numeral from 'numeral';
 
 const props = defineProps({
@@ -216,12 +196,10 @@ const props = defineProps({
 });
 
 const apollo = inject('apollo');
-const { isMobile } = useIsMobile();
 
 const {
 	getDonationTotalsForFund,
 	getFundTargetDisplayNounFromName,
-	getFundTargetSupportedPeoplePhraseFromName,
 } = useGivingFund(apollo);
 
 const givingFundRootPath = ref('/gf');
@@ -254,15 +232,30 @@ const progressPercentage = computed(() => {
 	return percentage > 100 ? 100 : Math.round(percentage);
 });
 
-const daysRemaining = computed(() => {
-	if (!actionableGoal.value?.endDate) return '0 days';
-	const endDate = new Date(actionableGoal.value.endDate);
-	const today = new Date();
-	const timeDiff = endDate - today;
-	const daysCount = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-	if (daysCount < 0) return '0 days';
-	if (daysCount === 0) return '1 day';
-	return `${daysCount} days`;
+const goalEndDate = computed(() => {
+	if (!actionableGoal.value?.endDate) return '';
+	return format(new Date(actionableGoal.value.endDate), 'MM/yy');
+});
+
+const categoryIconUrl = computed(() => {
+	try {
+		const contentBlocks = props?.fund?.campaign?.category?.contentfulEntry?.entry?.fields?.content;
+		if (!contentBlocks || !Array.isArray(contentBlocks)) return null;
+
+		// Find the content block with key ending in "-giving-fund-category-icon-image"
+		// eslint-disable-next-line max-len
+		const iconContentBlock = contentBlocks.find(block => block?.fields?.key?.endsWith('-giving-fund-category-icon-image'));
+
+		if (!iconContentBlock) return null;
+
+		// Get the URL from the first contentLight item
+		const iconUrl = iconContentBlock?.fields?.contentLight?.[0]?.fields?.file?.url;
+
+		return iconUrl || null;
+	} catch (error) {
+		console.warn('Error accessing category icon URL:', error);
+		return null;
+	}
 });
 
 onMounted(async () => {
@@ -282,8 +275,12 @@ onMounted(async () => {
 
 .min-meter-width {
 	@media (width >= 734px) {
-		min-width: 300px;
-		max-width: 350px;
+		min-width: 350px;
+		max-width: 400px;
 	}
+}
+
+.progess-bar-override {
+	@apply tw-bg-gray-300;
 }
 </style>
