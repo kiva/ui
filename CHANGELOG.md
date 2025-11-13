@@ -1,3 +1,25 @@
+## [3.43.0](https://github.com/kiva/ui/compare/v3.42.0...v3.43.0) (2025-11-13)
+
+### 🎉 New Features
+
+* show gf card for users who only contributed ([f983ef8](https://github.com/kiva/ui/commit/f983ef8841de34a640b311c9a3c545c71ebb9ac7))
+* ui added for goals entrypoint on thanks page ([#6442](https://github.com/kiva/ui/issues/6442)) ([feaf131](https://github.com/kiva/ui/commit/feaf1311712e3512965b146c61cf590a4fbded2b))
+
+### 🐛 Bugfixes
+
+* achievements messages mixing with goal pill ([9e366e1](https://github.com/kiva/ui/commit/9e366e13c2973bc70ba01fc5a62ab8c39ecfbc04))
+* add loading in watcher ([ca6cb4d](https://github.com/kiva/ui/commit/ca6cb4d9317bbb56cf60b9ac5e965ba834fd95a9))
+* refresh styles, action controls and fundraising content on gf management dash ([cb64619](https://github.com/kiva/ui/commit/cb646191c2f4e6c5ee028b3cb25b76c0ce97d3bc))
+* remove unnecesary if statement in fetch checkout achievements method ([3a834eb](https://github.com/kiva/ui/commit/3a834eb0336a46ebe3bcce8ca8543b4d41e92db0))
+* update share link analytics event ([de1d8e8](https://github.com/kiva/ui/commit/de1d8e847552c26886abe4c222542485a6a04962))
+* update SummaryCard when navigating between ui pages via router-link ([c558c8b](https://github.com/kiva/ui/commit/c558c8baa56372783d1233e9db09c09b385f789a))
+* use font definitions from kv-tokens ([3bb9bb8](https://github.com/kiva/ui/commit/3bb9bb831f486b2eb5eb9a67477e3775000ba0e5))
+
+### 🧹 Chores
+
+* **deps:** update to latest kv-components, kv-shop, and kv-tokens ([9ac0055](https://github.com/kiva/ui/commit/9ac005564ef013ff4ca2dcf90789ae1055f2d4e7))
+* **release:** 3.43.0-rc.1 [skip ci] ([7121964](https://github.com/kiva/ui/commit/7121964b4182e03185578faec38b515f8feffcc8)), closes [#6442](https://github.com/kiva/ui/issues/6442)
+
 ## [3.43.0-rc.1](https://github.com/kiva/ui/compare/v3.42.0...v3.43.0-rc.1) (2025-11-13)
 
 ### 🎉 New Features
