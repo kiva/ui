@@ -46,16 +46,23 @@ const props = defineProps({
 const { myFundsCount, contributedFundsCount } = toRefs(props);
 
 const textCopy = computed(() => {
-	let copy = `You have ${myFundsCount.value} ${
-		myFundsCount.value === 1 ? 'fund' : 'funds'
-	} making an impact`;
-
-	if (contributedFundsCount.value > 0) {
-		copy += ` and have contributed to ${contributedFundsCount.value} ${
+	let copy = '';
+	if (myFundsCount.value > 0 && contributedFundsCount.value > 0) {
+		copy = `You have ${myFundsCount.value} ${
+			myFundsCount.value === 1 ? 'fund' : 'funds'
+		} making an impact and have contributed to ${contributedFundsCount.value} ${
 			contributedFundsCount.value === 1 ? 'fund' : 'funds'
-		}`;
+		}.`;
+	} else if (contributedFundsCount.value > 0) {
+		copy = `You have contributed to ${contributedFundsCount.value} ${
+			contributedFundsCount.value === 1 ? 'fund' : 'funds'
+		}.`;
+	} else if (myFundsCount.value > 0) {
+		copy = `You have ${myFundsCount.value} ${
+			myFundsCount.value === 1 ? 'fund' : 'funds'
+		} making an impact.`;
 	}
-	return `${copy}.`;
+	return copy;
 });
 </script>
 
