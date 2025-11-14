@@ -60,7 +60,7 @@
 					:class="{ 'tw--mt-6': controlsTopRight }"
 					:multiple-slides-visible="true"
 					:slide-max-width="singleSlideWidth"
-					:embla-options="{ loop: false, align: 'center'}"
+					:embla-options="{ loop: false, align: 'start' }"
 					:controls-top-right="controlsTopRight"
 					@change="onInteractCarousel"
 				>
@@ -255,7 +255,7 @@ const numLenders = computed(() => loanForMenu.value?.lenders?.numLenders ?? 0);
 
 const singleSlideWidth = computed(() => {
 	if (isLarge.value) {
-		return 'calc((100% - 32px) / 3)';
+		return 'calc((100% - 64px) / 3)';
 	}
 	if (isMedium.value) {
 		return '336px';

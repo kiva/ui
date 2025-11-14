@@ -10,28 +10,30 @@
 		@navigation-closed="showNavigation = false"
 	/>
 	<MyKivaHero v-if="!userInHomepage" @show-navigation="handleShowNavigation" />
-	<MyKivaContainer>
+	<MyKivaContainer class="page-container">
 		<MyKivaProfile
 			class="tw-mt-4"
 			:lender="lender"
 			:user-info="userInfo"
 			v-if="!userInHomepage"
 		/>
-		<h3 class="tw-mt-4">
-			<u>{{ userInfo?.userAccount?.firstName }}'s</u> impact overview
-		</h3>
-		<MyKivaStats
-			class="tw-mt-2"
-			:user-balance="userBalance"
-			:lending-stats="lendingStats"
-		/>
+		<section>
+			<h3 class="tw-mt-4">
+				<u>{{ userInfo?.userAccount?.firstName }}'s</u> impact overview
+			</h3>
+			<MyKivaStats
+				class="tw-mt-2"
+				:user-balance="userBalance"
+				:lending-stats="lendingStats"
+			/>
+		</section>
 		<section v-if="myGivingFundsCount > 0 || numberOfFundsContributedTo > 0" class="tw-mt-4">
 			<MyGivingFundsCard
 				:my-funds-count="myGivingFundsCount"
 				:contributed-funds-count="numberOfFundsContributedTo"
 			/>
 		</section>
-		<section class="tw-mt-4">
+		<section v-if="clientRendered" class="!tw-mt-2">
 			<LendingStats
 				:regions-data="lendingStats.regionsData"
 				:user-lent-to-all-regions="userLentToAllRegions"
@@ -44,33 +46,35 @@
 				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 			/>
 		</section>
-		<section id="mykiva-borrower-carousel" class="tw-my-4">
-			<MyKivaBorrowerCarousel
-				v-if="clientRendered"
+		<MyKivaBorrowerCarousel
+			v-if="clientRendered"
+			id="mykiva-borrower-carousel"
+			controls-top-right
+			:basket-items="basketItems"
+			:is-adding="isAdding"
+			:loans="loans"
+			:total-loans="totalLoans"
+			@add-to-basket="addToBasket"
+			@go-to-link="goToLink"
+			@handle-selected-loan="showLoanDetails($event, true)"
+			@mouse-enter-status-card="loadBPData"
+			show-menu
+			class="tw-mb-2"
+		/>
+		<AsyncMyKivaSection @visible="fetchInitialUpdates">
+			<JournalUpdatesCarousel
+				v-if="!updatesLoading && visibleUpdates.length"
+				id="mykiva-journal-updates"
 				controls-top-right
-				:basket-items="basketItems"
-				:is-adding="isAdding"
-				:loans="loans"
-				:total-loans="totalLoans"
-				@add-to-basket="addToBasket"
-				@go-to-link="goToLink"
-				@handle-selected-loan="showLoanDetails($event, true)"
-				@mouse-enter-status-card="loadBPData"
-				show-menu
+				:updates="visibleUpdates"
+				:lender="lender"
+				:total-updates="totalUpdates"
+				:updates-loading="updatesLoading"
+				@load-more-updates="loadMoreUpdates"
+				class="!tw--mt-2"
 			/>
-			<AsyncMyKivaSection @visible="fetchInitialUpdates">
-				<JournalUpdatesCarousel
-					v-if="!updatesLoading && visibleUpdates.length"
-					controls-top-right
-					:updates="visibleUpdates"
-					:lender="lender"
-					:total-updates="totalUpdates"
-					:updates-loading="updatesLoading"
-					@load-more-updates="loadMoreUpdates"
-				/>
-			</AsyncMyKivaSection>
-		</section>
-		<section v-if="clientRendered" class="tw-my-4">
+		</AsyncMyKivaSection>
+		<section v-if="clientRendered" class="!tw-my-2">
 			<LendingCategorySection
 				controls-top-right
 				id="recommended-loans"
@@ -84,7 +88,7 @@
 				@mouse-enter-loan-card="loadBPData"
 			/>
 		</section>
-		<section class="tw-mb-4">
+		<section class="tw-mb-4" id="mykiva-achievements">
 			<h3 id="my-achievements">
 				My achievements
 			</h3>
@@ -94,17 +98,6 @@
 				:badge-data="badgeData"
 				:selected-journey="selectedJourney"
 				@badge-clicked="handleBadgeSectionClicked"
-			/>
-			<JourneySideSheet
-				v-if="showJourneySideSheet"
-				:visible="showJourneySideSheet"
-				:selected-badge-data="selectedBadgeData"
-				:loans="loans"
-				:all-badges-completed="allBadgesCompleted"
-				:is-selected-journey-complete="isSelectedJourneyComplete"
-				@badge-journey-level-clicked="handleBadgeJourneyLevelClicked"
-				@continue-journey-clicked="handleContinueJourneyClicked"
-				@sidesheet-closed="handleComponentClosed"
 			/>
 		</section>
 		<section v-if="moreWaysToHelpSlides.length" class="tw-my-4">
@@ -141,7 +134,7 @@
 			@go-to-link="goToLink"
 			@close-side-sheet="handleCloseSideSheet"
 		/>
-		<section v-if="blogCards.length" class="tw-my-4">
+		<section v-if="blogCards.length" class="!tw-my-2">
 			<LatestBlogCarousel controls-top-right :blog-cards="blogCards" />
 		</section>
 	</MyKivaContainer>
@@ -153,10 +146,21 @@
 			<BailoutChips />
 		</div>
 	</section>
+	<JourneySideSheet
+		v-if="showJourneySideSheet"
+		:visible="showJourneySideSheet"
+		:selected-badge-data="selectedBadgeData"
+		:loans="loans"
+		:all-badges-completed="allBadgesCompleted"
+		:is-selected-journey-complete="isSelectedJourneyComplete"
+		@badge-journey-level-clicked="handleBadgeJourneyLevelClicked"
+		@continue-journey-clicked="handleContinueJourneyClicked"
+		@sidesheet-closed="handleComponentClosed"
+	/>
 </template>
 
 <script>
-import { inject } from 'vue';
+import { inject, nextTick } from 'vue';
 
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
@@ -640,12 +644,15 @@ export default {
 	mounted() {
 		this.clientRendered = true;
 
-		const sectionId = this.$route?.query?.goTo || '';
-		if (sectionId) {
-			const elementToScrollTo = document.querySelector(`#${sectionId}`);
-			const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 30 ?? 0;
-			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
-		}
+		// Ensure clientRendered is true before attempting to scroll to section
+		nextTick(() => {
+			const sectionId = this.$route?.query?.goTo || '';
+			if (sectionId) {
+				const elementToScrollTo = document.querySelector(`#${sectionId}`);
+				const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 30 ?? 0;
+				this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+			}
+		});
 
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 		fireHotJarEvent('my_kiva_viewed');
@@ -675,6 +682,22 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+.page-container :deep(> div > div > *:not(#mykiva-journal-updates, #mykiva-achievements, #mykiva-borrower-carousel)) {
+	@apply tw-p-2 tw--m-2;
+}
+
+.page-container :deep(> div > div > *), #mykiva-journal-updates :deep(> section) {
+	@apply tw-overflow-visible lg:tw-overflow-hidden;
+}
+
+:deep(.kv-carousel) {
+	@apply tw-overflow-visible;
+}
+
+:deep(.kv-carousel > div:first-child) {
+	@apply tw-gap-2 lg:tw-gap-4;
+}
+
 :deep(#recommended-loans #customizedCarousel div:first-child div div div) {
 	@apply !tw-rounded;
 }
@@ -697,10 +720,6 @@ export default {
 
 #recommended-loans :deep(.kv-carousel) {
 	@apply !tw-w-full;
-}
-
-:deep(.kv-carousel > div:first-child) {
-	@apply tw-gap-2;
 }
 
 :deep(.kv-carousel__controls) {

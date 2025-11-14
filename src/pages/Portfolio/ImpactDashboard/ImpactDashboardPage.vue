@@ -27,7 +27,7 @@
 							v-if="myGivingFundsCount > 0 || numberOfFundsContributedTo > 0"
 							:my-funds-count="myGivingFundsCount"
 							:contributed-funds-count="numberOfFundsContributedTo"
-							class="md:tw-mb-3 tw-mb-0.5"
+							class="tw-mb-3 tw-mx-2 md:tw-mx-0"
 						/>
 						<your-donations />
 						<LoanCards

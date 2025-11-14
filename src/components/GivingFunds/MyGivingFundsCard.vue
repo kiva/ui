@@ -70,6 +70,6 @@ const textCopy = computed(() => {
 .giving-fund-card {
 	@apply tw-max-w-xs;
 
-	min-width: 353px;
+	min-width: 265px;
 }
 </style>

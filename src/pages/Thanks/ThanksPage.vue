@@ -13,6 +13,8 @@
 				:achievements-completed="achievementsCompleted"
 				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 				:thanks-page-goals-entrypoint-enable="thanksPageGoalsEntrypointEnable"
+				:total-loans="totalLoanCount"
+				:tiered-achievements="achievements"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -169,6 +171,8 @@ export default {
 			achievementsCompleted: false,
 			isNextStepsExpEnabled: false,
 			thanksPageGoalsEntrypointEnable: false,
+			totalLoanCount: 0,
+			achievements: [],
 		};
 	},
 	apollo: {
@@ -296,8 +300,8 @@ export default {
 				query: userAchievementProgressQuery,
 			});
 
-			const achievements = userAchievements?.userAchievementProgress?.tieredLendingAchievements ?? [];
-			this.achievementsCompleted = this.allAchievementsCompleted(achievements);
+			this.achievements = userAchievements?.userAchievementProgress?.tieredLendingAchievements ?? [];
+			this.achievementsCompleted = this.allAchievementsCompleted(this.achievements);
 			this.thanksPageGoalsEntrypointEnable = readBoolSetting(data, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
 		} catch (e) {
 			logReadQueryError(e, 'Thanks page readQuery failed');
@@ -386,8 +390,8 @@ export default {
 		userHasLentBefore(hasLentBefore);
 		userHasDepositBefore(hasDepositBefore);
 
-		const totalLoanCount = data?.my?.loans?.totalCount ?? 0;
-		const isFirstLoan = this.loans.length && totalLoanCount === this.loans.length;
+		this.totalLoanCount = data?.my?.loans?.totalCount ?? 0;
+		const isFirstLoan = this.loans.length && this.totalLoanCount === this.loans.length;
 		const hasDirectLoan = this.loans.findIndex(loan => loan.distributionModel === 'direct') > -1;
 		const hasCoreLoan = this.loans.findIndex(loan => loan.distributionModel === 'fieldPartner') > -1;
 

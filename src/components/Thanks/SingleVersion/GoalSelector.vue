@@ -19,19 +19,19 @@
 				class="tw-text-h1 tw-text-center"
 				style="line-height: 1;"
 			>
-				2
+				{{ loansNumber }}
 			</span>
 			<span class="tw-text-small tw-text-center">loans</span>
 		</div>
 		<div class="tw-flex tw-flex-col tw-gap-1">
 			<div
 				v-if="highlightedText"
-				class="tw-bg-marigold-2 tw-rounded-lg tw-text-small tw-drop-shadow-md lg:tw-hidden"
+				class="tw-bg-marigold-2 tw-rounded-lg tw-text-small tw-drop-shadow-md lg:tw-hidden tw-px-1.5"
 			>
 				{{ highlightedText }}
 			</div>
 			<div class="tw-text-primary tw-font-medium">
-				Same as 2025
+				{{ optionText }}
 			</div>
 		</div>
 	</div>
@@ -44,6 +44,14 @@ defineProps({
 		default: false,
 	},
 	highlightedText: {
+		type: String,
+		default: '',
+	},
+	loansNumber: {
+		type: Number,
+		default: 2,
+	},
+	optionText: {
 		type: String,
 		default: '',
 	},
