@@ -34,6 +34,11 @@
 					:user-goal="userGoal"
 					@open-goal-modal="$emit('open-goal-modal')"
 				/>
+				<MyKivaEmailUpdatesCard
+					v-else-if="showEmailUpdatesCard && index === 1"
+					v-kv-track-event="['portfolio', 'view', 'next-step-email-option']"
+					:loans="loans"
+				/>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
 					class="kiva-card"
@@ -94,6 +99,7 @@ import { KvCarousel } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import GoalCard from '#src/components/MyKiva/GoalCard';
+import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCard';
 import { optimizeContentfulUrl } from '#src/util/imageUtils';
 
 const JOURNEY_MODAL_KEY = 'journey';
@@ -120,6 +126,10 @@ const props = defineProps({
 	lender: {
 		type: Object,
 		default: () => ({})
+	},
+	loans: {
+		type: Array,
+		default: () => ([]),
 	},
 	userInHomepage: {
 		type: Boolean,
@@ -182,6 +192,7 @@ const props = defineProps({
 const { isMobile, isMedium, isLarge } = useBreakpoints();
 const currentIndex = ref(0);
 const isSharingModalVisible = ref(false);
+const showEmailUpdatesCard = computed(() => props.userInfo?.isOptedIn === false);
 
 const badgesData = computed(() => {
 	const badgeContentfulData = (props.heroContentfulData ?? [])

@@ -67,6 +67,11 @@ query myKivaQuery {
       memberSince
 	  publicId
     }
+    communicationSettings {
+      globalUnsubscribed
+      lenderNews
+      loanUpdates
+    }
     userAccount {
       id
       publicId
