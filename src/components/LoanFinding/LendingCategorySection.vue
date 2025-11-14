@@ -23,7 +23,7 @@
 				:multiple-slides-visible="true"
 				slides-to-scroll="visible"
 				:slide-max-width="singleSlideWidth"
-				:embla-options="{ loop: false }"
+				:embla-options="{ loop: false, align: 'start', slidesToScroll: 1 }"
 				:controls-top-right="controlsTopRight"
 			>
 				<template v-for="(loan, index) in loans" #[`slide${index}`] :key="loanCardKey(index)">

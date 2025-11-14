@@ -11,6 +11,7 @@
 			:embla-options="{
 				loop: false,
 				align: 'start',
+				slidesToScroll: 1,
 				...(props.disableDrag && {
 					watchDrag: false,
 				}),
