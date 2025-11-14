@@ -10,7 +10,6 @@
 						:alt="`Icon for ${fund?.campaign?.category?.name} giving fund category`"
 						class="tw-w-6 tw-h-6 tw-mr-2 tw-inline-block"
 					/>
-					<!-- eslint-enable max-len -->
 					<h2 class="tw-mb-1">
 						<a
 							class="tw-no-underline tw-text-primary hover:tw-text-action"
@@ -43,6 +42,19 @@
 					</a>
 				</div>
 			</div>
+
+			<p
+				v-if="fund?.currentAmountDonated === 0"
+				class="tw-text-center"
+			>
+				<a
+					:href="`${givingFundRootPath}/${fund.id}?action=donate`"
+					target="_blank"
+					v-kv-track-event="['giving-funds', 'click', 'donate', fund.id]"
+				>
+					Make a first contribution to kickstart your impact.
+				</a>
+			</p>
 
 			<div
 				class="
