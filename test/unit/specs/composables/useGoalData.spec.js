@@ -23,6 +23,11 @@ describe('useGoalData', () => {
 	let mockKvTrackEvent;
 	let composable;
 
+	const makePrefs = goals => ({
+		id: 'pref-1',
+		preferences: JSON.stringify({ goals }),
+	});
+
 	beforeEach(() => {
 		mockKvTrackEvent = vi.fn();
 		mockApollo = {
@@ -843,6 +848,88 @@ describe('useGoalData', () => {
 			const progress = await composable.getProgressByLoan({ id: 999 });
 
 			expect(progress).toBe(0);
+		});
+	});
+
+	describe('replaceAllGoals', () => {
+		it('should replace all goals in preferences', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'new-pref-id',
+							preferences: JSON.stringify({ goals: [] }),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+
+			await composable.storeGoalPreferences({
+				goalName: 'Old Goal',
+				status: 'in-progress',
+				dateStarted: '2025-01-01'
+			});
+
+			expect(composable.userGoal.value.goalName).toContain('Old Goal');
+
+			const newGoals = [
+				{
+					goalName: 'Renewed Goal', status: 'active', active: true, dateStarted: '2026-01-01'
+				},
+			];
+			await composable.replaceAllGoals(newGoals);
+			expect(composable.userGoal.value.goalName).toContain('Renewed Goal');
+			expect(composable.userGoal.value.active).toBeTruthy();
+		});
+
+		it('should handle empty goals array', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'new-pref-id',
+							preferences: JSON.stringify({ goals: [] }),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+
+			await composable.storeGoalPreferences({
+				goalName: 'Old Goal',
+				status: 'in-progress',
+				dateStarted: '2025-01-01'
+			});
+			expect(composable.userGoal.value.goalName).toContain('Old Goal');
+
+			await composable.replaceAllGoals([]);
+			expect(composable.userGoal.value).toEqual({});
+		});
+	});
+
+	describe('renewAnnualGoal', () => {
+		it('should expire all goals on Jan 1st', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'new-pref-id',
+							preferences: JSON.stringify({ goals: [] }),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+
+			composable.userPreferences.value = makePrefs([
+				{
+					goalName: 'Goal', status: 'in-progress', dateStarted: '2025-01-01'
+				},
+			]);
+			const janFirst = new Date('2026-01-01T00:00:00Z');
+			const expiredGoals = await composable.renewAnnualGoal(janFirst);
+			expect(expiredGoals.every(goal => !goal.active)).toBe(true);
 		});
 	});
 });

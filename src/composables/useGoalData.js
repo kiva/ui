@@ -175,6 +175,65 @@ export default function useGoalData({ apollo }) {
 		loading.value = false;
 	}
 
+	/**
+	 * Replaces all goals in user preferences with newGoals
+	 * @param {*} newGoals - Array of new goal objects to set
+	 */
+	async function replaceAllGoals(newGoals) {
+		if (!userPreferences.value?.id) {
+			await createUserPreferences(apollo, { goals: [] });
+			await loadPreferences('network-only');
+		}
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+		parsedPrefs.goals = newGoals;
+		await updateUserPreferences(apollo, userPreferences.value, parsedPrefs, { goals: newGoals });
+		setGoalState({ goals: newGoals });
+	}
+
+	/**
+	 * This method shows Goal Entry for 2026 Goals
+	 * It invalidates all goals on Jan 1st of 2026
+	 * @return {Array} - expiredGoals
+	 */
+	async function renewAnnualGoal(today = new Date()) {
+		const parsedPrefs = await loadPreferences();
+		const goals = parsedPrefs.goals || [];
+		let expiredGoals = [];
+
+		if (today.getMonth() === 0 && today.getDate() === 1) {
+			expiredGoals = goals.map(prevGoal => ({
+				...prevGoal,
+				active: false
+			}));
+			await replaceAllGoals(expiredGoals);
+		}
+
+		return expiredGoals;
+	}
+
+	/**
+	 * Determines if the renew goal toast should be shown
+	 */
+	const showRenewedAnnualGoalToast = computed(() => {
+		const parsedPrefs = userPreferences.value
+			? JSON.parse(userPreferences.value.preferences || '{}')
+			: {};
+		const goals = parsedPrefs.goals || [];
+		return !goals.some(goal => !goal?.active && goal.status === 'completed');
+	});
+
+	/**
+	 * Determines if all goals are renewed (inactive)
+	 */
+	const goalsAreRenewed = computed(() => {
+		const parsedPrefs = userPreferences.value
+			? JSON.parse(userPreferences.value.preferences || '{}')
+			: {};
+		const goals = parsedPrefs.goals || [];
+
+		return goals.every(goal => !goal?.active);
+	});
+
 	return {
 		getGoalDisplayName,
 		goalProgress,
@@ -186,5 +245,11 @@ export default function useGoalData({ apollo }) {
 		userGoalAchievedNow,
 		checkCompletedGoal,
 		getProgressByLoan,
+		// Goal Entry for 2026 Goals
+		userPreferences,
+		replaceAllGoals,
+		renewAnnualGoal,
+		showRenewedAnnualGoalToast,
+		goalsAreRenewed,
 	};
 }
