@@ -10,7 +10,6 @@
 			:embla-options="{
 				loop: false,
 				align: 'start',
-				slidesToScroll: 1,
 			}"
 			:multiple-slides-visible="true"
 		>

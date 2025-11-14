@@ -10,7 +10,7 @@
 			:multiple-slides-visible="true"
 			slides-to-scroll="visible"
 			:slide-max-width="singleSlideWidth"
-			:embla-options="{ loop: false, startIndex: carouselIndex, align: 'start', slidesToScroll: 1 }"
+			:embla-options="{ loop: false, startIndex: carouselIndex, align: 'start' }"
 			:controls-top-right="controlsTopRight"
 			@interact-carousel="interactCarousel"
 		>

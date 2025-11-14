@@ -6,7 +6,7 @@
 		:multiple-slides-visible="true"
 		:slide-max-width="singleSlideWidth"
 		slides-to-scroll="visible"
-		:embla-options="{ loop: false, align: 'start', slidesToScroll: 1 }"
+		:embla-options="{ loop: false, align: 'start' }"
 		@change="handleChange"
 	>
 		<template v-for="(badge, index) in visibleBadges" #[`slide${index+1}`] :key="badge.id || index">
