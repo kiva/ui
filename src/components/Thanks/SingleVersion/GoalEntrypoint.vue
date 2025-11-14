@@ -97,6 +97,8 @@ import GoalSelector from '#src/components/Thanks/SingleVersion/GoalSelector';
 import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import useGoalData from '#src/composables/useGoalData';
 
+const SAME_AS_LAST_YEAR_LIMIT = 1;
+
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
@@ -140,10 +142,24 @@ const goalOptions = ref([
 	{ loansNumber: 5, optionText: 'Trailblazing!', selected: false },
 ]);
 
+const categoriesLoanCount = computed(() => {
+	const { getAllCategoryLoanCounts } = useBadgeData();
+	return getAllCategoryLoanCounts(props.tieredAchievements);
+});
+
+const womenLoansLastYear = computed(() => {
+	// TODO: Update to get actual last year data when available
+	return categoriesLoanCount?.value?.[ID_WOMENS_EQUALITY] || 0;
+});
+
 const titleText = computed(() => {
+	// eslint-disable-next-line no-nested-ternary
 	return isGoalSetOnThanksPage.value
 		? 'Thank you!'
-		: 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
+		: womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT
+			// eslint-disable-next-line max-len
+			? `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} women</span> shape their futures!`
+			: 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
 });
 
 const subtitleText = computed(() => {
@@ -153,11 +169,6 @@ const subtitleText = computed(() => {
 });
 
 const buttonText = computed(() => (isGoalSetOnThanksPage.value ? 'Track my progress' : 'Set 2026 goal'));
-
-const categoriesLoanCount = computed(() => {
-	const { getAllCategoryLoanCounts } = useBadgeData();
-	return getAllCategoryLoanCounts(props.tieredAchievements);
-});
 
 const selectedTarget = computed(() => {
 	const selectedOption = goalOptions.value.find(option => option.selected);
@@ -231,6 +242,18 @@ const handleContinue = () => {
 };
 
 onMounted(() => {
+	if (womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
+		const growALittleOption = Math.ceil(womenLoansLastYear.value * 1.25);
+		goalOptions.value = [
+			{ loansNumber: womenLoansLastYear.value, optionText: 'Same as 2025', selected: false },
+			{
+				// eslint-disable-next-line max-len
+				loansNumber: growALittleOption, optionText: 'Grow a little', selected: true, highlightedText: 'More Impact'
+			},
+			{ loansNumber: womenLoansLastYear.value * 2, optionText: 'Double my impact!', selected: false },
+		];
+	}
+
 	$kvTrackEvent(
 		'post-checkout',
 		'view',
