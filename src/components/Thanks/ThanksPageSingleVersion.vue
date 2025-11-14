@@ -16,12 +16,6 @@
 				class="tw-mb-2.5"
 				@view-pdf-clicked="scrollToReceipt"
 			/>
-			<GoalEntrypoint
-				v-if="thanksPageGoalsEntrypointEnable"
-				:loading="goalDataLoading"
-				:is-thanks-page="showGoalCompletedModule"
-				class="tw-mb-2.5"
-			/>
 			<GoalCompleted
 				v-if="showGoalCompletedModule"
 				:current-goal="userGoal"
@@ -40,6 +34,13 @@
 				:kiva-cards-module-shown="showKivaCardsModule"
 				:achievements-completed="achievementsCompleted"
 				@continue-clicked="handleContinue"
+				class="tw-mb-2.5"
+			/>
+			<GoalEntrypoint
+				v-if="thanksPageGoalsEntrypointEnable && !isGuest && isEmptyGoal"
+				:loading="goalDataLoading"
+				:total-loans="totalLoans"
+				:tiered-achievements="tieredAchievements"
 				class="tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
@@ -161,6 +162,14 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	totalLoans: {
+		type: Number,
+		default: 0,
+	},
+	tieredAchievements: {
+		type: Array,
+		default: () => ([]),
+	},
 });
 
 const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
@@ -231,6 +240,8 @@ const showJourneyModule = computed(() => {
 });
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
 /* eslint-enable max-len */
+
+const isEmptyGoal = computed(() => Object.keys(userGoal.value || {}).length === 0);
 
 const showConfetti = () => {
 	confetti({
