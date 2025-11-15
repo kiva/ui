@@ -123,7 +123,7 @@
 		"promise": "file:src/util/promise",
 		"qrcode.vue": "^3.4.1",
 		"serialize-javascript": "^6.0.2",
-		"set-cookie-parser": "^2.4.6",
+		"set-cookie-parser": "^2.7.2",
 		"store2": "^2.12.0",
 		"timesync": "^1.0.8",
 		"title-case": "^4.3.2",
