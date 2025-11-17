@@ -129,6 +129,13 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	/**
+	 * Tracking category for analytics
+	 */
+	trackingCategory: {
+		type: String,
+		default: 'post-checkout',
+	},
 });
 
 const isGoalSetOnThanksPage = ref(false);
@@ -183,7 +190,7 @@ const updateOptionSelection = selectedIndex => {
 
 	const trackingProperties = ['same-as-last-year', 'a-little-more', 'double'];
 	$kvTrackEvent(
-		'post-checkout',
+		props.trackingCategory,
 		'click',
 		'set-goal-amount',
 		trackingProperties[selectedIndex]
@@ -193,7 +200,7 @@ const updateOptionSelection = selectedIndex => {
 const editGoal = () => {
 	showGoalModal.value = true;
 	$kvTrackEvent(
-		'post-checkout',
+		props.trackingCategory,
 		'click',
 		'edit-goal-category'
 	);
@@ -209,7 +216,7 @@ const handleContinue = () => {
 	if (isGoalSetOnThanksPage.value) {
 		router.push('/mykiva');
 		$kvTrackEvent(
-			'post-checkout',
+			props.trackingCategory,
 			'click',
 			'go-to-mykiva'
 		);
@@ -232,7 +239,7 @@ const handleContinue = () => {
 		setGoal(preferences);
 
 		$kvTrackEvent(
-			'post-checkout',
+			props.trackingCategory,
 			'click',
 			'set-annual-goal',
 			ID_WOMENS_EQUALITY,
@@ -255,7 +262,7 @@ onMounted(() => {
 	}
 
 	$kvTrackEvent(
-		'post-checkout',
+		props.trackingCategory,
 		'view',
 		'set-annual-goal'
 	);
