@@ -23,11 +23,6 @@ describe('useGoalData', () => {
 	let mockKvTrackEvent;
 	let composable;
 
-	const makePrefs = goals => ({
-		id: 'pref-1',
-		preferences: JSON.stringify({ goals }),
-	});
-
 	beforeEach(() => {
 		mockKvTrackEvent = vi.fn();
 		mockApollo = {
