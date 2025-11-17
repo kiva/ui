@@ -36,6 +36,12 @@ const GOAL_1_DISPLAY_MAP = {
 	[ID_WOMENS_EQUALITY]: 'woman',
 };
 
+export const GOAL_STATUS = {
+	COMPLETED: 'completed',
+	EXPIRED: 'expired',
+	IN_PROGRESS: 'in-progress',
+};
+
 function getGoalDisplayName(target, category) {
 	if (!target || target > 1) return GOAL_DISPLAY_MAP[category] || 'loans';
 	return GOAL_1_DISPLAY_MAP[category] || 'loan';
@@ -176,14 +182,10 @@ export default function useGoalData({ apollo }) {
 	}
 
 	/**
-	 * Replaces all goals in user preferences with newGoals
+	 * Should only be used in renewAnnualGoal. Uupdate all previous goals with a new flag.
 	 * @param {*} newGoals - Array of new goal objects to set
 	 */
-	async function replaceAllGoals(newGoals) {
-		if (!userPreferences.value?.id) {
-			await createUserPreferences(apollo, { goals: [] });
-			await loadPreferences('network-only');
-		}
+	async function updateCurrentGoals(newGoals) {
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		parsedPrefs.goals = newGoals;
 		await updateUserPreferences(apollo, userPreferences.value, parsedPrefs, { goals: newGoals });
@@ -198,14 +200,18 @@ export default function useGoalData({ apollo }) {
 	async function renewAnnualGoal(today = new Date()) {
 		const parsedPrefs = await loadPreferences();
 		const goals = parsedPrefs.goals || [];
-		let expiredGoals = [];
+		const currentYear = today.getFullYear();
 
-		if (today.getMonth() === 0 && today.getDate() === 1) {
-			expiredGoals = goals.map(prevGoal => ({
-				...prevGoal,
-				active: false
-			}));
-			await replaceAllGoals(expiredGoals);
+		const expiredGoals = goals.map(goal => {
+			const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
+			if (goalYear < currentYear) {
+				return { ...goal, status: GOAL_STATUS.EXPIRED };
+			}
+			return goal;
+		});
+
+		if (expiredGoals.some(goal => goal.status === GOAL_STATUS.EXPIRED)) {
+			await updateCurrentGoals(expiredGoals);
 		}
 
 		return expiredGoals;
@@ -219,7 +225,7 @@ export default function useGoalData({ apollo }) {
 			? JSON.parse(userPreferences.value.preferences || '{}')
 			: {};
 		const goals = parsedPrefs.goals || [];
-		return !goals.some(goal => !goal?.active && goal.status === 'completed');
+		return !!goals.length && !goals.some(goal => goal.status === GOAL_STATUS.COMPLETED);
 	});
 
 	/**
@@ -231,7 +237,7 @@ export default function useGoalData({ apollo }) {
 			: {};
 		const goals = parsedPrefs.goals || [];
 
-		return goals.every(goal => !goal?.active);
+		return goals.some(goal => goal.status === GOAL_STATUS.EXPIRED);
 	});
 
 	return {
@@ -247,7 +253,7 @@ export default function useGoalData({ apollo }) {
 		getProgressByLoan,
 		// Goal Entry for 2026 Goals
 		userPreferences,
-		replaceAllGoals,
+		updateCurrentGoals,
 		renewAnnualGoal,
 		showRenewedAnnualGoalToast,
 		goalsAreRenewed,

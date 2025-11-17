@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import useGoalData from '#src/composables/useGoalData';
+import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
 import {
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
@@ -851,7 +851,7 @@ describe('useGoalData', () => {
 		});
 	});
 
-	describe('replaceAllGoals', () => {
+	describe('updateCurrentGoals', () => {
 		it('should replace all goals in preferences', async () => {
 			mockApollo.query = vi.fn().mockResolvedValue({
 				data: {
@@ -878,7 +878,7 @@ describe('useGoalData', () => {
 					goalName: 'Renewed Goal', status: 'active', active: true, dateStarted: '2026-01-01'
 				},
 			];
-			await composable.replaceAllGoals(newGoals);
+			await composable.updateCurrentGoals(newGoals);
 			expect(composable.userGoal.value.goalName).toContain('Renewed Goal');
 			expect(composable.userGoal.value.active).toBeTruthy();
 		});
@@ -903,33 +903,111 @@ describe('useGoalData', () => {
 			});
 			expect(composable.userGoal.value.goalName).toContain('Old Goal');
 
-			await composable.replaceAllGoals([]);
+			await composable.updateCurrentGoals([]);
 			expect(composable.userGoal.value).toEqual({});
 		});
 	});
 
 	describe('renewAnnualGoal', () => {
-		it('should expire all goals on Jan 1st', async () => {
+		it('should expire only goals from previous years', async () => {
 			mockApollo.query = vi.fn().mockResolvedValue({
 				data: {
 					my: {
 						userPreferences: {
 							id: 'new-pref-id',
-							preferences: JSON.stringify({ goals: [] }),
+							preferences: JSON.stringify({
+								goals: [
+									{
+										goalName: 'Goal', status: 'in-progress', dateStarted: '2025-01-01'
+									},
+									{
+										goalName: 'Current Goal', status: 'in-progress', dateStarted: '2026-02-01'
+									},
+								]
+							}),
 						},
 						loans: { totalCount: 0 },
 					},
 				},
 			});
 
-			composable.userPreferences.value = makePrefs([
-				{
-					goalName: 'Goal', status: 'in-progress', dateStarted: '2025-01-01'
-				},
-			]);
-			const janFirst = new Date('2026-01-01T00:00:00Z');
-			const expiredGoals = await composable.renewAnnualGoal(janFirst);
-			expect(expiredGoals.every(goal => !goal.active)).toBe(true);
+			const today = new Date('2026-06-01T00:00:00Z');
+			const updatedGoals = await composable.renewAnnualGoal(today);
+
+			expect(updatedGoals[0].status).toBe(GOAL_STATUS.EXPIRED); // Previous year
+			expect(updatedGoals[1].status).toBe(GOAL_STATUS.IN_PROGRESS); // Current year
+		});
+	});
+
+	describe('showRenewedAnnualGoalToast', () => {
+		it('returns true if no goals are completed', () => {
+			composable.userPreferences.value = {
+				id: 'pref-1',
+				preferences: JSON.stringify({
+					goals: [
+						{ goalName: 'Goal 1', status: 'in-progress' },
+						{ goalName: 'Goal 2', status: 'expired' },
+					],
+				}),
+			};
+			expect(composable.showRenewedAnnualGoalToast.value).toBe(true);
+		});
+
+		it('returns false if at least one goal is completed', () => {
+			composable.userPreferences.value = {
+				id: 'pref-1',
+				preferences: JSON.stringify({
+					goals: [
+						{ goalName: 'Goal 1', status: 'completed' },
+						{ goalName: 'Goal 2', status: 'expired' },
+					],
+				}),
+			};
+			expect(composable.showRenewedAnnualGoalToast.value).toBe(false);
+		});
+
+		it('returns true if there are no goals', () => {
+			composable.userPreferences.value = {
+				id: 'pref-1',
+				preferences: JSON.stringify({ goals: [] }),
+			};
+			expect(composable.showRenewedAnnualGoalToast.value).toBe(false);
+		});
+	});
+
+	describe('goalsAreRenewed', () => {
+		it('returns true if at least one goal is expired', () => {
+			composable.userPreferences.value = {
+				id: 'pref-1',
+				preferences: JSON.stringify({
+					goals: [
+						{ goalName: 'Goal 1', status: 'expired' },
+						{ goalName: 'Goal 2', status: 'in-progress' },
+					],
+				}),
+			};
+			expect(composable.goalsAreRenewed.value).toBe(true);
+		});
+
+		it('returns false if no goals are expired', () => {
+			composable.userPreferences.value = {
+				id: 'pref-1',
+				preferences: JSON.stringify({
+					goals: [
+						{ goalName: 'Goal 1', status: 'in-progress' },
+						{ goalName: 'Goal 2', status: 'completed' },
+					],
+				}),
+			};
+			expect(composable.goalsAreRenewed.value).toBe(false);
+		});
+
+		it('returns false if there are no goals', () => {
+			composable.userPreferences.value = {
+				id: 'pref-1',
+				preferences: JSON.stringify({ goals: [] }),
+			};
+			expect(composable.goalsAreRenewed.value).toBe(false);
 		});
 	});
 });
