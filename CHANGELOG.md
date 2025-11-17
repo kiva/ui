@@ -1,3 +1,47 @@
+## [3.44.0](https://github.com/kiva/ui/compare/v3.43.0...v3.44.0) (2025-11-14)
+
+### 🎉 New Features
+
+* log user id mismatch in authentication guard ([441494b](https://github.com/kiva/ui/commit/441494b20dfcaf09bf218b43b9b434c2e081f409))
+* thanks page goals entrypoint logic ([#6447](https://github.com/kiva/ui/issues/6447)) ([5974c3d](https://github.com/kiva/ui/commit/5974c3db46b08c485bd70909bfce79a979f7a959))
+
+### 🐛 Bugfixes
+
+* another carousel overflow tweak ([e1cd41a](https://github.com/kiva/ui/commit/e1cd41ad2a07c4901e971738be5f75a07674176f))
+* consistent mykiva carousel paging ([6843696](https://github.com/kiva/ui/commit/68436969c0bba79e0bcd167fa1b3e99cba0ebcf0))
+* ensure scrolling to anchors works after initial render ([b2793ef](https://github.com/kiva/ui/commit/b2793efb776d7b178deb34003d61a5c0437c58a7))
+* improve carousel gap for mobile ([be3bba6](https://github.com/kiva/ui/commit/be3bba602a0d29d70aef2570035f4da780408fc4))
+* missed one ([c8c0825](https://github.com/kiva/ui/commit/c8c0825cf18b87d9b4e448f14d3f6b3c72b3a87b))
+* reduce max width for gf card on mykiva and portfolio to prevent overflow on phones ([4bb5f05](https://github.com/kiva/ui/commit/4bb5f051380e90dcc4cb2077b001c29d59dcbbbb))
+* remove partially supported slides to scroll ([0b18200](https://github.com/kiva/ui/commit/0b18200e3780c7338fecf4b9dbc5ca654feffcca))
+* resolve issues with carousel overflow and shadow cutoff ([0874b22](https://github.com/kiva/ui/commit/0874b223795038f8aa727583391e6e8edb048509))
+* update carousel buttons ([6c4aeb0](https://github.com/kiva/ui/commit/6c4aeb02453edb0f1eaea86661843d3bb2f6e02b))
+* update create a new fund button and add make a first donation message ([3a0167e](https://github.com/kiva/ui/commit/3a0167e9f82140ddc30d96fd4fbfeefb34fde6f0))
+
+### 🧹 Chores
+
+* **release:** 3.44.0-rc.1 [skip ci] ([2038f10](https://github.com/kiva/ui/commit/2038f1070b3642f24e316c65c39785d0ce8b66d2)), closes [#6447](https://github.com/kiva/ui/issues/6447)
+
+## [3.44.0-rc.1](https://github.com/kiva/ui/compare/v3.43.0...v3.44.0-rc.1) (2025-11-14)
+
+### 🎉 New Features
+
+* log user id mismatch in authentication guard ([441494b](https://github.com/kiva/ui/commit/441494b20dfcaf09bf218b43b9b434c2e081f409))
+* thanks page goals entrypoint logic ([#6447](https://github.com/kiva/ui/issues/6447)) ([5974c3d](https://github.com/kiva/ui/commit/5974c3db46b08c485bd70909bfce79a979f7a959))
+
+### 🐛 Bugfixes
+
+* another carousel overflow tweak ([e1cd41a](https://github.com/kiva/ui/commit/e1cd41ad2a07c4901e971738be5f75a07674176f))
+* consistent mykiva carousel paging ([6843696](https://github.com/kiva/ui/commit/68436969c0bba79e0bcd167fa1b3e99cba0ebcf0))
+* ensure scrolling to anchors works after initial render ([b2793ef](https://github.com/kiva/ui/commit/b2793efb776d7b178deb34003d61a5c0437c58a7))
+* improve carousel gap for mobile ([be3bba6](https://github.com/kiva/ui/commit/be3bba602a0d29d70aef2570035f4da780408fc4))
+* missed one ([c8c0825](https://github.com/kiva/ui/commit/c8c0825cf18b87d9b4e448f14d3f6b3c72b3a87b))
+* reduce max width for gf card on mykiva and portfolio to prevent overflow on phones ([4bb5f05](https://github.com/kiva/ui/commit/4bb5f051380e90dcc4cb2077b001c29d59dcbbbb))
+* remove partially supported slides to scroll ([0b18200](https://github.com/kiva/ui/commit/0b18200e3780c7338fecf4b9dbc5ca654feffcca))
+* resolve issues with carousel overflow and shadow cutoff ([0874b22](https://github.com/kiva/ui/commit/0874b223795038f8aa727583391e6e8edb048509))
+* update carousel buttons ([6c4aeb0](https://github.com/kiva/ui/commit/6c4aeb02453edb0f1eaea86661843d3bb2f6e02b))
+* update create a new fund button and add make a first donation message ([3a0167e](https://github.com/kiva/ui/commit/3a0167e9f82140ddc30d96fd4fbfeefb34fde6f0))
+
 ## [3.43.0](https://github.com/kiva/ui/compare/v3.42.0...v3.43.0) (2025-11-13)
 
 ### 🎉 New Features

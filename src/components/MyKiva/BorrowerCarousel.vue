@@ -60,7 +60,7 @@
 					:class="{ 'tw--mt-6': controlsTopRight }"
 					:multiple-slides-visible="true"
 					:slide-max-width="singleSlideWidth"
-					:embla-options="{ loop: false, align: 'center'}"
+					:embla-options="{ loop: false, align: 'start' }"
 					:controls-top-right="controlsTopRight"
 					@change="onInteractCarousel"
 				>

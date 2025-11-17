@@ -3,7 +3,14 @@
 		<KvPageContainer>
 			<KvGrid class="tw-grid-cols-12 md:tw-mx-0">
 				<div class="tw-col-span-12 tw-pt-1.5 md:tw-pt-3">
-					<div class="tw-py-2 md:tw-py-3 tw-flex tw-flex-col md:tw-flex-row tw-justify-between">
+					<div
+						class="
+							tw-pt-2 tw-pb-4 md:tw-py-3
+							tw-flex tw-flex-col md:tw-flex-row
+							tw-justify-between
+							tw-items-center
+						"
+					>
 						<div>
 							<h1 class="tw-mb-1 tw-break-words">
 								Your giving funds
@@ -14,12 +21,13 @@
 						</div>
 						<kv-button
 							v-if="givingFundsEntries?.length"
+							class="tw-w-full md:tw-w-auto"
 							variant="primary"
 							:href="`#`"
 							@click.prevent="openCreateFundLightbox"
 							v-kv-track-event="['giving-funds', 'click', 'Create a new fund']"
 						>
-							Create a new fund
+							+ Create a new fund
 						</kv-button>
 						<!-- eslint-disable max-len -->
 						<kv-lightbox
