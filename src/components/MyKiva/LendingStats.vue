@@ -239,6 +239,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		goalsEntrypointEnable: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
