@@ -42,6 +42,7 @@ import _isEqual from 'lodash/isEqual';
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import logReadQueryError from '#src/util/logReadQueryError';
+import { formatPossessiveName } from '#src/util/stringParserUtils';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import lenderLoansQuery from '#src/graphql/query/lenderLoans.graphql';
 import NewHomePageLoanCard from '#src/components/LoanCards/NewHomePageLoanCard';
@@ -78,7 +79,7 @@ export default {
 	computed: {
 		lenderLoansTitle() {
 			return this.lenderInfo?.name
-				? `${this.lenderInfo.name}'s loans`
+				? `${formatPossessiveName(this.lenderInfo.name)} loans`
 				: 'Loans';
 		},
 		showedLoans() {
