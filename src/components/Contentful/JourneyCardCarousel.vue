@@ -6,7 +6,30 @@
 		>
 			Take the <u>next step</u> on your impact journey
 		</h2>
+		<!-- Mobile-->
+		<div
+			v-if="isMobile && inLendingStats"
+			class="tw-flex tw-flex-col tw-gap-2"
+		>
+			<GoalCard
+				v-if="shouldShowGoalCard"
+				:goal-progress="goalProgress"
+				:hero-slides="slides"
+				:loading="goalProgressLoading"
+				:user-goal="userGoal"
+				@open-goal-modal="$emit('open-goal-modal')"
+			/>
+
+			<MyKivaEmailUpdatesCard
+				v-if="showEmailUpdatesCard"
+				v-kv-track-event="['portfolio', 'view', 'next-step-email-option']"
+				:loans="loans"
+			/>
+		</div>
+
+		<!-- Desktop-->
 		<KvCarousel
+			v-else
 			:key="orderedSlides.length"
 			:embla-options="{
 				loop: false,
@@ -35,7 +58,7 @@
 					@open-goal-modal="$emit('open-goal-modal')"
 				/>
 				<MyKivaEmailUpdatesCard
-					v-else-if="showEmailUpdatesCard && index === 1"
+					v-else-if="isEmailUpdatesSlide(slide) && showEmailUpdatesCard"
 					v-kv-track-event="['portfolio', 'view', 'next-step-email-option']"
 					:loans="loans"
 				/>
@@ -187,13 +210,17 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	showEmailOptInSlide: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
 const currentIndex = ref(0);
 const isSharingModalVisible = ref(false);
-const showEmailUpdatesCard = computed(() => props.userInfo?.isOptedIn === false);
-
+const showEmailUpdatesCard = computed(() => props.showEmailOptInSlide === true && props.userInfo?.isOptedIn === false);
+// const showEmailUpdatesCard = computed(() => true);
 const badgesData = computed(() => {
 	const badgeContentfulData = (props.heroContentfulData ?? [])
 		.map(entry => getContentfulLevelData(entry));
@@ -294,6 +321,11 @@ const orderedSlides = computed(() => {
 	if (shouldShowGoalCard.value) {
 		// Add empty slide at start for goal card
 		sortedSlides.unshift({});
+	}
+
+	if (props.showEmailOptInSlide && showEmailUpdatesCard.value) {
+		const emailSlideIndex = 1;
+		sortedSlides.splice(emailSlideIndex, 0, { isEmailUpdates: true });
 	}
 
 	if (props.slidesNumber) {
@@ -443,6 +475,8 @@ const handleChange = interaction => {
 };
 
 const isCustomCard = slide => !!slide?.isCustomCard;
+
+const isEmailUpdatesSlide = slide => !!slide?.isEmailUpdates;
 
 const showGoalCard = idx => {
 	if (!props.inLendingStats) return false;

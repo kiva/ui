@@ -13,16 +13,18 @@
 				Email updates
 			</span>
 		</span>
-		<KvBorrowerImage
-			class="tw-relative tw-w-full tw-overflow tw-rounded"
-			:alt="name"
-			:hash="hash"
-			:aspect-ratio="3 / 4"
-			:default-image="{ width: 304 }"
-			:images="[{ width: 304 }]"
-			:photo-path="$appConfig.photoPath"
-		/>
-		<h3 class="tw-pt-1 tw-text-nowrap">
+		<div class="tw-relative tw-w-full tw-overflow">
+			<KvBorrowerImage
+				class="tw-w-full tw-h-full tw-object-cover tw-rounded"
+				:alt="name"
+				:hash="hash"
+				:aspect-ratio="3 / 4"
+				:default-image="{ width: 304 }"
+				:images="[{ width: 304 }]"
+				:photo-path="$appConfig.photoPath"
+			/>
+		</div>
+		<h3 class="tw-pt-1">
 			Follow {{ borrowerName }}'s journey
 		</h3>
 		<p class="tw-font-medium tw-text-base tw-pt-0.5">
@@ -86,5 +88,8 @@ const handleEmailOptIn = async () => {
 .card-container {
 	@apply tw-w-full tw-relative tw-rounded tw-shadow tw-p-4 tw-flex tw-flex-col tw-bg-white
 	tw-shrink-0 tw-overflow-hidden;
+
+	width: 336px;
+	min-height: 365px;
 }
 </style>

@@ -15,6 +15,7 @@
 			<div class="card-container tw-shrink-0">
 				<JourneyCardCarousel
 					class="carousel carousel-single"
+					show-email-opt-in-slide
 					user-in-homepage
 					in-lending-stats
 					:disable-drag="true"
@@ -25,7 +26,7 @@
 					:lender="lender"
 					:loans="loans"
 					:user-info="userInfo"
-					:slides-number="1"
+					:slides-number="2"
 					:slides="heroSlides"
 					:user-goal-enabled="isNextStepsExpEnabled"
 					:user-goal-achieved="userGoalAchieved"
@@ -142,6 +143,7 @@
 		<JourneyCardCarousel
 			v-else
 			class="carousel tw--mt-6"
+			show-email-opt-in-slide
 			user-in-homepage
 			in-lending-stats
 			controls-top-right
