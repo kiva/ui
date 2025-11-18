@@ -207,29 +207,15 @@ export default function useGoalData({ apollo }) {
 			setGoalState({ goals: expiredGoals });
 		}
 
-		return expiredGoals;
+		const showRenewedAnnualGoalToast = !!expiredGoals.length
+			&& !expiredGoals.some(g => g.status === GOAL_STATUS.COMPLETED);
+
+		return {
+			expiredGoals,
+			showRenewedAnnualGoalToast,
+			goalsRenewed: parsedPrefs?.goalsRenewed || false,
+		};
 	}
-
-	/**
-	 * Determines if the renew goal toast should be shown
-	 */
-	const showRenewedAnnualGoalToast = computed(() => {
-		const parsedPrefs = userPreferences.value
-			? JSON.parse(userPreferences.value.preferences || '{}')
-			: {};
-		const goals = parsedPrefs.goals || [];
-		return !!goals.length && !goals.some(goal => goal.status === GOAL_STATUS.COMPLETED);
-	});
-
-	/**
-	 * Determines if all goals are renewed (inactive)
-	 */
-	const goalsRenewed = computed(() => {
-		const parsedPrefs = userPreferences.value
-			? JSON.parse(userPreferences.value.preferences || '{}')
-			: {};
-		return parsedPrefs?.goalsRenewed || false;
-	});
 
 	return {
 		getGoalDisplayName,
@@ -245,7 +231,5 @@ export default function useGoalData({ apollo }) {
 		// Goal Entry for 2026 Goals
 		userPreferences,
 		renewAnnualGoal,
-		showRenewedAnnualGoalToast,
-		goalsRenewed,
 	};
 }

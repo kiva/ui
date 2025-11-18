@@ -872,8 +872,8 @@ describe('useGoalData', () => {
 			const today = new Date('2026-06-01T00:00:00Z');
 			const updatedGoals = await composable.renewAnnualGoal(today);
 
-			expect(updatedGoals[0].status).toBe(GOAL_STATUS.EXPIRED); // Previous year
-			expect(updatedGoals[1].status).toBe(GOAL_STATUS.IN_PROGRESS); // Current year
+			expect(updatedGoals.expiredGoals[0].status).toBe(GOAL_STATUS.EXPIRED); // Previous year
+			expect(updatedGoals.expiredGoals[1].status).toBe(GOAL_STATUS.IN_PROGRESS); // Current year
 		});
 
 		it('should add goalsRenewed flag to preferences when there were no previous goals', async () => {
@@ -895,81 +895,12 @@ describe('useGoalData', () => {
 			const today = new Date('2026-06-01T00:00:00Z');
 			const updatedGoals = await composable.renewAnnualGoal(today);
 
-			expect(updatedGoals).toEqual([]);
+			expect(updatedGoals).toEqual({
+				expiredGoals: [],
+				goalsRenewed: true,
+				showRenewedAnnualGoalToast: false,
+			});
 			expect(updateUserPreferences).toHaveBeenCalled();
-		});
-	});
-
-	describe('showRenewedAnnualGoalToast', () => {
-		it('returns true if no goals are completed', () => {
-			composable.userPreferences.value = {
-				id: 'pref-1',
-				preferences: JSON.stringify({
-					goals: [
-						{ goalName: 'Goal 1', status: 'in-progress' },
-						{ goalName: 'Goal 2', status: 'expired' },
-					],
-				}),
-			};
-			expect(composable.showRenewedAnnualGoalToast.value).toBe(true);
-		});
-
-		it('returns false if at least one goal is completed', () => {
-			composable.userPreferences.value = {
-				id: 'pref-1',
-				preferences: JSON.stringify({
-					goals: [
-						{ goalName: 'Goal 1', status: 'completed' },
-						{ goalName: 'Goal 2', status: 'expired' },
-					],
-				}),
-			};
-			expect(composable.showRenewedAnnualGoalToast.value).toBe(false);
-		});
-
-		it('returns true if there are no goals', () => {
-			composable.userPreferences.value = {
-				id: 'pref-1',
-				preferences: JSON.stringify({ goals: [] }),
-			};
-			expect(composable.showRenewedAnnualGoalToast.value).toBe(false);
-		});
-	});
-
-	describe('goalsRenewed', () => {
-		it('returns false if flag is not present in preferences', () => {
-			composable.userPreferences.value = {
-				id: 'pref-1',
-				preferences: JSON.stringify({
-					goals: [
-						{ goalName: 'Goal 1', status: 'in-progress' },
-						{ goalName: 'Goal 2', status: 'completed' },
-					],
-				}),
-			};
-			expect(composable.goalsRenewed.value).toBe(false);
-		});
-
-		it('returns true if goals are expired', () => {
-			composable.userPreferences.value = {
-				id: 'pref-1',
-				preferences: JSON.stringify({
-					goals: [
-						{ goalName: 'Goal 1', status: 'in-progress' },
-						{ goalName: 'Goal 2', status: 'completed' },
-					],
-					goalsRenewed: true,
-				}),
-			};
-			expect(composable.goalsRenewed.value).toBe(true);
-		});
-
-		it('returns false if there are no goals', () => {
-			composable.userPreferences.value = {
-				id: 'pref-1',
-				preferences: JSON.stringify({ goals: [], goalsRenewed: false }),
-			};
-			expect(composable.goalsRenewed.value).toBe(false);
 		});
 	});
 });
