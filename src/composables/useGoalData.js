@@ -199,7 +199,7 @@ export default function useGoalData({ apollo }) {
 			return goal;
 		});
 
-		if (!expiredGoals.length || expiredGoals.some(goal => goal.status === GOAL_STATUS.EXPIRED)) {
+		if (expiredGoals.some(goal => goal.status === GOAL_STATUS.EXPIRED)) {
 			parsedPrefs.goals = expiredGoals;
 			parsedPrefs.goalsRenewed = true;
 

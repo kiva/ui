@@ -897,7 +897,7 @@ describe('useGoalData', () => {
 
 			expect(updatedGoals).toEqual({
 				expiredGoals: [],
-				goalsRenewed: true,
+				goalsRenewed: false,
 				showRenewedAnnualGoalToast: false,
 			});
 			expect(updateUserPreferences).toHaveBeenCalled();
