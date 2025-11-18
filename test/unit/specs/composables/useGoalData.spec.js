@@ -846,63 +846,6 @@ describe('useGoalData', () => {
 		});
 	});
 
-	describe('updateCurrentGoals', () => {
-		it('should replace all goals in preferences', async () => {
-			mockApollo.query = vi.fn().mockResolvedValue({
-				data: {
-					my: {
-						userPreferences: {
-							id: 'new-pref-id',
-							preferences: JSON.stringify({ goals: [] }),
-						},
-						loans: { totalCount: 0 },
-					},
-				},
-			});
-
-			await composable.storeGoalPreferences({
-				goalName: 'Old Goal',
-				status: 'in-progress',
-				dateStarted: '2025-01-01'
-			});
-
-			expect(composable.userGoal.value.goalName).toContain('Old Goal');
-
-			const newGoals = [
-				{
-					goalName: 'Renewed Goal', status: 'active', active: true, dateStarted: '2026-01-01'
-				},
-			];
-			await composable.updateCurrentGoals(newGoals);
-			expect(composable.userGoal.value.goalName).toContain('Renewed Goal');
-			expect(composable.userGoal.value.active).toBeTruthy();
-		});
-
-		it('should handle empty goals array', async () => {
-			mockApollo.query = vi.fn().mockResolvedValue({
-				data: {
-					my: {
-						userPreferences: {
-							id: 'new-pref-id',
-							preferences: JSON.stringify({ goals: [] }),
-						},
-						loans: { totalCount: 0 },
-					},
-				},
-			});
-
-			await composable.storeGoalPreferences({
-				goalName: 'Old Goal',
-				status: 'in-progress',
-				dateStarted: '2025-01-01'
-			});
-			expect(composable.userGoal.value.goalName).toContain('Old Goal');
-
-			await composable.updateCurrentGoals([]);
-			expect(composable.userGoal.value).toEqual({});
-		});
-	});
-
 	describe('renewAnnualGoal', () => {
 		it('should expire only goals from previous years', async () => {
 			mockApollo.query = vi.fn().mockResolvedValue({
@@ -931,6 +874,29 @@ describe('useGoalData', () => {
 
 			expect(updatedGoals[0].status).toBe(GOAL_STATUS.EXPIRED); // Previous year
 			expect(updatedGoals[1].status).toBe(GOAL_STATUS.IN_PROGRESS); // Current year
+		});
+
+		it('should add goalsRenewed flag to preferences when there were no previous goals', async () => {
+			const {
+				updateUserPreferences,
+			} = await import('#src/util/userPreferenceUtils');
+
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'new-pref-id',
+							preferences: JSON.stringify({ goals: [] }),
+						},
+					},
+				},
+			});
+
+			const today = new Date('2026-06-01T00:00:00Z');
+			const updatedGoals = await composable.renewAnnualGoal(today);
+
+			expect(updatedGoals).toEqual([]);
+			expect(updateUserPreferences).toHaveBeenCalled();
 		});
 	});
 
@@ -970,21 +936,8 @@ describe('useGoalData', () => {
 		});
 	});
 
-	describe('goalsAreRenewed', () => {
-		it('returns true if at least one goal is expired', () => {
-			composable.userPreferences.value = {
-				id: 'pref-1',
-				preferences: JSON.stringify({
-					goals: [
-						{ goalName: 'Goal 1', status: 'expired' },
-						{ goalName: 'Goal 2', status: 'in-progress' },
-					],
-				}),
-			};
-			expect(composable.goalsAreRenewed.value).toBe(true);
-		});
-
-		it('returns false if no goals are expired', () => {
+	describe('goalsRenewed', () => {
+		it('returns false if flag is not present in preferences', () => {
 			composable.userPreferences.value = {
 				id: 'pref-1',
 				preferences: JSON.stringify({
@@ -994,15 +947,29 @@ describe('useGoalData', () => {
 					],
 				}),
 			};
-			expect(composable.goalsAreRenewed.value).toBe(false);
+			expect(composable.goalsRenewed.value).toBe(false);
+		});
+
+		it('returns true if goals are expired', () => {
+			composable.userPreferences.value = {
+				id: 'pref-1',
+				preferences: JSON.stringify({
+					goals: [
+						{ goalName: 'Goal 1', status: 'in-progress' },
+						{ goalName: 'Goal 2', status: 'completed' },
+					],
+					goalsRenewed: true,
+				}),
+			};
+			expect(composable.goalsRenewed.value).toBe(true);
 		});
 
 		it('returns false if there are no goals', () => {
 			composable.userPreferences.value = {
 				id: 'pref-1',
-				preferences: JSON.stringify({ goals: [] }),
+				preferences: JSON.stringify({ goals: [], goalsRenewed: false }),
 			};
-			expect(composable.goalsAreRenewed.value).toBe(false);
+			expect(composable.goalsRenewed.value).toBe(false);
 		});
 	});
 });

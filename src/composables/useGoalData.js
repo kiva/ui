@@ -182,17 +182,6 @@ export default function useGoalData({ apollo }) {
 	}
 
 	/**
-	 * Should only be used in renewAnnualGoal. Uupdate all previous goals with a new flag.
-	 * @param {*} newGoals - Array of new goal objects to set
-	 */
-	async function updateCurrentGoals(newGoals) {
-		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
-		parsedPrefs.goals = newGoals;
-		await updateUserPreferences(apollo, userPreferences.value, parsedPrefs, { goals: newGoals });
-		setGoalState({ goals: newGoals });
-	}
-
-	/**
 	 * This method shows Goal Entry for 2026 Goals
 	 * It invalidates all goals on Jan 1st of 2026
 	 * @return {Array} - expiredGoals
@@ -210,8 +199,12 @@ export default function useGoalData({ apollo }) {
 			return goal;
 		});
 
-		if (expiredGoals.some(goal => goal.status === GOAL_STATUS.EXPIRED)) {
-			await updateCurrentGoals(expiredGoals);
+		if (!expiredGoals.length || expiredGoals.some(goal => goal.status === GOAL_STATUS.EXPIRED)) {
+			parsedPrefs.goals = expiredGoals;
+			parsedPrefs.goalsRenewed = true;
+
+			await updateUserPreferences(apollo, userPreferences.value, parsedPrefs, { goals: expiredGoals });
+			setGoalState({ goals: expiredGoals });
 		}
 
 		return expiredGoals;
@@ -231,13 +224,11 @@ export default function useGoalData({ apollo }) {
 	/**
 	 * Determines if all goals are renewed (inactive)
 	 */
-	const goalsAreRenewed = computed(() => {
+	const goalsRenewed = computed(() => {
 		const parsedPrefs = userPreferences.value
 			? JSON.parse(userPreferences.value.preferences || '{}')
 			: {};
-		const goals = parsedPrefs.goals || [];
-
-		return goals.some(goal => goal.status === GOAL_STATUS.EXPIRED);
+		return parsedPrefs?.goalsRenewed || false;
 	});
 
 	return {
@@ -253,9 +244,8 @@ export default function useGoalData({ apollo }) {
 		getProgressByLoan,
 		// Goal Entry for 2026 Goals
 		userPreferences,
-		updateCurrentGoals,
 		renewAnnualGoal,
 		showRenewedAnnualGoalToast,
-		goalsAreRenewed,
+		goalsRenewed,
 	};
 }
