@@ -4,7 +4,6 @@
  * @param {string} name
  * @returns {string}
  */
-
 export function formatPossessiveName(name) {
 	const trimmed = (name ?? '').trim();
 	if (!trimmed) { return ''; }
