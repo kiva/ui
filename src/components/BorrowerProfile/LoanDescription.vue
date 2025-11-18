@@ -7,7 +7,7 @@
 				Story
 			</h2>
 			<h2 v-if="!isAnonymizationLevelFull">
-				{{ borrowerOrGroupName }}'s story
+				{{ borrowerPossessiveName }} story
 			</h2>
 		</div>
 		<div class="tw-prose">
@@ -92,6 +92,7 @@
 import { toParagraphs } from '#src/util/loanUtils';
 import previousLoanDescription from '#src/components/BorrowerProfile/PreviousLoanDescription';
 import { KvLightbox } from '@kiva/kv-components';
+import { formatPossessiveName } from '#src/util/stringParserUtils';
 
 export default {
 	name: 'LoanDescription',
@@ -180,10 +181,13 @@ export default {
 			return this.reviewer?.bylineName ?? '';
 		},
 		lightboxTitle() {
-			return this.isAnonymizationLevelFull ? 'Story' : `${this.borrowerOrGroupName}'s story`;
+			return this.isAnonymizationLevelFull ? 'Story' : `${this.borrowerPossessiveName} story`;
 		},
 		showReviewersName() {
 			return this.reviewer?.showName;
+		},
+		borrowerPossessiveName() {
+			return formatPossessiveName(this.borrowerOrGroupName);
 		},
 	},
 	methods: {
