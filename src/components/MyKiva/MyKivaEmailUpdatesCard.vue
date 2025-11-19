@@ -24,11 +24,11 @@
 				:photo-path="$appConfig.photoPath"
 			/>
 		</div>
-		<div class="tw-flex tw-flex-col tw-pt-1">
+		<div class="tw-flex tw-flex-col tw-pt-1 tw-grow">
 			<h3>
 				Follow {{ borrowerName }} journey
 			</h3>
-			<p class="tw-font-medium tw-text-base tw-pt-0.5">
+			<p class="tw-font-medium tw-text-base tw-pt-0.5 tw-grow">
 				Don't miss out on borrower updates, stories, and new ways to help.
 			</p>
 			<div class="tw-pt-1">
