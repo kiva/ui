@@ -73,6 +73,7 @@ import _get from 'lodash/get';
 import numeral from 'numeral';
 import { mdiAccountCircle } from '@mdi/js';
 import logReadQueryError from '#src/util/logReadQueryError';
+import { formatPossessiveName } from '#src/util/stringParserUtils';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import lenderDedicationsQuery from '#src/graphql/query/lenderDedications.graphql';
 import DedicateHeart from '#src/assets/icons/inline/dedicate-heart.svg';
@@ -113,7 +114,7 @@ export default {
 	computed: {
 		lenderDedicationsTitle() {
 			return this.lenderInfo?.name
-				? `${this.lenderInfo.name}'s loan dedications`
+				? `${formatPossessiveName(this.lenderInfo.name)} loan dedications`
 				: 'Loan dedications';
 		},
 		showedDedications() {
