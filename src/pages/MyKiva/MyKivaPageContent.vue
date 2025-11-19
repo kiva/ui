@@ -44,6 +44,7 @@
 				:hero-tiered-achievements="heroTieredAchievements"
 				:total-loans="totalLoans"
 				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
+				:goals-entrypoint-enable="goalsEntrypointEnable"
 			/>
 		</section>
 		<MyKivaBorrowerCarousel
@@ -285,6 +286,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		goalsEntrypointEnable: {
+			type: Boolean,
+			default: false
+		}
 	},
 	setup() {
 		const apollo = inject('apollo');

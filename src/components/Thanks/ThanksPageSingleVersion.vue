@@ -36,11 +36,16 @@
 				@continue-clicked="handleContinue"
 				class="tw-mb-2.5"
 			/>
+			<!-- TODO: update loading prop as BE work is done for last year women loans -->
 			<GoalEntrypoint
 				v-if="thanksPageGoalsEntrypointEnable && !isGuest && isEmptyGoal"
-				:loading="goalDataLoading"
+				:loading="false"
 				:total-loans="totalLoans"
-				:tiered-achievements="tieredAchievements"
+				:categories-loan-count="categoriesLoanCount"
+				:is-goal-set="isGoalSet"
+				@edit-goal="showGoalModal = true"
+				@set-goal-target="setGoalTarget"
+				@set-goal="setGoal"
 				class="tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
@@ -82,6 +87,15 @@
 				:guest-username="guestUsername"
 			/>
 		</KvLightbox>
+		<GoalSettingModal
+			:show="showGoalModal"
+			:total-loans="totalLoans"
+			:categories-loan-count="categoriesLoanCount"
+			:is-thanks-page="true"
+			:number-of-loans="goalTarget"
+			@close-goal-modal="showGoalModal = false"
+			@set-goal="setGoal"
+		/>
 	</div>
 </template>
 
@@ -108,7 +122,9 @@ import AccountReceiptShare from '#src/components/Thanks/SingleVersion/AccountRec
 import JourneyGeneralPrompt from '#src/components/Thanks/SingleVersion/JourneyGeneralPrompt';
 import BadgeMilestone from '#src/components/Thanks/SingleVersion/BadgeMilestone';
 import GoalEntrypoint from '#src/components/Thanks/SingleVersion/GoalEntrypoint';
+import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import useGoalData from '#src/composables/useGoalData';
+import useBadgeData from '#src/composables/useBadgeData';
 import { setGuestAssignmentCookie } from '#src/util/myKivaUtils';
 
 const EVENT_CATEGORY = 'post-checkout';
@@ -177,6 +193,10 @@ const receiptSection = ref(null);
 const showGuestAccountModal = ref(false);
 const showReceipt = ref(false);
 const router = useRouter();
+const showGoalModal = ref(false);
+const isGoalSet = ref(false);
+const isEmptyGoal = ref(true);
+const goalTarget = ref(0);
 
 const {
 	userGoal,
@@ -185,6 +205,7 @@ const {
 	loadGoalData,
 	checkCompletedGoal,
 	loading: goalDataLoading,
+	storeGoalPreferences,
 } = useGoalData({ apollo });
 
 // Initialize goalDataInitialized to track if we've loaded goal data
@@ -241,7 +262,10 @@ const showJourneyModule = computed(() => {
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
 /* eslint-enable max-len */
 
-const isEmptyGoal = computed(() => Object.keys(userGoal.value || {}).length === 0);
+const categoriesLoanCount = computed(() => {
+	const { getAllCategoryLoanCounts } = useBadgeData();
+	return getAllCategoryLoanCounts(props.tieredAchievements);
+});
 
 const showConfetti = () => {
 	confetti({
@@ -286,11 +310,22 @@ const handleContinue = () => {
 	}
 };
 
+const setGoal = async preferences => {
+	await storeGoalPreferences(preferences);
+	isGoalSet.value = true;
+	showGoalModal.value = false;
+};
+
+const setGoalTarget = target => {
+	goalTarget.value = target;
+};
+
 onMounted(async () => {
 	if (props.isNextStepsExpEnabled) {
 		await loadGoalData(props.loans);
 		await checkCompletedGoal();
 		goalDataInitialized.value = true;
+		isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
 	}
 	showConfetti();
 	const isOptInLoan = showOptInModule.value && props.loans.length > 0;

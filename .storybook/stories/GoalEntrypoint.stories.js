@@ -15,7 +15,7 @@ const story = (args) => {
 				<goal-entrypoint
 					:loading="loading"
 					:total-loans="totalLoans"
-					:tiered-achievements="tieredAchievements"
+					:categories-loan-count="categoriesLoanCount"
 				/>
 			</div>
 		`,
@@ -37,23 +37,15 @@ export const NoWomenLoansPastYear = story({
 export const OneDigitLoans = story({
 	loading: false,
 	totalLoans: 2,
-	tieredAchievements: [
-		{
-			__typename: "TieredLendingAchievement",
-			id: "womens-equality",
-			totalProgressToAchievement: 2,
-		}
-	],
+	categoriesLoanCount: {
+		"womens-equality": 2,
+	},
 });
 
 export const ThreeDigitsLoans = story({
 	loading: false,
 	totalLoans: 200,
-	tieredAchievements: [
-		{
-			__typename: "TieredLendingAchievement",
-			id: "womens-equality",
-			totalProgressToAchievement: 200,
-		}
-	],
+	categoriesLoanCount: {
+		"womens-equality": 200,
+	},
 });
