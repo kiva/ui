@@ -1,3 +1,14 @@
+## [3.45.0-rc.2](https://github.com/kiva/ui/compare/v3.45.0-rc.1...v3.45.0-rc.2) (2025-11-19)
+
+### 🎉 New Features
+
+* **live-loans:** retry borrower image loading or use fallback without caching ([cc9732c](https://github.com/kiva/ui/commit/cc9732c805319cd9e42e7e3f3809bcbbca10ba25))
+* mykiva goal entrypoint refactor ([#6457](https://github.com/kiva/ui/issues/6457)) ([e099400](https://github.com/kiva/ui/commit/e099400076269b3c101e54a488083b11aa092274))
+
+### 🔍 Tests
+
+* **live-loans:** add tests for canvas-image-utils ([fef5777](https://github.com/kiva/ui/commit/fef57771c83e7da967696f8509dcac8ccb80ccc7))
+
 ## [3.45.0-rc.1](https://github.com/kiva/ui/compare/v3.44.0...v3.45.0-rc.1) (2025-11-18)
 
 ### 🎉 New Features
