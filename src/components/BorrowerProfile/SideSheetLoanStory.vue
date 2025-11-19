@@ -77,6 +77,7 @@
 import { computed, ref, inject } from 'vue';
 import { toParagraphs } from '#src/util/loanUtils';
 import { KvLightbox } from '@kiva/kv-components';
+import { formatPossessiveName } from '#src/util/stringParserUtils';
 import PreviousLoanDescription from './PreviousLoanDescription';
 
 const borrowerProfile = inject('borrowerProfile');
@@ -125,8 +126,10 @@ const showReviewersName = computed(() => reviewer.value?.showName ?? false);
 
 const youtubeId = computed(() => video.value?.youtubeId ?? '');
 
+const borrowerPossessiveName = computed(() => formatPossessiveName(name.value));
+
 const lightboxTitle = computed(() => {
-	return anonymizationLevel.value === 'full' ? 'Story' : `${name.value}'s story`;
+	return anonymizationLevel.value === 'full' ? 'Story' : `${borrowerPossessiveName.value} story`;
 });
 
 const descriptionInOriginalLanguageParagraphs = computed(() => toParagraphs(descriptionInOriginalLanguage.value));

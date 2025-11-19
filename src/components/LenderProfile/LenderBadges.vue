@@ -43,6 +43,7 @@
 
 <script setup>
 import { computed, inject, ref } from 'vue';
+import { formatPossessiveName } from '#src/util/stringParserUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import useBadgeData from '#src/composables/useBadgeData';
 import { STATE_EARNED } from '#src/composables/useBadgeModal';
@@ -105,7 +106,7 @@ const showedBadges = computed(() => {
 
 const badgesTitle = computed(() => (
 	props.lenderInfo?.name
-		? `${props.lenderInfo.name}'s achievements`
+		? `${formatPossessiveName(props.lenderInfo.name)} achievements`
 		: 'Achievements'
 ));
 

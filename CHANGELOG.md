@@ -1,3 +1,25 @@
+## [3.45.0-rc.2](https://github.com/kiva/ui/compare/v3.45.0-rc.1...v3.45.0-rc.2) (2025-11-19)
+
+### 🎉 New Features
+
+* **live-loans:** retry borrower image loading or use fallback without caching ([cc9732c](https://github.com/kiva/ui/commit/cc9732c805319cd9e42e7e3f3809bcbbca10ba25))
+* mykiva goal entrypoint refactor ([#6457](https://github.com/kiva/ui/issues/6457)) ([e099400](https://github.com/kiva/ui/commit/e099400076269b3c101e54a488083b11aa092274))
+
+### 🔍 Tests
+
+* **live-loans:** add tests for canvas-image-utils ([fef5777](https://github.com/kiva/ui/commit/fef57771c83e7da967696f8509dcac8ccb80ccc7))
+
+## [3.45.0-rc.1](https://github.com/kiva/ui/compare/v3.44.0...v3.45.0-rc.1) (2025-11-18)
+
+### 🎉 New Features
+
+* add gf started date to management card ([6f8de98](https://github.com/kiva/ui/commit/6f8de98e1c65e0ad85138700a3ae90bc34150227))
+* goals entrypoint for same last year loans ([#6451](https://github.com/kiva/ui/issues/6451)) ([744df63](https://github.com/kiva/ui/commit/744df631cf373e7d95d93eeac1fe36bf68709619))
+* implementing util file in instances when names are in possessive form ([b1a253c](https://github.com/kiva/ui/commit/b1a253c2246e98ea6af1105342e437df1908fdd0))
+* removed extra line, included unit tests ([84dd220](https://github.com/kiva/ui/commit/84dd22073195db49140afb482a550612af04bbde))
+* story added for goal entrypoint ([#6453](https://github.com/kiva/ui/issues/6453)) ([859b58e](https://github.com/kiva/ui/commit/859b58e0f12ffd78a2cef15af3a14bd4f18d0e99))
+* tracking category prop added to goal entrypoint component ([#6454](https://github.com/kiva/ui/issues/6454)) ([00d7a52](https://github.com/kiva/ui/commit/00d7a520327dee8286d127b0656c2bc292d6925b))
+
 ## [3.44.0](https://github.com/kiva/ui/compare/v3.43.0...v3.44.0) (2025-11-14)
 
 ### 🎉 New Features
