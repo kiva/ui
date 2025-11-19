@@ -2,7 +2,7 @@ import { mdiMapMarker } from '@mdi/js';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import {
-	createCanvas, CanvasRenderingContext2D, registerFont, loadImage
+	createCanvas, CanvasRenderingContext2D, registerFont
 } from 'canvas';
 import deePool from 'deepool';
 import numeral from 'numeral';
@@ -10,6 +10,7 @@ import { polyfillPath2D } from 'path2d-polyfill';
 import {
 	ellipsisLine, drawPill, wrapText, roundRect
 } from './canvas-utils.js';
+import { loadBorrowerImage } from './canvas-image-utils.js';
 import getLoanCallouts from '../../../src/util/loanCallouts.js';
 import getLoanUse from '../../../src/util/loanUse.js';
 import { trace } from '../mockTrace.js';
@@ -160,15 +161,10 @@ async function drawLegacy(loanData) {
 		});
 
 		// Borrower Image
-		await trace('borrower-image', async () => {
-			// Use jpeg version of image as webp is not supported by node-canvas
-			const jpgUrl = loanData?.image?.retina?.replace('webp', 'jpg') ?? loanData?.image?.retina;
-			try {
-				const borrowerImg = await trace('loadImage', async () => loadImage(jpgUrl));
-				ctx.drawImage(borrowerImg, 0, 0, cardWidth, cardWidth * borrowerImgAspectRatio);
-			} catch (error) {
-				console.error('Error loading image:', error);
-			}
+		const hasBorrowerImage = await trace('borrower-image', async () => {
+			const result = await loadBorrowerImage(loanData);
+			ctx.drawImage(result.image, 0, 0, cardWidth, cardWidth * borrowerImgAspectRatio);
+			return result.hasBorrowerImage;
 		});
 
 		// Add a border around everything
@@ -189,7 +185,7 @@ async function drawLegacy(loanData) {
 		// Recycle canvas for use in other requests
 		trace('legacyCanvasPool.recycle', () => legacyCanvasPool.recycle(canvas));
 
-		return buffer;
+		return { buffer, hasBorrowerImage };
 	} catch (e) {
 		// Recycle canvas for use in other requests
 		if (canvas) {
@@ -227,20 +223,15 @@ async function drawClassic(loanData) {
 		});
 
 		// Borrower Image
-		await trace('borrower-image', async () => {
-			// Use jpeg version of image as webp is not supported by node-canvas
-			const jpgUrl = loanData?.image?.retina?.replace('webp', 'jpg') ?? loanData?.image?.retina;
-			try {
-				const borrowerImg = await trace('loadImage', async () => loadImage(jpgUrl));
-				ctx.save();
-				// eslint-disable-next-line max-len
-				roundRect(ctx, borrowerImgMargin, borrowerImgMargin, borrowerImgWidth, borrowerImgHeight, 16 * classicResizeFactor);
-				ctx.clip();
-				ctx.drawImage(borrowerImg, borrowerImgMargin, borrowerImgMargin, borrowerImgWidth, borrowerImgHeight);
-				ctx.restore();
-			} catch (error) {
-				console.error('Error loading image:', error);
-			}
+		const hasBorrowerImage = await trace('borrower-image', async () => {
+			const result = await loadBorrowerImage(loanData);
+			ctx.save();
+			// eslint-disable-next-line max-len
+			roundRect(ctx, borrowerImgMargin, borrowerImgMargin, borrowerImgWidth, borrowerImgHeight, 16 * classicResizeFactor);
+			ctx.clip();
+			ctx.drawImage(result.image, borrowerImgMargin, borrowerImgMargin, borrowerImgWidth, borrowerImgHeight);
+			ctx.restore();
+			return result.hasBorrowerImage;
 		});
 
 		// Borrower country
@@ -350,7 +341,7 @@ async function drawClassic(loanData) {
 		// Recycle canvas for use in other requests
 		trace('classicCanvasPool.recycle', () => classicCanvasPool.recycle(canvas));
 
-		return buffer;
+		return { buffer, hasBorrowerImage };
 	} catch (e) {
 		// Recycle canvas for use in other requests
 		if (canvas) {
