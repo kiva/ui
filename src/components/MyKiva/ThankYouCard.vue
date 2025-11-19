@@ -33,7 +33,7 @@ import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
 	content: '';
 	width: 400px;
     height: 598px;
-    background: url(/static/src/assets/images/my-kiva/goal-card-bg.png), lightgray;
+    background: url('/static/src/assets/images/my-kiva/goal-card-bg.png'), lightgray;
     transform: rotate(31deg);
     left: 62%;
     top: -40%;
@@ -46,6 +46,6 @@ import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
     background-blend-mode: overlay;
     opacity: 0.5;
 
-	@apply tw-absolute tw-bg-cover tw-bg-center tw-bg-no-repeat tw-z-base tw-right-0 tw-bg-blend-overlay !tw-z-[-1];
+	@apply tw-absolute tw-bg-cover tw-bg-center tw-bg-no-repeat tw-right-0 tw-bg-blend-overlay !tw-z-[-1];
 }
 </style>
