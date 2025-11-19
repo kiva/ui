@@ -3,7 +3,7 @@
 		<span
 			class="tw-inline-flex tw-items-center tw-gap-1 tw-mb-2
 						tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5
-						tw-absolute tw-top-3 tw-left-2.5 tw-z-1"
+						tw-absolute tw-top-2.5 tw-left-2.5 tw-z-1"
 		>
 			<KvMaterialIcon
 				class="tw-w-2 tw-h-2 tw-shrink-0"

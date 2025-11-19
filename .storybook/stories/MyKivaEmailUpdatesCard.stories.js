@@ -1,4 +1,5 @@
 import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCard.vue';
+import apolloStoryMixin from '../mixins/apollo-story-mixin';
 
 export default {
     title: 'MyKiva/MyKivaEmailUpdatesCard',
@@ -26,6 +27,7 @@ const story = (args = {}) => {
     const template = (_args, { argTypes }) => ({
         props: Object.keys(argTypes),
         components: { MyKivaEmailUpdatesCard },
+        mixins: [apolloStoryMixin()],
         setup() { return { args }; },
         template: `
             <div style="width: 336px;">
