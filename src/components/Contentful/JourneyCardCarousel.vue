@@ -58,10 +58,38 @@
 					@open-goal-modal="$emit('open-goal-modal')"
 				/>
 				<MyKivaEmailUpdatesCard
-					v-else-if="isEmailUpdatesSlide(slide) && showEmailUpdatesCard"
+					v-else-if="isEmailUpdatesSlide(slide) && showEmailUpdatesCard && !acceptedEmailUpdates"
 					v-kv-track-event="['portfolio', 'view', 'next-step-email-option']"
 					:loans="loans"
+					@accept-email-updates="acceptedEmailUpdates = true"
 				/>
+				<ThankYouCard
+					v-else-if="isEmailUpdatesSlide(slide) && acceptedEmailUpdates"
+					class="tw-w-full tw-h-full"
+				>
+					<template #header>
+						<span
+							class="tw-inline-flex tw-items-center tw-gap-1 tw-mb-2
+						tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5
+						tw-absolute tw-top-3 tw-left-3 tw-z-1"
+						>
+							<KvMaterialIcon
+								class="tw-w-2 tw-h-2 tw-shrink-0"
+								:icon="mdiEmailOutline"
+							/>
+							<span class="tw-text-primary tw-font-medium tw-align-middle" style="font-size: 0.875rem;">
+								Email updates
+							</span>
+						</span>
+					</template>
+					<template #content>
+						<span class="tw-block tw-text-center">We’ll keep you updated. Change your <a
+							href="/settings/email"
+							target="_blank"
+							v-kv-track-event="['portfolio', 'click', 'email-optin-settings']"
+						>email preferences</a> at any time.</span>
+					</template>
+				</ThankYouCard>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
 					class="kiva-card"
@@ -106,6 +134,7 @@
 </template>
 
 <script setup>
+import { mdiEmailOutline } from '@mdi/js';
 import { parseISO, differenceInDays } from 'date-fns';
 import {
 	computed,
@@ -118,12 +147,13 @@ import { formatUiSetting } from '#src/util/contentfulUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 import useBadgeData from '#src/composables/useBadgeData';
-import { KvCarousel } from '@kiva/kv-components';
+import { KvCarousel, KvMaterialIcon } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import GoalCard from '#src/components/MyKiva/GoalCard';
 import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCard';
 import { optimizeContentfulUrl } from '#src/util/imageUtils';
+import ThankYouCard from '../MyKiva/ThankYouCard';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
@@ -215,6 +245,7 @@ const props = defineProps({
 		default: false,
 	},
 });
+const acceptedEmailUpdates = ref(false);
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
 const currentIndex = ref(0);
