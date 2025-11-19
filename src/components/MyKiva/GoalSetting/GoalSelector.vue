@@ -1,0 +1,237 @@
+<template>
+	<HandsPlant
+		v-if="!isGoalSet"
+		class="lg:tw-mb-1 tw-w-10 lg:tw-w-auto"
+	/>
+
+	<h2
+		class="tw-px-4 lg:tw-px-7"
+		style="line-height: 125%;"
+		v-html="titleText"
+	>
+	</h2>
+
+	<div class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2">
+		{{ subtitleText }}
+	</div>
+
+	<ThumbUp
+		v-if="isGoalSet"
+		class="tw-w-16 tw-h-16 lg:tw-w-auto lg:tw-h-auto"
+	/>
+
+	<div
+		v-else
+		class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-2 tw-my-1"
+	>
+		<LoanNumberSelector
+			v-for="(option, index) in goalOptions"
+			:key="index"
+			:loans-number="option.loansNumber"
+			:option-text="option.optionText"
+			:selected="option.selected"
+			:highlighted-text="option.highlightedText"
+			@click="updateOptionSelection(index)"
+		/>
+	</div>
+
+	<KvButton
+		class="tw-w-full tw-mt-1.5"
+		@click="handleContinue"
+	>
+		{{ buttonText }}
+	</KvButton>
+
+	<KvButton
+		v-if="!isGoalSet"
+		variant="ghost"
+		class="edit-goal-button tw-w-full"
+		@click="editGoal"
+	>
+		Edit goal category
+		<KvMaterialIcon
+			:icon="mdiPencilOutline"
+			class="tw-ml-0.5"
+		/>
+	</KvButton>
+</template>
+
+<script setup>
+import {
+	computed,
+	ref,
+	inject,
+	onMounted,
+} from 'vue';
+import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
+import HandsPlant from '#src/assets/images/thanks-page/hands-plant.svg';
+import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
+import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
+import { useRouter } from 'vue-router';
+import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
+import { mdiPencilOutline } from '@mdi/js';
+
+const SAME_AS_LAST_YEAR_LIMIT = 1;
+
+const $kvTrackEvent = inject('$kvTrackEvent');
+const router = useRouter();
+
+const props = defineProps({
+	/**
+	 * Whether the goal has been set on parent component
+	 */
+	isGoalSet: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Categories loan count
+	 */
+	categoriesLoanCount: {
+		type: Object,
+		default: () => ({}),
+	},
+	/**
+	 * Tracking category for analytics
+	 */
+	trackingCategory: {
+		type: String,
+		default: 'post-checkout',
+	},
+	/**
+     * URL to go to after setting goal
+     */
+	goToUrl: {
+		type: String,
+		default: '/mykiva',
+	},
+});
+
+const emit = defineEmits(['set-goal', 'edit-goal', 'set-goal-target']);
+
+const goalOptions = ref([
+	{ loansNumber: 3, optionText: 'Start strong', selected: false },
+	{
+		loansNumber: 4, highlightedText: 'Recommended', optionText: 'Extra mile', selected: true,
+	},
+	{ loansNumber: 5, optionText: 'Trailblazing!', selected: false },
+]);
+
+const womenLoansLastYear = computed(() => {
+	// TODO: Update to get actual last year data when available
+	return props.categoriesLoanCount?.[ID_WOMENS_EQUALITY] || 0;
+});
+
+const titleText = computed(() => {
+	// eslint-disable-next-line no-nested-ternary
+	return props.isGoalSet
+		? 'Thank you!'
+		: womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT
+			// eslint-disable-next-line max-len
+			? `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} women</span> shape their futures!`
+			: 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
+});
+
+const subtitleText = computed(() => {
+	return props.isGoalSet
+		? 'Your 2026 commitment means more lives transformed!'
+		: 'How many loans will you make this year?';
+});
+
+const buttonText = computed(() => (props.isGoalSet ? 'Track my progress' : 'Set 2026 goal'));
+
+const selectedTarget = computed(() => {
+	const selectedOption = goalOptions.value.find(option => option.selected);
+	return selectedOption.loansNumber;
+});
+
+const updateOptionSelection = selectedIndex => {
+	goalOptions.value = goalOptions.value.map((option, index) => ({
+		...option,
+		selected: index === selectedIndex,
+	}));
+
+	const trackingProperties = ['same-as-last-year', 'a-little-more', 'double'];
+	$kvTrackEvent(
+		props.trackingCategory,
+		'click',
+		'set-goal-amount',
+		trackingProperties[selectedIndex]
+	);
+
+	emit('set-goal-target', goalOptions.value[selectedIndex].loansNumber);
+};
+
+const editGoal = () => {
+	emit('edit-goal');
+	$kvTrackEvent(
+		props.trackingCategory,
+		'click',
+		'edit-goal-category'
+	);
+};
+
+const handleContinue = () => {
+	if (props.isGoalSet) {
+		router.push(props.goToUrl);
+		$kvTrackEvent(
+			props.trackingCategory,
+			'click',
+			'go-to-mykiva'
+		);
+	} else {
+		const currentYear = new Date().getFullYear();
+		const goalName = `goal-${ID_WOMENS_EQUALITY}-${currentYear}`;
+		const target = selectedTarget.value;
+		const dateStarted = new Date().toISOString();
+		const status = 'in-progress';
+		const loanTotalAtStart = props.categoriesLoanCount?.[ID_WOMENS_EQUALITY] || 0;
+		const preferences = {
+			goalName,
+			category: ID_WOMENS_EQUALITY,
+			target,
+			dateStarted,
+			status,
+			loanTotalAtStart,
+		};
+
+		emit('set-goal', preferences);
+
+		$kvTrackEvent(
+			props.trackingCategory,
+			'click',
+			'set-annual-goal',
+			ID_WOMENS_EQUALITY,
+			selectedTarget.value
+		);
+	}
+};
+
+onMounted(() => {
+	if (womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
+		const growALittleOption = Math.ceil(womenLoansLastYear.value * 1.25);
+		goalOptions.value = [
+			{ loansNumber: womenLoansLastYear.value, optionText: 'Same as 2025', selected: false },
+			{
+				// eslint-disable-next-line max-len
+				loansNumber: growALittleOption, optionText: 'Grow a little', selected: true, highlightedText: 'More Impact'
+			},
+			{ loansNumber: womenLoansLastYear.value * 2, optionText: 'Double my impact!', selected: false },
+		];
+	}
+
+	$kvTrackEvent(
+		props.trackingCategory,
+		'view',
+		'set-annual-goal'
+	);
+
+	emit('set-goal-target', selectedTarget.value);
+});
+</script>
+
+<style lang="postcss" scoped>
+.edit-goal-button :deep(span) {
+	@apply tw-flex;
+}
+</style>

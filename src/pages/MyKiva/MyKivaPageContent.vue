@@ -19,7 +19,7 @@
 		/>
 		<section>
 			<h3 class="tw-mt-4">
-				<u>{{ userInfo?.userAccount?.firstName }}'s</u> impact overview
+				<u>{{ lenderPossessiveName }}</u> impact overview
 			</h3>
 			<MyKivaStats
 				class="tw-mt-2"
@@ -46,6 +46,7 @@
 				:hero-tiered-achievements="heroTieredAchievements"
 				:total-loans="totalLoans"
 				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
+				:goals-entrypoint-enable="goalsEntrypointEnable"
 			/>
 		</section>
 		<MyKivaBorrowerCarousel
@@ -199,6 +200,7 @@ import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
+import { formatPossessiveName } from '#src/util/stringParserUtils';
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -286,6 +288,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		goalsEntrypointEnable: {
+			type: Boolean,
+			default: false
+		}
 	},
 	setup() {
 		const apollo = inject('apollo');
@@ -345,6 +351,10 @@ export default {
 	computed: {
 		userBalance() {
 			return this.userInfo.userAccount?.balance ?? '';
+		},
+		lenderPossessiveName() {
+			const firstName = this.userInfo?.userAccount?.firstName ?? '';
+			return formatPossessiveName(firstName);
 		},
 		repaymentsRaw() {
 			return this.transactions.filter(trx => repaymentOptions.includes(trx.type));
