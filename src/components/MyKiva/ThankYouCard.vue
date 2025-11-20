@@ -37,15 +37,10 @@ import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
     transform: rotate(31deg);
     left: 62%;
     top: -40%;
-    position: absolute;
     right: 0;
     z-index: -1;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-blend-mode: overlay;
     opacity: 0.5;
 
-	@apply tw-absolute tw-bg-cover tw-bg-center tw-bg-no-repeat tw-right-0 tw-bg-blend-overlay !tw-z-[-1];
+	@apply tw-absolute tw-bg-cover tw-bg-center tw-bg-no-repeat tw-right-0 tw-bg-blend-overlay;
 }
 </style>

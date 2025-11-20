@@ -86,7 +86,7 @@
 						<span class="tw-block tw-text-center">We’ll keep you updated. Change your <a
 							href="/settings/email"
 							target="_blank"
-							v-kv-track-event="['portfolio', 'click', 'email-optin-settings']"
+							v-kv-track-event="['portfolio', 'click', 'email-preferences-settings']"
 						>email preferences</a> at any time.</span>
 					</template>
 				</ThankYouCard>
