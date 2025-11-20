@@ -1,10 +1,8 @@
 <template>
 	<div
 		class="
-			tw-rounded md:tw-rounded-xl tw-bg-white
-			tw-shadow-lg tw-p-2.5 tw-py-2.5 md:tw-px-2.5 md:tw-py-4
-			tw-flex tw-flex-col tw-gap-0 lg:tw-gap-1 print:tw-hidden
-			tw-items-center tw-text-center tw-overflow-hidden tw-relative"
+			tw-rounded md:tw-rounded-xl tw-bg-white tw-shadow-lg
+			tw-p-2.5 tw-py-2.5 md:tw-px-2.5 md:tw-py-4 tw-overflow-hidden"
 	>
 		<KvLoadingPlaceholder v-if="loading" class="!tw-h-9 !tw-rounded" />
 		<GoalSelector

@@ -6,10 +6,23 @@
 		@lightbox-closed="closeLightbox"
 	>
 		<template #header>
-			<h2 v-if="!isMobile" v-html="title" class="tw-mb-3 tw-text-center"></h2>
+			<h2 v-if="!isMobile && (showCategories || isThanksPage)" v-html="title" class="tw-mb-3 tw-text-center"></h2>
 		</template>
-		<h2 v-if="isMobile" v-html="title" class="tw-mb-3 tw-text-center"></h2>
+		<h2 v-if="isMobile && (showCategories || isThanksPage)" v-html="title" class="tw-mb-3 tw-text-center"></h2>
+		<GoalSelector
+			v-if="showGoalSelector && goalsEntrypointEnable"
+			v-show="!showCategories"
+			style="max-width: 612px;"
+			:is-goal-set="isGoalSet"
+			:categories-loan-count="categoriesLoanCount"
+			tracking-category="portfolio"
+			:go-to-url="ctaHref"
+			@set-goal-target="setGoalTarget"
+			@set-goal="$emit('set-goal', $event)"
+			@edit-goal="editGoal"
+		/>
 		<component
+			v-show="showCategories || isThanksPage"
 			:is="contentComponent"
 			:categories="categories"
 			:pre-selected-category="selectedCategory.id"
@@ -19,8 +32,15 @@
 			@number-changed="handleNumberChanged"
 		/>
 		<template #controls>
-			<div class="tw-flex tw-justify-end tw-gap-2">
-				<KvButton v-if="formStep === 2" variant="secondary" @click="clickBack">
+			<div
+				v-if="showCategories || isThanksPage"
+				class="tw-flex tw-justify-end tw-gap-2"
+			>
+				<KvButton
+					v-if="formStep === 2 || (showGoalSelector && formStep === 1)"
+					variant="secondary"
+					@click="clickBack"
+				>
 					Back
 				</KvButton>
 				<KvButton @click="handleClick">
@@ -44,7 +64,8 @@ import {
 } from 'vue';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import useIsMobile from '#src/composables/useIsMobile';
-import {
+import useBadgeData,
+{
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
 	ID_REFUGEE_EQUALITY,
@@ -52,12 +73,27 @@ import {
 	ID_WOMENS_EQUALITY,
 	ID_SUPPORT_ALL,
 } from '#src/composables/useBadgeData';
+import useGoalData from '#src/composables/useGoalData';
+import { useRouter } from 'vue-router';
+import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import womenImg from '#src/assets/images/my-kiva/goal-setting/women.svg?url';
 import refugeesImg from '#src/assets/images/my-kiva/goal-setting/refugees.svg?url';
 import climateActionImg from '#src/assets/images/my-kiva/goal-setting/climate-action.svg?url';
 import usEntrepreneursImg from '#src/assets/images/my-kiva/goal-setting/us-entrepreneurs.svg?url';
 import basicNeedsImg from '#src/assets/images/my-kiva/goal-setting/basic-needs.svg?url';
 import supportAllImg from '#src/assets/images/my-kiva/goal-setting/support-all.svg?url';
+
+const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
+const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
+
+const emit = defineEmits(['close-goal-modal', 'set-goal']);
+
+const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
+const $kvTrackEvent = inject('$kvTrackEvent');
+const router = useRouter();
+
+const { getLoanFindingUrl } = useBadgeData();
+const { getGoalDisplayName } = useGoalData({});
 
 const props = defineProps({
 	show: {
@@ -80,11 +116,28 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	showGoalSelector: {
+		type: Boolean,
+		default: false,
+	},
+	goalsEntrypointEnable: {
+		type: Boolean,
+		default: false
+	},
+	isGoalSet: {
+		type: Boolean,
+		default: false,
+	},
 });
 
-const { numberOfLoans } = toRefs(props);
+const { numberOfLoans, isGoalSet } = toRefs(props);
 
 const formStep = ref(1);
+const showCategories = ref(!props.goalsEntrypointEnable);
+const selectedLoanNumber = ref(0);
+// eslint-disable-next-line max-len
+const selectedGoalNumber = ref(numberOfLoans.value ? numberOfLoans.value : 5); // Default goals to 5 loans for initial MVP
+
 const categories = [
 	{
 		id: '1',
@@ -148,22 +201,35 @@ const categories = [
 	}
 ];
 
-const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
-
-const $kvTrackEvent = inject('$kvTrackEvent');
-const emit = defineEmits(['close-goal-modal', 'set-goal']);
 const selectedCategory = ref(categories[0]);
-// eslint-disable-next-line max-len
-const selectedGoalNumber = ref(numberOfLoans.value ? numberOfLoans.value : 5); // Default goals to 5 loans for initial MVP
-
-const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
-const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
 
 const contentComponent = computed(() => {
 	switch (formStep.value) {
 		case 2: return NumberChoice;
 		case 1: default: return CategoryForm;
 	}
+});
+
+const ctaCopy = computed(() => {
+	return formStep.value === 1 ? 'Continue' : 'Set my goal';
+});
+
+const title = computed(() => {
+	if (formStep.value === 1) {
+		return 'Choose your impact goal category';
+	}
+	if (selectedCategory.value?.title) {
+		return `How many more loans to ${selectedCategory.value?.title} will you support this year?`;
+	}
+	return 'How many more people will you support this year?';
+});
+
+const ctaHref = computed(() => {
+	const categoryHeader = getGoalDisplayName(selectedGoalNumber.value, selectedCategory.value?.badgeId);
+	const string = `Your goal: Support ${selectedGoalNumber.value} ${categoryHeader}`;
+	const encodedHeader = encodeURIComponent(string);
+	const loanFindingUrl = getLoanFindingUrl(selectedCategory.value?.badgeId, router.currentRoute.value);
+	return `${loanFindingUrl}?header=${encodedHeader}`;
 });
 
 const handleCategorySelected = categoryId => {
@@ -186,18 +252,21 @@ const handleNumberChanged = number => {
 };
 
 const clickBack = () => {
-	selectedGoalNumber.value = numberOfLoans.value ? numberOfLoans.value : 5;
-	formStep.value -= 1;
+	// eslint-disable-next-line no-nested-ternary
+	selectedGoalNumber.value = numberOfLoans.value ? numberOfLoans.value
+		: selectedLoanNumber.value ? selectedLoanNumber.value : 5;
+
+	if (formStep.value === 1 && props.showGoalSelector) {
+		showCategories.value = false;
+	} else {
+		formStep.value -= 1;
+	}
 	$kvTrackEvent(
 		props.isThanksPage ? 'post-checkout' : 'portfolio',
 		'click',
 		'goals-back'
 	);
 };
-
-const ctaCopy = computed(() => {
-	return formStep.value === 1 ? 'Continue' : 'Set my goal';
-});
 
 const handleClick = () => {
 	if (formStep.value === 1) {
@@ -234,19 +303,10 @@ const handleClick = () => {
 	}
 };
 
-const title = computed(() => {
-	if (formStep.value === 1) {
-		return 'Choose your impact goal category';
-	}
-	if (selectedCategory.value?.title) {
-		return `How many more loans to ${selectedCategory.value?.title} will you support this year?`;
-	}
-	return 'How many more people will you support this year?';
-});
-
 const resetForm = () => {
 	formStep.value = 1;
 	selectedCategory.value = { ...categories[0] };
+	showCategories.value = false;
 };
 
 const closeLightbox = () => {
@@ -255,6 +315,15 @@ const closeLightbox = () => {
 	setTimeout(() => {
 		resetForm();
 	}, 300);
+};
+
+const editGoal = () => {
+	showCategories.value = true;
+};
+
+const setGoalTarget = target => {
+	selectedLoanNumber.value = target;
+	selectedGoalNumber.value = target;
 };
 
 watch(() => props.show, (newVal, oldVal) => {
@@ -276,6 +345,12 @@ watch(() => props.show, (newVal, oldVal) => {
 watch(numberOfLoans, newVal => {
 	if (newVal) {
 		selectedGoalNumber.value = newVal;
+	}
+});
+
+watch(isGoalSet, newVal => {
+	if (newVal) {
+		showCategories.value = false;
 	}
 });
 </script>
