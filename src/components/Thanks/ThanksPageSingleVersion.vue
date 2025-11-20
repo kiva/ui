@@ -88,6 +88,7 @@
 			/>
 		</KvLightbox>
 		<GoalSettingModal
+			v-if="showGoalModal"
 			:show="showGoalModal"
 			:total-loans="totalLoans"
 			:categories-loan-count="categoriesLoanCount"
@@ -208,6 +209,8 @@ const {
 	storeGoalPreferences,
 } = useGoalData({ apollo });
 
+const { getAllCategoryLoanCounts } = useBadgeData();
+
 // Initialize goalDataInitialized to track if we've loaded goal data
 // This prevents flash of journey module before loading completes
 const goalDataInitialized = ref(!props.isNextStepsExpEnabled);
@@ -263,7 +266,6 @@ const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPart
 /* eslint-enable max-len */
 
 const categoriesLoanCount = computed(() => {
-	const { getAllCategoryLoanCounts } = useBadgeData();
 	return getAllCategoryLoanCounts(props.tieredAchievements);
 });
 
