@@ -33,6 +33,7 @@ import { gql } from 'graphql-tag';
 import { mdiPencilOutline } from '@mdi/js';
 import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
 import { KvMaterialIcon } from '@kiva/kv-components';
+import { formatPossessiveName } from '#src/util/stringParserUtils';
 
 export default {
 	name: 'ShareButton',
@@ -173,13 +174,14 @@ export default {
 			}
 			// Not the borrower of this loan
 			const borrowerName = this.$filters.changeCase(this.name, 'titleCase');
+			const borrowerPossessiveName = formatPossessiveName(borrowerName);
 			if (this.inPfp) {
 				return this.progressPfpPercent >= 50
 					? `Help ${borrowerName} reach their goal – only ${remainingLenders} ${lenderText} to go!`
 					: `Join me in supporting ${borrowerName} on Kiva! Let's help them reach their dream by getting 3 more lenders today.`;
 			}
 			return this.progressPercent >= 50
-				? `${borrowerName}'s loan is over halfway there on Kiva – only ${this.amountRemaining} to go!`
+				? `${borrowerPossessiveName} loan is over halfway there on Kiva – only ${this.amountRemaining} to go!`
 				: `${borrowerName} is crowdfunding a loan on Kiva — Let's get them to ${this.progressPercent + 10}% today!`;
 			/* eslint-enable max-len */
 		},

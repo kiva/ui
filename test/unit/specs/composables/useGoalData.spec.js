@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import useGoalData from '#src/composables/useGoalData';
+import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
 import {
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
@@ -843,6 +843,64 @@ describe('useGoalData', () => {
 			const progress = await composable.getProgressByLoan({ id: 999 });
 
 			expect(progress).toBe(0);
+		});
+	});
+
+	describe('renewAnnualGoal', () => {
+		it('should expire only goals from previous years', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'new-pref-id',
+							preferences: JSON.stringify({
+								goals: [
+									{
+										goalName: 'Goal', status: 'in-progress', dateStarted: '2025-01-01'
+									},
+									{
+										goalName: 'Current Goal', status: 'in-progress', dateStarted: '2026-02-01'
+									},
+								]
+							}),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+
+			const today = new Date('2026-06-01T00:00:00Z');
+			const updatedGoals = await composable.renewAnnualGoal(today);
+
+			expect(updatedGoals.expiredGoals[0].status).toBe(GOAL_STATUS.EXPIRED); // Previous year
+			expect(updatedGoals.expiredGoals[1].status).toBe(GOAL_STATUS.IN_PROGRESS); // Current year
+		});
+
+		it('should add goalsRenewed flag to preferences when there were no previous goals', async () => {
+			const {
+				updateUserPreferences,
+			} = await import('#src/util/userPreferenceUtils');
+
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'new-pref-id',
+							preferences: JSON.stringify({ goals: [] }),
+						},
+					},
+				},
+			});
+
+			const today = new Date('2026-06-01T00:00:00Z');
+			const updatedGoals = await composable.renewAnnualGoal(today);
+
+			expect(updatedGoals).toEqual({
+				expiredGoals: [],
+				goalsRenewed: false,
+				showRenewedAnnualGoalToast: false,
+			});
+			expect(updateUserPreferences).toHaveBeenCalled();
 		});
 	});
 });

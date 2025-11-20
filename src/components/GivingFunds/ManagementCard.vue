@@ -10,16 +10,19 @@
 						:alt="`Icon for ${fund?.campaign?.category?.name} giving fund category`"
 						class="tw-w-6 tw-h-6 tw-mr-2 tw-inline-block"
 					/>
-					<h2 class="tw-mb-1">
-						<a
-							class="tw-no-underline tw-text-primary hover:tw-text-action"
-							v-kv-track-event="['giving-funds', 'click', 'management-card-title']"
-							:href="`${givingFundRootPath}/${fund.id}`"
-							target="_blank"
-						>
-							{{ getFundTargetDisplayNounFromName(fund?.campaign?.category?.name) }}
-						</a>
-					</h2>
+					<div>
+						<h2 class="tw-mb-1">
+							<a
+								class="tw-no-underline tw-text-primary hover:tw-text-action"
+								v-kv-track-event="['giving-funds', 'click', 'management-card-title']"
+								:href="`${givingFundRootPath}/${fund.id}`"
+								target="_blank"
+							>
+								{{ getFundTargetDisplayNounFromName(fund?.campaign?.category?.name) }}
+							</a>
+						</h2>
+						<span v-if="!hideOwnerOperations">You started this fund in {{ formattedCreatedDate }}.</span>
+					</div>
 				</div>
 
 				<div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-right tw-gap-1.5">
@@ -192,7 +195,7 @@ import {
 	KvProgressBar,
 	KvPulsingDot,
 } from '@kiva/kv-components';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import useGivingFund from '#src/composables/useGivingFund';
 import numeral from 'numeral';
 
@@ -268,6 +271,11 @@ const categoryIconUrl = computed(() => {
 		console.warn('Error accessing category icon URL:', error);
 		return null;
 	}
+});
+
+const formattedCreatedDate = computed(() => {
+	if (!props?.fund?.createdDate) return '';
+	return format(parseISO(props.fund.createdDate), 'MMMM yyyy');
 });
 
 onMounted(async () => {

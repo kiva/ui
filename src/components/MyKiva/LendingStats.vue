@@ -166,6 +166,9 @@
 			:show="showGoalModal"
 			:total-loans="totalLoans"
 			:categories-loan-count="categoriesLoanCount"
+			:goals-entrypoint-enable="goalsEntrypointEnable"
+			:is-goal-set="isGoalSet"
+			:show-goal-selector="true"
 			@close-goal-modal="showGoalModal = false"
 			@set-goal="setGoal"
 		/>
@@ -249,6 +252,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		goalsEntrypointEnable: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -258,6 +265,7 @@ export default {
 			showGoalModal: false,
 			checkedArr: this.regionsData.map(() => false),
 			goalProgressLoading: true,
+			isGoalSet: false,
 		};
 	},
 	computed: {
@@ -388,7 +396,10 @@ export default {
 		async setGoal(preferences) {
 			await this.storeGoalPreferences(preferences);
 			await this.loadGoalData();
-			this.showGoalModal = false;
+			this.isGoalSet = true;
+			if (!this.goalsEntrypointEnable) {
+				this.showGoalModal = false;
+			}
 		},
 	},
 };

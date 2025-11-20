@@ -1,5 +1,5 @@
 import express from 'express';
-import { error } from './util/log.js';
+import { error, warn } from './util/log.js';
 import { getFromCache, setToCache } from './util/memJsUtils.js';
 import drawLoanCard from './util/live-loan/live-loan-draw.js';
 import fetchLoansByType, { QUERY_TYPE } from './util/live-loan/live-loan-fetch.js';
@@ -83,6 +83,7 @@ async function redirectToUrl(type, cache, req, res, queryType = QUERY_TYPE.DEFAU
 async function serveImg(type, style, cache, req, res, queryType = QUERY_TYPE.DEFAULT) {
 	let loan;
 	let loanImg;
+	let hasBorrowerImage = true;
 
 	try {
 		loan = await trace('getLoanForRequest', async () => getLoanForRequest(type, cache, req, queryType));
@@ -92,18 +93,31 @@ async function serveImg(type, style, cache, req, res, queryType = QUERY_TYPE.DEF
 		if (cachedLoanImg) {
 			loanImg = cachedLoanImg;
 		} else {
-			loanImg = await trace('drawLoanCard', { resource: loan.id }, async () => drawLoanCard(loan, style));
-			const expires = 10 * 60; // 10 minutes
-			setToCache(imgCachedName, loanImg, expires, cache).catch(err => {
-				error(`Error setting loan data to cache, ${err}`, {
-					error: err,
+			const result = await trace('drawLoanCard', { resource: loan.id }, async () => drawLoanCard(loan, style));
+			loanImg = result.buffer;
+			hasBorrowerImage = result.hasBorrowerImage;
+
+			// Only cache if we have the actual borrower image
+			if (hasBorrowerImage) {
+				const expires = 10 * 60; // 10 minutes
+				setToCache(imgCachedName, loanImg, expires, cache).catch(err => {
+					error(`Error setting loan data to cache, ${err}`, {
+						error: err,
+						params: req.params,
+						loan,
+						style,
+						type,
+					});
+				});
+				// Continue before setting to the cache completes to speed up response times
+			} else {
+				warn('Not caching loan image as borrower image is missing', {
 					params: req.params,
-					loan,
+					loanId: loan.id,
 					style,
 					type,
 				});
-			});
-			// Continue before setting to the cache completes to speed up response times
+			}
 		}
 	} catch (err) {
 		error(`Error getting served image, ${err}`, {

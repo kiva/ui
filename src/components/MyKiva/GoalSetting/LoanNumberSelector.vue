@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="tw-flex tw-justify-between tw-items-center tw-w-full tw-border-2 tw-border-gray-200 tw-rounded
-			tw-p-2.5 tw-py-1 tw-cursor-pointer tw-relative tw-gap-1"
+			tw-p-2.5 tw-py-1 tw-cursor-pointer tw-relative tw-gap-2"
 		:class="{ 'tw-border-eco-green-3 tw-bg-eco-green-1': selected }"
 	>
 		<div
@@ -17,6 +17,7 @@
 		>
 			<span
 				class="tw-text-h1 tw-text-center"
+				:class="{ '!tw-text-h2': isThreeDigitsNumber }"
 				style="line-height: 1;"
 			>
 				{{ loansNumber }}
@@ -30,7 +31,7 @@
 			>
 				{{ highlightedText }}
 			</div>
-			<div class="tw-text-primary tw-font-medium">
+			<div class="tw-text-primary tw-font-medium tw-text-h5 tw-text-center">
 				{{ optionText }}
 			</div>
 		</div>
@@ -38,7 +39,9 @@
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue';
+
+const props = defineProps({
 	selected: {
 		type: Boolean,
 		default: false,
@@ -55,5 +58,10 @@ defineProps({
 		type: String,
 		default: '',
 	},
+});
+
+const isThreeDigitsNumber = computed(() => {
+	const numString = Math.abs(props.loansNumber).toString();
+	return numString.length >= 3;
 });
 </script>

@@ -14,6 +14,7 @@
 			:enable-ai-loan-pills="enableAILoanPills"
 			:sidesheet-loan="sidesheetLoan"
 			:is-next-steps-exp-enabled="isNextStepsExpEnabled"
+			:goals-entrypoint-enable="goalsEntrypointEnable"
 		/>
 	</www-page>
 </template>
@@ -32,8 +33,10 @@ import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
+import { readBoolSetting } from '#src/util/settingsUtils';
 
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
+const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -61,6 +64,7 @@ export default {
 			userLentToAllRegions: false,
 			sidesheetLoan: {},
 			isNextStepsExpEnabled: undefined,
+			goalsEntrypointEnable: false,
 		};
 	},
 	apollo: {
@@ -166,6 +170,8 @@ export default {
 					regionsData,
 				};
 				this.transactions = myKivaQueryResult.my?.transactions?.values ?? [];
+
+				this.goalsEntrypointEnable = readBoolSetting(myKivaQueryResult, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');
 			}

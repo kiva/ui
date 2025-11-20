@@ -46,6 +46,7 @@
 <script setup>
 import { computed, inject, ref } from 'vue';
 import { KvButton } from '@kiva/kv-components';
+import { formatPossessiveName } from '#src/util/stringParserUtils';
 import useIsMobile from '#src/composables/useIsMobile';
 import useOptIn from '#src/composables/useOptIn';
 import {
@@ -87,6 +88,9 @@ const buttonState = ref('');
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const { updateCommunicationSettings, updateVisitorEmailOptIn } = useOptIn(apollo);
 
+const primaryBorrowerName = computed(() => props.loans[0]?.name ?? '');
+const primaryBorrowerPossessiveName = computed(() => formatPossessiveName(primaryBorrowerName.value));
+
 const title = computed(() => {
 	if (props.onlyDonations || props.achievementsCompleted) {
 		return 'Thank you!';
@@ -112,7 +116,7 @@ const description = computed(() => {
 	}
 	if (props.loans.length && !props.achievementsCompleted) {
 		// eslint-disable-next-line max-len
-		return `Want to hear how you're impacting ${props.loans[0]?.name}'s life and more ways to help people like them?`;
+		return `Want to hear how you're impacting ${primaryBorrowerPossessiveName.value} life and more ways to help people like them?`;
 	}
 
 	return 'Want to hear how your support is changing real lives?';

@@ -70,6 +70,7 @@ import _get from 'lodash/get';
 import numeral from 'numeral';
 import { mdiAccountCircle } from '@mdi/js';
 import logReadQueryError from '#src/util/logReadQueryError';
+import { formatPossessiveName } from '#src/util/stringParserUtils';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import lenderTeamsQuery from '#src/graphql/query/lenderTeams.graphql';
 import { KvPagination, KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
@@ -109,7 +110,7 @@ export default {
 	computed: {
 		lenderTeamsTitle() {
 			return this.lenderInfo?.name
-				? `${this.lenderInfo.name}'s teams`
+				? `${formatPossessiveName(this.lenderInfo.name)} teams`
 				: 'Teams';
 		},
 		showedTeams() {

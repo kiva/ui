@@ -39,7 +39,7 @@
 						previousLoanId
 					]"
 				>
-					{{ borrowerOrGroupName }}'s previous loan
+					{{ borrowerPossessiveName }} previous loan
 				</router-link>
 			</div>
 		</kv-expandable>
@@ -50,6 +50,7 @@
 import { mdiChevronDown } from '@mdi/js';
 import { toParagraphs } from '#src/util/loanUtils';
 import { gql } from 'graphql-tag';
+import { formatPossessiveName } from '#src/util/stringParserUtils';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import { KvTextLink, KvMaterialIcon } from '@kiva/kv-components';
 
@@ -94,6 +95,9 @@ export default {
 	computed: {
 		formattedPreviousLoanDescription() {
 			return toParagraphs(this.previousLoanDescription);
+		},
+		borrowerPossessiveName() {
+			return formatPossessiveName(this.borrowerOrGroupName);
 		},
 	},
 	methods: {

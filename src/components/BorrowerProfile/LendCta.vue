@@ -363,7 +363,8 @@ import {
 	isLessThan25,
 	isBetween25And500,
 	getLendCtaSelectedOption,
-} from '#src/util/loanUtils';
+}	from '#src/util/loanUtils';
+import { formatPossessiveName } from '#src/util/stringParserUtils';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import {
 	getExperimentSettingCached,
@@ -619,6 +620,9 @@ export default {
 				this.wrapperObserver.disconnect();
 			}
 		},
+		borrowerPossessiveName() {
+			return formatPossessiveName(this.name);
+		},
 		trackLendAmountSelection(selectedDollarAmount) {
 			this.$kvTrackEvent(
 				'Lending',
@@ -741,7 +745,7 @@ export default {
 		},
 		lgScreenheadline() {
 			if (this.showSparkles) {
-				return `${this.name}'s loan is almost funded!`;
+				return `${this.borrowerPossessiveName} loan is almost funded!`;
 			}
 			switch (this.state) {
 				case 'loading':

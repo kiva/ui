@@ -87,6 +87,7 @@ import numeral from 'numeral';
 import {
 	KvCheckbox, KvMap, getLoansIntervals, KvLoadingPlaceholder
 } from '@kiva/kv-components';
+import { formatPossessiveName } from '#src/util/stringParserUtils';
 import AsyncLenderSection from './AsyncLenderSection';
 
 const mapColors = [
@@ -125,7 +126,7 @@ export default {
 	computed: {
 		lenderMapTitle() {
 			return this.lenderInfo?.name
-				? `${this.lenderInfo.name}'s Lending Activity by Country`
+				? `${formatPossessiveName(this.lenderInfo.name)} Lending Activity by Country`
 				: 'Lending Activity by Country';
 		},
 		countriesData() {
