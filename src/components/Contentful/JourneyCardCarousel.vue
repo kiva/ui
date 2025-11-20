@@ -20,11 +20,55 @@
 				@open-goal-modal="$emit('open-goal-modal')"
 			/>
 
-			<MyKivaEmailUpdatesCard
-				v-if="showEmailUpdatesCard"
-				v-kv-track-event="['portfolio', 'view', 'next-step-email-option']"
-				:loans="loans"
-			/>
+			<transition
+				name="fade"
+				mode="out-in"
+				key="transition"
+				enter-active-class="tw-transition-all tw-duration-500"
+				enter-from-class="tw-opacity-0"
+				enter-to-class="tw-opacity-full"
+				leave-active-class="tw-transition-all tw-duration-500"
+				leave-from-class="tw-opacity-full"
+				leave-to-class="tw-opacity-0"
+			>
+				<MyKivaEmailUpdatesCard
+					v-if="showEmailUpdatesCard && !acceptedEmailUpdates"
+					key:="acceptEmails"
+					v-kv-track-event="['portfolio', 'view', 'next-step-email-option']"
+					:loans="loans"
+					@accept-email-updates="acceptedEmailUpdates = true"
+				/>
+				<ThankYouCard
+					v-else-if="acceptedEmailUpdates"
+					key:="tkYouCard"
+				>
+					<template #header>
+						<span
+							class="tw-inline-flex tw-items-center tw-gap-1 tw-mb-2
+						tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5
+						tw-absolute tw-top-3 tw-left-3 tw-z-1"
+						>
+							<KvMaterialIcon
+								class="tw-w-2 tw-h-2 tw-shrink-0"
+								:icon="mdiEmailOutline"
+							/>
+							<span
+								class="tw-text-primary tw-font-medium tw-align-middle"
+								style="font-size: 0.875rem;"
+							>
+								Email updates
+							</span>
+						</span>
+					</template>
+					<template #content>
+						<span class="tw-block tw-text-center">We’ll keep you updated. Change your <a
+							href="/settings/email"
+							target="_blank"
+							v-kv-track-event="['portfolio', 'click', 'email-preferences-settings']"
+						>email preferences</a> at any time.</span>
+					</template>
+				</ThankYouCard>
+			</transition>
 		</div>
 
 		<!-- Desktop-->
@@ -57,39 +101,59 @@
 					:user-goal="userGoal"
 					@open-goal-modal="$emit('open-goal-modal')"
 				/>
-				<MyKivaEmailUpdatesCard
-					v-else-if="isEmailUpdatesSlide(slide) && showEmailUpdatesCard && !acceptedEmailUpdates"
-					v-kv-track-event="['portfolio', 'view', 'next-step-email-option']"
-					:loans="loans"
-					@accept-email-updates="acceptedEmailUpdates = true"
-				/>
-				<ThankYouCard
-					v-else-if="isEmailUpdatesSlide(slide) && acceptedEmailUpdates"
-					class="tw-w-full tw-h-full"
+				<template
+					v-else-if="isEmailUpdatesSlide(slide)"
 				>
-					<template #header>
-						<span
-							class="tw-inline-flex tw-items-center tw-gap-1 tw-mb-2
+					<transition
+						name="fade"
+						mode="out-in"
+						key="transition"
+						enter-active-class="tw-transition-all tw-duration-500"
+						enter-from-class="tw-opacity-0"
+						enter-to-class="tw-opacity-full"
+						leave-active-class="tw-transition-all tw-duration-500"
+						leave-from-class="tw-opacity-full"
+						leave-to-class="tw-opacity-0"
+					>
+						<MyKivaEmailUpdatesCard
+							v-if="showEmailUpdatesCard && !acceptedEmailUpdates"
+							key:="acceptEmails"
+							v-kv-track-event="['portfolio', 'view', 'next-step-email-option']"
+							:loans="loans"
+							@accept-email-updates="acceptedEmailUpdates = true"
+						/>
+						<ThankYouCard
+							v-else-if="acceptedEmailUpdates"
+							key:="tkYouCard"
+						>
+							<template #header>
+								<span
+									class="tw-inline-flex tw-items-center tw-gap-1 tw-mb-2
 						tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5
 						tw-absolute tw-top-3 tw-left-3 tw-z-1"
-						>
-							<KvMaterialIcon
-								class="tw-w-2 tw-h-2 tw-shrink-0"
-								:icon="mdiEmailOutline"
-							/>
-							<span class="tw-text-primary tw-font-medium tw-align-middle" style="font-size: 0.875rem;">
-								Email updates
-							</span>
-						</span>
-					</template>
-					<template #content>
-						<span class="tw-block tw-text-center">We’ll keep you updated. Change your <a
-							href="/settings/email"
-							target="_blank"
-							v-kv-track-event="['portfolio', 'click', 'email-preferences-settings']"
-						>email preferences</a> at any time.</span>
-					</template>
-				</ThankYouCard>
+								>
+									<KvMaterialIcon
+										class="tw-w-2 tw-h-2 tw-shrink-0"
+										:icon="mdiEmailOutline"
+									/>
+									<span
+										class="tw-text-primary tw-font-medium tw-align-middle"
+										style="font-size: 0.875rem;"
+									>
+										Email updates
+									</span>
+								</span>
+							</template>
+							<template #content>
+								<span class="tw-block tw-text-center">We’ll keep you updated. Change your <a
+									href="/settings/email"
+									target="_blank"
+									v-kv-track-event="['portfolio', 'click', 'email-preferences-settings']"
+								>email preferences</a> at any time.</span>
+							</template>
+						</ThankYouCard>
+					</transition>
+				</template>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
 					class="kiva-card"
