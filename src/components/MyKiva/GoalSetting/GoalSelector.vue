@@ -1,59 +1,62 @@
 <template>
-	<HandsPlant
-		v-if="!isGoalSet"
-		class="lg:tw-mb-1 tw-w-10 lg:tw-w-auto"
-	/>
-
-	<h2
-		class="tw-px-4 lg:tw-px-7"
-		style="line-height: 125%;"
-		v-html="titleText"
-	>
-	</h2>
-
-	<div class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2">
-		{{ subtitleText }}
-	</div>
-
-	<ThumbUp
-		v-if="isGoalSet"
-		class="tw-w-16 tw-h-16 lg:tw-w-auto lg:tw-h-auto"
-	/>
-
-	<div
-		v-else
-		class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-2 tw-my-1"
-	>
-		<LoanNumberSelector
-			v-for="(option, index) in goalOptions"
-			:key="index"
-			:loans-number="option.loansNumber"
-			:option-text="option.optionText"
-			:selected="option.selected"
-			:highlighted-text="option.highlightedText"
-			@click="updateOptionSelection(index)"
+	<div class="tw-flex tw-flex-col tw-justify-center tw-gap-0 lg:tw-gap-1.5 tw-items-center">
+		<HandsPlant
+			v-if="!isGoalSet"
+			class="lg:tw-mb-1 tw-w-10 lg:tw-w-auto"
 		/>
-	</div>
 
-	<KvButton
-		class="tw-w-full tw-mt-1.5"
-		@click="handleContinue"
-	>
-		{{ buttonText }}
-	</KvButton>
+		<h2
+			class="tw-px-4 lg:tw-px-7 tw-text-center"
+			style="line-height: 125%;"
+			v-html="titleText"
+		>
+		</h2>
 
-	<KvButton
-		v-if="!isGoalSet"
-		variant="ghost"
-		class="edit-goal-button tw-w-full"
-		@click="editGoal"
-	>
-		Edit goal category
-		<KvMaterialIcon
-			:icon="mdiPencilOutline"
-			class="tw-ml-0.5"
+		<div class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
+			{{ subtitleText }}
+		</div>
+
+		<ThumbUp
+			v-if="isGoalSet"
+			class="tw-w-16 tw-h-16 lg:tw-w-auto lg:tw-h-auto tw-mx-auto"
+			style="max-width: 225px; max-height: 225px;"
 		/>
-	</KvButton>
+
+		<div
+			v-else
+			class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-2 tw-my-1"
+		>
+			<LoanNumberSelector
+				v-for="(option, index) in goalOptions"
+				:key="index"
+				:loans-number="option.loansNumber"
+				:option-text="option.optionText"
+				:selected="option.selected"
+				:highlighted-text="option.highlightedText"
+				@click="updateOptionSelection(index)"
+			/>
+		</div>
+
+		<KvButton
+			class="tw-w-full tw-mt-1.5"
+			@click="handleContinue"
+		>
+			{{ buttonText }}
+		</KvButton>
+
+		<KvButton
+			v-if="!isGoalSet"
+			variant="ghost"
+			class="edit-goal-button tw-w-full"
+			@click="editGoal"
+		>
+			Edit goal category
+			<KvMaterialIcon
+				:icon="mdiPencilOutline"
+				class="tw-ml-0.5"
+			/>
+		</KvButton>
+	</div>
 </template>
 
 <script setup>
@@ -177,7 +180,7 @@ const handleContinue = () => {
 		$kvTrackEvent(
 			props.trackingCategory,
 			'click',
-			'go-to-mykiva'
+			props.goToUrl === '/mykiva' ? 'go-to-mykiva' : 'continue-towards-goal'
 		);
 	} else {
 		const currentYear = new Date().getFullYear();
