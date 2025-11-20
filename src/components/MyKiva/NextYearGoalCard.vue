@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="card-container tw-h-full"
+		class="card-container"
 		:class="{'tw-gap-3': !!userHasGoal}"
 	>
 		<div v-if="!userHasGoal" class="tw-flex tw-flex-col tw-gap-1.5 tw-items-center">
@@ -166,16 +166,7 @@ onMounted(() => {
 
 <style lang="postcss" scoped>
 .card-container {
-	@apply tw-w-full tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
+	@apply tw-w-full tw-h-full tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
 		tw-overflow-hidden tw-bg-white tw-shrink-0;
-}
-
-.hide-bg::before {
-	@apply tw-opacity-0;
-}
-
-.achievement-card-bg {
-	width: 100%;
-	height: 236px;
 }
 </style>
