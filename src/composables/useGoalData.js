@@ -36,6 +36,12 @@ const GOAL_1_DISPLAY_MAP = {
 	[ID_WOMENS_EQUALITY]: 'woman',
 };
 
+export const GOAL_STATUS = {
+	COMPLETED: 'completed',
+	EXPIRED: 'expired',
+	IN_PROGRESS: 'in-progress',
+};
+
 function getGoalDisplayName(target, category) {
 	if (!target || target > 1) return GOAL_DISPLAY_MAP[category] || 'loans';
 	return GOAL_1_DISPLAY_MAP[category] || 'loan';
@@ -175,6 +181,42 @@ export default function useGoalData({ apollo }) {
 		loading.value = false;
 	}
 
+	/**
+	 * This method shows Goal Entry for 2026 Goals
+	 * It invalidates all goals on Jan 1st of 2026
+	 * @return {Array} - expiredGoals
+	 */
+	async function renewAnnualGoal(today = new Date()) {
+		const parsedPrefs = await loadPreferences();
+		const goals = parsedPrefs.goals || [];
+		const currentYear = today.getFullYear();
+
+		const expiredGoals = goals.map(goal => {
+			const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
+			if (goalYear < currentYear) {
+				return { ...goal, status: GOAL_STATUS.EXPIRED };
+			}
+			return goal;
+		});
+
+		if (expiredGoals.some(goal => goal.status === GOAL_STATUS.EXPIRED)) {
+			parsedPrefs.goals = expiredGoals;
+			parsedPrefs.goalsRenewed = true;
+
+			await updateUserPreferences(apollo, userPreferences.value, parsedPrefs, { goals: expiredGoals });
+			setGoalState({ goals: expiredGoals });
+		}
+
+		const showRenewedAnnualGoalToast = !!expiredGoals.length
+			&& !expiredGoals.some(g => g.status === GOAL_STATUS.COMPLETED);
+
+		return {
+			expiredGoals,
+			showRenewedAnnualGoalToast,
+			goalsRenewed: parsedPrefs?.goalsRenewed || false,
+		};
+	}
+
 	return {
 		getGoalDisplayName,
 		goalProgress,
@@ -186,5 +228,8 @@ export default function useGoalData({ apollo }) {
 		userGoalAchievedNow,
 		checkCompletedGoal,
 		getProgressByLoan,
+		// Goal Entry for 2026 Goals
+		userPreferences,
+		renewAnnualGoal,
 	};
 }
