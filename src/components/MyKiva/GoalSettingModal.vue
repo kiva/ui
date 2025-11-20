@@ -349,7 +349,7 @@ watch(numberOfLoans, newVal => {
 });
 
 watch(isGoalSet, newVal => {
-	if (newVal) {
+	if (newVal && showCategories.value) {
 		showCategories.value = false;
 	}
 });
