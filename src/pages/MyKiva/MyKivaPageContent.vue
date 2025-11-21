@@ -47,7 +47,7 @@
 				:goals-entrypoint-enable="goalsEntrypointEnable"
 			/>
 		</section>
-		<section v-if="newYearsGoalsIterExpShown" class="tw-mt-4" id="mykiva-achievements">
+		<section v-if="goalsEntrypointEnable" class="tw-mt-4" id="mykiva-achievements">
 			<h3 id="my-achievements">
 				Impact progress
 			</h3>
@@ -101,7 +101,7 @@
 				@mouse-enter-loan-card="loadBPData"
 			/>
 		</section>
-		<section v-if="!newYearsGoalsIterExpShown" class="tw-mb-4" id="mykiva-achievements">
+		<section v-if="!goalsEntrypointEnable" class="tw-mb-4" id="mykiva-achievements">
 			<h3 id="my-achievements">
 				My achievements
 			</h3>
@@ -211,7 +211,6 @@ import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -357,7 +356,6 @@ export default {
 			updatesLoading: true,
 			updatesOffset: 3,
 			clientRendered: false,
-			newYearsGoalsIterExpShown: false,
 		};
 	},
 	computed: {
@@ -659,17 +657,6 @@ export default {
 			this.showNextSteps = showNextSteps;
 			this.animatedSideSheet = isAnimated;
 		},
-		async initializeNewYearsGoalsIterExp() {
-			const { version } = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'borrower-profile',
-				'recommended_row'
-			);
-			if (version) {
-				this.newYearsGoalsIterExpShown = version === 'b';
-			}
-		},
 	},
 	created() {
 		if (this.sidesheetLoan?.id) {
@@ -697,7 +684,6 @@ export default {
 		this.fetchRecommendedLoans();
 		this.fetchMoreWaysToHelpData();
 		this.loadInitialBasketItems();
-		this.initializeNewYearsGoalsIterExp();
 
 		this.fetchMyGivingFundsCount()
 			.then(response => {
