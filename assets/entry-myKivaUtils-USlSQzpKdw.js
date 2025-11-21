@@ -1,0 +1,5 @@
+const d=`fragment experimentVersion on Experiment {
+	id
+	version
+}
+`,l={kind:"Document",definitions:[{kind:"FragmentDefinition",name:{kind:"Name",value:"experimentVersion"},typeCondition:{kind:"NamedType",name:{kind:"Name",value:"Experiment"}},directives:[],selectionSet:{kind:"SelectionSet",selections:[{kind:"Field",name:{kind:"Name",value:"id"},arguments:[],directives:[]},{kind:"Field",name:{kind:"Name",value:"version"},arguments:[],directives:[]}]}}],loc:{start:0,end:96,source:{name:"GraphQL request",locationOffset:{line:1,column:1},body:d}}},u="my_kiva_jan_2025",c="general.my_kiva_all_users.value",r="myKivaGuestAssignment",g="loan_purchase",E=(e,n,s)=>{s&&n&&(e==null||e.set(r,"true",{path:"/"}))},_=e=>!!(e!=null&&e.get(r)),v=e=>{const n=new Date;n.setMonth(n.getMonth()+2),e==null||e.set("mykivaredirectv2","true",n)},p=(e,n,s,t)=>{if(s){const i=_(t),{version:a}=e.readFragment({id:`Experiment:${u}`,fragment:l})??{},m=i||a==="b";return n("event-tracking","EXP-MP-1235-Jan2025",i?"b":a),m&&v(t),m}return!1};export{c as M,g as T,l as _,p as g,E as s};
