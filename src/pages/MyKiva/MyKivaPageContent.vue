@@ -47,6 +47,18 @@
 				:goals-entrypoint-enable="goalsEntrypointEnable"
 			/>
 		</section>
+		<section v-if="goalsEntrypointEnable" class="tw-mt-4" id="mykiva-achievements">
+			<h3 id="my-achievements">
+				Impact progress
+			</h3>
+			<BadgesSection
+				class="tw--mt-4"
+				controls-top-right
+				:badge-data="badgeData"
+				:selected-journey="selectedJourney"
+				@badge-clicked="handleBadgeSectionClicked"
+			/>
+		</section>
 		<MyKivaBorrowerCarousel
 			v-if="clientRendered"
 			id="mykiva-borrower-carousel"
@@ -89,7 +101,7 @@
 				@mouse-enter-loan-card="loadBPData"
 			/>
 		</section>
-		<section class="tw-mb-4" id="mykiva-achievements">
+		<section v-if="!goalsEntrypointEnable" class="tw-mb-4" id="mykiva-achievements">
 			<h3 id="my-achievements">
 				My achievements
 			</h3>
