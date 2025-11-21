@@ -1,6 +1,5 @@
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
-
-export const AI_LOAN_PILLS_EXP_KEY = 'ai_loan_pills';
+import { HOME_PAGE_EXPERIMENT_KEY as EXPERIMENT_KEY } from '#src/util/experiment/fastlyExperimentUtils';
 
 export default {
 	data() {
@@ -14,7 +13,7 @@ export default {
 				this.apollo,
 				this.$kvTrackEvent,
 				'event-tracking',
-				AI_LOAN_PILLS_EXP_KEY,
+				EXPERIMENT_KEY,
 				'EXP-MP-2050-Sept2025'
 			);
 			this.enableAILoanPills = version === 'b';
