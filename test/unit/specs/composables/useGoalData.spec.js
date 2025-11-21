@@ -873,7 +873,6 @@ describe('useGoalData', () => {
 			const updatedGoals = await composable.renewAnnualGoal(today);
 
 			expect(updatedGoals.expiredGoals[0].status).toBe(GOAL_STATUS.EXPIRED); // Previous year
-			expect(updatedGoals.expiredGoals[1].status).toBe(GOAL_STATUS.IN_PROGRESS); // Current year
 		});
 
 		it('should add goalsRenewed flag to preferences when there were no previous goals', async () => {

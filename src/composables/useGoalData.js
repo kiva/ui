@@ -189,6 +189,16 @@ export default function useGoalData({ apollo }) {
 	async function renewAnnualGoal(today = new Date()) {
 		const parsedPrefs = await loadPreferences();
 		const goals = parsedPrefs.goals || [];
+		const goalsRenewed = parsedPrefs.goalsRenewed || false;
+
+		if (goalsRenewed) {
+			return {
+				expiredGoals: goals,
+				showRenewedAnnualGoalToast: false,
+				goalsRenewed: true,
+			};
+		}
+
 		const currentYear = today.getFullYear();
 
 		const expiredGoals = goals.map(goal => {
@@ -196,8 +206,8 @@ export default function useGoalData({ apollo }) {
 			if (goalYear < currentYear) {
 				return { ...goal, status: GOAL_STATUS.EXPIRED };
 			}
-			return goal;
-		});
+			return null;
+		}).filter(goal => goal !== null);
 
 		if (expiredGoals.some(goal => goal.status === GOAL_STATUS.EXPIRED)) {
 			parsedPrefs.goals = expiredGoals;

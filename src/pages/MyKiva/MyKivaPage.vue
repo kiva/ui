@@ -202,7 +202,7 @@ export default {
 			'EXP-MP-1984-Sept2025',
 		);
 	},
-	mounted() {
+	async mounted() {
 		try {
 			this.apollo.watchQuery({
 				query: gql`
@@ -221,6 +221,14 @@ export default {
 					this.userInfo = { ...this.userInfo, userPreferences: data?.my?.userPreferences };
 				},
 			});
+
+			if (this.goalsEntrypointEnable) {
+				const { showRenewedAnnualGoalToast } = await this.renewAnnualGoal();
+				if (showRenewedAnnualGoalToast) {
+					// eslint-disable-next-line max-len
+					this.$showTipMsg('It’s time for your 2026 impact goal - a fresh start and new opportunity to make a difference.');
+				}
+			}
 		} catch (error) {
 			logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
 		}
