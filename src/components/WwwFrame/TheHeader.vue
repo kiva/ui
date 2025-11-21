@@ -600,7 +600,6 @@ import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 const NAV_UPDATE_EXP_KEY = 'home_page'; // Key aligns with key used in Fastly experimentation for cached CPS pages
-const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 
 export default {
 	name: 'TheHeader',
@@ -656,7 +655,6 @@ export default {
 			isNavUpdateExp: false,
 			isCountriesNotLentToExp: false,
 			throttledDetermineIfMobile: null,
-			goalsEntrypointEnable: false,
 		};
 	},
 	emits: ['show-basket'],
@@ -755,7 +753,6 @@ export default {
 			preFetch: true,
 			result({ data }) {
 				this.teamsMenuEnabled = readBoolSetting(data, 'general.teamsMenuEnabled.value');
-				this.goalsEntrypointEnable = readBoolSetting(data, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
 			},
 		},
 		{
@@ -847,14 +844,6 @@ export default {
 				COUNTRIES_NOT_LENT_TO_EXP,
 				'EXP-MP-1824-Aug2025',
 			)?.version === 'b';
-		}
-
-		if (this.goalsEntrypointEnable) {
-			const { showRenewedAnnualGoalToast } = await this.renewAnnualGoal();
-			if (showRenewedAnnualGoalToast) {
-				// eslint-disable-next-line max-len
-				this.$showTipMsg('It’s time for your 2026 impact goal - a fresh start and new opportunity to make a difference.');
-			}
 		}
 	},
 	beforeUnmount() {
