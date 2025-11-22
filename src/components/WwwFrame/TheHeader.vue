@@ -594,7 +594,6 @@ import {
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import countriesNotLentToExpMixin, { COUNTRIES_NOT_LENT_TO_EXP } from '#src/plugins/countries-not-lent-to-exp-mixin';
-import useGoalData from '#src/composables/useGoalData';
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
@@ -685,15 +684,6 @@ export default {
 			default: '',
 			required: false
 		},
-	},
-	setup() {
-		const apollo = inject('apollo');
-
-		const { renewAnnualGoal } = useGoalData({ apollo });
-
-		return {
-			renewAnnualGoal
-		};
 	},
 	computed: {
 		isVisitor() {
