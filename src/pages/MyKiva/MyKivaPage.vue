@@ -34,6 +34,8 @@ import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSid
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
+import useGoalData from '#src/composables/useGoalData';
+import { inject } from 'vue';
 
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
@@ -49,6 +51,16 @@ export default {
 	components: {
 		MyKivaPageContent,
 		WwwPage,
+	},
+	setup() {
+		const apollo = inject('apollo');
+		const {
+			renewAnnualGoal,
+		} = useGoalData({ apollo });
+
+		return {
+			renewAnnualGoal,
+		};
 	},
 	data() {
 		return {
