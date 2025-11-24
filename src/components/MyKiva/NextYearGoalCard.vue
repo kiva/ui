@@ -38,7 +38,7 @@
 					:rotate="180"
 					style="height: 170px; width: 170px;"
 				/>
-				<div class="tw-absolute tw-flex tw-flex-col tw-items-center tw-justify-center tw-inset-0 tw--mt-2">
+				<div class="tw-absolute tw-flex tw-flex-col tw-items-center tw-justify-center tw-inset-0 tw--mt-1">
 					<h1>
 						{{ goalProgress }}
 					</h1>

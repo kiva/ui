@@ -69,3 +69,12 @@ export const UserGoalCompleted = story({
   },
   goalProgress: 10,
 });
+
+export const BigNumberEdgeCase = story({
+  prevYearLoans: 100,
+  userGoal: {
+    target: 350,
+    category: 'ID_WOMENS_EQUALITY',
+  },
+  goalProgress: 300,
+});

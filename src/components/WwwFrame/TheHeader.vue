@@ -562,7 +562,7 @@
 </template>
 
 <script>
-import { defineAsyncComponent, inject } from 'vue';
+import { defineAsyncComponent } from 'vue';
 import {
 	hasLentBeforeCookie,
 	hasDepositBeforeCookie,
