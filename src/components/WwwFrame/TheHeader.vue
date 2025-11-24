@@ -794,7 +794,7 @@ export default {
 
 		this.isNavUpdateExp = navExperiment?.version === 'b';
 	},
-	async mounted() {
+	mounted() {
 		const { version } = this.apollo.readFragment({
 			id: `Experiment:${COMMS_OPT_IN_EXP_KEY}`,
 			fragment: experimentVersionFragment,
