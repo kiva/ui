@@ -182,7 +182,7 @@ export default function useGoalData({ apollo }) {
 	}
 
 	/**
-	 * This method shows Goal Entry for 2026 Goals
+	 * This method renew goals annually.
 	 * It invalidates all goals on Jan 1st of 2026
 	 * @return {Array} - expiredGoals
 	 */
@@ -190,18 +190,26 @@ export default function useGoalData({ apollo }) {
 		const parsedPrefs = await loadPreferences();
 		const goals = parsedPrefs.goals || [];
 		const currentYear = today.getFullYear();
+		const renewedYear = goals.goalsRenewedDate ? new Date(goals.goalsRenewedDate).getFullYear() : null;
+		if (renewedYear >= currentYear) {
+			return {
+				expiredGoals: goals,
+				showRenewedAnnualGoalToast: false,
+			};
+		}
 
+		// Renew goals every following year
 		const expiredGoals = goals.map(goal => {
 			const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
 			if (goalYear < currentYear) {
 				return { ...goal, status: GOAL_STATUS.EXPIRED };
 			}
-			return goal;
-		});
+			return null;
+		}).filter(goal => goal !== null);
 
 		if (expiredGoals.some(goal => goal.status === GOAL_STATUS.EXPIRED)) {
 			parsedPrefs.goals = expiredGoals;
-			parsedPrefs.goalsRenewed = true;
+			parsedPrefs.goalsRenewedDate = today.toISOString();
 
 			await updateUserPreferences(apollo, userPreferences.value, parsedPrefs, { goals: expiredGoals });
 			setGoalState({ goals: expiredGoals });
@@ -213,7 +221,6 @@ export default function useGoalData({ apollo }) {
 		return {
 			expiredGoals,
 			showRenewedAnnualGoalToast,
-			goalsRenewed: parsedPrefs?.goalsRenewed || false,
 		};
 	}
 
