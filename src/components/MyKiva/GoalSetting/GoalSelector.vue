@@ -1,9 +1,10 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-justify-center tw-gap-0 lg:tw-gap-1.5 tw-items-center">
-		<HandsPlant
+		<img
+			:src="HandsPlant"
 			v-if="!isGoalSet"
-			class="lg:tw-mb-1 tw-w-10 lg:tw-w-auto"
-		/>
+			class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
+		>
 
 		<h2
 			class="tw-px-4 lg:tw-px-7 tw-text-center"
@@ -37,25 +38,27 @@
 			/>
 		</div>
 
-		<KvButton
-			class="tw-w-full tw-mt-1.5"
-			@click="handleContinue"
-		>
-			{{ buttonText }}
-		</KvButton>
+		<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
+			<KvButton
+				class="tw-w-full tw-mt-1.5"
+				@click="handleContinue"
+			>
+				{{ buttonText }}
+			</KvButton>
 
-		<KvButton
-			v-if="!isGoalSet"
-			variant="ghost"
-			class="edit-goal-button tw-w-full"
-			@click="editGoal"
-		>
-			Edit goal category
-			<KvMaterialIcon
-				:icon="mdiPencilOutline"
-				class="tw-ml-0.5"
-			/>
-		</KvButton>
+			<KvButton
+				v-if="!isGoalSet"
+				variant="ghost"
+				class="edit-goal-button tw-w-full"
+				@click="editGoal"
+			>
+				Edit goal category
+				<KvMaterialIcon
+					:icon="mdiPencilOutline"
+					class="tw-ml-0.5"
+				/>
+			</KvButton>
+		</div>
 	</div>
 </template>
 
@@ -67,7 +70,7 @@ import {
 	onMounted,
 } from 'vue';
 import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
-import HandsPlant from '#src/assets/images/thanks-page/hands-plant.svg';
+import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import { useRouter } from 'vue-router';
