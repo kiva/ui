@@ -137,6 +137,14 @@ export default [
 		status: 'dev',
 	},
 	{
+		path: '/goal-setting',
+		component: () => import('#src/pages/GoalSetting'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		},
+	},
+	{
 
 		path: '/instant-donation-thanks/:result',
 		component: () => import('#src/pages/InstantActions/InstantDonationThanks'),
