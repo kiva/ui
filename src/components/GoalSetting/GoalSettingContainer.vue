@@ -6,6 +6,7 @@
 			<KvMaterialIcon
 				:icon="mdiChevronLeft"
 				class="tw-ml-0.5"
+				@click="goToDashboard"
 			/>
 			To dashboard
 		</button>
@@ -253,6 +254,10 @@ const handleClick = () => {
 	};
 
 	setGoal(preferences);
+};
+
+const goToDashboard = () => {
+	router.push('/mykiva');
 };
 
 onMounted(async () => {
