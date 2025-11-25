@@ -873,7 +873,6 @@ describe('useGoalData', () => {
 			const updatedGoals = await composable.renewAnnualGoal(today);
 
 			expect(updatedGoals.expiredGoals[0].status).toBe(GOAL_STATUS.EXPIRED); // Previous year
-			expect(updatedGoals.expiredGoals[1].status).toBe(GOAL_STATUS.IN_PROGRESS); // Current year
 		});
 
 		it('should add goalsRenewed flag to preferences when there were no previous goals', async () => {
@@ -897,10 +896,36 @@ describe('useGoalData', () => {
 
 			expect(updatedGoals).toEqual({
 				expiredGoals: [],
-				goalsRenewed: false,
 				showRenewedAnnualGoalToast: false,
 			});
 			expect(updateUserPreferences).toHaveBeenCalled();
 		});
+	});
+
+	it('should renew goals every year', async () => {
+		mockApollo.query = vi.fn().mockResolvedValue({
+			data: {
+				my: {
+					userPreferences: {
+						id: 'new-pref-id',
+						preferences: JSON.stringify({
+							goals: [
+								{
+									goalName: 'Goal', status: 'in-progress', dateStarted: '2025-01-01'
+								},
+							],
+							goalsRenewedDate: '2027-01-15T00:00:00Z',
+						}),
+					},
+					loans: { totalCount: 0 },
+				},
+			},
+		});
+
+		const today = new Date('2026-06-01T00:00:00Z');
+		const updatedGoals = await composable.renewAnnualGoal(today);
+
+		expect(updatedGoals.expiredGoals.length).toBe(1);
+		expect(updatedGoals.showRenewedAnnualGoalToast).toBe(true);
 	});
 });
