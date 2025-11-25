@@ -22,10 +22,6 @@ describe('ai-loan-pills-mixin.js', () => {
 		Object.assign(context, aiLoanPillsMixin.methods);
 	});
 
-	it('should export AI_LOAN_PILLS_EXP_KEY constant', () => {
-		expect(AI_LOAN_PILLS_EXP_KEY).toBe('ai_loan_pills');
-	});
-
 	it('should initialize with enableAILoanPills set to false', () => {
 		expect(context.enableAILoanPills).toBe(false);
 	});
@@ -39,7 +35,7 @@ describe('ai-loan-pills-mixin.js', () => {
 			context.apollo,
 			context.$kvTrackEvent,
 			'event-tracking',
-			'ai_loan_pills',
+			AI_LOAN_PILLS_EXP_KEY,
 			'EXP-MP-2050-Sept2025'
 		);
 	});

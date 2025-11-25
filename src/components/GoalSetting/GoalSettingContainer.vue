@@ -110,10 +110,16 @@ const {
 } = useGoalData({ apollo });
 
 const props = defineProps({
+	/**
+	 * Total number of loans across all categories
+	 */
 	totalLoans: {
 		type: Number,
 		default: 0,
 	},
+	/**
+	 * Object with loan counts per category
+	 */
 	categoriesLoanCount: {
 		type: Object,
 		default: () => ({}),
@@ -264,7 +270,7 @@ onMounted(async () => {
 }
 
 .buttons {
-    box-shadow: 0 0 12px 0 rgb(0, 0, 0, 8%);
+    box-shadow: 0 0 12px 0 rgb(0 0 0 / 8%);
     @screen lg {
         box-shadow: none;
     }
@@ -273,7 +279,7 @@ onMounted(async () => {
 .goal-selector :deep(.buttons) {
     @apply tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-z-sticky tw-bg-primary tw-p-2.5 lg:tw-p-0;
 
-    box-shadow: 0 0 12px 0 rgb(0, 0, 0, 8%);
+    box-shadow: 0 0 12px 0 rgb(0 0 0 / 8%);
     @screen lg {
         box-shadow: none;
     }
@@ -281,6 +287,7 @@ onMounted(async () => {
 
 .goal-selector :deep(button) {
     @apply tw-flex-none tw-mx-auto tw-w-auto;
-    min-width: 324px;
+
+	min-width: 324px;
 }
 </style>
