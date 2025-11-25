@@ -1,3 +1,6 @@
+import { mdiEmailOutline } from '@mdi/js';
+import { KvMaterialIcon } from '@kiva/kv-components';
+
 import ThankYouCard from '#src/components/MyKiva/ThankYouCard.vue';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 
@@ -9,20 +12,39 @@ export default {
 const story = (args = {}) => {
     const template = (_args, { argTypes }) => ({
         props: Object.keys(argTypes),
-        components: { ThankYouCard },
+        components: { ThankYouCard, KvMaterialIcon, mdiEmailOutline },
         mixins: [apolloStoryMixin()],
         setup() { return { args }; },
+		data() {
+			return {
+				mdiEmailOutline
+			};
+		},
         template: `
             <div style="width: 336px;">
                 <ThankYouCard v-bind="args">
                     <template #header>
-                        <h3 class="tw-text-center tw-m-0">You made a difference!</h3>
-                    </template>
-                    <template #content>
-                        <p class="tw-text-center tw-text-base">
-                            Your contribution helps create opportunities for borrowers around the world.
-                        </p>
-                    </template>
+						<span
+							class="tw-inline-flex tw-items-center tw-gap-1 tw-mb-2
+						tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5
+						tw-absolute tw-top-3 tw-left-3 tw-z-1"
+						>
+							<KvMaterialIcon
+								class="tw-w-2 tw-h-2 tw-shrink-0"
+								:icon="mdiEmailOutline"
+							/>
+							<span class="tw-text-primary tw-font-medium tw-align-middle" style="font-size: 0.875rem;">
+								Email updates
+							</span>
+						</span>
+					</template>
+					<template #content>
+						<span class="tw-block tw-text-center">We’ll keep you updated. Change your <a
+							href="/settings/email"
+							target="_blank"
+							v-kv-track-event="['portfolio', 'click', 'email-preferences-settings']"
+						>email preferences</a> at any time.</span>
+					</template>
                 </ThankYouCard>
             </div>
         `,

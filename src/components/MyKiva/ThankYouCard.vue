@@ -33,7 +33,7 @@ import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
 	content: '';
 	width: 400px;
     height: 598px;
-    background: url('/static/src/assets/images/my-kiva/goal-card-bg.png'), lightgray;
+    background: url('/src/assets/images/my-kiva/goal-card-bg.png'), lightgray;
     transform: rotate(31deg);
     left: 62%;
     top: -40%;
