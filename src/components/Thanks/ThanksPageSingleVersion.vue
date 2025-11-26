@@ -93,6 +93,7 @@
 			:categories-loan-count="categoriesLoanCount"
 			:is-thanks-page="true"
 			:number-of-loans="goalTarget"
+			:goals-entrypoint-enable="thanksPageGoalsEntrypointEnable"
 			@close-goal-modal="showGoalModal = false"
 			@set-goal="setGoal"
 		/>
