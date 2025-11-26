@@ -1,5 +1,5 @@
 <template>
-	<div class="card-container tw-h-full goal-card-bg card-container">
+	<div class="card-container tw-h-full goal-card-bg">
 		<div class="card-header tw-py-0">
 			<slot name="header"></slot>
 		</div>
