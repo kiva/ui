@@ -272,9 +272,13 @@ describe('useGoalData', () => {
 				})
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [
-								{ achievementId: ID_WOMENS_EQUALITY, totalProgress: 8 },
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{
+									id: ID_WOMENS_EQUALITY,
+									totalProgressToAchievement: 8,
+									tiers: [],
+								},
 							],
 						},
 					},
@@ -286,12 +290,18 @@ describe('useGoalData', () => {
 		});
 
 		it('should return 0 if progress is negative', async () => {
+			const logFormatter = (await import('#src/util/logFormatter')).default;
+			logFormatter.mockClear();
+
 			const mockPrefs = {
 				goals: [{
 					goalName: 'test-goal',
 					category: ID_BASIC_NEEDS,
 					target: 10,
 					loanTotalAtStart: 20,
+					dateStarted: '2024-01-01',
+					count: 0,
+					status: 'in-progress',
 				}],
 			};
 
@@ -309,9 +319,13 @@ describe('useGoalData', () => {
 				})
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [
-								{ achievementId: ID_BASIC_NEEDS, totalProgress: 5 },
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{
+									id: ID_BASIC_NEEDS,
+									totalProgressToAchievement: 5,
+									tiers: [],
+								},
 							],
 						},
 					},
@@ -320,6 +334,189 @@ describe('useGoalData', () => {
 			await composable.loadGoalData([]);
 
 			expect(composable.goalProgress.value).toBe(0);
+		});
+
+		it('should log to console and update goal when progress is negative', async () => {
+			const logFormatter = (await import('#src/util/logFormatter')).default;
+			const {
+				updateUserPreferences,
+			} = await import('#src/util/userPreferenceUtils');
+
+			logFormatter.mockClear();
+			updateUserPreferences.mockClear();
+
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_BASIC_NEEDS,
+					target: 10,
+					loanTotalAtStart: 20,
+					dateStarted: '2024-01-01',
+					count: 0,
+					status: 'in-progress',
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{
+									id: ID_BASIC_NEEDS,
+									totalProgressToAchievement: 5,
+									tiers: [],
+								},
+							],
+						},
+					},
+				});
+
+			await composable.loadGoalData([]);
+
+			// Access goalProgress to trigger the computed property
+			const progress = composable.goalProgress.value;
+
+			expect(progress).toBe(0);
+			expect(logFormatter).toHaveBeenCalledWith(
+				'Negative goal progress detected, correcting loanTotalAtStart',
+				'warn',
+				expect.objectContaining({
+					category: ID_BASIC_NEEDS,
+					goalName: 'test-goal',
+					totalProgress: 5,
+					loanTotalAtStart: 20,
+					adjustedProgress: -15,
+					target: 10,
+				})
+			);
+			expect(updateUserPreferences).toHaveBeenCalled();
+		});
+
+		it('should not log or update when progress is positive', async () => {
+			const logFormatter = (await import('#src/util/logFormatter')).default;
+			const {
+				updateUserPreferences,
+			} = await import('#src/util/userPreferenceUtils');
+
+			logFormatter.mockClear();
+			updateUserPreferences.mockClear();
+
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_WOMENS_EQUALITY,
+					target: 10,
+					loanTotalAtStart: 3,
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{
+									id: ID_WOMENS_EQUALITY,
+									totalProgressToAchievement: 8,
+									tiers: [],
+								},
+							],
+						},
+					},
+				});
+
+			await composable.loadGoalData([]);
+
+			// Access goalProgress to trigger the computed property
+			const progress = composable.goalProgress.value;
+
+			expect(progress).toBe(5);
+			expect(logFormatter).not.toHaveBeenCalledWith(
+				'Negative goal progress detected, correcting loanTotalAtStart',
+				expect.anything(),
+				expect.anything()
+			);
+		});
+
+		it('should correct loanTotalAtStart to totalProgress when negative', async () => {
+			const {
+				updateUserPreferences,
+			} = await import('#src/util/userPreferenceUtils');
+
+			updateUserPreferences.mockClear();
+
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_CLIMATE_ACTION,
+					target: 10,
+					loanTotalAtStart: 15,
+					dateStarted: '2024-01-01',
+					count: 0,
+					status: 'in-progress',
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{
+									id: ID_CLIMATE_ACTION,
+									totalProgressToAchievement: 7,
+									tiers: [],
+								},
+							],
+						},
+					},
+				});
+
+			await composable.loadGoalData([]);
+
+			// Access goalProgress to trigger the computed property
+			// eslint-disable-next-line no-unused-expressions
+			composable.goalProgress.value;
+
+			// Verify storeGoalPreferences was called with corrected loanTotalAtStart
+			expect(updateUserPreferences).toHaveBeenCalled();
+			const updateCall = updateUserPreferences.mock.calls[0];
+			const updatedGoals = updateCall[3].goals;
+			expect(updatedGoals[0].loanTotalAtStart).toBe(7); // Should be corrected to totalProgress
 		});
 
 		it('should handle missing progress entry', async () => {
@@ -582,7 +779,7 @@ describe('useGoalData', () => {
 					},
 				});
 
-			await composable.loadGoalData([]);
+			await composable.loadGoalData([{ id: 123 }]);
 			await composable.checkCompletedGoal();
 
 			expect(mockKvTrackEvent).toHaveBeenCalledWith(
@@ -646,7 +843,7 @@ describe('useGoalData', () => {
 					},
 				});
 
-			await composable.loadGoalData([]);
+			await composable.loadGoalData([{ id: 456 }]);
 			await composable.checkCompletedGoal('custom-category');
 
 			expect(mockKvTrackEvent).toHaveBeenCalledWith(
@@ -662,6 +859,8 @@ describe('useGoalData', () => {
 			const {
 				updateUserPreferences,
 			} = await import('#src/util/userPreferenceUtils');
+
+			updateUserPreferences.mockClear();
 
 			const mockPrefs = {
 				goals: [{
@@ -695,7 +894,7 @@ describe('useGoalData', () => {
 					},
 				});
 
-			await composable.loadGoalData([]);
+			await composable.loadGoalData([{ id: 789 }]);
 			updateUserPreferences.mockClear();
 			await composable.checkCompletedGoal();
 
@@ -740,7 +939,7 @@ describe('useGoalData', () => {
 					},
 				});
 
-			await composable.loadGoalData([]);
+			await composable.loadGoalData([{ id: 999 }]);
 			updateUserPreferences.mockClear();
 			await composable.checkCompletedGoal();
 
