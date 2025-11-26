@@ -25,7 +25,7 @@ const story = (args = {}) => {
                 <ThankYouCard v-bind="args">
                     <template #header>
 						<span
-							class="tw-inline-flex tw-items-center tw-gap-1 tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5 tw-top-3 tw-left-3 tw-z-1"
+							class="tw-inline-flex tw-items-center tw-gap-1 tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5"
 						>
 							<KvMaterialIcon
 								class="tw-w-2 tw-h-2 tw-shrink-0"

@@ -31,16 +31,18 @@ import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
 
 .goal-card-bg::before {
 	content: '';
-	width: 400px;
-    height: 598px;
+	width: 331px;
+    height: 1103px;
     background: url('/src/assets/images/my-kiva/goal-card-bg.png'), lightgray;
-    transform: rotate(31deg);
-    left: 62%;
-    top: -40%;
+    transform: rotate(21deg);
+    left: 93%;
+    top: -242%;
     right: 0;
     z-index: -1;
-    opacity: 0.5;
+    opacity: 0.3;
+	background-position: inherit;
+	background-size: 81% 110%;
 
-	@apply tw-absolute tw-bg-cover tw-bg-center tw-bg-no-repeat tw-right-0 tw-bg-blend-overlay;
+	@apply tw-absolute tw-bg-no-repeat tw-right-0 tw-bg-blend-overlay;
 }
 </style>
