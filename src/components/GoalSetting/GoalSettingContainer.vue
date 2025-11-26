@@ -26,6 +26,7 @@
 				:is-goal-set="isGoalSet"
 				:categories-loan-count="categoriesLoanCount"
 				:go-to-url="ctaHref"
+				tracking-category="event-tracking"
 				@set-goal-target="setTarget($event)"
 				@set-goal="setGoal($event)"
 				@edit-goal="editGoal"
@@ -84,33 +85,19 @@ import { KvLoadingPlaceholder, KvMaterialIcon, KvButton } from '@kiva/kv-compone
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import CategoryForm from '#src/components/MyKiva/GoalSetting/CategoryForm';
 import useGoalData from '#src/composables/useGoalData';
-import useBadgeData,
-{
-	ID_BASIC_NEEDS,
-	ID_CLIMATE_ACTION,
-	ID_REFUGEE_EQUALITY,
-	ID_US_ECONOMIC_EQUALITY,
-	ID_WOMENS_EQUALITY,
-	ID_SUPPORT_ALL,
-} from '#src/composables/useBadgeData';
-import womenImg from '#src/assets/images/my-kiva/goal-setting/women.svg?url';
-import refugeesImg from '#src/assets/images/my-kiva/goal-setting/refugees.svg?url';
-import climateActionImg from '#src/assets/images/my-kiva/goal-setting/climate-action.svg?url';
-import usEntrepreneursImg from '#src/assets/images/my-kiva/goal-setting/us-entrepreneurs.svg?url';
-import basicNeedsImg from '#src/assets/images/my-kiva/goal-setting/basic-needs.svg?url';
-import supportAllImg from '#src/assets/images/my-kiva/goal-setting/support-all.svg?url';
+import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 
 const apollo = inject('apollo');
+const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
-
-const { getLoanFindingUrl } = useBadgeData();
 
 const {
 	userGoal,
 	loadGoalData,
 	storeGoalPreferences,
 	loading,
-	getGoalDisplayName,
+	getCategories,
+	getCtaHref,
 } = useGoalData({ apollo });
 
 const props = defineProps({
@@ -133,82 +120,14 @@ const props = defineProps({
 const isGoalSet = ref(false);
 const loanTarget = ref(0);
 const showCategories = ref(false);
+const ctaHref = ref('');
 
-const categories = [
-	{
-		id: '1',
-		name: 'Women',
-		description: 'Open doors for women around the world',
-		eventProp: 'women',
-		customImage: womenImg,
-		loanCount: props.categoriesLoanCount?.[ID_WOMENS_EQUALITY],
-		title: 'women',
-		badgeId: ID_WOMENS_EQUALITY,
-	},
-	{
-		id: '2',
-		name: 'Refugees',
-		description: 'Transform the future for refugees',
-		eventProp: 'refugees',
-		customImage: refugeesImg,
-		loanCount: props.categoriesLoanCount?.[ID_REFUGEE_EQUALITY],
-		title: 'refugees',
-		badgeId: ID_REFUGEE_EQUALITY,
-	},
-	{
-		id: '3',
-		name: 'Climate Action',
-		description: 'Support the front lines of the climate crisis',
-		eventProp: 'climate',
-		customImage: climateActionImg,
-		loanCount: props.categoriesLoanCount?.[ID_CLIMATE_ACTION],
-		title: 'climate action',
-		badgeId: ID_CLIMATE_ACTION,
-	},
-	{
-		id: '4',
-		name: 'U.S. Entrepreneurs',
-		description: 'Support small businesses in the U.S.',
-		eventProp: 'us-entrepreneur',
-		customImage: usEntrepreneursImg,
-		loanCount: props.categoriesLoanCount?.[ID_US_ECONOMIC_EQUALITY],
-		title: 'US entrepreneurs',
-		badgeId: ID_US_ECONOMIC_EQUALITY,
-	},
-	{
-		id: '5',
-		name: 'Basic Needs',
-		description: 'Clean water, healthcare, and sanitation',
-		eventProp: 'basic-needs',
-		customImage: basicNeedsImg,
-		loanCount: props.categoriesLoanCount?.[ID_BASIC_NEEDS],
-		title: 'basic needs',
-		badgeId: ID_BASIC_NEEDS,
-	},
-	{
-		id: '6',
-		name: 'Choose as I go',
-		description: 'Support a variety of borrowers',
-		eventProp: 'help-everyone',
-		customImage: supportAllImg,
-		loanCount: props.totalLoans,
-		title: null,
-		badgeId: ID_SUPPORT_ALL,
-	}
-];
+const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
 const selectedCategory = ref(categories[0]);
 
 const title = computed(() => {
 	return `Make <span class="tw-text-eco-green-3">${loanTarget.value} loans</span> to...`;
-});
-
-const ctaHref = computed(() => {
-	const categoryHeader = getGoalDisplayName(loanTarget.value, selectedCategory.value?.badgeId);
-	const string = `Your goal: Support ${loanTarget.value} ${categoryHeader}`;
-	const encodedHeader = encodeURIComponent(string);
-	const loanFindingUrl = getLoanFindingUrl(selectedCategory.value?.badgeId, router.currentRoute.value);
-	return `${loanFindingUrl}?header=${encodedHeader}`;
 });
 
 const editGoal = () => {
@@ -222,6 +141,7 @@ const setTarget = target => {
 
 const setGoal = async preferences => {
 	await storeGoalPreferences(preferences);
+	ctaHref.value = getCtaHref(loanTarget.value, selectedCategory.value?.badgeId, router);
 	isGoalSet.value = true;
 	showCategories.value = false;
 };
@@ -229,6 +149,12 @@ const setGoal = async preferences => {
 const handleCategorySelected = categoryId => {
 	const categoryIdx = categoryId - 1;
 	selectedCategory.value = categories[categoryIdx];
+	$kvTrackEvent(
+		'event-tracking',
+		'click',
+		'choose-goal-category',
+		selectedCategory.value?.eventProp
+	);
 };
 
 const editGoalNumber = () => {
@@ -236,6 +162,11 @@ const editGoalNumber = () => {
 	window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 	// eslint-disable-next-line prefer-destructuring
 	selectedCategory.value = categories[0];
+	$kvTrackEvent(
+		'event-tracking',
+		'click',
+		'back-to-goal-number-selection',
+	);
 };
 
 const handleClick = () => {
@@ -258,9 +189,18 @@ const handleClick = () => {
 	};
 
 	setGoal(preferences);
+
+	$kvTrackEvent(
+		'event-tracking',
+		'click',
+		'set-annual-goal',
+		categorySelected,
+		loanTarget.value
+	);
 };
 
 const goToDashboard = () => {
+	$kvTrackEvent('event-tracking', 'click', 'back-to-dashboard');
 	router.push('/mykiva');
 };
 
@@ -268,8 +208,11 @@ onMounted(async () => {
 	await loadGoalData();
 	const isEmptyGoal = Object.keys(userGoal.value || {}).length === 0;
 	if (!isEmptyGoal) {
+		const { target, category } = userGoal.value;
+		ctaHref.value = getCtaHref(target, category, router);
 		isGoalSet.value = true;
 	}
+	$kvTrackEvent('event-tracking', 'view', 'goals-page');
 });
 </script>
 
