@@ -73,14 +73,12 @@ import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
-import { useRouter } from 'vue-router';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiPencilOutline } from '@mdi/js';
 
 const SAME_AS_LAST_YEAR_LIMIT = 1;
 
 const $kvTrackEvent = inject('$kvTrackEvent');
-const router = useRouter();
 
 const props = defineProps({
 	/**
