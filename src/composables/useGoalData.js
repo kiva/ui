@@ -6,6 +6,7 @@ import {
 
 import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import useGoalDataProgressQuery from '#src/graphql/query/useGoalDataProgress.graphql';
+import userAchievementProgressAllTimeQuery from '#src/graphql/query/userAchievementProgressAllTime.graphql';
 import logFormatter from '#src/util/logFormatter';
 import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 
@@ -86,14 +87,36 @@ export default function useGoalData({ apollo }) {
 		}
 	}
 
-	async function loadProgress(loans) {
+	async function loadProgress(loans = undefined) {
 		try {
-			const loanIds = loans.map(loan => loan.id);
+			if (loans?.length) {
+				// Use postCheckoutAchievements with specific loans (e.g., from a checkout receipt)
+				const loanIds = loans.map(loan => loan.id);
+				const response = await apollo.query({
+					query: useGoalDataProgressQuery,
+					variables: { loanIds },
+				});
+				return response?.data?.postCheckoutAchievements?.allTimeProgress || [];
+			}
+
+			// Use userAchievementProgress to get current user's all-time progress
 			const response = await apollo.query({
-				query: useGoalDataProgressQuery,
-				variables: { loanIds },
+				query: userAchievementProgressAllTimeQuery,
+				variables: { publicId: null }, // null means use the current user's JWT
 			});
-			return response?.data?.postCheckoutAchievements?.allTimeProgress || [];
+
+			// Transform userAchievementProgress data to match the allTimeProgress format
+			const achievements = response?.data?.userAchievementProgress?.tieredLendingAchievements || [];
+			return achievements.map(achievement => {
+				const currentTier = achievement.tiers?.findIndex(tier => !tier.completedDate)
+					?? achievement.tiers?.length ?? 0;
+				return {
+					achievementId: achievement.id,
+					totalProgress: achievement.totalProgressToAchievement || 0,
+					currentTier: currentTier >= 0 ? currentTier : achievement.tiers?.length ?? 0,
+					completed: null, // Tiered achievements don't have a single completed flag
+				};
+			});
 		} catch (error) {
 			logFormatter(error, 'Failed to load progress');
 			return null;
@@ -130,6 +153,28 @@ export default function useGoalData({ apollo }) {
 			entry => entry.achievementId === userGoal.value?.category
 		)?.totalProgress || 0;
 		const adjustedProgress = totalProgress - (userGoal.value?.loanTotalAtStart || 0);
+
+		// Check if adjustedProgress is negative and correct it
+		// This could be happening due to a race condition with postCheckoutAchievements
+		if (adjustedProgress < 0 && userGoal.value) {
+			const debugData = {
+				category: userGoal.value.category,
+				goalName: userGoal.value.goalName,
+				totalProgress,
+				loanTotalAtStart: userGoal.value.loanTotalAtStart,
+				adjustedProgress,
+				target: userGoal.value.target,
+			};
+
+			logFormatter('Negative goal progress detected, correcting loanTotalAtStart', 'warn', debugData);
+
+			// Correct the goal by updating loanTotalAtStart to totalProgress
+			storeGoalPreferences({
+				...userGoal.value,
+				loanTotalAtStart: totalProgress,
+			});
+		}
+
 		return Math.max(adjustedProgress, 0);
 	});
 
@@ -156,12 +201,12 @@ export default function useGoalData({ apollo }) {
 	};
 
 	const getProgressByLoan = async loan => {
-		const result = await loadProgress([loan]);
 		if (userGoal.value?.category === ID_SUPPORT_ALL) {
 			goalCurrentLoanCount.value += 1;
 			return goalCurrentLoanCount.value;
 		}
 
+		const result = await loadProgress([loan]);
 		const totalProgress = result.find(
 			entry => entry.achievementId === userGoal.value?.category
 		)?.totalProgress || 0;

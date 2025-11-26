@@ -329,7 +329,7 @@ export default {
 	},
 	async mounted() {
 		if (this.isNextStepsExpEnabled) {
-			await this.loadGoalData(this.loans);
+			await this.loadGoalData();
 			await this.checkCompletedGoal('portfolio');
 			this.goalProgressLoading = false;
 		}
