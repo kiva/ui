@@ -1,0 +1,13 @@
+query UserAchievementProgressAllTime($publicId: String) {
+  userAchievementProgress(publicId: $publicId) {
+    id
+    tieredLendingAchievements {
+      id
+      totalProgressToAchievement
+      tiers {
+        target
+        completedDate
+      }
+    }
+  }
+}
