@@ -6,9 +6,19 @@
 		@lightbox-closed="closeLightbox"
 	>
 		<template #header>
-			<h2 v-if="!isMobile && (showCategories || isThanksPage)" v-html="title" class="tw-mb-3 tw-text-center"></h2>
+			<h2
+				v-if="!isMobile && (showCategories || isThanksPage)"
+				v-html="title"
+				class="tw-mb-3 tw-text-center"
+				:class="{ '!tw-text-left': goalsEntrypointEnable }"
+			></h2>
 		</template>
-		<h2 v-if="isMobile && (showCategories || isThanksPage)" v-html="title" class="tw-mb-3 tw-text-center"></h2>
+		<h2
+			v-if="isMobile && (showCategories || isThanksPage)"
+			v-html="title"
+			class="tw-mb-3 tw-text-center"
+			:class="{ '!tw-text-left': goalsEntrypointEnable }"
+		></h2>
 		<GoalSelector
 			v-if="showGoalSelector && goalsEntrypointEnable"
 			v-show="!showCategories"
@@ -37,7 +47,7 @@
 				class="tw-flex tw-justify-end tw-gap-2"
 			>
 				<KvButton
-					v-if="formStep === 2 || (showGoalSelector && formStep === 1)"
+					v-if="formStep === 2"
 					variant="secondary"
 					@click="clickBack"
 				>
@@ -211,10 +221,16 @@ const contentComponent = computed(() => {
 });
 
 const ctaCopy = computed(() => {
+	if (props.goalsEntrypointEnable) {
+		return 'Set 2026 goal';
+	}
 	return formStep.value === 1 ? 'Continue' : 'Set my goal';
 });
 
 const title = computed(() => {
+	if (props.goalsEntrypointEnable) {
+		return `Make <span class="tw-text-eco-green-3">${selectedGoalNumber.value} loans</span> to...`;
+	}
 	if (formStep.value === 1) {
 		return 'Choose your impact goal category';
 	}
@@ -269,7 +285,7 @@ const clickBack = () => {
 };
 
 const handleClick = () => {
-	if (formStep.value === 1) {
+	if (formStep.value === 1 && !props.goalsEntrypointEnable) {
 		formStep.value += 1;
 		$kvTrackEvent(
 			props.isThanksPage ? 'post-checkout' : 'portfolio',

@@ -25,7 +25,7 @@
 
 		<div
 			v-else
-			class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-2 tw-my-1"
+			class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5 tw-my-1"
 		>
 			<LoanNumberSelector
 				v-for="(option, index) in goalOptions"
