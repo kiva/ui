@@ -47,7 +47,7 @@
 				class="tw-flex tw-justify-end tw-gap-2"
 			>
 				<KvButton
-					v-if="formStep === 2 || (showGoalSelector && formStep === 1)"
+					v-if="formStep === 2"
 					variant="secondary"
 					@click="clickBack"
 				>
