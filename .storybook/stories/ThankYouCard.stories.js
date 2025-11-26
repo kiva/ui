@@ -25,9 +25,7 @@ const story = (args = {}) => {
                 <ThankYouCard v-bind="args">
                     <template #header>
 						<span
-							class="tw-inline-flex tw-items-center tw-gap-1 tw-mb-2
-						tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5
-						tw-absolute tw-top-3 tw-left-3 tw-z-1"
+							class="tw-inline-flex tw-items-center tw-gap-1 tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5 tw-top-3 tw-left-3 tw-z-1"
 						>
 							<KvMaterialIcon
 								class="tw-w-2 tw-h-2 tw-shrink-0"
@@ -39,7 +37,7 @@ const story = (args = {}) => {
 						</span>
 					</template>
 					<template #content>
-						<span class="tw-block tw-text-center">We’ll keep you updated. Change your <a
+						<span>We’ll keep you updated. Change your <a
 							href="/settings/email"
 							target="_blank"
 							v-kv-track-event="['portfolio', 'click', 'email-preferences-settings']"
@@ -67,7 +65,7 @@ export const WithCustomHeader = (_args, { argTypes }) => ({
 					<h3 class="tw-text-center tw-m-0 tw-text-action-highlight">Achievement Unlocked!</h3>
 				</template>
 				<template #content>
-					<p class="tw-text-center tw-text-base">
+					<p>
 						You've supported 10 borrowers this year!
 					</p>
 				</template>
@@ -88,7 +86,7 @@ export const WithLongContent = (_args, { argTypes }) => ({
                         <h3 class="tw-text-center tw-m-0">Amazing work!</h3>
                     </template>
                     <template #content>
-                        <p class="tw-text-center tw-text-base">
+                        <p>
                             Your generous loan of $25 will help Maria expand her business
                             and provide for her family. Together, we're building a better future.
                         </p>

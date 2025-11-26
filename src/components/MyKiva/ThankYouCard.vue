@@ -1,15 +1,15 @@
 <template>
-	<div class="card-container tw-h-full goal-card-bg thank-you-card">
-		<div class="card-header tw-pt-0 tw-pb-2">
+	<div class="card-container tw-h-full goal-card-bg card-container">
+		<div class="card-header tw-py-0">
 			<slot name="header"></slot>
 		</div>
-		<div class="card-body tw-pt-4 tw-pb-2">
-			<h2 class="tw-text-center tw-py-4">
+		<div class="card-body tw-text-center tw-text-base tw-pt-4 tw-pb-2">
+			<h2 class="tw-pb-2">
 				Thank you!
 			</h2>
 			<slot name="content"></slot>
 		</div>
-		<div class="card-footer tw-py-0 tw-text-center tw-mx-auto">
+		<div class="card-footer tw-py-0 tw-text-center tw-mx-auto tw-mb-2">
 			<ThumbUp
 				class="tw-w-12 tw-h-12" viewBox="25 20 175 175"
 			/>
