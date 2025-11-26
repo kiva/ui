@@ -142,7 +142,14 @@ const subtitleText = computed(() => {
 		: 'How many loans will you make this year?';
 });
 
-const buttonText = computed(() => (props.isGoalSet ? 'Track my progress' : 'Set 2026 goal'));
+const buttonText = computed(() => {
+	// eslint-disable-next-line no-nested-ternary
+	return !props.isGoalSet
+		? 'Set 2026 goal'
+		: props.goToUrl !== '/mykiva'
+			? 'Make a loan'
+			: 'Track my progress';
+});
 
 const selectedTarget = computed(() => {
 	const selectedOption = goalOptions.value.find(option => option.selected);
