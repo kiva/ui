@@ -22,7 +22,7 @@
 		>
 			<GoalSelector
 				class="goal-selector"
-				v-if="!showCategories"
+				v-show="!showCategories"
 				:is-goal-set="isGoalSet"
 				:categories-loan-count="categoriesLoanCount"
 				:go-to-url="ctaHref"
@@ -31,9 +31,12 @@
 				@edit-goal="editGoal"
 			/>
 			<div
-				v-else
+				v-show="showCategories"
 			>
-				<h2 v-html="title" class="tw-mb-3 tw-text-center"></h2>
+				<h2
+					v-html="title"
+					class="tw-mb-3 tw-text-left lg:tw-text-center"
+				></h2>
 				<CategoryForm
 					:categories="categories"
 					:pre-selected-category="selectedCategory.id"
@@ -41,7 +44,7 @@
 				/>
 				<div
 					class="buttons tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-flex tw-flex-col tw-justify-center
-                        tw-w-full lg:tw-w-auto tw-z-sticky tw-gap-2 tw-mt-4 tw-bg-primary tw-p-2.5 lg:tw-p-0"
+                        tw-w-full lg:tw-w-auto tw-z-sticky tw-gap-1.5 tw-mt-4 tw-bg-primary tw-p-2.5 lg:tw-p-0"
 				>
 					<KvButton
 						class="tw-flex-none tw-mx-auto tw-w-full lg:tw-w-auto"
@@ -210,6 +213,7 @@ const ctaHref = computed(() => {
 
 const editGoal = () => {
 	showCategories.value = true;
+	window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 };
 
 const setTarget = target => {
@@ -291,7 +295,7 @@ onMounted(async () => {
 }
 
 .goal-selector :deep(button) {
-    @apply tw-flex-none tw-mx-auto tw-w-auto;
+    @apply tw-flex-none tw-mx-auto tw-w-full lg:tw-w-auto;
 
 	min-width: 324px;
 }
