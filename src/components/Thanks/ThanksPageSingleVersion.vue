@@ -36,10 +36,9 @@
 				@continue-clicked="handleContinue"
 				class="tw-mb-2.5"
 			/>
-			<!-- TODO: update loading prop as BE work is done for last year women loans -->
 			<GoalEntrypoint
 				v-if="thanksPageGoalsEntrypointEnable && !isGuest && isEmptyGoal"
-				:loading="false"
+				:loading="goalDataLoading"
 				:total-loans="totalLoans"
 				:categories-loan-count="categoriesLoanCount"
 				:is-goal-set="isGoalSet"
@@ -94,6 +93,7 @@
 			:categories-loan-count="categoriesLoanCount"
 			:is-thanks-page="true"
 			:number-of-loans="goalTarget"
+			:goals-entrypoint-enable="thanksPageGoalsEntrypointEnable"
 			@close-goal-modal="showGoalModal = false"
 			@set-goal="setGoal"
 		/>

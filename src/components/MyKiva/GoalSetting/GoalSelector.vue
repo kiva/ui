@@ -1,9 +1,10 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-justify-center tw-gap-0 lg:tw-gap-1.5 tw-items-center">
-		<HandsPlant
+		<img
+			:src="HandsPlant"
 			v-if="!isGoalSet"
-			class="lg:tw-mb-1 tw-w-10 lg:tw-w-auto"
-		/>
+			class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
+		>
 
 		<h2
 			class="tw-px-4 lg:tw-px-7 tw-text-center"
@@ -24,7 +25,7 @@
 
 		<div
 			v-else
-			class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-2 tw-my-1"
+			class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5 tw-my-1"
 		>
 			<LoanNumberSelector
 				v-for="(option, index) in goalOptions"
@@ -37,25 +38,27 @@
 			/>
 		</div>
 
-		<KvButton
-			class="tw-w-full tw-mt-1.5"
-			@click="handleContinue"
-		>
-			{{ buttonText }}
-		</KvButton>
+		<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
+			<KvButton
+				class="tw-w-full tw-mt-1.5"
+				@click="handleContinue"
+			>
+				{{ buttonText }}
+			</KvButton>
 
-		<KvButton
-			v-if="!isGoalSet"
-			variant="ghost"
-			class="edit-goal-button tw-w-full"
-			@click="editGoal"
-		>
-			Edit goal category
-			<KvMaterialIcon
-				:icon="mdiPencilOutline"
-				class="tw-ml-0.5"
-			/>
-		</KvButton>
+			<KvButton
+				v-if="!isGoalSet"
+				variant="ghost"
+				class="edit-goal-button tw-w-full"
+				@click="editGoal"
+			>
+				Edit goal category
+				<KvMaterialIcon
+					:icon="mdiPencilOutline"
+					class="tw-ml-0.5"
+				/>
+			</KvButton>
+		</div>
 	</div>
 </template>
 
@@ -67,17 +70,15 @@ import {
 	onMounted,
 } from 'vue';
 import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
-import HandsPlant from '#src/assets/images/thanks-page/hands-plant.svg';
+import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
-import { useRouter } from 'vue-router';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiPencilOutline } from '@mdi/js';
 
 const SAME_AS_LAST_YEAR_LIMIT = 1;
 
 const $kvTrackEvent = inject('$kvTrackEvent');
-const router = useRouter();
 
 const props = defineProps({
 	/**
@@ -141,7 +142,14 @@ const subtitleText = computed(() => {
 		: 'How many loans will you make this year?';
 });
 
-const buttonText = computed(() => (props.isGoalSet ? 'Track my progress' : 'Set 2026 goal'));
+const buttonText = computed(() => {
+	// eslint-disable-next-line no-nested-ternary
+	return !props.isGoalSet
+		? 'Set 2026 goal'
+		: props.goToUrl !== '/mykiva'
+			? 'Make a loan'
+			: 'Track my progress';
+});
 
 const selectedTarget = computed(() => {
 	const selectedOption = goalOptions.value.find(option => option.selected);
@@ -176,7 +184,7 @@ const editGoal = () => {
 
 const handleContinue = () => {
 	if (props.isGoalSet) {
-		router.push(props.goToUrl);
+		window.location.href = props.goToUrl;
 		$kvTrackEvent(
 			props.trackingCategory,
 			'click',
