@@ -179,7 +179,7 @@ const editGoal = () => {
 
 const handleContinue = () => {
 	if (props.isGoalSet) {
-		router.push(props.goToUrl);
+		window.location.href = props.goToUrl;
 		$kvTrackEvent(
 			props.trackingCategory,
 			'click',

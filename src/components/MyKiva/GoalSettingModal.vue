@@ -74,24 +74,9 @@ import {
 } from 'vue';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import useIsMobile from '#src/composables/useIsMobile';
-import useBadgeData,
-{
-	ID_BASIC_NEEDS,
-	ID_CLIMATE_ACTION,
-	ID_REFUGEE_EQUALITY,
-	ID_US_ECONOMIC_EQUALITY,
-	ID_WOMENS_EQUALITY,
-	ID_SUPPORT_ALL,
-} from '#src/composables/useBadgeData';
 import useGoalData from '#src/composables/useGoalData';
 import { useRouter } from 'vue-router';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
-import womenImg from '#src/assets/images/my-kiva/goal-setting/women.svg?url';
-import refugeesImg from '#src/assets/images/my-kiva/goal-setting/refugees.svg?url';
-import climateActionImg from '#src/assets/images/my-kiva/goal-setting/climate-action.svg?url';
-import usEntrepreneursImg from '#src/assets/images/my-kiva/goal-setting/us-entrepreneurs.svg?url';
-import basicNeedsImg from '#src/assets/images/my-kiva/goal-setting/basic-needs.svg?url';
-import supportAllImg from '#src/assets/images/my-kiva/goal-setting/support-all.svg?url';
 
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
 const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
@@ -102,8 +87,7 @@ const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
-const { getLoanFindingUrl } = useBadgeData();
-const { getGoalDisplayName } = useGoalData({});
+const { getCtaHref, getCategories } = useGoalData({});
 
 const props = defineProps({
 	show: {
@@ -148,68 +132,7 @@ const selectedLoanNumber = ref(0);
 // eslint-disable-next-line max-len
 const selectedGoalNumber = ref(numberOfLoans.value ? numberOfLoans.value : 5); // Default goals to 5 loans for initial MVP
 
-const categories = [
-	{
-		id: '1',
-		name: 'Women',
-		description: 'Open doors for women around the world',
-		eventProp: 'women',
-		customImage: womenImg,
-		loanCount: props.categoriesLoanCount?.[ID_WOMENS_EQUALITY],
-		title: 'women',
-		badgeId: ID_WOMENS_EQUALITY,
-	},
-	{
-		id: '2',
-		name: 'Refugees',
-		description: 'Transform the future for refugees',
-		eventProp: 'refugees',
-		customImage: refugeesImg,
-		loanCount: props.categoriesLoanCount?.[ID_REFUGEE_EQUALITY],
-		title: 'refugees',
-		badgeId: ID_REFUGEE_EQUALITY,
-	},
-	{
-		id: '3',
-		name: 'Climate Action',
-		description: 'Support the front lines of the climate crisis',
-		eventProp: 'climate',
-		customImage: climateActionImg,
-		loanCount: props.categoriesLoanCount?.[ID_CLIMATE_ACTION],
-		title: 'climate action',
-		badgeId: ID_CLIMATE_ACTION,
-	},
-	{
-		id: '4',
-		name: 'U.S. Entrepreneurs',
-		description: 'Support small businesses in the U.S.',
-		eventProp: 'us-entrepreneur',
-		customImage: usEntrepreneursImg,
-		loanCount: props.categoriesLoanCount?.[ID_US_ECONOMIC_EQUALITY],
-		title: 'US entrepreneurs',
-		badgeId: ID_US_ECONOMIC_EQUALITY,
-	},
-	{
-		id: '5',
-		name: 'Basic Needs',
-		description: 'Clean water, healthcare, and sanitation',
-		eventProp: 'basic-needs',
-		customImage: basicNeedsImg,
-		loanCount: props.categoriesLoanCount?.[ID_BASIC_NEEDS],
-		title: 'basic needs',
-		badgeId: ID_BASIC_NEEDS,
-	},
-	{
-		id: '6',
-		name: 'Choose as I go',
-		description: 'Support a variety of borrowers',
-		eventProp: 'help-everyone',
-		customImage: supportAllImg,
-		loanCount: props.totalLoans,
-		title: null,
-		badgeId: ID_SUPPORT_ALL,
-	}
-];
+const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
 const selectedCategory = ref(categories[0]);
 
@@ -241,11 +164,7 @@ const title = computed(() => {
 });
 
 const ctaHref = computed(() => {
-	const categoryHeader = getGoalDisplayName(selectedGoalNumber.value, selectedCategory.value?.badgeId);
-	const string = `Your goal: Support ${selectedGoalNumber.value} ${categoryHeader}`;
-	const encodedHeader = encodeURIComponent(string);
-	const loanFindingUrl = getLoanFindingUrl(selectedCategory.value?.badgeId, router.currentRoute.value);
-	return `${loanFindingUrl}?header=${encodedHeader}`;
+	return getCtaHref(selectedGoalNumber.value, selectedCategory.value?.badgeId, router);
 });
 
 const handleCategorySelected = categoryId => {
