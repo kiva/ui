@@ -928,4 +928,120 @@ describe('useGoalData', () => {
 		expect(updatedGoals.expiredGoals.length).toBe(1);
 		expect(updatedGoals.showRenewedAnnualGoalToast).toBe(true);
 	});
+
+	describe('getCategories', () => {
+		it('should return all goal categories with correct structure', () => {
+			const categoriesLoanCount = {
+				[ID_WOMENS_EQUALITY]: 5,
+				[ID_REFUGEE_EQUALITY]: 3,
+				[ID_CLIMATE_ACTION]: 7,
+				[ID_US_ECONOMIC_EQUALITY]: 2,
+				[ID_BASIC_NEEDS]: 10,
+			};
+			const totalLoans = 25;
+
+			const categories = composable.getCategories(categoriesLoanCount, totalLoans);
+
+			expect(categories).toHaveLength(6);
+			expect(categories[0]).toEqual({
+				id: '1',
+				name: 'Women',
+				description: 'Open doors for women around the world',
+				eventProp: 'women',
+				customImage: expect.any(String),
+				loanCount: 5,
+				title: 'women',
+				badgeId: ID_WOMENS_EQUALITY,
+			});
+
+			expect(categories[5]).toEqual({
+				id: '6',
+				name: 'Choose as I go',
+				description: 'Support a variety of borrowers',
+				eventProp: 'help-everyone',
+				customImage: expect.any(String),
+				loanCount: 25,
+				title: null,
+				badgeId: ID_SUPPORT_ALL,
+			});
+		});
+
+		it('should handle undefined categoriesLoanCount', () => {
+			const categories = composable.getCategories(undefined, 15);
+
+			expect(categories[0].loanCount).toBeUndefined();
+			expect(categories[5].loanCount).toBe(15);
+		});
+
+		it('should handle null categoriesLoanCount', () => {
+			const categories = composable.getCategories(null, 20);
+
+			expect(categories[1].loanCount).toBeUndefined();
+			expect(categories[5].loanCount).toBe(20);
+		});
+	});
+
+	describe('getCtaHref', () => {
+		beforeEach(() => {
+			vi.mock('#src/composables/useBadgeData', () => ({
+				default: () => ({
+					getLoanFindingUrl: vi.fn(categoryId => `/lend/${categoryId}`),
+				}),
+				ID_BASIC_NEEDS: 'basic-needs-id',
+				ID_CLIMATE_ACTION: 'climate-action-id',
+				ID_REFUGEE_EQUALITY: 'refugee-equality-id',
+				ID_SUPPORT_ALL: 'support-all-id',
+				ID_US_ECONOMIC_EQUALITY: 'us-economic-equality-id',
+				ID_WOMENS_EQUALITY: 'womens-equality-id',
+			}));
+		});
+
+		it('should generate correct href for single target', () => {
+			const selectedGoalNumber = 1;
+			const categoryId = ID_WOMENS_EQUALITY;
+			const router = { currentRoute: { value: {} } };
+
+			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router);
+			const expectedString = 'Your goal: Support 1 woman';
+			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
+
+			expect(href).toBe(expectedHref);
+		});
+
+		it('should generate correct href for plural target', () => {
+			const selectedGoalNumber = 5;
+			const categoryId = ID_BASIC_NEEDS;
+			const router = { currentRoute: { value: {} } };
+
+			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router);
+			const expectedString = 'Your goal: Support 5 basic needs loans';
+			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
+
+			expect(href).toBe(expectedHref);
+		});
+
+		it('should handle support all category', () => {
+			const selectedGoalNumber = 10;
+			const categoryId = ID_SUPPORT_ALL;
+			const router = { currentRoute: { value: {} } };
+
+			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router);
+			const expectedString = 'Your goal: Support 10 loans';
+			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
+
+			expect(href).toBe(expectedHref);
+		});
+
+		it('should encode special characters in header', () => {
+			const selectedGoalNumber = 3;
+			const categoryId = ID_US_ECONOMIC_EQUALITY;
+			const router = { currentRoute: { value: {} } };
+
+			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router);
+			const expectedString = 'Your goal: Support 3 U.S. entrepreneurs';
+			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
+
+			expect(href).toBe(expectedHref);
+		});
+	});
 });
