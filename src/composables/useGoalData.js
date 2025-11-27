@@ -115,15 +115,12 @@ export default function useGoalData({ apollo }) {
 
 	const goalProgress = computed(() => {
 		if (userGoal.value?.category === ID_SUPPORT_ALL) {
-			const currentTotal = totalLoanCount.value || 0;
-			const startTotal = userGoal.value?.loanTotalAtStart || 0;
-			return Math.max(currentTotal - startTotal, 0);
+			return totalLoanCount.value || 0;
 		}
 		const totalProgress = allTimeProgress.value.find(
 			entry => entry.achievementId === userGoal.value?.category
 		)?.totalProgress || 0;
-		const adjustedProgress = totalProgress - (userGoal.value?.loanTotalAtStart || 0);
-		return Math.max(adjustedProgress, 0);
+		return totalProgress;
 	});
 
 	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
@@ -161,13 +158,6 @@ export default function useGoalData({ apollo }) {
 		return totalProgress;
 	};
 
-	const setCurrentLoanCount = loansCount => {
-		const currentTotal = totalLoanCount.value || 0;
-		const startTotal = userGoal.value?.loanTotalAtStart || 0;
-
-		goalCurrentLoanCount.value = Math.max(currentTotal - startTotal, 0) + loansCount;
-	};
-
 	async function loadGoalData(loans = []) {
 		loading.value = true;
 		const parsedPrefs = await loadPreferences();
@@ -175,7 +165,7 @@ export default function useGoalData({ apollo }) {
 		setGoalState(parsedPrefs);
 		if (userGoal.value?.category === ID_SUPPORT_ALL && !goalCurrentLoanCount.value) {
 			// Reducing counter by 1 because loans already has the added loan
-			setCurrentLoanCount(loans.length - 1);
+			goalCurrentLoanCount.value = loans.length - 1;
 		}
 
 		loading.value = false;
