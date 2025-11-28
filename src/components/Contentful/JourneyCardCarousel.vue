@@ -26,8 +26,9 @@
 				#[`slide${index}`]
 				:key="index"
 			>
-				<GoalCard
+				<component
 					v-if="showGoalCard(index)"
+					:is="goalCardComponent"
 					:goal-progress="goalProgress"
 					:hero-slides="slides"
 					:loading="goalProgressLoading"
@@ -95,6 +96,7 @@ import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import GoalCard from '#src/components/MyKiva/GoalCard';
 import { optimizeContentfulUrl } from '#src/util/imageUtils';
+import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
@@ -176,6 +178,10 @@ const props = defineProps({
 	controlsTopRight: {
 		type: Boolean,
 		default: false,
+	},
+	goalsEntrypointEnable: {
+		type: Boolean,
+		default: false
 	},
 });
 
@@ -438,6 +444,13 @@ const showGoalCard = idx => {
 
 	return idx === 0 && shouldShowGoalCard.value;
 };
+
+const goalCardComponent = computed(() => {
+	if (props.goalsEntrypointEnable) {
+		return NextYearGoalCard;
+	}
+	return GoalCard;
+});
 
 </script>
 

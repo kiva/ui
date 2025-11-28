@@ -28,6 +28,7 @@
 					:user-goal-enabled="isNextStepsExpEnabled"
 					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
+					:goals-entrypoint-enable="goalsEntrypointEnable"
 					@open-goal-modal="showGoalModal = true"
 				/>
 			</div>
@@ -153,6 +154,7 @@
 			:user-goal-enabled="isNextStepsExpEnabled"
 			:user-goal-achieved="userGoalAchieved"
 			:user-goal="userGoal"
+			:goals-entrypoint-enable="goalsEntrypointEnable"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<GoalSettingModal
