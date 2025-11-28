@@ -21,7 +21,7 @@ const story = (args = {}) => {
 			};
 		},
         template: `
-            <div style="width: 336px;">
+            <div style="width: 336px; height: 362px;">
                 <ThankYouCard v-bind="args">
                     <template #header>
 						<span
@@ -59,7 +59,7 @@ export const WithCustomHeader = (_args, { argTypes }) => ({
 	mixins: [apolloStoryMixin()],
 	setup() { return { args }; },
 	template: `
-		<div style="width: 336px;">
+		<div style="width: 336px; height: 362px;">
 			<ThankYouCard>
 				<template #header>
 					<h3 class="tw-text-center tw-m-0 tw-text-action-highlight">Achievement Unlocked!</h3>
@@ -80,7 +80,7 @@ export const WithLongContent = (_args, { argTypes }) => ({
 	mixins: [apolloStoryMixin()],
 	setup() { return { args }; },
 	template: `
-            <div style="width: 336px;">
+            <div style="width: 336px; height: 362px;">
                 <ThankYouCard>
                     <template #header>
                         <h3 class="tw-text-center tw-m-0">Amazing work!</h3>

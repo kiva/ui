@@ -44,7 +44,7 @@ import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
 	background-size: 81% 110%;
 
 	@screen md {
-		top: -223%;
+		top: -187%;
 	}
 
 	@apply tw-absolute tw-bg-no-repeat tw-right-0 tw-bg-blend-overlay;
