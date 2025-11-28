@@ -36,12 +36,16 @@ import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
     background: url('/src/assets/images/my-kiva/goal-card-bg.png'), lightgray;
     transform: rotate(21deg);
     left: 93%;
-    top: -242%;
+    top: -243%;
     right: 0;
     z-index: -1;
     opacity: 0.3;
 	background-position: inherit;
 	background-size: 81% 110%;
+
+	@screen md {
+		top: -223%;
+	}
 
 	@apply tw-absolute tw-bg-no-repeat tw-right-0 tw-bg-blend-overlay;
 }
