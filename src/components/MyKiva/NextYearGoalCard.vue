@@ -115,7 +115,7 @@ const router = useRouter();
 const { getLoanFindingUrl } = useBadgeData();
 const { getGoalDisplayName } = useGoalData({});
 
-const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);
+const userHasGoal = computed(() => Object.keys(props.userGoal).length > 0);
 
 const goalLoans = computed(() => {
 	return props.userGoal?.target || 0;
