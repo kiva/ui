@@ -1,20 +1,22 @@
 <template>
 	<div class="tw-bg-eco-green-1 tw-p-3 md:tw-py-4 tw-flex tw-flex-col tw-gap-2.5">
 		<div class="content-box tw-mx-auto">
-			<OptInModule
-				v-if="showOptInModule"
-				:loans="loans"
-				:is-guest="isGuest"
-				:number-of-badges="numberOfBadges"
-				:only-donations="onlyDonations"
-				:achievements-completed="achievementsCompleted"
-				class="print:tw-hidden tw-mb-2.5"
-			/>
 			<KivaCards
 				v-if="showKivaCardsModule"
 				:printable-kiva-cards="printableKivaCards"
 				class="tw-mb-2.5"
 				@view-pdf-clicked="scrollToReceipt"
+			/>
+			<GoalEntrypoint
+				v-if="thanksPageGoalsEntrypointEnable && !isGuest && isEmptyGoal"
+				:loading="goalDataLoading"
+				:total-loans="totalLoans"
+				:categories-loan-count="categoriesLoanCount"
+				:is-goal-set="isGoalSet"
+				@edit-goal="showGoalModal = true"
+				@set-goal-target="setGoalTarget"
+				@set-goal="setGoal"
+				class="tw-mb-2.5"
 			/>
 			<GoalCompleted
 				v-if="showGoalCompletedModule"
@@ -36,16 +38,14 @@
 				@continue-clicked="handleContinue"
 				class="tw-mb-2.5"
 			/>
-			<GoalEntrypoint
-				v-if="thanksPageGoalsEntrypointEnable && !isGuest && isEmptyGoal"
-				:loading="goalDataLoading"
-				:total-loans="totalLoans"
-				:categories-loan-count="categoriesLoanCount"
-				:is-goal-set="isGoalSet"
-				@edit-goal="showGoalModal = true"
-				@set-goal-target="setGoalTarget"
-				@set-goal="setGoal"
-				class="tw-mb-2.5"
+			<OptInModule
+				v-if="showOptInModule"
+				:loans="loans"
+				:is-guest="isGuest"
+				:number-of-badges="numberOfBadges"
+				:only-donations="onlyDonations"
+				:achievements-completed="achievementsCompleted"
+				class="print:tw-hidden tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
 				v-else-if="showJourneyModule"
