@@ -3,60 +3,73 @@
 		class="card-container"
 		:class="{'tw-gap-3': !!userHasGoal}"
 	>
-		<div v-if="!userHasGoal" class="tw-flex tw-flex-col tw-gap-1.5 tw-items-center">
-			<h4>LAST YEAR</h4>
-			<h2>
-				You helped <span
-					class="tw-text-action"
-				> {{ prevYearLoans }} women</span><br>shape their futures!
-			</h2>
-			<p>How many loans will you make this year?</p>
-			<NextYearGoalImg class="tw-my-4" />
-			<KvButton
-				class="tw-w-full"
-				v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
-				@click="$emit('open-goal-modal')"
-			>
-				Set 2026 goal
-			</KvButton>
+		<div v-if="loading" class="tw-flex tw-flex-col tw-justify-between tw-h-full">
+			<kv-loading-placeholder class="!tw-h-4 tw-w-full tw-max-w-16 tw-my-1" />
+			<kv-loading-placeholder class="tw-mb-2" />
+			<kv-loading-placeholder class="!tw-h-3 tw-w-full tw-mb-1 tw-max-w-sm" />
+			<kv-loading-placeholder class="!tw-h-6 tw-mb-1" />
 		</div>
-		<div v-else class="tw-flex tw-flex-col tw-gap-2.5 tw-text-center">
-			<div class="tw-text-left">
-				<p class="tw-font-medium">
-					Your 2026 Goal
-				</p>
-				<p class="tw-text-secondary">
-					{{ goalLoans }} loans to women
-				</p>
+		<template v-else>
+			<div v-if="!userHasGoal" class="tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-between">
+				<h4>LAST YEAR</h4>
+				<h3 class="tw-text-center" v-if="prevYearLoans">
+					You helped <span
+						class="tw-text-action"
+					> {{ prevYearLoans }} women</span><br>shape their futures!
+				</h3>
+				<h3 class="tw-text-center" v-else>
+					Lenders helped <span
+						class="tw-text-action"
+					> 2 women</span> shape their futures!
+				</h3>
+				<p>How many loans will you make this year?</p>
+				<NextYearGoalImg class="tw-my-4" />
+				<KvButton
+					class="tw-w-full"
+					v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
+					@click="$emit('open-goal-modal')"
+				>
+					Set 2026 goal
+				</KvButton>
 			</div>
-			<div class="tw-relative tw-z-docked tw-mx-auto">
-				<KvProgressCircle
-					class="tw-z-2"
-					:stroke-width="20"
-					:value="goalProgressPercentage"
-					:max="goalLoans"
-					:rotate="180"
-					style="height: 170px; width: 170px;"
-				/>
-				<div class="tw-absolute tw-flex tw-flex-col tw-items-center tw-justify-center tw-inset-0 tw--mt-1">
-					<h1>
-						{{ goalProgress }}
-					</h1>
+			<div v-else class="tw-h-full tw-flex tw-flex-col tw-text-center tw-justify-between">
+				<div class="tw-text-left">
+					<p class="tw-font-medium">
+						Your 2026 Goal
+					</p>
 					<p class="tw-text-secondary">
-						loans made
+						{{ goalDescription }}
 					</p>
 				</div>
+				<div class="tw-relative tw-z-docked tw-mx-auto">
+					<KvProgressCircle
+						class="tw-z-2"
+						:stroke-width="20"
+						:value="goalProgressPercentage"
+						:max="goalLoans"
+						:rotate="180"
+						style="height: 170px; width: 170px;"
+					/>
+					<div class="tw-absolute tw-flex tw-flex-col tw-items-center tw-justify-center tw-inset-0 tw--mt-1">
+						<h1>
+							{{ goalProgress }}
+						</h1>
+						<p class="tw-text-secondary">
+							loans made
+						</p>
+					</div>
+				</div>
+				<p v-html="progressDescription" class="tw-font-medium">
+				</p>
+				<KvButton
+					class="tw-w-full"
+					v-kv-track-event="['portfolio', 'click', 'continue-towards-goal']"
+					@click="handleContinueClick"
+				>
+					Work towards your goal
+				</KvButton>
 			</div>
-			<p v-html="progressDescription" class="tw-font-medium">
-			</p>
-			<KvButton
-				class="tw-w-full"
-				v-kv-track-event="['portfolio', 'click', 'continue-towards-goal']"
-				@click="handleContinueClick"
-			>
-				Work towards your goal
-			</KvButton>
-		</div>
+		</template>
 	</div>
 </template>
 
@@ -66,7 +79,7 @@ import {
 	computed, watch, inject, onMounted
 } from 'vue';
 import {
-	KvButton
+	KvButton, KvLoadingPlaceholder
 } from '@kiva/kv-components';
 import useBadgeData from '#src/composables/useBadgeData';
 import useGoalData from '#src/composables/useGoalData';
@@ -78,7 +91,7 @@ import confetti from 'canvas-confetti';
 const props = defineProps({
 	userGoal: {
 		type: Object,
-		default: undefined,
+		default: () => ({}),
 	},
 	goalProgress: {
 		type: Number,
@@ -87,6 +100,10 @@ const props = defineProps({
 	prevYearLoans: {
 		type: Number,
 		default: 0,
+	},
+	loading: {
+		type: Boolean,
+		default: false,
 	}
 });
 
@@ -98,7 +115,7 @@ const router = useRouter();
 const { getLoanFindingUrl } = useBadgeData();
 const { getGoalDisplayName } = useGoalData({});
 
-const userHasGoal = computed(() => !!props.userGoal);
+const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);
 
 const goalLoans = computed(() => {
 	return props.userGoal?.target || 0;
@@ -125,8 +142,21 @@ const progressDescription = computed(() => {
 	return `Incredible! You reached your 2026<br>goal and changed ${goalLoans.value} lives!`;
 });
 
+const categoryName = computed(() => {
+	return getGoalDisplayName(props.userGoal?.target, props.userGoal?.category);
+});
+
+const goalDescription = computed(() => {
+	const description = `${goalLoans.value} loans`;
+
+	if (categoryName.value !== 'loans') {
+		return `${description} to ${categoryName.value}`;
+	}
+	return description;
+});
+
 const ctaHref = computed(() => {
-	const categoryHeader = getGoalDisplayName(props.userGoal?.target, props.userGoal?.category);
+	const categoryHeader = categoryName.value;
 	const string = `Your goal: Support ${props.userGoal?.target} ${categoryHeader}`;
 	const encodedHeader = encodeURIComponent(string);
 	const loanFindingUrl = getLoanFindingUrl(props.userGoal?.category, router.currentRoute.value);
@@ -151,6 +181,11 @@ const handleContinueClick = () => {
 };
 
 watch(() => props.userGoal, (newVal, oldVal) => {
+	// Only track when no user goal
+	if (!newVal?.category && !oldVal?.category) {
+		$kvTrackEvent('portfolio', 'view', 'set-annual-goal');
+	}
+
 	// Only track when a new goal is created (oldVal had no category, newVal has one)
 	if (newVal?.target && newVal?.category && !oldVal?.category) {
 		$kvTrackEvent('portfolio', 'show', 'goal-set', newVal.category, newVal.target);
