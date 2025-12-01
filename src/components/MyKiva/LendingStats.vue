@@ -29,6 +29,7 @@
 					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
 					:goals-entrypoint-enable="goalsEntrypointEnable"
+					:categories-loan-count="categoriesLoanCount"
 					@open-goal-modal="showGoalModal = true"
 				/>
 			</div>
@@ -155,6 +156,7 @@
 			:user-goal-achieved="userGoalAchieved"
 			:user-goal="userGoal"
 			:goals-entrypoint-enable="goalsEntrypointEnable"
+			:categories-loan-count="categoriesLoanCount"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<GoalSettingModal

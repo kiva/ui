@@ -33,6 +33,7 @@
 					:hero-slides="slides"
 					:loading="goalProgressLoading"
 					:user-goal="userGoal"
+					:prev-year-loans="womenLoansLastYear"
 					@open-goal-modal="$emit('open-goal-modal')"
 				/>
 				<MyKivaCard
@@ -90,7 +91,7 @@ import useBreakpoints from '#src/composables/useBreakpoints';
 import { formatUiSetting } from '#src/util/contentfulUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
-import useBadgeData from '#src/composables/useBadgeData';
+import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import { KvCarousel } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
@@ -182,6 +183,10 @@ const props = defineProps({
 	goalsEntrypointEnable: {
 		type: Boolean,
 		default: false
+	},
+	categoriesLoanCount: {
+		type: Object,
+		default: () => ({}),
 	},
 });
 
@@ -444,6 +449,11 @@ const showGoalCard = idx => {
 
 	return idx === 0 && shouldShowGoalCard.value;
 };
+
+const womenLoansLastYear = computed(() => {
+	// TODO: Update to get actual last year data when available
+	return props.categoriesLoanCount?.[ID_WOMENS_EQUALITY] || 0;
+});
 
 const goalCardComponent = computed(() => {
 	if (props.goalsEntrypointEnable) {

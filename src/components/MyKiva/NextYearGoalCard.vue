@@ -12,7 +12,7 @@
 		<template v-else>
 			<div v-if="!userHasGoal" class="tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-between">
 				<h4>LAST YEAR</h4>
-				<h3 class="tw-text-action" v-if="prevYearLoans">
+				<h3 class="tw-text-center" v-if="prevYearLoans">
 					You helped <span
 						class="tw-text-action"
 					> {{ prevYearLoans }} women</span><br>shape their futures!
@@ -20,7 +20,7 @@
 				<h3 class="tw-text-center" v-else>
 					Lenders helped <span
 						class="tw-text-action"
-					> 3 women</span> shape their futures!
+					> 2 women</span> shape their futures!
 				</h3>
 				<p>How many loans will you make this year?</p>
 				<NextYearGoalImg class="tw-my-4" />
