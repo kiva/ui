@@ -37,7 +37,6 @@ import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
     transform: rotate(21deg);
     left: 93%;
     top: -243%;
-    right: 0;
     z-index: -1;
     opacity: 0.3;
 	background-position: inherit;
