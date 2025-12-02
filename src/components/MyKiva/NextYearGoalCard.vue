@@ -55,7 +55,7 @@
 							{{ goalProgress }}
 						</h1>
 						<p class="tw-text-secondary">
-							loans made
+							{{ progressCircleDesc }}
 						</p>
 					</div>
 				</div>
@@ -179,6 +179,8 @@ const handleContinueClick = () => {
 	$kvTrackEvent('portfolio', 'click', 'continue-towards-goal');
 	router.push(ctaHref.value);
 };
+
+const progressCircleDesc = computed(() => `loan${props.goalProgress > 1 ? 's' : ''} made`);
 
 watch(() => props.userGoal, (newVal, oldVal) => {
 	// Only track when no user goal
