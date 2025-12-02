@@ -22,10 +22,12 @@
 						class="tw-text-action"
 					> 2 women</span> shape their futures!
 				</h3>
-				<p>How many loans will you make this year?</p>
+				<p class="tw-text-center">
+					How many loans will you make this year?
+				</p>
 				<img
 					:src="HandsPlant"
-					class=" tw-my-4 tw-w-14"
+					class="tw-my-2 md:tw-my-4 tw-w-14"
 				>
 				<KvButton
 					class="tw-w-full"
