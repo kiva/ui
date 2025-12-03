@@ -49,6 +49,8 @@ export const GOAL_STATUS = {
 	IN_PROGRESS: 'in-progress',
 };
 
+export const SAME_AS_LAST_YEAR_LIMIT = 1;
+
 function getGoalDisplayName(target, category) {
 	if (!target || target > 1) return GOAL_DISPLAY_MAP[category] || 'loans';
 	return GOAL_1_DISPLAY_MAP[category] || 'loan';
@@ -317,6 +319,14 @@ export default function useGoalData({ apollo }) {
 		return `${loanFindingUrl}?header=${encodedHeader}`;
 	};
 
+	/**
+	 * Get the number of women loans from last year
+	 */
+	const getWomenLoansLastYear = categoriesLoanCount => {
+		// TODO: Update to get actual last year data when available
+		return categoriesLoanCount?.[ID_WOMENS_EQUALITY] || 0;
+	};
+
 	return {
 		getGoalDisplayName,
 		goalProgress,
@@ -333,5 +343,6 @@ export default function useGoalData({ apollo }) {
 		renewAnnualGoal,
 		getCategories,
 		getCtaHref,
+		getWomenLoansLastYear,
 	};
 }

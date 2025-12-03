@@ -22,6 +22,9 @@
 							:allowed-teams="allowedTeams"
 						/>
 						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
+						<GoalEntrypoint
+							v-if="goalsEntrypointEnable && isEmptyGoal"
+						/>
 						<lending-insights />
 						<my-giving-funds-card
 							v-if="myGivingFundsCount > 0 || numberOfFundsContributedTo > 0"
@@ -70,6 +73,7 @@ import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
 import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';
 import useGivingFund from '#src/composables/useGivingFund';
+import useGoalData from '#src/composables/useGoalData';
 import logReadQueryError from '#src/util/logReadQueryError';
 
 import {
@@ -89,6 +93,9 @@ import EducationModule from './EducationModule';
 import YourDonations from './YourDonations';
 import TeamChallenge from './TeamChallenge';
 import LoanCards from './LoanCards';
+import GoalEntrypoint from './GoalEntrypoint';
+
+const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 
 export default {
 	name: 'ImpactDashboardPage',
@@ -111,6 +118,7 @@ export default {
 		TeamChallenge,
 		MyKivaPage,
 		LoanCards,
+		GoalEntrypoint
 	},
 	data() {
 		return {
@@ -125,6 +133,8 @@ export default {
 			showTeamChallenge: false,
 			teamsChallengeEnable: false,
 			userPreferences: null,
+			goalsEntrypointEnable: false,
+			isEmptyGoal: true,
 		};
 	},
 	mixins: [badgeGoalMixin],
@@ -161,12 +171,19 @@ export default {
 			fetchMyGivingFundsCount,
 		} = useGivingFund(apollo);
 
+		const {
+			userGoal,
+			loadGoalData,
+		} = useGoalData({ apollo });
+
 		return {
 			getFundsContributedToIds,
 			fetchMyGivingFundsCount,
+			loadGoalData,
+			userGoal
 		};
 	},
-	created() {
+	async created() {
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const userData = portfolioQueryData?.my ?? {};
 		this.loans = userData?.loans?.values ?? [];
@@ -201,6 +218,12 @@ export default {
 
 			this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
 			this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
+
+			this.goalsEntrypointEnable = readBoolSetting(portfolioQueryData, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
+			if (this.goalsEntrypointEnable) {
+				await this.loadGoalData();
+				this.isEmptyGoal = Object.keys(this.userGoal.value || {}).length === 0;
+			}
 		}
 
 		this.fetchMyGivingFundsCount()
