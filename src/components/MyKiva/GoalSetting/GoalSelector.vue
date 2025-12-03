@@ -75,10 +75,11 @@ import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiPencilOutline } from '@mdi/js';
-
-const SAME_AS_LAST_YEAR_LIMIT = 1;
+import useGoalData, { SAME_AS_LAST_YEAR_LIMIT } from '#src/composables/useGoalData';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
+
+const { getWomenLoansLastYear } = useGoalData({ });
 
 const props = defineProps({
 	/**
@@ -122,8 +123,7 @@ const goalOptions = ref([
 ]);
 
 const womenLoansLastYear = computed(() => {
-	// TODO: Update to get actual last year data when available
-	return props.categoriesLoanCount?.[ID_WOMENS_EQUALITY] || 0;
+	return getWomenLoansLastYear(props.categoriesLoanCount);
 });
 
 const titleText = computed(() => {

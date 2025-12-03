@@ -91,13 +91,14 @@ import useBreakpoints from '#src/composables/useBreakpoints';
 import { formatUiSetting } from '#src/util/contentfulUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
-import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
+import useBadgeData from '#src/composables/useBadgeData';
 import { KvCarousel } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import GoalCard from '#src/components/MyKiva/GoalCard';
 import { optimizeContentfulUrl } from '#src/util/imageUtils';
 import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
+import useGoalData from '#src/composables/useGoalData';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
@@ -112,6 +113,8 @@ const {
 	combineBadgeData,
 	getJourneysByLoan,
 } = useBadgeData(apollo);
+
+const { getWomenLoansLastYear } = useGoalData({ });
 
 const emit = defineEmits(['update-journey', 'open-goal-modal']);
 
@@ -451,8 +454,7 @@ const showGoalCard = idx => {
 };
 
 const womenLoansLastYear = computed(() => {
-	// TODO: Update to get actual last year data when available
-	return props.categoriesLoanCount?.[ID_WOMENS_EQUALITY] || 0;
+	return getWomenLoansLastYear(props.categoriesLoanCount);
 });
 
 const goalCardComponent = computed(() => {
