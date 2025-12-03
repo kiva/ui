@@ -88,7 +88,6 @@ describe('useGoalData', () => {
 					goalName: 'test-goal',
 					category: ID_WOMENS_EQUALITY,
 					target: 10,
-					loanTotalAtStart: 5,
 				}],
 			};
 
@@ -106,20 +105,17 @@ describe('useGoalData', () => {
 				})
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [
-								{ achievementId: ID_WOMENS_EQUALITY, totalProgress: 12 },
-							],
+						userAchievementProgress: {
+							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 15 }],
 						},
 					},
 				});
 
-			const loans = [{ id: 123 }, { id: 456 }];
-			await composable.loadGoalData(loans);
+			await composable.loadGoalData();
 
 			expect(composable.loading.value).toBe(false);
 			expect(composable.userGoal.value).toEqual(mockPrefs.goals[0]);
-			expect(mockApollo.query).toHaveBeenCalledTimes(2);
+			expect(mockApollo.query).toHaveBeenCalledTimes(3);
 		});
 
 		it('should handle empty loans array', async () => {
@@ -134,16 +130,16 @@ describe('useGoalData', () => {
 				})
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [],
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
 						},
 					},
 				});
 
-			await composable.loadGoalData([]);
+			await composable.loadGoalData();
 
 			expect(composable.loading.value).toBe(false);
-			expect(mockApollo.query).toHaveBeenCalledTimes(2);
+			expect(mockApollo.query).toHaveBeenCalledTimes(3);
 		});
 
 		it('should handle null user preferences', async () => {
@@ -158,8 +154,8 @@ describe('useGoalData', () => {
 				})
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [],
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
 						},
 					},
 				});
@@ -180,13 +176,13 @@ describe('useGoalData', () => {
 				.mockRejectedValueOnce(error)
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [],
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
 						},
 					},
 				});
 
-			await composable.loadGoalData([]);
+			await composable.loadGoalData();
 
 			expect(logFormatter).toHaveBeenCalledWith(error, 'Failed to load preferences');
 		});
@@ -206,7 +202,7 @@ describe('useGoalData', () => {
 				})
 				.mockRejectedValueOnce(error);
 
-			await composable.loadGoalData([{ id: 1 }]);
+			await composable.loadGoalData();
 
 			expect(logFormatter).toHaveBeenCalledWith(error, 'Failed to load progress');
 		});
@@ -219,188 +215,6 @@ describe('useGoalData', () => {
 					goalName: 'test-goal',
 					category: ID_SUPPORT_ALL,
 					target: 10,
-					loanTotalAtStart: 5,
-				}],
-			};
-
-			mockApollo.query = vi.fn()
-				.mockResolvedValueOnce({
-					data: {
-						my: {
-							userPreferences: {
-								id: 'pref-123',
-								preferences: JSON.stringify(mockPrefs),
-							},
-							loans: { totalCount: 15 },
-						},
-					},
-				})
-				.mockResolvedValueOnce({
-					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [],
-						},
-					},
-				});
-
-			await composable.loadGoalData([]);
-
-			expect(composable.goalProgress.value).toBe(10); // 15 - 5
-		});
-
-		it('should calculate progress for specific category', async () => {
-			const mockPrefs = {
-				goals: [{
-					goalName: 'test-goal',
-					category: ID_WOMENS_EQUALITY,
-					target: 10,
-					loanTotalAtStart: 3,
-				}],
-			};
-
-			mockApollo.query = vi.fn()
-				.mockResolvedValueOnce({
-					data: {
-						my: {
-							userPreferences: {
-								id: 'pref-123',
-								preferences: JSON.stringify(mockPrefs),
-							},
-							loans: { totalCount: 0 },
-						},
-					},
-				})
-				.mockResolvedValueOnce({
-					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [
-								{ achievementId: ID_WOMENS_EQUALITY, totalProgress: 8 },
-							],
-						},
-					},
-				});
-
-			await composable.loadGoalData([]);
-
-			expect(composable.goalProgress.value).toBe(5); // 8 - 3
-		});
-
-		it('should return 0 if progress is negative', async () => {
-			const mockPrefs = {
-				goals: [{
-					goalName: 'test-goal',
-					category: ID_BASIC_NEEDS,
-					target: 10,
-					loanTotalAtStart: 20,
-				}],
-			};
-
-			mockApollo.query = vi.fn()
-				.mockResolvedValueOnce({
-					data: {
-						my: {
-							userPreferences: {
-								id: 'pref-123',
-								preferences: JSON.stringify(mockPrefs),
-							},
-							loans: { totalCount: 0 },
-						},
-					},
-				})
-				.mockResolvedValueOnce({
-					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [
-								{ achievementId: ID_BASIC_NEEDS, totalProgress: 5 },
-							],
-						},
-					},
-				});
-
-			await composable.loadGoalData([]);
-
-			expect(composable.goalProgress.value).toBe(0);
-		});
-
-		it('should handle missing progress entry', async () => {
-			const mockPrefs = {
-				goals: [{
-					goalName: 'test-goal',
-					category: ID_CLIMATE_ACTION,
-					target: 10,
-					loanTotalAtStart: 0,
-				}],
-			};
-
-			mockApollo.query = vi.fn()
-				.mockResolvedValueOnce({
-					data: {
-						my: {
-							userPreferences: {
-								id: 'pref-123',
-								preferences: JSON.stringify(mockPrefs),
-							},
-							loans: { totalCount: 0 },
-						},
-					},
-				})
-				.mockResolvedValueOnce({
-					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [],
-						},
-					},
-				});
-
-			await composable.loadGoalData([]);
-
-			expect(composable.goalProgress.value).toBe(0);
-		});
-	});
-
-	describe('userGoalAchieved computed', () => {
-		it('should return true when goal is achieved', async () => {
-			const mockPrefs = {
-				goals: [{
-					goalName: 'test-goal',
-					category: ID_SUPPORT_ALL,
-					target: 10,
-					loanTotalAtStart: 5,
-				}],
-			};
-
-			mockApollo.query = vi.fn()
-				.mockResolvedValueOnce({
-					data: {
-						my: {
-							userPreferences: {
-								id: 'pref-123',
-								preferences: JSON.stringify(mockPrefs),
-							},
-							loans: { totalCount: 20 },
-						},
-					},
-				})
-				.mockResolvedValueOnce({
-					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [],
-						},
-					},
-				});
-
-			await composable.loadGoalData([]);
-
-			expect(composable.userGoalAchieved.value).toBe(true); // progress: 15, target: 10
-		});
-
-		it('should return false when goal is not achieved', async () => {
-			const mockPrefs = {
-				goals: [{
-					goalName: 'test-goal',
-					category: ID_SUPPORT_ALL,
-					target: 10,
-					loanTotalAtStart: 5,
 				}],
 			};
 
@@ -418,13 +232,155 @@ describe('useGoalData', () => {
 				})
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [],
+						userAchievementProgress: {
+							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 10 }],
 						},
 					},
 				});
 
-			await composable.loadGoalData([]);
+			await composable.loadGoalData();
+
+			expect(composable.goalProgress.value).toBe(10);
+		});
+
+		it('should calculate progress for specific category', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_WOMENS_EQUALITY,
+					target: 8,
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 8 },
+							],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			expect(composable.goalProgress.value).toBe(8);
+		});
+
+		it('should handle missing progress entry', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_CLIMATE_ACTION,
+					target: 10,
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 0 },
+							],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			expect(composable.goalProgress.value).toBe(0);
+		});
+	});
+
+	describe('userGoalAchieved computed', () => {
+		it('should return true when goal is achieved', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_SUPPORT_ALL,
+					target: 10,
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 20 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 20 }],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			expect(composable.userGoalAchieved.value).toBe(true); // progress: 15, target: 10
+		});
+
+		it('should return false when goal is not achieved', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_SUPPORT_ALL,
+					target: 10,
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 5 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 5 }],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
 
 			expect(composable.userGoalAchieved.value).toBe(false); // progress: 5, target: 10
 		});
@@ -482,7 +438,7 @@ describe('useGoalData', () => {
 				},
 			});
 
-			await composable.loadGoalData([]);
+			await composable.loadGoalData();
 
 			await composable.storeGoalPreferences({
 				goalName: 'existing-goal',
@@ -518,7 +474,7 @@ describe('useGoalData', () => {
 				},
 			});
 
-			await composable.loadGoalData([]);
+			await composable.loadGoalData();
 
 			await composable.storeGoalPreferences({
 				goalName: 'new-goal',
@@ -537,7 +493,6 @@ describe('useGoalData', () => {
 					goalName: 'test-goal',
 					category: ID_WOMENS_EQUALITY,
 					target: 10,
-					loanTotalAtStart: 5,
 					dateStarted: '2024-01-01',
 					count: 0,
 					status: 'active',
@@ -582,7 +537,7 @@ describe('useGoalData', () => {
 					},
 				});
 
-			await composable.loadGoalData([]);
+			await composable.loadGoalData();
 			await composable.checkCompletedGoal();
 
 			expect(mockKvTrackEvent).toHaveBeenCalledWith(
@@ -601,7 +556,6 @@ describe('useGoalData', () => {
 					goalName: 'test-goal',
 					category: ID_BASIC_NEEDS,
 					target: 5,
-					loanTotalAtStart: 0,
 					dateStarted: '2024-01-01',
 					count: 0,
 					status: 'active',
@@ -622,10 +576,8 @@ describe('useGoalData', () => {
 				})
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [
-								{ achievementId: ID_BASIC_NEEDS, totalProgress: 10 },
-							],
+						userAchievementProgress: {
+							tieredLendingAchievements: [{ id: ID_BASIC_NEEDS, totalProgressToAchievement: 10 }],
 						},
 					},
 				})
@@ -646,7 +598,7 @@ describe('useGoalData', () => {
 					},
 				});
 
-			await composable.loadGoalData([]);
+			await composable.loadGoalData();
 			await composable.checkCompletedGoal('custom-category');
 
 			expect(mockKvTrackEvent).toHaveBeenCalledWith(
@@ -668,7 +620,6 @@ describe('useGoalData', () => {
 					goalName: 'test-goal',
 					category: ID_WOMENS_EQUALITY,
 					target: 10,
-					loanTotalAtStart: 5,
 					status: 'completed',
 				}],
 			};
@@ -695,7 +646,7 @@ describe('useGoalData', () => {
 					},
 				});
 
-			await composable.loadGoalData([]);
+			await composable.loadGoalData();
 			updateUserPreferences.mockClear();
 			await composable.checkCompletedGoal();
 
@@ -713,7 +664,6 @@ describe('useGoalData', () => {
 					goalName: 'test-goal',
 					category: ID_WOMENS_EQUALITY,
 					target: 10,
-					loanTotalAtStart: 5,
 					status: 'active',
 				}],
 			};
@@ -726,21 +676,19 @@ describe('useGoalData', () => {
 								id: 'pref-123',
 								preferences: JSON.stringify(mockPrefs),
 							},
-							loans: { totalCount: 0 },
+							loans: { totalCount: 8 },
 						},
 					},
 				})
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [
-								{ achievementId: ID_WOMENS_EQUALITY, totalProgress: 8 },
-							],
+						userAchievementProgress: {
+							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 8 }],
 						},
 					},
 				});
 
-			await composable.loadGoalData([]);
+			await composable.loadGoalData();
 			updateUserPreferences.mockClear();
 			await composable.checkCompletedGoal();
 
@@ -774,22 +722,20 @@ describe('useGoalData', () => {
 				})
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [],
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
 						},
 					},
 				})
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [
-								{ achievementId: ID_WOMENS_EQUALITY, totalProgress: 7 },
-							],
+						userAchievementProgress: {
+							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 7 }],
 						},
 					},
 				});
 
-			await composable.loadGoalData([]);
+			await composable.loadGoalData();
 			const progress = await composable.getProgressByLoan({ id: 789 });
 
 			expect(progress).toBe(7);
@@ -824,22 +770,20 @@ describe('useGoalData', () => {
 				})
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [],
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
 						},
 					},
 				})
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							allTimeProgress: [
-								{ achievementId: ID_WOMENS_EQUALITY, totalProgress: 5 },
-							],
+						userAchievementProgress: {
+							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 5 }],
 						},
 					},
 				});
 
-			await composable.loadGoalData([]);
+			await composable.loadGoalData();
 			const progress = await composable.getProgressByLoan({ id: 999 });
 
 			expect(progress).toBe(0);
