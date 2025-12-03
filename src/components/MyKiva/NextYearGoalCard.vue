@@ -22,8 +22,13 @@
 						class="tw-text-action"
 					> 2 women</span> shape their futures!
 				</h3>
-				<p>How many loans will you make this year?</p>
-				<NextYearGoalImg class="tw-my-4" />
+				<p class="tw-text-center">
+					How many loans will you make this year?
+				</p>
+				<img
+					:src="HandsPlant"
+					class="tw-my-2 md:tw-my-4 tw-w-14"
+				>
 				<KvButton
 					class="tw-w-full"
 					v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
@@ -55,7 +60,7 @@
 							{{ goalProgress }}
 						</h1>
 						<p class="tw-text-secondary">
-							loans made
+							{{ progressCircleDesc }}
 						</p>
 					</div>
 				</div>
@@ -84,9 +89,9 @@ import {
 import useBadgeData from '#src/composables/useBadgeData';
 import useGoalData from '#src/composables/useGoalData';
 import { useRouter } from 'vue-router';
-import NextYearGoalImg from '#src/assets/images/my-kiva/goal-setting/next-year-goal.svg';
 import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
 import confetti from 'canvas-confetti';
+import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 
 const props = defineProps({
 	userGoal: {
@@ -179,6 +184,8 @@ const handleContinueClick = () => {
 	$kvTrackEvent('portfolio', 'click', 'continue-towards-goal');
 	router.push(ctaHref.value);
 };
+
+const progressCircleDesc = computed(() => `loan${props.goalProgress > 1 ? 's' : ''} made`);
 
 watch(() => props.userGoal, (newVal, oldVal) => {
 	// Only track when no user goal

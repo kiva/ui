@@ -84,8 +84,10 @@ const apollo = inject('apollo');
 const { updateCommunicationSettings } = useOptIn(apollo);
 
 const handleEmailOptIn = async () => {
-	await updateCommunicationSettings(true, true, false);
-	emit('accept-email-updates', true);
+	const updatedEmailSettings = await updateCommunicationSettings(true, true, false);
+	if (updatedEmailSettings) {
+		emit('accept-email-updates', true);
+	}
 };
 
 </script>
