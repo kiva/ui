@@ -137,8 +137,8 @@ export default function useGoalData({ apollo }) {
 				query: useGoalDataProgressQuery,
 				variables: { loanIds, year },
 			});
-			const allTimeProgress = response.data?.postCheckoutAchievements?.allTimeProgress || [];
-			const userGoalProgress = allTimeProgress.find(
+			const yearlyProgress = response.data?.postCheckoutAchievements?.yearlyProgress || [];
+			const userGoalProgress = yearlyProgress.find(
 				entry => entry.achievementId === userGoal.value?.category
 			)?.totalProgress || 0;
 			return userGoalProgress;

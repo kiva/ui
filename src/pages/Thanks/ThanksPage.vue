@@ -433,7 +433,7 @@ export default {
 				query: postCheckoutAchievementsQuery,
 				variables: { loanIds: getLoanIds(this.loans) },
 			});
-			this.badgesAchieved = response?.postCheckoutAchievements?.overallProgress ?? [];
+			this.badgesAchieved = response?.postCheckoutAchievements?.recentCompletedProgress ?? [];
 			// Don't show badges without a new tier achieved
 			this.badgesAchieved = this.badgesAchieved.filter(b => {
 				// The equality badge doesn't have tiers

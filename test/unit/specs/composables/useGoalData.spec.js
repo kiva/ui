@@ -514,7 +514,7 @@ describe('useGoalData', () => {
 				.mockResolvedValueOnce({
 					data: {
 						postCheckoutAchievements: {
-							allTimeProgress: [
+							yearlyProgress: [
 								{ achievementId: ID_WOMENS_EQUALITY, totalProgress: 20 },
 							],
 						},
@@ -639,7 +639,7 @@ describe('useGoalData', () => {
 				.mockResolvedValueOnce({
 					data: {
 						postCheckoutAchievements: {
-							allTimeProgress: [
+							yearlyProgress: [
 								{ achievementId: ID_WOMENS_EQUALITY, totalProgress: 20 },
 							],
 						},
