@@ -345,7 +345,7 @@ export default {
 						logReadQueryError(e, 'FundedBorrowerProfile personalizedLoansQuery');
 						this.isLoading = false;
 					}
-				} else {
+				} else if (this.loan?.id) {
 					try {
 						return this.apollo.query({
 							query: mlLoansYouMightLikeData,
