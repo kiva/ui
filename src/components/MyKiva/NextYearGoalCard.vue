@@ -12,16 +12,7 @@
 		<template v-else>
 			<div v-if="!userHasGoal" class="tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-between">
 				<h4>LAST YEAR</h4>
-				<h3 class="tw-text-center" v-if="prevYearLoans">
-					You helped <span
-						class="tw-text-action"
-					> {{ prevYearLoans }} women</span><br>shape their futures!
-				</h3>
-				<h3 class="tw-text-center" v-else>
-					Lenders like you help <span
-						class="tw-text-action"
-					> 3 women</span> a year
-				</h3>
+				<h3 class="tw-text-center" v-html="title"></h3>
 				<p>How many loans will you make this year?</p>
 				<NextYearGoalImg class="tw-my-4" />
 				<KvButton
@@ -119,6 +110,14 @@ const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoa
 
 const goalLoans = computed(() => {
 	return props.userGoal?.target || 0;
+});
+
+const title = computed(() => {
+	if (props.prevYearLoans) {
+		return `You helped <span class="tw-text-action"> ${props.prevYearLoans} women</span><br>shape their futures!`;
+	}
+
+	return 'Lenders like you help <span class="tw-text-action"> 3 women</span> a year';
 });
 
 const goalProgressPercentage = computed(() => {
