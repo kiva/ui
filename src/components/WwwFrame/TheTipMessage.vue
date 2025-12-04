@@ -79,6 +79,11 @@ export default {
 		this.initialPath = this.$route.path;
 	},
 	mounted() {
+		const uiv = this.cookieStore.get('uiv');
+		if (!uiv) {
+			// no visitor id cookie, nothing to do
+			return;
+		}
 		// query for flash messages
 		this.apollo.query({
 			query: flashMessageQuery,

@@ -1044,4 +1044,45 @@ describe('useGoalData', () => {
 			expect(href).toBe(expectedHref);
 		});
 	});
+
+	describe('getWomenLoansLastYear', () => {
+		it('should return women loans count from categoriesLoanCount', () => {
+			const categoriesLoanCount = {
+				[ID_WOMENS_EQUALITY]: 15,
+				[ID_BASIC_NEEDS]: 5,
+			};
+
+			const result = composable.getWomenLoansLastYear(categoriesLoanCount);
+			expect(result).toBe(15);
+		});
+
+		it('should return 0 when categoriesLoanCount is undefined', () => {
+			const result = composable.getWomenLoansLastYear(undefined);
+			expect(result).toBe(0);
+		});
+
+		it('should return 0 when categoriesLoanCount is null', () => {
+			const result = composable.getWomenLoansLastYear(null);
+			expect(result).toBe(0);
+		});
+
+		it('should return 0 when womens equality key is missing', () => {
+			const categoriesLoanCount = {
+				[ID_BASIC_NEEDS]: 10,
+				[ID_CLIMATE_ACTION]: 5,
+			};
+
+			const result = composable.getWomenLoansLastYear(categoriesLoanCount);
+			expect(result).toBe(0);
+		});
+
+		it('should return 0 when womens equality value is 0', () => {
+			const categoriesLoanCount = {
+				[ID_WOMENS_EQUALITY]: 0,
+			};
+
+			const result = composable.getWomenLoansLastYear(categoriesLoanCount);
+			expect(result).toBe(0);
+		});
+	});
 });
