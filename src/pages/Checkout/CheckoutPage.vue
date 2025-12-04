@@ -335,11 +335,13 @@ import { KvLoadingPlaceholder, KvPageContainer, KvButton } from '@kiva/kv-compon
 import { fetchPostCheckoutAchievements, getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
+import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
+const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -453,6 +455,7 @@ export default {
 			newAtbExpEnabled: false,
 			myKivaFlagEnabled: false,
 			isMyKivaEnabled: false,
+			isNextStepsExpEnabled: false,
 		};
 	},
 	apollo: {
@@ -490,6 +493,7 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: CHECKOUT_LOGIN_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: NEXT_STEPS_EXP_KEY } }),
 					]);
 				})
 				.then(response => {
@@ -647,6 +651,19 @@ export default {
 				this.cookieStore,
 			);
 		}
+
+		// MyKiva Next Steps Experiment SEPT2025 MP-1984
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			NEXT_STEPS_EXP_KEY,
+			version => {
+				this.isNextStepsExpEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-1984-Sept2025',
+		);
 	},
 	mounted() {
 		// update current time every second for reactivity
