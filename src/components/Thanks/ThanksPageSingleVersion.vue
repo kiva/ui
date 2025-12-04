@@ -13,6 +13,7 @@
 				:total-loans="totalLoans"
 				:categories-loan-count="categoriesLoanCount"
 				:is-goal-set="isGoalSet"
+				:tiered-achievements="tieredAchievements"
 				@edit-goal="showGoalModal = true"
 				@set-goal-target="setGoalTarget"
 				@set-goal="setGoal"

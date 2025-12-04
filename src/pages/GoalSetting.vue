@@ -4,6 +4,7 @@
 			<GoalSettingContainer
 				:total-loans="totalLoans"
 				:categories-loan-count="categoriesLoanCount"
+				:tiered-achievements="tieredAchievements"
 			/>
 		</KvPageContainer>
 	</WwwPage>
@@ -17,6 +18,7 @@ import userAchievementProgressQuery from '#src/graphql/query/userAchievementProg
 import { KvPageContainer } from '@kiva/kv-components';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import GoalSettingContainer from '#src/components/GoalSetting/GoalSettingContainer';
+import { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 
 export default {
 	name: 'GoalSetting',
@@ -30,13 +32,17 @@ export default {
 		return {
 			totalLoans: 0,
 			categoriesLoanCount: {},
+			tieredAchievements: [],
 		};
 	},
 	apollo: {
 		preFetch(_, client) {
 			return Promise.all([
 				client.query({ query: useGoalDataQuery }),
-				client.query({ query: userAchievementProgressQuery, variables: { loanIds: [] } }),
+				client.query({
+					query: userAchievementProgressQuery,
+					variables: { loanIds: [], year: LAST_YEAR_KEY }
+				}),
 			]).catch(error => {
 				logReadQueryError(error, 'GoalSettingPage Prefetch');
 			});
@@ -53,12 +59,12 @@ export default {
 		const goalDataResult = this.apollo.readQuery({ query: useGoalDataQuery });
 		const achievementsProgressResult = this.apollo.readQuery({
 			query: userAchievementProgressQuery,
-			variables: { loanIds: [] },
+			variables: { loanIds: [], year: LAST_YEAR_KEY },
 		});
 
 		this.totalLoans = goalDataResult.my?.loans.totalCount ?? 0;
-		const tieredAchievements = achievementsProgressResult.userAchievementProgress?.tieredLendingAchievements ?? [];
-		this.categoriesLoanCount = this.getAllCategoryLoanCounts(tieredAchievements);
+		this.tieredAchievements = achievementsProgressResult.userAchievementProgress?.tieredLendingAchievements ?? [];
+		this.categoriesLoanCount = this.getAllCategoryLoanCounts(this.tieredAchievements);
 	},
 };
 </script>

@@ -454,7 +454,7 @@ const showGoalCard = idx => {
 };
 
 const womenLoansLastYear = computed(() => {
-	return getWomenLoansLastYear(props.categoriesLoanCount);
+	return getWomenLoansLastYear(props.heroTieredAchievements);
 });
 
 const goalCardComponent = computed(() => {

@@ -167,6 +167,7 @@
 			:goals-entrypoint-enable="goalsEntrypointEnable"
 			:is-goal-set="isGoalSet"
 			:show-goal-selector="true"
+			:tiered-achievements="heroTieredAchievements"
 			@close-goal-modal="showGoalModal = false"
 			@set-goal="setGoal"
 		/>

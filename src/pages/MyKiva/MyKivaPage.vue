@@ -34,7 +34,7 @@ import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSid
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import useGoalData from '#src/composables/useGoalData';
+import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import { inject } from 'vue';
 
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
@@ -86,7 +86,7 @@ export default {
 			return Promise.all([
 				client.query({ query: myKivaQuery }),
 				client.query({ query: lendingStatsQuery }),
-				client.query({ query: userAchievementProgressQuery }),
+				client.query({ query: userAchievementProgressQuery, variables: { year: LAST_YEAR_KEY } }),
 				loanId
 					? client.query({ query: borrowerProfileSideSheetQuery, variables: { loanId: Number(loanId) } })
 					: Promise.resolve(null),
@@ -182,7 +182,8 @@ export default {
 		try {
 			this.fetchMyKivaData();
 			const achievementsResult = this.apollo.readQuery({
-				query: userAchievementProgressQuery
+				query: userAchievementProgressQuery,
+				variables: { year: LAST_YEAR_KEY }
 			});
 			this.heroTieredAchievements = achievementsResult.userAchievementProgress?.tieredLendingAchievements ?? [];
 			const contentfulChallengeResult = this.apollo.readQuery({

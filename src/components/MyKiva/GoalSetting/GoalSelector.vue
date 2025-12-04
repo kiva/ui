@@ -110,6 +110,13 @@ const props = defineProps({
 		type: String,
 		default: '/mykiva',
 	},
+	/**
+	 * Tiered achievements data
+	 */
+	tieredAchievements: {
+		type: Array,
+		default: () => ([]),
+	},
 });
 
 const emit = defineEmits(['set-goal', 'edit-goal', 'set-goal-target']);
@@ -123,7 +130,7 @@ const goalOptions = ref([
 ]);
 
 const womenLoansLastYear = computed(() => {
-	return getWomenLoansLastYear(props.categoriesLoanCount);
+	return getWomenLoansLastYear(props.tieredAchievements);
 });
 
 const titleText = computed(() => {

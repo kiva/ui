@@ -27,6 +27,7 @@
 			:categories-loan-count="categoriesLoanCount"
 			tracking-category="portfolio"
 			:go-to-url="ctaHref"
+			:tiered-achievements="tieredAchievements"
 			@set-goal-target="setGoalTarget"
 			@set-goal="$emit('set-goal', $event)"
 			@edit-goal="editGoal"
@@ -121,6 +122,10 @@ const props = defineProps({
 	isGoalSet: {
 		type: Boolean,
 		default: false,
+	},
+	tieredAchievements: {
+		type: Array,
+		default: () => ([]),
 	},
 });
 
