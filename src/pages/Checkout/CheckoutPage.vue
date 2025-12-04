@@ -635,7 +635,7 @@ export default {
 				variables: { loanIds: getLoanIds(this.loans) },
 			});
 
-			this.possibleAchievementProgress = response?.postCheckoutAchievements?.recentCompletedProgress ?? [];
+			this.possibleAchievementProgress = response?.postCheckoutAchievements?.overallProgress ?? [];
 		}
 
 		// Checkout page MyKiva pills only visible with new feature
@@ -1161,7 +1161,7 @@ export default {
 						query: postCheckoutAchievementsQuery,
 						variables: { loanIds },
 					}).then(({ data }) => {
-						this.possibleAchievementProgress = data?.postCheckoutAchievements?.recentCompletedProgress ?? [];
+						this.possibleAchievementProgress = data?.postCheckoutAchievements?.overallProgress ?? [];
 					});
 				}
 			}

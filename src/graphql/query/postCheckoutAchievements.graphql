@@ -1,6 +1,6 @@
 query PostCheckoutAchievements($loanIds: [Int!]!) {
 	postCheckoutAchievements(loanIds: $loanIds) {
-		recentCompletedProgress {
+		overallProgress {
 			id
 			achievementId
 			preCheckoutTier

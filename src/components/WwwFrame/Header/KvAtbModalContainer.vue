@@ -211,7 +211,7 @@ const fetchPostCheckoutAchievements = async loanIds => {
 		query: postCheckoutAchievementsQuery,
 		variables: { loanIds }
 	}).then(({ data }) => {
-		const loanAchievements = data.postCheckoutAchievements?.recentCompletedProgress ?? [];
+		const loanAchievements = data.postCheckoutAchievements?.overallProgress ?? [];
 		// eslint-disable-next-line max-len
 		const { contributingLoanAchievements, nonContributingAchievements } = splitAchievements(loanAchievements, tierTable.value);
 		contributingAchievements.value = [...contributingLoanAchievements];
@@ -244,7 +244,7 @@ const fetchAchievementFromBasket = async () => {
 		query: postCheckoutAchievementsQuery,
 		variables: { loanIds: loansIdsInBasket.value },
 	}).then(({ data }) => {
-		const loanAchievements = data.postCheckoutAchievements?.recentCompletedProgress ?? [];
+		const loanAchievements = data.postCheckoutAchievements?.overallProgress ?? [];
 		const { contributingLoanAchievements } = splitAchievements(loanAchievements, tierTable.value);
 		contributingAchievements.value = [...contributingLoanAchievements];
 		updateTierTable();
