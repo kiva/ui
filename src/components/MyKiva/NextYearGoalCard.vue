@@ -18,9 +18,9 @@
 					> {{ prevYearLoans }} women</span><br>shape their futures!
 				</h3>
 				<h3 class="tw-text-center" v-else>
-					Lenders helped <span
+					Lenders like you help <span
 						class="tw-text-action"
-					> 2 women</span> shape their futures!
+					> 3 women</span> a year
 				</h3>
 				<p>How many loans will you make this year?</p>
 				<NextYearGoalImg class="tw-my-4" />
