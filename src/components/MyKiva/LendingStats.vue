@@ -333,8 +333,8 @@ export default {
 	},
 	async mounted() {
 		if (this.isNextStepsExpEnabled) {
-			await this.loadGoalData(this.loans);
-			await this.checkCompletedGoal('portfolio');
+			await this.loadGoalData();
+			await this.checkCompletedGoal({ category: 'portfolio' });
 			this.goalProgressLoading = false;
 		}
 
