@@ -1,0 +1,15 @@
+import{D as s}from"./entry-DepositIncentiveUpsell-EakXxkoWxo.js";import{a as i}from"./entry-apollo-story-mixin-CB9BNmK9U5.js";import{m as a}from"./entry-utils-LVhxYihmNs.js";import"./entry-numeral-DJCTM12wUX.js";import"./entry-_commonjsHelpers-Cpj98o6Yn6.js";import"./entry-updateLoanReservation-BaDuxVurTB.js";import"./entry-KvIcon-CrvfhOx_MB.js";import"./iframe-BWPu5KZb.js";import"./entry-vue.esm-bundler-BthIfLPEGH.js";import"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";import"./entry-KvLoadingPlaceholder-aJYFcp9wXs.js";import"./entry-KvWwwHeader-COss86YtUr.js";import"./entry-KvButton-p9fkQMtQm5.js";import"./entry-KvLoadingSpinner-BCoIpoxPqz.js";import"./entry-KvCarousel-D6eNttjkRj.js";import"./entry-mdi-CxS5kPhO5v.js";import"./entry-throttle-DR-Bh3IiJx.js";import"./entry-KvMaterialIcon-DjW6IUJXeQ.js";import"./entry-KvProgressBar-DR7zDY2Gfg.js";import"./entry-exports-CudK1O5XNw.js";import"./entry-loan-data-mock-B1RgYuoN0n.js";const m=a(4),l={data:{fundraisingLoans:{values:m}}},c={goal:50,progress:25},T={title:"Components/Checkout/DepositIncentiveUpsell",component:s,args:c},o=(p,{argTypes:n})=>({props:Object.keys(n),components:{DepositIncentiveUpsell:s},mixins:[i({queryResult:l})],setup(){return p},template:'<deposit-incentive-upsell :goal="goal" :progress="progress" />'});var e,t,r;o.parameters={...o.parameters,docs:{...(e=o.parameters)==null?void 0:e.docs,source:{originalSource:`(args, {
+  argTypes
+}) => ({
+  props: Object.keys(argTypes),
+  components: {
+    DepositIncentiveUpsell
+  },
+  mixins: [apolloStoryMixin({
+    queryResult
+  })],
+  setup() {
+    return args;
+  },
+  template: '<deposit-incentive-upsell :goal="goal" :progress="progress" />'
+})`,...(r=(t=o.parameters)==null?void 0:t.docs)==null?void 0:r.source}}};const h=["Default"];export{o as Default,h as __namedExportsOrder,T as default};
