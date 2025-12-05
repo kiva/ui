@@ -47,13 +47,10 @@ import {
 import logReadQueryError from '#src/util/logReadQueryError';
 import { KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { useRouter } from 'vue-router';
-import useBadgeData from '#src/composables/useBadgeData';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import useGoalData, { SAME_AS_LAST_YEAR_LIMIT } from '#src/composables/useGoalData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
-
-const { getAllCategoryLoanCounts } = useBadgeData();
 
 const { getWomenLoansLastYear } = useGoalData({ });
 
@@ -61,7 +58,6 @@ const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 const loading = ref(true);
-const categoriesLoanCount = ref({});
 const womenLoansLastYear = ref(0);
 
 const title = computed(() => {
@@ -84,8 +80,7 @@ const fetchUserAchievementProgress = async () => {
 		});
 
 		const tieredAchievements = data.userAchievementProgress?.tieredLendingAchievements ?? [];
-		categoriesLoanCount.value = getAllCategoryLoanCounts(tieredAchievements);
-		womenLoansLastYear.value = getWomenLoansLastYear(categoriesLoanCount.value);
+		womenLoansLastYear.value = getWomenLoansLastYear(tieredAchievements);
 		loading.value = false;
 	} catch (error) {
 		logReadQueryError(error, 'PortfolioGoalEntrypoint fetchUserAchievementProgress');
