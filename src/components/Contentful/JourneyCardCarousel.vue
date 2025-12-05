@@ -187,10 +187,6 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
-	categoriesLoanCount: {
-		type: Object,
-		default: () => ({}),
-	},
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
@@ -454,7 +450,7 @@ const showGoalCard = idx => {
 };
 
 const womenLoansLastYear = computed(() => {
-	return getWomenLoansLastYear(props.categoriesLoanCount);
+	return getWomenLoansLastYear(props.heroTieredAchievements);
 });
 
 const goalCardComponent = computed(() => {
