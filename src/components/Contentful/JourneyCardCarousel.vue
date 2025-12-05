@@ -187,10 +187,6 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
-	categoriesLoanCount: {
-		type: Object,
-		default: () => ({}),
-	},
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
