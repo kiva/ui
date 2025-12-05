@@ -72,7 +72,7 @@
 		"apollo-server-express": "^2.18.2",
 		"apollo3-cache-persist": "^0.15.0",
 		"auth0-js": "^9.19.2",
-		"body-parser": "^1.19.0",
+		"body-parser": "^2.2.1",
 		"bowser": "^2.11.0",
 		"braintree-web-drop-in": "^1.30.0",
 		"canvas": "^3.1.0",
