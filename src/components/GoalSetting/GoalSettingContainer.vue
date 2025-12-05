@@ -25,6 +25,7 @@
 				v-show="!showCategories"
 				:is-goal-set="isGoalSet"
 				:categories-loan-count="categoriesLoanCount"
+				:tiered-achievements="tieredAchievements"
 				:go-to-url="ctaHref"
 				tracking-category="event-tracking"
 				@set-goal-target="setTarget($event)"
@@ -114,6 +115,13 @@ const props = defineProps({
 	categoriesLoanCount: {
 		type: Object,
 		default: () => ({}),
+	},
+	/**
+	 * Tiered achievements data
+	 */
+	tieredAchievements: {
+		type: Array,
+		default: () => ([]),
 	},
 });
 

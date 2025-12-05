@@ -1046,43 +1046,49 @@ describe('useGoalData', () => {
 	});
 
 	describe('getWomenLoansLastYear', () => {
-		it('should return women loans count from categoriesLoanCount', () => {
-			const categoriesLoanCount = {
-				[ID_WOMENS_EQUALITY]: 15,
-				[ID_BASIC_NEEDS]: 5,
-			};
+		it('should return progress for women equality achievement', () => {
+			const tieredAchievements = [
+				{ id: ID_WOMENS_EQUALITY, progressForYear: 25 },
+				{ id: ID_BASIC_NEEDS, progressForYear: 15 },
+				{ id: ID_CLIMATE_ACTION, progressForYear: 8 },
+			];
 
-			const result = composable.getWomenLoansLastYear(categoriesLoanCount);
-			expect(result).toBe(15);
+			const progress = composable.getWomenLoansLastYear(tieredAchievements);
+
+			expect(progress).toBe(25);
 		});
 
-		it('should return 0 when categoriesLoanCount is undefined', () => {
-			const result = composable.getWomenLoansLastYear(undefined);
-			expect(result).toBe(0);
+		it('should return 0 if women equality achievement not found', () => {
+			const tieredAchievements = [
+				{ id: ID_BASIC_NEEDS, progressForYear: 15 },
+				{ id: ID_CLIMATE_ACTION, progressForYear: 8 },
+			];
+
+			const progress = composable.getWomenLoansLastYear(tieredAchievements);
+
+			expect(progress).toBe(0);
 		});
 
-		it('should return 0 when categoriesLoanCount is null', () => {
-			const result = composable.getWomenLoansLastYear(null);
-			expect(result).toBe(0);
+		it('should return 0 for undefined progressForYear', () => {
+			const tieredAchievements = [
+				{ id: ID_WOMENS_EQUALITY },
+			];
+
+			const progress = composable.getWomenLoansLastYear(tieredAchievements);
+
+			expect(progress).toBe(0);
 		});
 
-		it('should return 0 when womens equality key is missing', () => {
-			const categoriesLoanCount = {
-				[ID_BASIC_NEEDS]: 10,
-				[ID_CLIMATE_ACTION]: 5,
-			};
+		it('should handle empty array', () => {
+			const progress = composable.getWomenLoansLastYear([]);
 
-			const result = composable.getWomenLoansLastYear(categoriesLoanCount);
-			expect(result).toBe(0);
+			expect(progress).toBe(0);
 		});
 
-		it('should return 0 when womens equality value is 0', () => {
-			const categoriesLoanCount = {
-				[ID_WOMENS_EQUALITY]: 0,
-			};
+		it('should handle null input', () => {
+			const progress = composable.getWomenLoansLastYear(null);
 
-			const result = composable.getWomenLoansLastYear(categoriesLoanCount);
-			expect(result).toBe(0);
+			expect(progress).toBe(0);
 		});
 	});
 });

@@ -9,6 +9,7 @@
 			v-else
 			:is-goal-set="isGoalSet"
 			:categories-loan-count="categoriesLoanCount"
+			:tiered-achievements="tieredAchievements"
 			@set-goal-target="$emit('set-goal-target', $event)"
 			@set-goal="$emit('set-goal', $event)"
 			@edit-goal="$emit('edit-goal')"
@@ -50,6 +51,13 @@ defineProps({
 	isGoalSet: {
 		type: Boolean,
 		default: false,
+	},
+	/**
+	 * Tiered achievements data
+	 */
+	tieredAchievements: {
+		type: Array,
+		default: () => ([]),
 	},
 });
 </script>

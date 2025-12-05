@@ -50,6 +50,7 @@ export const GOAL_STATUS = {
 };
 
 export const SAME_AS_LAST_YEAR_LIMIT = 1;
+export const LAST_YEAR_KEY = 2025;
 
 function getGoalDisplayName(target, category) {
 	if (!target || target > 1) return GOAL_DISPLAY_MAP[category] || 'loans';
@@ -322,9 +323,12 @@ export default function useGoalData({ apollo }) {
 	/**
 	 * Get the number of women loans from last year
 	 */
-	const getWomenLoansLastYear = categoriesLoanCount => {
-		// TODO: Update to get actual last year data when available
-		return categoriesLoanCount?.[ID_WOMENS_EQUALITY] || 0;
+	const getWomenLoansLastYear = tieredAchievements => {
+		const womensAchievement = (tieredAchievements ?? []).find(
+			achievement => achievement.id === ID_WOMENS_EQUALITY
+		);
+
+		return womensAchievement?.progressForYear || 0;
 	};
 
 	return {
