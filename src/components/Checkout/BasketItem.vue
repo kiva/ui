@@ -26,10 +26,14 @@
 				<KvCartPill
 					v-if="showPill"
 					show-bg
+					:custom-message="pillMessage"
 					style="height: 32px;"
 				>
 					<template #icon>
-						<EquityBadge v-if="isFirstLoan" class="tw-h-3 tw-w-4 tw--mx-0.5" />
+						<EquityBadge
+							v-if="isFirstLoan && !pillMessage.length"
+							class="tw-h-3 tw-w-4 tw--mx-0.5"
+						/>
 						<IconChoice v-else />
 					</template>
 				</KvCartPill>
@@ -193,6 +197,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		userGoalAchieved: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -231,7 +239,14 @@ export default {
 			return this.loan.team ? this.loan.team.id : 0;
 		},
 		showPill() {
-			return this.isMyKivaEnabled && (this.contributesInAchievement || this.isFirstLoan);
+			return (this.isMyKivaEnabled && (this.contributesInAchievement || this.isFirstLoan))
+				|| this.pillMessage.length > 0;
+		},
+		pillMessage() {
+			if (this.userGoalAchieved) {
+				return 'Supporting this loan reaches your annual goal!';
+			}
+			return '';
 		}
 	},
 	watch: {

@@ -47,6 +47,7 @@
 							:lender-total-loans="lenderTotalLoans"
 							:is-my-kiva-enabled="isMyKivaEnabled"
 							:has-ever-logged-in="hasEverLoggedIn"
+							:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@removed-loan="calculateProgressAchievement($event)"

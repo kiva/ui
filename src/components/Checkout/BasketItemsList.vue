@@ -12,6 +12,7 @@
 					:contributes-in-achievement="isLoanContributingInAchievements(loan.id)"
 					:is-first-loan="isFirstLoan(index)"
 					:is-my-kiva-enabled="isMyKivaEnabled"
+					:user-goal-achieved="userGoalAchieved"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
@@ -53,6 +54,8 @@
 </template>
 
 <script>
+import { inject } from 'vue';
+import useGoalData from '#src/composables/useGoalData';
 import BasketItem from '#src/components/Checkout/BasketItem';
 import DonationItem from '#src/components/Checkout/DonationItem';
 import KivaCardItem from '#src/components/Checkout/KivaCardItem';
@@ -133,6 +136,10 @@ export default {
 		hasEverLoggedIn: {
 			type: Boolean,
 			default: false
+		},
+		isNextStepsExpEnabled: {
+			type: Boolean,
+			default: false
 		}
 	},
 	components: {
@@ -146,6 +153,10 @@ export default {
 			// eslint-disable-next-line no-underscore-dangle
 			const hasUsLoan = loansInBasket.some(reservation => reservation?.loan?.__typename === 'LoanDirect');
 			userUsLoanCheckout(hasUsLoan);
+
+			if (this.isNextStepsExpEnabled) {
+				this.loadGoalData(this.loans);
+			}
 		}
 	},
 	methods: {
@@ -161,6 +172,24 @@ export default {
 
 			return this.isLoggedIn || (!this.isLoggedIn && !this.hasEverLoggedIn);
 		}
-	}
+	},
+	setup() {
+		const apollo = inject('apollo');
+
+		const {
+			userGoalAchieved,
+			loadGoalData,
+		} = useGoalData({ apollo });
+
+		return {
+			userGoalAchieved,
+			loadGoalData,
+		};
+	},
+	mounted() {
+		if (this.isNextStepsExpEnabled) {
+			this.loadGoalData(this.loans);
+		}
+	},
 };
 </script>
