@@ -28,8 +28,10 @@ export default apollo => {
 					globalUnsubscribed,
 				},
 			});
+			return true;
 		} catch (error) {
 			logReadQueryError(error, 'OptInModule updateCommunicationSettings');
+			return false;
 		}
 	};
 

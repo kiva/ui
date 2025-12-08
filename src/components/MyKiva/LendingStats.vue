@@ -28,6 +28,8 @@
 					:user-goal-enabled="isNextStepsExpEnabled"
 					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
+					:goals-entrypoint-enable="goalsEntrypointEnable"
+					:categories-loan-count="categoriesLoanCount"
 					@open-goal-modal="showGoalModal = true"
 				/>
 			</div>
@@ -153,6 +155,7 @@
 			:user-goal-enabled="isNextStepsExpEnabled"
 			:user-goal-achieved="userGoalAchieved"
 			:user-goal="userGoal"
+			:goals-entrypoint-enable="goalsEntrypointEnable"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<GoalSettingModal
@@ -163,6 +166,7 @@
 			:goals-entrypoint-enable="goalsEntrypointEnable"
 			:is-goal-set="isGoalSet"
 			:show-goal-selector="true"
+			:tiered-achievements="heroTieredAchievements"
 			@close-goal-modal="showGoalModal = false"
 			@set-goal="setGoal"
 		/>

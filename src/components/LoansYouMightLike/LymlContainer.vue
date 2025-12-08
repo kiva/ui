@@ -198,7 +198,7 @@ export default {
 		getLoansYouMightLike() {
 			this.loading = true;
 
-			if (this.expMlLoanToLoan) {
+			if (this.expMlLoanToLoan && this.targetLoan?.id) {
 				this.apollo.query({
 					query: mlLoansYouMightLikeData,
 					variables: {

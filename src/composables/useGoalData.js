@@ -10,7 +10,7 @@ import useGoalDataYearlyProgressQuery from '#src/graphql/query/useGoalDataYearly
 import logFormatter from '#src/util/logFormatter';
 import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 
-import {
+import useBadgeData, {
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
 	ID_REFUGEE_EQUALITY,
@@ -18,6 +18,13 @@ import {
 	ID_US_ECONOMIC_EQUALITY,
 	ID_WOMENS_EQUALITY,
 } from '#src/composables/useBadgeData';
+
+import womenImg from '#src/assets/images/my-kiva/goal-setting/women.svg?url';
+import refugeesImg from '#src/assets/images/my-kiva/goal-setting/refugees.svg?url';
+import climateActionImg from '#src/assets/images/my-kiva/goal-setting/climate-action.svg?url';
+import usEntrepreneursImg from '#src/assets/images/my-kiva/goal-setting/us-entrepreneurs.svg?url';
+import basicNeedsImg from '#src/assets/images/my-kiva/goal-setting/basic-needs.svg?url';
+import supportAllImg from '#src/assets/images/my-kiva/goal-setting/support-all.svg?url';
 
 const GOAL_DISPLAY_MAP = {
 	[ID_BASIC_NEEDS]: 'basic needs loans',
@@ -42,6 +49,9 @@ export const GOAL_STATUS = {
 	EXPIRED: 'expired',
 	IN_PROGRESS: 'in-progress',
 };
+
+export const SAME_AS_LAST_YEAR_LIMIT = 1;
+export const LAST_YEAR_KEY = 2025;
 
 function getGoalDisplayName(target, category) {
 	if (!target || target > 1) return GOAL_DISPLAY_MAP[category] || 'loans';
@@ -249,6 +259,103 @@ export default function useGoalData({ apollo }) {
 		};
 	}
 
+	/**
+	 * Get Goal Categories for Goal Selection
+	 * @param {*} categoriesLoanCount Categories Loan Count
+	 * @param {*} totalLoans Total Loans
+	 * @returns array of goal categories
+	 */
+	const getCategories = (categoriesLoanCount, totalLoans) => [
+		{
+			id: '1',
+			name: 'Women',
+			description: 'Open doors for women around the world',
+			eventProp: 'women',
+			customImage: womenImg,
+			loanCount: categoriesLoanCount?.[ID_WOMENS_EQUALITY],
+			title: 'women',
+			badgeId: ID_WOMENS_EQUALITY,
+		},
+		{
+			id: '2',
+			name: 'Refugees',
+			description: 'Transform the future for refugees',
+			eventProp: 'refugees',
+			customImage: refugeesImg,
+			loanCount: categoriesLoanCount?.[ID_REFUGEE_EQUALITY],
+			title: 'refugees',
+			badgeId: ID_REFUGEE_EQUALITY,
+		},
+		{
+			id: '3',
+			name: 'Climate Action',
+			description: 'Support the front lines of the climate crisis',
+			eventProp: 'climate',
+			customImage: climateActionImg,
+			loanCount: categoriesLoanCount?.[ID_CLIMATE_ACTION],
+			title: 'climate action',
+			badgeId: ID_CLIMATE_ACTION,
+		},
+		{
+			id: '4',
+			name: 'U.S. Entrepreneurs',
+			description: 'Support small businesses in the U.S.',
+			eventProp: 'us-entrepreneur',
+			customImage: usEntrepreneursImg,
+			loanCount: categoriesLoanCount?.[ID_US_ECONOMIC_EQUALITY],
+			title: 'US entrepreneurs',
+			badgeId: ID_US_ECONOMIC_EQUALITY,
+		},
+		{
+			id: '5',
+			name: 'Basic Needs',
+			description: 'Clean water, healthcare, and sanitation',
+			eventProp: 'basic-needs',
+			customImage: basicNeedsImg,
+			loanCount: categoriesLoanCount?.[ID_BASIC_NEEDS],
+			title: 'basic needs',
+			badgeId: ID_BASIC_NEEDS,
+		},
+		{
+			id: '6',
+			name: 'Choose as I go',
+			description: 'Support a variety of borrowers',
+			eventProp: 'help-everyone',
+			customImage: supportAllImg,
+			loanCount: totalLoans,
+			title: null,
+			badgeId: ID_SUPPORT_ALL,
+		}
+	];
+
+	/**
+	 * Generate CTA Href for Goal Completion
+	 * @param {*} selectedGoalNumber goal number selected by the user
+	 * @param {*} categoryId category id selected by the user
+	 * @param {*} router router instance
+	 * @returns href string
+	 */
+	const getCtaHref = (selectedGoalNumber, categoryId, router) => {
+		const { getLoanFindingUrl } = useBadgeData();
+
+		const categoryHeader = getGoalDisplayName(selectedGoalNumber, categoryId);
+		const string = `Your goal: Support ${selectedGoalNumber} ${categoryHeader}`;
+		const encodedHeader = encodeURIComponent(string);
+		const loanFindingUrl = getLoanFindingUrl(categoryId, router.currentRoute.value);
+		return `${loanFindingUrl}?header=${encodedHeader}`;
+	};
+
+	/**
+	 * Get the number of women loans from last year
+	 */
+	const getWomenLoansLastYear = tieredAchievements => {
+		const womensAchievement = (tieredAchievements ?? []).find(
+			achievement => achievement.id === ID_WOMENS_EQUALITY
+		);
+
+		return womensAchievement?.progressForYear || 0;
+	};
+
 	return {
 		checkCompletedGoal,
 		getGoalDisplayName,
@@ -265,5 +372,8 @@ export default function useGoalData({ apollo }) {
 		// Goal Entry for 2026 Goals
 		userPreferences,
 		renewAnnualGoal,
+		getCategories,
+		getCtaHref,
+		getWomenLoansLastYear,
 	};
 }

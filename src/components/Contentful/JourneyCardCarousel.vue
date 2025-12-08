@@ -26,12 +26,14 @@
 				#[`slide${index}`]
 				:key="index"
 			>
-				<GoalCard
+				<component
 					v-if="showGoalCard(index)"
+					:is="goalCardComponent"
 					:goal-progress="goalProgress"
 					:hero-slides="slides"
 					:loading="goalProgressLoading"
 					:user-goal="userGoal"
+					:prev-year-loans="womenLoansLastYear"
 					@open-goal-modal="$emit('open-goal-modal')"
 				/>
 				<MyKivaCard
@@ -95,6 +97,8 @@ import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import GoalCard from '#src/components/MyKiva/GoalCard';
 import { optimizeContentfulUrl } from '#src/util/imageUtils';
+import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
+import useGoalData from '#src/composables/useGoalData';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
@@ -109,6 +113,8 @@ const {
 	combineBadgeData,
 	getJourneysByLoan,
 } = useBadgeData(apollo);
+
+const { getWomenLoansLastYear } = useGoalData({ });
 
 const emit = defineEmits(['update-journey', 'open-goal-modal']);
 
@@ -176,6 +182,10 @@ const props = defineProps({
 	controlsTopRight: {
 		type: Boolean,
 		default: false,
+	},
+	goalsEntrypointEnable: {
+		type: Boolean,
+		default: false
 	},
 });
 
@@ -438,6 +448,17 @@ const showGoalCard = idx => {
 
 	return idx === 0 && shouldShowGoalCard.value;
 };
+
+const womenLoansLastYear = computed(() => {
+	return getWomenLoansLastYear(props.heroTieredAchievements);
+});
+
+const goalCardComponent = computed(() => {
+	if (props.goalsEntrypointEnable) {
+		return NextYearGoalCard;
+	}
+	return GoalCard;
+});
 
 </script>
 

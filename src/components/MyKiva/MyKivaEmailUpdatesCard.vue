@@ -61,6 +61,8 @@ const props = defineProps({
 	},
 });
 
+const emit = defineEmits(['accept-email-updates']);
+
 // Get the most recent loan (first in sorted array)
 const mostRecentLoan = computed(() => {
 	return props.loans?.[0] || null;
@@ -82,7 +84,10 @@ const apollo = inject('apollo');
 const { updateCommunicationSettings } = useOptIn(apollo);
 
 const handleEmailOptIn = async () => {
-	await updateCommunicationSettings(true, true, false);
+	const updatedEmailSettings = await updateCommunicationSettings(true, true, false);
+	if (updatedEmailSettings) {
+		emit('accept-email-updates', true);
+	}
 };
 
 </script>
