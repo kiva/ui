@@ -61,10 +61,15 @@ const loading = ref(true);
 const womenLoansLastYear = ref(0);
 
 const title = computed(() => {
-	return womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT
-	// eslint-disable-next-line max-len
-		? `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} women</span> shape their futures!`
-		: 'Lenders like you help <span class="tw-text-eco-green-3">3 women</span> a year!';
+	if (womenLoansLastYear.value === 1) {
+		return 'Last year, you helped <span class="tw-text-eco-green-3">1 woman</span> shape her future!';
+	}
+	if (womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
+		// eslint-disable-next-line max-len
+		return `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} women</span> shape their futures!`;
+	}
+
+	return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
 });
 
 const goToGoalPage = () => {
