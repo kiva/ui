@@ -52,6 +52,7 @@
 				Impact progress
 			</h3>
 			<BadgesSectionV2
+				v-if="showNewBadgeSection"
 				class="tw--mt-4"
 				controls-top-right
 				:badge-data="badgeData"
@@ -59,7 +60,8 @@
 				@badge-clicked="handleBadgeSectionClicked"
 			/>
 			<BadgesSection
-				class="tw-mt-4"
+				v-else
+				class="tw--mt-4"
 				controls-top-right
 				:badge-data="badgeData"
 				:selected-journey="selectedJourney"
@@ -112,7 +114,16 @@
 			<h3 id="my-achievements">
 				My achievements
 			</h3>
+			<BadgesSectionV2
+				v-if="showNewBadgeSection"
+				class="tw--mt-4"
+				controls-top-right
+				:badge-data="badgeData"
+				:selected-journey="selectedJourney"
+				@badge-clicked="handleBadgeSectionClicked"
+			/>
 			<BadgesSection
+				v-else
 				class="tw--mt-4"
 				controls-top-right
 				:badge-data="badgeData"
@@ -308,6 +319,10 @@ export default {
 			default: false
 		},
 		goalsEntrypointEnable: {
+			type: Boolean,
+			default: false
+		},
+		showNewBadgeSection: {
 			type: Boolean,
 			default: false
 		}
