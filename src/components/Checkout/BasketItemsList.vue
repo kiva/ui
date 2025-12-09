@@ -13,6 +13,7 @@
 					:is-first-loan="isFirstLoan(index)"
 					:is-my-kiva-enabled="isMyKivaEnabled"
 					:user-goal-achieved="userGoalAchieved"
+					:user-goal="userGoal"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
@@ -179,11 +180,13 @@ export default {
 		const {
 			userGoalAchieved,
 			loadGoalData,
+			userGoal,
 		} = useGoalData({ apollo });
 
 		return {
 			userGoalAchieved,
 			loadGoalData,
+			userGoal,
 		};
 	},
 	mounted() {
