@@ -48,7 +48,7 @@
 					/>
 					<div class="tw-absolute tw-flex tw-flex-col tw-items-center tw-justify-center tw-inset-0 tw--mt-1">
 						<h1>
-							{{ goalProgress }}
+							{{ visibleGoalLoans }}
 						</h1>
 						<p class="tw-text-secondary">
 							{{ progressCircleDesc }}
@@ -110,11 +110,17 @@ const router = useRouter();
 
 const { getLoanFindingUrl } = useBadgeData();
 const { getGoalDisplayName } = useGoalData({});
+const COMPLETED_GOAL_THRESHOLD = 100;
+const HALF_GOAL_THRESHOLD = 50;
 
 const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);
 
 const goalLoans = computed(() => {
 	return props.userGoal?.target || 0;
+});
+
+const visibleGoalLoans = computed(() => {
+	return Math.min(props.goalProgress, goalLoans.value);
 });
 
 const title = computed(() => {
@@ -136,18 +142,18 @@ const goalProgressPercentage = computed(() => {
 const progressDescription = computed(() => {
 	if (goalProgressPercentage.value === 0) {
 		return 'Get started by making a loan!';
-	} if (goalProgressPercentage.value > 0 && goalProgressPercentage.value < 50) {
+	} if (goalProgressPercentage.value > 0 && goalProgressPercentage.value < HALF_GOAL_THRESHOLD) {
 		return 'You’ve started something powerful.<br>Let’s keep it growing together.';
-	} if (goalProgressPercentage.value === 50) {
+	} if (goalProgressPercentage.value === HALF_GOAL_THRESHOLD) {
 		return 'Halfway to your goal!<br>Every loan fuels a dream.';
-	} if (goalProgressPercentage.value < 100) {
+	} if (goalProgressPercentage.value < COMPLETED_GOAL_THRESHOLD) {
 		return 'You’ve brought so many dreams<br>within reach. Finish strong!';
 	}
 	return `Incredible! You reached your 2026<br>goal and changed ${goalLoans.value} lives!`;
 });
 
 const btnCta = computed(() => {
-	if (goalProgressPercentage.value === 100) {
+	if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
 		return 'View lifetime goals';
 	}
 	return 'Work towards your goal';
@@ -187,7 +193,7 @@ const showConfetti = () => {
 };
 
 const handleContinueClick = () => {
-	if (goalProgressPercentage.value === 100) {
+	if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
 		$kvTrackEvent('portfolio', 'click', 'goal-completed-cta');
 		return;
 	}
