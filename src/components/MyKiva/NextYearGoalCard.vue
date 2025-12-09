@@ -72,7 +72,7 @@
 <script setup>
 
 import {
-	computed, watch, inject, onMounted
+	computed, watch, inject
 } from 'vue';
 import {
 	KvButton, KvLoadingPlaceholder
