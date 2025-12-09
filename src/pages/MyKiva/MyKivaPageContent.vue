@@ -51,8 +51,15 @@
 			<h3 id="my-achievements">
 				Impact progress
 			</h3>
-			<BadgesSection
+			<BadgesSectionV2
 				class="tw--mt-4"
+				controls-top-right
+				:badge-data="badgeData"
+				:selected-journey="selectedJourney"
+				@badge-clicked="handleBadgeSectionClicked"
+			/>
+			<BadgesSection
+				class="tw-mt-4"
 				controls-top-right
 				:badge-data="badgeData"
 				:selected-journey="selectedJourney"
@@ -211,6 +218,7 @@ import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
+import BadgesSectionV2 from '#src/components/MyKiva/BadgesSectionV2';
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -244,6 +252,7 @@ export default {
 		MyKivaStats,
 		LendingStats,
 		BailoutChips,
+		BadgesSectionV2,
 	},
 	props: {
 		userInfo: {
