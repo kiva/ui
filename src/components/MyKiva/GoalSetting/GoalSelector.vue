@@ -134,13 +134,18 @@ const womenLoansLastYear = computed(() => {
 });
 
 const titleText = computed(() => {
-	// eslint-disable-next-line no-nested-ternary
-	return props.isGoalSet
-		? 'Thank you!'
-		: womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT
-			// eslint-disable-next-line max-len
-			? `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} women</span> shape their futures!`
-			: 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
+	if (props.isGoalSet) {
+		return 'Thank you!';
+	}
+	if (womenLoansLastYear.value === 1) {
+		return 'Last year, you helped <span class="tw-text-eco-green-3">1 woman</span> shape her future!';
+	}
+	if (womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
+		// eslint-disable-next-line max-len
+		return `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} women</span> shape their futures!`;
+	}
+
+	return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
 });
 
 const subtitleText = computed(() => {
@@ -150,12 +155,15 @@ const subtitleText = computed(() => {
 });
 
 const buttonText = computed(() => {
-	// eslint-disable-next-line no-nested-ternary
-	return !props.isGoalSet
-		? 'Set 2026 goal'
-		: props.goToUrl !== '/mykiva'
-			? 'Make a loan'
-			: 'Track my progress';
+	if (!props.isGoalSet) {
+		return 'Set 2026 goal';
+	}
+
+	if (props.goToUrl !== '/mykiva') {
+		return 'Make a loan';
+	}
+
+	return 'Track my progress';
 });
 
 const selectedTarget = computed(() => {
