@@ -135,7 +135,7 @@ const goalProgressPercentage = computed(() => {
 	if (!props.userGoal?.target || props.goalProgress <= 0) return 0;
 	return Math.min(
 		Math.round((props.goalProgress / props.userGoal.target) * 100),
-		100
+		COMPLETED_GOAL_THRESHOLD
 	);
 });
 
@@ -216,7 +216,7 @@ watch(() => props.userGoal, (newVal, oldVal) => {
 });
 
 watch(goalProgressPercentage, newVal => {
-	if (newVal === 100) {
+	if (newVal === COMPLETED_GOAL_THRESHOLD) {
 		showConfetti();
 	}
 });
