@@ -2,11 +2,11 @@
 	<div class="tw-min-h-screen lg:tw-min-h-full tw-mt-5">
 		<button
 			class="tw-flex tw-gap-1 tw-items-center tw-font-medium tw-mt-3 tw-mb-4"
+			@click="goToDashboard"
 		>
 			<KvMaterialIcon
 				:icon="mdiChevronLeft"
 				class="tw-ml-0.5"
-				@click="goToDashboard"
 			/>
 			To dashboard
 		</button>
