@@ -55,14 +55,14 @@
 						</p>
 					</div>
 				</div>
-				<p v-html="progressDescription" class="tw-font-medium">
+				<p v-html="progressDescription" class="tw-font-medium" style="line-height: 1.5rem;">
 				</p>
 				<KvButton
 					class="tw-w-full"
 					v-kv-track-event="['portfolio', 'click', 'continue-towards-goal']"
 					@click="handleContinueClick"
 				>
-					Work towards your goal
+					{{ btnCta }}
 				</KvButton>
 			</div>
 		</template>
@@ -146,6 +146,13 @@ const progressDescription = computed(() => {
 	return `Incredible! You reached your 2026<br>goal and changed ${goalLoans.value} lives!`;
 });
 
+const btnCta = computed(() => {
+	if (goalProgressPercentage.value === 100) {
+		return 'View lifetime goals';
+	}
+	return 'Work towards your goal';
+});
+
 const categoryName = computed(() => {
 	return getGoalDisplayName(props.userGoal?.target, props.userGoal?.category);
 });
@@ -180,6 +187,10 @@ const showConfetti = () => {
 };
 
 const handleContinueClick = () => {
+	if (goalProgressPercentage.value === 100) {
+		$kvTrackEvent('portfolio', 'click', 'goal-completed-cta');
+		return;
+	}
 	$kvTrackEvent('portfolio', 'click', 'continue-towards-goal');
 	router.push(ctaHref.value);
 };
@@ -198,8 +209,8 @@ watch(() => props.userGoal, (newVal, oldVal) => {
 	}
 });
 
-onMounted(() => {
-	if (goalProgressPercentage.value === 100) {
+watch(goalProgressPercentage, newVal => {
+	if (newVal === 100) {
 		showConfetti();
 	}
 });
