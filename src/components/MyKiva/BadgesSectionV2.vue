@@ -48,7 +48,7 @@ import MyKivaProgressCard from '#src/components/MyKiva/MyKivaProgressCard';
 import useGoalData from '#src/composables/useGoalData';
 import { useRouter } from 'vue-router';
 
-const CARD_MIN_HEIGHT = '116px';
+const CARD_MIN_HEIGHT = '111px';
 const SINGLE_SLIDE_WIDTH = '336px';
 
 const emit = defineEmits(['badge-clicked']);
