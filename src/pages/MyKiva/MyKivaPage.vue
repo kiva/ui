@@ -15,6 +15,7 @@
 			:sidesheet-loan="sidesheetLoan"
 			:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 			:goals-entrypoint-enable="goalsEntrypointEnable"
+			:show-new-badge-section="showNewBadgeSection"
 		/>
 	</www-page>
 </template>
@@ -39,6 +40,7 @@ import { inject } from 'vue';
 
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
+const NEW_BADGE_SECTION_KEY = 'new_badge_section_enable';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -77,6 +79,7 @@ export default {
 			sidesheetLoan: {},
 			isNextStepsExpEnabled: undefined,
 			goalsEntrypointEnable: false,
+			showNewBadgeSection: false,
 		};
 	},
 	apollo: {
@@ -173,6 +176,7 @@ export default {
 				this.transactions = myKivaQueryResult.my?.transactions?.values ?? [];
 
 				this.goalsEntrypointEnable = readBoolSetting(myKivaQueryResult, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
+				this.showNewBadgeSection = readBoolSetting(myKivaQueryResult, `general.${NEW_BADGE_SECTION_KEY}.value`) ?? false; // eslint-disable-line max-len
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');
 			}
