@@ -14,6 +14,7 @@
 					:is-my-kiva-enabled="isMyKivaEnabled"
 					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
+					:loading-goal-data="loadingGoalData"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
@@ -149,6 +150,11 @@ export default {
 		KivaCardItem,
 		DepositIncentiveUpsell,
 	},
+	data() {
+		return {
+			loadingGoalData: true,
+		};
+	},
 	watch: {
 		loans(loansInBasket) {
 			// eslint-disable-next-line no-underscore-dangle
@@ -189,9 +195,12 @@ export default {
 			userGoal,
 		};
 	},
-	mounted() {
+	async mounted() {
 		if (this.isNextStepsExpEnabled) {
-			this.loadGoalData(this.loans);
+			await this.loadGoalData(this.loans);
+			this.loadingGoalData = false;
+		} else {
+			this.loadingGoalData = false;
 		}
 	},
 };
