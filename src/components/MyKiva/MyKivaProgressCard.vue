@@ -58,6 +58,9 @@ import {
 } from '#src/composables/useBadgeData';
 import numeral from 'numeral';
 
+const COMPLETED_GOAL_THRESHOLD = 100;
+const ONE_K_THRESHOLD = 1000;
+
 const props = defineProps({
 	goal: {
 		type: Object,
@@ -77,7 +80,7 @@ const goalProgressPercentage = computed(() => {
 	if (!props.goal?.target || props.goalProgress <= 0) return 0;
 	return Math.min(
 		Math.round((props.goalProgress / props.goal.target) * 100),
-		100
+		COMPLETED_GOAL_THRESHOLD
 	);
 });
 
@@ -122,7 +125,7 @@ const progress = computed(() => {
 		return `${props.goalProgress} / ${goalLoans.value}`;
 	}
 	// eslint-disable-next-line max-len
-	return props.goal?.totalLoans > 1000 ? numeral(props.goal?.totalLoans ?? 0).format('0.0a') : props.goal?.totalLoans ?? 0;
+	return props.goal?.totalLoans > ONE_K_THRESHOLD ? numeral(props.goal?.totalLoans ?? 0).format('0.0a') : props.goal?.totalLoans ?? 0;
 });
 
 const tag = computed(() => {
