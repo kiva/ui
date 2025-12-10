@@ -138,7 +138,8 @@ const titleText = computed(() => {
 		return 'Thank you!';
 	}
 	if (womenLoansLastYear.value === 1) {
-		return 'Last year, you helped <span class="tw-text-eco-green-3">1 woman</span> shape her future!';
+		// eslint-disable-next-line max-len
+		return `Last year, you helped <span class="tw-text-eco-green-3"> ${womenLoansLastYear.value} woman</span> shape her future!`;
 	}
 	if (womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
 		// eslint-disable-next-line max-len
