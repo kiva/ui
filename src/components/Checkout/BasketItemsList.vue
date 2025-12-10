@@ -12,7 +12,7 @@
 					:contributes-in-achievement="isLoanContributingInAchievements(loan.id)"
 					:is-first-loan="isFirstLoan(index)"
 					:is-my-kiva-enabled="isMyKivaEnabled"
-					:user-goal-achieved="userGoalAchieved"
+					:user-goal-achieved="isUserGoalAchieved"
 					:user-goal="userGoal"
 					:loading-goal-data="loadingGoalData"
 					@validateprecheckout="$emit('validateprecheckout')"
@@ -56,7 +56,8 @@
 </template>
 
 <script>
-import { inject } from 'vue';
+import { inject, computed } from 'vue';
+import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import useGoalData from '#src/composables/useGoalData';
 import BasketItem from '#src/components/Checkout/BasketItem';
 import DonationItem from '#src/components/Checkout/DonationItem';
@@ -180,7 +181,7 @@ export default {
 			return this.isLoggedIn || (!this.isLoggedIn && !this.hasEverLoggedIn);
 		}
 	},
-	setup() {
+	setup(props) {
 		const apollo = inject('apollo');
 
 		const {
@@ -189,8 +190,19 @@ export default {
 			userGoal,
 		} = useGoalData({ apollo });
 
+		const isUserGoalAchieved = computed(() => {
+			const goalCategory = userGoal.value?.category || null;
+			const goalTarget = userGoal.value?.target || 0;
+
+			if (goalCategory === ID_SUPPORT_ALL && props.loans.length >= goalTarget) {
+				return true;
+			}
+
+			return userGoalAchieved.value;
+		});
+
 		return {
-			userGoalAchieved,
+			isUserGoalAchieved,
 			loadGoalData,
 			userGoal,
 		};
