@@ -125,5 +125,9 @@ query myKivaQuery {
 			key
 			value
 		}
+    new_badge_section_enable: uiConfigSetting(key: "new_badge_section_enable") {
+			key
+			value
+		}
 	}
 }
