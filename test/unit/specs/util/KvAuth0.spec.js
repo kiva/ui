@@ -176,6 +176,7 @@ describe('KvAuth0', () => {
 			expect(kvAuth0.audience).toBe('test-audience');
 			expect(kvAuth0.clientID).toBe('test-client');
 			expect(kvAuth0.domain).toBe('test.auth0.com');
+			expect(kvAuth0.accessTokenExpired).toBe(false);
 		});
 
 		it('initializes with default values when not provided', () => {
@@ -184,6 +185,7 @@ describe('KvAuth0', () => {
 			expect(kvAuth0.user).toBe(null);
 			expect(kvAuth0.accessToken).toBe('');
 			expect(kvAuth0.checkFakeAuth).toBe(false);
+			expect(kvAuth0.accessTokenExpired).toBe(false);
 		});
 	});
 
@@ -666,6 +668,193 @@ describe('KvAuth0', () => {
 			// Second call should work and increment the count
 			await kvAuth0.checkSession();
 			expect(checkSessionSpy).toHaveBeenCalledTimes(2);
+		});
+	});
+
+	describe('accessTokenExpired tracking', () => {
+		it('sets accessTokenExpired to false when authenticating with checkSession', async () => {
+			const mockResult = {
+				idTokenPayload: {
+					[KIVA_ID_KEY]: 12345,
+					[LAST_LOGIN_KEY]: Date.now(),
+				},
+				accessToken: 'test-access-token',
+				expiresIn: 3600,
+			};
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(null, mockResult);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+			expect(kvAuth0.accessToken).toBe('test-access-token');
+		});
+
+		it('maintains accessTokenExpired as false when token has not expired', async () => {
+			vi.useFakeTimers();
+			const mockResult = {
+				idTokenPayload: {
+					[KIVA_ID_KEY]: 12345,
+					[LAST_LOGIN_KEY]: Date.now(),
+				},
+				accessToken: 'test-access-token',
+				expiresIn: 3600, // 1 hour
+			};
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(null, mockResult);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+
+			// Fast forward time but not past expiration
+			vi.advanceTimersByTime(1800 * 1000); // 30 minutes
+
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+			expect(kvAuth0.accessToken).toBe('test-access-token');
+
+			vi.useRealTimers();
+		});
+
+		it('sets accessTokenExpired to true when token expires after expiresIn duration', async () => {
+			vi.useFakeTimers();
+			const mockResult = {
+				idTokenPayload: {
+					[KIVA_ID_KEY]: 12345,
+					[LAST_LOGIN_KEY]: Date.now(),
+				},
+				accessToken: 'test-access-token',
+				expiresIn: 3600, // 1 hour
+			};
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(null, mockResult);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+			expect(kvAuth0.accessToken).toBe('test-access-token');
+
+			// Fast forward time past expiration
+			vi.advanceTimersByTime(3600 * 1000); // 1 hour
+
+			expect(kvAuth0.accessTokenExpired).toBe(true);
+			expect(kvAuth0.accessToken).toBe('');
+			expect(kvAuth0.user).toBe(null);
+
+			vi.useRealTimers();
+		});
+
+		it('resets accessTokenExpired to false when getting a new token', async () => {
+			vi.useFakeTimers();
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+
+			// First authentication
+			const firstResult = {
+				idTokenPayload: {
+					[KIVA_ID_KEY]: 12345,
+					[LAST_LOGIN_KEY]: Date.now(),
+				},
+				accessToken: 'first-token',
+				expiresIn: 10, // 10 seconds
+			};
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(null, firstResult);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+
+			// Fast forward past expiration
+			vi.advanceTimersByTime(10 * 1000);
+			expect(kvAuth0.accessTokenExpired).toBe(true);
+			expect(kvAuth0.accessToken).toBe('');
+
+			// Second authentication with new token
+			const secondResult = {
+				idTokenPayload: {
+					[KIVA_ID_KEY]: 12345,
+					[LAST_LOGIN_KEY]: Date.now(),
+				},
+				accessToken: 'second-token',
+				expiresIn: 3600,
+			};
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(null, secondResult);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+
+			// Should reset to false with new token
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+			expect(kvAuth0.accessToken).toBe('second-token');
+
+			vi.useRealTimers();
+		});
+
+		it('does not set expiration timer when expiresIn is not provided', async () => {
+			vi.useFakeTimers();
+			const mockResult = {
+				idTokenPayload: {
+					[KIVA_ID_KEY]: 12345,
+					[LAST_LOGIN_KEY]: Date.now(),
+				},
+				accessToken: 'test-access-token',
+			};
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(null, mockResult);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+
+			// Fast forward time
+			vi.advanceTimersByTime(3600 * 1000);
+
+			// Should still be false since no timer was set
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+			expect(kvAuth0.accessToken).toBe('test-access-token');
+
+			vi.useRealTimers();
 		});
 	});
 

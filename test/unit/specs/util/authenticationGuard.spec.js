@@ -530,5 +530,115 @@ describe('authenticationGuard.js', () => {
 				expectUserIdMismatchNotLogged();
 			}
 		);
+
+		it(
+			'should not log error when access token is expired and the auth0 user ID is undefined',
+			async () => {
+				mockRoute.matched[0].meta.authenticationRequired = true;
+				mockKvAuth0.getKivaId = vi.fn().mockReturnValue(undefined);
+				mockKvAuth0.accessTokenExpired = true;
+				mockApolloClient.query.mockResolvedValue({
+					data: {
+						my: {
+							id: 67890,
+							lastLoginTimestamp: Date.now()
+						}
+					}
+				});
+
+				await authenticationGuard({
+					route: mockRoute,
+					apolloClient: mockApolloClient,
+					kvAuth0: mockKvAuth0
+				});
+
+				expectUserIdMismatchNotLogged();
+			}
+		);
+
+		it(
+			'should log error when access token is not expired and the auth0 user ID is undefined',
+			async () => {
+				mockRoute.matched[0].meta.authenticationRequired = true;
+				mockKvAuth0.getKivaId = vi.fn().mockReturnValue(undefined);
+				mockKvAuth0.accessTokenExpired = false;
+				mockApolloClient.query.mockResolvedValue({
+					data: {
+						my: {
+							id: 67890,
+							lastLoginTimestamp: Date.now()
+						}
+					}
+				});
+
+				await authenticationGuard({
+					route: mockRoute,
+					apolloClient: mockApolloClient,
+					kvAuth0: mockKvAuth0
+				});
+
+				expectUserIdMismatchLogged({
+					graphqlUserId: 67890,
+					auth0UserId: undefined
+				});
+			}
+		);
+
+		it(
+			'should log error when access token is not expired and user IDs mismatch',
+			async () => {
+				mockRoute.matched[0].meta.authenticationRequired = true;
+				mockKvAuth0.getKivaId = vi.fn().mockReturnValue(12345);
+				mockKvAuth0.accessTokenExpired = false;
+				mockApolloClient.query.mockResolvedValue({
+					data: {
+						my: {
+							id: 67890,
+							lastLoginTimestamp: Date.now()
+						}
+					}
+				});
+
+				await authenticationGuard({
+					route: mockRoute,
+					apolloClient: mockApolloClient,
+					kvAuth0: mockKvAuth0
+				});
+
+				expectUserIdMismatchLogged({
+					graphqlUserId: 67890,
+					auth0UserId: 12345
+				});
+			}
+		);
+
+		it(
+			'should log error when access token expired is undefined and user IDs mismatch',
+			async () => {
+				mockRoute.matched[0].meta.authenticationRequired = true;
+				mockKvAuth0.getKivaId = vi.fn().mockReturnValue(12345);
+				mockKvAuth0.accessTokenExpired = undefined;
+				mockApolloClient.query.mockResolvedValue({
+					data: {
+						my: {
+							id: 67890,
+							lastLoginTimestamp: Date.now()
+						}
+					}
+				});
+
+				await authenticationGuard({
+					route: mockRoute,
+					apolloClient: mockApolloClient,
+					kvAuth0: mockKvAuth0
+				});
+
+				// When accessTokenExpired is undefined, !undefined is true, so the error IS logged
+				expectUserIdMismatchLogged({
+					graphqlUserId: 67890,
+					auth0UserId: 12345
+				});
+			}
+		);
 	});
 });

@@ -73,6 +73,7 @@ export default class KvAuth0 {
 		this.enabled = true;
 		this.user = user;
 		this.accessToken = accessToken;
+		this.accessTokenExpired = false;
 		this.isServer = typeof window === 'undefined';
 		this.checkFakeAuth = !!checkFakeAuth;
 		this.cookieStore = cookieStore;
@@ -114,9 +115,11 @@ export default class KvAuth0 {
 		this.accessToken = accessToken || '';
 
 		if (expiresIn > 0) {
+			this.accessTokenExpired = false;
 			setTimeout(() => {
 				// set null auth data to remove expired token
 				this[setAuthData]();
+				this.accessTokenExpired = true;
 			}, Number(expiresIn) * 1000);
 		}
 	}
