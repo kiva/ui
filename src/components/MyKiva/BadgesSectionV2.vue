@@ -21,6 +21,7 @@
 				@click="badgeClicked(badge)"
 			>
 				<MyKivaProgressCard
+					v-if="badge?.goal"
 					:goal="badge.goal"
 					:is-annual-goal="badge.isAnnualGoal"
 					:goal-progress="badge.goalProgress"
@@ -131,6 +132,7 @@ const visibleBadges = computed(() => {
 		};
 
 		showedSlides.unshift(formattedUserGoal);
+		$kvTrackEvent('portfolio', 'show', 'annual-goal-progress-row');
 	}
 
 	return showedSlides;
@@ -149,7 +151,7 @@ const badgeClicked = badge => {
 		return;
 	}
 
-	$kvTrackEvent('portfolio', 'click', 'continue-towards-goal');
+	$kvTrackEvent('portfolio', 'click', 'click-annual-goal-progress-continue');
 	router.push(getCtaHref(userGoal.value?.target, userGoal.value?.category, router));
 };
 
