@@ -1,17 +1,9 @@
 query useGoalDataYearlyProgressQuery($year: Int) {
-  userAchievementProgress {
-    id
-    tieredLendingAchievements(year: $year) {
-      id
-      description
-      totalProgressToAchievement
-      tiers {
-        target
-        tierStatement
-        completedDate
-        learnMoreURL
-      }
-	  year
+	userAchievementProgress(year: $year) {
+        tieredLendingAchievements {
+            id
+            progressForYear
+            totalProgressToAchievement
+        }
     }
-  }
 }

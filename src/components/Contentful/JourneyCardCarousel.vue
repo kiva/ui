@@ -114,7 +114,7 @@ const {
 	getJourneysByLoan,
 } = useBadgeData(apollo);
 
-const { getWomenLoansLastYear } = useGoalData({ });
+const { getCategoryLoansLastYear } = useGoalData();
 
 const emit = defineEmits(['update-journey', 'open-goal-modal']);
 
@@ -450,7 +450,7 @@ const showGoalCard = idx => {
 };
 
 const womenLoansLastYear = computed(() => {
-	return getWomenLoansLastYear(props.heroTieredAchievements);
+	return getCategoryLoansLastYear(props.heroTieredAchievements);
 });
 
 const goalCardComponent = computed(() => {

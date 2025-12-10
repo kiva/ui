@@ -204,7 +204,7 @@ const currGoalProgress = ref(0);
 const {
 	checkCompletedGoal,
 	getGoalDisplayName,
-	getProgressByLoans,
+	getPostCheckoutProgressByLoans,
 	loadGoalData,
 	loading: goalDataLoading,
 	storeGoalPreferences,
@@ -328,7 +328,7 @@ const setGoalTarget = target => {
 onMounted(async () => {
 	if (props.isNextStepsExpEnabled) {
 		await loadGoalData();
-		currGoalProgress.value = await getProgressByLoans(props.loans);
+		currGoalProgress.value = await getPostCheckoutProgressByLoans(props.loans);
 		await checkCompletedGoal({ currentGoalProgress: currGoalProgress.value });
 		goalDataInitialized.value = true;
 		isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;

@@ -697,7 +697,7 @@ describe('useGoalData', () => {
 		});
 	});
 
-	describe('getProgressByLoan', () => {
+	describe('getPostCheckoutProgressByLoan', () => {
 		it('should return progress for specific loan', async () => {
 			const mockPrefs = {
 				goals: [{
@@ -736,7 +736,7 @@ describe('useGoalData', () => {
 				});
 
 			await composable.loadGoalData();
-			const progress = await composable.getProgressByLoan({ id: 789 });
+			const progress = await composable.getPostCheckoutProgressByLoan({ id: 789 });
 
 			expect(progress).toBe(7);
 			expect(mockApollo.query).toHaveBeenCalledWith(
@@ -784,7 +784,7 @@ describe('useGoalData', () => {
 				});
 
 			await composable.loadGoalData();
-			const progress = await composable.getProgressByLoan({ id: 999 });
+			const progress = await composable.getPostCheckoutProgressByLoan({ id: 999 });
 
 			expect(progress).toBe(0);
 		});
@@ -989,7 +989,7 @@ describe('useGoalData', () => {
 		});
 	});
 
-	describe('getWomenLoansLastYear', () => {
+	describe('getCategoryLoansLastYear', () => {
 		it('should return progress for women equality achievement', () => {
 			const tieredAchievements = [
 				{ id: ID_WOMENS_EQUALITY, progressForYear: 25 },
@@ -997,7 +997,7 @@ describe('useGoalData', () => {
 				{ id: ID_CLIMATE_ACTION, progressForYear: 8 },
 			];
 
-			const progress = composable.getWomenLoansLastYear(tieredAchievements);
+			const progress = composable.getCategoryLoansLastYear(tieredAchievements);
 
 			expect(progress).toBe(25);
 		});
@@ -1008,7 +1008,7 @@ describe('useGoalData', () => {
 				{ id: ID_CLIMATE_ACTION, progressForYear: 8 },
 			];
 
-			const progress = composable.getWomenLoansLastYear(tieredAchievements);
+			const progress = composable.getCategoryLoansLastYear(tieredAchievements);
 
 			expect(progress).toBe(0);
 		});
@@ -1018,19 +1018,19 @@ describe('useGoalData', () => {
 				{ id: ID_WOMENS_EQUALITY },
 			];
 
-			const progress = composable.getWomenLoansLastYear(tieredAchievements);
+			const progress = composable.getCategoryLoansLastYear(tieredAchievements);
 
 			expect(progress).toBe(0);
 		});
 
 		it('should handle empty array', () => {
-			const progress = composable.getWomenLoansLastYear([]);
+			const progress = composable.getCategoryLoansLastYear([]);
 
 			expect(progress).toBe(0);
 		});
 
 		it('should handle null input', () => {
-			const progress = composable.getWomenLoansLastYear(null);
+			const progress = composable.getCategoryLoansLastYear(null);
 
 			expect(progress).toBe(0);
 		});

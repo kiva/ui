@@ -109,7 +109,7 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
 const { getLoanFindingUrl } = useBadgeData();
-const { getGoalDisplayName } = useGoalData({});
+const { getGoalDisplayName } = useGoalData();
 
 const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);
 
