@@ -21,6 +21,7 @@
 				@click="badgeClicked(badge)"
 			>
 				<MyKivaProgressCard
+					v-if="badge?.goal"
 					:goal="badge.goal"
 					:is-annual-goal="badge.isAnnualGoal"
 					:goal-progress="badge.goalProgress"
