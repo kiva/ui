@@ -24,7 +24,7 @@
 					/>
 				</div>
 				<KvCartPill
-					v-if="showPill"
+					v-if="showPill && !loadingGoalData"
 					show-bg
 					:custom-message="pillMessage"
 					style="height: 32px;"
@@ -205,7 +205,11 @@ export default {
 		userGoal: {
 			type: Object,
 			default: () => ({})
-		}
+		},
+		loadingGoalData: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
