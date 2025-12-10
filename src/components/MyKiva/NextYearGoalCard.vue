@@ -125,7 +125,7 @@ const visibleGoalLoans = computed(() => {
 
 const title = computed(() => {
 	if (props.prevYearLoans === 1) {
-		return `You helped <span class="tw-text-action"> ${props.prevYearLoans} woman</span><br>shape their futures!`;
+		return `You helped <span class="tw-text-action"> ${props.prevYearLoans} woman</span><br>shape her future!`;
 	}
 	if (props.prevYearLoans > 1) {
 		return `You helped <span class="tw-text-action"> ${props.prevYearLoans} women</span><br>shape their futures!`;
