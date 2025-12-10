@@ -45,7 +45,7 @@
 		</div>
 		<img
 			:class="['tw-absolute tw-z-2', 'card-texture', `card-texture--${cardColor}`]"
-			alt="Card color stain"
+			alt="Card color decorative stain"
 			:src="bgCardImages(`${cardColor}.png`)"
 		>
 	</div>
