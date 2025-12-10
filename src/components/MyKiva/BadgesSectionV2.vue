@@ -131,6 +131,7 @@ const visibleBadges = computed(() => {
 		};
 
 		showedSlides.unshift(formattedUserGoal);
+		$kvTrackEvent('portfolio', 'show', 'annual-goal-progress-row');
 	}
 
 	return showedSlides;
@@ -149,7 +150,7 @@ const badgeClicked = badge => {
 		return;
 	}
 
-	$kvTrackEvent('portfolio', 'click', 'continue-towards-goal');
+	$kvTrackEvent('portfolio', 'click', 'click-annual-goal-progress-continue');
 	router.push(getCtaHref(userGoal.value?.target, userGoal.value?.category, router));
 };
 
