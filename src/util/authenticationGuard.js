@@ -91,7 +91,8 @@ export function authenticationGuard({ route, apolloClient, kvAuth0 }) {
 				// Check if the user ID from the GraphQL response matches the Auth0 session user ID
 				const graphqlUserId = data.my.id;
 				const auth0UserId = kvAuth0.getKivaId();
-				if (graphqlUserId && String(graphqlUserId) !== String(auth0UserId)) {
+				const auth0UserIdIsValid = auth0UserId || !kvAuth0.accessTokenExpired;
+				if (graphqlUserId && auth0UserIdIsValid && String(graphqlUserId) !== String(auth0UserId)) {
 					// eslint-disable-next-line max-len
 					const errorMessage = `User ID mismatch: GraphQL user ID (${graphqlUserId}) does not match Auth0 user ID (${auth0UserId})`;
 					logFormatter(errorMessage, 'error', { authentication_guard: 'user_id_mismatch' });
