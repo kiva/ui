@@ -1,6 +1,5 @@
 <template>
 	<KvCarousel
-		ref="carousel"
 		class="tw-w-full"
 		:controls-top-right="controlsTopRight"
 		:multiple-slides-visible="true"
@@ -100,7 +99,7 @@ const formattedBadgeData = badges => {
 				nextAchievementAt,
 				totalLoans: badge.achievementData.totalProgressToAchievement || 0,
 			},
-			goalProgress: badge.level,
+			goalProgress: badge.level || 0,
 			isAnnualGoal: !badge.achievementData?.tiers?.length,
 		};
 	});

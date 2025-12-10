@@ -2,18 +2,16 @@
 	<div class="progress-card">
 		<div class="tw-relative tw-z-docked">
 			<KvProgressCircle
-				class="tw-z-2"
+				class="tw-z-2 progress-circle"
 				:stroke-width="20"
 				:value="goalProgressPercentage"
-				:max="goalLoans"
+				:max="goalTarget"
 				:rotate="180"
-				style="height: 72px; width: 72px;"
 				:color="cardColor"
 			/>
 			<div
-				class="tw-absolute tw-flex tw-flex-col tw-items-center tw-justify-center tw-inset-0"
+				class="progress-circle-content"
 				:class="{'tw-mt-0.5' : goalCompleted && !isAnnualGoal}"
-				style="height: 72px; width: 72px;"
 			>
 				<h5>
 					{{ progress }}
@@ -84,16 +82,16 @@ const goalProgressPercentage = computed(() => {
 	);
 });
 
-const goalLoans = computed(() => {
+const goalTarget = computed(() => {
 	return props.goal?.target || 0;
 });
 
 const goalCompleted = computed(() => {
-	return props.goalProgress >= goalLoans.value;
+	return props.goalProgress >= goalTarget.value;
 });
 
 const goalRemainingLoans = computed(() => {
-	return Math.max(goalLoans.value - props.goalProgress, 0);
+	return Math.max(goalTarget.value - props.goalProgress, 0);
 });
 
 const title = computed(() => {
@@ -122,7 +120,7 @@ const description = computed(() => {
 
 const progress = computed(() => {
 	if (props.isAnnualGoal || !goalCompleted.value) {
-		return `${props.goalProgress} / ${goalLoans.value}`;
+		return `${props.goalProgress} / ${goalTarget.value}`;
 	}
 	// eslint-disable-next-line max-len
 	return props.goal?.totalLoans > ONE_K_THRESHOLD ? numeral(props.goal?.totalLoans ?? 0).format('0.0a') : props.goal?.totalLoans ?? 0;
@@ -165,5 +163,14 @@ const cardColor = computed(() => {
 	height: 112px;
 
 	@apply tw-flex tw-bg-white tw-p-1 tw-shadow tw-rounded-md tw-gap-2.5 tw-h-full;
+}
+
+.progress-circle, .progress-circle-content {
+	width: 72px;
+	height: 72px;
+}
+
+.progress-circle-content {
+	@apply tw-absolute tw-flex tw-flex-col tw-items-center tw-justify-center tw-inset-0;
 }
 </style>
