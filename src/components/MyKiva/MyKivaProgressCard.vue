@@ -2,7 +2,7 @@
 	<div class="progress-card">
 		<div class="tw-relative tw-z-docked">
 			<KvProgressCircle
-				class="tw-z-2 progress-circle"
+				class="progress-circle"
 				:stroke-width="20"
 				:value="goalProgressPercentage"
 				:max="goalTarget"
@@ -43,6 +43,11 @@
 				</KvButton>
 			</div>
 		</div>
+		<img
+			:class="['tw-absolute tw-z-2', 'card-texture', `card-texture--${cardColor}`]"
+			alt="Card color stain"
+			:src="bgCardImages(`${cardColor}.png`)"
+		>
 	</div>
 </template>
 
@@ -55,6 +60,10 @@ import {
 	ID_WOMENS_EQUALITY, ID_BASIC_NEEDS, ID_CLIMATE_ACTION, ID_REFUGEE_EQUALITY
 } from '#src/composables/useBadgeData';
 import numeral from 'numeral';
+import { metaGlobReader } from '#src/util/importHelpers';
+
+const bgCardImgRequire = import.meta.glob('/src/assets/images/my-kiva/goal-progress-texture/*.*', { eager: true });
+const bgCardImages = metaGlobReader(bgCardImgRequire, '/src/assets/images/my-kiva/goal-progress-texture/');
 
 const COMPLETED_GOAL_THRESHOLD = 100;
 const ONE_K_THRESHOLD = 1000;
@@ -172,5 +181,15 @@ const cardColor = computed(() => {
 
 .progress-circle-content {
 	@apply tw-absolute tw-flex tw-flex-col tw-items-center tw-justify-center tw-inset-0;
+}
+
+.card-texture {
+	bottom: -3.5rem;
+	left: -0.75rem;
+	width: 7.5rem;
+}
+
+.card-texture--brand {
+	bottom: -1.25rem;
 }
 </style>
