@@ -48,8 +48,8 @@
 			/>
 		</section>
 		<section v-if="goalsEntrypointEnable" class="tw-mt-4" id="mykiva-achievements">
-			<div :class="{'tw-flex tw-items-end tw-gap-1 tw-z-tooltip tw-pb-6': showNewBadgeSection}">
-				<h3 id="my-achievements">
+			<div :class="{'tw-flex tw-items-center tw-gap-1 tw-z-tooltip tw-pb-6': showNewBadgeSection}">
+				<h3 id="my-achievements" :class="{'tw-min-h-4': showNewBadgeSection}">
 					Impact progress
 				</h3>
 				<div v-if="showNewBadgeSection">
