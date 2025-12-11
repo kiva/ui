@@ -115,7 +115,7 @@ describe('useGoalData', () => {
 
 			expect(composable.loading.value).toBe(false);
 			expect(composable.userGoal.value).toEqual(mockPrefs.goals[0]);
-			expect(mockApollo.query).toHaveBeenCalledTimes(3);
+			expect(mockApollo.query).toHaveBeenCalledTimes(2);
 		});
 
 		it('should handle empty loans array', async () => {
@@ -139,7 +139,7 @@ describe('useGoalData', () => {
 			await composable.loadGoalData();
 
 			expect(composable.loading.value).toBe(false);
-			expect(mockApollo.query).toHaveBeenCalledTimes(3);
+			expect(mockApollo.query).toHaveBeenCalledTimes(2);
 		});
 
 		it('should handle null user preferences', async () => {
@@ -538,7 +538,7 @@ describe('useGoalData', () => {
 				});
 
 			await composable.loadGoalData();
-			await composable.checkCompletedGoal();
+			await composable.checkCompletedGoal({ currentGoalProgress: 20 });
 
 			expect(mockKvTrackEvent).toHaveBeenCalledWith(
 				'post-checkout',
