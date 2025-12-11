@@ -84,7 +84,7 @@ export default function useGoalData({ apollo } = {}) {
 		const progress = currentYearProgress.value;
 		if (goal?.category === ID_SUPPORT_ALL) return totalLoanCount.value || 0;
 		const progressForYear = progress.find(n => n.id === goal?.category)?.progressForYear || 0;
-		return progressForYear;
+		return Math.max(progressForYear - (goal?.loanTotalAtStart || 0), 0);
 	});
 
 	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
@@ -94,7 +94,8 @@ export default function useGoalData({ apollo } = {}) {
 	function setGoalState(parsedPrefs) {
 		if (!parsedPrefs) return;
 		const goals = parsedPrefs.goals || [];
-		userGoal.value = { ...goals[0] };
+		const activeGoals = goals.filter(g => g.status !== GOAL_STATUS.EXPIRED);
+		userGoal.value = { ...activeGoals[0] };
 	}
 
 	/**
@@ -269,11 +270,12 @@ export default function useGoalData({ apollo } = {}) {
 	async function checkCompletedGoal({ currentGoalProgress = 0, category = 'post-checkout' } = {}) {
 		if (
 			(currentGoalProgress && (currentGoalProgress >= userGoal.value?.target))
-			|| (userGoal.value && userGoalAchieved.value && userGoal.value.status !== 'completed')
+			|| (userGoal.value && userGoalAchieved.value
+				&& ![GOAL_STATUS.COMPLETED, GOAL_STATUS.EXPIRED].includes(userGoal.value.status))
 		) {
 			userGoal.value = {
 				...userGoal.value,
-				status: 'completed'
+				status: GOAL_STATUS.COMPLETED
 			};
 			await storeGoalPreferences({ ...userGoal.value });
 			$kvTrackEvent(
@@ -311,8 +313,9 @@ export default function useGoalData({ apollo } = {}) {
 		const parsedPrefs = await loadPreferences();
 		const goals = parsedPrefs.goals || [];
 		const currentYear = today.getFullYear();
-		const renewedYear = goals.goalsRenewedDate ? new Date(goals.goalsRenewedDate).getFullYear() : null;
-		if (renewedYear >= currentYear) {
+		const renewedYear = parsedPrefs.goalsRenewedDate ? new Date(parsedPrefs.goalsRenewedDate).getFullYear() : null;
+		const areGoalsRenewed = goals.some(goal => goal.status === GOAL_STATUS.EXPIRED);
+		if (renewedYear > currentYear || areGoalsRenewed) {
 			return {
 				expiredGoals: goals,
 				showRenewedAnnualGoalToast: false,
