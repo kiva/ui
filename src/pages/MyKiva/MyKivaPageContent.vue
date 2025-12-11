@@ -48,9 +48,40 @@
 			/>
 		</section>
 		<section v-if="goalsEntrypointEnable" class="tw-mt-4" id="mykiva-achievements">
-			<h3 id="my-achievements">
-				Impact progress
-			</h3>
+			<div :class="{'tw-flex tw-items-center tw-gap-1 tw-z-tooltip tw-pb-6': showNewBadgeSection}">
+				<h3 id="my-achievements" :class="{'tw-min-h-4': showNewBadgeSection}">
+					Impact progress
+				</h3>
+				<div v-if="showNewBadgeSection">
+					<div class="tw-relative">
+						<KvMaterialIcon
+							@click="toggleTooltip"
+							class="tw-text-secondary tw-h-2 tw-w-2 tw-shrink-0"
+							:icon="mdiInformationOutline"
+						/>
+						<span
+							id="impact-progress-tooltip"
+							class="tw-sr-only tw-absolute tw--mt-2 tw-inset-x-1 md:tw-inset-x-4 md:tw-mt-1"
+						>Tooltip controller</span>
+					</div>
+					<kv-tooltip
+						controller="impact-progress-tooltip"
+						:show-tooltip="tooltipVisible"
+						:placement="isMobile ? 'top' : 'right'"
+						@tool-tip-visible="handleToolTipVisible"
+					>
+						<template #title>
+							<h5>Annual goals and achievements</h5>
+						</template>
+						<p class="tw-text-small">
+							<!-- eslint-disable-next-line max-len -->
+							Loans you make automatically build toward <span class="tw-font-medium">Lifetime achievements</span> where you can earn badges along the way.<br><br>
+							<!-- eslint-disable-next-line max-len -->
+							Set an <span class="tw-font-medium">Annual goal</span> to stay accountable and watch your impact grow.
+						</p>
+					</kv-tooltip>
+				</div>
+			</div>
 			<BadgesSectionV2
 				v-if="showNewBadgeSection"
 				class="tw--mt-4"
@@ -219,9 +250,11 @@ import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 import LendingStats from '#src/components/MyKiva/LendingStats';
 import BailoutChips from '#src/components/MyKiva/BailoutChips';
-
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
+import { KvMaterialIcon, KvTooltip } from '@kiva/kv-components';
+import { mdiInformationOutline } from '@mdi/js';
+import useBreakpoints from '#src/composables/useBreakpoints';
 
 import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
@@ -264,6 +297,8 @@ export default {
 		LendingStats,
 		BailoutChips,
 		BadgesSectionV2,
+		KvMaterialIcon,
+		KvTooltip,
 	},
 	props: {
 		userInfo: {
@@ -330,6 +365,8 @@ export default {
 	setup() {
 		const apollo = inject('apollo');
 		const { getMostRecentBlogPost } = useContentful(apollo);
+		const { isMobile } = useBreakpoints();
+
 		const {
 			badgeData,
 			fetchAchievementData,
@@ -350,6 +387,7 @@ export default {
 			fetchContentfulData,
 			getLoanFindingUrl,
 			getMostRecentBlogPost,
+			isMobile,
 		};
 	},
 	data() {
@@ -380,6 +418,8 @@ export default {
 			updatesLoading: true,
 			updatesOffset: 3,
 			clientRendered: false,
+			tooltipVisible: false,
+			mdiInformationOutline,
 		};
 	},
 	computed: {
@@ -680,6 +720,17 @@ export default {
 			this.showBPSideSheet = true;
 			this.showNextSteps = showNextSteps;
 			this.animatedSideSheet = isAnimated;
+		},
+		handleToolTipVisible(isVisible) {
+			if (this.tooltipVisible && !isVisible) {
+				this.tooltipVisible = isVisible;
+			}
+			if (isVisible) {
+				this.$kvTrackEvent('portfolio', 'click', 'impact-progress-info');
+			}
+		},
+		toggleTooltip() {
+			this.tooltipVisible = !this.tooltipVisible;
 		},
 	},
 	created() {
