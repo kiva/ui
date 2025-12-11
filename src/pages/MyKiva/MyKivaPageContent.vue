@@ -254,7 +254,7 @@ import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import { KvMaterialIcon, KvTooltip } from '@kiva/kv-components';
 import { mdiInformationOutline } from '@mdi/js';
-import useIsMobile from '#src/composables/useIsMobile';
+import useBreakpoints from '#src/composables/useBreakpoints';
 
 import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
@@ -365,7 +365,7 @@ export default {
 	setup() {
 		const apollo = inject('apollo');
 		const { getMostRecentBlogPost } = useContentful(apollo);
-		const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
+		const { isMobile } = useBreakpoints(MOBILE_BREAKPOINT);
 
 		const {
 			badgeData,
