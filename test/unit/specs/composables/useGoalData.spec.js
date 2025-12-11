@@ -106,7 +106,7 @@ describe('useGoalData', () => {
 				.mockResolvedValueOnce({
 					data: {
 						userAchievementProgress: {
-							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 15 }],
+							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, progressForYear: 15 }],
 						},
 					},
 				});
@@ -233,7 +233,7 @@ describe('useGoalData', () => {
 				.mockResolvedValueOnce({
 					data: {
 						userAchievementProgress: {
-							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 10 }],
+							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, progressForYear: 10 }],
 						},
 					},
 				});
@@ -268,7 +268,8 @@ describe('useGoalData', () => {
 					data: {
 						userAchievementProgress: {
 							tieredLendingAchievements: [
-								{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 8 },
+								{ id: ID_WOMENS_EQUALITY, progressForYear: 8 },
+								{ id: ID_US_ECONOMIC_EQUALITY, progressForYear: 5 },
 							],
 						},
 					},
@@ -304,7 +305,7 @@ describe('useGoalData', () => {
 					data: {
 						userAchievementProgress: {
 							tieredLendingAchievements: [
-								{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 0 },
+								{ id: ID_WOMENS_EQUALITY, progressForYear: 0 },
 							],
 						},
 					},
@@ -341,14 +342,14 @@ describe('useGoalData', () => {
 				.mockResolvedValueOnce({
 					data: {
 						userAchievementProgress: {
-							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 20 }],
+							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, progressForYear: 20 }],
 						},
 					},
 				});
 
 			await composable.loadGoalData();
 
-			expect(composable.userGoalAchieved.value).toBe(true); // progress: 15, target: 10
+			expect(composable.userGoalAchieved.value).toBe(true); // progress: 20, target: 10
 		});
 
 		it('should return false when goal is not achieved', async () => {
@@ -375,7 +376,7 @@ describe('useGoalData', () => {
 				.mockResolvedValueOnce({
 					data: {
 						userAchievementProgress: {
-							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 5 }],
+							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, progressForYear: 5 }],
 						},
 					},
 				});
@@ -577,7 +578,7 @@ describe('useGoalData', () => {
 				.mockResolvedValueOnce({
 					data: {
 						userAchievementProgress: {
-							tieredLendingAchievements: [{ id: ID_BASIC_NEEDS, totalProgressToAchievement: 10 }],
+							tieredLendingAchievements: [{ id: ID_BASIC_NEEDS, progressForYear: 10 }],
 						},
 					},
 				})
@@ -599,7 +600,7 @@ describe('useGoalData', () => {
 				});
 
 			await composable.loadGoalData();
-			await composable.checkCompletedGoal('custom-category');
+			await composable.checkCompletedGoal({ category: 'custom-category' });
 
 			expect(mockKvTrackEvent).toHaveBeenCalledWith(
 				'custom-category',
@@ -683,7 +684,7 @@ describe('useGoalData', () => {
 				.mockResolvedValueOnce({
 					data: {
 						userAchievementProgress: {
-							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 8 }],
+							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, progressForYear: 8 }],
 						},
 					},
 				});
@@ -722,26 +723,29 @@ describe('useGoalData', () => {
 				})
 				.mockResolvedValueOnce({
 					data: {
-						userAchievementProgress: {
-							tieredLendingAchievements: [],
+						postCheckoutAchievements: {
+							yearlyProgress: [],
 						},
 					},
 				})
 				.mockResolvedValueOnce({
 					data: {
-						userAchievementProgress: {
-							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 7 }],
+						postCheckoutAchievements: {
+							yearlyProgress: [
+								{ achievementId: ID_WOMENS_EQUALITY, totalProgress: 7 },
+							],
 						},
 					},
 				});
 
 			await composable.loadGoalData();
 			const progress = await composable.getPostCheckoutProgressByLoan({ id: 789 });
+			const currYear = new Date().getFullYear();
 
 			expect(progress).toBe(7);
 			expect(mockApollo.query).toHaveBeenCalledWith(
 				expect.objectContaining({
-					variables: { loanIds: [789] },
+					variables: { loanIds: [789], year: currYear },
 				})
 			);
 		});
@@ -770,15 +774,17 @@ describe('useGoalData', () => {
 				})
 				.mockResolvedValueOnce({
 					data: {
-						userAchievementProgress: {
-							tieredLendingAchievements: [],
+						postCheckoutAchievements: {
+							yearlyProgress: [],
 						},
 					},
 				})
 				.mockResolvedValueOnce({
 					data: {
-						userAchievementProgress: {
-							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 5 }],
+						postCheckoutAchievements: {
+							yearlyProgress: [
+								{ achievementId: ID_WOMENS_EQUALITY, totalProgress: 5 },
+							],
 						},
 					},
 				});

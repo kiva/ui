@@ -187,8 +187,8 @@ export default function useGoalData({ apollo } = {}) {
 	/**
 	 * Get the number of loans from last year by the given category ID
 	 */
-	function getCategoryLoansLastYear(tieredAchievements = [], categoryId = ID_WOMENS_EQUALITY) {
-		const categoryAchievement = tieredAchievements.find(entry => entry.id === categoryId);
+	function getCategoryLoansLastYear(tieredAchievements, categoryId = ID_WOMENS_EQUALITY) {
+		const categoryAchievement = tieredAchievements?.find(entry => entry.id === categoryId);
 		return categoryAchievement?.progressForYear || 0;
 	}
 
@@ -266,7 +266,7 @@ export default function useGoalData({ apollo } = {}) {
 		setGoalState({ goals }); // Refresh local state after update
 	}
 
-	async function checkCompletedGoal({ currentGoalProgress = 0, category = 'post-checkout' }) {
+	async function checkCompletedGoal({ currentGoalProgress = 0, category = 'post-checkout' } = {}) {
 		if (
 			(currentGoalProgress && (currentGoalProgress >= userGoal.value?.target))
 			|| (userGoal.value && userGoalAchieved.value && userGoal.value.status !== 'completed')
