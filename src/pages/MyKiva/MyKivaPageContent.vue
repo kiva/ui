@@ -227,7 +227,7 @@ import { inject, nextTick } from 'vue';
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 
-import { STATE_JOURNEY, STATE_EARNED, MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
+import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import useContentful from '#src/composables/useContentful';
 import useGivingFund from '#src/composables/useGivingFund';
 
@@ -365,7 +365,7 @@ export default {
 	setup() {
 		const apollo = inject('apollo');
 		const { getMostRecentBlogPost } = useContentful(apollo);
-		const { isMobile } = useBreakpoints(MOBILE_BREAKPOINT);
+		const { isMobile } = useBreakpoints();
 
 		const {
 			badgeData,
