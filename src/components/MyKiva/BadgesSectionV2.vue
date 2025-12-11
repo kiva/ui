@@ -1,6 +1,6 @@
 <template>
 	<KvCarousel
-		class="tw-w-full"
+		class="tw-w-full !tw-pt-0"
 		:controls-top-right="controlsTopRight"
 		:multiple-slides-visible="true"
 		:slide-max-width="SINGLE_SLIDE_WIDTH"
@@ -194,3 +194,9 @@ onMounted(async () => {
 	await loadGoalData();
 });
 </script>
+
+<style lang="postcss" scoped>
+:deep(.kv-carousel__controls) {
+	@apply tw--mt-6 tw-max-w-13;
+}
+</style>

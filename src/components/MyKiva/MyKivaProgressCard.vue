@@ -184,7 +184,7 @@ const cardColor = computed(() => {
 }
 
 .card-texture {
-	bottom: -3.5rem;
+	bottom: -3rem;
 	left: -0.75rem;
 	width: 7.5rem;
 }
