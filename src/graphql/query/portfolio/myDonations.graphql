@@ -7,6 +7,7 @@ query MyDonations($offset: Int = 0, $limit: Int = 10) {
                 fullDonorName
                 currentYear
                 currentYearDonations
+                hasDafDonations
                 latestTaxYear
                 latestTaxYearDonations
                 annualDonations {
