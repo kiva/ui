@@ -244,7 +244,7 @@ export default function useGoalData({ apollo } = {}) {
 			return goalCurrentLoanCount.value;
 		}
 		const progress = await getPostCheckoutProgressByLoans([loan], year);
-		return progress;
+		return progress?.totalProgress || 0;
 	}
 
 	async function storeGoalPreferences(updates) {
@@ -266,7 +266,7 @@ export default function useGoalData({ apollo } = {}) {
 		setGoalState({ goals }); // Refresh local state after update
 	}
 
-	async function checkCompletedGoal({ currentGoalProgress = null, category = 'post-checkout' }) {
+	async function checkCompletedGoal({ currentGoalProgress = 0, category = 'post-checkout' }) {
 		if (
 			(currentGoalProgress && (currentGoalProgress >= userGoal.value?.target))
 			|| (userGoal.value && userGoalAchieved.value && userGoal.value.status !== 'completed')
