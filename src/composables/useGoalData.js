@@ -6,6 +6,7 @@ import {
 
 import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import useGoalDataProgressQuery from '#src/graphql/query/useGoalDataProgress.graphql';
+import useGoalDataYearlyProgressQuery from '#src/graphql/query/useGoalDataYearlyProgress.graphql';
 import logFormatter from '#src/util/logFormatter';
 import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 
@@ -65,20 +66,135 @@ function getGoalDisplayName(target, category) {
  * @param {Object} options.apollo - Apollo client instance (optional, will use inject if not provided)
  * @returns Goal data and utilities
  */
-export default function useGoalData({ apollo }) {
+export default function useGoalData({ apollo } = {}) {
+	const apolloClient = apollo || inject('apollo');
 	const $kvTrackEvent = inject('$kvTrackEvent');
-
-	const allTimeProgress = ref([]);
+	const currentYearProgress = ref([]);
+	const goalCurrentLoanCount = ref(0); // Tracks loans toward "Support All" goal
 	const loading = ref(true);
 	const totalLoanCount = ref(null);
 	const userGoal = ref(null);
-	const userPreferences = ref(null);
 	const userGoalAchievedNow = ref(false);
-	const goalCurrentLoanCount = ref(0); // Tracks loans toward "Support All" goal
+	const userPreferences = ref(null);
+
+	// --- Computed Properties ---
+
+	const goalProgress = computed(() => {
+		const goal = userGoal.value;
+		const progress = currentYearProgress.value;
+		if (goal?.category === ID_SUPPORT_ALL) return totalLoanCount.value || 0;
+		const progressForYear = progress.find(n => n.id === goal?.category)?.progressForYear || 0;
+		return progressForYear;
+	});
+
+	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
+
+	// --- Functions ---
+
+	function setGoalState(parsedPrefs) {
+		if (!parsedPrefs) return;
+		const goals = parsedPrefs.goals || [];
+		userGoal.value = { ...goals[0] };
+	}
+
+	/**
+	 * Get Goal Categories for Goal Selection
+	 * @param {*} categoriesLoanCount Categories Loan Count
+	 * @param {*} totalLoans Total Loans
+	 * @returns array of goal categories
+	 */
+	function getCategories(categoriesLoanCount, totalLoans) {
+		return [
+			{
+				id: '1',
+				name: 'Women',
+				description: 'Open doors for women around the world',
+				eventProp: 'women',
+				customImage: womenImg,
+				loanCount: categoriesLoanCount?.[ID_WOMENS_EQUALITY],
+				title: 'women',
+				badgeId: ID_WOMENS_EQUALITY,
+			},
+			{
+				id: '2',
+				name: 'Refugees',
+				description: 'Transform the future for refugees',
+				eventProp: 'refugees',
+				customImage: refugeesImg,
+				loanCount: categoriesLoanCount?.[ID_REFUGEE_EQUALITY],
+				title: 'refugees',
+				badgeId: ID_REFUGEE_EQUALITY,
+			},
+			{
+				id: '3',
+				name: 'Climate Action',
+				description: 'Support the front lines of the climate crisis',
+				eventProp: 'climate',
+				customImage: climateActionImg,
+				loanCount: categoriesLoanCount?.[ID_CLIMATE_ACTION],
+				title: 'climate action',
+				badgeId: ID_CLIMATE_ACTION,
+			},
+			{
+				id: '4',
+				name: 'U.S. Entrepreneurs',
+				description: 'Support small businesses in the U.S.',
+				eventProp: 'us-entrepreneur',
+				customImage: usEntrepreneursImg,
+				loanCount: categoriesLoanCount?.[ID_US_ECONOMIC_EQUALITY],
+				title: 'US entrepreneurs',
+				badgeId: ID_US_ECONOMIC_EQUALITY,
+			},
+			{
+				id: '5',
+				name: 'Basic Needs',
+				description: 'Clean water, healthcare, and sanitation',
+				eventProp: 'basic-needs',
+				customImage: basicNeedsImg,
+				loanCount: categoriesLoanCount?.[ID_BASIC_NEEDS],
+				title: 'basic needs',
+				badgeId: ID_BASIC_NEEDS,
+			},
+			{
+				id: '6',
+				name: 'Choose as I go',
+				description: 'Support a variety of borrowers',
+				eventProp: 'help-everyone',
+				customImage: supportAllImg,
+				loanCount: totalLoans,
+				title: null,
+				badgeId: ID_SUPPORT_ALL,
+			}
+		];
+	}
+
+	/**
+	 * Generate CTA Href for Goal Completion
+	 * @param {*} selectedGoalNumber goal number selected by the user
+	 * @param {*} categoryId category id selected by the user
+	 * @param {*} router router instance
+	 * @returns href string
+	 */
+	function getCtaHref(selectedGoalNumber, categoryId, router) {
+		const { getLoanFindingUrl } = useBadgeData();
+		const categoryHeader = getGoalDisplayName(selectedGoalNumber, categoryId);
+		const string = `Your goal: Support ${selectedGoalNumber} ${categoryHeader}`;
+		const encodedHeader = encodeURIComponent(string);
+		const loanFindingUrl = getLoanFindingUrl(categoryId, router.currentRoute.value);
+		return `${loanFindingUrl}?header=${encodedHeader}`;
+	}
+
+	/**
+	 * Get the number of loans from last year by the given category ID
+	 */
+	function getCategoryLoansLastYear(tieredAchievements, categoryId = ID_WOMENS_EQUALITY) {
+		const categoryAchievement = tieredAchievements?.find(entry => entry.id === categoryId);
+		return categoryAchievement?.progressForYear || 0;
+	}
 
 	async function loadPreferences(fetchPolicy = 'cache-first') {
 		try {
-			const response = await apollo.query({ query: useGoalDataQuery, fetchPolicy });
+			const response = await apolloClient.query({ query: useGoalDataQuery, fetchPolicy });
 			const prefsData = response.data?.my?.userPreferences || null;
 			totalLoanCount.value = response.data?.my?.loans?.totalCount || 0;
 			userPreferences.value = prefsData;
@@ -89,29 +205,51 @@ export default function useGoalData({ apollo }) {
 		}
 	}
 
-	async function loadProgress(loans) {
+	async function loadProgress(year) {
 		try {
-			const loanIds = loans.map(loan => loan.id);
-			const response = await apollo.query({
-				query: useGoalDataProgressQuery,
-				variables: { loanIds },
+			const response = await apolloClient.query({
+				query: useGoalDataYearlyProgressQuery,
+				variables: { year },
+				fetchPolicy: 'network-only'
 			});
-			return response?.data?.postCheckoutAchievements?.allTimeProgress || [];
+			const progress = response.data.userAchievementProgress.tieredLendingAchievements;
+			currentYearProgress.value = progress;
 		} catch (error) {
 			logFormatter(error, 'Failed to load progress');
 			return null;
 		}
 	}
 
-	function setGoalState(parsedPrefs) {
-		if (!parsedPrefs) return;
-		const goals = parsedPrefs.goals || [];
-		userGoal.value = { ...goals[0] };
+	async function getPostCheckoutProgressByLoans(loans, year = new Date().getFullYear()) {
+		try {
+			const loanIds = loans.map(loan => loan.id);
+			const response = await apolloClient.query({
+				query: useGoalDataProgressQuery,
+				variables: { loanIds, year },
+			});
+			const progress = response.data?.postCheckoutAchievements?.yearlyProgress || [];
+			const userGoalProgress = progress.find(
+				entry => entry.achievementId === userGoal.value?.category
+			)?.totalProgress || 0;
+			return userGoalProgress;
+		} catch (error) {
+			logFormatter(error, 'Failed to get post-checkout progress');
+			return null;
+		}
+	}
+
+	async function getPostCheckoutProgressByLoan(loan, year = new Date().getFullYear()) {
+		if (userGoal.value?.category === ID_SUPPORT_ALL) {
+			goalCurrentLoanCount.value += 1;
+			return goalCurrentLoanCount.value;
+		}
+		const progress = await getPostCheckoutProgressByLoans([loan], year);
+		return progress;
 	}
 
 	async function storeGoalPreferences(updates) {
 		if (!userPreferences.value?.id) {
-			await createUserPreferences(apollo, { goals: [] });
+			await createUserPreferences(apolloClient, { goals: [] });
 			await loadPreferences('network-only'); // Reload after create
 		}
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
@@ -119,34 +257,25 @@ export default function useGoalData({ apollo }) {
 		const goalIndex = goals.findIndex(g => g.goalName === updates.goalName);
 		if (goalIndex !== -1) goals[goalIndex] = { ...goals[goalIndex], ...updates };
 		else goals.push(updates);
-		await updateUserPreferences(apollo, userPreferences.value, parsedPrefs, { goals });
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			{ goals }
+		);
 		setGoalState({ goals }); // Refresh local state after update
 	}
 
-	const goalProgress = computed(() => {
-		if (userGoal.value?.category === ID_SUPPORT_ALL) {
-			const currentTotal = totalLoanCount.value || 0;
-			const startTotal = userGoal.value?.loanTotalAtStart || 0;
-			return Math.max(currentTotal - startTotal, 0);
-		}
-		const totalProgress = allTimeProgress.value.find(
-			entry => entry.achievementId === userGoal.value?.category
-		)?.totalProgress || 0;
-		const adjustedProgress = totalProgress - (userGoal.value?.loanTotalAtStart || 0);
-		return Math.max(adjustedProgress, 0);
-	});
-
-	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
-
-	const checkCompletedGoal = async (category = 'post-checkout') => {
-		if (userGoal.value && userGoalAchieved.value && userGoal.value.status !== 'completed') {
-			await storeGoalPreferences({
-				goalName: userGoal.value.goalName,
-				dateStarted: userGoal.value.dateStarted,
-				target: userGoal.value.target,
-				count: userGoal.value.count,
-				status: 'completed',
-			});
+	async function checkCompletedGoal({ currentGoalProgress = 0, category = 'post-checkout' } = {}) {
+		if (
+			(currentGoalProgress && (currentGoalProgress >= userGoal.value?.target))
+			|| (userGoal.value && userGoalAchieved.value && userGoal.value.status !== 'completed')
+		) {
+			userGoal.value = {
+				...userGoal.value,
+				status: 'completed'
+			};
+			await storeGoalPreferences({ ...userGoal.value });
 			$kvTrackEvent(
 				category,
 				'show',
@@ -156,38 +285,20 @@ export default function useGoalData({ apollo }) {
 			);
 			userGoalAchievedNow.value = true;
 		}
-	};
+	}
 
-	const getProgressByLoan = async loan => {
-		const result = await loadProgress([loan]);
-		if (userGoal.value?.category === ID_SUPPORT_ALL) {
-			goalCurrentLoanCount.value += 1;
-			return goalCurrentLoanCount.value;
-		}
-
-		const totalProgress = result.find(
-			entry => entry.achievementId === userGoal.value?.category
-		)?.totalProgress || 0;
-		return totalProgress;
-	};
-
-	const setCurrentLoanCount = loansCount => {
-		const currentTotal = totalLoanCount.value || 0;
-		const startTotal = userGoal.value?.loanTotalAtStart || 0;
-
-		goalCurrentLoanCount.value = Math.max(currentTotal - startTotal, 0) + loansCount;
-	};
-
-	async function loadGoalData(loans = []) {
+	async function loadGoalData({
+		loans = [],
+		year = new Date().getFullYear()
+	} = {}) {
 		loading.value = true;
 		const parsedPrefs = await loadPreferences();
-		allTimeProgress.value = await loadProgress(loans);
+		await loadProgress(year);
 		setGoalState(parsedPrefs);
 		if (userGoal.value?.category === ID_SUPPORT_ALL && !goalCurrentLoanCount.value) {
 			// Reducing counter by 1 because loans already has the added loan
-			setCurrentLoanCount(loans.length - 1);
+			goalCurrentLoanCount.value = loans.length - 1;
 		}
-
 		loading.value = false;
 	}
 
@@ -212,7 +323,10 @@ export default function useGoalData({ apollo }) {
 		const expiredGoals = goals.map(goal => {
 			const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
 			if (goalYear < currentYear) {
-				return { ...goal, status: GOAL_STATUS.EXPIRED };
+				return {
+					...goal,
+					status: GOAL_STATUS.EXPIRED
+				};
 			}
 			return null;
 		}).filter(goal => goal !== null);
@@ -220,8 +334,12 @@ export default function useGoalData({ apollo }) {
 		if (expiredGoals.some(goal => goal.status === GOAL_STATUS.EXPIRED)) {
 			parsedPrefs.goals = expiredGoals;
 			parsedPrefs.goalsRenewedDate = today.toISOString();
-
-			await updateUserPreferences(apollo, userPreferences.value, parsedPrefs, { goals: expiredGoals });
+			await updateUserPreferences(
+				apolloClient,
+				userPreferences.value,
+				parsedPrefs,
+				{ goals: expiredGoals }
+			);
 			setGoalState({ goals: expiredGoals });
 		}
 
@@ -234,119 +352,23 @@ export default function useGoalData({ apollo }) {
 		};
 	}
 
-	/**
-	 * Get Goal Categories for Goal Selection
-	 * @param {*} categoriesLoanCount Categories Loan Count
-	 * @param {*} totalLoans Total Loans
-	 * @returns array of goal categories
-	 */
-	const getCategories = (categoriesLoanCount, totalLoans) => [
-		{
-			id: '1',
-			name: 'Women',
-			description: 'Open doors for women around the world',
-			eventProp: 'women',
-			customImage: womenImg,
-			loanCount: categoriesLoanCount?.[ID_WOMENS_EQUALITY],
-			title: 'women',
-			badgeId: ID_WOMENS_EQUALITY,
-		},
-		{
-			id: '2',
-			name: 'Refugees',
-			description: 'Transform the future for refugees',
-			eventProp: 'refugees',
-			customImage: refugeesImg,
-			loanCount: categoriesLoanCount?.[ID_REFUGEE_EQUALITY],
-			title: 'refugees',
-			badgeId: ID_REFUGEE_EQUALITY,
-		},
-		{
-			id: '3',
-			name: 'Climate Action',
-			description: 'Support the front lines of the climate crisis',
-			eventProp: 'climate',
-			customImage: climateActionImg,
-			loanCount: categoriesLoanCount?.[ID_CLIMATE_ACTION],
-			title: 'climate action',
-			badgeId: ID_CLIMATE_ACTION,
-		},
-		{
-			id: '4',
-			name: 'U.S. Entrepreneurs',
-			description: 'Support small businesses in the U.S.',
-			eventProp: 'us-entrepreneur',
-			customImage: usEntrepreneursImg,
-			loanCount: categoriesLoanCount?.[ID_US_ECONOMIC_EQUALITY],
-			title: 'US entrepreneurs',
-			badgeId: ID_US_ECONOMIC_EQUALITY,
-		},
-		{
-			id: '5',
-			name: 'Basic Needs',
-			description: 'Clean water, healthcare, and sanitation',
-			eventProp: 'basic-needs',
-			customImage: basicNeedsImg,
-			loanCount: categoriesLoanCount?.[ID_BASIC_NEEDS],
-			title: 'basic needs',
-			badgeId: ID_BASIC_NEEDS,
-		},
-		{
-			id: '6',
-			name: 'Choose as I go',
-			description: 'Support a variety of borrowers',
-			eventProp: 'help-everyone',
-			customImage: supportAllImg,
-			loanCount: totalLoans,
-			title: null,
-			badgeId: ID_SUPPORT_ALL,
-		}
-	];
-
-	/**
-	 * Generate CTA Href for Goal Completion
-	 * @param {*} selectedGoalNumber goal number selected by the user
-	 * @param {*} categoryId category id selected by the user
-	 * @param {*} router router instance
-	 * @returns href string
-	 */
-	const getCtaHref = (selectedGoalNumber, categoryId, router) => {
-		const { getLoanFindingUrl } = useBadgeData();
-
-		const categoryHeader = getGoalDisplayName(selectedGoalNumber, categoryId);
-		const string = `Your goal: Support ${selectedGoalNumber} ${categoryHeader}`;
-		const encodedHeader = encodeURIComponent(string);
-		const loanFindingUrl = getLoanFindingUrl(categoryId, router.currentRoute.value);
-		return `${loanFindingUrl}?header=${encodedHeader}`;
-	};
-
-	/**
-	 * Get the number of women loans from last year
-	 */
-	const getWomenLoansLastYear = tieredAchievements => {
-		const womensAchievement = (tieredAchievements ?? []).find(
-			achievement => achievement.id === ID_WOMENS_EQUALITY
-		);
-
-		return womensAchievement?.progressForYear || 0;
-	};
-
 	return {
+		checkCompletedGoal,
+		getCategories,
+		getCategoryLoansLastYear,
+		getCtaHref,
 		getGoalDisplayName,
+		getPostCheckoutProgressByLoan,
+		getPostCheckoutProgressByLoans,
 		goalProgress,
-		loading,
 		loadGoalData,
+		loading,
 		storeGoalPreferences,
 		userGoal,
 		userGoalAchieved,
 		userGoalAchievedNow,
-		checkCompletedGoal,
-		getProgressByLoan,
-		// Goal Entry for 2026 Goals
 		userPreferences,
+		// Goal Entry for 2026 Goals
 		renewAnnualGoal,
-		getCategories,
-		getCtaHref,
-		getWomenLoansLastYear,
 	};
 }

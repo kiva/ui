@@ -79,7 +79,7 @@ import useGoalData, { SAME_AS_LAST_YEAR_LIMIT } from '#src/composables/useGoalDa
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const { getWomenLoansLastYear } = useGoalData({ });
+const { getCategoryLoansLastYear } = useGoalData();
 
 const props = defineProps({
 	/**
@@ -122,15 +122,26 @@ const props = defineProps({
 const emit = defineEmits(['set-goal', 'edit-goal', 'set-goal-target']);
 
 const goalOptions = ref([
-	{ loansNumber: 3, optionText: 'Start strong', selected: false },
 	{
-		loansNumber: 4, highlightedText: 'Recommended', optionText: 'Extra mile', selected: true,
+		loansNumber: 3,
+		optionText: 'Start strong',
+		selected: false
 	},
-	{ loansNumber: 5, optionText: 'Trailblazing!', selected: false },
+	{
+		loansNumber: 4,
+		highlightedText: 'Recommended',
+		optionText: 'Extra mile',
+		selected: true,
+	},
+	{
+		loansNumber: 5,
+		optionText: 'Trailblazing!',
+		selected: false
+	},
 ]);
 
 const womenLoansLastYear = computed(() => {
-	return getWomenLoansLastYear(props.tieredAchievements);
+	return getCategoryLoansLastYear(props.tieredAchievements);
 });
 
 const titleText = computed(() => {
@@ -177,7 +188,6 @@ const updateOptionSelection = selectedIndex => {
 		...option,
 		selected: index === selectedIndex,
 	}));
-
 	const trackingProperties = ['same-as-last-year', 'a-little-more', 'double'];
 	$kvTrackEvent(
 		props.trackingCategory,
@@ -185,7 +195,6 @@ const updateOptionSelection = selectedIndex => {
 		'set-goal-amount',
 		trackingProperties[selectedIndex]
 	);
-
 	emit('set-goal-target', goalOptions.value[selectedIndex].loansNumber);
 };
 
@@ -221,9 +230,7 @@ const handleContinue = () => {
 			status,
 			loanTotalAtStart,
 		};
-
 		emit('set-goal', preferences);
-
 		$kvTrackEvent(
 			props.trackingCategory,
 			'click',
@@ -238,21 +245,29 @@ onMounted(() => {
 	if (womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
 		const growALittleOption = Math.ceil(womenLoansLastYear.value * 1.25);
 		goalOptions.value = [
-			{ loansNumber: womenLoansLastYear.value, optionText: 'Same as 2025', selected: false },
 			{
-				// eslint-disable-next-line max-len
-				loansNumber: growALittleOption, optionText: 'Grow a little', selected: true, highlightedText: 'More Impact'
+				loansNumber: womenLoansLastYear.value,
+				optionText: 'Same as 2025',
+				selected: false
 			},
-			{ loansNumber: womenLoansLastYear.value * 2, optionText: 'Double my impact!', selected: false },
+			{
+				loansNumber: growALittleOption,
+				optionText: 'Grow a little',
+				selected: true,
+				highlightedText: 'More Impact'
+			},
+			{
+				loansNumber: womenLoansLastYear.value * 2,
+				optionText: 'Double my impact!',
+				selected: false
+			},
 		];
 	}
-
 	$kvTrackEvent(
 		props.trackingCategory,
 		'view',
 		'set-annual-goal'
 	);
-
 	emit('set-goal-target', selectedTarget.value);
 });
 </script>

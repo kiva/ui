@@ -109,7 +109,7 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
 const { getLoanFindingUrl } = useBadgeData();
-const { getGoalDisplayName } = useGoalData({});
+const { getGoalDisplayName } = useGoalData();
 const COMPLETED_GOAL_THRESHOLD = 100;
 const HALF_GOAL_THRESHOLD = 50;
 

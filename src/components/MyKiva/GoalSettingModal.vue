@@ -88,7 +88,7 @@ const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
-const { getCtaHref, getCategories } = useGoalData({});
+const { getCtaHref, getCategories } = useGoalData();
 
 const props = defineProps({
 	show: {

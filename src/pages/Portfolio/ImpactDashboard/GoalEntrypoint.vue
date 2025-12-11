@@ -52,12 +52,12 @@ import useGoalData, { SAME_AS_LAST_YEAR_LIMIT } from '#src/composables/useGoalDa
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
-const { getWomenLoansLastYear } = useGoalData({ });
+const { getCategoryLoansLastYear } = useGoalData();
 
-const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
-const router = useRouter();
+const apollo = inject('apollo');
 const loading = ref(true);
+const router = useRouter();
 const womenLoansLastYear = ref(0);
 
 const title = computed(() => {
@@ -84,9 +84,8 @@ const fetchUserAchievementProgress = async () => {
 			query: userAchievementProgressQuery,
 			variables: { loanIds: [] },
 		});
-
 		const tieredAchievements = data.userAchievementProgress?.tieredLendingAchievements ?? [];
-		womenLoansLastYear.value = getWomenLoansLastYear(tieredAchievements);
+		womenLoansLastYear.value = getCategoryLoansLastYear(tieredAchievements);
 		loading.value = false;
 	} catch (error) {
 		logReadQueryError(error, 'PortfolioGoalEntrypoint fetchUserAchievementProgress');

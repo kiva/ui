@@ -199,15 +199,17 @@ const showGoalModal = ref(false);
 const isGoalSet = ref(false);
 const isEmptyGoal = ref(true);
 const goalTarget = ref(0);
+const currGoalProgress = ref(0);
 
 const {
-	userGoal,
-	userGoalAchievedNow,
-	getGoalDisplayName,
-	loadGoalData,
 	checkCompletedGoal,
+	getGoalDisplayName,
+	getPostCheckoutProgressByLoans,
+	loadGoalData,
 	loading: goalDataLoading,
 	storeGoalPreferences,
+	userGoal,
+	userGoalAchievedNow,
 } = useGoalData({ apollo });
 
 const { getAllCategoryLoanCounts } = useBadgeData();
@@ -325,8 +327,9 @@ const setGoalTarget = target => {
 
 onMounted(async () => {
 	if (props.isNextStepsExpEnabled) {
-		await loadGoalData(props.loans);
-		await checkCompletedGoal();
+		await loadGoalData();
+		currGoalProgress.value = await getPostCheckoutProgressByLoans(props.loans);
+		await checkCompletedGoal({ currentGoalProgress: currGoalProgress.value });
 		goalDataInitialized.value = true;
 		isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
 	}
