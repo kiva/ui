@@ -872,7 +872,7 @@ describe('useGoalData', () => {
 			},
 		});
 
-		const today = new Date('2026-06-01T00:00:00Z');
+		const today = new Date('2028-06-01T00:00:00Z');
 		const updatedGoals = await composable.renewAnnualGoal(today);
 
 		expect(updatedGoals.expiredGoals.length).toBe(1);
