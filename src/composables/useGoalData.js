@@ -244,7 +244,7 @@ export default function useGoalData({ apollo } = {}) {
 			return goalCurrentLoanCount.value;
 		}
 		const progress = await getPostCheckoutProgressByLoans([loan], year);
-		return progress?.totalProgress || 0;
+		return progress;
 	}
 
 	async function storeGoalPreferences(updates) {

@@ -329,7 +329,7 @@ onMounted(async () => {
 	if (props.isNextStepsExpEnabled) {
 		await loadGoalData();
 		currGoalProgress.value = await getPostCheckoutProgressByLoans(props.loans);
-		await checkCompletedGoal({ currentGoalProgress: currGoalProgress.value?.totalProgress });
+		await checkCompletedGoal({ currentGoalProgress: currGoalProgress.value });
 		goalDataInitialized.value = true;
 		isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
 	}
