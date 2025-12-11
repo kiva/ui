@@ -191,6 +191,12 @@
 									<h3 class="tw-mb-1">
 										Print tax receipts
 									</h3>
+									<div
+										v-if="hasDafDonations"
+										class="tw-text-left tw-pt-1 tw-text-small"
+									>
+										Note: DAF totals and line items will not be included in the printed version.
+									</div>
 									<div class="tw-flex tw-flex-col">
 										<div
 											v-for="donationYear in donationInfo.annualDonations"
@@ -301,6 +307,7 @@ export default {
 		return {
 			numeral,
 			mdiHelpCircle,
+			hasDafDonations: false,
 			loading: true,
 			loadingMore: false,
 			donationInfo: undefined,
@@ -329,6 +336,7 @@ export default {
 					},
 				});
 				this.donationInfo = response?.data?.my?.userAccount?.donationInfo;
+				this.hasDafDonations = response?.data?.my?.userAccount?.donationInfo?.hasDafDonations;
 				this.donationsTotalCount = response?.data?.my?.userAccount?.donationEntries?.total;
 				this.donationEntries = [
 					...(this.donationEntries ?? []),
