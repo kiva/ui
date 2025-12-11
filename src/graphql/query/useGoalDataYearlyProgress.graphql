@@ -1,5 +1,6 @@
 query useGoalDataYearlyProgressQuery($year: Int) {
-	userAchievementProgress(year: $year) {
+    userAchievementProgress(year: $year) {
+        id
         tieredLendingAchievements {
             id
             progressForYear
