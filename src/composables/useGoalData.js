@@ -207,13 +207,13 @@ export default function useGoalData({ apollo } = {}) {
 
 	async function loadProgress(year) {
 		try {
-			const currentYearResponse = await apolloClient.query({
+			const response = await apolloClient.query({
 				query: useGoalDataYearlyProgressQuery,
 				variables: { year },
 				fetchPolicy: 'network-only'
 			});
-			const currYearProgress = currentYearResponse.data.userAchievementProgress.tieredLendingAchievements;
-			currentYearProgress.value = currYearProgress;
+			const progress = response.data.userAchievementProgress.tieredLendingAchievements;
+			currentYearProgress.value = progress;
 		} catch (error) {
 			logFormatter(error, 'Failed to load progress');
 			return null;
@@ -227,8 +227,8 @@ export default function useGoalData({ apollo } = {}) {
 				query: useGoalDataProgressQuery,
 				variables: { loanIds, year },
 			});
-			const yearlyProgress = response.data?.postCheckoutAchievements?.yearlyProgress || [];
-			const userGoalProgress = yearlyProgress.find(
+			const progress = response.data?.postCheckoutAchievements?.yearlyProgress || [];
+			const userGoalProgress = progress.find(
 				entry => entry.achievementId === userGoal.value?.category
 			)?.totalProgress || 0;
 			return userGoalProgress;
