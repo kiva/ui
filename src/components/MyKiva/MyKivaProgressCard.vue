@@ -171,7 +171,7 @@ const cardColor = computed(() => {
 	width: 336px;
 	height: 112px;
 
-	@apply tw-flex tw-bg-white tw-p-1 tw-shadow tw-rounded-md tw-gap-2.5 tw-h-full;
+	@apply tw-flex tw-bg-white tw-p-1 tw-shadow tw-rounded-md tw-gap-2.5;
 }
 
 .progress-circle, .progress-circle-content {

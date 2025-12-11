@@ -196,6 +196,11 @@ onMounted(async () => {
 </script>
 
 <style lang="postcss" scoped>
+
+:deep(div[role=group]) {
+	@apply tw-overflow-y-hidden
+}
+
 :deep(.kv-carousel__controls) {
 	@apply tw--mt-6 tw-max-w-13;
 }
