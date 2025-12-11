@@ -1,6 +1,6 @@
 <template>
-	<WwwPage>
-		<KvPageContainer>
+	<WwwPage class="goal-setting">
+		<KvPageContainer class="goal-setting-container">
 			<GoalSettingContainer
 				:total-loans="totalLoans"
 				:categories-loan-count="categoriesLoanCount"
@@ -68,3 +68,13 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+.goal-setting :deep(.basket-bar) {
+	@apply tw-hidden;
+}
+
+:deep(.goal-setting-container > div) {
+	@apply !tw-min-h-full tw-mb-16;
+}
+</style>

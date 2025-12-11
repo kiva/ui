@@ -112,11 +112,13 @@ query initializeCheckout($basketId: String) {
 								url: url (presetSize: loan_thumbnail)
 								url_2x: url (presetSize: loan_thumbnail_retina)
 							}
+							tags
 							... on LoanDirect {
 								sponsor_name: trusteeName
 							}
 							... on LoanPartner {
 								sponsor_name: partnerName
+								themes
 							}
 							gender
 						}

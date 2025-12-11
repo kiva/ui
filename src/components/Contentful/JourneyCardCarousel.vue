@@ -219,7 +219,9 @@ const isNonBadgeSlide = slide => {
 
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
-	return props.userGoalEnabled && (!props.userGoal || !props.userGoalAchieved);
+
+	return props.userGoalEnabled
+	&& (!props.userGoal || !props.userGoalAchieved || (props.userGoalAchieved && props.goalsEntrypointEnable));
 });
 
 const orderedSlides = computed(() => {

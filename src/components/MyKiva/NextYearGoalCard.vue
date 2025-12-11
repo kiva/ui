@@ -48,21 +48,21 @@
 					/>
 					<div class="tw-absolute tw-flex tw-flex-col tw-items-center tw-justify-center tw-inset-0 tw--mt-1">
 						<h1>
-							{{ goalProgress }}
+							{{ visibleGoalLoans }}
 						</h1>
 						<p class="tw-text-secondary">
 							{{ progressCircleDesc }}
 						</p>
 					</div>
 				</div>
-				<p v-html="progressDescription" class="tw-font-medium">
+				<p v-html="progressDescription" class="tw-font-medium" style="line-height: 1.5rem;">
 				</p>
 				<KvButton
 					class="tw-w-full"
 					v-kv-track-event="['portfolio', 'click', 'continue-towards-goal']"
 					@click="handleContinueClick"
 				>
-					Work towards your goal
+					{{ btnCta }}
 				</KvButton>
 			</div>
 		</template>
@@ -72,7 +72,7 @@
 <script setup>
 
 import {
-	computed, watch, inject, onMounted
+	computed, watch, inject
 } from 'vue';
 import {
 	KvButton, KvLoadingPlaceholder
@@ -110,6 +110,8 @@ const router = useRouter();
 
 const { getLoanFindingUrl } = useBadgeData();
 const { getGoalDisplayName } = useGoalData();
+const COMPLETED_GOAL_THRESHOLD = 100;
+const HALF_GOAL_THRESHOLD = 50;
 
 const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);
 
@@ -117,11 +119,17 @@ const goalLoans = computed(() => {
 	return props.userGoal?.target || 0;
 });
 
+const visibleGoalLoans = computed(() => {
+	return Math.min(props.goalProgress, goalLoans.value);
+});
+
 const title = computed(() => {
-	if (props.prevYearLoans) {
+	if (props.prevYearLoans === 1) {
+		return `You helped <span class="tw-text-action"> ${props.prevYearLoans} woman</span><br>shape her future!`;
+	}
+	if (props.prevYearLoans > 1) {
 		return `You helped <span class="tw-text-action"> ${props.prevYearLoans} women</span><br>shape their futures!`;
 	}
-
 	return 'Lenders like you help <span class="tw-text-action"> 3 women</span> a year';
 });
 
@@ -129,21 +137,28 @@ const goalProgressPercentage = computed(() => {
 	if (!props.userGoal?.target || props.goalProgress <= 0) return 0;
 	return Math.min(
 		Math.round((props.goalProgress / props.userGoal.target) * 100),
-		100
+		COMPLETED_GOAL_THRESHOLD
 	);
 });
 
 const progressDescription = computed(() => {
 	if (goalProgressPercentage.value === 0) {
 		return 'Get started by making a loan!';
-	} if (goalProgressPercentage.value > 0 && goalProgressPercentage.value < 50) {
+	} if (goalProgressPercentage.value > 0 && goalProgressPercentage.value < HALF_GOAL_THRESHOLD) {
 		return 'You’ve started something powerful.<br>Let’s keep it growing together.';
-	} if (goalProgressPercentage.value === 50) {
+	} if (goalProgressPercentage.value === HALF_GOAL_THRESHOLD) {
 		return 'Halfway to your goal!<br>Every loan fuels a dream.';
-	} if (goalProgressPercentage.value < 100) {
+	} if (goalProgressPercentage.value < COMPLETED_GOAL_THRESHOLD) {
 		return 'You’ve brought so many dreams<br>within reach. Finish strong!';
 	}
 	return `Incredible! You reached your 2026<br>goal and changed ${goalLoans.value} lives!`;
+});
+
+const btnCta = computed(() => {
+	if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
+		return 'View lifetime goals';
+	}
+	return 'Work towards your goal';
 });
 
 const categoryName = computed(() => {
@@ -180,6 +195,10 @@ const showConfetti = () => {
 };
 
 const handleContinueClick = () => {
+	if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
+		$kvTrackEvent('portfolio', 'click', 'goal-completed-cta');
+		return;
+	}
 	$kvTrackEvent('portfolio', 'click', 'continue-towards-goal');
 	router.push(ctaHref.value);
 };
@@ -198,8 +217,8 @@ watch(() => props.userGoal, (newVal, oldVal) => {
 	}
 });
 
-onMounted(() => {
-	if (goalProgressPercentage.value === 100) {
+watch(goalProgressPercentage, newVal => {
+	if (newVal === COMPLETED_GOAL_THRESHOLD) {
 		showConfetti();
 	}
 });

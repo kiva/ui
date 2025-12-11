@@ -2,11 +2,11 @@
 	<div class="tw-min-h-screen lg:tw-min-h-full tw-mt-5">
 		<button
 			class="tw-flex tw-gap-1 tw-items-center tw-font-medium tw-mt-3 tw-mb-4"
+			@click="goToDashboard"
 		>
 			<KvMaterialIcon
 				:icon="mdiChevronLeft"
 				class="tw-ml-0.5"
-				@click="goToDashboard"
 			/>
 			To dashboard
 		</button>
@@ -86,7 +86,6 @@ import { KvLoadingPlaceholder, KvMaterialIcon, KvButton } from '@kiva/kv-compone
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import CategoryForm from '#src/components/MyKiva/GoalSetting/CategoryForm';
 import useGoalData from '#src/composables/useGoalData';
-import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -189,7 +188,7 @@ const handleClick = () => {
 
 	const preferences = {
 		goalName,
-		category: ID_WOMENS_EQUALITY,
+		category: categorySelected,
 		target,
 		dateStarted,
 		status,

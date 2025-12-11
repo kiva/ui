@@ -12,6 +12,9 @@
 					:contributes-in-achievement="isLoanContributingInAchievements(loan.id)"
 					:is-first-loan="isFirstLoan(index)"
 					:is-my-kiva-enabled="isMyKivaEnabled"
+					:user-goal-achieved="isUserGoalAchieved"
+					:user-goal="userGoal"
+					:loading-goal-data="loadingGoalData"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
@@ -53,6 +56,9 @@
 </template>
 
 <script>
+import { inject, computed } from 'vue';
+import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
+import useGoalData from '#src/composables/useGoalData';
 import BasketItem from '#src/components/Checkout/BasketItem';
 import DonationItem from '#src/components/Checkout/DonationItem';
 import KivaCardItem from '#src/components/Checkout/KivaCardItem';
@@ -133,6 +139,10 @@ export default {
 		hasEverLoggedIn: {
 			type: Boolean,
 			default: false
+		},
+		isNextStepsExpEnabled: {
+			type: Boolean,
+			default: false
 		}
 	},
 	components: {
@@ -141,11 +151,20 @@ export default {
 		KivaCardItem,
 		DepositIncentiveUpsell,
 	},
+	data() {
+		return {
+			loadingGoalData: true,
+		};
+	},
 	watch: {
 		loans(loansInBasket) {
 			// eslint-disable-next-line no-underscore-dangle
 			const hasUsLoan = loansInBasket.some(reservation => reservation?.loan?.__typename === 'LoanDirect');
 			userUsLoanCheckout(hasUsLoan);
+
+			if (this.isNextStepsExpEnabled) {
+				this.loadGoalData(this.loans);
+			}
 		}
 	},
 	methods: {
@@ -161,6 +180,40 @@ export default {
 
 			return this.isLoggedIn || (!this.isLoggedIn && !this.hasEverLoggedIn);
 		}
-	}
+	},
+	setup(props) {
+		const apollo = inject('apollo');
+
+		const {
+			userGoalAchieved,
+			loadGoalData,
+			userGoal,
+		} = useGoalData({ apollo });
+
+		const isUserGoalAchieved = computed(() => {
+			const goalCategory = userGoal.value?.category || null;
+			const goalTarget = userGoal.value?.target || 0;
+
+			if (goalCategory === ID_SUPPORT_ALL && props.loans.length >= goalTarget) {
+				return true;
+			}
+
+			return userGoalAchieved.value;
+		});
+
+		return {
+			isUserGoalAchieved,
+			loadGoalData,
+			userGoal,
+		};
+	},
+	async mounted() {
+		if (this.isNextStepsExpEnabled) {
+			await this.loadGoalData(this.loans);
+			this.loadingGoalData = false;
+		} else {
+			this.loadingGoalData = false;
+		}
+	},
 };
 </script>
