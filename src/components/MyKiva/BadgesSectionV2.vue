@@ -84,6 +84,7 @@ const {
 	userGoal,
 	loadGoalData,
 	getCtaHref,
+	userGoalAchieved,
 } = useGoalData({ apollo });
 
 const formattedBadgeData = badges => {
@@ -131,7 +132,12 @@ const visibleBadges = computed(() => {
 			isAnnualGoal: true,
 		};
 
-		showedSlides.unshift(formattedUserGoal);
+		if (userGoalAchieved.value) {
+			showedSlides.push(formattedUserGoal);
+		} else {
+			showedSlides.unshift(formattedUserGoal);
+		}
+
 		$kvTrackEvent('portfolio', 'show', 'annual-goal-progress-row');
 	}
 
