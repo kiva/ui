@@ -240,7 +240,12 @@ export default {
 			});
 
 			if (this.goalsEntrypointEnable) {
-				const { showRenewedAnnualGoalToast } = await this.renewAnnualGoal();
+				// Just for demo purposes, force goals renew in my kiva
+				// TODO: Remove forced renewYear after testing MP-2316
+				const { renewYear } = this.$route.query;
+				const { showRenewedAnnualGoalToast } = await this.renewAnnualGoal(
+					renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined
+				);
 				if (showRenewedAnnualGoalToast) {
 					// eslint-disable-next-line max-len
 					this.$showTipMsg('It’s time for your 2026 impact goal - a fresh start and new opportunity to make a difference.');
