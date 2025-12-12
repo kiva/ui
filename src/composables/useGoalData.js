@@ -84,7 +84,7 @@ export default function useGoalData({ apollo } = {}) {
 		const progress = currentYearProgress.value;
 		if (goal?.category === ID_SUPPORT_ALL) return totalLoanCount.value || 0;
 		const progressForYear = progress.find(n => n.id === goal?.category)?.progressForYear || 0;
-		return Math.max(progressForYear - (goal?.loanTotalAtStart || 0), 0);
+		return progressForYear;
 	});
 
 	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);

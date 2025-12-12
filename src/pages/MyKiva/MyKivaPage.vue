@@ -241,6 +241,7 @@ export default {
 
 			if (this.goalsEntrypointEnable) {
 				// Just for demo purposes, force goals renew in my kiva
+				// TODO: Remove forced renewYear after testing MP-2316
 				const { renewYear } = this.$route.query;
 				const { showRenewedAnnualGoalToast } = await this.renewAnnualGoal(
 					renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined

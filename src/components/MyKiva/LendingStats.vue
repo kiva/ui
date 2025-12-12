@@ -333,7 +333,9 @@ export default {
 	},
 	async mounted() {
 		if (this.isNextStepsExpEnabled) {
-			await this.loadGoalData();
+			// TODO: Remove forced renewYear after testing MP-2316
+			const { renewYear } = this.$route.query;
+			await this.loadGoalData({ year: renewYear });
 			await this.checkCompletedGoal({ category: 'portfolio' });
 			this.goalProgressLoading = false;
 		}
