@@ -16,6 +16,7 @@
 			:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 			:goals-entrypoint-enable="goalsEntrypointEnable"
 			:show-new-badge-section="showNewBadgeSection"
+			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 		/>
 	</www-page>
 </template>
@@ -41,6 +42,7 @@ import { inject } from 'vue';
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 const NEW_BADGE_SECTION_KEY = 'new_badge_section_enable';
+const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -80,6 +82,7 @@ export default {
 			isNextStepsExpEnabled: undefined,
 			goalsEntrypointEnable: false,
 			showNewBadgeSection: false,
+			postLendingNextStepsEnable: false,
 		};
 	},
 	apollo: {
@@ -177,6 +180,7 @@ export default {
 
 				this.goalsEntrypointEnable = readBoolSetting(myKivaQueryResult, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.showNewBadgeSection = readBoolSetting(myKivaQueryResult, `general.${NEW_BADGE_SECTION_KEY}.value`) ?? false; // eslint-disable-line max-len
+				this.postLendingNextStepsEnable = readBoolSetting(myKivaQueryResult, `general.${POST_LENDING_NEXT_STEPS_KEY}.value`) ?? false; // eslint-disable-line max-len
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');
 			}
