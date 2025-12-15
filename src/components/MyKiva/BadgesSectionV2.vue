@@ -191,9 +191,7 @@ watch(userGoal, async (newVal, oldVal) => {
 });
 
 onMounted(async () => {
-	// TODO: Remove forced renewYear after testing MP-2316
-	const { renewYear } = router.currentRoute.value.query;
-	await loadGoalData({ year: renewYear });
+	await loadGoalData();
 });
 </script>
 
