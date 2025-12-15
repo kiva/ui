@@ -81,11 +81,12 @@ const hash = computed(() => {
 });
 
 const apollo = inject('apollo');
-const { updateCommunicationSettings } = useOptIn(apollo);
+const { setMailUpdatesOptOutCookie, updateCommunicationSettings } = useOptIn(apollo);
 
 const handleEmailOptIn = async () => {
 	const updatedEmailSettings = await updateCommunicationSettings(true, true, false);
 	if (updatedEmailSettings) {
+		setMailUpdatesOptOutCookie(false);
 		emit('accept-email-updates', true);
 	}
 };

@@ -86,7 +86,9 @@ const receiveNews = ref(false);
 const buttonState = ref('');
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
-const { updateCommunicationSettings, updateVisitorEmailOptIn } = useOptIn(apollo);
+const {
+	setMailUpdatesOptOutCookie, updateCommunicationSettings, updateVisitorEmailOptIn
+} = useOptIn(apollo);
 
 const primaryBorrowerName = computed(() => props.loans[0]?.name ?? '');
 const primaryBorrowerPossessiveName = computed(() => formatPossessiveName(primaryBorrowerName.value));
@@ -142,6 +144,10 @@ const updateOptIn = async value => {
 		} else {
 			await updateCommunicationSettings(value, value, false);
 		}
+		setMailUpdatesOptOutCookie(false);
+	} else {
+		const loanId = props.loans[0]?.id || null;
+		setMailUpdatesOptOutCookie(true, loanId);
 	}
 	newConsentAnswered.value = true;
 	receiveNews.value = value;
