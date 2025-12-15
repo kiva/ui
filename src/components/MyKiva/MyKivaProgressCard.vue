@@ -128,6 +128,10 @@ const description = computed(() => {
 });
 
 const progress = computed(() => {
+	if (props.isAnnualGoal && goalCompleted.value) {
+		return `${goalTarget.value} / ${goalTarget.value}`;
+	}
+
 	if (props.isAnnualGoal || !goalCompleted.value) {
 		return `${props.goalProgress} / ${goalTarget.value}`;
 	}
