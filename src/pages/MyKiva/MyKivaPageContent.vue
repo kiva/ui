@@ -45,6 +45,7 @@
 				:total-loans="totalLoans"
 				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 				:goals-entrypoint-enable="goalsEntrypointEnable"
+				:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			/>
 		</section>
 		<section v-if="goalsEntrypointEnable" class="tw-mt-4" id="mykiva-achievements">
@@ -360,7 +361,11 @@ export default {
 		showNewBadgeSection: {
 			type: Boolean,
 			default: false
-		}
+		},
+		postLendingNextStepsEnable: {
+			type: Boolean,
+			default: false
+		},
 	},
 	setup() {
 		const apollo = inject('apollo');

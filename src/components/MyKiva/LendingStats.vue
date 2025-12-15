@@ -251,7 +251,11 @@ export default {
 		goalsEntrypointEnable: {
 			type: Boolean,
 			default: false
-		}
+		},
+		postLendingNextStepsEnable: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
