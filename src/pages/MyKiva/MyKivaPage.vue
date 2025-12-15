@@ -244,7 +244,11 @@ export default {
 			});
 
 			if (this.goalsEntrypointEnable) {
-				const { showRenewedAnnualGoalToast } = await this.renewAnnualGoal();
+				// Param to force goals renewal in an specific year
+				const { renewYear } = this.$route.query;
+				const { showRenewedAnnualGoalToast } = await this.renewAnnualGoal(
+					renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined
+				);
 				if (showRenewedAnnualGoalToast) {
 					// eslint-disable-next-line max-len
 					this.$showTipMsg('It’s time for your 2026 impact goal - a fresh start and new opportunity to make a difference.');
