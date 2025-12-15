@@ -1,3 +1,19 @@
+## [3.46.0-rc.2](https://github.com/kiva/ui/compare/v3.46.0-rc.1...v3.46.0-rc.2) (2025-12-15)
+
+### 🎉 New Features
+
+* add comment and ticket to remove testing flag ([446f774](https://github.com/kiva/ui/commit/446f774a764ba8be2ffd1d2cd9a5d9e33a47dbe3))
+* add logic to hide goal card when user revisits MyKiva and was able to see its completed state ([9d42602](https://github.com/kiva/ui/commit/9d42602a6cef6ac75f24ee541822a86d1d1fa3de))
+* add param to url to force goals renewal and add logic to useGoalData to filter expired goals ([d3343df](https://github.com/kiva/ui/commit/d3343df0fa7f9d2d433731aeb2a51afe2052d2fd))
+* add unit test to new methods ([8a172dc](https://github.com/kiva/ui/commit/8a172dcd18b71ea53a7a37f021566f475bbafe4e))
+* post lending next steps flag ([#6506](https://github.com/kiva/ui/issues/6506)) ([e061f13](https://github.com/kiva/ui/commit/e061f13e759e56984e5b24939d06630556ced3e8))
+
+### 🐛 Bugfixes
+
+* only show goals entry if experiment enabled ([#6507](https://github.com/kiva/ui/issues/6507)) ([d5600c3](https://github.com/kiva/ui/commit/d5600c3e7979c6a2cf37ffa1ade56f3b48472764))
+* remove load goal data in specific year and comment to remove year testing ([50f08ef](https://github.com/kiva/ui/commit/50f08ef10380ba88f345b512c3c2a27f19fd6e36))
+* test ([66cffe9](https://github.com/kiva/ui/commit/66cffe9a4ee6531987819db77314e4a21ef69e30))
+
 ## [3.46.0-rc.1](https://github.com/kiva/ui/compare/v3.45.0...v3.46.0-rc.1) (2025-12-15)
 
 ### 🎉 New Features
