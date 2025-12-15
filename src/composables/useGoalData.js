@@ -352,6 +352,21 @@ export default function useGoalData({ apollo } = {}) {
 		};
 	}
 
+	async function setHideGoalCardPreference() {
+		const parsedPrefs = await loadPreferences();
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			{ hideGoalCard: true }
+		);
+	}
+
+	function hideGoalCard() {
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+		return parsedPrefs.hideGoalCard || false;
+	}
+
 	return {
 		checkCompletedGoal,
 		getCategories,
@@ -370,5 +385,7 @@ export default function useGoalData({ apollo } = {}) {
 		userPreferences,
 		// Goal Entry for 2026 Goals
 		renewAnnualGoal,
+		hideGoalCard,
+		setHideGoalCardPreference,
 	};
 }
