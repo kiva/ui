@@ -187,6 +187,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
+	hideGoalCard: {
+		type: Boolean,
+		default: false
+	}
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
@@ -221,7 +225,8 @@ const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
 
 	return props.userGoalEnabled
-	&& (!props.userGoal || !props.userGoalAchieved || (props.userGoalAchieved && props.goalsEntrypointEnable));
+	&& (!props.userGoal || !props.userGoalAchieved || (props.userGoalAchieved && props.goalsEntrypointEnable))
+	&& !props.hideGoalCard;
 });
 
 const orderedSlides = computed(() => {
