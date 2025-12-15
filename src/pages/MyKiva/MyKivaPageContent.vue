@@ -45,6 +45,59 @@
 				:total-loans="totalLoans"
 				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 				:goals-entrypoint-enable="goalsEntrypointEnable"
+				:post-lending-next-steps-enable="postLendingNextStepsEnable"
+			/>
+		</section>
+		<section v-if="goalsEntrypointEnable" class="tw-mt-4" id="mykiva-achievements">
+			<div :class="{'tw-flex tw-items-center tw-gap-1 tw-z-tooltip tw-pb-6': showNewBadgeSection}">
+				<h3 id="my-achievements" :class="{'tw-min-h-4': showNewBadgeSection}">
+					Impact progress
+				</h3>
+				<div v-if="showNewBadgeSection">
+					<div class="tw-relative">
+						<KvMaterialIcon
+							@click="toggleTooltip"
+							class="tw-text-secondary tw-h-2 tw-w-2 tw-shrink-0"
+							:icon="mdiInformationOutline"
+						/>
+						<span
+							id="impact-progress-tooltip"
+							class="tw-sr-only tw-absolute tw--mt-2 tw-inset-x-1 md:tw-inset-x-4 md:tw-mt-1"
+						>Tooltip controller</span>
+					</div>
+					<kv-tooltip
+						controller="impact-progress-tooltip"
+						:show-tooltip="tooltipVisible"
+						:placement="isMobile ? 'top' : 'right'"
+						@tool-tip-visible="handleToolTipVisible"
+					>
+						<template #title>
+							<h5>Annual goals and achievements</h5>
+						</template>
+						<p class="tw-text-small">
+							<!-- eslint-disable-next-line max-len -->
+							Loans you make automatically build toward <span class="tw-font-medium">Lifetime achievements</span> where you can earn badges along the way.<br><br>
+							<!-- eslint-disable-next-line max-len -->
+							Set an <span class="tw-font-medium">Annual goal</span> to stay accountable and watch your impact grow.
+						</p>
+					</kv-tooltip>
+				</div>
+			</div>
+			<BadgesSectionV2
+				v-if="showNewBadgeSection"
+				class="tw--mt-4"
+				controls-top-right
+				:badge-data="badgeData"
+				:selected-journey="selectedJourney"
+				@badge-clicked="handleBadgeSectionClicked"
+			/>
+			<BadgesSection
+				v-else
+				class="tw--mt-4"
+				controls-top-right
+				:badge-data="badgeData"
+				:selected-journey="selectedJourney"
+				@badge-clicked="handleBadgeSectionClicked"
 			/>
 		</section>
 		<MyKivaBorrowerCarousel
@@ -89,11 +142,20 @@
 				@mouse-enter-loan-card="loadBPData"
 			/>
 		</section>
-		<section class="tw-mb-4" id="mykiva-achievements">
+		<section v-if="!goalsEntrypointEnable" class="tw-mb-4" id="mykiva-achievements">
 			<h3 id="my-achievements">
 				My achievements
 			</h3>
+			<BadgesSectionV2
+				v-if="showNewBadgeSection"
+				class="tw--mt-4"
+				controls-top-right
+				:badge-data="badgeData"
+				:selected-journey="selectedJourney"
+				@badge-clicked="handleBadgeSectionClicked"
+			/>
 			<BadgesSection
+				v-else
 				class="tw--mt-4"
 				controls-top-right
 				:badge-data="badgeData"
@@ -189,9 +251,11 @@ import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 import LendingStats from '#src/components/MyKiva/LendingStats';
 import BailoutChips from '#src/components/MyKiva/BailoutChips';
-
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
+import { KvMaterialIcon, KvTooltip } from '@kiva/kv-components';
+import { mdiInformationOutline } from '@mdi/js';
+import useBreakpoints from '#src/composables/useBreakpoints';
 
 import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
@@ -199,6 +263,7 @@ import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
+import BadgesSectionV2 from '#src/components/MyKiva/BadgesSectionV2';
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -232,6 +297,9 @@ export default {
 		MyKivaStats,
 		LendingStats,
 		BailoutChips,
+		BadgesSectionV2,
+		KvMaterialIcon,
+		KvTooltip,
 	},
 	props: {
 		userInfo: {
@@ -289,11 +357,21 @@ export default {
 		goalsEntrypointEnable: {
 			type: Boolean,
 			default: false
-		}
+		},
+		showNewBadgeSection: {
+			type: Boolean,
+			default: false
+		},
+		postLendingNextStepsEnable: {
+			type: Boolean,
+			default: false
+		},
 	},
 	setup() {
 		const apollo = inject('apollo');
 		const { getMostRecentBlogPost } = useContentful(apollo);
+		const { isMobile } = useBreakpoints();
+
 		const {
 			badgeData,
 			fetchAchievementData,
@@ -314,6 +392,7 @@ export default {
 			fetchContentfulData,
 			getLoanFindingUrl,
 			getMostRecentBlogPost,
+			isMobile,
 		};
 	},
 	data() {
@@ -344,6 +423,8 @@ export default {
 			updatesLoading: true,
 			updatesOffset: 3,
 			clientRendered: false,
+			tooltipVisible: false,
+			mdiInformationOutline,
 		};
 	},
 	computed: {
@@ -644,6 +725,17 @@ export default {
 			this.showBPSideSheet = true;
 			this.showNextSteps = showNextSteps;
 			this.animatedSideSheet = isAnimated;
+		},
+		handleToolTipVisible(isVisible) {
+			if (this.tooltipVisible && !isVisible) {
+				this.tooltipVisible = isVisible;
+			}
+			if (isVisible) {
+				this.$kvTrackEvent('portfolio', 'click', 'impact-progress-info');
+			}
+		},
+		toggleTooltip() {
+			this.tooltipVisible = !this.tooltipVisible;
 		},
 	},
 	created() {

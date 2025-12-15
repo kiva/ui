@@ -2,6 +2,10 @@ import KvAuth0, {
 	KIVA_ID_KEY, LAST_LOGIN_KEY, USED_MFA_KEY, MockKvAuth0
 } from '#src/util/KvAuth0';
 
+vi.mock('#src/util/syncDate', () => ({
+	default: vi.fn(() => Promise.resolve())
+}));
+
 function getKvAuth0WithFACookie(cookieValue, checkFakeAuth = true, domain = 'login.dev.kiva.org') {
 	return new KvAuth0({
 		domain,
@@ -12,14 +16,6 @@ function getKvAuth0WithFACookie(cookieValue, checkFakeAuth = true, domain = 'log
 			set: () => {},
 		},
 	});
-}
-
-function getMockCookieStore() {
-	return {
-		get: vi.fn(),
-		set: vi.fn(),
-		remove: vi.fn(),
-	};
 }
 
 describe('KvAuth0', () => {
@@ -162,12 +158,11 @@ describe('KvAuth0', () => {
 
 	describe('Constructor', () => {
 		it('initializes with provided parameters', () => {
-			const mockCookieStore = getMockCookieStore();
 			const kvAuth0 = new KvAuth0({
 				accessToken: 'test-token',
 				audience: 'test-audience',
 				clientID: 'test-client',
-				cookieStore: mockCookieStore,
+				cookieStore: {},
 				domain: 'test.auth0.com',
 				mfaAudience: 'mfa-audience',
 				redirectUri: 'https://example.com/callback',
@@ -181,50 +176,34 @@ describe('KvAuth0', () => {
 			expect(kvAuth0.audience).toBe('test-audience');
 			expect(kvAuth0.clientID).toBe('test-client');
 			expect(kvAuth0.domain).toBe('test.auth0.com');
+			expect(kvAuth0.accessTokenExpired).toBe(false);
 		});
 
 		it('initializes with default values when not provided', () => {
-			const mockCookieStore = getMockCookieStore();
-			const kvAuth0 = new KvAuth0({
-				clientID: 'test-client',
-				cookieStore: mockCookieStore,
-				domain: 'test.auth0.com',
-			});
+			const kvAuth0 = new KvAuth0({});
 
 			expect(kvAuth0.user).toBe(null);
 			expect(kvAuth0.accessToken).toBe('');
 			expect(kvAuth0.checkFakeAuth).toBe(false);
+			expect(kvAuth0.accessTokenExpired).toBe(false);
 		});
 	});
 
 	describe('getKivaId', () => {
 		it('returns undefined when user is null', () => {
-			const mockCookieStore = getMockCookieStore();
-			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
-			});
+			const kvAuth0 = new KvAuth0({});
 			expect(kvAuth0.getKivaId()).toBeUndefined();
 		});
 
 		it('returns kiva id from user object', () => {
-			const mockCookieStore = getMockCookieStore();
 			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
 				user: { [KIVA_ID_KEY]: 12345 },
 			});
 			expect(kvAuth0.getKivaId()).toBe(12345);
 		});
 
 		it('returns kiva id from _json property', () => {
-			const mockCookieStore = getMockCookieStore();
 			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
 				user: { _json: { [KIVA_ID_KEY]: 67890 } },
 			});
 			expect(kvAuth0.getKivaId()).toBe(67890);
@@ -233,34 +212,21 @@ describe('KvAuth0', () => {
 
 	describe('getLastLogin', () => {
 		it('returns 0 when user is null', () => {
-			const mockCookieStore = getMockCookieStore();
-			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
-			});
+			const kvAuth0 = new KvAuth0({});
 			expect(kvAuth0.getLastLogin()).toBe(0);
 		});
 
 		it('returns last login from user object', () => {
-			const mockCookieStore = getMockCookieStore();
 			const lastLogin = Date.now();
 			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
 				user: { [LAST_LOGIN_KEY]: lastLogin },
 			});
 			expect(kvAuth0.getLastLogin()).toBe(lastLogin);
 		});
 
 		it('returns last login from _json property', () => {
-			const mockCookieStore = getMockCookieStore();
 			const lastLogin = Date.now();
 			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
 				user: { _json: { [LAST_LOGIN_KEY]: lastLogin } },
 			});
 			expect(kvAuth0.getLastLogin()).toBe(lastLogin);
@@ -269,32 +235,19 @@ describe('KvAuth0', () => {
 
 	describe('isMfaAuthenticated', () => {
 		it('returns false when user is null', () => {
-			const mockCookieStore = getMockCookieStore();
-			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
-			});
+			const kvAuth0 = new KvAuth0({});
 			expect(kvAuth0.isMfaAuthenticated()).toBe(false);
 		});
 
 		it('returns mfa status from user object', () => {
-			const mockCookieStore = getMockCookieStore();
 			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
 				user: { [USED_MFA_KEY]: true },
 			});
 			expect(kvAuth0.isMfaAuthenticated()).toBe(true);
 		});
 
 		it('returns mfa status from _json property', () => {
-			const mockCookieStore = getMockCookieStore();
 			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
 				user: { _json: { [USED_MFA_KEY]: true } },
 			});
 			expect(kvAuth0.isMfaAuthenticated()).toBe(true);
@@ -303,96 +256,56 @@ describe('KvAuth0', () => {
 
 	describe('getSyncCookieValue', () => {
 		it('returns value from cookie store', () => {
-			const mockCookieStore = getMockCookieStore();
-			mockCookieStore.get.mockReturnValue('12345');
-			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
-			});
+			const kvAuth0 = getKvAuth0WithFACookie('12345');
 			expect(kvAuth0.getSyncCookieValue()).toBe('12345');
 		});
 	});
 
 	describe('isNotedLoggedIn', () => {
 		it('returns falsy when sync cookie is not set', () => {
-			const mockCookieStore = getMockCookieStore();
-			mockCookieStore.get.mockReturnValue(null);
-			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
-			});
+			const kvAuth0 = getKvAuth0WithFACookie(undefined);
 			expect(kvAuth0.isNotedLoggedIn()).toBeFalsy();
 		});
 
 		it('returns false when sync cookie is logout value', () => {
-			const mockCookieStore = getMockCookieStore();
-			mockCookieStore.get.mockReturnValue('o');
-			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
-			});
+			const kvAuth0 = getKvAuth0WithFACookie('o');
 			expect(kvAuth0.isNotedLoggedIn()).toBe(false);
 		});
 
 		it('returns true when sync cookie has a value', () => {
-			const mockCookieStore = getMockCookieStore();
-			mockCookieStore.get.mockReturnValue('12345');
-			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
-			});
+			const kvAuth0 = getKvAuth0WithFACookie('12345');
 			expect(kvAuth0.isNotedLoggedIn()).toBe(true);
 		});
 	});
 
 	describe('isNotedLoggedOut', () => {
 		it('returns true when sync cookie is logout value', () => {
-			const mockCookieStore = getMockCookieStore();
-			mockCookieStore.get.mockReturnValue('o');
-			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
-			});
+			const kvAuth0 = getKvAuth0WithFACookie('o');
 			expect(kvAuth0.isNotedLoggedOut()).toBe(true);
 		});
 
 		it('returns false when sync cookie is not logout value', () => {
-			const mockCookieStore = getMockCookieStore();
-			mockCookieStore.get.mockReturnValue('12345');
-			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
-			});
+			const kvAuth0 = getKvAuth0WithFACookie('12345');
 			expect(kvAuth0.isNotedLoggedOut()).toBe(false);
 		});
 	});
 
 	describe('isNotedUserSessionUser', () => {
 		it('returns true when sync cookie matches user id', () => {
-			const mockCookieStore = getMockCookieStore();
-			mockCookieStore.get.mockReturnValue('12345');
 			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
+				cookieStore: {
+					get: () => '12345',
+				},
 				user: { [KIVA_ID_KEY]: 12345 },
 			});
 			expect(kvAuth0.isNotedUserSessionUser()).toBe(true);
 		});
 
 		it('returns false when sync cookie does not match user id', () => {
-			const mockCookieStore = getMockCookieStore();
-			mockCookieStore.get.mockReturnValue('67890');
 			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
+				cookieStore: {
+					get: () => '67890',
+				},
 				user: { [KIVA_ID_KEY]: 12345 },
 			});
 			expect(kvAuth0.isNotedUserSessionUser()).toBe(false);
@@ -401,24 +314,14 @@ describe('KvAuth0', () => {
 
 	describe('Server mode', () => {
 		it('checkSession rejects in server mode', async () => {
-			const mockCookieStore = getMockCookieStore();
-			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
-			});
+			const kvAuth0 = new KvAuth0({});
 			kvAuth0.isServer = true;
 
 			await expect(kvAuth0.checkSession()).rejects.toThrow('checkSession called in server mode');
 		});
 
 		it('getMfaManagementToken rejects in server mode', async () => {
-			const mockCookieStore = getMockCookieStore();
-			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
-			});
+			const kvAuth0 = new KvAuth0({});
 			kvAuth0.isServer = true;
 
 			await expect(kvAuth0.getMfaManagementToken())
@@ -428,26 +331,14 @@ describe('KvAuth0', () => {
 
 	describe('getMfaManagementToken', () => {
 		it('rejects when user is not logged in', async () => {
-			const mockCookieStore = getMockCookieStore();
-			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
-			});
-			kvAuth0.isServer = false;
-
+			const kvAuth0 = new KvAuth0({});
 			await expect(kvAuth0.getMfaManagementToken()).rejects.toThrow('api.authenticationRequired');
 		});
 
 		it('returns existing mfaManagementToken if available', async () => {
-			const mockCookieStore = getMockCookieStore();
 			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
 				user: { [KIVA_ID_KEY]: 123 },
 			});
-			kvAuth0.isServer = false;
 			kvAuth0.mfaManagementToken = 'existing-token';
 
 			const token = await kvAuth0.getMfaManagementToken();
@@ -455,41 +346,515 @@ describe('KvAuth0', () => {
 		});
 	});
 
-	describe('onError', () => {
-		it('registers error callbacks', () => {
-			const mockCookieStore = getMockCookieStore();
+	describe('checkSession', () => {
+		it('resolves immediately when user exists and skipIfUserExists is true', async () => {
+			const kvAuth0 = new KvAuth0({});
+			kvAuth0.user = { [KIVA_ID_KEY]: 123 };
+			await expect(kvAuth0.checkSession({ skipIfUserExists: true })).resolves.toBeUndefined();
+		});
+
+		it('successfully authenticates and sets user data', async () => {
+			const mockResult = {
+				idTokenPayload: {
+					[KIVA_ID_KEY]: 12345,
+					[LAST_LOGIN_KEY]: Date.now(),
+					[USED_MFA_KEY]: false,
+				},
+				accessToken: 'test-access-token',
+				expiresIn: 3600,
+			};
 			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
+				cookieStore: {
+					set: vi.fn(),
+				},
 			});
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(null, mockResult);
+				}),
+			};
 
-			const callback1 = vi.fn();
-			const callback2 = vi.fn();
+			await kvAuth0.checkSession();
 
-			kvAuth0.onError(callback1);
-			kvAuth0.onError(callback2);
+			expect(kvAuth0.user).toEqual(mockResult.idTokenPayload);
+			expect(kvAuth0.accessToken).toBe('test-access-token');
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+			expect(kvAuth0.cookieStore.set).toHaveBeenCalledWith(
+				'kvls',
+				12345,
+				{ path: '/', secure: true }
+			);
+		});
 
-			// We can't easily test the private handleUnknownError method,
-			// but we can verify the callbacks are stored
-			expect(() => {
-				kvAuth0.onError(vi.fn());
-			}).not.toThrow();
+		it('handles login_required error by noting logged out', async () => {
+			const mockError = {
+				error: 'login_required',
+				error_description: 'Login required',
+			};
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(mockError, null);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+
+			expect(kvAuth0.user).toBe(null);
+			expect(kvAuth0.accessToken).toBe('');
+			expect(kvAuth0.cookieStore.set).toHaveBeenCalledWith(
+				'kvls',
+				'o',
+				{ path: '/', secure: true }
+			);
+		});
+
+		it('handles unauthorized error by noting logged out', async () => {
+			const mockError = {
+				error: 'unauthorized',
+				error_description: 'Unauthorized',
+			};
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(mockError, null);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+
+			expect(kvAuth0.user).toBe(null);
+			expect(kvAuth0.accessToken).toBe('');
+			expect(kvAuth0.cookieStore.set).toHaveBeenCalledWith(
+				'kvls',
+				'o',
+				{ path: '/', secure: true }
+			);
+		});
+
+		it('handles access_denied error by noting logged out', async () => {
+			const mockError = {
+				error: 'access_denied',
+				error_description: 'Access denied',
+			};
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(mockError, null);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+
+			expect(kvAuth0.user).toBe(null);
+			expect(kvAuth0.accessToken).toBe('');
+			expect(kvAuth0.cookieStore.set).toHaveBeenCalledWith(
+				'kvls',
+				'o',
+				{ path: '/', secure: true }
+			);
+		});
+
+		it('handles consent_required error by resolving without authentication', async () => {
+			const mockError = {
+				error: 'consent_required',
+				error_description: 'Consent required',
+			};
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(mockError, null);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+
+			expect(kvAuth0.user).toBe(null);
+			expect(kvAuth0.accessToken).toBe('');
+			// Should not note logged out for consent_required
+			expect(kvAuth0.cookieStore.set).not.toHaveBeenCalled();
+		});
+
+		it('handles interaction_required error by resolving without authentication', async () => {
+			const mockError = {
+				error: 'interaction_required',
+				error_description: 'Interaction required',
+			};
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(mockError, null);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+
+			expect(kvAuth0.user).toBe(null);
+			expect(kvAuth0.accessToken).toBe('');
+			// Should not note logged out for interaction_required
+			expect(kvAuth0.cookieStore.set).not.toHaveBeenCalled();
+		});
+
+		it('handles unknown errors by clearing login state and calling error callbacks', async () => {
+			const mockError = {
+				error: 'unknown_error',
+				error_description: 'Something went wrong',
+			};
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					remove: vi.fn(),
+				},
+			});
+			const errorCallback = vi.fn();
+			kvAuth0.onError(errorCallback);
+
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(mockError, null);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+
+			expect(kvAuth0.user).toBe(null);
+			expect(kvAuth0.accessToken).toBe('');
+			expect(kvAuth0.cookieStore.remove).toHaveBeenCalledWith(
+				'kvls',
+				{ path: '/', secure: true }
+			);
+			expect(errorCallback).toHaveBeenCalledWith(
+				expect.objectContaining({
+					error: mockError,
+					errorString: 'unknown_error: Something went wrong',
+				})
+			);
+		});
+
+		it('passes correct options to webAuth.checkSession', async () => {
+			const checkSessionSpy = vi.fn((options, callback) => {
+				callback(null, {
+					idTokenPayload: { [KIVA_ID_KEY]: 123 },
+					accessToken: 'token',
+					expiresIn: 3600,
+				});
+			});
+			const kvAuth0 = new KvAuth0({
+				audience: 'test-audience',
+				cookieStore: {
+					set: vi.fn(),
+				},
+				scope: 'openid profile',
+			});
+			kvAuth0.webAuth = {
+				checkSession: checkSessionSpy,
+			};
+
+			await kvAuth0.checkSession();
+
+			expect(checkSessionSpy).toHaveBeenCalledWith(
+				{
+					audience: 'test-audience',
+					responseType: 'token id_token',
+					scope: 'openid profile',
+				},
+				expect.any(Function)
+			);
+		});
+
+		it('only calls checkSession once if already in progress', async () => {
+			const checkSessionSpy = vi.fn((options, callback) => {
+				// Simulate async behavior
+				setTimeout(() => {
+					callback(null, {
+						idTokenPayload: { [KIVA_ID_KEY]: 123 },
+						accessToken: 'token',
+						expiresIn: 3600,
+					});
+				}, 50);
+			});
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+			kvAuth0.webAuth = {
+				checkSession: checkSessionSpy,
+			};
+
+			// Call checkSession multiple times simultaneously
+			const promise1 = kvAuth0.checkSession();
+			const promise2 = kvAuth0.checkSession();
+			const promise3 = kvAuth0.checkSession();
+
+			// All should return the same promise
+			expect(promise1).toBe(promise2);
+			expect(promise2).toBe(promise3);
+
+			await Promise.all([promise1, promise2, promise3]);
+
+			// Should only have called checkSession once
+			expect(checkSessionSpy).toHaveBeenCalledTimes(1);
+		});
+
+		it('clears auth data when receiving an error', async () => {
+			// First set some auth data
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+			kvAuth0.user = { [KIVA_ID_KEY]: 12345 };
+			kvAuth0.accessToken = 'existing-token';
+
+			const mockError = {
+				error: 'login_required',
+				error_description: 'Login required',
+			};
+
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(mockError, null);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+
+			// Auth data should be cleared
+			expect(kvAuth0.user).toBe(null);
+			expect(kvAuth0.accessToken).toBe('');
+		});
+
+		it('allows checkSession to be called again after completion', async () => {
+			const checkSessionSpy = vi.fn((options, callback) => {
+				callback(null, {
+					idTokenPayload: { [KIVA_ID_KEY]: 123 },
+					accessToken: 'token',
+					expiresIn: 3600,
+				});
+			});
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+			kvAuth0.webAuth = {
+				checkSession: checkSessionSpy,
+			};
+
+			// First call
+			await kvAuth0.checkSession();
+			expect(checkSessionSpy).toHaveBeenCalledTimes(1);
+
+			// Second call should work and increment the count
+			await kvAuth0.checkSession();
+			expect(checkSessionSpy).toHaveBeenCalledTimes(2);
 		});
 	});
 
-	describe('checkSession with skipIfUserExists', () => {
-		it('resolves immediately when user exists and skipIfUserExists is true', async () => {
-			const mockCookieStore = getMockCookieStore();
+	describe('accessTokenExpired tracking', () => {
+		it('sets accessTokenExpired to false when authenticating with checkSession', async () => {
+			const mockResult = {
+				idTokenPayload: {
+					[KIVA_ID_KEY]: 12345,
+					[LAST_LOGIN_KEY]: Date.now(),
+				},
+				accessToken: 'test-access-token',
+				expiresIn: 3600,
+			};
 			const kvAuth0 = new KvAuth0({
-				clientID: 'test',
-				cookieStore: mockCookieStore,
-				domain: 'test.com',
-				user: { [KIVA_ID_KEY]: 123 },
+				cookieStore: {
+					set: vi.fn(),
+				},
 			});
-			kvAuth0.isServer = false;
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(null, mockResult);
+				}),
+			};
 
-			await expect(kvAuth0.checkSession({ skipIfUserExists: true })).resolves.toBeUndefined();
+			await kvAuth0.checkSession();
+
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+			expect(kvAuth0.accessToken).toBe('test-access-token');
+		});
+
+		it('maintains accessTokenExpired as false when token has not expired', async () => {
+			vi.useFakeTimers();
+			const mockResult = {
+				idTokenPayload: {
+					[KIVA_ID_KEY]: 12345,
+					[LAST_LOGIN_KEY]: Date.now(),
+				},
+				accessToken: 'test-access-token',
+				expiresIn: 3600, // 1 hour
+			};
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(null, mockResult);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+
+			// Fast forward time but not past expiration
+			vi.advanceTimersByTime(1800 * 1000); // 30 minutes
+
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+			expect(kvAuth0.accessToken).toBe('test-access-token');
+
+			vi.useRealTimers();
+		});
+
+		it('sets accessTokenExpired to true when token expires after expiresIn duration', async () => {
+			vi.useFakeTimers();
+			const mockResult = {
+				idTokenPayload: {
+					[KIVA_ID_KEY]: 12345,
+					[LAST_LOGIN_KEY]: Date.now(),
+				},
+				accessToken: 'test-access-token',
+				expiresIn: 3600, // 1 hour
+			};
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(null, mockResult);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+			expect(kvAuth0.accessToken).toBe('test-access-token');
+
+			// Fast forward time past expiration
+			vi.advanceTimersByTime(3600 * 1000); // 1 hour
+
+			expect(kvAuth0.accessTokenExpired).toBe(true);
+			expect(kvAuth0.accessToken).toBe('');
+			expect(kvAuth0.user).toBe(null);
+
+			vi.useRealTimers();
+		});
+
+		it('resets accessTokenExpired to false when getting a new token', async () => {
+			vi.useFakeTimers();
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+
+			// First authentication
+			const firstResult = {
+				idTokenPayload: {
+					[KIVA_ID_KEY]: 12345,
+					[LAST_LOGIN_KEY]: Date.now(),
+				},
+				accessToken: 'first-token',
+				expiresIn: 10, // 10 seconds
+			};
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(null, firstResult);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+
+			// Fast forward past expiration
+			vi.advanceTimersByTime(10 * 1000);
+			expect(kvAuth0.accessTokenExpired).toBe(true);
+			expect(kvAuth0.accessToken).toBe('');
+
+			// Second authentication with new token
+			const secondResult = {
+				idTokenPayload: {
+					[KIVA_ID_KEY]: 12345,
+					[LAST_LOGIN_KEY]: Date.now(),
+				},
+				accessToken: 'second-token',
+				expiresIn: 3600,
+			};
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(null, secondResult);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+
+			// Should reset to false with new token
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+			expect(kvAuth0.accessToken).toBe('second-token');
+
+			vi.useRealTimers();
+		});
+
+		it('does not set expiration timer when expiresIn is not provided', async () => {
+			vi.useFakeTimers();
+			const mockResult = {
+				idTokenPayload: {
+					[KIVA_ID_KEY]: 12345,
+					[LAST_LOGIN_KEY]: Date.now(),
+				},
+				accessToken: 'test-access-token',
+			};
+			const kvAuth0 = new KvAuth0({
+				cookieStore: {
+					set: vi.fn(),
+				},
+			});
+			kvAuth0.webAuth = {
+				checkSession: vi.fn((options, callback) => {
+					callback(null, mockResult);
+				}),
+			};
+
+			await kvAuth0.checkSession();
+
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+
+			// Fast forward time
+			vi.advanceTimersByTime(3600 * 1000);
+
+			// Should still be false since no timer was set
+			expect(kvAuth0.accessTokenExpired).toBe(false);
+			expect(kvAuth0.accessToken).toBe('test-access-token');
+
+			vi.useRealTimers();
 		});
 	});
 

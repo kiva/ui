@@ -784,15 +784,15 @@ export default {
 		this.isBasketLoading = this.$renderConfig?.useCDNCaching ?? false;
 		this.isUserDataLoading = this.$renderConfig?.useCDNCaching && this.$renderConfig?.cdnNotedLoggedIn;
 
-		const navExperiment = trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'event-tracking',
-			NAV_UPDATE_EXP_KEY,
-			'EXP-MP-1696-Aug2025'
-		);
-
-		this.isNavUpdateExp = navExperiment?.version === 'b';
+		// TODO: uncomment when nav experiment is to be enabled again, experiment key temporarily used for AI loan pills
+		// const navExperiment = trackExperimentVersion(
+		// 	this.apollo,
+		// 	this.$kvTrackEvent,
+		// 	'event-tracking',
+		// 	NAV_UPDATE_EXP_KEY,
+		// 	'EXP-MP-1696-Aug2025'
+		// );
+		// this.isNavUpdateExp = navExperiment?.version === 'b';
 	},
 	mounted() {
 		const { version } = this.apollo.readFragment({

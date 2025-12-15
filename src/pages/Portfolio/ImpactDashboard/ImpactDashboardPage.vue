@@ -22,6 +22,9 @@
 							:allowed-teams="allowedTeams"
 						/>
 						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
+						<GoalEntrypoint
+							v-if="goalsEntrypointEnable && isEmptyGoal"
+						/>
 						<lending-insights />
 						<my-giving-funds-card
 							v-if="myGivingFundsCount > 0 || numberOfFundsContributedTo > 0"
@@ -89,6 +92,9 @@ import EducationModule from './EducationModule';
 import YourDonations from './YourDonations';
 import TeamChallenge from './TeamChallenge';
 import LoanCards from './LoanCards';
+import GoalEntrypoint from './GoalEntrypoint';
+
+const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 
 export default {
 	name: 'ImpactDashboardPage',
@@ -111,6 +117,7 @@ export default {
 		TeamChallenge,
 		MyKivaPage,
 		LoanCards,
+		GoalEntrypoint
 	},
 	data() {
 		return {
@@ -125,6 +132,8 @@ export default {
 			showTeamChallenge: false,
 			teamsChallengeEnable: false,
 			userPreferences: null,
+			goalsEntrypointEnable: false,
+			isEmptyGoal: true,
 		};
 	},
 	mixins: [badgeGoalMixin],
@@ -201,6 +210,13 @@ export default {
 
 			this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
 			this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
+
+			this.goalsEntrypointEnable = readBoolSetting(portfolioQueryData, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
+			if (this.goalsEntrypointEnable) {
+				const parsedPrefs = JSON.parse(this.userPreferences?.preferences || '{}');
+				const goals = parsedPrefs.goals || [];
+				this.isEmptyGoal = Object.keys(goals[0] || {}).length === 0;
+			}
 		}
 
 		this.fetchMyGivingFundsCount()

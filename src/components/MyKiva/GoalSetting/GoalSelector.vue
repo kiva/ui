@@ -1,59 +1,65 @@
 <template>
-	<HandsPlant
-		v-if="!isGoalSet"
-		class="lg:tw-mb-1 tw-w-10 lg:tw-w-auto"
-	/>
+	<div class="tw-flex tw-flex-col tw-justify-center tw-gap-0 lg:tw-gap-1.5 tw-items-center">
+		<img
+			:src="HandsPlant"
+			v-if="!isGoalSet"
+			class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
+		>
 
-	<h2
-		class="tw-px-4 lg:tw-px-7"
-		style="line-height: 125%;"
-		v-html="titleText"
-	>
-	</h2>
+		<h2
+			class="tw-px-4 lg:tw-px-7 tw-text-center"
+			style="line-height: 125%;"
+			v-html="titleText"
+		>
+		</h2>
 
-	<div class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2">
-		{{ subtitleText }}
-	</div>
+		<div class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
+			{{ subtitleText }}
+		</div>
 
-	<ThumbUp
-		v-if="isGoalSet"
-		class="tw-w-16 tw-h-16 lg:tw-w-auto lg:tw-h-auto"
-	/>
-
-	<div
-		v-else
-		class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-2 tw-my-1"
-	>
-		<LoanNumberSelector
-			v-for="(option, index) in goalOptions"
-			:key="index"
-			:loans-number="option.loansNumber"
-			:option-text="option.optionText"
-			:selected="option.selected"
-			:highlighted-text="option.highlightedText"
-			@click="updateOptionSelection(index)"
+		<ThumbUp
+			v-if="isGoalSet"
+			class="tw-w-16 tw-h-16 lg:tw-w-auto lg:tw-h-auto tw-mx-auto"
+			style="max-width: 225px; max-height: 225px;"
 		/>
+
+		<div
+			v-else
+			class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5 tw-my-1"
+		>
+			<LoanNumberSelector
+				v-for="(option, index) in goalOptions"
+				:key="index"
+				:loans-number="option.loansNumber"
+				:option-text="option.optionText"
+				:selected="option.selected"
+				:highlighted-text="option.highlightedText"
+				@click="updateOptionSelection(index)"
+			/>
+		</div>
+
+		<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
+			<KvButton
+				class="tw-w-full tw-mt-1.5"
+				@click="handleContinue"
+			>
+				{{ buttonText }}
+			</KvButton>
+
+			<KvButton
+				v-if="!isGoalSet"
+				variant="ghost"
+				class="edit-goal-button tw-w-full"
+				@click="editGoal"
+			>
+				Edit goal category
+				<KvMaterialIcon
+					:icon="mdiPencilOutline"
+					class="tw-ml-0.5"
+				/>
+			</KvButton>
+		</div>
 	</div>
-
-	<KvButton
-		class="tw-w-full tw-mt-1.5"
-		@click="handleContinue"
-	>
-		{{ buttonText }}
-	</KvButton>
-
-	<KvButton
-		v-if="!isGoalSet"
-		variant="ghost"
-		class="edit-goal-button tw-w-full"
-		@click="editGoal"
-	>
-		Edit goal category
-		<KvMaterialIcon
-			:icon="mdiPencilOutline"
-			class="tw-ml-0.5"
-		/>
-	</KvButton>
 </template>
 
 <script setup>
@@ -64,17 +70,16 @@ import {
 	onMounted,
 } from 'vue';
 import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
-import HandsPlant from '#src/assets/images/thanks-page/hands-plant.svg';
+import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
-import { useRouter } from 'vue-router';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiPencilOutline } from '@mdi/js';
-
-const SAME_AS_LAST_YEAR_LIMIT = 1;
+import useGoalData, { SAME_AS_LAST_YEAR_LIMIT } from '#src/composables/useGoalData';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
-const router = useRouter();
+
+const { getCategoryLoansLastYear } = useGoalData();
 
 const props = defineProps({
 	/**
@@ -105,31 +110,54 @@ const props = defineProps({
 		type: String,
 		default: '/mykiva',
 	},
+	/**
+	 * Tiered achievements data
+	 */
+	tieredAchievements: {
+		type: Array,
+		default: () => ([]),
+	},
 });
 
 const emit = defineEmits(['set-goal', 'edit-goal', 'set-goal-target']);
 
 const goalOptions = ref([
-	{ loansNumber: 3, optionText: 'Start strong', selected: false },
 	{
-		loansNumber: 4, highlightedText: 'Recommended', optionText: 'Extra mile', selected: true,
+		loansNumber: 3,
+		optionText: 'Start strong',
+		selected: false
 	},
-	{ loansNumber: 5, optionText: 'Trailblazing!', selected: false },
+	{
+		loansNumber: 4,
+		highlightedText: 'Recommended',
+		optionText: 'Extra mile',
+		selected: true,
+	},
+	{
+		loansNumber: 5,
+		optionText: 'Trailblazing!',
+		selected: false
+	},
 ]);
 
 const womenLoansLastYear = computed(() => {
-	// TODO: Update to get actual last year data when available
-	return props.categoriesLoanCount?.[ID_WOMENS_EQUALITY] || 0;
+	return getCategoryLoansLastYear(props.tieredAchievements);
 });
 
 const titleText = computed(() => {
-	// eslint-disable-next-line no-nested-ternary
-	return props.isGoalSet
-		? 'Thank you!'
-		: womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT
-			// eslint-disable-next-line max-len
-			? `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} women</span> shape their futures!`
-			: 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
+	if (props.isGoalSet) {
+		return 'Thank you!';
+	}
+	if (womenLoansLastYear.value === 1) {
+		// eslint-disable-next-line max-len
+		return `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} woman</span> shape her future!`;
+	}
+	if (womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
+		// eslint-disable-next-line max-len
+		return `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} women</span> shape their futures!`;
+	}
+
+	return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
 });
 
 const subtitleText = computed(() => {
@@ -138,7 +166,17 @@ const subtitleText = computed(() => {
 		: 'How many loans will you make this year?';
 });
 
-const buttonText = computed(() => (props.isGoalSet ? 'Track my progress' : 'Set 2026 goal'));
+const buttonText = computed(() => {
+	if (!props.isGoalSet) {
+		return 'Set 2026 goal';
+	}
+
+	if (props.goToUrl !== '/mykiva') {
+		return 'Make a loan';
+	}
+
+	return 'Track my progress';
+});
 
 const selectedTarget = computed(() => {
 	const selectedOption = goalOptions.value.find(option => option.selected);
@@ -150,7 +188,6 @@ const updateOptionSelection = selectedIndex => {
 		...option,
 		selected: index === selectedIndex,
 	}));
-
 	const trackingProperties = ['same-as-last-year', 'a-little-more', 'double'];
 	$kvTrackEvent(
 		props.trackingCategory,
@@ -158,7 +195,6 @@ const updateOptionSelection = selectedIndex => {
 		'set-goal-amount',
 		trackingProperties[selectedIndex]
 	);
-
 	emit('set-goal-target', goalOptions.value[selectedIndex].loansNumber);
 };
 
@@ -173,11 +209,11 @@ const editGoal = () => {
 
 const handleContinue = () => {
 	if (props.isGoalSet) {
-		router.push(props.goToUrl);
+		window.location.href = props.goToUrl;
 		$kvTrackEvent(
 			props.trackingCategory,
 			'click',
-			'go-to-mykiva'
+			props.goToUrl === '/mykiva' ? 'go-to-mykiva' : 'continue-towards-goal'
 		);
 	} else {
 		const currentYear = new Date().getFullYear();
@@ -194,9 +230,7 @@ const handleContinue = () => {
 			status,
 			loanTotalAtStart,
 		};
-
 		emit('set-goal', preferences);
-
 		$kvTrackEvent(
 			props.trackingCategory,
 			'click',
@@ -211,21 +245,29 @@ onMounted(() => {
 	if (womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
 		const growALittleOption = Math.ceil(womenLoansLastYear.value * 1.25);
 		goalOptions.value = [
-			{ loansNumber: womenLoansLastYear.value, optionText: 'Same as 2025', selected: false },
 			{
-				// eslint-disable-next-line max-len
-				loansNumber: growALittleOption, optionText: 'Grow a little', selected: true, highlightedText: 'More Impact'
+				loansNumber: womenLoansLastYear.value,
+				optionText: 'Same as 2025',
+				selected: false
 			},
-			{ loansNumber: womenLoansLastYear.value * 2, optionText: 'Double my impact!', selected: false },
+			{
+				loansNumber: growALittleOption,
+				optionText: 'Grow a little',
+				selected: true,
+				highlightedText: 'More Impact'
+			},
+			{
+				loansNumber: womenLoansLastYear.value * 2,
+				optionText: 'Double my impact!',
+				selected: false
+			},
 		];
 	}
-
 	$kvTrackEvent(
 		props.trackingCategory,
 		'view',
 		'set-annual-goal'
 	);
-
 	emit('set-goal-target', selectedTarget.value);
 });
 </script>

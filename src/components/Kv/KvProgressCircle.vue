@@ -34,7 +34,7 @@
 
 				<!-- ring foreground -->
 				<circle
-					class="tw-origin-center tw-text-brand tw-stroke-current"
+					:class="`tw-origin-center tw-text-${color} tw-stroke-current`"
 					:stroke-dasharray="circumference + ' ' + circumference"
 					style="fill: transparent;
 						stroke-linecap: round;
@@ -105,7 +105,7 @@
 
 					<!-- text foreground -->
 					<text
-						class="kv-progress-circle__ring-text tw-text-brand tw-fill-current tw-stroke-current"
+						:class="`kv-progress-circle__ring-text tw-text-${color} tw-fill-current tw-stroke-current`"
 						style="font-weight: 900;
 							text-anchor: start;
 							letter-spacing: 0.1em;"
@@ -165,6 +165,13 @@ export default {
 			default: false,
 			type: Boolean
 		},
+		/**
+		 * Color of the progress circle
+		* */
+		color: {
+			type: String,
+			default: 'brand',
+		}
 	},
 	data() {
 		return {

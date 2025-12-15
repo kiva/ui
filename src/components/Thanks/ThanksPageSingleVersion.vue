@@ -1,20 +1,23 @@
 <template>
 	<div class="tw-bg-eco-green-1 tw-p-3 md:tw-py-4 tw-flex tw-flex-col tw-gap-2.5">
 		<div class="content-box tw-mx-auto">
-			<OptInModule
-				v-if="showOptInModule"
-				:loans="loans"
-				:is-guest="isGuest"
-				:number-of-badges="numberOfBadges"
-				:only-donations="onlyDonations"
-				:achievements-completed="achievementsCompleted"
-				class="print:tw-hidden tw-mb-2.5"
-			/>
 			<KivaCards
 				v-if="showKivaCardsModule"
 				:printable-kiva-cards="printableKivaCards"
 				class="tw-mb-2.5"
 				@view-pdf-clicked="scrollToReceipt"
+			/>
+			<GoalEntrypoint
+				v-if="isNextStepsExpEnabled && thanksPageGoalsEntrypointEnable && !isGuest && isEmptyGoal"
+				:loading="goalDataLoading"
+				:total-loans="totalLoans"
+				:categories-loan-count="categoriesLoanCount"
+				:is-goal-set="isGoalSet"
+				:tiered-achievements="tieredAchievements"
+				@edit-goal="showGoalModal = true"
+				@set-goal-target="setGoalTarget"
+				@set-goal="setGoal"
+				class="tw-mb-2.5"
 			/>
 			<GoalCompleted
 				v-if="showGoalCompletedModule"
@@ -36,17 +39,14 @@
 				@continue-clicked="handleContinue"
 				class="tw-mb-2.5"
 			/>
-			<!-- TODO: update loading prop as BE work is done for last year women loans -->
-			<GoalEntrypoint
-				v-if="thanksPageGoalsEntrypointEnable && !isGuest && isEmptyGoal"
-				:loading="false"
-				:total-loans="totalLoans"
-				:categories-loan-count="categoriesLoanCount"
-				:is-goal-set="isGoalSet"
-				@edit-goal="showGoalModal = true"
-				@set-goal-target="setGoalTarget"
-				@set-goal="setGoal"
-				class="tw-mb-2.5"
+			<OptInModule
+				v-if="showOptInModule"
+				:loans="loans"
+				:is-guest="isGuest"
+				:number-of-badges="numberOfBadges"
+				:only-donations="onlyDonations"
+				:achievements-completed="achievementsCompleted"
+				class="print:tw-hidden tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
 				v-else-if="showJourneyModule"
@@ -88,11 +88,13 @@
 			/>
 		</KvLightbox>
 		<GoalSettingModal
+			v-if="showGoalModal"
 			:show="showGoalModal"
 			:total-loans="totalLoans"
 			:categories-loan-count="categoriesLoanCount"
 			:is-thanks-page="true"
 			:number-of-loans="goalTarget"
+			:goals-entrypoint-enable="thanksPageGoalsEntrypointEnable"
 			@close-goal-modal="showGoalModal = false"
 			@set-goal="setGoal"
 		/>
@@ -197,16 +199,20 @@ const showGoalModal = ref(false);
 const isGoalSet = ref(false);
 const isEmptyGoal = ref(true);
 const goalTarget = ref(0);
+const currGoalProgress = ref(0);
 
 const {
-	userGoal,
-	userGoalAchievedNow,
-	getGoalDisplayName,
-	loadGoalData,
 	checkCompletedGoal,
+	getGoalDisplayName,
+	getPostCheckoutProgressByLoans,
+	loadGoalData,
 	loading: goalDataLoading,
 	storeGoalPreferences,
+	userGoal,
+	userGoalAchievedNow,
 } = useGoalData({ apollo });
+
+const { getAllCategoryLoanCounts } = useBadgeData();
 
 // Initialize goalDataInitialized to track if we've loaded goal data
 // This prevents flash of journey module before loading completes
@@ -263,7 +269,6 @@ const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPart
 /* eslint-enable max-len */
 
 const categoriesLoanCount = computed(() => {
-	const { getAllCategoryLoanCounts } = useBadgeData();
 	return getAllCategoryLoanCounts(props.tieredAchievements);
 });
 
@@ -322,8 +327,9 @@ const setGoalTarget = target => {
 
 onMounted(async () => {
 	if (props.isNextStepsExpEnabled) {
-		await loadGoalData(props.loans);
-		await checkCompletedGoal();
+		await loadGoalData();
+		currGoalProgress.value = await getPostCheckoutProgressByLoans(props.loans);
+		await checkCompletedGoal({ currentGoalProgress: currGoalProgress.value });
 		goalDataInitialized.value = true;
 		isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
 	}

@@ -26,12 +26,14 @@
 				#[`slide${index}`]
 				:key="index"
 			>
-				<GoalCard
+				<component
 					v-if="showGoalCard(index)"
+					:is="goalCardComponent"
 					:goal-progress="goalProgress"
 					:hero-slides="slides"
 					:loading="goalProgressLoading"
 					:user-goal="userGoal"
+					:prev-year-loans="womenLoansLastYear"
 					@open-goal-modal="$emit('open-goal-modal')"
 				/>
 				<MyKivaCard
@@ -95,6 +97,8 @@ import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import GoalCard from '#src/components/MyKiva/GoalCard';
 import { optimizeContentfulUrl } from '#src/util/imageUtils';
+import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
+import useGoalData from '#src/composables/useGoalData';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
@@ -109,6 +113,8 @@ const {
 	combineBadgeData,
 	getJourneysByLoan,
 } = useBadgeData(apollo);
+
+const { getCategoryLoansLastYear } = useGoalData();
 
 const emit = defineEmits(['update-journey', 'open-goal-modal']);
 
@@ -177,6 +183,14 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	goalsEntrypointEnable: {
+		type: Boolean,
+		default: false
+	},
+	hideGoalCard: {
+		type: Boolean,
+		default: false
+	}
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
@@ -209,7 +223,10 @@ const isNonBadgeSlide = slide => {
 
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
-	return props.userGoalEnabled && (!props.userGoal || !props.userGoalAchieved);
+
+	return props.userGoalEnabled
+	&& (!props.userGoal || !props.userGoalAchieved || (props.userGoalAchieved && props.goalsEntrypointEnable))
+	&& !props.hideGoalCard;
 });
 
 const orderedSlides = computed(() => {
@@ -438,6 +455,17 @@ const showGoalCard = idx => {
 
 	return idx === 0 && shouldShowGoalCard.value;
 };
+
+const womenLoansLastYear = computed(() => {
+	return getCategoryLoansLastYear(props.heroTieredAchievements);
+});
+
+const goalCardComponent = computed(() => {
+	if (props.goalsEntrypointEnable) {
+		return NextYearGoalCard;
+	}
+	return GoalCard;
+});
 
 </script>
 

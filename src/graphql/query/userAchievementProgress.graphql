@@ -1,5 +1,5 @@
-query UserAchievementProgress($publicId: String) {
-  userAchievementProgress(publicId: $publicId) {
+query UserAchievementProgress($publicId: String, $year: Int) {
+  userAchievementProgress(publicId: $publicId, year: $year) {
     id
     lendingAchievements {
       id
@@ -14,8 +14,9 @@ query UserAchievementProgress($publicId: String) {
     }
     tieredLendingAchievements {
       id
-	  description
+      description
       totalProgressToAchievement
+      progressForYear
 	  loanPurchases (limit: 3) {
         loan {
           id

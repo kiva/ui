@@ -74,7 +74,7 @@ const {
 	userGoal,
 	goalProgress,
 	loadGoalData,
-	getProgressByLoan,
+	getPostCheckoutProgressByLoan,
 } = useGoalData({ apollo });
 
 const myKivaExperimentEnabled = ref(false);
@@ -189,8 +189,8 @@ const fetchPostCheckoutAchievements = async loanIds => {
 	let showAtbGoalMsg = false;
 
 	if (props.isNextStepsExpEnabled) {
-		await loadGoalData(loansInBasket.value);
-		loanGoalProgress.value = await getProgressByLoan(addedLoan.value);
+		await loadGoalData({ loans: loansInBasket.value });
+		loanGoalProgress.value = await getPostCheckoutProgressByLoan(addedLoan.value);
 		const userTarget = userGoal.value?.target || 0;
 		const isOneLoanAwayFromGoal = userTarget - currentGoalProgress.value === 1;
 		showAtbGoalMsg = isLoanGoal.value && (basketSize < BASKET_LIMIT_SIZE_FOR_EXP || isOneLoanAwayFromGoal);

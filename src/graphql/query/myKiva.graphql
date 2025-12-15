@@ -125,5 +125,13 @@ query myKivaQuery {
 			key
 			value
 		}
+    new_badge_section_enable: uiConfigSetting(key: "new_badge_section_enable") {
+			key
+			value
+		}
+    post_lending_next_steps_enable: uiConfigSetting(key: "mykiva_post_lending_next_steps_enable") {
+			key
+			value
+		}
 	}
 }

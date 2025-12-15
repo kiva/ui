@@ -15,6 +15,8 @@
 			:sidesheet-loan="sidesheetLoan"
 			:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 			:goals-entrypoint-enable="goalsEntrypointEnable"
+			:show-new-badge-section="showNewBadgeSection"
+			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 		/>
 	</www-page>
 </template>
@@ -34,9 +36,13 @@ import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSid
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
+import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import { inject } from 'vue';
 
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
+const NEW_BADGE_SECTION_KEY = 'new_badge_section_enable';
+const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -49,6 +55,16 @@ export default {
 	components: {
 		MyKivaPageContent,
 		WwwPage,
+	},
+	setup() {
+		const apollo = inject('apollo');
+		const {
+			renewAnnualGoal,
+		} = useGoalData({ apollo });
+
+		return {
+			renewAnnualGoal,
+		};
 	},
 	data() {
 		return {
@@ -65,6 +81,8 @@ export default {
 			sidesheetLoan: {},
 			isNextStepsExpEnabled: undefined,
 			goalsEntrypointEnable: false,
+			showNewBadgeSection: false,
+			postLendingNextStepsEnable: false,
 		};
 	},
 	apollo: {
@@ -74,7 +92,7 @@ export default {
 			return Promise.all([
 				client.query({ query: myKivaQuery }),
 				client.query({ query: lendingStatsQuery }),
-				client.query({ query: userAchievementProgressQuery }),
+				client.query({ query: userAchievementProgressQuery, variables: { year: LAST_YEAR_KEY } }),
 				loanId
 					? client.query({ query: borrowerProfileSideSheetQuery, variables: { loanId: Number(loanId) } })
 					: Promise.resolve(null),
@@ -161,6 +179,8 @@ export default {
 				this.transactions = myKivaQueryResult.my?.transactions?.values ?? [];
 
 				this.goalsEntrypointEnable = readBoolSetting(myKivaQueryResult, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
+				this.showNewBadgeSection = readBoolSetting(myKivaQueryResult, `general.${NEW_BADGE_SECTION_KEY}.value`) ?? false; // eslint-disable-line max-len
+				this.postLendingNextStepsEnable = readBoolSetting(myKivaQueryResult, `general.${POST_LENDING_NEXT_STEPS_KEY}.value`) ?? false; // eslint-disable-line max-len
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');
 			}
@@ -170,7 +190,8 @@ export default {
 		try {
 			this.fetchMyKivaData();
 			const achievementsResult = this.apollo.readQuery({
-				query: userAchievementProgressQuery
+				query: userAchievementProgressQuery,
+				variables: { year: LAST_YEAR_KEY }
 			});
 			this.heroTieredAchievements = achievementsResult.userAchievementProgress?.tieredLendingAchievements ?? [];
 			const contentfulChallengeResult = this.apollo.readQuery({
@@ -202,7 +223,7 @@ export default {
 			'EXP-MP-1984-Sept2025',
 		);
 	},
-	mounted() {
+	async mounted() {
 		try {
 			this.apollo.watchQuery({
 				query: gql`
@@ -221,6 +242,18 @@ export default {
 					this.userInfo = { ...this.userInfo, userPreferences: data?.my?.userPreferences };
 				},
 			});
+
+			if (this.goalsEntrypointEnable) {
+				// Param to force goals renewal in an specific year
+				const { renewYear } = this.$route.query;
+				const { showRenewedAnnualGoalToast } = await this.renewAnnualGoal(
+					renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined
+				);
+				if (showRenewedAnnualGoalToast) {
+					// eslint-disable-next-line max-len
+					this.$showTipMsg('It’s time for your 2026 impact goal - a fresh start and new opportunity to make a difference.');
+				}
+			}
 		} catch (error) {
 			logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
 		}
