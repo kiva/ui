@@ -94,7 +94,8 @@ export default function useGoalData({ apollo } = {}) {
 	function setGoalState(parsedPrefs) {
 		if (!parsedPrefs) return;
 		const goals = parsedPrefs.goals || [];
-		userGoal.value = { ...goals[0] };
+		const activeGoals = goals.filter(g => g.status !== GOAL_STATUS.EXPIRED);
+		userGoal.value = { ...activeGoals[0] };
 	}
 
 	/**
@@ -269,11 +270,12 @@ export default function useGoalData({ apollo } = {}) {
 	async function checkCompletedGoal({ currentGoalProgress = 0, category = 'post-checkout' } = {}) {
 		if (
 			(currentGoalProgress && (currentGoalProgress >= userGoal.value?.target))
-			|| (userGoal.value && userGoalAchieved.value && userGoal.value.status !== 'completed')
+			|| (userGoal.value && userGoalAchieved.value
+				&& ![GOAL_STATUS.COMPLETED, GOAL_STATUS.EXPIRED].includes(userGoal.value.status))
 		) {
 			userGoal.value = {
 				...userGoal.value,
-				status: 'completed'
+				status: GOAL_STATUS.COMPLETED
 			};
 			await storeGoalPreferences({ ...userGoal.value });
 			$kvTrackEvent(
@@ -311,8 +313,9 @@ export default function useGoalData({ apollo } = {}) {
 		const parsedPrefs = await loadPreferences();
 		const goals = parsedPrefs.goals || [];
 		const currentYear = today.getFullYear();
-		const renewedYear = goals.goalsRenewedDate ? new Date(goals.goalsRenewedDate).getFullYear() : null;
-		if (renewedYear >= currentYear) {
+		const renewedYear = parsedPrefs.goalsRenewedDate ? new Date(parsedPrefs.goalsRenewedDate).getFullYear() : null;
+		const areGoalsRenewed = goals.some(goal => goal.status === GOAL_STATUS.EXPIRED);
+		if (renewedYear > currentYear || areGoalsRenewed) {
 			return {
 				expiredGoals: goals,
 				showRenewedAnnualGoalToast: false,
@@ -352,6 +355,21 @@ export default function useGoalData({ apollo } = {}) {
 		};
 	}
 
+	async function setHideGoalCardPreference() {
+		const parsedPrefs = await loadPreferences();
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			{ hideGoalCard: true }
+		);
+	}
+
+	function hideGoalCard() {
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+		return parsedPrefs.hideGoalCard || false;
+	}
+
 	return {
 		checkCompletedGoal,
 		getCategories,
@@ -370,5 +388,7 @@ export default function useGoalData({ apollo } = {}) {
 		userPreferences,
 		// Goal Entry for 2026 Goals
 		renewAnnualGoal,
+		hideGoalCard,
+		setHideGoalCardPreference,
 	};
 }

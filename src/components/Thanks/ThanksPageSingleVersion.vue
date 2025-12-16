@@ -8,7 +8,7 @@
 				@view-pdf-clicked="scrollToReceipt"
 			/>
 			<GoalEntrypoint
-				v-if="thanksPageGoalsEntrypointEnable && !isGuest && isEmptyGoal"
+				v-if="isNextStepsExpEnabled && thanksPageGoalsEntrypointEnable && !isGuest && isEmptyGoal"
 				:loading="goalDataLoading"
 				:total-loans="totalLoans"
 				:categories-loan-count="categoriesLoanCount"

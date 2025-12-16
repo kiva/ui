@@ -30,6 +30,7 @@
 					:user-goal="userGoal"
 					:goals-entrypoint-enable="goalsEntrypointEnable"
 					:categories-loan-count="categoriesLoanCount"
+					:hide-goal-card="hideCompletedGoalCard"
 					@open-goal-modal="showGoalModal = true"
 				/>
 			</div>
@@ -156,6 +157,7 @@
 			:user-goal-achieved="userGoalAchieved"
 			:user-goal="userGoal"
 			:goals-entrypoint-enable="goalsEntrypointEnable"
+			:hide-goal-card="hideCompletedGoalCard"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<GoalSettingModal
@@ -249,7 +251,11 @@ export default {
 		goalsEntrypointEnable: {
 			type: Boolean,
 			default: false
-		}
+		},
+		postLendingNextStepsEnable: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -260,6 +266,7 @@ export default {
 			checkedArr: this.regionsData.map(() => false),
 			goalProgressLoading: true,
 			isGoalSet: false,
+			hideCompletedGoalCard: false,
 		};
 	},
 	computed: {
@@ -320,6 +327,7 @@ export default {
 			loadGoalData,
 			storeGoalPreferences,
 			checkCompletedGoal,
+			hideGoalCard,
 		} = useGoalData({ apollo });
 
 		return {
@@ -329,12 +337,14 @@ export default {
 			loadGoalData,
 			storeGoalPreferences,
 			checkCompletedGoal,
+			hideGoalCard,
 		};
 	},
 	async mounted() {
 		if (this.isNextStepsExpEnabled) {
 			await this.loadGoalData();
 			await this.checkCompletedGoal({ category: 'portfolio' });
+			this.hideCompletedGoalCard = this.hideGoalCard();
 			this.goalProgressLoading = false;
 		}
 

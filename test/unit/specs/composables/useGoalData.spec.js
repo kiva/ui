@@ -872,7 +872,7 @@ describe('useGoalData', () => {
 			},
 		});
 
-		const today = new Date('2026-06-01T00:00:00Z');
+		const today = new Date('2028-06-01T00:00:00Z');
 		const updatedGoals = await composable.renewAnnualGoal(today);
 
 		expect(updatedGoals.expiredGoals.length).toBe(1);
@@ -1039,6 +1039,80 @@ describe('useGoalData', () => {
 			const progress = composable.getCategoryLoansLastYear(null);
 
 			expect(progress).toBe(0);
+		});
+	});
+
+	describe('setHideGoalCardPreference', () => {
+		it('should set hideGoalCard preference to true', async () => {
+			const {
+				updateUserPreferences,
+			} = await import('#src/util/userPreferenceUtils');
+
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'hide-goal-id',
+							preferences: JSON.stringify({}),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+
+			updateUserPreferences.mockClear();
+			await composable.setHideGoalCardPreference(true);
+
+			expect(updateUserPreferences).toHaveBeenCalledWith(
+				mockApollo,
+				{ id: 'hide-goal-id', preferences: '{}' },
+				{},
+				{ hideGoalCard: true },
+			);
+		});
+	});
+
+	describe('hideGoalCard', () => {
+		it('should return hideGoalCard preference value', async () => {
+			const mockPrefs = {
+				hideGoalCard: true,
+			};
+
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify(mockPrefs),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+
+			await composable.loadGoalData();
+			const hideCard = await composable.hideGoalCard();
+
+			expect(hideCard).toBe(true);
+		});
+
+		it('should return false if preferences are empty', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify({}),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+
+			await composable.loadGoalData();
+			const hideCard = await composable.hideGoalCard();
+
+			expect(hideCard).toBe(false);
 		});
 	});
 });

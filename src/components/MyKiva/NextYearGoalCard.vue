@@ -109,7 +109,7 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
 const { getLoanFindingUrl } = useBadgeData();
-const { getGoalDisplayName } = useGoalData();
+const { getGoalDisplayName, setHideGoalCardPreference } = useGoalData();
 const COMPLETED_GOAL_THRESHOLD = 100;
 const HALF_GOAL_THRESHOLD = 50;
 
@@ -197,6 +197,11 @@ const showConfetti = () => {
 const handleContinueClick = () => {
 	if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
 		$kvTrackEvent('portfolio', 'click', 'goal-completed-cta');
+		const element = document.querySelector('#mykiva-achievements');
+		if (element) {
+			element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		}
+
 		return;
 	}
 	$kvTrackEvent('portfolio', 'click', 'continue-towards-goal');
@@ -220,6 +225,7 @@ watch(() => props.userGoal, (newVal, oldVal) => {
 watch(goalProgressPercentage, newVal => {
 	if (newVal === COMPLETED_GOAL_THRESHOLD) {
 		showConfetti();
+		setHideGoalCardPreference();
 	}
 });
 </script>
