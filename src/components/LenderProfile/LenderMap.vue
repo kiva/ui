@@ -24,7 +24,7 @@
 					:aspect-ratio="1.8"
 					:lat="30"
 					:long="1"
-					:zoom-level="1"
+					:zoom-level="2"
 					:use-leaflet="true"
 					:show-zoom-control="true"
 					:allow-dragging="true"

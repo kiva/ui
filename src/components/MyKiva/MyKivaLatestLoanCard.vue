@@ -27,7 +27,8 @@
 			:allow-dragging="false"
 			:show-labels="false"
 			:countries-data="countriesData"
-			:default-base-color="'#BFE5D1'"
+			:default-base-color="defaultBaseColor"
+			:show-tooltips="false"
 		/>
 		<div class="tw-relative tw-flex tw-justify-center tw-z-1">
 			<KvBorrowerImage
@@ -67,6 +68,7 @@ import {
 import { mdiEarth } from '@mdi/js';
 import { computed, inject, onMounted } from 'vue';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
+import kvTokensPrimitives from '@kiva/kv-tokens';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -77,7 +79,6 @@ const props = defineProps({
 	},
 });
 
-// Get the most recent loan (first in sorted array)
 const mostRecentLoan = computed(() => {
 	return props.loans?.[0] || null;
 });
@@ -121,6 +122,8 @@ const countriesData = computed(() => {
 		long: mostRecentLoan.value.geocode?.country?.longitude || 0,
 	}];
 });
+
+const defaultBaseColor = kvTokensPrimitives.colors?.brand[200] || null;
 
 onMounted(() => {
 	$kvTrackEvent('portfolio', 'view', 'next-step-impact-education');
