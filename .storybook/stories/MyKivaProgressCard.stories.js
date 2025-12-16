@@ -32,19 +32,19 @@ export const Default = story({
 
 export const InProgressGoal = story({
   goal: {
-    target: 10,
+    target: 100,
     category: 'ID_WOMENS_EQUALITY',
   },
-  goalProgress: 5,
+  goalProgress: 38,
   isAnnualGoal: true,
 });
 
 export const CompletedGoal = story({
   goal: {
-    target: 10,
+    target: 100,
     category: 'ID_WOMENS_EQUALITY',
   },
-  goalProgress: 10,
+  goalProgress: 100,
   isAnnualGoal: true,
 });
 
