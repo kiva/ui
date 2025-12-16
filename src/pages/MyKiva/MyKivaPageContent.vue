@@ -45,6 +45,7 @@
 				:total-loans="totalLoans"
 				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 				:goals-entrypoint-enable="goalsEntrypointEnable"
+				:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			/>
 		</section>
 		<section v-if="goalsEntrypointEnable" class="tw-mt-4" id="mykiva-achievements">
@@ -61,7 +62,8 @@
 						/>
 						<span
 							id="impact-progress-tooltip"
-							class="tw-sr-only tw-absolute tw--mt-2 tw-inset-x-1 md:tw-inset-x-4 md:tw-mt-1"
+							class="tw-sr-only tw-absolute tw--mt-2 tw-inset-x-1
+							md:tw-inset-x-4 md:tw-mt-1 tw-text-stone-3"
 						>Tooltip controller</span>
 					</div>
 					<kv-tooltip
@@ -360,7 +362,11 @@ export default {
 		showNewBadgeSection: {
 			type: Boolean,
 			default: false
-		}
+		},
+		postLendingNextStepsEnable: {
+			type: Boolean,
+			default: false
+		},
 	},
 	setup() {
 		const apollo = inject('apollo');
