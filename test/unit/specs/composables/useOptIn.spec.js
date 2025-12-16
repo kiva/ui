@@ -1,19 +1,23 @@
-import useOptIn from '#src/composables/useOptIn';
+import useOptIn, { MAIL_UPDATES_OPT_COOKIE_NAME } from '#src/composables/useOptIn';
 import logReadQueryError from '#src/util/logReadQueryError';
-import CookieStore from '#src/util/cookieStore';
 
 vi.mock('#src/util/logReadQueryError');
 vi.mock('#src/util/cookieStore');
 
 describe('useOptIn.js', () => {
 	let mockApollo;
+	let mockCookieStore;
 	let composable;
 
 	beforeEach(() => {
 		mockApollo = {
 			mutate: vi.fn(),
 		};
-		composable = useOptIn(mockApollo);
+		mockCookieStore = {
+			get: vi.fn(),
+			set: vi.fn(),
+		};
+		composable = useOptIn(mockApollo, mockCookieStore);
 	});
 
 	describe('updateCommunicationSettings', () => {
@@ -156,15 +160,12 @@ describe('useOptIn.js', () => {
 	});
 
 	describe('userHasMailUpdatesOptOut', () => {
-		let mockCookieStore;
-
 		beforeEach(() => {
 			mockCookieStore = {
 				get: vi.fn(),
 				set: vi.fn(),
 			};
-			vi.mocked(CookieStore).mockImplementation(() => mockCookieStore);
-			composable = useOptIn(mockApollo);
+			composable = useOptIn(mockApollo, mockCookieStore);
 		});
 
 		it('should return false when cookie does not exist', () => {
@@ -176,15 +177,15 @@ describe('useOptIn.js', () => {
 		});
 
 		it('should return false when cookie exists but pattern is not present', () => {
-			mockCookieStore.get.mockReturnValue('viewed=true&viewed_date=1765828957681');
+			mockCookieStore.get.mockReturnValue('');
 
 			const result = composable.userHasMailUpdatesOptOut();
 
 			expect(result).toBe(false);
 		});
 
-		it('should return true when pattern mails_opted_out=true is present', () => {
-			mockCookieStore.get.mockReturnValue('viewed=true&mails_opted_out=true');
+		it('should return true when pattern is true', () => {
+			mockCookieStore.get.mockReturnValue('true');
 
 			const result = composable.userHasMailUpdatesOptOut();
 
@@ -192,23 +193,7 @@ describe('useOptIn.js', () => {
 		});
 
 		it('should return true when pattern includes loan ID', () => {
-			mockCookieStore.get.mockReturnValue('viewed=true&mails_opted_out=true|3086700');
-
-			const result = composable.userHasMailUpdatesOptOut();
-
-			expect(result).toBe(true);
-		});
-
-		it('should return true when pattern is at the start', () => {
-			mockCookieStore.get.mockReturnValue('mails_opted_out=true&viewed=true');
-
-			const result = composable.userHasMailUpdatesOptOut();
-
-			expect(result).toBe(true);
-		});
-
-		it('should return true when pattern is at the end', () => {
-			mockCookieStore.get.mockReturnValue('viewed=true&viewed_date=1765828957681&mails_opted_out=true');
+			mockCookieStore.get.mockReturnValue('true|3086700');
 
 			const result = composable.userHasMailUpdatesOptOut();
 
@@ -216,7 +201,7 @@ describe('useOptIn.js', () => {
 		});
 
 		it('should handle cookie with extra whitespace', () => {
-			mockCookieStore.get.mockReturnValue('  viewed=true&mails_opted_out=true  ');
+			mockCookieStore.get.mockReturnValue('  true  ');
 
 			const result = composable.userHasMailUpdatesOptOut();
 
@@ -225,15 +210,12 @@ describe('useOptIn.js', () => {
 	});
 
 	describe('setMailUpdatesOptOutCookie', () => {
-		let mockCookieStore;
-
 		beforeEach(() => {
 			mockCookieStore = {
 				get: vi.fn(),
 				set: vi.fn(),
 			};
-			vi.mocked(CookieStore).mockImplementation(() => mockCookieStore);
-			composable = useOptIn(mockApollo);
+			composable = useOptIn(mockApollo, mockCookieStore);
 		});
 
 		describe('when optedOut is true', () => {
@@ -243,32 +225,8 @@ describe('useOptIn.js', () => {
 				composable.setMailUpdatesOptOutCookie(true);
 
 				expect(mockCookieStore.set).toHaveBeenCalledWith(
-					'kvgdpr',
-					'mails_opted_out=true',
-					expect.objectContaining({ expires: expect.any(Date) })
-				);
-			});
-
-			it('should add pattern with & to existing cookie', () => {
-				mockCookieStore.get.mockReturnValue('viewed=true&viewed_date=1765828957681');
-
-				composable.setMailUpdatesOptOutCookie(true);
-
-				expect(mockCookieStore.set).toHaveBeenCalledWith(
-					'kvgdpr',
-					'&mails_opted_out=true',
-					expect.objectContaining({ expires: expect.any(Date) })
-				);
-			});
-
-			it('should add pattern with loan ID', () => {
-				mockCookieStore.get.mockReturnValue('viewed=true');
-
-				composable.setMailUpdatesOptOutCookie(true, '3086700');
-
-				expect(mockCookieStore.set).toHaveBeenCalledWith(
-					'kvgdpr',
-					'&mails_opted_out=true|3086700',
+					MAIL_UPDATES_OPT_COOKIE_NAME,
+					'true',
 					expect.objectContaining({ expires: expect.any(Date) })
 				);
 			});
@@ -279,8 +237,8 @@ describe('useOptIn.js', () => {
 				composable.setMailUpdatesOptOutCookie(true, '1234567');
 
 				expect(mockCookieStore.set).toHaveBeenCalledWith(
-					'kvgdpr',
-					'mails_opted_out=true|1234567',
+					MAIL_UPDATES_OPT_COOKIE_NAME,
+					'true|1234567',
 					expect.objectContaining({ expires: expect.any(Date) })
 				);
 			});
@@ -288,75 +246,25 @@ describe('useOptIn.js', () => {
 
 		describe('when optedOut is false', () => {
 			it('should remove pattern from cookie', () => {
-				mockCookieStore.get.mockReturnValue('viewed=true&mails_opted_out=true&opted_out=true');
+				mockCookieStore.get.mockReturnValue('true');
 
 				composable.setMailUpdatesOptOutCookie(false);
 
 				expect(mockCookieStore.set).toHaveBeenCalledWith(
-					'kvgdpr',
-					'viewed=true&opted_out=true',
-					expect.objectContaining({ expires: expect.any(Date) })
-				);
-			});
-
-			it('should remove pattern with loan ID', () => {
-				mockCookieStore.get.mockReturnValue(
-					'viewed=true&viewed_date=1765828957681&mails_opted_out=true|3086700'
-				);
-
-				composable.setMailUpdatesOptOutCookie(false);
-
-				expect(mockCookieStore.set).toHaveBeenCalledWith(
-					'kvgdpr',
-					'viewed=true&viewed_date=1765828957681',
-					expect.objectContaining({ expires: expect.any(Date) })
-				);
-			});
-
-			it('should remove pattern from start of cookie', () => {
-				mockCookieStore.get.mockReturnValue('mails_opted_out=true|123&viewed=true');
-
-				composable.setMailUpdatesOptOutCookie(false);
-
-				expect(mockCookieStore.set).toHaveBeenCalledWith(
-					'kvgdpr',
-					'viewed=true',
-					expect.objectContaining({ expires: expect.any(Date) })
-				);
-			});
-
-			it('should remove pattern from end of cookie', () => {
-				mockCookieStore.get.mockReturnValue('viewed=true&opted_out=true&mails_opted_out=true');
-
-				composable.setMailUpdatesOptOutCookie(false);
-
-				expect(mockCookieStore.set).toHaveBeenCalledWith(
-					'kvgdpr',
-					'viewed=true&opted_out=true',
-					expect.objectContaining({ expires: expect.any(Date) })
-				);
-			});
-
-			it('should handle cookie with only the pattern', () => {
-				mockCookieStore.get.mockReturnValue('mails_opted_out=true|456');
-
-				composable.setMailUpdatesOptOutCookie(false);
-
-				expect(mockCookieStore.set).toHaveBeenCalledWith(
-					'kvgdpr',
+					MAIL_UPDATES_OPT_COOKIE_NAME,
 					'',
 					expect.objectContaining({ expires: expect.any(Date) })
 				);
 			});
 
-			it('should handle pattern without & prefix', () => {
-				mockCookieStore.get.mockReturnValue('viewed=true&mails_opted_out=true|789&opted_out=true');
+			it('should handle cookie with only the pattern', () => {
+				mockCookieStore.get.mockReturnValue('true|456');
 
 				composable.setMailUpdatesOptOutCookie(false);
 
 				expect(mockCookieStore.set).toHaveBeenCalledWith(
-					'kvgdpr',
-					'viewed=true&opted_out=true',
+					MAIL_UPDATES_OPT_COOKIE_NAME,
+					'',
 					expect.objectContaining({ expires: expect.any(Date) })
 				);
 			});
@@ -367,7 +275,7 @@ describe('useOptIn.js', () => {
 				composable.setMailUpdatesOptOutCookie(false);
 
 				expect(mockCookieStore.set).toHaveBeenCalledWith(
-					'kvgdpr',
+					MAIL_UPDATES_OPT_COOKIE_NAME,
 					'',
 					expect.objectContaining({ expires: expect.any(Date) })
 				);
@@ -379,7 +287,7 @@ describe('useOptIn.js', () => {
 				composable.setMailUpdatesOptOutCookie(false);
 
 				expect(mockCookieStore.set).toHaveBeenCalledWith(
-					'kvgdpr',
+					MAIL_UPDATES_OPT_COOKIE_NAME,
 					'',
 					expect.objectContaining({ expires: expect.any(Date) })
 				);

@@ -401,27 +401,6 @@ export default {
 				this.showGoalModal = false;
 			}
 		},
-		/**
-		 * TODO: When `MyKivaEmailUpdatesCard` is finally ready to add in myKiva page,
-		 * even in `LendingStats.vue > JourneyCardCarousel` or a new block,
-		 * use this validation to show `MyKivaEmailUpdatesCard` component or show `ThanYouCard` or no one
-		 *
-		 * note: add apollo query to get communication settings
-		 * */
-		/* checkIfUserHasMailUpdatesOptOut() {
-			const userMailUpdatesOptedIn = (this.data?.my?.communicationSettings?.lenderNews &&
-				this.data?.my?.communicationSettings?.loanUpdates);
-			// refresh cookie flag
-			if (!userMailUpdatesOptedIn) {
-				useOptInComposable.setMailUpdatesOptOut();
-			}
-
-			/!*
-			if user has opted out of email updates, show the `MyKivaEmailUpdatesCard` component
-			else if user has opted-in or already accepted the email updates
-			do not show anything when the user refresh/revisits the page
-			*!/
-		}, */
 	},
 };
 </script>

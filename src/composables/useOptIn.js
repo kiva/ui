@@ -1,9 +1,9 @@
-import CookieStore from '#src/util/cookieStore';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { gql } from 'graphql-tag';
 
-export default apollo => {
-	const cookieStore = new CookieStore();
+export const MAIL_UPDATES_OPT_COOKIE_NAME = 'kvemailopt';
+
+export default (apollo, cookieStore) => {
 	const updateCommunicationSettings = async (lenderNews, loanUpdates, globalUnsubscribed) => {
 		try {
 			await apollo.mutate({
@@ -73,8 +73,8 @@ export default apollo => {
 
 	const userHasMailUpdatesOptOut = () => {
 		let mailsUpdatesOptOut = false;
-		const value = cookieStore.get('kvgdpr')?.trim();
-		if (/(\b|&)mails_opted_out=true(\b|&)/.test(value)) {
+		const value = cookieStore.get(MAIL_UPDATES_OPT_COOKIE_NAME)?.trim();
+		if (/(\b|&)true(\b|&)/.test(value)) {
 			mailsUpdatesOptOut = true;
 		}
 
@@ -83,19 +83,15 @@ export default apollo => {
 
 	const setMailUpdatesOptOutCookie = (optedOut, loanId = null) => {
 		let newValue = '';
-		const currentValue = cookieStore.get('kvgdpr')?.trim() || '';
+		const currentValue = cookieStore.get(MAIL_UPDATES_OPT_COOKIE_NAME)?.trim() || '';
 		if (optedOut) {
-			newValue = `${currentValue !== '' ? '&' : ''}mails_opted_out=true${loanId ? `|${loanId}` : ''}`;
+			newValue = `true${loanId ? `|${loanId}` : ''}`;
 		} else {
-			// Remove pattern &mails_opted_out=true|${LOAN_ID} from currentValue
-			// pattern could be: &mails_opted_out=true|123, mails_opted_out=true|123,
-			// 	&mails_opted_out=true o mails_opted_out=true
-			newValue = currentValue.replace(/&?mails_opted_out=true(?:\|[^&]*)?/g, '');
-			// remove '&' duplicates or at the start or at the end
+			newValue = currentValue.replace(/&?true(?:\|[^&]*)?/g, '');
 			newValue = newValue.replace(/^&+/, '').replace(/&+/g, '&');
 		}
 		cookieStore.set(
-			'kvgdpr',
+			MAIL_UPDATES_OPT_COOKIE_NAME,
 			newValue,
 			{ expires: new Date(new Date().setFullYear(new Date().getFullYear() + 1)) }
 		);
