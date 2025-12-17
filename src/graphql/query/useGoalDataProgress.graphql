@@ -1,5 +1,11 @@
-query useGoalDataProgressQuery($loanIds: [Int!]!, $year: Int!) {
+query useGoalDataProgressQuery($loanIds: [Int!]!, $year: Int) {
   postCheckoutAchievements(loanIds: $loanIds, year: $year) {
+	allTimeProgress {
+		achievementId
+        totalProgress
+        currentTier
+        completed
+	}
 	yearlyProgress {
 		achievementId
         totalProgress

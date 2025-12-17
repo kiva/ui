@@ -70,24 +70,53 @@ export default function useGoalData({ apollo } = {}) {
 	const apolloClient = apollo || inject('apollo');
 	const $kvTrackEvent = inject('$kvTrackEvent');
 	const currentYearProgress = ref([]);
-	const goalCurrentLoanCount = ref(0); // Tracks loans toward "Support All" goal
+	const goalCurrentLoanCount = ref(0); // In-page counter for tracking loans added to basket
 	const loading = ref(true);
 	const totalLoanCount = ref(null);
 	const userGoal = ref(null);
 	const userGoalAchievedNow = ref(false);
 	const userPreferences = ref(null);
+	const useYearlyProgress = ref(false); // Default to all-time progress (flag disabled behavior)
 
 	// --- Computed Properties ---
 
 	const goalProgress = computed(() => {
 		const goal = userGoal.value;
 		const progress = currentYearProgress.value;
-		if (goal?.category === ID_SUPPORT_ALL) return totalLoanCount.value || 0;
-		const progressForYear = progress.find(n => n.id === goal?.category)?.progressForYear || 0;
-		return progressForYear;
+		// When flag is enabled (useYearlyProgress = true), use yearly progress
+		// When flag is disabled (useYearlyProgress = false), use all-time progress minus loanTotalAtStart
+		if (goal?.category === ID_SUPPORT_ALL) {
+			if (useYearlyProgress.value) {
+				return totalLoanCount.value || 0;
+			}
+			const loanTotalAtStart = goal?.loanTotalAtStart || 0;
+			return Math.max(0, (totalLoanCount.value || 0) - loanTotalAtStart);
+		}
+		const categoryProgress = progress.find(n => n.id === goal?.category);
+		if (useYearlyProgress.value) {
+			return categoryProgress?.progressForYear || 0;
+		}
+		const allTimeProgress = categoryProgress?.totalProgressToAchievement || 0;
+		const loanTotalAtStart = goal?.loanTotalAtStart || 0;
+		return Math.max(0, allTimeProgress - loanTotalAtStart);
 	});
 
 	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
+
+	/**
+	 * Check if the current progress would complete the user's goal
+	 * Used to show "reaches your goal" message in basket and ATB modal
+	 * @param {number} currentProgress - Current progress toward goal (after adding loan to basket)
+	 * @returns {boolean} True if this progress completes the goal
+	 */
+	function isProgressCompletingGoal(currentProgress) {
+		const goal = userGoal.value;
+		if (!goal || goal.status !== GOAL_STATUS.IN_PROGRESS) return false;
+
+		const target = goal.target || 0;
+		// Check if progress > 0 and equals target (completing the goal)
+		return currentProgress > 0 && currentProgress === target;
+	}
 
 	// --- Functions ---
 
@@ -221,31 +250,64 @@ export default function useGoalData({ apollo } = {}) {
 		}
 	}
 
-	async function getPostCheckoutProgressByLoans(loans, year = new Date().getFullYear()) {
+	/**
+	 * Get post-checkout progress for multiple loans
+	 * @param {Object} options - Options for progress calculation
+	 * @param {Array} options.loans - Array of loan objects with id property
+	 * @param {number|null} options.year - Year for yearly progress, or null for all-time progress
+	 * @param {boolean} options.increment - Increment in-page counter by 1 (ATB modal: true)
+	 * @param {boolean} options.addBasketLoans - Add loans.length to progress (Basket page: true)
+	 * @returns {number} Progress count for the user's goal category
+	 *
+	 * Use cases:
+	 * - ATB Modal: { loans, increment: true } - increments counter per add-to-basket action
+	 * - Basket Page: { loans, addBasketLoans: true } - adds basket loan count
+	 * - Thanks Page: { loans, year } - returns goalProgress (loans already in totalLoanCount)
+	 */
+	async function getPostCheckoutProgressByLoans({
+		loans = [],
+		year = null,
+		increment = false,
+		addBasketLoans = false,
+	} = {}) {
+		// For ID_SUPPORT_ALL, use in-page counter logic instead of API query
+		// goalProgress already accounts for loanTotalAtStart
+		if (userGoal.value?.category === ID_SUPPORT_ALL) {
+			if (increment) {
+				// ATB modal: increment by 1 per add-to-basket action
+				goalCurrentLoanCount.value += 1;
+				return goalProgress.value + goalCurrentLoanCount.value;
+			}
+			if (addBasketLoans) {
+				// Basket page: add basket loan count (loans not yet in totalLoanCount)
+				return goalProgress.value + loans.length;
+			}
+			// Thanks page: just return goalProgress (loans already in totalLoanCount after checkout)
+			return goalProgress.value;
+		}
 		try {
 			const loanIds = loans.map(loan => loan.id);
 			const response = await apolloClient.query({
 				query: useGoalDataProgressQuery,
 				variables: { loanIds, year },
 			});
-			const progress = response.data?.postCheckoutAchievements?.yearlyProgress || [];
-			const userGoalProgress = progress.find(
+			// Use allTimeProgress when year is null/undefined, otherwise use yearlyProgress
+			const progress = year
+				? response.data?.postCheckoutAchievements?.yearlyProgress || []
+				: response.data?.postCheckoutAchievements?.allTimeProgress || [];
+			const totalProgress = progress.find(
 				entry => entry.achievementId === userGoal.value?.category
 			)?.totalProgress || 0;
-			return userGoalProgress;
+			// When using all-time progress, subtract loanTotalAtStart to get progress since goal was set
+			if (!year) {
+				const loanTotalAtStart = userGoal.value?.loanTotalAtStart || 0;
+				return Math.max(0, totalProgress - loanTotalAtStart);
+			}
+			return totalProgress;
 		} catch (error) {
 			logFormatter(error, 'Failed to get post-checkout progress');
 			return null;
 		}
-	}
-
-	async function getPostCheckoutProgressByLoan(loan, year = new Date().getFullYear()) {
-		if (userGoal.value?.category === ID_SUPPORT_ALL) {
-			goalCurrentLoanCount.value += 1;
-			return goalCurrentLoanCount.value;
-		}
-		const progress = await getPostCheckoutProgressByLoans([loan], year);
-		return progress;
 	}
 
 	async function storeGoalPreferences(updates) {
@@ -256,8 +318,21 @@ export default function useGoalData({ apollo } = {}) {
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		const goals = parsedPrefs.goals || [];
 		const goalIndex = goals.findIndex(g => g.goalName === updates.goalName);
-		if (goalIndex !== -1) goals[goalIndex] = { ...goals[goalIndex], ...updates };
-		else goals.push(updates);
+		if (goalIndex !== -1) {
+			goals[goalIndex] = { ...goals[goalIndex], ...updates };
+		} else {
+			// When creating a new goal, set loanTotalAtStart to current all-time progress for the category
+			// This allows tracking progress from the point the goal was set
+			// For ID_SUPPORT_ALL, use totalLoanCount since it tracks total loans, not category-specific progress
+			let loanTotalAtStart;
+			if (updates.category === ID_SUPPORT_ALL) {
+				loanTotalAtStart = totalLoanCount.value || 0;
+			} else {
+				const categoryProgress = currentYearProgress.value.find(n => n.id === updates.category);
+				loanTotalAtStart = categoryProgress?.totalProgressToAchievement || 0;
+			}
+			goals.push({ ...updates, loanTotalAtStart });
+		}
 		await updateUserPreferences(
 			apolloClient,
 			userPreferences.value,
@@ -268,10 +343,13 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	async function checkCompletedGoal({ currentGoalProgress = 0, category = 'post-checkout' } = {}) {
+		// Skip if goal is already completed or expired
+		if ([GOAL_STATUS.COMPLETED, GOAL_STATUS.EXPIRED].includes(userGoal.value?.status)) {
+			return;
+		}
 		if (
 			(currentGoalProgress && (currentGoalProgress >= userGoal.value?.target))
-			|| (userGoal.value && userGoalAchieved.value
-				&& ![GOAL_STATUS.COMPLETED, GOAL_STATUS.EXPIRED].includes(userGoal.value.status))
+			|| (userGoal.value && userGoalAchieved.value)
 		) {
 			userGoal.value = {
 				...userGoal.value,
@@ -289,18 +367,59 @@ export default function useGoalData({ apollo } = {}) {
 		}
 	}
 
+	/**
+	 * Check and correct negative goal progress
+	 * This could happen due to a race condition with postCheckoutAchievements
+	 * Only applies when yearlyProgress is false (all-time progress mode)
+	 */
+	async function correctNegativeProgress() {
+		if (useYearlyProgress.value || !userGoal.value) return;
+
+		const goal = userGoal.value;
+		if (goal.category === ID_SUPPORT_ALL) return;
+
+		const categoryProgress = currentYearProgress.value.find(n => n.id === goal.category);
+		const allTimeProgress = categoryProgress?.totalProgressToAchievement || 0;
+		const loanTotalAtStart = goal.loanTotalAtStart || 0;
+		const adjustedProgress = allTimeProgress - loanTotalAtStart;
+
+		if (adjustedProgress < 0) {
+			const debugData = {
+				category: goal.category,
+				goalName: goal.goalName,
+				allTimeProgress,
+				loanTotalAtStart,
+				adjustedProgress,
+				target: goal.target,
+			};
+
+			logFormatter('Negative goal progress detected, correcting loanTotalAtStart', 'warn', debugData);
+
+			// Correct the goal by updating loanTotalAtStart to allTimeProgress
+			await storeGoalPreferences({
+				...goal,
+				loanTotalAtStart: allTimeProgress,
+			});
+		}
+	}
+
 	async function loadGoalData({
-		loans = [],
-		year = new Date().getFullYear()
+		loans = [], // Loans already in basket, used to initialize in-page counter for ID_SUPPORT_ALL
+		year = new Date().getFullYear(),
+		yearlyProgress = false, // thankyou_page_goals_enable flag - when true uses yearly, when false uses all-time
 	} = {}) {
 		loading.value = true;
+		useYearlyProgress.value = yearlyProgress;
 		const parsedPrefs = await loadPreferences();
 		await loadProgress(year);
 		setGoalState(parsedPrefs);
-		if (userGoal.value?.category === ID_SUPPORT_ALL && !goalCurrentLoanCount.value) {
+		// Initialize in-page counter for ID_SUPPORT_ALL based on loans already in basket
+		if (userGoal.value?.category === ID_SUPPORT_ALL && loans.length > 0 && !goalCurrentLoanCount.value) {
 			// Reducing counter by 1 because loans already has the added loan
 			goalCurrentLoanCount.value = loans.length - 1;
 		}
+		// Check and correct negative progress after loading
+		await correctNegativeProgress();
 		loading.value = false;
 	}
 
@@ -375,8 +494,8 @@ export default function useGoalData({ apollo } = {}) {
 		getCategories,
 		getCategoryLoansLastYear,
 		getCtaHref,
+		isProgressCompletingGoal,
 		getGoalDisplayName,
-		getPostCheckoutProgressByLoan,
 		getPostCheckoutProgressByLoans,
 		goalProgress,
 		loadGoalData,

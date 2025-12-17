@@ -1,3 +1,15 @@
+## [3.47.0-rc.1](https://github.com/kiva/ui/compare/v3.46.0...v3.47.0-rc.1) (2025-12-17)
+
+### 🎉 New Features
+
+* my kiva next steps borrower highlight ([#6510](https://github.com/kiva/ui/issues/6510)) ([ad6dbec](https://github.com/kiva/ui/commit/ad6dbec9d72434aab6ee118b44b72430cdc39fe2))
+
+### 🐛 Bugfixes
+
+* add stone-3 color hack and use target instead of progress for completed goals ([b643e70](https://github.com/kiva/ui/commit/b643e707c144dfe9f1ef8698814b4beaab6ac338))
+* reducing some space in progress and only check goal completed flag for circle progress ([5de9455](https://github.com/kiva/ui/commit/5de94553b1da441a87f98b3246d45bb4c58421f6))
+* resolve assorted issues with goals v1 ([#6512](https://github.com/kiva/ui/issues/6512)) ([bdb7eb0](https://github.com/kiva/ui/commit/bdb7eb024021692754e3f7121ccac96d6fe198f4))
+
 ## [3.46.0](https://github.com/kiva/ui/compare/v3.45.0...v3.46.0) (2025-12-15)
 
 ### 🎉 New Features

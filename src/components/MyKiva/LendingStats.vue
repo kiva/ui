@@ -345,7 +345,7 @@ export default {
 	},
 	async mounted() {
 		if (this.isNextStepsExpEnabled) {
-			await this.loadGoalData();
+			await this.loadGoalData({ yearlyProgress: this.goalsEntrypointEnable });
 			await this.checkCompletedGoal({ category: 'portfolio' });
 			this.hideCompletedGoalCard = this.hideGoalCard();
 			this.goalProgressLoading = false;
@@ -402,7 +402,7 @@ export default {
 		},
 		async setGoal(preferences) {
 			await this.storeGoalPreferences(preferences);
-			await this.loadGoalData();
+			await this.loadGoalData({ yearlyProgress: this.goalsEntrypointEnable });
 			this.isGoalSet = true;
 			if (!this.goalsEntrypointEnable) {
 				this.showGoalModal = false;

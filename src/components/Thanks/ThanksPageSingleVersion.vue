@@ -247,26 +247,34 @@ const hasTeamAttributedPartnerLoan = computed(
 	() => loanForComment.value?.distributionModel === 'fieldPartner' && !!loanForComment.value?.team?.name
 );
 
-/* eslint-disable max-len */
 const showOptInModule = computed(() => !props.isOptedIn);
 const showKivaCardsModule = computed(() => !!printableKivaCards.value.length);
-const showBadgeModule = computed(() => (numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value));
 const showGoalCompletedModule = computed(() => {
-	// Show goal module when experiment is enabled AND either:
-	// - We haven't initialized yet (show loader)
-	// - We're still loading (show loader)
-	// - User achieved their goal (show completion)
-	return props.isNextStepsExpEnabled && (!goalDataInitialized.value || goalDataLoading.value || userGoalAchievedNow.value);
+	// Show goal completed module immediately when user achieved their goal
+	if (!props.isNextStepsExpEnabled) return false;
+	return userGoalAchievedNow.value;
+});
+const showBadgeModule = computed(() => {
+	// Don't show badge module while loading goal data when experiment is enabled
+	// This prevents the badge module from flashing before goal completed module
+	if (props.isNextStepsExpEnabled && (!goalDataInitialized.value || goalDataLoading.value)) {
+		return false;
+	}
+	// Don't show badge module if goal completed module will show
+	if (showGoalCompletedModule.value) return false;
+	return numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value;
 });
 const showJourneyModule = computed(() => {
-	if (props.achievementsCompleted || (props.isNextStepsExpEnabled && !goalDataInitialized.value)) return false;
-	// If experiment enabled, wait for initialization and loading to complete
-	if (props.isNextStepsExpEnabled) return goalDataInitialized.value && !goalDataLoading.value && !userGoalAchievedNow.value;
+	if (props.achievementsCompleted) return false;
+	// If experiment enabled, wait for initialization and loading to complete, and goal not achieved
+	if (props.isNextStepsExpEnabled) {
+		if (!goalDataInitialized.value || goalDataLoading.value) return false;
+		return !userGoalAchievedNow.value;
+	}
 	// If experiment disabled, show journey module immediately
 	return true;
 });
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
-/* eslint-enable max-len */
 
 const categoriesLoanCount = computed(() => {
 	return getAllCategoryLoanCounts(props.tieredAchievements);
@@ -327,8 +335,14 @@ const setGoalTarget = target => {
 
 onMounted(async () => {
 	if (props.isNextStepsExpEnabled) {
-		await loadGoalData();
-		currGoalProgress.value = await getPostCheckoutProgressByLoans(props.loans);
+		await loadGoalData({ yearlyProgress: props.thanksPageGoalsEntrypointEnable });
+		// Use yearly progress with current year when flag is enabled, otherwise use all-time progress
+		const year = props.thanksPageGoalsEntrypointEnable ? new Date().getFullYear() : null;
+		// Loans already in totalLoanCount after checkout
+		currGoalProgress.value = await getPostCheckoutProgressByLoans({
+			loans: props.loans,
+			year,
+		});
 		await checkCompletedGoal({ currentGoalProgress: currGoalProgress.value });
 		goalDataInitialized.value = true;
 		isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
