@@ -56,8 +56,7 @@
 </template>
 
 <script>
-import { inject, computed } from 'vue';
-import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
+import { inject } from 'vue';
 import useGoalData from '#src/composables/useGoalData';
 import BasketItem from '#src/components/Checkout/BasketItem';
 import DonationItem from '#src/components/Checkout/DonationItem';
@@ -154,6 +153,7 @@ export default {
 	data() {
 		return {
 			loadingGoalData: true,
+			basketGoalProgress: 0,
 		};
 	},
 	watch: {
@@ -163,7 +163,7 @@ export default {
 			userUsLoanCheckout(hasUsLoan);
 
 			if (this.isNextStepsExpEnabled) {
-				this.loadGoalData(this.loans);
+				this.loadAndCalculateGoalProgress();
 			}
 		}
 	},
@@ -179,37 +179,40 @@ export default {
 			if (idx !== 0 || this.lenderTotalLoans !== 0) return false;
 
 			return this.isLoggedIn || (!this.isLoggedIn && !this.hasEverLoggedIn);
+		},
+		async loadAndCalculateGoalProgress() {
+			await this.loadGoalData({ loans: this.loans });
+			// Calculate progress including basket loans (don't increment counter, just check current state)
+			const loansForProgress = this.loans.map(loan => ({ id: loan.id }));
+			this.basketGoalProgress = await this.getPostCheckoutProgressByLoans(loansForProgress, null, false);
 		}
 	},
-	setup(props) {
+	setup() {
 		const apollo = inject('apollo');
 
 		const {
-			userGoalAchieved,
 			loadGoalData,
 			userGoal,
+			getPostCheckoutProgressByLoans,
+			isProgressCompletingGoal,
 		} = useGoalData({ apollo });
 
-		const isUserGoalAchieved = computed(() => {
-			const goalCategory = userGoal.value?.category || null;
-			const goalTarget = userGoal.value?.target || 0;
-
-			if (goalCategory === ID_SUPPORT_ALL && props.loans.length >= goalTarget) {
-				return true;
-			}
-
-			return userGoalAchieved.value;
-		});
-
 		return {
-			isUserGoalAchieved,
 			loadGoalData,
 			userGoal,
+			getPostCheckoutProgressByLoans,
+			isProgressCompletingGoal,
 		};
+	},
+	computed: {
+		// Check if supporting loans in basket would complete the goal
+		isUserGoalAchieved() {
+			return this.isProgressCompletingGoal(this.basketGoalProgress);
+		},
 	},
 	async mounted() {
 		if (this.isNextStepsExpEnabled) {
-			await this.loadGoalData(this.loans);
+			await this.loadAndCalculateGoalProgress();
 			this.loadingGoalData = false;
 		} else {
 			this.loadingGoalData = false;
