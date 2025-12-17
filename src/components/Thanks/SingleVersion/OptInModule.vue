@@ -146,6 +146,7 @@ const updateOptIn = async value => {
 		} else {
 			await updateCommunicationSettings(value, value, false);
 		}
+		setMailUpdatesOptOutCookie(false);
 	}
 	newConsentAnswered.value = true;
 	receiveNews.value = value;

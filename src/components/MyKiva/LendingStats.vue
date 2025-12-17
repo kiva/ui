@@ -35,7 +35,6 @@
 					@open-goal-modal="showGoalModal = true"
 				/>
 			</div>
-			<!-- map Regions supported -->
 			<div class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col">
 				<div>
 					<span
