@@ -31,6 +31,7 @@
 					:goals-entrypoint-enable="goalsEntrypointEnable"
 					:categories-loan-count="categoriesLoanCount"
 					:hide-goal-card="hideCompletedGoalCard"
+					:post-lending-next-steps-enable="postLendingNextStepsEnable"
 					@open-goal-modal="showGoalModal = true"
 				/>
 			</div>
@@ -151,6 +152,7 @@
 			:hero-contentful-data="heroContentfulData"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:lender="lender"
+			:loans="loans"
 			:slides-number="3"
 			:slides="heroSlides"
 			:user-goal-enabled="isNextStepsExpEnabled"
@@ -158,6 +160,7 @@
 			:user-goal="userGoal"
 			:goals-entrypoint-enable="goalsEntrypointEnable"
 			:hide-goal-card="hideCompletedGoalCard"
+			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<GoalSettingModal
@@ -271,7 +274,7 @@ export default {
 	},
 	computed: {
 		showRegionExperience() {
-			return this.isNextStepsExpEnabled && !this.userLentToAllRegions;
+			return this.isNextStepsExpEnabled && !this.postLendingNextStepsEnable && !this.userLentToAllRegions;
 		},
 		totalRegions() {
 			return this.regionsData.length;
@@ -342,7 +345,7 @@ export default {
 	},
 	async mounted() {
 		if (this.isNextStepsExpEnabled) {
-			await this.loadGoalData();
+			await this.loadGoalData({ yearlyProgress: this.goalsEntrypointEnable });
 			await this.checkCompletedGoal({ category: 'portfolio' });
 			this.hideCompletedGoalCard = this.hideGoalCard();
 			this.goalProgressLoading = false;
@@ -399,7 +402,7 @@ export default {
 		},
 		async setGoal(preferences) {
 			await this.storeGoalPreferences(preferences);
-			await this.loadGoalData();
+			await this.loadGoalData({ yearlyProgress: this.goalsEntrypointEnable });
 			this.isGoalSet = true;
 			if (!this.goalsEntrypointEnable) {
 				this.showGoalModal = false;

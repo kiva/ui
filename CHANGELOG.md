@@ -1,3 +1,31 @@
+## [3.47.0-rc.2](https://github.com/kiva/ui/compare/v3.47.0-rc.1...v3.47.0-rc.2) (2025-12-17)
+
+### 🎉 New Features
+
+* [MP-2265] - clean code ([0444357](https://github.com/kiva/ui/commit/044435781f4390ec483cb2700a6e955339873470))
+* [MP-2265] - fix myKivaEmail card and clean code ([34a54a2](https://github.com/kiva/ui/commit/34a54a221861eff58600e966aac5d26100329f90))
+* [MP-2265] - handle user actions in ty page for emails updates opted in or out ([ba80daf](https://github.com/kiva/ui/commit/ba80daf90676d51fc44883f1771282fa4ee85111))
+* [MP-2265] - new minor changes requested ([b2801e3](https://github.com/kiva/ui/commit/b2801e3df81dfeec480d6d14f6c34bce27824a49))
+* [MP-2265] - PR feedback ([a54970b](https://github.com/kiva/ui/commit/a54970bd810663e75150162fc271cf6e1e6b6be0))
+* [MP-2265] - PR feedback new 'kvemailopt' cookie ([e3fcfa0](https://github.com/kiva/ui/commit/e3fcfa04e4bbaf656ca00c884a14609daab03068))
+* [MP-2265] - use new cookie session in mykiva for email marketing card (new AC) ([a1bbaaf](https://github.com/kiva/ui/commit/a1bbaaf41dd14c9be6cd409d16989c5d50502d1f))
+
+### 🐛 Bugfixes
+
+* ty page was completing all loans goals one loan too early ([#6513](https://github.com/kiva/ui/issues/6513)) ([d2ff744](https://github.com/kiva/ui/commit/d2ff744e3b787d5d23f74293799ed5b24f8a087d))
+
+## [3.47.0-rc.1](https://github.com/kiva/ui/compare/v3.46.0...v3.47.0-rc.1) (2025-12-17)
+
+### 🎉 New Features
+
+* my kiva next steps borrower highlight ([#6510](https://github.com/kiva/ui/issues/6510)) ([ad6dbec](https://github.com/kiva/ui/commit/ad6dbec9d72434aab6ee118b44b72430cdc39fe2))
+
+### 🐛 Bugfixes
+
+* add stone-3 color hack and use target instead of progress for completed goals ([b643e70](https://github.com/kiva/ui/commit/b643e707c144dfe9f1ef8698814b4beaab6ac338))
+* reducing some space in progress and only check goal completed flag for circle progress ([5de9455](https://github.com/kiva/ui/commit/5de94553b1da441a87f98b3246d45bb4c58421f6))
+* resolve assorted issues with goals v1 ([#6512](https://github.com/kiva/ui/issues/6512)) ([bdb7eb0](https://github.com/kiva/ui/commit/bdb7eb024021692754e3f7121ccac96d6fe198f4))
+
 ## [3.46.0](https://github.com/kiva/ui/compare/v3.45.0...v3.46.0) (2025-12-15)
 
 ### 🎉 New Features

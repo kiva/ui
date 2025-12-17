@@ -13,7 +13,7 @@
 				class="progress-circle-content"
 				:class="{'tw-mt-0.5' : goalCompleted && !isAnnualGoal}"
 			>
-				<h5>
+				<h5 style="letter-spacing: -0.05rem;">
 					{{ progress }}
 				</h5>
 				<p v-if="goalCompleted && !isAnnualGoal" class="tw-text-small">
@@ -128,6 +128,10 @@ const description = computed(() => {
 });
 
 const progress = computed(() => {
+	if (goalCompleted.value) {
+		return `${goalTarget.value} / ${goalTarget.value}`;
+	}
+
 	if (props.isAnnualGoal || !goalCompleted.value) {
 		return `${props.goalProgress} / ${goalTarget.value}`;
 	}

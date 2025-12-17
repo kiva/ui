@@ -3,7 +3,7 @@
 		<span
 			class="tw-inline-flex tw-items-center tw-gap-1 tw-mb-2
 						tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5
-						tw-absolute tw-top-2.5 tw-left-2.5 tw-z-1"
+						tw-absolute md:!tw-top-2.5 md:!tw-left-2.5 tw-top-1.5 tw-left-1.5 tw-z-1"
 		>
 			<KvMaterialIcon
 				class="tw-w-2 tw-h-2 tw-shrink-0"
@@ -59,13 +59,18 @@ const props = defineProps({
 		type: Array,
 		default: () => [],
 	},
+	loanId: {
+		type: String,
+		default: ''
+	}
 });
 
 const emit = defineEmits(['accept-email-updates']);
 
 // Get the most recent loan (first in sorted array)
 const mostRecentLoan = computed(() => {
-	return props.loans?.[0] || null;
+	const defaultLoan = props.loans?.[0] || null;
+	return props.loanId !== '' ? props.loans.find(loan => loan.id === props.loanId) || defaultLoan : defaultLoan;
 });
 
 const borrowerName = computed(() => {
@@ -81,11 +86,13 @@ const hash = computed(() => {
 });
 
 const apollo = inject('apollo');
-const { updateCommunicationSettings } = useOptIn(apollo);
+const cookieStore = inject('cookieStore');
+const { setMailUpdatesOptOutCookie, updateCommunicationSettings } = useOptIn(apollo, cookieStore);
 
 const handleEmailOptIn = async () => {
 	const updatedEmailSettings = await updateCommunicationSettings(true, true, false);
 	if (updatedEmailSettings) {
+		setMailUpdatesOptOutCookie(false);
 		emit('accept-email-updates', true);
 	}
 };
@@ -94,16 +101,10 @@ const handleEmailOptIn = async () => {
 
 <style lang="postcss" scoped>
 .card-container {
-	@apply tw-w-full tw-relative tw-rounded tw-shadow tw-p-2 tw-flex tw-flex-col tw-bg-white
-	tw-shrink-0 tw-overflow-hidden;
+	z-index: 1;
 
-	width: 336px;
-	min-height: 365px;
-}
-
-.image-container {
-    width: 304px;
-	height: 183px;
+	@apply tw-w-full tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
+		tw-overflow-hidden tw-bg-white tw-shrink-0;
 }
 
 .image-container :deep(picture img) {
