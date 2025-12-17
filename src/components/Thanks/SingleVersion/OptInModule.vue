@@ -44,7 +44,9 @@
 </template>
 
 <script setup>
-import { computed, inject, ref } from 'vue';
+import {
+	computed, inject, onMounted, ref
+} from 'vue';
 import { KvButton } from '@kiva/kv-components';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import useIsMobile from '#src/composables/useIsMobile';
@@ -86,7 +88,9 @@ const receiveNews = ref(false);
 const buttonState = ref('');
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
-const { updateCommunicationSettings, updateVisitorEmailOptIn } = useOptIn(apollo);
+const {
+	setMailUpdatesOptOutCookie, updateCommunicationSettings, updateVisitorEmailOptIn
+} = useOptIn(apollo, cookieStore);
 
 const primaryBorrowerName = computed(() => props.loans[0]?.name ?? '');
 const primaryBorrowerPossessiveName = computed(() => formatPossessiveName(primaryBorrowerName.value));
@@ -142,10 +146,16 @@ const updateOptIn = async value => {
 		} else {
 			await updateCommunicationSettings(value, value, false);
 		}
+		setMailUpdatesOptOutCookie(false);
 	}
 	newConsentAnswered.value = true;
 	receiveNews.value = value;
 };
+
+onMounted(() => {
+	const loanId = props.loans[0]?.id || null;
+	setMailUpdatesOptOutCookie(true, loanId);
+});
 
 </script>
 

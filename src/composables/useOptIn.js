@@ -1,7 +1,9 @@
 import logReadQueryError from '#src/util/logReadQueryError';
 import { gql } from 'graphql-tag';
 
-export default apollo => {
+export const MAIL_UPDATES_OPT_COOKIE_NAME = 'kvemailopt';
+
+export default (apollo, cookieStore) => {
 	const updateCommunicationSettings = async (lenderNews, loanUpdates, globalUnsubscribed) => {
 		try {
 			await apollo.mutate({
@@ -69,8 +71,32 @@ export default apollo => {
 		}
 	};
 
+	const userHasMailUpdatesOptOut = () => {
+		let mailsUpdatesOptOut = false;
+		const value = cookieStore.get(MAIL_UPDATES_OPT_COOKIE_NAME)?.trim();
+		if (/(\b|&)true(\b|&)/.test(value)) {
+			mailsUpdatesOptOut = true;
+		}
+
+		return mailsUpdatesOptOut;
+	};
+
+	const setMailUpdatesOptOutCookie = (optedOut, loanId = null) => {
+		if (optedOut) {
+			const newValue = `true${loanId ? `|${loanId}` : ''}`;
+			cookieStore.set(
+				MAIL_UPDATES_OPT_COOKIE_NAME,
+				newValue,
+			);
+		} else {
+			cookieStore.remove(MAIL_UPDATES_OPT_COOKIE_NAME);
+		}
+	};
+
 	return {
+		setMailUpdatesOptOutCookie,
 		updateCommunicationSettings,
 		updateVisitorEmailOptIn,
+		userHasMailUpdatesOptOut,
 	};
 };
