@@ -183,8 +183,10 @@ export default {
 		async loadAndCalculateGoalProgress() {
 			await this.loadGoalData({ loans: this.loans });
 			// Calculate progress including basket loans (don't increment counter, just check current state)
-			const loansForProgress = this.loans.map(loan => ({ id: loan.id }));
-			this.basketGoalProgress = await this.getPostCheckoutProgressByLoans(loansForProgress, null, false);
+			this.basketGoalProgress = await this.getPostCheckoutProgressByLoans({
+				loans: this.loans.map(loan => ({ id: loan.id })),
+				addBasketLoans: true,
+			});
 		}
 	},
 	setup() {

@@ -338,7 +338,11 @@ onMounted(async () => {
 		await loadGoalData({ yearlyProgress: props.thanksPageGoalsEntrypointEnable });
 		// Use yearly progress with current year when flag is enabled, otherwise use all-time progress
 		const year = props.thanksPageGoalsEntrypointEnable ? new Date().getFullYear() : null;
-		currGoalProgress.value = await getPostCheckoutProgressByLoans(props.loans, year);
+		// Loans already in totalLoanCount after checkout
+		currGoalProgress.value = await getPostCheckoutProgressByLoans({
+			loans: props.loans,
+			year,
+		});
 		await checkCompletedGoal({ currentGoalProgress: currGoalProgress.value });
 		goalDataInitialized.value = true;
 		isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;

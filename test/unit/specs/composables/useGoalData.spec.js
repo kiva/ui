@@ -641,7 +641,7 @@ describe('useGoalData', () => {
 					target: 10,
 					dateStarted: '2024-01-01',
 					count: 0,
-					status: 'active',
+					status: 'in-progress',
 				}],
 			};
 
@@ -659,9 +659,9 @@ describe('useGoalData', () => {
 				})
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							yearlyProgress: [
-								{ achievementId: ID_WOMENS_EQUALITY, totalProgress: 20 },
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 0, progressForYear: 0 },
 							],
 						},
 					},
@@ -786,9 +786,9 @@ describe('useGoalData', () => {
 				})
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							yearlyProgress: [
-								{ achievementId: ID_WOMENS_EQUALITY, totalProgress: 20 },
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{ id: ID_WOMENS_EQUALITY, progressForYear: 20, totalProgressToAchievement: 20 },
 							],
 						},
 					},
@@ -892,7 +892,9 @@ describe('useGoalData', () => {
 				});
 
 			await composable.loadGoalData();
-			const progress = await composable.getPostCheckoutProgressByLoans([{ id: 789 }]);
+			const progress = await composable.getPostCheckoutProgressByLoans({
+				loans: [{ id: 789 }],
+			});
 
 			// Should return 57 - 50 = 7 (progress since goal was set)
 			expect(progress).toBe(7);
@@ -943,12 +945,14 @@ describe('useGoalData', () => {
 				});
 
 			await composable.loadGoalData();
-			const progress = await composable.getPostCheckoutProgressByLoans([{ id: 999 }]);
+			const progress = await composable.getPostCheckoutProgressByLoans({
+				loans: [{ id: 999 }],
+			});
 
 			expect(progress).toBe(0);
 		});
 
-		it('should increment counter by 1 per call for ID_SUPPORT_ALL goal', async () => {
+		it('should increment counter by 1 per call for ID_SUPPORT_ALL goal with increment option', async () => {
 			const mockPrefs = {
 				goals: [{
 					goalName: 'test-goal',
@@ -983,20 +987,107 @@ describe('useGoalData', () => {
 			// goalProgress should be 103 - 100 = 3
 			expect(composable.goalProgress.value).toBe(3);
 
-			// First call - should increment counter by 1 (regardless of loans array size)
-			const progress1 = await composable.getPostCheckoutProgressByLoans([{ id: 1 }]);
+			// First call with increment: true (ATB modal use case)
+			const progress1 = await composable.getPostCheckoutProgressByLoans({
+				loans: [{ id: 1 }],
+				increment: true,
+			});
 			expect(progress1).toBe(4); // 3 + 1
 
-			// Second call with multiple loans - still increments by 1 (called once per add-to-basket)
-			const progress2 = await composable.getPostCheckoutProgressByLoans([{ id: 1 }, { id: 2 }]);
+			// Second call - still increments by 1
+			const progress2 = await composable.getPostCheckoutProgressByLoans({
+				loans: [{ id: 1 }, { id: 2 }],
+				increment: true,
+			});
 			expect(progress2).toBe(5); // 3 + 1 + 1
-
-			// Third call - increments by 1 again
-			const progress3 = await composable.getPostCheckoutProgressByLoans([{ id: 1 }, { id: 2 }, { id: 3 }]);
-			expect(progress3).toBe(6); // 3 + 1 + 1 + 1
 
 			// Should NOT make any postCheckoutAchievements query for ID_SUPPORT_ALL
 			expect(mockApollo.query).toHaveBeenCalledTimes(2); // Only loadPreferences and loadProgress
+		});
+
+		it('should add loans.length for ID_SUPPORT_ALL goal with addBasketLoans option (Basket page)', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_SUPPORT_ALL,
+					target: 10,
+					loanTotalAtStart: 100,
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 100 }, // No change yet (loans in basket not counted)
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			// goalProgress should be 100 - 100 = 0
+			expect(composable.goalProgress.value).toBe(0);
+
+			// With addBasketLoans: true (Basket page use case), adds loans.length
+			const progress = await composable.getPostCheckoutProgressByLoans({
+				loans: [{ id: 1 }, { id: 2 }, { id: 3 }],
+				addBasketLoans: true,
+			});
+			expect(progress).toBe(3); // 0 + 3 loans in basket
+		});
+
+		it('should return just goalProgress for ID_SUPPORT_ALL (Thanks page)', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_SUPPORT_ALL,
+					target: 10,
+					loanTotalAtStart: 100,
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 105 }, // After checkout, loans already in totalCount
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			// goalProgress should be 105 - 100 = 5
+			expect(composable.goalProgress.value).toBe(5);
+
+			// Thanks page: just pass loans (defaults handle the rest)
+			const progress = await composable.getPostCheckoutProgressByLoans({
+				loans: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }],
+			});
+			expect(progress).toBe(5); // Just goalProgress, no additional loans added
 		});
 	});
 
