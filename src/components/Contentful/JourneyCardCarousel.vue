@@ -6,7 +6,76 @@
 		>
 			Take the <u>next step</u> on your impact journey
 		</h2>
+
+		<!-- Mobile-->
+		<div
+			v-if="isMobile && inLendingStats"
+			class="tw-flex tw-flex-col tw-gap-2"
+		>
+			<component
+				v-if="showGoalCard(0)"
+				:is="goalCardComponent"
+				:goal-progress="goalProgress"
+				:hero-slides="slides"
+				:loading="goalProgressLoading"
+				:user-goal="userGoal"
+				:prev-year-loans="womenLoansLastYear"
+				@open-goal-modal="$emit('open-goal-modal')"
+			/>
+			<transition
+				name="fade"
+				mode="out-in"
+				key="transition"
+				enter-active-class="tw-transition-all tw-duration-500"
+				enter-from-class="tw-opacity-0"
+				enter-to-class="tw-opacity-full"
+				leave-active-class="tw-transition-all tw-duration-500"
+				leave-from-class="tw-opacity-full"
+				leave-to-class="tw-opacity-0"
+			>
+				<MyKivaEmailUpdatesCard
+					v-if="shouldShowEmailMarketingCard && !acceptedEmailMarketingUpdates"
+					key:="acceptEmails"
+					v-kv-track-event="['portfolio', 'view', 'next-step-email-option']"
+					:loans="loans"
+					:loan-id="loanId"
+					@accept-email-updates="acceptedEmailMarketingUpdates = true"
+				/>
+				<ThankYouCard
+					v-else
+					key:="tkYouCard"
+				>
+					<template #header>
+						<span
+							class="tw-inline-flex tw-items-center tw-gap-1
+									tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5"
+						>
+							<KvMaterialIcon
+								class="tw-w-2 tw-h-2 tw-shrink-0"
+								:icon="mdiEmailOutline"
+							/>
+							<span
+								class="tw-text-primary tw-font-medium tw-align-middle"
+								style="font-size: 0.875rem;"
+							>
+								Email updates
+							</span>
+						</span>
+					</template>
+					<template #content>
+						<span>We’ll keep you updated. Change your <a
+							href="/settings/email"
+							target="_blank"
+							v-kv-track-event="['portfolio', 'click', 'email-preferences-settings']"
+						>email preferences</a> at any time.</span>
+					</template>
+				</ThankYouCard>
+			</transition>
+		</div>
+
+		<!-- Desktop-->
 		<KvCarousel
+			v-else
 			:key="orderedSlides.length"
 			:embla-options="{
 				loop: false,
@@ -36,6 +105,59 @@
 					:prev-year-loans="womenLoansLastYear"
 					@open-goal-modal="$emit('open-goal-modal')"
 				/>
+				<template
+					v-else-if="isEmailUpdatesSlide(slide)"
+				>
+					<transition
+						name="fade"
+						mode="out-in"
+						key="transition"
+						enter-active-class="tw-transition-all tw-duration-500"
+						enter-from-class="tw-opacity-0"
+						enter-to-class="tw-opacity-full"
+						leave-active-class="tw-transition-all tw-duration-500"
+						leave-from-class="tw-opacity-full"
+						leave-to-class="tw-opacity-0"
+					>
+						<MyKivaEmailUpdatesCard
+							v-if="shouldShowEmailMarketingCard && !acceptedEmailMarketingUpdates"
+							key:="acceptEmails"
+							v-kv-track-event="['portfolio', 'view', 'next-step-email-option']"
+							:loans="loans"
+							:loan-id="loanId"
+							@accept-email-updates="acceptedEmailMarketingUpdates = true"
+						/>
+						<ThankYouCard
+							v-else
+							key:="tkYouCard"
+						>
+							<template #header>
+								<span
+									class="tw-inline-flex tw-items-center tw-gap-1
+									tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5"
+								>
+									<KvMaterialIcon
+										class="tw-w-2 tw-h-2 tw-shrink-0"
+										:icon="mdiEmailOutline"
+									/>
+									<span
+										class="tw-text-primary tw-font-medium tw-align-middle"
+										style="font-size: 0.875rem;"
+									>
+										Email updates
+									</span>
+								</span>
+							</template>
+							<template #content>
+								<span>We’ll keep you updated. Change your <a
+									href="/settings/email"
+									target="_blank"
+									v-kv-track-event="['portfolio', 'click', 'email-preferences-settings']"
+								>email preferences</a> at any time.</span>
+							</template>
+						</ThankYouCard>
+					</transition>
+				</template>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
 					class="kiva-card"
@@ -80,6 +202,7 @@
 </template>
 
 <script setup>
+import { mdiEmailOutline } from '@mdi/js';
 import { parseISO, differenceInDays } from 'date-fns';
 import {
 	computed,
@@ -92,19 +215,23 @@ import { formatUiSetting } from '#src/util/contentfulUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 import useBadgeData from '#src/composables/useBadgeData';
-import { KvCarousel } from '@kiva/kv-components';
+import { KvCarousel, KvMaterialIcon } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import GoalCard from '#src/components/MyKiva/GoalCard';
 import { optimizeContentfulUrl } from '#src/util/imageUtils';
 import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
 import useGoalData from '#src/composables/useGoalData';
+import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCard';
+import useOptIn, { MAIL_UPDATES_OPT_COOKIE_NAME } from '#src/composables/useOptIn';
+import ThankYouCard from '../MyKiva/ThankYouCard';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
 const TRANSACTION_DAYS_LIMIT = 30;
 
 const apollo = inject('apollo');
+const cookieStore = inject('cookieStore');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
@@ -126,6 +253,10 @@ const props = defineProps({
 	lender: {
 		type: Object,
 		default: () => ({})
+	},
+	loans: {
+		type: Array,
+		default: () => ([]),
 	},
 	userInHomepage: {
 		type: Boolean,
@@ -190,12 +321,24 @@ const props = defineProps({
 	hideGoalCard: {
 		type: Boolean,
 		default: false
+	},
+	postLendingNextStepsEnable: {
+		type: Boolean,
+		default: false
 	}
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
 const currentIndex = ref(0);
 const isSharingModalVisible = ref(false);
+const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
+const acceptedEmailMarketingUpdates = ref(false);
+const shouldShowEmailMarketingCard = computed(
+	() => props.postLendingNextStepsEnable && props.inLendingStats
+		&& userHasMailUpdatesOptOut()
+);
+const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
+const loanId = computed(() => cookieStore.get(MAIL_UPDATES_OPT_COOKIE_NAME)?.trim()?.split('|')?.[1] || '');
 
 const badgesData = computed(() => {
 	const badgeContentfulData = (props.heroContentfulData ?? [])
@@ -233,6 +376,7 @@ const orderedSlides = computed(() => {
 	const achievementSlides = [];
 	let loanJourneys = [];
 	let sortedSlides = [];
+	let addedSlides = 0;
 
 	const transactionLoans = props.userInfo?.transactions?.values?.filter(t => {
 		const diffInDays = differenceInDays(new Date(), parseISO(t.createTime));
@@ -302,8 +446,13 @@ const orderedSlides = computed(() => {
 		sortedSlides.unshift({});
 	}
 
+	if (shouldShowEmailMarketingCard.value) {
+		addedSlides += 1;
+		sortedSlides.splice(1, 0, { isEmailUpdates: true });
+	}
+
 	if (props.slidesNumber) {
-		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
+		sortedSlides = sortedSlides.slice(0, props.slidesNumber + addedSlides);
 	}
 
 	return sortedSlides;

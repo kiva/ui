@@ -14,6 +14,7 @@
 		<template v-if="showRegionExperience">
 			<div class="card-container tw-shrink-0">
 				<JourneyCardCarousel
+					key="lending-stats-carousel"
 					class="carousel carousel-single"
 					user-in-homepage
 					in-lending-stats
@@ -31,9 +32,11 @@
 					:goals-entrypoint-enable="goalsEntrypointEnable"
 					:categories-loan-count="categoriesLoanCount"
 					:hide-goal-card="hideCompletedGoalCard"
+					:post-lending-next-steps-enable="postLendingNextStepsEnable"
 					@open-goal-modal="showGoalModal = true"
 				/>
 			</div>
+			<!-- map Regions supported -->
 			<div class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col">
 				<div>
 					<span
@@ -142,6 +145,7 @@
 		</template>
 		<JourneyCardCarousel
 			v-else
+			key="lending-stats-carousel"
 			class="carousel tw--mt-6"
 			user-in-homepage
 			in-lending-stats
@@ -151,6 +155,7 @@
 			:hero-contentful-data="heroContentfulData"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:lender="lender"
+			:loans="loans"
 			:slides-number="3"
 			:slides="heroSlides"
 			:user-goal-enabled="isNextStepsExpEnabled"
@@ -158,6 +163,7 @@
 			:user-goal="userGoal"
 			:goals-entrypoint-enable="goalsEntrypointEnable"
 			:hide-goal-card="hideCompletedGoalCard"
+			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<GoalSettingModal
@@ -271,7 +277,7 @@ export default {
 	},
 	computed: {
 		showRegionExperience() {
-			return this.isNextStepsExpEnabled && !this.userLentToAllRegions;
+			return this.isNextStepsExpEnabled && !this.postLendingNextStepsEnable && !this.userLentToAllRegions;
 		},
 		totalRegions() {
 			return this.regionsData.length;

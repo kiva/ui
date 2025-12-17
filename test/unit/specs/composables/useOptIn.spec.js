@@ -16,6 +16,7 @@ describe('useOptIn.js', () => {
 		mockCookieStore = {
 			get: vi.fn(),
 			set: vi.fn(),
+			remove: vi.fn(),
 		};
 		composable = useOptIn(mockApollo, mockCookieStore);
 	});
@@ -160,14 +161,6 @@ describe('useOptIn.js', () => {
 	});
 
 	describe('userHasMailUpdatesOptOut', () => {
-		beforeEach(() => {
-			mockCookieStore = {
-				get: vi.fn(),
-				set: vi.fn(),
-			};
-			composable = useOptIn(mockApollo, mockCookieStore);
-		});
-
 		it('should return false when cookie does not exist', () => {
 			mockCookieStore.get.mockReturnValue(undefined);
 
@@ -210,14 +203,6 @@ describe('useOptIn.js', () => {
 	});
 
 	describe('setMailUpdatesOptOutCookie', () => {
-		beforeEach(() => {
-			mockCookieStore = {
-				get: vi.fn(),
-				set: vi.fn(),
-			};
-			composable = useOptIn(mockApollo, mockCookieStore);
-		});
-
 		describe('when optedOut is true', () => {
 			it('should add pattern to empty cookie', () => {
 				mockCookieStore.get.mockReturnValue('');
@@ -226,8 +211,7 @@ describe('useOptIn.js', () => {
 
 				expect(mockCookieStore.set).toHaveBeenCalledWith(
 					MAIL_UPDATES_OPT_COOKIE_NAME,
-					'true',
-					expect.objectContaining({ expires: expect.any(Date) })
+					'true'
 				);
 			});
 
@@ -238,58 +222,19 @@ describe('useOptIn.js', () => {
 
 				expect(mockCookieStore.set).toHaveBeenCalledWith(
 					MAIL_UPDATES_OPT_COOKIE_NAME,
-					'true|1234567',
-					expect.objectContaining({ expires: expect.any(Date) })
+					'true|1234567'
 				);
 			});
 		});
 
 		describe('when optedOut is false', () => {
-			it('should remove pattern from cookie', () => {
+			it('should remove cookie', () => {
 				mockCookieStore.get.mockReturnValue('true');
 
 				composable.setMailUpdatesOptOutCookie(false);
 
-				expect(mockCookieStore.set).toHaveBeenCalledWith(
+				expect(mockCookieStore.remove).toHaveBeenCalledWith(
 					MAIL_UPDATES_OPT_COOKIE_NAME,
-					'',
-					expect.objectContaining({ expires: expect.any(Date) })
-				);
-			});
-
-			it('should handle cookie with only the pattern', () => {
-				mockCookieStore.get.mockReturnValue('true|456');
-
-				composable.setMailUpdatesOptOutCookie(false);
-
-				expect(mockCookieStore.set).toHaveBeenCalledWith(
-					MAIL_UPDATES_OPT_COOKIE_NAME,
-					'',
-					expect.objectContaining({ expires: expect.any(Date) })
-				);
-			});
-
-			it('should handle empty cookie', () => {
-				mockCookieStore.get.mockReturnValue('');
-
-				composable.setMailUpdatesOptOutCookie(false);
-
-				expect(mockCookieStore.set).toHaveBeenCalledWith(
-					MAIL_UPDATES_OPT_COOKIE_NAME,
-					'',
-					expect.objectContaining({ expires: expect.any(Date) })
-				);
-			});
-
-			it('should handle undefined cookie', () => {
-				mockCookieStore.get.mockReturnValue(undefined);
-
-				composable.setMailUpdatesOptOutCookie(false);
-
-				expect(mockCookieStore.set).toHaveBeenCalledWith(
-					MAIL_UPDATES_OPT_COOKIE_NAME,
-					'',
-					expect.objectContaining({ expires: expect.any(Date) })
 				);
 			});
 		});

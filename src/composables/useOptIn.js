@@ -82,19 +82,15 @@ export default (apollo, cookieStore) => {
 	};
 
 	const setMailUpdatesOptOutCookie = (optedOut, loanId = null) => {
-		let newValue = '';
-		const currentValue = cookieStore.get(MAIL_UPDATES_OPT_COOKIE_NAME)?.trim() || '';
 		if (optedOut) {
-			newValue = `true${loanId ? `|${loanId}` : ''}`;
+			const newValue = `true${loanId ? `|${loanId}` : ''}`;
+			cookieStore.set(
+				MAIL_UPDATES_OPT_COOKIE_NAME,
+				newValue,
+			);
 		} else {
-			newValue = currentValue.replace(/&?true(?:\|[^&]*)?/g, '');
-			newValue = newValue.replace(/^&+/, '').replace(/&+/g, '&');
+			cookieStore.remove(MAIL_UPDATES_OPT_COOKIE_NAME);
 		}
-		cookieStore.set(
-			MAIL_UPDATES_OPT_COOKIE_NAME,
-			newValue,
-			{ expires: new Date(new Date().setFullYear(new Date().getFullYear() + 1)) }
-		);
 	};
 
 	return {

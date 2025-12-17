@@ -65,7 +65,8 @@ const emit = defineEmits(['accept-email-updates']);
 
 // Get the most recent loan (first in sorted array)
 const mostRecentLoan = computed(() => {
-	return props.loans?.[0] || null;
+	const defaultLoan = props.loans?.[0] || null;
+	return props.loanId !== '' ? props.loans.find(loan => loan.id === props.loanId) || defaultLoan : defaultLoan;
 });
 
 const borrowerName = computed(() => {
@@ -81,7 +82,8 @@ const hash = computed(() => {
 });
 
 const apollo = inject('apollo');
-const { setMailUpdatesOptOutCookie, updateCommunicationSettings } = useOptIn(apollo);
+const cookieStore = inject('cookieStore');
+const { setMailUpdatesOptOutCookie, updateCommunicationSettings } = useOptIn(apollo, cookieStore);
 
 const handleEmailOptIn = async () => {
 	const updatedEmailSettings = await updateCommunicationSettings(true, true, false);
