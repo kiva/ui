@@ -34,10 +34,7 @@ import { getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaU
 import userAtbModalQuery from '#src/graphql/query/userAtbModal.graphql';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import { KvAtbModal } from '@kiva/kv-components';
-import useBadgeData, {
-	CATEGORY_TARGETS,
-	ID_SUPPORT_ALL,
-} from '#src/composables/useBadgeData';
+import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
 import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import { splitAchievements, filterAchievementData, getOneLoanAwayAchievement } from '#src/util/atbAchievementUtils';
@@ -72,9 +69,9 @@ const { addedLoan } = toRefs(props);
 
 const {
 	userGoal,
-	goalProgress,
 	loadGoalData,
-	getPostCheckoutProgressByLoan,
+	getPostCheckoutProgressByLoans,
+	isProgressCompletingGoal,
 } = useGoalData({ apollo });
 
 const myKivaExperimentEnabled = ref(false);
@@ -159,12 +156,9 @@ const isFirstLoan = computed(() => {
 });
 
 // eslint-disable-next-line max-len
-const currentGoalProgress = computed(() => (userGoal.value?.category === ID_SUPPORT_ALL ? loanGoalProgress.value : goalProgress.value));
+const isLoanGoal = computed(() => loanGoalProgress.value > 0 && userGoal.value?.status === 'in-progress' && loanGoalProgress.value <= userGoal.value?.target);
 
-// eslint-disable-next-line max-len
-const isLoanGoal = computed(() => loanGoalProgress.value > 0 && userGoal.value?.status === 'in-progress' && currentGoalProgress.value <= userGoal.value?.target);
-
-const isCompletingGoal = computed(() => isLoanGoal.value && currentGoalProgress.value === userGoal.value?.target);
+const isCompletingGoal = computed(() => isProgressCompletingGoal(loanGoalProgress.value));
 
 const updateTierTable = () => {
 	contributingAchievements.value.forEach(achievement => {
@@ -190,9 +184,9 @@ const fetchPostCheckoutAchievements = async loanIds => {
 
 	if (props.isNextStepsExpEnabled) {
 		await loadGoalData({ loans: loansInBasket.value });
-		loanGoalProgress.value = await getPostCheckoutProgressByLoan(addedLoan.value);
+		loanGoalProgress.value = await getPostCheckoutProgressByLoans(loanIds.map(id => ({ id })));
 		const userTarget = userGoal.value?.target || 0;
-		const isOneLoanAwayFromGoal = userTarget - currentGoalProgress.value === 1;
+		const isOneLoanAwayFromGoal = userTarget - loanGoalProgress.value === 1;
 		showAtbGoalMsg = isLoanGoal.value && (basketSize < BASKET_LIMIT_SIZE_FOR_EXP || isOneLoanAwayFromGoal);
 		if (showAtbGoalMsg) {
 			if (isOneLoanAwayFromGoal) {
