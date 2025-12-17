@@ -9,7 +9,7 @@
 
 		<!-- Mobile-->
 		<div
-			v-if="isMobile && inLendingStats"
+			v-if="isMobile && shouldShowEmailMarketingCard"
 			class="tw-flex tw-flex-col tw-gap-2"
 		>
 			<component
@@ -34,7 +34,7 @@
 				leave-to-class="tw-opacity-0"
 			>
 				<MyKivaEmailUpdatesCard
-					v-if="shouldShowEmailMarketingCard && !acceptedEmailMarketingUpdates"
+					v-if="!acceptedEmailMarketingUpdates"
 					key:="acceptEmails"
 					v-kv-track-event="['portfolio', 'view', 'next-step-email-option']"
 					:loans="loans"

@@ -59,6 +59,10 @@ const props = defineProps({
 		type: Array,
 		default: () => [],
 	},
+	loanId: {
+		type: String,
+		default: ''
+	}
 });
 
 const emit = defineEmits(['accept-email-updates']);
