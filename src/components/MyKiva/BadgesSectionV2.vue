@@ -1,6 +1,7 @@
 <template>
 	<KvCarousel
 		class="tw-w-full !tw-pt-0"
+		:key="carouselKey"
 		:controls-top-right="controlsTopRight"
 		:multiple-slides-visible="true"
 		:slide-max-width="SINGLE_SLIDE_WIDTH"
@@ -55,6 +56,7 @@ const SINGLE_SLIDE_WIDTH = '336px';
 const emit = defineEmits(['badge-clicked']);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
+const carouselKey = ref(0);
 
 const props = defineProps({
 	badgeData: {
@@ -108,7 +110,7 @@ const formattedBadgeData = badges => {
 };
 
 const visibleBadges = computed(() => {
-	let showedSlides = Array(6);
+	let showedSlides = Array(5);
 
 	const badgesSlides = props.badgeData
 		.filter(b => defaultBadges.includes(b.id))
@@ -185,6 +187,7 @@ watch(selectedJourney, () => {
 // Watch visibleBadges to update isLoading
 watch(visibleBadges, (newSlides, oldSlides) => {
 	if (oldSlides && JSON.stringify(oldSlides) !== JSON.stringify(newSlides)) {
+		carouselKey.value += 1;
 		isLoading.value = false;
 	}
 }, { immediate: true, deep: true });
