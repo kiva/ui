@@ -376,7 +376,6 @@ const orderedSlides = computed(() => {
 	const achievementSlides = [];
 	let loanJourneys = [];
 	let sortedSlides = [];
-	let addedSlides = 0;
 
 	const transactionLoans = props.userInfo?.transactions?.values?.filter(t => {
 		const diffInDays = differenceInDays(new Date(), parseISO(t.createTime));
@@ -447,12 +446,11 @@ const orderedSlides = computed(() => {
 	}
 
 	if (shouldShowEmailMarketingCard.value) {
-		addedSlides += 1;
 		sortedSlides.splice(1, 0, { isEmailUpdates: true });
 	}
 
 	if (props.slidesNumber) {
-		sortedSlides = sortedSlides.slice(0, props.slidesNumber + addedSlides);
+		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
 	}
 
 	return sortedSlides;
