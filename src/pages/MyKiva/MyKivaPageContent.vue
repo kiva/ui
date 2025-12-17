@@ -169,7 +169,6 @@
 				More ways to help
 			</h3>
 			<JourneyCardCarousel
-				key="more-ways-carousel"
 				class="tw--mt-4"
 				controls-top-right
 				:slides="moreWaysToHelpSlides"

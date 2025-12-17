@@ -14,7 +14,6 @@
 		<template v-if="showRegionExperience">
 			<div class="card-container tw-shrink-0">
 				<JourneyCardCarousel
-					key="lending-stats-carousel"
 					class="carousel carousel-single"
 					user-in-homepage
 					in-lending-stats
@@ -145,7 +144,6 @@
 		</template>
 		<JourneyCardCarousel
 			v-else
-			key="lending-stats-carousel"
 			class="carousel tw--mt-6"
 			user-in-homepage
 			in-lending-stats
