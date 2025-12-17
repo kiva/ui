@@ -184,7 +184,11 @@ const fetchPostCheckoutAchievements = async loanIds => {
 
 	if (props.isNextStepsExpEnabled) {
 		await loadGoalData({ loans: loansInBasket.value });
-		loanGoalProgress.value = await getPostCheckoutProgressByLoans(loanIds.map(id => ({ id })));
+		// Increment counter per add-to-basket action
+		loanGoalProgress.value = await getPostCheckoutProgressByLoans({
+			loans: loanIds.map(id => ({ id })),
+			increment: true,
+		});
 		const userTarget = userGoal.value?.target || 0;
 		const isOneLoanAwayFromGoal = userTarget - loanGoalProgress.value === 1;
 		showAtbGoalMsg = isLoanGoal.value && (basketSize < BASKET_LIMIT_SIZE_FOR_EXP || isOneLoanAwayFromGoal);

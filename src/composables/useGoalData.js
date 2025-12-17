@@ -252,13 +252,25 @@ export default function useGoalData({ apollo } = {}) {
 
 	/**
 	 * Get post-checkout progress for multiple loans
-	 * @param {Array} loans - Array of loan objects with id property
-	 * @param {number|null} year - Year for yearly progress, or null/undefined for all-time progress
-	 * @param {boolean} increment - Whether to increment the in-page counter (for ATB modal add-to-basket)
+	 * @param {Object} options - Options for progress calculation
+	 * @param {Array} options.loans - Array of loan objects with id property
+	 * @param {number|null} options.year - Year for yearly progress, or null for all-time progress
+	 * @param {boolean} options.increment - Increment in-page counter by 1 (ATB modal: true)
+	 * @param {boolean} options.addBasketLoans - Add loans.length to progress (Basket page: true)
 	 * @returns {number} Progress count for the user's goal category
+	 *
+	 * Use cases:
+	 * - ATB Modal: { loans, increment: true } - increments counter per add-to-basket action
+	 * - Basket Page: { loans, addBasketLoans: true } - adds basket loan count
+	 * - Thanks Page: { loans, year } - returns goalProgress (loans already in totalLoanCount)
 	 */
-	async function getPostCheckoutProgressByLoans(loans, year = null, increment = true) {
-		// For ID_SUPPORT_ALL, optionally increment the in-page counter and return updated progress
+	async function getPostCheckoutProgressByLoans({
+		loans = [],
+		year = null,
+		increment = false,
+		addBasketLoans = false,
+	} = {}) {
+		// For ID_SUPPORT_ALL, use in-page counter logic instead of API query
 		// goalProgress already accounts for loanTotalAtStart
 		if (userGoal.value?.category === ID_SUPPORT_ALL) {
 			if (increment) {
@@ -266,8 +278,12 @@ export default function useGoalData({ apollo } = {}) {
 				goalCurrentLoanCount.value += 1;
 				return goalProgress.value + goalCurrentLoanCount.value;
 			}
-			// Basket page: just return progress + all loans in basket (no increment)
-			return goalProgress.value + loans.length;
+			if (addBasketLoans) {
+				// Basket page: add basket loan count (loans not yet in totalLoanCount)
+				return goalProgress.value + loans.length;
+			}
+			// Thanks page: just return goalProgress (loans already in totalLoanCount after checkout)
+			return goalProgress.value;
 		}
 		try {
 			const loanIds = loans.map(loan => loan.id);
