@@ -55,7 +55,7 @@
 							key="acceptEmails"
 							v-kv-track-event="['portfolio', 'view', 'next-step-email-option']"
 							:loans="loans"
-							:loan-id="loanId"
+							:latest-loan="latestLoan"
 							@accept-email-updates="acceptedEmailMarketingUpdates = true"
 						/>
 						<ThankYouCard
@@ -159,7 +159,7 @@ import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
 import useGoalData from '#src/composables/useGoalData';
 import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCard';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
-import useOptIn, { MAIL_UPDATES_OPT_COOKIE_NAME } from '#src/composables/useOptIn';
+import useOptIn from '#src/composables/useOptIn';
 import ThankYouCard from '../MyKiva/ThankYouCard';
 
 const JOURNEY_MODAL_KEY = 'journey';
@@ -278,7 +278,6 @@ const shouldShowEmailMarketingCard = computed(
 		&& userHasMailUpdatesOptOut()
 );
 const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
-const loanId = computed(() => cookieStore.get(MAIL_UPDATES_OPT_COOKIE_NAME)?.trim()?.split('|')?.[1] || '');
 
 const showLatestLoan = computed(() => props.postLendingNextStepsEnable && props.latestLoan);
 
