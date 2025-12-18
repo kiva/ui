@@ -109,7 +109,7 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
 const { getLoanFindingUrl } = useBadgeData();
-const { getGoalDisplayName, setHideGoalCardPreference } = useGoalData();
+const { getGoalDisplayName, setHideGoalCardPreference, hideGoalCard } = useGoalData();
 const COMPLETED_GOAL_THRESHOLD = 100;
 const HALF_GOAL_THRESHOLD = 50;
 
@@ -223,7 +223,7 @@ watch(() => props.userGoal, (newVal, oldVal) => {
 });
 
 watch(goalProgressPercentage, newVal => {
-	if (newVal === COMPLETED_GOAL_THRESHOLD) {
+	if (newVal === COMPLETED_GOAL_THRESHOLD && !hideGoalCard()) {
 		showConfetti();
 		setHideGoalCardPreference();
 	}
