@@ -211,11 +211,6 @@ const handleContinueClick = () => {
 const progressCircleDesc = computed(() => `loan${props.goalProgress > 1 ? 's' : ''} made`);
 
 watch(() => props.userGoal, (newVal, oldVal) => {
-	// Only track when no user goal
-	if (!newVal?.category && !oldVal?.category) {
-		$kvTrackEvent('portfolio', 'view', 'set-annual-goal');
-	}
-
 	// Only track when a new goal is created (oldVal had no category, newVal has one)
 	if (newVal?.target && newVal?.category && !oldVal?.category) {
 		$kvTrackEvent('portfolio', 'show', 'goal-set', newVal.category, newVal.target);

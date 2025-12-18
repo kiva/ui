@@ -72,6 +72,8 @@ import {
 	inject,
 	watch,
 	toRefs,
+	onMounted,
+	onUnmounted,
 } from 'vue';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import useIsMobile from '#src/composables/useIsMobile';
@@ -266,22 +268,6 @@ const setGoalTarget = target => {
 	selectedGoalNumber.value = target;
 };
 
-watch(() => props.show, (newVal, oldVal) => {
-	if (newVal === true && oldVal === false) {
-		$kvTrackEvent(
-			props.isThanksPage ? 'post-checkout' : 'portfolio',
-			'show',
-			'view-goal-categories'
-		);
-	} else if (newVal === false && oldVal === true) {
-		$kvTrackEvent(
-			props.isThanksPage ? 'post-checkout' : 'portfolio',
-			'click',
-			'close-goals'
-		);
-	}
-});
-
 watch(numberOfLoans, newVal => {
 	if (newVal) {
 		selectedGoalNumber.value = newVal;
@@ -292,6 +278,22 @@ watch(isGoalSet, newVal => {
 	if (newVal && showCategories.value) {
 		showCategories.value = false;
 	}
+});
+
+onMounted(() => {
+	$kvTrackEvent(
+		props.isThanksPage ? 'post-checkout' : 'portfolio',
+		'show',
+		'view-goal-categories'
+	);
+});
+
+onUnmounted(() => {
+	$kvTrackEvent(
+		props.isThanksPage ? 'post-checkout' : 'portfolio',
+		'click',
+		'close-goals'
+	);
 });
 </script>
 
