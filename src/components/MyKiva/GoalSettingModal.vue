@@ -72,7 +72,6 @@ import {
 	inject,
 	watch,
 	toRefs,
-	onUnmounted,
 } from 'vue';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import useIsMobile from '#src/composables/useIsMobile';
