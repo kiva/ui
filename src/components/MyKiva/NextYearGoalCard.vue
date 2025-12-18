@@ -11,7 +11,7 @@
 		</div>
 		<template v-else>
 			<div v-if="!userHasGoal" class="tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-between">
-				<h4>LAST YEAR</h4>
+				<h4>{{ prevYearLoans > 0 ? 'LAST YEAR' : ' HELP' }}</h4>
 				<h3 class="tw-text-center" v-html="title"></h3>
 				<p class="tw-text-center">
 					How many loans will you make this year?
