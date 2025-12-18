@@ -161,6 +161,7 @@
 			:goals-entrypoint-enable="goalsEntrypointEnable"
 			:hide-goal-card="hideCompletedGoalCard"
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
+			:latest-loan="latestLoan"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<GoalSettingModal
@@ -259,6 +260,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		latestLoan: {
+			type: Object,
+			default: null
+		}
 	},
 	data() {
 		return {

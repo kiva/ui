@@ -18,7 +18,7 @@
 			:controls-top-right="controlsTopRight"
 			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
-			class="journey-card-carousel tw-w-full"
+			class="tw-w-full"
 			@change="handleChange"
 		>
 			<template
@@ -52,7 +52,7 @@
 					>
 						<MyKivaEmailUpdatesCard
 							v-if="shouldShowEmailMarketingCard && !acceptedEmailMarketingUpdates"
-							key:="acceptEmails"
+							key="acceptEmails"
 							v-kv-track-event="['portfolio', 'view', 'next-step-email-option']"
 							:loans="loans"
 							:loan-id="loanId"
@@ -89,6 +89,10 @@
 						</ThankYouCard>
 					</transition>
 				</template>
+				<MyKivaLatestLoanCard
+					v-else-if="slide?.isLatestLoan"
+					:loan="latestLoan"
+				/>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
 					class="kiva-card"
@@ -154,6 +158,7 @@ import { optimizeContentfulUrl } from '#src/util/imageUtils';
 import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
 import useGoalData from '#src/composables/useGoalData';
 import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCard';
+import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import useOptIn, { MAIL_UPDATES_OPT_COOKIE_NAME } from '#src/composables/useOptIn';
 import ThankYouCard from '../MyKiva/ThankYouCard';
 
@@ -256,6 +261,10 @@ const props = defineProps({
 	postLendingNextStepsEnable: {
 		type: Boolean,
 		default: false
+	},
+	latestLoan: {
+		type: Object,
+		default: null
 	}
 });
 
@@ -270,6 +279,8 @@ const shouldShowEmailMarketingCard = computed(
 );
 const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
 const loanId = computed(() => cookieStore.get(MAIL_UPDATES_OPT_COOKIE_NAME)?.trim()?.split('|')?.[1] || '');
+
+const showLatestLoan = computed(() => props.postLendingNextStepsEnable && props.latestLoan);
 
 const badgesData = computed(() => {
 	const badgeContentfulData = (props.heroContentfulData ?? [])
@@ -374,6 +385,10 @@ const orderedSlides = computed(() => {
 	if (shouldShowGoalCard.value) {
 		// Add empty slide at start for goal card
 		sortedSlides.unshift({});
+	}
+
+	if (showLatestLoan.value) {
+		sortedSlides.splice(1, 0, { isLatestLoan: true });
 	}
 
 	if (shouldShowEmailMarketingCard.value) {
