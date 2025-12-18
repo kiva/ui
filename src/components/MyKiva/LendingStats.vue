@@ -414,12 +414,14 @@ export default {
 			}
 		},
 		closeGoalModal() {
-			this.showGoalModal = false;
-			this.$kvTrackEvent(
-				'portfolio',
-				'click',
-				'close-goals'
-			);
+			if (this.showGoalModal) {
+				this.showGoalModal = false;
+				this.$kvTrackEvent(
+					'portfolio',
+					'click',
+					'close-goals'
+				);
+			}
 		},
 	},
 };

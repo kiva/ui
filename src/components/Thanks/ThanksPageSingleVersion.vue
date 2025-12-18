@@ -330,12 +330,14 @@ const setGoal = async preferences => {
 };
 
 const closeGoalModal = () => {
-	showGoalModal.value = false;
-	$kvTrackEvent(
-		'post-checkout',
-		'click',
-		'close-goals'
-	);
+	if (showGoalModal.value) {
+		showGoalModal.value = false;
+		$kvTrackEvent(
+			'post-checkout',
+			'click',
+			'close-goals'
+		);
+	}
 };
 const setGoalTarget = target => {
 	goalTarget.value = target;
