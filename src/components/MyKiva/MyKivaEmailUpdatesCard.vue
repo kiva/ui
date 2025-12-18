@@ -13,7 +13,7 @@
 				Email updates
 			</span>
 		</span>
-		<div class="tw-relative tw-w-full tw-overflow-hidden tw-rounded image-container">
+		<div class="tw-relative tw-w-full tw-overflow-hidden image-container">
 			<KvBorrowerImage
 				class="tw-w-full tw-h-full tw-object-cover"
 				:alt="name"
@@ -107,7 +107,15 @@ const handleEmailOptIn = async () => {
 		tw-overflow-hidden tw-bg-white tw-shrink-0;
 }
 
+.image-container :deep(picture) {
+	@apply !tw-pb-0;
+
+	height: 183px;
+}
+
 .image-container :deep(picture img) {
 	@apply tw-object-cover tw-object-center;
+
+	height: 183px;
 }
 </style>
