@@ -116,6 +116,6 @@ const handleEmailOptIn = async () => {
 .image-container :deep(picture img) {
 	@apply tw-object-cover tw-object-center;
 
-    height: 183px;
+	height: 183px;
 }
 </style>
