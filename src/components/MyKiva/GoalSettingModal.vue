@@ -30,7 +30,7 @@
 			:tiered-achievements="tieredAchievements"
 			@set-goal-target="setGoalTarget"
 			@set-goal="$emit('set-goal', $event)"
-			@edit-goal="editGoal"
+			@edit-goal="editGoalCategory"
 		/>
 		<component
 			v-show="showCategories || isThanksPage"
@@ -72,7 +72,6 @@ import {
 	inject,
 	watch,
 	toRefs,
-	onMounted,
 	onUnmounted,
 } from 'vue';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
@@ -208,6 +207,11 @@ const clickBack = () => {
 		'click',
 		'goals-back'
 	);
+	$kvTrackEvent(
+		props.isThanksPage ? 'post-checkout' : 'portfolio',
+		'show',
+		'view-goal-categories'
+	);
 };
 
 const handleClick = () => {
@@ -259,8 +263,13 @@ const closeLightbox = () => {
 	}, 300);
 };
 
-const editGoal = () => {
+const editGoalCategory = () => {
 	showCategories.value = true;
+	$kvTrackEvent(
+		props.isThanksPage ? 'post-checkout' : 'portfolio',
+		'show',
+		'view-goal-categories'
+	);
 };
 
 const setGoalTarget = target => {
@@ -278,14 +287,6 @@ watch(isGoalSet, newVal => {
 	if (newVal && showCategories.value) {
 		showCategories.value = false;
 	}
-});
-
-onMounted(() => {
-	$kvTrackEvent(
-		props.isThanksPage ? 'post-checkout' : 'portfolio',
-		'show',
-		'view-goal-categories'
-	);
 });
 
 onUnmounted(() => {
