@@ -17,6 +17,7 @@
 			:goals-entrypoint-enable="goalsEntrypointEnable"
 			:show-new-badge-section="showNewBadgeSection"
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
+			:latest-loan="latestLoan"
 		/>
 	</www-page>
 </template>
@@ -83,6 +84,7 @@ export default {
 			goalsEntrypointEnable: false,
 			showNewBadgeSection: false,
 			postLendingNextStepsEnable: false,
+			latestLoan: null,
 		};
 	},
 	apollo: {
@@ -181,6 +183,8 @@ export default {
 				this.goalsEntrypointEnable = readBoolSetting(myKivaQueryResult, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.showNewBadgeSection = readBoolSetting(myKivaQueryResult, `general.${NEW_BADGE_SECTION_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.postLendingNextStepsEnable = readBoolSetting(myKivaQueryResult, `general.${POST_LENDING_NEXT_STEPS_KEY}.value`) ?? false; // eslint-disable-line max-len
+
+				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan || null;
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');
 			}
