@@ -165,7 +165,7 @@
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<GoalSettingModal
-			v-if="isNextStepsExpEnabled"
+			v-if="isNextStepsExpEnabled && showGoalModal"
 			:show="showGoalModal"
 			:total-loans="totalLoans"
 			:categories-loan-count="categoriesLoanCount"
@@ -173,7 +173,7 @@
 			:is-goal-set="isGoalSet"
 			:show-goal-selector="true"
 			:tiered-achievements="heroTieredAchievements"
-			@close-goal-modal="showGoalModal = false"
+			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
 		/>
 	</div>
@@ -411,6 +411,16 @@ export default {
 			this.isGoalSet = true;
 			if (!this.goalsEntrypointEnable) {
 				this.showGoalModal = false;
+			}
+		},
+		closeGoalModal() {
+			if (this.showGoalModal) {
+				this.showGoalModal = false;
+				this.$kvTrackEvent(
+					'portfolio',
+					'click',
+					'close-goals'
+				);
 			}
 		},
 	},
