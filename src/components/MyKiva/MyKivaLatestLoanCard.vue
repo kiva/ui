@@ -55,7 +55,7 @@
 				variant="secondary"
 				v-kv-track-event="['portfolio', 'click', 'next-step-impact-education']"
 				class="tw-w-full tw-mt-1"
-				@click="handleEmailOptIn"
+				@click="openModal"
 			>
 				View impact insights
 			</KvButton>
@@ -80,6 +80,8 @@ const props = defineProps({
 		default: () => ({}),
 	},
 });
+
+const defaultBaseColor = kvTokensPrimitives.colors?.brand[200] || null;
 
 const mapLat = computed(() => {
 	return props.loan?.geocode?.latitude || 0;
@@ -121,7 +123,9 @@ const countriesData = computed(() => {
 	}];
 });
 
-const defaultBaseColor = kvTokensPrimitives.colors?.brand[200] || null;
+const openModal = () => {
+	// TODO: Implement modal opening logic
+};
 
 onMounted(() => {
 	$kvTrackEvent('portfolio', 'view', 'next-step-impact-education');
