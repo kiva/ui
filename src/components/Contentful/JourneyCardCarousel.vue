@@ -18,7 +18,7 @@
 			:controls-top-right="controlsTopRight"
 			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
-			class="journey-card-carousel tw-w-full"
+			class="tw-w-full"
 			@change="handleChange"
 		>
 			<template
