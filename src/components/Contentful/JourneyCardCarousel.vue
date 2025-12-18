@@ -275,7 +275,7 @@ const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
 const acceptedEmailMarketingUpdates = ref(false);
 const shouldShowEmailMarketingCard = computed(
 	() => props.postLendingNextStepsEnable && props.inLendingStats
-		&& userHasMailUpdatesOptOut()
+		&& userHasMailUpdatesOptOut() && (props.loans.length > 0 || props.latestLoan !== null)
 );
 const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
 
