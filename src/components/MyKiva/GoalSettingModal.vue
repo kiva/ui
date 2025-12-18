@@ -288,14 +288,6 @@ watch(isGoalSet, newVal => {
 		showCategories.value = false;
 	}
 });
-
-onUnmounted(() => {
-	$kvTrackEvent(
-		props.isThanksPage ? 'post-checkout' : 'portfolio',
-		'click',
-		'close-goals'
-	);
-});
 </script>
 
 <style lang="postcss" scoped>

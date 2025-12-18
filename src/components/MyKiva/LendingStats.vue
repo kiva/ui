@@ -173,7 +173,7 @@
 			:is-goal-set="isGoalSet"
 			:show-goal-selector="true"
 			:tiered-achievements="heroTieredAchievements"
-			@close-goal-modal="showGoalModal = false"
+			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
 		/>
 	</div>
@@ -412,6 +412,14 @@ export default {
 			if (!this.goalsEntrypointEnable) {
 				this.showGoalModal = false;
 			}
+		},
+		closeGoalModal() {
+			this.showGoalModal = false;
+			this.$kvTrackEvent(
+				'portfolio',
+				'click',
+				'close-goals'
+			);
 		},
 	},
 };

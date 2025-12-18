@@ -95,7 +95,7 @@
 			:is-thanks-page="true"
 			:number-of-loans="goalTarget"
 			:goals-entrypoint-enable="thanksPageGoalsEntrypointEnable"
-			@close-goal-modal="showGoalModal = false"
+			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
 		/>
 	</div>
@@ -329,6 +329,14 @@ const setGoal = async preferences => {
 	showGoalModal.value = false;
 };
 
+const closeGoalModal = () => {
+	showGoalModal.value = false;
+	$kvTrackEvent(
+		'post-checkout',
+		'click',
+		'close-goals'
+	);
+};
 const setGoalTarget = target => {
 	goalTarget.value = target;
 };
