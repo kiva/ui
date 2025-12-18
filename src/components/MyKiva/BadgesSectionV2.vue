@@ -184,9 +184,11 @@ watch(selectedJourney, () => {
 
 // Watch visibleBadges to update isLoading
 watch(visibleBadges, (newSlides, oldSlides) => {
-	if (oldSlides && oldSlides.length !== newSlides.length) {
-		carouselKey.value += 1;
+	if (oldSlides && JSON.stringify(oldSlides) !== JSON.stringify(newSlides)) {
 		isLoading.value = false;
+	}
+	if (oldSlides?.length !== newSlides?.length) {
+		carouselKey.value += 1;
 		$kvTrackEvent('portfolio', 'show', 'annual-goal-progress-row');
 	}
 }, { immediate: true, deep: true });
