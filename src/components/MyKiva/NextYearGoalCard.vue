@@ -11,7 +11,7 @@
 		</div>
 		<template v-else>
 			<div v-if="!userHasGoal" class="tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-between">
-				<h4>LAST YEAR</h4>
+				<h4>{{ prevYearLoans > 0 ? 'LAST YEAR' : ' HELP' }}</h4>
 				<h3 class="tw-text-center" v-html="title"></h3>
 				<div class="tw-pt-1 tw-text-center">
 					<p>
@@ -44,7 +44,7 @@
 				</div>
 				<div class="tw-relative tw-z-docked tw-mx-auto">
 					<KvProgressCircle
-						class="tw-z-2"
+						class="tw-z-2 tw-py-0.5"
 						:stroke-width="20"
 						:value="goalProgressPercentage"
 						:max="goalLoans"
@@ -60,7 +60,7 @@
 						</p>
 					</div>
 				</div>
-				<p v-html="progressDescription" class="tw-font-medium" style="line-height: 1.5rem;">
+				<p v-html="progressDescription" class="tw-font-medium tw-py-1" style="line-height: 1.5rem;">
 				</p>
 				<KvButton
 					class="tw-w-full"
@@ -121,7 +121,6 @@ const { getLoanFindingUrl, ID_WOMENS_EQUALITY } = useBadgeData();
 const {
 	getCategoryLoansByYear,
 	getGoalDisplayName,
-	hideGoalCard,
 	setHideGoalCardPreference,
 } = useGoalData();
 const COMPLETED_GOAL_THRESHOLD = 100;
@@ -235,19 +234,14 @@ const handleContinueClick = () => {
 const progressCircleDesc = computed(() => `loan${props.goalProgress > 1 ? 's' : ''} made`);
 
 watch(() => props.userGoal, (newVal, oldVal) => {
-	// Only track when no user goal
-	if (!newVal?.category && !oldVal?.category) {
-		$kvTrackEvent('portfolio', 'view', 'set-annual-goal');
-	}
-
 	// Only track when a new goal is created (oldVal had no category, newVal has one)
 	if (newVal?.target && newVal?.category && !oldVal?.category) {
 		$kvTrackEvent('portfolio', 'show', 'goal-set', newVal.category, newVal.target);
 	}
 });
 
-watch(goalProgressPercentage, newVal => {
-	if (newVal === COMPLETED_GOAL_THRESHOLD && !hideGoalCard()) {
+watch(() => props.loading, newVal => {
+	if (!newVal && goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
 		showConfetti();
 		setHideGoalCardPreference();
 	}

@@ -28,7 +28,7 @@
 					:user-goal-enabled="isNextStepsExpEnabled"
 					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
-					:goals-entrypoint-enable="goalsEntrypointEnable"
+					:goals-v2-enabled="goalsV2Enabled"
 					:categories-loan-count="categoriesLoanCount"
 					:hide-goal-card="hideCompletedGoalCard"
 					:post-lending-next-steps-enable="postLendingNextStepsEnable"
@@ -158,22 +158,22 @@
 			:user-goal-enabled="isNextStepsExpEnabled"
 			:user-goal-achieved="userGoalAchieved"
 			:user-goal="userGoal"
-			:goals-entrypoint-enable="goalsEntrypointEnable"
+			:goals-v2-enabled="goalsV2Enabled"
 			:hide-goal-card="hideCompletedGoalCard"
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<GoalSettingModal
-			v-if="isNextStepsExpEnabled"
+			v-if="isNextStepsExpEnabled && showGoalModal"
 			:show="showGoalModal"
 			:total-loans="totalLoans"
 			:categories-loan-count="categoriesLoanCount"
-			:goals-entrypoint-enable="goalsEntrypointEnable"
+			:goals-v2-enabled="goalsV2Enabled"
 			:is-goal-set="isGoalSet"
 			:show-goal-selector="true"
 			:tiered-achievements="heroTieredAchievements"
-			@close-goal-modal="showGoalModal = false"
+			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
 		/>
 	</div>
@@ -252,7 +252,7 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		goalsEntrypointEnable: {
+		goalsV2Enabled: {
 			type: Boolean,
 			default: false
 		},
@@ -350,7 +350,8 @@ export default {
 	},
 	async mounted() {
 		if (this.isNextStepsExpEnabled) {
-			await this.loadGoalData({ yearlyProgress: this.goalsEntrypointEnable });
+			// Goals V2 (yearly progress) is enabled if flag is true OR year >= 2026
+			await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
 			await this.checkCompletedGoal({ category: 'portfolio' });
 			this.hideCompletedGoalCard = this.hideGoalCard();
 			this.goalProgressLoading = false;
@@ -407,10 +408,21 @@ export default {
 		},
 		async setGoal(preferences) {
 			await this.storeGoalPreferences(preferences);
-			await this.loadGoalData({ yearlyProgress: this.goalsEntrypointEnable });
+			// Goals V2 (yearly progress) is enabled if flag is true OR year >= 2026
+			await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
 			this.isGoalSet = true;
-			if (!this.goalsEntrypointEnable) {
+			if (!this.goalsV2Enabled) {
 				this.showGoalModal = false;
+			}
+		},
+		closeGoalModal() {
+			if (this.showGoalModal) {
+				this.showGoalModal = false;
+				this.$kvTrackEvent(
+					'portfolio',
+					'click',
+					'close-goals'
+				);
 			}
 		},
 	},
