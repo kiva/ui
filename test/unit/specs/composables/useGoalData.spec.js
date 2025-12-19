@@ -632,7 +632,6 @@ describe('useGoalData', () => {
 			};
 
 			mockApollo.query = vi.fn()
-				// 1. loadPreferences (useGoalDataQuery)
 				.mockResolvedValueOnce({
 					data: {
 						my: {
@@ -644,7 +643,6 @@ describe('useGoalData', () => {
 						},
 					},
 				})
-				// 2. loadProgress (useGoalDataYearlyProgressQuery)
 				.mockResolvedValueOnce({
 					data: {
 						userAchievementProgress: {
