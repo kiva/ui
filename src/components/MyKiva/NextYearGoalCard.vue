@@ -13,9 +13,14 @@
 			<div v-if="!userHasGoal" class="tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-between">
 				<h4>LAST YEAR</h4>
 				<h3 class="tw-text-center" v-html="title"></h3>
-				<p class="tw-text-center">
-					How many loans will you make this year?
-				</p>
+				<div class="tw-pt-1 tw-text-center">
+					<p>
+						How many loans will you make this year?
+					</p>
+					<p v-if="womenLoansThisYear">
+						You've already made {{ womenLoansThisYear }}.
+					</p>
+				</div>
 				<img
 					:src="HandsPlant"
 					class="tw-my-2 md:tw-my-4 tw-w-14"
@@ -72,7 +77,11 @@
 <script setup>
 
 import {
-	computed, watch, inject
+	computed,
+	inject,
+	onMounted,
+	ref,
+	watch,
 } from 'vue';
 import {
 	KvButton, KvLoadingPlaceholder
@@ -108,10 +117,25 @@ defineEmits(['open-goal-modal']);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
-const { getLoanFindingUrl } = useBadgeData();
-const { getGoalDisplayName, setHideGoalCardPreference, hideGoalCard } = useGoalData();
+const { getLoanFindingUrl, ID_WOMENS_EQUALITY } = useBadgeData();
+const {
+	getCategoryLoansByYear,
+	getGoalDisplayName,
+	hideGoalCard,
+	setHideGoalCardPreference,
+} = useGoalData();
 const COMPLETED_GOAL_THRESHOLD = 100;
 const HALF_GOAL_THRESHOLD = 50;
+
+const womenLoansThisYear = ref(0);
+
+async function loadWomenLoansThisYear() {
+	const currentYear = new Date().getFullYear();
+	const categoryLoansThisYear = await getCategoryLoansByYear(currentYear);
+	womenLoansThisYear.value = categoryLoansThisYear?.find(
+		categoryLoans => categoryLoans.id === ID_WOMENS_EQUALITY
+	)?.progressForYear || 0;
+}
 
 const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);
 
@@ -227,6 +251,10 @@ watch(goalProgressPercentage, newVal => {
 		showConfetti();
 		setHideGoalCardPreference();
 	}
+});
+
+onMounted(async () => {
+	await loadWomenLoansThisYear();
 });
 </script>
 

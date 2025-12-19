@@ -222,6 +222,28 @@ export default function useGoalData({ apollo } = {}) {
 		return categoryAchievement?.progressForYear || 0;
 	}
 
+	/**
+	 * Retrieves the user's tiered lending achievement progress for a given year.
+	 *
+	 * @param {number} year - Year to fetch progress for.
+	 * @param {string} [fetchPolicy='cache-first'] - Apollo fetch policy.
+	 * @returns {Promise<Object[]|null>} Tiered lending progress data, or null on error.
+	 */
+	async function getCategoryLoansByYear(year, fetchPolicy = 'cache-first') {
+		try {
+			const response = await apolloClient.query({
+				query: useGoalDataYearlyProgressQuery,
+				variables: { year },
+				fetchPolicy
+			});
+			const progress = response.data.userAchievementProgress.tieredLendingAchievements;
+			return progress;
+		} catch (error) {
+			logFormatter(error, 'Failed to fetch category loans by year');
+			return null;
+		}
+	}
+
 	async function loadPreferences(fetchPolicy = 'cache-first') {
 		try {
 			const response = await apolloClient.query({ query: useGoalDataQuery, fetchPolicy });
@@ -235,14 +257,9 @@ export default function useGoalData({ apollo } = {}) {
 		}
 	}
 
-	async function loadProgress(year) {
+	async function loadProgress(year, fetchPolicy = 'network-only') {
 		try {
-			const response = await apolloClient.query({
-				query: useGoalDataYearlyProgressQuery,
-				variables: { year },
-				fetchPolicy: 'network-only'
-			});
-			const progress = response.data.userAchievementProgress.tieredLendingAchievements;
+			const progress = await getCategoryLoansByYear(year, fetchPolicy);
 			currentYearProgress.value = progress;
 		} catch (error) {
 			logFormatter(error, 'Failed to load progress');
@@ -494,13 +511,14 @@ export default function useGoalData({ apollo } = {}) {
 		getCategories,
 		getCategoryLoansLastYear,
 		getCtaHref,
-		isProgressCompletingGoal,
 		getGoalDisplayName,
 		getPostCheckoutProgressByLoans,
-		goalProgress,
+		isProgressCompletingGoal,
 		loadGoalData,
-		loading,
+		getCategoryLoansByYear,
 		storeGoalPreferences,
+		goalProgress,
+		loading,
 		userGoal,
 		userGoalAchieved,
 		userGoalAchievedNow,
