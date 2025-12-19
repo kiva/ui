@@ -200,7 +200,8 @@ watch(userGoal, async (newVal, oldVal) => {
 });
 
 onMounted(async () => {
-	await loadGoalData();
+	// This card is only displayed for annual goals
+	await loadGoalData({ yearlyProgress: true });
 });
 </script>
 

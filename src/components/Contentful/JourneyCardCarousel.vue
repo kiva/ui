@@ -245,7 +245,7 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	goalsEntrypointEnable: {
+	goalsV2Enabled: {
 		type: Boolean,
 		default: false
 	},
@@ -299,7 +299,7 @@ const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
 
 	return props.userGoalEnabled
-	&& (!props.userGoal || !props.userGoalAchieved || (props.userGoalAchieved && props.goalsEntrypointEnable))
+	&& (!props.userGoal || !props.userGoalAchieved || (props.userGoalAchieved && props.goalsV2Enabled))
 	&& !props.hideGoalCard;
 });
 
@@ -539,7 +539,7 @@ const womenLoansLastYear = computed(() => {
 });
 
 const goalCardComponent = computed(() => {
-	if (props.goalsEntrypointEnable) {
+	if (props.goalsV2Enabled) {
 		return NextYearGoalCard;
 	}
 	return GoalCard;

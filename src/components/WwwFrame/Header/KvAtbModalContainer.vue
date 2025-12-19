@@ -63,6 +63,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
+	goalsV2Enabled: {
+		type: Boolean,
+		default: false
+	},
 });
 
 const { addedLoan } = toRefs(props);
@@ -183,10 +187,16 @@ const fetchPostCheckoutAchievements = async loanIds => {
 	let showAtbGoalMsg = false;
 
 	if (props.isNextStepsExpEnabled) {
-		await loadGoalData({ loans: loansInBasket.value });
+		await loadGoalData({
+			loans: loansInBasket.value,
+			yearlyProgress: props.goalsV2Enabled,
+		});
+		// Use yearly progress with current year when Goals V2 is enabled, otherwise use all-time progress
+		const year = props.goalsV2Enabled ? new Date().getFullYear() : null;
 		// Increment counter per add-to-basket action
 		loanGoalProgress.value = await getPostCheckoutProgressByLoans({
 			loans: loanIds.map(id => ({ id })),
+			year,
 			increment: true,
 		});
 		const userTarget = userGoal.value?.target || 0;
