@@ -14,7 +14,7 @@
 			:enable-ai-loan-pills="enableAILoanPills"
 			:sidesheet-loan="sidesheetLoan"
 			:is-next-steps-exp-enabled="isNextStepsExpEnabled"
-			:goals-entrypoint-enable="goalsEntrypointEnable"
+			:goals-v2-enabled="goalsV2Enabled"
 			:show-new-badge-section="showNewBadgeSection"
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
@@ -37,7 +37,7 @@ import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSid
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import useGoalData, { LAST_YEAR_KEY, isGoalsV2Enabled } from '#src/composables/useGoalData';
 import { inject } from 'vue';
 
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
@@ -86,6 +86,11 @@ export default {
 			postLendingNextStepsEnable: false,
 			latestLoan: null,
 		};
+	},
+	computed: {
+		goalsV2Enabled() {
+			return isGoalsV2Enabled(this.goalsEntrypointEnable);
+		},
 	},
 	apollo: {
 		preFetch(_, client, { route }) {
@@ -247,7 +252,8 @@ export default {
 				},
 			});
 
-			if (this.goalsEntrypointEnable) {
+			// Goals V2 (yearly progress) is enabled if flag is true OR year >= 2026
+			if (this.goalsV2Enabled) {
 				// Param to force goals renewal in an specific year
 				const { renewYear } = this.$route.query;
 				const { showRenewedAnnualGoalToast } = await this.renewAnnualGoal(
@@ -255,7 +261,7 @@ export default {
 				);
 				if (showRenewedAnnualGoalToast) {
 					// eslint-disable-next-line max-len
-					this.$showTipMsg('It’s time for your 2026 impact goal - a fresh start and new opportunity to make a difference.');
+					this.$showTipMsg('It\'s time for your 2026 impact goal - a fresh start and new opportunity to make a difference.');
 				}
 			}
 		} catch (error) {

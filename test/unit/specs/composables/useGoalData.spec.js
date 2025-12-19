@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
+import useGoalData, { GOAL_STATUS, GOALS_V2_START_YEAR, isGoalsV2Enabled } from '#src/composables/useGoalData';
 import {
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
@@ -17,6 +17,67 @@ vi.mock('#src/util/userPreferenceUtils', () => ({
 	createUserPreferences: vi.fn(() => Promise.resolve({ id: 'new-pref-id' })),
 	updateUserPreferences: vi.fn(() => Promise.resolve()),
 }));
+
+describe('GOALS_V2_START_YEAR', () => {
+	it('should be 2026', () => {
+		expect(GOALS_V2_START_YEAR).toBe(2026);
+	});
+});
+
+describe('isGoalsV2Enabled', () => {
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
+	it('should return true when flag is true regardless of year', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2025-06-15T00:00:00Z'));
+
+		expect(isGoalsV2Enabled(true)).toBe(true);
+	});
+
+	it('should return false when flag is false and year is before 2026', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2025-06-15T00:00:00Z'));
+
+		expect(isGoalsV2Enabled(false)).toBe(false);
+	});
+
+	it('should return true when flag is false but year is 2026', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-06-15T00:00:00Z'));
+
+		expect(isGoalsV2Enabled(false)).toBe(true);
+	});
+
+	it('should return true when flag is false but year is after 2026', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2027-06-15T00:00:00Z'));
+
+		expect(isGoalsV2Enabled(false)).toBe(true);
+	});
+
+	it('should return true when flag is undefined but year is 2026 or later', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-06-15T00:00:00Z'));
+
+		expect(isGoalsV2Enabled(undefined)).toBe(true);
+	});
+
+	it('should return true when flag is null but year is 2026 or later', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-06-15T00:00:00Z'));
+
+		expect(isGoalsV2Enabled(null)).toBe(true);
+	});
+
+	it('should return falsy when flag is undefined and year is before 2026', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2025-06-15T00:00:00Z'));
+
+		expect(isGoalsV2Enabled(undefined)).toBeFalsy();
+	});
+});
 
 describe('useGoalData', () => {
 	let mockApollo;

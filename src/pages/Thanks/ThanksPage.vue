@@ -12,7 +12,7 @@
 				:guest-username="guestUsername"
 				:achievements-completed="achievementsCompleted"
 				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
-				:thanks-page-goals-entrypoint-enable="thanksPageGoalsEntrypointEnable"
+				:goals-v2-enabled="goalsV2Enabled"
 				:total-loans="totalLoanCount"
 				:tiered-achievements="achievements"
 			/>
@@ -102,6 +102,7 @@ import userAchievementProgressQuery from '#src/graphql/query/userAchievementProg
 import useBadgeData from '#src/composables/useBadgeData';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
+import { isGoalsV2Enabled } from '#src/composables/useGoalData';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
@@ -233,6 +234,9 @@ export default {
 		}
 	},
 	computed: {
+		goalsV2Enabled() {
+			return isGoalsV2Enabled(this.thanksPageGoalsEntrypointEnable);
+		},
 		showDafThanks() {
 			return !!this.$route?.query?.show_daf_thanks;
 		},

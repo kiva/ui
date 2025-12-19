@@ -194,7 +194,8 @@ watch(visibleBadges, (newSlides, oldSlides) => {
 }, { immediate: true, deep: true });
 
 onMounted(async () => {
-	await loadGoalData();
+	// This card is only displayed for annual goals
+	await loadGoalData({ yearlyProgress: true });
 });
 </script>
 

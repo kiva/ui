@@ -39,7 +39,7 @@
 				</div>
 				<div class="tw-relative tw-z-docked tw-mx-auto">
 					<KvProgressCircle
-						class="tw-z-2"
+						class="tw-z-2 tw-py-0.5"
 						:stroke-width="20"
 						:value="goalProgressPercentage"
 						:max="goalLoans"
@@ -55,7 +55,7 @@
 						</p>
 					</div>
 				</div>
-				<p v-html="progressDescription" class="tw-font-medium" style="line-height: 1.5rem;">
+				<p v-html="progressDescription" class="tw-font-medium tw-py-1" style="line-height: 1.5rem;">
 				</p>
 				<KvButton
 					class="tw-w-full"

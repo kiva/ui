@@ -52,6 +52,18 @@ export const GOAL_STATUS = {
 
 export const SAME_AS_LAST_YEAR_LIMIT = 1;
 export const LAST_YEAR_KEY = 2025;
+export const GOALS_V2_START_YEAR = 2026;
+
+/**
+ * Check if Goals V2 should be enabled based on the flag or current year
+ * Goals V2 is enabled if the flag is true OR the year is 2026 or later
+ * @param {boolean} flagEnabled - The thankyou_page_goals_enable flag value
+ * @returns {boolean} True if Goals V2 should be enabled
+ */
+export function isGoalsV2Enabled(flagEnabled) {
+	const currentYear = new Date().getFullYear();
+	return flagEnabled || currentYear >= GOALS_V2_START_YEAR;
+}
 
 function getGoalDisplayName(target, category) {
 	if (!target || target > 1) return GOAL_DISPLAY_MAP[category] || 'loans';
