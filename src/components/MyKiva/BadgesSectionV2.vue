@@ -139,8 +139,6 @@ const visibleBadges = computed(() => {
 		} else {
 			showedSlides.unshift(formattedUserGoal);
 		}
-
-		$kvTrackEvent('portfolio', 'show', 'annual-goal-progress-row');
 	}
 
 	return showedSlides;
@@ -187,17 +185,13 @@ watch(selectedJourney, () => {
 // Watch visibleBadges to update isLoading
 watch(visibleBadges, (newSlides, oldSlides) => {
 	if (oldSlides && JSON.stringify(oldSlides) !== JSON.stringify(newSlides)) {
-		carouselKey.value += 1;
 		isLoading.value = false;
 	}
-}, { immediate: true, deep: true });
-
-watch(userGoal, async (newVal, oldVal) => {
-	// Only track when a new goal is created (oldVal had no category, newVal has one)
-	if (newVal?.target && newVal?.category && !oldVal?.category) {
-		$kvTrackEvent('portfolio', 'show', 'goal-set', newVal.category, newVal.target);
+	if (oldSlides?.length !== newSlides?.length) {
+		carouselKey.value += 1;
+		$kvTrackEvent('portfolio', 'show', 'annual-goal-progress-row');
 	}
-});
+}, { immediate: true, deep: true });
 
 onMounted(async () => {
 	// This card is only displayed for annual goals

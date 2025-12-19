@@ -47,6 +47,7 @@
 				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 				:goals-v2-enabled="goalsV2Enabled"
 				:post-lending-next-steps-enable="postLendingNextStepsEnable"
+				:latest-loan="latestLoan"
 			/>
 		</section>
 		<section v-if="goalsV2Enabled" class="tw-mt-4" id="mykiva-achievements">
@@ -368,6 +369,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		latestLoan: {
+			type: Object,
+			default: null
+		}
 	},
 	setup() {
 		const apollo = inject('apollo');

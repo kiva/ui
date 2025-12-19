@@ -119,6 +119,37 @@ query myKivaQuery {
         }
       }
     }
+    latestLoan: transactions(
+      filter: {
+        type: ["loan_purchase", "direct_loan_purchase"]
+      }
+      limit: 1
+    ) {
+      values {
+        loan {
+          id
+          name
+          gender
+          image {
+            id
+            hash
+          }
+          geocode {
+            country {
+              id
+              name
+              isoCode
+            }
+            latitude
+            longitude
+          }
+          borrowerCount
+          ... on LoanPartner {
+            themes
+          }
+        }
+      }
+    }
   }
   general {
 		thankyou_page_goals_enable: uiConfigSetting(key: "thankyou_page_goals_enable") {

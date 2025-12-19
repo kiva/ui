@@ -30,7 +30,7 @@
 			:tiered-achievements="tieredAchievements"
 			@set-goal-target="setGoalTarget"
 			@set-goal="$emit('set-goal', $event)"
-			@edit-goal="editGoal"
+			@edit-goal="editGoalCategory"
 		/>
 		<component
 			v-show="showCategories || isThanksPage"
@@ -206,6 +206,11 @@ const clickBack = () => {
 		'click',
 		'goals-back'
 	);
+	$kvTrackEvent(
+		props.isThanksPage ? 'post-checkout' : 'portfolio',
+		'show',
+		'view-goal-categories'
+	);
 };
 
 const handleClick = () => {
@@ -257,30 +262,19 @@ const closeLightbox = () => {
 	}, 300);
 };
 
-const editGoal = () => {
+const editGoalCategory = () => {
 	showCategories.value = true;
+	$kvTrackEvent(
+		props.isThanksPage ? 'post-checkout' : 'portfolio',
+		'show',
+		'view-goal-categories'
+	);
 };
 
 const setGoalTarget = target => {
 	selectedLoanNumber.value = target;
 	selectedGoalNumber.value = target;
 };
-
-watch(() => props.show, (newVal, oldVal) => {
-	if (newVal === true && oldVal === false) {
-		$kvTrackEvent(
-			props.isThanksPage ? 'post-checkout' : 'portfolio',
-			'show',
-			'view-goal-categories'
-		);
-	} else if (newVal === false && oldVal === true) {
-		$kvTrackEvent(
-			props.isThanksPage ? 'post-checkout' : 'portfolio',
-			'click',
-			'close-goals'
-		);
-	}
-});
 
 watch(numberOfLoans, newVal => {
 	if (newVal) {

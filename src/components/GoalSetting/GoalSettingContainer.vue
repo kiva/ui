@@ -30,7 +30,7 @@
 				tracking-category="event-tracking"
 				@set-goal-target="setTarget($event)"
 				@set-goal="setGoal($event)"
-				@edit-goal="editGoal"
+				@edit-goal="editGoalCategory"
 			/>
 			<div
 				v-show="showCategories"
@@ -137,7 +137,7 @@ const title = computed(() => {
 	return `Make <span class="tw-text-eco-green-3">${loanTarget.value} loans</span> to...`;
 });
 
-const editGoal = () => {
+const editGoalCategory = () => {
 	showCategories.value = true;
 	window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 };
