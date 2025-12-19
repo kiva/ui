@@ -81,12 +81,11 @@ export default (apollo, cookieStore) => {
 		return mailsUpdatesOptOut;
 	};
 
-	const setMailUpdatesOptOutCookie = (optedOut, loanId = null) => {
+	const setMailUpdatesOptOutCookie = optedOut => {
 		if (optedOut) {
-			const newValue = `true${loanId ? `|${loanId}` : ''}`;
 			cookieStore.set(
 				MAIL_UPDATES_OPT_COOKIE_NAME,
-				newValue,
+				'true',
 			);
 		} else {
 			cookieStore.remove(MAIL_UPDATES_OPT_COOKIE_NAME);

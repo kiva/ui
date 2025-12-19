@@ -153,8 +153,7 @@ const updateOptIn = async value => {
 };
 
 onMounted(() => {
-	const loanId = props.loans[0]?.id || null;
-	setMailUpdatesOptOutCookie(true, loanId);
+	setMailUpdatesOptOutCookie(true);
 });
 
 </script>
