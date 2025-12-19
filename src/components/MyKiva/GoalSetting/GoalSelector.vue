@@ -257,15 +257,12 @@ async function loadWomenLoansThisYear() {
 	)?.progressForYear || 0;
 }
 
-const loanAmountBase = computed(() => {
-	return Math.max(womenLoansThisYear.value, womenLoansLastYear.value);
-});
-
 onMounted(async () => {
 	await loadWomenLoansThisYear();
 	const ytdLoans = womenLoansThisYear.value;
 	const lastYearLoans = womenLoansLastYear.value;
-	if (loanAmountBase.value > SAME_AS_LAST_YEAR_LIMIT) {
+	const baseAmount = Math.max(ytdLoans, lastYearLoans);
+	if (baseAmount > SAME_AS_LAST_YEAR_LIMIT) {
 		let copy = 'Same as last year';
 		let suggestion1 = lastYearLoans;
 		let suggestion2 = Math.ceil(lastYearLoans * 1.25);
