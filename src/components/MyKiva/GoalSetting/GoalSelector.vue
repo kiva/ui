@@ -166,7 +166,7 @@ const titleText = computed(() => {
 
 const subtitleText = computed(() => {
 	let extraText = '';
-	if (womenLoansThisYear.value >= womenLoansLastYear.value) {
+	if (womenLoansThisYear.value > womenLoansLastYear.value) {
 		extraText = `<br> You've already made ${womenLoansThisYear.value}.`;
 	}
 	return props.isGoalSet
@@ -267,7 +267,7 @@ onMounted(async () => {
 		let suggestion1 = lastYearLoans;
 		let suggestion2 = Math.ceil(lastYearLoans * 1.25);
 		let suggestion3 = lastYearLoans * 2;
-		if (ytdLoans >= suggestion1) {
+		if (ytdLoans > lastYearLoans) {
 			copy = 'Continue your yearly trend';
 			suggestion1 = ytdLoans + 1;
 			suggestion2 = Math.ceil(ytdLoans * 1.5);
