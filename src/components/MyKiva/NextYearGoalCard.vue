@@ -13,12 +13,12 @@
 			<div v-if="!userHasGoal" class="tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-between">
 				<h4>{{ prevYearLoans > 0 ? 'LAST YEAR' : ' HELP' }}</h4>
 				<h3 class="tw-text-center" v-html="title"></h3>
-				<div class="tw-pt-1 tw-text-center">
+				<div class="tw-text-center">
 					<p>
 						How many loans will you make this year?
-					</p>
-					<p v-if="womenLoansThisYear">
-						You've already made {{ womenLoansThisYear }}.
+						<span v-if="womenLoansThisYear">
+							You've already made {{ womenLoansThisYear }}.
+						</span>
 					</p>
 				</div>
 				<img
@@ -119,7 +119,7 @@ const router = useRouter();
 
 const { getLoanFindingUrl, ID_WOMENS_EQUALITY } = useBadgeData();
 const {
-	getCategoryLoansByYear,
+	getCategoryLoanCountByYear,
 	getGoalDisplayName,
 	setHideGoalCardPreference,
 } = useGoalData();
@@ -130,10 +130,8 @@ const womenLoansThisYear = ref(0);
 
 async function loadWomenLoansThisYear() {
 	const currentYear = new Date().getFullYear();
-	const categoryLoansThisYear = await getCategoryLoansByYear(currentYear);
-	womenLoansThisYear.value = categoryLoansThisYear?.find(
-		categoryLoans => categoryLoans.id === ID_WOMENS_EQUALITY
-	)?.progressForYear || 0;
+	const count = await getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, currentYear);
+	womenLoansThisYear.value = count;
 }
 
 const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);

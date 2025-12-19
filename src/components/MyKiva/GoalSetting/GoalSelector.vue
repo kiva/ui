@@ -14,9 +14,9 @@
 		</h2>
 
 		<div
-			v-html="subtitleText"
 			class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
 		>
+			{{ subtitleText }}
 		</div>
 
 		<ThumbUp
@@ -67,9 +67,9 @@
 <script setup>
 import {
 	computed,
-	ref,
 	inject,
 	onMounted,
+	ref,
 } from 'vue';
 import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
@@ -81,7 +81,7 @@ import useGoalData, { SAME_AS_LAST_YEAR_LIMIT } from '#src/composables/useGoalDa
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const { getCategoryLoansLastYear, getCategoryLoansByYear } = useGoalData();
+const { getCategoryLoansLastYear, getCategoryLoanCountByYear } = useGoalData();
 
 const props = defineProps({
 	/**
@@ -167,7 +167,7 @@ const titleText = computed(() => {
 const subtitleText = computed(() => {
 	let extraText = '';
 	if (womenLoansThisYear.value > womenLoansLastYear.value) {
-		extraText = `<br> You've already made ${womenLoansThisYear.value}.`;
+		extraText = `You've already made ${womenLoansThisYear.value}.`;
 	}
 	return props.isGoalSet
 		? 'Your 2026 commitment means more lives transformed!'
@@ -251,10 +251,8 @@ const handleContinue = () => {
 
 async function loadWomenLoansThisYear() {
 	const currentYear = new Date().getFullYear();
-	const categoryLoansThisYear = await getCategoryLoansByYear(currentYear);
-	womenLoansThisYear.value = categoryLoansThisYear?.find(
-		categoryLoans => categoryLoans.id === ID_WOMENS_EQUALITY
-	)?.progressForYear || 0;
+	const count = await getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, currentYear);
+	womenLoansThisYear.value = count;
 }
 
 onMounted(async () => {
@@ -268,7 +266,7 @@ onMounted(async () => {
 		let suggestion2 = Math.ceil(lastYearLoans * 1.25);
 		let suggestion3 = lastYearLoans * 2;
 		if (ytdLoans > lastYearLoans) {
-			copy = 'Continue your yearly trend';
+			copy = 'One more';
 			suggestion1 = ytdLoans + 1;
 			suggestion2 = Math.ceil(ytdLoans * 1.5);
 			suggestion3 = ytdLoans * 2;

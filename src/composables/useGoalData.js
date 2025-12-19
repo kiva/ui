@@ -241,7 +241,7 @@ export default function useGoalData({ apollo } = {}) {
 	 * @param {string} [fetchPolicy='cache-first'] - Apollo fetch policy.
 	 * @returns {Promise<Object[]|null>} Tiered lending progress data, or null on error.
 	 */
-	async function getCategoryLoansByYear(year, fetchPolicy = 'cache-first') {
+	async function getCategoriesProgressByYear(year, fetchPolicy = 'cache-first') {
 		try {
 			const response = await apolloClient.query({
 				query: useGoalDataYearlyProgressQuery,
@@ -251,7 +251,26 @@ export default function useGoalData({ apollo } = {}) {
 			const progress = response.data.userAchievementProgress.tieredLendingAchievements;
 			return progress;
 		} catch (error) {
-			logFormatter(error, 'Failed to fetch category loans by year');
+			logFormatter(error, 'Failed to fetch categories progress by year');
+			return null;
+		}
+	}
+
+	/**
+	 * Retrieves the user's loan count for the specified category id and year.
+	 *
+	 * @param {string} categoryId - Category ID to fetch loan count for.
+	 * @param {number} year - Year to fetch progress for.
+	 * @param {string} [fetchPolicy='cache-first'] - Apollo fetch policy.
+	 * @returns {number|null} The category loan count for the given year, or null on error.
+	 */
+	async function getCategoryLoanCountByYear(categoryId, year, fetchPolicy = 'cache-first') {
+		try {
+			const progress = await getCategoriesProgressByYear(year, fetchPolicy);
+			const count = progress?.find(entry => entry.id === categoryId)?.progressForYear || 0;
+			return count;
+		} catch (error) {
+			logFormatter(error, 'Failed to fetch category loan count by year');
 			return null;
 		}
 	}
@@ -271,7 +290,7 @@ export default function useGoalData({ apollo } = {}) {
 
 	async function loadProgress(year, fetchPolicy = 'network-only') {
 		try {
-			const progress = await getCategoryLoansByYear(year, fetchPolicy);
+			const progress = await getCategoriesProgressByYear(year, fetchPolicy);
 			currentYearProgress.value = progress;
 		} catch (error) {
 			logFormatter(error, 'Failed to load progress');
@@ -402,7 +421,7 @@ export default function useGoalData({ apollo } = {}) {
 	 * Only applies when yearlyProgress is false (all-time progress mode)
 	 */
 	async function correctNegativeProgress() {
-		if (useYearlyProgress.value || !userGoal.value) return;
+		if (useYearlyProgress.value || !userGoal.value || !currentYearProgress.value) return;
 
 		const goal = userGoal.value;
 		if (goal.category === ID_SUPPORT_ALL) return;
@@ -521,13 +540,14 @@ export default function useGoalData({ apollo } = {}) {
 	return {
 		checkCompletedGoal,
 		getCategories,
+		getCategoriesProgressByYear,
+		getCategoryLoanCountByYear,
 		getCategoryLoansLastYear,
 		getCtaHref,
 		getGoalDisplayName,
 		getPostCheckoutProgressByLoans,
 		isProgressCompletingGoal,
 		loadGoalData,
-		getCategoryLoansByYear,
 		storeGoalPreferences,
 		goalProgress,
 		loading,
