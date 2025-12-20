@@ -126,8 +126,8 @@ export default function useGoalData({ apollo } = {}) {
 		if (!goal || goal.status !== GOAL_STATUS.IN_PROGRESS) return false;
 
 		const target = goal.target || 0;
-		// Check if progress > 0 and equals target (completing the goal)
-		return currentProgress > 0 && currentProgress === target;
+		// Check if progress > 0 and meets or exceeds target (completing the goal)
+		return currentProgress > 0 && currentProgress >= target;
 	}
 
 	// --- Functions ---

@@ -486,7 +486,7 @@ describe('useGoalData', () => {
 			expect(composable.isProgressCompletingGoal(5)).toBe(true);
 		});
 
-		it('should return false when progress does not equal target', async () => {
+		it('should return false when progress is less than target', async () => {
 			const mockPrefs = {
 				goals: [{
 					goalName: 'test-goal',
@@ -519,7 +519,8 @@ describe('useGoalData', () => {
 			await composable.loadGoalData();
 
 			expect(composable.isProgressCompletingGoal(3)).toBe(false);
-			expect(composable.isProgressCompletingGoal(6)).toBe(false);
+			// Progress exceeding target should still return true (goal is completed)
+			expect(composable.isProgressCompletingGoal(6)).toBe(true);
 		});
 
 		it('should return false when goal status is not in-progress', async () => {
