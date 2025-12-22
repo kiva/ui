@@ -51,7 +51,7 @@ export const GOAL_STATUS = {
 };
 
 export const SAME_AS_LAST_YEAR_LIMIT = 1;
-export const LAST_YEAR_KEY = 2025;
+export const LAST_YEAR_KEY = new Date().getFullYear() - 1;
 export const GOALS_V2_START_YEAR = 2026;
 
 /**
