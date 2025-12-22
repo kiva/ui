@@ -421,7 +421,7 @@ export default function useGoalData({ apollo } = {}) {
 	 * Only applies when yearlyProgress is false (all-time progress mode)
 	 */
 	async function correctNegativeProgress() {
-		if (useYearlyProgress.value || !userGoal.value || !currentYearProgress.value) return;
+		if (useYearlyProgress.value || !userGoal.value || !currentYearProgress?.value?.length) return;
 
 		const goal = userGoal.value;
 		if (goal.category === ID_SUPPORT_ALL) return;

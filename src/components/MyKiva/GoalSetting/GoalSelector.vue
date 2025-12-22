@@ -166,7 +166,7 @@ const titleText = computed(() => {
 
 const subtitleText = computed(() => {
 	let extraText = '';
-	if (womenLoansThisYear.value > womenLoansLastYear.value) {
+	if (womenLoansThisYear.value > 0) {
 		extraText = `You've already made ${womenLoansThisYear.value}.`;
 	}
 	return props.isGoalSet
