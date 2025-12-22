@@ -19,11 +19,16 @@
 			{{ subtitleText }}
 		</div>
 
-		<ThumbUp
-			v-if="isGoalSet"
-			class="tw-w-16 tw-h-16 lg:tw-w-auto lg:tw-h-auto tw-mx-auto"
-			style="max-width: 225px; max-height: 225px;"
-		/>
+		<div
+			v-if="isGoalSet" class="tw-flex tw-justify-center tw-items-center"
+			style="max-width: 575px; height: 150px;"
+		>
+			<img
+				:src="HandsPlant"
+				class="lg:tw-mb-1 tw-w-10 lg:tw-w-14"
+				alt="gif"
+			>
+		</div>
 
 		<div
 			v-else
@@ -73,7 +78,6 @@ import {
 } from 'vue';
 import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
-import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiPencilOutline } from '@mdi/js';
@@ -150,7 +154,7 @@ const womenLoansLastYear = computed(() => {
 
 const titleText = computed(() => {
 	if (props.isGoalSet) {
-		return 'Thank you!';
+		return 'Success! Your goal is set!';
 	}
 	if (womenLoansLastYear.value === 1) {
 		// eslint-disable-next-line max-len
@@ -170,7 +174,7 @@ const subtitleText = computed(() => {
 		extraText = `You've already made ${womenLoansThisYear.value}.`;
 	}
 	return props.isGoalSet
-		? 'Your 2026 commitment means more lives transformed!'
+		? ''
 		: `How many loans will you make this year? ${extraText}`;
 });
 
@@ -180,7 +184,7 @@ const buttonText = computed(() => {
 	}
 
 	if (props.goToUrl !== '/mykiva') {
-		return 'Make a loan';
+		return 'Start my goal';
 	}
 
 	return 'Track my progress';
