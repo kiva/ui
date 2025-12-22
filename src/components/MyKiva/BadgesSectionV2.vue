@@ -125,7 +125,7 @@ const visibleBadges = computed(() => {
 		const bNextAchievementAt = b?.goal?.nextAchievementAt ?? Infinity;
 
 		if (aNextAchievementAt === bNextAchievementAt) {
-			return (b.level ?? 0) - (a?.level ?? 0);
+			return (b?.level ?? 0) - (a?.level ?? 0);
 		}
 
 		return aNextAchievementAt - bNextAchievementAt;
