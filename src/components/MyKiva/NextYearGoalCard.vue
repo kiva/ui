@@ -158,7 +158,7 @@ const progressDescription = computed(() => {
 
 const btnCta = computed(() => {
 	if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
-		return 'View lifetime goals';
+		return 'View impact progress';
 	}
 	return 'Work towards your goal';
 });
