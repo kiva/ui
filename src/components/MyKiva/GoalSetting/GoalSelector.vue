@@ -17,10 +17,10 @@
 			How many loans will you make this year?
 		</p>
 
-		<div v-if="isGoalSet" class="tw-flex tw-justify-center tw-items-center" style="height: 150px;">
+		<div v-if="isGoalSet" class="tw-flex tw-justify-center tw-items-center" style="width: 575px; height: 180px;">
 			<img
 				:src="HandsPlant"
-				class="lg:tw-mb-1 tw-w-15 lg:tw-w-12.5"
+				class="lg:tw-mb-1 tw-w-10 lg:tw-w-14"
 				alt="gif"
 			>
 		</div>
@@ -147,7 +147,7 @@ const womenLoansLastYear = computed(() => {
 
 const titleText = computed(() => {
 	if (props.isGoalSet) {
-		return 'Success!<br>Your goal is set!';
+		return 'Success! Your goal is set!';
 	}
 	if (womenLoansLastYear.value === 1) {
 		// eslint-disable-next-line max-len
