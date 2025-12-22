@@ -265,7 +265,7 @@ onMounted(async () => {
 		let suggestion1 = lastYearLoans;
 		let suggestion2 = Math.ceil(lastYearLoans * 1.25);
 		let suggestion3 = lastYearLoans * 2;
-		if (ytdLoans > lastYearLoans) {
+		if (ytdLoans >= lastYearLoans) {
 			copy = 'One more';
 			suggestion1 = ytdLoans + 1;
 			suggestion2 = Math.ceil(ytdLoans * 1.5);
