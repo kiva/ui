@@ -92,7 +92,7 @@ const goalProgressPercentage = computed(() => {
 });
 
 const goalTarget = computed(() => {
-	return props.goal?.target || 0;
+	return props.goal?.tierTarget || props.goal?.target || 0;
 });
 
 const goalCompleted = computed(() => {
@@ -100,7 +100,8 @@ const goalCompleted = computed(() => {
 });
 
 const goalRemainingLoans = computed(() => {
-	return Math.max(goalTarget.value - props.goalProgress, 0);
+	const inProgress = props.goal?.totalProgressToAchievement ?? props.goalProgress;
+	return Math.max(goalTarget.value - inProgress, 0);
 });
 
 const title = computed(() => {
@@ -135,8 +136,13 @@ const progress = computed(() => {
 		return `${goalTarget.value} / ${goalTarget.value}`;
 	}
 
-	if (props.isAnnualGoal || !goalCompleted.value) {
+	if (props.isAnnualGoal) {
 		return `${props.goalProgress} / ${goalTarget.value}`;
+	}
+
+	if (!goalCompleted.value) {
+		const currentProgress = props.goal?.totalProgressToAchievement ?? props.goalProgress;
+		return `${currentProgress} / ${goalTarget.value}`;
 	}
 	// eslint-disable-next-line max-len
 	return props.goal?.totalLoans > ONE_K_THRESHOLD ? numeral(props.goal?.totalLoans ?? 0).format('0.0a') : props.goal?.totalLoans ?? 0;
