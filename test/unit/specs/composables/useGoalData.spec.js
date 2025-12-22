@@ -265,7 +265,7 @@ describe('useGoalData', () => {
 
 			await composable.loadGoalData();
 
-			expect(logFormatter).toHaveBeenCalledWith(error, 'Failed to load progress');
+			expect(logFormatter).toHaveBeenCalledWith(error, 'Failed to fetch categories progress by year');
 		});
 	});
 
@@ -621,9 +621,7 @@ describe('useGoalData', () => {
 		});
 
 		it('should update existing goal', async () => {
-			const {
-				updateUserPreferences,
-			} = await import('#src/util/userPreferenceUtils');
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
 
 			const mockPrefs = {
 				goals: [{
@@ -633,17 +631,31 @@ describe('useGoalData', () => {
 				}],
 			};
 
-			mockApollo.query = vi.fn().mockResolvedValue({
-				data: {
-					my: {
-						userPreferences: {
-							id: 'pref-123',
-							preferences: JSON.stringify(mockPrefs),
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
 						},
-						loans: { totalCount: 0 },
 					},
-				},
-			});
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{
+									id: ID_BASIC_NEEDS,
+									totalProgressToAchievement: 0,
+									progressForYear: 0,
+								},
+							],
+						},
+					},
+				});
 
 			await composable.loadGoalData();
 
@@ -669,17 +681,30 @@ describe('useGoalData', () => {
 				}],
 			};
 
-			mockApollo.query = vi.fn().mockResolvedValue({
-				data: {
-					my: {
-						userPreferences: {
-							id: 'pref-123',
-							preferences: JSON.stringify(mockPrefs),
+			mockApollo.query = vi.fn()
+				.mockResolvedValue({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
 						},
-						loans: { totalCount: 0 },
 					},
-				},
-			});
+				}).mockResolvedValue({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{
+									id: ID_WOMENS_EQUALITY,
+									totalProgressToAchievement: 3,
+									progressForYear: 3,
+								},
+							],
+						},
+					},
+				});
 
 			await composable.loadGoalData();
 
@@ -990,12 +1015,12 @@ describe('useGoalData', () => {
 				})
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							yearlyProgress: [],
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
 						},
 					},
 				})
-				.mockResolvedValueOnce({
+				.mockResolvedValue({
 					data: {
 						postCheckoutAchievements: {
 							yearlyProgress: [
@@ -1434,7 +1459,7 @@ describe('useGoalData', () => {
 				hideGoalCard: true,
 			};
 
-			mockApollo.query = vi.fn().mockResolvedValue({
+			mockApollo.query = vi.fn().mockResolvedValueOnce({
 				data: {
 					my: {
 						userPreferences: {
@@ -1442,6 +1467,12 @@ describe('useGoalData', () => {
 							preferences: JSON.stringify(mockPrefs),
 						},
 						loans: { totalCount: 0 },
+					},
+				},
+			}).mockResolvedValueOnce({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: [],
 					},
 				},
 			});
@@ -1461,6 +1492,12 @@ describe('useGoalData', () => {
 							preferences: JSON.stringify({}),
 						},
 						loans: { totalCount: 0 },
+					},
+				},
+			}).mockResolvedValueOnce({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: [],
 					},
 				},
 			});

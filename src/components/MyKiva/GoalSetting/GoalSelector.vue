@@ -13,9 +13,11 @@
 		>
 		</h2>
 
-		<p v-if="!isGoalSet" class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
-			How many loans will you make this year?
-		</p>
+		<div
+			class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
+		>
+			{{ subtitleText }}
+		</div>
 
 		<div v-if="isGoalSet" class="tw-flex tw-justify-center tw-items-center" style="width: 575px; height: 180px;">
 			<img
@@ -67,9 +69,9 @@
 <script setup>
 import {
 	computed,
-	ref,
 	inject,
 	onMounted,
+	ref,
 } from 'vue';
 import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
@@ -80,7 +82,7 @@ import useGoalData, { SAME_AS_LAST_YEAR_LIMIT } from '#src/composables/useGoalDa
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const { getCategoryLoansLastYear } = useGoalData();
+const { getCategoryLoansLastYear, getCategoryLoanCountByYear } = useGoalData();
 
 const props = defineProps({
 	/**
@@ -141,6 +143,8 @@ const goalOptions = ref([
 	},
 ]);
 
+const womenLoansThisYear = ref(0);
+
 const womenLoansLastYear = computed(() => {
 	return getCategoryLoansLastYear(props.tieredAchievements);
 });
@@ -159,6 +163,16 @@ const titleText = computed(() => {
 	}
 
 	return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
+});
+
+const subtitleText = computed(() => {
+	let extraText = '';
+	if (womenLoansThisYear.value > 0) {
+		extraText = `You've already made ${womenLoansThisYear.value}.`;
+	}
+	return props.isGoalSet
+		? ''
+		: `How many loans will you make this year? ${extraText}`;
 });
 
 const buttonText = computed(() => {
@@ -236,23 +250,42 @@ const handleContinue = () => {
 	}
 };
 
-onMounted(() => {
-	if (womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
-		const growALittleOption = Math.ceil(womenLoansLastYear.value * 1.25);
+async function loadWomenLoansThisYear() {
+	const currentYear = new Date().getFullYear();
+	const count = await getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, currentYear);
+	womenLoansThisYear.value = count;
+}
+
+onMounted(async () => {
+	await loadWomenLoansThisYear();
+	const ytdLoans = womenLoansThisYear.value;
+	const lastYearLoans = womenLoansLastYear.value;
+	const baseAmount = Math.max(ytdLoans, lastYearLoans);
+	if (baseAmount > SAME_AS_LAST_YEAR_LIMIT) {
+		let copy = 'Same as last year';
+		let suggestion1 = lastYearLoans;
+		let suggestion2 = Math.ceil(lastYearLoans * 1.25);
+		let suggestion3 = lastYearLoans * 2;
+		if (ytdLoans >= lastYearLoans) {
+			copy = 'One more';
+			suggestion1 = ytdLoans + 1;
+			suggestion2 = Math.ceil(ytdLoans * 1.5);
+			suggestion3 = ytdLoans * 2;
+		}
 		goalOptions.value = [
 			{
-				loansNumber: womenLoansLastYear.value,
-				optionText: 'Same as 2025',
+				loansNumber: suggestion1,
+				optionText: copy,
 				selected: false
 			},
 			{
-				loansNumber: growALittleOption,
+				loansNumber: suggestion2,
 				optionText: 'Grow a little',
 				selected: true,
 				highlightedText: 'More Impact'
 			},
 			{
-				loansNumber: womenLoansLastYear.value * 2,
+				loansNumber: suggestion3,
 				optionText: 'Double my impact!',
 				selected: false
 			},
