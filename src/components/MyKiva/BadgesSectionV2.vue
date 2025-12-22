@@ -152,6 +152,7 @@ const visibleBadges = computed(() => {
 		} else {
 			showedSlides.unshift(formattedUserGoal);
 		}
+		$kvTrackEvent('portfolio', 'show', 'annual-goal-progress-row');
 	}
 
 	return showedSlides;
@@ -200,9 +201,8 @@ watch(visibleBadges, (newSlides, oldSlides) => {
 	if (oldSlides && JSON.stringify(oldSlides) !== JSON.stringify(newSlides)) {
 		isLoading.value = false;
 	}
-	if (oldSlides?.length !== newSlides?.length && !userHasGoal.value) {
+	if (oldSlides?.length !== newSlides?.length) {
 		carouselKey.value += 1;
-		$kvTrackEvent('portfolio', 'show', 'annual-goal-progress-row');
 	}
 }, { immediate: true, deep: true });
 
