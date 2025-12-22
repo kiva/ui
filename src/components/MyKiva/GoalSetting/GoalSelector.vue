@@ -19,7 +19,10 @@
 			{{ subtitleText }}
 		</div>
 
-		<div v-if="isGoalSet" class="tw-flex tw-justify-center tw-items-center" style="width: 575px; height: 180px;">
+		<div
+			v-if="isGoalSet" class="tw-flex tw-justify-center tw-items-center"
+			style="max-width: 575px; height: 150px;"
+		>
 			<img
 				:src="HandsPlant"
 				class="lg:tw-mb-1 tw-w-10 lg:tw-w-14"
