@@ -196,7 +196,9 @@ export default {
 		},
 		/**
 		 * Determines if a specific loan contributes to completing the user's goal
-		 * Only the first X loans needed to reach the goal target will return true
+		 * Only returns true if:
+		 * 1. The basket items complete the goal (basketGoalProgress >= target)
+		 * 2. This loan is one of the first X loans needed to reach the target
 		 * @param {Object} loan - The loan reservation object
 		 * @param {Number} index - The index of the loan in the basket
 		 * @returns {Boolean} - True if this loan contributes to reaching the goal
@@ -206,10 +208,14 @@ export default {
 			if (!goal || goal.status !== 'in-progress') return false;
 
 			const target = goal.target || 0;
+
+			// First check: basket must complete the goal
+			if (this.basketGoalProgress < target) return false;
+
 			const currentProgress = this.goalProgress || 0;
 			const loansNeededForGoal = Math.max(0, target - currentProgress);
 
-			// If no loans needed (goal already complete), return false
+			// If no loans needed (goal already complete without basket), return false
 			if (loansNeededForGoal <= 0) return false;
 
 			const goalCategory = goal.category || '';
