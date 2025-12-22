@@ -847,4 +847,13 @@ export default {
 		width: 600px !important;
     }
 }
+
+/* Ensure scroll position accounts for sticky header */
+#mykiva-achievements {
+	scroll-margin-top: 85px;
+
+	@media (width >= 1024px) {
+		scroll-margin-top: 116px;
+	}
+}
 </style>
