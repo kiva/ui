@@ -201,7 +201,9 @@ const fetchPostCheckoutAchievements = async loanIds => {
 		});
 		const userTarget = userGoal.value?.target || 0;
 		const isOneLoanAwayFromGoal = userTarget - loanGoalProgress.value === 1;
-		showAtbGoalMsg = isLoanGoal.value && (basketSize < BASKET_LIMIT_SIZE_FOR_EXP || isOneLoanAwayFromGoal);
+		const goalAchieved = loanGoalProgress.value === userTarget;
+		showAtbGoalMsg = isLoanGoal.value && (basketSize < BASKET_LIMIT_SIZE_FOR_EXP
+			|| isOneLoanAwayFromGoal || goalAchieved);
 		if (showAtbGoalMsg) {
 			if (isOneLoanAwayFromGoal) {
 				const loanUrl = getLoanFindingUrl(userGoal.value?.category, router.currentRoute.value);
