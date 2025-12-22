@@ -87,7 +87,7 @@
 				</div>
 			</div>
 			<BadgesSectionV2
-				v-if="showNewBadgeSection && userHasGoal"
+				v-if="showNewBadgeSection"
 				class="tw--mt-4"
 				controls-top-right
 				:badge-data="badgeData"
@@ -150,7 +150,7 @@
 				My achievements
 			</h3>
 			<BadgesSectionV2
-				v-if="showNewBadgeSection && userHasGoal"
+				v-if="showNewBadgeSection"
 				class="tw--mt-4"
 				controls-top-right
 				:badge-data="badgeData"
