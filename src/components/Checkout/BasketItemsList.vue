@@ -12,7 +12,7 @@
 					:contributes-in-achievement="isLoanContributingInAchievements(loan.id)"
 					:is-first-loan="isFirstLoan(index)"
 					:is-my-kiva-enabled="isMyKivaEnabled"
-					:loan-contributes-to-goal="loanContributesToGoal(loan, index)"
+					:loan-contributes-to-goal="loansContributingToGoal[index]"
 					:loading-goal-data="loadingGoalData"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
@@ -193,47 +193,56 @@ export default {
 				addBasketLoans: true,
 				year,
 			});
-		},
+		}
+	},
+	computed: {
 		/**
-		 * Determines if a specific loan contributes to completing the user's goal
-		 * Only the first X loans needed to reach the goal target will return true
-		 * @param {Object} loan - The loan reservation object
-		 * @param {Number} index - The index of the loan in the basket
-		 * @returns {Boolean} - True if this loan contributes to reaching the goal
+		 * Returns an array of booleans indicating which loans contribute to completing the user's goal
+		 * Only the first X loans needed to reach the goal target will be true
+		 * @returns {Boolean[]} - Array of booleans, one per loan in basket
 		 */
-		loanContributesToGoal(loan, index) {
+		loansContributingToGoal() {
 			const goal = this.userGoal;
-			if (!goal || goal.status !== 'in-progress') return false;
+			if (!goal || goal.status !== 'in-progress') {
+				return this.loans.map(() => false);
+			}
 
 			const target = goal.target || 0;
 			const currentProgress = this.goalProgress || 0;
 			const loansNeededForGoal = Math.max(0, target - currentProgress);
 
-			// If no loans needed (goal already complete), return false
-			if (loansNeededForGoal <= 0) return false;
+			// If no loans needed (goal already complete), return all false
+			if (loansNeededForGoal <= 0) {
+				return this.loans.map(() => false);
+			}
+
+			// First check: basket must complete the goal
+			if (this.basketGoalProgress < target) {
+				return this.loans.map(() => false);
+			}
 
 			const goalCategory = goal.category || '';
 
 			// For "support-all" goal, any loan counts - just check position
 			if (goalCategory === ID_SUPPORT_ALL) {
-				return index < loansNeededForGoal;
+				return this.loans.map((_, index) => index < loansNeededForGoal);
 			}
 
-			// For category-specific goals, count how many qualifying loans come before this one
-			const loanJourneys = this.getJourneysByLoan(loan?.loan || {});
-			const isLoanInGoalCategory = loanJourneys.some(journey => journey === goalCategory);
+			// For category-specific goals, track which loans contribute
+			let qualifyingCount = 0;
+			return this.loans.map(loan => {
+				const loanJourneys = this.getJourneysByLoan(loan?.loan || {});
+				const isLoanInGoalCategory = loanJourneys.some(journey => journey === goalCategory);
 
-			// If this loan doesn't match the goal category, it doesn't contribute
-			if (!isLoanInGoalCategory) return false;
+				if (!isLoanInGoalCategory) return false;
 
-			// Count how many loans before this one are in the goal category
-			const precedingQualifyingLoans = this.loans.slice(0, index).filter(prevLoan => {
-				const prevJourneys = this.getJourneysByLoan(prevLoan?.loan || {});
-				return prevJourneys.some(journey => journey === goalCategory);
-			}).length;
-
-			// This loan contributes if there are still slots needed
-			return precedingQualifyingLoans < loansNeededForGoal;
+				// This loan contributes if we still need more loans
+				const contributes = qualifyingCount < loansNeededForGoal;
+				if (contributes) {
+					qualifyingCount += 1;
+				}
+				return contributes;
+			});
 		}
 	},
 	setup() {
