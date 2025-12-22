@@ -82,7 +82,7 @@ const handleContinue = () => {
 		'continue-to-my-kiva',
 		'signed-in',
 	);
-	router?.push('/mykiva#my-achievements');
+	router?.push('/mykiva');
 };
 </script>
 

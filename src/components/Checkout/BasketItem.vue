@@ -138,7 +138,6 @@ import LoanPrice from '#src/components/Checkout/LoanPrice';
 import RemoveBasketItem from '#src/components/Checkout/RemoveBasketItem';
 import TeamAttribution from '#src/components/Checkout/TeamAttribution';
 import { getForcedTeamId, removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
-import useBadgeData, { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import { KvCartPill } from '@kiva/kv-components';
 import IconChoice from '#src/assets/icons/inline/achievements/icon_choice.svg';
 import EquityBadge from '#src/assets/icons/inline/achievements/equity-badge.svg';
@@ -198,13 +197,9 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		userGoalAchieved: {
+		loanContributesToGoal: {
 			type: Boolean,
 			default: false
-		},
-		userGoal: {
-			type: Object,
-			default: () => ({})
 		},
 		loadingGoalData: {
 			type: Boolean,
@@ -217,13 +212,6 @@ export default {
 			loanVisible: true,
 			appendedTeams: [],
 			forceTeamId: null
-		};
-	},
-	setup() {
-		const { getJourneysByLoan } = useBadgeData();
-
-		return {
-			getJourneysByLoan,
 		};
 	},
 	computed: {
@@ -259,13 +247,7 @@ export default {
 				|| this.pillMessage.length > 0;
 		},
 		pillMessage() {
-			const goalCategory = this.userGoal?.category || '';
-			const loanJourneys = this.getJourneysByLoan(this.loan?.loan || {});
-			const isLoanInGoalCategory = loanJourneys.some(
-				journey => journey === goalCategory
-			);
-
-			if (this.userGoalAchieved && (isLoanInGoalCategory || goalCategory === ID_SUPPORT_ALL)) {
+			if (this.loanContributesToGoal) {
 				return 'Supporting this loan reaches your annual goal!';
 			}
 			return '';

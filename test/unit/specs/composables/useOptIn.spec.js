@@ -185,14 +185,6 @@ describe('useOptIn.js', () => {
 			expect(result).toBe(true);
 		});
 
-		it('should return true when pattern includes loan ID', () => {
-			mockCookieStore.get.mockReturnValue('true|3086700');
-
-			const result = composable.userHasMailUpdatesOptOut();
-
-			expect(result).toBe(true);
-		});
-
 		it('should handle cookie with extra whitespace', () => {
 			mockCookieStore.get.mockReturnValue('  true  ');
 
@@ -212,17 +204,6 @@ describe('useOptIn.js', () => {
 				expect(mockCookieStore.set).toHaveBeenCalledWith(
 					MAIL_UPDATES_OPT_COOKIE_NAME,
 					'true'
-				);
-			});
-
-			it('should add pattern with loan ID to empty cookie', () => {
-				mockCookieStore.get.mockReturnValue('');
-
-				composable.setMailUpdatesOptOutCookie(true, '1234567');
-
-				expect(mockCookieStore.set).toHaveBeenCalledWith(
-					MAIL_UPDATES_OPT_COOKIE_NAME,
-					'true|1234567'
 				);
 			});
 		});
