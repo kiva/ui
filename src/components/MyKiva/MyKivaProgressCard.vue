@@ -116,6 +116,9 @@ const description = computed(() => {
 	}
 
 	if (props.isAnnualGoal) {
+		if (goalRemainingLoans.value === 1) {
+			return `${goalRemainingLoans.value} loan to complete your goal.`;
+		}
 		return `${goalRemainingLoans.value} loans to complete your goal.`;
 	}
 
