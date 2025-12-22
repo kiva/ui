@@ -13,15 +13,17 @@
 		>
 		</h2>
 
-		<div class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
-			{{ subtitleText }}
-		</div>
+		<p v-if="!isGoalSet" class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
+			How many loans will you make this year?
+		</p>
 
-		<ThumbUp
-			v-if="isGoalSet"
-			class="tw-w-16 tw-h-16 lg:tw-w-auto lg:tw-h-auto tw-mx-auto"
-			style="max-width: 225px; max-height: 225px;"
-		/>
+		<div v-if="isGoalSet" class="tw-flex tw-justify-center tw-items-center" style="height: 150px;">
+			<img
+				:src="HandsPlant"
+				class="lg:tw-mb-1 tw-w-15 lg:tw-w-12.5"
+				alt="gif"
+			>
+		</div>
 
 		<div
 			v-else
@@ -71,7 +73,6 @@ import {
 } from 'vue';
 import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
-import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiPencilOutline } from '@mdi/js';
@@ -146,7 +147,7 @@ const womenLoansLastYear = computed(() => {
 
 const titleText = computed(() => {
 	if (props.isGoalSet) {
-		return 'Thank you!';
+		return 'Success!<br>Your goal is set!';
 	}
 	if (womenLoansLastYear.value === 1) {
 		// eslint-disable-next-line max-len
@@ -160,19 +161,13 @@ const titleText = computed(() => {
 	return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
 });
 
-const subtitleText = computed(() => {
-	return props.isGoalSet
-		? 'Your 2026 commitment means more lives transformed!'
-		: 'How many loans will you make this year?';
-});
-
 const buttonText = computed(() => {
 	if (!props.isGoalSet) {
 		return 'Set 2026 goal';
 	}
 
 	if (props.goToUrl !== '/mykiva') {
-		return 'Make a loan';
+		return 'Start my goal';
 	}
 
 	return 'Track my progress';
