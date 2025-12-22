@@ -120,6 +120,17 @@ const visibleBadges = computed(() => {
 		showedSlides = formattedBadgeData(badgesSlides);
 	}
 
+	showedSlides.sort((a, b) => {
+		const aNextAchievementAt = a?.goal?.nextAchievementAt ?? Infinity;
+		const bNextAchievementAt = b?.goal?.nextAchievementAt ?? Infinity;
+
+		if (aNextAchievementAt === bNextAchievementAt) {
+			return (b?.level ?? 0) - (a?.level ?? 0);
+		}
+
+		return aNextAchievementAt - bNextAchievementAt;
+	});
+
 	if (Object.keys(userGoal.value || {})?.length) {
 		const formattedUserGoal = {
 			id: 'annual-goal',
