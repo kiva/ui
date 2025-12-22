@@ -220,9 +220,18 @@ watch(() => props.userGoal, (newVal, oldVal) => {
 });
 
 watch(() => props.loading, newVal => {
-	if (!newVal && goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
-		showConfetti();
-		setHideGoalCardPreference();
+	if (!newVal) {
+		if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
+			showConfetti();
+			setHideGoalCardPreference();
+		}
+		if (!userHasGoal.value) {
+			$kvTrackEvent(
+				'portfolio',
+				'view',
+				'set-annual-goal'
+			);
+		}
 	}
 });
 </script>

@@ -87,7 +87,7 @@
 				</div>
 			</div>
 			<BadgesSectionV2
-				v-if="showNewBadgeSection"
+				v-if="showNewBadgeSection && userHasGoal"
 				class="tw--mt-4"
 				controls-top-right
 				:badge-data="badgeData"
@@ -150,7 +150,7 @@
 				My achievements
 			</h3>
 			<BadgesSectionV2
-				v-if="showNewBadgeSection"
+				v-if="showNewBadgeSection && userHasGoal"
 				class="tw--mt-4"
 				controls-top-right
 				:badge-data="badgeData"
@@ -259,6 +259,7 @@ import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import { KvMaterialIcon, KvTooltip } from '@kiva/kv-components';
 import { mdiInformationOutline } from '@mdi/js';
 import useBreakpoints from '#src/composables/useBreakpoints';
+import useGoalData from '#src/composables/useGoalData';
 
 import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
@@ -391,6 +392,11 @@ export default {
 			fetchMyGivingFundsCount,
 		} = useGivingFund(apollo);
 
+		const {
+			userGoal,
+			loadGoalData,
+		} = useGoalData({ apollo });
+
 		return {
 			badgeData,
 			getFundsContributedToIds,
@@ -400,6 +406,8 @@ export default {
 			getLoanFindingUrl,
 			getMostRecentBlogPost,
 			isMobile,
+			userGoal,
+			loadGoalData,
 		};
 	},
 	data() {
@@ -479,6 +487,7 @@ export default {
 			const updates = Array.isArray(this.mergedUpdates) ? this.mergedUpdates.slice(0, this.displayedCount) : [];
 			return updates;
 		},
+		userHasGoal() { return Boolean(this.userGoal?.category); },
 	},
 	methods: {
 		handleShowNavigation() {
@@ -771,6 +780,7 @@ export default {
 		this.fetchRecommendedLoans();
 		this.fetchMoreWaysToHelpData();
 		this.loadInitialBasketItems();
+		this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
 
 		this.fetchMyGivingFundsCount()
 			.then(response => {

@@ -165,7 +165,7 @@
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<GoalSettingModal
-			v-if="isNextStepsExpEnabled"
+			v-if="isNextStepsExpEnabled && showGoalModal"
 			:show="showGoalModal"
 			:total-loans="totalLoans"
 			:categories-loan-count="categoriesLoanCount"
