@@ -48,6 +48,7 @@
 				:goals-v2-enabled="goalsV2Enabled"
 				:post-lending-next-steps-enable="postLendingNextStepsEnable"
 				:latest-loan="latestLoan"
+				:goal-refresh-key="goalRefreshKey"
 			/>
 		</section>
 		<section v-if="goalsV2Enabled" class="tw-mt-4" id="mykiva-achievements">
@@ -372,6 +373,10 @@ export default {
 		latestLoan: {
 			type: Object,
 			default: null
+		},
+		goalRefreshKey: {
+			type: Number,
+			default: 0
 		}
 	},
 	setup() {

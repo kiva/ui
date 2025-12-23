@@ -263,6 +263,10 @@ export default {
 		latestLoan: {
 			type: Object,
 			default: null
+		},
+		goalRefreshKey: {
+			type: Number,
+			default: 0
 		}
 	},
 	data() {
@@ -384,6 +388,15 @@ export default {
 	beforeUnmount() {
 		if (this.interval) clearInterval(this.interval);
 		if (this.disconnectRegionWatcher) this.disconnectRegionWatcher();
+	},
+	watch: {
+		async goalRefreshKey(newVal, oldVal) {
+			if (newVal !== oldVal && newVal > 0) {
+				this.goalProgressLoading = true;
+				await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+				this.goalProgressLoading = false;
+			}
+		}
 	},
 	methods: {
 		regionImageSource(region) {
