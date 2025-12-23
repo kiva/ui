@@ -11,11 +11,18 @@
 		</div>
 		<template v-else>
 			<div v-if="!userHasGoal" class="tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-between">
-				<h4>{{ prevYearLoans > 0 ? 'LAST YEAR' : '' }}</h4>
+				<h4 v-if="prevYearLoans > 0">
+					LAST YEAR
+				</h4>
 				<h3 class="tw-text-center" v-html="title"></h3>
-				<p class="tw-text-center">
-					How many loans will you make this year?
-				</p>
+				<div class="tw-text-center">
+					<p>
+						How many loans will you make this year?
+						<span v-if="womenLoansThisYear">
+							You've already made {{ womenLoansThisYear }}.
+						</span>
+					</p>
+				</div>
 				<img
 					:src="HandsPlant"
 					class="tw-my-2 md:tw-my-4 tw-w-14"
@@ -72,7 +79,11 @@
 <script setup>
 
 import {
-	computed, watch, inject
+	computed,
+	inject,
+	onMounted,
+	ref,
+	watch,
 } from 'vue';
 import {
 	KvButton, KvLoadingPlaceholder
@@ -108,12 +119,21 @@ defineEmits(['open-goal-modal']);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
-const { getLoanFindingUrl } = useBadgeData();
+const { getLoanFindingUrl, ID_WOMENS_EQUALITY } = useBadgeData();
 const {
-	goalProgressPercentage,
+	getCategoryLoanCountByYear,
 	getGoalDisplayName,
-	setHideGoalCardPreference
+	goalProgressPercentage,
+	setHideGoalCardPreference,
 } = useGoalData();
+
+const womenLoansThisYear = ref(0);
+
+async function loadWomenLoansThisYear() {
+	const currentYear = new Date().getFullYear();
+	const count = await getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, currentYear);
+	womenLoansThisYear.value = count;
+}
 
 const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);
 
@@ -225,6 +245,10 @@ watch(() => props.loading, newVal => {
 			);
 		}
 	}
+});
+
+onMounted(async () => {
+	await loadWomenLoansThisYear();
 });
 </script>
 

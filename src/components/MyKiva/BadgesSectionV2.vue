@@ -104,6 +104,7 @@ const formattedBadgeData = badges => {
 				category: badge.id || '',
 				nextAchievementAt,
 				totalLoans: badge.achievementData.totalProgressToAchievement || 0,
+				tierTarget: activeTierData?.target || 0,
 			},
 			goalProgress: badge.level || 0,
 			isAnnualGoal: !badge.achievementData?.tiers?.length,

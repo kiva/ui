@@ -13,15 +13,22 @@
 		>
 		</h2>
 
-		<div class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
+		<div
+			class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
+		>
 			{{ subtitleText }}
 		</div>
 
-		<ThumbUp
-			v-if="isGoalSet"
-			class="tw-w-16 tw-h-16 lg:tw-w-auto lg:tw-h-auto tw-mx-auto"
-			style="max-width: 225px; max-height: 225px;"
-		/>
+		<div
+			v-if="isGoalSet" class="tw-flex tw-justify-center tw-items-center"
+			style="max-width: 575px; height: 150px;"
+		>
+			<img
+				:src="HandsPlant"
+				class="lg:tw-mb-1 tw-w-10 lg:tw-w-14"
+				alt="gif"
+			>
+		</div>
 
 		<div
 			v-else
@@ -65,13 +72,12 @@
 <script setup>
 import {
 	computed,
-	ref,
 	inject,
 	onMounted,
+	ref,
 } from 'vue';
 import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
-import ThumbUp from '#src/assets/images/thanks-page/thumbs-up.svg';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiPencilOutline } from '@mdi/js';
@@ -79,7 +85,7 @@ import useGoalData, { SAME_AS_LAST_YEAR_LIMIT } from '#src/composables/useGoalDa
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const { getCategoryLoansLastYear } = useGoalData();
+const { getCategoryLoansLastYear, getCategoryLoanCountByYear } = useGoalData();
 
 const props = defineProps({
 	/**
@@ -140,13 +146,15 @@ const goalOptions = ref([
 	},
 ]);
 
+const womenLoansThisYear = ref(0);
+
 const womenLoansLastYear = computed(() => {
 	return getCategoryLoansLastYear(props.tieredAchievements);
 });
 
 const titleText = computed(() => {
 	if (props.isGoalSet) {
-		return 'Thank you!';
+		return 'Success! Your goal is set!';
 	}
 	if (womenLoansLastYear.value === 1) {
 		// eslint-disable-next-line max-len
@@ -161,9 +169,13 @@ const titleText = computed(() => {
 });
 
 const subtitleText = computed(() => {
+	let extraText = '';
+	if (womenLoansThisYear.value > 0) {
+		extraText = `You've already made ${womenLoansThisYear.value}.`;
+	}
 	return props.isGoalSet
-		? 'Your 2026 commitment means more lives transformed!'
-		: 'How many loans will you make this year?';
+		? ''
+		: `How many loans will you make this year? ${extraText}`;
 });
 
 const buttonText = computed(() => {
@@ -172,7 +184,7 @@ const buttonText = computed(() => {
 	}
 
 	if (props.goToUrl !== '/mykiva') {
-		return 'Make a loan';
+		return 'Start my goal';
 	}
 
 	return 'Track my progress';
@@ -241,23 +253,43 @@ const handleContinue = () => {
 	}
 };
 
-onMounted(() => {
-	if (womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
-		const growALittleOption = Math.ceil(womenLoansLastYear.value * 1.25);
+async function loadWomenLoansThisYear() {
+	const currentYear = new Date().getFullYear();
+	const count = await getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, currentYear);
+	womenLoansThisYear.value = count;
+}
+
+onMounted(async () => {
+	await loadWomenLoansThisYear();
+	const ytdLoans = womenLoansThisYear.value;
+	const lastYearLoans = womenLoansLastYear.value;
+
+	// Determine base amount and labels based on whether YTD exceeds last year
+	// Goal suggestions must always be higher than YTD to prevent auto-completion
+	const useYtdAsBase = ytdLoans >= lastYearLoans;
+	const base = useYtdAsBase ? ytdLoans : lastYearLoans;
+
+	// Only show personalized options if user has lending history
+	if (base > SAME_AS_LAST_YEAR_LIMIT) {
+		const suggestion1 = useYtdAsBase ? base + 1 : base;
+		// Ensure each suggestion is at least 1 more than the previous
+		const suggestion2 = Math.max(Math.ceil(base * 1.5), suggestion1 + 1);
+		const suggestion3 = Math.max(base * 2, suggestion2 + 1);
+
 		goalOptions.value = [
 			{
-				loansNumber: womenLoansLastYear.value,
-				optionText: 'Same as 2025',
+				loansNumber: suggestion1,
+				optionText: useYtdAsBase ? 'One more' : 'Same as last year',
 				selected: false
 			},
 			{
-				loansNumber: growALittleOption,
+				loansNumber: suggestion2,
 				optionText: 'Grow a little',
 				selected: true,
 				highlightedText: 'More Impact'
 			},
 			{
-				loansNumber: womenLoansLastYear.value * 2,
+				loansNumber: suggestion3,
 				optionText: 'Double my impact!',
 				selected: false
 			},
