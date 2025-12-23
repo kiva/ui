@@ -142,6 +142,274 @@ describe('useGoalData', () => {
 		});
 	});
 
+	describe('setGoalState (via loadGoalData)', () => {
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		it('should filter out expired goals', async () => {
+			const mockPrefs = {
+				goals: [
+					{
+						goalName: 'expired-goal',
+						category: ID_WOMENS_EQUALITY,
+						target: 10,
+						status: GOAL_STATUS.EXPIRED,
+						dateStarted: '2025-01-01',
+					},
+				],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			// Expired goal should be filtered out, userGoal should be empty
+			expect(composable.userGoal.value).toEqual({});
+		});
+
+		it('should filter out goals completed in previous years', async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-06-15T00:00:00Z'));
+
+			const mockPrefs = {
+				goals: [
+					{
+						goalName: 'old-completed-goal',
+						category: ID_WOMENS_EQUALITY,
+						target: 10,
+						status: GOAL_STATUS.COMPLETED,
+						dateStarted: '2025-01-01', // Previous year
+					},
+				],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			// Goal completed in previous year should be filtered out
+			expect(composable.userGoal.value).toEqual({});
+		});
+
+		it('should keep goals completed in current year', async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-06-15T00:00:00Z'));
+
+			const mockPrefs = {
+				goals: [
+					{
+						goalName: 'current-completed-goal',
+						category: ID_WOMENS_EQUALITY,
+						target: 10,
+						status: GOAL_STATUS.COMPLETED,
+						dateStarted: '2026-02-01', // Current year
+					},
+				],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			// Goal completed in current year should be kept
+			expect(composable.userGoal.value).toEqual(mockPrefs.goals[0]);
+		});
+
+		it('should keep in-progress goals from current year', async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-06-15T00:00:00Z'));
+
+			const mockPrefs = {
+				goals: [
+					{
+						goalName: 'current-goal',
+						category: ID_BASIC_NEEDS,
+						target: 5,
+						status: GOAL_STATUS.IN_PROGRESS,
+						dateStarted: '2026-03-01',
+					},
+				],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			expect(composable.userGoal.value).toEqual(mockPrefs.goals[0]);
+		});
+
+		it('should select first active goal when multiple goals exist', async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-06-15T00:00:00Z'));
+
+			const mockPrefs = {
+				goals: [
+					{
+						goalName: 'expired-goal',
+						category: ID_WOMENS_EQUALITY,
+						target: 10,
+						status: GOAL_STATUS.EXPIRED,
+						dateStarted: '2024-01-01',
+					},
+					{
+						goalName: 'old-completed-goal',
+						category: ID_BASIC_NEEDS,
+						target: 5,
+						status: GOAL_STATUS.COMPLETED,
+						dateStarted: '2025-01-01', // Previous year
+					},
+					{
+						goalName: 'current-goal',
+						category: ID_CLIMATE_ACTION,
+						target: 3,
+						status: GOAL_STATUS.IN_PROGRESS,
+						dateStarted: '2026-03-01', // Current year
+					},
+				],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			// Should select the current year in-progress goal (third one)
+			expect(composable.userGoal.value.goalName).toBe('current-goal');
+		});
+
+		it('should handle completed goal without dateStarted', async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-06-15T00:00:00Z'));
+
+			const mockPrefs = {
+				goals: [
+					{
+						goalName: 'completed-no-date',
+						category: ID_WOMENS_EQUALITY,
+						target: 10,
+						status: GOAL_STATUS.COMPLETED,
+						// No dateStarted field
+					},
+				],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			// Goal without dateStarted should be kept (can't determine year)
+			expect(composable.userGoal.value).toEqual(mockPrefs.goals[0]);
+		});
+	});
+
 	describe('loadGoalData', () => {
 		it('should load preferences and progress successfully', async () => {
 			const mockPrefs = {
@@ -720,12 +988,13 @@ describe('useGoalData', () => {
 
 	describe('checkCompletedGoal', () => {
 		it('should mark goal as completed and track event', async () => {
+			const currentYear = new Date().getFullYear();
 			const mockPrefs = {
 				goals: [{
 					goalName: 'test-goal',
 					category: ID_WOMENS_EQUALITY,
 					target: 10,
-					dateStarted: '2024-01-01',
+					dateStarted: `${currentYear}-01-01`,
 					count: 0,
 					status: 'in-progress',
 				}],
@@ -783,12 +1052,13 @@ describe('useGoalData', () => {
 		});
 
 		it('should use custom category for tracking', async () => {
+			const currentYear = new Date().getFullYear();
 			const mockPrefs = {
 				goals: [{
 					goalName: 'test-goal',
 					category: ID_BASIC_NEEDS,
 					target: 5,
-					dateStarted: '2024-01-01',
+					dateStarted: `${currentYear}-01-01`,
 					count: 0,
 					status: 'in-progress',
 				}],

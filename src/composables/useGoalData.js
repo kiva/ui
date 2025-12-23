@@ -137,7 +137,17 @@ export default function useGoalData({ apollo } = {}) {
 	function setGoalState(parsedPrefs) {
 		if (!parsedPrefs) return;
 		const goals = parsedPrefs.goals || [];
-		const activeGoals = goals.filter(g => g.status !== GOAL_STATUS.EXPIRED);
+		const currentYear = new Date().getFullYear();
+		const activeGoals = goals.filter(g => {
+			// Filter out expired goals
+			if (g.status === GOAL_STATUS.EXPIRED) return false;
+			// Filter out goals completed in previous years
+			if (g.status === GOAL_STATUS.COMPLETED && g.dateStarted) {
+				const goalYear = new Date(g.dateStarted).getFullYear();
+				if (goalYear < currentYear) return false;
+			}
+			return true;
+		});
 		userGoal.value = { ...activeGoals[0] };
 	}
 
@@ -401,6 +411,9 @@ export default function useGoalData({ apollo } = {}) {
 			(currentGoalProgress && (currentGoalProgress >= userGoal.value?.target))
 			|| (userGoal.value && userGoalAchieved.value)
 		) {
+			// Capture goal data before storeGoalPreferences (which may filter out the goal via setGoalState)
+			const goalCategory = userGoal.value.category;
+			const goalTarget = userGoal.value.target;
 			userGoal.value = {
 				...userGoal.value,
 				status: GOAL_STATUS.COMPLETED
@@ -410,8 +423,8 @@ export default function useGoalData({ apollo } = {}) {
 				category,
 				'show',
 				'annual-goal-complete',
-				userGoal.value.category,
-				userGoal.value.target
+				goalCategory,
+				goalTarget
 			);
 			userGoalAchievedNow.value = true;
 		}
