@@ -21,11 +21,11 @@
 
 		<div
 			v-if="isGoalSet" class="tw-flex tw-justify-center tw-items-center"
-			style="max-width: 575px; height: 150px;"
 		>
 			<img
 				:src="HandsPlant"
-				class="lg:tw-mb-1 tw-w-10 lg:tw-w-14"
+				style="max-width: 200px;"
+				class="lg:tw-mb-1 tw-w-full tw-h-full"
 				alt="gif"
 			>
 		</div>
@@ -75,6 +75,7 @@ import {
 	inject,
 	onMounted,
 	ref,
+	watch,
 } from 'vue';
 import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
@@ -303,6 +304,20 @@ onMounted(async () => {
 		);
 	}
 	emit('set-goal-target', selectedTarget.value);
+});
+
+watch(() => props.isGoalSet, newVal => {
+	// Re-run gif animation when goal is set
+	if (newVal) {
+		const imgElement = document.querySelector('img[alt="gif"]');
+		if (imgElement) {
+			const { src } = imgElement;
+			imgElement.src = '';
+			setTimeout(() => {
+				imgElement.src = src;
+			}, 50);
+		}
+	}
 });
 </script>
 
