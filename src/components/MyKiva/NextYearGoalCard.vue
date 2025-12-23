@@ -186,12 +186,14 @@ const categoryName = computed(() => {
 });
 
 const goalDescription = computed(() => {
-	const description = `${goalLoans.value} loans`;
-
-	if (categoryName.value !== 'loans') {
-		return `${description} to ${categoryName.value}`;
+	if (
+		categoryName.value !== 'loans'
+		&& categoryName.value !== 'eco-friendly loans'
+		&& categoryName.value !== 'basic needs loans'
+	) {
+		return `${goalLoans.value} loans to ${categoryName.value}`;
 	}
-	return description;
+	return `${goalLoans.value} ${categoryName.value}`;
 });
 
 const ctaHref = computed(() => {
