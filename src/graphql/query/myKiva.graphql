@@ -139,9 +139,11 @@ query myKivaQuery {
               id
               name
               isoCode
+              geocode {
+                latitude
+                longitude
+              }
             }
-            latitude
-            longitude
           }
           borrowerCount
           ... on LoanPartner {

@@ -124,7 +124,6 @@ const { getLoanFindingUrl, ID_WOMENS_EQUALITY } = useBadgeData();
 const {
 	getCategoryLoanCountByYear,
 	getGoalDisplayName,
-	goalProgressPercentage,
 	setHideGoalCardPreference,
 } = goalData;
 
@@ -154,6 +153,14 @@ const title = computed(() => {
 		return `You helped <span class="tw-text-action"> ${props.prevYearLoans} women</span><br>shape their futures!`;
 	}
 	return 'Lenders like you help <span class="tw-text-action"> 3 women</span> a year';
+});
+
+const goalProgressPercentage = computed(() => {
+	if (!props.userGoal?.target || props.goalProgress <= 0) return 0;
+	return Math.min(
+		Math.round((props.goalProgress / props.userGoal.target) * 100),
+		COMPLETED_GOAL_THRESHOLD
+	);
 });
 
 const progressDescription = computed(() => {
@@ -224,14 +231,6 @@ const handleContinueClick = () => {
 
 const progressCircleDesc = computed(() => `loan${props.goalProgress > 1 ? 's' : ''} made`);
 
-watch(() => props.userGoal, (newVal, oldVal) => {
-	// Only track when a new goal is created (oldVal had no category, newVal has one)
-	if (newVal?.target && newVal?.category && !oldVal?.category
-		&& goalProgressPercentage.value !== COMPLETED_GOAL_THRESHOLD) {
-		$kvTrackEvent('portfolio', 'show', 'goal-set', newVal.category, newVal.target);
-	}
-});
-
 watch(() => props.loading, newVal => {
 	if (!newVal) {
 		if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
@@ -244,6 +243,8 @@ watch(() => props.loading, newVal => {
 				'view',
 				'set-annual-goal'
 			);
+		} else if (userHasGoal.value && goalProgressPercentage.value !== COMPLETED_GOAL_THRESHOLD) {
+			$kvTrackEvent('portfolio', 'show', 'goal-set', props.userGoal.category, props.userGoal.target);
 		}
 	}
 });
