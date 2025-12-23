@@ -53,6 +53,8 @@ export const GOAL_STATUS = {
 export const SAME_AS_LAST_YEAR_LIMIT = 1;
 export const LAST_YEAR_KEY = 2025;
 export const GOALS_V2_START_YEAR = 2026;
+export const COMPLETED_GOAL_THRESHOLD = 100;
+export const HALF_GOAL_THRESHOLD = 50;
 
 /**
  * Check if Goals V2 should be enabled based on the flag or current year
@@ -501,6 +503,15 @@ export default function useGoalData({ apollo } = {}) {
 		return parsedPrefs.hideGoalCard || false;
 	}
 
+	const goalProgressPercentage = computed(() => {
+		const target = Number(userGoal?.value?.target);
+		if (!target || Number.isNaN(target) || goalProgress.value <= 0) return 0;
+		return Math.min(
+			Math.round((goalProgress.value / target) * 100),
+			COMPLETED_GOAL_THRESHOLD
+		);
+	});
+
 	return {
 		checkCompletedGoal,
 		getCategories,
@@ -510,6 +521,7 @@ export default function useGoalData({ apollo } = {}) {
 		getGoalDisplayName,
 		getPostCheckoutProgressByLoans,
 		goalProgress,
+		goalProgressPercentage,
 		loadGoalData,
 		loading,
 		storeGoalPreferences,

@@ -152,7 +152,6 @@ const visibleBadges = computed(() => {
 		} else {
 			showedSlides.unshift(formattedUserGoal);
 		}
-		$kvTrackEvent('portfolio', 'show', 'annual-goal-progress-row');
 	}
 
 	return showedSlides;
@@ -193,6 +192,15 @@ watch(selectedJourney, () => {
 		if (badge) {
 			badgeClicked(badge);
 		}
+	}
+});
+
+// Track annual goal progress row only once when userHasGoal becomes true
+let hasTrackedAnnualGoal = false;
+watch(userHasGoal, newValue => {
+	if (newValue && !hasTrackedAnnualGoal) {
+		$kvTrackEvent('portfolio', 'show', 'annual-goal-progress-row');
+		hasTrackedAnnualGoal = true;
 	}
 });
 
