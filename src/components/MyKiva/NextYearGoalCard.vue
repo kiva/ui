@@ -123,10 +123,8 @@ const { getLoanFindingUrl, ID_WOMENS_EQUALITY } = useBadgeData();
 const {
 	getCategoryLoanCountByYear,
 	getGoalDisplayName,
-	goalProgressPercentage,
 	setHideGoalCardPreference,
 } = useGoalData();
-
 const womenLoansThisYear = ref(0);
 
 async function loadWomenLoansThisYear() {
@@ -153,6 +151,14 @@ const title = computed(() => {
 		return `You helped <span class="tw-text-action"> ${props.prevYearLoans} women</span><br>shape their futures!`;
 	}
 	return 'Lenders like you help <span class="tw-text-action"> 3 women</span> a year';
+});
+
+const goalProgressPercentage = computed(() => {
+	if (!props.userGoal?.target || props.goalProgress <= 0) return 0;
+	return Math.min(
+		Math.round((props.goalProgress / props.userGoal.target) * 100),
+		COMPLETED_GOAL_THRESHOLD
+	);
 });
 
 const progressDescription = computed(() => {
