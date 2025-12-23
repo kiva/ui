@@ -295,6 +295,13 @@ onMounted(async () => {
 			},
 		];
 	}
+	if (props.trackingCategory === 'post-checkout') {
+		$kvTrackEvent(
+			'post-checkout',
+			'view',
+			'set-annual-goal'
+		);
+	}
 	emit('set-goal-target', selectedTarget.value);
 });
 </script>

@@ -274,6 +274,8 @@ export default {
 			checkedArr: this.regionsData.map(() => false),
 			goalProgressLoading: true,
 			isGoalSet: false,
+			recordedGoalSet: false,
+			newGoalPrefs: null,
 			hideCompletedGoalCard: false,
 		};
 	},
@@ -410,6 +412,7 @@ export default {
 			await this.storeGoalPreferences(preferences);
 			// Goals V2 (yearly progress) is enabled if flag is true OR year >= 2026
 			await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+			this.newGoalPrefs = preferences;
 			this.isGoalSet = true;
 			if (!this.goalsV2Enabled) {
 				this.showGoalModal = false;
@@ -423,6 +426,11 @@ export default {
 					'click',
 					'close-goals'
 				);
+			}
+			if (this.isGoalSet && !this.recordedGoalSet) {
+				// eslint-disable-next-line max-len
+				this.$kvTrackEvent('portfolio', 'show', 'goal-set', this.newGoalPrefs?.category, this.newGoalPrefs?.target);
+				this.recordedGoalSet = true;
 			}
 		},
 	},
