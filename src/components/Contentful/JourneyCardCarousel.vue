@@ -244,7 +244,7 @@ const props = defineProps({
 	},
 	goalProgressLoading: {
 		type: Boolean,
-		default: false,
+		default: true,
 	},
 	controlsTopRight: {
 		type: Boolean,

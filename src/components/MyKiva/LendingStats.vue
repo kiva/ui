@@ -185,7 +185,6 @@ import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 
 import useBadgeData from '#src/composables/useBadgeData';
-import useGoalData from '#src/composables/useGoalData';
 
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
 
@@ -272,7 +271,6 @@ export default {
 			disconnectRegionWatcher: null,
 			showGoalModal: false,
 			checkedArr: this.regionsData.map(() => false),
-			goalProgressLoading: true,
 			isGoalSet: false,
 			hideCompletedGoalCard: false,
 		};
@@ -326,35 +324,23 @@ export default {
 		},
 	},
 	setup() {
-		const apollo = inject('apollo');
-
-		const {
-			goalProgress,
-			userGoal,
-			userGoalAchieved,
-			loadGoalData,
-			storeGoalPreferences,
-			checkCompletedGoal,
-			hideGoalCard,
-		} = useGoalData({ apollo });
+		const goalData = inject('goalData');
 
 		return {
-			goalProgress,
-			userGoal,
-			userGoalAchieved,
-			loadGoalData,
-			storeGoalPreferences,
-			checkCompletedGoal,
-			hideGoalCard,
+			checkCompletedGoal: goalData.checkCompletedGoal,
+			hideGoalCard: goalData.hideGoalCard,
+			goalProgress: goalData.goalProgress,
+			goalProgressLoading: goalData.loading,
+			loadGoalData: goalData.loadGoalData,
+			storeGoalPreferences: goalData.storeGoalPreferences,
+			userGoal: goalData.userGoal,
+			userGoalAchieved: goalData.userGoalAchieved,
 		};
 	},
 	async mounted() {
 		if (this.isNextStepsExpEnabled) {
-			// Goals V2 (yearly progress) is enabled if flag is true OR year >= 2026
-			await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
 			await this.checkCompletedGoal({ category: 'portfolio' });
 			this.hideCompletedGoalCard = this.hideGoalCard();
-			this.goalProgressLoading = false;
 		}
 
 		if (this.showRegionExperience) {

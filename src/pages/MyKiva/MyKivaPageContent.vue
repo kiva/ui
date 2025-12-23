@@ -226,7 +226,11 @@
 </template>
 
 <script>
-import { inject, nextTick } from 'vue';
+import {
+	inject,
+	nextTick,
+	provide,
+} from 'vue';
 
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
@@ -234,6 +238,7 @@ import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import useContentful from '#src/composables/useContentful';
 import useGivingFund from '#src/composables/useGivingFund';
+import useGoalData from '#src/composables/useGoalData';
 
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
@@ -391,6 +396,9 @@ export default {
 			fetchMyGivingFundsCount,
 		} = useGivingFund(apollo);
 
+		const goalDataComposable = useGoalData({ apollo });
+		provide('goalData', goalDataComposable);
+
 		return {
 			badgeData,
 			getFundsContributedToIds,
@@ -400,6 +408,7 @@ export default {
 			getLoanFindingUrl,
 			getMostRecentBlogPost,
 			isMobile,
+			loadGoalData: goalDataComposable.loadGoalData,
 		};
 	},
 	data() {
@@ -750,7 +759,7 @@ export default {
 			this.showLoanDetails({ id: Number(this.sidesheetLoan.id) }, true, false);
 		}
 	},
-	mounted() {
+	async mounted() {
 		this.clientRendered = true;
 
 		// Ensure clientRendered is true before attempting to scroll to section
@@ -771,10 +780,13 @@ export default {
 		this.fetchRecommendedLoans();
 		this.fetchMoreWaysToHelpData();
 		this.loadInitialBasketItems();
+		if (this.isNextStepsExpEnabled) {
+			await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+		}
 
 		this.fetchMyGivingFundsCount()
 			.then(response => {
-				this.myGivingFundsCount = response.givingFunds.totalCount;
+				this.myGivingFundsCount = response?.givingFunds?.totalCount;
 			})
 			.catch(error => {
 				logReadQueryError(error, 'MyKivaPageContent fetchMyGivingFundsCount');

@@ -89,7 +89,7 @@ import {
 	KvButton, KvLoadingPlaceholder
 } from '@kiva/kv-components';
 import useBadgeData from '#src/composables/useBadgeData';
-import useGoalData, { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
+import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import { useRouter } from 'vue-router';
 import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
 import confetti from 'canvas-confetti';
@@ -110,7 +110,7 @@ const props = defineProps({
 	},
 	loading: {
 		type: Boolean,
-		default: false,
+		default: true,
 	}
 });
 
@@ -118,6 +118,7 @@ defineEmits(['open-goal-modal']);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
+const goalData = inject('goalData');
 
 const { getLoanFindingUrl, ID_WOMENS_EQUALITY } = useBadgeData();
 const {
@@ -125,7 +126,7 @@ const {
 	getGoalDisplayName,
 	goalProgressPercentage,
 	setHideGoalCardPreference,
-} = useGoalData();
+} = goalData;
 
 const womenLoansThisYear = ref(0);
 

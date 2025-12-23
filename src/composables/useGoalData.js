@@ -106,7 +106,7 @@ export default function useGoalData({ apollo } = {}) {
 			const loanTotalAtStart = goal?.loanTotalAtStart || 0;
 			return Math.max(0, (totalLoanCount.value || 0) - loanTotalAtStart);
 		}
-		const categoryProgress = progress.find(n => n.id === goal?.category);
+		const categoryProgress = progress?.find(n => n.id === goal?.category);
 		if (useYearlyProgress.value) {
 			return categoryProgress?.progressForYear || 0;
 		}
