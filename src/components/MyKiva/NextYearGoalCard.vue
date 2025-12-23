@@ -229,14 +229,6 @@ const handleContinueClick = () => {
 
 const progressCircleDesc = computed(() => `loan${props.goalProgress > 1 ? 's' : ''} made`);
 
-watch(() => props.userGoal, (newVal, oldVal) => {
-	// Only track when a new goal is created (oldVal had no category, newVal has one)
-	if (newVal?.target && newVal?.category && !oldVal?.category
-		&& goalProgressPercentage.value !== COMPLETED_GOAL_THRESHOLD) {
-		$kvTrackEvent('portfolio', 'show', 'goal-set', newVal.category, newVal.target);
-	}
-});
-
 watch(() => props.loading, newVal => {
 	if (!newVal) {
 		if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
@@ -249,6 +241,8 @@ watch(() => props.loading, newVal => {
 				'view',
 				'set-annual-goal'
 			);
+		} else if (userHasGoal.value && goalProgressPercentage.value !== COMPLETED_GOAL_THRESHOLD) {
+			$kvTrackEvent('portfolio', 'show', 'goal-set', props.userGoal.category, props.userGoal.target);
 		}
 	}
 });
