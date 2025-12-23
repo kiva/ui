@@ -1,7 +1,7 @@
 <template>
 	<div class="tw-mb-2">
 		<h3 class="tw-text-primary tw-mb-1">
-			{{ title }}
+			Next steps recommended for you
 		</h3>
 	</div>
 	<div
@@ -310,9 +310,6 @@ export default {
 		categoriesLoanCount() {
 			const { getAllCategoryLoanCounts } = useBadgeData();
 			return getAllCategoryLoanCounts(this.heroTieredAchievements);
-		},
-		title() {
-			return 'Next steps recommended for you';
 		},
 	},
 	setup() {
