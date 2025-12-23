@@ -18,6 +18,7 @@
 			:show-new-badge-section="showNewBadgeSection"
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
+			:goal-refresh-key="goalRefreshKey"
 		/>
 	</www-page>
 </template>
@@ -85,6 +86,7 @@ export default {
 			showNewBadgeSection: false,
 			postLendingNextStepsEnable: false,
 			latestLoan: null,
+			goalRefreshKey: 0,
 		};
 	},
 	computed: {
@@ -262,6 +264,8 @@ export default {
 				if (showRenewedAnnualGoalToast) {
 					// eslint-disable-next-line max-len
 					this.$showTipMsg('It\'s time for your 2026 impact goal - a fresh start and new opportunity to make a difference.');
+					// Trigger goal data refresh in child components
+					this.goalRefreshKey += 1;
 				}
 			}
 		} catch (error) {
