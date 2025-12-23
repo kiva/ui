@@ -206,7 +206,6 @@ const handleContinueClick = () => {
 
 		return;
 	}
-	$kvTrackEvent('portfolio', 'click', 'continue-towards-goal');
 	router.push(ctaHref.value);
 };
 
@@ -214,7 +213,8 @@ const progressCircleDesc = computed(() => `loan${props.goalProgress > 1 ? 's' : 
 
 watch(() => props.userGoal, (newVal, oldVal) => {
 	// Only track when a new goal is created (oldVal had no category, newVal has one)
-	if (newVal?.target && newVal?.category && !oldVal?.category) {
+	if (newVal?.target && newVal?.category && !oldVal?.category
+		&& goalProgressPercentage.value !== COMPLETED_GOAL_THRESHOLD) {
 		$kvTrackEvent('portfolio', 'show', 'goal-set', newVal.category, newVal.target);
 	}
 });
