@@ -106,7 +106,7 @@ export default function useGoalData({ apollo } = {}) {
 			const loanTotalAtStart = goal?.loanTotalAtStart || 0;
 			return Math.max(0, (totalLoanCount.value || 0) - loanTotalAtStart);
 		}
-		const categoryProgress = progress.find(n => n.id === goal?.category);
+		const categoryProgress = progress?.find(n => n.id === goal?.category);
 		if (useYearlyProgress.value) {
 			return categoryProgress?.progressForYear || 0;
 		}
@@ -539,6 +539,15 @@ export default function useGoalData({ apollo } = {}) {
 		return parsedPrefs.hideGoalCard || false;
 	}
 
+	const goalProgressPercentage = computed(() => {
+		const target = Number(userGoal?.value?.target);
+		if (!target || Number.isNaN(target) || goalProgress.value <= 0) return 0;
+		return Math.min(
+			Math.round((goalProgress.value / target) * 100),
+			COMPLETED_GOAL_THRESHOLD
+		);
+	});
+
 	return {
 		checkCompletedGoal,
 		getCategories,
@@ -549,6 +558,7 @@ export default function useGoalData({ apollo } = {}) {
 		getGoalDisplayName,
 		getPostCheckoutProgressByLoans,
 		goalProgress,
+		goalProgressPercentage,
 		isProgressCompletingGoal,
 		loadGoalData,
 		loading,
