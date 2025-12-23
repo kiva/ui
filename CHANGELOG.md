@@ -1,3 +1,55 @@
+## [3.48.0](https://github.com/kiva/ui/compare/v3.47.0...v3.48.0) (2025-12-23)
+
+### 🎉 New Features
+
+* achievement row copy fix ([#6530](https://github.com/kiva/ui/issues/6530)) ([b843ddc](https://github.com/kiva/ui/commit/b843ddc6ec4855955da311b12d139dcb39cb49d4))
+* code style ([79234bb](https://github.com/kiva/ui/commit/79234bbd1c1f7c16c8e15e58662f94093141c86b))
+* do not show confetti when goal is completed on every page load ([#6515](https://github.com/kiva/ui/issues/6515)) ([c94462e](https://github.com/kiva/ui/commit/c94462ebf54f21f8f0450bbd8f73b0347dac17de))
+* latest loan card added to post lending next steps on mykiva ([#6516](https://github.com/kiva/ui/issues/6516)) ([f6a214f](https://github.com/kiva/ui/commit/f6a214f56a1691f122e12b5aa0c4ad1869e350a1))
+* mp-2343 update cta text ([aee1b44](https://github.com/kiva/ui/commit/aee1b444327536bdd3df1970cff4dc0aa5fa6cfb))
+* progress circle calculation fix ([#6533](https://github.com/kiva/ui/issues/6533)) ([009cf67](https://github.com/kiva/ui/commit/009cf675dfb1c4ebfb8d6d72d7f5d6a451fb3b7c))
+
+### 🐛 Bugfixes
+
+* [MP-2319] - 'view-goal-categories' events on mykiva ([4c0a4d5](https://github.com/kiva/ui/commit/4c0a4d5a54ee2fce306a342f74f5f48e8c0c2bdf))
+* [MP-2319] - clean code ([dbaa5c7](https://github.com/kiva/ui/commit/dbaa5c7bec78a6aa6924054405b1e7d5dd02f4f6))
+* [MP-2319] - extra condition to prevent double emit ([f4013b5](https://github.com/kiva/ui/commit/f4013b5f8c116cc597b0a1416003b13a55d09fe4))
+* [MP-2319] - Last Year label to Help ([25b3b3c](https://github.com/kiva/ui/commit/25b3b3c4db20bf87c945242cc0ddf8524926cc2e))
+* [MP-2319] - part2 ([#6527](https://github.com/kiva/ui/issues/6527)) ([eb4446d](https://github.com/kiva/ui/commit/eb4446df89d4c517611ae96bc4695feb96f13442))
+* [MP-2319] - PR feedback ([7176e8d](https://github.com/kiva/ui/commit/7176e8dd2c06f2de3413f618fbe8625da2976633))
+* [MP-2319] - set-annual-goal events on mykiva ([07e25a8](https://github.com/kiva/ui/commit/07e25a84d35456a5eca4b12c68922c985fa2892b))
+* [MP-2335] - clean code ([0ed77ab](https://github.com/kiva/ui/commit/0ed77ab217cef51e815d9938f00739593ec2e648))
+* [MP-2335] - PR feedback ([97c2a28](https://github.com/kiva/ui/commit/97c2a28a107a20f570d2c21ff384b657b0693b84))
+* [MP-2335] - use latest loan and some minor css bugs in email mktg card ([c1722e5](https://github.com/kiva/ui/commit/c1722e55afc832048036f80b28e6bab49d603235))
+* add getCategoryLoansByYear and template changes ([107b8d8](https://github.com/kiva/ui/commit/107b8d85443d924ebf3e89898bd64dc006e3265d))
+* apply only greater than template triggers ([9d8186c](https://github.com/kiva/ui/commit/9d8186ca24c34b6eaa1de7aa2948d50c1bfadd88))
+* ensure scroll works for completed goal cta and sticky header ([#6534](https://github.com/kiva/ui/issues/6534)) ([dfb0591](https://github.com/kiva/ui/commit/dfb059163742a50233321fa6f2c5bb7eabe83a4d))
+* goal complete checkout pill was showing too early ([#6532](https://github.com/kiva/ui/issues/6532)) ([750b78d](https://github.com/kiva/ui/commit/750b78d990edae6a517f95dd5a97ec11e396f939))
+* improve goals basket messages ([#6526](https://github.com/kiva/ui/issues/6526)) ([892bb8f](https://github.com/kiva/ui/commit/892bb8f2f0f0a95970db16722c1b2024ab741213))
+* latest loan card tweak ([#6520](https://github.com/kiva/ui/issues/6520)) ([e68eb91](https://github.com/kiva/ui/commit/e68eb9184482c472560209edefbe8f5d2bbcb2b5))
+* loading error on new mykiva card ([#6537](https://github.com/kiva/ui/issues/6537)) ([7f61c67](https://github.com/kiva/ui/commit/7f61c67e9fef6a3468c2f5d8ba80f6c727d1aaf1))
+* modal width ([b9f642a](https://github.com/kiva/ui/commit/b9f642a60fb18c81c081acabdd30d72fc0476ef7))
+* modify copy and use gif for confirm goal set message ([471973e](https://github.com/kiva/ui/commit/471973ec7c8e132a61ef4a823d0e27daba801cdc))
+* nullish coalescing missin for level ([7b2a418](https://github.com/kiva/ui/commit/7b2a41840aed9d655a271b55ebdccd7cebe2a16f))
+* reinstate >= check ([6a556ed](https://github.com/kiva/ui/commit/6a556ededf31b84007e97a7746de578889e68c52))
+* remove the extra empty slide when user has no goal ([b870d0f](https://github.com/kiva/ui/commit/b870d0f52f8c721aa65dfcce3506198caa290e04))
+* remove unnecessary comments ([6fa857f](https://github.com/kiva/ui/commit/6fa857f3b1d2e5c2acf2d9a27b151a73c744a28c))
+* resolve goal selector issues ([#6536](https://github.com/kiva/ui/issues/6536)) ([5ab2d1b](https://github.com/kiva/ui/commit/5ab2d1b60ebd87096ac75c1cf62e97bbd1c210da))
+* resolved issues with goals v2 and smoothed out edges ([#6523](https://github.com/kiva/ui/issues/6523)) ([7c7fad4](https://github.com/kiva/ui/commit/7c7fad4ceda6d54a6bddbce9419e4ad4f30e793f))
+* show atb goal message when user achieved goal ([65f1889](https://github.com/kiva/ui/commit/65f188949f81f257421629473d6e54f23f0e7321))
+* show confetti and infinite loading in achievement row ([5919475](https://github.com/kiva/ui/commit/59194754245c24bdaf015082dd14482324a5102d))
+* simplify code ([9d211d9](https://github.com/kiva/ui/commit/9d211d986a7c838ad46a082fc103d96cb388243a))
+* small tweaks to make modal bigger ([445b7ab](https://github.com/kiva/ui/commit/445b7ab287b31f9a9fab87a1d4fb01fde938b477))
+* solve conflict ([3a43801](https://github.com/kiva/ui/commit/3a43801d3a4b84d220196ae121f2a8638510851a))
+* sort achievements by nextAchievemntAt value ([c2a3c01](https://github.com/kiva/ui/commit/c2a3c01d9295fa1d725809a20e11b7fc5a47b912))
+* subtitleText on any value above 0 + currentYearProgress.value.length ([5c18ce7](https://github.com/kiva/ui/commit/5c18ce7a7a1e536536fb486b62afbdf9e74c697a))
+* tests ([3eba8ce](https://github.com/kiva/ui/commit/3eba8ceb280aeb9512390798de54ff3852ac1912))
+* tracking events in achievement row ([56ba75c](https://github.com/kiva/ui/commit/56ba75cd889fe971604e6cd230a2f734d9206424))
+
+### 🧹 Chores
+
+* **release:** 3.48.0-rc.1 [skip ci] ([cb50a81](https://github.com/kiva/ui/commit/cb50a81953e8db0b9eaf898b052db822437c6e47)), closes [#6530](https://github.com/kiva/ui/issues/6530) [#6515](https://github.com/kiva/ui/issues/6515) [#6516](https://github.com/kiva/ui/issues/6516) [#6533](https://github.com/kiva/ui/issues/6533) [#6527](https://github.com/kiva/ui/issues/6527) [#6534](https://github.com/kiva/ui/issues/6534) [#6532](https://github.com/kiva/ui/issues/6532) [#6526](https://github.com/kiva/ui/issues/6526) [#6520](https://github.com/kiva/ui/issues/6520) [#6537](https://github.com/kiva/ui/issues/6537) [#6536](https://github.com/kiva/ui/issues/6536) [#6523](https://github.com/kiva/ui/issues/6523)
+
 ## [3.48.0-rc.1](https://github.com/kiva/ui/compare/v3.47.0...v3.48.0-rc.1) (2025-12-23)
 
 ### 🎉 New Features
