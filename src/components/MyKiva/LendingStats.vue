@@ -3,9 +3,6 @@
 		<h3 class="tw-text-primary tw-mb-1">
 			{{ title }}
 		</h3>
-		<p class="tw-text-base">
-			{{ description }}
-		</p>
 	</div>
 	<div
 		ref="loanRegionsElement"
@@ -315,14 +312,7 @@ export default {
 			return getAllCategoryLoanCounts(this.heroTieredAchievements);
 		},
 		title() {
-			if (!this.hasLoans) return 'Your impact starts here';
-			if (this.isNextStepsExpEnabled) return 'Make a difference today';
-			return 'Ready to grow your impact?';
-		},
-		description() {
-			if (!this.hasLoans) return 'Recommended for you';
-			if (this.isNextStepsExpEnabled) return 'How many more people will you help this year?';
-			return 'Next steps for you based on your lending history';
+			return 'Next steps recommended for you';
 		},
 	},
 	setup() {
