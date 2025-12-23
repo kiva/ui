@@ -284,9 +284,6 @@ export default {
 		loanRegions() {
 			return this.regionsData.filter(region => region.hasLoans).length;
 		},
-		hasLoans() {
-			return this.loans.length > 0;
-		},
 		pillHeader() {
 			if (this.totalRegions === 0) return '';
 			if (this.loanRegions === 0) return 'Make a global impact';
