@@ -84,11 +84,11 @@ const props = defineProps({
 const defaultBaseColor = kvTokensPrimitives.colors?.brand[200] || null;
 
 const mapLat = computed(() => {
-	return props.loan?.geocode?.latitude || 0;
+	return props.loan?.geocode?.country?.geocode?.latitude || 0;
 });
 
 const mapLong = computed(() => {
-	return props.loan?.geocode?.longitude || 0;
+	return props.loan?.geocode?.country?.geocode?.longitude || 0;
 });
 
 const pronoun = computed(() => {

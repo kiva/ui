@@ -104,7 +104,10 @@ const goalProgressPercentage = computed(() => {
 });
 
 const goalTarget = computed(() => {
-	return props.goal?.tierTarget || props.goal?.target || 0;
+	if (props.goal?.nextAchievementAt > 0) {
+		return props.goal?.tierTarget;
+	}
+	return props.goal?.target || 0;
 });
 
 const goalCompleted = computed(() => {
@@ -144,7 +147,7 @@ const description = computed(() => {
 });
 
 const progress = computed(() => {
-	if (goalCompleted.value) {
+	if (goalCompleted.value && props.isAnnualGoal) {
 		return `${goalTarget.value} / ${goalTarget.value}`;
 	}
 

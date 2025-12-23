@@ -119,14 +119,18 @@ defineEmits(['open-goal-modal']);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
-const { getLoanFindingUrl, ID_WOMENS_EQUALITY } = useBadgeData();
+const {
+	getLoanFindingUrl,
+	ID_WOMENS_EQUALITY,
+	ID_BASIC_NEEDS,
+	ID_CLIMATE_ACTION,
+	ID_SUPPORT_ALL
+} = useBadgeData();
 const {
 	getCategoryLoanCountByYear,
 	getGoalDisplayName,
-	goalProgressPercentage,
 	setHideGoalCardPreference,
 } = useGoalData();
-
 const womenLoansThisYear = ref(0);
 
 async function loadWomenLoansThisYear() {
@@ -155,6 +159,14 @@ const title = computed(() => {
 	return 'Lenders like you help <span class="tw-text-action"> 3 women</span> a year';
 });
 
+const goalProgressPercentage = computed(() => {
+	if (!props.userGoal?.target || props.goalProgress <= 0) return 0;
+	return Math.min(
+		Math.round((props.goalProgress / props.userGoal.target) * 100),
+		COMPLETED_GOAL_THRESHOLD
+	);
+});
+
 const progressDescription = computed(() => {
 	if (goalProgressPercentage.value === 0) {
 		return 'Get started by making a loan!';
@@ -180,12 +192,14 @@ const categoryName = computed(() => {
 });
 
 const goalDescription = computed(() => {
-	const description = `${goalLoans.value} loans`;
-
-	if (categoryName.value !== 'loans') {
-		return `${description} to ${categoryName.value}`;
+	switch (props.userGoal?.category) {
+		case ID_BASIC_NEEDS:
+		case ID_CLIMATE_ACTION:
+		case ID_SUPPORT_ALL:
+			return `${goalLoans.value} ${categoryName.value}`;
+		default:
+			return `${goalLoans.value} loans to ${categoryName.value}`;
 	}
-	return description;
 });
 
 const ctaHref = computed(() => {
@@ -223,14 +237,6 @@ const handleContinueClick = () => {
 
 const progressCircleDesc = computed(() => `loan${props.goalProgress > 1 ? 's' : ''} made`);
 
-watch(() => props.userGoal, (newVal, oldVal) => {
-	// Only track when a new goal is created (oldVal had no category, newVal has one)
-	if (newVal?.target && newVal?.category && !oldVal?.category
-		&& goalProgressPercentage.value !== COMPLETED_GOAL_THRESHOLD) {
-		$kvTrackEvent('portfolio', 'show', 'goal-set', newVal.category, newVal.target);
-	}
-});
-
 watch(() => props.loading, newVal => {
 	if (!newVal) {
 		if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
@@ -243,6 +249,8 @@ watch(() => props.loading, newVal => {
 				'view',
 				'set-annual-goal'
 			);
+		} else if (userHasGoal.value && goalProgressPercentage.value !== COMPLETED_GOAL_THRESHOLD) {
+			$kvTrackEvent('portfolio', 'show', 'goal-set', props.userGoal.category, props.userGoal.target);
 		}
 	}
 });

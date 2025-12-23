@@ -177,7 +177,7 @@ const handleCategorySelected = categoryId => {
 	selectedCategory.value = categories[categoryIdx];
 
 	// Only track when modal is open and user wants to choose a different category, not on pageload
-	if (props.show && showCategories.value) {
+	if ((props.show && showCategories.value) || props.isThanksPage) {
 		$kvTrackEvent(
 			props.isThanksPage ? 'post-checkout' : 'portfolio',
 			'click',

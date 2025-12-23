@@ -37,7 +37,6 @@
 
 <script setup>
 import { computed, inject } from 'vue';
-import { useRouter } from 'vue-router';
 import { mdiArrowRight } from '@mdi/js';
 import {
 	KvMaterialIcon,
@@ -66,8 +65,6 @@ const props = defineProps({
 	},
 });
 
-const router = useRouter();
-
 const goalDisplayName = computed(() => {
 	const category = props.currentGoal?.category || '';
 	return category ? props.getGoalDisplayName(props.currentGoal?.target, category) : 'loans';
@@ -82,7 +79,7 @@ const handleContinue = () => {
 		'continue-to-my-kiva',
 		'signed-in',
 	);
-	router?.push('/mykiva');
+	window.location = '/mykiva';
 };
 </script>
 

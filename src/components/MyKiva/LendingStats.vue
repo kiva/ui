@@ -263,6 +263,10 @@ export default {
 		latestLoan: {
 			type: Object,
 			default: null
+		},
+		goalRefreshKey: {
+			type: Number,
+			default: 0
 		}
 	},
 	data() {
@@ -274,6 +278,8 @@ export default {
 			checkedArr: this.regionsData.map(() => false),
 			goalProgressLoading: true,
 			isGoalSet: false,
+			recordedGoalSet: false,
+			newGoalPrefs: null,
 			hideCompletedGoalCard: false,
 		};
 	},
@@ -383,6 +389,15 @@ export default {
 		if (this.interval) clearInterval(this.interval);
 		if (this.disconnectRegionWatcher) this.disconnectRegionWatcher();
 	},
+	watch: {
+		async goalRefreshKey(newVal, oldVal) {
+			if (newVal !== oldVal && newVal > 0) {
+				this.goalProgressLoading = true;
+				await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+				this.goalProgressLoading = false;
+			}
+		}
+	},
 	methods: {
 		regionImageSource(region) {
 			const regionImages = {
@@ -410,6 +425,7 @@ export default {
 			await this.storeGoalPreferences(preferences);
 			// Goals V2 (yearly progress) is enabled if flag is true OR year >= 2026
 			await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+			this.newGoalPrefs = preferences;
 			this.isGoalSet = true;
 			if (!this.goalsV2Enabled) {
 				this.showGoalModal = false;
@@ -423,6 +439,11 @@ export default {
 					'click',
 					'close-goals'
 				);
+			}
+			if (this.isGoalSet && !this.recordedGoalSet) {
+				// eslint-disable-next-line max-len
+				this.$kvTrackEvent('portfolio', 'show', 'goal-set', this.newGoalPrefs?.category, this.newGoalPrefs?.target);
+				this.recordedGoalSet = true;
 			}
 		},
 	},
