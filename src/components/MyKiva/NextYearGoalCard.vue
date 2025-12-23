@@ -119,7 +119,13 @@ defineEmits(['open-goal-modal']);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
-const { getLoanFindingUrl, ID_WOMENS_EQUALITY } = useBadgeData();
+const {
+	getLoanFindingUrl,
+	ID_WOMENS_EQUALITY,
+	ID_BASIC_NEEDS,
+	ID_CLIMATE_ACTION,
+	ID_SUPPORT_ALL
+} = useBadgeData();
 const {
 	getCategoryLoanCountByYear,
 	getGoalDisplayName,
@@ -186,14 +192,14 @@ const categoryName = computed(() => {
 });
 
 const goalDescription = computed(() => {
-	if (
-		categoryName.value !== 'loans'
-		&& categoryName.value !== 'eco-friendly loans'
-		&& categoryName.value !== 'basic needs loans'
-	) {
-		return `${goalLoans.value} loans to ${categoryName.value}`;
+	switch (props.userGoal?.category) {
+		case ID_BASIC_NEEDS:
+		case ID_CLIMATE_ACTION:
+		case ID_SUPPORT_ALL:
+			return `${goalLoans.value} ${categoryName.value}`;
+		default:
+			return `${goalLoans.value} loans to ${categoryName.value}`;
 	}
-	return `${goalLoans.value} ${categoryName.value}`;
 });
 
 const ctaHref = computed(() => {
