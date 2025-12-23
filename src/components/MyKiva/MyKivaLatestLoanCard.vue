@@ -92,7 +92,7 @@ const mapLong = computed(() => {
 });
 
 const pronoun = computed(() => {
-	if (props.loan?.borrowerCount > 1 || props.loan?.themes.includes('Social Enterprise')) {
+	if (props.loan?.borrowerCount > 1 || props.loan?.themes?.includes('Social Enterprise')) {
 		return 'their lives';
 	}
 	if (props.loan?.gender === 'male') {
