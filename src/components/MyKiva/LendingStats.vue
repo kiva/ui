@@ -429,7 +429,7 @@ export default {
 			}
 			if (this.isGoalSet && !this.recordedGoalSet) {
 				// eslint-disable-next-line max-len
-				this.$kvTrackEvent('portfolio', 'show', 'goal-set', this.newGoalPrefs.category, this.newGoalPrefs.target);
+				this.$kvTrackEvent('portfolio', 'show', 'goal-set', this.newGoalPrefs?.category, this.newGoalPrefs?.target);
 				this.recordedGoalSet = true;
 			}
 		},
