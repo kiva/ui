@@ -1,3 +1,22 @@
+## [3.49.0](https://github.com/kiva/ui/compare/v3.48.0...v3.49.0) (2025-12-23)
+
+### 🎉 New Features
+
+* [MP-2319] - minor changes requested and small revert for new proposal  ([#6539](https://github.com/kiva/ui/issues/6539)) ([f8d4a26](https://github.com/kiva/ui/commit/f8d4a26e7ea0e2017eea90997322ee73f5ca4395))
+
+### 🐛 Bugfixes
+
+* bigger gif and re-run it after goal is set ([#6545](https://github.com/kiva/ui/issues/6545)) ([caa5156](https://github.com/kiva/ui/commit/caa5156a6075b42cc1718dd52da53888ea8340da))
+* change router.push to window.location ([#6544](https://github.com/kiva/ui/issues/6544)) ([54cbf60](https://github.com/kiva/ui/commit/54cbf60fc07bdda5f27364015a00ee8bf39255ed))
+* completed goal state in card ([#6543](https://github.com/kiva/ui/issues/6543)) ([8f14ec1](https://github.com/kiva/ui/commit/8f14ec1ec7e5fcdff92a66d686723fff6884ed2b))
+* ensure goal card refreshed on renewal of goal ([#6546](https://github.com/kiva/ui/issues/6546)) ([3907f76](https://github.com/kiva/ui/commit/3907f76c75f3b3088b0eaa7bcb17178d33246918))
+* lastest loan card map bug ([#6541](https://github.com/kiva/ui/issues/6541)) ([a647748](https://github.com/kiva/ui/commit/a647748dc056db7e9b8e80ecc5bc528d2f1998de))
+* mp-2352 / Fix Copy on NextYearGoalCard's Goal Description ([#6542](https://github.com/kiva/ui/issues/6542)) ([db9e17b](https://github.com/kiva/ui/commit/db9e17b18542d0bbb13f3eaa56ccc404581f6c7f))
+
+### 🧹 Chores
+
+* **release:** 3.49.0-rc.1 [skip ci] ([3df5773](https://github.com/kiva/ui/commit/3df57738184655a54a03904850472735657dfef4)), closes [#6539](https://github.com/kiva/ui/issues/6539) [#6545](https://github.com/kiva/ui/issues/6545) [#6544](https://github.com/kiva/ui/issues/6544) [#6543](https://github.com/kiva/ui/issues/6543) [#6546](https://github.com/kiva/ui/issues/6546) [#6541](https://github.com/kiva/ui/issues/6541) [#6542](https://github.com/kiva/ui/issues/6542)
+
 ## [3.49.0-rc.1](https://github.com/kiva/ui/compare/v3.48.0...v3.49.0-rc.1) (2025-12-23)
 
 ### 🎉 New Features
