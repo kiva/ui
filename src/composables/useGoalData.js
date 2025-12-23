@@ -411,6 +411,9 @@ export default function useGoalData({ apollo } = {}) {
 			(currentGoalProgress && (currentGoalProgress >= userGoal.value?.target))
 			|| (userGoal.value && userGoalAchieved.value)
 		) {
+			// Capture goal data before storeGoalPreferences (which may filter out the goal via setGoalState)
+			const goalCategory = userGoal.value.category;
+			const goalTarget = userGoal.value.target;
 			userGoal.value = {
 				...userGoal.value,
 				status: GOAL_STATUS.COMPLETED
@@ -420,8 +423,8 @@ export default function useGoalData({ apollo } = {}) {
 				category,
 				'show',
 				'annual-goal-complete',
-				userGoal.value.category,
-				userGoal.value.target
+				goalCategory,
+				goalTarget
 			);
 			userGoalAchievedNow.value = true;
 		}
