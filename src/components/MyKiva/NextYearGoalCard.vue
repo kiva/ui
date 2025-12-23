@@ -11,11 +11,18 @@
 		</div>
 		<template v-else>
 			<div v-if="!userHasGoal" class="tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-between">
-				<h4>LAST YEAR</h4>
+				<h4 v-if="prevYearLoans > 0">
+					LAST YEAR
+				</h4>
 				<h3 class="tw-text-center" v-html="title"></h3>
-				<p class="tw-text-center">
-					How many loans will you make this year?
-				</p>
+				<div class="tw-text-center">
+					<p>
+						How many loans will you make this year?
+						<span v-if="womenLoansThisYear">
+							You've already made {{ womenLoansThisYear }}.
+						</span>
+					</p>
+				</div>
 				<img
 					:src="HandsPlant"
 					class="tw-my-2 md:tw-my-4 tw-w-14"
@@ -39,7 +46,7 @@
 				</div>
 				<div class="tw-relative tw-z-docked tw-mx-auto">
 					<KvProgressCircle
-						class="tw-z-2"
+						class="tw-z-2 tw-py-0.5"
 						:stroke-width="20"
 						:value="goalProgressPercentage"
 						:max="goalLoans"
@@ -55,7 +62,7 @@
 						</p>
 					</div>
 				</div>
-				<p v-html="progressDescription" class="tw-font-medium" style="line-height: 1.5rem;">
+				<p v-html="progressDescription" class="tw-font-medium tw-py-1" style="line-height: 1.5rem;">
 				</p>
 				<KvButton
 					class="tw-w-full"
@@ -72,13 +79,17 @@
 <script setup>
 
 import {
-	computed, watch, inject
+	computed,
+	inject,
+	onMounted,
+	ref,
+	watch,
 } from 'vue';
 import {
 	KvButton, KvLoadingPlaceholder
 } from '@kiva/kv-components';
 import useBadgeData from '#src/composables/useBadgeData';
-import useGoalData from '#src/composables/useGoalData';
+import useGoalData, { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import { useRouter } from 'vue-router';
 import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
 import confetti from 'canvas-confetti';
@@ -108,10 +119,21 @@ defineEmits(['open-goal-modal']);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
-const { getLoanFindingUrl } = useBadgeData();
-const { getGoalDisplayName, setHideGoalCardPreference } = useGoalData();
-const COMPLETED_GOAL_THRESHOLD = 100;
-const HALF_GOAL_THRESHOLD = 50;
+const { getLoanFindingUrl, ID_WOMENS_EQUALITY } = useBadgeData();
+const {
+	getCategoryLoanCountByYear,
+	getGoalDisplayName,
+	goalProgressPercentage,
+	setHideGoalCardPreference,
+} = useGoalData();
+
+const womenLoansThisYear = ref(0);
+
+async function loadWomenLoansThisYear() {
+	const currentYear = new Date().getFullYear();
+	const count = await getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, currentYear);
+	womenLoansThisYear.value = count;
+}
 
 const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);
 
@@ -133,14 +155,6 @@ const title = computed(() => {
 	return 'Lenders like you help <span class="tw-text-action"> 3 women</span> a year';
 });
 
-const goalProgressPercentage = computed(() => {
-	if (!props.userGoal?.target || props.goalProgress <= 0) return 0;
-	return Math.min(
-		Math.round((props.goalProgress / props.userGoal.target) * 100),
-		COMPLETED_GOAL_THRESHOLD
-	);
-});
-
 const progressDescription = computed(() => {
 	if (goalProgressPercentage.value === 0) {
 		return 'Get started by making a loan!';
@@ -156,7 +170,7 @@ const progressDescription = computed(() => {
 
 const btnCta = computed(() => {
 	if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
-		return 'View lifetime goals';
+		return 'View impact progress';
 	}
 	return 'Work towards your goal';
 });
@@ -204,29 +218,37 @@ const handleContinueClick = () => {
 
 		return;
 	}
-	$kvTrackEvent('portfolio', 'click', 'continue-towards-goal');
 	router.push(ctaHref.value);
 };
 
 const progressCircleDesc = computed(() => `loan${props.goalProgress > 1 ? 's' : ''} made`);
 
 watch(() => props.userGoal, (newVal, oldVal) => {
-	// Only track when no user goal
-	if (!newVal?.category && !oldVal?.category) {
-		$kvTrackEvent('portfolio', 'view', 'set-annual-goal');
-	}
-
 	// Only track when a new goal is created (oldVal had no category, newVal has one)
-	if (newVal?.target && newVal?.category && !oldVal?.category) {
+	if (newVal?.target && newVal?.category && !oldVal?.category
+		&& goalProgressPercentage.value !== COMPLETED_GOAL_THRESHOLD) {
 		$kvTrackEvent('portfolio', 'show', 'goal-set', newVal.category, newVal.target);
 	}
 });
 
-watch(goalProgressPercentage, newVal => {
-	if (newVal === COMPLETED_GOAL_THRESHOLD) {
-		showConfetti();
-		setHideGoalCardPreference();
+watch(() => props.loading, newVal => {
+	if (!newVal) {
+		if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
+			showConfetti();
+			setHideGoalCardPreference();
+		}
+		if (!userHasGoal.value) {
+			$kvTrackEvent(
+				'portfolio',
+				'view',
+				'set-annual-goal'
+			);
+		}
 	}
+});
+
+onMounted(async () => {
+	await loadWomenLoansThisYear();
 });
 </script>
 

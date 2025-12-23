@@ -8,7 +8,7 @@
 				@view-pdf-clicked="scrollToReceipt"
 			/>
 			<GoalEntrypoint
-				v-if="isNextStepsExpEnabled && thanksPageGoalsEntrypointEnable && !isGuest && isEmptyGoal"
+				v-if="isNextStepsExpEnabled && goalsV2Enabled && !isGuest && goalDataInitialized && isEmptyGoal"
 				:loading="goalDataLoading"
 				:total-loans="totalLoans"
 				:categories-loan-count="categoriesLoanCount"
@@ -94,8 +94,8 @@
 			:categories-loan-count="categoriesLoanCount"
 			:is-thanks-page="true"
 			:number-of-loans="goalTarget"
-			:goals-entrypoint-enable="thanksPageGoalsEntrypointEnable"
-			@close-goal-modal="showGoalModal = false"
+			:goals-v2-enabled="goalsV2Enabled"
+			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
 		/>
 	</div>
@@ -176,7 +176,7 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	thanksPageGoalsEntrypointEnable: {
+	goalsV2Enabled: {
 		type: Boolean,
 		default: false,
 	},
@@ -329,15 +329,26 @@ const setGoal = async preferences => {
 	showGoalModal.value = false;
 };
 
+const closeGoalModal = () => {
+	if (showGoalModal.value) {
+		showGoalModal.value = false;
+		$kvTrackEvent(
+			'post-checkout',
+			'click',
+			'close-goals'
+		);
+	}
+};
 const setGoalTarget = target => {
 	goalTarget.value = target;
 };
 
 onMounted(async () => {
 	if (props.isNextStepsExpEnabled) {
-		await loadGoalData({ yearlyProgress: props.thanksPageGoalsEntrypointEnable });
-		// Use yearly progress with current year when flag is enabled, otherwise use all-time progress
-		const year = props.thanksPageGoalsEntrypointEnable ? new Date().getFullYear() : null;
+		// Goals V2 is enabled if flag is true OR year >= 2026
+		await loadGoalData({ yearlyProgress: props.goalsV2Enabled });
+		// Use yearly progress with current year when Goals V2 is enabled, otherwise use all-time progress
+		const year = props.goalsV2Enabled ? new Date().getFullYear() : null;
 		// Loans already in totalLoanCount after checkout
 		currGoalProgress.value = await getPostCheckoutProgressByLoans({
 			loans: props.loans,

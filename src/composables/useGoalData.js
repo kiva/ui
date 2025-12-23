@@ -51,7 +51,21 @@ export const GOAL_STATUS = {
 };
 
 export const SAME_AS_LAST_YEAR_LIMIT = 1;
-export const LAST_YEAR_KEY = 2025;
+export const LAST_YEAR_KEY = new Date().getFullYear() - 1;
+export const GOALS_V2_START_YEAR = 2026;
+export const COMPLETED_GOAL_THRESHOLD = 100;
+export const HALF_GOAL_THRESHOLD = 50;
+
+/**
+ * Check if Goals V2 should be enabled based on the flag or current year
+ * Goals V2 is enabled if the flag is true OR the year is 2026 or later
+ * @param {boolean} flagEnabled - The thankyou_page_goals_enable flag value
+ * @returns {boolean} True if Goals V2 should be enabled
+ */
+export function isGoalsV2Enabled(flagEnabled) {
+	const currentYear = new Date().getFullYear();
+	return flagEnabled || currentYear >= GOALS_V2_START_YEAR;
+}
 
 function getGoalDisplayName(target, category) {
 	if (!target || target > 1) return GOAL_DISPLAY_MAP[category] || 'loans';
@@ -222,6 +236,47 @@ export default function useGoalData({ apollo } = {}) {
 		return categoryAchievement?.progressForYear || 0;
 	}
 
+	/**
+	 * Retrieves the user's tiered lending achievement progress for a given year.
+	 *
+	 * @param {number} year - Year to fetch progress for.
+	 * @param {string} [fetchPolicy='cache-first'] - Apollo fetch policy.
+	 * @returns {Promise<Object[]|null>} Tiered lending progress data, or null on error.
+	 */
+	async function getCategoriesProgressByYear(year, fetchPolicy = 'cache-first') {
+		try {
+			const response = await apolloClient.query({
+				query: useGoalDataYearlyProgressQuery,
+				variables: { year },
+				fetchPolicy
+			});
+			const progress = response.data.userAchievementProgress.tieredLendingAchievements;
+			return progress;
+		} catch (error) {
+			logFormatter(error, 'Failed to fetch categories progress by year');
+			return null;
+		}
+	}
+
+	/**
+	 * Retrieves the user's loan count for the specified category id and year.
+	 *
+	 * @param {string} categoryId - Category ID to fetch loan count for.
+	 * @param {number} year - Year to fetch progress for.
+	 * @param {string} [fetchPolicy='cache-first'] - Apollo fetch policy.
+	 * @returns {number|null} The category loan count for the given year, or null on error.
+	 */
+	async function getCategoryLoanCountByYear(categoryId, year, fetchPolicy = 'cache-first') {
+		try {
+			const progress = await getCategoriesProgressByYear(year, fetchPolicy);
+			const count = progress?.find(entry => entry.id === categoryId)?.progressForYear || 0;
+			return count;
+		} catch (error) {
+			logFormatter(error, 'Failed to fetch category loan count by year');
+			return null;
+		}
+	}
+
 	async function loadPreferences(fetchPolicy = 'cache-first') {
 		try {
 			const response = await apolloClient.query({ query: useGoalDataQuery, fetchPolicy });
@@ -235,14 +290,9 @@ export default function useGoalData({ apollo } = {}) {
 		}
 	}
 
-	async function loadProgress(year) {
+	async function loadProgress(year, fetchPolicy = 'network-only') {
 		try {
-			const response = await apolloClient.query({
-				query: useGoalDataYearlyProgressQuery,
-				variables: { year },
-				fetchPolicy: 'network-only'
-			});
-			const progress = response.data.userAchievementProgress.tieredLendingAchievements;
+			const progress = await getCategoriesProgressByYear(year, fetchPolicy);
 			currentYearProgress.value = progress;
 		} catch (error) {
 			logFormatter(error, 'Failed to load progress');
@@ -373,7 +423,7 @@ export default function useGoalData({ apollo } = {}) {
 	 * Only applies when yearlyProgress is false (all-time progress mode)
 	 */
 	async function correctNegativeProgress() {
-		if (useYearlyProgress.value || !userGoal.value) return;
+		if (useYearlyProgress.value || !userGoal.value || !currentYearProgress?.value?.length) return;
 
 		const goal = userGoal.value;
 		if (goal.category === ID_SUPPORT_ALL) return;
@@ -489,15 +539,27 @@ export default function useGoalData({ apollo } = {}) {
 		return parsedPrefs.hideGoalCard || false;
 	}
 
+	const goalProgressPercentage = computed(() => {
+		const target = Number(userGoal?.value?.target);
+		if (!target || Number.isNaN(target) || goalProgress.value <= 0) return 0;
+		return Math.min(
+			Math.round((goalProgress.value / target) * 100),
+			COMPLETED_GOAL_THRESHOLD
+		);
+	});
+
 	return {
 		checkCompletedGoal,
 		getCategories,
+		getCategoriesProgressByYear,
+		getCategoryLoanCountByYear,
 		getCategoryLoansLastYear,
 		getCtaHref,
-		isProgressCompletingGoal,
 		getGoalDisplayName,
 		getPostCheckoutProgressByLoans,
 		goalProgress,
+		goalProgressPercentage,
+		isProgressCompletingGoal,
 		loadGoalData,
 		loading,
 		storeGoalPreferences,

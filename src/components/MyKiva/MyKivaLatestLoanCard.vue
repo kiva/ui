@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="tw-w-full tw-relative tw-rounded tw-shadow tw-p-2 tw-flex tw-flex-col
-			tw-bg-white tw-shrink-0 tw-overflow-hidden tw-h-full"
+			tw-bg-white tw-shrink-0 tw-overflow-hidden tw-h-full tw-select-none"
 		style="width: 336px; min-height: 365px;"
 	>
 		<span
@@ -19,7 +19,7 @@
 		</span>
 		<KvMap
 			class="tw-rounded tw-overflow-hidden !tw-pb-0 tw-z-base"
-			style="height: 170px;"
+			style="height: 165px;"
 			:use-leaflet="true"
 			:lat="mapLat"
 			:long="mapLong"
@@ -42,18 +42,20 @@
 				:photo-path="$appConfig.photoPath"
 			/>
 		</div>
-		<div class="tw-flex tw-flex-col tw--mt-3.5">
-			<h3>
-				Step closer to {{ borrowerName }} story
-			</h3>
-			<p class="tw-font-medium tw-text-base tw-pt-0.5 tw-grow">
-				See how your loan improves {{ pronoun }}.
-			</p>
+		<div class="tw-flex tw-flex-col tw--mt-3.5 tw-justify-between tw-grow">
+			<div>
+				<h3>
+					Step closer to {{ borrowerName }} story
+				</h3>
+				<p class="tw-font-medium tw-text-base tw-pt-0.5">
+					See how your loan improves {{ pronoun }}.
+				</p>
+			</div>
 			<KvButton
 				variant="secondary"
 				v-kv-track-event="['portfolio', 'click', 'next-step-impact-education']"
 				class="tw-w-full tw-mt-1"
-				@click="handleEmailOptIn"
+				@click="openModal"
 			>
 				View impact insights
 			</KvButton>
@@ -73,57 +75,57 @@ import kvTokensPrimitives from '@kiva/kv-tokens';
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const props = defineProps({
-	loans: {
-		type: Array,
-		default: () => [],
+	loan: {
+		type: Object,
+		default: () => ({}),
 	},
 });
 
-const mostRecentLoan = computed(() => {
-	return props.loans?.[0] || null;
-});
+const defaultBaseColor = kvTokensPrimitives.colors?.brand[200] || null;
 
 const mapLat = computed(() => {
-	return mostRecentLoan.value?.geocode?.country?.latitude || 0;
+	return props.loan?.geocode?.latitude || 0;
 });
 
 const mapLong = computed(() => {
-	return mostRecentLoan.value?.geocode?.country?.longitude || 0;
+	return props.loan?.geocode?.longitude || 0;
 });
 
 const pronoun = computed(() => {
-	if (mostRecentLoan.value?.borrowerCount > 1 || mostRecentLoan.value?.themes.includes('Social Enterprise')) {
+	if (props.loan?.borrowerCount > 1 || props.loan?.themes?.includes('Social Enterprise')) {
 		return 'their lives';
 	}
-	if (mostRecentLoan.value?.gender === 'male') {
+	if (props.loan?.gender === 'male') {
 		return 'him live';
 	}
 	return 'her live';
 });
 
 const borrowerName = computed(() => {
-	return formatPossessiveName(mostRecentLoan.value?.name) || 'this borrower';
+	return formatPossessiveName(props.loan?.name) || 'this borrower';
 });
 
 const name = computed(() => {
-	return mostRecentLoan.value?.name || '';
+	return props.loan?.name || '';
 });
 
 const hash = computed(() => {
-	return mostRecentLoan.value?.image?.hash || '';
+	return props.loan?.image?.hash || '';
 });
 
 const countriesData = computed(() => {
 	return [{
-		isoCode: mostRecentLoan.value.geocode?.country?.isoCode || '',
-		label: mostRecentLoan.value.geocode?.country?.name || '',
+		isoCode: props.loan?.geocode?.country?.isoCode || '',
+		label: props.loan?.geocode?.country?.name || '',
 		value: 100,
-		lat: mostRecentLoan.value.geocode?.country?.latitude || 0,
-		long: mostRecentLoan.value.geocode?.country?.longitude || 0,
+		lat: mapLat.value,
+		long: mapLong.value,
 	}];
 });
 
-const defaultBaseColor = kvTokensPrimitives.colors?.brand[200] || null;
+const openModal = () => {
+	// TODO: Implement modal opening logic
+};
 
 onMounted(() => {
 	$kvTrackEvent('portfolio', 'view', 'next-step-impact-education');
@@ -132,7 +134,7 @@ onMounted(() => {
 
 <style lang="postcss" scoped>
 :deep(#kv-map-holder-0), :deep(#kv-map-holder-0 div), :deep(.maplibregl-canvas) {
-	height: 170px !important;
+	height: 165px !important;
 }
 
 .bp-image, :deep(.bp-image img) {

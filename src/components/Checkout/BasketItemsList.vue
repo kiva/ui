@@ -12,8 +12,7 @@
 					:contributes-in-achievement="isLoanContributingInAchievements(loan.id)"
 					:is-first-loan="isFirstLoan(index)"
 					:is-my-kiva-enabled="isMyKivaEnabled"
-					:user-goal-achieved="isUserGoalAchieved"
-					:user-goal="userGoal"
+					:loan-contributes-to-goal="loansContributingToGoal[index]"
 					:loading-goal-data="loadingGoalData"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
@@ -58,6 +57,7 @@
 <script>
 import { inject } from 'vue';
 import useGoalData from '#src/composables/useGoalData';
+import useBadgeData, { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import BasketItem from '#src/components/Checkout/BasketItem';
 import DonationItem from '#src/components/Checkout/DonationItem';
 import KivaCardItem from '#src/components/Checkout/KivaCardItem';
@@ -142,6 +142,10 @@ export default {
 		isNextStepsExpEnabled: {
 			type: Boolean,
 			default: false
+		},
+		goalsV2Enabled: {
+			type: Boolean,
+			default: false
 		}
 	},
 	components: {
@@ -181,11 +185,63 @@ export default {
 			return this.isLoggedIn || (!this.isLoggedIn && !this.hasEverLoggedIn);
 		},
 		async loadAndCalculateGoalProgress() {
-			await this.loadGoalData({ loans: this.loans });
+			await this.loadGoalData({ loans: this.loans, yearlyProgress: this.goalsV2Enabled });
 			// Calculate progress including basket loans (don't increment counter, just check current state)
+			const year = this.goalsV2Enabled ? new Date().getFullYear() : null;
 			this.basketGoalProgress = await this.getPostCheckoutProgressByLoans({
 				loans: this.loans.map(loan => ({ id: loan.id })),
 				addBasketLoans: true,
+				year,
+			});
+		}
+	},
+	computed: {
+		/**
+		 * Returns an array of booleans indicating which loans contribute to completing the user's goal
+		 * Only the first X loans needed to reach the goal target will be true
+		 * @returns {Boolean[]} - Array of booleans, one per loan in basket
+		 */
+		loansContributingToGoal() {
+			const goal = this.userGoal;
+			if (!goal || goal.status !== 'in-progress') {
+				return this.loans.map(() => false);
+			}
+
+			const target = goal.target || 0;
+			const currentProgress = this.goalProgress || 0;
+			const loansNeededForGoal = Math.max(0, target - currentProgress);
+
+			// If no loans needed (goal already complete), return all false
+			if (loansNeededForGoal <= 0) {
+				return this.loans.map(() => false);
+			}
+
+			// First check: basket must complete the goal
+			if (this.basketGoalProgress < target) {
+				return this.loans.map(() => false);
+			}
+
+			const goalCategory = goal.category || '';
+
+			// For "support-all" goal, any loan counts - just check position
+			if (goalCategory === ID_SUPPORT_ALL) {
+				return this.loans.map((_, index) => index < loansNeededForGoal);
+			}
+
+			// For category-specific goals, track which loans contribute
+			let qualifyingCount = 0;
+			return this.loans.map(loan => {
+				const loanJourneys = this.getJourneysByLoan(loan?.loan || {});
+				const isLoanInGoalCategory = loanJourneys.some(journey => journey === goalCategory);
+
+				if (!isLoanInGoalCategory) return false;
+
+				// This loan contributes if we still need more loans
+				const contributes = qualifyingCount < loansNeededForGoal;
+				if (contributes) {
+					qualifyingCount += 1;
+				}
+				return contributes;
 			});
 		}
 	},
@@ -195,22 +251,21 @@ export default {
 		const {
 			loadGoalData,
 			userGoal,
+			goalProgress,
 			getPostCheckoutProgressByLoans,
 			isProgressCompletingGoal,
 		} = useGoalData({ apollo });
 
+		const { getJourneysByLoan } = useBadgeData({ apollo });
+
 		return {
 			loadGoalData,
 			userGoal,
+			goalProgress,
 			getPostCheckoutProgressByLoans,
 			isProgressCompletingGoal,
+			getJourneysByLoan,
 		};
-	},
-	computed: {
-		// Check if supporting loans in basket would complete the goal
-		isUserGoalAchieved() {
-			return this.isProgressCompletingGoal(this.basketGoalProgress);
-		},
 	},
 	async mounted() {
 		if (this.isNextStepsExpEnabled) {

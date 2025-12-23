@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
+import useGoalData, { GOAL_STATUS, GOALS_V2_START_YEAR, isGoalsV2Enabled } from '#src/composables/useGoalData';
 import {
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
@@ -17,6 +17,67 @@ vi.mock('#src/util/userPreferenceUtils', () => ({
 	createUserPreferences: vi.fn(() => Promise.resolve({ id: 'new-pref-id' })),
 	updateUserPreferences: vi.fn(() => Promise.resolve()),
 }));
+
+describe('GOALS_V2_START_YEAR', () => {
+	it('should be 2026', () => {
+		expect(GOALS_V2_START_YEAR).toBe(2026);
+	});
+});
+
+describe('isGoalsV2Enabled', () => {
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
+	it('should return true when flag is true regardless of year', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2025-06-15T00:00:00Z'));
+
+		expect(isGoalsV2Enabled(true)).toBe(true);
+	});
+
+	it('should return false when flag is false and year is before 2026', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2025-06-15T00:00:00Z'));
+
+		expect(isGoalsV2Enabled(false)).toBe(false);
+	});
+
+	it('should return true when flag is false but year is 2026', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-06-15T00:00:00Z'));
+
+		expect(isGoalsV2Enabled(false)).toBe(true);
+	});
+
+	it('should return true when flag is false but year is after 2026', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2027-06-15T00:00:00Z'));
+
+		expect(isGoalsV2Enabled(false)).toBe(true);
+	});
+
+	it('should return true when flag is undefined but year is 2026 or later', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-06-15T00:00:00Z'));
+
+		expect(isGoalsV2Enabled(undefined)).toBe(true);
+	});
+
+	it('should return true when flag is null but year is 2026 or later', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-06-15T00:00:00Z'));
+
+		expect(isGoalsV2Enabled(null)).toBe(true);
+	});
+
+	it('should return falsy when flag is undefined and year is before 2026', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2025-06-15T00:00:00Z'));
+
+		expect(isGoalsV2Enabled(undefined)).toBeFalsy();
+	});
+});
 
 describe('useGoalData', () => {
 	let mockApollo;
@@ -204,7 +265,7 @@ describe('useGoalData', () => {
 
 			await composable.loadGoalData();
 
-			expect(logFormatter).toHaveBeenCalledWith(error, 'Failed to load progress');
+			expect(logFormatter).toHaveBeenCalledWith(error, 'Failed to fetch categories progress by year');
 		});
 	});
 
@@ -560,9 +621,7 @@ describe('useGoalData', () => {
 		});
 
 		it('should update existing goal', async () => {
-			const {
-				updateUserPreferences,
-			} = await import('#src/util/userPreferenceUtils');
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
 
 			const mockPrefs = {
 				goals: [{
@@ -572,17 +631,31 @@ describe('useGoalData', () => {
 				}],
 			};
 
-			mockApollo.query = vi.fn().mockResolvedValue({
-				data: {
-					my: {
-						userPreferences: {
-							id: 'pref-123',
-							preferences: JSON.stringify(mockPrefs),
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
 						},
-						loans: { totalCount: 0 },
 					},
-				},
-			});
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{
+									id: ID_BASIC_NEEDS,
+									totalProgressToAchievement: 0,
+									progressForYear: 0,
+								},
+							],
+						},
+					},
+				});
 
 			await composable.loadGoalData();
 
@@ -608,17 +681,30 @@ describe('useGoalData', () => {
 				}],
 			};
 
-			mockApollo.query = vi.fn().mockResolvedValue({
-				data: {
-					my: {
-						userPreferences: {
-							id: 'pref-123',
-							preferences: JSON.stringify(mockPrefs),
+			mockApollo.query = vi.fn()
+				.mockResolvedValue({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
 						},
-						loans: { totalCount: 0 },
 					},
-				},
-			});
+				}).mockResolvedValue({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{
+									id: ID_WOMENS_EQUALITY,
+									totalProgressToAchievement: 3,
+									progressForYear: 3,
+								},
+							],
+						},
+					},
+				});
 
 			await composable.loadGoalData();
 
@@ -929,12 +1015,12 @@ describe('useGoalData', () => {
 				})
 				.mockResolvedValueOnce({
 					data: {
-						postCheckoutAchievements: {
-							yearlyProgress: [],
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
 						},
 					},
 				})
-				.mockResolvedValueOnce({
+				.mockResolvedValue({
 					data: {
 						postCheckoutAchievements: {
 							yearlyProgress: [
@@ -1373,7 +1459,7 @@ describe('useGoalData', () => {
 				hideGoalCard: true,
 			};
 
-			mockApollo.query = vi.fn().mockResolvedValue({
+			mockApollo.query = vi.fn().mockResolvedValueOnce({
 				data: {
 					my: {
 						userPreferences: {
@@ -1381,6 +1467,12 @@ describe('useGoalData', () => {
 							preferences: JSON.stringify(mockPrefs),
 						},
 						loans: { totalCount: 0 },
+					},
+				},
+			}).mockResolvedValueOnce({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: [],
 					},
 				},
 			});
@@ -1402,12 +1494,287 @@ describe('useGoalData', () => {
 						loans: { totalCount: 0 },
 					},
 				},
+			}).mockResolvedValueOnce({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: [],
+					},
+				},
 			});
 
 			await composable.loadGoalData();
 			const hideCard = await composable.hideGoalCard();
 
 			expect(hideCard).toBe(false);
+		});
+	});
+
+	describe('goalProgressPercentage computed', () => {
+		it('should return 0 when userGoal is null', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: null,
+						loans: { totalCount: 0 },
+					},
+					userAchievementProgress: {
+						tieredLendingAchievements: [],
+					},
+				},
+			});
+
+			await composable.loadGoalData();
+			expect(composable.goalProgressPercentage.value).toBe(0);
+		});
+
+		it('should return 0 when target is 0', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify({
+								goals: [{
+									goalName: 'Goal 2026',
+									category: ID_WOMENS_EQUALITY,
+									target: 0,
+									status: GOAL_STATUS.IN_PROGRESS,
+									loanTotalAtStart: 0,
+								}],
+							}),
+						},
+						loans: { totalCount: 5 },
+					},
+					userAchievementProgress: {
+						tieredLendingAchievements: [{
+							id: ID_WOMENS_EQUALITY,
+							totalProgressToAchievement: 5,
+						}],
+					},
+				},
+			});
+
+			await composable.loadGoalData();
+			expect(composable.goalProgressPercentage.value).toBe(0);
+		});
+
+		it('should return 0 when target is NaN', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify({
+								goals: [{
+									goalName: 'Goal 2026',
+									category: ID_WOMENS_EQUALITY,
+									target: 'invalid',
+									status: GOAL_STATUS.IN_PROGRESS,
+									loanTotalAtStart: 0,
+								}],
+							}),
+						},
+						loans: { totalCount: 5 },
+					},
+					userAchievementProgress: {
+						tieredLendingAchievements: [{
+							id: ID_WOMENS_EQUALITY,
+							totalProgressToAchievement: 5,
+						}],
+					},
+				},
+			});
+
+			await composable.loadGoalData();
+			expect(composable.goalProgressPercentage.value).toBe(0);
+		});
+
+		it('should return 0 when goalProgress is 0', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify({
+								goals: [{
+									goalName: 'Goal 2026',
+									category: ID_WOMENS_EQUALITY,
+									target: 10,
+									status: GOAL_STATUS.IN_PROGRESS,
+									loanTotalAtStart: 0,
+								}],
+							}),
+						},
+						loans: { totalCount: 0 },
+					},
+					userAchievementProgress: {
+						tieredLendingAchievements: [{
+							id: ID_WOMENS_EQUALITY,
+							totalProgressToAchievement: 0,
+						}],
+					},
+				},
+			});
+
+			await composable.loadGoalData();
+			expect(composable.goalProgressPercentage.value).toBe(0);
+		});
+
+		it('should calculate correct percentage for partial progress', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify({
+								goals: [{
+									goalName: 'Goal 2026',
+									category: ID_WOMENS_EQUALITY,
+									target: 10,
+									status: GOAL_STATUS.IN_PROGRESS,
+									loanTotalAtStart: 0,
+								}],
+							}),
+						},
+						loans: { totalCount: 5 },
+					},
+					userAchievementProgress: {
+						tieredLendingAchievements: [{
+							id: ID_WOMENS_EQUALITY,
+							totalProgressToAchievement: 5,
+						}],
+					},
+				},
+			});
+
+			await composable.loadGoalData();
+			// 5/10 * 100 = 50%
+			expect(composable.goalProgressPercentage.value).toBe(50);
+		});
+
+		it('should round percentage to nearest integer', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify({
+								goals: [{
+									goalName: 'Goal 2026',
+									category: ID_WOMENS_EQUALITY,
+									target: 3,
+									status: GOAL_STATUS.IN_PROGRESS,
+									loanTotalAtStart: 0,
+								}],
+							}),
+						},
+						loans: { totalCount: 2 },
+					},
+					userAchievementProgress: {
+						tieredLendingAchievements: [{
+							id: ID_WOMENS_EQUALITY,
+							totalProgressToAchievement: 2,
+						}],
+					},
+				},
+			});
+
+			await composable.loadGoalData();
+			// 2/3 * 100 = 66.666... rounded to 67%
+			expect(composable.goalProgressPercentage.value).toBe(67);
+		});
+
+		it('should cap percentage at COMPLETED_GOAL_THRESHOLD (100) when exceeding target', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify({
+								goals: [{
+									goalName: 'Goal 2026',
+									category: ID_WOMENS_EQUALITY,
+									target: 10,
+									status: GOAL_STATUS.IN_PROGRESS,
+									loanTotalAtStart: 0,
+								}],
+							}),
+						},
+						loans: { totalCount: 15 },
+					},
+					userAchievementProgress: {
+						tieredLendingAchievements: [{
+							id: ID_WOMENS_EQUALITY,
+							totalProgressToAchievement: 15,
+						}],
+					},
+				},
+			});
+
+			await composable.loadGoalData();
+			// 15/10 * 100 = 150%, but capped at 100
+			expect(composable.goalProgressPercentage.value).toBe(100);
+		});
+
+		it('should return 100 when progress exactly equals target', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify({
+								goals: [{
+									goalName: 'Goal 2026',
+									category: ID_WOMENS_EQUALITY,
+									target: 10,
+									status: GOAL_STATUS.IN_PROGRESS,
+									loanTotalAtStart: 0,
+								}],
+							}),
+						},
+						loans: { totalCount: 10 },
+					},
+					userAchievementProgress: {
+						tieredLendingAchievements: [{
+							id: ID_WOMENS_EQUALITY,
+							totalProgressToAchievement: 10,
+						}],
+					},
+				},
+			});
+
+			await composable.loadGoalData();
+			expect(composable.goalProgressPercentage.value).toBe(100);
+		});
+
+		it('should handle ID_SUPPORT_ALL category correctly', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify({
+								goals: [{
+									goalName: 'Goal 2026',
+									category: ID_SUPPORT_ALL,
+									target: 20,
+									status: GOAL_STATUS.IN_PROGRESS,
+									loanTotalAtStart: 10,
+								}],
+							}),
+						},
+						loans: { totalCount: 15 },
+					},
+					userAchievementProgress: {
+						tieredLendingAchievements: [],
+					},
+				},
+			});
+
+			await composable.loadGoalData({ yearlyProgress: false });
+			// totalLoanCount (15) - loanTotalAtStart (10) = 5 progress
+			// 5/20 * 100 = 25%
+			expect(composable.goalProgressPercentage.value).toBe(25);
 		});
 	});
 });

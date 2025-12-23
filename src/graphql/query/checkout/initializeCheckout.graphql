@@ -39,6 +39,10 @@ query initializeCheckout($basketId: String) {
 			key
 			value
 		}
+		thankyou_page_goals_enable: uiConfigSetting(key: "thankyou_page_goals_enable") {
+			key
+			value
+		}
 	}
 	shop (basketId: $basketId) {
 		id

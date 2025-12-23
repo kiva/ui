@@ -2,6 +2,7 @@
 	<KvAtbModalContainer
 		:added-loan="addedLoan"
 		:is-next-steps-exp-enabled="isNextStepsExpEnabled"
+		:goals-v2-enabled="goalsV2Enabled"
 	/>
 	<MyKivaNavigation
 		:visible="showNavigation"
@@ -44,11 +45,12 @@
 				:hero-tiered-achievements="heroTieredAchievements"
 				:total-loans="totalLoans"
 				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
-				:goals-entrypoint-enable="goalsEntrypointEnable"
+				:goals-v2-enabled="goalsV2Enabled"
 				:post-lending-next-steps-enable="postLendingNextStepsEnable"
+				:latest-loan="latestLoan"
 			/>
 		</section>
-		<section v-if="goalsEntrypointEnable" class="tw-mt-4" id="mykiva-achievements">
+		<section v-if="goalsV2Enabled" class="tw-mt-4" id="mykiva-achievements">
 			<div :class="{'tw-flex tw-items-center tw-gap-1 tw-z-tooltip tw-pb-6': showNewBadgeSection}">
 				<h3 id="my-achievements" :class="{'tw-min-h-4': showNewBadgeSection}">
 					Impact progress
@@ -143,7 +145,7 @@
 				@mouse-enter-loan-card="loadBPData"
 			/>
 		</section>
-		<section v-if="!goalsEntrypointEnable" class="tw-mb-4" id="mykiva-achievements">
+		<section v-if="!goalsV2Enabled" class="tw-mb-4" id="mykiva-achievements">
 			<h3 id="my-achievements">
 				My achievements
 			</h3>
@@ -355,7 +357,7 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		goalsEntrypointEnable: {
+		goalsV2Enabled: {
 			type: Boolean,
 			default: false
 		},
@@ -367,6 +369,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		latestLoan: {
+			type: Object,
+			default: null
+		}
 	},
 	setup() {
 		const apollo = inject('apollo');
@@ -840,5 +846,14 @@ export default {
 	@media (width >= 1280px) {
 		width: 600px !important;
     }
+}
+
+/* Ensure scroll position accounts for sticky header */
+#mykiva-achievements {
+	scroll-margin-top: 85px;
+
+	@media (width >= 1024px) {
+		scroll-margin-top: 116px;
+	}
 }
 </style>

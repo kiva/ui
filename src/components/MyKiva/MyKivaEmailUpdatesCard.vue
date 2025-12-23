@@ -13,7 +13,7 @@
 				Email updates
 			</span>
 		</span>
-		<div class="tw-relative tw-w-full tw-overflow-hidden tw-rounded image-container">
+		<div class="tw-relative tw-w-full tw-overflow-hidden image-container">
 			<KvBorrowerImage
 				class="tw-w-full tw-h-full tw-object-cover"
 				:alt="name"
@@ -59,9 +59,9 @@ const props = defineProps({
 		type: Array,
 		default: () => [],
 	},
-	loanId: {
-		type: String,
-		default: ''
+	latestLoan: {
+		type: Object,
+		default: null,
 	}
 });
 
@@ -70,7 +70,7 @@ const emit = defineEmits(['accept-email-updates']);
 // Get the most recent loan (first in sorted array)
 const mostRecentLoan = computed(() => {
 	const defaultLoan = props.loans?.[0] || null;
-	return props.loanId !== '' ? props.loans.find(loan => loan.id === props.loanId) || defaultLoan : defaultLoan;
+	return props.latestLoan !== null ? props.latestLoan : defaultLoan;
 });
 
 const borrowerName = computed(() => {
@@ -107,7 +107,15 @@ const handleEmailOptIn = async () => {
 		tw-overflow-hidden tw-bg-white tw-shrink-0;
 }
 
+.image-container :deep(picture) {
+	@apply !tw-pb-0 tw-rounded;
+
+	height: 183px;
+}
+
 .image-container :deep(picture img) {
 	@apply tw-object-cover tw-object-center;
+
+	height: 183px;
 }
 </style>

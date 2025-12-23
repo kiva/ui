@@ -12,7 +12,7 @@
 				:guest-username="guestUsername"
 				:achievements-completed="achievementsCompleted"
 				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
-				:thanks-page-goals-entrypoint-enable="thanksPageGoalsEntrypointEnable"
+				:goals-v2-enabled="goalsV2Enabled"
 				:total-loans="totalLoanCount"
 				:tiered-achievements="achievements"
 			/>
@@ -102,6 +102,7 @@ import userAchievementProgressQuery from '#src/graphql/query/userAchievementProg
 import useBadgeData from '#src/composables/useBadgeData';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
+import { isGoalsV2Enabled, LAST_YEAR_KEY } from '#src/composables/useGoalData';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
@@ -180,7 +181,8 @@ export default {
 			return Promise.all([
 				client.query({ query: thanksPageQuery }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: NEXT_STEPS_EXP_KEY } }),
-				client.query({ query: userAchievementProgressQuery }),
+				// Query returns both progressForYear (for specified year) and totalProgressToAchievement (all-time)
+				client.query({ query: userAchievementProgressQuery, variables: { year: LAST_YEAR_KEY } }),
 			]).then(() => {
 				const transactionId = route?.query?.kiva_transaction_id
 					? numeral(route?.query.kiva_transaction_id).value()
@@ -233,6 +235,9 @@ export default {
 		}
 	},
 	computed: {
+		goalsV2Enabled() {
+			return isGoalsV2Enabled(this.thanksPageGoalsEntrypointEnable);
+		},
 		showDafThanks() {
 			return !!this.$route?.query?.show_daf_thanks;
 		},
@@ -296,8 +301,11 @@ export default {
 				query: thanksPageQuery,
 			});
 
+			// Query with LAST_YEAR_KEY returns progressForYear for last year (goal suggestions)
+			// and tiers.completedDate for all-time achievement completion check
 			userAchievements = this.apollo.readQuery({
 				query: userAchievementProgressQuery,
+				variables: { year: LAST_YEAR_KEY },
 			});
 
 			this.achievements = userAchievements?.userAchievementProgress?.tieredLendingAchievements ?? [];

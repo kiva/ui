@@ -1,6 +1,7 @@
 <template>
 	<KvCarousel
 		class="tw-w-full !tw-pt-0"
+		:key="carouselKey"
 		:controls-top-right="controlsTopRight"
 		:multiple-slides-visible="true"
 		:slide-max-width="SINGLE_SLIDE_WIDTH"
@@ -55,6 +56,7 @@ const SINGLE_SLIDE_WIDTH = '336px';
 const emit = defineEmits(['badge-clicked']);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
+const carouselKey = ref(0);
 
 const props = defineProps({
 	badgeData: {
@@ -87,6 +89,8 @@ const {
 	userGoalAchieved,
 } = useGoalData({ apollo });
 
+const userHasGoal = computed(() => !!userGoal.value && Object.keys(userGoal.value).length > 0);
+
 const formattedBadgeData = badges => {
 	return badges.map(badge => {
 		const activeTierData = getActiveTierData(badge);
@@ -100,6 +104,7 @@ const formattedBadgeData = badges => {
 				category: badge.id || '',
 				nextAchievementAt,
 				totalLoans: badge.achievementData.totalProgressToAchievement || 0,
+				tierTarget: activeTierData?.target || 0,
 			},
 			goalProgress: badge.level || 0,
 			isAnnualGoal: !badge.achievementData?.tiers?.length,
@@ -108,7 +113,7 @@ const formattedBadgeData = badges => {
 };
 
 const visibleBadges = computed(() => {
-	let showedSlides = Array(6);
+	let showedSlides = Array(5);
 
 	const badgesSlides = props.badgeData
 		.filter(b => defaultBadges.includes(b.id))
@@ -118,7 +123,18 @@ const visibleBadges = computed(() => {
 		showedSlides = formattedBadgeData(badgesSlides);
 	}
 
-	if (Object.keys(userGoal.value || {})?.length) {
+	showedSlides.sort((a, b) => {
+		const aNextAchievementAt = a?.goal?.nextAchievementAt ?? Infinity;
+		const bNextAchievementAt = b?.goal?.nextAchievementAt ?? Infinity;
+
+		if (aNextAchievementAt === bNextAchievementAt) {
+			return (b?.level ?? 0) - (a?.level ?? 0);
+		}
+
+		return aNextAchievementAt - bNextAchievementAt;
+	});
+
+	if (userHasGoal.value) {
 		const formattedUserGoal = {
 			id: 'annual-goal',
 			goal: {
@@ -137,8 +153,6 @@ const visibleBadges = computed(() => {
 		} else {
 			showedSlides.unshift(formattedUserGoal);
 		}
-
-		$kvTrackEvent('portfolio', 'show', 'annual-goal-progress-row');
 	}
 
 	return showedSlides;
@@ -182,22 +196,28 @@ watch(selectedJourney, () => {
 	}
 });
 
+// Track annual goal progress row only once when userHasGoal becomes true
+let hasTrackedAnnualGoal = false;
+watch(userHasGoal, newValue => {
+	if (newValue && !hasTrackedAnnualGoal) {
+		$kvTrackEvent('portfolio', 'show', 'annual-goal-progress-row');
+		hasTrackedAnnualGoal = true;
+	}
+});
+
 // Watch visibleBadges to update isLoading
 watch(visibleBadges, (newSlides, oldSlides) => {
 	if (oldSlides && JSON.stringify(oldSlides) !== JSON.stringify(newSlides)) {
 		isLoading.value = false;
 	}
+	if (oldSlides?.length !== newSlides?.length) {
+		carouselKey.value += 1;
+	}
 }, { immediate: true, deep: true });
 
-watch(userGoal, async (newVal, oldVal) => {
-	// Only track when a new goal is created (oldVal had no category, newVal has one)
-	if (newVal?.target && newVal?.category && !oldVal?.category) {
-		$kvTrackEvent('portfolio', 'show', 'goal-set', newVal.category, newVal.target);
-	}
-});
-
 onMounted(async () => {
-	await loadGoalData();
+	// This card is only displayed for annual goals
+	await loadGoalData({ yearlyProgress: true });
 });
 </script>
 
