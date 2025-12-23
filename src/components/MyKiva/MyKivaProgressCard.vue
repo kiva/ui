@@ -84,9 +84,21 @@ const props = defineProps({
 });
 
 const goalProgressPercentage = computed(() => {
-	if (!props.goal?.target || props.goalProgress <= 0) return 0;
+	// Annual goals: progress based on overall target
+	if (props.isAnnualGoal) {
+		if (!props.goal?.target || props.goalProgress <= 0) return 0;
+		return Math.min(
+			Math.round((props.goalProgress / props.goal.target) * 100),
+			COMPLETED_GOAL_THRESHOLD
+		);
+	}
+
+	// Non-annual badge goals: ring percent based on current tier target
+	const tierTarget = props.goal?.tierTarget || 0;
+	const totalLoans = props.goal?.totalLoans ?? 0;
+	if (!tierTarget || totalLoans <= 0) return 0;
 	return Math.min(
-		Math.round((props.goalProgress / props.goal.target) * 100),
+		Math.round((totalLoans / tierTarget) * 100),
 		COMPLETED_GOAL_THRESHOLD
 	);
 });
@@ -100,7 +112,7 @@ const goalCompleted = computed(() => {
 });
 
 const goalRemainingLoans = computed(() => {
-	const inProgress = props.goal?.totalProgressToAchievement ?? props.goalProgress;
+	const inProgress = props.goal?.totalLoans ?? props.goalProgress;
 	return Math.max(goalTarget.value - inProgress, 0);
 });
 
@@ -141,7 +153,7 @@ const progress = computed(() => {
 	}
 
 	if (!goalCompleted.value) {
-		const currentProgress = props.goal?.totalProgressToAchievement ?? props.goalProgress;
+		const currentProgress = props.goal?.totalLoans ?? props.goalProgress;
 		return `${currentProgress} / ${goalTarget.value}`;
 	}
 	// eslint-disable-next-line max-len
