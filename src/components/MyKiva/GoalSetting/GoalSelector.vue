@@ -295,12 +295,6 @@ onMounted(async () => {
 			},
 		];
 	}
-
-	$kvTrackEvent(
-		props.trackingCategory,
-		'view',
-		'set-annual-goal'
-	);
 	emit('set-goal-target', selectedTarget.value);
 });
 </script>

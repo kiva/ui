@@ -156,12 +156,14 @@ const setGoal = async preferences => {
 const handleCategorySelected = categoryId => {
 	const categoryIdx = categoryId - 1;
 	selectedCategory.value = categories[categoryIdx];
-	$kvTrackEvent(
-		'event-tracking',
-		'click',
-		'choose-goal-category',
-		selectedCategory.value?.eventProp
-	);
+	if (showCategories.value) {
+		$kvTrackEvent(
+			'event-tracking',
+			'click',
+			'choose-goal-category',
+			selectedCategory.value?.eventProp
+		);
+	}
 };
 
 const editGoalNumber = () => {

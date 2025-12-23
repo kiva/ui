@@ -89,7 +89,7 @@ import {
 	KvButton, KvLoadingPlaceholder
 } from '@kiva/kv-components';
 import useBadgeData from '#src/composables/useBadgeData';
-import useGoalData from '#src/composables/useGoalData';
+import useGoalData, { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import { useRouter } from 'vue-router';
 import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
 import confetti from 'canvas-confetti';
@@ -123,10 +123,9 @@ const { getLoanFindingUrl, ID_WOMENS_EQUALITY } = useBadgeData();
 const {
 	getCategoryLoanCountByYear,
 	getGoalDisplayName,
+	goalProgressPercentage,
 	setHideGoalCardPreference,
 } = useGoalData();
-const COMPLETED_GOAL_THRESHOLD = 100;
-const HALF_GOAL_THRESHOLD = 50;
 
 const womenLoansThisYear = ref(0);
 
@@ -154,14 +153,6 @@ const title = computed(() => {
 		return `You helped <span class="tw-text-action"> ${props.prevYearLoans} women</span><br>shape their futures!`;
 	}
 	return 'Lenders like you help <span class="tw-text-action"> 3 women</span> a year';
-});
-
-const goalProgressPercentage = computed(() => {
-	if (!props.userGoal?.target || props.goalProgress <= 0) return 0;
-	return Math.min(
-		Math.round((props.goalProgress / props.userGoal.target) * 100),
-		COMPLETED_GOAL_THRESHOLD
-	);
 });
 
 const progressDescription = computed(() => {
@@ -227,7 +218,6 @@ const handleContinueClick = () => {
 
 		return;
 	}
-	$kvTrackEvent('portfolio', 'click', 'continue-towards-goal');
 	router.push(ctaHref.value);
 };
 
@@ -235,15 +225,25 @@ const progressCircleDesc = computed(() => `loan${props.goalProgress > 1 ? 's' : 
 
 watch(() => props.userGoal, (newVal, oldVal) => {
 	// Only track when a new goal is created (oldVal had no category, newVal has one)
-	if (newVal?.target && newVal?.category && !oldVal?.category) {
+	if (newVal?.target && newVal?.category && !oldVal?.category
+		&& goalProgressPercentage.value !== COMPLETED_GOAL_THRESHOLD) {
 		$kvTrackEvent('portfolio', 'show', 'goal-set', newVal.category, newVal.target);
 	}
 });
 
 watch(() => props.loading, newVal => {
-	if (!newVal && goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
-		showConfetti();
-		setHideGoalCardPreference();
+	if (!newVal) {
+		if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
+			showConfetti();
+			setHideGoalCardPreference();
+		}
+		if (!userHasGoal.value) {
+			$kvTrackEvent(
+				'portfolio',
+				'view',
+				'set-annual-goal'
+			);
+		}
 	}
 });
 
