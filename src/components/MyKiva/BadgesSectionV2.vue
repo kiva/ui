@@ -47,6 +47,7 @@ import useBadgeData from '#src/composables/useBadgeData';
 import { KvCarousel, KvLoadingPlaceholder } from '@kiva/kv-components';
 import MyKivaProgressCard from '#src/components/MyKiva/MyKivaProgressCard';
 import { useRouter } from 'vue-router';
+import { COMPLETED_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 
 const CARD_MIN_HEIGHT = '111px';
 const SINGLE_SLIDE_WIDTH = '336px';
@@ -80,9 +81,10 @@ const currentIndex = ref(0);
 const isLoading = ref(true);
 
 const {
-	goalProgress,
-	userGoal,
 	getCtaHref,
+	goalProgress,
+	goalProgressPercentage,
+	userGoal,
 	userGoalAchieved,
 } = goalData;
 
@@ -196,7 +198,7 @@ watch(selectedJourney, () => {
 // Track annual goal progress row only once when userHasGoal becomes true
 let hasTrackedAnnualGoal = false;
 watch(userHasGoal, newValue => {
-	if (newValue && !hasTrackedAnnualGoal) {
+	if (newValue && !hasTrackedAnnualGoal && COMPLETED_GOAL_THRESHOLD !== goalProgressPercentage.value) {
 		$kvTrackEvent('portfolio', 'show', 'annual-goal-progress-row');
 		hasTrackedAnnualGoal = true;
 	}
