@@ -263,22 +263,23 @@ onMounted(async () => {
 	await loadWomenLoansThisYear();
 	const ytdLoans = womenLoansThisYear.value;
 	const lastYearLoans = womenLoansLastYear.value;
-	const baseAmount = Math.max(ytdLoans, lastYearLoans);
-	if (baseAmount > SAME_AS_LAST_YEAR_LIMIT) {
-		let copy = 'Same as last year';
-		let suggestion1 = lastYearLoans;
-		let suggestion2 = Math.ceil(lastYearLoans * 1.25);
-		let suggestion3 = lastYearLoans * 2;
-		if (ytdLoans >= lastYearLoans) {
-			copy = 'One more';
-			suggestion1 = ytdLoans + 1;
-			suggestion2 = Math.ceil(ytdLoans * 1.5);
-			suggestion3 = ytdLoans * 2;
-		}
+
+	// Determine base amount and labels based on whether YTD exceeds last year
+	// Goal suggestions must always be higher than YTD to prevent auto-completion
+	const useYtdAsBase = ytdLoans >= lastYearLoans;
+	const base = useYtdAsBase ? ytdLoans : lastYearLoans;
+
+	// Only show personalized options if user has lending history
+	if (base > SAME_AS_LAST_YEAR_LIMIT) {
+		const suggestion1 = useYtdAsBase ? base + 1 : base;
+		// Ensure each suggestion is at least 1 more than the previous
+		const suggestion2 = Math.max(Math.ceil(base * 1.5), suggestion1 + 1);
+		const suggestion3 = Math.max(base * 2, suggestion2 + 1);
+
 		goalOptions.value = [
 			{
 				loansNumber: suggestion1,
-				optionText: copy,
+				optionText: useYtdAsBase ? 'One more' : 'Same as last year',
 				selected: false
 			},
 			{
@@ -294,6 +295,7 @@ onMounted(async () => {
 			},
 		];
 	}
+
 	$kvTrackEvent(
 		props.trackingCategory,
 		'view',

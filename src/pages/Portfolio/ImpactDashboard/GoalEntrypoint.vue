@@ -48,7 +48,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { useRouter } from 'vue-router';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
-import useGoalData, { SAME_AS_LAST_YEAR_LIMIT } from '#src/composables/useGoalData';
+import useGoalData, { SAME_AS_LAST_YEAR_LIMIT, LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
@@ -82,7 +82,7 @@ const fetchUserAchievementProgress = async () => {
 	try {
 		const { data } = await apollo.query({
 			query: userAchievementProgressQuery,
-			variables: { loanIds: [] },
+			variables: { year: LAST_YEAR_KEY },
 		});
 		const tieredAchievements = data.userAchievementProgress?.tieredLendingAchievements ?? [];
 		womenLoansLastYear.value = getCategoryLoansLastYear(tieredAchievements);
