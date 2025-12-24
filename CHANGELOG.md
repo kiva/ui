@@ -1,3 +1,10 @@
+## [3.49.1-rc.1](https://github.com/kiva/ui/compare/v3.49.0...v3.49.1-rc.1) (2025-12-24)
+
+### 🐛 Bugfixes
+
+* copy in next steps goal card ([#6548](https://github.com/kiva/ui/issues/6548)) ([41809fe](https://github.com/kiva/ui/commit/41809fec0d29ae62c7a85b654dd4b71eb9407cef))
+* filter out goals from the previous year ([#6547](https://github.com/kiva/ui/issues/6547)) ([6002cd0](https://github.com/kiva/ui/commit/6002cd0d0b5b2220baf9e4210b2a588ba2024f38))
+
 ## [3.49.0](https://github.com/kiva/ui/compare/v3.48.0...v3.49.0) (2025-12-23)
 
 ### 🎉 New Features
