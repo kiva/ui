@@ -106,7 +106,7 @@ export default function useGoalData({ apollo } = {}) {
 			const loanTotalAtStart = goal?.loanTotalAtStart || 0;
 			return Math.max(0, (totalLoanCount.value || 0) - loanTotalAtStart);
 		}
-		const categoryProgress = progress.find(n => n.id === goal?.category);
+		const categoryProgress = progress?.find(n => n.id === goal?.category);
 		if (useYearlyProgress.value) {
 			return categoryProgress?.progressForYear || 0;
 		}
@@ -137,7 +137,17 @@ export default function useGoalData({ apollo } = {}) {
 	function setGoalState(parsedPrefs) {
 		if (!parsedPrefs) return;
 		const goals = parsedPrefs.goals || [];
-		const activeGoals = goals.filter(g => g.status !== GOAL_STATUS.EXPIRED);
+		const currentYear = new Date().getFullYear();
+		const activeGoals = goals.filter(g => {
+			// Filter out expired goals
+			if (g.status === GOAL_STATUS.EXPIRED) return false;
+			// Filter out goals completed in previous years
+			if (g.status === GOAL_STATUS.COMPLETED && g.dateStarted) {
+				const goalYear = new Date(g.dateStarted).getFullYear();
+				if (goalYear < currentYear) return false;
+			}
+			return true;
+		});
 		userGoal.value = { ...activeGoals[0] };
 	}
 
@@ -378,7 +388,7 @@ export default function useGoalData({ apollo } = {}) {
 			if (updates.category === ID_SUPPORT_ALL) {
 				loanTotalAtStart = totalLoanCount.value || 0;
 			} else {
-				const categoryProgress = currentYearProgress.value.find(n => n.id === updates.category);
+				const categoryProgress = currentYearProgress.value?.find(n => n.id === updates.category);
 				loanTotalAtStart = categoryProgress?.totalProgressToAchievement || 0;
 			}
 			goals.push({ ...updates, loanTotalAtStart });
@@ -401,6 +411,9 @@ export default function useGoalData({ apollo } = {}) {
 			(currentGoalProgress && (currentGoalProgress >= userGoal.value?.target))
 			|| (userGoal.value && userGoalAchieved.value)
 		) {
+			// Capture goal data before storeGoalPreferences (which may filter out the goal via setGoalState)
+			const goalCategory = userGoal.value.category;
+			const goalTarget = userGoal.value.target;
 			userGoal.value = {
 				...userGoal.value,
 				status: GOAL_STATUS.COMPLETED
@@ -410,8 +423,8 @@ export default function useGoalData({ apollo } = {}) {
 				category,
 				'show',
 				'annual-goal-complete',
-				userGoal.value.category,
-				userGoal.value.target
+				goalCategory,
+				goalTarget
 			);
 			userGoalAchievedNow.value = true;
 		}
@@ -428,7 +441,7 @@ export default function useGoalData({ apollo } = {}) {
 		const goal = userGoal.value;
 		if (goal.category === ID_SUPPORT_ALL) return;
 
-		const categoryProgress = currentYearProgress.value.find(n => n.id === goal.category);
+		const categoryProgress = currentYearProgress.value?.find(n => n.id === goal.category);
 		const allTimeProgress = categoryProgress?.totalProgressToAchievement || 0;
 		const loanTotalAtStart = goal.loanTotalAtStart || 0;
 		const adjustedProgress = allTimeProgress - loanTotalAtStart;
@@ -524,13 +537,13 @@ export default function useGoalData({ apollo } = {}) {
 		};
 	}
 
-	async function setHideGoalCardPreference() {
-		const parsedPrefs = await loadPreferences();
+	async function setHideGoalCardPreference(hide = true) {
+		const parsedPrefs = await loadPreferences('network-only');
 		await updateUserPreferences(
 			apolloClient,
 			userPreferences.value,
 			parsedPrefs,
-			{ hideGoalCard: true }
+			{ hideGoalCard: hide }
 		);
 	}
 
@@ -551,6 +564,7 @@ export default function useGoalData({ apollo } = {}) {
 		goalProgress,
 		isProgressCompletingGoal,
 		loadGoalData,
+		loadPreferences,
 		loading,
 		storeGoalPreferences,
 		userGoal,
