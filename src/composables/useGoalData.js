@@ -106,7 +106,7 @@ export default function useGoalData({ apollo } = {}) {
 			const loanTotalAtStart = goal?.loanTotalAtStart || 0;
 			return Math.max(0, (totalLoanCount.value || 0) - loanTotalAtStart);
 		}
-		const categoryProgress = progress.find(n => n.id === goal?.category);
+		const categoryProgress = progress?.find(n => n.id === goal?.category);
 		if (useYearlyProgress.value) {
 			return categoryProgress?.progressForYear || 0;
 		}
@@ -388,7 +388,7 @@ export default function useGoalData({ apollo } = {}) {
 			if (updates.category === ID_SUPPORT_ALL) {
 				loanTotalAtStart = totalLoanCount.value || 0;
 			} else {
-				const categoryProgress = currentYearProgress.value.find(n => n.id === updates.category);
+				const categoryProgress = currentYearProgress.value?.find(n => n.id === updates.category);
 				loanTotalAtStart = categoryProgress?.totalProgressToAchievement || 0;
 			}
 			goals.push({ ...updates, loanTotalAtStart });
@@ -441,7 +441,7 @@ export default function useGoalData({ apollo } = {}) {
 		const goal = userGoal.value;
 		if (goal.category === ID_SUPPORT_ALL) return;
 
-		const categoryProgress = currentYearProgress.value.find(n => n.id === goal.category);
+		const categoryProgress = currentYearProgress.value?.find(n => n.id === goal.category);
 		const allTimeProgress = categoryProgress?.totalProgressToAchievement || 0;
 		const loanTotalAtStart = goal.loanTotalAtStart || 0;
 		const adjustedProgress = allTimeProgress - loanTotalAtStart;
