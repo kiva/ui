@@ -1,3 +1,9 @@
+## [3.49.1-rc.3](https://github.com/kiva/ui/compare/v3.49.1-rc.2...v3.49.1-rc.3) (2025-12-24)
+
+### 🐛 Bugfixes
+
+* hide goal card was causing an issue with completed goal ([#6550](https://github.com/kiva/ui/issues/6550)) ([9cf3a08](https://github.com/kiva/ui/commit/9cf3a08aeb106f0dc908dd2eb7bda0fd160739e7))
+
 ## [3.49.1-rc.2](https://github.com/kiva/ui/compare/v3.49.1-rc.1...v3.49.1-rc.2) (2025-12-24)
 
 ### 🐛 Bugfixes
