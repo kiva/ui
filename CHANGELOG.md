@@ -1,3 +1,9 @@
+## [3.49.1-rc.2](https://github.com/kiva/ui/compare/v3.49.1-rc.1...v3.49.1-rc.2) (2025-12-24)
+
+### 🐛 Bugfixes
+
+* defensive optional chaining in goals ([#6549](https://github.com/kiva/ui/issues/6549)) ([de2967d](https://github.com/kiva/ui/commit/de2967d5b9b9d17ba9e91ce6c3788f1176cc8130))
+
 ## [3.49.1-rc.1](https://github.com/kiva/ui/compare/v3.49.0...v3.49.1-rc.1) (2025-12-24)
 
 ### 🐛 Bugfixes
