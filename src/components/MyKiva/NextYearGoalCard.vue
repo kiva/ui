@@ -235,7 +235,7 @@ const handleContinueClick = () => {
 	router.push(ctaHref.value);
 };
 
-const progressCircleDesc = computed(() => `loan${props.goalProgress > 1 ? 's' : ''} made`);
+const progressCircleDesc = computed(() => `loan${props.goalProgress > 1 || props.goalProgress === 0 ? 's' : ''} made`);
 
 watch(() => props.loading, newVal => {
 	if (!newVal) {
