@@ -339,6 +339,7 @@ export default {
 			userGoal,
 			userGoalAchieved,
 			loadGoalData,
+			loadPreferences,
 			storeGoalPreferences,
 			checkCompletedGoal,
 			hideGoalCard,
@@ -349,6 +350,7 @@ export default {
 			userGoal,
 			userGoalAchieved,
 			loadGoalData,
+			loadPreferences,
 			storeGoalPreferences,
 			checkCompletedGoal,
 			hideGoalCard,
@@ -393,7 +395,12 @@ export default {
 		async goalRefreshKey(newVal, oldVal) {
 			if (newVal !== oldVal && newVal > 0) {
 				this.goalProgressLoading = true;
-				await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+				await Promise.all([
+					this.loadGoalData({ yearlyProgress: this.goalsV2Enabled }),
+					this.loadPreferences('network-only'),
+				]);
+				// Update hideCompletedGoalCard after loading fresh preferences
+				this.hideCompletedGoalCard = this.hideGoalCard();
 				this.goalProgressLoading = false;
 			}
 		}

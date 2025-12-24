@@ -537,13 +537,13 @@ export default function useGoalData({ apollo } = {}) {
 		};
 	}
 
-	async function setHideGoalCardPreference() {
-		const parsedPrefs = await loadPreferences();
+	async function setHideGoalCardPreference(hide = true) {
+		const parsedPrefs = await loadPreferences('network-only');
 		await updateUserPreferences(
 			apolloClient,
 			userPreferences.value,
 			parsedPrefs,
-			{ hideGoalCard: true }
+			{ hideGoalCard: hide }
 		);
 	}
 
@@ -564,6 +564,7 @@ export default function useGoalData({ apollo } = {}) {
 		goalProgress,
 		isProgressCompletingGoal,
 		loadGoalData,
+		loadPreferences,
 		loading,
 		storeGoalPreferences,
 		userGoal,
