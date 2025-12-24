@@ -1,3 +1,18 @@
+## [3.49.1](https://github.com/kiva/ui/compare/v3.49.0...v3.49.1) (2025-12-24)
+
+### 🐛 Bugfixes
+
+* copy in next steps goal card ([#6548](https://github.com/kiva/ui/issues/6548)) ([41809fe](https://github.com/kiva/ui/commit/41809fec0d29ae62c7a85b654dd4b71eb9407cef))
+* defensive optional chaining in goals ([#6549](https://github.com/kiva/ui/issues/6549)) ([de2967d](https://github.com/kiva/ui/commit/de2967d5b9b9d17ba9e91ce6c3788f1176cc8130))
+* filter out goals from the previous year ([#6547](https://github.com/kiva/ui/issues/6547)) ([6002cd0](https://github.com/kiva/ui/commit/6002cd0d0b5b2220baf9e4210b2a588ba2024f38))
+* hide goal card was causing an issue with completed goal ([#6550](https://github.com/kiva/ui/issues/6550)) ([9cf3a08](https://github.com/kiva/ui/commit/9cf3a08aeb106f0dc908dd2eb7bda0fd160739e7))
+
+### 🧹 Chores
+
+* **release:** 3.49.1-rc.1 [skip ci] ([595f1e4](https://github.com/kiva/ui/commit/595f1e43cada696c946d7be397405685e33cb163)), closes [#6548](https://github.com/kiva/ui/issues/6548) [#6547](https://github.com/kiva/ui/issues/6547)
+* **release:** 3.49.1-rc.2 [skip ci] ([c095a08](https://github.com/kiva/ui/commit/c095a086bf1b2be08a26894d7200983bc2bb6ba7)), closes [#6549](https://github.com/kiva/ui/issues/6549)
+* **release:** 3.49.1-rc.3 [skip ci] ([7c09da8](https://github.com/kiva/ui/commit/7c09da82ffee6e365e26a7758e06720fb13936a4)), closes [#6550](https://github.com/kiva/ui/issues/6550)
+
 ## [3.49.1-rc.3](https://github.com/kiva/ui/compare/v3.49.1-rc.2...v3.49.1-rc.3) (2025-12-24)
 
 ### 🐛 Bugfixes
