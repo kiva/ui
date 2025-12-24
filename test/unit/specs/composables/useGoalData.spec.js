@@ -1721,6 +1721,119 @@ describe('useGoalData', () => {
 				{ hideGoalCard: true },
 			);
 		});
+
+		it('should use network-only fetch policy to get fresh preferences', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'hide-goal-id',
+							preferences: JSON.stringify({}),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+
+			await composable.setHideGoalCardPreference(true);
+
+			expect(mockApollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					fetchPolicy: 'network-only',
+				})
+			);
+		});
+	});
+
+	describe('loadPreferences', () => {
+		it('should load preferences with default cache-first fetch policy', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify({ hideGoalCard: true }),
+						},
+						loans: { totalCount: 5 },
+					},
+				},
+			});
+
+			const result = await composable.loadPreferences();
+
+			expect(mockApollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					fetchPolicy: 'cache-first',
+				})
+			);
+			expect(result).toEqual({ hideGoalCard: true });
+		});
+
+		it('should load preferences with network-only fetch policy when specified', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify({ hideGoalCard: false }),
+						},
+						loans: { totalCount: 10 },
+					},
+				},
+			});
+
+			const result = await composable.loadPreferences('network-only');
+
+			expect(mockApollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					fetchPolicy: 'network-only',
+				})
+			);
+			expect(result).toEqual({ hideGoalCard: false });
+		});
+
+		it('should update userPreferences ref with loaded data', async () => {
+			const mockPrefsData = {
+				id: 'pref-456',
+				preferences: JSON.stringify({ goals: [] }),
+			};
+
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: mockPrefsData,
+						loans: { totalCount: 3 },
+					},
+				},
+			});
+
+			await composable.loadPreferences();
+
+			expect(composable.userPreferences.value).toEqual(mockPrefsData);
+		});
+
+		it('should return empty object when preferences are null', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: null,
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+
+			const result = await composable.loadPreferences();
+
+			expect(result).toEqual({});
+		});
+
+		it('should return null on error', async () => {
+			mockApollo.query = vi.fn().mockRejectedValue(new Error('Network error'));
+
+			const result = await composable.loadPreferences();
+
+			expect(result).toBeNull();
+		});
 	});
 
 	describe('hideGoalCard', () => {

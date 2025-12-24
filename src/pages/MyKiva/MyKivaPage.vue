@@ -62,10 +62,12 @@ export default {
 		const apollo = inject('apollo');
 		const {
 			renewAnnualGoal,
+			setHideGoalCardPreference,
 		} = useGoalData({ apollo });
 
 		return {
 			renewAnnualGoal,
+			setHideGoalCardPreference,
 		};
 	},
 	data() {
@@ -264,6 +266,8 @@ export default {
 				if (showRenewedAnnualGoalToast) {
 					// eslint-disable-next-line max-len
 					this.$showTipMsg('It\'s time for your 2026 impact goal - a fresh start and new opportunity to make a difference.');
+					// Ensure goal card is shown again after renewal if user previously completed a goal
+					await this.setHideGoalCardPreference(false);
 					// Trigger goal data refresh in child components
 					this.goalRefreshKey += 1;
 				}
