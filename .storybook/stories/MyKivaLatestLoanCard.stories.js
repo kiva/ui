@@ -15,10 +15,12 @@ const loanMock = {
     geocode: {
         country: {
             isoCode: "EC",
-            name: "Ecuador",    
+            name: "Ecuador",
+            geocode: {
+                latitude: -0.9676533,
+                longitude: -80.7089101,
+            },
         },
-        latitude: -0.9676533,
-        longitude: -80.7089101,
     },
     borrowerCount: 1,
     themes: [],
@@ -53,10 +55,12 @@ export const Plural = story({
         geocode: {
             country: {
                 isoCode: "US",
-                name: "United States",    
+                name: "United States",
+                geocode: {
+                    latitude: 39.76,
+                    longitude: -98.5,
+                },
             },
-            latitude: 39.76,
-            longitude: -98.5,
         },
     },
 });
