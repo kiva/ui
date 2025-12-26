@@ -187,32 +187,33 @@ const fetchPostCheckoutAchievements = async loanIds => {
 	let showAtbGoalMsg = false;
 
 	if (props.isNextStepsExpEnabled) {
-		await loadGoalData({
-			loans: loansInBasket.value,
-			yearlyProgress: props.goalsV2Enabled,
-		});
-		// Use yearly progress with current year when Goals V2 is enabled, otherwise use all-time progress
-		const year = props.goalsV2Enabled ? new Date().getFullYear() : null;
-		// Increment counter per add-to-basket action
-		loanGoalProgress.value = await getPostCheckoutProgressByLoans({
-			loans: loanIds.map(id => ({ id })),
-			year,
-			increment: true,
-		});
+		await loadGoalData({ loans: loansInBasket.value, yearlyProgress: props.goalsV2Enabled });
 		const userTarget = userGoal.value?.target || 0;
-		const isOneLoanAwayFromGoal = userTarget - loanGoalProgress.value === 1;
-		const goalAchieved = loanGoalProgress.value === userTarget;
-		showAtbGoalMsg = isLoanGoal.value && (basketSize < BASKET_LIMIT_SIZE_FOR_EXP
-			|| isOneLoanAwayFromGoal || goalAchieved);
-		if (showAtbGoalMsg) {
-			if (isOneLoanAwayFromGoal) {
-				const loanUrl = getLoanFindingUrl(userGoal.value?.category, router.currentRoute.value);
-				oneLoanAwayFilteredUrl.value = !loanUrl ? router.currentRoute.value.path : loanUrl;
-				oneLoanAwayCategory.value = CATEGORY_TARGETS[userGoal.value?.category];
-				oneAwayText.value = `${userTarget - 1} of ${userTarget}`;
+		const hasActiveGoal = userTarget > 0 && userGoal.value?.status === 'in-progress';
+		if (hasActiveGoal) {
+			// Use yearly progress with current year when Goals V2 is enabled, otherwise use all-time progress
+			const year = props.goalsV2Enabled ? new Date().getFullYear() : null;
+			// Increment counter per add-to-basket action
+			loanGoalProgress.value = await getPostCheckoutProgressByLoans({
+				loans: loanIds.map(id => ({ id })),
+				year,
+				increment: true,
+			});
+			const isOneLoanAwayFromGoal = userTarget - loanGoalProgress.value === 1;
+			const goalAchieved = loanGoalProgress.value === userTarget;
+			showAtbGoalMsg = isLoanGoal.value
+				&& (basketSize < BASKET_LIMIT_SIZE_FOR_EXP
+				|| isOneLoanAwayFromGoal || goalAchieved);
+			if (showAtbGoalMsg) {
+				if (isOneLoanAwayFromGoal) {
+					const loanUrl = getLoanFindingUrl(userGoal.value?.category, router.currentRoute.value);
+					oneLoanAwayFilteredUrl.value = !loanUrl ? router.currentRoute.value.path : loanUrl;
+					oneLoanAwayCategory.value = CATEGORY_TARGETS[userGoal.value?.category];
+					oneAwayText.value = `${userTarget - 1} of ${userTarget}`;
+				}
+				showModalContent.value = true;
+				modalVisible.value = true;
 			}
-			showModalContent.value = true;
-			modalVisible.value = true;
 			return;
 		}
 	}
