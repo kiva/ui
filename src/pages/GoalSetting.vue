@@ -75,6 +75,6 @@ export default {
 }
 
 :deep(.goal-setting-container > div) {
-	@apply !tw-min-h-full tw-mb-16;
+	@apply !tw-min-h-full md:tw-mb-16 tw-mb-2.5;
 }
 </style>
