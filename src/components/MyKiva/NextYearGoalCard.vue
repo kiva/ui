@@ -18,9 +18,6 @@
 				<div class="tw-text-center">
 					<p>
 						How many loans will you make this year?
-						<span v-if="womenLoansThisYear">
-							You've already made {{ womenLoansThisYear }}.
-						</span>
 					</p>
 				</div>
 				<img
@@ -81,8 +78,6 @@
 import {
 	computed,
 	inject,
-	onMounted,
-	ref,
 	watch,
 } from 'vue';
 import {
@@ -121,23 +116,14 @@ const router = useRouter();
 
 const {
 	getLoanFindingUrl,
-	ID_WOMENS_EQUALITY,
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
 	ID_SUPPORT_ALL
 } = useBadgeData();
 const {
-	getCategoryLoanCountByYear,
 	getGoalDisplayName,
 	setHideGoalCardPreference,
 } = useGoalData();
-const womenLoansThisYear = ref(0);
-
-async function loadWomenLoansThisYear() {
-	const currentYear = new Date().getFullYear();
-	const count = await getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, currentYear);
-	womenLoansThisYear.value = count;
-}
 
 const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);
 
@@ -253,10 +239,6 @@ watch(() => props.loading, newVal => {
 			$kvTrackEvent('portfolio', 'show', 'goal-set', props.userGoal.category, props.userGoal.target);
 		}
 	}
-});
-
-onMounted(async () => {
-	await loadWomenLoansThisYear();
 });
 </script>
 
