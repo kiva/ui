@@ -49,6 +49,7 @@
 							:has-ever-logged-in="hasEverLoggedIn"
 							:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 							:goals-v2-enabled="goalsV2Enabled"
+							:has-goal="userGoal !== null && userGoal?.status === 'in-progress'"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@removed-loan="calculateProgressAchievement($event)"
@@ -290,6 +291,7 @@
 </template>
 
 <script>
+import { inject } from 'vue';
 import { gql } from 'graphql-tag';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
@@ -338,7 +340,7 @@ import { fetchPostCheckoutAchievements, getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USER
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
-import { isGoalsV2Enabled } from '#src/composables/useGoalData';
+import useGoalData, { isGoalsV2Enabled } from '#src/composables/useGoalData';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
@@ -556,6 +558,17 @@ export default {
 		} else {
 			next();
 		}
+	},
+	setup() {
+		const apollo = inject('apollo');
+
+		const {
+			userGoal,
+		} = useGoalData({ apollo });
+
+		return {
+			userGoal,
+		};
 	},
 	created() {
 		// show guest account claim confirmation message

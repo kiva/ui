@@ -14,6 +14,7 @@
 					:is-my-kiva-enabled="isMyKivaEnabled"
 					:loan-contributes-to-goal="loansContributingToGoal[index]"
 					:loading-goal-data="loadingGoalData"
+					:has-goal="userGoal !== null && userGoal?.status === 'in-progress'"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
@@ -56,7 +57,6 @@
 
 <script>
 import { inject } from 'vue';
-import useGoalData from '#src/composables/useGoalData';
 import useBadgeData, { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import BasketItem from '#src/components/Checkout/BasketItem';
 import DonationItem from '#src/components/Checkout/DonationItem';
@@ -247,23 +247,16 @@ export default {
 	},
 	setup() {
 		const apollo = inject('apollo');
-
-		const {
-			loadGoalData,
-			userGoal,
-			goalProgress,
-			getPostCheckoutProgressByLoans,
-			isProgressCompletingGoal,
-		} = useGoalData({ apollo });
+		const goalData = inject('goalData');
 
 		const { getJourneysByLoan } = useBadgeData({ apollo });
 
 		return {
-			loadGoalData,
-			userGoal,
-			goalProgress,
-			getPostCheckoutProgressByLoans,
-			isProgressCompletingGoal,
+			loadGoalData: goalData.loadGoalData,
+			userGoal: goalData.userGoal,
+			goalProgress: goalData.goalProgress,
+			getPostCheckoutProgressByLoans: goalData.getPostCheckoutProgressByLoans,
+			isProgressCompletingGoal: goalData.isProgressCompletingGoal,
 			getJourneysByLoan,
 		};
 	},

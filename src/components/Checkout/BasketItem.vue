@@ -205,6 +205,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		hasGoal: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -243,8 +247,14 @@ export default {
 			return this.loan.team ? this.loan.team.id : 0;
 		},
 		showPill() {
-			return (this.isMyKivaEnabled && (this.contributesInAchievement || this.isFirstLoan))
-				|| this.pillMessage.length > 0;
+			if (this.hasGoal) {
+				if (this.loanContributesToGoal) return true;
+				return false;
+			}
+			if (this.isMyKivaEnabled && (this.contributesInAchievement || this.isFirstLoan)) {
+				return true;
+			}
+			return false;
 		},
 		pillMessage() {
 			if (this.loanContributesToGoal) {
