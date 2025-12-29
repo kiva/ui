@@ -36,6 +36,9 @@
 					:prev-year-loans="womenLoansLastYear"
 					@open-goal-modal="$emit('open-goal-modal')"
 				/>
+				<MyKivaSurveyCard
+					v-else-if="slide?.isSurveyCard"
+				/>
 				<template
 					v-else-if="isEmailUpdatesSlide(slide)"
 				>
@@ -159,12 +162,14 @@ import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
 import useGoalData from '#src/composables/useGoalData';
 import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCard';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
+import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import useOptIn from '#src/composables/useOptIn';
 import ThankYouCard from '../MyKiva/ThankYouCard';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
 const TRANSACTION_DAYS_LIMIT = 30;
+const MYKIVA_INPUT_FORM_KEY = 'mykiva-input-form';
 
 const apollo = inject('apollo');
 const cookieStore = inject('cookieStore');
@@ -265,7 +270,7 @@ const props = defineProps({
 	latestLoan: {
 		type: Object,
 		default: null
-	}
+	},
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
@@ -280,6 +285,14 @@ const shouldShowEmailMarketingCard = computed(
 const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
 
 const showLatestLoan = computed(() => props.postLendingNextStepsEnable && props.latestLoan);
+
+const showSurveyCard = computed(() => {
+	const userPreferences = props.userInfo?.userPreferences || {};
+	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
+	const isFormSubmitted = (parsedPrefs.savedForms || []).some(form => form.formName === MYKIVA_INPUT_FORM_KEY);
+
+	return !isFormSubmitted;
+});
 
 const badgesData = computed(() => {
 	const badgeContentfulData = (props.heroContentfulData ?? [])
@@ -392,6 +405,10 @@ const orderedSlides = computed(() => {
 
 	if (shouldShowEmailMarketingCard.value) {
 		sortedSlides.splice(1, 0, { isEmailUpdates: true });
+	}
+
+	if (showSurveyCard.value) {
+		sortedSlides.splice(1, 0, { isSurveyCard: true });
 	}
 
 	if (props.slidesNumber) {

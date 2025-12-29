@@ -29,6 +29,7 @@
 					:categories-loan-count="categoriesLoanCount"
 					:hide-goal-card="hideCompletedGoalCard"
 					:post-lending-next-steps-enable="postLendingNextStepsEnable"
+					:user-info="userInfo"
 					@open-goal-modal="showGoalModal = true"
 				/>
 			</div>
@@ -159,6 +160,7 @@
 			:hide-goal-card="hideCompletedGoalCard"
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
+			:user-info="userInfo"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<GoalSettingModal
@@ -264,7 +266,11 @@ export default {
 		goalRefreshKey: {
 			type: Number,
 			default: 0
-		}
+		},
+		userInfo: {
+			type: Object,
+			default: () => ({}),
+		},
 	},
 	data() {
 		return {

@@ -29,7 +29,7 @@
 
 		<KvButton
 			variant="secondary"
-			v-kv-track-event="['portfolio', 'click', 'next-step-qual-feedback']"
+			v-kv-track-event="['portfolio', 'click', 'next-step-qualitative-feedback']"
 			class="tw-w-full tw-mt-1"
 			@click="goToSurvey"
 		>
@@ -47,7 +47,7 @@ import MyKivaLightningImg from '#src/assets/images/my-kiva/mykiva-lightning.svg'
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const goToSurvey = () => {
-	window.href.location = '/lp/mykiva-input';
+	window.location.href = '/lp/mykiva-input';
 };
 
 onMounted(() => {
@@ -57,8 +57,6 @@ onMounted(() => {
 
 <style lang="postcss" scoped>
 .card {
-	width: 336px;
-	min-height: 365px;
 	background: url('/src/assets/images/my-kiva/survey-card-ellipse.png'),
 			url('/src/assets/images/my-kiva/survey-card-mask.png'),
 			url('/src/assets/images/my-kiva/survey-card-mask-2.png');
