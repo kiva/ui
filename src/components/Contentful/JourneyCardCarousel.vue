@@ -291,7 +291,7 @@ const showSurveyCard = computed(() => {
 	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
 	const isFormSubmitted = (parsedPrefs.savedForms || []).some(form => form.formName === MYKIVA_INPUT_FORM_KEY);
 
-	return !isFormSubmitted;
+	return !isFormSubmitted && props.postLendingNextStepsEnable;
 });
 
 const badgesData = computed(() => {
