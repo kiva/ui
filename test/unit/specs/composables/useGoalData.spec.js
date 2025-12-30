@@ -112,19 +112,19 @@ describe('useGoalData', () => {
 	describe('getGoalDisplayName', () => {
 		it('should return plural display name for target > 1', () => {
 			expect(composable.getGoalDisplayName(5, ID_BASIC_NEEDS)).toBe('basic needs loans');
-			expect(composable.getGoalDisplayName(10, ID_CLIMATE_ACTION)).toBe('eco-friendly loans');
+			expect(composable.getGoalDisplayName(10, ID_CLIMATE_ACTION)).toBe('eco friendly loans');
 			expect(composable.getGoalDisplayName(3, ID_REFUGEE_EQUALITY)).toBe('refugees');
-			expect(composable.getGoalDisplayName(2, ID_SUPPORT_ALL)).toBe('loans');
-			expect(composable.getGoalDisplayName(100, ID_US_ECONOMIC_EQUALITY)).toBe('U.S. entrepreneurs');
+			expect(composable.getGoalDisplayName(2, ID_SUPPORT_ALL)).toBe('borrowers');
+			expect(composable.getGoalDisplayName(100, ID_US_ECONOMIC_EQUALITY)).toBe('US entrepreneurs');
 			expect(composable.getGoalDisplayName(7, ID_WOMENS_EQUALITY)).toBe('women');
 		});
 
 		it('should return singular display name for target = 1', () => {
 			expect(composable.getGoalDisplayName(1, ID_BASIC_NEEDS)).toBe('basic needs loan');
-			expect(composable.getGoalDisplayName(1, ID_CLIMATE_ACTION)).toBe('eco-friendly loan');
+			expect(composable.getGoalDisplayName(1, ID_CLIMATE_ACTION)).toBe('eco friendly loan');
 			expect(composable.getGoalDisplayName(1, ID_REFUGEE_EQUALITY)).toBe('refugee');
-			expect(composable.getGoalDisplayName(1, ID_SUPPORT_ALL)).toBe('loan');
-			expect(composable.getGoalDisplayName(1, ID_US_ECONOMIC_EQUALITY)).toBe('U.S. entrepreneur');
+			expect(composable.getGoalDisplayName(1, ID_SUPPORT_ALL)).toBe('borrower');
+			expect(composable.getGoalDisplayName(1, ID_US_ECONOMIC_EQUALITY)).toBe('US entrepreneur');
 			expect(composable.getGoalDisplayName(1, ID_WOMENS_EQUALITY)).toBe('woman');
 		});
 
@@ -1603,7 +1603,7 @@ describe('useGoalData', () => {
 			const router = { currentRoute: { value: {} } };
 
 			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router);
-			const expectedString = 'Your goal: Support 1 woman';
+			const expectedString = 'Support 1 more woman to reach your goal';
 			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
 
 			expect(href).toBe(expectedHref);
@@ -1615,7 +1615,7 @@ describe('useGoalData', () => {
 			const router = { currentRoute: { value: {} } };
 
 			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router);
-			const expectedString = 'Your goal: Support 5 basic needs loans';
+			const expectedString = 'Support 5 more basic needs loans to reach your goal';
 			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
 
 			expect(href).toBe(expectedHref);
@@ -1627,19 +1627,7 @@ describe('useGoalData', () => {
 			const router = { currentRoute: { value: {} } };
 
 			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router);
-			const expectedString = 'Your goal: Support 10 loans';
-			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
-
-			expect(href).toBe(expectedHref);
-		});
-
-		it('should encode special characters in header', () => {
-			const selectedGoalNumber = 3;
-			const categoryId = ID_US_ECONOMIC_EQUALITY;
-			const router = { currentRoute: { value: {} } };
-
-			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router);
-			const expectedString = 'Your goal: Support 3 U.S. entrepreneurs';
+			const expectedString = 'Support 10 more borrowers to reach your goal';
 			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
 
 			expect(href).toBe(expectedHref);
