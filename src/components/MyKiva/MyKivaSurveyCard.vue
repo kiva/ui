@@ -1,7 +1,7 @@
 <template>
 	<div
-		class="card tw-w-full tw-rounded tw-shadow tw-p-2 tw-flex tw-flex-col tw-justify-between tw-bg-white
-			tw-shrink-0 tw-overflow-hidden tw-h-full tw-select-none"
+		class="card tw-w-full tw-rounded tw-shadow tw-p-2 tw-flex tw-flex-col tw-justify-between
+			tw-shrink-0 tw-overflow-hidden tw-h-full tw-select-none !tw-bg-no-repeat !tw-bg-white"
 	>
 		<div>
 			<span
@@ -61,7 +61,5 @@ onMounted(() => {
 			url('/src/assets/images/my-kiva/survey-card-mask.png'),
 			url('/src/assets/images/my-kiva/survey-card-mask-2.png');
 	background-position: center, bottom left, top right;
-
-	@apply tw-bg-no-repeat;
 }
 </style>

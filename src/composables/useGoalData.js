@@ -28,19 +28,19 @@ import supportAllImg from '#src/assets/images/my-kiva/goal-setting/support-all.s
 
 const GOAL_DISPLAY_MAP = {
 	[ID_BASIC_NEEDS]: 'basic needs loans',
-	[ID_CLIMATE_ACTION]: 'eco-friendly loans',
+	[ID_CLIMATE_ACTION]: 'eco friendly loans',
 	[ID_REFUGEE_EQUALITY]: 'refugees',
-	[ID_SUPPORT_ALL]: 'loans',
-	[ID_US_ECONOMIC_EQUALITY]: 'U.S. entrepreneurs',
+	[ID_SUPPORT_ALL]: 'borrowers',
+	[ID_US_ECONOMIC_EQUALITY]: 'US entrepreneurs',
 	[ID_WOMENS_EQUALITY]: 'women',
 };
 
 const GOAL_1_DISPLAY_MAP = {
 	[ID_BASIC_NEEDS]: 'basic needs loan',
-	[ID_CLIMATE_ACTION]: 'eco-friendly loan',
+	[ID_CLIMATE_ACTION]: 'eco friendly loan',
 	[ID_REFUGEE_EQUALITY]: 'refugee',
-	[ID_SUPPORT_ALL]: 'loan',
-	[ID_US_ECONOMIC_EQUALITY]: 'U.S. entrepreneur',
+	[ID_SUPPORT_ALL]: 'borrower',
+	[ID_US_ECONOMIC_EQUALITY]: 'US entrepreneur',
 	[ID_WOMENS_EQUALITY]: 'woman',
 };
 
@@ -232,7 +232,7 @@ export default function useGoalData({ apollo } = {}) {
 	function getCtaHref(selectedGoalNumber, categoryId, router) {
 		const { getLoanFindingUrl } = useBadgeData();
 		const categoryHeader = getGoalDisplayName(selectedGoalNumber, categoryId);
-		const string = `Your goal: Support ${selectedGoalNumber} ${categoryHeader}`;
+		const string = `Support ${selectedGoalNumber} more ${categoryHeader} to reach your goal`;
 		const encodedHeader = encodeURIComponent(string);
 		const loanFindingUrl = getLoanFindingUrl(categoryId, router.currentRoute.value);
 		return `${loanFindingUrl}?header=${encodedHeader}`;

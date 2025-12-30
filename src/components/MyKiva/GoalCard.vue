@@ -89,7 +89,7 @@ import {
 import { mdiCheckCircleOutline } from '@mdi/js';
 import { formatRichTextContent } from '#src/util/contentfulUtils';
 import GoalCardCareImg from '#src/assets/images/my-kiva/goal-card-care.svg';
-import useBadgeData, {
+import {
 	ID_BASIC_NEEDS,
 	ID_US_ECONOMIC_EQUALITY,
 	ID_WOMENS_EQUALITY,
@@ -121,8 +121,7 @@ defineEmits(['open-goal-modal']);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
-const { getLoanFindingUrl } = useBadgeData();
-const { getGoalDisplayName } = useGoalData();
+const { getCtaHref } = useGoalData();
 
 const loansToReachGoal = computed(() => props.userGoal?.target || 0);
 const userHasGoal = computed(() => !!props.userGoal?.category);
@@ -144,11 +143,7 @@ const getContentfulKey = category => {
 };
 
 const ctaHref = computed(() => {
-	const categoryHeader = getGoalDisplayName(props.userGoal?.target, props.userGoal?.category);
-	const string = `Your goal: Support ${props.userGoal?.target} ${categoryHeader}`;
-	const encodedHeader = encodeURIComponent(string);
-	const loanFindingUrl = getLoanFindingUrl(props.userGoal?.category, router.currentRoute.value);
-	return `${loanFindingUrl}?header=${encodedHeader}`;
+	return getCtaHref(props.userGoal?.target, props.userGoal?.category, router);
 });
 
 const achievementGoalImg = computed(() => {
