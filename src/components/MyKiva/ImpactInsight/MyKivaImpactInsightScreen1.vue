@@ -83,13 +83,6 @@ const countryName = computed(() => {
 	return props.latestLoan?.geocode?.country?.name || '';
 });
 
-console.log('HP > MyKivaImpactInsightScreen1.vue', JSON.stringify({
-	borrowerName: borrowerName.value,
-	name: name.value,
-	hash: hash.value,
-	loan: props.latestLoan,
-}, null, 2));
-
 </script>
 
 <style lang="postcss" scoped>
