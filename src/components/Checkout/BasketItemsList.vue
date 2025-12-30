@@ -63,6 +63,7 @@ import DonationItem from '#src/components/Checkout/DonationItem';
 import KivaCardItem from '#src/components/Checkout/KivaCardItem';
 import DepositIncentiveUpsell from '#src/components/Checkout/DepositIncentiveUpsell';
 import { userUsLoanCheckout } from '#src/util/optimizelyUserMetrics';
+import useGoalData from '#src/composables/useGoalData';
 
 export default {
 	name: 'BasketItemsList',
@@ -247,16 +248,20 @@ export default {
 	},
 	setup() {
 		const apollo = inject('apollo');
-		const goalData = inject('goalData');
+		const {
+			loadGoalData,
+			userGoal,
+			goalProgress,
+			getPostCheckoutProgressByLoans,
+		} = useGoalData({ apollo });
 
 		const { getJourneysByLoan } = useBadgeData({ apollo });
 
 		return {
-			loadGoalData: goalData.loadGoalData,
-			userGoal: goalData.userGoal,
-			goalProgress: goalData.goalProgress,
-			getPostCheckoutProgressByLoans: goalData.getPostCheckoutProgressByLoans,
-			isProgressCompletingGoal: goalData.isProgressCompletingGoal,
+			loadGoalData,
+			userGoal,
+			goalProgress,
+			getPostCheckoutProgressByLoans,
 			getJourneysByLoan,
 		};
 	},

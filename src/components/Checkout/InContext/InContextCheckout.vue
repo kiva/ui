@@ -38,7 +38,6 @@
 			:kiva-cards="kivaCards"
 			:loan-reservation-total="parseInt(totals.loanReservationTotal)"
 			:teams="teams"
-			:has-goal="userGoal !== null && userGoal?.status === 'in-progress'"
 			@refreshtotals="$emit('refreshtotals')"
 			@updating-totals="setUpdatingTotals"
 			@jump-to-loans="$emit('jump-to-loans')"
@@ -152,7 +151,6 @@
 </template>
 
 <script>
-import { inject } from 'vue';
 import numeral from 'numeral';
 import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
 import { isCCPage } from '#src/util/urlUtils';
@@ -165,7 +163,6 @@ import BasketItemsList from '#src/components/Checkout/BasketItemsList';
 import OrderTotals from '#src/components/Checkout/OrderTotals';
 import KvIcon from '#src/components/Kv/KvIcon';
 import { KvButton, KvGrid } from '@kiva/kv-components';
-import useGoalData from '#src/composables/useGoalData';
 
 export default {
 	name: 'InContextCheckout',
@@ -258,17 +255,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-	},
-	setup() {
-		const apollo = inject('apollo');
-
-		const {
-			userGoal,
-		} = useGoalData({ apollo });
-
-		return {
-			userGoal,
-		};
 	},
 	data() {
 		return {
