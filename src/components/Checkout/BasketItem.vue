@@ -251,10 +251,8 @@ export default {
 				if (this.loanContributesToGoal) return true;
 				return false;
 			}
-			if (this.isMyKivaEnabled && (this.contributesInAchievement || this.isFirstLoan)) {
-				return true;
-			}
-			return false;
+			return (this.isMyKivaEnabled && (this.contributesInAchievement || this.isFirstLoan))
+			|| this.pillMessage.length > 0;
 		},
 		pillMessage() {
 			if (this.loanContributesToGoal) {
