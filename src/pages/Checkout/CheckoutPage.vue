@@ -35,6 +35,7 @@
 					<div class="basket-container tw-mx-auto tw-my-0">
 						<basket-items-list
 							:loans="loans"
+							:lender-loans-ids="lenderLoansIds"
 							:donations="donations"
 							:kiva-cards="kivaCards"
 							:teams="teams"
@@ -460,6 +461,7 @@ export default {
 			isMyKivaEnabled: false,
 			isNextStepsExpEnabled: false,
 			thanksPageGoalsEntrypointEnable: false,
+			lenderLoansIds: [],
 		};
 	},
 	apollo: {
@@ -520,6 +522,8 @@ export default {
 			this.teams = _get(data, 'my.lender.teams.values');
 			this.hasEverLoggedIn = _get(data, 'hasEverLoggedIn', false);
 			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
+			const lenderLoans = data?.my?.loans?.values ?? [];
+			this.lenderLoansIds = lenderLoans.map(loan => loan.id);
 			// basket data
 			this.totals = _get(data, 'shop.basket.totals') || {};
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });

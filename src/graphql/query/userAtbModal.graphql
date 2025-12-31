@@ -2,12 +2,15 @@ query userAtbModal {
 	hasEverLoggedIn @client
 	my {
 		id
-        userAccount {
-          id
-          balance
-        }
+		userAccount {
+			id
+			balance
+		}
 		loans {
 			totalCount
+			values {
+				id
+			}
 		}
 	}
 	general {
