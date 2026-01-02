@@ -39,6 +39,7 @@ import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import { splitAchievements, filterAchievementData, getOneLoanAwayAchievement } from '#src/util/atbAchievementUtils';
 import useGoalData from '#src/composables/useGoalData';
+import userLentToQuery from '#src/graphql/query/userLentTo.graphql';
 
 const BASKET_LIMIT_SIZE_FOR_EXP = 3;
 const PHOTO_PATH = 'https://www.kiva.org/img/';
@@ -140,11 +141,6 @@ const fetchBasketData = async () => {
 		logFormatter(e, 'Modal ATB Basket Data');
 	});
 };
-
-const lentLoanIds = computed(() => {
-	const lentLoans = userData.value?.my?.loans?.values ?? [];
-	return lentLoans.map(loan => loan.id);
-});
 
 const loansInBasket = computed(() => {
 	// eslint-disable-next-line no-underscore-dangle
@@ -270,11 +266,21 @@ const fetchAchievementFromBasket = async () => {
 	});
 };
 
+const hasUserLentToAddedLoan = async loanId => {
+	return apollo.query({
+		query: userLentToQuery,
+		variables: { loanId },
+	}).then(({ data }) => {
+		const hasLentToLoan = data?.lend?.loan?.userProperties?.lentTo ?? false;
+		return hasLentToLoan;
+	}).catch(e => {
+		logFormatter(e, 'Modal ATB User Lent To Loan Query');
+		return false;
+	});
+};
+
 watch(addedLoan, async () => {
-	if (myKivaExperimentEnabled.value
-			&& !isGuest.value
-			&& !lentLoanIds.value.includes(addedLoan.value?.id)
-	) {
+	if (myKivaExperimentEnabled.value && !isGuest.value && !(await hasUserLentToAddedLoan(addedLoan.value?.id))) {
 		await fetchBasketData();
 		fetchPostCheckoutAchievements(loansIdsInBasket.value);
 	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
