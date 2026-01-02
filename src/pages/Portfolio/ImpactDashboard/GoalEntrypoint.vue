@@ -90,6 +90,7 @@ const fetchUserAchievementProgress = async () => {
 		loading.value = false;
 	} catch (error) {
 		logReadQueryError(error, 'PortfolioGoalEntrypoint fetchUserAchievementProgress');
+		loading.value = false;
 	}
 };
 

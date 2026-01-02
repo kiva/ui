@@ -256,7 +256,7 @@ const handleContinue = () => {
 
 async function loadWomenLoansThisYear() {
 	const currentYear = new Date().getFullYear();
-	const count = await getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, currentYear);
+	const count = await getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, currentYear, 'network-only');
 	womenLoansThisYear.value = count;
 }
 
