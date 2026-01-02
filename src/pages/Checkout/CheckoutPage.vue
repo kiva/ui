@@ -522,8 +522,6 @@ export default {
 			this.teams = _get(data, 'my.lender.teams.values');
 			this.hasEverLoggedIn = _get(data, 'hasEverLoggedIn', false);
 			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
-			const lenderLoans = data?.my?.loans?.values ?? [];
-			this.lenderLoansIds = lenderLoans.map(loan => loan.id);
 			// basket data
 			this.totals = _get(data, 'shop.basket.totals') || {};
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
@@ -534,6 +532,7 @@ export default {
 				{ __typename: 'Credit', creditType: 'redemption_code' }
 			);
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+			this.lenderLoansIds = this.loans.filter(l => l?.loan?.userProperties?.lentTo).map(l => l.id);
 			if (this.redemption_credits.length || this.hasFreeCredits !== false) {
 				this.disableGuestCheckout();
 			}
