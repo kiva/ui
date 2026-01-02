@@ -219,9 +219,7 @@ export default {
 			if (this.goalsV2Enabled) {
 				const parsedPrefs = JSON.parse(this.userPreferences?.preferences || '{}');
 				const goals = parsedPrefs.goals || [];
-				this.isEmptyGoal = Object.keys(goals[0] || {}).length !== 0
-					? !goals.some(goal => goal.status === GOAL_STATUS.IN_PROGRESS)
-					: true;
+				this.isEmptyGoal = !goals.some(goal => goal.status === GOAL_STATUS.IN_PROGRESS);
 			}
 		}
 

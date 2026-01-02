@@ -61,7 +61,6 @@ export default {
 		const achievementsProgressResult = this.apollo.readQuery({
 			query: userAchievementProgressQuery,
 			variables: { year: LAST_YEAR_KEY },
-			fetchPolicy: 'network-only',
 		});
 
 		this.totalLoans = goalDataResult.my?.loans.totalCount ?? 0;
