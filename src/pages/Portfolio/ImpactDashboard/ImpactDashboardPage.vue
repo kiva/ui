@@ -66,7 +66,7 @@ import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSeco
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { gql } from 'graphql-tag';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import { isGoalsV2Enabled } from '#src/composables/useGoalData';
+import { isGoalsV2Enabled, GOAL_STATUS } from '#src/composables/useGoalData';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { getIsMyKivaEnabled, hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
@@ -219,7 +219,7 @@ export default {
 			if (this.goalsV2Enabled) {
 				const parsedPrefs = JSON.parse(this.userPreferences?.preferences || '{}');
 				const goals = parsedPrefs.goals || [];
-				this.isEmptyGoal = Object.keys(goals[0] || {}).length === 0;
+				this.isEmptyGoal = !goals.some(goal => goal.status === GOAL_STATUS.IN_PROGRESS);
 			}
 		}
 

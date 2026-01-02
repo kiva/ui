@@ -103,7 +103,11 @@ export default {
 			return Promise.all([
 				client.query({ query: myKivaQuery }),
 				client.query({ query: lendingStatsQuery }),
-				client.query({ query: userAchievementProgressQuery, variables: { year: LAST_YEAR_KEY } }),
+				client.query({
+					query: userAchievementProgressQuery,
+					variables: { year: LAST_YEAR_KEY },
+					fetchPolicy: 'network-only',
+				}),
 				loanId
 					? client.query({ query: borrowerProfileSideSheetQuery, variables: { loanId: Number(loanId) } })
 					: Promise.resolve(null),
