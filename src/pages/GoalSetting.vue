@@ -41,7 +41,8 @@ export default {
 				client.query({ query: useGoalDataQuery }),
 				client.query({
 					query: userAchievementProgressQuery,
-					variables: { year: LAST_YEAR_KEY }
+					variables: { year: LAST_YEAR_KEY },
+					fetchPolicy: 'network-only',
 				}),
 			]).catch(error => {
 				logReadQueryError(error, 'GoalSettingPage Prefetch');
@@ -60,6 +61,7 @@ export default {
 		const achievementsProgressResult = this.apollo.readQuery({
 			query: userAchievementProgressQuery,
 			variables: { year: LAST_YEAR_KEY },
+			fetchPolicy: 'network-only',
 		});
 
 		this.totalLoans = goalDataResult.my?.loans.totalCount ?? 0;

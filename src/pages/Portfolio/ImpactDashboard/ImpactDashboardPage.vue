@@ -220,7 +220,8 @@ export default {
 				const parsedPrefs = JSON.parse(this.userPreferences?.preferences || '{}');
 				const goals = parsedPrefs.goals || [];
 				this.isEmptyGoal = Object.keys(goals[0] || {}).length !== 0
-					? goals[0].status !== GOAL_STATUS.IN_PROGRESS : true;
+					? !goals.some(goal => goal.status === GOAL_STATUS.IN_PROGRESS)
+					: true;
 			}
 		}
 
