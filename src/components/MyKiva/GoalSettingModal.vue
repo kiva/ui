@@ -250,6 +250,7 @@ const handleClick = () => {
 
 const resetForm = () => {
 	formStep.value = 1;
+	// Reset selected category to default (women's equality)
 	selectedCategory.value = { ...categories[0] };
 	showCategories.value = false;
 };
