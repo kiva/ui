@@ -224,15 +224,18 @@ export default function useGoalData({ apollo } = {}) {
 
 	/**
 	 * Generate CTA Href for Goal Completion
-	 * @param {*} selectedGoalNumber goal number selected by the user
-	 * @param {*} categoryId category id selected by the user
-	 * @param {*} router router instance
-	 * @returns href string
+	 * @param {number} selectedGoalNumber goal target number selected by the user
+	 * @param {string} categoryId category id selected by the user
+	 * @param {object} router vue-router instance
+	 * @param {number} currentLoanCount loans made toward this goal (default 0 for new goals,
+	 *   pass goalProgress for existing goals to show remaining loans needed)
+	 * @returns {string} href string with encoded header message
 	 */
-	function getCtaHref(selectedGoalNumber, categoryId, router) {
+	function getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount = 0) {
 		const { getLoanFindingUrl } = useBadgeData();
-		const categoryHeader = getGoalDisplayName(selectedGoalNumber, categoryId);
-		const string = `Support ${selectedGoalNumber} more ${categoryHeader} to reach your goal`;
+		const remaining = Math.max(0, selectedGoalNumber - currentLoanCount);
+		const categoryHeader = getGoalDisplayName(remaining, categoryId);
+		const string = `Support ${remaining} more ${categoryHeader} to reach your goal`;
 		const encodedHeader = encodeURIComponent(string);
 		const loanFindingUrl = getLoanFindingUrl(categoryId, router.currentRoute.value);
 		return `${loanFindingUrl}?header=${encodedHeader}`;

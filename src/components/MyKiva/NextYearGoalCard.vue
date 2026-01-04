@@ -189,7 +189,7 @@ const goalDescription = computed(() => {
 });
 
 const ctaHref = computed(() => {
-	return getCtaHref(props.userGoal?.target, props.userGoal?.category, router);
+	return getCtaHref(props.userGoal?.target, props.userGoal?.category, router, props.goalProgress);
 });
 
 const showConfetti = () => {
