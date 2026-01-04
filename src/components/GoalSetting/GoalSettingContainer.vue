@@ -57,18 +57,6 @@
 					>
 						Set 2026 goal
 					</KvButton>
-					<KvButton
-						variant="ghost"
-						class="edit-goal-button tw-flex-none tw-mx-auto tw-w-full lg:tw-w-auto"
-						style="min-width: 324px;"
-						@click="editGoalNumber"
-					>
-						Edit goal number
-						<KvMaterialIcon
-							:icon="mdiPencilOutline"
-							class="tw-ml-0.5"
-						/>
-					</KvButton>
 				</div>
 			</div>
 		</div>
@@ -83,7 +71,7 @@ import {
 	computed
 } from 'vue';
 import { useRouter } from 'vue-router';
-import { mdiChevronLeft, mdiPencilOutline } from '@mdi/js';
+import { mdiChevronLeft } from '@mdi/js';
 import { KvLoadingPlaceholder, KvMaterialIcon, KvButton } from '@kiva/kv-components';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import CategoryForm from '#src/components/MyKiva/GoalSetting/CategoryForm';
@@ -100,6 +88,7 @@ const {
 	loading,
 	getCategories,
 	getCtaHref,
+	goalProgress,
 } = useGoalData({ apollo });
 
 const props = defineProps({
@@ -153,7 +142,13 @@ const setTarget = target => {
 
 const setGoal = async preferences => {
 	await storeGoalPreferences(preferences);
-	ctaHref.value = getCtaHref(loanTarget.value, selectedCategory.value?.badgeId, router);
+	// Use goalProgress to calculate remaining loans needed based on current year progress
+	ctaHref.value = getCtaHref(
+		loanTarget.value,
+		selectedCategory.value?.badgeId,
+		router,
+		goalProgress.value
+	);
 	isGoalSet.value = true;
 	showCategories.value = false;
 };
@@ -171,18 +166,6 @@ const handleCategorySelected = categoryId => {
 	}
 };
 
-const editGoalNumber = () => {
-	showCategories.value = false;
-	window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-	// eslint-disable-next-line prefer-destructuring
-	selectedCategory.value = categories[0];
-	$kvTrackEvent(
-		'event-tracking',
-		'click',
-		'back-to-goal-number-selection',
-	);
-};
-
 const handleClick = () => {
 	const categorySelected = selectedCategory.value?.badgeId;
 
@@ -191,7 +174,6 @@ const handleClick = () => {
 	const target = loanTarget.value;
 	const dateStarted = new Date().toISOString();
 	const status = 'in-progress';
-	const loanTotalAtStart = selectedCategory.value?.loanCount || 0;
 
 	const preferences = {
 		goalName,
@@ -199,7 +181,6 @@ const handleClick = () => {
 		target,
 		dateStarted,
 		status,
-		loanTotalAtStart,
 	};
 
 	setGoal(preferences);
@@ -219,11 +200,12 @@ const goToDashboard = () => {
 };
 
 onMounted(async () => {
-	await loadGoalData();
+	await loadGoalData({ yearlyProgress: true });
 	const isEmptyGoal = Object.keys(userGoal.value || {}).length === 0;
 	if (!isEmptyGoal) {
 		const { target, category } = userGoal.value;
-		ctaHref.value = getCtaHref(target, category, router);
+		// Use goalProgress which tracks current year progress
+		ctaHref.value = getCtaHref(target, category, router, goalProgress.value);
 		isGoalSet.value = true;
 	}
 	$kvTrackEvent('event-tracking', 'view', 'goals-page');
@@ -231,10 +213,6 @@ onMounted(async () => {
 </script>
 
 <style lang="postcss" scoped>
-.edit-goal-button :deep(span) {
-	@apply tw-flex;
-}
-
 .buttons {
     box-shadow: 0 0 12px 0 rgb(0 0 0 / 8%);
     @screen lg {
