@@ -40,13 +40,15 @@
 					class="tw-mb-3 tw-text-left lg:tw-text-center"
 				></h2>
 				<CategoryForm
+					:key="categoryFormKey"
 					:categories="categories"
 					:pre-selected-category="selectedCategory.id"
 					@category-selected="handleCategorySelected"
 				/>
 				<div
 					class="buttons tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-flex tw-flex-col tw-justify-center
-                        tw-w-full lg:tw-w-auto tw-z-sticky tw-gap-1.5 tw-mt-4 tw-bg-primary tw-p-2.5 lg:tw-p-0"
+						tw-w-full lg:tw-w-auto tw-z-sticky lg:tw-z-auto tw-gap-1.5 tw-mt-4 tw-bg-primary
+						tw-p-2.5 lg:tw-p-0"
 				>
 					<KvButton
 						class="tw-flex-none tw-mx-auto tw-w-full lg:tw-w-auto"
@@ -128,6 +130,7 @@ const isGoalSet = ref(false);
 const loanTarget = ref(0);
 const showCategories = ref(false);
 const ctaHref = ref('');
+const categoryFormKey = ref(0);
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
@@ -138,6 +141,8 @@ const title = computed(() => {
 });
 
 const editGoalCategory = () => {
+	// Force CategoryForm to re-render so it reverts to the default selected category
+	categoryFormKey.value += 1;
 	showCategories.value = true;
 	window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 };
@@ -238,7 +243,7 @@ onMounted(async () => {
 }
 
 .goal-selector :deep(.buttons) {
-    @apply tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-z-sticky tw-bg-primary tw-p-2.5 lg:tw-p-0;
+    @apply tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-z-sticky lg:tw-z-auto tw-bg-primary tw-p-2.5 lg:tw-p-0;
 
     box-shadow: 0 0 12px 0 rgb(0 0 0 / 8%);
     @screen lg {
