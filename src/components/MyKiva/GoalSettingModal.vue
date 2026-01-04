@@ -88,7 +88,12 @@ const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
-const { getCtaHref, getCategories } = useGoalData();
+const {
+	getCtaHref,
+	getCategories,
+	goalProgress,
+	loadGoalData,
+} = useGoalData();
 
 const props = defineProps({
 	show: {
@@ -169,7 +174,13 @@ const title = computed(() => {
 });
 
 const ctaHref = computed(() => {
-	return getCtaHref(selectedGoalNumber.value, selectedCategory.value?.badgeId, router);
+	// Use goalProgress which tracks current year progress
+	return getCtaHref(
+		selectedGoalNumber.value,
+		selectedCategory.value?.badgeId,
+		router,
+		goalProgress.value
+	);
 });
 
 const handleCategorySelected = categoryId => {
@@ -236,14 +247,12 @@ const handleClick = () => {
 		const target = selectedGoalNumber.value;
 		const dateStarted = new Date().toISOString();
 		const status = 'in-progress';
-		const loanTotalAtStart = selectedCategory.value?.loanCount || 0;
 		emit('set-goal', {
 			goalName,
 			category: categorySelected,
 			target,
 			dateStarted,
 			status,
-			loanTotalAtStart,
 		});
 	}
 };
@@ -283,9 +292,13 @@ watch(numberOfLoans, newVal => {
 	}
 });
 
-watch(isGoalSet, newVal => {
-	if (newVal && showCategories.value) {
-		showCategories.value = false;
+watch(isGoalSet, async newVal => {
+	if (newVal) {
+		// Load goal data to get current year progress for ctaHref
+		await loadGoalData({ yearlyProgress: props.goalsV2Enabled });
+		if (showCategories.value) {
+			showCategories.value = false;
+		}
 	}
 });
 </script>
