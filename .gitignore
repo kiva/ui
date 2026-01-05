@@ -12,6 +12,7 @@ build/schema.graphql
 .lighthouseci/
 lhci/
 vite.config.js.*
+storybook-static
 
 # Logs
 npm-debug.log*
