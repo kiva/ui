@@ -143,7 +143,7 @@ const getContentfulKey = category => {
 };
 
 const ctaHref = computed(() => {
-	return getCtaHref(props.userGoal?.target, props.userGoal?.category, router);
+	return getCtaHref(props.userGoal?.target, props.userGoal?.category, router, props.goalProgress);
 });
 
 const achievementGoalImg = computed(() => {
