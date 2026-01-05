@@ -7,6 +7,7 @@ import {
 import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import useGoalDataProgressQuery from '#src/graphql/query/useGoalDataProgress.graphql';
 import useGoalDataYearlyProgressQuery from '#src/graphql/query/useGoalDataYearlyProgress.graphql';
+import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import logFormatter from '#src/util/logFormatter';
 import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 
@@ -87,6 +88,7 @@ export default function useGoalData({ apollo } = {}) {
 	const goalCurrentLoanCount = ref(0); // In-page counter for tracking loans added to basket
 	const loading = ref(true);
 	const totalLoanCount = ref(null);
+	const yearlyLoanCount = ref(null); // Total loans for current year from loanStatsByYear
 	const userGoal = ref(null);
 	const userGoalAchievedNow = ref(false);
 	const userPreferences = ref(null);
@@ -101,7 +103,8 @@ export default function useGoalData({ apollo } = {}) {
 		// When flag is disabled (useYearlyProgress = false), use all-time progress minus loanTotalAtStart
 		if (goal?.category === ID_SUPPORT_ALL) {
 			if (useYearlyProgress.value) {
-				return totalLoanCount.value || 0;
+				// Use yearlyLoanCount from loanStatsByYear query for accurate current year total
+				return yearlyLoanCount.value || 0;
 			}
 			const loanTotalAtStart = goal?.loanTotalAtStart || 0;
 			return Math.max(0, (totalLoanCount.value || 0) - loanTotalAtStart);
@@ -286,6 +289,32 @@ export default function useGoalData({ apollo } = {}) {
 			return count;
 		} catch (error) {
 			logFormatter(error, 'Failed to fetch category loan count by year');
+			return null;
+		}
+	}
+
+	/**
+	 * Retrieves the user's total loan count and amount for a given year.
+	 * This includes all loans regardless of category.
+	 *
+	 * @param {number} year - Year to fetch loan stats for.
+	 * @param {string} [fetchPolicy='cache-first'] - Apollo fetch policy.
+	 * @returns {Promise<{count: number, amount: number}|null>} Loan stats for the year, or null on error.
+	 */
+	async function getLoanStatsByYear(year, fetchPolicy = 'cache-first') {
+		try {
+			const response = await apolloClient.query({
+				query: loanStatsByYearQuery,
+				variables: { year },
+				fetchPolicy
+			});
+			const stats = response.data?.my?.lendingStats?.loanStatsByYear;
+			return {
+				count: stats?.count || 0,
+				amount: stats?.amount || 0,
+			};
+		} catch (error) {
+			logFormatter(error, 'Failed to fetch loan stats by year');
 			return null;
 		}
 	}
@@ -479,6 +508,11 @@ export default function useGoalData({ apollo } = {}) {
 		const parsedPrefs = await loadPreferences();
 		await loadProgress(year);
 		setGoalState(parsedPrefs);
+		// Load yearly loan count for ID_SUPPORT_ALL goals when using yearly progress
+		if (yearlyProgress && userGoal.value?.category === ID_SUPPORT_ALL) {
+			const stats = await getLoanStatsByYear(year, 'network-only');
+			yearlyLoanCount.value = stats?.count || 0;
+		}
 		// Initialize in-page counter for ID_SUPPORT_ALL based on loans already in basket
 		if (userGoal.value?.category === ID_SUPPORT_ALL && loans.length > 0 && !goalCurrentLoanCount.value) {
 			// Reducing counter by 1 because loans already has the added loan
@@ -563,6 +597,7 @@ export default function useGoalData({ apollo } = {}) {
 		getCategoryLoansLastYear,
 		getCtaHref,
 		getGoalDisplayName,
+		getLoanStatsByYear,
 		getPostCheckoutProgressByLoans,
 		goalProgress,
 		isProgressCompletingGoal,
