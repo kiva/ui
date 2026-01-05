@@ -147,7 +147,11 @@ export default {
 		goalsV2Enabled: {
 			type: Boolean,
 			default: false
-		}
+		},
+		lenderLoansIds: {
+			type: Array,
+			default: () => []
+		},
 	},
 	components: {
 		BasketItem,
@@ -238,7 +242,7 @@ export default {
 				if (!isLoanInGoalCategory) return false;
 
 				// This loan contributes if we still need more loans
-				const contributes = qualifyingCount < loansNeededForGoal;
+				const contributes = qualifyingCount < loansNeededForGoal && !this.lenderLoansIds.includes(loan.id);
 				if (contributes) {
 					qualifyingCount += 1;
 				}

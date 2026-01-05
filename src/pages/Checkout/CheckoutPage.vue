@@ -35,6 +35,7 @@
 					<div class="basket-container tw-mx-auto tw-my-0">
 						<basket-items-list
 							:loans="loans"
+							:lender-loans-ids="lenderLoansIds"
 							:donations="donations"
 							:kiva-cards="kivaCards"
 							:teams="teams"
@@ -460,6 +461,7 @@ export default {
 			isMyKivaEnabled: false,
 			isNextStepsExpEnabled: false,
 			thanksPageGoalsEntrypointEnable: false,
+			lenderLoansIds: [],
 		};
 	},
 	apollo: {
@@ -530,6 +532,7 @@ export default {
 				{ __typename: 'Credit', creditType: 'redemption_code' }
 			);
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+			this.lenderLoansIds = this.loans.filter(l => l?.loan?.userProperties?.lentTo).map(l => l.id);
 			if (this.redemption_credits.length || this.hasFreeCredits !== false) {
 				this.disableGuestCheckout();
 			}
