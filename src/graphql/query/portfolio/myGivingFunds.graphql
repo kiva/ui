@@ -1,4 +1,10 @@
 query MyGivingFunds {
+  general {
+	givingFundParticipantDataControls: featureSetting(key: "giving_fund_participant_data_controls") {
+	  key
+	  value
+	}
+  }
   my {
 	id
     givingFunds {

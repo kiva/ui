@@ -90,6 +90,7 @@
 							class="tw-mb-2"
 							:key="`management-card-${i}`"
 							:fund="fund"
+							:show-participant-data-controls="showParticipantDataControls"
 						/>
 					</div>
 
@@ -140,6 +141,7 @@
 								:hide-owner-operations="true"
 								:key="`management-card-${i}`"
 								:fund="fund"
+								:show-participant-data-controls="showParticipantDataControls"
 							/>
 						</div>
 					</div>
@@ -185,6 +187,7 @@ const {
 
 const loading = ref(true);
 const loadingContributedFunds = ref(true);
+const showParticipantDataControls = ref(false);
 const contributedFundIds = ref([]);
 const contributedFundsEntries = ref([]);
 const givingFundsInfo = ref({});
@@ -236,6 +239,8 @@ const fetchGivingFundData = async () => {
 		givingFundsTotalCount.value = response?.data?.my?.givingFunds?.totalCount;
 		givingFundsEntries.value = response?.data?.my?.givingFunds?.values ?? [];
 		myGivingFundsEntryIds.value = givingFundsEntries.value.map(fund => fund.id);
+		// eslint-disable-next-line max-len
+		showParticipantDataControls.value = response?.data?.general?.givingFundParticipantDataControls?.value === 'true';
 		loading.value = false;
 	} catch (error) {
 		logFormatter(`Error fetching giving fund data: ${error}`, 'error');
