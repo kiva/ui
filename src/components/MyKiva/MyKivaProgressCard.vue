@@ -169,6 +169,10 @@ const tag = computed(() => {
 
 const btnCta = computed(() => {
 	if (props.isAnnualGoal && goalCompleted.value) return '';
+	const completedProgress = props.isAnnualGoal
+		? (props.goalProgress ?? 0)
+		: (props.goal?.totalLoans ?? props.goalProgress ?? 0);
+	if (!goalCompleted.value && completedProgress <= 0) return 'Get started';
 	return goalCompleted.value ? 'See details' : 'Continue';
 });
 
@@ -196,7 +200,8 @@ const cardColor = computed(() => {
 
 <style lang="postcss" scoped>
 .progress-card {
-	width: 336px;
+	width: 100%;
+    max-width: 336px;
 	height: 112px;
 
 	@apply tw-flex tw-bg-white tw-p-1 tw-shadow tw-rounded-md tw-gap-2.5;
