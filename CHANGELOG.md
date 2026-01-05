@@ -1,3 +1,24 @@
+## [3.51.0](https://github.com/kiva/ui/compare/v3.50.0...v3.51.0) (2026-01-05)
+
+### 🎉 New Features
+
+* adjusting impact progress goal cards sort order ([2a9a126](https://github.com/kiva/ui/commit/2a9a126b18d3e02d808473d2bee7e6aed10a311f))
+* check user lent to for each added loan ([c921897](https://github.com/kiva/ui/commit/c921897ec9a41ac580874e94034f40d403a40f9c))
+* mobile scrollbar + copy fix ([b7c1bbe](https://github.com/kiva/ui/commit/b7c1bbed8496dd3e700583573de204226edac05a))
+* prevent lent loans to count on goal message ([f3d5228](https://github.com/kiva/ui/commit/f3d522808858750dc1aadd103e8c2e2691db08f9))
+
+### 🐛 Bugfixes
+
+* ensure yearly lending is used when setting all loans goal ([#6567](https://github.com/kiva/ui/issues/6567)) ([b660132](https://github.com/kiva/ui/commit/b66013269ca3a5e0fc05802f835c6e19158648a7))
+* get lentTo value from basket items ([b5542c8](https://github.com/kiva/ui/commit/b5542c85bed775a2ea8a604ede4165a8acb8788e))
+* hide entrypoint if v2 goal was completed ([7e9edc5](https://github.com/kiva/ui/commit/7e9edc5c225bafb38d9a77f8a95b02da5baf58f2))
+* hide goal entrypoint when it is completed ([526a4d5](https://github.com/kiva/ui/commit/526a4d5ed283688ce9e8bdda114570771769ebac))
+* missing comment and reverting getting loan ids from my query ([cd5d2de](https://github.com/kiva/ui/commit/cd5d2dea8e1c6ae02808fc52ac5a132d6af48570))
+
+### 🧹 Chores
+
+* **release:** 3.51.0-rc.1 [skip ci] ([a7a620e](https://github.com/kiva/ui/commit/a7a620e91134bc35f6d05e2e1616808bbd514551)), closes [#6567](https://github.com/kiva/ui/issues/6567)
+
 ## [3.51.0-rc.1](https://github.com/kiva/ui/compare/v3.50.0...v3.51.0-rc.1) (2026-01-05)
 
 ### 🎉 New Features
