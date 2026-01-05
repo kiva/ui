@@ -34,7 +34,7 @@
 				<kv-progress-bar
 					:value="percentageLeft"
 					class="tw-mb-1.5 lg:tw-mb-1 tw-ml-3 tw-col-span-1"
-					:aria-label="`You have $${ creditLeft } in credit left`"
+					:label="`You have $${ creditLeft } in credit left`"
 				/>
 			</kv-grid>
 		</div>

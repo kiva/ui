@@ -45,7 +45,7 @@
 						</h5>
 						<kv-progress-bar
 							style="width: 98px;"
-							aria-label="Percent the loan has funded"
+							label="Percent the loan has funded"
 							:value="goalProgress"
 							:max="loansToReachGoal"
 						/>

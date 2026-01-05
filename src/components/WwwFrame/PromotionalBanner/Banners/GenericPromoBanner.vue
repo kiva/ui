@@ -36,7 +36,7 @@
 			v-if="enableDepositIncentiveExp"
 			style="max-width: 7rem;"
 			class="tw-w-full tw-max-w-sm tw-my-1 tw-absolute progress-bar-exp"
-			:aria-label="'Percent progress towards lending reward'"
+			:label="'Percent progress towards lending reward'"
 			:max="amountToLend"
 			:value="progressBarValue"
 		/>
