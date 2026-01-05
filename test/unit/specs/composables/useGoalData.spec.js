@@ -538,7 +538,46 @@ describe('useGoalData', () => {
 	});
 
 	describe('goalProgress computed', () => {
-		it('should calculate progress for SUPPORT_ALL category', async () => {
+		// eslint-disable-next-line max-len
+		it('should calculate progress for SUPPORT_ALL category using all-time total minus loanTotalAtStart', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_SUPPORT_ALL,
+					target: 10,
+					loanTotalAtStart: 5, // Had 5 loans when goal was set
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 10 }, // Now has 10 total loans
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, progressForYear: 10 }],
+						},
+					},
+				});
+
+			// yearlyProgress: false (default) uses all-time total minus loanTotalAtStart
+			await composable.loadGoalData();
+
+			// Should be 10 - 5 = 5 (progress since goal was set)
+			expect(composable.goalProgress.value).toBe(5);
+		});
+
+		// eslint-disable-next-line max-len
+		it('should calculate progress for SUPPORT_ALL category using loanStatsByYear when yearlyProgress is true', async () => {
 			const mockPrefs = {
 				goals: [{
 					goalName: 'test-goal',
@@ -555,21 +594,41 @@ describe('useGoalData', () => {
 								id: 'pref-123',
 								preferences: JSON.stringify(mockPrefs),
 							},
-							loans: { totalCount: 10 },
+							loans: { totalCount: 100 }, // All-time total (should NOT be used)
 						},
 					},
 				})
 				.mockResolvedValueOnce({
 					data: {
 						userAchievementProgress: {
-							tieredLendingAchievements: [{ id: ID_WOMENS_EQUALITY, progressForYear: 10 }],
+							tieredLendingAchievements: [
+								{ id: ID_WOMENS_EQUALITY, progressForYear: 3 },
+								{ id: ID_BASIC_NEEDS, progressForYear: 2 },
+								{ id: ID_CLIMATE_ACTION, progressForYear: 1 },
+							],
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							id: 'user-123',
+							lendingStats: {
+								id: 'stats-123',
+								loanStatsByYear: {
+									count: 6, // Current year total from loanStatsByYear
+									amount: 150,
+								},
+							},
 						},
 					},
 				});
 
-			await composable.loadGoalData();
+			// yearlyProgress: true uses loanStatsByYear for ID_SUPPORT_ALL
+			await composable.loadGoalData({ yearlyProgress: true });
 
-			expect(composable.goalProgress.value).toBe(10);
+			// Should be 6 (current year loans from loanStatsByYear, NOT all-time total of 100)
+			expect(composable.goalProgress.value).toBe(6);
 		});
 
 		it('should calculate progress for specific category', async () => {
@@ -1916,6 +1975,302 @@ describe('useGoalData', () => {
 			const result = await composable.getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, 2026);
 
 			expect(result).toBe(0);
+		});
+	});
+
+	describe('getLoanStatsByYear', () => {
+		it('should use cache-first fetch policy by default', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						id: 'user-123',
+						lendingStats: {
+							id: 'stats-123',
+							loanStatsByYear: {
+								count: 10,
+								amount: 250,
+							},
+						},
+					},
+				},
+			});
+
+			await composable.getLoanStatsByYear(2026);
+
+			expect(mockApollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					fetchPolicy: 'cache-first',
+				})
+			);
+		});
+
+		it('should use network-only fetch policy when specified', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						id: 'user-123',
+						lendingStats: {
+							id: 'stats-123',
+							loanStatsByYear: {
+								count: 15,
+								amount: 375,
+							},
+						},
+					},
+				},
+			});
+
+			await composable.getLoanStatsByYear(2026, 'network-only');
+
+			expect(mockApollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					fetchPolicy: 'network-only',
+				})
+			);
+		});
+
+		it('should return loan stats for the specified year', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						id: 'user-123',
+						lendingStats: {
+							id: 'stats-123',
+							loanStatsByYear: {
+								count: 12,
+								amount: 300,
+							},
+						},
+					},
+				},
+			});
+
+			const result = await composable.getLoanStatsByYear(2025);
+
+			expect(result).toEqual({ count: 12, amount: 300 });
+			expect(mockApollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					variables: { year: 2025 },
+				})
+			);
+		});
+
+		it('should return 0 values when loanStatsByYear is null', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						id: 'user-123',
+						lendingStats: {
+							id: 'stats-123',
+							loanStatsByYear: null,
+						},
+					},
+				},
+			});
+
+			const result = await composable.getLoanStatsByYear(2026);
+
+			expect(result).toEqual({ count: 0, amount: 0 });
+		});
+
+		it('should return null on error', async () => {
+			mockApollo.query = vi.fn().mockRejectedValue(new Error('Network error'));
+
+			const result = await composable.getLoanStatsByYear(2026);
+
+			expect(result).toBeNull();
+		});
+	});
+
+	describe('fixIncorrectlyCompletedSupportAllGoals', () => {
+		it('should return wasFixed: false when no ID_SUPPORT_ALL goal exists', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'goal-womens-equality-2026',
+					category: ID_WOMENS_EQUALITY,
+					target: 10,
+					status: 'completed',
+					dateStarted: '2026-01-15T00:00:00Z',
+				}],
+			};
+
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify(mockPrefs),
+						},
+						loans: { totalCount: 50 },
+					},
+				},
+			});
+
+			const result = await composable.fixIncorrectlyCompletedSupportAllGoals();
+
+			expect(result).toEqual({ wasFixed: false });
+		});
+
+		it('should return wasFixed: false when ID_SUPPORT_ALL goal is not completed', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'goal-support-all-2026',
+					category: ID_SUPPORT_ALL,
+					target: 10,
+					status: 'in-progress',
+					dateStarted: '2026-01-15T00:00:00Z',
+				}],
+			};
+
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify(mockPrefs),
+						},
+						loans: { totalCount: 50 },
+					},
+				},
+			});
+
+			const result = await composable.fixIncorrectlyCompletedSupportAllGoals();
+
+			expect(result).toEqual({ wasFixed: false });
+		});
+
+		it('should return wasFixed: false when goal is legitimately completed', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'goal-support-all-2026',
+					category: ID_SUPPORT_ALL,
+					target: 5,
+					status: 'completed',
+					dateStarted: '2026-01-15T00:00:00Z',
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 100 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							id: 'user-123',
+							lendingStats: {
+								id: 'stats-123',
+								loanStatsByYear: {
+									count: 10, // More than target of 5
+									amount: 250,
+								},
+							},
+						},
+					},
+				});
+
+			const result = await composable.fixIncorrectlyCompletedSupportAllGoals();
+
+			expect(result).toEqual({ wasFixed: false });
+		});
+
+		// eslint-disable-next-line max-len
+		it('should fix incorrectly completed goal and return wasFixed: true when yearly progress is less than target', async () => {
+			const {
+				updateUserPreferences,
+			} = await import('#src/util/userPreferenceUtils');
+
+			const mockPrefs = {
+				goals: [{
+					goalName: 'goal-support-all-2026',
+					category: ID_SUPPORT_ALL,
+					target: 10,
+					status: 'completed',
+					dateStarted: '2026-01-15T00:00:00Z',
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 100 }, // All-time total (was incorrectly used)
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							id: 'user-123',
+							lendingStats: {
+								id: 'stats-123',
+								loanStatsByYear: {
+									count: 3, // Only 3 loans this year, less than target of 10
+									amount: 75,
+								},
+							},
+						},
+					},
+				});
+
+			updateUserPreferences.mockClear();
+			const result = await composable.fixIncorrectlyCompletedSupportAllGoals();
+
+			expect(result).toEqual({ wasFixed: true });
+			expect(updateUserPreferences).toHaveBeenCalledWith(
+				mockApollo,
+				expect.anything(),
+				expect.anything(),
+				{
+					goals: [{
+						goalName: 'goal-support-all-2026',
+						category: ID_SUPPORT_ALL,
+						target: 10,
+						status: 'in-progress', // Changed from completed to in-progress
+						dateStarted: '2026-01-15T00:00:00Z',
+					}],
+				},
+			);
+		});
+
+		it('should not fix goals from years before GOALS_V2_START_YEAR', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'goal-support-all-2025',
+					category: ID_SUPPORT_ALL,
+					target: 10,
+					status: 'completed',
+					dateStarted: '2025-01-15T00:00:00Z', // 2025 is before GOALS_V2_START_YEAR
+				}],
+			};
+
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify(mockPrefs),
+						},
+						loans: { totalCount: 50 },
+					},
+				},
+			});
+
+			const result = await composable.fixIncorrectlyCompletedSupportAllGoals();
+
+			expect(result).toEqual({ wasFixed: false });
 		});
 	});
 

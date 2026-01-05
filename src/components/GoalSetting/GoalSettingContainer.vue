@@ -76,6 +76,7 @@ import { KvLoadingPlaceholder, KvMaterialIcon, KvButton } from '@kiva/kv-compone
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import CategoryForm from '#src/components/MyKiva/GoalSetting/CategoryForm';
 import useGoalData from '#src/composables/useGoalData';
+import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -89,6 +90,7 @@ const {
 	getCategories,
 	getCtaHref,
 	goalProgress,
+	getLoanStatsByYear,
 } = useGoalData({ apollo });
 
 const props = defineProps({
@@ -142,12 +144,18 @@ const setTarget = target => {
 
 const setGoal = async preferences => {
 	await storeGoalPreferences(preferences);
+	// For ID_SUPPORT_ALL, load yearly loan count to calculate correct progress
+	let currentProgress = goalProgress.value;
+	if (selectedCategory.value?.badgeId === ID_SUPPORT_ALL) {
+		const stats = await getLoanStatsByYear(new Date().getFullYear(), 'network-only');
+		currentProgress = stats?.count || 0;
+	}
 	// Use goalProgress to calculate remaining loans needed based on current year progress
 	ctaHref.value = getCtaHref(
 		loanTarget.value,
 		selectedCategory.value?.badgeId,
 		router,
-		goalProgress.value
+		currentProgress
 	);
 	isGoalSet.value = true;
 	showCategories.value = false;
