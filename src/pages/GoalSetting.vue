@@ -41,7 +41,8 @@ export default {
 				client.query({ query: useGoalDataQuery }),
 				client.query({
 					query: userAchievementProgressQuery,
-					variables: { year: LAST_YEAR_KEY }
+					variables: { year: LAST_YEAR_KEY },
+					fetchPolicy: 'network-only',
 				}),
 			]).catch(error => {
 				logReadQueryError(error, 'GoalSettingPage Prefetch');
@@ -55,16 +56,45 @@ export default {
 			getAllCategoryLoanCounts,
 		};
 	},
-	created() {
+	async mounted() {
+		// Try to read from cache first (populated by preFetch on SSR)
+		// readQuery returns null if data not in cache (Apollo Client 3.x)
 		const goalDataResult = this.apollo.readQuery({ query: useGoalDataQuery });
-		const achievementsProgressResult = this.apollo.readQuery({
+		if (goalDataResult) {
+			this.totalLoans = goalDataResult?.my?.loans?.totalCount ?? 0;
+		} else {
+			// Cache miss - fetch from network
+			try {
+				const { data } = await this.apollo.query({ query: useGoalDataQuery });
+				this.totalLoans = data?.my?.loans?.totalCount ?? 0;
+			} catch (e) {
+				logReadQueryError(e, 'GoalSettingPage useGoalDataQuery');
+			}
+		}
+
+		// Fetch tiered achievements - try cache first, then network
+		const achievementsResult = this.apollo.readQuery({
 			query: userAchievementProgressQuery,
 			variables: { year: LAST_YEAR_KEY },
 		});
+		if (achievementsResult?.userAchievementProgress?.tieredLendingAchievements) {
+			this.tieredAchievements = achievementsResult.userAchievementProgress.tieredLendingAchievements;
+			this.categoriesLoanCount = this.getAllCategoryLoanCounts(this.tieredAchievements);
+			return;
+		}
 
-		this.totalLoans = goalDataResult.my?.loans.totalCount ?? 0;
-		this.tieredAchievements = achievementsProgressResult.userAchievementProgress?.tieredLendingAchievements ?? [];
-		this.categoriesLoanCount = this.getAllCategoryLoanCounts(this.tieredAchievements);
+		// Fetch from network if cache miss
+		try {
+			const { data } = await this.apollo.query({
+				query: userAchievementProgressQuery,
+				variables: { year: LAST_YEAR_KEY },
+				fetchPolicy: 'network-only',
+			});
+			this.tieredAchievements = data?.userAchievementProgress?.tieredLendingAchievements ?? [];
+			this.categoriesLoanCount = this.getAllCategoryLoanCounts(this.tieredAchievements);
+		} catch (e) {
+			logReadQueryError(e, 'GoalSettingPage userAchievementProgressQuery');
+		}
 	},
 };
 </script>
@@ -75,6 +105,6 @@ export default {
 }
 
 :deep(.goal-setting-container > div) {
-	@apply !tw-min-h-full tw-mb-16;
+	@apply !tw-min-h-full md:tw-mb-16 tw-mb-2.5;
 }
 </style>

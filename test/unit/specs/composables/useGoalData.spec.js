@@ -112,19 +112,19 @@ describe('useGoalData', () => {
 	describe('getGoalDisplayName', () => {
 		it('should return plural display name for target > 1', () => {
 			expect(composable.getGoalDisplayName(5, ID_BASIC_NEEDS)).toBe('basic needs loans');
-			expect(composable.getGoalDisplayName(10, ID_CLIMATE_ACTION)).toBe('eco-friendly loans');
+			expect(composable.getGoalDisplayName(10, ID_CLIMATE_ACTION)).toBe('eco friendly loans');
 			expect(composable.getGoalDisplayName(3, ID_REFUGEE_EQUALITY)).toBe('refugees');
-			expect(composable.getGoalDisplayName(2, ID_SUPPORT_ALL)).toBe('loans');
-			expect(composable.getGoalDisplayName(100, ID_US_ECONOMIC_EQUALITY)).toBe('U.S. entrepreneurs');
+			expect(composable.getGoalDisplayName(2, ID_SUPPORT_ALL)).toBe('borrowers');
+			expect(composable.getGoalDisplayName(100, ID_US_ECONOMIC_EQUALITY)).toBe('US entrepreneurs');
 			expect(composable.getGoalDisplayName(7, ID_WOMENS_EQUALITY)).toBe('women');
 		});
 
 		it('should return singular display name for target = 1', () => {
 			expect(composable.getGoalDisplayName(1, ID_BASIC_NEEDS)).toBe('basic needs loan');
-			expect(composable.getGoalDisplayName(1, ID_CLIMATE_ACTION)).toBe('eco-friendly loan');
+			expect(composable.getGoalDisplayName(1, ID_CLIMATE_ACTION)).toBe('eco friendly loan');
 			expect(composable.getGoalDisplayName(1, ID_REFUGEE_EQUALITY)).toBe('refugee');
-			expect(composable.getGoalDisplayName(1, ID_SUPPORT_ALL)).toBe('loan');
-			expect(composable.getGoalDisplayName(1, ID_US_ECONOMIC_EQUALITY)).toBe('U.S. entrepreneur');
+			expect(composable.getGoalDisplayName(1, ID_SUPPORT_ALL)).toBe('borrower');
+			expect(composable.getGoalDisplayName(1, ID_US_ECONOMIC_EQUALITY)).toBe('US entrepreneur');
 			expect(composable.getGoalDisplayName(1, ID_WOMENS_EQUALITY)).toBe('woman');
 		});
 
@@ -1597,25 +1597,27 @@ describe('useGoalData', () => {
 			}));
 		});
 
-		it('should generate correct href for single target', () => {
-			const selectedGoalNumber = 1;
+		it('should generate correct href for single remaining loan', () => {
+			const selectedGoalNumber = 5;
 			const categoryId = ID_WOMENS_EQUALITY;
 			const router = { currentRoute: { value: {} } };
+			const currentLoanCount = 4; // 5 - 4 = 1 remaining
 
-			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router);
-			const expectedString = 'Your goal: Support 1 woman';
+			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount);
+			const expectedString = 'Support 1 more woman to reach your goal';
 			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
 
 			expect(href).toBe(expectedHref);
 		});
 
-		it('should generate correct href for plural target', () => {
-			const selectedGoalNumber = 5;
+		it('should generate correct href for plural remaining loans', () => {
+			const selectedGoalNumber = 10;
 			const categoryId = ID_BASIC_NEEDS;
 			const router = { currentRoute: { value: {} } };
+			const currentLoanCount = 5; // 10 - 5 = 5 remaining
 
-			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router);
-			const expectedString = 'Your goal: Support 5 basic needs loans';
+			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount);
+			const expectedString = 'Support 5 more basic needs loans to reach your goal';
 			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
 
 			expect(href).toBe(expectedHref);
@@ -1625,21 +1627,69 @@ describe('useGoalData', () => {
 			const selectedGoalNumber = 10;
 			const categoryId = ID_SUPPORT_ALL;
 			const router = { currentRoute: { value: {} } };
+			const currentLoanCount = 0; // 10 - 0 = 10 remaining
 
-			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router);
-			const expectedString = 'Your goal: Support 10 loans';
+			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount);
+			const expectedString = 'Support 10 more borrowers to reach your goal';
 			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
 
 			expect(href).toBe(expectedHref);
 		});
 
-		it('should encode special characters in header', () => {
-			const selectedGoalNumber = 3;
-			const categoryId = ID_US_ECONOMIC_EQUALITY;
+		it('should default currentLoanCount to 0 when not provided', () => {
+			const selectedGoalNumber = 5;
+			const categoryId = ID_WOMENS_EQUALITY;
 			const router = { currentRoute: { value: {} } };
 
 			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router);
-			const expectedString = 'Your goal: Support 3 U.S. entrepreneurs';
+			const expectedString = 'Support 5 more women to reach your goal';
+			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
+
+			expect(href).toBe(expectedHref);
+		});
+
+		it('should return 0 remaining when currentLoanCount exceeds target', () => {
+			const selectedGoalNumber = 5;
+			const categoryId = ID_WOMENS_EQUALITY;
+			const router = { currentRoute: { value: {} } };
+			const currentLoanCount = 10; // More than target, should clamp to 0
+
+			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount);
+			const expectedString = 'Support 0 more women to reach your goal';
+			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
+
+			expect(href).toBe(expectedHref);
+		});
+
+		it('should return 0 remaining when currentLoanCount equals target', () => {
+			const selectedGoalNumber = 5;
+			const categoryId = ID_WOMENS_EQUALITY;
+			const router = { currentRoute: { value: {} } };
+			const currentLoanCount = 5; // Equals target
+
+			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount);
+			const expectedString = 'Support 0 more women to reach your goal';
+			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
+
+			expect(href).toBe(expectedHref);
+		});
+
+		it('should handle undefined selectedGoalNumber', () => {
+			const categoryId = ID_WOMENS_EQUALITY;
+			const router = { currentRoute: { value: {} } };
+
+			const href = composable.getCtaHref(undefined, categoryId, router, 0);
+			// undefined - 0 = NaN, Math.max(0, NaN) = NaN, but display will show NaN
+			// This tests the current behavior - function doesn't guard against this
+			expect(href).toContain('/lend/');
+		});
+
+		it('should handle zero selectedGoalNumber', () => {
+			const categoryId = ID_WOMENS_EQUALITY;
+			const router = { currentRoute: { value: {} } };
+
+			const href = composable.getCtaHref(0, categoryId, router, 0);
+			const expectedString = 'Support 0 more women to reach your goal';
 			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
 
 			expect(href).toBe(expectedHref);
@@ -1690,6 +1740,182 @@ describe('useGoalData', () => {
 			const progress = composable.getCategoryLoansLastYear(null);
 
 			expect(progress).toBe(0);
+		});
+	});
+
+	describe('getCategoriesProgressByYear', () => {
+		it('should use cache-first fetch policy by default', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: [
+							{ id: ID_WOMENS_EQUALITY, progressForYear: 10, totalProgressToAchievement: 50 }
+						]
+					}
+				}
+			});
+
+			await composable.getCategoriesProgressByYear(2026);
+
+			expect(mockApollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					fetchPolicy: 'cache-first',
+				})
+			);
+		});
+
+		it('should use network-only fetch policy when specified', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: [
+							{ id: ID_WOMENS_EQUALITY, progressForYear: 15, totalProgressToAchievement: 60 }
+						]
+					}
+				}
+			});
+
+			await composable.getCategoriesProgressByYear(2026, 'network-only');
+
+			expect(mockApollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					fetchPolicy: 'network-only',
+				})
+			);
+		});
+
+		it('should return tiered lending achievements for the specified year', async () => {
+			const mockAchievements = [
+				{ id: ID_WOMENS_EQUALITY, progressForYear: 10, totalProgressToAchievement: 50 },
+				{ id: ID_BASIC_NEEDS, progressForYear: 5, totalProgressToAchievement: 25 }
+			];
+
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: mockAchievements
+					}
+				}
+			});
+
+			const result = await composable.getCategoriesProgressByYear(2025);
+
+			expect(result).toEqual(mockAchievements);
+			expect(mockApollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					variables: { year: 2025 },
+				})
+			);
+		});
+
+		it('should return null on error', async () => {
+			mockApollo.query = vi.fn().mockRejectedValue(new Error('Network error'));
+
+			const result = await composable.getCategoriesProgressByYear(2026);
+
+			expect(result).toBeNull();
+		});
+	});
+
+	describe('getCategoryLoanCountByYear', () => {
+		it('should use cache-first fetch policy by default', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: [
+							{ id: ID_WOMENS_EQUALITY, progressForYear: 12 }
+						]
+					}
+				}
+			});
+
+			await composable.getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, 2026);
+
+			expect(mockApollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					fetchPolicy: 'cache-first',
+				})
+			);
+		});
+
+		it('should use network-only fetch policy when specified', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: [
+							{ id: ID_WOMENS_EQUALITY, progressForYear: 8 }
+						]
+					}
+				}
+			});
+
+			await composable.getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, 2026, 'network-only');
+
+			expect(mockApollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					fetchPolicy: 'network-only',
+				})
+			);
+		});
+
+		it('should return progressForYear for the specified category', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: [
+							{ id: ID_WOMENS_EQUALITY, progressForYear: 15 },
+							{ id: ID_BASIC_NEEDS, progressForYear: 7 }
+						]
+					}
+				}
+			});
+
+			const result = await composable.getCategoryLoanCountByYear(ID_BASIC_NEEDS, 2026);
+
+			expect(result).toBe(7);
+		});
+
+		it('should return 0 if category not found', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: [
+							{ id: ID_WOMENS_EQUALITY, progressForYear: 15 }
+						]
+					}
+				}
+			});
+
+			const result = await composable.getCategoryLoanCountByYear(ID_CLIMATE_ACTION, 2026);
+
+			expect(result).toBe(0);
+		});
+
+		it('should return 0 if progressForYear is undefined', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: [
+							{ id: ID_WOMENS_EQUALITY }
+						]
+					}
+				}
+			});
+
+			const result = await composable.getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, 2026);
+
+			expect(result).toBe(0);
+		});
+
+		it('should return 0 when getCategoriesProgressByYear returns null on error', async () => {
+			// When getCategoriesProgressByYear fails, it returns null (handles its own error)
+			// getCategoryLoanCountByYear then gets null progress, and progress?.find() returns undefined
+			// which falls back to 0 via the || 0 default
+			mockApollo.query = vi.fn().mockRejectedValue(new Error('Network error'));
+
+			const result = await composable.getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, 2026);
+
+			expect(result).toBe(0);
 		});
 	});
 

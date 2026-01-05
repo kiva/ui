@@ -2,7 +2,6 @@
 	<div
 		class="tw-w-full tw-relative tw-rounded tw-shadow tw-p-2 tw-flex tw-flex-col
 			tw-bg-white tw-shrink-0 tw-overflow-hidden tw-h-full tw-select-none"
-		style="width: 336px; min-height: 365px;"
 	>
 		<span
 			class="tw-inline-flex tw-items-center tw-gap-1 tw-mb-2

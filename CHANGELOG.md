@@ -1,3 +1,27 @@
+## [3.50.0-rc.1](https://github.com/kiva/ui/compare/v3.49.1...v3.50.0-rc.1) (2026-01-05)
+
+### 🎉 New Features
+
+* goal display name update ([#6557](https://github.com/kiva/ui/issues/6557)) ([195ca3e](https://github.com/kiva/ui/commit/195ca3ea39165af8d0f3cb4baf92cab051d101ce))
+* mykiva survey card added ([#6551](https://github.com/kiva/ui/issues/6551)) ([932b58c](https://github.com/kiva/ui/commit/932b58cedb55ddce4b42b5db8ecc8299c97390e5))
+* next year goal card update ([#6553](https://github.com/kiva/ui/issues/6553)) ([4cb6daa](https://github.com/kiva/ui/commit/4cb6daab2567a0b93af925da738eb3b01c6da9ce))
+* survey card added to lending stats carousel ([#6555](https://github.com/kiva/ui/issues/6555)) ([d15a819](https://github.com/kiva/ui/commit/d15a819f3cf81696c859513b14caa86ac931cbaa))
+
+### 🐛 Bugfixes
+
+* add hasActiveGoal check to AtbModal ([2744673](https://github.com/kiva/ui/commit/274467373d00f984ee12fef5a3eef04f1d48b860))
+* further defensive programming for goal data not being loaded ([#6561](https://github.com/kiva/ui/issues/6561)) ([c343adb](https://github.com/kiva/ui/commit/c343adba470e9aafd5b16a200672a19942e816c1))
+* implement card pill changes ([4ad7f2f](https://github.com/kiva/ui/commit/4ad7f2ff1fa46ec277a81053b52441b3f12bc449))
+* latest loan card update ([#6554](https://github.com/kiva/ui/issues/6554)) ([e86a2e8](https://github.com/kiva/ui/commit/e86a2e8c25b274859f3830f97859fd7d139e9239))
+* mobile spacing in goal setting page ([fe5506f](https://github.com/kiva/ui/commit/fe5506fe337bb56c55aefd6f7c20603974c67a0b))
+* more goals V2 fixes ([#6563](https://github.com/kiva/ui/issues/6563)) ([c038e7b](https://github.com/kiva/ui/commit/c038e7b15d8ef6abb0f12ccacae285d99338718e))
+* mp-2263 / Update Copy for Next Steps Row Header ([#6540](https://github.com/kiva/ui/issues/6540)) ([151eb0a](https://github.com/kiva/ui/commit/151eb0aee51a1083a61934443ffb16976ea24a1f))
+* portfolio goals bug ([#6560](https://github.com/kiva/ui/issues/6560)) ([7c810af](https://github.com/kiva/ui/commit/7c810af755c4ea1994cae96861dffec581bf43d3))
+* remove unnecessary useGoalData context ([68e497e](https://github.com/kiva/ui/commit/68e497ed807870a3192a13cf79e2331e39f7bb0a))
+* resolve issues with goal selector component/page ([#6562](https://github.com/kiva/ui/issues/6562)) ([9dedd0d](https://github.com/kiva/ui/commit/9dedd0d1349fa541f85c6db571493a124e309b2c))
+* restore pillMessage length ([b5052f7](https://github.com/kiva/ui/commit/b5052f7664a8cb0b9ccd269bc992b162e6b8e4dd))
+* revert KvAtbModalContainer changes ([46ab554](https://github.com/kiva/ui/commit/46ab554f73761837e2a9f45de3ef3fb70c30ba33))
+
 ## [3.49.1](https://github.com/kiva/ui/compare/v3.49.0...v3.49.1) (2025-12-24)
 
 ### 🐛 Bugfixes

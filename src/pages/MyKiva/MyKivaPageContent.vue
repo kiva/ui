@@ -49,6 +49,7 @@
 				:post-lending-next-steps-enable="postLendingNextStepsEnable"
 				:latest-loan="latestLoan"
 				:goal-refresh-key="goalRefreshKey"
+				:user-info="userInfo"
 			/>
 		</section>
 		<section v-if="goalsV2Enabled" class="tw-mt-4" id="mykiva-achievements">
