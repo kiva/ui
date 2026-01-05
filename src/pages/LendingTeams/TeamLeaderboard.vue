@@ -105,7 +105,7 @@
 								class="tw-flex-none tw-w-full"
 							>
 								<kv-progress-bar
-									:aria-label="progressLabel"
+									:label="progressLabel"
 									:min="0"
 									:max="maxValue(timeFrame)"
 									:value="parseInt(leaderboardTeam.value)"
