@@ -22,9 +22,6 @@ query initializeCheckout($basketId: String) {
 		}
 		loans {
 			totalCount
-			values {
-				id
-			}
 		}
 		depositIncentiveAmountToLend
 	}

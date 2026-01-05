@@ -217,6 +217,8 @@ const fetchPostCheckoutAchievements = async loanIds => {
 		}
 	}
 
+	// If added loan is not related to user goal, proceed with achievements logic.
+	// This condition will prevent any conflict between goal and achievement messages.
 	if (!isLoanGoal.value) {
 		await apollo.query({
 			query: postCheckoutAchievementsQuery,

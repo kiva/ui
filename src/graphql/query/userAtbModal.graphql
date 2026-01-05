@@ -8,9 +8,6 @@ query userAtbModal {
 		}
 		loans {
 			totalCount
-			values {
-				id
-			}
 		}
 	}
 	general {
