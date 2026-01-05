@@ -66,7 +66,7 @@ import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSeco
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { gql } from 'graphql-tag';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import { isGoalsV2Enabled, GOAL_STATUS } from '#src/composables/useGoalData';
+import { isGoalsV2Enabled, GOAL_STATUS, GOALS_V2_START_YEAR } from '#src/composables/useGoalData';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { getIsMyKivaEnabled, hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
@@ -219,7 +219,12 @@ export default {
 			if (this.goalsV2Enabled) {
 				const parsedPrefs = JSON.parse(this.userPreferences?.preferences || '{}');
 				const goals = parsedPrefs.goals || [];
-				this.isEmptyGoal = !goals.some(goal => goal.status === GOAL_STATUS.IN_PROGRESS);
+				const goalInProgress = goals.some(goal => goal.status === GOAL_STATUS.IN_PROGRESS);
+				const goalV2Achieved = goals.some(goal => {
+					const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
+					return goal?.status === GOAL_STATUS.COMPLETED && goalYear === GOALS_V2_START_YEAR;
+				});
+				this.isEmptyGoal = !goalInProgress && !goalV2Achieved;
 			}
 		}
 
