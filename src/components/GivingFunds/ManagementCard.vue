@@ -73,6 +73,10 @@
 						<h2>{{ numeral(myDonationTotals).format('$0,0') }}</h2>
 						<p class="tw-text-small tw-text-gray-500">
 							Your donations
+							<a
+								v-if="showParticipantDataControls"
+								:href="`${givingFundRootPath}/${fund.id}?action=my-donations`"
+							>View</a>
 						</p>
 					</div>
 					<div v-if="fund?.currentAmountDonated">
@@ -93,6 +97,10 @@
 						<h2>{{ fund?.totalParticipants }}</h2>
 						<p class="tw-text-small tw-text-gray-500">
 							Participants
+							<a
+								v-if="showParticipantDataControls && !hideOwnerOperations"
+								:href="`${givingFundRootPath}/${fund.id}?action=participants`"
+							>View</a>
 						</p>
 					</div>
 				</div>
@@ -203,6 +211,10 @@ const props = defineProps({
 	fund: {
 		type: Object,
 		required: true,
+	},
+	showParticipantDataControls: {
+		type: Boolean,
+		default: false,
 	},
 	hideOwnerOperations: {
 		type: Boolean,
