@@ -574,6 +574,63 @@ export default function useGoalData({ apollo } = {}) {
 		};
 	}
 
+	/**
+	 * Fix goals that were incorrectly marked as completed due to the ID_SUPPORT_ALL bug.
+	 * The bug used all-time loan count instead of current year loans for yearly progress.
+	 * This function checks 2026 ID_SUPPORT_ALL goals and resets them to in-progress if
+	 * the actual yearly loan count doesn't meet the target.
+	 *
+	 * @returns {Promise<{wasFixed: boolean}>} Whether a goal was fixed
+	 */
+	async function fixIncorrectlyCompletedSupportAllGoals() {
+		const parsedPrefs = await loadPreferences('network-only');
+		const goals = parsedPrefs.goals || [];
+		const currentYear = new Date().getFullYear();
+
+		// Find 2026 ID_SUPPORT_ALL goals that are marked as completed
+		const goalToFix = goals.find(goal => {
+			if (goal.category !== ID_SUPPORT_ALL) return false;
+			if (goal.status !== GOAL_STATUS.COMPLETED) return false;
+			const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
+			return goalYear === currentYear && currentYear >= GOALS_V2_START_YEAR;
+		});
+
+		if (!goalToFix) {
+			return { wasFixed: false };
+		}
+
+		// Get actual yearly loan count
+		const stats = await getLoanStatsByYear(currentYear, 'network-only');
+		const actualYearlyProgress = stats?.count || 0;
+
+		// Check if goal is actually complete
+		if (actualYearlyProgress >= goalToFix.target) {
+			// Goal is legitimately complete
+			return { wasFixed: false };
+		}
+
+		// Goal was incorrectly marked as complete - fix it
+		const updatedGoals = goals.map(goal => {
+			if (goal.goalName === goalToFix.goalName) {
+				return {
+					...goal,
+					status: GOAL_STATUS.IN_PROGRESS
+				};
+			}
+			return goal;
+		});
+
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			{ goals: updatedGoals }
+		);
+		setGoalState({ goals: updatedGoals });
+
+		return { wasFixed: true };
+	}
+
 	async function setHideGoalCardPreference(hide = true) {
 		const parsedPrefs = await loadPreferences('network-only');
 		await updateUserPreferences(
@@ -610,6 +667,7 @@ export default function useGoalData({ apollo } = {}) {
 		userGoalAchievedNow,
 		userPreferences,
 		// Goal Entry for 2026 Goals
+		fixIncorrectlyCompletedSupportAllGoals,
 		renewAnnualGoal,
 		hideGoalCard,
 		setHideGoalCardPreference,

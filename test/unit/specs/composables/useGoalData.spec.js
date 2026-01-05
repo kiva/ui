@@ -2082,6 +2082,198 @@ describe('useGoalData', () => {
 		});
 	});
 
+	describe('fixIncorrectlyCompletedSupportAllGoals', () => {
+		it('should return wasFixed: false when no ID_SUPPORT_ALL goal exists', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'goal-womens-equality-2026',
+					category: ID_WOMENS_EQUALITY,
+					target: 10,
+					status: 'completed',
+					dateStarted: '2026-01-15T00:00:00Z',
+				}],
+			};
+
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify(mockPrefs),
+						},
+						loans: { totalCount: 50 },
+					},
+				},
+			});
+
+			const result = await composable.fixIncorrectlyCompletedSupportAllGoals();
+
+			expect(result).toEqual({ wasFixed: false });
+		});
+
+		it('should return wasFixed: false when ID_SUPPORT_ALL goal is not completed', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'goal-support-all-2026',
+					category: ID_SUPPORT_ALL,
+					target: 10,
+					status: 'in-progress',
+					dateStarted: '2026-01-15T00:00:00Z',
+				}],
+			};
+
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify(mockPrefs),
+						},
+						loans: { totalCount: 50 },
+					},
+				},
+			});
+
+			const result = await composable.fixIncorrectlyCompletedSupportAllGoals();
+
+			expect(result).toEqual({ wasFixed: false });
+		});
+
+		it('should return wasFixed: false when goal is legitimately completed', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'goal-support-all-2026',
+					category: ID_SUPPORT_ALL,
+					target: 5,
+					status: 'completed',
+					dateStarted: '2026-01-15T00:00:00Z',
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 100 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							id: 'user-123',
+							lendingStats: {
+								id: 'stats-123',
+								loanStatsByYear: {
+									count: 10, // More than target of 5
+									amount: 250,
+								},
+							},
+						},
+					},
+				});
+
+			const result = await composable.fixIncorrectlyCompletedSupportAllGoals();
+
+			expect(result).toEqual({ wasFixed: false });
+		});
+
+		// eslint-disable-next-line max-len
+		it('should fix incorrectly completed goal and return wasFixed: true when yearly progress is less than target', async () => {
+			const {
+				updateUserPreferences,
+			} = await import('#src/util/userPreferenceUtils');
+
+			const mockPrefs = {
+				goals: [{
+					goalName: 'goal-support-all-2026',
+					category: ID_SUPPORT_ALL,
+					target: 10,
+					status: 'completed',
+					dateStarted: '2026-01-15T00:00:00Z',
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 100 }, // All-time total (was incorrectly used)
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							id: 'user-123',
+							lendingStats: {
+								id: 'stats-123',
+								loanStatsByYear: {
+									count: 3, // Only 3 loans this year, less than target of 10
+									amount: 75,
+								},
+							},
+						},
+					},
+				});
+
+			updateUserPreferences.mockClear();
+			const result = await composable.fixIncorrectlyCompletedSupportAllGoals();
+
+			expect(result).toEqual({ wasFixed: true });
+			expect(updateUserPreferences).toHaveBeenCalledWith(
+				mockApollo,
+				expect.anything(),
+				expect.anything(),
+				{
+					goals: [{
+						goalName: 'goal-support-all-2026',
+						category: ID_SUPPORT_ALL,
+						target: 10,
+						status: 'in-progress', // Changed from completed to in-progress
+						dateStarted: '2026-01-15T00:00:00Z',
+					}],
+				},
+			);
+		});
+
+		it('should not fix goals from years before GOALS_V2_START_YEAR', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'goal-support-all-2025',
+					category: ID_SUPPORT_ALL,
+					target: 10,
+					status: 'completed',
+					dateStarted: '2025-01-15T00:00:00Z', // 2025 is before GOALS_V2_START_YEAR
+				}],
+			};
+
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-123',
+							preferences: JSON.stringify(mockPrefs),
+						},
+						loans: { totalCount: 50 },
+					},
+				},
+			});
+
+			const result = await composable.fixIncorrectlyCompletedSupportAllGoals();
+
+			expect(result).toEqual({ wasFixed: false });
+		});
+	});
+
 	describe('setHideGoalCardPreference', () => {
 		it('should set hideGoalCard preference to true', async () => {
 			const {
