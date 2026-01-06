@@ -66,6 +66,7 @@ export default {
 
 		return {
 			fixIncorrectlyCompletedSupportAllGoals: goalDataComposable.fixIncorrectlyCompletedSupportAllGoals,
+			loadGoalData: goalDataComposable.loadGoalData,
 			renewAnnualGoal: goalDataComposable.renewAnnualGoal,
 			setHideGoalCardPreference: goalDataComposable.setHideGoalCardPreference,
 		};
@@ -287,6 +288,10 @@ export default {
 			}
 		} catch (error) {
 			logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
+		}
+
+		if (this.isNextStepsExpEnabled) {
+			await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
 		}
 	},
 };

@@ -382,7 +382,6 @@ export default {
 	},
 	setup() {
 		const apollo = inject('apollo');
-		const goalData = inject('goalData');
 		const { getMostRecentBlogPost } = useContentful(apollo);
 		const { isMobile } = useBreakpoints();
 
@@ -406,8 +405,7 @@ export default {
 			fetchContentfulData,
 			getLoanFindingUrl,
 			getMostRecentBlogPost,
-			isMobile,
-			loadGoalData: goalData.loadGoalData,
+			isMobile
 		};
 	},
 	data() {
@@ -779,9 +777,6 @@ export default {
 		this.fetchRecommendedLoans();
 		this.fetchMoreWaysToHelpData();
 		this.loadInitialBasketItems();
-		if (this.isNextStepsExpEnabled) {
-			await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
-		}
 
 		this.fetchMyGivingFundsCount()
 			.then(response => {
