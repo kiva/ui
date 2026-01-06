@@ -231,7 +231,6 @@
 import {
 	inject,
 	nextTick,
-	provide,
 } from 'vue';
 
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
@@ -240,7 +239,6 @@ import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import useContentful from '#src/composables/useContentful';
 import useGivingFund from '#src/composables/useGivingFund';
-import useGoalData from '#src/composables/useGoalData';
 
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
@@ -387,6 +385,7 @@ export default {
 	},
 	setup() {
 		const apollo = inject('apollo');
+		const goalData = inject('goalData');
 		const { getMostRecentBlogPost } = useContentful(apollo);
 		const { isMobile } = useBreakpoints();
 
@@ -402,9 +401,6 @@ export default {
 			fetchMyGivingFundsCount,
 		} = useGivingFund(apollo);
 
-		const goalDataComposable = useGoalData({ apollo });
-		provide('goalData', goalDataComposable);
-
 		return {
 			badgeData,
 			getFundsContributedToIds,
@@ -414,7 +410,7 @@ export default {
 			getLoanFindingUrl,
 			getMostRecentBlogPost,
 			isMobile,
-			loadGoalData: goalDataComposable.loadGoalData,
+			loadGoalData: goalData.loadGoalData,
 		};
 	},
 	data() {
