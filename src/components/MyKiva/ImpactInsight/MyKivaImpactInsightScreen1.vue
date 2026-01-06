@@ -1,5 +1,5 @@
 <template>
-	<section class="tw-w-full tw-px-2	 md:!tw-py-10 md:!tw-px-10">
+	<section class="tw-w-full tw-px-2 md:!tw-py-10 md:!tw-px-10">
 		<div class="tw-mx-auto tw-max-w-6xl">
 			<!-- Title -->
 			<h2 class="">
@@ -44,7 +44,7 @@
 						Your $25 loan helps {{ name }} build stability and success in
 						<strong class="tw-text-brand">{{ countryName }}</strong>,
 						where the average
-						<strong class="tw-text-brand">annual income is $2,700 USD</strong>.
+						<strong class="tw-text-brand">annual income is {{ countryPPP }} USD</strong>.
 					</p>
 				</div>
 			</div>
@@ -57,6 +57,7 @@ import {
 	KvBorrowerImage,
 } from '@kiva/kv-components';
 import { computed } from 'vue';
+import numeral from 'numeral';
 
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 
@@ -81,6 +82,10 @@ const hash = computed(() => {
 
 const countryName = computed(() => {
 	return props.latestLoan?.geocode?.country?.name || '';
+});
+
+const countryPPP = computed(() => {
+	return numeral(props.latestLoan?.geocode?.country?.ppp || '$0').format('$0,0[.]00');
 });
 
 </script>

@@ -29,13 +29,14 @@ export const Default = story({
         },
 		geocode: {
 			country: {
-				id: 231,
-				name: 'Vanuatu',
-				isoCode: 'VU',
 				geocode:{
 					latitude: -16,
 					longitude: 167
-				}
+				},
+				id: 231,
+				isoCode: 'VU',
+				name: 'Vanuatu',
+				ppp: '$89,599'
 			}
 		}
     },
