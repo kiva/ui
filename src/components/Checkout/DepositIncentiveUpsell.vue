@@ -14,7 +14,7 @@
 		<kv-progress-bar
 			v-if="!loadingProgress"
 			class="tw-w-full tw-max-w-sm tw-mb-2"
-			:aria-label="'Percent progress towards lending reward'"
+			:label="'Percent progress towards lending reward'"
 			:value="progressPercent"
 		/>
 		<kv-loading-placeholder v-if="loadingProgress" class="tw-h-1 tw-w-full tw-max-w-sm tw-mb-2" />

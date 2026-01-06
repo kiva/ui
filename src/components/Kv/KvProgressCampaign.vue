@@ -11,7 +11,7 @@
 		<div class="tw-relative tw-mt-1">
 			<kv-progress-bar
 				class="progress-bar"
-				aria-label="Percent the campaign has funded"
+				label="Percent the campaign has funded"
 				:value="progressPercentage"
 				:bg-variant="bgVariant"
 			/>

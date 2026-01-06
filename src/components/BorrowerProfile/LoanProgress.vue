@@ -3,14 +3,14 @@
 		<kv-progress-bar
 			v-if="loanStatus === 'pfp'"
 			class="tw-mb-1.5 lg:tw-mb-1"
-			aria-label="Percent completion of private fundraising"
+			label="Percent completion of private fundraising"
 			:value="pfpProgressPercent"
 			:bg-variant="'tertiary'"
 		/>
 		<kv-progress-bar
 			v-else
 			class="tw-mb-1.5 lg:tw-mb-1"
-			aria-label="Percent the loan has funded"
+			label="Percent the loan has funded"
 			:value="progressPercent * 100"
 			:bg-variant="'tertiary'"
 		/>
