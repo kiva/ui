@@ -126,6 +126,7 @@ query myKivaQuery {
       limit: 1
     ) {
       values {
+		amount
         loan {
           id
           name

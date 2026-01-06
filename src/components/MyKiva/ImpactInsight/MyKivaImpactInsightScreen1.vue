@@ -41,7 +41,7 @@
 						class="tw-rounded-2xl tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3
 							tw-text-base tw-leading-relaxed tw-bg-gray-100 tw-rounded-md md:tw-text-lg"
 					>
-						Your $25 loan helps {{ name }} build stability and success in
+						Your {{ amountBorrowed }} loan helps {{ name }} build stability and success in
 						<strong class="tw-text-brand">{{ countryName }}</strong>,
 						where the average
 						<strong class="tw-text-brand">annual income is {{ countryPPP }} USD</strong>.
@@ -85,7 +85,11 @@ const countryName = computed(() => {
 });
 
 const countryPPP = computed(() => {
-	return numeral(props.latestLoan?.geocode?.country?.ppp || '$0').format('$0,0[.]00');
+	return numeral(props.latestLoan?.geocode?.country?.ppp || 0).format('$0,0[.]00');
+});
+
+const amountBorrowed = computed(() => {
+	return numeral(Math.abs(props.latestLoan?.amountBorrowed || 0)).format('$0,0[.]00');
 });
 
 </script>
