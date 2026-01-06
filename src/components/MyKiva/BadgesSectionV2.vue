@@ -122,16 +122,9 @@ const visibleBadges = computed(() => {
 		showedSlides = formattedBadgeData(badgesSlides);
 	}
 
-	showedSlides.sort((a, b) => {
-		const aNextAchievementAt = a?.goal?.nextAchievementAt ?? Infinity;
-		const bNextAchievementAt = b?.goal?.nextAchievementAt ?? Infinity;
-
-		if (aNextAchievementAt === bNextAchievementAt) {
-			return (b?.level ?? 0) - (a?.level ?? 0);
-		}
-
-		return aNextAchievementAt - bNextAchievementAt;
-	});
+	showedSlides.sort((a, b) => (b?.goalProgress ?? 0) - (a?.goalProgress ?? 0)
+        || (b?.goal?.totalLoans ?? 0) - (a?.goal?.totalLoans ?? 0)
+        || defaultBadges.indexOf(a?.id) - defaultBadges.indexOf(b?.id));
 
 	if (userHasGoal.value) {
 		const formattedUserGoal = {
@@ -171,7 +164,7 @@ const badgeClicked = badge => {
 	}
 
 	$kvTrackEvent('portfolio', 'click', 'click-annual-goal-progress-continue');
-	router.push(getCtaHref(userGoal.value?.target, userGoal.value?.category, router));
+	router.push(getCtaHref(userGoal.value?.target, userGoal.value?.category, router, goalProgress.value));
 };
 
 const handleChange = interaction => {

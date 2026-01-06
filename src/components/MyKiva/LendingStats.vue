@@ -1,11 +1,8 @@
 <template>
 	<div class="tw-mb-2">
 		<h3 class="tw-text-primary tw-mb-1">
-			{{ title }}
+			Next steps recommended for you
 		</h3>
-		<p class="tw-text-base">
-			{{ description }}
-		</p>
 	</div>
 	<div
 		ref="loanRegionsElement"
@@ -32,6 +29,7 @@
 					:categories-loan-count="categoriesLoanCount"
 					:hide-goal-card="hideCompletedGoalCard"
 					:post-lending-next-steps-enable="postLendingNextStepsEnable"
+					:user-info="userInfo"
 					@open-goal-modal="showGoalModal = true"
 				/>
 			</div>
@@ -162,6 +160,7 @@
 			:hide-goal-card="hideCompletedGoalCard"
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
+			:user-info="userInfo"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<GoalSettingModal
@@ -262,7 +261,15 @@ export default {
 		latestLoan: {
 			type: Object,
 			default: null
-		}
+		},
+		goalRefreshKey: {
+			type: Number,
+			default: 0
+		},
+		userInfo: {
+			type: Object,
+			default: () => ({}),
+		},
 	},
 	data() {
 		return {
@@ -286,9 +293,6 @@ export default {
 		},
 		loanRegions() {
 			return this.regionsData.filter(region => region.hasLoans).length;
-		},
-		hasLoans() {
-			return this.loans.length > 0;
 		},
 		pillHeader() {
 			if (this.totalRegions === 0) return '';
@@ -314,16 +318,6 @@ export default {
 			const { getAllCategoryLoanCounts } = useBadgeData();
 			return getAllCategoryLoanCounts(this.heroTieredAchievements);
 		},
-		title() {
-			if (!this.hasLoans) return 'Your impact starts here';
-			if (this.isNextStepsExpEnabled) return 'Make a difference today';
-			return 'Ready to grow your impact?';
-		},
-		description() {
-			if (!this.hasLoans) return 'Recommended for you';
-			if (this.isNextStepsExpEnabled) return 'How many more people will you help this year?';
-			return 'Next steps for you based on your lending history';
-		},
 	},
 	setup() {
 		const goalData = inject('goalData');
@@ -334,6 +328,7 @@ export default {
 			goalProgress: goalData.goalProgress,
 			goalProgressLoading: goalData.loading,
 			loadGoalData: goalData.loadGoalData,
+			loadPreferences: goalData.loadPreferences,
 			storeGoalPreferences: goalData.storeGoalPreferences,
 			userGoal: goalData.userGoal,
 			userGoalAchieved: goalData.userGoalAchieved,
@@ -370,6 +365,20 @@ export default {
 	beforeUnmount() {
 		if (this.interval) clearInterval(this.interval);
 		if (this.disconnectRegionWatcher) this.disconnectRegionWatcher();
+	},
+	watch: {
+		async goalRefreshKey(newVal, oldVal) {
+			if (newVal !== oldVal && newVal > 0) {
+				this.goalProgressLoading = true;
+				await Promise.all([
+					this.loadGoalData({ yearlyProgress: this.goalsV2Enabled }),
+					this.loadPreferences('network-only'),
+				]);
+				// Update hideCompletedGoalCard after loading fresh preferences
+				this.hideCompletedGoalCard = this.hideGoalCard();
+				this.goalProgressLoading = false;
+			}
+		}
 	},
 	methods: {
 		regionImageSource(region) {

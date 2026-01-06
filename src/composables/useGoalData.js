@@ -7,6 +7,7 @@ import {
 import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import useGoalDataProgressQuery from '#src/graphql/query/useGoalDataProgress.graphql';
 import useGoalDataYearlyProgressQuery from '#src/graphql/query/useGoalDataYearlyProgress.graphql';
+import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import logFormatter from '#src/util/logFormatter';
 import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 
@@ -28,19 +29,19 @@ import supportAllImg from '#src/assets/images/my-kiva/goal-setting/support-all.s
 
 const GOAL_DISPLAY_MAP = {
 	[ID_BASIC_NEEDS]: 'basic needs loans',
-	[ID_CLIMATE_ACTION]: 'eco-friendly loans',
+	[ID_CLIMATE_ACTION]: 'eco friendly loans',
 	[ID_REFUGEE_EQUALITY]: 'refugees',
-	[ID_SUPPORT_ALL]: 'loans',
-	[ID_US_ECONOMIC_EQUALITY]: 'U.S. entrepreneurs',
+	[ID_SUPPORT_ALL]: 'borrowers',
+	[ID_US_ECONOMIC_EQUALITY]: 'US entrepreneurs',
 	[ID_WOMENS_EQUALITY]: 'women',
 };
 
 const GOAL_1_DISPLAY_MAP = {
 	[ID_BASIC_NEEDS]: 'basic needs loan',
-	[ID_CLIMATE_ACTION]: 'eco-friendly loan',
+	[ID_CLIMATE_ACTION]: 'eco friendly loan',
 	[ID_REFUGEE_EQUALITY]: 'refugee',
-	[ID_SUPPORT_ALL]: 'loan',
-	[ID_US_ECONOMIC_EQUALITY]: 'U.S. entrepreneur',
+	[ID_SUPPORT_ALL]: 'borrower',
+	[ID_US_ECONOMIC_EQUALITY]: 'US entrepreneur',
 	[ID_WOMENS_EQUALITY]: 'woman',
 };
 
@@ -87,6 +88,7 @@ export default function useGoalData({ apollo } = {}) {
 	const goalCurrentLoanCount = ref(0); // In-page counter for tracking loans added to basket
 	const loading = ref(true);
 	const totalLoanCount = ref(null);
+	const yearlyLoanCount = ref(null); // Total loans for current year from loanStatsByYear
 	const userGoal = ref(null);
 	const userGoalAchievedNow = ref(false);
 	const userPreferences = ref(null);
@@ -101,7 +103,8 @@ export default function useGoalData({ apollo } = {}) {
 		// When flag is disabled (useYearlyProgress = false), use all-time progress minus loanTotalAtStart
 		if (goal?.category === ID_SUPPORT_ALL) {
 			if (useYearlyProgress.value) {
-				return totalLoanCount.value || 0;
+				// Use yearlyLoanCount from loanStatsByYear query for accurate current year total
+				return yearlyLoanCount.value || 0;
 			}
 			const loanTotalAtStart = goal?.loanTotalAtStart || 0;
 			return Math.max(0, (totalLoanCount.value || 0) - loanTotalAtStart);
@@ -137,7 +140,17 @@ export default function useGoalData({ apollo } = {}) {
 	function setGoalState(parsedPrefs) {
 		if (!parsedPrefs) return;
 		const goals = parsedPrefs.goals || [];
-		const activeGoals = goals.filter(g => g.status !== GOAL_STATUS.EXPIRED);
+		const currentYear = new Date().getFullYear();
+		const activeGoals = goals.filter(g => {
+			// Filter out expired goals
+			if (g.status === GOAL_STATUS.EXPIRED) return false;
+			// Filter out goals completed in previous years
+			if (g.status === GOAL_STATUS.COMPLETED && g.dateStarted) {
+				const goalYear = new Date(g.dateStarted).getFullYear();
+				if (goalYear < currentYear) return false;
+			}
+			return true;
+		});
 		userGoal.value = { ...activeGoals[0] };
 	}
 
@@ -214,15 +227,18 @@ export default function useGoalData({ apollo } = {}) {
 
 	/**
 	 * Generate CTA Href for Goal Completion
-	 * @param {*} selectedGoalNumber goal number selected by the user
-	 * @param {*} categoryId category id selected by the user
-	 * @param {*} router router instance
-	 * @returns href string
+	 * @param {number} selectedGoalNumber goal target number selected by the user
+	 * @param {string} categoryId category id selected by the user
+	 * @param {object} router vue-router instance
+	 * @param {number} currentLoanCount loans made toward this goal (default 0 for new goals,
+	 *   pass goalProgress for existing goals to show remaining loans needed)
+	 * @returns {string} href string with encoded header message
 	 */
-	function getCtaHref(selectedGoalNumber, categoryId, router) {
+	function getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount = 0) {
 		const { getLoanFindingUrl } = useBadgeData();
-		const categoryHeader = getGoalDisplayName(selectedGoalNumber, categoryId);
-		const string = `Your goal: Support ${selectedGoalNumber} ${categoryHeader}`;
+		const remaining = Math.max(0, selectedGoalNumber - currentLoanCount);
+		const categoryHeader = getGoalDisplayName(remaining, categoryId);
+		const string = `Support ${remaining} more ${categoryHeader} to reach your goal`;
 		const encodedHeader = encodeURIComponent(string);
 		const loanFindingUrl = getLoanFindingUrl(categoryId, router.currentRoute.value);
 		return `${loanFindingUrl}?header=${encodedHeader}`;
@@ -273,6 +289,32 @@ export default function useGoalData({ apollo } = {}) {
 			return count;
 		} catch (error) {
 			logFormatter(error, 'Failed to fetch category loan count by year');
+			return null;
+		}
+	}
+
+	/**
+	 * Retrieves the user's total loan count and amount for a given year.
+	 * This includes all loans regardless of category.
+	 *
+	 * @param {number} year - Year to fetch loan stats for.
+	 * @param {string} [fetchPolicy='cache-first'] - Apollo fetch policy.
+	 * @returns {Promise<{count: number, amount: number}|null>} Loan stats for the year, or null on error.
+	 */
+	async function getLoanStatsByYear(year, fetchPolicy = 'cache-first') {
+		try {
+			const response = await apolloClient.query({
+				query: loanStatsByYearQuery,
+				variables: { year },
+				fetchPolicy
+			});
+			const stats = response.data?.my?.lendingStats?.loanStatsByYear;
+			return {
+				count: stats?.count || 0,
+				amount: stats?.amount || 0,
+			};
+		} catch (error) {
+			logFormatter(error, 'Failed to fetch loan stats by year');
 			return null;
 		}
 	}
@@ -378,7 +420,7 @@ export default function useGoalData({ apollo } = {}) {
 			if (updates.category === ID_SUPPORT_ALL) {
 				loanTotalAtStart = totalLoanCount.value || 0;
 			} else {
-				const categoryProgress = currentYearProgress.value.find(n => n.id === updates.category);
+				const categoryProgress = currentYearProgress.value?.find(n => n.id === updates.category);
 				loanTotalAtStart = categoryProgress?.totalProgressToAchievement || 0;
 			}
 			goals.push({ ...updates, loanTotalAtStart });
@@ -401,6 +443,9 @@ export default function useGoalData({ apollo } = {}) {
 			(currentGoalProgress && (currentGoalProgress >= userGoal.value?.target))
 			|| (userGoal.value && userGoalAchieved.value)
 		) {
+			// Capture goal data before storeGoalPreferences (which may filter out the goal via setGoalState)
+			const goalCategory = userGoal.value.category;
+			const goalTarget = userGoal.value.target;
 			userGoal.value = {
 				...userGoal.value,
 				status: GOAL_STATUS.COMPLETED
@@ -410,8 +455,8 @@ export default function useGoalData({ apollo } = {}) {
 				category,
 				'show',
 				'annual-goal-complete',
-				userGoal.value.category,
-				userGoal.value.target
+				goalCategory,
+				goalTarget
 			);
 			userGoalAchievedNow.value = true;
 		}
@@ -428,7 +473,7 @@ export default function useGoalData({ apollo } = {}) {
 		const goal = userGoal.value;
 		if (goal.category === ID_SUPPORT_ALL) return;
 
-		const categoryProgress = currentYearProgress.value.find(n => n.id === goal.category);
+		const categoryProgress = currentYearProgress.value?.find(n => n.id === goal.category);
 		const allTimeProgress = categoryProgress?.totalProgressToAchievement || 0;
 		const loanTotalAtStart = goal.loanTotalAtStart || 0;
 		const adjustedProgress = allTimeProgress - loanTotalAtStart;
@@ -463,6 +508,11 @@ export default function useGoalData({ apollo } = {}) {
 		const parsedPrefs = await loadPreferences();
 		await loadProgress(year);
 		setGoalState(parsedPrefs);
+		// Load yearly loan count for ID_SUPPORT_ALL goals when using yearly progress
+		if (yearlyProgress && userGoal.value?.category === ID_SUPPORT_ALL) {
+			const stats = await getLoanStatsByYear(year, 'network-only');
+			yearlyLoanCount.value = stats?.count || 0;
+		}
 		// Initialize in-page counter for ID_SUPPORT_ALL based on loans already in basket
 		if (userGoal.value?.category === ID_SUPPORT_ALL && loans.length > 0 && !goalCurrentLoanCount.value) {
 			// Reducing counter by 1 because loans already has the added loan
@@ -524,13 +574,70 @@ export default function useGoalData({ apollo } = {}) {
 		};
 	}
 
-	async function setHideGoalCardPreference() {
-		const parsedPrefs = await loadPreferences();
+	/**
+	 * Fix goals that were incorrectly marked as completed due to the ID_SUPPORT_ALL bug.
+	 * The bug used all-time loan count instead of current year loans for yearly progress.
+	 * This function checks 2026 ID_SUPPORT_ALL goals and resets them to in-progress if
+	 * the actual yearly loan count doesn't meet the target.
+	 *
+	 * @returns {Promise<{wasFixed: boolean}>} Whether a goal was fixed
+	 */
+	async function fixIncorrectlyCompletedSupportAllGoals() {
+		const parsedPrefs = await loadPreferences('network-only');
+		const goals = parsedPrefs.goals || [];
+		const currentYear = new Date().getFullYear();
+
+		// Find 2026 ID_SUPPORT_ALL goals that are marked as completed
+		const goalToFix = goals.find(goal => {
+			if (goal.category !== ID_SUPPORT_ALL) return false;
+			if (goal.status !== GOAL_STATUS.COMPLETED) return false;
+			const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
+			return goalYear === currentYear && currentYear >= GOALS_V2_START_YEAR;
+		});
+
+		if (!goalToFix) {
+			return { wasFixed: false };
+		}
+
+		// Get actual yearly loan count
+		const stats = await getLoanStatsByYear(currentYear, 'network-only');
+		const actualYearlyProgress = stats?.count || 0;
+
+		// Check if goal is actually complete
+		if (actualYearlyProgress >= goalToFix.target) {
+			// Goal is legitimately complete
+			return { wasFixed: false };
+		}
+
+		// Goal was incorrectly marked as complete - fix it
+		const updatedGoals = goals.map(goal => {
+			if (goal.goalName === goalToFix.goalName) {
+				return {
+					...goal,
+					status: GOAL_STATUS.IN_PROGRESS
+				};
+			}
+			return goal;
+		});
+
 		await updateUserPreferences(
 			apolloClient,
 			userPreferences.value,
 			parsedPrefs,
-			{ hideGoalCard: true }
+			{ goals: updatedGoals }
+		);
+		setGoalState({ goals: updatedGoals });
+
+		return { wasFixed: true };
+	}
+
+	async function setHideGoalCardPreference(hide = true) {
+		const parsedPrefs = await loadPreferences('network-only');
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			{ hideGoalCard: hide }
 		);
 	}
 
@@ -556,11 +663,13 @@ export default function useGoalData({ apollo } = {}) {
 		getCategoryLoansLastYear,
 		getCtaHref,
 		getGoalDisplayName,
+		getLoanStatsByYear,
 		getPostCheckoutProgressByLoans,
 		goalProgress,
 		goalProgressPercentage,
 		isProgressCompletingGoal,
 		loadGoalData,
+		loadPreferences,
 		loading,
 		storeGoalPreferences,
 		userGoal,
@@ -568,6 +677,7 @@ export default function useGoalData({ apollo } = {}) {
 		userGoalAchievedNow,
 		userPreferences,
 		// Goal Entry for 2026 Goals
+		fixIncorrectlyCompletedSupportAllGoals,
 		renewAnnualGoal,
 		hideGoalCard,
 		setHideGoalCardPreference,

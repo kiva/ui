@@ -21,11 +21,11 @@
 
 		<div
 			v-if="isGoalSet" class="tw-flex tw-justify-center tw-items-center"
-			style="max-width: 575px; height: 150px;"
 		>
 			<img
 				:src="HandsPlant"
-				class="lg:tw-mb-1 tw-w-10 lg:tw-w-14"
+				style="max-width: 200px;"
+				class="lg:tw-mb-1 tw-w-full tw-h-full"
 				alt="gif"
 			>
 		</div>
@@ -34,15 +34,25 @@
 			v-else
 			class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5 tw-my-1"
 		>
-			<LoanNumberSelector
-				v-for="(option, index) in goalOptions"
-				:key="index"
-				:loans-number="option.loansNumber"
-				:option-text="option.optionText"
-				:selected="option.selected"
-				:highlighted-text="option.highlightedText"
-				@click="updateOptionSelection(index)"
-			/>
+			<template v-if="loadingCurrentYear">
+				<KvLoadingPlaceholder
+					v-for="n in 3"
+					:key="n"
+					class="tw-flex-1 !tw-rounded"
+					style="min-height: 82px;"
+				/>
+			</template>
+			<template v-else>
+				<LoanNumberSelector
+					v-for="(option, index) in goalOptions"
+					:key="index"
+					:loans-number="option.loansNumber"
+					:option-text="option.optionText"
+					:selected="option.selected"
+					:highlighted-text="option.highlightedText"
+					@click="updateOptionSelection(index)"
+				/>
+			</template>
 		</div>
 
 		<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
@@ -75,11 +85,12 @@ import {
 	inject,
 	onMounted,
 	ref,
+	watch,
 } from 'vue';
 import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
-import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
+import { KvButton, KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { mdiPencilOutline } from '@mdi/js';
 import useGoalData, { SAME_AS_LAST_YEAR_LIMIT } from '#src/composables/useGoalData';
 
@@ -117,7 +128,7 @@ const props = defineProps({
 		default: '/mykiva',
 	},
 	/**
-	 * Tiered achievements data
+	 * Tiered achievements data (last year)
 	 */
 	tieredAchievements: {
 		type: Array,
@@ -147,6 +158,7 @@ const goalOptions = ref([
 ]);
 
 const womenLoansThisYear = ref(0);
+const loadingCurrentYear = ref(true);
 
 const womenLoansLastYear = computed(() => {
 	return getCategoryLoansLastYear(props.tieredAchievements);
@@ -253,14 +265,15 @@ const handleContinue = () => {
 	}
 };
 
-async function loadWomenLoansThisYear() {
+const loadWomenLoansThisYear = async () => {
+	loadingCurrentYear.value = true;
 	const currentYear = new Date().getFullYear();
-	const count = await getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, currentYear);
+	const count = await getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, currentYear, 'network-only');
 	womenLoansThisYear.value = count;
-}
+	loadingCurrentYear.value = false;
+};
 
-onMounted(async () => {
-	await loadWomenLoansThisYear();
+const updateGoalOptions = () => {
 	const ytdLoans = womenLoansThisYear.value;
 	const lastYearLoans = womenLoansLastYear.value;
 
@@ -295,6 +308,13 @@ onMounted(async () => {
 			},
 		];
 	}
+	emit('set-goal-target', selectedTarget.value);
+};
+
+onMounted(async () => {
+	await loadWomenLoansThisYear();
+	updateGoalOptions();
+
 	if (props.trackingCategory === 'post-checkout') {
 		$kvTrackEvent(
 			'post-checkout',
@@ -302,7 +322,20 @@ onMounted(async () => {
 			'set-annual-goal'
 		);
 	}
-	emit('set-goal-target', selectedTarget.value);
+});
+
+watch(() => props.isGoalSet, newVal => {
+	// Re-run gif animation when goal is set
+	if (newVal) {
+		const imgElement = document.querySelector('img[alt="gif"]');
+		if (imgElement) {
+			const { src } = imgElement;
+			imgElement.src = '';
+			setTimeout(() => {
+				imgElement.src = src;
+			}, 50);
+		}
+	}
 });
 </script>
 

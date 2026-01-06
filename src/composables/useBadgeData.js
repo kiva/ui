@@ -639,6 +639,7 @@ export default function useBadgeData() {
 		getLoanFindingUrl,
 		getTierBadgeDataByLevel,
 		getTierBadgeHeadline,
+		ID_SUPPORT_ALL,
 		ID_BASIC_NEEDS,
 		ID_CLIMATE_ACTION,
 		ID_REFUGEE_EQUALITY,

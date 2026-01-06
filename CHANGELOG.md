@@ -1,3 +1,161 @@
+## [3.51.0](https://github.com/kiva/ui/compare/v3.50.0...v3.51.0) (2026-01-05)
+
+### 🎉 New Features
+
+* adjusting impact progress goal cards sort order ([2a9a126](https://github.com/kiva/ui/commit/2a9a126b18d3e02d808473d2bee7e6aed10a311f))
+* check user lent to for each added loan ([c921897](https://github.com/kiva/ui/commit/c921897ec9a41ac580874e94034f40d403a40f9c))
+* mobile scrollbar + copy fix ([b7c1bbe](https://github.com/kiva/ui/commit/b7c1bbed8496dd3e700583573de204226edac05a))
+* prevent lent loans to count on goal message ([f3d5228](https://github.com/kiva/ui/commit/f3d522808858750dc1aadd103e8c2e2691db08f9))
+
+### 🐛 Bugfixes
+
+* ensure yearly lending is used when setting all loans goal ([#6567](https://github.com/kiva/ui/issues/6567)) ([b660132](https://github.com/kiva/ui/commit/b66013269ca3a5e0fc05802f835c6e19158648a7))
+* get lentTo value from basket items ([b5542c8](https://github.com/kiva/ui/commit/b5542c85bed775a2ea8a604ede4165a8acb8788e))
+* hide entrypoint if v2 goal was completed ([7e9edc5](https://github.com/kiva/ui/commit/7e9edc5c225bafb38d9a77f8a95b02da5baf58f2))
+* hide goal entrypoint when it is completed ([526a4d5](https://github.com/kiva/ui/commit/526a4d5ed283688ce9e8bdda114570771769ebac))
+* missing comment and reverting getting loan ids from my query ([cd5d2de](https://github.com/kiva/ui/commit/cd5d2dea8e1c6ae02808fc52ac5a132d6af48570))
+
+### 🧹 Chores
+
+* **release:** 3.51.0-rc.1 [skip ci] ([a7a620e](https://github.com/kiva/ui/commit/a7a620e91134bc35f6d05e2e1616808bbd514551)), closes [#6567](https://github.com/kiva/ui/issues/6567)
+
+## [3.51.0-rc.1](https://github.com/kiva/ui/compare/v3.50.0...v3.51.0-rc.1) (2026-01-05)
+
+### 🎉 New Features
+
+* adjusting impact progress goal cards sort order ([2a9a126](https://github.com/kiva/ui/commit/2a9a126b18d3e02d808473d2bee7e6aed10a311f))
+* check user lent to for each added loan ([c921897](https://github.com/kiva/ui/commit/c921897ec9a41ac580874e94034f40d403a40f9c))
+* mobile scrollbar + copy fix ([b7c1bbe](https://github.com/kiva/ui/commit/b7c1bbed8496dd3e700583573de204226edac05a))
+* prevent lent loans to count on goal message ([f3d5228](https://github.com/kiva/ui/commit/f3d522808858750dc1aadd103e8c2e2691db08f9))
+
+### 🐛 Bugfixes
+
+* ensure yearly lending is used when setting all loans goal ([#6567](https://github.com/kiva/ui/issues/6567)) ([b660132](https://github.com/kiva/ui/commit/b66013269ca3a5e0fc05802f835c6e19158648a7))
+* get lentTo value from basket items ([b5542c8](https://github.com/kiva/ui/commit/b5542c85bed775a2ea8a604ede4165a8acb8788e))
+* hide entrypoint if v2 goal was completed ([7e9edc5](https://github.com/kiva/ui/commit/7e9edc5c225bafb38d9a77f8a95b02da5baf58f2))
+* hide goal entrypoint when it is completed ([526a4d5](https://github.com/kiva/ui/commit/526a4d5ed283688ce9e8bdda114570771769ebac))
+* missing comment and reverting getting loan ids from my query ([cd5d2de](https://github.com/kiva/ui/commit/cd5d2dea8e1c6ae02808fc52ac5a132d6af48570))
+
+## [3.50.0](https://github.com/kiva/ui/compare/v3.49.1...v3.50.0) (2026-01-05)
+
+### 🎉 New Features
+
+* goal display name update ([#6557](https://github.com/kiva/ui/issues/6557)) ([195ca3e](https://github.com/kiva/ui/commit/195ca3ea39165af8d0f3cb4baf92cab051d101ce))
+* mykiva survey card added ([#6551](https://github.com/kiva/ui/issues/6551)) ([932b58c](https://github.com/kiva/ui/commit/932b58cedb55ddce4b42b5db8ecc8299c97390e5))
+* next year goal card update ([#6553](https://github.com/kiva/ui/issues/6553)) ([4cb6daa](https://github.com/kiva/ui/commit/4cb6daab2567a0b93af925da738eb3b01c6da9ce))
+* survey card added to lending stats carousel ([#6555](https://github.com/kiva/ui/issues/6555)) ([d15a819](https://github.com/kiva/ui/commit/d15a819f3cf81696c859513b14caa86ac931cbaa))
+
+### 🐛 Bugfixes
+
+* add hasActiveGoal check to AtbModal ([2744673](https://github.com/kiva/ui/commit/274467373d00f984ee12fef5a3eef04f1d48b860))
+* further defensive programming for goal data not being loaded ([#6561](https://github.com/kiva/ui/issues/6561)) ([c343adb](https://github.com/kiva/ui/commit/c343adba470e9aafd5b16a200672a19942e816c1))
+* implement card pill changes ([4ad7f2f](https://github.com/kiva/ui/commit/4ad7f2ff1fa46ec277a81053b52441b3f12bc449))
+* latest loan card update ([#6554](https://github.com/kiva/ui/issues/6554)) ([e86a2e8](https://github.com/kiva/ui/commit/e86a2e8c25b274859f3830f97859fd7d139e9239))
+* mobile spacing in goal setting page ([fe5506f](https://github.com/kiva/ui/commit/fe5506fe337bb56c55aefd6f7c20603974c67a0b))
+* more goals V2 fixes ([#6563](https://github.com/kiva/ui/issues/6563)) ([c038e7b](https://github.com/kiva/ui/commit/c038e7b15d8ef6abb0f12ccacae285d99338718e))
+* mp-2263 / Update Copy for Next Steps Row Header ([#6540](https://github.com/kiva/ui/issues/6540)) ([151eb0a](https://github.com/kiva/ui/commit/151eb0aee51a1083a61934443ffb16976ea24a1f))
+* portfolio goals bug ([#6560](https://github.com/kiva/ui/issues/6560)) ([7c810af](https://github.com/kiva/ui/commit/7c810af755c4ea1994cae96861dffec581bf43d3))
+* remove unnecessary useGoalData context ([68e497e](https://github.com/kiva/ui/commit/68e497ed807870a3192a13cf79e2331e39f7bb0a))
+* resolve issues with goal selector component/page ([#6562](https://github.com/kiva/ui/issues/6562)) ([9dedd0d](https://github.com/kiva/ui/commit/9dedd0d1349fa541f85c6db571493a124e309b2c))
+* restore pillMessage length ([b5052f7](https://github.com/kiva/ui/commit/b5052f7664a8cb0b9ccd269bc992b162e6b8e4dd))
+* revert KvAtbModalContainer changes ([46ab554](https://github.com/kiva/ui/commit/46ab554f73761837e2a9f45de3ef3fb70c30ba33))
+
+### 🧹 Chores
+
+* **release:** 3.50.0-rc.1 [skip ci] ([e64ea5b](https://github.com/kiva/ui/commit/e64ea5b4b77424788f1b09b3313f402eefa9b2b6)), closes [#6557](https://github.com/kiva/ui/issues/6557) [#6551](https://github.com/kiva/ui/issues/6551) [#6553](https://github.com/kiva/ui/issues/6553) [#6555](https://github.com/kiva/ui/issues/6555) [#6561](https://github.com/kiva/ui/issues/6561) [#6554](https://github.com/kiva/ui/issues/6554) [#6563](https://github.com/kiva/ui/issues/6563) [#6540](https://github.com/kiva/ui/issues/6540) [#6560](https://github.com/kiva/ui/issues/6560) [#6562](https://github.com/kiva/ui/issues/6562)
+
+## [3.50.0-rc.1](https://github.com/kiva/ui/compare/v3.49.1...v3.50.0-rc.1) (2026-01-05)
+
+### 🎉 New Features
+
+* goal display name update ([#6557](https://github.com/kiva/ui/issues/6557)) ([195ca3e](https://github.com/kiva/ui/commit/195ca3ea39165af8d0f3cb4baf92cab051d101ce))
+* mykiva survey card added ([#6551](https://github.com/kiva/ui/issues/6551)) ([932b58c](https://github.com/kiva/ui/commit/932b58cedb55ddce4b42b5db8ecc8299c97390e5))
+* next year goal card update ([#6553](https://github.com/kiva/ui/issues/6553)) ([4cb6daa](https://github.com/kiva/ui/commit/4cb6daab2567a0b93af925da738eb3b01c6da9ce))
+* survey card added to lending stats carousel ([#6555](https://github.com/kiva/ui/issues/6555)) ([d15a819](https://github.com/kiva/ui/commit/d15a819f3cf81696c859513b14caa86ac931cbaa))
+
+### 🐛 Bugfixes
+
+* add hasActiveGoal check to AtbModal ([2744673](https://github.com/kiva/ui/commit/274467373d00f984ee12fef5a3eef04f1d48b860))
+* further defensive programming for goal data not being loaded ([#6561](https://github.com/kiva/ui/issues/6561)) ([c343adb](https://github.com/kiva/ui/commit/c343adba470e9aafd5b16a200672a19942e816c1))
+* implement card pill changes ([4ad7f2f](https://github.com/kiva/ui/commit/4ad7f2ff1fa46ec277a81053b52441b3f12bc449))
+* latest loan card update ([#6554](https://github.com/kiva/ui/issues/6554)) ([e86a2e8](https://github.com/kiva/ui/commit/e86a2e8c25b274859f3830f97859fd7d139e9239))
+* mobile spacing in goal setting page ([fe5506f](https://github.com/kiva/ui/commit/fe5506fe337bb56c55aefd6f7c20603974c67a0b))
+* more goals V2 fixes ([#6563](https://github.com/kiva/ui/issues/6563)) ([c038e7b](https://github.com/kiva/ui/commit/c038e7b15d8ef6abb0f12ccacae285d99338718e))
+* mp-2263 / Update Copy for Next Steps Row Header ([#6540](https://github.com/kiva/ui/issues/6540)) ([151eb0a](https://github.com/kiva/ui/commit/151eb0aee51a1083a61934443ffb16976ea24a1f))
+* portfolio goals bug ([#6560](https://github.com/kiva/ui/issues/6560)) ([7c810af](https://github.com/kiva/ui/commit/7c810af755c4ea1994cae96861dffec581bf43d3))
+* remove unnecessary useGoalData context ([68e497e](https://github.com/kiva/ui/commit/68e497ed807870a3192a13cf79e2331e39f7bb0a))
+* resolve issues with goal selector component/page ([#6562](https://github.com/kiva/ui/issues/6562)) ([9dedd0d](https://github.com/kiva/ui/commit/9dedd0d1349fa541f85c6db571493a124e309b2c))
+* restore pillMessage length ([b5052f7](https://github.com/kiva/ui/commit/b5052f7664a8cb0b9ccd269bc992b162e6b8e4dd))
+* revert KvAtbModalContainer changes ([46ab554](https://github.com/kiva/ui/commit/46ab554f73761837e2a9f45de3ef3fb70c30ba33))
+
+## [3.49.1](https://github.com/kiva/ui/compare/v3.49.0...v3.49.1) (2025-12-24)
+
+### 🐛 Bugfixes
+
+* copy in next steps goal card ([#6548](https://github.com/kiva/ui/issues/6548)) ([41809fe](https://github.com/kiva/ui/commit/41809fec0d29ae62c7a85b654dd4b71eb9407cef))
+* defensive optional chaining in goals ([#6549](https://github.com/kiva/ui/issues/6549)) ([de2967d](https://github.com/kiva/ui/commit/de2967d5b9b9d17ba9e91ce6c3788f1176cc8130))
+* filter out goals from the previous year ([#6547](https://github.com/kiva/ui/issues/6547)) ([6002cd0](https://github.com/kiva/ui/commit/6002cd0d0b5b2220baf9e4210b2a588ba2024f38))
+* hide goal card was causing an issue with completed goal ([#6550](https://github.com/kiva/ui/issues/6550)) ([9cf3a08](https://github.com/kiva/ui/commit/9cf3a08aeb106f0dc908dd2eb7bda0fd160739e7))
+
+### 🧹 Chores
+
+* **release:** 3.49.1-rc.1 [skip ci] ([595f1e4](https://github.com/kiva/ui/commit/595f1e43cada696c946d7be397405685e33cb163)), closes [#6548](https://github.com/kiva/ui/issues/6548) [#6547](https://github.com/kiva/ui/issues/6547)
+* **release:** 3.49.1-rc.2 [skip ci] ([c095a08](https://github.com/kiva/ui/commit/c095a086bf1b2be08a26894d7200983bc2bb6ba7)), closes [#6549](https://github.com/kiva/ui/issues/6549)
+* **release:** 3.49.1-rc.3 [skip ci] ([7c09da8](https://github.com/kiva/ui/commit/7c09da82ffee6e365e26a7758e06720fb13936a4)), closes [#6550](https://github.com/kiva/ui/issues/6550)
+
+## [3.49.1-rc.3](https://github.com/kiva/ui/compare/v3.49.1-rc.2...v3.49.1-rc.3) (2025-12-24)
+
+### 🐛 Bugfixes
+
+* hide goal card was causing an issue with completed goal ([#6550](https://github.com/kiva/ui/issues/6550)) ([9cf3a08](https://github.com/kiva/ui/commit/9cf3a08aeb106f0dc908dd2eb7bda0fd160739e7))
+
+## [3.49.1-rc.2](https://github.com/kiva/ui/compare/v3.49.1-rc.1...v3.49.1-rc.2) (2025-12-24)
+
+### 🐛 Bugfixes
+
+* defensive optional chaining in goals ([#6549](https://github.com/kiva/ui/issues/6549)) ([de2967d](https://github.com/kiva/ui/commit/de2967d5b9b9d17ba9e91ce6c3788f1176cc8130))
+
+## [3.49.1-rc.1](https://github.com/kiva/ui/compare/v3.49.0...v3.49.1-rc.1) (2025-12-24)
+
+### 🐛 Bugfixes
+
+* copy in next steps goal card ([#6548](https://github.com/kiva/ui/issues/6548)) ([41809fe](https://github.com/kiva/ui/commit/41809fec0d29ae62c7a85b654dd4b71eb9407cef))
+* filter out goals from the previous year ([#6547](https://github.com/kiva/ui/issues/6547)) ([6002cd0](https://github.com/kiva/ui/commit/6002cd0d0b5b2220baf9e4210b2a588ba2024f38))
+
+## [3.49.0](https://github.com/kiva/ui/compare/v3.48.0...v3.49.0) (2025-12-23)
+
+### 🎉 New Features
+
+* [MP-2319] - minor changes requested and small revert for new proposal  ([#6539](https://github.com/kiva/ui/issues/6539)) ([f8d4a26](https://github.com/kiva/ui/commit/f8d4a26e7ea0e2017eea90997322ee73f5ca4395))
+
+### 🐛 Bugfixes
+
+* bigger gif and re-run it after goal is set ([#6545](https://github.com/kiva/ui/issues/6545)) ([caa5156](https://github.com/kiva/ui/commit/caa5156a6075b42cc1718dd52da53888ea8340da))
+* change router.push to window.location ([#6544](https://github.com/kiva/ui/issues/6544)) ([54cbf60](https://github.com/kiva/ui/commit/54cbf60fc07bdda5f27364015a00ee8bf39255ed))
+* completed goal state in card ([#6543](https://github.com/kiva/ui/issues/6543)) ([8f14ec1](https://github.com/kiva/ui/commit/8f14ec1ec7e5fcdff92a66d686723fff6884ed2b))
+* ensure goal card refreshed on renewal of goal ([#6546](https://github.com/kiva/ui/issues/6546)) ([3907f76](https://github.com/kiva/ui/commit/3907f76c75f3b3088b0eaa7bcb17178d33246918))
+* lastest loan card map bug ([#6541](https://github.com/kiva/ui/issues/6541)) ([a647748](https://github.com/kiva/ui/commit/a647748dc056db7e9b8e80ecc5bc528d2f1998de))
+* mp-2352 / Fix Copy on NextYearGoalCard's Goal Description ([#6542](https://github.com/kiva/ui/issues/6542)) ([db9e17b](https://github.com/kiva/ui/commit/db9e17b18542d0bbb13f3eaa56ccc404581f6c7f))
+
+### 🧹 Chores
+
+* **release:** 3.49.0-rc.1 [skip ci] ([3df5773](https://github.com/kiva/ui/commit/3df57738184655a54a03904850472735657dfef4)), closes [#6539](https://github.com/kiva/ui/issues/6539) [#6545](https://github.com/kiva/ui/issues/6545) [#6544](https://github.com/kiva/ui/issues/6544) [#6543](https://github.com/kiva/ui/issues/6543) [#6546](https://github.com/kiva/ui/issues/6546) [#6541](https://github.com/kiva/ui/issues/6541) [#6542](https://github.com/kiva/ui/issues/6542)
+
+## [3.49.0-rc.1](https://github.com/kiva/ui/compare/v3.48.0...v3.49.0-rc.1) (2025-12-23)
+
+### 🎉 New Features
+
+* [MP-2319] - minor changes requested and small revert for new proposal  ([#6539](https://github.com/kiva/ui/issues/6539)) ([f8d4a26](https://github.com/kiva/ui/commit/f8d4a26e7ea0e2017eea90997322ee73f5ca4395))
+
+### 🐛 Bugfixes
+
+* bigger gif and re-run it after goal is set ([#6545](https://github.com/kiva/ui/issues/6545)) ([caa5156](https://github.com/kiva/ui/commit/caa5156a6075b42cc1718dd52da53888ea8340da))
+* change router.push to window.location ([#6544](https://github.com/kiva/ui/issues/6544)) ([54cbf60](https://github.com/kiva/ui/commit/54cbf60fc07bdda5f27364015a00ee8bf39255ed))
+* completed goal state in card ([#6543](https://github.com/kiva/ui/issues/6543)) ([8f14ec1](https://github.com/kiva/ui/commit/8f14ec1ec7e5fcdff92a66d686723fff6884ed2b))
+* ensure goal card refreshed on renewal of goal ([#6546](https://github.com/kiva/ui/issues/6546)) ([3907f76](https://github.com/kiva/ui/commit/3907f76c75f3b3088b0eaa7bcb17178d33246918))
+* lastest loan card map bug ([#6541](https://github.com/kiva/ui/issues/6541)) ([a647748](https://github.com/kiva/ui/commit/a647748dc056db7e9b8e80ecc5bc528d2f1998de))
+* mp-2352 / Fix Copy on NextYearGoalCard's Goal Description ([#6542](https://github.com/kiva/ui/issues/6542)) ([db9e17b](https://github.com/kiva/ui/commit/db9e17b18542d0bbb13f3eaa56ccc404581f6c7f))
+
 ## [3.48.0](https://github.com/kiva/ui/compare/v3.47.0...v3.48.0) (2025-12-23)
 
 ### 🎉 New Features
