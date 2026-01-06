@@ -228,10 +228,7 @@
 </template>
 
 <script>
-import {
-	inject,
-	nextTick,
-} from 'vue';
+import { inject, nextTick } from 'vue';
 
 import userUpdatesQuery from '#src/graphql/query/userUpdates.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
