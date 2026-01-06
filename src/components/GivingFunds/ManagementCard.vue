@@ -137,7 +137,7 @@
 					</div>
 					<kv-progress-bar
 						class="progess-bar-override tw-mt-1"
-						aria-label="Percent the fundraiser has raised towards their goal"
+						label="Percent the fundraiser has raised towards their goal"
 						:value="progressPercentage"
 					/>
 					<div class="tw-flex tw-justify-between tw-mt-1">
