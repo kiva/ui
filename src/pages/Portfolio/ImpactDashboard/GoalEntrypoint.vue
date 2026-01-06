@@ -83,12 +83,14 @@ const fetchUserAchievementProgress = async () => {
 		const { data } = await apollo.query({
 			query: userAchievementProgressQuery,
 			variables: { year: LAST_YEAR_KEY },
+			fetchPolicy: 'network-only',
 		});
 		const tieredAchievements = data.userAchievementProgress?.tieredLendingAchievements ?? [];
 		womenLoansLastYear.value = getCategoryLoansLastYear(tieredAchievements);
 		loading.value = false;
 	} catch (error) {
 		logReadQueryError(error, 'PortfolioGoalEntrypoint fetchUserAchievementProgress');
+		loading.value = false;
 	}
 };
 

@@ -1,0 +1,12 @@
+query loanStatsByYear($year: Int!) {
+  my {
+    id
+    lendingStats {
+      id
+      loanStatsByYear(year: $year) {
+        amount
+        count
+      }
+    }
+  }
+}

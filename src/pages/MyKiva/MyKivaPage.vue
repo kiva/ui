@@ -61,11 +61,13 @@ export default {
 	setup() {
 		const apollo = inject('apollo');
 		const {
+			fixIncorrectlyCompletedSupportAllGoals,
 			renewAnnualGoal,
 			setHideGoalCardPreference,
 		} = useGoalData({ apollo });
 
 		return {
+			fixIncorrectlyCompletedSupportAllGoals,
 			renewAnnualGoal,
 			setHideGoalCardPreference,
 		};
@@ -103,7 +105,11 @@ export default {
 			return Promise.all([
 				client.query({ query: myKivaQuery }),
 				client.query({ query: lendingStatsQuery }),
-				client.query({ query: userAchievementProgressQuery, variables: { year: LAST_YEAR_KEY } }),
+				client.query({
+					query: userAchievementProgressQuery,
+					variables: { year: LAST_YEAR_KEY },
+					fetchPolicy: 'network-only',
+				}),
 				loanId
 					? client.query({ query: borrowerProfileSideSheetQuery, variables: { loanId: Number(loanId) } })
 					: Promise.resolve(null),
@@ -263,10 +269,16 @@ export default {
 				const { showRenewedAnnualGoalToast } = await this.renewAnnualGoal(
 					renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined
 				);
-				if (showRenewedAnnualGoalToast) {
-					// eslint-disable-next-line max-len
-					this.$showTipMsg('It\'s time for your 2026 impact goal - a fresh start and new opportunity to make a difference.');
-					// Ensure goal card is shown again after renewal if user previously completed a goal
+
+				// Fix goals incorrectly marked as completed due to ID_SUPPORT_ALL bug
+				const { wasFixed } = await this.fixIncorrectlyCompletedSupportAllGoals();
+
+				if (showRenewedAnnualGoalToast || wasFixed) {
+					if (showRenewedAnnualGoalToast) {
+						// eslint-disable-next-line max-len
+						this.$showTipMsg('It\'s time for your 2026 impact goal - a fresh start and new opportunity to make a difference.');
+					}
+					// Ensure goal card is shown again after renewal or fix
 					await this.setHideGoalCardPreference(false);
 					// Trigger goal data refresh in child components
 					this.goalRefreshKey += 1;

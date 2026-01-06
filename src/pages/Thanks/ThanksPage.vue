@@ -182,7 +182,11 @@ export default {
 				client.query({ query: thanksPageQuery }),
 				client.query({ query: experimentAssignmentQuery, variables: { id: NEXT_STEPS_EXP_KEY } }),
 				// Query returns both progressForYear (for specified year) and totalProgressToAchievement (all-time)
-				client.query({ query: userAchievementProgressQuery, variables: { year: LAST_YEAR_KEY } }),
+				client.query({
+					query: userAchievementProgressQuery,
+					variables: { year: LAST_YEAR_KEY },
+					fetchPolicy: 'network-only',
+				}),
 			]).then(() => {
 				const transactionId = route?.query?.kiva_transaction_id
 					? numeral(route?.query.kiva_transaction_id).value()

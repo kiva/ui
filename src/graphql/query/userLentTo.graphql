@@ -1,0 +1,10 @@
+query userLentTo($loanId: Int!) {
+  lend {
+    loan(id: $loanId) {
+      id
+      userProperties {
+        lentTo
+      }
+    }
+  }
+}

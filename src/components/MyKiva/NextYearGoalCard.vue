@@ -115,7 +115,6 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
 const {
-	getLoanFindingUrl,
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
 	ID_SUPPORT_ALL
@@ -123,6 +122,7 @@ const {
 const {
 	getGoalDisplayName,
 	setHideGoalCardPreference,
+	getCtaHref,
 } = useGoalData();
 
 const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);
@@ -189,11 +189,7 @@ const goalDescription = computed(() => {
 });
 
 const ctaHref = computed(() => {
-	const categoryHeader = categoryName.value;
-	const string = `Your goal: Support ${props.userGoal?.target} ${categoryHeader}`;
-	const encodedHeader = encodeURIComponent(string);
-	const loanFindingUrl = getLoanFindingUrl(props.userGoal?.category, router.currentRoute.value);
-	return `${loanFindingUrl}?header=${encodedHeader}`;
+	return getCtaHref(props.userGoal?.target, props.userGoal?.category, router, props.goalProgress);
 });
 
 const showConfetti = () => {
