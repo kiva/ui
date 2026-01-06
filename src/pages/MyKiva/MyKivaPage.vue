@@ -201,7 +201,7 @@ export default {
 
 				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
 					...myKivaQueryResult.my.latestLoan.values[0].loan,
-					amountBorrowed: myKivaQueryResult.my.latestLoan.values[0].amount || 0,
+					amount: myKivaQueryResult.my.latestLoan.values[0].amount || 0,
 				} : null;
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');

@@ -22,7 +22,7 @@ const story = (args = {}) => {
 
 export const Default = story({
     latestLoan: {
-		amountBorrowed: '-75.00',
+		amount: '-75.00',
         id: 1975833,
         name: 'Mayram',
         image: {
