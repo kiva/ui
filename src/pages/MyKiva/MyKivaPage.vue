@@ -199,7 +199,10 @@ export default {
 				this.showNewBadgeSection = readBoolSetting(myKivaQueryResult, `general.${NEW_BADGE_SECTION_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.postLendingNextStepsEnable = readBoolSetting(myKivaQueryResult, `general.${POST_LENDING_NEXT_STEPS_KEY}.value`) ?? false; // eslint-disable-line max-len
 
-				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan || null;
+				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
+					...myKivaQueryResult.my.latestLoan.values[0].loan,
+					amount: myKivaQueryResult.my.latestLoan.values[0]?.amount || null,
+				} : null;
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');
 			}
