@@ -49,7 +49,7 @@
 				class="print:tw-hidden tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
-				v-else-if="showJourneyModule"
+				v-if="showJourneyModule && !(showGoalCompletedModule) && !(showBadgeModule || achievementsCompleted)"
 				:loans="loans"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
