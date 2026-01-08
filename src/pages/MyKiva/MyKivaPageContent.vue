@@ -405,7 +405,7 @@ export default {
 			fetchContentfulData,
 			getLoanFindingUrl,
 			getMostRecentBlogPost,
-			isMobile,
+			isMobile
 		};
 	},
 	data() {
@@ -756,7 +756,7 @@ export default {
 			this.showLoanDetails({ id: Number(this.sidesheetLoan.id) }, true, false);
 		}
 	},
-	mounted() {
+	async mounted() {
 		this.clientRendered = true;
 
 		// Ensure clientRendered is true before attempting to scroll to section
@@ -780,7 +780,7 @@ export default {
 
 		this.fetchMyGivingFundsCount()
 			.then(response => {
-				this.myGivingFundsCount = response.givingFunds.totalCount;
+				this.myGivingFundsCount = response?.givingFunds?.totalCount;
 			})
 			.catch(error => {
 				logReadQueryError(error, 'MyKivaPageContent fetchMyGivingFundsCount');

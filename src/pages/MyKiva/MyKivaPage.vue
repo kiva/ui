@@ -39,7 +39,7 @@ import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.g
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY, isGoalsV2Enabled } from '#src/composables/useGoalData';
-import { inject } from 'vue';
+import { inject, provide } from 'vue';
 
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
@@ -60,16 +60,15 @@ export default {
 	},
 	setup() {
 		const apollo = inject('apollo');
-		const {
-			fixIncorrectlyCompletedSupportAllGoals,
-			renewAnnualGoal,
-			setHideGoalCardPreference,
-		} = useGoalData({ apollo });
+
+		const goalDataComposable = useGoalData({ apollo });
+		provide('goalData', goalDataComposable);
 
 		return {
-			fixIncorrectlyCompletedSupportAllGoals,
-			renewAnnualGoal,
-			setHideGoalCardPreference,
+			fixIncorrectlyCompletedSupportAllGoals: goalDataComposable.fixIncorrectlyCompletedSupportAllGoals,
+			loadGoalData: goalDataComposable.loadGoalData,
+			renewAnnualGoal: goalDataComposable.renewAnnualGoal,
+			setHideGoalCardPreference: goalDataComposable.setHideGoalCardPreference,
 		};
 	},
 	data() {
@@ -289,6 +288,10 @@ export default {
 			}
 		} catch (error) {
 			logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
+		}
+
+		if (this.isNextStepsExpEnabled) {
+			await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
 		}
 	},
 };
