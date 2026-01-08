@@ -7,6 +7,7 @@ import {
 	getLoginId,
 	getCookieAssignments,
 	setCookieAssignments,
+	cleanupStaleCookieAssignments,
 } from '#src/util/experiment/experimentUtils';
 import Experiment from '#src/api/fixtures/Experiment';
 import logFormatter from '#src/util/logFormatter';
@@ -44,6 +45,9 @@ export default ({ cookieStore, route, forceHeader }) => {
 						return Experiment({ id });
 					}
 
+					// Clean up stale cookie assignments that are no longer in active experiments
+					cleanupStaleCookieAssignments(cookieStore, activeExperiments);
+
 					// Check if the requested experiment is active
 					if (!activeExperiments.includes(id)) {
 						logFormatter(`Experiment is not in active experiments list: ${id}`, 'warn');
@@ -72,6 +76,23 @@ export default ({ cookieStore, route, forceHeader }) => {
 					// Get the hash and population based on the experiment settings
 					const hash = calculateHash(experimentSetting);
 					const population = experimentSetting?.population ?? 1;
+
+					// Check if this experiment uses userId-based assignment (no cookie storage)
+					// When userIdExperiment is true, assignments are determined by the current loginId
+					// and are NOT stored to the uiab cookie (except for query-forced assignments)
+					const isUserIdExperiment = experimentSetting?.userIdExperiment === true;
+
+					// If this is a userIdExperiment and there's an existing non-query-forced cookie assignment,
+					// remove it from the cookie (experiment may have transitioned from cookie-based to userId-based)
+					if (isUserIdExperiment && currentAssignment.version && !currentAssignment.queryForced) {
+						const cookieAssignments = getCookieAssignments(cookieStore);
+						if (cookieAssignments[id]) {
+							delete cookieAssignments[id];
+							setCookieAssignments(cookieStore, cookieAssignments);
+						}
+						// Clear the cookie assignment so we recalculate based on loginId
+						currentAssignment = { id };
+					}
 
 					// Get new experiment assignment if:
 					// - Assignment is not Fastly header forced (new assignment and setting cookie not needed)
@@ -104,8 +125,11 @@ export default ({ cookieStore, route, forceHeader }) => {
 							queryForced: currentAssignment.queryForced,
 						};
 
-						// Update the "uiab" cookie if the assignment was forced via the "setuiab" query string param
-						if (currentAssignment.queryForced) {
+						// Update the "uiab" cookie:
+						// - Always update if assignment was forced via "setuiab" query string param
+						// - Also update for new assignments if NOT a userIdExperiment (default behavior)
+						// userIdExperiment uses current loginId for assignment without cookie storage
+						if (currentAssignment.queryForced || !isUserIdExperiment) {
 							const cookieAssignments = getCookieAssignments(cookieStore);
 							cookieAssignments[id] = updatedAssignment;
 							setCookieAssignments(cookieStore, cookieAssignments);
