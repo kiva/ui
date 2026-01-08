@@ -93,7 +93,11 @@
 			data-testid="free-credit-banner"
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
 		>
-			<span class="tw-underline">
+			<div v-if="!isScrolled">
+				<h3>You’ve got $15 to give!</h3>
+				<h4>While funds last</h4>
+			</div>
+			<span v-else class="tw-underline">
 				Use your {{ $filters.numeral(bonusBalance, '$0.00') }} gift today while funds last!
 			</span>
 		</a>
@@ -196,6 +200,7 @@ export default {
 			promoCampaignData: null,
 			priorityBasketCredit: null,
 			isUserDataLoading: false,
+			isScrolled: false,
 		};
 	},
 	components: {
@@ -312,7 +317,16 @@ export default {
 				colors: ['#6AC395', '#223829', '#95D4B3'],
 				disableForReducedMotion: true,
 			});
+		},
+		onScroll() {
+			this.isScrolled = window.scrollY > 0;
 		}
-	}
+	},
+	mounted() {
+		window.addEventListener('scroll', this.onScroll);
+	},
+	beforeUnmount() {
+		window.removeEventListener('scroll', this.onScroll);
+	},
 };
 </script>
