@@ -1,17 +1,22 @@
 <template>
-	<div class="tw-rounded tw-bg-white tw-p-2 giving-fund-card">
-		<h3>Check in on your giving funds</h3>
-		<p class="tw-my-2 tw-font-medium">
+	<div
+		class="giving-fund-card tw-rounded tw-bg-white tw-p-2 tw-w-full tw-flex tw-flex-col tw-gap-2 tw-items-stretch
+			md:tw-flex-row md:tw-items-center md:tw-justify-between md:tw-gap-3 md:tw-p-2.5"
+	>
+		<h3 class="tw-text-center md:tw-text-left md:tw-flex-1">
+			Check in on your giving funds
+		</h3>
+		<p class="tw-font-medium tw-text-center md:tw-text-left md:tw-flex-1">
 			{{ textCopy }}
 		</p>
 		<KvButton
-			class="tw-w-full"
+			class="tw-w-full md:tw-w-auto md:tw-ml-auto"
 			variant="primary"
 			to="/gfm"
 			aria-label="See your giving funds"
 			v-kv-track-event="['portfolio', 'click', 'see-your-giving-funds']"
 		>
-			<div class="tw-flex tw-items-center tw-w-full tw-gap-1">
+			<div class="tw-flex tw-items-center tw-w-full tw-gap-1 md:tw-w-auto">
 				<span>See your giving funds</span>
 				<KvMaterialIcon
 					class="tw-w-3 tw-h-3"
@@ -65,11 +70,3 @@ const textCopy = computed(() => {
 	return copy;
 });
 </script>
-
-<style lang="postcss" scoped>
-.giving-fund-card {
-	@apply tw-max-w-xs;
-
-	min-width: 265px;
-}
-</style>
