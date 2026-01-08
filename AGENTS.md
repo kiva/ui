@@ -5,16 +5,20 @@ Kiva UI is a Vue 3 SSR (Server-Side Rendering) application for Kiva.org's lendin
 
 ## Vue 3 Best Practices
 
-### Prefer Composition API
-- **Use composables over mixins** for new code. Composables live in `src/composables/`
-- Mixins (`src/plugins/*-mixin.js`) exist for legacy code but should not be used for new features
-- When refactoring, migrate mixins to composables where practical
+### Vue 3 API Usage
+
+Use **Options API with `setup()`** for components that need Apollo prefetching. This allows Apollo prefetching (`preFetch: true`) while still using composables from `src/composables/`.
 
 ### ⚠️ Options API + Composition API Nesting Warning
 Deeply nested component chains can have issues when parent components use Options API and children use Composition API (or vice versa). When working with nested components:
 1. Verify `inject`/`provide` chains work correctly across API boundaries
 2. Test the full component hierarchy, not just the component you're editing
 3. Watch for `undefined` injection values in deeply nested Composition API components
+
+### Use Composition API where appropriate
+- **Use composables over mixins** for new code. Composables live in `src/composables/`
+- Mixins (`src/plugins/*-mixin.js`) exist for legacy code but should not be used for new features
+- When refactoring, migrate mixins to composables where practical
 
 ## Architecture
 
