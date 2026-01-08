@@ -162,7 +162,7 @@
 				class="tooltip"
 				data-testid="promo-tool-tip"
 				controller="promo_name"
-				theme="mint"
+				theme="ecoGreenLight"
 				v-if="promoFundDisplayDescription && !isCorporateCampaign"
 			>
 				{{ promoFundDisplayDescription }}
@@ -221,7 +221,7 @@ import addCreditByType from '#src/graphql/mutation/shopAddCreditByType.graphql';
 import { removeCredit } from '#src/util/checkoutUtils';
 import { isCCPage } from '#src/util/urlUtils';
 import showVerificationLightbox from '#src/graphql/mutation/checkout/showVerificationLightbox.graphql';
-import KvTooltip from '#src/components/Kv/KvTooltip';
+import { KvTooltip, KvMaterialIcon } from '@kiva/kv-components';
 import VerifyRemovePromoCredit from '#src/components/Checkout/VerifyRemovePromoCredit';
 import experimentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import {
@@ -230,7 +230,6 @@ import {
 } from '#src/util/experiment/experimentUtils';
 import DonationItem from '#src/components/Checkout/DonationItem';
 import { mdiClose } from '@mdi/js';
-import { KvMaterialIcon } from '@kiva/kv-components';
 
 export default {
 	name: 'OrderTotals',

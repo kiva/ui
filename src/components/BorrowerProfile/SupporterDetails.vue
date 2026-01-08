@@ -90,7 +90,7 @@
 			class="tooltip"
 			:controller="toolTipId"
 			:data-testid="`tooltip-id-${toolTipId}`"
-			theme="dark"
+			theme="ecoGreenDark"
 			v-if="teamTooltipData && !isMobile"
 		>
 			{{ teamTooltipData.category }}<br>
@@ -102,7 +102,7 @@
 <script>
 import { getCurrentInstance } from 'vue';
 import _throttle from 'lodash/throttle';
-import KvTooltip from '#src/components/Kv/KvTooltip';
+import { KvTooltip } from '@kiva/kv-components';
 import BorrowerImage from './BorrowerImage';
 import kivaKUrl from '#src/assets/images/kiva_k.svg?url';
 
