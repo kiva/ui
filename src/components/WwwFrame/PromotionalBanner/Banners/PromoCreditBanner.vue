@@ -9,9 +9,11 @@
 	</div>
 	<div
 		v-else-if="isUpcCampaign && partnerName && upcCampaignLink"
-		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
+		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2
+			tw-flex tw-gap-2 tw-justify-center tw-items-center"
 		data-testid="upc-campaign-banner"
 	>
+		<HeartBox class="tw-w-4.5 tw-h-4.5" />
 		<a
 			:href="upcCampaignLink"
 			class="
@@ -26,9 +28,11 @@
 	</div>
 	<div
 		v-else-if="isFromImpactDashboard"
-		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
+		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2
+			tw-flex tw-gap-2 tw-justify-center tw-items-center"
 		data-testid="lending-reward-banner-impact-dashboard"
 	>
+		<HeartBox class="tw-w-4.5 tw-h-4.5" />
 		<a
 			:href="impactDashboardLink"
 			class="
@@ -46,9 +50,11 @@
 	</div>
 	<div
 		v-else-if="lendingRewardOffered"
-		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
+		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2
+			tw-flex tw-gap-2 tw-justify-center tw-items-center"
 		data-testid="lending-reward-banner"
 	>
+		<HeartBox class="tw-w-4.5 tw-h-4.5" />
 		<template v-if="promoFundDisplayName && managedAccountPageId">
 			<router-link
 				:to="`/cc/${managedAccountPageId}`"
@@ -72,21 +78,21 @@
 	</div>
 	<div
 		v-else-if="bonusBalance > 0"
-		class="bonus-banner-holder tw-bg-brand tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
+		class="bonus-banner-holder tw-bg-brand tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2
+			tw-flex tw-gap-2 tw-justify-center tw-items-center"
 		data-testid="bonus-banner"
 	>
+		<HeartBox class="tw-w-4.5 tw-h-4.5" />
 		<a
 			v-if="!managedAccountPageId"
 			href="/lend/freeCreditEligible"
 			class="
 				tw-text-white
 				tw-no-underline hover:tw-no-underline hover:tw-text-white
-				active:tw-text-white visited:tw-text-white focus:tw-text-white
-				tw-flex tw-gap-2 tw-justify-center tw-items-center"
+				active:tw-text-white visited:tw-text-white focus:tw-text-white"
 			data-testid="free-credit-banner"
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
 		>
-			<HeartBox class="tw-w-4.5 tw-h-4.5" />
 			<span class="tw-underline">
 				Use your {{ $filters.numeral(bonusBalance, '$0.00') }} gift today while funds last!
 			</span>
@@ -278,12 +284,6 @@ export default {
 
 			// set other promo credit signifiers
 			this.lendingRewardOffered = promotionData.shop?.lendingRewardOffered;
-
-			// set promo cookie to show pill in checkout
-			if (this.bonusBalance > 0) {
-				this.cookieStore.set('showPromoCreditPill', 'true');
-				this.showConfetti();
-			}
 		},
 		setPriorityBasketCredit(promotionData) {
 			// get credits list
@@ -291,10 +291,16 @@ export default {
 			// establish precedence for credit types
 			const sortBy = ['universal_code', 'redemption_code', 'bonus_credit', 'kiva_credit'];
 			// copy and sort the credits
-			const creditsArrayCopy = basketCredits.map(credit => credit);
+			const creditsArrayCopy = basketCredits.map(credit => credit).filter(credit => credit?.available > 0);
 			creditsArrayCopy.sort(indexIn(sortBy, 'creditType'));
 			// use the 1st credit for presentation
 			this.priorityBasketCredit = creditsArrayCopy[0] ?? null;
+
+			// set promo cookie to show pill in checkout
+			if (this.priorityBasketCredit?.available > 0) {
+				this.cookieStore.set('showPromoCreditPill', 'true');
+				this.showConfetti();
+			}
 		},
 		showConfetti() {
 			confetti({
