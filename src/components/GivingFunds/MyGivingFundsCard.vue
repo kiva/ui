@@ -6,9 +6,13 @@
 		<h3 class="tw-text-center md:tw-text-left md:tw-flex-1">
 			Check in on your giving funds
 		</h3>
-		<p class="tw-font-medium tw-text-center md:tw-text-left md:tw-flex-1">
-			{{ textCopy }}
-		</p>
+		<div class="tw-font-medium tw-text-center md:tw-text-left md:tw-flex-1">
+			<transition name="kvfade">
+				<p v-if="textCopy">
+					{{ textCopy }}
+				</p>
+			</transition>
+		</div>
 		<KvButton
 			class="tw-w-full md:tw-w-auto md:tw-ml-auto"
 			variant="primary"
@@ -30,25 +34,32 @@
 <script setup>
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
+import useGivingFund from '#src/composables/useGivingFund';
 
 import {
 	computed,
-	toRefs,
-	defineProps,
+	inject,
+	ref,
+	onMounted,
 } from 'vue';
 
+const apollo = inject('apollo');
+
 const props = defineProps({
-	myFundsCount: {
-		type: Number,
-		required: true,
-	},
-	contributedFundsCount: {
-		type: Number,
-		required: true,
+	userId: {
+		type: [String, Number],
+		required: false,
+		default: null,
 	},
 });
 
-const { myFundsCount, contributedFundsCount } = toRefs(props);
+const {
+	getFundsContributedToIds,
+	fetchMyGivingFundsCount,
+} = useGivingFund(apollo);
+
+const myFundsCount = ref(0);
+const contributedFundsCount = ref(0);
 
 const textCopy = computed(() => {
 	let copy = '';
@@ -69,4 +80,29 @@ const textCopy = computed(() => {
 	}
 	return copy;
 });
+
+onMounted(() => {
+	// Fetch giving fund data
+	fetchMyGivingFundsCount()
+		.then(response => {
+			myFundsCount.value = response.givingFunds.totalCount;
+		});
+
+	getFundsContributedToIds(parseInt(props?.userId, 10) || null)
+		.then(fundIds => {
+			contributedFundsCount.value = fundIds.length;
+		});
+});
 </script>
+
+<style lang="postcss" scoped>
+.kvfade-enter-active,
+.kvfade-leave-active {
+	transition: opacity 0.8s ease;
+}
+
+.kvfade-enter-from,
+.kvfade-leave-to {
+	opacity: 0;
+}
+</style>
