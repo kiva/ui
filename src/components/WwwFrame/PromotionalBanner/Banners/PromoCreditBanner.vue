@@ -81,12 +81,15 @@
 			class="
 				tw-text-white
 				tw-no-underline hover:tw-no-underline hover:tw-text-white
-				active:tw-text-white visited:tw-text-white focus:tw-text-white"
+				active:tw-text-white visited:tw-text-white focus:tw-text-white
+				tw-flex tw-gap-2 tw-justify-center tw-items-center"
 			data-testid="free-credit-banner"
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
 		>
-			Select a borrower to <span class="tw-underline">
-				lend your {{ $filters.numeral(bonusBalance, '$0.00') }} free credit</span>
+			<HeartBox class="tw-w-4.5 tw-h-4.5" />
+			<span class="tw-underline">
+				Use your {{ $filters.numeral(bonusBalance, '$0.00') }} gift today while funds last!
+			</span>
 		</a>
 		<router-link
 			v-if="managedAccountPageId"
@@ -115,6 +118,8 @@ import {
 	basketPromoAvailableFragment,
 	bonusBalance,
 } from '#src/util/promoCredit';
+import HeartBox from '#src/assets/images/heart-box.svg';
+import confetti from 'canvas-confetti';
 
 const userPromoCredits = gql`
 	query userPromoCredits($basketId: String) {
@@ -186,6 +191,9 @@ export default {
 			priorityBasketCredit: null,
 			isUserDataLoading: false,
 		};
+	},
+	components: {
+		HeartBox,
 	},
 	apollo: [
 		{
@@ -270,6 +278,12 @@ export default {
 
 			// set other promo credit signifiers
 			this.lendingRewardOffered = promotionData.shop?.lendingRewardOffered;
+
+			// set promo cookie to show pill in checkout
+			if (this.bonusBalance > 0) {
+				this.cookieStore.set('showPromoCreditPill', 'true');
+				this.showConfetti();
+			}
 		},
 		setPriorityBasketCredit(promotionData) {
 			// get credits list
@@ -282,6 +296,17 @@ export default {
 			// use the 1st credit for presentation
 			this.priorityBasketCredit = creditsArrayCopy[0] ?? null;
 		},
+		showConfetti() {
+			confetti({
+				origin: {
+					y: 0.2,
+				},
+				particleCount: 150,
+				spread: 200,
+				colors: ['#6AC395', '#223829', '#95D4B3'],
+				disableForReducedMotion: true,
+			});
+		}
 	}
 };
 </script>

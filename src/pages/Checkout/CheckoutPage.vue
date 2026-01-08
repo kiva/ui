@@ -25,12 +25,29 @@
 					</h1>
 					<hr class="tw-border-tertiary tw-my-3">
 
+					<div
+						v-if="showPromoCreditPill"
+						class="tw-flex tw-gap-1 tw-items-center tw-w-fit
+						tw-bg-brand tw-text-white tw-rounded-md tw-px-2 tw-py-1"
+					>
+						<kv-material-icon
+							class="tw-w-2 tw-h-2"
+							:icon="mdiGiftOutline"
+						/>
+						<h5
+							data-testid="bonus-available-banner"
+						>
+							Use your {{ bonusAvailableTotal }} gift - while funds last!
+						</h5>
+					</div>
+
 					<ftds-message
 						class="tw-mb-2"
 						v-if="showFtdMessage"
 						:ftd-credit-amount="ftdCreditAmount"
 					/>
 				</div>
+
 				<div class="tw-relative">
 					<div class="basket-container tw-mx-auto tw-my-0">
 						<basket-items-list
@@ -334,12 +351,15 @@ import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dolla
 import FtdsMessage from '#src/components/Checkout/FtdsMessage';
 import FtdsDisclaimer from '#src/components/Checkout/FtdsDisclaimer';
 import { removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
-import { KvLoadingPlaceholder, KvPageContainer, KvButton } from '@kiva/kv-components';
+import {
+	KvLoadingPlaceholder, KvPageContainer, KvButton, KvMaterialIcon
+} from '@kiva/kv-components';
 import { fetchPostCheckoutAchievements, getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { isGoalsV2Enabled } from '#src/composables/useGoalData';
+import { mdiGiftOutline } from '@mdi/js';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
@@ -401,6 +421,7 @@ export default {
 		KvLoadingPlaceholder,
 		FtdsMessage,
 		FtdsDisclaimer,
+		KvMaterialIcon,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	mixins: [checkoutUtils, fiveDollarsTest, aiLoanPillsTest],
@@ -462,6 +483,7 @@ export default {
 			isNextStepsExpEnabled: false,
 			thanksPageGoalsEntrypointEnable: false,
 			lenderLoansIds: [],
+			mdiGiftOutline,
 		};
 	},
 	apollo: {
@@ -821,6 +843,13 @@ export default {
 		},
 		showFtdMessage() {
 			return !this.lenderTotalLoans && this.enableFtdMessage && this.ftdCreditAmount && this.ftdValidDate;
+		},
+		showPromoCreditPill() {
+			const showPromoCreditPill = this.cookieStore.get('showPromoCreditPill') || false;
+			return showPromoCreditPill && this.totals.bonusAvailableTotal > 0;
+		},
+		bonusAvailableTotal() {
+			return numeral(this.totals.bonusAvailableTotal).format('$0,0');
 		},
 	},
 	methods: {
