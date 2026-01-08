@@ -70,9 +70,3 @@ const textCopy = computed(() => {
 	return copy;
 });
 </script>
-
-<style lang="postcss" scoped>
-.giving-fund-card {
-	@apply tw-w-full;
-}
-</style>
