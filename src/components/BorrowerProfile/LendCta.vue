@@ -620,9 +620,6 @@ export default {
 				this.wrapperObserver.disconnect();
 			}
 		},
-		borrowerPossessiveName() {
-			return formatPossessiveName(this.name);
-		},
 		trackLendAmountSelection(selectedDollarAmount) {
 			this.$kvTrackEvent(
 				'Lending',
@@ -715,6 +712,9 @@ export default {
 		},
 	},
 	computed: {
+		borrowerPossessiveName() {
+			return formatPossessiveName(this.name);
+		},
 		isInBasket() {
 			// eslint-disable-next-line no-underscore-dangle
 			return this.basketItems.some(item => item.__typename === 'LoanReservation' && item.id === this.loanId);
