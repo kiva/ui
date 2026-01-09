@@ -7,7 +7,6 @@ import { defaultTheme } from '@kiva/kv-tokens';
 import changeCaseFilter from '../src/plugins/change-case-filter';
 import numeralFilter from '../src/plugins/numeral-filter';
 import apolloMixin from '../src/plugins/apollo-plugin';
-import kivaPlugins from '#src/plugins';
 
 // same styles that are in App.vue
 import '../src/assets/scss/app.scss';
