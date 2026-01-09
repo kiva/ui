@@ -1,0 +1,1 @@
+const s=(o,r,n={})=>{if(!o||o==="")return!1;const e=JSON.stringify({meta:n,level:r||"log",message:o});switch(r){case"debug":console.debug(e);break;case"info":console.info(e);break;case"warn":console.warn(e);break;case"error":console.error(e);break;default:console.log(e)}};export{s as l};

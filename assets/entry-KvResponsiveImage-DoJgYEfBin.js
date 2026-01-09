@@ -1,0 +1,17 @@
+import{_ as u}from"./entry-throttle-DL1zg7kAk0.js";import{c as d,q as p,J as g,I as f,x as h,_ as y,$ as x,o as m}from"./entry-vue.esm-bundler-C0PPCo9W96.js";import{_ as w}from"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";let s,a;function o(e){return window.matchMedia&&window.matchMedia(e).matches}function v(){return typeof window>"u"?!1:(typeof s<"u"||(s=o(`only screen and (min-resolution: 124dpi),
+		only screen and (min-resolution: 1.3dppx),
+		only screen and (min-resolution: 48.8dpcm)`)||o(`only screen and (-webkit-min-device-pixel-ratio: 1.3),
+		only screen and (-o-min-device-pixel-ratio: 2.6/2),
+		only screen and (min--moz-device-pixel-ratio: 1.3),
+		only screen and (min-device-pixel-ratio: 1.3)`)||window.devicePixelRatio&&window.devicePixelRatio>1.3),s)}function I(){return typeof window>"u"?!1:(typeof a<"u"||(a=o(`only screen and (min-resolution: 192dpi),
+		only screen and (min-resolution: 2dppx),
+		only screen and (min-resolution: 75.6dpcm)`)||o(`only screen and (-webkit-min-device-pixel-ratio: 2),
+		only screen and (-o-min-device-pixel-ratio: 2/1),
+		only screen and (min--moz-device-pixel-ratio: 2),
+		only screen and (min-device-pixel-ratio: 2)`)||window.devicePixelRatio&&window.devicePixelRatio>=2),a)}const l={name:"KvResponsiveImage",inheritAttrs:!1,props:{images:{type:Array,required:!0}},data(){return{isRetina:null,screenWidth:320,breakpoints:[{name:"wxga",size:1441},{name:"xga",size:1025},{name:"xxlarge",size:989},{name:"xlarge",size:761},{name:"large",size:681},{name:"medium",size:481},{name:"small",size:0}]}},computed:{screenBreakpoints(){return this.breakpoints.filter(e=>e.size<=this.screenWidth).map(e=>e.name)},retinaImages(){return this.images.filter(e=>e[0].indexOf("retina")>-1).reverse()},standardImages(){return this.images.filter(e=>e[0].indexOf("retina")===-1).reverse()},bestStandardImage(){for(let e=0;e<this.screenBreakpoints.length;e+=1){const i=this.screenBreakpoints[e],n=this.standardImages.find(c=>c[0].indexOf(i)>-1);if(n)return n}return["",""]},imageUrl(){if(this.isRetina){const e=this.bestStandardImage[0],i=this.retinaImages.find(n=>n[0].indexOf(e)>-1);if(i)return i[1]}return this.bestStandardImage[1]}},methods:{getPxSizeForImage(e){return this.breakpoints.find(i=>i.name===e).size},getSrcsetForImage(e){const i=this.retinaImages.find(n=>n[0]===`${e[0]} retina`);return i?`${e[1]}, ${i[1]} 2x`:`${e[1]}`}},mounted(){this.isRetina=I()||v(),typeof window.HTMLPictureElement>"u"&&(this.screenWidth=window.innerWidth,this.$refs.img.src=this.imageUrl,window.addEventListener("resize",u(()=>{this.screenWidth=window.innerWidth,this.$refs.img.src=this.imageUrl},200)))}},z=["media","srcset"],_=["src"];function R(e,i,n,c,k,r){return m(),d("picture",y(x(e.$attrs)),[(m(!0),d(g,null,f(r.standardImages,t=>(m(),d("source",{key:`${t[0]}-${t[1]}`,media:`(min-width: ${r.getPxSizeForImage(t[0])}px)`,srcset:r.getSrcsetForImage(t)},null,8,z))),128)),p("img",h({src:r.standardImages[0][1]},e.$attrs,{ref:"img"}),null,16,_)],16)}const Q=w(l,[["render",R],["__scopeId","data-v-c97fbb2b"]]);l.__docgenInfo={displayName:"KvResponsiveImage",exportName:"default",description:"",tags:{},props:[{name:"images",description:`A two-dimensional array containing image sizes and urls, ordered smallest to largest, e.g.,
+[
+  ['small', 'img-sm.jpg'],
+  ['small retina', 'img-sm-2x.jpg']],
+  ['medium', 'img-md.jpg'],
+  ['medium retina', 'img-md-2x.jpg']],
+]`,type:{name:"array"},required:!0}],sourceFiles:["/home/runner/work/ui/ui/src/components/Kv/KvResponsiveImage.vue"]};export{Q as K};
