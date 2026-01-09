@@ -10,6 +10,7 @@ import {
 	calculateHash,
 	getCookieAssignments,
 	setCookieAssignments,
+	cleanupStaleCookieAssignments,
 	getForcedAssignment,
 	getLoginId,
 	assignAllActiveExperiments,
@@ -844,16 +845,21 @@ describe('experimentUtils.js', () => {
 	describe('setCookieAssignments', () => {
 		afterEach(clearDocumentCookies);
 
-		it('should handle empty assignments', () => {
+		it('should not modify cookie when assignments is undefined', () => {
 			const cookieStore = new CookieStore();
 
 			setCookieAssignments(cookieStore);
 
 			expect(cookieStore.getSetCookies()[0]).toBe(undefined);
+		});
 
-			setCookieAssignments(cookieStore, []);
+		it('should remove cookie when assignments is empty', () => {
+			const cookieStore = new CookieStore({ uiab: 'exp1:a:123:0.5' });
 
-			expect(cookieStore.getSetCookies()[0]).toBe(undefined);
+			setCookieAssignments(cookieStore, {});
+
+			// Cookie should be removed (js-cookie sets an expired cookie to delete)
+			expect(cookieStore.get('uiab')).toBe(undefined);
 		});
 
 		it('should set cookie', () => {
@@ -870,6 +876,85 @@ describe('experimentUtils.js', () => {
 			setCookieAssignments(cookieStore, mockAssignments);
 
 			expect(cookieStore.getSetCookies()[0]).toBe('uiab=ab:variant:1753809052:0.5:false; Path=/');
+		});
+	});
+
+	describe('cleanupStaleCookieAssignments', () => {
+		beforeEach(clearDocumentCookies);
+		afterEach(clearDocumentCookies);
+
+		it('should return false when activeExperiments is empty', () => {
+			const cookieStore = new CookieStore({ uiab: 'exp1:a:123:0.5' });
+
+			expect(cleanupStaleCookieAssignments(cookieStore, [])).toBe(false);
+			expect(cleanupStaleCookieAssignments(cookieStore, null)).toBe(false);
+			expect(cleanupStaleCookieAssignments(cookieStore, undefined)).toBe(false);
+		});
+
+		it('should return false when cookie has no assignments', () => {
+			const cookieStore = new CookieStore({});
+
+			const result = cleanupStaleCookieAssignments(cookieStore, ['exp1', 'exp2']);
+
+			expect(result).toBe(false);
+		});
+
+		it('should return false when all assignments are active', () => {
+			const cookieStore = new CookieStore({ uiab: 'exp1:a:123:0.5|exp2:b:456:0.5' });
+
+			const result = cleanupStaleCookieAssignments(cookieStore, ['exp1', 'exp2', 'exp3']);
+
+			expect(result).toBe(false);
+			// Cookie should remain unchanged
+			expect(cookieStore.get('uiab')).toBe('exp1:a:123:0.5|exp2:b:456:0.5');
+		});
+
+		it('should remove stale assignments and return true', () => {
+			const cookieStore = new CookieStore({
+				uiab: 'exp1:a:123:0.5:false|stale_exp:b:456:0.5:false|exp2:c:789:0.5:false'
+			});
+
+			const result = cleanupStaleCookieAssignments(cookieStore, ['exp1', 'exp2']);
+
+			expect(result).toBe(true);
+			// Check the cookie was updated (stale_exp removed)
+			const setCookies = cookieStore.getSetCookies();
+			expect(setCookies[setCookies.length - 1]).toContain('exp1:a:123:0.5:false');
+			expect(setCookies[setCookies.length - 1]).toContain('exp2:c:789:0.5:false');
+			expect(setCookies[setCookies.length - 1]).not.toContain('stale_exp');
+		});
+
+		it('should remove all assignments if all are stale', () => {
+			const cookieStore = new CookieStore({
+				uiab: 'stale1:a:123:0.5:false|stale2:b:456:0.5:false'
+			});
+
+			const result = cleanupStaleCookieAssignments(cookieStore, ['active_exp']);
+
+			expect(result).toBe(true);
+			// Cookie should be removed entirely
+			expect(cookieStore.get('uiab')).toBe(undefined);
+		});
+
+		it('should handle single stale assignment', () => {
+			const cookieStore = new CookieStore({ uiab: 'stale_exp:a:123:0.5:false' });
+
+			const result = cleanupStaleCookieAssignments(cookieStore, ['exp1', 'exp2']);
+
+			expect(result).toBe(true);
+			expect(cookieStore.get('uiab')).toBe(undefined);
+		});
+
+		it('should preserve queryForced flag in retained assignments', () => {
+			const cookieStore = new CookieStore({
+				uiab: 'exp1:a:123:0.5:true|stale_exp:b:456:0.5:false|exp2:c:789:0.5:false'
+			});
+
+			const result = cleanupStaleCookieAssignments(cookieStore, ['exp1', 'exp2']);
+
+			expect(result).toBe(true);
+			const setCookies = cookieStore.getSetCookies();
+			expect(setCookies[setCookies.length - 1]).toContain('exp1:a:123:0.5:true');
 		});
 	});
 

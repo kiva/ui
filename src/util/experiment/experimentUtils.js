@@ -265,7 +265,46 @@ export const setCookieAssignments = (cookieStore, assignments) => {
 	const serialized = serializeExpCookie(assignments);
 	if (serialized) {
 		cookieStore.set(UIAB_COOKIE_NAME, serialized, { path: '/' });
+	} else if (assignments !== undefined) {
+		// Remove cookie if assignments object is empty (but was explicitly passed)
+		cookieStore.remove(UIAB_COOKIE_NAME, { path: '/' });
 	}
+};
+
+/**
+ * Removes stale experiment assignments from the cookie that are not in the active experiments list.
+ * This helps prevent unbounded cookie growth as experiments are added and removed over time.
+ *
+ * @param {CookieStore} cookieStore The cookie mixin
+ * @param {Array<string>} activeExperiments The list of active experiment IDs
+ * @returns {boolean} True if any stale assignments were removed, false otherwise
+ */
+export const cleanupStaleCookieAssignments = (cookieStore, activeExperiments) => {
+	if (!activeExperiments?.length) return false;
+
+	const assignments = getCookieAssignments(cookieStore);
+	const assignmentKeys = Object.keys(assignments);
+
+	if (!assignmentKeys.length) return false;
+
+	// Filter out assignments that are not in the active experiments list
+	const cleanedAssignments = {};
+	let hasStaleAssignments = false;
+
+	assignmentKeys.forEach(key => {
+		if (activeExperiments.includes(key)) {
+			cleanedAssignments[key] = assignments[key];
+		} else {
+			hasStaleAssignments = true;
+		}
+	});
+
+	// Only update the cookie if we removed stale assignments
+	if (hasStaleAssignments) {
+		setCookieAssignments(cookieStore, cleanedAssignments);
+	}
+
+	return hasStaleAssignments;
 };
 
 /**
