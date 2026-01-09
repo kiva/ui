@@ -8,12 +8,10 @@
 		&nbsp;
 	</div>
 	<div
-		v-else-if="isUpcCampaign && partnerName && upcCampaignLink"
-		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2
-			tw-flex tw-gap-2 tw-justify-center tw-items-center"
+		v-else-if="showUpcCampaignBanner"
+		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
 		data-testid="upc-campaign-banner"
 	>
-		<HeartBox class="tw-w-4.5 tw-h-4.5" />
 		<a
 			:href="upcCampaignLink"
 			class="
@@ -28,11 +26,9 @@
 	</div>
 	<div
 		v-else-if="isFromImpactDashboard"
-		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2
-			tw-flex tw-gap-2 tw-justify-center tw-items-center"
+		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
 		data-testid="lending-reward-banner-impact-dashboard"
 	>
-		<HeartBox class="tw-w-4.5 tw-h-4.5" />
 		<a
 			:href="impactDashboardLink"
 			class="
@@ -45,16 +41,13 @@
 
 			Please go back to your first Kiva tab or <span class="tw-underline">
 				click here</span> to use your {{ bonusBalanceFormatted }} promo credit.
-
 		</a>
 	</div>
 	<div
 		v-else-if="lendingRewardOffered"
-		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2
-			tw-flex tw-gap-2 tw-justify-center tw-items-center"
+		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
 		data-testid="lending-reward-banner"
 	>
-		<HeartBox class="tw-w-4.5 tw-h-4.5" />
 		<template v-if="promoFundDisplayName && managedAccountPageId">
 			<router-link
 				:to="`/cc/${managedAccountPageId}`"
@@ -80,6 +73,7 @@
 		v-else-if="bonusBalance > 0"
 		class="bonus-banner-holder tw-bg-brand tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2
 			tw-flex tw-gap-2 tw-justify-center tw-items-center"
+		:class="isScrolled ? 'tw-items-center' : ''"
 		data-testid="bonus-banner"
 	>
 		<HeartBox class="tw-w-4.5 tw-h-4.5" />
@@ -281,6 +275,13 @@ export default {
 			// return the upc campaign link
 			return `/impact-dashboard/${partnerPage}/upc/${upcCode}`;
 		},
+		showUpcCampaignBanner() {
+			return this.isUpcCampaign && !!this.partnerName && !!this.upcCampaignLink;
+		},
+		setPromoCreditPillCookie() {
+			return !this.showUpcCampaignBanner && !this.lendingRewardOffered
+				&& (this.bonusBalance > 0 && !this.managedAccountPageId);
+		}
 	},
 	methods: {
 		setPromoState(promotionData) {
@@ -300,12 +301,6 @@ export default {
 			creditsArrayCopy.sort(indexIn(sortBy, 'creditType'));
 			// use the 1st credit for presentation
 			this.priorityBasketCredit = creditsArrayCopy[0] ?? null;
-
-			// set promo cookie to show pill in checkout
-			if (this.priorityBasketCredit?.available > 0) {
-				this.cookieStore.set('showPromoCreditPill', 'true');
-				this.showConfetti();
-			}
 		},
 		showConfetti() {
 			confetti({
@@ -323,6 +318,12 @@ export default {
 		}
 	},
 	mounted() {
+		// set promo cookie to show pill in checkout
+		if (this.priorityBasketCredit?.available > 0 && this.setPromoCreditPillCookie) {
+			this.cookieStore.set('showPromoCreditPill', 'true');
+			this.showConfetti();
+		}
+
 		window.addEventListener('scroll', this.onScroll);
 	},
 	beforeUnmount() {
