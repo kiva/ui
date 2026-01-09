@@ -265,7 +265,7 @@ const showBadgeModule = computed(() => {
 	return numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value;
 });
 const showJourneyModule = computed(() => {
-	if (props.achievementsCompleted) return false;
+	if (props.achievementsCompleted || showBadgeModule.value) return false;
 	// If experiment enabled, wait for initialization and loading to complete, and goal not achieved
 	if (props.isNextStepsExpEnabled) {
 		if (!goalDataInitialized.value || goalDataLoading.value) return false;
