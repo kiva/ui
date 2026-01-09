@@ -1,64 +1,96 @@
 import PromoCreditBanner from '#src/components/WwwFrame/PromotionalBanner/Banners/PromoCreditBanner.vue';
+import apolloStoryMixin from '../mixins/apollo-story-mixin';
+import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 
-const args = {
-	basketState: {
-		shop: {
-			nonTrivialItemCount: 1,
-			basket: {
-				id: 12,
-				hasFreeCredits: true,
-				credits: {
-					values: {
-						id: 12,
-						available: true,
-						creditType: 'bonus_credit',
-						promoFund: {
-							id: 12,
-							displayName: 'test',
-						}
-					}
-				},
-				totals: {
-					bonusAvailableTotal: 124312.23,
-					freeTrialAvailableTotal: 2432.342,
-					redemptionCodeAvailableTotal: 24.241,
-					universalCodeAvailableTotal: 234
-				}
-
-			}
-		},
+const queryResult = {
+	data: {
 		my: {
+			id: '1017469',
 			userAccount: {
-				id: 1017469,
-				balance: "0.00",
-				promoBalance: "10.00",
+				id: '1017469',
+				promoBalance: '10.00',
 			},
-			lender: {
-				image: {
-					id: 726677,
-					url: "https://www.kiva.org/img/s140/726677.webp",
+		},
+		shop: {
+			id: '12',
+			basket: {
+				id: '12',
+				hasFreeCredits: true,
+				totals: {
+					bonusAvailableTotal: 15,
+					freeTrialAvailableTotal: 0,
+					redemptionCodeAvailableTotal: 0,
+					universalCodeAvailableTotal: 0,
+				},
+				credits: {
+					values: [
+						{
+							id: '12',
+							available: 15,
+							creditType: 'bonus_credit',
+							promoFund: {
+								id: '12',
+								displayName: 'Test Partner',
+							},
+						},
+					],
 				},
 			},
-			isBorrower: false,
-			mostRecentBorrowedLoan: null,
-			trustee: null,
-		}
-	}
+			lendingRewardOffered: false,
+			promoCampaign: {
+				promoFund: {
+					id: '12',
+					displayName: 'Test Partner',
+				},
+				managedAccount: {
+					campaignInfo: {
+						campaignPromoFundId: '12',
+						upc: false,
+					},
+					id: 'ma-1',
+					managementType: 'managed',
+					pageId: null,
+					strategicPartner: {
+						id: 'sp-1',
+						partnerName: 'Test Partner',
+						partnerContentfulPage: 'test-partner',
+					},
+				},
+			},
+		},
+	},
 };
 
 export default {
 	title: 'WwwFrame/Banners/PromoCreditBanner',
 	component: PromoCreditBanner,
-	args,
 };
 
-export const Default = (args, { argTypes }) => ({
-	props: Object.keys(argTypes),
+export const Default = () => ({
 	components: {
-		PromoCreditBanner
+		PromoCreditBanner,
 	},
-	setup() { return args; },
+	mixins: [apolloStoryMixin({ queryResult }), cookieStoreStoryMixin()],
+	provide: {
+		$renderConfig: {
+			useCDNCaching: false,
+			cdnNotedLoggedIn: false,
+		},
+	},
+	data() {
+		return {
+			$renderConfig: {
+				useCDNCaching: false,
+				cdnNotedLoggedIn: false,
+			},
+			$route: {
+				query: {
+					fromContext: '/impact-dashboard'
+				}
+			}
+		};
+	},
 	template: `
-		<promo-credit-banner :basket-state="basketState" />
+		<promo-credit-banner />
 	`,
 });

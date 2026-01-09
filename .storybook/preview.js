@@ -6,6 +6,8 @@ import { KvThemeProvider } from '@kiva/kv-components';
 import { defaultTheme } from '@kiva/kv-tokens';
 import changeCaseFilter from '../src/plugins/change-case-filter';
 import numeralFilter from '../src/plugins/numeral-filter';
+import apolloMixin from '../src/plugins/apollo-plugin';
+import kivaPlugins from '#src/plugins';
 
 // same styles that are in App.vue
 import '../src/assets/scss/app.scss';
@@ -41,6 +43,11 @@ setup((app) => {
 		changeCase: changeCaseFilter,
 		numeral: numeralFilter,
 	};
+
+	// install apollo mixin
+	app.use(apolloMixin);
+	// provide renderConfig for components that need it
+	app.config.globalProperties.$renderConfig = ({});
 
 	// initialize unhead
 	const head = createHead();
