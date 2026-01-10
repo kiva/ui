@@ -673,6 +673,11 @@ export default {
 			this.possibleAchievementProgress = response?.postCheckoutAchievements?.overallProgress ?? [];
 		}
 
+		// If no bonus available and showPromoCreditPill cookie exists, remove promo credit pill
+		if (this.totals?.bonusAvailableTotal <= 0 && this.cookieStore.get('showPromoCreditPill')) {
+			this.cookieStore.remove('showPromoCreditPill');
+		}
+
 		// Checkout page MyKiva pills only visible with new feature
 		if (this.myKivaFlagEnabled) {
 			this.isMyKivaEnabled = getIsMyKivaEnabled(
