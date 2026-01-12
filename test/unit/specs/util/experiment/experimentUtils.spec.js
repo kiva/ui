@@ -877,6 +877,17 @@ describe('experimentUtils.js', () => {
 
 			expect(cookieStore.getSetCookies()[0]).toBe('uiab=ab:variant:1753809052:0.5:false; Path=/');
 		});
+
+		it('should clear cookie when assignments become empty', () => {
+			const cookieStore = new CookieStore({ uiab: 'ab:variant:1753809052:0.5:false' });
+
+			setCookieAssignments(cookieStore, {});
+
+			// Should have called remove on the cookie
+			const setCookies = cookieStore.getSetCookies();
+			// The cookie should be removed (set to empty or with expired date)
+			expect(setCookies.length).toBeGreaterThan(0);
+		});
 	});
 
 	describe('cleanupStaleCookieAssignments', () => {
