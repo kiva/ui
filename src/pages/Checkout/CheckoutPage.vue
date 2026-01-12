@@ -360,6 +360,7 @@ import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { isGoalsV2Enabled } from '#src/composables/useGoalData';
 import { mdiGiftOutline } from '@mdi/js';
+import { clearPromoCreditBannerCookie, getPromoCreditBannerCookie } from '#src/util/promoCreditCookie';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
@@ -674,8 +675,8 @@ export default {
 		}
 
 		// If no bonus available and showPromoCreditPill cookie exists, remove promo credit pill
-		if (this.totals?.bonusAvailableTotal <= 0 && this.cookieStore.get('showPromoCreditPill')) {
-			this.cookieStore.remove('showPromoCreditPill');
+		if (this.totals?.bonusAvailableTotal <= 0 && getPromoCreditBannerCookie(this.cookieStore)) {
+			clearPromoCreditBannerCookie(this.cookieStore);
 		}
 
 		// Checkout page MyKiva pills only visible with new feature
@@ -850,7 +851,7 @@ export default {
 			return !this.lenderTotalLoans && this.enableFtdMessage && this.ftdCreditAmount && this.ftdValidDate;
 		},
 		showPromoCreditPill() {
-			const showPromoCreditPill = this.cookieStore.get('showPromoCreditPill') || false;
+			const showPromoCreditPill = getPromoCreditBannerCookie(this.cookieStore) || false;
 			return showPromoCreditPill && this.totals.bonusAvailableTotal > 0;
 		},
 		bonusAvailableTotal() {

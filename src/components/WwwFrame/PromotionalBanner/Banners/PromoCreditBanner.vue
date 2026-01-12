@@ -79,7 +79,7 @@
 		<HeartBox class="tw-w-4.5 tw-h-4.5" />
 		<a
 			v-if="!managedAccountPageId"
-			href="/lend/freeCreditEligible"
+			href="/lend/filter"
 			class="
 				tw-text-white
 				tw-no-underline hover:tw-no-underline hover:tw-text-white
@@ -123,7 +123,8 @@ import {
 	bonusBalance,
 } from '#src/util/promoCredit';
 import HeartBox from '#src/assets/images/heart-box.svg';
-import confetti from 'canvas-confetti';
+import { showConfetti } from '#src/util/animation/confettiUtils';
+import { setPromoCreditBannerCookie } from '#src/util/promoCreditCookie';
 
 const userPromoCredits = gql`
 	query userPromoCredits($basketId: String) {
@@ -297,21 +298,11 @@ export default {
 			// establish precedence for credit types
 			const sortBy = ['universal_code', 'redemption_code', 'bonus_credit', 'kiva_credit'];
 			// copy and sort the credits
+			// filter out credits with 0 available balance to prevent showing them in the banner
 			const creditsArrayCopy = basketCredits.map(credit => credit).filter(credit => credit?.available > 0);
 			creditsArrayCopy.sort(indexIn(sortBy, 'creditType'));
 			// use the 1st credit for presentation
 			this.priorityBasketCredit = creditsArrayCopy[0] ?? null;
-		},
-		showConfetti() {
-			confetti({
-				origin: {
-					y: 0.2,
-				},
-				particleCount: 150,
-				spread: 200,
-				colors: ['#6AC395', '#223829', '#95D4B3'],
-				disableForReducedMotion: true,
-			});
 		},
 		onScroll() {
 			this.isScrolled = window.scrollY > 0;
@@ -320,8 +311,8 @@ export default {
 	mounted() {
 		// set promo cookie to show pill in checkout
 		if (this.priorityBasketCredit?.available > 0 && this.setPromoCreditPillCookie) {
-			this.cookieStore.set('showPromoCreditPill', 'true');
-			this.showConfetti();
+			setPromoCreditBannerCookie(this.cookieStore);
+			showConfetti();
 		}
 
 		window.addEventListener('scroll', this.onScroll);
