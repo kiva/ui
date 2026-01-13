@@ -207,6 +207,7 @@ const {
 	getPostCheckoutProgressByLoans,
 	loadGoalData,
 	loading: goalDataLoading,
+	postCheckoutSyncGoalCount,
 	storeGoalPreferences,
 	userGoal,
 	userGoalAchievedNow,
@@ -351,6 +352,10 @@ onMounted(async () => {
 		const year = props.goalsV2Enabled ? new Date().getFullYear() : null;
 		// Loans already in totalLoanCount after checkout
 		currGoalProgress.value = await getPostCheckoutProgressByLoans({
+			loans: props.loans,
+			year,
+		});
+		await postCheckoutSyncGoalCount({
 			loans: props.loans,
 			year,
 		});
