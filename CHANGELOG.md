@@ -1,3 +1,9 @@
+## [3.52.0-rc.2](https://github.com/kiva/ui/compare/v3.52.0-rc.1...v3.52.0-rc.2) (2026-01-13)
+
+### 🐛 Bugfixes
+
+* add experiment tracking that can be used for cypress and checking assignment contamination ([#6581](https://github.com/kiva/ui/issues/6581)) ([37981d7](https://github.com/kiva/ui/commit/37981d720bc9a1f9c07014eb4f44e1d5b3ee7a4d))
+
 ## [3.52.0-rc.1](https://github.com/kiva/ui/compare/v3.51.0...v3.52.0-rc.1) (2026-01-12)
 
 ### 🎉 New Features
