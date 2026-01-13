@@ -1,17 +1,26 @@
 <template>
-	<div class="tw-rounded tw-bg-white tw-p-2 giving-fund-card">
-		<h3>Check in on your giving funds</h3>
-		<p class="tw-my-2 tw-font-medium">
-			{{ textCopy }}
-		</p>
+	<div
+		class="giving-fund-card tw-rounded tw-bg-white tw-p-2 tw-w-full tw-flex tw-flex-col tw-gap-2 tw-items-stretch
+			md:tw-flex-row md:tw-items-center md:tw-justify-between md:tw-gap-3 md:tw-p-2.5"
+	>
+		<h3 class="tw-text-center md:tw-text-left md:tw-flex-1">
+			Check in on your giving funds
+		</h3>
+		<div class="tw-font-medium tw-text-center md:tw-text-left md:tw-flex-1">
+			<transition name="kvfade">
+				<p v-if="textCopy">
+					{{ textCopy }}
+				</p>
+			</transition>
+		</div>
 		<KvButton
-			class="tw-w-full"
+			class="tw-w-full md:tw-w-auto md:tw-ml-auto"
 			variant="primary"
 			to="/gfm"
 			aria-label="See your giving funds"
 			v-kv-track-event="['portfolio', 'click', 'see-your-giving-funds']"
 		>
-			<div class="tw-flex tw-items-center tw-w-full tw-gap-1">
+			<div class="tw-flex tw-items-center tw-w-full tw-gap-1 md:tw-w-auto">
 				<span>See your giving funds</span>
 				<KvMaterialIcon
 					class="tw-w-3 tw-h-3"
@@ -25,25 +34,32 @@
 <script setup>
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
+import useGivingFund from '#src/composables/useGivingFund';
 
 import {
 	computed,
-	toRefs,
-	defineProps,
+	inject,
+	ref,
+	onMounted,
 } from 'vue';
 
+const apollo = inject('apollo');
+
 const props = defineProps({
-	myFundsCount: {
-		type: Number,
-		required: true,
-	},
-	contributedFundsCount: {
-		type: Number,
-		required: true,
+	userId: {
+		type: [String, Number],
+		required: false,
+		default: null,
 	},
 });
 
-const { myFundsCount, contributedFundsCount } = toRefs(props);
+const {
+	getFundsContributedToIds,
+	fetchMyGivingFundsCount,
+} = useGivingFund(apollo);
+
+const myFundsCount = ref(0);
+const contributedFundsCount = ref(0);
 
 const textCopy = computed(() => {
 	let copy = '';
@@ -64,12 +80,29 @@ const textCopy = computed(() => {
 	}
 	return copy;
 });
+
+onMounted(() => {
+	// Fetch giving fund data
+	fetchMyGivingFundsCount()
+		.then(response => {
+			myFundsCount.value = response.givingFunds.totalCount;
+		});
+
+	getFundsContributedToIds(parseInt(props?.userId, 10) || null)
+		.then(fundIds => {
+			contributedFundsCount.value = fundIds.length;
+		});
+});
 </script>
 
 <style lang="postcss" scoped>
-.giving-fund-card {
-	@apply tw-max-w-xs;
+.kvfade-enter-active,
+.kvfade-leave-active {
+	transition: opacity 0.8s ease;
+}
 
-	min-width: 265px;
+.kvfade-enter-from,
+.kvfade-leave-to {
+	opacity: 0;
 }
 </style>

@@ -28,10 +28,9 @@
 				:lending-stats="lendingStats"
 			/>
 		</section>
-		<section v-if="myGivingFundsCount > 0 || numberOfFundsContributedTo > 0" class="tw-mt-4">
+		<section v-if="showMyGivingFundsCard" class="tw-mt-4">
 			<MyGivingFundsCard
-				:my-funds-count="myGivingFundsCount"
-				:contributed-funds-count="numberOfFundsContributedTo"
+				:user-id="userInfo?.id"
 			/>
 		</section>
 		<section v-if="clientRendered" class="!tw-mt-2">
@@ -235,7 +234,6 @@ import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql
 
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import useContentful from '#src/composables/useContentful';
-import useGivingFund from '#src/composables/useGivingFund';
 
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
@@ -378,6 +376,10 @@ export default {
 		goalRefreshKey: {
 			type: Number,
 			default: 0
+		},
+		showMyGivingFundsCard: {
+			type: Boolean,
+			default: false
 		}
 	},
 	setup() {
@@ -392,15 +394,8 @@ export default {
 			getLoanFindingUrl,
 		} = useBadgeData(apollo);
 
-		const {
-			getFundsContributedToIds,
-			fetchMyGivingFundsCount,
-		} = useGivingFund(apollo);
-
 		return {
 			badgeData,
-			getFundsContributedToIds,
-			fetchMyGivingFundsCount,
 			fetchAchievementData,
 			fetchContentfulData,
 			getLoanFindingUrl,
@@ -420,8 +415,6 @@ export default {
 			isFirstLoad: true,
 			loanUpdates: [],
 			moreWaysToHelpSlides: [],
-			myGivingFundsCount: 0,
-			numberOfFundsContributedTo: 0,
 			realTotalUpdates: 0,
 			recommendedLoans: Array(6).fill({ id: 0 }),
 			selectedBadgeData: null,
@@ -777,21 +770,6 @@ export default {
 		this.fetchRecommendedLoans();
 		this.fetchMoreWaysToHelpData();
 		this.loadInitialBasketItems();
-
-		this.fetchMyGivingFundsCount()
-			.then(response => {
-				this.myGivingFundsCount = response?.givingFunds?.totalCount;
-			})
-			.catch(error => {
-				logReadQueryError(error, 'MyKivaPageContent fetchMyGivingFundsCount');
-			});
-		this.getFundsContributedToIds(parseInt(this.userInfo?.id, 10) || null)
-			.then(fundIds => {
-				this.numberOfFundsContributedTo = fundIds.length;
-			})
-			.catch(error => {
-				logReadQueryError(error, 'MyKivaPageContent getFundsContributedToIds');
-			});
 	},
 };
 </script>

@@ -8,7 +8,7 @@
 		&nbsp;
 	</div>
 	<div
-		v-else-if="isUpcCampaign && partnerName && upcCampaignLink"
+		v-else-if="showUpcCampaignBanner"
 		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
 		data-testid="upc-campaign-banner"
 	>
@@ -41,7 +41,6 @@
 
 			Please go back to your first Kiva tab or <span class="tw-underline">
 				click here</span> to use your {{ bonusBalanceFormatted }} promo credit.
-
 		</a>
 	</div>
 	<div
@@ -72,12 +71,18 @@
 	</div>
 	<div
 		v-else-if="bonusBalance > 0"
-		class="bonus-banner-holder tw-bg-brand tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
+		class="bonus-banner-holder tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2
+			tw-flex tw-gap-2 tw-justify-center tw-items-center"
+		:class="{'tw-items-center' : isScrolled,
+			'tw-bg-brand-500': !managedAccountPageId,
+			'tw-bg-brand': managedAccountPageId
+		}"
 		data-testid="bonus-banner"
 	>
+		<HeartBox v-if="!managedAccountPageId" class="tw-w-4.5 tw-h-4.5" />
 		<a
 			v-if="!managedAccountPageId"
-			href="/lend/freeCreditEligible"
+			href="/lend/filter"
 			class="
 				tw-text-white
 				tw-no-underline hover:tw-no-underline hover:tw-text-white
@@ -85,8 +90,13 @@
 			data-testid="free-credit-banner"
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
 		>
-			Select a borrower to <span class="tw-underline">
-				lend your {{ $filters.numeral(bonusBalance, '$0.00') }} free credit</span>
+			<div v-if="!isScrolled">
+				<h3>You’ve got {{ $filters.numeral(bonusBalance, '$0.00') }} to give!</h3>
+				<h4>While funds last</h4>
+			</div>
+			<span v-else class="tw-underline">
+				Use your {{ $filters.numeral(bonusBalance, '$0.00') }} gift today while funds last!
+			</span>
 		</a>
 		<router-link
 			v-if="managedAccountPageId"
@@ -115,6 +125,9 @@ import {
 	basketPromoAvailableFragment,
 	bonusBalance,
 } from '#src/util/promoCredit';
+import HeartBox from '#src/assets/images/heart-box.svg';
+import { showConfetti } from '#src/util/animation/confettiUtils';
+import { setPromoCreditBannerCookie } from '#src/util/promoCreditCookie';
 
 const userPromoCredits = gql`
 	query userPromoCredits($basketId: String) {
@@ -185,7 +198,11 @@ export default {
 			promoCampaignData: null,
 			priorityBasketCredit: null,
 			isUserDataLoading: false,
+			isScrolled: false,
 		};
+	},
+	components: {
+		HeartBox,
 	},
 	apollo: [
 		{
@@ -262,6 +279,13 @@ export default {
 			// return the upc campaign link
 			return `/impact-dashboard/${partnerPage}/upc/${upcCode}`;
 		},
+		showUpcCampaignBanner() {
+			return this.isUpcCampaign && !!this.partnerName && !!this.upcCampaignLink;
+		},
+		setPromoCreditPillCookie() {
+			return !this.showUpcCampaignBanner && !this.lendingRewardOffered
+				&& this.bonusBalance > 0 && !this.managedAccountPageId;
+		}
 	},
 	methods: {
 		setPromoState(promotionData) {
@@ -277,11 +301,27 @@ export default {
 			// establish precedence for credit types
 			const sortBy = ['universal_code', 'redemption_code', 'bonus_credit', 'kiva_credit'];
 			// copy and sort the credits
-			const creditsArrayCopy = basketCredits.map(credit => credit);
+			// filter out credits with 0 available balance to prevent showing them in the banner
+			const creditsArrayCopy = basketCredits.map(credit => credit).filter(credit => credit?.available > 0);
 			creditsArrayCopy.sort(indexIn(sortBy, 'creditType'));
 			// use the 1st credit for presentation
 			this.priorityBasketCredit = creditsArrayCopy[0] ?? null;
 		},
-	}
+		onScroll() {
+			this.isScrolled = window.scrollY > 0;
+		}
+	},
+	mounted() {
+		// set promo cookie to show pill in checkout
+		if (this.setPromoCreditPillCookie) {
+			setPromoCreditBannerCookie(this.cookieStore);
+			showConfetti();
+		}
+
+		window.addEventListener('scroll', this.onScroll);
+	},
+	beforeUnmount() {
+		window.removeEventListener('scroll', this.onScroll);
+	},
 };
 </script>

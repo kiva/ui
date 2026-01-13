@@ -2,6 +2,10 @@ query myKivaQuery {
   my {
     id
     isBorrower
+    givingFundParticipation {
+      totalAmount
+      totalCount
+    }
     loans {
       totalCount
       values {

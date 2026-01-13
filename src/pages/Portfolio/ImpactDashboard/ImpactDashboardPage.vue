@@ -27,10 +27,8 @@
 						/>
 						<lending-insights />
 						<my-giving-funds-card
-							v-if="myGivingFundsCount > 0 || numberOfFundsContributedTo > 0"
-							:my-funds-count="myGivingFundsCount"
-							:contributed-funds-count="numberOfFundsContributedTo"
-							class="tw-mb-3 tw-mx-2 md:tw-mx-0"
+							:user-id="userId"
+							class="tw-my-2 tw-mx-0 md:tw-mx-0 tw-rounded-none md:tw-rounded"
 						/>
 						<your-donations />
 						<LoanCards
@@ -59,8 +57,6 @@
 </template>
 
 <script>
-import { inject } from 'vue';
-
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
@@ -73,8 +69,6 @@ import { getIsMyKivaEnabled, hasLoanFunFactFootnote } from '#src/util/myKivaUtil
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
 import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';
-import useGivingFund from '#src/composables/useGivingFund';
-import logReadQueryError from '#src/util/logReadQueryError';
 
 import {
 	PAYING_BACK,
@@ -136,6 +130,8 @@ export default {
 			goalsEntrypointEnable: false,
 			goalsV2Enabled: false,
 			isEmptyGoal: true,
+			showMyGivingFundsCard: false,
+			userId: null,
 		};
 	},
 	mixins: [badgeGoalMixin],
@@ -164,19 +160,6 @@ export default {
 			});
 		},
 	},
-	setup() {
-		const apollo = inject('apollo');
-
-		const {
-			getFundsContributedToIds,
-			fetchMyGivingFundsCount,
-		} = useGivingFund(apollo);
-
-		return {
-			getFundsContributedToIds,
-			fetchMyGivingFundsCount,
-		};
-	},
 	created() {
 		const portfolioQueryData = this.apollo.readQuery({ query: portfolioQuery });
 		const userData = portfolioQueryData?.my ?? {};
@@ -188,6 +171,14 @@ export default {
 
 			this.showLoanFootnote = this.filteredLoans.some(l => hasLoanFunFactFootnote(l));
 		}
+
+		this.userId = portfolioQueryData?.my?.id ?? null;
+
+		// show giving funds card if user has any giving fund participation
+		this.showMyGivingFundsCard = (
+			(userData?.givingFundParticipation?.totalCount ?? 0) > 0
+			|| (userData?.givingFundParticipation?.totalAmount ?? 0) > 0
+		);
 
 		// User will always see old portfolio page when MyKiva is rolled out to all users
 		const myKivaAllUsersEnabled = readBoolSetting(portfolioQueryData, 'general.my_kiva_all_users.value');
@@ -227,21 +218,6 @@ export default {
 				this.isEmptyGoal = !goalInProgress && !goalV2Achieved;
 			}
 		}
-
-		this.fetchMyGivingFundsCount()
-			.then(response => {
-				this.myGivingFundsCount = response.givingFunds.totalCount;
-			})
-			.catch(error => {
-				logReadQueryError(error, 'MyKivaPageContent fetchMyGivingFundsCount');
-			});
-		this.getFundsContributedToIds(parseInt(userData?.id, 10) || null)
-			.then(fundIds => {
-				this.numberOfFundsContributedTo = fundIds.length;
-			})
-			.catch(error => {
-				logReadQueryError(error, 'MyKivaPageContent getFundsContributedToIds');
-			});
 	},
 	async mounted() {
 		if (!this.showMyKivaPage) {

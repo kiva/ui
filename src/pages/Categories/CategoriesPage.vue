@@ -103,6 +103,12 @@ import MonthlyGoodModule from '#src/components/Categories/MonthlyGoodModule';
 import FrequentlyAskedQuestions from '#src/components/Contentful/FrequentlyAskedQuestions';
 import { gql } from 'graphql-tag';
 import { KvGrid, KvPageContainer, KvButton } from '@kiva/kv-components';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+
+// DO NOT REMOVE: This experiment key is used by Cypress E2E tests to verify cookie-based
+// experiment assignments. Removing it will break the suiteExperimentAssignments.spec.js tests.
+const CYPRESS_TESTING_EXP_KEY = 'cypress_experiment_cookie_testing';
 
 const allCategoriesPageQuery = gql`
 	query allCategoriesPageQuery {
@@ -167,6 +173,13 @@ export default {
 		};
 	},
 	apollo: {
+		// DO NOT REMOVE: This preFetch is required for Cypress E2E testing of experiment cookie assignments
+		preFetch(config, client) {
+			return client.query({
+				query: experimentAssignmentQuery,
+				variables: { id: CYPRESS_TESTING_EXP_KEY },
+			});
+		},
 		query: allCategoriesPageQuery,
 		result(result) {
 			this.categories = result.data?.lend?.loanChannels?.values ?? [];
@@ -193,6 +206,15 @@ export default {
 		},
 	},
 	mounted() {
+		// DO NOT REMOVE: Track cypress testing experiment for E2E cookie assignment tests
+		trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'event-tracking',
+			CYPRESS_TESTING_EXP_KEY,
+			'EXP-CYPRESS-TESTING'
+		);
+
 		this.apollo.query({
 			query: gql`
 				query bpHeroBackgroundImage($placeholderKey: String) {

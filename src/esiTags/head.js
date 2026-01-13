@@ -63,6 +63,15 @@ export default async function renderESIHead({
 	} = context;
 	const { topUrl } = context.esi;
 	const topUrlObj = new URL(topUrl, `${config.transport}://${config.host}`);
+	// Parse top URL and extract setuiab query params for experiment forcing
+	const setuiabParams = topUrlObj.searchParams.getAll('setuiab');
+	const routeQuery = {};
+	if (setuiabParams.length === 1) {
+		[routeQuery.setuiab] = setuiabParams;
+	} else if (setuiabParams.length > 1) {
+		routeQuery.setuiab = setuiabParams;
+	}
+	const route = { query: routeQuery };
 
 	// Initialize Apollo Client
 	const apollo = createApolloClient({
@@ -73,6 +82,7 @@ export default async function renderESIHead({
 		userAgent: kivaUserAgent,
 		uri: config.graphqlUri,
 		types: config.graphqlPossibleTypes,
+		route,
 		forceHeader,
 	});
 
