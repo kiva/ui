@@ -356,7 +356,7 @@ onMounted(async () => {
 			year,
 		});
 		await postCheckoutSyncGoalCount({
-			loans: props.loans,
+			progressTotal: currGoalProgress.value,
 			year,
 		});
 		await checkCompletedGoal({ currentGoalProgress: currGoalProgress.value });

@@ -344,28 +344,26 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
-	 * Fetches up-to-date achievement progress for specific loans from the postCheckoutAchievements query.
+	 * Fetches up-to-date achievement progress list for specific loans from the postCheckoutAchievements query.
 	 *
 	 * @param {Object} options - Configuration options
 	 * @param {Array} options.loans - Array of loan objects to check progress for (must have `id` property)
 	 * @param {number|null} options.year - Year for yearly progress (returns yearlyProgress),
 	 *   null for all-time progress (returns allTimeProgress)
-	 * @param {string} options.category - Achievement category ID to find in the results
 	 * @param {string} options.fetchPolicy - Apollo fetch policy (default: 'cache-first')
-	 * @returns {Promise<Object|null|undefined>} Progress object with shape:
-	 *   { achievementId, totalProgress, currentTier, completed }
-	 *   Returns null if category not found in results, undefined if no valid loan IDs provided
+	 * @returns {Promise<Object|null>} Progress array with shape:
+	 *   [{ achievementId, totalProgress, currentTier, completed }]
+	 *   Returns null if no valid loan IDs, or on error
 	 */
-	async function getPostCheckoutAchievementProgress({
+	async function getPostCheckoutAchievementProgressList({
 		loans = [],
 		year = null, // pass current year for yearly mode, null for all-time mode
-		category = ID_WOMENS_EQUALITY,
 		fetchPolicy = 'cache-first',
 	} = {}) {
 		try {
 			// For category goals: pull authoritative totals for these loanIds
 			const loanIds = loans.map(l => l.id).filter(Boolean);
-			if (!loanIds.length) return;
+			if (!loanIds.length) return null;
 			const res = await apolloClient.query({
 				query: useGoalDataProgressQuery,
 				variables: { loanIds, year }, // year=null => all-time list; year=YYYY => yearly list
@@ -374,12 +372,36 @@ export default function useGoalData({ apollo } = {}) {
 			const progressList = year
 				? res.data?.postCheckoutAchievements?.yearlyProgress || []
 				: res.data?.postCheckoutAchievements?.allTimeProgress || [];
-			const progress = progressList.find(e => e.achievementId === category) ?? null;
-			return progress;
+			return progressList;
 		} catch (error) {
-			logFormatter(error, 'Failed to get post-checkout achievement progress');
+			logFormatter(error, 'Failed to get post-checkout achievement progress list');
 			return null;
 		}
+	}
+
+	/**
+	 * Fetches up-to-date achievement progress for a specified category.
+	 *
+	 * @param {Object} options - Configuration options
+	 * @param {Array} options.loans - Array of loan objects to check progress for (must have `id` property)
+	 * @param {number|null} options.year - Year for yearly progress (returns yearlyProgress),
+	 *   null for all-time progress (returns allTimeProgress)
+	 * @param {string} options.category - Achievement category ID to find in the results
+	 * @param {string} options.fetchPolicy - Apollo fetch policy (default: 'cache-first')
+	 * @returns {Promise<Object|null>} Progress object with shape:
+	 *   { achievementId, totalProgress, currentTier, completed }
+	 *   Returns null if category not found, no valid loan IDs, or on error
+	 */
+	async function getPostCheckoutAchievementProgress({
+		loans = [],
+		year = null, // pass current year for yearly mode, null for all-time mode
+		category = ID_WOMENS_EQUALITY,
+		fetchPolicy = 'cache-first',
+	} = {}) {
+		const progressList = await getPostCheckoutAchievementProgressList({ loans, year, fetchPolicy });
+		if (!progressList) return null;
+		const progress = progressList.find(e => e.achievementId === category) ?? null;
+		return progress;
 	}
 
 	/**
@@ -389,7 +411,7 @@ export default function useGoalData({ apollo } = {}) {
 	 * @param {number|null} options.year - Year for yearly progress, or null for all-time progress
 	 * @param {boolean} options.increment - Increment in-page counter by 1 (ATB modal: true)
 	 * @param {boolean} options.addBasketLoans - Add loans.length to progress (Basket page: true)
-	 * @returns {number} Progress count for the user's goal category
+	 * @returns {Promise<number|null>} Progress count for the user's goal category, or null if unavailable
 	 *
 	 * Use cases:
 	 * - ATB Modal: { loans, increment: true } - increments counter per add-to-basket action
@@ -424,7 +446,7 @@ export default function useGoalData({ apollo } = {}) {
 				category: userGoal.value?.category
 			});
 			const totalProgress = res?.totalProgress;
-			if (!totalProgress) return;
+			if (totalProgress == null) return null;
 			if (!year) {
 				const loanTotalAtStart = userGoal.value?.loanTotalAtStart || 0;
 				return Math.max(0, totalProgress - loanTotalAtStart);
@@ -437,30 +459,39 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
-	 * Synchronizes goal progress with real-time data from postCheckoutAchievements.
+	 * Synchronizes goal progress with real-time data to address Kafka lag.
 	 *
 	 * This function addresses a race condition where tieredLendingAchievements (powered by Kafka)
 	 * may not yet reflect recent checkout activity when the user navigates to MyKiva.
 	 *
-	 * It fetches up-to-date progress for the given loan IDs from postCheckoutAchievements and
-	 * updates currentYearProgress using Math.max to ensure displayed progress never decreases.
-	 * This triggers the goalProgress computed to recalculate with the corrected value.
+	 * For category-based goals, it updates currentYearProgress using Math.max to ensure
+	 * displayed progress never decreases. Triggers goalProgress re-computation.
+	 *
+	 * For ID_SUPPORT_ALL goals, it refreshes the underlying data source directly
+	 * (yearlyLoanCount or totalLoanCount via loadPreferences).
 	 *
 	 * @param {Object} options - Configuration options
-	 * @param {Array} options.loans - Array of loan objects from recent transactions (must have `id` property)
-	 * @param {number|null} options.year - Year for yearly progress mode, or null for all-time progress mode
-	 * @returns {Promise<void>}
+	 * @param {number|undefined} options.progressTotal - The authoritative progress total from
+	 *   postCheckoutAchievements (required for category-based goals, ignored for ID_SUPPORT_ALL)
+	 * @param {number|null} options.year - Year for yearly progress mode, or null for all-time mode
+	 * @returns {Promise<void|null>}
+	 *
+	 * @example
+	 * // For category-based goals, first fetch progress then sync:
+	 * const progressTotal = await getPostCheckoutProgressByLoans({ loans, year });
+	 * await postCheckoutSyncGoalCount({ progressTotal, year });
+	 *
+	 * @example
+	 * // For ID_SUPPORT_ALL goals, progressTotal is not needed:
+	 * await postCheckoutSyncGoalCount({ year: 2026 });
 	 */
-	async function postCheckoutSyncGoalCount({
-		loans = [],
-		year = null, // pass current year for yearly mode, null for all-time mode
-	} = {}) {
+	async function postCheckoutSyncGoalCount({ progressTotal = undefined, year = null }) {
 		try {
-			if (!userGoal.value || !loans.length) return;
+			if (!userGoal.value) return;
 			// ID_SUPPORT_ALL does not use tiered achievements in goalProgress
 			if (userGoal.value.category === ID_SUPPORT_ALL) {
 				if (useYearlyProgress.value) {
-				// Ensure yearly total is correct immediately
+					// Ensure yearly total is correct immediately
 					const stats = await getLoanStatsByYear(year ?? new Date().getFullYear(), 'network-only');
 					yearlyLoanCount.value = Math.max(yearlyLoanCount.value || 0, stats?.count || 0);
 					return;
@@ -470,13 +501,8 @@ export default function useGoalData({ apollo } = {}) {
 				await loadPreferences('network-only');
 				return;
 			}
-			const res = await getPostCheckoutAchievementProgress({
-				loans,
-				year,
-				category: userGoal.value.category,
-			});
-			const syncedTotal = res?.totalProgress;
-			if (syncedTotal === undefined) return;
+
+			if (progressTotal == null) return;
 
 			// Re-write currentYearProgress to re-compute goalProgress
 			const categoryId = userGoal.value.category;
@@ -485,10 +511,13 @@ export default function useGoalData({ apollo } = {}) {
 			const nextEntry = idx === -1
 				? { id: categoryId, progressForYear: 0, totalProgressToAchievement: 0 }
 				: { ...existing[idx] };
+			const base = useYearlyProgress.value
+				? nextEntry.progressForYear || 0
+				: nextEntry.totalProgressToAchievement || 0;
 			if (useYearlyProgress.value) {
-				nextEntry.progressForYear = Math.max(nextEntry.progressForYear || 0, syncedTotal);
+				nextEntry.progressForYear = Math.max(base, progressTotal);
 			} else {
-				nextEntry.totalProgressToAchievement = Math.max(nextEntry.totalProgressToAchievement || 0, syncedTotal);
+				nextEntry.totalProgressToAchievement = Math.max(base, progressTotal);
 			}
 			const next = [...existing];
 			if (idx === -1) next.push(nextEntry);
