@@ -114,7 +114,7 @@
 					<kv-progress-bar
 						v-if="!isLoading"
 						class="tw-mb-1.5 lg:tw-mb-1 tw-bg-tertiary"
-						aria-label="Percent the loan has funded"
+						label="Percent the loan has funded"
 						:value="fundraisingPercent"
 					/>
 				</figure>

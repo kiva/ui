@@ -19,6 +19,7 @@
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
+			:show-my-giving-funds-card="showMyGivingFundsCard"
 		/>
 	</www-page>
 </template>
@@ -91,6 +92,7 @@ export default {
 			postLendingNextStepsEnable: false,
 			latestLoan: null,
 			goalRefreshKey: 0,
+			showMyGivingFundsCard: false,
 		};
 	},
 	computed: {
@@ -147,6 +149,11 @@ export default {
 					public: this.userInfo.userAccount?.public ?? false,
 					inviterName: this.userInfo.userAccount?.inviterName ?? null,
 				};
+				// show giving funds card if user has any giving fund participation
+				this.showMyGivingFundsCard = (
+					(this.userInfo?.givingFundParticipation?.totalCount ?? 0) > 0
+					|| (this.userInfo?.givingFundParticipation?.totalAmount ?? 0) > 0
+				);
 				this.loans = myKivaQueryResult.my?.loans?.values ?? [];
 				this.sidesheetLoan = bpSidesheetLoan?.lend?.loan ?? { id: 0 };
 				const isSideSheetLoanInLoans = this.loans.some(loan => loan?.id === this.sidesheetLoan.id);
@@ -199,7 +206,10 @@ export default {
 				this.showNewBadgeSection = readBoolSetting(myKivaQueryResult, `general.${NEW_BADGE_SECTION_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.postLendingNextStepsEnable = readBoolSetting(myKivaQueryResult, `general.${POST_LENDING_NEXT_STEPS_KEY}.value`) ?? false; // eslint-disable-line max-len
 
-				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan || null;
+				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
+					...myKivaQueryResult.my.latestLoan.values[0].loan,
+					amount: myKivaQueryResult.my.latestLoan.values[0]?.amount || null,
+				} : null;
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');
 			}

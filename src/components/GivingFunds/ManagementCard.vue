@@ -73,6 +73,11 @@
 						<h2>{{ numeral(myDonationTotals).format('$0,0') }}</h2>
 						<p class="tw-text-small tw-text-gray-500">
 							Your donations
+							<a
+								v-if="showParticipantDataControls"
+								:href="`${givingFundRootPath}/${fund.id}?action=my-donations`"
+								v-kv-track-event="['giving-funds', 'click', 'my-donations', fund.id]"
+							>View</a>
 						</p>
 					</div>
 					<div v-if="fund?.currentAmountDonated">
@@ -93,6 +98,11 @@
 						<h2>{{ fund?.totalParticipants }}</h2>
 						<p class="tw-text-small tw-text-gray-500">
 							Participants
+							<a
+								v-if="showParticipantDataControls && !hideOwnerOperations"
+								:href="`${givingFundRootPath}/${fund.id}?action=participants`"
+								v-kv-track-event="['giving-funds', 'click', 'participants', fund.id]"
+							>View</a>
 						</p>
 					</div>
 				</div>
@@ -127,7 +137,7 @@
 					</div>
 					<kv-progress-bar
 						class="progess-bar-override tw-mt-1"
-						aria-label="Percent the fundraiser has raised towards their goal"
+						label="Percent the fundraiser has raised towards their goal"
 						:value="progressPercentage"
 					/>
 					<div class="tw-flex tw-justify-between tw-mt-1">
@@ -203,6 +213,10 @@ const props = defineProps({
 	fund: {
 		type: Object,
 		required: true,
+	},
+	showParticipantDataControls: {
+		type: Boolean,
+		default: false,
 	},
 	hideOwnerOperations: {
 		type: Boolean,

@@ -265,7 +265,46 @@ export const setCookieAssignments = (cookieStore, assignments) => {
 	const serialized = serializeExpCookie(assignments);
 	if (serialized) {
 		cookieStore.set(UIAB_COOKIE_NAME, serialized, { path: '/' });
+	} else if (assignments !== undefined) {
+		// Remove cookie if assignments object is empty (but was explicitly passed)
+		cookieStore.remove(UIAB_COOKIE_NAME, { path: '/' });
 	}
+};
+
+/**
+ * Removes stale experiment assignments from the cookie that are not in the active experiments list.
+ * This helps prevent unbounded cookie growth as experiments are added and removed over time.
+ *
+ * @param {CookieStore} cookieStore The cookie mixin
+ * @param {Array<string>} activeExperiments The list of active experiment IDs
+ * @returns {boolean} True if any stale assignments were removed, false otherwise
+ */
+export const cleanupStaleCookieAssignments = (cookieStore, activeExperiments) => {
+	if (!activeExperiments?.length) return false;
+
+	const assignments = getCookieAssignments(cookieStore);
+	const assignmentKeys = Object.keys(assignments);
+
+	if (!assignmentKeys.length) return false;
+
+	// Filter out assignments that are not in the active experiments list
+	const cleanedAssignments = {};
+	let hasStaleAssignments = false;
+
+	assignmentKeys.forEach(key => {
+		if (activeExperiments.includes(key)) {
+			cleanedAssignments[key] = assignments[key];
+		} else {
+			hasStaleAssignments = true;
+		}
+	});
+
+	// Only update the cookie if we removed stale assignments
+	if (hasStaleAssignments) {
+		setCookieAssignments(cookieStore, cleanedAssignments);
+	}
+
+	return hasStaleAssignments;
 };
 
 /**
@@ -282,14 +321,18 @@ export const getForcedAssignment = (cookieStore, route, id, experimentSetting, f
 	// Get previous cookie assignment
 	const cookieAssignment = getCookieAssignments(cookieStore)[id];
 
-	let queryForced;
+	let cookieQueryForced = false;
+	let queryForced = false;
 	let headerForced = false;
-	let forcedVersion = cookieAssignment?.version;
+	let forcedVersion;
 
 	if (forceHeader && id === HOME_PAGE_EXPERIMENT_KEY) {
 		headerForced = true;
 		forcedVersion = forceHeader;
 	} else {
+		cookieQueryForced = !!cookieAssignment?.queryForced;
+		forcedVersion = cookieAssignment?.version;
+
 		// Look through setuiab assignments
 		const setuiabQuery = route?.query?.setuiab;
 		// Route query param will be an array if more than one instance in URL
@@ -313,7 +356,7 @@ export const getForcedAssignment = (cookieStore, route, id, experimentSetting, f
 			version: forcedVersion,
 			...(forcedHash && { hash: forcedHash }),
 			...(headerForced && { headerForced }),
-			queryForced: !!queryForced,
+			queryForced: queryForced || cookieQueryForced,
 		};
 	}
 };

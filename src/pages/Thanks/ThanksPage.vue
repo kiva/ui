@@ -99,10 +99,11 @@ import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
 import { fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
 import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
-import useBadgeData from '#src/composables/useBadgeData';
+import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import { isGoalsV2Enabled, LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import { isGoalsV2Enabled, LAST_YEAR_KEY, GOALS_V2_START_YEAR } from '#src/composables/useGoalData';
+import userYearlyProgressQuery from '#src/graphql/query/userYearlyProgress.graphql';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
@@ -217,10 +218,15 @@ export default {
 						teamId,
 					};
 					const limit = 1;
+					const loanIds = getLoanIds(loans);
 
 					return Promise.all([
 						teamId ? fetchGoals(client, limit, filters) : null,
-						fetchPostCheckoutAchievements(client, getLoanIds(loans)),
+						fetchPostCheckoutAchievements(client, loanIds),
+						client.query({
+							query: userYearlyProgressQuery,
+							variables: { loanIds, year: GOALS_V2_START_YEAR },
+						}),
 					]);
 				}).catch(errorResponse => {
 					logFormatter(
@@ -366,6 +372,32 @@ export default {
 		this.isGuest = this.receipt && !data?.my?.userAccount;
 
 		this.loans = getLoans(this.receipt);
+
+		// It is likely that achievement service have some loan count delay.
+		// This ensures loan count is correct for women category
+		const loanIds = getLoanIds(this.loans);
+		try {
+			const response = this.apollo.readQuery({
+				query: userYearlyProgressQuery,
+				variables: { loanIds, year: GOALS_V2_START_YEAR },
+			});
+			const progress = response?.postCheckoutAchievements?.yearlyProgress || [];
+			const womenProgress = progress.find(p => p.achievementId === ID_WOMENS_EQUALITY);
+
+			if (womenProgress) {
+				this.achievements = this.achievements.map(achievement => {
+					if (achievement.id === ID_WOMENS_EQUALITY && womenProgress) {
+						return {
+							...achievement,
+							progressForYear: womenProgress.totalProgress,
+						};
+					}
+					return achievement;
+				});
+			}
+		} catch (e) {
+			logReadQueryError(e, 'User yearly progress readQuery failed');
+		}
 
 		// Fetch Goal Information
 		try {

@@ -2,6 +2,10 @@ query myKivaQuery {
   my {
     id
     isBorrower
+    givingFundParticipation {
+      totalAmount
+      totalCount
+    }
     loans {
       totalCount
       values {
@@ -126,6 +130,7 @@ query myKivaQuery {
       limit: 1
     ) {
       values {
+		amount
         loan {
           id
           name
@@ -143,6 +148,7 @@ query myKivaQuery {
                 latitude
                 longitude
               }
+			  ppp
             }
           }
           borrowerCount

@@ -1,6 +1,10 @@
 query portfolioQuery {
 	my {
 		id
+		givingFundParticipation {
+			totalAmount
+			totalCount
+		}
 		loans(limit: 50) {
 			totalCount
 			values {

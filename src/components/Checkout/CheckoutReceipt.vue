@@ -95,7 +95,8 @@
 									/>
 									<kv-tooltip
 										data-testid="kcard-tool-tip-text"
-										:controller="`print-card-${card.id}`" theme="mint"
+										:controller="`print-card-${card.id}`"
+										theme="ecoGreenLight"
 									>
 										You can print this card now. We'll also send it to
 										you in an email so you can print it later.
@@ -293,8 +294,7 @@
 <script>
 import { format } from 'date-fns';
 import KvIcon from '#src/components/Kv/KvIcon';
-import KvTooltip from '#src/components/Kv/KvTooltip';
-import { KvButton } from '@kiva/kv-components';
+import { KvButton, KvTooltip } from '@kiva/kv-components';
 
 // Ensures the date renders the same on client or SSR in any timezone.
 // Taken from https://github.com/date-fns/date-fns/issues/376#issuecomment-353871093
