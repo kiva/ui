@@ -321,14 +321,18 @@ export const getForcedAssignment = (cookieStore, route, id, experimentSetting, f
 	// Get previous cookie assignment
 	const cookieAssignment = getCookieAssignments(cookieStore)[id];
 
-	let queryForced;
+	let cookieQueryForced = false;
+	let queryForced = false;
 	let headerForced = false;
-	let forcedVersion = cookieAssignment?.version;
+	let forcedVersion;
 
 	if (forceHeader && id === HOME_PAGE_EXPERIMENT_KEY) {
 		headerForced = true;
 		forcedVersion = forceHeader;
 	} else {
+		cookieQueryForced = !!cookieAssignment?.queryForced;
+		forcedVersion = cookieAssignment?.version;
+
 		// Look through setuiab assignments
 		const setuiabQuery = route?.query?.setuiab;
 		// Route query param will be an array if more than one instance in URL
@@ -352,7 +356,7 @@ export const getForcedAssignment = (cookieStore, route, id, experimentSetting, f
 			version: forcedVersion,
 			...(forcedHash && { hash: forcedHash }),
 			...(headerForced && { headerForced }),
-			queryForced: !!queryForced,
+			queryForced: queryForced || cookieQueryForced,
 		};
 	}
 };

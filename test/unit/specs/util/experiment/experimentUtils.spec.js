@@ -1105,7 +1105,7 @@ describe('experimentUtils.js', () => {
 				...experimentSetting,
 				version: 'variant',
 				hash: hash1,
-				queryForced: false // queryForced is only true with active query param, not from cookie
+				queryForced: true
 			});
 
 			result = getForcedAssignment(cookieStore, '', 'qwe', experimentSetting);
@@ -1118,9 +1118,8 @@ describe('experimentUtils.js', () => {
 			});
 		});
 
-		it('should respect new query param even when cookie has queryForced=true', () => {
+		it('should keep queryForced=true from cookie when no active query param', () => {
 			const hash = 1753809052;
-			// Cookie has queryForced=true from previous setuiab, but no active query param now
 			const cookieStore = new CookieStore({ uiab: `asd:variant:${hash}:0.5:true` });
 
 			const result = getForcedAssignment(cookieStore, { query: {} }, 'asd', experimentSetting);
@@ -1129,11 +1128,11 @@ describe('experimentUtils.js', () => {
 				...experimentSetting,
 				version: 'variant',
 				hash,
-				queryForced: false // Should be false since there's no active query param
+				queryForced: true
 			});
 		});
 
-		it('should set queryForced=true only with active setuiab query param', () => {
+		it('should set queryForced=true with active setuiab query param', () => {
 			const hash = 1753809052;
 			const cookieStore = new CookieStore({ uiab: `asd:a:${hash}:0.5:false` });
 			const route = { query: { setuiab: 'asd.b' } };
@@ -1205,7 +1204,7 @@ describe('experimentUtils.js', () => {
 				hash: hash1,
 				version: 'variant',
 				headerForced: true,
-				queryForced: false, // queryForced is only true with active query param, not from cookie
+				queryForced: false, // header-forced assignment should not be queryForced
 			});
 		});
 
