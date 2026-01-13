@@ -74,7 +74,7 @@
 		class="bonus-banner-holder tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2
 			tw-flex tw-gap-2 tw-justify-center tw-items-center"
 		:class="{'tw-items-center' : isScrolled,
-			'lending-credit-bg': !managedAccountPageId,
+			'tw-bg-brand-500': !managedAccountPageId,
 			'tw-bg-brand': managedAccountPageId
 		}"
 		data-testid="bonus-banner"
@@ -325,9 +325,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="postcss" scoped>
-	.lending-credit-bg {
-		background-color: #54A66D;
-	}
-</style>

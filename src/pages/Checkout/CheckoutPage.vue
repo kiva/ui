@@ -675,7 +675,8 @@ export default {
 		}
 
 		// If no bonus available and showPromoCreditPill cookie exists, remove promo credit pill
-		if (this.totals?.bonusAvailableTotal <= 0 && getPromoCreditBannerCookie(this.cookieStore)) {
+		if (typeof window !== 'undefined'
+				&& this.totals?.bonusAvailableTotal <= 0 && getPromoCreditBannerCookie(this.cookieStore)) {
 			clearPromoCreditBannerCookie(this.cookieStore);
 		}
 

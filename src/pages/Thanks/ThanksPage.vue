@@ -516,13 +516,13 @@ export default {
 			`active-view-${this.activeView}`,
 			this.isGuest ? 'guest' : 'signed-in'
 		);
-	},
-	mounted() {
+
 		// If bonus was applied and showPromoCreditPill cookie exists, remove promo credit pill
-		if (this.receipt?.total?.bonusAvailableTotal > 0 && getPromoCreditBannerCookie(this.cookieStore)) {
+		if (typeof window !== 'undefined'
+				&& this.receipt?.total?.bonusAvailableTotal > 0 && getPromoCreditBannerCookie(this.cookieStore)) {
 			clearPromoCreditBannerCookie(this.cookieStore);
 		}
-	}
+	},
 };
 
 </script>
