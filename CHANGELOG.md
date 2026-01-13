@@ -1,3 +1,9 @@
+## [3.52.0-rc.3](https://github.com/kiva/ui/compare/v3.52.0-rc.2...v3.52.0-rc.3) (2026-01-13)
+
+### 🐛 Bugfixes
+
+* ensure setuiab works like expected ([#6583](https://github.com/kiva/ui/issues/6583)) ([efe01fc](https://github.com/kiva/ui/commit/efe01fc06f6f734107c40b962ae06774bfc76460))
+
 ## [3.52.0-rc.2](https://github.com/kiva/ui/compare/v3.52.0-rc.1...v3.52.0-rc.2) (2026-01-13)
 
 ### 🐛 Bugfixes
