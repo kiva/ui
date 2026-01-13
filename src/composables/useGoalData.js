@@ -421,6 +421,7 @@ export default function useGoalData({ apollo } = {}) {
 	async function getPostCheckoutProgressByLoans({
 		loans = [],
 		year = null,
+		category = userGoal.value?.category,
 		increment = false,
 		addBasketLoans = false,
 	} = {}) {
@@ -443,7 +444,7 @@ export default function useGoalData({ apollo } = {}) {
 			const res = await getPostCheckoutAchievementProgress({
 				loans,
 				year,
-				category: userGoal.value?.category
+				category
 			});
 			const totalProgress = res?.totalProgress;
 			if (totalProgress == null) return null;
