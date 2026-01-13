@@ -79,7 +79,7 @@
 		}"
 		data-testid="bonus-banner"
 	>
-		<HeartBox class="tw-w-4.5 tw-h-4.5" />
+		<HeartBox v-if="!managedAccountPageId" class="tw-w-4.5 tw-h-4.5" />
 		<a
 			v-if="!managedAccountPageId"
 			href="/lend/filter"

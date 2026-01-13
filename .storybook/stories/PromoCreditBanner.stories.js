@@ -45,7 +45,7 @@ const queryResult = {
 				managedAccount: {
 					campaignInfo: {
 						campaignPromoFundId: '12',
-						upc: false,
+						upc: true,
 					},
 					id: 'ma-1',
 					managementType: 'managed',
@@ -83,6 +83,46 @@ export const Default = () => ({
 				useCDNCaching: false,
 				cdnNotedLoggedIn: false,
 			},
+		};
+	},
+	template: `
+		<promo-credit-banner />
+	`,
+});
+
+const queryResultLendingPromo = {
+	data: {
+		...queryResult.data,
+		shop: {
+			...queryResult.data.shop,
+			promoCampaign: {
+				promoFund: {
+					id: '34',
+					displayName: 'Lending Promo',
+				},
+				managedAccount: null,
+			},
+		},
+	},
+};
+
+export const WithLendingPromoCredit = () => ({
+	components: {
+		PromoCreditBanner,
+	},
+	mixins: [apolloStoryMixin({ queryResult: queryResultLendingPromo }), cookieStoreStoryMixin()],
+	provide: {
+		$renderConfig: {
+			useCDNCaching: false,
+			cdnNotedLoggedIn: false,
+		},
+	},
+	data() {
+		return {
+			$renderConfig: {
+				useCDNCaching: false,
+				cdnNotedLoggedIn: false,
+			},
 			$route: {
 				query: {
 					fromContext: '/impact-dashboard'
@@ -93,4 +133,101 @@ export const Default = () => ({
 	template: `
 		<promo-credit-banner />
 	`,
+});
+
+const queryResultLendingRewardOffered = {
+	data: {
+		...queryResult.data,
+		shop: {
+			...queryResult.data.shop,
+			lendingRewardOffered: true,
+			promoCampaign: {
+				promoFund: {
+					id: '34',
+					displayName: 'Managed Account Promo',
+				},
+				managedAccount: {
+					campaignInfo: {
+						campaignPromoFundId: '34',
+						upc: false,
+					},
+				},
+			},
+		},
+	}
+};
+
+export const WithLendingRewardOffered = () => ({
+	components: {
+		PromoCreditBanner,
+	},
+	mixins: [apolloStoryMixin({ queryResult: queryResultLendingRewardOffered }), cookieStoreStoryMixin()],
+	provide: {
+		$renderConfig: {
+			useCDNCaching: false,
+			cdnNotedLoggedIn: false,
+		},
+	},
+	data() {
+		return {
+			$renderConfig: {
+				useCDNCaching: false,
+				cdnNotedLoggedIn: false,
+			},
+		};
+	},
+	template: `
+		<promo-credit-banner />
+	`,
+});
+
+const managedAccountQueryResult = {
+	data: {
+		...queryResult.data,
+		shop: {
+			...queryResult.data.shop,
+			promoCampaign: {
+				promoFund: {
+					id: '56',
+					displayName: 'Managed Account Fund',
+				},
+				managedAccount: {
+					campaignInfo: {
+						campaignPromoFundId: '56',
+						upc: false,
+					},
+					id: 'ma-3',
+					managementType: 'managed',
+					pageId: '12345',
+					strategicPartner: {
+						id: 'sp-3',
+						partnerName: 'Managed Account Partner 2',
+						partnerContentfulPage: 'managed-account-partner-2',
+					},
+				},
+			},
+		},
+	},
+};
+
+export const WithManagedAccountId = () => ({
+	components: {
+		PromoCreditBanner,
+	},
+	mixins: [apolloStoryMixin({ queryResult: managedAccountQueryResult }), cookieStoreStoryMixin()],
+	provide: {
+		$renderConfig: {
+			useCDNCaching: false,
+			cdnNotedLoggedIn: false,
+		},
+	},
+	data() {
+		return {
+			$renderConfig: {
+				useCDNCaching: false,
+				cdnNotedLoggedIn: false,
+			},
+		};
+	},
+	template: `<promo-credit-banner />`,
 });
