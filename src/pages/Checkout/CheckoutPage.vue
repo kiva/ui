@@ -852,10 +852,10 @@ export default {
 		},
 		showPromoCreditPill() {
 			const showPromoCreditPill = getPromoCreditBannerCookie(this.cookieStore) || false;
-			return showPromoCreditPill && this.totals.bonusAvailableTotal > 0;
+			return showPromoCreditPill && this.totals?.bonusAvailableTotal > 0;
 		},
 		bonusAvailableTotal() {
-			return numeral(this.totals.bonusAvailableTotal).format('$0,0');
+			return numeral(this.totals?.bonusAvailableTotal).format('$0,0');
 		},
 	},
 	methods: {

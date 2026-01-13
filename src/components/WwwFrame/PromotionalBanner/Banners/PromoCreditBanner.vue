@@ -284,7 +284,7 @@ export default {
 		},
 		setPromoCreditPillCookie() {
 			return !this.showUpcCampaignBanner && !this.lendingRewardOffered
-				&& (this.bonusBalance > 0 && !this.managedAccountPageId);
+				&& this.bonusBalance > 0 && !this.managedAccountPageId;
 		}
 	},
 	methods: {
@@ -313,7 +313,7 @@ export default {
 	},
 	mounted() {
 		// set promo cookie to show pill in checkout
-		if (this.priorityBasketCredit?.available > 0 && this.setPromoCreditPillCookie) {
+		if (this.setPromoCreditPillCookie) {
 			setPromoCreditBannerCookie(this.cookieStore);
 			showConfetti();
 		}
