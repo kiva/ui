@@ -749,7 +749,7 @@ export default {
 			this.showLoanDetails({ id: Number(this.sidesheetLoan.id) }, true, false);
 		}
 	},
-	async mounted() {
+	mounted() {
 		this.clientRendered = true;
 
 		// Ensure clientRendered is true before attempting to scroll to section
