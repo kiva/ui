@@ -104,6 +104,7 @@ import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import { isGoalsV2Enabled, LAST_YEAR_KEY, GOALS_V2_START_YEAR } from '#src/composables/useGoalData';
 import userYearlyProgressQuery from '#src/graphql/query/userYearlyProgress.graphql';
+import { clearPromoCreditBannerCookie, getPromoCreditBannerCookie } from '#src/util/promoCreditCookie';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
@@ -515,6 +516,12 @@ export default {
 			`active-view-${this.activeView}`,
 			this.isGuest ? 'guest' : 'signed-in'
 		);
+
+		// If bonus was applied and showPromoCreditPill cookie exists, remove promo credit pill
+		if (typeof window !== 'undefined'
+				&& this.receipt?.total?.bonusAvailableTotal > 0 && getPromoCreditBannerCookie(this.cookieStore)) {
+			clearPromoCreditBannerCookie(this.cookieStore);
+		}
 	},
 };
 

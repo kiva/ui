@@ -169,8 +169,70 @@ describe('renderESIHead', () => {
 			userAgent: mockContext.kivaUserAgent,
 			uri: mockContext.config.graphqlUri,
 			types: mockContext.config.graphqlPossibleTypes,
+			route: { query: {} },
 			forceHeader: mockContext.forceHeader,
 		});
+	});
+
+	it('should pass single setuiab param to Apollo client route', async () => {
+		const contextWithSetuiab = {
+			...mockContext,
+			esi: { topUrl: '/lend?setuiab=test_exp.b' },
+		};
+
+		await renderESIHead({
+			cookieStore: mockCookieStore,
+			context: contextWithSetuiab,
+			fetch: mockFetch,
+			kvAuth0: mockKvAuth0,
+		});
+
+		expect(createApolloClient).toHaveBeenCalledWith(
+			expect.objectContaining({
+				route: { query: { setuiab: 'test_exp.b' } },
+			}),
+		);
+	});
+
+	it('should pass multiple setuiab params to Apollo client route as array', async () => {
+		const contextWithSetuiab = {
+			...mockContext,
+			esi: { topUrl: '/lend?setuiab=exp1.a&setuiab=exp2.b' },
+		};
+
+		await renderESIHead({
+			cookieStore: mockCookieStore,
+			context: contextWithSetuiab,
+			fetch: mockFetch,
+			kvAuth0: mockKvAuth0,
+		});
+
+		expect(createApolloClient).toHaveBeenCalledWith(
+			expect.objectContaining({
+				route: { query: { setuiab: ['exp1.a', 'exp2.b'] } },
+			}),
+		);
+	});
+
+	it('should handle invalid topUrl gracefully and pass empty route query', async () => {
+		const contextWithInvalidUrl = {
+			...mockContext,
+			esi: { topUrl: ':::invalid-url:::' },
+		};
+
+		await renderESIHead({
+			cookieStore: mockCookieStore,
+			context: contextWithInvalidUrl,
+			fetch: mockFetch,
+			kvAuth0: mockKvAuth0,
+		});
+
+		// Should not throw and should pass empty query
+		expect(createApolloClient).toHaveBeenCalledWith(
+			expect.objectContaining({
+				route: { query: {} },
+			}),
+		);
 	});
 
 	it('should set visitor ID cookie', async () => {

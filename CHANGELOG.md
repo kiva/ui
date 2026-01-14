@@ -1,3 +1,94 @@
+## [3.52.0](https://github.com/kiva/ui/compare/v3.51.0...v3.52.0) (2026-01-13)
+
+### 🎉 New Features
+
+* [MP-2226] - added new screen 01 for mykiva impact insights ([c22ad16](https://github.com/kiva/ui/commit/c22ad163dffe5e86596ca361c87ba1af086b8c24))
+* [MP-2226] - clean code ([4f9a89f](https://github.com/kiva/ui/commit/4f9a89f88a72c0b9f27c03ca37486eb9082a2bee))
+* [MP-2226] - PR fdbk ([c194aab](https://github.com/kiva/ui/commit/c194aab90cf051fc976f898ffd27abd7f99abaa9))
+* [MP-2226] - rename prop ([5a0345b](https://github.com/kiva/ui/commit/5a0345b6e51add631da4c6abecda7ae6a5843b50))
+* [MP-2226] - use `latestLoan.amount` data as `amountBorrowed` ([248c386](https://github.com/kiva/ui/commit/248c386866f86e41b16e414685b5a7ea0caa2612))
+* [MP-2226] - use `loan.country.ppp` data on screen ([a444b3c](https://github.com/kiva/ui/commit/a444b3cf5afac6e456ec71bc0f9c0711ad8d6cbc))
+* add analytics ([963a2f7](https://github.com/kiva/ui/commit/963a2f7e111b965889d35feb011e8a7ce50867ae))
+* add view links for participant info on fund page gated by feature flag ([bcf94e9](https://github.com/kiva/ui/commit/bcf94e9f0e08aca8aeb99bca634c4ca6585badd7))
+* change experiment assignment default behavior to store uiab cookie ([#6575](https://github.com/kiva/ui/issues/6575)) ([ab72e12](https://github.com/kiva/ui/commit/ab72e12cc327f6559606e7c873f7ae4b74373f18))
+* import tooltips from kv-ui-elements, remove component, change to eco themes ([828ca52](https://github.com/kiva/ui/commit/828ca52667fc5a5aac0e1a5635b1c43527fa6476))
+
+### 🐛 Bugfixes
+
+* add back else-if ([3e32268](https://github.com/kiva/ui/commit/3e322684d1310b96b17b420b8f967192148a48ef))
+* add experiment tracking that can be used for cypress and checking assignment contamination ([#6581](https://github.com/kiva/ui/issues/6581)) ([37981d7](https://github.com/kiva/ui/commit/37981d720bc9a1f9c07014eb4f44e1d5b3ee7a4d))
+* add showBadgeModule negative conditional to showJourneyModule ([2d0eb74](https://github.com/kiva/ui/commit/2d0eb74b4bb47a7791fa5bd0519e3e1b00b6b2f1))
+* adding missing test ([#6580](https://github.com/kiva/ui/issues/6580)) ([5ae69a5](https://github.com/kiva/ui/commit/5ae69a5b5d39e7bca620cd20f238d0ec37d3bd4a))
+* ensure setuiab works like expected ([#6583](https://github.com/kiva/ui/issues/6583)) ([efe01fc](https://github.com/kiva/ui/commit/efe01fc06f6f734107c40b962ae06774bfc76460))
+* ensure women category loan count from post checkout query ([e48d01f](https://github.com/kiva/ui/commit/e48d01f7a076c3a2c577001352fd7ab82cbe2a88))
+* improve responsive layout of my giving funds card to clean up large empty space ([da54c5a](https://github.com/kiva/ui/commit/da54c5a7d7cac93a25e16cc094db992779835d4c))
+* modify JourneyGeneralPrompt render condition ([56e6938](https://github.com/kiva/ui/commit/56e6938ad379aba2e9eded8555ffe25e36f73a41))
+* remove duplicate styles on giving fund card ([e11e5dd](https://github.com/kiva/ui/commit/e11e5ddfb7de524093d86ed457b3c76afd471eec))
+* remove unused test dockerfile.vue ([67515cb](https://github.com/kiva/ui/commit/67515cb730522bccbf4518f0d269defe9c3d5770))
+* resolve issue with naming format method usage ([#6577](https://github.com/kiva/ui/issues/6577)) ([69e6a29](https://github.com/kiva/ui/commit/69e6a297050385c618e723a572ceab15e052208b))
+* server render giving funds based on simple count query, update on mounted with deeper fund data ([5c0f4f3](https://github.com/kiva/ui/commit/5c0f4f334bbabc885b4ee0d743198530c87c507a))
+* update fuse.js import ([92e7428](https://github.com/kiva/ui/commit/92e74282f141324c705434db6d62e0f86df65ed0))
+* update usage of KvProgressBar for kv-components 8 ([4ab8a5c](https://github.com/kiva/ui/commit/4ab8a5c7cba270beeeeef667e3dba794c8fea622))
+
+### 🧹 Chores
+
+* add initial instruction and context files to aid in ai based development flows ([7b6cb81](https://github.com/kiva/ui/commit/7b6cb8112a777b3c1227dd1c15454c6502784893))
+* **deps:** update to latest kv-ui-elements ([143915a](https://github.com/kiva/ui/commit/143915a84b88a5dc3ce5170cb4786034b93cb09c))
+* ignore storybook-static directory ([6331064](https://github.com/kiva/ui/commit/6331064a7e0a443b0c99eaec9c449d338b06fc45))
+* **release:** 3.52.0-rc.1 [skip ci] ([83ebc5e](https://github.com/kiva/ui/commit/83ebc5e4ebdd53340a10bbc32e94823b516cc1ac)), closes [#6575](https://github.com/kiva/ui/issues/6575) [#6580](https://github.com/kiva/ui/issues/6580) [#6577](https://github.com/kiva/ui/issues/6577)
+* **release:** 3.52.0-rc.2 [skip ci] ([0e02a43](https://github.com/kiva/ui/commit/0e02a43a3455733d985b3bb4ea7a9352f1108177)), closes [#6581](https://github.com/kiva/ui/issues/6581)
+* **release:** 3.52.0-rc.3 [skip ci] ([1f62f15](https://github.com/kiva/ui/commit/1f62f15d24ee3aa4daa40515deaff4d3a5d22192)), closes [#6583](https://github.com/kiva/ui/issues/6583)
+* update notes on using Options API for prefetched pages/components ([8b7753c](https://github.com/kiva/ui/commit/8b7753c1b8e9a16b9a5f01947856a04bbfe2333a))
+
+## [3.52.0-rc.3](https://github.com/kiva/ui/compare/v3.52.0-rc.2...v3.52.0-rc.3) (2026-01-13)
+
+### 🐛 Bugfixes
+
+* ensure setuiab works like expected ([#6583](https://github.com/kiva/ui/issues/6583)) ([efe01fc](https://github.com/kiva/ui/commit/efe01fc06f6f734107c40b962ae06774bfc76460))
+
+## [3.52.0-rc.2](https://github.com/kiva/ui/compare/v3.52.0-rc.1...v3.52.0-rc.2) (2026-01-13)
+
+### 🐛 Bugfixes
+
+* add experiment tracking that can be used for cypress and checking assignment contamination ([#6581](https://github.com/kiva/ui/issues/6581)) ([37981d7](https://github.com/kiva/ui/commit/37981d720bc9a1f9c07014eb4f44e1d5b3ee7a4d))
+
+## [3.52.0-rc.1](https://github.com/kiva/ui/compare/v3.51.0...v3.52.0-rc.1) (2026-01-12)
+
+### 🎉 New Features
+
+* [MP-2226] - added new screen 01 for mykiva impact insights ([c22ad16](https://github.com/kiva/ui/commit/c22ad163dffe5e86596ca361c87ba1af086b8c24))
+* [MP-2226] - clean code ([4f9a89f](https://github.com/kiva/ui/commit/4f9a89f88a72c0b9f27c03ca37486eb9082a2bee))
+* [MP-2226] - PR fdbk ([c194aab](https://github.com/kiva/ui/commit/c194aab90cf051fc976f898ffd27abd7f99abaa9))
+* [MP-2226] - rename prop ([5a0345b](https://github.com/kiva/ui/commit/5a0345b6e51add631da4c6abecda7ae6a5843b50))
+* [MP-2226] - use `latestLoan.amount` data as `amountBorrowed` ([248c386](https://github.com/kiva/ui/commit/248c386866f86e41b16e414685b5a7ea0caa2612))
+* [MP-2226] - use `loan.country.ppp` data on screen ([a444b3c](https://github.com/kiva/ui/commit/a444b3cf5afac6e456ec71bc0f9c0711ad8d6cbc))
+* add analytics ([963a2f7](https://github.com/kiva/ui/commit/963a2f7e111b965889d35feb011e8a7ce50867ae))
+* add view links for participant info on fund page gated by feature flag ([bcf94e9](https://github.com/kiva/ui/commit/bcf94e9f0e08aca8aeb99bca634c4ca6585badd7))
+* change experiment assignment default behavior to store uiab cookie ([#6575](https://github.com/kiva/ui/issues/6575)) ([ab72e12](https://github.com/kiva/ui/commit/ab72e12cc327f6559606e7c873f7ae4b74373f18))
+* import tooltips from kv-ui-elements, remove component, change to eco themes ([828ca52](https://github.com/kiva/ui/commit/828ca52667fc5a5aac0e1a5635b1c43527fa6476))
+
+### 🐛 Bugfixes
+
+* add back else-if ([3e32268](https://github.com/kiva/ui/commit/3e322684d1310b96b17b420b8f967192148a48ef))
+* add showBadgeModule negative conditional to showJourneyModule ([2d0eb74](https://github.com/kiva/ui/commit/2d0eb74b4bb47a7791fa5bd0519e3e1b00b6b2f1))
+* adding missing test ([#6580](https://github.com/kiva/ui/issues/6580)) ([5ae69a5](https://github.com/kiva/ui/commit/5ae69a5b5d39e7bca620cd20f238d0ec37d3bd4a))
+* ensure women category loan count from post checkout query ([e48d01f](https://github.com/kiva/ui/commit/e48d01f7a076c3a2c577001352fd7ab82cbe2a88))
+* improve responsive layout of my giving funds card to clean up large empty space ([da54c5a](https://github.com/kiva/ui/commit/da54c5a7d7cac93a25e16cc094db992779835d4c))
+* modify JourneyGeneralPrompt render condition ([56e6938](https://github.com/kiva/ui/commit/56e6938ad379aba2e9eded8555ffe25e36f73a41))
+* remove duplicate styles on giving fund card ([e11e5dd](https://github.com/kiva/ui/commit/e11e5ddfb7de524093d86ed457b3c76afd471eec))
+* remove unused test dockerfile.vue ([67515cb](https://github.com/kiva/ui/commit/67515cb730522bccbf4518f0d269defe9c3d5770))
+* resolve issue with naming format method usage ([#6577](https://github.com/kiva/ui/issues/6577)) ([69e6a29](https://github.com/kiva/ui/commit/69e6a297050385c618e723a572ceab15e052208b))
+* server render giving funds based on simple count query, update on mounted with deeper fund data ([5c0f4f3](https://github.com/kiva/ui/commit/5c0f4f334bbabc885b4ee0d743198530c87c507a))
+* update fuse.js import ([92e7428](https://github.com/kiva/ui/commit/92e74282f141324c705434db6d62e0f86df65ed0))
+* update usage of KvProgressBar for kv-components 8 ([4ab8a5c](https://github.com/kiva/ui/commit/4ab8a5c7cba270beeeeef667e3dba794c8fea622))
+
+### 🧹 Chores
+
+* add initial instruction and context files to aid in ai based development flows ([7b6cb81](https://github.com/kiva/ui/commit/7b6cb8112a777b3c1227dd1c15454c6502784893))
+* **deps:** update to latest kv-ui-elements ([143915a](https://github.com/kiva/ui/commit/143915a84b88a5dc3ce5170cb4786034b93cb09c))
+* ignore storybook-static directory ([6331064](https://github.com/kiva/ui/commit/6331064a7e0a443b0c99eaec9c449d338b06fc45))
+* update notes on using Options API for prefetched pages/components ([8b7753c](https://github.com/kiva/ui/commit/8b7753c1b8e9a16b9a5f01947856a04bbfe2333a))
+
 ## [3.51.0](https://github.com/kiva/ui/compare/v3.50.0...v3.51.0) (2026-01-05)
 
 ### 🎉 New Features
