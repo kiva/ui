@@ -91,11 +91,11 @@
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
 		>
 			<div v-if="!isScrolled">
-				<h3>You’ve got {{ $filters.numeral(bonusBalance, '$0.00') }} to give!</h3>
+				<h3>You’ve got {{ $filters.numeral(bonusBalance, '$0') }} to give!</h3>
 				<h4>While funds last</h4>
 			</div>
-			<span v-else class="tw-underline">
-				Use your {{ $filters.numeral(bonusBalance, '$0.00') }} gift today while funds last!
+			<span v-else class="tw-underline tw-text-h5">
+				Use your {{ $filters.numeral(bonusBalance, '$0') }} gift today while funds last!
 			</span>
 		</a>
 		<router-link
