@@ -128,6 +128,8 @@ const description = computed(() => {
 
 const loansToDisplay = computed(() => props.loans.slice(0, 3));
 
+const emit = defineEmits(['answered']);
+
 const updateOptIn = async value => {
 	buttonState.value = 'loading';
 
@@ -150,6 +152,7 @@ const updateOptIn = async value => {
 	}
 	newConsentAnswered.value = true;
 	receiveNews.value = value;
+	emit('answered', value);
 };
 
 onMounted(() => {

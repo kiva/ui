@@ -11,8 +11,8 @@
 				:lender-image-url="loanImageUrl"
 				class="tw-mx-auto tw-w-6 tw-h-6 tw-mb-1"
 			/>
-			<h2 v-html="moduleTitle" class="tw-text-center tw-mb-1" style="line-height: 1.25;"></h2>
-			<img :src="HandsPlant" alt="" class="tw-mx-auto tw-w-full tw-mb-1">
+			<h2 v-html="moduleTitle" class="tw-text-center tw-my-2" style="line-height: 1.25;"></h2>
+			<img :src="HandsPlant" alt="" class="img-dimensions tw-mx-auto tw-w-full tw-mb-1">
 			<KvButton class="text-copy-centering tw-w-full tw-items-center tw-my-0.5" @click="handleSeeProgressClicked">
 				See my progress
 				<KvMaterialIcon :icon="mdiArrowRight" class="tw-ml-0.5" />
@@ -30,7 +30,7 @@ import {
 	KvUserAvatar,
 } from '@kiva/kv-components';
 import { mdiArrowRight } from '@mdi/js';
-import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
+import HandsPlant from '#src/assets/images/thanks-page/hands-plant-v2.png';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -59,10 +59,6 @@ const props = defineProps({
 		type: Number,
 		default: 0,
 	},
-	remainingTargetLoansAmount: {
-		type: Number,
-		default: 0,
-	},
 });
 
 const loanImageUrl = computed(() => props.loan?.image?.url ?? '');
@@ -80,7 +76,7 @@ const moduleTitle = computed(() => {
 
 	if (props.targetLoansAmount > 0) {
 		// eslint-disable-next-line max-len
-		title += `You’re making progress towards your goal of making ${props.targetLoansAmount} loans to ${goalDisplayName.value} this year. Just ${props.remainingTargetLoansAmount} more to go!`;
+		title += `You’re making progress towards your goal of making ${props.targetLoansAmount} loans to ${goalDisplayName.value} this year.`;
 		return title;
 	}
 
@@ -104,5 +100,10 @@ const handleSeeProgressClicked = () => {
 <style lang="postcss" scoped>
 .text-copy-centering :deep(span) {
 	@apply tw-flex;
+}
+
+.img-dimensions {
+	width: 198px;
+	height: 191px;
 }
 </style>

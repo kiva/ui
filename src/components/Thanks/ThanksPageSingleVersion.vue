@@ -46,6 +46,7 @@
 				:number-of-badges="numberOfBadges"
 				:only-donations="onlyDonations"
 				:achievements-completed="achievementsCompleted"
+				@answered="handleOptInAnswered"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
@@ -63,7 +64,6 @@
 				:current-goal="userGoal"
 				:get-goal-display-name="getGoalDisplayName"
 				:target-loans-amount="goalTargetLoansAmount"
-				:remaining-target-loans-amount="remainingGoalLoansAmount"
 				class="tw-mb-2.5"
 			/>
 			<LoanComment
@@ -212,6 +212,8 @@ const isGoalSet = ref(false);
 const isEmptyGoal = ref(true);
 const goalTarget = ref(0);
 const currGoalProgress = ref(0);
+const optInAnswered = ref(false);
+const optInAccepted = ref(false);
 
 const {
 	checkCompletedGoal,
@@ -227,9 +229,6 @@ const {
 const { getAllCategoryLoanCounts } = useBadgeData();
 
 const goalTargetLoansAmount = computed(() => userGoal.value?.target ?? 0);
-const remainingGoalLoansAmount = computed(() => {
-	return Math.max(0, goalTargetLoansAmount.value - (currGoalProgress.value ?? 0));
-});
 
 // Initialize goalDataInitialized to track if we've loaded goal data
 // This prevents flash of journey module before loading completes
@@ -264,7 +263,12 @@ const hasTeamAttributedPartnerLoan = computed(
 	() => loanForComment.value?.distributionModel === 'fieldPartner' && !!loanForComment.value?.team?.name
 );
 
-const showOptInModule = computed(() => !props.isOptedIn);
+const handleOptInAnswered = accepted => {
+	optInAnswered.value = true;
+	optInAccepted.value = accepted;
+};
+
+const showOptInModule = computed(() => !props.isOptedIn && !optInAnswered.value);
 const showKivaCardsModule = computed(() => !!printableKivaCards.value.length);
 const showGoalCompletedModule = computed(() => {
 	// Show goal completed module immediately when user achieved their goal
