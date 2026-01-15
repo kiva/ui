@@ -57,9 +57,7 @@ onMounted(() => {
 
 <style lang="postcss" scoped>
 .card {
-	background: url('/src/assets/images/my-kiva/survey-card-ellipse.png'),
-			url('/src/assets/images/my-kiva/survey-card-mask.png'),
-			url('/src/assets/images/my-kiva/survey-card-mask-2.png');
-	background-position: center, bottom left, top right;
+	background: url('/src/assets/images/my-kiva/Survey Card Background.png');
+	background-position: top;
 }
 </style>
