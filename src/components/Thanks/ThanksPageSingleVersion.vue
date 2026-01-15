@@ -46,7 +46,6 @@
 				:number-of-badges="numberOfBadges"
 				:only-donations="onlyDonations"
 				:achievements-completed="achievementsCompleted"
-				@answered="handleOptInAnswered"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
 			<JourneyGeneralPrompt
@@ -58,7 +57,7 @@
 				class="tw-mb-2.5"
 			/>
 			<GoalInProgress
-				v-else-if="showGoalInProgressModule && goalsV2Enabled"
+				v-if="showGoalInProgressModule && goalsV2Enabled"
 				:is-opted-in="isOptedIn"
 				:loan="loanForComment"
 				:current-goal="userGoal"
@@ -212,8 +211,6 @@ const isGoalSet = ref(false);
 const isEmptyGoal = ref(true);
 const goalTarget = ref(0);
 const currGoalProgress = ref(0);
-const optInAnswered = ref(false);
-const optInAccepted = ref(false);
 
 const {
 	checkCompletedGoal,
@@ -263,12 +260,7 @@ const hasTeamAttributedPartnerLoan = computed(
 	() => loanForComment.value?.distributionModel === 'fieldPartner' && !!loanForComment.value?.team?.name
 );
 
-const handleOptInAnswered = accepted => {
-	optInAnswered.value = true;
-	optInAccepted.value = accepted;
-};
-
-const showOptInModule = computed(() => !props.isOptedIn && !optInAnswered.value);
+const showOptInModule = computed(() => !props.isOptedIn);
 const showKivaCardsModule = computed(() => !!printableKivaCards.value.length);
 const showGoalCompletedModule = computed(() => {
 	// Show goal completed module immediately when user achieved their goal
