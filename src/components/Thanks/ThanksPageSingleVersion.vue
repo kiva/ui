@@ -27,7 +27,7 @@
 				class="tw-mb-2.5"
 			/>
 			<BadgeMilestone
-				v-else-if="showBadgeModule || achievementsCompleted"
+				v-else-if="(showBadgeModule || achievementsCompleted) && !showGoalInProgressModule"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
 				:badge-achieved-ids="badgeAchievedIds"
