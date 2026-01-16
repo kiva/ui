@@ -84,7 +84,7 @@ import {
 	KvButton, KvLoadingPlaceholder
 } from '@kiva/kv-components';
 import useBadgeData from '#src/composables/useBadgeData';
-import useGoalData, { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
+import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import { useRouter } from 'vue-router';
 import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
 import confetti from 'canvas-confetti';
@@ -105,7 +105,7 @@ const props = defineProps({
 	},
 	loading: {
 		type: Boolean,
-		default: false,
+		default: true,
 	}
 });
 
@@ -113,6 +113,7 @@ defineEmits(['open-goal-modal']);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
+const goalData = inject('goalData');
 
 const {
 	ID_BASIC_NEEDS,
@@ -120,10 +121,11 @@ const {
 	ID_SUPPORT_ALL
 } = useBadgeData();
 const {
-	getGoalDisplayName,
-	setHideGoalCardPreference,
 	getCtaHref,
-} = useGoalData();
+	getGoalDisplayName,
+	goalProgressPercentage,
+	setHideGoalCardPreference,
+} = goalData;
 
 const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);
 
@@ -143,14 +145,6 @@ const title = computed(() => {
 		return `You helped <span class="tw-text-action"> ${props.prevYearLoans} women</span><br>shape their futures!`;
 	}
 	return 'Lenders like you help <span class="tw-text-action"> 3 women</span> a year';
-});
-
-const goalProgressPercentage = computed(() => {
-	if (!props.userGoal?.target || props.goalProgress <= 0) return 0;
-	return Math.min(
-		Math.round((props.goalProgress / props.userGoal.target) * 100),
-		COMPLETED_GOAL_THRESHOLD
-	);
 });
 
 const progressDescription = computed(() => {
