@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="card tw-w-full tw-rounded tw-shadow tw-p-2 tw-flex tw-flex-col tw-justify-between
-			tw-shrink-0 tw-overflow-hidden tw-h-full tw-select-none !tw-bg-white"
+			tw-shrink-0 tw-overflow-hidden tw-h-full tw-select-none !tw-bg-white "
 	>
 		<div>
 			<span
@@ -60,5 +60,6 @@ onMounted(() => {
 	background: url('/src/assets/images/my-kiva/survey-card-background.jpg');
     background-position: center;
     background-size: 100% auto;
+    background-repeat: no-repeat;
 }
 </style>
