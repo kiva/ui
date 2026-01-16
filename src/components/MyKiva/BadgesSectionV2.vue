@@ -40,15 +40,14 @@ import {
 	inject,
 	toRefs,
 	ref,
-	onMounted,
 } from 'vue';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { indexIn } from '#src/util/comparators';
 import useBadgeData from '#src/composables/useBadgeData';
 import { KvCarousel, KvLoadingPlaceholder } from '@kiva/kv-components';
 import MyKivaProgressCard from '#src/components/MyKiva/MyKivaProgressCard';
-import useGoalData, { COMPLETED_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import { useRouter } from 'vue-router';
+import { COMPLETED_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 
 const CARD_MIN_HEIGHT = '111px';
 const SINGLE_SLIDE_WIDTH = '336px';
@@ -76,7 +75,7 @@ const props = defineProps({
 const { selectedJourney } = toRefs(props);
 const { getActiveTierData } = useBadgeData();
 const router = useRouter();
-const apollo = inject('apollo');
+const goalData = inject('goalData');
 
 const currentIndex = ref(0);
 const isLoading = ref(true);
@@ -84,19 +83,12 @@ const isLoading = ref(true);
 const {
 	getCtaHref,
 	goalProgress,
-	loadGoalData,
+	goalProgressPercentage,
 	userGoal,
 	userGoalAchieved,
-} = useGoalData({ apollo });
+} = goalData;
 
 const userHasGoal = computed(() => !!userGoal.value && Object.keys(userGoal.value).length > 0);
-const goalProgressPercentage = computed(() => {
-	if (!props.userGoal?.target || props.goalProgress <= 0) return 0;
-	return Math.min(
-		Math.round((props.goalProgress / props.userGoal.target) * 100),
-		COMPLETED_GOAL_THRESHOLD
-	);
-});
 
 const formattedBadgeData = badges => {
 	return badges.map(badge => {
@@ -214,11 +206,6 @@ watch(visibleBadges, (newSlides, oldSlides) => {
 		carouselKey.value += 1;
 	}
 }, { immediate: true, deep: true });
-
-onMounted(async () => {
-	// This card is only displayed for annual goals
-	await loadGoalData({ yearlyProgress: true });
-});
 </script>
 
 <style lang="postcss" scoped>
