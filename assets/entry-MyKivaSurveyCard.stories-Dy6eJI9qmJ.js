@@ -1,0 +1,5 @@
+import{_ as i}from"./entry-MyKivaSurveyCard-Dce2pG_RWu.js";import"./entry-vue.esm-bundler-C0PPCo9W96.js";import"./entry-mdi-DFXJvA78Hr.js";import"./entry-KvMaterialIcon-B1UgUIVXS0.js";import"./entry-KvWwwHeader-K_aXJrsvke.js";import"./entry-_commonjsHelpers-Cpj98o6Yn6.js";import"./entry-index-CWclSTHHJk.js";import"./entry-numeral-xVHG5DEP0A.js";import"./entry-KvButton-2WLASe3tCZ.js";import"./entry-KvLoadingSpinner-B-Httn77Py.js";const S={title:"MyKiva/MyKivaSurveyCard",component:i},m=(t={})=>{const e=(c,{argTypes:p})=>({props:Object.keys(p),components:{MyKivaSurveyCard:i},setup(){return{args:t}},template:`
+            <div style="width: 336px;">
+                <MyKivaSurveyCard v-bind="args" />
+            </div>
+        `});return e.args=t,e},r=m({});var o,a,s;r.parameters={...r.parameters,docs:{...(o=r.parameters)==null?void 0:o.docs,source:{originalSource:"story({})",...(s=(a=r.parameters)==null?void 0:a.docs)==null?void 0:s.source}}};const C=["Default"];export{r as Default,C as __namedExportsOrder,S as default};
