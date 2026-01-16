@@ -172,7 +172,6 @@ const TRANSACTION_DAYS_LIMIT = 30;
 const MYKIVA_INPUT_FORM_KEY = 'mykiva-input-form';
 
 const apollo = inject('apollo');
-const goalData = inject('goalData');
 const cookieStore = inject('cookieStore');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
@@ -182,10 +181,6 @@ const {
 	combineBadgeData,
 	getJourneysByLoan,
 } = useBadgeData(apollo);
-
-const {
-	loading: goalProgressLoading
-} = goalData;
 
 const { getCategoryLoansLastYear } = useGoalData();
 
@@ -251,6 +246,10 @@ const props = defineProps({
 	goalProgress: {
 		type: Number,
 		default: 0,
+	},
+	goalProgressLoading: {
+		type: Boolean,
+		default: true,
 	},
 	controlsTopRight: {
 		type: Boolean,
