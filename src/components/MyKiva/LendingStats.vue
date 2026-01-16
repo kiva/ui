@@ -15,6 +15,7 @@
 					user-in-homepage
 					in-lending-stats
 					:disable-drag="true"
+					:goal-progress-loading="goalProgressLoading"
 					:goal-progress="goalProgress"
 					:hero-contentful-data="heroContentfulData"
 					:hero-tiered-achievements="heroTieredAchievements"
@@ -144,6 +145,7 @@
 			user-in-homepage
 			in-lending-stats
 			controls-top-right
+			:goal-progress-loading="goalProgressLoading"
 			:goal-progress="goalProgress"
 			:hero-contentful-data="heroContentfulData"
 			:hero-tiered-achievements="heroTieredAchievements"
@@ -324,6 +326,7 @@ export default {
 			checkCompletedGoal: goalData.checkCompletedGoal,
 			hideGoalCard: goalData.hideGoalCard,
 			goalProgress: goalData.goalProgress,
+			goalProgressLoading: goalData.loading,
 			loadGoalData: goalData.loadGoalData,
 			loadPreferences: goalData.loadPreferences,
 			storeGoalPreferences: goalData.storeGoalPreferences,
