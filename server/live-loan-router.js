@@ -127,6 +127,7 @@ async function serveImg(type, style, cache, req, res, queryType = QUERY_TYPE.DEF
 			type,
 		});
 		res.sendStatus(500);
+		return;
 	}
 
 	// Separate out sending response to isolate exception catching
