@@ -73,6 +73,16 @@ function getGoalDisplayName(target, category) {
 	return GOAL_1_DISPLAY_MAP[category] || 'loan';
 }
 
+const currentYearProgress = ref([]);
+const goalCurrentLoanCount = ref(0); // In-page counter for tracking loans added to basket
+const loading = ref(true);
+const totalLoanCount = ref(null);
+const userGoal = ref(null);
+const userGoalAchievedNow = ref(false);
+const userPreferences = ref(null);
+const useYearlyProgress = ref(false); // Default to all-time progress (flag disabled behavior)
+const yearlyLoanCount = ref(null); // Total loans for current year from loanStatsByYear
+
 /**
  * Vue composable for loading and managing user goal data
  *
@@ -84,15 +94,6 @@ function getGoalDisplayName(target, category) {
 export default function useGoalData({ apollo } = {}) {
 	const apolloClient = apollo || inject('apollo');
 	const $kvTrackEvent = inject('$kvTrackEvent');
-	const currentYearProgress = ref([]);
-	const goalCurrentLoanCount = ref(0); // In-page counter for tracking loans added to basket
-	const loading = ref(true);
-	const totalLoanCount = ref(null);
-	const yearlyLoanCount = ref(null); // Total loans for current year from loanStatsByYear
-	const userGoal = ref(null);
-	const userGoalAchievedNow = ref(false);
-	const userPreferences = ref(null);
-	const useYearlyProgress = ref(false); // Default to all-time progress (flag disabled behavior)
 
 	// --- Computed Properties ---
 
@@ -120,6 +121,8 @@ export default function useGoalData({ apollo } = {}) {
 
 	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
 
+	// --- Functions ---
+
 	/**
 	 * Check if the current progress would complete the user's goal
 	 * Used to show "reaches your goal" message in basket and ATB modal
@@ -134,8 +137,6 @@ export default function useGoalData({ apollo } = {}) {
 		// Check if progress > 0 and equals target (completing the goal)
 		return currentProgress > 0 && currentProgress === target;
 	}
-
-	// --- Functions ---
 
 	function setGoalState(parsedPrefs) {
 		if (!parsedPrefs) return;
@@ -343,13 +344,74 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
+	 * Fetches up-to-date achievement progress list for specific loans from the postCheckoutAchievements query.
+	 *
+	 * @param {Object} options - Configuration options
+	 * @param {Array} options.loans - Array of loan objects to check progress for (must have `id` property)
+	 * @param {number|null} options.year - Year for yearly progress (returns yearlyProgress),
+	 *   null for all-time progress (returns allTimeProgress)
+	 * @param {string} options.fetchPolicy - Apollo fetch policy (default: 'cache-first')
+	 * @returns {Promise<Object|null>} Progress array with shape:
+	 *   [{ achievementId, totalProgress, currentTier, completed }]
+	 *   Returns null if no valid loan IDs, or on error
+	 */
+	async function getPostCheckoutAchievementProgressList({
+		loans = [],
+		year = null, // pass current year for yearly mode, null for all-time mode
+		fetchPolicy = 'cache-first',
+	} = {}) {
+		try {
+			// For category goals: pull authoritative totals for these loanIds
+			const loanIds = loans.map(l => l.id).filter(Boolean);
+			if (!loanIds.length) return null;
+			const res = await apolloClient.query({
+				query: useGoalDataProgressQuery,
+				variables: { loanIds, year }, // year=null => all-time list; year=YYYY => yearly list
+				fetchPolicy
+			});
+			const progressList = year
+				? res.data?.postCheckoutAchievements?.yearlyProgress || []
+				: res.data?.postCheckoutAchievements?.allTimeProgress || [];
+			return progressList;
+		} catch (error) {
+			logFormatter(error, 'Failed to get post-checkout achievement progress list');
+			return null;
+		}
+	}
+
+	/**
+	 * Fetches up-to-date achievement progress for a specified category.
+	 *
+	 * @param {Object} options - Configuration options
+	 * @param {Array} options.loans - Array of loan objects to check progress for (must have `id` property)
+	 * @param {number|null} options.year - Year for yearly progress (returns yearlyProgress),
+	 *   null for all-time progress (returns allTimeProgress)
+	 * @param {string} options.category - Achievement category ID to find in the results
+	 * @param {string} options.fetchPolicy - Apollo fetch policy (default: 'cache-first')
+	 * @returns {Promise<Object|null>} Progress object with shape:
+	 *   { achievementId, totalProgress, currentTier, completed }
+	 *   Returns null if category not found, no valid loan IDs, or on error
+	 */
+	async function getPostCheckoutAchievementProgress({
+		loans = [],
+		year = null, // pass current year for yearly mode, null for all-time mode
+		category = ID_WOMENS_EQUALITY,
+		fetchPolicy = 'cache-first',
+	} = {}) {
+		const progressList = await getPostCheckoutAchievementProgressList({ loans, year, fetchPolicy });
+		if (!progressList) return null;
+		const progress = progressList.find(e => e.achievementId === category) ?? null;
+		return progress;
+	}
+
+	/**
 	 * Get post-checkout progress for multiple loans
 	 * @param {Object} options - Options for progress calculation
 	 * @param {Array} options.loans - Array of loan objects with id property
 	 * @param {number|null} options.year - Year for yearly progress, or null for all-time progress
 	 * @param {boolean} options.increment - Increment in-page counter by 1 (ATB modal: true)
 	 * @param {boolean} options.addBasketLoans - Add loans.length to progress (Basket page: true)
-	 * @returns {number} Progress count for the user's goal category
+	 * @returns {Promise<number|null>} Progress count for the user's goal category, or null if unavailable
 	 *
 	 * Use cases:
 	 * - ATB Modal: { loans, increment: true } - increments counter per add-to-basket action
@@ -359,6 +421,7 @@ export default function useGoalData({ apollo } = {}) {
 	async function getPostCheckoutProgressByLoans({
 		loans = [],
 		year = null,
+		category = userGoal.value?.category,
 		increment = false,
 		addBasketLoans = false,
 	} = {}) {
@@ -378,19 +441,13 @@ export default function useGoalData({ apollo } = {}) {
 			return goalProgress.value;
 		}
 		try {
-			const loanIds = loans.map(loan => loan.id);
-			const response = await apolloClient.query({
-				query: useGoalDataProgressQuery,
-				variables: { loanIds, year },
+			const res = await getPostCheckoutAchievementProgress({
+				loans,
+				year,
+				category
 			});
-			// Use allTimeProgress when year is null/undefined, otherwise use yearlyProgress
-			const progress = year
-				? response.data?.postCheckoutAchievements?.yearlyProgress || []
-				: response.data?.postCheckoutAchievements?.allTimeProgress || [];
-			const totalProgress = progress.find(
-				entry => entry.achievementId === userGoal.value?.category
-			)?.totalProgress || 0;
-			// When using all-time progress, subtract loanTotalAtStart to get progress since goal was set
+			const totalProgress = res?.totalProgress;
+			if (totalProgress == null) return null;
 			if (!year) {
 				const loanTotalAtStart = userGoal.value?.loanTotalAtStart || 0;
 				return Math.max(0, totalProgress - loanTotalAtStart);
@@ -398,6 +455,77 @@ export default function useGoalData({ apollo } = {}) {
 			return totalProgress;
 		} catch (error) {
 			logFormatter(error, 'Failed to get post-checkout progress');
+			return null;
+		}
+	}
+
+	/**
+	 * Synchronizes goal progress with real-time data to address Kafka lag.
+	 *
+	 * This function addresses a race condition where tieredLendingAchievements (powered by Kafka)
+	 * may not yet reflect recent checkout activity when the user navigates to MyKiva.
+	 *
+	 * For category-based goals, it updates currentYearProgress using Math.max to ensure
+	 * displayed progress never decreases. Triggers goalProgress re-computation.
+	 *
+	 * For ID_SUPPORT_ALL goals, it refreshes the underlying data source directly
+	 * (yearlyLoanCount or totalLoanCount via loadPreferences).
+	 *
+	 * @param {Object} options - Configuration options
+	 * @param {number|undefined} options.progressTotal - The authoritative progress total from
+	 *   postCheckoutAchievements (required for category-based goals, ignored for ID_SUPPORT_ALL)
+	 * @param {number|null} options.year - Year for yearly progress mode, or null for all-time mode
+	 * @returns {Promise<void|null>}
+	 *
+	 * @example
+	 * // For category-based goals, first fetch progress then sync:
+	 * const progressTotal = await getPostCheckoutProgressByLoans({ loans, year });
+	 * await postCheckoutSyncGoalCount({ progressTotal, year });
+	 *
+	 * @example
+	 * // For ID_SUPPORT_ALL goals, progressTotal is not needed:
+	 * await postCheckoutSyncGoalCount({ year: 2026 });
+	 */
+	async function postCheckoutSyncGoalCount({ progressTotal = undefined, year = null }) {
+		try {
+			if (!userGoal.value) return;
+			// ID_SUPPORT_ALL does not use tiered achievements in goalProgress
+			if (userGoal.value.category === ID_SUPPORT_ALL) {
+				if (useYearlyProgress.value) {
+					// Ensure yearly total is correct immediately
+					const stats = await getLoanStatsByYear(year ?? new Date().getFullYear(), 'network-only');
+					yearlyLoanCount.value = Math.max(yearlyLoanCount.value || 0, stats?.count || 0);
+					return;
+				}
+				// All-time support-all comes from my.loans.totalCount
+				// Refresh after checkout for absolute certainty.
+				await loadPreferences('network-only');
+				return;
+			}
+
+			if (progressTotal == null) return;
+
+			// Re-write currentYearProgress to re-compute goalProgress
+			const categoryId = userGoal.value.category;
+			const existing = currentYearProgress.value || [];
+			const idx = existing.findIndex(n => n.id === categoryId);
+			const nextEntry = idx === -1
+				? { id: categoryId, progressForYear: 0, totalProgressToAchievement: 0 }
+				: { ...existing[idx] };
+			const base = useYearlyProgress.value
+				? nextEntry.progressForYear || 0
+				: nextEntry.totalProgressToAchievement || 0;
+			if (useYearlyProgress.value) {
+				nextEntry.progressForYear = Math.max(base, progressTotal);
+			} else {
+				nextEntry.totalProgressToAchievement = Math.max(base, progressTotal);
+			}
+			const next = [...existing];
+			if (idx === -1) next.push(nextEntry);
+			else next[idx] = nextEntry;
+			currentYearProgress.value = next;
+		} catch (error) {
+			logFormatter(error, 'Failed to sync post-checkout goal count');
 			return null;
 		}
 	}
@@ -647,6 +775,7 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	return {
+		// Functions
 		checkCompletedGoal,
 		getCategories,
 		getCategoriesProgressByYear,
@@ -656,12 +785,14 @@ export default function useGoalData({ apollo } = {}) {
 		getGoalDisplayName,
 		getLoanStatsByYear,
 		getPostCheckoutProgressByLoans,
-		goalProgress,
 		isProgressCompletingGoal,
 		loadGoalData,
 		loadPreferences,
-		loading,
+		postCheckoutSyncGoalCount,
 		storeGoalPreferences,
+		// Refs & Computed
+		goalProgress,
+		loading,
 		userGoal,
 		userGoalAchieved,
 		userGoalAchievedNow,

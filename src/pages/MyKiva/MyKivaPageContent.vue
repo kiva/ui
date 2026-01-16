@@ -626,38 +626,34 @@ export default {
 				livesToImpact,
 			}];
 		},
-		fetchUserUpdates() {
+		async fetchUserUpdates() {
 			const limit = this.updatesLimit;
 			const oneMonthBefore = new Date();
 			oneMonthBefore.setMonth(oneMonthBefore.getMonth() - 1);
 			const timestamp = oneMonthBefore.getTime();
 
-			return this.apollo.query({
-				query: userUpdatesQuery,
-				variables: {
-					limit,
-					offset: 0, // Always fetch from the beginning
-					trxLimit: limit,
-					trxOffset: 0,
-					since: timestamp,
-				}
-			})
-				.then(result => {
-					this.transactionsTypes = result.data?.recentCheckouts?.values
-						?.filter(t => t?.receipt?.manifest);
-					const formattedTransactions = this.getFormattedTransactions();
-					const updates = (result.data?.my?.updates?.values ?? []).concat(formattedTransactions);
-
-					this.realTotalUpdates = result.data?.my?.updates?.totalCount ?? 0;
-
-					this.loanUpdates = updates;
-				})
-				.finally(() => {
-					this.updatesLoading = false;
-				})
-				.catch(e => {
-					logReadQueryError(e, 'MyKivaPage updatesQuery');
+			try {
+				const res = await this.apollo.query({
+					query: userUpdatesQuery,
+					variables: {
+						limit,
+						offset: 0, // Always fetch from the beginning
+						trxLimit: limit,
+						trxOffset: 0,
+						since: timestamp,
+					}
 				});
+				this.transactionsTypes = res.data?.recentCheckouts?.values
+					?.filter(t => t?.receipt?.manifest);
+				const formattedTransactions = this.getFormattedTransactions();
+				const updates = (res.data?.my?.updates?.values ?? []).concat(formattedTransactions);
+				this.realTotalUpdates = res.data?.my?.updates?.totalCount ?? 0;
+				this.loanUpdates = updates;
+			} catch (e) {
+				logReadQueryError(e, 'MyKivaPage fetchUserUpdates');
+			} finally {
+				this.updatesLoading = false;
+			}
 		},
 		async fetchRecommendedLoans() {
 			const userId = parseInt(this.userInfo?.id, 10) || null;
@@ -682,6 +678,11 @@ export default {
 			this.updatesLimit = 15;
 			this.updatesOffset = 0;
 			await this.fetchUserUpdates(this.updatesLimit);
+			// recentLoans logic is still pending: recentCheckouts in fetchUserUpdates does not work
+			// because it does not contain loan IDs.
+			// const year = new Date().getFullYear();
+			// const res = getPostCheckoutProgressByLoans({ recentLoans, year });
+			// await postCheckoutSyncGoalCount({ progressTotal: res?.progressTotal, year });
 		},
 		async loadMoreUpdates() {
 			this.isFirstLoad = false;
