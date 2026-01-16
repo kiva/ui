@@ -31,6 +31,7 @@ import {
 } from '@kiva/kv-components';
 import { mdiArrowRight } from '@mdi/js';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant-v2.png';
+import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -75,7 +76,7 @@ const moduleTitle = computed(() => {
 	}
 
 	if (props.targetLoansAmount > 0) {
-		if (props.currentGoal?.category === 'support_all') {
+		if (props.currentGoal?.category === ID_SUPPORT_ALL) {
 			title += `You’re making progress towards your goal of making ${props.targetLoansAmount} loans this year`;
 		} else {
 			// eslint-disable-next-line max-len
