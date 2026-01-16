@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="card tw-w-full tw-rounded tw-shadow tw-p-2 tw-flex tw-flex-col tw-justify-between
+		class="card tw-w-full tw-rounded tw-shadow tw-p-2 tw-flex tw-flex-col tw-bg-cover tw-justify-between
 			tw-shrink-0 tw-overflow-hidden tw-h-full tw-select-none !tw-bg-no-repeat !tw-bg-white"
 	>
 		<div>
@@ -57,7 +57,7 @@ onMounted(() => {
 
 <style lang="postcss" scoped>
 .card {
-	background: url('/src/assets/images/my-kiva/Survey Card Background.png');
+	background: url('/src/assets/images/my-kiva/survey-card-background.png');
 	background-position: top;
 }
 </style>
