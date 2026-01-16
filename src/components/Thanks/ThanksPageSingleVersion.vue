@@ -27,7 +27,7 @@
 				class="tw-mb-2.5"
 			/>
 			<BadgeMilestone
-				v-else-if="showBadgeModule || achievementsCompleted"
+				v-else-if="(showBadgeModule || achievementsCompleted) && !showGoalInProgressModule"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
 				:badge-achieved-ids="badgeAchievedIds"
@@ -54,6 +54,15 @@
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
 				@continue-as-guest="handleContinue"
+				class="tw-mb-2.5"
+			/>
+			<GoalInProgress
+				v-if="showGoalInProgressModule && goalsV2Enabled"
+				:is-opted-in="isOptedIn"
+				:loan="loanForComment"
+				:current-goal="userGoal"
+				:get-goal-display-name="getGoalDisplayName"
+				:target-loans-amount="goalTargetLoansAmount"
 				class="tw-mb-2.5"
 			/>
 			<LoanComment
@@ -125,6 +134,7 @@ import JourneyGeneralPrompt from '#src/components/Thanks/SingleVersion/JourneyGe
 import BadgeMilestone from '#src/components/Thanks/SingleVersion/BadgeMilestone';
 import GoalEntrypoint from '#src/components/Thanks/SingleVersion/GoalEntrypoint';
 import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
+import GoalInProgress from '#src/components/Thanks/SingleVersion/GoalInProgress';
 import useGoalData from '#src/composables/useGoalData';
 import useBadgeData from '#src/composables/useBadgeData';
 import { setGuestAssignmentCookie } from '#src/util/myKivaUtils';
@@ -196,6 +206,7 @@ const showGuestAccountModal = ref(false);
 const showReceipt = ref(false);
 const router = useRouter();
 const showGoalModal = ref(false);
+const showGoalInProgressModule = ref(false);
 const isGoalSet = ref(false);
 const isEmptyGoal = ref(true);
 const goalTarget = ref(0);
@@ -213,6 +224,8 @@ const {
 } = useGoalData({ apollo });
 
 const { getAllCategoryLoanCounts } = useBadgeData();
+
+const goalTargetLoansAmount = computed(() => userGoal.value?.target ?? 0);
 
 // Initialize goalDataInitialized to track if we've loaded goal data
 // This prevents flash of journey module before loading completes
@@ -269,6 +282,7 @@ const showJourneyModule = computed(() => {
 	// If experiment enabled, wait for initialization and loading to complete, and goal not achieved
 	if (props.isNextStepsExpEnabled) {
 		if (!goalDataInitialized.value || goalDataLoading.value) return false;
+		if (showGoalInProgressModule.value && props.goalsV2Enabled) return false;
 		return !userGoalAchievedNow.value;
 	}
 	// If experiment disabled, show journey module immediately
@@ -357,6 +371,7 @@ onMounted(async () => {
 		await checkCompletedGoal({ currentGoalProgress: currGoalProgress.value });
 		goalDataInitialized.value = true;
 		isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
+		showGoalInProgressModule.value = !isEmptyGoal.value && !userGoalAchievedNow.value;
 	}
 	showConfetti();
 	const isOptInLoan = showOptInModule.value && props.loans.length > 0;

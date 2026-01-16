@@ -22,6 +22,40 @@ const queryResult = {
 	}
 };
 
+const queryResultWithGoalInProgress = {
+	data: {
+		...queryResult.data,
+		userAchievementProgress: {
+			...mockUserAchievementProgress,
+			tieredLendingAchievements: [{
+				id: 'womens-equality',
+				progressForYear: 3,
+				totalProgressToAchievement: 3,
+				__typename: 'TieredLendingAchievement',
+			}],
+		},
+		my: {
+			id: 1,
+			userPreferences: {
+				id: 1,
+				preferences: JSON.stringify({
+					goals: [{
+						goalName: 'goal-womens-equality-2026',
+						category: 'womens-equality',
+						target: 5,
+						dateStarted: new Date().toISOString(),
+						status: 'in-progress',
+						loanTotalAtStart: 0,
+					}],
+				}),
+			},
+			loans: {
+				totalCount: 10,
+			},
+		},
+	}
+};
+
 const mockTieredBadge = { achievementId: MOCK_TIERED_BADGE_ID };
 
 const receiptWithSingleLoan = {
@@ -241,3 +275,47 @@ export const allAchievementsCompletedNotOptedIn = story({
 	receipt: receiptWithSingleLoan,
 	achievementsCompleted: true,
 });
+
+export const GoalInProgress = story({
+	isGuest: false,
+	isOptedIn: true,
+	isNextStepsExpEnabled: true,
+	goalsV2Enabled: true,
+
+	lender: mockLender,
+	loans: [{
+		...mockLoans[0],
+		inPfp: false,
+		distributionModel: null,
+		team: null,
+	}],
+	receipt: receiptWithSingleLoan,
+
+	badgesAchieved: [],
+	achievementsCompleted: false,
+
+	totalLoans: 10,
+	tieredAchievements: [],
+}, queryResultWithGoalInProgress);
+
+export const GoalInProgressNotOptedIn = story({
+	isGuest: false,
+	isOptedIn: false,
+	isNextStepsExpEnabled: true,
+	goalsV2Enabled: true,
+
+	lender: mockLender,
+	loans: [{
+		...mockLoans[0],
+		inPfp: false,
+		distributionModel: null,
+		team: null,
+	}],
+	receipt: receiptWithSingleLoan,
+
+	badgesAchieved: [],
+	achievementsCompleted: false,
+
+	totalLoans: 10,
+	tieredAchievements: [],
+}, queryResultWithGoalInProgress);
