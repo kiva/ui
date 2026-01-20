@@ -34,6 +34,7 @@
 					:loading="goalProgressLoading"
 					:user-goal="userGoal"
 					:prev-year-loans="womenLoansLastYear"
+					:hide-goal-card="hideGoalCard"
 					@open-goal-modal="$emit('open-goal-modal')"
 				/>
 				<MyKivaSurveyCard

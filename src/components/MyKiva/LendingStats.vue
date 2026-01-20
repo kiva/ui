@@ -281,7 +281,6 @@ export default {
 			isGoalSet: false,
 			recordedGoalSet: false,
 			newGoalPrefs: null,
-			hideCompletedGoalCard: false,
 		};
 	},
 	computed: {
@@ -324,7 +323,7 @@ export default {
 
 		return {
 			checkCompletedGoal: goalData.checkCompletedGoal,
-			hideGoalCard: goalData.hideGoalCard,
+			hideCompletedGoalCard: goalData.hideGoalCard,
 			goalProgress: goalData.goalProgress,
 			goalProgressLoading: goalData.loading,
 			loadGoalData: goalData.loadGoalData,
@@ -337,7 +336,6 @@ export default {
 	async mounted() {
 		if (this.isNextStepsExpEnabled) {
 			await this.checkCompletedGoal({ category: 'portfolio' });
-			this.hideCompletedGoalCard = this.hideGoalCard();
 		}
 
 		if (this.showRegionExperience) {
@@ -373,8 +371,6 @@ export default {
 					this.loadGoalData({ yearlyProgress: this.goalsV2Enabled }),
 					this.loadPreferences('network-only'),
 				]);
-				// Update hideCompletedGoalCard after loading fresh preferences
-				this.hideCompletedGoalCard = this.hideGoalCard();
 			}
 		}
 	},
