@@ -641,10 +641,10 @@ export default function useGoalData({ apollo } = {}) {
 		);
 	}
 
-	function hideGoalCard() {
+	const hideGoalCard = computed(() => {
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		return parsedPrefs.hideGoalCard || false;
-	}
+	});
 
 	const goalProgressPercentage = computed(() => {
 		const target = Number(userGoal?.value?.target);

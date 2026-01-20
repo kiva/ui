@@ -2442,7 +2442,7 @@ describe('useGoalData', () => {
 			});
 
 			await composable.loadGoalData();
-			const hideCard = await composable.hideGoalCard();
+			const hideCard = await composable.hideGoalCard.value;
 
 			expect(hideCard).toBe(true);
 		});
@@ -2467,7 +2467,7 @@ describe('useGoalData', () => {
 			});
 
 			await composable.loadGoalData();
-			const hideCard = await composable.hideGoalCard();
+			const hideCard = await composable.hideGoalCard.value;
 
 			expect(hideCard).toBe(false);
 		});

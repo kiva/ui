@@ -106,6 +106,10 @@ const props = defineProps({
 	loading: {
 		type: Boolean,
 		default: true,
+	},
+	hideGoalCard: {
+		type: Boolean,
+		default: false,
 	}
 });
 
@@ -213,8 +217,8 @@ const handleContinueClick = () => {
 
 const progressCircleDesc = computed(() => `loan${props.goalProgress > 1 || props.goalProgress === 0 ? 's' : ''} made`);
 
-watch(() => props.loading, newVal => {
-	if (!newVal) {
+watch(() => [props.loading, props.hideGoalCard], ([newLoading, newHideGoalCard], [oldLoading]) => {
+	if (!newLoading && oldLoading && !newHideGoalCard) {
 		if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
 			showConfetti();
 			setHideGoalCardPreference();
