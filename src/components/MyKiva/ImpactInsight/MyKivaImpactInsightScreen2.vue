@@ -80,6 +80,7 @@ const whySpecial = computed(() => {
 		min-width: 194px;
 	}
 }
+
 .min-circle-size {
 	min-height: 168px;
 	min-width: 168px;
