@@ -208,6 +208,8 @@ export default {
 				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
 					...myKivaQueryResult.my.latestLoan.values[0].loan,
 					amount: myKivaQueryResult.my.latestLoan.values[0]?.amount || null,
+					// eslint-disable-next-line max-len
+					...(myKivaQueryResult.my?.latestLoan?.values?.length > 1 ? { otherLoans: myKivaQueryResult.my.latestLoan.values.slice(1) } : {})
 				} : null;
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');

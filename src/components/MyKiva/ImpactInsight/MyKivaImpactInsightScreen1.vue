@@ -92,7 +92,14 @@ const countryPPP = computed(() => {
 });
 
 const amount = computed(() => {
-	return props.latestLoan?.amount ? numeral(Math.abs(props.latestLoan.amount)).format('$0,0[.]00') : null;
+	const initialAmount = Math.abs(props.latestLoan?.amount) || 0;
+	if (props.latestLoan?.otherLoans?.length > 0 && props.latestLoan?.id) {
+		const totalAmount = props.latestLoan.otherLoans.reduce((sum, loan) => {
+			return props.latestLoan?.id === loan.id ? sum + Math.abs(loan.amount || 0) : sum;
+		}, initialAmount);
+		return numeral(totalAmount).format('$0,0[.]00');
+	}
+	return props.latestLoan?.amount ? numeral(initialAmount).format('$0,0[.]00') : null;
 });
 
 </script>
