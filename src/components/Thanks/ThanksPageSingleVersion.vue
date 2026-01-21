@@ -135,7 +135,7 @@ import BadgeMilestone from '#src/components/Thanks/SingleVersion/BadgeMilestone'
 import GoalEntrypoint from '#src/components/Thanks/SingleVersion/GoalEntrypoint';
 import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import GoalInProgress from '#src/components/Thanks/SingleVersion/GoalInProgress';
-import useGoalData from '#src/composables/useGoalData';
+import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
 import useBadgeData from '#src/composables/useBadgeData';
 import { setGuestAssignmentCookie } from '#src/util/myKivaUtils';
 
@@ -376,11 +376,11 @@ onMounted(async () => {
 
 		// Show goal in progress module when:
 		// - User is logged in (not a guest)
-		// - User has a goal set
+		// - User has an in-progress goal (not completed or expired)
 		// - Goal not completed this checkout
 		// - Current checkout loans contributed to goal progress
 		showGoalInProgressModule.value = !props.isGuest
-			&& !isEmptyGoal.value
+			&& userGoal.value?.status === GOAL_STATUS.IN_PROGRESS
 			&& !userGoalAchievedNow.value
 			&& hasContributingLoans;
 	}
