@@ -135,6 +135,7 @@ query myKivaQuery {
           id
           name
           gender
+		  whySpecial
           image {
             id
             hash
