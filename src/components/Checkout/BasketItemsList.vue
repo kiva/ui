@@ -193,11 +193,12 @@ export default {
 			await this.loadGoalData({ loans: this.loans, yearlyProgress: this.goalsV2Enabled });
 			// Calculate progress including basket loans (don't increment counter, just check current state)
 			const year = this.goalsV2Enabled ? new Date().getFullYear() : null;
-			this.basketGoalProgress = await this.getPostCheckoutProgressByLoans({
+			const { totalProgress } = await this.getPostCheckoutProgressByLoans({
 				loans: this.loans.map(loan => ({ id: loan.id })),
 				addBasketLoans: true,
 				year,
 			});
+			this.basketGoalProgress = totalProgress;
 		}
 	},
 	computed: {

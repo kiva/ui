@@ -349,7 +349,7 @@ export default function useGoalData({ apollo } = {}) {
 	 * @param {number|null} options.year - Year for yearly progress, or null for all-time progress
 	 * @param {boolean} options.increment - Increment in-page counter by 1 (ATB modal: true)
 	 * @param {boolean} options.addBasketLoans - Add loans.length to progress (Basket page: true)
-	 * @returns {number} Progress count for the user's goal category
+	 * @returns {Object} { totalProgress, hasContributingLoans } - Progress count and whether loans contributed
 	 *
 	 * Use cases:
 	 * - ATB Modal: { loans, increment: true } - increments counter per add-to-basket action
@@ -368,14 +368,23 @@ export default function useGoalData({ apollo } = {}) {
 			if (increment) {
 				// ATB modal: increment by 1 per add-to-basket action
 				goalCurrentLoanCount.value += 1;
-				return goalProgress.value + goalCurrentLoanCount.value;
+				return {
+					totalProgress: goalProgress.value + goalCurrentLoanCount.value,
+					hasContributingLoans: true,
+				};
 			}
 			if (addBasketLoans) {
 				// Basket page: add basket loan count (loans not yet in totalLoanCount)
-				return goalProgress.value + loans.length;
+				return {
+					totalProgress: goalProgress.value + loans.length,
+					hasContributingLoans: loans.length > 0,
+				};
 			}
-			// Thanks page: just return goalProgress (loans already in totalLoanCount after checkout)
-			return goalProgress.value;
+			// Thanks page: any loan counts towards support-all goal
+			return {
+				totalProgress: goalProgress.value,
+				hasContributingLoans: loans.length > 0,
+			};
 		}
 		try {
 			const loanIds = loans.map(loan => loan.id);
@@ -387,18 +396,30 @@ export default function useGoalData({ apollo } = {}) {
 			const progress = year
 				? response.data?.postCheckoutAchievements?.yearlyProgress || []
 				: response.data?.postCheckoutAchievements?.allTimeProgress || [];
-			const totalProgress = progress.find(
+			const categoryProgress = progress.find(
 				entry => entry.achievementId === userGoal.value?.category
-			)?.totalProgress || 0;
+			);
+			const totalProgress = categoryProgress?.totalProgress || 0;
+			// Get contributingLoanIds from overallProgress (different type than allTimeProgress/yearlyProgress)
+			const overallProgress = response.data?.postCheckoutAchievements?.overallProgress || [];
+			const overallCategoryProgress = overallProgress.find(
+				entry => entry.achievementId === userGoal.value?.category
+			);
+			const contributingLoanIds = overallCategoryProgress?.contributingLoanIds || [];
+			// contributingLoanIds from GraphQL are strings, loanIds are numbers - convert for comparison
+			const hasContributingLoans = loanIds.some(id => contributingLoanIds.includes(String(id)));
 			// When using all-time progress, subtract loanTotalAtStart to get progress since goal was set
 			if (!year) {
 				const loanTotalAtStart = userGoal.value?.loanTotalAtStart || 0;
-				return Math.max(0, totalProgress - loanTotalAtStart);
+				return {
+					totalProgress: Math.max(0, totalProgress - loanTotalAtStart),
+					hasContributingLoans,
+				};
 			}
-			return totalProgress;
+			return { totalProgress, hasContributingLoans };
 		} catch (error) {
 			logFormatter(error, 'Failed to get post-checkout progress');
-			return null;
+			return { totalProgress: null, hasContributingLoans: false };
 		}
 	}
 

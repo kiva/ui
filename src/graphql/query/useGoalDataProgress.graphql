@@ -12,5 +12,10 @@ query useGoalDataProgressQuery($loanIds: [Int!]!, $year: Int) {
         currentTier
         completed
 	}
+	overallProgress {
+		id
+		achievementId
+		contributingLoanIds
+	}
   }
 }
