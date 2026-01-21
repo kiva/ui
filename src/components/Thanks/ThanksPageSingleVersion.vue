@@ -264,7 +264,8 @@ const showOptInModule = computed(() => !props.isOptedIn);
 const showKivaCardsModule = computed(() => !!printableKivaCards.value.length);
 const showGoalCompletedModule = computed(() => {
 	// Show goal completed module immediately when user achieved their goal
-	if (!props.isNextStepsExpEnabled) return false;
+	// Guests don't have goals, so never show for guests
+	if (!props.isNextStepsExpEnabled || props.isGuest) return false;
 	return userGoalAchievedNow.value;
 });
 const showBadgeModule = computed(() => {
@@ -364,14 +365,24 @@ onMounted(async () => {
 		// Use yearly progress with current year when Goals V2 is enabled, otherwise use all-time progress
 		const year = props.goalsV2Enabled ? new Date().getFullYear() : null;
 		// Loans already in totalLoanCount after checkout
-		currGoalProgress.value = await getPostCheckoutProgressByLoans({
+		const { totalProgress, hasContributingLoans } = await getPostCheckoutProgressByLoans({
 			loans: props.loans,
 			year,
 		});
-		await checkCompletedGoal({ currentGoalProgress: currGoalProgress.value });
+		currGoalProgress.value = totalProgress;
+		await checkCompletedGoal({ currentGoalProgress: totalProgress });
 		goalDataInitialized.value = true;
 		isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
-		showGoalInProgressModule.value = !isEmptyGoal.value && !userGoalAchievedNow.value;
+
+		// Show goal in progress module when:
+		// - User is logged in (not a guest)
+		// - User has a goal set
+		// - Goal not completed this checkout
+		// - Current checkout loans contributed to goal progress
+		showGoalInProgressModule.value = !props.isGuest
+			&& !isEmptyGoal.value
+			&& !userGoalAchievedNow.value
+			&& hasContributingLoans;
 	}
 	showConfetti();
 	const isOptInLoan = showOptInModule.value && props.loans.length > 0;

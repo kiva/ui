@@ -194,13 +194,14 @@ const fetchPostCheckoutAchievements = async loanIds => {
 		// Use yearly progress with current year when Goals V2 is enabled, otherwise use all-time progress
 		const year = props.goalsV2Enabled ? new Date().getFullYear() : null;
 		// Increment counter per add-to-basket action
-		loanGoalProgress.value = await getPostCheckoutProgressByLoans({
+		const { totalProgress } = await getPostCheckoutProgressByLoans({
 			loans: loanIds.map(id => ({ id })),
 			year,
 			increment: true,
 		});
+		loanGoalProgress.value = totalProgress;
 		const userTarget = userGoal.value?.target || 0;
-		const isOneLoanAwayFromGoal = userTarget - loanGoalProgress.value === 1;
+		const isOneLoanAwayFromGoal = userTarget - totalProgress === 1;
 		const goalAchieved = loanGoalProgress.value === userTarget;
 		showAtbGoalMsg = isLoanGoal.value && (basketSize < BASKET_LIMIT_SIZE_FOR_EXP
 			|| isOneLoanAwayFromGoal || goalAchieved);
