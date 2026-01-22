@@ -149,7 +149,6 @@ query myKivaQuery {
                 longitude
               }
 			  ppp
-			  fundsLentInCountry
             }
           }
           borrowerCount

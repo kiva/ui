@@ -26,9 +26,7 @@ export const Default = story({
         id: 1975833,
         name: 'Mayram',
 		geocode: {
-			country: {
-				fundsLentInCountry: 89599
-			}
+			country: { }
 		}
     },
 });

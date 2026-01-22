@@ -46,7 +46,7 @@
 					>
 						{{ name }} isn't on this journey alone. They're working with a
 						Kiva lending partner that's already helped
-						<strong class="tw-text-brand">{{ fundsLentInCountry }}</strong> people in their region.
+						<strong class="tw-text-brand">{{ helpedPeopleInCountry }}</strong> people in their region.
 					</p>
 				</div>
 			</div>
@@ -76,9 +76,9 @@ const name = computed(() => {
 	return props.latestLoan?.name || '';
 });
 
-const fundsLentInCountry = computed(() => {
-	return props.latestLoan?.geocode?.country?.fundsLentInCountry
-		? numeral(props.latestLoan.geocode.country.fundsLentInCountry).format('0,0[.]00') : null;
+const helpedPeopleInCountry = computed(() => {
+	// pending BE change to get helpedPeopleInCountry field, on MP-2431 (update storybook when done)
+	return numeral(46716).format('0,0[.]00');
 });
 
 </script>
