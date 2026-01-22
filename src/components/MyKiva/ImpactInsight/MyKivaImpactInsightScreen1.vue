@@ -15,7 +15,7 @@
 				>
 					<div class="tw-items-center tw-gap-3">
 						<div
-							class="tw-h-6.5 tw-w-6.5 tw-overflow-hidden tw-rounded-full
+							class="borrower-img-size tw-overflow-hidden tw-rounded-full
 									tw-border-4 tw-border-white tw-my-0 tw-mx-auto"
 						>
 							<KvBorrowerImage
@@ -94,8 +94,8 @@ const countryPPP = computed(() => {
 const amount = computed(() => {
 	const initialAmount = Math.abs(props.latestLoan?.amount) || 0;
 	if (props.latestLoan?.otherLoans?.length > 0 && props.latestLoan?.id) {
-		const totalAmount = props.latestLoan.otherLoans.reduce((sum, loan) => {
-			return props.latestLoan?.id === loan.id ? sum + Math.abs(loan.amount || 0) : sum;
+		const totalAmount = props.latestLoan.otherLoans.reduce((sum, item) => {
+			return props.latestLoan?.id === item?.loan.id ? sum + Math.abs(item?.loan.amount || 0) : sum;
 		}, initialAmount);
 		return numeral(totalAmount).format('$0,0[.]00');
 	}
@@ -112,6 +112,16 @@ const amount = computed(() => {
 	@screen md {
 		min-height: 168px;
 		min-width: 168px;
+	}
+}
+
+.borrower-img-size {
+	height: 45px;
+	width: 45px;
+
+	@screen md {
+		height: 60px;
+		width: 60px;
 	}
 }
 </style>

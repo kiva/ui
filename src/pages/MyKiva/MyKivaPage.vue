@@ -208,8 +208,11 @@ export default {
 				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
 					...myKivaQueryResult.my.latestLoan.values[0].loan,
 					amount: myKivaQueryResult.my.latestLoan.values[0]?.amount || null,
+					/* there is an edge case where an user have a promo credit in his/her account and purchase a loan,
+					the final transaction is split out. As each item share the same transaction id we include the others
+					items to sum their amounts and get the total amount lent */
 					// eslint-disable-next-line max-len
-					...(myKivaQueryResult.my?.latestLoan?.values?.length > 1 ? { otherLoans: myKivaQueryResult.my.latestLoan.values.slice(1) } : {})
+					...(myKivaQueryResult.my?.latestLoan?.values?.length > 2 ? { otherLoans: myKivaQueryResult.my.latestLoan.values.slice(1) } : {})
 				} : null;
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');

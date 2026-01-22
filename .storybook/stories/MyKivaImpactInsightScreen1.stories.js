@@ -65,16 +65,22 @@ export const SplitTransaction = story({
 		},
 		otherLoans: [
 			{
-				amount: '-5.00',
-				id: 1975833,
+				loan: {
+					amount: '-5.00',
+					id: 1975833,
+				},
 			},
 			{
-				amount: '-25.00',
-				id: 1975833,
+				loan: {
+					amount: '-25.00',
+					id: 1975833,
+				},
 			},
 			{
-				amount: '-3.00',
-				id: 1975834,
+				loan: {
+					amount: '-3.00',
+					id: 1975834,
+				},
 			},
 		]
     },
