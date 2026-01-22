@@ -390,7 +390,8 @@ export default {
 					if (achievement.id === ID_WOMENS_EQUALITY && womenProgress) {
 						return {
 							...achievement,
-							progressForYear: womenProgress.totalProgress,
+							// Store current year progress separately to preserve last year's progressForYear
+							progressForCurrentYear: womenProgress.totalProgress,
 						};
 					}
 					return achievement;

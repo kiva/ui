@@ -275,25 +275,6 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
-	 * Retrieves the user's loan count for the specified category id and year.
-	 *
-	 * @param {string} categoryId - Category ID to fetch loan count for.
-	 * @param {number} year - Year to fetch progress for.
-	 * @param {string} [fetchPolicy='cache-first'] - Apollo fetch policy.
-	 * @returns {number|null} The category loan count for the given year, or null on error.
-	 */
-	async function getCategoryLoanCountByYear(categoryId, year, fetchPolicy = 'cache-first') {
-		try {
-			const progress = await getCategoriesProgressByYear(year, fetchPolicy);
-			const count = progress?.find(entry => entry.id === categoryId)?.progressForYear || 0;
-			return count;
-		} catch (error) {
-			logFormatter(error, 'Failed to fetch category loan count by year');
-			return null;
-		}
-	}
-
-	/**
 	 * Retrieves the user's total loan count and amount for a given year.
 	 * This includes all loans regardless of category.
 	 *
@@ -680,7 +661,6 @@ export default function useGoalData({ apollo } = {}) {
 		checkCompletedGoal,
 		getCategories,
 		getCategoriesProgressByYear,
-		getCategoryLoanCountByYear,
 		getCategoryLoansLastYear,
 		getCtaHref,
 		getGoalDisplayName,
