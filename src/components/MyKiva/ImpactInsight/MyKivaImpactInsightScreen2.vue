@@ -72,22 +72,22 @@ const whySpecial = computed(() => {
 
 <style lang="postcss" scoped>
 .min-big-circle-size {
-	min-height: 218px;
-	min-width: 218px;
+	min-height: 194px;
+	min-width: 194px;
 
 	@screen md {
-		min-height: 194px;
-		min-width: 194px;
+		min-height: 218px;
+		min-width: 218px;
 	}
 }
 
 .min-circle-size {
-	min-height: 168px;
-	min-width: 168px;
+	min-height: 145px;
+	min-width: 145px;
 
 	@screen md {
-		min-height: 145px;
-		min-width: 145px;
+		min-height: 168px;
+		min-width: 168px;
 	}
 }
 </style>
