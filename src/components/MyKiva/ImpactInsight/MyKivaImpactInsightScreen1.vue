@@ -44,7 +44,7 @@
 						Your {{ amount }} loan helps {{ name }} build stability and success in
 						<strong class="tw-text-brand">{{ countryName }}</strong>
 						<template v-if="countryPPP">
-							, where the average
+							where the average
 							<strong class="tw-text-brand">annual income is {{ countryPPP }} USD</strong>
 						</template>.
 					</p>
@@ -94,6 +94,9 @@ const countryPPP = computed(() => {
 const amount = computed(() => {
 	const initialAmount = Math.abs(props.latestLoan?.amount) || 0;
 	if (props.latestLoan?.otherLoans?.length > 0 && props.latestLoan?.id) {
+		/* there is an edge case where an user have a promo credit in his/her account and purchase a loan,
+		the final transaction is split out. As each item share the same transaction id we include the others
+		items to sum their amounts and get the total amount lent */
 		const totalAmount = props.latestLoan.otherLoans.reduce((sum, item) => {
 			return props.latestLoan?.id === item?.loan.id ? sum + Math.abs(item?.loan.amount || 0) : sum;
 		}, initialAmount);
