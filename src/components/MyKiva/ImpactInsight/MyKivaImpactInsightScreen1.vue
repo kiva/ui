@@ -38,16 +38,10 @@
 					class="tw-w-full tw-max-w-xl tw-px-4 md:!tw-px-0"
 				>
 					<p
+						v-html="loanDescription"
 						class="tw-rounded-2xl tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3
 							tw-text-base tw-leading-relaxed tw-bg-gray-100 tw-rounded-md md:tw-text-lg"
-					>
-						Your {{ amount }} loan helps {{ name }} build stability and success in
-						<strong class="tw-text-brand">{{ countryName }}</strong>
-						<template v-if="countryPPP">
-							where the average
-							<strong class="tw-text-brand">annual income is {{ countryPPP }} USD</strong>
-						</template>.
-					</p>
+					></p>
 				</div>
 			</div>
 		</div>
@@ -103,6 +97,19 @@ const amount = computed(() => {
 		return numeral(totalAmount).format('$0,0[.]00');
 	}
 	return props.latestLoan?.amount ? numeral(initialAmount).format('$0,0[.]00') : null;
+});
+
+const loanDescription = computed(() => {
+	let text = `Your ${amount.value} loan helps ${name.value} build stability and success in `
+		+ `<strong class="tw-text-brand">${countryName.value}</strong>`;
+
+	if (countryPPP.value) {
+		text += `, where the average <strong class="tw-text-brand">annual income is ${countryPPP.value} USD</strong>`;
+	}
+
+	text += '.';
+
+	return text;
 });
 
 </script>
