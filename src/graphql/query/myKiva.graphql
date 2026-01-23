@@ -127,7 +127,7 @@ query myKivaQuery {
       filter: {
         type: ["loan_purchase", "direct_loan_purchase"]
       }
-      limit: 1
+      limit: 2
     ) {
       values {
 		amount
@@ -135,6 +135,7 @@ query myKivaQuery {
           id
           name
           gender
+          whySpecial
           image {
             id
             hash
