@@ -96,7 +96,7 @@ import useGoalData, { SAME_AS_LAST_YEAR_LIMIT } from '#src/composables/useGoalDa
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const { getCategoryLoansLastYear } = useGoalData();
+const { getCategoryLoansLastYear, getCategoryLoanCountByYear } = useGoalData();
 
 const props = defineProps({
 	/**
@@ -158,19 +158,47 @@ const goalOptions = ref([
 ]);
 
 const loadingCurrentYear = ref(false);
+const fetchedCurrentYearLoans = ref(null);
 
 const womenLoansLastYear = computed(() => {
 	return getCategoryLoansLastYear(props.tieredAchievements);
 });
 
 // Use progressForCurrentYear from tieredAchievements if available (set on Thanks page),
-// otherwise default to 0 (no current year lending)
+// otherwise use fetched current year data (for MyKiva goal-setting page and modal)
 const womenLoansThisYear = computed(() => {
 	const categoryAchievement = props.tieredAchievements?.find(
 		entry => entry.id === ID_WOMENS_EQUALITY
 	);
-	return categoryAchievement?.progressForCurrentYear ?? 0;
+	// If progressForCurrentYear is explicitly set (Thanks page), use it
+	if (typeof categoryAchievement?.progressForCurrentYear === 'number') {
+		return categoryAchievement.progressForCurrentYear;
+	}
+	// Otherwise use fetched data (MyKiva goal-setting page and modal)
+	return fetchedCurrentYearLoans.value ?? 0;
 });
+
+/**
+ * Fetch current year loan count when not provided via props.
+ * This is needed for the MyKiva goal-setting page and modal where progressForCurrentYear
+ * is not set (only last year data comes from tieredAchievements).
+ */
+const loadWomenLoansThisYear = async () => {
+	// Check if progressForCurrentYear is already provided via props
+	const categoryAchievement = props.tieredAchievements?.find(
+		entry => entry.id === ID_WOMENS_EQUALITY
+	);
+	if (typeof categoryAchievement?.progressForCurrentYear === 'number') {
+		// Already have current year data from props (Thanks page), no need to fetch
+		return;
+	}
+
+	loadingCurrentYear.value = true;
+	const currentYear = new Date().getFullYear();
+	const count = await getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, currentYear, 'network-only');
+	fetchedCurrentYearLoans.value = count;
+	loadingCurrentYear.value = false;
+};
 
 const titleText = computed(() => {
 	if (props.isGoalSet) {
@@ -311,7 +339,8 @@ const updateGoalOptions = () => {
 	emit('set-goal-target', selectedTarget.value);
 };
 
-onMounted(() => {
+onMounted(async () => {
+	await loadWomenLoansThisYear();
 	updateGoalOptions();
 
 	if (props.trackingCategory === 'post-checkout') {

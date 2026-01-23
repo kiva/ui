@@ -2089,6 +2089,108 @@ describe('useGoalData', () => {
 		});
 	});
 
+	describe('getCategoryLoanCountByYear', () => {
+		it('should use cache-first fetch policy by default', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: [
+							{ id: ID_WOMENS_EQUALITY, progressForYear: 12 }
+						]
+					}
+				}
+			});
+
+			await composable.getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, 2026);
+
+			expect(mockApollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					fetchPolicy: 'cache-first',
+				})
+			);
+		});
+
+		it('should use network-only fetch policy when specified', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: [
+							{ id: ID_WOMENS_EQUALITY, progressForYear: 8 }
+						]
+					}
+				}
+			});
+
+			await composable.getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, 2026, 'network-only');
+
+			expect(mockApollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					fetchPolicy: 'network-only',
+				})
+			);
+		});
+
+		it('should return progressForYear for the specified category', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: [
+							{ id: ID_WOMENS_EQUALITY, progressForYear: 15 },
+							{ id: ID_BASIC_NEEDS, progressForYear: 7 }
+						]
+					}
+				}
+			});
+
+			const result = await composable.getCategoryLoanCountByYear(ID_BASIC_NEEDS, 2026);
+
+			expect(result).toBe(7);
+		});
+
+		it('should return 0 if category not found', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: [
+							{ id: ID_WOMENS_EQUALITY, progressForYear: 15 }
+						]
+					}
+				}
+			});
+
+			const result = await composable.getCategoryLoanCountByYear(ID_CLIMATE_ACTION, 2026);
+
+			expect(result).toBe(0);
+		});
+
+		it('should return 0 if progressForYear is undefined', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					userAchievementProgress: {
+						tieredLendingAchievements: [
+							{ id: ID_WOMENS_EQUALITY }
+						]
+					}
+				}
+			});
+
+			const result = await composable.getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, 2026);
+
+			expect(result).toBe(0);
+		});
+
+		it('should return 0 when getCategoriesProgressByYear returns null on error', async () => {
+			// When getCategoriesProgressByYear fails, it returns null (handles its own error)
+			// getCategoryLoanCountByYear then gets null progress, and progress?.find() returns undefined
+			// which falls back to 0 via the || 0 default
+			mockApollo.query = vi.fn().mockRejectedValue(new Error('Network error'));
+
+			const result = await composable.getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, 2026);
+
+			expect(result).toBe(0);
+		});
+	});
+
 	describe('getLoanStatsByYear', () => {
 		it('should use cache-first fetch policy by default', async () => {
 			mockApollo.query = vi.fn().mockResolvedValue({
