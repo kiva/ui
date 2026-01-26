@@ -272,6 +272,10 @@ const props = defineProps({
 		type: Object,
 		default: null
 	},
+	showPostLendingNextStepsCards: {
+		type: Boolean,
+		default: false
+	},
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
@@ -284,20 +288,16 @@ const shouldShowEmailMarketingCard = computed(
 		&& userHasMailUpdatesOptOut() && (props.loans.length > 0 || props.latestLoan !== null)
 );
 const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
-const isFormEnabled = computed(() => {
-	const userPreferences = props.userInfo?.userPreferences || {};
-	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
-	return parsedPrefs?.myKivaSurveyEnabled ?? false;
-});
 
-const showLatestLoan = computed(() => isFormEnabled.value && props.postLendingNextStepsEnable && props.latestLoan);
+const showLatestLoan = computed(() => props.showPostLendingNextStepsCards
+	&& props.postLendingNextStepsEnable && props.latestLoan);
 
 const showSurveyCard = computed(() => {
 	const userPreferences = props.userInfo?.userPreferences || {};
 	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
 	const isFormSubmitted = (parsedPrefs.savedForms || []).some(form => form.formName === MYKIVA_INPUT_FORM_KEY);
 
-	return isFormEnabled.value && !isFormSubmitted && props.postLendingNextStepsEnable;
+	return props.showPostLendingNextStepsCards && !isFormSubmitted && props.postLendingNextStepsEnable;
 });
 
 const badgesData = computed(() => {

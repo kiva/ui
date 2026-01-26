@@ -35,12 +35,11 @@ export const updateUserPreferencesMutation = gql`
  * @param newPreferences The new preferences to add
  * @returns The results of the mutation
  */
-export const createUserPreferences = async (apollo, newPreferences, refetchQueries = null) => {
+export const createUserPreferences = async (apollo, newPreferences) => {
 	try {
 		return await apollo.mutate({
 			mutation: createUserPreferencesMutation,
 			variables: { preferences: JSON.stringify(newPreferences) },
-			refetchQueries: refetchQueries || [],
 		});
 	} catch (e) {
 		logReadQueryError(e, 'userPreferenceUtils createUserPreferencesMutation');
@@ -54,16 +53,9 @@ export const createUserPreferences = async (apollo, newPreferences, refetchQueri
  * @param userPreferences The original user preferences
  * @param parsedPreferences The parsed user preferences
  * @param newPreferences The new preferences to add
- * @param refetchQueries Optional queries to refetch after mutation
  * @returns The updated user preferences
  */
-export const updateUserPreferences = async (
-	apollo,
-	userPreferences,
-	parsedPreferences,
-	newPreferences,
-	refetchQueries = null
-) => {
+export const updateUserPreferences = async (apollo, userPreferences, parsedPreferences, newPreferences) => {
 	try {
 		const mergedPreferences = { ...parsedPreferences, ...newPreferences };
 		const preferences = JSON.stringify(mergedPreferences);
@@ -73,7 +65,6 @@ export const updateUserPreferences = async (
 				updateUserPreferencesId: userPreferences.id,
 				preferences,
 			},
-			refetchQueries: refetchQueries || [],
 		});
 	} catch (e) {
 		logReadQueryError(e, 'userPreferenceUtils updateUserPreferencesMutation');

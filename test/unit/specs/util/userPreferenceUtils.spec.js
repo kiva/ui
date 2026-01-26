@@ -53,7 +53,6 @@ describe('userPreferenceUtils.ts', () => {
 			expect(apolloMock.mutate).toHaveBeenCalledWith({
 				mutation: createUserPreferencesMutation,
 				variables: { preferences: JSON.stringify(preferences) },
-				refetchQueries: [],
 			});
 		});
 
@@ -97,7 +96,6 @@ describe('userPreferenceUtils.ts', () => {
 					updateUserPreferencesId: userPreferenceDataMock.my.userPreference.id,
 					preferences: JSON.stringify({ test: 'test', new: 'new' }),
 				},
-				refetchQueries: [],
 			});
 		});
 

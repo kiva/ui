@@ -9,6 +9,8 @@ export const GUEST_ASSIGNMENT_COOKIE = 'myKivaGuestAssignment';
 export const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
 export const MY_KIVA_HERO_ENABLE_KEY = 'new_mykiva_hero_enable';
 export const TRANSACTION_LOANS_KEY = 'loan_purchase';
+export const MY_KIVA_POST_LENDING_NEXT_STEPS_COOKIE = 'my_kiva_post_lending_next_steps';
+export const MY_KIVA_POST_LENDING_CARDS_SHOWN = 'myKivaPostLendingCardsShown';
 
 /**
  * Determines whether the provided loan needs a footnote

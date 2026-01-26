@@ -30,6 +30,7 @@
 					:hide-goal-card="hideCompletedGoalCard"
 					:post-lending-next-steps-enable="postLendingNextStepsEnable"
 					:user-info="userInfo"
+					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 					@open-goal-modal="showGoalModal = true"
 				/>
 			</div>
@@ -161,6 +162,7 @@
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
+			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 			@open-goal-modal="showGoalModal = true"
 		/>
 		<GoalSettingModal
@@ -199,6 +201,8 @@ import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 
+import { MY_KIVA_POST_LENDING_NEXT_STEPS_COOKIE, MY_KIVA_POST_LENDING_CARDS_SHOWN } from '#src/util/myKivaUtils';
+import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 import GoalSettingModal from './GoalSettingModal';
 
 export default {
@@ -281,6 +285,7 @@ export default {
 			isGoalSet: false,
 			recordedGoalSet: false,
 			newGoalPrefs: null,
+			showPostLendingNextStepsCards: false,
 		};
 	},
 	computed: {
@@ -358,6 +363,28 @@ export default {
 				}, 800);
 			}, [this.$refs.loanRegionsElement]);
 			this.disconnectRegionWatcher = disconnect;
+		}
+
+		// Show post-lending next steps cards in My Kiva
+		this.showPostLendingNextStepsCards = this.cookieStore.get(MY_KIVA_POST_LENDING_NEXT_STEPS_COOKIE) ?? false; // eslint-disable-line max-len
+		if (this.showPostLendingNextStepsCards) {
+			this.cookieStore.remove(MY_KIVA_POST_LENDING_NEXT_STEPS_COOKIE);
+
+			// Update user preferences to mark post-lending next steps cards as shown
+			const userPreferences = this.userInfo.userPreferences || {};
+			const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
+
+			if (!userPreferences?.id) {
+				return createUserPreferences(this.apollo, { [MY_KIVA_POST_LENDING_CARDS_SHOWN]: true });
+			}
+
+			updateUserPreferences(
+				this.apollo,
+				userPreferences,
+				parsedPrefs,
+				{ [MY_KIVA_POST_LENDING_CARDS_SHOWN]: true },
+
+			);
 		}
 	},
 	beforeUnmount() {
