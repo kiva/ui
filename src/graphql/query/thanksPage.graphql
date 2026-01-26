@@ -29,6 +29,10 @@ query thanksPage {
 			inviterName
 			public
 		}
+		userPreferences {
+			id
+			preferences
+		}
 		loans {
 			totalCount
 		}

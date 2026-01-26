@@ -290,9 +290,10 @@ const showLatestLoan = computed(() => props.postLendingNextStepsEnable && props.
 const showSurveyCard = computed(() => {
 	const userPreferences = props.userInfo?.userPreferences || {};
 	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
+	const isFormEnabled = parsedPrefs?.myKivaSurveyEnabled ?? false;
 	const isFormSubmitted = (parsedPrefs.savedForms || []).some(form => form.formName === MYKIVA_INPUT_FORM_KEY);
 
-	return !isFormSubmitted && props.postLendingNextStepsEnable;
+	return isFormEnabled && !isFormSubmitted && props.postLendingNextStepsEnable;
 });
 
 const badgesData = computed(() => {

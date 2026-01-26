@@ -138,6 +138,7 @@ import GoalInProgress from '#src/components/Thanks/SingleVersion/GoalInProgress'
 import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
 import useBadgeData from '#src/composables/useBadgeData';
 import { setGuestAssignmentCookie } from '#src/util/myKivaUtils';
+import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 
 const EVENT_CATEGORY = 'post-checkout';
 
@@ -197,6 +198,10 @@ const props = defineProps({
 	tieredAchievements: {
 		type: Array,
 		default: () => ([]),
+	},
+	userPreferences: {
+		type: Object,
+		default: () => ({}),
 	},
 });
 
@@ -414,6 +419,22 @@ onMounted(async () => {
 			'post-checkout',
 			'view',
 			'all-achievements-earned',
+		);
+	}
+
+	// Enable survey in My Kiva
+	const userPreferences = props.userPreferences || {};
+	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
+	if (!parsedPrefs?.myKivaSurveyEnabled) {
+		if (!userPreferences?.id) {
+			return createUserPreferences(apollo, { myKivaSurveyEnabled: true });
+		}
+
+		updateUserPreferences(
+			apollo,
+			userPreferences,
+			parsedPrefs,
+			{ myKivaSurveyEnabled: true }
 		);
 	}
 });

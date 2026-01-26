@@ -15,6 +15,7 @@
 				:goals-v2-enabled="goalsV2Enabled"
 				:total-loans="totalLoanCount"
 				:tiered-achievements="achievements"
+				:user-preferences="userPreferences"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -176,6 +177,7 @@ export default {
 			thanksPageGoalsEntrypointEnable: false,
 			totalLoanCount: 0,
 			achievements: [],
+			userPreferences: {},
 		};
 	},
 	apollo: {
@@ -335,6 +337,7 @@ export default {
 			publicId: data?.my?.lender?.publicId ?? '',
 		};
 
+		this.userPreferences = data?.my?.userPreferences ?? {};
 		this.optedIn = (data?.my?.communicationSettings?.lenderNews && data?.my?.communicationSettings?.loanUpdates)
 			|| this.$route.query?.optedIn === 'true';
 
