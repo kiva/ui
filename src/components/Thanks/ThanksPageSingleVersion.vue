@@ -427,14 +427,15 @@ onMounted(async () => {
 	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
 	if (!parsedPrefs?.myKivaSurveyEnabled) {
 		if (!userPreferences?.id) {
-			return createUserPreferences(apollo, { myKivaSurveyEnabled: true });
+			return createUserPreferences(apollo, { myKivaSurveyEnabled: true }, ['UserPreferences']);
 		}
 
 		updateUserPreferences(
 			apollo,
 			userPreferences,
 			parsedPrefs,
-			{ myKivaSurveyEnabled: true }
+			{ myKivaSurveyEnabled: true },
+			['UserPreferences']
 		);
 	}
 });

@@ -284,16 +284,20 @@ const shouldShowEmailMarketingCard = computed(
 		&& userHasMailUpdatesOptOut() && (props.loans.length > 0 || props.latestLoan !== null)
 );
 const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
+const isFormEnabled = computed(() => {
+	const userPreferences = props.userInfo?.userPreferences || {};
+	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
+	return parsedPrefs?.myKivaSurveyEnabled ?? false;
+});
 
-const showLatestLoan = computed(() => props.postLendingNextStepsEnable && props.latestLoan);
+const showLatestLoan = computed(() => isFormEnabled.value && props.postLendingNextStepsEnable && props.latestLoan);
 
 const showSurveyCard = computed(() => {
 	const userPreferences = props.userInfo?.userPreferences || {};
 	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
-	const isFormEnabled = parsedPrefs?.myKivaSurveyEnabled ?? false;
 	const isFormSubmitted = (parsedPrefs.savedForms || []).some(form => form.formName === MYKIVA_INPUT_FORM_KEY);
 
-	return isFormEnabled && !isFormSubmitted && props.postLendingNextStepsEnable;
+	return isFormEnabled.value && !isFormSubmitted && props.postLendingNextStepsEnable;
 });
 
 const badgesData = computed(() => {
