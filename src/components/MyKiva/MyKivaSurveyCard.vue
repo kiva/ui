@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="card tw-w-full tw-rounded tw-shadow tw-p-2 tw-flex tw-flex-col tw-justify-between
-			tw-shrink-0 tw-overflow-hidden tw-h-full tw-select-none !tw-bg-no-repeat !tw-bg-white"
+			tw-shrink-0 tw-overflow-hidden tw-h-full tw-select-none tw-bg-center tw-bg-cover tw-bg-no-repeat"
 	>
 		<div>
 			<span
@@ -56,10 +56,7 @@ onMounted(() => {
 </script>
 
 <style lang="postcss" scoped>
-.card {
-	background: url('/src/assets/images/my-kiva/survey-card-ellipse.png'),
-			url('/src/assets/images/my-kiva/survey-card-mask.png'),
-			url('/src/assets/images/my-kiva/survey-card-mask-2.png');
-	background-position: center, bottom left, top right;
-}
+	.card {
+		background-image: url('/src/assets/images/my-kiva/survey-card-background.jpg');
+	}
 </style>

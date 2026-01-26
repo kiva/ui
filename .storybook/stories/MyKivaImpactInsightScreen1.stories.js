@@ -42,3 +42,46 @@ export const Default = story({
 		}
     },
 });
+
+export const SplitTransaction = story({
+    latestLoan: {
+		amount: '-20.00',
+        id: 1975833,
+        name: 'Mimir',
+        image: {
+            hash: 'e3976547cb6d30ff631e616c18a62dad',
+        },
+		geocode: {
+			country: {
+				geocode:{
+					latitude: -16,
+					longitude: 167
+				},
+				id: 231,
+				isoCode: 'VU',
+				name: 'Uganda',
+				ppp: '$53,129'
+			}
+		},
+		otherLoans: [
+			{
+				loan: {
+					amount: '-5.00',
+					id: 1975833,
+				},
+			},
+			{
+				loan: {
+					amount: '-25.00',
+					id: 1975833,
+				},
+			},
+			{
+				loan: {
+					amount: '-3.00',
+					id: 1975834,
+				},
+			},
+		]
+    },
+});

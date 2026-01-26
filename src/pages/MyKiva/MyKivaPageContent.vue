@@ -400,7 +400,7 @@ export default {
 			fetchContentfulData,
 			getLoanFindingUrl,
 			getMostRecentBlogPost,
-			isMobile,
+			isMobile
 		};
 	},
 	data() {

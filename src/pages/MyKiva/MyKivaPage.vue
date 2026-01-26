@@ -40,7 +40,7 @@ import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.g
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY, isGoalsV2Enabled } from '#src/composables/useGoalData';
-import { inject } from 'vue';
+import { inject, provide } from 'vue';
 
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
@@ -61,16 +61,15 @@ export default {
 	},
 	setup() {
 		const apollo = inject('apollo');
-		const {
-			fixIncorrectlyCompletedSupportAllGoals,
-			renewAnnualGoal,
-			setHideGoalCardPreference,
-		} = useGoalData({ apollo });
+
+		const goalDataComposable = useGoalData({ apollo });
+		provide('goalData', goalDataComposable);
 
 		return {
-			fixIncorrectlyCompletedSupportAllGoals,
-			renewAnnualGoal,
-			setHideGoalCardPreference,
+			fixIncorrectlyCompletedSupportAllGoals: goalDataComposable.fixIncorrectlyCompletedSupportAllGoals,
+			loadGoalData: goalDataComposable.loadGoalData,
+			renewAnnualGoal: goalDataComposable.renewAnnualGoal,
+			setHideGoalCardPreference: goalDataComposable.setHideGoalCardPreference,
 		};
 	},
 	data() {
@@ -209,6 +208,11 @@ export default {
 				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
 					...myKivaQueryResult.my.latestLoan.values[0].loan,
 					amount: myKivaQueryResult.my.latestLoan.values[0]?.amount || null,
+					/* there is an edge case where an user have a promo credit in his/her account and purchase a loan,
+					the final transaction is split out. As each item share the same transaction id we include the others
+					items to sum their amounts and get the total amount lent */
+					// eslint-disable-next-line max-len
+					...(myKivaQueryResult.my?.latestLoan?.values?.length > 1 ? { otherLoans: myKivaQueryResult.my.latestLoan.values.slice(1) } : {})
 				} : null;
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');
@@ -296,6 +300,10 @@ export default {
 			}
 		} catch (error) {
 			logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
+		}
+
+		if (this.isNextStepsExpEnabled) {
+			await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
 		}
 	},
 };

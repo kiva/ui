@@ -34,6 +34,7 @@
 					:loading="goalProgressLoading"
 					:user-goal="userGoal"
 					:prev-year-loans="womenLoansLastYear"
+					:hide-goal-card="hideGoalCard"
 					@open-goal-modal="$emit('open-goal-modal')"
 				/>
 				<MyKivaSurveyCard
@@ -249,7 +250,7 @@ const props = defineProps({
 	},
 	goalProgressLoading: {
 		type: Boolean,
-		default: false,
+		default: true,
 	},
 	controlsTopRight: {
 		type: Boolean,

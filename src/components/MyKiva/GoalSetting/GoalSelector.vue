@@ -157,12 +157,48 @@ const goalOptions = ref([
 	},
 ]);
 
-const womenLoansThisYear = ref(0);
-const loadingCurrentYear = ref(true);
+const loadingCurrentYear = ref(false);
+const fetchedCurrentYearLoans = ref(null);
 
 const womenLoansLastYear = computed(() => {
 	return getCategoryLoansLastYear(props.tieredAchievements);
 });
+
+// Use progressForCurrentYear from tieredAchievements if available (set on Thanks page),
+// otherwise use fetched current year data (for MyKiva goal-setting page and modal)
+const womenLoansThisYear = computed(() => {
+	const categoryAchievement = props.tieredAchievements?.find(
+		entry => entry.id === ID_WOMENS_EQUALITY
+	);
+	// If progressForCurrentYear is explicitly set (Thanks page), use it
+	if (typeof categoryAchievement?.progressForCurrentYear === 'number') {
+		return categoryAchievement.progressForCurrentYear;
+	}
+	// Otherwise use fetched data (MyKiva goal-setting page and modal)
+	return fetchedCurrentYearLoans.value ?? 0;
+});
+
+/**
+ * Fetch current year loan count when not provided via props.
+ * This is needed for the MyKiva goal-setting page and modal where progressForCurrentYear
+ * is not set (only last year data comes from tieredAchievements).
+ */
+const loadWomenLoansThisYear = async () => {
+	// Check if progressForCurrentYear is already provided via props
+	const categoryAchievement = props.tieredAchievements?.find(
+		entry => entry.id === ID_WOMENS_EQUALITY
+	);
+	if (typeof categoryAchievement?.progressForCurrentYear === 'number') {
+		// Already have current year data from props (Thanks page), no need to fetch
+		return;
+	}
+
+	loadingCurrentYear.value = true;
+	const currentYear = new Date().getFullYear();
+	const count = await getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, currentYear, 'network-only');
+	fetchedCurrentYearLoans.value = count;
+	loadingCurrentYear.value = false;
+};
 
 const titleText = computed(() => {
 	if (props.isGoalSet) {
@@ -263,14 +299,6 @@ const handleContinue = () => {
 			selectedTarget.value
 		);
 	}
-};
-
-const loadWomenLoansThisYear = async () => {
-	loadingCurrentYear.value = true;
-	const currentYear = new Date().getFullYear();
-	const count = await getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, currentYear, 'network-only');
-	womenLoansThisYear.value = count;
-	loadingCurrentYear.value = false;
 };
 
 const updateGoalOptions = () => {
