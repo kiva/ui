@@ -58,6 +58,7 @@ onMounted(() => {
 <style lang="postcss" scoped>
 	.card {
 		background-image: url('/src/assets/images/my-kiva/survey-card-background.jpg');
+
 		--heading-underline-primary: url('/kvui/heading-underline.svg#F8CD69');
 	}
 </style>
