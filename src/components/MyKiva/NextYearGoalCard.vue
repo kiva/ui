@@ -173,10 +173,7 @@ const categoryName = computed(() => {
 
 const goalDescription = computed(() => {
 	const name = categoryName.value;
-	if (props.userGoal?.category === ID_SUPPORT_ALL) {
-		return `${goalLoans.value} ${name}`;
-	}
-	if (name.endsWith('loans')) {
+	if (props.userGoal?.category === ID_SUPPORT_ALL || name.endsWith('loans')) {
 		return `${goalLoans.value} ${name}`;
 	}
 	return `${goalLoans.value} loans to ${name}`;
