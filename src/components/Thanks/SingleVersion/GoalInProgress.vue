@@ -32,8 +32,11 @@ import {
 import { mdiArrowRight } from '@mdi/js';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant-v2.png';
 import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
+import useGoalData from '#src/composables/useGoalData';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
+
+const { getGoalDisplayName } = useGoalData({});
 
 const props = defineProps({
 	loading: {
@@ -52,10 +55,6 @@ const props = defineProps({
 		type: Object,
 		default: null,
 	},
-	getGoalDisplayName: {
-		type: Function,
-		required: true,
-	},
 	targetLoansAmount: {
 		type: Number,
 		default: 0,
@@ -66,7 +65,7 @@ const loanImageUrl = computed(() => props.loan?.image?.url ?? '');
 
 const goalDisplayName = computed(() => {
 	const category = props.currentGoal?.category || '';
-	return category ? props.getGoalDisplayName(props.targetLoansAmount, category) : '';
+	return category ? getGoalDisplayName(props.targetLoansAmount, category) : '';
 });
 
 const moduleTitle = computed(() => {
@@ -76,11 +75,15 @@ const moduleTitle = computed(() => {
 	}
 
 	if (props.targetLoansAmount > 0) {
-		if (props.currentGoal?.category === ID_SUPPORT_ALL) {
-			title += `You’re making progress towards your goal of making ${props.targetLoansAmount} loans this year`;
+		const category = props.currentGoal?.category;
+		const count = props.targetLoansAmount;
+		const name = goalDisplayName.value;
+		if (category === ID_SUPPORT_ALL) {
+			title += `You're making progress towards your goal of making ${count} loans this year.`;
+		} else if (name.endsWith('loans')) {
+			title += `You're making progress towards your goal of making ${count} ${name} this year.`;
 		} else {
-			// eslint-disable-next-line max-len
-			title += `You’re making progress towards your goal of making ${props.targetLoansAmount} loans to ${goalDisplayName.value} this year.`;
+			title += `You're making progress towards your goal of making ${count} loans to ${name} this year.`;
 		}
 		return title;
 	}

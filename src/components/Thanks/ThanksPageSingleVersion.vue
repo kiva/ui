@@ -22,7 +22,6 @@
 			<GoalCompleted
 				v-if="showGoalCompletedModule"
 				:current-goal="userGoal"
-				:get-goal-display-name="getGoalDisplayName"
 				:loading="goalDataLoading"
 				class="tw-mb-2.5"
 			/>
@@ -61,7 +60,6 @@
 				:is-opted-in="isOptedIn"
 				:loan="loanForComment"
 				:current-goal="userGoal"
-				:get-goal-display-name="getGoalDisplayName"
 				:target-loans-amount="goalTargetLoansAmount"
 				class="tw-mb-2.5"
 			/>
@@ -214,7 +212,6 @@ const currGoalProgress = ref(0);
 
 const {
 	checkCompletedGoal,
-	getGoalDisplayName,
 	getPostCheckoutProgressByLoans,
 	loadGoalData,
 	loading: goalDataLoading,

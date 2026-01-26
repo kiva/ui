@@ -119,11 +119,7 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 const goalData = inject('goalData');
 
-const {
-	ID_BASIC_NEEDS,
-	ID_CLIMATE_ACTION,
-	ID_SUPPORT_ALL
-} = useBadgeData();
+const { ID_SUPPORT_ALL } = useBadgeData();
 const {
 	getCtaHref,
 	getGoalDisplayName,
@@ -176,14 +172,11 @@ const categoryName = computed(() => {
 });
 
 const goalDescription = computed(() => {
-	switch (props.userGoal?.category) {
-		case ID_BASIC_NEEDS:
-		case ID_CLIMATE_ACTION:
-		case ID_SUPPORT_ALL:
-			return `${goalLoans.value} ${categoryName.value}`;
-		default:
-			return `${goalLoans.value} loans to ${categoryName.value}`;
+	const name = categoryName.value;
+	if (props.userGoal?.category === ID_SUPPORT_ALL || name.endsWith('loans')) {
+		return `${goalLoans.value} ${name}`;
 	}
+	return `${goalLoans.value} loans to ${name}`;
 });
 
 const ctaHref = computed(() => {
