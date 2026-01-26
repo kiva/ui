@@ -198,10 +198,6 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
-	userPreferences: {
-		type: Object,
-		default: () => ({}),
-	},
 });
 
 const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
