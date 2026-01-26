@@ -179,6 +179,7 @@ const goalDescription = computed(() => {
 	switch (props.userGoal?.category) {
 		case ID_BASIC_NEEDS:
 		case ID_CLIMATE_ACTION:
+			return `${goalLoans.value} ${categoryName.value} loans`;
 		case ID_SUPPORT_ALL:
 			return `${goalLoans.value} ${categoryName.value}`;
 		default:
