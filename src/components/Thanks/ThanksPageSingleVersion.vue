@@ -137,11 +137,7 @@ import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import GoalInProgress from '#src/components/Thanks/SingleVersion/GoalInProgress';
 import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
 import useBadgeData from '#src/composables/useBadgeData';
-import {
-	setGuestAssignmentCookie,
-	MY_KIVA_POST_LENDING_NEXT_STEPS_COOKIE,
-	MY_KIVA_POST_LENDING_CARDS_SHOWN
-} from '#src/util/myKivaUtils';
+import { setGuestAssignmentCookie, MY_KIVA_POST_LENDING_NEXT_STEPS_COOKIE } from '#src/util/myKivaUtils';
 
 const EVENT_CATEGORY = 'post-checkout';
 
@@ -425,12 +421,8 @@ onMounted(async () => {
 		);
 	}
 
-	// Enable post lending cards in My Kiva
-	const userPreferences = props.userPreferences || {};
-	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
-	if (!parsedPrefs?.[MY_KIVA_POST_LENDING_CARDS_SHOWN]) {
-		cookieStore.set(MY_KIVA_POST_LENDING_NEXT_STEPS_COOKIE, 'true', { path: '/' });
-	}
+	// Set session cookie to enable post lending cards in My Kiva
+	cookieStore.set(MY_KIVA_POST_LENDING_NEXT_STEPS_COOKIE, 'true', { path: '/' });
 });
 </script>
 
