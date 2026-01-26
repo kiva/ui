@@ -31,7 +31,7 @@ import {
 } from '@kiva/kv-components';
 import { mdiArrowRight } from '@mdi/js';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant-v2.png';
-import { ID_BASIC_NEEDS, ID_CLIMATE_ACTION, ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
+import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import useGoalData from '#src/composables/useGoalData';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -79,9 +79,9 @@ const moduleTitle = computed(() => {
 		const count = props.targetLoansAmount;
 		const name = goalDisplayName.value;
 		if (category === ID_SUPPORT_ALL) {
-			title += `You're making progress towards your goal of making ${count} loans this year`;
-		} else if (category === ID_BASIC_NEEDS || category === ID_CLIMATE_ACTION) {
-			title += `You're making progress towards your goal of making ${count} ${name} loans this year.`;
+			title += `You're making progress towards your goal of making ${count} loans this year.`;
+		} else if (name.endsWith('loans')) {
+			title += `You're making progress towards your goal of making ${count} ${name} this year.`;
 		} else {
 			title += `You're making progress towards your goal of making ${count} loans to ${name} this year.`;
 		}

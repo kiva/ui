@@ -111,8 +111,8 @@ describe('useGoalData', () => {
 
 	describe('getGoalDisplayName', () => {
 		it('should return plural display name for target > 1', () => {
-			expect(composable.getGoalDisplayName(5, ID_BASIC_NEEDS)).toBe('basic needs');
-			expect(composable.getGoalDisplayName(10, ID_CLIMATE_ACTION)).toBe('eco friendly');
+			expect(composable.getGoalDisplayName(5, ID_BASIC_NEEDS)).toBe('basic needs loans');
+			expect(composable.getGoalDisplayName(10, ID_CLIMATE_ACTION)).toBe('eco friendly loans');
 			expect(composable.getGoalDisplayName(3, ID_REFUGEE_EQUALITY)).toBe('refugees');
 			expect(composable.getGoalDisplayName(2, ID_SUPPORT_ALL)).toBe('borrowers');
 			expect(composable.getGoalDisplayName(100, ID_US_ECONOMIC_EQUALITY)).toBe('US entrepreneurs');
@@ -120,8 +120,8 @@ describe('useGoalData', () => {
 		});
 
 		it('should return singular display name for target = 1', () => {
-			expect(composable.getGoalDisplayName(1, ID_BASIC_NEEDS)).toBe('basic needs');
-			expect(composable.getGoalDisplayName(1, ID_CLIMATE_ACTION)).toBe('eco friendly');
+			expect(composable.getGoalDisplayName(1, ID_BASIC_NEEDS)).toBe('basic needs loan');
+			expect(composable.getGoalDisplayName(1, ID_CLIMATE_ACTION)).toBe('eco friendly loan');
 			expect(composable.getGoalDisplayName(1, ID_REFUGEE_EQUALITY)).toBe('refugee');
 			expect(composable.getGoalDisplayName(1, ID_SUPPORT_ALL)).toBe('borrower');
 			expect(composable.getGoalDisplayName(1, ID_US_ECONOMIC_EQUALITY)).toBe('US entrepreneur');
@@ -137,7 +137,7 @@ describe('useGoalData', () => {
 		});
 
 		it('should handle falsy target as plural', () => {
-			expect(composable.getGoalDisplayName(0, ID_BASIC_NEEDS)).toBe('basic needs');
+			expect(composable.getGoalDisplayName(0, ID_BASIC_NEEDS)).toBe('basic needs loans');
 			expect(composable.getGoalDisplayName(null, ID_WOMENS_EQUALITY)).toBe('women');
 		});
 	});

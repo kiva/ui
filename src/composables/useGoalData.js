@@ -28,8 +28,8 @@ import basicNeedsImg from '#src/assets/images/my-kiva/goal-setting/basic-needs.s
 import supportAllImg from '#src/assets/images/my-kiva/goal-setting/support-all.svg?url';
 
 const GOAL_DISPLAY_MAP = {
-	[ID_BASIC_NEEDS]: 'basic needs',
-	[ID_CLIMATE_ACTION]: 'eco friendly',
+	[ID_BASIC_NEEDS]: 'basic needs loans',
+	[ID_CLIMATE_ACTION]: 'eco friendly loans',
 	[ID_REFUGEE_EQUALITY]: 'refugees',
 	[ID_SUPPORT_ALL]: 'borrowers',
 	[ID_US_ECONOMIC_EQUALITY]: 'US entrepreneurs',
@@ -37,8 +37,8 @@ const GOAL_DISPLAY_MAP = {
 };
 
 const GOAL_1_DISPLAY_MAP = {
-	[ID_BASIC_NEEDS]: 'basic needs',
-	[ID_CLIMATE_ACTION]: 'eco friendly',
+	[ID_BASIC_NEEDS]: 'basic needs loan',
+	[ID_CLIMATE_ACTION]: 'eco friendly loan',
 	[ID_REFUGEE_EQUALITY]: 'refugee',
 	[ID_SUPPORT_ALL]: 'borrower',
 	[ID_US_ECONOMIC_EQUALITY]: 'US entrepreneur',
@@ -238,11 +238,7 @@ export default function useGoalData({ apollo } = {}) {
 		const { getLoanFindingUrl } = useBadgeData();
 		const remaining = Math.max(0, selectedGoalNumber - currentLoanCount);
 		const categoryName = getGoalDisplayName(remaining, categoryId);
-		// Add "loans" suffix for basic needs and climate action categories
-		const categoryHeader = (categoryId === ID_BASIC_NEEDS || categoryId === ID_CLIMATE_ACTION)
-			? `${categoryName} loans`
-			: categoryName;
-		const string = `Support ${remaining} more ${categoryHeader} to reach your goal`;
+		const string = `Support ${remaining} more ${categoryName} to reach your goal`;
 		const encodedHeader = encodeURIComponent(string);
 		const loanFindingUrl = getLoanFindingUrl(categoryId, router.currentRoute.value);
 		return `${loanFindingUrl}?header=${encodedHeader}`;
