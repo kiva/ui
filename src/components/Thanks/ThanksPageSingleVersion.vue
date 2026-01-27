@@ -135,7 +135,7 @@ import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import GoalInProgress from '#src/components/Thanks/SingleVersion/GoalInProgress';
 import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
 import useBadgeData from '#src/composables/useBadgeData';
-import { setGuestAssignmentCookie } from '#src/util/myKivaUtils';
+import { setGuestAssignmentCookie, setPostLendingCardCookie } from '#src/util/myKivaUtils';
 
 const EVENT_CATEGORY = 'post-checkout';
 
@@ -196,6 +196,10 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	postLendingNextStepsEnable: {
+		type: Boolean,
+		default: false,
+	}
 });
 
 const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
@@ -413,6 +417,8 @@ onMounted(async () => {
 			'all-achievements-earned',
 		);
 	}
+
+	setPostLendingCardCookie(cookieStore, props.postLendingNextStepsEnable);
 });
 </script>
 
