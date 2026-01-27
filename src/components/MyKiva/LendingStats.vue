@@ -201,7 +201,7 @@ import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 
-import { MY_KIVA_POST_LENDING_NEXT_STEPS_COOKIE } from '#src/util/myKivaUtils';
+import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 import GoalSettingModal from './GoalSettingModal';
 
 export default {
@@ -365,9 +365,9 @@ export default {
 		}
 
 		// Show post-lending next steps cards in My Kiva
-		this.showPostLendingNextStepsCards = this.cookieStore.get(MY_KIVA_POST_LENDING_NEXT_STEPS_COOKIE) ?? false; // eslint-disable-line max-len
-		if (this.showPostLendingNextStepsCards) {
-			this.cookieStore.remove(MY_KIVA_POST_LENDING_NEXT_STEPS_COOKIE);
+		if (checkPostLendingCardCookie(this.cookieStore)) {
+			this.showPostLendingNextStepsCards = true;
+			removePostLendingCardCookie(this.cookieStore);
 		}
 	},
 	beforeUnmount() {
