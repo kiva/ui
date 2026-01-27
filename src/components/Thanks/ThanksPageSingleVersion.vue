@@ -22,7 +22,6 @@
 			<GoalCompleted
 				v-if="showGoalCompletedModule"
 				:current-goal="userGoal"
-				:get-goal-display-name="getGoalDisplayName"
 				:loading="goalDataLoading"
 				class="tw-mb-2.5"
 			/>
@@ -61,7 +60,6 @@
 				:is-opted-in="isOptedIn"
 				:loan="loanForComment"
 				:current-goal="userGoal"
-				:get-goal-display-name="getGoalDisplayName"
 				:target-loans-amount="goalTargetLoansAmount"
 				class="tw-mb-2.5"
 			/>
@@ -137,7 +135,7 @@ import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import GoalInProgress from '#src/components/Thanks/SingleVersion/GoalInProgress';
 import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
 import useBadgeData from '#src/composables/useBadgeData';
-import { setGuestAssignmentCookie } from '#src/util/myKivaUtils';
+import { setGuestAssignmentCookie, setPostLendingCardCookie } from '#src/util/myKivaUtils';
 
 const EVENT_CATEGORY = 'post-checkout';
 
@@ -198,6 +196,10 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	postLendingNextStepsEnable: {
+		type: Boolean,
+		default: false,
+	}
 });
 
 const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
@@ -214,7 +216,6 @@ const currGoalProgress = ref(0);
 
 const {
 	checkCompletedGoal,
-	getGoalDisplayName,
 	getPostCheckoutProgressByLoans,
 	loadGoalData,
 	loading: goalDataLoading,
@@ -416,6 +417,8 @@ onMounted(async () => {
 			'all-achievements-earned',
 		);
 	}
+
+	setPostLendingCardCookie(cookieStore, props.postLendingNextStepsEnable);
 });
 </script>
 

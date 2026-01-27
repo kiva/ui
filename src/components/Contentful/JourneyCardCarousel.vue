@@ -272,6 +272,10 @@ const props = defineProps({
 		type: Object,
 		default: null
 	},
+	showPostLendingNextStepsCards: {
+		type: Boolean,
+		default: false
+	},
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
@@ -285,14 +289,15 @@ const shouldShowEmailMarketingCard = computed(
 );
 const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
 
-const showLatestLoan = computed(() => props.postLendingNextStepsEnable && props.latestLoan);
+const showLatestLoan = computed(() => props.showPostLendingNextStepsCards
+	&& props.postLendingNextStepsEnable && props.latestLoan);
 
 const showSurveyCard = computed(() => {
 	const userPreferences = props.userInfo?.userPreferences || {};
 	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
 	const isFormSubmitted = (parsedPrefs.savedForms || []).some(form => form.formName === MYKIVA_INPUT_FORM_KEY);
 
-	return !isFormSubmitted && props.postLendingNextStepsEnable;
+	return props.showPostLendingNextStepsCards && !isFormSubmitted && props.postLendingNextStepsEnable;
 });
 
 const badgesData = computed(() => {

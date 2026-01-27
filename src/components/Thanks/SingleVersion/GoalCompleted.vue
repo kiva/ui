@@ -47,17 +47,16 @@ import {
 import HighFive from '#src/assets/images/thanks-page/hi-five.svg';
 import BadgeContainer from '#src/components/MyKiva/BadgeContainer';
 import BgRays from '#src/components/Thanks/BgRays';
+import useGoalData from '#src/composables/useGoalData';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
+
+const { getGoalDisplayName } = useGoalData({});
 
 const props = defineProps({
 	currentGoal: {
 		type: Object,
 		default: null,
-	},
-	getGoalDisplayName: {
-		type: Function,
-		required: true,
 	},
 	loading: {
 		type: Boolean,
@@ -67,7 +66,8 @@ const props = defineProps({
 
 const goalDisplayName = computed(() => {
 	const category = props.currentGoal?.category || '';
-	return category ? props.getGoalDisplayName(props.currentGoal?.target, category) : 'loans';
+	if (!category) return 'loans';
+	return getGoalDisplayName(props.currentGoal?.target, category);
 });
 
 const handleContinue = () => {

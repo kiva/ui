@@ -15,7 +15,7 @@
 				>
 					<div class="tw-items-center tw-gap-3">
 						<div
-							class="tw-h-6.5 tw-w-6.5 tw-overflow-hidden tw-rounded-full
+							class="borrower-img-size tw-overflow-hidden tw-rounded-full
 									tw-border-4 tw-border-white tw-my-0 tw-mx-auto"
 						>
 							<KvBorrowerImage
@@ -38,16 +38,10 @@
 					class="tw-w-full tw-max-w-xl tw-px-4 md:!tw-px-0"
 				>
 					<p
+						v-html="loanDescription"
 						class="tw-rounded-2xl tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3
 							tw-text-base tw-leading-relaxed tw-bg-gray-100 tw-rounded-md md:tw-text-lg"
-					>
-						Your {{ amount }} loan helps {{ name }} build stability and success in
-						<strong class="tw-text-brand">{{ countryName }}</strong>
-						<template v-if="countryPPP">
-							, where the average
-							<strong class="tw-text-brand">annual income is {{ countryPPP }} USD</strong>
-						</template>.
-					</p>
+					></p>
 				</div>
 			</div>
 		</div>
@@ -92,7 +86,30 @@ const countryPPP = computed(() => {
 });
 
 const amount = computed(() => {
-	return props.latestLoan?.amount ? numeral(Math.abs(props.latestLoan.amount)).format('$0,0[.]00') : null;
+	const initialAmount = Math.abs(props.latestLoan?.amount) || 0;
+	if (props.latestLoan?.otherLoans?.length > 0 && props.latestLoan?.id) {
+		/* there is an edge case where an user have a promo credit in his/her account and purchase a loan,
+		the final transaction is split out. As each item share the same transaction id we include the others
+		items to sum their amounts and get the total amount lent */
+		const totalAmount = props.latestLoan.otherLoans.reduce((sum, item) => {
+			return props.latestLoan?.id === item?.loan.id ? sum + Math.abs(item?.loan.amount || 0) : sum;
+		}, initialAmount);
+		return numeral(totalAmount).format('$0,0[.]00');
+	}
+	return props.latestLoan?.amount ? numeral(initialAmount).format('$0,0[.]00') : null;
+});
+
+const loanDescription = computed(() => {
+	let text = `Your ${amount.value} loan helps ${name.value} build stability and success in `
+		+ `<strong class="tw-text-brand">${countryName.value}</strong>`;
+
+	if (countryPPP.value) {
+		text += `, where the average <strong class="tw-text-brand">annual income is ${countryPPP.value} USD</strong>`;
+	}
+
+	text += '.';
+
+	return text;
 });
 
 </script>
@@ -105,6 +122,16 @@ const amount = computed(() => {
 	@screen md {
 		min-height: 168px;
 		min-width: 168px;
+	}
+}
+
+.borrower-img-size {
+	height: 45px;
+	width: 45px;
+
+	@screen md {
+		height: 60px;
+		width: 60px;
 	}
 }
 </style>
