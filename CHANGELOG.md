@@ -1,3 +1,30 @@
+## [3.54.0-rc.1](https://github.com/kiva/ui/compare/v3.53.0...v3.54.0-rc.1) (2026-01-28)
+
+### 🎉 New Features
+
+* mp-2432 update underline color ([d82c1b4](https://github.com/kiva/ui/commit/d82c1b47a7d151ae07babbd17141c072c3325c9c))
+* mp-2432 update underline color ([6ead24f](https://github.com/kiva/ui/commit/6ead24fcdca4e882d08257105c28c848a52e7e89))
+* mp-2432 update underline color ([dea8474](https://github.com/kiva/ui/commit/dea8474ee9c85e270b98b28848dc19b1ebdb01cd))
+* refetch user preference query to show survey and lasted loan card in my kiva ([853a4e6](https://github.com/kiva/ui/commit/853a4e66f3dca07e6a6d86b4e06eac3772ad8831))
+* set cookie at ty page to show kiva survey in my kiva ([58f5e8d](https://github.com/kiva/ui/commit/58f5e8d886431eb3e25b7f61c97b5a931d977012))
+
+### 🐛 Bugfixes
+
+* adjust logic to show post lending cards in my kiva ([0dc733a](https://github.com/kiva/ui/commit/0dc733a1679633a03dbbf27cb3b5cdf94e3ce409))
+* adjust ty goal in progress copy ([#6595](https://github.com/kiva/ui/issues/6595)) ([c6dfaa1](https://github.com/kiva/ui/commit/c6dfaa1b8005d2ffe0e9593d4c031ccb7f29d27b))
+* remove user preferences from logic ([8b41384](https://github.com/kiva/ui/commit/8b413847d0ef4844ab9dbbab7fce93598c9969bb))
+* remove userPreferences from ty page single version prop ([1706377](https://github.com/kiva/ui/commit/1706377a25ba0a992ac63394eea30a7d314ba1ff))
+* update tests ([8129dfe](https://github.com/kiva/ui/commit/8129dfef613ca14229ce2ff3931d162399c9ccc6))
+
+### 🪚 Refactors
+
+* add utils to cookie logic ([0240a25](https://github.com/kiva/ui/commit/0240a25ac98f7b859e226bb8adebb9d88e3e75b4))
+
+### 🧹 Chores
+
+* **deps-dev:** bump vite from 6.3.5 to 6.4.1 ([53b9b3c](https://github.com/kiva/ui/commit/53b9b3c684e4d0541416625a0ea2d8fe209e064c))
+* **release:** 3.53.0-rc.2 [skip ci] ([c9daef8](https://github.com/kiva/ui/commit/c9daef8411085f2a9eded7d7162d91320d6b259b)), closes [#6595](https://github.com/kiva/ui/issues/6595)
+
 ## [3.53.0](https://github.com/kiva/ui/compare/v3.52.0...v3.53.0) (2026-01-26)
 
 ### 🎉 New Features
