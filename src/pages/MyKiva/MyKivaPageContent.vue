@@ -387,18 +387,21 @@ export default {
 		const { getMostRecentBlogPost } = useContentful(apollo);
 		const { isMobile } = useBreakpoints();
 
+		// Use badge data composable directly in this component
 		const {
 			badgeData,
 			fetchAchievementData,
 			fetchContentfulData,
 			getLoanFindingUrl,
-		} = useBadgeData(apollo);
+			updateBadgeDataWithFreshProgress,
+		} = useBadgeData();
 
 		return {
 			badgeData,
 			fetchAchievementData,
 			fetchContentfulData,
 			getLoanFindingUrl,
+			updateBadgeDataWithFreshProgress,
 			getMostRecentBlogPost,
 			isMobile
 		};
@@ -765,8 +768,14 @@ export default {
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 		fireHotJarEvent('my_kiva_viewed');
 		this.fetchBlogCards();
-		this.fetchAchievementData(this.apollo);
 		this.fetchContentfulData(this.apollo);
+
+		// Fetch achievement data first, then update with fresh progress adjustments
+		this.fetchAchievementData(this.apollo).then(() => {
+			// Update with fresh progress adjustments for loans not yet in achievement service
+			this.updateBadgeDataWithFreshProgress(this.loans, this.heroTieredAchievements);
+		});
+
 		this.fetchRecommendedLoans();
 		this.fetchMoreWaysToHelpData();
 		this.loadInitialBasketItems();

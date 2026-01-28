@@ -302,8 +302,15 @@ export default {
 			logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
 		}
 
+		// Load goal data with fresh progress from loans not yet in achievement service
 		if (this.isNextStepsExpEnabled) {
-			await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+			await this.loadGoalData({
+				year: LAST_YEAR_KEY, // Use same year as tieredAchievements query for correct filtering
+				yearlyProgress: this.goalsV2Enabled,
+				loans: this.loans,
+				tieredAchievements: this.heroTieredAchievements,
+				transactions: this.transactions
+			});
 		}
 	},
 };

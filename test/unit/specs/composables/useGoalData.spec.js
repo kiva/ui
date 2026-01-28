@@ -2954,4 +2954,83 @@ describe('useGoalData', () => {
 			expect(composable.goalProgressPercentage.value).toBe(25);
 		});
 	});
+
+	describe('calculateGoalFreshProgressAdjustments', () => {
+		// Note: calculateGoalFreshProgressAdjustments internally calls useBadgeData()
+		// composable which requires proper Vue injection context and apollo setup.
+		// The core logic is tested through useBadgeData.spec.js:calculateFreshProgressAdjustments
+		// and through applyFreshProgressToGoalData tests below.
+		// Integration testing of fresh progress adjustments should be done through E2E tests.
+		it('should be tested through useBadgeData.spec.js and E2E tests', () => {
+			// This function delegates to useBadgeData().calculateFreshProgressAdjustments
+			// for all-time adjustments, which is tested in useBadgeData.spec.js
+			expect(composable.calculateGoalFreshProgressAdjustments).toBeDefined();
+		});
+	});
+
+	describe('applyFreshProgressToGoalData', () => {
+		it('should return empty array when progress is null', () => {
+			const result = composable.applyFreshProgressToGoalData(null, { allTime: { 'womens-equality': 5 } });
+
+			expect(result).toEqual([]);
+		});
+
+		it('should return progress copies unchanged when adjustments is empty', () => {
+			const progress = [
+				{ id: 'womens-equality', totalProgressToAchievement: 10 }
+			];
+
+			const result = composable.applyFreshProgressToGoalData(progress, { allTime: {}, yearSpecific: {} });
+
+			expect(result[0].totalProgressToAchievement).toBe(10);
+		});
+
+		it('should apply adjustments to total progress and year progress', () => {
+			const progress = [
+				{ id: 'womens-equality', totalProgressToAchievement: 5, progressForYear: 3 },
+				{ id: 'climate-action', totalProgressToAchievement: 3, progressForYear: 1 }
+			];
+			const adjustments = {
+				allTime: { 'womens-equality': 2, 'climate-action': 1 },
+				yearSpecific: { 'womens-equality': 1, 'climate-action': 1 }
+			};
+
+			const result = composable.applyFreshProgressToGoalData(progress, adjustments);
+
+			expect(result.find(c => c.id === 'womens-equality').totalProgressToAchievement).toBe(7);
+			expect(result.find(c => c.id === 'womens-equality').progressForYear).toBe(4);
+			expect(result.find(c => c.id === 'climate-action').totalProgressToAchievement).toBe(4);
+			expect(result.find(c => c.id === 'climate-action').progressForYear).toBe(2);
+		});
+
+		it('should not modify achievements not in adjustments', () => {
+			const progress = [
+				{ id: 'womens-equality', totalProgressToAchievement: 5 },
+				{ id: 'refugee-equality', totalProgressToAchievement: 2 }
+			];
+			const adjustments = {
+				allTime: { 'womens-equality': 3 },
+				yearSpecific: {}
+			};
+
+			const result = composable.applyFreshProgressToGoalData(progress, adjustments);
+
+			expect(result.find(c => c.id === 'refugee-equality').totalProgressToAchievement).toBe(2);
+		});
+
+		it('should handle missing progressForYear', () => {
+			const progress = [
+				{ id: 'womens-equality', totalProgressToAchievement: 10 }
+			];
+			const adjustments = {
+				allTime: { 'womens-equality': 2 },
+				yearSpecific: { 'womens-equality': 1 }
+			};
+
+			const result = composable.applyFreshProgressToGoalData(progress, adjustments);
+
+			expect(result[0].totalProgressToAchievement).toBe(12);
+			expect(result[0].progressForYear).toBeUndefined();
+		});
+	});
 });
