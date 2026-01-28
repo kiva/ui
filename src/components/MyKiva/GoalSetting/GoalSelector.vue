@@ -87,16 +87,17 @@ import {
 	ref,
 	watch,
 } from 'vue';
-import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
+import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import { KvButton, KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { mdiPencilOutline } from '@mdi/js';
-import useGoalData, { SAME_AS_LAST_YEAR_LIMIT } from '#src/composables/useGoalData';
+import useGoalData, { SAME_AS_LAST_YEAR_LIMIT, LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import logFormatter from '#src/util/logFormatter';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const { getCategoryLoansLastYear, getCategoryLoanCountByYear } = useGoalData();
+const { getCategoryLoansLastYear, getCategoryLoanCountByYear, getLoanStatsByYear } = useGoalData();
 
 const props = defineProps({
 	/**
@@ -134,11 +135,25 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	/**
+	 * Goal Category ID
+	 */
+	selectedCategoryId: {
+		type: String,
+		default: ID_WOMENS_EQUALITY,
+	},
+	/**
+	 * Goal Category Name
+	 */
+	selectedCategoryName: {
+		type: String,
+		default: 'Women',
+	}
 });
 
 const emit = defineEmits(['set-goal', 'edit-goal', 'set-goal-target']);
 
-const goalOptions = ref([
+const DEFAULT_GOAL_OPTIONS = [
 	{
 		loansNumber: 3,
 		optionText: 'Start strong',
@@ -155,20 +170,27 @@ const goalOptions = ref([
 		optionText: 'Trailblazing!',
 		selected: false
 	},
-]);
+];
+
+const goalOptions = ref(DEFAULT_GOAL_OPTIONS);
 
 const loadingCurrentYear = ref(false);
 const fetchedCurrentYearLoans = ref(null);
+const prevSupportAllCount = ref(0);
 
 const womenLoansLastYear = computed(() => {
-	return getCategoryLoansLastYear(props.tieredAchievements);
+	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
+		return prevSupportAllCount.value;
+	}
+
+	return getCategoryLoansLastYear(props.tieredAchievements, props.selectedCategoryId);
 });
 
 // Use progressForCurrentYear from tieredAchievements if available (set on Thanks page),
 // otherwise use fetched current year data (for MyKiva goal-setting page and modal)
 const womenLoansThisYear = computed(() => {
 	const categoryAchievement = props.tieredAchievements?.find(
-		entry => entry.id === ID_WOMENS_EQUALITY
+		entry => entry.id === props.selectedCategoryId
 	);
 	// If progressForCurrentYear is explicitly set (Thanks page), use it
 	if (typeof categoryAchievement?.progressForCurrentYear === 'number') {
@@ -186,7 +208,7 @@ const womenLoansThisYear = computed(() => {
 const loadWomenLoansThisYear = async () => {
 	// Check if progressForCurrentYear is already provided via props
 	const categoryAchievement = props.tieredAchievements?.find(
-		entry => entry.id === ID_WOMENS_EQUALITY
+		entry => entry.id === props.selectedCategoryId
 	);
 	if (typeof categoryAchievement?.progressForCurrentYear === 'number') {
 		// Already have current year data from props (Thanks page), no need to fetch
@@ -195,7 +217,7 @@ const loadWomenLoansThisYear = async () => {
 
 	loadingCurrentYear.value = true;
 	const currentYear = new Date().getFullYear();
-	const count = await getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, currentYear, 'network-only');
+	const count = await getCategoryLoanCountByYear(props.selectedCategoryId, currentYear, 'network-only');
 	fetchedCurrentYearLoans.value = count;
 	loadingCurrentYear.value = false;
 };
@@ -277,14 +299,14 @@ const handleContinue = () => {
 		);
 	} else {
 		const currentYear = new Date().getFullYear();
-		const goalName = `goal-${ID_WOMENS_EQUALITY}-${currentYear}`;
+		const goalName = `goal-${props.selectedCategoryId}-${currentYear}`;
 		const target = selectedTarget.value;
 		const dateStarted = new Date().toISOString();
 		const status = 'in-progress';
-		const loanTotalAtStart = props.categoriesLoanCount?.[ID_WOMENS_EQUALITY] || 0;
+		const loanTotalAtStart = props.categoriesLoanCount?.[props.selectedCategoryId] || 0;
 		const preferences = {
 			goalName,
-			category: ID_WOMENS_EQUALITY,
+			category: props.selectedCategoryId,
 			target,
 			dateStarted,
 			status,
@@ -295,7 +317,7 @@ const handleContinue = () => {
 			props.trackingCategory,
 			'click',
 			'set-annual-goal',
-			ID_WOMENS_EQUALITY,
+			props.selectedCategoryId,
 			selectedTarget.value
 		);
 	}
@@ -335,8 +357,20 @@ const updateGoalOptions = () => {
 				selected: false
 			},
 		];
+	} else {
+		goalOptions.value = DEFAULT_GOAL_OPTIONS;
 	}
 	emit('set-goal-target', selectedTarget.value);
+};
+
+const prevSupportAllLoanCount = async () => {
+	try {
+		const stats = await getLoanStatsByYear(LAST_YEAR_KEY, 'network-only');
+		prevSupportAllCount.value = stats?.count || 0;
+	} catch (error) {
+		logFormatter(error, 'Failed to load previous support-all loan count');
+		return null;
+	}
 };
 
 onMounted(async () => {
@@ -349,6 +383,15 @@ onMounted(async () => {
 			'view',
 			'set-annual-goal'
 		);
+	}
+});
+
+watch(() => props.selectedCategoryId, async newCategory => {
+	await loadWomenLoansThisYear();
+	updateGoalOptions();
+
+	if (newCategory === ID_SUPPORT_ALL) {
+		await prevSupportAllLoanCount();
 	}
 });
 
