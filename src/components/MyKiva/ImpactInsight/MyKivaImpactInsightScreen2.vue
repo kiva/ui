@@ -89,10 +89,18 @@ const whySpecial = computed(() => {
 }
 
 div:has(.screen-description) {
-	gap: 138px;
+	gap: 80px;
+
+	@screen md {
+		gap: 138px;
+	}
 }
 
 .screen-description {
-	width: 400px;
+	width: 289px;
+
+	@screen md {
+		width: 400px;
+	}
 }
 </style>

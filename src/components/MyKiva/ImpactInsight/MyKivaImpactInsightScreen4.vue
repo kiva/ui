@@ -1,5 +1,5 @@
 <template>
-	<section class="tw-w-full tw-px-2 md:!tw-pl-7 md:!tw-pr-3 impact-insight-slide">
+	<section class="tw-w-full tw-px-2 md:tw-pl-7 md:tw-pr-3 impact-insight-slide">
 		<div class="tw-mx-auto md:!tw-max-w-4xl">
 			<div
 				class="tw-flex tw-flex-col tw-items-center
@@ -40,7 +40,7 @@
 					</div>
 				</div>
 				<div
-					class="tw-px-4 md:!tw-px-0 screen-description"
+					class="tw-px-0 screen-description"
 				>
 					<p
 						v-html="description"
@@ -124,10 +124,18 @@ const description = computed(() => {
 }
 
 div:has(.screen-description) {
-	gap: 5.5rem;
+	gap: 2rem;
+
+	@screen md {
+		gap: 5.5rem;
+	}
 }
 
 .screen-description {
-	width: 400px;
+	width: 289px;
+
+	@screen md {
+		width: 400px;
+	}
 }
 </style>

@@ -55,7 +55,7 @@
 							tw-gap-2 tw-float-end secondary-navigation-buttons"
 				>
 					<button
-						v-if="currentSlide > 0"
+						v-if="currentSlide > 0 && !isMobile"
 						class="tw-w-11 tw-text-center tw-border tw-rounded-lg
 								tw-bg-white tw-text-gray-900 tw-font-medium"
 						:disabled="currentSlide === 0"
@@ -64,7 +64,7 @@
 						Back
 					</button>
 					<button
-						class="tw-w-11 tw-text-center tw-rounded-lg tw-bg-action tw-text-white
+						class="tw-w-full md:tw-w-11 tw-text-center tw-rounded-lg tw-bg-action tw-text-white
 								tw-font-medium hover:tw-bg-action-highlight"
 						@click="handleNextOrDone"
 					>
@@ -84,8 +84,7 @@ import {
 
 import { KvLightbox, KvCarousel } from '@kiva/kv-components';
 
-import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
-import useIsMobile from '#src/composables/useIsMobile';
+import useBreakpoints from '#src/composables/useBreakpoints';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import MyKivaImpactInsightScreen1 from './MyKivaImpactInsightScreen1';
 import MyKivaImpactInsightScreen2 from './MyKivaImpactInsightScreen2';
@@ -110,7 +109,7 @@ const currentSlide = ref(0);
 const carouselRef = ref(null);
 
 const totalSlides = 4;
-const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
+const { isMobile } = useBreakpoints();
 
 const borrowerName = computed(() => {
 	return formatPossessiveName(props.latestLoan?.name) || '';
@@ -185,31 +184,37 @@ onMounted(() => {
 		@apply md:!tw-mb-2
 	}
 
-	.impact-insight-carousel div:first-child {
-		@apply !tw-items-center;
-	}
-
 	.tw-bg-primary:has(#kvLightboxBody) {
 		max-height: 528px;
+	}
+
+	.impact-insight-carousel div:has(.impact-insight-slide) {
+		@apply tw-self-start md:tw-self-auto;
+	}
+
+	.impact-insight-carousel div:first-child {
+		@apply !tw-items-center;
 	}
 
 	.kv-carousel__controls {
 		gap: 10px;
 		flex-wrap: wrap;
-		max-width: 50%;
 
-		@apply tw-flex tw-items-center tw-gap-1 tw-z-sticky md:!tw-mt-5;
+		@apply !tw-flex tw-items-center tw-gap-1 tw-mb-1.5 tw-z-sticky md:!tw-mt-5 md:!tw-mb-0;
+
+		@screen md {
+			max-width: 50%;
+		}
 	}
 
 	.impact-insight-footer {
 		max-height: 48px;
 
 		.secondary-navigation-buttons {
-			width: auto;
-
 			@apply md:!tw-absolute;
 
 			@screen md {
+				width: auto;
 				bottom: 21%;
 			}
 

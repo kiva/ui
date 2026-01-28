@@ -113,10 +113,18 @@ const helpedPeopleInCountry = computed(() => {
 }
 
 div:has(.screen-description) {
-	gap: 7rem;
+	gap: 3.5rem;
+
+	@screen md {
+		gap: 7rem;
+	}
 }
 
 .screen-description {
-	width: 400px;
+	width: 289px;
+
+	@screen md {
+		width: 400px;
+	}
 }
 </style>

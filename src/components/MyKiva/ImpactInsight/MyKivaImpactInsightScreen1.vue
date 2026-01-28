@@ -132,10 +132,18 @@ const loanDescription = computed(() => {
 }
 
 div:has(.screen-description) {
-	gap: 10rem;
+	gap: 105px;
+
+	@screen md {
+		gap: 10rem;
+	}
 }
 
 .screen-description {
-	width: 400px;
+	width: 289px;
+
+	@screen md {
+		width: 400px;
+	}
 }
 </style>
