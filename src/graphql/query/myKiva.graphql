@@ -127,7 +127,7 @@ query myKivaQuery {
       filter: {
         type: ["loan_purchase", "direct_loan_purchase"]
       }
-      limit: 2
+      limit: 5
     ) {
       values {
 		amount
