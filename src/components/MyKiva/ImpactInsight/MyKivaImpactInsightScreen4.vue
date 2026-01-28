@@ -1,5 +1,5 @@
 <template>
-	<section class="tw-w-full tw-px-2 md:!tw-py-10 md:!tw-px-10">
+	<section class="tw-w-full tw-px-2 md:tw-py-10 md:tw-px-10">
 		<div class="tw-mx-auto tw-max-w-6xl">
 			<h2 class="">
 				A closer look at <u>{{ borrowerName }} world</u>
