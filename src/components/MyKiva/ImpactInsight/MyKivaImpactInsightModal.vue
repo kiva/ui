@@ -109,8 +109,6 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const currentSlide = ref(0);
 const carouselRef = ref(null);
 
-const carouselIndex = computed(() => currentSlide.value);
-
 const totalSlides = 4;
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 
@@ -131,7 +129,9 @@ const handleClose = () => {
 
 const goToPrev = () => {
 	if (currentSlide.value > 0) {
-		currentSlide.value -= 1;
+		const newIndex = currentSlide.value - 1;
+		carouselRef.value?.goToSlide(newIndex);
+		currentSlide.value = newIndex;
 		$kvTrackEvent('portfolio', 'click', 'next-step-impact-education-back');
 		handleTrackEvent();
 	}
@@ -139,7 +139,9 @@ const goToPrev = () => {
 
 const goToNext = () => {
 	if (currentSlide.value < totalSlides - 1) {
-		currentSlide.value += 1;
+		const newIndex = currentSlide.value + 1;
+		carouselRef.value?.goToSlide(newIndex);
+		currentSlide.value = newIndex;
 	}
 };
 
