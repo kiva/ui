@@ -194,8 +194,6 @@ onMounted(() => {
 	}
 
 	.kv-carousel__controls {
-		/* width: auto;
-		left: 25%; */
 		gap: 10px;
 		flex-wrap: wrap;
 		max-width: 50%;
@@ -204,7 +202,6 @@ onMounted(() => {
 	}
 
 	.impact-insight-footer {
-		/* min-height: 64px; */
 		max-height: 48px;
 
 		.secondary-navigation-buttons {
