@@ -19,7 +19,7 @@
 		>
 			A closer look at <u>{{ borrowerName }} world</u>
 		</h2>
-		<div class="tw-flex tw-flex-col tw-items-center tw-w-full">
+		<div class="tw-flex tw-flex-col tw-items-center tw-w-full md:!tw-relative">
 			<KvCarousel
 				ref="carouselRef"
 				:is-dotted="true"
@@ -48,28 +48,32 @@
 			</KvCarousel>
 
 			<div
-				class="tw-static tw-w-full impact-insight-footer"
+				class="tw-static tw-w-full md:tw-w-auto md:tw-absolute tw-self-end tw-bottom-0"
 			>
 				<div
-					class="tw-flex tw-justify-self-end tw-w-full tw-h-6
-							tw-gap-2 tw-float-end secondary-navigation-buttons"
+					class="tw-relative tw-justify-end tw-items-end tw-gap-1.5 tw-w-xs impact-insight-footer"
 				>
-					<button
-						v-if="currentSlide > 0 && !isMobile"
-						class="tw-w-11 tw-text-center tw-border tw-rounded-lg
+					<div
+						class="tw-flex tw-justify-self-end tw-w-full tw-h-6
+							tw-gap-2 tw-float-end secondary-navigation-buttons"
+					>
+						<button
+							v-if="currentSlide > 0 && !isMobile"
+							class="tw-w-11 tw-text-center tw-border tw-rounded-lg
 								tw-bg-white tw-text-gray-900 tw-font-medium"
-						:disabled="currentSlide === 0"
-						@click="goToPrev"
-					>
-						Back
-					</button>
-					<button
-						class="tw-w-full md:tw-w-11 tw-text-center tw-rounded-lg tw-bg-action tw-text-white
+							:disabled="currentSlide === 0"
+							@click="goToPrev"
+						>
+							Back
+						</button>
+						<button
+							class="tw-w-full md:tw-w-11 tw-text-center tw-rounded-lg tw-bg-action tw-text-white
 								tw-font-medium hover:tw-bg-action-highlight"
-						@click="handleNextOrDone"
-					>
-						{{ isLastSlide ? 'Done' : 'Next' }}
-					</button>
+							@click="handleNextOrDone"
+						>
+							{{ isLastSlide ? 'Done' : 'Next' }}
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>

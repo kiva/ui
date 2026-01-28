@@ -66,18 +66,12 @@ const props = defineProps({
 });
 
 const description = computed(() => {
-	let text = '';
-	if (props.latestLoan?.gender === 'female') {
-		text += '<strong class="tw-text-brand">8 out of 10 women</strong> '
-		+ 'earned more income after getting their loan';
-	} else {
-		text += '<strong class="tw-text-brand">89%</strong> of people said their '
-		+ '<strong class="tw-text-brand">quality of life improved</strong> after their loan';
-	}
+	const text = props.latestLoan?.gender === 'female'
+		? '<strong class="tw-text-brand">8 out of 10 women</strong> earned more income after getting their loan'
+		// eslint-disable-next-line max-len
+		: '<strong class="tw-text-brand">89%</strong> of people said their <strong class="tw-text-brand">quality of life improved</strong> after their loan';
 
-	text += '.';
-
-	return text;
+	return `${text}.`;
 });
 
 </script>
