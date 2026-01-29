@@ -1920,32 +1920,6 @@ describe('useGoalData', () => {
 			expect(href).toBe(expectedHref);
 		});
 
-		it('should return 0 remaining when currentLoanCount exceeds target', () => {
-			const selectedGoalNumber = 5;
-			const categoryId = ID_WOMENS_EQUALITY;
-			const router = { currentRoute: { value: {} } };
-			const currentLoanCount = 10; // More than target, should clamp to 0
-
-			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount);
-			const expectedString = 'Support 0 more women to reach your goal';
-			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
-
-			expect(href).toBe(expectedHref);
-		});
-
-		it('should return 0 remaining when currentLoanCount equals target', () => {
-			const selectedGoalNumber = 5;
-			const categoryId = ID_WOMENS_EQUALITY;
-			const router = { currentRoute: { value: {} } };
-			const currentLoanCount = 5; // Equals target
-
-			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount);
-			const expectedString = 'Support 0 more women to reach your goal';
-			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
-
-			expect(href).toBe(expectedHref);
-		});
-
 		it('should handle undefined selectedGoalNumber', () => {
 			const categoryId = ID_WOMENS_EQUALITY;
 			const router = { currentRoute: { value: {} } };
@@ -1956,15 +1930,15 @@ describe('useGoalData', () => {
 			expect(href).toContain('/lend/');
 		});
 
-		it('should handle zero selectedGoalNumber', () => {
+		it('should return href without query parameter when remaining is 0', () => {
+			const selectedGoalNumber = 5;
 			const categoryId = ID_WOMENS_EQUALITY;
 			const router = { currentRoute: { value: {} } };
+			const currentLoanCount = 5; // Equals target
 
-			const href = composable.getCtaHref(0, categoryId, router, 0);
-			const expectedString = 'Support 0 more women to reach your goal';
-			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
+			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount);
 
-			expect(href).toBe(expectedHref);
+			expect(href).toBe(`/lend/${categoryId}`);
 		});
 	});
 

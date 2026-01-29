@@ -241,7 +241,10 @@ export default function useGoalData({ apollo } = {}) {
 		const string = `Support ${remaining} more ${categoryHeader} to reach your goal`;
 		const encodedHeader = encodeURIComponent(string);
 		const loanFindingUrl = getLoanFindingUrl(categoryId, router.currentRoute.value);
-		return `${loanFindingUrl}?header=${encodedHeader}`;
+		if (remaining > 0) {
+			return `${loanFindingUrl}?header=${encodedHeader}`;
+		}
+		return `${loanFindingUrl}`;
 	}
 
 	/**
