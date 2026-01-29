@@ -83,17 +83,21 @@ export default function useBadgeData() {
 	 *
 	 * @param apollo The current instance of Apollo
 	 * @param publicId Whether to get achievement data for a specific user
+	 * @returns Promise that resolves when data is loaded
 	 */
-	const fetchAchievementData = (apollo, publicId = null) => {
-		apollo.query({ query: userAchievementProgressQuery, variables: { publicId } })
-			.then(result => {
-				badgeAchievementData.value = [
-					...(result.data?.userAchievementProgress?.lendingAchievements ?? []),
-					...(result.data?.userAchievementProgress?.tieredLendingAchievements ?? [])
-				];
-			}).catch(e => {
-				logReadQueryError(e, 'useBadgeData userAchievementProgressQuery');
+	const fetchAchievementData = async (apollo, publicId = null) => {
+		try {
+			const result = await apollo.query({
+				query: userAchievementProgressQuery,
+				variables: { publicId }
 			});
+			badgeAchievementData.value = [
+				...(result.data?.userAchievementProgress?.lendingAchievements ?? []),
+				...(result.data?.userAchievementProgress?.tieredLendingAchievements ?? [])
+			];
+		} catch (e) {
+			logReadQueryError(e, 'useBadgeData userAchievementProgressQuery');
+		}
 	};
 
 	/**
@@ -527,6 +531,102 @@ export default function useBadgeData() {
 	};
 
 	/**
+	 * Calculates fresh progress adjustments by comparing carousel loans with achievement service loans
+	 *
+	 * @param loans Array of carousel loans to check against achievement service
+	 * @param tieredAchievements Array of tiered achievements from achievement service
+	 * @returns Map of badgeId to count of missing loans (all-time progress only)
+	 */
+	const calculateFreshProgressAdjustments = (loans, tieredAchievements) => {
+		if (!loans?.length || !tieredAchievements?.length) {
+			return {};
+		}
+
+		// Get loan IDs that achievement service already knows about
+		const achievementServiceLoanIds = new Set();
+		tieredAchievements.forEach(achievement => {
+			const loanPurchases = achievement.loanPurchases || [];
+			loanPurchases.forEach(purchase => {
+				if (purchase?.loan?.id) {
+					achievementServiceLoanIds.add(purchase.loan.id);
+				}
+			});
+		});
+
+		// Find carousel loans that are NOT in achievement service
+		const missingLoans = loans.filter(loan => loan?.id && !achievementServiceLoanIds.has(loan.id));
+
+		// Count missing loans by category (all-time only for badges)
+		const adjustments = {};
+
+		missingLoans.forEach(loan => {
+			if (!loan) return;
+
+			const journeys = getJourneysByLoan(loan);
+			journeys.forEach(journeyId => {
+				adjustments[journeyId] = (adjustments[journeyId] || 0) + 1;
+			});
+		});
+
+		return adjustments;
+	};
+
+	/**
+	 * Applies fresh progress adjustments to achievement data array
+	 *
+	 * @param achievements The achievements array to adjust
+	 * @param freshProgressAdjustments Map of badgeId to progress adjustment count
+	 * @returns The adjusted achievements array (new array with modified copies)
+	 */
+	const applyFreshProgressAdjustments = (achievements, freshProgressAdjustments) => {
+		if (!achievements?.length || !freshProgressAdjustments || Object.keys(freshProgressAdjustments).length === 0) {
+			return achievements?.map(a => ({ ...a })) || [];
+		}
+
+		// Create mutable copies and apply adjustments
+		// Apollo cache objects are read-only, so we need to create new objects
+		return achievements.map(achievement => {
+			// Only apply adjustments to tiered achievements (which have totalProgressToAchievement)
+			// Regular lendingAchievements don't have this field and shouldn't be adjusted
+			const adjustment = freshProgressAdjustments[achievement.id];
+			if (adjustment && achievement.totalProgressToAchievement !== undefined) {
+				const currentProgress = achievement.totalProgressToAchievement || 0;
+				const newProgress = currentProgress + adjustment;
+				// Return new object with adjusted progress (all-time only)
+				return {
+					...achievement,
+					totalProgressToAchievement: newProgress
+				};
+			}
+			// Return copy of achievement without adjustments
+			return { ...achievement };
+		});
+	};
+
+	/**
+	 * Updates the existing badge data with fresh progress adjustments from loans not yet in achievement service
+	 *
+	 * @param loans Array of carousel loans to check for missing progress
+	 * @param tieredAchievements Array of tiered achievements from achievement service
+	 * @returns The calculated adjustments object (map of badgeId to count)
+	 */
+	const updateBadgeDataWithFreshProgress = (loans, tieredAchievements) => {
+		if (!loans?.length || !tieredAchievements?.length || !badgeAchievementData.value?.length) {
+			return {};
+		}
+
+		// Calculate fresh progress adjustments (all-time only)
+		const adjustments = calculateFreshProgressAdjustments(loans, tieredAchievements);
+
+		// Apply adjustments to existing badge data
+		if (Object.keys(adjustments).length > 0) {
+			badgeAchievementData.value = applyFreshProgressAdjustments(badgeAchievementData.value, adjustments);
+		}
+
+		return adjustments;
+	};
+
+	/**
 	 * Get badge headline
 	 *
 	 * @param badge The badge to filter loans by
@@ -650,5 +750,7 @@ export default function useBadgeData() {
 		getJourneysByLoan,
 		getAllCategoryLoanCounts,
 		allAchievementsCompleted,
+		calculateFreshProgressAdjustments,
+		updateBadgeDataWithFreshProgress,
 	};
 }
