@@ -597,6 +597,14 @@ export default [
 		}
 	},
 	{
+		path: '/settings/credit-beta',
+		component: () => import('#src/pages/Settings/CreditSettings/CreditSettingsPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		},
+	},
+	{
 		path: '/settings/autolending',
 		component: () => import('#src/pages/Autolending/AutolendingPage'),
 		meta: {
