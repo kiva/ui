@@ -8,12 +8,13 @@
 		</template>
 
 		<kv-default-wrapper>
+			<div class="row column">
+				<h1 class="tw-mb-4">
+					Credit Settings
+				</h1>
+			</div>
 			<div class="row">
 				<div class="columns small-12 large-8">
-					<h1 class="tw-mb-4">
-						Credit Settings
-					</h1>
-
 					<credit-settings-linked-section
 						title="Subscriptions settings"
 						description="Manage your Monthly Good or Auto Deposit settings"
