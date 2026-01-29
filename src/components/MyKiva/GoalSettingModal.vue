@@ -8,17 +8,17 @@
 		<template #header>
 			<h2
 				v-if="!isMobile && (showCategories || isThanksPage)"
-				v-html="title"
-				class="tw-mb-3 tw-text-center"
-				:class="{ '!tw-text-left': goalsV2Enabled }"
-			></h2>
+				class="tw-mb-3 tw-text-left md:tw-text-center"
+			>
+				Choose an impact area
+			</h2>
 		</template>
 		<h2
 			v-if="isMobile && (showCategories || isThanksPage)"
-			v-html="title"
-			class="tw-mb-3 tw-text-center"
-			:class="{ '!tw-text-left': goalsV2Enabled }"
-		></h2>
+			class="tw-mb-3 tw-text-left md:tw-text-center"
+		>
+			Choose an impact area
+		</h2>
 		<GoalSelector
 			v-if="showGoalSelector && goalsV2Enabled"
 			v-show="!showCategories"
@@ -166,19 +166,6 @@ const ctaCopy = computed(() => {
 		return 'Set 2026 goal';
 	}
 	return formStep.value === 1 ? 'Continue' : 'Set my goal';
-});
-
-const title = computed(() => {
-	if (props.goalsV2Enabled) {
-		return `Make <span class="tw-text-eco-green-3">${selectedGoalNumber.value} loans</span> to...`;
-	}
-	if (formStep.value === 1) {
-		return 'Choose your impact goal category';
-	}
-	if (selectedCategory.value?.title) {
-		return `How many more loans to ${selectedCategory.value?.title} will you support this year?`;
-	}
-	return 'How many more people will you support this year?';
 });
 
 const ctaHref = computed(() => {

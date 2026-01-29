@@ -96,6 +96,7 @@
 				<MyKivaLatestLoanCard
 					v-else-if="slide?.isLatestLoan"
 					:loan="latestLoan"
+					@open-impact-insight-modal="$emit('open-impact-insight-modal')"
 				/>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
@@ -185,7 +186,7 @@ const {
 
 const { getCategoryLoansLastYear } = useGoalData();
 
-const emit = defineEmits(['update-journey', 'open-goal-modal']);
+const emit = defineEmits(['update-journey', 'open-goal-modal', 'open-impact-insight-modal']);
 
 const props = defineProps({
 	userInfo: {
@@ -272,6 +273,10 @@ const props = defineProps({
 		type: Object,
 		default: null
 	},
+	showPostLendingNextStepsCards: {
+		type: Boolean,
+		default: false
+	},
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
@@ -285,14 +290,15 @@ const shouldShowEmailMarketingCard = computed(
 );
 const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
 
-const showLatestLoan = computed(() => props.postLendingNextStepsEnable && props.latestLoan);
+const showLatestLoan = computed(() => props.showPostLendingNextStepsCards
+	&& props.postLendingNextStepsEnable && props.latestLoan);
 
 const showSurveyCard = computed(() => {
 	const userPreferences = props.userInfo?.userPreferences || {};
 	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
 	const isFormSubmitted = (parsedPrefs.savedForms || []).some(form => form.formName === MYKIVA_INPUT_FORM_KEY);
 
-	return !isFormSubmitted && props.postLendingNextStepsEnable;
+	return props.showPostLendingNextStepsCards && !isFormSubmitted && props.postLendingNextStepsEnable;
 });
 
 const badgesData = computed(() => {

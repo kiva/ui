@@ -1827,8 +1827,8 @@ describe('useGoalData', () => {
 				badgeId: ID_WOMENS_EQUALITY,
 			});
 
-			expect(categories[5]).toEqual({
-				id: '6',
+			expect(categories[1]).toEqual({
+				id: '2',
 				name: 'Choose as I go',
 				description: 'Support a variety of borrowers',
 				eventProp: 'help-everyone',
@@ -1843,14 +1843,14 @@ describe('useGoalData', () => {
 			const categories = composable.getCategories(undefined, 15);
 
 			expect(categories[0].loanCount).toBeUndefined();
-			expect(categories[5].loanCount).toBe(15);
+			expect(categories[1].loanCount).toBe(15);
 		});
 
 		it('should handle null categoriesLoanCount', () => {
 			const categories = composable.getCategories(null, 20);
 
-			expect(categories[1].loanCount).toBeUndefined();
-			expect(categories[5].loanCount).toBe(20);
+			expect(categories[3].loanCount).toBeUndefined();
+			expect(categories[1].loanCount).toBe(20);
 		});
 	});
 

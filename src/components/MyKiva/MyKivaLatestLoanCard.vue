@@ -54,7 +54,7 @@
 				variant="secondary"
 				v-kv-track-event="['portfolio', 'click', 'next-step-impact-education']"
 				class="tw-w-full tw-mt-1"
-				@click="openModal"
+				@click="$emit('open-impact-insight-modal')"
 			>
 				View impact insights
 			</KvButton>
@@ -70,6 +70,8 @@ import { mdiEarth } from '@mdi/js';
 import { computed, inject, onMounted } from 'vue';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import kvTokensPrimitives from '@kiva/kv-tokens';
+
+defineEmits(['open-impact-insight-modal']);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -121,10 +123,6 @@ const countriesData = computed(() => {
 		long: mapLong.value,
 	}];
 });
-
-const openModal = () => {
-	// TODO: Implement modal opening logic
-};
 
 onMounted(() => {
 	$kvTrackEvent('portfolio', 'view', 'next-step-impact-education');

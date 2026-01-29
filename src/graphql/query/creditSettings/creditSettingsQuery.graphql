@@ -1,0 +1,13 @@
+query creditSettingsQuery {
+	my {
+		id
+		userAccount {
+			id
+			balance
+			promoBalance
+			donateRepayments
+			inactiveAccountSetting
+			inactiveAccountEmailAddress
+		}
+	}
+}

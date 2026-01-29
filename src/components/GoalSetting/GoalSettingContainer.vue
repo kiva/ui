@@ -36,9 +36,10 @@
 				v-show="showCategories"
 			>
 				<h2
-					v-html="title"
 					class="tw-mb-3 tw-text-left lg:tw-text-center"
-				></h2>
+				>
+					Choose an impact area
+				</h2>
 				<CategoryForm
 					:key="categoryFormKey"
 					:categories="categories"
@@ -68,7 +69,6 @@ import {
 	ref,
 	inject,
 	onMounted,
-	computed
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { mdiChevronLeft } from '@mdi/js';
@@ -126,10 +126,6 @@ const categoryFormKey = ref(0);
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
 const selectedCategory = ref(categories[0]);
-
-const title = computed(() => {
-	return `Make <span class="tw-text-eco-green-3">${loanTarget.value} loans</span> to...`;
-});
 
 const editGoalCategory = () => {
 	// Force CategoryForm to re-render so it reverts to the default selected category
