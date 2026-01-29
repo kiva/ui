@@ -2956,14 +2956,11 @@ describe('useGoalData', () => {
 	});
 
 	describe('calculateGoalFreshProgressAdjustments', () => {
-		// Note: calculateGoalFreshProgressAdjustments internally calls useBadgeData()
-		// composable which requires proper Vue injection context and apollo setup.
-		// The core logic is tested through useBadgeData.spec.js:calculateFreshProgressAdjustments
-		// and through applyFreshProgressToGoalData tests below.
-		// Integration testing of fresh progress adjustments should be done through E2E tests.
-		it('should be tested through useBadgeData.spec.js and E2E tests', () => {
-			// This function delegates to useBadgeData().calculateFreshProgressAdjustments
-			// for all-time adjustments, which is tested in useBadgeData.spec.js
+		// Note: This function can now be tested directly since calculateFreshProgressAdjustments
+		// and getJourneysByLoan are exported as standalone functions from useBadgeData.
+		// The base calculateFreshProgressAdjustments logic is tested in useBadgeData.spec.js.
+		// TODO: Add tests for year-specific filtering logic unique to calculateGoalFreshProgressAdjustments
+		it('should be defined', () => {
 			expect(composable.calculateGoalFreshProgressAdjustments).toBeDefined();
 		});
 	});

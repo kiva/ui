@@ -53,6 +53,81 @@ const CLIMATE_ACTION_THEME = 'clean energy';
 const CLIMATE_ACTION_TAGS = ['#eco-friendly', '#sustainable ag'];
 
 /**
+ * Get journeys by loan using defined search filters in vue-admin
+ *
+ * @param loan The loan to filter
+ * @returns The journeys by loan array
+ */
+export const getJourneysByLoan = loan => {
+	const journeys = [];
+
+	if (COUNTRIES_ISO_CODE.includes(loan?.geocode?.country?.isoCode)) {
+		journeys.push(ID_US_ECONOMIC_EQUALITY);
+	}
+
+	if (loan?.gender === WOMENS_EQUALITY_FILTER) {
+		journeys.push(ID_WOMENS_EQUALITY);
+	}
+
+	if (loan?.themes?.some(theme => theme?.toLowerCase() === REFUGEE_THEME)) {
+		journeys.push(ID_REFUGEE_EQUALITY);
+	}
+
+	// eslint-disable-next-line max-len
+	if (BASIC_NEEDS_SECTORS.includes(loan?.sector?.id) || loan?.themes?.some(theme => theme?.toLowerCase() === BASIC_NEEDS_THEME)) {
+		journeys.push(ID_BASIC_NEEDS);
+	}
+
+	// eslint-disable-next-line max-len
+	if (loan?.tags?.some(tag => CLIMATE_ACTION_TAGS.includes(tag?.toLowerCase())) || loan?.themes?.some(theme => theme?.toLowerCase() === CLIMATE_ACTION_THEME)) {
+		journeys.push(ID_CLIMATE_ACTION);
+	}
+
+	return journeys;
+};
+
+/**
+ * Calculates fresh progress adjustments by comparing carousel loans with achievement service loans
+ *
+ * @param loans Array of carousel loans to check against achievement service
+ * @param tieredAchievements Array of tiered achievements from achievement service
+ * @returns Map of badgeId to count of missing loans (all-time progress only)
+ */
+export const calculateFreshProgressAdjustments = (loans, tieredAchievements) => {
+	if (!loans?.length || !tieredAchievements?.length) {
+		return {};
+	}
+
+	// Get loan IDs that achievement service already knows about
+	const achievementServiceLoanIds = new Set();
+	tieredAchievements.forEach(achievement => {
+		const loanPurchases = achievement.loanPurchases || [];
+		loanPurchases.forEach(purchase => {
+			if (purchase?.loan?.id) {
+				achievementServiceLoanIds.add(purchase.loan.id);
+			}
+		});
+	});
+
+	// Find carousel loans that are NOT in achievement service
+	const missingLoans = loans.filter(loan => loan?.id && !achievementServiceLoanIds.has(loan.id));
+
+	// Count missing loans by category (all-time only for badges)
+	const adjustments = {};
+
+	missingLoans.forEach(loan => {
+		if (!loan) return;
+
+		const journeys = getJourneysByLoan(loan);
+		journeys.forEach(journeyId => {
+			adjustments[journeyId] = (adjustments[journeyId] || 0) + 1;
+		});
+	});
+
+	return adjustments;
+};
+
+/**
  * Utilities for loading and combining tiered badge data
  *
  * @returns Badge data and utilities
@@ -89,7 +164,8 @@ export default function useBadgeData() {
 		try {
 			const result = await apollo.query({
 				query: userAchievementProgressQuery,
-				variables: { publicId }
+				variables: { publicId },
+				fetchPolicy: 'network-only'
 			});
 			badgeAchievementData.value = [
 				...(result.data?.userAchievementProgress?.lendingAchievements ?? []),
@@ -497,81 +573,6 @@ export default function useBadgeData() {
 	};
 
 	/**
-	 * Get journeys by loan using defined search filters in vue-admin
-	 *
-	 * @param loan The loan to filter
-	 * @returns The journeys by loan array
-	 */
-	const getJourneysByLoan = loan => {
-		const journeys = [];
-
-		if (COUNTRIES_ISO_CODE.includes(loan?.geocode?.country?.isoCode)) {
-			journeys.push(ID_US_ECONOMIC_EQUALITY);
-		}
-
-		if (loan?.gender === WOMENS_EQUALITY_FILTER) {
-			journeys.push(ID_WOMENS_EQUALITY);
-		}
-
-		if (loan?.themes?.some(theme => theme?.toLowerCase() === REFUGEE_THEME)) {
-			journeys.push(ID_REFUGEE_EQUALITY);
-		}
-
-		// eslint-disable-next-line max-len
-		if (BASIC_NEEDS_SECTORS.includes(loan?.sector?.id) || loan?.themes?.some(theme => theme?.toLowerCase() === BASIC_NEEDS_THEME)) {
-			journeys.push(ID_BASIC_NEEDS);
-		}
-
-		// eslint-disable-next-line max-len
-		if (loan?.tags?.some(tag => CLIMATE_ACTION_TAGS.includes(tag?.toLowerCase())) || loan?.themes?.some(theme => theme?.toLowerCase() === CLIMATE_ACTION_THEME)) {
-			journeys.push(ID_CLIMATE_ACTION);
-		}
-
-		return journeys;
-	};
-
-	/**
-	 * Calculates fresh progress adjustments by comparing carousel loans with achievement service loans
-	 *
-	 * @param loans Array of carousel loans to check against achievement service
-	 * @param tieredAchievements Array of tiered achievements from achievement service
-	 * @returns Map of badgeId to count of missing loans (all-time progress only)
-	 */
-	const calculateFreshProgressAdjustments = (loans, tieredAchievements) => {
-		if (!loans?.length || !tieredAchievements?.length) {
-			return {};
-		}
-
-		// Get loan IDs that achievement service already knows about
-		const achievementServiceLoanIds = new Set();
-		tieredAchievements.forEach(achievement => {
-			const loanPurchases = achievement.loanPurchases || [];
-			loanPurchases.forEach(purchase => {
-				if (purchase?.loan?.id) {
-					achievementServiceLoanIds.add(purchase.loan.id);
-				}
-			});
-		});
-
-		// Find carousel loans that are NOT in achievement service
-		const missingLoans = loans.filter(loan => loan?.id && !achievementServiceLoanIds.has(loan.id));
-
-		// Count missing loans by category (all-time only for badges)
-		const adjustments = {};
-
-		missingLoans.forEach(loan => {
-			if (!loan) return;
-
-			const journeys = getJourneysByLoan(loan);
-			journeys.forEach(journeyId => {
-				adjustments[journeyId] = (adjustments[journeyId] || 0) + 1;
-			});
-		});
-
-		return adjustments;
-	};
-
-	/**
 	 * Applies fresh progress adjustments to achievement data array
 	 *
 	 * @param achievements The achievements array to adjust
@@ -747,10 +748,8 @@ export default function useBadgeData() {
 		ID_WOMENS_EQUALITY,
 		isBadgeKeyValid,
 		getLevelCaption,
-		getJourneysByLoan,
 		getAllCategoryLoanCounts,
 		allAchievementsCompleted,
-		calculateFreshProgressAdjustments,
 		updateBadgeDataWithFreshProgress,
 	};
 }

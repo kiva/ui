@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
 import useBadgeData, {
+	calculateFreshProgressAdjustments,
+	getJourneysByLoan,
 	ID_WOMENS_EQUALITY,
 	ID_US_ECONOMIC_EQUALITY,
 	ID_CLIMATE_ACTION,
@@ -761,8 +763,6 @@ describe('useBadgeData.js', () => {
 	});
 
 	describe('getJourneysByLoan', () => {
-		const { getJourneysByLoan } = useBadgeData();
-
 		it('should return expected journey for us-economic-equality loans', () => {
 			const loan = {
 				id: 1,
@@ -1036,7 +1036,8 @@ describe('useBadgeData.js', () => {
 
 			expect(apolloMock.query).toHaveBeenCalledWith({
 				query: expect.anything(),
-				variables: { publicId: null }
+				variables: { publicId: null },
+				fetchPolicy: 'network-only'
 			});
 
 			await vi.waitFor(() => {
@@ -1065,7 +1066,8 @@ describe('useBadgeData.js', () => {
 
 			expect(apolloMock.query).toHaveBeenCalledWith({
 				query: expect.anything(),
-				variables: { publicId: 'user123' }
+				variables: { publicId: 'user123' },
+				fetchPolicy: 'network-only'
 			});
 		});
 
@@ -1591,7 +1593,8 @@ describe('useBadgeData.js', () => {
 
 			expect(mockApollo.query).toHaveBeenCalledWith({
 				query: expect.any(Object),
-				variables: { publicId: 'user-123' }
+				variables: { publicId: 'user-123' },
+				fetchPolicy: 'network-only'
 			});
 		});
 	});
@@ -1640,23 +1643,18 @@ describe('useBadgeData.js', () => {
 
 	describe('calculateFreshProgressAdjustments', () => {
 		it('should return empty object when loans array is empty', () => {
-			const { calculateFreshProgressAdjustments } = useBadgeData();
-
 			const result = calculateFreshProgressAdjustments([], [{ id: 'achievement-1' }]);
 
 			expect(result).toEqual({});
 		});
 
 		it('should return empty object when tieredAchievements array is empty', () => {
-			const { calculateFreshProgressAdjustments } = useBadgeData();
-
 			const result = calculateFreshProgressAdjustments([{ id: 1 }], []);
 
 			expect(result).toEqual({});
 		});
 
 		it('should return empty object when all loans are already in achievement service', () => {
-			const { calculateFreshProgressAdjustments } = useBadgeData();
 			const loans = [{ id: 1 }, { id: 2 }];
 			const tieredAchievements = [{
 				id: 'womens-equality',
@@ -1669,7 +1667,6 @@ describe('useBadgeData.js', () => {
 		});
 
 		it('should calculate adjustments for missing loans that match womens-equality', () => {
-			const { calculateFreshProgressAdjustments } = useBadgeData();
 			const loans = [
 				{ id: 1, gender: 'female' },
 				{ id: 2, gender: 'female' }
@@ -1685,7 +1682,6 @@ describe('useBadgeData.js', () => {
 		});
 
 		it('should calculate adjustments for missing loans that match us-economic-equality', () => {
-			const { calculateFreshProgressAdjustments } = useBadgeData();
 			const loans = [
 				{ id: 1, geocode: { country: { isoCode: 'US' } } },
 				{ id: 2, geocode: { country: { isoCode: 'PR' } } }
@@ -1701,7 +1697,6 @@ describe('useBadgeData.js', () => {
 		});
 
 		it('should calculate adjustments for loans matching multiple categories', () => {
-			const { calculateFreshProgressAdjustments } = useBadgeData();
 			const loans = [
 				{
 					id: 1,
@@ -1721,7 +1716,6 @@ describe('useBadgeData.js', () => {
 		});
 
 		it('should handle loans with refugee theme', () => {
-			const { calculateFreshProgressAdjustments } = useBadgeData();
 			const loans = [
 				{ id: 1, themes: ['Refugees/Displaced'] }
 			];
@@ -1736,7 +1730,6 @@ describe('useBadgeData.js', () => {
 		});
 
 		it('should handle loans with basic needs sector', () => {
-			const { calculateFreshProgressAdjustments } = useBadgeData();
 			const loans = [
 				{ id: 1, sector: { id: 6 } }, // Health sector
 				{ id: 2, sector: { id: 10 } } // Food sector
@@ -1752,7 +1745,6 @@ describe('useBadgeData.js', () => {
 		});
 
 		it('should handle loans with climate action tags', () => {
-			const { calculateFreshProgressAdjustments } = useBadgeData();
 			const loans = [
 				{ id: 1, tags: ['#Eco-friendly'] },
 				{ id: 2, tags: ['#Sustainable Ag'] }

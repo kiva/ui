@@ -12,6 +12,8 @@ import logFormatter from '#src/util/logFormatter';
 import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 
 import useBadgeData, {
+	calculateFreshProgressAdjustments,
+	getJourneysByLoan,
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
 	ID_REFUGEE_EQUALITY,
@@ -342,9 +344,7 @@ export default function useGoalData({ apollo } = {}) {
 	 * @returns Object with allTime and yearSpecific adjustment maps
 	 */
 	function calculateGoalFreshProgressAdjustments(loans, tieredAchievements, targetYear, transactions = []) {
-		const { calculateFreshProgressAdjustments, getJourneysByLoan } = useBadgeData();
-
-		// Get all-time adjustments from badge composable (no year filtering)
+		// Get all-time adjustments using the exported utility function (no year filtering)
 		const allTimeAdjustments = calculateFreshProgressAdjustments(loans, tieredAchievements);
 
 		// Calculate year-specific adjustments by filtering loans by year
