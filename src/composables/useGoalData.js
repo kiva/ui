@@ -93,7 +93,6 @@ export default function useGoalData({ apollo } = {}) {
 	const userGoalAchievedNow = ref(false);
 	const userPreferences = ref(null);
 	const useYearlyProgress = ref(false); // Default to all-time progress (flag disabled behavior)
-	const prevSupportAllCount = ref(0);
 
 	// --- Computed Properties ---
 
