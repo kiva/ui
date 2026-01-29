@@ -1,13 +1,9 @@
 <template>
-	<section class="tw-w-full tw-px-2 md:!tw-py-10 md:!tw-px-10">
-		<div class="tw-mx-auto tw-max-w-6xl">
-			<!-- Title -->
-			<h2 class="">
-				A closer look at <u>{{ borrowerName }} world</u>
-			</h2>
+	<section class="tw-w-full tw-px-2 md:!tw-pr-3 impact-insight-slide">
+		<div class="tw-mx-auto md:!tw-max-w-4xl">
 			<div
-				class="tw-mt-10 tw-flex tw-flex-col tw-items-center tw-gap-10
-						md:tw-mt-14 md:tw-flex-row md:tw-items-center md:!tw-justify-center"
+				class="tw-flex tw-flex-col tw-items-center
+						md:tw-flex-row md:tw-items-center md:!tw-justify-center"
 			>
 				<div
 					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-brand-500
@@ -35,7 +31,7 @@
 					</div>
 				</div>
 				<div
-					class="tw-w-full tw-max-w-xl tw-px-4 md:!tw-px-0"
+					class="tw-px-4 md:!tw-px-0 screen-description"
 				>
 					<p
 						v-html="loanDescription"
@@ -55,17 +51,11 @@ import {
 import { computed } from 'vue';
 import numeral from 'numeral';
 
-import { formatPossessiveName } from '#src/util/stringParserUtils';
-
 const props = defineProps({
 	latestLoan: {
 		type: Object,
 		default: null,
 	}
-});
-
-const borrowerName = computed(() => {
-	return formatPossessiveName(props.latestLoan?.name) || '';
 });
 
 const name = computed(() => {
@@ -132,6 +122,28 @@ const loanDescription = computed(() => {
 	@screen md {
 		height: 60px;
 		width: 60px;
+	}
+}
+
+.impact-insight-slide {
+	@screen md {
+		padding-left: 130px;
+	}
+}
+
+div:has(.screen-description) {
+	gap: 105px;
+
+	@screen md {
+		gap: 10rem;
+	}
+}
+
+.screen-description {
+	width: 289px;
+
+	@screen md {
+		width: 400px;
 	}
 }
 </style>

@@ -32,6 +32,7 @@
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 					@open-goal-modal="showGoalModal = true"
+					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
 			</div>
 			<div class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col">
@@ -164,6 +165,7 @@
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 			@open-goal-modal="showGoalModal = true"
+			@open-impact-insight-modal="showImpactInsightsModal = true"
 		/>
 		<GoalSettingModal
 			v-if="isNextStepsExpEnabled && showGoalModal"
@@ -176,6 +178,12 @@
 			:tiered-achievements="heroTieredAchievements"
 			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
+		/>
+		<MyKivaImpactInsightModal
+			v-if="showPostLendingNextStepsCards && postLendingNextStepsEnable && showImpactInsightsModal"
+			:show="showImpactInsightsModal"
+			:latest-loan="latestLoan"
+			@close="closeImpactInsightsModal"
 		/>
 	</div>
 </template>
@@ -202,6 +210,7 @@ import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 
 import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
+import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
 import GoalSettingModal from './GoalSettingModal';
 
 export default {
@@ -210,6 +219,7 @@ export default {
 		GlobeSearchIcon,
 		JourneyCardCarousel,
 		GoalSettingModal,
+		MyKivaImpactInsightModal,
 		KvCheckbox,
 		KvMaterialIcon,
 	},
@@ -280,6 +290,7 @@ export default {
 			interval: null,
 			disconnectRegionWatcher: null,
 			showGoalModal: false,
+			showImpactInsightsModal: false,
 			checkedArr: this.regionsData.map(() => false),
 			isGoalSet: false,
 			recordedGoalSet: false,
@@ -430,6 +441,12 @@ export default {
 				// eslint-disable-next-line max-len
 				this.$kvTrackEvent('portfolio', 'show', 'goal-set', this.newGoalPrefs?.category, this.newGoalPrefs?.target);
 				this.recordedGoalSet = true;
+			}
+		},
+		closeImpactInsightsModal() {
+			if (this.showImpactInsightsModal) {
+				this.showImpactInsightsModal = false;
+				this.$kvTrackEvent('portfolio', 'click', 'next-step-close-education');
 			}
 		},
 	},

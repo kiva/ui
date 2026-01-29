@@ -96,6 +96,7 @@
 				<MyKivaLatestLoanCard
 					v-else-if="slide?.isLatestLoan"
 					:loan="latestLoan"
+					@open-impact-insight-modal="$emit('open-impact-insight-modal')"
 				/>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
@@ -185,7 +186,7 @@ const {
 
 const { getCategoryLoansLastYear } = useGoalData();
 
-const emit = defineEmits(['update-journey', 'open-goal-modal']);
+const emit = defineEmits(['update-journey', 'open-goal-modal', 'open-impact-insight-modal']);
 
 const props = defineProps({
 	userInfo: {

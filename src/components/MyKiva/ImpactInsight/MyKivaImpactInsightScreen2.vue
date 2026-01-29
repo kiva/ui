@@ -1,12 +1,9 @@
 <template>
-	<section class="tw-w-full tw-px-2 md:!tw-py-10 md:!tw-px-10">
-		<div class="tw-mx-auto tw-max-w-6xl">
-			<h2 class="">
-				A closer look at <u>{{ borrowerName }} world</u>
-			</h2>
+	<section class="tw-w-full tw-px-2 md:!tw-pr-3 impact-insight-slide">
+		<div class="tw-mx-auto md:!tw-max-w-4xl">
 			<div
-				class="tw-mt-10 tw-flex tw-flex-col tw-items-center tw-gap-10
-						md:tw-mt-14 md:tw-flex-row md:tw-items-center md:!tw-justify-center"
+				class="tw-flex tw-flex-col tw-items-center
+						md:tw-flex-row md:tw-items-center md:!tw-justify-center"
 			>
 				<div
 					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-marigold
@@ -32,7 +29,7 @@
 					</div>
 				</div>
 				<div
-					class="tw-w-full tw-max-w-xl tw-px-4 md:!tw-px-0"
+					class="tw-px-4 md:!tw-px-0 screen-description"
 				>
 					<p
 						class="tw-rounded-2xl tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3
@@ -51,17 +48,11 @@
 import IconHeartBgWhite from '#src/assets/images/icon-heart-bg-white.svg';
 import { computed } from 'vue';
 
-import { formatPossessiveName } from '#src/util/stringParserUtils';
-
 const props = defineProps({
 	latestLoan: {
 		type: Object,
 		default: null,
 	}
-});
-
-const borrowerName = computed(() => {
-	return formatPossessiveName(props.latestLoan?.name) || '';
 });
 
 const whySpecial = computed(() => {
@@ -88,6 +79,28 @@ const whySpecial = computed(() => {
 	@screen md {
 		min-height: 168px;
 		min-width: 168px;
+	}
+}
+
+.impact-insight-slide {
+	@screen md {
+		padding-left: 104px;
+	}
+}
+
+div:has(.screen-description) {
+	gap: 80px;
+
+	@screen md {
+		gap: 138px;
+	}
+}
+
+.screen-description {
+	width: 289px;
+
+	@screen md {
+		width: 400px;
 	}
 }
 </style>
