@@ -43,8 +43,6 @@
 				<template #slide4>
 					<MyKivaImpactInsightScreen4 :latest-loan="latestLoan" />
 				</template>
-				<!-- dots class: "tw-flex tw-justify-start tw-items-center tw-max-w-xl tw-gap-3 tw-absolute",
-					style: "bottom: 13rem; left: 26%;" -->
 			</KvCarousel>
 
 			<div
