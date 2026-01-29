@@ -178,7 +178,7 @@ const loadingCurrentYear = ref(false);
 const fetchedCurrentYearLoans = ref(null);
 const prevSupportAllCount = ref(0);
 
-const womenLoansLastYear = computed(() => {
+const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
 		return prevSupportAllCount.value;
 	}
@@ -188,7 +188,7 @@ const womenLoansLastYear = computed(() => {
 
 // Use progressForCurrentYear from tieredAchievements if available (set on Thanks page),
 // otherwise use fetched current year data (for MyKiva goal-setting page and modal)
-const womenLoansThisYear = computed(() => {
+const loansThisYear = computed(() => {
 	const categoryAchievement = props.tieredAchievements?.find(
 		entry => entry.id === props.selectedCategoryId
 	);
@@ -205,7 +205,7 @@ const womenLoansThisYear = computed(() => {
  * This is needed for the MyKiva goal-setting page and modal where progressForCurrentYear
  * is not set (only last year data comes from tieredAchievements).
  */
-const loadWomenLoansThisYear = async () => {
+const loadLoansThisYear = async () => {
 	// Check if progressForCurrentYear is already provided via props
 	const categoryAchievement = props.tieredAchievements?.find(
 		entry => entry.id === props.selectedCategoryId
@@ -226,13 +226,13 @@ const titleText = computed(() => {
 	if (props.isGoalSet) {
 		return 'Success! Your goal is set!';
 	}
-	if (womenLoansLastYear.value === 1) {
+	if (loansLastYear.value === 1) {
 		// eslint-disable-next-line max-len
-		return `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} woman</span> shape her future!`;
+		return `Last year, you helped <span class="tw-text-eco-green-3">${loansLastYear.value} woman</span> shape her future!`;
 	}
-	if (womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
+	if (loansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
 		// eslint-disable-next-line max-len
-		return `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} women</span> shape their futures!`;
+		return `Last year, you helped <span class="tw-text-eco-green-3">${loansLastYear.value} women</span> shape their futures!`;
 	}
 
 	return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
@@ -240,8 +240,8 @@ const titleText = computed(() => {
 
 const subtitleText = computed(() => {
 	let extraText = '';
-	if (womenLoansThisYear.value > 0) {
-		extraText = `You've already made ${womenLoansThisYear.value}.`;
+	if (loansThisYear.value > 0) {
+		extraText = `You've already made ${loansThisYear.value}.`;
 	}
 	return props.isGoalSet
 		? ''
@@ -324,8 +324,8 @@ const handleContinue = () => {
 };
 
 const updateGoalOptions = () => {
-	const ytdLoans = womenLoansThisYear.value;
-	const lastYearLoans = womenLoansLastYear.value;
+	const ytdLoans = loansThisYear.value;
+	const lastYearLoans = loansLastYear.value;
 
 	// Determine base amount and labels based on whether YTD exceeds last year
 	// Goal suggestions must always be higher than YTD to prevent auto-completion
@@ -374,7 +374,7 @@ const prevSupportAllLoanCount = async () => {
 };
 
 onMounted(async () => {
-	await loadWomenLoansThisYear();
+	await loadLoansThisYear();
 	updateGoalOptions();
 
 	if (props.trackingCategory === 'post-checkout') {
@@ -387,7 +387,7 @@ onMounted(async () => {
 });
 
 watch(() => props.selectedCategoryId, async newCategory => {
-	await loadWomenLoansThisYear();
+	await loadLoansThisYear();
 	updateGoalOptions();
 
 	if (newCategory === ID_SUPPORT_ALL) {
