@@ -1,5 +1,5 @@
 <template>
-	<section class="tw-py-3 tw-border-b tw-border-secondary">
+	<section class="tw-bg-primary tw-p-3 tw-mb-3">
 		<h2 class="tw-text-h3 tw-mb-1">
 			{{ title }}
 		</h2>
