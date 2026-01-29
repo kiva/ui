@@ -93,6 +93,7 @@ export default function useGoalData({ apollo } = {}) {
 	const userGoalAchievedNow = ref(false);
 	const userPreferences = ref(null);
 	const useYearlyProgress = ref(false); // Default to all-time progress (flag disabled behavior)
+	const prevSupportAllCount = ref(0);
 
 	// --- Computed Properties ---
 
@@ -301,6 +302,20 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
+	 * Get the previous year's support-all loan count
+	 * @returns {Promise<{count: number, amount: number}|null>} Returns null if an error occurs
+	 */
+	const getSupportAllLoanCountByYear = async (year, fetchPolicy = 'network-only') => {
+		try {
+			const stats = await getLoanStatsByYear(year, fetchPolicy);
+			return stats.count || 0;
+		} catch (error) {
+			logFormatter(error, 'Failed to fetch previous support-all loan count');
+			return null;
+		}
+	};
+
+	/**
 	 * Retrieves the user's loan count for the specified category id and year.
 	 *
 	 * @param {string} categoryId - Category ID to fetch loan count for.
@@ -312,8 +327,7 @@ export default function useGoalData({ apollo } = {}) {
 		try {
 			// Get actual yearly loan count
 			if (categoryId === ID_SUPPORT_ALL) {
-				const stats = await getLoanStatsByYear(year, 'network-only');
-				return stats?.count || 0;
+				return await getSupportAllLoanCountByYear(year);
 			}
 
 			const progress = await getCategoriesProgressByYear(year, fetchPolicy);
@@ -708,5 +722,6 @@ export default function useGoalData({ apollo } = {}) {
 		renewAnnualGoal,
 		hideGoalCard,
 		setHideGoalCardPreference,
+		getSupportAllLoanCountByYear,
 	};
 }

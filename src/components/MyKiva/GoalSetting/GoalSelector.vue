@@ -93,11 +93,10 @@ import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSel
 import { KvButton, KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { mdiPencilOutline } from '@mdi/js';
 import useGoalData, { SAME_AS_LAST_YEAR_LIMIT, LAST_YEAR_KEY } from '#src/composables/useGoalData';
-import logFormatter from '#src/util/logFormatter';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const { getCategoryLoansLastYear, getCategoryLoanCountByYear, getLoanStatsByYear } = useGoalData();
+const { getCategoryLoansLastYear, getCategoryLoanCountByYear, getSupportAllLoanCountByYear } = useGoalData();
 
 const props = defineProps({
 	/**
@@ -177,6 +176,7 @@ const goalOptions = ref(DEFAULT_GOAL_OPTIONS);
 const loadingCurrentYear = ref(false);
 const fetchedCurrentYearLoans = ref(null);
 const prevSupportAllCount = ref(0);
+const selectedIdx = ref(0);
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -270,6 +270,7 @@ const updateOptionSelection = selectedIndex => {
 		...option,
 		selected: index === selectedIndex,
 	}));
+	selectedIdx.value = selectedIndex;
 	const trackingProperties = ['same-as-last-year', 'a-little-more', 'double'];
 	$kvTrackEvent(
 		props.trackingCategory,
@@ -348,7 +349,7 @@ const updateGoalOptions = () => {
 			{
 				loansNumber: suggestion2,
 				optionText: 'Grow a little',
-				selected: true,
+				selected: false,
 				highlightedText: 'More Impact'
 			},
 			{
@@ -360,17 +361,10 @@ const updateGoalOptions = () => {
 	} else {
 		goalOptions.value = DEFAULT_GOAL_OPTIONS;
 	}
-	emit('set-goal-target', selectedTarget.value);
-};
 
-const prevSupportAllLoanCount = async () => {
-	try {
-		const stats = await getLoanStatsByYear(LAST_YEAR_KEY, 'network-only');
-		prevSupportAllCount.value = stats?.count || 0;
-	} catch (error) {
-		logFormatter(error, 'Failed to load previous support-all loan count');
-		return null;
-	}
+	// Keep previous selection if still valid, otherwise select the middle option
+	goalOptions.value[selectedIdx.value].selected = true;
+	emit('set-goal-target', selectedTarget.value);
 };
 
 onMounted(async () => {
@@ -391,7 +385,7 @@ watch(() => props.selectedCategoryId, async newCategory => {
 	updateGoalOptions();
 
 	if (newCategory === ID_SUPPORT_ALL) {
-		await prevSupportAllLoanCount();
+		prevSupportAllCount.value = await getSupportAllLoanCountByYear(LAST_YEAR_KEY);
 	}
 });
 
