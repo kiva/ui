@@ -57,7 +57,7 @@ import { computed } from 'vue';
 import KvIcon from '#src/components/Kv/KvIcon';
 import KvButton from '#src/components/Kv/KvButton';
 import {
-	ID_WOMENS_EQUALITY, ID_BASIC_NEEDS, ID_CLIMATE_ACTION, ID_REFUGEE_EQUALITY
+	ID_WOMENS_EQUALITY, ID_BASIC_NEEDS, ID_CLIMATE_ACTION, ID_REFUGEE_EQUALITY, MAX_TIERED_BADGE_LOANS
 } from '#src/composables/useBadgeData';
 import numeral from 'numeral';
 import { metaGlobReader } from '#src/util/importHelpers';
@@ -159,8 +159,9 @@ const progress = computed(() => {
 		const currentProgress = props.goal?.totalLoans ?? props.goalProgress;
 		return `${currentProgress} / ${goalTarget.value}`;
 	}
-	// eslint-disable-next-line max-len
-	return props.goal?.totalLoans > ONE_K_THRESHOLD ? numeral(props.goal?.totalLoans ?? 0).format('0.0a') : props.goal?.totalLoans ?? 0;
+	// Cap completed tiered badge display at max 100 (matching max loans needed for all tiers)
+	const totalLoans = Math.min(props.goal?.totalLoans ?? 0, MAX_TIERED_BADGE_LOANS);
+	return totalLoans > ONE_K_THRESHOLD ? numeral(totalLoans).format('0.0a') : totalLoans;
 });
 
 const tag = computed(() => {
