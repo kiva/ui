@@ -189,12 +189,8 @@ onMounted(() => {
 		@apply md:!tw-mb-2
 	}
 
-	.tw-bg-primary:has(#kvLightboxBody) {
-		height: 90%;
-
-		@screen md {
-			height: auto;
-		}
+	#kvLightboxBody {
+		@apply tw-overflow-x-hidden;
 	}
 
 	.impact-insight-carousel div:has(.impact-insight-slide) {
