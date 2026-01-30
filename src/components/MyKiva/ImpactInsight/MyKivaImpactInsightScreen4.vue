@@ -7,7 +7,7 @@
 			<div
 				class="tw-flex tw-flex-col tw-items-center
 						md:tw-flex-row md:tw-items-center md:!tw-justify-center"
-				:class="isLoanPartner ? 'four-rings-gap' : 'three-rings-gap'"
+				:class="isLoanPartner ? 'tw-gap-4 md:tw-gap-11' : 'tw-gap-4 md:tw-gap-14'"
 			>
 				<!-- 4 rings layout (when partner exists) -->
 				<div
@@ -178,24 +178,6 @@ const description = computed(() => {
 	@screen md {
 		min-height: 168px;
 		min-width: 168px;
-	}
-}
-
-/* Gap styles for 4 rings */
-.four-rings-gap {
-	gap: 2rem;
-
-	@screen md {
-		gap: 5.5rem;
-	}
-}
-
-/* Gap styles for 3 rings (same as Screen3) */
-.three-rings-gap {
-	gap: 3.5rem;
-
-	@screen md {
-		gap: 7rem;
 	}
 }
 
