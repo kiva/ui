@@ -346,10 +346,46 @@ describe('myKivaUtils.js', () => {
 				set: vi.fn(),
 			};
 			const postLendingEnabled = true;
+			const totalLoans = 5;
+
+			setPostLendingCardCookie(cookieStore, postLendingEnabled, totalLoans);
+
+			expect(cookieStore.set).toHaveBeenCalledWith(POST_LENDING_NEXT_STEPS_COOKIE, 'true', { path: '/' });
+		});
+
+		it('should not set the post lending card cookie if post lending is not enabled', () => {
+			const cookieStore = {
+				set: vi.fn(),
+			};
+			const postLendingEnabled = false;
 
 			setPostLendingCardCookie(cookieStore, postLendingEnabled);
 
-			expect(cookieStore.set).toHaveBeenCalledWith(POST_LENDING_NEXT_STEPS_COOKIE, 'true', { path: '/' });
+			expect(cookieStore.set).not.toHaveBeenCalled();
+		});
+
+		it('should not set the post lending card cookie if post lending is enabled, but no loans were made', () => {
+			const cookieStore = {
+				set: vi.fn(),
+			};
+			const postLendingEnabled = true;
+			const totalLoans = 0;
+
+			setPostLendingCardCookie(cookieStore, postLendingEnabled, totalLoans);
+
+			expect(cookieStore.set).not.toHaveBeenCalled();
+		});
+
+		it('should not set the post lending card cookie if post lending is enabled, but loans is undefined', () => {
+			const cookieStore = {
+				set: vi.fn(),
+			};
+			const postLendingEnabled = true;
+			const totalLoans = undefined;
+
+			setPostLendingCardCookie(cookieStore, postLendingEnabled, totalLoans);
+
+			expect(cookieStore.set).not.toHaveBeenCalled();
 		});
 
 		it('should not set the post lending card cookie if post lending is not enabled', () => {

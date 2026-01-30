@@ -128,10 +128,12 @@ export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, myKivaFlagEnabled, coo
  * Set session cookie for post lending card cookie to show cards in MyKiva
  *
  * @param cookieStore The cookie store
+ * @param postLendingEnabled Whether the post lending next steps is enabled
+ * @param totalLoans The total number of loans the user has made
  */
-export const setPostLendingCardCookie = (cookieStore, postLendingEnabled) => {
+export const setPostLendingCardCookie = (cookieStore, postLendingEnabled, totalLoans) => {
 	// Only add the session cookie if the user is a guest and postLendingEnabled is enabled
-	if (postLendingEnabled) {
+	if (postLendingEnabled && totalLoans > 0) {
 		cookieStore?.set(POST_LENDING_NEXT_STEPS_COOKIE, 'true', { path: '/' });
 	}
 };
