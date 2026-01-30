@@ -144,10 +144,8 @@ import useBadgeModal,
 import { KvUserAvatar } from '@kiva/kv-components';
 import KvIcon from '#src/components/Kv/KvIcon';
 import ChooseCheckmark from '#src/assets/inline-svgs/covid-response/choose-checkmark.svg';
-import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
+import useBadgeData, { ID_WOMENS_EQUALITY, MAX_TIERED_BADGE_LOANS } from '#src/composables/useBadgeData';
 import BadgeContainer from './BadgeContainer';
-
-const MAX_TIERED_BADGE_LOANS = 100;
 
 const props = defineProps({
 	badge: {

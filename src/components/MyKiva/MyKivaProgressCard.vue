@@ -57,7 +57,7 @@ import { computed } from 'vue';
 import KvIcon from '#src/components/Kv/KvIcon';
 import KvButton from '#src/components/Kv/KvButton';
 import {
-	ID_WOMENS_EQUALITY, ID_BASIC_NEEDS, ID_CLIMATE_ACTION, ID_REFUGEE_EQUALITY
+	ID_WOMENS_EQUALITY, ID_BASIC_NEEDS, ID_CLIMATE_ACTION, ID_REFUGEE_EQUALITY, MAX_TIERED_BADGE_LOANS
 } from '#src/composables/useBadgeData';
 import numeral from 'numeral';
 import { metaGlobReader } from '#src/util/importHelpers';
@@ -66,7 +66,6 @@ const bgCardImgRequire = import.meta.glob('/src/assets/images/my-kiva/goal-progr
 const bgCardImages = metaGlobReader(bgCardImgRequire, '/src/assets/images/my-kiva/goal-progress-texture/');
 
 const COMPLETED_GOAL_THRESHOLD = 100;
-const MAX_TIERED_BADGE_LOANS = 100;
 const ONE_K_THRESHOLD = 1000;
 
 const props = defineProps({
