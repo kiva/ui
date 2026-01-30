@@ -35,15 +35,16 @@
 					</div>
 				</div>
 				<div
-					class="tw-px-4 md:!tw-px-0 screen-description"
+					class="tw-px-0 screen-description"
 				>
 					<p
 						class="tw-rounded-2xl tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3
 							tw-text-base tw-leading-relaxed tw-bg-gray-100 tw-rounded-md md:tw-text-lg"
 					>
 						{{ name }} isn't on this journey alone. They're working with a
-						Kiva lending partner that's already helped
-						<strong class="tw-text-brand">{{ helpedPeopleInCountry }}</strong> people in their region.
+						Kiva lending partner that's already given
+						<strong class="tw-text-brand">{{ loansPosted }}</strong> loans to
+						support their region.
 					</p>
 				</div>
 			</div>
@@ -68,9 +69,8 @@ const name = computed(() => {
 	return props.latestLoan?.name || '';
 });
 
-const helpedPeopleInCountry = computed(() => {
-	// pending BE change to get helpedPeopleInCountry field, on MP-2431 (update storybook when done)
-	return numeral(46716).format('0,0[.]00');
+const loansPosted = computed(() => {
+	return numeral(props.latestLoan?.partner?.loansPosted || 0).format('0,0[.]00');
 });
 
 </script>

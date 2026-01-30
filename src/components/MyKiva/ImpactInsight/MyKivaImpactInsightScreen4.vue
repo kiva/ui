@@ -1,11 +1,17 @@
 <template>
-	<section class="tw-w-full tw-px-2 md:tw-pl-7 md:tw-pr-3 impact-insight-slide">
+	<section
+		class="tw-w-full tw-px-2 md:tw-pr-3 impact-insight-slide"
+		:class="isLoanPartner ? 'md:tw-pl-7' : 'md:tw-pl-10'"
+	>
 		<div class="tw-mx-auto md:!tw-max-w-4xl">
 			<div
 				class="tw-flex tw-flex-col tw-items-center
 						md:tw-flex-row md:tw-items-center md:!tw-justify-center"
+				:class="isLoanPartner ? 'tw-gap-4 md:tw-gap-11' : 'tw-gap-4 md:tw-gap-14'"
 			>
+				<!-- 4 rings layout (when partner exists) -->
 				<div
+					v-if="isLoanPartner"
 					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-stone-2
 							tw-bg-stone-1 tw-text-center min-stone-circle-size"
 				>
@@ -39,6 +45,37 @@
 						</div>
 					</div>
 				</div>
+				<!-- 3 rings layout (when no partner) -->
+				<div
+					v-else
+					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-desert-rose-2
+							tw-bg-danger-highlight tw-text-center min-ext-circle-size"
+				>
+					<div
+						class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-marigold
+							tw-text-center min-big-circle-size"
+					>
+						<div
+							class="tw-flex tw-items-center tw-justify-center tw-rounded-full
+							tw-border-4 tw-border-brand-500 tw-text-center min-circle-size"
+						>
+							<div class="tw-items-center tw-gap-3">
+								<div
+									class="tw-h-6.5 tw-w-6.5 tw-overflow-hidden tw-my-0
+										tw-mx-auto md:!tw-h-8 md:!tw-w-8"
+								>
+									<IconGlobeDark
+										class="tw-w-full tw-h-full tw-object-cover" viewBox="0 0 56 56"
+									/>
+								</div>
+
+								<div class="tw-text-lg tw-font-semibold tw-text-slate-900">
+									<strong>Global change</strong>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 				<div
 					class="tw-px-0 screen-description"
 				>
@@ -65,6 +102,10 @@ const props = defineProps({
 	}
 });
 
+const isLoanPartner = computed(() => {
+	return !!props.latestLoan?.partner?.loansPosted;
+});
+
 const description = computed(() => {
 	const text = props.latestLoan?.gender === 'female'
 		? '<strong class="tw-text-brand">8 out of 10 women</strong> earned more income after getting their loan'
@@ -77,6 +118,7 @@ const description = computed(() => {
 </script>
 
 <style lang="postcss" scoped>
+/* 4 rings styles */
 .min-stone-circle-size {
 	min-height: 291px;
 	min-width: 291px;
@@ -107,6 +149,28 @@ const description = computed(() => {
 	}
 }
 
+/* 3 rings styles (same as Screen3) */
+.min-ext-circle-size {
+	min-height: 243px;
+	min-width: 243px;
+
+	@screen md {
+		min-height: 268px;
+		min-width: 268px;
+	}
+}
+
+.min-big-circle-size {
+	min-height: 194px;
+	min-width: 194px;
+
+	@screen md {
+		min-height: 218px;
+		min-width: 218px;
+	}
+}
+
+/* Shared inner circle */
 .min-circle-size {
 	min-height: 145px;
 	min-width: 145px;
@@ -114,14 +178,6 @@ const description = computed(() => {
 	@screen md {
 		min-height: 168px;
 		min-width: 168px;
-	}
-}
-
-div:has(.screen-description) {
-	gap: 2rem;
-
-	@screen md {
-		gap: 5.5rem;
 	}
 }
 

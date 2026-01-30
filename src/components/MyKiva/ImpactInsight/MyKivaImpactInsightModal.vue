@@ -38,9 +38,16 @@
 					<MyKivaImpactInsightScreen2 :latest-loan="latestLoan" />
 				</template>
 				<template #slide3>
-					<MyKivaImpactInsightScreen3 :latest-loan="latestLoan" />
+					<MyKivaImpactInsightScreen3
+						v-if="isLoanPartner"
+						:latest-loan="latestLoan"
+					/>
+					<MyKivaImpactInsightScreen4
+						v-else
+						:latest-loan="latestLoan"
+					/>
 				</template>
-				<template #slide4>
+				<template v-if="isLoanPartner" #slide4>
 					<MyKivaImpactInsightScreen4 :latest-loan="latestLoan" />
 				</template>
 			</KvCarousel>
@@ -110,14 +117,19 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const currentSlide = ref(0);
 const carouselRef = ref(null);
 
-const totalSlides = 4;
 const { isMobile } = useBreakpoints();
+
+const isLoanPartner = computed(() => {
+	return !!props.latestLoan?.partner?.loansPosted;
+});
+
+const totalSlides = computed(() => (isLoanPartner.value ? 4 : 3));
 
 const borrowerName = computed(() => {
 	return formatPossessiveName(props.latestLoan?.name) || '';
 });
 
-const isLastSlide = computed(() => currentSlide.value === totalSlides - 1);
+const isLastSlide = computed(() => currentSlide.value === totalSlides.value - 1);
 
 const handleTrackEvent = () => {
 	$kvTrackEvent('portfolio', 'view', `impact-education-screen-${currentSlide.value + 1}`);
@@ -139,7 +151,7 @@ const goToPrev = () => {
 };
 
 const goToNext = () => {
-	if (currentSlide.value < totalSlides - 1) {
+	if (currentSlide.value < totalSlides.value - 1) {
 		const newIndex = currentSlide.value + 1;
 		carouselRef.value?.goToSlide(newIndex);
 		currentSlide.value = newIndex;
@@ -171,23 +183,14 @@ onMounted(() => {
 </script>
 
 <style lang="postcss">
-.impact-insight-modal ::v-deep #kvLightboxBody {
-	height: 771px;
-	width: 100%;
-
-	@screen md {
-		height: 384px;
-		width: 952px;
-	}
-}
 
 .impact-insight-modal {
 	.impact-insight-carousel {
 		@apply md:!tw-mb-2
 	}
 
-	.tw-bg-primary:has(#kvLightboxBody) {
-		max-height: 528px;
+	#kvLightboxBody {
+		@apply tw-overflow-x-hidden;
 	}
 
 	.impact-insight-carousel div:has(.impact-insight-slide) {

@@ -31,7 +31,7 @@
 					</div>
 				</div>
 				<div
-					class="tw-px-4 md:!tw-px-0 screen-description"
+					class="tw-px-0 screen-description"
 				>
 					<p
 						v-html="loanDescription"
