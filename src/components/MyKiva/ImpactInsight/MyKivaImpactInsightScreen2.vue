@@ -29,7 +29,7 @@
 					</div>
 				</div>
 				<div
-					class="tw-px-4 md:!tw-px-0 screen-description"
+					class="tw-px-0 screen-description"
 				>
 					<p
 						class="tw-rounded-2xl tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3

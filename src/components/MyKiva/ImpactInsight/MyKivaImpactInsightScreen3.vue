@@ -35,15 +35,16 @@
 					</div>
 				</div>
 				<div
-					class="tw-px-4 md:!tw-px-0 screen-description"
+					class="tw-px-0 screen-description"
 				>
 					<p
 						class="tw-rounded-2xl tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3
 							tw-text-base tw-leading-relaxed tw-bg-gray-100 tw-rounded-md md:tw-text-lg"
 					>
 						{{ name }} isn't on this journey alone. They're working with a
-						Kiva lending partner that's already helped
-						<strong class="tw-text-brand">{{ helpedPeopleInCountry }}</strong> people in their region.
+						Kiva lending partner that's already given
+						<strong class="tw-text-brand">{{ helpedPeopleInCountry }}</strong> loans to
+						support their region.
 					</p>
 				</div>
 			</div>
