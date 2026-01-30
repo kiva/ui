@@ -1,0 +1,19 @@
+mutation updateContactRecord(
+	$streetAddress: String
+	$city: String
+	$state: String
+	$postalCode: String
+	$countryIsoCode: String
+) {
+	my {
+		updateContactRecord(
+			streetAddress: $streetAddress
+			city: $city
+			state: $state
+			postalCode: $postalCode
+			countryIsoCode: $countryIsoCode
+		) {
+			success
+		}
+	}
+}
