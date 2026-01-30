@@ -163,6 +163,63 @@ describe('GoalSelector', () => {
 		await expectCategoryOptions('category-support-all', getExpectedGoalOptions({ useDefault: true }));
 	});
 
+	it('renders the selected category name in the title when the user changes category', async () => {
+		const tieredAchievements = [
+			{
+				id: ID_WOMENS_EQUALITY,
+				progressForYear: 2,
+			},
+			{
+				id: ID_REFUGEE_EQUALITY,
+				progressForYear: 3,
+			},
+		];
+
+		const user = userEvent.setup();
+		const { getByRole, getByTestId } = render(TestWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: { tieredAchievements },
+		});
+
+		await flushPromises();
+
+		const getTitleText = () => getByRole('heading', { level: 2 }).innerHTML;
+
+		// Initial category is Women
+		expect(getTitleText()).toContain('women');
+
+		// Refugees
+		await user.click(getByTestId('category-refugees'));
+		await flushPromises();
+		expect(getTitleText()).toContain('refugees');
+
+		// Climate Action
+		await user.click(getByTestId('category-climate'));
+		await flushPromises();
+		expect(getTitleText()).toContain('climate action');
+
+		// U.S. Entrepreneurs
+		await user.click(getByTestId('category-us'));
+		await flushPromises();
+		expect(getTitleText()).toContain('u.s. entrepreneurs');
+
+		// Basic Needs
+		await user.click(getByTestId('category-basic-needs'));
+		await flushPromises();
+		expect(getTitleText()).toContain('basic needs');
+
+		// Choose as I go (support all)
+		await user.click(getByTestId('category-support-all'));
+		await flushPromises();
+		expect(getTitleText()).toBe('How many loans will you make this year?');
+	});
+
 	it('uses YTD loans as base when they exceed last year', async () => {
 		const tieredAchievements = [
 			{
