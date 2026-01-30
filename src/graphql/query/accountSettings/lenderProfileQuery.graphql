@@ -1,0 +1,29 @@
+query lenderProfileQuery {
+	my {
+		id
+		userAccount {
+			id
+			firstName
+			publicId
+			public
+		}
+		lender {
+			id
+			name
+			publicId
+			lenderPage {
+				city
+				state
+				country {
+					id
+					isoCode
+					name
+				}
+				occupation
+				url
+				loanBecause
+				otherInfo
+			}
+		}
+	}
+}

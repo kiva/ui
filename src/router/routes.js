@@ -597,6 +597,14 @@ export default [
 		}
 	},
 	{
+		path: '/settings/account-beta',
+		component: () => import('#src/pages/Settings/AccountSettings/AccountSettingsPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		},
+	},
+	{
 		path: '/settings/credit-beta',
 		component: () => import('#src/pages/Settings/CreditSettings/CreditSettingsPage'),
 		meta: {
