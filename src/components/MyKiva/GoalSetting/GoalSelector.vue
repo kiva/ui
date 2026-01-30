@@ -366,7 +366,7 @@ const updateGoalOptions = () => {
 		goalOptions.value = DEFAULT_GOAL_OPTIONS;
 	}
 
-	// Keep previous selection if still valid, otherwise select the middle option
+	// Keep previous selection
 	resetOptionSelection(selectedIdx.value);
 	emit('set-goal-target', selectedTarget.value);
 };
