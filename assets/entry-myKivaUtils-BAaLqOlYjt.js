@@ -1,0 +1,5 @@
+const _=`fragment experimentVersion on Experiment {
+	id
+	version
+}
+`,r={kind:"Document",definitions:[{kind:"FragmentDefinition",name:{kind:"Name",value:"experimentVersion"},typeCondition:{kind:"NamedType",name:{kind:"Name",value:"Experiment"}},directives:[],selectionSet:{kind:"SelectionSet",selections:[{kind:"Field",name:{kind:"Name",value:"id"},arguments:[],directives:[]},{kind:"Field",name:{kind:"Name",value:"version"},arguments:[],directives:[]}]}}],loc:{start:0,end:96,source:{name:"GraphQL request",locationOffset:{line:1,column:1},body:_}}},l="my_kiva_jan_2025",c="general.my_kiva_all_users.value",d="myKivaGuestAssignment",E="loan_purchase",u="my_kiva_post_lending_next_steps",p=(n,e,s)=>{s&&e&&(n==null||n.set(d,"true",{path:"/"}))},v=n=>!!(n!=null&&n.get(d)),g=n=>{const e=new Date;e.setMonth(e.getMonth()+2),n==null||n.set("mykivaredirectv2","true",e)},N=(n,e,s,t)=>{if(s){const i=v(t),{version:a}=n.readFragment({id:`Experiment:${l}`,fragment:r})??{},m=i||a==="b";return e("event-tracking","EXP-MP-1235-Jan2025",i?"b":a),m&&g(t),m}return!1},y=(n,e)=>{e&&(n==null||n.set(u,"true",{path:"/"}))};export{c as M,E as T,r as _,y as a,N as g,p as s};
