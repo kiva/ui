@@ -162,7 +162,7 @@ const DEFAULT_GOAL_OPTIONS = [
 		loansNumber: 4,
 		highlightedText: 'Recommended',
 		optionText: 'Extra mile',
-		selected: true,
+		selected: false,
 	},
 	{
 		loansNumber: 5,
@@ -176,7 +176,7 @@ const goalOptions = ref(DEFAULT_GOAL_OPTIONS);
 const loadingCurrentYear = ref(false);
 const fetchedCurrentYearLoans = ref(null);
 const prevSupportAllCount = ref(0);
-const selectedIdx = ref(0);
+const selectedIdx = ref(1);
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -265,11 +265,15 @@ const selectedTarget = computed(() => {
 	return selectedOption.loansNumber;
 });
 
-const updateOptionSelection = selectedIndex => {
+const resetOptionSelection = selectedIndex => {
 	goalOptions.value = goalOptions.value.map((option, index) => ({
 		...option,
 		selected: index === selectedIndex,
 	}));
+};
+
+const updateOptionSelection = selectedIndex => {
+	resetOptionSelection(selectedIndex);
 	selectedIdx.value = selectedIndex;
 	const trackingProperties = ['same-as-last-year', 'a-little-more', 'double'];
 	$kvTrackEvent(
@@ -363,7 +367,7 @@ const updateGoalOptions = () => {
 	}
 
 	// Keep previous selection if still valid, otherwise select the middle option
-	goalOptions.value[selectedIdx.value].selected = true;
+	resetOptionSelection(selectedIdx.value);
 	emit('set-goal-target', selectedTarget.value);
 };
 
