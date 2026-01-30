@@ -2121,6 +2121,31 @@ describe('useGoalData', () => {
 			expect(result).toBe(7);
 		});
 
+		it('should fetch support-all stats via apollo when category is ID_SUPPORT_ALL', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						lendingStats: {
+							loanStatsByYear: {
+								count: 15,
+								amount: 300,
+							},
+						},
+					},
+				},
+			});
+
+			const result = await composable.getCategoryLoanCountByYear(ID_SUPPORT_ALL, 2026, 'network-only');
+
+			expect(mockApollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					variables: { year: 2026 },
+					fetchPolicy: 'network-only',
+				}),
+			);
+			expect(result).toBe(15);
+		});
+
 		it('should return 0 if category not found', async () => {
 			mockApollo.query = vi.fn().mockResolvedValue({
 				data: {
@@ -2926,6 +2951,57 @@ describe('useGoalData', () => {
 			// totalLoanCount (15) - loanTotalAtStart (10) = 5 progress
 			// 5/20 * 100 = 25%
 			expect(composable.goalProgressPercentage.value).toBe(25);
+		});
+	});
+
+	describe('getSupportAllLoanCountByYear', () => {
+		it('should return loan count for ID_SUPPORT_ALL category', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						lendingStats: {
+							loanStatsByYear: {
+								count: 18,
+								amount: 360,
+							},
+						},
+					},
+				},
+			});
+
+			const result = await composable.getSupportAllLoanCountByYear(2026, 'network-only');
+
+			expect(mockApollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					variables: { year: 2026 },
+					fetchPolicy: 'network-only',
+				}),
+			);
+			expect(result).toBe(18);
+		});
+
+		it('should return 0 when loanStatsByYear is null', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						lendingStats: {
+							loanStatsByYear: null,
+						},
+					},
+				},
+			});
+
+			const result = await composable.getSupportAllLoanCountByYear(2026);
+
+			expect(result).toBe(0);
+		});
+
+		it('should return null on error', async () => {
+			mockApollo.query = vi.fn().mockRejectedValue(new Error('Network error'));
+
+			const result = await composable.getSupportAllLoanCountByYear(2026);
+
+			expect(result).toBeNull();
 		});
 	});
 });
