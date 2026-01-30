@@ -147,6 +147,8 @@ import ChooseCheckmark from '#src/assets/inline-svgs/covid-response/choose-check
 import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import BadgeContainer from './BadgeContainer';
 
+const MAX_TIERED_BADGE_LOANS = 100;
+
 const props = defineProps({
 	badge: {
 		type: Object,
@@ -243,7 +245,10 @@ const journeyLoans = computed(() => {
 	return (props.badge.achievementData?.loanPurchases ?? [])
 		?.map(purchase => purchase.loan).filter(loan => loan != null);
 });
-const journeyTotalLoans = computed(() => props.badge.achievementData?.totalProgressToAchievement ?? 0);
+const journeyTotalLoans = computed(() => {
+	const total = props.badge.achievementData?.totalProgressToAchievement ?? 0;
+	return Math.min(total, MAX_TIERED_BADGE_LOANS);
+});
 const extraLoanCount = computed(() => journeyTotalLoans.value - 3);
 
 const journeyLoansNames = computed(() => {

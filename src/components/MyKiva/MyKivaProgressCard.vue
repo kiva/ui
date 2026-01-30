@@ -66,6 +66,7 @@ const bgCardImgRequire = import.meta.glob('/src/assets/images/my-kiva/goal-progr
 const bgCardImages = metaGlobReader(bgCardImgRequire, '/src/assets/images/my-kiva/goal-progress-texture/');
 
 const COMPLETED_GOAL_THRESHOLD = 100;
+const MAX_TIERED_BADGE_LOANS = 100;
 const ONE_K_THRESHOLD = 1000;
 
 const props = defineProps({
@@ -159,8 +160,9 @@ const progress = computed(() => {
 		const currentProgress = props.goal?.totalLoans ?? props.goalProgress;
 		return `${currentProgress} / ${goalTarget.value}`;
 	}
-	// eslint-disable-next-line max-len
-	return props.goal?.totalLoans > ONE_K_THRESHOLD ? numeral(props.goal?.totalLoans ?? 0).format('0.0a') : props.goal?.totalLoans ?? 0;
+	// Cap completed tiered badge display at max 100 (matching max loans needed for all tiers)
+	const totalLoans = Math.min(props.goal?.totalLoans ?? 0, MAX_TIERED_BADGE_LOANS);
+	return totalLoans > ONE_K_THRESHOLD ? numeral(totalLoans).format('0.0a') : totalLoans;
 });
 
 const tag = computed(() => {
