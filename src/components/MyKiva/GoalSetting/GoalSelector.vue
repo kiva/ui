@@ -226,26 +226,27 @@ const titleText = computed(() => {
 	if (props.isGoalSet) {
 		return 'Success! Your goal is set!';
 	}
-	if (loansLastYear.value === 1) {
+	if (loansLastYear.value === 0 || loansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
+		if (props.selectedCategoryId === ID_SUPPORT_ALL) {
+			return 'How many loans will you make this year?';
+		}
 		// eslint-disable-next-line max-len
-		return `Last year, you helped <span class="tw-text-eco-green-3">${loansLastYear.value} woman</span> shape her future!`;
-	}
-	if (loansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
-		// eslint-disable-next-line max-len
-		return `Last year, you helped <span class="tw-text-eco-green-3">${loansLastYear.value} women</span> shape their futures!`;
+		return `How many loans to <span class="tw-text-eco-green-3">${props.selectedCategoryName?.toLowerCase()}</span> will you make this year?`;
 	}
 
 	return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
 });
 
 const subtitleText = computed(() => {
-	let extraText = '';
-	if (loansThisYear.value > 0) {
-		extraText = `You've already made ${loansThisYear.value}.`;
+	if (props.isGoalSet) {
+		return '';
 	}
-	return props.isGoalSet
-		? ''
-		: `How many loans will you make this year? ${extraText}`;
+
+	if (loansThisYear.value > 0) {
+		return `You've already made ${loansThisYear.value} that will count!.`;
+	}
+
+	return '';
 });
 
 const buttonText = computed(() => {
@@ -347,7 +348,7 @@ const updateGoalOptions = () => {
 		goalOptions.value = [
 			{
 				loansNumber: suggestion1,
-				optionText: useYtdAsBase ? 'One more' : 'Same as last year',
+				optionText: useYtdAsBase ? 'One more' : `Same as ${LAST_YEAR_KEY}`,
 				selected: false
 			},
 			{
