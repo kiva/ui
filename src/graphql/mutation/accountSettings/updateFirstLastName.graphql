@@ -1,0 +1,8 @@
+mutation updateFirstLastName($firstName: String, $lastName: String) {
+	my {
+		updateFirstLastName(firstName: $firstName, lastName: $lastName) {
+			success
+			error
+		}
+	}
+}
