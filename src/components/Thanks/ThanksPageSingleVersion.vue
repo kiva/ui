@@ -418,7 +418,7 @@ onMounted(async () => {
 		);
 	}
 
-	setPostLendingCardCookie(cookieStore, props.postLendingNextStepsEnable);
+	setPostLendingCardCookie(cookieStore, props.postLendingNextStepsEnable, props.loans?.length);
 });
 </script>
 
