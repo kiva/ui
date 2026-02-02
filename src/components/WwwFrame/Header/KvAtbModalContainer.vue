@@ -60,14 +60,6 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
-	isNextStepsExpEnabled: {
-		type: Boolean,
-		default: false
-	},
-	goalsV2Enabled: {
-		type: Boolean,
-		default: false
-	},
 });
 
 const { addedLoan } = toRefs(props);
@@ -186,36 +178,34 @@ const newAchievementReached = () => {
 const fetchPostCheckoutAchievements = async loanIds => {
 	const { id: addedLoanId, basketSize } = addedLoan.value;
 	let showAtbGoalMsg = false;
-	if (props.isNextStepsExpEnabled) {
-		await loadGoalData({
-			loans: loansInBasket.value,
-			yearlyProgress: props.goalsV2Enabled,
-		});
-		// Use yearly progress with current year when Goals V2 is enabled, otherwise use all-time progress
-		const year = props.goalsV2Enabled ? new Date().getFullYear() : null;
-		// Increment counter per add-to-basket action
-		const { totalProgress } = await getPostCheckoutProgressByLoans({
-			loans: loanIds.map(id => ({ id })),
-			year,
-			increment: true,
-		});
-		loanGoalProgress.value = totalProgress;
-		const userTarget = userGoal.value?.target || 0;
-		const isOneLoanAwayFromGoal = userTarget - totalProgress === 1;
-		const goalAchieved = loanGoalProgress.value === userTarget;
-		showAtbGoalMsg = isLoanGoal.value && (basketSize < BASKET_LIMIT_SIZE_FOR_EXP
+	await loadGoalData({
+		loans: loansInBasket.value,
+		yearlyProgress: true,
+	});
+	// Use yearly progress with current year
+	const year = new Date().getFullYear();
+	// Increment counter per add-to-basket action
+	const { totalProgress } = await getPostCheckoutProgressByLoans({
+		loans: loanIds.map(id => ({ id })),
+		year,
+		increment: true,
+	});
+	loanGoalProgress.value = totalProgress;
+	const userTarget = userGoal.value?.target || 0;
+	const isOneLoanAwayFromGoal = userTarget - totalProgress === 1;
+	const goalAchieved = loanGoalProgress.value === userTarget;
+	showAtbGoalMsg = isLoanGoal.value && (basketSize < BASKET_LIMIT_SIZE_FOR_EXP
 			|| isOneLoanAwayFromGoal || goalAchieved);
-		if (showAtbGoalMsg) {
-			if (isOneLoanAwayFromGoal) {
-				const loanUrl = getLoanFindingUrl(userGoal.value?.category, router.currentRoute.value);
-				oneLoanAwayFilteredUrl.value = !loanUrl ? router.currentRoute.value.path : loanUrl;
-				oneLoanAwayCategory.value = CATEGORY_TARGETS[userGoal.value?.category];
-				oneAwayText.value = `${userTarget - 1} of ${userTarget}`;
-			}
-			showModalContent.value = true;
-			modalVisible.value = true;
-			return;
+	if (showAtbGoalMsg) {
+		if (isOneLoanAwayFromGoal) {
+			const loanUrl = getLoanFindingUrl(userGoal.value?.category, router.currentRoute.value);
+			oneLoanAwayFilteredUrl.value = !loanUrl ? router.currentRoute.value.path : loanUrl;
+			oneLoanAwayCategory.value = CATEGORY_TARGETS[userGoal.value?.category];
+			oneAwayText.value = `${userTarget - 1} of ${userTarget}`;
 		}
+		showModalContent.value = true;
+		modalVisible.value = true;
+		return;
 	}
 
 	// If added loan is not related to user goal, proceed with achievements logic.
