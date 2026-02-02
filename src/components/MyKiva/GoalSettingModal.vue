@@ -85,7 +85,7 @@ import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
 const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
 
-const emit = defineEmits(['close-goal-modal', 'set-goal']);
+const emit = defineEmits(['close-goal-modal', 'set-goal', 'update-goal-choices']);
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -135,6 +135,20 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	/**
+	 * Controlled is editing flag from parent
+	 */
+	controlledIsEditing: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Controlled selected category from parent
+	 */
+	controlledSelectedCategory: {
+		type: Object,
+		default: () => ({}),
+	},
 });
 
 const { numberOfLoans, isGoalSet } = toRefs(props);
@@ -142,13 +156,13 @@ const { numberOfLoans, isGoalSet } = toRefs(props);
 const formStep = ref(1);
 const showCategories = ref(!props.goalsV2Enabled);
 const selectedLoanNumber = ref(0);
-const isEditing = ref(false);
+const isEditing = ref(props.controlledIsEditing);
 // eslint-disable-next-line max-len
 const selectedGoalNumber = ref(numberOfLoans.value ? numberOfLoans.value : 5); // Default goals to 5 loans for initial MVP
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
-const selectedCategory = ref(categories[0]);
+const selectedCategory = ref(props.controlledSelectedCategory || categories[0]);
 
 const contentComponent = computed(() => {
 	switch (formStep.value) {
@@ -224,6 +238,7 @@ const handleClick = () => {
 		isEditing.value = false;
 		showCategories.value = false;
 		formStep.value = 1;
+		emit('update-goal-choices', selectedCategory.value);
 	} else if (formStep.value === 1 && !props.goalsV2Enabled) {
 		formStep.value += 1;
 		$kvTrackEvent(
