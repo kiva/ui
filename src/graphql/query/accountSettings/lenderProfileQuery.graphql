@@ -11,6 +11,13 @@ query lenderProfileQuery {
 			id
 			name
 			publicId
+			image {
+				hash
+				height
+				id
+				width
+				url(customSize: "w200h200")
+			}
 			lenderPage {
 				city
 				state

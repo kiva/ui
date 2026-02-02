@@ -7,30 +7,12 @@
 			<div
 				v-if="!loading"
 			>
-				<!-- Profile image placeholder - TODO: integrate image upload GraphQL endpoint -->
-				<div class="tw-flex tw-items-start tw-gap-4 tw-mb-4">
-					<div
-						class="tw-flex-shrink-0 tw-w-28 tw-h-28 tw-bg-tertiary tw-rounded
-							tw-flex tw-items-center tw-justify-center"
-					>
-						<KvMaterialIcon
-							class="tw-w-12 tw-h-12 tw-shrink-0 tw-text-secondary"
-							:icon="mdiAccount"
-						/>
-					</div>
-					<div class="tw-flex tw-flex-col tw-gap-2">
-						<kv-button
-							variant="secondary"
-							:disabled="isSaving"
-							class="tw-self-start"
-						>
-							Choose image
-						</kv-button>
-						<p class="tw-text-small tw-text-secondary">
-							(Must be a .gif, .jpg or .png)
-						</p>
-					</div>
-				</div>
+				<!-- Profile image -->
+				<ProfileImageUpload
+					:image-url="lenderImageUrl"
+					:disabled="isSaving"
+					@update:image-id="updateForm('imageId', $event)"
+				/>
 
 				<!-- Lender page URL -->
 				<div class="tw-mb-4">
@@ -227,17 +209,19 @@
 <script>
 import logFormatter from '#src/util/logFormatter';
 
-import { mdiAccount } from '@mdi/js';
 import {
-	KvButton, KvCheckbox, KvMaterialIcon, KvSelect, KvTextInput
+	KvButton, KvCheckbox, KvSelect, KvTextInput
 } from '@kiva/kv-components';
+import ProfileImageUpload from '#src/components/Settings/ProfileImageUpload';
 import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
 import { getCountryOptions } from '#src/util/countryOptions';
 import lenderProfileQuery from '#src/graphql/query/accountSettings/lenderProfileQuery.graphql';
+import updateProfileImageMutation from '#src/graphql/mutation/accountSettings/updateProfileImage.graphql';
 
 const defaultForm = () => ({
 	name: '',
 	publicId: '',
+	imageId: null,
 	city: '',
 	state: '',
 	countryIsoCode: '',
@@ -253,10 +237,10 @@ export default {
 	components: {
 		KvButton,
 		KvCheckbox,
-		KvMaterialIcon,
 		KvSelect,
 		KvSettingsCard,
 		KvTextInput,
+		ProfileImageUpload,
 	},
 	props: {
 		lenderPageUrlBase: {
@@ -271,14 +255,18 @@ export default {
 			preFetch: true,
 			result({ data }) {
 				this.loading = false;
+				console.log('lenderProfileQuery result', data?.my?.lender ?? data);
 				const userAccount = data?.my?.userAccount ?? {};
 				const lender = data?.my?.lender ?? {};
 				const lenderPage = lender?.lenderPage ?? {};
 				const country = lenderPage?.country ?? {};
+				const image = lender?.image ?? {};
 
+				this.lenderImageUrl = image.url ?? '';
 				this.localForm = {
 					name: lender.name ?? userAccount.firstName ?? '',
 					publicId: lender.publicId ?? userAccount.publicId ?? '',
+					imageId: image.id ?? null,
 					city: lenderPage.city ?? '',
 					state: lenderPage.state ?? '',
 					countryIsoCode: country?.isoCode ?? '',
@@ -299,7 +287,7 @@ export default {
 			localForm: defaultForm(),
 			initialForm: defaultForm(),
 			countries: getCountryOptions(),
-			mdiAccount,
+			lenderImageUrl: '',
 		};
 	},
 	computed: {
@@ -315,8 +303,24 @@ export default {
 		async save() {
 			this.isSaving = true;
 			try {
-				// TODO: Integrate mutation(s) for all My Lender Profile fields
+				const imageIdChanged = this.localForm.imageId != null
+					&& this.localForm.imageId !== this.initialForm.imageId;
+				if (imageIdChanged) {
+					const result = await this.apollo.mutate({
+						mutation: updateProfileImageMutation,
+						variables: { imageId: this.localForm.imageId },
+						refetchQueries: [{ query: lenderProfileQuery }],
+					});
+					const updateResult = result?.data?.my?.updateProfileImage;
+					if (updateResult && !updateResult.success) {
+						throw new Error('Failed to update profile image');
+					}
+				}
+				// TODO: Integrate mutation(s) for remaining My Lender Profile fields
 				// (name, publicId, city, state, countryIsoCode, occupation, website, loanBecause, otherInfo, public)
+				if (imageIdChanged) {
+					this.$showTipMsg('Profile image saved successfully');
+				}
 			} catch (error) {
 				logFormatter(error, 'error');
 				this.$showTipMsg('There was a problem saving your lender profile', 'error');

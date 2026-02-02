@@ -1,0 +1,7 @@
+mutation updateProfileImage($imageId: Int!) {
+	my {
+		updateProfileImage(imageId: $imageId) {
+			success
+		}
+	}
+}
