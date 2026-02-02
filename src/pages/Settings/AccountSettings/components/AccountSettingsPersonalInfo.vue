@@ -4,16 +4,10 @@
 		title="Personal Info"
 	>
 		<template #content>
-			<p
-				v-if="!loading"
-				class="tw-mb-4 tw-text-small"
-			>
+			<p class="tw-mb-4 tw-text-small">
 				* denotes a required field
 			</p>
-			<form
-				v-if="!loading"
-				@submit.prevent="save"
-			>
+			<form @submit.prevent="save">
 				<div class="tw-flex tw-flex-wrap tw-gap-4 tw-mb-4">
 					<div>
 						<label for="firstName" class="tw-block tw-mb-1 tw-font-medium">
@@ -91,6 +85,7 @@
 							@update:model-value="updateForm('postalCode', $event)"
 						/>
 					</div>
+					<!-- TODO: Add country list options in once graphql endpoint exists -->
 					<div>
 						<label for="countryIsoCode" class="tw-block tw-mb-1 tw-font-medium">
 							Country
@@ -132,7 +127,6 @@ import logFormatter from '#src/util/logFormatter';
 
 import { KvButton, KvSelect, KvTextInput } from '@kiva/kv-components';
 import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
-import countryListQuery from '#src/graphql/query/countryList.graphql';
 import personalInfoQuery from '#src/graphql/query/accountSettings/personalInfoQuery.graphql';
 import updateContactRecordMutation from '#src/graphql/mutation/accountSettings/updateContactRecord.graphql';
 import updateFirstLastNameMutation from '#src/graphql/mutation/accountSettings/updateFirstLastName.graphql';
@@ -161,7 +155,6 @@ export default {
 			query: personalInfoQuery,
 			preFetch: true,
 			result({ data }) {
-				this.loading = false;
 				const userAccount = data?.my?.userAccount ?? {};
 				const contactRecord = userAccount?.contactRecord ?? {};
 				this.localForm = {
@@ -175,20 +168,9 @@ export default {
 				};
 			},
 		},
-		{
-			query: countryListQuery,
-			preFetch: true,
-			result({ data }) {
-				this.countries = (data?.lend?.countryFacets ?? [])
-					.map(facet => facet.country)
-					.filter(country => country?.name && country?.isoCode)
-					.sort((a, b) => a.name.localeCompare(b.name));
-			},
-		},
 	],
 	data() {
 		return {
-			loading: true,
 			isSaving: false,
 			localForm: defaultForm(),
 			countries: [],
