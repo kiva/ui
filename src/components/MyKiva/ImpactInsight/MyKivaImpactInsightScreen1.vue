@@ -19,8 +19,8 @@
 								:alt="name"
 								:hash="hash"
 								:aspect-ratio="2 / 2"
-								:default-image="{ width: 60 }"
-								:images="[{ width: 60 }]"
+								:default-image="{ width: 80, faceZoom: 50 }"
+								:images="[{ width: 80, faceZoom: 50 }]"
 								:photo-path="$appConfig.photoPath"
 							/>
 						</div>
