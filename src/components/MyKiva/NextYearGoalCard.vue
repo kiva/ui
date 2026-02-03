@@ -29,31 +29,31 @@
 					v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
 					@click="$emit('open-goal-modal')"
 				>
-					Set 2026 goal
+					Set {{ yearToDate }} goal
 				</KvButton>
 			</div>
 			<div v-else class="tw-h-full tw-flex tw-flex-col tw-text-center tw-justify-between">
 				<div class="tw-text-left">
 					<p class="tw-font-medium">
-						Your 2026 Goal
-					</p>
-					<p class="tw-text-secondary">
-						{{ goalDescription }}
+						Your {{ yearToDate }} goal to {{ categoryName }}
 					</p>
 				</div>
-				<div class="tw-relative tw-z-docked tw-mx-auto">
+				<div class="tw-relative tw-z-docked tw-mx-auto tw-py-2.5">
 					<KvProgressCircle
 						class="tw-z-2 tw-py-0.5"
-						:stroke-width="20"
+						:stroke-width="22"
 						:value="goalProgressPercentage"
 						:max="goalLoans"
 						:rotate="180"
-						style="height: 170px; width: 170px;"
+						style="height: 190px; width: 190px;"
 					/>
 					<div class="tw-absolute tw-flex tw-flex-col tw-items-center tw-justify-center tw-inset-0 tw--mt-1">
-						<h1>
-							{{ visibleGoalLoans }}
-						</h1>
+						<div class="tw-flex tw-items-baseline tw-justify-center tw-gap-0">
+							<h1>{{ visibleGoalLoans }}</h1>
+							<h2 class="tw-text-secondary">
+								/{{ goalLoans }}
+							</h2>
+						</div>
 						<p class="tw-text-secondary">
 							{{ progressCircleDesc }}
 						</p>
@@ -83,7 +83,6 @@ import {
 import {
 	KvButton, KvLoadingPlaceholder
 } from '@kiva/kv-components';
-import useBadgeData from '#src/composables/useBadgeData';
 import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import { useRouter } from 'vue-router';
 import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
@@ -119,7 +118,6 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 const goalData = inject('goalData');
 
-const { ID_SUPPORT_ALL } = useBadgeData();
 const {
 	getCtaHref,
 	getGoalDisplayName,
@@ -131,6 +129,11 @@ const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoa
 
 const goalLoans = computed(() => {
 	return props.userGoal?.target || 0;
+});
+
+const yearToDate = computed(() => {
+	const currentYear = new Date().getFullYear();
+	return currentYear;
 });
 
 const visibleGoalLoans = computed(() => {
@@ -157,7 +160,7 @@ const progressDescription = computed(() => {
 	} if (goalProgressPercentage.value < COMPLETED_GOAL_THRESHOLD) {
 		return 'You’ve brought so many dreams<br>within reach. Finish strong!';
 	}
-	return `Incredible! You reached your 2026<br>goal and changed ${goalLoans.value} lives!`;
+	return `Incredible! You reached your ${yearToDate.value} <br>goal and changed ${goalLoans.value} lives!`;
 });
 
 const btnCta = computed(() => {
@@ -169,14 +172,6 @@ const btnCta = computed(() => {
 
 const categoryName = computed(() => {
 	return getGoalDisplayName(props.userGoal?.target, props.userGoal?.category);
-});
-
-const goalDescription = computed(() => {
-	const name = categoryName.value;
-	if (props.userGoal?.category === ID_SUPPORT_ALL || name.endsWith('loans')) {
-		return `${goalLoans.value} ${name}`;
-	}
-	return `${goalLoans.value} loans to ${name}`;
 });
 
 const ctaHref = computed(() => {
@@ -208,7 +203,7 @@ const handleContinueClick = () => {
 	router.push(ctaHref.value);
 };
 
-const progressCircleDesc = computed(() => `loan${props.goalProgress > 1 || props.goalProgress === 0 ? 's' : ''} made`);
+const progressCircleDesc = computed(() => `Loan${props.goalProgress > 1 || props.goalProgress === 0 ? 's' : ''}`);
 
 watch(() => [props.loading, props.hideGoalCard], ([newLoading, newHideGoalCard], [oldLoading]) => {
 	if (!newLoading && oldLoading && !newHideGoalCard) {
