@@ -57,7 +57,6 @@
 						<MyKivaEmailUpdatesCard
 							v-if="shouldShowEmailMarketingCard && !acceptedEmailMarketingUpdates"
 							key="acceptEmails"
-							v-kv-track-event="['portfolio', 'view', 'next-step-email-option']"
 							:loans="loans"
 							:latest-loan="latestLoan"
 							@accept-email-updates="acceptedEmailMarketingUpdates = true"
