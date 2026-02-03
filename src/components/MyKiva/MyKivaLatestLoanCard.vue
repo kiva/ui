@@ -47,7 +47,7 @@
 					Step closer to {{ borrowerName }} story
 				</h3>
 				<p class="tw-font-medium tw-text-base tw-pt-0.5">
-					See how your loan improves their lives.
+					See how your loan improves {{ pronoun }}.
 				</p>
 			</div>
 			<KvButton
@@ -90,6 +90,10 @@ const mapLat = computed(() => {
 
 const mapLong = computed(() => {
 	return props.loan?.geocode?.country?.geocode?.longitude || 0;
+});
+
+const pronoun = computed(() => {
+	return props.loan?.borrowerCount > 1 ? 'their lives' : 'their life';
 });
 
 const borrowerName = computed(() => {
