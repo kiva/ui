@@ -285,7 +285,7 @@ const isSharingModalVisible = ref(false);
 const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
 const acceptedEmailMarketingUpdates = ref(false);
 const shouldShowEmailMarketingCard = computed(
-	() => props.postLendingNextStepsEnable && props.inLendingStats
+	() => props.showPostLendingNextStepsCards && props.postLendingNextStepsEnable && props.inLendingStats
 		&& userHasMailUpdatesOptOut() && (props.loans.length > 0 || props.latestLoan !== null)
 );
 const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
@@ -401,22 +401,33 @@ const orderedSlides = computed(() => {
 		];
 	}
 
+	// Build the priority card slots for post-lending experience
+	const priorityCards = [];
+
+	// Goal card (set or in-progress goal)
 	if (shouldShowGoalCard.value) {
-		// Add empty slide at start for goal card
-		sortedSlides.unshift({});
+		priorityCards.push({}); // Empty object placeholder for goal card component
 	}
 
-	if (showLatestLoan.value) {
-		sortedSlides.splice(1, 0, { isLatestLoan: true });
-	}
-
+	// Email marketing card if user isn't opted in, otherwise Latest Loan card
 	if (shouldShowEmailMarketingCard.value) {
-		sortedSlides.splice(1, 0, { isEmailUpdates: true });
+		priorityCards.push({ isEmailUpdates: true });
+	} else if (showLatestLoan.value) {
+		priorityCards.push({ isLatestLoan: true });
 	}
 
-	if (showSurveyCard.value) {
-		sortedSlides.splice(1, 0, { isSurveyCard: true });
+	// Latest Loan card (if email marketing card is also shown)
+	if (shouldShowEmailMarketingCard.value && showLatestLoan.value) {
+		priorityCards.push({ isLatestLoan: true });
 	}
+
+	// Survey card: shown if no goal card (goal completed) OR user is opted into email marketing
+	if (showSurveyCard.value && (!shouldShowGoalCard.value || !shouldShowEmailMarketingCard.value)) {
+		priorityCards.push({ isSurveyCard: true });
+	}
+
+	// Prepend priority cards to the sorted slides
+	sortedSlides = [...priorityCards, ...sortedSlides];
 
 	if (props.slidesNumber) {
 		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
