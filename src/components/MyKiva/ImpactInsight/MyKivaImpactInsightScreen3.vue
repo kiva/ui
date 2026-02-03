@@ -43,7 +43,7 @@
 					>
 						{{ name }} isn't on this journey alone. They're working with a
 						Kiva lending partner that's already given
-						<strong class="tw-text-brand">{{ loansPosted }}</strong> loans to
+						<strong class="tw-text-brand">{{ loansPosted }} loans</strong> to
 						support their region.
 					</p>
 				</div>
