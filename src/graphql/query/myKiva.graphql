@@ -158,6 +158,7 @@ query myKivaQuery {
 			partner {
 				id
 				loansPosted
+				name
 			}
           }
         }
