@@ -34,7 +34,7 @@
 			<div class="tw-pt-1">
 				<KvButton
 					variant="secondary"
-					v-kv-track-event="['portfolio', 'click', 'next-step-email-option']"
+					v-kv-track-event="['portfolio', 'click', 'next-step-email-optin']"
 					class="tw-w-full"
 					@click="handleEmailOptIn"
 				>
@@ -50,7 +50,7 @@ import {
 	KvMaterialIcon, KvButton, KvBorrowerImage,
 } from '@kiva/kv-components';
 import { mdiEmailOutline } from '@mdi/js';
-import { computed, inject } from 'vue';
+import { computed, inject, onMounted } from 'vue';
 import useOptIn from '#src/composables/useOptIn';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 
@@ -87,6 +87,7 @@ const hash = computed(() => {
 
 const apollo = inject('apollo');
 const cookieStore = inject('cookieStore');
+const $kvTrackEvent = inject('$kvTrackEvent');
 const { setMailUpdatesOptOutCookie, updateCommunicationSettings } = useOptIn(apollo, cookieStore);
 
 const handleEmailOptIn = async () => {
@@ -96,6 +97,10 @@ const handleEmailOptIn = async () => {
 		emit('accept-email-updates', true);
 	}
 };
+
+onMounted(() => {
+	$kvTrackEvent('portfolio', 'view', 'next-step-email-optin');
+});
 
 </script>
 
