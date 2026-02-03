@@ -61,8 +61,8 @@
 						>
 							<div class="tw-items-center tw-gap-3">
 								<div
-									class="tw-h-6.5 tw-w-6.5 tw-overflow-hidden tw-my-0
-										tw-mx-auto md:!tw-h-8 md:!tw-w-8"
+									class="tw-h-6 tw-w-6 tw-overflow-hidden tw-my-0
+											tw-mx-auto md:!tw-h-7 md:!tw-w-7"
 								>
 									<IconGlobeDark
 										class="tw-w-full tw-h-full tw-object-cover" viewBox="0 0 56 56"
@@ -99,11 +99,11 @@ const props = defineProps({
 	latestLoan: {
 		type: Object,
 		default: null,
-	}
-});
-
-const isLoanPartner = computed(() => {
-	return !!props.latestLoan?.partner?.loansPosted;
+	},
+	isLoanPartner: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const description = computed(() => {

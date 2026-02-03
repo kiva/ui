@@ -44,11 +44,11 @@
 					/>
 					<MyKivaImpactInsightScreen4
 						v-else
-						:latest-loan="latestLoan"
+						:latest-loan="latestLoan" :is-loan-partner="isLoanPartner"
 					/>
 				</template>
 				<template v-if="isLoanPartner" #slide4>
-					<MyKivaImpactInsightScreen4 :latest-loan="latestLoan" />
+					<MyKivaImpactInsightScreen4 :latest-loan="latestLoan" :is-loan-partner="isLoanPartner" />
 				</template>
 			</KvCarousel>
 
@@ -120,7 +120,7 @@ const carouselRef = ref(null);
 const { isMobile } = useBreakpoints();
 
 const isLoanPartner = computed(() => {
-	return !!props.latestLoan?.partner?.loansPosted;
+	return !!props.latestLoan?.partner?.loansPosted && !props.latestLoan?.partner?.name?.toLowerCase().includes('n/a');
 });
 
 const totalSlides = computed(() => (isLoanPartner.value ? 4 : 3));
