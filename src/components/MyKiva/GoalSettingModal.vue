@@ -28,6 +28,9 @@
 			tracking-category="portfolio"
 			:go-to-url="ctaHref"
 			:tiered-achievements="tieredAchievements"
+			:is-editing="isEditing"
+			:selected-category-id="selectedCategory.badgeId"
+			:selected-category-name="selectedCategory.name"
 			@set-goal-target="setGoalTarget"
 			@set-goal="$emit('set-goal', $event)"
 			@edit-goal="editGoalCategory"
@@ -82,7 +85,7 @@ import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
 const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
 
-const emit = defineEmits(['close-goal-modal', 'set-goal']);
+const emit = defineEmits(['close-goal-modal', 'set-goal', 'update-goal-choices']);
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -132,6 +135,20 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	/**
+	 * Controlled is editing flag from parent
+	 */
+	controlledIsEditing: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Controlled selected category from parent
+	 */
+	controlledSelectedCategory: {
+		type: Object,
+		default: () => ({}),
+	},
 });
 
 const { numberOfLoans, isGoalSet } = toRefs(props);
@@ -139,12 +156,13 @@ const { numberOfLoans, isGoalSet } = toRefs(props);
 const formStep = ref(1);
 const showCategories = ref(!props.goalsV2Enabled);
 const selectedLoanNumber = ref(0);
+const isEditing = ref(props.controlledIsEditing);
 // eslint-disable-next-line max-len
 const selectedGoalNumber = ref(numberOfLoans.value ? numberOfLoans.value : 5); // Default goals to 5 loans for initial MVP
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
-const selectedCategory = ref(categories[0]);
+const selectedCategory = ref(props.controlledSelectedCategory || categories[0]);
 
 const contentComponent = computed(() => {
 	switch (formStep.value) {
@@ -154,6 +172,10 @@ const contentComponent = computed(() => {
 });
 
 const ctaCopy = computed(() => {
+	if (isEditing.value) {
+		return 'Continue';
+	}
+
 	if (props.goalsV2Enabled) {
 		return 'Set 2026 goal';
 	}
@@ -212,7 +234,12 @@ const clickBack = () => {
 };
 
 const handleClick = () => {
-	if (formStep.value === 1 && !props.goalsV2Enabled) {
+	if (isEditing.value) {
+		isEditing.value = false;
+		showCategories.value = false;
+		formStep.value = 1;
+		emit('update-goal-choices', selectedCategory.value);
+	} else if (formStep.value === 1 && !props.goalsV2Enabled) {
 		formStep.value += 1;
 		$kvTrackEvent(
 			props.isThanksPage ? 'post-checkout' : 'portfolio',
@@ -261,6 +288,7 @@ const closeLightbox = () => {
 
 const editGoalCategory = () => {
 	showCategories.value = true;
+	isEditing.value = true;
 	$kvTrackEvent(
 		props.isThanksPage ? 'post-checkout' : 'portfolio',
 		'show',
