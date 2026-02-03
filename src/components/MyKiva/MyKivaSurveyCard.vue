@@ -43,10 +43,13 @@ import { inject, onMounted } from 'vue';
 import { KvMaterialIcon, KvButton } from '@kiva/kv-components';
 import { mdiLightningBoltOutline } from '@mdi/js';
 import MyKivaLightningImg from '#src/assets/images/my-kiva/mykiva-lightning.svg';
+import { setPostLendingCardCookie } from '#src/util/myKivaUtils';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
+const cookieStore = inject('cookieStore');
 
 const goToSurvey = () => {
+	setPostLendingCardCookie(cookieStore, true, 1);
 	window.location.href = '/lp/mykiva-input';
 };
 
