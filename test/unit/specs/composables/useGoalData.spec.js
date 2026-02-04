@@ -2954,81 +2954,6 @@ describe('useGoalData', () => {
 		});
 	});
 
-<<<<<<< HEAD
-	describe('calculateGoalFreshProgressAdjustments', () => {
-		// Note: This function can now be tested directly since calculateFreshProgressAdjustments
-		// and getJourneysByLoan are exported as standalone functions from useBadgeData.
-		// The base calculateFreshProgressAdjustments logic is tested in useBadgeData.spec.js.
-		// TODO: Add tests for year-specific filtering logic unique to calculateGoalFreshProgressAdjustments
-		it('should be defined', () => {
-			expect(composable.calculateGoalFreshProgressAdjustments).toBeDefined();
-		});
-	});
-
-	describe('applyFreshProgressToGoalData', () => {
-		it('should return empty array when progress is null', () => {
-			const result = composable.applyFreshProgressToGoalData(null, { allTime: { 'womens-equality': 5 } });
-
-			expect(result).toEqual([]);
-		});
-
-		it('should return progress copies unchanged when adjustments is empty', () => {
-			const progress = [
-				{ id: 'womens-equality', totalProgressToAchievement: 10 }
-			];
-
-			const result = composable.applyFreshProgressToGoalData(progress, { allTime: {}, yearSpecific: {} });
-
-			expect(result[0].totalProgressToAchievement).toBe(10);
-		});
-
-		it('should apply adjustments to total progress and year progress', () => {
-			const progress = [
-				{ id: 'womens-equality', totalProgressToAchievement: 5, progressForYear: 3 },
-				{ id: 'climate-action', totalProgressToAchievement: 3, progressForYear: 1 }
-			];
-			const adjustments = {
-				allTime: { 'womens-equality': 2, 'climate-action': 1 },
-				yearSpecific: { 'womens-equality': 1, 'climate-action': 1 }
-			};
-
-			const result = composable.applyFreshProgressToGoalData(progress, adjustments);
-
-			expect(result.find(c => c.id === 'womens-equality').totalProgressToAchievement).toBe(7);
-			expect(result.find(c => c.id === 'womens-equality').progressForYear).toBe(4);
-			expect(result.find(c => c.id === 'climate-action').totalProgressToAchievement).toBe(4);
-			expect(result.find(c => c.id === 'climate-action').progressForYear).toBe(2);
-		});
-
-		it('should not modify achievements not in adjustments', () => {
-			const progress = [
-				{ id: 'womens-equality', totalProgressToAchievement: 5 },
-				{ id: 'refugee-equality', totalProgressToAchievement: 2 }
-			];
-			const adjustments = {
-				allTime: { 'womens-equality': 3 },
-				yearSpecific: {}
-			};
-
-			const result = composable.applyFreshProgressToGoalData(progress, adjustments);
-
-			expect(result.find(c => c.id === 'refugee-equality').totalProgressToAchievement).toBe(2);
-		});
-
-		it('should handle missing progressForYear', () => {
-			const progress = [
-				{ id: 'womens-equality', totalProgressToAchievement: 10 }
-			];
-			const adjustments = {
-				allTime: { 'womens-equality': 2 },
-				yearSpecific: { 'womens-equality': 1 }
-			};
-
-			const result = composable.applyFreshProgressToGoalData(progress, adjustments);
-
-			expect(result[0].totalProgressToAchievement).toBe(12);
-			expect(result[0].progressForYear).toBeUndefined();
-=======
 	describe('getSupportAllLoanCountByYear', () => {
 		it('should return loan count for ID_SUPPORT_ALL category', async () => {
 			mockApollo.query = vi.fn().mockResolvedValue({
@@ -3077,7 +3002,6 @@ describe('useGoalData', () => {
 			const result = await composable.getSupportAllLoanCountByYear(2026);
 
 			expect(result).toBeNull();
->>>>>>> main
 		});
 	});
 });

@@ -14,6 +14,7 @@ import { createUserPreferences, updateUserPreferences } from '#src/util/userPref
 import useBadgeData, {
 	calculateFreshProgressAdjustments,
 	getJourneysByLoan,
+	getMissingLoans,
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
 	ID_REFUGEE_EQUALITY,
@@ -376,19 +377,8 @@ export default function useGoalData({ apollo } = {}) {
 			return { allTime: allTimeAdjustments, yearSpecific: yearSpecificAdjustments };
 		}
 
-		// Get loan IDs that achievement service already knows about
-		const achievementServiceLoanIds = new Set();
-		tieredAchievements.forEach(achievement => {
-			const loanPurchases = achievement.loanPurchases || [];
-			loanPurchases.forEach(purchase => {
-				if (purchase?.loan?.id) {
-					achievementServiceLoanIds.add(purchase.loan.id);
-				}
-			});
-		});
-
-		// Find missing loans and filter by year
-		const missingLoans = loans.filter(loan => loan?.id && !achievementServiceLoanIds.has(loan.id));
+		// Get missing loans using the shared helper
+		const missingLoans = getMissingLoans(loans, tieredAchievements);
 
 		// Create a map of loan ID to transaction purchase year
 		const loanPurchaseYears = new Map();

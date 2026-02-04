@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import useBadgeData, {
 	calculateFreshProgressAdjustments,
+	getMissingLoans,
 	getJourneysByLoan,
 	ID_WOMENS_EQUALITY,
 	ID_US_ECONOMIC_EQUALITY,
@@ -1638,6 +1639,118 @@ describe('useBadgeData.js', () => {
 			await fetchContentfulData(mockApollo);
 
 			expect(badgeContentfulData.value).toBeUndefined();
+		});
+	});
+
+	describe('getMissingLoans', () => {
+		it('should return empty array when loans array is empty', () => {
+			const result = getMissingLoans([], [{ id: 'achievement-1' }]);
+
+			expect(result).toEqual([]);
+		});
+
+		it('should return empty array when tieredAchievements array is empty', () => {
+			const result = getMissingLoans([{ id: 1 }], []);
+
+			expect(result).toEqual([]);
+		});
+
+		it('should return empty array when all loans are already in achievement service', () => {
+			const loans = [{ id: 1 }, { id: 2 }];
+			const tieredAchievements = [{
+				id: 'womens-equality',
+				loanPurchases: [{ loan: { id: 1 } }, { loan: { id: 2 } }]
+			}];
+
+			const result = getMissingLoans(loans, tieredAchievements);
+
+			expect(result).toEqual([]);
+		});
+
+		it('should return loans that are missing from achievement service', () => {
+			const loans = [
+				{ id: 1, gender: 'female' },
+				{ id: 2, gender: 'female' },
+				{ id: 3, gender: 'male' }
+			];
+			const tieredAchievements = [{
+				id: 'womens-equality',
+				loanPurchases: [{ loan: { id: 1 } }]
+			}];
+
+			const result = getMissingLoans(loans, tieredAchievements);
+
+			expect(result).toHaveLength(2);
+			expect(result).toContainEqual({ id: 2, gender: 'female' });
+			expect(result).toContainEqual({ id: 3, gender: 'male' });
+		});
+
+		it('should handle multiple achievements with different loan purchases', () => {
+			const loans = [
+				{ id: 1, gender: 'female' },
+				{ id: 2, gender: 'female' },
+				{ id: 3, geocode: { country: { isoCode: 'US' } } }
+			];
+			const tieredAchievements = [
+				{
+					id: 'womens-equality',
+					loanPurchases: [{ loan: { id: 1 } }]
+				},
+				{
+					id: 'us-economic-equality',
+					loanPurchases: [{ loan: { id: 3 } }]
+				}
+			];
+
+			const result = getMissingLoans(loans, tieredAchievements);
+
+			expect(result).toHaveLength(1);
+			expect(result).toContainEqual({ id: 2, gender: 'female' });
+		});
+
+		it('should filter out loans without valid IDs', () => {
+			const loans = [
+				{ id: 1, gender: 'female' },
+				{ id: null, gender: 'female' },
+				{ gender: 'male' }
+			];
+			const tieredAchievements = [{
+				id: 'womens-equality',
+				loanPurchases: []
+			}];
+
+			const result = getMissingLoans(loans, tieredAchievements);
+
+			expect(result).toHaveLength(1);
+			expect(result[0].id).toBe(1);
+		});
+
+		it('should handle achievements with empty loanPurchases', () => {
+			const loans = [
+				{ id: 1, gender: 'female' },
+				{ id: 2, gender: 'female' }
+			];
+			const tieredAchievements = [{
+				id: 'womens-equality',
+				loanPurchases: []
+			}];
+
+			const result = getMissingLoans(loans, tieredAchievements);
+
+			expect(result).toHaveLength(2);
+		});
+
+		it('should handle achievements with null or undefined loanPurchases', () => {
+			const loans = [{ id: 1, gender: 'female' }];
+			const tieredAchievements = [
+				{ id: 'womens-equality', loanPurchases: null },
+				{ id: 'us-economic-equality' }
+			];
+
+			const result = getMissingLoans(loans, tieredAchievements);
+
+			expect(result).toHaveLength(1);
+			expect(result[0].id).toBe(1);
 		});
 	});
 

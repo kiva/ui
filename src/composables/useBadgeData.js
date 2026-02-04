@@ -89,15 +89,14 @@ export const getJourneysByLoan = loan => {
 };
 
 /**
- * Calculates fresh progress adjustments by comparing carousel loans with achievement service loans
- *
- * @param loans Array of carousel loans to check against achievement service
+ * Get loans that are in the carousel but not yet processed by the achievement service
+ * @param loans Array of loans from carousel
  * @param tieredAchievements Array of tiered achievements from achievement service
- * @returns Map of badgeId to count of missing loans (all-time progress only)
+ * @returns Array of loans not yet in achievement service
  */
-export const calculateFreshProgressAdjustments = (loans, tieredAchievements) => {
+export const getMissingLoans = (loans, tieredAchievements) => {
 	if (!loans?.length || !tieredAchievements?.length) {
-		return {};
+		return [];
 	}
 
 	// Get loan IDs that achievement service already knows about
@@ -112,7 +111,22 @@ export const calculateFreshProgressAdjustments = (loans, tieredAchievements) => 
 	});
 
 	// Find carousel loans that are NOT in achievement service
-	const missingLoans = loans.filter(loan => loan?.id && !achievementServiceLoanIds.has(loan.id));
+	return loans.filter(loan => loan?.id && !achievementServiceLoanIds.has(loan.id));
+};
+
+/**
+ * Calculates fresh progress adjustments by comparing carousel loans with achievement service loans
+ *
+ * @param loans Array of carousel loans to check against achievement service
+ * @param tieredAchievements Array of tiered achievements from achievement service
+ * @returns Map of badgeId to count of missing loans (all-time progress only)
+ */
+export const calculateFreshProgressAdjustments = (loans, tieredAchievements) => {
+	if (!loans?.length || !tieredAchievements?.length) {
+		return {};
+	}
+
+	const missingLoans = getMissingLoans(loans, tieredAchievements);
 
 	// Count missing loans by category (all-time only for badges)
 	const adjustments = {};
