@@ -11,6 +11,7 @@ query personalInfoQuery {
 				state
 				postalCode
 				country {
+					id
 					isoCode
 				}
 			}
