@@ -185,7 +185,7 @@ const fetchPostCheckoutAchievements = async loanIds => {
 	// Use yearly progress with current year
 	const year = new Date().getFullYear();
 	// Increment counter per add-to-basket action
-	const { totalProgress } = await getPostCheckoutProgressByLoans({
+	const { totalProgress, hasContributingLoans } = await getPostCheckoutProgressByLoans({
 		loans: loanIds.map(id => ({ id })),
 		year,
 		increment: true,
@@ -210,7 +210,7 @@ const fetchPostCheckoutAchievements = async loanIds => {
 
 	// If added loan is not related to user goal, proceed with achievements logic.
 	// This condition will prevent any conflict between goal and achievement messages.
-	if (!isLoanGoal.value) {
+	if (!isLoanGoal.value || !hasContributingLoans) {
 		await apollo.query({
 			query: postCheckoutAchievementsQuery,
 			variables: { loanIds }
