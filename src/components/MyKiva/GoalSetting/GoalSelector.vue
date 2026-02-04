@@ -333,22 +333,41 @@ const updateGoalOptions = () => {
 	const ytdLoans = loansThisYear.value;
 	const lastYearLoans = loansLastYear.value;
 
-	// Determine base amount and labels based on whether YTD exceeds last year
-	// Goal suggestions must always be higher than YTD to prevent auto-completion
-	const useYtdAsBase = ytdLoans >= lastYearLoans;
-	const base = useYtdAsBase ? ytdLoans : lastYearLoans;
-
 	// Only show personalized options if user has lending history
-	if (base > SAME_AS_LAST_YEAR_LIMIT) {
-		const suggestion1 = useYtdAsBase ? base + 1 : base;
+	if (ytdLoans >= SAME_AS_LAST_YEAR_LIMIT) {
+		const suggestion1 = ytdLoans + 3;
 		// Ensure each suggestion is at least 1 more than the previous
-		const suggestion2 = Math.max(Math.ceil(base * 1.5), suggestion1 + 1);
-		const suggestion3 = Math.max(base * 2, suggestion2 + 1);
+		const suggestion2 = Math.max(Math.ceil(suggestion1 * 1.5), suggestion1 + 1);
+		const suggestion3 = Math.max(suggestion1 * 2, suggestion2 + 1);
 
 		goalOptions.value = [
 			{
 				loansNumber: suggestion1,
-				optionText: useYtdAsBase ? 'One more' : `Same as ${LAST_YEAR_KEY}`,
+				optionText: 'A few more',
+				selected: false
+			},
+			{
+				loansNumber: suggestion2,
+				optionText: 'Grow a little',
+				selected: false,
+				highlightedText: 'More Impact'
+			},
+			{
+				loansNumber: suggestion3,
+				optionText: 'Aim higher',
+				selected: false
+			},
+		];
+	} else if (lastYearLoans > SAME_AS_LAST_YEAR_LIMIT) {
+		const suggestion1 = lastYearLoans;
+		// Ensure each suggestion is at least 1 more than the previous
+		const suggestion2 = Math.max(Math.ceil(suggestion1 * 1.5), suggestion1 + 1);
+		const suggestion3 = Math.max(suggestion1 * 2, suggestion2 + 1);
+
+		goalOptions.value = [
+			{
+				loansNumber: suggestion1,
+				optionText: `Same as ${LAST_YEAR_KEY}`,
 				selected: false
 			},
 			{

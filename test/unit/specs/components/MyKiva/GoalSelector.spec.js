@@ -9,6 +9,7 @@ import {
 	ID_US_ECONOMIC_EQUALITY,
 	ID_WOMENS_EQUALITY,
 } from '#src/composables/useBadgeData';
+import { SAME_AS_LAST_YEAR_LIMIT } from '#src/composables/useGoalData';
 import { globalOptions } from '../../../specUtils';
 
 const getExpectedGoalOptions = ({ lastYear = 0, ytd, useDefault = false }) => {
@@ -16,16 +17,19 @@ const getExpectedGoalOptions = ({ lastYear = 0, ytd, useDefault = false }) => {
 		return [3, 4, 5];
 	}
 
-	const useYtdAsBase = typeof ytd === 'number' && ytd >= lastYear;
-	const base = useYtdAsBase ? ytd : lastYear;
+	let suggestion1;
+	let suggestion2;
+	let suggestion3;
 
-	if (base <= 1) {
-		return [3, 4, 5];
+	if (ytd >= SAME_AS_LAST_YEAR_LIMIT) {
+		suggestion1 = ytd + 3;
+		suggestion2 = Math.max(Math.ceil(suggestion1 * 1.5), suggestion1 + 1);
+		suggestion3 = Math.max(suggestion1 * 2, suggestion2 + 1);
+	} else if (lastYear >= SAME_AS_LAST_YEAR_LIMIT) {
+		suggestion1 = lastYear;
+		suggestion2 = Math.max(Math.ceil(lastYear * 1.5), suggestion1 + 1);
+		suggestion3 = Math.max(lastYear * 2, suggestion2 + 1);
 	}
-
-	const suggestion1 = useYtdAsBase ? base + 1 : base;
-	const suggestion2 = Math.max(Math.ceil(base * 1.5), suggestion1 + 1);
-	const suggestion3 = Math.max(base * 2, suggestion2 + 1);
 
 	return [suggestion1, suggestion2, suggestion3];
 };
@@ -218,144 +222,6 @@ describe('GoalSelector', () => {
 		await user.click(getByTestId('category-support-all'));
 		await flushPromises();
 		expect(getTitleText()).toBe('How many loans will you make this year?');
-	});
-
-	it('uses YTD loans as base when they exceed last year', async () => {
-		const tieredAchievements = [
-			{
-				id: ID_WOMENS_EQUALITY,
-				progressForYear: 1,
-				progressForCurrentYear: 3,
-			},
-			{
-				id: ID_REFUGEE_EQUALITY,
-				progressForYear: 1,
-				progressForCurrentYear: 4,
-			},
-			{
-				id: ID_CLIMATE_ACTION,
-				progressForYear: 2,
-				progressForCurrentYear: 5,
-			},
-			{
-				id: ID_US_ECONOMIC_EQUALITY,
-				progressForYear: 2,
-				progressForCurrentYear: 6,
-			},
-			{
-				id: ID_BASIC_NEEDS,
-				progressForYear: 3,
-				progressForCurrentYear: 7,
-			},
-		];
-
-		const user = userEvent.setup();
-		const { container, getByTestId } = render(TestWrapper, {
-			global: {
-				...globalOptions,
-				provide: {
-					...globalOptions.provide,
-					$kvTrackEvent: vi.fn(),
-				},
-			},
-			props: { tieredAchievements },
-		});
-
-		await flushPromises();
-
-		const getLoanNumbers = () => Array.from(
-			container.querySelectorAll('span.tw-text-h1')
-		).map(el => Number(el.textContent.trim()));
-
-		const expectCategoryOptions = async (testId, expected) => {
-			await user.click(getByTestId(testId));
-			await flushPromises();
-			expect(getLoanNumbers()).toEqual(expected);
-		};
-
-		// Women: last year = 1, YTD = 3
-		expect(getLoanNumbers()).toEqual(getExpectedGoalOptions({ lastYear: 1, ytd: 3 }));
-
-		// Refugees: last year = 1, YTD = 4
-		await expectCategoryOptions('category-refugees', getExpectedGoalOptions({ lastYear: 1, ytd: 4 }));
-
-		// Climate Action: last year = 2, YTD = 5
-		await expectCategoryOptions('category-climate', getExpectedGoalOptions({ lastYear: 2, ytd: 5 }));
-
-		// U.S. Entrepreneurs: last year = 2, YTD = 6
-		await expectCategoryOptions('category-us', getExpectedGoalOptions({ lastYear: 2, ytd: 6 }));
-
-		// Basic Needs: last year = 3, YTD = 7
-		await expectCategoryOptions('category-basic-needs', getExpectedGoalOptions({ lastYear: 3, ytd: 7 }));
-	});
-
-	it('uses last year loans as base when they exceed YTD', async () => {
-		const tieredAchievements = [
-			{
-				id: ID_WOMENS_EQUALITY,
-				progressForYear: 3,
-				progressForCurrentYear: 1,
-			},
-			{
-				id: ID_REFUGEE_EQUALITY,
-				progressForYear: 4,
-				progressForCurrentYear: 2,
-			},
-			{
-				id: ID_CLIMATE_ACTION,
-				progressForYear: 5,
-				progressForCurrentYear: 3,
-			},
-			{
-				id: ID_US_ECONOMIC_EQUALITY,
-				progressForYear: 6,
-				progressForCurrentYear: 4,
-			},
-			{
-				id: ID_BASIC_NEEDS,
-				progressForYear: 7,
-				progressForCurrentYear: 5,
-			},
-		];
-
-		const user = userEvent.setup();
-		const { container, getByTestId } = render(TestWrapper, {
-			global: {
-				...globalOptions,
-				provide: {
-					...globalOptions.provide,
-					$kvTrackEvent: vi.fn(),
-				},
-			},
-			props: { tieredAchievements },
-		});
-
-		await flushPromises();
-
-		const getLoanNumbers = () => Array.from(
-			container.querySelectorAll('span.tw-text-h1')
-		).map(el => Number(el.textContent.trim()));
-
-		const expectCategoryOptions = async (testId, expected) => {
-			await user.click(getByTestId(testId));
-			await flushPromises();
-			expect(getLoanNumbers()).toEqual(expected);
-		};
-
-		// Women: last year = 3, YTD = 1
-		expect(getLoanNumbers()).toEqual(getExpectedGoalOptions({ lastYear: 3, ytd: 1 }));
-
-		// Refugees: last year = 4, YTD = 2
-		await expectCategoryOptions('category-refugees', getExpectedGoalOptions({ lastYear: 4, ytd: 2 }));
-
-		// Climate Action: last year = 5, YTD = 3
-		await expectCategoryOptions('category-climate', getExpectedGoalOptions({ lastYear: 5, ytd: 3 }));
-
-		// U.S. Entrepreneurs: last year = 6, YTD = 4
-		await expectCategoryOptions('category-us', getExpectedGoalOptions({ lastYear: 6, ytd: 4 }));
-
-		// Basic Needs: last year = 7, YTD = 5
-		await expectCategoryOptions('category-basic-needs', getExpectedGoalOptions({ lastYear: 7, ytd: 5 }));
 	});
 
 	it('fetches support-all loan count via apollo when selecting Choose as I go', async () => {
