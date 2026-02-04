@@ -23,7 +23,6 @@
 			<KvCarousel
 				ref="carouselRef"
 				:is-dotted="true"
-				:new-index="carouselIndex"
 				:slide-max-width="''"
 				:controls-top-right="false"
 				fade-enabled
@@ -86,7 +85,7 @@
 	</KvLightbox>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import {
 	ref, computed, defineProps, defineEmits,
 	inject, onMounted
@@ -96,10 +95,10 @@ import { KvLightbox, KvCarousel } from '@kiva/kv-components';
 
 import useBreakpoints from '#src/composables/useBreakpoints';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
-import MyKivaImpactInsightScreen1 from './MyKivaImpactInsightScreen1';
-import MyKivaImpactInsightScreen2 from './MyKivaImpactInsightScreen2';
-import MyKivaImpactInsightScreen3 from './MyKivaImpactInsightScreen3';
-import MyKivaImpactInsightScreen4 from './MyKivaImpactInsightScreen4';
+import MyKivaImpactInsightScreen1 from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightScreen1';
+import MyKivaImpactInsightScreen2 from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightScreen2';
+import MyKivaImpactInsightScreen3 from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightScreen3';
+import MyKivaImpactInsightScreen4 from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightScreen4';
 
 const props = defineProps({
 	show: {
