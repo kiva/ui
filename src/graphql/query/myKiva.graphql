@@ -140,6 +140,7 @@ query myKivaQuery {
             id
             hash
           }
+          anonymizationLevel
           geocode {
             country {
               id

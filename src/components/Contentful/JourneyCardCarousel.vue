@@ -282,14 +282,20 @@ const currentIndex = ref(0);
 const isSharingModalVisible = ref(false);
 const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
 const acceptedEmailMarketingUpdates = ref(false);
+
+const isLatestLoanAnonymous = computed(() => {
+	return props.latestLoan?.anonymizationLevel === 'full';
+});
+
 const shouldShowEmailMarketingCard = computed(
-	() => props.showPostLendingNextStepsCards && props.postLendingNextStepsEnable && props.inLendingStats
+	() => props.showPostLendingNextStepsCards && props.postLendingNextStepsEnable
+		&& props.inLendingStats && !isLatestLoanAnonymous.value
 		&& userHasMailUpdatesOptOut() && (props.loans.length > 0 || props.latestLoan !== null)
 );
 const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
 
 const showLatestLoan = computed(() => props.showPostLendingNextStepsCards
-	&& props.postLendingNextStepsEnable && props.latestLoan);
+	&& props.postLendingNextStepsEnable && props.latestLoan && !isLatestLoanAnonymous.value);
 
 const showSurveyCard = computed(() => {
 	const userPreferences = props.userInfo?.userPreferences || {};
