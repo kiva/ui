@@ -144,7 +144,7 @@ import useBadgeModal,
 import { KvUserAvatar } from '@kiva/kv-components';
 import KvIcon from '#src/components/Kv/KvIcon';
 import ChooseCheckmark from '#src/assets/inline-svgs/covid-response/choose-checkmark.svg';
-import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
+import useBadgeData, { ID_WOMENS_EQUALITY, MAX_TIERED_BADGE_LOANS } from '#src/composables/useBadgeData';
 import BadgeContainer from './BadgeContainer';
 
 const props = defineProps({
@@ -243,7 +243,10 @@ const journeyLoans = computed(() => {
 	return (props.badge.achievementData?.loanPurchases ?? [])
 		?.map(purchase => purchase.loan).filter(loan => loan != null);
 });
-const journeyTotalLoans = computed(() => props.badge.achievementData?.totalProgressToAchievement ?? 0);
+const journeyTotalLoans = computed(() => {
+	const total = props.badge.achievementData?.totalProgressToAchievement ?? 0;
+	return Math.min(total, MAX_TIERED_BADGE_LOANS);
+});
 const extraLoanCount = computed(() => journeyTotalLoans.value - 3);
 
 const journeyLoansNames = computed(() => {

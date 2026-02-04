@@ -1,8 +1,6 @@
 <template>
 	<KvAtbModalContainer
 		:added-loan="addedLoan"
-		:is-next-steps-exp-enabled="isNextStepsExpEnabled"
-		:goals-v2-enabled="goalsV2Enabled"
 	/>
 	<MyKivaNavigation
 		:visible="showNavigation"

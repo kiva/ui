@@ -87,16 +87,16 @@ import {
 	ref,
 	watch,
 } from 'vue';
-import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
+import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import { KvButton, KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { mdiPencilOutline } from '@mdi/js';
-import useGoalData, { SAME_AS_LAST_YEAR_LIMIT } from '#src/composables/useGoalData';
+import useGoalData, { SAME_AS_LAST_YEAR_LIMIT, LAST_YEAR_KEY } from '#src/composables/useGoalData';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const { getCategoryLoansLastYear, getCategoryLoanCountByYear } = useGoalData();
+const { getCategoryLoansLastYear, getCategoryLoanCountByYear, getSupportAllLoanCountByYear } = useGoalData();
 
 const props = defineProps({
 	/**
@@ -134,11 +134,25 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	/**
+	 * Goal Category ID
+	 */
+	selectedCategoryId: {
+		type: String,
+		default: ID_WOMENS_EQUALITY,
+	},
+	/**
+	 * Goal Category Name
+	 */
+	selectedCategoryName: {
+		type: String,
+		default: 'Women',
+	}
 });
 
 const emit = defineEmits(['set-goal', 'edit-goal', 'set-goal-target']);
 
-const goalOptions = ref([
+const DEFAULT_GOAL_OPTIONS = [
 	{
 		loansNumber: 3,
 		optionText: 'Start strong',
@@ -148,27 +162,35 @@ const goalOptions = ref([
 		loansNumber: 4,
 		highlightedText: 'Recommended',
 		optionText: 'Extra mile',
-		selected: true,
+		selected: false,
 	},
 	{
 		loansNumber: 5,
 		optionText: 'Trailblazing!',
 		selected: false
 	},
-]);
+];
+
+const goalOptions = ref(DEFAULT_GOAL_OPTIONS);
 
 const loadingCurrentYear = ref(false);
 const fetchedCurrentYearLoans = ref(null);
+const prevSupportAllCount = ref(0);
+const selectedIdx = ref(1);
 
-const womenLoansLastYear = computed(() => {
-	return getCategoryLoansLastYear(props.tieredAchievements);
+const loansLastYear = computed(() => {
+	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
+		return prevSupportAllCount.value;
+	}
+
+	return getCategoryLoansLastYear(props.tieredAchievements, props.selectedCategoryId);
 });
 
 // Use progressForCurrentYear from tieredAchievements if available (set on Thanks page),
 // otherwise use fetched current year data (for MyKiva goal-setting page and modal)
-const womenLoansThisYear = computed(() => {
+const loansThisYear = computed(() => {
 	const categoryAchievement = props.tieredAchievements?.find(
-		entry => entry.id === ID_WOMENS_EQUALITY
+		entry => entry.id === props.selectedCategoryId
 	);
 	// If progressForCurrentYear is explicitly set (Thanks page), use it
 	if (typeof categoryAchievement?.progressForCurrentYear === 'number') {
@@ -183,10 +205,10 @@ const womenLoansThisYear = computed(() => {
  * This is needed for the MyKiva goal-setting page and modal where progressForCurrentYear
  * is not set (only last year data comes from tieredAchievements).
  */
-const loadWomenLoansThisYear = async () => {
+const loadLoansThisYear = async () => {
 	// Check if progressForCurrentYear is already provided via props
 	const categoryAchievement = props.tieredAchievements?.find(
-		entry => entry.id === ID_WOMENS_EQUALITY
+		entry => entry.id === props.selectedCategoryId
 	);
 	if (typeof categoryAchievement?.progressForCurrentYear === 'number') {
 		// Already have current year data from props (Thanks page), no need to fetch
@@ -195,7 +217,7 @@ const loadWomenLoansThisYear = async () => {
 
 	loadingCurrentYear.value = true;
 	const currentYear = new Date().getFullYear();
-	const count = await getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, currentYear, 'network-only');
+	const count = await getCategoryLoanCountByYear(props.selectedCategoryId, currentYear, 'network-only');
 	fetchedCurrentYearLoans.value = count;
 	loadingCurrentYear.value = false;
 };
@@ -204,26 +226,27 @@ const titleText = computed(() => {
 	if (props.isGoalSet) {
 		return 'Success! Your goal is set!';
 	}
-	if (womenLoansLastYear.value === 1) {
+	if (loansLastYear.value === 0 || loansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
+		if (props.selectedCategoryId === ID_SUPPORT_ALL) {
+			return 'How many loans will you make this year?';
+		}
 		// eslint-disable-next-line max-len
-		return `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} woman</span> shape her future!`;
-	}
-	if (womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
-		// eslint-disable-next-line max-len
-		return `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} women</span> shape their futures!`;
+		return `How many loans to <span class="tw-text-eco-green-3">${props.selectedCategoryName?.toLowerCase()}</span> will you make this year?`;
 	}
 
 	return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
 });
 
 const subtitleText = computed(() => {
-	let extraText = '';
-	if (womenLoansThisYear.value > 0) {
-		extraText = `You've already made ${womenLoansThisYear.value}.`;
+	if (props.isGoalSet) {
+		return '';
 	}
-	return props.isGoalSet
-		? ''
-		: `How many loans will you make this year? ${extraText}`;
+
+	if (loansThisYear.value > 0) {
+		return `You've already made ${loansThisYear.value} that will count!.`;
+	}
+
+	return '';
 });
 
 const buttonText = computed(() => {
@@ -243,11 +266,16 @@ const selectedTarget = computed(() => {
 	return selectedOption.loansNumber;
 });
 
-const updateOptionSelection = selectedIndex => {
+const resetOptionSelection = selectedIndex => {
 	goalOptions.value = goalOptions.value.map((option, index) => ({
 		...option,
 		selected: index === selectedIndex,
 	}));
+};
+
+const updateOptionSelection = selectedIndex => {
+	resetOptionSelection(selectedIndex);
+	selectedIdx.value = selectedIndex;
 	const trackingProperties = ['same-as-last-year', 'a-little-more', 'double'];
 	$kvTrackEvent(
 		props.trackingCategory,
@@ -277,14 +305,14 @@ const handleContinue = () => {
 		);
 	} else {
 		const currentYear = new Date().getFullYear();
-		const goalName = `goal-${ID_WOMENS_EQUALITY}-${currentYear}`;
+		const goalName = `goal-${props.selectedCategoryId}-${currentYear}`;
 		const target = selectedTarget.value;
 		const dateStarted = new Date().toISOString();
 		const status = 'in-progress';
-		const loanTotalAtStart = props.categoriesLoanCount?.[ID_WOMENS_EQUALITY] || 0;
+		const loanTotalAtStart = props.categoriesLoanCount?.[props.selectedCategoryId] || 0;
 		const preferences = {
 			goalName,
-			category: ID_WOMENS_EQUALITY,
+			category: props.selectedCategoryId,
 			target,
 			dateStarted,
 			status,
@@ -295,15 +323,15 @@ const handleContinue = () => {
 			props.trackingCategory,
 			'click',
 			'set-annual-goal',
-			ID_WOMENS_EQUALITY,
+			props.selectedCategoryId,
 			selectedTarget.value
 		);
 	}
 };
 
 const updateGoalOptions = () => {
-	const ytdLoans = womenLoansThisYear.value;
-	const lastYearLoans = womenLoansLastYear.value;
+	const ytdLoans = loansThisYear.value;
+	const lastYearLoans = loansLastYear.value;
 
 	// Determine base amount and labels based on whether YTD exceeds last year
 	// Goal suggestions must always be higher than YTD to prevent auto-completion
@@ -320,13 +348,13 @@ const updateGoalOptions = () => {
 		goalOptions.value = [
 			{
 				loansNumber: suggestion1,
-				optionText: useYtdAsBase ? 'One more' : 'Same as last year',
+				optionText: useYtdAsBase ? 'One more' : `Same as ${LAST_YEAR_KEY}`,
 				selected: false
 			},
 			{
 				loansNumber: suggestion2,
 				optionText: 'Grow a little',
-				selected: true,
+				selected: false,
 				highlightedText: 'More Impact'
 			},
 			{
@@ -335,12 +363,17 @@ const updateGoalOptions = () => {
 				selected: false
 			},
 		];
+	} else {
+		goalOptions.value = DEFAULT_GOAL_OPTIONS;
 	}
+
+	// Keep previous selection
+	resetOptionSelection(selectedIdx.value);
 	emit('set-goal-target', selectedTarget.value);
 };
 
 onMounted(async () => {
-	await loadWomenLoansThisYear();
+	await loadLoansThisYear();
 	updateGoalOptions();
 
 	if (props.trackingCategory === 'post-checkout') {
@@ -349,6 +382,15 @@ onMounted(async () => {
 			'view',
 			'set-annual-goal'
 		);
+	}
+});
+
+watch(() => props.selectedCategoryId, async newCategory => {
+	await loadLoansThisYear();
+	updateGoalOptions();
+
+	if (newCategory === ID_SUPPORT_ALL) {
+		prevSupportAllCount.value = await getSupportAllLoanCountByYear(LAST_YEAR_KEY);
 	}
 });
 

@@ -14,7 +14,8 @@
 				:categories-loan-count="categoriesLoanCount"
 				:is-goal-set="isGoalSet"
 				:tiered-achievements="tieredAchievements"
-				@edit-goal="showGoalModal = true"
+				:selected-category="selectedCategory"
+				@edit-goal="editGoalCategory"
 				@set-goal-target="setGoalTarget"
 				@set-goal="setGoal"
 				class="tw-mb-2.5"
@@ -102,6 +103,9 @@
 			:is-thanks-page="true"
 			:number-of-loans="goalTarget"
 			:goals-v2-enabled="goalsV2Enabled"
+			:controlled-is-editing="isEditing"
+			:controlled-selected-category="selectedCategory"
+			@update-goal-choices="handleUpdateGoalChoices"
 			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
 		/>
@@ -222,9 +226,13 @@ const {
 	storeGoalPreferences,
 	userGoal,
 	userGoalAchievedNow,
+	getCategories,
 } = useGoalData({ apollo });
 
 const { getAllCategoryLoanCounts } = useBadgeData();
+
+const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
+const selectedCategory = ref(categories[0]);
 
 const goalTargetLoansAmount = computed(() => userGoal.value?.target ?? 0);
 
@@ -359,6 +367,19 @@ const setGoalTarget = target => {
 	goalTarget.value = target;
 };
 
+const isEditing = ref(false);
+
+const editGoalCategory = () => {
+	isEditing.value = true;
+	showGoalModal.value = true;
+};
+
+const handleUpdateGoalChoices = updatedCategory => {
+	selectedCategory.value = updatedCategory;
+	isEditing.value = false;
+	showGoalModal.value = false;
+};
+
 onMounted(async () => {
 	if (props.isNextStepsExpEnabled) {
 		// Goals V2 is enabled if flag is true OR year >= 2026
@@ -418,7 +439,7 @@ onMounted(async () => {
 		);
 	}
 
-	setPostLendingCardCookie(cookieStore, props.postLendingNextStepsEnable);
+	setPostLendingCardCookie(cookieStore, props.postLendingNextStepsEnable, props.loans?.length);
 });
 </script>
 

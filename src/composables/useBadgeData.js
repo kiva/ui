@@ -44,6 +44,8 @@ export const CATEGORY_TARGETS = {
 	[ID_SUPPORT_ALL]: 'person',
 };
 
+export const MAX_TIERED_BADGE_LOANS = 100;
+
 const COUNTRIES_ISO_CODE = ['PR', 'US'];
 const WOMENS_EQUALITY_FILTER = 'female';
 const REFUGEE_THEME = 'refugees/displaced';

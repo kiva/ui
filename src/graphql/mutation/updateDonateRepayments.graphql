@@ -1,0 +1,9 @@
+mutation updateDonateRepayments($donateRepayments: Boolean) {
+	my {
+		updateDonateRepayments(donateRepayments: $donateRepayments) {
+			success
+			error
+			value
+		}
+	}
+}

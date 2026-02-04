@@ -176,13 +176,13 @@ export default function useGoalData({ apollo } = {}) {
 			},
 			{
 				id: '2',
-				name: 'Refugees',
-				description: 'Transform the future for refugees',
-				eventProp: 'refugees',
-				customImage: refugeesImg,
-				loanCount: categoriesLoanCount?.[ID_REFUGEE_EQUALITY],
-				title: 'refugees',
-				badgeId: ID_REFUGEE_EQUALITY,
+				name: 'Choose as I go',
+				description: 'Support a variety of borrowers',
+				eventProp: 'help-everyone',
+				customImage: supportAllImg,
+				loanCount: totalLoans,
+				title: null,
+				badgeId: ID_SUPPORT_ALL,
 			},
 			{
 				id: '3',
@@ -196,16 +196,6 @@ export default function useGoalData({ apollo } = {}) {
 			},
 			{
 				id: '4',
-				name: 'U.S. Entrepreneurs',
-				description: 'Support small businesses in the U.S.',
-				eventProp: 'us-entrepreneur',
-				customImage: usEntrepreneursImg,
-				loanCount: categoriesLoanCount?.[ID_US_ECONOMIC_EQUALITY],
-				title: 'US entrepreneurs',
-				badgeId: ID_US_ECONOMIC_EQUALITY,
-			},
-			{
-				id: '5',
 				name: 'Basic Needs',
 				description: 'Clean water, healthcare, and sanitation',
 				eventProp: 'basic-needs',
@@ -215,15 +205,25 @@ export default function useGoalData({ apollo } = {}) {
 				badgeId: ID_BASIC_NEEDS,
 			},
 			{
+				id: '5',
+				name: 'Refugees',
+				description: 'Transform the future for refugees',
+				eventProp: 'refugees',
+				customImage: refugeesImg,
+				loanCount: categoriesLoanCount?.[ID_REFUGEE_EQUALITY],
+				title: 'refugees',
+				badgeId: ID_REFUGEE_EQUALITY,
+			},
+			{
 				id: '6',
-				name: 'Choose as I go',
-				description: 'Support a variety of borrowers',
-				eventProp: 'help-everyone',
-				customImage: supportAllImg,
-				loanCount: totalLoans,
-				title: null,
-				badgeId: ID_SUPPORT_ALL,
-			}
+				name: 'U.S. Entrepreneurs',
+				description: 'Support small businesses in the U.S.',
+				eventProp: 'us-entrepreneur',
+				customImage: usEntrepreneursImg,
+				loanCount: categoriesLoanCount?.[ID_US_ECONOMIC_EQUALITY],
+				title: 'US entrepreneurs',
+				badgeId: ID_US_ECONOMIC_EQUALITY,
+			},
 		];
 	}
 
@@ -243,7 +243,10 @@ export default function useGoalData({ apollo } = {}) {
 		const string = `Support ${remaining} more ${categoryHeader} to reach your goal`;
 		const encodedHeader = encodeURIComponent(string);
 		const loanFindingUrl = getLoanFindingUrl(categoryId, router.currentRoute.value);
-		return `${loanFindingUrl}?header=${encodedHeader}`;
+		if (remaining > 0) {
+			return `${loanFindingUrl}?header=${encodedHeader}`;
+		}
+		return `${loanFindingUrl}`;
 	}
 
 	/**
@@ -277,25 +280,6 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
-	 * Retrieves the user's loan count for the specified category id and year.
-	 *
-	 * @param {string} categoryId - Category ID to fetch loan count for.
-	 * @param {number} year - Year to fetch progress for.
-	 * @param {string} [fetchPolicy='cache-first'] - Apollo fetch policy.
-	 * @returns {Promise<number|null>} The category loan count for the given year, or null on error.
-	 */
-	async function getCategoryLoanCountByYear(categoryId, year, fetchPolicy = 'cache-first') {
-		try {
-			const progress = await getCategoriesProgressByYear(year, fetchPolicy);
-			const count = progress?.find(entry => entry.id === categoryId)?.progressForYear || 0;
-			return count;
-		} catch (error) {
-			logFormatter(error, 'Failed to fetch category loan count by year');
-			return null;
-		}
-	}
-
-	/**
 	 * Retrieves the user's total loan count and amount for a given year.
 	 * This includes all loans regardless of category.
 	 *
@@ -317,6 +301,44 @@ export default function useGoalData({ apollo } = {}) {
 			};
 		} catch (error) {
 			logFormatter(error, 'Failed to fetch loan stats by year');
+			return null;
+		}
+	}
+
+	/**
+	 * Get the previous year's support-all loan count
+	 * @returns {Promise<{count: number, amount: number}|null>} Returns null if an error occurs
+	 */
+	const getSupportAllLoanCountByYear = async (year, fetchPolicy = 'network-only') => {
+		try {
+			const stats = await getLoanStatsByYear(year, fetchPolicy);
+			return stats.count || 0;
+		} catch (error) {
+			logFormatter(error, 'Failed to fetch previous support-all loan count');
+			return null;
+		}
+	};
+
+	/**
+	 * Retrieves the user's loan count for the specified category id and year.
+	 *
+	 * @param {string} categoryId - Category ID to fetch loan count for.
+	 * @param {number} year - Year to fetch progress for.
+	 * @param {string} [fetchPolicy='cache-first'] - Apollo fetch policy.
+	 * @returns {Promise<number|null>} The category loan count for the given year, or null on error.
+	 */
+	async function getCategoryLoanCountByYear(categoryId, year, fetchPolicy = 'cache-first') {
+		try {
+			// Get actual yearly loan count
+			if (categoryId === ID_SUPPORT_ALL) {
+				return await getSupportAllLoanCountByYear(year);
+			}
+
+			const progress = await getCategoriesProgressByYear(year, fetchPolicy);
+			const count = progress?.find(entry => entry.id === categoryId)?.progressForYear || 0;
+			return count;
+		} catch (error) {
+			logFormatter(error, 'Failed to fetch category loan count by year');
 			return null;
 		}
 	}
@@ -826,5 +848,6 @@ export default function useGoalData({ apollo } = {}) {
 		renewAnnualGoal,
 		hideGoalCard,
 		setHideGoalCardPreference,
+		getSupportAllLoanCountByYear,
 	};
 }

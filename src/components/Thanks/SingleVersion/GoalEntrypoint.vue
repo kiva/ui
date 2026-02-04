@@ -10,6 +10,9 @@
 			:is-goal-set="isGoalSet"
 			:categories-loan-count="categoriesLoanCount"
 			:tiered-achievements="tieredAchievements"
+			:is-editing="isEditing"
+			:selected-category-id="selectedCategory.badgeId"
+			:selected-category-name="selectedCategory.name"
 			@set-goal-target="$emit('set-goal-target', $event)"
 			@set-goal="$emit('set-goal', $event)"
 			@edit-goal="$emit('edit-goal')"
@@ -59,5 +62,13 @@ defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	/**
+	 * Selected Category
+	 */
+	selectedCategory: {
+		type: Object,
+		default: () => ({}),
+	},
 });
+
 </script>
