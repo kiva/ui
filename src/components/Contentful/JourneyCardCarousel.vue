@@ -153,7 +153,7 @@ import useBreakpoints from '#src/composables/useBreakpoints';
 import { formatUiSetting } from '#src/util/contentfulUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
-import useBadgeData from '#src/composables/useBadgeData';
+import useBadgeData, { getJourneysByLoan } from '#src/composables/useBadgeData';
 import { KvCarousel, KvMaterialIcon } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
@@ -180,7 +180,6 @@ const router = useRouter();
 const {
 	getContentfulLevelData,
 	combineBadgeData,
-	getJourneysByLoan,
 } = useBadgeData(apollo);
 
 const { getCategoryLoansLastYear } = useGoalData();
