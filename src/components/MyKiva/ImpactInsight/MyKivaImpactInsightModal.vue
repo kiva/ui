@@ -26,6 +26,7 @@
 				:new-index="carouselIndex"
 				:slide-max-width="''"
 				:controls-top-right="false"
+				fade-enabled
 				:multiple-slides-visible="false"
 				:embla-options="{ loop: false, startIndex: 0 }"
 				class="impact-insight-carousel"
