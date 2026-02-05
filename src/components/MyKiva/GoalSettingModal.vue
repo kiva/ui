@@ -162,7 +162,8 @@ const selectedGoalNumber = ref(numberOfLoans.value ? numberOfLoans.value : 5); /
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
-const selectedCategory = ref(props.controlledSelectedCategory || categories[0]);
+// eslint-disable-next-line max-len
+const selectedCategory = ref(Object.keys(props.controlledSelectedCategory).length === 0 ? categories[0] : props.controlledSelectedCategory);
 
 const contentComponent = computed(() => {
 	switch (formStep.value) {
