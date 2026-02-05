@@ -15,7 +15,7 @@
 		>
 			<p
 				v-if="hasProgress"
-				class="modal-description-text tw-font-medium" style="line-height: 1.5rem;"
+				class="modal-description-text tw-text-subhead" style="line-height: 1.5rem;"
 			>
 				You're already on your way to making
 				<strong class="tw-text-brand">{{ goalLoans }} loans</strong> to
@@ -23,7 +23,7 @@
 			</p>
 			<p
 				v-else
-				class="modal-description-text tw-font-medium" style="line-height: 1.5rem;"
+				class="modal-description-text tw-text-subhead" style="line-height: 1.5rem;"
 			>
 				Your support to
 				<strong class="tw-text-brand">{{ goalLoans }} loans</strong> for
@@ -196,6 +196,8 @@ const handleButtonClick = () => {
 <style lang="postcss" scoped>
 .goal-modal-container {
 	.modal-description-text {
+		line-height: 125%;
+
 		@screen md {
 			width: 60%;
 		}
