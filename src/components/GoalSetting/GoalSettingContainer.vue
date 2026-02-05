@@ -30,6 +30,7 @@
 				:is-editing="isEditing"
 				:selected-category-id="selectedCategory.badgeId"
 				:selected-category-name="selectedCategory.name"
+				:goal-loans="loanTarget"
 				tracking-category="event-tracking"
 				@set-goal-target="setTarget($event)"
 				@set-goal="setGoal($event)"
@@ -251,6 +252,13 @@ onMounted(async () => {
 	const isEmptyGoal = Object.keys(userGoal.value || {}).length === 0;
 	if (!isEmptyGoal) {
 		const { target, category } = userGoal.value;
+		// Set loanTarget from stored goal so GoalSelector shows correct target
+		loanTarget.value = target;
+		// Find and set the selected category from stored goal
+		const storedCategory = categories.find(c => c.badgeId === category);
+		if (storedCategory) {
+			selectedCategory.value = storedCategory;
+		}
 		// Use goalProgress which tracks current year progress
 		ctaHref.value = getCtaHref(target, category, router, goalProgress.value);
 		isGoalSet.value = true;

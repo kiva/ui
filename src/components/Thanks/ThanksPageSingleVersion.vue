@@ -15,6 +15,11 @@
 				:is-goal-set="isGoalSet"
 				:tiered-achievements="tieredAchievements"
 				:selected-category="selectedCategory"
+				:is-editing="isEditing"
+				:goal-loans="goalTarget"
+				:goal-progress="currGoalProgress"
+				:goal-progress-percentage="goalProgressPercentage"
+				go-to-url="/mykiva"
 				@edit-goal="editGoalCategory"
 				@set-goal-target="setGoalTarget"
 				@set-goal="setGoal"
@@ -221,6 +226,7 @@ const currGoalProgress = ref(0);
 const {
 	checkCompletedGoal,
 	getPostCheckoutProgressByLoans,
+	goalProgressPercentage,
 	loadGoalData,
 	loading: goalDataLoading,
 	storeGoalPreferences,

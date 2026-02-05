@@ -4,9 +4,9 @@
 		<GoalProgressRing
 			v-if="isGoalSet"
 			variant="modal"
-			:goal-loans="goalLoans"
-			:goal-progress="goalProgress"
-			:goal-progress-percentage="goalProgressPercentage"
+			:goal-loans="effectiveGoalLoans"
+			:goal-progress="loansThisYear"
+			:goal-progress-percentage="localGoalProgressPercentage"
 			:category-name="selectedCategoryName"
 			@button-click="handleSuccessContinue"
 		/>
@@ -272,6 +272,17 @@ const buttonText = computed(() => {
 const selectedTarget = computed(() => {
 	const selectedOption = goalOptions.value.find(option => option.selected);
 	return selectedOption.loansNumber;
+});
+
+// Use goalLoans prop if available, otherwise fall back to selectedTarget
+const effectiveGoalLoans = computed(() => {
+	return props.goalLoans > 0 ? props.goalLoans : selectedTarget.value;
+});
+
+// Calculate progress percentage based on loansThisYear and effective goal
+const localGoalProgressPercentage = computed(() => {
+	if (!effectiveGoalLoans.value || effectiveGoalLoans.value === 0) return 0;
+	return Math.min(Math.round((loansThisYear.value / effectiveGoalLoans.value) * 100), 100);
 });
 
 const resetOptionSelection = selectedIndex => {
