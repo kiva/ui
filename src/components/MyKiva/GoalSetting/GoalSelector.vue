@@ -93,7 +93,7 @@ import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSel
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import { KvButton, KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { mdiPencilOutline } from '@mdi/js';
-import useGoalData, { SAME_AS_LAST_YEAR_LIMIT, LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import useGoalData, { SAME_AS_LAST_YEAR_LIMIT, LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -328,14 +328,13 @@ const handleContinue = () => {
 	const goalName = `goal-${props.selectedCategoryId}-${currentYear}`;
 	const target = selectedTarget.value;
 	const dateStarted = new Date().toISOString();
-	const status = 'in-progress';
 	const loanTotalAtStart = props.categoriesLoanCount?.[props.selectedCategoryId] || 0;
 	const preferences = {
 		goalName,
 		category: props.selectedCategoryId,
 		target,
 		dateStarted,
-		status,
+		status: GOAL_STATUS.IN_PROGRESS,
 		loanTotalAtStart,
 	};
 	emit('set-goal', preferences);

@@ -137,19 +137,19 @@ const hasProgress = computed(() => props.goalProgress > 0);
 const isModalVariant = computed(() => props.variant === 'modal');
 
 const containerClass = computed(() => {
-	return props.isModalVariant ? 'tw-text-center goal-modal-container' : 'tw-text-center';
+	return isModalVariant.value ? 'tw-text-center goal-modal-container' : 'tw-text-center';
 });
 
 const titleContainerClass = computed(() => {
-	return props.isModalVariant ? 'tw-text-center' : 'tw-text-left';
+	return isModalVariant.value ? 'tw-text-center' : 'tw-text-left';
 });
 
 const titleClass = computed(() => {
-	return props.isModalVariant ? 'tw-text-center' : '';
+	return isModalVariant.value ? 'tw-text-center' : '';
 });
 
 const titleText = computed(() => {
-	if (props.isModalVariant) {
+	if (isModalVariant.value) {
 		return 'Goal set!';
 	}
 	return `Your ${yearToDate} goal to ${props.categoryName}`;
@@ -173,7 +173,7 @@ const descriptionText = computed(() => {
 });
 
 const buttonText = computed(() => {
-	if (props.isModalVariant) {
+	if (isModalVariant.value) {
 		// Modal variant
 		if (props.goalProgress > 0) {
 			return 'Track my progress';
