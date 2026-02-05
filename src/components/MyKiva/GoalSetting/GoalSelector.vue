@@ -1,81 +1,81 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-justify-center tw-gap-0 lg:tw-gap-1.5 tw-items-center">
-		<img
-			:src="HandsPlant"
-			v-if="!isGoalSet"
-			class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
-		>
+		<!-- Goal Progress Ring (shown after goal is set) -->
+		<GoalProgressRing
+			v-if="isGoalSet"
+			variant="modal"
+			:goal-loans="effectiveGoalLoans"
+			:goal-progress="loansThisYear"
+			:goal-progress-percentage="localGoalProgressPercentage"
+			:category-name="selectedCategoryName"
+			@button-click="handleSuccessContinue"
+		/>
 
-		<h2
-			class="tw-px-4 lg:tw-px-7 tw-text-center"
-			style="line-height: 125%;"
-			v-html="titleText"
-		>
-		</h2>
-
-		<div
-			class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
-		>
-			{{ subtitleText }}
-		</div>
-
-		<div
-			v-if="isGoalSet" class="tw-flex tw-justify-center tw-items-center"
-		>
+		<!-- Goal Selection Form (shown before goal is set) -->
+		<template v-else>
 			<img
 				:src="HandsPlant"
-				style="max-width: 200px;"
-				class="lg:tw-mb-1 tw-w-full tw-h-full"
-				alt="gif"
+				class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
 			>
-		</div>
 
-		<div
-			v-else
-			class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5 tw-my-1"
-		>
-			<template v-if="loadingCurrentYear">
-				<KvLoadingPlaceholder
-					v-for="n in 3"
-					:key="n"
-					class="tw-flex-1 !tw-rounded"
-					style="min-height: 82px;"
-				/>
-			</template>
-			<template v-else>
-				<LoanNumberSelector
-					v-for="(option, index) in goalOptions"
-					:key="index"
-					:loans-number="option.loansNumber"
-					:option-text="option.optionText"
-					:selected="option.selected"
-					:highlighted-text="option.highlightedText"
-					@click="updateOptionSelection(index)"
-				/>
-			</template>
-		</div>
-
-		<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
-			<KvButton
-				class="tw-w-full tw-mt-1.5"
-				@click="handleContinue"
+			<h2
+				class="tw-px-4 lg:tw-px-7 tw-text-center"
+				style="line-height: 125%;"
+				v-html="titleText"
 			>
-				{{ buttonText }}
-			</KvButton>
+			</h2>
 
-			<KvButton
-				v-if="!isGoalSet"
-				variant="ghost"
-				class="edit-goal-button tw-w-full"
-				@click="editGoal"
+			<div
+				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
 			>
-				Edit goal category
-				<KvMaterialIcon
-					:icon="mdiPencilOutline"
-					class="tw-ml-0.5"
-				/>
-			</KvButton>
-		</div>
+				{{ subtitleText }}
+			</div>
+
+			<div
+				class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5 tw-my-1"
+			>
+				<template v-if="loadingCurrentYear">
+					<KvLoadingPlaceholder
+						v-for="n in 3"
+						:key="n"
+						class="tw-flex-1 !tw-rounded"
+						style="min-height: 82px;"
+					/>
+				</template>
+				<template v-else>
+					<LoanNumberSelector
+						v-for="(option, index) in goalOptions"
+						:key="index"
+						:loans-number="option.loansNumber"
+						:option-text="option.optionText"
+						:selected="option.selected"
+						:highlighted-text="option.highlightedText"
+						@click="updateOptionSelection(index)"
+					/>
+				</template>
+			</div>
+
+			<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
+				<KvButton
+					class="tw-w-full tw-mt-1.5"
+					@click="handleContinue"
+				>
+					{{ buttonText }}
+				</KvButton>
+
+				<KvButton
+					variant="ghost"
+					class="edit-goal-button tw-w-full"
+					@click="editGoal"
+				>
+					Edit goal category
+					<KvMaterialIcon
+						:icon="mdiPencilOutline"
+						class="tw-ml-0.5"
+					/>
+				</KvButton>
+			</div>
+		</template>
 	</div>
 </template>
 
@@ -90,9 +90,10 @@ import {
 import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
+import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import { KvButton, KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { mdiPencilOutline } from '@mdi/js';
-import useGoalData, { SAME_AS_LAST_YEAR_LIMIT, LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import useGoalData, { SAME_AS_LAST_YEAR_LIMIT, LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -147,10 +148,31 @@ const props = defineProps({
 	selectedCategoryName: {
 		type: String,
 		default: 'Women',
-	}
+	},
+	/**
+	 * Target number of loans for the goal
+	 */
+	goalLoans: {
+		type: Number,
+		default: 0,
+	},
+	/**
+	 * Current progress (number of loans made toward goal)
+	 */
+	goalProgress: {
+		type: Number,
+		default: 0,
+	},
+	/**
+	 * Progress percentage (0-100)
+	 */
+	goalProgressPercentage: {
+		type: Number,
+		default: 0,
+	},
 });
 
-const emit = defineEmits(['set-goal', 'edit-goal', 'set-goal-target']);
+const emit = defineEmits(['set-goal', 'edit-goal', 'set-goal-target', 'close-modal']);
 
 const DEFAULT_GOAL_OPTIONS = [
 	{
@@ -223,9 +245,6 @@ const loadLoansThisYear = async () => {
 };
 
 const titleText = computed(() => {
-	if (props.isGoalSet) {
-		return 'Success! Your goal is set!';
-	}
 	if (loansLastYear.value === 0 || loansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
 		if (props.selectedCategoryId === ID_SUPPORT_ALL) {
 			return 'How many loans will you make this year?';
@@ -238,32 +257,32 @@ const titleText = computed(() => {
 });
 
 const subtitleText = computed(() => {
-	if (props.isGoalSet) {
-		return '';
-	}
-
 	if (loansThisYear.value > 0) {
-		return `You've already made ${loansThisYear.value} that will count!.`;
+		return `You've already made ${loansThisYear.value} that will count!`;
 	}
-
 	return '';
 });
 
+const yearToDate = new Date().getFullYear();
+
 const buttonText = computed(() => {
-	if (!props.isGoalSet) {
-		return 'Set 2026 goal';
-	}
-
-	if (props.goToUrl !== '/mykiva') {
-		return 'Start my goal';
-	}
-
-	return 'Track my progress';
+	return `Set ${yearToDate} goal`;
 });
 
 const selectedTarget = computed(() => {
 	const selectedOption = goalOptions.value.find(option => option.selected);
-	return selectedOption.loansNumber;
+	return selectedOption?.loansNumber ?? DEFAULT_GOAL_OPTIONS[1].loansNumber;
+});
+
+// Use goalLoans prop if available, otherwise fall back to selectedTarget
+const effectiveGoalLoans = computed(() => {
+	return props.goalLoans > 0 ? props.goalLoans : selectedTarget.value;
+});
+
+// Calculate progress percentage based on loansThisYear and effective goal
+const localGoalProgressPercentage = computed(() => {
+	if (!effectiveGoalLoans.value || effectiveGoalLoans.value === 0) return 0;
+	return Math.min(Math.round((loansThisYear.value / effectiveGoalLoans.value) * 100), 100);
 });
 
 const resetOptionSelection = selectedIndex => {
@@ -295,38 +314,37 @@ const editGoal = () => {
 	);
 };
 
+const handleSuccessContinue = () => {
+	$kvTrackEvent(
+		props.trackingCategory,
+		'click',
+		props.goToUrl === '/mykiva' ? 'go-to-mykiva' : 'continue-towards-goal'
+	);
+	window.location.href = props.goToUrl;
+};
+
 const handleContinue = () => {
-	if (props.isGoalSet) {
-		window.location.href = props.goToUrl;
-		$kvTrackEvent(
-			props.trackingCategory,
-			'click',
-			props.goToUrl === '/mykiva' ? 'go-to-mykiva' : 'continue-towards-goal'
-		);
-	} else {
-		const currentYear = new Date().getFullYear();
-		const goalName = `goal-${props.selectedCategoryId}-${currentYear}`;
-		const target = selectedTarget.value;
-		const dateStarted = new Date().toISOString();
-		const status = 'in-progress';
-		const loanTotalAtStart = props.categoriesLoanCount?.[props.selectedCategoryId] || 0;
-		const preferences = {
-			goalName,
-			category: props.selectedCategoryId,
-			target,
-			dateStarted,
-			status,
-			loanTotalAtStart,
-		};
-		emit('set-goal', preferences);
-		$kvTrackEvent(
-			props.trackingCategory,
-			'click',
-			'set-annual-goal',
-			props.selectedCategoryId,
-			selectedTarget.value
-		);
-	}
+	const currentYear = new Date().getFullYear();
+	const goalName = `goal-${props.selectedCategoryId}-${currentYear}`;
+	const target = selectedTarget.value;
+	const dateStarted = new Date().toISOString();
+	const loanTotalAtStart = props.categoriesLoanCount?.[props.selectedCategoryId] || 0;
+	const preferences = {
+		goalName,
+		category: props.selectedCategoryId,
+		target,
+		dateStarted,
+		status: GOAL_STATUS.IN_PROGRESS,
+		loanTotalAtStart,
+	};
+	emit('set-goal', preferences);
+	$kvTrackEvent(
+		props.trackingCategory,
+		'click',
+		'set-annual-goal',
+		props.selectedCategoryId,
+		selectedTarget.value
+	);
 };
 
 const updateGoalOptions = () => {
@@ -413,19 +431,6 @@ watch(() => props.selectedCategoryId, async newCategory => {
 	}
 });
 
-watch(() => props.isGoalSet, newVal => {
-	// Re-run gif animation when goal is set
-	if (newVal) {
-		const imgElement = document.querySelector('img[alt="gif"]');
-		if (imgElement) {
-			const { src } = imgElement;
-			imgElement.src = '';
-			setTimeout(() => {
-				imgElement.src = src;
-			}, 50);
-		}
-	}
-});
 </script>
 
 <style lang="postcss" scoped>

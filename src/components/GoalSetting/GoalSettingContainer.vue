@@ -30,6 +30,7 @@
 				:is-editing="isEditing"
 				:selected-category-id="selectedCategory.badgeId"
 				:selected-category-name="selectedCategory.name"
+				:goal-loans="loanTarget"
 				tracking-category="event-tracking"
 				@set-goal-target="setTarget($event)"
 				@set-goal="setGoal($event)"
@@ -49,7 +50,7 @@
 					:categories="categories"
 					:pre-selected-category="selectedCategory.id"
 					:selected-category="selectedCategory"
-					:selected-goal-number="selectedGoalNumber"
+					:selected-goal-number="loanTarget"
 					@category-selected="handleCategorySelected"
 					@number-changed="handleNumberChanged"
 				/>
@@ -235,15 +236,13 @@ const handleNumberChanged = number => {
 	console.log(number);
 };
 
+const yearToDate = new Date().getFullYear();
+
 const ctaCopy = computed(() => {
 	if (isEditing.value) {
 		return 'Continue';
 	}
-
-	if (props.goalsV2Enabled) {
-		return 'Set 2026 goal';
-	}
-	return formStep.value === 1 ? 'Continue' : 'Set my goal';
+	return `Set ${yearToDate} goal`;
 });
 
 onMounted(async () => {
@@ -251,6 +250,13 @@ onMounted(async () => {
 	const isEmptyGoal = Object.keys(userGoal.value || {}).length === 0;
 	if (!isEmptyGoal) {
 		const { target, category } = userGoal.value;
+		// Set loanTarget from stored goal so GoalSelector shows correct target
+		loanTarget.value = target;
+		// Find and set the selected category from stored goal
+		const storedCategory = categories.find(c => c.badgeId === category);
+		if (storedCategory) {
+			selectedCategory.value = storedCategory;
+		}
 		// Use goalProgress which tracks current year progress
 		ctaHref.value = getCtaHref(target, category, router, goalProgress.value);
 		isGoalSet.value = true;

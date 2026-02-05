@@ -419,16 +419,19 @@ export default {
 			this.$router.push(`/lend/filter?country=${region?.countries.join(',')}`);
 		},
 		async setGoal(preferences) {
-			await this.storeGoalPreferences(preferences);
-			// Goals V2 (yearly progress) is enabled if flag is true OR year >= 2026
-			await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+			// For goalsV2, pass false to not update local state yet
+			// This delays the UI update until the modal is closed
+			const updateLocalState = !this.goalsV2Enabled;
+			await this.storeGoalPreferences(preferences, updateLocalState);
 			this.newGoalPrefs = preferences;
 			this.isGoalSet = true;
 			if (!this.goalsV2Enabled) {
+				// For legacy goals, close modal and refresh immediately
+				await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
 				this.showGoalModal = false;
 			}
 		},
-		closeGoalModal() {
+		async closeGoalModal() {
 			if (this.showGoalModal) {
 				this.showGoalModal = false;
 				this.$kvTrackEvent(
@@ -437,10 +440,16 @@ export default {
 					'close-goals'
 				);
 			}
-			if (this.isGoalSet && !this.recordedGoalSet) {
-				// eslint-disable-next-line max-len
-				this.$kvTrackEvent('portfolio', 'show', 'goal-set', this.newGoalPrefs?.category, this.newGoalPrefs?.target);
-				this.recordedGoalSet = true;
+			// Only refresh goal data when modal closes AND goal was set
+			// This ensures the main card transitions to ring only after modal is closed
+			if (this.isGoalSet) {
+				if (!this.recordedGoalSet) {
+					// eslint-disable-next-line max-len
+					this.$kvTrackEvent('portfolio', 'show', 'goal-set', this.newGoalPrefs?.category, this.newGoalPrefs?.target);
+					this.recordedGoalSet = true;
+				}
+				// Refresh goal data to update the main card with the ring
+				await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
 			}
 		},
 		closeImpactInsightsModal() {

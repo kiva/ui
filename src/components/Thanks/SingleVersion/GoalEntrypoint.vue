@@ -13,6 +13,10 @@
 			:is-editing="isEditing"
 			:selected-category-id="selectedCategory.badgeId"
 			:selected-category-name="selectedCategory.name"
+			:goal-loans="goalLoans"
+			:goal-progress="goalProgress"
+			:goal-progress-percentage="goalProgressPercentage"
+			:go-to-url="goToUrl"
 			@set-goal-target="$emit('set-goal-target', $event)"
 			@set-goal="$emit('set-goal', $event)"
 			@edit-goal="$emit('edit-goal')"
@@ -68,6 +72,41 @@ defineProps({
 	selectedCategory: {
 		type: Object,
 		default: () => ({}),
+	},
+	/**
+	 * Whether the user is editing their goal category
+	 */
+	isEditing: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Target number of loans for the goal
+	 */
+	goalLoans: {
+		type: Number,
+		default: 0,
+	},
+	/**
+	 * Current progress (number of loans made toward goal)
+	 */
+	goalProgress: {
+		type: Number,
+		default: 0,
+	},
+	/**
+	 * Progress percentage (0-100)
+	 */
+	goalProgressPercentage: {
+		type: Number,
+		default: 0,
+	},
+	/**
+	 * URL to navigate to after setting goal
+	 */
+	goToUrl: {
+		type: String,
+		default: '/mykiva',
 	},
 });
 
