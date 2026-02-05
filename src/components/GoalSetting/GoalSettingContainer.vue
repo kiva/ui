@@ -236,13 +236,13 @@ const handleNumberChanged = number => {
 	console.log(number);
 };
 
-const yearToDate = computed(() => new Date().getFullYear());
+const yearToDate = new Date().getFullYear();
 
 const ctaCopy = computed(() => {
 	if (isEditing.value) {
 		return 'Continue';
 	}
-	return `Set ${yearToDate.value} goal`;
+	return `Set ${yearToDate} goal`;
 });
 
 onMounted(async () => {

@@ -1,7 +1,7 @@
 <template>
 	<div class="tw-h-full tw-flex tw-flex-col tw-justify-between" :class="containerClass">
 		<div :class="titleContainerClass">
-			<h2 v-if="variant === 'modal'" class="tw-font-medium" :class="titleClass">
+			<h2 v-if="isModalVariant" class="tw-font-medium" :class="titleClass">
 				{{ titleText }}
 			</h2>
 			<p v-else class="tw-font-medium" :class="titleClass">
@@ -10,13 +10,24 @@
 		</div>
 
 		<div
-			v-if="variant === 'modal'"
+			v-if="isModalVariant"
 			class="tw-text-center tw-w-full tw-flex tw-justify-center tw-py-1"
 		>
-			<p class="modal-description-text tw-font-medium" style="line-height: 1.5rem;">
+			<p
+				v-if="hasProgress"
+				class="modal-description-text tw-font-medium" style="line-height: 1.5rem;"
+			>
 				You're already on your way to making
 				<strong class="tw-text-brand">{{ goalLoans }} loans</strong> to
 				<strong class="tw-text-brand">{{ categoryName }}</strong> this year
+			</p>
+			<p
+				v-else
+				class="modal-description-text tw-font-medium" style="line-height: 1.5rem;"
+			>
+				Your support to
+				<strong class="tw-text-brand">{{ goalLoans }} loans</strong> for
+				<strong class="tw-text-brand">{{ categoryName }}</strong> for women begins here.
 			</p>
 		</div>
 
@@ -121,20 +132,24 @@ const progressCircleDesc = computed(() => {
 
 // --- Variant-specific computed properties ---
 
+const hasProgress = computed(() => props.goalProgress > 0);
+
+const isModalVariant = computed(() => props.variant === 'modal');
+
 const containerClass = computed(() => {
-	return props.variant === 'modal' ? 'tw-text-center goal-modal-container' : 'tw-text-center';
+	return props.isModalVariant ? 'tw-text-center goal-modal-container' : 'tw-text-center';
 });
 
 const titleContainerClass = computed(() => {
-	return props.variant === 'modal' ? 'tw-text-center' : 'tw-text-left';
+	return props.isModalVariant ? 'tw-text-center' : 'tw-text-left';
 });
 
 const titleClass = computed(() => {
-	return props.variant === 'modal' ? 'tw-text-center' : '';
+	return props.isModalVariant ? 'tw-text-center' : '';
 });
 
 const titleText = computed(() => {
-	if (props.variant === 'modal') {
+	if (props.isModalVariant) {
 		return 'Goal set!';
 	}
 	return `Your ${yearToDate.value} goal to ${props.categoryName}`;
@@ -158,7 +173,7 @@ const descriptionText = computed(() => {
 });
 
 const buttonText = computed(() => {
-	if (props.variant === 'modal') {
+	if (props.isModalVariant) {
 		// Modal variant
 		if (props.goalProgress > 0) {
 			return 'Track my progress';

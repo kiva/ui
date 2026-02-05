@@ -263,10 +263,10 @@ const subtitleText = computed(() => {
 	return '';
 });
 
-const yearToDate = computed(() => new Date().getFullYear());
+const yearToDate = new Date().getFullYear();
 
 const buttonText = computed(() => {
-	return `Set ${yearToDate.value} goal`;
+	return `Set ${yearToDate} goal`;
 });
 
 const selectedTarget = computed(() => {
@@ -315,12 +315,12 @@ const editGoal = () => {
 };
 
 const handleSuccessContinue = () => {
-	window.location.href = props.goToUrl;
 	$kvTrackEvent(
 		props.trackingCategory,
 		'click',
 		props.goToUrl === '/mykiva' ? 'go-to-mykiva' : 'continue-towards-goal'
 	);
+	window.location.href = props.goToUrl;
 };
 
 const handleContinue = () => {
