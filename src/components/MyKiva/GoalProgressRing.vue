@@ -15,19 +15,19 @@
 		>
 			<p
 				v-if="hasProgress"
-				class="modal-description-text tw-text-subhead" style="line-height: 1.5rem;"
+				class="modal-description-text tw-text-subhead !tw-font-medium" style="line-height: 1.5rem;"
 			>
 				You're already on your way to making
 				<strong class="tw-text-brand">{{ goalLoans }} loans</strong> to
-				<strong class="tw-text-brand">{{ categoryName }}</strong> this year
+				<strong class="tw-text-brand">{{ categoryName?.toLowerCase() }}</strong> this year
 			</p>
 			<p
 				v-else
-				class="modal-description-text tw-text-subhead" style="line-height: 1.5rem;"
+				class="modal-description-text tw-text-subhead !tw-font-medium" style="line-height: 1.5rem;"
 			>
 				Your support to
 				<strong class="tw-text-brand">{{ goalLoans }} loans</strong> for
-				<strong class="tw-text-brand">{{ categoryName }}</strong> for women begins here.
+				<strong class="tw-text-brand">{{ categoryName?.toLowerCase() }}</strong> for women begins here.
 			</p>
 		</div>
 
@@ -54,7 +54,7 @@
 		</div>
 
 		<p
-			v-if="variant !== 'modal'"
+			v-if="!isModalVariant"
 			v-html="descriptionText"
 			class="tw-font-medium tw-py-1"
 			style="line-height: 1.5rem;"
@@ -152,7 +152,7 @@ const titleText = computed(() => {
 	if (isModalVariant.value) {
 		return 'Goal set!';
 	}
-	return `Your ${yearToDate} goal to ${props.categoryName}`;
+	return `Your ${yearToDate} goal to ${props.categoryName?.toLowerCase() || ''}`;
 });
 
 // Card variant only
