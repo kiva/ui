@@ -543,7 +543,13 @@ export default function useGoalData({ apollo } = {}) {
 		}
 	}
 
-	async function storeGoalPreferences(updates) {
+	/**
+	 * Store goal preferences to backend
+	 * @param {Object} updates - Goal data to store
+	 * @param {boolean} updateLocalState - Whether to update local userGoal state (default: true)
+	 *   Set to false when you want to delay the UI update (e.g., until modal closes)
+	 */
+	async function storeGoalPreferences(updates, updateLocalState = true) {
 		if (!userPreferences.value?.id) {
 			await createUserPreferences(apolloClient, { goals: [] });
 			await loadPreferences('network-only'); // Reload after create
@@ -572,7 +578,9 @@ export default function useGoalData({ apollo } = {}) {
 			parsedPrefs,
 			{ goals }
 		);
-		setGoalState({ goals }); // Refresh local state after update
+		if (updateLocalState) {
+			setGoalState({ goals }); // Refresh local state after update
+		}
 	}
 
 	async function checkCompletedGoal({ currentGoalProgress = 0, category = 'post-checkout' } = {}) {

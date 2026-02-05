@@ -31,9 +31,13 @@
 			:is-editing="isEditing"
 			:selected-category-id="selectedCategory.badgeId"
 			:selected-category-name="selectedCategory.name"
+			:goal-loans="selectedGoalNumber"
+			:goal-progress="goalProgress"
+			:goal-progress-percentage="goalProgressPercentage"
 			@set-goal-target="setGoalTarget"
 			@set-goal="$emit('set-goal', $event)"
 			@edit-goal="editGoalCategory"
+			@close-modal="closeLightbox"
 		/>
 		<component
 			v-show="showCategories || isThanksPage"
@@ -45,9 +49,11 @@
 			@category-selected="handleCategorySelected"
 			@number-changed="handleNumberChanged"
 		/>
-		<template #controls>
+		<template
+			v-if="showCategories || isThanksPage"
+			#controls
+		>
 			<div
-				v-if="showCategories || isThanksPage"
 				class="tw-flex tw-justify-end tw-gap-2"
 			>
 				<KvButton
@@ -95,6 +101,7 @@ const {
 	getCtaHref,
 	getCategories,
 	goalProgress,
+	goalProgressPercentage,
 	loadGoalData,
 } = useGoalData();
 
@@ -162,7 +169,10 @@ const selectedGoalNumber = ref(numberOfLoans.value ? numberOfLoans.value : 5); /
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
-const selectedCategory = ref(props.controlledSelectedCategory || categories[0]);
+// Check if controlledSelectedCategory has actual data (not just empty object)
+const hasControlledCategory = props.controlledSelectedCategory
+	&& Object.keys(props.controlledSelectedCategory).length > 0;
+const selectedCategory = ref(hasControlledCategory ? props.controlledSelectedCategory : categories[0]);
 
 const contentComponent = computed(() => {
 	switch (formStep.value) {
@@ -171,13 +181,15 @@ const contentComponent = computed(() => {
 	}
 });
 
+const yearToDate = computed(() => new Date().getFullYear());
+
 const ctaCopy = computed(() => {
 	if (isEditing.value) {
 		return 'Continue';
 	}
 
 	if (props.goalsV2Enabled) {
-		return 'Set 2026 goal';
+		return `Set ${yearToDate.value} goal`;
 	}
 	return formStep.value === 1 ? 'Continue' : 'Set my goal';
 });
