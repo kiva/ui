@@ -120,7 +120,7 @@ const props = defineProps({
 
 const emit = defineEmits(['button-click']);
 
-const yearToDate = computed(() => new Date().getFullYear());
+const yearToDate = new Date().getFullYear();
 
 const visibleGoalLoans = computed(() => {
 	return Math.min(props.goalProgress, props.goalLoans);
@@ -152,7 +152,7 @@ const titleText = computed(() => {
 	if (props.isModalVariant) {
 		return 'Goal set!';
 	}
-	return `Your ${yearToDate.value} goal to ${props.categoryName}`;
+	return `Your ${yearToDate} goal to ${props.categoryName}`;
 });
 
 // Card variant only
@@ -169,7 +169,7 @@ const descriptionText = computed(() => {
 	if (props.goalProgressPercentage < COMPLETED_GOAL_THRESHOLD) {
 		return 'You\'ve brought so many dreams<br>within reach. Finish strong!';
 	}
-	return `Incredible! You reached your ${yearToDate.value} <br>goal and changed ${props.goalLoans} lives!`;
+	return `Incredible! You reached your ${yearToDate} <br>goal and changed ${props.goalLoans} lives!`;
 });
 
 const buttonText = computed(() => {

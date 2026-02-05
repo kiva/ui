@@ -103,10 +103,7 @@ const goalLoans = computed(() => {
 	return props.userGoal?.target || 0;
 });
 
-const yearToDate = computed(() => {
-	const currentYear = new Date().getFullYear();
-	return currentYear;
-});
+const yearToDate = new Date().getFullYear();
 
 const title = computed(() => {
 	if (props.prevYearLoans === 1) {

@@ -181,7 +181,7 @@ const contentComponent = computed(() => {
 	}
 });
 
-const yearToDate = computed(() => new Date().getFullYear());
+const yearToDate = new Date().getFullYear();
 
 const ctaCopy = computed(() => {
 	if (isEditing.value) {
@@ -189,7 +189,7 @@ const ctaCopy = computed(() => {
 	}
 
 	if (props.goalsV2Enabled) {
-		return `Set ${yearToDate.value} goal`;
+		return `Set ${yearToDate} goal`;
 	}
 	return formStep.value === 1 ? 'Continue' : 'Set my goal';
 });
