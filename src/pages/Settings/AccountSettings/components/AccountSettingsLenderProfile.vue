@@ -104,7 +104,6 @@
 							@update:model-value="updateForm('state', $event)"
 						/>
 					</div>
-					<!-- TODO: Add country list options in once graphql endpoint exists -->
 					<div>
 						<label for="profileCountry" class="tw-block tw-mb-1 tw-font-medium">
 							Country
@@ -233,6 +232,7 @@ import {
 	KvButton, KvCheckbox, KvMaterialIcon, KvSelect, KvTextInput
 } from '@kiva/kv-components';
 import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
+import { getCountryOptions } from '#src/util/countryOptions';
 import lenderProfileQuery from '#src/graphql/query/accountSettings/lenderProfileQuery.graphql';
 
 const defaultForm = () => ({
@@ -298,7 +298,7 @@ export default {
 			isSaving: false,
 			localForm: defaultForm(),
 			initialForm: defaultForm(),
-			countries: [],
+			countries: getCountryOptions(),
 			mdiAccount,
 		};
 	},

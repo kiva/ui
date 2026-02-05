@@ -25,8 +25,8 @@
 							/>
 						</div>
 
-						<div class="tw-text-lg tw-font-semibold tw-text-slate-900">
-							<strong>{{ name }}</strong>
+						<div class="borrower-name tw-text-lg tw-font-semibold tw-text-slate-900">
+							<strong class="tw-line-clamp-1 tw-truncate">{{ name }}</strong>
 						</div>
 					</div>
 				</div>
@@ -146,4 +146,9 @@ div:has(.screen-description) {
 		width: 400px;
 	}
 }
+
+.borrower-name {
+	width: 140px;
+}
+
 </style>

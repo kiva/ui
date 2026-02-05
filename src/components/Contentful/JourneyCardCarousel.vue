@@ -153,7 +153,7 @@ import useBreakpoints from '#src/composables/useBreakpoints';
 import { formatUiSetting } from '#src/util/contentfulUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
-import useBadgeData from '#src/composables/useBadgeData';
+import useBadgeData, { getJourneysByLoan } from '#src/composables/useBadgeData';
 import { KvCarousel, KvMaterialIcon } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
@@ -180,7 +180,6 @@ const router = useRouter();
 const {
 	getContentfulLevelData,
 	combineBadgeData,
-	getJourneysByLoan,
 } = useBadgeData(apollo);
 
 const { getCategoryLoansLastYear } = useGoalData();
@@ -283,14 +282,20 @@ const currentIndex = ref(0);
 const isSharingModalVisible = ref(false);
 const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
 const acceptedEmailMarketingUpdates = ref(false);
+
+const isLatestLoanAnonymous = computed(() => {
+	return props.latestLoan?.anonymizationLevel === 'full';
+});
+
 const shouldShowEmailMarketingCard = computed(
-	() => props.showPostLendingNextStepsCards && props.postLendingNextStepsEnable && props.inLendingStats
+	() => props.showPostLendingNextStepsCards && props.postLendingNextStepsEnable
+		&& props.inLendingStats && !isLatestLoanAnonymous.value
 		&& userHasMailUpdatesOptOut() && (props.loans.length > 0 || props.latestLoan !== null)
 );
 const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
 
 const showLatestLoan = computed(() => props.showPostLendingNextStepsCards
-	&& props.postLendingNextStepsEnable && props.latestLoan);
+	&& props.postLendingNextStepsEnable && props.latestLoan && !isLatestLoanAnonymous.value);
 
 const showSurveyCard = computed(() => {
 	const userPreferences = props.userInfo?.userPreferences || {};

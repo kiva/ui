@@ -1,5 +1,8 @@
 /* eslint-disable max-len */
 import useBadgeData, {
+	calculateFreshProgressAdjustments,
+	getMissingLoans,
+	getJourneysByLoan,
 	ID_WOMENS_EQUALITY,
 	ID_US_ECONOMIC_EQUALITY,
 	ID_CLIMATE_ACTION,
@@ -761,8 +764,6 @@ describe('useBadgeData.js', () => {
 	});
 
 	describe('getJourneysByLoan', () => {
-		const { getJourneysByLoan } = useBadgeData();
-
 		it('should return expected journey for us-economic-equality loans', () => {
 			const loan = {
 				id: 1,
@@ -1036,7 +1037,8 @@ describe('useBadgeData.js', () => {
 
 			expect(apolloMock.query).toHaveBeenCalledWith({
 				query: expect.anything(),
-				variables: { publicId: null }
+				variables: { publicId: null },
+				fetchPolicy: 'network-only'
 			});
 
 			await vi.waitFor(() => {
@@ -1065,7 +1067,8 @@ describe('useBadgeData.js', () => {
 
 			expect(apolloMock.query).toHaveBeenCalledWith({
 				query: expect.anything(),
-				variables: { publicId: 'user123' }
+				variables: { publicId: 'user123' },
+				fetchPolicy: 'network-only'
 			});
 		});
 
@@ -1591,7 +1594,8 @@ describe('useBadgeData.js', () => {
 
 			expect(mockApollo.query).toHaveBeenCalledWith({
 				query: expect.any(Object),
-				variables: { publicId: 'user-123' }
+				variables: { publicId: 'user-123' },
+				fetchPolicy: 'network-only'
 			});
 		});
 	});
@@ -1635,6 +1639,298 @@ describe('useBadgeData.js', () => {
 			await fetchContentfulData(mockApollo);
 
 			expect(badgeContentfulData.value).toBeUndefined();
+		});
+	});
+
+	describe('getMissingLoans', () => {
+		it('should return empty array when loans array is empty', () => {
+			const result = getMissingLoans([], [{ id: 'achievement-1' }]);
+
+			expect(result).toEqual([]);
+		});
+
+		it('should return empty array when tieredAchievements array is empty', () => {
+			const result = getMissingLoans([{ id: 1 }], []);
+
+			expect(result).toEqual([]);
+		});
+
+		it('should return empty array when all loans are already in achievement service', () => {
+			const loans = [{ id: 1 }, { id: 2 }];
+			const tieredAchievements = [{
+				id: 'womens-equality',
+				loanPurchases: [{ loan: { id: 1 } }, { loan: { id: 2 } }]
+			}];
+
+			const result = getMissingLoans(loans, tieredAchievements);
+
+			expect(result).toEqual([]);
+		});
+
+		it('should return loans that are missing from achievement service', () => {
+			const loans = [
+				{ id: 1, gender: 'female' },
+				{ id: 2, gender: 'female' },
+				{ id: 3, gender: 'male' }
+			];
+			const tieredAchievements = [{
+				id: 'womens-equality',
+				loanPurchases: [{ loan: { id: 1 } }]
+			}];
+
+			const result = getMissingLoans(loans, tieredAchievements);
+
+			expect(result).toHaveLength(2);
+			expect(result).toContainEqual({ id: 2, gender: 'female' });
+			expect(result).toContainEqual({ id: 3, gender: 'male' });
+		});
+
+		it('should handle multiple achievements with different loan purchases', () => {
+			const loans = [
+				{ id: 1, gender: 'female' },
+				{ id: 2, gender: 'female' },
+				{ id: 3, geocode: { country: { isoCode: 'US' } } }
+			];
+			const tieredAchievements = [
+				{
+					id: 'womens-equality',
+					loanPurchases: [{ loan: { id: 1 } }]
+				},
+				{
+					id: 'us-economic-equality',
+					loanPurchases: [{ loan: { id: 3 } }]
+				}
+			];
+
+			const result = getMissingLoans(loans, tieredAchievements);
+
+			expect(result).toHaveLength(1);
+			expect(result).toContainEqual({ id: 2, gender: 'female' });
+		});
+
+		it('should filter out loans without valid IDs', () => {
+			const loans = [
+				{ id: 1, gender: 'female' },
+				{ id: null, gender: 'female' },
+				{ gender: 'male' }
+			];
+			const tieredAchievements = [{
+				id: 'womens-equality',
+				loanPurchases: []
+			}];
+
+			const result = getMissingLoans(loans, tieredAchievements);
+
+			expect(result).toHaveLength(1);
+			expect(result[0].id).toBe(1);
+		});
+
+		it('should handle achievements with empty loanPurchases', () => {
+			const loans = [
+				{ id: 1, gender: 'female' },
+				{ id: 2, gender: 'female' }
+			];
+			const tieredAchievements = [{
+				id: 'womens-equality',
+				loanPurchases: []
+			}];
+
+			const result = getMissingLoans(loans, tieredAchievements);
+
+			expect(result).toHaveLength(2);
+		});
+
+		it('should handle achievements with null or undefined loanPurchases', () => {
+			const loans = [{ id: 1, gender: 'female' }];
+			const tieredAchievements = [
+				{ id: 'womens-equality', loanPurchases: null },
+				{ id: 'us-economic-equality' }
+			];
+
+			const result = getMissingLoans(loans, tieredAchievements);
+
+			expect(result).toHaveLength(1);
+			expect(result[0].id).toBe(1);
+		});
+	});
+
+	describe('calculateFreshProgressAdjustments', () => {
+		it('should return empty object when loans array is empty', () => {
+			const result = calculateFreshProgressAdjustments([], [{ id: 'achievement-1' }]);
+
+			expect(result).toEqual({});
+		});
+
+		it('should return empty object when tieredAchievements array is empty', () => {
+			const result = calculateFreshProgressAdjustments([{ id: 1 }], []);
+
+			expect(result).toEqual({});
+		});
+
+		it('should return empty object when all loans are already in achievement service', () => {
+			const loans = [{ id: 1 }, { id: 2 }];
+			const tieredAchievements = [{
+				id: 'womens-equality',
+				loanPurchases: [{ loan: { id: 1 } }, { loan: { id: 2 } }]
+			}];
+
+			const result = calculateFreshProgressAdjustments(loans, tieredAchievements);
+
+			expect(result).toEqual({});
+		});
+
+		it('should calculate adjustments for missing loans that match womens-equality', () => {
+			const loans = [
+				{ id: 1, gender: 'female' },
+				{ id: 2, gender: 'female' }
+			];
+			const tieredAchievements = [{
+				id: 'womens-equality',
+				loanPurchases: [{ loan: { id: 1 } }]
+			}];
+
+			const result = calculateFreshProgressAdjustments(loans, tieredAchievements);
+
+			expect(result['womens-equality']).toBe(1);
+		});
+
+		it('should calculate adjustments for missing loans that match us-economic-equality', () => {
+			const loans = [
+				{ id: 1, geocode: { country: { isoCode: 'US' } } },
+				{ id: 2, geocode: { country: { isoCode: 'PR' } } }
+			];
+			const tieredAchievements = [{
+				id: 'us-economic-equality',
+				loanPurchases: []
+			}];
+
+			const result = calculateFreshProgressAdjustments(loans, tieredAchievements);
+
+			expect(result['us-economic-equality']).toBe(2);
+		});
+
+		it('should calculate adjustments for loans matching multiple categories', () => {
+			const loans = [
+				{
+					id: 1,
+					gender: 'female',
+					geocode: { country: { isoCode: 'US' } }
+				}
+			];
+			const tieredAchievements = [{
+				id: 'womens-equality',
+				loanPurchases: []
+			}];
+
+			const result = calculateFreshProgressAdjustments(loans, tieredAchievements);
+
+			expect(result['womens-equality']).toBe(1);
+			expect(result['us-economic-equality']).toBe(1);
+		});
+
+		it('should handle loans with refugee theme', () => {
+			const loans = [
+				{ id: 1, themes: ['Refugees/Displaced'] }
+			];
+			const tieredAchievements = [{
+				id: 'refugee-equality',
+				loanPurchases: []
+			}];
+
+			const result = calculateFreshProgressAdjustments(loans, tieredAchievements);
+
+			expect(result['refugee-equality']).toBe(1);
+		});
+
+		it('should handle loans with basic needs sector', () => {
+			const loans = [
+				{ id: 1, sector: { id: 6 } }, // Health sector
+				{ id: 2, sector: { id: 10 } } // Food sector
+			];
+			const tieredAchievements = [{
+				id: 'basic-needs',
+				loanPurchases: []
+			}];
+
+			const result = calculateFreshProgressAdjustments(loans, tieredAchievements);
+
+			expect(result['basic-needs']).toBe(2);
+		});
+
+		it('should handle loans with climate action tags', () => {
+			const loans = [
+				{ id: 1, tags: ['#Eco-friendly'] },
+				{ id: 2, tags: ['#Sustainable Ag'] }
+			];
+			const tieredAchievements = [{
+				id: 'climate-action',
+				loanPurchases: []
+			}];
+
+			const result = calculateFreshProgressAdjustments(loans, tieredAchievements);
+
+			expect(result['climate-action']).toBe(2);
+		});
+	});
+
+	describe('updateBadgeDataWithFreshProgress', () => {
+		it('should return empty object when loans array is empty', () => {
+			const { updateBadgeDataWithFreshProgress, badgeAchievementData } = useBadgeData();
+			badgeAchievementData.value = [{ id: 'womens-equality', totalProgressToAchievement: 5 }];
+
+			const result = updateBadgeDataWithFreshProgress([], [{ id: 'achievement-1' }]);
+
+			expect(result).toEqual({});
+		});
+
+		it('should return empty object when badgeAchievementData is empty', () => {
+			const { updateBadgeDataWithFreshProgress, badgeAchievementData } = useBadgeData();
+			badgeAchievementData.value = [];
+
+			const result = updateBadgeDataWithFreshProgress([{ id: 1 }], [{ id: 'achievement-1' }]);
+
+			expect(result).toEqual({});
+		});
+
+		it('should update badge achievement data with fresh progress adjustments', () => {
+			const { updateBadgeDataWithFreshProgress, badgeAchievementData } = useBadgeData();
+			badgeAchievementData.value = [
+				{ id: 'womens-equality', totalProgressToAchievement: 5 },
+				{ id: 'climate-action', totalProgressToAchievement: 3 }
+			];
+
+			const loans = [
+				{ id: 1, gender: 'female' },
+				{ id: 2, gender: 'female' }
+			];
+			const tieredAchievements = [{
+				id: 'womens-equality',
+				loanPurchases: []
+			}];
+
+			const result = updateBadgeDataWithFreshProgress(loans, tieredAchievements);
+
+			expect(result['womens-equality']).toBe(2);
+			expect(badgeAchievementData.value.find(a => a.id === 'womens-equality').totalProgressToAchievement).toBe(7);
+		});
+
+		it('should not modify achievements without totalProgressToAchievement', () => {
+			const { updateBadgeDataWithFreshProgress, badgeAchievementData } = useBadgeData();
+			badgeAchievementData.value = [
+				{ id: 'equity' }, // No totalProgressToAchievement
+				{ id: 'womens-equality', totalProgressToAchievement: 5 }
+			];
+
+			const loans = [{ id: 1, gender: 'female' }];
+			const tieredAchievements = [{
+				id: 'womens-equality',
+				loanPurchases: []
+			}];
+
+			updateBadgeDataWithFreshProgress(loans, tieredAchievements);
+
+			const equityAchievement = badgeAchievementData.value.find(a => a.id === 'equity');
+			expect(equityAchievement.totalProgressToAchievement).toBeUndefined();
 		});
 	});
 });

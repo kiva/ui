@@ -12,6 +12,9 @@ import logFormatter from '#src/util/logFormatter';
 import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 
 import useBadgeData, {
+	calculateFreshProgressAdjustments,
+	getJourneysByLoan,
+	getMissingLoans,
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
 	ID_REFUGEE_EQUALITY,
@@ -354,10 +357,105 @@ export default function useGoalData({ apollo } = {}) {
 		}
 	}
 
-	async function loadProgress(year, fetchPolicy = 'network-only') {
+	/**
+	 * Calculates year-aware fresh progress adjustments for goals
+	 *
+	 * @param loans Array of carousel loans
+	 * @param tieredAchievements Array of tiered achievements
+	 * @param targetYear Year to filter for year-specific progress
+	 * @param transactions Array of user transactions to get purchase dates
+	 * @returns Object with allTime and yearSpecific adjustment maps
+	 */
+	function calculateGoalFreshProgressAdjustments(loans, tieredAchievements, targetYear, transactions = []) {
+		// Get all-time adjustments using the exported utility function (no year filtering)
+		const allTimeAdjustments = calculateFreshProgressAdjustments(loans, tieredAchievements);
+
+		// Calculate year-specific adjustments by filtering loans by year
+		const yearSpecificAdjustments = {};
+
+		if (!loans?.length || !tieredAchievements?.length) {
+			return { allTime: allTimeAdjustments, yearSpecific: yearSpecificAdjustments };
+		}
+
+		// Get missing loans using the shared helper
+		const missingLoans = getMissingLoans(loans, tieredAchievements);
+
+		// Create a map of loan ID to transaction purchase year
+		const loanPurchaseYears = new Map();
+		transactions.forEach(txn => {
+			if (txn?.loan?.id && (txn.effectiveTime || txn.createTime)) {
+				const purchaseDate = txn.effectiveTime || txn.createTime;
+				const purchaseYear = new Date(purchaseDate).getFullYear();
+				loanPurchaseYears.set(txn.loan.id, { date: purchaseDate, year: purchaseYear });
+			}
+		});
+
+		missingLoans.forEach(loan => {
+			if (!loan) return;
+
+			// Use transaction purchase year only
+			const purchaseInfo = loanPurchaseYears.get(loan.id);
+			const loanYear = purchaseInfo?.year || null;
+
+			// Only count for year-specific if year matches or is unknown (assume recent)
+			if (!loanYear || loanYear === targetYear) {
+				const journeys = getJourneysByLoan(loan);
+				journeys.forEach(journeyId => {
+					yearSpecificAdjustments[journeyId] = (yearSpecificAdjustments[journeyId] || 0) + 1;
+				});
+			}
+		});
+		return { allTime: allTimeAdjustments, yearSpecific: yearSpecificAdjustments };
+	}
+
+	/**
+	 * Applies fresh progress adjustments to goal progress data
+	 *
+	 * @param progress Array of category progress objects
+	 * @param freshProgressAdjustments Object with allTime and yearSpecific adjustment maps
+	 * @returns The adjusted progress array (new array with modified copies)
+	 */
+	function applyFreshProgressToGoalData(progress, freshProgressAdjustments) {
+		const allTimeAdjustments = freshProgressAdjustments?.allTime || {};
+		const yearSpecificAdjustments = freshProgressAdjustments?.yearSpecific || {};
+
+		if (!progress?.length || Object.keys(allTimeAdjustments).length === 0) {
+			return progress?.map(p => ({ ...p })) || [];
+		}
+
+		// Apply adjustments to both all-time and year-specific progress
+		return progress.map(achievement => {
+			const allTimeAdjustment = allTimeAdjustments[achievement.id];
+			const yearAdjustment = yearSpecificAdjustments[achievement.id];
+
+			// Only apply adjustments to tiered achievements (which have totalProgressToAchievement)
+			if ((allTimeAdjustment || yearAdjustment) && achievement.totalProgressToAchievement !== undefined) {
+				// Update all-time progress
+				const allTimeProgress = achievement.totalProgressToAchievement || 0;
+				const newAllTimeProgress = allTimeProgress + (allTimeAdjustment || 0);
+
+				// Update year-specific progress only with year-filtered loans
+				const yearProgress = achievement.progressForYear || 0;
+				const newYearProgress = achievement.progressForYear !== undefined
+					? yearProgress + (yearAdjustment || 0)
+					: achievement.progressForYear;
+
+				// Return new object with adjusted progress
+				return {
+					...achievement,
+					totalProgressToAchievement: newAllTimeProgress,
+					progressForYear: newYearProgress
+				};
+			}
+			// Return copy of achievement without adjustments
+			return { ...achievement };
+		});
+	}
+
+	async function loadProgress(year, fetchPolicy = 'network-only', freshProgressAdjustments = {}) {
 		try {
 			const progress = await getCategoriesProgressByYear(year, fetchPolicy);
-			currentYearProgress.value = progress;
+			currentYearProgress.value = applyFreshProgressToGoalData(progress, freshProgressAdjustments);
 		} catch (error) {
 			logFormatter(error, 'Failed to load progress');
 			return null;
@@ -545,11 +643,25 @@ export default function useGoalData({ apollo } = {}) {
 		loans = [], // Loans already in basket, used to initialize in-page counter for ID_SUPPORT_ALL
 		year = new Date().getFullYear(),
 		yearlyProgress = false, // thankyou_page_goals_enable flag - when true uses yearly, when false uses all-time
+		tieredAchievements = [], // Tiered achievements from achievement service to calculate fresh progress
+		transactions = [], // User transactions to get purchase dates for year filtering
 	} = {}) {
 		loading.value = true;
 		useYearlyProgress.value = yearlyProgress;
 		const parsedPrefs = await loadPreferences();
-		await loadProgress(year);
+
+		// Calculate fresh progress adjustments if loans and achievements provided
+		let freshProgressAdjustments = { allTime: {}, yearSpecific: {} };
+		if (loans?.length && tieredAchievements?.length) {
+			freshProgressAdjustments = calculateGoalFreshProgressAdjustments(
+				loans,
+				tieredAchievements,
+				year,
+				transactions
+			);
+		}
+
+		await loadProgress(year, 'network-only', freshProgressAdjustments);
 		setGoalState(parsedPrefs);
 		// Load yearly loan count for ID_SUPPORT_ALL goals when using yearly progress
 		if (yearlyProgress && userGoal.value?.category === ID_SUPPORT_ALL) {
@@ -699,6 +811,8 @@ export default function useGoalData({ apollo } = {}) {
 	});
 
 	return {
+		applyFreshProgressToGoalData,
+		calculateGoalFreshProgressAdjustments,
 		checkCompletedGoal,
 		getCategories,
 		getCategoriesProgressByYear,

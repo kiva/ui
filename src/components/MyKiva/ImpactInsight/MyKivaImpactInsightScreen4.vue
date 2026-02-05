@@ -108,9 +108,9 @@ const props = defineProps({
 
 const description = computed(() => {
 	const text = props.latestLoan?.gender === 'female'
-		? '<strong class="tw-text-brand">8 out of 10 women</strong> earned more income after getting their loan'
+		? '<strong class="tw-text-brand">8 out of 10 women</strong> earned more income after getting their Kiva loan'
 		// eslint-disable-next-line max-len
-		: '<strong class="tw-text-brand">89%</strong> of people said their <strong class="tw-text-brand">quality of life improved</strong> after their loan';
+		: '<strong class="tw-text-brand">89%</strong> of people said their <strong class="tw-text-brand">quality of life improved</strong> after their Kiva loan';
 
 	return `${text}.`;
 });

@@ -129,9 +129,9 @@ onMounted(() => {
 }
 
 .bp-image, :deep(.bp-image img) {
-	@apply !tw-pb-0;
+	@apply !tw-pb-0 !tw--mt-0.5;
 
-	width: 78px;
-	height: 78px;
+	width: 80px;
+	height: 80px;
 }
 </style>
