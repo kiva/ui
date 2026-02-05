@@ -271,7 +271,7 @@ const buttonText = computed(() => {
 
 const selectedTarget = computed(() => {
 	const selectedOption = goalOptions.value.find(option => option.selected);
-	return selectedOption.loansNumber;
+	return selectedOption?.loansNumber ?? DEFAULT_GOAL_OPTIONS[1].loansNumber;
 });
 
 // Use goalLoans prop if available, otherwise fall back to selectedTarget

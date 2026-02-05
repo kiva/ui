@@ -328,7 +328,6 @@ export default {
 		};
 
 		app.directive('kv-track-event', {
-			// CR COMMENTS: Adding trackEvent directive to track events via v-kv-track-event="[...]" and $kvTrackEvent method
 			beforeMount: (el, binding) => {
 				// TODO: add arg for once, submit + change events
 				if (typeof el === 'object' && binding.value) {
@@ -423,10 +422,6 @@ export default {
 
 		// eslint-disable-next-line no-param-reassign
 		app.config.globalProperties.$kvTrackEvent = (category, action, label, property, value, callback) => {
-			// CR COMMENTS: Adding trackEvent directive to track events via v-kv-track-event="[...]" and $kvTrackEvent method
-			console.log('HP > kv-track-event registering event...', JSON.stringify({
-				category, action, label, property, value
-			}));
 			kvActions.trackEvent(category, action, label, property, value, callback);
 		};
 

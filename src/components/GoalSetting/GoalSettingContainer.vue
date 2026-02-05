@@ -50,7 +50,7 @@
 					:categories="categories"
 					:pre-selected-category="selectedCategory.id"
 					:selected-category="selectedCategory"
-					:selected-goal-number="selectedGoalNumber"
+					:selected-goal-number="loanTarget"
 					@category-selected="handleCategorySelected"
 					@number-changed="handleNumberChanged"
 				/>
@@ -236,15 +236,13 @@ const handleNumberChanged = number => {
 	console.log(number);
 };
 
+const yearToDate = computed(() => new Date().getFullYear());
+
 const ctaCopy = computed(() => {
 	if (isEditing.value) {
 		return 'Continue';
 	}
-
-	if (props.goalsV2Enabled) {
-		return 'Set 2026 goal';
-	}
-	return formStep.value === 1 ? 'Continue' : 'Set my goal';
+	return `Set ${yearToDate.value} goal`;
 });
 
 onMounted(async () => {

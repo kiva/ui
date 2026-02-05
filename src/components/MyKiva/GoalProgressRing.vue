@@ -43,7 +43,7 @@
 		</div>
 
 		<p
-			v-if="!variant === 'modal'"
+			v-if="variant !== 'modal'"
 			v-html="descriptionText"
 			class="tw-font-medium tw-py-1"
 			style="line-height: 1.5rem;"
