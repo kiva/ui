@@ -85,7 +85,6 @@
 							@update:model-value="updateForm('postalCode', $event)"
 						/>
 					</div>
-					<!-- TODO: Add country list options in once graphql endpoint exists -->
 					<div>
 						<label for="countryIsoCode" class="tw-block tw-mb-1 tw-font-medium">
 							Country
@@ -124,6 +123,7 @@
 
 <script>
 import logFormatter from '#src/util/logFormatter';
+import { getCountryOptions } from '#src/util/countryOptions';
 
 import { KvButton, KvSelect, KvTextInput } from '@kiva/kv-components';
 import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
@@ -173,7 +173,7 @@ export default {
 		return {
 			isSaving: false,
 			localForm: defaultForm(),
-			countries: [],
+			countries: getCountryOptions(),
 		};
 	},
 	methods: {
