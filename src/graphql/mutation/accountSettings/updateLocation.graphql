@@ -1,0 +1,16 @@
+mutation updateLocation(
+	$city: String
+	$state: String
+	$countryIsoCode: String
+) {
+	my {
+		updateLocation(
+			city: $city
+			state: $state
+			countryIsoCode: $countryIsoCode
+		) {
+			success
+			error
+		}
+	}
+}

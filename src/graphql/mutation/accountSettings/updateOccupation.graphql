@@ -1,0 +1,8 @@
+mutation updateOccupation($occupation: String) {
+	my {
+		updateOccupation(occupation: $occupation) {
+			success
+			error
+		}
+	}
+}

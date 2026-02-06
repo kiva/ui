@@ -217,20 +217,77 @@ import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
 import { getCountryOptions } from '#src/util/countryOptions';
 import lenderProfileQuery from '#src/graphql/query/accountSettings/lenderProfileQuery.graphql';
 import updateProfileImageMutation from '#src/graphql/mutation/accountSettings/updateProfileImage.graphql';
+import changePublicVisibilityMutation from '#src/graphql/mutation/accountSettings/changePublicVisibility.graphql';
+import updateDisplayNameMutation from '#src/graphql/mutation/accountSettings/updateDisplayName.graphql';
+import updateLoanBecauseMutation from '#src/graphql/mutation/accountSettings/updateLoanBecause.graphql';
+import updateLocationMutation from '#src/graphql/mutation/accountSettings/updateLocation.graphql';
+import updateOccupationMutation from '#src/graphql/mutation/accountSettings/updateOccupation.graphql';
+import updateOtherInfoMutation from '#src/graphql/mutation/accountSettings/updateOtherInfo.graphql';
+import updateProfileUrlMutation from '#src/graphql/mutation/accountSettings/updateProfileUrl.graphql';
+import updatePublicIdMutation from '#src/graphql/mutation/accountSettings/updatePublicId.graphql';
 
-const defaultForm = () => ({
-	name: '',
-	publicId: '',
-	imageId: null,
-	city: '',
-	state: '',
-	countryIsoCode: '',
-	occupation: '',
-	website: '',
-	loanBecause: '',
-	otherInfo: '',
-	public: false,
-});
+const FORM_KEYS = [
+	'name', 'publicId', 'imageId', 'city', 'state', 'countryIsoCode',
+	'occupation', 'website', 'loanBecause', 'otherInfo', 'public',
+];
+
+const defaultForm = () => Object.fromEntries(
+	FORM_KEYS.map(k => {
+		if (k === 'imageId') return [k, null];
+		if (k === 'public') return [k, false];
+		return [k, ''];
+	}),
+);
+
+/** Profile field mutations: run in order, one at a time. */
+const PROFILE_MUTATION_CONFIG = [
+	{
+		changed: (local, initial) => local.name !== initial.name,
+		mutation: updateDisplayNameMutation,
+		getVariables: form => ({ displayName: form.name ?? '' }),
+	},
+	{
+		changed: (local, initial) => local.publicId !== initial.publicId,
+		mutation: updatePublicIdMutation,
+		getVariables: form => ({ publicId: form.publicId ?? '' }),
+	},
+	{
+		changed: (local, initial) => local.city !== initial.city
+			|| local.state !== initial.state
+			|| local.countryIsoCode !== initial.countryIsoCode,
+		mutation: updateLocationMutation,
+		getVariables: form => ({
+			city: form.city ?? '',
+			state: form.state ?? '',
+			countryIsoCode: form.countryIsoCode ?? '',
+		}),
+	},
+	{
+		changed: (local, initial) => local.occupation !== initial.occupation,
+		mutation: updateOccupationMutation,
+		getVariables: form => ({ occupation: form.occupation ?? '' }),
+	},
+	{
+		changed: (local, initial) => local.website !== initial.website,
+		mutation: updateProfileUrlMutation,
+		getVariables: form => ({ url: form.website ?? '' }),
+	},
+	{
+		changed: (local, initial) => local.loanBecause !== initial.loanBecause,
+		mutation: updateLoanBecauseMutation,
+		getVariables: form => ({ loanBecause: form.loanBecause ?? '' }),
+	},
+	{
+		changed: (local, initial) => local.otherInfo !== initial.otherInfo,
+		mutation: updateOtherInfoMutation,
+		getVariables: form => ({ otherInfo: form.otherInfo ?? '' }),
+	},
+	{
+		changed: (local, initial) => local.public !== initial.public,
+		mutation: changePublicVisibilityMutation,
+		getVariables: form => ({ public: form.public }),
+	},
+];
 
 export default {
 	name: 'AccountSettingsLenderProfile',
@@ -255,28 +312,7 @@ export default {
 			preFetch: true,
 			result({ data }) {
 				this.loading = false;
-				console.log('lenderProfileQuery result', data?.my?.lender ?? data);
-				const userAccount = data?.my?.userAccount ?? {};
-				const lender = data?.my?.lender ?? {};
-				const lenderPage = lender?.lenderPage ?? {};
-				const country = lenderPage?.country ?? {};
-				const image = lender?.image ?? {};
-
-				this.lenderImageUrl = image.url ?? '';
-				this.localForm = {
-					name: lender.name ?? userAccount.firstName ?? '',
-					publicId: lender.publicId ?? userAccount.publicId ?? '',
-					imageId: image.id ?? null,
-					city: lenderPage.city ?? '',
-					state: lenderPage.state ?? '',
-					countryIsoCode: country?.isoCode ?? '',
-					occupation: lenderPage.occupation ?? '',
-					website: lenderPage.url ?? '',
-					loanBecause: lenderPage.loanBecause ?? '',
-					otherInfo: lenderPage.otherInfo ?? '',
-					public: userAccount.public ?? false,
-				};
-				this.initialForm = { ...this.localForm };
+				this.applyProfileData(data);
 			},
 		},
 	],
@@ -297,33 +333,94 @@ export default {
 		},
 	},
 	methods: {
+		applyProfileData(data) {
+			const userAccount = data?.my?.userAccount ?? {};
+			const lender = data?.my?.lender ?? {};
+			const lenderPage = lender?.lenderPage ?? {};
+			const country = lenderPage?.country ?? {};
+			const image = lender?.image ?? {};
+
+			this.lenderImageUrl = image?.url ?? '';
+			const form = {
+				name: lender.name ?? userAccount.firstName ?? '',
+				publicId: lender.publicId ?? userAccount.publicId ?? '',
+				imageId: image?.id ?? null,
+				city: lenderPage.city ?? '',
+				state: lenderPage.state ?? '',
+				countryIsoCode: country?.isoCode ?? '',
+				occupation: lenderPage.occupation ?? '',
+				website: lenderPage.url ?? '',
+				loanBecause: lenderPage.loanBecause ?? '',
+				otherInfo: lenderPage.otherInfo ?? '',
+				public: userAccount.public ?? false,
+			};
+			this.localForm = form;
+			this.initialForm = { ...form };
+		},
 		updateForm(field, value) {
 			this.localForm = { ...this.localForm, [field]: value };
 		},
+		/**
+		 * Throws if the mutation response indicates an error.
+		 * @param {object} response - Apollo mutation result
+		 * @param {string} fallbackMessage
+		 */
+		checkMutationResponse(response, fallbackMessage = 'Failed to save profile') {
+			if (response?.errors?.length) {
+				throw new Error(response.errors[0].message || fallbackMessage);
+			}
+			const result = Object.values(response?.data?.my ?? {}).find(
+				v => v && typeof v === 'object' && 'success' in v,
+			);
+			if (result && !result.success) {
+				throw new Error(result?.error || fallbackMessage);
+			}
+		},
 		async save() {
+			const { localForm, initialForm } = this;
+			const mutationRunners = PROFILE_MUTATION_CONFIG
+				.filter(({ changed }) => changed(localForm, initialForm))
+				.map(({ mutation, getVariables }) => () => this.apollo.mutate({
+					mutation,
+					variables: getVariables(localForm),
+				}));
+
+			const imageIdChanged = localForm.imageId != null
+				&& localForm.imageId !== initialForm.imageId;
+			const hasChanges = imageIdChanged || mutationRunners.length > 0;
+
+			if (!hasChanges) {
+				return;
+			}
+
 			this.isSaving = true;
 			try {
-				const imageIdChanged = this.localForm.imageId != null
-					&& this.localForm.imageId !== this.initialForm.imageId;
 				if (imageIdChanged) {
-					const result = await this.apollo.mutate({
+					const response = await this.apollo.mutate({
 						mutation: updateProfileImageMutation,
-						variables: { imageId: this.localForm.imageId },
-						refetchQueries: [{ query: lenderProfileQuery }],
+						variables: { imageId: localForm.imageId },
 					});
-					const updateResult = result?.data?.my?.updateProfileImage;
-					if (updateResult && !updateResult.success) {
-						throw new Error('Failed to update profile image');
-					}
+					this.checkMutationResponse(response, 'Failed to update profile image');
 				}
-				// TODO: Integrate mutation(s) for remaining My Lender Profile fields
-				// (name, publicId, city, state, countryIsoCode, occupation, website, loanBecause, otherInfo, public)
-				if (imageIdChanged) {
-					this.$showTipMsg('Profile image saved successfully');
-				}
+
+				await mutationRunners.reduce(
+					(p, runMutation) => p.then(async () => {
+						const response = await runMutation();
+						this.checkMutationResponse(response);
+					}),
+					Promise.resolve(),
+				);
+
+				const { data } = await this.apollo.query({
+					query: lenderProfileQuery,
+					fetchPolicy: 'network-only',
+				});
+				this.applyProfileData(data);
+				this.$showTipMsg('Profile saved successfully');
 			} catch (error) {
 				logFormatter(error, 'error');
-				this.$showTipMsg('There was a problem saving your lender profile', 'error');
+				const errorMsg = error?.message || 'There was a problem saving your lender profile';
+				this.$showTipMsg(errorMsg, 'error');
 			} finally {
 				this.isSaving = false;
 			}

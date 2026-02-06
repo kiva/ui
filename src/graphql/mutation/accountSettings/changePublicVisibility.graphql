@@ -1,0 +1,8 @@
+mutation changePublicVisibility($public: Boolean) {
+	my {
+		changePublicVisibility(public: $public) {
+			success
+			error
+		}
+	}
+}
