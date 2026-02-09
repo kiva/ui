@@ -305,7 +305,7 @@ export default {
 		// Load goal data with fresh progress from loans not yet in achievement service
 		if (this.isNextStepsExpEnabled) {
 			await this.loadGoalData({
-				year: LAST_YEAR_KEY, // Use same year as tieredAchievements query for correct filtering
+				year: new Date().getFullYear(),
 				yearlyProgress: this.goalsV2Enabled,
 				loans: this.loans,
 				tieredAchievements: this.heroTieredAchievements,
