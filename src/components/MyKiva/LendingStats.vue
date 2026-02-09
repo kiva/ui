@@ -467,7 +467,7 @@ export default {
 	height: auto;
 
 	@screen md {
-		height: 382px;
+		height: 390px;
 	}
 }
 
@@ -475,7 +475,7 @@ export default {
 	width: 100%;
 
 	@screen md {
-		width: 382px;
+		width: 390px;
 	}
 }
 
