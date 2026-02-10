@@ -8,6 +8,7 @@
 			:goal-progress="loansThisYear"
 			:goal-progress-percentage="localGoalProgressPercentage"
 			:category-name="selectedCategoryName"
+			:go-to-url="goToUrl"
 			@button-click="handleSuccessContinue"
 		/>
 
@@ -355,7 +356,7 @@ const updateGoalOptions = () => {
 	if (ytdLoans >= SAME_AS_LAST_YEAR_LIMIT) {
 		const suggestion1 = ytdLoans + 3;
 		// Ensure each suggestion is at least 1 more than the previous
-		const suggestion2 = Math.max(Math.ceil(suggestion1 * 1.5), suggestion1 + 1);
+		const suggestion2 = Math.max(Math.ceil(suggestion1 * 1.25), suggestion1 + 1);
 		const suggestion3 = Math.max(suggestion1 * 2, suggestion2 + 1);
 
 		goalOptions.value = [
@@ -379,7 +380,7 @@ const updateGoalOptions = () => {
 	} else if (lastYearLoans > SAME_AS_LAST_YEAR_LIMIT) {
 		const suggestion1 = lastYearLoans;
 		// Ensure each suggestion is at least 1 more than the previous
-		const suggestion2 = Math.max(Math.ceil(suggestion1 * 1.5), suggestion1 + 1);
+		const suggestion2 = Math.max(Math.ceil(suggestion1 * 1.25), suggestion1 + 1);
 		const suggestion3 = Math.max(suggestion1 * 2, suggestion2 + 1);
 
 		goalOptions.value = [
