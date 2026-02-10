@@ -91,7 +91,7 @@
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
 		>
 			<div v-if="!isScrolled">
-				<h3>You've got {{ $filters.numeral(effectiveBonusBalance, '$0') }} to give!</h3>
+				<h3>You've got {{ $filters.numeral(effectiveBonusBalance, '$0') }} to lend!</h3>
 				<h4>While funds last</h4>
 			</div>
 			<span v-else class="tw-underline tw-text-h5">
@@ -127,7 +127,11 @@ import {
 } from '#src/util/promoCredit';
 import HeartBox from '#src/assets/images/heart-box.svg';
 import { showConfetti } from '#src/util/animation/confettiUtils';
-import { setPromoCreditBannerCookie, getKivaLendingCreditCookie } from '#src/util/promoCreditCookie';
+import {
+	setPromoCreditBannerCookie,
+	getKivaLendingCreditCookie,
+	getPromoCreditBannerCookie
+} from '#src/util/promoCreditCookie';
 
 const userPromoCredits = gql`
 	query userPromoCredits($basketId: String) {
@@ -329,7 +333,7 @@ export default {
 	},
 	mounted() {
 		// set promo cookie to show pill in checkout
-		if (this.setPromoCreditPillCookie) {
+		if (!getPromoCreditBannerCookie(this.cookieStore) && this.setPromoCreditPillCookie) {
 			setPromoCreditBannerCookie(this.cookieStore);
 			showConfetti();
 		}
