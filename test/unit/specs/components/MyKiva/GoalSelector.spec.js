@@ -23,11 +23,11 @@ const getExpectedGoalOptions = ({ lastYear = 0, ytd, useDefault = false }) => {
 
 	if (ytd >= SAME_AS_LAST_YEAR_LIMIT) {
 		suggestion1 = ytd + 3;
-		suggestion2 = Math.max(Math.ceil(suggestion1 * 1.5), suggestion1 + 1);
+		suggestion2 = Math.max(Math.ceil(suggestion1 * 1.25), suggestion1 + 1);
 		suggestion3 = Math.max(suggestion1 * 2, suggestion2 + 1);
-	} else if (lastYear >= SAME_AS_LAST_YEAR_LIMIT) {
+	} else if (lastYear > SAME_AS_LAST_YEAR_LIMIT) {
 		suggestion1 = lastYear;
-		suggestion2 = Math.max(Math.ceil(lastYear * 1.5), suggestion1 + 1);
+		suggestion2 = Math.max(Math.ceil(suggestion1 * 1.25), suggestion1 + 1);
 		suggestion3 = Math.max(lastYear * 2, suggestion2 + 1);
 	}
 
