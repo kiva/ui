@@ -1,0 +1,8 @@
+mutation updatePublicId($publicId: String) {
+	my {
+		updatePublicId(publicId: $publicId) {
+			success
+			error
+		}
+	}
+}

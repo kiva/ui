@@ -1,0 +1,8 @@
+mutation updateOtherInfo($otherInfo: String) {
+	my {
+		updateOtherInfo(otherInfo: $otherInfo) {
+			success
+			error
+		}
+	}
+}
