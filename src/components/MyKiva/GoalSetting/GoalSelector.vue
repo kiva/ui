@@ -8,6 +8,7 @@
 			:goal-progress="loansThisYear"
 			:goal-progress-percentage="localGoalProgressPercentage"
 			:category-name="selectedCategoryName"
+			:category-id="selectedCategoryId"
 			:go-to-url="goToUrl"
 			@button-click="handleSuccessContinue"
 		/>
@@ -259,7 +260,7 @@ const titleText = computed(() => {
 
 const subtitleText = computed(() => {
 	if (loansThisYear.value > 0) {
-		return `You've already made ${loansThisYear.value} that will count!`;
+		return `You've already made ${loansThisYear.value} that will count`;
 	}
 	return '';
 });
