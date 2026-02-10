@@ -8,6 +8,7 @@
 			:goal-progress="loansThisYear"
 			:goal-progress-percentage="localGoalProgressPercentage"
 			:category-name="selectedCategoryName"
+			:go-to-url="goToUrl"
 			@button-click="handleSuccessContinue"
 		/>
 

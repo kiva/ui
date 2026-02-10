@@ -116,6 +116,13 @@ const props = defineProps({
 		default: 'card',
 		validator: value => ['card', 'modal'].includes(value),
 	},
+	/**
+	 * URL to navigate to after button click
+	 */
+	goToUrl: {
+		type: String,
+		default: '',
+	},
 });
 
 const emit = defineEmits(['button-click']);
@@ -174,8 +181,8 @@ const descriptionText = computed(() => {
 
 const buttonText = computed(() => {
 	if (isModalVariant.value) {
-		// Modal variant
-		if (props.goalProgress > 0) {
+		// MyKiva modal: user already has progress, show tracking CTA
+		if (props.goToUrl === '/mykiva' && props.goalProgress > 0) {
 			return 'Track my progress';
 		}
 		return 'Let\'s do this';
@@ -199,7 +206,7 @@ const handleButtonClick = () => {
 		line-height: 125%;
 
 		@screen md {
-			width: 60%;
+			width: 65%;
 		}
 	}
 
