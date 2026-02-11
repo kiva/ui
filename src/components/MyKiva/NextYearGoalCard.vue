@@ -39,6 +39,7 @@
 				:goal-progress="goalProgress"
 				:goal-progress-percentage="goalProgressPercentage"
 				:category-name="categoryName"
+				:category-id="userGoal?.category"
 				@button-click="handleContinueClick"
 			/>
 		</template>

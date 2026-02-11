@@ -15,19 +15,16 @@
 		>
 			<p
 				v-if="hasProgress"
+				v-html="progressDescription"
 				class="modal-description-text tw-text-subhead !tw-font-medium" style="line-height: 1.5rem;"
-			>
-				You're already on your way to making
-				<strong class="tw-text-brand">{{ goalLoans }} loans</strong> to
-				<strong class="tw-text-brand">{{ categoryName?.toLowerCase() }}</strong> this year
-			</p>
+			></p>
 			<p
 				v-else
 				class="modal-description-text tw-text-subhead !tw-font-medium" style="line-height: 1.5rem;"
 			>
 				Your support to
 				<strong class="tw-text-brand">{{ goalLoans }} loans</strong> for
-				<strong class="tw-text-brand">{{ categoryName?.toLowerCase() }}</strong> for women begins here.
+				<strong class="tw-text-brand">{{ categoryName?.toLowerCase() }}</strong> begins here.
 			</p>
 		</div>
 
@@ -76,6 +73,13 @@ import { computed } from 'vue';
 import { KvButton } from '@kiva/kv-components';
 import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
 import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
+import {
+	ID_SUPPORT_ALL,
+	ID_CLIMATE_ACTION,
+	ID_REFUGEE_EQUALITY,
+	ID_BASIC_NEEDS,
+	ID_US_ECONOMIC_EQUALITY,
+} from '#src/composables/useBadgeData';
 
 const props = defineProps({
 	/**
@@ -103,6 +107,13 @@ const props = defineProps({
 	 * Category display name (e.g., "women", "basic needs")
 	 */
 	categoryName: {
+		type: String,
+		default: '',
+	},
+	/**
+	 * Category ID (e.g., 'womens-equality', 'climate-action')
+	 */
+	categoryId: {
 		type: String,
 		default: '',
 	},
@@ -140,6 +151,31 @@ const progressCircleDesc = computed(() => {
 // --- Variant-specific computed properties ---
 
 const hasProgress = computed(() => props.goalProgress > 0);
+
+const progressDescription = computed(() => {
+	const loans = props.goalLoans;
+	const s = 'class="tw-text-brand"';
+	const loansTag = `<strong ${s}>${loans} loans</strong>`;
+	const prefix = "You're already on your way to making";
+
+	if (props.categoryId === ID_SUPPORT_ALL) {
+		return `${prefix} ${loansTag} this year`;
+	}
+	if (props.categoryId === ID_CLIMATE_ACTION) {
+		return `${prefix} <strong ${s}>${loans} eco-friendly loans</strong> this year`;
+	}
+	if (props.categoryId === ID_REFUGEE_EQUALITY) {
+		return `${prefix} ${loansTag} to <strong ${s}>refugees</strong> this year`;
+	}
+	if (props.categoryId === ID_BASIC_NEEDS) {
+		return `${prefix} ${loansTag} to <strong ${s}>basic needs</strong> this year`;
+	}
+	if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
+		return `${prefix} ${loansTag} to <strong ${s}>U.S. entrepreneurs</strong> this year`;
+	}
+	// Default: women
+	return `${prefix} ${loansTag} to <strong ${s}>women</strong> this year`;
+});
 
 const isModalVariant = computed(() => props.variant === 'modal');
 
