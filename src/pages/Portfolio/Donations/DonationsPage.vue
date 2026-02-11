@@ -22,7 +22,7 @@
 								{{ donationInfo?.fullDonorName }}
 								<a
 									class="tw-text-small tw-no-underline"
-									href="/settings/account"
+									href="/settings/account-beta"
 									v-kv-track-event="[
 										'portfolio',
 										'click',

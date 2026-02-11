@@ -8,7 +8,7 @@
 			{{ lenderName }}
 		</p>
 		<a
-			href="/settings/account"
+			href="/settings/account-beta"
 			v-kv-track-event="[
 				'portfolio',
 				'click',

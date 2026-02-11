@@ -2,7 +2,7 @@
 	<ul>
 		<li>
 			<router-link
-				to="/settings/account"
+				to="/settings/account-beta"
 				class="settings-tertitary-menu-link"
 				exact-active-class="settings-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Settings-account']"

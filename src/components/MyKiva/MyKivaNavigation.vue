@@ -167,7 +167,7 @@ const publicId = computed(() => {
 
 const open = ref(false);
 const profileSettingsOptions = computed(() => [
-	{ link: '/settings/account', text: 'Account' },
+	{ link: '/settings/account-beta', text: 'Account' },
 	{ link: '/settings/security', text: 'Security and login' },
 	{ link: '/settings/email', text: 'Email' },
 	{ link: '/settings/payments', text: 'Payment methods' },

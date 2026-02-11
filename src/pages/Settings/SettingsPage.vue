@@ -16,7 +16,7 @@
 					<section data-testid="account-settings-section" class="section">
 						<a
 							class="section__link"
-							href="/settings/account"
+							href="/settings/account-beta"
 							data-testid="account-settings-lnk"
 						>
 							<h2 class="section__title">Account settings</h2>
