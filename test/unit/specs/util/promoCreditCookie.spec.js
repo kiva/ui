@@ -5,6 +5,7 @@ import {
 	clearPromoCreditBannerCookie,
 	getPromoCreditBannerCookie,
 	getKivaLendingCreditCookie,
+	clearKivaLendingCreditCookie,
 } from '#src/util/promoCreditCookie';
 
 describe('promoCreditCookie util', () => {
@@ -44,6 +45,19 @@ describe('promoCreditCookie util', () => {
 
 		expect(cookieStore.get).toHaveBeenCalledWith(BANNER_COOKIE_NAME);
 		expect(result).toBe('true');
+	});
+
+	it('clears the kiva lending credit cookie with correct name and path', () => {
+		const cookieStore = {
+			remove: vi.fn(),
+		};
+
+		clearKivaLendingCreditCookie(cookieStore);
+
+		expect(cookieStore.remove).toHaveBeenCalledWith(
+			KIVA_LENDING_CREDIT_COOKIE_NAME,
+			{ path: '/' }
+		);
 	});
 
 	describe('getKivaLendingCreditCookie', () => {

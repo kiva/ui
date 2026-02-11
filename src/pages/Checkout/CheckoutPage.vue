@@ -360,7 +360,11 @@ import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { isGoalsV2Enabled } from '#src/composables/useGoalData';
 import { mdiGiftOutline } from '@mdi/js';
-import { clearPromoCreditBannerCookie, getPromoCreditBannerCookie } from '#src/util/promoCreditCookie';
+import {
+	clearPromoCreditBannerCookie,
+	clearKivaLendingCreditCookie,
+	getPromoCreditBannerCookie
+} from '#src/util/promoCreditCookie';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
@@ -1010,6 +1014,8 @@ export default {
 			});
 
 			removeLoansFromChallengeCookie(this.cookieStore, this.loanIdsInBasket);
+			// Clear the lending credit cookie after successful checkout
+			clearKivaLendingCreditCookie(this.cookieStore);
 		},
 		setUpdatingTotals(state) {
 			this.updatingTotals = state;

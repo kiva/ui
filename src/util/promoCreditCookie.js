@@ -37,3 +37,7 @@ export const getKivaLendingCreditCookie = cookieStore => {
 		return !Number.isNaN(numValue) && numValue > 0 ? numValue : 0;
 	}
 };
+
+export const clearKivaLendingCreditCookie = cookieStore => {
+	cookieStore.remove(KIVA_LENDING_CREDIT_COOKIE_NAME, { path: '/' });
+};
