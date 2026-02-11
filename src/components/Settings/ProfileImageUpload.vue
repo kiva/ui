@@ -24,14 +24,25 @@
 				class="tw-hidden"
 				@change="handleFileChange"
 			>
-			<kv-button
-				variant="secondary"
-				:disabled="disabled || uploadingImage"
-				class="tw-self-start"
-				@click="openFileInput"
-			>
-				{{ uploadingImage ? 'Uploading...' : buttonLabel }}
-			</kv-button>
+			<div class="tw-flex tw-gap-2 tw-flex-wrap">
+				<kv-button
+					variant="secondary"
+					:disabled="disabled || uploadingImage"
+					class="tw-self-start"
+					@click="openFileInput"
+				>
+					{{ uploadingImage ? 'Uploading...' : buttonLabel }}
+				</kv-button>
+				<kv-button
+					v-if="imageIdSet && !pendingImagePreviewUrl"
+					variant="secondary"
+					:disabled="disabled || uploadingImage || deletingImage"
+					class="tw-self-start"
+					@click="$emit('delete:image')"
+				>
+					{{ deletingImage ? 'Removing...' : 'Remove image' }}
+				</kv-button>
+			</div>
 			<p
 				v-if="uploadError"
 				class="tw-text-small tw-text-danger-highlight"
@@ -67,8 +78,18 @@ export default {
 			type: String,
 			default: '',
 		},
+		/** True when a profile image is set (imageId is set); used to show/hide Remove image button */
+		imageIdSet: {
+			type: Boolean,
+			default: false,
+		},
 		/** Disable the upload button (e.g. when parent form is saving) */
 		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		/** Show removing state on the Remove image button */
+		deletingImage: {
 			type: Boolean,
 			default: false,
 		},
@@ -88,7 +109,7 @@ export default {
 			default: 'Profile',
 		},
 	},
-	emits: ['update:imageId'],
+	emits: ['update:imageId', 'delete:image'],
 	inject: ['kvAuth0'],
 	data() {
 		const imageUpload = this.kvAuth0

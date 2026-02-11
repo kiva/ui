@@ -10,8 +10,11 @@
 				<!-- Profile image -->
 				<ProfileImageUpload
 					:image-url="lenderImageUrl"
-					:disabled="isSaving"
-					@update:image-id="updateForm('imageId', $event)"
+					:image-id-set="isProfileImageIdSet"
+					:disabled="isSaving || isUpdatingImage || isDeletingImage"
+					:deleting-image="isDeletingImage"
+					@update:image-id="onProfileImageUpload"
+					@delete:image="onProfileImageDelete"
 				/>
 
 				<!-- Lender page URL -->
@@ -226,6 +229,9 @@ import updateOtherInfoMutation from '#src/graphql/mutation/accountSettings/updat
 import updateProfileUrlMutation from '#src/graphql/mutation/accountSettings/updateProfileUrl.graphql';
 import updatePublicIdMutation from '#src/graphql/mutation/accountSettings/updatePublicId.graphql';
 
+/** Backend uses this id as the default/placeholder when no profile image is set (monolith "anonymous image ID"). */
+const PLACEHOLDER_IMAGE_ID = 726677;
+
 const FORM_KEYS = [
 	'name', 'publicId', 'imageId', 'city', 'state', 'countryIsoCode',
 	'occupation', 'website', 'loanBecause', 'otherInfo', 'public',
@@ -320,6 +326,8 @@ export default {
 		return {
 			loading: true,
 			isSaving: false,
+			isUpdatingImage: false,
+			isDeletingImage: false,
 			localForm: defaultForm(),
 			initialForm: defaultForm(),
 			countries: getCountryOptions(),
@@ -330,6 +338,12 @@ export default {
 		lenderPageUrl() {
 			const { publicId } = this.initialForm;
 			return publicId ? `${this.lenderPageUrlBase}${publicId}` : '';
+		},
+		isProfileImageIdSet() {
+			const id = this.localForm.imageId;
+			// Backend returns placeholder image id 726677 when no profile image is set
+			if (id == null || id === '') return false;
+			return Number(id) !== PLACEHOLDER_IMAGE_ID;
 		},
 	},
 	methods: {
@@ -360,6 +374,53 @@ export default {
 		updateForm(field, value) {
 			this.localForm = { ...this.localForm, [field]: value };
 		},
+		/** Update profile image on the server when user uploads a new image. */
+		async onProfileImageUpload(imageId) {
+			this.updateForm('imageId', imageId);
+			this.isUpdatingImage = true;
+			try {
+				const response = await this.apollo.mutate({
+					mutation: updateProfileImageMutation,
+					variables: { imageId },
+				});
+				this.checkMutationResponse(response, 'Failed to update profile image');
+				const { data } = await this.apollo.query({
+					query: lenderProfileQuery,
+					fetchPolicy: 'network-only',
+				});
+				this.applyProfileData(data);
+				this.$showTipMsg('Profile image updated');
+			} catch (error) {
+				logFormatter(error, 'error');
+				const errorMsg = error?.message || 'There was a problem updating your profile image';
+				this.$showTipMsg(errorMsg, 'error');
+			} finally {
+				this.isUpdatingImage = false;
+			}
+		},
+		/** Remove profile image: updateProfileImage(null) clears association; backend cleans up assets. */
+		async onProfileImageDelete() {
+			this.isDeletingImage = true;
+			try {
+				const response = await this.apollo.mutate({
+					mutation: updateProfileImageMutation,
+					variables: { imageId: null },
+				});
+				this.checkMutationResponse(response, 'Failed to remove profile image');
+				const { data } = await this.apollo.query({
+					query: lenderProfileQuery,
+					fetchPolicy: 'network-only',
+				});
+				this.applyProfileData(data);
+				this.$showTipMsg('Profile image removed');
+			} catch (error) {
+				logFormatter(error, 'error');
+				const errorMsg = error?.message || 'There was a problem removing your profile image';
+				this.$showTipMsg(errorMsg, 'error');
+			} finally {
+				this.isDeletingImage = false;
+			}
+		},
 		/**
 		 * Throws if the mutation response indicates an error.
 		 * @param {object} response - Apollo mutation result
@@ -385,24 +446,12 @@ export default {
 					variables: getVariables(localForm),
 				}));
 
-			const imageIdChanged = localForm.imageId != null
-				&& localForm.imageId !== initialForm.imageId;
-			const hasChanges = imageIdChanged || mutationRunners.length > 0;
-
-			if (!hasChanges) {
+			if (mutationRunners.length === 0) {
 				return;
 			}
 
 			this.isSaving = true;
 			try {
-				if (imageIdChanged) {
-					const response = await this.apollo.mutate({
-						mutation: updateProfileImageMutation,
-						variables: { imageId: localForm.imageId },
-					});
-					this.checkMutationResponse(response, 'Failed to update profile image');
-				}
-
 				await mutationRunners.reduce(
 					(p, runMutation) => p.then(async () => {
 						const response = await runMutation();
