@@ -217,7 +217,6 @@ import {
 } from '@kiva/kv-components';
 import ProfileImageUpload from '#src/components/Settings/ProfileImageUpload';
 import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
-import { getCountryOptions } from '#src/util/countryOptions';
 import lenderProfileQuery from '#src/graphql/query/accountSettings/lenderProfileQuery.graphql';
 import updateProfileImageMutation from '#src/graphql/mutation/accountSettings/updateProfileImage.graphql';
 import changePublicVisibilityMutation from '#src/graphql/mutation/accountSettings/changePublicVisibility.graphql';
@@ -310,6 +309,10 @@ export default {
 			type: String,
 			default: '/lender/',
 		},
+		countries: {
+			type: Array,
+			default: () => [],
+		},
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: [
@@ -330,7 +333,6 @@ export default {
 			isDeletingImage: false,
 			localForm: defaultForm(),
 			initialForm: defaultForm(),
-			countries: getCountryOptions(),
 			lenderImageUrl: '',
 		};
 	},
