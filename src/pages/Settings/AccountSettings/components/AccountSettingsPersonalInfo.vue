@@ -123,7 +123,6 @@
 
 <script>
 import logFormatter from '#src/util/logFormatter';
-import { getCountryOptions } from '#src/util/countryOptions';
 
 import { KvButton, KvSelect, KvTextInput } from '@kiva/kv-components';
 import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
@@ -149,6 +148,12 @@ export default {
 		KvSettingsCard,
 		KvTextInput,
 	},
+	props: {
+		countries: {
+			type: Array,
+			default: () => [],
+		},
+	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: [
 		{
@@ -173,7 +178,6 @@ export default {
 		return {
 			isSaving: false,
 			localForm: defaultForm(),
-			countries: getCountryOptions(),
 		};
 	},
 	methods: {
