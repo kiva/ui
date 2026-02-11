@@ -1014,8 +1014,13 @@ export default {
 			});
 
 			removeLoansFromChallengeCookie(this.cookieStore, this.loanIdsInBasket);
-			// Clear the lending credit cookie after successful checkout
-			clearKivaLendingCreditCookie(this.cookieStore);
+
+			// Clear the lending credit cookie if any bonus/promo credit was used in checkout
+			// This handles one-click promo credits set for logged-out users
+			const bonusUsed = numeral(this.totals?.bonusAppliedTotal).value() > 0;
+			if (bonusUsed) {
+				clearKivaLendingCreditCookie(this.cookieStore);
+			}
 		},
 		setUpdatingTotals(state) {
 			this.updatingTotals = state;
