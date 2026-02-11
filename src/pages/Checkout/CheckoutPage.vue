@@ -1016,7 +1016,7 @@ export default {
 			removeLoansFromChallengeCookie(this.cookieStore, this.loanIdsInBasket);
 
 			// Clear the lending credit cookie if any bonus/promo credit was used in checkout
-			// This handles one-click promo credits set for logged-out users
+			// This prevents the promo credit banner from showing after credits are used
 			const bonusUsed = numeral(this.totals?.bonusAppliedTotal).value() > 0;
 			if (bonusUsed) {
 				clearKivaLendingCreditCookie(this.cookieStore);

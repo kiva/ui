@@ -213,7 +213,6 @@ export default {
 		{
 			query: userPromoCredits,
 			preFetch: true,
-			fetchPolicy: 'network-only',
 			shouldPreFetch(config, { renderConfig }) {
 				// Don't prefetch if using CDN caching
 				return !renderConfig.useCDNCaching;
