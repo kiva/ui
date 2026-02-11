@@ -203,6 +203,7 @@ export default {
 			priorityBasketCredit: null,
 			isUserDataLoading: false,
 			isScrolled: false,
+			kivaLendingCreditFromCookie: 0,
 			myId: null,
 		};
 	},
@@ -240,14 +241,12 @@ export default {
 	created() {
 		const { useCDNCaching } = this.$renderConfig;
 		this.isUserDataLoading = useCDNCaching;
+		// Check for kiva_lending_credit cookie on component creation
+		this.kivaLendingCreditFromCookie = getKivaLendingCreditCookie(this.cookieStore);
 	},
 	computed: {
 		isLoggedIn() {
 			return this.myId !== null && this.myId !== undefined;
-		},
-		kivaLendingCreditFromCookie() {
-			// Reactively read the cookie value each time this computed property is accessed
-			return getKivaLendingCreditCookie(this.cookieStore);
 		},
 		effectiveBonusBalance() {
 			// If logged in, use the balance from GraphQL
