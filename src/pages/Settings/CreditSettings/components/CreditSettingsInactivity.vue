@@ -23,7 +23,9 @@
 				name="inactivity-setting"
 				value="email_address"
 				v-model="localRecipient"
-				@click="$kvTrackEvent('user-settings', 'click', 'credit-settings-inactivity-option', 'email_address')"
+				@click="
+					$kvTrackEvent('user-settings', 'click', 'credit-settings-inactivity-option', 'paypal_email_address')
+				"
 			>
 				Return my remaining credit to my PayPal account
 			</kv-radio>

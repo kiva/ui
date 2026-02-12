@@ -15,7 +15,7 @@
 			<router-link
 				class="tw-text-link tw-font-medium"
 				to="/portfolio/credit/deposit"
-				@click="$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-link', 'add-credit')"
+				@click="$kvTrackEvent('user-settings', 'click', 'add-credit')"
 			>
 				Add credit
 			</router-link>
@@ -23,7 +23,7 @@
 			<router-link
 				class="tw-text-link tw-font-medium"
 				to="/donate/emailprocess"
-				@click="$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-link', 'donate')"
+				@click="$kvTrackEvent('user-settings', 'click', 'donate')"
 			>
 				Donate
 			</router-link>
@@ -31,7 +31,7 @@
 			<router-link
 				class="tw-text-link tw-font-medium"
 				to="/gifts/kiva-cards"
-				@click="$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-link', 'kiva-gifts')"
+				@click="$kvTrackEvent('user-settings', 'click', 'kiva-gifts')"
 			>
 				Kiva gifts
 			</router-link>
@@ -39,7 +39,7 @@
 			<router-link
 				class="tw-text-link tw-font-medium"
 				to="/withdraw"
-				@click="$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-link', 'withdraw')"
+				@click="$kvTrackEvent('user-settings', 'click', 'withdraw')"
 			>
 				Withdraw
 			</router-link>
@@ -57,7 +57,7 @@
 				type="button"
 				class="tw-text-link tw-font-medium tw-bg-transparent tw-border-0 tw-p-0"
 				@click="
-					$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-faq-open', 'learn-more');
+					$kvTrackEvent('user-settings', 'click', 'learn-more');
 					showLearnMoreFaq = true
 				"
 			>
@@ -74,7 +74,7 @@
 					type="button"
 					class="tw-text-link tw-font-medium tw-bg-transparent tw-border-0 tw-p-0"
 					@click="
-						$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-faq-open', faq.value);
+						$kvTrackEvent('user-settings', 'click', faq.value);
 						openFaq(faq.key)
 					"
 				>
@@ -87,7 +87,7 @@
 			:visible="showDonationsFaq"
 			title="How does Kiva use donations?"
 			@lightbox-closed="
-				$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-faq-close', 'donations');
+				$kvTrackEvent('user-settings', 'click', 'donations');
 				closeFaq('showDonationsFaq')
 			"
 		>
@@ -117,7 +117,7 @@
 			:visible="showLearnMoreFaq"
 			title="Inactive credit and abandoned property laws"
 			@lightbox-closed="
-				$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-faq-close', 'learn-more');
+				$kvTrackEvent('user-settings', 'click', 'learn-more');
 				closeFaq('showLearnMoreFaq')
 			"
 		>
@@ -151,7 +151,7 @@
 			:visible="showInactiveWithdrawalFaq"
 			title="What is inactive withdrawal?"
 			@lightbox-closed="
-				$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-faq-close', 'inactive-withdrawal');
+				$kvTrackEvent('user-settings', 'click', 'inactive-withdrawal');
 				closeFaq('showInactiveWithdrawalFaq')
 			"
 		>
@@ -172,11 +172,7 @@
 							class="tw-text-link tw-font-medium"
 							href="/settings/autolending"
 							@click="
-								$kvTrackEvent(
-									'user-settings',
-									'click',
-									'credit-settings-sidebar-inactive-withdrawal-auto-lending-link'
-								)
+								$kvTrackEvent('user-settings', 'click', 'auto-lending-settings')
 							"
 						>
 							Click here
@@ -196,7 +192,7 @@
 			:visible="showAutoLendingFaq"
 			title="How does auto-lending work?"
 			@lightbox-closed="
-				$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-faq-close', 'auto-lending');
+				$kvTrackEvent('user-settings', 'click', 'auto-lending');
 				closeFaq('showAutoLendingFaq')
 			"
 		>
@@ -225,7 +221,7 @@
 			:visible="showAutoDepositsFaq"
 			title="Auto Deposits"
 			@lightbox-closed="
-				$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-faq-close', 'auto-deposits');
+				$kvTrackEvent('user-settings', 'click', 'auto-deposits');
 				closeFaq('showAutoDepositsFaq')
 			"
 		>
