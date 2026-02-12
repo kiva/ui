@@ -363,7 +363,8 @@ import { mdiGiftOutline } from '@mdi/js';
 import {
 	clearPromoCreditBannerCookie,
 	getPromoCreditBannerCookie,
-	getKivaLendingCreditCookie
+	getKivaLendingCreditCookie,
+	clearKivaLendingCreditCookie
 } from '#src/util/promoCreditCookie';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
