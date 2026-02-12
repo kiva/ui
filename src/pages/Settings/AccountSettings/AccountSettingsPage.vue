@@ -41,12 +41,10 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
-		allCountriesIsoMap: {
-			query: allCountriesIsoMapQuery,
-			preFetch: true,
-			result({ data }) {
-				this.countries = parseAllCountriesIsoMapToOptions(data?.general?.allCountriesIsoMap ?? '');
-			},
+		query: allCountriesIsoMapQuery,
+		preFetch: true,
+		result({ data }) {
+			this.countries = parseAllCountriesIsoMapToOptions(data?.general?.allCountriesIsoMap ?? '');
 		},
 	},
 	data() {
