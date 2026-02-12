@@ -680,12 +680,8 @@ export default {
 		}
 
 		// If no bonus available and showPromoCreditPill cookie exists, remove promo credit pill
-		// For logged-out users, check cookie; for logged-in users, check totals
-		const bonusAmount = !this.isLoggedIn
-			? getKivaLendingCreditCookie(this.cookieStore)
-			: this.totals?.bonusAvailableTotal;
 		if (typeof window !== 'undefined'
-				&& bonusAmount <= 0 && getPromoCreditBannerCookie(this.cookieStore)) {
+				&& this.totals?.bonusAvailableTotal <= 0 && getPromoCreditBannerCookie(this.cookieStore)) {
 			clearPromoCreditBannerCookie(this.cookieStore);
 		}
 
@@ -871,6 +867,7 @@ export default {
 			return showPromoCreditPill && this.totals?.bonusAvailableTotal > 0;
 		},
 		bonusAvailableTotal() {
+			// Formatted bonus amount displayed only in the promo credit pill
 			// For logged-out users, use lending credit from cookie
 			// For logged-in users, use bonus available from server totals
 			const amount = !this.isLoggedIn
