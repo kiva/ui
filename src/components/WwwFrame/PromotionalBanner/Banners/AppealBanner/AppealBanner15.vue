@@ -65,7 +65,7 @@
 import { expand, collapse } from '#src/util/expander';
 
 import FifteenYearsButton from '#src/components/15Years/15YearsButton';
-// import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
+// import { KvProgressCircle } from '@kiva/kv-components';
 // import SwashieFace from '#src/components/15Years/SwashieFace';
 
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';

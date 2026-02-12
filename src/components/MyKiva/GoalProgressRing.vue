@@ -70,8 +70,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { KvButton } from '@kiva/kv-components';
-import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
+import { KvButton, KvProgressCircle } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import {
 	ID_SUPPORT_ALL,

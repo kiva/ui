@@ -158,9 +158,8 @@ import smoothReflow from 'vue-smooth-reflow';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 
 import { mdiClose } from '@mdi/js';
-import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
 import {
-	KvPageContainer, KvButton, KvMaterialIcon, KvContentfulImg
+	KvPageContainer, KvButton, KvMaterialIcon, KvContentfulImg, KvProgressCircle,
 } from '@kiva/kv-components';
 
 export default {
