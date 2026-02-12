@@ -7,6 +7,7 @@
 			<router-link
 				:to="to"
 				class="tw-text-link tw-font-medium hover:tw-underline focus:tw-underline"
+				@click="$kvTrackEvent('user-settings', 'click', 'credit-settings-linked-section', to)"
 			>
 				{{ description }}
 			</router-link>

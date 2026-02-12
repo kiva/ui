@@ -15,6 +15,7 @@
 			<router-link
 				class="tw-text-link tw-font-medium"
 				to="/portfolio/credit/deposit"
+				@click="$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-link', 'add-credit')"
 			>
 				Add credit
 			</router-link>
@@ -22,6 +23,7 @@
 			<router-link
 				class="tw-text-link tw-font-medium"
 				to="/donate/emailprocess"
+				@click="$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-link', 'donate')"
 			>
 				Donate
 			</router-link>
@@ -29,6 +31,7 @@
 			<router-link
 				class="tw-text-link tw-font-medium"
 				to="/gifts/kiva-cards"
+				@click="$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-link', 'kiva-gifts')"
 			>
 				Kiva gifts
 			</router-link>
@@ -36,6 +39,7 @@
 			<router-link
 				class="tw-text-link tw-font-medium"
 				to="/withdraw"
+				@click="$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-link', 'withdraw')"
 			>
 				Withdraw
 			</router-link>
@@ -52,7 +56,10 @@
 			<button
 				type="button"
 				class="tw-text-link tw-font-medium tw-bg-transparent tw-border-0 tw-p-0"
-				@click="showLearnMoreFaq = true"
+				@click="
+					$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-faq-open', 'learn-more');
+					showLearnMoreFaq = true
+				"
 			>
 				Learn more
 			</button>
@@ -66,7 +73,10 @@
 				<button
 					type="button"
 					class="tw-text-link tw-font-medium tw-bg-transparent tw-border-0 tw-p-0"
-					@click="openFaq(faq.key)"
+					@click="
+						$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-faq-open', faq.value);
+						openFaq(faq.key)
+					"
 				>
 					{{ faq.label }}
 				</button>
@@ -76,7 +86,10 @@
 		<kv-lightbox
 			:visible="showDonationsFaq"
 			title="How does Kiva use donations?"
-			@lightbox-closed="showDonationsFaq = false"
+			@lightbox-closed="
+				$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-faq-close', 'donations');
+				closeFaq('showDonationsFaq')
+			"
 		>
 			<div class="tw-space-y-3">
 				<p>
@@ -103,7 +116,10 @@
 		<kv-lightbox
 			:visible="showLearnMoreFaq"
 			title="Inactive credit and abandoned property laws"
-			@lightbox-closed="showLearnMoreFaq = false"
+			@lightbox-closed="
+				$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-faq-close', 'learn-more');
+				closeFaq('showLearnMoreFaq')
+			"
 		>
 			<div class="tw-space-y-3">
 				<p>
@@ -134,7 +150,10 @@
 		<kv-lightbox
 			:visible="showInactiveWithdrawalFaq"
 			title="What is inactive withdrawal?"
-			@lightbox-closed="showInactiveWithdrawalFaq = false"
+			@lightbox-closed="
+				$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-faq-close', 'inactive-withdrawal');
+				closeFaq('showInactiveWithdrawalFaq')
+			"
 		>
 			<div class="tw-space-y-3">
 				<p>
@@ -149,7 +168,19 @@
 					<li>You can automatically make a donation to Kiva’s operating expenses.</li>
 					<li>
 						You can enable auto lending.
-						<a class="tw-text-link tw-font-medium" href="/settings/autolending">Click here</a>
+						<a
+							class="tw-text-link tw-font-medium"
+							href="/settings/autolending"
+							@click="
+								$kvTrackEvent(
+									'user-settings',
+									'click',
+									'credit-settings-sidebar-inactive-withdrawal-auto-lending-link'
+								)
+							"
+						>
+							Click here
+						</a>
 						to change your auto lending settings.
 					</li>
 				</ul>
@@ -164,7 +195,10 @@
 		<kv-lightbox
 			:visible="showAutoLendingFaq"
 			title="How does auto-lending work?"
-			@lightbox-closed="showAutoLendingFaq = false"
+			@lightbox-closed="
+				$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-faq-close', 'auto-lending');
+				closeFaq('showAutoLendingFaq')
+			"
 		>
 			<div class="tw-space-y-3">
 				<p>
@@ -190,7 +224,10 @@
 		<kv-lightbox
 			:visible="showAutoDepositsFaq"
 			title="Auto Deposits"
-			@lightbox-closed="showAutoDepositsFaq = false"
+			@lightbox-closed="
+				$kvTrackEvent('user-settings', 'click', 'credit-settings-sidebar-faq-close', 'auto-deposits');
+				closeFaq('showAutoDepositsFaq')
+			"
 		>
 			<div class="tw-space-y-3">
 				<p>
@@ -208,10 +245,10 @@
 import { KvLightbox, KvLoadingPlaceholder } from '@kiva/kv-components';
 
 const FAQ_ITEMS = [
-	{ key: 'showDonationsFaq', label: 'How does Kiva use donations?' },
-	{ key: 'showInactiveWithdrawalFaq', label: 'What is inactive withdrawal?' },
-	{ key: 'showAutoLendingFaq', label: 'What is auto lending?' },
-	{ key: 'showAutoDepositsFaq', label: 'What are auto deposits?' },
+	{ key: 'showDonationsFaq', label: 'How does Kiva use donations?', value: 'donations' },
+	{ key: 'showInactiveWithdrawalFaq', label: 'What is inactive withdrawal?', value: 'inactive-withdrawal' },
+	{ key: 'showAutoLendingFaq', label: 'What is auto lending?', value: 'auto-lending' },
+	{ key: 'showAutoDepositsFaq', label: 'What are auto deposits?', value: 'auto-deposits' },
 ];
 
 export default {
@@ -251,6 +288,9 @@ export default {
 	methods: {
 		openFaq(key) {
 			this[key] = true;
+		},
+		closeFaq(key) {
+			this[key] = false;
 		},
 	},
 };
