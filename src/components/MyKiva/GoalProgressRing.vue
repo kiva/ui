@@ -145,7 +145,10 @@ const visibleGoalLoans = computed(() => {
 });
 
 const progressCircleDesc = computed(() => {
-	return `Loan${props.goalProgress > 1 || props.goalProgress === 0 ? 's' : ''}`;
+	if (props.goalLoans === 1) {
+		return 'Loan';
+	}
+	return 'Loans';
 });
 
 // --- Variant-specific computed properties ---
