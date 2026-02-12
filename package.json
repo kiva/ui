@@ -207,7 +207,7 @@
 		"vite-plugin-svg-store": "^0.1.4",
 		"vite-svg-loader": "^5.1.0",
 		"vitest": "^3.1.4",
-		"wait-on": "^5.2.0"
+		"wait-on": "^9.0.4"
 	},
 	"engines": {
 		"node": ">= 20.11.0",
