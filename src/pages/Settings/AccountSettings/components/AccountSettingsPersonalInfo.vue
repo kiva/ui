@@ -112,6 +112,7 @@
 					<kv-button
 						type="submit"
 						:disabled="isSaving"
+						v-kv-track-event="['user-settings', 'click', 'save-personal-info']"
 					>
 						{{ isSaving ? 'Saving...' : 'Save personal info' }}
 					</kv-button>

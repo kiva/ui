@@ -30,6 +30,7 @@
 					:disabled="disabled || uploadingImage"
 					class="tw-self-start"
 					@click="openFileInput"
+					v-kv-track-event="['user-settings', 'click', 'choose-profile-image']"
 				>
 					{{ uploadingImage ? 'Uploading...' : buttonLabel }}
 				</kv-button>
@@ -39,6 +40,7 @@
 					:disabled="disabled || uploadingImage || deletingImage"
 					class="tw-self-start"
 					@click="$emit('delete:image')"
+					v-kv-track-event="['user-settings', 'click', 'remove-profile-image']"
 				>
 					{{ deletingImage ? 'Removing...' : 'Remove image' }}
 				</kv-button>

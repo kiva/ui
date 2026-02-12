@@ -19,12 +19,14 @@
 					<a
 						href="mailto:contactus@kiva.org"
 						class="tw-text-link"
+						v-kv-track-event="['user-settings', 'click', 'contact-support-email-link']"
 					>contactus@kiva.org</a>.
 				</p>
 				<kv-button
 					variant="secondary"
 					:disabled="isRequestingChange"
 					@click="requestChange"
+					v-kv-track-event="['user-settings', 'click', 'request-email-change']"
 				>
 					{{ isRequestingChange ? 'Requesting...' : 'Request change' }}
 				</kv-button>
