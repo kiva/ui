@@ -360,7 +360,11 @@ import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { isGoalsV2Enabled } from '#src/composables/useGoalData';
 import { mdiGiftOutline } from '@mdi/js';
-import { clearPromoCreditBannerCookie, getPromoCreditBannerCookie } from '#src/util/promoCreditCookie';
+import {
+	clearPromoCreditBannerCookie,
+	getPromoCreditBannerCookie,
+	getKivaLendingCreditCookie
+} from '#src/util/promoCreditCookie';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
@@ -675,8 +679,12 @@ export default {
 		}
 
 		// If no bonus available and showPromoCreditPill cookie exists, remove promo credit pill
+		// For logged-out users, check cookie; for logged-in users, check totals
+		const bonusAmount = !this.isLoggedIn
+			? getKivaLendingCreditCookie(this.cookieStore)
+			: this.totals?.bonusAvailableTotal;
 		if (typeof window !== 'undefined'
-				&& this.totals?.bonusAvailableTotal <= 0 && getPromoCreditBannerCookie(this.cookieStore)) {
+				&& bonusAmount <= 0 && getPromoCreditBannerCookie(this.cookieStore)) {
 			clearPromoCreditBannerCookie(this.cookieStore);
 		}
 
@@ -852,11 +860,22 @@ export default {
 			return !this.lenderTotalLoans && this.enableFtdMessage && this.ftdCreditAmount && this.ftdValidDate;
 		},
 		showPromoCreditPill() {
+			// For logged-out users, show pill if they have lending credit from cookie
+			if (!this.isLoggedIn) {
+				const kivaLendingCredit = getKivaLendingCreditCookie(this.cookieStore);
+				return kivaLendingCredit > 0;
+			}
+			// For logged-in users, check both banner cookie and totals
 			const showPromoCreditPill = getPromoCreditBannerCookie(this.cookieStore) || false;
 			return showPromoCreditPill && this.totals?.bonusAvailableTotal > 0;
 		},
 		bonusAvailableTotal() {
-			return numeral(this.totals?.bonusAvailableTotal).format('$0,0');
+			// For logged-out users, use lending credit from cookie
+			// For logged-in users, use bonus available from server totals
+			const amount = !this.isLoggedIn
+				? getKivaLendingCreditCookie(this.cookieStore)
+				: this.totals?.bonusAvailableTotal;
+			return numeral(amount).format('$0,0');
 		},
 	},
 	methods: {
