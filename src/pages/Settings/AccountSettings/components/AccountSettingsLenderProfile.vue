@@ -13,6 +13,7 @@
 					:image-id-set="isProfileImageIdSet"
 					:disabled="isSaving || isUpdatingImage || isDeletingImage"
 					:deleting-image="isDeletingImage"
+					:updating-image="isUpdatingImage"
 					@update:image-id="onProfileImageUpload"
 					@delete:image="onProfileImageDelete"
 				/>
