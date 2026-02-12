@@ -600,7 +600,7 @@ export default [
 		path: '/settings/account-beta',
 		component: () => import('#src/pages/Settings/AccountSettings/AccountSettingsPage'),
 		meta: {
-			authenticationRequired: true,
+			activeLoginRequired: true,
 			excludeFromStaticSitemap: true,
 		},
 	},

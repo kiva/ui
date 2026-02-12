@@ -3,6 +3,9 @@ import { render } from '@testing-library/vue';
 import AccountSettingsLenderProfile from '#src/pages/Settings/AccountSettings/components/AccountSettingsLenderProfile';
 import { globalOptions } from '../../../../specUtils';
 
+/** Minimal country list for country dropdown (sourced from general.allCountriesIsoMap in app) */
+const mockCountries = [{ isoCode: 'US', name: 'United States' }];
+
 /** Mock profile data matching lenderProfileQuery shape */
 const mockProfileData = (overrides = {}) => ({
 	my: {
@@ -50,7 +53,8 @@ function getProfileWrapper(apolloOverrides = {}) {
 
 	const Wrapper = {
 		components: { AccountSettingsLenderProfile },
-		template: '<AccountSettingsLenderProfile ref="child" />',
+		template: '<AccountSettingsLenderProfile ref="child" :countries="countries" />',
+		data: () => ({ countries: mockCountries }),
 		mounted() {
 			childRef.current = this.$refs.child;
 		},

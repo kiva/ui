@@ -1,3 +1,10 @@
+## [3.54.0-rc.3](https://github.com/kiva/ui/compare/v3.54.0-rc.2...v3.54.0-rc.3) (2026-02-12)
+
+### 🎉 New Features
+
+* country list endpoint integration for ALL countries ([6abf74f](https://github.com/kiva/ui/commit/6abf74f6c90cf96d53bb5a1512df04ec606f38b8))
+* make sure new account beta settings page requires active login ([1ddfe20](https://github.com/kiva/ui/commit/1ddfe209677db2c5d7eb594d34db4dfcf89ef67c))
+
 ## [3.54.0-rc.2](https://github.com/kiva/ui/compare/v3.54.0-rc.1...v3.54.0-rc.2) (2026-02-11)
 
 ### 🎉 New Features
