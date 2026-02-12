@@ -64,7 +64,7 @@
 					<section data-testid="credit-settings-section" class="section">
 						<a
 							class="section__link"
-							href="/settings/credit"
+							href="/settings/credit-beta"
 							data-testid="credit-settings-lnk"
 						>
 							<h2 class="section__title">Credit settings</h2>
