@@ -2294,15 +2294,15 @@ describe('useGoalData', () => {
 		});
 	});
 
-	describe('fixIncorrectlyCompletedSupportAllGoals', () => {
-		it('should return wasFixed: false when no ID_SUPPORT_ALL goal exists', async () => {
+	describe('fixIncorrectlyCompletedGoals', () => {
+		it('should return wasFixed: false when no current year goal exists', async () => {
 			const mockPrefs = {
 				goals: [{
-					goalName: 'goal-womens-equality-2026',
-					category: ID_WOMENS_EQUALITY,
+					goalName: 'goal-support-all-2025',
+					category: ID_SUPPORT_ALL,
 					target: 10,
 					status: 'completed',
-					dateStarted: '2026-01-15T00:00:00Z',
+					dateStarted: '2025-01-15T00:00:00Z',
 				}],
 			};
 
@@ -2318,12 +2318,12 @@ describe('useGoalData', () => {
 				},
 			});
 
-			const result = await composable.fixIncorrectlyCompletedSupportAllGoals();
+			const result = await composable.fixIncorrectlyCompletedGoals();
 
 			expect(result).toEqual({ wasFixed: false });
 		});
 
-		it('should return wasFixed: false when ID_SUPPORT_ALL goal is not completed', async () => {
+		it('should return wasFixed: false when goal is in-progress and not hidden', async () => {
 			const mockPrefs = {
 				goals: [{
 					goalName: 'goal-support-all-2026',
@@ -2346,12 +2346,12 @@ describe('useGoalData', () => {
 				},
 			});
 
-			const result = await composable.fixIncorrectlyCompletedSupportAllGoals();
+			const result = await composable.fixIncorrectlyCompletedGoals();
 
 			expect(result).toEqual({ wasFixed: false });
 		});
 
-		it('should return wasFixed: false when goal is legitimately completed', async () => {
+		it('should return wasFixed: false when support-all goal is legitimately completed', async () => {
 			const mockPrefs = {
 				goals: [{
 					goalName: 'goal-support-all-2026',
@@ -2389,13 +2389,12 @@ describe('useGoalData', () => {
 					},
 				});
 
-			const result = await composable.fixIncorrectlyCompletedSupportAllGoals();
+			const result = await composable.fixIncorrectlyCompletedGoals();
 
 			expect(result).toEqual({ wasFixed: false });
 		});
 
-		// eslint-disable-next-line max-len
-		it('should fix incorrectly completed goal and return wasFixed: true when yearly progress is less than target', async () => {
+		it('should fix incorrectly completed support-all goal when yearly loan count is less than target', async () => {
 			const {
 				updateUserPreferences,
 			} = await import('#src/util/userPreferenceUtils');
@@ -2438,7 +2437,7 @@ describe('useGoalData', () => {
 				});
 
 			updateUserPreferences.mockClear();
-			const result = await composable.fixIncorrectlyCompletedSupportAllGoals();
+			const result = await composable.fixIncorrectlyCompletedGoals();
 
 			expect(result).toEqual({ wasFixed: true });
 			expect(updateUserPreferences).toHaveBeenCalledWith(
@@ -2450,11 +2449,173 @@ describe('useGoalData', () => {
 						goalName: 'goal-support-all-2026',
 						category: ID_SUPPORT_ALL,
 						target: 10,
-						status: 'in-progress', // Changed from completed to in-progress
+						status: 'in-progress',
 						dateStarted: '2026-01-15T00:00:00Z',
 					}],
 				},
 			);
+		});
+
+		it('should fix incorrectly completed category goal when yearly progress is less than target', async () => {
+			const {
+				updateUserPreferences,
+			} = await import('#src/util/userPreferenceUtils');
+
+			const mockPrefs = {
+				goals: [{
+					goalName: 'goal-womens-equality-2026',
+					category: ID_WOMENS_EQUALITY,
+					target: 10,
+					status: 'completed',
+					dateStarted: '2026-01-15T00:00:00Z',
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 100 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [{
+								id: ID_WOMENS_EQUALITY,
+								progressForYear: 4, // Only 4 this year, less than target of 10
+								totalProgressToAchievement: 50,
+							}],
+						},
+					},
+				});
+
+			updateUserPreferences.mockClear();
+			const result = await composable.fixIncorrectlyCompletedGoals();
+
+			expect(result).toEqual({ wasFixed: true });
+			expect(updateUserPreferences).toHaveBeenCalledWith(
+				mockApollo,
+				expect.anything(),
+				expect.anything(),
+				{
+					goals: [{
+						goalName: 'goal-womens-equality-2026',
+						category: ID_WOMENS_EQUALITY,
+						target: 10,
+						status: 'in-progress',
+						dateStarted: '2026-01-15T00:00:00Z',
+					}],
+				},
+			);
+		});
+
+		it('should fix hidden in-progress goal when progress is below target', async () => {
+			const {
+				updateUserPreferences,
+			} = await import('#src/util/userPreferenceUtils');
+
+			const mockPrefs = {
+				hideGoalCard: true,
+				goals: [{
+					goalName: 'goal-support-all-2026',
+					category: ID_SUPPORT_ALL,
+					target: 10,
+					status: 'in-progress',
+					dateStarted: '2026-01-15T00:00:00Z',
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 50 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							id: 'user-123',
+							lendingStats: {
+								id: 'stats-123',
+								loanStatsByYear: {
+									count: 3, // Below target of 10
+									amount: 75,
+								},
+							},
+						},
+					},
+				});
+
+			updateUserPreferences.mockClear();
+			const result = await composable.fixIncorrectlyCompletedGoals();
+
+			expect(result).toEqual({ wasFixed: true });
+			expect(updateUserPreferences).toHaveBeenCalledWith(
+				mockApollo,
+				expect.anything(),
+				expect.anything(),
+				{
+					goals: [{
+						goalName: 'goal-support-all-2026',
+						category: ID_SUPPORT_ALL,
+						target: 10,
+						status: 'in-progress',
+						dateStarted: '2026-01-15T00:00:00Z',
+					}],
+				},
+			);
+		});
+
+		it('should return wasFixed: false when category goal is legitimately completed', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'goal-womens-equality-2026',
+					category: ID_WOMENS_EQUALITY,
+					target: 5,
+					status: 'completed',
+					dateStarted: '2026-01-15T00:00:00Z',
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 100 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [{
+								id: ID_WOMENS_EQUALITY,
+								progressForYear: 8, // More than target of 5
+								totalProgressToAchievement: 50,
+							}],
+						},
+					},
+				});
+
+			const result = await composable.fixIncorrectlyCompletedGoals();
+
+			expect(result).toEqual({ wasFixed: false });
 		});
 
 		it('should not fix goals from years before GOALS_V2_START_YEAR', async () => {
@@ -2480,7 +2641,7 @@ describe('useGoalData', () => {
 				},
 			});
 
-			const result = await composable.fixIncorrectlyCompletedSupportAllGoals();
+			const result = await composable.fixIncorrectlyCompletedGoals();
 
 			expect(result).toEqual({ wasFixed: false });
 		});

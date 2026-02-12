@@ -67,7 +67,7 @@ export default {
 		provide('goalData', goalDataComposable);
 
 		return {
-			fixIncorrectlyCompletedSupportAllGoals: goalDataComposable.fixIncorrectlyCompletedSupportAllGoals,
+			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
 			loadGoalData: goalDataComposable.loadGoalData,
 			renewAnnualGoal: goalDataComposable.renewAnnualGoal,
 			setHideGoalCardPreference: goalDataComposable.setHideGoalCardPreference,
@@ -297,8 +297,8 @@ export default {
 					renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined
 				);
 
-				// Fix goals incorrectly marked as completed due to ID_SUPPORT_ALL bug
-				const { wasFixed } = await this.fixIncorrectlyCompletedSupportAllGoals();
+				// Fix goals incorrectly marked as completed due to progress double-counting bug
+				const { wasFixed } = await this.fixIncorrectlyCompletedGoals();
 
 				if (showRenewedAnnualGoalToast || wasFixed) {
 					if (showRenewedAnnualGoalToast) {
