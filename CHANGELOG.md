@@ -1,3 +1,114 @@
+## [3.54.0-rc.3](https://github.com/kiva/ui/compare/v3.54.0-rc.2...v3.54.0-rc.3) (2026-02-12)
+
+### 🎉 New Features
+
+* country list endpoint integration for ALL countries ([6abf74f](https://github.com/kiva/ui/commit/6abf74f6c90cf96d53bb5a1512df04ec606f38b8))
+* make sure new account beta settings page requires active login ([1ddfe20](https://github.com/kiva/ui/commit/1ddfe209677db2c5d7eb594d34db4dfcf89ef67c))
+
+## [3.54.0-rc.2](https://github.com/kiva/ui/compare/v3.54.0-rc.1...v3.54.0-rc.2) (2026-02-11)
+
+### 🎉 New Features
+
+* [MP-000] - fix UI Tests: looks like country schema in Graphql has changed ([38f6f6a](https://github.com/kiva/ui/commit/38f6f6aa2904eeda35f9a79eee9b10c6ed82d022))
+* [MP-2374] - done screen 4 and clean branch ([83767eb](https://github.com/kiva/ui/commit/83767eb0eed8c8bf558e739356ba6db750380db2))
+* [MP-2375] - fixed mobile design ([c5f22f1](https://github.com/kiva/ui/commit/c5f22f15eacbce6be61a6f8191041db364e028c0))
+* [MP-2375] - new requirement ([39f6b70](https://github.com/kiva/ui/commit/39f6b7004190bb004ad1671e69efa054df733697))
+* [MP-2375] - PR feedback ([7ed454c](https://github.com/kiva/ui/commit/7ed454cd90b5fac1d56d84053f16561251932940))
+* [MP-2375] - remove comments ([238cb58](https://github.com/kiva/ui/commit/238cb58af46bdd956edc28fb74f86838c909fa51))
+* [MP-2375] - remove important ([2fe8855](https://github.com/kiva/ui/commit/2fe8855cbbfc03fac0d696cde8e468e1ae310689))
+* [MP-2376] - better option to locate secondary buttons ([ab2dd81](https://github.com/kiva/ui/commit/ab2dd819c533641103b171792e5788ae7a286945))
+* [MP-2376] - clean code ([aeaa463](https://github.com/kiva/ui/commit/aeaa46399c0d500be8f0d9539a4521629bc70327))
+* [MP-2376] - done events and impact insights modal feature ([91bee78](https://github.com/kiva/ui/commit/91bee783314994c7d73f4c925f1b72e5fd626936))
+* [MP-2376] - use carousel ref instead of prop drilling ([d361e0b](https://github.com/kiva/ui/commit/d361e0bfa832fbd5cf897b655d16be0e0c27cefb))
+* [MP-2415] - update goal v2 rings subtitle ([63e42f1](https://github.com/kiva/ui/commit/63e42f18e5414935b07178e6c0e4ead9e015540f))
+* [MP-2416] - adjust font size ([1eff1f0](https://github.com/kiva/ui/commit/1eff1f026a26db0cdd7d3aaa7a313872533e7001))
+* [MP-2416] - change goal set success card ([9490779](https://github.com/kiva/ui/commit/9490779ba631e7ed2a360c75407e55a20b88de22))
+* [MP-2416] - change goal set success card on Goal-Setting page ([4305a35](https://github.com/kiva/ui/commit/4305a35cd891c0dfee700a6baba9f6ab01c24c81))
+* [MP-2416] - change goal set success card on TY page ([d91e731](https://github.com/kiva/ui/commit/d91e73196f6eb8b80916911ab9a06c2bfd297ee6))
+* [MP-2416] - fix and user enum goal_status ([d680142](https://github.com/kiva/ui/commit/d680142d4d455e7dab912b341eba211c998efd74))
+* [MP-2416] - fix some styles issues ([0547d74](https://github.com/kiva/ui/commit/0547d7430c6e0e1061ad13755994f88c0ddd6dbf))
+* [MP-2416] - missed commit ([07d3976](https://github.com/kiva/ui/commit/07d39766e9c0fa37c08a9c7ef2858c21dfa17b36))
+* [MP-2416] - PR feedback ([d9adf38](https://github.com/kiva/ui/commit/d9adf3882db84ade1653020a17c439a74d030006))
+* [MP-2445] - clean code ([2f02b2b](https://github.com/kiva/ui/commit/2f02b2b3e18f2bc6667d59b2df9aaf78c407ac37))
+* [MP-2445] - done make modal slides dynamic if it is a loanPartner or not ([28e0aeb](https://github.com/kiva/ui/commit/28e0aeb987f41f3be1df6556f8706909b830ee05))
+* [MP-2445] - missed commit ([b8e6b34](https://github.com/kiva/ui/commit/b8e6b349968b15b4312d0d5459d87563443f8647))
+* [MP-2445] - PR fdb use classes instead of rules ([29c7a0f](https://github.com/kiva/ui/commit/29c7a0f0696960bb51a4903e2c1afaff387cf847))
+* [MP-2446] - covering new edge case for N/A partners ([bebadde](https://github.com/kiva/ui/commit/bebaddefaa402915ef7427ded746eec8bbca3e4b))
+* [MP-2453] - Fixes for email opt-in card ([a3269da](https://github.com/kiva/ui/commit/a3269da22cd7417ceed4a559f169f9e488332c62))
+* add country data to ui repo and apply to country dropdowns ([3195f75](https://github.com/kiva/ui/commit/3195f7543d12f47c619a5a980bb89963060b5054))
+* add image deletion capability ([5cf45c4](https://github.com/kiva/ui/commit/5cf45c40870a941f7db3200cf6bd8bdb69c0b9c9))
+* added tests for account settings lender profile ([7a30e76](https://github.com/kiva/ui/commit/7a30e76f27afaa315d424646ff34477af3f2d2bd))
+* adding post lending cookie when leaving via survey card ([#6618](https://github.com/kiva/ui/issues/6618)) ([75575d7](https://github.com/kiva/ui/commit/75575d79edc8f2156bfc0d3a45797b0a193ad0af))
+* atb modal update ([#6613](https://github.com/kiva/ui/issues/6613)) ([7707804](https://github.com/kiva/ui/commit/77078042d5635bc85813b40e1505e2eec8dc75fa))
+* combo page header fixed for 0 remaining loans on goals ([#6608](https://github.com/kiva/ui/issues/6608)) ([201fad7](https://github.com/kiva/ui/commit/201fad79fb0a563ede179a6694db1de5af738caa))
+* enabling fade effect in carousel ([6dddab2](https://github.com/kiva/ui/commit/6dddab2a0c7a257a91d5630cbf745119d190f719))
+* goals category screen update ([#6607](https://github.com/kiva/ui/issues/6607)) ([80fce46](https://github.com/kiva/ui/commit/80fce469ddd24c0c6d9cc83f087d2a9c995d0102))
+* goals loan count update ([#6625](https://github.com/kiva/ui/issues/6625)) ([62d03ce](https://github.com/kiva/ui/commit/62d03ce7827b7486c395427fd64c7d598376a04c))
+* image upload functionality ([e47adc7](https://github.com/kiva/ui/commit/e47adc77e053c7e18a7ef5a55ddf6a02d121f910))
+* mp-2366 fixing lag for goal progress ([b4e0d4f](https://github.com/kiva/ui/commit/b4e0d4f82b37a0f250ee1c8453b39c8f5210a306))
+* mp-2366 fixing lag for goal progress ([7d04668](https://github.com/kiva/ui/commit/7d046681c3b9d48044d40bd391b7aebd6738b8dc))
+* mp-2366 fixing lag for goal progress ([92ef10d](https://github.com/kiva/ui/commit/92ef10d372e4e8adc34f2044bccea841e6078961))
+* mp-2366 fixing lag for goal progress ([5fc6389](https://github.com/kiva/ui/commit/5fc638900da51c5e55c31bee4b16b25a34839e34))
+* mp-2417 logged out lending credit banner ([0bdfe2c](https://github.com/kiva/ui/commit/0bdfe2c6146f1449d734f38a51cdbd6fd736c6fe))
+* new account settings page ([f491f1c](https://github.com/kiva/ui/commit/f491f1cf795416247da89667c4c6bf539a81a295))
+* new credit settings page ([248c699](https://github.com/kiva/ui/commit/248c699301e98e0082806ed5adbeeee693fe78b8))
+* post lending educational modal update ([#6617](https://github.com/kiva/ui/issues/6617)) ([e2062d9](https://github.com/kiva/ui/commit/e2062d96b299e94ceb6e6502a9974c65070eda93))
+* take users back to edit goal category and update options choices. ([#6605](https://github.com/kiva/ui/issues/6605)) ([5eb0a07](https://github.com/kiva/ui/commit/5eb0a071080085d461cd043db580b4a248408c4e))
+* update styling to be more consistent ([a183233](https://github.com/kiva/ui/commit/a183233a7f4135a7defc3dd4a7e66fa8f2c6397e))
+* updated ui for next year goal card ([78426f9](https://github.com/kiva/ui/commit/78426f9d7bacc54959e4296e2f3df4cb78cc524e))
+
+### 🐛 Bugfixes
+
+* [mp-2473-2484] - goal v2 card bugs ([#6638](https://github.com/kiva/ui/issues/6638)) ([0072ba7](https://github.com/kiva/ui/commit/0072ba74b7bfa3d76ff7a05fb16d19330932d519))
+* borrower image fix ([#6626](https://github.com/kiva/ui/issues/6626)) ([5d56390](https://github.com/kiva/ui/commit/5d56390f4534098a059f74fc53493a192d9de72d))
+* borrower name in impact insight first screen ([68ff80f](https://github.com/kiva/ui/commit/68ff80f10b8e8151cdf33b9bd9af006ccf91d886))
+* borrower profile facezoom fix ([#6620](https://github.com/kiva/ui/issues/6620)) ([93ba5e0](https://github.com/kiva/ui/commit/93ba5e00dcd2e079a9652d9ee6e3d69ce692dd6f))
+* cap the display journey max count to 100 ([#6609](https://github.com/kiva/ui/issues/6609)) ([f16f6e7](https://github.com/kiva/ui/commit/f16f6e7ee52bf48163f2d1475b0654f8962134a2))
+* change promo credit copy and avoid triggering confetti if cookie is set ([05d7df9](https://github.com/kiva/ui/commit/05d7df909797ab61aa2237ddc79cbcb71c293f85))
+* change styles to apply white bg color for each section ([c4e4a87](https://github.com/kiva/ui/commit/c4e4a878227c1dfb30e6c2b6a2255084eb7efb6e))
+* cleanup gql ([f26e14b](https://github.com/kiva/ui/commit/f26e14b26e00d35dbc39de43f31ac798c556ab83))
+* code warnings ([b92dd3d](https://github.com/kiva/ui/commit/b92dd3deb9f2012cd101a1924907bfc658ec94d6))
+* goal setting modal fix ([#6633](https://github.com/kiva/ui/issues/6633)) ([410390f](https://github.com/kiva/ui/commit/410390faefe43231c4c1f586b7f2bdbc752beea2))
+* hide opt-in and education cards in post lending next steps if loan is anonymous ([a9c1bb5](https://github.com/kiva/ui/commit/a9c1bb59f882394f20e3a66369ddfb9b9f71128b))
+* how post lending next step cards are ordered ([#6615](https://github.com/kiva/ui/issues/6615)) ([f8945c7](https://github.com/kiva/ui/commit/f8945c7aa5fb290ce673c1ec88b82133e71b23da))
+* lender profile save functionality ([dbdc92b](https://github.com/kiva/ui/commit/dbdc92b3ff77a2ce31f1e9152abe5d033701a031))
+* minor goals fixes ([#6640](https://github.com/kiva/ui/issues/6640)) ([dfd2a23](https://github.com/kiva/ui/commit/dfd2a23e0fc9bb5a87471f542dea0155b9c90a88))
+* mykiva email update card borrower image update ([#6619](https://github.com/kiva/ui/issues/6619)) ([12ffc32](https://github.com/kiva/ui/commit/12ffc328c9018a226e6062c826ec4e81f1c92b34))
+* only set next steps cookie post lending to a loan ([22c93df](https://github.com/kiva/ui/commit/22c93dfe718fa24d42291868db80e56f4bcc914b))
+* removed prefetch loading and countrylist graphql query ([d958af3](https://github.com/kiva/ui/commit/d958af379bfec51eb655d258823367151ee2ba42))
+* using activeLoginRequired flag ([35801d9](https://github.com/kiva/ui/commit/35801d94aea852af11c6a46a4351e1865ba48eeb))
+
+### 🧹 Chores
+
+* update kv-components ([#6637](https://github.com/kiva/ui/issues/6637)) ([bc3cda7](https://github.com/kiva/ui/commit/bc3cda751d005285211455d32b4d5ab3ead16268))
+
+## [3.54.0-rc.1](https://github.com/kiva/ui/compare/v3.53.0...v3.54.0-rc.1) (2026-01-28)
+
+### 🎉 New Features
+
+* mp-2432 update underline color ([d82c1b4](https://github.com/kiva/ui/commit/d82c1b47a7d151ae07babbd17141c072c3325c9c))
+* mp-2432 update underline color ([6ead24f](https://github.com/kiva/ui/commit/6ead24fcdca4e882d08257105c28c848a52e7e89))
+* mp-2432 update underline color ([dea8474](https://github.com/kiva/ui/commit/dea8474ee9c85e270b98b28848dc19b1ebdb01cd))
+* refetch user preference query to show survey and lasted loan card in my kiva ([853a4e6](https://github.com/kiva/ui/commit/853a4e66f3dca07e6a6d86b4e06eac3772ad8831))
+* set cookie at ty page to show kiva survey in my kiva ([58f5e8d](https://github.com/kiva/ui/commit/58f5e8d886431eb3e25b7f61c97b5a931d977012))
+
+### 🐛 Bugfixes
+
+* adjust logic to show post lending cards in my kiva ([0dc733a](https://github.com/kiva/ui/commit/0dc733a1679633a03dbbf27cb3b5cdf94e3ce409))
+* adjust ty goal in progress copy ([#6595](https://github.com/kiva/ui/issues/6595)) ([c6dfaa1](https://github.com/kiva/ui/commit/c6dfaa1b8005d2ffe0e9593d4c031ccb7f29d27b))
+* remove user preferences from logic ([8b41384](https://github.com/kiva/ui/commit/8b413847d0ef4844ab9dbbab7fce93598c9969bb))
+* remove userPreferences from ty page single version prop ([1706377](https://github.com/kiva/ui/commit/1706377a25ba0a992ac63394eea30a7d314ba1ff))
+* update tests ([8129dfe](https://github.com/kiva/ui/commit/8129dfef613ca14229ce2ff3931d162399c9ccc6))
+
+### 🪚 Refactors
+
+* add utils to cookie logic ([0240a25](https://github.com/kiva/ui/commit/0240a25ac98f7b859e226bb8adebb9d88e3e75b4))
+
+### 🧹 Chores
+
+* **deps-dev:** bump vite from 6.3.5 to 6.4.1 ([53b9b3c](https://github.com/kiva/ui/commit/53b9b3c684e4d0541416625a0ea2d8fe209e064c))
+* **release:** 3.53.0-rc.2 [skip ci] ([c9daef8](https://github.com/kiva/ui/commit/c9daef8411085f2a9eded7d7162d91320d6b259b)), closes [#6595](https://github.com/kiva/ui/issues/6595)
+
 ## [3.53.0](https://github.com/kiva/ui/compare/v3.52.0...v3.53.0) (2026-01-26)
 
 ### 🎉 New Features

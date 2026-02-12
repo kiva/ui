@@ -8,17 +8,17 @@
 		<template #header>
 			<h2
 				v-if="!isMobile && (showCategories || isThanksPage)"
-				v-html="title"
-				class="tw-mb-3 tw-text-center"
-				:class="{ '!tw-text-left': goalsV2Enabled }"
-			></h2>
+				class="tw-mb-3 tw-text-left md:tw-text-center"
+			>
+				Choose an impact area
+			</h2>
 		</template>
 		<h2
 			v-if="isMobile && (showCategories || isThanksPage)"
-			v-html="title"
-			class="tw-mb-3 tw-text-center"
-			:class="{ '!tw-text-left': goalsV2Enabled }"
-		></h2>
+			class="tw-mb-3 tw-text-left md:tw-text-center"
+		>
+			Choose an impact area
+		</h2>
 		<GoalSelector
 			v-if="showGoalSelector && goalsV2Enabled"
 			v-show="!showCategories"
@@ -28,9 +28,16 @@
 			tracking-category="portfolio"
 			:go-to-url="ctaHref"
 			:tiered-achievements="tieredAchievements"
+			:is-editing="isEditing"
+			:selected-category-id="selectedCategory.badgeId"
+			:selected-category-name="selectedCategory.name"
+			:goal-loans="selectedGoalNumber"
+			:goal-progress="goalProgress"
+			:goal-progress-percentage="goalProgressPercentage"
 			@set-goal-target="setGoalTarget"
 			@set-goal="$emit('set-goal', $event)"
 			@edit-goal="editGoalCategory"
+			@close-modal="closeLightbox"
 		/>
 		<component
 			v-show="showCategories || isThanksPage"
@@ -42,9 +49,11 @@
 			@category-selected="handleCategorySelected"
 			@number-changed="handleNumberChanged"
 		/>
-		<template #controls>
+		<template
+			v-if="showCategories || isThanksPage"
+			#controls
+		>
 			<div
-				v-if="showCategories || isThanksPage"
 				class="tw-flex tw-justify-end tw-gap-2"
 			>
 				<KvButton
@@ -82,7 +91,7 @@ import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
 const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
 
-const emit = defineEmits(['close-goal-modal', 'set-goal']);
+const emit = defineEmits(['close-goal-modal', 'set-goal', 'update-goal-choices']);
 
 const { isMobile } = useIsMobile(MOBILE_BREAKPOINT);
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -92,6 +101,7 @@ const {
 	getCtaHref,
 	getCategories,
 	goalProgress,
+	goalProgressPercentage,
 	loadGoalData,
 } = useGoalData();
 
@@ -132,6 +142,20 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	/**
+	 * Controlled is editing flag from parent
+	 */
+	controlledIsEditing: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Controlled selected category from parent
+	 */
+	controlledSelectedCategory: {
+		type: Object,
+		default: () => ({}),
+	},
 });
 
 const { numberOfLoans, isGoalSet } = toRefs(props);
@@ -139,12 +163,16 @@ const { numberOfLoans, isGoalSet } = toRefs(props);
 const formStep = ref(1);
 const showCategories = ref(!props.goalsV2Enabled);
 const selectedLoanNumber = ref(0);
+const isEditing = ref(props.controlledIsEditing);
 // eslint-disable-next-line max-len
 const selectedGoalNumber = ref(numberOfLoans.value ? numberOfLoans.value : 5); // Default goals to 5 loans for initial MVP
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
-const selectedCategory = ref(categories[0]);
+// Check if controlledSelectedCategory has actual data (not just empty object)
+const hasControlledCategory = props.controlledSelectedCategory
+	&& Object.keys(props.controlledSelectedCategory).length > 0;
+const selectedCategory = ref(hasControlledCategory ? props.controlledSelectedCategory : categories[0]);
 
 const contentComponent = computed(() => {
 	switch (formStep.value) {
@@ -153,24 +181,17 @@ const contentComponent = computed(() => {
 	}
 });
 
+const yearToDate = new Date().getFullYear();
+
 const ctaCopy = computed(() => {
+	if (isEditing.value) {
+		return 'Continue';
+	}
+
 	if (props.goalsV2Enabled) {
-		return 'Set 2026 goal';
+		return `Set ${yearToDate} goal`;
 	}
 	return formStep.value === 1 ? 'Continue' : 'Set my goal';
-});
-
-const title = computed(() => {
-	if (props.goalsV2Enabled) {
-		return `Make <span class="tw-text-eco-green-3">${selectedGoalNumber.value} loans</span> to...`;
-	}
-	if (formStep.value === 1) {
-		return 'Choose your impact goal category';
-	}
-	if (selectedCategory.value?.title) {
-		return `How many more loans to ${selectedCategory.value?.title} will you support this year?`;
-	}
-	return 'How many more people will you support this year?';
 });
 
 const ctaHref = computed(() => {
@@ -225,7 +246,12 @@ const clickBack = () => {
 };
 
 const handleClick = () => {
-	if (formStep.value === 1 && !props.goalsV2Enabled) {
+	if (isEditing.value) {
+		isEditing.value = false;
+		showCategories.value = false;
+		formStep.value = 1;
+		emit('update-goal-choices', selectedCategory.value);
+	} else if (formStep.value === 1 && !props.goalsV2Enabled) {
 		formStep.value += 1;
 		$kvTrackEvent(
 			props.isThanksPage ? 'post-checkout' : 'portfolio',
@@ -274,6 +300,7 @@ const closeLightbox = () => {
 
 const editGoalCategory = () => {
 	showCategories.value = true;
+	isEditing.value = true;
 	$kvTrackEvent(
 		props.isThanksPage ? 'post-checkout' : 'portfolio',
 		'show',

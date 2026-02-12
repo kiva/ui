@@ -70,7 +70,7 @@
 		</template>
 	</div>
 	<div
-		v-else-if="bonusBalance > 0"
+		v-else-if="effectiveBonusBalance > 0"
 		class="bonus-banner-holder tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2
 			tw-flex tw-gap-2 tw-justify-center tw-items-center"
 		:class="{'tw-items-center' : isScrolled,
@@ -91,11 +91,11 @@
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
 		>
 			<div v-if="!isScrolled">
-				<h3>You’ve got {{ $filters.numeral(bonusBalance, '$0') }} to give!</h3>
+				<h3>You've got {{ $filters.numeral(effectiveBonusBalance, '$0') }} to lend!</h3>
 				<h4>While funds last</h4>
 			</div>
 			<span v-else class="tw-underline tw-text-h5">
-				Use your {{ $filters.numeral(bonusBalance, '$0') }} gift today while funds last!
+				Use your {{ $filters.numeral(effectiveBonusBalance, '$0') }} gift today while funds last!
 			</span>
 		</a>
 		<router-link
@@ -127,7 +127,11 @@ import {
 } from '#src/util/promoCredit';
 import HeartBox from '#src/assets/images/heart-box.svg';
 import { showConfetti } from '#src/util/animation/confettiUtils';
-import { setPromoCreditBannerCookie } from '#src/util/promoCreditCookie';
+import {
+	setPromoCreditBannerCookie,
+	getKivaLendingCreditCookie,
+	getPromoCreditBannerCookie
+} from '#src/util/promoCreditCookie';
 
 const userPromoCredits = gql`
 	query userPromoCredits($basketId: String) {
@@ -199,6 +203,8 @@ export default {
 			priorityBasketCredit: null,
 			isUserDataLoading: false,
 			isScrolled: false,
+			kivaLendingCreditFromCookie: 0,
+			myId: null,
 		};
 	},
 	components: {
@@ -214,6 +220,7 @@ export default {
 			},
 			result({ data }) {
 				this.isUserDataLoading = false;
+				this.myId = data?.my?.id ?? null;
 				this.setPromoState(data);
 				this.setPriorityBasketCredit(data);
 			},
@@ -234,10 +241,23 @@ export default {
 	created() {
 		const { useCDNCaching } = this.$renderConfig;
 		this.isUserDataLoading = useCDNCaching;
+		// Check for kiva_lending_credit cookie on component creation
+		this.kivaLendingCreditFromCookie = getKivaLendingCreditCookie(this.cookieStore);
 	},
 	computed: {
+		isLoggedIn() {
+			return this.myId !== null && this.myId !== undefined;
+		},
+		effectiveBonusBalance() {
+			// If logged in, use the balance from GraphQL
+			if (this.isLoggedIn) {
+				return this.bonusBalance;
+			}
+			// If not logged in, use the kiva_lending_credit cookie value
+			return this.kivaLendingCreditFromCookie;
+		},
 		bonusBalanceFormatted() {
-			return numeral(this.bonusBalance).format('$0[.]00');
+			return numeral(this.effectiveBonusBalance).format('$0[.]00');
 		},
 		impactDashboardLink() {
 			// return the impact dashboard link
@@ -284,7 +304,7 @@ export default {
 		},
 		setPromoCreditPillCookie() {
 			return !this.showUpcCampaignBanner && !this.lendingRewardOffered
-				&& this.bonusBalance > 0 && !this.managedAccountPageId;
+				&& this.effectiveBonusBalance > 0 && !this.managedAccountPageId;
 		}
 	},
 	methods: {
@@ -313,7 +333,7 @@ export default {
 	},
 	mounted() {
 		// set promo cookie to show pill in checkout
-		if (this.setPromoCreditPillCookie) {
+		if (!getPromoCreditBannerCookie(this.cookieStore) && this.setPromoCreditPillCookie) {
 			setPromoCreditBannerCookie(this.cookieStore);
 			showConfetti();
 		}

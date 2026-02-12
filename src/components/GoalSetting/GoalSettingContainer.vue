@@ -27,6 +27,10 @@
 				:categories-loan-count="categoriesLoanCount"
 				:tiered-achievements="tieredAchievements"
 				:go-to-url="ctaHref"
+				:is-editing="isEditing"
+				:selected-category-id="selectedCategory.badgeId"
+				:selected-category-name="selectedCategory.name"
+				:goal-loans="loanTarget"
 				tracking-category="event-tracking"
 				@set-goal-target="setTarget($event)"
 				@set-goal="setGoal($event)"
@@ -36,14 +40,19 @@
 				v-show="showCategories"
 			>
 				<h2
-					v-html="title"
 					class="tw-mb-3 tw-text-left lg:tw-text-center"
-				></h2>
-				<CategoryForm
-					:key="categoryFormKey"
+				>
+					Choose an impact area
+				</h2>
+				<component
+					v-show="showCategories"
+					:is="contentComponent"
 					:categories="categories"
 					:pre-selected-category="selectedCategory.id"
+					:selected-category="selectedCategory"
+					:selected-goal-number="loanTarget"
 					@category-selected="handleCategorySelected"
+					@number-changed="handleNumberChanged"
 				/>
 				<div
 					class="buttons tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-flex tw-flex-col tw-justify-center
@@ -55,7 +64,7 @@
 						style="min-width: 324px;"
 						@click="handleClick"
 					>
-						Set 2026 goal
+						{{ ctaCopy }}
 					</KvButton>
 				</div>
 			</div>
@@ -68,13 +77,13 @@ import {
 	ref,
 	inject,
 	onMounted,
-	computed
+	computed,
+	defineAsyncComponent
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { mdiChevronLeft } from '@mdi/js';
 import { KvLoadingPlaceholder, KvMaterialIcon, KvButton } from '@kiva/kv-components';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
-import CategoryForm from '#src/components/MyKiva/GoalSetting/CategoryForm';
 import useGoalData from '#src/composables/useGoalData';
 import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 
@@ -122,19 +131,28 @@ const loanTarget = ref(0);
 const showCategories = ref(false);
 const ctaHref = ref('');
 const categoryFormKey = ref(0);
+const isEditing = ref(false);
+const formStep = ref(1);
+
+const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
+const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
 const selectedCategory = ref(categories[0]);
 
-const title = computed(() => {
-	return `Make <span class="tw-text-eco-green-3">${loanTarget.value} loans</span> to...`;
+const contentComponent = computed(() => {
+	switch (formStep.value) {
+		case 2: return NumberChoice;
+		case 1: default: return CategoryForm;
+	}
 });
 
 const editGoalCategory = () => {
 	// Force CategoryForm to re-render so it reverts to the default selected category
 	categoryFormKey.value += 1;
 	showCategories.value = true;
+	isEditing.value = true;
 	window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 };
 
@@ -175,6 +193,13 @@ const handleCategorySelected = categoryId => {
 };
 
 const handleClick = () => {
+	if (isEditing.value) {
+		isEditing.value = false;
+		showCategories.value = false;
+		formStep.value = 1;
+
+		return;
+	}
 	const categorySelected = selectedCategory.value?.badgeId;
 
 	const currentYear = new Date().getFullYear();
@@ -207,11 +232,31 @@ const goToDashboard = () => {
 	router.push('/mykiva');
 };
 
+const handleNumberChanged = number => {
+	console.log(number);
+};
+
+const yearToDate = new Date().getFullYear();
+
+const ctaCopy = computed(() => {
+	if (isEditing.value) {
+		return 'Continue';
+	}
+	return `Set ${yearToDate} goal`;
+});
+
 onMounted(async () => {
 	await loadGoalData({ yearlyProgress: true });
 	const isEmptyGoal = Object.keys(userGoal.value || {}).length === 0;
 	if (!isEmptyGoal) {
 		const { target, category } = userGoal.value;
+		// Set loanTarget from stored goal so GoalSelector shows correct target
+		loanTarget.value = target;
+		// Find and set the selected category from stored goal
+		const storedCategory = categories.find(c => c.badgeId === category);
+		if (storedCategory) {
+			selectedCategory.value = storedCategory;
+		}
 		// Use goalProgress which tracks current year progress
 		ctaHref.value = getCtaHref(target, category, router, goalProgress.value);
 		isGoalSet.value = true;

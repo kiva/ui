@@ -9,6 +9,7 @@ export const GUEST_ASSIGNMENT_COOKIE = 'myKivaGuestAssignment';
 export const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
 export const MY_KIVA_HERO_ENABLE_KEY = 'new_mykiva_hero_enable';
 export const TRANSACTION_LOANS_KEY = 'loan_purchase';
+export const POST_LENDING_NEXT_STEPS_COOKIE = 'my_kiva_post_lending_next_steps';
 
 /**
  * Determines whether the provided loan needs a footnote
@@ -121,4 +122,38 @@ export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, myKivaFlagEnabled, coo
 	}
 
 	return false;
+};
+
+/**
+ * Set session cookie for post lending card cookie to show cards in MyKiva
+ *
+ * @param cookieStore The cookie store
+ * @param postLendingEnabled Whether the post lending next steps is enabled
+ * @param totalLoans The total number of loans the user has made
+ */
+export const setPostLendingCardCookie = (cookieStore, postLendingEnabled, totalLoans) => {
+	// Only add the session cookie if the user is a guest and postLendingEnabled is enabled
+	if (postLendingEnabled && totalLoans > 0) {
+		cookieStore?.set(POST_LENDING_NEXT_STEPS_COOKIE, 'true', { path: '/' });
+	}
+};
+
+/**
+ * Checks for existence of session cookie for post lending card cookie
+ *
+ * @param cookieStore The cookie store
+ * @returns Whether the post lending card cookie exists
+ */
+export const checkPostLendingCardCookie = cookieStore => {
+	return !!cookieStore?.get(POST_LENDING_NEXT_STEPS_COOKIE);
+};
+
+/**
+ * Checks for existence of session cookie for post lending card cookie
+ *
+ * @param cookieStore The cookie store
+ * @returns Whether the post lending card cookie exists
+ */
+export const removePostLendingCardCookie = cookieStore => {
+	return cookieStore?.remove(POST_LENDING_NEXT_STEPS_COOKIE);
 };

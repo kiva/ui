@@ -1,0 +1,8 @@
+mutation updateProfileUrl($url: String) {
+	my {
+		updateProfileUrl(url: $url) {
+			success
+			error
+		}
+	}
+}

@@ -30,7 +30,9 @@
 					:hide-goal-card="hideCompletedGoalCard"
 					:post-lending-next-steps-enable="postLendingNextStepsEnable"
 					:user-info="userInfo"
+					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 					@open-goal-modal="showGoalModal = true"
+					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
 			</div>
 			<div class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col">
@@ -161,7 +163,9 @@
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
+			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 			@open-goal-modal="showGoalModal = true"
+			@open-impact-insight-modal="showImpactInsightsModal = true"
 		/>
 		<GoalSettingModal
 			v-if="isNextStepsExpEnabled && showGoalModal"
@@ -174,6 +178,12 @@
 			:tiered-achievements="heroTieredAchievements"
 			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
+		/>
+		<MyKivaImpactInsightModal
+			v-if="showPostLendingNextStepsCards && postLendingNextStepsEnable && showImpactInsightsModal"
+			:show="showImpactInsightsModal"
+			:latest-loan="latestLoan"
+			@close="closeImpactInsightsModal"
 		/>
 	</div>
 </template>
@@ -199,6 +209,8 @@ import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
 
+import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
+import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
 import GoalSettingModal from './GoalSettingModal';
 
 export default {
@@ -207,6 +219,7 @@ export default {
 		GlobeSearchIcon,
 		JourneyCardCarousel,
 		GoalSettingModal,
+		MyKivaImpactInsightModal,
 		KvCheckbox,
 		KvMaterialIcon,
 	},
@@ -277,10 +290,12 @@ export default {
 			interval: null,
 			disconnectRegionWatcher: null,
 			showGoalModal: false,
+			showImpactInsightsModal: false,
 			checkedArr: this.regionsData.map(() => false),
 			isGoalSet: false,
 			recordedGoalSet: false,
 			newGoalPrefs: null,
+			showPostLendingNextStepsCards: false,
 		};
 	},
 	computed: {
@@ -359,6 +374,12 @@ export default {
 			}, [this.$refs.loanRegionsElement]);
 			this.disconnectRegionWatcher = disconnect;
 		}
+
+		// Show post-lending next steps cards in My Kiva
+		if (checkPostLendingCardCookie(this.cookieStore)) {
+			this.showPostLendingNextStepsCards = true;
+			removePostLendingCardCookie(this.cookieStore);
+		}
 	},
 	beforeUnmount() {
 		if (this.interval) clearInterval(this.interval);
@@ -398,16 +419,19 @@ export default {
 			this.$router.push(`/lend/filter?country=${region?.countries.join(',')}`);
 		},
 		async setGoal(preferences) {
-			await this.storeGoalPreferences(preferences);
-			// Goals V2 (yearly progress) is enabled if flag is true OR year >= 2026
-			await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+			// For goalsV2, pass false to not update local state yet
+			// This delays the UI update until the modal is closed
+			const updateLocalState = !this.goalsV2Enabled;
+			await this.storeGoalPreferences(preferences, updateLocalState);
 			this.newGoalPrefs = preferences;
 			this.isGoalSet = true;
 			if (!this.goalsV2Enabled) {
+				// For legacy goals, close modal and refresh immediately
+				await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
 				this.showGoalModal = false;
 			}
 		},
-		closeGoalModal() {
+		async closeGoalModal() {
 			if (this.showGoalModal) {
 				this.showGoalModal = false;
 				this.$kvTrackEvent(
@@ -416,10 +440,22 @@ export default {
 					'close-goals'
 				);
 			}
-			if (this.isGoalSet && !this.recordedGoalSet) {
-				// eslint-disable-next-line max-len
-				this.$kvTrackEvent('portfolio', 'show', 'goal-set', this.newGoalPrefs?.category, this.newGoalPrefs?.target);
-				this.recordedGoalSet = true;
+			// Only refresh goal data when modal closes AND goal was set
+			// This ensures the main card transitions to ring only after modal is closed
+			if (this.isGoalSet) {
+				if (!this.recordedGoalSet) {
+					// eslint-disable-next-line max-len
+					this.$kvTrackEvent('portfolio', 'show', 'goal-set', this.newGoalPrefs?.category, this.newGoalPrefs?.target);
+					this.recordedGoalSet = true;
+				}
+				// Refresh goal data to update the main card with the ring
+				await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+			}
+		},
+		closeImpactInsightsModal() {
+			if (this.showImpactInsightsModal) {
+				this.showImpactInsightsModal = false;
+				this.$kvTrackEvent('portfolio', 'click', 'next-step-close-education');
 			}
 		},
 	},
@@ -431,7 +467,7 @@ export default {
 	height: auto;
 
 	@screen md {
-		height: 362px;
+		height: 390px;
 	}
 }
 
@@ -439,7 +475,7 @@ export default {
 	width: 100%;
 
 	@screen md {
-		width: 336px;
+		width: 390px;
 	}
 }
 

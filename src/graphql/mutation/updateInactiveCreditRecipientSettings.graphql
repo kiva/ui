@@ -1,0 +1,15 @@
+mutation updateInactiveCreditRecipientSettings(
+	$recipient: InactiveCreditRecipientEnum!,
+	$emailAddress: String
+) {
+	my {
+		updateInactiveCreditRecipientSettings(
+			recipient: $recipient,
+			emailAddress: $emailAddress
+		) {
+			success
+			error
+			value
+		}
+	}
+}

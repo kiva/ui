@@ -127,7 +127,7 @@ query myKivaQuery {
       filter: {
         type: ["loan_purchase", "direct_loan_purchase"]
       }
-      limit: 2
+      limit: 5
     ) {
       values {
 		amount
@@ -140,6 +140,7 @@ query myKivaQuery {
             id
             hash
           }
+          anonymizationLevel
           geocode {
             country {
               id
@@ -155,6 +156,11 @@ query myKivaQuery {
           borrowerCount
           ... on LoanPartner {
             themes
+			partner {
+				id
+				loansPosted
+				name
+			}
           }
         }
       }

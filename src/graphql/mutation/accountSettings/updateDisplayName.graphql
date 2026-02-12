@@ -1,0 +1,8 @@
+mutation updateDisplayName($displayName: String) {
+	my {
+		updateDisplayName(displayName: $displayName) {
+			success
+			error
+		}
+	}
+}

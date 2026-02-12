@@ -57,7 +57,6 @@
 						<MyKivaEmailUpdatesCard
 							v-if="shouldShowEmailMarketingCard && !acceptedEmailMarketingUpdates"
 							key="acceptEmails"
-							v-kv-track-event="['portfolio', 'view', 'next-step-email-option']"
 							:loans="loans"
 							:latest-loan="latestLoan"
 							@accept-email-updates="acceptedEmailMarketingUpdates = true"
@@ -96,6 +95,7 @@
 				<MyKivaLatestLoanCard
 					v-else-if="slide?.isLatestLoan"
 					:loan="latestLoan"
+					@open-impact-insight-modal="$emit('open-impact-insight-modal')"
 				/>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
@@ -153,7 +153,7 @@ import useBreakpoints from '#src/composables/useBreakpoints';
 import { formatUiSetting } from '#src/util/contentfulUtils';
 import { defaultBadges } from '#src/util/achievementUtils';
 import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
-import useBadgeData from '#src/composables/useBadgeData';
+import useBadgeData, { getJourneysByLoan } from '#src/composables/useBadgeData';
 import { KvCarousel, KvMaterialIcon } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
@@ -180,12 +180,11 @@ const router = useRouter();
 const {
 	getContentfulLevelData,
 	combineBadgeData,
-	getJourneysByLoan,
 } = useBadgeData(apollo);
 
 const { getCategoryLoansLastYear } = useGoalData();
 
-const emit = defineEmits(['update-journey', 'open-goal-modal']);
+const emit = defineEmits(['update-journey', 'open-goal-modal', 'open-impact-insight-modal']);
 
 const props = defineProps({
 	userInfo: {
@@ -272,6 +271,10 @@ const props = defineProps({
 		type: Object,
 		default: null
 	},
+	showPostLendingNextStepsCards: {
+		type: Boolean,
+		default: false
+	},
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
@@ -279,20 +282,27 @@ const currentIndex = ref(0);
 const isSharingModalVisible = ref(false);
 const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
 const acceptedEmailMarketingUpdates = ref(false);
+
+const isLatestLoanAnonymous = computed(() => {
+	return props.latestLoan?.anonymizationLevel === 'full';
+});
+
 const shouldShowEmailMarketingCard = computed(
-	() => props.postLendingNextStepsEnable && props.inLendingStats
+	() => props.showPostLendingNextStepsCards && props.postLendingNextStepsEnable
+		&& props.inLendingStats && !isLatestLoanAnonymous.value
 		&& userHasMailUpdatesOptOut() && (props.loans.length > 0 || props.latestLoan !== null)
 );
 const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
 
-const showLatestLoan = computed(() => props.postLendingNextStepsEnable && props.latestLoan);
+const showLatestLoan = computed(() => props.showPostLendingNextStepsCards
+	&& props.postLendingNextStepsEnable && props.latestLoan && !isLatestLoanAnonymous.value);
 
 const showSurveyCard = computed(() => {
 	const userPreferences = props.userInfo?.userPreferences || {};
 	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
 	const isFormSubmitted = (parsedPrefs.savedForms || []).some(form => form.formName === MYKIVA_INPUT_FORM_KEY);
 
-	return !isFormSubmitted && props.postLendingNextStepsEnable;
+	return props.showPostLendingNextStepsCards && !isFormSubmitted && props.postLendingNextStepsEnable;
 });
 
 const badgesData = computed(() => {
@@ -395,22 +405,33 @@ const orderedSlides = computed(() => {
 		];
 	}
 
+	// Build the priority card slots for post-lending experience
+	const priorityCards = [];
+
+	// Goal card (set or in-progress goal)
 	if (shouldShowGoalCard.value) {
-		// Add empty slide at start for goal card
-		sortedSlides.unshift({});
+		priorityCards.push({}); // Empty object placeholder for goal card component
 	}
 
-	if (showLatestLoan.value) {
-		sortedSlides.splice(1, 0, { isLatestLoan: true });
-	}
-
+	// Email marketing card if user isn't opted in, otherwise Latest Loan card
 	if (shouldShowEmailMarketingCard.value) {
-		sortedSlides.splice(1, 0, { isEmailUpdates: true });
+		priorityCards.push({ isEmailUpdates: true });
+	} else if (showLatestLoan.value) {
+		priorityCards.push({ isLatestLoan: true });
 	}
 
-	if (showSurveyCard.value) {
-		sortedSlides.splice(1, 0, { isSurveyCard: true });
+	// Latest Loan card (if email marketing card is also shown)
+	if (shouldShowEmailMarketingCard.value && showLatestLoan.value) {
+		priorityCards.push({ isLatestLoan: true });
 	}
+
+	// Survey card: shown if no goal card (goal completed) OR user is opted into email marketing
+	if (showSurveyCard.value && (!shouldShowGoalCard.value || !shouldShowEmailMarketingCard.value)) {
+		priorityCards.push({ isSurveyCard: true });
+	}
+
+	// Prepend priority cards to the sorted slides
+	sortedSlides = [...priorityCards, ...sortedSlides];
 
 	if (props.slidesNumber) {
 		sortedSlides = sortedSlides.slice(0, props.slidesNumber);

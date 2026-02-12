@@ -1,0 +1,8 @@
+mutation updateLoanBecause($loanBecause: String) {
+	my {
+		updateLoanBecause(loanBecause: $loanBecause) {
+			success
+			error
+		}
+	}
+}

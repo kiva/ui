@@ -36,8 +36,8 @@
 				:alt="name"
 				:hash="hash"
 				:aspect-ratio="1 / 1"
-				:default-image="{ width: 80 }"
-				:images="[{ width: 80 }]"
+				:default-image="{ width: 80, faceZoom: 50 }"
+				:images="[{ width: 80, faceZoom: 50 }]"
 				:photo-path="$appConfig.photoPath"
 			/>
 		</div>
@@ -54,7 +54,7 @@
 				variant="secondary"
 				v-kv-track-event="['portfolio', 'click', 'next-step-impact-education']"
 				class="tw-w-full tw-mt-1"
-				@click="openModal"
+				@click="$emit('open-impact-insight-modal')"
 			>
 				View impact insights
 			</KvButton>
@@ -70,6 +70,8 @@ import { mdiEarth } from '@mdi/js';
 import { computed, inject, onMounted } from 'vue';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import kvTokensPrimitives from '@kiva/kv-tokens';
+
+defineEmits(['open-impact-insight-modal']);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -91,13 +93,7 @@ const mapLong = computed(() => {
 });
 
 const pronoun = computed(() => {
-	if (props.loan?.borrowerCount > 1 || props.loan?.themes?.includes('Social Enterprise')) {
-		return 'their lives';
-	}
-	if (props.loan?.gender === 'male') {
-		return 'him live';
-	}
-	return 'her live';
+	return props.loan?.borrowerCount > 1 ? 'their lives' : 'their life';
 });
 
 const borrowerName = computed(() => {
@@ -122,10 +118,6 @@ const countriesData = computed(() => {
 	}];
 });
 
-const openModal = () => {
-	// TODO: Implement modal opening logic
-};
-
 onMounted(() => {
 	$kvTrackEvent('portfolio', 'view', 'next-step-impact-education');
 });
@@ -137,9 +129,9 @@ onMounted(() => {
 }
 
 .bp-image, :deep(.bp-image img) {
-	@apply !tw-pb-0;
+	@apply !tw-pb-0 !tw--mt-0.5;
 
-	width: 78px;
-	height: 78px;
+	width: 80px;
+	height: 80px;
 }
 </style>

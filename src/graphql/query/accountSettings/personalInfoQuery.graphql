@@ -1,0 +1,20 @@
+query personalInfoQuery {
+	my {
+		id
+		userAccount {
+			id
+			firstName
+			lastName
+			contactRecord {
+				streetAddress
+				city
+				state
+				postalCode
+				country {
+					id
+					isoCode
+				}
+			}
+		}
+	}
+}

@@ -15,6 +15,7 @@
 				:goals-v2-enabled="goalsV2Enabled"
 				:total-loans="totalLoanCount"
 				:tiered-achievements="achievements"
+				:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -111,6 +112,7 @@ const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
+const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
 
 // Thanks views
 const DONATION_ONLY_VIEW = 'donation_only';
@@ -176,6 +178,7 @@ export default {
 			thanksPageGoalsEntrypointEnable: false,
 			totalLoanCount: 0,
 			achievements: [],
+			postLendingNextStepsEnable: false,
 		};
 	},
 	apollo: {
@@ -322,6 +325,7 @@ export default {
 			this.achievements = userAchievements?.userAchievementProgress?.tieredLendingAchievements ?? [];
 			this.achievementsCompleted = this.allAchievementsCompleted(this.achievements);
 			this.thanksPageGoalsEntrypointEnable = readBoolSetting(data, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
+			this.postLendingNextStepsEnable = readBoolSetting(data, `general.${POST_LENDING_NEXT_STEPS_KEY}.value`) ?? false; // eslint-disable-line max-len
 		} catch (e) {
 			logReadQueryError(e, 'Thanks page readQuery failed');
 		}

@@ -6,6 +6,10 @@ import {
 	checkGuestAssignmentCookie,
 	GUEST_ASSIGNMENT_COOKIE,
 	setMyKivaRedirectCookie,
+	setPostLendingCardCookie,
+	checkPostLendingCardCookie,
+	POST_LENDING_NEXT_STEPS_COOKIE,
+	removePostLendingCardCookie
 } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -333,6 +337,111 @@ describe('myKivaUtils.js', () => {
 			cookieStoreMock.get.mockReturnValue(undefined);
 			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, true, cookieStoreMock);
 			expect(result).toBe(false);
+		});
+	});
+
+	describe('setPostLendingCardCookie', () => {
+		it('should set the post lending card cookie if post lending is enabled', () => {
+			const cookieStore = {
+				set: vi.fn(),
+			};
+			const postLendingEnabled = true;
+			const totalLoans = 5;
+
+			setPostLendingCardCookie(cookieStore, postLendingEnabled, totalLoans);
+
+			expect(cookieStore.set).toHaveBeenCalledWith(POST_LENDING_NEXT_STEPS_COOKIE, 'true', { path: '/' });
+		});
+
+		it('should not set the post lending card cookie if post lending is not enabled', () => {
+			const cookieStore = {
+				set: vi.fn(),
+			};
+			const postLendingEnabled = false;
+
+			setPostLendingCardCookie(cookieStore, postLendingEnabled);
+
+			expect(cookieStore.set).not.toHaveBeenCalled();
+		});
+
+		it('should not set the post lending card cookie if post lending is enabled, but no loans were made', () => {
+			const cookieStore = {
+				set: vi.fn(),
+			};
+			const postLendingEnabled = true;
+			const totalLoans = 0;
+
+			setPostLendingCardCookie(cookieStore, postLendingEnabled, totalLoans);
+
+			expect(cookieStore.set).not.toHaveBeenCalled();
+		});
+
+		it('should not set the post lending card cookie if post lending is enabled, but loans is undefined', () => {
+			const cookieStore = {
+				set: vi.fn(),
+			};
+			const postLendingEnabled = true;
+			const totalLoans = undefined;
+
+			setPostLendingCardCookie(cookieStore, postLendingEnabled, totalLoans);
+
+			expect(cookieStore.set).not.toHaveBeenCalled();
+		});
+
+		it('should not set the post lending card cookie if post lending is not enabled', () => {
+			const cookieStore = {
+				set: vi.fn(),
+			};
+			const postLendingEnabled = false;
+
+			setPostLendingCardCookie(cookieStore, postLendingEnabled);
+
+			expect(cookieStore.set).not.toHaveBeenCalled();
+		});
+
+		it('should not throw an error if cookieStore is undefined', () => {
+			expect(() => setPostLendingCardCookie(undefined, true)).not.toThrow();
+		});
+	});
+
+	describe('checkPostLendingCardCookie', () => {
+		it('should return true if the guest assignment cookie exists', () => {
+			const cookieStore = {
+				get: vi.fn().mockReturnValue('true'),
+			};
+
+			const result = checkPostLendingCardCookie(cookieStore);
+
+			expect(result).toBe(true);
+			expect(cookieStore.get).toHaveBeenCalledWith(POST_LENDING_NEXT_STEPS_COOKIE);
+		});
+
+		it('should return false if the guest assignment cookie does not exist', () => {
+			const cookieStore = {
+				get: vi.fn().mockReturnValue(undefined),
+			};
+
+			const result = checkPostLendingCardCookie(cookieStore);
+
+			expect(result).toBe(false);
+			expect(cookieStore.get).toHaveBeenCalledWith(POST_LENDING_NEXT_STEPS_COOKIE);
+		});
+
+		it('should return false if cookieStore is undefined', () => {
+			const result = checkPostLendingCardCookie(undefined);
+
+			expect(result).toBe(false);
+		});
+	});
+
+	describe('removePostLendingCardCookie', () => {
+		it('should remove post lending cookie', () => {
+			const cookieStore = {
+				remove: vi.fn(),
+			};
+
+			removePostLendingCardCookie(cookieStore);
+			expect(cookieStore.remove).toHaveBeenCalledWith(POST_LENDING_NEXT_STEPS_COOKIE);
 		});
 	});
 });

@@ -82,6 +82,12 @@ export const SplitTransaction = story({
 					id: 1975834,
 				},
 			},
+			{
+				loan: {
+					amount: '-25.00',
+					id: 1975835,
+				},
+			},
 		]
     },
 });

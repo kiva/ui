@@ -29,46 +29,19 @@
 					v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
 					@click="$emit('open-goal-modal')"
 				>
-					Set 2026 goal
+					Set {{ yearToDate }} goal
 				</KvButton>
 			</div>
-			<div v-else class="tw-h-full tw-flex tw-flex-col tw-text-center tw-justify-between">
-				<div class="tw-text-left">
-					<p class="tw-font-medium">
-						Your 2026 Goal
-					</p>
-					<p class="tw-text-secondary">
-						{{ goalDescription }}
-					</p>
-				</div>
-				<div class="tw-relative tw-z-docked tw-mx-auto">
-					<KvProgressCircle
-						class="tw-z-2 tw-py-0.5"
-						:stroke-width="20"
-						:value="goalProgressPercentage"
-						:max="goalLoans"
-						:rotate="180"
-						style="height: 170px; width: 170px;"
-					/>
-					<div class="tw-absolute tw-flex tw-flex-col tw-items-center tw-justify-center tw-inset-0 tw--mt-1">
-						<h1>
-							{{ visibleGoalLoans }}
-						</h1>
-						<p class="tw-text-secondary">
-							{{ progressCircleDesc }}
-						</p>
-					</div>
-				</div>
-				<p v-html="progressDescription" class="tw-font-medium tw-py-1" style="line-height: 1.5rem;">
-				</p>
-				<KvButton
-					class="tw-w-full"
-					v-kv-track-event="['portfolio', 'click', 'continue-towards-goal']"
-					@click="handleContinueClick"
-				>
-					{{ btnCta }}
-				</KvButton>
-			</div>
+			<GoalProgressRing
+				v-else
+				variant="card"
+				:goal-loans="goalLoans"
+				:goal-progress="goalProgress"
+				:goal-progress-percentage="goalProgressPercentage"
+				:category-name="categoryName"
+				:category-id="userGoal?.category"
+				@button-click="handleContinueClick"
+			/>
 		</template>
 	</div>
 </template>
@@ -83,11 +56,10 @@ import {
 import {
 	KvButton, KvLoadingPlaceholder
 } from '@kiva/kv-components';
-import useBadgeData from '#src/composables/useBadgeData';
-import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
+import { COMPLETED_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import { useRouter } from 'vue-router';
-import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
 import confetti from 'canvas-confetti';
+import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 
 const props = defineProps({
@@ -120,11 +92,6 @@ const router = useRouter();
 const goalData = inject('goalData');
 
 const {
-	ID_BASIC_NEEDS,
-	ID_CLIMATE_ACTION,
-	ID_SUPPORT_ALL
-} = useBadgeData();
-const {
 	getCtaHref,
 	getGoalDisplayName,
 	goalProgressPercentage,
@@ -137,9 +104,7 @@ const goalLoans = computed(() => {
 	return props.userGoal?.target || 0;
 });
 
-const visibleGoalLoans = computed(() => {
-	return Math.min(props.goalProgress, goalLoans.value);
-});
+const yearToDate = new Date().getFullYear();
 
 const title = computed(() => {
 	if (props.prevYearLoans === 1) {
@@ -151,39 +116,8 @@ const title = computed(() => {
 	return 'Lenders like you help <span class="tw-text-action"> 3 women</span> a year';
 });
 
-const progressDescription = computed(() => {
-	if (goalProgressPercentage.value === 0) {
-		return 'Get started by making a loan!';
-	} if (goalProgressPercentage.value > 0 && goalProgressPercentage.value < HALF_GOAL_THRESHOLD) {
-		return 'You’ve started something powerful.<br>Let’s keep it growing together.';
-	} if (goalProgressPercentage.value === HALF_GOAL_THRESHOLD) {
-		return 'Halfway to your goal!<br>Every loan fuels a dream.';
-	} if (goalProgressPercentage.value < COMPLETED_GOAL_THRESHOLD) {
-		return 'You’ve brought so many dreams<br>within reach. Finish strong!';
-	}
-	return `Incredible! You reached your 2026<br>goal and changed ${goalLoans.value} lives!`;
-});
-
-const btnCta = computed(() => {
-	if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
-		return 'View impact progress';
-	}
-	return 'Work towards your goal';
-});
-
 const categoryName = computed(() => {
 	return getGoalDisplayName(props.userGoal?.target, props.userGoal?.category);
-});
-
-const goalDescription = computed(() => {
-	switch (props.userGoal?.category) {
-		case ID_BASIC_NEEDS:
-		case ID_CLIMATE_ACTION:
-		case ID_SUPPORT_ALL:
-			return `${goalLoans.value} ${categoryName.value}`;
-		default:
-			return `${goalLoans.value} loans to ${categoryName.value}`;
-	}
 });
 
 const ctaHref = computed(() => {
@@ -203,6 +137,7 @@ const showConfetti = () => {
 };
 
 const handleContinueClick = () => {
+	$kvTrackEvent('portfolio', 'click', 'continue-towards-goal');
 	if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
 		$kvTrackEvent('portfolio', 'click', 'goal-completed-cta');
 		const element = document.querySelector('#mykiva-achievements');
@@ -214,8 +149,6 @@ const handleContinueClick = () => {
 	}
 	router.push(ctaHref.value);
 };
-
-const progressCircleDesc = computed(() => `loan${props.goalProgress > 1 || props.goalProgress === 0 ? 's' : ''} made`);
 
 watch(() => [props.loading, props.hideGoalCard], ([newLoading, newHideGoalCard], [oldLoading]) => {
 	if (!newLoading && oldLoading && !newHideGoalCard) {

@@ -1,0 +1,45 @@
+query accountSettingsQuery {
+	my {
+		id
+		userAccount {
+			id
+			email
+			firstName
+			lastName
+			publicId
+			public
+			contactRecord {
+				streetAddress
+				city
+				state
+				postalCode
+				country {
+					id
+					isoCode
+				}
+			}
+		}
+		lender {
+			id
+			name
+			publicId
+			image {
+				id
+				url
+			}
+			lenderPage {
+				city
+				state
+				country {
+					id
+					isoCode
+					name
+				}
+				occupation
+				url
+				loanBecause
+				otherInfo
+			}
+		}
+	}
+}

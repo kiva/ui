@@ -57,7 +57,7 @@
 
 <script>
 import { inject } from 'vue';
-import useBadgeData, { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
+import { ID_SUPPORT_ALL, getJourneysByLoan } from '#src/composables/useBadgeData';
 import BasketItem from '#src/components/Checkout/BasketItem';
 import DonationItem from '#src/components/Checkout/DonationItem';
 import KivaCardItem from '#src/components/Checkout/KivaCardItem';
@@ -259,8 +259,6 @@ export default {
 			goalProgress,
 			getPostCheckoutProgressByLoans,
 		} = useGoalData({ apollo });
-
-		const { getJourneysByLoan } = useBadgeData({ apollo });
 
 		return {
 			loadGoalData,
