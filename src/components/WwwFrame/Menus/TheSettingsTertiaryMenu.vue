@@ -22,7 +22,7 @@
 		</li>
 		<li>
 			<router-link
-				to="/settings/credit-beta"
+				to="/settings/credit"
 				class="settings-tertitary-menu-link"
 				exact-active-class="settings-tertitary-menu-active-link"
 				v-kv-track-event="['TertiaryNav','click-MyKiva-Settings-credit']"

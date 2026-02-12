@@ -84,7 +84,7 @@ export default {
 						if (e.message.indexOf('monthlyGoodSubscriber') > -1) {
 						// Redirect to legacy Monthly Good Settins page
 							reject({
-								path: '/settings/credit-beta'
+								path: '/settings/credit'
 							});
 						} else {
 						// Log other errors

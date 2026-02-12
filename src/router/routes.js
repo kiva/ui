@@ -605,7 +605,7 @@ export default [
 		},
 	},
 	{
-		path: '/settings/credit-beta',
+		path: '/settings/credit',
 		component: () => import('#src/pages/Settings/CreditSettings/CreditSettingsPage'),
 		meta: {
 			activeLoginRequired: true,
