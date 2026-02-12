@@ -362,8 +362,9 @@ import { isGoalsV2Enabled } from '#src/composables/useGoalData';
 import { mdiGiftOutline } from '@mdi/js';
 import {
 	clearPromoCreditBannerCookie,
-	clearKivaLendingCreditCookie,
-	getPromoCreditBannerCookie
+	getPromoCreditBannerCookie,
+	getKivaLendingCreditCookie,
+	clearKivaLendingCreditCookie
 } from '#src/util/promoCreditCookie';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
@@ -856,11 +857,23 @@ export default {
 			return !this.lenderTotalLoans && this.enableFtdMessage && this.ftdCreditAmount && this.ftdValidDate;
 		},
 		showPromoCreditPill() {
+			// For logged-out users, show pill if they have lending credit from cookie
+			if (!this.isLoggedIn) {
+				const kivaLendingCredit = getKivaLendingCreditCookie(this.cookieStore);
+				return kivaLendingCredit > 0;
+			}
+			// For logged-in users, check both banner cookie and totals
 			const showPromoCreditPill = getPromoCreditBannerCookie(this.cookieStore) || false;
 			return showPromoCreditPill && this.totals?.bonusAvailableTotal > 0;
 		},
 		bonusAvailableTotal() {
-			return numeral(this.totals?.bonusAvailableTotal).format('$0,0');
+			// Formatted bonus amount displayed only in the promo credit pill
+			// For logged-out users, use lending credit from cookie
+			// For logged-in users, use bonus available from server totals
+			const amount = !this.isLoggedIn
+				? getKivaLendingCreditCookie(this.cookieStore)
+				: this.totals?.bonusAvailableTotal;
+			return numeral(amount).format('$0,0');
 		},
 	},
 	methods: {
