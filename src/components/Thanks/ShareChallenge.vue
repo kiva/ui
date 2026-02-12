@@ -135,7 +135,6 @@
 
 <script>
 import teamGoalInfo from '#src/plugins/team-goal-mixin';
-import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
 import RewardsIcon from '#src/assets/icons/inline/rewards.svg';
 import socialSharingMixin from '#src/plugins/social-sharing-mixin';
 import { mdiLink } from '@mdi/js';
@@ -146,7 +145,8 @@ import {
 	KvPageContainer,
 	KvGrid,
 	KvMaterialIcon,
-	KvBlueskyIcon
+	KvBlueskyIcon,
+	KvProgressCircle,
 } from '@kiva/kv-components';
 
 export default {

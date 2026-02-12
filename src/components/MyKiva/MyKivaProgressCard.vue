@@ -52,7 +52,7 @@
 </template>
 
 <script setup>
-import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
+import { KvProgressCircle } from '@kiva/kv-components';
 import { computed } from 'vue';
 import KvIcon from '#src/components/Kv/KvIcon';
 import KvButton from '#src/components/Kv/KvButton';
