@@ -107,7 +107,7 @@
 		"locale": "^0.1.0",
 		"lodash": "^4.17.20",
 		"lru-cache": "^6.0.0",
-		"make-fetch-happen": "^10.1.7",
+		"make-fetch-happen": "^15.0.3",
 		"memcached": "^2.2.2",
 		"memjs": "^1.2.2",
 		"minimist": "^1.2.6",
