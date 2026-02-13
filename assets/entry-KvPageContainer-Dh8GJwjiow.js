@@ -1,0 +1,1 @@
+import{c as o,o as e,v as r}from"./entry-vue.esm-bundler-C0PPCo9W96.js";import{s}from"./entry-KvWwwHeader-C1bm1YMh4q.js";const a={},c={class:"tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8",style:{"max-width":"1200px"}};function l(t,n,m,p,d,x){return e(),o("div",c,[r(t.$slots,"default")])}const w=s(a,[["render",l]]);export{w as u};
