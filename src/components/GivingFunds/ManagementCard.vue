@@ -76,7 +76,7 @@
 							<a
 								v-if="showParticipantDataControls"
 								:href="`${givingFundRootPath}/${fund.id}?action=my-donations`"
-								v-kv-track-event="['giving-funds', 'click', 'my-donations', fund.id]"
+								v-kv-track-event="['giving-funds', 'click', 'view-my-donations-gfm', fund.id]"
 							>View</a>
 						</p>
 					</div>
@@ -101,7 +101,7 @@
 							<a
 								v-if="showParticipantDataControls && !hideOwnerOperations"
 								:href="`${givingFundRootPath}/${fund.id}?action=participants`"
-								v-kv-track-event="['giving-funds', 'click', 'participants', fund.id]"
+								v-kv-track-event="['giving-funds', 'click', 'view-participants-gfm', fund.id]"
 							>View</a>
 						</p>
 					</div>
