@@ -175,7 +175,7 @@
 		"eslint-plugin-cypress": "^3.2.0",
 		"eslint-plugin-graphql": "^4.0.0",
 		"eslint-plugin-import": "^2.29.1",
-		"eslint-plugin-storybook": "^0.12.0",
+		"eslint-plugin-storybook": "^9.0.7",
 		"eslint-plugin-vitest-globals": "^1.5.0",
 		"eslint-plugin-vue": "^9.26.0",
 		"git-revision-webpack-plugin": "^5.0.0",
