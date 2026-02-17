@@ -1856,17 +1856,15 @@ describe('useGoalData', () => {
 
 	describe('getCtaHref', () => {
 		beforeEach(() => {
-			vi.mock('#src/composables/useBadgeData', () => ({
-				default: () => ({
-					getLoanFindingUrl: vi.fn(categoryId => `/lend/${categoryId}`),
-				}),
-				ID_BASIC_NEEDS: 'basic-needs-id',
-				ID_CLIMATE_ACTION: 'climate-action-id',
-				ID_REFUGEE_EQUALITY: 'refugee-equality-id',
-				ID_SUPPORT_ALL: 'support-all-id',
-				ID_US_ECONOMIC_EQUALITY: 'us-economic-equality-id',
-				ID_WOMENS_EQUALITY: 'womens-equality-id',
-			}));
+			vi.mock('#src/composables/useBadgeData', async importOriginal => {
+				const actual = await importOriginal();
+				return {
+					...actual,
+					default: () => ({
+						getLoanFindingUrl: vi.fn(categoryId => `/lend/${categoryId}`),
+					}),
+				};
+			});
 		});
 
 		it('should generate correct href for single remaining loan', () => {
@@ -3163,6 +3161,161 @@ describe('useGoalData', () => {
 			const result = await composable.getSupportAllLoanCountByYear(2026);
 
 			expect(result).toBeNull();
+		});
+	});
+
+	describe('calculateGoalFreshProgressAdjustments', () => {
+		// Helper to create a loan with properties that match getJourneysByLoan
+		const makeLoan = (id, overrides = {}) => ({
+			id,
+			gender: 'female',
+			geocode: { country: { isoCode: 'KE' } },
+			themes: [],
+			tags: [],
+			sector: { id: 1 },
+			...overrides,
+		});
+
+		// Helper to create tiered achievements with loanPurchases
+		const makeAchievements = (knownLoanIds = []) => [{
+			id: ID_WOMENS_EQUALITY,
+			loanPurchases: knownLoanIds.map(id => ({ loan: { id } })),
+		}];
+
+		// Helper to create transactions with loan id and date
+		const makeTransaction = (loanId, date) => ({
+			loan: { id: loanId },
+			effectiveTime: date,
+			createTime: date,
+		});
+
+		it('should include loans with matching year in yearSpecific adjustments', () => {
+			const loans = [makeLoan(1), makeLoan(2)];
+			const achievements = makeAchievements([]); // none known
+			const transactions = [
+				makeTransaction(1, '2026-03-15T00:00:00Z'),
+				makeTransaction(2, '2026-06-01T00:00:00Z'),
+			];
+
+			const result = composable.calculateGoalFreshProgressAdjustments(loans, achievements, 2026, transactions);
+
+			expect(result.allTime[ID_WOMENS_EQUALITY]).toBe(2);
+			expect(result.yearSpecific[ID_WOMENS_EQUALITY]).toBe(2);
+		});
+
+		it('should exclude loans with unknown purchase year from yearSpecific adjustments', () => {
+			const loans = [makeLoan(1), makeLoan(2)];
+			const achievements = makeAchievements([]); // none known
+			// Only loan 1 has a transaction; loan 2 has no transaction data
+			const transactions = [
+				makeTransaction(1, '2026-03-15T00:00:00Z'),
+			];
+
+			const result = composable.calculateGoalFreshProgressAdjustments(loans, achievements, 2026, transactions);
+
+			// All-time should count both loans
+			expect(result.allTime[ID_WOMENS_EQUALITY]).toBe(2);
+			// Year-specific should only count loan 1 (loan 2 has unknown year)
+			expect(result.yearSpecific[ID_WOMENS_EQUALITY]).toBe(1);
+		});
+
+		it('should exclude loans from a different year from yearSpecific adjustments', () => {
+			const loans = [makeLoan(1), makeLoan(2)];
+			const achievements = makeAchievements([]);
+			const transactions = [
+				makeTransaction(1, '2026-03-15T00:00:00Z'),
+				makeTransaction(2, '2025-11-20T00:00:00Z'), // previous year
+			];
+
+			const result = composable.calculateGoalFreshProgressAdjustments(loans, achievements, 2026, transactions);
+
+			expect(result.allTime[ID_WOMENS_EQUALITY]).toBe(2);
+			expect(result.yearSpecific[ID_WOMENS_EQUALITY]).toBe(1);
+		});
+
+		it('should return empty yearSpecific when no transactions provided', () => {
+			const loans = [makeLoan(1)];
+			const achievements = makeAchievements([]);
+
+			const result = composable.calculateGoalFreshProgressAdjustments(loans, achievements, 2026, []);
+
+			expect(result.allTime[ID_WOMENS_EQUALITY]).toBe(1);
+			expect(result.yearSpecific[ID_WOMENS_EQUALITY]).toBeUndefined();
+		});
+
+		it('should not count loans already known by achievement service', () => {
+			const loans = [makeLoan(1), makeLoan(2)];
+			const achievements = makeAchievements([1]); // loan 1 already known
+			const transactions = [
+				makeTransaction(1, '2026-03-15T00:00:00Z'),
+				makeTransaction(2, '2026-06-01T00:00:00Z'),
+			];
+
+			const result = composable.calculateGoalFreshProgressAdjustments(loans, achievements, 2026, transactions);
+
+			// Only loan 2 is missing from achievement service
+			expect(result.allTime[ID_WOMENS_EQUALITY]).toBe(1);
+			expect(result.yearSpecific[ID_WOMENS_EQUALITY]).toBe(1);
+		});
+
+		it('should return empty adjustments when loans array is empty', () => {
+			const achievements = makeAchievements([]);
+			const transactions = [];
+
+			const result = composable.calculateGoalFreshProgressAdjustments([], achievements, 2026, transactions);
+
+			expect(result.allTime).toEqual({});
+			expect(result.yearSpecific).toEqual({});
+		});
+	});
+
+	describe('applyFreshProgressToGoalData', () => {
+		const makeProgress = (id, allTime, yearly) => ({
+			id,
+			totalProgressToAchievement: allTime,
+			progressForYear: yearly,
+		});
+
+		it('should apply both allTime and yearSpecific adjustments', () => {
+			const progress = [makeProgress(ID_WOMENS_EQUALITY, 10, 5)];
+			const adjustments = {
+				allTime: { [ID_WOMENS_EQUALITY]: 2 },
+				yearSpecific: { [ID_WOMENS_EQUALITY]: 1 },
+			};
+
+			const result = composable.applyFreshProgressToGoalData(progress, adjustments);
+
+			expect(result[0].totalProgressToAchievement).toBe(12);
+			expect(result[0].progressForYear).toBe(6);
+		});
+
+		it('should apply allTime adjustment without yearSpecific when yearSpecific is empty', () => {
+			const progress = [makeProgress(ID_WOMENS_EQUALITY, 10, 5)];
+			const adjustments = {
+				allTime: { [ID_WOMENS_EQUALITY]: 2 },
+				yearSpecific: {},
+			};
+
+			const result = composable.applyFreshProgressToGoalData(progress, adjustments);
+
+			expect(result[0].totalProgressToAchievement).toBe(12);
+			expect(result[0].progressForYear).toBe(5); // unchanged
+		});
+
+		it('should not modify progress for categories without adjustments', () => {
+			const progress = [
+				makeProgress(ID_WOMENS_EQUALITY, 10, 5),
+				makeProgress(ID_CLIMATE_ACTION, 3, 2),
+			];
+			const adjustments = {
+				allTime: { [ID_WOMENS_EQUALITY]: 1 },
+				yearSpecific: { [ID_WOMENS_EQUALITY]: 1 },
+			};
+
+			const result = composable.applyFreshProgressToGoalData(progress, adjustments);
+
+			expect(result[1].totalProgressToAchievement).toBe(3);
+			expect(result[1].progressForYear).toBe(2);
 		});
 	});
 });
