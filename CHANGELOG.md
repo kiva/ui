@@ -1,3 +1,9 @@
+## [3.55.0-rc.2](https://github.com/kiva/ui/compare/v3.55.0-rc.1...v3.55.0-rc.2) (2026-02-17)
+
+### 🐛 Bugfixes
+
+* another goal progress fix ([#6661](https://github.com/kiva/ui/issues/6661)) ([f9e4270](https://github.com/kiva/ui/commit/f9e427041a2e3e74b6dd8b25bb113e22d5da7a72))
+
 ## [3.55.0-rc.1](https://github.com/kiva/ui/compare/v3.54.0...v3.55.0-rc.1) (2026-02-17)
 
 ### 🎉 New Features
