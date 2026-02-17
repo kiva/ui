@@ -397,8 +397,9 @@ export default function useGoalData({ apollo } = {}) {
 			const purchaseInfo = loanPurchaseYears.get(loan.id);
 			const loanYear = purchaseInfo?.year || null;
 
-			// Only count for year-specific if year matches or is unknown (assume recent)
-			if (!loanYear || loanYear === targetYear) {
+			// Only count for year-specific if year matches; skip loans with unknown purchase year
+			// Unknown purchase years are for loans outside of the transactions loaded
+			if (loanYear && loanYear === targetYear) {
 				const journeys = getJourneysByLoan(loan);
 				journeys.forEach(journeyId => {
 					yearSpecificAdjustments[journeyId] = (yearSpecificAdjustments[journeyId] || 0) + 1;
