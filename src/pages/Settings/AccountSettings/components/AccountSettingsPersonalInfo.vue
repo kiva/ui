@@ -10,28 +10,44 @@
 			<form @submit.prevent="save">
 				<div class="tw-flex tw-flex-wrap tw-gap-4 tw-mb-4">
 					<div>
-						<label for="firstName" class="tw-block tw-mb-1 tw-font-medium">
+						<label
+							for="firstName"
+							class="tw-block tw-mb-1 tw-font-medium"
+						>
 							First name *
 						</label>
 						<kv-text-input
 							id="firstName"
 							v-model="localForm.firstName"
 							type="text"
+							:valid="!v$.localForm?.firstName?.$error"
 							:disabled="isSaving"
 							@update:model-value="updateForm('firstName', $event)"
-						/>
+						>
+							<template v-if="v$.localForm?.firstName?.required?.$invalid" #error>
+								First name is required.
+							</template>
+						</kv-text-input>
 					</div>
 					<div>
-						<label for="lastName" class="tw-block tw-mb-1 tw-font-medium">
+						<label
+							for="lastName"
+							class="tw-block tw-mb-1 tw-font-medium"
+						>
 							Last name *
 						</label>
 						<kv-text-input
 							id="lastName"
 							v-model="localForm.lastName"
 							type="text"
+							:valid="!v$.localForm?.lastName?.$error"
 							:disabled="isSaving"
 							@update:model-value="updateForm('lastName', $event)"
-						/>
+						>
+							<template v-if="v$.localForm?.lastName?.required?.$invalid" #error>
+								Last name is required.
+							</template>
+						</kv-text-input>
 					</div>
 				</div>
 				<div class="tw-flex tw-flex-wrap tw-gap-4 tw-mb-4">
@@ -111,7 +127,7 @@
 				<div>
 					<kv-button
 						type="submit"
-						:disabled="isSaving"
+						:disabled="isSaving || v$.$invalid"
 						v-kv-track-event="['user-settings', 'click', 'save-personal-info']"
 					>
 						{{ isSaving ? 'Saving...' : 'Save personal info' }}
@@ -124,6 +140,8 @@
 
 <script>
 import logFormatter from '#src/util/logFormatter';
+import { useVuelidate } from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
 
 import { KvButton, KvSelect, KvTextInput } from '@kiva/kv-components';
 import KvSettingsCard from '#src/components/Kv/KvSettingsCard';
@@ -175,10 +193,21 @@ export default {
 			},
 		},
 	],
+	setup() {
+		return { v$: useVuelidate() };
+	},
 	data() {
 		return {
 			isSaving: false,
 			localForm: defaultForm(),
+		};
+	},
+	validations() {
+		return {
+			localForm: {
+				firstName: { required },
+				lastName: { required },
+			},
 		};
 	},
 	methods: {
@@ -186,6 +215,10 @@ export default {
 			this.localForm = { ...this.localForm, [field]: value };
 		},
 		async save() {
+			this.v$.$touch();
+			if (this.v$.$invalid) {
+				return;
+			}
 			this.isSaving = true;
 			try {
 				const {
