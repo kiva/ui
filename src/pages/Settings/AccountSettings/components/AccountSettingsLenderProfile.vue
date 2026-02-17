@@ -153,7 +153,7 @@
 						id="loanBecause"
 						v-model="localForm.loanBecause"
 						:disabled="isSaving"
-						class="tw-w-full tw-p-2 tw-border tw-border-tertiary tw-rounded tw-min-h-20"
+						class="tw-w-full tw-p-2 tw-border tw-border-tertiary tw-rounded-xs tw-min-h-20"
 						rows="3"
 						@input="updateForm('loanBecause', $event.target.value)"
 					></textarea>
@@ -168,7 +168,7 @@
 						id="otherInfo"
 						v-model="localForm.otherInfo"
 						:disabled="isSaving"
-						class="tw-w-full tw-p-2 tw-border tw-border-tertiary tw-rounded tw-min-h-20"
+						class="tw-w-full tw-p-2 tw-border tw-border-tertiary tw-rounded-xs tw-min-h-20"
 						rows="3"
 						@input="updateForm('otherInfo', $event.target.value)"
 					></textarea>
