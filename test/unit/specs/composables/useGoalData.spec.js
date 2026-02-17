@@ -2452,6 +2452,9 @@ describe('useGoalData', () => {
 					}],
 				},
 			);
+			// Verify goalProgress is populated immediately (not 0)
+			expect(composable.goalProgress.value).toBe(3);
+			expect(composable.userGoal.value.status).toBe('in-progress');
 		});
 
 		it('should fix incorrectly completed category goal when yearly progress is less than target', async () => {
@@ -2511,6 +2514,9 @@ describe('useGoalData', () => {
 					}],
 				},
 			);
+			// Verify goalProgress is populated immediately (not 0)
+			expect(composable.goalProgress.value).toBe(4);
+			expect(composable.userGoal.value.status).toBe('in-progress');
 		});
 
 		it('should fix hidden in-progress goal when progress is below target', async () => {
