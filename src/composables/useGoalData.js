@@ -769,15 +769,24 @@ export default function useGoalData({ apollo } = {}) {
 			const stats = await getLoanStatsByYear(currentYear, 'network-only');
 			actualYearlyProgress = stats?.count || 0;
 		} else {
-			const progress = await getCategoriesProgressByYear(currentYear, 'network-only');
-			const categoryProgress = progress?.find(n => n.id === goalToFix.category);
+			// Use loadProgress to populate currentYearProgress so goalProgress computed has data immediately
+			await loadProgress(currentYear);
+			const categoryProgress = currentYearProgress.value?.find(n => n.id === goalToFix.category);
 			actualYearlyProgress = categoryProgress?.progressForYear || 0;
 		}
+
+		// Ensure yearly progress mode is set so goalProgress computed uses progressForYear
+		useYearlyProgress.value = true;
 
 		// Check if goal is actually complete
 		if (actualYearlyProgress >= goalToFix.target) {
 			// Goal is legitimately complete
 			return { wasFixed: false };
+		}
+
+		// For ID_SUPPORT_ALL, store the yearly loan count so goalProgress has data
+		if (goalToFix.category === ID_SUPPORT_ALL) {
+			yearlyLoanCount.value = actualYearlyProgress;
 		}
 
 		// Fix: reset status to in-progress and unhide goal card
