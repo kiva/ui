@@ -481,6 +481,37 @@ export default {
 		},
 	},
 	methods: {
+		getLatestLoanPurchaseLoans() {
+			const getTransactionTimestamp = transaction => {
+				const effectiveTimestamp = transaction?.effectiveTime
+					? new Date(transaction.effectiveTime).getTime()
+					: NaN;
+				if (!Number.isNaN(effectiveTimestamp)) {
+					return effectiveTimestamp;
+				}
+
+				const createTimestamp = transaction?.createTime
+					? new Date(transaction.createTime).getTime()
+					: NaN;
+				return Number.isNaN(createTimestamp) ? null : createTimestamp;
+			};
+			const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
+			const nowTimestamp = Date.now();
+			const windowStartTimestamp = nowTimestamp - FIFTEEN_MINUTES_MS;
+
+			return (this.transactions ?? [])
+				.map(transaction => ({
+					transaction,
+					timestamp: getTransactionTimestamp(transaction),
+				}))
+				.filter(item => (
+					item.transaction?.loan?.id != null
+					&& item.timestamp != null
+					&& item.timestamp >= windowStartTimestamp
+					&& item.timestamp <= nowTimestamp
+				))
+				.map(item => item.transaction.loan);
+		},
 		handleShowNavigation() {
 			this.showNavigation = true;
 			this.$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
@@ -770,8 +801,9 @@ export default {
 
 		// Fetch achievement data first, then update with fresh progress adjustments
 		this.fetchAchievementData(this.apollo).then(() => {
-			// Update with fresh progress adjustments for loans not yet in achievement service
-			this.updateBadgeDataWithFreshProgress(this.loans, this.heroTieredAchievements);
+			// Update with fresh progress using loans from transactions in the last 15 minutes
+			const latestTransactionLoans = this.getLatestLoanPurchaseLoans();
+			this.updateBadgeDataWithFreshProgress(latestTransactionLoans, this.heroTieredAchievements);
 		});
 
 		this.fetchRecommendedLoans();
