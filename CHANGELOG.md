@@ -1,3 +1,39 @@
+## [3.55.0](https://github.com/kiva/ui/compare/v3.54.0...v3.55.0) (2026-02-18)
+
+### 🎉 New Features
+
+* add click analytics to account settings page ([2690d41](https://github.com/kiva/ui/commit/2690d4177f2e9a938662e5670ee98e548a353a90))
+* add click tracking to credit settings page ([4a9ccf4](https://github.com/kiva/ui/commit/4a9ccf44e2887b36f88e1422c7f47839b5e88686))
+* add credit-beta page to navigation items that previously used /settings/credit page ([0b3ac42](https://github.com/kiva/ui/commit/0b3ac42ff3662e74932a38083ba1a354fff97d07))
+* add routes for new settings page ([ea5bf61](https://github.com/kiva/ui/commit/ea5bf61a9fed54fb3ea56f89e1d6c2132fb3c8d3))
+* fix issue with country list loading ([c31d88d](https://github.com/kiva/ui/commit/c31d88dc9a0c341015d78364160349f909a1ae5a))
+* kvprogresscircle component replaced with a shared one ([#6655](https://github.com/kiva/ui/issues/6655)) ([08fb7b3](https://github.com/kiva/ui/commit/08fb7b3c740f420a99d44aaa2b44fc5647babb04))
+* mp-2488-missing-pill ([150dcd6](https://github.com/kiva/ui/commit/150dcd61ca29f6f0c1b328f521da58ac8aeabbba))
+* mp-2488-missing-pill ([634edc3](https://github.com/kiva/ui/commit/634edc35ef6d5153271f9853d2eea6ce2d87275b))
+* mp-2488-missing-pill ([43c3a51](https://github.com/kiva/ui/commit/43c3a5129a9c55f7f1596cb9d8d4f1008482e28f))
+* mp-2488-missing-pill ([adaa031](https://github.com/kiva/ui/commit/adaa0317691f486c0e46945e73d81c6ddf9210ba))
+* mp-2489-banner-not-dissapear ([73d687b](https://github.com/kiva/ui/commit/73d687b6416c26f02dbf4cb4a77df621b64ee024))
+* mp-2489-banner-not-dissapear ([c9371c9](https://github.com/kiva/ui/commit/c9371c94317a2c3c4d935e3d9d6638001c313320))
+* mp-2489-banner-not-dissapear ([dfc9c28](https://github.com/kiva/ui/commit/dfc9c286a803930c72c26e1c5036fdd3a605d141))
+* mp-2489-banner-not-dissapear ([1bff899](https://github.com/kiva/ui/commit/1bff899292fc18a7e0ea6bce4f99e061be26b96e))
+* progress ring copy fix ([abdbb33](https://github.com/kiva/ui/commit/abdbb33410fc63b53bcfa7315b09dd9fd60ce967))
+* update credit-beta to replace legacy credit page ([2544297](https://github.com/kiva/ui/commit/254429736e19c2503595e20a37ce9c369cf417bd))
+* updates kv-tokens/kv-components making new semantic text classes available for use ([848a9e0](https://github.com/kiva/ui/commit/848a9e0bb7cf5c72033f8031c902221cbde2d234))
+
+### 🐛 Bugfixes
+
+* addressing pr comments ([a4774db](https://github.com/kiva/ui/commit/a4774db6006cfa4005d6592ca6d444fc49640b47))
+* another goal progress fix ([#6661](https://github.com/kiva/ui/issues/6661)) ([f9e4270](https://github.com/kiva/ui/commit/f9e427041a2e3e74b6dd8b25bb113e22d5da7a72))
+* fix timing issue with image uploads so ui updates when image updates ([a36c840](https://github.com/kiva/ui/commit/a36c84031359e4ea12149c354b7106128a17e666))
+* goal progress bug from check progress against incorrect achievement year ([#6658](https://github.com/kiva/ui/issues/6658)) ([3b30f89](https://github.com/kiva/ui/commit/3b30f890bb0dbd01865dadfea322e66fdf106206))
+* resolve issue where loans could incorrectly apply towards goal ([#6660](https://github.com/kiva/ui/issues/6660)) ([6a6924f](https://github.com/kiva/ui/commit/6a6924fa6bbdaf37146f3f951e4416df5aa48ec6))
+* update gfm donation list events ([db91860](https://github.com/kiva/ui/commit/db9186018668c30a33ebdb1b1301b6e10e258384))
+
+### 🧹 Chores
+
+* **release:** 3.55.0-rc.1 [skip ci] ([5507d0d](https://github.com/kiva/ui/commit/5507d0db75c2915dc2db06cd252245d432a4d030)), closes [#6655](https://github.com/kiva/ui/issues/6655) [#6658](https://github.com/kiva/ui/issues/6658) [#6660](https://github.com/kiva/ui/issues/6660)
+* **release:** 3.55.0-rc.2 [skip ci] ([b719c0b](https://github.com/kiva/ui/commit/b719c0b22d05b47bd30b28f025511384d092cbf6)), closes [#6661](https://github.com/kiva/ui/issues/6661)
+
 ## [3.55.0-rc.2](https://github.com/kiva/ui/compare/v3.55.0-rc.1...v3.55.0-rc.2) (2026-02-17)
 
 ### 🐛 Bugfixes
