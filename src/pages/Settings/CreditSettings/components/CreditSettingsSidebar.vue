@@ -22,7 +22,7 @@
 			<span class="tw-text-secondary">|</span>
 			<router-link
 				class="tw-text-link tw-font-medium"
-				to="/donate/emailprocess"
+				to="/donate/supportus"
 				@click="$kvTrackEvent('user-settings', 'click', 'donate')"
 			>
 				Donate
