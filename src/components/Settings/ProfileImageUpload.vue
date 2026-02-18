@@ -66,7 +66,7 @@
 import { ref } from 'vue';
 import { mdiAccount } from '@mdi/js';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
-import useImageUpload from '#src/composables/useImageUpload';
+import useImageUpload, { MAX_IMAGE_SIZE_MB } from '#src/composables/useImageUpload';
 
 export default {
 	name: 'ProfileImageUpload',
@@ -108,7 +108,7 @@ export default {
 		/** Hint text below the button */
 		hintText: {
 			type: String,
-			default: '(Must be a .gif, .jpg or .png)',
+			default: () => `Must be a .gif, .jpg or .png. Max size ${MAX_IMAGE_SIZE_MB} MB.`,
 		},
 		/** Alt text for the image */
 		alt: {
