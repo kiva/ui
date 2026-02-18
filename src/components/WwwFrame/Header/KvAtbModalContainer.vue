@@ -176,6 +176,8 @@ const newAchievementReached = () => {
 };
 
 const fetchPostCheckoutAchievements = async loanIds => {
+	// Reset modal state to clear previous messages
+	resetModal();
 	const { id: addedLoanId, basketSize } = addedLoan.value;
 	let showAtbGoalMsg = false;
 	await loadGoalData({
