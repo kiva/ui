@@ -397,8 +397,9 @@ export default function useGoalData({ apollo } = {}) {
 			const purchaseInfo = loanPurchaseYears.get(loan.id);
 			const loanYear = purchaseInfo?.year || null;
 
-			// Only count for year-specific if year matches or is unknown (assume recent)
-			if (!loanYear || loanYear === targetYear) {
+			// Only count for year-specific if year matches; skip loans with unknown purchase year
+			// Unknown purchase years are for loans outside of the transactions loaded
+			if (loanYear && loanYear === targetYear) {
 				const journeys = getJourneysByLoan(loan);
 				journeys.forEach(journeyId => {
 					yearSpecificAdjustments[journeyId] = (yearSpecificAdjustments[journeyId] || 0) + 1;
@@ -738,22 +739,22 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
-	 * Fix goals that were incorrectly marked as completed due to the ID_SUPPORT_ALL bug.
-	 * The bug used all-time loan count instead of current year loans for yearly progress.
-	 * This function checks 2026 ID_SUPPORT_ALL goals and resets them to in-progress if
-	 * the actual yearly loan count doesn't meet the target.
+	 * Fix goals incorrectly marked as completed or hidden due to progress-related bugs.
+	 * Checks current year goals and resets status to in-progress and unhides the goal card
+	 * if the actual yearly progress doesn't meet the target.
 	 *
 	 * @returns {Promise<{wasFixed: boolean}>} Whether a goal was fixed
 	 */
-	async function fixIncorrectlyCompletedSupportAllGoals() {
+	async function fixIncorrectlyCompletedGoals() {
 		const parsedPrefs = await loadPreferences('network-only');
 		const goals = parsedPrefs.goals || [];
 		const currentYear = new Date().getFullYear();
 
-		// Find 2026 ID_SUPPORT_ALL goals that are marked as completed
+		const isGoalCardHidden = parsedPrefs.hideGoalCard || false;
+
+		// Find current year goal that is completed or hidden
 		const goalToFix = goals.find(goal => {
-			if (goal.category !== ID_SUPPORT_ALL) return false;
-			if (goal.status !== GOAL_STATUS.COMPLETED) return false;
+			if (goal.status !== GOAL_STATUS.COMPLETED && !isGoalCardHidden) return false;
 			const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
 			return goalYear === currentYear && currentYear >= GOALS_V2_START_YEAR;
 		});
@@ -762,9 +763,20 @@ export default function useGoalData({ apollo } = {}) {
 			return { wasFixed: false };
 		}
 
-		// Get actual yearly loan count
-		const stats = await getLoanStatsByYear(currentYear, 'network-only');
-		const actualYearlyProgress = stats?.count || 0;
+		// Get actual yearly progress based on goal category
+		let actualYearlyProgress;
+		if (goalToFix.category === ID_SUPPORT_ALL) {
+			const stats = await getLoanStatsByYear(currentYear, 'network-only');
+			actualYearlyProgress = stats?.count || 0;
+		} else {
+			// Use loadProgress to populate currentYearProgress so goalProgress computed has data immediately
+			await loadProgress(currentYear);
+			const categoryProgress = currentYearProgress.value?.find(n => n.id === goalToFix.category);
+			actualYearlyProgress = categoryProgress?.progressForYear || 0;
+		}
+
+		// Ensure yearly progress mode is set so goalProgress computed uses progressForYear
+		useYearlyProgress.value = true;
 
 		// Check if goal is actually complete
 		if (actualYearlyProgress >= goalToFix.target) {
@@ -772,7 +784,12 @@ export default function useGoalData({ apollo } = {}) {
 			return { wasFixed: false };
 		}
 
-		// Goal was incorrectly marked as complete - fix it
+		// For ID_SUPPORT_ALL, store the yearly loan count so goalProgress has data
+		if (goalToFix.category === ID_SUPPORT_ALL) {
+			yearlyLoanCount.value = actualYearlyProgress;
+		}
+
+		// Fix: reset status to in-progress and unhide goal card
 		const updatedGoals = goals.map(goal => {
 			if (goal.goalName === goalToFix.goalName) {
 				return {
@@ -842,7 +859,7 @@ export default function useGoalData({ apollo } = {}) {
 		userGoalAchievedNow,
 		userPreferences,
 		// Goal Entry for 2026 Goals
-		fixIncorrectlyCompletedSupportAllGoals,
+		fixIncorrectlyCompletedGoals,
 		renewAnnualGoal,
 		hideGoalCard,
 		setHideGoalCardPreference,

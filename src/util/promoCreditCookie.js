@@ -18,7 +18,8 @@ export const getKivaLendingCreditCookie = cookieStore => {
 	if (!value) return 0;
 
 	try {
-		// Cookie value is URL-encoded JSON: {"amount":25,"campaign_id":null}
+		// Cookie value is URL-encoded JSON set by monolith: {"amount":25,"campaign_id":null}
+		// Used to display promo credit banner to logged-out users (they must login to actually use credits)
 		const decoded = decodeURIComponent(value);
 		const parsed = JSON.parse(decoded);
 
@@ -36,4 +37,8 @@ export const getKivaLendingCreditCookie = cookieStore => {
 		const numValue = parseFloat(value);
 		return !Number.isNaN(numValue) && numValue > 0 ? numValue : 0;
 	}
+};
+
+export const clearKivaLendingCreditCookie = cookieStore => {
+	cookieStore.remove(KIVA_LENDING_CREDIT_COOKIE_NAME, { path: '/' });
 };

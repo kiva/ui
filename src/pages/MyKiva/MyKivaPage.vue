@@ -42,6 +42,7 @@ import { readBoolSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY, isGoalsV2Enabled } from '#src/composables/useGoalData';
 import { inject, provide } from 'vue';
 
+const CURRENT_YEAR = new Date().getFullYear();
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 const NEW_BADGE_SECTION_KEY = 'new_badge_section_enable';
@@ -66,7 +67,7 @@ export default {
 		provide('goalData', goalDataComposable);
 
 		return {
-			fixIncorrectlyCompletedSupportAllGoals: goalDataComposable.fixIncorrectlyCompletedSupportAllGoals,
+			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
 			loadGoalData: goalDataComposable.loadGoalData,
 			renewAnnualGoal: goalDataComposable.renewAnnualGoal,
 			setHideGoalCardPreference: goalDataComposable.setHideGoalCardPreference,
@@ -77,6 +78,7 @@ export default {
 			heroContentfulData: [],
 			heroSlides: [],
 			heroTieredAchievements: [],
+			currentYearTieredAchievements: [],
 			lender: null,
 			lendingStats: {},
 			loans: [],
@@ -109,6 +111,11 @@ export default {
 				client.query({
 					query: userAchievementProgressQuery,
 					variables: { year: LAST_YEAR_KEY },
+					fetchPolicy: 'network-only',
+				}),
+				client.query({
+					query: userAchievementProgressQuery,
+					variables: { year: CURRENT_YEAR },
 					fetchPolicy: 'network-only',
 				}),
 				loanId
@@ -227,6 +234,12 @@ export default {
 				variables: { year: LAST_YEAR_KEY }
 			});
 			this.heroTieredAchievements = achievementsResult.userAchievementProgress?.tieredLendingAchievements ?? [];
+			const currentYearResult = this.apollo.readQuery({
+				query: userAchievementProgressQuery,
+				variables: { year: CURRENT_YEAR }
+			});
+			// eslint-disable-next-line max-len
+			this.currentYearTieredAchievements = currentYearResult.userAchievementProgress?.tieredLendingAchievements ?? [];
 			const contentfulChallengeResult = this.apollo.readQuery({
 				query: contentfulEntriesQuery,
 				variables: { contentType: 'challenge', limit: 200 }
@@ -284,8 +297,8 @@ export default {
 					renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined
 				);
 
-				// Fix goals incorrectly marked as completed due to ID_SUPPORT_ALL bug
-				const { wasFixed } = await this.fixIncorrectlyCompletedSupportAllGoals();
+				// Fix goals incorrectly marked as completed due to progress double-counting bug
+				const { wasFixed } = await this.fixIncorrectlyCompletedGoals();
 
 				if (showRenewedAnnualGoalToast || wasFixed) {
 					if (showRenewedAnnualGoalToast) {
@@ -305,10 +318,10 @@ export default {
 		// Load goal data with fresh progress from loans not yet in achievement service
 		if (this.isNextStepsExpEnabled) {
 			await this.loadGoalData({
-				year: new Date().getFullYear(),
+				year: CURRENT_YEAR,
 				yearlyProgress: this.goalsV2Enabled,
 				loans: this.loans,
-				tieredAchievements: this.heroTieredAchievements,
+				tieredAchievements: this.currentYearTieredAchievements,
 				transactions: this.transactions
 			});
 		}

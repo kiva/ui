@@ -597,8 +597,24 @@ export default [
 		}
 	},
 	{
+		path: '/settings/account',
+		component: () => import('#src/pages/Settings/AccountSettings/AccountSettingsPage'),
+		meta: {
+			activeLoginRequired: true,
+			excludeFromStaticSitemap: true,
+		},
+	},
+	{
 		path: '/settings/account-beta',
 		component: () => import('#src/pages/Settings/AccountSettings/AccountSettingsPage'),
+		meta: {
+			activeLoginRequired: true,
+			excludeFromStaticSitemap: true,
+		},
+	},
+	{
+		path: '/settings/credit',
+		component: () => import('#src/pages/Settings/CreditSettings/CreditSettingsPage'),
 		meta: {
 			activeLoginRequired: true,
 			excludeFromStaticSitemap: true,

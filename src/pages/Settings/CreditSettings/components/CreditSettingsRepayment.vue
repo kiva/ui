@@ -14,6 +14,7 @@
 				value="deposit"
 				v-model="localSelection"
 				class="tw-mb-1"
+				@click="$kvTrackEvent('user-settings', 'click', 'credit-settings-repayment-option', 'deposit')"
 			>
 				Deposit my repayments in my Kiva account so I can relend
 			</kv-radio>
@@ -22,6 +23,7 @@
 				name="repayment-setting"
 				value="donate"
 				v-model="localSelection"
+				@click="$kvTrackEvent('user-settings', 'click', 'credit-settings-repayment-option', 'donate')"
 			>
 				Donate my repayments to Kiva’s operating expenses
 			</kv-radio>

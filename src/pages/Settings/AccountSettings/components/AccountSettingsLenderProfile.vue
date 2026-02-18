@@ -13,6 +13,7 @@
 					:image-id-set="isProfileImageIdSet"
 					:disabled="isSaving || isUpdatingImage || isDeletingImage"
 					:deleting-image="isDeletingImage"
+					:updating-image="isUpdatingImage"
 					@update:image-id="onProfileImageUpload"
 					@delete:image="onProfileImageDelete"
 				/>
@@ -29,6 +30,7 @@
 							target="_blank"
 							rel="noopener noreferrer"
 							class="tw-text-link"
+							v-kv-track-event="['user-settings', 'click', 'view-lender-page']"
 						>
 							View your lender page »
 						</a>
@@ -178,7 +180,7 @@
 						id="public"
 						v-model="localForm.public"
 						:disabled="isSaving"
-						@update:model-value="updateForm('public', $event)"
+						@update:model-value="onPublicVisibilityUpdate"
 					>
 						Make my page and loans public. If unchecked, the information above will not be displayed.
 					</kv-checkbox>
@@ -189,6 +191,7 @@
 					<kv-button
 						:disabled="isSaving"
 						@click="save"
+						v-kv-track-event="['user-settings', 'click', 'save-lender-profile']"
 					>
 						{{ isSaving ? 'Saving...' : 'Save profile info' }}
 					</kv-button>
@@ -197,12 +200,28 @@
 				<!-- Footnote -->
 				<p class="tw-mt-4 tw-text-small tw-text-secondary">
 					Your lender page will also include information about your
-					<a href="/portfolio/loans" class="tw-text-link">loans</a>,
-					<a href="/community/teams/my-teams" class="tw-text-link">teams</a>
+					<a
+						href="/portfolio/loans"
+						class="tw-text-link"
+						v-kv-track-event="['user-settings', 'click', 'lender-profile-loans-link']"
+					>loans</a>,
+					<a
+						href="/community/teams/my-teams"
+						class="tw-text-link"
+						v-kv-track-event="['user-settings', 'click', 'lender-profile-teams-link']"
+					>teams</a>
 					and
-					<a href="/portfolio/invites" class="tw-text-link">accepted invitations</a>.
+					<a
+						href="/portfolio/invites"
+						class="tw-text-link"
+						v-kv-track-event="['user-settings', 'click', 'lender-profile-accepted-invitations-link']"
+					>accepted invitations</a>.
 					All posted information on Kiva falls under our
-					<a href="/legal/terms" class="tw-text-link">Terms of Use</a>.
+					<a
+						href="/legal/terms"
+						class="tw-text-link"
+						v-kv-track-event="['user-settings', 'click', 'lender-profile-terms-of-use-link']"
+					>Terms of Use</a>.
 				</p>
 			</div>
 		</template>
@@ -375,6 +394,14 @@ export default {
 		},
 		updateForm(field, value) {
 			this.localForm = { ...this.localForm, [field]: value };
+		},
+		onPublicVisibilityUpdate(value) {
+			this.updateForm('public', value);
+			this.$kvTrackEvent(
+				'user-settings',
+				'click',
+				`toggle-public-visibility-${value ? 'on' : 'off'}`,
+			);
 		},
 		/** Update profile image on the server when user uploads a new image. */
 		async onProfileImageUpload(imageId) {

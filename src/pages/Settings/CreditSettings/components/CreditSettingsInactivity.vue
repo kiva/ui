@@ -14,6 +14,7 @@
 				value="kiva"
 				v-model="localRecipient"
 				class="tw-mb-1"
+				@click="$kvTrackEvent('user-settings', 'click', 'credit-settings-inactivity-option', 'kiva')"
 			>
 				Donate my remaining credit to Kiva’s operating expenses
 			</kv-radio>
@@ -22,6 +23,9 @@
 				name="inactivity-setting"
 				value="email_address"
 				v-model="localRecipient"
+				@click="
+					$kvTrackEvent('user-settings', 'click', 'credit-settings-inactivity-option', 'paypal_email_address')
+				"
 			>
 				Return my remaining credit to my PayPal account
 			</kv-radio>
@@ -37,6 +41,7 @@
 					autocomplete="email"
 					placeholder="name@example.com"
 					v-model="localEmail"
+					@click="$kvTrackEvent('user-settings', 'click', 'credit-settings-inactivity-paypal-email-input')"
 				/>
 			</div>
 		</fieldset>

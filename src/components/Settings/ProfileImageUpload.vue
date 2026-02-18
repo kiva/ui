@@ -5,8 +5,8 @@
 				tw-rounded tw-bg-tertiary tw-overflow-hidden"
 		>
 			<img
-				v-if="profileImageUrl"
-				:src="profileImageUrl"
+				v-if="imageUrl"
+				:src="imageUrl"
 				:alt="alt"
 				class="tw-w-14 tw-h-14 tw-min-w-0 tw-min-h-0 tw-max-w-14 tw-max-h-14 tw-object-cover"
 			>
@@ -30,15 +30,17 @@
 					:disabled="disabled || uploadingImage"
 					class="tw-self-start"
 					@click="openFileInput"
+					v-kv-track-event="['user-settings', 'click', 'choose-profile-image']"
 				>
-					{{ uploadingImage ? 'Uploading...' : buttonLabel }}
+					{{ (uploadingImage || updatingImage) ? 'Uploading...' : buttonLabel }}
 				</kv-button>
 				<kv-button
-					v-if="imageIdSet && !pendingImagePreviewUrl"
+					v-if="imageIdSet && !uploadingImage && !updatingImage"
 					variant="secondary"
 					:disabled="disabled || uploadingImage || deletingImage"
 					class="tw-self-start"
 					@click="$emit('delete:image')"
+					v-kv-track-event="['user-settings', 'click', 'remove-profile-image']"
 				>
 					{{ deletingImage ? 'Removing...' : 'Remove image' }}
 				</kv-button>
@@ -93,6 +95,11 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		/** True while parent is saving (mutation, refetch, toast). */
+		updatingImage: {
+			type: Boolean,
+			default: false,
+		},
 		/** Button label when not uploading */
 		buttonLabel: {
 			type: String,
@@ -116,26 +123,12 @@ export default {
 			? useImageUpload(this.kvAuth0, this.$appConfig?.host)
 			: null;
 		return {
-			pendingImagePreviewUrl: null,
 			uploadImage: imageUpload?.uploadImage ?? (() => null),
+			/** True while uploading file to storage (before emit). */
 			uploadingImage: imageUpload?.uploadingImage ?? ref(false),
 			uploadError: imageUpload?.uploadError ?? ref(''),
 			mdiAccount,
 		};
-	},
-	computed: {
-		profileImageUrl() {
-			return this.pendingImagePreviewUrl || this.imageUrl || '';
-		},
-	},
-	watch: {
-		imageUrl(newUrl) {
-			// When parent provides updated URL (e.g. after save/refetch), clear local preview
-			if (newUrl && this.pendingImagePreviewUrl) {
-				URL.revokeObjectURL(this.pendingImagePreviewUrl);
-				this.pendingImagePreviewUrl = null;
-			}
-		},
 	},
 	methods: {
 		openFileInput() {
@@ -146,15 +139,6 @@ export default {
 			const file = input?.files?.[0];
 			if (!file) return;
 
-			// Revoke previous object URL if any
-			if (this.pendingImagePreviewUrl) {
-				URL.revokeObjectURL(this.pendingImagePreviewUrl);
-				this.pendingImagePreviewUrl = null;
-			}
-
-			// Show immediate preview
-			this.pendingImagePreviewUrl = URL.createObjectURL(file);
-
 			const imageId = await this.uploadImage(file);
 			input.value = '';
 
@@ -162,11 +146,6 @@ export default {
 				this.$emit('update:imageId', imageId);
 			}
 		},
-	},
-	beforeUnmount() {
-		if (this.pendingImagePreviewUrl) {
-			URL.revokeObjectURL(this.pendingImagePreviewUrl);
-		}
 	},
 };
 </script>

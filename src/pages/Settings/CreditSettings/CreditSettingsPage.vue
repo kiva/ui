@@ -43,14 +43,20 @@
 					<div class="tw-mt-3">
 						<kv-button
 							:disabled="!isChanged || isSaving || v$.$invalid"
-							@click="saveSettings"
+							@click="
+								$kvTrackEvent('user-settings', 'click', 'credit-settings-save-settings');
+								saveSettings();
+							"
 						>
 							{{ isSaving ? 'Saving...' : 'Save settings' }}
 						</kv-button>
 						<button
 							v-if="isChanged && !isSaving"
 							class="tw-text-link tw-font-medium tw-ml-2"
-							@click="resetForm"
+							@click="
+								$kvTrackEvent('user-settings', 'click', 'credit-settings-reset-settings');
+								resetForm();
+							"
 						>
 							Reset
 						</button>

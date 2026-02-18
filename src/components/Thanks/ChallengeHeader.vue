@@ -64,10 +64,11 @@
 	</kv-page-container>
 </template>
 <script>
-import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
 import RewardsIcon from '#src/assets/icons/inline/rewards.svg';
 import teamGoalInfo from '#src/plugins/team-goal-mixin';
-import { KvButton, KvPageContainer, KvGrid } from '@kiva/kv-components';
+import {
+	KvButton, KvPageContainer, KvGrid, KvProgressCircle,
+} from '@kiva/kv-components';
 
 export default {
 	name: 'ChallengeHeader',

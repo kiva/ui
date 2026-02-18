@@ -70,8 +70,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { KvButton } from '@kiva/kv-components';
-import KvProgressCircle from '#src/components/Kv/KvProgressCircle';
+import { KvButton, KvProgressCircle } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import {
 	ID_SUPPORT_ALL,
@@ -145,7 +144,10 @@ const visibleGoalLoans = computed(() => {
 });
 
 const progressCircleDesc = computed(() => {
-	return `Loan${props.goalProgress > 1 || props.goalProgress === 0 ? 's' : ''}`;
+	if (props.goalLoans === 1) {
+		return 'Loan';
+	}
+	return 'Loans';
 });
 
 // --- Variant-specific computed properties ---
