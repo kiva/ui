@@ -9,6 +9,9 @@ import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.g
 import Alea from './Alea';
 import { HOME_PAGE_EXPERIMENT_KEY } from './fastlyExperimentUtils';
 
+const EXPIRES_IN_90_DAYS = 90 * 24 * 60 * 60;
+const NEXT_STEPS_REDIRECT_EXP_KEY = 'next_steps_redirect_exp';
+
 /**
  * The name of the cookie for storing assignments
  */
@@ -522,3 +525,61 @@ export const initializeExperiment = (
 
 	return initialVersion;
 };
+
+/**
+ * Get or assign variant for EXP-MP-2417-Feb2026 experiment,
+ * 	which is a simple A/B test for the next steps page redirect
+ * @param {Object} cookieStore - Cookie storage utility
+ * @param {Object} route - Vue router route object
+ * @param {Object} apollo - Apollo client instance
+ * @returns {String} 'a' or 'b'
+ */
+const getNextStepsRedirectExpVariant = (cookieStore, route) => {
+	// Check for query parameter override
+	if (route?.query?.[NEXT_STEPS_REDIRECT_EXP_KEY] === 'a' || route?.query?.[NEXT_STEPS_REDIRECT_EXP_KEY] === 'b') {
+		return route.query[NEXT_STEPS_REDIRECT_EXP_KEY];
+	}
+
+	// Check for existing assignment in new cookie
+	const existingAssignment = cookieStore.get(NEXT_STEPS_REDIRECT_EXP_KEY);
+	if (existingAssignment === 'a' || existingAssignment === 'b') {
+		return existingAssignment;
+	}
+
+	// Check setuiab URL param or uiab cookie (backwards compatibility)
+	const forced = getForcedAssignment(cookieStore, route, 'mykiva_next_steps_redirect', {});
+	if (forced?.version === 'a' || forced?.version === 'b') {
+		cookieStore.set(NEXT_STEPS_REDIRECT_EXP_KEY, forced.version, { maxAge: EXPIRES_IN_90_DAYS });
+		return forced.version;
+	}
+
+	// Generate new assignment (50/50 split)
+	const assignment = Math.random() < 0.5 ? 'a' : 'b';
+
+	// Store assignment (expires in 90 days)
+	cookieStore.set(NEXT_STEPS_REDIRECT_EXP_KEY, assignment, { maxAge: EXPIRES_IN_90_DAYS });
+
+	return assignment;
+};
+
+/**
+ * Check and track the next steps experiment assignment
+ * @param {*} cookieStore - Cookie storage utility
+ * @param {*} route Vue router route object
+ * @param {*} kvTrackEvent Kiva tracking utility
+ * @returns assignment variant for next steps redirect experiment, either 'a' or 'b'
+ */
+export function checkAndTrackNextStepsExperiment(cookieStore, route, kvTrackEvent) {
+	const variant = getNextStepsRedirectExpVariant(cookieStore, route);
+
+	const storage = globalThis.sessionStorage;
+	if (storage) {
+		const trackedKey = 'EXP-MP-2417-Feb2026';
+		const trackedExperiment = storage.getItem(`tracked-${trackedKey}`);
+		if (!trackedExperiment) {
+			kvTrackEvent('event-tracking', trackedKey, variant);
+			storage.setItem(`tracked-${trackedKey}`, 'true');
+		}
+	}
+	return variant;
+}

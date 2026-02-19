@@ -20,6 +20,7 @@
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:show-my-giving-funds-card="showMyGivingFundsCard"
+			:next-steps-experiment-variant="nextStepsExperimentVariant"
 		/>
 	</www-page>
 </template>
@@ -37,7 +38,7 @@ import { gql } from 'graphql-tag';
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-import { initializeExperiment } from '#src/util/experiment/experimentUtils';
+import { initializeExperiment, checkAndTrackNextStepsExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY, isGoalsV2Enabled } from '#src/composables/useGoalData';
 import { inject, provide } from 'vue';
@@ -94,6 +95,8 @@ export default {
 			latestLoan: null,
 			goalRefreshKey: 0,
 			showMyGivingFundsCard: false,
+			isLoggedIn: false,
+			nextStepsExperimentVariant: null,
 		};
 	},
 	computed: {
@@ -149,6 +152,7 @@ export default {
 					variables: { loanId: Number(loanId) }
 				}) : null;
 				this.userInfo = myKivaQueryResult.my ?? {};
+				this.isLoggedIn = !!this.userInfo?.id;
 				this.lender = myKivaQueryResult.my?.lender ?? null;
 				this.lender = {
 					...this.lender,
@@ -268,6 +272,12 @@ export default {
 			this.$kvTrackEvent,
 			'EXP-MP-1984-Sept2025',
 		);
+
+		// Ensure the user is logged in before to check new next-steps experiment
+		if (this.isLoggedIn) {
+			const variant = checkAndTrackNextStepsExperiment(this.cookieStore, this.$route, this.$kvTrackEvent);
+			this.nextStepsExperimentVariant = variant;
+		}
 	},
 	async mounted() {
 		try {

@@ -283,6 +283,11 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
+		nextStepsExperimentVariant: {
+			type: String,
+			default: 'a',
+			validator: value => ['a', 'b'].includes(value)
+		},
 	},
 	data() {
 		return {
