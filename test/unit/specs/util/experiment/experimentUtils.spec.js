@@ -18,6 +18,7 @@ import {
 	queryExperimentAssignment,
 	evictExperimentCacheIfForced,
 	initializeExperiment,
+	checkAndTrackNextStepsExperiment,
 } from '#src/util/experiment/experimentUtils';
 import * as Alea from '#src/util/experiment/Alea';
 import experimentIdsQuery from '#src/graphql/query/experimentIds.graphql';
@@ -1897,6 +1898,134 @@ describe('experimentUtils.js', () => {
 			});
 			// trackEvent should not be called for undefined version
 			expect(trackEvent).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('checkAndTrackNextStepsExperiment', () => {
+		const NEXT_STEPS_KEY = 'next_steps_redirect_exp';
+		const TRACKED_KEY = 'tracked-EXP-MP-2417-Feb2026';
+
+		afterEach(() => {
+			clearDocumentCookies();
+			globalThis.sessionStorage.clear();
+		});
+
+		it('should return variant from query parameter override', () => {
+			const cookieStore = new CookieStore();
+			const route = { query: { [NEXT_STEPS_KEY]: 'b' } };
+			const kvTrackEvent = vi.fn();
+
+			const result = checkAndTrackNextStepsExperiment(cookieStore, route, kvTrackEvent);
+
+			expect(result).toBe('b');
+		});
+
+		it('should return variant from dedicated cookie', () => {
+			const cookieStore = new CookieStore({ [NEXT_STEPS_KEY]: 'a' });
+			const route = { query: {} };
+			const kvTrackEvent = vi.fn();
+
+			const result = checkAndTrackNextStepsExperiment(cookieStore, route, kvTrackEvent);
+
+			expect(result).toBe('a');
+		});
+
+		it('should return variant from setuiab URL param via getForcedAssignment', () => {
+			const cookieStore = new CookieStore();
+			const setSpy = vi.spyOn(cookieStore, 'set').mockImplementation(() => {});
+			const route = { query: { setuiab: 'mykiva_next_steps_redirect.b' } };
+			const kvTrackEvent = vi.fn();
+
+			const result = checkAndTrackNextStepsExperiment(cookieStore, route, kvTrackEvent);
+
+			expect(result).toBe('b');
+			// eslint-disable-next-line max-len
+			expect(setSpy).toHaveBeenCalledWith(NEXT_STEPS_KEY, 'b', expect.objectContaining({ maxAge: expect.any(Number) }));
+		});
+
+		it('should return variant from uiab cookie via getForcedAssignment', () => {
+			const cookieStore = new CookieStore({
+				uiab: 'mykiva_next_steps_redirect:a:123:0.5:false'
+			});
+			const setSpy = vi.spyOn(cookieStore, 'set').mockImplementation(() => {});
+			const route = { query: {} };
+			const kvTrackEvent = vi.fn();
+
+			const result = checkAndTrackNextStepsExperiment(cookieStore, route, kvTrackEvent);
+
+			expect(result).toBe('a');
+			// eslint-disable-next-line max-len
+			expect(setSpy).toHaveBeenCalledWith(NEXT_STEPS_KEY, 'a', expect.objectContaining({ maxAge: expect.any(Number) }));
+		});
+
+		it('should generate random assignment when no existing assignment found', () => {
+			const cookieStore = new CookieStore();
+			const setSpy = vi.spyOn(cookieStore, 'set').mockImplementation(() => {});
+			const route = { query: {} };
+			const kvTrackEvent = vi.fn();
+
+			const result = checkAndTrackNextStepsExperiment(cookieStore, route, kvTrackEvent);
+
+			expect(['a', 'b']).toContain(result);
+			// eslint-disable-next-line max-len
+			expect(setSpy).toHaveBeenCalledWith(NEXT_STEPS_KEY, result, expect.objectContaining({ maxAge: expect.any(Number) }));
+		});
+
+		it('should track event on first call', () => {
+			const cookieStore = new CookieStore({ [NEXT_STEPS_KEY]: 'a' });
+			const route = { query: {} };
+			const kvTrackEvent = vi.fn();
+
+			checkAndTrackNextStepsExperiment(cookieStore, route, kvTrackEvent);
+
+			expect(kvTrackEvent).toHaveBeenCalledWith('event-tracking', 'EXP-MP-2417-Feb2026', 'a');
+			expect(globalThis.sessionStorage.getItem(TRACKED_KEY)).toBe('true');
+		});
+
+		it('should not track event if already tracked in session', () => {
+			globalThis.sessionStorage.setItem(TRACKED_KEY, 'true');
+			const cookieStore = new CookieStore({ [NEXT_STEPS_KEY]: 'b' });
+			const route = { query: {} };
+			const kvTrackEvent = vi.fn();
+
+			checkAndTrackNextStepsExperiment(cookieStore, route, kvTrackEvent);
+
+			expect(kvTrackEvent).not.toHaveBeenCalled();
+		});
+
+		it('should prioritize query param over dedicated cookie', () => {
+			const cookieStore = new CookieStore({ [NEXT_STEPS_KEY]: 'a' });
+			const route = { query: { [NEXT_STEPS_KEY]: 'b' } };
+			const kvTrackEvent = vi.fn();
+
+			const result = checkAndTrackNextStepsExperiment(cookieStore, route, kvTrackEvent);
+
+			expect(result).toBe('b');
+		});
+
+		it('should prioritize dedicated cookie over setuiab', () => {
+			const cookieStore = new CookieStore({
+				[NEXT_STEPS_KEY]: 'a',
+				uiab: 'mykiva_next_steps_redirect:b:123:0.5:false'
+			});
+			const route = { query: {} };
+			const kvTrackEvent = vi.fn();
+
+			const result = checkAndTrackNextStepsExperiment(cookieStore, route, kvTrackEvent);
+
+			expect(result).toBe('a');
+		});
+
+		it('should ignore invalid values from query param', () => {
+			const cookieStore = new CookieStore();
+			vi.spyOn(cookieStore, 'set').mockImplementation(() => {});
+			const route = { query: { [NEXT_STEPS_KEY]: 'c' } };
+			const kvTrackEvent = vi.fn();
+
+			const result = checkAndTrackNextStepsExperiment(cookieStore, route, kvTrackEvent);
+
+			// 'c' is not valid, should fall through to random assignment
+			expect(['a', 'b']).toContain(result);
 		});
 	});
 });
