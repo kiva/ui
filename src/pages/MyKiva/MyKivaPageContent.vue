@@ -265,6 +265,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import BadgesSectionV2 from '#src/components/MyKiva/BadgesSectionV2';
+import { getRecentTransactionLoans } from '#src/util/myKivaUtils';
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -481,37 +482,6 @@ export default {
 		},
 	},
 	methods: {
-		getLatestLoanPurchaseLoans() {
-			const getTransactionTimestamp = transaction => {
-				const effectiveTimestamp = transaction?.effectiveTime
-					? new Date(transaction.effectiveTime).getTime()
-					: NaN;
-				if (!Number.isNaN(effectiveTimestamp)) {
-					return effectiveTimestamp;
-				}
-
-				const createTimestamp = transaction?.createTime
-					? new Date(transaction.createTime).getTime()
-					: NaN;
-				return Number.isNaN(createTimestamp) ? null : createTimestamp;
-			};
-			const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
-			const nowTimestamp = Date.now();
-			const windowStartTimestamp = nowTimestamp - FIFTEEN_MINUTES_MS;
-
-			return (this.transactions ?? [])
-				.map(transaction => ({
-					transaction,
-					timestamp: getTransactionTimestamp(transaction),
-				}))
-				.filter(item => (
-					item.transaction?.loan?.id != null
-					&& item.timestamp != null
-					&& item.timestamp >= windowStartTimestamp
-					&& item.timestamp <= nowTimestamp
-				))
-				.map(item => item.transaction.loan);
-		},
 		handleShowNavigation() {
 			this.showNavigation = true;
 			this.$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
@@ -802,8 +772,8 @@ export default {
 		// Fetch achievement data first, then update with fresh progress adjustments
 		this.fetchAchievementData(this.apollo).then(() => {
 			// Update with fresh progress using loans from transactions in the last 15 minutes
-			const latestTransactionLoans = this.getLatestLoanPurchaseLoans();
-			this.updateBadgeDataWithFreshProgress(latestTransactionLoans, this.heroTieredAchievements);
+			const recentTransactionLoans = getRecentTransactionLoans(this.transactions);
+			this.updateBadgeDataWithFreshProgress(recentTransactionLoans, this.heroTieredAchievements);
 		});
 
 		this.fetchRecommendedLoans();

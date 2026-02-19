@@ -10,6 +10,57 @@ export const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
 export const MY_KIVA_HERO_ENABLE_KEY = 'new_mykiva_hero_enable';
 export const TRANSACTION_LOANS_KEY = 'loan_purchase';
 export const POST_LENDING_NEXT_STEPS_COOKIE = 'my_kiva_post_lending_next_steps';
+// Fresh-progress reconciliation window: last 15 minutes.
+export const RECENT_TRANSACTION_WINDOW_MS = 15 * 60 * 1000;
+
+/**
+ * Returns transaction timestamp (ms) preferring effectiveTime with createTime fallback.
+ *
+ * @param transaction Transaction object
+ * @returns Transaction timestamp in milliseconds or null when invalid
+ */
+export const getTransactionTimestamp = transaction => {
+	const effectiveTimestamp = transaction?.effectiveTime
+		? new Date(transaction.effectiveTime).getTime()
+		: NaN;
+	if (!Number.isNaN(effectiveTimestamp)) {
+		return effectiveTimestamp;
+	}
+
+	const createTimestamp = transaction?.createTime
+		? new Date(transaction.createTime).getTime()
+		: NaN;
+	return Number.isNaN(createTimestamp) ? null : createTimestamp;
+};
+
+/**
+ * Returns loans from transactions that occurred within a recent time window.
+ * Transactions are expected to be pre-filtered by caller when needed.
+ *
+ * @param transactions Array of transactions
+ * @param options Optional configuration
+ * @param options.nowTimestamp Current timestamp in milliseconds
+ * @param options.windowMs Window size in milliseconds
+ * @returns Array of loans from in-window transactions
+ */
+export const getRecentTransactionLoans = (
+	transactions = [],
+	{ nowTimestamp = Date.now(), windowMs = RECENT_TRANSACTION_WINDOW_MS } = {}
+) => {
+	const windowStartTimestamp = nowTimestamp - windowMs;
+	return (transactions ?? [])
+		.map(transaction => ({
+			transaction,
+			timestamp: getTransactionTimestamp(transaction),
+		}))
+		.filter(item => (
+			item.transaction?.loan?.id != null
+			&& item.timestamp != null
+			&& item.timestamp >= windowStartTimestamp
+			&& item.timestamp <= nowTimestamp
+		))
+		.map(item => item.transaction.loan);
+};
 
 /**
  * Determines whether the provided loan needs a footnote

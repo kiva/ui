@@ -15,139 +15,6 @@ describe('MyKivaPageContent', () => {
 		return date.toISOString();
 	};
 
-	describe('getLatestLoanPurchaseLoans', () => {
-		beforeEach(() => {
-			vi.useFakeTimers();
-			vi.setSystemTime(new Date('2026-02-01T12:00:00Z'));
-		});
-
-		afterEach(() => {
-			vi.useRealTimers();
-		});
-
-		it('returns all loans from transactions in the last 15 minutes', () => {
-			const context = {
-				transactions: [
-					{
-						type: 'loan_purchase',
-						effectiveTime: '2026-02-01T11:50:00Z',
-						loan: { id: 101, tags: ['#Eco-friendly'] }
-					},
-					{
-						type: 'loan_purchase',
-						effectiveTime: '2026-02-01T11:46:00Z',
-						loan: { id: 102, tags: ['#Sustainable Ag'] }
-					},
-					{
-						type: 'direct_loan_purchase',
-						effectiveTime: '2026-02-01T11:44:00Z',
-						loan: { id: 103 }
-					}
-				]
-			};
-
-			const result = MyKivaPageContent.methods.getLatestLoanPurchaseLoans.call(context);
-
-			expect(result.map(loan => loan.id)).toEqual([101, 102]);
-		});
-
-		it('includes transactions exactly at the 15-minute boundary', () => {
-			const context = {
-				transactions: [
-					{
-						type: 'loan_purchase',
-						effectiveTime: '2026-02-01T11:45:00Z',
-						loan: { id: 301 }
-					},
-					{
-						type: 'direct_loan_purchase',
-						effectiveTime: '2026-02-01T11:44:59Z',
-						loan: { id: 302 }
-					}
-				]
-			};
-
-			const result = MyKivaPageContent.methods.getLatestLoanPurchaseLoans.call(context);
-
-			expect(result).toEqual([{ id: 301 }]);
-		});
-
-		it('uses createTime when effectiveTime is missing', () => {
-			const context = {
-				transactions: [
-					{
-						type: 'loan_purchase',
-						effectiveTime: '2026-02-01T11:40:00Z',
-						loan: { id: 401 }
-					},
-					{
-						type: 'loan_purchase',
-						createTime: '2026-02-01T11:52:00Z',
-						loan: { id: 402 }
-					}
-				]
-			};
-
-			const result = MyKivaPageContent.methods.getLatestLoanPurchaseLoans.call(context);
-
-			expect(result).toEqual([{ id: 402 }]);
-		});
-
-		it('falls back to createTime when effectiveTime is invalid', () => {
-			const context = {
-				transactions: [
-					{
-						type: 'loan_purchase',
-						effectiveTime: '2026-01-01T00:00:00Z',
-						loan: { id: 501 }
-					},
-					{
-						type: 'direct_loan_purchase',
-						effectiveTime: 'not-a-date',
-						createTime: '2026-02-01T11:53:00Z',
-						loan: { id: 502 }
-					}
-				]
-			};
-
-			const result = MyKivaPageContent.methods.getLatestLoanPurchaseLoans.call(context);
-
-			expect(result).toEqual([{ id: 502 }]);
-		});
-
-		it('returns an empty array when there are no transactions in the last 15 minutes', () => {
-			const context = {
-				transactions: [
-					{
-						type: 'loan_repayment',
-						effectiveTime: '2026-02-01T11:40:00Z',
-						loan: { id: 601 }
-					}
-				]
-			};
-
-			const result = MyKivaPageContent.methods.getLatestLoanPurchaseLoans.call(context);
-
-			expect(result).toEqual([]);
-		});
-
-		it('returns an empty array when all transactions are older than 15 minutes', () => {
-			const context = {
-				transactions: [
-					{
-						type: 'loan_purchase',
-						effectiveTime: '2026-02-01T11:44:59Z',
-						loan: { id: 901 }
-					}
-				]
-			};
-
-			const result = MyKivaPageContent.methods.getLatestLoanPurchaseLoans.call(context);
-
-			expect(result).toEqual([]);
-		});
-	});
-
 	describe('mounted', () => {
 		it('updates fresh progress using all loans from transactions in the last 15 minutes', async () => {
 			const context = {
@@ -181,7 +48,6 @@ describe('MyKivaPageContent', () => {
 				fetchRecommendedLoans: vi.fn(),
 				fetchMoreWaysToHelpData: vi.fn(),
 				loadInitialBasketItems: vi.fn(),
-				getLatestLoanPurchaseLoans: MyKivaPageContent.methods.getLatestLoanPurchaseLoans,
 			};
 
 			MyKivaPageContent.mounted.call(context);
@@ -229,7 +95,6 @@ describe('MyKivaPageContent', () => {
 				fetchRecommendedLoans: vi.fn(),
 				fetchMoreWaysToHelpData: vi.fn(),
 				loadInitialBasketItems: vi.fn(),
-				getLatestLoanPurchaseLoans: MyKivaPageContent.methods.getLatestLoanPurchaseLoans,
 			};
 
 			MyKivaPageContent.mounted.call(context);
@@ -258,7 +123,6 @@ describe('MyKivaPageContent', () => {
 				fetchRecommendedLoans: vi.fn(),
 				fetchMoreWaysToHelpData: vi.fn(),
 				loadInitialBasketItems: vi.fn(),
-				getLatestLoanPurchaseLoans: MyKivaPageContent.methods.getLatestLoanPurchaseLoans,
 			};
 
 			MyKivaPageContent.mounted.call(context);
@@ -293,7 +157,6 @@ describe('MyKivaPageContent', () => {
 				fetchRecommendedLoans: vi.fn(),
 				fetchMoreWaysToHelpData: vi.fn(),
 				loadInitialBasketItems: vi.fn(),
-				getLatestLoanPurchaseLoans: MyKivaPageContent.methods.getLatestLoanPurchaseLoans,
 			};
 
 			MyKivaPageContent.mounted.call(context);
