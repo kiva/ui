@@ -535,6 +535,108 @@ describe('useGoalData', () => {
 
 			expect(logFormatter).toHaveBeenCalledWith(error, 'Failed to fetch categories progress by year');
 		});
+
+		it('should use freshProgressLoans for fresh progress adjustments', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_WOMENS_EQUALITY,
+					target: 10,
+					loanTotalAtStart: 0,
+				}],
+			};
+			const recentFemaleLoan = {
+				id: 101,
+				gender: 'female',
+				geocode: { country: { isoCode: 'KE' } },
+				themes: [],
+				tags: [],
+				sector: { id: 1 },
+			};
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{
+									id: ID_WOMENS_EQUALITY,
+									totalProgressToAchievement: 0,
+									progressForYear: 0,
+								},
+							],
+						},
+					},
+				});
+
+			await composable.loadGoalData({
+				year: 2026,
+				freshProgressLoans: [recentFemaleLoan],
+				tieredAchievements: [{
+					id: ID_WOMENS_EQUALITY,
+					loanPurchases: [],
+				}],
+				transactions: [{
+					loan: { id: 101 },
+					effectiveTime: '2026-02-01T12:00:00Z',
+				}],
+			});
+
+			expect(composable.goalProgress.value).toBe(1);
+		});
+
+		it('should use supportAllCounterLoans for support-all counter initialization when provided', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_SUPPORT_ALL,
+					target: 10,
+					loanTotalAtStart: 100,
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 103 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
+						},
+					},
+				});
+
+			await composable.loadGoalData({
+				supportAllCounterLoans: [{ id: 1 }, { id: 2 }, { id: 3 }],
+			});
+
+			const result = await composable.getPostCheckoutProgressByLoans({
+				loans: [{ id: 999 }],
+				increment: true,
+			});
+
+			expect(result.totalProgress).toBe(6);
+			expect(result.hasContributingLoans).toBe(true);
+		});
 	});
 
 	describe('goalProgress computed', () => {

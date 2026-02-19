@@ -9,7 +9,10 @@ import {
 	setPostLendingCardCookie,
 	checkPostLendingCardCookie,
 	POST_LENDING_NEXT_STEPS_COOKIE,
-	removePostLendingCardCookie
+	removePostLendingCardCookie,
+	getRecentTransactionLoans,
+	getTransactionTimestamp,
+	RECENT_TRANSACTION_WINDOW_MS
 } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -140,6 +143,121 @@ describe('myKivaUtils.js', () => {
 			await fetchPostCheckoutAchievements(apolloMock, loanIds);
 
 			expect(logReadQueryError).toHaveBeenCalledWith(error, 'myKivaUtils postCheckoutAchievementsQuery');
+		});
+	});
+
+	describe('getRecentTransactionLoans', () => {
+		const nowTimestamp = new Date('2026-02-01T12:00:00Z').getTime();
+		const windowStart = new Date(nowTimestamp - RECENT_TRANSACTION_WINDOW_MS).toISOString();
+
+		it('returns loans from transactions within the default 15-minute window', () => {
+			const transactions = [
+				{
+					effectiveTime: '2026-02-01T11:50:00Z',
+					loan: { id: 1 }
+				},
+				{
+					createTime: '2026-02-01T11:55:00Z',
+					loan: { id: 2 }
+				},
+				{
+					effectiveTime: new Date(new Date(windowStart).getTime() - 1).toISOString(),
+					loan: { id: 3 }
+				},
+				{
+					effectiveTime: '2026-02-01T12:05:00Z',
+					loan: { id: 4 }
+				}
+			];
+
+			const result = getRecentTransactionLoans(transactions, { nowTimestamp });
+
+			expect(result).toEqual([{ id: 1 }, { id: 2 }]);
+		});
+
+		it('falls back to createTime when effectiveTime is invalid', () => {
+			const transactions = [
+				{
+					effectiveTime: 'invalid',
+					createTime: '2026-02-01T11:53:00Z',
+					loan: { id: 5 }
+				},
+				{
+					effectiveTime: 'invalid',
+					createTime: 'invalid',
+					loan: { id: 6 }
+				}
+			];
+
+			const result = getRecentTransactionLoans(transactions, { nowTimestamp });
+
+			expect(result).toEqual([{ id: 5 }]);
+		});
+
+		it('returns empty array when loans are missing or transaction timestamps are out of range', () => {
+			const transactions = [
+				{
+					effectiveTime: '2026-02-01T11:58:00Z',
+					loan: { id: null }
+				},
+				{
+					effectiveTime: '2026-02-01T11:30:00Z',
+					loan: { id: 7 }
+				}
+			];
+
+			const result = getRecentTransactionLoans(transactions, { nowTimestamp });
+
+			expect(result).toEqual([]);
+		});
+
+		it('supports custom window sizes', () => {
+			const transactions = [
+				{
+					effectiveTime: '2026-02-01T11:56:00Z',
+					loan: { id: 8 }
+				},
+				{
+					effectiveTime: '2026-02-01T11:53:00Z',
+					loan: { id: 9 }
+				}
+			];
+
+			const result = getRecentTransactionLoans(transactions, {
+				nowTimestamp,
+				windowMs: 5 * 60 * 1000
+			});
+
+			expect(result).toEqual([{ id: 8 }]);
+		});
+	});
+
+	describe('getTransactionTimestamp', () => {
+		it('returns effectiveTime timestamp when valid', () => {
+			const transaction = {
+				effectiveTime: '2026-02-01T11:50:00Z',
+				createTime: '2026-02-01T11:55:00Z'
+			};
+
+			const result = getTransactionTimestamp(transaction);
+
+			expect(result).toBe(new Date(transaction.effectiveTime).getTime());
+		});
+
+		it('falls back to createTime when effectiveTime is invalid', () => {
+			const transaction = {
+				effectiveTime: 'invalid',
+				createTime: '2026-02-01T11:55:00Z'
+			};
+
+			const result = getTransactionTimestamp(transaction);
+
+			expect(result).toBe(new Date(transaction.createTime).getTime());
+		});
+
+		it('returns null when both timestamps are invalid or missing', () => {
+			expect(getTransactionTimestamp({ effectiveTime: 'invalid', createTime: 'invalid' })).toBeNull();
+			expect(getTransactionTimestamp({})).toBeNull();
 		});
 	});
 

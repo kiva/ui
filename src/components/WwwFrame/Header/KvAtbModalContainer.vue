@@ -179,7 +179,7 @@ const fetchPostCheckoutAchievements = async loanIds => {
 	const { id: addedLoanId, basketSize } = addedLoan.value;
 	let showAtbGoalMsg = false;
 	await loadGoalData({
-		loans: loansInBasket.value,
+		supportAllCounterLoans: loansInBasket.value,
 		yearlyProgress: true,
 	});
 	// Use yearly progress with current year

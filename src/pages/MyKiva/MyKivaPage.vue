@@ -26,7 +26,7 @@
 
 <script>
 import logReadQueryError from '#src/util/logReadQueryError';
-import { CONTENTFUL_CAROUSEL_KEY } from '#src/util/myKivaUtils';
+import { CONTENTFUL_CAROUSEL_KEY, getRecentTransactionLoans } from '#src/util/myKivaUtils';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
@@ -315,12 +315,13 @@ export default {
 			logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
 		}
 
-		// Load goal data with fresh progress from loans not yet in achievement service
+		// Load goal data with fresh progress from recent transaction loans
 		if (this.isNextStepsExpEnabled) {
+			const recentTransactionLoans = getRecentTransactionLoans(this.transactions);
 			await this.loadGoalData({
 				year: CURRENT_YEAR,
 				yearlyProgress: this.goalsV2Enabled,
-				loans: this.loans,
+				freshProgressLoans: recentTransactionLoans,
 				tieredAchievements: this.currentYearTieredAchievements,
 				transactions: this.transactions
 			});
