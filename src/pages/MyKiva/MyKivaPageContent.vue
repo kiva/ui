@@ -265,6 +265,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import BadgesSectionV2 from '#src/components/MyKiva/BadgesSectionV2';
+import { getRecentTransactionLoans } from '#src/util/myKivaUtils';
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -770,8 +771,9 @@ export default {
 
 		// Fetch achievement data first, then update with fresh progress adjustments
 		this.fetchAchievementData(this.apollo).then(() => {
-			// Update with fresh progress adjustments for loans not yet in achievement service
-			this.updateBadgeDataWithFreshProgress(this.loans, this.heroTieredAchievements);
+			// Update with fresh progress using loans from transactions in the last 15 minutes
+			const recentTransactionLoans = getRecentTransactionLoans(this.transactions);
+			this.updateBadgeDataWithFreshProgress(recentTransactionLoans, this.heroTieredAchievements);
 		});
 
 		this.fetchRecommendedLoans();

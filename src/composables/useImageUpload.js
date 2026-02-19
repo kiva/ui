@@ -2,6 +2,10 @@ import { ref } from 'vue';
 
 const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
 
+// Max upload size in MB; matches backend (media-service ImageProperties.maxSizeMb).
+export const MAX_IMAGE_SIZE_MB = 5;
+const MAX_IMAGE_SIZE_BYTES = MAX_IMAGE_SIZE_MB * 1024 * 1024;
+
 /**
  * Composable for uploading images to /img/upload. In local dev (e.g. app at kiva-ui.local), a relative
  * /img/upload would hit the UI server and return HTML. So we send the upload to the app host URL instead
@@ -33,6 +37,11 @@ export default function useImageUpload(kvAuth0, appHost = '') {
 				return null;
 			}
 
+			if (file.size > MAX_IMAGE_SIZE_BYTES) {
+				uploadError.value = `File is too large. Maximum size is ${MAX_IMAGE_SIZE_MB} MB.`;
+				return null;
+			}
+
 			const formData = new FormData();
 			formData.append('image', file);
 
@@ -57,6 +66,17 @@ export default function useImageUpload(kvAuth0, appHost = '') {
 
 			if (!response.ok) {
 				const errorText = await response.text();
+				if (response.status === 413) {
+					let message = `File is too large. Maximum size is ${MAX_IMAGE_SIZE_MB} MB.`;
+					try {
+						const body = JSON.parse(errorText);
+						if (body?.detail) message = body.detail;
+					} catch {
+						// use default message
+					}
+					uploadError.value = message;
+					return null;
+				}
 				throw new Error(errorText || `Upload failed (${response.status})`);
 			}
 

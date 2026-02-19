@@ -190,7 +190,7 @@ export default {
 			return this.isLoggedIn || (!this.isLoggedIn && !this.hasEverLoggedIn);
 		},
 		async loadAndCalculateGoalProgress() {
-			await this.loadGoalData({ loans: this.loans, yearlyProgress: this.goalsV2Enabled });
+			await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
 			// Calculate progress including basket loans (don't increment counter, just check current state)
 			const year = this.goalsV2Enabled ? new Date().getFullYear() : null;
 			const { totalProgress } = await this.getPostCheckoutProgressByLoans({
