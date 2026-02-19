@@ -124,7 +124,7 @@
 		"qrcode.vue": "^3.4.1",
 		"serialize-javascript": "^6.0.2",
 		"set-cookie-parser": "^2.4.6",
-		"store2": "^2.12.0",
+		"store2": "^2.14.4",
 		"timesync": "^1.0.8",
 		"title-case": "^4.3.2",
 		"uuid": "^8.3.0",
