@@ -20,6 +20,7 @@
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:show-my-giving-funds-card="showMyGivingFundsCard"
+			:next-steps-experiment-variant="nextStepsExperimentVariant"
 		/>
 	</www-page>
 </template>
@@ -44,6 +45,7 @@ import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
+const NEXT_STEPS_REDIRECT_EXP_KEY = 'mykiva_next_steps_redirect';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 const NEW_BADGE_SECTION_KEY = 'new_badge_section_enable';
 const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
@@ -94,6 +96,8 @@ export default {
 			latestLoan: null,
 			goalRefreshKey: 0,
 			showMyGivingFundsCard: false,
+			isLoggedIn: false,
+			nextStepsExperimentVariant: null,
 		};
 	},
 	computed: {
@@ -149,6 +153,7 @@ export default {
 					variables: { loanId: Number(loanId) }
 				}) : null;
 				this.userInfo = myKivaQueryResult.my ?? {};
+				this.isLoggedIn = !!this.userInfo?.id;
 				this.lender = myKivaQueryResult.my?.lender ?? null;
 				this.lender = {
 					...this.lender,
@@ -267,6 +272,19 @@ export default {
 			},
 			this.$kvTrackEvent,
 			'EXP-MP-1984-Sept2025',
+		);
+
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			NEXT_STEPS_REDIRECT_EXP_KEY,
+			version => {
+				this.nextStepsExperimentVariant = version;
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-2417-Feb2026',
+			'event-tracking'
 		);
 	},
 	async mounted() {
