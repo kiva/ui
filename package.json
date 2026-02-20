@@ -86,7 +86,7 @@
 		"date-fns": "^2.16.1",
 		"deepmerge": "^4.3.1",
 		"deepool": "^3.0.0",
-		"dompurify": "^2.3.9",
+		"dompurify": "^3.3.0",
 		"dotenv": "^8.1.0",
 		"embla-carousel": "^4.0.6",
 		"express": "^4.19.2",
