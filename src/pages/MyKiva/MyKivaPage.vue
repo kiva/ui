@@ -49,6 +49,7 @@ const NEXT_STEPS_REDIRECT_EXP_KEY = 'mykiva_next_steps_redirect';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 const NEW_BADGE_SECTION_KEY = 'new_badge_section_enable';
 const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
+const NEXT_STEPS_SEE_ALL_LINK_EXP_KEY = 'mykiva_next_steps_see_all_link';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -135,6 +136,10 @@ export default {
 				client.query({
 					query: experimentAssignmentQuery,
 					variables: { id: NEXT_STEPS_EXP_KEY },
+				}),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: NEXT_STEPS_SEE_ALL_LINK_EXP_KEY },
 				}),
 			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
