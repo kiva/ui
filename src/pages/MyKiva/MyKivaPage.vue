@@ -96,7 +96,6 @@ export default {
 			latestLoan: null,
 			goalRefreshKey: 0,
 			showMyGivingFundsCard: false,
-			isLoggedIn: false,
 			nextStepsExperimentVariant: null,
 		};
 	},
@@ -153,7 +152,6 @@ export default {
 					variables: { loanId: Number(loanId) }
 				}) : null;
 				this.userInfo = myKivaQueryResult.my ?? {};
-				this.isLoggedIn = !!this.userInfo?.id;
 				this.lender = myKivaQueryResult.my?.lender ?? null;
 				this.lender = {
 					...this.lender,
@@ -283,8 +281,7 @@ export default {
 				this.nextStepsExperimentVariant = version;
 			},
 			this.$kvTrackEvent,
-			'EXP-MP-2417-Feb2026',
-			'event-tracking'
+			'EXP-MP-2417-Feb2026'
 		);
 	},
 	async mounted() {
