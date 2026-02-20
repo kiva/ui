@@ -1,3 +1,33 @@
+## [3.56.0](https://github.com/kiva/ui/compare/v3.55.0...v3.56.0) (2026-02-19)
+
+### 🎉 New Features
+
+* add form validation to prevent submit if first or last name are empty ([bcad3f8](https://github.com/kiva/ui/commit/bcad3f8754c734f9a373515a44681c024b3ae312))
+* display image size restrictions for account settings form and show errors accordingly ([f1276fa](https://github.com/kiva/ui/commit/f1276fa9d0f1289cac3622488f7539c61301984f))
+
+### 🐛 Bugfixes
+
+* clicking donate redirects to basket instead of appropriate link ([015b4d8](https://github.com/kiva/ui/commit/015b4d8b1d6977c7a0e96d490e3f6fb93ad2714c))
+* mykiva progress issues related to transactions ([#6667](https://github.com/kiva/ui/issues/6667)) ([00211b6](https://github.com/kiva/ui/commit/00211b6339a9767ea9f759e0063aa855efa7eac8))
+* the loan because and about me fields have different corner radius ([2fe578c](https://github.com/kiva/ui/commit/2fe578ce8a6ebe83869c096f1bf0e93bbbed8c70))
+
+### 🧹 Chores
+
+* **release:** 3.56.0-rc.1 [skip ci] ([2cdcc32](https://github.com/kiva/ui/commit/2cdcc329d8b86890e19219663395171d86abcea1)), closes [#6667](https://github.com/kiva/ui/issues/6667)
+
+## [3.56.0-rc.1](https://github.com/kiva/ui/compare/v3.55.0...v3.56.0-rc.1) (2026-02-19)
+
+### 🎉 New Features
+
+* add form validation to prevent submit if first or last name are empty ([bcad3f8](https://github.com/kiva/ui/commit/bcad3f8754c734f9a373515a44681c024b3ae312))
+* display image size restrictions for account settings form and show errors accordingly ([f1276fa](https://github.com/kiva/ui/commit/f1276fa9d0f1289cac3622488f7539c61301984f))
+
+### 🐛 Bugfixes
+
+* clicking donate redirects to basket instead of appropriate link ([015b4d8](https://github.com/kiva/ui/commit/015b4d8b1d6977c7a0e96d490e3f6fb93ad2714c))
+* mykiva progress issues related to transactions ([#6667](https://github.com/kiva/ui/issues/6667)) ([00211b6](https://github.com/kiva/ui/commit/00211b6339a9767ea9f759e0063aa855efa7eac8))
+* the loan because and about me fields have different corner radius ([2fe578c](https://github.com/kiva/ui/commit/2fe578ce8a6ebe83869c096f1bf0e93bbbed8c70))
+
 ## [3.55.0](https://github.com/kiva/ui/compare/v3.54.0...v3.55.0) (2026-02-18)
 
 ### 🎉 New Features

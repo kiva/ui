@@ -1,13 +1,13 @@
 <template>
 	<div
 		class="tw-mb-2"
-		:class="{'next-steps-link': nextStepsSeeAllLinkExpEnabled}"
+		:class="{'next-steps-link': nextStepsExperimentVariant}"
 	>
 		<h3 class="tw-text-primary md:tw-mb-1">
 			Next steps recommended for you
 		</h3>
 		<div
-			v-if="nextStepsSeeAllLinkExpEnabled"
+			v-if="nextStepsExperimentVariant"
 			class="tw-flex md:tw-gap-1 tw-cursor-pointer tw-w-16 md:tw-w-fit tw-justify-end"
 			@click="$router.push('/mykiva/next-steps')"
 		>
@@ -162,7 +162,7 @@
 			class="carousel tw--mt-6"
 			user-in-homepage
 			in-lending-stats
-			:controls-top-right="!nextStepsSeeAllLinkExpEnabled"
+			controls-top-right
 			:goal-progress-loading="goalProgressLoading"
 			:goal-progress="goalProgress"
 			:hero-contentful-data="heroContentfulData"
@@ -299,9 +299,10 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
-		nextStepsSeeAllLinkExpEnabled: {
-			type: Boolean,
-			default: false
+		nextStepsExperimentVariant: {
+			type: String,
+			default: 'a',
+			validator: value => ['a', 'b'].includes(value)
 		},
 	},
 	data() {
@@ -352,6 +353,9 @@ export default {
 		categoriesLoanCount() {
 			const { getAllCategoryLoanCounts } = useBadgeData();
 			return getAllCategoryLoanCounts(this.heroTieredAchievements);
+		},
+		isNextStepsExperimentEnabled() {
+			return this.nextStepsExperimentVariant === 'b';
 		},
 	},
 	setup() {
@@ -525,6 +529,7 @@ export default {
 }
 
 .next-steps-link {
-	@apply tw-flex tw-items-end md:tw-items-center tw-justify-end md:tw-justify-between tw-mb-8 tw-gap-1;
+	@apply tw-flex tw-items-end md:tw-items-center tw-justify-end md:tw-justify-between
+		tw-mb-2 md:tw-mb-8 lg:tw-mb-2 tw-gap-1;
 }
 </style>

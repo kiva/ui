@@ -104,14 +104,25 @@ export const getMissingLoans = (loans, tieredAchievements) => {
 	tieredAchievements.forEach(achievement => {
 		const loanPurchases = achievement.loanPurchases || [];
 		loanPurchases.forEach(purchase => {
-			if (purchase?.loan?.id) {
+			if (purchase?.loan?.id != null) {
 				achievementServiceLoanIds.add(purchase.loan.id);
 			}
 		});
 	});
 
-	// Find carousel loans that are NOT in achievement service
-	return loans.filter(loan => loan?.id && !achievementServiceLoanIds.has(loan.id));
+	// Find carousel loans that are NOT in achievement service and de-dupe repeated loan IDs.
+	const processedLoanIds = new Set();
+	return loans.filter(loan => {
+		if (loan?.id == null) {
+			return false;
+		}
+
+		if (processedLoanIds.has(loan.id)) {
+			return false;
+		}
+		processedLoanIds.add(loan.id);
+		return !achievementServiceLoanIds.has(loan.id);
+	});
 };
 
 /**

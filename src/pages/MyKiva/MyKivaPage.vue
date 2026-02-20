@@ -20,14 +20,14 @@
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:show-my-giving-funds-card="showMyGivingFundsCard"
-			:next-steps-see-all-link-exp-enabled="nextStepsSeeAllLinkExpEnabled"
+			:next-steps-experiment-variant="nextStepsExperimentVariant"
 		/>
 	</www-page>
 </template>
 
 <script>
 import logReadQueryError from '#src/util/logReadQueryError';
-import { CONTENTFUL_CAROUSEL_KEY } from '#src/util/myKivaUtils';
+import { CONTENTFUL_CAROUSEL_KEY, getRecentTransactionLoans } from '#src/util/myKivaUtils';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
@@ -45,6 +45,7 @@ import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
+const NEXT_STEPS_REDIRECT_EXP_KEY = 'mykiva_next_steps_redirect';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 const NEW_BADGE_SECTION_KEY = 'new_badge_section_enable';
 const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
@@ -96,7 +97,7 @@ export default {
 			latestLoan: null,
 			goalRefreshKey: 0,
 			showMyGivingFundsCard: false,
-			nextStepsSeeAllLinkExpEnabled: false,
+			nextStepsExperimentVariant: null,
 		};
 	},
 	computed: {
@@ -276,17 +277,16 @@ export default {
 			'EXP-MP-1984-Sept2025',
 		);
 
-		// Next Steps See All Link experiment
 		initializeExperiment(
 			this.cookieStore,
 			this.apollo,
 			this.$route,
-			NEXT_STEPS_SEE_ALL_LINK_EXP_KEY,
+			NEXT_STEPS_REDIRECT_EXP_KEY,
 			version => {
-				this.nextStepsSeeAllLinkExpEnabled = version === 'b';
+				this.nextStepsExperimentVariant = version;
 			},
 			this.$kvTrackEvent,
-			'EXP-MP-2476-Feb2026',
+			'EXP-MP-2417-Feb2026'
 		);
 	},
 	async mounted() {
@@ -335,12 +335,13 @@ export default {
 			logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
 		}
 
-		// Load goal data with fresh progress from loans not yet in achievement service
+		// Load goal data with fresh progress from recent transaction loans
 		if (this.isNextStepsExpEnabled) {
+			const recentTransactionLoans = getRecentTransactionLoans(this.transactions);
 			await this.loadGoalData({
 				year: CURRENT_YEAR,
 				yearlyProgress: this.goalsV2Enabled,
-				loans: this.loans,
+				freshProgressLoans: recentTransactionLoans,
 				tieredAchievements: this.currentYearTieredAchievements,
 				transactions: this.transactions
 			});

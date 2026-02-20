@@ -9,6 +9,7 @@ import useGoalDataProgressQuery from '#src/graphql/query/useGoalDataProgress.gra
 import useGoalDataYearlyProgressQuery from '#src/graphql/query/useGoalDataYearlyProgress.graphql';
 import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import logFormatter from '#src/util/logFormatter';
+import { getTransactionTimestamp } from '#src/util/myKivaUtils';
 import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
 
 import useBadgeData, {
@@ -383,10 +384,10 @@ export default function useGoalData({ apollo } = {}) {
 		// Create a map of loan ID to transaction purchase year
 		const loanPurchaseYears = new Map();
 		transactions.forEach(txn => {
-			if (txn?.loan?.id && (txn.effectiveTime || txn.createTime)) {
-				const purchaseDate = txn.effectiveTime || txn.createTime;
-				const purchaseYear = new Date(purchaseDate).getFullYear();
-				loanPurchaseYears.set(txn.loan.id, { date: purchaseDate, year: purchaseYear });
+			const transactionTimestamp = getTransactionTimestamp(txn);
+			if (txn?.loan?.id != null && transactionTimestamp != null) {
+				const purchaseYear = new Date(transactionTimestamp).getFullYear();
+				loanPurchaseYears.set(txn.loan.id, { year: purchaseYear });
 			}
 		});
 
@@ -649,7 +650,8 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	async function loadGoalData({
-		loans = [], // Loans already in basket, used to initialize in-page counter for ID_SUPPORT_ALL
+		freshProgressLoans = [], // Loans used to reconcile missing achievement progress (e.g. recent transactions)
+		supportAllCounterLoans = [], // Loans used to initialize in-page support-all counter state
 		year = new Date().getFullYear(),
 		yearlyProgress = false, // thankyou_page_goals_enable flag - when true uses yearly, when false uses all-time
 		tieredAchievements = [], // Tiered achievements from achievement service to calculate fresh progress
@@ -661,9 +663,9 @@ export default function useGoalData({ apollo } = {}) {
 
 		// Calculate fresh progress adjustments if loans and achievements provided
 		let freshProgressAdjustments = { allTime: {}, yearSpecific: {} };
-		if (loans?.length && tieredAchievements?.length) {
+		if (freshProgressLoans?.length && tieredAchievements?.length) {
 			freshProgressAdjustments = calculateGoalFreshProgressAdjustments(
-				loans,
+				freshProgressLoans,
 				tieredAchievements,
 				year,
 				transactions
@@ -677,10 +679,15 @@ export default function useGoalData({ apollo } = {}) {
 			const stats = await getLoanStatsByYear(year, 'network-only');
 			yearlyLoanCount.value = stats?.count || 0;
 		}
-		// Initialize in-page counter for ID_SUPPORT_ALL based on loans already in basket
-		if (userGoal.value?.category === ID_SUPPORT_ALL && loans.length > 0 && !goalCurrentLoanCount.value) {
-			// Reducing counter by 1 because loans already has the added loan
-			goalCurrentLoanCount.value = loans.length - 1;
+		// ATB-only: initialize support-all in-page counter from current basket loans.
+		if (
+			userGoal.value?.category === ID_SUPPORT_ALL
+			&& supportAllCounterLoans.length > 0
+			&& !goalCurrentLoanCount.value
+		) {
+			// ATB flow calls getPostCheckoutProgressByLoans({ increment: true }) right after this
+			// Initialize to basketSize - 1 so that increment lands at basketSize (no +1 overcount)
+			goalCurrentLoanCount.value = supportAllCounterLoans.length - 1;
 		}
 		// Check and correct negative progress after loading
 		await correctNegativeProgress();

@@ -1752,6 +1752,24 @@ describe('useBadgeData.js', () => {
 			expect(result).toHaveLength(1);
 			expect(result[0].id).toBe(1);
 		});
+
+		it('should de-duplicate repeated loans by ID', () => {
+			const loans = [
+				{ id: 1, gender: 'female' },
+				{ id: 1, gender: 'female' },
+				{ id: 2, gender: 'female' }
+			];
+			const tieredAchievements = [{
+				id: 'womens-equality',
+				loanPurchases: []
+			}];
+
+			const result = getMissingLoans(loans, tieredAchievements);
+
+			expect(result).toHaveLength(2);
+			expect(result).toContainEqual({ id: 1, gender: 'female' });
+			expect(result).toContainEqual({ id: 2, gender: 'female' });
+		});
 	});
 
 	describe('calculateFreshProgressAdjustments', () => {
