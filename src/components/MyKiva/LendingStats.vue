@@ -1,8 +1,21 @@
 <template>
-	<div class="tw-mb-2">
+	<div class="tw-mb-2" :class="{'tw-flex tw-items-center tw-justify-between tw-mb-8': nextStepsSeeAllLinkExpEnabled}">
 		<h3 class="tw-text-primary tw-mb-1">
 			Next steps recommended for you
 		</h3>
+		<div
+			v-if="nextStepsSeeAllLinkExpEnabled"
+			class="tw-flex tw-gap-1 tw-cursor-pointer"
+			@click="$router.push('/mykiva/next-steps')"
+		>
+			<p class="tw-text-eco-green-3 tw-font-medium tw-cursor-pointer">
+				View all
+			</p>
+			<KvMaterialIcon
+				class="tw-w-3 tw-h-3 tw-text-eco-green-3 tw-align-middle"
+				:icon="mdiArrowRight"
+			/>
+		</div>
 	</div>
 	<div
 		ref="loanRegionsElement"
@@ -146,7 +159,7 @@
 			class="carousel tw--mt-6"
 			user-in-homepage
 			in-lending-stats
-			controls-top-right
+			:controls-top-right="!nextStepsSeeAllLinkExpEnabled"
 			:goal-progress-loading="goalProgressLoading"
 			:goal-progress="goalProgress"
 			:hero-contentful-data="heroContentfulData"
@@ -191,7 +204,7 @@
 <script>
 import { inject } from 'vue';
 import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
-import { mdiArrowTopRight } from '@mdi/js';
+import { mdiArrowTopRight, mdiArrowRight } from '@mdi/js';
 
 import useBadgeData from '#src/composables/useBadgeData';
 
@@ -283,9 +296,14 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
+		nextStepsSeeAllLinkExpEnabled: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
+			mdiArrowRight,
 			mdiArrowTopRight,
 			interval: null,
 			disconnectRegionWatcher: null,

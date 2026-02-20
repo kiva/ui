@@ -47,6 +47,7 @@
 				:latest-loan="latestLoan"
 				:goal-refresh-key="goalRefreshKey"
 				:user-info="userInfo"
+				:next-steps-see-all-link-exp-enabled="nextStepsSeeAllLinkExpEnabled"
 			/>
 		</section>
 		<section v-if="goalsV2Enabled" class="tw-mt-4" id="mykiva-achievements">
@@ -376,6 +377,10 @@ export default {
 			default: 0
 		},
 		showMyGivingFundsCard: {
+			type: Boolean,
+			default: false
+		},
+		nextStepsSeeAllLinkExpEnabled: {
 			type: Boolean,
 			default: false
 		}

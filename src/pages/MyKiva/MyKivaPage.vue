@@ -20,6 +20,7 @@
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:show-my-giving-funds-card="showMyGivingFundsCard"
+			:next-steps-see-all-link-exp-enabled="nextStepsSeeAllLinkExpEnabled"
 		/>
 	</www-page>
 </template>
@@ -47,6 +48,7 @@ const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 const NEW_BADGE_SECTION_KEY = 'new_badge_section_enable';
 const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
+const NEXT_STEPS_SEE_ALL_LINK_EXP_KEY = 'mykiva_next_steps_see_all_link';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -94,6 +96,7 @@ export default {
 			latestLoan: null,
 			goalRefreshKey: 0,
 			showMyGivingFundsCard: false,
+			nextStepsSeeAllLinkExpEnabled: false,
 		};
 	},
 	computed: {
@@ -132,6 +135,10 @@ export default {
 				client.query({
 					query: experimentAssignmentQuery,
 					variables: { id: NEXT_STEPS_EXP_KEY },
+				}),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: NEXT_STEPS_SEE_ALL_LINK_EXP_KEY },
 				}),
 			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
@@ -267,6 +274,19 @@ export default {
 			},
 			this.$kvTrackEvent,
 			'EXP-MP-1984-Sept2025',
+		);
+
+		// Next Steps See All Link experiment
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			NEXT_STEPS_SEE_ALL_LINK_EXP_KEY,
+			version => {
+				this.nextStepsSeeAllLinkExpEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-2476-Feb2026',
 		);
 	},
 	async mounted() {
