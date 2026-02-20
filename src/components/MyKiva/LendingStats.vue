@@ -1,11 +1,14 @@
 <template>
-	<div class="tw-mb-2" :class="{'tw-flex tw-items-center tw-justify-between tw-mb-8': nextStepsSeeAllLinkExpEnabled}">
-		<h3 class="tw-text-primary tw-mb-1">
+	<div
+		class="tw-mb-2"
+		:class="{'next-steps-link': nextStepsSeeAllLinkExpEnabled}"
+	>
+		<h3 class="tw-text-primary md:tw-mb-1">
 			Next steps recommended for you
 		</h3>
 		<div
 			v-if="nextStepsSeeAllLinkExpEnabled"
-			class="tw-flex tw-gap-1 tw-cursor-pointer"
+			class="tw-flex md:tw-gap-1 tw-cursor-pointer tw-w-16 md:tw-w-fit tw-justify-end"
 			@click="$router.push('/mykiva/next-steps')"
 		>
 			<p class="tw-text-eco-green-3 tw-font-medium tw-cursor-pointer">
@@ -519,5 +522,9 @@ export default {
 
 .carousel :deep(.kv-carousel__controls) {
 	@apply lg:tw-hidden;
+}
+
+.next-steps-link {
+	@apply tw-flex tw-items-end md:tw-items-center tw-justify-end md:tw-justify-between tw-mb-8 tw-gap-1;
 }
 </style>
