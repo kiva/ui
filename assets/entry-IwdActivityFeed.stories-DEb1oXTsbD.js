@@ -1,0 +1,27 @@
+import{A as f}from"./entry-ActivityCard-BZLKmFZBca.js";import{l as A}from"./entry-logReadQueryError-Codcl0QZ_g.js";import{c as d,J as h,I as w,r as y,o,z as _}from"./entry-vue.esm-bundler-C0PPCo9W96.js";import{_ as F}from"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";import{a as S}from"./entry-apollo-story-mixin-CB9BNmK9U5.js";import"./entry-ActivityAvatar-BJbInqdFEb.js";import"./iframe-Cc_r_Bkf.js";import"./entry-imageUtils-XCIqTGZvrk.js";import"./entry-KvLoadingPlaceholder-B_9_tltQhY.js";import"./entry-KvWwwHeader-C1bm1YMh4q.js";import"./entry-_commonjsHelpers-Cpj98o6Yn6.js";import"./entry-index-CWclSTHHJk.js";import"./entry-numeral-xVHG5DEP0A.js";import"./entry-logFormatter-DhjghUk5Me.js";const N=`query IwdActions {
+  lend {
+    campaignActions(
+        campaignKey: "iwd2024",
+        filters: { gender: female },
+		limit: 12,
+    ) {
+      totalCount
+      values {
+        lender {
+          id
+          name
+          image {
+			id
+            url
+          }
+        }
+        shareAmount
+      }
+    }
+  }
+}
+`,b={kind:"Document",definitions:[{kind:"OperationDefinition",operation:"query",name:{kind:"Name",value:"IwdActions"},variableDefinitions:[],directives:[],selectionSet:{kind:"SelectionSet",selections:[{kind:"Field",name:{kind:"Name",value:"lend"},arguments:[],directives:[],selectionSet:{kind:"SelectionSet",selections:[{kind:"Field",name:{kind:"Name",value:"campaignActions"},arguments:[{kind:"Argument",name:{kind:"Name",value:"campaignKey"},value:{kind:"StringValue",value:"iwd2024",block:!1}},{kind:"Argument",name:{kind:"Name",value:"filters"},value:{kind:"ObjectValue",fields:[{kind:"ObjectField",name:{kind:"Name",value:"gender"},value:{kind:"EnumValue",value:"female"}}]}},{kind:"Argument",name:{kind:"Name",value:"limit"},value:{kind:"IntValue",value:"12"}}],directives:[],selectionSet:{kind:"SelectionSet",selections:[{kind:"Field",name:{kind:"Name",value:"totalCount"},arguments:[],directives:[]},{kind:"Field",name:{kind:"Name",value:"values"},arguments:[],directives:[],selectionSet:{kind:"SelectionSet",selections:[{kind:"Field",name:{kind:"Name",value:"lender"},arguments:[],directives:[],selectionSet:{kind:"SelectionSet",selections:[{kind:"Field",name:{kind:"Name",value:"id"},arguments:[],directives:[]},{kind:"Field",name:{kind:"Name",value:"name"},arguments:[],directives:[]},{kind:"Field",name:{kind:"Name",value:"image"},arguments:[],directives:[],selectionSet:{kind:"SelectionSet",selections:[{kind:"Field",name:{kind:"Name",value:"id"},arguments:[],directives:[]},{kind:"Field",name:{kind:"Name",value:"url"},arguments:[],directives:[]}]}}]}},{kind:"Field",name:{kind:"Name",value:"shareAmount"},arguments:[],directives:[]}]}}]}}]}}]}}],loc:{start:0,end:356,source:{name:"GraphQL request",locationOffset:{line:1,column:1},body:N}}},u={name:"ActivityFeed",components:{ActivityCard:f},inject:["apollo"],data(){return{activities:[]}},methods:{async fetchActivities(){var n,e,i;try{const t=await this.apollo.query({query:b});this.activities=((i=(e=(n=t==null?void 0:t.data)==null?void 0:n.lend)==null?void 0:e.campaignActions)==null?void 0:i.values)??[]}catch(t){A(t,"ActivityFeed iwdActionsQuery")}}},computed:{aggregatedActivities(){const n=[];return this.activities.filter(e=>{var i;return![2716811,6160978,6160977,6175667,6175666].includes((i=e==null?void 0:e.lender)==null?void 0:i.id)}).forEach(e=>{const i=n.find(t=>{var a,s;return((a=t==null?void 0:t.lender)==null?void 0:a.id)===((s=e==null?void 0:e.lender)==null?void 0:s.id)});if(i){const t=parseFloat((i==null?void 0:i.shareAmount)??0),a=parseFloat((e==null?void 0:e.shareAmount)??0);i.shareAmount=t+a}else n.push({...e})}),n}},async mounted(){await this.fetchActivities()}},x={class:"tw-flex tw-gap-x-0.5 tw-overflow-x-auto tw-py-2 tw-px-1 hide-scrollbar"};function I(n,e,i,t,a,s){const v=y("activity-card");return o(),d("div",x,[(o(!0),d(h,null,w(s.aggregatedActivities,(g,k)=>(o(),_(v,{key:k,activity:g},null,8,["activity"]))),128))])}const p=F(u,[["render",I],["__scopeId","data-v-a34b9c2d"]]);u.__docgenInfo={displayName:"ActivityFeed",exportName:"default",description:"",tags:{},sourceFiles:["/home/runner/work/ui/ui/src/components/Iwd/ActivityFeed.vue"]};const j={data:{lend:{campaignActions:{values:[{lender:{id:723174,name:"TonyB",image:{url:"https://www-0.development.kiva.org/img/s100/6b1a24092be3aaa22216874e644a4acf.jpg"}},shareAmount:"25.00"},{lender:{id:723174,name:"Roger",image:{url:""}},shareAmount:"25.00"},{lender:{id:723174,name:"Anonymous",image:{url:"https://www-0.development.kiva.org/img/s100/6b1a24092be3aaa22216874e644a4acf.jpg"}},shareAmount:"25.00"},{lender:{id:723174,name:"Default user",image:{url:"https://www-0.development.kiva.org/img/s100/4d844ac2c0b77a8a522741b908ea5c32.jpg"}},shareAmount:"25.00"},{lender:{id:723174,name:"Jessica",image:{url:"https://www-0.development.kiva.org/img/s100/6b1a24092be3aaa22216874e644a4acf.jpg"}},shareAmount:"25.00"}]}}}},M={title:"IWD/ActivityFeed",component:p},q=n=>{const e=(i,{argTypes:t})=>({props:Object.keys(t),components:{ActivityFeed:p},mixins:[S({queryResult:j})],template:`
+            <div>
+                <activity-feed />
+            </div>
+        `});return e.args=n,e},r=q();var l,m,c;r.parameters={...r.parameters,docs:{...(l=r.parameters)==null?void 0:l.docs,source:{originalSource:"story()",...(c=(m=r.parameters)==null?void 0:m.docs)==null?void 0:c.source}}};const T=["Default"];export{r as Default,T as __namedExportsOrder,M as default};

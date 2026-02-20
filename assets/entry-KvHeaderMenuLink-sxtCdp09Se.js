@@ -1,0 +1,1 @@
+import{c as e,o as r,v as o}from"./entry-vue.esm-bundler-C0PPCo9W96.js";import{s as n}from"./entry-KvWwwHeader-C1bm1YMh4q.js";const s={},a={class:"tw-py-1.5 tw-cursor-pointer tw-no-underline hover:tw-underline tw-text-primary hover:tw-text-action"};function c(t,i){return r(),e("a",a,[o(t.$slots,"default")])}const m=n(s,[["render",c]]);export{m as _};

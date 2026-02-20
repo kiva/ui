@@ -1,0 +1,1 @@
+const n="womens-equality",i="us-economic-equality",o="climate-action",E="refugee-equality",a="basic-needs",r=[n,i,a,o,E];function u(s=[],t=""){return s.filter(e=>e.achievement===t).filter(e=>e.status!=="COMPLETABLE"&&e.status!=="ALREADY_COMPLETE")}export{r as d,u as m};

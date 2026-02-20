@@ -1,0 +1,1 @@
+const r={methods:{categoryRowArrowsVisible(){if(typeof window>"u"||typeof document>"u")return!0;const e=document.querySelector(".arrow.right-arrow");return e?window.getComputedStyle(e).display!=="none":!0}}};export{r as c};

@@ -1,0 +1,1 @@
+import{r as F}from"./entry-toNumber-MeiYJWOH0A.js";var o,u;function m(){if(u)return o;u=1;var e=F(),n=1/0,i=17976931348623157e292;function t(r){if(!r)return r===0?r:0;if(r=e(r),r===n||r===-1/0){var T=r<0?-1:1;return T*i}return r===r?r:0}return o=t,o}var f,I;function s(){if(I)return f;I=1;var e=m();function n(i){var t=e(i),r=t%1;return t===t?r?t-r:t:0}return f=n,f}export{s as r};
