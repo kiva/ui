@@ -160,6 +160,7 @@
 		<JourneyCardCarousel
 			v-else
 			class="carousel tw--mt-6"
+			:class="{'carousel-spacing': nextStepsExperimentVariant}"
 			user-in-homepage
 			in-lending-stats
 			controls-top-right
@@ -528,8 +529,12 @@ export default {
 	@apply lg:tw-hidden;
 }
 
+.carousel-spacing :deep(.kv-carousel) {
+	@apply tw-pt-0 md:tw-pt-6 lg:tw-pt-0;
+}
+
 .next-steps-link {
 	@apply tw-flex tw-items-end md:tw-items-center tw-justify-end md:tw-justify-between
-		tw-mb-2 md:tw-mb-8 lg:tw-mb-2 tw-gap-1;
+		tw-mb-8 tw-gap-1;
 }
 </style>
