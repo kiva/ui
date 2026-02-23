@@ -136,6 +136,10 @@ export default {
 					query: experimentAssignmentQuery,
 					variables: { id: NEXT_STEPS_EXP_KEY },
 				}),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: NEXT_STEPS_REDIRECT_EXP_KEY },
+				}),
 			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
 			});
