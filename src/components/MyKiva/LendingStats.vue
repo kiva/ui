@@ -1,13 +1,13 @@
 <template>
 	<div
 		class="tw-mb-2"
-		:class="{'next-steps-link': nextStepsExperimentVariant}"
+		:class="{'next-steps-link': isNextStepsExperimentEnabled}"
 	>
 		<h3 class="tw-text-primary md:tw-mb-1">
 			Next steps recommended for you
 		</h3>
 		<div
-			v-if="nextStepsExperimentVariant"
+			v-if="isNextStepsExperimentEnabled"
 			class="tw-flex md:tw-gap-1 tw-cursor-pointer tw-w-16 md:tw-w-fit tw-justify-end"
 			@click="$router.push('/mykiva/next-steps')"
 		>
@@ -160,7 +160,7 @@
 		<JourneyCardCarousel
 			v-else
 			class="carousel tw--mt-6"
-			:class="{'carousel-spacing': nextStepsExperimentVariant}"
+			:class="{'carousel-spacing': isNextStepsExperimentEnabled}"
 			user-in-homepage
 			in-lending-stats
 			controls-top-right
