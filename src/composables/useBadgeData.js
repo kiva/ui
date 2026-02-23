@@ -50,9 +50,53 @@ const COUNTRIES_ISO_CODE = ['PR', 'US'];
 const WOMENS_EQUALITY_FILTER = 'female';
 const REFUGEE_THEME = 'refugees/displaced';
 const BASIC_NEEDS_SECTORS = [6, 10, 20, 21];
-const BASIC_NEEDS_THEME = 'water and sanitation';
-const CLIMATE_ACTION_THEME = 'clean energy';
+const BASIC_NEEDS_THEMES = ['water and sanitation'];
+const CLIMATE_ACTION_THEMES = ['clean energy'];
 const CLIMATE_ACTION_TAGS = ['#eco-friendly', '#sustainable ag'];
+
+const normalizeValue = value => `${value ?? ''}`.trim().toLowerCase();
+const normalizeValues = values => (values ?? []).map(normalizeValue).filter(Boolean);
+const getLoanThemes = loan => normalizeValues(loan?.themes);
+const getLoanTags = loan => normalizeValues(loan?.tags);
+
+export const getTierCompletionLevel = achievement => {
+	const tiers = achievement?.tiers ?? [];
+	const totalProgress = achievement?.totalProgressToAchievement ?? 0;
+	if (!tiers.length) {
+		return undefined;
+	}
+
+	const completedLevelByDate = tiers.reduce((maxLevel, tier, index) => {
+		if (!tier?.completedDate) {
+			return maxLevel;
+		}
+
+		const tierLevel = Number(tier?.level) || index + 1;
+		return Math.max(maxLevel, tierLevel);
+	}, 0);
+
+	const completedLevelByProgress = tiers.reduce((maxLevel, tier, index) => {
+		const tierTarget = Number(tier?.target ?? 0);
+		if (!tierTarget || totalProgress < tierTarget) {
+			return maxLevel;
+		}
+
+		const tierLevel = Number(tier?.level) || index + 1;
+		return Math.max(maxLevel, tierLevel);
+	}, 0);
+
+	const completedLevel = Math.max(completedLevelByDate, completedLevelByProgress);
+	return completedLevel || undefined;
+};
+
+export const isTieredAchievementComplete = achievement => {
+	const tierCount = achievement?.tiers?.length ?? 0;
+	if (!tierCount) {
+		return false;
+	}
+
+	return (getTierCompletionLevel(achievement) ?? 0) >= tierCount;
+};
 
 /**
  * Get journeys by loan using defined search filters in vue-admin
@@ -62,26 +106,32 @@ const CLIMATE_ACTION_TAGS = ['#eco-friendly', '#sustainable ag'];
  */
 export const getJourneysByLoan = loan => {
 	const journeys = [];
+	const countryIsoCode = `${loan?.geocode?.country?.isoCode ?? ''}`.toUpperCase();
+	const loanThemes = getLoanThemes(loan);
 
-	if (COUNTRIES_ISO_CODE.includes(loan?.geocode?.country?.isoCode)) {
+	if (COUNTRIES_ISO_CODE.includes(countryIsoCode)) {
 		journeys.push(ID_US_ECONOMIC_EQUALITY);
 	}
 
-	if (loan?.gender === WOMENS_EQUALITY_FILTER) {
+	if (normalizeValue(loan?.gender) === WOMENS_EQUALITY_FILTER) {
 		journeys.push(ID_WOMENS_EQUALITY);
 	}
 
-	if (loan?.themes?.some(theme => theme?.toLowerCase() === REFUGEE_THEME)) {
+	if (loanThemes.includes(REFUGEE_THEME)) {
 		journeys.push(ID_REFUGEE_EQUALITY);
 	}
 
-	// eslint-disable-next-line max-len
-	if (BASIC_NEEDS_SECTORS.includes(loan?.sector?.id) || loan?.themes?.some(theme => theme?.toLowerCase() === BASIC_NEEDS_THEME)) {
+	if (
+		BASIC_NEEDS_SECTORS.includes(Number(loan?.sector?.id))
+		|| loanThemes.some(theme => BASIC_NEEDS_THEMES.includes(theme))
+	) {
 		journeys.push(ID_BASIC_NEEDS);
 	}
 
-	// eslint-disable-next-line max-len
-	if (loan?.tags?.some(tag => CLIMATE_ACTION_TAGS.includes(tag?.toLowerCase())) || loan?.themes?.some(theme => theme?.toLowerCase() === CLIMATE_ACTION_THEME)) {
+	if (
+		getLoanTags(loan).some(tag => CLIMATE_ACTION_TAGS.includes(tag))
+		|| loanThemes.some(theme => CLIMATE_ACTION_THEMES.includes(theme))
+	) {
 		journeys.push(ID_CLIMATE_ACTION);
 	}
 
@@ -253,9 +303,11 @@ export default function useBadgeData() {
 					contentfulData.sort((a, b) => a.level - b.level);
 
 					// Get specific properties used in the UI
-					const completedTiers = sortedTiers.filter(t => !!t.completedDate);
-					const hasStarted = completedTiers.length > 0 || achievementData?.totalProgressToAchievement > 0;
-					const level = hasStarted ? completedTiers?.[completedTiers.length - 1]?.level : undefined;
+					const level = getTierCompletionLevel({
+						...achievementData,
+						tiers: sortedTiers,
+					});
+					const hasStarted = (level ?? 0) > 0 || achievementData?.totalProgressToAchievement > 0;
 
 					// Clean up milestone progress date format
 					const { milestoneProgress } = achievementData;
@@ -740,13 +792,7 @@ export default function useBadgeData() {
 			return false;
 		}
 		const tieredBadges = badges.filter(badge => badge?.tiers?.length);
-		return tieredBadges.every(badge => {
-			const tiers = badge?.tiers;
-			if (tiers?.length) {
-				return tiers.every(tier => !!tier.completedDate);
-			}
-			return false;
-		});
+		return tieredBadges.every(isTieredAchievementComplete);
 	};
 
 	return {
@@ -765,6 +811,7 @@ export default function useBadgeData() {
 		getLastCompletedBadgeLevelData,
 		getLevelName,
 		getLoanFindingUrl,
+		getTierCompletionLevel,
 		getTierBadgeDataByLevel,
 		getTierBadgeHeadline,
 		ID_SUPPORT_ALL,
@@ -774,6 +821,7 @@ export default function useBadgeData() {
 		ID_US_ECONOMIC_EQUALITY,
 		ID_WOMENS_EQUALITY,
 		isBadgeKeyValid,
+		isTieredAchievementComplete,
 		getLevelCaption,
 		getAllCategoryLoanCounts,
 		allAchievementsCompleted,
