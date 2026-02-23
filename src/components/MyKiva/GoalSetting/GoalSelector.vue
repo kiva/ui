@@ -247,15 +247,17 @@ const loadLoansThisYear = async () => {
 };
 
 const titleText = computed(() => {
-	if (loansLastYear.value === 0 || loansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
-		if (props.selectedCategoryId === ID_SUPPORT_ALL) {
-			return 'How many loans will you make this year?';
-		}
-		// eslint-disable-next-line max-len
-		return `How many loans to <span class="tw-text-eco-green-3">${props.selectedCategoryName?.toLowerCase()}</span> will you make this year?`;
+	// Default title if no lending history and category is ID_WOMENS_EQUALITY
+	if (props.selectedCategoryId === ID_WOMENS_EQUALITY && loansLastYear.value === 0) {
+		return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
 	}
 
-	return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
+	// Support All is not a specific category, so use generic language
+	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
+		return 'How many loans will you make this year?';
+	}
+	// eslint-disable-next-line max-len
+	return `How many loans to <span class="tw-text-eco-green-3">${props.selectedCategoryName?.toLowerCase()}</span> will you make this year?`;
 });
 
 const subtitleText = computed(() => {
