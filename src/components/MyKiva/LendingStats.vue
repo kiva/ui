@@ -534,7 +534,6 @@ export default {
 }
 
 .next-steps-link {
-	@apply tw-flex tw-items-end md:tw-items-center tw-justify-end md:tw-justify-between
-		tw-mb-8 tw-gap-1;
+	@apply tw-flex tw-items-end md:tw-items-center tw-justify-between tw-mb-8 tw-gap-1;
 }
 </style>
