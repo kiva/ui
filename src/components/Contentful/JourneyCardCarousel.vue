@@ -180,6 +180,8 @@ const router = useRouter();
 const {
 	getContentfulLevelData,
 	combineBadgeData,
+	getActiveTierData,
+	isTieredAchievementComplete,
 } = useBadgeData(apollo);
 
 const { getCategoryLoansLastYear } = useGoalData();
@@ -356,16 +358,20 @@ const orderedSlides = computed(() => {
 		const achievementContent = badgesData.value.find(achievement => badgeKey === achievement.id);
 
 		if (achievementContent) {
-			// eslint-disable-next-line no-unsafe-optional-chaining
-			const lastTierIndex = achievementContent.achievementData?.tiers?.length - 1;
-			const lastTier = achievementContent.achievementData?.tiers[lastTierIndex];
 			// Hidden slide for completed journeys
-			if (lastTier?.completedDate) {
+			if (isTieredAchievementComplete(achievementContent.achievementData)) {
 				return;
 			}
 
-			const tier = achievementContent.achievementData?.tiers?.find(t => !t.completedDate);
-			const milestoneDiff = tier.target - achievementContent.achievementData.totalProgressToAchievement;
+			const tier = getActiveTierData(achievementContent);
+			if (!tier?.target) {
+				return;
+			}
+
+			const milestoneDiff = Math.max(
+				tier.target - (achievementContent.achievementData?.totalProgressToAchievement ?? 0),
+				0
+			);
 			const contentfulData = achievementContent.contentfulData.find(cData => cData.level === tier.level);
 
 			const slideData = props.slides.find(slide => {

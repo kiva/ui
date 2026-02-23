@@ -398,6 +398,7 @@ export default {
 			fetchAchievementData,
 			fetchContentfulData,
 			getLoanFindingUrl,
+			isTieredAchievementComplete,
 			updateBadgeDataWithFreshProgress,
 		} = useBadgeData();
 
@@ -406,6 +407,7 @@ export default {
 			fetchAchievementData,
 			fetchContentfulData,
 			getLoanFindingUrl,
+			isTieredAchievementComplete,
 			updateBadgeDataWithFreshProgress,
 			getMostRecentBlogPost,
 			isMobile
@@ -469,7 +471,7 @@ export default {
 
 		allBadgesCompleted() {
 			const tieredBadges = this.badgeData?.filter(b => defaultBadges.includes(b?.id));
-			return tieredBadges?.every(b => !b.achievementData?.tiers?.find(t => !t?.completedDate));
+			return tieredBadges?.every(b => this.isTieredAchievementComplete(b.achievementData));
 		},
 		recommendedLoansTitle() {
 			return this.loans.length < 1

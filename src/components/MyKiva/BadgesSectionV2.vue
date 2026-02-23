@@ -93,7 +93,10 @@ const userHasGoal = computed(() => !!userGoal.value && Object.keys(userGoal.valu
 const formattedBadgeData = badges => {
 	return badges.map(badge => {
 		const activeTierData = getActiveTierData(badge);
-		const nextAchievementAt = activeTierData.target - (badge?.achievementData?.totalProgressToAchievement ?? 0);
+		const nextAchievementAt = Math.max(
+			(activeTierData?.target ?? 0) - (badge?.achievementData?.totalProgressToAchievement ?? 0),
+			0
+		);
 
 		return {
 			...badge,
