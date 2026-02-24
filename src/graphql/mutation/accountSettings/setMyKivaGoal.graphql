@@ -1,0 +1,11 @@
+mutation SetMyKivaGoal($category: String!, $target: Int!, $dateStarted: String!, $status: String!) {
+	my {
+		setMyKivaGoal(category: $category, target: $target, dateStarted: $dateStarted, status: $status) {
+			category
+			dateStarted
+			goalName
+			status
+			target
+		}
+	}
+}

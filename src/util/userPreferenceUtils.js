@@ -1,4 +1,5 @@
 import { gql } from 'graphql-tag';
+import setMyKivaGoalMutation from '#src/graphql/mutation/accountSettings/setMyKivaGoal.graphql';
 import logReadQueryError from './logReadQueryError';
 
 export const createUserPreferencesMutation = gql`
@@ -68,5 +69,34 @@ export const updateUserPreferences = async (apollo, userPreferences, parsedPrefe
 		});
 	} catch (e) {
 		logReadQueryError(e, 'userPreferenceUtils updateUserPreferencesMutation');
+	}
+};
+
+/**
+ * Upserts a My Kiva goal using the setMyKivaGoal mutation
+ *
+ * @param apollo The current Apollo client
+ * @param {Object} goalData The goal data to upsert
+ * @param {string} goalData.category The goal category
+ * @param {number} goalData.target The target number of loans
+ * @param {string} goalData.dateStarted The date the goal was started (ISO-8601)
+ * @param {string} goalData.status The goal status
+ * @returns The result of the mutation
+ */
+export const upsertMyKivaGoal = async (apollo, {
+	category, target, dateStarted, status
+}) => {
+	try {
+		return await apollo.mutate({
+			mutation: setMyKivaGoalMutation,
+			variables: {
+				category,
+				target,
+				dateStarted,
+				status,
+			},
+		});
+	} catch (e) {
+		logReadQueryError(e, 'userPreferenceUtils setMyKivaGoalMutation');
 	}
 };
