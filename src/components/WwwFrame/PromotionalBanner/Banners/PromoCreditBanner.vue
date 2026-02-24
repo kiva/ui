@@ -92,7 +92,7 @@
 		>
 			<div>
 				<!-- eslint-disable-next-line max-len -->
-				<p :class="{'tw-text-h3': !isScrolled, 'tw-text-h4': isScrolled}">Your {{ $filters.numeral(effectiveBonusBalance, '$0') }} in lending credits will be applied at checkout!</p>
+				<p :class="{'tw-text-h3': !isScrolled, 'tw-text-h5': isScrolled}">Your {{ $filters.numeral(effectiveBonusBalance, '$0') }} in lending credits will be applied at checkout!</p>
 			</div>
 		</a>
 		<router-link
