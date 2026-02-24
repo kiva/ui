@@ -90,14 +90,10 @@
 			data-testid="free-credit-banner"
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
 		>
-			<div v-if="!isScrolled">
+			<div>
 				<!-- eslint-disable-next-line max-len -->
-				<h3>Your {{ $filters.numeral(effectiveBonusBalance, '$0') }} in lending credits will be applied at checkout!</h3>
-				<h4>While funds last</h4>
+				<p :class="{'tw-text-h3': !isScrolled, 'tw-text-h4': isScrolled}">Your {{ $filters.numeral(effectiveBonusBalance, '$0') }} in lending credits will be applied at checkout!</p>
 			</div>
-			<span v-else class="tw-text-h5">
-				Your {{ $filters.numeral(effectiveBonusBalance, '$0') }} in lending credits will be applied at checkout!
-			</span>
 		</a>
 		<router-link
 			v-if="managedAccountPageId"
