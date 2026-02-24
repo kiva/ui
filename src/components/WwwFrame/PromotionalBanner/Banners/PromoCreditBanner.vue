@@ -91,11 +91,12 @@
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
 		>
 			<div v-if="!isScrolled">
-				<h3>You've got {{ $filters.numeral(effectiveBonusBalance, '$0') }} to lend!</h3>
+				<!-- eslint-disable-next-line max-len -->
+				<h3>Your {{ $filters.numeral(effectiveBonusBalance, '$0') }} in lending credits will be applied at checkout!</h3>
 				<h4>While funds last</h4>
 			</div>
-			<span v-else class="tw-underline tw-text-h5">
-				Use your {{ $filters.numeral(effectiveBonusBalance, '$0') }} gift today while funds last!
+			<span v-else class="tw-text-h5">
+				Your {{ $filters.numeral(effectiveBonusBalance, '$0') }} in lending credits will be applied at checkout!
 			</span>
 		</a>
 		<router-link
