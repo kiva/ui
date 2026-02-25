@@ -7,7 +7,7 @@
 			Take the <u>next step</u> on your impact journey
 		</h2>
 		<KvCarousel
-			:key="orderedSlides.length"
+			:key="cardOrderingSystem.length"
 			:embla-options="{
 				loop: false,
 				align: 'start',
@@ -22,7 +22,7 @@
 			@change="handleChange"
 		>
 			<template
-				v-for="(slide, index) in orderedSlides"
+				v-for="(slide, index) in cardOrderingSystem"
 				#[`slide${index}`]
 				:key="index"
 			>
@@ -277,6 +277,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
+	useUniversalOrder: {
+		type: Boolean,
+		default: false
+	}
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
@@ -339,10 +343,43 @@ const shouldShowGoalCard = computed(() => {
 	&& !props.hideGoalCard;
 });
 
-const orderedSlides = computed(() => {
+const buildAchievementSlides = (includeMilestoneDiff = false) => {
 	const achievementSlides = [];
+	defaultBadges.forEach(badgeKey => {
+		const achievementContent = badgesData.value.find(achievement => badgeKey === achievement.id);
+		if (!achievementContent) return;
+		if (isTieredAchievementComplete(achievementContent.achievementData)) return;
+
+		const tier = getActiveTierData(achievementContent);
+		if (!tier?.target) return;
+
+		const contentfulData = achievementContent.contentfulData.find(cData => cData.level === tier.level);
+		const slideData = props.slides.find(slide => {
+			return getRichTextUiSettingsData(slide)?.achievementKey === badgeKey;
+		});
+
+		if (slideData) {
+			achievementSlides.push({
+				...slideData,
+				...(includeMilestoneDiff && {
+					milestoneDiff: Math.max(
+						tier.target - (achievementContent.achievementData?.totalProgressToAchievement ?? 0),
+						0
+					),
+				}),
+				target: tier.target,
+				totalProgressToAchievement: achievementContent.achievementData?.totalProgressToAchievement,
+				badgeImgUrl: contentfulData?.imageUrl,
+				badgeKey,
+			});
+		}
+	});
+	return achievementSlides;
+};
+
+const dynamicOrderedSlides = computed(() => {
+	const achievementSlides = buildAchievementSlides(true);
 	let loanJourneys = [];
-	let sortedSlides = [];
 
 	const transactionLoans = props.userInfo?.transactions?.values?.filter(t => {
 		const diffInDays = differenceInDays(new Date(), parseISO(t.createTime));
@@ -354,45 +391,7 @@ const orderedSlides = computed(() => {
 		loanJourneys = getJourneysByLoan(transactionLoan);
 	}
 
-	defaultBadges.forEach(badgeKey => {
-		const achievementContent = badgesData.value.find(achievement => badgeKey === achievement.id);
-
-		if (achievementContent) {
-			// Hidden slide for completed journeys
-			if (isTieredAchievementComplete(achievementContent.achievementData)) {
-				return;
-			}
-
-			const tier = getActiveTierData(achievementContent);
-			if (!tier?.target) {
-				return;
-			}
-
-			const milestoneDiff = Math.max(
-				tier.target - (achievementContent.achievementData?.totalProgressToAchievement ?? 0),
-				0
-			);
-			const contentfulData = achievementContent.contentfulData.find(cData => cData.level === tier.level);
-
-			const slideData = props.slides.find(slide => {
-				const richTextSlideData = getRichTextUiSettingsData(slide);
-				return richTextSlideData?.achievementKey === badgeKey;
-			});
-
-			if (slideData) {
-				achievementSlides.push({
-					...slideData,
-					milestoneDiff,
-					target: tier.target,
-					totalProgressToAchievement: achievementContent.achievementData?.totalProgressToAchievement,
-					badgeImgUrl: contentfulData?.imageUrl,
-					badgeKey,
-				});
-			}
-		}
-	});
-
-	sortedSlides = achievementSlides.sort((a, b) => {
+	let sortedSlides = achievementSlides.sort((a, b) => {
 		return a.milestoneDiff - b.milestoneDiff;
 	});
 
@@ -444,6 +443,47 @@ const orderedSlides = computed(() => {
 	}
 
 	return sortedSlides;
+});
+
+const universalOrderedSlides = computed(() => {
+	const achievementSlides = buildAchievementSlides();
+	const universalSequence = [];
+
+	// Goal card
+	if (shouldShowGoalCard.value) {
+		universalSequence.push({});
+	}
+
+	// Achievement cards
+	universalSequence.push(...achievementSlides.slice(0, 2));
+
+	// Email marketing card
+	if (shouldShowEmailMarketingCard.value) {
+		universalSequence.push({ isEmailUpdates: true });
+	} else if (showLatestLoan.value) {
+		universalSequence.push({ isLatestLoan: true });
+	}
+
+	// Latest loan card
+	if (shouldShowEmailMarketingCard.value && showLatestLoan.value) {
+		universalSequence.push({ isLatestLoan: true });
+	}
+
+	// Survey card
+	if (showSurveyCard.value) {
+		universalSequence.push({ isSurveyCard: true });
+	}
+	// TODO: Add impact activity cards (education, invite a friend, etc)
+
+	if (props.slidesNumber) {
+		return universalSequence.slice(0, props.slidesNumber);
+	}
+
+	return universalSequence;
+});
+
+const cardOrderingSystem = computed(() => {
+	return props.useUniversalOrder ? universalOrderedSlides.value : dynamicOrderedSlides.value;
 });
 
 const getMediaImgUrl = media => {
