@@ -257,8 +257,7 @@ const titleText = computed(() => {
 		return 'How many loans will you make this year?';
 	}
 	if (props.selectedCategoryId === ID_US_ECONOMIC_EQUALITY) {
-		// eslint-disable-next-line max-len
-		return `How many loans to <span class="tw-text-eco-green-3">${props.selectedCategoryName}</span> will you make this year?`;
+		return 'How many loans to <span class="tw-text-eco-green-3">U.S. entrepreneurs</span> will you make this year?';
 	}
 	// eslint-disable-next-line max-len
 	return `How many loans to <span class="tw-text-eco-green-3">${props.selectedCategoryName?.toLowerCase()}</span> will you make this year?`;
