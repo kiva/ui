@@ -1,8 +1,24 @@
 <template>
-	<div class="tw-mb-2">
-		<h3 class="tw-text-primary tw-mb-1">
+	<div
+		class="tw-mb-2"
+		:class="{'next-steps-link': nextStepsExperimentVariant}"
+	>
+		<h3 class="tw-text-primary md:tw-mb-1">
 			Next steps recommended for you
 		</h3>
+		<div
+			v-if="nextStepsExperimentVariant"
+			class="tw-flex md:tw-gap-1 tw-cursor-pointer tw-w-16 md:tw-w-fit tw-justify-end"
+			@click="$router.push('/mykiva/next-steps')"
+		>
+			<p class="tw-text-eco-green-3 tw-font-medium tw-cursor-pointer">
+				View all
+			</p>
+			<KvMaterialIcon
+				class="tw-w-3 tw-h-3 tw-text-eco-green-3 tw-align-middle"
+				:icon="mdiArrowRight"
+			/>
+		</div>
 	</div>
 	<div
 		ref="loanRegionsElement"
@@ -144,6 +160,7 @@
 		<JourneyCardCarousel
 			v-else
 			class="carousel tw--mt-6"
+			:class="{'carousel-spacing': nextStepsExperimentVariant}"
 			user-in-homepage
 			in-lending-stats
 			controls-top-right
@@ -191,7 +208,7 @@
 <script>
 import { inject } from 'vue';
 import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
-import { mdiArrowTopRight } from '@mdi/js';
+import { mdiArrowTopRight, mdiArrowRight } from '@mdi/js';
 
 import useBadgeData from '#src/composables/useBadgeData';
 
@@ -283,9 +300,15 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
+		nextStepsExperimentVariant: {
+			type: String,
+			default: 'a',
+			validator: value => ['a', 'b'].includes(value)
+		},
 	},
 	data() {
 		return {
+			mdiArrowRight,
 			mdiArrowTopRight,
 			interval: null,
 			disconnectRegionWatcher: null,
@@ -331,6 +354,9 @@ export default {
 		categoriesLoanCount() {
 			const { getAllCategoryLoanCounts } = useBadgeData();
 			return getAllCategoryLoanCounts(this.heroTieredAchievements);
+		},
+		isNextStepsExperimentEnabled() {
+			return this.nextStepsExperimentVariant === 'b';
 		},
 	},
 	setup() {
@@ -501,5 +527,13 @@ export default {
 
 .carousel :deep(.kv-carousel__controls) {
 	@apply lg:tw-hidden;
+}
+
+.carousel-spacing :deep(.kv-carousel) {
+	@apply tw-pt-0 md:tw-pt-6 lg:tw-pt-0;
+}
+
+.next-steps-link {
+	@apply tw-flex tw-items-end md:tw-items-center tw-justify-between tw-mb-8 tw-gap-1;
 }
 </style>

@@ -47,6 +47,7 @@
 				:latest-loan="latestLoan"
 				:goal-refresh-key="goalRefreshKey"
 				:user-info="userInfo"
+				:next-steps-experiment-variant="nextStepsExperimentVariant"
 			/>
 		</section>
 		<section v-if="goalsV2Enabled" class="tw-mt-4" id="mykiva-achievements">
@@ -379,7 +380,12 @@ export default {
 		showMyGivingFundsCard: {
 			type: Boolean,
 			default: false
-		}
+		},
+		nextStepsExperimentVariant: {
+			type: String,
+			default: 'a',
+			validator: value => ['a', 'b'].includes(value)
+		},
 	},
 	setup() {
 		const apollo = inject('apollo');
@@ -392,6 +398,7 @@ export default {
 			fetchAchievementData,
 			fetchContentfulData,
 			getLoanFindingUrl,
+			isTieredAchievementComplete,
 			updateBadgeDataWithFreshProgress,
 		} = useBadgeData();
 
@@ -400,6 +407,7 @@ export default {
 			fetchAchievementData,
 			fetchContentfulData,
 			getLoanFindingUrl,
+			isTieredAchievementComplete,
 			updateBadgeDataWithFreshProgress,
 			getMostRecentBlogPost,
 			isMobile
@@ -463,7 +471,7 @@ export default {
 
 		allBadgesCompleted() {
 			const tieredBadges = this.badgeData?.filter(b => defaultBadges.includes(b?.id));
-			return tieredBadges?.every(b => !b.achievementData?.tiers?.find(t => !t?.completedDate));
+			return tieredBadges?.every(b => this.isTieredAchievementComplete(b.achievementData));
 		},
 		recommendedLoansTitle() {
 			return this.loans.length < 1

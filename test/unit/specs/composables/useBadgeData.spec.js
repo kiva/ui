@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import useBadgeData, {
 	calculateFreshProgressAdjustments,
+	getTierCompletionLevel,
 	getMissingLoans,
 	getJourneysByLoan,
 	ID_WOMENS_EQUALITY,
@@ -15,6 +16,7 @@ import useBadgeData, {
 	ID_CLIMATE,
 	ID_ROAD_3BB,
 	ID_2BB,
+	isTieredAchievementComplete,
 	FILTERS,
 	CATEGORIES,
 } from '#src/composables/useBadgeData';
@@ -100,6 +102,36 @@ describe('useBadgeData.js', () => {
 				completedDate: '2024-10-22T18:49:21Z',
 				learnMoreURL: ''
 			});
+		});
+	});
+
+	describe('tier completion reconciliation', () => {
+		it('should resolve tier completion level from progress when completed dates are stale', () => {
+			const achievement = {
+				totalProgressToAchievement: 6,
+				tiers: [
+					{ target: 2, completedDate: null, level: 1 },
+					{ target: 5, completedDate: null, level: 2 },
+					{ target: 10, completedDate: null, level: 3 }
+				]
+			};
+
+			expect(getTierCompletionLevel(achievement)).toBe(2);
+			expect(isTieredAchievementComplete(achievement)).toBe(false);
+		});
+
+		it('should mark tiered achievement complete when total progress reaches final target', () => {
+			const achievement = {
+				totalProgressToAchievement: 10,
+				tiers: [
+					{ target: 2, completedDate: null, level: 1 },
+					{ target: 5, completedDate: null, level: 2 },
+					{ target: 10, completedDate: null, level: 3 }
+				]
+			};
+
+			expect(getTierCompletionLevel(achievement)).toBe(3);
+			expect(isTieredAchievementComplete(achievement)).toBe(true);
 		});
 	});
 
@@ -796,12 +828,23 @@ describe('useBadgeData.js', () => {
 			expect(getJourneysByLoan(loan)).toEqual([ID_CLIMATE_ACTION]);
 
 			const loan2 = {
+				id: 2,
+				tags: [
+					'#Sustainable Ag'
+				]
+			};
+			expect(getJourneysByLoan(loan2)).toEqual([ID_CLIMATE_ACTION]);
+		});
+
+		it('should match climate-action with theme-only fallback', () => {
+			const loan = {
 				id: 1,
 				themes: [
 					'Clean Energy'
 				]
 			};
-			expect(getJourneysByLoan(loan2)).toEqual([ID_CLIMATE_ACTION]);
+
+			expect(getJourneysByLoan(loan)).toEqual([ID_CLIMATE_ACTION]);
 		});
 
 		it('should return expected journey for womens-equality loan', () => {
@@ -840,14 +883,16 @@ describe('useBadgeData.js', () => {
 				}
 			};
 			expect(getJourneysByLoan(loan2)).toEqual([ID_BASIC_NEEDS]);
+		});
 
-			const loan3 = {
+		it('should match basic-needs with theme-only fallback', () => {
+			const loan = {
 				id: 3,
 				themes: [
 					'Water and Sanitation'
 				]
 			};
-			expect(getJourneysByLoan(loan3)).toEqual([ID_BASIC_NEEDS]);
+			expect(getJourneysByLoan(loan)).toEqual([ID_BASIC_NEEDS]);
 		});
 
 		it('should return an empty array when no match a filter', () => {
@@ -1949,6 +1994,53 @@ describe('useBadgeData.js', () => {
 
 			const equityAchievement = badgeAchievementData.value.find(a => a.id === 'equity');
 			expect(equityAchievement.totalProgressToAchievement).toBeUndefined();
+		});
+
+		it('should advance display tier when fresh progress crosses a tier target', () => {
+			const {
+				updateBadgeDataWithFreshProgress,
+				badgeAchievementData,
+				combineBadgeData,
+				getActiveTierData,
+			} = useBadgeData();
+
+			badgeAchievementData.value = [
+				{
+					id: ID_WOMENS_EQUALITY,
+					description: 'Women challenge',
+					totalProgressToAchievement: 4,
+					tiers: [
+						{ target: 5, completedDate: null, learnMoreURL: '' },
+						{ target: 10, completedDate: null, learnMoreURL: '' }
+					]
+				}
+			];
+
+			const loans = [{ id: 1, gender: 'female' }];
+			const tieredAchievements = [{
+				id: ID_WOMENS_EQUALITY,
+				loanPurchases: []
+			}];
+
+			updateBadgeDataWithFreshProgress(loans, tieredAchievements);
+
+			const combinedBadgeData = combineBadgeData(badgeAchievementData.value, [
+				{
+					id: ID_WOMENS_EQUALITY,
+					level: 1,
+					challengeName: 'Women',
+					levelName: '1',
+				},
+				{
+					id: ID_WOMENS_EQUALITY,
+					level: 2,
+					challengeName: 'Women',
+					levelName: '2',
+				},
+			]);
+
+			expect(combinedBadgeData[0].level).toBe(1);
+			expect(getActiveTierData(combinedBadgeData[0]).target).toBe(10);
 		});
 	});
 });
