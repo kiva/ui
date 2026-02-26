@@ -1147,6 +1147,68 @@ describe('useGoalData', () => {
 		});
 	});
 
+	describe('removeGoalFromPreferences', () => {
+		it('should remove goal from preferences and update local state', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+
+			const mockPrefs = {
+				goals: [
+					{
+						goalName: 'goal-to-remove',
+						category: ID_WOMENS_EQUALITY,
+						target: 5,
+						status: GOAL_STATUS.IN_PROGRESS,
+						dateStarted: '2026-01-01',
+					},
+					{
+						goalName: 'goal-to-keep',
+						category: ID_BASIC_NEEDS,
+						target: 10,
+						status: GOAL_STATUS.EXPIRED,
+						dateStarted: '2025-01-02',
+					},
+				],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: '1',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			// Initial goal should be the first goal in preferences
+			expect(composable.userGoal.value.goalName).toBe('goal-to-remove');
+
+			await composable.removeGoalFromPreferences(mockPrefs.goals[0]);
+
+			expect(updateUserPreferences).toHaveBeenCalledWith(
+				mockApollo,
+				expect.objectContaining({ id: '1' }),
+				mockPrefs,
+				{ goals: [mockPrefs.goals[1]] }
+			);
+			// After removal, local userGoal state should reflect remaining goal
+			// Since there is no user goal, goal name should be undefined
+			expect(composable.userGoal.value.goalName).toBe(undefined);
+		});
+	});
+
 	describe('checkCompletedGoal', () => {
 		it('should mark goal as completed and track event', async () => {
 			const currentYear = new Date().getFullYear();
