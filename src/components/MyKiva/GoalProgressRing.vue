@@ -7,6 +7,18 @@
 			<p v-else class="tw-font-medium" :class="titleClass">
 				{{ titleText }}
 			</p>
+
+			<button
+				class="tw-flex tw-gap-0.5 tw-items-center tw-text-h5 hover:tw-underline tw-text-action"
+				v-if="!isModalVariant"
+				@click="handleEditGoal"
+			>
+				Edit
+				<KvMaterialIcon
+					:icon="mdiPencilOutline"
+					class="tw-text-action tw-w-1.5 tw-h-1.5"
+				/>
+			</button>
 		</div>
 
 		<div
@@ -70,7 +82,8 @@
 
 <script setup>
 import { computed } from 'vue';
-import { KvButton, KvProgressCircle } from '@kiva/kv-components';
+import { mdiPencilOutline } from '@mdi/js';
+import { KvButton, KvProgressCircle, KvMaterialIcon } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import {
 	ID_SUPPORT_ALL,
@@ -135,7 +148,7 @@ const props = defineProps({
 	},
 });
 
-const emit = defineEmits(['button-click']);
+const emit = defineEmits(['button-click', 'edit-button-click']);
 
 const yearToDate = new Date().getFullYear();
 
@@ -186,7 +199,7 @@ const containerClass = computed(() => {
 });
 
 const titleContainerClass = computed(() => {
-	return isModalVariant.value ? 'tw-text-center' : 'tw-text-left';
+	return isModalVariant.value ? 'tw-text-center' : 'tw-text-left tw-flex tw-justify-between tw-items-center';
 });
 
 const titleClass = computed(() => {
@@ -235,6 +248,10 @@ const buttonText = computed(() => {
 
 const handleButtonClick = () => {
 	emit('button-click');
+};
+
+const handleEditGoal = () => {
+	emit('edit-button-click');
 };
 </script>
 
