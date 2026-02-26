@@ -47,6 +47,7 @@
 					:post-lending-next-steps-enable="postLendingNextStepsEnable"
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+					:use-universal-order="useUniversalOrder"
 					@open-goal-modal="showGoalModal = true"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
@@ -181,6 +182,7 @@
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+			:use-universal-order="useUniversalOrder"
 			@open-goal-modal="showGoalModal = true"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
 		/>
@@ -319,6 +321,7 @@ export default {
 			recordedGoalSet: false,
 			newGoalPrefs: null,
 			showPostLendingNextStepsCards: false,
+			useUniversalOrder: false,
 		};
 	},
 	computed: {
