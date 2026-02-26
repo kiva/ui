@@ -1,15 +1,27 @@
 <template>
 	<div class="tw-min-h-screen lg:tw-min-h-full md:tw-mt-5 tw-mt-2">
-		<button
-			class="tw-flex tw-gap-1 tw-items-center tw-font-medium tw-mb-4"
-			@click="goToDashboard"
+		<div
+			class="tw-flex tw-items-center tw-justify-between tw-mb-4"
+			:class="{'!tw-justify-end': userIsEditingGoal}"
 		>
-			<KvMaterialIcon
-				:icon="mdiChevronLeft"
-				class="tw-ml-0.5"
+			<button
+				v-if="!userIsEditingGoal"
+				class="tw-flex tw-gap-1 tw-items-center tw-font-medium"
+				@click="goToDashboard"
+			>
+				<KvMaterialIcon
+					:icon="mdiChevronLeft"
+					class="tw-ml-0.5"
+				/>
+				To dashboard
+			</button>
+			<ThreeDotMenu
+				v-if="goalActionsEnabled && isGoalSet"
+				:actions="menuActions"
+				@select="onSelect"
 			/>
-			To dashboard
-		</button>
+		</div>
+
 		<KvLoadingPlaceholder
 			v-if="loading"
 			class="!tw-rounded tw-mx-auto"
@@ -32,9 +44,11 @@
 				:selected-category-name="selectedCategory.name"
 				:goal-loans="loanTarget"
 				tracking-category="event-tracking"
+				:edit-goal-enabled="goalActionsEnabled"
 				@set-goal-target="setTarget($event)"
 				@set-goal="setGoal($event)"
 				@edit-goal="editGoalCategory"
+				@edit-goal-from-email="userIsEditingGoal = true"
 			/>
 			<div
 				v-show="showCategories"
@@ -52,7 +66,6 @@
 					:selected-category="selectedCategory"
 					:selected-goal-number="loanTarget"
 					@category-selected="handleCategorySelected"
-					@number-changed="handleNumberChanged"
 				/>
 				<div
 					class="buttons tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-flex tw-flex-col tw-justify-center
@@ -69,6 +82,28 @@
 				</div>
 			</div>
 		</div>
+
+		<!-- Goal Actions modal -->
+		<KvLightbox
+			:visible="isVisible"
+			title="Delete your 2026 impact goal?"
+			@lightbox-closed="isVisible = false"
+		>
+			<!-- eslint-disable-next-line max-len -->
+			This will remove your goal and its progress from your dashboard. This action <br> can’t be undone, but you can create a new goal anytime.
+			<template #controls>
+				<KvButton variant="secondary" @click="isVisible = false">
+					Keep Goal
+				</KvButton>
+				<KvButton
+					variant="primary"
+					@click="handleDeleteGoal"
+					:state="isDeleting ? 'loading' : 'default'"
+				>
+					Delete goal
+				</KvButton>
+			</template>
+		</KvLightbox>
 	</div>
 </template>
 
@@ -82,14 +117,18 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { mdiChevronLeft } from '@mdi/js';
-import { KvLoadingPlaceholder, KvMaterialIcon, KvButton } from '@kiva/kv-components';
+import {
+	KvLoadingPlaceholder, KvMaterialIcon, KvButton, KvLightbox
+} from '@kiva/kv-components';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import useGoalData from '#src/composables/useGoalData';
 import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
+import ThreeDotMenu from '#src/components/MyKiva/GoalSetting/ThreeDotMenu';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
+const $emit = defineEmits(['select-action', 'edit-goal']);
 
 const {
 	userGoal,
@@ -100,6 +139,7 @@ const {
 	getCtaHref,
 	goalProgress,
 	getLoanStatsByYear,
+	removeGoalFromPreferences,
 } = useGoalData({ apollo });
 
 const props = defineProps({
@@ -124,6 +164,13 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	/**
+	 * Is goal actions enabled
+	 */
+	goalActionsEnabled: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const isGoalSet = ref(false);
@@ -133,9 +180,27 @@ const ctaHref = ref('');
 const categoryFormKey = ref(0);
 const isEditing = ref(false);
 const formStep = ref(1);
+const isVisible = ref(false);
+const userIsEditingGoal = ref(false);
+const isDeleting = ref(false);
 
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
 const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
+
+const menuActions = [
+	{ label: 'Delete goal', value: 'delete' },
+];
+
+const onSelect = async action => {
+	isVisible.value = true;
+	$emit('select-action', action);
+};
+
+const handleDeleteGoal = async () => {
+	isDeleting.value = true;
+	await removeGoalFromPreferences(userGoal.value);
+	router.push('/mykiva');
+};
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
@@ -161,6 +226,10 @@ const setTarget = target => {
 };
 
 const setGoal = async preferences => {
+	if (userIsEditingGoal.value) {
+		await removeGoalFromPreferences(userGoal.value);
+	}
+
 	await storeGoalPreferences(preferences);
 	// For ID_SUPPORT_ALL, load yearly loan count to calculate correct progress
 	let currentProgress = goalProgress.value;
@@ -177,6 +246,7 @@ const setGoal = async preferences => {
 	);
 	isGoalSet.value = true;
 	showCategories.value = false;
+	userIsEditingGoal.value = false;
 };
 
 const handleCategorySelected = categoryId => {
@@ -230,10 +300,6 @@ const handleClick = () => {
 const goToDashboard = () => {
 	$kvTrackEvent('event-tracking', 'click', 'back-to-dashboard');
 	router.push('/mykiva');
-};
-
-const handleNumberChanged = number => {
-	console.log(number);
 };
 
 const yearToDate = new Date().getFullYear();

@@ -65,13 +65,26 @@
 		>
 			{{ buttonText }}
 		</KvButton>
+		<KvButton
+			v-if="editGoalEnabled"
+			variant="ghost"
+			class="edit-goal-button tw-w-full"
+			@click="editGoal"
+		>
+			Edit goal
+			<KvMaterialIcon
+				:icon="mdiPencilOutline"
+				class="tw-ml-0.5"
+			/>
+		</KvButton>
 	</div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
-import { KvButton, KvProgressCircle } from '@kiva/kv-components';
+import { KvButton, KvProgressCircle, KvMaterialIcon } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
+import { mdiPencilOutline } from '@mdi/js';
 import {
 	ID_SUPPORT_ALL,
 	ID_CLIMATE_ACTION,
@@ -133,9 +146,16 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
+	/**
+	 * Enable edit goal button (only shows when user has a goal set)
+	 */
+	editGoalEnabled: {
+		type: Boolean,
+		default: false,
+	},
 });
 
-const emit = defineEmits(['button-click']);
+const emit = defineEmits(['button-click', 'edit-goal-from-email']);
 
 const yearToDate = new Date().getFullYear();
 
@@ -235,6 +255,10 @@ const buttonText = computed(() => {
 
 const handleButtonClick = () => {
 	emit('button-click');
+};
+
+const editGoal = () => {
+	emit('edit-goal-from-email');
 };
 </script>
 

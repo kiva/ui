@@ -2,7 +2,8 @@
 	<div class="tw-flex tw-flex-col tw-justify-center tw-gap-0 lg:tw-gap-1.5 tw-items-center">
 		<!-- Goal Progress Ring (shown after goal is set) -->
 		<GoalProgressRing
-			v-if="isGoalSet"
+			v-if="isGoalSet && !editGoalFromEmail"
+			@edit-goal-from-email="handleEditGoalFromEmail"
 			variant="modal"
 			:goal-loans="effectiveGoalLoans"
 			:goal-progress="loansThisYear"
@@ -10,9 +11,9 @@
 			:category-name="selectedCategoryName"
 			:category-id="selectedCategoryId"
 			:go-to-url="goToUrl"
+			:edit-goal-enabled="editGoalEnabled"
 			@button-click="handleSuccessContinue"
 		/>
-
 		<!-- Goal Selection Form (shown before goal is set) -->
 		<template v-else>
 			<img
@@ -70,7 +71,7 @@
 					class="edit-goal-button tw-w-full"
 					@click="editGoal"
 				>
-					Edit goal category
+					{{ editGoalCopy }}
 					<KvMaterialIcon
 						:icon="mdiPencilOutline"
 						class="tw-ml-0.5"
@@ -172,9 +173,16 @@ const props = defineProps({
 		type: Number,
 		default: 0,
 	},
+	/**
+	 * Enable edit goal button (only shows when user has a goal set)
+	 */
+	editGoalEnabled: {
+		type: Boolean,
+		default: false,
+	},
 });
 
-const emit = defineEmits(['set-goal', 'edit-goal', 'set-goal-target', 'close-modal']);
+const emit = defineEmits(['set-goal', 'edit-goal', 'set-goal-target', 'close-modal', 'edit-goal-from-email', 'update-goal-target']);
 
 const DEFAULT_GOAL_OPTIONS = [
 	{
@@ -201,6 +209,7 @@ const loadingCurrentYear = ref(false);
 const fetchedCurrentYearLoans = ref(null);
 const prevSupportAllCount = ref(0);
 const selectedIdx = ref(1);
+const editGoalFromEmail = ref(false);
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -270,6 +279,9 @@ const subtitleText = computed(() => {
 const yearToDate = new Date().getFullYear();
 
 const buttonText = computed(() => {
+	if (editGoalFromEmail.value) {
+		return `Update ${yearToDate} goal`;
+	}
 	return `Set ${yearToDate} goal`;
 });
 
@@ -349,6 +361,8 @@ const handleContinue = () => {
 		props.selectedCategoryId,
 		selectedTarget.value
 	);
+
+	editGoalFromEmail.value = false;
 };
 
 const updateGoalOptions = () => {
@@ -413,6 +427,11 @@ const updateGoalOptions = () => {
 	emit('set-goal-target', selectedTarget.value);
 };
 
+const handleEditGoalFromEmail = () => {
+	editGoalFromEmail.value = true;
+	emit('edit-goal-from-email');
+};
+
 onMounted(async () => {
 	await loadLoansThisYear();
 	updateGoalOptions();
@@ -424,6 +443,13 @@ onMounted(async () => {
 			'set-annual-goal'
 		);
 	}
+});
+
+const editGoalCopy = computed(() => {
+	if (editGoalFromEmail.value) {
+		return 'Customize your goal';
+	}
+	return 'Edit goal';
 });
 
 watch(() => props.selectedCategoryId, async newCategory => {

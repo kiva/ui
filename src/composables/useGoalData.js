@@ -546,6 +546,30 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
+	 *
+	 * Remove goal from user preferences goals array (Used for Editing and Deleting goal)
+	 */
+	const removeGoalFromPreferences = async goal => {
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+		let goals = parsedPrefs.goals || [];
+		const goalIndex = goals.findIndex(g => g.goalName === goal.goalName);
+
+		if (goalIndex !== -1) {
+			// Given the goal index remove the entry from the array
+			goals = goals.filter((_, index) => index !== goalIndex);
+		}
+
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			{ goals }
+		);
+
+		setGoalState({ goals }); // Refresh local state after update
+	};
+
+	/**
 	 * Store goal preferences to backend
 	 * @param {Object} updates - Goal data to store
 	 * @param {boolean} updateLocalState - Whether to update local userGoal state (default: true)
@@ -871,5 +895,6 @@ export default function useGoalData({ apollo } = {}) {
 		hideGoalCard,
 		setHideGoalCardPreference,
 		getSupportAllLoanCountByYear,
+		removeGoalFromPreferences,
 	};
 }
