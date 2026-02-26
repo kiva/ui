@@ -629,6 +629,22 @@ export default [
 		},
 	},
 	{
+		path: '/settings/data',
+		component: () => import('#src/pages/Settings/DataSettings/DataSettingsPage'),
+		meta: {
+			activeLoginRequired: true,
+			excludeFromStaticSitemap: true,
+		},
+	},
+	{
+		path: '/settings/data-beta',
+		component: () => import('#src/pages/Settings/DataSettings/DataSettingsPage'),
+		meta: {
+			activeLoginRequired: true,
+			excludeFromStaticSitemap: true,
+		},
+	},
+	{
 		path: '/settings/autolending',
 		component: () => import('#src/pages/Autolending/AutolendingPage'),
 		meta: {
