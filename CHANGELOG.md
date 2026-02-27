@@ -1,3 +1,21 @@
+## [3.58.0](https://github.com/kiva/ui/compare/v3.57.0...v3.58.0) (2026-02-27)
+
+### 🎉 New Features
+
+* capitalization fix on us category name ([#6682](https://github.com/kiva/ui/issues/6682)) ([b7c8cb0](https://github.com/kiva/ui/commit/b7c8cb0ede022b1dc55999ac5e055f0ec75d88e4))
+* edit entrypoint added to goal card ([#6685](https://github.com/kiva/ui/issues/6685)) ([029f1dc](https://github.com/kiva/ui/commit/029f1dc9b0e89fde3d2bb280d8194ceae23d722f))
+* goal editing flag added ([#6688](https://github.com/kiva/ui/issues/6688)) ([dd497b6](https://github.com/kiva/ui/commit/dd497b6ad3ddc889ed584236637c660ee7a08d63))
+
+### 🐛 Bugfixes
+
+* prefetch next steps redirect experiment ([3fd8917](https://github.com/kiva/ui/commit/3fd8917854637f771729ef084921968234faf952))
+* use enabled flag in lending stats ([31e3822](https://github.com/kiva/ui/commit/31e3822cc58f9296f24c8d729e9ee483d29e1e49))
+
+### 🧹 Chores
+
+* **release:** 3.58.0-rc.1 [skip ci] ([9c4995e](https://github.com/kiva/ui/commit/9c4995eee06ebc00bdff78decea7f29a0f65815e)), closes [#6685](https://github.com/kiva/ui/issues/6685)
+* **release:** 3.58.0-rc.2 [skip ci] ([729c7a5](https://github.com/kiva/ui/commit/729c7a5772af70b3beb0a0d4bf21f2ac60664305)), closes [#6682](https://github.com/kiva/ui/issues/6682) [#6688](https://github.com/kiva/ui/issues/6688)
+
 ## [3.58.0-rc.2](https://github.com/kiva/ui/compare/v3.58.0-rc.1...v3.58.0-rc.2) (2026-02-27)
 
 ### 🎉 New Features
