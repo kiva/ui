@@ -181,7 +181,7 @@
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-			@open-goal-modal="showGoalModal = true"
+			@open-goal-modal="openGoalModal($event)"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
 		/>
 		<GoalSettingModal
@@ -319,6 +319,7 @@ export default {
 			recordedGoalSet: false,
 			newGoalPrefs: null,
 			showPostLendingNextStepsCards: false,
+			isUpdatingGoal: false,
 		};
 	},
 	computed: {
@@ -483,6 +484,10 @@ export default {
 				this.showImpactInsightsModal = false;
 				this.$kvTrackEvent('portfolio', 'click', 'next-step-close-education');
 			}
+		},
+		openGoalModal(event) {
+			this.isUpdatingGoal = event?.updating || false;
+			this.showGoalModal = true;
 		},
 	},
 };

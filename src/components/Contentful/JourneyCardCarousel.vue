@@ -35,7 +35,7 @@
 					:user-goal="userGoal"
 					:prev-year-loans="womenLoansLastYear"
 					:hide-goal-card="hideGoalCard"
-					@open-goal-modal="$emit('open-goal-modal')"
+					@open-goal-modal="$emit('open-goal-modal', $event)"
 				/>
 				<MyKivaSurveyCard
 					v-else-if="slide?.isSurveyCard"

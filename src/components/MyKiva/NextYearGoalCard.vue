@@ -41,6 +41,7 @@
 				:category-name="categoryName"
 				:category-id="userGoal?.category"
 				@button-click="handleContinueClick"
+				@edit-button-click="handleEditClick"
 			/>
 		</template>
 	</div>
@@ -85,7 +86,7 @@ const props = defineProps({
 	}
 });
 
-defineEmits(['open-goal-modal']);
+const emit = defineEmits(['open-goal-modal']);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
@@ -148,6 +149,11 @@ const handleContinueClick = () => {
 		return;
 	}
 	router.push(ctaHref.value);
+};
+
+const handleEditClick = () => {
+	$kvTrackEvent('portfolio', 'click', 'edit-goal');
+	emit('open-goal-modal', { updating: true });
 };
 
 watch(() => [props.loading, props.hideGoalCard], ([newLoading, newHideGoalCard], [oldLoading]) => {
