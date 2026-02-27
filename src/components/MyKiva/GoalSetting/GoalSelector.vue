@@ -182,7 +182,14 @@ const props = defineProps({
 	},
 });
 
-const emit = defineEmits(['set-goal', 'edit-goal', 'set-goal-target', 'close-modal', 'edit-goal-from-email', 'update-goal-target']);
+const emit = defineEmits([
+	'set-goal',
+	'edit-goal',
+	'set-goal-target',
+	'close-modal',
+	'edit-goal-from-email',
+	'update-goal-target'
+]);
 
 const DEFAULT_GOAL_OPTIONS = [
 	{
