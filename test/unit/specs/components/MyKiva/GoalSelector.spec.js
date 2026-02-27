@@ -211,7 +211,7 @@ describe('GoalSelector', () => {
 		// U.S. Entrepreneurs
 		await user.click(getByTestId('category-us'));
 		await flushPromises();
-		expect(getTitleText()).toContain('u.s. entrepreneurs');
+		expect(getTitleText()).toContain('U.S. entrepreneurs');
 
 		// Basic Needs
 		await user.click(getByTestId('category-basic-needs'));
