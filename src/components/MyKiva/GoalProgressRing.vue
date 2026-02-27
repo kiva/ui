@@ -7,6 +7,18 @@
 			<p v-else class="tw-font-medium" :class="titleClass">
 				{{ titleText }}
 			</p>
+
+			<button
+				class="tw-flex tw-gap-0.5 tw-items-center tw-text-h5 hover:tw-underline tw-text-action"
+				v-if="!isModalVariant"
+				@click="handleEditGoal"
+			>
+				Edit
+				<KvMaterialIcon
+					:icon="mdiPencilOutline"
+					class="tw-text-action tw-w-1.5 tw-h-1.5"
+				/>
+			</button>
 		</div>
 
 		<div
@@ -59,7 +71,7 @@
 		</p>
 
 		<KvButton
-			class="tw-w-full goal-set-button"
+			class="tw-w-full goal-button"
 			v-kv-track-event="['portfolio', 'click', 'continue-towards-goal']"
 			@click="handleButtonClick"
 		>
@@ -68,7 +80,7 @@
 		<KvButton
 			v-if="editGoalEnabled"
 			variant="ghost"
-			class="edit-goal-button tw-w-full"
+			class="goal-button edit-goal-button tw-w-full"
 			@click="editGoal"
 		>
 			Edit goal
@@ -82,9 +94,10 @@
 
 <script setup>
 import { computed } from 'vue';
+import { mdiPencilOutline } from '@mdi/js';
+
 import { KvButton, KvProgressCircle, KvMaterialIcon } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
-import { mdiPencilOutline } from '@mdi/js';
 import {
 	ID_SUPPORT_ALL,
 	ID_CLIMATE_ACTION,
@@ -155,7 +168,7 @@ const props = defineProps({
 	},
 });
 
-const emit = defineEmits(['button-click', 'edit-goal-from-email']);
+const emit = defineEmits(['button-click', 'edit-button-click', 'edit-goal-from-email']);
 
 const yearToDate = new Date().getFullYear();
 
@@ -206,7 +219,7 @@ const containerClass = computed(() => {
 });
 
 const titleContainerClass = computed(() => {
-	return isModalVariant.value ? 'tw-text-center' : 'tw-text-left';
+	return isModalVariant.value ? 'tw-text-center' : 'tw-text-left tw-flex tw-justify-between tw-items-center';
 });
 
 const titleClass = computed(() => {
@@ -260,6 +273,10 @@ const handleButtonClick = () => {
 const editGoal = () => {
 	emit('edit-goal-from-email');
 };
+
+const handleEditGoal = () => {
+	emit('edit-button-click');
+};
 </script>
 
 <style lang="postcss" scoped>
@@ -272,7 +289,7 @@ const editGoal = () => {
 		}
 	}
 
-	.goal-set-button {
+	.goal-button {
 
 		@apply tw-self-center tw-mt-2.5;
 

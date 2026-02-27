@@ -1,3 +1,56 @@
+## [3.57.0](https://github.com/kiva/ui/compare/v3.56.0...v3.57.0) (2026-02-26)
+
+### 🎉 New Features
+
+* [MP-2417] - clean code ([73fdcf8](https://github.com/kiva/ui/commit/73fdcf83807f7191f9e0078d94075ea9582acf66))
+* [MP-2417] - done set up new experiment 'mykiva_next_steps_redirect' ([8434cb0](https://github.com/kiva/ui/commit/8434cb051cf44b5ed8a3e7900fdbc94cb2e344be))
+* change promo credit banner copy ([ed4b262](https://github.com/kiva/ui/commit/ed4b262c94a740c7c438d69ae0fd83cc3acca236))
+* resetting atb modal messaging fix ([#6665](https://github.com/kiva/ui/issues/6665)) ([8c2e731](https://github.com/kiva/ui/commit/8c2e731c197cdffeba942a5171cbc37093ec2693))
+* setup link to next steps in lending stats ([4816810](https://github.com/kiva/ui/commit/48168109d121527a663319a022fa042fb659a64a))
+
+### 🐛 Bugfixes
+
+* carousel padding when experiment is enabled to make link clickable ([c8ddf9a](https://github.com/kiva/ui/commit/c8ddf9a5e4379281b78a86d10b694821f868031c))
+* change title logic in goal number selection ([59b5b1c](https://github.com/kiva/ui/commit/59b5b1cf2b77d7b15f4c7da23dec992954b9eb98))
+* conflicts and styles ([86cb8cc](https://github.com/kiva/ui/commit/86cb8cc642e46ead5af0b6b348caccd6f3b11f14))
+* lint error ([ee36bf2](https://github.com/kiva/ui/commit/ee36bf29880a4dc734e5f3741926168f730c78fe))
+* mobile title alignment in next steps redirect ([9fccfc5](https://github.com/kiva/ui/commit/9fccfc59511c89c8f191b90359f8369effe348e1))
+* more mykiva progress fixes ([#6675](https://github.com/kiva/ui/issues/6675)) ([6f2a9ef](https://github.com/kiva/ui/commit/6f2a9efe2b9aaad6aa1f584967fb7dbeaebe67c7))
+* refactor copy ([7f8dd69](https://github.com/kiva/ui/commit/7f8dd69a54b758fda8c1df65aa5354d474077fed))
+* remove deprecated Next Steps link experiment key ([4317d51](https://github.com/kiva/ui/commit/4317d512464a3fdd9fa22e156507060b37c4e424))
+* use h5 is scrolled ([3341c4f](https://github.com/kiva/ui/commit/3341c4fda55b90d2366dffe2b48f84a1ed48bc37))
+
+### 🧹 Chores
+
+* [CP-2449] Adjusting monthly good text to align with how it currently works ([#6679](https://github.com/kiva/ui/issues/6679)) ([5c161cd](https://github.com/kiva/ui/commit/5c161cd3cc8afc2ea7e76e396837a62f5772e0a4))
+* **release:** 3.57.0-rc.1 [skip ci] ([82b6aa6](https://github.com/kiva/ui/commit/82b6aa6456c54e22a389c9c1507a5c317361cb14)), closes [#6665](https://github.com/kiva/ui/issues/6665) [#6675](https://github.com/kiva/ui/issues/6675) [#6679](https://github.com/kiva/ui/issues/6679)
+
+## [3.57.0-rc.1](https://github.com/kiva/ui/compare/v3.56.0...v3.57.0-rc.1) (2026-02-26)
+
+### 🎉 New Features
+
+* [MP-2417] - clean code ([73fdcf8](https://github.com/kiva/ui/commit/73fdcf83807f7191f9e0078d94075ea9582acf66))
+* [MP-2417] - done set up new experiment 'mykiva_next_steps_redirect' ([8434cb0](https://github.com/kiva/ui/commit/8434cb051cf44b5ed8a3e7900fdbc94cb2e344be))
+* change promo credit banner copy ([ed4b262](https://github.com/kiva/ui/commit/ed4b262c94a740c7c438d69ae0fd83cc3acca236))
+* resetting atb modal messaging fix ([#6665](https://github.com/kiva/ui/issues/6665)) ([8c2e731](https://github.com/kiva/ui/commit/8c2e731c197cdffeba942a5171cbc37093ec2693))
+* setup link to next steps in lending stats ([4816810](https://github.com/kiva/ui/commit/48168109d121527a663319a022fa042fb659a64a))
+
+### 🐛 Bugfixes
+
+* carousel padding when experiment is enabled to make link clickable ([c8ddf9a](https://github.com/kiva/ui/commit/c8ddf9a5e4379281b78a86d10b694821f868031c))
+* change title logic in goal number selection ([59b5b1c](https://github.com/kiva/ui/commit/59b5b1cf2b77d7b15f4c7da23dec992954b9eb98))
+* conflicts and styles ([86cb8cc](https://github.com/kiva/ui/commit/86cb8cc642e46ead5af0b6b348caccd6f3b11f14))
+* lint error ([ee36bf2](https://github.com/kiva/ui/commit/ee36bf29880a4dc734e5f3741926168f730c78fe))
+* mobile title alignment in next steps redirect ([9fccfc5](https://github.com/kiva/ui/commit/9fccfc59511c89c8f191b90359f8369effe348e1))
+* more mykiva progress fixes ([#6675](https://github.com/kiva/ui/issues/6675)) ([6f2a9ef](https://github.com/kiva/ui/commit/6f2a9efe2b9aaad6aa1f584967fb7dbeaebe67c7))
+* refactor copy ([7f8dd69](https://github.com/kiva/ui/commit/7f8dd69a54b758fda8c1df65aa5354d474077fed))
+* remove deprecated Next Steps link experiment key ([4317d51](https://github.com/kiva/ui/commit/4317d512464a3fdd9fa22e156507060b37c4e424))
+* use h5 is scrolled ([3341c4f](https://github.com/kiva/ui/commit/3341c4fda55b90d2366dffe2b48f84a1ed48bc37))
+
+### 🧹 Chores
+
+* [CP-2449] Adjusting monthly good text to align with how it currently works ([#6679](https://github.com/kiva/ui/issues/6679)) ([5c161cd](https://github.com/kiva/ui/commit/5c161cd3cc8afc2ea7e76e396837a62f5772e0a4))
+
 ## [3.56.0](https://github.com/kiva/ui/compare/v3.55.0...v3.56.0) (2026-02-19)
 
 ### 🎉 New Features
