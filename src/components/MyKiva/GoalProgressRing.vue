@@ -74,7 +74,7 @@
 			Edit goal
 			<KvMaterialIcon
 				:icon="mdiPencilOutline"
-				class="tw-ml-0.5"
+				class="tw-ml-0.5 tw-w-2.5"
 			/>
 		</KvButton>
 	</div>
@@ -280,5 +280,9 @@ const editGoal = () => {
 			width: 78%;
 		}
 	}
+}
+
+.edit-goal-button :deep(span) {
+	@apply tw-flex tw-items-center tw-justify-center;
 }
 </style>
