@@ -35,6 +35,7 @@
 					:user-goal="userGoal"
 					:prev-year-loans="womenLoansLastYear"
 					:hide-goal-card="hideGoalCard"
+					:goal-editing-enable="goalEditingEnable"
 					@open-goal-modal="$emit('open-goal-modal')"
 				/>
 				<MyKivaSurveyCard
@@ -274,6 +275,10 @@ const props = defineProps({
 		default: null
 	},
 	showPostLendingNextStepsCards: {
+		type: Boolean,
+		default: false
+	},
+	goalEditingEnable: {
 		type: Boolean,
 		default: false
 	},
