@@ -21,10 +21,8 @@
 			<p
 				v-else
 				class="modal-description-text tw-text-subhead !tw-font-medium" style="line-height: 1.5rem;"
+				v-html="modalDescriptionText"
 			>
-				Your support to
-				<strong class="tw-text-brand">{{ goalLoans }} loans</strong> for
-				<strong class="tw-text-brand">{{ categoryName?.toLowerCase() }}</strong> begins here.
 			</p>
 		</div>
 
@@ -193,9 +191,20 @@ const titleClass = computed(() => {
 	return isModalVariant.value ? 'tw-text-center' : '';
 });
 
+const modalDescriptionText = computed(() => {
+	if (props.categoryId === ID_SUPPORT_ALL) {
+		return `Your goal to support <span class="tw-text-brand">${props.goalLoans} loans</span> begins here.`;
+	}
+	// eslint-disable-next-line max-len
+	return `Your support to <span class="tw-text-brand">${props.goalLoans}</span> for <span class="tw-text-brand">${props.categoryName?.toLowerCase() || ''}</span> begins here.`;
+});
+
 const titleText = computed(() => {
 	if (isModalVariant.value) {
 		return 'Goal set!';
+	}
+	if (props.categoryId === ID_SUPPORT_ALL) {
+		return `Your ${yearToDate} goal`;
 	}
 	return `Your ${yearToDate} goal to ${props.categoryName?.toLowerCase() || ''}`;
 });
