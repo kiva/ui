@@ -11,7 +11,7 @@
 			:category-name="selectedCategoryName"
 			:category-id="selectedCategoryId"
 			:go-to-url="goToUrl"
-			:edit-goal-enabled="editGoalEnabled"
+			:goal-editing-enable="goalEditingEnable"
 			@button-click="handleSuccessContinue"
 		/>
 		<!-- Goal Selection Form (shown before goal is set) -->
@@ -90,7 +90,7 @@ import {
 	ref,
 	watch,
 } from 'vue';
-import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
+import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL, ID_US_ECONOMIC_EQUALITY } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
@@ -176,7 +176,7 @@ const props = defineProps({
 	/**
 	 * Enable edit goal button (only shows when user has a goal set)
 	 */
-	editGoalEnabled: {
+	goalEditingEnable: {
 		type: Boolean,
 		default: false,
 	},
@@ -271,6 +271,9 @@ const titleText = computed(() => {
 	// Support All is not a specific category, so use generic language
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
 		return 'How many loans will you make this year?';
+	}
+	if (props.selectedCategoryId === ID_US_ECONOMIC_EQUALITY) {
+		return 'How many loans to <span class="tw-text-eco-green-3">U.S. entrepreneurs</span> will you make this year?';
 	}
 	// eslint-disable-next-line max-len
 	return `How many loans to <span class="tw-text-eco-green-3">${props.selectedCategoryName?.toLowerCase()}</span> will you make this year?`;

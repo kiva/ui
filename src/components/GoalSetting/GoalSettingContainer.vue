@@ -16,7 +16,7 @@
 				To dashboard
 			</button>
 			<ThreeDotMenu
-				v-if="goalActionsEnabled && isGoalSet"
+				v-if="goalEditingEnable && isGoalSet"
 				:actions="menuActions"
 				@select="onSelect"
 			/>
@@ -44,7 +44,7 @@
 				:selected-category-name="selectedCategory.name"
 				:goal-loans="loanTarget"
 				tracking-category="event-tracking"
-				:edit-goal-enabled="goalActionsEnabled"
+				:goal-editing-enable="goalEditingEnable"
 				@set-goal-target="setTarget($event)"
 				@set-goal="setGoal($event)"
 				@edit-goal="editGoalCategory"
@@ -98,7 +98,7 @@
 				<KvButton
 					variant="primary"
 					@click="handleDeleteGoal"
-					:state="isDeleting ? 'loading' : 'default'"
+					:state="isDeleting ? 'loading' : ''"
 				>
 					Delete goal
 				</KvButton>
@@ -165,9 +165,9 @@ const props = defineProps({
 		default: () => ([]),
 	},
 	/**
-	 * Is goal actions enabled
+	 * Is goal editing enabled
 	 */
-	goalActionsEnabled: {
+	goalEditingEnable: {
 		type: Boolean,
 		default: false,
 	},

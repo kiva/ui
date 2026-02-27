@@ -179,5 +179,9 @@ query myKivaQuery {
 			key
 			value
 		}
+    goal_editing_enable: uiConfigSetting(key: "goal_editing_enable") {
+			key
+			value
+		}
 	}
 }

@@ -10,7 +10,7 @@
 
 			<button
 				class="tw-flex tw-gap-0.5 tw-items-center tw-text-h5 hover:tw-underline tw-text-action"
-				v-if="!isModalVariant"
+				v-if="!isModalVariant && goalEditingEnable"
 				@click="handleEditGoal"
 			>
 				Edit
@@ -33,10 +33,8 @@
 			<p
 				v-else
 				class="modal-description-text tw-text-subhead !tw-font-medium" style="line-height: 1.5rem;"
+				v-html="modalDescriptionText"
 			>
-				Your support to
-				<strong class="tw-text-brand">{{ goalLoans }} loans</strong> for
-				<strong class="tw-text-brand">{{ categoryName?.toLowerCase() }}</strong> begins here.
 			</p>
 		</div>
 
@@ -78,7 +76,7 @@
 			{{ buttonText }}
 		</KvButton>
 		<KvButton
-			v-if="editGoalEnabled"
+			v-if="goalEditingEnable"
 			variant="ghost"
 			class="goal-button edit-goal-button tw-w-full"
 			@click="editGoal"
@@ -162,7 +160,7 @@ const props = defineProps({
 	/**
 	 * Enable edit goal button (only shows when user has a goal set)
 	 */
-	editGoalEnabled: {
+	goalEditingEnable: {
 		type: Boolean,
 		default: false,
 	},
@@ -226,9 +224,20 @@ const titleClass = computed(() => {
 	return isModalVariant.value ? 'tw-text-center' : '';
 });
 
+const modalDescriptionText = computed(() => {
+	if (props.categoryId === ID_SUPPORT_ALL) {
+		return `Your goal to support <span class="tw-text-brand">${props.goalLoans} loans</span> begins here.`;
+	}
+	// eslint-disable-next-line max-len
+	return `Your support to <span class="tw-text-brand">${props.goalLoans}</span> for <span class="tw-text-brand">${props.categoryName?.toLowerCase() || ''}</span> begins here.`;
+});
+
 const titleText = computed(() => {
 	if (isModalVariant.value) {
 		return 'Goal set!';
+	}
+	if (props.categoryId === ID_SUPPORT_ALL) {
+		return `Your ${yearToDate} goal`;
 	}
 	return `Your ${yearToDate} goal to ${props.categoryName?.toLowerCase() || ''}`;
 });
