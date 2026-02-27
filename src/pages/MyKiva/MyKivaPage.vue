@@ -21,6 +21,7 @@
 			:goal-refresh-key="goalRefreshKey"
 			:show-my-giving-funds-card="showMyGivingFundsCard"
 			:next-steps-experiment-variant="nextStepsExperimentVariant"
+			:goal-editing-enable="goalEditingEnable"
 		/>
 	</www-page>
 </template>
@@ -49,6 +50,7 @@ const NEXT_STEPS_REDIRECT_EXP_KEY = 'mykiva_next_steps_redirect';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 const NEW_BADGE_SECTION_KEY = 'new_badge_section_enable';
 const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
+const GOAL_EDITING_KEY = 'goal_editing_enable';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -97,6 +99,7 @@ export default {
 			goalRefreshKey: 0,
 			showMyGivingFundsCard: false,
 			nextStepsExperimentVariant: null,
+			goalEditingEnable: false,
 		};
 	},
 	computed: {
@@ -218,6 +221,7 @@ export default {
 				this.goalsEntrypointEnable = readBoolSetting(myKivaQueryResult, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.showNewBadgeSection = readBoolSetting(myKivaQueryResult, `general.${NEW_BADGE_SECTION_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.postLendingNextStepsEnable = readBoolSetting(myKivaQueryResult, `general.${POST_LENDING_NEXT_STEPS_KEY}.value`) ?? false; // eslint-disable-line max-len
+				this.goalEditingEnable = readBoolSetting(myKivaQueryResult, `general.${GOAL_EDITING_KEY}.value`) ?? false; // eslint-disable-line max-len
 
 				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
 					...myKivaQueryResult.my.latestLoan.values[0].loan,

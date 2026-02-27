@@ -47,6 +47,7 @@
 					:post-lending-next-steps-enable="postLendingNextStepsEnable"
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+					:goal-editing-enable="goalEditingEnable"
 					@open-goal-modal="showGoalModal = true"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
@@ -181,6 +182,7 @@
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+			:goal-editing-enable="goalEditingEnable"
 			@open-goal-modal="showGoalModal = true"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
 		/>
@@ -304,6 +306,10 @@ export default {
 			type: String,
 			default: 'a',
 			validator: value => ['a', 'b'].includes(value)
+		},
+		goalEditingEnable: {
+			type: Boolean,
+			default: false
 		},
 	},
 	data() {

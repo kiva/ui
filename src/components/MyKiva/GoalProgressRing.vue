@@ -10,7 +10,7 @@
 
 			<button
 				class="tw-flex tw-gap-0.5 tw-items-center tw-text-h5 hover:tw-underline tw-text-action"
-				v-if="!isModalVariant"
+				v-if="!isModalVariant && goalEditingEnable"
 				@click="handleEditGoal"
 			>
 				Edit
@@ -145,6 +145,10 @@ const props = defineProps({
 	goToUrl: {
 		type: String,
 		default: '',
+	},
+	goalEditingEnable: {
+		type: Boolean,
+		default: false,
 	},
 });
 
