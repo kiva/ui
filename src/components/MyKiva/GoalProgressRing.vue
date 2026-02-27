@@ -76,7 +76,7 @@
 			{{ buttonText }}
 		</KvButton>
 		<KvButton
-			v-if="goalEditingEnable"
+			v-if="showEditGoalButton"
 			variant="ghost"
 			class="goal-button edit-goal-button tw-w-full"
 			@click="editGoal"
@@ -103,6 +103,7 @@ import {
 	ID_BASIC_NEEDS,
 	ID_US_ECONOMIC_EQUALITY,
 } from '#src/composables/useBadgeData';
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
 	/**
@@ -167,6 +168,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['button-click', 'edit-button-click', 'edit-goal-from-email']);
+const router = useRouter();
 
 const yearToDate = new Date().getFullYear();
 
@@ -286,6 +288,11 @@ const editGoal = () => {
 const handleEditGoal = () => {
 	emit('edit-button-click');
 };
+
+const showEditGoalButton = computed(() => {
+	return props.goalEditingEnable && router.currentRoute.value?.path?.includes('/goal-setting');
+});
+
 </script>
 
 <style lang="postcss" scoped>

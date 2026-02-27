@@ -15,11 +15,29 @@
 				/>
 				To dashboard
 			</button>
-			<ThreeDotMenu
+			<KvUtilityMenu
 				v-if="goalEditingEnable && isGoalSet"
-				:actions="menuActions"
+				menu-position="right-aligned"
+				button-size="small"
+				menu-border-class="tw-border tw-border-tertiary tw-rounded-md"
+				class="tw-top-0"
 				@select="onSelect"
-			/>
+			>
+				<ul class="tw-m-0 tw-p-0">
+					<li
+						v-for="action in menuActions"
+						:key="action.label"
+						class="tw-list-none"
+					>
+						<button
+							href="#" @click.prevent="onSelect(action)"
+							class="tw-w-full tw-px-2 tw-py-2 tw-rounded-md hover:tw-bg-secondary tw-font-medium"
+						>
+							{{ action.label }}
+						</button>
+					</li>
+				</ul>
+			</KvUtilityMenu>
 		</div>
 
 		<KvLoadingPlaceholder
@@ -118,12 +136,15 @@ import {
 import { useRouter } from 'vue-router';
 import { mdiChevronLeft } from '@mdi/js';
 import {
-	KvLoadingPlaceholder, KvMaterialIcon, KvButton, KvLightbox
+	KvLoadingPlaceholder,
+	KvMaterialIcon,
+	KvButton,
+	KvLightbox,
+	KvUtilityMenu
 } from '@kiva/kv-components';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import useGoalData from '#src/composables/useGoalData';
 import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
-import ThreeDotMenu from '#src/components/MyKiva/GoalSetting/ThreeDotMenu';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
