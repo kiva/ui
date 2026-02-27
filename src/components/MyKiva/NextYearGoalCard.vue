@@ -40,6 +40,7 @@
 				:goal-progress-percentage="goalProgressPercentage"
 				:category-name="categoryName"
 				:category-id="userGoal?.category"
+				:goal-editing-enable="goalEditingEnable"
 				@button-click="handleContinueClick"
 				@edit-button-click="handleEditClick"
 			/>
@@ -83,7 +84,11 @@ const props = defineProps({
 	hideGoalCard: {
 		type: Boolean,
 		default: false,
-	}
+	},
+	goalEditingEnable: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits(['open-goal-modal']);

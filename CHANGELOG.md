@@ -1,3 +1,14 @@
+## [3.58.0-rc.1](https://github.com/kiva/ui/compare/v3.57.0...v3.58.0-rc.1) (2026-02-27)
+
+### 🎉 New Features
+
+* edit entrypoint added to goal card ([#6685](https://github.com/kiva/ui/issues/6685)) ([029f1dc](https://github.com/kiva/ui/commit/029f1dc9b0e89fde3d2bb280d8194ceae23d722f))
+
+### 🐛 Bugfixes
+
+* prefetch next steps redirect experiment ([3fd8917](https://github.com/kiva/ui/commit/3fd8917854637f771729ef084921968234faf952))
+* use enabled flag in lending stats ([31e3822](https://github.com/kiva/ui/commit/31e3822cc58f9296f24c8d729e9ee483d29e1e49))
+
 ## [3.57.0](https://github.com/kiva/ui/compare/v3.56.0...v3.57.0) (2026-02-26)
 
 ### 🎉 New Features

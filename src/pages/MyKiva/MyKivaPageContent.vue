@@ -48,6 +48,7 @@
 				:goal-refresh-key="goalRefreshKey"
 				:user-info="userInfo"
 				:next-steps-experiment-variant="nextStepsExperimentVariant"
+				:goal-editing-enable="goalEditingEnable"
 			/>
 		</section>
 		<section v-if="goalsV2Enabled" class="tw-mt-4" id="mykiva-achievements">
@@ -385,6 +386,10 @@ export default {
 			type: String,
 			default: 'a',
 			validator: value => ['a', 'b'].includes(value)
+		},
+		goalEditingEnable: {
+			type: Boolean,
+			default: false
 		},
 	},
 	setup() {

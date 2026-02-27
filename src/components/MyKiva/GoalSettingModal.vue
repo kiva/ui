@@ -156,6 +156,13 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
+	/**
+	 * Flag to enable goal editing features
+	 */
+	isUpdatingGoal: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const { numberOfLoans, isGoalSet } = toRefs(props);
