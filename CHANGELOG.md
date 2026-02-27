@@ -1,3 +1,10 @@
+## [3.58.0-rc.2](https://github.com/kiva/ui/compare/v3.58.0-rc.1...v3.58.0-rc.2) (2026-02-27)
+
+### 🎉 New Features
+
+* capitalization fix on us category name ([#6682](https://github.com/kiva/ui/issues/6682)) ([b7c8cb0](https://github.com/kiva/ui/commit/b7c8cb0ede022b1dc55999ac5e055f0ec75d88e4))
+* goal editing flag added ([#6688](https://github.com/kiva/ui/issues/6688)) ([dd497b6](https://github.com/kiva/ui/commit/dd497b6ad3ddc889ed584236637c660ee7a08d63))
+
 ## [3.58.0-rc.1](https://github.com/kiva/ui/compare/v3.57.0...v3.58.0-rc.1) (2026-02-27)
 
 ### 🎉 New Features
