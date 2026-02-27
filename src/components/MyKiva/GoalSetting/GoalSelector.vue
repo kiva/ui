@@ -439,6 +439,7 @@ const updateGoalOptions = () => {
 
 const handleEditGoalFromEmail = () => {
 	editGoalFromEmail.value = true;
+	$kvTrackEvent('event-tracking', 'click', 'edit-goal');
 	emit('edit-goal-from-email');
 };
 

@@ -105,12 +105,12 @@
 		<KvLightbox
 			:visible="isVisible"
 			title="Delete your 2026 impact goal?"
-			@lightbox-closed="isVisible = false"
+			@lightbox-closed="handleKeepGoal"
 		>
 			<!-- eslint-disable-next-line max-len -->
 			This will remove your goal and its progress from your dashboard. This action <br> can’t be undone, but you can create a new goal anytime.
 			<template #controls>
-				<KvButton variant="secondary" @click="isVisible = false">
+				<KvButton variant="secondary" @click="handleKeepGoal">
 					Keep Goal
 				</KvButton>
 				<KvButton
@@ -219,8 +219,14 @@ const onSelect = async action => {
 
 const handleDeleteGoal = async () => {
 	isDeleting.value = true;
+	$kvTrackEvent('event-tracking', 'click', 'confirm-delete-goal');
 	await removeGoalFromPreferences(userGoal.value);
 	router.push('/mykiva');
+};
+
+const handleKeepGoal = () => {
+	isVisible.value = false;
+	$kvTrackEvent('event-tracking', 'click', 'cancel-delete-goal');
 };
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
@@ -248,10 +254,11 @@ const setTarget = target => {
 
 const setGoal = async preferences => {
 	if (userIsEditingGoal.value) {
-		await removeGoalFromPreferences(userGoal.value);
+		await editGoalCategory(userGoal.value, preferences);
+	} else {
+		await storeGoalPreferences(preferences);
 	}
 
-	await storeGoalPreferences(preferences);
 	// For ID_SUPPORT_ALL, load yearly loan count to calculate correct progress
 	let currentProgress = goalProgress.value;
 	if (selectedCategory.value?.badgeId === ID_SUPPORT_ALL) {
