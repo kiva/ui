@@ -21,7 +21,6 @@
 				button-size="small"
 				menu-border-class="tw-border tw-border-tertiary tw-rounded-md"
 				class="tw-top-0"
-				@select="onSelect"
 			>
 				<ul class="tw-m-0 tw-p-0">
 					<li
@@ -30,7 +29,7 @@
 						class="tw-list-none"
 					>
 						<button
-							href="#" @click.prevent="onSelect(action)"
+							@click.prevent="onSelect(action)"
 							class="tw-w-full tw-px-2 tw-py-2 tw-rounded-md hover:tw-bg-secondary tw-font-medium"
 						>
 							{{ action.label }}
@@ -63,8 +62,10 @@
 				:goal-loans="loanTarget"
 				tracking-category="event-tracking"
 				:goal-editing-enable="goalEditingEnable"
+				:is-updating-goal="userIsEditingGoal"
 				@set-goal-target="setTarget($event)"
 				@set-goal="setGoal($event)"
+				@update-goal-target="updateGoal($event)"
 				@edit-goal="editGoalCategory"
 				@edit-goal-from-email="userIsEditingGoal = true"
 			/>
@@ -103,7 +104,7 @@
 
 		<!-- Goal Actions modal -->
 		<KvLightbox
-			:visible="isVisible"
+			:visible="isDeleteGoalModalVisible"
 			title="Delete your 2026 impact goal?"
 			@lightbox-closed="handleKeepGoal"
 		>
@@ -149,7 +150,6 @@ import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
-const $emit = defineEmits(['select-action', 'edit-goal']);
 
 const {
 	userGoal,
@@ -161,6 +161,7 @@ const {
 	goalProgress,
 	getLoanStatsByYear,
 	removeGoalFromPreferences,
+	updateCurrentGoal,
 } = useGoalData({ apollo });
 
 const props = defineProps({
@@ -201,7 +202,7 @@ const ctaHref = ref('');
 const categoryFormKey = ref(0);
 const isEditing = ref(false);
 const formStep = ref(1);
-const isVisible = ref(false);
+const isDeleteGoalModalVisible = ref(false);
 const userIsEditingGoal = ref(false);
 const isDeleting = ref(false);
 
@@ -213,8 +214,8 @@ const menuActions = [
 ];
 
 const onSelect = async action => {
-	isVisible.value = true;
-	$emit('select-action', action);
+	isDeleteGoalModalVisible.value = true;
+	$kvTrackEvent('event-tracking', 'click', 'goal-setting-menu', action.value);
 };
 
 const handleDeleteGoal = async () => {
@@ -225,7 +226,7 @@ const handleDeleteGoal = async () => {
 };
 
 const handleKeepGoal = () => {
-	isVisible.value = false;
+	isDeleteGoalModalVisible.value = false;
 	$kvTrackEvent('event-tracking', 'click', 'cancel-delete-goal');
 };
 
@@ -252,13 +253,7 @@ const setTarget = target => {
 	loanTarget.value = target;
 };
 
-const setGoal = async preferences => {
-	if (userIsEditingGoal.value) {
-		await editGoalCategory(userGoal.value, preferences);
-	} else {
-		await storeGoalPreferences(preferences);
-	}
-
+const recalculateGoalInformation = async () => {
 	// For ID_SUPPORT_ALL, load yearly loan count to calculate correct progress
 	let currentProgress = goalProgress.value;
 	if (selectedCategory.value?.badgeId === ID_SUPPORT_ALL) {
@@ -275,6 +270,16 @@ const setGoal = async preferences => {
 	isGoalSet.value = true;
 	showCategories.value = false;
 	userIsEditingGoal.value = false;
+};
+
+const updateGoal = async preferences => {
+	await updateCurrentGoal(userGoal.value, preferences);
+	await recalculateGoalInformation();
+};
+
+const setGoal = async preferences => {
+	await storeGoalPreferences(preferences);
+	await recalculateGoalInformation();
 };
 
 const handleCategorySelected = categoryId => {

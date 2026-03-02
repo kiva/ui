@@ -3,7 +3,6 @@
 		<!-- Goal Progress Ring (shown after goal is set) -->
 		<GoalProgressRing
 			v-if="isGoalSet && !editGoalFromEmail"
-			@edit-goal-from-email="handleEditGoalFromEmail"
 			variant="modal"
 			:goal-loans="effectiveGoalLoans"
 			:goal-progress="loansThisYear"
@@ -12,6 +11,7 @@
 			:category-id="selectedCategoryId"
 			:go-to-url="goToUrl"
 			:goal-editing-enable="goalEditingEnable"
+			@edit-goal-from-email="handleEditGoalFromEmail"
 			@button-click="handleSuccessContinue"
 		/>
 		<!-- Goal Selection Form (shown before goal is set) -->
@@ -177,6 +177,13 @@ const props = defineProps({
 	 * Enable edit goal button (only shows when user has a goal set)
 	 */
 	goalEditingEnable: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Flag to indicate if user is editing an existing goal
+	 */
+	isUpdatingGoal: {
 		type: Boolean,
 		default: false,
 	},
@@ -363,7 +370,6 @@ const handleContinue = () => {
 		status: GOAL_STATUS.IN_PROGRESS,
 		loanTotalAtStart,
 	};
-	emit('set-goal', preferences);
 	$kvTrackEvent(
 		props.trackingCategory,
 		'click',
@@ -371,6 +377,12 @@ const handleContinue = () => {
 		props.selectedCategoryId,
 		selectedTarget.value
 	);
+
+	if (props.isUpdatingGoal) {
+		emit('update-goal-target', preferences);
+	} else {
+		emit('set-goal', preferences);
+	}
 
 	editGoalFromEmail.value = false;
 };

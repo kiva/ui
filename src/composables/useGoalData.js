@@ -546,7 +546,6 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
-	 *
 	 * Remove goal from user preferences goals array (Used for Editing and Deleting goal)
 	 */
 	const removeGoalFromPreferences = async goal => {
@@ -574,7 +573,7 @@ export default function useGoalData({ apollo } = {}) {
 	 * @param {Object} previousGoal - Previous goal data to identify which goal to remove
 	 * @param {Object} updatedGoal - Updated goal data to replace the previous goal with
 	 */
-	async function editGoalCategory(previousGoal, updatedGoal) {
+	async function updateCurrentGoal(previousGoal, updatedGoal) {
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		const goals = parsedPrefs.goals || [];
 		const goalIndex = goals.findIndex(g => g.goalName === previousGoal.goalName);
@@ -919,6 +918,6 @@ export default function useGoalData({ apollo } = {}) {
 		setHideGoalCardPreference,
 		getSupportAllLoanCountByYear,
 		removeGoalFromPreferences,
-		editGoalCategory,
+		updateCurrentGoal,
 	};
 }

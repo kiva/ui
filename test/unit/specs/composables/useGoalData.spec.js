@@ -1209,7 +1209,7 @@ describe('useGoalData', () => {
 		});
 	});
 
-	describe('editGoalCategory', () => {
+	describe('updateCurrentGoal', () => {
 		it('should update goal category and refresh local state', async () => {
 			const mockPrefs = {
 				goals: [
@@ -1257,7 +1257,7 @@ describe('useGoalData', () => {
 				target: 15,
 			};
 
-			await composable.editGoalCategory(previousGoal, updatedGoal);
+			await composable.updateCurrentGoal(previousGoal, updatedGoal);
 
 			// Local userGoal state should reflect the updated goal
 			expect(composable.userGoal.value.goalName).toBe('goal-to-edit');
