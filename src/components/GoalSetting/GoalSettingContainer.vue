@@ -29,7 +29,7 @@
 						:goal-progress-percentage="goalProgressPercentage"
 						:is-existing-goal="!isNewGoal"
 						:category-id="userGoal.category"
-						:category-name="userGoal.category"
+						:category-name="emailCategoryName"
 						:go-to-url="ctaHref"
 						@button-click="handleEmailGoalContinue"
 					/>
@@ -127,7 +127,14 @@ import { KvLoadingPlaceholder, KvMaterialIcon, KvButton } from '@kiva/kv-compone
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
-import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
+import {
+	ID_SUPPORT_ALL,
+	ID_WOMENS_EQUALITY,
+	ID_CLIMATE_ACTION,
+	ID_REFUGEE_EQUALITY,
+	ID_BASIC_NEEDS,
+	ID_US_ECONOMIC_EQUALITY,
+} from '#src/composables/useBadgeData';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -143,35 +150,26 @@ const {
 	goalProgress,
 	goalProgressPercentage,
 	getLoanStatsByYear,
+	userPreferences,
 } = useGoalData({ apollo });
 
 const props = defineProps({
-	/**
-	 * Target value passed via ?target= query param from an email link.
-	 * When present, the component auto-creates a support-all goal and shows
-	 * a confirmation state instead of the normal form flow.
-	 */
 	emailTarget: {
 		type: String,
 		default: null,
 	},
-	/**
-	 * Total number of loans across all categories
-	 */
+	emailCategory: {
+		type: String,
+		default: null,
+	},
 	totalLoans: {
 		type: Number,
 		default: 0,
 	},
-	/**
-	 * Object with loan counts per category
-	 */
 	categoriesLoanCount: {
 		type: Object,
 		default: () => ({}),
 	},
-	/**
-	 * Tiered achievements data
-	 */
 	tieredAchievements: {
 		type: Array,
 		default: () => ([]),
@@ -186,9 +184,18 @@ const categoryFormKey = ref(0);
 const isEditing = ref(false);
 const formStep = ref(1);
 
-// Email flow — always creates a support-all goal;
+// Email flow
 const emailLoading = ref(false);
 const isNewGoal = ref(true);
+
+const VALID_EMAIL_CATEGORIES = new Set([
+	ID_SUPPORT_ALL,
+	ID_WOMENS_EQUALITY,
+	ID_CLIMATE_ACTION,
+	ID_REFUGEE_EQUALITY,
+	ID_BASIC_NEEDS,
+	ID_US_ECONOMIC_EQUALITY,
+]);
 
 function validateEmailTarget(param) {
 	if (param == null || Array.isArray(param)) return null;
@@ -198,6 +205,13 @@ function validateEmailTarget(param) {
 }
 
 const validEmailTarget = computed(() => validateEmailTarget(props.emailTarget));
+const validEmailCategory = computed(() => {
+	if (props.emailCategory && VALID_EMAIL_CATEGORIES.has(props.emailCategory)) {
+		return props.emailCategory;
+	}
+	return ID_SUPPORT_ALL;
+});
+
 const isEmailFlow = computed(() => props.emailTarget != null);
 const hasActiveGoal = computed(() => Object.keys(userGoal.value || {}).length > 0);
 
@@ -205,6 +219,11 @@ const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/G
 const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
+
+const emailCategoryName = computed(() => {
+	const category = categories.find(c => c.badgeId === (userGoal.value?.category ?? validEmailCategory.value));
+	return category?.name ?? '';
+});
 
 const selectedCategory = ref(categories[0]);
 
@@ -323,26 +342,35 @@ onMounted(async () => {
 	await loadGoalData({ yearlyProgress: true });
 
 	if (isEmailFlow.value) {
-		const isEmptyGoal = Object.keys(userGoal.value || {}).length === 0;
+		const category = validEmailCategory.value;
+		const allGoals = JSON.parse(userPreferences.value?.preferences || '{}').goals || [];
+		const existingCategoryGoal = allGoals.find(g => g.category === category
+			&& g.status === GOAL_STATUS.IN_PROGRESS);
 
-		if (isEmptyGoal && validEmailTarget.value) {
+		if (!existingCategoryGoal && validEmailTarget.value) {
 			const currentYear = new Date().getFullYear();
 			await storeGoalPreferences({
-				goalName: `goal-${ID_SUPPORT_ALL}-${currentYear}`,
-				category: ID_SUPPORT_ALL,
+				goalName: `goal-${category}-${currentYear}`,
+				category,
 				target: validEmailTarget.value,
 				dateStarted: new Date().toISOString(),
 				status: GOAL_STATUS.IN_PROGRESS,
 			});
 			isNewGoal.value = true;
-		} else if (!isEmptyGoal) {
+		} else if (existingCategoryGoal) {
 			isNewGoal.value = false;
+		}
+
+		const emailGoal = existingCategoryGoal
+			?? (JSON.parse(userPreferences.value?.preferences || '{}').goals || []).find(g => g.category === category);
+		if (emailGoal) {
+			userGoal.value = { ...emailGoal };
 		}
 
 		if (userGoal.value?.target) {
 			ctaHref.value = getCtaHref(
 				userGoal.value.target,
-				ID_SUPPORT_ALL,
+				userGoal.value.category,
 				router,
 				goalProgress.value
 			);
