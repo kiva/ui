@@ -7,6 +7,18 @@
 			<p v-else class="tw-font-medium" :class="titleClass">
 				{{ titleText }}
 			</p>
+
+			<button
+				class="tw-flex tw-gap-0.5 tw-items-center tw-text-h5 hover:tw-underline tw-text-action"
+				v-if="!isModalVariant && goalEditingEnable"
+				@click="handleEditGoal"
+			>
+				Edit
+				<KvMaterialIcon
+					:icon="mdiPencilOutline"
+					class="tw-text-action tw-w-1.5 tw-h-1.5"
+				/>
+			</button>
 		</div>
 
 		<div
@@ -21,10 +33,8 @@
 			<p
 				v-else
 				class="modal-description-text tw-text-subhead !tw-font-medium" style="line-height: 1.5rem;"
+				v-html="modalDescriptionText"
 			>
-				Your support to
-				<strong class="tw-text-brand">{{ goalLoans }} loans</strong> for
-				<strong class="tw-text-brand">{{ categoryName?.toLowerCase() }}</strong> begins here.
 			</p>
 		</div>
 
@@ -70,7 +80,8 @@
 
 <script setup>
 import { computed } from 'vue';
-import { KvButton, KvProgressCircle } from '@kiva/kv-components';
+import { mdiPencilOutline } from '@mdi/js';
+import { KvButton, KvProgressCircle, KvMaterialIcon } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import {
 	ID_SUPPORT_ALL,
@@ -133,9 +144,13 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
+	goalEditingEnable: {
+		type: Boolean,
+		default: false,
+	},
 });
 
-const emit = defineEmits(['button-click']);
+const emit = defineEmits(['button-click', 'edit-button-click']);
 
 const yearToDate = new Date().getFullYear();
 
@@ -186,16 +201,27 @@ const containerClass = computed(() => {
 });
 
 const titleContainerClass = computed(() => {
-	return isModalVariant.value ? 'tw-text-center' : 'tw-text-left';
+	return isModalVariant.value ? 'tw-text-center' : 'tw-text-left tw-flex tw-justify-between tw-items-center';
 });
 
 const titleClass = computed(() => {
 	return isModalVariant.value ? 'tw-text-center' : '';
 });
 
+const modalDescriptionText = computed(() => {
+	if (props.categoryId === ID_SUPPORT_ALL) {
+		return `Your goal to support <span class="tw-text-brand">${props.goalLoans} loans</span> begins here.`;
+	}
+	// eslint-disable-next-line max-len
+	return `Your support to <span class="tw-text-brand">${props.goalLoans}</span> for <span class="tw-text-brand">${props.categoryName?.toLowerCase() || ''}</span> begins here.`;
+});
+
 const titleText = computed(() => {
 	if (isModalVariant.value) {
 		return 'Goal set!';
+	}
+	if (props.categoryId === ID_SUPPORT_ALL) {
+		return `Your ${yearToDate} goal`;
 	}
 	return `Your ${yearToDate} goal to ${props.categoryName?.toLowerCase() || ''}`;
 });
@@ -235,6 +261,10 @@ const buttonText = computed(() => {
 
 const handleButtonClick = () => {
 	emit('button-click');
+};
+
+const handleEditGoal = () => {
+	emit('edit-button-click');
 };
 </script>
 

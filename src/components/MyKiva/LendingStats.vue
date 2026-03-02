@@ -1,13 +1,13 @@
 <template>
 	<div
 		class="tw-mb-2"
-		:class="{'next-steps-link': nextStepsExperimentVariant}"
+		:class="{'next-steps-link': isNextStepsExperimentEnabled}"
 	>
 		<h3 class="tw-text-primary md:tw-mb-1">
 			Next steps recommended for you
 		</h3>
 		<div
-			v-if="nextStepsExperimentVariant"
+			v-if="isNextStepsExperimentEnabled"
 			class="tw-flex md:tw-gap-1 tw-cursor-pointer tw-w-16 md:tw-w-fit tw-justify-end"
 			@click="$router.push('/mykiva/next-steps')"
 		>
@@ -47,6 +47,7 @@
 					:post-lending-next-steps-enable="postLendingNextStepsEnable"
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+					:goal-editing-enable="goalEditingEnable"
 					:use-universal-order="useUniversalOrder"
 					@open-goal-modal="showGoalModal = true"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
@@ -161,7 +162,7 @@
 		<JourneyCardCarousel
 			v-else
 			class="carousel tw--mt-6"
-			:class="{'carousel-spacing': nextStepsExperimentVariant}"
+			:class="{'carousel-spacing': isNextStepsExperimentEnabled}"
 			user-in-homepage
 			in-lending-stats
 			controls-top-right
@@ -182,6 +183,7 @@
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+			:goal-editing-enable="goalEditingEnable"
 			:use-universal-order="useUniversalOrder"
 			@open-goal-modal="showGoalModal = true"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
@@ -306,6 +308,10 @@ export default {
 			type: String,
 			default: 'a',
 			validator: value => ['a', 'b'].includes(value)
+		},
+		goalEditingEnable: {
+			type: Boolean,
+			default: false
 		},
 	},
 	data() {
