@@ -574,6 +574,8 @@ export default function useGoalData({ apollo } = {}) {
 	 * @param {Object} updatedGoal - Updated goal data to replace the previous goal with
 	 */
 	async function updateCurrentGoal(previousGoal, updatedGoal) {
+		// Update user preferences to ensure goal is up-to-date preventing user from updating stale goal data.
+		await loadPreferences('network-only');
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		const goals = parsedPrefs.goals || [];
 		const goalIndex = goals.findIndex(g => g.goalName === previousGoal.goalName);

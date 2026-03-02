@@ -65,7 +65,7 @@
 				:is-updating-goal="userIsEditingGoal"
 				@set-goal-target="setTarget($event)"
 				@set-goal="setGoal($event)"
-				@update-goal-target="updateGoal($event)"
+				@update-goal="updateGoal($event)"
 				@edit-goal="editGoalCategory"
 				@edit-goal-from-email="userIsEditingGoal = true"
 			/>

@@ -195,7 +195,7 @@ const emit = defineEmits([
 	'set-goal-target',
 	'close-modal',
 	'edit-goal-from-email',
-	'update-goal-target'
+	'update-goal'
 ]);
 
 const DEFAULT_GOAL_OPTIONS = [
@@ -379,7 +379,7 @@ const handleContinue = () => {
 	);
 
 	if (props.isUpdatingGoal) {
-		emit('update-goal-target', preferences);
+		emit('update-goal', preferences);
 	} else {
 		emit('set-goal', preferences);
 	}
