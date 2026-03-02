@@ -1,14 +1,5 @@
 <template>
-	<template v-if="loadingGoalData">
-		<div class="tw-flex tw-flex-col tw-gap-1 tw-w-full tw-items-center">
-			<KvLoadingPlaceholder style="min-height: 50px; " />
-			<KvLoadingPlaceholder style="min-height: 20px;" />
-			<KvLoadingPlaceholder style="min-height: 20px;" />
-			<KvLoadingPlaceholder style="width: 160px; height: 160px;" />
-			<KvLoadingPlaceholder style="min-height: 50px;" />
-		</div>
-	</template>
-	<div v-else class="tw-h-full tw-flex tw-flex-col tw-justify-between" :class="containerClass">
+	<div class="tw-h-full tw-flex tw-flex-col tw-justify-between" :class="containerClass">
 		<div :class="titleContainerClass">
 			<h2 v-if="isModalVariant" class="tw-font-medium" :class="titleClass">
 				{{ titleText }}
@@ -91,7 +82,7 @@
 import { computed } from 'vue';
 import { mdiPencilOutline } from '@mdi/js';
 import {
-	KvButton, KvProgressCircle, KvMaterialIcon, KvLoadingPlaceholder
+	KvButton, KvProgressCircle, KvMaterialIcon
 } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import {
@@ -156,13 +147,6 @@ const props = defineProps({
 		default: '',
 	},
 	goalEditingEnable: {
-		type: Boolean,
-		default: false,
-	},
-	/**
-	 * Loading state for goal data (used in GoalSelector when fetching current year data)
-	 */
-	loadingGoalData: {
 		type: Boolean,
 		default: false,
 	},
