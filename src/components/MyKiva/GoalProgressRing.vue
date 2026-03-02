@@ -81,9 +81,7 @@
 <script setup>
 import { computed } from 'vue';
 import { mdiPencilOutline } from '@mdi/js';
-import {
-	KvButton, KvProgressCircle, KvMaterialIcon
-} from '@kiva/kv-components';
+import { KvButton, KvProgressCircle, KvMaterialIcon } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import {
 	ID_SUPPORT_ALL,

@@ -31,7 +31,6 @@
 				:selected-category-id="selectedCategory.badgeId"
 				:selected-category-name="selectedCategory.name"
 				:goal-loans="loanTarget"
-				:goal-progress="goalProgress"
 				tracking-category="event-tracking"
 				@set-goal-target="setTarget($event)"
 				@set-goal="setGoal($event)"
