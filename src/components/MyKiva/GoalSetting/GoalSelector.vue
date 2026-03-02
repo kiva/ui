@@ -10,6 +10,7 @@
 			:category-name="selectedCategoryName"
 			:category-id="selectedCategoryId"
 			:go-to-url="goToUrl"
+			:loading-goal-data="loadingCurrentYear"
 			@button-click="handleSuccessContinue"
 		/>
 
