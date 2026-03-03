@@ -166,7 +166,7 @@ import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCar
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import useOptIn from '#src/composables/useOptIn';
-import buildUniversalOrderedSlides from '#src/util/journeyCardOrderingUtils';
+import { buildUniversalOrderedSlides } from '#src/util/journeyCardOrderingUtils';
 import ThankYouCard from '../MyKiva/ThankYouCard';
 
 const JOURNEY_MODAL_KEY = 'journey';
