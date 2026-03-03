@@ -327,10 +327,12 @@ export default {
 			recordedGoalSet: false,
 			newGoalPrefs: null,
 			showPostLendingNextStepsCards: false,
-			useUniversalOrder: false,
 		};
 	},
 	computed: {
+		useUniversalOrder() {
+			return this.nextStepsExperimentVariant === 'b';
+		},
 		showRegionExperience() {
 			return this.isNextStepsExpEnabled && !this.postLendingNextStepsEnable && !this.userLentToAllRegions;
 		},

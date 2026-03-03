@@ -166,6 +166,7 @@ import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCar
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import useOptIn from '#src/composables/useOptIn';
+import buildUniversalOrderedSlides from '#src/util/journeyCardOrderingUtils';
 import ThankYouCard from '../MyKiva/ThankYouCard';
 
 const JOURNEY_MODAL_KEY = 'journey';
@@ -316,6 +317,8 @@ const showSurveyCard = computed(() => {
 	return props.showPostLendingNextStepsCards && !isFormSubmitted && props.postLendingNextStepsEnable;
 });
 
+// TODO: Create computed properties for showFriendReferralCard, showLendingTeamsCard, and showKivaCard
+
 const badgesData = computed(() => {
 	const badgeContentfulData = (props.heroContentfulData ?? [])
 		.map(entry => getContentfulLevelData(entry));
@@ -450,41 +453,27 @@ const dynamicOrderedSlides = computed(() => {
 	return sortedSlides;
 });
 
+const slideLimit = computed(() => {
+	if (isMobile.value) return 3;
+	return props.slidesNumber;
+});
+
 const universalOrderedSlides = computed(() => {
 	const achievementSlides = buildAchievementSlides();
-	const universalSequence = [];
+	return buildUniversalOrderedSlides({
+		achievementSlides,
+		shouldShowGoalCard: shouldShowGoalCard.value,
+		shouldShowEmailMarketingCard: shouldShowEmailMarketingCard.value,
+		showLatestLoan: showLatestLoan.value,
+		showSurveyCard: showSurveyCard.value,
+		/* TODO: Refer to and remove when Line 320 is worked on
 
-	// Goal card
-	if (shouldShowGoalCard.value) {
-		universalSequence.push({});
-	}
-
-	// Achievement cards
-	universalSequence.push(...achievementSlides.slice(0, 2));
-
-	// Email marketing card
-	if (shouldShowEmailMarketingCard.value) {
-		universalSequence.push({ isEmailUpdates: true });
-	} else if (showLatestLoan.value) {
-		universalSequence.push({ isLatestLoan: true });
-	}
-
-	// Latest loan card
-	if (shouldShowEmailMarketingCard.value && showLatestLoan.value) {
-		universalSequence.push({ isLatestLoan: true });
-	}
-
-	// Survey card
-	if (showSurveyCard.value) {
-		universalSequence.push({ isSurveyCard: true });
-	}
-	// TODO: Add impact activity cards (education, invite a friend, etc)
-
-	if (props.slidesNumber) {
-		return universalSequence.slice(0, props.slidesNumber);
-	}
-
-	return universalSequence;
+		showFriendReferralCard: showFriendReferralCard.value,
+		showLendingTeamsCard: showLendingTeamsCard.value,
+		showKivaCard: showKivaCard.value,
+		*/
+		slidesNumber: slideLimit.value,
+	});
 });
 
 const cardOrderingSystem = computed(() => {
