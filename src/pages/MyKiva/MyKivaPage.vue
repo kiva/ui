@@ -351,7 +351,11 @@ export default {
 				);
 
 				// Fix goals incorrectly marked as completed due to progress double-counting bug
-				const { wasFixed } = await this.fixIncorrectlyCompletedGoals();
+				const { wasFixed } = await this.fixIncorrectlyCompletedGoals({
+					freshProgressLoans: this.recentTransactionLoans,
+					tieredAchievements: this.currentYearTieredAchievements,
+					transactions: this.transactions,
+				});
 
 				if (showRenewedAnnualGoalToast || wasFixed) {
 					if (showRenewedAnnualGoalToast) {

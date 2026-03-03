@@ -748,11 +748,21 @@ export default function useGoalData({ apollo } = {}) {
 	/**
 	 * Fix goals incorrectly marked as completed or hidden due to progress-related bugs.
 	 * Checks current year goals and resets status to in-progress and unhides the goal card
-	 * if the actual yearly progress doesn't meet the target.
+	 * if the actual yearly progress doesn't meet the target. Accepts fresh progress data
+	 * to compensate for achievement service indexing lag, preventing false reverts of
+	 * legitimately completed goals.
 	 *
+	 * @param {Object} options - Configuration options
+	 * @param {Array} options.freshProgressLoans - Recent transaction loans for reconciling missing achievement progress
+	 * @param {Array} options.tieredAchievements - Tiered achievements from achievement service for fresh progress calc
+	 * @param {Array} options.transactions - User transactions for purchase date filtering
 	 * @returns {Promise<{wasFixed: boolean}>} Whether a goal was fixed
 	 */
-	async function fixIncorrectlyCompletedGoals() {
+	async function fixIncorrectlyCompletedGoals({
+		freshProgressLoans = [],
+		tieredAchievements = [],
+		transactions = [],
+	} = {}) {
 		const parsedPrefs = await loadPreferences('network-only');
 		const goals = parsedPrefs.goals || [];
 		const currentYear = new Date().getFullYear();
@@ -776,8 +786,18 @@ export default function useGoalData({ apollo } = {}) {
 			const stats = await getLoanStatsByYear(currentYear, 'network-only');
 			actualYearlyProgress = stats?.count || 0;
 		} else {
+			// Calculate fresh progress adjustments to account for achievement service kafka lag
+			let freshProgressAdjustments = { allTime: {}, yearSpecific: {} };
+			if (freshProgressLoans?.length && tieredAchievements?.length) {
+				freshProgressAdjustments = calculateGoalFreshProgressAdjustments(
+					freshProgressLoans,
+					tieredAchievements,
+					currentYear,
+					transactions
+				);
+			}
 			// Use loadProgress to populate currentYearProgress so goalProgress computed has data immediately
-			await loadProgress(currentYear);
+			await loadProgress(currentYear, 'network-only', freshProgressAdjustments);
 			const categoryProgress = currentYearProgress.value?.find(n => n.id === goalToFix.category);
 			actualYearlyProgress = categoryProgress?.progressForYear || 0;
 		}
