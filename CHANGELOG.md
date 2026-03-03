@@ -1,3 +1,17 @@
+## [3.59.0-rc.1](https://github.com/kiva/ui/compare/v3.58.0...v3.59.0-rc.1) (2026-03-03)
+
+### 🎉 New Features
+
+* add tests for query string cookie file ([de7c3de](https://github.com/kiva/ui/commit/de7c3de3ad0f4d2966c2844783a54199d8aeb5b0))
+* create data settings page in ui repo ([2f9eeb3](https://github.com/kiva/ui/commit/2f9eeb3693573635eb031fc914435a41a3ff49af))
+* fixed copy change for support all context ([082d4e4](https://github.com/kiva/ui/commit/082d4e48b319ebbd05bd4d9d44a17f20fb8ab772))
+
+### 🐛 Bugfixes
+
+* ensure current year loans are loaded before showing ring progress information ([4c8ed35](https://github.com/kiva/ui/commit/4c8ed35f4724bb76ae77f640a668a7519c27a31d))
+* reverting not needed changes ([027dd37](https://github.com/kiva/ui/commit/027dd37856547f0298fcb9d409450268071f90df))
+* wait to show goal information until yearly data loads ([f469f0b](https://github.com/kiva/ui/commit/f469f0bb0d457d7221f0332aceaf93e9f4bc709a))
+
 ## [3.58.0](https://github.com/kiva/ui/compare/v3.57.0...v3.58.0) (2026-02-27)
 
 ### 🎉 New Features
