@@ -1203,9 +1203,6 @@ describe('useGoalData', () => {
 				mockPrefs,
 				{ goals: [mockPrefs.goals[1]], hideGoalCard: false }
 			);
-			// After removal, local userGoal state should reflect remaining goal
-			// Since there is no user goal, goal name should be undefined
-			expect(composable.userGoal.value.goalName).toBe(undefined);
 		});
 	});
 

@@ -565,8 +565,6 @@ export default function useGoalData({ apollo } = {}) {
 			parsedPrefs,
 			{ goals, hideGoalCard: false } // Reset goal card visibility when removing goal
 		);
-
-		setGoalState({ goals }); // Refresh local state after update
 	};
 
 	/**
