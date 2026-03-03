@@ -1201,7 +1201,7 @@ describe('useGoalData', () => {
 				mockApollo,
 				expect.objectContaining({ id: '1' }),
 				mockPrefs,
-				{ goals: [mockPrefs.goals[1]] }
+				{ goals: [mockPrefs.goals[1]], hideGoalCard: false }
 			);
 			// After removal, local userGoal state should reflect remaining goal
 			// Since there is no user goal, goal name should be undefined
