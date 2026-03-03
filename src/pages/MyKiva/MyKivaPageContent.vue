@@ -237,7 +237,7 @@ import useContentful from '#src/composables/useContentful';
 
 import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
-import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
+import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
 import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';

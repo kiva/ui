@@ -226,7 +226,7 @@ import Oceania from '#src/assets/images/my-kiva/Oceania.png';
 import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
-import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
+import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 
 import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';

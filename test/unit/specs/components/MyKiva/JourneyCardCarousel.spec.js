@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies, vue/one-component-per-file */
 import { mount } from '@vue/test-utils';
 import { defineComponent, h, ref } from 'vue';
-import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
+import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 
 vi.mock('vue-router', () => ({

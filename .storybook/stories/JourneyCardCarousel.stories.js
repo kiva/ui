@@ -1,4 +1,4 @@
-import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel.vue';
+import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel.vue';
 import {
 	badgeWomensEquality,
 } from '../mock-data/badge-journey-data-mock';

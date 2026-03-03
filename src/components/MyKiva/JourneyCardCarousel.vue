@@ -166,7 +166,7 @@ import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCar
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import useOptIn from '#src/composables/useOptIn';
-import ThankYouCard from '../MyKiva/ThankYouCard';
+import ThankYouCard from '#src/components/MyKiva/ThankYouCard';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
