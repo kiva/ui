@@ -79,7 +79,7 @@
 			v-if="showEditGoalButton"
 			variant="ghost"
 			class="goal-button edit-goal-button tw-w-full"
-			@click="editGoal"
+			@click="handleEditGoalFromSettings"
 		>
 			Edit goal
 			<KvMaterialIcon
@@ -167,7 +167,7 @@ const props = defineProps({
 	},
 });
 
-const emit = defineEmits(['button-click', 'edit-button-click', 'edit-goal-from-email']);
+const emit = defineEmits(['button-click', 'edit-button-click', 'edit-goal-from-settings']);
 const router = useRouter();
 
 const yearToDate = new Date().getFullYear();
@@ -281,8 +281,8 @@ const handleButtonClick = () => {
 	emit('button-click');
 };
 
-const editGoal = () => {
-	emit('edit-goal-from-email');
+const handleEditGoalFromSettings = () => {
+	emit('edit-goal-from-settings');
 };
 
 const handleEditGoal = () => {

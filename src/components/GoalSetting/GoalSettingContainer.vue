@@ -59,7 +59,7 @@
 				:is-editing="isEditing"
 				:selected-category-id="selectedCategory.badgeId"
 				:selected-category-name="selectedCategory.name"
-				:goal-loans="loanTarget"
+				:goal-loans="goalTarget"
 				tracking-category="event-tracking"
 				:goal-editing-enable="goalEditingEnable"
 				:is-updating-goal="userIsEditingGoal"
@@ -67,7 +67,7 @@
 				@set-goal="setGoal($event)"
 				@update-goal="updateGoal($event)"
 				@edit-goal="editGoalCategory"
-				@edit-goal-from-email="userIsEditingGoal = true"
+				@edit-goal-from-settings="userIsEditingGoal = true"
 			/>
 			<div
 				v-show="showCategories"
@@ -250,9 +250,7 @@ const editGoalCategory = () => {
 };
 
 const setTarget = target => {
-	if (isEditing.value || userIsEditingGoal.value) {
-		loanTarget.value = target;
-	}
+	loanTarget.value = target;
 };
 
 const recalculateGoalInformation = async () => {
@@ -344,6 +342,10 @@ const ctaCopy = computed(() => {
 		return 'Continue';
 	}
 	return `Set ${yearToDate} goal`;
+});
+
+const goalTarget = computed(() => {
+	return userGoal.value?.target || 0;
 });
 
 onMounted(async () => {

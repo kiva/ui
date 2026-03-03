@@ -1,7 +1,7 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-justify-center tw-gap-0 lg:tw-gap-1.5 tw-items-center">
 		<!-- Goal Progress Ring (shown after goal is set) -->
-		<template v-if="loadingCurrentYear">
+		<template v-if="loadingCurrentYear && !isUpdatingGoal">
 			<div class="tw-flex tw-flex-col tw-gap-1 tw-w-full tw-items-center">
 				<KvLoadingPlaceholder class="!tw-min-h-6" />
 				<KvLoadingPlaceholder class="!tw-min-h-2.5" />
@@ -12,7 +12,7 @@
 		</template>
 		<template v-else>
 			<GoalProgressRing
-				v-if="isGoalSet && !editGoalFromEmail"
+				v-if="isGoalSet && !editGoalFromSettings"
 				variant="modal"
 				:goal-loans="effectiveGoalLoans"
 				:goal-progress="loansThisYear"
@@ -21,7 +21,7 @@
 				:category-id="selectedCategoryId"
 				:go-to-url="goToUrl"
 				:goal-editing-enable="goalEditingEnable"
-				@edit-goal-from-email="handleEditGoalFromEmail"
+				@edit-goal-from-settings="handleEditGoalFromSettings"
 				@button-click="handleSuccessContinue"
 			/>
 			<!-- Goal Selection Form (shown before goal is set) -->
@@ -205,7 +205,7 @@ const emit = defineEmits([
 	'edit-goal',
 	'set-goal-target',
 	'close-modal',
-	'edit-goal-from-email',
+	'edit-goal-from-settings',
 	'update-goal'
 ]);
 
@@ -234,7 +234,7 @@ const loadingCurrentYear = ref(false);
 const fetchedCurrentYearLoans = ref(null);
 const prevSupportAllCount = ref(0);
 const selectedIdx = ref(1);
-const editGoalFromEmail = ref(false);
+const editGoalFromSettings = ref(false);
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -307,7 +307,7 @@ const subtitleText = computed(() => {
 const yearToDate = new Date().getFullYear();
 
 const buttonText = computed(() => {
-	if (editGoalFromEmail.value) {
+	if (editGoalFromSettings.value) {
 		return `Update ${yearToDate} goal`;
 	}
 	return `Set ${yearToDate} goal`;
@@ -395,7 +395,7 @@ const handleContinue = () => {
 		emit('set-goal', preferences);
 	}
 
-	editGoalFromEmail.value = false;
+	editGoalFromSettings.value = false;
 };
 
 const updateGoalOptions = () => {
@@ -460,10 +460,10 @@ const updateGoalOptions = () => {
 	emit('set-goal-target', selectedTarget.value);
 };
 
-const handleEditGoalFromEmail = () => {
-	editGoalFromEmail.value = true;
+const handleEditGoalFromSettings = () => {
+	editGoalFromSettings.value = true;
 	$kvTrackEvent('event-tracking', 'click', 'edit-goal');
-	emit('edit-goal-from-email');
+	emit('edit-goal-from-settings');
 };
 
 onMounted(async () => {
@@ -480,7 +480,7 @@ onMounted(async () => {
 });
 
 const editGoalCopy = computed(() => {
-	if (editGoalFromEmail.value) {
+	if (editGoalFromSettings.value) {
 		return 'Customize your goal';
 	}
 	return 'Edit goal';
