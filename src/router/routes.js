@@ -188,6 +188,22 @@ export default [
 		component: () => import('#src/pages/LendingTeams/LendingTeams')
 	},
 	{
+		path: '/teams/my-teams',
+		component: () => import('#src/pages/LendingTeams/MyTeams/MyTeams'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
+		path: '/teams/my-teams-beta',
+		component: () => import('#src/pages/LendingTeams/MyTeams/MyTeams'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
 		path: '/lend-by-category/loans-to-women',
 		redirect: '/lend-by-category/women'
 	},
