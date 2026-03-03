@@ -16,98 +16,72 @@
 			style="max-width: 644px; min-height: 495px;"
 		/>
 		<template v-else>
-			<template v-if="isEmailFlow">
-				<div
-					class="tw-mx-auto tw-flex tw-flex-col tw-items-center"
-					style="max-width: 644px;"
-				>
-					<GoalProgressRing
-						v-if="hasActiveGoal"
-						variant="modal"
-						:goal-loans="userGoal.target"
-						:goal-progress="goalProgress"
-						:goal-progress-percentage="goalProgressPercentage"
-						:is-existing-goal="!isNewGoal"
-						:category-id="userGoal.category"
-						:category-name="emailCategoryName"
-						:go-to-url="ctaHref"
-						@button-click="handleEmailGoalContinue"
-					/>
-					<p
-						v-else
-						class="tw-text-center tw-text-secondary tw-mt-4"
-					>
-						No active goal found.
-					</p>
-					<KvButton
-						v-if="hasActiveGoal"
-						variant="ghost"
-						class="edit-goal-button tw-w-full tw-mt-1.5"
-						style="max-width: 324px;"
-						href="#"
-					>
-						Edit goal
-						<KvMaterialIcon
-							:icon="mdiPencilOutline"
-							class="tw-ml-0.5"
-						/>
-					</KvButton>
-				</div>
-			</template>
-
 			<div
-				v-else
 				class="tw-mx-auto"
 				style="max-width: 644px;"
 			>
-				<GoalSelector
-					class="goal-selector"
-					v-show="!showCategories"
-					:is-goal-set="isGoalSet"
-					:categories-loan-count="categoriesLoanCount"
-					:tiered-achievements="tieredAchievements"
-					:go-to-url="ctaHref"
-					:is-editing="isEditing"
-					:selected-category-id="selectedCategory.badgeId"
-					:selected-category-name="selectedCategory.name"
+				<GoalProgressRing
+					v-if="isGoalSet"
+					variant="modal"
 					:goal-loans="loanTarget"
-					tracking-category="event-tracking"
-					@set-goal-target="setTarget($event)"
-					@set-goal="setGoal($event)"
-					@edit-goal="editGoalCategory"
+					:goal-progress="goalProgress"
+					:goal-progress-percentage="goalProgressPercentage"
+					:is-existing-goal="isExistingGoal"
+					:category-id="selectedCategory.badgeId"
+					:category-name="selectedCategory.name"
+					:go-to-url="ctaHref"
 				/>
-				<div
-					v-show="showCategories"
-				>
-					<h2
-						class="tw-mb-3 tw-text-left lg:tw-text-center"
-					>
-						Choose an impact area
-					</h2>
-					<component
-						v-show="showCategories"
-						:is="contentComponent"
-						:categories="categories"
-						:pre-selected-category="selectedCategory.id"
-						:selected-category="selectedCategory"
-						:selected-goal-number="loanTarget"
-						@category-selected="handleCategorySelected"
-						@number-changed="handleNumberChanged"
+				<template v-else>
+					<GoalSelector
+						class="goal-selector"
+						v-show="!showCategories"
+						:is-goal-set="isGoalSet"
+						:categories-loan-count="categoriesLoanCount"
+						:tiered-achievements="tieredAchievements"
+						:go-to-url="ctaHref"
+						:is-editing="isEditing"
+						:selected-category-id="selectedCategory.badgeId"
+						:selected-category-name="selectedCategory.name"
+						:goal-loans="loanTarget"
+						tracking-category="event-tracking"
+						@set-goal-target="setTarget($event)"
+						@set-goal="setGoal($event)"
+						@edit-goal="editGoalCategory"
 					/>
 					<div
-						class="buttons tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-flex tw-flex-col tw-justify-center
-							tw-w-full lg:tw-w-auto tw-z-sticky lg:tw-z-auto tw-gap-1.5 tw-mt-4 tw-bg-primary
-							tw-p-2.5 lg:tw-p-0"
+						v-show="showCategories"
 					>
-						<KvButton
-							class="tw-flex-none tw-mx-auto tw-w-full lg:tw-w-auto"
-							style="min-width: 324px;"
-							@click="handleClick"
+						<h2
+							class="tw-mb-3 tw-text-left lg:tw-text-center"
 						>
-							{{ ctaCopy }}
-						</KvButton>
+							Choose an impact area
+						</h2>
+						<component
+							v-show="showCategories"
+							:key="categoryFormKey"
+							:is="contentComponent"
+							:categories="categories"
+							:pre-selected-category="selectedCategory.id"
+							:selected-category="selectedCategory"
+							:selected-goal-number="loanTarget"
+							@category-selected="handleCategorySelected"
+							@number-changed="handleNumberChanged"
+						/>
+						<div
+							class="buttons tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-flex tw-flex-col
+								tw-justify-center tw-w-full lg:tw-w-auto tw-z-sticky lg:tw-z-auto tw-gap-1.5
+								tw-mt-4 tw-bg-primary tw-p-2.5 lg:tw-p-0"
+						>
+							<KvButton
+								class="tw-flex-none tw-mx-auto tw-w-full lg:tw-w-auto"
+								style="min-width: 324px;"
+								@click="handleClick"
+							>
+								{{ ctaCopy }}
+							</KvButton>
+						</div>
 					</div>
-				</div>
+				</template>
 			</div>
 		</template>
 	</div>
@@ -122,11 +96,13 @@ import {
 	defineAsyncComponent
 } from 'vue';
 import { useRouter } from 'vue-router';
-import { mdiChevronLeft, mdiPencilOutline } from '@mdi/js';
+import { mdiChevronLeft } from '@mdi/js';
 import { KvLoadingPlaceholder, KvMaterialIcon, KvButton } from '@kiva/kv-components';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
-import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
+import useGoalData from '#src/composables/useGoalData';
+import { buildEmailFlowGoalData, findEmailDisplayGoal } from '#src/util/goalEmailFlow';
+import logFormatter from '#src/util/logFormatter';
 import {
 	ID_SUPPORT_ALL,
 	ID_WOMENS_EQUALITY,
@@ -154,22 +130,40 @@ const {
 } = useGoalData({ apollo });
 
 const props = defineProps({
+	/**
+	 * Target value passed via ?target= query param from an email link.
+	 * When present, the component auto-creates a goal and shows
+	 * a confirmation state instead of the normal form flow.
+	 */
 	emailTarget: {
 		type: String,
 		default: null,
 	},
+	/**
+	 * Category passed via ?category= query param from an email link.
+	 * Must be one of the valid badge IDs; falls back to support-all if absent or invalid.
+	 */
 	emailCategory: {
 		type: String,
 		default: null,
 	},
+	/**
+	 * Total number of loans across all categories
+	 */
 	totalLoans: {
 		type: Number,
 		default: 0,
 	},
+	/**
+	 * Object with loan counts per category
+	 */
 	categoriesLoanCount: {
 		type: Object,
 		default: () => ({}),
 	},
+	/**
+	 * Tiered achievements data
+	 */
 	tieredAchievements: {
 		type: Array,
 		default: () => ([]),
@@ -186,7 +180,7 @@ const formStep = ref(1);
 
 // Email flow
 const emailLoading = ref(false);
-const isNewGoal = ref(true);
+const isExistingGoal = ref(false);
 
 const VALID_EMAIL_CATEGORIES = new Set([
 	ID_SUPPORT_ALL,
@@ -213,17 +207,11 @@ const validEmailCategory = computed(() => {
 });
 
 const isEmailFlow = computed(() => props.emailTarget != null);
-const hasActiveGoal = computed(() => Object.keys(userGoal.value || {}).length > 0);
 
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
 const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
-
-const emailCategoryName = computed(() => {
-	const category = categories.find(c => c.badgeId === (userGoal.value?.category ?? validEmailCategory.value));
-	return category?.name ?? '';
-});
 
 const selectedCategory = ref(categories[0]);
 
@@ -318,11 +306,6 @@ const goToDashboard = () => {
 	router.push('/mykiva');
 };
 
-const handleEmailGoalContinue = () => {
-	$kvTrackEvent('event-tracking', 'click', 'email-goal-continue');
-	window.location.href = ctaHref.value;
-};
-
 const handleNumberChanged = () => {};
 
 const yearToDate = new Date().getFullYear();
@@ -334,6 +317,49 @@ const ctaCopy = computed(() => {
 	return `Set ${yearToDate} goal`;
 });
 
+const parseGoals = () => JSON.parse(userPreferences.value?.preferences || '{}').goals || [];
+
+async function handleEmailFlow() {
+	const category = validEmailCategory.value;
+
+	const { existingGoal, newGoalPrefs } = buildEmailFlowGoalData({
+		allGoals: parseGoals(),
+		category,
+		validEmailTarget: validEmailTarget.value,
+	});
+
+	if (newGoalPrefs) {
+		try {
+			await storeGoalPreferences(newGoalPrefs);
+		} catch (e) {
+			logFormatter('GoalSettingContainer: failed to store email goal', 'error', { error: e });
+		}
+	}
+
+	const emailGoal = findEmailDisplayGoal({ existingGoal, allGoals: parseGoals(), category });
+	if (emailGoal) {
+		userGoal.value = { ...emailGoal };
+	} else {
+		logFormatter('GoalSettingContainer: no goal found for email flow', 'error', { category });
+	}
+
+	isExistingGoal.value = !!existingGoal;
+
+	if (userGoal.value?.target) {
+		const { target, category: goalCategory } = userGoal.value;
+		loanTarget.value = target;
+		const storedCategory = categories.find(c => c.badgeId === goalCategory);
+		if (storedCategory) {
+			selectedCategory.value = storedCategory;
+		}
+		ctaHref.value = getCtaHref(target, goalCategory, router, goalProgress.value);
+		isGoalSet.value = true;
+	}
+
+	emailLoading.value = false;
+	$kvTrackEvent('event-tracking', 'view', 'goals-page-email');
+}
+
 onMounted(async () => {
 	if (isEmailFlow.value) {
 		emailLoading.value = true;
@@ -342,42 +368,7 @@ onMounted(async () => {
 	await loadGoalData({ yearlyProgress: true });
 
 	if (isEmailFlow.value) {
-		const category = validEmailCategory.value;
-		const allGoals = JSON.parse(userPreferences.value?.preferences || '{}').goals || [];
-		const existingCategoryGoal = allGoals.find(g => g.category === category
-			&& g.status === GOAL_STATUS.IN_PROGRESS);
-
-		if (!existingCategoryGoal && validEmailTarget.value) {
-			const currentYear = new Date().getFullYear();
-			await storeGoalPreferences({
-				goalName: `goal-${category}-${currentYear}`,
-				category,
-				target: validEmailTarget.value,
-				dateStarted: new Date().toISOString(),
-				status: GOAL_STATUS.IN_PROGRESS,
-			});
-			isNewGoal.value = true;
-		} else if (existingCategoryGoal) {
-			isNewGoal.value = false;
-		}
-
-		const emailGoal = existingCategoryGoal
-			?? (JSON.parse(userPreferences.value?.preferences || '{}').goals || []).find(g => g.category === category);
-		if (emailGoal) {
-			userGoal.value = { ...emailGoal };
-		}
-
-		if (userGoal.value?.target) {
-			ctaHref.value = getCtaHref(
-				userGoal.value.target,
-				userGoal.value.category,
-				router,
-				goalProgress.value
-			);
-		}
-
-		emailLoading.value = false;
-		$kvTrackEvent('event-tracking', 'view', 'goals-page-email');
+		await handleEmailFlow();
 		return;
 	}
 
@@ -391,6 +382,7 @@ onMounted(async () => {
 		}
 		ctaHref.value = getCtaHref(target, category, router, goalProgress.value);
 		isGoalSet.value = true;
+		isExistingGoal.value = true;
 	}
 	$kvTrackEvent('event-tracking', 'view', 'goals-page');
 });
@@ -411,10 +403,6 @@ onMounted(async () => {
     @screen lg {
         box-shadow: none;
     }
-}
-
-.edit-goal-button :deep(span) {
-    @apply tw-flex;
 }
 
 .goal-selector :deep(button) {
