@@ -5,7 +5,7 @@
 			v-if="isGoalSet && !editGoalFromSettings"
 			variant="modal"
 			:goal-loans="effectiveGoalLoans"
-			:goal-progress="loansThisYear"
+			:goal-progress="goalProgress"
 			:goal-progress-percentage="localGoalProgressPercentage"
 			:category-name="selectedCategoryName"
 			:category-id="selectedCategoryId"
@@ -100,7 +100,7 @@ import useGoalData, { SAME_AS_LAST_YEAR_LIMIT, LAST_YEAR_KEY, GOAL_STATUS } from
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const { getCategoryLoansLastYear, getSupportAllLoanCountByYear } = useGoalData();
+const { getCategoryLoansLastYear, getCategoryLoanCountByYear, getSupportAllLoanCountByYear } = useGoalData();
 
 const props = defineProps({
 	/**
@@ -187,14 +187,6 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	fetchedCurrentYearLoans: {
-		type: Number,
-		default: null,
-	},
-	loadingCurrentYear: {
-		type: Boolean,
-		default: false,
-	}
 });
 
 const emit = defineEmits([
@@ -227,6 +219,8 @@ const DEFAULT_GOAL_OPTIONS = [
 
 const goalOptions = ref(DEFAULT_GOAL_OPTIONS);
 
+const loadingCurrentYear = ref(false);
+const fetchedCurrentYearLoans = ref(null);
 const prevSupportAllCount = ref(0);
 const selectedIdx = ref(1);
 const editGoalFromSettings = ref(false);
@@ -250,8 +244,30 @@ const loansThisYear = computed(() => {
 		return categoryAchievement.progressForCurrentYear;
 	}
 	// Otherwise use fetched data (MyKiva goal-setting page and modal)
-	return props.fetchedCurrentYearLoans ?? 0;
+	return fetchedCurrentYearLoans.value ?? 0;
 });
+
+/**
+ * Fetch current year loan count when not provided via props.
+ * This is needed for the MyKiva goal-setting page and modal where progressForCurrentYear
+ * is not set (only last year data comes from tieredAchievements).
+ */
+const loadLoansThisYear = async () => {
+	// Check if progressForCurrentYear is already provided via props
+	const categoryAchievement = props.tieredAchievements?.find(
+		entry => entry.id === props.selectedCategoryId
+	);
+	if (typeof categoryAchievement?.progressForCurrentYear === 'number') {
+		// Already have current year data from props (Thanks page), no need to fetch
+		return;
+	}
+
+	loadingCurrentYear.value = true;
+	const currentYear = new Date().getFullYear();
+	const count = await getCategoryLoanCountByYear(props.selectedCategoryId, currentYear, 'network-only');
+	fetchedCurrentYearLoans.value = count;
+	loadingCurrentYear.value = false;
+};
 
 const titleText = computed(() => {
 	// Default title if no lending history and category is ID_WOMENS_EQUALITY
@@ -440,6 +456,7 @@ const handleEditGoalFromSettings = () => {
 };
 
 onMounted(async () => {
+	await loadLoansThisYear();
 	updateGoalOptions();
 
 	if (props.trackingCategory === 'post-checkout') {
@@ -458,7 +475,8 @@ const editGoalCopy = computed(() => {
 	return 'Edit goal';
 });
 
-watch(() => props.fetchedCurrentYearLoans, async newCategory => {
+watch(() => props.selectedCategoryId, async newCategory => {
+	await loadLoansThisYear();
 	updateGoalOptions();
 
 	if (newCategory === ID_SUPPORT_ALL) {

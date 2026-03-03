@@ -65,6 +65,7 @@
 				:is-updating-goal="userIsEditingGoal"
 				:fetched-current-year-loans="fetchedCurrentYearLoans"
 				:loading-current-year="loadingCurrentYear"
+				:goal-progress="goalProgress"
 				@set-goal-target="setTarget($event)"
 				@set-goal="setGoal($event)"
 				@update-goal="updateGoal($event)"
@@ -135,7 +136,6 @@ import {
 	onMounted,
 	computed,
 	defineAsyncComponent,
-	watch
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { mdiChevronLeft } from '@mdi/js';
@@ -165,7 +165,6 @@ const {
 	getLoanStatsByYear,
 	removeGoalFromPreferences,
 	updateCurrentGoal,
-	getCategoryLoanCountByYear
 } = useGoalData({ apollo });
 
 const props = defineProps({
@@ -355,35 +354,8 @@ const goalTarget = computed(() => {
 	return userGoal.value?.target || 0;
 });
 
-/**
- * Fetch current year loan count when not provided via props.
- * This is needed for the MyKiva goal-setting page and modal where progressForCurrentYear
- * is not set (only last year data comes from tieredAchievements).
- */
-const loadLoansThisYear = async () => {
-	loadingCurrentYear.value = true;
-	// Check if progressForCurrentYear is already provided via props
-	const categoryAchievement = props.tieredAchievements?.find(
-		entry => entry.id === selectedCategory.value?.badgeId
-	);
-	if (typeof categoryAchievement?.progressForCurrentYear === 'number') {
-		// Already have current year data from props (Thanks page), no need to fetch
-		return;
-	}
-
-	const currentYear = new Date().getFullYear();
-	const count = await getCategoryLoanCountByYear(selectedCategory.value?.badgeId, currentYear, 'network-only');
-	fetchedCurrentYearLoans.value = count;
-	loadingCurrentYear.value = false;
-};
-
-watch(() => selectedCategory.value?.badgeId, async () => {
-	await loadLoansThisYear();
-});
-
 onMounted(async () => {
 	await loadGoalData({ yearlyProgress: true });
-	loading.value = true;
 	const isEmptyGoal = Object.keys(userGoal.value || {}).length === 0;
 	if (!isEmptyGoal) {
 		const { target, category } = userGoal.value;
@@ -394,11 +366,9 @@ onMounted(async () => {
 		if (storedCategory) {
 			selectedCategory.value = storedCategory;
 		}
-		await loadLoansThisYear();
 		// Use goalProgress which tracks current year progress
 		ctaHref.value = getCtaHref(target, category, router, goalProgress.value);
 		isGoalSet.value = true;
-		loading.value = false;
 	}
 	$kvTrackEvent('event-tracking', 'view', 'goals-page');
 });
