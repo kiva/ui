@@ -250,7 +250,9 @@ const editGoalCategory = () => {
 };
 
 const setTarget = target => {
-	loanTarget.value = target;
+	if (isEditing.value || userIsEditingGoal.value) {
+		loanTarget.value = target;
+	}
 };
 
 const recalculateGoalInformation = async () => {

@@ -10,83 +10,85 @@
 				<KvLoadingPlaceholder class="!tw-min-h-6" />
 			</div>
 		</template>
-		<GoalProgressRing
-			v-else-if="isGoalSet && !editGoalFromEmail"
-			variant="modal"
-			:goal-loans="effectiveGoalLoans"
-			:goal-progress="loansThisYear"
-			:goal-progress-percentage="localGoalProgressPercentage"
-			:category-name="selectedCategoryName"
-			:category-id="selectedCategoryId"
-			:go-to-url="goToUrl"
-			:goal-editing-enable="goalEditingEnable"
-			@edit-goal-from-email="handleEditGoalFromEmail"
-			@button-click="handleSuccessContinue"
-		/>
-		<!-- Goal Selection Form (shown before goal is set) -->
 		<template v-else>
-			<img
-				:src="HandsPlant"
-				class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
-			>
-
-			<h2
-				class="tw-px-4 lg:tw-px-7 tw-text-center"
-				style="line-height: 125%;"
-				v-html="titleText"
-			>
-			</h2>
-
-			<div
-				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
-			>
-				{{ subtitleText }}
-			</div>
-
-			<div
-				class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5 tw-my-1"
-			>
-				<template v-if="loadingCurrentYear">
-					<KvLoadingPlaceholder
-						v-for="n in 3"
-						:key="n"
-						class="tw-flex-1 !tw-rounded"
-						style="min-height: 82px;"
-					/>
-				</template>
-				<template v-else>
-					<LoanNumberSelector
-						v-for="(option, index) in goalOptions"
-						:key="index"
-						:loans-number="option.loansNumber"
-						:option-text="option.optionText"
-						:selected="option.selected"
-						:highlighted-text="option.highlightedText"
-						@click="updateOptionSelection(index)"
-					/>
-				</template>
-			</div>
-
-			<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
-				<KvButton
-					class="tw-w-full tw-mt-1.5"
-					@click="handleContinue"
+			<GoalProgressRing
+				v-if="isGoalSet && !editGoalFromEmail"
+				variant="modal"
+				:goal-loans="effectiveGoalLoans"
+				:goal-progress="loansThisYear"
+				:goal-progress-percentage="localGoalProgressPercentage"
+				:category-name="selectedCategoryName"
+				:category-id="selectedCategoryId"
+				:go-to-url="goToUrl"
+				:goal-editing-enable="goalEditingEnable"
+				@edit-goal-from-email="handleEditGoalFromEmail"
+				@button-click="handleSuccessContinue"
+			/>
+			<!-- Goal Selection Form (shown before goal is set) -->
+			<template v-else>
+				<img
+					:src="HandsPlant"
+					class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
 				>
-					{{ buttonText }}
-				</KvButton>
 
-				<KvButton
-					variant="ghost"
-					class="edit-goal-button tw-w-full"
-					@click="editGoal"
+				<h2
+					class="tw-px-4 lg:tw-px-7 tw-text-center"
+					style="line-height: 125%;"
+					v-html="titleText"
 				>
-					{{ editGoalCopy }}
-					<KvMaterialIcon
-						:icon="mdiPencilOutline"
-						class="tw-ml-0.5"
-					/>
-				</KvButton>
-			</div>
+				</h2>
+
+				<div
+					class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
+				>
+					{{ subtitleText }}
+				</div>
+
+				<div
+					class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5 tw-my-1"
+				>
+					<template v-if="loadingCurrentYear">
+						<KvLoadingPlaceholder
+							v-for="n in 3"
+							:key="n"
+							class="tw-flex-1 !tw-rounded"
+							style="min-height: 82px;"
+						/>
+					</template>
+					<template v-else>
+						<LoanNumberSelector
+							v-for="(option, index) in goalOptions"
+							:key="index"
+							:loans-number="option.loansNumber"
+							:option-text="option.optionText"
+							:selected="option.selected"
+							:highlighted-text="option.highlightedText"
+							@click="updateOptionSelection(index)"
+						/>
+					</template>
+				</div>
+
+				<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
+					<KvButton
+						class="tw-w-full tw-mt-1.5"
+						@click="handleContinue"
+					>
+						{{ buttonText }}
+					</KvButton>
+
+					<KvButton
+						variant="ghost"
+						class="edit-goal-button tw-w-full"
+						@click="editGoal"
+					>
+						{{ editGoalCopy }}
+						<KvMaterialIcon
+							:icon="mdiPencilOutline"
+							class="tw-ml-0.5"
+						/>
+					</KvButton>
+				</div>
+			</template>
 		</template>
 	</div>
 </template>
