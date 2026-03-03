@@ -1,8 +1,17 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-justify-center tw-gap-0 lg:tw-gap-1.5 tw-items-center">
 		<!-- Goal Progress Ring (shown after goal is set) -->
+		<template v-if="loadingCurrentYear">
+			<div class="tw-flex tw-flex-col tw-gap-1 tw-w-full tw-items-center">
+				<KvLoadingPlaceholder class="!tw-min-h-6" />
+				<KvLoadingPlaceholder class="!tw-min-h-2.5" />
+				<KvLoadingPlaceholder class="!tw-min-h-2.5" />
+				<KvLoadingPlaceholder style="width: 160px; height: 160px;" />
+				<KvLoadingPlaceholder class="!tw-min-h-6" />
+			</div>
+		</template>
 		<GoalProgressRing
-			v-if="isGoalSet && !editGoalFromEmail"
+			v-else-if="isGoalSet && !editGoalFromEmail"
 			variant="modal"
 			:goal-loans="effectiveGoalLoans"
 			:goal-progress="loansThisYear"
