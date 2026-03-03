@@ -38,7 +38,7 @@
 				:hero-slides="heroSlides"
 				:loans="loans"
 				:lender="lender"
-				:hero-contentful-data="heroContentfulData"
+				:hero-badge-data="heroBadgeData"
 				:hero-tiered-achievements="heroTieredAchievements"
 				:total-loans="totalLoans"
 				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
@@ -91,7 +91,7 @@
 				v-if="showNewBadgeSection"
 				class="tw--mt-4"
 				controls-top-right
-				:badge-data="badgeData"
+				:badge-data="heroBadgeData"
 				:selected-journey="selectedJourney"
 				@badge-clicked="handleBadgeSectionClicked"
 			/>
@@ -99,7 +99,7 @@
 				v-else
 				class="tw--mt-4"
 				controls-top-right
-				:badge-data="badgeData"
+				:badge-data="heroBadgeData"
 				:selected-journey="selectedJourney"
 				@badge-clicked="handleBadgeSectionClicked"
 			/>
@@ -154,7 +154,7 @@
 				v-if="showNewBadgeSection"
 				class="tw--mt-4"
 				controls-top-right
-				:badge-data="badgeData"
+				:badge-data="heroBadgeData"
 				:selected-journey="selectedJourney"
 				@badge-clicked="handleBadgeSectionClicked"
 			/>
@@ -162,7 +162,7 @@
 				v-else
 				class="tw--mt-4"
 				controls-top-right
-				:badge-data="badgeData"
+				:badge-data="heroBadgeData"
 				:selected-journey="selectedJourney"
 				@badge-clicked="handleBadgeSectionClicked"
 			/>
@@ -177,7 +177,7 @@
 				:slides="moreWaysToHelpSlides"
 				:lender="lender"
 				:user-in-homepage="userInHomepage"
-				:hero-contentful-data="heroContentfulData"
+				:hero-badge-data="heroBadgeData"
 				:hero-tiered-achievements="heroTieredAchievements"
 				@update-journey="updateJourney"
 			/>
@@ -267,7 +267,6 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import BadgesSectionV2 from '#src/components/MyKiva/BadgesSectionV2';
-import { getRecentTransactionLoans } from '#src/util/myKivaUtils';
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -326,7 +325,7 @@ export default {
 			type: Array,
 			default: () => ([]),
 		},
-		heroContentfulData: {
+		heroBadgeData: {
 			type: Array,
 			default: () => ([]),
 		},
@@ -397,23 +396,14 @@ export default {
 		const { getMostRecentBlogPost } = useContentful(apollo);
 		const { isMobile } = useBreakpoints();
 
-		// Use badge data composable directly in this component
 		const {
-			badgeData,
-			fetchAchievementData,
-			fetchContentfulData,
 			getLoanFindingUrl,
 			isTieredAchievementComplete,
-			updateBadgeDataWithFreshProgress,
 		} = useBadgeData();
 
 		return {
-			badgeData,
-			fetchAchievementData,
-			fetchContentfulData,
 			getLoanFindingUrl,
 			isTieredAchievementComplete,
-			updateBadgeDataWithFreshProgress,
 			getMostRecentBlogPost,
 			isMobile
 		};
@@ -475,7 +465,7 @@ export default {
 		},
 
 		allBadgesCompleted() {
-			const tieredBadges = this.badgeData?.filter(b => defaultBadges.includes(b?.id));
+			const tieredBadges = this.heroBadgeData?.filter(b => defaultBadges.includes(b?.id));
 			return tieredBadges?.every(b => this.isTieredAchievementComplete(b.achievementData));
 		},
 		recommendedLoansTitle() {
@@ -780,15 +770,6 @@ export default {
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');
 		fireHotJarEvent('my_kiva_viewed');
 		this.fetchBlogCards();
-		this.fetchContentfulData(this.apollo);
-
-		// Fetch achievement data first, then update with fresh progress adjustments
-		this.fetchAchievementData(this.apollo).then(() => {
-			// Update with fresh progress using loans from transactions in the last 15 minutes
-			const recentTransactionLoans = getRecentTransactionLoans(this.transactions);
-			this.updateBadgeDataWithFreshProgress(recentTransactionLoans, this.heroTieredAchievements);
-		});
-
 		this.fetchRecommendedLoans();
 		this.fetchMoreWaysToHelpData();
 		this.loadInitialBasketItems();

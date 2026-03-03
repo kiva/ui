@@ -33,7 +33,7 @@
 					:disable-drag="true"
 					:goal-progress-loading="goalProgressLoading"
 					:goal-progress="goalProgress"
-					:hero-contentful-data="heroContentfulData"
+					:hero-badge-data="heroBadgeData"
 					:hero-tiered-achievements="heroTieredAchievements"
 					:lender="lender"
 					:slides-number="1"
@@ -167,7 +167,7 @@
 			controls-top-right
 			:goal-progress-loading="goalProgressLoading"
 			:goal-progress="goalProgress"
-			:hero-contentful-data="heroContentfulData"
+			:hero-badge-data="heroBadgeData"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:lender="lender"
 			:loans="loans"
@@ -266,13 +266,13 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
-		heroContentfulData: {
-			type: Object,
-			default: () => ({}),
+		heroBadgeData: {
+			type: Array,
+			default: () => ([]),
 		},
 		heroTieredAchievements: {
-			type: Object,
-			default: () => ({}),
+			type: Array,
+			default: () => ([]),
 		},
 		totalLoans: {
 			type: Number,

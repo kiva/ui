@@ -179,8 +179,6 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
 const {
-	getContentfulLevelData,
-	combineBadgeData,
 	getActiveTierData,
 	isTieredAchievementComplete,
 } = useBadgeData(apollo);
@@ -210,7 +208,7 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
-	heroContentfulData: {
+	heroBadgeData: {
 		type: Array,
 		default: () => ([]),
 	},
@@ -312,13 +310,6 @@ const showSurveyCard = computed(() => {
 	return props.showPostLendingNextStepsCards && !isFormSubmitted && props.postLendingNextStepsEnable;
 });
 
-const badgesData = computed(() => {
-	const badgeContentfulData = (props.heroContentfulData ?? [])
-		.map(entry => getContentfulLevelData(entry));
-
-	return combineBadgeData(props.heroTieredAchievements, badgeContentfulData);
-});
-
 const getRichTextContent = slide => slide?.fields?.richText?.content ?? [];
 const getRichTextUiSettingsData = slide => {
 	const richTextContent = getRichTextContent(slide);
@@ -360,7 +351,7 @@ const orderedSlides = computed(() => {
 	}
 
 	defaultBadges.forEach(badgeKey => {
-		const achievementContent = badgesData.value.find(achievement => badgeKey === achievement.id);
+		const achievementContent = (props.heroBadgeData ?? []).find(achievement => badgeKey === achievement.id);
 
 		if (achievementContent) {
 			// Hidden slide for completed journeys

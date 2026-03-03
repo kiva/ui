@@ -6,7 +6,7 @@
 			:loans="loans"
 			:total-loans="totalLoans"
 			:hero-slides="heroSlides"
-			:hero-contentful-data="heroContentfulData"
+			:hero-badge-data="heroBadgeData"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:lending-stats="lendingStats"
 			:transactions="transactions"
@@ -42,6 +42,11 @@ import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.g
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY, isGoalsV2Enabled } from '#src/composables/useGoalData';
+import useBadgeData, {
+	applyFreshProgressToAchievements,
+	FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
+	getContentfulLevelData
+} from '#src/composables/useBadgeData';
 import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -68,9 +73,11 @@ export default {
 		const apollo = inject('apollo');
 
 		const goalDataComposable = useGoalData({ apollo });
+		const { combineBadgeData } = useBadgeData();
 		provide('goalData', goalDataComposable);
 
 		return {
+			combineBadgeData,
 			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
 			loadGoalData: goalDataComposable.loadGoalData,
 			renewAnnualGoal: goalDataComposable.renewAnnualGoal,
@@ -79,7 +86,7 @@ export default {
 	},
 	data() {
 		return {
-			heroContentfulData: [],
+			heroBadgeContentfulData: [],
 			heroSlides: [],
 			heroTieredAchievements: [],
 			currentYearTieredAchievements: [],
@@ -100,11 +107,15 @@ export default {
 			showMyGivingFundsCard: false,
 			nextStepsExperimentVariant: null,
 			goalEditingEnable: false,
+			recentTransactionLoans: [],
 		};
 	},
 	computed: {
 		goalsV2Enabled() {
 			return isGoalsV2Enabled(this.goalsEntrypointEnable);
+		},
+		heroBadgeData() {
+			return this.combineBadgeData(this.heroTieredAchievements, this.heroBadgeContentfulData);
 		},
 	},
 	apollo: {
@@ -116,12 +127,18 @@ export default {
 				client.query({ query: lendingStatsQuery }),
 				client.query({
 					query: userAchievementProgressQuery,
-					variables: { year: LAST_YEAR_KEY },
+					variables: {
+						year: LAST_YEAR_KEY,
+						loanPurchasesLimit: FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
+					},
 					fetchPolicy: 'network-only',
 				}),
 				client.query({
 					query: userAchievementProgressQuery,
-					variables: { year: CURRENT_YEAR },
+					variables: {
+						year: CURRENT_YEAR,
+						loanPurchasesLimit: FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
+					},
 					fetchPolicy: 'network-only',
 				}),
 				loanId
@@ -149,6 +166,25 @@ export default {
 		},
 	},
 	methods: {
+		applyMyKivaFreshProgress() {
+			this.recentTransactionLoans = getRecentTransactionLoans(this.transactions);
+			const achievements = applyFreshProgressToAchievements({
+				achievements: this.heroTieredAchievements,
+				freshProgressLoans: this.recentTransactionLoans,
+			});
+			this.heroTieredAchievements = achievements;
+		},
+		readTieredAchievementsFromCache(year) {
+			try {
+				const queryResult = this.apollo.readQuery({
+					query: userAchievementProgressQuery,
+					variables: { year, loanPurchasesLimit: FRESH_PROGRESS_LOAN_PURCHASE_LIMIT },
+				});
+				return queryResult?.userAchievementProgress?.tieredLendingAchievements ?? [];
+			} catch (error) {
+				return [];
+			}
+		},
 		fetchMyKivaData() {
 			try {
 				const myKivaQueryResult = this.apollo.readQuery({ query: myKivaQuery });
@@ -240,17 +276,10 @@ export default {
 	created() {
 		try {
 			this.fetchMyKivaData();
-			const achievementsResult = this.apollo.readQuery({
-				query: userAchievementProgressQuery,
-				variables: { year: LAST_YEAR_KEY }
-			});
-			this.heroTieredAchievements = achievementsResult.userAchievementProgress?.tieredLendingAchievements ?? [];
-			const currentYearResult = this.apollo.readQuery({
-				query: userAchievementProgressQuery,
-				variables: { year: CURRENT_YEAR }
-			});
-			// eslint-disable-next-line max-len
-			this.currentYearTieredAchievements = currentYearResult.userAchievementProgress?.tieredLendingAchievements ?? [];
+			this.heroTieredAchievements = this.readTieredAchievementsFromCache(LAST_YEAR_KEY);
+			this.currentYearTieredAchievements = this.readTieredAchievementsFromCache(CURRENT_YEAR);
+			// Apply centralized fresh progress during creation to avoid initial stale render.
+			this.applyMyKivaFreshProgress();
 			const contentfulChallengeResult = this.apollo.readQuery({
 				query: contentfulEntriesQuery,
 				variables: { contentType: 'challenge', limit: 200 }
@@ -263,7 +292,8 @@ export default {
 				}
 			});
 			this.heroSlides = slidesResult.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
-			this.heroContentfulData = contentfulChallengeResult.contentful?.entries?.items ?? [];
+			this.heroBadgeContentfulData = (contentfulChallengeResult.contentful?.entries?.items ?? [])
+				.map(entry => getContentfulLevelData(entry));
 		} catch (e) {
 			logReadQueryError(e, 'MyKivaPage created');
 		}
@@ -340,11 +370,10 @@ export default {
 
 		// Load goal data with fresh progress from recent transaction loans
 		if (this.isNextStepsExpEnabled) {
-			const recentTransactionLoans = getRecentTransactionLoans(this.transactions);
 			await this.loadGoalData({
 				year: CURRENT_YEAR,
 				yearlyProgress: this.goalsV2Enabled,
-				freshProgressLoans: recentTransactionLoans,
+				freshProgressLoans: this.recentTransactionLoans,
 				tieredAchievements: this.currentYearTieredAchievements,
 				transactions: this.transactions
 			});

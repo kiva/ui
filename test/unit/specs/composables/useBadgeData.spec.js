@@ -1,6 +1,9 @@
 /* eslint-disable max-len */
 import useBadgeData, {
+	applyFreshProgressToAchievements,
 	calculateFreshProgressAdjustments,
+	FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
+	getContentfulLevelData,
 	getTierCompletionLevel,
 	getMissingLoans,
 	getJourneysByLoan,
@@ -38,10 +41,10 @@ describe('useBadgeData.js', () => {
 					.mockReturnValueOnce(Promise.resolve({ data: contentfulData }))
 			};
 
-			const { combineBadgeData, getContentfulLevelData } = useBadgeData(apolloMock);
+			const { combineBadgeData } = useBadgeData(apolloMock);
 			const badgeData = combineBadgeData(
 				achievementData.userAchievementProgress.tieredLendingAchievements,
-				contentfulData.contentful.entries.items.map(getContentfulLevelData),
+				contentfulData.contentful.entries.items.map(entry => getContentfulLevelData(entry)),
 			);
 
 			expect(badgeData).toEqual(combinedData);
@@ -1117,8 +1120,31 @@ describe('useBadgeData.js', () => {
 			});
 		});
 
+		it('should pass loanPurchasesLimit when provided', async () => {
+			const apolloMock = {
+				query: vi.fn().mockResolvedValue({
+					data: {
+						userAchievementProgress: {
+							lendingAchievements: [],
+							tieredLendingAchievements: []
+						}
+					}
+				})
+			};
+
+			const { fetchAchievementData } = useBadgeData();
+
+			await fetchAchievementData(apolloMock, null, 20);
+
+			expect(apolloMock.query).toHaveBeenCalledWith({
+				query: expect.anything(),
+				variables: { publicId: null, loanPurchasesLimit: 20 },
+				fetchPolicy: 'network-only'
+			});
+		});
+
 		it('should handle errors when fetching achievement data', async () => {
-			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 			const apolloMock = {
 				query: vi.fn().mockRejectedValue(new Error('Network error'))
 			};
@@ -1194,7 +1220,7 @@ describe('useBadgeData.js', () => {
 		});
 
 		it('should handle errors when fetching contentful data', async () => {
-			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 			const apolloMock = {
 				query: vi.fn().mockRejectedValue(new Error('Network error'))
 			};
@@ -1210,61 +1236,37 @@ describe('useBadgeData.js', () => {
 	});
 
 	describe('getContentfulLevelData', () => {
-		it('should return cleaned up contentful data', () => {
-			const { getContentfulLevelData } = useBadgeData();
+		it('should parse id by stripping the level suffix from the key', () => {
+			const result = getContentfulLevelData({ fields: { key: 'womens-equality-level-3' } });
+			expect(result.id).toBe('womens-equality');
+			expect(result.level).toBe(3);
+		});
+
+		it('should extract all fields from a full contentful entry', () => {
 			const entry = {
 				fields: {
-					key: 'basic-needs-level-1',
+					key: 'climate-action-level-1',
 					levelName: '1',
-					challengeName: 'Basic needs',
-					badgeImage: {
-						fields: {
-							file: {
-								url: '//images.ctfassets.net/test.svg'
-							}
-						}
-					},
-					shareFact: 'Test fact',
-					shareFactFootnote: 'Test footnote',
-					shareFactUrl: 'https://test.com'
+					challengeName: 'Climate Action',
+					badgeImage: { fields: { file: { url: '/climate.svg' } } },
+					shareFact: 'A fact',
+					shareFactFootnote: 'A footnote',
+					shareFactUrl: 'https://example.com',
 				}
 			};
-
 			expect(getContentfulLevelData(entry)).toEqual({
-				id: 'basic-needs',
+				id: 'climate-action',
 				level: 1,
 				levelName: '1',
-				challengeName: 'Basic needs',
-				imageUrl: '//images.ctfassets.net/test.svg',
-				shareFact: 'Test fact',
-				shareFactFootnote: 'Test footnote',
-				shareFactUrl: 'https://test.com'
+				challengeName: 'Climate Action',
+				imageUrl: '/climate.svg',
+				shareFact: 'A fact',
+				shareFactFootnote: 'A footnote',
+				shareFactUrl: 'https://example.com',
 			});
 		});
 
-		it('should handle missing optional fields with defaults', () => {
-			const { getContentfulLevelData } = useBadgeData();
-			const entry = {
-				fields: {
-					key: 'test-level-2'
-				}
-			};
-
-			expect(getContentfulLevelData(entry)).toEqual({
-				id: 'test',
-				level: 2,
-				levelName: '',
-				challengeName: '',
-				imageUrl: '',
-				shareFact: '',
-				shareFactFootnote: '',
-				shareFactUrl: ''
-			});
-		});
-
-		it('should handle undefined entry', () => {
-			const { getContentfulLevelData } = useBadgeData();
-
+		it('should default all fields when entry is undefined', () => {
 			expect(getContentfulLevelData(undefined)).toEqual({
 				id: '',
 				level: 0,
@@ -1273,7 +1275,7 @@ describe('useBadgeData.js', () => {
 				imageUrl: '',
 				shareFact: '',
 				shareFactFootnote: '',
-				shareFactUrl: ''
+				shareFactUrl: '',
 			});
 		});
 	});
@@ -1524,169 +1526,6 @@ describe('useBadgeData.js', () => {
 		});
 	});
 
-	describe('getContentfulLevelData', () => {
-		it('should extract contentful level data from entry', () => {
-			const { getContentfulLevelData } = useBadgeData();
-			const entry = {
-				fields: {
-					key: 'basic-needs-level-1',
-					levelName: '1',
-					challengeName: 'Basic Needs',
-					badgeImage: {
-						fields: {
-							file: {
-								url: '//images.ctfassets.net/image.svg'
-							}
-						}
-					},
-					shareFact: 'Test fact',
-					shareFactFootnote: 'Test footnote',
-					shareFactUrl: 'https://example.com'
-				}
-			};
-			const result = getContentfulLevelData(entry);
-			expect(result).toEqual({
-				id: 'basic-needs',
-				level: 1,
-				levelName: '1',
-				challengeName: 'Basic Needs',
-				imageUrl: '//images.ctfassets.net/image.svg',
-				shareFact: 'Test fact',
-				shareFactFootnote: 'Test footnote',
-				shareFactUrl: 'https://example.com'
-			});
-		});
-
-		it('should handle missing fields with defaults', () => {
-			const { getContentfulLevelData } = useBadgeData();
-			const entry = {};
-			const result = getContentfulLevelData(entry);
-			expect(result).toEqual({
-				id: '',
-				level: 0,
-				levelName: '',
-				challengeName: '',
-				imageUrl: '',
-				shareFact: '',
-				shareFactFootnote: '',
-				shareFactUrl: ''
-			});
-		});
-	});
-
-	describe('getLevelCaption', () => {
-		it('should return capitalized number words for levels 1-10', () => {
-			const { getLevelCaption } = useBadgeData();
-			expect(getLevelCaption({ level: 1 })).toBe('One');
-			expect(getLevelCaption({ level: 5 })).toBe('Five');
-			expect(getLevelCaption({ level: 10 })).toBe('Ten');
-		});
-
-		it('should return numeric value for levels greater than 10', () => {
-			const { getLevelCaption } = useBadgeData();
-			expect(getLevelCaption({ level: 11 })).toBe(11);
-			expect(getLevelCaption({ level: 100 })).toBe(100);
-		});
-	});
-
-	describe('fetchAchievementData', () => {
-		it('should fetch and set badge achievement data', async () => {
-			const mockApollo = {
-				query: vi.fn().mockResolvedValue({
-					data: {
-						userAchievementProgress: {
-							lendingAchievements: [{ id: 'achievement-1' }],
-							tieredLendingAchievements: [{ id: 'tiered-1' }]
-						}
-					}
-				})
-			};
-			const { fetchAchievementData, badgeAchievementData } = useBadgeData();
-
-			await fetchAchievementData(mockApollo);
-
-			expect(badgeAchievementData.value).toEqual([
-				{ id: 'achievement-1' },
-				{ id: 'tiered-1' }
-			]);
-		});
-
-		it('should handle query errors gracefully', async () => {
-			const mockApollo = {
-				query: vi.fn().mockRejectedValue(new Error('Query failed'))
-			};
-			const { fetchAchievementData, badgeAchievementData } = useBadgeData();
-
-			await fetchAchievementData(mockApollo);
-
-			expect(badgeAchievementData.value).toBeUndefined();
-		});
-
-		it('should pass publicId when provided', async () => {
-			const mockApollo = {
-				query: vi.fn().mockResolvedValue({
-					data: {
-						userAchievementProgress: {
-							lendingAchievements: [],
-							tieredLendingAchievements: []
-						}
-					}
-				})
-			};
-			const { fetchAchievementData } = useBadgeData();
-
-			await fetchAchievementData(mockApollo, 'user-123');
-
-			expect(mockApollo.query).toHaveBeenCalledWith({
-				query: expect.any(Object),
-				variables: { publicId: 'user-123' },
-				fetchPolicy: 'network-only'
-			});
-		});
-	});
-
-	describe('fetchContentfulData', () => {
-		it('should fetch and set badge contentful data', async () => {
-			const mockApollo = {
-				query: vi.fn().mockResolvedValue({
-					data: {
-						contentful: {
-							entries: {
-								items: [
-									{
-										fields: {
-											key: 'badge-1-level-1',
-											challengeName: 'Badge 1',
-											levelName: '1',
-											badgeImage: { fields: { file: { url: '//url.svg' } } }
-										}
-									}
-								]
-							}
-						}
-					}
-				})
-			};
-			const { fetchContentfulData, badgeContentfulData } = useBadgeData();
-
-			await fetchContentfulData(mockApollo);
-
-			expect(badgeContentfulData.value).toHaveLength(1);
-			expect(badgeContentfulData.value[0].id).toBe('badge-1');
-		});
-
-		it('should handle query errors gracefully', async () => {
-			const mockApollo = {
-				query: vi.fn().mockRejectedValue(new Error('Contentful query failed'))
-			};
-			const { fetchContentfulData, badgeContentfulData } = useBadgeData();
-
-			await fetchContentfulData(mockApollo);
-
-			expect(badgeContentfulData.value).toBeUndefined();
-		});
-	});
-
 	describe('getMissingLoans', () => {
 		it('should return empty array when loans array is empty', () => {
 			const result = getMissingLoans([], [{ id: 'achievement-1' }]);
@@ -1934,113 +1773,326 @@ describe('useBadgeData.js', () => {
 
 			expect(result['climate-action']).toBe(2);
 		});
+
+		it('should treat loan IDs with different primitive types as the same loan', () => {
+			const loans = [{ id: '101', gender: 'female' }];
+			const tieredAchievements = [{
+				id: ID_WOMENS_EQUALITY,
+				loanPurchases: [{ loan: { id: 101, gender: 'female' } }]
+			}];
+
+			const result = calculateFreshProgressAdjustments(loans, tieredAchievements);
+
+			expect(result).toEqual({});
+		});
 	});
 
-	describe('updateBadgeDataWithFreshProgress', () => {
-		it('should return empty object when loans array is empty', () => {
-			const { updateBadgeDataWithFreshProgress, badgeAchievementData } = useBadgeData();
-			badgeAchievementData.value = [{ id: 'womens-equality', totalProgressToAchievement: 5 }];
-
-			const result = updateBadgeDataWithFreshProgress([], [{ id: 'achievement-1' }]);
-
-			expect(result).toEqual({});
-		});
-
-		it('should return empty object when badgeAchievementData is empty', () => {
-			const { updateBadgeDataWithFreshProgress, badgeAchievementData } = useBadgeData();
-			badgeAchievementData.value = [];
-
-			const result = updateBadgeDataWithFreshProgress([{ id: 1 }], [{ id: 'achievement-1' }]);
-
-			expect(result).toEqual({});
-		});
-
-		it('should update badge achievement data with fresh progress adjustments', () => {
-			const { updateBadgeDataWithFreshProgress, badgeAchievementData } = useBadgeData();
-			badgeAchievementData.value = [
-				{ id: 'womens-equality', totalProgressToAchievement: 5 },
-				{ id: 'climate-action', totalProgressToAchievement: 3 }
-			];
-
-			const loans = [
-				{ id: 1, gender: 'female' },
-				{ id: 2, gender: 'female' }
-			];
-			const tieredAchievements = [{
-				id: 'womens-equality',
-				loanPurchases: []
-			}];
-
-			const result = updateBadgeDataWithFreshProgress(loans, tieredAchievements);
-
-			expect(result['womens-equality']).toBe(2);
-			expect(badgeAchievementData.value.find(a => a.id === 'womens-equality').totalProgressToAchievement).toBe(7);
-		});
-
-		it('should not modify achievements without totalProgressToAchievement', () => {
-			const { updateBadgeDataWithFreshProgress, badgeAchievementData } = useBadgeData();
-			badgeAchievementData.value = [
-				{ id: 'equity' }, // No totalProgressToAchievement
-				{ id: 'womens-equality', totalProgressToAchievement: 5 }
-			];
-
-			const loans = [{ id: 1, gender: 'female' }];
-			const tieredAchievements = [{
-				id: 'womens-equality',
-				loanPurchases: []
-			}];
-
-			updateBadgeDataWithFreshProgress(loans, tieredAchievements);
-
-			const equityAchievement = badgeAchievementData.value.find(a => a.id === 'equity');
-			expect(equityAchievement.totalProgressToAchievement).toBeUndefined();
-		});
-
-		it('should advance display tier when fresh progress crosses a tier target', () => {
-			const {
-				updateBadgeDataWithFreshProgress,
-				badgeAchievementData,
-				combineBadgeData,
-				getActiveTierData,
-			} = useBadgeData();
-
-			badgeAchievementData.value = [
+	describe('applyFreshProgressToAchievements', () => {
+		it('calculates adjustments from achievements snapshot and fresh loans', () => {
+			const achievements = [
 				{
 					id: ID_WOMENS_EQUALITY,
-					description: 'Women challenge',
 					totalProgressToAchievement: 4,
-					tiers: [
-						{ target: 5, completedDate: null, learnMoreURL: '' },
-						{ target: 10, completedDate: null, learnMoreURL: '' }
-					]
+					loanPurchases: [{ loan: { id: 1, gender: 'female' } }]
 				}
 			];
 
-			const loans = [{ id: 1, gender: 'female' }];
-			const tieredAchievements = [{
-				id: ID_WOMENS_EQUALITY,
-				loanPurchases: []
+			const result = applyFreshProgressToAchievements({
+				achievements,
+				// Loan already exists in achievement service snapshot.
+				freshProgressLoans: [{ id: 1, gender: 'female' }],
+			});
+
+			expect(result[0].totalProgressToAchievement).toBe(4);
+			expect(result[0].loanPurchases.map(purchase => purchase.loan.id)).toEqual([1]);
+		});
+
+		it('returns no effective adjustments when no fresh loans exist', () => {
+			const achievements = [
+				{
+					id: ID_WOMENS_EQUALITY,
+					totalProgressToAchievement: 4,
+					loanPurchases: []
+				}
+			];
+
+			const result = applyFreshProgressToAchievements({
+				achievements,
+				freshProgressLoans: [],
+			});
+
+			expect(result[0].totalProgressToAchievement).toBe(4);
+		});
+	});
+
+	describe('applyFreshProgressToAchievements loan purchase merging', () => {
+		it('should apply total progress adjustments and merge fresh loan purchases without duplicates', () => {
+			const achievements = [
+				{
+					id: ID_WOMENS_EQUALITY,
+					totalProgressToAchievement: 5,
+					loanPurchases: [{ loan: { id: 10, gender: 'female' } }]
+				}
+			];
+			const freshProgressLoans = [
+				{ id: 20, gender: 'female' },
+				{ id: 10, gender: 'female' },
+			];
+
+			const result = applyFreshProgressToAchievements({
+				achievements,
+				freshProgressLoans,
+			});
+
+			expect(result[0].totalProgressToAchievement).toBe(6);
+			expect(result[0].loanPurchases.map(purchase => purchase.loan.id)).toEqual([20, 10]);
+		});
+
+		it('should prepend fresh loans without capping the merged array', () => {
+			const existingLoanPurchases = Array.from({ length: FRESH_PROGRESS_LOAN_PURCHASE_LIMIT }, (_, index) => ({
+				loan: { id: index + 1, gender: 'female' }
+			}));
+			const achievements = [
+				{
+					id: ID_WOMENS_EQUALITY,
+					totalProgressToAchievement: FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
+					loanPurchases: existingLoanPurchases
+				}
+			];
+			const freshProgressLoans = [{ id: 999, gender: 'female' }];
+
+			const result = applyFreshProgressToAchievements({
+				achievements,
+				freshProgressLoans,
+			});
+
+			expect(result[0].loanPurchases).toHaveLength(FRESH_PROGRESS_LOAN_PURCHASE_LIMIT + 1);
+			expect(result[0].loanPurchases[0].loan.id).toBe(999);
+		});
+
+		it('should avoid duplicate merged loans when fresh and existing loan IDs differ only by type', () => {
+			const achievements = [
+				{
+					id: ID_WOMENS_EQUALITY,
+					totalProgressToAchievement: 1,
+					loanPurchases: [{ loan: { id: 10, gender: 'female' } }]
+				}
+			];
+			const freshProgressLoans = [{ id: '10', gender: 'female' }];
+
+			const result = applyFreshProgressToAchievements({
+				achievements,
+				freshProgressLoans,
+			});
+
+			expect(result[0].loanPurchases).toHaveLength(1);
+			expect(result[0].loanPurchases[0].loan.id).toBe(10);
+		});
+
+		it('keeps progress and loanPurchases aligned when loan already exists in another journey', () => {
+			const achievements = [
+				{
+					id: ID_WOMENS_EQUALITY,
+					totalProgressToAchievement: 5,
+					loanPurchases: [{ loan: { id: 10, gender: 'female' } }]
+				},
+				{
+					id: ID_US_ECONOMIC_EQUALITY,
+					totalProgressToAchievement: 2,
+					loanPurchases: []
+				}
+			];
+			const freshProgressLoans = [{
+				id: 10,
+				gender: 'female',
+				geocode: { country: { isoCode: 'US' } }
 			}];
 
-			updateBadgeDataWithFreshProgress(loans, tieredAchievements);
+			const result = applyFreshProgressToAchievements({
+				achievements,
+				freshProgressLoans,
+			});
+			const womensAchievement = result.find(a => a.id === ID_WOMENS_EQUALITY);
+			const usAchievement = result.find(a => a.id === ID_US_ECONOMIC_EQUALITY);
 
-			const combinedBadgeData = combineBadgeData(badgeAchievementData.value, [
+			expect(womensAchievement.totalProgressToAchievement).toBe(5);
+			expect(womensAchievement.loanPurchases.map(purchase => purchase.loan.id)).toEqual([10]);
+			expect(usAchievement.totalProgressToAchievement).toBe(2);
+			expect(usAchievement.loanPurchases).toEqual([]);
+		});
+
+		it('should adjust progress and loanPurchases for a fresh loan matching multiple categories', () => {
+			const achievements = [
 				{
 					id: ID_WOMENS_EQUALITY,
-					level: 1,
-					challengeName: 'Women',
-					levelName: '1',
+					totalProgressToAchievement: 3,
+					loanPurchases: [],
+					tiers: [{ target: 5, completedDate: null }]
+				},
+				{
+					id: ID_US_ECONOMIC_EQUALITY,
+					totalProgressToAchievement: 1,
+					loanPurchases: [],
+					tiers: [{ target: 5, completedDate: null }]
+				}
+			];
+			const freshProgressLoans = [{
+				id: 50,
+				gender: 'female',
+				geocode: { country: { isoCode: 'US' } }
+			}];
+
+			const result = applyFreshProgressToAchievements({
+				achievements,
+				freshProgressLoans,
+			});
+			const womensAchievement = result.find(a => a.id === ID_WOMENS_EQUALITY);
+			const usAchievement = result.find(a => a.id === ID_US_ECONOMIC_EQUALITY);
+
+			expect(womensAchievement.totalProgressToAchievement).toBe(4);
+			expect(womensAchievement.loanPurchases).toHaveLength(1);
+			expect(womensAchievement.loanPurchases[0].loan.id).toBe(50);
+
+			expect(usAchievement.totalProgressToAchievement).toBe(2);
+			expect(usAchievement.loanPurchases).toHaveLength(1);
+			expect(usAchievement.loanPurchases[0].loan.id).toBe(50);
+		});
+
+		it('should pass through non-tiered achievements unchanged', () => {
+			const achievements = [
+				{
+					id: 'equity',
+					description: 'First loan',
+					milestoneProgress: [{ earnedAtDate: '2024-01-01T00:00:00Z' }]
 				},
 				{
 					id: ID_WOMENS_EQUALITY,
-					level: 2,
-					challengeName: 'Women',
-					levelName: '2',
-				},
-			]);
+					totalProgressToAchievement: 2,
+					loanPurchases: [],
+					tiers: [{ target: 5, completedDate: null }]
+				}
+			];
+			const freshProgressLoans = [{ id: 99, gender: 'female' }];
 
-			expect(combinedBadgeData[0].level).toBe(1);
-			expect(getActiveTierData(combinedBadgeData[0]).target).toBe(10);
+			const result = applyFreshProgressToAchievements({
+				achievements,
+				freshProgressLoans,
+			});
+
+			expect(result).toHaveLength(2);
+			expect(result[0].id).toBe('equity');
+			expect(result[0].totalProgressToAchievement).toBeUndefined();
+			expect(result[0].milestoneProgress).toEqual([{ earnedAtDate: '2024-01-01T00:00:00Z' }]);
+			expect(result[1].totalProgressToAchievement).toBe(3);
+		});
+
+		it('should be idempotent when called with its own output', () => {
+			const achievements = [
+				{
+					id: ID_WOMENS_EQUALITY,
+					totalProgressToAchievement: 5,
+					loanPurchases: [],
+					tiers: [{ target: 10, completedDate: null }]
+				}
+			];
+			const freshProgressLoans = [{ id: 77, gender: 'female' }];
+
+			const firstResult = applyFreshProgressToAchievements({
+				achievements,
+				freshProgressLoans,
+			});
+
+			expect(firstResult[0].totalProgressToAchievement).toBe(6);
+			expect(firstResult[0].loanPurchases).toHaveLength(1);
+
+			const secondResult = applyFreshProgressToAchievements({
+				achievements: firstResult,
+				freshProgressLoans,
+			});
+
+			expect(secondResult[0].totalProgressToAchievement).toBe(6);
+			expect(secondResult[0].loanPurchases).toHaveLength(1);
+		});
+
+		it('should not mutate original achievement objects', () => {
+			const originalAchievements = [
+				{
+					id: ID_WOMENS_EQUALITY,
+					totalProgressToAchievement: 5,
+					loanPurchases: [{ loan: { id: 1, gender: 'female' } }],
+					tiers: [{ target: 10, completedDate: null }]
+				}
+			];
+			const freshProgressLoans = [{ id: 88, gender: 'female' }];
+
+			const result = applyFreshProgressToAchievements({
+				achievements: originalAchievements,
+				freshProgressLoans,
+			});
+
+			expect(originalAchievements[0].totalProgressToAchievement).toBe(5);
+			expect(originalAchievements[0].loanPurchases).toHaveLength(1);
+			expect(originalAchievements[0].tiers[0].completedDate).toBeNull();
+			expect(result[0].totalProgressToAchievement).toBe(6);
+			expect(result[0].loanPurchases).toHaveLength(2);
+		});
+
+		it('should adjust progress from 0 when fresh loans are provided', () => {
+			const achievements = [
+				{
+					id: ID_WOMENS_EQUALITY,
+					totalProgressToAchievement: 0,
+					loanPurchases: [],
+					tiers: [{ target: 5, completedDate: null }]
+				}
+			];
+			const freshProgressLoans = [{ id: 1, gender: 'female' }];
+
+			const result = applyFreshProgressToAchievements({
+				achievements,
+				freshProgressLoans,
+			});
+
+			expect(result[0].totalProgressToAchievement).toBe(1);
+			expect(result[0].loanPurchases).toHaveLength(1);
+		});
+
+		it('should skip fresh loans that match no categories', () => {
+			const achievements = [
+				{
+					id: ID_WOMENS_EQUALITY,
+					totalProgressToAchievement: 3,
+					loanPurchases: [],
+					tiers: [{ target: 5, completedDate: null }]
+				}
+			];
+			const freshProgressLoans = [{
+				id: 42,
+				gender: 'male',
+				geocode: { country: { isoCode: 'PE' } },
+				sector: { id: 2 }
+			}];
+
+			const result = applyFreshProgressToAchievements({
+				achievements,
+				freshProgressLoans,
+			});
+
+			expect(result[0].totalProgressToAchievement).toBe(3);
+			expect(result[0].loanPurchases).toHaveLength(0);
+		});
+
+		it('should return empty array when achievements is empty', () => {
+			const result = applyFreshProgressToAchievements({
+				achievements: [],
+				freshProgressLoans: [{ id: 1, gender: 'female' }],
+			});
+
+			expect(result).toEqual([]);
+		});
+
+		it('should return empty array when called with no arguments', () => {
+			expect(applyFreshProgressToAchievements()).toEqual([]);
 		});
 	});
 });
