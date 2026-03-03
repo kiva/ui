@@ -165,6 +165,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 *  Loading state for goal data (used in GoalSelector after loading goal)
+	 */
+	loadingCurrentYear: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits(['button-click', 'edit-button-click', 'edit-goal-from-settings']);

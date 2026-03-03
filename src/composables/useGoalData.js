@@ -546,7 +546,8 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
-	 * Remove goal from user preferences goals array (Used for Editing and Deleting goal)
+	 * Remove goal from user preferences
+	 * @param {Object} goal - Goal object to remove (identified by goalName)
 	 */
 	const removeGoalFromPreferences = async goal => {
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
@@ -562,7 +563,7 @@ export default function useGoalData({ apollo } = {}) {
 			apolloClient,
 			userPreferences.value,
 			parsedPrefs,
-			{ goals }
+			{ goals, hideGoalCard: false } // Reset goal card visibility when removing goal
 		);
 
 		setGoalState({ goals }); // Refresh local state after update
@@ -575,6 +576,7 @@ export default function useGoalData({ apollo } = {}) {
 	 */
 	async function updateCurrentGoal(previousGoal, updatedGoal) {
 		// Update user preferences to ensure goal is up-to-date preventing user from updating stale goal data.
+		loading.value = true;
 		await loadPreferences('network-only');
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		const goals = parsedPrefs.goals || [];
@@ -589,6 +591,7 @@ export default function useGoalData({ apollo } = {}) {
 			parsedPrefs,
 			{ goals }
 		);
+		loading.value = false;
 
 		setGoalState({ goals }); // Refresh local state after update
 	}

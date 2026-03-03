@@ -1,94 +1,83 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-justify-center tw-gap-0 lg:tw-gap-1.5 tw-items-center">
 		<!-- Goal Progress Ring (shown after goal is set) -->
-		<template v-if="loadingCurrentYear && !isUpdatingGoal">
-			<div class="tw-flex tw-flex-col tw-gap-1 tw-w-full tw-items-center">
-				<KvLoadingPlaceholder class="!tw-min-h-6" />
-				<KvLoadingPlaceholder class="!tw-min-h-2.5" />
-				<KvLoadingPlaceholder class="!tw-min-h-2.5" />
-				<KvLoadingPlaceholder style="width: 160px; height: 160px;" />
-				<KvLoadingPlaceholder class="!tw-min-h-6" />
-			</div>
-		</template>
+		<GoalProgressRing
+			v-if="isGoalSet && !editGoalFromSettings"
+			variant="modal"
+			:goal-loans="effectiveGoalLoans"
+			:goal-progress="loansThisYear"
+			:goal-progress-percentage="localGoalProgressPercentage"
+			:category-name="selectedCategoryName"
+			:category-id="selectedCategoryId"
+			:go-to-url="goToUrl"
+			:goal-editing-enable="goalEditingEnable"
+			@edit-goal-from-settings="handleEditGoalFromSettings"
+			@button-click="handleSuccessContinue"
+		/>
+		<!-- Goal Selection Form (shown before goal is set) -->
 		<template v-else>
-			<GoalProgressRing
-				v-if="isGoalSet && !editGoalFromSettings"
-				variant="modal"
-				:goal-loans="effectiveGoalLoans"
-				:goal-progress="loansThisYear"
-				:goal-progress-percentage="localGoalProgressPercentage"
-				:category-name="selectedCategoryName"
-				:category-id="selectedCategoryId"
-				:go-to-url="goToUrl"
-				:goal-editing-enable="goalEditingEnable"
-				@edit-goal-from-settings="handleEditGoalFromSettings"
-				@button-click="handleSuccessContinue"
-			/>
-			<!-- Goal Selection Form (shown before goal is set) -->
-			<template v-else>
-				<img
-					:src="HandsPlant"
-					class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
+			<img
+				:src="HandsPlant"
+				class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
+			>
+
+			<h2
+				class="tw-px-4 lg:tw-px-7 tw-text-center"
+				style="line-height: 125%;"
+				v-html="titleText"
+			>
+			</h2>
+
+			<div
+				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
+			>
+				{{ subtitleText }}
+			</div>
+
+			<div
+				class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5 tw-my-1"
+			>
+				<template v-if="loadingCurrentYear">
+					<KvLoadingPlaceholder
+						v-for="n in 3"
+						:key="n"
+						class="tw-flex-1 !tw-rounded"
+						style="min-height: 82px;"
+					/>
+				</template>
+				<template v-else>
+					<LoanNumberSelector
+						v-for="(option, index) in goalOptions"
+						:key="index"
+						:loans-number="option.loansNumber"
+						:option-text="option.optionText"
+						:selected="option.selected"
+						:highlighted-text="option.highlightedText"
+						@click="updateOptionSelection(index)"
+					/>
+				</template>
+			</div>
+
+			<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
+				<KvButton
+					class="tw-w-full tw-mt-1.5"
+					@click="handleContinue"
 				>
+					{{ buttonText }}
+				</KvButton>
 
-				<h2
-					class="tw-px-4 lg:tw-px-7 tw-text-center"
-					style="line-height: 125%;"
-					v-html="titleText"
+				<KvButton
+					variant="ghost"
+					class="edit-goal-button tw-w-full"
+					@click="editGoal"
 				>
-				</h2>
-
-				<div
-					class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
-				>
-					{{ subtitleText }}
-				</div>
-
-				<div
-					class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5 tw-my-1"
-				>
-					<template v-if="loadingCurrentYear">
-						<KvLoadingPlaceholder
-							v-for="n in 3"
-							:key="n"
-							class="tw-flex-1 !tw-rounded"
-							style="min-height: 82px;"
-						/>
-					</template>
-					<template v-else>
-						<LoanNumberSelector
-							v-for="(option, index) in goalOptions"
-							:key="index"
-							:loans-number="option.loansNumber"
-							:option-text="option.optionText"
-							:selected="option.selected"
-							:highlighted-text="option.highlightedText"
-							@click="updateOptionSelection(index)"
-						/>
-					</template>
-				</div>
-
-				<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
-					<KvButton
-						class="tw-w-full tw-mt-1.5"
-						@click="handleContinue"
-					>
-						{{ buttonText }}
-					</KvButton>
-
-					<KvButton
-						variant="ghost"
-						class="edit-goal-button tw-w-full"
-						@click="editGoal"
-					>
-						{{ editGoalCopy }}
-						<KvMaterialIcon
-							:icon="mdiPencilOutline"
-							class="tw-ml-0.5"
-						/>
-					</KvButton>
-				</div>
-			</template>
+					{{ editGoalCopy }}
+					<KvMaterialIcon
+						:icon="mdiPencilOutline"
+						class="tw-ml-0.5"
+					/>
+				</KvButton>
+			</div>
 		</template>
 	</div>
 </template>
@@ -111,7 +100,7 @@ import useGoalData, { SAME_AS_LAST_YEAR_LIMIT, LAST_YEAR_KEY, GOAL_STATUS } from
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
-const { getCategoryLoansLastYear, getCategoryLoanCountByYear, getSupportAllLoanCountByYear } = useGoalData();
+const { getCategoryLoansLastYear, getSupportAllLoanCountByYear } = useGoalData();
 
 const props = defineProps({
 	/**
@@ -198,6 +187,14 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	fetchedCurrentYearLoans: {
+		type: Number,
+		default: null,
+	},
+	loadingCurrentYear: {
+		type: Boolean,
+		default: false,
+	}
 });
 
 const emit = defineEmits([
@@ -230,8 +227,6 @@ const DEFAULT_GOAL_OPTIONS = [
 
 const goalOptions = ref(DEFAULT_GOAL_OPTIONS);
 
-const loadingCurrentYear = ref(false);
-const fetchedCurrentYearLoans = ref(null);
 const prevSupportAllCount = ref(0);
 const selectedIdx = ref(1);
 const editGoalFromSettings = ref(false);
@@ -255,30 +250,8 @@ const loansThisYear = computed(() => {
 		return categoryAchievement.progressForCurrentYear;
 	}
 	// Otherwise use fetched data (MyKiva goal-setting page and modal)
-	return fetchedCurrentYearLoans.value ?? 0;
+	return props.fetchedCurrentYearLoans ?? 0;
 });
-
-/**
- * Fetch current year loan count when not provided via props.
- * This is needed for the MyKiva goal-setting page and modal where progressForCurrentYear
- * is not set (only last year data comes from tieredAchievements).
- */
-const loadLoansThisYear = async () => {
-	// Check if progressForCurrentYear is already provided via props
-	const categoryAchievement = props.tieredAchievements?.find(
-		entry => entry.id === props.selectedCategoryId
-	);
-	if (typeof categoryAchievement?.progressForCurrentYear === 'number') {
-		// Already have current year data from props (Thanks page), no need to fetch
-		return;
-	}
-
-	loadingCurrentYear.value = true;
-	const currentYear = new Date().getFullYear();
-	const count = await getCategoryLoanCountByYear(props.selectedCategoryId, currentYear, 'network-only');
-	fetchedCurrentYearLoans.value = count;
-	loadingCurrentYear.value = false;
-};
 
 const titleText = computed(() => {
 	// Default title if no lending history and category is ID_WOMENS_EQUALITY
@@ -467,7 +440,6 @@ const handleEditGoalFromSettings = () => {
 };
 
 onMounted(async () => {
-	await loadLoansThisYear();
 	updateGoalOptions();
 
 	if (props.trackingCategory === 'post-checkout') {
@@ -486,8 +458,7 @@ const editGoalCopy = computed(() => {
 	return 'Edit goal';
 });
 
-watch(() => props.selectedCategoryId, async newCategory => {
-	await loadLoansThisYear();
+watch(() => props.fetchedCurrentYearLoans, async newCategory => {
 	updateGoalOptions();
 
 	if (newCategory === ID_SUPPORT_ALL) {
