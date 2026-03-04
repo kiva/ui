@@ -1,7 +1,7 @@
 <template>
 	<section
 		class="tw-w-full tw-px-2 md:tw-pr-3 impact-insight-slide"
-		:class="isLoanPartner ? 'md:tw-pl-7' : 'md:tw-pl-10'"
+		:class="isLoanPartner ? 'is-partner' : 'no-partner'"
 	>
 		<div class="tw-mx-auto md:!tw-max-w-4xl">
 			<div
@@ -119,6 +119,26 @@ const description = computed(() => {
 
 <style lang="postcss" scoped>
 /* 4 rings styles */
+.impact-insight-slide.no-partner {
+	@screen md {
+		padding-left: 34px;
+	}
+
+	@media (width >= 1024px) {
+		padding-left: 79px;
+	}
+}
+
+.impact-insight-slide.is-partner {
+	@screen md {
+		padding-left: 9px;
+	}
+
+	@media (width >= 1024px) {
+		padding-left: 53px;
+	}
+}
+
 .min-stone-circle-size {
 	min-height: 291px;
 	min-width: 291px;
