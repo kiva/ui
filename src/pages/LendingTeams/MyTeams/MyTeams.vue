@@ -43,5 +43,8 @@ export default {
 		MyTeamMessages,
 		MyTeamsList,
 	},
+	head: {
+		title: 'My Teams',
+	},
 };
 </script>
