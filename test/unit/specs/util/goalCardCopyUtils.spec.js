@@ -34,7 +34,7 @@ describe('GoalProgressRing.vue', () => {
 				categoryId: ID_CLIMATE_ACTION,
 				categoryName: 'Eco-Friendly',
 				goalProgress: 0,
-
+				goalLoans: 10,
 			};
 
 			const { container } = render(GoalProgressRing, {
@@ -43,7 +43,7 @@ describe('GoalProgressRing.vue', () => {
 
 			const description = container.querySelector('.modal-description-text');
 			// eslint-disable-next-line max-len
-			expect(description.innerHTML).toBe(`Your support to <span class="tw-text-brand">${testProps.categoryName.toLowerCase()}</span> begins here.`);
+			expect(description.innerHTML).toBe(`Your support to <span class="tw-text-brand">${testProps.goalLoans} ${testProps.categoryName.toLowerCase()}</span> begins here.`);
 		});
 
 		it('returns correct description for ID_BASIC_NEEDS category', () => {
@@ -52,7 +52,7 @@ describe('GoalProgressRing.vue', () => {
 				categoryId: ID_BASIC_NEEDS,
 				categoryName: 'Basic Needs',
 				goalProgress: 0,
-
+				goalLoans: 8,
 			};
 
 			const { container } = render(GoalProgressRing, {
@@ -61,7 +61,7 @@ describe('GoalProgressRing.vue', () => {
 
 			const description = container.querySelector('.modal-description-text');
 			// eslint-disable-next-line max-len
-			expect(description.innerHTML).toBe(`Your support to <span class="tw-text-brand">${testProps.categoryName.toLowerCase()}</span> begins here.`);
+			expect(description.innerHTML).toBe(`Your support to <span class="tw-text-brand">${testProps.goalLoans} ${testProps.categoryName.toLowerCase()}</span> begins here.`);
 		});
 
 		it('returns correct description for ID_REFUGEE_EQUALITY category', () => {
@@ -70,7 +70,7 @@ describe('GoalProgressRing.vue', () => {
 				categoryId: ID_REFUGEE_EQUALITY,
 				categoryName: 'Refugees',
 				goalProgress: 0,
-
+				goalLoans: 12,
 			};
 
 			const { container } = render(GoalProgressRing, {
@@ -79,7 +79,7 @@ describe('GoalProgressRing.vue', () => {
 
 			const description = container.querySelector('.modal-description-text');
 			// eslint-disable-next-line max-len
-			expect(description.innerHTML).toBe(`Your support to <span class="tw-text-brand">${testProps.categoryName.toLowerCase()}</span> begins here.`);
+			expect(description.innerHTML).toBe(`Your support to <span class="tw-text-brand">${testProps.goalLoans} ${testProps.categoryName.toLowerCase()}</span> begins here.`);
 		});
 
 		it('returns correct description for ID_US_ECONOMIC_EQUALITY category', () => {
@@ -88,7 +88,7 @@ describe('GoalProgressRing.vue', () => {
 				categoryId: ID_US_ECONOMIC_EQUALITY,
 				categoryName: 'U.S entrepreneurs',
 				goalProgress: 0,
-
+				goalLoans: 6,
 			};
 
 			const { container } = render(GoalProgressRing, {
@@ -97,7 +97,7 @@ describe('GoalProgressRing.vue', () => {
 
 			const description = container.querySelector('.modal-description-text');
 			// eslint-disable-next-line max-len
-			expect(description.innerHTML).toBe(`Your support to <span class="tw-text-brand">${testProps.categoryName}</span> begins here.`);
+			expect(description.innerHTML).toBe(`Your support to <span class="tw-text-brand">${testProps.goalLoans} ${testProps.categoryName}</span> begins here.`);
 		});
 
 		it('returns correct description for ID_WOMENS_EQUALITY category', () => {
@@ -106,6 +106,7 @@ describe('GoalProgressRing.vue', () => {
 				categoryId: ID_WOMENS_EQUALITY,
 				categoryName: 'Women',
 				goalProgress: 0,
+				goalLoans: 15,
 			};
 
 			const { container } = render(GoalProgressRing, {
@@ -114,7 +115,7 @@ describe('GoalProgressRing.vue', () => {
 
 			const description = container.querySelector('.modal-description-text');
 			// eslint-disable-next-line max-len
-			expect(description.innerHTML).toBe(`Your support to <span class="tw-text-brand">${testProps.categoryName.toLowerCase()}</span> begins here.`);
+			expect(description.innerHTML).toBe(`Your support to <span class="tw-text-brand">${testProps.goalLoans} ${testProps.categoryName.toLowerCase()}</span> begins here.`);
 		});
 	});
 });
