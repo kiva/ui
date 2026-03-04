@@ -277,7 +277,8 @@ export default {
 					delete kvgdpr[cookieKey];
 				}
 			});
-			const isKivaOrg = typeof window !== 'undefined' && window.location?.hostname?.endsWith('.kiva.org');
+			const hostname = typeof window !== 'undefined' ? window.location?.hostname : '';
+			const isKivaOrg = hostname.endsWith('kiva.org');
 			this.cookieStore.set(KVGDPR_COOKIE_NAME, buildQueryStringCookie(kvgdpr), {
 				expires: addDays(new Date(), KVGDPR_EXPIRES_DAYS),
 				path: '/',

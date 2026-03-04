@@ -184,6 +184,25 @@ describe('DataSettingsPage', () => {
 			expect(setCookie.mock.calls[0][1]).toMatch(/pii_opted_out=true/);
 		});
 
+		it('sets cookie with domain .kiva.org when hostname ends with kiva.org', async () => {
+			const setCookie = vi.fn();
+			const { getVm } = mountForMethods();
+			await nextTick();
+			const vm = getVm();
+			vm.cookieStore = { get: () => '', set: setCookie };
+
+			const origLocation = window.location;
+			['www.kiva.org', 'kiva.org', 'www.development.kiva.org'].forEach(hostname => {
+				window.location = { hostname };
+				vm.syncKvgdprCookie();
+			});
+			expect(setCookie.mock.calls[0][2]).toEqual(expect.objectContaining({ domain: '.kiva.org' }));
+			expect(setCookie.mock.calls[1][2]).toEqual(expect.objectContaining({ domain: '.kiva.org' }));
+			expect(setCookie.mock.calls[2][2]).toEqual(expect.objectContaining({ domain: '.kiva.org' }));
+
+			window.location = origLocation;
+		});
+
 		it('does nothing when cookieStore is absent', async () => {
 			const { getVm } = mountForMethods();
 			await nextTick();
