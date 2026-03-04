@@ -315,8 +315,6 @@ const showSurveyCard = computed(() => {
 	return props.showPostLendingNextStepsCards && !isFormSubmitted && props.postLendingNextStepsEnable;
 });
 
-// TODO: Create computed properties for showFriendReferralCard, showLendingTeamsCard, and showKivaCard
-
 const getRichTextContent = slide => slide?.fields?.richText?.content ?? [];
 const getRichTextUiSettingsData = slide => {
 	const richTextContent = getRichTextContent(slide);
@@ -334,6 +332,10 @@ const isNonBadgeSlide = slide => {
 	return !defaultBadges.includes(richTextUiSettingsData.achievementKey);
 };
 
+const nonBadgesSlides = computed(() => {
+	return props.slides.filter(slide => isNonBadgeSlide(slide));
+});
+
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
 
@@ -345,7 +347,7 @@ const shouldShowGoalCard = computed(() => {
 const buildAchievementSlides = (includeMilestoneDiff = false) => {
 	const achievementSlides = [];
 	defaultBadges.forEach(badgeKey => {
-		const achievementContent = badgesData.value.find(achievement => badgeKey === achievement.id);
+		const achievementContent = (props.heroBadgeData ?? []).find(achievement => badgeKey === achievement.id);
 		if (!achievementContent) return;
 		if (isTieredAchievementComplete(achievementContent.achievementData)) return;
 
@@ -390,45 +392,7 @@ const dynamicOrderedSlides = computed(() => {
 		loanJourneys = getJourneysByLoan(transactionLoan);
 	}
 
-	defaultBadges.forEach(badgeKey => {
-		const achievementContent = (props.heroBadgeData ?? []).find(achievement => badgeKey === achievement.id);
-
-		if (achievementContent) {
-			// Hidden slide for completed journeys
-			if (isTieredAchievementComplete(achievementContent.achievementData)) {
-				return;
-			}
-
-			const tier = getActiveTierData(achievementContent);
-			if (!tier?.target) {
-				return;
-			}
-
-			const milestoneDiff = Math.max(
-				tier.target - (achievementContent.achievementData?.totalProgressToAchievement ?? 0),
-				0
-			);
-			const contentfulData = achievementContent.contentfulData.find(cData => cData.level === tier.level);
-
-			const slideData = props.slides.find(slide => {
-				const richTextSlideData = getRichTextUiSettingsData(slide);
-				return richTextSlideData?.achievementKey === badgeKey;
-			});
-
-			if (slideData) {
-				achievementSlides.push({
-					...slideData,
-					milestoneDiff,
-					target: tier.target,
-					totalProgressToAchievement: achievementContent.achievementData?.totalProgressToAchievement,
-					badgeImgUrl: contentfulData?.imageUrl,
-					badgeKey,
-				});
-			}
-		}
-	});
-
-	sortedSlides = achievementSlides.sort((a, b) => {
+	let sortedSlides = achievementSlides.sort((a, b) => {
 		return a.milestoneDiff - b.milestoneDiff;
 	});
 
@@ -436,14 +400,10 @@ const dynamicOrderedSlides = computed(() => {
 		sortedSlides.sort((a, b) => loanJourneys.indexOf(b.badgeKey) - loanJourneys.indexOf(a.badgeKey)); // eslint-disable-line max-len
 	}
 
-	const nonBadgesSlides = props.slides.filter(slide => {
-		return isNonBadgeSlide(slide);
-	});
-
-	if (nonBadgesSlides.length > 0) {
+	if (nonBadgesSlides.value.length > 0) {
 		sortedSlides = [
 			...sortedSlides,
-			...nonBadgesSlides,
+			...nonBadgesSlides.value,
 		];
 	}
 
@@ -491,16 +451,11 @@ const universalOrderedSlides = computed(() => {
 	const achievementSlides = buildAchievementSlides();
 	return buildUniversalOrderedSlides({
 		achievementSlides,
+		nonBadgesSlides: nonBadgesSlides.value,
 		shouldShowGoalCard: shouldShowGoalCard.value,
 		shouldShowEmailMarketingCard: shouldShowEmailMarketingCard.value,
 		showLatestLoan: showLatestLoan.value,
 		showSurveyCard: showSurveyCard.value,
-		/* TODO: Refer to and remove when Line 320 is worked on
-
-		showFriendReferralCard: showFriendReferralCard.value,
-		showLendingTeamsCard: showLendingTeamsCard.value,
-		showKivaCard: showKivaCard.value,
-		*/
 		slidesNumber: slideLimit.value,
 	});
 });

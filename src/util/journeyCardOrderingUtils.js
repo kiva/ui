@@ -6,24 +6,18 @@
 * @param {boolean} params.shouldShowEmailMarketingCard - Email marketing card
 * @param {boolean} params.showLatestLoan - Latest loan card
 * @param {boolean} params.showSurveyCard - Survey card
-* @param {boolean} params.showFriendReferralCard - Friend referral card
-* @param {boolean} params.showLendingTeamsCard - Lending teams card
-* @param {boolean} params.showKivaCard - Kiva card
+* @param {Array} params.nonBadgesSlides - Pre-filtered non-badges slides
 * @param {number|null} params.slidesNumber - Max slides to return (null = no limit)
 * @returns {Array} Ordered sequence of slide objects
 */
 
 export const buildUniversalOrderedSlides = ({
 	achievementSlides,
+	nonBadgesSlides, // friend-referral, lending teams, and kiva cards
 	shouldShowGoalCard,
 	shouldShowEmailMarketingCard,
 	showLatestLoan,
 	showSurveyCard,
-	/* TODO: Uncomment when implemented
-	showFriendReferralCard,
-	showLendingTeamsCard,
-	showKivaCard,
-	*/
 	slidesNumber = null,
 }) => {
 	const universalSequence = [];
@@ -53,23 +47,10 @@ export const buildUniversalOrderedSlides = ({
 		universalSequence.push({ isSurveyCard: true });
 	}
 
-	/* TODO: Uncomment when the following cards are implemented within the journey card carousel
-
-	// Invite a friend card
-	if (showFriendReferralCard.value) {
-		universalSequence.push({ isFriendReferral: true });
+	// Non-badges slides
+	if (nonBadgesSlides?.length > 0) {
+		universalSequence.push(...nonBadgesSlides);
 	}
-
-	// Lending teams
-	if (showLendingTeamsCard.value) {
-		universalSequence.push({ isLendingTeams: true });
-	}
-
-	// Kiva card
-	if (showKivaCard.value) {
-		universalSequence.push({ isKivaCard: true });
-	}
-	*/
 
 	// Apply slide limit if specified
 	if (slidesNumber) {

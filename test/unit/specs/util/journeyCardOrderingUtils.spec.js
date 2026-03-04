@@ -9,11 +9,7 @@ describe('journeyCardOrderingUtils', () => {
 				shouldShowEmailMarketingCard: false,
 				showLatestLoan: false,
 				showSurveyCard: false,
-				/* TODO: Uncomment when implemented
-				showFriendReferralCard: false,
-				showLendingTeamsCard: false,
-				showKivaCard: false,
-				*/
+				nonBadgesSlides: [],
 			});
 
 			expect(result[0]).toEqual({});
@@ -27,11 +23,7 @@ describe('journeyCardOrderingUtils', () => {
 				shouldShowEmailMarketingCard: false,
 				showLatestLoan: false,
 				showSurveyCard: false,
-				/* TODO: Uncomment when implemented
-				showFriendReferralCard: false,
-				showLendingTeamsCard: false,
-				showKivaCard: false,
-				*/
+				nonBadgesSlides: [],
 			});
 
 			expect(result[0].badgeKey).toBe('badge1');
@@ -53,11 +45,7 @@ describe('journeyCardOrderingUtils', () => {
 				shouldShowEmailMarketingCard: false,
 				showLatestLoan: false,
 				showSurveyCard: false,
-				/* TODO: Uncomment when implemented
-				showFriendReferralCard: false,
-				showLendingTeamsCard: false,
-				showKivaCard: false,
-				*/
+				nonBadgesSlides: [],
 			});
 
 			expect(result).toHaveLength(5);
@@ -99,17 +87,12 @@ describe('journeyCardOrderingUtils', () => {
 				shouldShowEmailMarketingCard: true,
 				showLatestLoan: false,
 				showSurveyCard: false,
-				/* TODO: Uncomment when implemented
-				showFriendReferralCard: false,
-				showLendingTeamsCard: false,
-				showKivaCard: false,
-				*/
+				nonBadgesSlides: [],
 			});
 
 			expect(result).toEqual([{}, { isEmailUpdates: true }]);
 		});
-		// Impact activity cards tests (7)
-		// Email marketing and latest loan cards tests (3)
+
 		it('shows email marketing card (when user has yet to opt in)', () => {
 			const result = buildUniversalOrderedSlides({
 				achievementSlides: [],
@@ -149,7 +132,7 @@ describe('journeyCardOrderingUtils', () => {
 			expect(emailCards).toHaveLength(1);
 			expect(loanCards).toHaveLength(1);
 		});
-		// Survey card tests
+
 		it('includes survey card when showSurveyCard is true', () => {
 			const result = buildUniversalOrderedSlides({
 				achievementSlides: [],
@@ -157,65 +140,34 @@ describe('journeyCardOrderingUtils', () => {
 				shouldShowEmailMarketingCard: false,
 				showLatestLoan: false,
 				showSurveyCard: true,
-				/* TODO: Uncomment when implemented
-				showFriendReferralCard: false,
-				showLendingTeamsCard: false,
-				showKivaCard: false,
-				*/
+				nonBadgesSlides: [],
 			});
 
 			expect(result).toContainEqual({ isSurveyCard: true });
 		});
 
-		/* TODO: Uncomment when implemented
-
-		it('includes referral card when showFriendReferralCard is true', () => {
+		it('includes three non-badges slides', () => {
+			const nonBadges = [
+				{ title: 'Invite a friend to Kiva', ctaText: 'Invite a friend' },
+				{ title: 'Lend together', ctaText: 'Explore lending teams' },
+				{ title: 'Send a Kiva Card to give a gift that keeps on giving', ctaText: 'Send a kiva card' }
+			];
 			const result = buildUniversalOrderedSlides({
 				achievementSlides: [],
 				shouldShowGoalCard: false,
 				shouldShowEmailMarketingCard: false,
 				showLatestLoan: false,
 				showSurveyCard: false,
-				showFriendReferralCard: true,
-				showLendingTeamsCard: false,
-				showKivaCard: false,
+				nonBadgesSlides: nonBadges,
 			});
 
-			expect(result).toContainEqual({ isFriendReferralCard: true });
+			expect(result).toHaveLength(3);
+			expect(result[0]).toEqual({ title: 'Invite a friend to Kiva', ctaText: 'Invite a friend' });
+			expect(result[1]).toEqual({ title: 'Lend together', ctaText: 'Explore lending teams' });
+			// eslint-disable-next-line max-len
+			expect(result[2]).toEqual({ title: 'Send a Kiva Card to give a gift that keeps on giving', ctaText: 'Send a kiva card' });
 		});
 
-		it('includes lending teams card when showLendingTeamsCard is true', () => {
-			const result = buildUniversalOrderedSlides({
-				achievementSlides: [],
-				shouldShowGoalCard: false,
-				shouldShowEmailMarketingCard: false,
-				showLatestLoan: false,
-				showSurveyCard: false,
-				showFriendReferralCard: false,
-				showLendingTeamsCard: true,
-				showKivaCard: false,
-			});
-
-			expect(result).toContainEqual({ isLendingTeamsCard: true });
-		});
-
-		it('includes Kiva card when showKivaCard is true', () => {
-			const result = buildUniversalOrderedSlides({
-				achievementSlides: [],
-				shouldShowGoalCard: false,
-				shouldShowEmailMarketingCard: false,
-				showLatestLoan: false,
-				showSurveyCard: false,
-				showFriendReferralCard: false,
-				showLendingTeamsCard: false,
-				showKivaCard: true,
-			});
-
-			expect(result).toContainEqual({ isKivaCard: true });
-		});
-		*/
-
-		// Full sequence tests (2)
 		it('respects slidesNumber limit on full mixed sequence', () => {
 			const achievements = [
 				{ badgeKey: 'education', target: 30 },
@@ -228,7 +180,6 @@ describe('journeyCardOrderingUtils', () => {
 				shouldShowGoalCard: true,
 				shouldShowEmailMarketingCard: true,
 				showLatestLoan: true,
-				showSurveyCard: true,
 				slidesNumber: 3,
 			});
 
@@ -236,14 +187,12 @@ describe('journeyCardOrderingUtils', () => {
 			expect(result[0]).toEqual({});
 			expect(result[1].badgeKey).toBe('education');
 			expect(result[2].badgeKey).toBe('refugees');
-			// Verify truncation excluded later cards
 			expect(result.find(s => s.badgeKey === 'climate')).toBeUndefined();
 			expect(result.find(s => s.isEmailUpdates)).toBeUndefined();
 			expect(result.find(s => s.isLatestLoan)).toBeUndefined();
 		});
 
-		// TODO: Remove placeholder full sequence test when all cards are implemented
-		it('builds full sequence in correct order (placeholder test - 8 cards)', () => {
+		it('builds full sequence in correct order', () => {
 			const achievements = [
 				{ badgeKey: 'women', target: 10 },
 				{ badgeKey: 'agriculture', target: 20 },
@@ -252,35 +201,10 @@ describe('journeyCardOrderingUtils', () => {
 				{ badgeKey: 'climate', target: 50 },
 			];
 
-			const result = buildUniversalOrderedSlides({
-				achievementSlides: achievements,
-				shouldShowGoalCard: true,
-				shouldShowEmailMarketingCard: true,
-				showLatestLoan: true,
-				showSurveyCard: true,
-			});
-
-			// Expected order: goal, achievements, email, latest loan, and survey
-			expect(result).toHaveLength(9);
-			expect(result[0]).toEqual({});
-			expect(result[1].badgeKey).toBe('women');
-			expect(result[2].badgeKey).toBe('agriculture');
-			expect(result[3].badgeKey).toBe('education');
-			expect(result[4].badgeKey).toBe('refugees');
-			expect(result[5].badgeKey).toBe('climate');
-			expect(result[6]).toEqual({ isEmailUpdates: true });
-			expect(result[7]).toEqual({ isLatestLoan: true });
-			expect(result[8]).toEqual({ isSurveyCard: true });
-		});
-
-		/* TODO: Uncomment this final full sequence test when all cards are implemented
-		it('builds full sequence in correct order (12 cards)', () => {
-			const achievements = [
-				{ badgeKey: 'women', target: 10 },
-				{ badgeKey: 'agriculture', target: 20 },
-				{ badgeKey: 'education', target: 30 },
-				{ badgeKey: 'refugees', target: 40 },
-				{ badgeKey: 'climate', target: 50 },
+			const nonBadges = [
+				{ title: 'Invite a friend to Kiva', ctaText: 'Invite a friend' },
+				{ title: 'Lend together', ctaText: 'Explore lending teams' },
+				{ title: 'Send a Kiva Card to give a gift that keeps on giving', ctaText: 'Send a kiva card' }
 			];
 
 			const result = buildUniversalOrderedSlides({
@@ -289,12 +213,10 @@ describe('journeyCardOrderingUtils', () => {
 				shouldShowEmailMarketingCard: true,
 				showLatestLoan: true,
 				showSurveyCard: true,
-				showFriendReferralCard: true,
-				showLendingTeamsCard: true,
-				showKivaCard: true,
+				nonBadgesSlides: nonBadges,
 			});
 
-			// Expected order: goal, achievements, email, latest loan, survey, referral, lending teams, kiva card
+			// Expected order: goal, achievements, email, latest loan, survey, non-badges
 			expect(result).toHaveLength(12);
 			expect(result[0]).toEqual({});
 			expect(result[1].badgeKey).toBe('women');
@@ -305,9 +227,10 @@ describe('journeyCardOrderingUtils', () => {
 			expect(result[6]).toEqual({ isEmailUpdates: true });
 			expect(result[7]).toEqual({ isLatestLoan: true });
 			expect(result[8]).toEqual({ isSurveyCard: true });
-			expect(result[9]).toEqual({ isFriendReferral: true });
-			expect(result[10]).toEqual({ isLendingTeams: true });
-			expect(result[11]).toEqual({ isKivaCard: true });
-			*/
+			expect(result[9]).toEqual({ title: 'Invite a friend to Kiva', ctaText: 'Invite a friend' });
+			expect(result[10]).toEqual({ title: 'Lend together', ctaText: 'Explore lending teams' });
+			// eslint-disable-next-line max-len
+			expect(result[11]).toEqual({ title: 'Send a Kiva Card to give a gift that keeps on giving', ctaText: 'Send a kiva card' });
+		});
 	});
 });
