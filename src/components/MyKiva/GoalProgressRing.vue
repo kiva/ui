@@ -227,7 +227,7 @@ const titleText = computed(() => {
 		return `Your ${yearToDate} goal`;
 	}
 	if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
-		return `Your ${yearToDate} goal to support U.S entrepreneurs`;
+		return `Your ${yearToDate} goal to U.S entrepreneurs`;
 	}
 	return `Your ${yearToDate} goal to ${props.categoryName?.toLowerCase() || ''}`;
 });
