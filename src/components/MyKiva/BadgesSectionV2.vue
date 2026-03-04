@@ -167,7 +167,7 @@ const badgeClicked = badge => {
 	}
 
 	$kvTrackEvent('portfolio', 'click', 'click-annual-goal-progress-continue');
-	router.push(getCtaHref(userGoal.value?.target, userGoal.value?.category, router, goalProgress.value));
+	window.location.href = getCtaHref(userGoal.value?.target, userGoal.value?.category, router, goalProgress.value);
 };
 
 const handleChange = interaction => {
