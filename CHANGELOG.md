@@ -1,3 +1,9 @@
+## [3.59.0-rc.2](https://github.com/kiva/ui/compare/v3.59.0-rc.1...v3.59.0-rc.2) (2026-03-04)
+
+### 🐛 Bugfixes
+
+* consolidate how progress is loaded for mykiva ([#6692](https://github.com/kiva/ui/issues/6692)) ([1b0c648](https://github.com/kiva/ui/commit/1b0c648102be990ce4a5384e7f4f8dfc22271c9a))
+
 ## [3.59.0-rc.1](https://github.com/kiva/ui/compare/v3.58.0...v3.59.0-rc.1) (2026-03-03)
 
 ### 🎉 New Features
