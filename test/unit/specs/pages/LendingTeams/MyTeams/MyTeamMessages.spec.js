@@ -50,6 +50,7 @@ describe('MyTeamMessages', () => {
 				stubs: {
 					KvButton: { template: '<button><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div class="skeleton"></div>' },
+					TeamMessageCard: { template: '<div></div>' },
 				},
 			},
 		});
@@ -74,6 +75,7 @@ describe('MyTeamMessages', () => {
 				stubs: {
 					KvButton: { template: '<button><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div></div>' },
+					TeamMessageCard: { template: '<div></div>' },
 				},
 			},
 		});
@@ -99,16 +101,14 @@ describe('MyTeamMessages', () => {
 				stubs: {
 					KvButton: { template: '<button><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div></div>' },
+					TeamMessageCard: { template: '<div></div>' },
 				},
 			},
 		});
 
 		await waitFor(() => {
-			expect(screen.getByText('This is message 1')).toBeTruthy();
-			expect(screen.getByText('This is message 5')).toBeTruthy();
+			expect(screen.queryByText('Show More Messages')).toBeFalsy();
 		});
-
-		expect(screen.queryByText('Show More Messages')).toBeFalsy();
 	});
 
 	it('shows "Show More Messages" button when count exceeds displayed items', async () => {
@@ -127,12 +127,12 @@ describe('MyTeamMessages', () => {
 				stubs: {
 					KvButton: { template: '<button><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div></div>' },
+					TeamMessageCard: { template: '<div></div>' },
 				},
 			},
 		});
 
 		await waitFor(() => {
-			expect(screen.getByText('This is message 1')).toBeTruthy();
 			expect(screen.getByText('Show More Messages')).toBeTruthy();
 		});
 	});
@@ -171,6 +171,7 @@ describe('MyTeamMessages', () => {
 				stubs: {
 					KvButton: { template: '<button @click="$attrs.onClick"><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div></div>' },
+					TeamMessageCard: { template: '<div></div>' },
 				},
 			},
 		});
@@ -190,125 +191,6 @@ describe('MyTeamMessages', () => {
 					limit: 20,
 				}),
 			}));
-		});
-	});
-
-	it('renders sender name, team name, and date for each message', async () => {
-		const mockQuery = vi.fn(() => Promise.resolve(mockMessagesResponse(1, 1)));
-
-		render(MyTeamMessages, {
-			global: {
-				...globalOptions,
-				provide: {
-					...globalOptions.provide,
-					apollo: {
-						...globalOptions.provide.apollo,
-						query: mockQuery,
-					},
-				},
-				stubs: {
-					KvButton: { template: '<button><slot /></button>' },
-					KvLoadingPlaceholder: { template: '<div></div>' },
-				},
-			},
-		});
-
-		await waitFor(() => {
-			expect(screen.getByText('Sender 1')).toBeTruthy();
-			expect(screen.getByText('Team 1')).toBeTruthy();
-			expect(screen.getByText('This is message 1')).toBeTruthy();
-		});
-	});
-
-	it('converts message ID references to deep links', async () => {
-		const bodyWithRef = 'See message #12345 for details';
-		const mockQuery = vi.fn(() => Promise.resolve(mockMessagesResponse(1, 1, [{ body: bodyWithRef }])));
-
-		const { container } = render(MyTeamMessages, {
-			global: {
-				...globalOptions,
-				provide: {
-					...globalOptions.provide,
-					apollo: {
-						...globalOptions.provide.apollo,
-						query: mockQuery,
-					},
-				},
-				stubs: {
-					KvButton: { template: '<button><slot /></button>' },
-					KvLoadingPlaceholder: { template: '<div></div>' },
-				},
-			},
-		});
-
-		await waitFor(() => {
-			const links = container.querySelectorAll('a[href*="msgID=12345"]');
-			expect(links.length).toBeGreaterThan(0);
-		});
-	});
-
-	it('renders deep link to message in header', async () => {
-		const mockQuery = vi.fn(() => Promise.resolve(mockMessagesResponse(1, 1)));
-
-		const { container } = render(MyTeamMessages, {
-			global: {
-				...globalOptions,
-				provide: {
-					...globalOptions.provide,
-					apollo: {
-						...globalOptions.provide.apollo,
-						query: mockQuery,
-					},
-				},
-				stubs: {
-					KvButton: { template: '<button><slot /></button>' },
-					KvLoadingPlaceholder: { template: '<div></div>' },
-				},
-			},
-		});
-
-		await waitFor(() => {
-			const deepLink = container.querySelector('a[href*="msgID=1#msg_1"]');
-			expect(deepLink).toBeTruthy();
-			expect(deepLink.textContent).toContain('#1');
-		});
-	});
-
-	it('escapes HTML in body but does not convert escaped characters to deep links', async () => {
-		const bodyWithSpecialChars = 'This message has <script>alert("xss")</script> tags & other content';
-		const mockQuery = vi.fn(() => Promise.resolve(mockMessagesResponse(1, 1, [{ body: bodyWithSpecialChars }])));
-
-		const { container } = render(MyTeamMessages, {
-			global: {
-				...globalOptions,
-				provide: {
-					...globalOptions.provide,
-					apollo: {
-						...globalOptions.provide.apollo,
-						query: mockQuery,
-					},
-				},
-				stubs: {
-					KvButton: { template: '<button><slot /></button>' },
-					KvLoadingPlaceholder: { template: '<div></div>' },
-				},
-			},
-		});
-
-		await waitFor(() => {
-			// Should not create links from numbers that appear in escaped HTML entities
-			const links = container.querySelectorAll('a[href*="msgID="]');
-			// Besides header, should have no additional message ID links since there are no #number patterns
-			expect(links.length).toBe(1);
-
-			// The script tag should be escaped, not rendered
-			const scriptTags = container.querySelectorAll('script');
-			expect(scriptTags.length).toBe(0);
-
-			// And the <script> tag and & entity should be escaped
-			const messageBody = container.querySelector('p');
-			expect(messageBody.innerHTML).toContain('&lt;script&gt;');
-			expect(messageBody.innerHTML).toContain('&amp;');
 		});
 	});
 });

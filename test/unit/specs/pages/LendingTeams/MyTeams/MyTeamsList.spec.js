@@ -38,8 +38,7 @@ describe('MyTeamsList', () => {
 				stubs: {
 					KvButton: { template: '<button><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div class="skeleton"></div>' },
-					KvMaterialIcon: { template: '<span></span>' },
-					KvDropdown: { template: '<div><slot /></div>' },
+					TeamCard: { template: '<div></div>' },
 				},
 			},
 		});
@@ -64,8 +63,7 @@ describe('MyTeamsList', () => {
 				stubs: {
 					KvButton: { template: '<button><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div></div>' },
-					KvMaterialIcon: { template: '<span></span>' },
-					KvDropdown: { template: '<div><slot /></div>' },
+					TeamCard: { template: '<div></div>' },
 				},
 			},
 		});
@@ -92,15 +90,13 @@ describe('MyTeamsList', () => {
 				stubs: {
 					KvButton: { template: '<button><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div></div>' },
-					KvMaterialIcon: { template: '<span></span>' },
-					KvDropdown: { template: '<div><slot /></div>' },
+					TeamCard: { template: '<div><slot /></div>' },
 				},
 			},
 		});
 
 		await waitFor(() => {
-			expect(screen.getByText('Team 1')).toBeTruthy();
-			expect(screen.getByText('Team 5')).toBeTruthy();
+			expect(mockQuery).toHaveBeenCalled();
 		});
 
 		expect(screen.queryByText('More Teams')).toBeFalsy();
@@ -122,14 +118,12 @@ describe('MyTeamsList', () => {
 				stubs: {
 					KvButton: { template: '<button><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div></div>' },
-					KvMaterialIcon: { template: '<span></span>' },
-					KvDropdown: { template: '<div><slot /></div>' },
+					TeamCard: { template: '<div></div>' },
 				},
 			},
 		});
 
 		await waitFor(() => {
-			expect(screen.getByText('Team 1')).toBeTruthy();
 			expect(screen.getByText('More Teams')).toBeTruthy();
 		});
 	});
@@ -168,8 +162,7 @@ describe('MyTeamsList', () => {
 				stubs: {
 					KvButton: { template: '<button @click="$attrs.onClick"><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div></div>' },
-					KvMaterialIcon: { template: '<span></span>' },
-					KvDropdown: { template: '<div><slot /></div>' },
+					TeamCard: { template: '<div></div>' },
 				},
 			},
 		});
@@ -190,38 +183,5 @@ describe('MyTeamsList', () => {
 				}),
 			}));
 		});
-	});
-
-	it('renders dropdown menu with 4 action links for each team', async () => {
-		const mockQuery = vi.fn(() => Promise.resolve(mockTeamsResponse(1, 1)));
-
-		const { container } = render(MyTeamsList, {
-			global: {
-				...globalOptions,
-				provide: {
-					...globalOptions.provide,
-					apollo: {
-						...globalOptions.provide.apollo,
-						query: mockQuery,
-					},
-				},
-				stubs: {
-					KvButton: { template: '<button><slot /></button>' },
-					KvLoadingPlaceholder: { template: '<div></div>' },
-					KvMaterialIcon: { template: '<span></span>' },
-					KvDropdown: { template: '<div><slot /></div>' },
-				},
-			},
-		});
-
-		await waitFor(() => {
-			expect(screen.getByText('Jump to message board')).toBeTruthy();
-			expect(screen.getByText('Go to overview')).toBeTruthy();
-			expect(screen.getByText('Set as preferred team')).toBeTruthy();
-			expect(screen.getByText('Quit team')).toBeTruthy();
-		});
-
-		const links = container.querySelectorAll('a');
-		expect(links.length).toBeGreaterThanOrEqual(4);
 	});
 });
