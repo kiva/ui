@@ -69,11 +69,23 @@
 		</p>
 
 		<KvButton
-			class="tw-w-full goal-set-button"
+			class="tw-w-full goal-button"
 			v-kv-track-event="['portfolio', 'click', 'continue-towards-goal']"
 			@click="handleButtonClick"
 		>
 			{{ buttonText }}
+		</KvButton>
+		<KvButton
+			v-if="showEditGoalButton"
+			variant="ghost"
+			class="goal-button edit-goal-button tw-w-full"
+			@click="handleEditGoalFromSettings"
+		>
+			Edit goal
+			<KvMaterialIcon
+				:icon="mdiPencilOutline"
+				class="tw-ml-0.5 tw-w-2.5"
+			/>
 		</KvButton>
 	</div>
 </template>
@@ -81,6 +93,7 @@
 <script setup>
 import { computed } from 'vue';
 import { mdiPencilOutline } from '@mdi/js';
+
 import { KvButton, KvProgressCircle, KvMaterialIcon } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import {
@@ -90,6 +103,7 @@ import {
 	ID_BASIC_NEEDS,
 	ID_US_ECONOMIC_EQUALITY,
 } from '#src/composables/useBadgeData';
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
 	/**
@@ -144,13 +158,24 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
+	/**
+	 * Enable edit goal button (only shows when user has a goal set)
+	 */
 	goalEditingEnable: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 *  Loading state for goal data (used in GoalSelector after loading goal)
+	 */
+	loadingCurrentYear: {
 		type: Boolean,
 		default: false,
 	},
 });
 
-const emit = defineEmits(['button-click', 'edit-button-click']);
+const emit = defineEmits(['button-click', 'edit-button-click', 'edit-goal-from-settings']);
+const router = useRouter();
 
 const yearToDate = new Date().getFullYear();
 
@@ -212,8 +237,12 @@ const modalDescriptionText = computed(() => {
 	if (props.categoryId === ID_SUPPORT_ALL) {
 		return `Your goal to support <span class="tw-text-brand">${props.goalLoans} loans</span> begins here.`;
 	}
+	if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
+		// eslint-disable-next-line max-len
+		return `Your goal to support <span class="tw-text-brand">${props.goalLoans} U.S entrepreneurs</span> begins here.`;
+	}
 	// eslint-disable-next-line max-len
-	return `Your support to <span class="tw-text-brand">${props.goalLoans}</span> for <span class="tw-text-brand">${props.categoryName?.toLowerCase() || ''}</span> begins here.`;
+	return `Your goal to support <span class="tw-text-brand">${props.goalLoans} ${props.categoryName?.toLowerCase() || ''}</span> begins here.`;
 });
 
 const titleText = computed(() => {
@@ -222,6 +251,9 @@ const titleText = computed(() => {
 	}
 	if (props.categoryId === ID_SUPPORT_ALL) {
 		return `Your ${yearToDate} goal`;
+	}
+	if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
+		return `Your ${yearToDate} goal to U.S entrepreneurs`;
 	}
 	return `Your ${yearToDate} goal to ${props.categoryName?.toLowerCase() || ''}`;
 });
@@ -263,9 +295,18 @@ const handleButtonClick = () => {
 	emit('button-click');
 };
 
+const handleEditGoalFromSettings = () => {
+	emit('edit-goal-from-settings');
+};
+
 const handleEditGoal = () => {
 	emit('edit-button-click');
 };
+
+const showEditGoalButton = computed(() => {
+	return props.goalEditingEnable && router.currentRoute.value?.path?.includes('/goal-setting');
+});
+
 </script>
 
 <style lang="postcss" scoped>
@@ -278,7 +319,7 @@ const handleEditGoal = () => {
 		}
 	}
 
-	.goal-set-button {
+	.goal-button {
 
 		@apply tw-self-center tw-mt-2.5;
 
@@ -286,5 +327,9 @@ const handleEditGoal = () => {
 			width: 78%;
 		}
 	}
+}
+
+.edit-goal-button :deep(span) {
+	@apply tw-flex tw-items-center tw-justify-center;
 }
 </style>
