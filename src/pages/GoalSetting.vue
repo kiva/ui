@@ -5,6 +5,7 @@
 				:total-loans="totalLoans"
 				:categories-loan-count="categoriesLoanCount"
 				:tiered-achievements="tieredAchievements"
+				:goal-editing-enable="goalEditingEnable"
 			/>
 		</KvPageContainer>
 	</WwwPage>
@@ -19,6 +20,9 @@ import { KvPageContainer } from '@kiva/kv-components';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import GoalSettingContainer from '#src/components/GoalSetting/GoalSettingContainer';
 import { LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import { readBoolSetting } from '#src/util/settingsUtils';
+
+const GOAL_EDITING_KEY = 'goal_editing_enable';
 
 export default {
 	name: 'GoalSetting',
@@ -33,6 +37,7 @@ export default {
 			totalLoans: 0,
 			categoriesLoanCount: {},
 			tieredAchievements: [],
+			goalEditingEnable: false,
 		};
 	},
 	apollo: {
@@ -71,6 +76,8 @@ export default {
 				logReadQueryError(e, 'GoalSettingPage useGoalDataQuery');
 			}
 		}
+		// Get feature flag for goal editing
+		this.goalEditingEnable = readBoolSetting(goalDataResult, `general.${GOAL_EDITING_KEY}.value`) ?? false;
 
 		// Fetch tiered achievements - try cache first, then network
 		const achievementsResult = this.apollo.readQuery({

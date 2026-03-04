@@ -1,3 +1,68 @@
+## [3.59.0](https://github.com/kiva/ui/compare/v3.58.0...v3.59.0) (2026-03-04)
+
+### 🎉 New Features
+
+* add tests for query string cookie file ([de7c3de](https://github.com/kiva/ui/commit/de7c3de3ad0f4d2966c2844783a54199d8aeb5b0))
+* create data settings page in ui repo ([2f9eeb3](https://github.com/kiva/ui/commit/2f9eeb3693573635eb031fc914435a41a3ff49af))
+* fixed copy change for support all context ([082d4e4](https://github.com/kiva/ui/commit/082d4e48b319ebbd05bd4d9d44a17f20fb8ab772))
+
+### 🐛 Bugfixes
+
+* consolidate how progress is loaded for mykiva ([#6692](https://github.com/kiva/ui/issues/6692)) ([1b0c648](https://github.com/kiva/ui/commit/1b0c648102be990ce4a5384e7f4f8dfc22271c9a))
+* ensure current year loans are loaded before showing ring progress information ([4c8ed35](https://github.com/kiva/ui/commit/4c8ed35f4724bb76ae77f640a668a7519c27a31d))
+* reverting not needed changes ([027dd37](https://github.com/kiva/ui/commit/027dd37856547f0298fcb9d409450268071f90df))
+* wait to show goal information until yearly data loads ([f469f0b](https://github.com/kiva/ui/commit/f469f0bb0d457d7221f0332aceaf93e9f4bc709a))
+
+### 🧹 Chores
+
+* **release:** 3.59.0-rc.1 [skip ci] ([b107982](https://github.com/kiva/ui/commit/b1079820fd48890094ba37a4c89dd24c046613f2))
+* **release:** 3.59.0-rc.2 [skip ci] ([272717a](https://github.com/kiva/ui/commit/272717aa3b4547c6d1c13747d6fa0dd6ff9d5a7b)), closes [#6692](https://github.com/kiva/ui/issues/6692)
+
+## [3.59.0-rc.2](https://github.com/kiva/ui/compare/v3.59.0-rc.1...v3.59.0-rc.2) (2026-03-04)
+
+### 🐛 Bugfixes
+
+* consolidate how progress is loaded for mykiva ([#6692](https://github.com/kiva/ui/issues/6692)) ([1b0c648](https://github.com/kiva/ui/commit/1b0c648102be990ce4a5384e7f4f8dfc22271c9a))
+
+## [3.59.0-rc.1](https://github.com/kiva/ui/compare/v3.58.0...v3.59.0-rc.1) (2026-03-03)
+
+### 🎉 New Features
+
+* add tests for query string cookie file ([de7c3de](https://github.com/kiva/ui/commit/de7c3de3ad0f4d2966c2844783a54199d8aeb5b0))
+* create data settings page in ui repo ([2f9eeb3](https://github.com/kiva/ui/commit/2f9eeb3693573635eb031fc914435a41a3ff49af))
+* fixed copy change for support all context ([082d4e4](https://github.com/kiva/ui/commit/082d4e48b319ebbd05bd4d9d44a17f20fb8ab772))
+
+### 🐛 Bugfixes
+
+* ensure current year loans are loaded before showing ring progress information ([4c8ed35](https://github.com/kiva/ui/commit/4c8ed35f4724bb76ae77f640a668a7519c27a31d))
+* reverting not needed changes ([027dd37](https://github.com/kiva/ui/commit/027dd37856547f0298fcb9d409450268071f90df))
+* wait to show goal information until yearly data loads ([f469f0b](https://github.com/kiva/ui/commit/f469f0bb0d457d7221f0332aceaf93e9f4bc709a))
+
+## [3.58.0](https://github.com/kiva/ui/compare/v3.57.0...v3.58.0) (2026-02-27)
+
+### 🎉 New Features
+
+* capitalization fix on us category name ([#6682](https://github.com/kiva/ui/issues/6682)) ([b7c8cb0](https://github.com/kiva/ui/commit/b7c8cb0ede022b1dc55999ac5e055f0ec75d88e4))
+* edit entrypoint added to goal card ([#6685](https://github.com/kiva/ui/issues/6685)) ([029f1dc](https://github.com/kiva/ui/commit/029f1dc9b0e89fde3d2bb280d8194ceae23d722f))
+* goal editing flag added ([#6688](https://github.com/kiva/ui/issues/6688)) ([dd497b6](https://github.com/kiva/ui/commit/dd497b6ad3ddc889ed584236637c660ee7a08d63))
+
+### 🐛 Bugfixes
+
+* prefetch next steps redirect experiment ([3fd8917](https://github.com/kiva/ui/commit/3fd8917854637f771729ef084921968234faf952))
+* use enabled flag in lending stats ([31e3822](https://github.com/kiva/ui/commit/31e3822cc58f9296f24c8d729e9ee483d29e1e49))
+
+### 🧹 Chores
+
+* **release:** 3.58.0-rc.1 [skip ci] ([9c4995e](https://github.com/kiva/ui/commit/9c4995eee06ebc00bdff78decea7f29a0f65815e)), closes [#6685](https://github.com/kiva/ui/issues/6685)
+* **release:** 3.58.0-rc.2 [skip ci] ([729c7a5](https://github.com/kiva/ui/commit/729c7a5772af70b3beb0a0d4bf21f2ac60664305)), closes [#6682](https://github.com/kiva/ui/issues/6682) [#6688](https://github.com/kiva/ui/issues/6688)
+
+## [3.58.0-rc.2](https://github.com/kiva/ui/compare/v3.58.0-rc.1...v3.58.0-rc.2) (2026-02-27)
+
+### 🎉 New Features
+
+* capitalization fix on us category name ([#6682](https://github.com/kiva/ui/issues/6682)) ([b7c8cb0](https://github.com/kiva/ui/commit/b7c8cb0ede022b1dc55999ac5e055f0ec75d88e4))
+* goal editing flag added ([#6688](https://github.com/kiva/ui/issues/6688)) ([dd497b6](https://github.com/kiva/ui/commit/dd497b6ad3ddc889ed584236637c660ee7a08d63))
+
 ## [3.58.0-rc.1](https://github.com/kiva/ui/compare/v3.57.0...v3.58.0-rc.1) (2026-02-27)
 
 ### 🎉 New Features
