@@ -43,7 +43,7 @@ describe('GoalProgressRing.vue', () => {
 
 			const description = container.querySelector('.modal-description-text');
 			// eslint-disable-next-line max-len
-			expect(description.innerHTML).toBe(`Your support to <span class="tw-text-brand">${testProps.goalLoans} ${testProps.categoryName.toLowerCase()}</span> begins here.`);
+			expect(description.innerHTML).toBe(`Your goal to support <span class="tw-text-brand">${testProps.goalLoans} ${testProps.categoryName.toLowerCase()}</span> begins here.`);
 		});
 
 		it('returns correct description for ID_BASIC_NEEDS category', () => {
@@ -61,7 +61,7 @@ describe('GoalProgressRing.vue', () => {
 
 			const description = container.querySelector('.modal-description-text');
 			// eslint-disable-next-line max-len
-			expect(description.innerHTML).toBe(`Your support to <span class="tw-text-brand">${testProps.goalLoans} ${testProps.categoryName.toLowerCase()}</span> begins here.`);
+			expect(description.innerHTML).toBe(`Your goal to support <span class="tw-text-brand">${testProps.goalLoans} ${testProps.categoryName.toLowerCase()}</span> begins here.`);
 		});
 
 		it('returns correct description for ID_REFUGEE_EQUALITY category', () => {
@@ -79,7 +79,7 @@ describe('GoalProgressRing.vue', () => {
 
 			const description = container.querySelector('.modal-description-text');
 			// eslint-disable-next-line max-len
-			expect(description.innerHTML).toBe(`Your support to <span class="tw-text-brand">${testProps.goalLoans} ${testProps.categoryName.toLowerCase()}</span> begins here.`);
+			expect(description.innerHTML).toBe(`Your goal to support <span class="tw-text-brand">${testProps.goalLoans} ${testProps.categoryName.toLowerCase()}</span> begins here.`);
 		});
 
 		it('returns correct description for ID_US_ECONOMIC_EQUALITY category', () => {
@@ -97,7 +97,7 @@ describe('GoalProgressRing.vue', () => {
 
 			const description = container.querySelector('.modal-description-text');
 			// eslint-disable-next-line max-len
-			expect(description.innerHTML).toBe(`Your support to <span class="tw-text-brand">${testProps.goalLoans} ${testProps.categoryName}</span> begins here.`);
+			expect(description.innerHTML).toBe(`Your goal to support <span class="tw-text-brand">${testProps.goalLoans} ${testProps.categoryName}</span> begins here.`);
 		});
 
 		it('returns correct description for ID_WOMENS_EQUALITY category', () => {
@@ -115,7 +115,7 @@ describe('GoalProgressRing.vue', () => {
 
 			const description = container.querySelector('.modal-description-text');
 			// eslint-disable-next-line max-len
-			expect(description.innerHTML).toBe(`Your support to <span class="tw-text-brand">${testProps.goalLoans} ${testProps.categoryName.toLowerCase()}</span> begins here.`);
+			expect(description.innerHTML).toBe(`Your goal to support <span class="tw-text-brand">${testProps.goalLoans} ${testProps.categoryName.toLowerCase()}</span> begins here.`);
 		});
 	});
 });

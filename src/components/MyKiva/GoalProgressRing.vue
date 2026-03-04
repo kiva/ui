@@ -213,10 +213,11 @@ const modalDescriptionText = computed(() => {
 		return `Your goal to support <span class="tw-text-brand">${props.goalLoans} loans</span> begins here.`;
 	}
 	if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
-		return `Your support to <span class="tw-text-brand">${props.goalLoans} U.S entrepreneurs</span> begins here.`;
+		// eslint-disable-next-line max-len
+		return `Your goal to support <span class="tw-text-brand">${props.goalLoans} U.S entrepreneurs</span> begins here.`;
 	}
 	// eslint-disable-next-line max-len
-	return `Your support to <span class="tw-text-brand">${props.goalLoans} ${props.categoryName?.toLowerCase() || ''}</span> begins here.`;
+	return `Your goal to support <span class="tw-text-brand">${props.goalLoans} ${props.categoryName?.toLowerCase() || ''}</span> begins here.`;
 });
 
 const titleText = computed(() => {
