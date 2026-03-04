@@ -1,0 +1,10 @@
+query dataSettingsQuery {
+	my {
+		id
+		userAccount {
+			id
+			cookieOptOut
+			piiSharingOptOut
+		}
+	}
+}

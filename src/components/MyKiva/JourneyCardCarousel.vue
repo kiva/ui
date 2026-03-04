@@ -167,7 +167,7 @@ import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import useOptIn from '#src/composables/useOptIn';
 import { buildUniversalOrderedSlides } from '#src/util/journeyCardOrderingUtils';
-import ThankYouCard from '../MyKiva/ThankYouCard';
+import ThankYouCard from '#src/components/MyKiva/ThankYouCard';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
@@ -180,8 +180,6 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
 const {
-	getContentfulLevelData,
-	combineBadgeData,
 	getActiveTierData,
 	isTieredAchievementComplete,
 } = useBadgeData(apollo);
@@ -211,7 +209,7 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
-	heroContentfulData: {
+	heroBadgeData: {
 		type: Array,
 		default: () => ([]),
 	},
@@ -319,13 +317,6 @@ const showSurveyCard = computed(() => {
 
 // TODO: Create computed properties for showFriendReferralCard, showLendingTeamsCard, and showKivaCard
 
-const badgesData = computed(() => {
-	const badgeContentfulData = (props.heroContentfulData ?? [])
-		.map(entry => getContentfulLevelData(entry));
-
-	return combineBadgeData(props.heroTieredAchievements, badgeContentfulData);
-});
-
 const getRichTextContent = slide => slide?.fields?.richText?.content ?? [];
 const getRichTextUiSettingsData = slide => {
 	const richTextContent = getRichTextContent(slide);
@@ -399,7 +390,45 @@ const dynamicOrderedSlides = computed(() => {
 		loanJourneys = getJourneysByLoan(transactionLoan);
 	}
 
-	let sortedSlides = achievementSlides.sort((a, b) => {
+	defaultBadges.forEach(badgeKey => {
+		const achievementContent = (props.heroBadgeData ?? []).find(achievement => badgeKey === achievement.id);
+
+		if (achievementContent) {
+			// Hidden slide for completed journeys
+			if (isTieredAchievementComplete(achievementContent.achievementData)) {
+				return;
+			}
+
+			const tier = getActiveTierData(achievementContent);
+			if (!tier?.target) {
+				return;
+			}
+
+			const milestoneDiff = Math.max(
+				tier.target - (achievementContent.achievementData?.totalProgressToAchievement ?? 0),
+				0
+			);
+			const contentfulData = achievementContent.contentfulData.find(cData => cData.level === tier.level);
+
+			const slideData = props.slides.find(slide => {
+				const richTextSlideData = getRichTextUiSettingsData(slide);
+				return richTextSlideData?.achievementKey === badgeKey;
+			});
+
+			if (slideData) {
+				achievementSlides.push({
+					...slideData,
+					milestoneDiff,
+					target: tier.target,
+					totalProgressToAchievement: achievementContent.achievementData?.totalProgressToAchievement,
+					badgeImgUrl: contentfulData?.imageUrl,
+					badgeKey,
+				});
+			}
+		}
+	});
+
+	sortedSlides = achievementSlides.sort((a, b) => {
 		return a.milestoneDiff - b.milestoneDiff;
 	});
 
