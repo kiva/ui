@@ -353,7 +353,6 @@ const handleContinue = () => {
 		status: GOAL_STATUS.IN_PROGRESS,
 		loanTotalAtStart,
 	};
-	emit('set-goal', preferences);
 	$kvTrackEvent(
 		props.trackingCategory,
 		'click',
@@ -361,6 +360,7 @@ const handleContinue = () => {
 		props.selectedCategoryId,
 		selectedTarget.value
 	);
+	emit('set-goal', preferences);
 };
 
 const updateGoalOptions = () => {
