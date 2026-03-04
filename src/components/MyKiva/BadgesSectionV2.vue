@@ -1,7 +1,15 @@
 <template>
+	<div v-if="isLoading" class="tw-flex tw-gap-2 tw-overflow-hidden">
+		<KvLoadingPlaceholder
+			v-for="n in 5"
+			:key="n"
+			class="!tw-rounded tw-shrink-0"
+			:style="{ 'width': SINGLE_SLIDE_WIDTH, 'min-height': CARD_MIN_HEIGHT }"
+		/>
+	</div>
 	<KvCarousel
+		v-else
 		class="tw-w-full !tw-pt-0"
-		:key="carouselKey"
 		:controls-top-right="controlsTopRight"
 		:multiple-slides-visible="true"
 		:slide-max-width="SINGLE_SLIDE_WIDTH"
@@ -10,13 +18,7 @@
 		@change="handleChange"
 	>
 		<template v-for="(badge, index) in visibleBadges" #[`slide${index+1}`] :key="badge.id || index">
-			<KvLoadingPlaceholder
-				v-if="isLoading"
-				class="!tw-rounded"
-				:style="{ 'width': SINGLE_SLIDE_WIDTH, 'min-height': CARD_MIN_HEIGHT }"
-			/>
 			<div
-				v-else
 				class="tw-flex tw-flex-col tw-justify-between tw-cursor-pointer"
 				:style="{ 'min-height': CARD_MIN_HEIGHT }"
 				@click="badgeClicked(badge)"
@@ -55,7 +57,6 @@ const SINGLE_SLIDE_WIDTH = '336px';
 const emit = defineEmits(['badge-clicked']);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
-const carouselKey = ref(0);
 
 const props = defineProps({
 	badgeData: {
@@ -78,7 +79,11 @@ const router = useRouter();
 const goalData = inject('goalData');
 
 const currentIndex = ref(0);
-const isLoading = computed(() => !props.badgeData?.some(b => b?.id));
+
+// Show loading placeholders until goal data is ready.
+// goalData.loading starts as true (ref(true) in useGoalData), so during SSR
+// and until loadGoalData() resolves, placeholders are shown.
+const isLoading = computed(() => goalData.loading.value);
 
 const {
 	getCtaHref,
@@ -200,10 +205,6 @@ watch(userHasGoal, newValue => {
 	}
 });
 
-// Re-key carousel when slide count changes (e.g. user goal slide added/removed)
-watch(() => visibleBadges.value?.length, () => {
-	carouselKey.value += 1;
-});
 </script>
 
 <style lang="postcss" scoped>
