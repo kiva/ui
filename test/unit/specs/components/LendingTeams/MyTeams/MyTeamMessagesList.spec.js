@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import MyTeamMessages from '#src/pages/LendingTeams/MyTeams/MyTeamMessages';
+import MyTeamMessagesList from '#src/components/LendingTeams/MyTeams/MyTeamMessagesList';
 import { globalOptions } from '../../../../specUtils';
 
 const mockMessage = (id, overrides = {}) => ({
@@ -42,9 +42,9 @@ const mockMessagesResponse = (totalCount, count, overrides = []) => ({
 	},
 });
 
-describe('MyTeamMessages', () => {
+describe('MyTeamMessagesList', () => {
 	it('shows loading skeletons initially', () => {
-		const { container } = render(MyTeamMessages, {
+		const { container } = render(MyTeamMessagesList, {
 			global: {
 				...globalOptions,
 				stubs: {
@@ -62,7 +62,7 @@ describe('MyTeamMessages', () => {
 	it('shows empty state when no messages', async () => {
 		const mockQuery = vi.fn(() => Promise.resolve(mockMessagesResponse(0, 0)));
 
-		render(MyTeamMessages, {
+		render(MyTeamMessagesList, {
 			global: {
 				...globalOptions,
 				provide: {
@@ -88,7 +88,7 @@ describe('MyTeamMessages', () => {
 	it('renders messages without "Show More Messages" button when count is below threshold', async () => {
 		const mockQuery = vi.fn(() => Promise.resolve(mockMessagesResponse(5, 5)));
 
-		render(MyTeamMessages, {
+		render(MyTeamMessagesList, {
 			global: {
 				...globalOptions,
 				provide: {
@@ -114,7 +114,7 @@ describe('MyTeamMessages', () => {
 	it('shows "Show More Messages" button when count exceeds displayed items', async () => {
 		const mockQuery = vi.fn(() => Promise.resolve(mockMessagesResponse(25, 20)));
 
-		render(MyTeamMessages, {
+		render(MyTeamMessagesList, {
 			global: {
 				...globalOptions,
 				provide: {
@@ -158,7 +158,7 @@ describe('MyTeamMessages', () => {
 			});
 		});
 
-		render(MyTeamMessages, {
+		render(MyTeamMessagesList, {
 			global: {
 				...globalOptions,
 				provide: {

@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import MyTeamsList from '#src/pages/LendingTeams/MyTeams/MyTeamsList';
+import MyTeamsList from '#src/components/LendingTeams/MyTeams/MyTeamsList';
 import { globalOptions } from '../../../../specUtils';
 
 const mockTeam = (id, overrides = {}) => ({

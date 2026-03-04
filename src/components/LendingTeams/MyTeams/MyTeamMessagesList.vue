@@ -67,7 +67,7 @@ import teamDefaultImage from '#src/assets/images/team_s135.png';
 import TeamMessageCard from '#src/components/LendingTeams/MyTeams/TeamMessageCard';
 
 export default {
-	name: 'MyTeamMessages',
+	name: 'MyTeamMessagesList',
 	components: {
 		KvButton,
 		KvLoadingPlaceholder,

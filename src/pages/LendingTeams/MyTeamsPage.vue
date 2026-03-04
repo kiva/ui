@@ -16,7 +16,7 @@
 				<div
 					class="tw-col-span-12 md:tw-col-span-8"
 				>
-					<my-team-messages />
+					<my-team-messages-list />
 				</div>
 				<div
 					class="tw-col-span-12 md:tw-col-span-4"
@@ -31,16 +31,16 @@
 <script>
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import { KvPageContainer, KvGrid } from '@kiva/kv-components';
-import MyTeamMessages from './MyTeamMessages';
-import MyTeamsList from './MyTeamsList';
+import MyTeamMessagesList from '#src/components/LendingTeams/MyTeams/MyTeamMessagesList';
+import MyTeamsList from '#src/components/LendingTeams/MyTeams/MyTeamsList';
 
 export default {
-	name: 'MyTeams',
+	name: 'MyTeamsPage',
 	components: {
 		WwwPage,
 		KvPageContainer,
 		KvGrid,
-		MyTeamMessages,
+		MyTeamMessagesList,
 		MyTeamsList,
 	},
 	head: {
