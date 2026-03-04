@@ -33,7 +33,7 @@
 					:disable-drag="true"
 					:goal-progress-loading="goalProgressLoading"
 					:goal-progress="goalProgress"
-					:hero-contentful-data="heroContentfulData"
+					:hero-badge-data="heroBadgeData"
 					:hero-tiered-achievements="heroTieredAchievements"
 					:lender="lender"
 					:slides-number="1"
@@ -167,7 +167,7 @@
 			controls-top-right
 			:goal-progress-loading="goalProgressLoading"
 			:goal-progress="goalProgress"
-			:hero-contentful-data="heroContentfulData"
+			:hero-badge-data="heroBadgeData"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:lender="lender"
 			:loans="loans"
@@ -226,7 +226,7 @@ import Oceania from '#src/assets/images/my-kiva/Oceania.png';
 import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
-import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
+import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 
 import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
@@ -266,13 +266,13 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
-		heroContentfulData: {
-			type: Object,
-			default: () => ({}),
+		heroBadgeData: {
+			type: Array,
+			default: () => ([]),
 		},
 		heroTieredAchievements: {
-			type: Object,
-			default: () => ({}),
+			type: Array,
+			default: () => ([]),
 		},
 		totalLoans: {
 			type: Number,

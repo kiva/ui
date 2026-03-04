@@ -78,7 +78,7 @@ const router = useRouter();
 const goalData = inject('goalData');
 
 const currentIndex = ref(0);
-const isLoading = ref(true);
+const isLoading = computed(() => !props.badgeData?.some(b => b?.id));
 
 const {
 	getCtaHref,
@@ -167,7 +167,7 @@ const badgeClicked = badge => {
 	}
 
 	$kvTrackEvent('portfolio', 'click', 'click-annual-goal-progress-continue');
-	router.push(getCtaHref(userGoal.value?.target, userGoal.value?.category, router, goalProgress.value));
+	window.location.href = getCtaHref(userGoal.value?.target, userGoal.value?.category, router, goalProgress.value);
 };
 
 const handleChange = interaction => {
@@ -200,15 +200,10 @@ watch(userHasGoal, newValue => {
 	}
 });
 
-// Watch visibleBadges to update isLoading
-watch(visibleBadges, (newSlides, oldSlides) => {
-	if (oldSlides && JSON.stringify(oldSlides) !== JSON.stringify(newSlides)) {
-		isLoading.value = false;
-	}
-	if (oldSlides?.length !== newSlides?.length) {
-		carouselKey.value += 1;
-	}
-}, { immediate: true, deep: true });
+// Re-key carousel when slide count changes (e.g. user goal slide added/removed)
+watch(() => visibleBadges.value?.length, () => {
+	carouselKey.value += 1;
+});
 </script>
 
 <style lang="postcss" scoped>

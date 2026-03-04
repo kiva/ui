@@ -45,6 +45,7 @@ export const CATEGORY_TARGETS = {
 };
 
 export const MAX_TIERED_BADGE_LOANS = 100;
+export const FRESH_PROGRESS_LOAN_PURCHASE_LIMIT = 20;
 
 const COUNTRIES_ISO_CODE = ['PR', 'US'];
 const WOMENS_EQUALITY_FILTER = 'female';
@@ -55,9 +56,27 @@ const CLIMATE_ACTION_THEMES = ['clean energy'];
 const CLIMATE_ACTION_TAGS = ['#eco-friendly', '#sustainable ag'];
 
 const normalizeValue = value => `${value ?? ''}`.trim().toLowerCase();
+const normalizeLoanId = value => (value == null ? null : `${value}`);
 const normalizeValues = values => (values ?? []).map(normalizeValue).filter(Boolean);
 const getLoanThemes = loan => normalizeValues(loan?.themes);
 const getLoanTags = loan => normalizeValues(loan?.tags);
+
+/**
+ * Gets a cleaned up version of Contentful badge data
+ *
+ * @param entry The Contentful entry
+ * @returns The cleaned up Contentful badge data
+ */
+export const getContentfulLevelData = entry => ({
+	id: entry?.fields?.key?.replace(/-level-\d+/, '') ?? '',
+	level: +(entry?.fields?.key?.replace(/\D/g, '') ?? ''),
+	levelName: entry?.fields?.levelName ?? '',
+	challengeName: entry?.fields?.challengeName ?? '',
+	imageUrl: entry?.fields?.badgeImage?.fields?.file?.url ?? '',
+	shareFact: entry?.fields?.shareFact ?? '',
+	shareFactFootnote: entry?.fields?.shareFactFootnote ?? '',
+	shareFactUrl: entry?.fields?.shareFactUrl ?? '',
+});
 
 export const getTierCompletionLevel = achievement => {
 	const tiers = achievement?.tiers ?? [];
@@ -154,8 +173,9 @@ export const getMissingLoans = (loans, tieredAchievements) => {
 	tieredAchievements.forEach(achievement => {
 		const loanPurchases = achievement.loanPurchases || [];
 		loanPurchases.forEach(purchase => {
-			if (purchase?.loan?.id != null) {
-				achievementServiceLoanIds.add(purchase.loan.id);
+			const normalizedLoanId = normalizeLoanId(purchase?.loan?.id);
+			if (normalizedLoanId != null) {
+				achievementServiceLoanIds.add(normalizedLoanId);
 			}
 		});
 	});
@@ -163,15 +183,16 @@ export const getMissingLoans = (loans, tieredAchievements) => {
 	// Find carousel loans that are NOT in achievement service and de-dupe repeated loan IDs.
 	const processedLoanIds = new Set();
 	return loans.filter(loan => {
-		if (loan?.id == null) {
+		const normalizedLoanId = normalizeLoanId(loan?.id);
+		if (normalizedLoanId == null) {
 			return false;
 		}
 
-		if (processedLoanIds.has(loan.id)) {
+		if (processedLoanIds.has(normalizedLoanId)) {
 			return false;
 		}
-		processedLoanIds.add(loan.id);
-		return !achievementServiceLoanIds.has(loan.id);
+		processedLoanIds.add(normalizedLoanId);
+		return !achievementServiceLoanIds.has(normalizedLoanId);
 	});
 };
 
@@ -204,6 +225,77 @@ export const calculateFreshProgressAdjustments = (loans, tieredAchievements) => 
 	return adjustments;
 };
 
+const copyLoanPurchase = loanPurchase => ({
+	...loanPurchase,
+	loan: loanPurchase?.loan ? { ...loanPurchase.loan } : loanPurchase?.loan,
+});
+
+/**
+ * Applies fresh progress to achievements.
+ *
+ * @param achievements Achievements from achievement service
+ * @param freshProgressLoans Array of recent transaction loans
+ * @returns Updated achievements
+ */
+export const applyFreshProgressToAchievements = ({
+	achievements = [],
+	freshProgressLoans = [],
+} = {}) => {
+	// Keep caller behavior predictable: no achievements means no derived updates.
+	if (!achievements?.length) {
+		return [];
+	}
+
+	// Progress adjustments apply only to tiered achievements (the ones with numeric progress).
+	const tieredAchievements = achievements.filter(
+		achievement => achievement?.totalProgressToAchievement !== undefined
+	);
+	const missingFreshLoans = (freshProgressLoans?.length && tieredAchievements.length)
+		? getMissingLoans(freshProgressLoans, tieredAchievements)
+		: [];
+
+	// Build both the numeric adjustment counts AND the per-journey loan lists in a single pass
+	// so they are structurally guaranteed to stay in sync.
+	const effectiveAdjustments = {};
+	const freshJourneyLoans = {};
+	missingFreshLoans.forEach(loan => {
+		const journeys = getJourneysByLoan(loan);
+		journeys.forEach(journeyId => {
+			effectiveAdjustments[journeyId] = (effectiveAdjustments[journeyId] || 0) + 1;
+			freshJourneyLoans[journeyId] = [...(freshJourneyLoans[journeyId] ?? []), loan];
+		});
+	});
+
+	const updatedAchievements = achievements.map(achievement => {
+		// Clone before mutation so repeated invocations do not mutate Apollo/cache-backed objects in place.
+		const copiedAchievement = {
+			...achievement,
+			tiers: achievement?.tiers?.map(tier => ({ ...tier })),
+			loanPurchases: (achievement?.loanPurchases ?? []).map(copyLoanPurchase),
+		};
+
+		const adjustment = effectiveAdjustments?.[copiedAchievement.id] ?? 0;
+		if (adjustment > 0 && copiedAchievement.totalProgressToAchievement !== undefined) {
+			const currentProgress = copiedAchievement.totalProgressToAchievement || 0;
+			copiedAchievement.totalProgressToAchievement = currentProgress + adjustment;
+		}
+
+		const journeyFreshLoans = freshJourneyLoans[copiedAchievement.id] ?? [];
+		if (journeyFreshLoans.length) {
+			// freshJourneyLoans are guaranteed to not already exist in loanPurchases because
+			// getMissingLoans already excluded any loan present in ANY achievement's loanPurchases.
+			// Prepend new loans so recent activity appears first.
+			const freshLoanPurchases = journeyFreshLoans
+				.map(loan => ({ loan: { ...loan } }));
+			copiedAchievement.loanPurchases = [...freshLoanPurchases, ...copiedAchievement.loanPurchases];
+		}
+
+		return copiedAchievement;
+	});
+
+	return updatedAchievements;
+};
+
 /**
  * Utilities for loading and combining tiered badge data
  *
@@ -214,34 +306,23 @@ export default function useBadgeData() {
 	const badgeContentfulData = ref();
 
 	/**
-	 * Gets a cleaned up version of Contentful badge data
-	 *
-	 * @param entry The Contentful entry
-	 * @returns The cleaned up Contentful badge data
-	 */
-	const getContentfulLevelData = entry => ({
-		id: entry?.fields?.key?.replace(/-level-\d+/, '') ?? '',
-		level: +(entry?.fields?.key?.replace(/\D/g, '') ?? ''),
-		levelName: entry?.fields?.levelName ?? '',
-		challengeName: entry?.fields?.challengeName ?? '',
-		imageUrl: entry?.fields?.badgeImage?.fields?.file?.url ?? '',
-		shareFact: entry?.fields?.shareFact ?? '',
-		shareFactFootnote: entry?.fields?.shareFactFootnote ?? '',
-		shareFactUrl: entry?.fields?.shareFactUrl ?? '',
-	});
-
-	/**
 	 * Calls Apollo to get the badge achievement service data
 	 *
 	 * @param apollo The current instance of Apollo
 	 * @param publicId Whether to get achievement data for a specific user
+	 * @param loanPurchasesLimit Optional loan purchases query limit override
 	 * @returns Promise that resolves when data is loaded
 	 */
-	const fetchAchievementData = async (apollo, publicId = null) => {
+	const fetchAchievementData = async (apollo, publicId = null, loanPurchasesLimit = null) => {
+		const queryVariables = { publicId };
+		if (loanPurchasesLimit != null) {
+			queryVariables.loanPurchasesLimit = loanPurchasesLimit;
+		}
+
 		try {
 			const result = await apollo.query({
 				query: userAchievementProgressQuery,
-				variables: { publicId },
+				variables: queryVariables,
 				fetchPolicy: 'network-only'
 			});
 			badgeAchievementData.value = [
@@ -455,9 +536,9 @@ export default function useBadgeData() {
 	 * @returns The URL for loan finding
 	 */
 	const getLoanFindingUrl = (badgeId, currentRoute) => {
-		const FILTER_PAGE = '/lend/filter';
+		const FILTER_PAGE = '/lend-category-beta';
 		const categorySlug = CATEGORIES[badgeId] || '';
-		const CATEGORY_PAGE = categorySlug ? `/lend-by-category/${categorySlug}` : FILTER_PAGE;
+		const CATEGORY_PAGE = categorySlug ? `/lend-category-beta/${categorySlug}` : FILTER_PAGE;
 		const routePath = currentRoute?.path;
 
 		if (routePath === CATEGORY_PAGE) {
@@ -652,61 +733,6 @@ export default function useBadgeData() {
 	};
 
 	/**
-	 * Applies fresh progress adjustments to achievement data array
-	 *
-	 * @param achievements The achievements array to adjust
-	 * @param freshProgressAdjustments Map of badgeId to progress adjustment count
-	 * @returns The adjusted achievements array (new array with modified copies)
-	 */
-	const applyFreshProgressAdjustments = (achievements, freshProgressAdjustments) => {
-		if (!achievements?.length || !freshProgressAdjustments || Object.keys(freshProgressAdjustments).length === 0) {
-			return achievements?.map(a => ({ ...a })) || [];
-		}
-
-		// Create mutable copies and apply adjustments
-		// Apollo cache objects are read-only, so we need to create new objects
-		return achievements.map(achievement => {
-			// Only apply adjustments to tiered achievements (which have totalProgressToAchievement)
-			// Regular lendingAchievements don't have this field and shouldn't be adjusted
-			const adjustment = freshProgressAdjustments[achievement.id];
-			if (adjustment && achievement.totalProgressToAchievement !== undefined) {
-				const currentProgress = achievement.totalProgressToAchievement || 0;
-				const newProgress = currentProgress + adjustment;
-				// Return new object with adjusted progress (all-time only)
-				return {
-					...achievement,
-					totalProgressToAchievement: newProgress
-				};
-			}
-			// Return copy of achievement without adjustments
-			return { ...achievement };
-		});
-	};
-
-	/**
-	 * Updates the existing badge data with fresh progress adjustments from loans not yet in achievement service
-	 *
-	 * @param loans Array of carousel loans to check for missing progress
-	 * @param tieredAchievements Array of tiered achievements from achievement service
-	 * @returns The calculated adjustments object (map of badgeId to count)
-	 */
-	const updateBadgeDataWithFreshProgress = (loans, tieredAchievements) => {
-		if (!loans?.length || !tieredAchievements?.length || !badgeAchievementData.value?.length) {
-			return {};
-		}
-
-		// Calculate fresh progress adjustments (all-time only)
-		const adjustments = calculateFreshProgressAdjustments(loans, tieredAchievements);
-
-		// Apply adjustments to existing badge data
-		if (Object.keys(adjustments).length > 0) {
-			badgeAchievementData.value = applyFreshProgressAdjustments(badgeAchievementData.value, adjustments);
-		}
-
-		return adjustments;
-	};
-
-	/**
 	 * Get badge headline
 	 *
 	 * @param badge The badge to filter loans by
@@ -825,6 +851,5 @@ export default function useBadgeData() {
 		getLevelCaption,
 		getAllCategoryLoanCounts,
 		allAchievementsCompleted,
-		updateBadgeDataWithFreshProgress,
 	};
 }
