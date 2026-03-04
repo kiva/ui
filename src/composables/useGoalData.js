@@ -871,5 +871,6 @@ export default function useGoalData({ apollo } = {}) {
 		hideGoalCard,
 		setHideGoalCardPreference,
 		getSupportAllLoanCountByYear,
+		setGoalState,
 	};
 }

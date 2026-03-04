@@ -26,7 +26,6 @@
 					:goal-loans="loanTarget"
 					:goal-progress="goalProgress"
 					:goal-progress-percentage="goalProgressPercentage"
-					:is-existing-goal="isExistingGoal"
 					:category-id="selectedCategory.badgeId"
 					:category-name="selectedCategory.name"
 					:go-to-url="ctaHref"
@@ -65,7 +64,6 @@
 							:selected-category="selectedCategory"
 							:selected-goal-number="loanTarget"
 							@category-selected="handleCategorySelected"
-							@number-changed="handleNumberChanged"
 						/>
 						<div
 							class="buttons tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-flex tw-flex-col
@@ -120,6 +118,7 @@ const {
 	userGoal,
 	loadGoalData,
 	storeGoalPreferences,
+	setGoalState,
 	loading,
 	getCategories,
 	getCtaHref,
@@ -178,9 +177,8 @@ const categoryFormKey = ref(0);
 const isEditing = ref(false);
 const formStep = ref(1);
 
-// Email flow
-const emailLoading = ref(false);
-const isExistingGoal = ref(false);
+// Email flow — set during creation so the loading placeholder renders on the first tick
+const emailLoading = ref(props.emailTarget != null);
 
 const VALID_EMAIL_CATEGORIES = new Set([
 	ID_SUPPORT_ALL,
@@ -306,8 +304,6 @@ const goToDashboard = () => {
 	router.push('/mykiva');
 };
 
-const handleNumberChanged = () => {};
-
 const yearToDate = new Date().getFullYear();
 
 const ctaCopy = computed(() => {
@@ -318,6 +314,19 @@ const ctaCopy = computed(() => {
 });
 
 const parseGoals = () => JSON.parse(userPreferences.value?.preferences || '{}').goals || [];
+
+function applyGoalState() {
+	if (!userGoal.value?.target) return;
+	const { target, category: goalCategory } = userGoal.value;
+	loanTarget.value = target;
+	const storedCategory = categories.find(c => c.badgeId === goalCategory);
+	if (storedCategory) {
+		selectedCategory.value = storedCategory;
+	}
+	// Use goalProgress which tracks current year progress
+	ctaHref.value = getCtaHref(target, goalCategory, router, goalProgress.value);
+	isGoalSet.value = true;
+}
 
 async function handleEmailFlow() {
 	const category = validEmailCategory.value;
@@ -336,35 +345,21 @@ async function handleEmailFlow() {
 		}
 	}
 
-	const emailGoal = findEmailDisplayGoal({ existingGoal, allGoals: parseGoals(), category });
+	const allGoals = parseGoals();
+	const emailGoal = findEmailDisplayGoal({ existingGoal, allGoals, category });
 	if (emailGoal) {
-		userGoal.value = { ...emailGoal };
+		setGoalState({ goals: allGoals });
 	} else {
 		logFormatter('GoalSettingContainer: no goal found for email flow', 'error', { category });
 	}
 
-	isExistingGoal.value = !!existingGoal;
-
-	if (userGoal.value?.target) {
-		const { target, category: goalCategory } = userGoal.value;
-		loanTarget.value = target;
-		const storedCategory = categories.find(c => c.badgeId === goalCategory);
-		if (storedCategory) {
-			selectedCategory.value = storedCategory;
-		}
-		ctaHref.value = getCtaHref(target, goalCategory, router, goalProgress.value);
-		isGoalSet.value = true;
-	}
+	applyGoalState();
 
 	emailLoading.value = false;
 	$kvTrackEvent('event-tracking', 'view', 'goals-page-email');
 }
 
 onMounted(async () => {
-	if (isEmailFlow.value) {
-		emailLoading.value = true;
-	}
-
 	await loadGoalData({ yearlyProgress: true });
 
 	if (isEmailFlow.value) {
@@ -372,18 +367,7 @@ onMounted(async () => {
 		return;
 	}
 
-	const isEmptyGoal = Object.keys(userGoal.value || {}).length === 0;
-	if (!isEmptyGoal) {
-		const { target, category } = userGoal.value;
-		loanTarget.value = target;
-		const storedCategory = categories.find(c => c.badgeId === category);
-		if (storedCategory) {
-			selectedCategory.value = storedCategory;
-		}
-		ctaHref.value = getCtaHref(target, category, router, goalProgress.value);
-		isGoalSet.value = true;
-		isExistingGoal.value = true;
-	}
+	applyGoalState();
 	$kvTrackEvent('event-tracking', 'view', 'goals-page');
 });
 </script>

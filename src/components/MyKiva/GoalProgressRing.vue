@@ -148,14 +148,6 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	/**
-	 * When true, shows the "already on your way" description even if goalProgress is 0.
-	 * Used in the email flow to show the existing-goal copy without faking the progress number.
-	 */
-	isExistingGoal: {
-		type: Boolean,
-		default: false,
-	},
 });
 
 const emit = defineEmits(['button-click', 'edit-button-click']);
@@ -175,7 +167,7 @@ const progressCircleDesc = computed(() => {
 
 // --- Variant-specific computed properties ---
 
-const hasProgress = computed(() => props.isExistingGoal || props.goalProgress > 0);
+const hasProgress = computed(() => props.goalProgress > 0);
 
 const progressDescription = computed(() => {
 	const loans = props.goalLoans;
