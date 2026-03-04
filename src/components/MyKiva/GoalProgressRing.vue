@@ -226,6 +226,9 @@ const titleText = computed(() => {
 	if (props.categoryId === ID_SUPPORT_ALL) {
 		return `Your ${yearToDate} goal`;
 	}
+	if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
+		return `Your ${yearToDate} goal to support U.S entrepreneurs`;
+	}
 	return `Your ${yearToDate} goal to ${props.categoryName?.toLowerCase() || ''}`;
 });
 
