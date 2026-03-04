@@ -212,8 +212,12 @@ const modalDescriptionText = computed(() => {
 	if (props.categoryId === ID_SUPPORT_ALL) {
 		return `Your goal to support <span class="tw-text-brand">${props.goalLoans} loans</span> begins here.`;
 	}
+	if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
+		// eslint-disable-next-line max-len
+		return `Your goal to support <span class="tw-text-brand">${props.goalLoans} U.S entrepreneurs</span> begins here.`;
+	}
 	// eslint-disable-next-line max-len
-	return `Your support to <span class="tw-text-brand">${props.goalLoans}</span> for <span class="tw-text-brand">${props.categoryName?.toLowerCase() || ''}</span> begins here.`;
+	return `Your goal to support <span class="tw-text-brand">${props.goalLoans} ${props.categoryName?.toLowerCase() || ''}</span> begins here.`;
 });
 
 const titleText = computed(() => {
@@ -222,6 +226,9 @@ const titleText = computed(() => {
 	}
 	if (props.categoryId === ID_SUPPORT_ALL) {
 		return `Your ${yearToDate} goal`;
+	}
+	if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
+		return `Your ${yearToDate} goal to U.S entrepreneurs`;
 	}
 	return `Your ${yearToDate} goal to ${props.categoryName?.toLowerCase() || ''}`;
 });
