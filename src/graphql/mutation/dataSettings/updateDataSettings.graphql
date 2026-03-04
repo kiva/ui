@@ -1,0 +1,6 @@
+mutation updateDataSettings($cookieOptOut: Boolean!, $piiSharingOptOut: Boolean!) {
+	my {
+		updateCookieOptOut(cookieOptOut: $cookieOptOut)
+		updatePiiSharingOptOut(piiSharingOptOut: $piiSharingOptOut)
+	}
+}
