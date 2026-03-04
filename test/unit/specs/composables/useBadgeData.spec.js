@@ -271,10 +271,10 @@ describe('useBadgeData.js', () => {
 		const { getLoanFindingUrl } = useBadgeData();
 
 		Object.keys(FILTERS).forEach(badgeId => {
-			const categoryPath = `/lend-by-category/${CATEGORIES[badgeId]}`;
+			const categoryPath = `/lend-category-beta/${CATEGORIES[badgeId]}`;
 			const filterParams = FILTERS[badgeId];
 			const filterString = new URLSearchParams(filterParams).toString();
-			const filterPath = `/lend/filter?${filterString}`;
+			const filterPath = `/lend-category-beta?${filterString}`;
 
 			it(`should return undefined if the current route matches the category page for ${badgeId}`, () => {
 				const currentRoute = { path: categoryPath };
@@ -286,7 +286,7 @@ describe('useBadgeData.js', () => {
 
 			it(`should return the correct filtered URL if the current route matches the filter page for ${badgeId}`, () => {
 				const currentRoute = {
-					path: '/lend/filter',
+					path: '/lend-category-beta',
 					query: {},
 				};
 
@@ -305,7 +305,7 @@ describe('useBadgeData.js', () => {
 
 			it(`should handle an empty query object gracefully for ${badgeId}`, () => {
 				const currentRoute = {
-					path: '/lend/filter',
+					path: '/lend-category-beta',
 					query: {},
 				};
 
@@ -316,25 +316,25 @@ describe('useBadgeData.js', () => {
 
 			it(`should handle existing query parameters for ${badgeId}`, () => {
 				const currentRoute = {
-					path: '/lend/filter',
+					path: '/lend-category-beta',
 					query: { existingFilter: 'value' },
 				};
 
 				const result = getLoanFindingUrl(badgeId, currentRoute);
 
-				const expectedPath = `/lend/filter?existingFilter=value&${filterString}`;
+				const expectedPath = `/lend-category-beta?existingFilter=value&${filterString}`;
 				expect(result).toBe(expectedPath);
 			});
 
 			it(`should handle updating query parameters for ${badgeId}`, () => {
 				const currentRoute = {
-					path: '/lend/filter',
+					path: '/lend-category-beta',
 					query: { [Object.keys(filterParams)[0]]: ['value'] },
 				};
 
 				const result = getLoanFindingUrl(badgeId, currentRoute);
 
-				const expectedPath = `/lend/filter?${filterString}`;
+				const expectedPath = `/lend-category-beta?${filterString}`;
 				expect(result).toBe(expectedPath);
 			});
 		});

@@ -163,7 +163,7 @@ const achievementGoalImg = computed(() => {
 
 const handleContinueClick = () => {
 	$kvTrackEvent('portfolio', 'click', 'continue-towards-goal');
-	router.push(ctaHref.value);
+	window.location.href = ctaHref.value;
 };
 
 watch(() => props.userGoal, (newVal, oldVal) => {
