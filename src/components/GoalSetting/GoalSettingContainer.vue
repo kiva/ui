@@ -86,7 +86,7 @@
 					:categories="categories"
 					:pre-selected-category="selectedCategory.id"
 					:selected-category="selectedCategory"
-					:selected-goal-number="loanTarget"
+					:selected-goal-number="goalSelectorLoanTarget"
 					@category-selected="handleCategorySelected"
 				/>
 				<div
@@ -199,7 +199,8 @@ const props = defineProps({
 });
 
 const isGoalSet = ref(false);
-const loanTarget = ref(0);
+// Variable used to create/update the goal target based on user selection
+const goalSelectorLoanTarget = ref(0);
 const showCategories = ref(false);
 const ctaHref = ref('');
 const categoryFormKey = ref(0);
@@ -256,7 +257,7 @@ const editGoalCategory = () => {
 };
 
 const setTarget = target => {
-	loanTarget.value = target;
+	goalSelectorLoanTarget.value = target;
 };
 
 const recalculateGoalInformation = async () => {
@@ -268,7 +269,7 @@ const recalculateGoalInformation = async () => {
 	}
 	// Use goalProgress to calculate remaining loans needed based on current year progress
 	ctaHref.value = getCtaHref(
-		loanTarget.value,
+		goalSelectorLoanTarget.value,
 		selectedCategory.value?.badgeId,
 		router,
 		currentProgress
@@ -313,7 +314,7 @@ const handleClick = () => {
 
 	const currentYear = new Date().getFullYear();
 	const goalName = `goal-${categorySelected}-${currentYear}`;
-	const target = loanTarget.value;
+	const target = goalSelectorLoanTarget.value;
 	const dateStarted = new Date().toISOString();
 	const status = 'in-progress';
 
@@ -332,7 +333,7 @@ const handleClick = () => {
 		'click',
 		'set-annual-goal',
 		categorySelected,
-		loanTarget.value
+		goalSelectorLoanTarget.value
 	);
 };
 
@@ -359,8 +360,8 @@ onMounted(async () => {
 	const isEmptyGoal = Object.keys(userGoal.value || {}).length === 0;
 	if (!isEmptyGoal) {
 		const { target, category } = userGoal.value;
-		// Set loanTarget from stored goal so GoalSelector shows correct target
-		loanTarget.value = target;
+		// Set goalSelectorLoanTarget from stored goal so GoalSelector shows correct target
+		goalSelectorLoanTarget.value = target;
 		// Find and set the selected category from stored goal
 		const storedCategory = categories.find(c => c.badgeId === category);
 		if (storedCategory) {
