@@ -99,7 +99,7 @@ import { KvLoadingPlaceholder, KvMaterialIcon, KvButton } from '@kiva/kv-compone
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import useGoalData from '#src/composables/useGoalData';
-import { buildEmailFlowGoalData, findEmailDisplayGoal } from '#src/util/goalEmailFlow';
+import { buildEmailFlowGoalData } from '#src/util/goalEmailFlow';
 import logFormatter from '#src/util/logFormatter';
 import {
 	ID_SUPPORT_ALL,
@@ -119,6 +119,7 @@ const {
 	loadGoalData,
 	storeGoalPreferences,
 	setGoalState,
+	refreshSupportAllProgress,
 	loading,
 	getCategories,
 	getCtaHref,
@@ -346,9 +347,10 @@ async function handleEmailFlow() {
 	}
 
 	const allGoals = parseGoals();
-	const emailGoal = findEmailDisplayGoal({ existingGoal, allGoals, category });
+	const emailGoal = existingGoal ?? newGoalPrefs;
 	if (emailGoal) {
 		setGoalState({ goals: allGoals });
+		await refreshSupportAllProgress();
 	} else {
 		logFormatter('GoalSettingContainer: no goal found for email flow', 'error', { category });
 	}

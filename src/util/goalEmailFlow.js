@@ -29,17 +29,3 @@ export function buildEmailFlowGoalData({ allGoals, category, validEmailTarget })
 
 	return { existingGoal, newGoalPrefs };
 }
-
-/**
- * Finds the goal to display in the email flow after store operations complete.
- * Falls back to any goal for the category when no in-progress goal existed.
- *
- * @param {Object} params
- * @param {Object|null} params.existingGoal - The pre-existing in-progress goal (if any)
- * @param {Array} params.allGoals - Updated list of all user goals (post-store)
- * @param {string} params.category - The validated email category
- * @returns {Object|null}
- */
-export function findEmailDisplayGoal({ existingGoal, allGoals, category }) {
-	return existingGoal ?? allGoals.find(g => g.category === category) ?? null;
-}

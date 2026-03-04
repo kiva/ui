@@ -1,4 +1,4 @@
-import { buildEmailFlowGoalData, findEmailDisplayGoal } from '#src/util/goalEmailFlow';
+import { buildEmailFlowGoalData } from '#src/util/goalEmailFlow';
 import { GOAL_STATUS } from '#src/composables/useGoalData';
 
 vi.mock('#src/composables/useGoalData', () => ({
@@ -98,50 +98,6 @@ describe('goalEmailFlow.js', () => {
 
 			expect(existingGoal).toBeNull();
 			expect(newGoalPrefs).toBeNull();
-		});
-	});
-
-	describe('findEmailDisplayGoal', () => {
-		it('returns existingGoal directly when provided', () => {
-			const existing = { category: CATEGORY, status: GOAL_STATUS.IN_PROGRESS, target: 5 };
-			const result = findEmailDisplayGoal({
-				existingGoal: existing,
-				allGoals: [existing],
-				category: CATEGORY,
-			});
-
-			expect(result).toEqual(existing);
-		});
-
-		it('falls back to the first matching goal in allGoals when existingGoal is null', () => {
-			const stored = { category: CATEGORY, status: GOAL_STATUS.IN_PROGRESS, target: 10 };
-			const result = findEmailDisplayGoal({
-				existingGoal: null,
-				allGoals: [stored],
-				category: CATEGORY,
-			});
-
-			expect(result).toEqual(stored);
-		});
-
-		it('returns null when existingGoal is null and no goal in allGoals matches', () => {
-			const result = findEmailDisplayGoal({
-				existingGoal: null,
-				allGoals: [{ category: OTHER_CATEGORY, status: GOAL_STATUS.IN_PROGRESS, target: 5 }],
-				category: CATEGORY,
-			});
-
-			expect(result).toBeNull();
-		});
-
-		it('returns null when existingGoal is null and allGoals is empty', () => {
-			const result = findEmailDisplayGoal({
-				existingGoal: null,
-				allGoals: [],
-				category: CATEGORY,
-			});
-
-			expect(result).toBeNull();
 		});
 	});
 });
