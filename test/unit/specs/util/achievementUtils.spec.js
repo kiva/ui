@@ -1,6 +1,8 @@
 import {
 	missingMilestones,
 	defaultBadges,
+	isNonBadgeSlide,
+	buildAchievementSlides,
 } from '#src/util/achievementUtils';
 
 const sampleAPIMilestoneProgress = [
@@ -163,5 +165,183 @@ describe('achievementUtils.js defaultBadges', () => {
 	test('Should have unique badge keys', () => {
 		const uniqueBadges = new Set(defaultBadges);
 		expect(uniqueBadges.size).toBe(defaultBadges.length);
+	});
+});
+
+const buildSlide = (achievementKey, extraData = {}) => ({
+	fields: {
+		richText: {
+			content: [
+				{
+					data: {
+						target: {
+							sys: { contentType: { sys: { id: 'uiSetting' } } },
+							fields: { dataObject: { achievementKey, ...extraData } },
+						},
+					},
+				},
+			],
+		},
+	},
+});
+
+describe('achievementUtils.js isNonBadgeSlide', () => {
+	test('returns false for default badge slides', () => {
+		defaultBadges.forEach(badgeKey => {
+			const slide = buildSlide(badgeKey);
+			expect(isNonBadgeSlide(slide)).toBe(false);
+		});
+	});
+
+	test('returns true for non-badge slides', () => {
+		const slide = buildSlide('donate-to-kiva');
+		expect(isNonBadgeSlide(slide)).toBe(true);
+	});
+
+	test('returns true when achievementKey is missing', () => {
+		const slide = buildSlide(undefined);
+		expect(isNonBadgeSlide(slide)).toBe(true);
+	});
+
+	test('returns true for null slide', () => {
+		expect(isNonBadgeSlide(null)).toBe(true);
+	});
+});
+
+describe('achievementUtils.js buildAchievementSlides', () => {
+	const mockSlides = defaultBadges.map(key => buildSlide(key));
+	const mockBadgesData = defaultBadges.map(key => ({
+		id: key,
+		achievementData: { totalProgressToAchievement: 2 },
+		contentfulData: [{ level: 1, imageUrl: `http://example.com/${key}.png` }],
+	}));
+
+	const isTieredAchievementComplete = () => false;
+	const getActiveTierData = () => ({ target: 5, level: 1 });
+
+	test('returns slides for all matching badges', () => {
+		const result = buildAchievementSlides({
+			badgesData: mockBadgesData,
+			slides: mockSlides,
+			isTieredAchievementComplete,
+			getActiveTierData,
+		});
+		expect(result.length).toBe(defaultBadges.length);
+	});
+
+	test('each slide contains target, totalProgressToAchievement, badgeImgUrl, badgeKey', () => {
+		const result = buildAchievementSlides({
+			badgesData: mockBadgesData,
+			slides: mockSlides,
+			isTieredAchievementComplete,
+			getActiveTierData,
+		});
+		result.forEach(slide => {
+			expect(slide.target).toBe(5);
+			expect(slide.totalProgressToAchievement).toBe(2);
+			expect(slide.badgeImgUrl).toBeDefined();
+			expect(slide.badgeKey).toBeDefined();
+		});
+	});
+
+	test('excludes completed achievements', () => {
+		const result = buildAchievementSlides({
+			badgesData: mockBadgesData,
+			slides: mockSlides,
+			isTieredAchievementComplete: () => true,
+			getActiveTierData,
+		});
+		expect(result.length).toBe(0);
+	});
+
+	test('excludes badges with no tier target', () => {
+		const result = buildAchievementSlides({
+			badgesData: mockBadgesData,
+			slides: mockSlides,
+			isTieredAchievementComplete,
+			getActiveTierData: () => ({ target: null, level: 1 }),
+		});
+		expect(result.length).toBe(0);
+	});
+
+	test('includes milestoneDiff when includeMilestoneDiff is true', () => {
+		const result = buildAchievementSlides({
+			badgesData: mockBadgesData,
+			slides: mockSlides,
+			includeMilestoneDiff: true,
+			isTieredAchievementComplete,
+			getActiveTierData,
+		});
+		result.forEach(slide => {
+			expect(slide.milestoneDiff).toBe(3); // 5 - 2
+		});
+	});
+
+	test('does not include milestoneDiff by default', () => {
+		const result = buildAchievementSlides({
+			badgesData: mockBadgesData,
+			slides: mockSlides,
+			isTieredAchievementComplete,
+			getActiveTierData,
+		});
+		result.forEach(slide => {
+			expect(slide.milestoneDiff).toBeUndefined();
+		});
+	});
+
+	test('sorts by milestoneDiff when sortByMilestoneDiff is true', () => {
+		const customBadgesData = [
+			{
+				id: 'womens-equality',
+				achievementData: { totalProgressToAchievement: 1 },
+				contentfulData: [{ level: 1, imageUrl: 'url1' }],
+			},
+			{
+				id: 'climate-action',
+				achievementData: { totalProgressToAchievement: 4 },
+				contentfulData: [{ level: 1, imageUrl: 'url2' }],
+			},
+			{
+				id: 'basic-needs',
+				achievementData: { totalProgressToAchievement: 3 },
+				contentfulData: [{ level: 1, imageUrl: 'url3' }],
+			},
+		];
+		const customSlides = ['womens-equality', 'climate-action', 'basic-needs']
+			.map(key => buildSlide(key));
+
+		const result = buildAchievementSlides({
+			badgesData: customBadgesData,
+			slides: customSlides,
+			includeMilestoneDiff: true,
+			sortByMilestoneDiff: true,
+			isTieredAchievementComplete,
+			getActiveTierData,
+		});
+
+		// milestoneDiff: womens-equality=4, basic-needs=2, climate-action=1
+		expect(result[0].badgeKey).toBe('climate-action');
+		expect(result[1].badgeKey).toBe('basic-needs');
+		expect(result[2].badgeKey).toBe('womens-equality');
+	});
+
+	test('returns empty array when badgesData is empty', () => {
+		const result = buildAchievementSlides({
+			badgesData: [],
+			slides: mockSlides,
+			isTieredAchievementComplete,
+			getActiveTierData,
+		});
+		expect(result).toEqual([]);
+	});
+
+	test('returns empty array when slides is empty', () => {
+		const result = buildAchievementSlides({
+			badgesData: mockBadgesData,
+			slides: [],
+			isTieredAchievementComplete,
+			getActiveTierData,
+		});
+		expect(result).toEqual([]);
 	});
 });

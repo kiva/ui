@@ -151,15 +151,24 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import useBreakpoints from '#src/composables/useBreakpoints';
-import { formatUiSetting } from '#src/util/contentfulUtils';
-import { defaultBadges } from '#src/util/achievementUtils';
+import {
+	getRichTextUiSettingsData,
+	getSlideTitle,
+	getSlideSubTitle,
+	getSlidePrimaryCtaText,
+	getSlidePrimaryCtaVariant,
+	getSlideSecondaryCtaText,
+	isSlideTitleFontSans,
+	getSlideTitleColor,
+	getSlideBackgroundImg
+} from '#src/util/myKiva/myKivaContentfulUtils';
+import { buildAchievementSlides, isNonBadgeSlide } from '#src/util/achievementUtils';
 import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 import useBadgeData, { getJourneysByLoan } from '#src/composables/useBadgeData';
 import { KvCarousel, KvMaterialIcon } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import GoalCard from '#src/components/MyKiva/GoalCard';
-import { optimizeContentfulUrl } from '#src/util/imageUtils';
 import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
 import useGoalData from '#src/composables/useGoalData';
 import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCard';
@@ -315,23 +324,6 @@ const showSurveyCard = computed(() => {
 	return props.showPostLendingNextStepsCards && !isFormSubmitted && props.postLendingNextStepsEnable;
 });
 
-const getRichTextContent = slide => slide?.fields?.richText?.content ?? [];
-const getRichTextUiSettingsData = slide => {
-	const richTextContent = getRichTextContent(slide);
-	const uiSettings = richTextContent.find(
-		item => item.data?.target?.sys?.contentType?.sys?.id === 'uiSetting'
-	);
-	const uiSettingsTarget = uiSettings?.data?.target ?? {};
-	const uiSettingsData = formatUiSetting(uiSettingsTarget);
-
-	return uiSettingsData?.dataObject ?? {};
-};
-
-const isNonBadgeSlide = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return !defaultBadges.includes(richTextUiSettingsData.achievementKey);
-};
-
 const nonBadgesSlides = computed(() => {
 	return props.slides.filter(slide => isNonBadgeSlide(slide));
 });
@@ -344,42 +336,15 @@ const shouldShowGoalCard = computed(() => {
 	&& !props.hideGoalCard;
 });
 
-const buildAchievementSlides = (includeMilestoneDiff = false) => {
-	const achievementSlides = [];
-	defaultBadges.forEach(badgeKey => {
-		const achievementContent = (props.heroBadgeData ?? []).find(achievement => badgeKey === achievement.id);
-		if (!achievementContent) return;
-		if (isTieredAchievementComplete(achievementContent.achievementData)) return;
-
-		const tier = getActiveTierData(achievementContent);
-		if (!tier?.target) return;
-
-		const contentfulData = achievementContent.contentfulData.find(cData => cData.level === tier.level);
-		const slideData = props.slides.find(slide => {
-			return getRichTextUiSettingsData(slide)?.achievementKey === badgeKey;
-		});
-
-		if (slideData) {
-			achievementSlides.push({
-				...slideData,
-				...(includeMilestoneDiff && {
-					milestoneDiff: Math.max(
-						tier.target - (achievementContent.achievementData?.totalProgressToAchievement ?? 0),
-						0
-					),
-				}),
-				target: tier.target,
-				totalProgressToAchievement: achievementContent.achievementData?.totalProgressToAchievement,
-				badgeImgUrl: contentfulData?.imageUrl,
-				badgeKey,
-			});
-		}
-	});
-	return achievementSlides;
-};
-
 const dynamicOrderedSlides = computed(() => {
-	const achievementSlides = buildAchievementSlides(true);
+	const achievementSlides = buildAchievementSlides({
+		badgesData: props.heroBadgeData ?? [],
+		slides: props.slides,
+		includeMilestoneDiff: true,
+		isTieredAchievementComplete,
+		getActiveTierData,
+		sortByMilestoneDiff: true,
+	});
 	let loanJourneys = [];
 
 	const transactionLoans = props.userInfo?.transactions?.values?.filter(t => {
@@ -392,9 +357,7 @@ const dynamicOrderedSlides = computed(() => {
 		loanJourneys = getJourneysByLoan(transactionLoan);
 	}
 
-	let sortedSlides = achievementSlides.sort((a, b) => {
-		return a.milestoneDiff - b.milestoneDiff;
-	});
+	let sortedSlides = [...achievementSlides];
 
 	if (loanJourneys.length) {
 		sortedSlides.sort((a, b) => loanJourneys.indexOf(b.badgeKey) - loanJourneys.indexOf(a.badgeKey)); // eslint-disable-line max-len
@@ -448,7 +411,12 @@ const slideLimit = computed(() => {
 });
 
 const universalOrderedSlides = computed(() => {
-	const achievementSlides = buildAchievementSlides();
+	const achievementSlides = buildAchievementSlides({
+		badgesData: props.heroBadgeData ?? [],
+		slides: props.slides,
+		isTieredAchievementComplete,
+		getActiveTierData,
+	});
 	return buildUniversalOrderedSlides({
 		achievementSlides,
 		nonBadgesSlides: nonBadgesSlides.value,
@@ -464,86 +432,14 @@ const cardOrderingSystem = computed(() => {
 	return props.useUniversalOrder ? universalOrderedSlides.value : dynamicOrderedSlides.value;
 });
 
-const getMediaImgUrl = media => {
-	const baseUrl = media?.data?.target?.fields?.contentLight?.[0]?.fields?.file?.url || '';
-	return optimizeContentfulUrl(baseUrl, 336);
-};
-
-const backgroundImg = slide => {
-	const richTextContent = getRichTextContent(slide);
-	if (isNonBadgeSlide(slide)) {
-		const mobileMediaData = richTextContent.find(
-			item => item.data?.target?.sys?.contentType?.sys?.id === 'media'
-			&& item.data?.target?.fields?.key.includes('mobile')
-		);
-		const desktopMediaData = richTextContent.find(
-			item => item.data?.target?.sys?.contentType?.sys?.id === 'media'
-			&& item.data?.target?.fields?.key.includes('desktop')
-		);
-
-		if (isMobile.value) {
-			return getMediaImgUrl(mobileMediaData);
-		}
-		return getMediaImgUrl(desktopMediaData);
-	}
-
-	const backgroundImage = richTextContent.find(
-		item => item.nodeType === 'embedded-asset-block' && item.data?.target?.fields?.file?.url
-	);
-	const baseUrl = backgroundImage?.data?.target?.fields?.file?.url || '';
-	return optimizeContentfulUrl(baseUrl, 336);
-};
-
-const title = slide => {
-	if (slide.totalProgressToAchievement) {
-		return `Your progress: ${slide.totalProgressToAchievement}/${slide.target} loans`;
-	}
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-
-	return richTextUiSettingsData?.title || '';
-};
-
-const subTitle = slide => {
-	if (isNonBadgeSlide(slide)) {
-		const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-
-		return richTextUiSettingsData.contentText || '';
-	}
-
-	if (slide.totalProgressToAchievement) {
-		return 'Keep lending to reach your next achievement';
-	}
-
-	return 'Get started to reach your first achievement';
-};
-
-const primaryCtaText = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richTextUiSettingsData.primaryCtaText || '';
-};
-
-const primaryCtaVariant = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richTextUiSettingsData.primaryCtaVariant || 'secondary';
-};
-
-const secondaryCtaText = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richTextUiSettingsData.secondaryCtaText || '';
-};
-
-const isTitleFontSans = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richTextUiSettingsData.titleSans === 'true';
-};
-
-const titleColor = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	if (!richTextUiSettingsData.titleColor && isNonBadgeSlide(slide)) {
-		return 'tw-text-action';
-	}
-	return richTextUiSettingsData.titleColor;
-};
+const backgroundImg = slide => getSlideBackgroundImg(slide, isNonBadgeSlide(slide), isMobile.value);
+const title = slide => getSlideTitle(slide);
+const subTitle = slide => getSlideSubTitle(slide, isNonBadgeSlide(slide));
+const primaryCtaText = slide => getSlidePrimaryCtaText(slide);
+const primaryCtaVariant = slide => getSlidePrimaryCtaVariant(slide);
+const secondaryCtaText = slide => getSlideSecondaryCtaText(slide);
+const isTitleFontSans = slide => isSlideTitleFontSans(slide);
+const titleColor = slide => getSlideTitleColor(slide, isNonBadgeSlide(slide));
 
 const getUrlParamsFromString = string => {
 	const urlSplit = string.split('?');
