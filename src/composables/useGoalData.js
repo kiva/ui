@@ -550,7 +550,9 @@ export default function useGoalData({ apollo } = {}) {
 	 * @param {Object} goal - Goal object to remove (identified by goalName)
 	 */
 	const removeGoalFromPreferences = async goal => {
-		// Update user preferences to ensure goal is up-to-date preventing user from deleting stale goal data.
+		// Load preferences to ensure that goals information is up to date before modifying it
+		// preventing the use case where a user updates a goal,
+		// then quickly removes it before the update is reflected in the cache.
 		await loadPreferences('network-only');
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		let goals = parsedPrefs.goals || [];
@@ -575,8 +577,9 @@ export default function useGoalData({ apollo } = {}) {
 	 * @param {Object} updatedGoal - Updated goal data to replace the previous goal with
 	 */
 	async function updateCurrentGoal(previousGoal, updatedGoal) {
-		// Update user preferences to ensure goal is up-to-date preventing user from updating stale goal data.
 		loading.value = true;
+		// Load preferences to ensure goals information is up to date before modiying it
+		// preventing the  use case where the previous goal was not updated in the cache
 		await loadPreferences('network-only');
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		const goals = parsedPrefs.goals || [];
