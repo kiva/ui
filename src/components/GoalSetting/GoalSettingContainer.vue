@@ -49,73 +49,61 @@
 				class="tw-mx-auto"
 				style="max-width: 644px;"
 			>
-				<GoalProgressRing
-					v-if="isEmailFlow"
-					variant="modal"
-					:goal-loans="goalTarget"
-					:goal-progress="goalProgress"
-					:goal-progress-percentage="goalProgressPercentage"
-					:category-id="selectedCategory.badgeId"
-					:category-name="selectedCategory.name"
+				<GoalSelector
+					class="goal-selector"
+					v-show="!showCategories"
+					:is-goal-set="isGoalSet"
+					:categories-loan-count="categoriesLoanCount"
+					:tiered-achievements="tieredAchievements"
 					:go-to-url="ctaHref"
+					:is-editing="isEditing"
+					:selected-category-id="selectedCategory.badgeId"
+					:selected-category-name="selectedCategory.name"
+					:goal-loans="goalTarget"
+					tracking-category="event-tracking"
+					:goal-editing-enable="goalEditingEnable"
+					:is-updating-goal="userIsEditingGoal"
+					:fetched-current-year-loans="fetchedCurrentYearLoans"
+					:loading-current-year="loadingCurrentYear"
+					:goal-progress="goalProgress"
+					@set-goal-target="setTarget($event)"
+					@set-goal="setGoal($event)"
+					@update-goal="updateGoal($event)"
+					@edit-goal="editGoalCategory"
+					@edit-goal-from-settings="userIsEditingGoal = true"
 				/>
-				<template v-else>
-					<GoalSelector
-						class="goal-selector"
-						v-show="!showCategories"
-						:is-goal-set="isGoalSet"
-						:categories-loan-count="categoriesLoanCount"
-						:tiered-achievements="tieredAchievements"
-						:go-to-url="ctaHref"
-						:is-editing="isEditing"
-						:selected-category-id="selectedCategory.badgeId"
-						:selected-category-name="selectedCategory.name"
-						:goal-loans="goalTarget"
-						tracking-category="event-tracking"
-						:goal-editing-enable="goalEditingEnable"
-						:is-updating-goal="userIsEditingGoal"
-						:fetched-current-year-loans="fetchedCurrentYearLoans"
-						:loading-current-year="loadingCurrentYear"
-						:goal-progress="goalProgress"
-						@set-goal-target="setTarget($event)"
-						@set-goal="setGoal($event)"
-						@update-goal="updateGoal($event)"
-						@edit-goal="editGoalCategory"
-						@edit-goal-from-settings="userIsEditingGoal = true"
+				<div
+					v-show="showCategories"
+				>
+					<h2
+						class="tw-mb-3 tw-text-left lg:tw-text-center"
+					>
+						Choose an impact area
+					</h2>
+					<component
+						v-show="showCategories"
+						:key="categoryFormKey"
+						:is="contentComponent"
+						:categories="categories"
+						:pre-selected-category="selectedCategory.id"
+						:selected-category="selectedCategory"
+						:selected-goal-number="goalSelectorLoanTarget"
+						@category-selected="handleCategorySelected"
 					/>
 					<div
-						v-show="showCategories"
+						class="buttons tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-flex tw-flex-col
+							tw-justify-center tw-w-full lg:tw-w-auto tw-z-sticky lg:tw-z-auto tw-gap-1.5
+							tw-mt-4 tw-bg-primary tw-p-2.5 lg:tw-p-0"
 					>
-						<h2
-							class="tw-mb-3 tw-text-left lg:tw-text-center"
+						<KvButton
+							class="tw-flex-none tw-mx-auto tw-w-full lg:tw-w-auto"
+							style="min-width: 324px;"
+							@click="handleClick"
 						>
-							Choose an impact area
-						</h2>
-						<component
-							v-show="showCategories"
-							:key="categoryFormKey"
-							:is="contentComponent"
-							:categories="categories"
-							:pre-selected-category="selectedCategory.id"
-							:selected-category="selectedCategory"
-							:selected-goal-number="goalSelectorLoanTarget"
-							@category-selected="handleCategorySelected"
-						/>
-						<div
-							class="buttons tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-flex tw-flex-col
-								tw-justify-center tw-w-full lg:tw-w-auto tw-z-sticky lg:tw-z-auto tw-gap-1.5
-								tw-mt-4 tw-bg-primary tw-p-2.5 lg:tw-p-0"
-						>
-							<KvButton
-								class="tw-flex-none tw-mx-auto tw-w-full lg:tw-w-auto"
-								style="min-width: 324px;"
-								@click="handleClick"
-							>
-								{{ ctaCopy }}
-							</KvButton>
-						</div>
+							{{ ctaCopy }}
+						</KvButton>
 					</div>
-				</template>
+				</div>
 			</div>
 		</template>
 
@@ -161,7 +149,6 @@ import {
 	KvUtilityMenu
 } from '@kiva/kv-components';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
-import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import useGoalData from '#src/composables/useGoalData';
 import { buildEmailFlowGoalData } from '#src/util/goalEmailFlow';
 import logFormatter from '#src/util/logFormatter';
@@ -182,12 +169,10 @@ const {
 	userGoal,
 	loadGoalData,
 	storeGoalPreferences,
-	refreshSupportAllProgress,
 	loading,
 	getCategories,
 	getCtaHref,
 	goalProgress,
-	goalProgressPercentage,
 	getLoanStatsByYear,
 	userPreferences,
 	removeGoalFromPreferences,
@@ -457,7 +442,7 @@ async function handleEmailFlow() {
 	}
 
 	if (existingGoal ?? newGoalPrefs) {
-		await refreshSupportAllProgress();
+		await loadGoalData({ yearlyProgress: true });
 	} else {
 		logFormatter('GoalSettingContainer: no goal found for email flow', 'error', { category });
 	}

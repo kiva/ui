@@ -887,17 +887,6 @@ export default function useGoalData({ apollo } = {}) {
 		return { wasFixed: true };
 	}
 
-	/**
-	 * Loads the current year's loan count for a support-all goal and updates
-	 * yearlyLoanCount so goalProgress reflects actual progress.
-	 * Call this after setGoalState when the active goal may have changed to support-all.
-	 */
-	async function refreshSupportAllProgress() {
-		if (!useYearlyProgress.value || userGoal.value?.category !== ID_SUPPORT_ALL) return;
-		const stats = await getLoanStatsByYear(new Date().getFullYear(), 'network-only');
-		yearlyLoanCount.value = stats?.count || 0;
-	}
-
 	async function setHideGoalCardPreference(hide = true) {
 		const parsedPrefs = await loadPreferences('network-only');
 		await updateUserPreferences(
@@ -952,7 +941,6 @@ export default function useGoalData({ apollo } = {}) {
 		setHideGoalCardPreference,
 		getSupportAllLoanCountByYear,
 		setGoalState,
-		refreshSupportAllProgress,
 		removeGoalFromPreferences,
 		updateCurrentGoal,
 	};

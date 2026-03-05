@@ -53,7 +53,7 @@ describe('goalEmailFlow.js', () => {
 			expect(newGoalPrefs).toBeNull();
 		});
 
-		it('returns newGoalPrefs when an in-progress goal exists for a different category', () => {
+		it('returns the existing active goal', () => {
 			const otherGoal = { category: OTHER_CATEGORY, status: GOAL_STATUS.IN_PROGRESS, target: 5 };
 			const { existingGoal, newGoalPrefs } = buildEmailFlowGoalData({
 				allGoals: [otherGoal],
@@ -61,8 +61,8 @@ describe('goalEmailFlow.js', () => {
 				validEmailTarget: 10,
 			});
 
-			expect(existingGoal).toBeNull();
-			expect(newGoalPrefs).toMatchObject({ category: CATEGORY, target: 10 });
+			expect(existingGoal).toEqual(otherGoal);
+			expect(newGoalPrefs).toBeNull();
 		});
 
 		it('ignores completed goals for the same category', () => {

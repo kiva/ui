@@ -12,7 +12,7 @@ import { GOAL_STATUS } from '#src/composables/useGoalData';
  */
 export function buildEmailFlowGoalData({ allGoals, category, validEmailTarget }) {
 	const existingGoal = allGoals.find(
-		g => g.category === category && g.status === GOAL_STATUS.IN_PROGRESS,
+		g => g.status === GOAL_STATUS.IN_PROGRESS,
 	) ?? null;
 
 	let newGoalPrefs = null;
