@@ -108,7 +108,7 @@
 
 			<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
 				<template v-if="!isMobile">
-					<template v-if="shouldShowEmailMarketingCard">
+					<template v-if="shouldShowEmailMarketingCard || acceptedEmailMarketingUpdates">
 						<transition
 							name="fade"
 							mode="out-in"
@@ -266,7 +266,7 @@ import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
 import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCard';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
-
+import ThankYouCard from '#src/components/MyKiva/ThankYouCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
@@ -346,6 +346,7 @@ const showImpactInsightsModal = ref(false);
 const isGoalSet = ref(false);
 const showPostLendingNextStepsCards = ref(false);
 const newGoalPrefs = ref(null);
+const acceptedEmailMarketingUpdates = ref(false);
 
 const {
 	checkCompletedGoal,
@@ -418,8 +419,6 @@ const handleSecondaryCtaClick = slide => handleSecondaryCtaClickUtil({
 	trackEvent: $kvTrackEvent,
 	navigate: router.push,
 });
-
-const acceptedEmailMarketingUpdates = ref(false);
 
 const achievementSlides = computed(() => buildAchievementSlides({
 	badgesData: heroBadgeData.value,
