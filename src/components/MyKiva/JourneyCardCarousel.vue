@@ -336,6 +336,10 @@ const nonBadgesSlides = computed(() => {
 	return props.slides.filter(slide => isNonBadgeSlide(slide));
 });
 
+const nonBadgesSlides = computed(() => {
+	return props.slides.filter(slide => isNonBadgeSlide(slide));
+});
+
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
 
