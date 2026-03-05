@@ -307,6 +307,14 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import useBreakpoints from '#src/composables/useBreakpoints';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import useOptIn from '#src/composables/useOptIn';
+import {
+	buildLatestLoanData,
+	buildLenderData,
+	buildHeroBadgeData,
+	buildCategoriesLoanCount,
+	buildRegionsData,
+	createModalsHandlers,
+} from '#src/composables/useMyKivaJourneyData';
 
 const { isMobile } = useBreakpoints();
 const CURRENT_YEAR = new Date().getFullYear();
@@ -338,7 +346,6 @@ const showGoalModal = ref(false);
 const showImpactInsightsModal = ref(false);
 const isGoalSet = ref(false);
 const showPostLendingNextStepsCards = ref(false);
-const recordedGoalSet = ref(false);
 const newGoalPrefs = ref(null);
 
 const {
@@ -354,54 +361,51 @@ const {
 } = goalDataComposable;
 
 const {
-	getAllCategoryLoanCounts,
-	combineBadgeData,
 	isTieredAchievementComplete,
 	getActiveTierData,
 } = useBadgeData();
 
-const heroBadgeData = computed(() => {
-	return combineBadgeData(heroTieredAchievements.value, heroBadgeContentfulData.value);
-});
+const heroBadgeData = computed(() => buildHeroBadgeData(
+	heroTieredAchievements.value,
+	heroBadgeContentfulData.value
+));
 
-const categoriesLoanCount = computed(() => getAllCategoryLoanCounts(heroTieredAchievements.value));
+const categoriesLoanCount = computed(() => buildCategoriesLoanCount(heroTieredAchievements.value));
 
 const goToDashboard = position => {
 	$kvTrackEvent('event-tracking', 'click', 'back-to-dashboard', position);
 	router.push('/mykiva');
 };
 
+// Goal modal handlers using centralized factory
+const goalModalHandlers = createModalsHandlers({
+	trackEvent: $kvTrackEvent,
+	storeGoalPreferences,
+	loadGoalData,
+	trackingCategory: 'next-steps',
+	goalsV2Enabled: true,
+});
+
 const setGoal = async preferences => {
-	await storeGoalPreferences(preferences);
-	newGoalPrefs.value = preferences;
-	isGoalSet.value = true;
+	await goalModalHandlers.setGoal(preferences, {
+		isGoalSet,
+		newGoalPrefs,
+		showGoalModal,
+	});
 };
 
 const closeGoalModal = async () => {
-	if (showGoalModal.value) {
-		showGoalModal.value = false;
-		$kvTrackEvent('next-steps', 'click', 'close-goals');
-	}
-	if (isGoalSet.value) {
-		if (!recordedGoalSet.value) {
-			$kvTrackEvent(
-				'next-steps',
-				'show',
-				'goal-set',
-				newGoalPrefs.value?.category,
-				newGoalPrefs.value?.target
-			);
-			recordedGoalSet.value = true;
-		}
-		await loadGoalData({ yearlyProgress: true });
-	}
+	await goalModalHandlers.closeGoalModal({
+		showGoalModal,
+		isGoalSet,
+		newGoalPrefs,
+	});
 };
 
 const closeImpactInsightsModal = () => {
-	if (showImpactInsightsModal.value) {
-		showImpactInsightsModal.value = false;
-		$kvTrackEvent('next-steps', 'click', 'next-step-close-education');
-	}
+	goalModalHandlers.closeImpactInsightsModal({
+		showImpactInsightsModal,
+	});
 };
 
 const handlePrimaryCtaClick = slide => {
@@ -502,45 +506,15 @@ onMounted(async () => {
 		// Populate from myKivaQuery
 		const myData = myKivaResult.data;
 		userInfo.value = myData.my ?? {};
-		lender.value = {
-			...(myData.my?.lender ?? {}),
-			public: myData.my?.userAccount?.public ?? false,
-			inviterName: myData.my?.userAccount?.inviterName ?? null,
-		};
+		lender.value = buildLenderData(myData.my);
 		loans.value = myData.my?.loans?.values ?? [];
 		totalLoans.value = myData.my?.loans?.totalCount ?? 0;
 		transactions.value = myData.my?.transactions?.values ?? [];
-		latestLoan.value = myData.my?.latestLoan?.values?.[0]?.loan ? {
-			...myData.my.latestLoan.values[0].loan,
-			amount: myData.my.latestLoan.values[0]?.amount || null,
-			...(myData.my?.latestLoan?.values?.length > 1
-				? { otherLoans: myData.my.latestLoan.values.slice(1) }
-				: {}),
-		} : null;
+		latestLoan.value = buildLatestLoanData(myData.my);
 
-		// Build regionsData from lendingStatsQuery
-		const lendingStatsData = lendingStatsResult.data;
-		const countryFacets = lendingStatsData.lend?.countryFacets ?? [];
-		const countriesLentTo = lendingStatsData.my?.lendingStats?.countriesLentTo ?? [];
-		const regionCounts = new Map();
-		const regionCountries = new Map();
-		countryFacets.forEach(facet => {
-			const region = facet.country?.region;
-			const isoCode = facet.country?.isoCode;
-			if (region) {
-				regionCounts.set(region, (regionCounts.get(region) || 0) + (facet.count || 0));
-				if (isoCode) {
-					const current = regionCountries.get(region) || [];
-					regionCountries.set(region, [...current, isoCode]);
-				}
-			}
-		});
-		regionsData.value = [...regionCounts.keys()].map(region => ({
-			name: region,
-			hasLoans: countriesLentTo.some(item => item?.region === region),
-			count: regionCounts.get(region) || 0,
-			countries: regionCountries.get(region) || [],
-		}));
+		// Build regionsData from lendingStatsQuery using shared utility
+		const { regionsData: builtRegionsData } = buildRegionsData(lendingStatsResult.data);
+		regionsData.value = builtRegionsData;
 
 		// Settings flags
 		const nextStepsSettingKey = `general.${POST_LENDING_NEXT_STEPS_KEY}.value`;

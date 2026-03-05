@@ -42,11 +42,17 @@ import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.g
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY, isGoalsV2Enabled } from '#src/composables/useGoalData';
-import useBadgeData, {
+import {
 	applyFreshProgressToAchievements,
 	FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
 	getContentfulLevelData
 } from '#src/composables/useBadgeData';
+import {
+	buildLatestLoanData,
+	buildLenderData,
+	buildRegionsData,
+	buildHeroBadgeData,
+} from '#src/composables/useMyKivaJourneyData';
 import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -72,11 +78,9 @@ export default {
 		const apollo = inject('apollo');
 
 		const goalDataComposable = useGoalData({ apollo });
-		const { combineBadgeData } = useBadgeData();
 		provide('goalData', goalDataComposable);
 
 		return {
-			combineBadgeData,
 			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
 			loadGoalData: goalDataComposable.loadGoalData,
 			renewAnnualGoal: goalDataComposable.renewAnnualGoal,
@@ -113,7 +117,7 @@ export default {
 			return isGoalsV2Enabled(this.goalsEntrypointEnable);
 		},
 		heroBadgeData() {
-			return this.combineBadgeData(this.heroTieredAchievements, this.heroBadgeContentfulData);
+			return buildHeroBadgeData(this.heroTieredAchievements, this.heroBadgeContentfulData);
 		},
 	},
 	apollo: {
@@ -189,12 +193,7 @@ export default {
 					variables: { loanId: Number(loanId) }
 				}) : null;
 				this.userInfo = myKivaQueryResult.my ?? {};
-				this.lender = myKivaQueryResult.my?.lender ?? null;
-				this.lender = {
-					...this.lender,
-					public: this.userInfo.userAccount?.public ?? false,
-					inviterName: this.userInfo.userAccount?.inviterName ?? null,
-				};
+				this.lender = buildLenderData(myKivaQueryResult.my);
 				// show giving funds card if user has any giving fund participation
 				this.showMyGivingFundsCard = (
 					(this.userInfo?.givingFundParticipation?.totalCount ?? 0) > 0
@@ -217,30 +216,10 @@ export default {
 				}
 
 				this.totalLoans = myKivaQueryResult.my?.loans?.totalCount ?? 0;
-				const countryFacets = lendingStatsQueryResult.lend?.countryFacets ?? [];
-				const regionCounts = new Map();
-				const regionCountries = new Map();
-				countryFacets.forEach(facet => {
-					const region = facet.country?.region;
-					const isoCode = facet.country?.isoCode;
-					if (region) {
-						regionCounts.set(region, (regionCounts.get(region) || 0) + (facet.count || 0));
-						if (isoCode) {
-							const currentCountries = regionCountries.get(region) || [];
-							regionCountries.set(region, [...currentCountries, isoCode]);
-						}
-					}
-				});
-				const allRegions = [...regionCounts.keys()];
-				const regionsData = allRegions.map(region => ({
-					name: region,
-					hasLoans: lendingStatsQueryResult
-						.my?.lendingStats?.countriesLentTo
-						.some(item => item?.region === region),
-					count: regionCounts.get(region) || 0,
-					countries: regionCountries.get(region) || []
-				}));
-				this.userLentToAllRegions = regionsData.map(region => region.hasLoans).every(Boolean) || false;
+
+				// Build regionsData using shared utility
+				const { regionsData, userLentToAllRegions } = buildRegionsData(lendingStatsQueryResult);
+				this.userLentToAllRegions = userLentToAllRegions;
 				this.lendingStats = {
 					...lendingStatsQueryResult.my?.lendingStats,
 					...lendingStatsQueryResult.my?.userStats,
@@ -253,15 +232,7 @@ export default {
 				this.postLendingNextStepsEnable = readBoolSetting(myKivaQueryResult, `general.${POST_LENDING_NEXT_STEPS_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.goalEditingEnable = readBoolSetting(myKivaQueryResult, `general.${GOAL_EDITING_KEY}.value`) ?? false; // eslint-disable-line max-len
 
-				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
-					...myKivaQueryResult.my.latestLoan.values[0].loan,
-					amount: myKivaQueryResult.my.latestLoan.values[0]?.amount || null,
-					/* there is an edge case where an user have a promo credit in his/her account and purchase a loan,
-					the final transaction is split out. As each item share the same transaction id we include the others
-					items to sum their amounts and get the total amount lent */
-					// eslint-disable-next-line max-len
-					...(myKivaQueryResult.my?.latestLoan?.values?.length > 1 ? { otherLoans: myKivaQueryResult.my.latestLoan.values.slice(1) } : {})
-				} : null;
+				this.latestLoan = buildLatestLoanData(myKivaQueryResult.my);
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKivaQuery');
 			}

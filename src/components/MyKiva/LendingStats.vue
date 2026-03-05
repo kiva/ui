@@ -117,7 +117,10 @@ import MyKivaRegionExperience from '#src/components/MyKiva/MyKivaRegionExperienc
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
 import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 
-import useBadgeData from '#src/composables/useBadgeData';
+import {
+	buildCategoriesLoanCount,
+	createModalsHandlers,
+} from '#src/composables/useMyKivaJourneyData';
 import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 
 export default {
@@ -205,9 +208,9 @@ export default {
 			showGoalModal: false,
 			showImpactInsightsModal: false,
 			isGoalSet: false,
-			recordedGoalSet: false,
 			newGoalPrefs: null,
 			showPostLendingNextStepsCards: false,
+			goalModalHandlers: null,
 		};
 	},
 	computed: {
@@ -218,8 +221,7 @@ export default {
 			return this.isNextStepsExpEnabled && !this.postLendingNextStepsEnable && !this.userLentToAllRegions;
 		},
 		categoriesLoanCount() {
-			const { getAllCategoryLoanCounts } = useBadgeData();
-			return getAllCategoryLoanCounts(this.heroTieredAchievements);
+			return buildCategoriesLoanCount(this.heroTieredAchievements);
 		},
 		isNextStepsExperimentEnabled() {
 			return this.nextStepsExperimentVariant === 'b';
@@ -239,6 +241,16 @@ export default {
 			userGoal: goalData.userGoal,
 			userGoalAchieved: goalData.userGoalAchieved,
 		};
+	},
+	created() {
+		// Initialize goal modal handlers with component's dependencies
+		this.goalModalHandlers = createModalsHandlers({
+			trackEvent: this.$kvTrackEvent,
+			storeGoalPreferences: this.storeGoalPreferences,
+			loadGoalData: this.loadGoalData,
+			trackingCategory: 'portfolio',
+			goalsV2Enabled: this.goalsV2Enabled,
+		});
 	},
 	async mounted() {
 		if (this.isNextStepsExpEnabled) {
@@ -263,37 +275,26 @@ export default {
 	},
 	methods: {
 		async setGoal(preferences) {
-			// For goalsV2, pass false to not update local state yet
-			// This delays the UI update until the modal is closed
-			const updateLocalState = !this.goalsV2Enabled;
-			await this.storeGoalPreferences(preferences, updateLocalState);
+			// Use centralized handler with Options API data binding
+			await this.goalModalHandlers.setGoal(preferences, {});
 			this.newGoalPrefs = preferences;
 			this.isGoalSet = true;
 			if (!this.goalsV2Enabled) {
-				// For legacy goals, close modal and refresh immediately
-				await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
 				this.showGoalModal = false;
 			}
 		},
 		async closeGoalModal() {
+			const wasGoalSet = this.isGoalSet;
 			if (this.showGoalModal) {
 				this.showGoalModal = false;
-				this.$kvTrackEvent(
-					'portfolio',
-					'click',
-					'close-goals'
-				);
+				this.$kvTrackEvent('portfolio', 'click', 'close-goals');
 			}
-			// Only refresh goal data when modal closes AND goal was set
-			// This ensures the main card transitions to ring only after modal is closed
-			if (this.isGoalSet) {
-				if (!this.recordedGoalSet) {
-					// eslint-disable-next-line max-len
-					this.$kvTrackEvent('portfolio', 'show', 'goal-set', this.newGoalPrefs?.category, this.newGoalPrefs?.target);
-					this.recordedGoalSet = true;
-				}
-				// Refresh goal data to update the main card with the ring
-				await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+			if (wasGoalSet) {
+				await this.goalModalHandlers.closeGoalModal({
+					showGoalModal: { value: false },
+					isGoalSet: { value: this.isGoalSet },
+					newGoalPrefs: { value: this.newGoalPrefs },
+				});
 			}
 		},
 		closeImpactInsightsModal() {

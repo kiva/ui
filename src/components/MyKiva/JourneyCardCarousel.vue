@@ -458,6 +458,7 @@ const getUrlParamsFromString = string => {
 	return urlSplit[1];
 };
 
+// TODO: Sync with MyKivaNextStepsPage
 const goToPrimaryCtaUrl = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
 	const primaryCtaUrl = richTextUiSettingsData.primaryCtaUrl || '';
@@ -475,6 +476,7 @@ const goToPrimaryCtaUrl = slide => {
 	}
 };
 
+// TODO: Sync with MyKivaNextStepsPage
 const goToSecondaryCtaUrl = slide => {
 	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
 	const secondaryCtaUrl = richTextUiSettingsData.secondaryCtaUrl || '';
