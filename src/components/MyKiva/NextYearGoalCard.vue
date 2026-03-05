@@ -153,7 +153,7 @@ const handleContinueClick = () => {
 
 		return;
 	}
-	window.location.href = ctaHref.value;
+	router.push(ctaHref.value);
 };
 
 const handleEditClick = () => {

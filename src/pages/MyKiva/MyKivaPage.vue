@@ -13,7 +13,7 @@
 			:user-lent-to-all-regions="userLentToAllRegions"
 			:enable-ai-loan-pills="enableAILoanPills"
 			:sidesheet-loan="sidesheetLoan"
-			:is-next-steps-exp-enabled="isNextStepsExpEnabled"
+			:is-next-steps-exp-enabled="true"
 			:goals-v2-enabled="goalsV2Enabled"
 			:show-new-badge-section="showNewBadgeSection"
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
@@ -50,7 +50,6 @@ import useBadgeData, {
 import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
-const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 const NEXT_STEPS_REDIRECT_EXP_KEY = 'mykiva_next_steps_redirect';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 const NEW_BADGE_SECTION_KEY = 'new_badge_section_enable';
@@ -98,7 +97,6 @@ export default {
 			userInfo: {},
 			userLentToAllRegions: false,
 			sidesheetLoan: {},
-			isNextStepsExpEnabled: undefined,
 			goalsEntrypointEnable: false,
 			showNewBadgeSection: false,
 			postLendingNextStepsEnable: false,
@@ -151,10 +149,6 @@ export default {
 				client.query({
 					query: contentfulEntriesQuery,
 					variables: { contentType: 'challenge', limit: 200 }
-				}),
-				client.query({
-					query: experimentAssignmentQuery,
-					variables: { id: NEXT_STEPS_EXP_KEY },
 				}),
 				client.query({
 					query: experimentAssignmentQuery,
@@ -302,18 +296,6 @@ export default {
 			this.cookieStore,
 			this.apollo,
 			this.$route,
-			NEXT_STEPS_EXP_KEY,
-			version => {
-				this.isNextStepsExpEnabled = version === 'b';
-			},
-			this.$kvTrackEvent,
-			'EXP-MP-1984-Sept2025',
-		);
-
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
 			NEXT_STEPS_REDIRECT_EXP_KEY,
 			version => {
 				this.nextStepsExperimentVariant = version;
@@ -372,16 +354,13 @@ export default {
 			logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
 		}
 
-		// Load goal data with fresh progress from recent transaction loans
-		if (this.isNextStepsExpEnabled) {
-			await this.loadGoalData({
-				year: CURRENT_YEAR,
-				yearlyProgress: this.goalsV2Enabled,
-				freshProgressLoans: this.recentTransactionLoans,
-				tieredAchievements: this.currentYearTieredAchievements,
-				transactions: this.transactions
-			});
-		}
+		await this.loadGoalData({
+			year: CURRENT_YEAR,
+			yearlyProgress: this.goalsV2Enabled,
+			freshProgressLoans: this.recentTransactionLoans,
+			tieredAchievements: this.currentYearTieredAchievements,
+			transactions: this.transactions,
+		});
 	},
 };
 </script>

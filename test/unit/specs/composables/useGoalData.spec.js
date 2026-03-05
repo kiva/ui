@@ -1500,6 +1500,64 @@ describe('useGoalData', () => {
 			expect(composable.userGoal.value.category).toBe(ID_CLIMATE_ACTION);
 			expect(composable.userGoal.value.target).toBe(15);
 		});
+
+		it('should update goalProgress using yearly loan count when new goal category is SUPPORT_ALL', async () => {
+			const yearlyLoanCount = 10;
+			const mockPrefs = {
+				goals: [
+					{
+						goalName: 'goal-to-edit',
+						category: ID_WOMENS_EQUALITY,
+						target: 5,
+						status: GOAL_STATUS.IN_PROGRESS,
+						dateStarted: '2026-01-01',
+					},
+				],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValue({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: yearlyLoanCount },
+							lendingStats: {
+								id: 'stats-123',
+								loanStatsByYear: {
+									count: yearlyLoanCount,
+									amount: 100,
+								},
+							},
+						},
+						userAchievementProgress: {
+							tieredLendingAchievements: [{
+								id: ID_WOMENS_EQUALITY,
+								totalProgressToAchievement: 5,
+							}],
+						},
+					},
+				});
+
+			// Set useYearlyProgress to true so getLoanStatsByYear gets called
+			await composable.loadGoalData({ yearlyProgress: true });
+
+			const previousGoal = { ...mockPrefs.goals[0] };
+			const updatedGoal = {
+				...mockPrefs.goals[0],
+				category: ID_SUPPORT_ALL,
+				status: GOAL_STATUS.IN_PROGRESS,
+				dateStarted: '2026-01-01',
+			};
+
+			await composable.updateCurrentGoal(previousGoal, updatedGoal);
+
+			expect(composable.userGoal.value.category).toBe(ID_SUPPORT_ALL);
+			// Validate the new progress is user total loans
+			expect(composable.goalProgress.value).toBe(yearlyLoanCount);
+		});
 	});
 
 	describe('checkCompletedGoal', () => {
@@ -2543,7 +2601,7 @@ describe('useGoalData', () => {
 				return {
 					...actual,
 					default: () => ({
-						getLoanFindingUrl: vi.fn(categoryId => `/lend-category-beta/${categoryId}`),
+						getLoanFindingUrl: vi.fn(categoryId => `/lend/${categoryId}`),
 					}),
 				};
 			});
@@ -2557,7 +2615,7 @@ describe('useGoalData', () => {
 
 			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount);
 			const expectedString = 'Support 1 more woman to reach your goal';
-			const expectedHref = `/lend-category-beta/${categoryId}?header=${encodeURIComponent(expectedString)}`;
+			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
 
 			expect(href).toBe(expectedHref);
 		});
@@ -2570,7 +2628,7 @@ describe('useGoalData', () => {
 
 			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount);
 			const expectedString = 'Support 5 more basic needs loans to reach your goal';
-			const expectedHref = `/lend-category-beta/${categoryId}?header=${encodeURIComponent(expectedString)}`;
+			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
 
 			expect(href).toBe(expectedHref);
 		});
@@ -2583,7 +2641,7 @@ describe('useGoalData', () => {
 
 			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount);
 			const expectedString = 'Support 10 more borrowers to reach your goal';
-			const expectedHref = `/lend-category-beta/${categoryId}?header=${encodeURIComponent(expectedString)}`;
+			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
 
 			expect(href).toBe(expectedHref);
 		});
@@ -2595,7 +2653,7 @@ describe('useGoalData', () => {
 
 			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router);
 			const expectedString = 'Support 5 more women to reach your goal';
-			const expectedHref = `/lend-category-beta/${categoryId}?header=${encodeURIComponent(expectedString)}`;
+			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
 
 			expect(href).toBe(expectedHref);
 		});
@@ -2607,7 +2665,7 @@ describe('useGoalData', () => {
 			const href = composable.getCtaHref(undefined, categoryId, router, 0);
 			// undefined - 0 = NaN, Math.max(0, NaN) = NaN, but display will show NaN
 			// This tests the current behavior - function doesn't guard against this
-			expect(href).toContain('/lend-category-beta/');
+			expect(href).toContain('/lend/');
 		});
 
 		it('should return href without query parameter when remaining is 0', () => {
@@ -2618,7 +2676,7 @@ describe('useGoalData', () => {
 
 			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount);
 
-			expect(href).toBe(`/lend-category-beta/${categoryId}`);
+			expect(href).toBe(`/lend/${categoryId}`);
 		});
 	});
 
