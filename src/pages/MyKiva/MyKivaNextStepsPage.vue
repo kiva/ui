@@ -95,7 +95,8 @@
 					:latest-loan="latestLoan"
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="false"
-					:enable-limit="false"
+					:enable-slide-limit="false"
+					:show-non-badges-slides="false"
 					@open-goal-modal="showGoalModal = true"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
@@ -203,7 +204,7 @@
 					:slides="heroSlides"
 					:latest-loan="latestLoan"
 					:user-info="userInfo"
-					:enable-limit="false"
+					:enable-slide-limit="false"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
 			</section>

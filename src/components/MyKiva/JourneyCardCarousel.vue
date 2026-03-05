@@ -293,6 +293,14 @@ const props = defineProps({
 	useUniversalOrder: {
 		type: Boolean,
 		default: false
+	},
+	enableSlideLimit: {
+		type: Boolean,
+		default: true
+	},
+	showNonBadgesSlides: {
+		type: Boolean,
+		default: true
 	}
 });
 
@@ -406,7 +414,7 @@ const dynamicOrderedSlides = computed(() => {
 });
 
 const slideLimit = computed(() => {
-	if (isMobile.value) return 3;
+	if (isMobile.value && props.enableSlideLimit) return 3;
 	return props.slidesNumber;
 });
 
@@ -419,7 +427,7 @@ const universalOrderedSlides = computed(() => {
 	});
 	return buildUniversalOrderedSlides({
 		achievementSlides,
-		nonBadgesSlides: nonBadgesSlides.value,
+		nonBadgesSlides: props.showNonBadgesSlides ? nonBadgesSlides.value : [],
 		shouldShowGoalCard: shouldShowGoalCard.value,
 		shouldShowEmailMarketingCard: shouldShowEmailMarketingCard.value,
 		showLatestLoan: showLatestLoan.value,
