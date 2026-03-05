@@ -1501,7 +1501,6 @@ describe('useGoalData', () => {
 			expect(composable.userGoal.value.target).toBe(15);
 		});
 
-		// Add test that if the new goal category is support all, getLoanStatsByYear method  is called
 		it('should call getLoanStatsByYear when updating to SUPPORT_ALL category', async () => {
 			const totalLoans = 10;
 			const mockPrefs = {
