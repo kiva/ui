@@ -550,6 +550,8 @@ export default function useGoalData({ apollo } = {}) {
 	 * @param {Object} goal - Goal object to remove (identified by goalName)
 	 */
 	const removeGoalFromPreferences = async goal => {
+		// Update user preferences to ensure goal is up-to-date preventing user from deleting stale goal data.
+		await loadPreferences('network-only');
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		let goals = parsedPrefs.goals || [];
 		const goalIndex = goals.findIndex(g => g.goalName === goal.goalName);
