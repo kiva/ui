@@ -297,6 +297,12 @@ import {
 	getSlideTitleColor,
 	getSlideBackgroundImg
 } from '#src/util/myKiva/myKivaContentfulUtils';
+import {
+	checkShouldShowEmailMarketing,
+	checkShowLatestLoan,
+	checkShowSurveyCard,
+	filterNonBadgesSlides,
+} from '#src/util/journeyCardOrderingUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import useBreakpoints from '#src/composables/useBreakpoints';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
@@ -414,9 +420,6 @@ const handleSecondaryCtaClick = slide => {
 	router.push(secondaryCtaUrl);
 };
 
-// <--- START DUPLICATE CODE --->
-// TODO CR: remove Journey Methods to avoid duplicates
-const MYKIVA_INPUT_FORM_KEY = 'mykiva-input-form';
 const acceptedEmailMarketingUpdates = ref(false);
 
 const achievementSlides = computed(() => buildAchievementSlides({
@@ -428,30 +431,27 @@ const achievementSlides = computed(() => buildAchievementSlides({
 
 const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
 
-const isLatestLoanAnonymous = computed(() => {
-	return latestLoan.value?.anonymizationLevel === 'full';
-});
+const shouldShowEmailMarketingCard = computed(() => checkShouldShowEmailMarketing({
+	showPostLendingNextStepsCards: showPostLendingNextStepsCards.value,
+	postLendingNextStepsEnable: postLendingNextStepsEnable.value,
+	latestLoan: latestLoan.value,
+	hasMailUpdatesOptOut: userHasMailUpdatesOptOut(),
+	loansCount: loans.value.length,
+}));
 
-const shouldShowEmailMarketingCard = computed(
-	() => showPostLendingNextStepsCards.value && postLendingNextStepsEnable.value
-		&& !isLatestLoanAnonymous.value
-		&& userHasMailUpdatesOptOut() && (loans.value.length > 0 || latestLoan.value !== null)
-);
+const showLatestLoan = computed(() => checkShowLatestLoan({
+	showPostLendingNextStepsCards: showPostLendingNextStepsCards.value,
+	postLendingNextStepsEnable: postLendingNextStepsEnable.value,
+	latestLoan: latestLoan.value,
+}));
 
-const showLatestLoan = computed(() => showPostLendingNextStepsCards.value
-	&& postLendingNextStepsEnable.value && latestLoan.value && !isLatestLoanAnonymous.value);
+const showSurveyCard = computed(() => checkShowSurveyCard({
+	showPostLendingNextStepsCards: showPostLendingNextStepsCards.value,
+	postLendingNextStepsEnable: postLendingNextStepsEnable.value,
+	userInfo: userInfo.value,
+}));
 
-const showSurveyCard = computed(() => {
-	const userPreferences = userInfo.value?.userPreferences || {};
-	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
-	const isFormSubmitted = (parsedPrefs.savedForms || []).some(form => form.formName === MYKIVA_INPUT_FORM_KEY);
-
-	return showPostLendingNextStepsCards.value && !isFormSubmitted && postLendingNextStepsEnable.value;
-});
-
-const nonBadgesSlides = computed(() => {
-	return heroSlides.value.filter(slide => isNonBadgeSlide(slide));
-});
+const nonBadgesSlides = computed(() => filterNonBadgesSlides(heroSlides.value));
 
 const womenLoansLastYear = computed(() => {
 	return getCategoryLoansLastYear(heroTieredAchievements.value);
@@ -460,7 +460,6 @@ const womenLoansLastYear = computed(() => {
 const shouldShowGoalCard = computed(() => {
 	return (!userGoal.value || !userGoalAchieved.value) && !hideCompletedGoalCard.value;
 });
-// <--- END DUPLICATE CODE --->
 
 onMounted(async () => {
 	try {

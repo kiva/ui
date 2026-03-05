@@ -175,13 +175,18 @@ import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCar
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import useOptIn from '#src/composables/useOptIn';
-import { buildUniversalOrderedSlides } from '#src/util/journeyCardOrderingUtils';
+import {
+	buildUniversalOrderedSlides,
+	checkShouldShowEmailMarketing,
+	checkShowLatestLoan,
+	checkShowSurveyCard,
+	filterNonBadgesSlides,
+} from '#src/util/journeyCardOrderingUtils';
 import ThankYouCard from '#src/components/MyKiva/ThankYouCard';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
 const TRANSACTION_DAYS_LIMIT = 30;
-const MYKIVA_INPUT_FORM_KEY = 'mykiva-input-form';
 
 const apollo = inject('apollo');
 const cookieStore = inject('cookieStore');
@@ -310,31 +315,30 @@ const isSharingModalVisible = ref(false);
 const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
 const acceptedEmailMarketingUpdates = ref(false);
 
-const isLatestLoanAnonymous = computed(() => {
-	return props.latestLoan?.anonymizationLevel === 'full';
-});
-
 const shouldShowEmailMarketingCard = computed(
-	() => props.showPostLendingNextStepsCards && props.postLendingNextStepsEnable
-		&& props.inLendingStats && !isLatestLoanAnonymous.value
-		&& userHasMailUpdatesOptOut() && (props.loans.length > 0 || props.latestLoan !== null)
+	() => props.inLendingStats && checkShouldShowEmailMarketing({
+		showPostLendingNextStepsCards: props.showPostLendingNextStepsCards,
+		postLendingNextStepsEnable: props.postLendingNextStepsEnable,
+		latestLoan: props.latestLoan,
+		hasMailUpdatesOptOut: userHasMailUpdatesOptOut(),
+		loansCount: props.loans.length,
+	})
 );
 const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
 
-const showLatestLoan = computed(() => props.showPostLendingNextStepsCards
-	&& props.postLendingNextStepsEnable && props.latestLoan && !isLatestLoanAnonymous.value);
+const showLatestLoan = computed(() => checkShowLatestLoan({
+	showPostLendingNextStepsCards: props.showPostLendingNextStepsCards,
+	postLendingNextStepsEnable: props.postLendingNextStepsEnable,
+	latestLoan: props.latestLoan,
+}));
 
-const showSurveyCard = computed(() => {
-	const userPreferences = props.userInfo?.userPreferences || {};
-	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
-	const isFormSubmitted = (parsedPrefs.savedForms || []).some(form => form.formName === MYKIVA_INPUT_FORM_KEY);
+const showSurveyCard = computed(() => checkShowSurveyCard({
+	showPostLendingNextStepsCards: props.showPostLendingNextStepsCards,
+	postLendingNextStepsEnable: props.postLendingNextStepsEnable,
+	userInfo: props.userInfo,
+}));
 
-	return props.showPostLendingNextStepsCards && !isFormSubmitted && props.postLendingNextStepsEnable;
-});
-
-const nonBadgesSlides = computed(() => {
-	return props.slides.filter(slide => isNonBadgeSlide(slide));
-});
+const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.slides));
 
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;

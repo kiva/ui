@@ -1,3 +1,83 @@
+import { isNonBadgeSlide } from '#src/util/achievementUtils';
+
+export const MYKIVA_INPUT_FORM_KEY = 'mykiva-input-form';
+
+/**
+ * Checks if a loan is fully anonymous
+ * @param {Object|null} loan
+ * @returns {boolean}
+ */
+export const isLoanAnonymous = loan => loan?.anonymizationLevel === 'full';
+
+/**
+ * Core visibility check for the email marketing card
+ * @param {Object} params
+ * @param {boolean} params.showPostLendingNextStepsCards
+ * @param {boolean} params.postLendingNextStepsEnable
+ * @param {Object|null} params.latestLoan
+ * @param {boolean} params.hasMailUpdatesOptOut - result of userHasMailUpdatesOptOut()
+ * @param {number} params.loansCount
+ * @returns {boolean}
+ */
+export const checkShouldShowEmailMarketing = ({
+	showPostLendingNextStepsCards,
+	postLendingNextStepsEnable,
+	latestLoan,
+	hasMailUpdatesOptOut,
+	loansCount,
+}) => {
+	return showPostLendingNextStepsCards && postLendingNextStepsEnable
+		&& !isLoanAnonymous(latestLoan)
+		&& hasMailUpdatesOptOut && (loansCount > 0 || latestLoan !== null);
+};
+
+/**
+ * Core visibility check for the latest loan card
+ * @param {Object} params
+ * @param {boolean} params.showPostLendingNextStepsCards
+ * @param {boolean} params.postLendingNextStepsEnable
+ * @param {Object|null} params.latestLoan
+ * @returns {boolean}
+ */
+export const checkShowLatestLoan = ({
+	showPostLendingNextStepsCards,
+	postLendingNextStepsEnable,
+	latestLoan,
+}) => {
+	return !!showPostLendingNextStepsCards && !!postLendingNextStepsEnable
+		&& !!latestLoan && !isLoanAnonymous(latestLoan);
+};
+
+/**
+ * Core visibility check for the survey card
+ * @param {Object} params
+ * @param {boolean} params.showPostLendingNextStepsCards
+ * @param {boolean} params.postLendingNextStepsEnable
+ * @param {Object} params.userInfo
+ * @returns {boolean}
+ */
+export const checkShowSurveyCard = ({
+	showPostLendingNextStepsCards,
+	postLendingNextStepsEnable,
+	userInfo,
+}) => {
+	const userPreferences = userInfo?.userPreferences || {};
+	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
+	const isFormSubmitted = (parsedPrefs.savedForms || []).some(
+		form => form.formName === MYKIVA_INPUT_FORM_KEY
+	);
+	return showPostLendingNextStepsCards && !isFormSubmitted && postLendingNextStepsEnable;
+};
+
+/**
+ * Filters slides to only include non-badge slides
+ * @param {Array} slides
+ * @returns {Array}
+ */
+export const filterNonBadgesSlides = slides => {
+	return (slides || []).filter(slide => isNonBadgeSlide(slide));
+};
+
 /**
 * Builds the universal ordered sequence for journey cards
 * @param {Object} params
@@ -24,7 +104,7 @@ export const buildUniversalOrderedSlides = ({
 
 	// Goal card
 	if (shouldShowGoalCard) {
-		universalSequence.push({});
+		universalSequence.push({ isGoalCard: true });
 	}
 
 	// Achievement cards
