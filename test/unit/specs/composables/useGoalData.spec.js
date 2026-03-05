@@ -1501,8 +1501,8 @@ describe('useGoalData', () => {
 			expect(composable.userGoal.value.target).toBe(15);
 		});
 
-		it('should call getLoanStatsByYear when updating to SUPPORT_ALL category', async () => {
-			const totalLoans = 10;
+		it('should update goalProgress using yearly loan count when new goal category is SUPPORT_ALL', async () => {
+			const yearlyLoanCount = 10;
 			const mockPrefs = {
 				goals: [
 					{
@@ -1523,11 +1523,11 @@ describe('useGoalData', () => {
 								id: 'pref-123',
 								preferences: JSON.stringify(mockPrefs),
 							},
-							loans: { totalCount: totalLoans },
+							loans: { totalCount: yearlyLoanCount },
 							lendingStats: {
 								id: 'stats-123',
 								loanStatsByYear: {
-									count: 10,
+									count: yearlyLoanCount,
 									amount: 100,
 								},
 							},
@@ -1554,10 +1554,9 @@ describe('useGoalData', () => {
 
 			await composable.updateCurrentGoal(previousGoal, updatedGoal);
 
-			// Validate the composable's userGoal has ID_SUPPORT_ALL category after update
 			expect(composable.userGoal.value.category).toBe(ID_SUPPORT_ALL);
 			// Validate the new progress is user total loans
-			expect(composable.goalProgress.value).toBe(totalLoans);
+			expect(composable.goalProgress.value).toBe(yearlyLoanCount);
 		});
 	});
 
