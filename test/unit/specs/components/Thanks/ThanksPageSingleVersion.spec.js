@@ -96,6 +96,7 @@ const MODULE_IDS = [
 	'goal-entrypoint',
 	'goal-completed',
 	'goal-in-progress',
+	'opt-in-module',
 ];
 
 function renderComponent(propsOverrides = {}) {
@@ -114,7 +115,6 @@ function renderComponent(propsOverrides = {}) {
 			isOptedIn: true,
 			loans: [{ id: 1, unreservedAmount: '25.00' }],
 			isNextStepsExpEnabled: true,
-			goalsV2Enabled: true,
 			receipt: { items: { values: [{ basketItemType: 'loan' }] } },
 			...propsOverrides,
 		},
@@ -136,16 +136,18 @@ describe('ThanksPageSingleVersion', () => {
 	});
 
 	describe('tiered badge ordering', () => {
-		it('shows GoalInProgress before BadgeMilestone when active goal + only tiered badges', async () => {
+		// eslint-disable-next-line max-len
+		it('shows GoalInProgress before opt-in before BadgeMilestone when active goal + only tiered badges', async () => {
 			mockUserGoal.value = inProgressGoal;
 
 			const { container } = renderComponent({
 				badgesAchieved: [tieredBadge],
+				isOptedIn: false,
 			});
 
 			await vi.waitFor(() => {
 				const ids = getOrderedModules(container);
-				expect(ids).toEqual(['goal-in-progress', 'badge-milestone']);
+				expect(ids).toEqual(['goal-in-progress', 'opt-in-module', 'badge-milestone']);
 			});
 		});
 
@@ -245,6 +247,50 @@ describe('ThanksPageSingleVersion', () => {
 			await vi.waitFor(() => {
 				const ids = getOrderedModules(container);
 				expect(ids).toEqual(['badge-milestone', 'goal-completed']);
+			});
+		});
+	});
+
+	describe('opt-in module ordering', () => {
+		it('shows opt-in between GoalInProgress and tiered BadgeMilestone when not opted in', async () => {
+			mockUserGoal.value = inProgressGoal;
+
+			const { container } = renderComponent({
+				badgesAchieved: [tieredBadge],
+				isOptedIn: false,
+			});
+
+			await vi.waitFor(() => {
+				const ids = getOrderedModules(container);
+				expect(ids).toEqual(['goal-in-progress', 'opt-in-module', 'badge-milestone']);
+			});
+		});
+
+		it('shows opt-in after GoalInProgress when no badge and not opted in', async () => {
+			mockUserGoal.value = inProgressGoal;
+
+			const { container } = renderComponent({
+				badgesAchieved: [],
+				isOptedIn: false,
+			});
+
+			await vi.waitFor(() => {
+				const ids = getOrderedModules(container);
+				expect(ids).toEqual(['goal-in-progress', 'opt-in-module']);
+			});
+		});
+
+		it('shows opt-in after non-tiered BadgeMilestone and GoalInProgress when not opted in', async () => {
+			mockUserGoal.value = inProgressGoal;
+
+			const { container } = renderComponent({
+				badgesAchieved: [nonTieredBadge],
+				isOptedIn: false,
+			});
+
+			await vi.waitFor(() => {
+				const ids = getOrderedModules(container);
+				expect(ids).toEqual(['badge-milestone', 'goal-in-progress', 'opt-in-module']);
 			});
 		});
 	});

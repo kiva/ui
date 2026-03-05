@@ -55,7 +55,6 @@ export const GOAL_STATUS = {
 	IN_PROGRESS: 'in-progress',
 };
 
-export const SAME_AS_LAST_YEAR_LIMIT = 1;
 export const LAST_YEAR_KEY = new Date().getFullYear() - 1;
 export const GOALS_V2_START_YEAR = 2026;
 export const COMPLETED_GOAL_THRESHOLD = 100;
