@@ -22,8 +22,9 @@
 				@continue-clicked="handleContinue"
 				class="tw-mb-2.5"
 			/>
+			<!-- Start goal module variations -->
 			<GoalEntrypoint
-				v-if="isNextStepsExpEnabled && goalsV2Enabled && !isGuest && goalDataInitialized && isEmptyGoal"
+				v-if="isNextStepsExpEnabled && !isGuest && goalDataInitialized && isEmptyGoal"
 				:loading="goalDataLoading"
 				:total-loans="totalLoans"
 				:categories-loan-count="categoriesLoanCount"
@@ -41,14 +42,13 @@
 				class="tw-mb-2.5"
 			/>
 			<GoalCompleted
-				v-if="showGoalCompletedModule"
+				v-else-if="showGoalCompletedModule"
 				:current-goal="userGoal"
 				:loading="goalDataLoading"
 				class="tw-mb-2.5"
 			/>
-			<!-- Tiered badge only: GoalInProgress appears BEFORE badge -->
 			<GoalInProgress
-				v-if="showGoalBeforeBadge"
+				v-else-if="showGoalInProgressModule"
 				data-testid="goal-in-progress"
 				:is-opted-in="isOptedIn"
 				:loan="loanForComment"
@@ -56,6 +56,18 @@
 				:target-loans-amount="goalTargetLoansAmount"
 				class="tw-mb-2.5"
 			/>
+			<!-- End goal module variations -->
+			<OptInModule
+				v-if="showOptInModule"
+				data-testid="opt-in-module"
+				:loans="loans"
+				:is-guest="isGuest"
+				:number-of-badges="numberOfBadges"
+				:only-donations="onlyDonations"
+				:achievements-completed="achievementsCompleted"
+				class="print:tw-hidden tw-mb-2.5"
+			/>
+			<!-- Tiered badge achieved: appears AFTER goal and opt-in module -->
 			<BadgeMilestone
 				v-if="showBadgeAfterGoals"
 				data-testid="badge-milestone"
@@ -70,31 +82,12 @@
 				@continue-clicked="handleContinue"
 				class="tw-mb-2.5"
 			/>
-			<OptInModule
-				v-if="showOptInModule"
-				:loans="loans"
-				:is-guest="isGuest"
-				:number-of-badges="numberOfBadges"
-				:only-donations="onlyDonations"
-				:achievements-completed="achievementsCompleted"
-				class="print:tw-hidden tw-mb-2.5"
-			/>
 			<JourneyGeneralPrompt
-				v-else-if="showJourneyModule"
+				v-if="showJourneyModule"
 				:loans="loans"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
 				@continue-as-guest="handleContinue"
-				class="tw-mb-2.5"
-			/>
-			<!-- Non-tiered badge or no badge: GoalInProgress appears AFTER badge -->
-			<GoalInProgress
-				v-if="showGoalAfterBadge"
-				data-testid="goal-in-progress"
-				:is-opted-in="isOptedIn"
-				:loan="loanForComment"
-				:current-goal="userGoal"
-				:target-loans-amount="goalTargetLoansAmount"
 				class="tw-mb-2.5"
 			/>
 			<LoanComment
@@ -135,7 +128,7 @@
 			:categories-loan-count="categoriesLoanCount"
 			:is-thanks-page="true"
 			:number-of-loans="goalTarget"
-			:goals-v2-enabled="goalsV2Enabled"
+			:goals-v2-enabled="true"
 			:controlled-is-editing="isEditing"
 			:controlled-selected-category="selectedCategory"
 			@update-goal-choices="handleUpdateGoalChoices"
@@ -218,10 +211,6 @@ const props = defineProps({
 		default: false,
 	},
 	isNextStepsExpEnabled: {
-		type: Boolean,
-		default: false,
-	},
-	goalsV2Enabled: {
 		type: Boolean,
 		default: false,
 	},
@@ -324,7 +313,7 @@ const showJourneyModule = computed(() => {
 	// If experiment enabled, wait for initialization and loading to complete, and goal not achieved
 	if (props.isNextStepsExpEnabled) {
 		if (!goalDataInitialized.value || goalDataLoading.value) return false;
-		if (showGoalInProgressModule.value && props.goalsV2Enabled) return false;
+		if (showGoalInProgressModule.value) return false;
 		return !userGoalAchievedNow.value;
 	}
 	// If experiment disabled, show journey module immediately
@@ -345,16 +334,6 @@ const showBadgeBeforeGoals = computed(() => {
 
 const showBadgeAfterGoals = computed(() => {
 	return showBadgeModule.value && !showBadgeBeforeGoals.value;
-});
-
-const showGoalBeforeBadge = computed(() => {
-	return showGoalInProgressModule.value && props.goalsV2Enabled
-		&& showBadgeAfterGoals.value;
-});
-
-const showGoalAfterBadge = computed(() => {
-	return showGoalInProgressModule.value && props.goalsV2Enabled
-		&& !showGoalBeforeBadge.value;
 });
 
 const categoriesLoanCount = computed(() => {
@@ -439,10 +418,8 @@ const handleUpdateGoalChoices = updatedCategory => {
 
 onMounted(async () => {
 	if (props.isNextStepsExpEnabled) {
-		// Goals V2 is enabled if flag is true OR year >= 2026
-		await loadGoalData({ yearlyProgress: props.goalsV2Enabled });
-		// Use yearly progress with current year when Goals V2 is enabled, otherwise use all-time progress
-		const year = props.goalsV2Enabled ? new Date().getFullYear() : null;
+		await loadGoalData({ yearlyProgress: true });
+		const year = new Date().getFullYear();
 		// Loans already in totalLoanCount after checkout
 		const { totalProgress, hasContributingLoans } = await getPostCheckoutProgressByLoans({
 			loans: props.loans,
