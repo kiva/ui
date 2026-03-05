@@ -182,7 +182,7 @@ import {
 	filterNonBadgesSlides,
 	handlePrimaryCtaClick as handlePrimaryCtaClickUtil,
 	handleSecondaryCtaClick as handleSecondaryCtaClickUtil,
-} from '#src/util/journeyCardOrderingUtils';
+} from '#src/util/myKiva/myKivaJourneyCardUtils';
 import ThankYouCard from '#src/components/MyKiva/ThankYouCard';
 
 const TRANSACTION_DAYS_LIMIT = 30;

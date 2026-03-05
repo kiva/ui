@@ -298,7 +298,7 @@ import {
 	filterNonBadgesSlides,
 	handlePrimaryCtaClick as handlePrimaryCtaClickUtil,
 	handleSecondaryCtaClick as handleSecondaryCtaClickUtil,
-} from '#src/util/journeyCardOrderingUtils';
+} from '#src/util/myKiva/myKivaJourneyCardUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import useBreakpoints from '#src/composables/useBreakpoints';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';

@@ -5,7 +5,7 @@ import {
 	handleSecondaryCtaClick,
 	REFER_FRIEND_MODAL_KEY,
 	JOURNEY_MODAL_KEY,
-} from '#src/util/journeyCardOrderingUtils';
+} from '#src/util/myKiva/myKivaJourneyCardUtils';
 
 vi.mock('#src/util/myKiva/myKivaContentfulUtils', () => ({
 	getRichTextUiSettingsData: vi.fn(slide => slide?.mockRichTextData || {}),
