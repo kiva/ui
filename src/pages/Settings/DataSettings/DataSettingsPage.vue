@@ -267,7 +267,7 @@ export default {
 			return { ...this.form };
 		},
 		syncKvgdprCookie() {
-			if (!this.cookieStore) return;
+			if (typeof window === 'undefined' || !this.cookieStore) return;
 			const current = this.cookieStore.get(KVGDPR_COOKIE_NAME) || '';
 			const kvgdpr = parseQueryStringCookie(current);
 			Object.entries(FORM_TO_KVGDPR_KEYS).forEach(([formKey, cookieKey]) => {
