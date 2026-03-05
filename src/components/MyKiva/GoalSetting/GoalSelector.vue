@@ -478,11 +478,14 @@ onMounted(async () => {
 });
 
 const editGoalCopy = computed(() => {
-	if (editGoalFromSettings.value && !allowBackToCategorySelection.value) {
+	const isCustomizeMode = editGoalFromSettings.value && !allowBackToCategorySelection.value;
+	const shouldShowCategoryEdit = allowBackToCategorySelection.value || !props.inGoalSettingsPage;
+
+	if (isCustomizeMode) {
 		return 'Customize your goal';
 	}
 
-	if (allowBackToCategorySelection.value || !props.inGoalSettingsPage) {
+	if (shouldShowCategoryEdit) {
 		return 'Edit goal category';
 	}
 
