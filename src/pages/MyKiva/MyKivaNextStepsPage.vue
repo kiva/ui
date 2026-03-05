@@ -164,7 +164,7 @@
 						@open-impact-insight-modal="showImpactInsightsModal = true"
 					/>
 					<MyKivaSurveyCard
-						v-if="showSurveyCard && (!shouldShowGoalCard || !shouldShowEmailMarketingCard)"
+						v-if="showSurveyCard"
 					/>
 					<MyKivaCard
 						v-for="slide in nonBadgesSlides"
