@@ -1,6 +1,136 @@
-import { buildUniversalOrderedSlides } from '#src/util/journeyCardOrderingUtils';
+import {
+	buildUniversalOrderedSlides,
+	getUrlParamsFromString,
+	handlePrimaryCtaClick,
+	handleSecondaryCtaClick,
+	REFER_FRIEND_MODAL_KEY,
+	JOURNEY_MODAL_KEY,
+} from '#src/util/journeyCardOrderingUtils';
+
+vi.mock('#src/util/myKiva/myKivaContentfulUtils', () => ({
+	getRichTextUiSettingsData: vi.fn(slide => slide?.mockRichTextData || {}),
+	getSlidePrimaryCtaText: vi.fn(slide => slide?.mockPrimaryCtaText || 'primary-cta'),
+	getSlideSecondaryCtaText: vi.fn(slide => slide?.mockSecondaryCtaText || 'secondary-cta'),
+}));
 
 describe('journeyCardOrderingUtils', () => {
+	describe('getUrlParamsFromString', () => {
+		it('returns undefined when no query params', () => {
+			expect(getUrlParamsFromString('/some/path')).toBeUndefined();
+		});
+
+		it('extracts query params from URL', () => {
+			expect(getUrlParamsFromString('/path?foo=bar')).toBe('foo=bar');
+			expect(getUrlParamsFromString('/path?refer-friend=true')).toBe('refer-friend=true');
+		});
+	});
+
+	describe('handlePrimaryCtaClick', () => {
+		it('tracks event and navigates to URL', () => {
+			const trackEvent = vi.fn();
+			const navigate = vi.fn();
+			const slide = {
+				mockRichTextData: { primaryCtaUrl: '/lend', achievementKey: 'women' },
+				mockPrimaryCtaText: 'Lend now',
+			};
+
+			handlePrimaryCtaClick({ slide, trackEvent, navigate });
+
+			expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', 'primary-cta-Lend now', 'women');
+			expect(navigate).toHaveBeenCalledWith('/lend');
+		});
+
+		it('opens sharing modal when refer-friend param is true', () => {
+			const trackEvent = vi.fn();
+			const navigate = vi.fn();
+			const openSharingModal = vi.fn();
+			const slide = {
+				mockRichTextData: {
+					primaryCtaUrl: `/invite?${REFER_FRIEND_MODAL_KEY}=true`,
+					achievementKey: 'referral',
+				},
+			};
+
+			handlePrimaryCtaClick({
+				slide,
+				trackEvent,
+				navigate,
+				modalHandlers: { openSharingModal },
+			});
+
+			expect(openSharingModal).toHaveBeenCalled();
+			expect(navigate).not.toHaveBeenCalled();
+		});
+
+		it('navigates normally when refer-friend handler not provided', () => {
+			const trackEvent = vi.fn();
+			const navigate = vi.fn();
+			const slide = {
+				mockRichTextData: {
+					primaryCtaUrl: `/invite?${REFER_FRIEND_MODAL_KEY}=true`,
+					achievementKey: 'referral',
+				},
+			};
+
+			handlePrimaryCtaClick({ slide, trackEvent, navigate });
+
+			expect(navigate).toHaveBeenCalledWith(`/invite?${REFER_FRIEND_MODAL_KEY}=true`);
+		});
+	});
+
+	describe('handleSecondaryCtaClick', () => {
+		it('tracks event and navigates to URL', () => {
+			const trackEvent = vi.fn();
+			const navigate = vi.fn();
+			const slide = {
+				mockRichTextData: { secondaryCtaUrl: '/learn-more', achievementKey: 'climate' },
+				mockSecondaryCtaText: 'Learn more',
+			};
+
+			handleSecondaryCtaClick({ slide, trackEvent, navigate });
+
+			expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', 'secondary-cta-Learn more', 'climate');
+			expect(navigate).toHaveBeenCalledWith('/learn-more');
+		});
+
+		it('calls updateJourney when journey param present', () => {
+			const trackEvent = vi.fn();
+			const navigate = vi.fn();
+			const updateJourney = vi.fn();
+			const slide = {
+				mockRichTextData: {
+					secondaryCtaUrl: `/badges?${JOURNEY_MODAL_KEY}=open`,
+					achievementKey: 'women',
+				},
+			};
+
+			handleSecondaryCtaClick({
+				slide,
+				trackEvent,
+				navigate,
+				modalHandlers: { updateJourney },
+			});
+
+			expect(updateJourney).toHaveBeenCalledWith('women');
+			expect(navigate).not.toHaveBeenCalled();
+		});
+
+		it('navigates normally when journey handler not provided', () => {
+			const trackEvent = vi.fn();
+			const navigate = vi.fn();
+			const slide = {
+				mockRichTextData: {
+					secondaryCtaUrl: `/badges?${JOURNEY_MODAL_KEY}=open`,
+					achievementKey: 'women',
+				},
+			};
+
+			handleSecondaryCtaClick({ slide, trackEvent, navigate });
+
+			expect(navigate).toHaveBeenCalledWith(`/badges?${JOURNEY_MODAL_KEY}=open`);
+		});
+	});
+
 	describe('buildUniversalOrderedSlides', () => {
 		it('returns goal card first when set or in progress', () => {
 			const result = buildUniversalOrderedSlides({
@@ -12,7 +142,7 @@ describe('journeyCardOrderingUtils', () => {
 				nonBadgesSlides: [],
 			});
 
-			expect(result[0]).toEqual({});
+			expect(result[0]).toEqual({ isGoalCard: true });
 			expect(result.length).toBe(1);
 		});
 
@@ -90,7 +220,7 @@ describe('journeyCardOrderingUtils', () => {
 				nonBadgesSlides: [],
 			});
 
-			expect(result).toEqual([{}, { isEmailUpdates: true }]);
+			expect(result).toEqual([{ isGoalCard: true }, { isEmailUpdates: true }]);
 		});
 
 		it('shows email marketing card (when user has yet to opt in)', () => {
@@ -184,7 +314,7 @@ describe('journeyCardOrderingUtils', () => {
 			});
 
 			expect(result).toHaveLength(3);
-			expect(result[0]).toEqual({});
+			expect(result[0]).toEqual({ isGoalCard: true });
 			expect(result[1].badgeKey).toBe('education');
 			expect(result[2].badgeKey).toBe('refugees');
 			expect(result.find(s => s.badgeKey === 'climate')).toBeUndefined();
@@ -218,7 +348,7 @@ describe('journeyCardOrderingUtils', () => {
 
 			// Expected order: goal, achievements, email, latest loan, survey, non-badges
 			expect(result).toHaveLength(12);
-			expect(result[0]).toEqual({});
+			expect(result[0]).toEqual({ isGoalCard: true });
 			expect(result[1].badgeKey).toBe('women');
 			expect(result[2].badgeKey).toBe('agriculture');
 			expect(result[3].badgeKey).toBe('education');

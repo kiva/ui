@@ -119,9 +119,9 @@ import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 
 import {
 	buildCategoriesLoanCount,
+	checkAndClearPostLendingCookie,
 	createModalsHandlers,
 } from '#src/composables/useMyKivaJourneyData';
-import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 
 export default {
 	name: 'LendingStats',
@@ -257,11 +257,8 @@ export default {
 			await this.checkCompletedGoal({ category: 'portfolio' });
 		}
 
-		// Show post-lending next steps cards in My Kiva
-		if (checkPostLendingCardCookie(this.cookieStore)) {
-			this.showPostLendingNextStepsCards = true;
-			removePostLendingCardCookie(this.cookieStore);
-		}
+		// Show post-lending next steps cards in My Kiva - using shared utility
+		this.showPostLendingNextStepsCards = checkAndClearPostLendingCookie(this.cookieStore);
 	},
 	watch: {
 		async goalRefreshKey(newVal, oldVal) {

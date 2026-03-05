@@ -1,6 +1,13 @@
 import { isNonBadgeSlide } from '#src/util/achievementUtils';
+import {
+	getRichTextUiSettingsData,
+	getSlidePrimaryCtaText,
+	getSlideSecondaryCtaText,
+} from '#src/util/myKiva/myKivaContentfulUtils';
 
 export const MYKIVA_INPUT_FORM_KEY = 'mykiva-input-form';
+export const REFER_FRIEND_MODAL_KEY = 'refer-friend';
+export const JOURNEY_MODAL_KEY = 'journey';
 
 /**
  * Checks if a loan is fully anonymous
@@ -76,6 +83,77 @@ export const checkShowSurveyCard = ({
  */
 export const filterNonBadgesSlides = slides => {
 	return (slides || []).filter(slide => isNonBadgeSlide(slide));
+};
+
+/**
+ * Extracts URL params from a URL string
+ * @param {string} url
+ * @returns {string|undefined}
+ */
+export const getUrlParamsFromString = url => {
+	const urlSplit = url.split('?');
+	return urlSplit[1];
+};
+
+/**
+ * Handles primary CTA click with optional modal support
+ * @param {Object} params
+ * @param {Object} params.slide - The slide object
+ * @param {Function} params.trackEvent - Event tracking function ($kvTrackEvent)
+ * @param {Function} params.navigate - Router navigation function (router.push)
+ * @param {Object} [params.modalHandlers] - Optional modal handlers
+ * @param {Function} [params.modalHandlers.openSharingModal] - Opens sharing modal
+ */
+export const handlePrimaryCtaClick = ({
+	slide,
+	trackEvent,
+	navigate,
+	modalHandlers = {},
+}) => {
+	const data = getRichTextUiSettingsData(slide);
+	const primaryCtaUrl = data.primaryCtaUrl || '';
+	const ctaLabel = `primary-cta-${getSlidePrimaryCtaText(slide)}`;
+	trackEvent('portfolio', 'click', ctaLabel, data.achievementKey);
+
+	const urlParams = getUrlParamsFromString(primaryCtaUrl);
+
+	if (urlParams && urlParams.includes(REFER_FRIEND_MODAL_KEY) && modalHandlers.openSharingModal) {
+		const paramsSplit = urlParams.split('=');
+		if (paramsSplit && paramsSplit[1] === 'true') {
+			modalHandlers.openSharingModal();
+			return;
+		}
+	}
+	navigate(primaryCtaUrl);
+};
+
+/**
+ * Handles secondary CTA click with optional modal support
+ * @param {Object} params
+ * @param {Object} params.slide - The slide object
+ * @param {Function} params.trackEvent - Event tracking function ($kvTrackEvent)
+ * @param {Function} params.navigate - Router navigation function (router.push)
+ * @param {Object} [params.modalHandlers] - Optional modal handlers
+ * @param {Function} [params.modalHandlers.updateJourney] - Emits update-journey event
+ */
+export const handleSecondaryCtaClick = ({
+	slide,
+	trackEvent,
+	navigate,
+	modalHandlers = {},
+}) => {
+	const data = getRichTextUiSettingsData(slide);
+	const secondaryCtaUrl = data.secondaryCtaUrl || '';
+	const ctaLabel = `secondary-cta-${getSlideSecondaryCtaText(slide)}`;
+	trackEvent('portfolio', 'click', ctaLabel, data.achievementKey);
+
+	const urlParams = getUrlParamsFromString(secondaryCtaUrl);
+
+	if (urlParams && urlParams.includes(JOURNEY_MODAL_KEY) && modalHandlers.updateJourney) {
+		modalHandlers.updateJourney(data.achievementKey);
+		return;
+	}
+	navigate(secondaryCtaUrl);
 };
 
 /**

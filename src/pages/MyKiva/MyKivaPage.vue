@@ -45,13 +45,13 @@ import useGoalData, { LAST_YEAR_KEY, isGoalsV2Enabled } from '#src/composables/u
 import {
 	applyFreshProgressToAchievements,
 	FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
-	getContentfulLevelData
 } from '#src/composables/useBadgeData';
 import {
 	buildLatestLoanData,
 	buildLenderData,
 	buildRegionsData,
 	buildHeroBadgeData,
+	buildContentfulData,
 } from '#src/composables/useMyKivaJourneyData';
 import { inject, provide } from 'vue';
 
@@ -217,7 +217,7 @@ export default {
 
 				this.totalLoans = myKivaQueryResult.my?.loans?.totalCount ?? 0;
 
-				// Build regionsData using shared utility
+				// Build regionsData
 				const { regionsData, userLentToAllRegions } = buildRegionsData(lendingStatsQueryResult);
 				this.userLentToAllRegions = userLentToAllRegions;
 				this.lendingStats = {
@@ -256,9 +256,9 @@ export default {
 					contentKey: CONTENTFUL_CAROUSEL_KEY,
 				}
 			});
-			this.heroSlides = slidesResult.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
-			this.heroBadgeContentfulData = (contentfulChallengeResult.contentful?.entries?.items ?? [])
-				.map(entry => getContentfulLevelData(entry));
+			const contentfulData = buildContentfulData(slidesResult, contentfulChallengeResult);
+			this.heroSlides = contentfulData.heroSlides;
+			this.heroBadgeContentfulData = contentfulData.heroBadgeContentfulData;
 		} catch (e) {
 			logReadQueryError(e, 'MyKivaPage created');
 		}

@@ -48,7 +48,7 @@
 				Continue with your lifetime achievements
 			</h3>
 
-			<section class="achievements-section tw-grid tw-grid-cols-1 tw-gap-4">
+			<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
 				<template v-if="!isMobile">
 					<MyKivaCard
 						v-for="slide in achievementSlides"
@@ -106,7 +106,7 @@
 				Build impact beyond your loan
 			</h3>
 
-			<section class="achievements-section tw-grid tw-grid-cols-1 tw-gap-4">
+			<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
 				<template v-if="!isMobile">
 					<template v-if="shouldShowEmailMarketingCard">
 						<transition
@@ -276,18 +276,12 @@ import userAchievementProgressQuery from '#src/graphql/query/userAchievementProg
 import { readBoolSetting } from '#src/util/settingsUtils';
 import {
 	CONTENTFUL_CAROUSEL_KEY,
-	getRecentTransactionLoans,
-	checkPostLendingCardCookie,
-	removePostLendingCardCookie,
 } from '#src/util/myKivaUtils';
 import useBadgeData, {
-	applyFreshProgressToAchievements,
 	FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
-	getContentfulLevelData
 } from '#src/composables/useBadgeData';
 import { buildAchievementSlides, isNonBadgeSlide } from '#src/util/achievementUtils';
 import {
-	getRichTextUiSettingsData,
 	getSlideTitle,
 	getSlideSubTitle,
 	getSlidePrimaryCtaText,
@@ -302,6 +296,8 @@ import {
 	checkShowLatestLoan,
 	checkShowSurveyCard,
 	filterNonBadgesSlides,
+	handlePrimaryCtaClick as handlePrimaryCtaClickUtil,
+	handleSecondaryCtaClick as handleSecondaryCtaClickUtil,
 } from '#src/util/journeyCardOrderingUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import useBreakpoints from '#src/composables/useBreakpoints';
@@ -313,6 +309,9 @@ import {
 	buildHeroBadgeData,
 	buildCategoriesLoanCount,
 	buildRegionsData,
+	buildContentfulData,
+	buildAchievementsWithFreshProgress,
+	checkAndClearPostLendingCookie,
 	createModalsHandlers,
 } from '#src/composables/useMyKivaJourneyData';
 
@@ -382,7 +381,7 @@ const goalModalHandlers = createModalsHandlers({
 	trackEvent: $kvTrackEvent,
 	storeGoalPreferences,
 	loadGoalData,
-	trackingCategory: 'next-steps',
+	trackingCategory: 'portfolio',
 	goalsV2Enabled: true,
 });
 
@@ -408,21 +407,17 @@ const closeImpactInsightsModal = () => {
 	});
 };
 
-const handlePrimaryCtaClick = slide => {
-	const data = getRichTextUiSettingsData(slide);
-	const primaryCtaUrl = data.primaryCtaUrl || '';
-	const ctaLabel = `primary-cta-${getSlidePrimaryCtaText(slide)}`;
-	$kvTrackEvent('next-steps', 'click', ctaLabel, data.achievementKey);
-	router.push(primaryCtaUrl);
-};
+const handlePrimaryCtaClick = slide => handlePrimaryCtaClickUtil({
+	slide,
+	trackEvent: $kvTrackEvent,
+	navigate: router.push,
+});
 
-const handleSecondaryCtaClick = slide => {
-	const data = getRichTextUiSettingsData(slide);
-	const secondaryCtaUrl = data.secondaryCtaUrl || '';
-	const ctaLabel = `secondary-cta-${getSlideSecondaryCtaText(slide)}`;
-	$kvTrackEvent('next-steps', 'click', ctaLabel, data.achievementKey);
-	router.push(secondaryCtaUrl);
-};
+const handleSecondaryCtaClick = slide => handleSecondaryCtaClickUtil({
+	slide,
+	trackEvent: $kvTrackEvent,
+	navigate: router.push,
+});
 
 const acceptedEmailMarketingUpdates = ref(false);
 
@@ -512,7 +507,7 @@ onMounted(async () => {
 		transactions.value = myData.my?.transactions?.values ?? [];
 		latestLoan.value = buildLatestLoanData(myData.my);
 
-		// Build regionsData from lendingStatsQuery using shared utility
+		// Build regionsData from lendingStatsQuery
 		const { regionsData: builtRegionsData } = buildRegionsData(lendingStatsResult.data);
 		regionsData.value = builtRegionsData;
 
@@ -521,27 +516,22 @@ onMounted(async () => {
 		postLendingNextStepsEnable.value = readBoolSetting(myData, nextStepsSettingKey) ?? false;
 
 		// Contentful
-		heroSlides.value = slidesResult.data.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
-		heroBadgeContentfulData.value = (contentfulChallengeResult.data.contentful?.entries?.items ?? [])
-			.map(entry => getContentfulLevelData(entry));
+		const contentfulData = buildContentfulData(slidesResult.data, contentfulChallengeResult.data);
+		heroSlides.value = contentfulData.heroSlides;
+		heroBadgeContentfulData.value = contentfulData.heroBadgeContentfulData;
 
-		// Achievements — apply fresh progress (matches MyKivaPage pattern)
-		heroTieredAchievements.value = lastYearAchievementsResult.data
-			.userAchievementProgress?.tieredLendingAchievements ?? [];
-		currentYearTieredAchievements.value = currentYearAchievementsResult.data
-			.userAchievementProgress?.tieredLendingAchievements ?? [];
-
-		recentTransactionLoans.value = getRecentTransactionLoans(transactions.value);
-		heroTieredAchievements.value = applyFreshProgressToAchievements({
-			achievements: heroTieredAchievements.value,
-			freshProgressLoans: recentTransactionLoans.value,
-		});
+		// Achievements
+		const achievementsData = buildAchievementsWithFreshProgress(
+			lastYearAchievementsResult.data,
+			currentYearAchievementsResult.data,
+			transactions.value
+		);
+		heroTieredAchievements.value = achievementsData.heroTieredAchievements;
+		currentYearTieredAchievements.value = achievementsData.currentYearTieredAchievements;
+		recentTransactionLoans.value = achievementsData.recentTransactionLoans;
 
 		// Post-lending next steps cookie
-		if (checkPostLendingCardCookie(cookieStore)) {
-			showPostLendingNextStepsCards.value = true;
-			removePostLendingCardCookie(cookieStore);
-		}
+		showPostLendingNextStepsCards.value = checkAndClearPostLendingCookie(cookieStore);
 		await loadGoalData({
 			year: CURRENT_YEAR,
 			yearlyProgress: true,
@@ -549,7 +539,7 @@ onMounted(async () => {
 			tieredAchievements: currentYearTieredAchievements.value,
 			transactions: transactions.value,
 		});
-		await checkCompletedGoal({ category: 'next-steps' });
+		await checkCompletedGoal({ category: 'portfolio' });
 	} catch (error) {
 		logReadQueryError(error, 'MyKivaNextStepsPageContent mounted');
 	}
@@ -607,7 +597,7 @@ onMounted(async () => {
 
 /* achievements section */
 
-.achievements-section {
+.badges-section {
 	@media (width >= 768px) {
 		grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
 	}

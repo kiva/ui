@@ -152,7 +152,6 @@ import {
 import { useRouter } from 'vue-router';
 import useBreakpoints from '#src/composables/useBreakpoints';
 import {
-	getRichTextUiSettingsData,
 	getSlideTitle,
 	getSlideSubTitle,
 	getSlidePrimaryCtaText,
@@ -181,11 +180,11 @@ import {
 	checkShowLatestLoan,
 	checkShowSurveyCard,
 	filterNonBadgesSlides,
+	handlePrimaryCtaClick as handlePrimaryCtaClickUtil,
+	handleSecondaryCtaClick as handleSecondaryCtaClickUtil,
 } from '#src/util/journeyCardOrderingUtils';
 import ThankYouCard from '#src/components/MyKiva/ThankYouCard';
 
-const JOURNEY_MODAL_KEY = 'journey';
-const REFER_FRIEND_MODAL_KEY = 'refer-friend';
 const TRANSACTION_DAYS_LIMIT = 30;
 
 const apollo = inject('apollo');
@@ -453,44 +452,23 @@ const secondaryCtaText = slide => getSlideSecondaryCtaText(slide);
 const isTitleFontSans = slide => isSlideTitleFontSans(slide);
 const titleColor = slide => getSlideTitleColor(slide, isNonBadgeSlide(slide));
 
-const getUrlParamsFromString = string => {
-	const urlSplit = string.split('?');
-	return urlSplit[1];
-};
+const goToPrimaryCtaUrl = slide => handlePrimaryCtaClickUtil({
+	slide,
+	trackEvent: $kvTrackEvent,
+	navigate: router.push,
+	modalHandlers: {
+		openSharingModal: () => { isSharingModalVisible.value = true; },
+	},
+});
 
-// TODO: Sync with MyKivaNextStepsPage
-const goToPrimaryCtaUrl = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	const primaryCtaUrl = richTextUiSettingsData.primaryCtaUrl || '';
-	$kvTrackEvent('portfolio', 'click', `primary-cta-${primaryCtaText(slide)}`, richTextUiSettingsData.achievementKey);
-	const urlParams = getUrlParamsFromString(primaryCtaUrl);
-
-	if (urlParams && urlParams.includes(REFER_FRIEND_MODAL_KEY)) {
-		const paramsSplit = urlParams.split('=');
-		if (paramsSplit && paramsSplit[1] === 'true') {
-			// open sharing modal
-			isSharingModalVisible.value = true;
-		}
-	} else {
-		router.push(primaryCtaUrl);
-	}
-};
-
-// TODO: Sync with MyKivaNextStepsPage
-const goToSecondaryCtaUrl = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	const secondaryCtaUrl = richTextUiSettingsData.secondaryCtaUrl || '';
-	// eslint-disable-next-line max-len
-	$kvTrackEvent('portfolio', 'click', `secondary-cta-${secondaryCtaText(slide)}`, richTextUiSettingsData.achievementKey);
-	const urlParams = getUrlParamsFromString(secondaryCtaUrl);
-
-	if (urlParams && urlParams.includes(JOURNEY_MODAL_KEY)) {
-		const { achievementKey } = richTextUiSettingsData;
-		emit('update-journey', achievementKey);
-	} else {
-		router.push(secondaryCtaUrl);
-	}
-};
+const goToSecondaryCtaUrl = slide => handleSecondaryCtaClickUtil({
+	slide,
+	trackEvent: $kvTrackEvent,
+	navigate: router.push,
+	modalHandlers: {
+		updateJourney: achievementKey => emit('update-journey', achievementKey),
+	},
+});
 
 const singleSlideWidth = computed(() => {
 	if (isLarge.value) {

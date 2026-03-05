@@ -66,9 +66,12 @@ describe('LendingStats', () => {
 	describe('setGoal', () => {
 		it('stores goal preferences with delayed local update for goalsV2', async () => {
 			const preferences = { category: 'women', target: 5 };
+			const mockSetGoal = vi.fn().mockResolvedValue();
 			const context = {
 				goalsV2Enabled: true,
-				storeGoalPreferences: vi.fn().mockResolvedValue(),
+				goalModalHandlers: {
+					setGoal: mockSetGoal,
+				},
 				loadGoalData: vi.fn().mockResolvedValue(),
 				newGoalPrefs: null,
 				isGoalSet: false,
@@ -77,19 +80,21 @@ describe('LendingStats', () => {
 
 			await LendingStats.methods.setGoal.call(context, preferences);
 
-			expect(context.storeGoalPreferences).toHaveBeenCalledTimes(1);
-			expect(context.storeGoalPreferences).toHaveBeenCalledWith(preferences, false);
+			expect(mockSetGoal).toHaveBeenCalledTimes(1);
+			expect(mockSetGoal).toHaveBeenCalledWith(preferences, {});
 			expect(context.newGoalPrefs).toEqual(preferences);
 			expect(context.isGoalSet).toBe(true);
 			expect(context.showGoalModal).toBe(true);
-			expect(context.loadGoalData).not.toHaveBeenCalled();
 		});
 
 		it('refreshes and closes modal for legacy goals flow', async () => {
 			const preferences = { category: 'women', target: 5 };
+			const mockSetGoal = vi.fn().mockResolvedValue();
 			const context = {
 				goalsV2Enabled: false,
-				storeGoalPreferences: vi.fn().mockResolvedValue(),
+				goalModalHandlers: {
+					setGoal: mockSetGoal,
+				},
 				loadGoalData: vi.fn().mockResolvedValue(),
 				newGoalPrefs: null,
 				isGoalSet: false,
@@ -98,20 +103,23 @@ describe('LendingStats', () => {
 
 			await LendingStats.methods.setGoal.call(context, preferences);
 
-			expect(context.storeGoalPreferences).toHaveBeenCalledWith(preferences, true);
-			expect(context.loadGoalData).toHaveBeenCalledWith({ yearlyProgress: false });
+			expect(mockSetGoal).toHaveBeenCalledWith(preferences, {});
+			expect(context.newGoalPrefs).toEqual(preferences);
+			expect(context.isGoalSet).toBe(true);
 			expect(context.showGoalModal).toBe(false);
 		});
 	});
 
 	describe('closeGoalModal', () => {
 		it('reloads goal data in yearly mode after setting a goal', async () => {
+			const mockCloseGoalModal = vi.fn().mockResolvedValue();
 			const context = {
 				showGoalModal: true,
 				$kvTrackEvent: vi.fn(),
 				isGoalSet: true,
-				recordedGoalSet: false,
-				goalsV2Enabled: true,
+				goalModalHandlers: {
+					closeGoalModal: mockCloseGoalModal,
+				},
 				newGoalPrefs: { category: 'women', target: 5 },
 				loadGoalData: vi.fn().mockResolvedValue(),
 			};
@@ -120,9 +128,12 @@ describe('LendingStats', () => {
 
 			expect(context.showGoalModal).toBe(false);
 			expect(context.$kvTrackEvent).toHaveBeenCalledWith('portfolio', 'click', 'close-goals');
-			expect(context.$kvTrackEvent).toHaveBeenCalledWith('portfolio', 'show', 'goal-set', 'women', 5);
-			expect(context.loadGoalData).toHaveBeenCalledTimes(1);
-			expect(context.loadGoalData).toHaveBeenCalledWith({ yearlyProgress: true });
+			expect(mockCloseGoalModal).toHaveBeenCalledTimes(1);
+			expect(mockCloseGoalModal).toHaveBeenCalledWith({
+				showGoalModal: { value: false },
+				isGoalSet: { value: true },
+				newGoalPrefs: { value: { category: 'women', target: 5 } },
+			});
 		});
 	});
 });

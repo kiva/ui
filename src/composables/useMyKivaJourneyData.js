@@ -10,7 +10,16 @@
  *   // Use directly in methods or computed
  */
 
-import useBadgeData from '#src/composables/useBadgeData';
+import useBadgeData, {
+	applyFreshProgressToAchievements,
+	getContentfulLevelData
+} from '#src/composables/useBadgeData';
+import {
+	getRecentTransactionLoans,
+	checkPostLendingCardCookie,
+	removePostLendingCardCookie
+} from '#src/util/myKivaUtils';
+
 /**
  * Builds the latestLoan object from myKiva query result
  * @param {Object} myData - The my object from myKivaQuery result
@@ -102,13 +111,60 @@ export const buildRegionsData = lendingStatsData => {
 };
 
 /**
+ * Builds contentful data (heroSlides and heroBadgeContentfulData) from query results
+ * @param {Object} slidesResult - The result from contentful slides query
+ * @param {Object} contentfulChallengeResult - The result from contentful challenge query
+ * @returns {Object} - Object containing { heroSlides, heroBadgeContentfulData }
+ */
+export const buildContentfulData = (slidesResult, contentfulChallengeResult) => {
+	const heroSlides = slidesResult?.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
+	const heroBadgeContentfulData = (contentfulChallengeResult?.contentful?.entries?.items ?? [])
+		.map(entry => getContentfulLevelData(entry));
+
+	return { heroSlides, heroBadgeContentfulData };
+};
+
+/**
+ * Builds achievements data with fresh progress applied
+ * @param {Object} lastYearResult - The result from userAchievementProgress query for last year
+ * @param {Object} currentYearResult - The result from userAchievementProgress query for current year
+ * @param {Array} transactions - The transactions array from myKivaQuery
+ * @returns {Object} - { heroTieredAchievements, currentYearTieredAchievements, recentTransactionLoans }
+ */
+export const buildAchievementsWithFreshProgress = (lastYearResult, currentYearResult, transactions) => {
+	const rawHeroTieredAchievements = lastYearResult?.userAchievementProgress?.tieredLendingAchievements ?? [];
+	const currentYearTieredAchievements = currentYearResult?.userAchievementProgress?.tieredLendingAchievements ?? [];
+
+	const recentTransactionLoans = getRecentTransactionLoans(transactions);
+	const heroTieredAchievements = applyFreshProgressToAchievements({
+		achievements: rawHeroTieredAchievements,
+		freshProgressLoans: recentTransactionLoans,
+	});
+
+	return { heroTieredAchievements, currentYearTieredAchievements, recentTransactionLoans };
+};
+
+/**
+ * Checks and clears the post-lending card cookie
+ * @param {Object} cookieStore - The cookie store instance
+ * @returns {boolean} - Whether the cookie was present (and cleared)
+ */
+export const checkAndClearPostLendingCookie = cookieStore => {
+	if (checkPostLendingCardCookie(cookieStore)) {
+		removePostLendingCardCookie(cookieStore);
+		return true;
+	}
+	return false;
+};
+
+/**
  * Creates modal handler methods with configurable tracking category
  * Handles both Goal modal and Impact Insights modal
  * @param {Object} options - Configuration options
  * @param {Function} options.trackEvent - The $kvTrackEvent function
  * @param {Function} options.storeGoalPreferences - Function to store goal preferences
  * @param {Function} options.loadGoalData - Function to reload goal data
- * @param {string} options.trackingCategory - Category for analytics ('portfolio' or 'next-steps')
+ * @param {string} options.trackingCategory - Category for analytics ('portfolio')
  * @param {boolean} options.goalsV2Enabled - Whether goals v2 is enabled (for LendingStats compatibility)
  * @returns {Object} - Object containing modal methods (setGoal, closeGoalModal, closeImpactInsightsModal, resetState)
  */
@@ -224,6 +280,9 @@ export default function useMyKivaJourneyData() {
 		buildHeroBadgeData,
 		buildCategoriesLoanCount,
 		buildRegionsData,
+		buildContentfulData,
+		buildAchievementsWithFreshProgress,
+		checkAndClearPostLendingCookie,
 		createModalsHandlers,
 	};
 }

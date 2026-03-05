@@ -10,7 +10,7 @@ import {
 	getSlideTitleColor,
 	getSlideMediaImgUrl,
 	getSlideBackgroundImg,
-} from '#src/util/myKivaContentfulUtils';
+} from '#src/util/myKiva/myKivaContentfulUtils';
 
 const buildSlide = (dataObject = {}, extraContent = []) => ({
 	fields: {
