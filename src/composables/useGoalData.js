@@ -579,7 +579,7 @@ export default function useGoalData({ apollo } = {}) {
 	async function updateCurrentGoal(previousGoal, updatedGoal) {
 		loading.value = true;
 		// Load preferences to ensure goals information is up to date before modiying it
-		// preventing the  use case where the previous goal was not updated in the cache
+		// preventing the use case where the previous goal was not updated in the cache
 		await loadPreferences('network-only');
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		const goals = parsedPrefs.goals || [];
