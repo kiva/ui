@@ -96,7 +96,7 @@ import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSel
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import { KvButton, KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { mdiPencilOutline } from '@mdi/js';
-import useGoalData, { SAME_AS_LAST_YEAR_LIMIT, LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
+import useGoalData, { LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -391,32 +391,9 @@ const updateGoalOptions = () => {
 	const ytdLoans = loansThisYear.value;
 	const lastYearLoans = loansLastYear.value;
 
-	// Only show personalized options if user has lending history
-	if (ytdLoans >= SAME_AS_LAST_YEAR_LIMIT) {
-		const suggestion1 = ytdLoans + 3;
-		// Ensure each suggestion is at least 1 more than the previous
-		const suggestion2 = Math.max(Math.ceil(suggestion1 * 1.25), suggestion1 + 1);
-		const suggestion3 = Math.max(suggestion1 * 2, suggestion2 + 1);
-
-		goalOptions.value = [
-			{
-				loansNumber: suggestion1,
-				optionText: 'A few more',
-				selected: false
-			},
-			{
-				loansNumber: suggestion2,
-				optionText: 'Grow a little',
-				selected: false,
-				highlightedText: 'More Impact'
-			},
-			{
-				loansNumber: suggestion3,
-				optionText: 'Aim higher',
-				selected: false
-			},
-		];
-	} else if (lastYearLoans > SAME_AS_LAST_YEAR_LIMIT) {
+	// Use last year loans as the base if user had more loans last year than year-to-date,
+	// otherwise use year-to-date as the base
+	if (lastYearLoans > ytdLoans) {
 		const suggestion1 = lastYearLoans;
 		// Ensure each suggestion is at least 1 more than the previous
 		const suggestion2 = Math.max(Math.ceil(suggestion1 * 1.25), suggestion1 + 1);
@@ -437,6 +414,30 @@ const updateGoalOptions = () => {
 			{
 				loansNumber: suggestion3,
 				optionText: 'Double my impact!',
+				selected: false
+			},
+		];
+	} else if (ytdLoans) {
+		const suggestion1 = ytdLoans + 3;
+		// Ensure each suggestion is at least 1 more than the previous
+		const suggestion2 = Math.max(Math.ceil(suggestion1 * 1.25), suggestion1 + 1);
+		const suggestion3 = Math.max(suggestion1 * 2, suggestion2 + 1);
+
+		goalOptions.value = [
+			{
+				loansNumber: suggestion1,
+				optionText: 'A few more',
+				selected: false
+			},
+			{
+				loansNumber: suggestion2,
+				optionText: 'Grow a little',
+				selected: false,
+				highlightedText: 'More Impact'
+			},
+			{
+				loansNumber: suggestion3,
+				optionText: 'Aim higher',
 				selected: false
 			},
 		];

@@ -9,10 +9,9 @@ import {
 	ID_US_ECONOMIC_EQUALITY,
 	ID_WOMENS_EQUALITY,
 } from '#src/composables/useBadgeData';
-import { SAME_AS_LAST_YEAR_LIMIT } from '#src/composables/useGoalData';
 import { globalOptions } from '../../../specUtils';
 
-const getExpectedGoalOptions = ({ lastYear = 0, ytd, useDefault = false }) => {
+const getExpectedGoalOptions = ({ lastYear = 0, ytd = 0, useDefault = false }) => {
 	if (useDefault) {
 		return [3, 4, 5];
 	}
@@ -21,14 +20,14 @@ const getExpectedGoalOptions = ({ lastYear = 0, ytd, useDefault = false }) => {
 	let suggestion2;
 	let suggestion3;
 
-	if (ytd >= SAME_AS_LAST_YEAR_LIMIT) {
+	if (lastYear > ytd) {
+		suggestion1 = lastYear;
+		suggestion2 = Math.max(Math.ceil(suggestion1 * 1.25), suggestion1 + 1);
+		suggestion3 = Math.max(suggestion1 * 2, suggestion2 + 1);
+	} else if (ytd) {
 		suggestion1 = ytd + 3;
 		suggestion2 = Math.max(Math.ceil(suggestion1 * 1.25), suggestion1 + 1);
 		suggestion3 = Math.max(suggestion1 * 2, suggestion2 + 1);
-	} else if (lastYear > SAME_AS_LAST_YEAR_LIMIT) {
-		suggestion1 = lastYear;
-		suggestion2 = Math.max(Math.ceil(suggestion1 * 1.25), suggestion1 + 1);
-		suggestion3 = Math.max(lastYear * 2, suggestion2 + 1);
 	}
 
 	return [suggestion1, suggestion2, suggestion3];
