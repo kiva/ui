@@ -187,6 +187,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Flag to indicate if component is rendered within goal settings page
+	 */
+	inGoalSettingsPage: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits([
@@ -224,6 +231,7 @@ const fetchedCurrentYearLoans = ref(null);
 const prevSupportAllCount = ref(0);
 const selectedIdx = ref(1);
 const editGoalFromSettings = ref(false);
+const allowBackToCategorySelection = ref(false);
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -385,6 +393,7 @@ const handleContinue = () => {
 	}
 
 	editGoalFromSettings.value = false;
+	allowBackToCategorySelection.value = false;
 };
 
 const updateGoalOptions = () => {
@@ -469,15 +478,23 @@ onMounted(async () => {
 });
 
 const editGoalCopy = computed(() => {
-	if (editGoalFromSettings.value) {
+	if (editGoalFromSettings.value && !allowBackToCategorySelection.value) {
 		return 'Customize your goal';
 	}
+
+	if (allowBackToCategorySelection.value || !props.inGoalSettingsPage) {
+		return 'Edit goal category';
+	}
+
 	return 'Edit goal';
 });
 
 watch(() => props.selectedCategoryId, async newCategory => {
 	await loadLoansThisYear();
 	updateGoalOptions();
+	if (editGoalFromSettings.value) {
+		allowBackToCategorySelection.value = true;
+	}
 
 	if (newCategory === ID_SUPPORT_ALL) {
 		prevSupportAllCount.value = await getSupportAllLoanCountByYear(LAST_YEAR_KEY);
