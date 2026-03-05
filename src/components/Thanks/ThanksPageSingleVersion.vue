@@ -340,13 +340,11 @@ const hasOnlyTieredBadgesAchieved = computed(() => {
 
 // Non-tiered badge appears before all goal modules; tiered-only badge appears after GoalInProgress
 const showBadgeBeforeGoals = computed(() => {
-	return (showBadgeModule.value || props.achievementsCompleted)
-		&& !hasOnlyTieredBadgesAchieved.value;
+	return showBadgeModule.value && !hasOnlyTieredBadgesAchieved.value;
 });
 
 const showBadgeAfterGoals = computed(() => {
-	return (showBadgeModule.value || props.achievementsCompleted)
-		&& !showBadgeBeforeGoals.value;
+	return showBadgeModule.value && !showBadgeBeforeGoals.value;
 });
 
 const showGoalBeforeBadge = computed(() => {
