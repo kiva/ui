@@ -152,7 +152,7 @@ const handleContinueClick = () => {
 
 		return;
 	}
-	window.location.href = ctaHref.value;
+	router.push(ctaHref.value);
 };
 
 watch(() => [props.loading, props.hideGoalCard], ([newLoading, newHideGoalCard], [oldLoading]) => {
