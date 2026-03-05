@@ -74,7 +74,7 @@
 					{{ editGoalCopy }}
 					<KvMaterialIcon
 						:icon="mdiPencilOutline"
-						class="tw-ml-0.5"
+						class="tw-ml-0.5 tw-w-2.5"
 					/>
 				</KvButton>
 			</div>
@@ -479,14 +479,7 @@ onMounted(async () => {
 });
 
 const editGoalCopy = computed(() => {
-	const isCustomizeMode = editGoalFromSettings.value && !allowBackToCategorySelection.value;
-	const shouldShowCategoryEdit = allowBackToCategorySelection.value || !props.inGoalSettingsPage;
-
-	if (isCustomizeMode) {
-		return 'Customize your goal';
-	}
-
-	if (shouldShowCategoryEdit) {
+	if (allowBackToCategorySelection.value || !props.inGoalSettingsPage) {
 		return 'Edit goal category';
 	}
 

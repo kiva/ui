@@ -587,6 +587,13 @@ export default function useGoalData({ apollo } = {}) {
 			goals[goalIndex] = { ...updatedGoal };
 		}
 
+		// If the updated category is support-all and using yearly progress is true,
+		// we need to load the latest yearly loan count to set accurate progress
+		if (updatedGoal?.category === ID_SUPPORT_ALL && useYearlyProgress.value) {
+			const stats = await getLoanStatsByYear(GOALS_V2_START_YEAR, 'network-only');
+			yearlyLoanCount.value = stats?.count || 0;
+		}
+
 		await updateUserPreferences(
 			apolloClient,
 			userPreferences.value,
