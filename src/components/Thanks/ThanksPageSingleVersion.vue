@@ -7,6 +7,21 @@
 				class="tw-mb-2.5"
 				@view-pdf-clicked="scrollToReceipt"
 			/>
+			<!-- Non-tiered badge: badge appears BEFORE all goal modules -->
+			<BadgeMilestone
+				v-if="showBadgeBeforeGoals"
+				data-testid="badge-milestone"
+				:is-guest="isGuest"
+				:is-opted-in="isOptedIn"
+				:badge-achieved-ids="badgeAchievedIds"
+				:only-kiva-cards-and-donations="onlyKivaCardsAndDonations"
+				:loans="loans"
+				:loan-comment-module-shown="showLoanComment"
+				:kiva-cards-module-shown="showKivaCardsModule"
+				:achievements-completed="achievementsCompleted"
+				@continue-clicked="handleContinue"
+				class="tw-mb-2.5"
+			/>
 			<GoalEntrypoint
 				v-if="isNextStepsExpEnabled && goalsV2Enabled && !isGuest && goalDataInitialized && isEmptyGoal"
 				:loading="goalDataLoading"
@@ -31,8 +46,19 @@
 				:loading="goalDataLoading"
 				class="tw-mb-2.5"
 			/>
+			<!-- Tiered badge only: GoalInProgress appears BEFORE badge -->
+			<GoalInProgress
+				v-if="showGoalBeforeBadge"
+				data-testid="goal-in-progress"
+				:is-opted-in="isOptedIn"
+				:loan="loanForComment"
+				:current-goal="userGoal"
+				:target-loans-amount="goalTargetLoansAmount"
+				class="tw-mb-2.5"
+			/>
 			<BadgeMilestone
-				v-else-if="(showBadgeModule || achievementsCompleted) && !showGoalInProgressModule"
+				v-if="showBadgeAfterGoals"
+				data-testid="badge-milestone"
 				:is-guest="isGuest"
 				:is-opted-in="isOptedIn"
 				:badge-achieved-ids="badgeAchievedIds"
@@ -61,8 +87,10 @@
 				@continue-as-guest="handleContinue"
 				class="tw-mb-2.5"
 			/>
+			<!-- Non-tiered badge or no badge: GoalInProgress appears AFTER badge -->
 			<GoalInProgress
-				v-if="showGoalInProgressModule && goalsV2Enabled"
+				v-if="showGoalAfterBadge"
+				data-testid="goal-in-progress"
 				:is-opted-in="isOptedIn"
 				:loan="loanForComment"
 				:current-goal="userGoal"
@@ -289,8 +317,6 @@ const showBadgeModule = computed(() => {
 	if (props.isNextStepsExpEnabled && (!goalDataInitialized.value || goalDataLoading.value)) {
 		return false;
 	}
-	// Don't show badge module if goal completed module will show
-	if (showGoalCompletedModule.value) return false;
 	return numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value;
 });
 const showJourneyModule = computed(() => {
@@ -305,6 +331,31 @@ const showJourneyModule = computed(() => {
 	return true;
 });
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
+
+// Only tiered when all achieved badges are tiered; non-tiered takes precedence
+const hasOnlyTieredBadgesAchieved = computed(() => {
+	return props.badgesAchieved.length > 0
+		&& props.badgesAchieved.every(b => b.preCheckoutTier !== null);
+});
+
+// Non-tiered badge appears before all goal modules; tiered-only badge appears after GoalInProgress
+const showBadgeBeforeGoals = computed(() => {
+	return showBadgeModule.value && !hasOnlyTieredBadgesAchieved.value;
+});
+
+const showBadgeAfterGoals = computed(() => {
+	return showBadgeModule.value && !showBadgeBeforeGoals.value;
+});
+
+const showGoalBeforeBadge = computed(() => {
+	return showGoalInProgressModule.value && props.goalsV2Enabled
+		&& showBadgeAfterGoals.value;
+});
+
+const showGoalAfterBadge = computed(() => {
+	return showGoalInProgressModule.value && props.goalsV2Enabled
+		&& !showGoalBeforeBadge.value;
+});
 
 const categoriesLoanCount = computed(() => {
 	return getAllCategoryLoanCounts(props.tieredAchievements);

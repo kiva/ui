@@ -183,10 +183,17 @@ onMounted(() => {
 </script>
 
 <style lang="postcss">
-
 .impact-insight-modal {
+	div:has(> #kvLightboxBody) {
+		@apply md:!tw-max-w-full;
+
+		@screen lg {
+			max-width: 55.55rem !important;
+		}
+    }
+
 	.impact-insight-carousel {
-		@apply md:!tw-mb-2
+		@apply md:!tw-mb-2;
 	}
 
 	#kvLightboxBody {

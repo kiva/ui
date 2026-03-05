@@ -84,6 +84,10 @@ const whySpecial = computed(() => {
 
 .impact-insight-slide {
 	@screen md {
+		padding-left: 60px;
+	}
+
+	@media (width >= 1024px) {
 		padding-left: 104px;
 	}
 }

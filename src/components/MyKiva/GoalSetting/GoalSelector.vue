@@ -1,27 +1,19 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-justify-center tw-gap-0 lg:tw-gap-1.5 tw-items-center">
 		<!-- Goal Progress Ring (shown after goal is set) -->
-		<template v-if="loadingCurrentYear">
-			<div class="tw-flex tw-flex-col tw-gap-1 tw-w-full tw-items-center">
-				<KvLoadingPlaceholder class="!tw-min-h-6" />
-				<KvLoadingPlaceholder class="!tw-min-h-2.5" />
-				<KvLoadingPlaceholder class="!tw-min-h-2.5" />
-				<KvLoadingPlaceholder style="width: 160px; height: 160px;" />
-				<KvLoadingPlaceholder class="!tw-min-h-6" />
-			</div>
-		</template>
 		<GoalProgressRing
-			v-else-if="isGoalSet"
+			v-if="isGoalSet && !editGoalFromSettings"
 			variant="modal"
 			:goal-loans="effectiveGoalLoans"
-			:goal-progress="loansThisYear"
+			:goal-progress="goalProgress"
 			:goal-progress-percentage="localGoalProgressPercentage"
 			:category-name="selectedCategoryName"
 			:category-id="selectedCategoryId"
 			:go-to-url="goToUrl"
+			:goal-editing-enable="goalEditingEnable"
+			@edit-goal-from-settings="handleEditGoalFromSettings"
 			@button-click="handleSuccessContinue"
 		/>
-
 		<!-- Goal Selection Form (shown before goal is set) -->
 		<template v-else>
 			<img
@@ -79,7 +71,7 @@
 					class="edit-goal-button tw-w-full"
 					@click="editGoal"
 				>
-					Edit goal category
+					{{ editGoalCopy }}
 					<KvMaterialIcon
 						:icon="mdiPencilOutline"
 						class="tw-ml-0.5"
@@ -181,9 +173,30 @@ const props = defineProps({
 		type: Number,
 		default: 0,
 	},
+	/**
+	 * Enable edit goal button (only shows when user has a goal set)
+	 */
+	goalEditingEnable: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Flag to indicate if user is editing an existing goal
+	 */
+	isUpdatingGoal: {
+		type: Boolean,
+		default: false,
+	},
 });
 
-const emit = defineEmits(['set-goal', 'edit-goal', 'set-goal-target', 'close-modal']);
+const emit = defineEmits([
+	'set-goal',
+	'edit-goal',
+	'set-goal-target',
+	'close-modal',
+	'edit-goal-from-settings',
+	'update-goal'
+]);
 
 const DEFAULT_GOAL_OPTIONS = [
 	{
@@ -210,6 +223,7 @@ const loadingCurrentYear = ref(false);
 const fetchedCurrentYearLoans = ref(null);
 const prevSupportAllCount = ref(0);
 const selectedIdx = ref(1);
+const editGoalFromSettings = ref(false);
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -282,6 +296,9 @@ const subtitleText = computed(() => {
 const yearToDate = new Date().getFullYear();
 
 const buttonText = computed(() => {
+	if (editGoalFromSettings.value) {
+		return `Update ${yearToDate} goal`;
+	}
 	return `Set ${yearToDate} goal`;
 });
 
@@ -353,7 +370,6 @@ const handleContinue = () => {
 		status: GOAL_STATUS.IN_PROGRESS,
 		loanTotalAtStart,
 	};
-	emit('set-goal', preferences);
 	$kvTrackEvent(
 		props.trackingCategory,
 		'click',
@@ -361,6 +377,14 @@ const handleContinue = () => {
 		props.selectedCategoryId,
 		selectedTarget.value
 	);
+
+	if (props.isUpdatingGoal) {
+		emit('update-goal', preferences);
+	} else {
+		emit('set-goal', preferences);
+	}
+
+	editGoalFromSettings.value = false;
 };
 
 const updateGoalOptions = () => {
@@ -425,6 +449,12 @@ const updateGoalOptions = () => {
 	emit('set-goal-target', selectedTarget.value);
 };
 
+const handleEditGoalFromSettings = () => {
+	editGoalFromSettings.value = true;
+	$kvTrackEvent('event-tracking', 'click', 'edit-goal');
+	emit('edit-goal-from-settings');
+};
+
 onMounted(async () => {
 	await loadLoansThisYear();
 	updateGoalOptions();
@@ -436,6 +466,13 @@ onMounted(async () => {
 			'set-annual-goal'
 		);
 	}
+});
+
+const editGoalCopy = computed(() => {
+	if (editGoalFromSettings.value) {
+		return 'Customize your goal';
+	}
+	return 'Edit goal';
 });
 
 watch(() => props.selectedCategoryId, async newCategory => {
