@@ -1500,6 +1500,66 @@ describe('useGoalData', () => {
 			expect(composable.userGoal.value.category).toBe(ID_CLIMATE_ACTION);
 			expect(composable.userGoal.value.target).toBe(15);
 		});
+
+		// Add test that if the new goal category is support all, getLoanStatsByYear method  is called
+		it('should call getLoanStatsByYear when updating to SUPPORT_ALL category', async () => {
+			const totalLoans = 10;
+			const mockPrefs = {
+				goals: [
+					{
+						goalName: 'goal-to-edit',
+						category: ID_WOMENS_EQUALITY,
+						target: 5,
+						status: GOAL_STATUS.IN_PROGRESS,
+						dateStarted: '2026-01-01',
+					},
+				],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValue({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: totalLoans },
+							lendingStats: {
+								id: 'stats-123',
+								loanStatsByYear: {
+									count: 10,
+									amount: 100,
+								},
+							},
+						},
+						userAchievementProgress: {
+							tieredLendingAchievements: [{
+								id: ID_WOMENS_EQUALITY,
+								totalProgressToAchievement: 5,
+							}],
+						},
+					},
+				});
+
+			// Set useYearlyProgress to true so getLoanStatsByYear gets called
+			await composable.loadGoalData({ yearlyProgress: true });
+
+			const previousGoal = { ...mockPrefs.goals[0] };
+			const updatedGoal = {
+				...mockPrefs.goals[0],
+				category: ID_SUPPORT_ALL,
+				status: GOAL_STATUS.IN_PROGRESS,
+				dateStarted: '2026-01-01',
+			};
+
+			await composable.updateCurrentGoal(previousGoal, updatedGoal);
+
+			// Validate the composable's userGoal has ID_SUPPORT_ALL category after update
+			expect(composable.userGoal.value.category).toBe(ID_SUPPORT_ALL);
+			// Validate the new progress is user total loans
+			expect(composable.goalProgress.value).toBe(totalLoans);
+		});
 	});
 
 	describe('checkCompletedGoal', () => {
