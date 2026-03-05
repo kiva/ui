@@ -74,7 +74,7 @@
 					{{ editGoalCopy }}
 					<KvMaterialIcon
 						:icon="mdiPencilOutline"
-						class="tw-ml-0.5"
+						class="tw-ml-0.5 tw-w-2.5"
 					/>
 				</KvButton>
 			</div>
