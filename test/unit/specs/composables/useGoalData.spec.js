@@ -2543,7 +2543,7 @@ describe('useGoalData', () => {
 				return {
 					...actual,
 					default: () => ({
-						getLoanFindingUrl: vi.fn(categoryId => `/lend-category-beta/${categoryId}`),
+						getLoanFindingUrl: vi.fn(categoryId => `/lend/${categoryId}`),
 					}),
 				};
 			});
@@ -2557,7 +2557,7 @@ describe('useGoalData', () => {
 
 			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount);
 			const expectedString = 'Support 1 more woman to reach your goal';
-			const expectedHref = `/lend-category-beta/${categoryId}?header=${encodeURIComponent(expectedString)}`;
+			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
 
 			expect(href).toBe(expectedHref);
 		});
@@ -2570,7 +2570,7 @@ describe('useGoalData', () => {
 
 			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount);
 			const expectedString = 'Support 5 more basic needs loans to reach your goal';
-			const expectedHref = `/lend-category-beta/${categoryId}?header=${encodeURIComponent(expectedString)}`;
+			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
 
 			expect(href).toBe(expectedHref);
 		});
@@ -2583,7 +2583,7 @@ describe('useGoalData', () => {
 
 			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount);
 			const expectedString = 'Support 10 more borrowers to reach your goal';
-			const expectedHref = `/lend-category-beta/${categoryId}?header=${encodeURIComponent(expectedString)}`;
+			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
 
 			expect(href).toBe(expectedHref);
 		});
@@ -2595,7 +2595,7 @@ describe('useGoalData', () => {
 
 			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router);
 			const expectedString = 'Support 5 more women to reach your goal';
-			const expectedHref = `/lend-category-beta/${categoryId}?header=${encodeURIComponent(expectedString)}`;
+			const expectedHref = `/lend/${categoryId}?header=${encodeURIComponent(expectedString)}`;
 
 			expect(href).toBe(expectedHref);
 		});
@@ -2607,7 +2607,7 @@ describe('useGoalData', () => {
 			const href = composable.getCtaHref(undefined, categoryId, router, 0);
 			// undefined - 0 = NaN, Math.max(0, NaN) = NaN, but display will show NaN
 			// This tests the current behavior - function doesn't guard against this
-			expect(href).toContain('/lend-category-beta/');
+			expect(href).toContain('/lend/');
 		});
 
 		it('should return href without query parameter when remaining is 0', () => {
@@ -2618,7 +2618,7 @@ describe('useGoalData', () => {
 
 			const href = composable.getCtaHref(selectedGoalNumber, categoryId, router, currentLoanCount);
 
-			expect(href).toBe(`/lend-category-beta/${categoryId}`);
+			expect(href).toBe(`/lend/${categoryId}`);
 		});
 	});
 
