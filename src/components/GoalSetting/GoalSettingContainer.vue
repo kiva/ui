@@ -50,7 +50,7 @@
 				style="max-width: 644px;"
 			>
 				<GoalProgressRing
-					v-if="isGoalSet"
+					v-if="isEmailFlow"
 					variant="modal"
 					:goal-loans="goalTarget"
 					:goal-progress="goalProgress"
@@ -182,7 +182,6 @@ const {
 	userGoal,
 	loadGoalData,
 	storeGoalPreferences,
-	setGoalState,
 	refreshSupportAllProgress,
 	loading,
 	getCategories,
@@ -457,10 +456,7 @@ async function handleEmailFlow() {
 		}
 	}
 
-	const allGoals = parseGoals();
-	const emailGoal = existingGoal ?? newGoalPrefs;
-	if (emailGoal) {
-		setGoalState({ goals: allGoals });
+	if (existingGoal ?? newGoalPrefs) {
 		await refreshSupportAllProgress();
 	} else {
 		logFormatter('GoalSettingContainer: no goal found for email flow', 'error', { category });
