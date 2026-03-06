@@ -275,12 +275,12 @@ const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/G
 const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
 
 const menuActions = [
-	{ label: 'Delete goal', value: 'delete' },
+	{ label: 'Delete goal', value: 'delete-goal' },
 ];
 
 const onSelect = async action => {
 	isDeleteGoalModalVisible.value = true;
-	$kvTrackEvent('event-tracking', 'click', 'goal-setting-menu', action.value);
+	$kvTrackEvent('event-tracking', 'click', action.value);
 };
 
 const handleDeleteGoal = async () => {
