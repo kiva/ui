@@ -334,7 +334,6 @@ const recalculateGoalInformation = async () => {
 	);
 	isGoalSet.value = true;
 	showCategories.value = false;
-	userIsEditingGoal.value = false;
 };
 
 const updateGoal = async preferences => {

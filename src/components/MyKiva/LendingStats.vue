@@ -49,7 +49,7 @@
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 					:goal-editing-enable="goalEditingEnable"
 					:use-universal-order="useUniversalOrder"
-					@open-goal-modal="showGoalModal = true"
+					@open-goal-modal="openGoalModal($event)"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
 			</div>
@@ -185,7 +185,7 @@
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 			:goal-editing-enable="goalEditingEnable"
 			:use-universal-order="useUniversalOrder"
-			@open-goal-modal="showGoalModal = true"
+			@open-goal-modal="openGoalModal($event)"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
 		/>
 		<GoalSettingModal
@@ -197,6 +197,7 @@
 			:is-goal-set="isGoalSet"
 			:show-goal-selector="true"
 			:tiered-achievements="heroTieredAchievements"
+			:is-updating-goal="isUpdatingGoal"
 			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
 		/>
@@ -327,6 +328,7 @@ export default {
 			recordedGoalSet: false,
 			newGoalPrefs: null,
 			showPostLendingNextStepsCards: false,
+			isUpdatingGoal: false,
 		};
 	},
 	computed: {
@@ -383,6 +385,7 @@ export default {
 			storeGoalPreferences: goalData.storeGoalPreferences,
 			userGoal: goalData.userGoal,
 			userGoalAchieved: goalData.userGoalAchieved,
+			updateCurrentGoal: goalData.updateCurrentGoal,
 		};
 	},
 	async mounted() {
@@ -459,7 +462,16 @@ export default {
 			// For goalsV2, pass false to not update local state yet
 			// This delays the UI update until the modal is closed
 			const updateLocalState = !this.goalsV2Enabled;
-			await this.storeGoalPreferences(preferences, updateLocalState);
+			if (this.isUpdatingGoal) {
+				await this.updateCurrentGoal(this.userGoal, preferences);
+				this.$kvTrackEvent(
+					'portfolio',
+					'click',
+					'confirm-edit-goal'
+				);
+			} else {
+				await this.storeGoalPreferences(preferences, updateLocalState);
+			}
 			this.newGoalPrefs = preferences;
 			this.isGoalSet = true;
 			if (!this.goalsV2Enabled) {
@@ -469,6 +481,14 @@ export default {
 			}
 		},
 		async closeGoalModal() {
+			if (this.isUpdatingGoal && !this.isGoalSet) {
+				this.$kvTrackEvent(
+					'portfolio',
+					'click',
+					'cancel-goal-edit',
+				);
+			}
+
 			if (this.showGoalModal) {
 				this.showGoalModal = false;
 				this.$kvTrackEvent(
@@ -485,14 +505,24 @@ export default {
 					this.$kvTrackEvent('portfolio', 'show', 'goal-set', this.newGoalPrefs?.category, this.newGoalPrefs?.target);
 					this.recordedGoalSet = true;
 				}
-				// Refresh goal data to update the main card with the ring
-				await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+				if (!this.isUpdatingGoal) {
+					// Refresh goal data to update the main card with the ring
+					await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+				}
 			}
+			this.isGoalSet = false;
 		},
 		closeImpactInsightsModal() {
 			if (this.showImpactInsightsModal) {
 				this.showImpactInsightsModal = false;
 				this.$kvTrackEvent('portfolio', 'click', 'next-step-close-education');
+			}
+		},
+		openGoalModal(event) {
+			this.isUpdatingGoal = event?.updating || false;
+			this.showGoalModal = true;
+			if (this.isUpdatingGoal) {
+				this.$kvTrackEvent('portfolio', 'view', 'edit-goal-modal');
 			}
 		},
 	},
