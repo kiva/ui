@@ -34,8 +34,10 @@
 			:goal-loans="selectedGoalNumber"
 			:goal-progress="goalProgress"
 			:goal-progress-percentage="goalProgressPercentage"
+			:is-updating-goal="isUpdatingGoal"
 			@set-goal-target="setGoalTarget"
 			@set-goal="$emit('set-goal', $event)"
+			@update-goal="$emit('set-goal', $event)"
 			@edit-goal="editGoalCategory"
 			@close-modal="closeLightbox"
 		/>
