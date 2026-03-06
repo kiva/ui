@@ -108,6 +108,10 @@ const loansPosted = computed(() => {
 
 .impact-insight-slide {
 	@screen md {
+		padding-left: 34px;
+	}
+
+	@media (width >= 1024px) {
 		padding-left: 79px;
 	}
 }

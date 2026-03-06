@@ -1386,6 +1386,122 @@ describe('useGoalData', () => {
 		});
 	});
 
+	describe('removeGoalFromPreferences', () => {
+		it('should remove goal from preferences and update local state', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+
+			const mockPrefs = {
+				goals: [
+					{
+						goalName: 'goal-to-remove',
+						category: ID_WOMENS_EQUALITY,
+						target: 5,
+						status: GOAL_STATUS.IN_PROGRESS,
+						dateStarted: '2026-01-01',
+					},
+					{
+						goalName: 'goal-to-keep',
+						category: ID_BASIC_NEEDS,
+						target: 10,
+						status: GOAL_STATUS.EXPIRED,
+						dateStarted: '2025-01-02',
+					},
+				],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: '1',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			// Initial goal should be the first goal in preferences
+			expect(composable.userGoal.value.goalName).toBe('goal-to-remove');
+
+			await composable.removeGoalFromPreferences(mockPrefs.goals[0]);
+
+			expect(updateUserPreferences).toHaveBeenCalledWith(
+				mockApollo,
+				expect.objectContaining({ id: '1' }),
+				mockPrefs,
+				{ goals: [mockPrefs.goals[1]], hideGoalCard: false }
+			);
+		});
+	});
+
+	describe('updateCurrentGoal', () => {
+		it('should update goal category and refresh local state', async () => {
+			const mockPrefs = {
+				goals: [
+					{
+						goalName: 'goal-to-edit',
+						category: ID_WOMENS_EQUALITY,
+						target: 5,
+						status: GOAL_STATUS.IN_PROGRESS,
+						dateStarted: '2026-01-01',
+					},
+				],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: '1',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			// Initial goal should be the first goal in preferences
+			expect(composable.userGoal.value.goalName).toBe('goal-to-edit');
+			expect(composable.userGoal.value.category).toBe(ID_WOMENS_EQUALITY);
+			expect(composable.userGoal.value.target).toBe(5);
+
+			const previousGoal = { ...mockPrefs.goals[0] };
+			const updatedGoal = {
+				...mockPrefs.goals[0],
+				category: ID_CLIMATE_ACTION,
+				target: 15,
+			};
+
+			await composable.updateCurrentGoal(previousGoal, updatedGoal);
+
+			// Local userGoal state should reflect the updated goal
+			expect(composable.userGoal.value.goalName).toBe('goal-to-edit');
+			expect(composable.userGoal.value.category).toBe(ID_CLIMATE_ACTION);
+			expect(composable.userGoal.value.target).toBe(15);
+		});
+	});
+
 	describe('checkCompletedGoal', () => {
 		it('should mark goal as completed and track event', async () => {
 			const currentYear = new Date().getFullYear();

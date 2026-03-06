@@ -55,7 +55,6 @@ export const GOAL_STATUS = {
 	IN_PROGRESS: 'in-progress',
 };
 
-export const SAME_AS_LAST_YEAR_LIMIT = 1;
 export const LAST_YEAR_KEY = new Date().getFullYear() - 1;
 export const GOALS_V2_START_YEAR = 2026;
 export const COMPLETED_GOAL_THRESHOLD = 100;
@@ -546,6 +545,60 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
+	 * Remove goal from user preferences
+	 * @param {Object} goal - Goal object to remove (identified by goalName)
+	 */
+	const removeGoalFromPreferences = async goal => {
+		// Load preferences to ensure that goals information is up to date before modifying it
+		// preventing the use case where a user updates a goal,
+		// then quickly removes it before the update is reflected in the cache.
+		await loadPreferences('network-only');
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+		let goals = parsedPrefs.goals || [];
+		const goalIndex = goals.findIndex(g => g.goalName === goal.goalName);
+
+		if (goalIndex !== -1) {
+			// Given the goal index remove the entry from the array
+			goals = goals.filter((_, index) => index !== goalIndex);
+		}
+
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			{ goals, hideGoalCard: false } // Reset goal card visibility when removing goal
+		);
+	};
+
+	/**
+	 * Patch previous goal with update goal and store
+	 * @param {Object} previousGoal - Previous goal data to identify which goal to remove
+	 * @param {Object} updatedGoal - Updated goal data to replace the previous goal with
+	 */
+	async function updateCurrentGoal(previousGoal, updatedGoal) {
+		loading.value = true;
+		// Load preferences to ensure goals information is up to date before modiying it
+		// preventing the use case where the previous goal was not updated in the cache
+		await loadPreferences('network-only');
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+		const goals = parsedPrefs.goals || [];
+		const goalIndex = goals.findIndex(g => g.goalName === previousGoal.goalName);
+		if (goalIndex !== -1) {
+			goals[goalIndex] = { ...updatedGoal };
+		}
+
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			{ goals }
+		);
+		loading.value = false;
+
+		setGoalState({ goals }); // Refresh local state after update
+	}
+
+	/**
 	 * Store goal preferences to backend
 	 * @param {Object} updates - Goal data to store
 	 * @param {boolean} updateLocalState - Whether to update local userGoal state (default: true)
@@ -891,5 +944,7 @@ export default function useGoalData({ apollo } = {}) {
 		hideGoalCard,
 		setHideGoalCardPreference,
 		getSupportAllLoanCountByYear,
+		removeGoalFromPreferences,
+		updateCurrentGoal,
 	};
 }

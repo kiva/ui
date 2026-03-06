@@ -1,12 +1,18 @@
 query useGoalDataQuery {
   my {
     id
-	userPreferences {
+    userPreferences {
       id
       preferences
     }
-	loans {
-	  totalCount
-	}
+    loans {
+      totalCount
+    }
+  }
+  general {
+    goal_editing_enable: uiConfigSetting(key: "goal_editing_enable") {
+			key
+			value
+		}
   }
 }

@@ -127,7 +127,11 @@ const loanDescription = computed(() => {
 
 .impact-insight-slide {
 	@screen md {
-		padding-left: 130px;
+		padding-left: 84px;
+	}
+
+	@media (width >= 1024px) {
+		padding-left: 129px;
 	}
 }
 
