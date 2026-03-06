@@ -219,6 +219,12 @@
 				@close="closeImpactInsightsModal"
 			/>
 
+			<MyKivaSharingModal
+				:lender="lender"
+				:is-visible="isSharingModalVisible"
+				@close-modal="isSharingModalVisible = false"
+			/>
+
 			<div
 				class="tw-w-full tw-text-center tw-my-5 tw-p-0"
 			>
@@ -257,6 +263,7 @@ import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
+import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
@@ -338,6 +345,7 @@ const isGoalSet = ref(false);
 const showPostLendingNextStepsCards = ref(false);
 const newGoalPrefs = ref(null);
 const recordedGoalSet = ref(false);
+const isSharingModalVisible = ref(false);
 const acceptedEmailMarketingUpdates = ref(false);
 
 const {
@@ -405,6 +413,9 @@ const handlePrimaryCtaClick = slide => handlePrimaryCtaClickUtil({
 	slide,
 	trackEvent: $kvTrackEvent,
 	navigate: router.push,
+	modalHandlers: {
+		openSharingModal: () => { isSharingModalVisible.value = true; },
+	},
 });
 
 const handleSecondaryCtaClick = slide => handleSecondaryCtaClickUtil({
