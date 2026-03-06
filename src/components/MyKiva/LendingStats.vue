@@ -48,6 +48,7 @@
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 					:goal-editing-enable="goalEditingEnable"
+					:use-universal-order="useUniversalOrder"
 					@open-goal-modal="showGoalModal = true"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
@@ -183,6 +184,7 @@
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 			:goal-editing-enable="goalEditingEnable"
+			:use-universal-order="useUniversalOrder"
 			@open-goal-modal="showGoalModal = true"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
 		/>
@@ -328,6 +330,9 @@ export default {
 		};
 	},
 	computed: {
+		useUniversalOrder() {
+			return this.nextStepsExperimentVariant === 'b';
+		},
 		showRegionExperience() {
 			return this.isNextStepsExpEnabled && !this.postLendingNextStepsEnable && !this.userLentToAllRegions;
 		},

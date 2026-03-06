@@ -48,7 +48,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { useRouter } from 'vue-router';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
-import useGoalData, { SAME_AS_LAST_YEAR_LIMIT, LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
@@ -65,7 +65,7 @@ const title = computed(() => {
 	// eslint-disable-next-line max-len
 		return `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} woman</span> shape her future!`;
 	}
-	if (womenLoansLastYear.value > SAME_AS_LAST_YEAR_LIMIT) {
+	if (womenLoansLastYear.value > 1) {
 		// eslint-disable-next-line max-len
 		return `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} women</span> shape their futures!`;
 	}
