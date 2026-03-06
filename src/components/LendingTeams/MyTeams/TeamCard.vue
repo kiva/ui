@@ -9,7 +9,7 @@
 				height="48"
 			>
 
-			<div class="tw-flex-1 tw-min-w-0">
+			<div class="tw-flex-1 tw-min-w-0 tw-overflow-hidden">
 				<router-link
 					:to="`/team/${team.teamPublicId}`"
 					class="tw-font-medium tw-truncate tw-block"

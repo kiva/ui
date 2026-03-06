@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="tw-flex tw-items-center tw-justify-between tw-mb-2">
-			<h3 class="tw-text-h3">
+			<h3>
 				My Teams
 				<template v-if="!loading">
 					({{ totalCount }})
@@ -36,7 +36,7 @@
 			v-if="!loading && teams.length === 0"
 			class="tw-py-4"
 		>
-			<h3 class="tw-text-h3 tw-mb-2 tw-text-secondary">
+			<h3 class="tw-mb-2 tw-text-secondary">
 				You haven't joined any teams yet.
 			</h3>
 			<p class="tw-text-secondary tw-mb-2">
@@ -79,7 +79,7 @@
 		</div>
 
 		<div v-if="!loading && teams.length > 0" class="tw-mt-4">
-			<h3 class="tw-text-h3 tw-mb-2">
+			<h3 class="tw-mb-2">
 				About Teams
 			</h3>
 			<p class="tw-text-base">
