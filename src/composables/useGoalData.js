@@ -55,7 +55,6 @@ export const GOAL_STATUS = {
 	IN_PROGRESS: 'in-progress',
 };
 
-export const SAME_AS_LAST_YEAR_LIMIT = 1;
 export const LAST_YEAR_KEY = new Date().getFullYear() - 1;
 export const GOALS_V2_START_YEAR = 2026;
 export const COMPLETED_GOAL_THRESHOLD = 100;
@@ -550,6 +549,10 @@ export default function useGoalData({ apollo } = {}) {
 	 * @param {Object} goal - Goal object to remove (identified by goalName)
 	 */
 	const removeGoalFromPreferences = async goal => {
+		// Load preferences to ensure that goals information is up to date before modifying it
+		// preventing the use case where a user updates a goal,
+		// then quickly removes it before the update is reflected in the cache.
+		await loadPreferences('network-only');
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		let goals = parsedPrefs.goals || [];
 		const goalIndex = goals.findIndex(g => g.goalName === goal.goalName);
@@ -573,14 +576,22 @@ export default function useGoalData({ apollo } = {}) {
 	 * @param {Object} updatedGoal - Updated goal data to replace the previous goal with
 	 */
 	async function updateCurrentGoal(previousGoal, updatedGoal) {
-		// Update user preferences to ensure goal is up-to-date preventing user from updating stale goal data.
 		loading.value = true;
+		// Load preferences to ensure goals information is up to date before modiying it
+		// preventing the use case where the previous goal was not updated in the cache
 		await loadPreferences('network-only');
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		const goals = parsedPrefs.goals || [];
 		const goalIndex = goals.findIndex(g => g.goalName === previousGoal.goalName);
 		if (goalIndex !== -1) {
 			goals[goalIndex] = { ...updatedGoal };
+		}
+
+		// If the updated category is support-all and using yearly progress is true,
+		// we need to load the latest yearly loan count to set accurate progress
+		if (updatedGoal?.category === ID_SUPPORT_ALL && useYearlyProgress.value) {
+			const stats = await getLoanStatsByYear(GOALS_V2_START_YEAR, 'network-only');
+			yearlyLoanCount.value = stats?.count || 0;
 		}
 
 		await updateUserPreferences(
