@@ -1,3 +1,57 @@
+## [3.60.0](https://github.com/kiva/ui/compare/v3.59.0...v3.60.0) (2026-03-06)
+
+### 🎉 New Features
+
+* add edit and delete actions to goal setting page ([9727f9f](https://github.com/kiva/ui/commit/9727f9f150dcad6f8d9a24f77764d6d6728f5b5f))
+* add tests and tracking events for goal actions ([d4ab40b](https://github.com/kiva/ui/commit/d4ab40bf2252475a8d26ec911a45d7958d2a71b6))
+* added back goalLoans amount ([aa70e8a](https://github.com/kiva/ui/commit/aa70e8a2fc92ef9e79ad43df46fa1301c4dbc4cd))
+* fixed copy ([ecc8fcf](https://github.com/kiva/ui/commit/ecc8fcfaaccf89231d3ffca309cdc13e83c037bc))
+* goals redirect to combo page fixed ([#6694](https://github.com/kiva/ui/issues/6694)) ([787408e](https://github.com/kiva/ui/commit/787408e6be5857b14efa048bf81dd0846ceff362))
+* new card ordering system (universal context) ([#6678](https://github.com/kiva/ui/issues/6678)) ([bb3e7af](https://github.com/kiva/ui/commit/bb3e7af97cc5eeb6257d6407f97eb0ca886dbcf6))
+* rename loanTarget variable with an specific use ([598d150](https://github.com/kiva/ui/commit/598d150d26a767d19220762f4fc38798f433dad1))
+* revised copy (removed goalLoans from non-ID_SUPPORT_ALL contexts) ([7bf13cb](https://github.com/kiva/ui/commit/7bf13cb9bffbe1da09ff5a378f9f4d4ea9a2dd8a))
+* revised progress ring copy fix (unit testing and additional contexts) ([1ac11c1](https://github.com/kiva/ui/commit/1ac11c1f2300304a067c54b602339f665d5b8fcd))
+* revised titleTexts for US Entrepreneur context ([8f298b2](https://github.com/kiva/ui/commit/8f298b22d47aa4a475fd86d20608953cc5e57b77))
+
+### 🐛 Bugfixes
+
+* [MP-2532] - Post lending next step overflows sometimes ([3efa37b](https://github.com/kiva/ui/commit/3efa37b5fada5f8460160cef9fabea2fc6d1e0cc))
+* [MP-2537] - try to prevent some timing issues with vue re-render ([c93203d](https://github.com/kiva/ui/commit/c93203db105ca5c2757713205023e6665be9f3b2))
+* address ssr window undefined cases for cookie setting so default domain isn't used ([2e3ced5](https://github.com/kiva/ui/commit/2e3ced5828b45ca20149449d5997660befecc4da))
+* adjust mykiva and badges on ty ([#6699](https://github.com/kiva/ui/issues/6699)) ([6f8176f](https://github.com/kiva/ui/commit/6f8176f49fa2ab3ed8542fc6987aca3fb33d1538))
+* clarify comment about why we need to load preferences before doing an action ([fef5b30](https://github.com/kiva/ui/commit/fef5b300666828219472fee0e7e76ec7cef6d534))
+* clean up unnecesary emits and correctly name goal variables and methods ([3ae8861](https://github.com/kiva/ui/commit/3ae886137c1ffdb65d87eda9cedb07a3ae91e7c8))
+* conflicts ([5065c6a](https://github.com/kiva/ui/commit/5065c6a8da5192853d4b97affbac8cbe4153178d))
+* conflicts and other app warnings ([84d9619](https://github.com/kiva/ui/commit/84d9619f696f549a80c1184575ede55eb778f451))
+* consolidate one loading state for goal information and other to update goal options on category change ([ec40656](https://github.com/kiva/ui/commit/ec406560a666f9cad03c5a426243ff59151c42af))
+* do not refresh goal in delete method to keep goal visible ([f0acabc](https://github.com/kiva/ui/commit/f0acabce6b157ab7c5b78fda941825e106ce4fcf))
+* edit goal copy ([67305dd](https://github.com/kiva/ui/commit/67305dd9c8c1f67f4cd25ae5a5d9c58c3b50d13b))
+* ensure goal is updated before edit ([27b21fe](https://github.com/kiva/ui/commit/27b21fe7922d651934b401222842ebd9cc1f000d))
+* lint ([70681ef](https://github.com/kiva/ui/commit/70681ef80584f13202b57c80a06619204aff5aa9))
+* load current user preference to ensure removed goal is the correct one ([fad5763](https://github.com/kiva/ui/commit/fad5763d6c8bdcf1e064f4f703c63dbd49ecabe5))
+* more ty page order changes and assorted cleanup ([#6709](https://github.com/kiva/ui/issues/6709)) ([59bb182](https://github.com/kiva/ui/commit/59bb1821a7cd37b8ee31f2d868124a652d67531a))
+* pencil icon alignment ([83879c7](https://github.com/kiva/ui/commit/83879c7211dfc3ae5c4a22617a08bc2f15aaea89))
+* remove extraspace in comment ([0ffd959](https://github.com/kiva/ui/commit/0ffd959d191c27e24720e810ad713d0083b95e36))
+* remove support ([06089cc](https://github.com/kiva/ui/commit/06089cc3bc7e82456a02327446e03aaad14ee765))
+* reorganize conditions ([1031fcc](https://github.com/kiva/ui/commit/1031fcc86566814ff2b4cda36d3784bbffd21d2b))
+* reuse utility menu component and only show edit goal button in goal setting ([9742620](https://github.com/kiva/ui/commit/9742620e224369be44747a7bb8df338592d924c4))
+* reverting goals redirect as not fixing ([#6707](https://github.com/kiva/ui/issues/6707)) ([3b475c1](https://github.com/kiva/ui/commit/3b475c1ae8e56e70607529513a8fff8c14b5a721))
+* solve conflicts ([d86712e](https://github.com/kiva/ui/commit/d86712e587e6c30b77a24a5d508a4381ae977689))
+* solve conflicts in goal progress ring ([7b215a5](https://github.com/kiva/ui/commit/7b215a5204b657a27e4c0aca3b306b20cb451ecd))
+* update remove goal test ([e4f8e34](https://github.com/kiva/ui/commit/e4f8e344385d1996da10771b1040f51d64a7b1e4))
+* update target only on edit ([7dc82f3](https://github.com/kiva/ui/commit/7dc82f3c3e61ca8c2a796f044bc5361fb8c52a2b))
+* update variable names and loading state ([2dcda49](https://github.com/kiva/ui/commit/2dcda491654db59f9186738c97005c2e349bf4bb))
+* use goal progress from composable in ring component instead of using goalLoans which is related to target ([e980402](https://github.com/kiva/ui/commit/e980402f4d7a5a8c16012f388a6b8ec80dcef860))
+
+### 🔍 Tests
+
+* add test for remove goal method ([d42bf96](https://github.com/kiva/ui/commit/d42bf968bb092b2422ede36d3a6caf4530bd0687))
+
+### 🧹 Chores
+
+* [CP-2449] adjusting copy on MG sign up page ([55bf516](https://github.com/kiva/ui/commit/55bf516ad5fe51ef5900fe790d3f44127f2d2e6b))
+* **release:** 3.60.0-rc.1 [skip ci] ([b962b60](https://github.com/kiva/ui/commit/b962b60913734537d5183ea91e49096578815618)), closes [#6694](https://github.com/kiva/ui/issues/6694) [#6678](https://github.com/kiva/ui/issues/6678) [#6699](https://github.com/kiva/ui/issues/6699) [#6709](https://github.com/kiva/ui/issues/6709) [#6707](https://github.com/kiva/ui/issues/6707)
+
 ## [3.60.0-rc.1](https://github.com/kiva/ui/compare/v3.59.0...v3.60.0-rc.1) (2026-03-05)
 
 ### 🎉 New Features
