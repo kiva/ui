@@ -41,58 +41,13 @@
 				<MyKivaSurveyCard
 					v-else-if="slide?.isSurveyCard"
 				/>
-				<template
+				<MyKivaEmailUpdatesTransition
 					v-else-if="isEmailUpdatesSlide(slide)"
-				>
-					<transition
-						name="fade"
-						mode="out-in"
-						key="transition"
-						enter-active-class="tw-transition-all tw-duration-500"
-						enter-from-class="tw-opacity-0"
-						enter-to-class="tw-opacity-full"
-						leave-active-class="tw-transition-all tw-duration-500"
-						leave-from-class="tw-opacity-full"
-						leave-to-class="tw-opacity-0"
-					>
-						<MyKivaEmailUpdatesCard
-							v-if="shouldShowEmailMarketingCard && !acceptedEmailMarketingUpdates"
-							key="acceptEmails"
-							:loans="loans"
-							:latest-loan="latestLoan"
-							@accept-email-updates="acceptedEmailMarketingUpdates = true"
-						/>
-						<ThankYouCard
-							v-else
-							key:="tkYouCard"
-						>
-							<template #header>
-								<span
-									class="tw-inline-flex tw-items-center tw-gap-1
-									tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5"
-								>
-									<KvMaterialIcon
-										class="tw-w-2 tw-h-2 tw-shrink-0"
-										:icon="mdiEmailOutline"
-									/>
-									<span
-										class="tw-text-primary tw-font-medium tw-align-middle"
-										style="font-size: 0.875rem;"
-									>
-										Email updates
-									</span>
-								</span>
-							</template>
-							<template #content>
-								<span>We’ll keep you updated. Change your <a
-									href="/settings/email"
-									target="_blank"
-									v-kv-track-event="['portfolio', 'click', 'email-preferences-settings']"
-								>email preferences</a> at any time.</span>
-							</template>
-						</ThankYouCard>
-					</transition>
-				</template>
+					:accepted="acceptedEmailMarketingUpdates"
+					:loans="loans"
+					:latest-loan="latestLoan"
+					@accept-email-updates="acceptedEmailMarketingUpdates = true"
+				/>
 				<MyKivaLatestLoanCard
 					v-else-if="slide?.isLatestLoan"
 					:loan="latestLoan"
@@ -142,7 +97,6 @@
 </template>
 
 <script setup>
-import { mdiEmailOutline } from '@mdi/js';
 import { parseISO, differenceInDays } from 'date-fns';
 import {
 	computed,
@@ -164,13 +118,13 @@ import {
 import { buildAchievementSlides, isNonBadgeSlide } from '#src/util/achievementUtils';
 import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 import useBadgeData, { getJourneysByLoan } from '#src/composables/useBadgeData';
-import { KvCarousel, KvMaterialIcon } from '@kiva/kv-components';
+import { KvCarousel } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import GoalCard from '#src/components/MyKiva/GoalCard';
 import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
 import useGoalData from '#src/composables/useGoalData';
-import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCard';
+import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import useOptIn from '#src/composables/useOptIn';
@@ -183,7 +137,6 @@ import {
 	handlePrimaryCtaClick as handlePrimaryCtaClickUtil,
 	handleSecondaryCtaClick as handleSecondaryCtaClickUtil,
 } from '#src/util/myKiva/myKivaJourneyCardUtils';
-import ThankYouCard from '#src/components/MyKiva/ThankYouCard';
 
 const TRANSACTION_DAYS_LIMIT = 30;
 

@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { inject } from 'vue';
+import { inject, ref } from 'vue';
 import { KvMaterialIcon } from '@kiva/kv-components';
 import { mdiArrowRight } from '@mdi/js';
 
@@ -205,12 +205,7 @@ export default {
 	data() {
 		return {
 			mdiArrowRight,
-			showGoalModal: false,
-			showImpactInsightsModal: false,
-			isGoalSet: false,
-			newGoalPrefs: null,
 			showPostLendingNextStepsCards: false,
-			goalModalHandlers: null,
 		};
 	},
 	computed: {
@@ -227,8 +222,32 @@ export default {
 			return this.nextStepsExperimentVariant === 'b';
 		},
 	},
-	setup() {
+	setup(props) {
 		const goalData = inject('goalData');
+		const $kvTrackEvent = inject('$kvTrackEvent');
+
+		const showGoalModal = ref(false);
+		const showImpactInsightsModal = ref(false);
+		const isGoalSet = ref(false);
+		const newGoalPrefs = ref(null);
+		const recordedGoalSet = ref(false);
+
+		const goalModalHandlers = createModalsHandlers({
+			trackEvent: $kvTrackEvent,
+			storeGoalPreferences: goalData.storeGoalPreferences,
+			loadGoalData: goalData.loadGoalData,
+			trackingCategory: 'portfolio',
+			goalsV2Enabled: props.goalsV2Enabled,
+		});
+
+		// Store refs for passing to modal handlers
+		const modalRefs = {
+			showGoalModal,
+			showImpactInsightsModal,
+			isGoalSet,
+			newGoalPrefs,
+			recordedGoalSet,
+		};
 
 		return {
 			checkCompletedGoal: goalData.checkCompletedGoal,
@@ -240,24 +259,20 @@ export default {
 			storeGoalPreferences: goalData.storeGoalPreferences,
 			userGoal: goalData.userGoal,
 			userGoalAchieved: goalData.userGoalAchieved,
+			showGoalModal,
+			showImpactInsightsModal,
+			isGoalSet,
+			newGoalPrefs,
+			recordedGoalSet,
+			goalModalHandlers,
+			modalRefs,
 		};
-	},
-	created() {
-		// Initialize goal modal handlers with component's dependencies
-		this.goalModalHandlers = createModalsHandlers({
-			trackEvent: this.$kvTrackEvent,
-			storeGoalPreferences: this.storeGoalPreferences,
-			loadGoalData: this.loadGoalData,
-			trackingCategory: 'portfolio',
-			goalsV2Enabled: this.goalsV2Enabled,
-		});
 	},
 	async mounted() {
 		if (this.isNextStepsExpEnabled) {
 			await this.checkCompletedGoal({ category: 'portfolio' });
 		}
 
-		// Show post-lending next steps cards in My Kiva - using shared utility
 		this.showPostLendingNextStepsCards = checkAndClearPostLendingCookie(this.cookieStore);
 	},
 	watch: {
@@ -272,33 +287,13 @@ export default {
 	},
 	methods: {
 		async setGoal(preferences) {
-			// Use centralized handler with Options API data binding
-			await this.goalModalHandlers.setGoal(preferences, {});
-			this.newGoalPrefs = preferences;
-			this.isGoalSet = true;
-			if (!this.goalsV2Enabled) {
-				this.showGoalModal = false;
-			}
+			await this.goalModalHandlers.setGoal(preferences, this.modalRefs);
 		},
 		async closeGoalModal() {
-			const wasGoalSet = this.isGoalSet;
-			if (this.showGoalModal) {
-				this.showGoalModal = false;
-				this.$kvTrackEvent('portfolio', 'click', 'close-goals');
-			}
-			if (wasGoalSet) {
-				await this.goalModalHandlers.closeGoalModal({
-					showGoalModal: { value: false },
-					isGoalSet: { value: this.isGoalSet },
-					newGoalPrefs: { value: this.newGoalPrefs },
-				});
-			}
+			await this.goalModalHandlers.closeGoalModal(this.modalRefs);
 		},
 		closeImpactInsightsModal() {
-			if (this.showImpactInsightsModal) {
-				this.showImpactInsightsModal = false;
-				this.$kvTrackEvent('portfolio', 'click', 'next-step-close-education');
-			}
+			this.goalModalHandlers.closeImpactInsightsModal(this.modalRefs);
 		},
 	},
 };

@@ -1,24 +1,26 @@
 /**
- * Composable for shared MyKiva journey data transformations and methods.
- * Compatible with both Options API and Composition API.
+ * Shared MyKiva journey data transformations and methods.
+ * All exports are named functions, compatible with both Options API and Composition API.
  *
- * Usage in Composition API:
- *   const { buildLatestLoanData, buildLenderData, ... } = useMyKivaJourneyData();
- *
- * Usage in Options API:
+ * Usage:
  *   import { buildLatestLoanData, buildLenderData, ... } from '#src/composables/useMyKivaJourneyData';
- *   // Use directly in methods or computed
  */
 
 import useBadgeData, {
 	applyFreshProgressToAchievements,
-	getContentfulLevelData
+	getContentfulLevelData,
 } from '#src/composables/useBadgeData';
 import {
 	getRecentTransactionLoans,
 	checkPostLendingCardCookie,
 	removePostLendingCardCookie
 } from '#src/util/myKivaUtils';
+
+let badgeDataInstance = null;
+const getBadgeData = () => {
+	if (!badgeDataInstance) badgeDataInstance = useBadgeData();
+	return badgeDataInstance;
+};
 
 /**
  * Builds the latestLoan object from myKiva query result
@@ -59,8 +61,7 @@ export const buildLenderData = myData => {
  * @returns {Array} - Combined badge data
  */
 export const buildHeroBadgeData = (heroTieredAchievements, heroBadgeContentfulData) => {
-	const { combineBadgeData } = useBadgeData();
-	return combineBadgeData(heroTieredAchievements, heroBadgeContentfulData);
+	return getBadgeData().combineBadgeData(heroTieredAchievements, heroBadgeContentfulData);
 };
 
 /**
@@ -69,8 +70,7 @@ export const buildHeroBadgeData = (heroTieredAchievements, heroBadgeContentfulDa
  * @returns {Object} - Categories loan count object
  */
 export const buildCategoriesLoanCount = heroTieredAchievements => {
-	const { getAllCategoryLoanCounts } = useBadgeData();
-	return getAllCategoryLoanCounts(heroTieredAchievements);
+	return getBadgeData().getAllCategoryLoanCounts(heroTieredAchievements);
 };
 
 /**
@@ -145,6 +145,22 @@ export const buildAchievementsWithFreshProgress = (lastYearResult, currentYearRe
 };
 
 /**
+ * Applies fresh progress to a single achievements array.
+ * This is the base pattern used by MyKivaPage.applyMyKivaFreshProgress.
+ * @param {Array} achievements - Tiered achievements to update
+ * @param {Array} transactions - Raw transactions array
+ * @returns {Object} - { achievements, recentTransactionLoans }
+ */
+export const applyFreshProgress = (achievements, transactions) => {
+	const recentTransactionLoans = getRecentTransactionLoans(transactions);
+	const updatedAchievements = applyFreshProgressToAchievements({
+		achievements,
+		freshProgressLoans: recentTransactionLoans,
+	});
+	return { achievements: updatedAchievements, recentTransactionLoans };
+};
+
+/**
  * Checks and clears the post-lending card cookie
  * @param {Object} cookieStore - The cookie store instance
  * @returns {boolean} - Whether the cookie was present (and cleared)
@@ -158,15 +174,15 @@ export const checkAndClearPostLendingCookie = cookieStore => {
 };
 
 /**
- * Creates modal handler methods with configurable tracking category
- * Handles both Goal modal and Impact Insights modal
+ * Creates modal handler methods with configurable tracking category.
+ * All state is managed via refs passed by the caller — no internal closure state.
  * @param {Object} options - Configuration options
  * @param {Function} options.trackEvent - The $kvTrackEvent function
  * @param {Function} options.storeGoalPreferences - Function to store goal preferences
  * @param {Function} options.loadGoalData - Function to reload goal data
  * @param {string} options.trackingCategory - Category for analytics ('portfolio')
- * @param {boolean} options.goalsV2Enabled - Whether goals v2 is enabled (for LendingStats compatibility)
- * @returns {Object} - Object containing modal methods (setGoal, closeGoalModal, closeImpactInsightsModal, resetState)
+ * @param {boolean} options.goalsV2Enabled - Whether goals v2 is enabled
+ * @returns {Object} - Object containing modal methods (setGoal, closeGoalModal, closeImpactInsightsModal)
  */
 export const createModalsHandlers = ({
 	trackEvent,
@@ -175,32 +191,20 @@ export const createModalsHandlers = ({
 	trackingCategory = 'portfolio',
 	goalsV2Enabled = true,
 }) => {
-	// Shared state for tracking
-	let recordedGoalSet = false;
-	let newGoalPrefs = null;
-	let isGoalSet = false;
-
 	/**
 	 * Handles setting a goal
 	 * @param {Object} preferences - Goal preferences
 	 * @param {Object} refs - Reactive refs { isGoalSet, newGoalPrefs, showGoalModal }
 	 */
-	const setGoal = async (preferences, refs = {}) => {
-		// For goalsV2, pass false to not update local state yet (delays UI update until modal closes)
+	const setGoal = async (preferences, refs) => {
 		const updateLocalState = !goalsV2Enabled;
 		await storeGoalPreferences(preferences, updateLocalState);
 
-		// Update local tracking state
-		newGoalPrefs = preferences;
-		isGoalSet = true;
-
-		// Update refs if provided (for Composition API)
 		/* eslint-disable no-param-reassign */
-		if (refs.newGoalPrefs) refs.newGoalPrefs.value = preferences;
-		if (refs.isGoalSet) refs.isGoalSet.value = true;
+		refs.newGoalPrefs.value = preferences;
+		refs.isGoalSet.value = true;
 		/* eslint-enable no-param-reassign */
 
-		// For legacy goals (non-v2), close modal and refresh immediately
 		if (!goalsV2Enabled) {
 			await loadGoalData({ yearlyProgress: false });
 			if (refs.showGoalModal) refs.showGoalModal.value = false; // eslint-disable-line no-param-reassign
@@ -209,31 +213,25 @@ export const createModalsHandlers = ({
 
 	/**
 	 * Handles closing the goal modal
-	 * @param {Object} refs - Reactive refs { showGoalModal, isGoalSet, newGoalPrefs }
+	 * @param {Object} refs - Reactive refs { showGoalModal, isGoalSet, newGoalPrefs, recordedGoalSet }
 	 */
-	const closeGoalModal = async (refs = {}) => {
-		const showModalValue = refs.showGoalModal?.value ?? false;
-		const isGoalSetValue = refs.isGoalSet?.value ?? isGoalSet;
-		const newGoalPrefsValue = refs.newGoalPrefs?.value ?? newGoalPrefs;
-
-		if (showModalValue) {
-			if (refs.showGoalModal) refs.showGoalModal.value = false; // eslint-disable-line no-param-reassign
+	const closeGoalModal = async refs => {
+		if (refs.showGoalModal.value) {
+			refs.showGoalModal.value = false; // eslint-disable-line no-param-reassign
 			trackEvent(trackingCategory, 'click', 'close-goals');
 		}
 
-		// Only refresh goal data when modal closes AND goal was set
-		if (isGoalSetValue) {
-			if (!recordedGoalSet) {
+		if (refs.isGoalSet.value) {
+			if (!refs.recordedGoalSet.value) {
 				trackEvent(
 					trackingCategory,
 					'show',
 					'goal-set',
-					newGoalPrefsValue?.category,
-					newGoalPrefsValue?.target
+					refs.newGoalPrefs.value?.category,
+					refs.newGoalPrefs.value?.target
 				);
-				recordedGoalSet = true;
+				refs.recordedGoalSet.value = true; // eslint-disable-line no-param-reassign
 			}
-			// Refresh goal data to update the main card with the ring
 			await loadGoalData({ yearlyProgress: goalsV2Enabled });
 		}
 	};
@@ -242,47 +240,16 @@ export const createModalsHandlers = ({
 	 * Handles closing the impact insights modal
 	 * @param {Object} refs - Reactive refs { showImpactInsightsModal }
 	 */
-	const closeImpactInsightsModal = (refs = {}) => {
-		const showModalValue = refs.showImpactInsightsModal?.value ?? false;
-
-		if (showModalValue) {
-			// eslint-disable-next-line no-param-reassign
-			if (refs.showImpactInsightsModal) refs.showImpactInsightsModal.value = false;
+	const closeImpactInsightsModal = refs => {
+		if (refs.showImpactInsightsModal.value) {
+			refs.showImpactInsightsModal.value = false; // eslint-disable-line no-param-reassign
 			trackEvent(trackingCategory, 'click', 'next-step-close-education');
 		}
-	};
-
-	/**
-	 * Resets the internal tracking state (useful for component cleanup)
-	 */
-	const resetState = () => {
-		recordedGoalSet = false;
-		newGoalPrefs = null;
-		isGoalSet = false;
 	};
 
 	return {
 		setGoal,
 		closeGoalModal,
 		closeImpactInsightsModal,
-		resetState,
 	};
 };
-
-/**
- * Composable for MyKiva journey data
- * @returns {Object} - All utility functions and composable methods
- */
-export default function useMyKivaJourneyData() {
-	return {
-		buildLatestLoanData,
-		buildLenderData,
-		buildHeroBadgeData,
-		buildCategoriesLoanCount,
-		buildRegionsData,
-		buildContentfulData,
-		buildAchievementsWithFreshProgress,
-		checkAndClearPostLendingCookie,
-		createModalsHandlers,
-	};
-}

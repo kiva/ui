@@ -1,3 +1,4 @@
+import { ref } from 'vue';
 import {
 	buildLatestLoanData,
 	buildLenderData,
@@ -5,6 +6,7 @@ import {
 	buildContentfulData,
 	buildAchievementsWithFreshProgress,
 	checkAndClearPostLendingCookie,
+	createModalsHandlers,
 } from '#src/composables/useMyKivaJourneyData';
 import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 
@@ -298,6 +300,134 @@ describe('useMyKivaJourneyData', () => {
 
 			expect(result).toBe(true);
 			expect(removePostLendingCardCookie).toHaveBeenCalledWith(mockCookieStore);
+		});
+	});
+
+	describe('createModalsHandlers', () => {
+		const createRefs = () => ({
+			showGoalModal: ref(true),
+			showImpactInsightsModal: ref(true),
+			isGoalSet: ref(false),
+			newGoalPrefs: ref(null),
+			recordedGoalSet: ref(false),
+		});
+
+		const createHandlers = (overrides = {}) => createModalsHandlers({
+			trackEvent: vi.fn(),
+			storeGoalPreferences: vi.fn().mockResolvedValue(),
+			loadGoalData: vi.fn().mockResolvedValue(),
+			goalsV2Enabled: true,
+			...overrides,
+		});
+
+		describe('setGoal', () => {
+			it('stores preferences and updates refs', async () => {
+				const mockStore = vi.fn().mockResolvedValue();
+				const handlers = createHandlers({ storeGoalPreferences: mockStore });
+				const refs = createRefs();
+				const prefs = { category: 'women', target: 5 };
+
+				await handlers.setGoal(prefs, refs);
+
+				expect(mockStore).toHaveBeenCalledWith(prefs, false);
+				expect(refs.isGoalSet.value).toBe(true);
+				expect(refs.newGoalPrefs.value).toEqual(prefs);
+			});
+
+			it('closes modal and refreshes for legacy goals (non-v2)', async () => {
+				const mockLoad = vi.fn().mockResolvedValue();
+				const handlers = createHandlers({ goalsV2Enabled: false, loadGoalData: mockLoad });
+				const refs = createRefs();
+
+				await handlers.setGoal({ category: 'women', target: 5 }, refs);
+
+				expect(mockLoad).toHaveBeenCalledWith({ yearlyProgress: false });
+				expect(refs.showGoalModal.value).toBe(false);
+			});
+
+			it('does not close modal for v2 goals', async () => {
+				const handlers = createHandlers({ goalsV2Enabled: true });
+				const refs = createRefs();
+
+				await handlers.setGoal({ category: 'women', target: 5 }, refs);
+
+				expect(refs.showGoalModal.value).toBe(true);
+			});
+		});
+
+		describe('closeGoalModal', () => {
+			it('closes modal and tracks close event', async () => {
+				const mockTrack = vi.fn();
+				const handlers = createHandlers({ trackEvent: mockTrack });
+				const refs = createRefs();
+
+				await handlers.closeGoalModal(refs);
+
+				expect(refs.showGoalModal.value).toBe(false);
+				expect(mockTrack).toHaveBeenCalledWith('portfolio', 'click', 'close-goals');
+			});
+
+			it('tracks goal-set and refreshes when goal was set', async () => {
+				const mockTrack = vi.fn();
+				const mockLoad = vi.fn().mockResolvedValue();
+				const handlers = createHandlers({ trackEvent: mockTrack, loadGoalData: mockLoad });
+				const refs = createRefs();
+				refs.isGoalSet.value = true;
+				refs.newGoalPrefs.value = { category: 'women', target: 5 };
+
+				await handlers.closeGoalModal(refs);
+
+				expect(mockTrack).toHaveBeenCalledWith('portfolio', 'show', 'goal-set', 'women', 5);
+				expect(refs.recordedGoalSet.value).toBe(true);
+				expect(mockLoad).toHaveBeenCalledWith({ yearlyProgress: true });
+			});
+
+			it('does not track goal-set twice', async () => {
+				const mockTrack = vi.fn();
+				const handlers = createHandlers({ trackEvent: mockTrack });
+				const refs = createRefs();
+				refs.isGoalSet.value = true;
+				refs.recordedGoalSet.value = true;
+
+				await handlers.closeGoalModal(refs);
+
+				const goalSetCalls = mockTrack.mock.calls.filter(c => c[1] === 'show' && c[2] === 'goal-set');
+				expect(goalSetCalls).toHaveLength(0);
+			});
+
+			it('does not refresh when no goal was set', async () => {
+				const mockLoad = vi.fn().mockResolvedValue();
+				const handlers = createHandlers({ loadGoalData: mockLoad });
+				const refs = createRefs();
+
+				await handlers.closeGoalModal(refs);
+
+				expect(mockLoad).not.toHaveBeenCalled();
+			});
+		});
+
+		describe('closeImpactInsightsModal', () => {
+			it('closes modal and tracks event', () => {
+				const mockTrack = vi.fn();
+				const handlers = createHandlers({ trackEvent: mockTrack });
+				const refs = createRefs();
+
+				handlers.closeImpactInsightsModal(refs);
+
+				expect(refs.showImpactInsightsModal.value).toBe(false);
+				expect(mockTrack).toHaveBeenCalledWith('portfolio', 'click', 'next-step-close-education');
+			});
+
+			it('does not track when modal is already closed', () => {
+				const mockTrack = vi.fn();
+				const handlers = createHandlers({ trackEvent: mockTrack });
+				const refs = createRefs();
+				refs.showImpactInsightsModal.value = false;
+
+				handlers.closeImpactInsightsModal(refs);
+
+				expect(mockTrack).not.toHaveBeenCalled();
+			});
 		});
 	});
 });

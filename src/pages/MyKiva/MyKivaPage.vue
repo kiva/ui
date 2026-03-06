@@ -28,7 +28,7 @@
 
 <script>
 import logReadQueryError from '#src/util/logReadQueryError';
-import { CONTENTFUL_CAROUSEL_KEY, getRecentTransactionLoans } from '#src/util/myKivaUtils';
+import { CONTENTFUL_CAROUSEL_KEY } from '#src/util/myKivaUtils';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
@@ -43,7 +43,6 @@ import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY, isGoalsV2Enabled } from '#src/composables/useGoalData';
 import {
-	applyFreshProgressToAchievements,
 	FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
 } from '#src/composables/useBadgeData';
 import {
@@ -52,6 +51,7 @@ import {
 	buildRegionsData,
 	buildHeroBadgeData,
 	buildContentfulData,
+	applyFreshProgress,
 } from '#src/composables/useMyKivaJourneyData';
 import { inject, provide } from 'vue';
 
@@ -165,12 +165,9 @@ export default {
 	},
 	methods: {
 		applyMyKivaFreshProgress() {
-			this.recentTransactionLoans = getRecentTransactionLoans(this.transactions);
-			const achievements = applyFreshProgressToAchievements({
-				achievements: this.heroTieredAchievements,
-				freshProgressLoans: this.recentTransactionLoans,
-			});
-			this.heroTieredAchievements = achievements;
+			const result = applyFreshProgress(this.heroTieredAchievements, this.transactions);
+			this.heroTieredAchievements = result.achievements;
+			this.recentTransactionLoans = result.recentTransactionLoans;
 		},
 		readTieredAchievementsFromCache(year) {
 			try {

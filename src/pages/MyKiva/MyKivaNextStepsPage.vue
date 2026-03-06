@@ -141,56 +141,13 @@
 					</div>
 				</div>
 				<template v-if="!isMobile">
-					<template v-if="shouldShowEmailMarketingCard || acceptedEmailMarketingUpdates">
-						<transition
-							name="fade"
-							mode="out-in"
-							key="transition"
-							enter-active-class="tw-transition-all tw-duration-500"
-							enter-from-class="tw-opacity-0"
-							enter-to-class="tw-opacity-full"
-							leave-active-class="tw-transition-all tw-duration-500"
-							leave-from-class="tw-opacity-full"
-							leave-to-class="tw-opacity-0"
-						>
-							<MyKivaEmailUpdatesCard
-								v-if="!acceptedEmailMarketingUpdates"
-								key="acceptEmails"
-								:loans="loans"
-								:latest-loan="latestLoan"
-								@accept-email-updates="acceptedEmailMarketingUpdates = true"
-							/>
-							<ThankYouCard
-								v-else
-								key:="tkYouCard"
-							>
-								<template #header>
-									<span
-										class="tw-inline-flex tw-items-center tw-gap-1
-									tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5"
-									>
-										<KvMaterialIcon
-											class="tw-w-2 tw-h-2 tw-shrink-0"
-											:icon="mdiEmailOutline"
-										/>
-										<span
-											class="tw-text-primary tw-font-medium tw-align-middle"
-											style="font-size: 0.875rem;"
-										>
-											Email updates
-										</span>
-									</span>
-								</template>
-								<template #content>
-									<span>We’ll keep you updated. Change your <a
-										href="/settings/email"
-										target="_blank"
-										v-kv-track-event="['portfolio', 'click', 'email-preferences-settings']"
-									>email preferences</a> at any time.</span>
-								</template>
-							</ThankYouCard>
-						</transition>
-					</template>
+					<MyKivaEmailUpdatesTransition
+						v-if="shouldShowEmailMarketingCard || acceptedEmailMarketingUpdates"
+						:accepted="acceptedEmailMarketingUpdates"
+						:loans="loans"
+						:latest-loan="latestLoan"
+						@accept-email-updates="acceptedEmailMarketingUpdates = true"
+					/>
 					<MyKivaLatestLoanCard
 						v-if="showLatestLoan"
 						:loan="latestLoan"
@@ -297,9 +254,8 @@ import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import MyKivaRegionExperience from '#src/components/MyKiva/MyKivaRegionExperience';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
-import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCard';
+import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
-import ThankYouCard from '#src/components/MyKiva/ThankYouCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
@@ -381,6 +337,7 @@ const showImpactInsightsModal = ref(false);
 const isGoalSet = ref(false);
 const showPostLendingNextStepsCards = ref(false);
 const newGoalPrefs = ref(null);
+const recordedGoalSet = ref(false);
 const acceptedEmailMarketingUpdates = ref(false);
 
 const {
@@ -434,6 +391,7 @@ const closeGoalModal = async () => {
 		showGoalModal,
 		isGoalSet,
 		newGoalPrefs,
+		recordedGoalSet,
 	});
 };
 
