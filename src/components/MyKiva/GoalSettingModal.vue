@@ -83,6 +83,7 @@ import {
 	inject,
 	watch,
 	toRefs,
+	onMounted,
 } from 'vue';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import useIsMobile from '#src/composables/useIsMobile';
@@ -104,6 +105,7 @@ const {
 	getCategories,
 	goalProgress,
 	goalProgressPercentage,
+	userGoal,
 	loadGoalData,
 } = useGoalData();
 
@@ -335,6 +337,16 @@ watch(isGoalSet, async newVal => {
 		if (showCategories.value) {
 			showCategories.value = false;
 		}
+	}
+});
+
+onMounted(async () => {
+	await loadGoalData({ yearlyProgress: props.goalsV2Enabled });
+	const { target, category: goalCategory } = userGoal.value;
+	const storedCategory = categories.find(c => c.badgeId === goalCategory);
+	if (storedCategory && target) {
+		selectedCategory.value = storedCategory;
+		selectedGoalNumber.value = target;
 	}
 });
 </script>
