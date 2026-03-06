@@ -20,10 +20,10 @@
 			</h3>
 
 			<section
-				class="tw-flex tw-flex-col md:tw-flex-row tw-gap-4 tw-grid-rows-1"
+				class="region-section tw-grid md:tw-flex-row"
 				:class="{
-					'tw-grid-cols-1' : isMobile,
-					'tw-grid-flow-row-dense tw-grid-cols-3' : !isMobile
+					'tw-grid-cols-1 tw-grid-rows-2' : isMobile,
+					'tw-grid-flow-row-dense tw-gap-4 tw-grid-cols-3 tw-grid-rows-1' : !isMobile
 				}"
 			>
 				<NextYearGoalCard
@@ -37,7 +37,16 @@
 					:hide-goal-card="hideGoalCard"
 					@open-goal-modal="showGoalModal = true"
 				/>
+				<div v-if="loadingRegionData" class="loading-card tw-col-span-2" style="min-height: 320px;">
+					<div class="tw-w-full tw-h-auto tw-p-1 md:tw-p-2">
+						<KvLoadingPlaceholder class="!tw-h-4 tw-w-full tw-max-w-16 tw-my-1" />
+						<KvLoadingPlaceholder class="tw-mb-2" />
+						<KvLoadingPlaceholder class="!tw-h-3 tw-w-full tw-mb-1 tw-max-w-sm" />
+						<KvLoadingPlaceholder class="!tw-h-6 tw-mb-1" />
+					</div>
+				</div>
 				<MyKivaRegionExperience
+					v-else
 					class="tw-col-span-2"
 					:regions-data="regionsData"
 					:loans="loans"
@@ -49,6 +58,18 @@
 			</h3>
 
 			<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
+				<div
+					v-for="n in (loadingSlides ? (isMobile ? 1 : 3) : 0)"
+					:key="`loading-achievement-${n}`"
+					class="loading-card"
+				>
+					<div class="tw-flex tw-flex-col tw-justify-between tw-h-full">
+						<KvLoadingPlaceholder class="!tw-h-4 tw-w-full tw-max-w-16 tw-my-1" />
+						<KvLoadingPlaceholder class="tw-mb-2" />
+						<KvLoadingPlaceholder class="!tw-h-3 tw-w-full tw-mb-1 tw-max-w-sm" />
+						<KvLoadingPlaceholder class="!tw-h-6 tw-mb-1" />
+					</div>
+				</div>
 				<template v-if="!isMobile">
 					<MyKivaCard
 						v-for="slide in achievementSlides"
@@ -107,6 +128,18 @@
 			</h3>
 
 			<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
+				<div
+					v-for="n in (loadingSlides ? (isMobile ? 1 : 3) : 0)"
+					:key="`loading-impact-${n}`"
+					class="loading-card"
+				>
+					<div class="tw-flex tw-flex-col tw-justify-between tw-h-full">
+						<KvLoadingPlaceholder class="!tw-h-4 tw-w-full tw-max-w-16 tw-my-1" />
+						<KvLoadingPlaceholder class="tw-mb-2" />
+						<KvLoadingPlaceholder class="!tw-h-3 tw-w-full tw-mb-1 tw-max-w-sm" />
+						<KvLoadingPlaceholder class="!tw-h-6 tw-mb-1" />
+					</div>
+				</div>
 				<template v-if="!isMobile">
 					<template v-if="shouldShowEmailMarketingCard || acceptedEmailMarketingUpdates">
 						<transition
@@ -254,7 +287,7 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { mdiArrowLeft } from '@mdi/js';
-import { KvMaterialIcon, KvButton } from '@kiva/kv-components';
+import { KvMaterialIcon, KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
 
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
@@ -340,6 +373,8 @@ const latestLoan = ref(null);
 const transactions = ref([]);
 
 const postLendingNextStepsEnable = ref(false);
+const loadingRegionData = ref(true);
+const loadingSlides = ref(true);
 
 const showGoalModal = ref(false);
 const showImpactInsightsModal = ref(false);
@@ -509,6 +544,7 @@ onMounted(async () => {
 		// Build regionsData from lendingStatsQuery
 		const { regionsData: builtRegionsData } = buildRegionsData(lendingStatsResult.data);
 		regionsData.value = builtRegionsData;
+		loadingRegionData.value = false;
 
 		// Settings flags
 		const nextStepsSettingKey = `general.${POST_LENDING_NEXT_STEPS_KEY}.value`;
@@ -518,6 +554,7 @@ onMounted(async () => {
 		const contentfulData = buildContentfulData(slidesResult.data, contentfulChallengeResult.data);
 		heroSlides.value = contentfulData.heroSlides;
 		heroBadgeContentfulData.value = contentfulData.heroBadgeContentfulData;
+		loadingSlides.value = false;
 
 		// Achievements
 		const achievementsData = buildAchievementsWithFreshProgress(
@@ -546,6 +583,11 @@ onMounted(async () => {
 </script>
 
 <style lang="postcss" scoped>
+.loading-card {
+	@apply tw-w-full tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
+		tw-overflow-hidden tw-bg-white;
+}
+
 .stats-wrapper, .card-container {
 	height: auto;
 
@@ -594,7 +636,11 @@ onMounted(async () => {
 	@apply tw-flex tw-items-end md:tw-items-center tw-justify-between tw-mb-8 tw-gap-1;
 }
 
-/* achievements section */
+.region-section {
+	.card-container:first-child {
+		@apply tw-mb-2 md:tw-mb-0;
+	}
+}
 
 .badges-section {
 	@media (width >= 768px) {
