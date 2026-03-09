@@ -48,7 +48,7 @@
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 					:goal-editing-enable="goalEditingEnable"
 					:use-universal-order="useUniversalOrder"
-					@open-goal-modal="showGoalModal = true"
+					@open-goal-modal="openGoalModal($event)"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
 			</div>
@@ -83,7 +83,7 @@
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 			:goal-editing-enable="goalEditingEnable"
 			:use-universal-order="useUniversalOrder"
-			@open-goal-modal="showGoalModal = true"
+			@open-goal-modal="openGoalModal($event)"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
 		/>
 		<GoalSettingModal
@@ -95,6 +95,7 @@
 			:is-goal-set="isGoalSet"
 			:show-goal-selector="true"
 			:tiered-achievements="heroTieredAchievements"
+			:is-updating-goal="isUpdatingGoal"
 			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
 		/>
@@ -231,6 +232,7 @@ export default {
 		const isGoalSet = ref(false);
 		const newGoalPrefs = ref(null);
 		const recordedGoalSet = ref(false);
+		const isUpdatingGoal = ref(false);
 
 		const goalModalHandlers = createModalsHandlers({
 			trackEvent: $kvTrackEvent,
@@ -238,6 +240,7 @@ export default {
 			loadGoalData: goalData.loadGoalData,
 			trackingCategory: 'portfolio',
 			goalsV2Enabled: props.goalsV2Enabled,
+			updateCurrentGoal: goalData.updateCurrentGoal,
 		});
 
 		// Store refs for passing to modal handlers
@@ -247,6 +250,7 @@ export default {
 			isGoalSet,
 			newGoalPrefs,
 			recordedGoalSet,
+			isUpdatingGoal,
 		};
 
 		return {
@@ -257,6 +261,7 @@ export default {
 			loadGoalData: goalData.loadGoalData,
 			loadPreferences: goalData.loadPreferences,
 			storeGoalPreferences: goalData.storeGoalPreferences,
+			updateCurrentGoal: goalData.updateCurrentGoal,
 			userGoal: goalData.userGoal,
 			userGoalAchieved: goalData.userGoalAchieved,
 			showGoalModal,
@@ -264,6 +269,7 @@ export default {
 			isGoalSet,
 			newGoalPrefs,
 			recordedGoalSet,
+			isUpdatingGoal,
 			goalModalHandlers,
 			modalRefs,
 		};
@@ -294,6 +300,9 @@ export default {
 		},
 		closeImpactInsightsModal() {
 			this.goalModalHandlers.closeImpactInsightsModal(this.modalRefs);
+		},
+		openGoalModal(event) {
+			this.goalModalHandlers.openGoalModal(event, this.modalRefs);
 		},
 	},
 };

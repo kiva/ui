@@ -172,6 +172,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Flag to indicate if user is editing an existing goal
+	 */
+	isUpdatingGoal: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits(['button-click', 'edit-button-click', 'edit-goal-from-settings']);
@@ -246,6 +253,9 @@ const modalDescriptionText = computed(() => {
 });
 
 const titleText = computed(() => {
+	if (props.isUpdatingGoal) {
+		return 'Goal updated!';
+	}
 	if (isModalVariant.value) {
 		return 'Goal set!';
 	}

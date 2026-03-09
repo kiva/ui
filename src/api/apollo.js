@@ -29,6 +29,16 @@ export default function createApolloClient({
 			Setting: {
 				keyFields: ['key'],
 			},
+			// Disable normalization for achievement types so that queries with
+			// different `year` variables keep their own copies of the data.
+			// Without this, parallel fetches for last-year and current-year
+			// overwrite each other's `progressForYear` in the normalized cache.
+			UserAchievements: {
+				keyFields: false,
+			},
+			TieredLendingAchievement: {
+				keyFields: false,
+			},
 		}
 	});
 

@@ -154,6 +154,11 @@ query myKivaQuery {
             }
           }
           borrowerCount
+          userProperties {
+            loanBalance {
+              totalAmountPurchased
+            }
+          }
           ... on LoanPartner {
             themes
 			partner {

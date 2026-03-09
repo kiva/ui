@@ -34,6 +34,8 @@ export const buildLatestLoanData = myData => {
 	return {
 		...latestLoanValues[0].loan,
 		amount: latestLoanValues[0]?.amount || null,
+		/* totalAmountPurchased includes both the lender amount and any lending credit */
+		totalAmountPurchased: latestLoanValues[0].loan?.userProperties?.loanBalance?.totalAmountPurchased || null,
 		// Edge case: user has promo credit, transaction is split. Include other items to sum amounts.
 		...(latestLoanValues.length > 1
 			? { otherLoans: latestLoanValues.slice(1) }
@@ -190,6 +192,7 @@ export const createModalsHandlers = ({
 	loadGoalData,
 	trackingCategory = 'portfolio',
 	goalsV2Enabled = true,
+	updateCurrentGoal = null,
 }) => {
 	/**
 	 * Handles setting a goal
@@ -198,7 +201,16 @@ export const createModalsHandlers = ({
 	 */
 	const setGoal = async (preferences, refs) => {
 		const updateLocalState = !goalsV2Enabled;
-		await storeGoalPreferences(preferences, updateLocalState);
+		if (refs.isUpdatingGoal?.value && updateCurrentGoal) {
+			await updateCurrentGoal(refs.userGoal, preferences);
+			trackEvent(
+				'portfolio',
+				'click',
+				'confirm-edit-goal'
+			);
+		} else {
+			await storeGoalPreferences(preferences, updateLocalState);
+		}
 
 		/* eslint-disable no-param-reassign */
 		refs.newGoalPrefs.value = preferences;
@@ -216,6 +228,14 @@ export const createModalsHandlers = ({
 	 * @param {Object} refs - Reactive refs { showGoalModal, isGoalSet, newGoalPrefs, recordedGoalSet }
 	 */
 	const closeGoalModal = async refs => {
+		if (refs.isUpdatingGoal?.value && !refs.isGoalSet.value) {
+			trackEvent(
+				'portfolio',
+				'click',
+				'cancel-goal-edit',
+			);
+		}
+
 		if (refs.showGoalModal.value) {
 			refs.showGoalModal.value = false; // eslint-disable-line no-param-reassign
 			trackEvent(trackingCategory, 'click', 'close-goals');
@@ -232,8 +252,12 @@ export const createModalsHandlers = ({
 				);
 				refs.recordedGoalSet.value = true; // eslint-disable-line no-param-reassign
 			}
-			await loadGoalData({ yearlyProgress: goalsV2Enabled });
+			if (!refs.isUpdatingGoal?.value) {
+				await loadGoalData({ yearlyProgress: goalsV2Enabled });
+			}
 		}
+		// eslint-disable-next-line no-param-reassign
+		refs.isGoalSet.value = false;
 	};
 
 	/**
@@ -247,8 +271,22 @@ export const createModalsHandlers = ({
 		}
 	};
 
+	/**
+	 * Handles opening the goal modal
+	 * @param {Object} event - Event object with optional { updating } flag
+	 * @param {Object} refs - Reactive refs { showGoalModal, isUpdatingGoal }
+	 */
+	const openGoalModal = (event, refs) => {
+		refs.isUpdatingGoal.value = event?.updating || false; // eslint-disable-line no-param-reassign
+		refs.showGoalModal.value = true; // eslint-disable-line no-param-reassign
+		if (refs.isUpdatingGoal.value) {
+			trackEvent(trackingCategory, 'view', 'edit-goal-modal');
+		}
+	};
+
 	return {
 		setGoal,
+		openGoalModal,
 		closeGoalModal,
 		closeImpactInsightsModal,
 	};

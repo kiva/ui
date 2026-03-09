@@ -51,6 +51,7 @@ describe('useMyKivaJourneyData', () => {
 				id: 123,
 				name: 'Test Loan',
 				amount: 25,
+				totalAmountPurchased: null,
 			});
 		});
 

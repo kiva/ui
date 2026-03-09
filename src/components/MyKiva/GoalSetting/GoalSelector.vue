@@ -11,6 +11,7 @@
 			:category-id="selectedCategoryId"
 			:go-to-url="goToUrl"
 			:goal-editing-enable="goalEditingEnable"
+			:is-updating-goal="isUpdatingGoal"
 			@edit-goal-from-settings="handleEditGoalFromSettings"
 			@button-click="handleSuccessContinue"
 		/>
@@ -304,7 +305,7 @@ const subtitleText = computed(() => {
 const yearToDate = new Date().getFullYear();
 
 const buttonText = computed(() => {
-	if (editGoalFromSettings.value) {
+	if (editGoalFromSettings.value || props.isUpdatingGoal) {
 		return `Update ${yearToDate} goal`;
 	}
 	return `Set ${yearToDate} goal`;

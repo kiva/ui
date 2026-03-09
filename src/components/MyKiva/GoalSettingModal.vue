@@ -34,8 +34,10 @@
 			:goal-loans="selectedGoalNumber"
 			:goal-progress="goalProgress"
 			:goal-progress-percentage="goalProgressPercentage"
+			:is-updating-goal="isUpdatingGoal"
 			@set-goal-target="setGoalTarget"
 			@set-goal="$emit('set-goal', $event)"
+			@update-goal="$emit('set-goal', $event)"
 			@edit-goal="editGoalCategory"
 			@close-modal="closeLightbox"
 		/>
@@ -81,6 +83,7 @@ import {
 	inject,
 	watch,
 	toRefs,
+	onMounted,
 } from 'vue';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import useIsMobile from '#src/composables/useIsMobile';
@@ -102,6 +105,7 @@ const {
 	getCategories,
 	goalProgress,
 	goalProgressPercentage,
+	userGoal,
 	loadGoalData,
 } = useGoalData();
 
@@ -155,6 +159,13 @@ const props = defineProps({
 	controlledSelectedCategory: {
 		type: Object,
 		default: () => ({}),
+	},
+	/**
+	 * Flag to enable goal editing features
+	 */
+	isUpdatingGoal: {
+		type: Boolean,
+		default: false,
 	},
 });
 
@@ -326,6 +337,16 @@ watch(isGoalSet, async newVal => {
 		if (showCategories.value) {
 			showCategories.value = false;
 		}
+	}
+});
+
+onMounted(async () => {
+	await loadGoalData({ yearlyProgress: props.goalsV2Enabled });
+	const { target, category: goalCategory } = userGoal.value;
+	const storedCategory = categories.find(c => c.badgeId === goalCategory);
+	if (storedCategory && target) {
+		selectedCategory.value = storedCategory;
+		selectedGoalNumber.value = target;
 	}
 });
 </script>
