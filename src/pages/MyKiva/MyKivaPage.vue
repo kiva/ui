@@ -256,6 +256,9 @@ export default {
 				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
 					...myKivaQueryResult.my.latestLoan.values[0].loan,
 					amount: myKivaQueryResult.my.latestLoan.values[0]?.amount || null,
+					/* totalAmountPurchased includes both the lender amount and any lending credit */
+					totalAmountPurchased: myKivaQueryResult.my.latestLoan.values[0].loan
+						?.userProperties?.loanBalance?.totalAmountPurchased || null,
 					/* there is an edge case where an user have a promo credit in his/her account and purchase a loan,
 					the final transaction is split out. As each item share the same transaction id we include the others
 					items to sum their amounts and get the total amount lent */
