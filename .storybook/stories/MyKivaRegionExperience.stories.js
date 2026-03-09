@@ -45,6 +45,7 @@ export const Default = story({
 	loans: mockLoans,
 });
 
+// Same as empty state
 export const AllRegionsLent = story({
 	regionsData: mockRegionsData.map(r => ({ ...r, hasLoans: true })),
 	loans: mockLoans,
@@ -63,9 +64,4 @@ export const FewRegionsLent = story({
 		{ name: 'South America', hasLoans: false, count: 90, countries: ['BO', 'PE'] },
 	],
 	loans: mockLoans,
-});
-
-export const EmptyState = story({
-	regionsData: mockRegionsData.map(r => ({ ...r, hasLoans: false })),
-	loans: [],
 });

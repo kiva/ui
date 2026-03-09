@@ -168,7 +168,6 @@ export const handleSecondaryCtaClick = ({
 * @param {number|null} params.slidesNumber - Max slides to return (null = no limit)
 * @returns {Array} Ordered sequence of slide objects
 */
-
 export const buildUniversalOrderedSlides = ({
 	achievementSlides,
 	nonBadgesSlides, // friend-referral, lending teams, and kiva cards

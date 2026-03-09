@@ -1,7 +1,7 @@
 <template>
 	<div
 		ref="regionElement"
-		class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col"
+		class="stats-wrapper tw-h-auto tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col"
 	>
 		<div>
 			<span
@@ -234,7 +234,6 @@ onBeforeUnmount(() => {
 
 <style lang="postcss" scoped>
 .stats-wrapper {
-	height: auto;
 
 	@screen md {
 		height: 390px;
