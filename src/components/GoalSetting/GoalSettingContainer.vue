@@ -13,7 +13,7 @@
 					:icon="mdiChevronLeft"
 					class="tw-ml-0.5"
 				/>
-				To dashboard
+				{{ backToCopy }}
 			</button>
 			<KvUtilityMenu
 				v-if="goalEditingEnable && !isGoalCompleted && isGoalSet "
@@ -460,6 +460,14 @@ const goalTarget = computed(() => {
 
 const isGoalCompleted = computed(() => {
 	return userGoal.value?.status === GOAL_STATUS.COMPLETED;
+});
+
+const backToCopy = computed(() => {
+	if (props.emailTarget) {
+		return 'To dashboard';
+	}
+
+	return 'Back to dashboard';
 });
 
 onMounted(async () => {
