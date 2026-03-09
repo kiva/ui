@@ -146,6 +146,12 @@ describe('createApolloClient', () => {
 				Setting: {
 					keyFields: ['key'],
 				},
+				UserAchievements: {
+					keyFields: false,
+				},
+				TieredLendingAchievement: {
+					keyFields: false,
+				},
 			},
 		});
 	});
