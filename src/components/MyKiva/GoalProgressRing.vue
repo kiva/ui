@@ -250,7 +250,7 @@ const modalDescriptionText = computed(() => {
 		: props.categoryName?.toLowerCase() || '';
 
 	// eslint-disable-next-line max-len
-	return `Your goal to support <span class="tw-text-brand">${props.goalLoans}</span> loans to <span class="tw-text-brand"> ${formattedCategory}</span> begins here.`;
+	return `Your goal to support <span class="tw-text-brand">${props.goalLoans} loans </span> to <span class="tw-text-brand"> ${formattedCategory}</span> begins here.`;
 });
 
 const titleText = computed(() => {
