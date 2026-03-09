@@ -242,7 +242,7 @@ const titleClass = computed(() => {
 
 const modalDescriptionText = computed(() => {
 	if (props.categoryId === ID_SUPPORT_ALL) {
-		return `Your goal to support <span class="tw-text-brand">${props.goalLoans} loans</span> begins here.`;
+		return `Your goal to support <span class="tw-text-brand">${props.goalLoans} loans </span> begins here.`;
 	}
 
 	const formattedCategory = props.categoryId === ID_US_ECONOMIC_EQUALITY
