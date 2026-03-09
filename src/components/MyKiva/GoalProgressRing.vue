@@ -179,6 +179,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Flag to indicate if the goal has been completed
+	 */
+	isGoalCompleted: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits(['button-click', 'edit-button-click', 'edit-goal-from-settings']);
@@ -315,7 +322,9 @@ const handleEditGoal = () => {
 };
 
 const showEditGoalButton = computed(() => {
-	return props.goalEditingEnable && router.currentRoute.value?.path?.includes('/goal-setting');
+	return props.goalEditingEnable
+		&& !props.isGoalCompleted
+		&& router.currentRoute.value?.path?.includes('/goal-setting');
 });
 
 </script>
