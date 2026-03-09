@@ -13,7 +13,7 @@
 					:icon="mdiChevronLeft"
 					class="tw-ml-0.5"
 				/>
-				To dashboard
+				Back to dashboard
 			</button>
 			<KvUtilityMenu
 				v-if="goalEditingEnable && isGoalSet"
@@ -334,6 +334,7 @@ const recalculateGoalInformation = async () => {
 	);
 	isGoalSet.value = true;
 	showCategories.value = false;
+	userIsEditingGoal.value = false;
 };
 
 const updateGoal = async preferences => {
