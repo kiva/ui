@@ -13,10 +13,10 @@
 					:icon="mdiChevronLeft"
 					class="tw-ml-0.5"
 				/>
-				Back to dashboard
+				To dashboard
 			</button>
 			<KvUtilityMenu
-				v-if="goalEditingEnable && isGoalSet"
+				v-if="goalEditingEnable && !isGoalCompleted && isGoalSet "
 				menu-position="right-aligned"
 				button-size="small"
 				menu-border-class="tw-border tw-border-tertiary tw-rounded-md"
@@ -66,6 +66,7 @@
 					:fetched-current-year-loans="fetchedCurrentYearLoans"
 					:loading-current-year="loadingCurrentYear"
 					:goal-progress="goalProgress"
+					:is-goal-completed="isGoalCompleted"
 					@set-goal-target="setTarget($event)"
 					@set-goal="setGoal($event)"
 					@update-goal="updateGoal($event)"
@@ -149,7 +150,7 @@ import {
 	KvUtilityMenu
 } from '@kiva/kv-components';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
-import useGoalData from '#src/composables/useGoalData';
+import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
 import { buildEmailFlowGoalData } from '#src/util/goalEmailFlow';
 import logFormatter from '#src/util/logFormatter';
 import {
@@ -455,6 +456,10 @@ async function handleEmailFlow() {
 
 const goalTarget = computed(() => {
 	return userGoal.value?.target || 0;
+});
+
+const isGoalCompleted = computed(() => {
+	return userGoal.value?.status === GOAL_STATUS.COMPLETED;
 });
 
 onMounted(async () => {
