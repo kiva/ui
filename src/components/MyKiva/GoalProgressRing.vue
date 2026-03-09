@@ -244,16 +244,13 @@ const modalDescriptionText = computed(() => {
 	if (props.categoryId === ID_SUPPORT_ALL) {
 		return `Your goal to support <span class="tw-text-brand">${props.goalLoans} loans</span> begins here.`;
 	}
-	if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
-		// eslint-disable-next-line max-len
-		return `Your goal to support <span class="tw-text-brand">${props.goalLoans} U.S entrepreneurs</span> begins here.`;
-	}
-	if (props.categoryId === ID_BASIC_NEEDS || props.categoryId === ID_CLIMATE_ACTION) {
-		// eslint-disable-next-line max-len
-		return `Your goal to support <span class="tw-text-brand">${props.goalLoans}</span> loans to <span class="tw-text-brand"> ${props.categoryName?.toLowerCase() || ''}</span> begins here.`;
-	}
+
+	const formattedCategory = props.categoryId === ID_US_ECONOMIC_EQUALITY
+		? props.categoryName
+		: props.categoryName?.toLowerCase() || '';
+
 	// eslint-disable-next-line max-len
-	return `Your goal to support <span class="tw-text-brand">${props.goalLoans} ${props.categoryName?.toLowerCase() || ''}</span> begins here.`;
+	return `Your goal to support <span class="tw-text-brand">${props.goalLoans}</span> loans to <span class="tw-text-brand"> ${formattedCategory}</span> begins here.`;
 });
 
 const titleText = computed(() => {
