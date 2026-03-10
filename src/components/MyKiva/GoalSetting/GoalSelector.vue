@@ -12,6 +12,7 @@
 			:go-to-url="goToUrl"
 			:goal-editing-enable="goalEditingEnable"
 			:is-updating-goal="isUpdatingGoal"
+			:is-goal-completed="isGoalCompleted"
 			@edit-goal-from-settings="handleEditGoalFromSettings"
 			@button-click="handleSuccessContinue"
 		/>
@@ -192,6 +193,13 @@ const props = defineProps({
 	 * Flag to indicate if component is rendered within goal settings page
 	 */
 	inGoalSettingsPage: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Flag to indicate if the goal has been completed
+	 */
+	isGoalCompleted: {
 		type: Boolean,
 		default: false,
 	},
