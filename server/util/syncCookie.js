@@ -1,4 +1,4 @@
-import cookie from 'cookie';
+import { parseCookie, stringifySetCookie } from 'cookie';
 import { subYears } from 'date-fns';
 
 const NAME = 'kvls';
@@ -13,7 +13,7 @@ function getKivaId(user) {
 
 // Return the value of the cookie in Request req
 export function getSyncCookie(req) {
-	const cookies = cookie.parse(req.headers.cookie || '');
+	const cookies = parseCookie(req.headers.cookie || '');
 	return cookies[NAME];
 }
 
@@ -28,7 +28,7 @@ function setSyncCookie(res, value) {
 		level: 'log',
 		message: `LoginSyncUI: setting sync cookie, value:${value}`
 	}));
-	res.append('Set-Cookie', cookie.serialize(NAME, value, options));
+	res.append('Set-Cookie', stringifySetCookie(NAME, value, options));
 }
 
 // Deletes the cookie in Response res

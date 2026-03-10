@@ -51,7 +51,7 @@
 								:category-list="orderedGivingFundCategories"
 								:existing-categories="usersGivingFundCategoryIds"
 								existing-category-message="You've already set up this fund"
-								use-compact-card="true"
+								:use-compact-card="true"
 								@category-selected="selectImpactArea($event)"
 							/>
 							<div
