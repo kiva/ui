@@ -41,58 +41,13 @@
 				<MyKivaSurveyCard
 					v-else-if="slide?.isSurveyCard"
 				/>
-				<template
+				<MyKivaEmailUpdatesTransition
 					v-else-if="isEmailUpdatesSlide(slide)"
-				>
-					<transition
-						name="fade"
-						mode="out-in"
-						key="transition"
-						enter-active-class="tw-transition-all tw-duration-500"
-						enter-from-class="tw-opacity-0"
-						enter-to-class="tw-opacity-full"
-						leave-active-class="tw-transition-all tw-duration-500"
-						leave-from-class="tw-opacity-full"
-						leave-to-class="tw-opacity-0"
-					>
-						<MyKivaEmailUpdatesCard
-							v-if="shouldShowEmailMarketingCard && !acceptedEmailMarketingUpdates"
-							key="acceptEmails"
-							:loans="loans"
-							:latest-loan="latestLoan"
-							@accept-email-updates="acceptedEmailMarketingUpdates = true"
-						/>
-						<ThankYouCard
-							v-else
-							key:="tkYouCard"
-						>
-							<template #header>
-								<span
-									class="tw-inline-flex tw-items-center tw-gap-1
-									tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5"
-								>
-									<KvMaterialIcon
-										class="tw-w-2 tw-h-2 tw-shrink-0"
-										:icon="mdiEmailOutline"
-									/>
-									<span
-										class="tw-text-primary tw-font-medium tw-align-middle"
-										style="font-size: 0.875rem;"
-									>
-										Email updates
-									</span>
-								</span>
-							</template>
-							<template #content>
-								<span>We’ll keep you updated. Change your <a
-									href="/settings/email"
-									target="_blank"
-									v-kv-track-event="['portfolio', 'click', 'email-preferences-settings']"
-								>email preferences</a> at any time.</span>
-							</template>
-						</ThankYouCard>
-					</transition>
-				</template>
+					:accepted="acceptedEmailMarketingUpdates"
+					:loans="loans"
+					:latest-loan="latestLoan"
+					@accept-email-updates="acceptedEmailMarketingUpdates = true"
+				/>
 				<MyKivaLatestLoanCard
 					v-else-if="slide?.isLatestLoan"
 					:loan="latestLoan"
@@ -116,20 +71,20 @@
 				<MyKivaCard
 					v-else
 					class="tw-w-full tw-h-full"
-					:bg-image="backgroundImg(slide)"
+					:bg-image="getSlideBackgroundImg(slide, isNonBadgeSlide(slide), isMobile)"
 					:is-bg-top-aligned="isNonBadgeSlide(slide)"
 					:has-gradient="!isNonBadgeSlide(slide)"
-					:title="title(slide)"
-					:subtitle="subTitle(slide)"
+					:title="getSlideTitle(slide)"
+					:subtitle="getSlideSubTitle(slide, isNonBadgeSlide(slide))"
 					:is-black-subtitle="isNonBadgeSlide(slide)"
-					:secondary-cta-text="secondaryCtaText(slide)"
-					:primary-cta-text="primaryCtaText(slide)"
-					:primary-cta-variant="primaryCtaVariant(slide)"
+					:secondary-cta-text="getSlideSecondaryCtaText(slide)"
+					:primary-cta-text="getSlidePrimaryCtaText(slide)"
+					:primary-cta-variant="getSlidePrimaryCtaVariant(slide)"
 					:is-full-width-primary-cta="isNonBadgeSlide(slide)"
-					:is-title-font-sans="isTitleFontSans(slide)"
-					:title-color="titleColor(slide)"
-					@primary-cta-clicked="goToPrimaryCtaUrl(slide)"
-					@secondary-cta-clicked="goToSecondaryCtaUrl(slide)"
+					:is-title-font-sans="isSlideTitleFontSans(slide)"
+					:title-color="getSlideTitleColor(slide, isNonBadgeSlide(slide))"
+					@primary-cta-clicked="onPrimaryCtaClick(slide)"
+					@secondary-cta-clicked="onSecondaryCtaClick(slide)"
 				/>
 			</template>
 		</KvCarousel>
@@ -142,7 +97,6 @@
 </template>
 
 <script setup>
-import { mdiEmailOutline } from '@mdi/js';
 import { parseISO, differenceInDays } from 'date-fns';
 import {
 	computed,
@@ -151,28 +105,41 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import useBreakpoints from '#src/composables/useBreakpoints';
-import { formatUiSetting } from '#src/util/contentfulUtils';
-import { defaultBadges } from '#src/util/achievementUtils';
+import { isNonBadgeSlide } from '#src/util/achievementUtils';
 import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 import useBadgeData, { getJourneysByLoan } from '#src/composables/useBadgeData';
-import { KvCarousel, KvMaterialIcon } from '@kiva/kv-components';
+import { KvCarousel } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import GoalCard from '#src/components/MyKiva/GoalCard';
-import { optimizeContentfulUrl } from '#src/util/imageUtils';
 import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
 import useGoalData from '#src/composables/useGoalData';
-import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCard';
+import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import useOptIn from '#src/composables/useOptIn';
-import { buildUniversalOrderedSlides } from '#src/util/journeyCardOrderingUtils';
-import ThankYouCard from '#src/components/MyKiva/ThankYouCard';
+import {
+	getSlideTitle,
+	getSlideSubTitle,
+	getSlidePrimaryCtaText,
+	getSlidePrimaryCtaVariant,
+	getSlideSecondaryCtaText,
+	isSlideTitleFontSans,
+	getSlideTitleColor,
+	getSlideBackgroundImg,
+} from '#src/util/myKiva/myKivaContentfulUtils';
+import {
+	buildAchievementSlides,
+	checkShouldShowEmailMarketing,
+	checkShowLatestLoan,
+	checkShowSurveyCard,
+	filterNonBadgesSlides,
+	handlePrimaryCtaClick,
+	handleSecondaryCtaClick,
+	buildUniversalOrderedSlides,
+} from '#src/util/myKiva/myKivaJourneyCardUtils';
 
-const JOURNEY_MODAL_KEY = 'journey';
-const REFER_FRIEND_MODAL_KEY = 'refer-friend';
 const TRANSACTION_DAYS_LIMIT = 30;
-const MYKIVA_INPUT_FORM_KEY = 'mykiva-input-form';
 
 const apollo = inject('apollo');
 const cookieStore = inject('cookieStore');
@@ -284,6 +251,14 @@ const props = defineProps({
 	useUniversalOrder: {
 		type: Boolean,
 		default: false
+	},
+	enableSlideLimit: {
+		type: Boolean,
+		default: true
+	},
+	showNonBadgesSlides: {
+		type: Boolean,
+		default: true
 	}
 });
 
@@ -293,48 +268,30 @@ const isSharingModalVisible = ref(false);
 const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
 const acceptedEmailMarketingUpdates = ref(false);
 
-const isLatestLoanAnonymous = computed(() => {
-	return props.latestLoan?.anonymizationLevel === 'full';
-});
-
 const shouldShowEmailMarketingCard = computed(
-	() => props.showPostLendingNextStepsCards && props.postLendingNextStepsEnable
-		&& props.inLendingStats && !isLatestLoanAnonymous.value
-		&& userHasMailUpdatesOptOut() && (props.loans.length > 0 || props.latestLoan !== null)
+	() => props.inLendingStats && checkShouldShowEmailMarketing({
+		showPostLendingNextStepsCards: props.showPostLendingNextStepsCards,
+		postLendingNextStepsEnable: props.postLendingNextStepsEnable,
+		latestLoan: props.latestLoan,
+		hasMailUpdatesOptOut: userHasMailUpdatesOptOut(),
+		loansCount: props.loans.length,
+	})
 );
 const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
 
-const showLatestLoan = computed(() => props.showPostLendingNextStepsCards
-	&& props.postLendingNextStepsEnable && props.latestLoan && !isLatestLoanAnonymous.value);
+const showLatestLoan = computed(() => checkShowLatestLoan({
+	showPostLendingNextStepsCards: props.showPostLendingNextStepsCards,
+	postLendingNextStepsEnable: props.postLendingNextStepsEnable,
+	latestLoan: props.latestLoan,
+}));
 
-const showSurveyCard = computed(() => {
-	const userPreferences = props.userInfo?.userPreferences || {};
-	const parsedPrefs = JSON.parse(userPreferences.preferences || '{}');
-	const isFormSubmitted = (parsedPrefs.savedForms || []).some(form => form.formName === MYKIVA_INPUT_FORM_KEY);
+const showSurveyCard = computed(() => checkShowSurveyCard({
+	showPostLendingNextStepsCards: props.showPostLendingNextStepsCards,
+	postLendingNextStepsEnable: props.postLendingNextStepsEnable,
+	userInfo: props.userInfo,
+}));
 
-	return props.showPostLendingNextStepsCards && !isFormSubmitted && props.postLendingNextStepsEnable;
-});
-
-const getRichTextContent = slide => slide?.fields?.richText?.content ?? [];
-const getRichTextUiSettingsData = slide => {
-	const richTextContent = getRichTextContent(slide);
-	const uiSettings = richTextContent.find(
-		item => item.data?.target?.sys?.contentType?.sys?.id === 'uiSetting'
-	);
-	const uiSettingsTarget = uiSettings?.data?.target ?? {};
-	const uiSettingsData = formatUiSetting(uiSettingsTarget);
-
-	return uiSettingsData?.dataObject ?? {};
-};
-
-const isNonBadgeSlide = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return !defaultBadges.includes(richTextUiSettingsData.achievementKey);
-};
-
-const nonBadgesSlides = computed(() => {
-	return props.slides.filter(slide => isNonBadgeSlide(slide));
-});
+const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.slides));
 
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
@@ -344,42 +301,15 @@ const shouldShowGoalCard = computed(() => {
 	&& !props.hideGoalCard;
 });
 
-const buildAchievementSlides = (includeMilestoneDiff = false) => {
-	const achievementSlides = [];
-	defaultBadges.forEach(badgeKey => {
-		const achievementContent = (props.heroBadgeData ?? []).find(achievement => badgeKey === achievement.id);
-		if (!achievementContent) return;
-		if (isTieredAchievementComplete(achievementContent.achievementData)) return;
-
-		const tier = getActiveTierData(achievementContent);
-		if (!tier?.target) return;
-
-		const contentfulData = achievementContent.contentfulData.find(cData => cData.level === tier.level);
-		const slideData = props.slides.find(slide => {
-			return getRichTextUiSettingsData(slide)?.achievementKey === badgeKey;
-		});
-
-		if (slideData) {
-			achievementSlides.push({
-				...slideData,
-				...(includeMilestoneDiff && {
-					milestoneDiff: Math.max(
-						tier.target - (achievementContent.achievementData?.totalProgressToAchievement ?? 0),
-						0
-					),
-				}),
-				target: tier.target,
-				totalProgressToAchievement: achievementContent.achievementData?.totalProgressToAchievement,
-				badgeImgUrl: contentfulData?.imageUrl,
-				badgeKey,
-			});
-		}
-	});
-	return achievementSlides;
-};
-
 const dynamicOrderedSlides = computed(() => {
-	const achievementSlides = buildAchievementSlides(true);
+	const achievementSlides = buildAchievementSlides({
+		badgesData: props.heroBadgeData,
+		slides: props.slides,
+		getActiveTierData,
+		isTieredAchievementComplete,
+		includeMilestoneDiff: true,
+		sortByMilestoneDiff: true,
+	});
 	let loanJourneys = [];
 
 	const transactionLoans = props.userInfo?.transactions?.values?.filter(t => {
@@ -392,9 +322,7 @@ const dynamicOrderedSlides = computed(() => {
 		loanJourneys = getJourneysByLoan(transactionLoan);
 	}
 
-	let sortedSlides = achievementSlides.sort((a, b) => {
-		return a.milestoneDiff - b.milestoneDiff;
-	});
+	let sortedSlides = achievementSlides;
 
 	if (loanJourneys.length) {
 		sortedSlides.sort((a, b) => loanJourneys.indexOf(b.badgeKey) - loanJourneys.indexOf(a.badgeKey)); // eslint-disable-line max-len
@@ -443,15 +371,20 @@ const dynamicOrderedSlides = computed(() => {
 });
 
 const slideLimit = computed(() => {
-	if (isMobile.value) return 3;
+	if (isMobile.value && props.enableSlideLimit) return 3;
 	return props.slidesNumber;
 });
 
 const universalOrderedSlides = computed(() => {
-	const achievementSlides = buildAchievementSlides();
+	const achievementSlides = buildAchievementSlides({
+		badgesData: props.heroBadgeData,
+		slides: props.slides,
+		getActiveTierData,
+		isTieredAchievementComplete,
+	});
 	return buildUniversalOrderedSlides({
 		achievementSlides,
-		nonBadgesSlides: nonBadgesSlides.value,
+		nonBadgesSlides: props.showNonBadgesSlides ? nonBadgesSlides.value : [],
 		shouldShowGoalCard: shouldShowGoalCard.value,
 		shouldShowEmailMarketingCard: shouldShowEmailMarketingCard.value,
 		showLatestLoan: showLatestLoan.value,
@@ -464,122 +397,26 @@ const cardOrderingSystem = computed(() => {
 	return props.useUniversalOrder ? universalOrderedSlides.value : dynamicOrderedSlides.value;
 });
 
-const getMediaImgUrl = media => {
-	const baseUrl = media?.data?.target?.fields?.contentLight?.[0]?.fields?.file?.url || '';
-	return optimizeContentfulUrl(baseUrl, 336);
+const onPrimaryCtaClick = slide => {
+	handlePrimaryCtaClick({
+		slide,
+		trackEvent: $kvTrackEvent,
+		navigate: url => router.push(url),
+		modalHandlers: {
+			openSharingModal: () => { isSharingModalVisible.value = true; },
+		},
+	});
 };
 
-const backgroundImg = slide => {
-	const richTextContent = getRichTextContent(slide);
-	if (isNonBadgeSlide(slide)) {
-		const mobileMediaData = richTextContent.find(
-			item => item.data?.target?.sys?.contentType?.sys?.id === 'media'
-			&& item.data?.target?.fields?.key.includes('mobile')
-		);
-		const desktopMediaData = richTextContent.find(
-			item => item.data?.target?.sys?.contentType?.sys?.id === 'media'
-			&& item.data?.target?.fields?.key.includes('desktop')
-		);
-
-		if (isMobile.value) {
-			return getMediaImgUrl(mobileMediaData);
-		}
-		return getMediaImgUrl(desktopMediaData);
-	}
-
-	const backgroundImage = richTextContent.find(
-		item => item.nodeType === 'embedded-asset-block' && item.data?.target?.fields?.file?.url
-	);
-	const baseUrl = backgroundImage?.data?.target?.fields?.file?.url || '';
-	return optimizeContentfulUrl(baseUrl, 336);
-};
-
-const title = slide => {
-	if (slide.totalProgressToAchievement) {
-		return `Your progress: ${slide.totalProgressToAchievement}/${slide.target} loans`;
-	}
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-
-	return richTextUiSettingsData?.title || '';
-};
-
-const subTitle = slide => {
-	if (isNonBadgeSlide(slide)) {
-		const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-
-		return richTextUiSettingsData.contentText || '';
-	}
-
-	if (slide.totalProgressToAchievement) {
-		return 'Keep lending to reach your next achievement';
-	}
-
-	return 'Get started to reach your first achievement';
-};
-
-const primaryCtaText = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richTextUiSettingsData.primaryCtaText || '';
-};
-
-const primaryCtaVariant = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richTextUiSettingsData.primaryCtaVariant || 'secondary';
-};
-
-const secondaryCtaText = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richTextUiSettingsData.secondaryCtaText || '';
-};
-
-const isTitleFontSans = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	return richTextUiSettingsData.titleSans === 'true';
-};
-
-const titleColor = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	if (!richTextUiSettingsData.titleColor && isNonBadgeSlide(slide)) {
-		return 'tw-text-action';
-	}
-	return richTextUiSettingsData.titleColor;
-};
-
-const getUrlParamsFromString = string => {
-	const urlSplit = string.split('?');
-	return urlSplit[1];
-};
-
-const goToPrimaryCtaUrl = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	const primaryCtaUrl = richTextUiSettingsData.primaryCtaUrl || '';
-	$kvTrackEvent('portfolio', 'click', `primary-cta-${primaryCtaText(slide)}`, richTextUiSettingsData.achievementKey);
-	const urlParams = getUrlParamsFromString(primaryCtaUrl);
-
-	if (urlParams && urlParams.includes(REFER_FRIEND_MODAL_KEY)) {
-		const paramsSplit = urlParams.split('=');
-		if (paramsSplit && paramsSplit[1] === 'true') {
-			// open sharing modal
-			isSharingModalVisible.value = true;
-		}
-	} else {
-		router.push(primaryCtaUrl);
-	}
-};
-
-const goToSecondaryCtaUrl = slide => {
-	const richTextUiSettingsData = getRichTextUiSettingsData(slide);
-	const secondaryCtaUrl = richTextUiSettingsData.secondaryCtaUrl || '';
-	// eslint-disable-next-line max-len
-	$kvTrackEvent('portfolio', 'click', `secondary-cta-${secondaryCtaText(slide)}`, richTextUiSettingsData.achievementKey);
-	const urlParams = getUrlParamsFromString(secondaryCtaUrl);
-
-	if (urlParams && urlParams.includes(JOURNEY_MODAL_KEY)) {
-		const { achievementKey } = richTextUiSettingsData;
-		emit('update-journey', achievementKey);
-	} else {
-		router.push(secondaryCtaUrl);
-	}
+const onSecondaryCtaClick = slide => {
+	handleSecondaryCtaClick({
+		slide,
+		trackEvent: $kvTrackEvent,
+		navigate: url => router.push(url),
+		modalHandlers: {
+			updateJourney: achievementKey => emit('update-journey', achievementKey),
+		},
+	});
 };
 
 const singleSlideWidth = computed(() => {

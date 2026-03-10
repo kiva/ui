@@ -1,4 +1,4 @@
-import { isNonBadgeSlide } from '#src/util/achievementUtils';
+import { isNonBadgeSlide, defaultBadges } from '#src/util/achievementUtils';
 import {
 	getRichTextUiSettingsData,
 	getSlidePrimaryCtaText,
@@ -215,4 +215,61 @@ export const buildUniversalOrderedSlides = ({
 	}
 
 	return universalSequence;
+};
+
+/**
+ * Build achievement slides from badge data and contentful slides
+ *
+ * @param {Object} options
+ * @param {Array} options.badgesData - Combined badge + contentful data (from combineBadgeData)
+ * @param {Array} options.slides - Contentful carousel slides
+ * @param {Boolean} options.includeMilestoneDiff - Whether to include milestoneDiff
+ * @param {Function} options.isTieredAchievementComplete - From useBadgeData
+ * @param {Function} options.getActiveTierData - From useBadgeData
+ * @returns {Array} Achievement slide objects
+ */
+export const buildAchievementSlides = ({
+	badgesData,
+	slides,
+	getActiveTierData,
+	isTieredAchievementComplete,
+	includeMilestoneDiff = false,
+	sortByMilestoneDiff = false,
+}) => {
+	const achievementSlides = [];
+	defaultBadges.forEach(badgeKey => {
+		const achievementContent = (badgesData ?? []).find(achievement => badgeKey === achievement.id);
+		if (!achievementContent) return;
+		if (isTieredAchievementComplete(achievementContent.achievementData)) return;
+
+		const tier = getActiveTierData(achievementContent);
+		if (!tier?.target) return;
+
+		const contentfulData = achievementContent.contentfulData.find(cData => cData.level === tier.level);
+		const slideData = slides.find(slide => {
+			return getRichTextUiSettingsData(slide)?.achievementKey === badgeKey;
+		});
+
+		if (slideData) {
+			achievementSlides.push({
+				...slideData,
+				...(includeMilestoneDiff && {
+					milestoneDiff: Math.max(
+						tier.target - (achievementContent.achievementData?.totalProgressToAchievement ?? 0),
+						0
+					),
+				}),
+				target: tier.target,
+				totalProgressToAchievement: achievementContent.achievementData?.totalProgressToAchievement,
+				badgeImgUrl: contentfulData?.imageUrl,
+				badgeKey,
+			});
+		}
+	});
+
+	if (sortByMilestoneDiff) {
+		achievementSlides.sort((a, b) => a.milestoneDiff - b.milestoneDiff);
+	}
+
+	return achievementSlides;
 };

@@ -33,7 +33,7 @@
 				:hide-goal-card="hideGoalCard"
 				@open-goal-modal="showGoalModal = true"
 			/>
-			<div v-if="loadingRegionData" class="loading-card tw-col-span-2" style="min-height: 320px;">
+			<div v-if="goalProgressLoading" class="loading-card tw-col-span-2" style="min-height: 320px;">
 				<div class="tw-w-full tw-h-auto tw-p-1 md:tw-p-2">
 					<KvLoadingPlaceholder class="!tw-h-4 tw-w-full tw-max-w-16 tw-my-1" />
 					<KvLoadingPlaceholder class="tw-mb-2" />
@@ -54,18 +54,6 @@
 		</h3>
 
 		<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
-			<div
-				v-for="n in (loadingSlides ? (isMobile ? 1 : 3) : 0)"
-				:key="`loading-achievement-${n}`"
-				class="loading-card"
-			>
-				<div class="tw-flex tw-flex-col tw-justify-between tw-h-full">
-					<KvLoadingPlaceholder class="!tw-h-4 tw-w-full tw-max-w-16 tw-my-1" />
-					<KvLoadingPlaceholder class="tw-mb-2" />
-					<KvLoadingPlaceholder class="!tw-h-3 tw-w-full tw-mb-1 tw-max-w-sm" />
-					<KvLoadingPlaceholder class="!tw-h-6 tw-mb-1" />
-				</div>
-			</div>
 			<template v-if="!isMobile">
 				<MyKivaCard
 					v-for="slide in achievementSlides"
@@ -124,18 +112,6 @@
 		</h3>
 
 		<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
-			<div
-				v-for="n in (loadingSlides ? (isMobile ? 1 : 3) : 0)"
-				:key="`loading-impact-${n}`"
-				class="loading-card"
-			>
-				<div class="tw-flex tw-flex-col tw-justify-between tw-h-full">
-					<KvLoadingPlaceholder class="!tw-h-4 tw-w-full tw-max-w-16 tw-my-1" />
-					<KvLoadingPlaceholder class="tw-mb-2" />
-					<KvLoadingPlaceholder class="!tw-h-3 tw-w-full tw-mb-1 tw-max-w-sm" />
-					<KvLoadingPlaceholder class="!tw-h-6 tw-mb-1" />
-				</div>
-			</div>
 			<template v-if="!isMobile">
 				<MyKivaEmailUpdatesTransition
 					v-if="shouldShowEmailMarketingCard || acceptedEmailMarketingUpdates"
@@ -236,15 +212,15 @@
 
 <script setup>
 import {
-	ref,
-	inject,
 	computed,
+	inject,
 	onMounted,
-	watch,
+	ref,
+	watch
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { mdiArrowLeft } from '@mdi/js';
-import { KvMaterialIcon, KvButton } from '@kiva/kv-components';
+import { KvMaterialIcon, KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
 
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
@@ -259,7 +235,7 @@ import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 
 import useBadgeData from '#src/composables/useBadgeData';
-import { buildAchievementSlides, isNonBadgeSlide } from '#src/util/achievementUtils';
+import { isNonBadgeSlide } from '#src/util/achievementUtils';
 import {
 	getSlideTitle,
 	getSlideSubTitle,
@@ -268,9 +244,10 @@ import {
 	getSlideSecondaryCtaText,
 	isSlideTitleFontSans,
 	getSlideTitleColor,
-	getSlideBackgroundImg,
+	getSlideBackgroundImg
 } from '#src/util/myKiva/myKivaContentfulUtils';
 import {
+	buildAchievementSlides,
 	checkShouldShowEmailMarketing,
 	checkShowLatestLoan,
 	checkShowSurveyCard,
