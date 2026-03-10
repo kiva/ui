@@ -372,6 +372,7 @@ const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
+const BANDIT_UPSELL_EXP_KEY = 'mykiva_bandit_upsell_enable';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -490,6 +491,7 @@ export default {
 			thanksPageGoalsEntrypointEnable: false,
 			lenderLoansIds: [],
 			mdiGiftOutline,
+			isBanditUpsellExpEnabled: false,
 		};
 	},
 	apollo: {
@@ -528,6 +530,7 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: NEXT_STEPS_EXP_KEY } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: BANDIT_UPSELL_EXP_KEY } }),
 					]);
 				})
 				.then(response => {
@@ -706,6 +709,19 @@ export default {
 			},
 			this.$kvTrackEvent,
 			'EXP-MP-1984-Sept2025',
+		);
+
+		// MyKiva Bandit Upsell Experiment Mar2026 MP-2513
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			BANDIT_UPSELL_EXP_KEY,
+			version => {
+				this.isBanditUpsellExpEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-2513-Mar2026',
 		);
 	},
 	mounted() {
