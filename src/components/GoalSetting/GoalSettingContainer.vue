@@ -1,74 +1,134 @@
 <template>
 	<div class="tw-min-h-screen lg:tw-min-h-full md:tw-mt-5 tw-mt-2">
-		<button
-			class="tw-flex tw-gap-1 tw-items-center tw-font-medium tw-mb-4"
-			@click="goToDashboard"
+		<div
+			class="tw-flex tw-items-center tw-justify-between tw-mb-4"
+			:class="{'!tw-justify-end': userIsEditingGoal}"
 		>
-			<KvMaterialIcon
-				:icon="mdiChevronLeft"
-				class="tw-ml-0.5"
-			/>
-			To dashboard
-		</button>
+			<button
+				v-if="!userIsEditingGoal"
+				class="tw-flex tw-gap-1 tw-items-center tw-font-medium"
+				@click="goToDashboard"
+			>
+				<KvMaterialIcon
+					:icon="mdiChevronLeft"
+					class="tw-ml-0.5"
+				/>
+				{{ backToCopy }}
+			</button>
+			<KvUtilityMenu
+				v-if="goalEditingEnable && !isGoalCompleted && isGoalSet "
+				menu-position="right-aligned"
+				button-size="small"
+				menu-border-class="tw-border tw-border-tertiary tw-rounded-md"
+				class="tw-top-0"
+			>
+				<ul class="tw-m-0 tw-p-0">
+					<li
+						v-for="action in menuActions"
+						:key="action.label"
+						class="tw-list-none"
+					>
+						<button
+							@click.prevent="onSelect(action)"
+							class="tw-w-full tw-px-2 tw-py-2 tw-rounded-md hover:tw-bg-secondary tw-font-medium"
+						>
+							{{ action.label }}
+						</button>
+					</li>
+				</ul>
+			</KvUtilityMenu>
+		</div>
+
 		<KvLoadingPlaceholder
-			v-if="loading"
+			v-if="loading || emailLoading"
 			class="!tw-rounded tw-mx-auto"
 			style="max-width: 644px; min-height: 495px;"
 		/>
-		<div
-			v-else
-			class="tw-mx-auto"
-			style="max-width: 644px;"
-		>
-			<GoalSelector
-				class="goal-selector"
-				v-show="!showCategories"
-				:is-goal-set="isGoalSet"
-				:categories-loan-count="categoriesLoanCount"
-				:tiered-achievements="tieredAchievements"
-				:go-to-url="ctaHref"
-				:is-editing="isEditing"
-				:selected-category-id="selectedCategory.badgeId"
-				:selected-category-name="selectedCategory.name"
-				:goal-loans="loanTarget"
-				tracking-category="event-tracking"
-				@set-goal-target="setTarget($event)"
-				@set-goal="setGoal($event)"
-				@edit-goal="editGoalCategory"
-			/>
+		<template v-else>
 			<div
-				v-show="showCategories"
+				class="tw-mx-auto"
+				style="max-width: 644px;"
 			>
-				<h2
-					class="tw-mb-3 tw-text-left lg:tw-text-center"
-				>
-					Choose an impact area
-				</h2>
-				<component
-					v-show="showCategories"
-					:is="contentComponent"
-					:categories="categories"
-					:pre-selected-category="selectedCategory.id"
-					:selected-category="selectedCategory"
-					:selected-goal-number="loanTarget"
-					@category-selected="handleCategorySelected"
-					@number-changed="handleNumberChanged"
+				<GoalSelector
+					class="goal-selector"
+					v-show="!showCategories"
+					:is-goal-set="isGoalSet"
+					:categories-loan-count="categoriesLoanCount"
+					:tiered-achievements="tieredAchievements"
+					:go-to-url="ctaHref"
+					:is-editing="isEditing"
+					:selected-category-id="selectedCategory.badgeId"
+					:selected-category-name="selectedCategory.name"
+					:goal-loans="goalTarget"
+					tracking-category="event-tracking"
+					:goal-editing-enable="goalEditingEnable"
+					:is-updating-goal="userIsEditingGoal"
+					:fetched-current-year-loans="fetchedCurrentYearLoans"
+					:loading-current-year="loadingCurrentYear"
+					:goal-progress="goalProgress"
+					:is-goal-completed="isGoalCompleted"
+					@set-goal-target="setTarget($event)"
+					@set-goal="setGoal($event)"
+					@update-goal="updateGoal($event)"
+					@edit-goal="editGoalCategory"
+					@edit-goal-from-settings="userIsEditingGoal = true"
 				/>
 				<div
-					class="buttons tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-flex tw-flex-col tw-justify-center
-						tw-w-full lg:tw-w-auto tw-z-sticky lg:tw-z-auto tw-gap-1.5 tw-mt-4 tw-bg-primary
-						tw-p-2.5 lg:tw-p-0"
+					v-show="showCategories"
 				>
-					<KvButton
-						class="tw-flex-none tw-mx-auto tw-w-full lg:tw-w-auto"
-						style="min-width: 324px;"
-						@click="handleClick"
+					<h2
+						class="tw-mb-3 tw-text-left lg:tw-text-center"
 					>
-						{{ ctaCopy }}
-					</KvButton>
+						Choose an impact area
+					</h2>
+					<component
+						v-show="showCategories"
+						:key="categoryFormKey"
+						:is="contentComponent"
+						:categories="categories"
+						:pre-selected-category="selectedCategory.id"
+						:selected-category="selectedCategory"
+						:selected-goal-number="goalSelectorLoanTarget"
+						@category-selected="handleCategorySelected"
+					/>
+					<div
+						class="buttons tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-flex tw-flex-col
+							tw-justify-center tw-w-full lg:tw-w-auto tw-z-sticky lg:tw-z-auto tw-gap-1.5
+							tw-mt-4 tw-bg-primary tw-p-2.5 lg:tw-p-0"
+					>
+						<KvButton
+							class="tw-flex-none tw-mx-auto tw-w-full lg:tw-w-auto"
+							style="min-width: 324px;"
+							@click="handleClick"
+						>
+							{{ ctaCopy }}
+						</KvButton>
+					</div>
 				</div>
 			</div>
-		</div>
+		</template>
+
+		<!-- Goal Actions modal -->
+		<KvLightbox
+			:visible="isDeleteGoalModalVisible"
+			title="Delete your 2026 impact goal?"
+			@lightbox-closed="handleKeepGoal"
+		>
+			<!-- eslint-disable-next-line max-len -->
+			This will remove your goal and its progress from your dashboard. This action <br> can’t be undone, but you can create a new goal anytime.
+			<template #controls>
+				<KvButton variant="secondary" @click="handleKeepGoal">
+					Keep Goal
+				</KvButton>
+				<KvButton
+					variant="primary"
+					@click="handleDeleteGoal"
+					:state="isDeleting ? 'loading' : ''"
+				>
+					Delete goal
+				</KvButton>
+			</template>
+		</KvLightbox>
 	</div>
 </template>
 
@@ -78,14 +138,29 @@ import {
 	inject,
 	onMounted,
 	computed,
-	defineAsyncComponent
+	defineAsyncComponent,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { mdiChevronLeft } from '@mdi/js';
-import { KvLoadingPlaceholder, KvMaterialIcon, KvButton } from '@kiva/kv-components';
+import {
+	KvLoadingPlaceholder,
+	KvMaterialIcon,
+	KvButton,
+	KvLightbox,
+	KvUtilityMenu
+} from '@kiva/kv-components';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
-import useGoalData from '#src/composables/useGoalData';
-import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
+import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
+import { buildEmailFlowGoalData } from '#src/util/goalEmailFlow';
+import logFormatter from '#src/util/logFormatter';
+import {
+	ID_SUPPORT_ALL,
+	ID_WOMENS_EQUALITY,
+	ID_CLIMATE_ACTION,
+	ID_REFUGEE_EQUALITY,
+	ID_BASIC_NEEDS,
+	ID_US_ECONOMIC_EQUALITY,
+} from '#src/composables/useBadgeData';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -100,9 +175,29 @@ const {
 	getCtaHref,
 	goalProgress,
 	getLoanStatsByYear,
+	userPreferences,
+	removeGoalFromPreferences,
+	updateCurrentGoal,
 } = useGoalData({ apollo });
 
 const props = defineProps({
+	/**
+	 * Target value passed via ?target= query param from an email link.
+	 * When present, the component auto-creates a goal and shows
+	 * a confirmation state instead of the normal form flow.
+	 */
+	emailTarget: {
+		type: String,
+		default: null,
+	},
+	/**
+	 * Category passed via ?category= query param from an email link.
+	 * Must be one of the valid badge IDs; falls back to support-all if absent or invalid.
+	 */
+	emailCategory: {
+		type: String,
+		default: null,
+	},
 	/**
 	 * Total number of loans across all categories
 	 */
@@ -124,18 +219,84 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	/**
+	 * Is goal editing enabled
+	 */
+	goalEditingEnable: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const isGoalSet = ref(false);
-const loanTarget = ref(0);
+// Variable used to create/update the goal target based on user selection
+const goalSelectorLoanTarget = ref(0);
 const showCategories = ref(false);
 const ctaHref = ref('');
 const categoryFormKey = ref(0);
 const isEditing = ref(false);
 const formStep = ref(1);
+const isDeleteGoalModalVisible = ref(false);
+const userIsEditingGoal = ref(false);
+const isDeleting = ref(false);
+const fetchedCurrentYearLoans = ref(0);
+// This loading state is specifically for goal options
+const loadingCurrentYear = ref(false);
+
+// Email flow — set during creation so the loading placeholder renders on the first tick
+const emailLoading = ref(props.emailTarget != null);
+
+const VALID_EMAIL_CATEGORIES = new Set([
+	ID_SUPPORT_ALL,
+	ID_WOMENS_EQUALITY,
+	ID_CLIMATE_ACTION,
+	ID_REFUGEE_EQUALITY,
+	ID_BASIC_NEEDS,
+	ID_US_ECONOMIC_EQUALITY,
+]);
+
+function validateEmailTarget(param) {
+	if (param == null || Array.isArray(param)) return null;
+	const n = Number(param);
+	if (!Number.isInteger(n) || n <= 0) return null;
+	return n;
+}
+
+const validEmailTarget = computed(() => validateEmailTarget(props.emailTarget));
+const validEmailCategory = computed(() => {
+	if (props.emailCategory && VALID_EMAIL_CATEGORIES.has(props.emailCategory)) {
+		return props.emailCategory;
+	}
+	return ID_SUPPORT_ALL;
+});
+
+const isEmailFlow = computed(() => props.emailTarget != null);
 
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
 const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
+
+const menuActions = [
+	{ label: 'Delete goal', value: 'delete-goal' },
+];
+
+const onSelect = async action => {
+	isDeleteGoalModalVisible.value = true;
+	$kvTrackEvent('event-tracking', 'click', action.value);
+};
+
+const handleDeleteGoal = async () => {
+	isDeleting.value = true;
+	$kvTrackEvent('event-tracking', 'click', 'confirm-delete-goal');
+	await removeGoalFromPreferences(userGoal.value);
+	router.push('/mykiva');
+};
+
+const handleKeepGoal = () => {
+	if (isDeleteGoalModalVisible.value) {
+		isDeleteGoalModalVisible.value = false;
+		$kvTrackEvent('event-tracking', 'click', 'cancel-delete-goal');
+	}
+};
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
@@ -157,11 +318,10 @@ const editGoalCategory = () => {
 };
 
 const setTarget = target => {
-	loanTarget.value = target;
+	goalSelectorLoanTarget.value = target;
 };
 
-const setGoal = async preferences => {
-	await storeGoalPreferences(preferences);
+const recalculateGoalInformation = async () => {
 	// For ID_SUPPORT_ALL, load yearly loan count to calculate correct progress
 	let currentProgress = goalProgress.value;
 	if (selectedCategory.value?.badgeId === ID_SUPPORT_ALL) {
@@ -170,13 +330,24 @@ const setGoal = async preferences => {
 	}
 	// Use goalProgress to calculate remaining loans needed based on current year progress
 	ctaHref.value = getCtaHref(
-		loanTarget.value,
+		goalSelectorLoanTarget.value,
 		selectedCategory.value?.badgeId,
 		router,
 		currentProgress
 	);
 	isGoalSet.value = true;
 	showCategories.value = false;
+	userIsEditingGoal.value = false;
+};
+
+const updateGoal = async preferences => {
+	await updateCurrentGoal(userGoal.value, preferences);
+	await recalculateGoalInformation();
+};
+
+const setGoal = async preferences => {
+	await storeGoalPreferences(preferences);
+	await recalculateGoalInformation();
 };
 
 const handleCategorySelected = categoryId => {
@@ -204,7 +375,7 @@ const handleClick = () => {
 
 	const currentYear = new Date().getFullYear();
 	const goalName = `goal-${categorySelected}-${currentYear}`;
-	const target = loanTarget.value;
+	const target = goalSelectorLoanTarget.value;
 	const dateStarted = new Date().toISOString();
 	const status = 'in-progress';
 
@@ -223,17 +394,13 @@ const handleClick = () => {
 		'click',
 		'set-annual-goal',
 		categorySelected,
-		loanTarget.value
+		goalSelectorLoanTarget.value
 	);
 };
 
 const goToDashboard = () => {
 	$kvTrackEvent('event-tracking', 'click', 'back-to-dashboard');
 	router.push('/mykiva');
-};
-
-const handleNumberChanged = number => {
-	console.log(number);
 };
 
 const yearToDate = new Date().getFullYear();
@@ -245,22 +412,75 @@ const ctaCopy = computed(() => {
 	return `Set ${yearToDate} goal`;
 });
 
+const parseGoals = () => JSON.parse(userPreferences.value?.preferences || '{}').goals || [];
+
+function applyGoalState() {
+	if (!userGoal.value?.target) return;
+	const { target, category: goalCategory } = userGoal.value;
+	goalSelectorLoanTarget.value = target;
+	const storedCategory = categories.find(c => c.badgeId === goalCategory);
+	if (storedCategory) {
+		selectedCategory.value = storedCategory;
+	}
+	// Use goalProgress which tracks current year progress
+	ctaHref.value = getCtaHref(target, goalCategory, router, goalProgress.value);
+	isGoalSet.value = true;
+}
+
+async function handleEmailFlow() {
+	const category = validEmailCategory.value;
+
+	const { existingGoal, newGoalPrefs } = buildEmailFlowGoalData({
+		allGoals: parseGoals(),
+		category,
+		validEmailTarget: validEmailTarget.value,
+	});
+
+	if (newGoalPrefs) {
+		try {
+			await storeGoalPreferences(newGoalPrefs);
+		} catch (e) {
+			logFormatter('GoalSettingContainer: failed to store email goal', 'error', { error: e });
+		}
+	}
+
+	if (existingGoal ?? newGoalPrefs) {
+		await loadGoalData({ yearlyProgress: true });
+	} else {
+		logFormatter('GoalSettingContainer: no goal found for email flow', 'error', { category });
+	}
+
+	applyGoalState();
+
+	emailLoading.value = false;
+	$kvTrackEvent('event-tracking', 'view', 'goals-page-email');
+}
+
+const goalTarget = computed(() => {
+	return userGoal.value?.target || 0;
+});
+
+const isGoalCompleted = computed(() => {
+	return userGoal.value?.status === GOAL_STATUS.COMPLETED;
+});
+
+const backToCopy = computed(() => {
+	if (props.emailTarget) {
+		return 'To dashboard';
+	}
+
+	return 'Back to dashboard';
+});
+
 onMounted(async () => {
 	await loadGoalData({ yearlyProgress: true });
-	const isEmptyGoal = Object.keys(userGoal.value || {}).length === 0;
-	if (!isEmptyGoal) {
-		const { target, category } = userGoal.value;
-		// Set loanTarget from stored goal so GoalSelector shows correct target
-		loanTarget.value = target;
-		// Find and set the selected category from stored goal
-		const storedCategory = categories.find(c => c.badgeId === category);
-		if (storedCategory) {
-			selectedCategory.value = storedCategory;
-		}
-		// Use goalProgress which tracks current year progress
-		ctaHref.value = getCtaHref(target, category, router, goalProgress.value);
-		isGoalSet.value = true;
+
+	if (isEmailFlow.value) {
+		await handleEmailFlow();
+		return;
 	}
+
+	applyGoalState();
 	$kvTrackEvent('event-tracking', 'view', 'goals-page');
 });
 </script>

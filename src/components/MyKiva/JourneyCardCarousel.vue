@@ -7,7 +7,7 @@
 			Take the <u>next step</u> on your impact journey
 		</h2>
 		<KvCarousel
-			:key="orderedSlides.length"
+			:key="cardOrderingSystem.length"
 			:embla-options="{
 				loop: false,
 				align: 'start',
@@ -22,7 +22,7 @@
 			@change="handleChange"
 		>
 			<template
-				v-for="(slide, index) in orderedSlides"
+				v-for="(slide, index) in cardOrderingSystem"
 				#[`slide${index}`]
 				:key="index"
 			>
@@ -35,7 +35,8 @@
 					:user-goal="userGoal"
 					:prev-year-loans="womenLoansLastYear"
 					:hide-goal-card="hideGoalCard"
-					@open-goal-modal="$emit('open-goal-modal')"
+					:goal-editing-enable="goalEditingEnable"
+					@open-goal-modal="$emit('open-goal-modal', $event)"
 				/>
 				<MyKivaSurveyCard
 					v-else-if="slide?.isSurveyCard"
@@ -165,7 +166,8 @@ import MyKivaEmailUpdatesCard from '#src/components/MyKiva/MyKivaEmailUpdatesCar
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import useOptIn from '#src/composables/useOptIn';
-import ThankYouCard from '../MyKiva/ThankYouCard';
+import { buildUniversalOrderedSlides } from '#src/util/journeyCardOrderingUtils';
+import ThankYouCard from '#src/components/MyKiva/ThankYouCard';
 
 const JOURNEY_MODAL_KEY = 'journey';
 const REFER_FRIEND_MODAL_KEY = 'refer-friend';
@@ -178,8 +180,6 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
 const {
-	getContentfulLevelData,
-	combineBadgeData,
 	getActiveTierData,
 	isTieredAchievementComplete,
 } = useBadgeData(apollo);
@@ -209,7 +209,7 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
-	heroContentfulData: {
+	heroBadgeData: {
 		type: Array,
 		default: () => ([]),
 	},
@@ -277,6 +277,14 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
+	goalEditingEnable: {
+		type: Boolean,
+		default: false
+	},
+	useUniversalOrder: {
+		type: Boolean,
+		default: false
+	}
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
@@ -307,13 +315,6 @@ const showSurveyCard = computed(() => {
 	return props.showPostLendingNextStepsCards && !isFormSubmitted && props.postLendingNextStepsEnable;
 });
 
-const badgesData = computed(() => {
-	const badgeContentfulData = (props.heroContentfulData ?? [])
-		.map(entry => getContentfulLevelData(entry));
-
-	return combineBadgeData(props.heroTieredAchievements, badgeContentfulData);
-});
-
 const getRichTextContent = slide => slide?.fields?.richText?.content ?? [];
 const getRichTextUiSettingsData = slide => {
 	const richTextContent = getRichTextContent(slide);
@@ -331,6 +332,10 @@ const isNonBadgeSlide = slide => {
 	return !defaultBadges.includes(richTextUiSettingsData.achievementKey);
 };
 
+const nonBadgesSlides = computed(() => {
+	return props.slides.filter(slide => isNonBadgeSlide(slide));
+});
+
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
 
@@ -339,10 +344,43 @@ const shouldShowGoalCard = computed(() => {
 	&& !props.hideGoalCard;
 });
 
-const orderedSlides = computed(() => {
+const buildAchievementSlides = (includeMilestoneDiff = false) => {
 	const achievementSlides = [];
+	defaultBadges.forEach(badgeKey => {
+		const achievementContent = (props.heroBadgeData ?? []).find(achievement => badgeKey === achievement.id);
+		if (!achievementContent) return;
+		if (isTieredAchievementComplete(achievementContent.achievementData)) return;
+
+		const tier = getActiveTierData(achievementContent);
+		if (!tier?.target) return;
+
+		const contentfulData = achievementContent.contentfulData.find(cData => cData.level === tier.level);
+		const slideData = props.slides.find(slide => {
+			return getRichTextUiSettingsData(slide)?.achievementKey === badgeKey;
+		});
+
+		if (slideData) {
+			achievementSlides.push({
+				...slideData,
+				...(includeMilestoneDiff && {
+					milestoneDiff: Math.max(
+						tier.target - (achievementContent.achievementData?.totalProgressToAchievement ?? 0),
+						0
+					),
+				}),
+				target: tier.target,
+				totalProgressToAchievement: achievementContent.achievementData?.totalProgressToAchievement,
+				badgeImgUrl: contentfulData?.imageUrl,
+				badgeKey,
+			});
+		}
+	});
+	return achievementSlides;
+};
+
+const dynamicOrderedSlides = computed(() => {
+	const achievementSlides = buildAchievementSlides(true);
 	let loanJourneys = [];
-	let sortedSlides = [];
 
 	const transactionLoans = props.userInfo?.transactions?.values?.filter(t => {
 		const diffInDays = differenceInDays(new Date(), parseISO(t.createTime));
@@ -354,45 +392,7 @@ const orderedSlides = computed(() => {
 		loanJourneys = getJourneysByLoan(transactionLoan);
 	}
 
-	defaultBadges.forEach(badgeKey => {
-		const achievementContent = badgesData.value.find(achievement => badgeKey === achievement.id);
-
-		if (achievementContent) {
-			// Hidden slide for completed journeys
-			if (isTieredAchievementComplete(achievementContent.achievementData)) {
-				return;
-			}
-
-			const tier = getActiveTierData(achievementContent);
-			if (!tier?.target) {
-				return;
-			}
-
-			const milestoneDiff = Math.max(
-				tier.target - (achievementContent.achievementData?.totalProgressToAchievement ?? 0),
-				0
-			);
-			const contentfulData = achievementContent.contentfulData.find(cData => cData.level === tier.level);
-
-			const slideData = props.slides.find(slide => {
-				const richTextSlideData = getRichTextUiSettingsData(slide);
-				return richTextSlideData?.achievementKey === badgeKey;
-			});
-
-			if (slideData) {
-				achievementSlides.push({
-					...slideData,
-					milestoneDiff,
-					target: tier.target,
-					totalProgressToAchievement: achievementContent.achievementData?.totalProgressToAchievement,
-					badgeImgUrl: contentfulData?.imageUrl,
-					badgeKey,
-				});
-			}
-		}
-	});
-
-	sortedSlides = achievementSlides.sort((a, b) => {
+	let sortedSlides = achievementSlides.sort((a, b) => {
 		return a.milestoneDiff - b.milestoneDiff;
 	});
 
@@ -400,14 +400,10 @@ const orderedSlides = computed(() => {
 		sortedSlides.sort((a, b) => loanJourneys.indexOf(b.badgeKey) - loanJourneys.indexOf(a.badgeKey)); // eslint-disable-line max-len
 	}
 
-	const nonBadgesSlides = props.slides.filter(slide => {
-		return isNonBadgeSlide(slide);
-	});
-
-	if (nonBadgesSlides.length > 0) {
+	if (nonBadgesSlides.value.length > 0) {
 		sortedSlides = [
 			...sortedSlides,
-			...nonBadgesSlides,
+			...nonBadgesSlides.value,
 		];
 	}
 
@@ -444,6 +440,28 @@ const orderedSlides = computed(() => {
 	}
 
 	return sortedSlides;
+});
+
+const slideLimit = computed(() => {
+	if (isMobile.value) return 3;
+	return props.slidesNumber;
+});
+
+const universalOrderedSlides = computed(() => {
+	const achievementSlides = buildAchievementSlides();
+	return buildUniversalOrderedSlides({
+		achievementSlides,
+		nonBadgesSlides: nonBadgesSlides.value,
+		shouldShowGoalCard: shouldShowGoalCard.value,
+		shouldShowEmailMarketingCard: shouldShowEmailMarketingCard.value,
+		showLatestLoan: showLatestLoan.value,
+		showSurveyCard: showSurveyCard.value,
+		slidesNumber: slideLimit.value,
+	});
+});
+
+const cardOrderingSystem = computed(() => {
+	return props.useUniversalOrder ? universalOrderedSlides.value : dynamicOrderedSlides.value;
 });
 
 const getMediaImgUrl = media => {

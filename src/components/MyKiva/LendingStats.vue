@@ -1,13 +1,13 @@
 <template>
 	<div
 		class="tw-mb-2"
-		:class="{'next-steps-link': nextStepsExperimentVariant}"
+		:class="{'next-steps-link': isNextStepsExperimentEnabled}"
 	>
 		<h3 class="tw-text-primary md:tw-mb-1">
 			Next steps recommended for you
 		</h3>
 		<div
-			v-if="nextStepsExperimentVariant"
+			v-if="isNextStepsExperimentEnabled"
 			class="tw-flex md:tw-gap-1 tw-cursor-pointer tw-w-16 md:tw-w-fit tw-justify-end"
 			@click="$router.push('/mykiva/next-steps')"
 		>
@@ -33,7 +33,7 @@
 					:disable-drag="true"
 					:goal-progress-loading="goalProgressLoading"
 					:goal-progress="goalProgress"
-					:hero-contentful-data="heroContentfulData"
+					:hero-badge-data="heroBadgeData"
 					:hero-tiered-achievements="heroTieredAchievements"
 					:lender="lender"
 					:slides-number="1"
@@ -47,7 +47,9 @@
 					:post-lending-next-steps-enable="postLendingNextStepsEnable"
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-					@open-goal-modal="showGoalModal = true"
+					:goal-editing-enable="goalEditingEnable"
+					:use-universal-order="useUniversalOrder"
+					@open-goal-modal="openGoalModal($event)"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
 			</div>
@@ -160,13 +162,13 @@
 		<JourneyCardCarousel
 			v-else
 			class="carousel tw--mt-6"
-			:class="{'carousel-spacing': nextStepsExperimentVariant}"
+			:class="{'carousel-spacing': isNextStepsExperimentEnabled}"
 			user-in-homepage
 			in-lending-stats
 			controls-top-right
 			:goal-progress-loading="goalProgressLoading"
 			:goal-progress="goalProgress"
-			:hero-contentful-data="heroContentfulData"
+			:hero-badge-data="heroBadgeData"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:lender="lender"
 			:loans="loans"
@@ -181,7 +183,9 @@
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-			@open-goal-modal="showGoalModal = true"
+			:goal-editing-enable="goalEditingEnable"
+			:use-universal-order="useUniversalOrder"
+			@open-goal-modal="openGoalModal($event)"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
 		/>
 		<GoalSettingModal
@@ -193,6 +197,7 @@
 			:is-goal-set="isGoalSet"
 			:show-goal-selector="true"
 			:tiered-achievements="heroTieredAchievements"
+			:is-updating-goal="isUpdatingGoal"
 			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
 		/>
@@ -224,7 +229,7 @@ import Oceania from '#src/assets/images/my-kiva/Oceania.png';
 import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
-import JourneyCardCarousel from '#src/components/Contentful/JourneyCardCarousel';
+import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 
 import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
@@ -264,13 +269,13 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
-		heroContentfulData: {
-			type: Object,
-			default: () => ({}),
+		heroBadgeData: {
+			type: Array,
+			default: () => ([]),
 		},
 		heroTieredAchievements: {
-			type: Object,
-			default: () => ({}),
+			type: Array,
+			default: () => ([]),
 		},
 		totalLoans: {
 			type: Number,
@@ -305,6 +310,10 @@ export default {
 			default: 'a',
 			validator: value => ['a', 'b'].includes(value)
 		},
+		goalEditingEnable: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -319,9 +328,13 @@ export default {
 			recordedGoalSet: false,
 			newGoalPrefs: null,
 			showPostLendingNextStepsCards: false,
+			isUpdatingGoal: false,
 		};
 	},
 	computed: {
+		useUniversalOrder() {
+			return this.nextStepsExperimentVariant === 'b';
+		},
 		showRegionExperience() {
 			return this.isNextStepsExpEnabled && !this.postLendingNextStepsEnable && !this.userLentToAllRegions;
 		},
@@ -372,6 +385,7 @@ export default {
 			storeGoalPreferences: goalData.storeGoalPreferences,
 			userGoal: goalData.userGoal,
 			userGoalAchieved: goalData.userGoalAchieved,
+			updateCurrentGoal: goalData.updateCurrentGoal,
 		};
 	},
 	async mounted() {
@@ -448,7 +462,16 @@ export default {
 			// For goalsV2, pass false to not update local state yet
 			// This delays the UI update until the modal is closed
 			const updateLocalState = !this.goalsV2Enabled;
-			await this.storeGoalPreferences(preferences, updateLocalState);
+			if (this.isUpdatingGoal) {
+				await this.updateCurrentGoal(this.userGoal, preferences);
+				this.$kvTrackEvent(
+					'portfolio',
+					'click',
+					'confirm-edit-goal'
+				);
+			} else {
+				await this.storeGoalPreferences(preferences, updateLocalState);
+			}
 			this.newGoalPrefs = preferences;
 			this.isGoalSet = true;
 			if (!this.goalsV2Enabled) {
@@ -458,6 +481,14 @@ export default {
 			}
 		},
 		async closeGoalModal() {
+			if (this.isUpdatingGoal && !this.isGoalSet) {
+				this.$kvTrackEvent(
+					'portfolio',
+					'click',
+					'cancel-goal-edit',
+				);
+			}
+
 			if (this.showGoalModal) {
 				this.showGoalModal = false;
 				this.$kvTrackEvent(
@@ -474,14 +505,24 @@ export default {
 					this.$kvTrackEvent('portfolio', 'show', 'goal-set', this.newGoalPrefs?.category, this.newGoalPrefs?.target);
 					this.recordedGoalSet = true;
 				}
-				// Refresh goal data to update the main card with the ring
-				await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+				if (!this.isUpdatingGoal) {
+					// Refresh goal data to update the main card with the ring
+					await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+				}
 			}
+			this.isGoalSet = false;
 		},
 		closeImpactInsightsModal() {
 			if (this.showImpactInsightsModal) {
 				this.showImpactInsightsModal = false;
 				this.$kvTrackEvent('portfolio', 'click', 'next-step-close-education');
+			}
+		},
+		openGoalModal(event) {
+			this.isUpdatingGoal = event?.updating || false;
+			this.showGoalModal = true;
+			if (this.isUpdatingGoal) {
+				this.$kvTrackEvent('portfolio', 'view', 'edit-goal-modal');
 			}
 		},
 	},

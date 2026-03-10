@@ -6,14 +6,14 @@
 			:loans="loans"
 			:total-loans="totalLoans"
 			:hero-slides="heroSlides"
-			:hero-contentful-data="heroContentfulData"
+			:hero-badge-data="heroBadgeData"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:lending-stats="lendingStats"
 			:transactions="transactions"
 			:user-lent-to-all-regions="userLentToAllRegions"
 			:enable-ai-loan-pills="enableAILoanPills"
 			:sidesheet-loan="sidesheetLoan"
-			:is-next-steps-exp-enabled="isNextStepsExpEnabled"
+			:is-next-steps-exp-enabled="true"
 			:goals-v2-enabled="goalsV2Enabled"
 			:show-new-badge-section="showNewBadgeSection"
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
@@ -21,6 +21,7 @@
 			:goal-refresh-key="goalRefreshKey"
 			:show-my-giving-funds-card="showMyGivingFundsCard"
 			:next-steps-experiment-variant="nextStepsExperimentVariant"
+			:goal-editing-enable="goalEditingEnable"
 		/>
 	</www-page>
 </template>
@@ -41,14 +42,19 @@ import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.g
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY, isGoalsV2Enabled } from '#src/composables/useGoalData';
+import useBadgeData, {
+	applyFreshProgressToAchievements,
+	FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
+	getContentfulLevelData
+} from '#src/composables/useBadgeData';
 import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
-const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 const NEXT_STEPS_REDIRECT_EXP_KEY = 'mykiva_next_steps_redirect';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 const NEW_BADGE_SECTION_KEY = 'new_badge_section_enable';
 const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
+const GOAL_EDITING_KEY = 'goal_editing_enable';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -66,9 +72,11 @@ export default {
 		const apollo = inject('apollo');
 
 		const goalDataComposable = useGoalData({ apollo });
+		const { combineBadgeData } = useBadgeData();
 		provide('goalData', goalDataComposable);
 
 		return {
+			combineBadgeData,
 			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
 			loadGoalData: goalDataComposable.loadGoalData,
 			renewAnnualGoal: goalDataComposable.renewAnnualGoal,
@@ -77,7 +85,7 @@ export default {
 	},
 	data() {
 		return {
-			heroContentfulData: [],
+			heroBadgeContentfulData: [],
 			heroSlides: [],
 			heroTieredAchievements: [],
 			currentYearTieredAchievements: [],
@@ -89,7 +97,6 @@ export default {
 			userInfo: {},
 			userLentToAllRegions: false,
 			sidesheetLoan: {},
-			isNextStepsExpEnabled: undefined,
 			goalsEntrypointEnable: false,
 			showNewBadgeSection: false,
 			postLendingNextStepsEnable: false,
@@ -97,11 +104,16 @@ export default {
 			goalRefreshKey: 0,
 			showMyGivingFundsCard: false,
 			nextStepsExperimentVariant: null,
+			goalEditingEnable: false,
+			recentTransactionLoans: [],
 		};
 	},
 	computed: {
 		goalsV2Enabled() {
 			return isGoalsV2Enabled(this.goalsEntrypointEnable);
+		},
+		heroBadgeData() {
+			return this.combineBadgeData(this.heroTieredAchievements, this.heroBadgeContentfulData);
 		},
 	},
 	apollo: {
@@ -113,12 +125,18 @@ export default {
 				client.query({ query: lendingStatsQuery }),
 				client.query({
 					query: userAchievementProgressQuery,
-					variables: { year: LAST_YEAR_KEY },
+					variables: {
+						year: LAST_YEAR_KEY,
+						loanPurchasesLimit: FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
+					},
 					fetchPolicy: 'network-only',
 				}),
 				client.query({
 					query: userAchievementProgressQuery,
-					variables: { year: CURRENT_YEAR },
+					variables: {
+						year: CURRENT_YEAR,
+						loanPurchasesLimit: FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
+					},
 					fetchPolicy: 'network-only',
 				}),
 				loanId
@@ -134,7 +152,7 @@ export default {
 				}),
 				client.query({
 					query: experimentAssignmentQuery,
-					variables: { id: NEXT_STEPS_EXP_KEY },
+					variables: { id: NEXT_STEPS_REDIRECT_EXP_KEY },
 				}),
 			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
@@ -142,6 +160,25 @@ export default {
 		},
 	},
 	methods: {
+		applyMyKivaFreshProgress() {
+			this.recentTransactionLoans = getRecentTransactionLoans(this.transactions);
+			const achievements = applyFreshProgressToAchievements({
+				achievements: this.heroTieredAchievements,
+				freshProgressLoans: this.recentTransactionLoans,
+			});
+			this.heroTieredAchievements = achievements;
+		},
+		readTieredAchievementsFromCache(year) {
+			try {
+				const queryResult = this.apollo.readQuery({
+					query: userAchievementProgressQuery,
+					variables: { year, loanPurchasesLimit: FRESH_PROGRESS_LOAN_PURCHASE_LIMIT },
+				});
+				return queryResult?.userAchievementProgress?.tieredLendingAchievements ?? [];
+			} catch (error) {
+				return [];
+			}
+		},
 		fetchMyKivaData() {
 			try {
 				const myKivaQueryResult = this.apollo.readQuery({ query: myKivaQuery });
@@ -214,10 +251,14 @@ export default {
 				this.goalsEntrypointEnable = readBoolSetting(myKivaQueryResult, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.showNewBadgeSection = readBoolSetting(myKivaQueryResult, `general.${NEW_BADGE_SECTION_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.postLendingNextStepsEnable = readBoolSetting(myKivaQueryResult, `general.${POST_LENDING_NEXT_STEPS_KEY}.value`) ?? false; // eslint-disable-line max-len
+				this.goalEditingEnable = readBoolSetting(myKivaQueryResult, `general.${GOAL_EDITING_KEY}.value`) ?? false; // eslint-disable-line max-len
 
 				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
 					...myKivaQueryResult.my.latestLoan.values[0].loan,
 					amount: myKivaQueryResult.my.latestLoan.values[0]?.amount || null,
+					/* totalAmountPurchased includes both the lender amount and any lending credit */
+					totalAmountPurchased: myKivaQueryResult.my.latestLoan.values[0].loan
+						?.userProperties?.loanBalance?.totalAmountPurchased || null,
 					/* there is an edge case where an user have a promo credit in his/her account and purchase a loan,
 					the final transaction is split out. As each item share the same transaction id we include the others
 					items to sum their amounts and get the total amount lent */
@@ -232,17 +273,10 @@ export default {
 	created() {
 		try {
 			this.fetchMyKivaData();
-			const achievementsResult = this.apollo.readQuery({
-				query: userAchievementProgressQuery,
-				variables: { year: LAST_YEAR_KEY }
-			});
-			this.heroTieredAchievements = achievementsResult.userAchievementProgress?.tieredLendingAchievements ?? [];
-			const currentYearResult = this.apollo.readQuery({
-				query: userAchievementProgressQuery,
-				variables: { year: CURRENT_YEAR }
-			});
-			// eslint-disable-next-line max-len
-			this.currentYearTieredAchievements = currentYearResult.userAchievementProgress?.tieredLendingAchievements ?? [];
+			this.heroTieredAchievements = this.readTieredAchievementsFromCache(LAST_YEAR_KEY);
+			this.currentYearTieredAchievements = this.readTieredAchievementsFromCache(CURRENT_YEAR);
+			// Apply centralized fresh progress during creation to avoid initial stale render.
+			this.applyMyKivaFreshProgress();
 			const contentfulChallengeResult = this.apollo.readQuery({
 				query: contentfulEntriesQuery,
 				variables: { contentType: 'challenge', limit: 200 }
@@ -255,22 +289,11 @@ export default {
 				}
 			});
 			this.heroSlides = slidesResult.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
-			this.heroContentfulData = contentfulChallengeResult.contentful?.entries?.items ?? [];
+			this.heroBadgeContentfulData = (contentfulChallengeResult.contentful?.entries?.items ?? [])
+				.map(entry => getContentfulLevelData(entry));
 		} catch (e) {
 			logReadQueryError(e, 'MyKivaPage created');
 		}
-
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
-			NEXT_STEPS_EXP_KEY,
-			version => {
-				this.isNextStepsExpEnabled = version === 'b';
-			},
-			this.$kvTrackEvent,
-			'EXP-MP-1984-Sept2025',
-		);
 
 		initializeExperiment(
 			this.cookieStore,
@@ -313,7 +336,11 @@ export default {
 				);
 
 				// Fix goals incorrectly marked as completed due to progress double-counting bug
-				const { wasFixed } = await this.fixIncorrectlyCompletedGoals();
+				const { wasFixed } = await this.fixIncorrectlyCompletedGoals({
+					freshProgressLoans: this.recentTransactionLoans,
+					tieredAchievements: this.currentYearTieredAchievements,
+					transactions: this.transactions,
+				});
 
 				if (showRenewedAnnualGoalToast || wasFixed) {
 					if (showRenewedAnnualGoalToast) {
@@ -330,17 +357,13 @@ export default {
 			logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
 		}
 
-		// Load goal data with fresh progress from recent transaction loans
-		if (this.isNextStepsExpEnabled) {
-			const recentTransactionLoans = getRecentTransactionLoans(this.transactions);
-			await this.loadGoalData({
-				year: CURRENT_YEAR,
-				yearlyProgress: this.goalsV2Enabled,
-				freshProgressLoans: recentTransactionLoans,
-				tieredAchievements: this.currentYearTieredAchievements,
-				transactions: this.transactions
-			});
-		}
+		await this.loadGoalData({
+			year: CURRENT_YEAR,
+			yearlyProgress: this.goalsV2Enabled,
+			freshProgressLoans: this.recentTransactionLoans,
+			tieredAchievements: this.currentYearTieredAchievements,
+			transactions: this.transactions,
+		});
 	},
 };
 </script>

@@ -76,17 +76,10 @@ const countryPPP = computed(() => {
 });
 
 const amount = computed(() => {
-	const initialAmount = Math.abs(props.latestLoan?.amount) || 0;
-	if (props.latestLoan?.otherLoans?.length > 0 && props.latestLoan?.id) {
-		/* there is an edge case where an user have a promo credit in his/her account and purchase a loan,
-		the final transaction is split out. As each item share the same transaction id we include the others
-		items to sum their amounts and get the total amount lent */
-		const totalAmount = props.latestLoan.otherLoans.reduce((sum, item) => {
-			return props.latestLoan?.id === item?.loan.id ? sum + Math.abs(item?.loan.amount || 0) : sum;
-		}, initialAmount);
-		return numeral(totalAmount).format('$0,0[.]00');
-	}
-	return props.latestLoan?.amount ? numeral(initialAmount).format('$0,0[.]00') : null;
+	/* Use totalAmountPurchased which includes lending credit, falling back to transaction amount */
+	const displayAmount = props.latestLoan?.totalAmountPurchased || props.latestLoan?.amount;
+	if (!displayAmount) return null;
+	return numeral(Math.abs(displayAmount)).format('$0,0[.]00');
 });
 
 const loanDescription = computed(() => {
@@ -127,7 +120,11 @@ const loanDescription = computed(() => {
 
 .impact-insight-slide {
 	@screen md {
-		padding-left: 130px;
+		padding-left: 84px;
+	}
+
+	@media (width >= 1024px) {
+		padding-left: 129px;
 	}
 }
 

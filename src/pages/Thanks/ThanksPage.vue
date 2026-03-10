@@ -12,7 +12,6 @@
 				:guest-username="guestUsername"
 				:achievements-completed="achievementsCompleted"
 				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
-				:goals-v2-enabled="goalsV2Enabled"
 				:total-loans="totalLoanCount"
 				:tiered-achievements="achievements"
 				:post-lending-next-steps-enable="postLendingNextStepsEnable"
@@ -103,7 +102,7 @@ import userAchievementProgressQuery from '#src/graphql/query/userAchievementProg
 import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import { isGoalsV2Enabled, LAST_YEAR_KEY, GOALS_V2_START_YEAR } from '#src/composables/useGoalData';
+import { LAST_YEAR_KEY, GOALS_V2_START_YEAR } from '#src/composables/useGoalData';
 import userYearlyProgressQuery from '#src/graphql/query/userYearlyProgress.graphql';
 import { clearPromoCreditBannerCookie, getPromoCreditBannerCookie } from '#src/util/promoCreditCookie';
 
@@ -111,7 +110,6 @@ const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
-const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
 
 // Thanks views
@@ -175,7 +173,6 @@ export default {
 			guestUsername: '',
 			achievementsCompleted: false,
 			isNextStepsExpEnabled: false,
-			thanksPageGoalsEntrypointEnable: false,
 			totalLoanCount: 0,
 			achievements: [],
 			postLendingNextStepsEnable: false,
@@ -249,9 +246,6 @@ export default {
 		}
 	},
 	computed: {
-		goalsV2Enabled() {
-			return isGoalsV2Enabled(this.thanksPageGoalsEntrypointEnable);
-		},
 		showDafThanks() {
 			return !!this.$route?.query?.show_daf_thanks;
 		},
@@ -324,7 +318,6 @@ export default {
 
 			this.achievements = userAchievements?.userAchievementProgress?.tieredLendingAchievements ?? [];
 			this.achievementsCompleted = this.allAchievementsCompleted(this.achievements);
-			this.thanksPageGoalsEntrypointEnable = readBoolSetting(data, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
 			this.postLendingNextStepsEnable = readBoolSetting(data, `general.${POST_LENDING_NEXT_STEPS_KEY}.value`) ?? false; // eslint-disable-line max-len
 		} catch (e) {
 			logReadQueryError(e, 'Thanks page readQuery failed');

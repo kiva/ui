@@ -154,6 +154,11 @@ query myKivaQuery {
             }
           }
           borrowerCount
+          userProperties {
+            loanBalance {
+              totalAmountPurchased
+            }
+          }
           ... on LoanPartner {
             themes
 			partner {
@@ -176,6 +181,10 @@ query myKivaQuery {
 			value
 		}
     post_lending_next_steps_enable: uiConfigSetting(key: "mykiva_post_lending_next_steps_enable") {
+			key
+			value
+		}
+    goal_editing_enable: uiConfigSetting(key: "goal_editing_enable") {
 			key
 			value
 		}

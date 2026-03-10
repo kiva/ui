@@ -2,17 +2,20 @@
 	<div class="tw-flex tw-flex-col tw-justify-center tw-gap-0 lg:tw-gap-1.5 tw-items-center">
 		<!-- Goal Progress Ring (shown after goal is set) -->
 		<GoalProgressRing
-			v-if="isGoalSet"
+			v-if="isGoalSet && !editGoalFromSettings"
 			variant="modal"
 			:goal-loans="effectiveGoalLoans"
-			:goal-progress="loansThisYear"
+			:goal-progress="goalProgress"
 			:goal-progress-percentage="localGoalProgressPercentage"
 			:category-name="selectedCategoryName"
 			:category-id="selectedCategoryId"
 			:go-to-url="goToUrl"
+			:goal-editing-enable="goalEditingEnable"
+			:is-updating-goal="isUpdatingGoal"
+			:is-goal-completed="isGoalCompleted"
+			@edit-goal-from-settings="handleEditGoalFromSettings"
 			@button-click="handleSuccessContinue"
 		/>
-
 		<!-- Goal Selection Form (shown before goal is set) -->
 		<template v-else>
 			<img
@@ -70,10 +73,10 @@
 					class="edit-goal-button tw-w-full"
 					@click="editGoal"
 				>
-					Edit goal category
+					{{ editGoalCopy }}
 					<KvMaterialIcon
 						:icon="mdiPencilOutline"
-						class="tw-ml-0.5"
+						class="tw-ml-0.5 tw-w-2.5"
 					/>
 				</KvButton>
 			</div>
@@ -89,13 +92,13 @@ import {
 	ref,
 	watch,
 } from 'vue';
-import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
+import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL, ID_US_ECONOMIC_EQUALITY } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import { KvButton, KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { mdiPencilOutline } from '@mdi/js';
-import useGoalData, { SAME_AS_LAST_YEAR_LIMIT, LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
+import useGoalData, { LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -172,9 +175,44 @@ const props = defineProps({
 		type: Number,
 		default: 0,
 	},
+	/**
+	 * Enable edit goal button (only shows when user has a goal set)
+	 */
+	goalEditingEnable: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Flag to indicate if user is editing an existing goal
+	 */
+	isUpdatingGoal: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Flag to indicate if component is rendered within goal settings page
+	 */
+	inGoalSettingsPage: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Flag to indicate if the goal has been completed
+	 */
+	isGoalCompleted: {
+		type: Boolean,
+		default: false,
+	},
 });
 
-const emit = defineEmits(['set-goal', 'edit-goal', 'set-goal-target', 'close-modal']);
+const emit = defineEmits([
+	'set-goal',
+	'edit-goal',
+	'set-goal-target',
+	'close-modal',
+	'edit-goal-from-settings',
+	'update-goal'
+]);
 
 const DEFAULT_GOAL_OPTIONS = [
 	{
@@ -201,6 +239,8 @@ const loadingCurrentYear = ref(false);
 const fetchedCurrentYearLoans = ref(null);
 const prevSupportAllCount = ref(0);
 const selectedIdx = ref(1);
+const editGoalFromSettings = ref(false);
+const allowBackToCategorySelection = ref(false);
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -256,6 +296,9 @@ const titleText = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
 		return 'How many loans will you make this year?';
 	}
+	if (props.selectedCategoryId === ID_US_ECONOMIC_EQUALITY) {
+		return 'How many loans to <span class="tw-text-eco-green-3">U.S. entrepreneurs</span> will you make this year?';
+	}
 	// eslint-disable-next-line max-len
 	return `How many loans to <span class="tw-text-eco-green-3">${props.selectedCategoryName?.toLowerCase()}</span> will you make this year?`;
 });
@@ -270,6 +313,9 @@ const subtitleText = computed(() => {
 const yearToDate = new Date().getFullYear();
 
 const buttonText = computed(() => {
+	if (editGoalFromSettings.value || props.isUpdatingGoal) {
+		return `Update ${yearToDate} goal`;
+	}
 	return `Set ${yearToDate} goal`;
 });
 
@@ -341,46 +387,33 @@ const handleContinue = () => {
 		status: GOAL_STATUS.IN_PROGRESS,
 		loanTotalAtStart,
 	};
-	emit('set-goal', preferences);
+
+	const label = props.isUpdatingGoal ? 'confirm-edit-goal' : 'set-annual-goal';
+
 	$kvTrackEvent(
-		props.trackingCategory,
+		'event-tracking',
 		'click',
-		'set-annual-goal',
+		label,
 		props.selectedCategoryId,
 		selectedTarget.value
 	);
+	if (props.isUpdatingGoal) {
+		emit('update-goal', preferences);
+	} else {
+		emit('set-goal', preferences);
+	}
+
+	editGoalFromSettings.value = false;
+	allowBackToCategorySelection.value = false;
 };
 
 const updateGoalOptions = () => {
 	const ytdLoans = loansThisYear.value;
 	const lastYearLoans = loansLastYear.value;
 
-	// Only show personalized options if user has lending history
-	if (ytdLoans >= SAME_AS_LAST_YEAR_LIMIT) {
-		const suggestion1 = ytdLoans + 3;
-		// Ensure each suggestion is at least 1 more than the previous
-		const suggestion2 = Math.max(Math.ceil(suggestion1 * 1.25), suggestion1 + 1);
-		const suggestion3 = Math.max(suggestion1 * 2, suggestion2 + 1);
-
-		goalOptions.value = [
-			{
-				loansNumber: suggestion1,
-				optionText: 'A few more',
-				selected: false
-			},
-			{
-				loansNumber: suggestion2,
-				optionText: 'Grow a little',
-				selected: false,
-				highlightedText: 'More Impact'
-			},
-			{
-				loansNumber: suggestion3,
-				optionText: 'Aim higher',
-				selected: false
-			},
-		];
-	} else if (lastYearLoans > SAME_AS_LAST_YEAR_LIMIT) {
+	// Use last year loans as the base if user had more loans last year than year-to-date,
+	// otherwise use year-to-date as the base
+	if (lastYearLoans > ytdLoans) {
 		const suggestion1 = lastYearLoans;
 		// Ensure each suggestion is at least 1 more than the previous
 		const suggestion2 = Math.max(Math.ceil(suggestion1 * 1.25), suggestion1 + 1);
@@ -404,6 +437,30 @@ const updateGoalOptions = () => {
 				selected: false
 			},
 		];
+	} else if (ytdLoans) {
+		const suggestion1 = ytdLoans + 3;
+		// Ensure each suggestion is at least 1 more than the previous
+		const suggestion2 = Math.max(Math.ceil(suggestion1 * 1.25), suggestion1 + 1);
+		const suggestion3 = Math.max(suggestion1 * 2, suggestion2 + 1);
+
+		goalOptions.value = [
+			{
+				loansNumber: suggestion1,
+				optionText: 'A few more',
+				selected: false
+			},
+			{
+				loansNumber: suggestion2,
+				optionText: 'Grow a little',
+				selected: false,
+				highlightedText: 'More Impact'
+			},
+			{
+				loansNumber: suggestion3,
+				optionText: 'Aim higher',
+				selected: false
+			},
+		];
 	} else {
 		goalOptions.value = DEFAULT_GOAL_OPTIONS;
 	}
@@ -411,6 +468,12 @@ const updateGoalOptions = () => {
 	// Keep previous selection
 	resetOptionSelection(selectedIdx.value);
 	emit('set-goal-target', selectedTarget.value);
+};
+
+const handleEditGoalFromSettings = () => {
+	editGoalFromSettings.value = true;
+	$kvTrackEvent('event-tracking', 'click', 'edit-goal');
+	emit('edit-goal-from-settings');
 };
 
 onMounted(async () => {
@@ -426,9 +489,20 @@ onMounted(async () => {
 	}
 });
 
+const editGoalCopy = computed(() => {
+	if (allowBackToCategorySelection.value || !props.inGoalSettingsPage) {
+		return 'Edit goal category';
+	}
+
+	return 'Edit goal';
+});
+
 watch(() => props.selectedCategoryId, async newCategory => {
 	await loadLoansThisYear();
 	updateGoalOptions();
+	if (editGoalFromSettings.value) {
+		allowBackToCategorySelection.value = true;
+	}
 
 	if (newCategory === ID_SUPPORT_ALL) {
 		prevSupportAllCount.value = await getSupportAllLoanCountByYear(LAST_YEAR_KEY);
