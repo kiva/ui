@@ -30,7 +30,7 @@
 				:loading="goalProgressLoading"
 				:user-goal="userGoal"
 				:prev-year-loans="womenLoansLastYear"
-				:hide-goal-card="hideGoalCard"
+				:hide-goal-card="hideCompletedGoalCard"
 				@open-goal-modal="showGoalModal = true"
 			/>
 			<div v-if="goalProgressLoading" class="loading-card tw-col-span-2" style="min-height: 320px;">
