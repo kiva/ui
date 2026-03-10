@@ -387,14 +387,16 @@ const handleContinue = () => {
 		status: GOAL_STATUS.IN_PROGRESS,
 		loanTotalAtStart,
 	};
+
+	const label = props.isUpdatingGoal ? 'confirm-edit-goal' : 'set-annual-goal';
+
 	$kvTrackEvent(
-		props.trackingCategory,
+		'event-tracking',
 		'click',
-		'set-annual-goal',
+		label,
 		props.selectedCategoryId,
 		selectedTarget.value
 	);
-
 	if (props.isUpdatingGoal) {
 		emit('update-goal', preferences);
 	} else {
