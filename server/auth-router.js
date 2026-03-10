@@ -1,4 +1,4 @@
-import cookie from 'cookie';
+import { parseCookie } from 'cookie';
 import express from 'express';
 import passport from 'passport';
 import Auth0Strategy from 'passport-auth0';
@@ -78,7 +78,7 @@ export default function authRouter(config = {}) {
 	// Handle login request
 	router.get('/ui-login', (req, res, next) => {
 		res.set('Cache-Control', 'no-cache, no-store, max-age=0, no-transform, private');
-		const cookies = cookie.parse(req.headers.cookie || '');
+		const cookies = parseCookie(req.headers.cookie || '');
 		const options = {
 			audience: config.auth0.apiAudience,
 			scope: config.auth0.scope,
