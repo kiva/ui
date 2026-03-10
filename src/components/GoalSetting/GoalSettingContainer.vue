@@ -292,8 +292,10 @@ const handleDeleteGoal = async () => {
 };
 
 const handleKeepGoal = () => {
-	isDeleteGoalModalVisible.value = false;
-	$kvTrackEvent('event-tracking', 'click', 'cancel-delete-goal');
+	if (isDeleteGoalModalVisible.value) {
+		isDeleteGoalModalVisible.value = false;
+		$kvTrackEvent('event-tracking', 'click', 'cancel-delete-goal');
+	}
 };
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
