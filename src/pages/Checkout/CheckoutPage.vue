@@ -1262,25 +1262,17 @@ export default {
 			}
 		},
 		async initializeBanditUpsellExperiment() {
-			try {
-				await this.apollo.query({
-					query: experimentAssignmentQuery,
-					variables: { id: BANDIT_UPSELL_EXP_KEY },
-				});
-				initializeExperiment(
-					this.cookieStore,
-					this.apollo,
-					this.$route,
-					BANDIT_UPSELL_EXP_KEY,
-					version => {
-						this.isBanditUpsellExpEnabled = version === 'b';
-					},
-					this.$kvTrackEvent,
-					'EXP-MP-2513-Mar2026',
-				);
-			} catch (error) {
-				console.error('Error fetching bandit upsell experiment data:', error);
-			}
+			initializeExperiment(
+				this.cookieStore,
+				this.apollo,
+				this.$route,
+				BANDIT_UPSELL_EXP_KEY,
+				version => {
+					this.isBanditUpsellExpEnabled = version === 'b';
+				},
+				this.$kvTrackEvent,
+				'EXP-MP-2513-Mar2026',
+			);
 		},
 	},
 	unmounted() {
