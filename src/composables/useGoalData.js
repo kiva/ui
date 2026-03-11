@@ -736,23 +736,8 @@ export default function useGoalData({ apollo } = {}) {
 			);
 		}
 
-<<<<<<< Updated upstream
-		await loadProgress(year, 'network-only', freshProgressAdjustments);
-		setGoalState(parsedPrefs);
-=======
 		await loadProgress(year, 'no-cache', freshProgressAdjustments);
-		const goals = parsedPrefs?.goals || [];
-		const currentYear = new Date().getFullYear();
-		const activeGoal = goals.find(g => {
-			if (g.status === GOAL_STATUS.EXPIRED) return false;
-			if (g.status === GOAL_STATUS.COMPLETED && g.dateStarted) {
-				const goalYear = new Date(g.dateStarted).getFullYear();
-				if (goalYear < currentYear) return false;
-			}
-			return true;
-		});
-		setGoalState(activeGoal);
->>>>>>> Stashed changes
+		setGoalState(parsedPrefs);
 		// Load yearly loan count for ID_SUPPORT_ALL goals when using yearly progress
 		if (yearlyProgress && userGoal.value?.category === ID_SUPPORT_ALL) {
 			const stats = await getLoanStatsByYear(year, 'network-only');
