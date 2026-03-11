@@ -453,7 +453,11 @@ export default function useGoalData({ apollo } = {}) {
 		});
 	}
 
-	async function loadProgress(year, fetchPolicy = 'network-only', freshProgressAdjustments = {}) {
+	// Uses 'no-cache' by default so the lightweight useGoalDataYearlyProgressQuery
+	// (which only selects tieredLendingAchievements with minimal fields) doesn't
+	// write to the Apollo cache and overwrite richer data stored there by the full
+	// userAchievementProgressQuery prefetch.
+	async function loadProgress(year, fetchPolicy = 'no-cache', freshProgressAdjustments = {}) {
 		try {
 			const progress = await getCategoriesProgressByYear(year, fetchPolicy);
 			currentYearProgress.value = applyFreshProgressToGoalData(progress, freshProgressAdjustments);
@@ -732,8 +736,23 @@ export default function useGoalData({ apollo } = {}) {
 			);
 		}
 
+<<<<<<< Updated upstream
 		await loadProgress(year, 'network-only', freshProgressAdjustments);
 		setGoalState(parsedPrefs);
+=======
+		await loadProgress(year, 'no-cache', freshProgressAdjustments);
+		const goals = parsedPrefs?.goals || [];
+		const currentYear = new Date().getFullYear();
+		const activeGoal = goals.find(g => {
+			if (g.status === GOAL_STATUS.EXPIRED) return false;
+			if (g.status === GOAL_STATUS.COMPLETED && g.dateStarted) {
+				const goalYear = new Date(g.dateStarted).getFullYear();
+				if (goalYear < currentYear) return false;
+			}
+			return true;
+		});
+		setGoalState(activeGoal);
+>>>>>>> Stashed changes
 		// Load yearly loan count for ID_SUPPORT_ALL goals when using yearly progress
 		if (yearlyProgress && userGoal.value?.category === ID_SUPPORT_ALL) {
 			const stats = await getLoanStatsByYear(year, 'network-only');
@@ -857,7 +876,7 @@ export default function useGoalData({ apollo } = {}) {
 				);
 			}
 			// Use loadProgress to populate currentYearProgress so goalProgress computed has data immediately
-			await loadProgress(currentYear, 'network-only', freshProgressAdjustments);
+			await loadProgress(currentYear, 'no-cache', freshProgressAdjustments);
 			const categoryProgress = currentYearProgress.value?.find(n => n.id === goalToFix.category);
 			actualYearlyProgress = categoryProgress?.progressForYear || 0;
 		}
