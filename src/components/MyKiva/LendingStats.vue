@@ -189,7 +189,6 @@
 			@open-impact-insight-modal="showImpactInsightsModal = true"
 		/>
 		<GoalSettingModal
-			v-if="isNextStepsExpEnabled && showGoalModal"
 			:show="showGoalModal"
 			:total-loans="totalLoans"
 			:categories-loan-count="categoriesLoanCount"
