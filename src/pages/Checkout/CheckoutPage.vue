@@ -530,7 +530,6 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: NEXT_STEPS_EXP_KEY } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: BANDIT_UPSELL_EXP_KEY } }),
 					]);
 				})
 				.then(response => {
@@ -710,21 +709,8 @@ export default {
 			this.$kvTrackEvent,
 			'EXP-MP-1984-Sept2025',
 		);
-
-		// MyKiva Bandit Upsell Experiment Mar2026 MP-2513
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
-			BANDIT_UPSELL_EXP_KEY,
-			version => {
-				this.isBanditUpsellExpEnabled = version === 'b';
-			},
-			this.$kvTrackEvent,
-			'EXP-MP-2513-Mar2026',
-		);
 	},
-	mounted() {
+	async mounted() {
 		// update current time every second for reactivity
 		this.currentTimeInterval = setInterval(() => {
 			this.currentTime = Date.now();
@@ -745,6 +731,10 @@ export default {
 		// show toast for specified scenario
 		this.handleToast();
 		this.getPromoInformationFromBasket();
+
+		// MyKiva Bandit Upsell Experiment Mar2026 MP-2513
+		await this.initializeBanditUpsellExperiment();
+
 		this.getUpsellModuleData();
 	},
 	computed: {
@@ -1270,7 +1260,28 @@ export default {
 					});
 				}
 			}
-		}
+		},
+		async initializeBanditUpsellExperiment() {
+			try {
+				await this.apollo.query({
+					query: experimentAssignmentQuery,
+					variables: { id: BANDIT_UPSELL_EXP_KEY },
+				});
+				initializeExperiment(
+					this.cookieStore,
+					this.apollo,
+					this.$route,
+					BANDIT_UPSELL_EXP_KEY,
+					version => {
+						this.isBanditUpsellExpEnabled = version === 'b';
+					},
+					this.$kvTrackEvent,
+					'EXP-MP-2513-Mar2026',
+				);
+			} catch (error) {
+				console.error('Error fetching bandit upsell experiment data:', error);
+			}
+		},
 	},
 	unmounted() {
 		clearInterval(this.currentTimeInterval);
