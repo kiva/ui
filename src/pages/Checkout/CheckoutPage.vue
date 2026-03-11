@@ -372,7 +372,7 @@ const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
-const BANDIT_UPSELL_EXP_KEY = 'mykiva_bandit_upsell_enable';
+const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_enable';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
