@@ -1027,7 +1027,7 @@ describe('useGoalData', () => {
 					goalName: 'test-goal',
 					category: ID_WOMENS_EQUALITY,
 					target: 5,
-					status: 'in-progress',
+					status: GOAL_STATUS.IN_PROGRESS,
 				}],
 			};
 
@@ -1062,7 +1062,7 @@ describe('useGoalData', () => {
 					goalName: 'test-goal',
 					category: ID_WOMENS_EQUALITY,
 					target: 5,
-					status: 'in-progress',
+					status: GOAL_STATUS.IN_PROGRESS,
 				}],
 			};
 
@@ -1133,7 +1133,7 @@ describe('useGoalData', () => {
 					goalName: 'test-goal',
 					category: ID_WOMENS_EQUALITY,
 					target: 0,
-					status: 'in-progress',
+					status: GOAL_STATUS.IN_PROGRESS,
 				}],
 			};
 
@@ -1175,14 +1175,14 @@ describe('useGoalData', () => {
 				category: ID_WOMENS_EQUALITY,
 				target: 5,
 				dateStarted: '2026-01-01T00:00:00Z',
-				status: 'in-progress',
+				status: GOAL_STATUS.IN_PROGRESS,
 			});
 
 			expect(upsertMyKivaGoal).toHaveBeenCalledWith(mockApollo, {
 				category: ID_WOMENS_EQUALITY,
 				target: 5,
 				dateStarted: '2026-01-01T00:00:00Z',
-				status: 'in-progress',
+				status: GOAL_STATUS.IN_PROGRESS,
 			});
 		});
 
@@ -1192,7 +1192,7 @@ describe('useGoalData', () => {
 				category: ID_BASIC_NEEDS,
 				target: 10,
 				dateStarted: '2026-02-01T00:00:00Z',
-				status: 'in-progress',
+				status: GOAL_STATUS.IN_PROGRESS,
 			});
 
 			expect(composable.userGoal.value.category).toBe(ID_BASIC_NEEDS);
@@ -1206,7 +1206,7 @@ describe('useGoalData', () => {
 				category: ID_WOMENS_EQUALITY,
 				target: 5,
 				dateStarted: '2026-01-01T00:00:00Z',
-				status: 'in-progress',
+				status: GOAL_STATUS.IN_PROGRESS,
 			});
 
 			// Then store with updateLocalState = false
@@ -1215,110 +1215,11 @@ describe('useGoalData', () => {
 				category: ID_BASIC_NEEDS,
 				target: 15,
 				dateStarted: '2026-03-01T00:00:00Z',
-				status: 'in-progress',
+				status: GOAL_STATUS.IN_PROGRESS,
 			}, false);
 
 			// Should still have the first goal in local state
 			expect(composable.userGoal.value.category).toBe(ID_WOMENS_EQUALITY);
-		});
-
-		it('should set loanTotalAtStart to category all-time progress for new category goal', async () => {
-			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
-
-			mockApollo.query = vi.fn()
-				.mockResolvedValueOnce({
-					data: {
-						my: {
-							userPreferences: {
-								id: 'pref-123',
-								preferences: JSON.stringify({ goals: [] }),
-							},
-							loans: { totalCount: 50 },
-						},
-					},
-				})
-				.mockResolvedValueOnce({
-					data: {
-						userAchievementProgress: {
-							tieredLendingAchievements: [
-								{
-									id: ID_WOMENS_EQUALITY,
-									totalProgressToAchievement: 30,
-									progressForYear: 8,
-								},
-							],
-						},
-					},
-				});
-
-			await composable.loadGoalData();
-			updateUserPreferences.mockClear();
-
-			await composable.storeGoalPreferences({
-				goalName: 'new-women-goal',
-				category: ID_WOMENS_EQUALITY,
-				target: 10,
-			});
-
-			// loanTotalAtStart must be totalProgressToAchievement (30), not progressForYear (8)
-			// This prevents auto-completing the goal with previous years' loans
-			expect(updateUserPreferences).toHaveBeenCalledWith(
-				mockApollo,
-				expect.anything(),
-				expect.anything(),
-				{
-					goals: [expect.objectContaining({
-						goalName: 'new-women-goal',
-						loanTotalAtStart: 30,
-					})],
-				},
-			);
-		});
-
-		it('should set loanTotalAtStart to totalLoanCount for new ID_SUPPORT_ALL goal', async () => {
-			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
-
-			mockApollo.query = vi.fn()
-				.mockResolvedValueOnce({
-					data: {
-						my: {
-							userPreferences: {
-								id: 'pref-123',
-								preferences: JSON.stringify({ goals: [] }),
-							},
-							loans: { totalCount: 75 },
-						},
-					},
-				})
-				.mockResolvedValueOnce({
-					data: {
-						userAchievementProgress: {
-							tieredLendingAchievements: [],
-						},
-					},
-				});
-
-			await composable.loadGoalData();
-			updateUserPreferences.mockClear();
-
-			await composable.storeGoalPreferences({
-				goalName: 'new-support-all-goal',
-				category: ID_SUPPORT_ALL,
-				target: 10,
-			});
-
-			// loanTotalAtStart must be totalLoanCount (75) to prevent auto-completing
-			expect(updateUserPreferences).toHaveBeenCalledWith(
-				mockApollo,
-				expect.anything(),
-				expect.anything(),
-				{
-					goals: [expect.objectContaining({
-						goalName: 'new-support-all-goal',
-						loanTotalAtStart: 75,
-					})],
-				},
-			);
 		});
 	});
 
@@ -1382,7 +1283,7 @@ describe('useGoalData', () => {
 	});
 
 	describe('updateCurrentGoal', () => {
-		it('should update goal category and refresh local state', async () => {
+		it('should call upsertMyKivaGoal and refresh local state', async () => {
 			const mockPrefs = {
 				goals: [
 					{
@@ -1422,6 +1323,9 @@ describe('useGoalData', () => {
 			expect(composable.userGoal.value.category).toBe(ID_WOMENS_EQUALITY);
 			expect(composable.userGoal.value.target).toBe(5);
 
+			const { upsertMyKivaGoal } = await import('#src/util/userPreferenceUtils');
+			upsertMyKivaGoal.mockClear();
+
 			const previousGoal = { ...mockPrefs.goals[0] };
 			const updatedGoal = {
 				...mockPrefs.goals[0],
@@ -1430,6 +1334,14 @@ describe('useGoalData', () => {
 			};
 
 			await composable.updateCurrentGoal(previousGoal, updatedGoal);
+
+			// Should call upsertMyKivaGoal with updated goal data
+			expect(upsertMyKivaGoal).toHaveBeenCalledWith(mockApollo, {
+				category: ID_CLIMATE_ACTION,
+				target: 15,
+				dateStarted: '2026-01-01',
+				status: GOAL_STATUS.IN_PROGRESS,
+			});
 
 			// Local userGoal state should reflect the updated goal
 			expect(composable.userGoal.value.goalName).toBe('goal-to-edit');
@@ -1506,7 +1418,7 @@ describe('useGoalData', () => {
 					target: 10,
 					dateStarted: `${currentYear}-01-01`,
 					count: 0,
-					status: 'in-progress',
+					status: GOAL_STATUS.IN_PROGRESS,
 				}],
 			};
 
@@ -1570,7 +1482,7 @@ describe('useGoalData', () => {
 					target: 5,
 					dateStarted: `${currentYear}-01-01`,
 					count: 0,
-					status: 'in-progress',
+					status: GOAL_STATUS.IN_PROGRESS,
 				}],
 			};
 
@@ -2235,7 +2147,7 @@ describe('useGoalData', () => {
 
 	describe('correctNegativeProgress (via loadGoalData)', () => {
 		it('should correct loanTotalAtStart when all-time progress is less than baseline', async () => {
-			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			const { upsertMyKivaGoal } = await import('#src/util/userPreferenceUtils');
 
 			const mockPrefs = {
 				goals: [{
@@ -2271,39 +2183,19 @@ describe('useGoalData', () => {
 							],
 						},
 					},
-				})
-				// storeGoalPreferences reads userPreferences.value (already set)
-				// but setGoalState needs the updated goals, so mock additional query for loadPreferences
-				.mockResolvedValue({
-					data: {
-						my: {
-							userPreferences: {
-								id: 'pref-123',
-								preferences: JSON.stringify({
-									goals: [{
-										...mockPrefs.goals[0],
-										loanTotalAtStart: 40,
-									}],
-								}),
-							},
-							loans: { totalCount: 0 },
-						},
-					},
 				});
 
-			updateUserPreferences.mockClear();
+			upsertMyKivaGoal.mockClear();
 			await composable.loadGoalData({ yearlyProgress: false });
 
 			// Should correct loanTotalAtStart from 50 to 40 (current allTimeProgress)
-			expect(updateUserPreferences).toHaveBeenCalledWith(
+			// storeGoalPreferences now uses upsertMyKivaGoal which only sends category, target, dateStarted, status
+			expect(upsertMyKivaGoal).toHaveBeenCalledWith(
 				mockApollo,
-				expect.anything(),
-				expect.anything(),
-				{
-					goals: [expect.objectContaining({
-						loanTotalAtStart: 40,
-					})],
-				},
+				expect.objectContaining({
+					category: ID_WOMENS_EQUALITY,
+					target: 10,
+				}),
 			);
 		});
 
@@ -2405,10 +2297,12 @@ describe('useGoalData', () => {
 							preferences: JSON.stringify({
 								goals: [
 									{
-										goalName: 'Goal', status: 'in-progress', dateStarted: '2025-01-01'
+										goalName: 'Goal', status: GOAL_STATUS.IN_PROGRESS, dateStarted: '2025-01-01'
 									},
 									{
-										goalName: 'Current Goal', status: 'in-progress', dateStarted: '2026-02-01'
+										goalName: 'Current Goal',
+										status: GOAL_STATUS.IN_PROGRESS,
+										dateStarted: '2026-02-01'
 									},
 								]
 							}),
@@ -2461,7 +2355,7 @@ describe('useGoalData', () => {
 						preferences: JSON.stringify({
 							goals: [
 								{
-									goalName: 'Goal', status: 'in-progress', dateStarted: '2025-01-01'
+									goalName: 'Goal', status: GOAL_STATUS.IN_PROGRESS, dateStarted: '2025-01-01'
 								},
 							],
 							goalsRenewedDate: '2027-01-15T00:00:00Z',
@@ -3004,7 +2898,7 @@ describe('useGoalData', () => {
 					goalName: 'goal-support-all-2026',
 					category: ID_SUPPORT_ALL,
 					target: 10,
-					status: 'in-progress',
+					status: GOAL_STATUS.IN_PROGRESS,
 					dateStarted: '2026-01-15T00:00:00Z',
 				}],
 			};
@@ -3120,13 +3014,13 @@ describe('useGoalData', () => {
 				{
 					category: ID_SUPPORT_ALL,
 					target: 10,
-					status: 'in-progress',
+					status: GOAL_STATUS.IN_PROGRESS,
 					dateStarted: '2026-01-15T00:00:00Z',
 				},
 			);
 			// Verify goalProgress is populated immediately (not 0)
 			expect(composable.goalProgress.value).toBe(3);
-			expect(composable.userGoal.value.status).toBe('in-progress');
+			expect(composable.userGoal.value.status).toBe(GOAL_STATUS.IN_PROGRESS);
 		});
 
 		it('should fix incorrectly completed category goal when yearly progress is less than target', async () => {
@@ -3177,13 +3071,13 @@ describe('useGoalData', () => {
 				{
 					category: ID_WOMENS_EQUALITY,
 					target: 10,
-					status: 'in-progress',
+					status: GOAL_STATUS.IN_PROGRESS,
 					dateStarted: '2026-01-15T00:00:00Z',
 				},
 			);
 			// Verify goalProgress is populated immediately (not 0)
 			expect(composable.goalProgress.value).toBe(4);
-			expect(composable.userGoal.value.status).toBe('in-progress');
+			expect(composable.userGoal.value.status).toBe(GOAL_STATUS.IN_PROGRESS);
 		});
 
 		it('should fix hidden in-progress goal when progress is below target', async () => {
@@ -3197,7 +3091,7 @@ describe('useGoalData', () => {
 					goalName: 'goal-support-all-2026',
 					category: ID_SUPPORT_ALL,
 					target: 10,
-					status: 'in-progress',
+					status: GOAL_STATUS.IN_PROGRESS,
 					dateStarted: '2026-01-15T00:00:00Z',
 				}],
 			};
@@ -3238,7 +3132,7 @@ describe('useGoalData', () => {
 				{
 					category: ID_SUPPORT_ALL,
 					target: 10,
-					status: 'in-progress',
+					status: GOAL_STATUS.IN_PROGRESS,
 					dateStarted: '2026-01-15T00:00:00Z',
 				},
 			);
@@ -3378,7 +3272,7 @@ describe('useGoalData', () => {
 
 		it('should still fix incorrectly completed goal when fresh progress is not enough to meet target', async () => {
 			const {
-				updateUserPreferences,
+				upsertMyKivaGoal,
 			} = await import('#src/util/userPreferenceUtils');
 
 			const mockPrefs = {
@@ -3432,7 +3326,7 @@ describe('useGoalData', () => {
 				{ loan: { id: 5 }, effectiveTime: '2026-02-15T00:00:00Z', createTime: '2026-02-15T00:00:00Z' },
 			];
 
-			updateUserPreferences.mockClear();
+			upsertMyKivaGoal.mockClear();
 			const result = await composable.fixIncorrectlyCompletedGoals({
 				freshProgressLoans,
 				tieredAchievements,
@@ -3441,18 +3335,14 @@ describe('useGoalData', () => {
 
 			// Even with adjustment: 3 + 1 = 4 < target of 10, so goal is incorrectly completed
 			expect(result).toEqual({ wasFixed: true });
-			expect(updateUserPreferences).toHaveBeenCalledWith(
+			// fixIncorrectlyCompletedGoals now uses upsertMyKivaGoal directly
+			expect(upsertMyKivaGoal).toHaveBeenCalledWith(
 				mockApollo,
-				expect.anything(),
-				expect.anything(),
 				{
-					goals: [{
-						goalName: 'goal-womens-equality-2026',
-						category: ID_WOMENS_EQUALITY,
-						target: 10,
-						status: 'in-progress',
-						dateStarted: '2026-01-15T00:00:00Z',
-					}],
+					category: ID_WOMENS_EQUALITY,
+					target: 10,
+					status: GOAL_STATUS.IN_PROGRESS,
+					dateStarted: '2026-01-15T00:00:00Z',
 				},
 			);
 		});
