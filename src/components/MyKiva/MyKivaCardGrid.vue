@@ -49,6 +49,31 @@
 import { KvCarousel } from '@kiva/kv-components';
 import useBreakpoints from '#src/composables/useBreakpoints';
 
+/**
+ * MyKivaCardGrid - Presentational component for rendering a list of items.
+	This component is strictly responsible for layout:
+	- Desktop/Tablet: renders items in a CSS grid
+	- Mobile: renders items in a KvCarousel
+
+	It does NOT handle data fetching, business logic, or event handling.
+	The parent component is responsible for building the items array, ordering and
+	defining the event handlers.
+
+	Each item in the `items` array must follow this structure:
+	{
+		key: 'unique-key',              // Unique identifier for the item
+		component: MyComponent,         // Vue component to render
+		props: {                        // Props to pass to the component (optional)
+			title: 'Hello',
+			bgImage: 'https://...',
+		},
+		events: {                       // Event listeners to bind (optional)
+			'primary-cta-clicked': () => handleClick(),
+			'secondary-cta-clicked': () => handleOther(),
+		},
+	}
+ */
+
 defineOptions({ name: 'MyKivaCardGrid' });
 
 defineProps({
