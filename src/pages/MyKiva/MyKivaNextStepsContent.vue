@@ -77,7 +77,7 @@
 			</template>
 			<JourneyCardCarousel
 				v-else
-				:key="lifetime-achievements-row"
+				:key="'lifetime-achievements-row'"
 				class="carousel tw--mt-6"
 				user-in-homepage
 				in-lending-stats
@@ -150,7 +150,7 @@
 			</template>
 			<JourneyCardCarousel
 				v-else
-				:key="lifetime-achievements-row"
+				:key="'beyond-loan-row'"
 				class="carousel tw--mt-6"
 				controls-top-right
 				hide-goal-card
