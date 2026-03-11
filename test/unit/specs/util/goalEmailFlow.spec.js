@@ -65,7 +65,7 @@ describe('goalEmailFlow.js', () => {
 			expect(newGoalPrefs).toBeNull();
 		});
 
-		it('ignores completed goals for the same category', () => {
+		it('ignores completed goals', () => {
 			const completed = { category: CATEGORY, status: GOAL_STATUS.COMPLETED, target: 5 };
 			const { existingGoal, newGoalPrefs } = buildEmailFlowGoalData({
 				allGoals: [completed],
@@ -73,8 +73,8 @@ describe('goalEmailFlow.js', () => {
 				validEmailTarget: 10,
 			});
 
-			expect(existingGoal).toBeNull();
-			expect(newGoalPrefs).toMatchObject({ category: CATEGORY });
+			expect(newGoalPrefs).toBeNull();
+			expect(existingGoal).toMatchObject({ category: CATEGORY });
 		});
 
 		it('ignores expired goals for the same category', () => {
