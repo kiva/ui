@@ -2,7 +2,7 @@ import fs from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import Bowser from 'bowser';
-import cookie from 'cookie';
+import { parseCookie } from 'cookie';
 import { HOME_PAGE_EXPERIMENT_HEADER } from '../src/util/experiment/fastlyExperimentUtils.js';
 import vueWorkerPool from './vue-worker-pool.js';
 import vueRender from './vue-render.js';
@@ -75,7 +75,7 @@ export default function createMiddleware({ config, vite }) {
 
 	async function middleware(req, res, next) {
 		// Get cookies from the request
-		const cookies = cookie.parse(req.get('Cookie') || '');
+		const cookies = parseCookie(req.get('Cookie') || '');
 
 		// Get device information from the user agent
 		const userAgent = req.get('User-Agent');
