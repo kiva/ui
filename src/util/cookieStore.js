@@ -1,5 +1,5 @@
 import { subYears } from 'date-fns';
-import serverCookie from 'cookie';
+import { stringifySetCookie } from 'cookie';
 import clientCookie from 'js-cookie';
 
 /**
@@ -66,7 +66,7 @@ export default class CookieStore {
 	set(name, value, options) {
 		if (this.cookies) this.cookies.set(name, value);
 		clientCookie.set(name, value, options);
-		this.setCookies[name] = serverCookie.serialize(name, value, {
+		this.setCookies[name] = stringifySetCookie(name, value, {
 			// use encode function from js-cookie, since js-cookie can't be customized
 			encode: val => encodeURIComponent(String(val))
 				.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent),
@@ -83,7 +83,7 @@ export default class CookieStore {
 	remove(name, options) {
 		if (this.cookies) this.cookies.delete(name);
 		clientCookie.remove(name, options);
-		this.setCookies[name] = serverCookie.serialize(name, 'deleted', {
+		this.setCookies[name] = stringifySetCookie(name, 'deleted', {
 			expires: subYears(new Date(), 1),
 			...options,
 		});
