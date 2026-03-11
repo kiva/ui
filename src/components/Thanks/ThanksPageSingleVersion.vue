@@ -243,6 +243,7 @@ const currGoalProgress = ref(0);
 const {
 	checkCompletedGoal,
 	getPostCheckoutProgressByLoans,
+	goalProgress,
 	goalProgressPercentage,
 	loadGoalData,
 	loading: goalDataLoading,
@@ -387,6 +388,7 @@ const setGoal = async preferences => {
 	await storeGoalPreferences(preferences);
 	isGoalSet.value = true;
 	showGoalModal.value = false;
+	$kvTrackEvent('post-checkout', 'show', userGoal.value.category, goalProgress.value, userGoal.value.target);
 };
 
 const closeGoalModal = () => {
