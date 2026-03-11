@@ -281,7 +281,7 @@ const loadLoansThisYear = async () => {
 
 	loadingCurrentYear.value = true;
 	const currentYear = new Date().getFullYear();
-	const count = await getCategoryLoanCountByYear(props.selectedCategoryId, currentYear, 'network-only');
+	const count = await getCategoryLoanCountByYear(props.selectedCategoryId, currentYear);
 	fetchedCurrentYearLoans.value = count;
 	loadingCurrentYear.value = false;
 };
