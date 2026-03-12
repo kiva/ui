@@ -19,7 +19,7 @@
 			class="region-section tw-grid md:tw-flex-row"
 			:class="{
 				'tw-grid-cols-1 tw-grid-rows-2' : isMobile,
-				'tw-grid-flow-row-dense tw-gap-4 tw-grid-cols-3 tw-grid-rows-1' : !isMobile
+				'tw-grid-flow-row-dense tw-gap-4 tw-grid-rows-1' : !isMobile
 			}"
 		>
 			<NextYearGoalCard
@@ -33,7 +33,7 @@
 				:hide-goal-card="hideCompletedGoalCard"
 				@open-goal-modal="showGoalModal = true"
 			/>
-			<div v-if="goalProgressLoading" class="loading-card tw-col-span-2" style="min-height: 320px;">
+			<div v-if="goalProgressLoading" class="loading-card" style="min-height: 320px;">
 				<div class="tw-w-full tw-h-auto tw-p-1 md:tw-p-2">
 					<KvLoadingPlaceholder class="!tw-h-4 tw-w-full tw-max-w-16 tw-my-1" />
 					<KvLoadingPlaceholder class="tw-mb-2" />
@@ -43,7 +43,6 @@
 			</div>
 			<MyKivaRegionExperience
 				v-else
-				class="tw-col-span-2"
 				:regions-data="regionsData"
 				:loans="loans"
 			/>
@@ -545,6 +544,10 @@ onMounted(async () => {
 .region-section {
 	.card-container:first-child {
 		@apply tw-mb-2 md:tw-mb-0;
+	}
+
+	@screen md {
+		grid-template-columns: minmax(321px, 1fr) 2fr;
 	}
 }
 
