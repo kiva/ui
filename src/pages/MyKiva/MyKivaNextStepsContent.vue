@@ -16,6 +16,41 @@
 		</h3>
 
 		<section
+			v-if="shouldShowGoalCard || shouldShowEmailMarketingCard || showLatestLoan"
+			class="tw-grid tw-grid-cols-1 tw-gap-4"
+		>
+			<JourneyCardCarousel
+				:key="'post-lending-row'"
+				class="carousel tw--mt-6"
+				controls-top-right
+				in-lending-stats
+				use-universal-order
+				user-in-homepage
+				user-goal-enabled
+				goals-v2-enabled
+				hide-non-badges-cards
+				slides-number="3"
+				:goal-progress-loading="goalProgressLoading"
+				:goal-progress="goalProgress"
+				:hero-badge-data="null"
+				:hero-tiered-achievements="null"
+				:lender="lender"
+				:loans="loans"
+				:slides="[]"
+				:user-goal-achieved="userGoalAchieved"
+				:user-goal="userGoal"
+				:post-lending-next-steps-enable="postLendingNextStepsEnable"
+				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+				:latest-loan="latestLoan"
+				:user-info="null"
+				:enable-slide-limit="true"
+				:show-non-badges-slides="false"
+				@open-goal-modal="openGoalModal($event)"
+				@open-impact-insight-modal="showImpactInsightsModal = true"
+			/>
+		</section>
+		<section
+			v-else
 			class="region-section md:tw-flex-row"
 			:class="{
 				'tw-grid-cols-1 tw-grid-rows-2' : isMobile,
@@ -23,7 +58,7 @@
 			}"
 		>
 			<NextYearGoalCard
-				v-if="!hideCompletedGoalCard && shouldShowGoalCard"
+				v-if="shouldShowGoalCard"
 				class="tw-shrink-0"
 				:style="{ maxHeight: !userHasGoal && isMobile ? '340px' : undefined }"
 				:goal-progress="goalProgress"
@@ -40,6 +75,72 @@
 				:loading="goalProgressLoading"
 			/>
 		</section>
+
+		<div
+			v-if="showPostLendingNextStepsCards && postLendingNextStepsEnable"
+		>
+			<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
+				Build impact beyond your loan
+			</h3>
+
+			<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
+				<template v-if="!isMobile">
+					<MyKivaSurveyCard
+						v-if="showSurveyCard"
+					/>
+					<MyKivaCard
+						v-for="slide in nonBadgesSlides"
+						:key="slide.badgeKey"
+						class="card-container tw-w-full tw-h-full"
+						:bg-image="getSlideBackgroundImg(slide, isNonBadgeSlide(slide), false)"
+						:is-bg-top-aligned="isNonBadgeSlide(slide)"
+						:has-gradient="!isNonBadgeSlide(slide)"
+						:title="getSlideTitle(slide)"
+						:subtitle="getSlideSubTitle(slide, isNonBadgeSlide(slide))"
+						:is-black-subtitle="isNonBadgeSlide(slide)"
+						:secondary-cta-text="getSlideSecondaryCtaText(slide)"
+						:primary-cta-text="getSlidePrimaryCtaText(slide)"
+						:primary-cta-variant="getSlidePrimaryCtaVariant(slide)"
+						:is-full-width-primary-cta="isNonBadgeSlide(slide)"
+						:is-title-font-sans="isSlideTitleFontSans(slide)"
+						:title-color="getSlideTitleColor(slide, isNonBadgeSlide(slide))"
+						@primary-cta-clicked="handlePrimaryCtaClick(slide)"
+						@secondary-cta-clicked="handleSecondaryCtaClick(slide)"
+					/>
+				</template>
+				<JourneyCardCarousel
+					v-else
+					:key="'beyond-loan-row'"
+					class="carousel tw--mt-6"
+					controls-top-right
+					hide-goal-card
+					in-lending-stats
+					use-universal-order
+					user-in-homepage
+					:post-lending-next-steps-enable="false"
+					:show-post-lending-next-steps-cards="false"
+					:hero-badge-data="null"
+					:hero-tiered-achievements="heroTieredAchievements"
+					:lender="lender"
+					:loans="loans"
+					:slides="heroSlides"
+					:latest-loan="null"
+					:user-info="userInfo"
+					:enable-slide-limit="false"
+					@open-impact-insight-modal="showImpactInsightsModal = true"
+				/>
+			</section>
+
+			<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
+				Keep your impact going
+			</h3>
+			<section>
+				<MyKivaRegionExperience
+					:regions-data="regionsData"
+					:loans="loans"
+				/>
+			</section>
+		</div>
 
 		<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 			Continue with your lifetime achievements
@@ -99,69 +200,73 @@
 			/>
 		</section>
 
-		<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
-			Build impact beyond your loan
-		</h3>
+		<div
+			v-if="(!showPostLendingNextStepsCards || !postLendingNextStepsEnable)"
+		>
+			<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
+				Build impact beyond your loan
+			</h3>
 
-		<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
-			<template v-if="!isMobile">
-				<MyKivaEmailUpdatesTransition
-					v-if="shouldShowEmailMarketingCard || acceptedEmailMarketingUpdates"
-					:accepted="acceptedEmailMarketingUpdates"
+			<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
+				<template v-if="!isMobile">
+					<MyKivaEmailUpdatesTransition
+						v-if="shouldShowEmailMarketingCard || acceptedEmailMarketingUpdates"
+						:accepted="acceptedEmailMarketingUpdates"
+						:loans="loans"
+						:latest-loan="latestLoan"
+						@accept-email-updates="acceptedEmailMarketingUpdates = true"
+					/>
+					<MyKivaLatestLoanCard
+						v-if="showLatestLoan"
+						:loan="latestLoan"
+						@open-impact-insight-modal="showImpactInsightsModal = true"
+					/>
+					<MyKivaSurveyCard
+						v-if="showSurveyCard"
+					/>
+					<MyKivaCard
+						v-for="slide in nonBadgesSlides"
+						:key="slide.badgeKey"
+						class="card-container tw-w-full tw-h-full"
+						:bg-image="getSlideBackgroundImg(slide, isNonBadgeSlide(slide), false)"
+						:is-bg-top-aligned="isNonBadgeSlide(slide)"
+						:has-gradient="!isNonBadgeSlide(slide)"
+						:title="getSlideTitle(slide)"
+						:subtitle="getSlideSubTitle(slide, isNonBadgeSlide(slide))"
+						:is-black-subtitle="isNonBadgeSlide(slide)"
+						:secondary-cta-text="getSlideSecondaryCtaText(slide)"
+						:primary-cta-text="getSlidePrimaryCtaText(slide)"
+						:primary-cta-variant="getSlidePrimaryCtaVariant(slide)"
+						:is-full-width-primary-cta="isNonBadgeSlide(slide)"
+						:is-title-font-sans="isSlideTitleFontSans(slide)"
+						:title-color="getSlideTitleColor(slide, isNonBadgeSlide(slide))"
+						@primary-cta-clicked="handlePrimaryCtaClick(slide)"
+						@secondary-cta-clicked="handleSecondaryCtaClick(slide)"
+					/>
+				</template>
+				<JourneyCardCarousel
+					v-else
+					:key="'beyond-loan-row'"
+					class="carousel tw--mt-6"
+					controls-top-right
+					hide-goal-card
+					in-lending-stats
+					use-universal-order
+					user-in-homepage
+					:post-lending-next-steps-enable="postLendingNextStepsEnable"
+					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+					:hero-badge-data="null"
+					:hero-tiered-achievements="heroTieredAchievements"
+					:lender="lender"
 					:loans="loans"
+					:slides="heroSlides"
 					:latest-loan="latestLoan"
-					@accept-email-updates="acceptedEmailMarketingUpdates = true"
-				/>
-				<MyKivaLatestLoanCard
-					v-if="showLatestLoan"
-					:loan="latestLoan"
+					:user-info="userInfo"
+					:enable-slide-limit="false"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
-				<MyKivaSurveyCard
-					v-if="showSurveyCard"
-				/>
-				<MyKivaCard
-					v-for="slide in nonBadgesSlides"
-					:key="slide.badgeKey"
-					class="card-container tw-w-full tw-h-full"
-					:bg-image="getSlideBackgroundImg(slide, isNonBadgeSlide(slide), false)"
-					:is-bg-top-aligned="isNonBadgeSlide(slide)"
-					:has-gradient="!isNonBadgeSlide(slide)"
-					:title="getSlideTitle(slide)"
-					:subtitle="getSlideSubTitle(slide, isNonBadgeSlide(slide))"
-					:is-black-subtitle="isNonBadgeSlide(slide)"
-					:secondary-cta-text="getSlideSecondaryCtaText(slide)"
-					:primary-cta-text="getSlidePrimaryCtaText(slide)"
-					:primary-cta-variant="getSlidePrimaryCtaVariant(slide)"
-					:is-full-width-primary-cta="isNonBadgeSlide(slide)"
-					:is-title-font-sans="isSlideTitleFontSans(slide)"
-					:title-color="getSlideTitleColor(slide, isNonBadgeSlide(slide))"
-					@primary-cta-clicked="handlePrimaryCtaClick(slide)"
-					@secondary-cta-clicked="handleSecondaryCtaClick(slide)"
-				/>
-			</template>
-			<JourneyCardCarousel
-				v-else
-				:key="'beyond-loan-row'"
-				class="carousel tw--mt-6"
-				controls-top-right
-				hide-goal-card
-				in-lending-stats
-				use-universal-order
-				user-in-homepage
-				:post-lending-next-steps-enable="postLendingNextStepsEnable"
-				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-				:hero-badge-data="null"
-				:hero-tiered-achievements="heroTieredAchievements"
-				:lender="lender"
-				:loans="loans"
-				:slides="heroSlides"
-				:latest-loan="latestLoan"
-				:user-info="userInfo"
-				:enable-slide-limit="false"
-				@open-impact-insight-modal="showImpactInsightsModal = true"
-			/>
-		</section>
+			</section>
+		</div>
 
 		<GoalSettingModal
 			v-if="showGoalModal"
@@ -361,16 +466,16 @@ const achievementSlides = computed(() => buildAchievementSlides({
 const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
 
 const shouldShowEmailMarketingCard = computed(() => checkShouldShowEmailMarketing({
-	showPostLendingNextStepsCards: showPostLendingNextStepsCards.value,
-	postLendingNextStepsEnable: props.postLendingNextStepsEnable,
+	showPostLendingNextStepsCards: true,
+	postLendingNextStepsEnable: true,
 	latestLoan: props.latestLoan,
 	hasMailUpdatesOptOut: userHasMailUpdatesOptOut(),
 	loansCount: props.loans.length,
 }));
 
 const showLatestLoan = computed(() => checkShowLatestLoan({
-	showPostLendingNextStepsCards: showPostLendingNextStepsCards.value,
-	postLendingNextStepsEnable: props.postLendingNextStepsEnable,
+	showPostLendingNextStepsCards: true,
+	postLendingNextStepsEnable: true,
 	latestLoan: props.latestLoan,
 }));
 
@@ -476,7 +581,7 @@ watch(() => props.goalRefreshKey, async (newVal, oldVal) => {
 
 onMounted(async () => {
 	await checkCompletedGoal({ category: 'portfolio' });
-
+	console.error('HP > heckPostLendingCardCookie(cookieStore)', checkPostLendingCardCookie(cookieStore));
 	// Check post-lending cookie
 	if (checkPostLendingCardCookie(cookieStore)) {
 		showPostLendingNextStepsCards.value = true;
