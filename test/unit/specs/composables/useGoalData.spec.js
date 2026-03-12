@@ -2728,7 +2728,7 @@ describe('useGoalData', () => {
 	});
 
 	describe('getCategoriesProgressByYear', () => {
-		it('should use cache-first fetch policy by default', async () => {
+		it('should always use no-cache fetch policy', async () => {
 			mockApollo.query = vi.fn().mockResolvedValue({
 				data: {
 					userAchievementProgress: {
@@ -2743,27 +2743,7 @@ describe('useGoalData', () => {
 
 			expect(mockApollo.query).toHaveBeenCalledWith(
 				expect.objectContaining({
-					fetchPolicy: 'cache-first',
-				})
-			);
-		});
-
-		it('should use network-only fetch policy when specified', async () => {
-			mockApollo.query = vi.fn().mockResolvedValue({
-				data: {
-					userAchievementProgress: {
-						tieredLendingAchievements: [
-							{ id: ID_WOMENS_EQUALITY, progressForYear: 15, totalProgressToAchievement: 60 }
-						]
-					}
-				}
-			});
-
-			await composable.getCategoriesProgressByYear(2026, 'network-only');
-
-			expect(mockApollo.query).toHaveBeenCalledWith(
-				expect.objectContaining({
-					fetchPolicy: 'network-only',
+					fetchPolicy: 'no-cache',
 				})
 			);
 		});
@@ -2802,7 +2782,7 @@ describe('useGoalData', () => {
 	});
 
 	describe('getCategoryLoanCountByYear', () => {
-		it('should use cache-first fetch policy by default', async () => {
+		it('should always use no-cache fetch policy', async () => {
 			mockApollo.query = vi.fn().mockResolvedValue({
 				data: {
 					userAchievementProgress: {
@@ -2817,27 +2797,7 @@ describe('useGoalData', () => {
 
 			expect(mockApollo.query).toHaveBeenCalledWith(
 				expect.objectContaining({
-					fetchPolicy: 'cache-first',
-				})
-			);
-		});
-
-		it('should use network-only fetch policy when specified', async () => {
-			mockApollo.query = vi.fn().mockResolvedValue({
-				data: {
-					userAchievementProgress: {
-						tieredLendingAchievements: [
-							{ id: ID_WOMENS_EQUALITY, progressForYear: 8 }
-						]
-					}
-				}
-			});
-
-			await composable.getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, 2026, 'network-only');
-
-			expect(mockApollo.query).toHaveBeenCalledWith(
-				expect.objectContaining({
-					fetchPolicy: 'network-only',
+					fetchPolicy: 'no-cache',
 				})
 			);
 		});

@@ -14,7 +14,7 @@ export const JOURNEY_MODAL_KEY = 'journey';
  * @param {Object|null} loan
  * @returns {boolean}
  */
-export const isLoanAnonymous = loan => loan?.anonymizationLevel === 'full';
+export const isLoanAnonymous = loan => loan?.anonymizationLevel?.toLowerCase() === 'full';
 
 /**
  * Core visibility check for the email marketing card
@@ -92,7 +92,7 @@ export const filterNonBadgesSlides = slides => {
  */
 export const getUrlParamsFromString = url => {
 	const urlSplit = url.split('?');
-	return urlSplit[1];
+	return urlSplit[1] ?? '';
 };
 
 /**

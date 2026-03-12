@@ -372,6 +372,7 @@ const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
+const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_enable';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -490,6 +491,7 @@ export default {
 			thanksPageGoalsEntrypointEnable: false,
 			lenderLoansIds: [],
 			mdiGiftOutline,
+			isBanditUpsellExpEnabled: false,
 		};
 	},
 	apollo: {
@@ -708,7 +710,7 @@ export default {
 			'EXP-MP-1984-Sept2025',
 		);
 	},
-	mounted() {
+	async mounted() {
 		// update current time every second for reactivity
 		this.currentTimeInterval = setInterval(() => {
 			this.currentTime = Date.now();
@@ -729,6 +731,10 @@ export default {
 		// show toast for specified scenario
 		this.handleToast();
 		this.getPromoInformationFromBasket();
+
+		// MyKiva Bandit Upsell Experiment Mar2026 MP-2513
+		await this.initializeBanditUpsellExperiment();
+
 		this.getUpsellModuleData();
 	},
 	computed: {
@@ -1254,7 +1260,20 @@ export default {
 					});
 				}
 			}
-		}
+		},
+		async initializeBanditUpsellExperiment() {
+			initializeExperiment(
+				this.cookieStore,
+				this.apollo,
+				this.$route,
+				BANDIT_UPSELL_EXP_KEY,
+				version => {
+					this.isBanditUpsellExpEnabled = version === 'b';
+				},
+				this.$kvTrackEvent,
+				'EXP-MP-2513-Mar2026',
+			);
+		},
 	},
 	unmounted() {
 		clearInterval(this.currentTimeInterval);
