@@ -689,7 +689,7 @@ export default function useGoalData({ apollo } = {}) {
 			);
 		}
 
-		await loadProgress(year, 'network-only', freshProgressAdjustments);
+		await loadProgress(year, freshProgressAdjustments);
 		const goals = parsedPrefs?.goals || [];
 		const currentYear = new Date().getFullYear();
 		const activeGoal = goals.find(g => {

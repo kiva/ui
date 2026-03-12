@@ -2664,7 +2664,7 @@ describe('useGoalData', () => {
 				},
 			});
 
-			const result = await composable.getCategoryLoanCountByYear(ID_SUPPORT_ALL, 2026, 'network-only');
+			const result = await composable.getCategoryLoanCountByYear(ID_SUPPORT_ALL, 2026);
 
 			expect(mockApollo.query).toHaveBeenCalledWith(
 				expect.objectContaining({
