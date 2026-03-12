@@ -61,6 +61,7 @@ describe('GoalProgressRing', () => {
 	});
 
 	describe('modalVariantDescriptionText - completed state', () => {
+		/* eslint-disable max-len */
 		const completedCases = [
 			[ID_WOMENS_EQUALITY, 'Women', `Thank you for supporting ${GOAL_LOANS} women and turning your commitment into impact.`],
 			[ID_SUPPORT_ALL, 'Choose as I go', `Thank you for supporting ${GOAL_LOANS} borrowers and turning your commitment into impact.`],
@@ -69,6 +70,7 @@ describe('GoalProgressRing', () => {
 			[ID_BASIC_NEEDS, 'Basic Needs', `Thank you for supporting ${GOAL_LOANS} basic needs loans and turning your commitment into impact.`],
 			[ID_US_ECONOMIC_EQUALITY, 'U.S. Entrepreneurs', `Thank you for supporting ${GOAL_LOANS} U.S. entrepreneurs and turning your commitment into impact.`],
 		];
+		/* eslint-enable max-len */
 
 		it.each(completedCases)('shows correct copy for %s', (categoryId, categoryName, expectedText) => {
 			const { container } = renderRing({ isGoalCompleted: true, categoryId, categoryName });
@@ -77,6 +79,7 @@ describe('GoalProgressRing', () => {
 	});
 
 	describe('modalVariantDescriptionText - in-progress state', () => {
+		/* eslint-disable max-len */
 		const inProgressCases = [
 			[ID_WOMENS_EQUALITY, 'Women', `You're already on your way to making ${GOAL_LOANS} loans to women this year`],
 			[ID_SUPPORT_ALL, 'Choose as I go', `You're already on your way to making ${GOAL_LOANS} loans this year`],
@@ -85,6 +88,7 @@ describe('GoalProgressRing', () => {
 			[ID_BASIC_NEEDS, 'Basic Needs', `You're already on your way to making ${GOAL_LOANS} loans to basic needs this year`],
 			[ID_US_ECONOMIC_EQUALITY, 'U.S. Entrepreneurs', `You're already on your way to making ${GOAL_LOANS} loans to U.S. entrepreneurs this year`],
 		];
+		/* eslint-enable max-len */
 
 		it.each(inProgressCases)('shows correct copy for %s', (categoryId, categoryName, expectedText) => {
 			const { container } = renderRing({ goalProgress: 2, categoryId, categoryName });
