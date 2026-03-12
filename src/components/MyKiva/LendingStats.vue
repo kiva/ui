@@ -192,7 +192,6 @@
 			:show="showGoalModal"
 			:total-loans="totalLoans"
 			:categories-loan-count="categoriesLoanCount"
-			:goals-v2-enabled="goalsV2Enabled"
 			:is-goal-set="isGoalSet"
 			:show-goal-selector="true"
 			:tiered-achievements="heroTieredAchievements"
@@ -508,8 +507,12 @@ export default {
 					// Refresh goal data to update the main card with the ring
 					await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
 				}
+
+				// Avoid showing category choice step when closing the modal
+				setTimeout(() => {
+					this.isGoalSet = false;
+				}, 300);
 			}
-			this.isGoalSet = false;
 		},
 		closeImpactInsightsModal() {
 			if (this.showImpactInsightsModal) {
