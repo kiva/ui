@@ -1500,6 +1500,64 @@ describe('useGoalData', () => {
 			expect(composable.userGoal.value.category).toBe(ID_CLIMATE_ACTION);
 			expect(composable.userGoal.value.target).toBe(15);
 		});
+
+		it('should update goalProgress using yearly loan count when new goal category is SUPPORT_ALL', async () => {
+			const yearlyLoanCount = 10;
+			const mockPrefs = {
+				goals: [
+					{
+						goalName: 'goal-to-edit',
+						category: ID_WOMENS_EQUALITY,
+						target: 5,
+						status: GOAL_STATUS.IN_PROGRESS,
+						dateStarted: '2026-01-01',
+					},
+				],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValue({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: yearlyLoanCount },
+							lendingStats: {
+								id: 'stats-123',
+								loanStatsByYear: {
+									count: yearlyLoanCount,
+									amount: 100,
+								},
+							},
+						},
+						userAchievementProgress: {
+							tieredLendingAchievements: [{
+								id: ID_WOMENS_EQUALITY,
+								totalProgressToAchievement: 5,
+							}],
+						},
+					},
+				});
+
+			// Set useYearlyProgress to true so getLoanStatsByYear gets called
+			await composable.loadGoalData({ yearlyProgress: true });
+
+			const previousGoal = { ...mockPrefs.goals[0] };
+			const updatedGoal = {
+				...mockPrefs.goals[0],
+				category: ID_SUPPORT_ALL,
+				status: GOAL_STATUS.IN_PROGRESS,
+				dateStarted: '2026-01-01',
+			};
+
+			await composable.updateCurrentGoal(previousGoal, updatedGoal);
+
+			expect(composable.userGoal.value.category).toBe(ID_SUPPORT_ALL);
+			// Validate the new progress is user total loans
+			expect(composable.goalProgress.value).toBe(yearlyLoanCount);
+		});
 	});
 
 	describe('checkCompletedGoal', () => {
@@ -2670,7 +2728,7 @@ describe('useGoalData', () => {
 	});
 
 	describe('getCategoriesProgressByYear', () => {
-		it('should use cache-first fetch policy by default', async () => {
+		it('should always use no-cache fetch policy', async () => {
 			mockApollo.query = vi.fn().mockResolvedValue({
 				data: {
 					userAchievementProgress: {
@@ -2685,27 +2743,7 @@ describe('useGoalData', () => {
 
 			expect(mockApollo.query).toHaveBeenCalledWith(
 				expect.objectContaining({
-					fetchPolicy: 'cache-first',
-				})
-			);
-		});
-
-		it('should use network-only fetch policy when specified', async () => {
-			mockApollo.query = vi.fn().mockResolvedValue({
-				data: {
-					userAchievementProgress: {
-						tieredLendingAchievements: [
-							{ id: ID_WOMENS_EQUALITY, progressForYear: 15, totalProgressToAchievement: 60 }
-						]
-					}
-				}
-			});
-
-			await composable.getCategoriesProgressByYear(2026, 'network-only');
-
-			expect(mockApollo.query).toHaveBeenCalledWith(
-				expect.objectContaining({
-					fetchPolicy: 'network-only',
+					fetchPolicy: 'no-cache',
 				})
 			);
 		});
@@ -2744,7 +2782,7 @@ describe('useGoalData', () => {
 	});
 
 	describe('getCategoryLoanCountByYear', () => {
-		it('should use cache-first fetch policy by default', async () => {
+		it('should always use no-cache fetch policy', async () => {
 			mockApollo.query = vi.fn().mockResolvedValue({
 				data: {
 					userAchievementProgress: {
@@ -2759,27 +2797,7 @@ describe('useGoalData', () => {
 
 			expect(mockApollo.query).toHaveBeenCalledWith(
 				expect.objectContaining({
-					fetchPolicy: 'cache-first',
-				})
-			);
-		});
-
-		it('should use network-only fetch policy when specified', async () => {
-			mockApollo.query = vi.fn().mockResolvedValue({
-				data: {
-					userAchievementProgress: {
-						tieredLendingAchievements: [
-							{ id: ID_WOMENS_EQUALITY, progressForYear: 8 }
-						]
-					}
-				}
-			});
-
-			await composable.getCategoryLoanCountByYear(ID_WOMENS_EQUALITY, 2026, 'network-only');
-
-			expect(mockApollo.query).toHaveBeenCalledWith(
-				expect.objectContaining({
-					fetchPolicy: 'network-only',
+					fetchPolicy: 'no-cache',
 				})
 			);
 		});

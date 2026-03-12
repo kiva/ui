@@ -11,6 +11,8 @@
 			:category-id="selectedCategoryId"
 			:go-to-url="goToUrl"
 			:goal-editing-enable="goalEditingEnable"
+			:is-updating-goal="isUpdatingGoal"
+			:is-goal-completed="isGoalCompleted"
 			@edit-goal-from-settings="handleEditGoalFromSettings"
 			@button-click="handleSuccessContinue"
 		/>
@@ -74,7 +76,7 @@
 					{{ editGoalCopy }}
 					<KvMaterialIcon
 						:icon="mdiPencilOutline"
-						class="tw-ml-0.5"
+						class="tw-ml-0.5 tw-w-2.5"
 					/>
 				</KvButton>
 			</div>
@@ -194,6 +196,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Flag to indicate if the goal has been completed
+	 */
+	isGoalCompleted: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits([
@@ -272,7 +281,7 @@ const loadLoansThisYear = async () => {
 
 	loadingCurrentYear.value = true;
 	const currentYear = new Date().getFullYear();
-	const count = await getCategoryLoanCountByYear(props.selectedCategoryId, currentYear, 'network-only');
+	const count = await getCategoryLoanCountByYear(props.selectedCategoryId, currentYear);
 	fetchedCurrentYearLoans.value = count;
 	loadingCurrentYear.value = false;
 };
@@ -304,7 +313,7 @@ const subtitleText = computed(() => {
 const yearToDate = new Date().getFullYear();
 
 const buttonText = computed(() => {
-	if (editGoalFromSettings.value) {
+	if (editGoalFromSettings.value || props.isUpdatingGoal) {
 		return `Update ${yearToDate} goal`;
 	}
 	return `Set ${yearToDate} goal`;
@@ -378,14 +387,16 @@ const handleContinue = () => {
 		status: GOAL_STATUS.IN_PROGRESS,
 		loanTotalAtStart,
 	};
+
+	const label = props.isUpdatingGoal ? 'confirm-edit-goal' : 'set-annual-goal';
+
 	$kvTrackEvent(
-		props.trackingCategory,
+		'event-tracking',
 		'click',
-		'set-annual-goal',
+		label,
 		props.selectedCategoryId,
 		selectedTarget.value
 	);
-
 	if (props.isUpdatingGoal) {
 		emit('update-goal', preferences);
 	} else {
@@ -479,14 +490,7 @@ onMounted(async () => {
 });
 
 const editGoalCopy = computed(() => {
-	const isCustomizeMode = editGoalFromSettings.value && !allowBackToCategorySelection.value;
-	const shouldShowCategoryEdit = allowBackToCategorySelection.value || !props.inGoalSettingsPage;
-
-	if (isCustomizeMode) {
-		return 'Customize your goal';
-	}
-
-	if (shouldShowCategoryEdit) {
+	if (allowBackToCategorySelection.value || !props.inGoalSettingsPage) {
 		return 'Edit goal category';
 	}
 

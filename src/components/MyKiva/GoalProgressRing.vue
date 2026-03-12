@@ -172,6 +172,20 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Flag to indicate if user is editing an existing goal
+	 */
+	isUpdatingGoal: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Flag to indicate if the goal has been completed
+	 */
+	isGoalCompleted: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits(['button-click', 'edit-button-click', 'edit-goal-from-settings']);
@@ -237,15 +251,19 @@ const modalDescriptionText = computed(() => {
 	if (props.categoryId === ID_SUPPORT_ALL) {
 		return `Your goal to support <span class="tw-text-brand">${props.goalLoans} loans</span> begins here.`;
 	}
-	if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
-		// eslint-disable-next-line max-len
-		return `Your goal to support <span class="tw-text-brand">${props.goalLoans} U.S entrepreneurs</span> begins here.`;
-	}
+
+	const formattedCategory = props.categoryId === ID_US_ECONOMIC_EQUALITY
+		? props.categoryName
+		: props.categoryName?.toLowerCase() || '';
+
 	// eslint-disable-next-line max-len
-	return `Your goal to support <span class="tw-text-brand">${props.goalLoans} ${props.categoryName?.toLowerCase() || ''}</span> begins here.`;
+	return `Your goal to support <span class="tw-text-brand">${props.goalLoans} loans</span> to <span class="tw-text-brand"> ${formattedCategory}</span> begins here.`;
 });
 
 const titleText = computed(() => {
+	if (props.isUpdatingGoal) {
+		return 'Goal updated!';
+	}
 	if (isModalVariant.value) {
 		return 'Goal set!';
 	}
@@ -304,7 +322,9 @@ const handleEditGoal = () => {
 };
 
 const showEditGoalButton = computed(() => {
-	return props.goalEditingEnable && router.currentRoute.value?.path?.includes('/goal-setting');
+	return props.goalEditingEnable
+		&& !props.isGoalCompleted
+		&& router.currentRoute.value?.path?.includes('/goal-setting');
 });
 
 </script>

@@ -97,16 +97,18 @@ export default {
 			const badgeKey = route?.query?.utm_campaign ?? '';
 			const { isBadgeKeyValid } = useBadgeData();
 
-			return Promise.all([
-				client.query({ query: lenderPublicProfileQuery, variables: { publicId } }),
-				isBadgeKeyValid(badgeKey) ? client.query({
-					query: lenderProfileBadgeDataQuery,
-					variables: {
-						contentType: 'challenge',
-						limit: 200,
-					}
-				}) : null,
-			]);
+			return client.query({ query: lenderPublicProfileQuery, variables: { publicId } })
+				.then(lenderResult => {
+					if (!lenderResult?.data?.community?.lender?.id) return null;
+					if (!isBadgeKeyValid(badgeKey)) return null;
+					return client.query({
+						query: lenderProfileBadgeDataQuery,
+						variables: {
+							contentType: 'challenge',
+							limit: 200,
+						}
+					});
+				});
 		}
 	},
 	computed: {

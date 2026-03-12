@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import useBreakpoints from '#src/composables/useBreakpoints';
 import { KvCardFrame } from '@kiva/kv-components';
 
@@ -82,4 +82,11 @@ const selectCategory = categoryId => {
 	selectedCategory.value = categoryId;
 	emit('category-selected', categoryId);
 };
+
+watch(
+	() => props.preSelectedCategory,
+	newVal => {
+		selectedCategory.value = newVal;
+	},
+);
 </script>

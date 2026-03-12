@@ -5,6 +5,8 @@
 				:total-loans="totalLoans"
 				:categories-loan-count="categoriesLoanCount"
 				:tiered-achievements="tieredAchievements"
+				:email-target="$route.query.target || null"
+				:email-category="$route.query.category || null"
 				:goal-editing-enable="goalEditingEnable"
 			/>
 		</KvPageContainer>
