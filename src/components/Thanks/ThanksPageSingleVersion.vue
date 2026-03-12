@@ -33,7 +33,7 @@
 				:selected-category="selectedCategory"
 				:is-editing="isEditing"
 				:goal-loans="goalTarget"
-				:goal-progress="currGoalProgress"
+				:goal-progress="goalProgress"
 				:goal-progress-percentage="goalProgressPercentage"
 				go-to-url="/mykiva"
 				@edit-goal="editGoalCategory"
@@ -390,7 +390,6 @@ const setGoal = async preferences => {
 	showGoalModal.value = false;
 	// close modal and refresh immediately
 	await loadGoalData({ yearlyProgress: true });
-	$kvTrackEvent('post-checkout', 'show', userGoal.value.category, goalProgress.value, userGoal.value.target);
 };
 
 const closeGoalModal = () => {
@@ -443,6 +442,11 @@ onMounted(async () => {
 			&& userGoal.value?.status === GOAL_STATUS.IN_PROGRESS
 			&& !userGoalAchievedNow.value
 			&& hasContributingLoans;
+		if (!props.isGuest
+			&& userGoal.value?.status === GOAL_STATUS.IN_PROGRESS) {
+			// eslint-disable-next-line max-len
+			$kvTrackEvent('post-checkout', 'show', userGoal.value?.category, goalProgress?.value, userGoal.value?.target);
+		}
 	}
 	showConfetti();
 	const isOptInLoan = showOptInModule.value && props.loans.length > 0;
