@@ -26,7 +26,12 @@
 			class="tw-text-center tw-w-full tw-flex tw-justify-center tw-py-1"
 		>
 			<p
-				v-if="hasProgress"
+				v-if="isGoalCompleted"
+				v-html="completedDescriptionText"
+				class="modal-description-text tw-text-subhead !tw-font-medium" style="line-height: 1.5rem;"
+			></p>
+			<p
+				v-else-if="hasProgress"
 				v-html="progressDescription"
 				class="modal-description-text tw-text-subhead !tw-font-medium" style="line-height: 1.5rem;"
 			></p>
@@ -260,7 +265,33 @@ const modalDescriptionText = computed(() => {
 	return `Your goal to support <span class="tw-text-brand">${props.goalLoans} loans</span> to <span class="tw-text-brand"> ${formattedCategory}</span> begins here.`;
 });
 
+const completedDescriptionText = computed(() => {
+	const s = 'class="tw-text-brand"';
+	const n = `<span ${s}>${props.goalLoans}</span>`;
+	const suffix = 'and turning your commitment into impact.';
+	if (props.categoryId === ID_SUPPORT_ALL) {
+		return `Thank you for supporting ${n} <span ${s}>borrowers</span> ${suffix}`;
+	}
+	if (props.categoryId === ID_CLIMATE_ACTION) {
+		return `Thank you for supporting ${n} <span ${s}>eco-friendly loans</span> ${suffix}`;
+	}
+	if (props.categoryId === ID_REFUGEE_EQUALITY) {
+		return `Thank you for supporting ${n} <span ${s}>refugees</span> ${suffix}`;
+	}
+	if (props.categoryId === ID_BASIC_NEEDS) {
+		return `Thank you for supporting ${n} <span ${s}>basic needs loans</span> ${suffix}`;
+	}
+	if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
+		return `Thank you for supporting ${n} <span ${s}>U.S. entrepreneurs</span> ${suffix}`;
+	}
+	// Default: women
+	return `Thank you for supporting ${n} <span ${s}>women</span> ${suffix}`;
+});
+
 const titleText = computed(() => {
+	if (props.isGoalCompleted && isModalVariant.value) {
+		return 'You did it! You reached your annual goal';
+	}
 	if (props.isUpdatingGoal) {
 		return 'Goal updated!';
 	}
@@ -295,6 +326,9 @@ const descriptionText = computed(() => {
 
 const buttonText = computed(() => {
 	if (isModalVariant.value) {
+		if (props.isGoalCompleted) {
+			return 'Continue my impact';
+		}
 		// MyKiva modal: user already has progress, show tracking CTA
 		if (props.goToUrl === '/mykiva' && props.goalProgress > 0) {
 			return 'Track my progress';
