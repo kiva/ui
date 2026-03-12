@@ -238,7 +238,6 @@ const showGoalInProgressModule = ref(false);
 const isGoalSet = ref(false);
 const isEmptyGoal = ref(true);
 const goalTarget = ref(0);
-const currGoalProgress = ref(0);
 
 const {
 	checkCompletedGoal,
@@ -428,7 +427,6 @@ onMounted(async () => {
 			loans: props.loans,
 			year,
 		});
-		currGoalProgress.value = totalProgress;
 		await checkCompletedGoal({ currentGoalProgress: totalProgress });
 		goalDataInitialized.value = true;
 		isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
