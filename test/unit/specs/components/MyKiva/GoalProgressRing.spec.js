@@ -114,7 +114,7 @@ describe('GoalProgressRing', () => {
 
 		it('shows "Track my progress" for mykiva url with existing progress', () => {
 			const { getByRole } = renderRing({ goToUrl: '/mykiva', goalProgress: 2 });
-			expect(getByRole('button', { name: "Track my progress" })).toBeTruthy();
+			expect(getByRole('button', { name: 'Track my progress' })).toBeTruthy();
 		});
 
 		it('shows "Let\'s do this" for modal with no progress', () => {
