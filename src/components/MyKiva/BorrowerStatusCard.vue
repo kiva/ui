@@ -172,14 +172,14 @@ const menuOptions = computed(() => {
 });
 
 const showWhatIsNextColumn = computed(() => {
-	return !([REFUNDED, EXPIRED, ENDED].includes(loan.value?.status));
+	return !([REFUNDED, EXPIRED].includes(loan.value?.status));
 });
 
 const stepsCopy = computed(() => {
-	if (!showWhatIsNextColumn.value) {
-		return 'Learn what this means';
+	if (showWhatIsNextColumn.value) {
+		return 'What’s next?';
 	}
-	return 'What’s next?';
+	return 'Learn what this means';
 });
 
 const loanStatus = computed(() => {
