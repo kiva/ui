@@ -132,7 +132,7 @@
 		"vue-observe-visibility": "^1.0.0",
 		"vue-router": "^4.5.1",
 		"vue-smooth-reflow": "^0.1.12",
-		"vue3-touch-events": "^4.1.8",
+		"vue3-touch-events": "^5.0.15",
 		"vuelidate": "^0.7.6",
 		"web-vitals": "^3.5.2",
 		"whatwg-fetch": "^3.6.2",
