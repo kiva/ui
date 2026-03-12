@@ -6,7 +6,7 @@
 		>
 			<KvMaterialIcon
 				:icon="mdiArrowLeft"
-				class="tw-ml-0.5"
+				class="md:tw-ml-0.5"
 			/>
 			Back to dashboard
 		</button>
