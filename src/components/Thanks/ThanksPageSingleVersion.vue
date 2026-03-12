@@ -387,8 +387,6 @@ const setGoal = async preferences => {
 	await storeGoalPreferences(preferences);
 	isGoalSet.value = true;
 	showGoalModal.value = false;
-	// close modal and refresh immediately
-	await loadGoalData({ yearlyProgress: true });
 };
 
 const closeGoalModal = () => {
