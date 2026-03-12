@@ -86,17 +86,13 @@ export const updateUserPreferences = async (apollo, userPreferences, parsedPrefe
 export const upsertMyKivaGoal = async (apollo, {
 	category, target, dateStarted, status
 }) => {
-	try {
-		return await apollo.mutate({
-			mutation: setMyKivaGoalMutation,
-			variables: {
-				category,
-				target,
-				dateStarted,
-				status,
-			},
-		});
-	} catch (e) {
-		logReadQueryError(e, 'userPreferenceUtils setMyKivaGoalMutation');
-	}
+	return apollo.mutate({
+		mutation: setMyKivaGoalMutation,
+		variables: {
+			category,
+			target,
+			dateStarted,
+			status,
+		},
+	});
 };
