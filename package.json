@@ -102,7 +102,7 @@
 		"gsap": "^3.12.5",
 		"helmet": "^4.6.0",
 		"js-cookie": "^3.0.1",
-		"jsonwebtoken": "^9.0.2",
+		"jsonwebtoken": "^9.0.3",
 		"libphonenumber-js": "^1.11.4",
 		"locale": "^0.1.0",
 		"lodash": "^4.17.23",
