@@ -214,59 +214,59 @@ const titleClass = computed(() => {
 });
 
 const modalVariantDescriptionText = computed(() => {
-	const s = 'class="tw-text-brand"';
+	const brandClass = 'class="tw-text-brand"';
 	const loans = props.goalLoans;
-	const loansTag = `<span ${s}>${loans}</span>`;
+	const loansTag = `<span ${brandClass}>${loans}</span>`;
 
 	if (props.isGoalCompleted) {
 		const suffix = 'and turning your commitment into impact.';
 		if (props.categoryId === ID_SUPPORT_ALL) {
-			return `Thank you for supporting ${loansTag} <span ${s}>borrowers</span> ${suffix}`;
+			return `Thank you for supporting ${loansTag} <span ${brandClass}>borrowers</span> ${suffix}`;
 		}
 		if (props.categoryId === ID_CLIMATE_ACTION) {
-			return `Thank you for supporting ${loansTag} <span ${s}>eco-friendly loans</span> ${suffix}`;
+			return `Thank you for supporting ${loansTag} <span ${brandClass}>eco-friendly loans</span> ${suffix}`;
 		}
 		if (props.categoryId === ID_REFUGEE_EQUALITY) {
-			return `Thank you for supporting ${loansTag} <span ${s}>refugees</span> ${suffix}`;
+			return `Thank you for supporting ${loansTag} <span ${brandClass}>refugees</span> ${suffix}`;
 		}
 		if (props.categoryId === ID_BASIC_NEEDS) {
-			return `Thank you for supporting ${loansTag} <span ${s}>basic needs loans</span> ${suffix}`;
+			return `Thank you for supporting ${loansTag} <span ${brandClass}>basic needs loans</span> ${suffix}`;
 		}
 		if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
-			return `Thank you for supporting ${loansTag} <span ${s}>U.S. entrepreneurs</span> ${suffix}`;
+			return `Thank you for supporting ${loansTag} <span ${brandClass}>U.S. entrepreneurs</span> ${suffix}`;
 		}
-		return `Thank you for supporting ${loansTag} <span ${s}>women</span> ${suffix}`;
+		return `Thank you for supporting ${loansTag} <span ${brandClass}>women</span> ${suffix}`;
 	}
 
 	if (props.goalProgress > 0) {
-		const strongTag = `<strong ${s}>${loans} loans</strong>`;
+		const strongTag = `<strong ${brandClass}>${loans} loans</strong>`;
 		const prefix = "You're already on your way to making";
 		if (props.categoryId === ID_SUPPORT_ALL) {
 			return `${prefix} ${strongTag} this year`;
 		}
 		if (props.categoryId === ID_CLIMATE_ACTION) {
-			return `${prefix} <strong ${s}>${loans} eco-friendly loans</strong> this year`;
+			return `${prefix} <strong ${brandClass}>${loans} eco-friendly loans</strong> this year`;
 		}
 		if (props.categoryId === ID_REFUGEE_EQUALITY) {
-			return `${prefix} ${strongTag} to <strong ${s}>refugees</strong> this year`;
+			return `${prefix} ${strongTag} to <strong ${brandClass}>refugees</strong> this year`;
 		}
 		if (props.categoryId === ID_BASIC_NEEDS) {
-			return `${prefix} ${strongTag} to <strong ${s}>basic needs</strong> this year`;
+			return `${prefix} ${strongTag} to <strong ${brandClass}>basic needs</strong> this year`;
 		}
 		if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
-			return `${prefix} ${strongTag} to <strong ${s}>U.S. entrepreneurs</strong> this year`;
+			return `${prefix} ${strongTag} to <strong ${brandClass}>U.S. entrepreneurs</strong> this year`;
 		}
-		return `${prefix} ${strongTag} to <strong ${s}>women</strong> this year`;
+		return `${prefix} ${strongTag} to <strong ${brandClass}>women</strong> this year`;
 	}
 
 	if (props.categoryId === ID_SUPPORT_ALL) {
-		return `Your goal to support <span ${s}>${loans} loans</span> begins here.`;
+		return `Your goal to support <span ${brandClass}>${loans} loans</span> begins here.`;
 	}
 	const formattedCategory = props.categoryId === ID_US_ECONOMIC_EQUALITY
 		? props.categoryName
 		: props.categoryName?.toLowerCase() || '';
 	// eslint-disable-next-line max-len
-	return `Your goal to support <span ${s}>${loans} loans</span> to <span ${s}>${formattedCategory}</span> begins here.`;
+	return `Your goal to support <span ${brandClass}>${loans} loans</span> to <span ${brandClass}>${formattedCategory}</span> begins here.`;
 });
 
 const titleText = computed(() => {
