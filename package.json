@@ -42,7 +42,7 @@
 		"@contentful/rich-text-html-renderer": "^15.13.1",
 		"@contentful/rich-text-types": "^14.1.2",
 		"@godaddy/terminus": "^4.11.0",
-		"@graphql-tools/load": "^7.7.0",
+		"@graphql-tools/load": "^8.1.8",
 		"@graphql-tools/url-loader": "^7.17.18",
 		"@kiva/kv-components": "^8.6.0",
 		"@kiva/kv-shop": "^3.7.48",
