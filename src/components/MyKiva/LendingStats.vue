@@ -477,6 +477,7 @@ export default {
 				const msg = this.isUpdatingGoal ? 'updating' : 'setting up';
 				this.$showTipMsg(`There was a problem ${msg} your goal`, 'error');
 				logReadQueryError(error, `MyKivaPage ${msg} goal`);
+				return;
 			}
 			this.newGoalPrefs = preferences;
 			this.isGoalSet = true;
