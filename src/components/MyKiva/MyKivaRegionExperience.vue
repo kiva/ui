@@ -1,5 +1,14 @@
 <template>
+	<div v-if="loading" class="loading-card" style="min-height: 320px;">
+		<div class="tw-w-full tw-h-auto tw-p-1 md:tw-p-2">
+			<KvLoadingPlaceholder class="!tw-h-4 tw-w-full tw-max-w-16 tw-my-1" />
+			<KvLoadingPlaceholder class="tw-mb-2" />
+			<KvLoadingPlaceholder class="!tw-h-3 tw-w-full tw-mb-1 tw-max-w-sm" />
+			<KvLoadingPlaceholder class="!tw-h-6 tw-mb-1" />
+		</div>
+	</div>
 	<div
+		v-else
 		ref="regionElement"
 		class="stats-wrapper tw-h-auto tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col"
 	>
@@ -114,11 +123,13 @@ import {
 	ref,
 	computed,
 	inject,
+	watch,
 	onMounted,
 	onBeforeUnmount,
+	nextTick,
 } from 'vue';
 import { useRouter } from 'vue-router';
-import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
+import { KvMaterialIcon, KvCheckbox, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 
 import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
@@ -143,6 +154,10 @@ const props = defineProps({
 	loans: {
 		type: Array,
 		default: () => ([]),
+	},
+	loading: {
+		type: Boolean,
+		default: false,
 	},
 });
 
@@ -205,7 +220,7 @@ const handleRecommendRegionClick = region => {
 	router.push(`/lend/filter?country=${region?.countries.join(',')}`);
 };
 
-onMounted(() => {
+const startCheckAnimation = () => {
 	const { delayUntilVisible, disconnect } = useDelayUntilVisible();
 	delayUntilVisible(() => {
 		setTimeout(() => {
@@ -224,6 +239,19 @@ onMounted(() => {
 		}, 800);
 	}, [regionElement.value]);
 	disconnectRegionWatcher = disconnect;
+};
+
+onMounted(() => {
+	if (props.loading) return;
+	startCheckAnimation();
+});
+
+watch(() => props.loading, (newVal, oldVal) => {
+	if (oldVal && !newVal) {
+		nextTick(() => {
+			startCheckAnimation();
+		});
+	}
 });
 
 onBeforeUnmount(() => {

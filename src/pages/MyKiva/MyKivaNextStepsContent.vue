@@ -16,15 +16,16 @@
 		</h3>
 
 		<section
-			class="region-section tw-grid md:tw-flex-row"
+			class="region-section md:tw-flex-row"
 			:class="{
 				'tw-grid-cols-1 tw-grid-rows-2' : isMobile,
-				'tw-grid-flow-row-dense tw-gap-4 tw-grid-rows-1' : !isMobile
+				'tw-grid tw-grid-flow-row-dense tw-gap-4 tw-grid-rows-1' : !isMobile
 			}"
 		>
 			<NextYearGoalCard
 				v-if="!hideCompletedGoalCard && shouldShowGoalCard"
 				class="tw-shrink-0"
+				:style="{ maxHeight: !userHasGoal && isMobile ? '340px' : undefined }"
 				:goal-progress="goalProgress"
 				:hero-slides="heroSlides"
 				:loading="goalProgressLoading"
@@ -33,18 +34,10 @@
 				:hide-goal-card="hideCompletedGoalCard"
 				@open-goal-modal="showGoalModal = true"
 			/>
-			<div v-if="goalProgressLoading" class="loading-card" style="min-height: 320px;">
-				<div class="tw-w-full tw-h-auto tw-p-1 md:tw-p-2">
-					<KvLoadingPlaceholder class="!tw-h-4 tw-w-full tw-max-w-16 tw-my-1" />
-					<KvLoadingPlaceholder class="tw-mb-2" />
-					<KvLoadingPlaceholder class="!tw-h-3 tw-w-full tw-mb-1 tw-max-w-sm" />
-					<KvLoadingPlaceholder class="!tw-h-6 tw-mb-1" />
-				</div>
-			</div>
 			<MyKivaRegionExperience
-				v-else
 				:regions-data="regionsData"
 				:loans="loans"
+				:loading="goalProgressLoading"
 			/>
 		</section>
 
@@ -219,7 +212,7 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { mdiArrowLeft } from '@mdi/js';
-import { KvMaterialIcon, KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
+import { KvMaterialIcon, KvButton } from '@kiva/kv-components';
 
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
@@ -353,6 +346,7 @@ const isUpdatingGoal = ref(false);
 const isSharingModalVisible = ref(false);
 const acceptedEmailMarketingUpdates = ref(false);
 const showPostLendingNextStepsCards = ref(false);
+const userHasGoal = computed(() => !!userGoal.value && Object.keys(userGoal.value).length > 0);
 
 // Computed
 const categoriesLoanCount = computed(() => getAllCategoryLoanCounts(props.heroTieredAchievements));
@@ -508,9 +502,7 @@ onMounted(async () => {
 .card-container {
 	width: 100%;
 
-	@screen md {
-		width: auto;
-	}
+	@apply md:tw-w-auto;
 }
 
 .kiva-card :deep(h2) {
