@@ -388,6 +388,8 @@ const setGoal = async preferences => {
 	await storeGoalPreferences(preferences);
 	isGoalSet.value = true;
 	showGoalModal.value = false;
+	// close modal and refresh immediately
+	await loadGoalData({ yearlyProgress: true });
 	$kvTrackEvent('post-checkout', 'show', userGoal.value.category, goalProgress.value, userGoal.value.target);
 };
 
