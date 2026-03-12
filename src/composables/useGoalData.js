@@ -247,17 +247,19 @@ export default function useGoalData({ apollo } = {}) {
 
 	/**
 	 * Retrieves the user's tiered lending achievement progress for a given year.
+	 * Always uses 'no-cache' because this lightweight query only selects
+	 * tieredLendingAchievements — writing it to cache would overwrite richer
+	 * data stored by the full userAchievementProgressQuery prefetch.
 	 *
 	 * @param {number} year - Year to fetch progress for.
-	 * @param {string} [fetchPolicy='cache-first'] - Apollo fetch policy.
 	 * @returns {Promise<Object[]|null>} Tiered lending progress data, or null on error.
 	 */
-	async function getCategoriesProgressByYear(year, fetchPolicy = 'cache-first') {
+	async function getCategoriesProgressByYear(year) {
 		try {
 			const response = await apolloClient.query({
 				query: useGoalDataYearlyProgressQuery,
 				variables: { year },
-				fetchPolicy
+				fetchPolicy: 'no-cache',
 			});
 			const progress = response.data.userAchievementProgress.tieredLendingAchievements;
 			return progress;
@@ -312,17 +314,16 @@ export default function useGoalData({ apollo } = {}) {
 	 *
 	 * @param {string} categoryId - Category ID to fetch loan count for.
 	 * @param {number} year - Year to fetch progress for.
-	 * @param {string} [fetchPolicy='cache-first'] - Apollo fetch policy.
 	 * @returns {Promise<number|null>} The category loan count for the given year, or null on error.
 	 */
-	async function getCategoryLoanCountByYear(categoryId, year, fetchPolicy = 'cache-first') {
+	async function getCategoryLoanCountByYear(categoryId, year) {
 		try {
 			// Get actual yearly loan count
 			if (categoryId === ID_SUPPORT_ALL) {
 				return await getSupportAllLoanCountByYear(year);
 			}
 
-			const progress = await getCategoriesProgressByYear(year, fetchPolicy);
+			const progress = await getCategoriesProgressByYear(year);
 			const count = progress?.find(entry => entry.id === categoryId)?.progressForYear || 0;
 			return count;
 		} catch (error) {
@@ -440,9 +441,9 @@ export default function useGoalData({ apollo } = {}) {
 		});
 	}
 
-	async function loadProgress(year, fetchPolicy = 'network-only', freshProgressAdjustments = {}) {
+	async function loadProgress(year, freshProgressAdjustments = {}) {
 		try {
-			const progress = await getCategoriesProgressByYear(year, fetchPolicy);
+			const progress = await getCategoriesProgressByYear(year);
 			currentYearProgress.value = applyFreshProgressToGoalData(progress, freshProgressAdjustments);
 		} catch (error) {
 			logFormatter(error, 'Failed to load progress');
@@ -750,13 +751,13 @@ export default function useGoalData({ apollo } = {}) {
 			return null;
 		}).filter(goal => goal !== null);
 
-		if (expiredGoals.some(goal => goal.status === GOAL_STATUS.EXPIRED)) {
-			await Promise.all(expiredGoals.map(goal => upsertMyKivaGoal(apolloClient, {
-				category: goal.category,
-				target: goal.target,
-				dateStarted: goal.dateStarted,
-				status: goal.status,
-			})));
+		if (expiredGoals.length) {
+			upsertMyKivaGoal(apolloClient, {
+				category: expiredGoals[0].category,
+				target: expiredGoals[0].target,
+				dateStarted: expiredGoals[0].dateStarted,
+				status: expiredGoals[0].status,
+			});
 			setGoalState(null);
 		}
 
@@ -821,7 +822,7 @@ export default function useGoalData({ apollo } = {}) {
 				);
 			}
 			// Use loadProgress to populate currentYearProgress so goalProgress computed has data immediately
-			await loadProgress(currentYear, 'network-only', freshProgressAdjustments);
+			await loadProgress(currentYear, freshProgressAdjustments);
 			const categoryProgress = currentYearProgress.value?.find(n => n.id === goalToFix.category);
 			actualYearlyProgress = categoryProgress?.progressForYear || 0;
 		}
