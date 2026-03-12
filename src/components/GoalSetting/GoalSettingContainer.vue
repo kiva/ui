@@ -345,7 +345,7 @@ const recalculateGoalInformation = async () => {
 
 const updateGoal = async preferences => {
 	try {
-		await updateCurrentGoal(userGoal.value, preferences);
+		await updateCurrentGoal(preferences);
 		await recalculateGoalInformation();
 	} catch (e) {
 		logFormatter('GoalSettingContainer: failed to updating this goal', 'error', { error: e });
@@ -454,7 +454,7 @@ async function handleEmailFlow() {
 			await storeGoalPreferences(newGoalPrefs);
 		} catch (e) {
 			logFormatter('GoalSettingContainer: failed to store email goal', 'error', { error: e });
-			$showTipMsg('There was a problem storing email goal', 'error');
+			$showTipMsg('There was a problem setting up this goal', 'error');
 		}
 	}
 

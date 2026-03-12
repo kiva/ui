@@ -459,12 +459,12 @@ export default {
 			this.$router.push(`/lend/filter?country=${region?.countries.join(',')}`);
 		},
 		async setGoal(preferences) {
-			try {
 			// For goalsV2, pass false to not update local state yet
 			// This delays the UI update until the modal is closed
-				const updateLocalState = !this.goalsV2Enabled;
+			const updateLocalState = !this.goalsV2Enabled;
+			try {
 				if (this.isUpdatingGoal) {
-					await this.updateCurrentGoal(this.userGoal, preferences);
+					await this.updateCurrentGoal(preferences);
 					this.$kvTrackEvent(
 						'portfolio',
 						'click',
@@ -473,16 +473,17 @@ export default {
 				} else {
 					await this.storeGoalPreferences(preferences, updateLocalState);
 				}
-				this.newGoalPrefs = preferences;
-				this.isGoalSet = true;
-				if (!this.goalsV2Enabled) {
-				// For legacy goals, close modal and refresh immediately
-					await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
-					this.showGoalModal = false;
-				}
 			} catch (error) {
-				this.$showTipMsg('There was a problem setting up your goal', 'error');
-				logReadQueryError(error, 'MyKivaPage setting up goal');
+				const msg = this.isUpdatingGoal ? 'updating' : 'setting up';
+				this.$showTipMsg(`There was a problem ${msg} your goal`, 'error');
+				logReadQueryError(error, `MyKivaPage ${msg} goal`);
+			}
+			this.newGoalPrefs = preferences;
+			this.isGoalSet = true;
+			if (!this.goalsV2Enabled) {
+				// For legacy goals, close modal and refresh immediately
+				await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+				this.showGoalModal = false;
 			}
 		},
 		async closeGoalModal() {

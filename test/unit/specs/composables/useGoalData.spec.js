@@ -1326,14 +1326,13 @@ describe('useGoalData', () => {
 			const { upsertMyKivaGoal } = await import('#src/util/userPreferenceUtils');
 			upsertMyKivaGoal.mockClear();
 
-			const previousGoal = { ...mockPrefs.goals[0] };
 			const updatedGoal = {
 				...mockPrefs.goals[0],
 				category: ID_CLIMATE_ACTION,
 				target: 15,
 			};
 
-			await composable.updateCurrentGoal(previousGoal, updatedGoal);
+			await composable.updateCurrentGoal(updatedGoal);
 
 			// Should call upsertMyKivaGoal with updated goal data
 			expect(upsertMyKivaGoal).toHaveBeenCalledWith(mockApollo, {
@@ -1392,7 +1391,6 @@ describe('useGoalData', () => {
 			// Set useYearlyProgress to true so getLoanStatsByYear gets called
 			await composable.loadGoalData({ yearlyProgress: true });
 
-			const previousGoal = { ...mockPrefs.goals[0] };
 			const updatedGoal = {
 				...mockPrefs.goals[0],
 				category: ID_SUPPORT_ALL,
@@ -1400,7 +1398,7 @@ describe('useGoalData', () => {
 				dateStarted: '2026-01-01',
 			};
 
-			await composable.updateCurrentGoal(previousGoal, updatedGoal);
+			await composable.updateCurrentGoal(updatedGoal);
 
 			expect(composable.userGoal.value.category).toBe(ID_SUPPORT_ALL);
 			// Validate the new progress is user total loans
@@ -1443,14 +1441,13 @@ describe('useGoalData', () => {
 			const { upsertMyKivaGoal } = await import('#src/util/userPreferenceUtils');
 			upsertMyKivaGoal.mockRejectedValueOnce(new Error('Mutation failed'));
 
-			const previousGoal = { ...mockPrefs.goals[0] };
 			const updatedGoal = {
 				...mockPrefs.goals[0],
 				category: ID_CLIMATE_ACTION,
 				target: 15,
 			};
 
-			await expect(composable.updateCurrentGoal(previousGoal, updatedGoal))
+			await expect(composable.updateCurrentGoal(updatedGoal))
 				.rejects.toThrow('Mutation failed');
 
 			// Local state should NOT be updated when mutation fails

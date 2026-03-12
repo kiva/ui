@@ -560,10 +560,9 @@ export default function useGoalData({ apollo } = {}) {
 
 	/**
 	 * Patch previous goal with update goal and store
-	 * @param {Object} previousGoal - Previous goal data to identify which goal to remove
 	 * @param {Object} updatedGoal - Updated goal data to replace the previous goal with
 	 */
-	async function updateCurrentGoal(_previousGoal, updatedGoal) {
+	async function updateCurrentGoal(updatedGoal) {
 		loading.value = true;
 
 		// If the updated category is support-all and using yearly progress is true,
