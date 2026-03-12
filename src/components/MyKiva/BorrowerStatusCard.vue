@@ -172,7 +172,7 @@ const menuOptions = computed(() => {
 });
 
 const showWhatIsNextColumn = computed(() => {
-	return !([REFUNDED, EXPIRED].includes(loan.value?.status));
+	return !([REFUNDED, EXPIRED, DEFAULTED].includes(loan.value?.status));
 });
 
 const stepsCopy = computed(() => {
