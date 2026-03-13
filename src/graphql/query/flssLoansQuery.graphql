@@ -24,6 +24,7 @@ query flssLoanData(
 				id
 				default: url(customSize: $imgDefaultSize)
 				retina: url(customSize: $imgRetinaSize)
+				s100: url(customSize: "s100")
 				hash
 			}
 		}
