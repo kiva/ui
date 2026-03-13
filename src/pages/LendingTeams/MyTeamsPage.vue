@@ -1,5 +1,8 @@
 <template>
 	<www-page>
+		<template #secondary>
+			<the-my-kiva-secondary-menu />
+		</template>
 		<kv-page-container>
 			<kv-grid
 				class="tw-grid-cols-12"
@@ -33,10 +36,12 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import { KvPageContainer, KvGrid } from '@kiva/kv-components';
 import MyTeamMessagesList from '#src/components/LendingTeams/MyTeams/MyTeamMessagesList';
 import MyTeamsList from '#src/components/LendingTeams/MyTeams/MyTeamsList';
+import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 
 export default {
 	name: 'MyTeamsPage',
 	components: {
+		TheMyKivaSecondaryMenu,
 		WwwPage,
 		KvPageContainer,
 		KvGrid,
