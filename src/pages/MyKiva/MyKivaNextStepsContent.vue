@@ -16,7 +16,7 @@
 		</h3>
 
 		<section
-			v-if="isPostLendingTopVisible"
+			v-if="showPostLendingNextStepsCards && postLendingNextStepsEnable"
 			class="tw-grid tw-grid-cols-1 tw-gap-4"
 		>
 			<JourneyCardCarousel
@@ -132,17 +132,15 @@
 				/>
 			</section>
 
-			<div v-if="isPostLendingTopVisible">
-				<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
-					Keep your impact going
-				</h3>
-				<section>
-					<MyKivaRegionExperience
-						:regions-data="regionsData"
-						:loans="loans"
-					/>
-				</section>
-			</div>
+			<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
+				Keep your impact going
+			</h3>
+			<section>
+				<MyKivaRegionExperience
+					:regions-data="regionsData"
+					:loans="loans"
+				/>
+			</section>
 		</div>
 
 		<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
@@ -212,6 +210,18 @@
 
 			<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
 				<template v-if="!isMobile">
+					<MyKivaEmailUpdatesTransition
+						v-if="shouldShowEmailMarketingCard || acceptedEmailMarketingUpdates"
+						:accepted="acceptedEmailMarketingUpdates"
+						:loans="loans"
+						:latest-loan="latestLoan"
+						@accept-email-updates="acceptedEmailMarketingUpdates = true"
+					/>
+					<MyKivaLatestLoanCard
+						v-if="showLatestLoan"
+						:loan="latestLoan"
+						@open-impact-insight-modal="showImpactInsightsModal = true"
+					/>
 					<MyKivaSurveyCard
 						v-if="showSurveyCard"
 					/>
@@ -240,7 +250,7 @@
 					:key="'beyond-loan-row'"
 					class="carousel tw--mt-6"
 					controls-top-right
-					hide-goal-card
+					in-lending-stats
 					use-universal-order
 					user-in-homepage
 					:post-lending-next-steps-enable="true"
@@ -250,7 +260,7 @@
 					:lender="lender"
 					:loans="loans"
 					:slides="heroSlides"
-					:latest-loan="null"
+					:latest-loan="latestLoan"
 					:user-info="userInfo"
 					:enable-slide-limit="false"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
@@ -314,6 +324,8 @@ import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import MyKivaRegionExperience from '#src/components/MyKiva/MyKivaRegionExperience';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
+import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
+import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 
@@ -435,6 +447,7 @@ const newGoalPrefs = ref(null);
 const recordedGoalSet = ref(false);
 const isUpdatingGoal = ref(false);
 const isSharingModalVisible = ref(false);
+const acceptedEmailMarketingUpdates = ref(false);
 const showPostLendingNextStepsCards = ref(false);
 const userHasGoal = computed(() => !!userGoal.value && Object.keys(userGoal.value).length > 0);
 
@@ -477,10 +490,6 @@ const womenLoansLastYear = computed(() => getCategoryLoansLastYear(props.heroTie
 const shouldShowGoalCard = computed(() => {
 	return (!userGoal.value || !userGoalAchieved.value) && !hideCompletedGoalCard.value;
 });
-
-const isPostLendingTopVisible = computed(
-	() => Boolean(shouldShowEmailMarketingCard.value || showLatestLoan.value),
-);
 
 // Navigation
 const goToDashboard = position => {
