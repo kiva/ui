@@ -19,71 +19,68 @@
 				</router-link>
 			</div>
 
-			<button
-				:id="`team-actions-${team.id}`"
-				class="tw-flex-none tw-ml-1 tw-p-0.5 tw-rounded hover:tw-bg-tertiary"
-				:aria-label="`Actions for ${team.name}`"
-				aria-expanded="false"
-			>
-				<kv-material-icon
-					class="tw-w-3 tw-h-3"
-					:icon="mdiDotsVertical"
-				/>
-			</button>
-
-			<kv-dropdown
-				:controller="`team-actions-${team.id}`"
-				class="dropdown-list"
+			<kv-utility-menu
+				class="tw-rounded-full"
+				menu-position="right-aligned"
+				button-radius-class="tw-rounded-full"
+				analytics-category="my-teams"
 			>
 				<ul>
 					<li>
 						<a
 							:href="`/team/${team.teamPublicId}/messages`"
+							class="utility-menu-link tw-rounded-t"
 							v-kv-track-event="['my-teams', 'click', 'team-action-messages', team.teamPublicId]"
 						>
-							Jump to message board
+							<kv-material-icon :icon="mdiMessageOutline" />
+							<span style="padding-top: 0.15rem;">Jump to message board</span>
 						</a>
 					</li>
 					<li>
 						<a
 							:href="`/team/${team.teamPublicId}`"
+							class="utility-menu-link"
 							v-kv-track-event="['my-teams', 'click', 'team-action-overview', team.teamPublicId]"
 						>
-							Go to overview
+							<kv-material-icon :icon="mdiEyeOutline" />
+							<span style="padding-top: 0.15rem;">Go to overview</span>
 						</a>
 					</li>
 					<li>
 						<a
 							:href="`/teams/my-teams/update-preferred?preferredTeamId=${team.id}`"
+							class="utility-menu-link"
 							v-kv-track-event="['my-teams', 'click', 'team-action-preferred', team.teamPublicId]"
 						>
-							Set as preferred team
+							<kv-material-icon :icon="mdiStarOutline" />
+							<span style="padding-top: 0.15rem;">Set as preferred team</span>
 						</a>
 					</li>
 					<li>
 						<a
 							:href="`/teams/quit/process?team_id=${team.id}`"
+							class="utility-menu-link tw-rounded-b"
 							v-kv-track-event="['my-teams', 'click', 'team-action-quit', team.teamPublicId]"
 						>
-							Quit team
+							<kv-material-icon :icon="mdiExitToApp" />
+							<span style="padding-top: 0.15rem;">Quit team</span>
 						</a>
 					</li>
 				</ul>
-			</kv-dropdown>
+			</kv-utility-menu>
 		</div>
 	</div>
 </template>
 
 <script>
-import { mdiDotsVertical } from '@mdi/js';
-import { KvMaterialIcon } from '@kiva/kv-components';
-import KvDropdown from '#src/components/Kv/KvDropdown';
+import { KvMaterialIcon, KvUtilityMenu } from '@kiva/kv-components';
+import { mdiMessageOutline, mdiEyeOutline, mdiStarOutline, mdiExitToApp } from '@mdi/js';
 
 export default {
 	name: 'TeamCard',
 	components: {
-		KvDropdown,
 		KvMaterialIcon,
+		KvUtilityMenu,
 	},
 	props: {
 		team: {
@@ -93,18 +90,20 @@ export default {
 	},
 	data() {
 		return {
-			mdiDotsVertical,
+			mdiExitToApp,
+			mdiEyeOutline,
+			mdiMessageOutline,
+			mdiStarOutline,
 		};
 	},
 };
 </script>
 
 <style lang="postcss" scoped>
-.dropdown-list {
-	@apply tw-px-2 tw-rounded-b;
-}
-
-.dropdown-list a {
-	@apply tw-font-medium tw-text-primary hover:tw-text-action-highlight tw-block tw-w-full tw-py-1;
+.utility-menu-link {
+	@apply tw-flex tw-items-center tw-gap-1 tw-cursor-pointer;
+	@apply tw-py-1 tw-px-1.5 hover:tw-bg-secondary tw-text-primary hover:tw-text-action-highlight tw-font-medium;
+	@apply tw-no-underline active:tw-no-underline;
+	@apply visited:tw-no-underline hover:tw-no-underline focus:tw-no-underline;
 }
 </style>
