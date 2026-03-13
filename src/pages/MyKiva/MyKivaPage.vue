@@ -1,6 +1,23 @@
 <template>
 	<www-page main-class="tw-bg-secondary tw-overflow-hidden tw-relative" class="tw-relative">
+		<MyKivaNextStepsContent
+			v-if="isNextStepsRoute"
+			:user-info="userInfo"
+			:lender="lender"
+			:loans="loans"
+			:total-loans="totalLoans"
+			:hero-slides="heroSlides"
+			:hero-badge-data="heroBadgeData"
+			:hero-tiered-achievements="heroTieredAchievements"
+			:regions-data="regionsData"
+			:goals-v2-enabled="goalsV2Enabled"
+			:post-lending-next-steps-enable="postLendingNextStepsEnable"
+			:latest-loan="latestLoan"
+			:goal-refresh-key="goalRefreshKey"
+			:goal-editing-enable="goalEditingEnable"
+		/>
 		<my-kiva-page-content
+			v-else
 			:user-info="userInfo"
 			:lender="lender"
 			:loans="loans"
@@ -34,6 +51,7 @@ import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
+import MyKivaNextStepsContent from '#src/pages/MyKiva/MyKivaNextStepsContent';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import { gql } from 'graphql-tag';
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
@@ -66,6 +84,7 @@ export default {
 	mixins: [aiLoanPillsTest],
 	components: {
 		MyKivaPageContent,
+		MyKivaNextStepsContent,
 		WwwPage,
 	},
 	setup() {
@@ -109,11 +128,17 @@ export default {
 		};
 	},
 	computed: {
+		isNextStepsRoute() {
+			return this.$route.path === '/mykiva/next-steps';
+		},
 		goalsV2Enabled() {
 			return isGoalsV2Enabled(this.goalsEntrypointEnable);
 		},
 		heroBadgeData() {
 			return this.combineBadgeData(this.heroTieredAchievements, this.heroBadgeContentfulData);
+		},
+		regionsData() {
+			return this.lendingStats.regionsData ?? [];
 		},
 	},
 	apollo: {

@@ -1,3 +1,5 @@
+import { getRichTextUiSettingsData } from '#src/util/myKiva/myKivaContentfulUtils';
+
 /**
  * Challenge keys from Contentful
  */
@@ -35,3 +37,14 @@ export function missingMilestones(achievementsQueryResult = [], achievementName 
 
 	return missingMilestonesArray;
 }
+
+/**
+ * Checks if a slide is a non-badge slide (i.e. not one of the default achievement badges)
+ *
+ * @param {Object} slide The contentful slide object
+ * @returns {Boolean} True if the slide is NOT a badge slide
+ */
+export const isNonBadgeSlide = slide => {
+	const data = getRichTextUiSettingsData(slide);
+	return !defaultBadges.includes(data.achievementKey);
+};

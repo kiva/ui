@@ -1,6 +1,7 @@
 import {
 	missingMilestones,
 	defaultBadges,
+	isNonBadgeSlide,
 } from '#src/util/achievementUtils';
 
 const sampleAPIMilestoneProgress = [
@@ -64,7 +65,7 @@ const sampleAPIMilestoneProgress = [
 ];
 
 describe('achievementUtils.js missingMilestones', () => {
-	test('Should return achievements yet to be completed', () => {
+	it('Should return achievements yet to be completed', () => {
 		expect(missingMilestones(sampleAPIMilestoneProgress, 'another-challenge')).toEqual([
 			{
 				achievement: 'another-challenge',
@@ -84,7 +85,7 @@ describe('achievementUtils.js missingMilestones', () => {
 			},
 		]);
 	});
-	test('Should always return an array', () => {
+	it('Should always return an array', () => {
 		expect(missingMilestones([], 'another-challenge')).toEqual([
 		]);
 		expect(missingMilestones(sampleAPIMilestoneProgress, 'challenge-does-not-exist')).toEqual([
@@ -93,32 +94,32 @@ describe('achievementUtils.js missingMilestones', () => {
 		]);
 	});
 
-	test('Should handle empty achievement name', () => {
+	it('Should handle empty achievement name', () => {
 		expect(missingMilestones(sampleAPIMilestoneProgress, '')).toEqual([]);
 	});
 
-	test('Should filter out COMPLETABLE status milestones', () => {
+	it('Should filter out COMPLETABLE status milestones', () => {
 		const result = missingMilestones(sampleAPIMilestoneProgress, 'climate-challenge');
 		// Should not include the COMPLETABLE milestone (solar)
 		expect(result.every(m => m.status !== 'COMPLETABLE')).toBe(true);
 		expect(result.length).toBe(2); // Only NO_NEW_PROGRESS milestones
 	});
 
-	test('Should filter out ALREADY_COMPLETE status milestones', () => {
+	it('Should filter out ALREADY_COMPLETE status milestones', () => {
 		const result = missingMilestones(sampleAPIMilestoneProgress, 'another-challenge');
 		// Should not include the ALREADY_COMPLETE milestone (solar)
 		expect(result.every(m => m.status !== 'ALREADY_COMPLETE')).toBe(true);
 		expect(result.some(m => m.milestoneName === 'solar')).toBe(false);
 	});
 
-	test('Should return all milestones with NEW_PROGRESS status', () => {
+	it('Should return all milestones with NEW_PROGRESS status', () => {
 		const result = missingMilestones(sampleAPIMilestoneProgress, 'another-challenge');
 		const newProgressMilestones = result.filter(m => m.status === 'NEW_PROGRESS');
 		expect(newProgressMilestones.length).toBe(1);
 		expect(newProgressMilestones[0].milestoneName).toBe('recycle-reuse');
 	});
 
-	test('Should handle achievements with only completed milestones', () => {
+	it('Should handle achievements with only completed milestones', () => {
 		const onlyCompleted = [
 			{
 				achievement: 'complete-challenge',
@@ -136,7 +137,7 @@ describe('achievementUtils.js missingMilestones', () => {
 		expect(missingMilestones(onlyCompleted, 'complete-challenge')).toEqual([]);
 	});
 
-	test('Should not modify the original input array', () => {
+	it('Should not modify the original input array', () => {
 		const originalLength = sampleAPIMilestoneProgress.length;
 		missingMilestones(sampleAPIMilestoneProgress, 'climate-challenge');
 		expect(sampleAPIMilestoneProgress.length).toBe(originalLength);
@@ -144,11 +145,11 @@ describe('achievementUtils.js missingMilestones', () => {
 });
 
 describe('achievementUtils.js defaultBadges', () => {
-	test('Should export defaultBadges as an array', () => {
+	it('Should export defaultBadges as an array', () => {
 		expect(Array.isArray(defaultBadges)).toBe(true);
 	});
 
-	test('Should contain expected badge keys', () => {
+	it('Should contain expected badge keys', () => {
 		expect(defaultBadges).toContain('womens-equality');
 		expect(defaultBadges).toContain('us-economic-equality');
 		expect(defaultBadges).toContain('basic-needs');
@@ -156,12 +157,52 @@ describe('achievementUtils.js defaultBadges', () => {
 		expect(defaultBadges).toContain('refugee-equality');
 	});
 
-	test('Should have exactly 5 default badges', () => {
+	it('Should have exactly 5 default badges', () => {
 		expect(defaultBadges.length).toBe(5);
 	});
 
-	test('Should have unique badge keys', () => {
+	it('Should have unique badge keys', () => {
 		const uniqueBadges = new Set(defaultBadges);
 		expect(uniqueBadges.size).toBe(defaultBadges.length);
+	});
+});
+
+const buildSlide = (achievementKey, extraData = {}) => ({
+	fields: {
+		richText: {
+			content: [
+				{
+					data: {
+						target: {
+							sys: { contentType: { sys: { id: 'uiSetting' } } },
+							fields: { dataObject: { achievementKey, ...extraData } },
+						},
+					},
+				},
+			],
+		},
+	},
+});
+
+describe('achievementUtils.js isNonBadgeSlide', () => {
+	it('returns false for default badge slides', () => {
+		defaultBadges.forEach(badgeKey => {
+			const slide = buildSlide(badgeKey);
+			expect(isNonBadgeSlide(slide)).toBe(false);
+		});
+	});
+
+	it('returns true for non-badge slides', () => {
+		const slide = buildSlide('donate-to-kiva');
+		expect(isNonBadgeSlide(slide)).toBe(true);
+	});
+
+	it('returns true when achievementKey is missing', () => {
+		const slide = buildSlide(undefined);
+		expect(isNonBadgeSlide(slide)).toBe(true);
+	});
+
+	it('returns true for null slide', () => {
+		expect(isNonBadgeSlide(null)).toBe(true);
 	});
 });
