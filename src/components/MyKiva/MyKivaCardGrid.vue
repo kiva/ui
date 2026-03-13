@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div
-			v-if="!isMobile"
+			v-if="!isMobile && !carouselOnly"
 			class="tw-grid tw-grid-cols-1 tw-gap-4"
 			:class="gridColsClass"
 		>
@@ -89,6 +89,10 @@ defineProps({
 	slideMaxWidth: {
 		type: String,
 		default: '90%',
+	},
+	carouselOnly: {
+		type: Boolean,
+		default: false,
 	},
 });
 
