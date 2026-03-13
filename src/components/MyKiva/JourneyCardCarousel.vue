@@ -259,6 +259,10 @@ const props = defineProps({
 	showNonBadgesSlides: {
 		type: Boolean,
 		default: true
+	},
+	showSurveySlide: {
+		type: Boolean,
+		default: true
 	}
 });
 
@@ -285,7 +289,7 @@ const showLatestLoan = computed(() => checkShowLatestLoan({
 	latestLoan: props.latestLoan,
 }));
 
-const showSurveyCard = computed(() => checkShowSurveyCard({
+const showSurveyCard = computed(() => props.showSurveySlide && checkShowSurveyCard({
 	showPostLendingNextStepsCards: props.showPostLendingNextStepsCards,
 	postLendingNextStepsEnable: props.postLendingNextStepsEnable,
 	userInfo: props.userInfo,

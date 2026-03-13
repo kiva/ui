@@ -16,7 +16,7 @@
 		</h3>
 
 		<section
-			v-if="shouldShowGoalCard || shouldShowEmailMarketingCard || showLatestLoan"
+			v-if="isPostLendingTopVisible"
 			class="tw-grid tw-grid-cols-1 tw-gap-4"
 		>
 			<JourneyCardCarousel
@@ -33,18 +33,20 @@
 				:goal-progress-loading="goalProgressLoading"
 				:goal-progress="goalProgress"
 				:hero-badge-data="null"
+				:hide-goal-card="hideCompletedGoalCard"
 				:hero-tiered-achievements="null"
 				:lender="lender"
 				:loans="loans"
 				:slides="[]"
 				:user-goal-achieved="userGoalAchieved"
 				:user-goal="userGoal"
-				:post-lending-next-steps-enable="postLendingNextStepsEnable"
-				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+				:post-lending-next-steps-enable="true"
+				:show-post-lending-next-steps-cards="true"
 				:latest-loan="latestLoan"
 				:user-info="null"
 				:enable-slide-limit="true"
 				:show-non-badges-slides="false"
+				:show-survey-slide="false"
 				@open-goal-modal="openGoalModal($event)"
 				@open-impact-insight-modal="showImpactInsightsModal = true"
 			/>
@@ -53,8 +55,8 @@
 			v-else
 			class="region-section md:tw-flex-row"
 			:class="{
-				'tw-grid-cols-1 tw-grid-rows-2' : isMobile,
-				'tw-grid tw-grid-flow-row-dense tw-gap-4 tw-grid-rows-1' : !isMobile
+				'tw-grid-cols-1 tw-grid-rows-2' : isMobile && shouldShowGoalCard,
+				'tw-grid tw-grid-flow-row-dense tw-gap-4 tw-grid-rows-1' : !isMobile && shouldShowGoalCard,
 			}"
 		>
 			<NextYearGoalCard
@@ -72,7 +74,6 @@
 			<MyKivaRegionExperience
 				:regions-data="regionsData"
 				:loans="loans"
-				:loading="goalProgressLoading"
 			/>
 		</section>
 
@@ -108,17 +109,17 @@
 						@secondary-cta-clicked="handleSecondaryCtaClick(slide)"
 					/>
 				</template>
+				<!-- VERSION POST LENDING SEGUNDA FILA CON SURVEY -->
 				<JourneyCardCarousel
 					v-else
 					:key="'beyond-loan-row'"
 					class="carousel tw--mt-6"
 					controls-top-right
 					hide-goal-card
-					in-lending-stats
 					use-universal-order
 					user-in-homepage
-					:post-lending-next-steps-enable="false"
-					:show-post-lending-next-steps-cards="false"
+					:post-lending-next-steps-enable="true"
+					:show-post-lending-next-steps-cards="true"
 					:hero-badge-data="null"
 					:hero-tiered-achievements="heroTieredAchievements"
 					:lender="lender"
@@ -131,15 +132,17 @@
 				/>
 			</section>
 
-			<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
-				Keep your impact going
-			</h3>
-			<section>
-				<MyKivaRegionExperience
-					:regions-data="regionsData"
-					:loans="loans"
-				/>
-			</section>
+			<div v-if="isPostLendingTopVisible">
+				<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
+					Keep your impact going
+				</h3>
+				<section>
+					<MyKivaRegionExperience
+						:regions-data="regionsData"
+						:loans="loans"
+					/>
+				</section>
+			</div>
 		</div>
 
 		<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
@@ -201,7 +204,7 @@
 		</section>
 
 		<div
-			v-if="(!showPostLendingNextStepsCards || !postLendingNextStepsEnable)"
+			v-if="!showPostLendingNextStepsCards && !postLendingNextStepsEnable"
 		>
 			<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 				Build impact beyond your loan
@@ -209,18 +212,6 @@
 
 			<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
 				<template v-if="!isMobile">
-					<MyKivaEmailUpdatesTransition
-						v-if="shouldShowEmailMarketingCard || acceptedEmailMarketingUpdates"
-						:accepted="acceptedEmailMarketingUpdates"
-						:loans="loans"
-						:latest-loan="latestLoan"
-						@accept-email-updates="acceptedEmailMarketingUpdates = true"
-					/>
-					<MyKivaLatestLoanCard
-						v-if="showLatestLoan"
-						:loan="latestLoan"
-						@open-impact-insight-modal="showImpactInsightsModal = true"
-					/>
 					<MyKivaSurveyCard
 						v-if="showSurveyCard"
 					/>
@@ -250,17 +241,16 @@
 					class="carousel tw--mt-6"
 					controls-top-right
 					hide-goal-card
-					in-lending-stats
 					use-universal-order
 					user-in-homepage
-					:post-lending-next-steps-enable="postLendingNextStepsEnable"
-					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+					:post-lending-next-steps-enable="true"
+					:show-post-lending-next-steps-cards="true"
 					:hero-badge-data="null"
 					:hero-tiered-achievements="heroTieredAchievements"
 					:lender="lender"
 					:loans="loans"
 					:slides="heroSlides"
-					:latest-loan="latestLoan"
+					:latest-loan="null"
 					:user-info="userInfo"
 					:enable-slide-limit="false"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
@@ -269,11 +259,9 @@
 		</div>
 
 		<GoalSettingModal
-			v-if="showGoalModal"
 			:show="showGoalModal"
 			:total-loans="totalLoans"
 			:categories-loan-count="categoriesLoanCount"
-			:goals-v2-enabled="true"
 			:is-goal-set="isGoalSet"
 			:show-goal-selector="true"
 			:tiered-achievements="heroTieredAchievements"
@@ -326,8 +314,6 @@ import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import MyKivaRegionExperience from '#src/components/MyKiva/MyKivaRegionExperience';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
-import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
-import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 
@@ -449,7 +435,6 @@ const newGoalPrefs = ref(null);
 const recordedGoalSet = ref(false);
 const isUpdatingGoal = ref(false);
 const isSharingModalVisible = ref(false);
-const acceptedEmailMarketingUpdates = ref(false);
 const showPostLendingNextStepsCards = ref(false);
 const userHasGoal = computed(() => !!userGoal.value && Object.keys(userGoal.value).length > 0);
 
@@ -480,8 +465,8 @@ const showLatestLoan = computed(() => checkShowLatestLoan({
 }));
 
 const showSurveyCard = computed(() => checkShowSurveyCard({
-	showPostLendingNextStepsCards: showPostLendingNextStepsCards.value,
-	postLendingNextStepsEnable: props.postLendingNextStepsEnable,
+	showPostLendingNextStepsCards: true,
+	postLendingNextStepsEnable: true,
 	userInfo: props.userInfo,
 }));
 
@@ -492,6 +477,10 @@ const womenLoansLastYear = computed(() => getCategoryLoansLastYear(props.heroTie
 const shouldShowGoalCard = computed(() => {
 	return (!userGoal.value || !userGoalAchieved.value) && !hideCompletedGoalCard.value;
 });
+
+const isPostLendingTopVisible = computed(
+	() => Boolean(shouldShowEmailMarketingCard.value || showLatestLoan.value),
+);
 
 // Navigation
 const goToDashboard = position => {
@@ -558,6 +547,11 @@ const closeGoalModal = async () => {
 		if (!isUpdatingGoal.value) {
 			await loadGoalData({ yearlyProgress: props.goalsV2Enabled });
 		}
+
+		// Avoid showing category choice step when closing the modal
+		setTimeout(() => {
+			this.isGoalSet = false;
+		}, 300);
 	}
 	isGoalSet.value = false;
 };
@@ -635,7 +629,11 @@ onMounted(async () => {
 }
 
 .carousel :deep(.kv-carousel) {
-	@apply tw-pt-0;
+	@apply tw-pt-0 tw-overflow-visible;
+}
+
+:deep(.kv-carousel > div:first-child) {
+	@apply tw-gap-2 lg:tw-gap-4;
 }
 
 .region-section {
