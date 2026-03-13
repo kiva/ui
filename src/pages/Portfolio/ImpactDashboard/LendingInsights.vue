@@ -23,7 +23,7 @@
 				<template #tabNav>
 					<div class="tw-flex tw-items-center tw-justify-between tw-w-full md:tw-flex-col md:tw-items-start">
 						<h2 class="tw-text-h3 tw-mb-1 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
-							Lending insights
+							Your lending insights
 						</h2>
 						<div class="tw-flex tw-gap-x-2 tw-items-center">
 							<kv-tab
@@ -72,7 +72,7 @@
 									{{ currentYearAmountLent }}
 								</dt>
 								<dd class="stat-def">
-									Total amount lent in {{ yearToDate }}
+									Total amount lent
 								</dd>
 								<router-link
 									class="stat-link"
@@ -80,10 +80,6 @@
 									v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
 								>
 									My loans
-									<kv-material-icon
-										class="tw-ml-0.5 tw-w-2 tw-h-2"
-										:icon="mdiArrowRight"
-									/>
 								</router-link>
 							</div>
 							<!-- Lending percentile -->
@@ -104,10 +100,6 @@
 									v-kv-track-event="['portfolio', 'click', `${currentYearPercentile}-percentile`]"
 								>
 									{{ nextPercentileMsg }}
-									<kv-material-icon
-										class="tw-ml-0.5 tw-w-3.5 tw-h-2"
-										:icon="mdiArrowRight"
-									/>
 								</router-link>
 								<span
 									v-else-if="currentYearPercentile === 99"
@@ -140,10 +132,6 @@
 									v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
 								>
 									Lending stats
-									<kv-material-icon
-										class="tw-ml-0.5 tw-w-2 tw-h-2"
-										:icon="mdiArrowRight"
-									/>
 								</router-link>
 							</div>
 						</kv-grid>
@@ -169,10 +157,6 @@
 									v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
 								>
 									My loans
-									<kv-material-icon
-										class="tw-ml-0.5 tw-w-2 tw-h-2"
-										:icon="mdiArrowRight"
-									/>
 								</router-link>
 							</div>
 							<!-- Lending percentile -->
@@ -225,10 +209,6 @@
 									v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
 								>
 									Lending stats
-									<kv-material-icon
-										class="tw-ml-0.5 tw-w-2 tw-h-2"
-										:icon="mdiArrowRight"
-									/>
 								</router-link>
 							</div>
 						</kv-grid>
@@ -254,7 +234,7 @@
 import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import getCacheKey from '#src/util/getCacheKey';
-import { mdiArrowRight, mdiClockOutline } from '@mdi/js';
+import { mdiClockOutline } from '@mdi/js';
 import {
 	KvGrid, KvLoadingPlaceholder, KvMaterialIcon, KvTab, KvTabs, KvTabPanel,
 } from '@kiva/kv-components';
@@ -278,7 +258,6 @@ export default {
 	serverCacheKey: () => getCacheKey('LendingInsights'),
 	data() {
 		return {
-			mdiArrowRight,
 			mdiClockOutline,
 			loading: true,
 			loadingPromise: null,
@@ -445,10 +424,6 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.stats-container {
-	background-color: rgb(255 255 255 / 5%);
-	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center;
-}
 
 .stats-container {
 	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-2.5 tw-rounded tw-text-center tw-bg-eco-green-4 tw-items-center;
@@ -473,7 +448,7 @@ export default {
 }
 
 .stat-link {
-	@apply tw-inline-flex tw-justify-center tw-items-center tw-text-eco-green-2 tw-font-medium;
+	@apply tw-inline-flex tw-justify-center tw-items-center tw-text-eco-green-2 tw-font-medium tw-no-underline;
 }
 
 .tab-header {
