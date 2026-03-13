@@ -74,7 +74,9 @@
 
 <script>
 import { KvMaterialIcon, KvUtilityMenu } from '@kiva/kv-components';
-import { mdiMessageOutline, mdiEyeOutline, mdiStarOutline, mdiExitToApp } from '@mdi/js';
+import {
+	mdiMessageOutline, mdiEyeOutline, mdiStarOutline, mdiExitToApp
+} from '@mdi/js';
 
 export default {
 	name: 'TeamCard',
