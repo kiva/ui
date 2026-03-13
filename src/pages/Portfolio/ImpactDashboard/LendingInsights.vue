@@ -66,33 +66,17 @@
 							v-else
 							as="dl" class="stats-container md:!tw-pr-4"
 						>
-							<!-- Total amount lent -->
-							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
-								<dt class="stat-value">
-									{{ currentYearAmountLent }}
-								</dt>
-								<dd class="stat-def">
-									Total amount lent
-								</dd>
-								<router-link
-									class="stat-link"
-									to="/portfolio/loans"
-									v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
-								>
-									My loans
-								</router-link>
-							</div>
 							<!-- Lending percentile -->
 							<div
 								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-5
 										tw-bg-eco-green-3 tw-rounded tw-px-4 tw-py-2 md:!tw-py-1.5 md:!tw-px-3"
 							>
-								<dt class="stat-value !tw-text-white">
-									{{ formattedCurrentYearPercentile }}
-								</dt>
 								<dd class="stat-def">
 									Lending percentile this year
 								</dd>
+								<dt class="stat-value !tw-text-white">
+									{{ formattedCurrentYearPercentile }}
+								</dt>
 								<router-link
 									v-if="nextPercentileMsg && currentYearPercentile < 99"
 									class="stat-link"
@@ -109,23 +93,39 @@
 									Thank you!
 								</span>
 							</div>
+							<!-- Total amount lent -->
+							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+								<dd class="stat-def">
+									Total amount lent
+								</dd>
+								<dt class="stat-value">
+									{{ currentYearAmountLent }}
+								</dt>
+								<router-link
+									class="stat-link"
+									to="/portfolio/loans"
+									v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
+								>
+									My loans
+								</router-link>
+							</div>
 							<!-- Loans made -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
-								<dd class="stat-value">
-									{{ currentYearNumberOfLoans }}
-								</dd>
 								<dt class="stat-def">
 									Loans made
 								</dt>
+								<dd class="stat-value">
+									{{ currentYearNumberOfLoans }}
+								</dd>
 							</div>
 							<!-- Countries supported -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
-								<dt class="stat-value">
-									{{ currentYearCountryCount }}
-								</dt>
 								<dd class="stat-def">
 									Countries supported
 								</dd>
+								<dt class="stat-value">
+									{{ currentYearCountryCount }}
+								</dt>
 								<router-link
 									class="stat-link"
 									to="/portfolio/lending-stats"
@@ -139,26 +139,6 @@
 					<kv-tab-panel id="lifetime" class="tw--mt-2">
 						<!-- Lifetime Panel -->
 						<kv-grid as="dl" class="stats-container">
-							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
-								<kv-loading-placeholder
-									v-if="loading"
-									class="stat-placeholder"
-									style="width: 7rem;"
-								/>
-								<dt v-show="!loading" class="stat-value">
-									{{ lifetimeAmountLent }}
-								</dt>
-								<dd class="stat-def">
-									Total amount lent
-								</dd>
-								<router-link
-									class="stat-link"
-									to="/portfolio/loans"
-									v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
-								>
-									My loans
-								</router-link>
-							</div>
 							<!-- Lending percentile -->
 							<div
 								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 tw-h-full
@@ -169,12 +149,32 @@
 									class="stat-placeholder"
 									style="width: 7rem;"
 								/>
-								<dt v-show="!loading" class="stat-value !tw-text-white">
-									{{ lifetimePercentile }}
-								</dt>
-								<dd class="stat-def">
+								<dd v-show="!loading" class="stat-def">
 									Lending percentile
 								</dd>
+								<dt class="stat-value !tw-text-white">
+									{{ lifetimePercentile }}
+								</dt>
+							</div>
+							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+								<kv-loading-placeholder
+									v-if="loading"
+									class="stat-placeholder"
+									style="width: 7rem;"
+								/>
+								<dd class="stat-def">
+									Total amount lent
+								</dd>
+								<dt v-show="!loading" class="stat-value">
+									{{ lifetimeAmountLent }}
+								</dt>
+								<router-link
+									class="stat-link"
+									to="/portfolio/loans"
+									v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
+								>
+									My loans
+								</router-link>
 							</div>
 							<!-- Loans made -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
@@ -183,12 +183,12 @@
 									class="stat-placeholder"
 									style="width: 4rem;"
 								/>
-								<dd v-else class="stat-value">
-									{{ lifetimeNumberOfLoans }}
-								</dd>
-								<dt class="stat-def">
+								<dt v-else class="stat-def">
 									Loans made
 								</dt>
+								<dd class="stat-value">
+									{{ lifetimeNumberOfLoans }}
+								</dd>
 							</div>
 							<!-- Countries supported -->
 							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
@@ -197,12 +197,12 @@
 									class="stat-placeholder"
 									style="width: 4rem;"
 								/>
-								<dt v-show="!loading" class="stat-value">
-									{{ lifetimeCountryCount }}
-								</dt>
-								<dd class="stat-def">
+								<dd v-show="!loading" class="stat-def">
 									Countries supported
 								</dd>
+								<dt class="stat-value">
+									{{ lifetimeCountryCount }}
+								</dt>
 								<router-link
 									class="stat-link"
 									to="/portfolio/lending-stats"
