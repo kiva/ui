@@ -10,7 +10,7 @@ import useGoalDataYearlyProgressQuery from '#src/graphql/query/useGoalDataYearly
 import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import logFormatter from '#src/util/logFormatter';
 import { getTransactionTimestamp } from '#src/util/myKivaUtils';
-import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
+import { updateUserPreferences, upsertMyKivaGoal } from '#src/util/userPreferenceUtils';
 
 import useBadgeData, {
 	calculateFreshProgressAdjustments,
@@ -140,21 +140,8 @@ export default function useGoalData({ apollo } = {}) {
 
 	// --- Functions ---
 
-	function setGoalState(parsedPrefs) {
-		if (!parsedPrefs) return;
-		const goals = parsedPrefs.goals || [];
-		const currentYear = new Date().getFullYear();
-		const activeGoals = goals.filter(g => {
-			// Filter out expired goals
-			if (g.status === GOAL_STATUS.EXPIRED) return false;
-			// Filter out goals completed in previous years
-			if (g.status === GOAL_STATUS.COMPLETED && g.dateStarted) {
-				const goalYear = new Date(g.dateStarted).getFullYear();
-				if (goalYear < currentYear) return false;
-			}
-			return true;
-		});
-		userGoal.value = { ...activeGoals[0] };
+	function setGoalState(goal) {
+		userGoal.value = goal ? { ...goal } : {};
 	}
 
 	/**
@@ -573,20 +560,10 @@ export default function useGoalData({ apollo } = {}) {
 
 	/**
 	 * Patch previous goal with update goal and store
-	 * @param {Object} previousGoal - Previous goal data to identify which goal to remove
 	 * @param {Object} updatedGoal - Updated goal data to replace the previous goal with
 	 */
-	async function updateCurrentGoal(previousGoal, updatedGoal) {
+	async function updateCurrentGoal(updatedGoal) {
 		loading.value = true;
-		// Load preferences to ensure goals information is up to date before modiying it
-		// preventing the use case where the previous goal was not updated in the cache
-		await loadPreferences('network-only');
-		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
-		const goals = parsedPrefs.goals || [];
-		const goalIndex = goals.findIndex(g => g.goalName === previousGoal.goalName);
-		if (goalIndex !== -1) {
-			goals[goalIndex] = { ...updatedGoal };
-		}
 
 		// If the updated category is support-all and using yearly progress is true,
 		// we need to load the latest yearly loan count to set accurate progress
@@ -595,15 +572,15 @@ export default function useGoalData({ apollo } = {}) {
 			yearlyLoanCount.value = stats?.count || 0;
 		}
 
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			{ goals }
-		);
+		await upsertMyKivaGoal(apolloClient, {
+			category: updatedGoal.category,
+			target: updatedGoal.target,
+			dateStarted: updatedGoal.dateStarted,
+			status: updatedGoal.status,
+		});
 		loading.value = false;
 
-		setGoalState({ goals }); // Refresh local state after update
+		setGoalState(updatedGoal); // Refresh local state after update
 	}
 
 	/**
@@ -613,36 +590,14 @@ export default function useGoalData({ apollo } = {}) {
 	 *   Set to false when you want to delay the UI update (e.g., until modal closes)
 	 */
 	async function storeGoalPreferences(updates, updateLocalState = true) {
-		if (!userPreferences.value?.id) {
-			await createUserPreferences(apolloClient, { goals: [] });
-			await loadPreferences('network-only'); // Reload after create
-		}
-		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
-		const goals = parsedPrefs.goals || [];
-		const goalIndex = goals.findIndex(g => g.goalName === updates.goalName);
-		if (goalIndex !== -1) {
-			goals[goalIndex] = { ...goals[goalIndex], ...updates };
-		} else {
-			// When creating a new goal, set loanTotalAtStart to current all-time progress for the category
-			// This allows tracking progress from the point the goal was set
-			// For ID_SUPPORT_ALL, use totalLoanCount since it tracks total loans, not category-specific progress
-			let loanTotalAtStart;
-			if (updates.category === ID_SUPPORT_ALL) {
-				loanTotalAtStart = totalLoanCount.value || 0;
-			} else {
-				const categoryProgress = currentYearProgress.value?.find(n => n.id === updates.category);
-				loanTotalAtStart = categoryProgress?.totalProgressToAchievement || 0;
-			}
-			goals.push({ ...updates, loanTotalAtStart });
-		}
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			{ goals }
-		);
+		await upsertMyKivaGoal(apolloClient, {
+			category: updates.category,
+			target: updates.target,
+			dateStarted: updates.dateStarted,
+			status: updates.status,
+		});
 		if (updateLocalState) {
-			setGoalState({ goals }); // Refresh local state after update
+			setGoalState(updates);
 		}
 	}
 
@@ -734,7 +689,17 @@ export default function useGoalData({ apollo } = {}) {
 		}
 
 		await loadProgress(year, freshProgressAdjustments);
-		setGoalState(parsedPrefs);
+		const goals = parsedPrefs?.goals || [];
+		const currentYear = new Date().getFullYear();
+		const activeGoal = goals.find(g => {
+			if (g.status === GOAL_STATUS.EXPIRED) return false;
+			if (g.status === GOAL_STATUS.COMPLETED && g.dateStarted) {
+				const goalYear = new Date(g.dateStarted).getFullYear();
+				if (goalYear < currentYear) return false;
+			}
+			return true;
+		});
+		setGoalState(activeGoal);
 		// Load yearly loan count for ID_SUPPORT_ALL goals when using yearly progress
 		if (yearlyProgress && userGoal.value?.category === ID_SUPPORT_ALL) {
 			const stats = await getLoanStatsByYear(year, 'network-only');
@@ -785,16 +750,14 @@ export default function useGoalData({ apollo } = {}) {
 			return null;
 		}).filter(goal => goal !== null);
 
-		if (expiredGoals.some(goal => goal.status === GOAL_STATUS.EXPIRED)) {
-			parsedPrefs.goals = expiredGoals;
-			parsedPrefs.goalsRenewedDate = today.toISOString();
-			await updateUserPreferences(
-				apolloClient,
-				userPreferences.value,
-				parsedPrefs,
-				{ goals: expiredGoals }
-			);
-			setGoalState({ goals: expiredGoals });
+		if (expiredGoals.length) {
+			upsertMyKivaGoal(apolloClient, {
+				category: expiredGoals[0].category,
+				target: expiredGoals[0].target,
+				dateStarted: expiredGoals[0].dateStarted,
+				status: expiredGoals[0].status,
+			});
+			setGoalState(null);
 		}
 
 		const showRenewedAnnualGoalToast = !!expiredGoals.length
@@ -877,24 +840,18 @@ export default function useGoalData({ apollo } = {}) {
 			yearlyLoanCount.value = actualYearlyProgress;
 		}
 
-		// Fix: reset status to in-progress and unhide goal card
-		const updatedGoals = goals.map(goal => {
-			if (goal.goalName === goalToFix.goalName) {
-				return {
-					...goal,
-					status: GOAL_STATUS.IN_PROGRESS
-				};
-			}
-			return goal;
+		// Fix: reset status to in-progress
+		const fixedGoal = {
+			...goalToFix,
+			status: GOAL_STATUS.IN_PROGRESS,
+		};
+		await upsertMyKivaGoal(apolloClient, {
+			category: fixedGoal.category,
+			target: fixedGoal.target,
+			dateStarted: fixedGoal.dateStarted,
+			status: fixedGoal.status,
 		});
-
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			{ goals: updatedGoals }
-		);
-		setGoalState({ goals: updatedGoals });
+		setGoalState(fixedGoal);
 
 		return { wasFixed: true };
 	}

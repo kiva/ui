@@ -354,6 +354,7 @@ export default {
 				}
 			}
 		} catch (error) {
+			this.$showTipMsg('There was a problem loading your preferences', 'error');
 			logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
 		}
 

@@ -166,12 +166,16 @@ import GoalInProgress from '#src/components/Thanks/SingleVersion/GoalInProgress'
 import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
 import useBadgeData from '#src/composables/useBadgeData';
 import { setGuestAssignmentCookie, setPostLendingCardCookie } from '#src/util/myKivaUtils';
+import logReadQueryError from '#src/util/logReadQueryError';
+import useTipMessage from '#src/composables/useTipMessage';
 
 const EVENT_CATEGORY = 'post-checkout';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const cookieStore = inject('cookieStore');
+
+const { $showTipMsg } = useTipMessage(apollo);
 
 const props = defineProps({
 	isGuest: {
@@ -384,9 +388,14 @@ const handleContinue = () => {
 };
 
 const setGoal = async preferences => {
-	await storeGoalPreferences(preferences);
-	isGoalSet.value = true;
-	showGoalModal.value = false;
+	try {
+		await storeGoalPreferences(preferences);
+		isGoalSet.value = true;
+		showGoalModal.value = false;
+	} catch (error) {
+		logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
+		$showTipMsg('There was a problem setting up this goal', 'error');
+	}
 };
 
 const closeGoalModal = () => {

@@ -229,6 +229,7 @@ import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 
+import logReadQueryError from '#src/util/logReadQueryError';
 import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
 import GoalSettingModal from './GoalSettingModal';
@@ -460,15 +461,22 @@ export default {
 			// For goalsV2, pass false to not update local state yet
 			// This delays the UI update until the modal is closed
 			const updateLocalState = !this.goalsV2Enabled;
-			if (this.isUpdatingGoal) {
-				await this.updateCurrentGoal(this.userGoal, preferences);
-				this.$kvTrackEvent(
-					'portfolio',
-					'click',
-					'confirm-edit-goal'
-				);
-			} else {
-				await this.storeGoalPreferences(preferences, updateLocalState);
+			try {
+				if (this.isUpdatingGoal) {
+					await this.updateCurrentGoal(preferences);
+					this.$kvTrackEvent(
+						'portfolio',
+						'click',
+						'confirm-edit-goal'
+					);
+				} else {
+					await this.storeGoalPreferences(preferences, updateLocalState);
+				}
+			} catch (error) {
+				const msg = this.isUpdatingGoal ? 'updating' : 'setting up';
+				this.$showTipMsg(`There was a problem ${msg} your goal`, 'error');
+				logReadQueryError(error, `MyKivaPage ${msg} goal`);
+				return;
 			}
 			this.newGoalPrefs = preferences;
 			this.isGoalSet = true;
