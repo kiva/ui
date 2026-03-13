@@ -18,7 +18,7 @@
 					{{ team.name }}
 				</router-link>
 			</div>
-
+			<!-- @todo Dropdown menu displays beneath team cards below it -->
 			<kv-utility-menu
 				class="tw-rounded-full"
 				menu-position="right-aligned"

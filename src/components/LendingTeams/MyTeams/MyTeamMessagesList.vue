@@ -10,6 +10,7 @@
 				:key="n"
 				class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2 tw-drop-shadow-lg"
 			>
+				<!-- @todo Can we use tailwind classes here and still get the placeholder gradient animation? -->
 				<div class="tw-flex tw-items-start tw-mb-1">
 					<kv-loading-placeholder
 						class="tw-flex-none tw-mr-1 tw-rounded-full"
