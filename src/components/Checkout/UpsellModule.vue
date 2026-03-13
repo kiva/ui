@@ -120,7 +120,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 @media screen and (width >= 1160px) {
 	.upsellLoanDetails {
 		min-width: 600px;

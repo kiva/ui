@@ -1087,9 +1087,9 @@ export default {
 				});
 			});
 		},
-		async getUpsellModuleData(loanId = 0) {
+		getUpsellModuleData(loanId = 0) {
 			this.addedUpsellLoans.push(loanId);
-			await runLoansQuery(
+			runLoansQuery(
 				this.apollo,
 				{
 					sortBy: 'amountLeft',
