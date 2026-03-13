@@ -578,15 +578,12 @@ onMounted(async () => {
 }
 
 :deep(.card-container) {
+	width: 100%;
 	height: auto;
 
 	@screen md {
 		height: 399px;
 	}
-}
-
-:deep(.card-container) {
-	width: 100%;
 
 	@apply md:tw-w-auto;
 }

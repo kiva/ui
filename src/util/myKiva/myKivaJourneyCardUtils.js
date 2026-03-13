@@ -92,7 +92,7 @@ export const filterNonBadgesSlides = slides => {
  */
 export const getUrlParamsFromString = url => {
 	const urlSplit = url.split('?');
-	return urlSplit[1] ?? '';
+	return urlSplit[1] || undefined;
 };
 
 /**
