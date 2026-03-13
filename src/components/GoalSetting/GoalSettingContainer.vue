@@ -440,6 +440,14 @@ async function handleEmailFlow() {
 	if (newGoalPrefs) {
 		try {
 			await storeGoalPreferences(newGoalPrefs);
+
+			$kvTrackEvent(
+				'event-tracking',
+				'click',
+				'set-annual-goal',
+				category,
+				validEmailTarget.value
+			);
 		} catch (e) {
 			logFormatter('GoalSettingContainer: failed to store email goal', 'error', { error: e });
 		}
