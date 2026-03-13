@@ -84,7 +84,7 @@ export default {
 			teamDefaultImage,
 		};
 	},
-	created() {
+	mounted() {
 		this.fetchMessages();
 	},
 	methods: {

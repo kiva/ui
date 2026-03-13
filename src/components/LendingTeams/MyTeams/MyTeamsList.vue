@@ -125,7 +125,7 @@ export default {
 			teamDefaultImage,
 		};
 	},
-	created() {
+	mounted() {
 		this.fetchTeams();
 	},
 	methods: {
