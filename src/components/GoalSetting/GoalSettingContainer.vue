@@ -178,6 +178,7 @@ const {
 	userPreferences,
 	removeGoalFromPreferences,
 	updateCurrentGoal,
+	userGoalAchieved,
 } = useGoalData({ apollo });
 
 const props = defineProps({
@@ -461,7 +462,7 @@ const goalTarget = computed(() => {
 });
 
 const isGoalCompleted = computed(() => {
-	return userGoal.value?.status === GOAL_STATUS.COMPLETED;
+	return userGoal.value?.status === GOAL_STATUS.COMPLETED || userGoalAchieved.value;
 });
 
 const backToCopy = computed(() => {
