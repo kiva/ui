@@ -6,7 +6,7 @@
 		>
 			<KvMaterialIcon
 				:icon="mdiArrowLeft"
-				class="tw-ml-0.5"
+				class="md:tw-ml-0.5"
 			/>
 			Back to dashboard
 		</button>
@@ -16,37 +16,12 @@
 		</h3>
 
 		<section
-			v-if="shouldShowGoalCard || shouldShowEmailMarketingCard || showLatestLoan"
+			v-if="isPostLendingTopVisible"
 			class="tw-grid tw-grid-cols-1 tw-gap-4"
 		>
-			<JourneyCardCarousel
-				:key="'post-lending-row'"
-				class="carousel tw--mt-6"
-				controls-top-right
-				in-lending-stats
-				use-universal-order
-				user-in-homepage
-				user-goal-enabled
-				goals-v2-enabled
-				hide-non-badges-cards
-				slides-number="3"
-				:goal-progress-loading="goalProgressLoading"
-				:goal-progress="goalProgress"
-				:hero-badge-data="null"
-				:hero-tiered-achievements="null"
-				:lender="lender"
-				:loans="loans"
-				:slides="[]"
-				:user-goal-achieved="userGoalAchieved"
-				:user-goal="userGoal"
-				:post-lending-next-steps-enable="postLendingNextStepsEnable"
-				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-				:latest-loan="latestLoan"
-				:user-info="null"
-				:enable-slide-limit="true"
-				:show-non-badges-slides="false"
-				@open-goal-modal="openGoalModal($event)"
-				@open-impact-insight-modal="showImpactInsightsModal = true"
+			<MyKivaCardGrid
+				:items="postLendingTopItems"
+				carousel-only
 			/>
 		</section>
 		<section
@@ -83,122 +58,34 @@
 				Build impact beyond your loan
 			</h3>
 
-			<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
-				<template v-if="!isMobile">
-					<MyKivaSurveyCard
-						v-if="showSurveyCard"
-					/>
-					<MyKivaCard
-						v-for="slide in nonBadgesSlides"
-						:key="slide.badgeKey"
-						class="card-container tw-w-full tw-h-full"
-						:bg-image="getSlideBackgroundImg(slide, isNonBadgeSlide(slide), false)"
-						:is-bg-top-aligned="isNonBadgeSlide(slide)"
-						:has-gradient="!isNonBadgeSlide(slide)"
-						:title="getSlideTitle(slide)"
-						:subtitle="getSlideSubTitle(slide, isNonBadgeSlide(slide))"
-						:is-black-subtitle="isNonBadgeSlide(slide)"
-						:secondary-cta-text="getSlideSecondaryCtaText(slide)"
-						:primary-cta-text="getSlidePrimaryCtaText(slide)"
-						:primary-cta-variant="getSlidePrimaryCtaVariant(slide)"
-						:is-full-width-primary-cta="isNonBadgeSlide(slide)"
-						:is-title-font-sans="isSlideTitleFontSans(slide)"
-						:title-color="getSlideTitleColor(slide, isNonBadgeSlide(slide))"
-						@primary-cta-clicked="handlePrimaryCtaClick(slide)"
-						@secondary-cta-clicked="handleSecondaryCtaClick(slide)"
-					/>
-				</template>
-				<JourneyCardCarousel
-					v-else
-					:key="'beyond-loan-row'"
-					class="carousel tw--mt-6"
-					controls-top-right
-					hide-goal-card
-					in-lending-stats
-					use-universal-order
-					user-in-homepage
-					:post-lending-next-steps-enable="false"
-					:show-post-lending-next-steps-cards="false"
-					:hero-badge-data="null"
-					:hero-tiered-achievements="heroTieredAchievements"
-					:lender="lender"
-					:loans="loans"
-					:slides="heroSlides"
-					:latest-loan="null"
-					:user-info="userInfo"
-					:enable-slide-limit="false"
-					@open-impact-insight-modal="showImpactInsightsModal = true"
-				/>
-			</section>
+			<MyKivaCardGrid
+				:items="postLendingBeyondLoanItems"
+				grid-cols-class="md:tw-grid-cols-2 lg:tw-grid-cols-3"
+			/>
 
-			<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
-				Keep your impact going
-			</h3>
-			<section>
-				<MyKivaRegionExperience
-					:regions-data="regionsData"
-					:loans="loans"
-				/>
-			</section>
+			<div
+				v-if="isPostLendingTopVisible"
+			>
+				<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
+					Keep your impact going
+				</h3>
+				<section>
+					<MyKivaRegionExperience
+						:regions-data="regionsData"
+						:loans="loans"
+					/>
+				</section>
+			</div>
 		</div>
 
 		<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 			Continue with your lifetime achievements
 		</h3>
 
-		<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
-			<template v-if="!isMobile">
-				<MyKivaCard
-					v-for="slide in achievementSlides"
-					:key="slide.badgeKey"
-					class="card-container tw-w-full tw-h-full"
-					:bg-image="getSlideBackgroundImg(slide, isNonBadgeSlide(slide), false)"
-					:is-bg-top-aligned="isNonBadgeSlide(slide)"
-					:has-gradient="!isNonBadgeSlide(slide)"
-					:title="getSlideTitle(slide)"
-					:subtitle="getSlideSubTitle(slide, isNonBadgeSlide(slide))"
-					:is-black-subtitle="isNonBadgeSlide(slide)"
-					:secondary-cta-text="getSlideSecondaryCtaText(slide)"
-					:primary-cta-text="getSlidePrimaryCtaText(slide)"
-					:primary-cta-variant="getSlidePrimaryCtaVariant(slide)"
-					:is-full-width-primary-cta="isNonBadgeSlide(slide)"
-					:is-title-font-sans="isSlideTitleFontSans(slide)"
-					:title-color="getSlideTitleColor(slide, isNonBadgeSlide(slide))"
-					@primary-cta-clicked="handlePrimaryCtaClick(slide)"
-					@secondary-cta-clicked="handleSecondaryCtaClick(slide)"
-				/>
-			</template>
-			<JourneyCardCarousel
-				v-else
-				:key="'lifetime-achievements-row'"
-				class="carousel tw--mt-6"
-				user-in-homepage
-				in-lending-stats
-				controls-top-right
-				goals-v2-enabled
-				hide-non-badges-cards
-				hide-goal-card
-				use-universal-order
-				user-goal-enabled
-				:goal-progress-loading="goalProgressLoading"
-				:goal-progress="goalProgress"
-				:hero-badge-data="heroBadgeData"
-				:hero-tiered-achievements="heroTieredAchievements"
-				:lender="lender"
-				:loans="loans"
-				:slides="heroSlides"
-				:user-goal-achieved="userGoalAchieved"
-				:user-goal="userGoal"
-				:post-lending-next-steps-enable="false"
-				:latest-loan="latestLoan"
-				:user-info="userInfo"
-				:show-post-lending-next-steps-cards="false"
-				:enable-slide-limit="false"
-				:show-non-badges-slides="false"
-				@open-goal-modal="openGoalModal($event)"
-				@open-impact-insight-modal="showImpactInsightsModal = true"
-			/>
-		</section>
+		<MyKivaCardGrid
+			:items="achievementCardItems"
+			grid-cols-class="md:tw-grid-cols-2 lg:tw-grid-cols-3"
+		/>
 
 		<div
 			v-if="(!showPostLendingNextStepsCards || !postLendingNextStepsEnable)"
@@ -207,65 +94,10 @@
 				Build impact beyond your loan
 			</h3>
 
-			<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
-				<template v-if="!isMobile">
-					<MyKivaEmailUpdatesTransition
-						v-if="shouldShowEmailMarketingCard || acceptedEmailMarketingUpdates"
-						:accepted="acceptedEmailMarketingUpdates"
-						:loans="loans"
-						:latest-loan="latestLoan"
-						@accept-email-updates="acceptedEmailMarketingUpdates = true"
-					/>
-					<MyKivaLatestLoanCard
-						v-if="showLatestLoan"
-						:loan="latestLoan"
-						@open-impact-insight-modal="showImpactInsightsModal = true"
-					/>
-					<MyKivaSurveyCard
-						v-if="showSurveyCard"
-					/>
-					<MyKivaCard
-						v-for="slide in nonBadgesSlides"
-						:key="slide.badgeKey"
-						class="card-container tw-w-full tw-h-full"
-						:bg-image="getSlideBackgroundImg(slide, isNonBadgeSlide(slide), false)"
-						:is-bg-top-aligned="isNonBadgeSlide(slide)"
-						:has-gradient="!isNonBadgeSlide(slide)"
-						:title="getSlideTitle(slide)"
-						:subtitle="getSlideSubTitle(slide, isNonBadgeSlide(slide))"
-						:is-black-subtitle="isNonBadgeSlide(slide)"
-						:secondary-cta-text="getSlideSecondaryCtaText(slide)"
-						:primary-cta-text="getSlidePrimaryCtaText(slide)"
-						:primary-cta-variant="getSlidePrimaryCtaVariant(slide)"
-						:is-full-width-primary-cta="isNonBadgeSlide(slide)"
-						:is-title-font-sans="isSlideTitleFontSans(slide)"
-						:title-color="getSlideTitleColor(slide, isNonBadgeSlide(slide))"
-						@primary-cta-clicked="handlePrimaryCtaClick(slide)"
-						@secondary-cta-clicked="handleSecondaryCtaClick(slide)"
-					/>
-				</template>
-				<JourneyCardCarousel
-					v-else
-					:key="'beyond-loan-row'"
-					class="carousel tw--mt-6"
-					controls-top-right
-					hide-goal-card
-					in-lending-stats
-					use-universal-order
-					user-in-homepage
-					:post-lending-next-steps-enable="postLendingNextStepsEnable"
-					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-					:hero-badge-data="null"
-					:hero-tiered-achievements="heroTieredAchievements"
-					:lender="lender"
-					:loans="loans"
-					:slides="heroSlides"
-					:latest-loan="latestLoan"
-					:user-info="userInfo"
-					:enable-slide-limit="false"
-					@open-impact-insight-modal="showImpactInsightsModal = true"
-				/>
-			</section>
+			<MyKivaCardGrid
+				:items="beyondLoanCardItems"
+				grid-cols-class="md:tw-grid-cols-2 lg:tw-grid-cols-3"
+			/>
 		</div>
 
 		<GoalSettingModal
@@ -319,7 +151,6 @@ import { useRouter } from 'vue-router';
 import { mdiArrowLeft } from '@mdi/js';
 import { KvMaterialIcon, KvButton } from '@kiva/kv-components';
 
-import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
@@ -330,19 +161,10 @@ import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpda
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
+import MyKivaCardGrid from '#src/components/MyKiva/MyKivaCardGrid';
 
 import useBadgeData from '#src/composables/useBadgeData';
 import { isNonBadgeSlide } from '#src/util/achievementUtils';
-import {
-	getSlideTitle,
-	getSlideSubTitle,
-	getSlidePrimaryCtaText,
-	getSlidePrimaryCtaVariant,
-	getSlideSecondaryCtaText,
-	isSlideTitleFontSans,
-	getSlideTitleColor,
-	getSlideBackgroundImg
-} from '#src/util/myKiva/myKivaContentfulUtils';
 import {
 	buildAchievementSlides,
 	checkShouldShowEmailMarketing,
@@ -352,6 +174,16 @@ import {
 	handlePrimaryCtaClick as handlePrimaryCtaClickUtil,
 	handleSecondaryCtaClick as handleSecondaryCtaClickUtil,
 } from '#src/util/myKiva/myKivaJourneyCardUtils';
+import {
+	getSlideTitle,
+	getSlideSubTitle,
+	getSlidePrimaryCtaText,
+	getSlidePrimaryCtaVariant,
+	getSlideSecondaryCtaText,
+	isSlideTitleFontSans,
+	getSlideTitleColor,
+	getSlideBackgroundImg,
+} from '#src/util/myKiva/myKivaContentfulUtils';
 import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 import useBreakpoints from '#src/composables/useBreakpoints';
 import useOptIn from '#src/composables/useOptIn';
@@ -493,12 +325,6 @@ const shouldShowGoalCard = computed(() => {
 	return (!userGoal.value || !userGoalAchieved.value) && !hideCompletedGoalCard.value;
 });
 
-// Navigation
-const goToDashboard = position => {
-	$kvTrackEvent('event-tracking', 'click', 'back-to-dashboard', position);
-	router.push('/mykiva');
-};
-
 // CTA handlers
 const handlePrimaryCtaClick = slide => handlePrimaryCtaClickUtil({
 	slide,
@@ -522,6 +348,162 @@ const openGoalModal = event => {
 	if (isUpdatingGoal.value) {
 		$kvTrackEvent('portfolio', 'view', 'edit-goal-modal');
 	}
+};
+
+// Build card item for MyKivaCardGrid from a contentful slide
+const buildSlideCardItem = slide => {
+	const isNonBadge = isNonBadgeSlide(slide);
+	return {
+		key: slide.badgeKey,
+		component: MyKivaCard,
+		props: {
+			class: 'card-container tw-w-full tw-h-full',
+			bgImage: getSlideBackgroundImg(slide, isNonBadge, false),
+			isBgTopAligned: isNonBadge,
+			hasGradient: !isNonBadge,
+			title: getSlideTitle(slide),
+			subtitle: getSlideSubTitle(slide, isNonBadge),
+			isBlackSubtitle: isNonBadge,
+			secondaryCtaText: getSlideSecondaryCtaText(slide),
+			primaryCtaText: getSlidePrimaryCtaText(slide),
+			primaryCtaVariant: getSlidePrimaryCtaVariant(slide),
+			isFullWidthPrimaryCta: isNonBadge,
+			isTitleFontSans: isSlideTitleFontSans(slide),
+			titleColor: getSlideTitleColor(slide, isNonBadge),
+		},
+		events: {
+			'primary-cta-clicked': () => handlePrimaryCtaClick(slide),
+			'secondary-cta-clicked': () => handleSecondaryCtaClick(slide),
+		},
+	};
+};
+
+// Card items for post-lending top row (GoalCard + EmailMarketing + LatestLoan)
+const postLendingTopItems = computed(() => {
+	const items = [];
+
+	if (shouldShowGoalCard.value) {
+		items.push({
+			key: 'goal-card',
+			component: NextYearGoalCard,
+			props: {
+				goalProgress: goalProgress.value,
+				heroSlides: props.heroSlides,
+				loading: goalProgressLoading.value,
+				userGoal: userGoal.value,
+				prevYearLoans: womenLoansLastYear.value,
+				hideGoalCard: hideCompletedGoalCard.value,
+			},
+			events: {
+				'open-goal-modal': () => openGoalModal(),
+			},
+		});
+	}
+
+	if (shouldShowEmailMarketingCard.value || acceptedEmailMarketingUpdates.value) {
+		items.push({
+			key: 'email-updates',
+			component: MyKivaEmailUpdatesTransition,
+			props: {
+				accepted: acceptedEmailMarketingUpdates.value,
+				loans: props.loans,
+				latestLoan: props.latestLoan,
+			},
+			events: {
+				'accept-email-updates': () => { acceptedEmailMarketingUpdates.value = true; },
+			},
+		});
+	}
+
+	if (showLatestLoan.value) {
+		items.push({
+			key: 'latest-loan',
+			component: MyKivaLatestLoanCard,
+			props: { loan: props.latestLoan },
+			events: {
+				'open-impact-insight-modal': () => { showImpactInsightsModal.value = true; },
+			},
+		});
+	}
+
+	return items;
+});
+
+// Card items for post-lending "Build impact beyond your loan" (SurveyCard + nonBadgesSlides)
+const postLendingBeyondLoanItems = computed(() => {
+	const items = [];
+
+	if (showSurveyCard.value) {
+		items.push({
+			key: 'survey',
+			component: MyKivaSurveyCard,
+		});
+	}
+
+	nonBadgesSlides.value.forEach(slide => {
+		items.push(buildSlideCardItem(slide));
+	});
+
+	return items;
+});
+
+// Card items for "Continue with your lifetime achievements"
+const achievementCardItems = computed(() => achievementSlides.value.map(buildSlideCardItem));
+
+// Whether the post-lending top row is visible (GoalCard, EmailMarketing, LatestLoan)
+const isPostLendingTopVisible = computed(
+	() => shouldShowEmailMarketingCard.value || showLatestLoan.value,
+);
+
+// Card items for non-post-lending "Build impact beyond your loan"
+const beyondLoanCardItems = computed(() => {
+	const items = [];
+
+	if (!isPostLendingTopVisible.value
+		&& (shouldShowEmailMarketingCard.value || acceptedEmailMarketingUpdates.value)) {
+		items.push({
+			key: 'email-updates',
+			component: MyKivaEmailUpdatesTransition,
+			props: {
+				accepted: acceptedEmailMarketingUpdates.value,
+				loans: props.loans,
+				latestLoan: props.latestLoan,
+			},
+			events: {
+				'accept-email-updates': () => { acceptedEmailMarketingUpdates.value = true; },
+			},
+		});
+	}
+
+	if (!isPostLendingTopVisible.value && showLatestLoan.value) {
+		items.push({
+			key: 'latest-loan',
+			component: MyKivaLatestLoanCard,
+			props: { loan: props.latestLoan },
+			events: {
+				'open-impact-insight-modal': () => { showImpactInsightsModal.value = true; },
+			},
+		});
+	}
+
+	if (showSurveyCard.value) {
+		items.push({
+			key: 'survey',
+			component: MyKivaSurveyCard,
+		});
+	}
+
+	nonBadgesSlides.value.forEach(slide => {
+		items.push(buildSlideCardItem(slide));
+	});
+
+	return items;
+});
+
+// Navigation
+const goToDashboard = position => {
+	$kvTrackEvent('event-tracking', 'click', 'back-to-dashboard', position);
+	router.push('/mykiva');
 };
 
 const setGoal = async preferences => {
@@ -581,7 +563,6 @@ watch(() => props.goalRefreshKey, async (newVal, oldVal) => {
 
 onMounted(async () => {
 	await checkCompletedGoal({ category: 'portfolio' });
-	console.error('HP > heckPostLendingCardCookie(cookieStore)', checkPostLendingCardCookie(cookieStore));
 	// Check post-lending cookie
 	if (checkPostLendingCardCookie(cookieStore)) {
 		showPostLendingNextStepsCards.value = true;
@@ -596,21 +577,18 @@ onMounted(async () => {
 		tw-overflow-hidden tw-bg-white;
 }
 
-.stats-wrapper, .card-container {
+:deep(.card-container) {
+	width: 100%;
 	height: auto;
 
 	@screen md {
 		height: 399px;
 	}
-}
-
-.card-container {
-	width: 100%;
 
 	@apply md:tw-w-auto;
 }
 
-.kiva-card :deep(h2) {
+:deep(.kiva-card) h2 {
 	font-size: 22px !important;
 }
 
@@ -622,22 +600,6 @@ onMounted(async () => {
 	}
 }
 
-.carousel-single > :deep(section > div > div) {
-	@apply !tw-min-w-full;
-}
-
-.carousel, .carousel > :deep(section), .carousel > :deep(section > div:first-of-type) {
-	@apply tw-h-full tw-mt-0;
-}
-
-.carousel :deep(.kv-carousel__controls) {
-	@apply tw-hidden;
-}
-
-.carousel :deep(.kv-carousel) {
-	@apply tw-pt-0;
-}
-
 .region-section {
 	.card-container:first-child {
 		@apply tw-mb-2 md:tw-mb-0;
@@ -645,16 +607,6 @@ onMounted(async () => {
 
 	@screen md {
 		grid-template-columns: minmax(321px, 1fr) 2fr;
-	}
-}
-
-.badges-section {
-	@media (width >= 768px) {
-		grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-	}
-
-	@media (width >= 1024px) {
-		grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
 	}
 }
 </style>
