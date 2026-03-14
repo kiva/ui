@@ -1,0 +1,31 @@
+query myTeamMessages($offset: Int, $limit: Int) {
+	my {
+		id
+		teamMessages(offset: $offset, limit: $limit) {
+			totalCount
+			values {
+				id
+				body
+				date
+				sender {
+					id
+					name
+					publicId
+					image {
+						id
+						url(customSize: "s64")
+					}
+				}
+				team {
+					id
+					name
+					teamPublicId
+					image {
+						id
+						url(customSize: "s64")
+					}
+				}
+			}
+		}
+	}
+}
