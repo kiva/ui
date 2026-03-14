@@ -1,0 +1,1 @@
+import{o as t,c as e}from"./entry-vue.esm-bundler-B8AARAaDW0.js";import{s as o}from"./entry-KvWwwHeader-Pg76_XcPb_.js";const r={},l={class:"loading-placeholder tw-w-full tw-h-full tw-relative tw-overflow-hidden tw-bg-tertiary tw-rounded-xs"};function a(c,d){return t(),e("div",l)}const i=o(r,[["render",a],["__scopeId","data-v-0340412a"]]);export{i as _};
