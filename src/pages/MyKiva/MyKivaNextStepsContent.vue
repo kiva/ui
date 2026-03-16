@@ -590,7 +590,6 @@ watch(() => props.goalRefreshKey, async (newVal, oldVal) => {
 
 onMounted(async () => {
 	await checkCompletedGoal({ category: 'portfolio' });
-	console.error('HP > heckPostLendingCardCookie(cookieStore)', checkPostLendingCardCookie(cookieStore));
 	// Check post-lending cookie
 	if (checkPostLendingCardCookie(cookieStore)) {
 		showPostLendingNextStepsCards.value = true;
