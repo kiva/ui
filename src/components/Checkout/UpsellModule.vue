@@ -10,9 +10,9 @@
 				/>
 			</button>
 		</div>
-		<div class="tw-flex tw-flex-col md:tw-flex-row tw-flex-no-wrap upsellModule">
+		<div class="tw-flex tw-flex-col md:tw-flex-row tw-flex-no-wrap tw-gap-1 md:tw-gap-4">
 			<div>
-				<img :src="imageUrl" class="tw-rounded-full sm:tw-w-6 tw-w-16 borrowerImage">
+				<img :src="imageUrl" class="tw-rounded-full tw-w-6 md:tw-w-16">
 			</div>
 			<div class="tw-grow tw-flex tw-flex-col tw-justify-center upsellLoanDetails">
 				<h4 class="tw-text-h4 tw-text-action tw-mb-0.5">
@@ -97,7 +97,7 @@ export default {
 			return this.loan?.id;
 		},
 		imageUrl() {
-			return this.loan?.image?.url;
+			return this.loan?.image?.s100;
 		},
 		loanAmount() {
 			return this.loan?.loanAmount ?? 0;
@@ -120,33 +120,10 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-@use '#src/assets/scss/settings' as *;
-
+<style scoped>
 @media screen and (width >= 1160px) {
 	.upsellLoanDetails {
 		min-width: 600px;
 	}
 }
-
-@media screen and (width >= 734px) {
-	.upsellModule {
-		gap: 32px;
-
-		.borrowerImage {
-			width: 128px;
-		}
-	}
-}
-
-@media screen and (width <= 733px) {
-	.upsellModule {
-		gap: 8px;
-
-		.borrowerImage {
-			width: 48px;
-		}
-	}
-}
-
 </style>
