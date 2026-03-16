@@ -2,19 +2,18 @@
 	<async-portfolio-section
 		@visible="fetchStats"
 		data-testid="lending-insights"
-		class="!tw-bg-white !tw-py-5 !tw-mb-3"
+		class="!tw-bg-secondary !tw-py-5 !tw-mb-3"
 	>
 		<div class="tw-flex tw-items-center tw-justify-end tw-gap-3 tw-mb-1 md:tw-mb-2 lg:tw-hidden">
 			<div
 				class="tw-inline-flex tw-px-1 tw-py-0.5 tw-items-center
-					tw-rounded-sm tw-bg-brand-100 tw-border tw-border-brand-200"
+					tw-rounded-sm tw-bg-caution tw-border tw-border-caution"
 			>
-				<star-shine class="tw-flex-shrink-0 tw-flex tw-items-center" />
 				<p
 					class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0"
 					style="line-height: normal;"
 				>
-					Filter by year now live
+					New! Filter by year
 				</p>
 			</div>
 		</div>
@@ -42,14 +41,13 @@
 							</kv-tab>
 							<div
 								class="tw-hidden lg:tw-inline-flex tw-px-1 tw-py-0.5 tw-items-center tw--mt-1
-								tw-rounded-sm tw-bg-brand-100 tw-border tw-border-brand-200"
+								tw-rounded-sm tw-bg-caution tw-border tw-border-caution"
 							>
-								<star-shine class="tw-flex-shrink-0 tw-flex tw-items-center" />
 								<p
 									class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0"
 									style="line-height: normal;"
 								>
-									Filter by year now live
+									New! Filter by year
 								</p>
 							</div>
 						</div>
@@ -69,12 +67,13 @@
 							<!-- Lending percentile -->
 							<div
 								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-5
-										tw-bg-eco-green-3 tw-rounded tw-px-4 tw-py-2 md:!tw-py-1.5 md:!tw-px-3"
+										tw-bg-primary stats-percentile-container tw-rounded tw-px-4
+										tw-py-2 md:!tw-py-1.5 md:!tw-px-3 tw-shadow-lg"
 							>
 								<dd class="stat-def">
 									Lending percentile this year
 								</dd>
-								<dt class="stat-value !tw-text-white">
+								<dt class="stat-value">
 									{{ formattedCurrentYearPercentile }}
 								</dt>
 								<router-link
@@ -94,7 +93,10 @@
 								</span>
 							</div>
 							<!-- Total amount lent -->
-							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+							<div
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 tw-bg-primary
+								tw-rounded tw-px-1 tw-py-1 tw-shadow-lg"
+							>
 								<dd class="stat-def">
 									Total amount lent
 								</dd>
@@ -110,7 +112,10 @@
 								</router-link>
 							</div>
 							<!-- Loans made -->
-							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
+							<div
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2
+								tw-bg-primary tw-rounded tw-px-1 tw-py-1 tw-shadow-lg"
+							>
 								<dt class="stat-def">
 									Loans made
 								</dt>
@@ -119,7 +124,10 @@
 								</dd>
 							</div>
 							<!-- Countries supported -->
-							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2">
+							<div
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2
+								tw-bg-primary tw-rounded tw-px-1 tw-py-1 tw-shadow-lg"
+							>
 								<dd class="stat-def">
 									Countries supported
 								</dd>
@@ -142,7 +150,8 @@
 							<!-- Lending percentile -->
 							<div
 								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 tw-h-full
-									tw-bg-eco-green-3 tw-rounded tw-px-4 tw-py-2 md:!tw-py-1.5 md:!tw-px-3"
+									tw-bg-primary tw-rounded tw-px-2 tw-py-2
+									stats-percentile-container md:!tw-py-1.5 md:!tw-px-3 tw-shadow-lg"
 							>
 								<kv-loading-placeholder
 									v-if="loading"
@@ -152,11 +161,14 @@
 								<dd v-show="!loading" class="stat-def">
 									Lending percentile
 								</dd>
-								<dt class="stat-value !tw-text-white">
+								<dt class="stat-value">
 									{{ lifetimePercentile }}
 								</dt>
 							</div>
-							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+							<div
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3
+									tw-bg-primary tw-rounded tw-px-2 tw-py-2 tw-shadow-lg"
+							>
 								<kv-loading-placeholder
 									v-if="loading"
 									class="stat-placeholder"
@@ -177,7 +189,10 @@
 								</router-link>
 							</div>
 							<!-- Loans made -->
-							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+							<div
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3
+									tw-bg-primary tw-rounded tw-px-2 tw-py-2 tw-shadow-lg"
+							>
 								<kv-loading-placeholder
 									v-if="loading"
 									class="stat-placeholder"
@@ -191,7 +206,10 @@
 								</dd>
 							</div>
 							<!-- Countries supported -->
-							<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+							<div
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3
+									tw-bg-primary tw-rounded tw-px-2 tw-py-2 tw-shadow-lg"
+							>
 								<kv-loading-placeholder
 									v-if="loading"
 									class="stat-placeholder"
@@ -223,7 +241,7 @@
 				class="tw-w-2 tw-h-2 tw-flex-shrink-0"
 				:icon="mdiClockOutline"
 			/>
-			<p class="tw-pl-0.5 tw-font-normal md:tw-text-small tw-flex-shrink-0">
+			<p class="tw-pl-0.5 md:tw-text-small tw-flex-shrink-0">
 				{{ daysUntilDeadline }} days to make contribution this year
 			</p>
 		</div>
@@ -239,7 +257,6 @@ import {
 	KvGrid, KvLoadingPlaceholder, KvMaterialIcon, KvTab, KvTabs, KvTabPanel,
 } from '@kiva/kv-components';
 import { differenceInCalendarDays } from 'date-fns';
-import StarShine from '#src/assets/icons/inline/star_shine.svg';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 export default {
@@ -252,7 +269,6 @@ export default {
 		KvTab,
 		KvTabs,
 		KvTabPanel,
-		StarShine,
 	},
 	inject: ['apollo', 'cookieStore'],
 	serverCacheKey: () => getCacheKey('LendingInsights'),
@@ -426,7 +442,13 @@ export default {
 <style lang="postcss" scoped>
 
 .stats-container {
-	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-2.5 tw-rounded tw-text-center tw-bg-eco-green-4 tw-items-center;
+	@apply tw-grid-cols-12 tw-items-center;
+}
+
+.stats-percentile-container {
+	background-image: url('/src/assets/images/my-kiva/peak-bg.png');
+	background-repeat: no-repeat;
+	background-position: right;
 }
 
 .stat-placeholder {
@@ -434,11 +456,11 @@ export default {
 }
 
 .stat-value {
-	@apply tw-text-h2 tw-text-eco-green-2 tw-pb-0.5;
+	@apply tw-text-h3 tw-text-action-highlight tw-pb-0.5;
 }
 
 .stat-def {
-	@apply tw-mb-0.5 tw-text-white;
+	@apply tw-mb-0.5 tw-text-secondary;
 }
 
 @screen md {
@@ -448,7 +470,7 @@ export default {
 }
 
 .stat-link {
-	@apply tw-inline-flex tw-justify-center tw-items-center tw-text-eco-green-2 tw-font-medium tw-no-underline;
+	@apply tw-block tw-text-right tw-text-action tw-font-medium tw-no-underline;
 }
 
 .tab-header {
