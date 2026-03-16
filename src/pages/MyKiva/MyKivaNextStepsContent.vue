@@ -133,7 +133,7 @@
 				/>
 			</section>
 
-			<div v-if="!userLentToAllRegions">
+			<template v-if="!userLentToAllRegions">
 				<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 					Keep your impact going
 				</h3>
@@ -143,7 +143,7 @@
 						:loans="loans"
 					/>
 				</section>
-			</div>
+			</template>
 		</div>
 
 		<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
