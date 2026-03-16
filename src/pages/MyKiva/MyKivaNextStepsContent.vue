@@ -570,10 +570,9 @@ const closeGoalModal = async () => {
 
 		// Avoid showing category choice step when closing the modal
 		setTimeout(() => {
-			this.isGoalSet = false;
+			isGoalSet.value = false;
 		}, 300);
 	}
-	isGoalSet.value = false;
 };
 
 const closeImpactInsightsModal = () => {
