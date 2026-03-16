@@ -15,6 +15,7 @@
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:goal-editing-enable="goalEditingEnable"
+			:user-lent-to-all-regions="userLentToAllRegions"
 		/>
 		<my-kiva-page-content
 			v-else

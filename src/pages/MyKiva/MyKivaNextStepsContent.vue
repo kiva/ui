@@ -72,6 +72,7 @@
 				@open-goal-modal="showGoalModal = true"
 			/>
 			<MyKivaRegionExperience
+				v-if="showRegionExperience"
 				:regions-data="regionsData"
 				:loans="loans"
 			/>
@@ -132,15 +133,17 @@
 				/>
 			</section>
 
-			<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
-				Keep your impact going
-			</h3>
-			<section>
-				<MyKivaRegionExperience
-					:regions-data="regionsData"
-					:loans="loans"
-				/>
-			</section>
+			<div v-if="showRegionExperience">
+				<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
+					Keep your impact going
+				</h3>
+				<section>
+					<MyKivaRegionExperience
+						:regions-data="regionsData"
+						:loans="loans"
+					/>
+				</section>
+			</div>
 		</div>
 
 		<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
@@ -409,6 +412,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	userLentToAllRegions: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const apollo = inject('apollo');
@@ -489,6 +496,10 @@ const womenLoansLastYear = computed(() => getCategoryLoansLastYear(props.heroTie
 
 const shouldShowGoalCard = computed(() => {
 	return (!userGoal.value || !userGoalAchieved.value) && !hideCompletedGoalCard.value;
+});
+
+const showRegionExperience = computed(() => {
+	return !props.postLendingNextStepsEnable && !props.userLentToAllRegions;
 });
 
 // Navigation
