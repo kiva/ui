@@ -72,7 +72,7 @@
 				@open-goal-modal="showGoalModal = true"
 			/>
 			<MyKivaRegionExperience
-				v-if="showRegionExperience"
+				v-if="!userLentToAllRegions"
 				:regions-data="regionsData"
 				:loans="loans"
 			/>
@@ -133,7 +133,7 @@
 				/>
 			</section>
 
-			<div v-if="showRegionExperience">
+			<div v-if="!userLentToAllRegions">
 				<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 					Keep your impact going
 				</h3>
@@ -496,10 +496,6 @@ const womenLoansLastYear = computed(() => getCategoryLoansLastYear(props.heroTie
 
 const shouldShowGoalCard = computed(() => {
 	return (!userGoal.value || !userGoalAchieved.value) && !hideCompletedGoalCard.value;
-});
-
-const showRegionExperience = computed(() => {
-	return !props.postLendingNextStepsEnable && !props.userLentToAllRegions;
 });
 
 // Navigation
