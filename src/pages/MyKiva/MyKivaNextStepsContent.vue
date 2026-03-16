@@ -29,7 +29,7 @@
 				user-goal-enabled
 				goals-v2-enabled
 				hide-non-badges-cards
-				slides-number="3"
+				:slides-number="3"
 				:goal-progress-loading="goalProgressLoading"
 				:goal-progress="goalProgress"
 				:hero-badge-data="null"
