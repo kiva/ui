@@ -62,13 +62,14 @@
 						/>
 						<kv-grid
 							v-else
-							as="dl" class="stats-container md:!tw-pr-4"
+							as="dl" class="stats-overall-container md:!tw-pr-4"
 						>
 							<!-- Lending percentile -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-5
-										tw-bg-primary stats-percentile-container tw-rounded tw-px-4
-										tw-py-2 md:!tw-py-1.5 md:!tw-px-3 tw-shadow-lg"
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-5 lg:tw-flex-shrink-0
+									tw-bg-primary stats-percentile-container tw-rounded
+									md:!tw-py-1.5 md:!tw-px-2 tw-shadow-lg"
+								style="min-width: 190px"
 							>
 								<dd class="stat-def">
 									Lending percentile this year
@@ -94,8 +95,19 @@
 							</div>
 							<!-- Total amount lent -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 tw-bg-primary
-								tw-rounded tw-px-1 tw-py-1 tw-shadow-lg"
+								class="
+									tw-col-span-12
+									md:tw-col-span-6
+									lg:tw-col-span-3
+									lg:tw-flex-shrink-0
+									tw-bg-primary
+									tw-rounded
+									tw-px-2
+									tw-py-1.5
+									tw-shadow-lg
+									stats-container
+								"
+								style="min-width: 155px"
 							>
 								<dd class="stat-def">
 									Total amount lent
@@ -113,8 +125,8 @@
 							</div>
 							<!-- Loans made -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2
-								tw-bg-primary tw-rounded tw-px-1 tw-py-1 tw-shadow-lg"
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 lg:tw-flex-shrink-0
+								tw-bg-primary tw-rounded tw-px-2 tw-py-1.5 tw-shadow-lg stats-container"
 							>
 								<dt class="stat-def">
 									Loans made
@@ -125,8 +137,8 @@
 							</div>
 							<!-- Countries supported -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-2
-								tw-bg-primary tw-rounded tw-px-1 tw-py-1 tw-shadow-lg"
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 lg:tw-flex-shrink-0
+								tw-bg-primary tw-rounded tw-px-2 tw-py-1.5 tw-shadow-lg stats-container"
 							>
 								<dd class="stat-def">
 									Countries supported
@@ -146,12 +158,13 @@
 					</kv-tab-panel>
 					<kv-tab-panel id="lifetime" class="tw--mt-2">
 						<!-- Lifetime Panel -->
-						<kv-grid as="dl" class="stats-container">
+						<kv-grid as="dl" class="stats-overall-container">
 							<!-- Lending percentile -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 tw-h-full
-									tw-bg-primary tw-rounded tw-px-2 tw-py-2
-									stats-percentile-container md:!tw-py-1.5 md:!tw-px-3 tw-shadow-lg"
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 lg:tw-flex-shrink-0 tw-h-full
+									tw-bg-primary stats-percentile-container tw-rounded
+									md:!tw-py-1.5 md:!tw-px-1 tw-shadow-lg"
+								style="min-width: 190px"
 							>
 								<kv-loading-placeholder
 									v-if="loading"
@@ -166,8 +179,9 @@
 								</dt>
 							</div>
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3
-									tw-bg-primary tw-rounded tw-px-2 tw-py-2 tw-shadow-lg"
+								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 lg:tw-flex-shrink-0
+									tw-bg-primary tw-rounded tw-px-2 tw-py-1 tw-shadow-lg stats-container"
+								style="min-width: 155px"
 							>
 								<kv-loading-placeholder
 									v-if="loading"
@@ -190,8 +204,18 @@
 							</div>
 							<!-- Loans made -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3
-									tw-bg-primary tw-rounded tw-px-2 tw-py-2 tw-shadow-lg"
+								class="
+									tw-col-span-12
+									md:tw-col-span-6
+									lg:tw-col-span-3
+									lg:tw-flex-shrink-0
+									stats-container
+									tw-bg-primary
+									tw-rounded
+									tw-px-2
+									tw-py-1.5
+									tw-shadow-lg
+								"
 							>
 								<kv-loading-placeholder
 									v-if="loading"
@@ -207,8 +231,18 @@
 							</div>
 							<!-- Countries supported -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3
-									tw-bg-primary tw-rounded tw-px-2 tw-py-2 tw-shadow-lg"
+								class="
+									tw-col-span-12
+									md:tw-col-span-6
+									lg:tw-col-span-3
+									lg:tw-flex-shrink-0
+									stats-container
+									tw-bg-primary
+									tw-rounded
+									tw-px-2
+									tw-py-1
+									tw-shadow-lg
+								"
 							>
 								<kv-loading-placeholder
 									v-if="loading"
@@ -441,14 +475,26 @@ export default {
 
 <style lang="postcss" scoped>
 
+.stats-overall-container {
+	@apply tw-grid tw-grid-cols-12 tw-items-start tw-gap-2;
+}
+
+@screen lg {
+	.stats-overall-container {
+		@apply tw-flex tw-flex-row tw-flex-nowrap;
+	}
+}
+
 .stats-container {
-	@apply tw-grid-cols-12 tw-items-center;
+	min-height: 96px;
+	min-width: 148px;
 }
 
 .stats-percentile-container {
 	background-image: url('/src/assets/images/my-kiva/peak-bg.png');
 	background-repeat: no-repeat;
 	background-position: right;
+	min-height: 96px;
 }
 
 .stat-placeholder {
