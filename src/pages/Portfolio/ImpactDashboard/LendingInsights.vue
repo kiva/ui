@@ -66,9 +66,9 @@
 						>
 							<!-- Lending percentile -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-5 lg:tw-flex-shrink-0
+								class="tw-col-span-12 lg:tw-flex-shrink-0
 									tw-bg-primary stats-percentile-container tw-rounded
-									md:!tw-py-1.5 md:!tw-px-2 tw-shadow-lg"
+									lg:!tw-py-1.5 lg:!tw-px-2 tw-px-2 tw-py-1 tw-shadow-lg"
 								style="min-width: 190px"
 							>
 								<dd class="stat-def">
@@ -88,7 +88,7 @@
 								<span
 									v-else-if="currentYearPercentile === 99"
 									class="stat-link tw-text-eco-green-2 tw-font-medium
-										tw-inline-flex tw-items-center"
+										tw-inline-flex tw-items-center tw-mt-auto"
 								>
 									Thank you!
 								</span>
@@ -96,9 +96,18 @@
 							<!-- Total amount lent -->
 							<div
 								class="
-									tw-col-span-12
-									md:tw-col-span-6
-									lg:tw-col-span-3
+									tw-col-span-6
+									tw-col-start-7
+									tw-row-start-2
+									tw-row-span-2
+									tw-order-3
+									tw-h-full
+									tw-flex
+									tw-flex-col
+									lg:tw-col-span-6
+									lg:tw-col-start-auto
+									lg:tw-row-start-auto
+									lg:tw-order-none
 									lg:tw-flex-shrink-0
 									tw-bg-primary
 									tw-rounded
@@ -116,7 +125,7 @@
 									{{ currentYearAmountLent }}
 								</dt>
 								<router-link
-									class="stat-link"
+									class="stat-link tw-mt-auto"
 									to="/portfolio/loans"
 									v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
 								>
@@ -125,8 +134,10 @@
 							</div>
 							<!-- Loans made -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 lg:tw-flex-shrink-0
-								tw-bg-primary tw-rounded tw-px-2 tw-py-1.5 tw-shadow-lg stats-container"
+								class="tw-col-span-6 tw-col-start-1 tw-order-1 lg:tw-col-span-3
+									lg:tw-col-start-auto lg:tw-order-none lg:tw-flex-shrink-0
+									tw-bg-primary tw-rounded tw-px-2 tw-py-1.5 tw-shadow-lg stats-container"
+								style="min-width: 148px; min-height: 102px"
 							>
 								<dt class="stat-def">
 									Loans made
@@ -137,8 +148,10 @@
 							</div>
 							<!-- Countries supported -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 lg:tw-flex-shrink-0
-								tw-bg-primary tw-rounded tw-px-2 tw-py-1.5 tw-shadow-lg stats-container"
+								class="tw-col-span-6 tw-col-start-1 tw-order-2 lg:tw-col-span-3
+									lg:tw-col-start-auto lg:tw-order-none lg:tw-flex-shrink-0
+									tw-bg-primary tw-rounded tw-px-2 tw-py-1.5 tw-shadow-lg stats-container"
+								style="min-width: 148px"
 							>
 								<dd class="stat-def">
 									Countries supported
@@ -147,7 +160,7 @@
 									{{ currentYearCountryCount }}
 								</dt>
 								<router-link
-									class="stat-link"
+									class="stat-link tw-mt-auto"
 									to="/portfolio/lending-stats"
 									v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
 								>
@@ -161,9 +174,9 @@
 						<kv-grid as="dl" class="stats-overall-container">
 							<!-- Lending percentile -->
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 lg:tw-flex-shrink-0 tw-h-full
+								class="tw-col-span-12 lg:tw-flex-shrink-0 tw-h-full
 									tw-bg-primary stats-percentile-container tw-rounded
-									md:!tw-py-1.5 md:!tw-px-1 tw-shadow-lg"
+									lg:!tw-py-1.5 lg:!tw-px-1 tw-px-2 tw-py-1 tw-shadow-lg"
 								style="min-width: 190px"
 							>
 								<kv-loading-placeholder
@@ -179,8 +192,10 @@
 								</dt>
 							</div>
 							<div
-								class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3 lg:tw-flex-shrink-0
-									tw-bg-primary tw-rounded tw-px-2 tw-py-1 tw-shadow-lg stats-container"
+								class="tw-col-span-6 tw-col-start-7 tw-row-start-2 tw-row-span-2 tw-order-3
+									tw-h-full tw-flex tw-flex-col lg:tw-col-span-3 lg:tw-col-start-auto
+									lg:tw-row-start-auto lg:tw-order-none lg:tw-flex-shrink-0 tw-bg-primary
+									tw-rounded tw-px-2 tw-py-1 tw-shadow-lg stats-container"
 								style="min-width: 155px"
 							>
 								<kv-loading-placeholder
@@ -195,7 +210,7 @@
 									{{ lifetimeAmountLent }}
 								</dt>
 								<router-link
-									class="stat-link"
+									class="stat-link tw-mt-auto"
 									to="/portfolio/loans"
 									v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
 								>
@@ -204,18 +219,10 @@
 							</div>
 							<!-- Loans made -->
 							<div
-								class="
-									tw-col-span-12
-									md:tw-col-span-6
-									lg:tw-col-span-3
-									lg:tw-flex-shrink-0
-									stats-container
-									tw-bg-primary
-									tw-rounded
-									tw-px-2
-									tw-py-1.5
-									tw-shadow-lg
-								"
+								class="tw-col-span-6 tw-col-start-1 tw-order-1 lg:tw-col-span-3
+									lg:tw-col-start-auto lg:tw-order-none lg:tw-flex-shrink-0
+									stats-container tw-bg-primary tw-rounded tw-px-2 tw-py-1.5 tw-shadow-lg"
+								style="min-width: 148px"
 							>
 								<kv-loading-placeholder
 									v-if="loading"
@@ -231,18 +238,10 @@
 							</div>
 							<!-- Countries supported -->
 							<div
-								class="
-									tw-col-span-12
-									md:tw-col-span-6
-									lg:tw-col-span-3
-									lg:tw-flex-shrink-0
-									stats-container
-									tw-bg-primary
-									tw-rounded
-									tw-px-2
-									tw-py-1
-									tw-shadow-lg
-								"
+								class="tw-col-span-6 tw-col-start-1 tw-order-2 lg:tw-col-span-3
+									lg:tw-col-start-auto lg:tw-order-none lg:tw-flex-shrink-0
+									stats-container tw-bg-primary tw-rounded tw-px-2 tw-py-1 tw-shadow-lg"
+								style="min-width: 148px"
 							>
 								<kv-loading-placeholder
 									v-if="loading"
@@ -487,7 +486,6 @@ export default {
 
 .stats-container {
 	min-height: 96px;
-	min-width: 148px;
 }
 
 .stats-percentile-container {
@@ -551,11 +549,6 @@ export default {
 	}
 
 	#kv-tab-panel-ytd {
-		.stat-def,
-		.stat-link {
-			@apply tw-text-small
-		}
-
 		.stat-link span {
 			@apply tw-w-3.5 tw-h-2;
 		}
