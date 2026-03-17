@@ -44,7 +44,10 @@ export async function runFacetsQueries(apollo, loanSearchState = {}, origin = FL
 export async function runLoansQuery(apollo, loanSearchState, origin) {
 	const flssData = await fetchLoans(
 		apollo,
-		getFlssFilters(loanSearchState),
+		{
+			...getFlssFilters(loanSearchState),
+			amountLeft: loanSearchState.amountLeft ?? {},
+		},
 		loanSearchState?.sortBy,
 		loanSearchState?.pageOffset,
 		loanSearchState?.pageLimit,

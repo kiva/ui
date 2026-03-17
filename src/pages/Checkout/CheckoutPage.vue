@@ -355,6 +355,7 @@ import {
 } from '@kiva/kv-components';
 import { fetchPostCheckoutAchievements, getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
+import getCheckoutAlmostFundedRecommendationQuery from '#src/graphql/query/checkout/getCheckoutAlmostFundedRecommendation.graphql'; // eslint-disable-line max-len
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { isGoalsV2Enabled } from '#src/composables/useGoalData';
@@ -367,6 +368,7 @@ import {
 } from '#src/util/promoCreditCookie';
 import { FLSS_ORIGIN_CHECKOUT_UPSELL } from '#src/util/flssUtils';
 import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
+import logReadQueryError from '#src/util/logReadQueryError';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
@@ -711,6 +713,15 @@ export default {
 			'EXP-MP-1984-Sept2025',
 		);
 	},
+	watch: {
+		async emptyBasket(newValue) {
+			if (!newValue && !this.upsellLoan?.id) {
+				// MyKiva Bandit Upsell Experiment Mar2026 MP-2513
+				await this.initializeBanditUpsellExperiment();
+				this.getUpsellModuleData();
+			}
+		},
+	},
 	async mounted() {
 		// update current time every second for reactivity
 		this.currentTimeInterval = setInterval(() => {
@@ -732,11 +743,6 @@ export default {
 		// show toast for specified scenario
 		this.handleToast();
 		this.getPromoInformationFromBasket();
-
-		// MyKiva Bandit Upsell Experiment Mar2026 MP-2513
-		await this.initializeBanditUpsellExperiment();
-
-		this.getUpsellModuleData();
 	},
 	computed: {
 		goalsV2Enabled() {
@@ -1087,19 +1093,75 @@ export default {
 				});
 			});
 		},
-		getUpsellModuleData(loanId = 0) {
-			this.addedUpsellLoans.push(loanId);
-			runLoansQuery(
+		getLoansByAmountLeft() {
+			return runLoansQuery(
 				this.apollo,
 				{
 					sortBy: 'amountLeft',
 					pageLimit: 20,
 				},
 				FLSS_ORIGIN_CHECKOUT_UPSELL,
-			).then(result => {
-				const loans = result?.loans || [];
-				this.upsellLoan = loans.filter(loan => isLoanFundraising(loan) && !this.addedUpsellLoans.includes(loan.id))[0] || {}; // eslint-disable-line max-len
-			});
+			);
+		},
+		getLoansByAmountLeftRange(start, end) {
+			return runLoansQuery(
+				this.apollo,
+				{
+					amountLeft: {
+						range: {
+							gte: start,
+							lte: end,
+						}
+					},
+					sortBy: 'amountLeft',
+					pageLimit: 20,
+				},
+				FLSS_ORIGIN_CHECKOUT_UPSELL,
+			);
+		},
+		getUpsellModuleData(loanId = 0) {
+			this.addedUpsellLoans.push(loanId);
+
+			if (this.isBanditUpsellExpEnabled) {
+				const balance = parseFloat(this.myBalance);
+				this.apollo.query({
+					query: getCheckoutAlmostFundedRecommendationQuery,
+					variables: {
+						loginId: this.myId,
+						balance,
+					},
+				}).then(({ data }) => {
+					const ranges = data?.getCheckoutAlmostFundedRecommendation?.recommendedRanges ?? [];
+					const promiseArray = ranges.map(range => this.getLoansByAmountLeftRange(range.start, range.end));
+					// Adding general query as fallback in case the ranges don't return any loans
+					promiseArray.push(this.getLoansByAmountLeft());
+
+					Promise.all(promiseArray).then(result => {
+						const loansArray = result || [];
+						const loansIndex = loansArray.findIndex(a => (a.loans || []).length > 0);
+						const loans = loansArray[loansIndex]?.loans || [];
+						this.upsellLoan = loans.filter(loan => isLoanFundraising(loan) && !this.addedUpsellLoans.includes(loan.id))[0] || {}; // eslint-disable-line max-len
+
+						const arrayLength = loansArray.length;
+						if (loansIndex >= 0 && loansIndex !== arrayLength - 1) {
+							this.$kvTrackEvent(
+								'basket',
+								'view',
+								'recommended-checkout-upsell',
+								`${ranges[loansIndex].start} - ${ranges[loansIndex].end}`,
+							);
+						}
+					});
+				}).catch(e => {
+					logReadQueryError(e, 'getCheckoutAlmostFundedRecommendationQuery');
+				});
+			} else {
+				this.getLoansByAmountLeft()
+					.then(result => {
+						const loans = result?.loans || [];
+						this.upsellLoan = loans.filter(loan => isLoanFundraising(loan) && !this.addedUpsellLoans.includes(loan.id))[0] || {}; // eslint-disable-line max-len
+					});
+			}
 		},
 		verificationComplete() {
 			this.verificationSubmitted = true;
