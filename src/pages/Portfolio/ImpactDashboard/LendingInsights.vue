@@ -1,6 +1,7 @@
 <template>
 	<async-portfolio-section
 		@visible="fetchStats"
+		v-if="lifetimeDeposits >= 10000"
 		data-testid="lending-insights"
 		class="!tw-bg-secondary !tw-py-5 !tw-mb-3"
 	>
@@ -321,6 +322,7 @@ export default {
 			lifetimeCountryCount: 0,
 			lifetimeNumberOfLoans: 0,
 			lifetimePercentile: 0,
+			lifetimeDeposits: 0,
 		};
 	},
 	computed: {
@@ -368,6 +370,7 @@ export default {
 					}`
 				}).then(({ data }) => {
 					const amountOfLoans = numeral(data?.my?.userStats?.amount_of_loans ?? 0);
+					this.lifetimeDeposits = amountOfLoans.value();
 
 					this.lifetimeAmountLent = amountOfLoans.format('$0,0[.]00');
 					this.lifetimeCountryCount = data?.my?.lendingStats?.lentTo?.countries?.totalCount ?? 0;
@@ -433,9 +436,10 @@ export default {
 							nextPercentile = parseInt(next25, 10);
 						}
 
+						const percentage = 100 - nextPercentile;
 						return nextPercentile === 99
 							? ''
-							: `${nextThreshold} more to reach ${numeral(nextPercentile).format('0o')} percentile`;
+							: `${nextThreshold} more to reach top ${percentage}%`;
 					};
 
 					this.nextPercentileMsg = updatedPercentile();
