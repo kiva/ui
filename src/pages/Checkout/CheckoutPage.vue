@@ -1139,7 +1139,7 @@ export default {
 						const loansArray = result || [];
 						const loansIndex = loansArray.findIndex(a => (a.loans || []).length > 0 && a.loans.filter(loan => !this.addedUpsellLoans.includes(loan.id)).length > 0); // eslint-disable-line max-len
 						const loans = loansArray[loansIndex]?.loans || [];
-						this.upsellLoan = loans[0] || {};
+						this.upsellLoan = loans.filter(loan => !this.addedUpsellLoans.includes(loan.id))[0] || {};
 
 						const arrayLength = loansArray.length;
 						if (loansIndex >= 0 && loansIndex !== arrayLength - 1) {
