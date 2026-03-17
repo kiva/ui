@@ -343,7 +343,6 @@ import UpsellModule from '#src/components/Checkout/UpsellModule';
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
-import { isLoanFundraising } from '#src/util/loanUtils';
 import MatchedLoansLightbox from '#src/components/Checkout/MatchedLoansLightbox';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
@@ -1138,9 +1137,9 @@ export default {
 
 					Promise.all(promiseArray).then(result => {
 						const loansArray = result || [];
-						const loansIndex = loansArray.findIndex(a => (a.loans || []).length > 0);
+						const loansIndex = loansArray.findIndex(a => (a.loans || []).length > 0 && a.loans.filter(loan => !this.addedUpsellLoans.includes(loan.id)).length > 0); // eslint-disable-line max-len
 						const loans = loansArray[loansIndex]?.loans || [];
-						this.upsellLoan = loans.filter(loan => isLoanFundraising(loan) && !this.addedUpsellLoans.includes(loan.id))[0] || {}; // eslint-disable-line max-len
+						this.upsellLoan = loans[0] || {};
 
 						const arrayLength = loansArray.length;
 						if (loansIndex >= 0 && loansIndex !== arrayLength - 1) {
@@ -1159,7 +1158,7 @@ export default {
 				this.getLoansByAmountLeft()
 					.then(result => {
 						const loans = result?.loans || [];
-						this.upsellLoan = loans.filter(loan => isLoanFundraising(loan) && !this.addedUpsellLoans.includes(loan.id))[0] || {}; // eslint-disable-line max-len
+						this.upsellLoan = loans.filter(loan => !this.addedUpsellLoans.includes(loan.id))[0] || {};
 					});
 			}
 		},
