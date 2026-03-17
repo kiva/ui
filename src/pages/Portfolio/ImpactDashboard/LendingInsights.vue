@@ -96,27 +96,10 @@
 							</div>
 							<!-- Total amount lent -->
 							<div
-								class="
-									tw-col-span-6
-									tw-col-start-7
-									tw-row-start-2
-									tw-row-span-2
-									tw-order-3
-									tw-h-full
-									tw-flex
-									tw-flex-col
-									lg:tw-col-span-6
-									lg:tw-col-start-auto
-									lg:tw-row-start-auto
-									lg:tw-order-none
-									lg:tw-flex-shrink-0
-									tw-bg-primary
-									tw-rounded
-									tw-px-2
-									tw-py-1.5
-									tw-shadow-lg
-									stats-container
-								"
+								class="tw-col-span-6 tw-col-start-7 tw-row-start-2 tw-row-span-2 tw-order-3 tw-h-full
+									tw-flex tw-flex-col lg:tw-col-span-6 lg:tw-col-start-auto lg:tw-row-start-auto
+									lg:tw-order-none lg:tw-flex-shrink-0 tw-bg-primary tw-rounded tw-px-2 tw-py-1.5
+									tw-shadow-lg stats-container"
 								style="min-width: 155px"
 							>
 								<dd class="stat-def">
@@ -135,9 +118,9 @@
 							</div>
 							<!-- Loans made -->
 							<div
-								class="tw-col-span-6 tw-col-start-1 tw-order-1 lg:tw-col-span-3
-									lg:tw-col-start-auto lg:tw-order-none lg:tw-flex-shrink-0
-									tw-bg-primary tw-rounded tw-px-2 tw-py-1.5 tw-shadow-lg stats-container"
+								class="tw-col-span-6 tw-col-start-1 tw-order-1 lg:tw-col-span-3 lg:tw-col-start-auto
+								lg:tw-order-none lg:tw-flex-shrink-0 tw-bg-primary tw-rounded tw-px-2 tw-py-1.5
+								tw-shadow-lg stats-container"
 								style="min-width: 148px; min-height: 102px"
 							>
 								<dt class="stat-def">
