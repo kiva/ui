@@ -22,15 +22,26 @@
 				:src="HandsPlant"
 				class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
 			>
-
+			<KvLoadingPlaceholder
+				v-if="isLoadingData"
+				class="!tw-w-full !tw-h-10 !tw-rounded tw-mb-1 lg:tw-mb-0"
+			/>
 			<h2
+				v-else
 				class="tw-px-4 lg:tw-px-7 tw-text-center"
+				:class="{ 'tw-mb-1.5 lg:tw-mb-3': !subtitleText }"
 				style="line-height: 125%;"
 				v-html="titleText"
 			>
 			</h2>
 
+			<KvLoadingPlaceholder
+				v-if="isLoadingData || loadingCurrentYear"
+				class="!tw-w-full !tw-h-4 !tw-rounded"
+			/>
+
 			<div
+				v-else-if="subtitleText"
 				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
 			>
 				{{ subtitleText }}
@@ -39,12 +50,11 @@
 			<div
 				class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5 tw-my-1"
 			>
-				<template v-if="loadingCurrentYear">
+				<template v-if="loadingCurrentYear || isLoadingData">
 					<KvLoadingPlaceholder
 						v-for="n in 3"
 						:key="n"
-						class="tw-flex-1 !tw-rounded"
-						style="min-height: 82px;"
+						class="tw-flex-1 !tw-rounded number-option-placeholder"
 					/>
 				</template>
 				<template v-else>
@@ -64,6 +74,7 @@
 				<KvButton
 					class="tw-w-full tw-mt-1.5"
 					@click="handleContinue"
+					:disabled="isLoadingData || loadingCurrentYear"
 				>
 					{{ buttonText }}
 				</KvButton>
@@ -72,6 +83,7 @@
 					variant="ghost"
 					class="edit-goal-button tw-w-full"
 					@click="editGoal"
+					:disabled="isLoadingData || loadingCurrentYear"
 				>
 					{{ editGoalCopy }}
 					<KvMaterialIcon
@@ -200,6 +212,13 @@ const props = defineProps({
 	 * Flag to indicate if the goal has been completed
 	 */
 	isGoalCompleted: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Loading state for goal data (used in GoalSelector after loading goal)
+	 */
+	isLoadingData: {
 		type: Boolean,
 		default: false,
 	},
@@ -514,5 +533,14 @@ watch(() => props.selectedCategoryId, async newCategory => {
 <style lang="postcss" scoped>
 .edit-goal-button :deep(span) {
 	@apply tw-flex;
+}
+
+.number-option-placeholder {
+	min-width: 186px;
+	min-height: 59px;
+
+	@screen lg {
+		min-height: 82px;
+	}
 }
 </style>

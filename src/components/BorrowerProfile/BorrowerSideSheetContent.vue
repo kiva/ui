@@ -27,6 +27,7 @@
 				:weeks-to-repay="weeksToRepay"
 				:current-step="currentStep"
 				:repayments-started="!isFundraising"
+				:is-repaid="isRepaid"
 				no-animation
 			/>
 			<SideSheetLoanHowMoneyHelps />
@@ -80,7 +81,7 @@ import useBorrowerProfileData from '#src/composables/useBorrowerProfileData';
 import logFormatter from '#src/util/logFormatter';
 import { fetchAiLoanPills } from '#src/util/aiLoanPIillsUtils';
 import { addMonths, differenceInWeeks } from 'date-fns';
-import { FUNDRAISING } from '#src/api/fixtures/LoanStatusEnum';
+import { FUNDRAISING, ENDED } from '#src/api/fixtures/LoanStatusEnum';
 import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
 import CommentsAndWhySpecial from './CommentsAndWhySpecial';
 import BorrowerCountry from './BorrowerCountry';
@@ -170,6 +171,7 @@ export default {
 		const loading = computed(() => borrowerProfile?.loading?.value);
 		const isGuest = computed(() => borrowerProfile?.isGuest?.value);
 		const isFundraising = computed(() => loan.value?.status === FUNDRAISING);
+		const isRepaid = computed(() => loan.value?.status === ENDED);
 		const currentStep = computed(() => {
 			if (isFundraising.value) return 1;
 			return 4;
@@ -226,6 +228,7 @@ export default {
 			currentStep,
 			fundraisingPercent,
 			inPfp,
+			isRepaid,
 			isFundraising,
 			isGuest,
 			lenderCount,

@@ -174,6 +174,7 @@ watch(() => [props.loading, props.hideGoalCard], ([newLoading, newHideGoalCard],
 				'set-annual-goal'
 			);
 		} else if (userHasGoal.value && goalProgressPercentage.value !== COMPLETED_GOAL_THRESHOLD) {
+			$kvTrackEvent('portfolio', 'show', props.userGoal.category, props.goalProgress, props.userGoal.target);
 			$kvTrackEvent('portfolio', 'show', 'goal-set', props.userGoal.category, props.userGoal.target);
 		}
 	}

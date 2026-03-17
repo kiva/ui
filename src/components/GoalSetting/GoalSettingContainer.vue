@@ -181,6 +181,7 @@ const {
 	userPreferences,
 	removeGoalFromPreferences,
 	updateCurrentGoal,
+	userGoalAchieved,
 } = useGoalData({ apollo });
 
 const props = defineProps({
@@ -452,6 +453,14 @@ async function handleEmailFlow() {
 	if (newGoalPrefs) {
 		try {
 			await storeGoalPreferences(newGoalPrefs);
+
+			$kvTrackEvent(
+				'event-tracking',
+				'click',
+				'set-annual-goal',
+				category,
+				validEmailTarget.value
+			);
 		} catch (e) {
 			logFormatter('GoalSettingContainer: failed to store email goal', 'error', { error: e });
 			$showTipMsg('There was a problem setting up this goal', 'error');
@@ -475,7 +484,7 @@ const goalTarget = computed(() => {
 });
 
 const isGoalCompleted = computed(() => {
-	return userGoal.value?.status === GOAL_STATUS.COMPLETED;
+	return userGoal.value?.status === GOAL_STATUS.COMPLETED || userGoalAchieved.value;
 });
 
 const backToCopy = computed(() => {

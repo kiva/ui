@@ -339,7 +339,6 @@ import CheckoutHolidayPromo from '#src/components/Checkout/CheckoutHolidayPromo'
 import CheckoutDropInPaymentWrapper from '#src/components/Checkout/CheckoutDropInPaymentWrapper';
 import EmptyBasketCarousel from '#src/components/Checkout/EmptyBasketCarousel';
 import VerifyRemovePromoCredit from '#src/components/Checkout/VerifyRemovePromoCredit';
-import upsellQuery from '#src/graphql/query/checkout/upsellLoans.graphql';
 import UpsellModule from '#src/components/Checkout/UpsellModule';
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import * as Sentry from '@sentry/vue';
@@ -366,6 +365,8 @@ import {
 	getKivaLendingCreditCookie,
 	clearKivaLendingCreditCookie
 } from '#src/util/promoCreditCookie';
+import { FLSS_ORIGIN_CHECKOUT_UPSELL } from '#src/util/flssUtils';
+import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
@@ -1088,13 +1089,15 @@ export default {
 		},
 		getUpsellModuleData(loanId = 0) {
 			this.addedUpsellLoans.push(loanId);
-			this.apollo.query({
-				query: upsellQuery,
-				fetchPolicy: 'network-only',
-			}).then(({ data }) => {
-				this.continueButtonState = 'active';
-				const loans = data?.lend?.loans?.values || [];
-				// Temp solution so we don't show reserved loans on upsell
+			runLoansQuery(
+				this.apollo,
+				{
+					sortBy: 'amountLeft',
+					pageLimit: 20,
+				},
+				FLSS_ORIGIN_CHECKOUT_UPSELL,
+			).then(result => {
+				const loans = result?.loans || [];
 				this.upsellLoan = loans.filter(loan => isLoanFundraising(loan) && !this.addedUpsellLoans.includes(loan.id))[0] || {}; // eslint-disable-line max-len
 			});
 		},
