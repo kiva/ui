@@ -1,7 +1,6 @@
 <template>
 	<async-portfolio-section
 		@visible="fetchStats"
-		v-if="lifetimeDeposits >= 10000"
 		data-testid="lending-insights"
 		class="!tw-bg-secondary !tw-py-5 !tw-mb-3"
 	>
@@ -69,7 +68,7 @@
 							<div
 								class="tw-col-span-12 lg:tw-flex-shrink-0
 									tw-bg-primary stats-percentile-container tw-rounded
-									lg:!tw-py-1.5 lg:!tw-px-2 tw-px-2 tw-py-1 tw-shadow-lg"
+									lg:!tw-py-1.5 lg:!tw-px-1.5 tw-px-2 tw-py-1 tw-shadow-lg"
 								style="min-width: 190px"
 							>
 								<dd class="stat-def">
@@ -120,8 +119,8 @@
 							<div
 								class="tw-col-span-6 tw-col-start-1 tw-order-1 lg:tw-col-span-3 lg:tw-col-start-auto
 								lg:tw-order-none lg:tw-flex-shrink-0 tw-bg-primary tw-rounded tw-px-2 tw-py-1.5
-								tw-min-h-13 tw-shadow-lg stats-container"
-								style="min-width: 148px"
+								!tw-min-h-13 tw-shadow-lg stats-container"
+								style="min-width: 148px;"
 							>
 								<dt class="stat-def">
 									Loans made
@@ -305,7 +304,6 @@ export default {
 			lifetimeCountryCount: 0,
 			lifetimeNumberOfLoans: 0,
 			lifetimePercentile: 0,
-			lifetimeDeposits: 0,
 		};
 	},
 	computed: {
@@ -353,7 +351,6 @@ export default {
 					}`
 				}).then(({ data }) => {
 					const amountOfLoans = numeral(data?.my?.userStats?.amount_of_loans ?? 0);
-					this.lifetimeDeposits = amountOfLoans.value();
 
 					this.lifetimeAmountLent = amountOfLoans.format('$0,0[.]00');
 					this.lifetimeCountryCount = data?.my?.lendingStats?.lentTo?.countries?.totalCount ?? 0;
@@ -462,7 +459,7 @@ export default {
 <style lang="postcss" scoped>
 
 .stats-overall-container {
-	@apply tw-grid tw-grid-cols-12 tw-items-start tw-gap-2;
+	@apply tw-grid tw-grid-cols-12 tw-items-start tw-gap-1;
 }
 
 @screen lg {
@@ -478,7 +475,7 @@ export default {
 .stats-percentile-container {
 	background-image: url('/src/assets/images/my-kiva/peak-bg.png');
 	background-repeat: no-repeat;
-	background-position: right;
+	background-position: right 0px bottom 2px;
 	min-height: 96px;
 }
 
