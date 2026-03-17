@@ -120,8 +120,8 @@
 							<div
 								class="tw-col-span-6 tw-col-start-1 tw-order-1 lg:tw-col-span-3 lg:tw-col-start-auto
 								lg:tw-order-none lg:tw-flex-shrink-0 tw-bg-primary tw-rounded tw-px-2 tw-py-1.5
-								tw-shadow-lg stats-container"
-								style="min-width: 148px; min-height: 102px"
+								tw-min-h-13 tw-shadow-lg stats-container"
+								style="min-width: 148px"
 							>
 								<dt class="stat-def">
 									Loans made
