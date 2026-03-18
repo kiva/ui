@@ -1221,6 +1221,54 @@ describe('useGoalData', () => {
 			// Should still have the first goal in local state
 			expect(composable.userGoal.value.category).toBe(ID_WOMENS_EQUALITY);
 		});
+
+		it('should propagate error when upsertMyKivaGoal fails', async () => {
+			const mockPrefs = {
+				goals: [{
+					goalName: 'goal-to-edit',
+					category: ID_WOMENS_EQUALITY,
+					target: 5,
+					status: GOAL_STATUS.IN_PROGRESS,
+					dateStarted: '2026-01-01',
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: '1',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			const { upsertMyKivaGoal } = await import('#src/util/userPreferenceUtils');
+			upsertMyKivaGoal.mockRejectedValueOnce(new Error('Mutation failed'));
+
+			await expect(composable.storeGoalPreferences({
+				goalName: 'new-goal',
+				category: ID_WOMENS_EQUALITY,
+				target: 5,
+				dateStarted: '2026-01-01T00:00:00Z',
+				status: GOAL_STATUS.IN_PROGRESS,
+			})).rejects.toThrow('Mutation failed');
+
+			// Local state should NOT be updated when mutation fails
+			expect(composable.userGoal.value.category).toBe(ID_WOMENS_EQUALITY);
+		});
 	});
 
 	describe('removeGoalFromPreferences', () => {
@@ -1283,7 +1331,7 @@ describe('useGoalData', () => {
 	});
 
 	describe('updateCurrentGoal', () => {
-		it('should call upsertMyKivaGoal and refresh local state', async () => {
+		it('should update goal category and refresh local state', async () => {
 			const mockPrefs = {
 				goals: [
 					{
@@ -1323,9 +1371,6 @@ describe('useGoalData', () => {
 			expect(composable.userGoal.value.category).toBe(ID_WOMENS_EQUALITY);
 			expect(composable.userGoal.value.target).toBe(5);
 
-			const { upsertMyKivaGoal } = await import('#src/util/userPreferenceUtils');
-			upsertMyKivaGoal.mockClear();
-
 			const previousGoal = { ...mockPrefs.goals[0] };
 			const updatedGoal = {
 				...mockPrefs.goals[0],
@@ -1334,14 +1379,6 @@ describe('useGoalData', () => {
 			};
 
 			await composable.updateCurrentGoal(previousGoal, updatedGoal);
-
-			// Should call upsertMyKivaGoal with updated goal data
-			expect(upsertMyKivaGoal).toHaveBeenCalledWith(mockApollo, {
-				category: ID_CLIMATE_ACTION,
-				target: 15,
-				dateStarted: '2026-01-01',
-				status: GOAL_STATUS.IN_PROGRESS,
-			});
 
 			// Local userGoal state should reflect the updated goal
 			expect(composable.userGoal.value.goalName).toBe('goal-to-edit');
@@ -1405,56 +1442,6 @@ describe('useGoalData', () => {
 			expect(composable.userGoal.value.category).toBe(ID_SUPPORT_ALL);
 			// Validate the new progress is user total loans
 			expect(composable.goalProgress.value).toBe(yearlyLoanCount);
-		});
-
-		it('should propagate error when upsertMyKivaGoal fails', async () => {
-			const mockPrefs = {
-				goals: [{
-					goalName: 'goal-to-edit',
-					category: ID_WOMENS_EQUALITY,
-					target: 5,
-					status: GOAL_STATUS.IN_PROGRESS,
-					dateStarted: '2026-01-01',
-				}],
-			};
-
-			mockApollo.query = vi.fn()
-				.mockResolvedValueOnce({
-					data: {
-						my: {
-							userPreferences: {
-								id: '1',
-								preferences: JSON.stringify(mockPrefs),
-							},
-							loans: { totalCount: 0 },
-						},
-					},
-				})
-				.mockResolvedValueOnce({
-					data: {
-						userAchievementProgress: {
-							tieredLendingAchievements: [],
-						},
-					},
-				});
-
-			await composable.loadGoalData();
-
-			const { upsertMyKivaGoal } = await import('#src/util/userPreferenceUtils');
-			upsertMyKivaGoal.mockRejectedValueOnce(new Error('Mutation failed'));
-
-			const previousGoal = { ...mockPrefs.goals[0] };
-			const updatedGoal = {
-				...mockPrefs.goals[0],
-				category: ID_CLIMATE_ACTION,
-				target: 15,
-			};
-
-			await expect(composable.updateCurrentGoal(previousGoal, updatedGoal))
-				.rejects.toThrow('Mutation failed');
-
-			// Local state should NOT be updated when mutation fails
-			expect(composable.userGoal.value.category).toBe(ID_WOMENS_EQUALITY);
 		});
 	});
 

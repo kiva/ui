@@ -563,8 +563,17 @@ export default function useGoalData({ apollo } = {}) {
 	 * @param {Object} previousGoal - Previous goal data to identify which goal to remove
 	 * @param {Object} updatedGoal - Updated goal data to replace the previous goal with
 	 */
-	async function updateCurrentGoal(_previousGoal, updatedGoal) {
+	async function updateCurrentGoal(previousGoal, updatedGoal) {
 		loading.value = true;
+		// Load preferences to ensure goals information is up to date before modiying it
+		// preventing the use case where the previous goal was not updated in the cache
+		await loadPreferences('network-only');
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+		const goals = parsedPrefs.goals || [];
+		const goalIndex = goals.findIndex(g => g.goalName === previousGoal.goalName);
+		if (goalIndex !== -1) {
+			goals[goalIndex] = { ...updatedGoal };
+		}
 
 		// If the updated category is support-all and using yearly progress is true,
 		// we need to load the latest yearly loan count to set accurate progress
@@ -573,12 +582,12 @@ export default function useGoalData({ apollo } = {}) {
 			yearlyLoanCount.value = stats?.count || 0;
 		}
 
-		await upsertMyKivaGoal(apolloClient, {
-			category: updatedGoal.category,
-			target: updatedGoal.target,
-			dateStarted: updatedGoal.dateStarted,
-			status: updatedGoal.status,
-		});
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			{ goals }
+		);
 		loading.value = false;
 
 		setGoalState(updatedGoal); // Refresh local state after update
