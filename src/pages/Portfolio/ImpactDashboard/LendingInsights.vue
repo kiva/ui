@@ -591,13 +591,15 @@ export default {
 }
 
 /* Custom breakpoint for 1024-1096px to reduce container sizes and prevent overflow */
-@media (min-width: 1024px) and (max-width: 1096px) {
+@media (width >= 1024px) and (width <= 1096px) {
 	.stats-percentile-container {
 		min-width: 165px !important;
 	}
+
 	.stats-overall-container > div:nth-child(2) {
 		min-width: 140px !important;
 	}
+
 	.stats-overall-container > div:nth-child(3),
 	.stats-overall-container > div:nth-child(4) {
 		min-width: 106px !important;
@@ -611,7 +613,7 @@ export default {
 .stats-percentile-container {
 	background-image: url('/src/assets/images/my-kiva/peak-bg.png');
 	background-repeat: no-repeat;
-	background-position: right 0px bottom 2px;
+	background-position: right 0 bottom 2px;
 	min-height: 96px;
 }
 
