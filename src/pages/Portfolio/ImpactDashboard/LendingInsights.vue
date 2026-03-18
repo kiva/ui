@@ -272,7 +272,7 @@
 import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import getCacheKey from '#src/util/getCacheKey';
-import { mdiClockOutline } from '@mdi/js';
+import { mdiArrowRight, mdiClockOutline } from '@mdi/js';
 import {
 	KvGrid, KvLoadingPlaceholder, KvMaterialIcon, KvTab, KvTabs, KvTabPanel,
 } from '@kiva/kv-components';
@@ -294,6 +294,7 @@ export default {
 	serverCacheKey: () => getCacheKey('LendingInsights'),
 	data() {
 		return {
+			mdiArrowRight,
 			mdiClockOutline,
 			loading: true,
 			loadingPromise: null,
@@ -327,6 +328,10 @@ export default {
 		},
 		bannerDescription() {
 			return this.mobileTabletLayout ? 'New!' : 'New! Filter by this year';
+		},
+		lifetimeAmountLentOver10K() {
+			const amount = parseFloat(this.lifetimeAmountLent.replace(/[$,]/g, '')) || 0;
+			return amount >= 10000;
 		},
 	},
 	methods: {
