@@ -1,5 +1,80 @@
 <template>
 	<async-portfolio-section
+		v-if="!lifetimeAmountLentOver10K"
+		@visible="fetchLifetimeStats"
+		data-testid="lending-insights"
+		class="!tw-bg-eco-green-4"
+	>
+		<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-white tw-text-center md:tw-text-left">
+			Your lending insights
+		</h2>
+		<kv-grid as="dl" class="default-stats-container">
+			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+				<kv-loading-placeholder v-if="loading" class="default-stat-placeholder" style="width: 7rem;" />
+				<dt v-show="!loading" class="default-stat-value">
+					{{ lifetimeAmountLent }}
+				</dt>
+				<dd class="default-stat-def">
+					Total amount lent
+				</dd>
+				<router-link
+					class="default-stat-link"
+					to="/portfolio/loans"
+					v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
+				>
+					My loans
+					<kv-material-icon
+						class="tw-ml-0.5 tw-w-2 tw-h-2"
+						:icon="mdiArrowRight"
+					/>
+				</router-link>
+			</div>
+			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+				<kv-loading-placeholder
+					v-if="loading"
+					class="default-stat-placeholder"
+					style="width: 4rem;"
+				/>
+				<dd v-else class="default-stat-value">
+					{{ $filters.numeral(lifetimeNumberOfLoans, '0,0') }}
+				</dd>
+				<dt class="default-stat-def">
+					Loans made
+				</dt>
+			</div>
+			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+				<kv-loading-placeholder v-if="loading" class="default-stat-placeholder" style="width: 4rem;" />
+				<dt v-show="!loading" class="default-stat-value">
+					{{ lifetimeCountryCount }}
+				</dt>
+				<dd class="default-stat-def">
+					Countries supported
+				</dd>
+				<router-link
+					class="default-stat-link"
+					to="/portfolio/lending-stats"
+					v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
+				>
+					Lending stats
+					<kv-material-icon
+						class="tw-ml-0.5 tw-w-2 tw-h-2"
+						:icon="mdiArrowRight"
+					/>
+				</router-link>
+			</div>
+			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
+				<kv-loading-placeholder v-if="loading" class="default-stat-placeholder" style="width: 7rem;" />
+				<dt v-show="!loading" class="default-stat-value">
+					{{ lifetimePercentile }}
+				</dt>
+				<dd class="default-stat-def">
+					Lending percentile
+				</dd>
+			</div>
+		</kv-grid>
+	</async-portfolio-section>
+	<async-portfolio-section
+		v-else
 		@visible="fetchStats"
 		data-testid="lending-insights"
 		class="!tw-bg-secondary !tw-py-5 !tw-mb-3"
@@ -330,7 +405,11 @@ export default {
 			return this.mobileTabletLayout ? 'New!' : 'New! Filter by this year';
 		},
 		lifetimeAmountLentOver10K() {
-			const amount = parseFloat(this.lifetimeAmountLent.replace(/[$,]/g, '')) || 0;
+			if (!this.lifetimeAmountLent || this.loading) {
+				return null;
+			}
+			const amountStr = String(this.lifetimeAmountLent);
+			const amount = parseFloat(amountStr.replace(/[$,]/g, '')) || 0;
 			return amount >= 10000;
 		},
 	},
@@ -558,16 +637,6 @@ export default {
 	@apply tw-block tw-text-right tw-text-action tw-font-medium tw-no-underline;
 }
 
-.tab-header {
-	@apply tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left tw-text-base tw-font-medium tw-mb-1;
-
-	font-weight: 621;
-}
-
-.ytd-loader {
-	height: 31.5rem;
-}
-
 @screen md {
 	.stat-placeholder {
 		height: 44px;
@@ -595,4 +664,79 @@ export default {
 		}
 	}
 }
+
+.default-stats-container {
+    background-color: rgb(255 255 255 / 5%);
+    @apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center;
+}
+
+.default-stats-container-exp {
+    @apply tw-grid-cols-12 tw-gap-y-4 tw-p-2.5 tw-rounded tw-text-center tw-bg-eco-green-4 tw-items-center;
+}
+
+.default-stat-placeholder {
+    @apply tw-mt-1 tw-h-4.5 tw-mx-auto tw-mb-0.5;
+}
+
+.default-stat-value {
+    @apply tw-text-h2 tw-text-eco-green-2 tw-pb-0.5;
+}
+
+.default-stat-def {
+    @apply tw-mb-0.5 tw-text-white;
+}
+
+@screen md {
+    .default-stat-def, .default-stat-link {
+        @apply tw-text-small;
+    }
+}
+
+.default-stat-link {
+    @apply tw-inline-flex tw-justify-center tw-items-center tw-text-eco-green-2 tw-font-medium;
+}
+
+.tab-header {
+    @apply tw-text-eco-green-4 tw-cursor-pointer tw-text-center md:tw-text-left tw-text-base tw-font-medium tw-mb-1;
+
+    font-weight: 621;
+}
+
+.ytd-loader {
+    height: 31.5rem;
+}
+
+@screen md {
+    .default-stat-placeholder {
+        height: 44px;
+        margin-bottom: 10.5px;
+    }
+
+    .ytd-loader {
+        height: 20.4rem;
+    }
+}
+
+@screen lg {
+    .default-stat-placeholder {
+        margin-bottom: 11.5px;
+        @apply tw-h-4;
+    }
+
+    .ytd-loader {
+        height: 9.5rem;
+    }
+
+    #kv-tab-panel-ytd {
+        .default-stat-def,
+        .default-stat-link {
+            @apply tw-text-small
+        }
+
+        .default-stat-link span {
+            @apply tw-w-3.5 tw-h-2;
+        }
+    }
+}
+
 </style>
