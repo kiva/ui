@@ -123,10 +123,7 @@ describe('dataUtils.js', () => {
 			const result = await runLoansQuery(apollo, mockState, origin);
 			expect(spyFetchLoans).toHaveBeenCalledWith(
 				apollo,
-				{
-					...getFlssFilters(mockState),
-					amountLeft: {},
-				},
+				getFlssFilters(mockState),
 				mockState.sortBy,
 				mockState.pageOffset,
 				mockState.pageLimit,
@@ -351,30 +348,6 @@ describe('dataUtils.js', () => {
 	});
 
 	describe('runLoansQuery edge cases', () => {
-		it('should pass through amountLeft when provided', async () => {
-			const amountLeft = { gte: 25, lte: 100 };
-			const stateWithAmountLeft = { ...mockState, amountLeft };
-			const spyFetchLoans = vi.spyOn(flssUtils, 'fetchLoans')
-				.mockResolvedValue({ values: [], totalCount: 0 });
-
-			const apollo = {};
-			await runLoansQuery(apollo, stateWithAmountLeft, 'web:test');
-
-			expect(spyFetchLoans).toHaveBeenCalledWith(
-				apollo,
-				{
-					...getFlssFilters(stateWithAmountLeft),
-					amountLeft,
-				},
-				stateWithAmountLeft.sortBy,
-				stateWithAmountLeft.pageOffset,
-				stateWithAmountLeft.pageLimit,
-				'web:test',
-			);
-
-			spyFetchLoans.mockRestore();
-		});
-
 		it('should filter out null loans from results', async () => {
 			const spyFetchLoans = vi.spyOn(flssUtils, 'fetchLoans')
 				.mockResolvedValue({

@@ -366,7 +366,7 @@ import {
 	clearKivaLendingCreditCookie
 } from '#src/util/promoCreditCookie';
 import { FLSS_ORIGIN_CHECKOUT_UPSELL } from '#src/util/flssUtils';
-import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
+import { runLoansQuery, runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
@@ -1103,19 +1103,21 @@ export default {
 			);
 		},
 		getLoansByAmountLeftRange(start, end) {
-			return runLoansQuery(
+			return runRecommendationsQuery(
 				this.apollo,
 				{
-					amountLeft: {
-						range: {
-							gte: start,
-							lte: end,
-						}
+					filterObject: {
+						amountLeft: {
+							range: {
+								gte: start,
+								lte: end,
+							}
+						},
 					},
 					sortBy: 'amountLeft',
-					pageLimit: 20,
+					limit: 20,
+					origin: FLSS_ORIGIN_CHECKOUT_UPSELL,
 				},
-				FLSS_ORIGIN_CHECKOUT_UPSELL,
 			);
 		},
 		getUpsellModuleData(loanId = 0) {
