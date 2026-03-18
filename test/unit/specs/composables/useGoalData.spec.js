@@ -16,7 +16,7 @@ vi.mock('#src/util/logFormatter', () => ({
 vi.mock('#src/util/userPreferenceUtils', () => ({
 	createUserPreferences: vi.fn(() => Promise.resolve({ id: 'new-pref-id' })),
 	updateUserPreferences: vi.fn(() => Promise.resolve()),
-	upsertMyKivaGoal: vi.fn(() => Promise.resolve()),
+	setMyKivaGoal: vi.fn(() => Promise.resolve()),
 }));
 
 describe('GOALS_V2_START_YEAR', () => {
@@ -1164,12 +1164,12 @@ describe('useGoalData', () => {
 	});
 
 	describe('storeGoalPreferences', () => {
-		it('should call upsertMyKivaGoal with goal data', async () => {
+		it('should call setMyKivaGoal with goal data', async () => {
 			const {
-				upsertMyKivaGoal,
+				setMyKivaGoal,
 			} = await import('#src/util/userPreferenceUtils');
 
-			upsertMyKivaGoal.mockClear();
+			setMyKivaGoal.mockClear();
 			await composable.storeGoalPreferences({
 				goalName: 'new-goal',
 				category: ID_WOMENS_EQUALITY,
@@ -1178,7 +1178,7 @@ describe('useGoalData', () => {
 				status: GOAL_STATUS.IN_PROGRESS,
 			});
 
-			expect(upsertMyKivaGoal).toHaveBeenCalledWith(mockApollo, {
+			expect(setMyKivaGoal).toHaveBeenCalledWith(mockApollo, {
 				category: ID_WOMENS_EQUALITY,
 				target: 5,
 				dateStarted: '2026-01-01T00:00:00Z',
@@ -1222,7 +1222,7 @@ describe('useGoalData', () => {
 			expect(composable.userGoal.value.category).toBe(ID_WOMENS_EQUALITY);
 		});
 
-		it('should propagate error when upsertMyKivaGoal fails', async () => {
+		it('should propagate error when setMyKivaGoal fails', async () => {
 			const mockPrefs = {
 				goals: [{
 					goalName: 'goal-to-edit',
@@ -1255,8 +1255,8 @@ describe('useGoalData', () => {
 
 			await composable.loadGoalData();
 
-			const { upsertMyKivaGoal } = await import('#src/util/userPreferenceUtils');
-			upsertMyKivaGoal.mockRejectedValueOnce(new Error('Mutation failed'));
+			const { setMyKivaGoal } = await import('#src/util/userPreferenceUtils');
+			setMyKivaGoal.mockRejectedValueOnce(new Error('Mutation failed'));
 
 			await expect(composable.storeGoalPreferences({
 				goalName: 'new-goal',
@@ -1575,7 +1575,7 @@ describe('useGoalData', () => {
 
 		it('should not mark completed if goal already completed', async () => {
 			const {
-				upsertMyKivaGoal,
+				setMyKivaGoal,
 			} = await import('#src/util/userPreferenceUtils');
 
 			const mockPrefs = {
@@ -1610,16 +1610,16 @@ describe('useGoalData', () => {
 				});
 
 			await composable.loadGoalData();
-			upsertMyKivaGoal.mockClear();
+			setMyKivaGoal.mockClear();
 			await composable.checkCompletedGoal();
 
-			expect(upsertMyKivaGoal).not.toHaveBeenCalled();
+			expect(setMyKivaGoal).not.toHaveBeenCalled();
 			expect(composable.userGoalAchievedNow.value).toBe(false);
 		});
 
 		it('should not mark completed if goal not achieved', async () => {
 			const {
-				upsertMyKivaGoal,
+				setMyKivaGoal,
 			} = await import('#src/util/userPreferenceUtils');
 
 			const mockPrefs = {
@@ -1652,10 +1652,10 @@ describe('useGoalData', () => {
 				});
 
 			await composable.loadGoalData();
-			upsertMyKivaGoal.mockClear();
+			setMyKivaGoal.mockClear();
 			await composable.checkCompletedGoal();
 
-			expect(upsertMyKivaGoal).not.toHaveBeenCalled();
+			expect(setMyKivaGoal).not.toHaveBeenCalled();
 			expect(composable.userGoalAchievedNow.value).toBe(false);
 		});
 	});
@@ -2184,7 +2184,7 @@ describe('useGoalData', () => {
 
 	describe('correctNegativeProgress (via loadGoalData)', () => {
 		it('should correct loanTotalAtStart when all-time progress is less than baseline', async () => {
-			const { upsertMyKivaGoal } = await import('#src/util/userPreferenceUtils');
+			const { setMyKivaGoal } = await import('#src/util/userPreferenceUtils');
 
 			const mockPrefs = {
 				goals: [{
@@ -2222,12 +2222,12 @@ describe('useGoalData', () => {
 					},
 				});
 
-			upsertMyKivaGoal.mockClear();
+			setMyKivaGoal.mockClear();
 			await composable.loadGoalData({ yearlyProgress: false });
 
 			// Should correct loanTotalAtStart from 50 to 40 (current allTimeProgress)
-			// storeGoalPreferences now uses upsertMyKivaGoal which only sends category, target, dateStarted, status
-			expect(upsertMyKivaGoal).toHaveBeenCalledWith(
+			// storeGoalPreferences now uses setMyKivaGoal which only sends category, target, dateStarted, status
+			expect(setMyKivaGoal).toHaveBeenCalledWith(
 				mockApollo,
 				expect.objectContaining({
 					category: ID_WOMENS_EQUALITY,
@@ -2357,7 +2357,7 @@ describe('useGoalData', () => {
 
 		it('should return empty expiredGoals when there were no previous goals', async () => {
 			const {
-				upsertMyKivaGoal,
+				setMyKivaGoal,
 			} = await import('#src/util/userPreferenceUtils');
 
 			mockApollo.query = vi.fn().mockResolvedValue({
@@ -2371,7 +2371,7 @@ describe('useGoalData', () => {
 				},
 			});
 
-			upsertMyKivaGoal.mockClear();
+			setMyKivaGoal.mockClear();
 			const today = new Date('2026-06-01T00:00:00Z');
 			const updatedGoals = await composable.renewAnnualGoal(today);
 
@@ -2379,7 +2379,7 @@ describe('useGoalData', () => {
 				expiredGoals: [],
 				showRenewedAnnualGoalToast: false,
 			});
-			expect(upsertMyKivaGoal).not.toHaveBeenCalled();
+			expect(setMyKivaGoal).not.toHaveBeenCalled();
 		});
 	});
 
@@ -2962,7 +2962,7 @@ describe('useGoalData', () => {
 
 		it('should fix incorrectly completed support-all goal when yearly loan count is less than target', async () => {
 			const {
-				upsertMyKivaGoal,
+				setMyKivaGoal,
 			} = await import('#src/util/userPreferenceUtils');
 
 			const mockPrefs = {
@@ -3002,11 +3002,11 @@ describe('useGoalData', () => {
 					},
 				});
 
-			upsertMyKivaGoal.mockClear();
+			setMyKivaGoal.mockClear();
 			const result = await composable.fixIncorrectlyCompletedGoals();
 
 			expect(result).toEqual({ wasFixed: true });
-			expect(upsertMyKivaGoal).toHaveBeenCalledWith(
+			expect(setMyKivaGoal).toHaveBeenCalledWith(
 				mockApollo,
 				{
 					category: ID_SUPPORT_ALL,
@@ -3022,7 +3022,7 @@ describe('useGoalData', () => {
 
 		it('should fix incorrectly completed category goal when yearly progress is less than target', async () => {
 			const {
-				upsertMyKivaGoal,
+				setMyKivaGoal,
 			} = await import('#src/util/userPreferenceUtils');
 
 			const mockPrefs = {
@@ -3059,11 +3059,11 @@ describe('useGoalData', () => {
 					},
 				});
 
-			upsertMyKivaGoal.mockClear();
+			setMyKivaGoal.mockClear();
 			const result = await composable.fixIncorrectlyCompletedGoals();
 
 			expect(result).toEqual({ wasFixed: true });
-			expect(upsertMyKivaGoal).toHaveBeenCalledWith(
+			expect(setMyKivaGoal).toHaveBeenCalledWith(
 				mockApollo,
 				{
 					category: ID_WOMENS_EQUALITY,
@@ -3079,7 +3079,7 @@ describe('useGoalData', () => {
 
 		it('should fix hidden in-progress goal when progress is below target', async () => {
 			const {
-				upsertMyKivaGoal,
+				setMyKivaGoal,
 			} = await import('#src/util/userPreferenceUtils');
 
 			const mockPrefs = {
@@ -3120,11 +3120,11 @@ describe('useGoalData', () => {
 					},
 				});
 
-			upsertMyKivaGoal.mockClear();
+			setMyKivaGoal.mockClear();
 			const result = await composable.fixIncorrectlyCompletedGoals();
 
 			expect(result).toEqual({ wasFixed: true });
-			expect(upsertMyKivaGoal).toHaveBeenCalledWith(
+			expect(setMyKivaGoal).toHaveBeenCalledWith(
 				mockApollo,
 				{
 					category: ID_SUPPORT_ALL,
@@ -3269,7 +3269,7 @@ describe('useGoalData', () => {
 
 		it('should still fix incorrectly completed goal when fresh progress is not enough to meet target', async () => {
 			const {
-				upsertMyKivaGoal,
+				setMyKivaGoal,
 			} = await import('#src/util/userPreferenceUtils');
 
 			const mockPrefs = {
@@ -3323,7 +3323,7 @@ describe('useGoalData', () => {
 				{ loan: { id: 5 }, effectiveTime: '2026-02-15T00:00:00Z', createTime: '2026-02-15T00:00:00Z' },
 			];
 
-			upsertMyKivaGoal.mockClear();
+			setMyKivaGoal.mockClear();
 			const result = await composable.fixIncorrectlyCompletedGoals({
 				freshProgressLoans,
 				tieredAchievements,
@@ -3332,8 +3332,8 @@ describe('useGoalData', () => {
 
 			// Even with adjustment: 3 + 1 = 4 < target of 10, so goal is incorrectly completed
 			expect(result).toEqual({ wasFixed: true });
-			// fixIncorrectlyCompletedGoals now uses upsertMyKivaGoal directly
-			expect(upsertMyKivaGoal).toHaveBeenCalledWith(
+			// fixIncorrectlyCompletedGoals now uses setMyKivaGoal directly
+			expect(setMyKivaGoal).toHaveBeenCalledWith(
 				mockApollo,
 				{
 					category: ID_WOMENS_EQUALITY,

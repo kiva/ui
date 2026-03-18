@@ -83,7 +83,7 @@ export const updateUserPreferences = async (apollo, userPreferences, parsedPrefe
  * @param {string} goalData.status The goal status
  * @returns The result of the mutation
  */
-export const upsertMyKivaGoal = async (apollo, {
+export const setMyKivaGoal = async (apollo, {
 	category, target, dateStarted, status
 }) => {
 	return apollo.mutate({

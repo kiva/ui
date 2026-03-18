@@ -10,7 +10,7 @@ import useGoalDataYearlyProgressQuery from '#src/graphql/query/useGoalDataYearly
 import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import logFormatter from '#src/util/logFormatter';
 import { getTransactionTimestamp } from '#src/util/myKivaUtils';
-import { updateUserPreferences, upsertMyKivaGoal } from '#src/util/userPreferenceUtils';
+import { updateUserPreferences, setMyKivaGoal } from '#src/util/userPreferenceUtils';
 
 import useBadgeData, {
 	calculateFreshProgressAdjustments,
@@ -600,7 +600,7 @@ export default function useGoalData({ apollo } = {}) {
 	 *   Set to false when you want to delay the UI update (e.g., until modal closes)
 	 */
 	async function storeGoalPreferences(updates, updateLocalState = true) {
-		await upsertMyKivaGoal(apolloClient, {
+		await setMyKivaGoal(apolloClient, {
 			category: updates.category,
 			target: updates.target,
 			dateStarted: updates.dateStarted,
@@ -761,7 +761,7 @@ export default function useGoalData({ apollo } = {}) {
 		}).filter(goal => goal !== null);
 
 		if (expiredGoals.length) {
-			upsertMyKivaGoal(apolloClient, {
+			setMyKivaGoal(apolloClient, {
 				category: expiredGoals[0].category,
 				target: expiredGoals[0].target,
 				dateStarted: expiredGoals[0].dateStarted,
@@ -855,7 +855,7 @@ export default function useGoalData({ apollo } = {}) {
 			...goalToFix,
 			status: GOAL_STATUS.IN_PROGRESS,
 		};
-		await upsertMyKivaGoal(apolloClient, {
+		await setMyKivaGoal(apolloClient, {
 			category: fixedGoal.category,
 			target: fixedGoal.target,
 			dateStarted: fixedGoal.dateStarted,
