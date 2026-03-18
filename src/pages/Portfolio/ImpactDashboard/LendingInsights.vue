@@ -468,6 +468,20 @@ export default {
 	}
 }
 
+/* Custom breakpoint for 1024-1096px to reduce container sizes and prevent overflow */
+@media (min-width: 1024px) and (max-width: 1096px) {
+	.stats-percentile-container {
+		min-width: 165px !important;
+	}
+	.stats-overall-container > div:nth-child(2) {
+		min-width: 140px !important;
+	}
+	.stats-overall-container > div:nth-child(3),
+	.stats-overall-container > div:nth-child(4) {
+		min-width: 106px !important;
+	}
+}
+
 .stats-container {
 	min-height: 96px;
 }
