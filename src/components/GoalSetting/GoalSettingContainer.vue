@@ -345,13 +345,8 @@ const recalculateGoalInformation = async () => {
 };
 
 const updateGoal = async preferences => {
-	try {
-		await updateCurrentGoal(userGoal.value, preferences);
-		await recalculateGoalInformation();
-	} catch (e) {
-		logFormatter('GoalSettingContainer: failed to updating this goal', 'error', { error: e });
-		$showTipMsg('There was a problem updating this goal', 'error');
-	}
+	await updateCurrentGoal(userGoal.value, preferences);
+	await recalculateGoalInformation();
 };
 
 const setGoal = async preferences => {

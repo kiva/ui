@@ -461,23 +461,24 @@ export default {
 			// For goalsV2, pass false to not update local state yet
 			// This delays the UI update until the modal is closed
 			const updateLocalState = !this.goalsV2Enabled;
-			try {
-				if (this.isUpdatingGoal) {
-					await this.updateCurrentGoal(this.userGoal, preferences);
-					this.$kvTrackEvent(
-						'portfolio',
-						'click',
-						'confirm-edit-goal'
-					);
-				} else {
+
+			if (this.isUpdatingGoal) {
+				await this.updateCurrentGoal(this.userGoal, preferences);
+				this.$kvTrackEvent(
+					'portfolio',
+					'click',
+					'confirm-edit-goal'
+				);
+			} else {
+				try {
 					await this.storeGoalPreferences(preferences, updateLocalState);
+				} catch (error) {
+					this.$showTipMsg('There was a problem setting up your goal', 'error');
+					logReadQueryError(error, 'MyKivaPage setting up goal');
+					return;
 				}
-			} catch (error) {
-				const msg = this.isUpdatingGoal ? 'updating' : 'setting up';
-				this.$showTipMsg(`There was a problem ${msg} your goal`, 'error');
-				logReadQueryError(error, `MyKivaPage ${msg} goal`);
-				return;
 			}
+
 			this.newGoalPrefs = preferences;
 			this.isGoalSet = true;
 			if (!this.goalsV2Enabled) {
