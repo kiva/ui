@@ -73,7 +73,7 @@ export const updateUserPreferences = async (apollo, userPreferences, parsedPrefe
 };
 
 /**
- * Upserts a My Kiva goal using the setMyKivaGoal mutation
+ * Set a My Kiva goal using the setMyKivaGoal mutation
  *
  * @param apollo The current Apollo client
  * @param {Object} goalData The goal data to upsert
