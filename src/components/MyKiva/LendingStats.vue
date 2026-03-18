@@ -463,7 +463,7 @@ export default {
 			const updateLocalState = !this.goalsV2Enabled;
 			try {
 				if (this.isUpdatingGoal) {
-					await this.updateCurrentGoal(preferences);
+					await this.updateCurrentGoal(this.userGoal, preferences);
 					this.$kvTrackEvent(
 						'portfolio',
 						'click',

@@ -346,7 +346,7 @@ const recalculateGoalInformation = async () => {
 
 const updateGoal = async preferences => {
 	try {
-		await updateCurrentGoal(preferences);
+		await updateCurrentGoal(userGoal.value, preferences);
 		await recalculateGoalInformation();
 	} catch (e) {
 		logFormatter('GoalSettingContainer: failed to updating this goal', 'error', { error: e });
