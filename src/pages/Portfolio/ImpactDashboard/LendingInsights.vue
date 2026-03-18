@@ -4,7 +4,10 @@
 		data-testid="lending-insights"
 		class="!tw-bg-secondary !tw-py-5 !tw-mb-3"
 	>
-		<div class="tw-flex tw-items-center tw-justify-end tw-gap-3 tw-mb-1 md:tw-mb-2 lg:tw-hidden">
+		<div
+			v-if="showNewBanner"
+			class="tw-flex tw-items-center tw-justify-end tw-gap-3 tw-mb-1 md:tw-mb-2 lg:tw-hidden"
+		>
 			<div
 				class="tw-inline-flex tw-px-1 tw-py-0.5 tw-items-center
 					tw-rounded-sm tw-bg-caution tw-border tw-border-caution"
@@ -13,14 +16,14 @@
 					class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0"
 					style="line-height: normal;"
 				>
-					New! Filter by year
+					{{ bannerDescription }}
 				</p>
 			</div>
 		</div>
 		<div>
 			<kv-tabs @tab-changed="setActiveTab">
 				<template #tabNav>
-					<div class="tw-flex tw-items-center tw-justify-between tw-w-full md:tw-flex-col md:tw-items-start">
+					<div class="tw-flex tw-items-center tw-justify-between tw-w-full lg:tw-flex-col lg:tw-items-start">
 						<h2 class="tw-text-h3 tw-mb-1 md:tw-mb-2 tw-text-eco-green-4 tw-text-center md:tw-text-left">
 							Your lending insights
 						</h2>
@@ -40,14 +43,15 @@
 								Lifetime
 							</kv-tab>
 							<div
+								v-if="showNewBanner"
 								class="tw-hidden lg:tw-inline-flex tw-px-1 tw-py-0.5 tw-items-center tw--mt-1
-								tw-rounded-sm tw-bg-caution tw-border tw-border-caution"
+									tw-rounded-sm tw-bg-caution tw-border tw-border-caution"
 							>
 								<p
 									class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0"
 									style="line-height: normal;"
 								>
-									New! Filter by year
+									{{ bannerDescription }}
 								</p>
 							</div>
 						</div>
@@ -304,6 +308,8 @@ export default {
 			lifetimeCountryCount: 0,
 			lifetimeNumberOfLoans: 0,
 			lifetimePercentile: 0,
+			showNewBanner: true,
+			windowWidth: 1024,
 		};
 	},
 	computed: {
@@ -316,8 +322,28 @@ export default {
 			const currentYear = new Date().getFullYear();
 			return currentYear;
 		},
+		mobileTabletLayout() {
+			return this.windowWidth < 1024;
+		},
+		bannerDescription() {
+			return this.mobileTabletLayout ? 'New!' : 'New! Filter by this year';
+		},
 	},
 	methods: {
+		handleResize() {
+			this.windowWidth = window.innerWidth;
+		},
+		checkBannerVisibility() {
+			if (typeof window !== 'undefined' && window.localStorage) {
+				const visitCount = parseInt(localStorage.getItem('lendingInsightsVisits') || '0', 10);
+				const newVisitCount = visitCount + 1;
+
+				localStorage.setItem('lendingInsightsVisits', newVisitCount.toString());
+
+				// Hide banner after third visit/page refresh
+				this.showNewBanner = newVisitCount < 3;
+			}
+		},
 		setActiveTab(tab) {
 			if (tab === 'ytd' || tab === 0) {
 				this.$kvTrackEvent(
@@ -452,6 +478,18 @@ export default {
 				});
 			}
 		},
+	},
+	mounted() {
+		if (typeof window !== 'undefined') {
+			this.windowWidth = window.innerWidth;
+			window.addEventListener('resize', this.handleResize);
+			this.checkBannerVisibility();
+		}
+	},
+	beforeUnmount() {
+		if (typeof window !== 'undefined') {
+			window.removeEventListener('resize', this.handleResize);
+		}
 	},
 };
 </script>
