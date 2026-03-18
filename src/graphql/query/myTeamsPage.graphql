@@ -1,0 +1,20 @@
+query myTeamsPage($offset: Int, $limit: Int) {
+	my {
+		id
+		teams(offset: $offset, limit: $limit) {
+			totalCount
+			values {
+				id
+				team {
+					id
+					name
+					teamPublicId
+					image {
+						id
+						url(customSize: "s100")
+					}
+				}
+			}
+		}
+	}
+}
