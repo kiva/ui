@@ -188,14 +188,6 @@ export default [
 		component: () => import('#src/pages/LendingTeams/LendingTeams')
 	},
 	{
-		path: '/teams/my-teams',
-		component: () => import('#src/pages/LendingTeams/MyTeamsPage'),
-		meta: {
-			authenticationRequired: true,
-			excludeFromStaticSitemap: true,
-		}
-	},
-	{
 		path: '/teams/my-teams-beta',
 		component: () => import('#src/pages/LendingTeams/MyTeamsPage'),
 		meta: {
