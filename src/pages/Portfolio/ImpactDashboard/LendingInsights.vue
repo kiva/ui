@@ -8,17 +8,17 @@
 		<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-white tw-text-center md:tw-text-left">
 			Your lending insights
 		</h2>
-		<kv-grid as="dl" class="default-stats-container">
+		<kv-grid as="dl" class="stats-container">
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
-				<kv-loading-placeholder v-if="loading" class="default-stat-placeholder" style="width: 7rem;" />
-				<dt v-show="!loading" class="default-stat-value">
+				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
+				<dt v-show="!loading" class="stat-value">
 					{{ lifetimeAmountLent }}
 				</dt>
-				<dd class="default-stat-def">
+				<dd class="stat-def">
 					Total amount lent
 				</dd>
 				<router-link
-					class="default-stat-link"
+					class="stat-link"
 					to="/portfolio/loans"
 					v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
 				>
@@ -32,26 +32,26 @@
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder
 					v-if="loading"
-					class="default-stat-placeholder"
+					class="stat-placeholder"
 					style="width: 4rem;"
 				/>
-				<dd v-else class="default-stat-value">
+				<dd v-else class="stat-value">
 					{{ $filters.numeral(lifetimeNumberOfLoans, '0,0') }}
 				</dd>
-				<dt class="default-stat-def">
+				<dt class="stat-def">
 					Loans made
 				</dt>
 			</div>
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
-				<kv-loading-placeholder v-if="loading" class="default-stat-placeholder" style="width: 4rem;" />
-				<dt v-show="!loading" class="default-stat-value">
+				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 4rem;" />
+				<dt v-show="!loading" class="stat-value">
 					{{ lifetimeCountryCount }}
 				</dt>
-				<dd class="default-stat-def">
+				<dd class="stat-def">
 					Countries supported
 				</dd>
 				<router-link
-					class="default-stat-link"
+					class="stat-link"
 					to="/portfolio/lending-stats"
 					v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
 				>
@@ -63,11 +63,11 @@
 				</router-link>
 			</div>
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
-				<kv-loading-placeholder v-if="loading" class="default-stat-placeholder" style="width: 7rem;" />
-				<dt v-show="!loading" class="default-stat-value">
+				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
+				<dt v-show="!loading" class="stat-value">
 					{{ lifetimePercentile }}
 				</dt>
-				<dd class="default-stat-def">
+				<dd class="stat-def">
 					Lending percentile
 				</dd>
 			</div>
@@ -150,15 +150,15 @@
 									lg:!tw-py-1.5 lg:!tw-px-1.5 tw-px-2 tw-py-1 tw-shadow-lg"
 								style="min-width: 190px"
 							>
-								<dd class="stat-def">
+								<dd class="percentiles-stat-def">
 									Lending percentile this year
 								</dd>
-								<dt class="stat-value">
+								<dt class="percentiles-stat-value">
 									{{ formattedCurrentYearPercentile }}
 								</dt>
 								<router-link
 									v-if="nextPercentileMsg && currentYearPercentile < 99"
-									class="stat-link"
+									class="percentiles-stat-link"
 									to="/lend-category-beta"
 									v-kv-track-event="['portfolio', 'click', `${currentYearPercentile}-percentile`]"
 								>
@@ -166,7 +166,7 @@
 								</router-link>
 								<span
 									v-else-if="currentYearPercentile === 99"
-									class="stat-link tw-text-eco-green-2 tw-font-medium
+									class="percentiles-stat-link tw-text-eco-green-2 tw-font-medium
 										tw-inline-flex tw-items-center tw-mt-auto"
 								>
 									Thank you!
@@ -177,17 +177,17 @@
 								class="tw-col-span-6 tw-col-start-7 tw-row-start-2 tw-row-span-2 tw-order-3 tw-h-full
 									tw-flex tw-flex-col lg:tw-col-span-6 lg:tw-col-start-auto lg:tw-row-start-auto
 									lg:tw-order-none lg:tw-flex-shrink-0 tw-bg-primary tw-rounded tw-px-2 tw-py-1.5
-									tw-shadow-lg stats-container"
+									tw-shadow-lg percentiles-card"
 								style="min-width: 155px"
 							>
-								<dd class="stat-def">
+								<dd class="percentiles-stat-def">
 									Total amount lent
 								</dd>
-								<dt class="stat-value">
+								<dt class="percentiles-stat-value">
 									{{ currentYearAmountLent }}
 								</dt>
 								<router-link
-									class="stat-link tw-mt-auto"
+									class="percentiles-stat-link tw-mt-auto"
 									to="/portfolio/loans"
 									v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
 								>
@@ -198,13 +198,13 @@
 							<div
 								class="tw-col-span-6 tw-col-start-1 tw-order-1 lg:tw-col-span-3 lg:tw-col-start-auto
 								lg:tw-order-none lg:tw-flex-shrink-0 tw-bg-primary tw-rounded tw-px-2 tw-py-1.5
-								!tw-min-h-13 tw-shadow-lg stats-container"
+								!tw-min-h-13 tw-shadow-lg percentiles-card"
 								style="min-width: 148px;"
 							>
-								<dt class="stat-def">
+								<dt class="percentiles-stat-def">
 									Loans made
 								</dt>
-								<dd class="stat-value">
+								<dd class="percentiles-stat-value">
 									{{ currentYearNumberOfLoans }}
 								</dd>
 							</div>
@@ -212,17 +212,17 @@
 							<div
 								class="tw-col-span-6 tw-col-start-1 tw-order-2 lg:tw-col-span-3
 									lg:tw-col-start-auto lg:tw-order-none lg:tw-flex-shrink-0
-									tw-bg-primary tw-rounded tw-px-2 tw-py-1.5 tw-shadow-lg stats-container"
+									tw-bg-primary tw-rounded tw-px-2 tw-py-1.5 tw-shadow-lg percentiles-card"
 								style="min-width: 148px"
 							>
-								<dd class="stat-def">
+								<dd class="percentiles-stat-def">
 									Countries supported
 								</dd>
-								<dt class="stat-value">
+								<dt class="percentiles-stat-value">
 									{{ currentYearCountryCount }}
 								</dt>
 								<router-link
-									class="stat-link tw-mt-auto"
+									class="percentiles-stat-link tw-mt-auto"
 									to="/portfolio/lending-stats"
 									v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
 								>
@@ -243,13 +243,13 @@
 							>
 								<kv-loading-placeholder
 									v-if="loading"
-									class="stat-placeholder"
+									class="percentiles-stat-placeholder"
 									style="width: 7rem;"
 								/>
-								<dd v-show="!loading" class="stat-def">
+								<dd v-show="!loading" class="percentiles-stat-def">
 									Lending percentile
 								</dd>
-								<dt class="stat-value">
+								<dt class="percentiles-stat-value">
 									{{ lifetimePercentile }}
 								</dt>
 							</div>
@@ -257,22 +257,22 @@
 								class="tw-col-span-6 tw-col-start-7 tw-row-start-2 tw-row-span-2 tw-order-3
 									tw-h-full tw-flex tw-flex-col lg:tw-col-span-3 lg:tw-col-start-auto
 									lg:tw-row-start-auto lg:tw-order-none lg:tw-flex-shrink-0 tw-bg-primary
-									tw-rounded tw-px-2 tw-py-1 tw-shadow-lg stats-container"
+									tw-rounded tw-px-2 tw-py-1 tw-shadow-lg percentiles-card"
 								style="min-width: 155px"
 							>
 								<kv-loading-placeholder
 									v-if="loading"
-									class="stat-placeholder"
+									class="percentiles-stat-placeholder"
 									style="width: 7rem;"
 								/>
-								<dd class="stat-def">
+								<dd class="percentiles-stat-def">
 									Total amount lent
 								</dd>
-								<dt v-show="!loading" class="stat-value">
+								<dt v-show="!loading" class="percentiles-stat-value">
 									{{ lifetimeAmountLent }}
 								</dt>
 								<router-link
-									class="stat-link tw-mt-auto"
+									class="percentiles-stat-link tw-mt-auto"
 									to="/portfolio/loans"
 									v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
 								>
@@ -283,18 +283,18 @@
 							<div
 								class="tw-col-span-6 tw-col-start-1 tw-order-1 lg:tw-col-span-3
 									lg:tw-col-start-auto lg:tw-order-none lg:tw-flex-shrink-0
-									stats-container tw-bg-primary tw-rounded tw-px-2 tw-py-1.5 tw-shadow-lg"
+									percentiles-card tw-bg-primary tw-rounded tw-px-2 tw-py-1.5 tw-shadow-lg"
 								style="min-width: 148px"
 							>
 								<kv-loading-placeholder
 									v-if="loading"
-									class="stat-placeholder"
+									class="percentiles-stat-placeholder"
 									style="width: 4rem;"
 								/>
-								<dt v-else class="stat-def">
+								<dt v-else class="percentiles-stat-def">
 									Loans made
 								</dt>
-								<dd class="stat-value">
+								<dd class="percentiles-stat-value">
 									{{ lifetimeNumberOfLoans }}
 								</dd>
 							</div>
@@ -302,22 +302,22 @@
 							<div
 								class="tw-col-span-6 tw-col-start-1 tw-order-2 lg:tw-col-span-3
 									lg:tw-col-start-auto lg:tw-order-none lg:tw-flex-shrink-0
-									stats-container tw-bg-primary tw-rounded tw-px-2 tw-py-1 tw-shadow-lg"
+									percentiles-card tw-bg-primary tw-rounded tw-px-2 tw-py-1 tw-shadow-lg"
 								style="min-width: 148px"
 							>
 								<kv-loading-placeholder
 									v-if="loading"
-									class="stat-placeholder"
+									class="percentiles-stat-placeholder"
 									style="width: 4rem;"
 								/>
-								<dd v-show="!loading" class="stat-def">
+								<dd v-show="!loading" class="percentiles-stat-def">
 									Countries supported
 								</dd>
-								<dt class="stat-value">
+								<dt class="percentiles-stat-value">
 									{{ lifetimeCountryCount }}
 								</dt>
 								<router-link
-									class="stat-link"
+									class="percentiles-stat-link"
 									to="/portfolio/lending-stats"
 									v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
 								>
@@ -579,6 +579,32 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+.stats-container {
+	background-color: rgb(255 255 255 / 5%);
+	@apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center;
+}
+
+.stat-placeholder {
+	@apply tw-mt-1 tw-h-4.5 tw-mx-auto tw-mb-0.5;
+}
+
+.stat-value {
+	@apply tw-text-h2 tw-text-eco-green-2 tw-pb-0.5;
+}
+
+.stat-def {
+	@apply tw-mb-0.5 tw-text-white;
+}
+
+@screen md {
+	.stat-def, .stat-link {
+		@apply tw-text-small;
+	}
+}
+
+.stat-link {
+	@apply tw-inline-flex tw-justify-center tw-items-center tw-text-eco-green-2 tw-font-medium;
+}
 
 .stats-overall-container {
 	@apply tw-grid tw-grid-cols-12 tw-items-start tw-gap-1;
@@ -606,7 +632,7 @@ export default {
 	}
 }
 
-.stats-container {
+.percentiles-card {
 	min-height: 96px;
 }
 
@@ -617,85 +643,26 @@ export default {
 	min-height: 96px;
 }
 
-.stat-placeholder {
+.percentiles-stat-placeholder {
 	@apply tw-mt-1 tw-h-4.5 tw-mx-auto tw-mb-0.5;
 }
 
-.stat-value {
+.percentiles-stat-value {
 	@apply tw-text-h3 tw-text-action-highlight tw-pb-0.5;
 }
 
-.stat-def {
+.percentiles-stat-def {
 	@apply tw-mb-0.5 tw-text-secondary;
 }
 
 @screen md {
-	.stat-def, .stat-link {
+	.percentiles-stat-def, .percentiles-stat-link {
 		@apply tw-text-small;
 	}
 }
 
-.stat-link {
+.percentiles-stat-link {
 	@apply tw-block tw-text-right tw-text-action tw-font-medium tw-no-underline;
-}
-
-@screen md {
-	.stat-placeholder {
-		height: 44px;
-		margin-bottom: 10.5px;
-	}
-
-	.ytd-loader {
-		height: 20.4rem;
-	}
-}
-
-@screen lg {
-	.stat-placeholder {
-		margin-bottom: 11.5px;
-		@apply tw-h-4;
-	}
-
-	.ytd-loader {
-		height: 9.5rem;
-	}
-
-	#kv-tab-panel-ytd {
-		.stat-link span {
-			@apply tw-w-3.5 tw-h-2;
-		}
-	}
-}
-
-.default-stats-container {
-    background-color: rgb(255 255 255 / 5%);
-    @apply tw-grid-cols-12 tw-gap-y-4 tw-p-1.5 tw-rounded tw-text-center;
-}
-
-.default-stats-container-exp {
-    @apply tw-grid-cols-12 tw-gap-y-4 tw-p-2.5 tw-rounded tw-text-center tw-bg-eco-green-4 tw-items-center;
-}
-
-.default-stat-placeholder {
-    @apply tw-mt-1 tw-h-4.5 tw-mx-auto tw-mb-0.5;
-}
-
-.default-stat-value {
-    @apply tw-text-h2 tw-text-eco-green-2 tw-pb-0.5;
-}
-
-.default-stat-def {
-    @apply tw-mb-0.5 tw-text-white;
-}
-
-@screen md {
-    .default-stat-def, .default-stat-link {
-        @apply tw-text-small;
-    }
-}
-
-.default-stat-link {
-    @apply tw-inline-flex tw-justify-center tw-items-center tw-text-eco-green-2 tw-font-medium;
 }
 
 .tab-header {
@@ -709,36 +676,26 @@ export default {
 }
 
 @screen md {
-    .default-stat-placeholder {
-        height: 44px;
-        margin-bottom: 10.5px;
-    }
+	.stat-placeholder,
+	.percentiles-stat-placeholder {
+		height: 44px;
+		margin-bottom: 10.5px;
+	}
 
-    .ytd-loader {
-        height: 20.4rem;
-    }
+	.ytd-loader {
+		height: 20.4rem;
+	}
 }
 
 @screen lg {
-    .default-stat-placeholder {
-        margin-bottom: 11.5px;
-        @apply tw-h-4;
-    }
+	.stat-placeholder,
+	.percentiles-stat-placeholder {
+		margin-bottom: 11.5px;
+		@apply tw-h-4;
+	}
 
-    .ytd-loader {
-        height: 9.5rem;
-    }
-
-    #kv-tab-panel-ytd {
-        .default-stat-def,
-        .default-stat-link {
-            @apply tw-text-small
-        }
-
-        .default-stat-link span {
-            @apply tw-w-3.5 tw-h-2;
-        }
-    }
+	.ytd-loader {
+		height: 9.5rem;
+	}
 }
-
 </style>
