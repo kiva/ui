@@ -343,7 +343,6 @@ import UpsellModule from '#src/components/Checkout/UpsellModule';
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
-import { isLoanFundraising } from '#src/util/loanUtils';
 import MatchedLoansLightbox from '#src/components/Checkout/MatchedLoansLightbox';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
@@ -355,6 +354,7 @@ import {
 } from '@kiva/kv-components';
 import { fetchPostCheckoutAchievements, getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
+import getCheckoutAlmostFundedRecommendationQuery from '#src/graphql/query/checkout/getCheckoutAlmostFundedRecommendation.graphql'; // eslint-disable-line max-len
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { isGoalsV2Enabled } from '#src/composables/useGoalData';
@@ -366,7 +366,8 @@ import {
 	clearKivaLendingCreditCookie
 } from '#src/util/promoCreditCookie';
 import { FLSS_ORIGIN_CHECKOUT_UPSELL } from '#src/util/flssUtils';
-import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
+import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
+import logReadQueryError from '#src/util/logReadQueryError';
 
 const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
@@ -711,6 +712,15 @@ export default {
 			'EXP-MP-1984-Sept2025',
 		);
 	},
+	watch: {
+		async emptyBasket(newValue) {
+			if (!newValue && !this.upsellLoan?.id) {
+				// MyKiva Bandit Upsell Experiment Mar2026 MP-2513
+				await this.initializeBanditUpsellExperiment();
+				this.getUpsellModuleData();
+			}
+		},
+	},
 	async mounted() {
 		// update current time every second for reactivity
 		this.currentTimeInterval = setInterval(() => {
@@ -732,11 +742,6 @@ export default {
 		// show toast for specified scenario
 		this.handleToast();
 		this.getPromoInformationFromBasket();
-
-		// MyKiva Bandit Upsell Experiment Mar2026 MP-2513
-		await this.initializeBanditUpsellExperiment();
-
-		this.getUpsellModuleData();
 	},
 	computed: {
 		goalsV2Enabled() {
@@ -1087,19 +1092,77 @@ export default {
 				});
 			});
 		},
-		getUpsellModuleData(loanId = 0) {
-			this.addedUpsellLoans.push(loanId);
-			runLoansQuery(
+		getLoansByAmountLeft() {
+			return runRecommendationsQuery(
 				this.apollo,
 				{
 					sortBy: 'amountLeft',
-					pageLimit: 20,
+					limit: 20,
+					origin: FLSS_ORIGIN_CHECKOUT_UPSELL,
+				}
+			);
+		},
+		getLoansByAmountLeftRange(start, end) {
+			return runRecommendationsQuery(
+				this.apollo,
+				{
+					filterObject: {
+						amountLeft: {
+							range: {
+								gte: start,
+								lte: end,
+							}
+						},
+					},
+					sortBy: 'amountLeft',
+					limit: 20,
+					origin: FLSS_ORIGIN_CHECKOUT_UPSELL,
 				},
-				FLSS_ORIGIN_CHECKOUT_UPSELL,
-			).then(result => {
-				const loans = result?.loans || [];
-				this.upsellLoan = loans.filter(loan => isLoanFundraising(loan) && !this.addedUpsellLoans.includes(loan.id))[0] || {}; // eslint-disable-line max-len
-			});
+			);
+		},
+		getUpsellModuleData(loanId = 0) {
+			this.addedUpsellLoans.push(loanId);
+
+			if (this.isBanditUpsellExpEnabled) {
+				const balance = parseFloat(this.myBalance);
+				this.apollo.query({
+					query: getCheckoutAlmostFundedRecommendationQuery,
+					variables: {
+						loginId: this.myId,
+						balance,
+					},
+				}).then(({ data }) => {
+					const ranges = data?.getCheckoutAlmostFundedRecommendation?.recommendedRanges ?? [];
+					const promiseArray = ranges.map(range => this.getLoansByAmountLeftRange(range.start, range.end));
+					// Adding general query as fallback in case the ranges don't return any loans
+					promiseArray.push(this.getLoansByAmountLeft());
+
+					Promise.all(promiseArray).then(result => {
+						const loansArray = result || [];
+						const loansIndex = loansArray.findIndex(a => (a.loans || []).length > 0 && a.loans.filter(loan => !this.addedUpsellLoans.includes(loan.id)).length > 0); // eslint-disable-line max-len
+						const loans = loansArray[loansIndex]?.loans || [];
+						this.upsellLoan = loans.filter(loan => !this.addedUpsellLoans.includes(loan.id))[0] || {};
+
+						const arrayLength = loansArray.length;
+						if (loansIndex >= 0 && loansIndex !== arrayLength - 1) {
+							this.$kvTrackEvent(
+								'basket',
+								'view',
+								'recommended-checkout-upsell',
+								`${ranges[loansIndex].start} - ${ranges[loansIndex].end}`,
+							);
+						}
+					});
+				}).catch(e => {
+					logReadQueryError(e, 'getCheckoutAlmostFundedRecommendationQuery');
+				});
+			} else {
+				this.getLoansByAmountLeft()
+					.then(result => {
+						const loans = result?.loans || [];
+						this.upsellLoan = loans.filter(loan => !this.addedUpsellLoans.includes(loan.id))[0] || {};
+					});
+			}
 		},
 		verificationComplete() {
 			this.verificationSubmitted = true;
