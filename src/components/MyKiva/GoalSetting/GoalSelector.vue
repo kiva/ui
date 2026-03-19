@@ -410,7 +410,7 @@ const handleContinue = () => {
 	const label = props.isUpdatingGoal ? 'confirm-edit-goal' : 'set-annual-goal';
 
 	$kvTrackEvent(
-		'event-tracking',
+		props.trackingCategory,
 		'click',
 		label,
 		props.selectedCategoryId,
