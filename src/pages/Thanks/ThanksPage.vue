@@ -11,7 +11,6 @@
 				:badges-achieved="badgesAchieved"
 				:guest-username="guestUsername"
 				:achievements-completed="achievementsCompleted"
-				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 				:total-loans="totalLoanCount"
 				:tiered-achievements="achievements"
 				:post-lending-next-steps-enable="postLendingNextStepsEnable"
@@ -80,7 +79,6 @@
 <script>
 import numeral from 'numeral';
 import logReadQueryError from '#src/util/logReadQueryError';
-import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import ThanksPageDonationOnly from '#src/components/Thanks/ThanksPageDonationOnly';
 import thanksPageQuery from '#src/graphql/query/thanksPage.graphql';
@@ -100,7 +98,6 @@ import { fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
 import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
-import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import { LAST_YEAR_KEY, GOALS_V2_START_YEAR } from '#src/composables/useGoalData';
 import userYearlyProgressQuery from '#src/graphql/query/userYearlyProgress.graphql';
@@ -109,7 +106,6 @@ import { clearPromoCreditBannerCookie, getPromoCreditBannerCookie } from '#src/u
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
-const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
 
 // Thanks views
@@ -172,7 +168,6 @@ export default {
 			SINGLE_VERSION_VIEW,
 			guestUsername: '',
 			achievementsCompleted: false,
-			isNextStepsExpEnabled: false,
 			totalLoanCount: 0,
 			achievements: [],
 			postLendingNextStepsEnable: false,
@@ -182,7 +177,6 @@ export default {
 		preFetch(_config, client, { cookieStore, route }) {
 			return Promise.all([
 				client.query({ query: thanksPageQuery }),
-				client.query({ query: experimentAssignmentQuery, variables: { id: NEXT_STEPS_EXP_KEY } }),
 				// Query returns both progressForYear (for specified year) and totalProgressToAchievement (all-time)
 				client.query({
 					query: userAchievementProgressQuery,
@@ -485,18 +479,6 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'ThanksPage postCheckoutAchievementsQuery');
 		}
-
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
-			NEXT_STEPS_EXP_KEY,
-			version => {
-				this.isNextStepsExpEnabled = version === 'b';
-			},
-			this.$kvTrackEvent,
-			'EXP-MP-1984-Sept2025',
-		);
 
 		// Track may challenge page view
 		if (this.showMayChallengeHeader) {

@@ -140,14 +140,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		isNextStepsExpEnabled: {
-			type: Boolean,
-			default: false
-		},
-		goalsV2Enabled: {
-			type: Boolean,
-			default: false
-		},
 		lenderLoansIds: {
 			type: Array,
 			default: () => []
@@ -171,9 +163,7 @@ export default {
 			const hasUsLoan = loansInBasket.some(reservation => reservation?.loan?.__typename === 'LoanDirect');
 			userUsLoanCheckout(hasUsLoan);
 
-			if (this.isNextStepsExpEnabled) {
-				this.loadAndCalculateGoalProgress();
-			}
+			this.loadAndCalculateGoalProgress();
 		}
 	},
 	methods: {
@@ -190,9 +180,9 @@ export default {
 			return this.isLoggedIn || (!this.isLoggedIn && !this.hasEverLoggedIn);
 		},
 		async loadAndCalculateGoalProgress() {
-			await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+			await this.loadGoalData({ yearlyProgress: true });
 			// Calculate progress including basket loans (don't increment counter, just check current state)
-			const year = this.goalsV2Enabled ? new Date().getFullYear() : null;
+			const year = new Date().getFullYear();
 			const { totalProgress } = await this.getPostCheckoutProgressByLoans({
 				loans: this.loans.map(loan => ({ id: loan.id })),
 				addBasketLoans: true,
@@ -269,12 +259,8 @@ export default {
 		};
 	},
 	async mounted() {
-		if (this.isNextStepsExpEnabled) {
-			await this.loadAndCalculateGoalProgress();
-			this.loadingGoalData = false;
-		} else {
-			this.loadingGoalData = false;
-		}
+		await this.loadAndCalculateGoalProgress();
+		this.loadingGoalData = false;
 	},
 };
 </script>

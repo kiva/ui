@@ -83,7 +83,6 @@ describe('JourneyCardCarousel', () => {
 		const wrapper = mount(JourneyCardCarousel, {
 			props: {
 				inLendingStats: true,
-				userGoalEnabled: false,
 				slides: [slide],
 				heroTieredAchievements: [
 					{
@@ -201,7 +200,6 @@ describe('JourneyCardCarousel', () => {
 		const wrapper = mount(JourneyCardCarousel, {
 			props: {
 				inLendingStats: true,
-				userGoalEnabled: false,
 				slides: [slide],
 				heroTieredAchievements: [],
 				heroBadgeData: [],

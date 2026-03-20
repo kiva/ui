@@ -87,9 +87,6 @@ export default {
 				return '328px';
 			}
 			if (this.windowWidth >= 1024) {
-				if (this.isLargeCard) {
-					return '512px';
-				}
 				return '328px';
 			}
 			return '336px';
