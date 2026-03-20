@@ -422,7 +422,6 @@ const queryResultWithSupportAllGoal = {
 export const GoalInProgress = story({
 	isGuest: false,
 	isOptedIn: true,
-	isNextStepsExpEnabled: true,
 	goalsV2Enabled: true,
 
 	lender: mockLender,
@@ -440,7 +439,6 @@ export const GoalInProgress = story({
 export const GoalInProgressNotOptedIn = story({
 	isGuest: false,
 	isOptedIn: false,
-	isNextStepsExpEnabled: true,
 	goalsV2Enabled: true,
 
 	lender: mockLender,
@@ -458,7 +456,6 @@ export const GoalInProgressNotOptedIn = story({
 export const GoalInProgressSupportAll = story({
 	isGuest: false,
 	isOptedIn: true,
-	isNextStepsExpEnabled: true,
 	goalsV2Enabled: true,
 
 	lender: mockLender,
@@ -536,7 +533,6 @@ const queryResultWithGoalAndBadge = {
 export const GoalNotMatchingCheckoutWithBadge = story({
 	isGuest: false,
 	isOptedIn: true,
-	isNextStepsExpEnabled: true,
 	goalsV2Enabled: true,
 
 	lender: mockLender,
@@ -604,7 +600,6 @@ const queryResultWithGoalNoMatch = {
 export const GoalNotMatchingCheckoutWithJourney = story({
 	isGuest: false,
 	isOptedIn: true,
-	isNextStepsExpEnabled: true,
 	goalsV2Enabled: true,
 
 	lender: mockLender,
@@ -622,7 +617,6 @@ export const GoalNotMatchingCheckoutWithJourney = story({
 export const GoalCompleted = story({
 	isGuest: false,
 	isOptedIn: true,
-	isNextStepsExpEnabled: true,
 	goalsV2Enabled: true,
 
 	lender: mockLender,
@@ -659,7 +653,6 @@ const queryResultWithNoGoal = {
 export const GoalEntrypoint = story({
 	isGuest: false,
 	isOptedIn: true,
-	isNextStepsExpEnabled: true,
 	goalsV2Enabled: true,
 
 	lender: mockLender,
@@ -677,7 +670,6 @@ export const GoalEntrypoint = story({
 export const GuestWithGoalsExperiment = story({
 	isGuest: true,
 	isOptedIn: false,
-	isNextStepsExpEnabled: true,
 	goalsV2Enabled: true,
 
 	lender: mockLender,
@@ -737,7 +729,6 @@ export const LoanWithTeamAttribution = story({
 export const GoalInProgressWithPfpLoan = story({
 	isGuest: false,
 	isOptedIn: true,
-	isNextStepsExpEnabled: true,
 	goalsV2Enabled: true,
 
 	lender: mockLender,
@@ -785,7 +776,6 @@ const queryResultWithGoalAlreadyCompleted = {
 export const GoalAlreadyCompleted = story({
 	isGuest: false,
 	isOptedIn: true,
-	isNextStepsExpEnabled: true,
 	goalsV2Enabled: true,
 
 	lender: mockLender,
@@ -823,7 +813,6 @@ const queryResultNoGoalWithBadge = {
 export const NoGoalWithBadge = story({
 	isGuest: false,
 	isOptedIn: true,
-	isNextStepsExpEnabled: true,
 	goalsV2Enabled: true,
 
 	lender: mockLender,

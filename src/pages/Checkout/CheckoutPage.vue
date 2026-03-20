@@ -65,8 +65,6 @@
 							:lender-total-loans="lenderTotalLoans"
 							:is-my-kiva-enabled="isMyKivaEnabled"
 							:has-ever-logged-in="hasEverLoggedIn"
-							:is-next-steps-exp-enabled="isNextStepsExpEnabled"
-							:goals-v2-enabled="goalsV2Enabled"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@removed-loan="calculateProgressAchievement($event)"
@@ -357,7 +355,6 @@ import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchiev
 import getCheckoutAlmostFundedRecommendationQuery from '#src/graphql/query/checkout/getCheckoutAlmostFundedRecommendation.graphql'; // eslint-disable-line max-len
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
-import { isGoalsV2Enabled } from '#src/composables/useGoalData';
 import { mdiGiftOutline } from '@mdi/js';
 import {
 	clearPromoCreditBannerCookie,
@@ -373,7 +370,6 @@ const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
-const NEXT_STEPS_EXP_KEY = 'mykiva_next_steps';
 const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_enable';
 
 // Query to gather user Teams
@@ -489,7 +485,6 @@ export default {
 			newAtbExpEnabled: false,
 			myKivaFlagEnabled: false,
 			isMyKivaEnabled: false,
-			isNextStepsExpEnabled: false,
 			thanksPageGoalsEntrypointEnable: false,
 			lenderLoansIds: [],
 			mdiGiftOutline,
@@ -531,7 +526,6 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: CHECKOUT_LOGIN_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: NEXT_STEPS_EXP_KEY } }),
 					]);
 				})
 				.then(response => {
@@ -698,19 +692,6 @@ export default {
 				this.cookieStore,
 			);
 		}
-
-		// MyKiva Next Steps Experiment SEPT2025 MP-1984
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
-			NEXT_STEPS_EXP_KEY,
-			version => {
-				this.isNextStepsExpEnabled = version === 'b';
-			},
-			this.$kvTrackEvent,
-			'EXP-MP-1984-Sept2025',
-		);
 	},
 	watch: {
 		async emptyBasket(newValue) {
@@ -744,9 +725,6 @@ export default {
 		this.getPromoInformationFromBasket();
 	},
 	computed: {
-		goalsV2Enabled() {
-			return isGoalsV2Enabled(this.thanksPageGoalsEntrypointEnable);
-		},
 		isUpsellUnder100() {
 			const loanAmount = this.upsellLoan?.loanAmount ?? 0;
 			const fundedAmount = this.upsellLoan?.loanFundraisingInfo?.fundedAmount ?? 0;
@@ -866,7 +844,7 @@ export default {
 			return this.loans.map(loan => loan.id);
 		},
 		showFtdMessage() {
-			return !this.lenderTotalLoans && this.enableFtdMessage && this.ftdCreditAmount && this.ftdValidDate;
+			return !this.lenderTotalLoans && this.ftdCreditAmount && this.ftdValidDate;
 		},
 		showPromoCreditPill() {
 			// For logged-out users, show pill if they have lending credit from cookie

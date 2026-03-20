@@ -41,7 +41,6 @@
 				:hero-badge-data="heroBadgeData"
 				:hero-tiered-achievements="heroTieredAchievements"
 				:total-loans="totalLoans"
-				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 				:goals-v2-enabled="goalsV2Enabled"
 				:post-lending-next-steps-enable="postLendingNextStepsEnable"
 				:latest-loan="latestLoan"
@@ -352,10 +351,6 @@ export default {
 		sidesheetLoan: {
 			type: Object,
 			default: () => ({}),
-		},
-		isNextStepsExpEnabled: {
-			type: Boolean,
-			default: false
 		},
 		goalsV2Enabled: {
 			type: Boolean,
