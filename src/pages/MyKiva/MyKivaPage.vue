@@ -32,7 +32,6 @@
 			:enable-ai-loan-pills="enableAILoanPills"
 			:sidesheet-loan="sidesheetLoan"
 			:goals-v2-enabled="goalsV2Enabled"
-			:show-new-badge-section="showNewBadgeSection"
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
@@ -70,7 +69,6 @@ import { inject, provide } from 'vue';
 const CURRENT_YEAR = new Date().getFullYear();
 const NEXT_STEPS_REDIRECT_EXP_KEY = 'mykiva_next_steps_redirect';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
-const NEW_BADGE_SECTION_KEY = 'new_badge_section_enable';
 const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
 const GOAL_EDITING_KEY = 'goal_editing_enable';
 
@@ -117,7 +115,6 @@ export default {
 			userLentToAllRegions: false,
 			sidesheetLoan: {},
 			goalsEntrypointEnable: false,
-			showNewBadgeSection: false,
 			postLendingNextStepsEnable: false,
 			latestLoan: null,
 			goalRefreshKey: 0,
@@ -274,7 +271,6 @@ export default {
 				this.transactions = myKivaQueryResult.my?.transactions?.values ?? [];
 
 				this.goalsEntrypointEnable = readBoolSetting(myKivaQueryResult, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
-				this.showNewBadgeSection = readBoolSetting(myKivaQueryResult, `general.${NEW_BADGE_SECTION_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.postLendingNextStepsEnable = readBoolSetting(myKivaQueryResult, `general.${POST_LENDING_NEXT_STEPS_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.goalEditingEnable = readBoolSetting(myKivaQueryResult, `general.${GOAL_EDITING_KEY}.value`) ?? false; // eslint-disable-line max-len
 
