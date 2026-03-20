@@ -425,11 +425,11 @@ onMounted(async () => {
 	// - Goal not completed this checkout
 	// - Current checkout loans contributed to goal progress
 	showGoalInProgressModule.value = !props.isGuest
-			&& userGoal.value?.status === GOAL_STATUS.IN_PROGRESS
-			&& !userGoalAchievedNow.value
-			&& hasContributingLoans;
+		&& userGoal.value?.status === GOAL_STATUS.IN_PROGRESS
+		&& !userGoalAchievedNow.value
+		&& hasContributingLoans;
 	if (!props.isGuest
-			&& userGoal.value?.status === GOAL_STATUS.IN_PROGRESS) {
+		&& userGoal.value?.status === GOAL_STATUS.IN_PROGRESS) {
 		$kvTrackEvent('post-checkout', 'show', userGoal.value?.category, goalProgress?.value, userGoal.value?.target);
 	}
 

@@ -422,7 +422,6 @@ const queryResultWithSupportAllGoal = {
 export const GoalInProgress = story({
 	isGuest: false,
 	isOptedIn: true,
-	goalsV2Enabled: true,
 
 	lender: mockLender,
 	loans: [mockLoanMatchingWomensGoal],
@@ -439,7 +438,6 @@ export const GoalInProgress = story({
 export const GoalInProgressNotOptedIn = story({
 	isGuest: false,
 	isOptedIn: false,
-	goalsV2Enabled: true,
 
 	lender: mockLender,
 	loans: [mockLoanMatchingWomensGoal],
@@ -456,7 +454,6 @@ export const GoalInProgressNotOptedIn = story({
 export const GoalInProgressSupportAll = story({
 	isGuest: false,
 	isOptedIn: true,
-	goalsV2Enabled: true,
 
 	lender: mockLender,
 	loans: [mockLoanNotMatchingWomensGoal],
@@ -533,7 +530,6 @@ const queryResultWithGoalAndBadge = {
 export const GoalNotMatchingCheckoutWithBadge = story({
 	isGuest: false,
 	isOptedIn: true,
-	goalsV2Enabled: true,
 
 	lender: mockLender,
 	loans: [mockLoanNotMatchingWomensGoal],
@@ -600,7 +596,6 @@ const queryResultWithGoalNoMatch = {
 export const GoalNotMatchingCheckoutWithJourney = story({
 	isGuest: false,
 	isOptedIn: true,
-	goalsV2Enabled: true,
 
 	lender: mockLender,
 	loans: [mockLoanNotMatchingWomensGoal],
@@ -617,7 +612,6 @@ export const GoalNotMatchingCheckoutWithJourney = story({
 export const GoalCompleted = story({
 	isGuest: false,
 	isOptedIn: true,
-	goalsV2Enabled: true,
 
 	lender: mockLender,
 	loans: [mockLoanMatchingWomensGoal],
@@ -653,7 +647,6 @@ const queryResultWithNoGoal = {
 export const GoalEntrypoint = story({
 	isGuest: false,
 	isOptedIn: true,
-	goalsV2Enabled: true,
 
 	lender: mockLender,
 	loans: [mockLoanMatchingWomensGoal],
@@ -670,7 +663,6 @@ export const GoalEntrypoint = story({
 export const GuestWithGoalsExperiment = story({
 	isGuest: true,
 	isOptedIn: false,
-	goalsV2Enabled: true,
 
 	lender: mockLender,
 	loans: [mockLoanMatchingWomensGoal],
@@ -729,7 +721,6 @@ export const LoanWithTeamAttribution = story({
 export const GoalInProgressWithPfpLoan = story({
 	isGuest: false,
 	isOptedIn: true,
-	goalsV2Enabled: true,
 
 	lender: mockLender,
 	loans: [{
@@ -776,7 +767,6 @@ const queryResultWithGoalAlreadyCompleted = {
 export const GoalAlreadyCompleted = story({
 	isGuest: false,
 	isOptedIn: true,
-	goalsV2Enabled: true,
 
 	lender: mockLender,
 	loans: [mockLoanMatchingWomensGoal],
@@ -813,7 +803,6 @@ const queryResultNoGoalWithBadge = {
 export const NoGoalWithBadge = story({
 	isGuest: false,
 	isOptedIn: true,
-	goalsV2Enabled: true,
 
 	lender: mockLender,
 	loans: [mockLoanMatchingWomensGoal],
