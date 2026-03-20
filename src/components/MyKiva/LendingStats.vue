@@ -38,7 +38,6 @@
 					:lender="lender"
 					:slides-number="1"
 					:slides="heroSlides"
-					:user-goal-enabled="isNextStepsExpEnabled"
 					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
 					:goals-v2-enabled="goalsV2Enabled"
@@ -174,7 +173,6 @@
 			:loans="loans"
 			:slides-number="3"
 			:slides="heroSlides"
-			:user-goal-enabled="isNextStepsExpEnabled"
 			:user-goal-achieved="userGoalAchieved"
 			:user-goal="userGoal"
 			:goals-v2-enabled="goalsV2Enabled"
@@ -279,10 +277,6 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		isNextStepsExpEnabled: {
-			type: Boolean,
-			default: false
-		},
 		goalsV2Enabled: {
 			type: Boolean,
 			default: false
@@ -334,7 +328,7 @@ export default {
 			return this.nextStepsExperimentVariant === 'b';
 		},
 		showRegionExperience() {
-			return this.isNextStepsExpEnabled && !this.postLendingNextStepsEnable && !this.userLentToAllRegions;
+			return !this.postLendingNextStepsEnable && !this.userLentToAllRegions;
 		},
 		totalRegions() {
 			return this.regionsData.length;
@@ -387,9 +381,7 @@ export default {
 		};
 	},
 	async mounted() {
-		if (this.isNextStepsExpEnabled) {
-			await this.checkCompletedGoal({ category: 'portfolio' });
-		}
+		await this.checkCompletedGoal({ category: 'portfolio' });
 
 		if (this.showRegionExperience) {
 			// Check region boxes when component comes into view

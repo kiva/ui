@@ -114,7 +114,6 @@ function renderComponent(propsOverrides = {}) {
 			isGuest: false,
 			isOptedIn: true,
 			loans: [{ id: 1, unreservedAmount: '25.00' }],
-			isNextStepsExpEnabled: true,
 			receipt: { items: { values: [{ basketItemType: 'loan' }] } },
 			...propsOverrides,
 		},
