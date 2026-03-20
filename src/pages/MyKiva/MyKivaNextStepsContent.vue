@@ -451,7 +451,6 @@ const showGoalModal = ref(false);
 const showImpactInsightsModal = ref(false);
 const isGoalSet = ref(false);
 const newGoalPrefs = ref(null);
-const recordedGoalSet = ref(false);
 const isUpdatingGoal = ref(false);
 const isSharingModalVisible = ref(false);
 const acceptedEmailMarketingUpdates = ref(false);
@@ -556,10 +555,6 @@ const closeGoalModal = async () => {
 	}
 
 	if (isGoalSet.value) {
-		if (!recordedGoalSet.value) {
-			$kvTrackEvent('portfolio', 'show', 'goal-set', newGoalPrefs.value?.category, newGoalPrefs.value?.target);
-			recordedGoalSet.value = true;
-		}
 		if (!isUpdatingGoal.value) {
 			await loadGoalData({ yearlyProgress: props.goalsV2Enabled });
 		}

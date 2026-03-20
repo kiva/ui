@@ -323,7 +323,6 @@ export default {
 			showImpactInsightsModal: false,
 			checkedArr: this.regionsData.map(() => false),
 			isGoalSet: false,
-			recordedGoalSet: false,
 			newGoalPrefs: null,
 			showPostLendingNextStepsCards: false,
 			isUpdatingGoal: false,
@@ -493,11 +492,6 @@ export default {
 			// Only refresh goal data when modal closes AND goal was set
 			// This ensures the main card transitions to ring only after modal is closed
 			if (this.isGoalSet) {
-				if (!this.recordedGoalSet) {
-					// eslint-disable-next-line max-len
-					this.$kvTrackEvent('portfolio', 'show', 'goal-set', this.newGoalPrefs?.category, this.newGoalPrefs?.target);
-					this.recordedGoalSet = true;
-				}
 				if (!this.isUpdatingGoal) {
 					// Refresh goal data to update the main card with the ring
 					await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
