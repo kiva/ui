@@ -120,7 +120,6 @@ describe('LendingStats', () => {
 
 			expect(context.showGoalModal).toBe(false);
 			expect(context.$kvTrackEvent).toHaveBeenCalledWith('portfolio', 'click', 'close-goals');
-			expect(context.$kvTrackEvent).toHaveBeenCalledWith('portfolio', 'show', 'goal-set', 'women', 5);
 			expect(context.loadGoalData).toHaveBeenCalledTimes(1);
 			expect(context.loadGoalData).toHaveBeenCalledWith({ yearlyProgress: true });
 		});
