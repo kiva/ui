@@ -668,13 +668,13 @@ export default {
 		flex: 1 1 0;
 	}
 
-	.stats-overall-container > .stats-percentile-container {
-		flex-grow: 1.35;
-	}
-
 	.stats-percentile-container {
 		background-size: auto;
 		background-position: right 0 bottom 0;
+	}
+
+	.stats-overall-container > .stats-percentile-container {
+		flex-grow: 1.35;
 	}
 }
 
@@ -689,7 +689,7 @@ export default {
 	background-size: 100% 76px;
 }
 
-:deep([role="tablist"]) {
+:deep([role=tablist]) {
 	overflow: hidden;
 }
 
