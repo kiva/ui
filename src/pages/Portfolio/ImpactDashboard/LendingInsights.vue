@@ -92,7 +92,8 @@
 								class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0
 										tw-leading-normal"
 							>
-								{{ bannerDescription }}
+								<span class="lg:tw-hidden">New!</span>
+								<span class="tw-hidden lg:tw-inline">New! Filter by year</span>
 							</p>
 						</div>
 						<div class="percentiles-tabs-row">
@@ -340,7 +341,6 @@ const LENDING_INSIGHTS_LIFETIME_QUERY = gql`query lendingInsights {
 		lendingStats {
 			id
 			amountLentPercentile
-			totalAmountDeposited
 			lentTo {
 				countries {
 					totalCount
@@ -348,6 +348,7 @@ const LENDING_INSIGHTS_LIFETIME_QUERY = gql`query lendingInsights {
 			}
 		}
 		userStats {
+			amount_of_loans
 			number_of_loans
 		}
 	}
@@ -391,7 +392,6 @@ export default {
 			lifetimeCountryCount: 0,
 			lifetimeNumberOfLoans: 0,
 			lifetimePercentile: 0,
-			windowWidth: 1024,
 		};
 	},
 	computed: {
@@ -402,12 +402,6 @@ export default {
 		},
 		yearToDate() {
 			return new Date().getFullYear();
-		},
-		mobileTabletLayout() {
-			return this.windowWidth < 1024;
-		},
-		bannerDescription() {
-			return this.mobileTabletLayout ? 'New!' : 'New! Filter by year';
 		},
 		lifetimeAmountLentOver10K() {
 			return (this.lifetimeAmountLentValue ?? 0) >= 10000;
@@ -428,7 +422,7 @@ export default {
 				: !this.hasLifetimeStats;
 		},
 		applyLifetimeStats(data) {
-			const amount = toNumber(data?.my?.lendingStats?.totalAmountDeposited);
+			const amount = toNumber(data?.my?.userStats?.amount_of_loans);
 			const amountOfLoans = numeral(amount);
 
 			this.lifetimeAmountLentValue = amount;
@@ -448,9 +442,6 @@ export default {
 			} catch {
 				// Cache miss is expected outside SSR-prefetched renders.
 			}
-		},
-		handleResize() {
-			this.windowWidth = window.innerWidth;
 		},
 		setActiveTab(tab) {
 			this.activeTab = tab === 'lifetime' || tab === 1 ? 'lifetime' : 'ytd';
@@ -480,7 +471,7 @@ export default {
 			if (!this.currentYearLoadingPromise && !this.hasCurrentYearStats) {
 				this.syncLoadingState();
 				this.currentYearLoadingPromise = this.apollo.query({
-					query: gql`query lendingInsights {
+					query: gql`query lendingInsightsCurrentYear {
 						my {
 							id
 							lendingStats {
@@ -590,17 +581,6 @@ export default {
 				this.fetchLifetimeStats(),
 			]);
 		},
-	},
-	mounted() {
-		if (typeof window !== 'undefined') {
-			this.windowWidth = window.innerWidth;
-			window.addEventListener('resize', this.handleResize);
-		}
-	},
-	beforeUnmount() {
-		if (typeof window !== 'undefined') {
-			window.removeEventListener('resize', this.handleResize);
-		}
 	},
 };
 </script>
