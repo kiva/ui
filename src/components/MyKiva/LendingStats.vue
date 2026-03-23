@@ -321,7 +321,7 @@ export default {
 			return this.nextStepsExperimentVariant === 'b';
 		},
 		showRegionExperience() {
-			return !this.postLendingNextStepsEnable && !this.userLentToAllRegions;
+			return !this.showPostLendingNextStepsCards && !this.userLentToAllRegions;
 		},
 		totalRegions() {
 			return this.regionsData.length;
