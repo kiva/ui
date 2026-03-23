@@ -1,3 +1,57 @@
+## [3.62.0](https://github.com/kiva/ui/compare/v3.61.0...v3.62.0) (2026-03-23)
+
+### 🎉 New Features
+
+* [MP-2477] - ([c535fc3](https://github.com/kiva/ui/commit/c535fc37cb4a76a056a1142830b61118b9897ce6))
+* [MP-2477] - ([9bf735a](https://github.com/kiva/ui/commit/9bf735ab5ea98f0aaa92179c9703c87f4c23b879))
+* [MP-2477] - ([e132c80](https://github.com/kiva/ui/commit/e132c804a258a7a91e210ec8a235f2ae772aa2cb))
+* [MP-2477] - fix ([161c4a4](https://github.com/kiva/ui/commit/161c4a43f6d173103654fa87bb841fe81adf4877))
+* [MP-2477] - fix regions styles ([0309d16](https://github.com/kiva/ui/commit/0309d161a009d27ea7320449f1fe42e4269c4923))
+* [MP-2477] - jsdocs ([67038f8](https://github.com/kiva/ui/commit/67038f8635c281f7db3c800c96a7e291e8b72560))
+* [MP-2477] - more styles changes & moving loading inside region componente ([474e44f](https://github.com/kiva/ui/commit/474e44fe9c05771898654bb4deab39c3d362e8d2))
+* [MP-2477] - PR fdb ([226c5bc](https://github.com/kiva/ui/commit/226c5bcfb280111fd36a50fc5e4fb0066e3d828e))
+* [MP-2477] - refactor utils and journeyCardCarousel component ([457fc55](https://github.com/kiva/ui/commit/457fc5578ef6679bfa7408a0e5b0070b6d6fab7b))
+* [MP-2477] - remove log ([0f1f94f](https://github.com/kiva/ui/commit/0f1f94f5307e6ffd760f8724e607a276a64d2ba4))
+* [MP-2477] - second alternative version ([248499b](https://github.com/kiva/ui/commit/248499bc79f3da9f8f838e16b8cacb660166f601))
+* [MP-2477] - styles ([3f2bc5a](https://github.com/kiva/ui/commit/3f2bc5ab0124e15fc73f972d170676f261e5c5d7))
+* [MP-2477] - version for postLending ([d8e1b14](https://github.com/kiva/ui/commit/d8e1b142db24cc38738dee5c1244e3cd92492ace))
+* [MP-2531] - ([a90e908](https://github.com/kiva/ui/commit/a90e90868b3090d150525c7ca014ef8015833c3e))
+* [MP-2531] - clean code ([036a24d](https://github.com/kiva/ui/commit/036a24dd09cebb948c0a9f043720f36448e44dd7))
+* [MP-2531] - done new track event for current goal progress ([43f70c4](https://github.com/kiva/ui/commit/43f70c4d0ae3e333893a4e57f42db48cbdd17974))
+* [MP-2531] - force refresh goal after set it ([4b26847](https://github.com/kiva/ui/commit/4b268474116396fa4335e08b28a9ccdae628c67b))
+* [MP-2531] - move tracking event to OnMounted ([dc5d31e](https://github.com/kiva/ui/commit/dc5d31eb1a8267cf729c2c4174cedb98b53ef95c))
+* add My Teams prototype backed by graphql [CP-2515] ([#6713](https://github.com/kiva/ui/issues/6713)) ([57471f0](https://github.com/kiva/ui/commit/57471f07ecdd137df0a7539560f8e31cf976f7f5))
+* checkout upsell bandit ([#6755](https://github.com/kiva/ui/issues/6755)) ([f95ec6f](https://github.com/kiva/ui/commit/f95ec6fc317fbd2b16dfc77031e44671ed713e5a))
+* checkout upsell calls flss ([#6751](https://github.com/kiva/ui/issues/6751)) ([e563c99](https://github.com/kiva/ui/commit/e563c9953635299bf3050b809761a8006a94c5b7))
+* goal modal refactor ([#6750](https://github.com/kiva/ui/issues/6750)) ([736b2b6](https://github.com/kiva/ui/commit/736b2b623fde43ff6104d0a2c75ae59a38e0ce4f))
+* mp-2548-goal setting page visit after goal is complete ([cfcec41](https://github.com/kiva/ui/commit/cfcec4158c1334d4a675e96d72bba155bc2a0638))
+* mp-2548-goal setting page visit after goal is complete ([bb50d83](https://github.com/kiva/ui/commit/bb50d838fbb9920e9e5862d42dd028e3fd524ef4))
+* mp-2548-goal setting page visit after goal is complete ([931e30a](https://github.com/kiva/ui/commit/931e30a1349a05067aeae8961c7569d7d4e52b95))
+* mp-2548-goal setting page visit after goal is complete ([9faab01](https://github.com/kiva/ui/commit/9faab01467cdcfb1f86dee7c43d5d4d73e188713))
+* mp-2548-goal setting page visit after goal is complete ([52d9a79](https://github.com/kiva/ui/commit/52d9a79cbd5f068461ed6da5e1bee58f63d79ede))
+* mykiva next steps expriment code removed ([#6758](https://github.com/kiva/ui/issues/6758)) ([25156f8](https://github.com/kiva/ui/commit/25156f88b63f50d790ce04a40fd4f7bb03018a06))
+* related code to new badge section removed at mykiva ([#6761](https://github.com/kiva/ui/issues/6761)) ([d8e3077](https://github.com/kiva/ui/commit/d8e3077afeda7fa50844fee84635d87f696bd57c))
+
+### 🐛 Bugfixes
+
+* [MP-2477] - fix issue after sync with main, refreshing isGoalSet prop ([85b25f2](https://github.com/kiva/ui/commit/85b25f24f5402a94b9dc6fdc1f31a673d0121ddd))
+* [MP-2477] - issue with journey prop send like number ([84966dd](https://github.com/kiva/ui/commit/84966dd5b8790ef81ab9b212c17fb74e6abedec2))
+* [MP-2573] - hide regions block if showRegionExperience is false ([e66189e](https://github.com/kiva/ui/commit/e66189e8312b73df08eaf6335501073273f83035))
+* [MP-2573] - hide regions block if showRegionExperience is false ([6377c90](https://github.com/kiva/ui/commit/6377c90ae85ab185a4de0f422e799ec7b94fec88))
+* [MP-2573] - use template instead of div ([43e2952](https://github.com/kiva/ui/commit/43e2952e7d016ee8a88ba819d5be325c67d1d710))
+* defaulted status was not showing learn what this means ([9d0a3e3](https://github.com/kiva/ui/commit/9d0a3e33c814649fbafacbf0720c154bf8655a71))
+* duplicated event removed at mykiva ([#6757](https://github.com/kiva/ui/issues/6757)) ([943639a](https://github.com/kiva/ui/commit/943639a1f6646b1f3777936b9b8fc14be5e09f40))
+* missing tracking event for creating goal from email ([eacd6b8](https://github.com/kiva/ui/commit/eacd6b8e661ba19cc0cb19b041c90ad95bb125f0))
+* remove same tracking event in MyKivaGoalCard and do not track if user is updating a goal ([b4db5d5](https://github.com/kiva/ui/commit/b4db5d55c7b296e8a1f2e95a8c3bf7dd76c95752))
+* remove tracking from lending stats test ([1f59902](https://github.com/kiva/ui/commit/1f599020c8ce31341445524f38ca01c961d22e12))
+* repaid loan not showing the correct information in my kiva borrower carousel ([a193e1d](https://github.com/kiva/ui/commit/a193e1d9e299baba9c30df1bcd09690d9dc6874e))
+* rm non-beta My Teams route until ready to launch [CP-2515] ([#6756](https://github.com/kiva/ui/issues/6756)) ([7d7fc00](https://github.com/kiva/ui/commit/7d7fc00213c37b182c992bd48494425b69d340a1))
+* validate event is not fired twice when closing modal in mykiva or next steps pages ([c525ec5](https://github.com/kiva/ui/commit/c525ec56620cf5245b075fc246e269b310c5d5be))
+
+### 🧹 Chores
+
+* **release:** 3.62.0-rc.1 [skip ci] ([36491ab](https://github.com/kiva/ui/commit/36491ab649ed168ce4da119d76a1ea8f6382d5bf)), closes [#6713](https://github.com/kiva/ui/issues/6713) [#6755](https://github.com/kiva/ui/issues/6755) [#6751](https://github.com/kiva/ui/issues/6751) [#6750](https://github.com/kiva/ui/issues/6750) [#6758](https://github.com/kiva/ui/issues/6758) [#6761](https://github.com/kiva/ui/issues/6761) [#6757](https://github.com/kiva/ui/issues/6757) [#6756](https://github.com/kiva/ui/issues/6756)
+
 ## [3.62.0-rc.1](https://github.com/kiva/ui/compare/v3.61.0...v3.62.0-rc.1) (2026-03-23)
 
 ### 🎉 New Features
