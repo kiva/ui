@@ -20,7 +20,7 @@ const getExpectedGoalOptions = ({ lastYear = 0, ytd = 0, useDefault = false }) =
 	let suggestion2;
 	let suggestion3;
 
-	if (lastYear > ytd) {
+	if (lastYear > ytd && lastYear > 2) {
 		suggestion1 = lastYear;
 		suggestion2 = Math.max(Math.ceil(suggestion1 * 1.25), suggestion1 + 1);
 		suggestion3 = Math.max(suggestion1 * 2, suggestion2 + 1);
@@ -28,6 +28,10 @@ const getExpectedGoalOptions = ({ lastYear = 0, ytd = 0, useDefault = false }) =
 		suggestion1 = ytd + 3;
 		suggestion2 = Math.max(Math.ceil(suggestion1 * 1.25), suggestion1 + 1);
 		suggestion3 = Math.max(suggestion1 * 2, suggestion2 + 1);
+	}
+
+	if (suggestion1 === undefined) {
+		return [3, 4, 5];
 	}
 
 	return [suggestion1, suggestion2, suggestion3];
@@ -221,6 +225,45 @@ describe('GoalSelector', () => {
 		await user.click(getByTestId('category-support-all'));
 		await flushPromises();
 		expect(getTitleText()).toBe('How many loans will you make this year?');
+	});
+
+	it('shows default goal options when user has 2 or fewer loans from last year and none this year', async () => {
+		const tieredAchievements = [
+			{
+				id: ID_WOMENS_EQUALITY,
+				progressForYear: 1,
+			},
+			{
+				id: ID_REFUGEE_EQUALITY,
+				progressForYear: 2,
+			},
+		];
+
+		const user = userEvent.setup();
+		const { container, getByTestId } = render(TestWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: { tieredAchievements },
+		});
+
+		await flushPromises();
+
+		const getLoanNumbers = () => Array.from(
+			container.querySelectorAll('span.tw-text-h1')
+		).map(el => Number(el.textContent.trim()));
+
+		// Women category: 1 loan last year, 0 this year -> default options
+		expect(getLoanNumbers()).toEqual([3, 4, 5]);
+
+		// Refugees category: 2 loans last year, 0 this year -> default options
+		await user.click(getByTestId('category-refugees'));
+		await flushPromises();
+		expect(getLoanNumbers()).toEqual([3, 4, 5]);
 	});
 
 	it('fetches support-all loan count via apollo when selecting Choose as I go', async () => {
