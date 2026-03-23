@@ -340,6 +340,7 @@ const LENDING_INSIGHTS_LIFETIME_QUERY = gql`query lendingInsights {
 		lendingStats {
 			id
 			amountLentPercentile
+			totalAmountDeposited
 			lentTo {
 				countries {
 					totalCount
@@ -347,7 +348,6 @@ const LENDING_INSIGHTS_LIFETIME_QUERY = gql`query lendingInsights {
 			}
 		}
 		userStats {
-			amount_of_loans
 			number_of_loans
 		}
 	}
@@ -428,7 +428,7 @@ export default {
 				: !this.hasLifetimeStats;
 		},
 		applyLifetimeStats(data) {
-			const amount = toNumber(data?.my?.userStats?.amount_of_loans);
+			const amount = toNumber(data?.my?.lendingStats?.totalAmountDeposited);
 			const amountOfLoans = numeral(amount);
 
 			this.lifetimeAmountLentValue = amount;
