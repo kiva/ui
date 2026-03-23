@@ -38,7 +38,6 @@
 					:lender="lender"
 					:slides-number="1"
 					:slides="heroSlides"
-					:user-goal-enabled="isNextStepsExpEnabled"
 					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
 					:goals-v2-enabled="goalsV2Enabled"
@@ -174,7 +173,6 @@
 			:loans="loans"
 			:slides-number="3"
 			:slides="heroSlides"
-			:user-goal-enabled="isNextStepsExpEnabled"
 			:user-goal-achieved="userGoalAchieved"
 			:user-goal="userGoal"
 			:goals-v2-enabled="goalsV2Enabled"
@@ -192,7 +190,6 @@
 			:show="showGoalModal"
 			:total-loans="totalLoans"
 			:categories-loan-count="categoriesLoanCount"
-			:goals-v2-enabled="goalsV2Enabled"
 			:is-goal-set="isGoalSet"
 			:show-goal-selector="true"
 			:tiered-achievements="heroTieredAchievements"
@@ -280,10 +277,6 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		isNextStepsExpEnabled: {
-			type: Boolean,
-			default: false
-		},
 		goalsV2Enabled: {
 			type: Boolean,
 			default: false
@@ -324,7 +317,6 @@ export default {
 			showImpactInsightsModal: false,
 			checkedArr: this.regionsData.map(() => false),
 			isGoalSet: false,
-			recordedGoalSet: false,
 			newGoalPrefs: null,
 			showPostLendingNextStepsCards: false,
 			isUpdatingGoal: false,
@@ -335,7 +327,7 @@ export default {
 			return this.nextStepsExperimentVariant === 'b';
 		},
 		showRegionExperience() {
-			return this.isNextStepsExpEnabled && !this.postLendingNextStepsEnable && !this.userLentToAllRegions;
+			return !this.postLendingNextStepsEnable && !this.userLentToAllRegions;
 		},
 		totalRegions() {
 			return this.regionsData.length;
@@ -388,9 +380,7 @@ export default {
 		};
 	},
 	async mounted() {
-		if (this.isNextStepsExpEnabled) {
-			await this.checkCompletedGoal({ category: 'portfolio' });
-		}
+		await this.checkCompletedGoal({ category: 'portfolio' });
 
 		if (this.showRegionExperience) {
 			// Check region boxes when component comes into view
@@ -463,11 +453,6 @@ export default {
 			const updateLocalState = !this.goalsV2Enabled;
 			if (this.isUpdatingGoal) {
 				await this.updateCurrentGoal(this.userGoal, preferences);
-				this.$kvTrackEvent(
-					'portfolio',
-					'click',
-					'confirm-edit-goal'
-				);
 			} else {
 				await this.storeGoalPreferences(preferences, updateLocalState);
 			}
@@ -499,17 +484,16 @@ export default {
 			// Only refresh goal data when modal closes AND goal was set
 			// This ensures the main card transitions to ring only after modal is closed
 			if (this.isGoalSet) {
-				if (!this.recordedGoalSet) {
-					// eslint-disable-next-line max-len
-					this.$kvTrackEvent('portfolio', 'show', 'goal-set', this.newGoalPrefs?.category, this.newGoalPrefs?.target);
-					this.recordedGoalSet = true;
-				}
 				if (!this.isUpdatingGoal) {
 					// Refresh goal data to update the main card with the ring
 					await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
 				}
+
+				// Avoid showing category choice step when closing the modal
+				setTimeout(() => {
+					this.isGoalSet = false;
+				}, 300);
 			}
-			this.isGoalSet = false;
 		},
 		closeImpactInsightsModal() {
 			if (this.showImpactInsightsModal) {

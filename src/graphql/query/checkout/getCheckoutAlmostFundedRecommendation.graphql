@@ -1,0 +1,8 @@
+query getCheckoutAlmostFundedRecommendation($loginId: Int,$balance: Float) {
+    getCheckoutAlmostFundedRecommendation(loginId: $loginId, balance: $balance) {
+        recommendedRanges {
+            end
+            start
+        }
+    }
+}

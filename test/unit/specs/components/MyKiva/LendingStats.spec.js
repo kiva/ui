@@ -18,7 +18,6 @@ describe('LendingStats', () => {
 	describe('mounted', () => {
 		it('checks completed goals when next-steps experiment is enabled', async () => {
 			const context = {
-				isNextStepsExpEnabled: true,
 				checkCompletedGoal: vi.fn().mockResolvedValue(),
 				showRegionExperience: false,
 				cookieStore: { get: vi.fn() },
@@ -29,20 +28,6 @@ describe('LendingStats', () => {
 
 			expect(context.checkCompletedGoal).toHaveBeenCalledTimes(1);
 			expect(context.checkCompletedGoal).toHaveBeenCalledWith({ category: 'portfolio' });
-		});
-
-		it('does not check completed goals when next-steps experiment is disabled', async () => {
-			const context = {
-				isNextStepsExpEnabled: false,
-				checkCompletedGoal: vi.fn().mockResolvedValue(),
-				showRegionExperience: false,
-				cookieStore: { get: vi.fn() },
-				showPostLendingNextStepsCards: false,
-			};
-
-			await LendingStats.mounted.call(context);
-
-			expect(context.checkCompletedGoal).not.toHaveBeenCalled();
 		});
 	});
 
@@ -120,7 +105,6 @@ describe('LendingStats', () => {
 
 			expect(context.showGoalModal).toBe(false);
 			expect(context.$kvTrackEvent).toHaveBeenCalledWith('portfolio', 'click', 'close-goals');
-			expect(context.$kvTrackEvent).toHaveBeenCalledWith('portfolio', 'show', 'goal-set', 'women', 5);
 			expect(context.loadGoalData).toHaveBeenCalledTimes(1);
 			expect(context.loadGoalData).toHaveBeenCalledWith({ yearlyProgress: true });
 		});

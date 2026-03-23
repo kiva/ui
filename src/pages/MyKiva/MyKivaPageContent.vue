@@ -41,7 +41,6 @@
 				:hero-badge-data="heroBadgeData"
 				:hero-tiered-achievements="heroTieredAchievements"
 				:total-loans="totalLoans"
-				:is-next-steps-exp-enabled="isNextStepsExpEnabled"
 				:goals-v2-enabled="goalsV2Enabled"
 				:post-lending-next-steps-enable="postLendingNextStepsEnable"
 				:latest-loan="latestLoan"
@@ -52,11 +51,11 @@
 			/>
 		</section>
 		<section v-if="goalsV2Enabled" class="tw-mt-4" id="mykiva-achievements">
-			<div :class="{'tw-flex tw-items-center tw-gap-1 tw-z-tooltip tw-pb-6': showNewBadgeSection}">
-				<h3 id="my-achievements" :class="{'tw-min-h-4': showNewBadgeSection}">
+			<div class="tw-flex tw-items-center tw-gap-1 tw-z-tooltip tw-pb-6">
+				<h3 id="my-achievements" class="tw-min-h-4">
 					Impact progress
 				</h3>
-				<div v-if="showNewBadgeSection">
+				<div>
 					<div class="tw-relative">
 						<KvMaterialIcon
 							@click="toggleTooltip"
@@ -88,15 +87,6 @@
 				</div>
 			</div>
 			<BadgesSectionV2
-				v-if="showNewBadgeSection"
-				class="tw--mt-4"
-				controls-top-right
-				:badge-data="heroBadgeData"
-				:selected-journey="selectedJourney"
-				@badge-clicked="handleBadgeSectionClicked"
-			/>
-			<BadgesSection
-				v-else
 				class="tw--mt-4"
 				controls-top-right
 				:badge-data="heroBadgeData"
@@ -151,15 +141,6 @@
 				My achievements
 			</h3>
 			<BadgesSectionV2
-				v-if="showNewBadgeSection"
-				class="tw--mt-4"
-				controls-top-right
-				:badge-data="heroBadgeData"
-				:selected-journey="selectedJourney"
-				@badge-clicked="handleBadgeSectionClicked"
-			/>
-			<BadgesSection
-				v-else
 				class="tw--mt-4"
 				controls-top-right
 				:badge-data="heroBadgeData"
@@ -235,7 +216,6 @@ import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import useContentful from '#src/composables/useContentful';
 
-import BadgesSection from '#src/components/MyKiva/BadgesSection';
 import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
@@ -283,7 +263,6 @@ export default {
 	mixins: [borrowerProfileExpMixin, smoothScrollMixin],
 	components: {
 		AsyncMyKivaSection,
-		BadgesSection,
 		BorrowerSideSheetWrapper,
 		JournalUpdatesCarousel,
 		JourneyCardCarousel,
@@ -353,15 +332,7 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
-		isNextStepsExpEnabled: {
-			type: Boolean,
-			default: false
-		},
 		goalsV2Enabled: {
-			type: Boolean,
-			default: false
-		},
-		showNewBadgeSection: {
 			type: Boolean,
 			default: false
 		},

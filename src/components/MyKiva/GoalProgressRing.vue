@@ -26,16 +26,9 @@
 			class="tw-text-center tw-w-full tw-flex tw-justify-center tw-py-1"
 		>
 			<p
-				v-if="hasProgress"
-				v-html="progressDescription"
+				v-html="modalVariantDescriptionText"
 				class="modal-description-text tw-text-subhead !tw-font-medium" style="line-height: 1.5rem;"
 			></p>
-			<p
-				v-else
-				class="modal-description-text tw-text-subhead !tw-font-medium" style="line-height: 1.5rem;"
-				v-html="modalDescriptionText"
-			>
-			</p>
 		</div>
 
 		<div class="tw-relative tw-z-docked tw-mx-auto tw-py-2.5">
@@ -206,33 +199,6 @@ const progressCircleDesc = computed(() => {
 
 // --- Variant-specific computed properties ---
 
-const hasProgress = computed(() => props.goalProgress > 0);
-
-const progressDescription = computed(() => {
-	const loans = props.goalLoans;
-	const s = 'class="tw-text-brand"';
-	const loansTag = `<strong ${s}>${loans} loans</strong>`;
-	const prefix = "You're already on your way to making";
-
-	if (props.categoryId === ID_SUPPORT_ALL) {
-		return `${prefix} ${loansTag} this year`;
-	}
-	if (props.categoryId === ID_CLIMATE_ACTION) {
-		return `${prefix} <strong ${s}>${loans} eco-friendly loans</strong> this year`;
-	}
-	if (props.categoryId === ID_REFUGEE_EQUALITY) {
-		return `${prefix} ${loansTag} to <strong ${s}>refugees</strong> this year`;
-	}
-	if (props.categoryId === ID_BASIC_NEEDS) {
-		return `${prefix} ${loansTag} to <strong ${s}>basic needs</strong> this year`;
-	}
-	if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
-		return `${prefix} ${loansTag} to <strong ${s}>U.S. entrepreneurs</strong> this year`;
-	}
-	// Default: women
-	return `${prefix} ${loansTag} to <strong ${s}>women</strong> this year`;
-});
-
 const isModalVariant = computed(() => props.variant === 'modal');
 
 const containerClass = computed(() => {
@@ -247,20 +213,66 @@ const titleClass = computed(() => {
 	return isModalVariant.value ? 'tw-text-center' : '';
 });
 
-const modalDescriptionText = computed(() => {
-	if (props.categoryId === ID_SUPPORT_ALL) {
-		return `Your goal to support <span class="tw-text-brand">${props.goalLoans} loans</span> begins here.`;
+const modalVariantDescriptionText = computed(() => {
+	const brandClass = 'class="tw-text-brand"';
+	const loans = props.goalLoans;
+	const loansTag = `<span ${brandClass}>${loans}</span>`;
+
+	if (props.isGoalCompleted) {
+		const suffix = 'and turning your commitment into impact.';
+		if (props.categoryId === ID_SUPPORT_ALL) {
+			return `Thank you for supporting ${loansTag} <span ${brandClass}>borrowers</span> ${suffix}`;
+		}
+		if (props.categoryId === ID_CLIMATE_ACTION) {
+			return `Thank you for supporting ${loansTag} <span ${brandClass}>eco-friendly loans</span> ${suffix}`;
+		}
+		if (props.categoryId === ID_REFUGEE_EQUALITY) {
+			return `Thank you for supporting ${loansTag} <span ${brandClass}>refugees</span> ${suffix}`;
+		}
+		if (props.categoryId === ID_BASIC_NEEDS) {
+			return `Thank you for supporting ${loansTag} <span ${brandClass}>basic needs loans</span> ${suffix}`;
+		}
+		if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
+			return `Thank you for supporting ${loansTag} <span ${brandClass}>U.S. entrepreneurs</span> ${suffix}`;
+		}
+		return `Thank you for supporting ${loansTag} <span ${brandClass}>women</span> ${suffix}`;
 	}
 
+	if (props.goalProgress > 0) {
+		const strongTag = `<strong ${brandClass}>${loans} loans</strong>`;
+		const prefix = "You're already on your way to making";
+		if (props.categoryId === ID_SUPPORT_ALL) {
+			return `${prefix} ${strongTag} this year`;
+		}
+		if (props.categoryId === ID_CLIMATE_ACTION) {
+			return `${prefix} <strong ${brandClass}>${loans} eco-friendly loans</strong> this year`;
+		}
+		if (props.categoryId === ID_REFUGEE_EQUALITY) {
+			return `${prefix} ${strongTag} to <strong ${brandClass}>refugees</strong> this year`;
+		}
+		if (props.categoryId === ID_BASIC_NEEDS) {
+			return `${prefix} ${strongTag} to <strong ${brandClass}>basic needs</strong> this year`;
+		}
+		if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
+			return `${prefix} ${strongTag} to <strong ${brandClass}>U.S. entrepreneurs</strong> this year`;
+		}
+		return `${prefix} ${strongTag} to <strong ${brandClass}>women</strong> this year`;
+	}
+
+	if (props.categoryId === ID_SUPPORT_ALL) {
+		return `Your goal to support <span ${brandClass}>${loans} loans</span> begins here.`;
+	}
 	const formattedCategory = props.categoryId === ID_US_ECONOMIC_EQUALITY
 		? props.categoryName
 		: props.categoryName?.toLowerCase() || '';
-
 	// eslint-disable-next-line max-len
-	return `Your goal to support <span class="tw-text-brand">${props.goalLoans} loans</span> to <span class="tw-text-brand"> ${formattedCategory}</span> begins here.`;
+	return `Your goal to support <span ${brandClass}>${loans} loans</span> to <span ${brandClass}>${formattedCategory}</span> begins here.`;
 });
 
 const titleText = computed(() => {
+	if (props.isGoalCompleted && isModalVariant.value) {
+		return 'You did it! You reached your annual goal';
+	}
 	if (props.isUpdatingGoal) {
 		return 'Goal updated!';
 	}
@@ -295,6 +307,9 @@ const descriptionText = computed(() => {
 
 const buttonText = computed(() => {
 	if (isModalVariant.value) {
+		if (props.isGoalCompleted) {
+			return 'Continue my impact';
+		}
 		// MyKiva modal: user already has progress, show tracking CTA
 		if (props.goToUrl === '/mykiva' && props.goalProgress > 0) {
 			return 'Track my progress';

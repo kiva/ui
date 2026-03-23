@@ -54,6 +54,10 @@ const props = defineProps({
 	loanId: {
 		type: Number,
 		default: null
+	},
+	isRepaid: {
+		type: Boolean,
+		default: false
 	}
 });
 
@@ -68,7 +72,7 @@ const steps = [
 	{ text: 'Their loan is funded' },
 	{ text: 'They used the money to improve their life' },
 	// eslint-disable-next-line max-len
-	{ text: `${props.repaymentsStarted ? `First repayment in <span class="tw-text-action"> ${props.weeksToRepay} </span>` : 'They completed their repayments'}` }
+	{ text: `${props.repaymentsStarted && !props.isRepaid ? `First repayment in <span class="tw-text-action"> ${props.weeksToRepay} </span>` : 'They completed their repayments'}` }
 ];
 
 const getDelayStyle = index => {

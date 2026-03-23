@@ -20,10 +20,10 @@
 			Choose an impact area
 		</h2>
 		<GoalSelector
-			v-if="showGoalSelector && goalsV2Enabled"
+			v-if="showGoalSelector"
 			v-show="!showCategories"
 			style="max-width: 612px;"
-			:is-goal-set="isGoalSet"
+			:is-goal-set="loadedSetData"
 			:categories-loan-count="categoriesLoanCount"
 			tracking-category="portfolio"
 			:go-to-url="ctaHref"
@@ -35,6 +35,7 @@
 			:goal-progress="goalProgress"
 			:goal-progress-percentage="goalProgressPercentage"
 			:is-updating-goal="isUpdatingGoal"
+			:is-loading-data="isLoadingData"
 			@set-goal-target="setGoalTarget"
 			@set-goal="$emit('set-goal', $event)"
 			@update-goal="$emit('set-goal', $event)"
@@ -83,7 +84,6 @@ import {
 	inject,
 	watch,
 	toRefs,
-	onMounted,
 } from 'vue';
 import { MOBILE_BREAKPOINT } from '#src/composables/useBadgeModal';
 import useIsMobile from '#src/composables/useIsMobile';
@@ -134,10 +134,6 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	goalsV2Enabled: {
-		type: Boolean,
-		default: false
-	},
 	isGoalSet: {
 		type: Boolean,
 		default: false,
@@ -169,14 +165,16 @@ const props = defineProps({
 	},
 });
 
-const { numberOfLoans, isGoalSet } = toRefs(props);
+const { numberOfLoans, isGoalSet, show } = toRefs(props);
 
 const formStep = ref(1);
-const showCategories = ref(!props.goalsV2Enabled);
+const showCategories = ref(false);
 const selectedLoanNumber = ref(0);
 const isEditing = ref(props.controlledIsEditing);
 // eslint-disable-next-line max-len
 const selectedGoalNumber = ref(numberOfLoans.value ? numberOfLoans.value : 5); // Default goals to 5 loans for initial MVP
+const isLoadingData = ref(true);
+const loadedSetData = ref(false);
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
@@ -199,10 +197,7 @@ const ctaCopy = computed(() => {
 		return 'Continue';
 	}
 
-	if (props.goalsV2Enabled) {
-		return `Set ${yearToDate} goal`;
-	}
-	return formStep.value === 1 ? 'Continue' : 'Set my goal';
+	return `Set ${yearToDate} goal`;
 });
 
 const ctaHref = computed(() => {
@@ -262,13 +257,6 @@ const handleClick = () => {
 		showCategories.value = false;
 		formStep.value = 1;
 		emit('update-goal-choices', selectedCategory.value);
-	} else if (formStep.value === 1 && !props.goalsV2Enabled) {
-		formStep.value += 1;
-		$kvTrackEvent(
-			props.isThanksPage ? 'post-checkout' : 'portfolio',
-			'click',
-			'goal-setting-continue'
-		);
 	} else {
 		const categorySelected = selectedCategory.value?.badgeId;
 		$kvTrackEvent(
@@ -331,22 +319,28 @@ watch(numberOfLoans, newVal => {
 });
 
 watch(isGoalSet, async newVal => {
+	loadedSetData.value = false;
 	if (newVal) {
 		// Load goal data to get current year progress for ctaHref
-		await loadGoalData({ yearlyProgress: props.goalsV2Enabled });
+		await loadGoalData({ yearlyProgress: true });
 		if (showCategories.value) {
 			showCategories.value = false;
 		}
+		loadedSetData.value = true;
 	}
 });
 
-onMounted(async () => {
-	await loadGoalData({ yearlyProgress: props.goalsV2Enabled });
-	const { target, category: goalCategory } = userGoal.value;
-	const storedCategory = categories.find(c => c.badgeId === goalCategory);
-	if (storedCategory && target) {
-		selectedCategory.value = storedCategory;
-		selectedGoalNumber.value = target;
+watch(show, async newVal => {
+	if (newVal) {
+		isLoadingData.value = true;
+		await loadGoalData({ yearlyProgress: true });
+		const { target, category: goalCategory } = userGoal.value;
+		const storedCategory = categories.find(c => c.badgeId === goalCategory);
+		if (storedCategory && target) {
+			selectedCategory.value = storedCategory;
+			selectedGoalNumber.value = target;
+		}
+		isLoadingData.value = false;
 	}
 });
 </script>

@@ -188,6 +188,14 @@ export default [
 		component: () => import('#src/pages/LendingTeams/LendingTeams')
 	},
 	{
+		path: '/teams/my-teams-beta',
+		component: () => import('#src/pages/LendingTeams/MyTeamsPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
 		path: '/lend-by-category/loans-to-women',
 		redirect: '/lend-by-category/women'
 	},
@@ -471,6 +479,14 @@ export default [
 				replace: true, // avoids duplicate history entries
 			});
 		}
+	},
+	{
+		path: '/mykiva/next-steps',
+		component: () => import('#src/pages/MyKiva/MyKivaPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		},
 	},
 	{
 		path: '/portfolio',

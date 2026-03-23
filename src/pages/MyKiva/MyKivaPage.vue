@@ -1,6 +1,24 @@
 <template>
 	<www-page main-class="tw-bg-secondary tw-overflow-hidden tw-relative" class="tw-relative">
+		<MyKivaNextStepsContent
+			v-if="isNextStepsRoute"
+			:user-info="userInfo"
+			:lender="lender"
+			:loans="loans"
+			:total-loans="totalLoans"
+			:hero-slides="heroSlides"
+			:hero-badge-data="heroBadgeData"
+			:hero-tiered-achievements="heroTieredAchievements"
+			:regions-data="regionsData"
+			:goals-v2-enabled="goalsV2Enabled"
+			:post-lending-next-steps-enable="postLendingNextStepsEnable"
+			:latest-loan="latestLoan"
+			:goal-refresh-key="goalRefreshKey"
+			:goal-editing-enable="goalEditingEnable"
+			:user-lent-to-all-regions="userLentToAllRegions"
+		/>
 		<my-kiva-page-content
+			v-else
 			:user-info="userInfo"
 			:lender="lender"
 			:loans="loans"
@@ -13,9 +31,7 @@
 			:user-lent-to-all-regions="userLentToAllRegions"
 			:enable-ai-loan-pills="enableAILoanPills"
 			:sidesheet-loan="sidesheetLoan"
-			:is-next-steps-exp-enabled="true"
 			:goals-v2-enabled="goalsV2Enabled"
-			:show-new-badge-section="showNewBadgeSection"
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
@@ -34,6 +50,7 @@ import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
+import MyKivaNextStepsContent from '#src/pages/MyKiva/MyKivaNextStepsContent';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import { gql } from 'graphql-tag';
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
@@ -52,7 +69,6 @@ import { inject, provide } from 'vue';
 const CURRENT_YEAR = new Date().getFullYear();
 const NEXT_STEPS_REDIRECT_EXP_KEY = 'mykiva_next_steps_redirect';
 const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
-const NEW_BADGE_SECTION_KEY = 'new_badge_section_enable';
 const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
 const GOAL_EDITING_KEY = 'goal_editing_enable';
 
@@ -66,6 +82,7 @@ export default {
 	mixins: [aiLoanPillsTest],
 	components: {
 		MyKivaPageContent,
+		MyKivaNextStepsContent,
 		WwwPage,
 	},
 	setup() {
@@ -98,7 +115,6 @@ export default {
 			userLentToAllRegions: false,
 			sidesheetLoan: {},
 			goalsEntrypointEnable: false,
-			showNewBadgeSection: false,
 			postLendingNextStepsEnable: false,
 			latestLoan: null,
 			goalRefreshKey: 0,
@@ -109,11 +125,17 @@ export default {
 		};
 	},
 	computed: {
+		isNextStepsRoute() {
+			return this.$route.path === '/mykiva/next-steps';
+		},
 		goalsV2Enabled() {
 			return isGoalsV2Enabled(this.goalsEntrypointEnable);
 		},
 		heroBadgeData() {
 			return this.combineBadgeData(this.heroTieredAchievements, this.heroBadgeContentfulData);
+		},
+		regionsData() {
+			return this.lendingStats.regionsData ?? [];
 		},
 	},
 	apollo: {
@@ -249,7 +271,6 @@ export default {
 				this.transactions = myKivaQueryResult.my?.transactions?.values ?? [];
 
 				this.goalsEntrypointEnable = readBoolSetting(myKivaQueryResult, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
-				this.showNewBadgeSection = readBoolSetting(myKivaQueryResult, `general.${NEW_BADGE_SECTION_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.postLendingNextStepsEnable = readBoolSetting(myKivaQueryResult, `general.${POST_LENDING_NEXT_STEPS_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.goalEditingEnable = readBoolSetting(myKivaQueryResult, `general.${GOAL_EDITING_KEY}.value`) ?? false; // eslint-disable-line max-len
 

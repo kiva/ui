@@ -24,7 +24,7 @@
 			/>
 			<!-- Start goal module variations -->
 			<GoalEntrypoint
-				v-if="isNextStepsExpEnabled && !isGuest && goalDataInitialized && isEmptyGoal"
+				v-if="!isGuest && goalDataInitialized && isEmptyGoal"
 				:loading="goalDataLoading"
 				:total-loans="totalLoans"
 				:categories-loan-count="categoriesLoanCount"
@@ -33,7 +33,7 @@
 				:selected-category="selectedCategory"
 				:is-editing="isEditing"
 				:goal-loans="goalTarget"
-				:goal-progress="currGoalProgress"
+				:goal-progress="goalProgress"
 				:goal-progress-percentage="goalProgressPercentage"
 				go-to-url="/mykiva"
 				@edit-goal="editGoalCategory"
@@ -210,10 +210,6 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	isNextStepsExpEnabled: {
-		type: Boolean,
-		default: false,
-	},
 	totalLoans: {
 		type: Number,
 		default: 0,
@@ -238,11 +234,11 @@ const showGoalInProgressModule = ref(false);
 const isGoalSet = ref(false);
 const isEmptyGoal = ref(true);
 const goalTarget = ref(0);
-const currGoalProgress = ref(0);
 
 const {
 	checkCompletedGoal,
 	getPostCheckoutProgressByLoans,
+	goalProgress,
 	goalProgressPercentage,
 	loadGoalData,
 	loading: goalDataLoading,
@@ -261,7 +257,7 @@ const goalTargetLoansAmount = computed(() => userGoal.value?.target ?? 0);
 
 // Initialize goalDataInitialized to track if we've loaded goal data
 // This prevents flash of journey module before loading completes
-const goalDataInitialized = ref(!props.isNextStepsExpEnabled);
+const goalDataInitialized = ref(false);
 
 const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));
 
@@ -297,27 +293,22 @@ const showKivaCardsModule = computed(() => !!printableKivaCards.value.length);
 const showGoalCompletedModule = computed(() => {
 	// Show goal completed module immediately when user achieved their goal
 	// Guests don't have goals, so never show for guests
-	if (!props.isNextStepsExpEnabled || props.isGuest) return false;
+	if (props.isGuest) return false;
 	return userGoalAchievedNow.value;
 });
 const showBadgeModule = computed(() => {
 	// Don't show badge module while loading goal data when experiment is enabled
 	// This prevents the badge module from flashing before goal completed module
-	if (props.isNextStepsExpEnabled && (!goalDataInitialized.value || goalDataLoading.value)) {
+	if (!goalDataInitialized.value || goalDataLoading.value) {
 		return false;
 	}
 	return numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value;
 });
 const showJourneyModule = computed(() => {
 	if (props.achievementsCompleted || showBadgeModule.value) return false;
-	// If experiment enabled, wait for initialization and loading to complete, and goal not achieved
-	if (props.isNextStepsExpEnabled) {
-		if (!goalDataInitialized.value || goalDataLoading.value) return false;
-		if (showGoalInProgressModule.value) return false;
-		return !userGoalAchievedNow.value;
-	}
-	// If experiment disabled, show journey module immediately
-	return true;
+	if (!goalDataInitialized.value || goalDataLoading.value) return false;
+	if (showGoalInProgressModule.value) return false;
+	return !userGoalAchievedNow.value;
 });
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
 
@@ -417,29 +408,31 @@ const handleUpdateGoalChoices = updatedCategory => {
 };
 
 onMounted(async () => {
-	if (props.isNextStepsExpEnabled) {
-		await loadGoalData({ yearlyProgress: true });
-		const year = new Date().getFullYear();
-		// Loans already in totalLoanCount after checkout
-		const { totalProgress, hasContributingLoans } = await getPostCheckoutProgressByLoans({
-			loans: props.loans,
-			year,
-		});
-		currGoalProgress.value = totalProgress;
-		await checkCompletedGoal({ currentGoalProgress: totalProgress });
-		goalDataInitialized.value = true;
-		isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
+	await loadGoalData({ yearlyProgress: true });
+	const year = new Date().getFullYear();
+	// Loans already in totalLoanCount after checkout
+	const { totalProgress, hasContributingLoans } = await getPostCheckoutProgressByLoans({
+		loans: props.loans,
+		year,
+	});
+	await checkCompletedGoal({ currentGoalProgress: totalProgress });
+	goalDataInitialized.value = true;
+	isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
 
-		// Show goal in progress module when:
-		// - User is logged in (not a guest)
-		// - User has an in-progress goal (not completed or expired)
-		// - Goal not completed this checkout
-		// - Current checkout loans contributed to goal progress
-		showGoalInProgressModule.value = !props.isGuest
-			&& userGoal.value?.status === GOAL_STATUS.IN_PROGRESS
-			&& !userGoalAchievedNow.value
-			&& hasContributingLoans;
+	// Show goal in progress module when:
+	// - User is logged in (not a guest)
+	// - User has an in-progress goal (not completed or expired)
+	// - Goal not completed this checkout
+	// - Current checkout loans contributed to goal progress
+	showGoalInProgressModule.value = !props.isGuest
+		&& userGoal.value?.status === GOAL_STATUS.IN_PROGRESS
+		&& !userGoalAchievedNow.value
+		&& hasContributingLoans;
+	if (!props.isGuest
+		&& userGoal.value?.status === GOAL_STATUS.IN_PROGRESS) {
+		$kvTrackEvent('post-checkout', 'show', userGoal.value?.category, goalProgress?.value, userGoal.value?.target);
 	}
+
 	showConfetti();
 	const isOptInLoan = showOptInModule.value && props.loans.length > 0;
 	const isOptInDonate = showOptInModule.value && onlyDonations.value;
