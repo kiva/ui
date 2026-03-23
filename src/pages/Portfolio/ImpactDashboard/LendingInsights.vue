@@ -144,7 +144,7 @@
 							</dt>
 							<router-link
 								v-if="nextPercentileMsg && currentYearPercentile < 99"
-								class="percentiles-stat-link"
+								class="percentiles-stat-link tw-mt-auto"
 								to="/lend-category-beta"
 								v-kv-track-event="[
 									'portfolio',
