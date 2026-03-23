@@ -10,7 +10,6 @@
 			:hero-badge-data="heroBadgeData"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:regions-data="regionsData"
-			:goals-v2-enabled="goalsV2Enabled"
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
@@ -31,7 +30,6 @@
 			:user-lent-to-all-regions="userLentToAllRegions"
 			:enable-ai-loan-pills="enableAILoanPills"
 			:sidesheet-loan="sidesheetLoan"
-			:goals-v2-enabled="goalsV2Enabled"
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
@@ -58,7 +56,7 @@ import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSid
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import useGoalData, { LAST_YEAR_KEY, isGoalsV2Enabled } from '#src/composables/useGoalData';
+import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import useBadgeData, {
 	applyFreshProgressToAchievements,
 	FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
@@ -68,7 +66,6 @@ import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const NEXT_STEPS_REDIRECT_EXP_KEY = 'mykiva_next_steps_redirect';
-const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
 const GOAL_EDITING_KEY = 'goal_editing_enable';
 
@@ -114,7 +111,6 @@ export default {
 			userInfo: {},
 			userLentToAllRegions: false,
 			sidesheetLoan: {},
-			goalsEntrypointEnable: false,
 			postLendingNextStepsEnable: false,
 			latestLoan: null,
 			goalRefreshKey: 0,
@@ -127,9 +123,6 @@ export default {
 	computed: {
 		isNextStepsRoute() {
 			return this.$route.path === '/mykiva/next-steps';
-		},
-		goalsV2Enabled() {
-			return isGoalsV2Enabled(this.goalsEntrypointEnable);
 		},
 		heroBadgeData() {
 			return this.combineBadgeData(this.heroTieredAchievements, this.heroBadgeContentfulData);
@@ -270,7 +263,6 @@ export default {
 				};
 				this.transactions = myKivaQueryResult.my?.transactions?.values ?? [];
 
-				this.goalsEntrypointEnable = readBoolSetting(myKivaQueryResult, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.postLendingNextStepsEnable = readBoolSetting(myKivaQueryResult, `general.${POST_LENDING_NEXT_STEPS_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.goalEditingEnable = readBoolSetting(myKivaQueryResult, `general.${GOAL_EDITING_KEY}.value`) ?? false; // eslint-disable-line max-len
 
@@ -348,31 +340,28 @@ export default {
 				},
 			});
 
-			// Goals V2 (yearly progress) is enabled if flag is true OR year >= 2026
-			if (this.goalsV2Enabled) {
-				// Param to force goals renewal in an specific year
-				const { renewYear } = this.$route.query;
-				const { showRenewedAnnualGoalToast } = await this.renewAnnualGoal(
-					renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined
-				);
+			// Param to force goals renewal in an specific year
+			const { renewYear } = this.$route.query;
+			const { showRenewedAnnualGoalToast } = await this.renewAnnualGoal(
+				renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined
+			);
 
-				// Fix goals incorrectly marked as completed due to progress double-counting bug
-				const { wasFixed } = await this.fixIncorrectlyCompletedGoals({
-					freshProgressLoans: this.recentTransactionLoans,
-					tieredAchievements: this.currentYearTieredAchievements,
-					transactions: this.transactions,
-				});
+			// Fix goals incorrectly marked as completed due to progress double-counting bug
+			const { wasFixed } = await this.fixIncorrectlyCompletedGoals({
+				freshProgressLoans: this.recentTransactionLoans,
+				tieredAchievements: this.currentYearTieredAchievements,
+				transactions: this.transactions,
+			});
 
-				if (showRenewedAnnualGoalToast || wasFixed) {
-					if (showRenewedAnnualGoalToast) {
-						// eslint-disable-next-line max-len
-						this.$showTipMsg('It\'s time for your 2026 impact goal - a fresh start and new opportunity to make a difference.');
-					}
-					// Ensure goal card is shown again after renewal or fix
-					await this.setHideGoalCardPreference(false);
-					// Trigger goal data refresh in child components
-					this.goalRefreshKey += 1;
+			if (showRenewedAnnualGoalToast || wasFixed) {
+				if (showRenewedAnnualGoalToast) {
+					// eslint-disable-next-line max-len
+					this.$showTipMsg('It\'s time for your 2026 impact goal - a fresh start and new opportunity to make a difference.');
 				}
+				// Ensure goal card is shown again after renewal or fix
+				await this.setHideGoalCardPreference(false);
+				// Trigger goal data refresh in child components
+				this.goalRefreshKey += 1;
 			}
 		} catch (error) {
 			logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
@@ -380,7 +369,6 @@ export default {
 
 		await this.loadGoalData({
 			year: CURRENT_YEAR,
-			yearlyProgress: this.goalsV2Enabled,
 			freshProgressLoans: this.recentTransactionLoans,
 			tieredAchievements: this.currentYearTieredAchievements,
 			transactions: this.transactions,

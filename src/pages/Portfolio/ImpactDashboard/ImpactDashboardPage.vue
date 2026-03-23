@@ -23,7 +23,7 @@
 						/>
 						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
 						<GoalEntrypoint
-							v-if="goalsV2Enabled && isEmptyGoal"
+							v-if="isEmptyGoal"
 						/>
 						<lending-insights />
 						<my-giving-funds-card
@@ -62,7 +62,7 @@ import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSeco
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { gql } from 'graphql-tag';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import { isGoalsV2Enabled, GOAL_STATUS, GOALS_V2_START_YEAR } from '#src/composables/useGoalData';
+import { GOAL_STATUS, GOALS_START_YEAR } from '#src/composables/useGoalData';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { getIsMyKivaEnabled, hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
@@ -88,8 +88,6 @@ import YourDonations from './YourDonations';
 import TeamChallenge from './TeamChallenge';
 import LoanCards from './LoanCards';
 import GoalEntrypoint from './GoalEntrypoint';
-
-const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 
 export default {
 	name: 'ImpactDashboardPage',
@@ -128,7 +126,6 @@ export default {
 			teamsChallengeEnable: false,
 			userPreferences: null,
 			goalsEntrypointEnable: false,
-			goalsV2Enabled: false,
 			isEmptyGoal: true,
 			showMyGivingFundsCard: false,
 			userId: null,
@@ -204,19 +201,14 @@ export default {
 			this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
 			this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
 
-			this.goalsEntrypointEnable = readBoolSetting(portfolioQueryData, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
-			// Goals V2 (yearly progress) is enabled if flag is true OR year >= 2026
-			this.goalsV2Enabled = isGoalsV2Enabled(this.goalsEntrypointEnable);
-			if (this.goalsV2Enabled) {
-				const parsedPrefs = JSON.parse(this.userPreferences?.preferences || '{}');
-				const goals = parsedPrefs.goals || [];
-				const goalInProgress = goals.some(goal => goal.status === GOAL_STATUS.IN_PROGRESS);
-				const goalV2Achieved = goals.some(goal => {
-					const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
-					return goal?.status === GOAL_STATUS.COMPLETED && goalYear === GOALS_V2_START_YEAR;
-				});
-				this.isEmptyGoal = !goalInProgress && !goalV2Achieved;
-			}
+			const parsedPrefs = JSON.parse(this.userPreferences?.preferences || '{}');
+			const goals = parsedPrefs.goals || [];
+			const goalInProgress = goals.some(goal => goal.status === GOAL_STATUS.IN_PROGRESS);
+			const goalAchieved = goals.some(goal => {
+				const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
+				return goal?.status === GOAL_STATUS.COMPLETED && goalYear === GOALS_START_YEAR;
+			});
+			this.isEmptyGoal = !goalInProgress && !goalAchieved;
 		}
 	},
 	async mounted() {
