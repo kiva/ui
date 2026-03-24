@@ -643,9 +643,7 @@ export default {
 }
 
 .stats-overall-container {
-	@apply tw-grid tw-grid-cols-12 tw-items-stretch tw-gap-1;
-
-	grid-template-rows: 1fr 1fr 1fr;
+	@apply tw-grid tw-grid-cols-12 tw-grid-rows-3 tw-items-stretch tw-gap-1;
 }
 
 @screen lg {
@@ -654,14 +652,12 @@ export default {
 	}
 
 	.stats-overall-container > div {
-		@apply tw-min-w-0;
-
-		height: auto;
-		flex: 1 1 0;
+		@apply tw-min-w-0 tw-h-auto tw-flex-1;
 	}
 
 	.stats-percentile-container {
-		background-size: auto;
+		@apply tw-bg-auto;
+
 		background-position: right 0 bottom 0;
 	}
 
@@ -675,14 +671,14 @@ export default {
 }
 
 .stats-percentile-container {
+	@apply tw-bg-no-repeat tw-bg-bottom;
+
 	background-image: url('/src/assets/images/my-kiva/peak-bg.png');
-	background-repeat: no-repeat;
-	background-position: bottom center;
 	background-size: 100% 76px;
 }
 
 :deep([role=tablist]) {
-	overflow: hidden;
+	@apply tw-overflow-hidden;
 }
 
 .percentiles-stat-placeholder {
@@ -708,8 +704,10 @@ export default {
 }
 
 .stats-percentile-container .percentiles-stat-link {
-	@apply tw-text-base lg:tw-text-small tw-text-left lg:tw-text-right tw-flex tw-items-center lg:tw-block;
+	@apply tw-text-base lg:tw-text-small tw-text-left lg:tw-text-right
+		tw-flex tw-items-center lg:tw-block;
 
+	/* Raw CSS needed to override tw-font-medium from @apply, which loses specificity to other utilities */
 	font-weight: 500;
 }
 
