@@ -485,7 +485,6 @@ export default {
 			newAtbExpEnabled: false,
 			myKivaFlagEnabled: false,
 			isMyKivaEnabled: false,
-			thanksPageGoalsEntrypointEnable: false,
 			lenderLoansIds: [],
 			mdiGiftOutline,
 			isBanditUpsellExpEnabled: false,
@@ -574,8 +573,6 @@ export default {
 			this.newAtbExpEnabled = readBoolSetting(data, 'general.new_atb_experience_enable.value');
 
 			this.myKivaFlagEnabled = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
-
-			this.thanksPageGoalsEntrypointEnable = readBoolSetting(data, 'general.thankyou_page_goals_enable.value');
 		}
 	},
 	beforeRouteEnter(to, from, next) {

@@ -34,7 +34,6 @@ describe('LendingStats', () => {
 	describe('goalRefreshKey watcher', () => {
 		it('refreshes preferences and goal progress when key increments', async () => {
 			const context = {
-				goalsV2Enabled: true,
 				loadPreferences: vi.fn().mockResolvedValue({}),
 				loadGoalData: vi.fn().mockResolvedValue(),
 			};
@@ -44,7 +43,6 @@ describe('LendingStats', () => {
 			expect(context.loadPreferences).toHaveBeenCalledTimes(1);
 			expect(context.loadPreferences).toHaveBeenCalledWith('network-only');
 			expect(context.loadGoalData).toHaveBeenCalledTimes(1);
-			expect(context.loadGoalData).toHaveBeenCalledWith({ yearlyProgress: true });
 		});
 	});
 
@@ -52,7 +50,6 @@ describe('LendingStats', () => {
 		it('stores goal preferences with delayed local update for goalsV2', async () => {
 			const preferences = { category: 'women', target: 5 };
 			const context = {
-				goalsV2Enabled: true,
 				storeGoalPreferences: vi.fn().mockResolvedValue(),
 				loadGoalData: vi.fn().mockResolvedValue(),
 				newGoalPrefs: null,
@@ -69,24 +66,6 @@ describe('LendingStats', () => {
 			expect(context.showGoalModal).toBe(true);
 			expect(context.loadGoalData).not.toHaveBeenCalled();
 		});
-
-		it('refreshes and closes modal for legacy goals flow', async () => {
-			const preferences = { category: 'women', target: 5 };
-			const context = {
-				goalsV2Enabled: false,
-				storeGoalPreferences: vi.fn().mockResolvedValue(),
-				loadGoalData: vi.fn().mockResolvedValue(),
-				newGoalPrefs: null,
-				isGoalSet: false,
-				showGoalModal: true,
-			};
-
-			await LendingStats.methods.setGoal.call(context, preferences);
-
-			expect(context.storeGoalPreferences).toHaveBeenCalledWith(preferences, true);
-			expect(context.loadGoalData).toHaveBeenCalledWith({ yearlyProgress: false });
-			expect(context.showGoalModal).toBe(false);
-		});
 	});
 
 	describe('closeGoalModal', () => {
@@ -96,7 +75,6 @@ describe('LendingStats', () => {
 				$kvTrackEvent: vi.fn(),
 				isGoalSet: true,
 				recordedGoalSet: false,
-				goalsV2Enabled: true,
 				newGoalPrefs: { category: 'women', target: 5 },
 				loadGoalData: vi.fn().mockResolvedValue(),
 			};
@@ -106,7 +84,6 @@ describe('LendingStats', () => {
 			expect(context.showGoalModal).toBe(false);
 			expect(context.$kvTrackEvent).toHaveBeenCalledWith('portfolio', 'click', 'close-goals');
 			expect(context.loadGoalData).toHaveBeenCalledTimes(1);
-			expect(context.loadGoalData).toHaveBeenCalledWith({ yearlyProgress: true });
 		});
 	});
 });

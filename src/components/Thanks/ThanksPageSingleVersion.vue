@@ -408,7 +408,7 @@ const handleUpdateGoalChoices = updatedCategory => {
 };
 
 onMounted(async () => {
-	await loadGoalData({ yearlyProgress: true });
+	await loadGoalData();
 	const year = new Date().getFullYear();
 	// Loans already in totalLoanCount after checkout
 	const { totalProgress, hasContributingLoans } = await getPostCheckoutProgressByLoans({

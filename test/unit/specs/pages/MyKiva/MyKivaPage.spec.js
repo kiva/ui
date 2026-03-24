@@ -220,39 +220,6 @@ describe('MyKivaPage', () => {
 	});
 
 	describe('mounted', () => {
-		it('passes precomputed recent transaction loans to loadGoalData for fresh progress', async () => {
-			const context = {
-				apollo: {
-					watchQuery: vi.fn(() => ({
-						subscribe: vi.fn(),
-					}))
-				},
-				$route: { query: {} },
-				goalsV2Enabled: false,
-				loadGoalData: vi.fn().mockResolvedValue(),
-				loans: [{ id: 999 }],
-				currentYearTieredAchievements: [{ id: 'climate-action' }],
-				transactions: [],
-				recentTransactionLoans: [{ id: 101 }, { id: 201 }],
-				userInfo: {},
-				renewAnnualGoal: vi.fn().mockResolvedValue({ showRenewedAnnualGoalToast: false }),
-				fixIncorrectlyCompletedGoals: vi.fn().mockResolvedValue({ wasFixed: false }),
-				setHideGoalCardPreference: vi.fn().mockResolvedValue(),
-				goalRefreshKey: 0,
-			};
-
-			await MyKivaPage.mounted.call(context);
-
-			expect(context.loadGoalData).toHaveBeenCalledTimes(1);
-			expect(context.loadGoalData).toHaveBeenCalledWith({
-				year: expect.any(Number),
-				yearlyProgress: false,
-				freshProgressLoans: context.recentTransactionLoans,
-				tieredAchievements: context.currentYearTieredAchievements,
-				transactions: context.transactions
-			});
-		});
-
 		it('does not recompute fresh progress during mounted goals maintenance', async () => {
 			const applyMyKivaFreshProgress = vi.fn();
 			const renewAnnualGoal = vi.fn().mockResolvedValue({ showRenewedAnnualGoalToast: false });
@@ -264,7 +231,6 @@ describe('MyKivaPage', () => {
 					}))
 				},
 				$route: { query: {} },
-				goalsV2Enabled: true,
 				loadGoalData: vi.fn().mockResolvedValue(),
 				applyMyKivaFreshProgress,
 				renewAnnualGoal,

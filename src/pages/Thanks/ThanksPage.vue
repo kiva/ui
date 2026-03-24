@@ -99,7 +99,7 @@ import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVers
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import { LAST_YEAR_KEY, GOALS_V2_START_YEAR } from '#src/composables/useGoalData';
+import { LAST_YEAR_KEY, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import userYearlyProgressQuery from '#src/graphql/query/userYearlyProgress.graphql';
 import { clearPromoCreditBannerCookie, getPromoCreditBannerCookie } from '#src/util/promoCreditCookie';
 
@@ -220,7 +220,7 @@ export default {
 						fetchPostCheckoutAchievements(client, loanIds),
 						client.query({
 							query: userYearlyProgressQuery,
-							variables: { loanIds, year: GOALS_V2_START_YEAR },
+							variables: { loanIds, year: GOALS_CURRENT_YEAR },
 						}),
 					]);
 				}).catch(errorResponse => {
@@ -371,7 +371,7 @@ export default {
 		try {
 			const response = this.apollo.readQuery({
 				query: userYearlyProgressQuery,
-				variables: { loanIds, year: GOALS_V2_START_YEAR },
+				variables: { loanIds, year: GOALS_CURRENT_YEAR },
 			});
 			const progress = response?.postCheckoutAchievements?.yearlyProgress || [];
 			const womenProgress = progress.find(p => p.achievementId === ID_WOMENS_EQUALITY);
