@@ -32,7 +32,8 @@
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder
 					v-if="loading"
-					class="stat-placeholder" style="width: 4rem;"
+					class="stat-placeholder"
+					style="width: 4rem;"
 				/>
 				<dd v-else class="stat-value">
 					{{ $filters.numeral(lifetimeNumberOfLoans, '0,0') }}
@@ -85,9 +86,7 @@
 						Your lending insights
 					</h3>
 					<div class="percentiles-controls">
-						<div
-							class="percentiles-banner"
-						>
+						<div class="percentiles-banner">
 							<p
 								class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0
 										tw-leading-normal"
@@ -131,12 +130,11 @@
 					/>
 					<kv-grid
 						v-else
-						as="dl" class="stats-overall-container"
+						as="dl"
+						class="stats-overall-container"
 					>
 						<!-- Lending percentile -->
-						<div
-							class="tw-col-span-12 stats-percentile-container percentiles-card"
-						>
+						<div class="tw-col-span-12 stats-percentile-container percentiles-card">
 							<dd class="percentiles-stat-def">
 								Lending percentile this year
 							</dd>
@@ -231,9 +229,7 @@
 					<!-- Lifetime Panel -->
 					<kv-grid as="dl" class="stats-overall-container">
 						<!-- Lending percentile -->
-						<div
-							class="tw-col-span-12 stats-percentile-container percentiles-card"
-						>
+						<div class="tw-col-span-12 stats-percentile-container percentiles-card">
 							<kv-loading-placeholder
 								v-if="loading"
 								class="percentiles-stat-placeholder" style="width: 7rem;"
@@ -531,9 +527,7 @@ export default {
 				}).then(({ lendingStatsData, percentileStatsData }) => {
 					const percentileData = percentileStatsData?.lend?.percentilePerYear || {};
 					this.currentYearPercentile = toNumber(percentileData.percentile);
-					this.formattedCurrentYearPercentile = this.currentYearPercentile > 0
-						? numeral(this.currentYearPercentile).format('0o')
-						: '0%';
+					this.formattedCurrentYearPercentile = numeral(this.currentYearPercentile).format('0o');
 
 					const updatedPercentile = () => {
 						const current = toNumber(percentileData.percentile);
