@@ -79,7 +79,7 @@
 		</section>
 
 		<div
-			v-if="showPostLendingNextStepsCards && postLendingNextStepsEnable"
+			v-if="postLendingNextStepsEnable"
 		>
 			<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 				Build impact beyond your loan
@@ -133,7 +133,7 @@
 				/>
 			</section>
 
-			<template v-if="!userLentToAllRegions">
+			<template v-if="showPostLendingNextStepsCards && !userLentToAllRegions">
 				<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 					Keep your impact going
 				</h3>
@@ -205,7 +205,7 @@
 		</section>
 
 		<div
-			v-if="!showPostLendingNextStepsCards && !postLendingNextStepsEnable"
+			v-if="!postLendingNextStepsEnable"
 		>
 			<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 				Build impact beyond your loan
