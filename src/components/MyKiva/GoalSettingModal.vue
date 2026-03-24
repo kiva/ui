@@ -322,7 +322,7 @@ watch(isGoalSet, async newVal => {
 	loadedSetData.value = false;
 	if (newVal) {
 		// Load goal data for ctaHref
-		await loadGoalData();
+		await loadGoalData({ fetchPolicy: 'network-only' });
 		if (showCategories.value) {
 			showCategories.value = false;
 		}

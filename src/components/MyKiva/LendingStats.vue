@@ -225,6 +225,7 @@ import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 
+import logReadQueryError from '#src/util/logReadQueryError';
 import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
 import GoalSettingModal from './GoalSettingModal';
@@ -445,7 +446,13 @@ export default {
 			if (this.isUpdatingGoal) {
 				await this.updateCurrentGoal(this.userGoal, preferences);
 			} else {
-				await this.storeGoalPreferences(preferences, false);
+				try {
+					await this.storeGoalPreferences(preferences);
+				} catch (error) {
+					this.$showTipMsg('There was a problem setting up your goal', 'error');
+					logReadQueryError(error, 'MyKivaPage setting up goal');
+					return;
+				}
 			}
 			this.newGoalPrefs = preferences;
 			this.isGoalSet = true;

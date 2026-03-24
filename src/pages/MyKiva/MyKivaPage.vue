@@ -364,6 +364,7 @@ export default {
 				this.goalRefreshKey += 1;
 			}
 		} catch (error) {
+			this.$showTipMsg('There was a problem loading your preferences', 'error');
 			logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
 		}
 

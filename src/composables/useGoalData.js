@@ -10,7 +10,7 @@ import useGoalDataYearlyProgressQuery from '#src/graphql/query/useGoalDataYearly
 import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import logFormatter from '#src/util/logFormatter';
 import { getTransactionTimestamp } from '#src/util/myKivaUtils';
-import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
+import { createUserPreferences, updateUserPreferences, setMyKivaGoal } from '#src/util/userPreferenceUtils';
 
 import useBadgeData, {
 	calculateFreshProgressAdjustments,
@@ -95,6 +95,7 @@ export default function useGoalData({ apollo } = {}) {
 		}
 
 		const categoryProgress = progress?.find(n => n.id === goal?.category);
+		console.error('HP > goalProgress updated', JSON.parse(JSON.stringify({ categoryProgress })));
 		return categoryProgress?.progressForYear || 0;
 	});
 
@@ -252,6 +253,7 @@ export default function useGoalData({ apollo } = {}) {
 				fetchPolicy: 'no-cache',
 			});
 			const progress = response.data.userAchievementProgress.tieredLendingAchievements;
+			console.error('HP > getCategoriesProgressByYear', JSON.stringify({ year, progress }));
 			return progress;
 		} catch (error) {
 			logFormatter(error, 'Failed to fetch categories progress by year');
@@ -596,8 +598,10 @@ export default function useGoalData({ apollo } = {}) {
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		const goals = parsedPrefs.goals || [];
 		const goalIndex = goals.findIndex(g => g.goalName === updates.goalName);
+		let goalToStore;
 		if (goalIndex !== -1) {
 			goals[goalIndex] = { ...goals[goalIndex], ...updates };
+			goalToStore = goals[goalIndex];
 		} else {
 			// When creating a new goal, set loanTotalAtStart to current all-time progress for the category
 			// This allows tracking progress from the point the goal was set
@@ -609,14 +613,15 @@ export default function useGoalData({ apollo } = {}) {
 				const categoryProgress = currentYearProgress.value?.find(n => n.id === updates.category);
 				loanTotalAtStart = categoryProgress?.totalProgressToAchievement || 0;
 			}
-			goals.push({ ...updates, loanTotalAtStart });
+			goalToStore = { ...updates, loanTotalAtStart };
+			goals.push(goalToStore);
 		}
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			{ goals }
-		);
+		await setMyKivaGoal(apolloClient, {
+			category: goalToStore.category,
+			target: goalToStore.target,
+			dateStarted: goalToStore.dateStarted,
+			status: goalToStore.status,
+		});
 		if (updateLocalState) {
 			setGoalState({ goals }); // Refresh local state after update
 		}
@@ -691,9 +696,10 @@ export default function useGoalData({ apollo } = {}) {
 		year = new Date().getFullYear(),
 		tieredAchievements = [], // Tiered achievements from achievement service to calculate fresh progress
 		transactions = [], // User transactions to get purchase dates for year filtering
+		fetchPolicy = 'cache-first', // Apollo fetch policy for loading preferences
 	} = {}) {
 		loading.value = true;
-		const parsedPrefs = await loadPreferences();
+		const parsedPrefs = await loadPreferences(fetchPolicy);
 
 		// Calculate fresh progress adjustments if loans and achievements provided
 		let freshProgressAdjustments = { allTime: {}, yearSpecific: {} };
@@ -761,12 +767,15 @@ export default function useGoalData({ apollo } = {}) {
 		if (expiredGoals.some(goal => goal.status === GOAL_STATUS.EXPIRED)) {
 			parsedPrefs.goals = expiredGoals;
 			parsedPrefs.goalsRenewedDate = today.toISOString();
-			await updateUserPreferences(
-				apolloClient,
-				userPreferences.value,
-				parsedPrefs,
-				{ goals: expiredGoals }
-			);
+			if (expiredGoals.length > 0) {
+				const firstExpired = expiredGoals[0];
+				await setMyKivaGoal(apolloClient, {
+					category: firstExpired.category,
+					target: firstExpired.target,
+					dateStarted: firstExpired.dateStarted,
+					status: firstExpired.status,
+				});
+			}
 			setGoalState({ goals: expiredGoals });
 		}
 
@@ -858,12 +867,13 @@ export default function useGoalData({ apollo } = {}) {
 			return goal;
 		});
 
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			{ goals: updatedGoals }
-		);
+		const fixedGoal = updatedGoals.find(g => g.goalName === goalToFix.goalName);
+		await setMyKivaGoal(apolloClient, {
+			category: fixedGoal.category,
+			target: fixedGoal.target,
+			dateStarted: fixedGoal.dateStarted,
+			status: fixedGoal.status,
+		});
 		setGoalState({ goals: updatedGoals });
 
 		return { wasFixed: true };
