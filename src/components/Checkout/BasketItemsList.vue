@@ -163,7 +163,9 @@ export default {
 			const hasUsLoan = loansInBasket.some(reservation => reservation?.loan?.__typename === 'LoanDirect');
 			userUsLoanCheckout(hasUsLoan);
 
-			this.loadAndCalculateGoalProgress();
+			if (this.isLoggedIn) {
+				this.loadAndCalculateGoalProgress();
+			}
 		}
 	},
 	methods: {
@@ -259,7 +261,9 @@ export default {
 		};
 	},
 	async mounted() {
-		await this.loadAndCalculateGoalProgress();
+		if (this.isLoggedIn) {
+			await this.loadAndCalculateGoalProgress();
+		}
 		this.loadingGoalData = false;
 	},
 };
