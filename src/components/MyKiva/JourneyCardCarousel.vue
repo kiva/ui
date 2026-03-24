@@ -26,11 +26,9 @@
 				#[`slide${index}`]
 				:key="index"
 			>
-				<component
+				<NextYearGoalCard
 					v-if="showGoalCard(index)"
-					:is="goalCardComponent"
 					:goal-progress="goalProgress"
-					:hero-slides="slides"
 					:loading="goalProgressLoading"
 					:user-goal="userGoal"
 					:prev-year-loans="womenLoansLastYear"
@@ -444,11 +442,6 @@ const showGoalCard = idx => {
 const womenLoansLastYear = computed(() => {
 	return getCategoryLoansLastYear(props.heroTieredAchievements);
 });
-
-const goalCardComponent = computed(() => {
-	return NextYearGoalCard;
-});
-
 </script>
 
 <style lang="postcss" scoped>
