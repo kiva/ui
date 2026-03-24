@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import useGoalData, { GOAL_STATUS, GOALS_START_YEAR } from '#src/composables/useGoalData';
+import useGoalData, { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import {
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
@@ -18,9 +18,10 @@ vi.mock('#src/util/userPreferenceUtils', () => ({
 	updateUserPreferences: vi.fn(() => Promise.resolve()),
 }));
 
-describe('GOALS_START_YEAR', () => {
-	it('should be 2026', () => {
-		expect(GOALS_START_YEAR).toBe(2026);
+describe('GOALS_CURRENT_YEAR', () => {
+	it('should be the current year', () => {
+		const currentYear = new Date().getFullYear();
+		expect(GOALS_CURRENT_YEAR).toBe(currentYear);
 	});
 });
 
@@ -3069,14 +3070,14 @@ describe('useGoalData', () => {
 			expect(result).toEqual({ wasFixed: false });
 		});
 
-		it('should not fix goals from years before GOALS_START_YEAR', async () => {
+		it('should not fix goals from years before GOALS_CURRENT_YEAR', async () => {
 			const mockPrefs = {
 				goals: [{
 					goalName: 'goal-support-all-2025',
 					category: ID_SUPPORT_ALL,
 					target: 10,
 					status: 'completed',
-					dateStarted: '2025-01-15T00:00:00Z', // 2025 is before GOALS_START_YEAR
+					dateStarted: '2025-01-15T00:00:00Z', // 2025 is before GOALS_CURRENT_YEAR
 				}],
 			};
 

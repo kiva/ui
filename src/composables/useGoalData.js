@@ -55,8 +55,8 @@ export const GOAL_STATUS = {
 	IN_PROGRESS: 'in-progress',
 };
 
-export const LAST_YEAR_KEY = new Date().getFullYear() - 1;
-export const GOALS_START_YEAR = 2026;
+export const GOALS_CURRENT_YEAR = new Date().getFullYear();
+export const LAST_YEAR_KEY = GOALS_CURRENT_YEAR - 1;
 export const COMPLETED_GOAL_THRESHOLD = 100;
 export const HALF_GOAL_THRESHOLD = 50;
 
@@ -567,7 +567,7 @@ export default function useGoalData({ apollo } = {}) {
 
 		// If the updated category is support-all, we need to load the latest yearly loan count to set accurate progress
 		if (updatedGoal?.category === ID_SUPPORT_ALL) {
-			const stats = await getLoanStatsByYear(GOALS_START_YEAR, 'network-only');
+			const stats = await getLoanStatsByYear(GOALS_CURRENT_YEAR, 'network-only');
 			yearlyLoanCount.value = stats?.count || 0;
 		}
 
@@ -807,7 +807,7 @@ export default function useGoalData({ apollo } = {}) {
 		const goalToFix = goals.find(goal => {
 			if (goal.status !== GOAL_STATUS.COMPLETED && !isGoalCardHidden) return false;
 			const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
-			return goalYear === currentYear && currentYear >= GOALS_START_YEAR;
+			return goalYear === currentYear;
 		});
 
 		if (!goalToFix) {
