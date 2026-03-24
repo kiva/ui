@@ -491,7 +491,7 @@ const backToCopy = computed(() => {
 });
 
 onMounted(async () => {
-	await loadGoalData({ yearlyProgress: true });
+	await loadGoalData();
 
 	if (isEmailFlow.value) {
 		await handleEmailFlow();
