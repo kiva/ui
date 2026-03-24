@@ -1113,6 +1113,7 @@ export default {
 					promiseArray.push(this.getLoansByAmountLeft());
 
 					Promise.all(promiseArray).then(result => {
+						this.continueButtonState = 'active';
 						const loansArray = result || [];
 						const loansIndex = loansArray.findIndex(a => (a.loans || []).length > 0 && a.loans.filter(loan => !this.addedUpsellLoans.includes(loan.id)).length > 0); // eslint-disable-line max-len
 						const loans = loansArray[loansIndex]?.loans || [];
@@ -1129,11 +1130,13 @@ export default {
 						}
 					});
 				}).catch(e => {
+					this.continueButtonState = 'active';
 					logReadQueryError(e, 'getCheckoutAlmostFundedRecommendationQuery');
 				});
 			} else {
 				this.getLoansByAmountLeft()
 					.then(result => {
+						this.continueButtonState = 'active';
 						const loans = result?.loans || [];
 						this.upsellLoan = loans.filter(loan => !this.addedUpsellLoans.includes(loan.id))[0] || {};
 					});
