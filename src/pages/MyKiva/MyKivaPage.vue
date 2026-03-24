@@ -350,11 +350,11 @@ export default {
 
 			// Goals V2 (yearly progress) is enabled if flag is true OR year >= 2026
 			if (this.goalsV2Enabled) {
-				// Param to force goals renewal in an specific year
+				// Param to force goals renewal in a specific year
 				const { renewYear } = this.$route.query;
-				const { showRenewedAnnualGoalToast } = await this.renewAnnualGoal(
-					renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined
-				);
+				const today = renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined;
+
+				const { showRenewedAnnualGoalToast } = await this.renewAnnualGoal(today);
 
 				// Fix goals incorrectly marked as completed due to progress double-counting bug
 				const { wasFixed } = await this.fixIncorrectlyCompletedGoals({
@@ -363,10 +363,15 @@ export default {
 					transactions: this.transactions,
 				});
 
+				if (process.env.NODE_ENV !== 'production') {
+					console.log('[Goals] annual renewal result', { today, showRenewedAnnualGoalToast, wasFixed });
+				}
+
 				if (showRenewedAnnualGoalToast || wasFixed) {
 					if (showRenewedAnnualGoalToast) {
+						const goalYear = (today || new Date()).getFullYear();
 						// eslint-disable-next-line max-len
-						this.$showTipMsg('It\'s time for your 2026 impact goal - a fresh start and new opportunity to make a difference.');
+						this.$showTipMsg(`It's time for your ${goalYear} impact goal - a fresh start and new opportunity to make a difference.`);
 					}
 					// Ensure goal card is shown again after renewal or fix
 					await this.setHideGoalCardPreference(false);
