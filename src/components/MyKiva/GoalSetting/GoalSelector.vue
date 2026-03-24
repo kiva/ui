@@ -432,7 +432,7 @@ const updateGoalOptions = () => {
 
 	// Use last year loans as the base if user had more loans last year than year-to-date,
 	// otherwise use year-to-date as the base
-	if (lastYearLoans > ytdLoans) {
+	if (lastYearLoans > ytdLoans && lastYearLoans > 2) {
 		const suggestion1 = lastYearLoans;
 		// Ensure each suggestion is at least 1 more than the previous
 		const suggestion2 = Math.max(Math.ceil(suggestion1 * 1.25), suggestion1 + 1);

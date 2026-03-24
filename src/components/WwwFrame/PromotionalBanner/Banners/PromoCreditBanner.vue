@@ -238,8 +238,10 @@ export default {
 	created() {
 		const { useCDNCaching } = this.$renderConfig;
 		this.isUserDataLoading = useCDNCaching;
-		// Check for kiva_lending_credit cookie on component creation
-		this.kivaLendingCreditFromCookie = getKivaLendingCreditCookie(this.cookieStore);
+		// Check for kiva_lending_credit cookie on component creation, only if cookieStore is available
+		if (this.cookieStore) {
+			this.kivaLendingCreditFromCookie = getKivaLendingCreditCookie(this.cookieStore);
+		}
 	},
 	computed: {
 		isLoggedIn() {

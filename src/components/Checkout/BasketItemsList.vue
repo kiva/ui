@@ -163,7 +163,9 @@ export default {
 			const hasUsLoan = loansInBasket.some(reservation => reservation?.loan?.__typename === 'LoanDirect');
 			userUsLoanCheckout(hasUsLoan);
 
-			this.loadAndCalculateGoalProgress();
+			if (this.isLoggedIn) {
+				this.loadAndCalculateGoalProgress();
+			}
 		}
 	},
 	methods: {
@@ -180,7 +182,7 @@ export default {
 			return this.isLoggedIn || (!this.isLoggedIn && !this.hasEverLoggedIn);
 		},
 		async loadAndCalculateGoalProgress() {
-			await this.loadGoalData({ yearlyProgress: true });
+			await this.loadGoalData();
 			// Calculate progress including basket loans (don't increment counter, just check current state)
 			const year = new Date().getFullYear();
 			const { totalProgress } = await this.getPostCheckoutProgressByLoans({
@@ -259,7 +261,9 @@ export default {
 		};
 	},
 	async mounted() {
-		await this.loadAndCalculateGoalProgress();
+		if (this.isLoggedIn) {
+			await this.loadAndCalculateGoalProgress();
+		}
 		this.loadingGoalData = false;
 	},
 };

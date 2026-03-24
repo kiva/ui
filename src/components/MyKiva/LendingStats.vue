@@ -40,7 +40,6 @@
 					:slides="heroSlides"
 					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
-					:goals-v2-enabled="goalsV2Enabled"
 					:categories-loan-count="categoriesLoanCount"
 					:hide-goal-card="hideCompletedGoalCard"
 					:post-lending-next-steps-enable="postLendingNextStepsEnable"
@@ -175,7 +174,6 @@
 			:slides="heroSlides"
 			:user-goal-achieved="userGoalAchieved"
 			:user-goal="userGoal"
-			:goals-v2-enabled="goalsV2Enabled"
 			:hide-goal-card="hideCompletedGoalCard"
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
@@ -277,10 +275,6 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		goalsV2Enabled: {
-			type: Boolean,
-			default: false
-		},
 		postLendingNextStepsEnable: {
 			type: Boolean,
 			default: false
@@ -327,7 +321,7 @@ export default {
 			return this.nextStepsExperimentVariant === 'b';
 		},
 		showRegionExperience() {
-			return !this.postLendingNextStepsEnable && !this.userLentToAllRegions;
+			return !this.showPostLendingNextStepsCards && !this.userLentToAllRegions;
 		},
 		totalRegions() {
 			return this.regionsData.length;
@@ -418,7 +412,7 @@ export default {
 		async goalRefreshKey(newVal, oldVal) {
 			if (newVal !== oldVal && newVal > 0) {
 				await Promise.all([
-					this.loadGoalData({ yearlyProgress: this.goalsV2Enabled }),
+					this.loadGoalData(),
 					this.loadPreferences('network-only'),
 				]);
 			}
@@ -448,21 +442,13 @@ export default {
 			this.$router.push(`/lend/filter?country=${region?.countries.join(',')}`);
 		},
 		async setGoal(preferences) {
-			// For goalsV2, pass false to not update local state yet
-			// This delays the UI update until the modal is closed
-			const updateLocalState = !this.goalsV2Enabled;
 			if (this.isUpdatingGoal) {
 				await this.updateCurrentGoal(this.userGoal, preferences);
 			} else {
-				await this.storeGoalPreferences(preferences, updateLocalState);
+				await this.storeGoalPreferences(preferences, false);
 			}
 			this.newGoalPrefs = preferences;
 			this.isGoalSet = true;
-			if (!this.goalsV2Enabled) {
-				// For legacy goals, close modal and refresh immediately
-				await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
-				this.showGoalModal = false;
-			}
 		},
 		async closeGoalModal() {
 			if (this.isUpdatingGoal && !this.isGoalSet) {
@@ -486,7 +472,7 @@ export default {
 			if (this.isGoalSet) {
 				if (!this.isUpdatingGoal) {
 					// Refresh goal data to update the main card with the ring
-					await this.loadGoalData({ yearlyProgress: this.goalsV2Enabled });
+					await this.loadGoalData();
 				}
 
 				// Avoid showing category choice step when closing the modal

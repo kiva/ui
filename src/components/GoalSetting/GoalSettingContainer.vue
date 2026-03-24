@@ -454,7 +454,7 @@ async function handleEmailFlow() {
 	}
 
 	if (existingGoal ?? newGoalPrefs) {
-		await loadGoalData({ yearlyProgress: true });
+		await loadGoalData();
 	} else {
 		logFormatter('GoalSettingContainer: no goal found for email flow', 'error', { category });
 	}
@@ -482,7 +482,7 @@ const backToCopy = computed(() => {
 });
 
 onMounted(async () => {
-	await loadGoalData({ yearlyProgress: true });
+	await loadGoalData();
 
 	if (isEmailFlow.value) {
 		await handleEmailFlow();

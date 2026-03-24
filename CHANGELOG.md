@@ -1,3 +1,17 @@
+## [3.63.0-rc.1](https://github.com/kiva/ui/compare/v3.62.0...v3.63.0-rc.1) (2026-03-24)
+
+### 🎉 New Features
+
+* remove ty page goals flag code ([#6765](https://github.com/kiva/ui/issues/6765)) ([513b59f](https://github.com/kiva/ui/commit/513b59fb8d6f09346e64ce863aa808520e7d22a5))
+
+### 🐛 Bugfixes
+
+* check lending credit cookie if cookieStore is defined ([3d2c525](https://github.com/kiva/ui/commit/3d2c5255f083a9071e390171133f0cb013270af4))
+* guest checkout button issue from recent features ([#6769](https://github.com/kiva/ui/issues/6769)) ([163db42](https://github.com/kiva/ui/commit/163db42868bc45450bedf8a767d6b08e2737c245))
+* never show less than 3 for new goal CTA options ([#6762](https://github.com/kiva/ui/issues/6762)) ([5935730](https://github.com/kiva/ui/commit/5935730d1438b14f4ba314abce3bc60b95a4d2a0))
+* only hide region experience when post cards are shown ([06bcac9](https://github.com/kiva/ui/commit/06bcac929149e9749b7b7d44338dd6d9cef8848e))
+* portfolio percentile work for super lenders ([#6766](https://github.com/kiva/ui/issues/6766)) ([ad48b1e](https://github.com/kiva/ui/commit/ad48b1eab1b3fd91d15412b1d41ee674ff69769e))
+
 ## [3.62.0](https://github.com/kiva/ui/compare/v3.61.0...v3.62.0) (2026-03-23)
 
 ### 🎉 New Features

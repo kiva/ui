@@ -485,7 +485,6 @@ export default {
 			newAtbExpEnabled: false,
 			myKivaFlagEnabled: false,
 			isMyKivaEnabled: false,
-			thanksPageGoalsEntrypointEnable: false,
 			lenderLoansIds: [],
 			mdiGiftOutline,
 			isBanditUpsellExpEnabled: false,
@@ -574,8 +573,6 @@ export default {
 			this.newAtbExpEnabled = readBoolSetting(data, 'general.new_atb_experience_enable.value');
 
 			this.myKivaFlagEnabled = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
-
-			this.thanksPageGoalsEntrypointEnable = readBoolSetting(data, 'general.thankyou_page_goals_enable.value');
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -1116,6 +1113,7 @@ export default {
 					promiseArray.push(this.getLoansByAmountLeft());
 
 					Promise.all(promiseArray).then(result => {
+						this.continueButtonState = 'active';
 						const loansArray = result || [];
 						const loansIndex = loansArray.findIndex(a => (a.loans || []).length > 0 && a.loans.filter(loan => !this.addedUpsellLoans.includes(loan.id)).length > 0); // eslint-disable-line max-len
 						const loans = loansArray[loansIndex]?.loans || [];
@@ -1132,11 +1130,13 @@ export default {
 						}
 					});
 				}).catch(e => {
+					this.continueButtonState = 'active';
 					logReadQueryError(e, 'getCheckoutAlmostFundedRecommendationQuery');
 				});
 			} else {
 				this.getLoansByAmountLeft()
 					.then(result => {
+						this.continueButtonState = 'active';
 						const loans = result?.loans || [];
 						this.upsellLoan = loans.filter(loan => !this.addedUpsellLoans.includes(loan.id))[0] || {};
 					});
