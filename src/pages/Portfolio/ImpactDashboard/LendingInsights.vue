@@ -154,6 +154,10 @@
 								]"
 							>
 								{{ nextPercentileMsg }}
+								<kv-material-icon
+									class="tw-ml-0.5 tw-w-2 tw-h-2 lg:tw-hidden"
+									:icon="mdiArrowRight"
+								/>
 							</router-link>
 							<span
 								v-else-if="currentYearPercentile === 99"
@@ -696,7 +700,7 @@ export default {
 }
 
 .stats-percentile-container .percentiles-stat-link {
-	@apply tw-text-base lg:tw-text-small tw-text-left lg:tw-text-right;
+	@apply tw-text-base lg:tw-text-small tw-text-left lg:tw-text-right tw-flex tw-items-center lg:tw-block;
 
 	font-weight: 500;
 }
