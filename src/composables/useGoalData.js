@@ -95,7 +95,6 @@ export default function useGoalData({ apollo } = {}) {
 		}
 
 		const categoryProgress = progress?.find(n => n.id === goal?.category);
-		console.error('HP > goalProgress updated', JSON.parse(JSON.stringify({ categoryProgress })));
 		return categoryProgress?.progressForYear || 0;
 	});
 
@@ -253,7 +252,6 @@ export default function useGoalData({ apollo } = {}) {
 				fetchPolicy: 'no-cache',
 			});
 			const progress = response.data.userAchievementProgress.tieredLendingAchievements;
-			console.error('HP > getCategoriesProgressByYear', JSON.stringify({ year, progress }));
 			return progress;
 		} catch (error) {
 			logFormatter(error, 'Failed to fetch categories progress by year');
