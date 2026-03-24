@@ -60,7 +60,7 @@ describe('LendingStats', () => {
 			await LendingStats.methods.setGoal.call(context, preferences);
 
 			expect(context.storeGoalPreferences).toHaveBeenCalledTimes(1);
-			expect(context.storeGoalPreferences).toHaveBeenCalledWith(preferences, false);
+			expect(context.storeGoalPreferences).toHaveBeenCalledWith(preferences);
 			expect(context.newGoalPrefs).toEqual(preferences);
 			expect(context.isGoalSet).toBe(true);
 			expect(context.showGoalModal).toBe(true);
