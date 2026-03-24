@@ -85,13 +85,29 @@ export function bonusBalance(data) {
  * @return {boolean} - True if there are promotional credits available, false otherwise.
  */
 export function hasPromoSession(data) {
+	// 1. Lending reward offered
 	if (data?.shop?.lendingRewardOffered) {
 		return true;
 	}
+	// 2. Basket has free credits
 	if (data?.shop?.basket?.hasFreeCredits) {
 		return true;
 	}
+	// 3. Bonus balance (from basket or user account)
 	if (bonusBalance(data) > 0) {
+		return true;
+	}
+	// 4. Managed Account Promo (promoCampaign.managedAccount.pageId)
+	if (data?.shop?.promoCampaign?.managedAccount?.pageId) {
+		return true;
+	}
+	// 5. UPC Campaign Banner (promoCampaign.managedAccount.campaignInfo.upc, partnerName, upcCampaignLink)
+	const managedAccount = data?.shop?.promoCampaign?.managedAccount;
+	const upc = managedAccount?.campaignInfo?.upc;
+	const partnerName = managedAccount?.strategicPartner?.partnerName;
+	const partnerPage = managedAccount?.strategicPartner?.partnerContentfulPage;
+	const upcCampaignLink = (partnerPage && upc) ? `/impact-dashboard/${partnerPage}/upc/${upc}` : null;
+	if (upc && partnerName && upcCampaignLink) {
 		return true;
 	}
 	return false;
