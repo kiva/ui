@@ -117,7 +117,7 @@
 			</template>
 			<template #tabPanels>
 				<div
-					v-if="activeTab === 'ytd'"
+					v-if="activeTab === TAB_YTD"
 					id="kv-tab-panel-ytd"
 					class="tw--mt-1"
 					role="tabpanel"
@@ -144,7 +144,7 @@
 								{{ formattedCurrentYearPercentile }}
 							</dt>
 							<router-link
-								v-if="nextPercentileMsg && currentYearPercentile < 99"
+								v-if="nextPercentileMsg && currentYearPercentile < MAX_PERCENTILE"
 								class="percentiles-stat-link tw-mt-auto"
 								to="/lend-category-beta"
 								v-kv-track-event="[
@@ -160,7 +160,7 @@
 								/>
 							</router-link>
 							<span
-								v-else-if="currentYearPercentile === 99"
+								v-else-if="currentYearPercentile === MAX_PERCENTILE"
 								class="percentiles-stat-link tw-mt-auto"
 							>
 								Thank you!
@@ -358,6 +358,12 @@ const LENDING_INSIGHTS_LIFETIME_QUERY = gql`query lendingInsights {
 	}
 }`;
 
+const TAB_YTD = 'ytd';
+const TAB_LIFETIME = 'lifetime';
+const MAX_PERCENTILE = 99;
+const SUPER_LENDER_THRESHOLD = 10000;
+const DEFAULT_NEXT_THRESHOLD = '$25';
+
 const toNumber = value => {
 	const parsedValue = numeral(value ?? 0).value();
 	return Number.isFinite(parsedValue) ? parsedValue : 0;
@@ -377,6 +383,8 @@ export default {
 	serverCacheKey: () => getCacheKey('LendingInsights'),
 	data() {
 		return {
+			TAB_YTD,
+			MAX_PERCENTILE,
 			mdiArrowRight,
 			mdiClockOutline,
 			loading: true,
@@ -384,7 +392,7 @@ export default {
 			lifetimeLoadingPromise: null,
 			hasCurrentYearStats: false,
 			hasLifetimeStats: false,
-			activeTab: 'ytd',
+			activeTab: TAB_YTD,
 			currentYearAmountLent: 0,
 			currentYearCountryCount: 0,
 			currentYearNumberOfLoans: 0,
@@ -408,7 +416,7 @@ export default {
 			return new Date().getFullYear();
 		},
 		lifetimeAmountLentOver10K() {
-			return (this.lifetimeAmountLentValue ?? 0) >= 10000;
+			return (this.lifetimeAmountLentValue ?? 0) >= SUPER_LENDER_THRESHOLD;
 		},
 	},
 	apollo: {
@@ -448,8 +456,8 @@ export default {
 			}
 		},
 		setActiveTab(tab) {
-			this.activeTab = tab === 'lifetime' || tab === 1 ? 'lifetime' : 'ytd';
-			if (this.activeTab === 'ytd') {
+			this.activeTab = tab === TAB_LIFETIME || tab === 1 ? TAB_LIFETIME : TAB_YTD;
+			if (this.activeTab === TAB_YTD) {
 				this.$kvTrackEvent(
 					'portfolio',
 					'show',
@@ -533,8 +541,8 @@ export default {
 							return '';
 						}
 						const next25 = toNumber(percentileData.percentileNext25);
-						let nextPercentile = current < 99 ? current + 1 : 99;
-						let nextThreshold = '$25';
+						let nextPercentile = current < MAX_PERCENTILE ? current + 1 : MAX_PERCENTILE;
+						let nextThreshold = DEFAULT_NEXT_THRESHOLD;
 
 						if (current === next25 && percentileData.threshold && percentileData.nextPercentileThreshold) {
 							nextThreshold = numeral(
@@ -546,7 +554,7 @@ export default {
 						}
 
 						const percentage = 100 - nextPercentile;
-						return nextPercentile === 99
+						return nextPercentile === MAX_PERCENTILE
 							? ''
 							: `${nextThreshold} more to reach top ${percentage}%`;
 					};
