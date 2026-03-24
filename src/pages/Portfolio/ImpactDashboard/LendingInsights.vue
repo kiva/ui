@@ -318,7 +318,7 @@
 				:icon="mdiClockOutline"
 			/>
 			<p class="tw-pl-0.5 tw-text-small tw-flex-shrink-0">
-				{{ daysUntilDeadline }} days to make contribution this year
+				{{ daysUntilDeadline }} more days to make a contribution this year
 			</p>
 		</div>
 	</async-portfolio-section>
