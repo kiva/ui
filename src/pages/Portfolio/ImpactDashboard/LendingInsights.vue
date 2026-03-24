@@ -10,7 +10,7 @@
 		</h2>
 		<kv-grid as="dl" class="stats-container">
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
-				<kv-loading-placeholder v-if="loading" class="stat-placeholder tw-w-28" />
+				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
 				<dt v-show="!loading" class="stat-value">
 					{{ lifetimeAmountLent }}
 				</dt>
@@ -32,7 +32,7 @@
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
 				<kv-loading-placeholder
 					v-if="loading"
-					class="stat-placeholder tw-w-16"
+					class="stat-placeholder" style="width: 4rem;"
 				/>
 				<dd v-else class="stat-value">
 					{{ $filters.numeral(lifetimeNumberOfLoans, '0,0') }}
@@ -42,7 +42,7 @@
 				</dt>
 			</div>
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
-				<kv-loading-placeholder v-if="loading" class="stat-placeholder tw-w-16" />
+				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 4rem;" />
 				<dt v-show="!loading" class="stat-value">
 					{{ lifetimeCountryCount }}
 				</dt>
@@ -62,7 +62,7 @@
 				</router-link>
 			</div>
 			<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-3">
-				<kv-loading-placeholder v-if="loading" class="stat-placeholder tw-w-28" />
+				<kv-loading-placeholder v-if="loading" class="stat-placeholder" style="width: 7rem;" />
 				<dt v-show="!loading" class="stat-value">
 					{{ lifetimePercentile }}
 				</dt>
@@ -236,7 +236,7 @@
 						>
 							<kv-loading-placeholder
 								v-if="loading"
-								class="percentiles-stat-placeholder tw-w-28"
+								class="percentiles-stat-placeholder" style="width: 7rem;"
 							/>
 							<dd v-show="!loading" class="percentiles-stat-def">
 								Lending percentile
@@ -253,7 +253,7 @@
 						>
 							<kv-loading-placeholder
 								v-if="loading"
-								class="percentiles-stat-placeholder tw-w-28"
+								class="percentiles-stat-placeholder" style="width: 7rem;"
 							/>
 							<dd class="percentiles-stat-def">
 								Total amount lent
@@ -277,7 +277,7 @@
 						>
 							<kv-loading-placeholder
 								v-if="loading"
-								class="percentiles-stat-placeholder tw-w-16"
+								class="percentiles-stat-placeholder" style="width: 4rem;"
 							/>
 							<dt
 								v-else
@@ -296,7 +296,7 @@
 						>
 							<kv-loading-placeholder
 								v-if="loading"
-								class="percentiles-stat-placeholder tw-w-16"
+								class="percentiles-stat-placeholder" style="width: 4rem;"
 							/>
 							<dd v-show="!loading" class="percentiles-stat-def">
 								Countries supported
