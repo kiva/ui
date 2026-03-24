@@ -1,6 +1,6 @@
 <template>
 	<async-portfolio-section
-		v-if="!lifetimeAmountLentOver10K"
+		v-if="!totalDepositsOver10K"
 		@visible="fetchLifetimeStats"
 		data-testid="lending-insights"
 		class="!tw-bg-eco-green-4"
@@ -341,6 +341,7 @@ const LENDING_INSIGHTS_LIFETIME_QUERY = gql`query lendingInsights {
 		lendingStats {
 			id
 			amountLentPercentile
+			totalAmountDeposited
 			lentTo {
 				countries {
 					totalCount
@@ -397,6 +398,7 @@ export default {
 			nextPercentileMsg: '',
 			lifetimeAmountLent: 0,
 			lifetimeAmountLentValue: null,
+			totalDepositsValue: null,
 			lifetimeCountryCount: 0,
 			lifetimeNumberOfLoans: 0,
 			lifetimePercentile: 0,
@@ -411,8 +413,8 @@ export default {
 		yearToDate() {
 			return new Date().getFullYear();
 		},
-		lifetimeAmountLentOver10K() {
-			return (this.lifetimeAmountLentValue ?? 0) >= SUPER_LENDER_THRESHOLD;
+		totalDepositsOver10K() {
+			return (this.totalDepositsValue ?? 0) >= SUPER_LENDER_THRESHOLD;
 		},
 	},
 	apollo: {
@@ -425,7 +427,7 @@ export default {
 	},
 	methods: {
 		syncLoadingState() {
-			this.loading = this.lifetimeAmountLentOver10K
+			this.loading = this.totalDepositsOver10K
 				? !(this.hasLifetimeStats && this.hasCurrentYearStats)
 				: !this.hasLifetimeStats;
 		},
@@ -434,6 +436,7 @@ export default {
 			const amountOfLoans = numeral(amount);
 
 			this.lifetimeAmountLentValue = amount;
+			this.totalDepositsValue = toNumber(data?.my?.lendingStats?.totalAmountDeposited);
 			this.lifetimeAmountLent = amountOfLoans.format('$0,0[.]00');
 			this.lifetimeCountryCount = toNumber(data?.my?.lendingStats?.lentTo?.countries?.totalCount);
 			this.lifetimeNumberOfLoans = toNumber(data?.my?.userStats?.number_of_loans);
