@@ -397,7 +397,6 @@ export default {
 			currentYearPercentile: null,
 			nextPercentileMsg: '',
 			lifetimeAmountLent: 0,
-			lifetimeAmountLentValue: null,
 			totalDepositsValue: null,
 			lifetimeCountryCount: 0,
 			lifetimeNumberOfLoans: 0,
@@ -435,7 +434,6 @@ export default {
 			const amount = toNumber(data?.my?.userStats?.amount_of_loans);
 			const amountOfLoans = numeral(amount);
 
-			this.lifetimeAmountLentValue = amount;
 			this.totalDepositsValue = toNumber(data?.my?.lendingStats?.totalAmountDeposited);
 			this.lifetimeAmountLent = amountOfLoans.format('$0,0[.]00');
 			this.lifetimeCountryCount = toNumber(data?.my?.lendingStats?.lentTo?.countries?.totalCount);
