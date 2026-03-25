@@ -744,24 +744,7 @@ export default function useGoalData({ apollo } = {}) {
 		const renewedYear = parsedPrefs.goalsRenewedDate ? new Date(parsedPrefs.goalsRenewedDate).getFullYear() : null;
 		const areGoalsRenewed = goals.some(goal => goal.status === GOAL_STATUS.EXPIRED);
 
-		if (process.env.NODE_ENV !== 'production') {
-			console.log('[Goals] renewAnnualGoal start', {
-				today: today.toISOString(),
-				currentYear,
-				renewedYear,
-				areGoalsRenewed,
-				goals: goals.map(g => ({ status: g.status, dateStarted: g.dateStarted, category: g.category })),
-			});
-		}
-
 		if (renewedYear > currentYear || areGoalsRenewed) {
-			if (process.env.NODE_ENV !== 'production') {
-				console.log('[Goals] renewAnnualGoal early return — already renewed or goals already expired', {
-					renewedYear,
-					currentYear,
-					areGoalsRenewed,
-				});
-			}
 			return {
 				expiredGoals: [],
 				showRenewedAnnualGoalToast: false,
@@ -784,13 +767,6 @@ export default function useGoalData({ apollo } = {}) {
 			return null;
 		}).filter(goal => goal !== null);
 
-		if (process.env.NODE_ENV !== 'production') {
-			console.log('[Goals] renewAnnualGoal processing', {
-				hadCompletedGoal,
-				expiredGoals: expiredGoals.map(g => ({ status: g.status, dateStarted: g.dateStarted })),
-			});
-		}
-
 		if (expiredGoals.some(goal => goal.status === GOAL_STATUS.EXPIRED)) {
 			parsedPrefs.goals = expiredGoals;
 			parsedPrefs.goalsRenewedDate = today.toISOString();
@@ -807,13 +783,6 @@ export default function useGoalData({ apollo } = {}) {
 		}
 
 		const showRenewedAnnualGoalToast = !!expiredGoals.length && !hadCompletedGoal;
-
-		if (process.env.NODE_ENV !== 'production') {
-			console.log('[Goals] renewAnnualGoal result', {
-				expiredGoals: expiredGoals.length,
-				showRenewedAnnualGoalToast,
-			});
-		}
 
 		return {
 			expiredGoals,
