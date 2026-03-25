@@ -231,7 +231,6 @@ describe('MyKivaPage', () => {
 					}))
 				},
 				$route: { query: {} },
-				$showTipMsg: vi.fn(),
 				loadGoalData: vi.fn().mockResolvedValue(),
 				applyMyKivaFreshProgress,
 				renewAnnualGoal,
