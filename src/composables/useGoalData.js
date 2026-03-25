@@ -10,7 +10,7 @@ import useGoalDataYearlyProgressQuery from '#src/graphql/query/useGoalDataYearly
 import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import logFormatter from '#src/util/logFormatter';
 import { getTransactionTimestamp } from '#src/util/myKivaUtils';
-import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
+import { createUserPreferences, updateUserPreferences, setMyKivaGoal } from '#src/util/userPreferenceUtils';
 
 import useBadgeData, {
 	calculateFreshProgressAdjustments,
@@ -55,21 +55,10 @@ export const GOAL_STATUS = {
 	IN_PROGRESS: 'in-progress',
 };
 
-export const LAST_YEAR_KEY = new Date().getFullYear() - 1;
-export const GOALS_V2_START_YEAR = 2026;
+export const GOALS_CURRENT_YEAR = new Date().getFullYear();
+export const LAST_YEAR_KEY = GOALS_CURRENT_YEAR - 1;
 export const COMPLETED_GOAL_THRESHOLD = 100;
 export const HALF_GOAL_THRESHOLD = 50;
-
-/**
- * Check if Goals V2 should be enabled based on the flag or current year
- * Goals V2 is enabled if the flag is true OR the year is 2026 or later
- * @param {boolean} flagEnabled - The thankyou_page_goals_enable flag value
- * @returns {boolean} True if Goals V2 should be enabled
- */
-export function isGoalsV2Enabled(flagEnabled) {
-	const currentYear = new Date().getFullYear();
-	return flagEnabled || currentYear >= GOALS_V2_START_YEAR;
-}
 
 function getGoalDisplayName(target, category) {
 	if (!target || target > 1) return GOAL_DISPLAY_MAP[category] || 'loans';
@@ -95,30 +84,18 @@ export default function useGoalData({ apollo } = {}) {
 	const userGoal = ref(null);
 	const userGoalAchievedNow = ref(false);
 	const userPreferences = ref(null);
-	const useYearlyProgress = ref(false); // Default to all-time progress (flag disabled behavior)
 
 	// --- Computed Properties ---
 
 	const goalProgress = computed(() => {
 		const goal = userGoal.value;
 		const progress = currentYearProgress.value;
-		// When flag is enabled (useYearlyProgress = true), use yearly progress
-		// When flag is disabled (useYearlyProgress = false), use all-time progress minus loanTotalAtStart
 		if (goal?.category === ID_SUPPORT_ALL) {
-			if (useYearlyProgress.value) {
-				// Use yearlyLoanCount from loanStatsByYear query for accurate current year total
-				return yearlyLoanCount.value || 0;
-			}
-			const loanTotalAtStart = goal?.loanTotalAtStart || 0;
-			return Math.max(0, (totalLoanCount.value || 0) - loanTotalAtStart);
+			return yearlyLoanCount.value || 0;
 		}
+
 		const categoryProgress = progress?.find(n => n.id === goal?.category);
-		if (useYearlyProgress.value) {
-			return categoryProgress?.progressForYear || 0;
-		}
-		const allTimeProgress = categoryProgress?.totalProgressToAchievement || 0;
-		const loanTotalAtStart = goal?.loanTotalAtStart || 0;
-		return Math.max(0, allTimeProgress - loanTotalAtStart);
+		return categoryProgress?.progressForYear || 0;
 	});
 
 	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
@@ -588,10 +565,9 @@ export default function useGoalData({ apollo } = {}) {
 			goals[goalIndex] = { ...updatedGoal };
 		}
 
-		// If the updated category is support-all and using yearly progress is true,
-		// we need to load the latest yearly loan count to set accurate progress
-		if (updatedGoal?.category === ID_SUPPORT_ALL && useYearlyProgress.value) {
-			const stats = await getLoanStatsByYear(GOALS_V2_START_YEAR, 'network-only');
+		// If the updated category is support-all, we need to load the latest yearly loan count to set accurate progress
+		if (updatedGoal?.category === ID_SUPPORT_ALL) {
+			const stats = await getLoanStatsByYear(GOALS_CURRENT_YEAR, 'network-only');
 			yearlyLoanCount.value = stats?.count || 0;
 		}
 
@@ -620,8 +596,10 @@ export default function useGoalData({ apollo } = {}) {
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		const goals = parsedPrefs.goals || [];
 		const goalIndex = goals.findIndex(g => g.goalName === updates.goalName);
+		let goalToStore;
 		if (goalIndex !== -1) {
 			goals[goalIndex] = { ...goals[goalIndex], ...updates };
+			goalToStore = goals[goalIndex];
 		} else {
 			// When creating a new goal, set loanTotalAtStart to current all-time progress for the category
 			// This allows tracking progress from the point the goal was set
@@ -633,14 +611,15 @@ export default function useGoalData({ apollo } = {}) {
 				const categoryProgress = currentYearProgress.value?.find(n => n.id === updates.category);
 				loanTotalAtStart = categoryProgress?.totalProgressToAchievement || 0;
 			}
-			goals.push({ ...updates, loanTotalAtStart });
+			goalToStore = { ...updates, loanTotalAtStart };
+			goals.push(goalToStore);
 		}
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			{ goals }
-		);
+		await setMyKivaGoal(apolloClient, {
+			category: goalToStore.category,
+			target: goalToStore.target,
+			dateStarted: goalToStore.dateStarted,
+			status: goalToStore.status,
+		});
 		if (updateLocalState) {
 			setGoalState({ goals }); // Refresh local state after update
 		}
@@ -677,10 +656,9 @@ export default function useGoalData({ apollo } = {}) {
 	/**
 	 * Check and correct negative goal progress
 	 * This could happen due to a race condition with postCheckoutAchievements
-	 * Only applies when yearlyProgress is false (all-time progress mode)
 	 */
 	async function correctNegativeProgress() {
-		if (useYearlyProgress.value || !userGoal.value || !currentYearProgress?.value?.length) return;
+		if (!userGoal.value || !currentYearProgress?.value?.length) return;
 
 		const goal = userGoal.value;
 		if (goal.category === ID_SUPPORT_ALL) return;
@@ -714,13 +692,12 @@ export default function useGoalData({ apollo } = {}) {
 		freshProgressLoans = [], // Loans used to reconcile missing achievement progress (e.g. recent transactions)
 		supportAllCounterLoans = [], // Loans used to initialize in-page support-all counter state
 		year = new Date().getFullYear(),
-		yearlyProgress = false, // thankyou_page_goals_enable flag - when true uses yearly, when false uses all-time
 		tieredAchievements = [], // Tiered achievements from achievement service to calculate fresh progress
 		transactions = [], // User transactions to get purchase dates for year filtering
+		fetchPolicy = 'cache-first', // Apollo fetch policy for loading preferences
 	} = {}) {
 		loading.value = true;
-		useYearlyProgress.value = yearlyProgress;
-		const parsedPrefs = await loadPreferences();
+		const parsedPrefs = await loadPreferences(fetchPolicy);
 
 		// Calculate fresh progress adjustments if loans and achievements provided
 		let freshProgressAdjustments = { allTime: {}, yearSpecific: {} };
@@ -735,8 +712,8 @@ export default function useGoalData({ apollo } = {}) {
 
 		await loadProgress(year, freshProgressAdjustments);
 		setGoalState(parsedPrefs);
-		// Load yearly loan count for ID_SUPPORT_ALL goals when using yearly progress
-		if (yearlyProgress && userGoal.value?.category === ID_SUPPORT_ALL) {
+		// Load yearly loan count for ID_SUPPORT_ALL goals to set initial progress state accurately
+		if (userGoal.value?.category === ID_SUPPORT_ALL) {
 			const stats = await getLoanStatsByYear(year, 'network-only');
 			yearlyLoanCount.value = stats?.count || 0;
 		}
@@ -793,12 +770,15 @@ export default function useGoalData({ apollo } = {}) {
 		if (expiredGoals.some(goal => goal.status === GOAL_STATUS.EXPIRED)) {
 			parsedPrefs.goals = expiredGoals;
 			parsedPrefs.goalsRenewedDate = today.toISOString();
-			await updateUserPreferences(
-				apolloClient,
-				userPreferences.value,
-				parsedPrefs,
-				{ goals: expiredGoals }
-			);
+			if (expiredGoals.length > 0) {
+				const firstExpired = expiredGoals[0];
+				await setMyKivaGoal(apolloClient, {
+					category: firstExpired.category,
+					target: firstExpired.target,
+					dateStarted: firstExpired.dateStarted,
+					status: firstExpired.status,
+				});
+			}
 			setGoalState({ goals: expiredGoals });
 		}
 
@@ -838,7 +818,7 @@ export default function useGoalData({ apollo } = {}) {
 		const goalToFix = goals.find(goal => {
 			if (goal.status !== GOAL_STATUS.COMPLETED && !isGoalCardHidden) return false;
 			const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
-			return goalYear === currentYear && currentYear >= GOALS_V2_START_YEAR;
+			return goalYear === currentYear;
 		});
 
 		if (!goalToFix) {
@@ -867,9 +847,6 @@ export default function useGoalData({ apollo } = {}) {
 			actualYearlyProgress = categoryProgress?.progressForYear || 0;
 		}
 
-		// Ensure yearly progress mode is set so goalProgress computed uses progressForYear
-		useYearlyProgress.value = true;
-
 		// Check if goal is actually complete
 		if (actualYearlyProgress >= goalToFix.target) {
 			// Goal is legitimately complete
@@ -892,12 +869,13 @@ export default function useGoalData({ apollo } = {}) {
 			return goal;
 		});
 
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			{ goals: updatedGoals }
-		);
+		const fixedGoal = updatedGoals.find(g => g.goalName === goalToFix.goalName);
+		await setMyKivaGoal(apolloClient, {
+			category: fixedGoal.category,
+			target: fixedGoal.target,
+			dateStarted: fixedGoal.dateStarted,
+			status: fixedGoal.status,
+		});
 		setGoalState({ goals: updatedGoals });
 
 		return { wasFixed: true };

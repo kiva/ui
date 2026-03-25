@@ -10,7 +10,6 @@
 			:hero-badge-data="heroBadgeData"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:regions-data="regionsData"
-			:goals-v2-enabled="goalsV2Enabled"
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
@@ -31,7 +30,6 @@
 			:user-lent-to-all-regions="userLentToAllRegions"
 			:enable-ai-loan-pills="enableAILoanPills"
 			:sidesheet-loan="sidesheetLoan"
-			:goals-v2-enabled="goalsV2Enabled"
 			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
@@ -68,9 +66,9 @@ import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const NEXT_STEPS_REDIRECT_EXP_KEY = 'mykiva_next_steps_redirect';
-const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
 const GOAL_EDITING_KEY = 'goal_editing_enable';
+const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -114,13 +112,13 @@ export default {
 			userInfo: {},
 			userLentToAllRegions: false,
 			sidesheetLoan: {},
-			goalsEntrypointEnable: false,
 			postLendingNextStepsEnable: false,
 			latestLoan: null,
 			goalRefreshKey: 0,
 			showMyGivingFundsCard: false,
 			nextStepsExperimentVariant: null,
 			goalEditingEnable: false,
+			goalsEntrypointEnable: false,
 			recentTransactionLoans: [],
 		};
 	},
@@ -270,9 +268,9 @@ export default {
 				};
 				this.transactions = myKivaQueryResult.my?.transactions?.values ?? [];
 
-				this.goalsEntrypointEnable = readBoolSetting(myKivaQueryResult, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.postLendingNextStepsEnable = readBoolSetting(myKivaQueryResult, `general.${POST_LENDING_NEXT_STEPS_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.goalEditingEnable = readBoolSetting(myKivaQueryResult, `general.${GOAL_EDITING_KEY}.value`) ?? false; // eslint-disable-line max-len
+				this.goalsEntrypointEnable = readBoolSetting(myKivaQueryResult, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
 
 				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
 					...myKivaQueryResult.my.latestLoan.values[0].loan,
@@ -363,6 +361,15 @@ export default {
 					transactions: this.transactions,
 				});
 
+				if (process.env.NODE_ENV !== 'production') {
+					console.log('[Goals] renewal result', {
+						today,
+						showRenewedAnnualGoalToast,
+						expiredGoals,
+						wasFixed,
+					});
+				}
+
 				if (showRenewedAnnualGoalToast) {
 					const goalYear = (today || new Date()).getFullYear();
 					// eslint-disable-next-line max-len
@@ -377,12 +384,12 @@ export default {
 				}
 			}
 		} catch (error) {
+			this.$showTipMsg('There was a problem loading your preferences', 'error');
 			logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
 		}
 
 		await this.loadGoalData({
 			year: CURRENT_YEAR,
-			yearlyProgress: this.goalsV2Enabled,
 			freshProgressLoans: this.recentTransactionLoans,
 			tieredAchievements: this.currentYearTieredAchievements,
 			transactions: this.transactions,
