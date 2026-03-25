@@ -2,8 +2,6 @@ import { createApp } from 'vue';
 import useGoalData, {
 	GOAL_STATUS,
 	GOALS_CURRENT_YEAR,
-	GOALS_V2_START_YEAR,
-	isGoalsV2Enabled,
 } from '#src/composables/useGoalData';
 import {
 	ID_BASIC_NEEDS,
@@ -28,30 +26,6 @@ describe('GOALS_CURRENT_YEAR', () => {
 	it('should be the current year', () => {
 		const currentYear = new Date().getFullYear();
 		expect(GOALS_CURRENT_YEAR).toBe(currentYear);
-	});
-});
-
-describe('isGoalsV2Enabled', () => {
-	afterEach(() => {
-		vi.useRealTimers();
-	});
-
-	it('returns true when the flag is enabled, regardless of year', () => {
-		vi.useFakeTimers('modern');
-		vi.setSystemTime(new Date(GOALS_V2_START_YEAR - 1, 5, 1));
-		expect(isGoalsV2Enabled(true)).toBe(true);
-	});
-
-	it('returns false before the start year when the flag is disabled', () => {
-		vi.useFakeTimers('modern');
-		vi.setSystemTime(new Date(GOALS_V2_START_YEAR - 1, 5, 1));
-		expect(isGoalsV2Enabled(false)).toBe(false);
-	});
-
-	it('returns true on or after the start year when the flag is disabled', () => {
-		vi.useFakeTimers('modern');
-		vi.setSystemTime(new Date(GOALS_V2_START_YEAR, 0, 1));
-		expect(isGoalsV2Enabled(false)).toBe(true);
 	});
 });
 

@@ -56,7 +56,7 @@ import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSid
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import useGoalData, { LAST_YEAR_KEY, isGoalsV2Enabled } from '#src/composables/useGoalData';
+import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import useBadgeData, {
 	applyFreshProgressToAchievements,
 	FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
@@ -68,7 +68,6 @@ const CURRENT_YEAR = new Date().getFullYear();
 const NEXT_STEPS_REDIRECT_EXP_KEY = 'mykiva_next_steps_redirect';
 const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
 const GOAL_EDITING_KEY = 'goal_editing_enable';
-const THANK_YOU_PAGE_GOALS_ENABLE_KEY = 'thankyou_page_goals_enable';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -118,16 +117,12 @@ export default {
 			showMyGivingFundsCard: false,
 			nextStepsExperimentVariant: null,
 			goalEditingEnable: false,
-			goalsEntrypointEnable: false,
 			recentTransactionLoans: [],
 		};
 	},
 	computed: {
 		isNextStepsRoute() {
 			return this.$route.path === '/mykiva/next-steps';
-		},
-		goalsV2Enabled() {
-			return isGoalsV2Enabled(this.goalsEntrypointEnable);
 		},
 		heroBadgeData() {
 			return this.combineBadgeData(this.heroTieredAchievements, this.heroBadgeContentfulData);
@@ -270,7 +265,6 @@ export default {
 
 				this.postLendingNextStepsEnable = readBoolSetting(myKivaQueryResult, `general.${POST_LENDING_NEXT_STEPS_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.goalEditingEnable = readBoolSetting(myKivaQueryResult, `general.${GOAL_EDITING_KEY}.value`) ?? false; // eslint-disable-line max-len
-				this.goalsEntrypointEnable = readBoolSetting(myKivaQueryResult, `general.${THANK_YOU_PAGE_GOALS_ENABLE_KEY}.value`) ?? false; // eslint-disable-line max-len
 
 				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
 					...myKivaQueryResult.my.latestLoan.values[0].loan,
@@ -346,33 +340,30 @@ export default {
 				},
 			});
 
-			// Goals V2 (yearly progress) is enabled if flag is true OR year >= 2026
-			if (this.goalsV2Enabled) {
-				// Param to force goals renewal in a specific year
-				const { renewYear } = this.$route.query;
-				const today = renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined;
+			// Param to force goals renewal in a specific year
+			const { renewYear } = this.$route.query;
+			const today = renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined;
 
-				const { showRenewedAnnualGoalToast, expiredGoals } = await this.renewAnnualGoal(today);
+			const { showRenewedAnnualGoalToast, expiredGoals } = await this.renewAnnualGoal(today);
 
-				// Fix goals incorrectly marked as completed due to progress double-counting bug
-				const { wasFixed } = await this.fixIncorrectlyCompletedGoals({
-					freshProgressLoans: this.recentTransactionLoans,
-					tieredAchievements: this.currentYearTieredAchievements,
-					transactions: this.transactions,
-				});
+			// Fix goals incorrectly marked as completed due to progress double-counting bug
+			const { wasFixed } = await this.fixIncorrectlyCompletedGoals({
+				freshProgressLoans: this.recentTransactionLoans,
+				tieredAchievements: this.currentYearTieredAchievements,
+				transactions: this.transactions,
+			});
 
-				if (showRenewedAnnualGoalToast) {
-					const goalYear = (today || new Date()).getFullYear();
-					// eslint-disable-next-line max-len
-					this.$showTipMsg(`It's time for your ${goalYear} impact goal - a fresh start and new opportunity to make a difference.`);
-				}
+			if (showRenewedAnnualGoalToast) {
+				const goalYear = (today || new Date()).getFullYear();
+				// eslint-disable-next-line max-len
+				this.$showTipMsg(`It's time for your ${goalYear} impact goal - a fresh start and new opportunity to make a difference.`);
+			}
 
-				if (expiredGoals.length || wasFixed) {
-					// Ensure goal card is shown again after renewal or fix
-					await this.setHideGoalCardPreference(false);
-					// Trigger goal data refresh in child components
-					this.goalRefreshKey += 1;
-				}
+			if (expiredGoals.length || wasFixed) {
+				// Ensure goal card is shown again after renewal or fix
+				await this.setHideGoalCardPreference(false);
+				// Trigger goal data refresh in child components
+				this.goalRefreshKey += 1;
 			}
 		} catch (error) {
 			this.$showTipMsg('There was a problem loading your preferences', 'error');

@@ -57,20 +57,8 @@ export const GOAL_STATUS = {
 
 export const GOALS_CURRENT_YEAR = new Date().getFullYear();
 export const LAST_YEAR_KEY = GOALS_CURRENT_YEAR - 1;
-export const GOALS_V2_START_YEAR = 2026;
 export const COMPLETED_GOAL_THRESHOLD = 100;
 export const HALF_GOAL_THRESHOLD = 50;
-
-/**
- * Check if Goals V2 should be enabled based on the flag or current year
- * Goals V2 is enabled if the flag is true OR the year is 2026 or later
- * @param {boolean} flagEnabled - The thankyou_page_goals_enable flag value
- * @returns {boolean} True if Goals V2 should be enabled
- */
-export function isGoalsV2Enabled(flagEnabled) {
-	const currentYear = new Date().getFullYear();
-	return flagEnabled || currentYear >= GOALS_V2_START_YEAR;
-}
 
 function getGoalDisplayName(target, category) {
 	if (!target || target > 1) return GOAL_DISPLAY_MAP[category] || 'loans';
@@ -756,7 +744,24 @@ export default function useGoalData({ apollo } = {}) {
 		const renewedYear = parsedPrefs.goalsRenewedDate ? new Date(parsedPrefs.goalsRenewedDate).getFullYear() : null;
 		const areGoalsRenewed = goals.some(goal => goal.status === GOAL_STATUS.EXPIRED);
 
+		if (process.env.NODE_ENV !== 'production') {
+			console.log('[Goals] renewAnnualGoal start', {
+				today: today.toISOString(),
+				currentYear,
+				renewedYear,
+				areGoalsRenewed,
+				goals: goals.map(g => ({ status: g.status, dateStarted: g.dateStarted, category: g.category })),
+			});
+		}
+
 		if (renewedYear > currentYear || areGoalsRenewed) {
+			if (process.env.NODE_ENV !== 'production') {
+				console.log('[Goals] renewAnnualGoal early return — already renewed or goals already expired', {
+					renewedYear,
+					currentYear,
+					areGoalsRenewed,
+				});
+			}
 			return {
 				expiredGoals: [],
 				showRenewedAnnualGoalToast: false,
@@ -779,6 +784,13 @@ export default function useGoalData({ apollo } = {}) {
 			return null;
 		}).filter(goal => goal !== null);
 
+		if (process.env.NODE_ENV !== 'production') {
+			console.log('[Goals] renewAnnualGoal processing', {
+				hadCompletedGoal,
+				expiredGoals: expiredGoals.map(g => ({ status: g.status, dateStarted: g.dateStarted })),
+			});
+		}
+
 		if (expiredGoals.some(goal => goal.status === GOAL_STATUS.EXPIRED)) {
 			parsedPrefs.goals = expiredGoals;
 			parsedPrefs.goalsRenewedDate = today.toISOString();
@@ -795,6 +807,13 @@ export default function useGoalData({ apollo } = {}) {
 		}
 
 		const showRenewedAnnualGoalToast = !!expiredGoals.length && !hadCompletedGoal;
+
+		if (process.env.NODE_ENV !== 'production') {
+			console.log('[Goals] renewAnnualGoal result', {
+				expiredGoals: expiredGoals.length,
+				showRenewedAnnualGoalToast,
+			});
+		}
 
 		return {
 			expiredGoals,

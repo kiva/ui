@@ -233,7 +233,6 @@ describe('MyKivaPage', () => {
 						subscribe: vi.fn(),
 					}))
 				},
-				goalsV2Enabled: true,
 				$route: { query: {} },
 				loadGoalData: vi.fn().mockResolvedValue(),
 				applyMyKivaFreshProgress,
