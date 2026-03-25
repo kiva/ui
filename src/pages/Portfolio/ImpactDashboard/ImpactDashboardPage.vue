@@ -1,59 +1,51 @@
 <template>
-	<div>
-		<my-kiva-page
-			v-if="showMyKivaPage"
-		/>
-		<www-page
-			v-else
-			main-class="tw-bg-secondary tw-overflow-hidden"
+	<www-page main-class="tw-bg-secondary tw-overflow-hidden">
+		<template #secondary>
+			<the-my-kiva-secondary-menu />
+		</template>
+		<kv-page-container>
+			<kv-grid class="tw-grid-cols-12 tw--mx-2.5 md:tw-mx-0" data-testid="portfolio">
+				<the-portfolio-tertiary-menu class="tw-pt-2 tw-col-span-3 tw-hidden md:tw-block" />
+				<div
+					class="tw-col-span-12 md:tw-col-span-9"
+					:class="{ 'tw-pt-3' : !showTeamChallenge }"
+				>
+					<team-challenge
+						v-if="showTeamChallenge"
+						:allowed-teams="allowedTeams"
+					/>
+					<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
+					<GoalEntrypoint
+						v-if="isEmptyGoal"
+					/>
+					<lending-insights />
+					<my-giving-funds-card
+						:user-id="userId"
+						class="tw-my-2 tw-mx-0 md:tw-mx-0 tw-rounded-none md:tw-rounded"
+					/>
+					<your-donations />
+					<LoanCards
+						v-if="filteredLoans.length > 0"
+					/>
+					<education-module v-if="post" :post="post" />
+					<kiva-credit-stats />
+					<account-updates />
+					<your-teams />
+					<distribution-graphs />
+				</div>
+			</kv-grid>
+		</kv-page-container>
+		<div
+			v-if="showLoanFootnote"
+			class="tw-bg-white tw-text-small tw-py-4 md:tw-py-2.5"
 		>
-			<template #secondary>
-				<the-my-kiva-secondary-menu />
-			</template>
 			<kv-page-container>
-				<kv-grid class="tw-grid-cols-12 tw--mx-2.5 md:tw-mx-0" data-testid="portfolio">
-					<the-portfolio-tertiary-menu class="tw-pt-2 tw-col-span-3 tw-hidden md:tw-block" />
-					<div
-						class="tw-col-span-12 md:tw-col-span-9"
-						:class="{ 'tw-pt-3' : !showTeamChallenge }"
-					>
-						<team-challenge
-							v-if="showTeamChallenge"
-							:allowed-teams="allowedTeams"
-						/>
-						<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
-						<GoalEntrypoint
-							v-if="isEmptyGoal"
-						/>
-						<lending-insights />
-						<my-giving-funds-card
-							:user-id="userId"
-							class="tw-my-2 tw-mx-0 md:tw-mx-0 tw-rounded-none md:tw-rounded"
-						/>
-						<your-donations />
-						<LoanCards
-							v-if="filteredLoans.length > 0"
-						/>
-						<education-module v-if="post" :post="post" />
-						<kiva-credit-stats />
-						<account-updates />
-						<your-teams />
-						<distribution-graphs />
-					</div>
-				</kv-grid>
+				<section>
+					*Borrowers of Kiva Lending Partners surveyed by 60 Decibels.
+				</section>
 			</kv-page-container>
-			<div
-				v-if="showLoanFootnote"
-				class="tw-bg-white tw-text-small tw-py-4 md:tw-py-2.5"
-			>
-				<kv-page-container>
-					<section>
-						*Borrowers of Kiva Lending Partners surveyed by 60 Decibels.
-					</section>
-				</kv-page-container>
-			</div>
-		</www-page>
-	</div>
+		</div>
+	</www-page>
 </template>
 
 <script>
@@ -65,9 +57,8 @@ import { readBoolSetting } from '#src/util/settingsUtils';
 import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
-import { getIsMyKivaEnabled, hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
+import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
-import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
 import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';
 
 import {
@@ -108,7 +99,6 @@ export default {
 		YourTeams,
 		YourDonations,
 		TeamChallenge,
-		MyKivaPage,
 		LoanCards,
 		GoalEntrypoint
 	},
@@ -177,58 +167,42 @@ export default {
 			|| (userData?.givingFundParticipation?.totalAmount ?? 0) > 0
 		);
 
-		// User will always see old portfolio page when MyKiva is rolled out to all users
-		const myKivaAllUsersEnabled = readBoolSetting(portfolioQueryData, 'general.my_kiva_all_users.value');
-		const isMykivaEnabled = getIsMyKivaEnabled(
-			this.apollo,
-			this.$kvTrackEvent,
-			myKivaAllUsersEnabled,
-			this.cookieStore,
-		);
-		if (!myKivaAllUsersEnabled) {
-			this.showMyKivaPage = isMykivaEnabled;
-		}
+		const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
+		const userTeams = portfolioQueryData?.my?.teams?.values ?? [];
+		let allowedTeamsSettings = portfolioQueryData?.general?.challenge_allowed_teams?.value ?? '""';
+		allowedTeamsSettings = JSON.parse(allowedTeamsSettings);
+		this.allowedTeams = userTeams.filter(t => {
+			return allowedTeamsSettings.includes(t.team.teamPublicId);
+		});
 
-		if (!this.showMyKivaPage) {
-			const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
-			const userTeams = portfolioQueryData?.my?.teams?.values ?? [];
-			let allowedTeamsSettings = portfolioQueryData?.general?.challenge_allowed_teams?.value ?? '""';
-			allowedTeamsSettings = JSON.parse(allowedTeamsSettings);
-			this.allowedTeams = userTeams.filter(t => {
-				return allowedTeamsSettings.includes(t.team.teamPublicId);
-			});
+		this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
+		this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
 
-			this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
-			this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
-
-			const parsedPrefs = JSON.parse(this.userPreferences?.preferences || '{}');
-			const goals = parsedPrefs.goals || [];
-			const goalInProgress = goals.some(goal => goal.status === GOAL_STATUS.IN_PROGRESS);
-			const goalAchieved = goals.some(goal => {
-				const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
-				return goal?.status === GOAL_STATUS.COMPLETED && goalYear === GOALS_CURRENT_YEAR;
-			});
-			this.isEmptyGoal = !goalInProgress && !goalAchieved;
-		}
+		const parsedPrefs = JSON.parse(this.userPreferences?.preferences || '{}');
+		const goals = parsedPrefs.goals || [];
+		const goalInProgress = goals.some(goal => goal.status === GOAL_STATUS.IN_PROGRESS);
+		const goalAchieved = goals.some(goal => {
+			const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
+			return goal?.status === GOAL_STATUS.COMPLETED && goalYear === GOALS_CURRENT_YEAR;
+		});
+		this.isEmptyGoal = !goalInProgress && !goalAchieved;
 	},
 	async mounted() {
-		if (!this.showMyKivaPage) {
-			this.loadEducationPost();
+		this.loadEducationPost();
 
-			if (this.$route?.query?.goal_saved) {
-				const badgeName = this.$route?.query?.goal_saved ?? '';
+		if (this.$route?.query?.goal_saved) {
+			const badgeName = this.$route?.query?.goal_saved ?? '';
 
-				if (!this.userPreferences?.id) {
-					const createPreferences = await this.createUserPreferences();
-					this.userPreferences = createPreferences?.data?.my?.createUserPreferences ?? {};
-				}
-
-				this.storeGoal({ userPreferences: this.userPreferences, badgeName }).then(() => {
-					this.$showTipMsg('Goal saved');
-				}).catch(() => {
-					this.$showTipMsg('There was a problem saving your goal', 'error');
-				});
+			if (!this.userPreferences?.id) {
+				const createPreferences = await this.createUserPreferences();
+				this.userPreferences = createPreferences?.data?.my?.createUserPreferences ?? {};
 			}
+
+			this.storeGoal({ userPreferences: this.userPreferences, badgeName }).then(() => {
+				this.$showTipMsg('Goal saved');
+			}).catch(() => {
+				this.$showTipMsg('There was a problem saving your goal', 'error');
+			});
 		}
 	}
 };

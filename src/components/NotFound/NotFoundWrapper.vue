@@ -39,9 +39,7 @@ import {
 import useMyKivaHome from '#src/composables/useMyKivaHome';
 
 const apollo = inject('apollo');
-const $kvTrackEvent = inject('$kvTrackEvent');
-const cookieStore = inject('cookieStore');
 
-const { homePagePath } = useMyKivaHome(apollo, $kvTrackEvent, cookieStore);
+const { homePagePath } = useMyKivaHome(apollo);
 
 </script>

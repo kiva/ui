@@ -562,7 +562,7 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, inject } from 'vue';
 import {
 	hasLentBeforeCookie,
 	hasDepositBeforeCookie,
@@ -587,13 +587,13 @@ import TeamsMenu from '#src/components/WwwFrame/Header/TeamsMenu';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
-import myKivaHomePageMixin from '#src/plugins/my-kiva-homepage-mixin';
 import {
 	KvButton, KvLoadingPlaceholder, KvMaterialIcon, KvPageContainer, KvWwwHeader
 } from '@kiva/kv-components';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import countriesNotLentToExpMixin, { COUNTRIES_NOT_LENT_TO_EXP } from '#src/plugins/countries-not-lent-to-exp-mixin';
+import useMyKivaHome from '#src/composables/useMyKivaHome';
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
@@ -622,7 +622,7 @@ export default {
 		cookieStore: { default: null },
 		kvAuth0: { default: null },
 	},
-	mixins: [addToBasketExpMixin, myKivaHomePageMixin, countriesNotLentToExpMixin],
+	mixins: [addToBasketExpMixin, countriesNotLentToExpMixin],
 	data() {
 		return {
 			aboutMenuId: 'about-header-dropdown',
@@ -684,6 +684,14 @@ export default {
 			default: '',
 			required: false
 		},
+	},
+	setup() {
+		const apollo = inject('apollo');
+		const { homePagePath } = useMyKivaHome(apollo);
+
+		return {
+			homePagePath,
+		};
 	},
 	computed: {
 		isVisitor() {

@@ -350,7 +350,7 @@ import { removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
 import {
 	KvLoadingPlaceholder, KvPageContainer, KvButton, KvMaterialIcon
 } from '@kiva/kv-components';
-import { fetchPostCheckoutAchievements, getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
+import { fetchPostCheckoutAchievements, getIsMyKivaEnabled } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import getCheckoutAlmostFundedRecommendationQuery from '#src/graphql/query/checkout/getCheckoutAlmostFundedRecommendation.graphql'; // eslint-disable-line max-len
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
@@ -483,7 +483,6 @@ export default {
 			addedUpsellLoans: [],
 			possibleAchievementProgress: [],
 			newAtbExpEnabled: false,
-			myKivaFlagEnabled: false,
 			isMyKivaEnabled: false,
 			lenderLoansIds: [],
 			mdiGiftOutline,
@@ -571,8 +570,6 @@ export default {
 			this.depositIncentiveAmountToLend = numeral(data?.my?.depositIncentiveAmountToLend ?? 0).value();
 
 			this.newAtbExpEnabled = readBoolSetting(data, 'general.new_atb_experience_enable.value');
-
-			this.myKivaFlagEnabled = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -680,15 +677,11 @@ export default {
 			clearPromoCreditBannerCookie(this.cookieStore);
 		}
 
-		// Checkout page MyKiva pills only visible with new feature
-		if (this.myKivaFlagEnabled) {
-			this.isMyKivaEnabled = getIsMyKivaEnabled(
-				this.apollo,
-				this.$kvTrackEvent,
-				this.myKivaFlagEnabled,
-				this.cookieStore,
-			);
-		}
+		this.isMyKivaEnabled = getIsMyKivaEnabled(
+			this.apollo,
+			this.$kvTrackEvent,
+			this.cookieStore,
+		);
 	},
 	watch: {
 		async emptyBasket(newValue) {

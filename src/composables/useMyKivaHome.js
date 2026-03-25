@@ -3,22 +3,18 @@ import {
 	computed,
 	onMounted,
 } from 'vue';
-import { getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
-import { readBoolSetting } from '#src/util/settingsUtils';
 import logFormatter from '#src/util/logFormatter';
-import myKivaForAllUsersQuery from '#src/graphql/query/shared/myKivaForAllUsers.graphql';
+import userIdQuery from '#src/graphql/query/userId.graphql';
 
-export default function useMyKivaHome(apollo, $kvTrackEvent, cookieStore) {
+export default function useMyKivaHome(apollo) {
 	const redirectToMyKivaHomepage = ref(false);
-	const myKivaFlagEnabled = ref(false);
 	const userData = ref(false);
 
 	const fetchUserData = async () => {
 		await apollo.query({
-			query: myKivaForAllUsersQuery,
+			query: userIdQuery,
 		}).then(({ data }) => {
 			userData.value = data?.my ?? null;
-			myKivaFlagEnabled.value = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 		}).catch(e => {
 			logFormatter(e, 'useMyKivaHome composable');
 		});
@@ -35,14 +31,7 @@ export default function useMyKivaHome(apollo, $kvTrackEvent, cookieStore) {
 	onMounted(async () => {
 		await fetchUserData();
 
-		if (myKivaFlagEnabled.value) {
-			redirectToMyKivaHomepage.value = getIsMyKivaEnabled(
-				apollo,
-				$kvTrackEvent,
-				myKivaFlagEnabled.value,
-				cookieStore,
-			) && userData.value?.id;
-		}
+		redirectToMyKivaHomepage.value = userData.value?.id || false;
 	});
 
 	return {
