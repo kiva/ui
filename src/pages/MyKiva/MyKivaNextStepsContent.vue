@@ -81,12 +81,46 @@
 				<div
 					v-if="postLendingNextStepsEnable"
 				>
-					<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
+					<h3 class="tw-text-primary tw-mt-2 tw-mb-2">
 						Build impact beyond your loan
 					</h3>
-
 					<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
+						<template v-if="latestLoan !== null && !showPostLendingNextStepsCards && !isMobile">
+							<MyKivaEmailUpdatesTransition
+								v-if="shouldShowEmailMarketingCard || acceptedEmailMarketingUpdates"
+								:accepted="acceptedEmailMarketingUpdates"
+								:loans="loans"
+								:latest-loan="latestLoan"
+								@accept-email-updates="acceptedEmailMarketingUpdates = true"
+							/>
+							<MyKivaLatestLoanCard
+								v-if="showLatestLoan"
+								:loan="latestLoan"
+								@open-impact-insight-modal="showImpactInsightsModal = true"
+							/>
+						</template>
 						<template v-if="!isMobile">
+							<MyKivaCard
+								v-if="nonBadgesSlides[0]"
+								:key="nonBadgesSlides[0].badgeKey"
+								class="card-container tw-w-full tw-h-full"
+								:bg-image="getSlideBackgroundImg(nonBadgesSlides[0],
+									isNonBadgeSlide(nonBadgesSlides[0]), false)"
+								:is-bg-top-aligned="isNonBadgeSlide(nonBadgesSlides[0])"
+								:has-gradient="!isNonBadgeSlide(nonBadgesSlides[0])"
+								:title="getSlideTitle(nonBadgesSlides[0])"
+								:subtitle="getSlideSubTitle(nonBadgesSlides[0], isNonBadgeSlide(nonBadgesSlides[0]))"
+								:is-black-subtitle="isNonBadgeSlide(nonBadgesSlides[0])"
+								:secondary-cta-text="getSlideSecondaryCtaText(nonBadgesSlides[0])"
+								:primary-cta-text="getSlidePrimaryCtaText(nonBadgesSlides[0])"
+								:primary-cta-variant="getSlidePrimaryCtaVariant(nonBadgesSlides[0])"
+								:is-full-width-primary-cta="isNonBadgeSlide(nonBadgesSlides[0])"
+								:is-title-font-sans="isSlideTitleFontSans(nonBadgesSlides[0])"
+								:title-color="getSlideTitleColor(nonBadgesSlides[0],
+									isNonBadgeSlide(nonBadgesSlides[0]))"
+								@primary-cta-clicked="handlePrimaryCtaClick(nonBadgesSlides[0])"
+								@secondary-cta-clicked="handleSecondaryCtaClick(nonBadgesSlides[0])"
+							/>
 							<MyKivaSurveyCard
 								v-if="showSurveyCard"
 							/>
@@ -110,12 +144,13 @@
 								@secondary-cta-clicked="handleSecondaryCtaClick(slide)"
 							/>
 						</template>
-						<!-- VERSION POST LENDING SEGUNDA FILA CON SURVEY -->
+						<!-- Mobile carousel: post-lending cards + survey -->
 						<JourneyCardCarousel
 							v-else
 							:key="'beyond-loan-row'"
 							class="carousel tw--mt-6"
 							controls-top-right
+							:in-lending-stats="latestLoan !== null && !showPostLendingNextStepsCards"
 							hide-goal-card
 							use-universal-order
 							user-in-homepage
@@ -126,7 +161,7 @@
 							:lender="lender"
 							:loans="loans"
 							:slides="heroSlides"
-							:latest-loan="null"
+							:latest-loan="!showPostLendingNextStepsCards ? latestLoan : null"
 							:user-info="userInfo"
 							:enable-slide-limit="false"
 							@open-impact-insight-modal="showImpactInsightsModal = true"
