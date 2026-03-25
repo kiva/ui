@@ -94,10 +94,9 @@ import useMyKivaHome from '#src/composables/useMyKivaHome';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
-const cookieStore = inject('cookieStore');
 
 const router = useRouter();
-const { portfolioPath } = useMyKivaHome(apollo, $kvTrackEvent, cookieStore);
+const { portfolioPath } = useMyKivaHome(apollo);
 
 const emit = defineEmits(['continue-as-guest']);
 
