@@ -564,7 +564,7 @@ onMounted(async () => {
 
 	@screen md {
 		max-width: 390px;
-		with: auto;
+		width: auto;
 	}
 }
 
