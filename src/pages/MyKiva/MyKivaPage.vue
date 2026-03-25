@@ -354,7 +354,7 @@ export default {
 				const { renewYear } = this.$route.query;
 				const today = renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined;
 
-				const { showRenewedAnnualGoalToast } = await this.renewAnnualGoal(today);
+				const { showRenewedAnnualGoalToast, expiredGoals } = await this.renewAnnualGoal(today);
 
 				// Fix goals incorrectly marked as completed due to progress double-counting bug
 				const { wasFixed } = await this.fixIncorrectlyCompletedGoals({
@@ -363,16 +363,13 @@ export default {
 					transactions: this.transactions,
 				});
 
-				if (process.env.NODE_ENV !== 'production') {
-					console.log('[Goals] annual renewal result', { today, showRenewedAnnualGoalToast, wasFixed });
+				if (showRenewedAnnualGoalToast) {
+					const goalYear = (today || new Date()).getFullYear();
+					// eslint-disable-next-line max-len
+					this.$showTipMsg(`It's time for your ${goalYear} impact goal - a fresh start and new opportunity to make a difference.`);
 				}
 
-				if (showRenewedAnnualGoalToast || wasFixed) {
-					if (showRenewedAnnualGoalToast) {
-						const goalYear = (today || new Date()).getFullYear();
-						// eslint-disable-next-line max-len
-						this.$showTipMsg(`It's time for your ${goalYear} impact goal - a fresh start and new opportunity to make a difference.`);
-					}
+				if (expiredGoals.length || wasFixed) {
 					// Ensure goal card is shown again after renewal or fix
 					await this.setHideGoalCardPreference(false);
 					// Trigger goal data refresh in child components

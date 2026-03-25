@@ -767,22 +767,9 @@ export default function useGoalData({ apollo } = {}) {
 		const renewedYear = parsedPrefs.goalsRenewedDate ? new Date(parsedPrefs.goalsRenewedDate).getFullYear() : null;
 		const areGoalsRenewed = goals.some(goal => goal.status === GOAL_STATUS.EXPIRED);
 
-		if (process.env.NODE_ENV !== 'production') {
-			let skipReason = null;
-			if (renewedYear > currentYear) skipReason = 'renewedYear > currentYear';
-			else if (areGoalsRenewed) skipReason = 'goals already expired';
-			console.log('[Goals] renewAnnualGoal start', {
-				today: today.toISOString(),
-				currentYear,
-				renewedYear,
-				goals: goals.map(g => ({ goalName: g.goalName, status: g.status, dateStarted: g.dateStarted })),
-				skipReason,
-			});
-		}
-
 		if (renewedYear > currentYear || areGoalsRenewed) {
 			return {
-				expiredGoals: goals,
+				expiredGoals: [],
 				showRenewedAnnualGoalToast: false,
 			};
 		}
