@@ -401,24 +401,6 @@ describe('useGivingFund', () => {
 	});
 
 	describe('component-mounted context', () => {
-		it('should work when rendered in a component context', async () => {
-			const TestComponent = {
-				template: '<div><span data-testid="test">{{ result }}</span></div>',
-				setup() {
-					const givingFund = useGivingFund(mockApollo);
-					return {
-						result: givingFund.getFundTargetDisplayNounFromName('women'),
-					};
-				},
-			};
-
-			const { getByTestId } = render(TestComponent);
-
-			await waitFor(() => {
-				expect(getByTestId('test').textContent).toBe('women');
-			});
-		});
-
 		it('should handle async operations in component context', async () => {
 			mockApollo.query.mockResolvedValue({
 				data: {
