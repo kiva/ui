@@ -361,15 +361,6 @@ export default {
 					transactions: this.transactions,
 				});
 
-				if (process.env.NODE_ENV !== 'production') {
-					console.log('[Goals] renewal result', {
-						today,
-						showRenewedAnnualGoalToast,
-						expiredGoals,
-						wasFixed,
-					});
-				}
-
 				if (showRenewedAnnualGoalToast) {
 					const goalYear = (today || new Date()).getFullYear();
 					// eslint-disable-next-line max-len
