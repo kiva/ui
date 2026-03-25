@@ -296,7 +296,6 @@ import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import MyKivaRegionExperience from '#src/components/MyKiva/MyKivaRegionExperience';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
-import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
@@ -394,7 +393,6 @@ const { isMobile } = useBreakpoints();
 // Goal data from parent-provided composable
 const {
 	checkCompletedGoal,
-	getCategoryLoansLastYear,
 	goalProgress,
 	hideGoalCard: hideCompletedGoalCard,
 	loading: goalProgressLoading,
@@ -421,7 +419,6 @@ const isUpdatingGoal = ref(false);
 const isSharingModalVisible = ref(false);
 const acceptedEmailMarketingUpdates = ref(false);
 const showPostLendingNextStepsCards = ref(false);
-const userHasGoal = computed(() => !!userGoal.value && Object.keys(userGoal.value).length > 0);
 
 // Computed
 const categoriesLoanCount = computed(() => getAllCategoryLoanCounts(props.heroTieredAchievements));
@@ -456,12 +453,6 @@ const showSurveyCard = computed(() => checkShowSurveyCard({
 }));
 
 const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.heroSlides));
-
-const womenLoansLastYear = computed(() => getCategoryLoansLastYear(props.heroTieredAchievements));
-
-const shouldShowGoalCard = computed(() => {
-	return (!userGoal.value || !userGoalAchieved.value) && !hideCompletedGoalCard.value;
-});
 
 // Navigation
 const goToDashboard = position => {
