@@ -77,7 +77,7 @@
 			/>
 		</section>
 		<div class="tw-flex tw-flex-col">
-			<div :style="{ order: hasLoans ? 1 : 2 }">
+			<div :style="{ order: showPostLendingNextStepsCards ? 1 : 2 }">
 				<div
 					v-if="postLendingNextStepsEnable"
 				>
@@ -213,7 +213,7 @@
 					</section>
 				</div>
 			</div>
-			<div :style="{ order: hasLoans ? 2 : 1 }">
+			<div :style="{ order: showPostLendingNextStepsCards ? 2 : 1 }">
 				<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 					Continue with your lifetime achievements
 				</h3>
@@ -422,8 +422,6 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const goalData = inject('goalData');
 const router = useRouter();
 const { isMobile } = useBreakpoints();
-
-const hasLoans = computed(() => props.latestLoan !== null);
 
 // Goal data from parent-provided composable
 const {
