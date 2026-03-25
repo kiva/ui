@@ -3,7 +3,6 @@ import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchiev
 import logReadQueryError from '#src/util/logReadQueryError';
 
 const MY_KIVA_EXP = 'my_kiva_jan_2025';
-export const MY_KIVA_FOR_ALL_USERS_KEY = 'general.my_kiva_all_users.value';
 export const GUEST_ASSIGNMENT_COOKIE = 'myKivaGuestAssignment';
 export const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
 export const MY_KIVA_HERO_ENABLE_KEY = 'new_mykiva_hero_enable';
@@ -145,33 +144,29 @@ export const setMyKivaRedirectCookie = cookieStore => {
  * @param cookieStore The cookie store
  * @returns Whether the MyKiva experience is enabled for the user
  */
-export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, myKivaFlagEnabled, cookieStore) => {
-	if (myKivaFlagEnabled) {
-		const hadGuestAssignment = checkGuestAssignmentCookie(cookieStore);
+export const getIsMyKivaEnabled = (apollo, $kvTrackEvent, cookieStore) => {
+	const hadGuestAssignment = checkGuestAssignmentCookie(cookieStore);
 
-		const { version: myKivaVersion } = apollo.readFragment({
-			id: `Experiment:${MY_KIVA_EXP}`,
-			fragment: experimentVersionFragment,
-		}) ?? {};
+	const { version: myKivaVersion } = apollo.readFragment({
+		id: `Experiment:${MY_KIVA_EXP}`,
+		fragment: experimentVersionFragment,
+	}) ?? {};
 
-		const isMyKivaExperimentEnabled = hadGuestAssignment || myKivaVersion === 'b';
+	const isMyKivaExperimentEnabled = hadGuestAssignment || myKivaVersion === 'b';
 
-		$kvTrackEvent(
-			'event-tracking',
-			'EXP-MP-1235-Jan2025',
-			// Ensure tracking is consistent for guest users who login
-			hadGuestAssignment ? 'b' : myKivaVersion,
-		);
+	$kvTrackEvent(
+		'event-tracking',
+		'EXP-MP-1235-Jan2025',
+		// Ensure tracking is consistent for guest users who login
+		hadGuestAssignment ? 'b' : myKivaVersion,
+	);
 
-		// Set cookie used in Fastly VCL to redirect to MyKiva homepage
-		if (isMyKivaExperimentEnabled) {
-			setMyKivaRedirectCookie(cookieStore);
-		}
-
-		return isMyKivaExperimentEnabled;
+	// Set cookie used in Fastly VCL to redirect to MyKiva homepage
+	if (isMyKivaExperimentEnabled) {
+		setMyKivaRedirectCookie(cookieStore);
 	}
 
-	return false;
+	return isMyKivaExperimentEnabled;
 };
 
 /**

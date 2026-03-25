@@ -1,7 +1,10 @@
 <template>
 	<div
 		class="tw-mb-2"
-		:class="{'next-steps-link': isNextStepsExperimentEnabled}"
+		:class="{
+			'next-steps-link': isNextStepsExperimentEnabled,
+			'tw-mb-8': isNextStepsExperimentEnabled && !showRegionExperience
+		}"
 	>
 		<h3 class="tw-text-primary md:tw-mb-1">
 			Next steps recommended for you
@@ -551,6 +554,6 @@ export default {
 }
 
 .next-steps-link {
-	@apply tw-flex tw-items-end md:tw-items-center tw-justify-between tw-mb-8 tw-gap-1;
+	@apply tw-flex tw-items-end md:tw-items-center tw-justify-between tw-gap-1;
 }
 </style>

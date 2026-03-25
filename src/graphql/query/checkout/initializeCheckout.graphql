@@ -35,10 +35,6 @@ query initializeCheckout($basketId: String) {
 			key
 			value
 		}
-		my_kiva_all_users: uiConfigSetting(key: "my_kiva_all_users_enable") {
-			key
-			value
-		}
 	}
 	shop (basketId: $basketId) {
 		id

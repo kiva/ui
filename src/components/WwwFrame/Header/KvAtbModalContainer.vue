@@ -30,13 +30,12 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import logFormatter from '#src/util/logFormatter';
-import { getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
+import { getIsMyKivaEnabled } from '#src/util/myKivaUtils';
 import userAtbModalQuery from '#src/graphql/query/userAtbModal.graphql';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import { KvAtbModal } from '@kiva/kv-components';
 import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
 import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
-import { readBoolSetting } from '#src/util/settingsUtils';
 import { splitAchievements, filterAchievementData, getOneLoanAwayAchievement } from '#src/util/atbAchievementUtils';
 import useGoalData from '#src/composables/useGoalData';
 import userLentToQuery from '#src/graphql/query/userLentTo.graphql';
@@ -80,7 +79,6 @@ const oneLoanAwayCategory = ref('');
 const oneLoanAwayFilteredUrl = ref('');
 const modalVisible = ref(false);
 const oneAwayText = ref('');
-const myKivaFlagEnabled = ref(false);
 const tierTable = ref({});
 const milestonesProgress = ref({});
 const hasEverLoggedIn = ref(false);
@@ -112,7 +110,6 @@ const fetchUserData = async () => {
 	}).then(({ data }) => {
 		userData.value = data ?? null;
 		hasEverLoggedIn.value = data?.hasEverLoggedIn ?? false;
-		myKivaFlagEnabled.value = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 	}).catch(e => {
 		logFormatter(e, 'Modal ATB User Data');
 	});
@@ -288,7 +285,6 @@ onMounted(async () => {
 	myKivaExperimentEnabled.value = getIsMyKivaEnabled(
 		apollo,
 		$kvTrackEvent,
-		myKivaFlagEnabled.value,
 		cookieStore,
 	);
 
