@@ -16,67 +16,39 @@
 		</h3>
 
 		<section
-			v-if="showPostLendingNextStepsCards && postLendingNextStepsEnable"
-			class="tw-grid tw-grid-cols-1 tw-gap-4"
+			class="tw-flex tw-flex-col md:tw-flex-row tw-gap-4"
 		>
-			<JourneyCardCarousel
-				:key="'post-lending-row'"
-				class="carousel tw--mt-6"
-				controls-top-right
-				in-lending-stats
-				use-universal-order
-				user-in-homepage
-				user-goal-enabled
-				hide-non-badges-cards
-				:slides-number="3"
-				:goal-progress-loading="goalProgressLoading"
-				:goal-progress="goalProgress"
-				:hero-badge-data="null"
-				:hide-goal-card="hideCompletedGoalCard"
-				:hero-tiered-achievements="null"
-				:lender="lender"
-				:loans="loans"
-				:slides="[]"
-				:user-goal-achieved="userGoalAchieved"
-				:user-goal="userGoal"
-				:post-lending-next-steps-enable="true"
-				:show-post-lending-next-steps-cards="true"
-				:latest-loan="latestLoan"
-				:user-info="null"
-				:enable-slide-limit="true"
-				:show-non-badges-slides="false"
-				:show-survey-slide="false"
-				@open-goal-modal="openGoalModal($event)"
-				@open-impact-insight-modal="showImpactInsightsModal = true"
-			/>
-		</section>
-		<section
-			v-else
-			class="region-section md:tw-flex-row"
-			:class="{
-				'tw-grid-cols-1 tw-grid-rows-2' : isMobile && shouldShowGoalCard,
-				'tw-grid tw-grid-flow-row-dense tw-gap-4 tw-grid-rows-1' : !isMobile && shouldShowGoalCard,
-			}"
-		>
-			<NextYearGoalCard
-				v-if="shouldShowGoalCard"
-				class="tw-shrink-0"
-				:style="{ maxHeight: !userHasGoal && isMobile ? '340px' : undefined }"
-				:goal-progress="goalProgress"
-				:hero-slides="heroSlides"
-				:loading="goalProgressLoading"
-				:user-goal="userGoal"
-				:prev-year-loans="womenLoansLastYear"
-				:hide-goal-card="hideCompletedGoalCard"
-				@open-goal-modal="showGoalModal = true"
-			/>
+			<div class="card-container tw-shrink-0">
+				<JourneyCardCarousel
+					class="carousel carousel-single"
+					user-in-homepage
+					in-lending-stats
+					:disable-drag="true"
+					:goal-progress-loading="goalProgressLoading"
+					:goal-progress="goalProgress"
+					:hero-badge-data="heroBadgeData"
+					:hero-tiered-achievements="heroTieredAchievements"
+					:lender="lender"
+					:slides-number="userLentToAllRegions ? 3 : 1"
+					:slides="heroSlides"
+					:user-goal-achieved="userGoalAchieved"
+					:user-goal="userGoal"
+					:categories-loan-count="categoriesLoanCount"
+					:hide-goal-card="hideCompletedGoalCard"
+					:post-lending-next-steps-enable="postLendingNextStepsEnable"
+					:user-info="userInfo"
+					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+					use-universal-order
+					@open-goal-modal="openGoalModal($event)"
+					@open-impact-insight-modal="showImpactInsightsModal = true"
+				/>
+			</div>
 			<MyKivaRegionExperience
 				v-if="!userLentToAllRegions"
 				:regions-data="regionsData"
 				:loans="loans"
 			/>
 		</section>
-
 		<div
 			v-if="showPostLendingNextStepsCards && postLendingNextStepsEnable"
 		>
@@ -599,7 +571,10 @@ onMounted(async () => {
 .card-container {
 	width: 100%;
 
-	@apply md:tw-w-auto;
+	@screen md {
+		max-width: 390px;
+		with: auto;
+	}
 }
 
 .kiva-card :deep(h2) {
