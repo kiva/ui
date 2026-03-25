@@ -16,60 +16,33 @@
 		</h3>
 
 		<section
-			v-if="showPostLendingNextStepsCards && postLendingNextStepsEnable"
-			class="tw-grid tw-grid-cols-1 tw-gap-4"
+			class="tw-flex tw-flex-col md:tw-flex-row tw-gap-4"
 		>
-			<JourneyCardCarousel
-				:key="'post-lending-row'"
-				class="carousel tw--mt-6"
-				controls-top-right
-				in-lending-stats
-				use-universal-order
-				user-in-homepage
-				user-goal-enabled
-				hide-non-badges-cards
-				:slides-number="3"
-				:goal-progress-loading="goalProgressLoading"
-				:goal-progress="goalProgress"
-				:hero-badge-data="null"
-				:hide-goal-card="hideCompletedGoalCard"
-				:hero-tiered-achievements="null"
-				:lender="lender"
-				:loans="loans"
-				:slides="[]"
-				:user-goal-achieved="userGoalAchieved"
-				:user-goal="userGoal"
-				:post-lending-next-steps-enable="true"
-				:show-post-lending-next-steps-cards="true"
-				:latest-loan="latestLoan"
-				:user-info="null"
-				:enable-slide-limit="true"
-				:show-non-badges-slides="false"
-				:show-survey-slide="false"
-				@open-goal-modal="openGoalModal($event)"
-				@open-impact-insight-modal="showImpactInsightsModal = true"
-			/>
-		</section>
-		<section
-			v-else
-			class="region-section md:tw-flex-row"
-			:class="{
-				'tw-grid-cols-1 tw-grid-rows-2' : isMobile && shouldShowGoalCard,
-				'tw-grid tw-grid-flow-row-dense tw-gap-4 tw-grid-rows-1' : !isMobile && shouldShowGoalCard,
-			}"
-		>
-			<NextYearGoalCard
-				v-if="shouldShowGoalCard"
-				class="tw-shrink-0"
-				:style="{ maxHeight: !userHasGoal && isMobile ? '340px' : undefined }"
-				:goal-progress="goalProgress"
-				:hero-slides="heroSlides"
-				:loading="goalProgressLoading"
-				:user-goal="userGoal"
-				:prev-year-loans="womenLoansLastYear"
-				:hide-goal-card="hideCompletedGoalCard"
-				@open-goal-modal="showGoalModal = true"
-			/>
+			<div class="card-container tw-shrink-0">
+				<JourneyCardCarousel
+					class="carousel carousel-single"
+					user-in-homepage
+					in-lending-stats
+					:disable-drag="true"
+					:goal-progress-loading="goalProgressLoading"
+					:goal-progress="goalProgress"
+					:hero-badge-data="heroBadgeData"
+					:hero-tiered-achievements="heroTieredAchievements"
+					:lender="lender"
+					:slides-number="userLentToAllRegions ? 3 : 1"
+					:slides="heroSlides"
+					:user-goal-achieved="userGoalAchieved"
+					:user-goal="userGoal"
+					:categories-loan-count="categoriesLoanCount"
+					:hide-goal-card="hideCompletedGoalCard"
+					:post-lending-next-steps-enable="postLendingNextStepsEnable"
+					:user-info="userInfo"
+					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+					use-universal-order
+					@open-goal-modal="openGoalModal($event)"
+					@open-impact-insight-modal="showImpactInsightsModal = true"
+				/>
+			</div>
 			<MyKivaRegionExperience
 				v-if="!userLentToAllRegions"
 				:regions-data="regionsData"
@@ -100,27 +73,6 @@
 							/>
 						</template>
 						<template v-if="!isMobile">
-							<MyKivaCard
-								v-if="nonBadgesSlides[0]"
-								:key="nonBadgesSlides[0].badgeKey"
-								class="card-container tw-w-full tw-h-full"
-								:bg-image="getSlideBackgroundImg(nonBadgesSlides[0],
-									isNonBadgeSlide(nonBadgesSlides[0]), false)"
-								:is-bg-top-aligned="isNonBadgeSlide(nonBadgesSlides[0])"
-								:has-gradient="!isNonBadgeSlide(nonBadgesSlides[0])"
-								:title="getSlideTitle(nonBadgesSlides[0])"
-								:subtitle="getSlideSubTitle(nonBadgesSlides[0], isNonBadgeSlide(nonBadgesSlides[0]))"
-								:is-black-subtitle="isNonBadgeSlide(nonBadgesSlides[0])"
-								:secondary-cta-text="getSlideSecondaryCtaText(nonBadgesSlides[0])"
-								:primary-cta-text="getSlidePrimaryCtaText(nonBadgesSlides[0])"
-								:primary-cta-variant="getSlidePrimaryCtaVariant(nonBadgesSlides[0])"
-								:is-full-width-primary-cta="isNonBadgeSlide(nonBadgesSlides[0])"
-								:is-title-font-sans="isSlideTitleFontSans(nonBadgesSlides[0])"
-								:title-color="getSlideTitleColor(nonBadgesSlides[0],
-									isNonBadgeSlide(nonBadgesSlides[0]))"
-								@primary-cta-clicked="handlePrimaryCtaClick(nonBadgesSlides[0])"
-								@secondary-cta-clicked="handleSecondaryCtaClick(nonBadgesSlides[0])"
-							/>
 							<MyKivaSurveyCard
 								v-if="showSurveyCard"
 							/>
@@ -150,7 +102,6 @@
 							:key="'beyond-loan-row'"
 							class="carousel tw--mt-6"
 							controls-top-right
-							:in-lending-stats="latestLoan !== null && !showPostLendingNextStepsCards"
 							hide-goal-card
 							use-universal-order
 							user-in-homepage
@@ -168,7 +119,7 @@
 						/>
 					</section>
 
-					<template v-if="showPostLendingNextStepsCards && !userLentToAllRegions">
+					<template v-if="!userLentToAllRegions">
 						<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 							Keep your impact going
 						</h3>
@@ -180,7 +131,6 @@
 						</section>
 					</template>
 				</div>
-
 				<div
 					v-else
 				>
@@ -363,7 +313,6 @@ import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import MyKivaRegionExperience from '#src/components/MyKiva/MyKivaRegionExperience';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
-import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
@@ -461,7 +410,6 @@ const { isMobile } = useBreakpoints();
 // Goal data from parent-provided composable
 const {
 	checkCompletedGoal,
-	getCategoryLoansLastYear,
 	goalProgress,
 	hideGoalCard: hideCompletedGoalCard,
 	loading: goalProgressLoading,
@@ -488,7 +436,6 @@ const isUpdatingGoal = ref(false);
 const isSharingModalVisible = ref(false);
 const acceptedEmailMarketingUpdates = ref(false);
 const showPostLendingNextStepsCards = ref(false);
-const userHasGoal = computed(() => !!userGoal.value && Object.keys(userGoal.value).length > 0);
 
 // Computed
 const categoriesLoanCount = computed(() => getAllCategoryLoanCounts(props.heroTieredAchievements));
@@ -523,12 +470,6 @@ const showSurveyCard = computed(() => checkShowSurveyCard({
 }));
 
 const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.heroSlides));
-
-const womenLoansLastYear = computed(() => getCategoryLoansLastYear(props.heroTieredAchievements));
-
-const shouldShowGoalCard = computed(() => {
-	return (!userGoal.value || !userGoalAchieved.value) && !hideCompletedGoalCard.value;
-});
 
 // Navigation
 const goToDashboard = position => {
@@ -638,7 +579,10 @@ onMounted(async () => {
 .card-container {
 	width: 100%;
 
-	@apply md:tw-w-auto;
+	@screen md {
+		max-width: 390px;
+		width: auto;
+	}
 }
 
 .kiva-card :deep(h2) {
