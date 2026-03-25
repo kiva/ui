@@ -321,8 +321,8 @@ watch(numberOfLoans, newVal => {
 watch(isGoalSet, async newVal => {
 	loadedSetData.value = false;
 	if (newVal) {
-		// Load goal data to get current year progress for ctaHref
-		await loadGoalData({ yearlyProgress: true });
+		// Load goal data for ctaHref
+		await loadGoalData({ fetchPolicy: 'network-only' });
 		if (showCategories.value) {
 			showCategories.value = false;
 		}
@@ -333,7 +333,7 @@ watch(isGoalSet, async newVal => {
 watch(show, async newVal => {
 	if (newVal) {
 		isLoadingData.value = true;
-		await loadGoalData({ yearlyProgress: true });
+		await loadGoalData();
 		const { target, category: goalCategory } = userGoal.value;
 		const storedCategory = categories.find(c => c.badgeId === goalCategory);
 		if (storedCategory && target) {

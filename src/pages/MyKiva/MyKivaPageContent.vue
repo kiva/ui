@@ -41,7 +41,6 @@
 				:hero-badge-data="heroBadgeData"
 				:hero-tiered-achievements="heroTieredAchievements"
 				:total-loans="totalLoans"
-				:goals-v2-enabled="goalsV2Enabled"
 				:post-lending-next-steps-enable="postLendingNextStepsEnable"
 				:latest-loan="latestLoan"
 				:goal-refresh-key="goalRefreshKey"
@@ -50,7 +49,7 @@
 				:goal-editing-enable="goalEditingEnable"
 			/>
 		</section>
-		<section v-if="goalsV2Enabled" class="tw-mt-4" id="mykiva-achievements">
+		<section class="tw-mt-4" id="mykiva-achievements">
 			<div class="tw-flex tw-items-center tw-gap-1 tw-z-tooltip tw-pb-6">
 				<h3 id="my-achievements" class="tw-min-h-4">
 					Impact progress
@@ -134,18 +133,6 @@
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails($event)"
 				@mouse-enter-loan-card="loadBPData"
-			/>
-		</section>
-		<section v-if="!goalsV2Enabled" class="tw-mb-4" id="mykiva-achievements">
-			<h3 id="my-achievements">
-				My achievements
-			</h3>
-			<BadgesSectionV2
-				class="tw--mt-4"
-				controls-top-right
-				:badge-data="heroBadgeData"
-				:selected-journey="selectedJourney"
-				@badge-clicked="handleBadgeSectionClicked"
 			/>
 		</section>
 		<section v-if="moreWaysToHelpSlides.length" class="tw-my-4">
@@ -331,10 +318,6 @@ export default {
 		sidesheetLoan: {
 			type: Object,
 			default: () => ({}),
-		},
-		goalsV2Enabled: {
-			type: Boolean,
-			default: false
 		},
 		postLendingNextStepsEnable: {
 			type: Boolean,

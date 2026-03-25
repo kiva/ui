@@ -27,7 +27,6 @@
 				use-universal-order
 				user-in-homepage
 				user-goal-enabled
-				goals-v2-enabled
 				hide-non-badges-cards
 				:slides-number="3"
 				:goal-progress-loading="goalProgressLoading"
@@ -395,10 +394,6 @@ const props = defineProps({
 		type: Array,
 		default: () => [],
 	},
-	goalsV2Enabled: {
-		type: Boolean,
-		default: false,
-	},
 	postLendingNextStepsEnable: {
 		type: Boolean,
 		default: false,
@@ -534,19 +529,14 @@ const openGoalModal = event => {
 };
 
 const setGoal = async preferences => {
-	const updateLocalState = !props.goalsV2Enabled;
 	if (isUpdatingGoal.value) {
 		await updateCurrentGoal(userGoal, preferences);
 		$kvTrackEvent('portfolio', 'click', 'confirm-edit-goal');
 	} else {
-		await storeGoalPreferences(preferences, updateLocalState);
+		await storeGoalPreferences(preferences, false);
 	}
 	newGoalPrefs.value = preferences;
 	isGoalSet.value = true;
-	if (!props.goalsV2Enabled) {
-		await loadGoalData({ yearlyProgress: props.goalsV2Enabled });
-		showGoalModal.value = false;
-	}
 };
 
 const closeGoalModal = async () => {
@@ -561,7 +551,7 @@ const closeGoalModal = async () => {
 
 	if (isGoalSet.value) {
 		if (!isUpdatingGoal.value) {
-			await loadGoalData({ yearlyProgress: props.goalsV2Enabled });
+			await loadGoalData();
 		}
 
 		// Avoid showing category choice step when closing the modal
@@ -582,7 +572,7 @@ const closeImpactInsightsModal = () => {
 watch(() => props.goalRefreshKey, async (newVal, oldVal) => {
 	if (newVal !== oldVal && newVal > 0) {
 		await Promise.all([
-			loadGoalData({ yearlyProgress: props.goalsV2Enabled }),
+			loadGoalData(),
 			loadPreferences('network-only'),
 		]);
 	}

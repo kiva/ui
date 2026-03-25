@@ -182,7 +182,6 @@ const fetchPostCheckoutAchievements = async loanIds => {
 	let showAtbGoalMsg = false;
 	await loadGoalData({
 		supportAllCounterLoans: loansInBasket.value,
-		yearlyProgress: true,
 	});
 	// Use yearly progress with current year
 	const year = new Date().getFullYear();

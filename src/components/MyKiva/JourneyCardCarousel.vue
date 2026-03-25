@@ -26,11 +26,9 @@
 				#[`slide${index}`]
 				:key="index"
 			>
-				<component
+				<NextYearGoalCard
 					v-if="showGoalCard(index)"
-					:is="goalCardComponent"
 					:goal-progress="goalProgress"
-					:hero-slides="slides"
 					:loading="goalProgressLoading"
 					:user-goal="userGoal"
 					:prev-year-loans="womenLoansLastYear"
@@ -111,7 +109,6 @@ import useBadgeData, { getJourneysByLoan } from '#src/composables/useBadgeData';
 import { KvCarousel } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
-import GoalCard from '#src/components/MyKiva/GoalCard';
 import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
 import useGoalData from '#src/composables/useGoalData';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
@@ -220,10 +217,6 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	goalsV2Enabled: {
-		type: Boolean,
-		default: false
-	},
 	hideGoalCard: {
 		type: Boolean,
 		default: false
@@ -296,8 +289,7 @@ const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.slides));
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
 
-	return (!props.userGoal || !props.userGoalAchieved || (props.userGoalAchieved && props.goalsV2Enabled))
-	&& !props.hideGoalCard;
+	return (!props.userGoal || !props.userGoalAchieved || props.userGoalAchieved) && !props.hideGoalCard;
 });
 
 const dynamicOrderedSlides = computed(() => {
@@ -450,14 +442,6 @@ const showGoalCard = idx => {
 const womenLoansLastYear = computed(() => {
 	return getCategoryLoansLastYear(props.heroTieredAchievements);
 });
-
-const goalCardComponent = computed(() => {
-	if (props.goalsV2Enabled) {
-		return NextYearGoalCard;
-	}
-	return GoalCard;
-});
-
 </script>
 
 <style lang="postcss" scoped>

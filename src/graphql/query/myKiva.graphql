@@ -172,10 +172,6 @@ query myKivaQuery {
     }
   }
   general {
-		thankyou_page_goals_enable: uiConfigSetting(key: "thankyou_page_goals_enable") {
-			key
-			value
-		}
     post_lending_next_steps_enable: uiConfigSetting(key: "mykiva_post_lending_next_steps_enable") {
 			key
 			value
