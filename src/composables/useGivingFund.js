@@ -1,7 +1,6 @@
 import logFormatter from '#src/util/logFormatter';
 // eslint-disable-next-line max-len
 import myGivingFundParticipationDonations from '#src/graphql/query/portfolio/myGivingFundParticipationDonations.graphql';
-import myGivingFundParticipationFull from '#src/graphql/query/portfolio/myGivingFundParticipationFull.graphql';
 import myGivingFundsQuery from '#src/graphql/query/portfolio/myGivingFunds.graphql';
 import myGivingFundsCountQuery from '#src/graphql/query/portfolio/myGivingFundsCount.graphql';
 
@@ -180,111 +179,11 @@ export default function useGivingFund(apollo) {
 		return totalDonated;
 	};
 
-	/**
-	 * Generic Fetch method for Full Donation Participation Data
-	 */
-	const fetchFullGivingFundDonationData = async (fundIds = [], limit = DEFAULT_LIMIT, offset = 0) => {
-		const variables = {
-			limit,
-			offset,
-		};
-		// if we have fundIds, add to variables
-		if (fundIds.length) {
-			variables.filter = {
-				fundIds,
-			};
-		}
-
-		try {
-			const response = await apollo.query({
-				query: myGivingFundParticipationFull,
-				fetchPolicy: 'network-only',
-				variables,
-			});
-
-			// return query result
-			return response?.data?.my ?? {};
-		} catch (error) {
-			logFormatter(`Error fetching giving fund donation data: ${error}`, 'error');
-		}
-	};
-
-	const getDedupedFundsContributedToEntries = async (fundIds = []) => {
-		const retrievedFundIds = [];
-		const dedupedFunds = [];
-		let donationEntries = [];
-		await fetchFullGivingFundDonationData(fundIds).then(data => {
-			const totalDonationEntryCount = data?.givingFundParticipation?.totalCount || 0;
-			// operate on donation data to extract unique fund entries
-			if (totalDonationEntryCount && data?.givingFundParticipation?.values.length) {
-				// push initial donation entry to fund entries
-				donationEntries.push(...data.givingFundParticipation.values);
-				// if our totalCount is greater than our default limit, fetch the rest
-				if (totalDonationEntryCount > DEFAULT_LIMIT) {
-					const offsets = generateOffsets(totalDonationEntryCount, DEFAULT_LIMIT);
-					// fetch all offsets in parallel
-					// eslint-disable-next-line max-len
-					const fetchPromises = offsets.map(offset => fetchFullGivingFundDonationData(fundIds, DEFAULT_LIMIT, offset));
-					// wait for all fetches to complete
-					Promise.all(fetchPromises).then(results => {
-						// extract donation entries from each result
-						results.forEach(result => {
-							if (result?.givingFundParticipation?.values.length) {
-								donationEntries.push(...result.givingFundParticipation.values);
-							}
-						});
-					});
-				}
-
-				// map donation entry to fund entries
-				donationEntries = data?.givingFundParticipation?.values?.map(entry => {
-					return entry?.givingFund;
-				}) ?? [];
-				// extract unique funds
-				donationEntries.forEach(givingFund => {
-					if (!retrievedFundIds.includes(givingFund?.id)) {
-						retrievedFundIds.push(givingFund?.id);
-						dedupedFunds.push(givingFund);
-					}
-				});
-			}
-		});
-		return dedupedFunds;
-	};
-
-	const getFundTargetDisplayNounFromName = categoryName => {
-		if (!categoryName) return null;
-		switch (categoryName) {
-			case 'climate-threatened people':
-				return 'climate action';
-			case 'U.S. entrepreneurs':
-				return 'U.S. small businesses';
-			default:
-				return categoryName;
-		}
-	};
-
-	const getFundTargetSupportedPeoplePhraseFromName = categoryName => {
-		if (!categoryName) return null;
-		switch (categoryName) {
-			case 'women':
-			case 'refugees':
-			case 'U.S. entrepreneurs':
-				return categoryName;
-			default:
-				return 'people';
-		}
-	};
-
 	return {
 		fetchMyGivingFundsCount,
 		fetchMyGivingFundsData,
-		fetchFullGivingFundDonationData,
 		fetchGivingFundDonationData,
-		getDedupedFundsContributedToEntries,
 		getDonationTotalsForFund,
 		getFundsContributedToIds,
-		getFundTargetDisplayNounFromName,
-		getFundTargetSupportedPeoplePhraseFromName,
 	};
 }

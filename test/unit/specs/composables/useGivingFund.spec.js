@@ -15,45 +15,6 @@ describe('useGivingFund', () => {
 		composable = useGivingFund(mockApollo);
 	});
 
-	describe('getFundTargetDisplayNounFromName', () => {
-		it('should return null for null or undefined input', () => {
-			expect(composable.getFundTargetDisplayNounFromName(null)).toBe(null);
-			expect(composable.getFundTargetDisplayNounFromName(undefined)).toBe(null);
-		});
-
-		it('should return "climate action" for "climate-threatened people"', () => {
-			expect(composable.getFundTargetDisplayNounFromName('climate-threatened people')).toBe('climate action');
-		});
-
-		it('should return "U.S. small businesses" for "U.S. entrepreneurs"', () => {
-			expect(composable.getFundTargetDisplayNounFromName('U.S. entrepreneurs')).toBe('U.S. small businesses');
-		});
-
-		it('should return the original category name for unmapped categories', () => {
-			expect(composable.getFundTargetDisplayNounFromName('women')).toBe('women');
-			expect(composable.getFundTargetDisplayNounFromName('refugees')).toBe('refugees');
-		});
-	});
-
-	describe('getFundTargetSupportedPeoplePhraseFromName', () => {
-		it('should return null for null or undefined input', () => {
-			expect(composable.getFundTargetSupportedPeoplePhraseFromName(null)).toBe(null);
-			expect(composable.getFundTargetSupportedPeoplePhraseFromName(undefined)).toBe(null);
-		});
-
-		it('should return specific category names for mapped categories', () => {
-			expect(composable.getFundTargetSupportedPeoplePhraseFromName('women')).toBe('women');
-			expect(composable.getFundTargetSupportedPeoplePhraseFromName('refugees')).toBe('refugees');
-			expect(composable.getFundTargetSupportedPeoplePhraseFromName('U.S. entrepreneurs'))
-				.toBe('U.S. entrepreneurs');
-		});
-
-		it('should return "people" for unmapped categories', () => {
-			expect(composable.getFundTargetSupportedPeoplePhraseFromName('climate-threatened people')).toBe('people');
-			expect(composable.getFundTargetSupportedPeoplePhraseFromName('farmers')).toBe('people');
-		});
-	});
-
 	describe('fetchGivingFundDonationData', () => {
 		it('should call apollo.query with correct default parameters', async () => {
 			mockApollo.query.mockResolvedValue({
@@ -128,61 +89,6 @@ describe('useGivingFund', () => {
 			mockApollo.query.mockRejectedValue(new Error('Network error'));
 
 			const result = await composable.fetchGivingFundDonationData();
-
-			expect(result).toBeUndefined();
-		});
-	});
-
-	describe('fetchFullGivingFundDonationData', () => {
-		it('should call apollo.query with correct parameters', async () => {
-			mockApollo.query.mockResolvedValue({
-				data: {
-					my: {
-						givingFundParticipation: {
-							totalCount: 5,
-							values: [],
-						},
-					},
-				},
-			});
-
-			await composable.fetchFullGivingFundDonationData([789], 15, 30);
-
-			expect(mockApollo.query).toHaveBeenCalledWith({
-				query: expect.any(Object),
-				fetchPolicy: 'network-only',
-				variables: {
-					limit: 15,
-					offset: 30,
-					filter: {
-						fundIds: [789],
-					},
-				},
-			});
-		});
-
-		it('should return query result data', async () => {
-			const mockData = {
-				givingFundParticipation: {
-					totalCount: 1,
-					values: [{ givingFund: { id: 1, name: 'Test Fund' } }],
-				},
-			};
-			mockApollo.query.mockResolvedValue({
-				data: {
-					my: mockData,
-				},
-			});
-
-			const result = await composable.fetchFullGivingFundDonationData([1]);
-
-			expect(result).toEqual(mockData);
-		});
-
-		it('should handle errors gracefully', async () => {
-			mockApollo.query.mockRejectedValue(new Error('GraphQL error'));
-
-			const result = await composable.fetchFullGivingFundDonationData();
 
 			expect(result).toBeUndefined();
 		});
@@ -369,75 +275,6 @@ describe('useGivingFund', () => {
 		});
 	});
 
-	describe('getDedupedFundsContributedToEntries', () => {
-		it('should return empty array when no donations exist', async () => {
-			mockApollo.query.mockResolvedValue({
-				data: {
-					my: {
-						givingFundParticipation: {
-							totalCount: 0,
-							values: [],
-						},
-					},
-				},
-			});
-
-			const result = await composable.getDedupedFundsContributedToEntries([1, 2]);
-
-			expect(result).toEqual([]);
-		});
-
-		it('should return unique fund entries', async () => {
-			const fund1 = { id: 1, name: 'Fund 1' };
-			const fund2 = { id: 2, name: 'Fund 2' };
-			mockApollo.query.mockResolvedValue({
-				data: {
-					my: {
-						givingFundParticipation: {
-							totalCount: 3,
-							values: [
-								{ givingFund: fund1 },
-								{ givingFund: fund2 },
-								{ givingFund: fund1 }, // duplicate
-							],
-						},
-					},
-				},
-			});
-
-			const result = await composable.getDedupedFundsContributedToEntries([1, 2]);
-
-			expect(result).toEqual([fund1, fund2]);
-		});
-
-		it('should pass fundIds to query', async () => {
-			mockApollo.query.mockResolvedValue({
-				data: {
-					my: {
-						givingFundParticipation: {
-							totalCount: 0,
-							values: [],
-						},
-					},
-				},
-			});
-
-			await composable.getDedupedFundsContributedToEntries([123, 456]);
-
-			expect(mockApollo.query).toHaveBeenCalledWith({
-				query: expect.any(Object),
-				fetchPolicy: 'network-only',
-				variables: {
-					limit: 20,
-					offset: 0,
-					filter: {
-						fundIds: [123, 456],
-					},
-				},
-			});
-		});
-	});
-
 	describe('fetchMyGivingFundsData', () => {
 		it('should fetch giving funds data successfully', async () => {
 			const mockGivingFunds = {
@@ -560,72 +397,6 @@ describe('useGivingFund', () => {
 
 			expect(result).toBe(0);
 			expect(mockApollo.query).not.toHaveBeenCalled();
-		});
-	});
-
-	describe('getDedupedFundsContributedToEntries - pagination', () => {
-		it('should handle pagination for large result sets', async () => {
-			const fund1 = { id: 1, name: 'Fund 1' };
-			const fund2 = { id: 2, name: 'Fund 2' };
-
-			// First call returns 25 total (exceeds limit of 20)
-			mockApollo.query.mockResolvedValueOnce({
-				data: {
-					my: {
-						givingFundParticipation: {
-							totalCount: 25,
-							values: [
-								{ givingFund: fund1 },
-								...Array(19).fill({ givingFund: fund2 }),
-							],
-						},
-					},
-				},
-			});
-
-			// Second call for offset 20
-			mockApollo.query.mockResolvedValueOnce({
-				data: {
-					my: {
-						givingFundParticipation: {
-							totalCount: 5,
-							values: Array(5).fill({ givingFund: fund1 }),
-						},
-					},
-				},
-			});
-
-			const result = await composable.getDedupedFundsContributedToEntries([1, 2]);
-
-			// Should have made 2 calls for pagination
-			expect(mockApollo.query).toHaveBeenCalledTimes(2);
-			// Should return deduplicated funds
-			expect(result).toEqual([fund1, fund2]);
-		});
-
-		it('should work with empty fundIds array', async () => {
-			mockApollo.query.mockResolvedValue({
-				data: {
-					my: {
-						givingFundParticipation: {
-							totalCount: 0,
-							values: [],
-						},
-					},
-				},
-			});
-
-			const result = await composable.getDedupedFundsContributedToEntries([]);
-
-			expect(mockApollo.query).toHaveBeenCalledWith({
-				query: expect.any(Object),
-				fetchPolicy: 'network-only',
-				variables: {
-					limit: 20,
-					offset: 0,
-				},
-			});
-			expect(result).toEqual([]);
 		});
 	});
 
