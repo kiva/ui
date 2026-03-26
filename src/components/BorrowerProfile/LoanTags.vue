@@ -67,8 +67,6 @@ import availableTagsQuery from '#src/graphql/query/availableTags.graphql';
 import addOrRemoveTagOnLoan from '#src/graphql/mutation/addOrRemoveTagOnLoan.graphql';
 import { KvCheckbox } from '@kiva/kv-components';
 
-// Omit US-specific tags (all reviewed loans are lending partner loans)
-const usTagIds = [40, 43, 45, 88];
 // Exclude automated tag that users shouldn't select
 const excludedTagIds = [28]; // #Repeat Borrower - automated tag
 
@@ -120,7 +118,6 @@ export default {
 							&& tag.vocabularyId === 2
 							&& tag.status === 'active'
 							&& tag.id != null
-							&& !usTagIds.includes(tag.id)
 							&& !excludedTagIds.includes(tag.id))
 						.sort((a, b) => {
 							if (!a.name || !b.name) return 0;
