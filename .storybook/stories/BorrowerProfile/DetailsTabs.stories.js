@@ -2,41 +2,23 @@ import DetailsTabs from '#src/components/BorrowerProfile/DetailsTabs';
 
 import apolloStoryMixin from '../../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../../mixins/cookie-store-story-mixin';
-import kvAuth0StoryMixin from '../../mixins/kv-auth0-story-mixin';
-import {
-	createQueryResult,
-	fundraisingPartnerLoan,
-	fundraisingDirectLoan,
-	directLoanWithTrustee,
-} from './mockLoanFixtures';
-
-function detailsTabsStory(loan) {
-	return () => ({
-		components: { DetailsTabs },
-		mixins: [
-			apolloStoryMixin({ queryResult: createQueryResult(loan) }),
-			cookieStoreStoryMixin(),
-			kvAuth0StoryMixin,
-		],
-		template: `
-			<details-tabs
-				:loan-id="${loan.id}"
-				name="${loan.name}"
-			/>
-		`,
-	});
-}
+import { fundraisingPartnerLoan, createQueryResult } from './mockLoanFixtures';
 
 export default {
 	title: 'Components/BorrowerProfile/DetailsTabs',
 	component: DetailsTabs,
 };
 
-export const PartnerLoan = detailsTabsStory(fundraisingPartnerLoan);
-PartnerLoan.storyName = 'Partner Loan (Lending Partner Tab)';
-
-export const DirectLoanWithTrustee = detailsTabsStory(directLoanWithTrustee);
-DirectLoanWithTrustee.storyName = 'Direct Loan (Trustee Tab)';
-
-export const DirectLoanNoTrustee = detailsTabsStory(fundraisingDirectLoan);
-DirectLoanNoTrustee.storyName = 'Direct Loan (No Trustee)';
+export const Default = () => ({
+	components: { DetailsTabs },
+	mixins: [
+		apolloStoryMixin({ queryResult: createQueryResult(fundraisingPartnerLoan) }),
+		cookieStoreStoryMixin(),
+	],
+	template: `
+		<details-tabs
+			:loan-id="${fundraisingPartnerLoan.id}"
+			name="${fundraisingPartnerLoan.name}"
+		/>
+	`,
+});

@@ -22,6 +22,19 @@ export const WithComments = () => ({
 	`,
 });
 
+export const WithRoleLabels = () => ({
+	components: { CommentsAndWhySpecial },
+	mixins: [
+		apolloStoryMixin({ queryResult: createQueryResult(fundraisingPartnerLoan) }),
+		cookieStoreStoryMixin(),
+	],
+	template: `
+		<comments-and-why-special
+			:loan-id="${fundraisingPartnerLoan.id}"
+		/>
+	`,
+});
+
 export const AdminWithDeleteButton = () => ({
 	components: { CommentsAndWhySpecial },
 	mixins: [
