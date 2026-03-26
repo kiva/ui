@@ -19,7 +19,12 @@ function renderRepaymentSchedule(dataOverrides = {}) {
 				isLightboxVisible: false,
 				partnerName: 'Test Partner',
 				repaymentSchedule: [
-					{ amount: '50.00', localAmount: '50.00', dueToKivaDate: '2025-06-01T00:00:00Z', effectiveDate: '2025-06-01T00:00:00Z' },
+					{
+						amount: '50.00',
+						localAmount: '50.00',
+						dueToKivaDate: '2025-06-01T00:00:00Z',
+						effectiveDate: '2025-06-01T00:00:00Z',
+					},
 				],
 				repaidAmount: 0,
 				loanAmount: 500,

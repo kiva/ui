@@ -1,12 +1,11 @@
 import { render, fireEvent } from '@testing-library/vue';
 import LoanBookmark from '#src/components/BorrowerProfile/LoanBookmark';
+import bookmarkLoan from '#src/util/bookmarkUtil';
 import { globalOptions } from '../../../specUtils';
 
 vi.mock('#src/util/bookmarkUtil', () => ({
 	default: vi.fn(() => Promise.resolve({})),
 }));
-
-import bookmarkLoan from '#src/util/bookmarkUtil';
 
 function renderLoanBookmark(dataOverrides = {}) {
 	const mutate = vi.fn(() => Promise.resolve({}));
