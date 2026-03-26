@@ -65,7 +65,7 @@ function renderShareButton(dataOverrides = {}, propsOverrides = {}) {
 				},
 				$filters: {
 					...globalOptions.mocks.$filters,
-					changeCase: (str) => str,
+					changeCase: str => str,
 				},
 			},
 			stubs,

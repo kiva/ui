@@ -217,7 +217,7 @@ export default {
 			return (this.loan?.loanFundraisingInfo?.fundedAmount ?? 0) / (this.loan?.loanAmount ?? 0);
 		},
 		pageTitle() {
-			const name = this.loan.name;
+			const { name } = this.loan;
 			const country = this.loan.geocode?.country?.name;
 			if (this.loanStatus === 'expired') {
 				return `${name} from ${country}'s loan has expired`;
