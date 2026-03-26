@@ -699,12 +699,13 @@ export default {
 	computed: {
 		// Bridge --ui-data-* CSS variables (set by ESI head) to the unprefixed names
 		// KvHeaderLinkBar expects. Only needed during CDN-cached loading state.
+		// No fallback defaults here — let KvHeaderLinkBar's own fallbacks apply.
 		esiCssVarBridge() {
 			if (!this.isUserDataLoading) return undefined;
 			return {
-				'--basket-display': 'var(--ui-data-basket-count-display, none)',
-				'--user-avatar-display': 'var(--ui-data-user-avatar-display, inline-block)',
-				'--user-avatar-legacy-display': 'var(--ui-data-user-avatar-legacy-display, inline-block)',
+				'--basket-display': 'var(--ui-data-basket-count-display)',
+				'--user-avatar-display': 'var(--ui-data-user-avatar-display)',
+				'--user-avatar-legacy-display': 'var(--ui-data-user-avatar-legacy-display)',
 				'--user-avatar': 'var(--ui-data-user-avatar)',
 			};
 		},
