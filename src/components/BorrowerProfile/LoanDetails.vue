@@ -34,6 +34,12 @@
 			})"
 		/>
 		<description-list-item
+			v-if="terminalDateInfo"
+			data-testid="bp-loan-detail-terminal-date"
+			:term="terminalDateInfo.label"
+			:details="formattedTerminalDate"
+		/>
+		<description-list-item
 			data-testid="bp-loan-detail-funding-model"
 			:term="'Funding model'"
 			:details="fundingModel"
@@ -120,6 +126,22 @@ export default {
 			type: String,
 			default: '',
 		},
+		expiredDate: {
+			type: String,
+			default: '',
+		},
+		refundedDate: {
+			type: String,
+			default: '',
+		},
+		defaultedDate: {
+			type: String,
+			default: '',
+		},
+		endedDate: {
+			type: String,
+			default: '',
+		},
 	},
 	computed: {
 		isPartnerLoan() {
@@ -153,6 +175,17 @@ export default {
 		},
 		currencyLossScenarioTerm() {
 			return this.isPartnerLoan ? 'Partner covers currency loss?' : 'Currency exchange loss:';
+		},
+		terminalDateInfo() {
+			if (this.expiredDate) return { label: 'Expired date', date: this.expiredDate };
+			if (this.refundedDate) return { label: 'Refunded date', date: this.refundedDate };
+			if (this.defaultedDate) return { label: 'Defaulted date', date: this.defaultedDate };
+			if (this.endedDate) return { label: 'Ended date', date: this.endedDate };
+			return null;
+		},
+		formattedTerminalDate() {
+			if (!this.terminalDateInfo) return '';
+			return format(parseISO(this.terminalDateInfo.date), 'MMMM dd, yyyy');
 		},
 		currencyLossScenarioDetails() {
 			if (!this.isPartnerLoan) {
