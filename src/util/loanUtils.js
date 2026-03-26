@@ -9,20 +9,20 @@ export const BASE_CAMPAIGN = 'BASE-VB_BALANCE_MPV1';
  * Loan Statuses Available on borrower profile
  */
 export const ALLOWED_LOAN_STATUSES = [
-	// 'defaulted',
-	// 'deleted',
-	// 'ended',
+	'defaulted',
+	'deleted',
+	'ended',
 	'expired',
 	'funded',
 	'fundraising',
 	'inactive',
-	// 'inactiveExpired',
-	// 'issue',
-	// 'payingBack',
+	'inactiveExpired',
+	'issue',
+	'payingBack',
 	'pfp',
 	'raised',
-	// 'refunded',
-	// 'reviewed'
+	'refunded',
+	'reviewed',
 ];
 
 /**
