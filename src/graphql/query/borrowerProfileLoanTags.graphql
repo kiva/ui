@@ -1,0 +1,8 @@
+query BorrowerProfileLoanTags($loanId: Int!) {
+	lend {
+		loan(id: $loanId) {
+			id
+			tags
+		}
+	}
+}
