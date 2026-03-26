@@ -1,5 +1,5 @@
 <template>
-	<MyKivaContainer class="page-container tw-mt-2">
+	<MyKivaContainer class="page-container tw-mt-2 tw-mb-6">
 		<button
 			class="tw-flex tw-gap-1 tw-items-center tw-font-medium tw-mt-3 tw-mb-2 md:tw-my-5"
 			@click="goToDashboard('top')"
@@ -592,9 +592,8 @@ onMounted(async () => {
 	height: auto;
 
 	@screen md {
-		width: 390px;
-		height: 390px;
 		width: auto;
+		height: 390px;
 	}
 }
 
