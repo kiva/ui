@@ -162,7 +162,6 @@
 </template>
 
 <script>
-import { ALLOWED_LOAN_STATUSES } from '#src/util/loanUtils';
 import numeral from 'numeral';
 import { KvProgressBar, KvLoadingPlaceholder } from '@kiva/kv-components';
 
@@ -192,10 +191,6 @@ export default {
 		loanStatus: {
 			type: String,
 			default: 'fundraising',
-			validator: value => {
-				// Uncomment loan statuses as they become supported
-				return ALLOWED_LOAN_STATUSES.indexOf(value) !== -1;
-			}
 		},
 		numberOfLenders: {
 			type: Number,
