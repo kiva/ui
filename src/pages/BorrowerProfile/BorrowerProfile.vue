@@ -305,7 +305,7 @@ export default {
 					// Check loan exists
 					const loan = data?.lend?.loan;
 					if (!loan) {
-						return Promise.reject({ path: '/404' });
+						return Promise.reject({ path: '/lend', query: route.query });
 					}
 
 					return Promise.all([
