@@ -11,7 +11,6 @@
 					:is-logged-in="isLoggedIn"
 					:contributes-in-achievement="isLoanContributingInAchievements(loan.id)"
 					:is-first-loan="isFirstLoan(index)"
-					:is-my-kiva-enabled="isMyKivaEnabled"
 					:loan-contributes-to-goal="loansContributingToGoal[index]"
 					:loading-goal-data="loadingGoalData"
 					:has-goal="userGoal !== null && userGoal?.status === 'in-progress'"
@@ -127,10 +126,6 @@ export default {
 		possibleAchievementProgress: {
 			type: Array,
 			default: () => ([])
-		},
-		isMyKivaEnabled: {
-			type: Boolean,
-			default: false
 		},
 		lenderTotalLoans: {
 			type: Number,

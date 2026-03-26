@@ -1,18 +1,16 @@
 import {
 	hasLoanFunFactFootnote,
-	getIsMyKivaEnabled,
 	fetchPostCheckoutAchievements,
-	setGuestAssignmentCookie,
-	checkGuestAssignmentCookie,
-	GUEST_ASSIGNMENT_COOKIE,
-	setMyKivaRedirectCookie,
 	setPostLendingCardCookie,
 	checkPostLendingCardCookie,
-	POST_LENDING_NEXT_STEPS_COOKIE,
 	removePostLendingCardCookie,
+	POST_LENDING_NEXT_STEPS_COOKIE,
 	getRecentTransactionLoans,
 	getTransactionTimestamp,
-	RECENT_TRANSACTION_WINDOW_MS
+	RECENT_TRANSACTION_WINDOW_MS,
+	CONTENTFUL_CAROUSEL_KEY,
+	MY_KIVA_HERO_ENABLE_KEY,
+	TRANSACTION_LOANS_KEY,
 } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -20,8 +18,18 @@ import logReadQueryError from '#src/util/logReadQueryError';
 vi.mock('#src/util/logReadQueryError');
 
 describe('myKivaUtils.js', () => {
+	describe('exported constants', () => {
+		it('exports expected constant values', () => {
+			expect(CONTENTFUL_CAROUSEL_KEY).toBe('my-kiva-hero-carousel');
+			expect(MY_KIVA_HERO_ENABLE_KEY).toBe('new_mykiva_hero_enable');
+			expect(TRANSACTION_LOANS_KEY).toBe('loan_purchase');
+			expect(POST_LENDING_NEXT_STEPS_COOKIE).toBe('my_kiva_post_lending_next_steps');
+			expect(RECENT_TRANSACTION_WINDOW_MS).toBe(15 * 60 * 1000);
+		});
+	});
+
 	describe('hasLoanFunFactFootnote', () => {
-		it('should return true for loan in United States', () => {
+		it('returns true for United States in North America', () => {
 			const loan = {
 				geocode: {
 					country: {
@@ -31,12 +39,10 @@ describe('myKivaUtils.js', () => {
 				}
 			};
 
-			const result = hasLoanFunFactFootnote(loan);
-
-			expect(result).toBe(true);
+			expect(hasLoanFunFactFootnote(loan)).toBe(true);
 		});
 
-		it('should return false for loan in North America but not United States', () => {
+		it('returns false for non-US North America', () => {
 			const loan = {
 				geocode: {
 					country: {
@@ -46,68 +52,17 @@ describe('myKivaUtils.js', () => {
 				}
 			};
 
-			const result = hasLoanFunFactFootnote(loan);
-
-			expect(result).toBe(false);
+			expect(hasLoanFunFactFootnote(loan)).toBe(false);
 		});
 
-		it('should return true for loan in Central America', () => {
-			const loan = {
-				geocode: {
-					country: {
-						region: 'Central America'
-					}
-				}
-			};
-
-			const result = hasLoanFunFactFootnote(loan);
-
-			expect(result).toBe(true);
+		it('returns true for Central America, Africa, and Asia regions', () => {
+			expect(hasLoanFunFactFootnote({ geocode: { country: { region: 'Central America' } } })).toBe(true);
+			expect(hasLoanFunFactFootnote({ geocode: { country: { region: 'Africa' } } })).toBe(true);
+			expect(hasLoanFunFactFootnote({ geocode: { country: { region: 'Asia' } } })).toBe(true);
 		});
 
-		it('should return true for loan in Africa', () => {
-			const loan = {
-				geocode: {
-					country: {
-						region: 'Africa'
-					}
-				}
-			};
-
-			const result = hasLoanFunFactFootnote(loan);
-
-			expect(result).toBe(true);
-		});
-
-		it('should return true for loan in Asia', () => {
-			const loan = {
-				geocode: {
-					country: {
-						region: 'Asia'
-					}
-				}
-			};
-
-			const result = hasLoanFunFactFootnote(loan);
-
-			expect(result).toBe(true);
-		});
-
-		it('should return false for loan in Middle East', () => {
-			const loan = {
-				geocode: {
-					country: {
-						region: 'Middle East'
-					}
-				}
-			};
-
-			const result = hasLoanFunFactFootnote(loan);
-
-			expect(result).toBe(false);
-		});
-
-		it('should return false for loan with missing geocode data', () => {
+		it('returns false for unsupported or missing regions', () => {
+			expect(hasLoanFunFactFootnote({ geocode: { country: { region: 'Middle East' } } })).toBe(false);
 			expect(hasLoanFunFactFootnote({})).toBe(false);
 			expect(hasLoanFunFactFootnote({ geocode: null })).toBe(false);
 			expect(hasLoanFunFactFootnote({ geocode: { country: null } })).toBe(false);
@@ -125,8 +80,9 @@ describe('myKivaUtils.js', () => {
 			};
 		});
 
-		it('should call apollo.query with the correct parameters', async () => {
+		it('calls apollo.query with post checkout query and loan ids', async () => {
 			const loanIds = [1, 2, 3];
+
 			await fetchPostCheckoutAchievements(apolloMock, loanIds);
 
 			expect(apolloMock.query).toHaveBeenCalledWith({
@@ -135,14 +91,39 @@ describe('myKivaUtils.js', () => {
 			});
 		});
 
-		it('should call logReadQueryError on error', async () => {
+		it('logs read errors and does not throw', async () => {
 			const loanIds = [1, 2, 3];
 			const error = new Error('Test error');
 			apolloMock.query.mockRejectedValueOnce(error);
 
-			await fetchPostCheckoutAchievements(apolloMock, loanIds);
-
+			await expect(fetchPostCheckoutAchievements(apolloMock, loanIds)).resolves.toBeUndefined();
 			expect(logReadQueryError).toHaveBeenCalledWith(error, 'myKivaUtils postCheckoutAchievementsQuery');
+		});
+	});
+
+	describe('getTransactionTimestamp', () => {
+		it('returns effectiveTime timestamp when valid', () => {
+			const transaction = {
+				effectiveTime: '2026-02-01T11:50:00Z',
+				createTime: '2026-02-01T11:55:00Z'
+			};
+
+			expect(getTransactionTimestamp(transaction)).toBe(new Date(transaction.effectiveTime).getTime());
+		});
+
+		it('falls back to createTime when effectiveTime is invalid', () => {
+			const transaction = {
+				effectiveTime: 'invalid',
+				createTime: '2026-02-01T11:55:00Z'
+			};
+
+			expect(getTransactionTimestamp(transaction)).toBe(new Date(transaction.createTime).getTime());
+		});
+
+		it('returns null when both timestamps are invalid or missing', () => {
+			expect(getTransactionTimestamp({ effectiveTime: 'invalid', createTime: 'invalid' })).toBeNull();
+			expect(getTransactionTimestamp({})).toBeNull();
+			expect(getTransactionTimestamp(null)).toBeNull();
 		});
 	});
 
@@ -170,9 +151,7 @@ describe('myKivaUtils.js', () => {
 				}
 			];
 
-			const result = getRecentTransactionLoans(transactions, { nowTimestamp });
-
-			expect(result).toEqual([{ id: 1 }, { id: 2 }]);
+			expect(getRecentTransactionLoans(transactions, { nowTimestamp })).toEqual([{ id: 1 }, { id: 2 }]);
 		});
 
 		it('falls back to createTime when effectiveTime is invalid', () => {
@@ -189,12 +168,10 @@ describe('myKivaUtils.js', () => {
 				}
 			];
 
-			const result = getRecentTransactionLoans(transactions, { nowTimestamp });
-
-			expect(result).toEqual([{ id: 5 }]);
+			expect(getRecentTransactionLoans(transactions, { nowTimestamp })).toEqual([{ id: 5 }]);
 		});
 
-		it('returns empty array when loans are missing or transaction timestamps are out of range', () => {
+		it('filters out loans with missing ids and out-of-range timestamps', () => {
 			const transactions = [
 				{
 					effectiveTime: '2026-02-01T11:58:00Z',
@@ -206,9 +183,7 @@ describe('myKivaUtils.js', () => {
 				}
 			];
 
-			const result = getRecentTransactionLoans(transactions, { nowTimestamp });
-
-			expect(result).toEqual([]);
+			expect(getRecentTransactionLoans(transactions, { nowTimestamp })).toEqual([]);
 		});
 
 		it('supports custom window sizes', () => {
@@ -223,334 +198,74 @@ describe('myKivaUtils.js', () => {
 				}
 			];
 
-			const result = getRecentTransactionLoans(transactions, {
+			expect(getRecentTransactionLoans(transactions, {
 				nowTimestamp,
 				windowMs: 5 * 60 * 1000
-			});
-
-			expect(result).toEqual([{ id: 8 }]);
-		});
-	});
-
-	describe('getTransactionTimestamp', () => {
-		it('returns effectiveTime timestamp when valid', () => {
-			const transaction = {
-				effectiveTime: '2026-02-01T11:50:00Z',
-				createTime: '2026-02-01T11:55:00Z'
-			};
-
-			const result = getTransactionTimestamp(transaction);
-
-			expect(result).toBe(new Date(transaction.effectiveTime).getTime());
+			})).toEqual([{ id: 8 }]);
 		});
 
-		it('falls back to createTime when effectiveTime is invalid', () => {
-			const transaction = {
-				effectiveTime: 'invalid',
-				createTime: '2026-02-01T11:55:00Z'
-			};
-
-			const result = getTransactionTimestamp(transaction);
-
-			expect(result).toBe(new Date(transaction.createTime).getTime());
-		});
-
-		it('returns null when both timestamps are invalid or missing', () => {
-			expect(getTransactionTimestamp({ effectiveTime: 'invalid', createTime: 'invalid' })).toBeNull();
-			expect(getTransactionTimestamp({})).toBeNull();
-		});
-	});
-
-	describe('setGuestAssignmentCookie', () => {
-		it('should set the guest assignment cookie if MyKiva is enabled and the user is a guest', () => {
-			const cookieStore = {
-				set: vi.fn(),
-			};
-			const myKivaEnabled = true;
-			const isGuest = true;
-
-			setGuestAssignmentCookie(cookieStore, myKivaEnabled, isGuest);
-
-			expect(cookieStore.set).toHaveBeenCalledWith(GUEST_ASSIGNMENT_COOKIE, 'true', { path: '/' });
-		});
-
-		it('should not set the guest assignment cookie if MyKiva is not enabled', () => {
-			const cookieStore = {
-				set: vi.fn(),
-			};
-			const myKivaEnabled = false;
-			const isGuest = true;
-
-			setGuestAssignmentCookie(cookieStore, myKivaEnabled, isGuest);
-
-			expect(cookieStore.set).not.toHaveBeenCalled();
-		});
-
-		it('should not set the guest assignment cookie if the user is not a guest', () => {
-			const cookieStore = {
-				set: vi.fn(),
-			};
-			const myKivaEnabled = true;
-			const isGuest = false;
-
-			setGuestAssignmentCookie(cookieStore, myKivaEnabled, isGuest);
-
-			expect(cookieStore.set).not.toHaveBeenCalled();
-		});
-
-		it('should not throw an error if cookieStore is undefined', () => {
-			expect(() => setGuestAssignmentCookie(undefined, true, true)).not.toThrow();
-		});
-	});
-
-	describe('checkGuestAssignmentCookie', () => {
-		it('should return true if the guest assignment cookie exists', () => {
-			const cookieStore = {
-				get: vi.fn().mockReturnValue('true'),
-			};
-
-			const result = checkGuestAssignmentCookie(cookieStore);
-
-			expect(result).toBe(true);
-			expect(cookieStore.get).toHaveBeenCalledWith(GUEST_ASSIGNMENT_COOKIE);
-		});
-
-		it('should return false if the guest assignment cookie does not exist', () => {
-			const cookieStore = {
-				get: vi.fn().mockReturnValue(undefined),
-			};
-
-			const result = checkGuestAssignmentCookie(cookieStore);
-
-			expect(result).toBe(false);
-			expect(cookieStore.get).toHaveBeenCalledWith(GUEST_ASSIGNMENT_COOKIE);
-		});
-
-		it('should return false if cookieStore is undefined', () => {
-			const result = checkGuestAssignmentCookie(undefined);
-
-			expect(result).toBe(false);
-		});
-	});
-
-	describe('setMyKivaRedirectCookie', () => {
-		it('should set a cookie with the correct name, value, and expiration', () => {
-			const mockCookieStore = {
-				set: vi.fn(),
-			};
-
-			setMyKivaRedirectCookie(mockCookieStore);
-
-			expect(mockCookieStore.set).toHaveBeenCalledTimes(1);
-			expect(mockCookieStore.set).toHaveBeenCalledWith(
-				'mykivaredirectv2',
-				'true',
-				expect.any(Date)
-			);
-
-			// Verify the expiration date is approximately 2 months from now
-			const expirationDate = mockCookieStore.set.mock.calls[0][2];
-			const expectedDate = new Date();
-			expectedDate.setMonth(expectedDate.getMonth() + 2);
-			expect(expirationDate.getMonth()).toBe(expectedDate.getMonth());
-			expect(expirationDate.getFullYear()).toBe(expectedDate.getFullYear());
-		});
-
-		it('should not throw an error when cookieStore is undefined', () => {
-			expect(() => setMyKivaRedirectCookie(undefined)).not.toThrow();
-		});
-	});
-
-	describe('getIsMyKivaEnabled', () => {
-		let apolloMock;
-		let $kvTrackEventMock;
-		let cookieStoreMock;
-
-		beforeEach(() => {
-			apolloMock = { readFragment: vi.fn() };
-			$kvTrackEventMock = vi.fn();
-			cookieStoreMock = { set: vi.fn(), get: vi.fn() };
-		});
-
-		it('should return true and set cookie if experiment version is "b"', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-			cookieStoreMock.get.mockReturnValue(undefined);
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, cookieStoreMock);
-			expect(result).toBe(true);
-			expect(apolloMock.readFragment).toHaveBeenCalledWith({
-				id: 'Experiment:my_kiva_jan_2025',
-				fragment: expect.any(Object),
-			});
-			expect($kvTrackEventMock).toHaveBeenCalledWith(
-				'event-tracking',
-				'EXP-MP-1235-Jan2025',
-				'b'
-			);
-			expect(cookieStoreMock.set).toHaveBeenCalledWith(
-				'mykivaredirectv2',
-				'true',
-				expect.any(Date)
-			);
-		});
-
-		// eslint-disable-next-line max-len
-		it('should return true and set cookie if guest assignment cookie exists (regardless of experiment version)', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'a' });
-			cookieStoreMock.get.mockReturnValue('true');
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, cookieStoreMock);
-			expect(result).toBe(true);
-			expect($kvTrackEventMock).toHaveBeenCalledWith(
-				'event-tracking',
-				'EXP-MP-1235-Jan2025',
-				'b'
-			);
-			expect(cookieStoreMock.set).toHaveBeenCalledWith(
-				'mykivaredirectv2',
-				'true',
-				expect.any(Date)
-			);
-		});
-
-		it('should return false and not set cookie if experiment version is not "b" and no guest assignment', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'a' });
-			cookieStoreMock.get.mockReturnValue(undefined);
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, cookieStoreMock);
-			expect(result).toBe(false);
-			expect(apolloMock.readFragment).toHaveBeenCalled();
-			expect($kvTrackEventMock).toHaveBeenCalledWith(
-				'event-tracking',
-				'EXP-MP-1235-Jan2025',
-				'a'
-			);
-			expect(cookieStoreMock.set).not.toHaveBeenCalled();
-		});
-
-		it('should not throw if cookieStore is undefined', () => {
-			apolloMock.readFragment.mockReturnValue({ version: 'b' });
-			expect(() => getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, undefined)).not.toThrow();
-		});
-
-		it('should handle when readFragment returns null', () => {
-			apolloMock.readFragment.mockReturnValue(null);
-			cookieStoreMock.get.mockReturnValue(undefined);
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, cookieStoreMock);
-			expect(result).toBe(false);
-			expect($kvTrackEventMock).toHaveBeenCalledWith(
-				'event-tracking',
-				'EXP-MP-1235-Jan2025',
-				undefined
-			);
-		});
-
-		it('should handle when readFragment returns undefined', () => {
-			apolloMock.readFragment.mockReturnValue(undefined);
-			cookieStoreMock.get.mockReturnValue(undefined);
-			const result = getIsMyKivaEnabled(apolloMock, $kvTrackEventMock, cookieStoreMock);
-			expect(result).toBe(false);
+		it('returns an empty array for nullish transactions input', () => {
+			expect(getRecentTransactionLoans(undefined, { nowTimestamp })).toEqual([]);
+			expect(getRecentTransactionLoans(null, { nowTimestamp })).toEqual([]);
 		});
 	});
 
 	describe('setPostLendingCardCookie', () => {
-		it('should set the post lending card cookie if post lending is enabled', () => {
+		it('sets post lending cookie when enabled and totalLoans > 0', () => {
 			const cookieStore = {
 				set: vi.fn(),
 			};
-			const postLendingEnabled = true;
-			const totalLoans = 5;
 
-			setPostLendingCardCookie(cookieStore, postLendingEnabled, totalLoans);
+			setPostLendingCardCookie(cookieStore, true, 5);
 
 			expect(cookieStore.set).toHaveBeenCalledWith(POST_LENDING_NEXT_STEPS_COOKIE, 'true', { path: '/' });
 		});
 
-		it('should not set the post lending card cookie if post lending is not enabled', () => {
+		it('does not set cookie when disabled or totalLoans is not positive', () => {
 			const cookieStore = {
 				set: vi.fn(),
 			};
-			const postLendingEnabled = false;
 
-			setPostLendingCardCookie(cookieStore, postLendingEnabled);
+			setPostLendingCardCookie(cookieStore, false, 5);
+			setPostLendingCardCookie(cookieStore, true, 0);
+			setPostLendingCardCookie(cookieStore, true, undefined);
 
 			expect(cookieStore.set).not.toHaveBeenCalled();
 		});
 
-		it('should not set the post lending card cookie if post lending is enabled, but no loans were made', () => {
-			const cookieStore = {
-				set: vi.fn(),
-			};
-			const postLendingEnabled = true;
-			const totalLoans = 0;
-
-			setPostLendingCardCookie(cookieStore, postLendingEnabled, totalLoans);
-
-			expect(cookieStore.set).not.toHaveBeenCalled();
-		});
-
-		it('should not set the post lending card cookie if post lending is enabled, but loans is undefined', () => {
-			const cookieStore = {
-				set: vi.fn(),
-			};
-			const postLendingEnabled = true;
-			const totalLoans = undefined;
-
-			setPostLendingCardCookie(cookieStore, postLendingEnabled, totalLoans);
-
-			expect(cookieStore.set).not.toHaveBeenCalled();
-		});
-
-		it('should not set the post lending card cookie if post lending is not enabled', () => {
-			const cookieStore = {
-				set: vi.fn(),
-			};
-			const postLendingEnabled = false;
-
-			setPostLendingCardCookie(cookieStore, postLendingEnabled);
-
-			expect(cookieStore.set).not.toHaveBeenCalled();
-		});
-
-		it('should not throw an error if cookieStore is undefined', () => {
-			expect(() => setPostLendingCardCookie(undefined, true)).not.toThrow();
+		it('does not throw when cookieStore is undefined', () => {
+			expect(() => setPostLendingCardCookie(undefined, true, 5)).not.toThrow();
 		});
 	});
 
 	describe('checkPostLendingCardCookie', () => {
-		it('should return true if the guest assignment cookie exists', () => {
+		it('returns true when cookie exists', () => {
 			const cookieStore = {
 				get: vi.fn().mockReturnValue('true'),
 			};
 
-			const result = checkPostLendingCardCookie(cookieStore);
-
-			expect(result).toBe(true);
+			expect(checkPostLendingCardCookie(cookieStore)).toBe(true);
 			expect(cookieStore.get).toHaveBeenCalledWith(POST_LENDING_NEXT_STEPS_COOKIE);
 		});
 
-		it('should return false if the guest assignment cookie does not exist', () => {
+		it('returns false when cookie is missing or cookieStore is undefined', () => {
 			const cookieStore = {
 				get: vi.fn().mockReturnValue(undefined),
 			};
 
-			const result = checkPostLendingCardCookie(cookieStore);
-
-			expect(result).toBe(false);
-			expect(cookieStore.get).toHaveBeenCalledWith(POST_LENDING_NEXT_STEPS_COOKIE);
-		});
-
-		it('should return false if cookieStore is undefined', () => {
-			const result = checkPostLendingCardCookie(undefined);
-
-			expect(result).toBe(false);
+			expect(checkPostLendingCardCookie(cookieStore)).toBe(false);
+			expect(checkPostLendingCardCookie(undefined)).toBe(false);
 		});
 	});
 
 	describe('removePostLendingCardCookie', () => {
-		it('should remove post lending cookie', () => {
+		it('removes post lending cookie', () => {
 			const cookieStore = {
 				remove: vi.fn(),
 			};
 
 			removePostLendingCardCookie(cookieStore);
+
 			expect(cookieStore.remove).toHaveBeenCalledWith(POST_LENDING_NEXT_STEPS_COOKIE);
 		});
 	});

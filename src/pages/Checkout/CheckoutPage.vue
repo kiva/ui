@@ -63,7 +63,6 @@
 							:incentive-goal="depositIncentiveAmountToLend"
 							:possible-achievement-progress="possibleAchievementProgress"
 							:lender-total-loans="lenderTotalLoans"
-							:is-my-kiva-enabled="isMyKivaEnabled"
 							:has-ever-logged-in="hasEverLoggedIn"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
@@ -350,7 +349,7 @@ import { removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
 import {
 	KvLoadingPlaceholder, KvPageContainer, KvButton, KvMaterialIcon
 } from '@kiva/kv-components';
-import { fetchPostCheckoutAchievements, getIsMyKivaEnabled } from '#src/util/myKivaUtils';
+import { fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import getCheckoutAlmostFundedRecommendationQuery from '#src/graphql/query/checkout/getCheckoutAlmostFundedRecommendation.graphql'; // eslint-disable-line max-len
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
@@ -482,7 +481,6 @@ export default {
 			userOptedIn: false,
 			addedUpsellLoans: [],
 			possibleAchievementProgress: [],
-			isMyKivaEnabled: false,
 			lenderLoansIds: [],
 			mdiGiftOutline,
 			isBanditUpsellExpEnabled: false,
@@ -667,12 +665,6 @@ export default {
 				&& this.totals?.bonusAvailableTotal <= 0 && getPromoCreditBannerCookie(this.cookieStore)) {
 			clearPromoCreditBannerCookie(this.cookieStore);
 		}
-
-		this.isMyKivaEnabled = getIsMyKivaEnabled(
-			this.apollo,
-			this.$kvTrackEvent,
-			this.cookieStore,
-		);
 	},
 	watch: {
 		async emptyBasket(newValue) {
