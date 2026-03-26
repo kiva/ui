@@ -59,7 +59,7 @@
 		</article>
 		<article class="tw-mx-2 tw-overflow-auto lg:tw-mx-auto loans-container">
 			<h2 class="tw-text-center tw-my-6">
-				Similar borrowers that need your support
+				{{ similarBorrowersHeading }}
 			</h2>
 			<div :key="index" v-for="(category, index) in categories" class="tw-my-6">
 				<p class="tw-text-headline">
@@ -118,10 +118,10 @@ import { FLSS_ORIGIN_BP_FUNDED } from '#src/util/flssUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 
 export default {
-	name: 'FundedBorrowerProfile',
+	name: 'MinimalBorrowerProfile',
 	head() {
 		return {
-			title: `${this.loan.name} from ${this.loan.geocode?.country?.name}'s loan has been funded!`,
+			title: this.pageTitle,
 			meta: [
 				{
 					vmid: 'description',
@@ -191,6 +191,9 @@ export default {
 	},
 	computed: {
 		shareTitle() {
+			if (this.loanStatus === 'expired' || this.loanStatus === 'refunded') {
+				return `Help fund a loan on Kiva for someone like ${this.loan.name}`;
+			}
 			if (this.loan?.anonymizationLevel !== 'full') {
 				return `A loan of $${this.loan?.loanAmount} made a difference for ${this.loan.name}`;
 			}
@@ -212,6 +215,23 @@ export default {
 				return 1;
 			}
 			return (this.loan?.loanFundraisingInfo?.fundedAmount ?? 0) / (this.loan?.loanAmount ?? 0);
+		},
+		pageTitle() {
+			const name = this.loan.name;
+			const country = this.loan.geocode?.country?.name;
+			if (this.loanStatus === 'expired') {
+				return `${name} from ${country}'s loan has expired`;
+			}
+			if (this.loanStatus === 'refunded') {
+				return `${name} from ${country}'s loan has been refunded`;
+			}
+			return `${name} from ${country}'s loan has been funded!`;
+		},
+		similarBorrowersHeading() {
+			if (this.loanStatus === 'expired' || this.loanStatus === 'refunded') {
+				return 'Other borrowers that need your support';
+			}
+			return 'Similar borrowers that need your support';
 		},
 	},
 	mounted() {
@@ -342,7 +362,7 @@ export default {
 							}
 						});
 					} catch (e) {
-						logReadQueryError(e, 'FundedBorrowerProfile personalizedLoansQuery');
+						logReadQueryError(e, 'MinimalBorrowerProfile personalizedLoansQuery');
 						this.isLoading = false;
 					}
 				} else if (this.loan?.id) {
@@ -368,7 +388,7 @@ export default {
 							}
 						});
 					} catch (e) {
-						logReadQueryError(e, 'FundedBorrowerProfile mlLoansYouMightLikeData');
+						logReadQueryError(e, 'MinimalBorrowerProfile mlLoansYouMightLikeData');
 						this.isLoading = false;
 					}
 				}
