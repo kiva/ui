@@ -58,7 +58,7 @@
 						Build impact beyond your loan
 					</h3>
 					<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
-						<template v-if="latestLoan !== null && !showPostLendingNextStepsCards && !isMobile">
+						<template v-if="latestLoan !== null && !isMobile">
 							<MyKivaEmailUpdatesTransition
 								v-if="shouldShowEmailMarketingCard || acceptedEmailMarketingUpdates"
 								:accepted="acceptedEmailMarketingUpdates"
@@ -103,6 +103,7 @@
 							class="carousel tw--mt-6"
 							controls-top-right
 							hide-goal-card
+							in-lending-stats
 							use-universal-order
 							user-in-homepage
 							:post-lending-next-steps-enable="true"
@@ -112,7 +113,7 @@
 							:lender="lender"
 							:loans="loans"
 							:slides="heroSlides"
-							:latest-loan="!showPostLendingNextStepsCards ? latestLoan : null"
+							:latest-loan="latestLoan"
 							:user-info="userInfo"
 							:enable-slide-limit="false"
 							@open-impact-insight-modal="showImpactInsightsModal = true"
@@ -554,7 +555,6 @@ watch(() => props.goalRefreshKey, async (newVal, oldVal) => {
 
 onMounted(async () => {
 	await checkCompletedGoal({ category: 'portfolio' });
-	// Check post-lending cookie
 	if (checkPostLendingCardCookie(cookieStore)) {
 		showPostLendingNextStepsCards.value = true;
 		removePostLendingCardCookie(cookieStore);
