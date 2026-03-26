@@ -11,133 +11,18 @@
 			:team-id="teamData.teamPublicId"
 			@close="hideChallengeCallout = true"
 		/>
-		<article v-if="showFundraising" class="tw-relative tw-bg-secondary">
-			<div class="tw-relative">
-				<div class="tw-absolute tw-top-0 tw-h-full tw-w-full tw-overflow-hidden">
-					<hero-background />
-				</div>
-
-				<top-banner-pfp
-					v-if="inPfp"
-					class="tw-relative"
-					:lenders-needed="pfpMinLenders"
-					:borrower-name="name"
-					:days-left="diffInDays"
-				/>
-				<content-container
-					:class="[inPfp ? 'lg:tw-pt-3' : 'lg:tw-pt-8']"
-					class="md:tw-pt-6"
-				>
-					<summary-card
-						data-testid="bp-summary"
-						class="tw-relative lg:tw--mb-1.5"
-					/>
-				</content-container>
-			</div>
-			<div
-				:class="inPfp ? 'lg:tw-pt-16' : 'lg:tw-pt-8'"
-				class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0 tw-z-docked"
-			>
-				<sidebar-container
-					class="lg:tw-sticky lg:tw-mt-10 lg:tw-pb-8 lg:tw-top-12"
-				>
-					<lend-cta
-						class="tw-pointer-events-auto"
-						:loan-id="loanId"
-						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						:team-data="teamData"
-					>
-						<template #sharebutton>
-							<!-- Share button -->
-							<template v-if="isLoading">
-								<kv-loading-placeholder style="height: 2rem; width: 100%;" />
-							</template>
-							<share-button
-								v-else
-								class="tw-block lg:tw-mb-1.5"
-								:loan="loan"
-								:variant="shareBtnVariant"
-								:lender="lender"
-								:campaign="shareCampaign"
-								:in-pfp="inPfp"
-								:pfp-min-lenders="pfpMinLenders"
-								:num-lenders="numLenders"
-							/>
-						</template>
-					</lend-cta>
-				</sidebar-container>
-			</div>
-			<content-container class="tw-mt-4 md:tw-mt-3 lg:tw-mt-6">
-				<loan-story
-					id="loanStory"
-					data-testid="bp-loan-story"
-					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8 tw-z-1"
-					:loan-id="loanId"
-				/>
-			</content-container>
-			<content-container>
-				<journal-updates
-					v-if="showUpdates"
-					data-testid="bp-updates"
-					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
-					:loan-id="loanId"
-					@hide-section="showUpdates = false"
-				/>
-			</content-container>
-			<div class="tw-bg-primary tw-mb-5 md:tw-mb-6 lg:tw-mb-8" id="bp-comments-jump-link">
-				<content-container>
-					<comments-and-why-special
-						data-testid="bp-comments"
-						:loan-id="loanId"
-						:is-logged-in="lender.id ? true : false"
-					/>
-				</content-container>
-			</div>
-			<content-container v-if="showEducationPlacementExp">
-				<borrower-education-placement
-					data-testid="bp-education"
-					:loan-region="loanRegion"
-				/>
-			</content-container>
-			<content-container>
-				<more-about-loan
-					data-testid="bp-more-about"
-					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
-					:loan-id="loanId"
-				/>
-				<borrower-country data-testid="bp-country" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
-				<contributing-partners
-					data-testid="bp-contributing-partners"
-					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
-					:loan-id="loanId"
-				/>
-				<lenders-and-teams
-					v-if="showLenders"
-					data-testid="bp-lenders"
-					key="lenders"
-					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
-					:loan-id="loanId"
-					display-type="lenders"
-					@hide-section="showLenders = false"
-				/>
-				<lenders-and-teams
-					v-if="showTeams"
-					data-testid="bp-teams"
-					key="teams"
-					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
-					:loan-id="loanId"
-					display-type="teams"
-					@hide-section="showTeams = false"
-				/>
-			</content-container>
-			<div class="tw-bg-primary">
-				<content-container>
-					<details-tabs id="loanDetails" :loan-id="loanId" name="bp-details" />
-				</content-container>
-			</div>
-		</article>
+		<full-borrower-profile
+			v-if="showFullView"
+			:loan="loan"
+			:lender="lender"
+			:loading="isLoading"
+			:enable-five-dollars-notes="enableFiveDollarsNotes"
+			:team-data="teamData"
+			:show-education-placement-exp="showEducationPlacementExp"
+			:loan-region="loanRegion"
+		/>
 		<article v-else>
-			<FundedBorrowerProfile
+			<MinimalBorrowerProfile
 				:loan="loan"
 				:hash="hash"
 				:items-in-basket="itemsInBasket"
@@ -149,10 +34,7 @@
 </template>
 
 <script>
-import { ALLOWED_LOAN_STATUSES } from '#src/util/loanUtils';
-import {
-	format, parseISO, differenceInCalendarDays
-} from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { gql } from 'graphql-tag';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
@@ -161,31 +43,14 @@ import {
 	trackExperimentVersion
 } from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
-import ContentContainer from '#src/components/BorrowerProfile/ContentContainer';
-import SidebarContainer from '#src/components/BorrowerProfile/SidebarContainer';
-import HeroBackground from '#src/components/BorrowerProfile/HeroBackground';
-import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
-import LendCta from '#src/components/BorrowerProfile/LendCta';
-import LoanStory from '#src/components/BorrowerProfile/LoanStory';
-import FundedBorrowerProfile from '#src/components/BorrowerProfile/FundedBorrowerProfile';
-import DetailsTabs from '#src/components/BorrowerProfile/DetailsTabs';
-import BorrowerCountry from '#src/components/BorrowerProfile/BorrowerCountry';
-import ContributingPartners from '#src/components/BorrowerProfile/ContributingPartners';
-import LendersAndTeams from '#src/components/BorrowerProfile/LendersAndTeams';
-import MoreAboutLoan from '#src/components/BorrowerProfile/MoreAboutLoan';
-import CommentsAndWhySpecial from '#src/components/BorrowerProfile/CommentsAndWhySpecial';
-
-import TopBannerPfp from '#src/components/BorrowerProfile/TopBannerPfp';
-import ShareButton from '#src/components/BorrowerProfile/ShareButton';
-import JournalUpdates from '#src/components/BorrowerProfile/JournalUpdates';
+import MinimalBorrowerProfile from '#src/components/BorrowerProfile/MinimalBorrowerProfile';
+import FullBorrowerProfile from '#src/components/BorrowerProfile/FullBorrowerProfile';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
-import _throttle from 'lodash/throttle';
-import BorrowerEducationPlacement from '#src/components/BorrowerProfile/BorrowerEducationPlacement';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
 import TeamInfoFromId from '#src/graphql/query/teamInfoFromId.graphql';
 import ChallengeTeamInvite from '#src/components/BorrowerProfile/ChallengeTeamInvite';
-import { getKivaImageUrl, KvLoadingPlaceholder } from '@kiva/kv-components';
+import { getKivaImageUrl } from '@kiva/kv-components';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
 
@@ -246,8 +111,16 @@ const preFetchQuery = gql`
 					id
 					name
 				}
+				paidAmount
+				expiredDate
+				refundedDate
+				defaultedDate
+				endedDate
 				userProperties {
 					lentTo
+					isPrivileged
+					isAdmin
+					subscribed
 				}
 			}
 		}
@@ -305,25 +178,9 @@ export default {
 	name: 'BorrowerProfile',
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		BorrowerCountry,
-		ContributingPartners,
-		ContentContainer,
-		DetailsTabs,
-		HeroBackground,
-		KvLoadingPlaceholder,
-		FundedBorrowerProfile,
-		LendCta,
-		LendersAndTeams,
-		LoanStory,
-		JournalUpdates,
-		MoreAboutLoan,
-		SidebarContainer,
-		ShareButton,
-		CommentsAndWhySpecial,
-		SummaryCard,
-		TopBannerPfp,
+		FullBorrowerProfile,
+		MinimalBorrowerProfile,
 		WwwPage,
-		BorrowerEducationPlacement,
 		ChallengeTeamInvite,
 	},
 	head() {
@@ -404,35 +261,13 @@ export default {
 	},
 	data() {
 		return {
-			businessName: null,
-			countryName: '',
-			showLenders: true,
-			showTeams: true,
-			showUpdates: true,
-			hasThreeDaysOrLessLeft: false,
-			// meta fields
-			endDate: '',
-			numLenders: 0,
-			name: '',
-			hash: '',
-			anonymizationLevel: 'none',
-			loanAmount: '0',
-			status: '',
-			fullLoanUse: '',
-			loanFundraisingInfo: {},
+			loan: {},
+			lender: {},
 			inviterName: '',
 			inviterIsGuestOrAnonymous: false,
-			inPfp: false,
 			itemsInBasket: [],
-			pfpMinLenders: 0,
-			diffInDays: 0,
-			lender: {},
-			loan: {},
-			partnerName: '',
-			partnerCountry: '',
-			isoCode: '',
-			isMobile: false,
 			isLoading: true,
+			// Experiment state
 			regionBelongsToExp: false,
 			showEducationPlacementExp: false,
 			loanRegion: '',
@@ -444,6 +279,7 @@ export default {
 				'Asia',
 				'Europe'
 			],
+			// Challenge header
 			enableChallengeHeader: false,
 			teamData: {},
 			shareLender: undefined,
@@ -466,38 +302,10 @@ export default {
 					},
 				})
 				.then(({ data }) => {
-					const expCookieSignifier = cookieStore.get('kvlendborrowerbeta');
-					if (expCookieSignifier === 'a' || expCookieSignifier === 'c') {
-						const { query = {} } = route;
-						return Promise.reject({
-							path: `/lend-classic/${route?.params?.id}`,
-							query,
-						});
-					}
-
-					// Check for loan and loan status
+					// Check loan exists
 					const loan = data?.lend?.loan;
-					const loanStatusAllowed = ALLOWED_LOAN_STATUSES.indexOf(loan?.status) !== -1;
-					let redirectToLendClassic = loan === null || loan === 'undefined' || !loanStatusAllowed;
-					// Evaluate if lender should be redirected to lend classic MARS-358
-					const lentTo = loan?.userProperties?.lentTo ?? false;
-					if (lentTo && !redirectToLendClassic) {
-						const loanAmount = loan?.loanAmount ?? '0';
-						const fundedAmount = loan?.loanFundraisingInfo?.fundedAmount ?? '0';
-						const amountLeft = Number(loanAmount) - Number(fundedAmount);
-
-						const loanStatus = loan?.status !== 'fundraising';
-						redirectToLendClassic = !amountLeft || loanStatus;
-					}
-
-					if (redirectToLendClassic) {
-						// redirect to legacy borrower profile
-						const { query = {} } = route;
-						query.minimal = false;
-						return Promise.reject({
-							path: `/lend-classic/${Number(route?.params?.id ?? 0)}`,
-							query,
-						});
+					if (!loan) {
+						return Promise.reject({ path: '/404' });
 					}
 
 					return Promise.all([
@@ -525,29 +333,10 @@ export default {
 			};
 		},
 		result(result) {
-			const loan = result?.data?.lend?.loan;
-			this.loan = loan;
-			this.inPfp = loan?.inPfp ?? false;
-			this.pfpMinLenders = loan?.pfpMinLenders ?? 0;
-			this.businessName = loan?.businessName ?? '';
-			this.name = loan?.name ?? '';
-			this.countryName = loan?.geocode?.country?.name ?? '';
-			this.hash = loan?.image?.hash ?? '';
-			this.numLenders = loan?.lenders?.totalCount ?? 0;
-			this.endDate = loan?.plannedExpirationDate ? format(parseISO(loan?.plannedExpirationDate), 'M/d') : '';
-			this.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
-			this.loanAmount = loan?.loanAmount ?? '0';
-			this.status = loan?.status ?? '';
-			this.fullLoanUse = loan?.fullLoanUse ?? '';
-			this.loanFundraisingInfo = loan?.loanFundraisingInfo ?? {};
+			this.loan = result?.data?.lend?.loan ?? {};
 			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : result?.data?.community?.lender?.name ?? '';
 			this.itemsInBasket = result?.data?.shop?.basket?.items?.values ?? [];
-
-			this.diffInDays = differenceInCalendarDays(parseISO(loan?.plannedExpirationDate), new Date());
-			this.hasThreeDaysOrLessLeft = this.diffInDays <= 3;
-
-			this.isoCode = loan?.geocode?.country?.isoCode ?? '';
-			this.loanRegion = loan?.geocode?.country?.region ?? '';
+			this.loanRegion = this.loan?.geocode?.country?.region ?? '';
 			this.regionBelongsToExp = this.expRegionList.includes(this.loanRegion);
 		},
 	},
@@ -566,9 +355,6 @@ export default {
 				loanId: this.loanId,
 			},
 		});
-		const loan = data?.lend?.loan;
-		this.partnerName = loan?.partnerName ?? '';
-		this.partnerCountry = loan?.partner?.countries[0]?.name ?? '';
 		this.lender = data?.my?.userAccount ?? {};
 
 		if (this.regionBelongsToExp) {
@@ -614,31 +400,42 @@ export default {
 			}
 		}
 
-		this.determineIfMobile();
-
-		window.addEventListener('resize', _throttle(() => {
-			this.determineIfMobile();
-		}, 200));
-
 		this.isLoading = false;
 	},
-	methods: {
-		determineIfMobile() {
-			this.isMobile = document.documentElement.clientWidth < 735;
-		},
-	},
-	beforeUnmount() {
-		window.removeEventListener('resize', _throttle(() => {
-			this.determineIfMobile();
-		}, 200));
-	},
 	computed: {
-		shareCampaign() {
-			return this.inPfp ? 'social_share_bp_pfp' : 'social_share_bp';
-		},
 		loanId() {
 			return Number(this.$route.params.id || 0);
 		},
+		name() {
+			return this.loan?.name ?? '';
+		},
+		countryName() {
+			return this.loan?.geocode?.country?.name ?? '';
+		},
+		hash() {
+			return this.loan?.image?.hash ?? '';
+		},
+		amountLeft() {
+			const loanAmount = this.loan?.loanAmount ?? '0';
+			const fundedAmount = this.loan?.loanFundraisingInfo?.fundedAmount ?? '0';
+			return Number(loanAmount) - Number(fundedAmount);
+		},
+		isPrivileged() {
+			return this.loan?.userProperties?.isPrivileged ?? false;
+		},
+		showFullView() {
+			return (this.amountLeft && this.loan?.status === 'fundraising')
+				|| this.isPrivileged
+				|| this.$route.query.minimal === 'false';
+		},
+		loanType() {
+			// eslint-disable-next-line no-underscore-dangle
+			if (this.loan?.__typename === 'LoanDirect') {
+				return 'direct-loan';
+			}
+			return 'partner-loan';
+		},
+		// Meta / share computeds
 		imageShareUrl() {
 			if (!this.hash) return '';
 			return getKivaImageUrl({
@@ -652,29 +449,22 @@ export default {
 			return `Kiva - ${this.facebookPageTitle}`;
 		},
 		facebookPageTitle() {
-			// eslint-disable-next-line prefer-destructuring
-			let name = this.name;
-			if (this.businessName) {
-				name = `${name}, ${this.businessName}`;
+			let displayName = this.name;
+			if (this.loan?.businessName) {
+				displayName = `${displayName}, ${this.loan.businessName}`;
 			}
-			return `${name} - ${this.countryName}`;
-		},
-		amountLeft() {
-			return this.loanAmount - this.loanFundraisingInfo.fundedAmount;
+			return `${displayName} - ${this.countryName}`;
 		},
 		pageTitle() {
 			return `Lend to ${this.name} in ${this.countryName}`;
 		},
 		pageDescription() {
-			return this.fullLoanUse;
+			return this.loan?.fullLoanUse ?? '';
 		},
 		shareTitle() {
-			if (this.anonymizationLevel === 'full') {
+			if (this.loan?.anonymizationLevel === 'full') {
 				return 'Can you help support this loan?';
 			}
-			/** if inviterName is blank or share query param (used for sharing your own loan)
-			 * is set to true, then we don't want to use the inviter name in the share title
-			 */
 			if (this.inviterName === '' || this.$route.query.share === 'true') {
 				return `Can you help support ${this.name}?`;
 			}
@@ -684,22 +474,16 @@ export default {
 			// eslint-disable-next-line max-len
 			return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
 		},
-		showFundraising() {
-			return this.amountLeft && this.status === 'fundraising';
+		numLenders() {
+			return this.loan?.lenders?.totalCount ?? 0;
 		},
-		loanType() {
-			// eslint-disable-next-line no-underscore-dangle
-			if (this.loan?.__typename === 'LoanDirect') {
-				return 'direct-loan';
-			}
-			return 'partner-loan';
-		},
-		shareBtnVariant() {
-			return this.isMobile ? 'secondary' : 'caution';
+		endDate() {
+			const d = this.loan?.plannedExpirationDate;
+			return d ? format(parseISO(d), 'M/d') : '';
 		},
 		showChallengeCallout() {
 			return this.enableChallengeHeader && Object.keys(this.teamData).length && !this.hideChallengeCallout;
-		}
+		},
 	},
 	created() {
 		const publicId = getPublicId(this.$route);
