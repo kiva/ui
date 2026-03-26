@@ -165,7 +165,7 @@ import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import GoalInProgress from '#src/components/Thanks/SingleVersion/GoalInProgress';
 import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
 import useBadgeData from '#src/composables/useBadgeData';
-import { setGuestAssignmentCookie, setPostLendingCardCookie } from '#src/util/myKivaUtils';
+import { setPostLendingCardCookie } from '#src/util/myKivaUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import useTipMessage from '#src/composables/useTipMessage';
 
@@ -464,7 +464,6 @@ onMounted(async () => {
 		analyticsModuleOrder,
 		userType.value,
 	);
-	setGuestAssignmentCookie(cookieStore, true, props.isGuest);
 
 	// Track if all achievements have been earned
 	if (props.achievementsCompleted) {
