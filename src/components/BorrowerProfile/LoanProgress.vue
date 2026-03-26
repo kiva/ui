@@ -8,7 +8,14 @@
 			:bg-variant="'tertiary'"
 		/>
 		<kv-progress-bar
-			v-else
+			v-else-if="loanStatus === 'payingBack'"
+			class="tw-mb-1.5 lg:tw-mb-1"
+			label="Percent the loan has been repaid"
+			:value="progressPercent * 100"
+			:bg-variant="'tertiary'"
+		/>
+		<kv-progress-bar
+			v-else-if="loanStatus === 'fundraising'"
 			class="tw-mb-1.5 lg:tw-mb-1"
 			label="Percent the loan has funded"
 			:value="progressPercent * 100"
@@ -36,7 +43,7 @@
 						</p>
 						<p v-if="!hideViewProfileLinks" class="tw-text-upper tw-text-action tw-block">
 							<router-link
-								:to="`/lend-classic/${routeId}?minimal=false`"
+								:to="`/lend/${routeId}?minimal=false`"
 								v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
 							>
 								View the full borrower profile
@@ -55,7 +62,7 @@
 					</p>
 					<p v-if="!hideViewProfileLinks" class="tw-text-upper tw-text-action tw-block">
 						<router-link
-							:to="`/lend-classic/${routeId}?minimal=false`"
+							:to="`/lend/${routeId}?minimal=false`"
 							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
 						>
 							View the full borrower profile
@@ -73,7 +80,7 @@
 					</p>
 					<p v-if="!hideViewProfileLinks" class="tw-text-upper tw-text-action tw-block">
 						<router-link
-							:to="`/lend-classic/${routeId}?minimal=false`"
+							:to="`/lend/${routeId}?minimal=false`"
 							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
 						>
 							View the full borrower profile
@@ -105,7 +112,23 @@
 					</div>
 				</div>
 			</template>
-			<template v-else>
+			<template v-else-if="loanStatus === 'payingBack'">
+				<div v-if="loading" class="tw-flex tw-flex-auto tw-justify-between">
+					<KvLoadingPlaceholder style="height: 2rem; width: 100px" />
+					<KvLoadingPlaceholder style="height: 2rem; width: 100px" class="tw-text-right" />
+				</div>
+				<div v-else class="tw-flex tw-flex-auto">
+					<p class="tw-flex-auto" data-testid="bp-summary-repaid-percent">
+						<span class="tw-text-h3 tw-block tw-m-0">
+							{{ progressPercentRounded }} repaid
+						</span>
+						<span class="tw-text-h4 tw-text-secondary tw-block">
+							{{ $filters.numeral(moneyLeft, '$0,0[.]00') }} to go
+						</span>
+					</p>
+				</div>
+			</template>
+			<template v-else-if="loanStatus === 'fundraising'">
 				<div v-if="loading" class="tw-flex tw-flex-auto tw-justify-between">
 					<KvLoadingPlaceholder style="height: 2rem; width: 100px" />
 					<KvLoadingPlaceholder style="height: 2rem; width: 100px" class="tw-text-right" />
@@ -129,6 +152,11 @@
 					</div>
 				</div>
 			</template>
+			<div v-else class="tw-w-full">
+				<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-status-label">
+					{{ statusLabel }}
+				</p>
+			</div>
 		</figcaption>
 	</figure>
 </template>
@@ -205,7 +233,19 @@ export default {
 		},
 		routeId() {
 			return this.loanId ? this.loanId : this.$route.params.id;
-		}
+		},
+		statusLabel() {
+			const labels = {
+				ended: 'Repaid',
+				defaulted: 'Defaulted',
+				refunded: 'Refunded',
+				inactiveExpired: 'Inactive',
+				reviewed: 'Under review',
+				deleted: 'Deleted',
+				issue: 'Issue',
+			};
+			return labels[this.loanStatus] || this.loanStatus;
+		},
 	},
 };
 </script>
