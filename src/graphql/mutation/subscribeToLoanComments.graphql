@@ -1,0 +1,3 @@
+mutation SubscribeToLoanComments($loanId: Int!) {
+	subscribeToLoanComments(loanId: $loanId)
+}
