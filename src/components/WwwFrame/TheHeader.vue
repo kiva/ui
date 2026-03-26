@@ -16,6 +16,9 @@
 			:user-id="userId"
 			:is-mobile="isMobile"
 			:lender-image-url="profilePic"
+			:is-user-data-loading="isUserDataLoading"
+			:is-basket-data-loading="isBasketLoading"
+			:style="esiCssVarBridge"
 			:countries-not-lent-to-url="countriesNotLentToUrl"
 			show-m-g-upsell-link
 			@load-lend-menu-data="loadMenu"
@@ -694,6 +697,17 @@ export default {
 		};
 	},
 	computed: {
+		// Bridge --ui-data-* CSS variables (set by ESI head) to the unprefixed names
+		// KvHeaderLinkBar expects. Only needed during CDN-cached loading state.
+		esiCssVarBridge() {
+			if (!this.isUserDataLoading) return undefined;
+			return {
+				'--basket-display': 'var(--ui-data-basket-count-display, none)',
+				'--user-avatar-display': 'var(--ui-data-user-avatar-display, inline-block)',
+				'--user-avatar-legacy-display': 'var(--ui-data-user-avatar-legacy-display, inline-block)',
+				'--user-avatar': 'var(--ui-data-user-avatar)',
+			};
+		},
 		isVisitor() {
 			return !this.userId && !this.$renderConfig?.cdnNotedLoggedIn;
 		},
