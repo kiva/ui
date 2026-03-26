@@ -85,7 +85,7 @@ import myPublicLenderInfoQuery from '#src/graphql/query/myPublicLenderInfo.graph
 import ChallengeCallout from '#src/components/Lend/LoanSearch/ChallengeCallout';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 import basketCountQuery from '#src/graphql/query/basketCount.graphql';
-import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
+import addToBasketMixin from '#src/plugins/add-to-basket-mixin';
 import { KvPageContainer, KvMaterialIcon } from '@kiva/kv-components';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 import { setChallengeCookieData } from '../../util/teamChallengeUtils';
@@ -153,7 +153,7 @@ export default {
 			hasBasket: false,
 		};
 	},
-	mixins: [fiveDollarsTest, basketModalMixin, addToBasketExpMixin],
+	mixins: [fiveDollarsTest, basketModalMixin, addToBasketMixin],
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
 		preFetch(config, client, { route }) {

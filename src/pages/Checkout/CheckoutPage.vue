@@ -482,7 +482,6 @@ export default {
 			userOptedIn: false,
 			addedUpsellLoans: [],
 			possibleAchievementProgress: [],
-			newAtbExpEnabled: false,
 			isMyKivaEnabled: false,
 			lenderLoansIds: [],
 			mdiGiftOutline,
@@ -527,14 +526,10 @@ export default {
 					]);
 				})
 				.then(response => {
-					// eslint-disable-next-line max-len
-					const newAtbExpEnabled = readBoolSetting(response[0]?.data, 'general.new_atb_experience_enable.value');
-					if (newAtbExpEnabled) {
-						const basket = response[0]?.data?.shop?.basket ?? null;
-						const loans = getLoans(basket);
+					const basket = response[0]?.data?.shop?.basket ?? null;
+					const loans = getLoans(basket);
 
-						return fetchPostCheckoutAchievements(client, getLoanIds(loans));
-					}
+					return fetchPostCheckoutAchievements(client, getLoanIds(loans));
 				});
 		},
 		result({ data }) {
@@ -568,8 +563,6 @@ export default {
 
 			// Deposit incentive experiment MP-72
 			this.depositIncentiveAmountToLend = numeral(data?.my?.depositIncentiveAmountToLend ?? 0).value();
-
-			this.newAtbExpEnabled = readBoolSetting(data, 'general.new_atb_experience_enable.value');
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -662,14 +655,12 @@ export default {
 		// Deposit incentive experiment MP-72
 		this.initializeDepositIncentiveExperiment();
 
-		if (this.newAtbExpEnabled) {
-			const response = this.apollo.readQuery({
-				query: postCheckoutAchievementsQuery,
-				variables: { loanIds: getLoanIds(this.loans) },
-			});
+		const response = this.apollo.readQuery({
+			query: postCheckoutAchievementsQuery,
+			variables: { loanIds: getLoanIds(this.loans) },
+		});
 
-			this.possibleAchievementProgress = response?.postCheckoutAchievements?.overallProgress ?? [];
-		}
+		this.possibleAchievementProgress = response?.postCheckoutAchievements?.overallProgress ?? [];
 
 		// If no bonus available and showPromoCreditPill cookie exists, remove promo credit pill
 		if (typeof window !== 'undefined'
@@ -1286,16 +1277,14 @@ export default {
 			this.depositIncentiveExperimentEnabled = depositIncentiveExp.version === 'b';
 		},
 		calculateProgressAchievement(removedLoanId) {
-			if (this.newAtbExpEnabled) {
-				const loanIds = this.loanIdsInBasket.filter(loanId => loanId !== removedLoanId);
-				if (loanIds.length) {
-					this.apollo.query({
-						query: postCheckoutAchievementsQuery,
-						variables: { loanIds },
-					}).then(({ data }) => {
-						this.possibleAchievementProgress = data?.postCheckoutAchievements?.overallProgress ?? [];
-					});
-				}
+			const loanIds = this.loanIdsInBasket.filter(loanId => loanId !== removedLoanId);
+			if (loanIds.length) {
+				this.apollo.query({
+					query: postCheckoutAchievementsQuery,
+					variables: { loanIds },
+				}).then(({ data }) => {
+					this.possibleAchievementProgress = data?.postCheckoutAchievements?.overallProgress ?? [];
+				});
 			}
 		},
 		async initializeBanditUpsellExperiment() {

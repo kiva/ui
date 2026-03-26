@@ -1,7 +1,7 @@
 <template>
 	<header
 		class="tw-transition-all tw-duration-1000 tw-ease-in-out"
-		:class="isInExperimentPages & enableAddToBasketExp ? 'tw-sticky tw-top-0 tw-z-sticky' : ''"
+		:class="isInExperimentPages ? 'tw-sticky tw-top-0 tw-z-sticky' : ''"
 	>
 		<KvWwwHeader
 			v-if="isNavUpdateExp"
@@ -586,7 +586,7 @@ import MyKivaButton from '#src/components/WwwFrame/Header/MyKivaButton';
 import TeamsMenu from '#src/components/WwwFrame/Header/TeamsMenu';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
-import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
+import addToBasketMixin from '#src/plugins/add-to-basket-mixin';
 import {
 	KvButton, KvLoadingPlaceholder, KvMaterialIcon, KvPageContainer, KvWwwHeader
 } from '@kiva/kv-components';
@@ -622,7 +622,7 @@ export default {
 		cookieStore: { default: null },
 		kvAuth0: { default: null },
 	},
-	mixins: [addToBasketExpMixin, countriesNotLentToExpMixin],
+	mixins: [addToBasketMixin, countriesNotLentToExpMixin],
 	data() {
 		return {
 			aboutMenuId: 'about-header-dropdown',

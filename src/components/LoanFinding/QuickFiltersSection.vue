@@ -30,7 +30,6 @@
 					<kv-classic-loan-card-container
 						v-for="(loan, index) in loans"
 						:key="`new-card-${loan.id}-${index}`"
-						:add-to-basket-exp-enabled="enableAddToBasketExp"
 						:custom-loan-details="true"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:loan-id="loan.id"
@@ -83,7 +82,7 @@ import { transformIsoCodes } from '#src/util/loanSearch/filters/regions';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
 import KvPagination from '#src/components/Kv/KvPagination';
 import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
-import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
+import addToBasketMixin from '#src/plugins/add-to-basket-mixin';
 import EmptyState from './EmptyState';
 
 export default {
@@ -96,7 +95,7 @@ export default {
 		LendingCategorySection
 	},
 	inject: ['apollo'],
-	mixins: [addToBasketExpMixin],
+	mixins: [addToBasketMixin],
 	emits: ['add-to-basket', 'data-loaded', 'show-loan-details', 'mouse-enter-loan-card'],
 	props: {
 		enableFiveDollarsNotes: {

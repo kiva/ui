@@ -29,7 +29,6 @@
 				<template v-for="(loan, index) in loans" #[`slide${index}`] :key="loanCardKey(index)">
 					<kv-classic-loan-card-container
 						class="tw-h-full"
-						:add-to-basket-exp-enabled="enableAddToBasketExp"
 						:custom-loan-details="true"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:five-dollars-selected="fiveDollarsSelected"
@@ -61,7 +60,7 @@
 import _throttle from 'lodash/throttle';
 import { KvCarousel } from '@kiva/kv-components';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
-import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
+import addToBasketMixin from '#src/plugins/add-to-basket-mixin';
 import { getCustomHref } from '#src/util/loanUtils';
 import useBreakpoints from '#src/composables/useBreakpoints';
 import ViewMoreCard from './ViewMoreCard';
@@ -137,7 +136,7 @@ export default {
 		}
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [addToBasketExpMixin],
+	mixins: [addToBasketMixin],
 	data() {
 		return {
 			windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,
