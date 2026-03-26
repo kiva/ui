@@ -10,28 +10,12 @@ export default {
 	component: CountryInfo,
 };
 
-const loanWithParityFields = {
-	...fundraisingPartnerLoan,
-	terms: {
-		...fundraisingPartnerLoan.terms,
-		currency: 'NIO',
-		currencyFullName: 'Nicaraguan Córdoba',
-	},
-	geocode: {
-		...fundraisingPartnerLoan.geocode,
-		country: {
-			...fundraisingPartnerLoan.geocode.country,
-			fundsLentInCountry: 12450000,
-		},
-	},
-};
-
 export const Default = () => ({
 	components: { CountryInfo },
 	mixins: [
-		apolloStoryMixin({ queryResult: createQueryResult(loanWithParityFields) }),
+		apolloStoryMixin({ queryResult: createQueryResult(fundraisingPartnerLoan) }),
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<country-info :loan-id="${loanWithParityFields.id}" />`,
+	template: `<country-info :loan-id="${fundraisingPartnerLoan.id}" />`,
 });
