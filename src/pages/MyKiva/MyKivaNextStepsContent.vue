@@ -1,5 +1,5 @@
 <template>
-	<MyKivaContainer class="page-container">
+	<MyKivaContainer>
 		<button
 			class="tw-flex tw-gap-1 tw-items-center tw-font-medium tw-mt-3 tw-mb-2 md:tw-my-5"
 			@click="goToDashboard('top')"
@@ -16,37 +16,61 @@
 		</h3>
 
 		<section
-			class="tw-flex tw-flex-col md:tw-flex-row tw-gap-4"
+			:class="{'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperience}"
 		>
-			<div class="card-container tw-shrink-0">
-				<JourneyCardCarousel
-					class="carousel carousel-single"
-					user-in-homepage
-					in-lending-stats
-					:disable-drag="true"
-					:goal-progress-loading="goalProgressLoading"
-					:goal-progress="goalProgress"
-					:hero-badge-data="heroBadgeData"
-					:hero-tiered-achievements="heroTieredAchievements"
-					:lender="lender"
-					:slides-number="userLentToAllRegions ? 3 : 1"
-					:slides="heroSlides"
-					:user-goal-achieved="userGoalAchieved"
-					:user-goal="userGoal"
-					:categories-loan-count="categoriesLoanCount"
-					:hide-goal-card="hideCompletedGoalCard"
-					:post-lending-next-steps-enable="postLendingNextStepsEnable"
-					:user-info="userInfo"
-					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-					use-universal-order
-					@open-goal-modal="openGoalModal($event)"
-					@open-impact-insight-modal="showImpactInsightsModal = true"
+			<template v-if="showRegionExperience">
+				<div class="card-container tw-shrink-0">
+					<JourneyCardCarousel
+						class="carousel carousel-single"
+						user-in-homepage
+						in-lending-stats
+						:disable-drag="true"
+						:goal-progress-loading="goalProgressLoading"
+						:goal-progress="goalProgress"
+						:hero-badge-data="heroBadgeData"
+						:hero-tiered-achievements="heroTieredAchievements"
+						:lender="lender"
+						:slides-number="1"
+						:slides="heroSlides"
+						:user-goal-achieved="userGoalAchieved"
+						:user-goal="userGoal"
+						:categories-loan-count="categoriesLoanCount"
+						:hide-goal-card="hideCompletedGoalCard"
+						:post-lending-next-steps-enable="postLendingNextStepsEnable"
+						:user-info="userInfo"
+						:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+						use-universal-order
+						@open-goal-modal="openGoalModal($event)"
+						@open-impact-insight-modal="showImpactInsightsModal = true"
+					/>
+				</div>
+				<MyKivaRegionExperience
+					:regions-data="regionsData"
+					:loans="loans"
 				/>
-			</div>
-			<MyKivaRegionExperience
-				v-if="!userLentToAllRegions"
-				:regions-data="regionsData"
+			</template>
+			<JourneyCardCarousel
+				v-else
+				class="carousel tw--mt-6"
+				user-in-homepage
+				in-lending-stats
+				:goal-progress-loading="goalProgressLoading"
+				:goal-progress="goalProgress"
+				:hero-badge-data="heroBadgeData"
+				:hero-tiered-achievements="heroTieredAchievements"
+				:lender="lender"
 				:loans="loans"
+				:slides-number="3"
+				:slides="heroSlides"
+				:user-goal-achieved="userGoalAchieved"
+				:user-goal="userGoal"
+				:hide-goal-card="hideCompletedGoalCard"
+				:post-lending-next-steps-enable="postLendingNextStepsEnable"
+				:latest-loan="latestLoan"
+				:user-info="userInfo"
+				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+				@open-goal-modal="openGoalModal($event)"
+				@open-impact-insight-modal="showImpactInsightsModal = true"
 			/>
 		</section>
 		<div class="tw-flex tw-flex-col">
@@ -448,6 +472,10 @@ const achievementSlides = computed(() => buildAchievementSlides({
 	getActiveTierData,
 }));
 
+const showRegionExperience = computed(() => {
+	return !showPostLendingNextStepsCards.value && !props.userLentToAllRegions;
+});
+
 const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
 
 const shouldShowEmailMarketingCard = computed(() => checkShouldShowEmailMarketing({
@@ -568,20 +596,13 @@ onMounted(async () => {
 		tw-overflow-hidden tw-bg-white;
 }
 
-.stats-wrapper, .card-container {
+.card-container {
+	width: 100%;
 	height: auto;
 
 	@screen md {
-		height: 399px;
-	}
-}
-
-.card-container {
-	width: 100%;
-
-	@screen md {
-		max-width: 390px;
 		width: auto;
+		height: 390px;
 	}
 }
 
