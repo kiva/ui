@@ -1,5 +1,5 @@
 <template>
-	<MyKivaContainer class="page-container tw-mt-2 tw-mb-6">
+	<MyKivaContainer>
 		<button
 			class="tw-flex tw-gap-1 tw-items-center tw-font-medium tw-mt-3 tw-mb-2 md:tw-my-5"
 			@click="goToDashboard('top')"
@@ -574,14 +574,6 @@ onMounted(async () => {
 </script>
 
 <style lang="postcss" scoped>
-.page-container :deep(> div > div > *:not(#mykiva-journal-updates, #mykiva-achievements, #mykiva-borrower-carousel)) {
-	@apply tw-p-2 tw--m-2;
-}
-
-.page-container :deep(> div > div > *), #mykiva-journal-updates :deep(> section) {
-	@apply tw-overflow-visible lg:tw-overflow-hidden;
-}
-
 .loading-card {
 	@apply tw-w-full tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
 		tw-overflow-hidden tw-bg-white;
