@@ -811,14 +811,13 @@ export default {
 			switch (this.state) {
 				case 'loading':
 					return 'Loading...';
+				case 'lend':
+				case 'lent-to':
+					return 'Lend now';
 				case 'funded':
 					return 'Find another loan like this';
-				case 'refunded':
-				case 'expired':
-				case 'fully-reserved':
-					return 'Find another loan';
 				default:
-					return 'Lend now';
+					return 'Find another loan';
 			}
 		},
 		useFormSubmit() {
@@ -841,16 +840,17 @@ export default {
 			if (this.isInBasket) {
 				return 'basketed';
 			}
-			if (this.status === 'funded' || this.status === 'refunded' || this.status === 'expired') {
-				return this.status;
+			if (this.status === 'fundraising') {
+				if (this.allSharesReserved) {
+					return 'fully-reserved';
+				}
+				if (this.lentPreviously) {
+					return 'lent-to';
+				}
+				return 'lend';
 			}
-			if (this.allSharesReserved) {
-				return 'fully-reserved';
-			}
-			if (this.lentPreviously) {
-				return 'lent-to';
-			}
-			return 'lend';
+			// Non-fundraising statuses pass through directly
+			return this.status;
 		},
 		showAdding() {
 			return this.state === 'adding';
@@ -859,10 +859,7 @@ export default {
 			return this.state === 'lend' || this.state === 'loading';
 		},
 		showNonActionableLoanButton() {
-			return this.state === 'funded'
-				|| this.state === 'refunded'
-				|| this.state === 'expired'
-				|| this.state === 'fully-reserved';
+			return !['loading', 'adding', 'basketed', 'lend', 'lent-to'].includes(this.state);
 		},
 		hideShowLendDropdown() {
 			return this.state === 'lend' || this.state === 'lent-to';

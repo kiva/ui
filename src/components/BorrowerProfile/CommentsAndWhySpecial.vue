@@ -7,9 +7,19 @@
 			/>
 		</div>
 
-		<h2 class="tw-sr-only">
-			Loan Comments
-		</h2>
+		<div class="tw-flex tw-justify-between tw-items-center">
+			<h2 class="tw-sr-only">
+				Loan Comments
+			</h2>
+			<button
+				v-if="isLoggedIn"
+				class="tw-text-action"
+				data-testid="bp-comment-subscribe-toggle"
+				@click="toggleSubscription"
+			>
+				{{ isSubscribed ? 'Unsubscribe from updates' : 'Subscribe to updates' }}
+			</button>
+		</div>
 		<div
 			v-if="!loading" class="tw-py-2 md:tw-py-3 lg:tw-py-5"
 			:key="`comments-${loanId}`"
@@ -44,10 +54,15 @@
 										Report this comment
 									</button>
 								</li>
+								<li v-if="isAdmin" class="tw-text-base" data-testid="bp-comment-delete-btn">
+									<button @click="confirmDeleteComment(comment.id)">
+										Delete this comment
+									</button>
+								</li>
 							</ul>
 						</div>
 						<!-- comment -->
-						<div>
+						<div :class="{ 'tw-bg-brand-25 tw-rounded tw-p-1': comment.authorRole === 'Borrower' }">
 							<h2>
 								<em class="tw-break-words">"{{ shortComment(comment.body) }}"</em>
 							</h2>
@@ -112,6 +127,17 @@
 								<div class="tw-m-auto">
 									<h3>
 										{{ comment.authorName }}
+										<span
+											v-if="comment.authorRole"
+											class="tw-text-small tw-font-medium tw-px-1 tw-py-0.5 tw-rounded tw-ml-0.5"
+											:class="{
+												'tw-bg-brand-50 tw-text-brand-700': comment.authorRole === 'Borrower',
+												'tw-bg-secondary': comment.authorRole !== 'Borrower'
+											}"
+											data-testid="bp-comment-role-badge"
+										>
+											{{ comment.authorRole }}
+										</span>
 									</h3>
 									<h4
 										class="tw-text-base tw-text-upper"
@@ -213,6 +239,9 @@ import { mdiDotsHorizontalCircle } from '@mdi/js';
 import { gql } from 'graphql-tag';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import logFormatter from '#src/util/logFormatter';
+import deleteCommentMutation from '#src/graphql/mutation/deleteComment.graphql';
+import subscribeToLoanCommentsMutation from '#src/graphql/mutation/subscribeToLoanComments.graphql';
+import unsubscribeFromLoanCommentsMutation from '#src/graphql/mutation/unsubscribeFromLoanComments.graphql';
 import WhySpecial from '#src/components/BorrowerProfile/WhySpecial';
 import clickOutside from '#src/plugins/click-outside';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
@@ -223,6 +252,7 @@ import kivaKUrl from '#src/assets/images/kiva_k.svg?url';
 
 export default {
 	name: 'CommentsAndWhySpecial',
+	emits: ['subscription-toggled'],
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		BorrowerImage,
@@ -241,6 +271,14 @@ export default {
 			default: 0,
 		},
 		isLoggedIn: {
+			type: Boolean,
+			default: false,
+		},
+		isAdmin: {
+			type: Boolean,
+			default: false,
+		},
+		isSubscribed: {
 			type: Boolean,
 			default: false,
 		},
@@ -362,6 +400,7 @@ export default {
 										}
 									}
 									body
+								authorRole
 								}
 							}
 						}
@@ -442,6 +481,38 @@ export default {
 		showFullComment(commentBody) {
 			this.isCommentLightboxVisible = true;
 			this.selectedCommentBody = commentBody;
+		},
+		confirmDeleteComment(commentId) {
+			// eslint-disable-next-line no-alert
+			if (window.confirm('Are you sure you want to delete this comment?')) {
+				this.deleteComment(commentId);
+			}
+		},
+		deleteComment(commentId) {
+			this.apollo.mutate({
+				mutation: deleteCommentMutation,
+				variables: { commentId },
+			}).then(() => {
+				this.comments = this.comments.filter(c => c.id !== commentId);
+				this.$showTipMsg('Comment deleted');
+			}).catch(e => {
+				logFormatter(e, 'error');
+				this.$showTipMsg('There was a problem deleting this comment', 'error');
+			});
+		},
+		toggleSubscription() {
+			const mutation = this.isSubscribed
+				? unsubscribeFromLoanCommentsMutation
+				: subscribeToLoanCommentsMutation;
+			this.apollo.mutate({
+				mutation,
+				variables: { loanId: this.loanId },
+			}).then(() => {
+				this.$emit('subscription-toggled', !this.isSubscribed);
+			}).catch(e => {
+				logFormatter(e, 'error');
+				this.$showTipMsg('There was a problem updating your subscription', 'error');
+			});
 		},
 	}
 };
