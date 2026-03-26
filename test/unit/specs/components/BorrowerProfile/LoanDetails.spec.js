@@ -36,7 +36,9 @@ describe('LoanDetails', () => {
 	it('expired loan — renders "Expired date" with formatted date', () => {
 		const { getByTestId } = render(LoanDetails, {
 			global: globalOptions,
-			props: { ...defaultProps, status: 'expired', expiredDate: '2025-02-20T12:00:00Z', disbursalDate: '' },
+			props: {
+				...defaultProps, status: 'expired', expiredDate: '2025-02-20T12:00:00Z', disbursalDate: ''
+			},
 		});
 
 		const terminalDate = getByTestId('bp-loan-detail-terminal-date');

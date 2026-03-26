@@ -35,7 +35,9 @@ describe('LoanProgress', () => {
 	it('payingBack — renders repaid text with progress', () => {
 		const { getByTestId } = render(LoanProgress, {
 			global: testGlobalOptions,
-			props: { ...defaultProps, loanStatus: 'payingBack', progressPercent: 0.60, moneyLeft: '400.00' },
+			props: {
+				...defaultProps, loanStatus: 'payingBack', progressPercent: 0.60, moneyLeft: '400.00'
+			},
 		});
 
 		expect(getByTestId('bp-summary-repaid-percent').textContent).toContain('60%');
