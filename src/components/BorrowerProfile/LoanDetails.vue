@@ -163,7 +163,7 @@ export default {
 		},
 		disbursedDate() {
 			if (this.disbursalDate.length) {
-				const formattedDisbursedDate = format(parseISO(this.disbursalDate), 'MMMM dd, yyyy');
+				const formattedDisbursedDate = format(parseISO(this.disbursalDate), 'MMMM d, yyyy');
 				return formattedDisbursedDate;
 			} if (!this.disbursalDate.length && this.status === 'expired') {
 				return 'N/A, expired before fully funding';
@@ -185,7 +185,7 @@ export default {
 		},
 		formattedTerminalDate() {
 			if (!this.terminalDateInfo) return '';
-			return format(parseISO(this.terminalDateInfo.date), 'MMMM dd, yyyy');
+			return format(parseISO(this.terminalDateInfo.date), 'MMMM d, yyyy');
 		},
 		currencyLossScenarioDetails() {
 			if (!this.isPartnerLoan) {
