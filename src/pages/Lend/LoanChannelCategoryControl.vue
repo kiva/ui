@@ -79,7 +79,6 @@
 							:show-tags="true"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							:user-balance="userBalance"
-							:add-to-basket-exp-enabled="enableAddToBasketExp"
 							@show-cart-modal="showCartModal"
 						/>
 					</div>
@@ -108,7 +107,6 @@
 							:show-tags="true"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							:user-balance="userBalance"
-							:add-to-basket-exp-enabled="enableAddToBasketExp"
 							@show-cart-modal="showCartModal"
 						/>
 
@@ -125,7 +123,6 @@
 							:show-tags="true"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
 							:user-balance="userBalance"
-							:add-to-basket-exp-enabled="enableAddToBasketExp"
 							@show-cart-modal="showCartModal"
 						/>
 					</div>
@@ -190,7 +187,7 @@ import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanC
 import EmptyState from '#src/components/LoanFinding/EmptyState';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
-import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
+import addToBasketMixin from '#src/plugins/add-to-basket-mixin';
 import tuneUrl from '#src/assets/images/tune.svg?url';
 
 const defaultLoansPerPage = 12;
@@ -292,7 +289,7 @@ export default {
 		EmptyState,
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [loanChannelQueryMapMixin, addToBasketExpMixin],
+	mixins: [loanChannelQueryMapMixin, addToBasketMixin],
 	data() {
 		return {
 			offset: 0,
