@@ -49,7 +49,7 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const cookieStore = inject('cookieStore');
 
 const goToSurvey = () => {
-	setPostLendingCardCookie(cookieStore, true, 1);
+	setPostLendingCardCookie(cookieStore, 1);
 	window.location.href = '/lp/mykiva-input';
 };
 

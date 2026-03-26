@@ -222,10 +222,6 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
-	postLendingNextStepsEnable: {
-		type: Boolean,
-		default: false,
-	}
 });
 
 const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
@@ -474,7 +470,7 @@ onMounted(async () => {
 		);
 	}
 
-	setPostLendingCardCookie(cookieStore, props.postLendingNextStepsEnable, props.loans?.length);
+	setPostLendingCardCookie(cookieStore, props.loans?.length);
 });
 </script>
 

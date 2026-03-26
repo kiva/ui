@@ -20,7 +20,6 @@ export const isLoanAnonymous = loan => loan?.anonymizationLevel?.toLowerCase() =
  * Core visibility check for the email marketing card
  * @param {Object} params
  * @param {boolean} params.showPostLendingNextStepsCards
- * @param {boolean} params.postLendingNextStepsEnable
  * @param {Object|null} params.latestLoan
  * @param {boolean} params.hasMailUpdatesOptOut - result of userHasMailUpdatesOptOut()
  * @param {number} params.loansCount
@@ -28,12 +27,11 @@ export const isLoanAnonymous = loan => loan?.anonymizationLevel?.toLowerCase() =
  */
 export const checkShouldShowEmailMarketing = ({
 	showPostLendingNextStepsCards,
-	postLendingNextStepsEnable,
 	latestLoan,
 	hasMailUpdatesOptOut,
 	loansCount,
 }) => {
-	return showPostLendingNextStepsCards && postLendingNextStepsEnable
+	return showPostLendingNextStepsCards
 		&& !isLoanAnonymous(latestLoan)
 		&& hasMailUpdatesOptOut && (loansCount > 0 || latestLoan !== null);
 };
@@ -42,16 +40,14 @@ export const checkShouldShowEmailMarketing = ({
  * Core visibility check for the latest loan card
  * @param {Object} params
  * @param {boolean} params.showPostLendingNextStepsCards
- * @param {boolean} params.postLendingNextStepsEnable
  * @param {Object|null} params.latestLoan
  * @returns {boolean}
  */
 export const checkShowLatestLoan = ({
 	showPostLendingNextStepsCards,
-	postLendingNextStepsEnable,
 	latestLoan,
 }) => {
-	return !!showPostLendingNextStepsCards && !!postLendingNextStepsEnable
+	return !!showPostLendingNextStepsCards
 		&& !!latestLoan && !isLoanAnonymous(latestLoan);
 };
 
@@ -59,13 +55,11 @@ export const checkShowLatestLoan = ({
  * Core visibility check for the survey card
  * @param {Object} params
  * @param {boolean} params.showPostLendingNextStepsCards
- * @param {boolean} params.postLendingNextStepsEnable
  * @param {Object} params.userInfo
  * @returns {boolean}
  */
 export const checkShowSurveyCard = ({
 	showPostLendingNextStepsCards,
-	postLendingNextStepsEnable,
 	userInfo,
 }) => {
 	const userPreferences = userInfo?.userPreferences || {};
@@ -73,7 +67,7 @@ export const checkShowSurveyCard = ({
 	const isFormSubmitted = (parsedPrefs.savedForms || []).some(
 		form => form.formName === MYKIVA_INPUT_FORM_KEY
 	);
-	return showPostLendingNextStepsCards && !isFormSubmitted && postLendingNextStepsEnable;
+	return showPostLendingNextStepsCards && !isFormSubmitted;
 };
 
 /**
