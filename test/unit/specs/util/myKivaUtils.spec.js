@@ -216,7 +216,7 @@ describe('myKivaUtils.js', () => {
 				set: vi.fn(),
 			};
 
-			setPostLendingCardCookie(cookieStore, true, 5);
+			setPostLendingCardCookie(cookieStore, 5);
 
 			expect(cookieStore.set).toHaveBeenCalledWith(POST_LENDING_NEXT_STEPS_COOKIE, 'true', { path: '/' });
 		});
@@ -226,15 +226,14 @@ describe('myKivaUtils.js', () => {
 				set: vi.fn(),
 			};
 
-			setPostLendingCardCookie(cookieStore, false, 5);
-			setPostLendingCardCookie(cookieStore, true, 0);
-			setPostLendingCardCookie(cookieStore, true, undefined);
+			setPostLendingCardCookie(cookieStore, 0);
+			setPostLendingCardCookie(cookieStore, undefined);
 
 			expect(cookieStore.set).not.toHaveBeenCalled();
 		});
 
 		it('does not throw when cookieStore is undefined', () => {
-			expect(() => setPostLendingCardCookie(undefined, true, 5)).not.toThrow();
+			expect(() => setPostLendingCardCookie(undefined, 5)).not.toThrow();
 		});
 	});
 

@@ -221,10 +221,6 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
-	postLendingNextStepsEnable: {
-		type: Boolean,
-		default: false
-	},
 	latestLoan: {
 		type: Object,
 		default: null
@@ -264,7 +260,6 @@ const acceptedEmailMarketingUpdates = ref(false);
 const shouldShowEmailMarketingCard = computed(
 	() => props.inLendingStats && checkShouldShowEmailMarketing({
 		showPostLendingNextStepsCards: props.showPostLendingNextStepsCards,
-		postLendingNextStepsEnable: props.postLendingNextStepsEnable,
 		latestLoan: props.latestLoan,
 		hasMailUpdatesOptOut: userHasMailUpdatesOptOut(),
 		loansCount: props.loans.length,
@@ -274,13 +269,11 @@ const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
 
 const showLatestLoan = computed(() => checkShowLatestLoan({
 	showPostLendingNextStepsCards: props.showPostLendingNextStepsCards,
-	postLendingNextStepsEnable: props.postLendingNextStepsEnable,
 	latestLoan: props.latestLoan,
 }));
 
 const showSurveyCard = computed(() => props.showSurveySlide && checkShowSurveyCard({
 	showPostLendingNextStepsCards: props.showPostLendingNextStepsCards,
-	postLendingNextStepsEnable: props.postLendingNextStepsEnable,
 	userInfo: props.userInfo,
 }));
 

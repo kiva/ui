@@ -45,7 +45,6 @@
 					:user-goal="userGoal"
 					:categories-loan-count="categoriesLoanCount"
 					:hide-goal-card="hideCompletedGoalCard"
-					:post-lending-next-steps-enable="postLendingNextStepsEnable"
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 					:goal-editing-enable="goalEditingEnable"
@@ -178,7 +177,6 @@
 			:user-goal-achieved="userGoalAchieved"
 			:user-goal="userGoal"
 			:hide-goal-card="hideCompletedGoalCard"
-			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
@@ -199,7 +197,7 @@
 			@set-goal="setGoal"
 		/>
 		<MyKivaImpactInsightModal
-			v-if="showPostLendingNextStepsCards && postLendingNextStepsEnable && showImpactInsightsModal"
+			v-if="showPostLendingNextStepsCards && showImpactInsightsModal"
 			:show="showImpactInsightsModal"
 			:latest-loan="latestLoan"
 			@close="closeImpactInsightsModal"
@@ -278,10 +276,6 @@ export default {
 		totalLoans: {
 			type: Number,
 			default: 0,
-		},
-		postLendingNextStepsEnable: {
-			type: Boolean,
-			default: false
 		},
 		latestLoan: {
 			type: Object,
