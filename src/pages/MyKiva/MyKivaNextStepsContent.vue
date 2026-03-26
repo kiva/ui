@@ -588,18 +588,12 @@ onMounted(async () => {
 }
 
 .card-container {
+	width: 100%;
 	height: auto;
 
 	@screen md {
-		height: 390px;
-	}
-}
-
-.card-container {
-	width: 100%;
-
-	@screen md {
 		width: 390px;
+		height: 390px;
 		width: auto;
 	}
 }
