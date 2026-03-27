@@ -5,7 +5,6 @@ export const ERL_COOKIE_NAME = 'kverlfivedollarnotes';
 export const TOP_UP_CAMPAIGN = 'TOPUP-VB-BALANCE-MPV1';
 export const BASE_CAMPAIGN = 'BASE-VB_BALANCE_MPV1';
 
-
 /**
  * Returns true if loan is fundraising / can be lent to
  *
