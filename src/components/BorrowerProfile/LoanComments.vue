@@ -137,6 +137,7 @@
 <script>
 import { gql } from 'graphql-tag';
 import { format, parseISO } from 'date-fns';
+import { createIntersectionObserver } from '#src/util/observerUtils';
 import { KvButton } from '@kiva/kv-components';
 import deleteCommentMutation from '#src/graphql/mutation/deleteComment.graphql';
 import subscribeToLoanCommentsMutation from '#src/graphql/mutation/subscribeToLoanComments.graphql';
@@ -211,6 +212,7 @@ export default {
 			newCommentText: '',
 			isSubmitting: false,
 			showAll: false,
+			observer: null,
 		};
 	},
 	computed: {
@@ -229,9 +231,33 @@ export default {
 		},
 	},
 	mounted() {
-		this.loadComments();
+		this.createObserver();
+	},
+	beforeUnmount() {
+		this.destroyObserver();
 	},
 	methods: {
+		createObserver() {
+			this.observer = createIntersectionObserver({
+				targets: [this.$el],
+				rootMargin: '500px',
+				callback: entries => {
+					entries.forEach(entry => {
+						if (entry.target === this.$el && entry.intersectionRatio > 0) {
+							this.loadComments();
+						}
+					});
+				}
+			});
+			if (!this.observer) {
+				this.loadComments();
+			}
+		},
+		destroyObserver() {
+			if (this.observer) {
+				this.observer.disconnect();
+			}
+		},
 		async loadComments() {
 			if (!this.loanId) return;
 			try {

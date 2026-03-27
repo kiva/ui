@@ -65,6 +65,7 @@
 import loanTagsQuery from '#src/graphql/query/borrowerProfileLoanTags.graphql';
 import availableTagsQuery from '#src/graphql/query/availableTags.graphql';
 import addOrRemoveTagOnLoan from '#src/graphql/mutation/addOrRemoveTagOnLoan.graphql';
+import { createIntersectionObserver } from '#src/util/observerUtils';
 import { KvCheckbox } from '@kiva/kv-components';
 
 // Exclude automated tag that users shouldn't select
@@ -91,6 +92,7 @@ export default {
 			tagStates: {},
 			availableTags: [],
 			selectorVisible: false,
+			observer: null,
 		};
 	},
 	computed: {
@@ -102,9 +104,33 @@ export default {
 		},
 	},
 	mounted() {
-		this.loadTags();
+		this.createObserver();
+	},
+	beforeUnmount() {
+		this.destroyObserver();
 	},
 	methods: {
+		createObserver() {
+			this.observer = createIntersectionObserver({
+				targets: [this.$el],
+				rootMargin: '500px',
+				callback: entries => {
+					entries.forEach(entry => {
+						if (entry.target === this.$el && entry.intersectionRatio > 0) {
+							this.loadTags();
+						}
+					});
+				}
+			});
+			if (!this.observer) {
+				this.loadTags();
+			}
+		},
+		destroyObserver() {
+			if (this.observer) {
+				this.observer.disconnect();
+			}
+		},
 		async loadTags() {
 			if (!this.loanId) return;
 			try {

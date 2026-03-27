@@ -110,6 +110,7 @@
 
 <script>
 import { gql } from 'graphql-tag';
+import { createIntersectionObserver } from '#src/util/observerUtils';
 import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 
 import {
@@ -232,6 +233,27 @@ export default {
 		}
 	},
 	methods: {
+		createObserver() {
+			this.observer = createIntersectionObserver({
+				targets: [this.$el],
+				rootMargin: '500px',
+				callback: entries => {
+					entries.forEach(entry => {
+						if (entry.target === this.$el && entry.intersectionRatio > 0) {
+							this.loadData();
+						}
+					});
+				}
+			});
+			if (!this.observer) {
+				this.loadData();
+			}
+		},
+		destroyObserver() {
+			if (this.observer) {
+				this.observer.disconnect();
+			}
+		},
 		closeLightbox() {
 			// close lightbox
 			this.isLightboxVisible = false;
@@ -408,8 +430,10 @@ export default {
 		},
 	},
 	mounted() {
-		this.loadData();
+		this.createObserver();
 	},
-
+	beforeUnmount() {
+		this.destroyObserver();
+	},
 };
 </script>
