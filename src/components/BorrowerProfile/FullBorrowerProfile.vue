@@ -168,17 +168,15 @@ export const fullProfileFragment = gql`fragment bpFullProfileFields on LoanBasic
 	id
 	inPfp
 	pfpMinLenders
-	gender
-	fundraisingPercent @client
-	sector {
-		id
-		name
+	plannedExpirationDate
+	lenders {
+		totalCount
 	}
-	paidAmount
-	expiredDate
-	refundedDate
-	defaultedDate
-	endedDate
+	userProperties {
+		isPrivileged
+		isAdmin
+		subscribed
+	}
 }`;
 
 export default {
