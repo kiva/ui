@@ -416,3 +416,42 @@ export const issueLoan = createMockLoan({
 	loanFundraisingInfo: { id: 2000014, fundedAmount: '0.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo' },
 	unreservedAmount: '0.00',
 });
+
+/** Group loan (multiple borrowers). */
+export const groupLoan = createMockLoan({
+	id: 2000015,
+	name: 'Aisha\'s Group',
+	borrowerCount: 3,
+	borrowers: [
+		{ id: 1, firstName: 'Aisha', gender: 'female', isPrimary: true },
+		{ id: 2, firstName: 'Fatima', gender: 'female', isPrimary: false },
+		{ id: 3, firstName: 'Nadia', gender: 'female', isPrimary: false },
+	],
+});
+
+/** Repeat borrower loan (has previous loan). */
+export const repeatBorrowerLoan = createMockLoan({
+	id: 2000016,
+	previousLoanId: 1900000,
+});
+
+/** Direct loan with trustee. */
+export const directLoanWithTrustee = createMockLoan({
+	id: 2000017,
+	__typename: 'LoanDirect',
+	distributionModel: 'direct',
+	partnerName: '',
+	partner: null,
+	name: 'James',
+	trustee: {
+		id: 50,
+		organizationName: 'Accion',
+		stats: {
+			numDefaultedLoans: 0,
+			numLoansEndorsedPublic: 120,
+			repaymentRate: 0.98,
+			totalLoansValue: 2000000,
+		},
+	},
+	endorsement: 'Accion endorses this loan for responsible lending.',
+});
