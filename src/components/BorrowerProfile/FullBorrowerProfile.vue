@@ -127,6 +127,14 @@
 				<details-tabs id="loanDetails" :loan-id="loanId" name="bp-details" />
 			</content-container>
 		</div>
+		<content-container>
+			<loan-comments
+				class="tw-my-5 md:tw-my-6 lg:tw-my-8"
+				:loan-id="loanId"
+				:is-privileged="isPrivileged"
+				:is-admin="isAdmin"
+			/>
+		</content-container>
 	</article>
 </template>
 
@@ -149,6 +157,7 @@ import ShareButton from '#src/components/BorrowerProfile/ShareButton';
 import JournalUpdates from '#src/components/BorrowerProfile/JournalUpdates';
 import BorrowerEducationPlacement from '#src/components/BorrowerProfile/BorrowerEducationPlacement';
 import LoanTags from '#src/components/BorrowerProfile/LoanTags';
+import LoanComments from '#src/components/BorrowerProfile/LoanComments';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
@@ -172,6 +181,7 @@ export default {
 		JournalUpdates,
 		BorrowerEducationPlacement,
 		LoanTags,
+		LoanComments,
 		KvLoadingPlaceholder,
 	},
 	emits: ['subscription-toggled'],
@@ -233,6 +243,9 @@ export default {
 		},
 		isLoggedIn() {
 			return !!this.lender?.id;
+		},
+		isPrivileged() {
+			return this.loan?.userProperties?.isPrivileged ?? false;
 		},
 		isAdmin() {
 			return this.loan?.userProperties?.isAdmin ?? false;
