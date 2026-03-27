@@ -19,7 +19,7 @@
 			:class="{'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperience}"
 		>
 			<template v-if="showRegionExperience">
-				<div class="card-container tw-shrink-0">
+				<div class="goal-card-container">
 					<JourneyCardCarousel
 						class="carousel carousel-single"
 						user-in-homepage
@@ -45,6 +45,7 @@
 					/>
 				</div>
 				<MyKivaRegionExperience
+					class="tw-flex-1 tw-min-w-0"
 					:regions-data="regionsData"
 					:loans="loans"
 				/>
@@ -596,13 +597,19 @@ onMounted(async () => {
 		tw-overflow-hidden tw-bg-white;
 }
 
-.card-container {
-	width: 100%;
-	height: auto;
+.goal-card-container {
+	flex: 0 0 100%;
+	min-width: 0;
+	overflow: hidden;
 
 	@screen md {
-		width: auto;
+		/* -10px compensates for the goal card's shadow/padding visual bleed vs the achievement cards below */
+		flex: 0 0 calc((100% - 1rem) / 2 - 10px);
 		height: 390px;
+	}
+
+	@screen lg {
+		flex: 0 0 calc((100% - 2rem) / 3 - 10px);
 	}
 }
 
