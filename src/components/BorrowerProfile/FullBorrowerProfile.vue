@@ -141,6 +141,7 @@
 </template>
 
 <script>
+import { gql } from 'graphql-tag';
 import _throttle from 'lodash/throttle';
 import ContentContainer from '#src/components/BorrowerProfile/ContentContainer';
 import SidebarContainer from '#src/components/BorrowerProfile/SidebarContainer';
@@ -162,6 +163,23 @@ import LoanTags from '#src/components/BorrowerProfile/LoanTags';
 import LoanComments from '#src/components/BorrowerProfile/LoanComments';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
+
+export const fullProfileFragment = gql`fragment bpFullProfileFields on LoanBasic {
+	id
+	inPfp
+	pfpMinLenders
+	gender
+	fundraisingPercent @client
+	sector {
+		id
+		name
+	}
+	paidAmount
+	expiredDate
+	refundedDate
+	defaultedDate
+	endedDate
+}`;
 
 export default {
 	name: 'FullBorrowerProfile',
