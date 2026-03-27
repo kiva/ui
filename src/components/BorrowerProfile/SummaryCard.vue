@@ -66,7 +66,7 @@
 						:money-left="unreservedAmount"
 						:progress-percent="fundraisingPercent"
 						:time-left="timeLeft"
-						:loan-status="inPfp ? 'pfp' : 'fundraising'"
+						:loan-status="inPfp ? 'pfp' : status"
 						:number-of-lenders="numLenders"
 						:pfp-min-lenders="pfpMinLenders"
 						:loading="isLoading"
