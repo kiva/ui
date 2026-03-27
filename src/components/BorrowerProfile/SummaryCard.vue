@@ -246,16 +246,15 @@ export default {
 			return this.countryName;
 		}
 	},
-	methods: {
-		async fetchSummaryCardData() {
-			this.$kvTrackEvent(
-				'Borrower profile',
-				'borrower profile status',
-				this.status
-			);
-
-			const { data } = await this.apollo.query({ query: mountQuery, variables: { loanId: this.loanId } });
+	apollo: {
+		query: mountQuery,
+		preFetch: false,
+		variables() {
+			return { loanId: this.loanId };
+		},
+		result({ data }) {
 			const loan = data?.lend?.loan;
+			this.$kvTrackEvent('Borrower profile', 'borrower profile status', loan?.status);
 			this.inPfp = loan?.inPfp ?? false;
 			this.pfpMinLenders = loan?.pfpMinLenders ?? 0;
 			this.numLenders = loan?.lenders?.totalCount ?? 0;
@@ -273,18 +272,7 @@ export default {
 			}
 			this.totalComments = loan?.comments?.totalCount ?? 0;
 			this.isLoading = false;
-		}
-	},
-	mounted() {
-		this.fetchSummaryCardData();
-	},
-	watch: {
-		'$route.params.id': {
-			handler() {
-				this.isLoading = true;
-				this.fetchSummaryCardData();
-			}
-		}
+		},
 	},
 };
 </script>
