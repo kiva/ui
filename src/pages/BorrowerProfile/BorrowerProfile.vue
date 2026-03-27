@@ -44,7 +44,7 @@ import {
 } from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MinimalBorrowerProfile from '#src/components/BorrowerProfile/MinimalBorrowerProfile';
-import FullBorrowerProfile from '#src/components/BorrowerProfile/FullBorrowerProfile';
+import FullBorrowerProfile, { fullProfileFragment } from '#src/components/BorrowerProfile/FullBorrowerProfile';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
@@ -103,24 +103,6 @@ const shareMetaFragment = gql`fragment bpShareMetaFields on LoanBasic {
 	... on LoanDirect {
 		businessName
 	}
-}`;
-
-// Fields passed to FullBorrowerProfile via loan prop
-const fullProfileFragment = gql`fragment bpFullProfileFields on LoanBasic {
-	id
-	inPfp
-	pfpMinLenders
-	gender
-	fundraisingPercent @client
-	sector {
-		id
-		name
-	}
-	paidAmount
-	expiredDate
-	refundedDate
-	defaultedDate
-	endedDate
 }`;
 
 const preFetchQuery = gql`
