@@ -172,7 +172,7 @@ export function createMockLoan(overrides = {}) {
 		description: 'Aisha is a 35-year-old woman living in Kyrgyzstan. She has been raising cattle for 10 years and wants to expand her dairy farm.',
 		descriptionInOriginalLanguage: '',
 		originalLanguage: null,
-		borrowers: [{ firstName: 'Aisha', gender: 'female', isPrimary: true }],
+		borrowers: [{ id: 1, firstName: 'Aisha', gender: 'female', isPrimary: true }],
 		reviewer: null,
 		previousLoanId: null,
 		video: null,
