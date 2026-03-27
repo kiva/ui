@@ -120,33 +120,20 @@ import LoanProgress from './LoanProgress';
 import SummaryTag from './SummaryTag';
 import LoanBookmark from './LoanBookmark';
 
-const preFetchQuery = gql`
-	query summaryCard($loanId: Int!) {
-		lend {
-			loan(id: $loanId) {
-				id
-				image {
-					id
-					hash
-				}
-				name
-				status
-				use
-				# for fullLoanUse
-				anonymizationLevel
-				borrowerCount
-				loanAmount
-				fullLoanUse @client
-			}
-		}
-		my {
-			id
-			userAccount {
-				id
-			}
-		}
+export const summaryCardFragment = gql`fragment summaryCardFields on LoanBasic {
+	id
+	image {
+		id
+		hash
 	}
-`;
+	name
+	status
+	use
+	anonymizationLevel
+	borrowerCount
+	loanAmount
+	fullLoanUse @client
+}`;
 
 const mountQuery = gql`
 	query summaryCard($loanId: Int!) {
@@ -203,20 +190,25 @@ export default {
 		KvLoadingPlaceholder,
 		HeartComment,
 	},
+	props: {
+		loan: {
+			type: Object,
+			default: () => ({}),
+		},
+		isLoggedIn: {
+			type: Boolean,
+			default: false,
+		},
+	},
 	data() {
 		return {
 			isLoading: true,
-			isLoggedIn: false,
 			activityName: '',
 			countryName: '',
 			fundraisingPercent: 0,
-			hash: '',
 			mdiMapMarker,
-			name: '',
-			status: '',
 			timeLeft: '',
 			unreservedAmount: '0',
-			use: '',
 			distributionModel: '',
 			city: '',
 			state: '',
@@ -228,7 +220,19 @@ export default {
 	},
 	computed: {
 		loanId() {
-			return Number(this.$route?.params?.id ?? 0);
+			return this.loan?.id ?? 0;
+		},
+		hash() {
+			return this.loan?.image?.hash ?? '';
+		},
+		name() {
+			return this.loan?.name ?? '';
+		},
+		status() {
+			return this.loan?.status ?? '';
+		},
+		use() {
+			return this.loan?.fullLoanUse ?? '';
 		},
 		formattedLocation() {
 			if (this.distributionModel === 'direct') {
@@ -281,28 +285,6 @@ export default {
 				this.fetchSummaryCardData();
 			}
 		}
-	},
-	apollo: {
-		query: preFetchQuery,
-		preFetch: true,
-		preFetchVariables({ route }) {
-			return {
-				loanId: Number(route?.params?.id ?? 0),
-			};
-		},
-		variables() {
-			return {
-				loanId: this.loanId,
-			};
-		},
-		result(result) {
-			const loan = result?.data?.lend?.loan;
-			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
-			this.hash = loan?.image?.hash ?? '';
-			this.name = loan?.name ?? '';
-			this.status = loan?.status ?? '';
-			this.use = loan?.fullLoanUse ?? '';
-		},
 	},
 };
 </script>
