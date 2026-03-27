@@ -25,6 +25,7 @@
 
 <script>
 import { gql } from 'graphql-tag';
+import { createIntersectionObserver } from '#src/util/observerUtils';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
 import KvMap from '#src/components/Kv/KvMap';
@@ -55,6 +56,7 @@ export default {
 			mapLat: null,
 			mapLong: null,
 			loading: true,
+			observer: null,
 		};
 	},
 	watch: {
@@ -63,9 +65,33 @@ export default {
 		}
 	},
 	mounted() {
-		this.loadCoordinates();
+		this.createObserver();
+	},
+	beforeUnmount() {
+		this.destroyObserver();
 	},
 	methods: {
+		createObserver() {
+			this.observer = createIntersectionObserver({
+				targets: [this.$el],
+				rootMargin: '500px',
+				callback: entries => {
+					entries.forEach(entry => {
+						if (entry.target === this.$el && entry.intersectionRatio > 0) {
+							this.loadCoordinates();
+						}
+					});
+				}
+			});
+			if (!this.observer) {
+				this.loadCoordinates();
+			}
+		},
+		destroyObserver() {
+			if (this.observer) {
+				this.observer.disconnect();
+			}
+		},
 		loadCoordinates() {
 			if (!this.loanId) return;
 			return this.apollo.query({
