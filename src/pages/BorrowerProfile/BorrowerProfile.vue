@@ -50,6 +50,8 @@ import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
 import TeamInfoFromId from '#src/graphql/query/teamInfoFromId.graphql';
 import ChallengeTeamInvite from '#src/components/BorrowerProfile/ChallengeTeamInvite';
+import { summaryCardFragment } from '#src/components/BorrowerProfile/SummaryCard';
+import { loanStoryFragment } from '#src/components/BorrowerProfile/LoanStory';
 import { getKivaImageUrl } from '@kiva/kv-components';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
@@ -57,7 +59,76 @@ const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? 
 const EDUCATION_PLACEMENT_EXP = 'education_placement_bp';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 
+// Fields for showFullView routing logic
+const routingFragment = gql`fragment bpRoutingFields on LoanBasic {
+	id
+	status
+	loanAmount
+	loanFundraisingInfo {
+		id
+		fundedAmount
+		reservedAmount
+	}
+	userProperties {
+		lentTo
+		isPrivileged
+		isAdmin
+		subscribed
+	}
+}`;
+
+// Fields for head() meta tags, OG/Twitter share, and page title
+const shareMetaFragment = gql`fragment bpShareMetaFields on LoanBasic {
+	id
+	name
+	anonymizationLevel
+	fullLoanUse @client
+	plannedExpirationDate
+	lenders {
+		totalCount
+	}
+	image {
+		id
+		hash
+	}
+	geocode {
+		city
+		country {
+			id
+			name
+			isoCode
+			region
+		}
+	}
+	... on LoanDirect {
+		businessName
+	}
+}`;
+
+// Fields passed to FullBorrowerProfile via loan prop
+const fullProfileFragment = gql`fragment bpFullProfileFields on LoanBasic {
+	id
+	inPfp
+	pfpMinLenders
+	gender
+	fundraisingPercent @client
+	sector {
+		id
+		name
+	}
+	paidAmount
+	expiredDate
+	refundedDate
+	defaultedDate
+	endedDate
+}`;
+
 const preFetchQuery = gql`
+	${summaryCardFragment}
+	${loanStoryFragment}
+	${routingFragment}
+	${shareMetaFragment}
+	${fullProfileFragment}
 	query borrowerProfileMeta(
 		$loanId: Int!,
 		$publicId: String!,
@@ -69,58 +140,16 @@ const preFetchQuery = gql`
 		lend {
 			loan(id: $loanId) {
 				id
-				borrowerCount
-				name
-				... on LoanDirect {
-					businessName
-				}
-				geocode {
-					city
-					country {
-						id
-						name
-						isoCode
-						region
-					}
-				}
+				...summaryCardFields
+				...loanStoryFields
+				...bpRoutingFields
+				...bpShareMetaFields
+				...bpFullProfileFields
 				image {
 					id
 					default: url(customSize: $imgDefaultSize)
 					retina: url(customSize: $imgRetinaSize)
 					hash
-				}
-				plannedExpirationDate
-				lenders {
-					totalCount
-				}
-				anonymizationLevel
-				loanAmount
-				status
-				use
-				fullLoanUse @client
-				fundraisingPercent @client
-				loanFundraisingInfo {
-					id
-					fundedAmount
-					reservedAmount
-				}
-				inPfp
-				pfpMinLenders
-				gender
-				sector {
-					id
-					name
-				}
-				paidAmount
-				expiredDate
-				refundedDate
-				defaultedDate
-				endedDate
-				userProperties {
-					lentTo
-					isPrivileged
-					isAdmin
-					subscribed
 				}
 			}
 		}

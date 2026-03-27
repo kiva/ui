@@ -29,27 +29,11 @@
 				/>
 			</div>
 			<div class="tw-flex-auto">
-				<div class="tw-flex tw-items-center tw-mb-0.5">
-					<borrower-name
-						data-testid="bp-summary-borrower-name"
-						:name="name"
-					/>
-					<kv-icon-button
-						v-if="anonymizationLevel === 'pii'"
-						:icon="mdiInformationOutline"
-						size="small"
-						class="tw-ml-0.5 tw-shrink-0 tw--my-2 tw-text-secondary"
-						data-testid="bp-summary-pii-info"
-						aria-label="Why is this borrower anonymous?"
-						@click="showDefinition({ cid: 'bp-def-anonymized-loan', sfid: '501US00000NRTYa' })"
-						v-kv-track-event="[
-							'Borrower profile',
-							'click-PII-anonymization-info',
-							'PII anonymization',
-							loanId
-						]"
-					/>
-				</div>
+				<borrower-name
+					data-testid="bp-summary-borrower-name"
+					class="tw-mb-0.5"
+					:name="name"
+				/>
 				<template v-if="isLoading">
 					<div class="tw-flex tw-flex-wrap tw-mb-3">
 						<kv-loading-placeholder class="tw-mb-1" style="height: 0.5rem;" />
@@ -92,19 +76,6 @@
 		</div>
 		<p class="tw-flex-none tw-w-full tw-mb-2 tw-text-headline" data-testid="bp-summary-loan-use">
 			{{ use }}
-			<kv-text-link
-				v-if="anonymizationLevel === 'full'"
-				data-testid="bp-summary-anonymous-learn-more"
-				@click="showDefinition({ cid: 'bp-def-anonymous-description', sfid: '50150000000SXVz' })"
-				v-kv-track-event="[
-					'Borrower profile',
-					'click-anonymous-loan-use-info',
-					'Anonymous loan use',
-					loanId
-				]"
-			>
-				Learn more
-			</kv-text-link>
 		</p>
 		<div class="tw-flex-auto tw-inline-flex tw-w-full">
 			<template v-if="isLoading">
@@ -135,52 +106,34 @@
 			/>
 		</div>
 		<slot name="sharebutton"></slot>
-		<content-lightbox ref="lightbox" />
 	</section>
 </template>
 
 <script>
 import { gql } from 'graphql-tag';
-import { mdiMapMarker, mdiInformationOutline } from '@mdi/js';
+import { mdiMapMarker } from '@mdi/js';
 import HeartComment from '#src/assets/icons/inline/heart-comment.svg';
-import {
-	KvIconButton, KvMaterialIcon, KvLoadingPlaceholder, KvTextLink,
-} from '@kiva/kv-components';
-import useBorrowerProfileDefinitions from '#src/composables/useBorrowerProfileDefinitions';
+import { KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
-import ContentLightbox from './ContentLightbox';
 import LoanProgress from './LoanProgress';
 import SummaryTag from './SummaryTag';
 import LoanBookmark from './LoanBookmark';
 
-const preFetchQuery = gql`
-	query summaryCard($loanId: Int!) {
-		lend {
-			loan(id: $loanId) {
-				id
-				image {
-					id
-					hash
-				}
-				name
-				status
-				use
-				# for fullLoanUse
-				anonymizationLevel
-				borrowerCount
-				loanAmount
-				fullLoanUse @client
-			}
-		}
-		my {
-			id
-			userAccount {
-				id
-			}
-		}
+export const summaryCardFragment = gql`fragment summaryCardFields on LoanBasic {
+	id
+	image {
+		id
+		hash
 	}
-`;
+	name
+	status
+	use
+	anonymizationLevel
+	borrowerCount
+	loanAmount
+	fullLoanUse @client
+}`;
 
 const mountQuery = gql`
 	query summaryCard($loanId: Int!) {
@@ -230,35 +183,32 @@ export default {
 	components: {
 		BorrowerImage,
 		BorrowerName,
-		ContentLightbox,
-		KvIconButton,
 		KvMaterialIcon,
-		KvTextLink,
 		LoanProgress,
 		SummaryTag,
 		LoanBookmark,
 		KvLoadingPlaceholder,
 		HeartComment,
 	},
-	created() {
-		this.definitions = useBorrowerProfileDefinitions(this.apollo);
+	props: {
+		loan: {
+			type: Object,
+			default: () => ({}),
+		},
+		isLoggedIn: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
 			isLoading: true,
-			isLoggedIn: false,
-			anonymizationLevel: '',
 			activityName: '',
 			countryName: '',
 			fundraisingPercent: 0,
-			hash: '',
 			mdiMapMarker,
-			mdiInformationOutline,
-			name: '',
-			status: '',
 			timeLeft: '',
 			unreservedAmount: '0',
-			use: '',
 			distributionModel: '',
 			city: '',
 			state: '',
@@ -270,7 +220,19 @@ export default {
 	},
 	computed: {
 		loanId() {
-			return Number(this.$route?.params?.id ?? 0);
+			return this.loan?.id ?? 0;
+		},
+		hash() {
+			return this.loan?.image?.hash ?? '';
+		},
+		name() {
+			return this.loan?.name ?? '';
+		},
+		status() {
+			return this.loan?.status ?? '';
+		},
+		use() {
+			return this.loan?.fullLoanUse ?? '';
 		},
 		formattedLocation() {
 			if (this.distributionModel === 'direct') {
@@ -311,13 +273,7 @@ export default {
 			}
 			this.totalComments = loan?.comments?.totalCount ?? 0;
 			this.isLoading = false;
-		},
-		async showDefinition({ cid, sfid }) {
-			const result = await this.definitions.resolveDefinition({ cid, sfid });
-			if (result) {
-				this.$refs.lightbox.open(result);
-			}
-		},
+		}
 	},
 	mounted() {
 		this.fetchSummaryCardData();
@@ -329,29 +285,6 @@ export default {
 				this.fetchSummaryCardData();
 			}
 		}
-	},
-	apollo: {
-		query: preFetchQuery,
-		preFetch: true,
-		preFetchVariables({ route }) {
-			return {
-				loanId: Number(route?.params?.id ?? 0),
-			};
-		},
-		variables() {
-			return {
-				loanId: this.loanId,
-			};
-		},
-		result(result) {
-			const loan = result?.data?.lend?.loan;
-			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
-			this.hash = loan?.image?.hash ?? '';
-			this.name = loan?.name ?? '';
-			this.status = loan?.status ?? '';
-			this.use = loan?.fullLoanUse ?? '';
-			this.anonymizationLevel = loan?.anonymizationLevel ?? '';
-		},
 	},
 };
 </script>

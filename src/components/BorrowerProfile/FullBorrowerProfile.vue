@@ -19,6 +19,8 @@
 				<summary-card
 					data-testid="bp-summary"
 					class="tw-relative lg:tw--mb-1.5"
+					:loan="loan"
+					:is-logged-in="isLoggedIn"
 				/>
 			</content-container>
 		</div>
@@ -60,7 +62,7 @@
 				id="loanStory"
 				data-testid="bp-loan-story"
 				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8 tw-z-1"
-				:loan-id="loanId"
+				:loan="loan"
 			/>
 		</content-container>
 		<content-container>
