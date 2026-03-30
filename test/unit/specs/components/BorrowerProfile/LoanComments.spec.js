@@ -84,10 +84,16 @@ describe('LoanComments', () => {
 		);
 	});
 
-	it('delete comment calls delete mutation', async () => {
-		const { getAllByTestId, mutate } = renderLoanComments({}, { isAdmin: true });
+	it('delete comment opens confirmation lightbox then calls mutation', async () => {
+		const { getAllByTestId, getByText, mutate } = renderLoanComments({}, { isAdmin: true });
 		const deleteButtons = getAllByTestId('bp-comment-delete');
 		await fireEvent.click(deleteButtons[0]);
+
+		// Confirmation lightbox should be visible
+		expect(getByText('Delete this comment?')).toBeTruthy();
+
+		// Confirm the delete
+		await fireEvent.click(getByText('Delete comment'));
 
 		expect(mutate).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -96,16 +102,13 @@ describe('LoanComments', () => {
 		);
 	});
 
-	it('flag comment calls flag mutation', async () => {
-		const { getAllByTestId, mutate } = renderLoanComments();
+	it('flag comment opens report lightbox', async () => {
+		const { getAllByTestId, getByText } = renderLoanComments();
 		const flagButtons = getAllByTestId('bp-comment-flag');
 		await fireEvent.click(flagButtons[0]);
 
-		expect(mutate).toHaveBeenCalledWith(
-			expect.objectContaining({
-				variables: { id: 123, commentId: 1 },
-			}),
-		);
+		// Report lightbox should be visible
+		expect(getByText('Report Comment')).toBeTruthy();
 	});
 
 	it('subscribe calls subscribe mutation', async () => {
