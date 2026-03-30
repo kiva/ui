@@ -412,9 +412,13 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		teamData: {
-			type: Object,
+		teamId: {
+			type: Number,
 			default: null,
+		},
+		teamName: {
+			type: String,
+			default: '',
 		},
 	},
 	components: {
@@ -597,10 +601,10 @@ export default {
 	},
 	methods: {
 		async addToBasket() {
-			if (this.teamData?.id) {
+			if (this.teamId) {
 				const challenge = {
-					teamId: this.teamData.id,
-					teamName: this.teamData?.name ?? '',
+					teamId: this.teamId,
+					teamName: this.teamName,
 					loanId: this.loanId,
 				};
 				setChallengeCookieData(this.cookieStore, challenge);
@@ -800,6 +804,8 @@ export default {
 				case 'expired':
 				case 'fully-reserved':
 					return 'Help fund other borrowers';
+				// TODO: payingBack, ended, defaulted, inactive, inactiveExpired, reviewed,
+				// deleted, issue all need content-approved headlines (currently falls through to default)
 				default:
 					return 'Help fund this loan';
 			}
@@ -910,6 +916,7 @@ export default {
 		this.createWrapperObserver();
 	},
 	beforeUnmount() {
+		clearInterval(this.slotMachineInterval);
 		this.destroyWrapperObserver();
 	},
 };

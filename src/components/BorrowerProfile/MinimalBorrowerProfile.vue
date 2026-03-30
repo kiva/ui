@@ -126,7 +126,7 @@ export default {
 				{
 					vmid: 'description',
 					name: 'description',
-					content: `A loan helped ${this.loan.use}`,
+					content: `A loan helped ${this.loan?.use ?? ''}`,
 				}
 			].concat(
 				[
