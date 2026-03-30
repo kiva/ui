@@ -85,6 +85,8 @@
 						-->{{ comment.authorRole ? `, ${comment.authorRole}` : '' }}
 						| {{ formatDate(comment.date) }}
 					</div>
+					<!-- comment.body is HTML sanitized server-side
+						(same as old PHP BP which used triple-stash unescaped rendering) -->
 					<div class="tw-text-base" v-html="comment.body"></div>
 					<!-- Actions -->
 					<div class="tw-flex tw-gap-2 tw-mt-0.5 tw-text-small">
@@ -92,7 +94,7 @@
 							v-if="isAdmin"
 							class="tw-text-danger hover:tw-underline"
 							data-testid="bp-comment-delete"
-							@click="deleteComment(comment.id)"
+							@click="pendingDeleteCommentId = comment.id; isDeleteConfirmVisible = true"
 						>
 							Delete
 						</button>
@@ -100,7 +102,7 @@
 							v-if="isLoggedIn && !comment.isFlagged"
 							class="tw-text-secondary hover:tw-underline"
 							data-testid="bp-comment-flag"
-							@click="flagComment(comment.id)"
+							@click="openReportLightbox(comment.id)"
 						>
 							Flag as inappropriate
 						</button>
@@ -131,6 +133,30 @@
 		>
 			Hide
 		</button>
+
+		<kv-lightbox
+			:visible="isDeleteConfirmVisible"
+			title="Delete this comment?"
+			@lightbox-closed="isDeleteConfirmVisible = false"
+		>
+			This action cannot be undone.
+			<template #controls>
+				<kv-button variant="secondary" @click="isDeleteConfirmVisible = false">
+					Cancel
+				</kv-button>
+				<kv-button @click="confirmDeleteComment">
+					Delete comment
+				</kv-button>
+			</template>
+		</kv-lightbox>
+
+		<comment-report-lightbox
+			:visible="isReportLightboxVisible"
+			:loan-id="loanId"
+			:comment-id="reportingCommentId"
+			@close="isReportLightboxVisible = false"
+			@reported="onCommentReported"
+		/>
 	</section>
 </template>
 
@@ -138,7 +164,8 @@
 import { gql } from 'graphql-tag';
 import { format, parseISO } from 'date-fns';
 import { createIntersectionObserver } from '#src/util/observerUtils';
-import { KvButton } from '@kiva/kv-components';
+import { KvButton, KvLightbox } from '@kiva/kv-components';
+import CommentReportLightbox from '#src/components/BorrowerProfile/CommentReportLightbox';
 import deleteCommentMutation from '#src/graphql/mutation/deleteComment.graphql';
 import subscribeToLoanCommentsMutation from '#src/graphql/mutation/subscribeToLoanComments.graphql';
 import unsubscribeFromLoanCommentsMutation from '#src/graphql/mutation/unsubscribeFromLoanComments.graphql';
@@ -187,7 +214,9 @@ export default {
 	name: 'LoanComments',
 	inject: ['apollo'],
 	components: {
+		CommentReportLightbox,
 		KvButton,
+		KvLightbox,
 	},
 	props: {
 		loanId: {
@@ -213,6 +242,10 @@ export default {
 			isSubmitting: false,
 			showAll: false,
 			observer: null,
+			isReportLightboxVisible: false,
+			reportingCommentId: null,
+			isDeleteConfirmVisible: false,
+			pendingDeleteCommentId: null,
 		};
 	},
 	computed: {
@@ -300,7 +333,10 @@ export default {
 				this.isSubmitting = false;
 			}
 		},
-		async deleteComment(commentId) {
+		async confirmDeleteComment() {
+			const commentId = this.pendingDeleteCommentId;
+			this.isDeleteConfirmVisible = false;
+			this.pendingDeleteCommentId = null;
 			try {
 				await this.apollo.mutate({
 					mutation: deleteCommentMutation,
@@ -313,25 +349,15 @@ export default {
 				this.$showTipMsg('There was a problem deleting this comment', 'error');
 			}
 		},
-		async flagComment(commentId) {
-			try {
-				await this.apollo.mutate({
-					mutation: gql`mutation flagLoanComment($id: Int!, $commentId: Int!) {
-						loan(id: $id) {
-							flagComment(commentId: $commentId)
-						}
-					}`,
-					variables: { id: this.loanId, commentId },
-				});
-				const comment = this.comments.find(c => c.id === commentId);
-				if (comment) {
-					comment.isFlagged = true;
-					comment.timeFlagged = new Date().toISOString();
-				}
-				this.$showTipMsg('Comment flagged');
-			} catch (e) {
-				logFormatter(e, 'error');
-				this.$showTipMsg('There was a problem flagging this comment', 'error');
+		openReportLightbox(commentId) {
+			this.reportingCommentId = commentId;
+			this.isReportLightboxVisible = true;
+		},
+		onCommentReported(commentId) {
+			const comment = this.comments.find(c => c.id === commentId);
+			if (comment) {
+				comment.isFlagged = true;
+				comment.timeFlagged = new Date().toISOString();
 			}
 		},
 		async subscribe() {
