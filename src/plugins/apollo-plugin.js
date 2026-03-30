@@ -1,12 +1,48 @@
 import checkInjections from '#src/util/injectionCheck';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { isContentfulQuery } from '#src/util/contentful/isContentfulQuery';
+import { createIntersectionObserver } from '#src/util/observerUtils';
 
 const injections = ['apollo', 'cookieStore'];
 
+function parseLazy(lazy) {
+	if (!lazy) return null;
+	if (lazy === true) return { rootMargin: '500px' };
+	return { rootMargin: '500px', ...lazy };
+}
+
+function setupWatchQuery(vm, operation, commonVars) {
+	const {
+		query,
+		variables = () => {},
+		result = () => {},
+		fetchPolicy,
+	} = operation;
+	const { basketId, isContentfulPreview } = commonVars;
+
+	const observer = vm.apollo.watchQuery({
+		query,
+		...(fetchPolicy && { fetchPolicy }),
+		variables: {
+			...(basketId && { basketId }),
+			...variables.call(vm),
+			...(isContentfulQuery(query) && isContentfulPreview && { preview: true }),
+		},
+	});
+
+	vm.$watch(variables, vars => observer.setVariables({
+		...(basketId && { basketId }),
+		...vars,
+		...(isContentfulQuery(query) && isContentfulPreview && { preview: true }),
+	}), { deep: true });
+
+	observer.subscribe({
+		next: apolloResult => result.call(vm, apolloResult),
+	});
+}
+
 // install method for plugin
 export default app => {
-	// export default {
 	app.mixin({
 		created() {
 			if (this.$options.apollo) {
@@ -19,6 +55,8 @@ export default app => {
 				// $options.apollo is either a single object or an array of objects
 				const operations = Array.isArray(this.$options.apollo) ? this.$options.apollo : [this.$options.apollo];
 
+				this.lazyOperations = [];
+
 				// Load data for each query in the component
 				for (let i = 0; i < operations.length; i += 1) {
 					const operation = operations[i];
@@ -27,7 +65,6 @@ export default app => {
 						preFetch,
 						shouldPreFetch = true,
 						preFetchVariables = () => { },
-						variables = () => { },
 						result = () => { },
 					} = operation;
 
@@ -71,33 +108,50 @@ export default app => {
 							}
 						}
 
-						if (typeof window !== 'undefined') {
-							// Setup an observer to watch for changes to the query result
-							const observer = this.apollo.watchQuery({
-								query,
-								variables: {
-									...(basketId && { basketId }),
-									...variables.call(this),
-									...(isContentfulQuery(query) && isContentfulPreview && { preview: true })
-								}
-							});
-
-							// Use Vue's $watch to reactively update the query variables when the component data changes
-							// This will cause a new query result to be fetched if it is not available in the cache
-							this.$watch(variables, vars => observer.setVariables({
-								...(basketId && { basketId }),
-								...vars,
-								...(isContentfulQuery(query) && isContentfulPreview && { preview: true })
-							}), { deep: true });
-
-							// Subscribe to the observer to see each result
-							observer.subscribe({
-								next: apolloResult => result.call(this, apolloResult)
-							});
+						const lazyConfig = parseLazy(operation.lazy);
+						const commonVars = { basketId, isContentfulPreview };
+						if (lazyConfig && !preFetched) {
+							this.lazyOperations.push({ operation, lazyConfig, commonVars });
+						} else if (typeof window !== 'undefined') {
+							setupWatchQuery(this, operation, commonVars);
 						}
 					}
 				}
 			}
-		}
+		},
+		mounted() {
+			if (!this.lazyOperations?.length) return;
+
+			this.lazyObservers = [];
+
+			for (let i = 0; i < this.lazyOperations.length; i += 1) {
+				const { operation, lazyConfig, commonVars } = this.lazyOperations[i];
+
+				const observer = createIntersectionObserver({
+					targets: [this.$el],
+					options: { rootMargin: lazyConfig.rootMargin },
+					callback: entries => {
+						entries.forEach(entry => {
+							if (entry.intersectionRatio > 0) {
+								setupWatchQuery(this, operation, commonVars);
+								observer.disconnect();
+							}
+						});
+					},
+				});
+
+				if (observer) {
+					this.lazyObservers.push(observer);
+				} else {
+					// IntersectionObserver not supported — fall back to immediate setup
+					setupWatchQuery(this, operation, commonVars);
+				}
+			}
+		},
+		beforeUnmount() {
+			if (this.lazyObservers) {
+				this.lazyObservers.forEach(obs => obs.disconnect());
+			}
+		},
 	});
 };
