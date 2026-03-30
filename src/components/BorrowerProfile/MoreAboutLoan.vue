@@ -104,7 +104,6 @@
 <script>
 import { toParagraphs } from '#src/util/loanUtils';
 import { gql } from 'graphql-tag';
-import { createIntersectionObserver } from '#src/util/observerUtils';
 import BorrowerBusinessDetails from '#src/components/BorrowerProfile/BorrowerBusinessDetails';
 
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
@@ -165,96 +164,63 @@ export default {
 			return toParagraphs(this.purpose);
 		},
 	},
-	methods: {
-		createObserver() {
-			// Watch for this element being close to entering the viewport
-			this.observer = createIntersectionObserver({
-				targets: [this.$el],
-				rootMargin: '500px',
-				callback: entries => {
-					entries.forEach(entry => {
-						if (entry.target === this.$el && entry.intersectionRatio > 0) {
-							// This element is close to being in the viewport, so load the data.
-							// Because of the apollo cache it's safe to call this repeatedly.
-							this.loadData();
-						}
-					});
-				}
-			});
-			if (!this.observer) {
-				// Observer was not created, so call loadData right away as a fallback.
-				this.loadData();
-			}
-		},
-		destroyObserver() {
-			if (this.observer) {
-				this.observer.disconnect();
-			}
-		},
-		loadData() {
-			this.apollo.query({
-				query: gql`query moreAboutLoan($loanId: Int!) {
-					lend {
-						loan(id: $loanId) {
-							id
-							name
-							sector {
-								id
-								name
-							}
-							... on LoanDirect {
-								businessName
-								businessDescription
-								purpose
-								yearsInBusiness
-								socialLinks {
-									etsy
-									facebook
-									instagram
-									linkedin
-									twitter
-									website
-									yelp
-								}
-							}
-							... on LoanPartner {
-								dualStatementNote
-								moreInfoAboutLoan
-								partnerName
-								partner {
-									id
-									loanAlertText
-								}
-							}
+	apollo: {
+		lazy: true,
+		query: gql`query moreAboutLoan($loanId: Int!) {
+			lend {
+				loan(id: $loanId) {
+					id
+					name
+					sector {
+						id
+						name
+					}
+					... on LoanDirect {
+						businessName
+						businessDescription
+						purpose
+						yearsInBusiness
+						socialLinks {
+							etsy
+							facebook
+							instagram
+							linkedin
+							twitter
+							website
+							yelp
 						}
 					}
-				}`,
-				variables: {
-					loanId: this.loanId
-				},
-			}).then(result => {
-				const loan = result?.data?.lend?.loan;
-				this.businessName = loan?.businessName ?? '';
-				this.businessDescription = loan?.businessDescription ?? '';
-				this.dualStatementNote = loan?.dualStatementNote ?? '';
-				this.name = loan?.name ?? '';
-				this.loanAlertText = loan?.partner?.loanAlertText ?? '';
-				this.moreInfoAboutLoan = loan?.moreInfoAboutLoan ?? '';
-				this.partnerName = loan?.partnerName ?? '';
-				this.purpose = loan?.purpose ?? '';
-				this.sector = loan?.sector?.name ?? '';
-				this.socialLinks = loan?.socialLinks ?? {};
-				this.yearsInBusiness = loan?.yearsInBusiness ?? '';
-
-				this.loading = false;
-			});
+					... on LoanPartner {
+						dualStatementNote
+						moreInfoAboutLoan
+						partnerName
+						partner {
+							id
+							loanAlertText
+						}
+					}
+				}
+			}
+		}`,
+		variables() {
+			return { loanId: this.loanId };
 		},
-	},
-	mounted() {
-		this.createObserver();
-	},
-	beforeUnmount() {
-		this.destroyObserver();
+		result({ data }) {
+			const loan = data?.lend?.loan;
+			this.businessName = loan?.businessName ?? '';
+			this.businessDescription = loan?.businessDescription ?? '';
+			this.dualStatementNote = loan?.dualStatementNote ?? '';
+			this.name = loan?.name ?? '';
+			this.loanAlertText = loan?.partner?.loanAlertText ?? '';
+			this.moreInfoAboutLoan = loan?.moreInfoAboutLoan ?? '';
+			this.partnerName = loan?.partnerName ?? '';
+			this.purpose = loan?.purpose ?? '';
+			this.sector = loan?.sector?.name ?? '';
+			this.socialLinks = loan?.socialLinks ?? {};
+			this.yearsInBusiness = loan?.yearsInBusiness ?? '';
+
+			this.loading = false;
+		},
 	},
 };
 

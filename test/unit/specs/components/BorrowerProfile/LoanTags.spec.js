@@ -38,9 +38,6 @@ function renderLoanTags(dataOverrides = {}, propsOverrides = {}) {
 				...dataOverrides,
 			};
 		},
-		mounted() {
-			// Skip loadTags in tests
-		},
 	};
 
 	return {

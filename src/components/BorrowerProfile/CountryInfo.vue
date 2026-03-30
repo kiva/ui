@@ -63,7 +63,6 @@
 <script>
 import { gql } from 'graphql-tag';
 import numeral from 'numeral';
-import { createIntersectionObserver } from '#src/util/observerUtils';
 
 import { KvLoadingPlaceholder, KvButton as KvUiButton } from '@kiva/kv-components';
 
@@ -91,6 +90,59 @@ export default {
 			regionName: '',
 		};
 	},
+	apollo: {
+		lazy: true,
+		query: gql`query borrowerCountryInfo($loanId: Int!) {
+			lend {
+				loan(id: $loanId) {
+					id
+					geocode {
+						latitude
+						longitude
+						country {
+							id
+							numLoansFundraising
+							ppp
+							isoCode
+							name
+							region
+						}
+					}
+				}
+				countryFacets {
+					country {
+						id
+						isoCode
+						region
+					}
+				}
+			}
+		}`,
+		variables() {
+			return { loanId: this.loanId };
+		},
+		result({ data }) {
+			const geocode = data?.lend?.loan?.geocode;
+			this.numLoansFundraising = geocode?.country?.numLoansFundraising ?? 0;
+			this.avgAnnualIncome = geocode?.country?.ppp ?? '';
+			this.countryIsoCode = geocode?.country?.isoCode ?? '';
+			this.countryName = geocode?.country?.name ?? '';
+			this.regionName = geocode?.country?.region ?? '';
+
+			const countries = [];
+			const countryFacets = data?.lend?.countryFacets ?? [];
+			if (countryFacets.length) {
+				for (let i = 0; i < countryFacets.length; i += 1) {
+					if (countryFacets[i].country.region === this.regionName) {
+						countries.push(countryFacets[i].country.isoCode);
+					}
+				}
+				this.loansInRegionLink = `/lend/filter?country=${countries.join(',').toLowerCase()}&sortBy=newest`;
+			}
+
+			this.loading = false;
+		},
+	},
 	computed: {
 		showFindMoreLoansInCountryButton() {
 			return this.numLoansFundraising >= 1;
@@ -101,92 +153,6 @@ export default {
 		avgAnnualIncomeFormatted() {
 			return numeral(this.avgAnnualIncome).format('$0,0[.]00');
 		},
-	},
-	methods: {
-		createObserver() {
-			// Watch for this element being close to entering the viewport
-			this.observer = createIntersectionObserver({
-				targets: [this.$el],
-				rootMargin: '500px',
-				callback: entries => {
-					entries.forEach(entry => {
-						if (entry.target === this.$el && entry.intersectionRatio > 0) {
-							// This element is close to being in the viewport, so load the data.
-							// Because of the apollo cache it's safe to call this repeatedly.
-							this.loadData();
-						}
-					});
-				}
-			});
-			if (!this.observer) {
-				// Observer was not created, so call loadData right away as a fallback.
-				this.loadData();
-			}
-		},
-		destroyObserver() {
-			if (this.observer) {
-				this.observer.disconnect();
-			}
-		},
-		loadData() {
-			this.apollo.query({
-				query: gql`query borrowerCountryInfo($loanId: Int!) {
-					lend {
-						loan(id: $loanId) {
-							id
-							geocode {
-								latitude
-								longitude
-								country {
-									id
-									numLoansFundraising
-									ppp
-									isoCode
-									name
-									region
-								}
-							}
-						}
-						countryFacets {
-							country {
-								id
-								isoCode
-								region
-							}
-						}
-					}
-				}`,
-				variables: {
-					loanId: this.loanId
-				},
-			}).then(result => {
-				const geocode = result?.data?.lend?.loan?.geocode;
-				this.numLoansFundraising = geocode?.country?.numLoansFundraising ?? 0;
-				this.avgAnnualIncome = geocode?.country?.ppp ?? '';
-				this.countryIsoCode = geocode?.country?.isoCode ?? '';
-				this.countryName = geocode?.country?.name ?? '';
-				this.regionName = geocode?.country?.region ?? '';
-
-				const countries = [];
-				const countryFacets = result?.data?.lend?.countryFacets ?? [];
-				if (countryFacets.length) {
-					for (let i = 0; i < countryFacets.length; i += 1) {
-						if (countryFacets[i].country.region === this.regionName) {
-							countries.push(countryFacets[i].country.isoCode);
-						}
-					}
-					this.loansInRegionLink = `/lend/filter?country=${countries.join(',').toLowerCase()}&sortBy=newest`;
-				}
-
-				this.loading = false;
-			});
-		},
-	},
-	mounted() {
-		this.createObserver();
-	},
-	beforeUnmount() {
-		this.destroyObserver();
 	},
 };
 
