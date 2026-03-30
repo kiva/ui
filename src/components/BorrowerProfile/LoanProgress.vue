@@ -30,8 +30,8 @@
 					v-if="loading"
 					class="tw-flex tw-justify-between"
 				>
-					<KvLoadingPlaceholder style="height: 2rem; width: 100px" />
-					<KvLoadingPlaceholder style="height: 2rem; width: 100px" class="tw-text-right" />
+					<KvLoadingPlaceholder class="tw-h-8 tw-w-[100px]" />
+					<KvLoadingPlaceholder class="tw-h-8 tw-w-[100px] tw-text-right" />
 				</div>
 				<div v-else>
 					<p class="tw-text-title tw-m-0" data-testid="bp-summary-amount-to-go">
@@ -90,8 +90,8 @@
 			</div>
 			<template v-else-if="loanStatus === 'pfp'">
 				<div v-if="loading">
-					<KvLoadingPlaceholder style="height: 2rem; width: 100px" />
-					<KvLoadingPlaceholder style="height: 2rem; width: 100px" class="tw-text-right" />
+					<KvLoadingPlaceholder class="tw-h-8 tw-w-[100px]" />
+					<KvLoadingPlaceholder class="tw-h-8 tw-w-[100px] tw-text-right" />
 				</div>
 				<div v-else class="tw-flex tw-flex-auto">
 					<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
@@ -114,8 +114,8 @@
 			</template>
 			<template v-else-if="loanStatus === 'payingBack'">
 				<div v-if="loading" class="tw-flex tw-flex-auto tw-justify-between">
-					<KvLoadingPlaceholder style="height: 2rem; width: 100px" />
-					<KvLoadingPlaceholder style="height: 2rem; width: 100px" class="tw-text-right" />
+					<KvLoadingPlaceholder class="tw-h-8 tw-w-[100px]" />
+					<KvLoadingPlaceholder class="tw-h-8 tw-w-[100px] tw-text-right" />
 				</div>
 				<div v-else class="tw-flex tw-flex-auto">
 					<p class="tw-flex-auto" data-testid="bp-summary-repaid-percent">
@@ -130,8 +130,8 @@
 			</template>
 			<template v-else-if="loanStatus === 'fundraising'">
 				<div v-if="loading" class="tw-flex tw-flex-auto tw-justify-between">
-					<KvLoadingPlaceholder style="height: 2rem; width: 100px" />
-					<KvLoadingPlaceholder style="height: 2rem; width: 100px" class="tw-text-right" />
+					<KvLoadingPlaceholder class="tw-h-8 tw-w-[100px]" />
+					<KvLoadingPlaceholder class="tw-h-8 tw-w-[100px] tw-text-right" />
 				</div>
 				<div v-else class="tw-flex tw-flex-auto">
 					<p class="tw-flex-auto" data-testid="bp-summary-timeleft">

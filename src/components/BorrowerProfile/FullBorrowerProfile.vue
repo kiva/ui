@@ -35,7 +35,8 @@
 					class="tw-pointer-events-auto"
 					:loan-id="loanId"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
-					:team-data="teamData"
+					:team-id="teamId"
+					:team-name="teamName"
 				>
 					<template #sharebutton>
 						<!-- Share button -->
@@ -126,7 +127,7 @@
 		</content-container>
 		<div class="tw-bg-primary">
 			<content-container>
-				<details-tabs id="loanDetails" :loan-id="loanId" name="bp-details" />
+				<details-tabs id="loanDetails" :loan-id="loanId" name="bp-details" :is-privileged="isPrivileged" />
 			</content-container>
 		</div>
 		<content-container>
@@ -220,9 +221,13 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		teamData: {
-			type: Object,
-			default: () => ({}),
+		teamId: {
+			type: Number,
+			default: null,
+		},
+		teamName: {
+			type: String,
+			default: '',
 		},
 		showEducationPlacementExp: {
 			type: Boolean,
