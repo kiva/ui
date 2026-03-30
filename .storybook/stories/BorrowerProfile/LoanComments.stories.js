@@ -6,7 +6,7 @@ import kvAuth0StoryMixin from '../../mixins/kv-auth0-story-mixin';
 const mockComments = Array.from({ length: 20 }, (_, i) => ({
 	id: i + 1,
 	authorName: i === 3 ? 'Aisha' : `Lender ${i + 1}`,
-	authorImageUrl: i < 5 ? `https://www.kiva.org/img/s100/9673d0722a7675b9b8d11f90849d9b44.jpg` : null,
+	authorImageUrl: i < 5 ? 'https://www.kiva.org/img/s100/9673d0722a7675b9b8d11f90849d9b44.jpg' : null,
 	authorRole: i === 3 ? 'Borrower' : 'Lender',
 	body: i === 3
 		? 'Thank you so much for your support! My dairy business is growing and I can now sell more milk.'
@@ -55,7 +55,7 @@ export const WithComments = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<loan-comments :loan-id="123" :is-privileged="true" />`,
+	template: '<loan-comments :loan-id="123" :is-privileged="true" />',
 });
 
 export const WithCommentsAdmin = () => ({
@@ -65,7 +65,7 @@ export const WithCommentsAdmin = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<loan-comments :loan-id="123" :is-privileged="true" :is-admin="true" />`,
+	template: '<loan-comments :loan-id="123" :is-privileged="true" :is-admin="true" />',
 });
 WithCommentsAdmin.storyName = 'With Comments (Admin)';
 
@@ -76,7 +76,7 @@ export const FewComments = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<loan-comments :loan-id="123" :is-privileged="true" />`,
+	template: '<loan-comments :loan-id="123" :is-privileged="true" />',
 });
 
 export const Subscribed = () => ({
@@ -86,7 +86,7 @@ export const Subscribed = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<loan-comments :loan-id="123" :is-privileged="true" />`,
+	template: '<loan-comments :loan-id="123" :is-privileged="true" />',
 });
 
 export const NotLentTo = () => ({
@@ -96,7 +96,7 @@ export const NotLentTo = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<loan-comments :loan-id="123" :is-privileged="true" />`,
+	template: '<loan-comments :loan-id="123" :is-privileged="true" />',
 });
 NotLentTo.storyName = 'Logged In, Not Lent To (No Form)';
 
@@ -107,7 +107,7 @@ export const Anonymous = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<loan-comments :loan-id="123" :is-privileged="true" />`,
+	template: '<loan-comments :loan-id="123" :is-privileged="true" />',
 });
 Anonymous.storyName = 'Anonymous (No Form, No Actions)';
 
@@ -118,7 +118,7 @@ export const Empty = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<loan-comments :loan-id="123" :is-privileged="true" />`,
+	template: '<loan-comments :loan-id="123" :is-privileged="true" />',
 });
 
 export const NotPrivileged = () => ({
@@ -128,6 +128,6 @@ export const NotPrivileged = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<loan-comments :loan-id="123" :is-privileged="false" />`,
+	template: '<loan-comments :loan-id="123" :is-privileged="false" />',
 });
 NotPrivileged.storyName = 'Not Privileged (Hidden)';

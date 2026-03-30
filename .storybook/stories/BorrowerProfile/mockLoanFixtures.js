@@ -18,12 +18,9 @@ export const anonymousUser = {};
 
 export const loggedInUser = {
 	id: 'user-1',
-	userAccount: { id: 123, balance: '50.00', inviterName: '', public: true },
-};
-
-export const privilegedUser = {
-	id: 'user-1',
-	userAccount: { id: 123, balance: '50.00', inviterName: '', public: true },
+	userAccount: {
+		id: 123, balance: '50.00', inviterName: '', public: true
+	},
 };
 
 // ---------------------------------------------------------------------------
@@ -53,14 +50,24 @@ const mockComments = [
 ];
 
 const mockLenders = [
-	{ id: 201, name: 'Sarah', publicId: 'sarah123', image: { hash: 'abc123' }, lenderPage: { whereabouts: 'Portland, OR' } },
-	{ id: 202, name: 'Mike', publicId: 'mike456', image: { hash: 'def456' }, lenderPage: { whereabouts: 'Austin, TX' } },
-	{ id: 203, name: 'Emma', publicId: 'emma789', image: { hash: 'ghi789' }, lenderPage: { whereabouts: 'London, UK' } },
+	{
+		id: 201, name: 'Sarah', publicId: 'sarah123', image: { hash: 'abc123' }, lenderPage: { whereabouts: 'Portland, OR' }
+	},
+	{
+		id: 202, name: 'Mike', publicId: 'mike456', image: { hash: 'def456' }, lenderPage: { whereabouts: 'Austin, TX' }
+	},
+	{
+		id: 203, name: 'Emma', publicId: 'emma789', image: { hash: 'ghi789' }, lenderPage: { whereabouts: 'London, UK' }
+	},
 ];
 
 const mockTeams = [
-	{ id: 1, name: 'Kiva Lending Team', teamPublicId: 'kiva', image: { hash: 'team1' }, lenderCount: 500, lenderCountForLoan: 3 },
-	{ id: 2, name: 'Women Empowerment', teamPublicId: 'women', image: { hash: 'team2' }, lenderCount: 200, lenderCountForLoan: 1 },
+	{
+		id: 1, name: 'Kiva Lending Team', teamPublicId: 'kiva', image: { hash: 'team1' }, lenderCount: 500, lenderCountForLoan: 3
+	},
+	{
+		id: 2, name: 'Women Empowerment', teamPublicId: 'women', image: { hash: 'team2' }, lenderCount: 200, lenderCountForLoan: 1
+	},
 ];
 
 const mockUpdates = [
@@ -172,7 +179,9 @@ export function createMockLoan(overrides = {}) {
 		description: 'Aisha is a 35-year-old woman living in Kyrgyzstan. She has been raising cattle for 10 years and wants to expand her dairy farm.',
 		descriptionInOriginalLanguage: '',
 		originalLanguage: null,
-		borrowers: [{ id: 1, firstName: 'Aisha', gender: 'female', isPrimary: true }],
+		borrowers: [{
+			id: 1, firstName: 'Aisha', gender: 'female', isPrimary: true
+		}],
 		reviewer: null,
 		previousLoanId: null,
 		video: null,
@@ -278,7 +287,10 @@ export const fundraisingDirectLoan = createMockLoan({
 		latitude: 45.5,
 		longitude: -122.7,
 		country: {
-			id: 2, name: 'United States', isoCode: 'US', region: 'North America',
+			id: 2,
+			name: 'United States',
+			isoCode: 'US',
+			region: 'North America',
 			geocode: { latitude: 37.1, longitude: -95.7 },
 			__typename: 'Country',
 		},
@@ -287,7 +299,9 @@ export const fundraisingDirectLoan = createMockLoan({
 	use: 'to expand her bakery business and buy new equipment.',
 	fullLoanUse: 'A loan of $5,000 helps to expand her bakery business and buy new equipment.',
 	loanAmount: '5000.00',
-	loanFundraisingInfo: { id: 2000001, fundedAmount: '3750.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo' },
+	loanFundraisingInfo: {
+		id: 2000001, fundedAmount: '3750.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
+	},
 	unreservedAmount: '1250.00',
 	fundraisingPercent: 0.75,
 });
@@ -305,7 +319,9 @@ export const fullyFundedLoan = createMockLoan({
 	id: 2000003,
 	status: 'funded',
 	fundraisingPercent: 1,
-	loanFundraisingInfo: { id: 2000003, fundedAmount: '600.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo' },
+	loanFundraisingInfo: {
+		id: 2000003, fundedAmount: '600.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
+	},
 	unreservedAmount: '0.00',
 });
 
@@ -314,7 +330,9 @@ export const raisedLoan = createMockLoan({
 	id: 2000004,
 	status: 'raised',
 	fundraisingPercent: 1,
-	loanFundraisingInfo: { id: 2000004, fundedAmount: '600.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo' },
+	loanFundraisingInfo: {
+		id: 2000004, fundedAmount: '600.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
+	},
 	unreservedAmount: '0.00',
 });
 
@@ -324,7 +342,9 @@ export const payingBackLoan = createMockLoan({
 	status: 'payingBack',
 	fundraisingPercent: 1,
 	paidAmount: '275.00',
-	loanFundraisingInfo: { id: 2000005, fundedAmount: '600.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo' },
+	loanFundraisingInfo: {
+		id: 2000005, fundedAmount: '600.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
+	},
 	unreservedAmount: '0.00',
 });
 
@@ -335,7 +355,9 @@ export const endedLoan = createMockLoan({
 	fundraisingPercent: 1,
 	paidAmount: '600.00',
 	endedDate: '2025-01-15T12:00:00Z',
-	loanFundraisingInfo: { id: 2000006, fundedAmount: '600.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo' },
+	loanFundraisingInfo: {
+		id: 2000006, fundedAmount: '600.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
+	},
 	unreservedAmount: '0.00',
 });
 
@@ -346,7 +368,9 @@ export const defaultedLoan = createMockLoan({
 	fundraisingPercent: 1,
 	paidAmount: '150.00',
 	defaultedDate: '2025-02-20T12:00:00Z',
-	loanFundraisingInfo: { id: 2000007, fundedAmount: '600.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo' },
+	loanFundraisingInfo: {
+		id: 2000007, fundedAmount: '600.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
+	},
 	unreservedAmount: '0.00',
 });
 
@@ -357,7 +381,9 @@ export const expiredLoan = createMockLoan({
 	fundraisingPercent: 0.5,
 	expiredDate: '2025-03-01T12:00:00Z',
 	disbursalDate: '',
-	loanFundraisingInfo: { id: 2000008, fundedAmount: '300.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo' },
+	loanFundraisingInfo: {
+		id: 2000008, fundedAmount: '300.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
+	},
 	unreservedAmount: '0.00',
 });
 
@@ -367,7 +393,9 @@ export const refundedLoan = createMockLoan({
 	status: 'refunded',
 	fundraisingPercent: 1,
 	refundedDate: '2025-02-10T12:00:00Z',
-	loanFundraisingInfo: { id: 2000009, fundedAmount: '600.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo' },
+	loanFundraisingInfo: {
+		id: 2000009, fundedAmount: '600.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
+	},
 	unreservedAmount: '0.00',
 });
 
@@ -376,7 +404,9 @@ export const inactiveLoan = createMockLoan({
 	id: 2000010,
 	status: 'inactive',
 	fundraisingPercent: 0,
-	loanFundraisingInfo: { id: 2000010, fundedAmount: '0.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo' },
+	loanFundraisingInfo: {
+		id: 2000010, fundedAmount: '0.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
+	},
 	unreservedAmount: '0.00',
 });
 
@@ -386,7 +416,9 @@ export const inactiveExpiredLoan = createMockLoan({
 	status: 'inactiveExpired',
 	fundraisingPercent: 0,
 	expiredDate: '2024-12-01T12:00:00Z',
-	loanFundraisingInfo: { id: 2000011, fundedAmount: '0.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo' },
+	loanFundraisingInfo: {
+		id: 2000011, fundedAmount: '0.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
+	},
 	unreservedAmount: '0.00',
 });
 
@@ -395,7 +427,9 @@ export const reviewedLoan = createMockLoan({
 	id: 2000012,
 	status: 'reviewed',
 	fundraisingPercent: 0,
-	loanFundraisingInfo: { id: 2000012, fundedAmount: '0.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo' },
+	loanFundraisingInfo: {
+		id: 2000012, fundedAmount: '0.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
+	},
 	unreservedAmount: '0.00',
 });
 
@@ -404,7 +438,9 @@ export const deletedLoan = createMockLoan({
 	id: 2000013,
 	status: 'deleted',
 	fundraisingPercent: 0,
-	loanFundraisingInfo: { id: 2000013, fundedAmount: '0.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo' },
+	loanFundraisingInfo: {
+		id: 2000013, fundedAmount: '0.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
+	},
 	unreservedAmount: '0.00',
 });
 
@@ -413,7 +449,9 @@ export const issueLoan = createMockLoan({
 	id: 2000014,
 	status: 'issue',
 	fundraisingPercent: 0,
-	loanFundraisingInfo: { id: 2000014, fundedAmount: '0.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo' },
+	loanFundraisingInfo: {
+		id: 2000014, fundedAmount: '0.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
+	},
 	unreservedAmount: '0.00',
 });
 
@@ -423,9 +461,15 @@ export const groupLoan = createMockLoan({
 	name: 'Aisha\'s Group',
 	borrowerCount: 3,
 	borrowers: [
-		{ id: 1, firstName: 'Aisha', gender: 'female', isPrimary: true },
-		{ id: 2, firstName: 'Fatima', gender: 'female', isPrimary: false },
-		{ id: 3, firstName: 'Nadia', gender: 'female', isPrimary: false },
+		{
+			id: 1, firstName: 'Aisha', gender: 'female', isPrimary: true
+		},
+		{
+			id: 2, firstName: 'Fatima', gender: 'female', isPrimary: false
+		},
+		{
+			id: 3, firstName: 'Nadia', gender: 'female', isPrimary: false
+		},
 	],
 });
 

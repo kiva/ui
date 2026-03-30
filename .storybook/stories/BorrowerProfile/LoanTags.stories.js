@@ -4,11 +4,21 @@ import cookieStoreStoryMixin from '../../mixins/cookie-store-story-mixin';
 import kvAuth0StoryMixin from '../../mixins/kv-auth0-story-mixin';
 
 const mockAvailableTags = [
-	{ id: 1, name: 'Education', description: 'Loans for education purposes', status: 'active', vocabularyId: 2 },
-	{ id: 2, name: 'Sustainable Agriculture', description: 'Farming practices that are environmentally friendly', status: 'active', vocabularyId: 2 },
-	{ id: 3, name: 'Women-Owned Business', description: 'Businesses owned and operated by women', status: 'active', vocabularyId: 2 },
-	{ id: 4, name: 'First-Time Borrower', description: 'Borrower applying for their first loan', status: 'active', vocabularyId: 2 },
-	{ id: 5, name: 'Rural Area', description: 'Located in a rural community', status: 'active', vocabularyId: 2 },
+	{
+		id: 1, name: 'Education', description: 'Loans for education purposes', status: 'active', vocabularyId: 2
+	},
+	{
+		id: 2, name: 'Sustainable Agriculture', description: 'Farming practices that are environmentally friendly', status: 'active', vocabularyId: 2
+	},
+	{
+		id: 3, name: 'Women-Owned Business', description: 'Businesses owned and operated by women', status: 'active', vocabularyId: 2
+	},
+	{
+		id: 4, name: 'First-Time Borrower', description: 'Borrower applying for their first loan', status: 'active', vocabularyId: 2
+	},
+	{
+		id: 5, name: 'Rural Area', description: 'Located in a rural community', status: 'active', vocabularyId: 2
+	},
 ];
 
 /**
@@ -75,7 +85,7 @@ export const WithTags = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<loan-tags :loan-id="12345" />`,
+	template: '<loan-tags :loan-id="12345" />',
 });
 
 export const WithTagsLoggedIn = () => ({
@@ -85,7 +95,7 @@ export const WithTagsLoggedIn = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<loan-tags :loan-id="12345" :is-logged-in="true" />`,
+	template: '<loan-tags :loan-id="12345" :is-logged-in="true" />',
 });
 
 export const NoTags = () => ({
@@ -95,7 +105,7 @@ export const NoTags = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<loan-tags :loan-id="23456" />`,
+	template: '<loan-tags :loan-id="23456" />',
 });
 NoTags.storyName = 'No Tags (Anonymous)';
 
@@ -106,7 +116,7 @@ export const NoTagsLoggedIn = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<loan-tags :loan-id="23456" :is-logged-in="true" />`,
+	template: '<loan-tags :loan-id="23456" :is-logged-in="true" />',
 });
 NoTagsLoggedIn.storyName = 'No Tags (Logged In)';
 
@@ -117,5 +127,5 @@ export const MaxTagsReached = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<loan-tags :loan-id="34567" :is-logged-in="true" />`,
+	template: '<loan-tags :loan-id="34567" :is-logged-in="true" />',
 });
