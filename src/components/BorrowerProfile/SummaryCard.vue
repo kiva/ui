@@ -36,9 +36,9 @@
 				/>
 				<template v-if="isLoading">
 					<div class="tw-flex tw-flex-wrap tw-mb-3">
-						<kv-loading-placeholder class="tw-mb-1" style="height: 0.5rem;" />
-						<kv-loading-placeholder style="height: 2.8rem; width: 30%;" />
-						<kv-loading-placeholder style="height: 2.8rem; width: 30%; margin-left: auto;" />
+						<kv-loading-placeholder class="tw-mb-1 tw-h-2" />
+						<kv-loading-placeholder class="tw-h-[2.8rem]" :style="{width: '30%'}" />
+						<kv-loading-placeholder class="tw-h-[2.8rem] tw-ml-auto" :style="{width: '30%'}" />
 					</div>
 				</template>
 				<template v-else>
@@ -64,7 +64,7 @@
 						data-testid="bp-summary-progress"
 						class="tw-mb-2 tw-mt-1.5"
 						:money-left="unreservedAmount"
-						:progress-percent="fundraisingPercent"
+						:progress-percent="effectiveProgressPercent"
 						:time-left="timeLeft"
 						:loan-status="inPfp ? 'pfp' : status"
 						:number-of-lenders="numLenders"
@@ -79,7 +79,7 @@
 		</p>
 		<div class="tw-flex-auto tw-inline-flex tw-w-full">
 			<template v-if="isLoading">
-				<kv-loading-placeholder style="height: 1.9rem; width: 50%;" />
+				<kv-loading-placeholder class="tw-h-[1.9rem]" :style="{width: '50%'}" />
 			</template>
 			<template v-else>
 				<summary-tag v-if="countryName">
@@ -157,6 +157,7 @@ const mountQuery = gql`
 					}
 				}
 				loanAmount
+				paidAmount
 				loanFundraisingInfo {
 					id
 					fundedAmount
@@ -216,6 +217,7 @@ export default {
 			pfpMinLenders: 0,
 			numLenders: 0,
 			totalComments: 0,
+			paidAmount: '0.00',
 		};
 	},
 	computed: {
@@ -233,6 +235,13 @@ export default {
 		},
 		use() {
 			return this.loan?.fullLoanUse ?? '';
+		},
+		effectiveProgressPercent() {
+			if (this.status === 'payingBack') {
+				const loanAmount = parseFloat(this.loan?.loanAmount ?? '0');
+				return loanAmount > 0 ? parseFloat(this.paidAmount) / loanAmount : 0;
+			}
+			return this.fundraisingPercent;
 		},
 		formattedLocation() {
 			if (this.distributionModel === 'direct') {
@@ -271,6 +280,7 @@ export default {
 				this.fundraisingPercent = 1;
 			}
 			this.totalComments = loan?.comments?.totalCount ?? 0;
+			this.paidAmount = loan?.paidAmount ?? '0.00';
 			this.isLoading = false;
 		},
 	},

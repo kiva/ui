@@ -53,6 +53,10 @@
 						:partner-name="partner.name"
 						:repayment-interval="loan.repaymentInterval"
 						:disbursal-date="loan.disbursalDate"
+						:expired-date="loan.expiredDate"
+						:refunded-date="loan.refundedDate"
+						:defaulted-date="loan.defaultedDate"
+						:ended-date="loan.endedDate"
 						@show-definition="showDefinition"
 					/>
 					<repayment-schedule
@@ -148,7 +152,11 @@ export default {
 		useSalesForce: {
 			type: Boolean,
 			default: false,
-		}
+		},
+		isPrivileged: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
@@ -165,7 +173,10 @@ export default {
 				lossLiabilityCurrencyExchange: '',
 				repaymentInterval: '',
 				anonymizationLevel: '',
-				lentTo: false,
+				expiredDate: '',
+				refundedDate: '',
+				defaultedDate: '',
+				endedDate: '',
 			},
 			loading: true,
 			observer: null,
@@ -211,25 +222,17 @@ export default {
 		trusteeTabId() {
 			return `tab-panel-${this.name}-trustee`;
 		},
-		isSupporter() {
-			return this.loan?.lentTo || false;
-		},
 		displayRepaymentSchedule() {
-			// check anonymization of loan, if it's not set to
-			// full anonymization, continue
-			if (this.loan.anonymizationLevel !== 'full') {
-				// if loan is fundraising, always display the repayment schedule
-				if (this.loan.status === 'fundraising') {
-					return true;
-				}
-				// otherwise look at the isSupporter flag to determine if
-				// the repayment schedule should be shown to current user,
-				// if they are logged in
-				return this.isSupporter;
+			// Don't show repayment schedule for fully anonymized loans
+			if (this.loan.anonymizationLevel === 'full') {
+				return false;
 			}
-			// if loan is set to full anonymization, return false
-			// because the repayment schedule should not be shown.
-			return false;
+			// Always show for fundraising loans
+			if (this.loan.status === 'fundraising') {
+				return true;
+			}
+			// For non-fundraising loans, only show to privileged users
+			return this.isPrivileged;
 		}
 	},
 	methods: {
@@ -293,9 +296,10 @@ export default {
 							repaymentInterval
 							disbursalDate
 							anonymizationLevel
-							userProperties {
-								lentTo
-							}
+							expiredDate
+							refundedDate
+							defaultedDate
+							endedDate
 							terms {
 								currency
 								flexibleFundraisingEnabled
@@ -352,7 +356,10 @@ export default {
 				this.loan.status = loan?.status ?? '';
 				this.loan.name = loan?.name ?? '';
 				this.loan.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
-				this.loan.lentTo = loan?.userProperties?.lendTo ?? false;
+				this.loan.expiredDate = loan?.expiredDate ?? '';
+				this.loan.refundedDate = loan?.refundedDate ?? '';
+				this.loan.defaultedDate = loan?.defaultedDate ?? '';
+				this.loan.endedDate = loan?.endedDate ?? '';
 
 				this.partner.arrearsRate = partner?.arrearsRate ?? 0;
 				this.partner.avgBorrowerCost = partner?.avgBorrowerCost ?? 0;

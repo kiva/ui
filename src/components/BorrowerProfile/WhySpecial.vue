@@ -46,24 +46,6 @@ export default {
 			return formatWhySpecial(this.whySpecial);
 		}
 	},
-	apollo: {
-		query: gql`query whySpecial($loanId: Int!) {
-			lend {
-				loan(id: $loanId) {
-					id
-					whySpecial
-				}
-			}
-		}`,
-		variables() {
-			return {
-				loanId: this.loanId,
-			};
-		},
-		result(result) {
-			this.whySpecial = result?.data?.lend?.loan?.whySpecial ?? '';
-		},
-	},
 	methods: {
 		createObserver() {
 			// Watch for this element being close to entering the viewport
@@ -105,7 +87,8 @@ export default {
 				},
 			}).then(result => {
 				this.whySpecial = result?.data?.lend?.loan?.whySpecial ?? '';
-
+				this.loading = false;
+			}).catch(() => {
 				this.loading = false;
 			});
 		},

@@ -7,8 +7,8 @@
 			v-if="showChallengeCallout"
 			class="tw-absolute tw-mx-auto tw-w-full tw-z-5"
 			:share-lender="shareLender"
-			:team-name="teamData.name"
-			:team-id="teamData.teamPublicId"
+			:team-name="teamName"
+			:team-public-id="teamPublicId"
 			@close="hideChallengeCallout = true"
 		/>
 		<full-borrower-profile
@@ -17,12 +17,13 @@
 			:lender="lender"
 			:loading="isLoading"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
-			:team-data="teamData"
+			:team-id="teamId"
+			:team-name="teamName"
 			:show-education-placement-exp="showEducationPlacementExp"
 			:loan-region="loanRegion"
 		/>
 		<article v-else>
-			<MinimalBorrowerProfile
+			<minimal-borrower-profile
 				:loan="loan"
 				:hash="hash"
 				:items-in-basket="itemsInBasket"
@@ -48,7 +49,7 @@ import FullBorrowerProfile, { fullProfileFragment } from '#src/components/Borrow
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
-import TeamInfoFromId from '#src/graphql/query/teamInfoFromId.graphql';
+import teamBasicInfoQuery from '#src/graphql/query/teamBasicInfo.graphql';
 import ChallengeTeamInvite from '#src/components/BorrowerProfile/ChallengeTeamInvite';
 import { summaryCardFragment } from '#src/components/BorrowerProfile/SummaryCard';
 import { loanStoryFragment } from '#src/components/BorrowerProfile/LoanStory';
@@ -292,7 +293,9 @@ export default {
 			],
 			// Challenge header
 			enableChallengeHeader: false,
-			teamData: {},
+			teamId: null,
+			teamName: '',
+			teamPublicId: '',
 			shareLender: undefined,
 			hideChallengeCallout: false,
 		};
@@ -352,13 +355,6 @@ export default {
 		},
 	},
 	async mounted() {
-		// EXP-GROW-655-Aug2021
-		// This is cookie is set during the redirect and signifies the exp is active when landing on this page
-		const expCookieSignifier = this.cookieStore.get('kvlendborrowerbeta');
-		if (expCookieSignifier === 'b') {
-			this.$kvTrackEvent('Borrower Profile', 'EXP-GROW-655-Aug2021', expCookieSignifier);
-		}
-
 		// Async data fetch for MARS-317
 		const { data } = await this.apollo.query({
 			query: mountedQuery,
@@ -389,25 +385,25 @@ export default {
 		this.enableChallengeHeader = challengeHeaderExpData?.version === 'b';
 
 		if (this.enableChallengeHeader) {
-			const teamPublicId = this.$route?.query?.team ?? '';
-			let teamId = null;
-			if (teamPublicId) {
-				const teamInfo = await this.apollo.query({ query: TeamInfoFromId, variables: { team_public_id: teamPublicId } }); // eslint-disable-line max-len
-				teamId = teamInfo?.data?.community?.team?.id ?? null;
-			}
-
-			if (teamId) {
-				const teamData = await this.apollo.query({ query: TeamInfoFromId, variables: { team_id: teamId } });
-				this.teamData = teamData?.data?.community?.team || {};
-				const publicId = getPublicId(this.$route);
-
-				const lenderData = await this.apollo.query({
-					query: lenderPublicProfileQuery,
-					variables: {
-						publicId,
-					}
+			const routeTeamPublicId = this.$route?.query?.team ?? '';
+			if (routeTeamPublicId) {
+				const teamResult = await this.apollo.query({
+					query: teamBasicInfoQuery,
+					variables: { teamPublicId: routeTeamPublicId },
 				});
-				this.shareLender = lenderData?.data?.community?.lender ?? {};
+				const team = teamResult?.data?.community?.team;
+				if (team?.id) {
+					this.teamId = team.id;
+					this.teamName = team.name ?? '';
+					this.teamPublicId = team.teamPublicId ?? '';
+
+					const publicId = getPublicId(this.$route);
+					const lenderData = await this.apollo.query({
+						query: lenderPublicProfileQuery,
+						variables: { publicId },
+					});
+					this.shareLender = lenderData?.data?.community?.lender ?? {};
+				}
 			}
 		}
 
@@ -435,6 +431,8 @@ export default {
 			return this.loan?.userProperties?.isPrivileged ?? false;
 		},
 		showFullView() {
+			// Fully-reserved fundraising loans (amountLeft === 0) show the minimal view
+			// for non-privileged users since there's nothing left to lend.
 			return (this.amountLeft && this.loan?.status === 'fundraising')
 				|| this.isPrivileged
 				|| this.$route.query.minimal === 'false';
@@ -493,7 +491,7 @@ export default {
 			return d ? format(parseISO(d), 'M/d') : '';
 		},
 		showChallengeCallout() {
-			return this.enableChallengeHeader && Object.keys(this.teamData).length && !this.hideChallengeCallout;
+			return this.enableChallengeHeader && this.teamId && !this.hideChallengeCallout;
 		},
 	},
 	created() {
