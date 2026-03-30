@@ -16,9 +16,9 @@
 		</h3>
 
 		<section
-			:class="{'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperience}"
+			:class="{'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperienceInFirstRow}"
 		>
-			<template v-if="showRegionExperience">
+			<template v-if="showRegionExperienceInFirstRow">
 				<div class="card-container tw-shrink-0">
 					<JourneyCardCarousel
 						class="carousel carousel-single"
@@ -140,7 +140,7 @@
 						/>
 					</section>
 
-					<template v-if="!userLentToAllRegions">
+					<template v-if="!userLentToAllRegions && !showRegionExperienceInFirstRow">
 						<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 							Keep your impact going
 						</h3>
@@ -398,7 +398,7 @@ const achievementSlides = computed(() => buildAchievementSlides({
 	getActiveTierData,
 }));
 
-const showRegionExperience = computed(() => {
+const showRegionExperienceInFirstRow = computed(() => {
 	return !showPostLendingNextStepsCards.value && !props.userLentToAllRegions;
 });
 
