@@ -143,58 +143,13 @@
 				</template>
 			</kv-carousel>
 		</div>
-		<kv-lightbox
+		<comment-report-lightbox
 			:visible="isReportLightboxVisible"
-			title="Report comment"
-			@lightbox-closed="isReportLightboxVisible = false"
-		>
-			<template #header>
-				<h2>
-					Report Comment
-				</h2>
-				<h3 class="tw-mt-2">
-					Why are you reporting this comment?
-				</h3>
-			</template>
-
-			<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-mt-1 tw-mb-2">
-				<kv-radio
-					value="I find it offensive"
-					name="reportReason"
-					v-model="selectedReason"
-				>
-					I find it offensive
-				</kv-radio>
-				<kv-radio
-					value="It's spam or misleading"
-					name="reportReason" v-model="selectedReason"
-				>
-					It's spam or misleading
-				</kv-radio>
-				<kv-radio
-					value="It is harmful, violent, or could cause harm"
-					name="reportReason" v-model="selectedReason"
-				>
-					It is harmful, violent, or could cause harm
-				</kv-radio>
-			</fieldset>
-
-			<template #controls>
-				<kv-button
-					variant="secondary"
-					@click="isReportLightboxVisible = false"
-				>
-					Cancel
-				</kv-button>
-				<kv-button
-					variant="primary"
-					:state="buttonState"
-					@click="reportComment"
-				>
-					Submit report
-				</kv-button>
-			</template>
-		</kv-lightbox>
+			:loan-id="loanId"
+			:comment-id="selectedCommentId"
+			@close="isReportLightboxVisible = false"
+			@reported="onCommentReported"
+		/>
 		<kv-lightbox
 			:visible="isCommentLightboxVisible"
 			title=""
@@ -212,12 +167,13 @@ import _throttle from 'lodash/throttle';
 import { mdiDotsHorizontalCircle } from '@mdi/js';
 import { gql } from 'graphql-tag';
 import { createIntersectionObserver } from '#src/util/observerUtils';
-import logFormatter from '#src/util/logFormatter';
+
 import WhySpecial from '#src/components/BorrowerProfile/WhySpecial';
+import CommentReportLightbox from '#src/components/BorrowerProfile/CommentReportLightbox';
 import clickOutside from '#src/plugins/click-outside';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import {
-	isLegacyPlaceholderAvatar, KvCarousel, KvMaterialIcon, KvLoadingPlaceholder, KvLightbox, KvRadio, KvButton
+	isLegacyPlaceholderAvatar, KvCarousel, KvMaterialIcon, KvLoadingPlaceholder, KvLightbox
 } from '@kiva/kv-components';
 import kivaKUrl from '#src/assets/images/kiva_k.svg?url';
 
@@ -226,12 +182,11 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		BorrowerImage,
-		KvButton,
+		CommentReportLightbox,
 		KvCarousel,
 		KvLightbox,
 		KvLoadingPlaceholder,
 		KvMaterialIcon,
-		KvRadio,
 		WhySpecial,
 	},
 	mixins: [clickOutside],
@@ -254,8 +209,7 @@ export default {
 			commentMenuShown: false,
 			isReportLightboxVisible: false,
 			isCommentLightboxVisible: false,
-			selectedReason: '',
-			selectedCommentId: '',
+			selectedCommentId: null,
 			selectedCommentBody: '',
 			userCardStyleOptions: [
 				{ color: 'tw-text-action', bg: 'tw-bg-brand-50' },
@@ -271,11 +225,6 @@ export default {
 		};
 	},
 	computed: {
-		buttonState() {
-			if (this.loading) return 'loading';
-			if (!this.selectedReason) return 'disabled';
-			return '';
-		},
 		enhancedComments() {
 			// adds quasi computed properties to comments.
 			// isAnonymous boolean, lender name first letter, and image hash from url
@@ -386,35 +335,8 @@ export default {
 			this.selectedCommentId = commentId;
 			this.isReportLightboxVisible = true;
 		},
-		reportComment() {
-			this.loading = true;
-			this.apollo.mutate({
-				mutation: gql`mutation flagLoanComment($id: Int!, $description: String, $commentId: Int!) {
-					loan(id: $id) {
-						flagComment(description: $description, commentId: $commentId)
-					}
-				}`,
-				variables: {
-					id: this.loanId,
-					commentId: this.selectedCommentId,
-					description: this.selectedReason
-				}
-			}).then(({ data, errors }) => {
-				// comment was added successfully
-				if (data.loan.flagComment) {
-					this.$showTipMsg('Thank you for reporting this comment!');
-				} else if (errors[0].message) {
-					this.$showTipMsg(errors[0].message);
-				} else {
-					throw new Error('There was a problem reporting this comment');
-				}
-			}).catch(e => {
-				logFormatter(e, 'error');
-				this.$showTipMsg('There was a problem reporting this comment', 'error');
-			}).finally(() => {
-				this.isReportLightboxVisible = false;
-				this.loading = false;
-			});
+		onCommentReported() {
+			this.isReportLightboxVisible = false;
 		},
 		randomizedUserClass() {
 			const randomStyle = this.userCardStyleOptions[Math.floor(Math.random() * this.userCardStyleOptions.length)];

@@ -1,0 +1,5 @@
+mutation reportLoanComment($loanId: Int!, $commentId: Int!, $description: String) {
+	loan(id: $loanId) {
+		flagComment(description: $description, commentId: $commentId)
+	}
+}
