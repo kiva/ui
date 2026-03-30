@@ -22,7 +22,7 @@ function loanStoryStory(loan) {
 		setup() {
 			return { loan };
 		},
-		template: `<loan-story :loan="loan" />`,
+		template: '<loan-story :loan="loan" />',
 	});
 }
 

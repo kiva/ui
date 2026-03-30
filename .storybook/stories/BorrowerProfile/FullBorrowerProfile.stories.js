@@ -4,11 +4,11 @@ import apolloStoryMixin from '../../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../../mixins/cookie-store-story-mixin';
 import kvAuth0StoryMixin from '../../mixins/kv-auth0-story-mixin';
 import {
-	createMockLoan,
 	createQueryResult,
 	loggedInUser,
 	fundraisingPartnerLoan,
 	pfpLoan,
+	raisedLoan,
 	payingBackLoan,
 	endedLoan,
 	defaultedLoan,
@@ -74,6 +74,8 @@ export const Expired = fullProfileStory(expiredLoan);
 export const Refunded = fullProfileStory(refundedLoan);
 
 // --- Privileged-only statuses (real status, not collapsed) ---
+
+export const Raised = fullProfileStory(raisedLoan, loggedInUser);
 
 export const PayingBack = fullProfileStory(payingBackLoan, loggedInUser);
 
