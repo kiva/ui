@@ -114,7 +114,6 @@
 
 <script>
 import { gql } from 'graphql-tag';
-import { createIntersectionObserver } from '#src/util/observerUtils';
 import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 
 import {
@@ -128,7 +127,7 @@ import RepaymentSchedule from './RepaymentSchedule';
 
 export default {
 	name: 'DetailsTabs',
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		FieldPartnerDetails,
 		KvLightbox,
@@ -179,7 +178,6 @@ export default {
 				endedDate: '',
 			},
 			loading: true,
-			observer: null,
 			partner: {
 				arrearsRate: 0,
 				avgBorrowerCost: 0,
@@ -235,28 +233,107 @@ export default {
 			return this.isPrivileged;
 		}
 	},
-	methods: {
-		createObserver() {
-			this.observer = createIntersectionObserver({
-				targets: [this.$el],
-				rootMargin: '500px',
-				callback: entries => {
-					entries.forEach(entry => {
-						if (entry.target === this.$el && entry.intersectionRatio > 0) {
-							this.loadData();
+	apollo: {
+		lazy: true,
+		query: gql`query loanDetails($loanId: Int!) {
+			lend {
+				loan(id: $loanId) {
+					id
+					name
+					status
+					lenderRepaymentTerm
+					repaymentInterval
+					disbursalDate
+					anonymizationLevel
+					expiredDate
+					refundedDate
+					defaultedDate
+					endedDate
+					terms {
+						currency
+						flexibleFundraisingEnabled
+						lenderRepaymentTerm
+						lossLiabilityCurrencyExchange
+					}
+					... on LoanDirect {
+						trustee {
+							id
+							organizationName
+							stats {
+								id
+								numDefaultedLoans
+								numLoansEndorsedPublic
+								repaymentRate
+								totalLoansValue
+							}
 						}
-					});
+						endorsement
+					}
+					... on LoanPartner {
+						partner {
+							arrearsRate
+							avgBorrowerCost
+							avgBorrowerCostType
+							avgProfitability
+							chargesFeesInterest
+							defaultRate
+							id
+							loansAtRiskRate
+							name
+							riskRating
+							currencyExchangeLossRate
+						}
+					}
 				}
-			});
-			if (!this.observer) {
-				this.loadData();
 			}
+		}`,
+		variables() {
+			return { loanId: this.loanId };
 		},
-		destroyObserver() {
-			if (this.observer) {
-				this.observer.disconnect();
-			}
+		result({ data }) {
+			const loan = data?.lend?.loan;
+			const partner = loan?.partner;
+			const trustee = loan?.trustee;
+
+			this.loan.currency = loan?.terms?.currency ?? '';
+			this.loan.flexibleFundraisingEnabled = loan?.terms?.flexibleFundraisingEnabled ?? false;
+			this.loan.loanLenderRepaymentTerm = loan?.lenderRepaymentTerm ?? 0;
+			this.loan.loanTermLenderRepaymentTerm = loan?.terms?.lenderRepaymentTerm ?? 0;
+			this.loan.lossLiabilityCurrencyExchange = loan?.terms?.lossLiabilityCurrencyExchange ?? '';
+			this.loan.repaymentInterval = loan?.repaymentInterval ?? '';
+			this.loan.disbursalDate = loan?.disbursalDate ?? '';
+			this.loan.status = loan?.status ?? '';
+			this.loan.name = loan?.name ?? '';
+			this.loan.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
+			this.loan.expiredDate = loan?.expiredDate ?? '';
+			this.loan.refundedDate = loan?.refundedDate ?? '';
+			this.loan.defaultedDate = loan?.defaultedDate ?? '';
+			this.loan.endedDate = loan?.endedDate ?? '';
+
+			this.partner.arrearsRate = partner?.arrearsRate ?? 0;
+			this.partner.avgBorrowerCost = partner?.avgBorrowerCost ?? 0;
+			this.partner.avgBorrowerCostType = partner?.avgBorrowerCostType ?? '';
+			this.partner.avgProfitability = partner?.avgProfitability ?? 0;
+			this.partner.chargesFeesInterest = partner?.chargesFeesInterest ?? false;
+			this.partner.defaultRate = partner?.defaultRate ?? 0;
+			this.partner.id = partner?.id ?? 0;
+			this.partner.loansAtRiskRate = partner?.loansAtRiskRate ?? 0;
+			this.partner.name = partner?.name ?? '';
+			this.partner.riskRating = partner?.riskRating ?? 0;
+			this.partner.currencyExchangeLossRate = partner?.currencyExchangeLossRate ?? 0;
+
+			this.trustee.endorsement = loan?.endorsement ?? '';
+			this.trustee.id = trustee?.id ?? 0;
+			this.trustee.name = trustee?.organizationName ?? '';
+			this.trustee.numDefaultedLoans = trustee?.stats?.numDefaultedLoans ?? 0;
+			this.trustee.numLoansEndorsedPublic = trustee?.stats?.numLoansEndorsedPublic ?? 0;
+			this.trustee.repaymentRate = trustee?.stats?.repaymentRate ?? 0;
+			this.trustee.totalLoansValue = trustee?.stats?.totalLoansValue ?? '0';
+
+			this.loading = false;
 		},
+	},
+	methods: {
 		closeLightbox() {
 			// close lightbox
 			this.isLightboxVisible = false;
@@ -282,106 +359,6 @@ export default {
 					// show originally requested entry
 					this.showContentfulEntry(contentEntryKey);
 				}
-			});
-		},
-		loadData() {
-			this.apollo.query({
-				query: gql`query loanDetails($loanId: Int!) {
-					lend {
-						loan(id: $loanId) {
-							id
-							name
-							status
-							lenderRepaymentTerm
-							repaymentInterval
-							disbursalDate
-							anonymizationLevel
-							expiredDate
-							refundedDate
-							defaultedDate
-							endedDate
-							terms {
-								currency
-								flexibleFundraisingEnabled
-								lenderRepaymentTerm
-								lossLiabilityCurrencyExchange
-							}
-							... on LoanDirect {
-								trustee {
-									id
-									organizationName
-									stats {
-										id
-										numDefaultedLoans
-										numLoansEndorsedPublic
-										repaymentRate
-										totalLoansValue
-									}
-								}
-								endorsement
-							}
-							... on LoanPartner {
-								partner {
-									arrearsRate
-									avgBorrowerCost
-									avgBorrowerCostType
-									avgProfitability
-									chargesFeesInterest
-									defaultRate
-									id
-									loansAtRiskRate
-									name
-									riskRating
-									currencyExchangeLossRate
-								}
-							}
-						}
-					}
-				}`,
-				variables: {
-					loanId: this.loanId
-				},
-			}).then(result => {
-				const loan = result?.data?.lend?.loan;
-				const partner = loan?.partner;
-				const trustee = loan?.trustee;
-
-				this.loan.currency = loan?.terms?.currency ?? '';
-				this.loan.flexibleFundraisingEnabled = loan?.terms?.flexibleFundraisingEnabled ?? false;
-				this.loan.loanLenderRepaymentTerm = loan?.lenderRepaymentTerm ?? 0;
-				this.loan.loanTermLenderRepaymentTerm = loan?.terms?.lenderRepaymentTerm ?? 0;
-				this.loan.lossLiabilityCurrencyExchange = loan?.terms?.lossLiabilityCurrencyExchange ?? '';
-				this.loan.repaymentInterval = loan?.repaymentInterval ?? '';
-				this.loan.disbursalDate = loan?.disbursalDate ?? '';
-				this.loan.status = loan?.status ?? '';
-				this.loan.name = loan?.name ?? '';
-				this.loan.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
-				this.loan.expiredDate = loan?.expiredDate ?? '';
-				this.loan.refundedDate = loan?.refundedDate ?? '';
-				this.loan.defaultedDate = loan?.defaultedDate ?? '';
-				this.loan.endedDate = loan?.endedDate ?? '';
-
-				this.partner.arrearsRate = partner?.arrearsRate ?? 0;
-				this.partner.avgBorrowerCost = partner?.avgBorrowerCost ?? 0;
-				this.partner.avgBorrowerCostType = partner?.avgBorrowerCostType ?? '';
-				this.partner.avgProfitability = partner?.avgProfitability ?? 0;
-				this.partner.chargesFeesInterest = partner?.chargesFeesInterest ?? false;
-				this.partner.defaultRate = partner?.defaultRate ?? 0;
-				this.partner.id = partner?.id ?? 0;
-				this.partner.loansAtRiskRate = partner?.loansAtRiskRate ?? 0;
-				this.partner.name = partner?.name ?? '';
-				this.partner.riskRating = partner?.riskRating ?? 0;
-				this.partner.currencyExchangeLossRate = partner?.currencyExchangeLossRate ?? 0;
-
-				this.trustee.endorsement = loan?.endorsement ?? '';
-				this.trustee.id = trustee?.id ?? 0;
-				this.trustee.name = trustee?.organizationName ?? '';
-				this.trustee.numDefaultedLoans = trustee?.stats?.numDefaultedLoans ?? 0;
-				this.trustee.numLoansEndorsedPublic = trustee?.stats?.numLoansEndorsedPublic ?? 0;
-				this.trustee.repaymentRate = trustee?.stats?.repaymentRate ?? 0;
-				this.trustee.totalLoansValue = trustee?.stats?.totalLoansValue ?? '0';
-
-				this.loading = false;
 			});
 		},
 		showContentfulEntry(contentKey) {
@@ -435,12 +412,6 @@ export default {
 				}
 			});
 		},
-	},
-	mounted() {
-		this.createObserver();
-	},
-	beforeUnmount() {
-		this.destroyObserver();
 	},
 };
 </script>

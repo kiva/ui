@@ -65,7 +65,6 @@
 import loanTagsQuery from '#src/graphql/query/borrowerProfileLoanTags.graphql';
 import availableTagsQuery from '#src/graphql/query/availableTags.graphql';
 import addOrRemoveTagOnLoan from '#src/graphql/mutation/addOrRemoveTagOnLoan.graphql';
-import { createIntersectionObserver } from '#src/util/observerUtils';
 import { KvCheckbox } from '@kiva/kv-components';
 
 // Exclude automated tag that users shouldn't select
@@ -73,7 +72,7 @@ const excludedTagIds = [28]; // #Repeat Borrower - automated tag
 
 export default {
 	name: 'LoanTags',
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvCheckbox,
 	},
@@ -87,59 +86,13 @@ export default {
 			default: false,
 		},
 	},
-	data() {
-		return {
-			tagStates: {},
-			availableTags: [],
-			selectorVisible: false,
-			observer: null,
-		};
-	},
-	computed: {
-		selectedTags() {
-			return this.availableTags.filter(tag => this.tagStates[tag.id] === true);
-		},
-		selectedTagCount() {
-			return this.selectedTags.length;
-		},
-	},
-	mounted() {
-		this.createObserver();
-	},
-	beforeUnmount() {
-		this.destroyObserver();
-	},
-	methods: {
-		createObserver() {
-			this.observer = createIntersectionObserver({
-				targets: [this.$el],
-				rootMargin: '500px',
-				callback: entries => {
-					entries.forEach(entry => {
-						if (entry.target === this.$el && entry.intersectionRatio > 0) {
-							this.loadTags();
-						}
-					});
-				}
-			});
-			if (!this.observer) {
-				this.loadTags();
-			}
-		},
-		destroyObserver() {
-			if (this.observer) {
-				this.observer.disconnect();
-			}
-		},
-		async loadTags() {
-			if (!this.loanId) return;
-			try {
-				const availableResult = await this.apollo.query({
-					query: availableTagsQuery,
-				});
-
-				if (availableResult?.data?.lend?.tag) {
-					this.availableTags = availableResult.data.lend.tag
+	apollo: [
+		{
+			lazy: true,
+			query: availableTagsQuery,
+			result({ data }) {
+				if (data?.lend?.tag) {
+					this.availableTags = data.lend.tag
 						.filter(tag => tag != null
 							&& tag.vocabularyId === 2
 							&& tag.status === 'active'
@@ -152,15 +105,18 @@ export default {
 							return 0;
 						});
 				}
-
-				const result = await this.apollo.query({
-					query: loanTagsQuery,
-					variables: { loanId: this.loanId },
-					fetchPolicy: 'network-only',
-				});
-
-				if (result?.data?.lend?.loan?.tags) {
-					const currentTagNames = result.data.lend.loan.tags;
+			},
+		},
+		{
+			lazy: true,
+			query: loanTagsQuery,
+			fetchPolicy: 'network-only',
+			variables() {
+				return { loanId: this.loanId };
+			},
+			result({ data }) {
+				if (data?.lend?.loan?.tags) {
+					const currentTagNames = data.lend.loan.tags;
 					const newTagStates = {};
 					this.availableTags.forEach(tag => {
 						if (tag.id != null && tag.name != null) {
@@ -169,10 +125,25 @@ export default {
 					});
 					this.tagStates = newTagStates;
 				}
-			} catch {
-				// Tag loading failure is non-critical
-			}
+			},
 		},
+	],
+	data() {
+		return {
+			tagStates: {},
+			availableTags: [],
+			selectorVisible: false,
+		};
+	},
+	computed: {
+		selectedTags() {
+			return this.availableTags.filter(tag => this.tagStates[tag.id] === true);
+		},
+		selectedTagCount() {
+			return this.selectedTags.length;
+		},
+	},
+	methods: {
 		getTagDivider(index) {
 			return index < this.selectedTagCount - 1 ? ' | ' : '';
 		},

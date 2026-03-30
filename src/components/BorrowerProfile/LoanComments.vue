@@ -163,7 +163,6 @@
 <script>
 import { gql } from 'graphql-tag';
 import { format, parseISO } from 'date-fns';
-import { createIntersectionObserver } from '#src/util/observerUtils';
 import { KvButton, KvLightbox } from '@kiva/kv-components';
 import CommentReportLightbox from '#src/components/BorrowerProfile/CommentReportLightbox';
 import deleteCommentMutation from '#src/graphql/mutation/deleteComment.graphql';
@@ -212,7 +211,7 @@ const postCommentMutation = gql`mutation postLoanComment($loanId: Int!, $body: S
 
 export default {
 	name: 'LoanComments',
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	components: {
 		CommentReportLightbox,
 		KvButton,
@@ -232,6 +231,17 @@ export default {
 			default: false,
 		},
 	},
+	apollo: {
+		lazy: true,
+		query: commentsQuery,
+		fetchPolicy: 'network-only',
+		variables() {
+			return { loanId: this.loanId };
+		},
+		result({ data }) {
+			this.applyCommentsData(data);
+		},
+	},
 	data() {
 		return {
 			comments: [],
@@ -241,7 +251,6 @@ export default {
 			newCommentText: '',
 			isSubmitting: false,
 			showAll: false,
-			observer: null,
 			isReportLightboxVisible: false,
 			reportingCommentId: null,
 			isDeleteConfirmVisible: false,
@@ -263,35 +272,19 @@ export default {
 			return this.comments.slice(0, INITIAL_COMMENT_COUNT);
 		},
 	},
-	mounted() {
-		this.createObserver();
-	},
-	beforeUnmount() {
-		this.destroyObserver();
-	},
 	methods: {
-		createObserver() {
-			this.observer = createIntersectionObserver({
-				targets: [this.$el],
-				rootMargin: '500px',
-				callback: entries => {
-					entries.forEach(entry => {
-						if (entry.target === this.$el && entry.intersectionRatio > 0) {
-							this.loadComments();
-						}
-					});
-				}
-			});
-			if (!this.observer) {
-				this.loadComments();
-			}
+		applyCommentsData(data) {
+			const loan = data?.lend?.loan;
+			this.comments = (loan?.comments?.values ?? []).map(c => ({
+				...c,
+				isBorrower: c.authorRole === 'Borrower',
+				isFlagged: !!c.timeFlagged,
+			}));
+			this.lentTo = loan?.userProperties?.lentTo ?? false;
+			this.isSubscribed = loan?.userProperties?.subscribed ?? false;
+			this.isLoggedIn = !!data?.my?.userAccount?.id;
 		},
-		destroyObserver() {
-			if (this.observer) {
-				this.observer.disconnect();
-			}
-		},
-		async loadComments() {
+		async refreshComments() {
 			if (!this.loanId) return;
 			try {
 				const { data } = await this.apollo.query({
@@ -299,15 +292,7 @@ export default {
 					variables: { loanId: this.loanId },
 					fetchPolicy: 'network-only',
 				});
-				const loan = data?.lend?.loan;
-				this.comments = (loan?.comments?.values ?? []).map(c => ({
-					...c,
-					isBorrower: c.authorRole === 'Borrower',
-					isFlagged: !!c.timeFlagged,
-				}));
-				this.lentTo = loan?.userProperties?.lentTo ?? false;
-				this.isSubscribed = loan?.userProperties?.subscribed ?? false;
-				this.isLoggedIn = !!data?.my?.userAccount?.id;
+				this.applyCommentsData(data);
 			} catch (e) {
 				logFormatter(e, 'error');
 			}
@@ -325,7 +310,7 @@ export default {
 					variables: { loanId: this.loanId, body: this.newCommentText },
 				});
 				this.newCommentText = '';
-				await this.loadComments();
+				await this.refreshComments();
 			} catch (e) {
 				logFormatter(e, 'error');
 				this.$showTipMsg('There was a problem posting your comment', 'error');
