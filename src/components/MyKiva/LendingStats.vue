@@ -499,6 +499,7 @@ export default {
 			}
 		},
 		handleViewAllClick() {
+			this.$kvTrackEvent('portfolio', 'click', 'view-all-next-steps');
 			this.$router.push(`/mykiva/next-steps${this.showPostLendingNextStepsCards ? '?postLending=true' : ''}`);
 		},
 	},
