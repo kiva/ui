@@ -12,7 +12,7 @@
 		<div
 			v-if="isNextStepsExperimentEnabled"
 			class="tw-flex md:tw-gap-1 tw-cursor-pointer tw-w-16 md:tw-w-fit tw-justify-end"
-			@click="$router.push('/mykiva/next-steps')"
+			@click="handleViewAllClick"
 		>
 			<p class="tw-text-eco-green-3 tw-font-medium tw-cursor-pointer">
 				View all
@@ -497,6 +497,10 @@ export default {
 			if (this.isUpdatingGoal) {
 				this.$kvTrackEvent('portfolio', 'view', 'edit-goal-modal');
 			}
+		},
+		handleViewAllClick() {
+			this.$kvTrackEvent('portfolio', 'click', 'view-all-next-steps');
+			this.$router.push(`/mykiva/next-steps${this.showPostLendingNextStepsCards ? '?postLending=true' : ''}`);
 		},
 	},
 };

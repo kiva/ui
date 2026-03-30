@@ -506,7 +506,8 @@ watch(() => props.goalRefreshKey, async (newVal, oldVal) => {
 
 onMounted(async () => {
 	await checkCompletedGoal({ category: 'portfolio' });
-	if (checkPostLendingCardCookie(cookieStore)) {
+	const postLendingQueryExists = router.currentRoute.value.query.postLending === 'true';
+	if (checkPostLendingCardCookie(cookieStore) || postLendingQueryExists) {
 		showPostLendingNextStepsCards.value = true;
 		removePostLendingCardCookie(cookieStore);
 	}
