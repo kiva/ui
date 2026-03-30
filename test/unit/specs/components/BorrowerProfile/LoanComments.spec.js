@@ -41,9 +41,6 @@ function renderLoanComments(dataOverrides = {}, propsOverrides = {}) {
 				...dataOverrides,
 			};
 		},
-		mounted() {
-			// Skip loadComments in tests
-		},
 	};
 
 	return {

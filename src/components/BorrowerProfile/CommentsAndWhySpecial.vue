@@ -166,7 +166,6 @@
 import _throttle from 'lodash/throttle';
 import { mdiDotsHorizontalCircle } from '@mdi/js';
 import { gql } from 'graphql-tag';
-import { createIntersectionObserver } from '#src/util/observerUtils';
 
 import WhySpecial from '#src/components/BorrowerProfile/WhySpecial';
 import CommentReportLightbox from '#src/components/BorrowerProfile/CommentReportLightbox';
@@ -245,86 +244,53 @@ export default {
 			});
 		},
 	},
-	watch: {
-		loanId(newId, oldId) {
-			if (newId !== oldId && newId) this.loadData();
+	apollo: {
+		lazy: true,
+		query: gql`query loanComments($loanId: Int!) {
+			lend {
+				loan(id: $loanId) {
+					id
+					comments {
+						values {
+							id
+							authorName
+							authorImageUrl
+							authorLendingAction {
+								teams
+								lender {
+									id
+									teams(limit: 100) { #arbitrary limit for lenders that have a lot of teams
+										values {
+											id
+											name
+											teamPublicId
+										}
+									}
+								}
+							}
+							body
+						}
+					}
+				}
+			}
+		}`,
+		variables() {
+			return { loanId: this.loanId };
 		},
+		result({ data }) {
+			this.comments = data?.lend?.loan?.comments?.values ?? [];
+			this.loading = false;
+		},
+		fetchPolicy: 'network-only',
 	},
 	mounted() {
-		this.createObserver();
 		window.addEventListener('resize', this.throttledResize);
 		this.determineIfMobile();
 	},
 	beforeUnmount() {
-		this.destroyObserver();
 		window.removeEventListener('resize', this.throttledResize);
 	},
 	methods: {
-		createObserver() {
-			// Watch for this element being close to entering the viewport
-			this.observer = createIntersectionObserver({
-				targets: [this.$el],
-				rootMargin: '500px',
-				callback: entries => {
-					entries.forEach(entry => {
-						if (entry.target === this.$el && entry.intersectionRatio > 0) {
-							// This element is close to being in the viewport, so load the data.
-							// Because of the apollo cache it's safe to call this repeatedly.
-							this.loadData();
-						}
-					});
-				}
-			});
-			if (!this.observer) {
-				// Observer was not created, so call loadData right away as a fallback.
-				this.loadData();
-			}
-		},
-		destroyObserver() {
-			if (this.observer) {
-				this.observer.disconnect();
-			}
-		},
-		loadData() {
-			if (!this.loanId) return;
-			this.apollo.query({
-				query: gql`query loanComments($loanId: Int!) {
-					lend {
-						loan(id: $loanId) {
-							id
-							comments {
-								values {
-									id
-									authorName
-									authorImageUrl
-									authorLendingAction {
-										teams
-										lender {
-											id
-											teams(limit: 100) { #arbitrary limit for lenders that have a lot of teams
-												values {
-													id
-													name
-													teamPublicId
-												}
-											}
-										}
-									}
-									body
-								}
-							}
-						}
-					}
-				}`,
-				variables: {
-					loanId: this.loanId
-				},
-				fetchPolicy: 'network-only',
-			}).then(result => {
-				this.comments = result?.data?.lend?.loan?.comments?.values ?? [];
-				this.loading = false;
-			});
-		},
 		openCommentMenu() {
 			this.commentMenuShown = true;
 		},

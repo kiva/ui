@@ -54,7 +54,6 @@
 </template>
 
 <script>
-import { createIntersectionObserver } from '#src/util/observerUtils';
 import { KvLoadingPlaceholder, KvButton } from '@kiva/kv-components';
 import updatesQuery from '#src/graphql/query/loanUpdates.graphql';
 import UpdateDetails from './UpdateDetails';
@@ -74,9 +73,33 @@ export default {
 			default: 0,
 		},
 	},
+	apollo: {
+		lazy: true,
+		query: updatesQuery,
+		variables() {
+			return {
+				loanId: this.loanId,
+				limit: this.itemQueryLimit,
+				offset: this.itemQueryOffset,
+			};
+		},
+		result({ data }) {
+			this.loanName = data?.lend?.loan?.name ?? '';
+			this.totalItemCount = data?.lend?.loan?.updates?.totalCount ?? 0;
+			if (!this.totalItemCount) {
+				this.$emit('hide-section');
+			}
+			const values = data?.lend?.loan?.updates?.values ?? [];
+			if (this.itemQueryOffset === 0) {
+				this.journals = values;
+			} else {
+				this.journals = this.journals.concat(values);
+			}
+			this.loading = false;
+		},
+	},
 	data() {
 		return {
-			observer: null,
 			loading: true,
 			loanName: '',
 			journals: [],
@@ -98,69 +121,9 @@ export default {
 		},
 	},
 	methods: {
-		createObserver() {
-			// Watch for this element being close to entering the viewport
-			this.observer = createIntersectionObserver({
-				targets: [this.$el],
-				rootMargin: '500px',
-				callback: entries => {
-					entries.forEach(entry => {
-						if (entry.target === this.$el && entry.intersectionRatio > 0) {
-							// exit if already initialized
-							if (this.journals.length) return false;
-							// This element is close to being in the viewport, so load the data.
-							// Because of the apollo cache it's safe to call this repeatedly.
-							this.fetchItems();
-						}
-					});
-				}
-			});
-			if (!this.observer) {
-				// Observer was not created, so call fetchItems right away as a fallback.
-				this.fetchItems();
-			}
-		},
-		destroyObserver() {
-			if (this.observer) {
-				this.observer.disconnect();
-			}
-		},
-		fetchItems() {
-			if (this.loanId === 0) return false;
-
-			this.loading = true;
-
-			const updateVars = {
-				loanId: this.loanId,
-				limit: this.itemQueryLimit,
-				offset: this.itemQueryOffset,
-			};
-
-			// run apollo query
-			this.apollo.query({
-				query: updatesQuery,
-				variables: updateVars,
-			}).then(({ data }) => {
-				this.loanName = data?.lend?.loan?.name ?? '';
-
-				this.totalItemCount = data?.lend?.loan?.updates?.totalCount ?? 0;
-				if (!this.totalItemCount) {
-					this.$emit('hide-section');
-				}
-				this.journals = this.journals.concat(data?.lend?.loan?.updates?.values ?? []);
-				this.loading = false;
-			});
-		},
 		loadMore() {
 			this.itemQueryOffset += this.itemQueryLimit;
-			this.fetchItems();
 		},
-	},
-	mounted() {
-		this.createObserver();
-	},
-	beforeUnmount() {
-		this.destroyObserver();
 	},
 };
 </script>

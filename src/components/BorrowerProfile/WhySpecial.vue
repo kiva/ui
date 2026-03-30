@@ -18,7 +18,6 @@
 
 <script>
 import { gql } from 'graphql-tag';
-import { createIntersectionObserver } from '#src/util/observerUtils';
 import { formatWhySpecial } from '#src/util/loanUtils';
 
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
@@ -46,58 +45,23 @@ export default {
 			return formatWhySpecial(this.whySpecial);
 		}
 	},
-	methods: {
-		createObserver() {
-			// Watch for this element being close to entering the viewport
-			this.observer = createIntersectionObserver({
-				targets: [this.$el],
-				rootMargin: '500px',
-				callback: entries => {
-					entries.forEach(entry => {
-						if (entry.target === this.$el && entry.intersectionRatio > 0) {
-							// This element is close to being in the viewport, so load the data.
-							// Because of the apollo cache it's safe to call this repeatedly.
-							this.loadData();
-						}
-					});
+	apollo: {
+		lazy: true,
+		query: gql`query whySpecial($loanId: Int!) {
+			lend {
+				loan(id: $loanId) {
+					id
+					whySpecial
 				}
-			});
-			if (!this.observer) {
-				// Observer was not created, so call loadData right away as a fallback.
-				this.loadData();
 			}
+		}`,
+		variables() {
+			return { loanId: this.loanId };
 		},
-		destroyObserver() {
-			if (this.observer) {
-				this.observer.disconnect();
-			}
+		result({ data }) {
+			this.whySpecial = data?.lend?.loan?.whySpecial ?? '';
+			this.loading = false;
 		},
-		loadData() {
-			this.apollo.query({
-				query: gql`query whySpecial($loanId: Int!) {
-					lend {
-						loan(id: $loanId) {
-							id
-							whySpecial
-						}
-					}
-				}`,
-				variables: {
-					loanId: this.loanId
-				},
-			}).then(result => {
-				this.whySpecial = result?.data?.lend?.loan?.whySpecial ?? '';
-				this.loading = false;
-			}).catch(() => {
-				this.loading = false;
-			});
-		},
-	},
-	mounted() {
-		this.createObserver();
-	},
-	beforeUnmount() {
-		this.destroyObserver();
 	},
 };
 </script>
