@@ -52,11 +52,9 @@
 import * as Sentry from '@sentry/vue';
 import { gql } from 'graphql-tag';
 import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
-import { readLoanFragment, watchLoanData } from '#src/util/loanUtils';
 import bookmarkLoan from '#src/util/bookmarkUtil';
 import { getFullUrl } from '#src/util/urlUtils';
 import logFormatter from '#src/util/logFormatter';
-import { createIntersectionObserver } from '#src/util/observerUtils';
 import percentRaisedMixin from '#src/plugins/loan/percent-raised-mixin';
 import useMultiMatching from '#src/composables/useMultiMatching';
 import loanCardFieldsExtendedFragment from '#src/graphql/fragments/loanCardFieldsExtended.graphql';
@@ -180,6 +178,16 @@ export default {
 	setup() {
 		return useMultiMatching();
 	},
+	apollo: {
+		lazy: true,
+		query: loanQuery,
+		variables() {
+			return { loanId: this.loanId };
+		},
+		result({ data }) {
+			this.processQueryResult({ data });
+		},
+	},
 	components: {
 		KvClassicLoanCard,
 		KvUserAvatar,
@@ -188,13 +196,10 @@ export default {
 		return {
 			loan: null,
 			basketItems: null,
-			queryObserver: null,
-			viewportObserver: null,
 			isAdding: false,
 			loanCallouts: undefined,
 			isVisitor: true,
 			isBookmarked: false,
-			watchedQuery: {},
 			PHOTO_PATH,
 			combinedActivities: [],
 			errorMsg: '',
@@ -208,41 +213,6 @@ export default {
 		};
 	},
 	methods: {
-		createViewportObserver() {
-			// Watch for this element being in the viewport
-			this.viewportObserver = createIntersectionObserver({
-				targets: [this.$el],
-				callback: entries => {
-					entries.forEach(entry => {
-						if (entry.target === this.$el && entry.intersectionRatio > 0) {
-							// This element is in the viewport, so load the data
-							this.loadData();
-						}
-					});
-				}
-			});
-			if (!this.viewportObserver) {
-				// Observer was not created, so call loadData right away as a fallback
-				this.loadData();
-			}
-		},
-		destroyViewportObserver() {
-			if (this.viewportObserver) {
-				this.viewportObserver.disconnect();
-			}
-		},
-		loadData() {
-			if (!this.queryObserver) {
-				this.watchedQuery = watchLoanData({
-					apollo: this.apollo,
-					cookieStore: this.cookieStore,
-					loanId: this.loanId,
-					loanQuery,
-					callback: result => this.processQueryResult(result),
-				});
-				this.queryObserver = this.watchedQuery.queryObserver;
-			}
-		},
 		processQueryResult(result) {
 			if (result.error) {
 				console.error(result.error);
@@ -517,43 +487,10 @@ export default {
 		},
 	},
 	mounted() {
-		if (this.loan) {
-			// Already have a loan, so only setup watch query to handle changes in data
-			this.loadData();
-		} else {
-			// Don't have a loan yet, so setup viewport observer to prepare async loading
-			this.createViewportObserver();
-		}
-
 		// fetch loan activity
 		if (this.showLoansActivityFeed && this.isTeamPick) {
 			this.fetchLoanActivity();
 		}
-	},
-	beforeUnmount() {
-		this.destroyViewportObserver();
-		this.watchedQuery.subscription?.unsubscribe();
-	},
-	created() {
-		// Use cached loan data if it exists
-		const cachedLoan = readLoanFragment({
-			apollo: this.apollo,
-			loanId: this.loanId,
-			fragment: loanCardFieldsExtendedFragment,
-		});
-		if (cachedLoan) {
-			this.loan = cachedLoan;
-		}
-	},
-	watch: {
-		loanId(loanId) {
-			if (this.queryObserver) {
-				this.queryObserver.setVariables({
-					basketId: this.cookieStore.get('kvbskt'),
-					loanId,
-				});
-			}
-		},
 	},
 	computed: {
 		borrowerName() {
