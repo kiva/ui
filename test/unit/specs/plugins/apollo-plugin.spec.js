@@ -1,5 +1,38 @@
 import apolloPlugin from '#src/plugins/apollo-plugin';
 
+function mockIntersectionObserver(ctx) {
+	const instances = [];
+	const MockObserver = vi.fn((callback, options) => {
+		const instance = {
+			callback,
+			options,
+			observe: vi.fn(),
+			disconnect: vi.fn(),
+		};
+		instances.push(instance);
+		return instance;
+	});
+	global.IntersectionObserver = MockObserver;
+	global.IntersectionObserverEntry = { prototype: { intersectionRatio: 0 } };
+	// Also set on window object for checkIntersectionObserverSupport
+	if (typeof global.window === 'object' && global.window !== null) {
+		global.window.IntersectionObserver = MockObserver;
+		global.window.IntersectionObserverEntry = global.IntersectionObserverEntry;
+	}
+	return {
+		get instances() { return instances; },
+		trigger(intersectionRatio = 1) {
+			instances.forEach(inst => {
+				inst.callback([{ target: ctx.$el, intersectionRatio }]);
+			});
+		},
+		restore() {
+			delete global.IntersectionObserver;
+			delete global.IntersectionObserverEntry;
+		},
+	};
+}
+
 describe('apollo-plugin', () => {
 	let app;
 	let mixin;
@@ -18,6 +51,12 @@ describe('apollo-plugin', () => {
 		apolloPlugin(app);
 		[mixin] = app.getMixins();
 		ctx = {};
+	});
+
+	afterEach(() => {
+		global.window = undefined;
+		delete global.IntersectionObserver;
+		delete global.IntersectionObserverEntry;
 	});
 
 	it('registers a mixin with a created hook', () => {
@@ -270,5 +309,351 @@ describe('apollo-plugin', () => {
 			query: 'Q',
 			variables: { basketId: 'basket456', foo: 'bar' }
 		});
+	});
+
+	it('does not call watchQuery in created() when lazy is true', () => {
+		const result = vi.fn();
+		ctx.$options = {
+			inject: { apollo: {}, cookieStore: {} },
+			apollo: {
+				lazy: true,
+				query: 'Q',
+				variables: () => ({}),
+				result,
+			},
+		};
+		ctx.cookieStore = { get: vi.fn() };
+		ctx.$route = { query: {} };
+		ctx.apollo = {
+			readQuery: vi.fn(),
+			watchQuery: vi.fn(() => ({ subscribe: vi.fn() })),
+		};
+		ctx.$watch = vi.fn();
+		global.window = {};
+		mixin.created.call(ctx);
+		expect(ctx.apollo.watchQuery).not.toHaveBeenCalled();
+		expect(ctx.lazyOperations).toHaveLength(1);
+	});
+
+	it('ignores lazy when preFetch is true and shouldPreFetch passes', () => {
+		const data = { foo: 1 };
+		const result = vi.fn();
+		ctx.$options = {
+			inject: { apollo: {}, cookieStore: {} },
+			apollo: {
+				lazy: true,
+				query: 'Q',
+				preFetch: true,
+				variables: () => ({}),
+				result,
+			},
+		};
+		ctx.cookieStore = { get: vi.fn() };
+		ctx.$route = { query: {} };
+		ctx.apollo = {
+			readQuery: vi.fn(() => data),
+			watchQuery: vi.fn(() => ({ subscribe: vi.fn(), setVariables: vi.fn() })),
+		};
+		ctx.$watch = vi.fn();
+		global.window = {};
+		mixin.created.call(ctx);
+		expect(result).toHaveBeenCalledWith({ data });
+		expect(ctx.apollo.watchQuery).toHaveBeenCalled();
+		expect(ctx.lazyOperations).toHaveLength(0);
+	});
+
+	it('applies lazy when preFetch is true but shouldPreFetch returns false', () => {
+		const result = vi.fn();
+		ctx.$options = {
+			inject: { apollo: {}, cookieStore: {} },
+			apollo: {
+				lazy: true,
+				query: 'Q',
+				preFetch: true,
+				shouldPreFetch: () => false,
+				variables: () => ({}),
+				result,
+			},
+		};
+		ctx.cookieStore = { get: vi.fn() };
+		ctx.$route = { query: {} };
+		ctx.apollo = {
+			readQuery: vi.fn(),
+			watchQuery: vi.fn(() => ({ subscribe: vi.fn() })),
+		};
+		ctx.$watch = vi.fn();
+		global.window = {};
+		mixin.created.call(ctx);
+		expect(ctx.apollo.readQuery).not.toHaveBeenCalled();
+		expect(ctx.apollo.watchQuery).not.toHaveBeenCalled();
+		expect(ctx.lazyOperations).toHaveLength(1);
+	});
+
+	it('handles mixed lazy and non-lazy queries in array form', () => {
+		const result1 = vi.fn();
+		const result2 = vi.fn();
+		ctx.$options = {
+			inject: { apollo: {}, cookieStore: {} },
+			apollo: [
+				{
+					lazy: true,
+					query: 'Q1',
+					variables: () => ({}),
+					result: result1,
+				},
+				{
+					query: 'Q2',
+					variables: () => ({}),
+					result: result2,
+				},
+			],
+		};
+		ctx.cookieStore = { get: vi.fn() };
+		ctx.$route = { query: {} };
+		ctx.apollo = {
+			readQuery: vi.fn(),
+			watchQuery: vi.fn(() => ({
+				subscribe: ({ next }) => next({ data: 'immediate' }),
+				setVariables: vi.fn(),
+			})),
+		};
+		ctx.$watch = vi.fn((fn, cb) => cb({}));
+		global.window = {};
+		mixin.created.call(ctx);
+		expect(ctx.lazyOperations).toHaveLength(1);
+		expect(result1).not.toHaveBeenCalled();
+		expect(result2).toHaveBeenCalledWith({ data: 'immediate' });
+	});
+
+	it('sets up watchQuery when IntersectionObserver fires', () => {
+		global.window = {};
+		const mock = mockIntersectionObserver(ctx);
+		const result = vi.fn();
+		ctx.$el = document.createElement('div');
+		ctx.$options = {
+			inject: { apollo: {}, cookieStore: {} },
+			apollo: {
+				lazy: true,
+				query: 'Q',
+				variables: () => ({ id: 1 }),
+				result,
+			},
+		};
+		ctx.cookieStore = { get: vi.fn() };
+		ctx.$route = { query: {} };
+		ctx.apollo = {
+			readQuery: vi.fn(),
+			watchQuery: vi.fn(() => ({
+				subscribe: ({ next }) => next({ data: 'lazy-result' }),
+				setVariables: vi.fn(),
+			})),
+		};
+		ctx.$watch = vi.fn((fn, cb) => cb({}));
+
+		mixin.created.call(ctx);
+		expect(ctx.apollo.watchQuery).not.toHaveBeenCalled();
+
+		mixin.mounted.call(ctx);
+		expect(mock.instances).toHaveLength(1);
+		expect(mock.instances[0].options.rootMargin).toBe('500px');
+
+		mock.trigger(1);
+		expect(ctx.apollo.watchQuery).toHaveBeenCalled();
+		expect(result).toHaveBeenCalledWith({ data: 'lazy-result' });
+		expect(mock.instances[0].disconnect).toHaveBeenCalled();
+
+		mock.restore();
+	});
+
+	it('falls back to immediate watchQuery when IntersectionObserver is unavailable', () => {
+		delete global.IntersectionObserver;
+		delete global.IntersectionObserverEntry;
+		const result = vi.fn();
+		ctx.$el = document.createElement('div');
+		ctx.$options = {
+			inject: { apollo: {}, cookieStore: {} },
+			apollo: {
+				lazy: true,
+				query: 'Q',
+				variables: () => ({}),
+				result,
+			},
+		};
+		ctx.cookieStore = { get: vi.fn() };
+		ctx.$route = { query: {} };
+		ctx.apollo = {
+			readQuery: vi.fn(),
+			watchQuery: vi.fn(() => ({
+				subscribe: ({ next }) => next({ data: 'fallback' }),
+				setVariables: vi.fn(),
+			})),
+		};
+		ctx.$watch = vi.fn((fn, cb) => cb({}));
+		global.window = {};
+
+		mixin.created.call(ctx);
+		mixin.mounted.call(ctx);
+		expect(ctx.apollo.watchQuery).toHaveBeenCalled();
+		expect(result).toHaveBeenCalledWith({ data: 'fallback' });
+	});
+
+	it('uses custom rootMargin from lazy option object', () => {
+		global.window = {};
+		const mock = mockIntersectionObserver(ctx);
+		ctx.$el = document.createElement('div');
+		ctx.$options = {
+			inject: { apollo: {}, cookieStore: {} },
+			apollo: {
+				lazy: { rootMargin: '200px' },
+				query: 'Q',
+				variables: () => ({}),
+				result: vi.fn(),
+			},
+		};
+		ctx.cookieStore = { get: vi.fn() };
+		ctx.$route = { query: {} };
+		ctx.apollo = {
+			readQuery: vi.fn(),
+			watchQuery: vi.fn(() => ({ subscribe: vi.fn(), setVariables: vi.fn() })),
+		};
+		ctx.$watch = vi.fn();
+
+		mixin.created.call(ctx);
+		mixin.mounted.call(ctx);
+		expect(mock.instances[0].options.rootMargin).toBe('200px');
+
+		mock.restore();
+	});
+
+	it('disconnects lazy observers on beforeUnmount', () => {
+		global.window = {};
+		const mock = mockIntersectionObserver(ctx);
+		ctx.$el = document.createElement('div');
+		ctx.$options = {
+			inject: { apollo: {}, cookieStore: {} },
+			apollo: {
+				lazy: true,
+				query: 'Q',
+				variables: () => ({}),
+				result: vi.fn(),
+			},
+		};
+		ctx.cookieStore = { get: vi.fn() };
+		ctx.$route = { query: {} };
+		ctx.apollo = {
+			readQuery: vi.fn(),
+			watchQuery: vi.fn(() => ({ subscribe: vi.fn(), setVariables: vi.fn() })),
+		};
+		ctx.$watch = vi.fn();
+
+		mixin.created.call(ctx);
+		mixin.mounted.call(ctx);
+		expect(mock.instances[0].disconnect).not.toHaveBeenCalled();
+
+		mixin.beforeUnmount.call(ctx);
+		expect(mock.instances[0].disconnect).toHaveBeenCalled();
+
+		mock.restore();
+	});
+
+	it('mounted does nothing when there are no lazy operations', () => {
+		ctx.$options = {
+			inject: { apollo: {}, cookieStore: {} },
+			apollo: {
+				query: 'Q',
+				variables: () => ({}),
+				result: vi.fn(),
+			},
+		};
+		ctx.cookieStore = { get: vi.fn() };
+		ctx.$route = { query: {} };
+		ctx.apollo = {
+			readQuery: vi.fn(),
+			watchQuery: vi.fn(() => ({
+				subscribe: vi.fn(),
+				setVariables: vi.fn(),
+			})),
+		};
+		ctx.$watch = vi.fn();
+		global.window = {};
+
+		mixin.created.call(ctx);
+		expect(() => mixin.mounted.call(ctx)).not.toThrow();
+		expect(() => mixin.beforeUnmount.call(ctx)).not.toThrow();
+	});
+
+	it('passes fetchPolicy through to watchQuery for lazy queries', () => {
+		global.window = {};
+		const mock = mockIntersectionObserver(ctx);
+		ctx.$el = document.createElement('div');
+		ctx.$options = {
+			inject: { apollo: {}, cookieStore: {} },
+			apollo: {
+				lazy: true,
+				query: 'Q',
+				fetchPolicy: 'network-only',
+				variables: () => ({}),
+				result: vi.fn(),
+			},
+		};
+		ctx.cookieStore = { get: vi.fn() };
+		ctx.$route = { query: {} };
+		ctx.apollo = {
+			readQuery: vi.fn(),
+			watchQuery: vi.fn(() => ({
+				subscribe: vi.fn(),
+				setVariables: vi.fn(),
+			})),
+		};
+		ctx.$watch = vi.fn();
+
+		mixin.created.call(ctx);
+		mixin.mounted.call(ctx);
+		mock.trigger(1);
+
+		expect(ctx.apollo.watchQuery).toHaveBeenCalledWith(
+			expect.objectContaining({ fetchPolicy: 'network-only' })
+		);
+
+		mock.restore();
+	});
+
+	it('sets up $watch and calls setVariables after lazy query activates', () => {
+		global.window = {};
+		const mock = mockIntersectionObserver(ctx);
+		const setVariables = vi.fn();
+		ctx.$el = document.createElement('div');
+		ctx.$options = {
+			inject: { apollo: {}, cookieStore: {} },
+			apollo: {
+				lazy: true,
+				query: 'Q',
+				variables: () => ({ id: 1 }),
+				result: vi.fn(),
+			},
+		};
+		ctx.cookieStore = { get: vi.fn() };
+		ctx.$route = { query: {} };
+		ctx.apollo = {
+			readQuery: vi.fn(),
+			watchQuery: vi.fn(() => ({
+				subscribe: vi.fn(),
+				setVariables,
+			})),
+		};
+		const watchCallbacks = [];
+		ctx.$watch = vi.fn((fn, cb) => watchCallbacks.push(cb));
+
+		mixin.created.call(ctx);
+		mixin.mounted.call(ctx);
+		mock.trigger(1);
+
+		expect(ctx.$watch).toHaveBeenCalled();
+
+		// Simulate variable change
+		watchCallbacks[0]({ id: 2 });
+		expect(setVariables).toHaveBeenCalledWith(expect.objectContaining({ id: 2 }));
+
+		mock.restore();
 	});
 });
