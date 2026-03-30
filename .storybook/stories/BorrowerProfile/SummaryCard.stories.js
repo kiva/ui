@@ -22,9 +22,14 @@ function summaryCardStory(loan, myUser = null) {
 			cookieStoreStoryMixin(),
 			kvAuth0StoryMixin,
 		],
-		// SummaryCard takes no props; it derives loanId from the route and
-		// fetches the loan via Apollo (mocked by apolloStoryMixin above).
-		template: '<summary-card />',
+		setup() {
+			return { loan };
+		},
+		template: `
+			<summary-card
+				:loan="loan"
+			/>
+		`,
 	});
 }
 
@@ -51,5 +56,12 @@ export const Loading = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: '<summary-card />',
+	setup() {
+		return { loan: fundraisingPartnerLoan };
+	},
+	template: `
+		<summary-card
+			:loan="loan"
+		/>
+	`,
 });

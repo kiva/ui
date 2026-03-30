@@ -59,7 +59,7 @@ export const Inactive = () => ({
 	template: `
 		<loan-progress
 			loan-status="inactive"
-			:progress-percent="0.40"
+			:progress-percent="0"
 			money-left="600.00"
 			:loading="false"
 			:loan-id="123"
@@ -127,8 +127,8 @@ export const Refunded = () => ({
 	template: `
 		<loan-progress
 			loan-status="refunded"
-			:progress-percent="0.30"
-			money-left="700.00"
+			:progress-percent="1"
+			money-left="0.00"
 			:loading="false"
 			:loan-id="123"
 		/>
@@ -140,7 +140,7 @@ export const InactiveExpired = () => ({
 	template: `
 		<loan-progress
 			loan-status="inactiveExpired"
-			:progress-percent="0.50"
+			:progress-percent="0"
 			money-left="500.00"
 			:loading="false"
 			:loan-id="123"
@@ -182,6 +182,16 @@ export const Issue = () => ({
 			:progress-percent="0.20"
 			money-left="800.00"
 			:loading="false"
+			:loan-id="123"
+		/>
+	`,
+});
+
+export const Loading = () => ({
+	components: { LoanProgress },
+	template: `
+		<loan-progress
+			:loading="true"
 			:loan-id="123"
 		/>
 	`,

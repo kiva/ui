@@ -30,7 +30,7 @@ function minimalProfileStory(loan) {
 		setup() {
 			return { loan, hash: loan.image.hash };
 		},
-		template: `<minimal-borrower-profile :loan="loan" :hash="hash" />`,
+		template: '<minimal-borrower-profile :loan="loan" :hash="hash" />',
 	});
 }
 

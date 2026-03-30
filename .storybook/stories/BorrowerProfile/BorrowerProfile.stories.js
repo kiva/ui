@@ -1,4 +1,4 @@
-import BorrowerProfile from '#src/pages/BorrowerProfile/BorrowerProfile'
+import BorrowerProfile from '#src/pages/BorrowerProfile/BorrowerProfile';
 
 import apolloStoryMixin from '../../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../../mixins/cookie-store-story-mixin';
@@ -38,7 +38,7 @@ export const FundraisingFullView = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<borrower-profile />`,
+	template: '<borrower-profile />',
 });
 FundraisingFullView.storyName = 'Fundraising → Full View';
 
@@ -50,7 +50,7 @@ export const PrivateFundraisingPeriod = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<borrower-profile />`,
+	template: '<borrower-profile />',
 });
 
 // Public user, post-fundraising → minimal view (status collapsed to "funded")
@@ -61,7 +61,7 @@ export const FundedMinimalView = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<borrower-profile />`,
+	template: '<borrower-profile />',
 });
 FundedMinimalView.storyName = 'Post-Fundraising → Minimal View';
 
@@ -78,7 +78,7 @@ export const PrivilegedFullView = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: `<borrower-profile />`,
+	template: '<borrower-profile />',
 });
 PrivilegedFullView.storyName = 'Privileged User → Full View';
 
@@ -90,13 +90,9 @@ export const MinimalFalseOverride = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	data() {
-		return {
-			$route: {
-				query: { minimal: 'false' },
-			},
-		};
+	beforeMount() {
+		this.$router.replace({ query: { minimal: 'false' } });
 	},
-	template: `<borrower-profile />`,
+	template: '<borrower-profile />',
 });
 MinimalFalseOverride.storyName = '?minimal=false → Full View';
