@@ -28,7 +28,7 @@
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperience }"
 	>
 		<template v-if="showRegionExperience">
-			<div class="card-container tw-shrink-0">
+			<div class="goal-card-container">
 				<JourneyCardCarousel
 					class="carousel carousel-single"
 					user-in-homepage
@@ -54,7 +54,10 @@
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
 			</div>
-			<div class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col">
+			<div
+				class="stats-wrapper tw-bg-white tw-rounded
+			tw-shadow tw-p-1 md:tw-p-2 tw-flex-1 tw-min-w-0 tw-flex tw-flex-col"
+			>
 				<div>
 					<span
 						v-if="pillHeader"
@@ -509,7 +512,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.stats-wrapper, .card-container {
+.stats-wrapper {
 	height: auto;
 
 	@screen md {
@@ -517,11 +520,16 @@ export default {
 	}
 }
 
-.card-container {
+.goal-card-container {
 	width: 100%;
 
 	@screen md {
-		width: 390px;
+		flex: 0 0 336px;
+		height: 390px;
+	}
+
+	@screen lg {
+		flex: 0 0 336px;
 	}
 }
 
