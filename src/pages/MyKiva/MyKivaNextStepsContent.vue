@@ -145,8 +145,9 @@
 						<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 							Keep your impact going
 						</h3>
-						<section>
+						<section class="tw-grid md:tw-grid-cols-3 tw-gap-4">
 							<MyKivaRegionExperience
+								class="md:tw-col-span-2"
 								:regions-data="regionsData"
 								:loans="loans"
 							/>
