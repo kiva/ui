@@ -222,7 +222,10 @@ describe('MyKivaPage', () => {
 	describe('mounted', () => {
 		it('does not recompute fresh progress during mounted goals maintenance', async () => {
 			const applyMyKivaFreshProgress = vi.fn();
-			const renewAnnualGoal = vi.fn().mockResolvedValue({ showRenewedAnnualGoalToast: false });
+			const renewAnnualGoal = vi.fn().mockResolvedValue({
+				showRenewedAnnualGoalToast: false,
+				expiredGoals: [],
+			});
 			const fixIncorrectlyCompletedGoals = vi.fn().mockResolvedValue({ wasFixed: false });
 			const context = {
 				apollo: {
