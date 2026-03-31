@@ -3,7 +3,6 @@
 		:modal-visible="modalVisible"
 		:user-data="userData"
 		:added-loan="addedLoan"
-		:my-kiva-experiment-enabled="true"
 		:show-modal-content="showModalContent"
 		:photo-path="PHOTO_PATH"
 		:one-loan-away-category="oneLoanAwayCategory"

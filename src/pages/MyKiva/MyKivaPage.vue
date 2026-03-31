@@ -10,7 +10,6 @@
 			:hero-badge-data="heroBadgeData"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:regions-data="regionsData"
-			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:goal-editing-enable="goalEditingEnable"
@@ -30,7 +29,6 @@
 			:user-lent-to-all-regions="userLentToAllRegions"
 			:enable-ai-loan-pills="enableAILoanPills"
 			:sidesheet-loan="sidesheetLoan"
-			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:show-my-giving-funds-card="showMyGivingFundsCard"
@@ -66,7 +64,6 @@ import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const NEXT_STEPS_REDIRECT_EXP_KEY = 'mykiva_next_steps_redirect';
-const POST_LENDING_NEXT_STEPS_KEY = 'post_lending_next_steps_enable';
 const GOAL_EDITING_KEY = 'goal_editing_enable';
 
 /**
@@ -111,7 +108,6 @@ export default {
 			userInfo: {},
 			userLentToAllRegions: false,
 			sidesheetLoan: {},
-			postLendingNextStepsEnable: false,
 			latestLoan: null,
 			goalRefreshKey: 0,
 			showMyGivingFundsCard: false,
@@ -263,7 +259,6 @@ export default {
 				};
 				this.transactions = myKivaQueryResult.my?.transactions?.values ?? [];
 
-				this.postLendingNextStepsEnable = readBoolSetting(myKivaQueryResult, `general.${POST_LENDING_NEXT_STEPS_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.goalEditingEnable = readBoolSetting(myKivaQueryResult, `general.${GOAL_EDITING_KEY}.value`) ?? false; // eslint-disable-line max-len
 
 				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
@@ -340,11 +335,11 @@ export default {
 				},
 			});
 
-			// Param to force goals renewal in an specific year
+			// Param to force goals renewal in a specific year
 			const { renewYear } = this.$route.query;
-			const { showRenewedAnnualGoalToast } = await this.renewAnnualGoal(
-				renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined
-			);
+			const today = renewYear ? new Date(`${renewYear}-01-15T00:00:00Z`) : undefined;
+
+			const { showRenewedAnnualGoalToast, expiredGoals } = await this.renewAnnualGoal(today);
 
 			// Fix goals incorrectly marked as completed due to progress double-counting bug
 			const { wasFixed } = await this.fixIncorrectlyCompletedGoals({
@@ -353,11 +348,13 @@ export default {
 				transactions: this.transactions,
 			});
 
-			if (showRenewedAnnualGoalToast || wasFixed) {
-				if (showRenewedAnnualGoalToast) {
-					// eslint-disable-next-line max-len
-					this.$showTipMsg('It\'s time for your 2026 impact goal - a fresh start and new opportunity to make a difference.');
-				}
+			if (showRenewedAnnualGoalToast) {
+				const goalYear = (today || new Date()).getFullYear();
+				// eslint-disable-next-line max-len
+				this.$showTipMsg(`It's time for your ${goalYear} impact goal - a fresh start and new opportunity to make a difference.`);
+			}
+
+			if (expiredGoals.length || wasFixed) {
 				// Ensure goal card is shown again after renewal or fix
 				await this.setHideGoalCardPreference(false);
 				// Trigger goal data refresh in child components

@@ -16,9 +16,9 @@
 		</h3>
 
 		<section
-			:class="{'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperience}"
+			:class="{'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperienceInFirstRow}"
 		>
-			<template v-if="showRegionExperience">
+			<template v-if="showRegionExperienceInFirstRow">
 				<div class="goal-card-container">
 					<JourneyCardCarousel
 						class="carousel carousel-single"
@@ -36,7 +36,6 @@
 						:user-goal="userGoal"
 						:categories-loan-count="categoriesLoanCount"
 						:hide-goal-card="hideCompletedGoalCard"
-						:post-lending-next-steps-enable="postLendingNextStepsEnable"
 						:user-info="userInfo"
 						:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 						use-universal-order
@@ -66,7 +65,6 @@
 				:user-goal-achieved="userGoalAchieved"
 				:user-goal="userGoal"
 				:hide-goal-card="hideCompletedGoalCard"
-				:post-lending-next-steps-enable="postLendingNextStepsEnable"
 				:latest-loan="latestLoan"
 				:user-info="userInfo"
 				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
@@ -76,9 +74,7 @@
 		</section>
 		<div class="tw-flex tw-flex-col">
 			<div :style="{ order: showPostLendingNextStepsCards ? 1 : 2 }">
-				<div
-					v-if="postLendingNextStepsEnable"
-				>
+				<div>
 					<h3 class="tw-text-primary tw-mt-2 tw-mb-2">
 						Build impact beyond your loan
 					</h3>
@@ -145,7 +141,7 @@
 						/>
 					</section>
 
-					<template v-if="!userLentToAllRegions">
+					<template v-if="!userLentToAllRegions && !showRegionExperienceInFirstRow">
 						<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 							Keep your impact going
 						</h3>
@@ -156,72 +152,6 @@
 							/>
 						</section>
 					</template>
-				</div>
-				<div
-					v-else
-				>
-					<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
-						Build impact beyond your loan
-					</h3>
-
-					<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
-						<template v-if="!isMobile">
-							<MyKivaEmailUpdatesTransition
-								v-if="shouldShowEmailMarketingCard || acceptedEmailMarketingUpdates"
-								:accepted="acceptedEmailMarketingUpdates"
-								:loans="loans"
-								:latest-loan="latestLoan"
-								@accept-email-updates="acceptedEmailMarketingUpdates = true"
-							/>
-							<MyKivaLatestLoanCard
-								v-if="showLatestLoan"
-								:loan="latestLoan"
-								@open-impact-insight-modal="showImpactInsightsModal = true"
-							/>
-							<MyKivaSurveyCard
-								v-if="showSurveyCard"
-							/>
-							<MyKivaCard
-								v-for="slide in nonBadgesSlides"
-								:key="slide.badgeKey"
-								class="card-container tw-w-full tw-h-full"
-								:bg-image="getSlideBackgroundImg(slide, isNonBadgeSlide(slide), false)"
-								:is-bg-top-aligned="isNonBadgeSlide(slide)"
-								:has-gradient="!isNonBadgeSlide(slide)"
-								:title="getSlideTitle(slide)"
-								:subtitle="getSlideSubTitle(slide, isNonBadgeSlide(slide))"
-								:is-black-subtitle="isNonBadgeSlide(slide)"
-								:secondary-cta-text="getSlideSecondaryCtaText(slide)"
-								:primary-cta-text="getSlidePrimaryCtaText(slide)"
-								:primary-cta-variant="getSlidePrimaryCtaVariant(slide)"
-								:is-full-width-primary-cta="isNonBadgeSlide(slide)"
-								:is-title-font-sans="isSlideTitleFontSans(slide)"
-								:title-color="getSlideTitleColor(slide, isNonBadgeSlide(slide))"
-								@primary-cta-clicked="handlePrimaryCtaClick(slide)"
-								@secondary-cta-clicked="handleSecondaryCtaClick(slide)"
-							/>
-						</template>
-						<JourneyCardCarousel
-							v-else
-							:key="'beyond-loan-row'"
-							class="carousel tw--mt-6"
-							controls-top-right
-							in-lending-stats
-							use-universal-order
-							user-in-homepage
-							:post-lending-next-steps-enable="true"
-							:show-post-lending-next-steps-cards="true"
-							:hero-badge-data="null"
-							:hero-tiered-achievements="heroTieredAchievements"
-							:lender="lender"
-							:loans="loans"
-							:slides="heroSlides"
-							:latest-loan="latestLoan"
-							:user-info="userInfo"
-							:enable-slide-limit="false"
-							@open-impact-insight-modal="showImpactInsightsModal = true"
-						/>
-					</section>
 				</div>
 			</div>
 			<div :style="{ order: showPostLendingNextStepsCards ? 2 : 1 }">
@@ -404,10 +334,6 @@ const props = defineProps({
 		type: Array,
 		default: () => [],
 	},
-	postLendingNextStepsEnable: {
-		type: Boolean,
-		default: false,
-	},
 	latestLoan: {
 		type: Object,
 		default: null,
@@ -473,7 +399,7 @@ const achievementSlides = computed(() => buildAchievementSlides({
 	getActiveTierData,
 }));
 
-const showRegionExperience = computed(() => {
+const showRegionExperienceInFirstRow = computed(() => {
 	return !showPostLendingNextStepsCards.value && !props.userLentToAllRegions;
 });
 
@@ -481,7 +407,6 @@ const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
 
 const shouldShowEmailMarketingCard = computed(() => checkShouldShowEmailMarketing({
 	showPostLendingNextStepsCards: true,
-	postLendingNextStepsEnable: true,
 	latestLoan: props.latestLoan,
 	hasMailUpdatesOptOut: userHasMailUpdatesOptOut(),
 	loansCount: props.loans.length,
@@ -489,13 +414,11 @@ const shouldShowEmailMarketingCard = computed(() => checkShouldShowEmailMarketin
 
 const showLatestLoan = computed(() => checkShowLatestLoan({
 	showPostLendingNextStepsCards: true,
-	postLendingNextStepsEnable: true,
 	latestLoan: props.latestLoan,
 }));
 
 const showSurveyCard = computed(() => checkShowSurveyCard({
 	showPostLendingNextStepsCards: true,
-	postLendingNextStepsEnable: true,
 	userInfo: props.userInfo,
 }));
 
@@ -584,7 +507,8 @@ watch(() => props.goalRefreshKey, async (newVal, oldVal) => {
 
 onMounted(async () => {
 	await checkCompletedGoal({ category: 'portfolio' });
-	if (checkPostLendingCardCookie(cookieStore)) {
+	const postLendingQueryExists = router.currentRoute.value.query.postLending === 'true';
+	if (checkPostLendingCardCookie(cookieStore) || postLendingQueryExists) {
 		showPostLendingNextStepsCards.value = true;
 		removePostLendingCardCookie(cookieStore);
 	}
