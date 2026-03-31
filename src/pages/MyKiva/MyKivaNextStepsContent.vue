@@ -38,6 +38,7 @@
 						:hide-goal-card="hideCompletedGoalCard"
 						:user-info="userInfo"
 						:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+						:goal-editing-enable="goalEditingEnable"
 						use-universal-order
 						@open-goal-modal="openGoalModal($event)"
 						@open-impact-insight-modal="showImpactInsightsModal = true"
@@ -527,12 +528,15 @@ onMounted(async () => {
 	overflow: hidden;
 
 	@screen md {
-		/* -10px compensates for the goal card's shadow/padding visual bleed vs the achievement cards below */
+		/* md shows 2 cards per row: divide space by 2 minus 1 gap between them */
+		/* -10px compensates for the goal card's box-shadow visually bleeding into the adjacent card space */
 		flex: 0 0 calc((100% - 1rem) / 2 - 10px);
 		height: 390px;
 	}
 
 	@screen lg {
+		/* lg shows 3 cards per row: divide space by 3 minus 2 gaps between them */
+		/* -10px compensates for the goal card's box-shadow visually bleeding into the adjacent card space */
 		flex: 0 0 calc((100% - 2rem) / 3 - 10px);
 	}
 }
