@@ -175,7 +175,7 @@ export const fullProfileFragment = gql`fragment bpFullProfileFields on LoanBasic
 	}
 	userProperties {
 		isPrivileged
-		isAdmin
+		# TODO: isAdmin needs to come from my { isAdmin }, not userProperties
 		subscribed
 	}
 }`;
