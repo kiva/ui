@@ -116,6 +116,32 @@ import mlLoansYouMightLikeData from '#src/graphql/query/loansYouMightLike/mlLoan
 import LoanCardController from '#src/components/LoanCards/LoanCardController';
 import { FLSS_ORIGIN_BP_FUNDED } from '#src/util/flssUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
+import { gql } from 'graphql-tag';
+
+export const minimalProfileFragment = gql`fragment minimalProfileFields on LoanBasic {
+	id
+	name
+	status
+	use
+	anonymizationLevel
+	loanAmount
+	gender
+	sector {
+		id
+		name
+	}
+	geocode {
+		country {
+			id
+			name
+			isoCode
+		}
+	}
+	loanFundraisingInfo {
+		id
+		fundedAmount
+	}
+}`;
 
 export default {
 	name: 'MinimalBorrowerProfile',
