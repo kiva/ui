@@ -44,7 +44,7 @@ import {
 	trackExperimentVersion
 } from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
-import MinimalBorrowerProfile from '#src/components/BorrowerProfile/MinimalBorrowerProfile';
+import MinimalBorrowerProfile, { minimalProfileFragment } from '#src/components/BorrowerProfile/MinimalBorrowerProfile';
 import FullBorrowerProfile, { fullProfileFragment } from '#src/components/BorrowerProfile/FullBorrowerProfile';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
@@ -73,7 +73,7 @@ const routingFragment = gql`fragment bpRoutingFields on LoanBasic {
 	userProperties {
 		lentTo
 		isPrivileged
-		isAdmin
+		# TODO: isAdmin needs to come from my { isAdmin }, not userProperties
 		subscribed
 	}
 }`;
@@ -112,6 +112,7 @@ const preFetchQuery = gql`
 	${routingFragment}
 	${shareMetaFragment}
 	${fullProfileFragment}
+	${minimalProfileFragment}
 	query borrowerProfileMeta(
 		$loanId: Int!,
 		$publicId: String!,
@@ -128,6 +129,7 @@ const preFetchQuery = gql`
 				...bpRoutingFields
 				...bpShareMetaFields
 				...bpFullProfileFields
+				...minimalProfileFields
 				image {
 					id
 					default: url(customSize: $imgDefaultSize)

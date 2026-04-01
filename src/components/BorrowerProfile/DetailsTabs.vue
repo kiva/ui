@@ -245,10 +245,11 @@ export default {
 					repaymentInterval
 					disbursalDate
 					anonymizationLevel
-					expiredDate
-					refundedDate
-					defaultedDate
-					endedDate
+					# TODO: terminal date fields not yet deployed to GraphQL schema
+					# expiredDate
+					# refundedDate
+					# defaultedDate
+					# endedDate
 					terms {
 						currency
 						flexibleFundraisingEnabled
