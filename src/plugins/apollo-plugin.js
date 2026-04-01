@@ -127,8 +127,20 @@ export default app => {
 			for (let i = 0; i < this.lazyOperations.length; i += 1) {
 				const { operation, lazyConfig, commonVars } = this.lazyOperations[i];
 
+				// In Vue 3 fragment components, $el may be a comment/text node.
+				// Walk siblings to find the first actual Element for observation.
+				let target = this.$el;
+				while (target && !(target instanceof Element)) {
+					target = target.nextSibling;
+				}
+				if (!target) {
+					console.warn('[apollo-plugin] No Element found for IntersectionObserver in', this.$options.name);
+					setupWatchQuery(this, operation, commonVars);
+					continue;
+				}
+
 				const observer = createIntersectionObserver({
-					targets: [this.$el],
+					targets: [target],
 					options: { rootMargin: lazyConfig.rootMargin },
 					callback: entries => {
 						entries.forEach(entry => {
