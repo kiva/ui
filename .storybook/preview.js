@@ -23,14 +23,14 @@ import config from '../config/local';
 
 setup((app) => {
 	// Create a new router instance
+	// Memory history keeps route changes in-memory instead of modifying the
+	// browser URL. Without this, stories that call $router.replace() or
+	// $router.push() navigate the iframe away from Storybook's URL.
+	// The catch-all route ensures vue-router can resolve any path/query
+	// combination without throwing "No match found" errors.
 	const router = createRouter({
-		// Memory history keeps route changes in-memory instead of modifying the
-		// browser URL. Without this, stories that call $router.replace() or
-		// $router.push() navigate the iframe away from Storybook's URL.
 		history: createMemoryHistory(),
 		routes: [
-			// The catch-all route ensures vue-router can resolve any path/query
-			// combination without throwing "No match found" errors.
 			{ path: '/:catchAll(.*)*', component: { template: '' } },
 		],
 	});
