@@ -90,9 +90,15 @@ export const MinimalFalseOverride = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	beforeMount() {
-		this.$router.replace({ query: { minimal: 'false' } });
+	data() {
+		return { routeReady: false };
 	},
-	template: '<borrower-profile />',
+	async mounted() {
+		// Set the query param before rendering BorrowerProfile, so that its
+		// showFullView computed sees ?minimal=false on first evaluation.
+		await this.$router.replace({ query: { minimal: 'false' } });
+		this.routeReady = true;
+	},
+	template: '<borrower-profile v-if="routeReady" />',
 });
 MinimalFalseOverride.storyName = '?minimal=false → Full View';
