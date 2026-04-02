@@ -7,7 +7,7 @@
 			Take the <u>next step</u> on your impact journey
 		</h2>
 		<KvCarousel
-			:key="cardOrderingSystem.length"
+			:key="dynamicOrderedSlides.length"
 			:embla-options="{
 				loop: false,
 				align: 'start',
@@ -22,7 +22,7 @@
 			@change="handleChange"
 		>
 			<template
-				v-for="(slide, index) in cardOrderingSystem"
+				v-for="(slide, index) in dynamicOrderedSlides"
 				#[`slide${index}`]
 				:key="index"
 			>
@@ -133,7 +133,6 @@ import {
 	filterNonBadgesSlides,
 	handlePrimaryCtaClick,
 	handleSecondaryCtaClick,
-	buildUniversalOrderedSlides,
 } from '#src/util/myKiva/myKivaJourneyCardUtils';
 
 const TRANSACTION_DAYS_LIMIT = 30;
@@ -230,10 +229,6 @@ const props = defineProps({
 		default: false
 	},
 	goalEditingEnable: {
-		type: Boolean,
-		default: false
-	},
-	useUniversalOrder: {
 		type: Boolean,
 		default: false
 	},
@@ -352,33 +347,6 @@ const dynamicOrderedSlides = computed(() => {
 	}
 
 	return sortedSlides;
-});
-
-const slideLimit = computed(() => {
-	if (isMobile.value && props.enableSlideLimit) return 3;
-	return props.slidesNumber;
-});
-
-const universalOrderedSlides = computed(() => {
-	const achievementSlides = buildAchievementSlides({
-		badgesData: props.heroBadgeData,
-		slides: props.slides,
-		getActiveTierData,
-		isTieredAchievementComplete,
-	});
-	return buildUniversalOrderedSlides({
-		achievementSlides,
-		nonBadgesSlides: props.showNonBadgesSlides ? nonBadgesSlides.value : [],
-		shouldShowGoalCard: shouldShowGoalCard.value,
-		shouldShowEmailMarketingCard: shouldShowEmailMarketingCard.value,
-		showLatestLoan: showLatestLoan.value,
-		showSurveyCard: showSurveyCard.value,
-		slidesNumber: slideLimit.value,
-	});
-});
-
-const cardOrderingSystem = computed(() => {
-	return props.useUniversalOrder ? universalOrderedSlides.value : dynamicOrderedSlides.value;
 });
 
 const onPrimaryCtaClick = slide => {
