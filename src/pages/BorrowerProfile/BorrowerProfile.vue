@@ -13,7 +13,6 @@
 		/>
 		<full-borrower-profile
 			v-if="showFullView"
-			:loan="loan"
 			:lender="lender"
 			:loading="isLoading"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
@@ -24,8 +23,6 @@
 		/>
 		<article v-else>
 			<minimal-borrower-profile
-				:loan="loan"
-				:hash="hash"
 				:items-in-basket="itemsInBasket"
 				:inviter-name="inviterName"
 			/>
@@ -51,8 +48,6 @@ import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
 import teamBasicInfoQuery from '#src/graphql/query/teamBasicInfo.graphql';
 import ChallengeTeamInvite from '#src/components/BorrowerProfile/ChallengeTeamInvite';
-import { summaryCardFragment } from '#src/components/BorrowerProfile/SummaryCard';
-import { loanStoryFragment } from '#src/components/BorrowerProfile/LoanStory';
 import { getKivaImageUrl } from '@kiva/kv-components';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
@@ -68,13 +63,9 @@ const routingFragment = gql`fragment bpRoutingFields on LoanBasic {
 	loanFundraisingInfo {
 		id
 		fundedAmount
-		reservedAmount
 	}
 	userProperties {
-		lentTo
 		isPrivileged
-		# TODO: isAdmin needs to come from my { isAdmin }, not userProperties
-		subscribed
 	}
 }`;
 
@@ -82,7 +73,9 @@ const routingFragment = gql`fragment bpRoutingFields on LoanBasic {
 const shareMetaFragment = gql`fragment bpShareMetaFields on LoanBasic {
 	id
 	name
+	use
 	anonymizationLevel
+	borrowerCount
 	fullLoanUse @client
 	plannedExpirationDate
 	lenders {
@@ -106,14 +99,11 @@ const shareMetaFragment = gql`fragment bpShareMetaFields on LoanBasic {
 	}
 }`;
 
-const preFetchQuery = gql`
-	${summaryCardFragment}
-	${loanStoryFragment}
+// Phase 1: routing decision + share meta + basket
+const routingQuery = gql`
 	${routingFragment}
 	${shareMetaFragment}
-	${fullProfileFragment}
-	${minimalProfileFragment}
-	query borrowerProfileMeta(
+	query borrowerProfileRouting(
 		$loanId: Int!,
 		$publicId: String!,
 		$getInviter: Boolean!,
@@ -124,12 +114,8 @@ const preFetchQuery = gql`
 		lend {
 			loan(id: $loanId) {
 				id
-				...summaryCardFields
-				...loanStoryFields
 				...bpRoutingFields
 				...bpShareMetaFields
-				...bpFullProfileFields
-				...minimalProfileFields
 				image {
 					id
 					default: url(customSize: $imgDefaultSize)
@@ -153,6 +139,32 @@ const preFetchQuery = gql`
 						id
 					}
 				}
+			}
+		}
+	}
+`;
+
+// Phase 2: full profile data (when showFullView is true)
+const fullProfileQuery = gql`
+	${fullProfileFragment}
+	query fullBorrowerProfileData($loanId: Int!) {
+		lend {
+			loan(id: $loanId) {
+				id
+				...bpFullProfileFields
+			}
+		}
+	}
+`;
+
+// Phase 2: minimal profile data (when showFullView is false)
+const minimalProfileQuery = gql`
+	${minimalProfileFragment}
+	query minimalBorrowerProfileData($loanId: Int!) {
+		lend {
+			loan(id: $loanId) {
+				id
+				...minimalProfileFields
 			}
 		}
 	}
@@ -304,27 +316,39 @@ export default {
 	},
 	mixins: [fiveDollarsTest, guestComment],
 	apollo: {
-		query: preFetchQuery,
+		query: routingQuery,
 		preFetch(_config, client, { route, cookieStore }) {
+			const loanId = Number(route?.params?.id ?? 0);
 			const publicId = getPublicId(route);
-			return client
-				.query({
-					query: preFetchQuery,
-					variables: {
-						loanId: Number(route?.params?.id ?? 0),
-						publicId,
-						getInviter: !!publicId,
-						basketId: cookieStore.get('kvbskt')
-					},
-				})
+			const routingVars = {
+				loanId,
+				publicId,
+				getInviter: !!publicId,
+				basketId: cookieStore.get('kvbskt'),
+			};
+
+			return client.query({ query: routingQuery, variables: routingVars })
 				.then(({ data }) => {
-					// Check loan exists
 					const loan = data?.lend?.loan;
 					if (!loan) {
 						return Promise.reject({ path: '/lend', query: route.query });
 					}
 
+					// Routing decision (mirrors showFullView computed)
+					const loanAmount = Number(loan.loanAmount ?? 0);
+					const fundedAmount = Number(loan.loanFundraisingInfo?.fundedAmount ?? 0);
+					const amountLeft = loanAmount - fundedAmount;
+					const isPrivileged = loan.userProperties?.isPrivileged ?? false;
+					const minimalOverride = route.query?.minimal === 'false';
+					const showFullView = (amountLeft && loan.status === 'fundraising')
+						|| isPrivileged
+						|| minimalOverride;
+
+					// Phase 2: warm cache for the child that will render
+					const childQuery = showFullView ? fullProfileQuery : minimalProfileQuery;
+
 					return Promise.all([
+						client.query({ query: childQuery, variables: { loanId } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: EDUCATION_PLACEMENT_EXP } }),
 					]);
@@ -350,7 +374,8 @@ export default {
 		},
 		result(result) {
 			this.loan = result?.data?.lend?.loan ?? {};
-			this.inviterName = this.inviterIsGuestOrAnonymous ? '' : result?.data?.community?.lender?.name ?? '';
+			this.inviterName = this.inviterIsGuestOrAnonymous
+				? '' : result?.data?.community?.lender?.name ?? '';
 			this.itemsInBasket = result?.data?.shop?.basket?.items?.values ?? [];
 			this.loanRegion = this.loan?.geocode?.country?.region ?? '';
 			this.regionBelongsToExp = this.expRegionList.includes(this.loanRegion);
