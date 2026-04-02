@@ -293,8 +293,13 @@ import {
 	checkShowLatestLoan,
 	checkShowSurveyCard,
 	filterNonBadgesSlides,
+	getTopRowAchievementKeys,
+	getTopRowPriorityCards,
 	handlePrimaryCtaClick as handlePrimaryCtaClickUtil,
 	handleSecondaryCtaClick as handleSecondaryCtaClickUtil,
+	PRIORITY_CARD_EMAIL,
+	PRIORITY_CARD_LATEST_LOAN,
+	PRIORITY_CARD_SURVEY,
 } from '#src/util/myKiva/myKivaJourneyCardUtils';
 import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 import useBreakpoints from '#src/composables/useBreakpoints';
@@ -421,9 +426,11 @@ const showRegionExperienceInFirstRow = computed(() => {
 });
 
 // Hide the top row carousel when there is nothing to show (no active goal card,
-// no incomplete achievements). Applies to the fully-completed superlender case.
+// no incomplete achievements, and no post-lending cards). Applies to the fully-completed superlender case.
 const topRowHasContent = computed(() => {
-	return !hideCompletedGoalCard.value || achievementSlides.value.length > 0;
+	return !hideCompletedGoalCard.value
+		|| achievementSlides.value.length > 0
+		|| showPostLendingNextStepsCards.value;
 });
 
 const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
@@ -449,45 +456,26 @@ const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.heroSlides));
 
 // Track which post-lending priority cards appear in the top row carousel (slides-number=3)
 // so we can exclude them from the "Build impact beyond your loan" section below.
-const topRowPriorityCards = computed(() => {
-	if (showRegionExperienceInFirstRow.value) return new Set();
-	// Post-lending cards only appear in the top row carousel when the cookie is present.
-	// Without it, the carousel uses showPostLendingNextStepsCards=false and won't show them.
-	if (!showPostLendingNextStepsCards.value) return new Set();
-	const topRowSlidesCount = 3;
-	const goalCardVisible = !hideCompletedGoalCard.value;
-	const slots = [];
-	if (goalCardVisible) slots.push('goal');
-	if (shouldShowEmailMarketingCard.value) {
-		slots.push('email');
-	} else if (showLatestLoan.value) {
-		slots.push('latestLoan');
-	}
-	if (shouldShowEmailMarketingCard.value && showLatestLoan.value) {
-		slots.push('latestLoan');
-	}
-	if (showSurveyCard.value && (!goalCardVisible || !shouldShowEmailMarketingCard.value)) {
-		slots.push('survey');
-	}
-	return new Set(slots.slice(0, topRowSlidesCount));
-});
+const topRowPriorityCards = computed(() => getTopRowPriorityCards({
+	showRegionExperienceInFirstRow: showRegionExperienceInFirstRow.value,
+	showPostLendingNextStepsCards: showPostLendingNextStepsCards.value,
+	hideCompletedGoalCard: hideCompletedGoalCard.value,
+	shouldShowEmailMarketingCard: shouldShowEmailMarketingCard.value,
+	showLatestLoan: showLatestLoan.value,
+	showSurveyCard: showSurveyCard.value,
+}));
 
 // When superlender (userLentToAllRegions), the top row carousel shows 3 slides.
 // Compute which achievement badge keys appear there so we can exclude them from the bottom row.
 // Slot count is derived from topRowPriorityCards so post-lending priority cards (goal, email,
 // latest loan) are correctly accounted for before achievement slots are assigned.
-const topRowAchievementKeys = computed(() => {
-	if (showRegionExperienceInFirstRow.value) return new Set();
-	const topRowSlidesCount = 3; // matches :slides-number on the v-else carousel
-	// For pre-lending, topRowPriorityCards is empty (early return), so account for goal separately.
-	// For post-lending, topRowPriorityCards already includes the goal card in its count.
-	const goalSlot = !showPostLendingNextStepsCards.value && !hideCompletedGoalCard.value ? 1 : 0;
-	const achievementSlotsInTopRow = Math.max(
-		topRowSlidesCount - goalSlot - topRowPriorityCards.value.size,
-		0
-	);
-	return new Set(sortedAchievementSlides.value.slice(0, achievementSlotsInTopRow).map(s => s.badgeKey));
-});
+const topRowAchievementKeys = computed(() => getTopRowAchievementKeys({
+	showRegionExperienceInFirstRow: showRegionExperienceInFirstRow.value,
+	showPostLendingNextStepsCards: showPostLendingNextStepsCards.value,
+	hideCompletedGoalCard: hideCompletedGoalCard.value,
+	topRowPriorityCards: topRowPriorityCards.value,
+	sortedAchievementSlides: sortedAchievementSlides.value,
+}));
 
 const bottomRowAchievementSlides = computed(() => {
 	return achievementSlides.value.filter(s => !topRowAchievementKeys.value.has(s.badgeKey));
@@ -495,13 +483,13 @@ const bottomRowAchievementSlides = computed(() => {
 
 const showEmailInBuildSection = computed(
 	() => (shouldShowEmailMarketingCard.value || acceptedEmailMarketingUpdates.value)
-		&& !topRowPriorityCards.value.has('email')
+		&& !topRowPriorityCards.value.has(PRIORITY_CARD_EMAIL)
 );
 const showLatestLoanInBuildSection = computed(
-	() => showLatestLoan.value && !topRowPriorityCards.value.has('latestLoan')
+	() => showLatestLoan.value && !topRowPriorityCards.value.has(PRIORITY_CARD_LATEST_LOAN)
 );
 const showSurveyInBuildSection = computed(
-	() => showSurveyCard.value && !topRowPriorityCards.value.has('survey')
+	() => showSurveyCard.value && !topRowPriorityCards.value.has(PRIORITY_CARD_SURVEY)
 );
 
 // Navigation
