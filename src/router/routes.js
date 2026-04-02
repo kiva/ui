@@ -435,7 +435,6 @@ export default [
 			excludeFromStaticSitemap: true,
 		},
 		beforeEnter(to, from, next) {
-			// Redirect trailing slash to non-trailing slash
 			if (to.path === '/mykiva/') {
 				return next({
 					path: '/mykiva',
