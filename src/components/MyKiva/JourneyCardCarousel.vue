@@ -34,6 +34,7 @@
 					:prev-year-loans="womenLoansLastYear"
 					:hide-goal-card="hideGoalCard"
 					:goal-editing-enable="goalEditingEnable"
+					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 					@open-goal-modal="$emit('open-goal-modal', $event)"
 				/>
 				<MyKivaSurveyCard
@@ -248,6 +249,10 @@ const props = defineProps({
 	showSurveySlide: {
 		type: Boolean,
 		default: true
+	},
+	isGoalTileExperimentEnabled: {
+		type: Boolean,
+		default: false
 	}
 });
 
