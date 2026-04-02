@@ -435,6 +435,16 @@ export default [
 			excludeFromStaticSitemap: true,
 		},
 		beforeEnter(to, from, next) {
+			// Redirect trailing slash to non-trailing slash
+			if (to.path === '/mykiva/') {
+				return next({
+					path: '/mykiva',
+					query: to.query,
+					hash: to.hash,
+					replace: true
+				});
+			}
+
 			if (typeof window === 'undefined') return next();
 
 			const { hash, href } = window.location;
