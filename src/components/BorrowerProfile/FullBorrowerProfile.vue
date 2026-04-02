@@ -9,7 +9,7 @@
 				v-if="inPfp"
 				class="tw-relative"
 				:lenders-needed="pfpMinLenders"
-				:borrower-name="loan.name"
+				:borrower-name="loanData.name"
 				:days-left="diffInDays"
 			/>
 			<content-container
@@ -19,7 +19,7 @@
 				<summary-card
 					data-testid="bp-summary"
 					class="tw-relative lg:tw--mb-1.5"
-					:loan="loan"
+					:loan="loanData"
 					:is-logged-in="isLoggedIn"
 				/>
 			</content-container>
@@ -46,7 +46,7 @@
 						<share-button
 							v-else
 							class="tw-block lg:tw-mb-1.5"
-							:loan="loan"
+							:loan="loanData"
 							:variant="shareBtnVariant"
 							:lender="lender"
 							:campaign="shareCampaign"
@@ -63,7 +63,7 @@
 				id="loanStory"
 				data-testid="bp-loan-story"
 				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8 tw-z-1"
-				:loan="loan"
+				:loan="loanData"
 			/>
 		</content-container>
 		<content-container>
@@ -147,9 +147,9 @@ import _throttle from 'lodash/throttle';
 import ContentContainer from '#src/components/BorrowerProfile/ContentContainer';
 import SidebarContainer from '#src/components/BorrowerProfile/SidebarContainer';
 import HeroBackground from '#src/components/BorrowerProfile/HeroBackground';
-import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
+import SummaryCard, { summaryCardFragment } from '#src/components/BorrowerProfile/SummaryCard';
 import LendCta from '#src/components/BorrowerProfile/LendCta';
-import LoanStory from '#src/components/BorrowerProfile/LoanStory';
+import LoanStory, { loanStoryFragment } from '#src/components/BorrowerProfile/LoanStory';
 import DetailsTabs from '#src/components/BorrowerProfile/DetailsTabs';
 import BorrowerCountry from '#src/components/BorrowerProfile/BorrowerCountry';
 import ContributingPartners from '#src/components/BorrowerProfile/ContributingPartners';
@@ -165,20 +165,26 @@ import LoanComments from '#src/components/BorrowerProfile/LoanComments';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
-export const fullProfileFragment = gql`fragment bpFullProfileFields on LoanBasic {
-	id
-	inPfp
-	pfpMinLenders
-	plannedExpirationDate
-	lenders {
-		totalCount
+export const fullProfileFragment = gql`
+	${summaryCardFragment}
+	${loanStoryFragment}
+	fragment bpFullProfileFields on LoanBasic {
+		id
+		inPfp
+		pfpMinLenders
+		plannedExpirationDate
+		lenders {
+			totalCount
+		}
+		userProperties {
+			isPrivileged
+			# TODO: isAdmin needs to come from my { isAdmin }, not userProperties
+			subscribed
+		}
+		...summaryCardFields
+		...loanStoryFields
 	}
-	userProperties {
-		isPrivileged
-		# TODO: isAdmin needs to come from my { isAdmin }, not userProperties
-		subscribed
-	}
-}`;
+`;
 
 export default {
 	name: 'FullBorrowerProfile',
@@ -203,12 +209,30 @@ export default {
 		LoanComments,
 		KvLoadingPlaceholder,
 	},
+	inject: ['apollo', 'cookieStore'],
+	apollo: {
+		query: gql`
+			${fullProfileFragment}
+			query fullBorrowerProfileData($loanId: Int!) {
+				lend {
+					loan(id: $loanId) {
+						id
+						...bpFullProfileFields
+					}
+				}
+			}
+		`,
+		variables() {
+			return {
+				loanId: this.loanId,
+			};
+		},
+		result({ data }) {
+			this.loanData = data?.lend?.loan ?? {};
+		},
+	},
 	emits: ['subscription-toggled'],
 	props: {
-		loan: {
-			type: Object,
-			default: () => ({}),
-		},
 		lender: {
 			type: Object,
 			default: () => ({}),
@@ -240,6 +264,7 @@ export default {
 	},
 	data() {
 		return {
+			loanData: {},
 			showUpdates: true,
 			showLenders: true,
 			showTeams: true,
@@ -248,19 +273,19 @@ export default {
 	},
 	computed: {
 		loanId() {
-			return this.loan?.id ?? 0;
+			return Number(this.$route?.params?.id ?? 0);
 		},
 		inPfp() {
-			return this.loan?.inPfp ?? false;
+			return this.loanData?.inPfp ?? false;
 		},
 		pfpMinLenders() {
-			return this.loan?.pfpMinLenders ?? 0;
+			return this.loanData?.pfpMinLenders ?? 0;
 		},
 		numLenders() {
-			return this.loan?.lenders?.totalCount ?? 0;
+			return this.loanData?.lenders?.totalCount ?? 0;
 		},
 		diffInDays() {
-			const expDate = this.loan?.plannedExpirationDate;
+			const expDate = this.loanData?.plannedExpirationDate;
 			if (!expDate) return 0;
 			return differenceInCalendarDays(parseISO(expDate), new Date());
 		},
@@ -268,13 +293,13 @@ export default {
 			return !!this.lender?.id;
 		},
 		isPrivileged() {
-			return this.loan?.userProperties?.isPrivileged ?? false;
+			return this.loanData?.userProperties?.isPrivileged ?? false;
 		},
 		isAdmin() {
-			return this.loan?.userProperties?.isAdmin ?? false;
+			return this.loanData?.userProperties?.isAdmin ?? false;
 		},
 		isSubscribed() {
-			return this.loan?.userProperties?.subscribed ?? false;
+			return this.loanData?.userProperties?.subscribed ?? false;
 		},
 		shareCampaign() {
 			return this.inPfp ? 'social_share_bp_pfp' : 'social_share_bp';
