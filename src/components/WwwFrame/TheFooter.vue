@@ -8,13 +8,13 @@
 			<disclaimers />
 			<nav class="tw-block lg:tw-hidden" aria-label="Footer navigation">
 				<div class="tw-mt-3 tw-mb-3">
-					<h2 class="tw-text-h4">
+					<h2 class="section-header tw-mb-0.5">
 						Borrow
 					</h2>
 					<p class="tw-text-small">
 						Loans for entrepreneurs doing amazing things.
 					</p>
-					<ul class="tw-mb-2">
+					<ul class="tw-mb-2 footer-link-list">
 						<li>
 							<router-link
 								:to="applyUrl"
@@ -28,13 +28,13 @@
 				</div>
 
 				<div class="tw-mb-3">
-					<h2 class="tw-text-h4">
+					<h2 class="section-header tw-mb-0.5">
 						Lend
 					</h2>
 					<p class="tw-text-small">
 						Make a loan, change a life.
 					</p>
-					<ul class="tw-mb-2">
+					<ul class="tw-mb-2 footer-link-list">
 						<li>
 							<router-link
 								:to="lendByCategoryUrl"
@@ -57,7 +57,7 @@
 				</div>
 
 				<div>
-					<h2 class="tw-text-h4">
+					<h2 class="section-header tw-mb-0.5">
 						Donate
 					</h2>
 					<p class="tw-text-small">
@@ -65,7 +65,7 @@
 						Founded in 2005, and based in San Francisco, with offices in Bangkok, Nairobi,
 						Portland and staff around the globe.
 					</p>
-					<ul class="tw-mb-3">
+					<ul class="tw-mb-3 footer-link-list">
 						<li>
 							<a
 								href="/donate/supportus"
@@ -85,11 +85,11 @@
 						:open="false"
 					>
 						<template #header>
-							<h2 class="tw-text-h4">
+							<h2 class="section-header">
 								Get to know us
 							</h2>
 						</template>
-						<ul class="tw-mb-2">
+						<ul class="tw-mb-2 footer-link-list">
 							<li>
 								<router-link
 									:to="aboutUrl"
@@ -178,11 +178,11 @@
 						:open="false"
 					>
 						<template #header>
-							<h2 class="tw-text-h4">
+							<h2 class="section-header">
 								Community
 							</h2>
 						</template>
-						<ul class="tw-mb-2">
+						<ul class="tw-mb-2 footer-link-list">
 							<li>
 								<router-link
 									to="/teams"
@@ -199,11 +199,11 @@
 						:open="false"
 					>
 						<template #header>
-							<h2 class="tw-text-h4">
+							<h2 class="section-header">
 								Explore
 							</h2>
 						</template>
-						<ul class="tw-mb-2">
+						<ul class="tw-mb-2 footer-link-list">
 							<li>
 								<router-link
 									to="/kiva-capital"
@@ -247,11 +247,11 @@
 						:open="false"
 					>
 						<template #header>
-							<h2 class="tw-text-h4">
+							<h2 class="section-header">
 								Work with us
 							</h2>
 						</template>
-						<ul class="tw-mb-2">
+						<ul class="tw-mb-2 footer-link-list">
 							<li>
 								<a
 									:href="careersUrl"
@@ -441,13 +441,13 @@
 				<kv-grid class="tw-grid-cols-4 tw-mb-1">
 					<div class="print:tw-hidden">
 						<div class="tw-mb-2">
-							<h2 class="tw-text-h4">
+							<h2 class="section-header">
 								Borrow
 							</h2>
 							<p class="tw-text-small">
 								Loans for entrepreneurs doing <br class="xxlu">amazing things.
 							</p>
-							<ul>
+							<ul class="footer-link-list">
 								<li>
 									<router-link
 										:to="applyUrl"
@@ -460,13 +460,13 @@
 							</ul>
 						</div>
 						<div class="tw-mb-2">
-							<h2 class="tw-text-h4">
+							<h2 class="section-header">
 								Lend
 							</h2>
 							<p class="tw-text-small">
 								Make a loan, change a life.
 							</p>
-							<ul>
+							<ul class="footer-link-list">
 								<li>
 									<router-link
 										:to="lendByCategoryUrl"
@@ -488,10 +488,10 @@
 							</ul>
 						</div>
 						<div class="tw-mb-2">
-							<h2 class="tw-text-h4">
+							<h2 class="section-header">
 								Explore
 							</h2>
-							<ul>
+							<ul class="footer-link-list">
 								<li>
 									<router-link
 										to="/kiva-capital"
@@ -533,10 +533,10 @@
 					</div>
 					<div class="print:tw-hidden">
 						<div class="tw-mb-2 print:tw-hidden">
-							<h2 class="tw-text-h4">
+							<h2 class="section-header">
 								Get to know us
 							</h2>
-							<ul>
+							<ul class="footer-link-list">
 								<li>
 									<router-link
 										:to="aboutUrl"
@@ -621,10 +621,10 @@
 							</ul>
 						</div>
 						<div class="tw-mb-2 print:tw-hidden">
-							<h2 class="tw-text-h4">
+							<h2 class="section-header">
 								Community
 							</h2>
-							<ul>
+							<ul class="footer-link-list">
 								<li>
 									<router-link
 										to="/teams"
@@ -693,7 +693,7 @@
 							</ul>
 						</div>
 						<div class="print:tw-hidden">
-							<h2 class="tw-text-h4 tw-mt-3">
+							<h2 class="section-header tw-mt-3">
 								Work with us
 							</h2>
 							<ul class="large-footer__single-line-links tw-mb-2 tw-max-w-md tw-overflow-hidden">
@@ -865,3 +865,19 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+.section-header {
+  @apply tw-text-base tw-text-upper !tw-font-serif;
+}
+
+.footer-link-list :deep(li) {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+}
+
+.footer-link-list :deep(li > a) {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+}
+</style>
