@@ -288,6 +288,7 @@ const dynamicOrderedSlides = computed(() => {
 		isTieredAchievementComplete,
 		includeMilestoneDiff: true,
 		sortByMilestoneDiff: true,
+		userGoalCategory: props.userGoal?.category,
 	});
 	let loanJourneys = [];
 

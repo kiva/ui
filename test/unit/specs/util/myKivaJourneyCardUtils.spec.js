@@ -292,5 +292,68 @@ describe('myKivaJourneyCardUtils', () => {
 			});
 			expect(result).toEqual([]);
 		});
+
+		it('moves goal category achievement to the end when userGoalCategory is set', () => {
+			const customBadgesData = [
+				{
+					id: 'womens-equality',
+					achievementData: { totalProgressToAchievement: 1 },
+					contentfulData: [{ level: 1, imageUrl: 'url1' }],
+				},
+				{
+					id: 'climate-action',
+					achievementData: { totalProgressToAchievement: 2 },
+					contentfulData: [{ level: 1, imageUrl: 'url2' }],
+				},
+				{
+					id: 'basic-needs',
+					achievementData: { totalProgressToAchievement: 3 },
+					contentfulData: [{ level: 1, imageUrl: 'url3' }],
+				},
+			];
+			const customSlides = ['womens-equality', 'climate-action', 'basic-needs']
+				.map(key => buildSlide(key));
+
+			const result = buildAchievementSlides({
+				badgesData: customBadgesData,
+				slides: customSlides,
+				isTieredAchievementComplete,
+				getActiveTierData,
+				userGoalCategory: 'womens-equality',
+			});
+
+			expect(result).toHaveLength(3);
+			expect(result[0].badgeKey).toBe('basic-needs');
+			expect(result[1].badgeKey).toBe('climate-action');
+			expect(result[2].badgeKey).toBe('womens-equality');
+		});
+
+		it('does not reorder when userGoalCategory is null (not set)', () => {
+			const customBadgesData = [
+				{
+					id: 'womens-equality',
+					achievementData: { totalProgressToAchievement: 1 },
+					contentfulData: [{ level: 1, imageUrl: 'url1' }],
+				},
+				{
+					id: 'climate-action',
+					achievementData: { totalProgressToAchievement: 2 },
+					contentfulData: [{ level: 1, imageUrl: 'url2' }],
+				},
+			];
+			const customSlides = ['womens-equality', 'climate-action'].map(key => buildSlide(key));
+
+			const result = buildAchievementSlides({
+				badgesData: customBadgesData,
+				slides: customSlides,
+				isTieredAchievementComplete,
+				getActiveTierData,
+				userGoalCategory: null,
+			});
+
+			expect(result).toHaveLength(2);
+			expect(result[0].badgeKey).toBe('womens-equality');
+			expect(result[1].badgeKey).toBe('climate-action');
+		});
 	});
 });

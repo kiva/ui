@@ -159,6 +159,7 @@ export const handleSecondaryCtaClick = ({
  * @param {Boolean} options.includeMilestoneDiff - Whether to include milestoneDiff
  * @param {Function} options.isTieredAchievementComplete - From useBadgeData
  * @param {Function} options.getActiveTierData - From useBadgeData
+ * @param {String} options.userGoalCategory - User's goal category ID (optional)
  * @returns {Array} Achievement slide objects
  */
 export const buildAchievementSlides = ({
@@ -168,6 +169,7 @@ export const buildAchievementSlides = ({
 	isTieredAchievementComplete,
 	includeMilestoneDiff = false,
 	sortByMilestoneDiff = false,
+	userGoalCategory = null,
 }) => {
 	const achievementSlides = [];
 	defaultBadges.forEach(badgeKey => {
@@ -202,6 +204,15 @@ export const buildAchievementSlides = ({
 
 	if (sortByMilestoneDiff) {
 		achievementSlides.sort((a, b) => a.milestoneDiff - b.milestoneDiff);
+	}
+
+	// If user has a goal set, move the goal category achievement to the end
+	if (userGoalCategory) {
+		const goalAchievementIndex = achievementSlides.findIndex(slide => slide.badgeKey === userGoalCategory);
+		if (goalAchievementIndex > -1) {
+			const [goalAchievement] = achievementSlides.splice(goalAchievementIndex, 1);
+			achievementSlides.push(goalAchievement);
+		}
 	}
 
 	return achievementSlides;
