@@ -177,7 +177,7 @@
 								{{ currentYearAmountLent }}
 							</dt>
 							<router-link
-								class="percentiles-stat-link tw-mt-auto"
+								class="percentiles-stat-link tw-mt-auto hover:md:!tw-underline"
 								to="/portfolio/loans"
 								v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
 							>
@@ -209,7 +209,7 @@
 								{{ currentYearCountryCount }}
 							</dt>
 							<router-link
-								class="percentiles-stat-link tw-mt-auto"
+								class="percentiles-stat-link tw-mt-auto hover:md:!tw-underline"
 								to="/portfolio/lending-stats"
 								v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
 							>
@@ -681,7 +681,7 @@ export default {
 }
 
 .percentiles-stat-value {
-	@apply tw-text-h2 tw-text-eco-green-4 tw-pb-0.5;
+	@apply tw-text-h3 tw-text-eco-green-4 tw-pb-0.5;
 
 	line-height: 1.1;
 }
