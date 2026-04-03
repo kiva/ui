@@ -38,7 +38,6 @@
 						:hide-goal-card="hideCompletedGoalCard"
 						:user-info="userInfo"
 						:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-						use-universal-order
 						@open-goal-modal="openGoalModal($event)"
 						@open-impact-insight-modal="showImpactInsightsModal = true"
 					/>
@@ -125,7 +124,6 @@
 							controls-top-right
 							hide-goal-card
 							in-lending-stats
-							use-universal-order
 							user-in-homepage
 							:post-lending-next-steps-enable="true"
 							:show-post-lending-next-steps-cards="true"
@@ -192,7 +190,6 @@
 						goals-v2-enabled
 						hide-non-badges-cards
 						hide-goal-card
-						use-universal-order
 						user-goal-enabled
 						:goal-progress-loading="goalProgressLoading"
 						:goal-progress="goalProgress"
