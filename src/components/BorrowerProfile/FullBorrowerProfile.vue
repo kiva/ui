@@ -34,6 +34,7 @@
 				<lend-cta
 					class="tw-pointer-events-auto"
 					:loan-id="loanId"
+					:loan-data="loanData"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
 					:team-id="teamId"
 					:team-name="teamName"
@@ -148,7 +149,7 @@ import ContentContainer from '#src/components/BorrowerProfile/ContentContainer';
 import SidebarContainer from '#src/components/BorrowerProfile/SidebarContainer';
 import HeroBackground from '#src/components/BorrowerProfile/HeroBackground';
 import SummaryCard, { summaryCardFragment } from '#src/components/BorrowerProfile/SummaryCard';
-import LendCta from '#src/components/BorrowerProfile/LendCta';
+import LendCta, { lendCtaFragment } from '#src/components/BorrowerProfile/LendCta';
 import LoanStory, { loanStoryFragment } from '#src/components/BorrowerProfile/LoanStory';
 import DetailsTabs from '#src/components/BorrowerProfile/DetailsTabs';
 import BorrowerCountry from '#src/components/BorrowerProfile/BorrowerCountry';
@@ -168,11 +169,13 @@ import { KvLoadingPlaceholder } from '@kiva/kv-components';
 export const fullProfileFragment = gql`
 	${summaryCardFragment}
 	${loanStoryFragment}
+	${lendCtaFragment}
 	fragment bpFullProfileFields on LoanBasic {
 		id
 		inPfp
 		pfpMinLenders
 		plannedExpirationDate
+		minNoteSize
 		lenders {
 			totalCount
 		}
@@ -183,6 +186,7 @@ export const fullProfileFragment = gql`
 		}
 		...summaryCardFields
 		...loanStoryFields
+		...lendCtaFields
 	}
 `;
 
@@ -233,6 +237,10 @@ export default {
 	},
 	emits: ['subscription-toggled'],
 	props: {
+		loan: {
+			type: Object,
+			default: () => ({}),
+		},
 		lender: {
 			type: Object,
 			default: () => ({}),
@@ -264,7 +272,9 @@ export default {
 	},
 	data() {
 		return {
-			loanData: {},
+			// Initialize from loan prop so SSR renders real content.
+			// The watch query will refresh with latest data client-side.
+			loanData: this.loan?.id ? { ...this.loan } : {},
 			showUpdates: true,
 			showLenders: true,
 			showTeams: true,

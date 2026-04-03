@@ -399,6 +399,93 @@ import { setChallengeCookieData } from '#src/util/teamChallengeUtils';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 
+export const lendCtaFragment = gql`fragment lendCtaFields on LoanBasic {
+	id
+	status
+	name
+	minNoteSize
+	loanAmount
+	inPfp
+	matchingText
+	matchRatio
+	gender
+	borrowerCount
+	... on LoanPartner {
+		themes
+	}
+	unreservedAmount @client
+	loanFundraisingInfo {
+		id
+		fundedAmount
+		reservedAmount
+		isExpiringSoon
+	}
+	lenders {
+		totalCount
+	}
+	simultaneousMatching {
+		managedAccountId
+		displayName
+		ratio
+		logo {
+			id
+			url
+		}
+	}
+}`;
+
+const lendCtaLoanQuery = gql`
+	${lendCtaFragment}
+	query lendCtaLoan($loanId: Int!) {
+		lend {
+			loan(id: $loanId) {
+				id
+				...lendCtaFields
+			}
+		}
+	}
+`;
+
+const lendCtaUserQuery = gql`
+	query lendCtaUser($loanId: Int!, $basketId: String) {
+		lend {
+			loan(id: $loanId) {
+				id
+				userProperties {
+					lentTo
+					promoEligible(basketId: $basketId)
+				}
+			}
+		}
+		shop(basketId: $basketId) {
+			id
+			basket {
+				id
+				hasFreeCredits
+				items {
+					values {
+						id
+					}
+				}
+			}
+			nonTrivialItemCount
+		}
+		my {
+			id
+			userAccount {
+				id
+				balance
+			}
+		}
+		general {
+			uiExperimentSetting(key: "matching_highlight") {
+				key
+				value
+			}
+		}
+	}
+`;
+
 export default {
 	name: 'LendCta',
 	inject: ['apollo', 'cookieStore'],
@@ -407,6 +494,10 @@ export default {
 		loanId: {
 			type: Number,
 			default: 0,
+		},
+		loanData: {
+			type: Object,
+			default: () => ({}),
 		},
 		enableFiveDollarsNotes: {
 			type: Boolean,
@@ -439,159 +530,109 @@ export default {
 		return { enableMultiMatching };
 	},
 	data() {
+		// Initialize from loanData prop when available (e.g. SSR with cache-warmed data)
+		// so the CTA renders with real content instead of a loading state.
+		// The loan query will refresh these values client-side.
+		const loan = this.loanData;
+		const hasData = !!loan?.id;
 		return {
 			isLoggedIn: false,
 			mdiLightningBolt,
 			defaultSelectorAmount: 25,
 			selectedOption: '25',
-			loanAmount: '',
-			isExpiringSoon: false,
-			fundedAmount: '',
-			reservedAmount: '',
-			unreservedAmount: '',
+			loanAmount: loan?.loanAmount ?? '',
+			isExpiringSoon: loan?.loanFundraisingInfo?.isExpiringSoon ?? false,
+			fundedAmount: loan?.loanFundraisingInfo?.fundedAmount ?? '',
+			reservedAmount: loan?.loanFundraisingInfo?.reservedAmount ?? '',
+			unreservedAmount: loan?.unreservedAmount ?? '',
 			lentPreviously: false,
 			promoEligible: false,
-			minNoteSize: '',
-			status: '',
-			numLenders: 0,
-			lenderCountVisibility: false,
+			minNoteSize: loan?.minNoteSize ?? '',
+			status: loan?.status ?? '',
+			numLenders: loan?.lenders?.totalCount ?? 0,
+			lenderCountVisibility: hasData && loan?.status === 'fundraising'
+				&& (loan?.lenders?.totalCount ?? 0) > 0,
 			matchingTextVisibility: false,
-			matchingText: '',
-			matchRatio: 0,
+			matchingText: loan?.matchingText ?? '',
+			matchRatio: loan?.matchRatio ?? 0,
 			basketItems: [],
 			isAdding: false,
-			isLoading: true,
+			isLoading: !hasData,
 			hasFreeCredit: false,
 			isSticky: false,
 			wrapperHeight: 0,
 			wrapperObserver: null,
-			name: '',
+			name: loan?.name ?? '',
 			completeLoanView: true,
 			slotMachineInterval: null,
 			currentSlotStat: '',
 			matchingHighlightExpShown: false,
-			inPfp: false,
+			inPfp: loan?.inPfp ?? false,
 			userBalance: undefined,
-			loan: null,
+			loan: hasData ? loan : null,
 			basketSize: 0,
 			simultaneousMatching: [],
 		};
 	},
-	apollo: {
-		query: gql`
-			query lendCta($loanId: Int!, $basketId: String) {
-				lend {
-					loan(id: $loanId) {
-						id
-						status
-						name
-						minNoteSize
-						loanAmount
-						inPfp
-						matchingText
-						matchRatio
-						gender
-						borrowerCount
-						... on LoanPartner {
-							themes
-						}
-						unreservedAmount @client
-						loanFundraisingInfo {
-							id
-							fundedAmount
-							reservedAmount
-							isExpiringSoon
-						}
-						userProperties {
-							lentTo
-							promoEligible(basketId: $basketId)
-						}
-						lenders{
-							totalCount
-						}
-						simultaneousMatching {
-							managedAccountId
-							displayName
-							ratio
-							logo {
-								id
-								url
-							}
-						}
-					}
+	apollo: [
+		{
+			query: lendCtaLoanQuery,
+			preFetch: false,
+			variables() {
+				return { loanId: this.loanId };
+			},
+			result({ data }) {
+				const loan = data?.lend?.loan;
+				if (!loan) return;
+
+				this.loan = loan;
+				this.loanAmount = loan?.loanAmount ?? '0';
+				this.status = loan?.status ?? '';
+				this.minNoteSize = loan?.minNoteSize ?? '';
+				this.name = loan?.name ?? '';
+				this.inPfp = loan?.inPfp ?? false;
+				this.numLenders = loan?.lenders?.totalCount ?? 0;
+				this.fundedAmount = loan?.loanFundraisingInfo?.fundedAmount ?? '';
+				this.reservedAmount = loan?.loanFundraisingInfo?.reservedAmount ?? '';
+				this.unreservedAmount = loan?.unreservedAmount ?? '';
+				this.isExpiringSoon = loan?.loanFundraisingInfo?.isExpiringSoon ?? false;
+				this.matchingText = loan?.matchingText ?? '';
+				this.matchRatio = loan?.matchRatio ?? 0;
+				this.simultaneousMatching = loan?.simultaneousMatching ?? [];
+				this.matchingTextVisibility = this.status === 'fundraising'
+					&& this.matchingText && !this.isMatchAtRisk;
+
+				// CTA is ready to render once loan data is available
+				this.isLoading = false;
+
+				if (this.status === 'fundraising' && this.numLenders > 0) {
+					this.lenderCountVisibility = true;
 				}
-				shop (basketId: $basketId) {
-					id
-					basket {
-						id
-						hasFreeCredits
-						items {
-							values {
-								id
-							}
-						}
-					}
-					nonTrivialItemCount
-				}
-				my {
-					id
-					userAccount {
-						id
-						balance
-					}
-				}
-				general {
-					uiExperimentSetting(key: "matching_highlight") {
-						key
-						value
-					}
-				}
-			}
-		`,
-		preFetch: false,
-		variables() {
-			return {
-				loanId: this.loanId,
-			};
+				this.cycleStatsSlot();
+			},
 		},
-		result(result) {
-			this.isLoading = false;
-			const loan = result?.data?.lend?.loan;
-			const basket = result?.data?.shop?.basket;
+		{
+			query: lendCtaUserQuery,
+			preFetch: false,
+			variables() {
+				return { loanId: this.loanId };
+			},
+			result({ data }) {
+				const loan = data?.lend?.loan;
+				const basket = data?.shop?.basket;
 
-			this.loan = loan;
-			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
-			this.loanAmount = loan?.loanAmount ?? '0';
-			this.status = loan?.status ?? '';
-			this.minNoteSize = loan?.minNoteSize ?? '';
-			this.fundedAmount = loan?.loanFundraisingInfo?.fundedAmount ?? '';
-			this.reservedAmount = loan?.loanFundraisingInfo?.reservedAmount ?? '';
-			this.unreservedAmount = loan?.unreservedAmount ?? '';
-			this.isExpiringSoon = loan?.loanFundraisingInfo?.isExpiringSoon ?? false;
-			this.lentPreviously = loan?.userProperties?.lentTo ?? false;
-			this.promoEligible = loan?.userProperties?.promoEligible ?? false;
-			this.numLenders = loan?.lenders?.totalCount ?? 0;
-			this.hasFreeCredit = basket?.hasFreeCredits ?? false;
-			this.basketItems = basket?.items?.values ?? [];
-			this.matchingText = loan?.matchingText ?? '';
-			this.matchRatio = loan?.matchRatio ?? 0;
-			this.name = loan?.name ?? '';
-			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
-			this.inPfp = loan?.inPfp ?? false;
-			this.simultaneousMatching = loan?.simultaneousMatching ?? [];
-			this.userBalance = result?.data?.my?.userAccount?.balance;
-			if (this.status === 'fundraising' && this.numLenders > 0) {
-				this.lenderCountVisibility = true;
-			}
-			this.basketSize = result.data?.shop?.nonTrivialItemCount || 0;
+				this.isLoggedIn = data?.my?.userAccount?.id !== undefined || false;
+				this.lentPreviously = loan?.userProperties?.lentTo ?? false;
+				this.promoEligible = loan?.userProperties?.promoEligible ?? false;
+				this.hasFreeCredit = basket?.hasFreeCredits ?? false;
+				this.basketItems = basket?.items?.values ?? [];
+				this.userBalance = data?.my?.userAccount?.balance;
+				this.basketSize = data?.shop?.nonTrivialItemCount || 0;
 
-			// Start cycling the stats slot now that loan data is available
-			this.cycleStatsSlot();
-
-			// Load matching experiment when data is available
-			this.initializeMatchingHighlightExp();
+				this.initializeMatchingHighlightExp();
+			},
 		},
-	},
+	],
 	methods: {
 		async addToBasket() {
 			if (this.teamId) {

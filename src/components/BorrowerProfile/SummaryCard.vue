@@ -133,6 +133,38 @@ export const summaryCardFragment = gql`fragment summaryCardFields on LoanBasic {
 	borrowerCount
 	loanAmount
 	fullLoanUse @client
+	activity {
+		id
+		name
+	}
+	distributionModel
+	fundraisingPercent @client
+	fundraisingTimeLeft @client
+	fundraisingTimeLeftMilliseconds @client
+	geocode {
+		city
+		state
+		country {
+			id
+			name
+		}
+	}
+	paidAmount
+	loanFundraisingInfo {
+		id
+		fundedAmount
+		reservedAmount
+	}
+	plannedExpirationDate
+	unreservedAmount @client
+	inPfp
+	pfpMinLenders
+	lenders {
+		totalCount
+	}
+	comments {
+		totalCount
+	}
 }`;
 
 const mountQuery = gql`
@@ -202,22 +234,27 @@ export default {
 		},
 	},
 	data() {
+		// Initialize from loan prop when available (e.g. SSR with cache-warmed data)
+		// so the component renders real content instead of loading skeletons.
+		// The mount query will refresh these values client-side.
+		const loan = this.loan;
+		const hasLoanData = !!loan?.id;
 		return {
-			isLoading: true,
-			activityName: '',
-			countryName: '',
-			fundraisingPercent: 0,
+			isLoading: !hasLoanData,
+			activityName: loan?.activity?.name ?? '',
+			countryName: loan?.geocode?.country?.name ?? '',
+			fundraisingPercent: hasLoanData ? (loan?.fundraisingPercent ?? 0) : 0,
 			mdiMapMarker,
-			timeLeft: '',
-			unreservedAmount: '0',
-			distributionModel: '',
-			city: '',
-			state: '',
-			inPfp: false,
-			pfpMinLenders: 0,
-			numLenders: 0,
-			totalComments: 0,
-			paidAmount: '0.00',
+			timeLeft: loan?.fundraisingTimeLeft ?? '',
+			unreservedAmount: loan?.unreservedAmount ?? '0',
+			distributionModel: loan?.distributionModel ?? '',
+			city: loan?.geocode?.city ?? '',
+			state: loan?.geocode?.state ?? '',
+			inPfp: loan?.inPfp ?? false,
+			pfpMinLenders: loan?.pfpMinLenders ?? 0,
+			numLenders: loan?.lenders?.totalCount ?? 0,
+			totalComments: loan?.comments?.totalCount ?? 0,
+			paidAmount: loan?.paidAmount ?? '0.00',
 		};
 	},
 	computed: {
