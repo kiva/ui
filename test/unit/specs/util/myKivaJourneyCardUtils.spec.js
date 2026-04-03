@@ -1,7 +1,6 @@
 import { defaultBadges } from '#src/util/achievementUtils';
 import {
 	buildAchievementSlides,
-	buildUniversalOrderedSlides,
 	checkShouldShowEmailMarketing,
 	checkShowLatestLoan,
 	checkShowSurveyCard,
