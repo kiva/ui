@@ -19,7 +19,7 @@
 				:loan-comment-module-shown="showLoanComment"
 				:kiva-cards-module-shown="showKivaCardsModule"
 				:achievements-completed="achievementsCompleted"
-				@continue-clicked="handleContinue"
+				@continue-clicked="handleContinue(NON_TIERED_BADGE)"
 				class="tw-mb-2.5"
 			/>
 			<!-- Start goal module variations -->
@@ -170,6 +170,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import useTipMessage from '#src/composables/useTipMessage';
 
 const EVENT_CATEGORY = 'post-checkout';
+const NON_TIERED_BADGE = 'non-tiered-badge';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -351,7 +352,7 @@ const scrollToReceipt = () => {
 	}, 500);
 };
 
-const handleContinue = () => {
+const handleContinue = (badgeType = null) => {
 	const CLICK_EVENT_ACTION = 'click';
 	if (props.isGuest) {
 		showGuestAccountModal.value = true;
@@ -370,6 +371,10 @@ const handleContinue = () => {
 			userType.value,
 			numberOfBadges.value,
 		);
+
+		if (badgeType) {
+			return router?.push('/portfolio/lending-stats#lend-stat-badges');
+		}
 		router?.push('/mykiva');
 	}
 };
