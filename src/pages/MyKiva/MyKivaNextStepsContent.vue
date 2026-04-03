@@ -398,6 +398,7 @@ const achievementSlides = computed(() => buildAchievementSlides({
 	slides: props.heroSlides,
 	isTieredAchievementComplete,
 	getActiveTierData,
+	userGoalCategory: userGoal.value?.category,
 }));
 
 const showRegionExperienceInFirstRow = computed(() => {
