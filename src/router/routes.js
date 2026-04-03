@@ -343,6 +343,7 @@ export default [
 			excludeFromStaticSitemap: true,
 			unbounceEmailCapture: true,
 			unbouncePopUp: true,
+			useCDNCaching: true,
 		}
 	},
 	{
