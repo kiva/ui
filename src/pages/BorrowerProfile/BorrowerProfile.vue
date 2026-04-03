@@ -13,6 +13,7 @@
 		/>
 		<full-borrower-profile
 			v-if="showFullView"
+			:loan="loan"
 			:lender="lender"
 			:loading="isLoading"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
@@ -49,6 +50,7 @@ import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.gra
 import teamBasicInfoQuery from '#src/graphql/query/teamBasicInfo.graphql';
 import ChallengeTeamInvite from '#src/components/BorrowerProfile/ChallengeTeamInvite';
 import { getKivaImageUrl } from '@kiva/kv-components';
+import useCDNHeaders from '#src/composables/useCDNHeaders';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
 
@@ -317,41 +319,75 @@ export default {
 	mixins: [fiveDollarsTest, guestComment],
 	apollo: {
 		query: routingQuery,
-		preFetch(_config, client, { route, cookieStore }) {
+		preFetch(_config, client, { route, cookieStore, renderConfig }) {
 			const loanId = Number(route?.params?.id ?? 0);
 			const publicId = getPublicId(route);
-			const routingVars = {
+			const cdnNotedLoggedIn = renderConfig?.cdnNotedLoggedIn ?? false;
+			const useCDNCaching = renderConfig?.useCDNCaching ?? false;
+
+			// Use the same routingQuery on both paths so the apollo plugin's
+			// readQuery in created() matches the preFetch cache entry.
+			// On the cached path, basketId is null (cookieStore is null),
+			// so shop/userProperties return nulls — that's fine.
+			const isCachedPath = useCDNCaching;
+			const variables = {
 				loanId,
 				publicId,
 				getInviter: !!publicId,
-				basketId: cookieStore.get('kvbskt'),
+				basketId: cookieStore?.get('kvbskt'),
 			};
 
-			return client.query({ query: routingQuery, variables: routingVars })
+			return client.query({ query: routingQuery, variables })
 				.then(({ data }) => {
 					const loan = data?.lend?.loan;
 					if (!loan) {
 						return Promise.reject({ path: '/lend', query: route.query });
 					}
 
-					// Routing decision (mirrors showFullView computed)
+					// Routing decision
 					const loanAmount = Number(loan.loanAmount ?? 0);
 					const fundedAmount = Number(loan.loanFundraisingInfo?.fundedAmount ?? 0);
 					const amountLeft = loanAmount - fundedAmount;
-					const isPrivileged = loan.userProperties?.isPrivileged ?? false;
 					const minimalOverride = route.query?.minimal === 'false';
+					const isPrivileged = isCachedPath
+						? false : (loan.userProperties?.isPrivileged ?? false);
 					const showFullView = (amountLeft && loan.status === 'fundraising')
 						|| isPrivileged
 						|| minimalOverride;
 
-					// Phase 2: warm cache for the child that will render
-					const childQuery = showFullView ? fullProfileQuery : minimalProfileQuery;
+					const promises = [
+						client.query({
+							query: experimentAssignmentQuery,
+							variables: { id: FIVE_DOLLARS_NOTES_EXP },
+						}),
+						client.query({
+							query: experimentAssignmentQuery,
+							variables: { id: EDUCATION_PLACEMENT_EXP },
+						}),
+					];
 
-					return Promise.all([
-						client.query({ query: childQuery, variables: { loanId } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: EDUCATION_PLACEMENT_EXP } }),
-					]);
+					// Cached path: set cache headers and warm child query cache
+					if (isCachedPath) {
+						const isCacheable = !cdnNotedLoggedIn
+							|| loan.status === 'fundraising';
+						if (isCacheable) {
+							useCDNHeaders(helper => {
+								helper
+									.setNumeric('maxAge', 60 * 5)
+									.setNumeric('staleWhileRevalidate', 60 * 60)
+									.setNumeric('staleIfError', 60 * 60 * 24);
+							});
+						}
+
+						const childQuery = showFullView
+							? fullProfileQuery : minimalProfileQuery;
+						promises.push(client.query({
+							query: childQuery,
+							variables: { loanId },
+						}));
+					}
+
+					return Promise.all(promises);
 				});
 		},
 		preFetchVariables({ route, cookieStore }) {
@@ -360,7 +396,7 @@ export default {
 				loanId: Number(route?.params?.id ?? 0),
 				publicId,
 				getInviter: !!publicId,
-				basketId: cookieStore.get('kvbskt'),
+				basketId: cookieStore?.get('kvbskt'),
 			};
 		},
 		variables() {
@@ -373,7 +409,24 @@ export default {
 			};
 		},
 		result(result) {
-			this.loan = result?.data?.lend?.loan ?? {};
+			const routingLoan = result?.data?.lend?.loan ?? {};
+			// Enrich with full profile data from phase 2 cache if available.
+			// On the cached path, preFetch warms the child query cache, so
+			// readQuery returns the complete loan with all child fragment fields.
+			// On the uncached path, readQuery returns null and we use routing data.
+			let fullLoan = null;
+			if (routingLoan.id) {
+				try {
+					const cached = this.apollo.readQuery({
+						query: fullProfileQuery,
+						variables: { loanId: routingLoan.id },
+					});
+					fullLoan = cached?.lend?.loan;
+				} catch {
+					// Query not in cache (uncached path)
+				}
+			}
+			this.loan = fullLoan ?? routingLoan;
 			this.inviterName = this.inviterIsGuestOrAnonymous
 				? '' : result?.data?.community?.lender?.name ?? '';
 			this.itemsInBasket = result?.data?.shop?.basket?.items?.values ?? [];
