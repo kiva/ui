@@ -52,7 +52,7 @@ import {
 	onMounted,
 } from 'vue';
 import { mdiArrowRight } from '@mdi/js';
-import useBadgeData, { ID_EQUITY } from '#src/composables/useBadgeData';
+import useBadgeData from '#src/composables/useBadgeData';
 import {
 	KvMaterialIcon, KvButton, KvLoadingPlaceholder
 } from '@kiva/kv-components';
@@ -108,6 +108,8 @@ const {
 	getHighestPriorityDisplayBadge,
 	getLastCompletedBadgeLevelData,
 	getTierBadgeDataByLevel,
+	getNonEquityBadgeOverride,
+	getPreferredFallbackBadge,
 } = useBadgeData();
 
 const badgeDataAchieved = ref();
@@ -150,6 +152,10 @@ const displayedBadgeData = computed(() => {
 			return badgeDataAchieved.value[0];
 		}
 		const displayedBadge = getHighestPriorityDisplayBadge(badgeDataAchieved.value);
+		// Contentful-only badges (non-equity badges not in achievement service) have no achievementData
+		if (!displayedBadge.achievementData) {
+			return displayedBadge;
+		}
 		return getLastCompletedBadgeLevelData(displayedBadge);
 	}
 	return {};
@@ -182,23 +188,39 @@ onMounted(async () => {
 });
 
 watch(() => badgeContentfulData.value, () => {
-	// Guests don't have access to achievement data, so we only show the equity badge
+	// Guests don't have access to achievement data, so we fall back to contentful only.
+	// Prefers an earned non-equity badge over equity.
 	if (showEqualityBadge.value && badgeContentfulData.value?.length) {
-		const equityBadge = badgeContentfulData.value.find(b => b.id === ID_EQUITY);
-		if (equityBadge) {
+		const badgeToShow = getPreferredFallbackBadge(props.badgeAchievedIds, badgeContentfulData.value);
+		if (badgeToShow) {
 			badgeDataAchieved.value = [
 				{
-					levelName: equityBadge.challengeName,
-					contentfulData: { ...equityBadge },
+					levelName: badgeToShow.challengeName,
+					contentfulData: { ...badgeToShow },
 				},
 			];
 		}
 	}
 });
 
-watch(() => badgeData.value, () => {
-	if (!showEqualityBadge.value && badgeData.value.length) {
-		badgeDataAchieved.value = badgeData.value.filter(b => props.badgeAchievedIds.includes(b.id));
+watch([() => badgeData.value, () => badgeContentfulData.value], ([newBadgeData]) => {
+	if (!showEqualityBadge.value && newBadgeData.length) {
+		const filteredBadges = newBadgeData.filter(b => props.badgeAchievedIds.includes(b.id));
+		const nonEquityBadgeOverride = getNonEquityBadgeOverride(
+			filteredBadges,
+			props.badgeAchievedIds,
+			badgeContentfulData.value,
+		);
+
+		if (nonEquityBadgeOverride) {
+			badgeDataAchieved.value = [
+				nonEquityBadgeOverride,
+				...filteredBadges.filter(b => b.id !== nonEquityBadgeOverride.id),
+			];
+			return;
+		}
+
+		badgeDataAchieved.value = filteredBadges;
 	}
 }, { immediate: true });
 </script>
