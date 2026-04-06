@@ -1,7 +1,7 @@
 <template>
 	<header
 		class="tw-transition-all tw-duration-1000 tw-ease-in-out"
-		:class="isInExperimentPages & enableAddToBasketExp ? 'tw-sticky tw-top-0 tw-z-sticky' : ''"
+		:class="isInExperimentPages ? 'tw-sticky tw-top-0 tw-z-sticky' : ''"
 	>
 		<KvWwwHeader
 			v-if="isNavUpdateExp"
@@ -16,6 +16,9 @@
 			:user-id="userId"
 			:is-mobile="isMobile"
 			:lender-image-url="profilePic"
+			:is-user-data-loading="isUserDataLoading"
+			:is-basket-data-loading="isBasketLoading"
+			:style="esiCssVarBridge"
 			:countries-not-lent-to-url="countriesNotLentToUrl"
 			show-m-g-upsell-link
 			@load-lend-menu-data="loadMenu"
@@ -562,7 +565,7 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, inject } from 'vue';
 import {
 	hasLentBeforeCookie,
 	hasDepositBeforeCookie,
@@ -586,14 +589,14 @@ import MyKivaButton from '#src/components/WwwFrame/Header/MyKivaButton';
 import TeamsMenu from '#src/components/WwwFrame/Header/TeamsMenu';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
-import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
-import myKivaHomePageMixin from '#src/plugins/my-kiva-homepage-mixin';
+import addToBasketMixin from '#src/plugins/add-to-basket-mixin';
 import {
 	KvButton, KvLoadingPlaceholder, KvMaterialIcon, KvPageContainer, KvWwwHeader
 } from '@kiva/kv-components';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import countriesNotLentToExpMixin, { COUNTRIES_NOT_LENT_TO_EXP } from '#src/plugins/countries-not-lent-to-exp-mixin';
+import useMyKivaHome from '#src/composables/useMyKivaHome';
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
@@ -622,7 +625,7 @@ export default {
 		cookieStore: { default: null },
 		kvAuth0: { default: null },
 	},
-	mixins: [addToBasketExpMixin, myKivaHomePageMixin, countriesNotLentToExpMixin],
+	mixins: [addToBasketMixin, countriesNotLentToExpMixin],
 	data() {
 		return {
 			aboutMenuId: 'about-header-dropdown',
@@ -685,7 +688,27 @@ export default {
 			required: false
 		},
 	},
+	setup() {
+		const apollo = inject('apollo');
+		const { homePagePath } = useMyKivaHome(apollo);
+
+		return {
+			homePagePath,
+		};
+	},
 	computed: {
+		// Bridge --ui-data-* CSS variables (set by ESI head) to the unprefixed names
+		// KvHeaderLinkBar expects. Only needed during CDN-cached loading state.
+		// No fallback defaults here — let KvHeaderLinkBar's own fallbacks apply.
+		esiCssVarBridge() {
+			if (!this.isUserDataLoading) return undefined;
+			return {
+				'--basket-display': 'var(--ui-data-basket-count-display)',
+				'--user-avatar-display': 'var(--ui-data-user-avatar-display)',
+				'--user-avatar-legacy-display': 'var(--ui-data-user-avatar-legacy-display)',
+				'--user-avatar': 'var(--ui-data-user-avatar)',
+			};
+		},
 		isVisitor() {
 			return !this.userId && !this.$renderConfig?.cdnNotedLoggedIn;
 		},

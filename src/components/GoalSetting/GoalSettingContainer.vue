@@ -161,10 +161,13 @@ import {
 	ID_BASIC_NEEDS,
 	ID_US_ECONOMIC_EQUALITY,
 } from '#src/composables/useBadgeData';
+import useTipMessage from '#src/composables/useTipMessage';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
+
+const { $showTipMsg } = useTipMessage(apollo);
 
 const {
 	userGoal,
@@ -347,8 +350,13 @@ const updateGoal = async preferences => {
 };
 
 const setGoal = async preferences => {
-	await storeGoalPreferences(preferences);
-	await recalculateGoalInformation();
+	try {
+		await storeGoalPreferences(preferences);
+		await recalculateGoalInformation();
+	} catch (e) {
+		logFormatter('GoalSettingContainer: failed to setting up this goal', 'error', { error: e });
+		$showTipMsg('There was a problem setting up this goal', 'error');
+	}
 };
 
 const handleCategorySelected = categoryId => {
@@ -450,6 +458,7 @@ async function handleEmailFlow() {
 			);
 		} catch (e) {
 			logFormatter('GoalSettingContainer: failed to store email goal', 'error', { error: e });
+			$showTipMsg('There was a problem setting up this goal', 'error');
 		}
 	}
 

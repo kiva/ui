@@ -153,7 +153,6 @@
 						:user-balance="userBalance"
 						:is-team-pick="showTeamPicks"
 						:show-loans-activity-feed="showLoansActivityFeed"
-						:add-to-basket-exp-enabled="enableAddToBasketExp"
 						@show-cart-modal="showCartModal"
 						@add-to-basket="addToBasket"
 					/>
@@ -197,7 +196,7 @@ import LoanSearchFilterChips from '#src/components/Lend/LoanSearch/LoanSearchFil
 import LoanSearchSavedSearch from '#src/components/Lend/LoanSearch/LoanSearchSavedSearch';
 import filterConfig from '#src/util/loanSearch/filterConfig';
 import { gql } from 'graphql-tag';
-import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
+import addToBasketMixin from '#src/plugins/add-to-basket-mixin';
 import { KvButton, KvLightbox } from '@kiva/kv-components';
 
 const COOKIE_KEY = 'kv-search-result-count';
@@ -229,7 +228,7 @@ export default {
 		KvClassicLoanCardContainer,
 		TeamPicksSwitch,
 	},
-	mixins: [addToBasketExpMixin],
+	mixins: [addToBasketMixin],
 	emits: ['add-to-basket', 'show-cart-modal'],
 	props: {
 		extendFlssFilters: {
@@ -513,9 +512,6 @@ export default {
 
 			updateQueryParams(challengeFiltersObject, this.$router, this.queryType);
 			this.challengeFilters = challengeFiltersObject;
-		},
-		showCartModal(basketSize) {
-			this.$emit('show-cart-modal', basketSize);
 		},
 	},
 	watch: {

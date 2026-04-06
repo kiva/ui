@@ -1,7 +1,10 @@
 <template>
 	<div
 		class="tw-mb-2"
-		:class="{'next-steps-link': isNextStepsExperimentEnabled}"
+		:class="{
+			'next-steps-link': isNextStepsExperimentEnabled,
+			'tw-mb-8': isNextStepsExperimentEnabled && !showRegionExperience
+		}"
 	>
 		<h3 class="tw-text-primary md:tw-mb-1">
 			Next steps recommended for you
@@ -9,7 +12,7 @@
 		<div
 			v-if="isNextStepsExperimentEnabled"
 			class="tw-flex md:tw-gap-1 tw-cursor-pointer tw-w-16 md:tw-w-fit tw-justify-end"
-			@click="$router.push('/mykiva/next-steps')"
+			@click="handleViewAllClick"
 		>
 			<p class="tw-text-eco-green-3 tw-font-medium tw-cursor-pointer">
 				View all
@@ -25,7 +28,7 @@
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperience }"
 	>
 		<template v-if="showRegionExperience">
-			<div class="card-container tw-shrink-0">
+			<div class="goal-card-container">
 				<JourneyCardCarousel
 					class="carousel carousel-single"
 					user-in-homepage
@@ -42,16 +45,17 @@
 					:user-goal="userGoal"
 					:categories-loan-count="categoriesLoanCount"
 					:hide-goal-card="hideCompletedGoalCard"
-					:post-lending-next-steps-enable="postLendingNextStepsEnable"
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 					:goal-editing-enable="goalEditingEnable"
-					:use-universal-order="useUniversalOrder"
 					@open-goal-modal="openGoalModal($event)"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
 			</div>
-			<div class="stats-wrapper tw-bg-white tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-w-full tw-flex tw-flex-col">
+			<div
+				class="stats-wrapper tw-bg-white tw-rounded
+			tw-shadow tw-p-1 md:tw-p-2 tw-flex-1 tw-min-w-0 tw-flex tw-flex-col"
+			>
 				<div>
 					<span
 						v-if="pillHeader"
@@ -175,12 +179,10 @@
 			:user-goal-achieved="userGoalAchieved"
 			:user-goal="userGoal"
 			:hide-goal-card="hideCompletedGoalCard"
-			:post-lending-next-steps-enable="postLendingNextStepsEnable"
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 			:goal-editing-enable="goalEditingEnable"
-			:use-universal-order="useUniversalOrder"
 			@open-goal-modal="openGoalModal($event)"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
 		/>
@@ -196,7 +198,7 @@
 			@set-goal="setGoal"
 		/>
 		<MyKivaImpactInsightModal
-			v-if="showPostLendingNextStepsCards && postLendingNextStepsEnable && showImpactInsightsModal"
+			v-if="showPostLendingNextStepsCards && showImpactInsightsModal"
 			:show="showImpactInsightsModal"
 			:latest-loan="latestLoan"
 			@close="closeImpactInsightsModal"
@@ -225,6 +227,7 @@ import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 
+import logReadQueryError from '#src/util/logReadQueryError';
 import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
 import GoalSettingModal from './GoalSettingModal';
@@ -275,10 +278,6 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		postLendingNextStepsEnable: {
-			type: Boolean,
-			default: false
-		},
 		latestLoan: {
 			type: Object,
 			default: null
@@ -317,9 +316,6 @@ export default {
 		};
 	},
 	computed: {
-		useUniversalOrder() {
-			return this.nextStepsExperimentVariant === 'b';
-		},
 		showRegionExperience() {
 			return !this.showPostLendingNextStepsCards && !this.userLentToAllRegions;
 		},
@@ -445,7 +441,13 @@ export default {
 			if (this.isUpdatingGoal) {
 				await this.updateCurrentGoal(this.userGoal, preferences);
 			} else {
-				await this.storeGoalPreferences(preferences, false);
+				try {
+					await this.storeGoalPreferences(preferences);
+				} catch (error) {
+					this.$showTipMsg('There was a problem setting up your goal', 'error');
+					logReadQueryError(error, 'MyKivaPage setting up goal');
+					return;
+				}
 			}
 			this.newGoalPrefs = preferences;
 			this.isGoalSet = true;
@@ -494,12 +496,16 @@ export default {
 				this.$kvTrackEvent('portfolio', 'view', 'edit-goal-modal');
 			}
 		},
+		handleViewAllClick() {
+			this.$kvTrackEvent('portfolio', 'click', 'view-all-next-steps');
+			this.$router.push(`/mykiva/next-steps${this.showPostLendingNextStepsCards ? '?postLending=true' : ''}`);
+		},
 	},
 };
 </script>
 
 <style lang="postcss" scoped>
-.stats-wrapper, .card-container {
+.stats-wrapper {
 	height: auto;
 
 	@screen md {
@@ -507,11 +513,16 @@ export default {
 	}
 }
 
-.card-container {
+.goal-card-container {
 	width: 100%;
 
 	@screen md {
-		width: 390px;
+		flex: 0 0 336px;
+		height: 390px;
+	}
+
+	@screen lg {
+		flex: 0 0 336px;
 	}
 }
 
@@ -544,6 +555,6 @@ export default {
 }
 
 .next-steps-link {
-	@apply tw-flex tw-items-end md:tw-items-center tw-justify-between tw-mb-8 tw-gap-1;
+	@apply tw-flex tw-items-end md:tw-items-center tw-justify-between tw-gap-1;
 }
 </style>

@@ -3,7 +3,6 @@
 		:modal-visible="modalVisible"
 		:user-data="userData"
 		:added-loan="addedLoan"
-		:my-kiva-experiment-enabled="myKivaExperimentEnabled"
 		:show-modal-content="showModalContent"
 		:photo-path="PHOTO_PATH"
 		:one-loan-away-category="oneLoanAwayCategory"
@@ -30,13 +29,11 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import logFormatter from '#src/util/logFormatter';
-import { getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
 import userAtbModalQuery from '#src/graphql/query/userAtbModal.graphql';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import { KvAtbModal } from '@kiva/kv-components';
 import useBadgeData, { CATEGORY_TARGETS } from '#src/composables/useBadgeData';
 import basketItemsQuery from '#src/graphql/query/basketItems.graphql';
-import { readBoolSetting } from '#src/util/settingsUtils';
 import { splitAchievements, filterAchievementData, getOneLoanAwayAchievement } from '#src/util/atbAchievementUtils';
 import useGoalData from '#src/composables/useGoalData';
 import userLentToQuery from '#src/graphql/query/userLentTo.graphql';
@@ -71,7 +68,6 @@ const {
 	isProgressCompletingGoal,
 } = useGoalData({ apollo });
 
-const myKivaExperimentEnabled = ref(false);
 const userData = ref({});
 const basketData = ref([]);
 const contributingAchievements = ref([]);
@@ -80,7 +76,6 @@ const oneLoanAwayCategory = ref('');
 const oneLoanAwayFilteredUrl = ref('');
 const modalVisible = ref(false);
 const oneAwayText = ref('');
-const myKivaFlagEnabled = ref(false);
 const tierTable = ref({});
 const milestonesProgress = ref({});
 const hasEverLoggedIn = ref(false);
@@ -112,7 +107,6 @@ const fetchUserData = async () => {
 	}).then(({ data }) => {
 		userData.value = data ?? null;
 		hasEverLoggedIn.value = data?.hasEverLoggedIn ?? false;
-		myKivaFlagEnabled.value = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 	}).catch(e => {
 		logFormatter(e, 'Modal ATB User Data');
 	});
@@ -147,8 +141,7 @@ const showBasedOnUserBalance = computed(() => {
 });
 
 const isFirstLoan = computed(() => {
-	return myKivaExperimentEnabled.value
-		&& ((isGuest.value && !hasEverLoggedIn.value) || (!isGuest.value && !userData.value?.my?.loans?.totalCount))
+	return ((isGuest.value && !hasEverLoggedIn.value) || (!isGuest.value && !userData.value?.my?.loans?.totalCount))
 		&& basketCount.value === 1;
 });
 
@@ -274,7 +267,7 @@ const hasUserLentToAddedLoan = async loanId => {
 };
 
 watch(addedLoan, async () => {
-	if (myKivaExperimentEnabled.value && !isGuest.value && !(await hasUserLentToAddedLoan(addedLoan.value?.id))) {
+	if (!isGuest.value && !(await hasUserLentToAddedLoan(addedLoan.value?.id))) {
 		await fetchBasketData();
 		fetchPostCheckoutAchievements(loansIdsInBasket.value);
 	} else if (addedLoan.value?.basketSize < BASKET_LIMIT_SIZE_FOR_EXP) {
@@ -285,14 +278,7 @@ watch(addedLoan, async () => {
 onMounted(async () => {
 	await fetchUserData();
 
-	myKivaExperimentEnabled.value = getIsMyKivaEnabled(
-		apollo,
-		$kvTrackEvent,
-		myKivaFlagEnabled.value,
-		cookieStore,
-	);
-
-	if (myKivaExperimentEnabled.value && !isGuest.value) {
+	if (!isGuest.value) {
 		fetchAchievementData(apollo);
 		await fetchBasketData();
 		await fetchAchievementFromBasket();

@@ -193,10 +193,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		isMyKivaEnabled: {
-			type: Boolean,
-			default: false
-		},
 		loanContributesToGoal: {
 			type: Boolean,
 			default: false
@@ -251,7 +247,7 @@ export default {
 				if (this.loanContributesToGoal) return true;
 				return false;
 			}
-			return (this.isMyKivaEnabled && (this.contributesInAchievement || this.isFirstLoan))
+			return (this.contributesInAchievement || this.isFirstLoan)
 			|| this.pillMessage.length > 0;
 		},
 		pillMessage() {

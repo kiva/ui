@@ -161,16 +161,24 @@ describe('useOptIn.js', () => {
 	});
 
 	describe('userHasMailUpdatesOptOut', () => {
-		it('should return false when cookie does not exist', () => {
+		it('should return null when cookie does not exist', () => {
 			mockCookieStore.get.mockReturnValue(undefined);
 
 			const result = composable.userHasMailUpdatesOptOut();
 
-			expect(result).toBe(false);
+			expect(result).toBeNull();
 		});
 
-		it('should return false when cookie exists but pattern is not present', () => {
+		it('should return null when cookie is empty', () => {
 			mockCookieStore.get.mockReturnValue('');
+
+			const result = composable.userHasMailUpdatesOptOut();
+
+			expect(result).toBeNull();
+		});
+
+		it('should return false when cookie exists but is not true', () => {
+			mockCookieStore.get.mockReturnValue('false');
 
 			const result = composable.userHasMailUpdatesOptOut();
 

@@ -7,7 +7,7 @@
 			Take the <u>next step</u> on your impact journey
 		</h2>
 		<KvCarousel
-			:key="cardOrderingSystem.length"
+			:key="dynamicOrderedSlides.length"
 			:embla-options="{
 				loop: false,
 				align: 'start',
@@ -22,7 +22,7 @@
 			@change="handleChange"
 		>
 			<template
-				v-for="(slide, index) in cardOrderingSystem"
+				v-for="(slide, index) in dynamicOrderedSlides"
 				#[`slide${index}`]
 				:key="index"
 			>
@@ -133,7 +133,6 @@ import {
 	filterNonBadgesSlides,
 	handlePrimaryCtaClick,
 	handleSecondaryCtaClick,
-	buildUniversalOrderedSlides,
 } from '#src/util/myKiva/myKivaJourneyCardUtils';
 
 const TRANSACTION_DAYS_LIMIT = 30;
@@ -221,10 +220,6 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
-	postLendingNextStepsEnable: {
-		type: Boolean,
-		default: false
-	},
 	latestLoan: {
 		type: Object,
 		default: null
@@ -234,10 +229,6 @@ const props = defineProps({
 		default: false
 	},
 	goalEditingEnable: {
-		type: Boolean,
-		default: false
-	},
-	useUniversalOrder: {
 		type: Boolean,
 		default: false
 	},
@@ -264,7 +255,6 @@ const acceptedEmailMarketingUpdates = ref(false);
 const shouldShowEmailMarketingCard = computed(
 	() => props.inLendingStats && checkShouldShowEmailMarketing({
 		showPostLendingNextStepsCards: props.showPostLendingNextStepsCards,
-		postLendingNextStepsEnable: props.postLendingNextStepsEnable,
 		latestLoan: props.latestLoan,
 		hasMailUpdatesOptOut: userHasMailUpdatesOptOut(),
 		loansCount: props.loans.length,
@@ -274,13 +264,11 @@ const isEmailUpdatesSlide = slide => slide?.isEmailUpdates === true;
 
 const showLatestLoan = computed(() => checkShowLatestLoan({
 	showPostLendingNextStepsCards: props.showPostLendingNextStepsCards,
-	postLendingNextStepsEnable: props.postLendingNextStepsEnable,
 	latestLoan: props.latestLoan,
 }));
 
 const showSurveyCard = computed(() => props.showSurveySlide && checkShowSurveyCard({
 	showPostLendingNextStepsCards: props.showPostLendingNextStepsCards,
-	postLendingNextStepsEnable: props.postLendingNextStepsEnable,
 	userInfo: props.userInfo,
 }));
 
@@ -300,6 +288,7 @@ const dynamicOrderedSlides = computed(() => {
 		isTieredAchievementComplete,
 		includeMilestoneDiff: true,
 		sortByMilestoneDiff: true,
+		userGoalCategory: props.userGoal?.category,
 	});
 	let loanJourneys = [];
 
@@ -359,33 +348,6 @@ const dynamicOrderedSlides = computed(() => {
 	}
 
 	return sortedSlides;
-});
-
-const slideLimit = computed(() => {
-	if (isMobile.value && props.enableSlideLimit) return 3;
-	return props.slidesNumber;
-});
-
-const universalOrderedSlides = computed(() => {
-	const achievementSlides = buildAchievementSlides({
-		badgesData: props.heroBadgeData,
-		slides: props.slides,
-		getActiveTierData,
-		isTieredAchievementComplete,
-	});
-	return buildUniversalOrderedSlides({
-		achievementSlides,
-		nonBadgesSlides: props.showNonBadgesSlides ? nonBadgesSlides.value : [],
-		shouldShowGoalCard: shouldShowGoalCard.value,
-		shouldShowEmailMarketingCard: shouldShowEmailMarketingCard.value,
-		showLatestLoan: showLatestLoan.value,
-		showSurveyCard: showSurveyCard.value,
-		slidesNumber: slideLimit.value,
-	});
-});
-
-const cardOrderingSystem = computed(() => {
-	return props.useUniversalOrder ? universalOrderedSlides.value : dynamicOrderedSlides.value;
 });
 
 const onPrimaryCtaClick = slide => {

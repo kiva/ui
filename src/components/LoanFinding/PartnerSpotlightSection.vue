@@ -40,7 +40,7 @@
 
 <script>
 import LendingCategorySection from '#src/components/LoanFinding/LendingCategorySection';
-import addToBasketExpMixin from '#src/plugins/add-to-basket-exp-mixin';
+import addToBasketMixin from '#src/plugins/add-to-basket-mixin';
 import SpotlightHero from './SpotlightHero';
 
 export default {
@@ -50,7 +50,7 @@ export default {
 		LendingCategorySection
 	},
 	inject: ['apollo', 'cookieStore'],
-	mixins: [addToBasketExpMixin],
+	mixins: [addToBasketMixin],
 	emits: ['add-to-basket', 'show-loan-details', 'mouse-enter-loan-card'],
 	props: {
 		spotlightData: {

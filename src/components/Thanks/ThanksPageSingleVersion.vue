@@ -19,7 +19,7 @@
 				:loan-comment-module-shown="showLoanComment"
 				:kiva-cards-module-shown="showKivaCardsModule"
 				:achievements-completed="achievementsCompleted"
-				@continue-clicked="handleContinue"
+				@continue-clicked="handleContinue(NON_TIERED_BADGE)"
 				class="tw-mb-2.5"
 			/>
 			<!-- Start goal module variations -->
@@ -165,13 +165,18 @@ import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import GoalInProgress from '#src/components/Thanks/SingleVersion/GoalInProgress';
 import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
 import useBadgeData from '#src/composables/useBadgeData';
-import { setGuestAssignmentCookie, setPostLendingCardCookie } from '#src/util/myKivaUtils';
+import { setPostLendingCardCookie } from '#src/util/myKivaUtils';
+import logReadQueryError from '#src/util/logReadQueryError';
+import useTipMessage from '#src/composables/useTipMessage';
 
 const EVENT_CATEGORY = 'post-checkout';
+const NON_TIERED_BADGE = 'non-tiered-badge';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const cookieStore = inject('cookieStore');
+
+const { $showTipMsg } = useTipMessage(apollo);
 
 const props = defineProps({
 	isGuest: {
@@ -218,10 +223,6 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
-	postLendingNextStepsEnable: {
-		type: Boolean,
-		default: false,
-	}
 });
 
 const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
@@ -351,7 +352,7 @@ const scrollToReceipt = () => {
 	}, 500);
 };
 
-const handleContinue = () => {
+const handleContinue = (badgeType = null) => {
 	const CLICK_EVENT_ACTION = 'click';
 	if (props.isGuest) {
 		showGuestAccountModal.value = true;
@@ -370,14 +371,23 @@ const handleContinue = () => {
 			userType.value,
 			numberOfBadges.value,
 		);
+
+		if (badgeType) {
+			return router?.push('/portfolio/lending-stats#lend-stat-badges');
+		}
 		router?.push('/mykiva');
 	}
 };
 
 const setGoal = async preferences => {
-	await storeGoalPreferences(preferences);
-	isGoalSet.value = true;
-	showGoalModal.value = false;
+	try {
+		await storeGoalPreferences(preferences);
+		isGoalSet.value = true;
+		showGoalModal.value = false;
+	} catch (error) {
+		logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
+		$showTipMsg('There was a problem setting up this goal', 'error');
+	}
 };
 
 const closeGoalModal = () => {
@@ -455,7 +465,6 @@ onMounted(async () => {
 		analyticsModuleOrder,
 		userType.value,
 	);
-	setGuestAssignmentCookie(cookieStore, true, props.isGuest);
 
 	// Track if all achievements have been earned
 	if (props.achievementsCompleted) {
@@ -466,7 +475,7 @@ onMounted(async () => {
 		);
 	}
 
-	setPostLendingCardCookie(cookieStore, props.postLendingNextStepsEnable, props.loans?.length);
+	setPostLendingCardCookie(cookieStore, props.loans?.length);
 });
 </script>
 

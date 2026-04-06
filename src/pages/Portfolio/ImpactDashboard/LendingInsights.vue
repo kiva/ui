@@ -1,6 +1,6 @@
 <template>
 	<async-portfolio-section
-		v-if="!lifetimeAmountLentOver10K"
+		v-if="!totalDepositsOver10K"
 		@visible="fetchLifetimeStats"
 		data-testid="lending-insights"
 		class="!tw-bg-eco-green-4"
@@ -177,7 +177,7 @@
 								{{ currentYearAmountLent }}
 							</dt>
 							<router-link
-								class="percentiles-stat-link tw-mt-auto"
+								class="percentiles-stat-link tw-mt-auto hover:md:!tw-underline"
 								to="/portfolio/loans"
 								v-kv-track-event="['portfolio', 'click', 'total-amount-lent-details']"
 							>
@@ -209,7 +209,7 @@
 								{{ currentYearCountryCount }}
 							</dt>
 							<router-link
-								class="percentiles-stat-link tw-mt-auto"
+								class="percentiles-stat-link tw-mt-auto hover:md:!tw-underline"
 								to="/portfolio/lending-stats"
 								v-kv-track-event="['portfolio', 'click', 'countries-supported-details']"
 							>
@@ -318,7 +318,7 @@
 				:icon="mdiClockOutline"
 			/>
 			<p class="tw-pl-0.5 tw-text-small tw-flex-shrink-0">
-				{{ daysUntilDeadline }} days to make contribution this year
+				{{ daysUntilDeadline }} more days to make a contribution this year
 			</p>
 		</div>
 	</async-portfolio-section>
@@ -341,6 +341,7 @@ const LENDING_INSIGHTS_LIFETIME_QUERY = gql`query lendingInsights {
 		lendingStats {
 			id
 			amountLentPercentile
+			totalAmountDeposited
 			lentTo {
 				countries {
 					totalCount
@@ -396,7 +397,7 @@ export default {
 			currentYearPercentile: null,
 			nextPercentileMsg: '',
 			lifetimeAmountLent: 0,
-			lifetimeAmountLentValue: null,
+			totalDepositsValue: null,
 			lifetimeCountryCount: 0,
 			lifetimeNumberOfLoans: 0,
 			lifetimePercentile: 0,
@@ -411,8 +412,8 @@ export default {
 		yearToDate() {
 			return new Date().getFullYear();
 		},
-		lifetimeAmountLentOver10K() {
-			return (this.lifetimeAmountLentValue ?? 0) >= SUPER_LENDER_THRESHOLD;
+		totalDepositsOver10K() {
+			return (this.totalDepositsValue ?? 0) >= SUPER_LENDER_THRESHOLD;
 		},
 	},
 	apollo: {
@@ -425,7 +426,7 @@ export default {
 	},
 	methods: {
 		syncLoadingState() {
-			this.loading = this.lifetimeAmountLentOver10K
+			this.loading = this.totalDepositsOver10K
 				? !(this.hasLifetimeStats && this.hasCurrentYearStats)
 				: !this.hasLifetimeStats;
 		},
@@ -433,7 +434,7 @@ export default {
 			const amount = toNumber(data?.my?.userStats?.amount_of_loans);
 			const amountOfLoans = numeral(amount);
 
-			this.lifetimeAmountLentValue = amount;
+			this.totalDepositsValue = toNumber(data?.my?.lendingStats?.totalAmountDeposited);
 			this.lifetimeAmountLent = amountOfLoans.format('$0,0[.]00');
 			this.lifetimeCountryCount = toNumber(data?.my?.lendingStats?.lentTo?.countries?.totalCount);
 			this.lifetimeNumberOfLoans = toNumber(data?.my?.userStats?.number_of_loans);
@@ -680,7 +681,7 @@ export default {
 }
 
 .percentiles-stat-value {
-	@apply tw-text-h2 tw-text-eco-green-4 tw-pb-0.5;
+	@apply tw-text-h3 tw-text-eco-green-4 tw-pb-0.5;
 
 	line-height: 1.1;
 }

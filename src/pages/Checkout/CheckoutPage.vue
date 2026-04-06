@@ -63,7 +63,6 @@
 							:incentive-goal="depositIncentiveAmountToLend"
 							:possible-achievement-progress="possibleAchievementProgress"
 							:lender-total-loans="lenderTotalLoans"
-							:is-my-kiva-enabled="isMyKivaEnabled"
 							:has-ever-logged-in="hasEverLoggedIn"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
@@ -350,7 +349,7 @@ import { removeLoansFromChallengeCookie } from '#src/util/teamChallengeUtils';
 import {
 	KvLoadingPlaceholder, KvPageContainer, KvButton, KvMaterialIcon
 } from '@kiva/kv-components';
-import { fetchPostCheckoutAchievements, getIsMyKivaEnabled, MY_KIVA_FOR_ALL_USERS_KEY } from '#src/util/myKivaUtils';
+import { fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import getCheckoutAlmostFundedRecommendationQuery from '#src/graphql/query/checkout/getCheckoutAlmostFundedRecommendation.graphql'; // eslint-disable-line max-len
 import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
@@ -482,9 +481,6 @@ export default {
 			userOptedIn: false,
 			addedUpsellLoans: [],
 			possibleAchievementProgress: [],
-			newAtbExpEnabled: false,
-			myKivaFlagEnabled: false,
-			isMyKivaEnabled: false,
 			lenderLoansIds: [],
 			mdiGiftOutline,
 			isBanditUpsellExpEnabled: false,
@@ -528,14 +524,10 @@ export default {
 					]);
 				})
 				.then(response => {
-					// eslint-disable-next-line max-len
-					const newAtbExpEnabled = readBoolSetting(response[0]?.data, 'general.new_atb_experience_enable.value');
-					if (newAtbExpEnabled) {
-						const basket = response[0]?.data?.shop?.basket ?? null;
-						const loans = getLoans(basket);
+					const basket = response[0]?.data?.shop?.basket ?? null;
+					const loans = getLoans(basket);
 
-						return fetchPostCheckoutAchievements(client, getLoanIds(loans));
-					}
+					return fetchPostCheckoutAchievements(client, getLoanIds(loans));
 				});
 		},
 		result({ data }) {
@@ -569,10 +561,6 @@ export default {
 
 			// Deposit incentive experiment MP-72
 			this.depositIncentiveAmountToLend = numeral(data?.my?.depositIncentiveAmountToLend ?? 0).value();
-
-			this.newAtbExpEnabled = readBoolSetting(data, 'general.new_atb_experience_enable.value');
-
-			this.myKivaFlagEnabled = readBoolSetting(data, MY_KIVA_FOR_ALL_USERS_KEY);
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -665,29 +653,17 @@ export default {
 		// Deposit incentive experiment MP-72
 		this.initializeDepositIncentiveExperiment();
 
-		if (this.newAtbExpEnabled) {
-			const response = this.apollo.readQuery({
-				query: postCheckoutAchievementsQuery,
-				variables: { loanIds: getLoanIds(this.loans) },
-			});
+		const response = this.apollo.readQuery({
+			query: postCheckoutAchievementsQuery,
+			variables: { loanIds: getLoanIds(this.loans) },
+		});
 
-			this.possibleAchievementProgress = response?.postCheckoutAchievements?.overallProgress ?? [];
-		}
+		this.possibleAchievementProgress = response?.postCheckoutAchievements?.overallProgress ?? [];
 
 		// If no bonus available and showPromoCreditPill cookie exists, remove promo credit pill
 		if (typeof window !== 'undefined'
 				&& this.totals?.bonusAvailableTotal <= 0 && getPromoCreditBannerCookie(this.cookieStore)) {
 			clearPromoCreditBannerCookie(this.cookieStore);
-		}
-
-		// Checkout page MyKiva pills only visible with new feature
-		if (this.myKivaFlagEnabled) {
-			this.isMyKivaEnabled = getIsMyKivaEnabled(
-				this.apollo,
-				this.$kvTrackEvent,
-				this.myKivaFlagEnabled,
-				this.cookieStore,
-			);
 		}
 	},
 	watch: {
@@ -1293,16 +1269,14 @@ export default {
 			this.depositIncentiveExperimentEnabled = depositIncentiveExp.version === 'b';
 		},
 		calculateProgressAchievement(removedLoanId) {
-			if (this.newAtbExpEnabled) {
-				const loanIds = this.loanIdsInBasket.filter(loanId => loanId !== removedLoanId);
-				if (loanIds.length) {
-					this.apollo.query({
-						query: postCheckoutAchievementsQuery,
-						variables: { loanIds },
-					}).then(({ data }) => {
-						this.possibleAchievementProgress = data?.postCheckoutAchievements?.overallProgress ?? [];
-					});
-				}
+			const loanIds = this.loanIdsInBasket.filter(loanId => loanId !== removedLoanId);
+			if (loanIds.length) {
+				this.apollo.query({
+					query: postCheckoutAchievementsQuery,
+					variables: { loanIds },
+				}).then(({ data }) => {
+					this.possibleAchievementProgress = data?.postCheckoutAchievements?.overallProgress ?? [];
+				});
 			}
 		},
 		async initializeBanditUpsellExperiment() {

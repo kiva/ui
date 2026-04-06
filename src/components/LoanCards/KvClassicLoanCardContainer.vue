@@ -35,7 +35,7 @@
 		/>
 		<div ref="bubble" class="tw-absolute tw-right-3 tw-z-modal">
 			<kv-user-avatar
-				v-show="addToBasketExpEnabled && showBubble"
+				v-show="showBubble"
 				class="loan-image tw-rounded-full tw-w-6 tw-h-6"
 				:style="bubbleStyle"
 				:lender-name="borrowerName"
@@ -156,10 +156,6 @@ export default {
 			default: false,
 		},
 		showLoansActivityFeed: {
-			type: Boolean,
-			default: false,
-		},
-		addToBasketExpEnabled: {
 			type: Boolean,
 			default: false,
 		},
@@ -315,13 +311,12 @@ export default {
 				apollo: this.apollo,
 				loanId: this.loanId,
 			}).then(() => {
-				if (this.addToBasketExpEnabled) {
-					this.animateBubble();
-					// Show modal after 1s (Defined in CSS)
-					setTimeout(() => {
-						this.formatAddedLoan();
-					}, 1000);
-				}
+				this.animateBubble();
+				// Show modal after 1s (Defined in CSS)
+				setTimeout(() => {
+					this.formatAddedLoan();
+				}, 1000);
+
 				this.isAdding = false;
 				this.$emit('add-to-basket', { loanId: this.loanId, name: this.loan?.name, success: true });
 				this.$kvTrackEvent(

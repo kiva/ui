@@ -120,23 +120,6 @@ export default [
 		redirect: '/',
 	},
 	{
-		path: '/gfm',
-		component: () => import('#src/pages/GivingFunds/GivingFundsManagementPage'),
-		meta: {
-			authenticationRequired: true,
-			excludeFromStaticSitemap: true,
-		},
-	},
-	{
-		path: '/gfm-beta',
-		component: () => import('#src/pages/GivingFunds/GivingFundsManagementPage'),
-		meta: {
-			authenticationRequired: true,
-			excludeFromStaticSitemap: true,
-		},
-		status: 'dev',
-	},
-	{
 		path: '/goal-setting',
 		component: () => import('#src/pages/GoalSetting'),
 		meta: {
