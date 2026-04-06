@@ -10,67 +10,68 @@
 			/>
 			Back to dashboard
 		</button>
+		<template v-if="!hideRecommendedForYouSection">
+			<h3 class="tw-text-primary tw-mb-2">
+				Next steps recommended for you
+			</h3>
 
-		<h3 class="tw-text-primary tw-mb-2">
-			Next steps recommended for you
-		</h3>
-
-		<section
-			:class="{'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperienceInFirstRow}"
-		>
-			<template v-if="showRegionExperienceInFirstRow">
-				<div class="goal-card-container">
-					<JourneyCardCarousel
-						class="carousel carousel-single"
-						user-in-homepage
-						in-lending-stats
-						:disable-drag="true"
-						:goal-progress-loading="goalProgressLoading"
-						:goal-progress="goalProgress"
-						:hero-badge-data="heroBadgeData"
-						:hero-tiered-achievements="heroTieredAchievements"
-						:lender="lender"
-						:slides-number="1"
-						:slides="heroSlides"
-						:user-goal-achieved="userGoalAchieved"
-						:user-goal="userGoal"
-						:categories-loan-count="categoriesLoanCount"
-						:hide-goal-card="hideCompletedGoalCard"
-						:user-info="userInfo"
-						:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-						@open-goal-modal="openGoalModal($event)"
-						@open-impact-insight-modal="showImpactInsightsModal = true"
+			<section
+				:class="{'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperienceInFirstRow}"
+			>
+				<template v-if="showRegionExperienceInFirstRow">
+					<div class="goal-card-container">
+						<JourneyCardCarousel
+							class="carousel carousel-single"
+							user-in-homepage
+							in-lending-stats
+							:disable-drag="true"
+							:goal-progress-loading="goalProgressLoading"
+							:goal-progress="goalProgress"
+							:hero-badge-data="heroBadgeData"
+							:hero-tiered-achievements="heroTieredAchievements"
+							:lender="lender"
+							:slides-number="1"
+							:slides="heroSlides"
+							:user-goal-achieved="userGoalAchieved"
+							:user-goal="userGoal"
+							:categories-loan-count="categoriesLoanCount"
+							:hide-goal-card="hideCompletedGoalCard"
+							:user-info="userInfo"
+							:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+							@open-goal-modal="openGoalModal($event)"
+							@open-impact-insight-modal="showImpactInsightsModal = true"
+						/>
+					</div>
+					<MyKivaRegionExperience
+						class="tw-flex-1 tw-min-w-0"
+						:regions-data="regionsData"
+						:loans="loans"
 					/>
-				</div>
-				<MyKivaRegionExperience
-					class="tw-flex-1 tw-min-w-0"
-					:regions-data="regionsData"
+				</template>
+				<JourneyCardCarousel
+					v-else-if="topRowHasContent"
+					class="carousel tw--mt-6"
+					user-in-homepage
+					in-lending-stats
+					:goal-progress-loading="goalProgressLoading"
+					:goal-progress="goalProgress"
+					:hero-badge-data="heroBadgeData"
+					:hero-tiered-achievements="heroTieredAchievements"
+					:lender="lender"
 					:loans="loans"
+					:slides-number="3"
+					:slides="achievementOnlySlides"
+					:user-goal-achieved="userGoalAchieved"
+					:user-goal="userGoal"
+					:hide-goal-card="hideCompletedGoalCard"
+					:latest-loan="latestLoan"
+					:user-info="userInfo"
+					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+					@open-goal-modal="openGoalModal($event)"
+					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
-			</template>
-			<JourneyCardCarousel
-				v-else-if="topRowHasContent"
-				class="carousel tw--mt-6"
-				user-in-homepage
-				in-lending-stats
-				:goal-progress-loading="goalProgressLoading"
-				:goal-progress="goalProgress"
-				:hero-badge-data="heroBadgeData"
-				:hero-tiered-achievements="heroTieredAchievements"
-				:lender="lender"
-				:loans="loans"
-				:slides-number="3"
-				:slides="achievementOnlySlides"
-				:user-goal-achieved="userGoalAchieved"
-				:user-goal="userGoal"
-				:hide-goal-card="hideCompletedGoalCard"
-				:latest-loan="latestLoan"
-				:user-info="userInfo"
-				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-				@open-goal-modal="openGoalModal($event)"
-				@open-impact-insight-modal="showImpactInsightsModal = true"
-			/>
-		</section>
+			</section>
+		</template>
 		<div class="tw-flex tw-flex-col">
 			<div :style="{ order: showPostLendingNextStepsCards ? 1 : 2 }">
 				<div>
@@ -380,6 +381,7 @@ const {
 	isTieredAchievementComplete,
 	getActiveTierData,
 	getAllCategoryLoanCounts,
+	allAchievementsCompleted
 } = useBadgeData();
 
 // Local modal/UI state
@@ -421,6 +423,12 @@ const achievementOnlySlides = computed(() => {
 
 const showRegionExperienceInFirstRow = computed(() => {
 	return !showPostLendingNextStepsCards.value && !props.userLentToAllRegions;
+});
+
+const hideRecommendedForYouSection = computed(() => {
+	return userGoalAchieved.value
+		&& !showRegionExperienceInFirstRow.value
+		&& allAchievementsCompleted(props.heroTieredAchievements);
 });
 
 // Hide the top row carousel when there is nothing to show (no active goal card,
