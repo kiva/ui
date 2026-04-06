@@ -9,6 +9,12 @@ export const MYKIVA_INPUT_FORM_KEY = 'mykiva-input-form';
 export const REFER_FRIEND_MODAL_KEY = 'refer-friend';
 export const JOURNEY_MODAL_KEY = 'journey';
 
+// Post-lending card slot keys used by topRowPriorityCards
+export const PRIORITY_CARD_GOAL = 'goal';
+export const PRIORITY_CARD_EMAIL = 'email';
+export const PRIORITY_CARD_LATEST_LOAN = 'latestLoan';
+export const PRIORITY_CARD_SURVEY = 'survey';
+
 /**
  * Checks if a loan is fully anonymous
  * @param {Object|null} loan
@@ -21,7 +27,8 @@ export const isLoanAnonymous = loan => loan?.anonymizationLevel?.toLowerCase() =
  * @param {Object} params
  * @param {boolean} params.showPostLendingNextStepsCards
  * @param {Object|null} params.latestLoan
- * @param {boolean} params.hasMailUpdatesOptOut - result of userHasMailUpdatesOptOut()
+ * @param {boolean|null} params.hasMailUpdatesOptOut - result of userHasMailUpdatesOptOut()
+ *   true = opted out, false = opted in, null = no preference set (new user)
  * @param {number} params.loansCount
  * @returns {boolean}
  */
@@ -33,7 +40,7 @@ export const checkShouldShowEmailMarketing = ({
 }) => {
 	return showPostLendingNextStepsCards
 		&& !isLoanAnonymous(latestLoan)
-		&& hasMailUpdatesOptOut && (loansCount > 0 || latestLoan !== null);
+		&& hasMailUpdatesOptOut !== false && (loansCount > 0 || latestLoan !== null);
 };
 
 /**
@@ -151,64 +158,73 @@ export const handleSecondaryCtaClick = ({
 };
 
 /**
-* Builds the universal ordered sequence for journey cards
-* @param {Object} params
-* @param {Array} params.achievementSlides - Pre-filtered achievement slides
-* @param {boolean} params.shouldShowGoalCard - Goal card
-* @param {boolean} params.shouldShowEmailMarketingCard - Email marketing card
-* @param {boolean} params.showLatestLoan - Latest loan card
-* @param {boolean} params.showSurveyCard - Survey card
-* @param {Array} params.nonBadgesSlides - Pre-filtered non-badges slides
-* @param {number|null} params.slidesNumber - Max slides to return (null = no limit)
-* @returns {Array} Ordered sequence of slide objects
-*/
-export const buildUniversalOrderedSlides = ({
-	achievementSlides,
-	nonBadgesSlides, // friend-referral, lending teams, and kiva cards
-	shouldShowGoalCard,
+ * Determines which post-lending cards occupy the top row carousel slots.
+ * Returns a Set of slot keys (e.g. 'goal', 'email', 'latestLoan', 'survey').
+ *
+ * @param {Object} params
+ * @param {boolean} params.showRegionExperienceInFirstRow - Whether region experience is in the first row
+ * @param {boolean} params.showPostLendingNextStepsCards - Whether post-lending cards are active
+ * @param {boolean} params.hideCompletedGoalCard - Whether the completed goal card is hidden
+ * @param {boolean} params.shouldShowEmailMarketingCard - Email marketing card visibility
+ * @param {boolean} params.showLatestLoan - Latest loan card visibility
+ * @param {boolean} params.showSurveyCard - Survey card visibility
+ * @returns {Set<string>}
+ */
+export const getTopRowPriorityCards = ({
+	showRegionExperienceInFirstRow,
+	showPostLendingNextStepsCards,
+	hideCompletedGoalCard,
 	shouldShowEmailMarketingCard,
 	showLatestLoan,
 	showSurveyCard,
-	slidesNumber = null,
 }) => {
-	const universalSequence = [];
-
-	// Goal card
-	if (shouldShowGoalCard) {
-		universalSequence.push({ isGoalCard: true });
-	}
-
-	// Achievement cards
-	universalSequence.push(...achievementSlides.slice(0, 5));
-
-	// Email marketing or latest loan (if user isn't opted in yet if so, only show latest loan)
+	if (showRegionExperienceInFirstRow) return new Set();
+	if (!showPostLendingNextStepsCards) return new Set();
+	const topRowSlidesCount = 3;
+	const goalCardVisible = !hideCompletedGoalCard;
+	const slots = [];
+	if (goalCardVisible) slots.push(PRIORITY_CARD_GOAL);
 	if (shouldShowEmailMarketingCard) {
-		universalSequence.push({ isEmailUpdates: true });
+		slots.push(PRIORITY_CARD_EMAIL);
 	} else if (showLatestLoan) {
-		universalSequence.push({ isLatestLoan: true });
+		slots.push(PRIORITY_CARD_LATEST_LOAN);
 	}
-
-	// Both are shown (if user isn't opted and has a recent lent loan)
 	if (shouldShowEmailMarketingCard && showLatestLoan) {
-		universalSequence.push({ isLatestLoan: true });
+		slots.push(PRIORITY_CARD_LATEST_LOAN);
 	}
-
-	// Survey card
-	if (showSurveyCard) {
-		universalSequence.push({ isSurveyCard: true });
+	if (showSurveyCard && (!goalCardVisible || !shouldShowEmailMarketingCard)) {
+		slots.push(PRIORITY_CARD_SURVEY);
 	}
+	return new Set(slots.slice(0, topRowSlidesCount));
+};
 
-	// Non-badges slides
-	if (nonBadgesSlides?.length > 0) {
-		universalSequence.push(...nonBadgesSlides);
-	}
-
-	// Apply slide limit if specified
-	if (slidesNumber) {
-		return universalSequence.slice(0, slidesNumber);
-	}
-
-	return universalSequence;
+/**
+ * Determines which achievement badge keys appear in the top row carousel
+ * so they can be excluded from the bottom row.
+ *
+ * @param {Object} params
+ * @param {boolean} params.showRegionExperienceInFirstRow
+ * @param {boolean} params.showPostLendingNextStepsCards
+ * @param {boolean} params.hideCompletedGoalCard
+ * @param {Set<string>} params.topRowPriorityCards - Result of getTopRowPriorityCards
+ * @param {Array} params.sortedAchievementSlides - Achievement slides sorted by milestoneDiff
+ * @returns {Set<string>}
+ */
+export const getTopRowAchievementKeys = ({
+	showRegionExperienceInFirstRow,
+	showPostLendingNextStepsCards,
+	hideCompletedGoalCard,
+	topRowPriorityCards,
+	sortedAchievementSlides,
+}) => {
+	if (showRegionExperienceInFirstRow) return new Set();
+	const topRowSlidesCount = 3;
+	const goalSlot = !showPostLendingNextStepsCards && !hideCompletedGoalCard ? 1 : 0;
+	const achievementSlotsInTopRow = Math.max(
+		topRowSlidesCount - goalSlot - topRowPriorityCards.size,
+		0
+	);
+	return new Set(sortedAchievementSlides.slice(0, achievementSlotsInTopRow).map(s => s.badgeKey));
 };
 
 /**
@@ -220,6 +236,7 @@ export const buildUniversalOrderedSlides = ({
  * @param {Boolean} options.includeMilestoneDiff - Whether to include milestoneDiff
  * @param {Function} options.isTieredAchievementComplete - From useBadgeData
  * @param {Function} options.getActiveTierData - From useBadgeData
+ * @param {String} options.userGoalCategory - User's goal category ID (optional)
  * @returns {Array} Achievement slide objects
  */
 export const buildAchievementSlides = ({
@@ -229,6 +246,7 @@ export const buildAchievementSlides = ({
 	isTieredAchievementComplete,
 	includeMilestoneDiff = false,
 	sortByMilestoneDiff = false,
+	userGoalCategory = null,
 }) => {
 	const achievementSlides = [];
 	defaultBadges.forEach(badgeKey => {
@@ -263,6 +281,15 @@ export const buildAchievementSlides = ({
 
 	if (sortByMilestoneDiff) {
 		achievementSlides.sort((a, b) => a.milestoneDiff - b.milestoneDiff);
+	}
+
+	// If user has a goal set, move the goal category achievement to the end
+	if (userGoalCategory) {
+		const goalAchievementIndex = achievementSlides.findIndex(slide => slide.badgeKey === userGoalCategory);
+		if (goalAchievementIndex > -1) {
+			const [goalAchievement] = achievementSlides.splice(goalAchievementIndex, 1);
+			achievementSlides.push(goalAchievement);
+		}
 	}
 
 	return achievementSlides;
