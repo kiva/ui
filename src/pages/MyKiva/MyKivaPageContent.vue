@@ -2,12 +2,6 @@
 	<KvAtbModalContainer
 		:added-loan="addedLoan"
 	/>
-	<MyKivaNavigation
-		:visible="showNavigation"
-		:user-info="userInfo"
-		:user-balance="userBalance"
-		@navigation-closed="showNavigation = false"
-	/>
 	<MyKivaContainer class="page-container">
 		<section>
 			<h3 class="tw-mt-4">
@@ -196,7 +190,6 @@ import useContentful from '#src/composables/useContentful';
 
 import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
-import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';
 import AsyncMyKivaSection from '#src/pages/MyKiva/AsyncMyKivaSection';
@@ -249,7 +242,6 @@ export default {
 		MyKivaBorrowerCarousel,
 		MyKivaContainer,
 		MyGivingFundsCard,
-		MyKivaNavigation,
 		MyKivaStats,
 		LendingStats,
 		BailoutChips,
@@ -363,7 +355,6 @@ export default {
 			selectedJourney: '',
 			showBPSideSheet: false,
 			showJourneySideSheet: false,
-			showNavigation: false,
 			showNextSteps: false,
 			state: STATE_JOURNEY,
 			transactionsTypes: [],
@@ -419,10 +410,6 @@ export default {
 		},
 	},
 	methods: {
-		handleShowNavigation() {
-			this.showNavigation = true;
-			this.$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
-		},
 		handleBadgeSectionClicked(badge) {
 			if (!badge.hasStarted) {
 				this.$router.push(this.getLoanFindingUrl(badge.id, this.$router.currentRoute.value));
