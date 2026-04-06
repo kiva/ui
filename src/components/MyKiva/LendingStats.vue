@@ -48,7 +48,6 @@
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 					:goal-editing-enable="goalEditingEnable"
-					:use-universal-order="useUniversalOrder"
 					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 					@open-goal-modal="openGoalModal($event)"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
@@ -185,7 +184,6 @@
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 			:goal-editing-enable="goalEditingEnable"
-			:use-universal-order="useUniversalOrder"
 			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			@open-goal-modal="openGoalModal($event)"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
@@ -325,9 +323,6 @@ export default {
 		};
 	},
 	computed: {
-		useUniversalOrder() {
-			return this.nextStepsExperimentVariant === 'b';
-		},
 		showRegionExperience() {
 			return !this.showPostLendingNextStepsCards && !this.userLentToAllRegions;
 		},

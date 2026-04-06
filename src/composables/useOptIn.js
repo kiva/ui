@@ -72,13 +72,12 @@ export default (apollo, cookieStore) => {
 	};
 
 	const userHasMailUpdatesOptOut = () => {
-		let mailsUpdatesOptOut = false;
 		const value = cookieStore.get(MAIL_UPDATES_OPT_COOKIE_NAME)?.trim();
-		if (/(\b|&)true(\b|&)/.test(value)) {
-			mailsUpdatesOptOut = true;
+		// Cookie doesn't exist — user hasn't made a preference choice
+		if (value === undefined || value === null || value === '') {
+			return null;
 		}
-
-		return mailsUpdatesOptOut;
+		return /(\b|&)true(\b|&)/.test(value);
 	};
 
 	const setMailUpdatesOptOutCookie = optedOut => {
