@@ -808,46 +808,26 @@ export default function useBadgeData() {
 	};
 
 	/**
-	 * Returns the contentful badge entry to show when full achievement data isn't available
-	 * (e.g. guests). Prefers an earned non-equity badge over equity.
-	 *
-	 * @param badgeAchievedIds IDs of all badges earned during checkout
-	 * @param allContentfulData All contentful badge data
-	 * @returns The contentful entry to display, or null
-	 */
-	const getPreferredFallbackBadge = (badgeAchievedIds, allContentfulData) => {
-		if (!allContentfulData?.length) return null;
-		const hasEquity = badgeAchievedIds.includes(ID_EQUITY);
-		const earnedNonEquityBadge = allContentfulData.find(
-			b => b.id !== ID_EQUITY && badgeAchievedIds.includes(b.id)
-		);
-		if (hasEquity && earnedNonEquityBadge) {
-			return earnedNonEquityBadge;
-		}
-		return allContentfulData.find(b => b.id === ID_EQUITY) ?? null;
-	};
-
-	/**
-	 * If equity and another badge were both earned but the other badge is missing from the
-	 * achievement service data, returns the badge built from contentful so it can be
-	 * prioritized over equity. Returns null if no override is needed.
+	 * If equity and a non-tiered milestone badge were both earned but the milestone badge is
+	 * missing from achievement service data, return a contentful-only override so it can be
+	 * prioritized over equity. Tiered badges should not override equity.
 	 *
 	 * @param filteredBadges Badges already filtered to those earned during checkout
 	 * @param badgeAchievedIds IDs of all badges earned during checkout
 	 * @param allContentfulData All contentful badge data
-	 * @returns The non-equity badge override object, or null
+	 * @returns The non-equity milestone badge override object, or null
 	 */
 	const getNonEquityBadgeOverride = (filteredBadges, badgeAchievedIds, allContentfulData) => {
-		const hasEquity = filteredBadges.some(b => b.id === ID_EQUITY);
-		const earnedNonEquityBadgeId = badgeAchievedIds.find(id => id !== ID_EQUITY);
-		const badgeMissingFromData = earnedNonEquityBadgeId
-			&& !filteredBadges.some(b => b.id === earnedNonEquityBadgeId);
+		const hasEquity = badgeAchievedIds.includes(ID_EQUITY);
+		const earnedMilestoneBadgeId = badgeAchievedIds.find(id => id !== ID_EQUITY && !defaultBadges.includes(id));
+		const milestoneMissingFromData = earnedMilestoneBadgeId
+			&& !filteredBadges.some(b => b.id === earnedMilestoneBadgeId);
 
-		if (hasEquity && badgeMissingFromData) {
-			const contentfulEntry = allContentfulData?.find(b => b.id === earnedNonEquityBadgeId);
+		if (hasEquity && milestoneMissingFromData) {
+			const contentfulEntry = allContentfulData?.find(b => b.id === earnedMilestoneBadgeId);
 			if (contentfulEntry) {
 				return {
-					id: earnedNonEquityBadgeId,
+					id: earnedMilestoneBadgeId,
 					challengeName: contentfulEntry.challengeName,
 					contentfulData: { ...contentfulEntry },
 				};
@@ -901,6 +881,5 @@ export default function useBadgeData() {
 		getAllCategoryLoanCounts,
 		allAchievementsCompleted,
 		getNonEquityBadgeOverride,
-		getPreferredFallbackBadge,
 	};
 }

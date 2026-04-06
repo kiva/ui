@@ -502,36 +502,8 @@ describe('useBadgeData.js', () => {
 		});
 	});
 
-	describe('getPreferredFallbackBadge', () => {
-		it('should prefer non-equity earned badges over equity for fallback display', () => {
-			const { getPreferredFallbackBadge } = useBadgeData();
-			const fallbackContentfulData = [
-				{ id: ID_EQUITY, challengeName: 'Equity' },
-				{ id: ID_EARTH_DAY_24, challengeName: 'Earth Day 2024' },
-			];
-
-			expect(getPreferredFallbackBadge(
-				[ID_EQUITY, ID_EARTH_DAY_24],
-				fallbackContentfulData,
-			)).toEqual(fallbackContentfulData[1]);
-		});
-
-		it('should fall back to equity when only equity is earned', () => {
-			const { getPreferredFallbackBadge } = useBadgeData();
-			const fallbackContentfulData = [
-				{ id: ID_EQUITY, challengeName: 'Equity' },
-				{ id: ID_WOMENS_EQUALITY, challengeName: 'Women' },
-			];
-
-			expect(getPreferredFallbackBadge(
-				[ID_EQUITY],
-				fallbackContentfulData,
-			)).toEqual(fallbackContentfulData[0]);
-		});
-	});
-
 	describe('getNonEquityBadgeOverride', () => {
-		it('should return a non-equity badge override when a non-equity badge is missing from achievement data', () => {
+		it('should return a non-equity milestone override when a milestone badge is missing from achievement data', () => {
 			const { getNonEquityBadgeOverride } = useBadgeData();
 			const filteredBadges = [
 				{ id: ID_EQUITY },
@@ -549,6 +521,22 @@ describe('useBadgeData.js', () => {
 				challengeName: 'IWD 2024',
 				contentfulData: { ...overrideContentfulData[0] },
 			});
+		});
+
+		it('should not override equity with tiered badges', () => {
+			const { getNonEquityBadgeOverride } = useBadgeData();
+			const filteredBadges = [
+				{ id: ID_EQUITY },
+			];
+			const overrideContentfulData = [
+				{ id: ID_WOMENS_EQUALITY, challengeName: 'Women' },
+			];
+
+			expect(getNonEquityBadgeOverride(
+				filteredBadges,
+				[ID_EQUITY, ID_WOMENS_EQUALITY],
+				overrideContentfulData,
+			)).toEqual(null);
 		});
 
 		it('should not override when only non-equity badges are already in achievement data', () => {

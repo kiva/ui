@@ -52,7 +52,7 @@ import {
 	onMounted,
 } from 'vue';
 import { mdiArrowRight } from '@mdi/js';
-import useBadgeData from '#src/composables/useBadgeData';
+import useBadgeData, { ID_EQUITY } from '#src/composables/useBadgeData';
 import {
 	KvMaterialIcon, KvButton, KvLoadingPlaceholder
 } from '@kiva/kv-components';
@@ -109,7 +109,6 @@ const {
 	getLastCompletedBadgeLevelData,
 	getTierBadgeDataByLevel,
 	getNonEquityBadgeOverride,
-	getPreferredFallbackBadge,
 } = useBadgeData();
 
 const badgeDataAchieved = ref();
@@ -188,15 +187,14 @@ onMounted(async () => {
 });
 
 watch(() => badgeContentfulData.value, () => {
-	// Guests don't have access to achievement data, so we fall back to contentful only.
-	// Prefers an earned non-equity badge over equity.
+	// Guests don't have access to achievement data, so we only show the equity badge
 	if (showEqualityBadge.value && badgeContentfulData.value?.length) {
-		const badgeToShow = getPreferredFallbackBadge(props.badgeAchievedIds, badgeContentfulData.value);
-		if (badgeToShow) {
+		const equityBadge = badgeContentfulData.value.find(b => b.id === ID_EQUITY);
+		if (equityBadge) {
 			badgeDataAchieved.value = [
 				{
-					levelName: badgeToShow.challengeName,
-					contentfulData: { ...badgeToShow },
+					levelName: equityBadge.challengeName,
+					contentfulData: { ...equityBadge },
 				},
 			];
 		}
