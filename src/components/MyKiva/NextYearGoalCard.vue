@@ -16,9 +16,7 @@
 				</h4>
 				<h3 class="tw-text-center" v-html="title"></h3>
 				<div class="tw-text-center">
-					<p>
-						How many loans will you make this year?
-					</p>
+					<p v-html="subtitle"></p>
 				</div>
 				<img
 					:src="HandsPlant"
@@ -120,6 +118,9 @@ const goalLoans = computed(() => {
 const yearToDate = new Date().getFullYear();
 
 const title = computed(() => {
+	if (props.isGoalTileExperimentEnabled) {
+		return 'You haven’t set your goal yet!';
+	}
 	if (props.prevYearLoans === 1) {
 		return `You helped <span class="tw-text-action"> ${props.prevYearLoans} woman</span><br>shape her future!`;
 	}
@@ -135,6 +136,13 @@ const categoryName = computed(() => {
 
 const ctaHref = computed(() => {
 	return getCtaHref(props.userGoal?.target, props.userGoal?.category, router, props.goalProgress);
+});
+
+const subtitle = computed(() => {
+	if (props.isGoalTileExperimentEnabled) {
+		return 'Make helping others a habit.<br>We’ll help you make it happen.';
+	}
+	return 'How many loans will you make this year?';
 });
 
 const showConfetti = () => {

@@ -19,6 +19,7 @@
 		<!-- Goal Selection Form (shown before goal is set) -->
 		<template v-else>
 			<img
+				v-if="!isGoalTileExperimentEnabled"
 				:src="HandsPlant"
 				class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
 			>
@@ -70,6 +71,60 @@
 				</template>
 			</div>
 
+			<template
+				v-if="isGoalTileExperimentEnabled && !isLarge && !isGoalSet"
+			>
+				<KvAccordionItem id="goal-tile-accordion-body" class="goal-tile-accordion">
+					<template
+						#header
+					>
+						<p class="tw-text-brand-900 !tw-font-semibold">
+							Why set a goal?
+						</p>
+					</template>
+					<div class="tw-text-justify tw-text-primary tw-text-base">
+						<ul>
+							<li>
+								<p>
+									<KvMaterialIcon
+										class="tw-w-1 tw-h-1 tw-text-primary"
+										:icon="mdiCheckBold"
+									/>
+									Build a habit of helping others
+								</p>
+							</li>
+							<li>
+								<p>
+									<KvMaterialIcon
+										class="tw-w-1 tw-h-1 tw-text-primary"
+										:icon="mdiCheckBold"
+									/>
+									Track your impact as it grows
+								</p>
+							</li>
+							<li>
+								<p>
+									<KvMaterialIcon
+										class="tw-w-1 tw-h-1 tw-text-primary"
+										:icon="mdiCheckBold"
+									/>
+									Stay consistent with reminders
+								</p>
+							</li>
+							<li>
+								<p>
+									<KvMaterialIcon
+										class="tw-w-1 tw-h-1 tw-text-primary"
+										:icon="mdiCheckBold"
+									/>
+									Edit anytime
+								</p>
+							</li>
+						</ul>
+					</div>
+				</KvAccordionItem>
+			</template>
+
 			<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
 				<KvButton
 					class="tw-w-full tw-mt-1.5"
@@ -104,13 +159,17 @@ import {
 	ref,
 	watch,
 } from 'vue';
+import { mdiPencilOutline, mdiCheckBold } from '@mdi/js';
+import {
+	KvButton, KvMaterialIcon, KvLoadingPlaceholder, KvAccordionItem
+} from '@kiva/kv-components';
+
 import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL, ID_US_ECONOMIC_EQUALITY } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
-import { KvButton, KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
-import { mdiPencilOutline } from '@mdi/js';
 import useGoalData, { LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
+import useBreakpoints from '#src/composables/useBreakpoints';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -222,6 +281,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Flag to indicate if the goal tile experiment is enabled
+	 */
+	isGoalTileExperimentEnabled: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits([
@@ -232,6 +298,8 @@ const emit = defineEmits([
 	'edit-goal-from-settings',
 	'update-goal'
 ]);
+
+const { isLarge } = useBreakpoints();
 
 const DEFAULT_GOAL_OPTIONS = [
 	{
@@ -530,7 +598,7 @@ watch(() => props.selectedCategoryId, async newCategory => {
 
 </script>
 
-<style lang="postcss" scoped>
+<style lang="postcss">
 .edit-goal-button :deep(span) {
 	@apply tw-flex;
 }
@@ -541,6 +609,31 @@ watch(() => props.selectedCategoryId, async newCategory => {
 
 	@screen lg {
 		min-height: 82px;
+	}
+}
+
+/* TODO: full width for accordion body */
+#kv-accordion-goal-tile-accordion-body {
+	@apply tw-w-full;
+}
+
+.goal-tile-accordion {
+	@apply !tw-border-b-0;
+
+	span {
+		font-weight: 611;
+
+		svg {
+			@apply !tw-text-brand-900;
+		}
+	}
+
+	ul {
+		li > p {
+			span svg {
+				@apply !tw-text-primary;
+			}
+		}
 	}
 }
 </style>
