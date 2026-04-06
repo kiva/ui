@@ -428,6 +428,14 @@ export default [
 		}
 	},
 	{
+		path: '/mykiva/',
+		redirect: to => ({
+			path: '/mykiva',
+			query: to.query,
+			hash: to.hash,
+		}),
+	},
+	{
 		path: '/mykiva',
 		component: () => import('#src/pages/MyKiva/MyKivaPage'),
 		meta: {
@@ -435,15 +443,6 @@ export default [
 			excludeFromStaticSitemap: true,
 		},
 		beforeEnter(to, from, next) {
-			if (to.path === '/mykiva/') {
-				return next({
-					path: '/mykiva',
-					query: to.query,
-					hash: to.hash,
-					replace: true
-				});
-			}
-
 			if (typeof window === 'undefined') return next();
 
 			const { hash, href } = window.location;
@@ -474,11 +473,11 @@ export default [
 	},
 	{
 		path: '/mykiva/next-steps',
-		component: () => import('#src/pages/MyKiva/MyKivaPage'),
-		meta: {
-			authenticationRequired: true,
-			excludeFromStaticSitemap: true,
-		},
+		redirect: to => ({
+			path: '/mykiva',
+			query: to.query,
+			hash: to.hash,
+		}),
 	},
 	{
 		path: '/portfolio',
