@@ -428,14 +428,6 @@ export default [
 		}
 	},
 	{
-		path: '/mykiva/',
-		redirect: to => ({
-			path: '/mykiva',
-			query: to.query,
-			hash: to.hash,
-		}),
-	},
-	{
 		path: '/mykiva',
 		component: () => import('#src/pages/MyKiva/MyKivaPage'),
 		meta: {
@@ -473,11 +465,11 @@ export default [
 	},
 	{
 		path: '/mykiva/next-steps',
-		redirect: to => ({
-			path: '/mykiva',
-			query: to.query,
-			hash: to.hash,
-		}),
+		component: () => import('#src/pages/MyKiva/MyKivaPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		},
 	},
 	{
 		path: '/portfolio',
