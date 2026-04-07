@@ -8,7 +8,7 @@
 			<div
 				v-for="n in 3"
 				:key="n"
-				class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2 tw-drop-shadow-lg"
+				class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2 tw-shadow-lg"
 			>
 				<!-- @todo Can we use tailwind classes here and still get the placeholder gradient animation? -->
 				<div class="tw-flex tw-items-start tw-mb-1">

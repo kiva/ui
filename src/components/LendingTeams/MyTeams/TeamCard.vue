@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2 tw-drop-shadow-lg">
+	<div class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2 tw-shadow-lg">
 		<div class="tw-flex tw-flex-row tw-items-center">
 			<img
 				:src="team.imageUrl"
@@ -18,7 +18,6 @@
 					{{ team.name }}
 				</router-link>
 			</div>
-			<!-- @todo Dropdown menu displays beneath team cards below it -->
 			<kv-utility-menu
 				class="tw-rounded-full"
 				menu-position="right-aligned"
