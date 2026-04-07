@@ -10,20 +10,28 @@
 				:key="n"
 				class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2 tw-shadow-lg"
 			>
-				<!-- @todo Can we use tailwind classes here and still get the placeholder gradient animation? -->
 				<div class="tw-flex tw-items-start tw-mb-1">
-					<kv-loading-placeholder
-						class="tw-flex-none tw-mr-1 tw-rounded-full"
-						:style="{width: '1.5rem', height: '1.5rem'}"
-					/>
+					<div class="tw-flex-none tw-mr-1 tw-rounded-full tw-w-6 tw-h-6 tw-overflow-hidden">
+						<kv-loading-placeholder />
+					</div>
 					<div class="tw-flex-1">
-						<kv-loading-placeholder class="tw-mb-0.5" :style="{width: '50%', height: '1rem'}" />
-						<kv-loading-placeholder :style="{width: '35%', height: '0.75rem'}" />
+						<div class="tw-w-1/2 tw-h-2 tw-mb-1">
+							<kv-loading-placeholder />
+						</div>
+						<div class="tw-w-[35%] tw-h-1.5">
+							<kv-loading-placeholder />
+						</div>
 					</div>
 				</div>
-				<kv-loading-placeholder class="tw-mb-1" :style="{width: '95%', height: '1rem'}" />
-				<kv-loading-placeholder class="tw-mb-1" :style="{width: '90%', height: '1rem'}" />
-				<kv-loading-placeholder :style="{width: '60%', height: '1rem'}" />
+				<div class="tw-w-[95%] tw-h-2 tw-mb-1">
+					<kv-loading-placeholder />
+				</div>
+				<div class="tw-w-[90%] tw-h-2 tw-mb-1">
+					<kv-loading-placeholder />
+				</div>
+				<div class="tw-w-3/5 tw-h-2">
+					<kv-loading-placeholder />
+				</div>
 			</div>
 		</template>
 
