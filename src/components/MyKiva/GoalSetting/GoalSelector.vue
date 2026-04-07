@@ -13,6 +13,7 @@
 			:goal-editing-enable="goalEditingEnable"
 			:is-updating-goal="isUpdatingGoal"
 			:is-goal-completed="isGoalCompleted"
+			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			@edit-goal-from-settings="handleEditGoalFromSettings"
 			@button-click="handleSuccessContinue"
 		/>
@@ -27,14 +28,22 @@
 				v-if="isLoadingData"
 				class="!tw-w-full !tw-h-10 !tw-rounded tw-mb-1 lg:tw-mb-0"
 			/>
-			<h2
+			<template
 				v-else
-				class="tw-px-4 lg:tw-px-7 tw-text-center"
-				:class="{ 'tw-mb-1.5 lg:tw-mb-3': !subtitleText }"
-				style="line-height: 125%;"
-				v-html="titleText"
 			>
-			</h2>
+				<img
+					v-if="isGoalTileExperimentEnabled && !isGoalSet"
+					:src="HandsPlant"
+					class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5 tw-mx-auto"
+				>
+				<h2
+					class="tw-px-4 lg:tw-px-7 tw-text-center"
+					:class="{ 'tw-mb-1.5 lg:tw-mb-3': !subtitleText }"
+					style="line-height: 125%;"
+					v-html="titleText"
+				>
+				</h2>
+			</template>
 
 			<KvLoadingPlaceholder
 				v-if="isLoadingData || loadingCurrentYear"
@@ -78,7 +87,7 @@
 					<template
 						#header
 					>
-						<p class="tw-text-brand-900 !tw-font-semibold">
+						<p class="tw-text-brand-900 !tw-font-semibold" @click="handleOpenGoalTile">
 							Why set a goal?
 						</p>
 					</template>
@@ -328,6 +337,7 @@ const prevSupportAllCount = ref(0);
 const selectedIdx = ref(1);
 const editGoalFromSettings = ref(false);
 const allowBackToCategorySelection = ref(false);
+const isGoalTileOpened = ref(false);
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -563,6 +573,19 @@ const handleEditGoalFromSettings = () => {
 	emit('edit-goal-from-settings');
 };
 
+const handleOpenGoalTile = () => {
+	if (props.trackingCategory === 'portfolio' && !isGoalTileOpened.value) {
+		$kvTrackEvent(
+			'portfolio',
+			'click',
+			'why-set-a-goal'
+		);
+		isGoalTileOpened.value = true;
+		return;
+	}
+	isGoalTileOpened.value = false;
+};
+
 onMounted(async () => {
 	await loadLoansThisYear();
 	updateGoalOptions();
@@ -612,16 +635,17 @@ watch(() => props.selectedCategoryId, async newCategory => {
 	}
 }
 
-/* TODO: full width for accordion body */
-#kv-accordion-goal-tile-accordion-body {
-	@apply tw-w-full;
-}
-
 .goal-tile-accordion {
-	@apply !tw-border-b-0;
+	@apply tw-w-full !tw-border-b-0;
+
+	button:first-child {
+		@apply !tw-w-auto tw-place-self-center;
+	}
 
 	span {
 		font-weight: 611;
+
+		@apply !tw-mr-1;
 
 		svg {
 			@apply !tw-text-brand-900;

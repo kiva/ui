@@ -41,40 +41,40 @@
 							<p class="tw-mb-2">
 								Set your annual goal
 							</p>
-							<ul>
-								<li>
-									<p>
-										<KvMaterialIcon
-											class="tw-w-1 tw-h-1 tw-text-base"
-											:icon="mdiCheckBold"
-										/>
+							<ul class="tw-inline-block">
+								<li class="tw-flex tw-items-start tw-gap-1 tw-mb-2">
+									<KvMaterialIcon
+										class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-mt-0.5"
+										:icon="mdiCheckBold"
+									/>
+									<p class="tw-text-left">
 										Build a habit of helping others
 									</p>
 								</li>
-								<li>
-									<p>
-										<KvMaterialIcon
-											class="tw-w-1 tw-h-1 tw-text-base"
-											:icon="mdiCheckBold"
-										/>
+								<li class="tw-flex tw-items-start tw-gap-1 tw-mb-2">
+									<KvMaterialIcon
+										class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-mt-0.5"
+										:icon="mdiCheckBold"
+									/>
+									<p class="tw-text-left">
 										Track your impact as it grows
 									</p>
 								</li>
-								<li>
-									<p>
-										<KvMaterialIcon
-											class="tw-w-1 tw-h-1 tw-text-base"
-											:icon="mdiCheckBold"
-										/>
+								<li class="tw-flex tw-items-start tw-gap-1 tw-mb-2">
+									<KvMaterialIcon
+										class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-mt-0.5"
+										:icon="mdiCheckBold"
+									/>
+									<p class="tw-text-left">
 										Stay consistent with reminders
 									</p>
 								</li>
-								<li>
-									<p>
-										<KvMaterialIcon
-											class="tw-w-1 tw-h-1 tw-text-base"
-											:icon="mdiCheckBold"
-										/>
+								<li class="tw-flex tw-items-start tw-gap-1 tw-mb-2">
+									<KvMaterialIcon
+										class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-mt-0.5"
+										:icon="mdiCheckBold"
+									/>
+									<p class="tw-text-left">
 										Edit anytime
 									</p>
 								</li>
@@ -90,22 +90,22 @@
 							<p class="tw-mb-2">
 								A year of impact
 							</p>
-							<ul>
-								<li>
-									<p>
-										<KvMaterialIcon
-											class="tw-w-1 tw-h-1 tw-text-base"
-											:icon="mdiCheckBold"
-										/>
+							<ul class="tw-inline-block">
+								<li class="tw-flex tw-items-start tw-gap-1 tw-mb-2">
+									<KvMaterialIcon
+										class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-mt-0.5"
+										:icon="mdiCheckBold"
+									/>
+									<p class="tw-text-left">
 										Reminders will help you stay on track.
 									</p>
 								</li>
-								<li>
-									<p>
-										<KvMaterialIcon
-											class="tw-w-1 tw-h-1 tw-text-base"
-											:icon="mdiCheckBold"
-										/>
+								<li class="tw-flex tw-items-start tw-gap-1 tw-mb-2">
+									<KvMaterialIcon
+										class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-mt-0.5"
+										:icon="mdiCheckBold"
+									/>
+									<p class="tw-text-left">
 										Edit your goal anytime.
 									</p>
 								</li>
@@ -519,7 +519,7 @@ watch(show, async newVal => {
 		li > p {
 			font-weight: 611;
 
-			@apply tw-text-small tw-mb-2;
+			@apply tw-text-small;
 
 			span {
 				@apply tw-mr-1;
