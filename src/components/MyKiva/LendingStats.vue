@@ -161,6 +161,14 @@
 				</div>
 			</div>
 		</template>
+		<div
+			v-else-if="goalProgressLoading"
+			class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden"
+		>
+			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0" />
+			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden md:tw-block" />
+			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden lg:tw-block" />
+		</div>
 		<JourneyCardCarousel
 			v-else
 			class="carousel tw--mt-6"
@@ -208,7 +216,7 @@
 
 <script>
 import { inject } from 'vue';
-import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
+import { KvMaterialIcon, KvCheckbox, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { mdiArrowTopRight, mdiArrowRight } from '@mdi/js';
 
 import useBadgeData from '#src/composables/useBadgeData';
@@ -240,6 +248,7 @@ export default {
 		GoalSettingModal,
 		MyKivaImpactInsightModal,
 		KvCheckbox,
+		KvLoadingPlaceholder,
 		KvMaterialIcon,
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -535,6 +544,19 @@ export default {
 
 	@screen md {
 		height: 191px;
+	}
+}
+
+.placeholder-card {
+	min-height: 340px;
+	flex: 0 0 100%;
+
+	@screen md {
+		flex: 0 0 calc((100% - 8px) / 2);
+	}
+
+	@screen lg {
+		flex: 0 0 calc((100% - 32px) / 3);
 	}
 }
 
