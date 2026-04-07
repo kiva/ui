@@ -34,6 +34,7 @@
 			:show-my-giving-funds-card="showMyGivingFundsCard"
 			:next-steps-experiment-variant="nextStepsExperimentVariant"
 			:goal-editing-enable="goalEditingEnable"
+			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 		/>
 	</www-page>
 </template>
@@ -65,6 +66,7 @@ import { inject, provide } from 'vue';
 const CURRENT_YEAR = new Date().getFullYear();
 const NEXT_STEPS_REDIRECT_EXP_KEY = 'mykiva_next_steps_redirect';
 const GOAL_EDITING_KEY = 'goal_editing_enable';
+const GOAL_TILE_EXPERIMENT_KEY = 'mykiva_goal_tile';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -114,6 +116,7 @@ export default {
 			nextStepsExperimentVariant: null,
 			goalEditingEnable: false,
 			recentTransactionLoans: [],
+			isGoalTileExperimentEnabled: false,
 		};
 	},
 	computed: {
@@ -164,6 +167,10 @@ export default {
 				client.query({
 					query: experimentAssignmentQuery,
 					variables: { id: NEXT_STEPS_REDIRECT_EXP_KEY },
+				}),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: GOAL_TILE_EXPERIMENT_KEY },
 				}),
 			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
@@ -313,6 +320,19 @@ export default {
 			},
 			this.$kvTrackEvent,
 			'EXP-MP-2417-Feb2026'
+		);
+
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			GOAL_TILE_EXPERIMENT_KEY,
+			version => {
+				this.isGoalTileExperimentEnabled = Boolean(version === 'b') && !this.isNextStepsRoute.value;
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-2565-Mar2026',
+			'portfolio'
 		);
 	},
 	async mounted() {

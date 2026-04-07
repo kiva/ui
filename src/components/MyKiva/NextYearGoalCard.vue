@@ -90,6 +90,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	isGoalTileExperimentEnabled: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits(['open-goal-modal']);

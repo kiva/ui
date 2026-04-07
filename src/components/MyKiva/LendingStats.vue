@@ -48,6 +48,7 @@
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 					:goal-editing-enable="goalEditingEnable"
+					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 					@open-goal-modal="openGoalModal($event)"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
@@ -183,6 +184,7 @@
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 			:goal-editing-enable="goalEditingEnable"
+			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			@open-goal-modal="openGoalModal($event)"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
 		/>
@@ -194,6 +196,7 @@
 			:show-goal-selector="true"
 			:tiered-achievements="heroTieredAchievements"
 			:is-updating-goal="isUpdatingGoal"
+			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
 		/>
@@ -296,6 +299,10 @@ export default {
 			validator: value => ['a', 'b'].includes(value)
 		},
 		goalEditingEnable: {
+			type: Boolean,
+			default: false
+		},
+		isGoalTileExperimentEnabled: {
 			type: Boolean,
 			default: false
 		},
