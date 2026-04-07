@@ -109,7 +109,6 @@ import useGoalData from '#src/composables/useGoalData';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
-import useOptIn from '#src/composables/useOptIn';
 import {
 	getSlideTitle,
 	getSlideSubTitle,
@@ -133,7 +132,6 @@ import {
 const TRANSACTION_DAYS_LIMIT = 30;
 
 const apollo = inject('apollo');
-const cookieStore = inject('cookieStore');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
@@ -244,14 +242,16 @@ const props = defineProps({
 const { isMobile, isMedium, isLarge } = useBreakpoints();
 const currentIndex = ref(0);
 const isSharingModalVisible = ref(false);
-const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
 const acceptedEmailMarketingUpdates = ref(false);
+
+const userOptedIn = computed(() => props.userInfo?.communicationSettings?.lenderNews
+	&& props.userInfo?.communicationSettings?.loanUpdates);
 
 const shouldShowEmailMarketingCard = computed(
 	() => props.inLendingStats && checkShouldShowEmailMarketing({
 		showPostLendingNextStepsCards: props.showPostLendingNextStepsCards,
 		latestLoan: props.latestLoan,
-		hasMailUpdatesOptOut: userHasMailUpdatesOptOut(),
+		hasMailUpdatesOptOut: !userOptedIn.value,
 		loansCount: props.loans.length,
 	})
 );
