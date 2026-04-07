@@ -1,11 +1,5 @@
 <template>
 	<div>
-		<h2
-			v-if="!userInHomepage"
-			class="tw-mb-3"
-		>
-			Take the <u>next step</u> on your impact journey
-		</h2>
 		<KvCarousel
 			:key="dynamicOrderedSlides.length"
 			:embla-options="{
@@ -164,10 +158,6 @@ const props = defineProps({
 	loans: {
 		type: Array,
 		default: () => ([]),
-	},
-	userInHomepage: {
-		type: Boolean,
-		default: false
 	},
 	slides: {
 		type: Array,
