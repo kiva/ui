@@ -135,7 +135,7 @@
 							in-lending-stats
 							user-in-homepage
 							:post-lending-next-steps-enable="true"
-							:show-post-lending-next-steps-cards="true"
+							:show-post-lending-next-steps-cards="!showPostLendingNextStepsCards"
 							:hero-badge-data="null"
 							:hero-tiered-achievements="heroTieredAchievements"
 							:lender="lender"
