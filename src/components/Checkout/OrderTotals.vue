@@ -103,7 +103,7 @@
 			>
 				<span class="tw-w-full tw-text-h3 " v-if="!isCorporateCampaign">
 					<template v-if="availablePromoTotal">
-						{{ availablePromoTotal }}
+						{{ availablePromoTotal }}{{ ' ' }}
 					</template>
 					<span
 						class="tw-text-brand"
