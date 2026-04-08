@@ -525,10 +525,18 @@ watch(show, async newVal => {
 }
 
 /* Style for components when Goal Tile experiment is enabled */
+.goal-modal-controls {
+	@apply tw-mx-auto tw-my-0;
+
+	button {
+		width: 314px;
+	}
+}
+
 .goal-tile-modal {
 	&.goal-tile-modal-expanded {
 		/* Override KvLightbox inline max-width to accommodate the category form with the new tile/left-sidebar */
-		[data-test="kv-lightbox"] {
+		[data-test=kv-lightbox] {
 			@apply lg:!tw-w-full;
 
 			@screen lg {
@@ -607,14 +615,6 @@ watch(show, async newVal => {
 				width: 314px;
 			}
 		}
-	}
-}
-
-.goal-modal-controls {
-	@apply tw-mx-auto tw-my-0;
-
-	button {
-		width: 314px;
 	}
 }
 
