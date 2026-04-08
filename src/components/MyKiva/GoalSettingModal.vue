@@ -1,12 +1,19 @@
 <template>
 	<KvLightbox
 		class="goal-setting-lightbox"
+		:class="{
+			'goal-tile-modal': showGoalTile,
+			'goal-tile-modal-expanded': showGoalTile && showCategories
+		}"
 		title=""
 		:visible="show"
 		:prevent-close="showGoalTile"
 		@lightbox-closed="closeLightbox"
 	>
-		<template #header>
+		<template
+			v-if="!showGoalTile"
+			#header
+		>
 			<h2
 				v-if="!isMobile && (showCategories || isThanksPage)"
 				class="tw-mb-3 tw-text-left md:tw-text-center"
@@ -115,8 +122,9 @@
 				</div>
 			</div>
 			<div
-				:class="{ 'tw-flex-1 tw-min-w-0': showGoalTile }"
+				:class="{ 'tw-flex-1 tw-min-w-0 goal-selector-wrapper': showGoalTile }"
 			>
+				<!-- second close button for goal tile variant -->
 				<button
 					v-if="showGoalTile"
 					class="
@@ -125,14 +133,24 @@
 						tw-w-6 tw-h-6 tw--m-2
 						hover:tw-text-action-highlight
 					"
+					:class="{
+						'tw-mb-1': isLoadingData
+					}"
+					@click="closeLightbox"
 				>
-					<!-- TODO: add trigger for close icon -->
 					<kv-material-icon
 						class="tw-w-3 tw-h-3"
 						:icon="mdiClose"
 					/>
 					<span class="tw-sr-only">Close</span>
 				</button>
+				<!-- second title for goal tile variant -->
+				<h2
+					v-if="showGoalTile && showCategories"
+					class="tw-mb-3 tw-text-left md:tw-text-center"
+				>
+					Choose an impact area
+				</h2>
 				<GoalSelector
 					v-if="showGoalSelector"
 					v-show="!showCategories"
@@ -160,17 +178,22 @@
 				/>
 				<component
 					v-show="showCategories || isThanksPage"
+					:class="{
+						'goal-tile-categories-container': showGoalTile
+					}"
 					:is="contentComponent"
 					:categories="categories"
 					:pre-selected-category="selectedCategory.id"
 					:selected-category="selectedCategory"
 					:selected-goal-number="selectedGoalNumber"
+					:is-goal-tile-experiment-enabled="showGoalTile"
 					@category-selected="handleCategorySelected"
 					@number-changed="handleNumberChanged"
 				/>
+				<!-- second continue button for goal tile variant -->
 				<div
 					v-if="showGoalTile && (showCategories || isThanksPage)"
-					class="tw-flex tw-justify-end tw-gap-2"
+					class="tw-flex tw-justify-end tw-gap-2 goal-tile-categories-controls"
 				>
 					<KvButton
 						v-if="formStep === 2"
@@ -190,7 +213,7 @@
 			#controls
 		>
 			<div
-				class="tw-flex tw-justify-end tw-gap-2"
+				class="tw-flex tw-justify-end tw-gap-2 goal-modal-controls"
 			>
 				<KvButton
 					v-if="formStep === 2"
@@ -499,47 +522,89 @@ watch(show, async newVal => {
 }
 
 /* Style for components when Goal Tile experiment is enabled */
-.goal-tile-container {
-	flex: 0 0 100%;
-	min-width: 0;
-	overflow: hidden;
+.goal-tile-modal {
+	&.goal-tile-modal-expanded {
+		/* Override KvLightbox inline max-width to accommodate the category form with the new tile/left-sidebar */
+		[data-test="kv-lightbox"] {
+			@apply lg:!tw-w-full;
 
-	@screen md {
-		flex: 0 0 calc((100% - 1rem) / 2 - 10px);
-		height: 390px;
-	}
-
-	@screen lg {
-		flex: 0 0 calc((100% - 2rem) / 3 - 10px);
-	}
-
-	ul {
-		@apply tw-text-justify;
-
-		li > p {
-			font-weight: 611;
-
-			@apply tw-text-small;
-
-			span {
-				@apply tw-mr-1;
+			@screen lg {
+				max-width: 70rem !important;
 			}
 		}
 	}
 
-	div:first-child {
-		max-width: 228px;
+	div:has(#kvLightboxBody) {
+		@apply lg:!tw-overflow-hidden;
 	}
-}
 
-/* TODO: In progress syncing modal body buttons with new styles for goal tile version */
-.goal-selector-container, .goal-modal-container {
-	button {
-		@apply lg:tw-self-center;
+	div:has(+ #kvLightboxBody) {
+		@apply lg:!tw-hidden;
+	}
+
+	#kvLightboxBody {
+		@apply lg:!tw-pl-0 lg:!tw-pb-0;
+	}
+
+	.goal-selector-wrapper {
+		@apply lg:tw-py-4;
+	}
+
+	.goal-tile-container {
+		flex: 0 0 100%;
+		min-width: 0;
+		overflow: hidden;
+
+		@screen md {
+			flex: 0 0 calc((100% - 1rem) / 2 - 10px);
+			height: 390px;
+		}
 
 		@screen lg {
-			max-width: 314px;
+			flex: 0 0 calc((100% - 2rem) / 3 - 10px);
+			height: auto;
+		}
+
+		ul {
+			@apply tw-text-justify;
+
+			li > p {
+				font-weight: 611;
+
+				@apply tw-text-small;
+
+				span {
+					@apply tw-mr-1;
+				}
+			}
+		}
+
+		div:first-child {
+			max-width: 228px;
+		}
+	}
+
+	.goal-selector-container, .goal-modal-container {
+		button {
+			@apply lg:tw-self-center;
+
+			@screen lg {
+				max-width: 314px;
+			}
+		}
+	}
+
+	.goal-tile-categories-controls {
+		@apply lg:tw-mt-5;
+
+		button {
+			@apply tw-mx-auto tw-my-0;
+
+			@screen lg {
+				width: 314px;
+			}
 		}
 	}
 }
+
 </style>
