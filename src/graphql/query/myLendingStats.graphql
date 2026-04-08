@@ -35,6 +35,7 @@ query myLendingStats {
 		}
 		userStats {
 			amount_of_loans
+			number_of_loans
 		}
 		statsPerCountry {
 			totalCount

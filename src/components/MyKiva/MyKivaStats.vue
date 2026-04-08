@@ -57,11 +57,11 @@ const props = defineProps({
 	},
 });
 
-const livesTouched = computed(() => props.lendingStats?.lentTo?.borrowers?.totalCount ?? 0);
+const livesTouched = computed(() => props.lendingStats?.number_of_loans ?? 0);
 
 const totalAmountLent = computed(() => numeral(props.lendingStats?.amount_of_loans ?? 0).value());
 
-const totalCountriesLentTo = computed(() => props.lendingStats?.lentTo?.countries?.totalCount ?? 0);
+const totalCountriesLentTo = computed(() => props.lendingStats?.countriesLentTo?.length ?? 0);
 
 const countryLabel = computed(() => {
 	return totalCountriesLentTo.value === 1 ? 'Country<br>lent to' : 'Countries<br>lent to';
