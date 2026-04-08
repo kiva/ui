@@ -8,22 +8,18 @@
 			<div
 				v-for="n in 3"
 				:key="n"
-				class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2 tw-drop-shadow-lg"
+				class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2 tw-shadow-lg tw-h-min-12"
 			>
-				<!-- @todo Can we use tailwind classes here and still get the placeholder gradient animation? -->
 				<div class="tw-flex tw-items-start tw-mb-1">
-					<kv-loading-placeholder
-						class="tw-flex-none tw-mr-1 tw-rounded-full"
-						:style="{width: '1.5rem', height: '1.5rem'}"
-					/>
+					<kv-loading-placeholder class="!tw-h-6 !tw-w-6 tw-flex-none tw-mr-1 !tw-rounded-full" />
 					<div class="tw-flex-1">
-						<kv-loading-placeholder class="tw-mb-0.5" :style="{width: '50%', height: '1rem'}" />
-						<kv-loading-placeholder :style="{width: '35%', height: '0.75rem'}" />
+						<kv-loading-placeholder class="!tw-h-2 !tw-w-1/2 tw-mb-1" />
+						<kv-loading-placeholder class="!tw-h-1.5 !tw-w-1/3" />
 					</div>
 				</div>
-				<kv-loading-placeholder class="tw-mb-1" :style="{width: '95%', height: '1rem'}" />
-				<kv-loading-placeholder class="tw-mb-1" :style="{width: '90%', height: '1rem'}" />
-				<kv-loading-placeholder :style="{width: '60%', height: '1rem'}" />
+				<kv-loading-placeholder class="!tw-h-2 !tw-w-4/5 tw-mb-1" />
+				<kv-loading-placeholder class="!tw-h-2 !tw-w-9/10 tw-mb-1" />
+				<kv-loading-placeholder class="!tw-h-2 !tw-w-3/5" />
 			</div>
 		</template>
 

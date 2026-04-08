@@ -808,6 +808,35 @@ export default function useBadgeData() {
 	};
 
 	/**
+	 * If equity and a non-tiered milestone badge were both earned but the milestone badge is
+	 * missing from achievement service data, return a contentful-only override so it can be
+	 * prioritized over equity. Tiered badges should not override equity.
+	 *
+	 * @param filteredBadges Badges already filtered to those earned during checkout
+	 * @param badgeAchievedIds IDs of all badges earned during checkout
+	 * @param allContentfulData All contentful badge data
+	 * @returns The non-equity milestone badge override object, or null
+	 */
+	const getNonEquityBadgeOverride = (filteredBadges, badgeAchievedIds, allContentfulData) => {
+		const hasEquity = badgeAchievedIds.includes(ID_EQUITY);
+		const earnedMilestoneBadgeId = badgeAchievedIds.find(id => id !== ID_EQUITY && !defaultBadges.includes(id));
+		const milestoneMissingFromData = earnedMilestoneBadgeId
+			&& !filteredBadges.some(b => b.id === earnedMilestoneBadgeId);
+
+		if (hasEquity && milestoneMissingFromData) {
+			const contentfulEntry = allContentfulData?.find(b => b.id === earnedMilestoneBadgeId);
+			if (contentfulEntry) {
+				return {
+					id: earnedMilestoneBadgeId,
+					challengeName: contentfulEntry.challengeName,
+					contentfulData: { ...contentfulEntry },
+				};
+			}
+		}
+		return null;
+	};
+
+	/**
 	 * Check if all achievements are completed
 	 *
 	 * @param badges The badges to check
@@ -851,5 +880,6 @@ export default function useBadgeData() {
 		getLevelCaption,
 		getAllCategoryLoanCounts,
 		allAchievementsCompleted,
+		getNonEquityBadgeOverride,
 	};
 }

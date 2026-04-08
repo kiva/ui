@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2 tw-drop-shadow-lg tw-overflow-hidden"
+		class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2 tw-shadow-lg tw-overflow-hidden"
 	>
 		<div class="tw-flex tw-items-start tw-mb-1">
 			<img
