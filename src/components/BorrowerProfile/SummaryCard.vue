@@ -237,24 +237,23 @@ export default {
 		// Initialize from loan prop when available (e.g. SSR with cache-warmed data)
 		// so the component renders real content instead of loading skeletons.
 		// The mount query will refresh these values client-side.
-		const loan = this.loan;
-		const hasLoanData = !!loan?.id;
+		const hasLoanData = !!this.loan?.id;
 		return {
 			isLoading: !hasLoanData,
-			activityName: loan?.activity?.name ?? '',
-			countryName: loan?.geocode?.country?.name ?? '',
-			fundraisingPercent: hasLoanData ? (loan?.fundraisingPercent ?? 0) : 0,
+			activityName: this.loan?.activity?.name ?? '',
+			countryName: this.loan?.geocode?.country?.name ?? '',
+			fundraisingPercent: hasLoanData ? (this.loan?.fundraisingPercent ?? 0) : 0,
 			mdiMapMarker,
-			timeLeft: loan?.fundraisingTimeLeft ?? '',
-			unreservedAmount: loan?.unreservedAmount ?? '0',
-			distributionModel: loan?.distributionModel ?? '',
-			city: loan?.geocode?.city ?? '',
-			state: loan?.geocode?.state ?? '',
-			inPfp: loan?.inPfp ?? false,
-			pfpMinLenders: loan?.pfpMinLenders ?? 0,
-			numLenders: loan?.lenders?.totalCount ?? 0,
-			totalComments: loan?.comments?.totalCount ?? 0,
-			paidAmount: loan?.paidAmount ?? '0.00',
+			timeLeft: this.loan?.fundraisingTimeLeft ?? '',
+			unreservedAmount: this.loan?.unreservedAmount ?? '0',
+			distributionModel: this.loan?.distributionModel ?? '',
+			city: this.loan?.geocode?.city ?? '',
+			state: this.loan?.geocode?.state ?? '',
+			inPfp: this.loan?.inPfp ?? false,
+			pfpMinLenders: this.loan?.pfpMinLenders ?? 0,
+			numLenders: this.loan?.lenders?.totalCount ?? 0,
+			totalComments: this.loan?.comments?.totalCount ?? 0,
+			paidAmount: this.loan?.paidAmount ?? '0.00',
 		};
 	},
 	computed: {
