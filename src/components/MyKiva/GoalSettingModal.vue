@@ -213,7 +213,10 @@
 			#controls
 		>
 			<div
-				class="tw-flex tw-justify-end tw-gap-2 goal-modal-controls"
+				class="tw-flex tw-justify-end tw-gap-2"
+				:class="{
+					'goal-modal-controls': isGoalTileExperimentEnabled
+				}"
 			>
 				<KvButton
 					v-if="formStep === 2"
@@ -604,6 +607,14 @@ watch(show, async newVal => {
 				width: 314px;
 			}
 		}
+	}
+}
+
+.goal-modal-controls {
+	@apply tw-mx-auto tw-my-0;
+
+	button {
+		width: 314px;
 	}
 }
 

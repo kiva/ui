@@ -32,7 +32,7 @@
 				v-else
 			>
 				<img
-					v-if="isGoalTileExperimentEnabled && !isGoalSet"
+					v-if="isGoalTileExperimentEnabled && !isGoalSet && !isLarge"
 					:src="HandsPlant"
 					class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5 tw-mx-auto"
 				>
@@ -83,7 +83,7 @@
 			<template
 				v-if="isGoalTileExperimentEnabled && !isLarge && !isGoalSet"
 			>
-				<KvAccordionItem id="goal-tile-accordion-body" class="goal-tile-accordion">
+				<KvAccordionItem ref="goalTileAccordion" id="goal-tile-accordion-body" class="goal-tile-accordion">
 					<template
 						#header
 					>
@@ -338,6 +338,7 @@ const selectedIdx = ref(1);
 const editGoalFromSettings = ref(false);
 const allowBackToCategorySelection = ref(false);
 const isGoalTileOpened = ref(false);
+const goalTileAccordion = ref(null);
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -433,6 +434,8 @@ const localGoalProgressPercentage = computed(() => {
 });
 
 const resetOptionSelection = selectedIndex => {
+	isGoalTileOpened.value = false;
+	goalTileAccordion.value?.collapse();
 	goalOptions.value = goalOptions.value.map((option, index) => ({
 		...option,
 		selected: index === selectedIndex,
