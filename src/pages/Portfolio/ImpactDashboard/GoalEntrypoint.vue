@@ -35,7 +35,7 @@
 			class="goal-button tw-whitespace-nowrap tw-mt-2 md:tw-mt-0 tw-w-full lg:tw-w-auto"
 			@click="goToGoalPage"
 		>
-			Set {{ yearToDate }} goal
+			Set {{ GOALS_CURRENT_YEAR }} goal
 		</KvButton>
 	</AsyncPortfolioSection>
 </template>
@@ -59,8 +59,6 @@ const apollo = inject('apollo');
 const loading = ref(true);
 const router = useRouter();
 const womenLoansLastYear = ref(0);
-
-const yearToDate = GOALS_CURRENT_YEAR;
 
 const title = computed(() => {
 	if (womenLoansLastYear.value === 1) {
