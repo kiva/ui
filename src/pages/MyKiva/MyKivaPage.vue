@@ -129,6 +129,33 @@ export default {
 		regionsData() {
 			return this.lendingStats.regionsData ?? [];
 		},
+		userOptedIn() {
+			return this.userInfo?.communicationSettings?.loanUpdates
+				&& this.userInfo?.communicationSettings?.lenderNews;
+		}
+	},
+	watch: {
+		'$route.path': {
+			async handler() {
+				// No need to fetch communication settings if user has already opted in
+				if (!this.isNextStepsRoute || this.userOptedIn) return;
+				const { data } = await this.apollo.query({
+					query: gql`
+						query UserCommunicationSettings {
+							my {
+								id
+								communicationSettings {
+									lenderNews
+									loanUpdates
+								}
+							}
+						}
+					`,
+					fetchPolicy: 'network-only',
+				});
+				this.userInfo = { ...this.userInfo, communicationSettings: data?.my?.communicationSettings };
+			}
+		}
 	},
 	apollo: {
 		preFetch(_, client, { route }) {
