@@ -48,7 +48,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { useRouter } from 'vue-router';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
-import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import useGoalData, { LAST_YEAR_KEY, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
@@ -60,7 +60,7 @@ const loading = ref(true);
 const router = useRouter();
 const womenLoansLastYear = ref(0);
 
-const yearToDate = new Date().getFullYear();
+const yearToDate = GOALS_CURRENT_YEAR;
 
 const title = computed(() => {
 	if (womenLoansLastYear.value === 1) {
