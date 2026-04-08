@@ -48,6 +48,14 @@
 						:loans="loans"
 					/>
 				</template>
+				<div
+					v-else-if="goalProgressLoading"
+					class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden"
+				>
+					<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0" />
+					<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden md:tw-block" />
+					<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden lg:tw-block" />
+				</div>
 				<JourneyCardCarousel
 					v-else-if="topRowHasContent"
 					class="carousel tw--mt-6"
@@ -127,7 +135,7 @@
 							in-lending-stats
 							user-in-homepage
 							:post-lending-next-steps-enable="true"
-							:show-post-lending-next-steps-cards="true"
+							:show-post-lending-next-steps-cards="!showPostLendingNextStepsCards"
 							:hero-badge-data="null"
 							:hero-tiered-achievements="heroTieredAchievements"
 							:lender="lender"
@@ -154,13 +162,21 @@
 					</template>
 				</div>
 			</div>
-			<div v-if="bottomRowAchievementSlides.length > 0" :style="{ order: showPostLendingNextStepsCards ? 2 : 1 }">
+			<div
+				v-if="goalProgressLoading || bottomRowAchievementSlides.length > 0"
+				:style="{ order: showPostLendingNextStepsCards ? 2 : 1 }"
+			>
 				<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 					Continue with your lifetime achievements
 				</h3>
 
 				<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
-					<template v-if="!isMobile">
+					<template v-if="goalProgressLoading">
+						<KvLoadingPlaceholder class="placeholder-card !tw-rounded" />
+						<KvLoadingPlaceholder class="placeholder-card !tw-rounded tw-hidden md:tw-block" />
+						<KvLoadingPlaceholder class="placeholder-card !tw-rounded tw-hidden lg:tw-block" />
+					</template>
+					<template v-else-if="!isMobile">
 						<MyKivaCard
 							v-for="slide in bottomRowAchievementSlides"
 							:key="slide.badgeKey"
@@ -198,7 +214,7 @@
 						:hero-tiered-achievements="heroTieredAchievements"
 						:lender="lender"
 						:loans="loans"
-						:slides="heroSlides"
+						:slides="bottomRowHeroSlides"
 						:user-goal-achieved="userGoalAchieved"
 						:user-goal="userGoal"
 						:post-lending-next-steps-enable="false"
@@ -260,7 +276,7 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { mdiArrowLeft } from '@mdi/js';
-import { KvMaterialIcon, KvButton } from '@kiva/kv-components';
+import { KvMaterialIcon, KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
 
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
@@ -276,6 +292,7 @@ import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import useBadgeData from '#src/composables/useBadgeData';
 import { isNonBadgeSlide } from '#src/util/achievementUtils';
 import {
+	getRichTextUiSettingsData,
 	getSlideTitle,
 	getSlideSubTitle,
 	getSlidePrimaryCtaText,
@@ -406,6 +423,8 @@ const achievementSlides = computed(() => buildAchievementSlides({
 }));
 
 // Sorted version used to determine which achievements land in the top row carousel.
+// Must include userGoalCategory to match the carousel's ordering (goal category pushed to end)
+// so topRowAchievementKeys correctly excludes the right slides from "Continue with your lifetime achievements".
 const sortedAchievementSlides = computed(() => buildAchievementSlides({
 	badgesData: props.heroBadgeData,
 	slides: props.heroSlides,
@@ -413,6 +432,7 @@ const sortedAchievementSlides = computed(() => buildAchievementSlides({
 	getActiveTierData,
 	includeMilestoneDiff: true,
 	sortByMilestoneDiff: true,
+	userGoalCategory: userGoal.value?.category,
 }));
 
 // Only badge slides — passed to the top row carousel so non-badge (contentful) slides
@@ -485,6 +505,14 @@ const topRowAchievementKeys = computed(() => getTopRowAchievementKeys({
 
 const bottomRowAchievementSlides = computed(() => {
 	return achievementSlides.value.filter(s => !topRowAchievementKeys.value.has(s.badgeKey));
+});
+
+// Filtered heroSlides for mobile bottom-row carousel — excludes slides already shown in the top row
+const bottomRowHeroSlides = computed(() => {
+	return (props.heroSlides || []).filter(slide => {
+		const key = getRichTextUiSettingsData(slide)?.achievementKey;
+		return !topRowAchievementKeys.value.has(key);
+	});
 });
 
 const showEmailInBuildSection = computed(
@@ -590,6 +618,19 @@ onMounted(async () => {
 </script>
 
 <style lang="postcss" scoped>
+.placeholder-card {
+	min-height: 340px;
+	flex: 0 0 100%;
+
+	@screen md {
+		flex: 0 0 calc((100% - 8px) / 2);
+	}
+
+	@screen lg {
+		flex: 0 0 calc((100% - 32px) / 3);
+	}
+}
+
 .loading-card {
 	@apply tw-w-full tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
 		tw-overflow-hidden tw-bg-white;
