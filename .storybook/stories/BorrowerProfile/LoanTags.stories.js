@@ -27,6 +27,27 @@ const mockAvailableTags = [
  * or not (available tags query).
  */
 function loanTagsMixin(appliedTagNames = []) {
+	function getMockData(variables) {
+		if (variables?.loanId) {
+			return {
+				data: {
+					lend: {
+						loan: {
+							id: variables.loanId,
+							tags: appliedTagNames,
+						},
+					},
+				},
+			};
+		}
+		return {
+			data: {
+				lend: {
+					tag: mockAvailableTags,
+				},
+			},
+		};
+	}
 	return {
 		provide: {
 			apollo: {
@@ -36,34 +57,15 @@ function loanTagsMixin(appliedTagNames = []) {
 				readQuery() {
 					return {};
 				},
-				watchQuery() {
+				watchQuery({ variables } = {}) {
+					const mockData = getMockData(variables);
 					return {
-						subscribe: ({ next }) => { next({}); },
+						subscribe: ({ next }) => { next(mockData); },
 						setVariables() {},
 					};
 				},
 				query({ variables } = {}) {
-					if (variables?.loanId) {
-						// Loan tags query
-						return Promise.resolve({
-							data: {
-								lend: {
-									loan: {
-										id: variables.loanId,
-										tags: appliedTagNames,
-									},
-								},
-							},
-						});
-					}
-					// Available tags query
-					return Promise.resolve({
-						data: {
-							lend: {
-								tag: mockAvailableTags,
-							},
-						},
-					});
+					return Promise.resolve(getMockData(variables));
 				},
 				readFragment() {
 					return null;
