@@ -17,26 +17,27 @@ const mockComments = Array.from({ length: 20 }, (_, i) => ({
 
 function commentsMixin(comments, opts = {}) {
 	const { isLoggedIn = true, lentTo = true, isSubscribed = false } = opts;
+	const mockData = {
+		data: {
+			lend: {
+				loan: {
+					id: 123,
+					comments: { values: comments },
+					userProperties: { lentTo, subscribed: isSubscribed },
+				},
+			},
+			my: isLoggedIn
+				? { id: 'user-1', userAccount: { id: 123 } }
+				: { id: null },
+		},
+	};
 	return {
 		provide: {
 			apollo: {
 				mutate: () => Promise.resolve({}),
 				readQuery: () => ({}),
-				watchQuery: () => ({ subscribe: ({ next }) => next({}), setVariables() {} }),
-				query: () => Promise.resolve({
-					data: {
-						lend: {
-							loan: {
-								id: 123,
-								comments: { values: comments },
-								userProperties: { lentTo, subscribed: isSubscribed },
-							},
-						},
-						my: isLoggedIn
-							? { id: 'user-1', userAccount: { id: 123 } }
-							: { id: null },
-					},
-				}),
+				watchQuery: () => ({ subscribe: ({ next }) => next(mockData), setVariables() {} }),
+				query: () => Promise.resolve(mockData),
 				readFragment: () => null,
 			},
 		},
