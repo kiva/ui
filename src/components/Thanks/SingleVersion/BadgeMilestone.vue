@@ -108,6 +108,7 @@ const {
 	getHighestPriorityDisplayBadge,
 	getLastCompletedBadgeLevelData,
 	getTierBadgeDataByLevel,
+	getNonEquityBadgeOverride,
 } = useBadgeData();
 
 const badgeDataAchieved = ref();
@@ -150,6 +151,10 @@ const displayedBadgeData = computed(() => {
 			return badgeDataAchieved.value[0];
 		}
 		const displayedBadge = getHighestPriorityDisplayBadge(badgeDataAchieved.value);
+		// Contentful-only badges (non-equity badges not in achievement service) have no achievementData
+		if (!displayedBadge.achievementData) {
+			return displayedBadge;
+		}
 		return getLastCompletedBadgeLevelData(displayedBadge);
 	}
 	return {};
@@ -196,9 +201,24 @@ watch(() => badgeContentfulData.value, () => {
 	}
 });
 
-watch(() => badgeData.value, () => {
-	if (!showEqualityBadge.value && badgeData.value.length) {
-		badgeDataAchieved.value = badgeData.value.filter(b => props.badgeAchievedIds.includes(b.id));
+watch([() => badgeData.value, () => badgeContentfulData.value], ([newBadgeData]) => {
+	if (!showEqualityBadge.value && newBadgeData.length) {
+		const filteredBadges = newBadgeData.filter(b => props.badgeAchievedIds.includes(b.id));
+		const nonEquityBadgeOverride = getNonEquityBadgeOverride(
+			filteredBadges,
+			props.badgeAchievedIds,
+			badgeContentfulData.value,
+		);
+
+		if (nonEquityBadgeOverride) {
+			badgeDataAchieved.value = [
+				nonEquityBadgeOverride,
+				...filteredBadges.filter(b => b.id !== nonEquityBadgeOverride.id),
+			];
+			return;
+		}
+
+		badgeDataAchieved.value = filteredBadges;
 	}
 }, { immediate: true });
 </script>

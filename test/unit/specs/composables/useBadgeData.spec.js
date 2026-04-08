@@ -502,6 +502,61 @@ describe('useBadgeData.js', () => {
 		});
 	});
 
+	describe('getNonEquityBadgeOverride', () => {
+		it('should return a non-equity milestone override when a milestone badge is missing from achievement data', () => {
+			const { getNonEquityBadgeOverride } = useBadgeData();
+			const filteredBadges = [
+				{ id: ID_EQUITY },
+			];
+			const overrideContentfulData = [
+				{ id: ID_IWD_24, challengeName: 'IWD 2024' },
+			];
+
+			expect(getNonEquityBadgeOverride(
+				filteredBadges,
+				[ID_EQUITY, ID_IWD_24],
+				overrideContentfulData,
+			)).toEqual({
+				id: ID_IWD_24,
+				challengeName: 'IWD 2024',
+				contentfulData: { ...overrideContentfulData[0] },
+			});
+		});
+
+		it('should not override equity with tiered badges', () => {
+			const { getNonEquityBadgeOverride } = useBadgeData();
+			const filteredBadges = [
+				{ id: ID_EQUITY },
+			];
+			const overrideContentfulData = [
+				{ id: ID_WOMENS_EQUALITY, challengeName: 'Women' },
+			];
+
+			expect(getNonEquityBadgeOverride(
+				filteredBadges,
+				[ID_EQUITY, ID_WOMENS_EQUALITY],
+				overrideContentfulData,
+			)).toEqual(null);
+		});
+
+		it('should not override when only non-equity badges are already in achievement data', () => {
+			const { getNonEquityBadgeOverride } = useBadgeData();
+			const filteredBadges = [
+				{ id: ID_EQUITY },
+				{ id: ID_WOMENS_EQUALITY },
+			];
+			const overrideContentfulData = [
+				{ id: ID_WOMENS_EQUALITY, challengeName: 'Women' },
+			];
+
+			expect(getNonEquityBadgeOverride(
+				filteredBadges,
+				[ID_EQUITY, ID_WOMENS_EQUALITY],
+				overrideContentfulData,
+			)).toEqual(null);
+		});
+	});
+
 	describe('getCompletedBadges', () => {
 		it('should return the completed badges', () => {
 			const { getCompletedBadges } = useBadgeData();
