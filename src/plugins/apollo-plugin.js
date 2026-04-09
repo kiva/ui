@@ -136,27 +136,26 @@ export default app => {
 				if (!target) {
 					console.warn('[apollo-plugin] No Element found for IntersectionObserver in', this.$options.name);
 					setupWatchQuery(this, operation, commonVars);
-					continue;
-				}
-
-				const observer = createIntersectionObserver({
-					targets: [target],
-					options: { rootMargin: lazyConfig.rootMargin },
-					callback: entries => {
-						entries.forEach(entry => {
-							if (entry.intersectionRatio > 0) {
-								setupWatchQuery(this, operation, commonVars);
-								observer.disconnect();
-							}
-						});
-					},
-				});
-
-				if (observer) {
-					this.lazyObservers.push(observer);
 				} else {
-					// IntersectionObserver not supported — fall back to immediate setup
-					setupWatchQuery(this, operation, commonVars);
+					const observer = createIntersectionObserver({
+						targets: [target],
+						options: { rootMargin: lazyConfig.rootMargin },
+						callback: entries => {
+							entries.forEach(entry => {
+								if (entry.intersectionRatio > 0) {
+									setupWatchQuery(this, operation, commonVars);
+									observer.disconnect();
+								}
+							});
+						},
+					});
+
+					if (observer) {
+						this.lazyObservers.push(observer);
+					} else {
+						// IntersectionObserver not supported — fall back to immediate setup
+						setupWatchQuery(this, operation, commonVars);
+					}
 				}
 			}
 		},
