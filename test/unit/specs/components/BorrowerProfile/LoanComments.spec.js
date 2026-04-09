@@ -113,7 +113,9 @@ describe('LoanComments', () => {
 	});
 
 	it('delete comment removes it from the list after confirmation', async () => {
-		const { getAllByTestId, getByText, queryByText, mutate } = renderLoanComments({}, { isAdmin: true });
+		const {
+			getAllByTestId, getByText, queryByText, mutate
+		} = renderLoanComments({}, { isAdmin: true });
 		await fireEvent.click(getAllByTestId('bp-comment-delete')[0]);
 
 		expect(getByText('Delete this comment?')).toBeTruthy();
@@ -128,7 +130,9 @@ describe('LoanComments', () => {
 	});
 
 	it('delete shows error on failure', async () => {
-		const { getAllByTestId, getByText, mutate, showTipMsg } = renderLoanComments({}, { isAdmin: true });
+		const {
+			getAllByTestId, getByText, mutate, showTipMsg
+		} = renderLoanComments({}, { isAdmin: true });
 		mutate.mockRejectedValueOnce(new Error('network'));
 		await fireEvent.click(getAllByTestId('bp-comment-delete')[0]);
 		await fireEvent.click(getByText('Delete comment'));
