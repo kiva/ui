@@ -20,7 +20,7 @@ function amount(loanAmount) {
  * @returns {string}
  */
 function helped(status = '') {
-	if (['fundraising', 'inactive', 'reviewed'].includes(status)) {
+	if (['fundraising', 'inactive', 'reviewed', 'issue'].includes(status)) {
 		return 'helps';
 	}
 	return 'helped';

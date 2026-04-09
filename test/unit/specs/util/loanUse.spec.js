@@ -1,5 +1,5 @@
 import {
-	FUNDRAISING, INACTIVE, REVIEWED, PAYING_BACK
+	FUNDRAISING, INACTIVE, REVIEWED, ISSUE, PAYING_BACK
 } from '#src/api/fixtures/LoanStatusEnum';
 import getLoanUse from '#src/util/loanUse';
 
@@ -87,6 +87,7 @@ describe('getLoanUse', () => {
 		const helpedUse = 'A loan of $1,800 helped to buy produce.';
 		expectUse({ ...loanDefaults, status: INACTIVE }, defaultUse);
 		expectUse({ ...loanDefaults, status: REVIEWED }, defaultUse);
+		expectUse({ ...loanDefaults, status: ISSUE }, defaultUse);
 		expectUse({ ...loanDefaults, status: PAYING_BACK }, helpedUse);
 		expectUse({ ...loanDefaults, status: 'not_a_status' }, helpedUse);
 		expectUse({ ...loanDefaults, status: null }, helpedUse);
@@ -96,6 +97,7 @@ describe('getLoanUse', () => {
 		const helpedUseV2 = '$1,800 helped Test Borrower to buy produce.';
 		expectUse({ ...loanDefaultsV2, status: INACTIVE }, defaultUseV2);
 		expectUse({ ...loanDefaultsV2, status: REVIEWED }, defaultUseV2);
+		expectUse({ ...loanDefaultsV2, status: ISSUE }, defaultUseV2);
 		expectUse({ ...loanDefaultsV2, status: PAYING_BACK }, helpedUseV2);
 		expectUse({ ...loanDefaultsV2, status: 'not_a_status' }, helpedUseV2);
 		expectUse({ ...loanDefaultsV2, status: null }, helpedUseV2);
@@ -105,6 +107,7 @@ describe('getLoanUse', () => {
 		const directHelpedUseV2 = '$1,800 to Test Borrower helped buy produce.';
 		expectUse({ ...directLoanDefaultsV2, status: INACTIVE }, defaultDirectUseV2);
 		expectUse({ ...directLoanDefaultsV2, status: REVIEWED }, defaultDirectUseV2);
+		expectUse({ ...directLoanDefaultsV2, status: ISSUE }, defaultDirectUseV2);
 		expectUse({ ...directLoanDefaultsV2, status: PAYING_BACK }, directHelpedUseV2);
 		expectUse({ ...directLoanDefaultsV2, status: 'not_a_status' }, directHelpedUseV2);
 		expectUse({ ...directLoanDefaultsV2, status: null }, directHelpedUseV2);
