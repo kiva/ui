@@ -141,6 +141,8 @@ import timeLeftMixin from '#src/plugins/loan/time-left-mixin';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import BorrowerName from '#src/components/BorrowerProfile/BorrowerName';
 import KvLoadingParagraph from '#src/components/Kv/KvLoadingParagraph';
+import { readLoanFragment, watchLoanCardData } from '#src/util/loanUtils';
+import { createIntersectionObserver } from '#src/util/observerUtils';
 import SummaryTag from '#src/components/BorrowerProfile/SummaryTag';
 import { KvLoadingPlaceholder, KvProgressBar, KvMaterialIcon } from '@kiva/kv-components';
 
@@ -216,20 +218,9 @@ export default {
 			loan: null,
 			mdiMapMarker,
 			isLoading: true,
+			queryObserver: null,
+			viewportObserver: null,
 		};
-	},
-	apollo: {
-		lazy: true,
-		query: loanCardQuery,
-		variables() {
-			return {
-				loanId: this.loanId,
-				publicId: this.lenderPublicId,
-			};
-		},
-		result(result) {
-			this.processQueryResult(result);
-		},
 	},
 	computed: {
 		borrowerName() {
@@ -294,6 +285,40 @@ export default {
 		},
 	},
 	methods: {
+		createViewportObserver() {
+			// Watch for this element being in the viewport
+			this.viewportObserver = createIntersectionObserver({
+				targets: [this.$el],
+				callback: entries => {
+					entries.forEach(entry => {
+						if (entry.target === this.$el && entry.intersectionRatio > 0) {
+							// This element is in the viewport, so load the data.
+							this.loadData();
+						}
+					});
+				}
+			});
+			if (!this.viewportObserver) {
+				// Observer was not created, so call loadData right away as a fallback.
+				this.loadData();
+			}
+		},
+		destroyViewportObserver() {
+			if (this.viewportObserver) {
+				this.viewportObserver.disconnect();
+			}
+		},
+		loadData() {
+			if (!this.queryObserver) {
+				this.queryObserver = watchLoanCardData({
+					apollo: this.apollo,
+					loanId: this.loanId,
+					publicId: this.lenderPublicId,
+					loanCardQuery,
+					callback: result => this.processQueryResult(result),
+				});
+			}
+		},
 		processQueryResult(result) {
 			if (result.error) {
 				this.$showTipMsg('There was a problem loading your loan recommendations', 'error');
@@ -316,6 +341,42 @@ export default {
 		dedicationClickEvent() {
 			this.$emit('dedication-click', { loanId: this.loanId, dedicationCopy: this.dedicationsCopy });
 			this.$router.push(`/dedication/${this.loanId}`);
+		},
+	},
+	created() {
+		// Use cached loan data if it exists
+		const cachedLoan = readLoanFragment({
+			apollo: this.apollo,
+			loanId: this.loanId,
+			publicId: this.lenderPublicId,
+			fragment: loanFieldsFragment,
+		});
+		if (cachedLoan) {
+			this.loan = cachedLoan;
+			this.isLoading = false;
+		}
+	},
+	mounted() {
+		if (this.loan) {
+			// Already have a loan, so only setup watch query to handle changes in data
+			this.loadData();
+		} else {
+			// Don't have a loan yet, so setup viewport observer to prepare async loading
+			this.createViewportObserver();
+		}
+	},
+	beforeUnmount() {
+		this.destroyViewportObserver();
+	},
+	watch: {
+		// When loan id changes, update watch query variables
+		loanId(loanId) {
+			if (this.queryObserver) {
+				this.queryObserver.setVariables({
+					loanId,
+					publicId: this.lenderPublicId,
+				});
+			}
 		},
 	},
 };
