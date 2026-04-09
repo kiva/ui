@@ -98,7 +98,7 @@
 									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
 									:icon="mdiCheckBold"
 								/>
-								<p class="tw-text-left !tw-font-medium">
+								<p class="tw-text-left">
 									Build a habit of helping others
 								</p>
 							</li>
@@ -107,7 +107,7 @@
 									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
 									:icon="mdiCheckBold"
 								/>
-								<p class="tw-text-left !tw-font-medium">
+								<p class="tw-text-left">
 									Track your impact as it grows
 								</p>
 							</li>
@@ -116,7 +116,7 @@
 									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
 									:icon="mdiCheckBold"
 								/>
-								<p class="tw-text-left !tw-font-medium">
+								<p class="tw-text-left">
 									Stay consistent with reminders
 								</p>
 							</li>
@@ -125,7 +125,7 @@
 									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
 									:icon="mdiCheckBold"
 								/>
-								<p class="tw-text-left !tw-font-medium">
+								<p class="tw-text-left">
 									Edit anytime
 								</p>
 							</li>
@@ -643,11 +643,7 @@ watch(() => props.selectedCategoryId, async newCategory => {
 }
 
 :deep(.goal-tile-accordion button:first-child) {
-	@apply !tw-w-auto !tw-pt-3 !tw-pb-2 tw-place-self-center;
-}
-
-:deep(.goal-tile-accordion span) {
-	@apply tw-font-medium;
+	@apply !tw-w-auto !tw-pt-3 !tw-pb-2 tw-place-self-center tw-font-medium;
 }
 
 :deep(.goal-tile-accordion span svg) {
