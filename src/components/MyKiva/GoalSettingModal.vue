@@ -46,7 +46,7 @@
 						>
 						<div class="tw-text-center tw-text-brand-50 tw-text-base">
 							<p class="tw-mb-2">
-								Set your annual goal
+								<strong>Set your annual goal</strong>
 							</p>
 							<ul class="tw-inline-block">
 								<li class="tw-flex tw-items-start tw-gap-1 tw-mb-2">
@@ -90,12 +90,12 @@
 					</template>
 					<template v-else>
 						<kv-material-icon
-							class="tw-w-3 tw-h-3 tw-text-brand tw-mx-auto"
+							class="tw-w-3.5 tw-h-3.5 tw-text-brand tw-mx-auto"
 							:icon="mdiCheckCircle"
 						/>
 						<div class="tw-text-center tw-text-brand-50 tw-text-base">
 							<p class="tw-mb-2">
-								A year of impact
+								<strong>A year of impact</strong>
 							</p>
 							<ul class="tw-inline-block">
 								<li class="tw-flex tw-items-start tw-gap-1 tw-mb-2">
@@ -563,26 +563,22 @@ watch(show, async newVal => {
 
 	.goal-tile-container {
 		flex: 0 0 100%;
-		min-width: 0;
-		overflow: hidden;
+
+		@apply tw-min-w-0 lg:tw-h-auto;
 
 		@screen md {
 			flex: 0 0 calc((100% - 1rem) / 2 - 10px);
-			height: 390px;
 		}
 
 		@screen lg {
-			flex: 0 0 calc((100% - 2rem) / 3 - 10px);
-			height: auto;
+			flex: 0 0 276px;
 		}
 
 		ul {
 			@apply tw-text-justify;
 
 			li > p {
-				font-weight: 611;
-
-				@apply tw-text-small;
+				@apply tw-text-small tw-font-medium;
 
 				span {
 					@apply tw-mr-1;
@@ -617,5 +613,4 @@ watch(show, async newVal => {
 		}
 	}
 }
-
 </style>

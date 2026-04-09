@@ -10,9 +10,7 @@
 					? 'tw-border-2 tw-border-action'
 					: 'tw-border-2 tw-border-transparent'
 			"
-			:style="{
-				minWidth: isLarge ? DESKTOP_WIDTH : 'auto',
-			}"
+			:style="isLarge ? { minWidth: DESKTOP_WIDTH } : {}"
 			@click="selectCategory(category.id)"
 		>
 			<div

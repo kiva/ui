@@ -16,7 +16,14 @@
 				</h4>
 				<h3 class="tw-text-center" v-html="title"></h3>
 				<div class="tw-text-center">
-					<p v-html="subtitle"></p>
+					<p
+						v-if="isGoalTileExperimentEnabled"
+					>
+						Make helping others a habit.<br>We'll help you make it happen.
+					</p>
+					<p v-else>
+						How many loans will you make this year?
+					</p>
 				</div>
 				<img
 					:src="HandsPlant"
@@ -136,13 +143,6 @@ const categoryName = computed(() => {
 
 const ctaHref = computed(() => {
 	return getCtaHref(props.userGoal?.target, props.userGoal?.category, router, props.goalProgress);
-});
-
-const subtitle = computed(() => {
-	if (props.isGoalTileExperimentEnabled) {
-		return 'Make helping others a habit.<br>We’ll help you make it happen.';
-	}
-	return 'How many loans will you make this year?';
 });
 
 const showConfetti = () => {

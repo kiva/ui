@@ -92,40 +92,40 @@
 						</p>
 					</template>
 					<div class="tw-text-justify tw-text-primary tw-text-base">
-						<ul>
-							<li>
-								<p>
-									<KvMaterialIcon
-										class="tw-w-1 tw-h-1 tw-text-primary"
-										:icon="mdiCheckBold"
-									/>
+						<ul class="tw-inline-block">
+							<li class="tw-flex tw-items-start tw-gap-1">
+								<KvMaterialIcon
+									class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-self-center"
+									:icon="mdiCheckBold"
+								/>
+								<p class="tw-text-left">
 									Build a habit of helping others
 								</p>
 							</li>
-							<li>
-								<p>
-									<KvMaterialIcon
-										class="tw-w-1 tw-h-1 tw-text-primary"
-										:icon="mdiCheckBold"
-									/>
+							<li class="tw-flex tw-items-start tw-gap-1">
+								<KvMaterialIcon
+									class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-self-center"
+									:icon="mdiCheckBold"
+								/>
+								<p class="tw-text-left">
 									Track your impact as it grows
 								</p>
 							</li>
-							<li>
-								<p>
-									<KvMaterialIcon
-										class="tw-w-1 tw-h-1 tw-text-primary"
-										:icon="mdiCheckBold"
-									/>
+							<li class="tw-flex tw-items-start tw-gap-1">
+								<KvMaterialIcon
+									class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-self-center"
+									:icon="mdiCheckBold"
+								/>
+								<p class="tw-text-left">
 									Stay consistent with reminders
 								</p>
 							</li>
-							<li>
-								<p>
-									<KvMaterialIcon
-										class="tw-w-1 tw-h-1 tw-text-primary"
-										:icon="mdiCheckBold"
-									/>
+							<li class="tw-flex tw-items-start tw-gap-1">
+								<KvMaterialIcon
+									class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-self-center"
+									:icon="mdiCheckBold"
+								/>
+								<p class="tw-text-left">
 									Edit anytime
 								</p>
 							</li>
@@ -577,7 +577,7 @@ const handleEditGoalFromSettings = () => {
 };
 
 const handleOpenGoalTile = () => {
-	if (props.trackingCategory === 'portfolio' && !isGoalTileOpened.value) {
+	if (props.isGoalTileExperimentEnabled && props.trackingCategory === 'portfolio' && !isGoalTileOpened.value) {
 		$kvTrackEvent(
 			'portfolio',
 			'click',
@@ -630,7 +630,7 @@ watch(() => props.selectedCategoryId, async newCategory => {
 }
 
 .number-option-placeholder {
-	min-width: 186px;
+	min-width: 126px;
 	min-height: 59px;
 
 	@screen lg {
@@ -646,9 +646,7 @@ watch(() => props.selectedCategoryId, async newCategory => {
 	}
 
 	span {
-		font-weight: 611;
-
-		@apply !tw-mr-1;
+		@apply tw-font-medium;
 
 		svg {
 			@apply !tw-text-brand-900;
