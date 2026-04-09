@@ -638,27 +638,23 @@ watch(() => props.selectedCategoryId, async newCategory => {
 	}
 }
 
-.goal-tile-accordion :deep {
+:deep(.goal-tile-accordion) {
 	@apply tw-w-full !tw-border-b-0;
+}
 
-	:deep(button:first-child) {
-		@apply !tw-w-auto tw-place-self-center;
-	}
+:deep(.goal-tile-accordion button:first-child) {
+	@apply !tw-w-auto tw-place-self-center;
+}
 
-	:deep(span) {
-		@apply tw-font-medium;
+:deep(.goal-tile-accordion span) {
+	@apply tw-font-medium;
+}
 
-		svg {
-			@apply !tw-text-brand-900;
-		}
-	}
+:deep(.goal-tile-accordion span svg) {
+	@apply !tw-text-brand-900;
+}
 
-	:deep(ul) {
-		li > p {
-			span svg {
-				@apply !tw-text-primary;
-			}
-		}
-	}
+:deep(.goal-tile-accordion ul li > span svg) {
+	@apply !tw-text-primary;
 }
 </style>
