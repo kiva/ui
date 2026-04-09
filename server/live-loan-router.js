@@ -80,6 +80,36 @@ async function redirectToUrl(type, cache, req, res, queryType = QUERY_TYPE.DEFAU
 	}
 }
 
+async function redirectToBundleUrl(type, cache, req, res, queryType = QUERY_TYPE.DEFAULT) {
+	try {
+		const id = req.params?.id || 0;
+		const loanData = await trace(
+			'fetchRecommendedLoans',
+			async () => fetchRecommendedLoans(type, id, cache, queryType)
+		);
+
+		const loanIds = loanData.map(loan => loan.id).filter(Boolean).join(',');
+		if (!loanIds) {
+			res.redirect(302, '/lend-by-category/');
+			return;
+		}
+
+		let redirect = `/add-loan-bundle?loanIds=${loanIds}`;
+
+		// Forward any original query params
+		const requestUrl = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+		const queryParams = new URLSearchParams(requestUrl.search);
+		if (queryParams.toString()) {
+			redirect += `&${queryParams}`;
+		}
+
+		res.redirect(302, redirect);
+	} catch (err) {
+		error(`Error redirecting to bundle url, ${err}`, { error: err, params: req.params, type });
+		res.redirect(302, '/lend-by-category/');
+	}
+}
+
 async function serveImg(type, style, cache, req, res, queryType = QUERY_TYPE.DEFAULT) {
 	let loan;
 	let loanImg;
@@ -285,6 +315,30 @@ export default function liveLoanRouter(cache) {
 	router.use('/lid/:id([0-9]{0,})/img2', async (req, res) => {
 		await trace('live-loan.loanid.serveImg', { resource: req.path }, async () => {
 			await serveImg('loanid', 'classic', cache, req, res);
+		});
+	});
+
+	// User Bundle URL Router
+	// Example: /live-loan/u/12345/bundle-url -> redirects to /add-loan-bundle?loanIds=101,202,303,404
+	router.use('/u/:id(\\d{0,})/bundle-url', async (req, res) => {
+		await trace('live-loan.user.redirectToBundleUrl', { resource: req.path }, async () => {
+			await redirectToBundleUrl('user', cache, req, res);
+		});
+	});
+
+	// User Bundle URL Router FLSS
+	// Example: /live-loan/flss/u/12345/bundle-url -> redirects to /add-loan-bundle?loanIds=101,202,303,404
+	router.use('/flss/u/:id(\\d{0,})/bundle-url', async (req, res) => {
+		await trace('live-loan.flss.user.redirectToBundleUrl', { resource: req.path }, async () => {
+			await redirectToBundleUrl('user', cache, req, res, QUERY_TYPE.FLSS);
+		});
+	});
+
+	// User Bundle URL Router Recommendations
+	// Example: /live-loan/recommendations/u/12345/bundle-url -> redirects to /add-loan-bundle?loanIds=101,202,303,404
+	router.use('/recommendations/u/:id(\\d{0,})/bundle-url', async (req, res) => {
+		await trace('live-loan.recommendations.user.redirectToBundleUrl', { resource: req.path }, async () => {
+			await redirectToBundleUrl('user', cache, req, res, QUERY_TYPE.RECOMMENDATIONS);
 		});
 	});
 
