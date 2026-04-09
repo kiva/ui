@@ -2,42 +2,52 @@ import { render, fireEvent } from '@testing-library/vue';
 import LoanComments from '#src/components/BorrowerProfile/LoanComments';
 import { globalOptions } from '../../../specUtils';
 
-const mockComments = [
+const mockApiComments = [
 	{
 		id: 1,
-		authorName: 'Sarah',
-		authorImageUrl: 'https://example.com/img.jpg',
-		authorRole: 'Lender',
+		author: { name: 'Sarah', imageUrl: 'https://example.com/img.jpg', role: 'lender' },
 		body: 'Great loan!',
 		date: '2025-03-15T12:00:00Z',
-		timeFlagged: null,
 	},
 	{
 		id: 2,
-		authorName: 'Aisha',
-		authorImageUrl: null,
-		authorRole: 'Borrower',
+		author: { name: 'Aisha', imageUrl: null, role: 'borrower' },
 		body: 'Thank you!',
 		date: '2025-03-16T12:00:00Z',
-		timeFlagged: null,
 	},
 ];
 
+function buildApiResponse(comments, { lentTo = true, subscribed = false, loggedIn = true } = {}) {
+	return {
+		lend: {
+			loan: {
+				id: 123,
+				comments: { values: comments },
+				userProperties: { lentTo, subscribed },
+			},
+		},
+		my: loggedIn ? { id: 1, userAccount: { id: 1 } } : { id: null, userAccount: null },
+	};
+}
+
+// Runs mock API data through the component's actual applyCommentsData mapping
+function applyMockData(apiComments, responseOverrides = {}) {
+	const context = {};
+	LoanComments.methods.applyCommentsData.call(context, buildApiResponse(apiComments, responseOverrides));
+	return context;
+}
+
 function renderLoanComments(dataOverrides = {}, propsOverrides = {}) {
-	const mutate = vi.fn(() => Promise.resolve({ data: { loan: { postComment: { id: 99 } } } }));
+	const mutate = vi.fn(() => Promise.resolve({ data: {} }));
+	const query = vi.fn(() => Promise.resolve({ data: {} }));
+	const showTipMsg = vi.fn();
+	const mapped = applyMockData(mockApiComments);
 	const Component = {
 		...LoanComments,
 		data() {
 			return {
 				...LoanComments.data.call(this),
-				comments: mockComments.map(c => ({
-					...c,
-					isBorrower: c.authorRole === 'Borrower',
-					isFlagged: !!c.timeFlagged,
-				})),
-				isLoggedIn: true,
-				lentTo: true,
-				isSubscribed: false,
+				...mapped,
 				...dataOverrides,
 			};
 		},
@@ -52,11 +62,12 @@ function renderLoanComments(dataOverrides = {}, propsOverrides = {}) {
 					apollo: {
 						...globalOptions.provide.apollo,
 						mutate,
+						query,
 					},
 				},
 				mocks: {
 					...globalOptions.mocks,
-					$showTipMsg: vi.fn(),
+					$showTipMsg: showTipMsg,
 				},
 			},
 			props: {
@@ -64,11 +75,13 @@ function renderLoanComments(dataOverrides = {}, propsOverrides = {}) {
 			},
 		}),
 		mutate,
+		query,
+		showTipMsg,
 	};
 }
 
 describe('LoanComments', () => {
-	it('submit comment calls post mutation', async () => {
+	it('submit comment calls addComment mutation and clears textarea', async () => {
 		const { getByTestId, mutate } = renderLoanComments();
 		const textarea = getByTestId('bp-comment-form-textarea');
 		await fireEvent.update(textarea, 'New comment text');
@@ -76,75 +89,96 @@ describe('LoanComments', () => {
 
 		expect(mutate).toHaveBeenCalledWith(
 			expect.objectContaining({
-				variables: { loanId: 123, body: 'New comment text' },
+				variables: { id: 123, body: 'New comment text' },
 			}),
 		);
+		expect(textarea.value).toBe('');
 	});
 
-	it('delete comment opens confirmation lightbox then calls mutation', async () => {
-		const { getAllByTestId, getByText, mutate } = renderLoanComments({}, { isAdmin: true });
-		const deleteButtons = getAllByTestId('bp-comment-delete');
-		await fireEvent.click(deleteButtons[0]);
+	it('submit ignores empty or whitespace-only input', async () => {
+		const { getByTestId, mutate } = renderLoanComments();
+		await fireEvent.update(getByTestId('bp-comment-form-textarea'), '   ');
+		await fireEvent.click(getByTestId('bp-comment-form-submit'));
 
-		// Confirmation lightbox should be visible
+		expect(mutate).not.toHaveBeenCalled();
+	});
+
+	it('submit shows error on failure', async () => {
+		const { getByTestId, mutate, showTipMsg } = renderLoanComments();
+		mutate.mockRejectedValueOnce(new Error('network'));
+		await fireEvent.update(getByTestId('bp-comment-form-textarea'), 'text');
+		await fireEvent.click(getByTestId('bp-comment-form-submit'));
+
+		expect(showTipMsg).toHaveBeenCalledWith('There was a problem posting your comment', 'error');
+	});
+
+	it('delete comment removes it from the list after confirmation', async () => {
+		const { getAllByTestId, getByText, queryByText, mutate } = renderLoanComments({}, { isAdmin: true });
+		await fireEvent.click(getAllByTestId('bp-comment-delete')[0]);
+
 		expect(getByText('Delete this comment?')).toBeTruthy();
-
-		// Confirm the delete
 		await fireEvent.click(getByText('Delete comment'));
 
 		expect(mutate).toHaveBeenCalledWith(
 			expect.objectContaining({
-				variables: { commentId: 1 },
+				variables: { loanId: 123, commentId: 1 },
 			}),
 		);
+		expect(queryByText('Great loan!')).toBeNull();
+	});
+
+	it('delete shows error on failure', async () => {
+		const { getAllByTestId, getByText, mutate, showTipMsg } = renderLoanComments({}, { isAdmin: true });
+		mutate.mockRejectedValueOnce(new Error('network'));
+		await fireEvent.click(getAllByTestId('bp-comment-delete')[0]);
+		await fireEvent.click(getByText('Delete comment'));
+
+		expect(showTipMsg).toHaveBeenCalledWith('There was a problem deleting this comment', 'error');
 	});
 
 	it('flag comment opens report lightbox', async () => {
 		const { getAllByTestId, getByText } = renderLoanComments();
-		const flagButtons = getAllByTestId('bp-comment-flag');
-		await fireEvent.click(flagButtons[0]);
+		await fireEvent.click(getAllByTestId('bp-comment-flag')[0]);
 
-		// Report lightbox should be visible
 		expect(getByText('Report Comment')).toBeTruthy();
 	});
 
-	it('subscribe calls subscribe mutation', async () => {
-		const { getByTestId, mutate } = renderLoanComments();
+	it('subscribe calls mutation and toggles to unsubscribe button', async () => {
+		const { getByTestId, queryByTestId, mutate } = renderLoanComments();
 		await fireEvent.click(getByTestId('bp-comment-subscribe'));
 
 		expect(mutate).toHaveBeenCalledWith(
 			expect.objectContaining({
-				variables: { loanId: 123 },
+				variables: { loanId: 123, subscribe: true },
 			}),
 		);
+		expect(queryByTestId('bp-comment-subscribe')).toBeNull();
+		expect(getByTestId('bp-comment-unsubscribe')).toBeTruthy();
 	});
 
-	it('unsubscribe calls unsubscribe mutation', async () => {
-		const { getByTestId, mutate } = renderLoanComments({ isSubscribed: true });
+	it('unsubscribe calls mutation and toggles to subscribe button', async () => {
+		const { getByTestId, queryByTestId, mutate } = renderLoanComments({ isSubscribed: true });
 		await fireEvent.click(getByTestId('bp-comment-unsubscribe'));
 
 		expect(mutate).toHaveBeenCalledWith(
 			expect.objectContaining({
-				variables: { loanId: 123 },
+				variables: { loanId: 123, subscribe: false },
 			}),
 		);
+		expect(queryByTestId('bp-comment-unsubscribe')).toBeNull();
+		expect(getByTestId('bp-comment-subscribe')).toBeTruthy();
 	});
 
 	it('show all reveals spillover comments', async () => {
-		const manyComments = Array.from({ length: 20 }, (_, i) => ({
+		const manyApiComments = Array.from({ length: 20 }, (_, i) => ({
 			id: i + 1,
-			authorName: `User ${i}`,
-			authorImageUrl: null,
-			authorRole: 'Lender',
+			author: { name: `User ${i}`, imageUrl: null, role: 'lender' },
 			body: `Comment ${i}`,
 			date: '2025-03-15T12:00:00Z',
-			timeFlagged: null,
-			isBorrower: false,
-			isFlagged: false,
 		}));
-		const { getByTestId, queryByText } = renderLoanComments({ comments: manyComments });
+		const mapped = applyMockData(manyApiComments);
+		const { getByTestId, queryByText } = renderLoanComments({ comments: mapped.comments });
 
-		// Initially only 15 visible
 		expect(queryByText('Comment 19')).toBeNull();
 
 		await fireEvent.click(getByTestId('bp-comment-show-all'));
