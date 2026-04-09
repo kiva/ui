@@ -535,7 +535,7 @@ watch(show, async newVal => {
 
 .goal-tile-modal {
 	[data-test=kv-lightbox] {
-		@apply lg:!tw-w-full lg:!tw-bg-eco-green-4;
+		@apply lg:!tw-bg-eco-green-4;
 	}
 
 	&.goal-tile-modal-expanded {
