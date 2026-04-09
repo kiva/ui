@@ -28,7 +28,7 @@
 			Choose an impact area
 		</h2>
 		<section
-			:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showGoalTile }"
+			:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-0': showGoalTile }"
 		>
 			<div
 				v-if="showGoalTile"
@@ -534,6 +534,10 @@ watch(show, async newVal => {
 }
 
 .goal-tile-modal {
+	[data-test=kv-lightbox] {
+		@apply lg:!tw-w-full lg:!tw-bg-eco-green-4;
+	}
+
 	&.goal-tile-modal-expanded {
 		/* Override KvLightbox inline max-width to accommodate the category form with the new tile/left-sidebar */
 		[data-test=kv-lightbox] {
@@ -554,17 +558,17 @@ watch(show, async newVal => {
 	}
 
 	#kvLightboxBody {
-		@apply lg:!tw-pl-0 lg:!tw-pb-0;
+		@apply lg:!tw-px-0 lg:!tw-pb-0;
 	}
 
 	.goal-selector-wrapper {
-		@apply lg:tw-py-4;
+		@apply lg:tw-p-4 lg:tw-bg-primary;
 	}
 
 	.goal-tile-container {
 		flex: 0 0 100%;
 
-		@apply tw-min-w-0 lg:tw-h-auto;
+		@apply tw-min-w-0 lg:tw-h-auto lg:tw-rounded-l;
 
 		@screen md {
 			flex: 0 0 calc((100% - 1rem) / 2 - 10px);
