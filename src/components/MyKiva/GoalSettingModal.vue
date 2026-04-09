@@ -7,7 +7,6 @@
 		}"
 		title=""
 		:visible="show"
-		:prevent-close="showGoalTile"
 		@lightbox-closed="closeLightbox"
 	>
 		<template
@@ -90,7 +89,7 @@
 					</template>
 					<template v-else>
 						<kv-material-icon
-							class="tw-w-3.5 tw-h-3.5 tw-text-brand tw-mx-auto"
+							class="tw-w-3.5 tw-h-3.5 tw-text-brand tw-mx-auto tw-mb-3"
 							:icon="mdiCheckCircle"
 						/>
 						<div class="tw-text-center tw-text-brand-50 tw-text-base">

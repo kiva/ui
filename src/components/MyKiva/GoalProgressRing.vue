@@ -3,7 +3,7 @@
 		<div :class="titleContainerClass">
 			<kv-material-icon
 				v-if="isGoalTileExperimentEnabled && !isLarge && isModalVariant && !isUpdatingGoal"
-				class="tw-w-3.5 tw-h-3.5 tw-text-brand tw-mx-auto"
+				class="tw-w-3.5 tw-h-3.5 tw-text-brand tw-mx-auto tw-mb-2"
 				:icon="mdiCheckCircle"
 			/>
 			<h2 v-if="isModalVariant" class="tw-font-medium" :class="titleClass">

@@ -10,7 +10,7 @@
 					? 'tw-border-2 tw-border-action'
 					: 'tw-border-2 tw-border-transparent'
 			"
-			:style="isLarge ? { minWidth: DESKTOP_WIDTH } : {}"
+			:style="isLarge && isGoalTileExperimentEnabled ? { minWidth: DESKTOP_WIDTH } : {}"
 			@click="selectCategory(category.id)"
 		>
 			<div

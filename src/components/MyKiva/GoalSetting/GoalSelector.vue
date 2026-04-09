@@ -630,8 +630,7 @@ watch(() => props.selectedCategoryId, async newCategory => {
 }
 
 .number-option-placeholder {
-	min-width: 126px;
-	min-height: 59px;
+	@apply !tw-min-h-7.5 !tw-min-w-15.5;
 
 	@screen lg {
 		min-height: 82px;
