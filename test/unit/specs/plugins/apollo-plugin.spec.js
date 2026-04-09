@@ -118,7 +118,9 @@ describe('apollo-plugin', () => {
 		const result = vi.fn();
 		const shouldPreFetch = vi.fn(() => false);
 		const ctx = makeCtx({
-			apolloConfig: { query: 'Q', preFetch: true, shouldPreFetch, result },
+			apolloConfig: {
+				query: 'Q', preFetch: true, shouldPreFetch, result
+			},
 		});
 
 		runCreated(ctx);
@@ -174,7 +176,9 @@ describe('apollo-plugin', () => {
 		const result = vi.fn();
 		const subscribe = vi.fn(({ next }) => { next({ data: 123 }); });
 		const ctx = makeCtx({
-			apolloConfig: { query: 'Q', preFetch: false, variables: () => ({}), result },
+			apolloConfig: {
+				query: 'Q', preFetch: false, variables: () => ({}), result
+			},
 			watchQuery: vi.fn(() => ({ subscribe, setVariables: vi.fn() })),
 			$watch: vi.fn((fn, cb) => cb({})),
 		});
@@ -194,7 +198,9 @@ describe('apollo-plugin', () => {
 		const ctx = makeCtx({
 			apolloConfig: [
 				{ query: 'Q1', preFetch: true, result: result1 },
-				{ query: 'Q2', preFetch: false, variables: () => ({}), result: result2 },
+				{
+					query: 'Q2', preFetch: false, variables: () => ({}), result: result2
+				},
 			],
 			readQuery: vi.fn(() => ({ foo: 'bar' })),
 			watchQuery: vi.fn(() => ({
@@ -213,7 +219,9 @@ describe('apollo-plugin', () => {
 
 	it('should skip observer setup when window is not defined', () => {
 		const ctx = makeCtx({
-			apolloConfig: { query: 'Q', preFetch: false, variables: () => ({}), result: vi.fn() },
+			apolloConfig: {
+				query: 'Q', preFetch: false, variables: () => ({}), result: vi.fn()
+			},
 		});
 
 		runCreated(ctx);
@@ -225,7 +233,9 @@ describe('apollo-plugin', () => {
 	it('should include basketId in preFetchVariables when present', () => {
 		const preFetchVariables = vi.fn(() => ({ foo: 'bar' }));
 		const ctx = makeCtx({
-			apolloConfig: { query: 'Q', preFetch: true, preFetchVariables, result: vi.fn() },
+			apolloConfig: {
+				query: 'Q', preFetch: true, preFetchVariables, result: vi.fn()
+			},
 			cookieStoreGet: vi.fn(() => 'basket123'),
 			readQuery: vi.fn(() => ({ data: 'test' })),
 		});
@@ -240,7 +250,9 @@ describe('apollo-plugin', () => {
 
 	it('should include basketId in watchQuery variables when present', () => {
 		const ctx = makeCtx({
-			apolloConfig: { query: 'Q', preFetch: false, variables: () => ({ foo: 'bar' }), result: vi.fn() },
+			apolloConfig: {
+				query: 'Q', preFetch: false, variables: () => ({ foo: 'bar' }), result: vi.fn()
+			},
 			cookieStoreGet: vi.fn(() => 'basket456'),
 		});
 		setBrowser();
@@ -255,7 +267,9 @@ describe('apollo-plugin', () => {
 
 	it('does not call watchQuery in created() when lazy is true', () => {
 		const ctx = makeCtx({
-			apolloConfig: { lazy: true, query: 'Q', variables: () => ({}), result: vi.fn() },
+			apolloConfig: {
+				lazy: true, query: 'Q', variables: () => ({}), result: vi.fn()
+			},
 		});
 		setBrowser();
 
@@ -269,7 +283,9 @@ describe('apollo-plugin', () => {
 		const data = { foo: 1 };
 		const result = vi.fn();
 		const ctx = makeCtx({
-			apolloConfig: { lazy: true, query: 'Q', preFetch: true, variables: () => ({}), result },
+			apolloConfig: {
+				lazy: true, query: 'Q', preFetch: true, variables: () => ({}), result
+			},
 			readQuery: vi.fn(() => data),
 			watchQuery: vi.fn(() => ({ subscribe: vi.fn(), setVariables: vi.fn() })),
 			$watch: vi.fn(),
@@ -286,8 +302,12 @@ describe('apollo-plugin', () => {
 	it('applies lazy when preFetch is true but shouldPreFetch returns false', () => {
 		const ctx = makeCtx({
 			apolloConfig: {
-				lazy: true, query: 'Q', preFetch: true,
-				shouldPreFetch: () => false, variables: () => ({}), result: vi.fn(),
+				lazy: true,
+				query: 'Q',
+				preFetch: true,
+				shouldPreFetch: () => false,
+				variables: () => ({}),
+				result: vi.fn(),
 			},
 		});
 		setBrowser();
@@ -304,7 +324,9 @@ describe('apollo-plugin', () => {
 		const result2 = vi.fn();
 		const ctx = makeCtx({
 			apolloConfig: [
-				{ lazy: true, query: 'Q1', variables: () => ({}), result: result1 },
+				{
+					lazy: true, query: 'Q1', variables: () => ({}), result: result1
+				},
 				{ query: 'Q2', variables: () => ({}), result: result2 },
 			],
 			watchQuery: vi.fn(() => ({
@@ -326,7 +348,9 @@ describe('apollo-plugin', () => {
 		setBrowser();
 		const result = vi.fn();
 		const ctx = makeCtx({
-			apolloConfig: { lazy: true, query: 'Q', variables: () => ({ id: 1 }), result },
+			apolloConfig: {
+				lazy: true, query: 'Q', variables: () => ({ id: 1 }), result
+			},
 			watchQuery: vi.fn(() => ({
 				subscribe: ({ next }) => next({ data: 'lazy-result' }),
 				setVariables: vi.fn(),
@@ -356,7 +380,9 @@ describe('apollo-plugin', () => {
 		delete global.IntersectionObserverEntry;
 		const result = vi.fn();
 		const ctx = makeCtx({
-			apolloConfig: { lazy: true, query: 'Q', variables: () => ({}), result },
+			apolloConfig: {
+				lazy: true, query: 'Q', variables: () => ({}), result
+			},
 			watchQuery: vi.fn(() => ({
 				subscribe: ({ next }) => next({ data: 'fallback' }),
 				setVariables: vi.fn(),
@@ -376,7 +402,9 @@ describe('apollo-plugin', () => {
 	it('uses custom rootMargin from lazy option object', () => {
 		setBrowser();
 		const ctx = makeCtx({
-			apolloConfig: { lazy: { rootMargin: '200px' }, query: 'Q', variables: () => ({}), result: vi.fn() },
+			apolloConfig: {
+				lazy: { rootMargin: '200px' }, query: 'Q', variables: () => ({}), result: vi.fn()
+			},
 			$el: document.createElement('div'),
 		});
 		const mock = mockIntersectionObserver(ctx);
@@ -391,7 +419,9 @@ describe('apollo-plugin', () => {
 	it('disconnects lazy observers on beforeUnmount', () => {
 		setBrowser();
 		const ctx = makeCtx({
-			apolloConfig: { lazy: true, query: 'Q', variables: () => ({}), result: vi.fn() },
+			apolloConfig: {
+				lazy: true, query: 'Q', variables: () => ({}), result: vi.fn()
+			},
 			$el: document.createElement('div'),
 		});
 		const mock = mockIntersectionObserver(ctx);
@@ -421,7 +451,9 @@ describe('apollo-plugin', () => {
 	it('passes fetchPolicy through to watchQuery for lazy queries', () => {
 		setBrowser();
 		const ctx = makeCtx({
-			apolloConfig: { lazy: true, query: 'Q', fetchPolicy: 'network-only', variables: () => ({}), result: vi.fn() },
+			apolloConfig: {
+				lazy: true, query: 'Q', fetchPolicy: 'network-only', variables: () => ({}), result: vi.fn()
+			},
 			$el: document.createElement('div'),
 		});
 		const mock = mockIntersectionObserver(ctx);
@@ -441,7 +473,9 @@ describe('apollo-plugin', () => {
 		const setVariables = vi.fn();
 		const watchCallbacks = [];
 		const ctx = makeCtx({
-			apolloConfig: { lazy: true, query: 'Q', variables: () => ({ id: 1 }), result: vi.fn() },
+			apolloConfig: {
+				lazy: true, query: 'Q', variables: () => ({ id: 1 }), result: vi.fn()
+			},
 			watchQuery: vi.fn(() => ({ subscribe: vi.fn(), setVariables })),
 			$watch: vi.fn((fn, cb) => watchCallbacks.push(cb)),
 			$el: document.createElement('div'),
