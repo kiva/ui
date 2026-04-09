@@ -624,7 +624,7 @@ watch(() => props.selectedCategoryId, async newCategory => {
 
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .edit-goal-button :deep(span) {
 	@apply tw-flex;
 }
@@ -638,14 +638,14 @@ watch(() => props.selectedCategoryId, async newCategory => {
 	}
 }
 
-.goal-tile-accordion {
+.goal-tile-accordion :deep {
 	@apply tw-w-full !tw-border-b-0;
 
-	button:first-child {
+	:deep(button:first-child) {
 		@apply !tw-w-auto tw-place-self-center;
 	}
 
-	span {
+	:deep(span) {
 		@apply tw-font-medium;
 
 		svg {
@@ -653,7 +653,7 @@ watch(() => props.selectedCategoryId, async newCategory => {
 		}
 	}
 
-	ul {
+	:deep(ul) {
 		li > p {
 			span svg {
 				@apply !tw-text-primary;

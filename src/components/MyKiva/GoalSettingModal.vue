@@ -519,13 +519,13 @@ watch(show, async newVal => {
 });
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .goal-setting-lightbox :deep(h2) {
 	@apply tw-text-h2;
 }
 
 /* Style for components when Goal Tile experiment is enabled */
-.goal-modal-controls {
+:deep(.goal-modal-controls) {
 	@apply tw-mx-auto tw-my-0;
 
 	button {
@@ -533,7 +533,7 @@ watch(show, async newVal => {
 	}
 }
 
-.goal-tile-modal {
+.goal-tile-modal :deep {
 	[data-test=kv-lightbox] {
 		@apply lg:!tw-bg-eco-green-4;
 	}
@@ -549,23 +549,23 @@ watch(show, async newVal => {
 		}
 	}
 
-	div:has(#kvLightboxBody) {
+	:deep(div:has(#kvLightboxBody)) {
 		@apply lg:!tw-overflow-hidden;
 	}
 
-	div:has(+ #kvLightboxBody) {
+	:deep(div:has(+ #kvLightboxBody)) {
 		@apply lg:!tw-hidden;
 	}
 
-	#kvLightboxBody {
+	:deep(#kvLightboxBody) {
 		@apply lg:!tw-px-0 lg:!tw-pb-0;
 	}
 
-	.goal-selector-wrapper {
+	:deep(.goal-selector-wrapper) {
 		@apply lg:tw-p-4 lg:tw-bg-primary;
 	}
 
-	.goal-tile-container {
+	:deep(.goal-tile-container) {
 		flex: 0 0 100%;
 
 		@apply tw-min-w-0 lg:tw-h-auto lg:tw-rounded-l;
@@ -595,7 +595,7 @@ watch(show, async newVal => {
 		}
 	}
 
-	.goal-selector-container, .goal-modal-container {
+	:deep(.goal-selector-container), :deep(.goal-modal-container) {
 		button {
 			@apply lg:tw-self-center;
 
@@ -605,7 +605,7 @@ watch(show, async newVal => {
 		}
 	}
 
-	.goal-tile-categories-controls {
+	:deep(.goal-tile-categories-controls) {
 		@apply lg:tw-mt-5;
 
 		button {
