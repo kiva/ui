@@ -1,6 +1,11 @@
 <template>
 	<div class="tw-h-full tw-flex tw-flex-col tw-justify-between" :class="containerClass">
 		<div :class="titleContainerClass">
+			<kv-material-icon
+				v-if="isGoalTileExperimentEnabled && !isLarge && isModalVariant && !isUpdatingGoal"
+				class="tw-w-3.5 tw-h-3.5 tw-text-brand tw-mx-auto tw-mb-2"
+				:icon="mdiCheckCircle"
+			/>
 			<h2 v-if="isModalVariant" class="tw-font-medium" :class="titleClass">
 				{{ titleText }}
 			</h2>
@@ -61,6 +66,13 @@
 		>
 		</p>
 
+		<p
+			v-if="isGoalTileExperimentEnabled && !isLarge"
+			class="tw-text-center tw-font-medium tw-my-3"
+		>
+			Edit your goal anytime.
+		</p>
+
 		<KvButton
 			class="tw-w-full goal-button"
 			v-kv-track-event="['portfolio', 'click', 'continue-towards-goal']"
@@ -85,7 +97,8 @@
 
 <script setup>
 import { computed } from 'vue';
-import { mdiPencilOutline } from '@mdi/js';
+import { mdiPencilOutline, mdiCheckCircle } from '@mdi/js';
+import { useRouter } from 'vue-router';
 
 import { KvButton, KvProgressCircle, KvMaterialIcon } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
@@ -96,7 +109,7 @@ import {
 	ID_BASIC_NEEDS,
 	ID_US_ECONOMIC_EQUALITY,
 } from '#src/composables/useBadgeData';
-import { useRouter } from 'vue-router';
+import useBreakpoints from '#src/composables/useBreakpoints';
 
 const props = defineProps({
 	/**
@@ -179,10 +192,18 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Experiment flag to enable new goal tile design
+	 */
+	isGoalTileExperimentEnabled: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits(['button-click', 'edit-button-click', 'edit-goal-from-settings']);
 const router = useRouter();
+const { isLarge } = useBreakpoints();
 
 const yearToDate = new Date().getFullYear();
 

@@ -16,7 +16,12 @@
 				</h4>
 				<h3 class="tw-text-center" v-html="title"></h3>
 				<div class="tw-text-center">
-					<p>
+					<p
+						v-if="isGoalTileExperimentEnabled"
+					>
+						Make helping others a habit.<br>We'll help you make it happen.
+					</p>
+					<p v-else>
 						How many loans will you make this year?
 					</p>
 				</div>
@@ -120,6 +125,9 @@ const goalLoans = computed(() => {
 const yearToDate = new Date().getFullYear();
 
 const title = computed(() => {
+	if (props.isGoalTileExperimentEnabled) {
+		return 'You haven’t set your goal yet!';
+	}
 	if (props.prevYearLoans === 1) {
 		return `You helped <span class="tw-text-action"> ${props.prevYearLoans} woman</span><br>shape her future!`;
 	}
