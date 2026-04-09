@@ -25,6 +25,7 @@
 							user-in-homepage
 							in-lending-stats
 							:disable-drag="true"
+							:goal-editing-enable="goalEditingEnable"
 							:goal-progress-loading="goalProgressLoading"
 							:goal-progress="goalProgress"
 							:hero-badge-data="heroBadgeData"
@@ -61,6 +62,7 @@
 					class="carousel tw--mt-6"
 					user-in-homepage
 					in-lending-stats
+					:goal-editing-enable="goalEditingEnable"
 					:goal-progress-loading="goalProgressLoading"
 					:goal-progress="goalProgress"
 					:hero-badge-data="heroBadgeData"
