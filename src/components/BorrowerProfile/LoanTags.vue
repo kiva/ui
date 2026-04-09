@@ -116,26 +116,28 @@ export default {
 			},
 			result({ data }) {
 				if (data?.lend?.loan?.tags) {
-					const currentTagNames = data.lend.loan.tags;
-					const newTagStates = {};
-					this.availableTags.forEach(tag => {
-						if (tag.id != null && tag.name != null) {
-							newTagStates[tag.id] = currentTagNames.includes(tag.name);
-						}
-					});
-					this.tagStates = newTagStates;
+					this.currentTagNames = data.lend.loan.tags;
 				}
 			},
 		},
 	],
 	data() {
 		return {
-			tagStates: {},
 			availableTags: [],
+			currentTagNames: [],
 			selectorVisible: false,
 		};
 	},
 	computed: {
+		tagStates() {
+			const states = {};
+			this.availableTags.forEach(tag => {
+				if (tag.id != null && tag.name != null) {
+					states[tag.id] = this.currentTagNames.includes(tag.name);
+				}
+			});
+			return states;
+		},
 		selectedTags() {
 			return this.availableTags.filter(tag => this.tagStates[tag.id] === true);
 		},
@@ -148,12 +150,21 @@ export default {
 			return index < this.selectedTagCount - 1 ? ' | ' : '';
 		},
 		async handleTagToggle(tagId, checked) {
-			try {
-				if (checked && this.selectedTagCount >= 5) {
-					this.tagStates = { ...this.tagStates, [tagId]: false };
-					return;
-				}
+			const tag = this.availableTags.find(t => t.id === tagId);
+			if (!tag?.name) return;
 
+			if (checked && this.selectedTagCount >= 5) {
+				return;
+			}
+
+			// Optimistic update
+			if (checked) {
+				this.currentTagNames = [...this.currentTagNames, tag.name];
+			} else {
+				this.currentTagNames = this.currentTagNames.filter(n => n !== tag.name);
+			}
+
+			try {
 				await this.apollo.mutate({
 					mutation: addOrRemoveTagOnLoan,
 					variables: {
@@ -162,10 +173,13 @@ export default {
 						checked,
 					},
 				});
-
-				this.tagStates = { ...this.tagStates, [tagId]: checked };
 			} catch {
-				this.tagStates = { ...this.tagStates, [tagId]: !checked };
+				// Revert
+				if (checked) {
+					this.currentTagNames = this.currentTagNames.filter(n => n !== tag.name);
+				} else {
+					this.currentTagNames = [...this.currentTagNames, tag.name];
+				}
 			}
 		},
 	},

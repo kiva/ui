@@ -34,7 +34,7 @@ function renderLoanTags(dataOverrides = {}, propsOverrides = {}) {
 			return {
 				...LoanTags.data.call(this),
 				availableTags: mockAvailableTags,
-				tagStates: { 1: true, 2: true, 3: false },
+				currentTagNames: ['Education', 'Sustainable Agriculture'],
 				...dataOverrides,
 			};
 		},
