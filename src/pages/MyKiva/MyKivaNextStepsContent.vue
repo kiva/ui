@@ -38,6 +38,7 @@
 							:hide-goal-card="hideCompletedGoalCard"
 							:user-info="userInfo"
 							:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+							:goal-editing-enable="goalEditingEnable"
 							@open-goal-modal="openGoalModal($event)"
 							@open-impact-insight-modal="showImpactInsightsModal = true"
 						/>
@@ -75,6 +76,7 @@
 					:latest-loan="latestLoan"
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+					:goal-editing-enable="goalEditingEnable"
 					@open-goal-modal="openGoalModal($event)"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
@@ -558,7 +560,7 @@ const openGoalModal = event => {
 
 const setGoal = async preferences => {
 	if (isUpdatingGoal.value) {
-		await updateCurrentGoal(userGoal, preferences);
+		await updateCurrentGoal(userGoal.value, preferences);
 		$kvTrackEvent('portfolio', 'click', 'confirm-edit-goal');
 	} else {
 		await storeGoalPreferences(preferences, false);
