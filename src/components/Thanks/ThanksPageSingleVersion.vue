@@ -262,9 +262,9 @@ const goalDataInitialized = ref(false);
 
 const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));
 
-// Guests and transactions without loans should see the fallback equity version of the badge module
+// Guests should see the fallback equity version of the badge module
 const numberOfBadges = computed(() => {
-	return props.badgesAchieved.length || (props.isGuest || props.loans.length === 0 ? 1 : 0);
+	return props.badgesAchieved.length || (props.isGuest ? 1 : 0);
 });
 
 const onlyDonations = computed(() => (
@@ -303,12 +303,13 @@ const showBadgeModule = computed(() => {
 	if (!goalDataInitialized.value || goalDataLoading.value) {
 		return false;
 	}
-	return numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value;
+	return numberOfBadges.value > 0;
 });
 const showJourneyModule = computed(() => {
 	if (props.achievementsCompleted || showBadgeModule.value) return false;
 	if (!goalDataInitialized.value || goalDataLoading.value) return false;
 	if (showGoalInProgressModule.value) return false;
+	if (onlyKivaCardsAndDonations.value) return false;
 	return !userGoalAchievedNow.value;
 });
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
