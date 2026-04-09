@@ -830,13 +830,19 @@ export default {
 				case 'loading':
 					return 'Loading...';
 				case 'funded':
+				case 'payingBack':
+				case 'fully-reserved':
 					return 'Help more borrowers like this';
 				case 'refunded':
 				case 'expired':
-				case 'fully-reserved':
+				case 'ended':
+				case 'defaulted':
+				case 'inactive':
+				case 'inactiveExpired':
+				case 'reviewed':
+				case 'deleted':
+				case 'issue':
 					return 'Help fund other borrowers';
-				// TODO: payingBack, ended, defaulted, inactive, inactiveExpired, reviewed,
-				// deleted, issue all need content-approved headlines (currently falls through to default)
 				default:
 					return 'Help fund this loan';
 			}
