@@ -93,7 +93,7 @@
 					</template>
 					<div class="tw-text-justify tw-text-primary tw-text-base">
 						<ul class="tw-inline-block">
-							<li class="tw-flex tw-items-start tw-gap-1">
+							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
 								<KvMaterialIcon
 									class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-self-center"
 									:icon="mdiCheckBold"
@@ -102,7 +102,7 @@
 									Build a habit of helping others
 								</p>
 							</li>
-							<li class="tw-flex tw-items-start tw-gap-1">
+							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
 								<KvMaterialIcon
 									class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-self-center"
 									:icon="mdiCheckBold"
@@ -111,7 +111,7 @@
 									Track your impact as it grows
 								</p>
 							</li>
-							<li class="tw-flex tw-items-start tw-gap-1">
+							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
 								<KvMaterialIcon
 									class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-self-center"
 									:icon="mdiCheckBold"
@@ -120,7 +120,7 @@
 									Stay consistent with reminders
 								</p>
 							</li>
-							<li class="tw-flex tw-items-start tw-gap-1">
+							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
 								<KvMaterialIcon
 									class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-self-center"
 									:icon="mdiCheckBold"
@@ -643,7 +643,7 @@ watch(() => props.selectedCategoryId, async newCategory => {
 }
 
 :deep(.goal-tile-accordion button:first-child) {
-	@apply !tw-w-auto tw-place-self-center;
+	@apply !tw-w-auto !tw-pt-3 !tw-pb-2 tw-place-self-center;
 }
 
 :deep(.goal-tile-accordion span) {

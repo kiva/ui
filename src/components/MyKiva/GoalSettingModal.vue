@@ -538,34 +538,23 @@ watch(show, async newVal => {
 		@apply lg:!tw-bg-eco-green-4;
 	}
 
-	&.goal-tile-modal-expanded {
-		/* Override KvLightbox inline max-width to accommodate the category form with the new tile/left-sidebar */
-		[data-test=kv-lightbox] {
-			@apply lg:!tw-w-full;
-
-			@screen lg {
-				max-width: 70rem !important;
-			}
-		}
-	}
-
-	:deep(div:has(#kvLightboxBody)) {
+	div:has(#kvLightboxBody) {
 		@apply lg:!tw-overflow-hidden;
 	}
 
-	:deep(div:has(+ #kvLightboxBody)) {
+	div:has(+ #kvLightboxBody) {
 		@apply lg:!tw-hidden;
 	}
 
-	:deep(#kvLightboxBody) {
+	#kvLightboxBody {
 		@apply lg:!tw-px-0 lg:!tw-pb-0;
 	}
 
-	:deep(.goal-selector-wrapper) {
+	.goal-selector-wrapper {
 		@apply lg:tw-p-4 lg:tw-bg-primary;
 	}
 
-	:deep(.goal-tile-container) {
+	.goal-tile-container {
 		flex: 0 0 100%;
 
 		@apply tw-min-w-0 lg:tw-h-auto lg:tw-rounded-l;
@@ -595,7 +584,7 @@ watch(show, async newVal => {
 		}
 	}
 
-	:deep(.goal-selector-container), :deep(.goal-modal-container) {
+	.goal-selector-container, .goal-modal-container {
 		button {
 			@apply lg:tw-self-center;
 
@@ -605,7 +594,7 @@ watch(show, async newVal => {
 		}
 	}
 
-	:deep(.goal-tile-categories-controls) {
+	.goal-tile-categories-controls {
 		@apply lg:tw-mt-5;
 
 		button {
@@ -614,6 +603,17 @@ watch(show, async newVal => {
 			@screen lg {
 				width: 314px;
 			}
+		}
+	}
+}
+
+.goal-tile-modal.goal-tile-modal-expanded :deep {
+	/* Override KvLightbox inline max-width to accommodate the category form with the new tile/left-sidebar */
+	[data-test=kv-lightbox] {
+		@apply lg:!tw-w-full;
+
+		@screen lg {
+			max-width: 70rem !important;
 		}
 	}
 }
