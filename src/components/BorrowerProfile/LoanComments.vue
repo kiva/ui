@@ -165,9 +165,7 @@ import { gql } from 'graphql-tag';
 import { format, parseISO } from 'date-fns';
 import { KvButton, KvLightbox } from '@kiva/kv-components';
 import CommentReportLightbox from '#src/components/BorrowerProfile/CommentReportLightbox';
-import deleteCommentMutation from '#src/graphql/mutation/deleteComment.graphql';
-import subscribeToLoanCommentsMutation from '#src/graphql/mutation/subscribeToLoanComments.graphql';
-import unsubscribeFromLoanCommentsMutation from '#src/graphql/mutation/unsubscribeFromLoanComments.graphql';
+import addCommentMutation from '#src/graphql/mutation/loanAddComment.graphql';
 import logFormatter from '#src/util/logFormatter';
 
 const INITIAL_COMMENT_COUNT = 15;
@@ -179,12 +177,13 @@ const commentsQuery = gql`query loanCommentsFullList($loanId: Int!) {
 			comments {
 				values {
 					id
-					authorName
-					authorImageUrl
-					authorRole
+					author {
+						name
+						imageUrl
+						role
+					}
 					body
 					date
-					timeFlagged
 				}
 			}
 			userProperties {
@@ -201,11 +200,15 @@ const commentsQuery = gql`query loanCommentsFullList($loanId: Int!) {
 	}
 }`;
 
-const postCommentMutation = gql`mutation postLoanComment($loanId: Int!, $body: String!) {
+const removeCommentMutation = gql`mutation removeCommentOnLoan($loanId: Int!, $commentId: Int!) {
 	loan(id: $loanId) {
-		postComment(body: $body) {
-			id
-		}
+		removeComment(commentId: $commentId)
+	}
+}`;
+
+const loanSubscribeMutation = gql`mutation subscribeLoan($loanId: Int!, $subscribe: Boolean!) {
+	loan(id: $loanId) {
+		subscribe(subscribe: $subscribe)
 	}
 }`;
 
@@ -276,9 +279,14 @@ export default {
 		applyCommentsData(data) {
 			const loan = data?.lend?.loan;
 			this.comments = (loan?.comments?.values ?? []).map(c => ({
-				...c,
-				isBorrower: c.authorRole === 'Borrower',
-				isFlagged: !!c.timeFlagged,
+				id: c.id,
+				authorName: c.author?.name,
+				authorImageUrl: c.author?.imageUrl,
+				authorRole: c.author?.role,
+				body: c.body,
+				date: c.date,
+				isBorrower: c.author?.role === 'borrower',
+				isFlagged: false,
 			}));
 			this.lentTo = loan?.userProperties?.lentTo ?? false;
 			this.isSubscribed = loan?.userProperties?.subscribed ?? false;
@@ -306,8 +314,8 @@ export default {
 			this.isSubmitting = true;
 			try {
 				await this.apollo.mutate({
-					mutation: postCommentMutation,
-					variables: { loanId: this.loanId, body: this.newCommentText },
+					mutation: addCommentMutation,
+					variables: { id: this.loanId, body: this.newCommentText },
 				});
 				this.newCommentText = '';
 				await this.refreshComments();
@@ -324,8 +332,8 @@ export default {
 			this.pendingDeleteCommentId = null;
 			try {
 				await this.apollo.mutate({
-					mutation: deleteCommentMutation,
-					variables: { commentId },
+					mutation: removeCommentMutation,
+					variables: { loanId: this.loanId, commentId },
 				});
 				this.comments = this.comments.filter(c => c.id !== commentId);
 				this.$showTipMsg('Comment deleted');
@@ -348,8 +356,8 @@ export default {
 		async subscribe() {
 			try {
 				await this.apollo.mutate({
-					mutation: subscribeToLoanCommentsMutation,
-					variables: { loanId: this.loanId },
+					mutation: loanSubscribeMutation,
+					variables: { loanId: this.loanId, subscribe: true },
 				});
 				this.isSubscribed = true;
 			} catch (e) {
@@ -360,8 +368,8 @@ export default {
 		async unsubscribe() {
 			try {
 				await this.apollo.mutate({
-					mutation: unsubscribeFromLoanCommentsMutation,
-					variables: { loanId: this.loanId },
+					mutation: loanSubscribeMutation,
+					variables: { loanId: this.loanId, subscribe: false },
 				});
 				this.isSubscribed = false;
 			} catch (e) {
