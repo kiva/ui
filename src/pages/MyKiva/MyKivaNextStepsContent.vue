@@ -318,7 +318,6 @@ import {
 } from '#src/util/myKiva/myKivaJourneyCardUtils';
 import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 import useBreakpoints from '#src/composables/useBreakpoints';
-import useOptIn from '#src/composables/useOptIn';
 
 defineOptions({ name: 'MyKivaNextStepsContent' });
 
@@ -373,7 +372,6 @@ const props = defineProps({
 	},
 });
 
-const apollo = inject('apollo');
 const cookieStore = inject('cookieStore');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const goalData = inject('goalData');
@@ -459,12 +457,13 @@ const topRowHasContent = computed(() => {
 		|| showPostLendingNextStepsCards.value;
 });
 
-const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
+const userOptedIn = computed(() => props.userInfo?.communicationSettings?.lenderNews
+	&& props.userInfo?.communicationSettings?.loanUpdates);
 
 const shouldShowEmailMarketingCard = computed(() => checkShouldShowEmailMarketing({
 	showPostLendingNextStepsCards: true,
 	latestLoan: props.latestLoan,
-	hasMailUpdatesOptOut: userHasMailUpdatesOptOut(),
+	hasMailUpdatesOptOut: !userOptedIn.value,
 	loansCount: props.loans.length,
 }));
 
