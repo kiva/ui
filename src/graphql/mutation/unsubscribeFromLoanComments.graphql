@@ -1,3 +1,0 @@
-mutation UnsubscribeFromLoanComments($loanId: Int!) {
-	unsubscribeFromLoanComments(loanId: $loanId)
-}
