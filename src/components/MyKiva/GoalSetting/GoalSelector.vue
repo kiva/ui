@@ -95,37 +95,37 @@
 						<ul class="tw-inline-block">
 							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
 								<KvMaterialIcon
-									class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-self-center"
+									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
 									:icon="mdiCheckBold"
 								/>
-								<p class="tw-text-left">
+								<p class="tw-text-left !tw-font-medium">
 									Build a habit of helping others
 								</p>
 							</li>
 							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
 								<KvMaterialIcon
-									class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-self-center"
+									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
 									:icon="mdiCheckBold"
 								/>
-								<p class="tw-text-left">
+								<p class="tw-text-left !tw-font-medium">
 									Track your impact as it grows
 								</p>
 							</li>
 							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
 								<KvMaterialIcon
-									class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-self-center"
+									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
 									:icon="mdiCheckBold"
 								/>
-								<p class="tw-text-left">
+								<p class="tw-text-left !tw-font-medium">
 									Stay consistent with reminders
 								</p>
 							</li>
 							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
 								<KvMaterialIcon
-									class="tw-w-1 tw-h-1 tw-text-base tw-flex-shrink-0 tw-self-center"
+									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
 									:icon="mdiCheckBold"
 								/>
-								<p class="tw-text-left">
+								<p class="tw-text-left !tw-font-medium">
 									Edit anytime
 								</p>
 							</li>
