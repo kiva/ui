@@ -106,6 +106,8 @@ export function createMockLoan(overrides = {}) {
 				name: 'Kyrgyzstan',
 				isoCode: 'KG',
 				region: 'Asia',
+				numLoansFundraising: 342,
+				ppp: '3870',
 				geocode: { latitude: 41.2, longitude: 74.8 },
 				__typename: 'Country',
 			},
@@ -149,6 +151,7 @@ export function createMockLoan(overrides = {}) {
 		partnerName: 'Bai Tushum Bank',
 		partner: {
 			id: 100,
+			name: 'Bai Tushum Bank',
 			countries: [{ id: 1, name: 'Kyrgyzstan', __typename: 'Country' }],
 			arrearsRate: 0.02,
 			avgBorrowerCost: 15.5,
