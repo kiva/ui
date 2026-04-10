@@ -108,6 +108,13 @@ defineProps({
 		type: String,
 		default: '/mykiva',
 	},
+	/**
+	 * Whether the custom goal amount feature is enabled (from experiment)
+	 */
+	customGoalAmountEnable: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 </script>
