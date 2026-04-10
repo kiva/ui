@@ -27,7 +27,34 @@
 		ref="loanRegionsElement"
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperience }"
 	>
-		<template v-if="showRegionExperience">
+		<template v-if="showLendingNextStepsCards">
+			<JourneyCardCarousel
+				class="carousel tw-w-full"
+				user-in-homepage
+				in-lending-stats
+				controls-top-right
+				:goal-editing-enable="goalEditingEnable"
+				:goal-progress-loading="goalProgressLoading"
+				:goal-progress="goalProgress"
+				:hero-badge-data="heroBadgeData"
+				:hero-tiered-achievements="heroTieredAchievements"
+				:lender="lender"
+				:slides-number="3"
+				:slides="heroSlides"
+				:user-goal-achieved="userGoalAchieved"
+				:user-goal="userGoal"
+				:categories-loan-count="categoriesLoanCount"
+				:hide-goal-card="hideCompletedGoalCard"
+				:user-info="userInfo"
+				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+				:show-lending-next-steps-cards="true"
+				:regions-data="regionsData"
+				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
+				@open-goal-modal="openGoalModal($event)"
+				@open-impact-insight-modal="showImpactInsightsModal = true"
+			/>
+		</template>
+		<template v-else-if="showRegionExperience">
 			<div class="goal-card-container">
 				<JourneyCardCarousel
 					class="carousel carousel-single"
@@ -315,6 +342,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		lendingNextStepsVariant: {
+			type: String,
+			default: null,
+		},
 	},
 	data() {
 		return {
@@ -367,6 +398,9 @@ export default {
 		},
 		isNextStepsExperimentEnabled() {
 			return this.nextStepsExperimentVariant === 'b';
+		},
+		showLendingNextStepsCards() {
+			return this.lendingNextStepsVariant === 'b' && !this.showPostLendingNextStepsCards;
 		},
 	},
 	setup() {
@@ -577,6 +611,10 @@ export default {
 
 .carousel :deep(.kv-carousel__controls) {
 	@apply lg:tw-hidden;
+}
+
+.carousel :deep(.kv-carousel) {
+	@apply lg:tw-pt-0;
 }
 
 .carousel-spacing :deep(.kv-carousel) {

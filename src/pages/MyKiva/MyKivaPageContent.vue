@@ -34,6 +34,7 @@
 				:next-steps-experiment-variant="nextStepsExperimentVariant"
 				:goal-editing-enable="goalEditingEnable"
 				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
+				:lending-next-steps-variant="lendingNextStepsVariant"
 			/>
 		</section>
 		<section class="tw-mt-4" id="mykiva-achievements">
@@ -323,6 +324,10 @@ export default {
 		isGoalTileExperimentEnabled: {
 			type: Boolean,
 			default: false
+		},
+		lendingNextStepsVariant: {
+			type: String,
+			default: null,
 		},
 	},
 	setup() {

@@ -16,9 +16,36 @@
 			</h3>
 
 			<section
-				:class="{'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperienceInFirstRow}"
+				:class="{
+					'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperienceInFirstRow
+				}"
 			>
-				<template v-if="showRegionExperienceInFirstRow">
+				<JourneyCardCarousel
+					v-if="showLendingNextStepsCards"
+					class="carousel tw-w-full"
+					user-in-homepage
+					in-lending-stats
+					controls-top-right
+					:goal-editing-enable="goalEditingEnable"
+					:goal-progress-loading="goalProgressLoading"
+					:goal-progress="goalProgress"
+					:hero-badge-data="heroBadgeData"
+					:hero-tiered-achievements="heroTieredAchievements"
+					:lender="lender"
+					:slides-number="3"
+					:slides="heroSlides"
+					:user-goal-achieved="userGoalAchieved"
+					:user-goal="userGoal"
+					:categories-loan-count="categoriesLoanCount"
+					:hide-goal-card="hideCompletedGoalCard"
+					:user-info="userInfo"
+					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+					:show-lending-next-steps-cards="true"
+					:regions-data="regionsData"
+					@open-goal-modal="openGoalModal($event)"
+					@open-impact-insight-modal="showImpactInsightsModal = true"
+				/>
+				<template v-else-if="showRegionExperienceInFirstRow">
 					<div class="goal-card-container">
 						<JourneyCardCarousel
 							class="carousel carousel-single"
@@ -372,6 +399,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	lendingNextStepsVariant: {
+		type: String,
+		default: null,
+	},
 });
 
 const cookieStore = inject('cookieStore');
@@ -444,6 +475,10 @@ const achievementOnlySlides = computed(() => {
 const showRegionExperienceInFirstRow = computed(() => {
 	return !showPostLendingNextStepsCards.value && !props.userLentToAllRegions;
 });
+
+const showLendingNextStepsCards = computed(
+	() => props.lendingNextStepsVariant === 'b' && !showPostLendingNextStepsCards.value
+);
 
 const hideRecommendedForYouSection = computed(() => {
 	return userGoalAchieved.value
