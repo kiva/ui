@@ -201,6 +201,8 @@ watch(() => [props.loading, props.hideGoalCard], ([newLoading, newHideGoalCard],
 
 <style lang="postcss" scoped>
 .card-container {
+	min-height: 300px;
+
 	@apply tw-w-full tw-h-full tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
 		tw-overflow-hidden tw-bg-white tw-shrink-0;
 }
