@@ -416,6 +416,57 @@ describe('apollo-plugin', () => {
 		mock.restore();
 	});
 
+	it('passes all IntersectionObserver options through from lazy config', () => {
+		setBrowser();
+		const ctx = makeCtx({
+			apolloConfig: {
+				lazy: { rootMargin: '100px', threshold: 0.5 },
+				query: 'Q',
+				variables: () => ({}),
+				result: vi.fn(),
+			},
+			$el: document.createElement('div'),
+		});
+		const mock = mockIntersectionObserver(ctx);
+
+		runCreated(ctx);
+		runMounted(ctx);
+
+		expect(mock.instances[0].options).toEqual({ rootMargin: '100px', threshold: 0.5 });
+		mock.restore();
+	});
+
+	it('observes a custom target element via $refs when target is specified', () => {
+		setBrowser();
+		const customEl = document.createElement('section');
+		const result = vi.fn();
+		const ctx = makeCtx({
+			apolloConfig: {
+				lazy: { target: 'lazyRoot' },
+				query: 'Q',
+				variables: () => ({}),
+				result,
+			},
+			watchQuery: vi.fn(() => ({
+				subscribe: ({ next }) => next({ data: 'custom-target' }),
+				setVariables: vi.fn(),
+			})),
+			$watch: vi.fn((fn, cb) => cb({})),
+			$el: document.createElement('div'),
+		});
+		ctx.$refs = { lazyRoot: customEl };
+		const mock = mockIntersectionObserver(ctx);
+
+		runCreated(ctx);
+		runMounted(ctx);
+
+		expect(mock.instances[0].observe).toHaveBeenCalledWith(customEl);
+
+		mock.trigger(1);
+		expect(result).toHaveBeenCalledWith({ data: 'custom-target' });
+		mock.restore();
+	});
+
 	it('disconnects lazy observers on beforeUnmount', () => {
 		setBrowser();
 		const ctx = makeCtx({
