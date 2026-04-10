@@ -166,6 +166,69 @@ export default {
 
 If an error occurs during preFetch and no error handler is defined, a warning will be logged to the console containing the error code and message: "Warning: No error handler for error code 'ERROR_CODE': error message".
 
+### Lazy loading queries
+
+When a component is rendered below the fold, we can defer its query until the component is near the viewport by adding the `lazy` option. This avoids fetching data the user may never scroll to.
+
+A basic lazy query uses `lazy: true`, which defers the query until the component's root element is within 500px of the viewport:
+```javascript
+export default {
+	inject: ['apollo', 'cookieStore'],
+	apollo: {
+		lazy: true,
+		query: myQueryName,
+		variables() {
+			return { id: this.myId };
+		},
+		result({ data }) {
+			this.myVar = data?.someProperty;
+		}
+	}
+}
+```
+
+The `lazy` option also accepts an object to override any `IntersectionObserver` option:
+```javascript
+export default {
+	inject: ['apollo', 'cookieStore'],
+	apollo: {
+		lazy: { rootMargin: '200px', threshold: 0.5 },
+		query: myQueryName,
+		result({ data }) {
+			this.myVar = data?.someProperty;
+		}
+	}
+}
+```
+
+By default the observer watches the component's root element (`$el`). To observe a different element, pass a `target` string matching a template `ref`:
+```html
+<template>
+	<div>
+		<p>Always visible content</p>
+		<div ref="lazySection">
+			<!-- content populated by lazy query -->
+		</div>
+	</div>
+</template>
+```
+```javascript
+export default {
+	inject: ['apollo', 'cookieStore'],
+	apollo: {
+		lazy: { target: 'lazySection' },
+		query: myQueryName,
+		result({ data }) {
+			this.myVar = data?.someProperty;
+		}
+	}
+}
+```
+
+When combined with `preFetch: true`, the lazy option is automatically skipped if the data was already prefetched on the server and the watch query is set up immediately with no unnecessary observer. If the prefetch did not run (e.g. `shouldPreFetch` returned `false`), the lazy behavior applies as normal.
+
+The plugin handles cleanup automatically: all intersection observers are disconnected in `beforeUnmount`. If `IntersectionObserver` is not supported by the browser, the query falls back to executing immediately.
+
 ### Multiple queries
 
 When multiple queries are required, we can define the apollo option as an array of objects, each containing a `query` and `result` method, and other options as described above. This allows us to perform multiple queries in a single component, and independently handle prefetching and results for each query.
