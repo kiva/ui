@@ -9,14 +9,30 @@ vi.mock('vue-router', () => ({
 }));
 
 const baseRegionsData = [
-	{ name: 'Africa', hasLoans: true, countries: ['KE', 'UG'], count: 50 },
-	{ name: 'Asia', hasLoans: true, countries: ['PH', 'KH'], count: 40 },
-	{ name: 'South America', hasLoans: false, countries: ['PE', 'EC', 'CO'], count: 30 },
-	{ name: 'Central America', hasLoans: false, countries: ['SV', 'NI'], count: 20 },
-	{ name: 'Oceania', hasLoans: false, countries: ['WS', 'FJ'], count: 10 },
-	{ name: 'Middle East', hasLoans: false, countries: ['JO', 'LB'], count: 8 },
-	{ name: 'Eastern Europe', hasLoans: false, countries: ['AL', 'GE'], count: 5 },
-	{ name: 'North America', hasLoans: false, countries: ['US', 'MX'], count: 3 },
+	{
+		name: 'Africa', hasLoans: true, countries: ['KE', 'UG'], count: 50
+	},
+	{
+		name: 'Asia', hasLoans: true, countries: ['PH', 'KH'], count: 40
+	},
+	{
+		name: 'South America', hasLoans: false, countries: ['PE', 'EC', 'CO'], count: 30
+	},
+	{
+		name: 'Central America', hasLoans: false, countries: ['SV', 'NI'], count: 20
+	},
+	{
+		name: 'Oceania', hasLoans: false, countries: ['WS', 'FJ'], count: 10
+	},
+	{
+		name: 'Middle East', hasLoans: false, countries: ['JO', 'LB'], count: 8
+	},
+	{
+		name: 'Eastern Europe', hasLoans: false, countries: ['AL', 'GE'], count: 5
+	},
+	{
+		name: 'North America', hasLoans: false, countries: ['US', 'MX'], count: 3
+	},
 ];
 
 const renderComponent = (regionsData = baseRegionsData) => {
