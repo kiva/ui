@@ -8,7 +8,8 @@ const injections = ['apollo', 'cookieStore'];
 function parseLazy(lazy) {
 	if (!lazy) return null;
 	if (lazy === true) return { rootMargin: '500px' };
-	return { rootMargin: '500px', ...lazy };
+	const { target, ...options } = lazy;
+	return { rootMargin: '500px', ...options, target };
 }
 
 function setupWatchQuery(vm, operation, commonVars) {
@@ -127,9 +128,12 @@ export default app => {
 			for (let i = 0; i < this.lazyOperations.length; i += 1) {
 				const { operation, lazyConfig, commonVars } = this.lazyOperations[i];
 
-				// In Vue 3 fragment components, $el may be a comment/text node.
-				// Walk siblings to find the first actual Element for observation.
-				let target = this.$el;
+				const { target: customTarget, ...observerOptions } = lazyConfig;
+
+				// Resolve the observation target: use a custom target ref if provided,
+				// otherwise default to this.$el. In Vue 3 fragment components, $el may
+				// be a comment/text node — walk siblings to find the first Element.
+				let target = customTarget ? this.$refs[customTarget] : this.$el;
 				while (target && !(target instanceof Element)) {
 					target = target.nextSibling;
 				}
@@ -139,7 +143,7 @@ export default app => {
 				} else {
 					const observer = createIntersectionObserver({
 						targets: [target],
-						options: { rootMargin: lazyConfig.rootMargin },
+						options: observerOptions,
 						callback: entries => {
 							entries.forEach(entry => {
 								if (entry.intersectionRatio > 0) {
