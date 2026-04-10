@@ -316,7 +316,7 @@ const dynamicOrderedSlides = computed(() => {
 		sortedSlides.sort((a, b) => loanJourneys.indexOf(b.badgeKey) - loanJourneys.indexOf(a.badgeKey)); // eslint-disable-line max-len
 	}
 
-	if (nonBadgesSlides.value.length > 0) {
+	if (props.showNonBadgesSlides && nonBadgesSlides.value.length > 0) {
 		sortedSlides = [
 			...sortedSlides,
 			...nonBadgesSlides.value,
@@ -334,7 +334,9 @@ const dynamicOrderedSlides = computed(() => {
 	// Almost funded and country collecting cards for lending next steps
 	if (props.showLendingNextStepsCards) {
 		priorityCards.push({ isAlmostFunded: true });
-		priorityCards.push({ isCountryCollecting: true });
+		if (props.regionsData.some(r => !r.hasLoans)) {
+			priorityCards.push({ isCountryCollecting: true });
+		}
 	}
 
 	// Email marketing card if user isn't opted in, otherwise Latest Loan card
@@ -386,8 +388,14 @@ const onSecondaryCtaClick = slide => {
 	});
 };
 
-const shouldDisableDrag = computed(() => props.disableDrag
-	|| (props.showLendingNextStepsCards && isLarge.value));
+const allSlidesVisible = computed(() => {
+	const count = dynamicOrderedSlides.value.length;
+	if (isLarge.value) return count <= 3;
+	if (isMedium.value) return count <= 1;
+	return false;
+});
+
+const shouldDisableDrag = computed(() => props.disableDrag || allSlidesVisible.value);
 
 const emblaOptions = computed(() => ({
 	loop: false,

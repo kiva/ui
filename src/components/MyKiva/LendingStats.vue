@@ -1,9 +1,10 @@
 <template>
 	<div
-		class="tw-mb-2"
 		:class="{
+			'tw-mb-2': !showLendingNextStepsCards,
 			'next-steps-link': isNextStepsExperimentEnabled,
-			'tw-mb-8': !goalProgressLoading && isNextStepsExperimentEnabled && !showRegionExperience
+			'tw-mb-8': isNextStepsExperimentEnabled && !(showPostLendingNextStepsCards && goalProgressLoading)
+				&& !showRegionExperience && !showLendingNextStepsCards
 		}"
 	>
 		<h3 class="tw-text-primary md:tw-mb-1">
@@ -29,7 +30,7 @@
 	>
 		<template v-if="showLendingNextStepsCards">
 			<JourneyCardCarousel
-				class="carousel tw-w-full"
+				class="carousel carousel-lending-next-steps tw-w-full"
 				user-in-homepage
 				in-lending-stats
 				controls-top-right
@@ -613,8 +614,12 @@ export default {
 	@apply lg:tw-hidden;
 }
 
-.carousel :deep(.kv-carousel) {
-	@apply lg:tw-pt-0;
+.carousel:not(.carousel-single):not(.carousel-lending-next-steps) :deep(.kv-carousel) {
+	@apply tw-pt-0 md:tw-pt-6 lg:tw-pt-0;
+}
+
+.carousel-lending-next-steps :deep(.kv-carousel) {
+	@apply tw-pt-2 md:tw-pt-6 lg:tw-pt-1.5;
 }
 
 .carousel-spacing :deep(.kv-carousel) {

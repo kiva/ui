@@ -217,7 +217,11 @@ export const getTopRowAchievementKeys = ({
 	topRowPriorityCards,
 	sortedAchievementSlides,
 }) => {
-	if (showRegionExperienceInFirstRow) return new Set();
+	if (showRegionExperienceInFirstRow) {
+		// When region is in first row with completed goal, 1 achievement fills the goal card slot
+		const achievementSlots = hideCompletedGoalCard ? 1 : 0;
+		return new Set(sortedAchievementSlides.slice(0, achievementSlots).map(s => s.badgeKey));
+	}
 	const topRowSlidesCount = 3;
 	const goalSlot = !showPostLendingNextStepsCards && !hideCompletedGoalCard ? 1 : 0;
 	const achievementSlotsInTopRow = Math.max(

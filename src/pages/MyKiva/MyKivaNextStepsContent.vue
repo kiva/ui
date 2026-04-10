@@ -177,7 +177,8 @@
 						/>
 					</section>
 
-					<template v-if="!userLentToAllRegions && !showRegionExperienceInFirstRow">
+					<!-- eslint-disable-next-line max-len -->
+					<template v-if="!userLentToAllRegions && (!showRegionExperienceInFirstRow || showLendingNextStepsCards)">
 						<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 							Keep your impact going
 						</h3>
