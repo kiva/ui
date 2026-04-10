@@ -625,15 +625,21 @@ export default function useBadgeData() {
 			ID_CLIMATE_ACTION,
 			ID_REFUGEE_EQUALITY
 		];
+
+		if (!badges?.length) return {};
+
+		// Event badges (Contentful-only, not in achievement service) always take priority
+		const eventBadge = badges.find(b => b.id !== ID_EQUITY && !defaultBadges.includes(b.id));
+		if (eventBadge) return eventBadge;
+
+		// Fall through to standard priority order for tiered badges
+		const sortedBadges = JSON.parse(JSON.stringify(badges));
+		sortedBadges.sort((a, b) => badgeOrder.indexOf(a.id) - badgeOrder.indexOf(b.id));
 		let displayedBadge;
-		if (badges?.length) {
-			const sortedBadges = JSON.parse(JSON.stringify(badges));
-			sortedBadges.sort((a, b) => badgeOrder.indexOf(a.id) - badgeOrder.indexOf(b.id));
-			for (let i = 0; i < sortedBadges.length; i += 1) {
-				const badge = sortedBadges[i];
-				if (!displayedBadge || (badge.level ?? 1) > displayedBadge.level) {
-					displayedBadge = badge;
-				}
+		for (let i = 0; i < sortedBadges.length; i += 1) {
+			const badge = sortedBadges[i];
+			if (!displayedBadge || (badge.level ?? 1) > displayedBadge.level) {
+				displayedBadge = badge;
 			}
 		}
 		return displayedBadge ?? {};
