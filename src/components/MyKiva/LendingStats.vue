@@ -614,7 +614,7 @@ export default {
 	@apply lg:tw-hidden;
 }
 
-.carousel:not(.carousel-single):not(.carousel-lending-next-steps) :deep(.kv-carousel) {
+.carousel:not(.carousel-single, .carousel-lending-next-steps) :deep(.kv-carousel) {
 	@apply tw-pt-0 md:tw-pt-6 lg:tw-pt-0;
 }
 
