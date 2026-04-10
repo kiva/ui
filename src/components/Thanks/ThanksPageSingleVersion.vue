@@ -483,18 +483,20 @@ onMounted(async () => {
 	setPostLendingCardCookie(cookieStore, props.loans?.length);
 
 	// Initialize experiment and set customGoalAmountEnable based on assigned version
-	initializeExperiment(
-		cookieStore,
-		apollo,
-		router,
-		CUSTOM_GOAL_AMOUNT_EXP_KEY,
-		version => {
-			customGoalAmountEnable.value = Boolean(version === 'b');
-		},
-		$kvTrackEvent,
-		'EXP-MP-2605-Apr2026',
-		'post-checkout',
-	);
+	if (isEmptyGoal.value) {
+		initializeExperiment(
+			cookieStore,
+			apollo,
+			router,
+			CUSTOM_GOAL_AMOUNT_EXP_KEY,
+			version => {
+				customGoalAmountEnable.value = Boolean(version === 'b');
+			},
+			$kvTrackEvent,
+			'EXP-MP-2605-Apr2026',
+			'post-checkout',
+		);
+	}
 });
 </script>
 
