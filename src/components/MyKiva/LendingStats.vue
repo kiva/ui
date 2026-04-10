@@ -3,7 +3,7 @@
 		class="tw-mb-2"
 		:class="{
 			'next-steps-link': isNextStepsExperimentEnabled,
-			'tw-mb-8': isNextStepsExperimentEnabled && !showRegionExperience
+			'tw-mb-8': !goalProgressLoading && isNextStepsExperimentEnabled && !showRegionExperience
 		}"
 	>
 		<h3 class="tw-text-primary md:tw-mb-1">
@@ -593,11 +593,11 @@ export default {
 	flex: 0 0 100%;
 
 	@screen md {
-		flex: 0 0 calc((100% - 8px) / 2);
+		flex: 0 0 calc((100% - 16px) / 2);
 	}
 
 	@screen lg {
-		flex: 0 0 calc((100% - 32px) / 3);
+		flex: 0 0 calc((100% - 64px) / 3);
 	}
 }
 

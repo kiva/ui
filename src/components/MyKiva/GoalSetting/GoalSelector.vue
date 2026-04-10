@@ -13,12 +13,14 @@
 			:goal-editing-enable="goalEditingEnable"
 			:is-updating-goal="isUpdatingGoal"
 			:is-goal-completed="isGoalCompleted"
+			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			@edit-goal-from-settings="handleEditGoalFromSettings"
 			@button-click="handleSuccessContinue"
 		/>
 		<!-- Goal Selection Form (shown before goal is set) -->
 		<template v-else>
 			<img
+				v-if="!isGoalTileExperimentEnabled"
 				:src="HandsPlant"
 				class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
 			>
@@ -26,14 +28,22 @@
 				v-if="isLoadingData"
 				class="!tw-w-full !tw-h-10 !tw-rounded tw-mb-1 lg:tw-mb-0"
 			/>
-			<h2
+			<template
 				v-else
-				class="tw-px-4 lg:tw-px-7 tw-text-center"
-				:class="{ 'tw-mb-1.5 lg:tw-mb-3': !subtitleText }"
-				style="line-height: 125%;"
-				v-html="titleText"
 			>
-			</h2>
+				<img
+					v-if="isGoalTileExperimentEnabled && !isGoalSet && !isLarge"
+					:src="HandsPlant"
+					class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5 tw-mx-auto"
+				>
+				<h2
+					class="tw-px-4 lg:tw-px-7 tw-text-center"
+					:class="{ 'tw-mb-1.5 lg:tw-mb-3': !subtitleText }"
+					style="line-height: 125%;"
+					v-html="titleText"
+				>
+				</h2>
+			</template>
 
 			<KvLoadingPlaceholder
 				v-if="isLoadingData || loadingCurrentYear"
@@ -70,6 +80,60 @@
 				</template>
 			</div>
 
+			<template
+				v-if="isGoalTileExperimentEnabled && !isLarge && !isGoalSet"
+			>
+				<KvAccordionItem ref="goalTileAccordion" id="goal-tile-accordion-body" class="goal-tile-accordion">
+					<template
+						#header
+					>
+						<p class="tw-text-brand-900 !tw-font-semibold" @click="handleOpenGoalTile">
+							Why set a goal?
+						</p>
+					</template>
+					<div class="tw-text-justify tw-text-primary tw-text-base">
+						<ul class="tw-inline-block">
+							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
+								<KvMaterialIcon
+									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
+									:icon="mdiCheckBold"
+								/>
+								<p class="tw-text-left">
+									Build a habit of helping others
+								</p>
+							</li>
+							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
+								<KvMaterialIcon
+									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
+									:icon="mdiCheckBold"
+								/>
+								<p class="tw-text-left">
+									Track your impact as it grows
+								</p>
+							</li>
+							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
+								<KvMaterialIcon
+									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
+									:icon="mdiCheckBold"
+								/>
+								<p class="tw-text-left">
+									Stay consistent with reminders
+								</p>
+							</li>
+							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
+								<KvMaterialIcon
+									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
+									:icon="mdiCheckBold"
+								/>
+								<p class="tw-text-left">
+									Edit anytime
+								</p>
+							</li>
+						</ul>
+					</div>
+				</KvAccordionItem>
+			</template>
+
 			<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
 				<KvButton
 					class="tw-w-full tw-mt-1.5"
@@ -104,13 +168,17 @@ import {
 	ref,
 	watch,
 } from 'vue';
+import { mdiPencilOutline, mdiCheckBold } from '@mdi/js';
+import {
+	KvButton, KvMaterialIcon, KvLoadingPlaceholder, KvAccordionItem
+} from '@kiva/kv-components';
+
 import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL, ID_US_ECONOMIC_EQUALITY } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
-import { KvButton, KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
-import { mdiPencilOutline } from '@mdi/js';
 import useGoalData, { LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
+import useBreakpoints from '#src/composables/useBreakpoints';
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -222,6 +290,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Flag to indicate if the goal tile experiment is enabled
+	 */
+	isGoalTileExperimentEnabled: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits([
@@ -232,6 +307,8 @@ const emit = defineEmits([
 	'edit-goal-from-settings',
 	'update-goal'
 ]);
+
+const { isLarge } = useBreakpoints();
 
 const DEFAULT_GOAL_OPTIONS = [
 	{
@@ -260,6 +337,8 @@ const prevSupportAllCount = ref(0);
 const selectedIdx = ref(1);
 const editGoalFromSettings = ref(false);
 const allowBackToCategorySelection = ref(false);
+const isGoalTileOpened = ref(false);
+const goalTileAccordion = ref(null);
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -355,6 +434,8 @@ const localGoalProgressPercentage = computed(() => {
 });
 
 const resetOptionSelection = selectedIndex => {
+	isGoalTileOpened.value = false;
+	goalTileAccordion.value?.collapse();
 	goalOptions.value = goalOptions.value.map((option, index) => ({
 		...option,
 		selected: index === selectedIndex,
@@ -495,6 +576,19 @@ const handleEditGoalFromSettings = () => {
 	emit('edit-goal-from-settings');
 };
 
+const handleOpenGoalTile = () => {
+	if (props.isGoalTileExperimentEnabled && props.trackingCategory === 'portfolio' && !isGoalTileOpened.value) {
+		$kvTrackEvent(
+			'portfolio',
+			'click',
+			'why-set-a-goal'
+		);
+		isGoalTileOpened.value = true;
+		return;
+	}
+	isGoalTileOpened.value = false;
+};
+
 onMounted(async () => {
 	await loadLoansThisYear();
 	updateGoalOptions();
@@ -536,11 +630,26 @@ watch(() => props.selectedCategoryId, async newCategory => {
 }
 
 .number-option-placeholder {
-	min-width: 186px;
-	min-height: 59px;
+	@apply !tw-min-h-7.5 !tw-min-w-15.5;
 
 	@screen lg {
 		min-height: 82px;
 	}
+}
+
+:deep(.goal-tile-accordion) {
+	@apply tw-w-full !tw-border-b-0;
+}
+
+:deep(.goal-tile-accordion button:first-child) {
+	@apply !tw-w-auto !tw-pt-3 !tw-pb-2 tw-place-self-center tw-font-medium;
+}
+
+:deep(.goal-tile-accordion span svg) {
+	@apply !tw-text-brand-900;
+}
+
+:deep(.goal-tile-accordion ul li > span svg) {
+	@apply !tw-text-primary;
 }
 </style>

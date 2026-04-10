@@ -1,5 +1,5 @@
 <template>
-	<div v-if="isLoading" class="tw-flex tw-gap-2 tw-overflow-hidden">
+	<div v-if="isLoading" class="tw-flex tw-gap-2 md:tw-gap-4 tw-overflow-hidden">
 		<KvLoadingPlaceholder
 			v-for="n in 5"
 			:key="n"
