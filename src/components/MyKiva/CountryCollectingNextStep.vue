@@ -30,14 +30,13 @@
 				Help your first person in {{ recommendedRegion.name }}
 			</h3>
 
-			<button
-				class="tw-w-full tw-border tw-border-tertiary tw-rounded tw-py-1.5 tw-px-2
-					tw-font-medium tw-text-primary tw-bg-white
-					hover:tw-bg-tertiary hover:tw-text-white tw-transition-colors"
+			<KvButton
+				variant="secondary"
+				class="tw-w-full"
 				@click="handleClick"
 			>
 				Support a new region
-			</button>
+			</KvButton>
 		</div>
 	</div>
 </template>
@@ -52,7 +51,7 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { mdiEarth } from '@mdi/js';
-import { KvMaterialIcon } from '@kiva/kv-components';
+import { KvMaterialIcon, KvButton } from '@kiva/kv-components';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 
 import Africa from '#src/assets/images/my-kiva/Africa.png';
