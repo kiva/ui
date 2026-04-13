@@ -1,5 +1,7 @@
+import { nextTick } from 'vue';
 import { render, fireEvent } from '@testing-library/vue';
 import LoanComments from '#src/components/BorrowerProfile/LoanComments';
+import CommentReportLightbox from '#src/components/BorrowerProfile/CommentReportLightbox';
 import { globalOptions } from '../../../specUtils';
 
 const stubs = {
@@ -88,5 +90,98 @@ describe('CommentReportLightbox', () => {
 		expect(queryByTestId('report-lightbox')).toBeTruthy();
 		expect(getByText('Report Comment')).toBeTruthy();
 		expect(getByText('Why are you reporting this comment?')).toBeTruthy();
+	});
+});
+
+describe('CommentReportLightbox direct submit behaviour', () => {
+	it('calls apollo.mutate with loanId, commentId, and the selected reason', async () => {
+		const mutate = vi.fn(() => Promise.resolve({ data: { loan: { flagComment: true } } }));
+		const Component = { ...CommentReportLightbox, apollo: undefined };
+
+		const { getByLabelText, getByText } = render(Component, {
+			props: { visible: true, loanId: 42, commentId: 7 },
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					apollo: { ...globalOptions.provide.apollo, mutate },
+				},
+				mocks: {
+					...globalOptions.mocks,
+					$showTipMsg: vi.fn(),
+				},
+			},
+		});
+
+		await fireEvent.click(getByLabelText('I find it offensive'));
+		await fireEvent.click(getByText('Submit report'));
+		await nextTick();
+		await nextTick();
+
+		expect(mutate).toHaveBeenCalledTimes(1);
+		const callArg = mutate.mock.calls[0][0];
+		expect(callArg.variables).toEqual({
+			loanId: 42,
+			commentId: 7,
+			description: 'I find it offensive',
+		});
+	});
+
+	it("emits 'reported' and 'close' after a successful mutation", async () => {
+		const mutate = vi.fn(() => Promise.resolve({ data: { loan: { flagComment: true } } }));
+		const Component = { ...CommentReportLightbox, apollo: undefined };
+
+		const { getByLabelText, getByText, emitted } = render(Component, {
+			props: { visible: true, loanId: 42, commentId: 7 },
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					apollo: { ...globalOptions.provide.apollo, mutate },
+				},
+				mocks: {
+					...globalOptions.mocks,
+					$showTipMsg: vi.fn(),
+				},
+			},
+		});
+
+		await fireEvent.click(getByLabelText("It's spam or misleading"));
+		await fireEvent.click(getByText('Submit report'));
+		await nextTick();
+		await nextTick();
+
+		expect(emitted().reported).toBeTruthy();
+		expect(emitted().reported[0]).toEqual([7]);
+		expect(emitted().close).toBeTruthy();
+	});
+
+	it('shows an error tip and does not emit reported when the mutation rejects', async () => {
+		const mutate = vi.fn(() => Promise.reject(new Error('boom')));
+		const showTipMsg = vi.fn();
+		const Component = { ...CommentReportLightbox, apollo: undefined };
+
+		const { getByLabelText, getByText, emitted } = render(Component, {
+			props: { visible: true, loanId: 42, commentId: 7 },
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					apollo: { ...globalOptions.provide.apollo, mutate },
+				},
+				mocks: {
+					...globalOptions.mocks,
+					$showTipMsg: showTipMsg,
+				},
+			},
+		});
+
+		await fireEvent.click(getByLabelText('I find it offensive'));
+		await fireEvent.click(getByText('Submit report'));
+		await nextTick();
+		await nextTick();
+
+		expect(showTipMsg).toHaveBeenCalledWith(expect.any(String), 'error');
+		expect(emitted().reported).toBeFalsy();
 	});
 });
