@@ -70,6 +70,30 @@
 					linkText: 'Currency exchange loss rate'
 				})"
 			/>
+			<description-list-item
+				v-if="startDate"
+				data-testid="bp-field-partner-details-time-on-kiva"
+				:term="'Time on Kiva'"
+				:details="timeOnKivaFormatted"
+			/>
+			<description-list-item
+				v-if="loansPosted"
+				data-testid="bp-field-partner-details-loans-posted"
+				:term="'Kiva borrowers'"
+				:details="loansPostedFormatted"
+			/>
+			<description-list-item
+				v-if="totalAmountRaised && totalAmountRaised !== '0' && totalAmountRaised !== 0"
+				data-testid="bp-field-partner-details-total-loans"
+				:term="'Total loans'"
+				:details="totalAmountRaisedFormatted"
+			/>
+			<description-list-item
+				v-if="avgLoanSizePercentPerCapitaIncome"
+				data-testid="bp-field-partner-details-avg-loan-size"
+				:term="'Avg loan size (% per capita)'"
+				:details="avgLoanSizePercentFormatted"
+			/>
 			<div class="tw-flex tw-mb-1.5" data-testid="bp-field-partner-details-partner-risk-rate">
 				<dt class="tw-flex-1 tw-mb-0">
 					<button
@@ -181,7 +205,23 @@ export default {
 		currencyExchangeLossRate: { // Partner.currencyExchangeLossRate
 			type: Number,
 			default: 0,
-		}
+		},
+		startDate: { // Partner.startDate (ISO date string)
+			type: String,
+			default: '',
+		},
+		loansPosted: { // Partner.loansPosted
+			type: Number,
+			default: 0,
+		},
+		totalAmountRaised: { // Partner.totalAmountRaised
+			type: [String, Number],
+			default: 0,
+		},
+		avgLoanSizePercentPerCapitaIncome: { // Partner.avgLoanSizePercentPerCapitaIncome
+			type: Number,
+			default: 0,
+		},
 	},
 	computed: {
 		avgBorrowerCostFormatted() {
@@ -203,6 +243,27 @@ export default {
 		},
 		currencyExchangeLossRateFormatted() {
 			return numeral(this.currencyExchangeLossRate / 100).format('0[.]00%');
+		},
+		timeOnKivaFormatted() {
+			if (!this.startDate) return '';
+			const start = new Date(this.startDate);
+			if (Number.isNaN(start.getTime())) return '';
+			const now = new Date();
+			let months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+			if (months < 0) months = 0;
+			if (months < 12) return `${months} months`;
+			const years = Math.floor(months / 12);
+			const remMonths = months % 12;
+			return remMonths === 0 ? `${years} years` : `${years} years, ${remMonths} months`;
+		},
+		loansPostedFormatted() {
+			return numeral(this.loansPosted).format('0,0');
+		},
+		totalAmountRaisedFormatted() {
+			return numeral(this.totalAmountRaised).format('$0,0');
+		},
+		avgLoanSizePercentFormatted() {
+			return `${numeral(this.avgLoanSizePercentPerCapitaIncome).format('0.0')}%`;
 		},
 	},
 	methods: {
