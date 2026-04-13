@@ -80,6 +80,10 @@
 						:partner-name="partner.name"
 						:risk-rating="partner.riskRating"
 						:currency-exchange-loss-rate="partner.currencyExchangeLossRate"
+						:start-date="partner.startDate"
+						:loans-posted="partner.loansPosted"
+						:total-amount-raised="partner.totalAmountRaised"
+						:avg-loan-size-percent-per-capita-income="partner.avgLoanSizePercentPerCapitaIncome"
 						@show-definition="showDefinition"
 					/>
 				</kv-tab-panel>
@@ -189,6 +193,10 @@ export default {
 				loansAtRiskRate: 0,
 				name: '',
 				riskRating: 0,
+				startDate: '',
+				loansPosted: 0,
+				totalAmountRaised: 0,
+				avgLoanSizePercentPerCapitaIncome: 0,
 			},
 			trustee: {
 				id: 0,
@@ -283,6 +291,10 @@ export default {
 							name
 							riskRating
 							currencyExchangeLossRate
+							startDate
+							loansPosted
+							totalAmountRaised
+							avgLoanSizePercentPerCapitaIncome
 						}
 					}
 				}
@@ -322,6 +334,10 @@ export default {
 			this.partner.name = partner?.name ?? '';
 			this.partner.riskRating = partner?.riskRating ?? 0;
 			this.partner.currencyExchangeLossRate = partner?.currencyExchangeLossRate ?? 0;
+			this.partner.startDate = partner?.startDate ?? '';
+			this.partner.loansPosted = partner?.loansPosted ?? 0;
+			this.partner.totalAmountRaised = partner?.totalAmountRaised ?? 0;
+			this.partner.avgLoanSizePercentPerCapitaIncome = partner?.avgLoanSizePercentPerCapitaIncome ?? 0;
 
 			this.trustee.endorsement = loan?.endorsement ?? '';
 			this.trustee.id = trustee?.id ?? 0;
