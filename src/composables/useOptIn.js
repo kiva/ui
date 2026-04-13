@@ -1,7 +1,8 @@
 import logReadQueryError from '#src/util/logReadQueryError';
 import { gql } from 'graphql-tag';
 
-export default (apollo, cookieStore) => {
+// eslint-disable-next-line no-unused-vars
+export default (apollo, _cookieStore) => {
 	const updateCommunicationSettings = async (lenderNews, loanUpdates, globalUnsubscribed) => {
 		try {
 			await apollo.mutate({
