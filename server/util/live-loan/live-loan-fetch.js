@@ -297,7 +297,7 @@ function parseSortString(sortString, sortOptions) {
 
 	// only try parsing if the input is valid
 	if (sortString && typeof sortString === 'string') {
-		// start pasring the string
+		// start parsing the string
 		getFilterArrays(sortString)
 			// remove any filter that isn't "sort"
 			.filter(([name]) => name === 'sort')
@@ -305,7 +305,7 @@ function parseSortString(sortString, sortOptions) {
 			.map(array => array?.[1])
 			// if the sort option value is valid, set it as the sort to be returned
 			.forEach(value => {
-				const sortOption = sortOptions.find(o => o?.toLowerCase() === value);
+				const sortOption = sortOptions.find(o => o?.toLowerCase() === value?.toLowerCase());
 				if (sortOption) {
 					sort = sortOption;
 				}
