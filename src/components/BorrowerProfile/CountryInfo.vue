@@ -38,6 +38,20 @@
 					</span>
 				</p>
 			</div>
+			<dl v-if="fundsLentInCountry || loanCurrencyLabel" class="tw-mb-4">
+				<description-list-item
+					v-if="fundsLentInCountry"
+					data-testid="bp-country-funds-lent"
+					:term="'Funds lent in country'"
+					:details="fundsLentInCountryFormatted"
+				/>
+				<description-list-item
+					v-if="loanCurrencyLabel"
+					data-testid="bp-country-loan-currency"
+					:term="'Loan transacted in'"
+					:details="loanCurrencyLabel"
+				/>
+			</dl>
 			<kv-ui-button
 				v-if="showFindMoreLoansInCountryButton"
 				class="tw-inline-flex tw-flex-1"
@@ -66,10 +80,13 @@ import numeral from 'numeral';
 
 import { KvLoadingPlaceholder, KvButton as KvUiButton } from '@kiva/kv-components';
 
+import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionListItem';
+
 export default {
 	name: 'CountryInfo',
 	inject: ['apollo', 'cookieStore'],
 	components: {
+		DescriptionListItem,
 		KvLoadingPlaceholder,
 		KvUiButton,
 	},
@@ -84,6 +101,9 @@ export default {
 			avgAnnualIncome: '',
 			countryIsoCode: '',
 			countryName: '',
+			fundsLentInCountry: 0,
+			loanCurrency: '',
+			loanCurrencyFullName: '',
 			loading: true,
 			loansInRegionLink: '',
 			numLoansFundraising: 0,
@@ -96,6 +116,10 @@ export default {
 			lend {
 				loan(id: $loanId) {
 					id
+					terms {
+						currency
+						currencyFullName
+					}
 					geocode {
 						latitude
 						longitude
@@ -106,6 +130,7 @@ export default {
 							isoCode
 							name
 							region
+							fundsLentInCountry
 						}
 					}
 				}
@@ -122,12 +147,16 @@ export default {
 			return { loanId: this.loanId };
 		},
 		result({ data }) {
-			const geocode = data?.lend?.loan?.geocode;
+			const loan = data?.lend?.loan;
+			const geocode = loan?.geocode;
 			this.numLoansFundraising = geocode?.country?.numLoansFundraising ?? 0;
 			this.avgAnnualIncome = geocode?.country?.ppp ?? '';
 			this.countryIsoCode = geocode?.country?.isoCode ?? '';
 			this.countryName = geocode?.country?.name ?? '';
 			this.regionName = geocode?.country?.region ?? '';
+			this.fundsLentInCountry = geocode?.country?.fundsLentInCountry ?? 0;
+			this.loanCurrency = loan?.terms?.currency ?? '';
+			this.loanCurrencyFullName = loan?.terms?.currencyFullName ?? '';
 
 			const countries = [];
 			const countryFacets = data?.lend?.countryFacets ?? [];
@@ -152,6 +181,12 @@ export default {
 		},
 		avgAnnualIncomeFormatted() {
 			return numeral(this.avgAnnualIncome).format('$0,0[.]00');
+		},
+		fundsLentInCountryFormatted() {
+			return numeral(this.fundsLentInCountry).format('$0,0');
+		},
+		loanCurrencyLabel() {
+			return this.loanCurrencyFullName || this.loanCurrency || '';
 		},
 	},
 };
