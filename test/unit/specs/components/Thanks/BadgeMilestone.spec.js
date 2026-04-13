@@ -148,22 +148,18 @@ describe('BadgeMilestone', () => {
 	});
 
 	describe('onlyKivaCardsAndDonations', () => {
-		it('shows the equity badge fallback when only kiva cards and donations', async () => {
-			const { findByAltText } = render(BadgeMilestone, {
+		it('does not render the badge module when only kiva cards and donations', () => {
+			const { queryByRole } = render(BadgeMilestone, {
 				props: {
 					isGuest: false,
 					onlyKivaCardsAndDonations: true,
-					badgeAchievedIds: ['equity'],
+					badgeAchievedIds: [],
 					loans: [],
 				},
 				...globalOptions,
 			});
 
-			// Trigger the contentful data watch by setting after render
-			mockBadgeContentfulData.value = [equityBadgeContentfulEntry];
-
-			const badgeImg = await findByAltText('Badge');
-			expect(badgeImg.src).toContain('equity-badge.png');
+			expect(queryByRole('button', { name: /continue/i })).toBeNull();
 		});
 	});
 
