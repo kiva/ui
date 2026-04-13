@@ -1,7 +1,7 @@
 import logReadQueryError from '#src/util/logReadQueryError';
 import { gql } from 'graphql-tag';
 
-export default apollo => {
+export default (apollo, cookieStore) => {
 	const updateCommunicationSettings = async (lenderNews, loanUpdates, globalUnsubscribed) => {
 		try {
 			await apollo.mutate({
