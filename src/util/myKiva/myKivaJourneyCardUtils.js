@@ -27,8 +27,7 @@ export const isLoanAnonymous = loan => loan?.anonymizationLevel?.toLowerCase() =
  * @param {Object} params
  * @param {boolean} params.showPostLendingNextStepsCards
  * @param {Object|null} params.latestLoan
- * @param {boolean|null} params.hasMailUpdatesOptOut - result of userHasMailUpdatesOptOut()
- *   true = opted out, false = opted in, null = no preference set (new user)
+ * @param {boolean|null} params.hasMailUpdatesOptOut
  * @param {number} params.loansCount
  * @returns {boolean}
  */
