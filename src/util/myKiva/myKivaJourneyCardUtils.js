@@ -27,8 +27,7 @@ export const isLoanAnonymous = loan => loan?.anonymizationLevel?.toLowerCase() =
  * @param {Object} params
  * @param {boolean} params.showPostLendingNextStepsCards
  * @param {Object|null} params.latestLoan
- * @param {boolean|null} params.hasMailUpdatesOptOut - result of userHasMailUpdatesOptOut()
- *   true = opted out, false = opted in, null = no preference set (new user)
+ * @param {boolean|null} params.hasMailUpdatesOptOut
  * @param {number} params.loansCount
  * @returns {boolean}
  */
@@ -217,7 +216,11 @@ export const getTopRowAchievementKeys = ({
 	topRowPriorityCards,
 	sortedAchievementSlides,
 }) => {
-	if (showRegionExperienceInFirstRow) return new Set();
+	if (showRegionExperienceInFirstRow) {
+		// When region is in first row with completed goal, 1 achievement fills the goal card slot
+		const achievementSlots = hideCompletedGoalCard ? 1 : 0;
+		return new Set(sortedAchievementSlides.slice(0, achievementSlots).map(s => s.badgeKey));
+	}
 	const topRowSlidesCount = 3;
 	const goalSlot = !showPostLendingNextStepsCards && !hideCompletedGoalCard ? 1 : 0;
 	const achievementSlotsInTopRow = Math.max(
