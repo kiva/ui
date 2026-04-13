@@ -18,12 +18,6 @@ vi.mock('#src/composables/useBreakpoints', () => ({
 	}),
 }));
 
-vi.mock('#src/composables/useOptIn', () => ({
-	default: () => ({
-		userHasMailUpdatesOptOut: () => false,
-	}),
-}));
-
 vi.mock('#src/composables/useGoalData', () => ({
 	default: () => ({
 		getCategoryLoansLastYear: () => 0,

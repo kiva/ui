@@ -1,9 +1,7 @@
 import logReadQueryError from '#src/util/logReadQueryError';
 import { gql } from 'graphql-tag';
 
-export const MAIL_UPDATES_OPT_COOKIE_NAME = 'kvemailopt';
-
-export default (apollo, cookieStore) => {
+export default apollo => {
 	const updateCommunicationSettings = async (lenderNews, loanUpdates, globalUnsubscribed) => {
 		try {
 			await apollo.mutate({
@@ -71,30 +69,8 @@ export default (apollo, cookieStore) => {
 		}
 	};
 
-	const userHasMailUpdatesOptOut = () => {
-		const value = cookieStore.get(MAIL_UPDATES_OPT_COOKIE_NAME)?.trim();
-		// Cookie doesn't exist — user hasn't made a preference choice
-		if (value === undefined || value === null || value === '') {
-			return null;
-		}
-		return /(\b|&)true(\b|&)/.test(value);
-	};
-
-	const setMailUpdatesOptOutCookie = optedOut => {
-		if (optedOut) {
-			cookieStore.set(
-				MAIL_UPDATES_OPT_COOKIE_NAME,
-				'true',
-			);
-		} else {
-			cookieStore.remove(MAIL_UPDATES_OPT_COOKIE_NAME);
-		}
-	};
-
 	return {
-		setMailUpdatesOptOutCookie,
 		updateCommunicationSettings,
 		updateVisitorEmailOptIn,
-		userHasMailUpdatesOptOut,
 	};
 };
