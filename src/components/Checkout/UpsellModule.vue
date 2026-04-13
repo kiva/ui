@@ -18,7 +18,11 @@
 				<h4 class="tw-text-h4 tw-text-action tw-mb-0.5">
 					Support Another Borrower
 				</h4>
-				<h3 class="tw-text-h3 tw-mb-2">
+				<h3 v-if="isExpiringSoonExpEnabled" class="tw-text-h3 tw-mb-2">
+					<!-- eslint-disable-next-line max-len -->
+					Time is running out for {{ loan.name }}. Add {{ $filters.numeral(amountLeft, '$0,0[.]00') }} to help this loan before it expires.
+				</h3>
+				<h3 v-else class="tw-text-h3 tw-mb-2">
 					<!-- eslint-disable-next-line max-len -->
 					{{ loan.name }} is missing just {{ $filters.numeral(amountLeft, '$0,0[.]00') }}! Be the person to complete their loan.
 				</h3>
@@ -76,6 +80,10 @@ export default {
 		addToBasket: {
 			type: Function,
 			default: () => {}
+		},
+		isExpiringSoonExpEnabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {
