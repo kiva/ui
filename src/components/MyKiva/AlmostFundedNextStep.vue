@@ -28,7 +28,6 @@
 				:src="borrowerSvg"
 				alt="Almost funded borrower"
 				class="tw-max-h-full tw-object-contain"
-				style="max-width: 80%;"
 			>
 		</div>
 
