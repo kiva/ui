@@ -251,10 +251,12 @@ export default {
 			const now = new Date();
 			let months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
 			if (months < 0) months = 0;
-			if (months < 12) return `${months} months`;
+			const pluralize = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+			if (months < 12) return pluralize(months, 'month');
 			const years = Math.floor(months / 12);
 			const remMonths = months % 12;
-			return remMonths === 0 ? `${years} years` : `${years} years, ${remMonths} months`;
+			if (remMonths === 0) return pluralize(years, 'year');
+			return `${pluralize(years, 'year')}, ${pluralize(remMonths, 'month')}`;
 		},
 		loansPostedFormatted() {
 			return numeral(this.loansPosted).format('0,0');
