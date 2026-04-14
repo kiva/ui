@@ -83,7 +83,7 @@
 				:details="loansPostedFormatted"
 			/>
 			<description-list-item
-				v-if="totalAmountRaised && totalAmountRaised !== '0' && totalAmountRaised !== 0"
+				v-if="Number(totalAmountRaised) > 0"
 				data-testid="bp-field-partner-details-total-loans"
 				:term="'Total loans'"
 				:details="totalAmountRaisedFormatted"
@@ -214,9 +214,9 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		totalAmountRaised: { // Partner.totalAmountRaised
-			type: [String, Number],
-			default: 0,
+		totalAmountRaised: { // Partner.totalAmountRaised — Money scalar, serialized as a string like '75.00' or null
+			type: String,
+			default: '',
 		},
 		avgLoanSizePercentPerCapitaIncome: { // Partner.avgLoanSizePercentPerCapitaIncome
 			type: Number,

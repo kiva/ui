@@ -195,7 +195,7 @@ export default {
 				riskRating: 0,
 				startDate: '',
 				loansPosted: 0,
-				totalAmountRaised: 0,
+				totalAmountRaised: '',
 				avgLoanSizePercentPerCapitaIncome: 0,
 			},
 			trustee: {
@@ -336,7 +336,7 @@ export default {
 			this.partner.currencyExchangeLossRate = partner?.currencyExchangeLossRate ?? 0;
 			this.partner.startDate = partner?.startDate ?? '';
 			this.partner.loansPosted = partner?.loansPosted ?? 0;
-			this.partner.totalAmountRaised = partner?.totalAmountRaised ?? 0;
+			this.partner.totalAmountRaised = partner?.totalAmountRaised ?? '';
 			this.partner.avgLoanSizePercentPerCapitaIncome = partner?.avgLoanSizePercentPerCapitaIncome ?? 0;
 
 			this.trustee.endorsement = loan?.endorsement ?? '';
