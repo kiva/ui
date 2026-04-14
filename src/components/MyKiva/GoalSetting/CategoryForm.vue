@@ -15,7 +15,7 @@
 		>
 			<div
 				class="tw-p-1 md:tw-p-2 tw-flex tw-flex-row tw-items-center tw-cursor-pointer
-					md:tw-flex-col md:tw-justify-center"
+					md:tw-flex-col md:tw-justify-center md:tw-justify-self-center"
 				:style="cardStylings"
 			>
 				<img
