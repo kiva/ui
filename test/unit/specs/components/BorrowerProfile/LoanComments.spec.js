@@ -71,7 +71,7 @@ function renderLoanComments(dataOverrides = {}, propsOverrides = {}) {
 				},
 			},
 			props: {
-				loanId: 123, isPrivileged: true, isAdmin: false, ...propsOverrides
+				loanId: 123, isPrivileged: true, ...propsOverrides
 			},
 		}),
 		mutate,
@@ -115,7 +115,7 @@ describe('LoanComments', () => {
 	it('delete comment removes it from the list after confirmation', async () => {
 		const {
 			getAllByTestId, getByText, queryByText, mutate
-		} = renderLoanComments({}, { isAdmin: true });
+		} = renderLoanComments({ isAdmin: true });
 		await fireEvent.click(getAllByTestId('bp-comment-delete')[0]);
 
 		expect(getByText('Delete this comment?')).toBeTruthy();
@@ -132,7 +132,7 @@ describe('LoanComments', () => {
 	it('delete shows error on failure', async () => {
 		const {
 			getAllByTestId, getByText, mutate, showTipMsg
-		} = renderLoanComments({}, { isAdmin: true });
+		} = renderLoanComments({ isAdmin: true });
 		mutate.mockRejectedValueOnce(new Error('network'));
 		await fireEvent.click(getAllByTestId('bp-comment-delete')[0]);
 		await fireEvent.click(getByText('Delete comment'));
