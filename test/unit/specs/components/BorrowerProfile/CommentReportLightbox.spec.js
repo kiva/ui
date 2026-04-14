@@ -74,7 +74,7 @@ function renderLoanCommentsWithReport(dataOverrides = {}) {
 				$showTipMsg: vi.fn(),
 			},
 		},
-		props: { loanId: 123, isPrivileged: true, isAdmin: false },
+		props: { loanId: 123, isPrivileged: true },
 	});
 }
 
