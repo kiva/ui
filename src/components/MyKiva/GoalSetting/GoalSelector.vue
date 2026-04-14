@@ -244,7 +244,7 @@ import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import useGoalData, { LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
 import useBreakpoints from '#src/composables/useBreakpoints';
 
-const CUSTOM_LOAN_NUMBER_INDEX = 4;
+const CUSTOM_LOAN_NUMBER_INDEX = 3;
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -524,7 +524,8 @@ const resetOptionSelection = selectedIndex => {
 const updateOptionSelection = selectedIndex => {
 	resetOptionSelection(selectedIndex);
 	selectedIdx.value = selectedIndex;
-	const trackingProperties = ['same-as-last-year', 'a-little-more', 'double'];
+	const trackingProperties = ['same-as-last-year', 'a-little-more', 'double', 'custom'];
+	console.log(trackingProperties[selectedIndex]);
 	$kvTrackEvent(
 		props.trackingCategory,
 		'click',
