@@ -213,6 +213,10 @@ export default {
 		},
 	},
 	props: {
+		loan: {
+			type: Object,
+			default: () => ({}),
+		},
 		itemsInBasket: {
 			type: Array,
 			default: () => []
@@ -223,6 +227,12 @@ export default {
 		}
 	},
 	data() {
+		// Initialize from the loan prop (populated by the parent page's routingQuery,
+		// which carries shareMetaFragment fields including name and country). Without
+		// this, SSR renders with loanData={} and head() produces the broken
+		// "undefined from undefined's loan has been funded!" title, because
+		// MinimalBorrowerProfile's own apollo query isn't preFetched and
+		// setupWatchQuery is client-only in the apollo plugin.
 		return {
 			viewportObserver: null,
 			isLoading: true,
@@ -230,7 +240,7 @@ export default {
 			rows: null,
 			isVisitor: true,
 			loanRowsCount: 4,
-			loanData: {},
+			loanData: this.loan?.id ? { ...this.loan } : {},
 		};
 	},
 	computed: {
