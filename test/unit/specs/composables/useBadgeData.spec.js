@@ -500,6 +500,27 @@ describe('useBadgeData.js', () => {
 
 			expect(getHighestPriorityDisplayBadge(badges)).toEqual({ id: ID_CLIMATE_ACTION, level: 3 });
 		});
+
+		it('should return an event badge over equity and tiered badges', () => {
+			const { getHighestPriorityDisplayBadge } = useBadgeData();
+			const badges = [
+				{ id: ID_EQUITY, level: 1 },
+				{ id: ID_WOMENS_EQUALITY, level: 2 },
+				{ id: ID_IWD_24 },
+			];
+
+			expect(getHighestPriorityDisplayBadge(badges)).toEqual({ id: ID_IWD_24 });
+		});
+
+		it('should return an event badge when mixed with other tiered badges and no equity', () => {
+			const { getHighestPriorityDisplayBadge } = useBadgeData();
+			const badges = [
+				{ id: ID_BASIC_NEEDS, level: 1 },
+				{ id: ID_IWD_24 },
+			];
+
+			expect(getHighestPriorityDisplayBadge(badges)).toEqual({ id: ID_IWD_24 });
+		});
 	});
 
 	describe('getNonEquityBadgeOverride', () => {

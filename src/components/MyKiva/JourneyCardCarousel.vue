@@ -1,14 +1,8 @@
 <template>
 	<div>
 		<KvCarousel
-			:key="dynamicOrderedSlides.length"
-			:embla-options="{
-				loop: false,
-				align: 'start',
-				...(props.disableDrag && {
-					watchDrag: false,
-				}),
-			}"
+			:key="`${dynamicOrderedSlides.length}-${shouldDisableDrag}`"
+			:embla-options="emblaOptions"
 			:controls-top-right="controlsTopRight"
 			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
@@ -45,6 +39,15 @@
 					v-else-if="slide?.isLatestLoan"
 					:loan="latestLoan"
 					@open-impact-insight-modal="$emit('open-impact-insight-modal')"
+				/>
+				<AlmostFundedNextStep
+					v-else-if="slide?.isAlmostFunded"
+					class="tw-h-full"
+				/>
+				<CountryCollectingNextStep
+					v-else-if="slide?.isCountryCollecting"
+					class="tw-h-full"
+					:regions-data="regionsData"
 				/>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
@@ -109,6 +112,8 @@ import useGoalData from '#src/composables/useGoalData';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
+import AlmostFundedNextStep from '#src/components/MyKiva/AlmostFundedNextStep';
+import CountryCollectingNextStep from '#src/components/MyKiva/CountryCollectingNextStep';
 import {
 	getSlideTitle,
 	getSlideSubTitle,
@@ -236,7 +241,15 @@ const props = defineProps({
 	isGoalTileExperimentEnabled: {
 		type: Boolean,
 		default: false
-	}
+	},
+	showLendingNextStepsCards: {
+		type: Boolean,
+		default: false
+	},
+	regionsData: {
+		type: Array,
+		default: () => [],
+	},
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
@@ -303,7 +316,7 @@ const dynamicOrderedSlides = computed(() => {
 		sortedSlides.sort((a, b) => loanJourneys.indexOf(b.badgeKey) - loanJourneys.indexOf(a.badgeKey)); // eslint-disable-line max-len
 	}
 
-	if (nonBadgesSlides.value.length > 0) {
+	if (props.showNonBadgesSlides && nonBadgesSlides.value.length > 0) {
 		sortedSlides = [
 			...sortedSlides,
 			...nonBadgesSlides.value,
@@ -316,6 +329,14 @@ const dynamicOrderedSlides = computed(() => {
 	// Goal card (set or in-progress goal)
 	if (shouldShowGoalCard.value) {
 		priorityCards.push({}); // Empty object placeholder for goal card component
+	}
+
+	// Almost funded and country collecting cards for lending next steps
+	if (props.showLendingNextStepsCards) {
+		priorityCards.push({ isAlmostFunded: true });
+		if (props.regionsData.some(r => !r.hasLoans)) {
+			priorityCards.push({ isCountryCollecting: true });
+		}
 	}
 
 	// Email marketing card if user isn't opted in, otherwise Latest Loan card
@@ -366,6 +387,21 @@ const onSecondaryCtaClick = slide => {
 		},
 	});
 };
+
+const allSlidesVisible = computed(() => {
+	const count = dynamicOrderedSlides.value.length;
+	if (isLarge.value) return count <= 3;
+	if (isMedium.value) return count <= 1;
+	return false;
+});
+
+const shouldDisableDrag = computed(() => props.disableDrag || allSlidesVisible.value);
+
+const emblaOptions = computed(() => ({
+	loop: false,
+	align: 'start',
+	...(shouldDisableDrag.value && { watchDrag: false }),
+}));
 
 const singleSlideWidth = computed(() => {
 	if (isLarge.value) {

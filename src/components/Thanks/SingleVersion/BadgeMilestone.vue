@@ -117,9 +117,6 @@ const isLoading = computed(() => !badgeDataAchieved.value);
 
 const showEqualityBadge = computed(() => props.isGuest || props.onlyKivaCardsAndDonations);
 
-// eslint-disable-next-line max-len
-const showBadgeModule = computed(() => showEqualityBadge.value || !!props.badgeAchievedIds.length || props.achievementsCompleted);
-
 const loansCount = computed(() => props.loans?.length ?? 0);
 
 const moduleTitle = computed(() => {
@@ -152,10 +149,22 @@ const displayedBadgeData = computed(() => {
 		}
 		const displayedBadge = getHighestPriorityDisplayBadge(badgeDataAchieved.value);
 		// Contentful-only badges (non-equity badges not in achievement service) have no achievementData
+		// contentfulData is a plain object for event badges, an array for tiered badges
 		if (!displayedBadge.achievementData) {
-			return displayedBadge;
+			return {
+				...displayedBadge,
+				contentfulData: displayedBadge.contentfulData?.[0] ?? displayedBadge.contentfulData,
+			};
 		}
-		return getLastCompletedBadgeLevelData(displayedBadge);
+		const lastCompletedBadgeLevelData = getLastCompletedBadgeLevelData(displayedBadge);
+		if (Object.keys(lastCompletedBadgeLevelData ?? {}).length) {
+			return lastCompletedBadgeLevelData;
+		}
+		// Fallback: normalize contentfulData shape if getLastCompletedBadgeLevelData returns empty
+		return {
+			...displayedBadge,
+			contentfulData: displayedBadge.contentfulData?.[0] ?? displayedBadge.contentfulData,
+		};
 	}
 	return {};
 });
@@ -176,6 +185,9 @@ const funFact = computed(() => displayedBadgeData.value.contentfulData?.shareFac
 const funFactSource = computed(() => {
 	return displayedBadgeData.value.contentfulData?.shareFactFootnote ?? '';
 });
+
+// eslint-disable-next-line max-len
+const showBadgeModule = computed(() => showEqualityBadge.value || !!props.badgeAchievedIds.length || props.achievementsCompleted);
 
 onMounted(async () => {
 	await Promise.all([

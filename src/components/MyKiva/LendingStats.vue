@@ -1,9 +1,10 @@
 <template>
 	<div
-		class="tw-mb-2"
 		:class="{
+			'tw-mb-2': !showLendingNextStepsCards,
 			'next-steps-link': isNextStepsExperimentEnabled,
-			'tw-mb-8': !goalProgressLoading && isNextStepsExperimentEnabled && !showRegionExperience
+			'tw-mb-8': isNextStepsExperimentEnabled && !(showPostLendingNextStepsCards && goalProgressLoading)
+				&& !showRegionExperience && !showLendingNextStepsCards
 		}"
 	>
 		<h3 class="tw-text-primary md:tw-mb-1">
@@ -27,7 +28,34 @@
 		ref="loanRegionsElement"
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperience }"
 	>
-		<template v-if="showRegionExperience">
+		<template v-if="showLendingNextStepsCards">
+			<JourneyCardCarousel
+				class="carousel carousel-lending-next-steps tw-w-full"
+				user-in-homepage
+				in-lending-stats
+				controls-top-right
+				:goal-editing-enable="goalEditingEnable"
+				:goal-progress-loading="goalProgressLoading"
+				:goal-progress="goalProgress"
+				:hero-badge-data="heroBadgeData"
+				:hero-tiered-achievements="heroTieredAchievements"
+				:lender="lender"
+				:slides-number="3"
+				:slides="heroSlides"
+				:user-goal-achieved="userGoalAchieved"
+				:user-goal="userGoal"
+				:categories-loan-count="categoriesLoanCount"
+				:hide-goal-card="hideCompletedGoalCard"
+				:user-info="userInfo"
+				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+				:show-lending-next-steps-cards="true"
+				:regions-data="regionsData"
+				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
+				@open-goal-modal="openGoalModal($event)"
+				@open-impact-insight-modal="showImpactInsightsModal = true"
+			/>
+		</template>
+		<template v-else-if="showRegionExperience">
 			<div class="goal-card-container">
 				<JourneyCardCarousel
 					class="carousel carousel-single"
@@ -164,7 +192,7 @@
 		</template>
 		<div
 			v-else-if="goalProgressLoading"
-			class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden"
+			class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden tw--mt-6"
 		>
 			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0" />
 			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden md:tw-block" />
@@ -315,6 +343,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		lendingNextStepsVariant: {
+			type: String,
+			default: null,
+		},
 	},
 	data() {
 		return {
@@ -367,6 +399,9 @@ export default {
 		},
 		isNextStepsExperimentEnabled() {
 			return this.nextStepsExperimentVariant === 'b';
+		},
+		showLendingNextStepsCards() {
+			return this.lendingNextStepsVariant === 'b' && !this.showPostLendingNextStepsCards;
 		},
 	},
 	setup() {
@@ -577,6 +612,14 @@ export default {
 
 .carousel :deep(.kv-carousel__controls) {
 	@apply lg:tw-hidden;
+}
+
+.carousel:not(.carousel-single, .carousel-lending-next-steps) :deep(.kv-carousel) {
+	@apply tw-pt-0 md:tw-pt-6 lg:tw-pt-0;
+}
+
+.carousel-lending-next-steps :deep(.kv-carousel) {
+	@apply tw-pt-2 md:tw-pt-6 lg:tw-pt-1.5;
 }
 
 .carousel-spacing :deep(.kv-carousel) {
