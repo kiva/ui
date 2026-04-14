@@ -45,6 +45,7 @@ import {
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MinimalBorrowerProfile, { minimalProfileFragment } from '#src/components/BorrowerProfile/MinimalBorrowerProfile';
 import FullBorrowerProfile, { fullProfileFragment } from '#src/components/BorrowerProfile/FullBorrowerProfile';
+import { shareButtonFragment } from '#src/components/BorrowerProfile/ShareButton';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
@@ -73,34 +74,36 @@ const routingFragment = gql`fragment bpRoutingFields on LoanBasic {
 }`;
 
 // Fields for head() meta tags, OG/Twitter share, and page title
-const shareMetaFragment = gql`fragment bpShareMetaFields on LoanBasic {
-	id
-	name
-	use
-	anonymizationLevel
-	borrowerCount
-	fullLoanUse @client
-	plannedExpirationDate
-	lenders {
-		totalCount
-	}
-	image {
+const shareMetaFragment = gql`
+	${shareButtonFragment}
+	fragment bpShareMetaFields on LoanBasic {
 		id
-		hash
-	}
-	geocode {
-		city
-		country {
-			id
-			name
-			isoCode
-			region
+		use
+		borrowerCount
+		fullLoanUse @client
+		plannedExpirationDate
+		lenders {
+			totalCount
 		}
+		image {
+			id
+			hash
+		}
+		geocode {
+			city
+			country {
+				id
+				name
+				isoCode
+				region
+			}
+		}
+		... on LoanDirect {
+			businessName
+		}
+		...shareButtonFields
 	}
-	... on LoanDirect {
-		businessName
-	}
-}`;
+`;
 
 // Phase 1: routing decision + share meta + basket
 const routingQuery = gql`
