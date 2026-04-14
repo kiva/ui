@@ -160,7 +160,10 @@ export function createMockLoan(overrides = {}) {
 			defaultRate: 0.01,
 			loanAlertText: '',
 			riskRating: 3.5,
-			totalAmountRaised: 5000000,
+			totalAmountRaised: '5000000.00',
+			startDate: '2018-06-01',
+			loansPosted: 1200,
+			avgLoanSizePercentPerCapitaIncome: 45.5,
 			__typename: 'Partner',
 		},
 		// User properties
@@ -216,10 +219,11 @@ export function createMockLoan(overrides = {}) {
 		repaymentInterval: 'monthly',
 		terms: {
 			currency: 'KGS',
+			currencyFullName: 'Kyrgyzstani Som',
 			flexibleFundraisingEnabled: false,
 			lenderRepaymentTerm: 26,
 			lossLiabilityCurrencyExchange: 'shared',
-			__typename: 'LoanTerms',
+			__typename: 'LoanTerm',
 		},
 		trustee: null,
 		endorsement: null,
@@ -283,7 +287,7 @@ export const fundraisingDirectLoan = createMockLoan({
 	businessDescription: 'A family-owned bakery specializing in artisan breads.',
 	purpose: 'To buy a commercial oven and expand production.',
 	yearsInBusiness: 5,
-	socialLinks: [],
+	socialLinks: {},
 	geocode: {
 		city: 'Portland',
 		state: 'Oregon',
