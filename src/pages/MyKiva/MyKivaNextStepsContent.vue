@@ -674,17 +674,19 @@ onMounted(async () => {
 }
 
 .goal-card-container {
+	--goal-card-width: 336px;
+
 	width: 100%;
 	min-width: 0;
 	overflow: hidden;
 
 	@screen md {
-		flex: 0 0 336px;
+		flex: 0 0 var(--goal-card-width);
 		height: 390px;
 	}
 
 	@screen lg {
-		flex: 0 0 336px;
+		flex: 0 0 var(--goal-card-width);
 	}
 }
 
