@@ -146,7 +146,7 @@ export default {
 				: `Get ${this.name}'s loan back on track`;
 		},
 		name() {
-			if (this.loan.name && this.loan.anonymization !== 'full') {
+			if (this.loan.name && this.loan.anonymizationLevel !== 'full') {
 				return this.loan.name;
 			}
 			return 'this lender';
