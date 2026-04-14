@@ -34,13 +34,14 @@ const stubs = {
 const defaultLoan = {
 	id: 123,
 	name: 'Maria',
-	anonymization: 'none',
+	anonymizationLevel: 'none',
 	fundraisingPercent: 0.5,
 	loanAmount: 1000,
 	loanFundraisingInfo: { fundedAmount: 500 },
 };
 
-function renderShareButton() {
+function renderShareButton(loanOverride = {}) {
+	const loan = { ...defaultLoan, ...loanOverride };
 	const Component = {
 		...ShareButton,
 		data() {
@@ -59,7 +60,7 @@ function renderShareButton() {
 			...globalOptions,
 			mocks: {
 				...globalOptions.mocks,
-				$route: { path: `/lend/${defaultLoan.id}`, query: {} },
+				$route: { path: `/lend/${loan.id}`, query: {} },
 				$filters: {
 					...globalOptions.mocks.$filters,
 					changeCase: str => str,
@@ -68,7 +69,7 @@ function renderShareButton() {
 			stubs,
 		},
 		props: {
-			loan: defaultLoan,
+			loan,
 			campaign: 'social_share_bp',
 		},
 	});
@@ -80,5 +81,18 @@ describe('ShareButton', () => {
 		await fireEvent.click(getByTestId('bp-share-cta-button'));
 
 		expect(getByTestId('share-options')).toBeTruthy();
+	});
+
+	it('suppresses the borrower name in modal copy when anonymizationLevel is full', async () => {
+		const { getByTestId, container } = renderShareButton({ anonymizationLevel: 'full' });
+
+		await fireEvent.click(getByTestId('bp-share-cta-button'));
+
+		// Modal copy uses `this.name`, which must fall through to "this lender"
+		// when the loan is fully anonymized (ShareButton.vue:148–153).
+		const shareTextarea = container.querySelector('textarea');
+		expect(shareTextarea).not.toBeNull();
+		expect(shareTextarea.value).not.toMatch(/Maria/);
+		expect(shareTextarea.value).toMatch(/this lender/);
 	});
 });
