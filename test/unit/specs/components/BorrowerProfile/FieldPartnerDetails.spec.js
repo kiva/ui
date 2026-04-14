@@ -64,3 +64,24 @@ describe('FieldPartnerDetails.timeOnKivaFormatted', () => {
 		expect(computeTimeOnKiva(isoMonthsAgo(27, NOW))).toBe('2 years, 3 months');
 	});
 });
+
+describe('FieldPartnerDetails.avgBorrowerCostFormatted', () => {
+	function compute(avgBorrowerCost, avgBorrowerCostType) {
+		return FieldPartnerDetails.computed.avgBorrowerCostFormatted.call({
+			avgBorrowerCost,
+			avgBorrowerCostType,
+		});
+	}
+
+	it('returns "N/A" when avgBorrowerCost is 0', () => {
+		expect(compute(0, 'APR')).toBe('N/A');
+	});
+
+	it('formats the percentage with the cost type when non-zero', () => {
+		expect(compute(25, 'APR')).toBe('25% APR');
+	});
+
+	it('handles low percentages', () => {
+		expect(compute(1, 'MPR')).toBe('1% MPR');
+	});
+});
