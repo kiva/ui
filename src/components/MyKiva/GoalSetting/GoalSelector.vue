@@ -525,7 +525,6 @@ const updateOptionSelection = selectedIndex => {
 	resetOptionSelection(selectedIndex);
 	selectedIdx.value = selectedIndex;
 	const trackingProperties = ['same-as-last-year', 'a-little-more', 'double', 'custom'];
-	console.log(trackingProperties[selectedIndex]);
 	$kvTrackEvent(
 		props.trackingCategory,
 		'click',
