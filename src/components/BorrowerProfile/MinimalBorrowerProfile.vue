@@ -209,7 +209,16 @@ export default {
 			};
 		},
 		result({ data }) {
-			this.loanData = data?.lend?.loan ?? {};
+			// Preserve the prop-seeded loanData (see data() comment) when the
+			// query response is missing. Without this guard, a transient null
+			// or missing-loan response would overwrite the seed and the
+			// "undefined from undefined's" title flicker would return.
+			// Truthy check is intentional: loan is always an object or null,
+			// never a primitive, so this is equivalent to `!= null` at runtime
+			// but is shorter and matches the optional-chaining idiom above.
+			if (data?.lend?.loan) {
+				this.loanData = data.lend.loan;
+			}
 		},
 	},
 	props: {
