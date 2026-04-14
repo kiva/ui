@@ -194,6 +194,7 @@ const commentsQuery = gql`query loanCommentsFullList($loanId: Int!) {
 	}
 	my {
 		id
+		isAdmin
 		userAccount {
 			id
 		}
@@ -229,10 +230,6 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		isAdmin: {
-			type: Boolean,
-			default: false,
-		},
 	},
 	apollo: {
 		lazy: true,
@@ -249,6 +246,7 @@ export default {
 		return {
 			comments: [],
 			isLoggedIn: false,
+			isAdmin: false,
 			lentTo: false,
 			isSubscribed: false,
 			newCommentText: '',
@@ -291,6 +289,7 @@ export default {
 			this.lentTo = loan?.userProperties?.lentTo ?? false;
 			this.isSubscribed = loan?.userProperties?.subscribed ?? false;
 			this.isLoggedIn = !!data?.my?.userAccount?.id;
+			this.isAdmin = data?.my?.isAdmin ?? false;
 		},
 		async refreshComments() {
 			if (!this.loanId) return;

@@ -82,8 +82,6 @@
 					data-testid="bp-comments"
 					:loan-id="loanId"
 					:is-logged-in="isLoggedIn"
-					:is-admin="isAdmin"
-					:is-subscribed="isSubscribed"
 					@subscription-toggled="$emit('subscription-toggled', $event)"
 				/>
 			</content-container>
@@ -136,7 +134,6 @@
 				class="tw-my-5 md:tw-my-6 lg:tw-my-8"
 				:loan-id="loanId"
 				:is-privileged="isPrivileged"
-				:is-admin="isAdmin"
 			/>
 		</content-container>
 	</article>
@@ -181,8 +178,6 @@ export const fullProfileFragment = gql`
 		}
 		userProperties {
 			isPrivileged
-			# TODO: isAdmin needs to come from my { isAdmin }, not userProperties
-			subscribed
 		}
 		...summaryCardFields
 		...loanStoryFields
@@ -304,12 +299,6 @@ export default {
 		},
 		isPrivileged() {
 			return this.loanData?.userProperties?.isPrivileged ?? false;
-		},
-		isAdmin() {
-			return this.loanData?.userProperties?.isAdmin ?? false;
-		},
-		isSubscribed() {
-			return this.loanData?.userProperties?.subscribed ?? false;
 		},
 		shareCampaign() {
 			return this.inPfp ? 'social_share_bp_pfp' : 'social_share_bp';
