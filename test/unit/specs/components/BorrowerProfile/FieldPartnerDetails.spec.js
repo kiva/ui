@@ -85,3 +85,17 @@ describe('FieldPartnerDetails.avgBorrowerCostFormatted', () => {
 		expect(compute(1, 'MPR')).toBe('1% MPR');
 	});
 });
+
+describe('FieldPartnerDetails.totalAmountRaisedFormatted', () => {
+	function compute(totalAmountRaised) {
+		return FieldPartnerDetails.computed.totalAmountRaisedFormatted.call({ totalAmountRaised });
+	}
+
+	it('formats a Money string as USD', () => {
+		expect(compute('5000000.00')).toBe('$5,000,000');
+	});
+
+	it('handles empty string from the default', () => {
+		expect(compute('')).toBe('$0');
+	});
+});
