@@ -674,19 +674,19 @@ onMounted(async () => {
 }
 
 .goal-card-container {
-	flex: 0 0 100%;
+	--goal-card-width: 336px;
+
+	width: 100%;
 	min-width: 0;
 	overflow: hidden;
 
 	@screen md {
-		/* md: 2 cards/row — (100% - 1 gap) / 2. -10px offsets goal card box-shadow bleed into adjacent space */
-		flex: 0 0 calc((100% - 1rem) / 2 - 10px);
+		flex: 0 0 var(--goal-card-width);
 		height: 390px;
 	}
 
 	@screen lg {
-		/* lg: 3 cards/row — (100% - 2 gaps) / 3. -10px offsets goal card box-shadow bleed into adjacent space */
-		flex: 0 0 calc((100% - 2rem) / 3 - 10px);
+		flex: 0 0 var(--goal-card-width);
 	}
 }
 
