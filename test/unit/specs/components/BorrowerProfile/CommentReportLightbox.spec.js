@@ -184,4 +184,43 @@ describe('CommentReportLightbox direct submit behaviour', () => {
 		expect(showTipMsg).toHaveBeenCalledWith(expect.any(String), 'error');
 		expect(emitted().reported).toBeFalsy();
 	});
+
+	it('does not call mutate a second time while a submission is in flight', async () => {
+		// Create a mutate mock whose promise never resolves, so the component
+		// stays in the isSubmitting state for the entire test.
+		let resolveMutate;
+		const mutate = vi.fn(() => new Promise(resolve => {
+			resolveMutate = resolve;
+		}));
+		const Component = { ...CommentReportLightbox, apollo: undefined };
+
+		const { getByLabelText, getByText } = render(Component, {
+			props: { visible: true, loanId: 42, commentId: 7 },
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					apollo: { ...globalOptions.provide.apollo, mutate },
+				},
+				mocks: {
+					...globalOptions.mocks,
+					$showTipMsg: vi.fn(),
+				},
+			},
+		});
+
+		await fireEvent.click(getByLabelText('I find it offensive'));
+		await fireEvent.click(getByText('Submit report'));
+		await nextTick();
+
+		// Second click while the first mutation is still pending.
+		await fireEvent.click(getByText('Submit report'));
+		await nextTick();
+
+		expect(mutate).toHaveBeenCalledTimes(1);
+
+		// Clean up the pending promise so Vitest doesn't hold the worker open.
+		resolveMutate({ data: { loan: { flagComment: true } } });
+		await nextTick();
+	});
 });
