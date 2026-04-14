@@ -35,6 +35,20 @@ import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
 import { KvMaterialIcon } from '@kiva/kv-components';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 
+export const shareButtonFragment = gql`
+	fragment shareButtonFields on LoanBasic {
+		id
+		name
+		anonymizationLevel
+		fundraisingPercent
+		loanAmount
+		loanFundraisingInfo {
+			id
+			fundedAmount
+		}
+	}
+`;
+
 export default {
 	name: 'ShareButton',
 	components: {
