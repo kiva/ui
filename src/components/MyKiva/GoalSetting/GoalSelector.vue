@@ -741,13 +741,12 @@ watch(() => props.selectedCategoryId, async newCategory => {
 /* Chrome, Safari, Edge, Opera */
 .custom-input::-webkit-outer-spin-button,
 .custom-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
+  appearance: none;
   margin: 0;
 }
 
 /* Firefox */
 .custom-input[type=number] {
-  -moz-appearance: textfield;
-  appearance: textfield; /* Standard property */
+  appearance: textfield;
 }
 </style>
