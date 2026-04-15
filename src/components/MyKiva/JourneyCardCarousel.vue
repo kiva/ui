@@ -250,6 +250,10 @@ const props = defineProps({
 		type: Array,
 		default: () => [],
 	},
+	preBuiltAchievementSlides: {
+		type: Array,
+		default: null,
+	},
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
@@ -289,31 +293,32 @@ const shouldShowGoalCard = computed(() => {
 });
 
 const dynamicOrderedSlides = computed(() => {
-	const achievementSlides = buildAchievementSlides({
-		badgesData: props.heroBadgeData,
-		slides: props.slides,
-		getActiveTierData,
-		isTieredAchievementComplete,
-		includeMilestoneDiff: true,
-		sortByMilestoneDiff: true,
-		userGoalCategory: props.userGoal?.category,
-	});
-	let loanJourneys = [];
+	let sortedSlides;
 
-	const transactionLoans = props.userInfo?.transactions?.values?.filter(t => {
-		const diffInDays = differenceInDays(new Date(), parseISO(t.createTime));
-		return t.type === TRANSACTION_LOANS_KEY && diffInDays <= TRANSACTION_DAYS_LIMIT;
-	});
+	if (props.preBuiltAchievementSlides) {
+		sortedSlides = [...props.preBuiltAchievementSlides];
+	} else {
+		sortedSlides = buildAchievementSlides({
+			badgesData: props.heroBadgeData,
+			slides: props.slides,
+			getActiveTierData,
+			isTieredAchievementComplete,
+			includeMilestoneDiff: true,
+			sortByMilestoneDiff: true,
+			userGoalCategory: props.userGoal?.category,
+		});
 
-	if (transactionLoans?.length) {
-		const transactionLoan = transactionLoans?.[0]?.loan ?? {};
-		loanJourneys = getJourneysByLoan(transactionLoan);
-	}
+		const transactionLoans = props.userInfo?.transactions?.values?.filter(t => {
+			const diffInDays = differenceInDays(new Date(), parseISO(t.createTime));
+			return t.type === TRANSACTION_LOANS_KEY && diffInDays <= TRANSACTION_DAYS_LIMIT;
+		});
 
-	let sortedSlides = achievementSlides;
-
-	if (loanJourneys.length) {
-		sortedSlides.sort((a, b) => loanJourneys.indexOf(b.badgeKey) - loanJourneys.indexOf(a.badgeKey)); // eslint-disable-line max-len
+		if (transactionLoans?.length) {
+			const loanJourneys = getJourneysByLoan(transactionLoans[0]?.loan ?? {});
+			if (loanJourneys.length) {
+				sortedSlides.sort((a, b) => loanJourneys.indexOf(b.badgeKey) - loanJourneys.indexOf(a.badgeKey)); // eslint-disable-line max-len
+			}
+		}
 	}
 
 	if (props.showNonBadgesSlides && nonBadgesSlides.value.length > 0) {

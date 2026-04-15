@@ -34,6 +34,7 @@
 					:lender="lender"
 					:slides-number="3"
 					:slides="heroSlides"
+					:pre-built-achievement-slides="sortedAchievementSlides"
 					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
 					:categories-loan-count="categoriesLoanCount"
@@ -97,6 +98,7 @@
 					:loans="loans"
 					:slides-number="3"
 					:slides="achievementOnlySlides"
+					:pre-built-achievement-slides="sortedAchievementSlides"
 					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
 					:hide-goal-card="hideCompletedGoalCard"
@@ -305,6 +307,7 @@ import {
 	watch
 } from 'vue';
 import { useRouter } from 'vue-router';
+import { parseISO, differenceInDays } from 'date-fns';
 import { mdiArrowLeft } from '@mdi/js';
 import { KvMaterialIcon, KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
 
@@ -319,7 +322,7 @@ import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 
-import useBadgeData from '#src/composables/useBadgeData';
+import useBadgeData, { getJourneysByLoan } from '#src/composables/useBadgeData';
 import { isNonBadgeSlide } from '#src/util/achievementUtils';
 import {
 	getRichTextUiSettingsData,
@@ -346,10 +349,12 @@ import {
 	PRIORITY_CARD_LATEST_LOAN,
 	PRIORITY_CARD_SURVEY,
 } from '#src/util/myKiva/myKivaJourneyCardUtils';
-import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
+import { checkPostLendingCardCookie, removePostLendingCardCookie, TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
 import useBreakpoints from '#src/composables/useBreakpoints';
 
 defineOptions({ name: 'MyKivaNextStepsContent' });
+
+const TRANSACTION_DAYS_LIMIT = 30;
 
 const props = defineProps({
 	userInfo: {
@@ -454,18 +459,35 @@ const achievementSlides = computed(() => buildAchievementSlides({
 	userGoalCategory: userGoal.value?.category,
 }));
 
-// Sorted version used to determine which achievements land in the top row carousel.
-// Must include userGoalCategory to match the carousel's ordering (goal category pushed to end)
-// so topRowAchievementKeys correctly excludes the right slides from "Continue with your lifetime achievements".
-const sortedAchievementSlides = computed(() => buildAchievementSlides({
-	badgesData: props.heroBadgeData,
-	slides: props.heroSlides,
-	isTieredAchievementComplete,
-	getActiveTierData,
-	includeMilestoneDiff: true,
-	sortByMilestoneDiff: true,
-	userGoalCategory: userGoal.value?.category,
-}));
+// Single source of truth for achievement ordering in the top row carousel.
+// Passed to the carousel via preBuiltAchievementSlides so the carousel does not
+// independently recompute ordering. Also used to derive topRowAchievementKeys
+// for filtering the bottom "Continue with your lifetime achievements" section.
+const sortedAchievementSlides = computed(() => {
+	const slides = buildAchievementSlides({
+		badgesData: props.heroBadgeData,
+		slides: props.heroSlides,
+		isTieredAchievementComplete,
+		getActiveTierData,
+		includeMilestoneDiff: true,
+		sortByMilestoneDiff: true,
+		userGoalCategory: userGoal.value?.category,
+	});
+
+	const transactionLoans = props.userInfo?.transactions?.values?.filter(t => {
+		const diffInDays = differenceInDays(new Date(), parseISO(t.createTime));
+		return t.type === TRANSACTION_LOANS_KEY && diffInDays <= TRANSACTION_DAYS_LIMIT;
+	});
+
+	if (transactionLoans?.length) {
+		const loanJourneys = getJourneysByLoan(transactionLoans[0]?.loan ?? {});
+		if (loanJourneys.length) {
+			slides.sort((a, b) => loanJourneys.indexOf(b.badgeKey) - loanJourneys.indexOf(a.badgeKey));
+		}
+	}
+
+	return slides;
+});
 
 // Only badge slides — passed to the top row carousel so non-badge (contentful) slides
 // are not pulled into its slots. Non-badge slides belong only in "Build impact" below.
