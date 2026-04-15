@@ -22,6 +22,17 @@
 				@continue-clicked="handleContinue(NON_TIERED_BADGE)"
 				class="tw-mb-2.5"
 			/>
+			<!--  Donation opt-in module -->
+			<OptInModule
+				v-if="showDonationOptInModule"
+				data-testid="donation-opt-in-module"
+				:loans="loans"
+				:is-guest="isGuest"
+				:number-of-badges="numberOfBadges"
+				:only-donations="true"
+				:achievements-completed="achievementsCompleted"
+				class="print:tw-hidden tw-mb-2.5"
+			/>
 			<!-- Start goal module variations -->
 			<GoalEntrypoint
 				v-if="!isGuest && goalDataInitialized && isEmptyGoal"
@@ -59,12 +70,12 @@
 			/>
 			<!-- End goal module variations -->
 			<OptInModule
-				v-if="showOptInModule"
+				v-if="showNonDonationOptInModule"
 				data-testid="opt-in-module"
 				:loans="loans"
 				:is-guest="isGuest"
 				:number-of-badges="numberOfBadges"
-				:only-donations="onlyDonations"
+				:only-donations="false"
 				:achievements-completed="achievementsCompleted"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
@@ -294,6 +305,8 @@ const hasTeamAttributedPartnerLoan = computed(
 );
 
 const showOptInModule = computed(() => !props.isOptedIn);
+const showDonationOptInModule = computed(() => showOptInModule.value && onlyDonations.value);
+const showNonDonationOptInModule = computed(() => showOptInModule.value && !onlyDonations.value);
 const showKivaCardsModule = computed(() => !!printableKivaCards.value.length);
 const showGoalCompletedModule = computed(() => {
 	// Show goal completed module immediately when user achieved their goal

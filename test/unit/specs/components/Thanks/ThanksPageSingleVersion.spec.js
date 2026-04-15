@@ -97,6 +97,7 @@ const MODULE_IDS = [
 	'goal-completed',
 	'goal-in-progress',
 	'opt-in-module',
+	'donation-opt-in-module',
 ];
 
 function renderComponent(propsOverrides = {}) {
@@ -114,7 +115,10 @@ function renderComponent(propsOverrides = {}) {
 			isGuest: false,
 			isOptedIn: true,
 			loans: [{ id: 1, unreservedAmount: '25.00' }],
-			receipt: { items: { values: [{ basketItemType: 'loan' }] } },
+			receipt: {
+				items: { values: [{ basketItemType: 'loan' }] },
+				totals: { itemTotal: '25.00', donationTotal: '0.00' },
+			},
 			...propsOverrides,
 		},
 	});
@@ -290,6 +294,24 @@ describe('ThanksPageSingleVersion', () => {
 			await vi.waitFor(() => {
 				const ids = getOrderedModules(container);
 				expect(ids).toEqual(['badge-milestone', 'goal-in-progress', 'opt-in-module']);
+			});
+		});
+
+		it('shows donation opt-in before GoalInProgress when donation-only and not opted in', async () => {
+			mockUserGoal.value = inProgressGoal;
+
+			const { container } = renderComponent({
+				badgesAchieved: [],
+				isOptedIn: false,
+				receipt: {
+					items: { values: [{ basketItemType: 'donation' }] },
+					totals: { itemTotal: '25.00', donationTotal: '25.00' },
+				},
+			});
+
+			await vi.waitFor(() => {
+				const ids = getOrderedModules(container);
+				expect(ids).toEqual(['donation-opt-in-module', 'goal-in-progress']);
 			});
 		});
 	});
