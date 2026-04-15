@@ -1,3 +1,92 @@
+## [3.65.0-rc.1](https://github.com/kiva/ui/compare/v3.64.0...v3.65.0-rc.1) (2026-04-15)
+
+### 🎉 New Features
+
+* [MP-2586] - done add new experiment flag & goal tile+accordion ([73218f3](https://github.com/kiva/ui/commit/73218f3dca1f36bd71c8e623a33fc208c93f7036))
+* [MP-2588] - new requested changes ([f6f479c](https://github.com/kiva/ui/commit/f6f479cbb9c0fe56bb6aac16560304af05e5a5a5))
+* [MP-2650] - fix styles ([d2c3f22](https://github.com/kiva/ui/commit/d2c3f22460683059523c14f1c5eeecd46efe6ce2))
+* [MP-2650] - fix styles accordion mobile spacing ([009fe35](https://github.com/kiva/ui/commit/009fe3563666dfed7fd9a0d50c46a4c4da6ab432))
+* [MP-2650] - fix styles after add `:deep` ([5c39b2b](https://github.com/kiva/ui/commit/5c39b2be9f145a5e6ad75d94a0b3bb684f6fc743))
+* [MP-2650] - fix styles mobile version ([0201b86](https://github.com/kiva/ui/commit/0201b866b6f24c7f6a95dd3f1001c831f91c48c7))
+* [MP-2650] - fix styles mobile version font-weight ([783d490](https://github.com/kiva/ui/commit/783d490b747dd2a8aa9bf4d10bed9095dec8824c))
+* [MP-2650] - fix weird Benjamin Button case on borders ([665978d](https://github.com/kiva/ui/commit/665978d84629cf9cf925bc2c7daa589abb810216))
+* [MP-2650] - fix weird case on borders ([fe41b64](https://github.com/kiva/ui/commit/fe41b64d9834225d63308aff05653eed241425a6))
+* [MP-2650] - new storybook and fix some stylelint errors ([4d73ff7](https://github.com/kiva/ui/commit/4d73ff75811ff5a037d47348c36ba315df942f38))
+* [MP-2650] - revert scoped removed and use `:deep` ([1351975](https://github.com/kiva/ui/commit/1351975d8cedd163ae67589219173250e17fc93e))
+* [MP-2650] - story 1 part 2 finally forced KvLightbox structure by css ([095651e](https://github.com/kiva/ui/commit/095651e8a7b62b945387248c4e74dc92420597c4))
+* [MP-2650] - story 1 part 2 in-progress new copy for exp variant ([8d9db0d](https://github.com/kiva/ui/commit/8d9db0d3b8025061e05d4a98ff72bb5e83d0d7ec))
+* [MP-2650] - story 1 part 2 reset accordion state ([a3ee952](https://github.com/kiva/ui/commit/a3ee952ab95775b8afb93b4d9ff07f65b656aa19))
+* [MP-2650] - styles changes ([6d0246a](https://github.com/kiva/ui/commit/6d0246a208db37130db18a128f765f333b30e825))
+* alternative dynamic data field ([263023c](https://github.com/kiva/ui/commit/263023c52062b9e384c181c0af9406c7ea8805ac))
+* **apollo:** add lazy query option to Apollo plugin ([b1de410](https://github.com/kiva/ui/commit/b1de4101fae826991891169c3bf35d134707ffad))
+* **apollo:** support custom target and full observer options in lazy config ([f3087ff](https://github.com/kiva/ui/commit/f3087ffe77602383a1ff2da9243b0d88d2d0f6f2))
+* custom goal amount ([#6830](https://github.com/kiva/ui/issues/6830)) ([f008cd6](https://github.com/kiva/ui/commit/f008cd63451c5ebd35859d03e4cbb855cf38d73c))
+* custom goal amount test setup added to ty page ([#6823](https://github.com/kiva/ui/issues/6823)) ([0798d04](https://github.com/kiva/ui/commit/0798d043b2278044d03c5e5c7c1343b9a19198eb))
+* expiring soon upsell experiment ([#6828](https://github.com/kiva/ui/issues/6828)) ([a513f04](https://github.com/kiva/ui/commit/a513f04391238bcd3f5e63c9cfea6e3b781a7b55))
+* explore being able to add a single cta in an email that adds the 4 live loans ([#6815](https://github.com/kiva/ui/issues/6815)) ([88302f9](https://github.com/kiva/ui/commit/88302f9fd9c91053ec2a866e0dedf0a632c302fb))
+* fixed url redirect ([6bc7a37](https://github.com/kiva/ui/commit/6bc7a37cbd9718cbe19bb592355226e49735bc43))
+* images removal ([d240445](https://github.com/kiva/ui/commit/d240445a002a107309d5432bbc4e218779ea64d0))
+* kiva navigation code removal ([eca7c2c](https://github.com/kiva/ui/commit/eca7c2c4f1ec83ce0d942ee47d699825aee1b73d))
+* lending focused next steps experiment ([#6825](https://github.com/kiva/ui/issues/6825)) ([91fd665](https://github.com/kiva/ui/commit/91fd665b5fee81f0b67a089167e872041fa21d2c))
+* making ytd dynamic for goal entrypoint ([13434db](https://github.com/kiva/ui/commit/13434db27ab3a3f7001e17907f7525b4b2a01b3f))
+* mp-2525-checkout-missing-space ([137a436](https://github.com/kiva/ui/commit/137a43634022eb8157b179e63e2a0ebe5d3e8830))
+* mp-2576-lower-equity ([a8b86e1](https://github.com/kiva/ui/commit/a8b86e12b697bfdeebcc5025826e6164bdaefbf4))
+* mp-2576-lower-equity ([0e30dd0](https://github.com/kiva/ui/commit/0e30dd0fa76a045febf429de9bf8bb324cbc2678))
+* mp-2576-lower-equity-fix ([f9909e0](https://github.com/kiva/ui/commit/f9909e0feba0c6af92069396ade169f5de1b705c))
+* mp-2576-lower-equity-fix ([49a22cf](https://github.com/kiva/ui/commit/49a22cf89990620cbf1c860dd021e042d4ea6160))
+* mp-2576-lower-equity-fix ([0ccc2b7](https://github.com/kiva/ui/commit/0ccc2b7e878b5aa0e9f494b51745dd13f97e9cf8))
+* mp-2626-next steps bugs ([8c21160](https://github.com/kiva/ui/commit/8c211605a32b0c8c0d1e6d3c5c33de73be9fb5eb))
+* mp-2626-next steps bugs ([e33fcf2](https://github.com/kiva/ui/commit/e33fcf2841a46754e5f5a79e0573749e29b5d9aa))
+* mykiva navigation page removal ([c142d33](https://github.com/kiva/ui/commit/c142d33d7d34eb0e1afb8cdbf534e2c00d0b60a2))
+* removed files ([962d036](https://github.com/kiva/ui/commit/962d03643007ac603ef5121500c107b577df4a79))
+* reverted file ([d6bf61b](https://github.com/kiva/ui/commit/d6bf61b22031c7c163c6fe658063c238533d76fd))
+* revised solution (additonal redirects, removal of userhomepage code) ([ebea780](https://github.com/kiva/ui/commit/ebea780ad3a704925bc1ad1256b9e53fee69b9b9))
+
+### 🐛 Bugfixes
+
+* add anchor above section to show title ([b7b253f](https://github.com/kiva/ui/commit/b7b253f7995fa5fd7759209f6a456233fc3198d1))
+* add cookie store in case query needs them ([d2fb4b2](https://github.com/kiva/ui/commit/d2fb4b2a3888bc40ea471bf030fee53f0a958112))
+* add edit goal functionality to next steps ([d13cf24](https://github.com/kiva/ui/commit/d13cf243383a955076b37e7c58fb965ff7f810de))
+* add min height to goal card for loading state ([b0393dd](https://github.com/kiva/ui/commit/b0393ddbe066d1b59a03af42d0b41b2a499d36ae))
+* add url constant to a shared file ([7c97a81](https://github.com/kiva/ui/commit/7c97a81e0956b85a2293ef885b94755d323a2b2d))
+* aim to resolve ssr render size of goal card loading ([#6834](https://github.com/kiva/ui/issues/6834)) ([287655e](https://github.com/kiva/ui/commit/287655ed1c0bbef1be2371b880a900a80b68789c))
+* **apollo:** handle Vue 3 fragment components in lazy query observer ([034f93d](https://github.com/kiva/ui/commit/034f93d6790c764e5ca052b0f988802d016a78ec))
+* change impact progress gap in mobile ([37673bc](https://github.com/kiva/ui/commit/37673bc2b32bc983dc00b5a6da0e69912dc3eb0f))
+* hide badge and journey modules when no loans in checkout ([5ff33b8](https://github.com/kiva/ui/commit/5ff33b81ee915d0ea1acdc3001d4ff92e73e7e90))
+* hide opt-in email card when user already accepted ([bb92f74](https://github.com/kiva/ui/commit/bb92f746f7eca985dcd34d6d0ac9b6b7106a28de))
+* hide recommended for you row in next steps if goal and achievements were completed ([8b9bb9b](https://github.com/kiva/ui/commit/8b9bb9b5d1d25f70ba92fc468ca54ddaefd1ee0d))
+* lint ([9441786](https://github.com/kiva/ui/commit/9441786801e19bab7e99f31e64decf8a44579dfb))
+* one more extra space issue for mykiva next steps ([#6829](https://github.com/kiva/ui/issues/6829)) ([dca1b30](https://github.com/kiva/ui/commit/dca1b30e0d6c0aa596bf2f2cd2465d44e1c2f828))
+* placeholder width in my kiva ([f4385e6](https://github.com/kiva/ui/commit/f4385e628f621ed51542f03d100c38ce0463a8d2))
+* refetch communication setting information when going to next steps ([53a85ea](https://github.com/kiva/ui/commit/53a85ea0e953608942b0baf710db2c58edfea3c5))
+* remove comment related to removed method ([5b9b73f](https://github.com/kiva/ui/commit/5b9b73fcaae34133d5549332f65e07e7781c88c4))
+* remove const declaration ([d8b8f5f](https://github.com/kiva/ui/commit/d8b8f5fe05734132291bf077c5c46f04ee3fbb0e))
+* removed comment ([698a07a](https://github.com/kiva/ui/commit/698a07ae3071443bad05b2dd313d688771e6937b))
+* resolve issue with goal loading state on next steps page ([#6832](https://github.com/kiva/ui/issues/6832)) ([be851fa](https://github.com/kiva/ui/commit/be851fa8d918074b95df60b964903d05c8ca4e43))
+* use tailwind classes for placeholder dimensions rather than style [CP-2515] ([#6808](https://github.com/kiva/ui/issues/6808)) ([1c9a6f5](https://github.com/kiva/ui/commit/1c9a6f54e80ee43dac462b535733bbfb1fab9788))
+* use tw-shadow-lg so dropdown menus are not buried under subsequent team cards [CP-2515] ([#6807](https://github.com/kiva/ui/issues/6807)) ([0ce0ced](https://github.com/kiva/ui/commit/0ce0ced77f06a40205a40755be948684b774af92))
+
+### 🪚 Refactors
+
+* **apollo:** restructure lazy observer fallback as if/else ([3e51bf8](https://github.com/kiva/ui/commit/3e51bf880b396cbf0b36b9cf13dd41151ef27ec7))
+* clean up countries not lent to ([c756ed6](https://github.com/kiva/ui/commit/c756ed6a7ce836438dc0f6b21175c2c9818971f9))
+* **config:** split local config into local-prod and local-dev ([65d30c9](https://github.com/kiva/ui/commit/65d30c9ba85fc89d65775b830de7f7395afac65f))
+* remove opt in cookie logic ([d319fec](https://github.com/kiva/ui/commit/d319fec894a56e3c0deaffe54a6bdc6725036119))
+
+### 📚 Documentation Changes
+
+* **apollo:** add lazy loading section to GraphQL README ([9d44456](https://github.com/kiva/ui/commit/9d4445660a7241dae113cf10616582ac7034800d))
+* fix stale config names in README ([6e27c37](https://github.com/kiva/ui/commit/6e27c37b61a7fb516ea3ea37cc30511238c8d83c))
+
+### 🔍 Tests
+
+* **apollo:** add tests for custom target and full observer options ([d5b1957](https://github.com/kiva/ui/commit/d5b195701b92eff30054d4126cea6d788672619d))
+* **apollo:** extract makeCtx builder to reduce test boilerplate ([4a42d00](https://github.com/kiva/ui/commit/4a42d00c69778637c1a56f78af18a4dda5ac62cb))
+
+### 💅 Code Style Changes
+
+* **apollo:** fix object-curly-newline lint errors in tests ([0a1b6c5](https://github.com/kiva/ui/commit/0a1b6c555767088646fd60b5a272a7f35da7ae72))
+
 ## [3.64.0](https://github.com/kiva/ui/compare/v3.63.0...v3.64.0) (2026-04-06)
 
 ### 🎉 New Features
