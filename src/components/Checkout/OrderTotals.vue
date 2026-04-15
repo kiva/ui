@@ -401,9 +401,9 @@ export default {
 		},
 		removeKivaCreditText() {
 			// eslint-disable-next-line no-nested-ternary
-			return this.isKivaCreditReplacementExpEnabled
-				? (this.isCorporateCampaign ? 'Remaining account balance:' : 'Account balance:')
-				: (this.isCorporateCampaign ? 'Remaining Kiva credit:' : 'Kiva Credit:');
+			return !this.isCorporateCampaign
+				? (this.isKivaCreditReplacementExpEnabled ? 'Account balance:' : 'Kiva Credit:')
+				: 'Remaining Kiva credit:';
 		}
 	},
 	methods: {
