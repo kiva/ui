@@ -4,7 +4,7 @@
 		id="kiva-credit-submit"
 		class="tw-mb-2"
 		v-kv-track-event="['payment.continueBtn']"
-		title="Checkout using your Kiva credit"
+		:title="titleText"
 		@click.prevent="validateCreditBasket"
 	>
 		<slot>Complete order</slot>
@@ -15,6 +15,7 @@
 import checkoutUtils from '#src/plugins/checkout-utils-mixin';
 import { pollForFinishedCheckout } from '@kiva/kv-shop';
 import { KvButton } from '@kiva/kv-components';
+import kivaCreditReplacement from '#src/plugins/kiva-credit-replacement-mixin';
 
 export default {
 	name: 'KivaCreditPayment',
@@ -23,7 +24,8 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	mixins: [
-		checkoutUtils
+		checkoutUtils,
+		kivaCreditReplacement,
 	],
 	emits: [
 		'complete-transaction',
@@ -35,7 +37,12 @@ export default {
 		useAsyncCheckout: {
 			type: Boolean,
 			default: false
-		}
+		},
+	},
+	computed: {
+		titleText() {
+			return `Checkout using your ${this.isKivaCreditText}`;
+		},
 	},
 	methods: {
 		validateCreditBasket() {

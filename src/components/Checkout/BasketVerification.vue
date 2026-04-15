@@ -37,9 +37,11 @@
 				We sent a validation link
 				<span v-if="email" class="email data-hj-suppress">to {{ email }}</span>.
 			</p>
+			<!-- eslint-disable max-len -->
 			<p class="tw-mb-4">
-				After receiving the email, follow the link provided to continue checking out with your Kiva Credit.
+				After receiving the email, follow the link provided to continue checking out with your {{ isKivaCreditText }}.
 			</p>
+			<!-- eslint-enable max-len -->
 			<kv-button v-if="!sending" @click="send" data-testid="basket-verification-resend-button">
 				Resend email
 			</kv-button>
@@ -61,6 +63,7 @@ import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
 import getVerificationState from '#src/graphql/query/checkout/basketVerificationState.graphql';
 import startBasketVerificationMutation from '#src/graphql/mutation/checkout/startBasketVerification.graphql';
 import closeVerificationLightboxMutation from '#src/graphql/mutation/checkout/closeVerificationLightbox.graphql';
+import kivaCreditReplacement from '#src/plugins/kiva-credit-replacement-mixin';
 
 export default {
 	name: 'BasketVerification',
@@ -70,6 +73,7 @@ export default {
 		KvLoadingSpinner,
 	},
 	inject: ['apollo', 'cookieStore'],
+	mixins: [kivaCreditReplacement],
 	data() {
 		return {
 			email: '',
