@@ -150,7 +150,7 @@
 						</li>
 						<li>
 							<a
-								:href="countriesNotLentToUrl"
+								:href="COUNTRIES_NOT_LENT_TO_URL"
 								class="lend-link tw-text-primary"
 								v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
 							>
@@ -170,7 +170,7 @@ import { mdiArrowRight } from '@mdi/js';
 import {
 	KvLoadingPlaceholder, KvMaterialIcon, KvTab, KvTabPanel, KvTabs
 } from '@kiva/kv-components';
-import countriesNotLentToExpMixin from '#src/plugins/countries-not-lent-to-exp-mixin';
+import { COUNTRIES_NOT_LENT_TO_URL } from '#src/util/headerUtils';
 import CountryList from './CountryList';
 import SearchList from './SearchList';
 
@@ -228,11 +228,11 @@ export default {
 			default: false,
 		},
 	},
-	mixins: [countriesNotLentToExpMixin],
 	data() {
 		return {
 			mgHighlightInNavVersion: null,
 			mdiArrowRight,
+			COUNTRIES_NOT_LENT_TO_URL,
 		};
 	},
 	computed: {

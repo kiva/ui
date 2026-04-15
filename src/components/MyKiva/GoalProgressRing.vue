@@ -66,13 +66,6 @@
 		>
 		</p>
 
-		<p
-			v-if="isGoalTileExperimentEnabled && !isLarge"
-			class="tw-text-center tw-font-medium tw-my-3"
-		>
-			Edit your goal anytime.
-		</p>
-
 		<KvButton
 			class="tw-w-full goal-button"
 			v-kv-track-event="['portfolio', 'click', 'continue-towards-goal']"
@@ -371,7 +364,7 @@ const showEditGoalButton = computed(() => {
 		line-height: 125%;
 
 		@screen md {
-			width: 65%;
+			width: 80%;
 		}
 	}
 
