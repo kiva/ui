@@ -20,15 +20,14 @@
 			<div
 				v-for="n in 3"
 				:key="n"
-				class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2 tw-drop-shadow-lg"
+				class="tw-mb-4 tw-bg-primary tw-rounded tw-p-2 tw-shadow-lg tw-h-min-6"
 			>
-				<!-- @todo Can we use tailwind classes here and still get the placeholder gradient animation? -->
 				<div class="tw-flex tw-flex-row tw-items-center">
-					<kv-loading-placeholder class="tw-flex-none tw-mr-1" :style="{height: '3rem', width: '3rem'}" />
+					<kv-loading-placeholder class="!tw-h-6 !tw-w-6 tw-flex-none tw-mr-1" />
 					<div class="tw-flex-1 tw-min-w-0">
-						<kv-loading-placeholder class="tw-mb-1" :style="{width: '70%', height: '1.25rem'}" />
+						<kv-loading-placeholder class="!tw-h-2.5 !tw-w-7/10" />
 					</div>
-					<kv-loading-placeholder class="tw-flex-none tw-ml-1" :style="{width: '1.5rem', height: '1.5rem'}" />
+					<kv-loading-placeholder class="!tw-h-3 !tw-w-3 tw-flex-none tw-ml-1" />
 				</div>
 			</div>
 		</template>

@@ -35,7 +35,7 @@
 			class="goal-button tw-whitespace-nowrap tw-mt-2 md:tw-mt-0 tw-w-full lg:tw-w-auto"
 			@click="goToGoalPage"
 		>
-			Set 2026 goal
+			Set {{ GOALS_CURRENT_YEAR }} goal
 		</KvButton>
 	</AsyncPortfolioSection>
 </template>
@@ -48,7 +48,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { useRouter } from 'vue-router';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
-import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import useGoalData, { LAST_YEAR_KEY, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 

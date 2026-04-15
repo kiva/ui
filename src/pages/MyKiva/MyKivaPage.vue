@@ -14,6 +14,7 @@
 			:goal-refresh-key="goalRefreshKey"
 			:goal-editing-enable="goalEditingEnable"
 			:user-lent-to-all-regions="userLentToAllRegions"
+			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
 		/>
 		<my-kiva-page-content
 			v-else
@@ -34,6 +35,8 @@
 			:show-my-giving-funds-card="showMyGivingFundsCard"
 			:next-steps-experiment-variant="nextStepsExperimentVariant"
 			:goal-editing-enable="goalEditingEnable"
+			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
+			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
 		/>
 	</www-page>
 </template>
@@ -65,6 +68,8 @@ import { inject, provide } from 'vue';
 const CURRENT_YEAR = new Date().getFullYear();
 const NEXT_STEPS_REDIRECT_EXP_KEY = 'mykiva_next_steps_redirect';
 const GOAL_EDITING_KEY = 'goal_editing_enable';
+const GOAL_TILE_EXPERIMENT_KEY = 'mykiva_goal_tile';
+const LENDING_NEXT_STEPS_EXP_KEY = 'mykiva_lending_next_steps';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -114,6 +119,8 @@ export default {
 			nextStepsExperimentVariant: null,
 			goalEditingEnable: false,
 			recentTransactionLoans: [],
+			isGoalTileExperimentEnabled: false,
+			lendingNextStepsExperimentVariant: null,
 		};
 	},
 	computed: {
@@ -126,6 +133,33 @@ export default {
 		regionsData() {
 			return this.lendingStats.regionsData ?? [];
 		},
+		userOptedIn() {
+			return this.userInfo?.communicationSettings?.loanUpdates
+				&& this.userInfo?.communicationSettings?.lenderNews;
+		}
+	},
+	watch: {
+		'$route.path': {
+			async handler() {
+				// No need to fetch communication settings if user has already opted in
+				if (!this.isNextStepsRoute || this.userOptedIn) return;
+				const { data } = await this.apollo.query({
+					query: gql`
+						query UserCommunicationSettings {
+							my {
+								id
+								communicationSettings {
+									lenderNews
+									loanUpdates
+								}
+							}
+						}
+					`,
+					fetchPolicy: 'network-only',
+				});
+				this.userInfo = { ...this.userInfo, communicationSettings: data?.my?.communicationSettings };
+			}
+		}
 	},
 	apollo: {
 		preFetch(_, client, { route }) {
@@ -164,6 +198,14 @@ export default {
 				client.query({
 					query: experimentAssignmentQuery,
 					variables: { id: NEXT_STEPS_REDIRECT_EXP_KEY },
+				}),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: GOAL_TILE_EXPERIMENT_KEY },
+				}),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: LENDING_NEXT_STEPS_EXP_KEY },
 				}),
 			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
@@ -313,6 +355,31 @@ export default {
 			},
 			this.$kvTrackEvent,
 			'EXP-MP-2417-Feb2026'
+		);
+
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			GOAL_TILE_EXPERIMENT_KEY,
+			version => {
+				this.isGoalTileExperimentEnabled = Boolean(version === 'b') && !this.isNextStepsRoute.value;
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-2565-Mar2026',
+			'portfolio'
+		);
+
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			LENDING_NEXT_STEPS_EXP_KEY,
+			version => {
+				this.lendingNextStepsExperimentVariant = version;
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-2291-Feb2026'
 		);
 	},
 	async mounted() {

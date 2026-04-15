@@ -2,20 +2,7 @@
 	<KvAtbModalContainer
 		:added-loan="addedLoan"
 	/>
-	<MyKivaNavigation
-		:visible="showNavigation"
-		:user-info="userInfo"
-		:user-balance="userBalance"
-		@navigation-closed="showNavigation = false"
-	/>
-	<MyKivaHero v-if="!userInHomepage" @show-navigation="handleShowNavigation" />
 	<MyKivaContainer class="page-container">
-		<MyKivaProfile
-			class="tw-mt-4"
-			:lender="lender"
-			:user-info="userInfo"
-			v-if="!userInHomepage"
-		/>
 		<section>
 			<h3 class="tw-mt-4">
 				<u>{{ lenderPossessiveName }}</u> impact overview
@@ -46,6 +33,8 @@
 				:user-info="userInfo"
 				:next-steps-experiment-variant="nextStepsExperimentVariant"
 				:goal-editing-enable="goalEditingEnable"
+				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
+				:lending-next-steps-variant="lendingNextStepsVariant"
 			/>
 		</section>
 		<section class="tw-mt-4" id="mykiva-achievements">
@@ -143,7 +132,6 @@
 				controls-top-right
 				:slides="moreWaysToHelpSlides"
 				:lender="lender"
-				:user-in-homepage="userInHomepage"
 				:hero-badge-data="heroBadgeData"
 				:hero-tiered-achievements="heroTieredAchievements"
 				@update-journey="updateJourney"
@@ -204,9 +192,6 @@ import useContentful from '#src/composables/useContentful';
 
 import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
-import MyKivaNavigation from '#src/components/MyKiva/MyKivaNavigation';
-import MyKivaHero from '#src/components/MyKiva/MyKivaHero';
-import MyKivaProfile from '#src/components/MyKiva/MyKivaProfile';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';
 import AsyncMyKivaSection from '#src/pages/MyKiva/AsyncMyKivaSection';
@@ -259,9 +244,6 @@ export default {
 		MyKivaBorrowerCarousel,
 		MyKivaContainer,
 		MyGivingFundsCard,
-		MyKivaHero,
-		MyKivaNavigation,
-		MyKivaProfile,
 		MyKivaStats,
 		LendingStats,
 		BailoutChips,
@@ -339,6 +321,14 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		isGoalTileExperimentEnabled: {
+			type: Boolean,
+			default: false
+		},
+		lendingNextStepsVariant: {
+			type: String,
+			default: null,
+		},
 	},
 	setup() {
 		const apollo = inject('apollo');
@@ -375,7 +365,6 @@ export default {
 			selectedJourney: '',
 			showBPSideSheet: false,
 			showJourneySideSheet: false,
-			showNavigation: false,
 			showNextSteps: false,
 			state: STATE_JOURNEY,
 			transactionsTypes: [],
@@ -425,19 +414,12 @@ export default {
 		isSelectedJourneyComplete() {
 			return this.selectedBadgeData?.achievementData?.tiers?.length === this.selectedBadgeData?.level;
 		},
-		userInHomepage() {
-			return this.$router.currentRoute.value?.path === '/mykiva';
-		},
 		visibleUpdates() {
 			const updates = Array.isArray(this.mergedUpdates) ? this.mergedUpdates.slice(0, this.displayedCount) : [];
 			return updates;
 		},
 	},
 	methods: {
-		handleShowNavigation() {
-			this.showNavigation = true;
-			this.$kvTrackEvent('SecondaryNav top level', 'click', 'MyKiva-Settings-icon');
-		},
 		handleBadgeSectionClicked(badge) {
 			if (!badge.hasStarted) {
 				this.$router.push(this.getLoanFindingUrl(badge.id, this.$router.currentRoute.value));

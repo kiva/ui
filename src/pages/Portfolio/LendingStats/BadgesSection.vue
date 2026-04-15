@@ -1,5 +1,5 @@
 <template>
-	<section id="lend-stat-badges" data-testid="lend-stat-badges" class="stats-section tw-py-4">
+	<section data-testid="lend-stat-badges" class="tw-py-4">
 		<h2 class="tw-flex tw-gap-2 tw-mb-4">
 			<span>My Achievements</span>
 			<span

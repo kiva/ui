@@ -13,12 +13,14 @@
 			:goal-editing-enable="goalEditingEnable"
 			:is-updating-goal="isUpdatingGoal"
 			:is-goal-completed="isGoalCompleted"
+			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			@edit-goal-from-settings="handleEditGoalFromSettings"
 			@button-click="handleSuccessContinue"
 		/>
 		<!-- Goal Selection Form (shown before goal is set) -->
 		<template v-else>
 			<img
+				v-if="!isGoalTileExperimentEnabled"
 				:src="HandsPlant"
 				class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
 			>
@@ -26,14 +28,22 @@
 				v-if="isLoadingData"
 				class="!tw-w-full !tw-h-10 !tw-rounded tw-mb-1 lg:tw-mb-0"
 			/>
-			<h2
+			<template
 				v-else
-				class="tw-px-4 lg:tw-px-7 tw-text-center"
-				:class="{ 'tw-mb-1.5 lg:tw-mb-3': !subtitleText }"
-				style="line-height: 125%;"
-				v-html="titleText"
 			>
-			</h2>
+				<img
+					v-if="isGoalTileExperimentEnabled && !isGoalSet && !isLarge"
+					:src="HandsPlant"
+					class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5 tw-mx-auto"
+				>
+				<h2
+					class="tw-px-4 lg:tw-px-7 tw-text-center"
+					:class="{ 'tw-mb-1.5 lg:tw-mb-3': !subtitleText }"
+					style="line-height: 125%;"
+					v-html="titleText"
+				>
+				</h2>
+			</template>
 
 			<KvLoadingPlaceholder
 				v-if="isLoadingData || loadingCurrentYear"
@@ -67,8 +77,126 @@
 						:highlighted-text="option.highlightedText"
 						@click="updateOptionSelection(index)"
 					/>
+					<!-- Custom goal amount option, only shown if experiment flag is enabled -->
+					<div
+						v-if="customGoalAmountEnable"
+						class="tw-flex lg:tw-flex-col tw-justify-between lg:tw-justify-center tw-items-center
+							tw-border-2 tw-border-gray-200 tw-rounded tw-p-2 tw-cursor-pointer tw-gap-1"
+						:class="{ '!tw-border-eco-green-3 tw-bg-eco-green-1 !tw-py-1.5 lg:tw-py-2': isCustomIndex }"
+						@click="updateOptionSelection(CUSTOM_LOAN_NUMBER_INDEX)"
+					>
+						<div class="tw-text-eco-green-3 tw-text-center tw-flex tw-items-center tw-gap-1">
+							<span class="tw-text-h1 lg:tw-text-h2 tw--mt-1">
+								&#43;
+							</span>
+							<span class="lg:tw-hidden tw-text-base !tw-font-medium">
+								Custom
+							</span>
+						</div>
+						<div class="tw-text-primary tw-font-medium tw-text-h5 tw-text-center">
+							<span class="tw-hidden lg:tw-inline">
+								Custom
+							</span>
+							<div class="tw-flex tw-flex-col tw-items-start tw-gap-0.5">
+								<span
+									class="tw-font-medium lg:tw-hidden"
+									:class="{ 'tw-text-small': isCustomIndex }"
+								>
+									Set your number
+								</span>
+								<input
+									v-if="isCustomIndex"
+									type="number"
+									name="customGoalAmount"
+									v-model="customGoalAmount"
+									class="lg:tw-hidden tw-rounded-sm tw-border-2 tw-border-gray-400 tw-px-1.5 tw-py-0.5
+										tw-min-h-5 tw-ring-inset focus:tw-outline-none focus:tw-ring-0
+										focus:tw-border-gray-400 custom-input"
+									placeholder="Add number"
+									style="max-width: 136px;"
+									@input="validateCustomAmount"
+									autofocus
+								>
+							</div>
+						</div>
+					</div>
 				</template>
 			</div>
+
+			<div
+				v-if="customGoalAmountEnable && isCustomIndex"
+				class="tw-hidden lg:tw-flex tw-justify-between tw-bg-eco-green-1 tw-px-2.5 tw-py-1.5 tw-w-full
+					tw-rounded-sm tw-items-center"
+			>
+				<div class="tw-text-base">
+					Customize your number of loans
+				</div>
+				<input
+					type="number"
+					name="customGoalAmount"
+					v-model="customGoalAmount"
+					class="tw-rounded-sm tw-border-2 tw-border-gray-400 tw-px-1.5 tw-py-0.5
+						tw-ring-inset focus:tw-outline-none focus:tw-ring-0 focus:tw-border-gray-400 custom-input"
+					placeholder="Add number"
+					style="max-width: 148px;"
+					@input="validateCustomAmount"
+					autofocus
+				>
+			</div>
+
+			<template
+				v-if="isGoalTileExperimentEnabled && !isLarge && !isGoalSet"
+			>
+				<KvAccordionItem ref="goalTileAccordion" id="goal-tile-accordion-body" class="goal-tile-accordion">
+					<template
+						#header
+					>
+						<p class="tw-text-brand-900 !tw-font-semibold" @click="handleOpenGoalTile">
+							Why set a goal?
+						</p>
+					</template>
+					<div class="tw-text-justify tw-text-primary tw-text-base">
+						<ul class="tw-inline-block">
+							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
+								<KvMaterialIcon
+									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
+									:icon="mdiCheckBold"
+								/>
+								<p class="tw-text-left">
+									Build a habit of helping others
+								</p>
+							</li>
+							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
+								<KvMaterialIcon
+									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
+									:icon="mdiCheckBold"
+								/>
+								<p class="tw-text-left">
+									Track your impact as it grows
+								</p>
+							</li>
+							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
+								<KvMaterialIcon
+									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
+									:icon="mdiCheckBold"
+								/>
+								<p class="tw-text-left">
+									Stay consistent with reminders
+								</p>
+							</li>
+							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
+								<KvMaterialIcon
+									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
+									:icon="mdiCheckBold"
+								/>
+								<p class="tw-text-left">
+									Edit anytime
+								</p>
+							</li>
+						</ul>
+					</div>
+				</KvAccordionItem>
+			</template>
 
 			<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
 				<KvButton
@@ -104,13 +232,19 @@ import {
 	ref,
 	watch,
 } from 'vue';
+import { mdiPencilOutline, mdiCheckBold } from '@mdi/js';
+import {
+	KvButton, KvMaterialIcon, KvLoadingPlaceholder, KvAccordionItem
+} from '@kiva/kv-components';
+
 import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL, ID_US_ECONOMIC_EQUALITY } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
-import { KvButton, KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
-import { mdiPencilOutline } from '@mdi/js';
 import useGoalData, { LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
+import useBreakpoints from '#src/composables/useBreakpoints';
+
+const CUSTOM_LOAN_NUMBER_INDEX = 3;
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -222,6 +356,20 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Flag to indicate if the goal tile experiment is enabled
+	 */
+	isGoalTileExperimentEnabled: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Whether the custom goal amount feature is enabled (from experiment)
+	 */
+	customGoalAmountEnable: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits([
@@ -232,6 +380,8 @@ const emit = defineEmits([
 	'edit-goal-from-settings',
 	'update-goal'
 ]);
+
+const { isLarge } = useBreakpoints();
 
 const DEFAULT_GOAL_OPTIONS = [
 	{
@@ -260,6 +410,9 @@ const prevSupportAllCount = ref(0);
 const selectedIdx = ref(1);
 const editGoalFromSettings = ref(false);
 const allowBackToCategorySelection = ref(false);
+const isGoalTileOpened = ref(false);
+const goalTileAccordion = ref(null);
+const customGoalAmount = ref(null);
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -282,6 +435,8 @@ const loansThisYear = computed(() => {
 	// Otherwise use fetched data (MyKiva goal-setting page and modal)
 	return fetchedCurrentYearLoans.value ?? 0;
 });
+
+const isCustomIndex = computed(() => selectedIdx.value === CUSTOM_LOAN_NUMBER_INDEX);
 
 /**
  * Fetch current year loan count when not provided via props.
@@ -340,6 +495,9 @@ const buttonText = computed(() => {
 
 const selectedTarget = computed(() => {
 	const selectedOption = goalOptions.value.find(option => option.selected);
+	if (isCustomIndex.value && customGoalAmount.value > 0) {
+		return Number(customGoalAmount.value);
+	}
 	return selectedOption?.loansNumber ?? DEFAULT_GOAL_OPTIONS[1].loansNumber;
 });
 
@@ -355,6 +513,8 @@ const localGoalProgressPercentage = computed(() => {
 });
 
 const resetOptionSelection = selectedIndex => {
+	isGoalTileOpened.value = false;
+	goalTileAccordion.value?.collapse();
 	goalOptions.value = goalOptions.value.map((option, index) => ({
 		...option,
 		selected: index === selectedIndex,
@@ -364,14 +524,20 @@ const resetOptionSelection = selectedIndex => {
 const updateOptionSelection = selectedIndex => {
 	resetOptionSelection(selectedIndex);
 	selectedIdx.value = selectedIndex;
-	const trackingProperties = ['same-as-last-year', 'a-little-more', 'double'];
+	const trackingProperties = ['same-as-last-year', 'a-little-more', 'double', 'custom'];
 	$kvTrackEvent(
 		props.trackingCategory,
 		'click',
 		'set-goal-amount',
 		trackingProperties[selectedIndex]
 	);
-	emit('set-goal-target', goalOptions.value[selectedIndex].loansNumber);
+	if (!isCustomIndex.value) {
+		emit('set-goal-target', goalOptions.value[selectedIndex].loansNumber);
+	}
+};
+
+const validateCustomAmount = () => {
+	emit('set-goal-target', selectedTarget.value);
 };
 
 const editGoal = () => {
@@ -495,6 +661,19 @@ const handleEditGoalFromSettings = () => {
 	emit('edit-goal-from-settings');
 };
 
+const handleOpenGoalTile = () => {
+	if (props.isGoalTileExperimentEnabled && props.trackingCategory === 'portfolio' && !isGoalTileOpened.value) {
+		$kvTrackEvent(
+			'portfolio',
+			'click',
+			'why-set-a-goal'
+		);
+		isGoalTileOpened.value = true;
+		return;
+	}
+	isGoalTileOpened.value = false;
+};
+
 onMounted(async () => {
 	await loadLoansThisYear();
 	updateGoalOptions();
@@ -536,11 +715,38 @@ watch(() => props.selectedCategoryId, async newCategory => {
 }
 
 .number-option-placeholder {
-	min-width: 186px;
-	min-height: 59px;
+	@apply !tw-min-h-7.5 !tw-min-w-15.5;
 
 	@screen lg {
 		min-height: 82px;
 	}
+}
+
+:deep(.goal-tile-accordion) {
+	@apply tw-w-full !tw-border-b-0;
+}
+
+:deep(.goal-tile-accordion button:first-child) {
+	@apply !tw-w-auto !tw-pt-3 !tw-pb-2 tw-place-self-center tw-font-medium;
+}
+
+:deep(.goal-tile-accordion span svg) {
+	@apply !tw-text-brand-900;
+}
+
+:deep(.goal-tile-accordion ul li > span svg) {
+	@apply !tw-text-primary;
+}
+
+/* Chrome, Safari, Edge, Opera */
+.custom-input::-webkit-outer-spin-button,
+.custom-input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.custom-input[type=number] {
+  appearance: textfield;
 }
 </style>

@@ -1,20 +1,8 @@
 <template>
-	<div>
-		<h2
-			v-if="!userInHomepage"
-			class="tw-mb-3"
-		>
-			Take the <u>next step</u> on your impact journey
-		</h2>
+	<div class="journey-card-carousel">
 		<KvCarousel
-			:key="dynamicOrderedSlides.length"
-			:embla-options="{
-				loop: false,
-				align: 'start',
-				...(props.disableDrag && {
-					watchDrag: false,
-				}),
-			}"
+			:key="`${dynamicOrderedSlides.length}-${shouldDisableDrag}`"
+			:embla-options="emblaOptions"
 			:controls-top-right="controlsTopRight"
 			:slide-max-width="singleSlideWidth"
 			:multiple-slides-visible="true"
@@ -34,6 +22,7 @@
 					:prev-year-loans="womenLoansLastYear"
 					:hide-goal-card="hideGoalCard"
 					:goal-editing-enable="goalEditingEnable"
+					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 					@open-goal-modal="$emit('open-goal-modal', $event)"
 				/>
 				<MyKivaSurveyCard
@@ -50,6 +39,15 @@
 					v-else-if="slide?.isLatestLoan"
 					:loan="latestLoan"
 					@open-impact-insight-modal="$emit('open-impact-insight-modal')"
+				/>
+				<AlmostFundedNextStep
+					v-else-if="slide?.isAlmostFunded"
+					class="tw-h-full"
+				/>
+				<CountryCollectingNextStep
+					v-else-if="slide?.isCountryCollecting"
+					class="tw-h-full"
+					:regions-data="regionsData"
 				/>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
@@ -114,7 +112,8 @@ import useGoalData from '#src/composables/useGoalData';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
-import useOptIn from '#src/composables/useOptIn';
+import AlmostFundedNextStep from '#src/components/MyKiva/AlmostFundedNextStep';
+import CountryCollectingNextStep from '#src/components/MyKiva/CountryCollectingNextStep';
 import {
 	getSlideTitle,
 	getSlideSubTitle,
@@ -138,7 +137,6 @@ import {
 const TRANSACTION_DAYS_LIMIT = 30;
 
 const apollo = inject('apollo');
-const cookieStore = inject('cookieStore');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
 
@@ -163,10 +161,6 @@ const props = defineProps({
 	loans: {
 		type: Array,
 		default: () => ([]),
-	},
-	userInHomepage: {
-		type: Boolean,
-		default: false
 	},
 	slides: {
 		type: Array,
@@ -243,20 +237,34 @@ const props = defineProps({
 	showSurveySlide: {
 		type: Boolean,
 		default: true
-	}
+	},
+	isGoalTileExperimentEnabled: {
+		type: Boolean,
+		default: false
+	},
+	showLendingNextStepsCards: {
+		type: Boolean,
+		default: false
+	},
+	regionsData: {
+		type: Array,
+		default: () => [],
+	},
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
 const currentIndex = ref(0);
 const isSharingModalVisible = ref(false);
-const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
 const acceptedEmailMarketingUpdates = ref(false);
+
+const userOptedIn = computed(() => props.userInfo?.communicationSettings?.lenderNews
+	&& props.userInfo?.communicationSettings?.loanUpdates);
 
 const shouldShowEmailMarketingCard = computed(
 	() => props.inLendingStats && checkShouldShowEmailMarketing({
 		showPostLendingNextStepsCards: props.showPostLendingNextStepsCards,
 		latestLoan: props.latestLoan,
-		hasMailUpdatesOptOut: userHasMailUpdatesOptOut(),
+		hasMailUpdatesOptOut: !userOptedIn.value,
 		loansCount: props.loans.length,
 	})
 );
@@ -308,7 +316,7 @@ const dynamicOrderedSlides = computed(() => {
 		sortedSlides.sort((a, b) => loanJourneys.indexOf(b.badgeKey) - loanJourneys.indexOf(a.badgeKey)); // eslint-disable-line max-len
 	}
 
-	if (nonBadgesSlides.value.length > 0) {
+	if (props.showNonBadgesSlides && nonBadgesSlides.value.length > 0) {
 		sortedSlides = [
 			...sortedSlides,
 			...nonBadgesSlides.value,
@@ -321,6 +329,14 @@ const dynamicOrderedSlides = computed(() => {
 	// Goal card (set or in-progress goal)
 	if (shouldShowGoalCard.value) {
 		priorityCards.push({}); // Empty object placeholder for goal card component
+	}
+
+	// Almost funded and country collecting cards for lending next steps
+	if (props.showLendingNextStepsCards) {
+		priorityCards.push({ isAlmostFunded: true });
+		if (props.regionsData.some(r => !r.hasLoans)) {
+			priorityCards.push({ isCountryCollecting: true });
+		}
 	}
 
 	// Email marketing card if user isn't opted in, otherwise Latest Loan card
@@ -372,15 +388,23 @@ const onSecondaryCtaClick = slide => {
 	});
 };
 
-const singleSlideWidth = computed(() => {
-	if (isLarge.value) {
-		return 'calc((100% - 64px) / 3)';
-	}
-	if (isMedium.value) {
-		return '336px';
-	}
-	return '90%';
+const allSlidesVisible = computed(() => {
+	const count = dynamicOrderedSlides.value.length;
+	if (isLarge.value) return count <= 3;
+	if (isMedium.value) return count <= 1;
+	return false;
 });
+
+const shouldDisableDrag = computed(() => props.disableDrag || allSlidesVisible.value);
+
+const emblaOptions = computed(() => ({
+	loop: false,
+	align: 'start',
+	...(shouldDisableDrag.value && { watchDrag: false }),
+}));
+
+// CSS var keeps the slide width correct during SSR/hydration before useBreakpoints resolves.
+const singleSlideWidth = 'var(--journey-slide-max-width)';
 
 const handleChange = interaction => {
 	const direction = currentIndex.value > interaction.value ? 'prev' : 'next';
@@ -407,6 +431,18 @@ const womenLoansLastYear = computed(() => {
 </script>
 
 <style lang="postcss" scoped>
+.journey-card-carousel {
+	--journey-slide-max-width: 90%;
+
+	@screen md {
+		--journey-slide-max-width: 336px;
+	}
+
+	@screen lg {
+		--journey-slide-max-width: calc((100% - 64px) / 3);
+	}
+}
+
 .kiva-card :deep(h2) {
 	font-size: 22px !important;
 }

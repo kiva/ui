@@ -108,6 +108,7 @@ const {
 	getHighestPriorityDisplayBadge,
 	getLastCompletedBadgeLevelData,
 	getTierBadgeDataByLevel,
+	getNonEquityBadgeOverride,
 } = useBadgeData();
 
 const badgeDataAchieved = ref();
@@ -115,9 +116,6 @@ const badgeDataAchieved = ref();
 const isLoading = computed(() => !badgeDataAchieved.value);
 
 const showEqualityBadge = computed(() => props.isGuest || props.onlyKivaCardsAndDonations);
-
-// eslint-disable-next-line max-len
-const showBadgeModule = computed(() => showEqualityBadge.value || !!props.badgeAchievedIds.length || props.achievementsCompleted);
 
 const loansCount = computed(() => props.loans?.length ?? 0);
 
@@ -150,7 +148,23 @@ const displayedBadgeData = computed(() => {
 			return badgeDataAchieved.value[0];
 		}
 		const displayedBadge = getHighestPriorityDisplayBadge(badgeDataAchieved.value);
-		return getLastCompletedBadgeLevelData(displayedBadge);
+		// Contentful-only badges (non-equity badges not in achievement service) have no achievementData
+		// contentfulData is a plain object for event badges, an array for tiered badges
+		if (!displayedBadge.achievementData) {
+			return {
+				...displayedBadge,
+				contentfulData: displayedBadge.contentfulData?.[0] ?? displayedBadge.contentfulData,
+			};
+		}
+		const lastCompletedBadgeLevelData = getLastCompletedBadgeLevelData(displayedBadge);
+		if (Object.keys(lastCompletedBadgeLevelData ?? {}).length) {
+			return lastCompletedBadgeLevelData;
+		}
+		// Fallback: normalize contentfulData shape if getLastCompletedBadgeLevelData returns empty
+		return {
+			...displayedBadge,
+			contentfulData: displayedBadge.contentfulData?.[0] ?? displayedBadge.contentfulData,
+		};
 	}
 	return {};
 });
@@ -171,6 +185,9 @@ const funFact = computed(() => displayedBadgeData.value.contentfulData?.shareFac
 const funFactSource = computed(() => {
 	return displayedBadgeData.value.contentfulData?.shareFactFootnote ?? '';
 });
+
+// eslint-disable-next-line max-len
+const showBadgeModule = computed(() => showEqualityBadge.value || !!props.badgeAchievedIds.length || props.achievementsCompleted);
 
 onMounted(async () => {
 	await Promise.all([
@@ -196,9 +213,24 @@ watch(() => badgeContentfulData.value, () => {
 	}
 });
 
-watch(() => badgeData.value, () => {
-	if (!showEqualityBadge.value && badgeData.value.length) {
-		badgeDataAchieved.value = badgeData.value.filter(b => props.badgeAchievedIds.includes(b.id));
+watch([() => badgeData.value, () => badgeContentfulData.value], ([newBadgeData]) => {
+	if (!showEqualityBadge.value && newBadgeData.length) {
+		const filteredBadges = newBadgeData.filter(b => props.badgeAchievedIds.includes(b.id));
+		const nonEquityBadgeOverride = getNonEquityBadgeOverride(
+			filteredBadges,
+			props.badgeAchievedIds,
+			badgeContentfulData.value,
+		);
+
+		if (nonEquityBadgeOverride) {
+			badgeDataAchieved.value = [
+				nonEquityBadgeOverride,
+				...filteredBadges.filter(b => b.id !== nonEquityBadgeOverride.id),
+			];
+			return;
+		}
+
+		badgeDataAchieved.value = filteredBadges;
 	}
 }, { immediate: true });
 </script>

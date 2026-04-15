@@ -1,9 +1,10 @@
 <template>
 	<div
-		class="tw-mb-2"
 		:class="{
+			'tw-mb-2': !showLendingNextStepsCards,
 			'next-steps-link': isNextStepsExperimentEnabled,
-			'tw-mb-8': isNextStepsExperimentEnabled && !showRegionExperience
+			'tw-mb-8': isNextStepsExperimentEnabled && !(showPostLendingNextStepsCards && goalProgressLoading)
+				&& !showRegionExperience && !showLendingNextStepsCards
 		}"
 	>
 		<h3 class="tw-text-primary md:tw-mb-1">
@@ -27,7 +28,34 @@
 		ref="loanRegionsElement"
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperience }"
 	>
-		<template v-if="showRegionExperience">
+		<template v-if="showLendingNextStepsCards">
+			<JourneyCardCarousel
+				class="carousel carousel-lending-next-steps tw-w-full"
+				user-in-homepage
+				in-lending-stats
+				controls-top-right
+				:goal-editing-enable="goalEditingEnable"
+				:goal-progress-loading="goalProgressLoading"
+				:goal-progress="goalProgress"
+				:hero-badge-data="heroBadgeData"
+				:hero-tiered-achievements="heroTieredAchievements"
+				:lender="lender"
+				:slides-number="3"
+				:slides="heroSlides"
+				:user-goal-achieved="userGoalAchieved"
+				:user-goal="userGoal"
+				:categories-loan-count="categoriesLoanCount"
+				:hide-goal-card="hideCompletedGoalCard"
+				:user-info="userInfo"
+				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+				:show-lending-next-steps-cards="true"
+				:regions-data="regionsData"
+				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
+				@open-goal-modal="openGoalModal($event)"
+				@open-impact-insight-modal="showImpactInsightsModal = true"
+			/>
+		</template>
+		<template v-else-if="showRegionExperience">
 			<div class="goal-card-container">
 				<JourneyCardCarousel
 					class="carousel carousel-single"
@@ -48,6 +76,7 @@
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 					:goal-editing-enable="goalEditingEnable"
+					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 					@open-goal-modal="openGoalModal($event)"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
@@ -161,6 +190,14 @@
 				</div>
 			</div>
 		</template>
+		<div
+			v-else-if="goalProgressLoading"
+			class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden tw--mt-6"
+		>
+			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0" />
+			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden md:tw-block" />
+			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden lg:tw-block" />
+		</div>
 		<JourneyCardCarousel
 			v-else
 			class="carousel tw--mt-6"
@@ -183,6 +220,7 @@
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 			:goal-editing-enable="goalEditingEnable"
+			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			@open-goal-modal="openGoalModal($event)"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
 		/>
@@ -194,6 +232,7 @@
 			:show-goal-selector="true"
 			:tiered-achievements="heroTieredAchievements"
 			:is-updating-goal="isUpdatingGoal"
+			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
 		/>
@@ -208,7 +247,7 @@
 
 <script>
 import { inject } from 'vue';
-import { KvMaterialIcon, KvCheckbox } from '@kiva/kv-components';
+import { KvMaterialIcon, KvCheckbox, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { mdiArrowTopRight, mdiArrowRight } from '@mdi/js';
 
 import useBadgeData from '#src/composables/useBadgeData';
@@ -240,6 +279,7 @@ export default {
 		GoalSettingModal,
 		MyKivaImpactInsightModal,
 		KvCheckbox,
+		KvLoadingPlaceholder,
 		KvMaterialIcon,
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -299,6 +339,14 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		isGoalTileExperimentEnabled: {
+			type: Boolean,
+			default: false
+		},
+		lendingNextStepsVariant: {
+			type: String,
+			default: null,
+		},
 	},
 	data() {
 		return {
@@ -351,6 +399,9 @@ export default {
 		},
 		isNextStepsExperimentEnabled() {
 			return this.nextStepsExperimentVariant === 'b';
+		},
+		showLendingNextStepsCards() {
+			return this.lendingNextStepsVariant === 'b' && !this.showPostLendingNextStepsCards;
 		},
 	},
 	setup() {
@@ -538,6 +589,19 @@ export default {
 	}
 }
 
+.placeholder-card {
+	min-height: 340px;
+	flex: 0 0 100%;
+
+	@screen md {
+		flex: 0 0 calc((100% - 16px) / 2);
+	}
+
+	@screen lg {
+		flex: 0 0 calc((100% - 64px) / 3);
+	}
+}
+
 .carousel-single > :deep(section > div > div) {
 	@apply !tw-min-w-full;
 }
@@ -548,6 +612,14 @@ export default {
 
 .carousel :deep(.kv-carousel__controls) {
 	@apply lg:tw-hidden;
+}
+
+.carousel:not(.carousel-single, .carousel-lending-next-steps) :deep(.kv-carousel) {
+	@apply tw-pt-0 md:tw-pt-6 lg:tw-pt-0;
+}
+
+.carousel-lending-next-steps :deep(.kv-carousel) {
+	@apply tw-pt-2 md:tw-pt-6 lg:tw-pt-1.5;
 }
 
 .carousel-spacing :deep(.kv-carousel) {

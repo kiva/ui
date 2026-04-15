@@ -35,6 +35,7 @@
 				:goal-loans="goalTarget"
 				:goal-progress="goalProgress"
 				:goal-progress-percentage="goalProgressPercentage"
+				:custom-goal-amount-enable="customGoalAmountEnable"
 				go-to-url="/mykiva"
 				@edit-goal="editGoalCategory"
 				@set-goal-target="setGoalTarget"
@@ -168,9 +169,11 @@ import useBadgeData from '#src/composables/useBadgeData';
 import { setPostLendingCardCookie } from '#src/util/myKivaUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import useTipMessage from '#src/composables/useTipMessage';
+import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 
 const EVENT_CATEGORY = 'post-checkout';
 const NON_TIERED_BADGE = 'non-tiered-badge';
+const CUSTOM_GOAL_AMOUNT_EXP_KEY = 'custom_goal_amount';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -235,6 +238,7 @@ const showGoalInProgressModule = ref(false);
 const isGoalSet = ref(false);
 const isEmptyGoal = ref(true);
 const goalTarget = ref(0);
+const customGoalAmountEnable = ref(false);
 
 const {
 	checkCompletedGoal,
@@ -262,9 +266,9 @@ const goalDataInitialized = ref(false);
 
 const userType = computed(() => (props.isGuest ? 'guest' : 'signed-in'));
 
-// Guests and transactions without loans should see the fallback equity version of the badge module
+// Guests should see the fallback equity version of the badge module
 const numberOfBadges = computed(() => {
-	return props.badgesAchieved.length || (props.isGuest || props.loans.length === 0 ? 1 : 0);
+	return props.badgesAchieved.length || (props.isGuest ? 1 : 0);
 });
 
 const onlyDonations = computed(() => (
@@ -303,12 +307,13 @@ const showBadgeModule = computed(() => {
 	if (!goalDataInitialized.value || goalDataLoading.value) {
 		return false;
 	}
-	return numberOfBadges.value > 0 || onlyKivaCardsAndDonations.value;
+	return numberOfBadges.value > 0;
 });
 const showJourneyModule = computed(() => {
 	if (props.achievementsCompleted || showBadgeModule.value) return false;
 	if (!goalDataInitialized.value || goalDataLoading.value) return false;
 	if (showGoalInProgressModule.value) return false;
+	if (onlyKivaCardsAndDonations.value) return false;
 	return !userGoalAchievedNow.value;
 });
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
@@ -476,6 +481,22 @@ onMounted(async () => {
 	}
 
 	setPostLendingCardCookie(cookieStore, props.loans?.length);
+
+	// Initialize experiment and set customGoalAmountEnable based on assigned version
+	if (isEmptyGoal.value) {
+		initializeExperiment(
+			cookieStore,
+			apollo,
+			router,
+			CUSTOM_GOAL_AMOUNT_EXP_KEY,
+			version => {
+				customGoalAmountEnable.value = Boolean(version === 'b');
+			},
+			$kvTrackEvent,
+			'EXP-MP-2605-Apr2026',
+			'post-checkout',
+		);
+	}
 });
 </script>
 

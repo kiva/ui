@@ -19,7 +19,7 @@
 			:is-user-data-loading="isUserDataLoading"
 			:is-basket-data-loading="isBasketLoading"
 			:style="esiCssVarBridge"
-			:countries-not-lent-to-url="countriesNotLentToUrl"
+			:countries-not-lent-to-url="COUNTRIES_NOT_LENT_TO_URL"
 			show-m-g-upsell-link
 			@load-lend-menu-data="loadMenu"
 		/>
@@ -594,9 +594,8 @@ import {
 	KvButton, KvLoadingPlaceholder, KvMaterialIcon, KvPageContainer, KvWwwHeader
 } from '@kiva/kv-components';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
-import countriesNotLentToExpMixin, { COUNTRIES_NOT_LENT_TO_EXP } from '#src/plugins/countries-not-lent-to-exp-mixin';
 import useMyKivaHome from '#src/composables/useMyKivaHome';
+import { COUNTRIES_NOT_LENT_TO_URL } from '#src/util/headerUtils';
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
@@ -625,7 +624,7 @@ export default {
 		cookieStore: { default: null },
 		kvAuth0: { default: null },
 	},
-	mixins: [addToBasketMixin, countriesNotLentToExpMixin],
+	mixins: [addToBasketMixin],
 	data() {
 		return {
 			aboutMenuId: 'about-header-dropdown',
@@ -655,8 +654,8 @@ export default {
 			trusteeId: null,
 			userId: null,
 			isNavUpdateExp: false,
-			isCountriesNotLentToExp: false,
 			throttledDetermineIfMobile: null,
+			COUNTRIES_NOT_LENT_TO_URL,
 		};
 	},
 	emits: ['show-basket'],
@@ -848,16 +847,6 @@ export default {
 
 		this.determineIfMobile();
 		window.addEventListener('resize', this.throttledDetermineIfMobile);
-
-		if (!this.isVisitor) {
-			this.isCountriesNotLentToExp = trackExperimentVersion(
-				this.apollo,
-				this.$kvTrackEvent,
-				'Lending',
-				COUNTRIES_NOT_LENT_TO_EXP,
-				'EXP-MP-1824-Aug2025',
-			)?.version === 'b';
-		}
 	},
 	beforeUnmount() {
 		window.removeEventListener('resize', this.throttledDetermineIfMobile);

@@ -10,67 +10,105 @@
 			/>
 			Back to dashboard
 		</button>
+		<template v-if="!hideRecommendedForYouSection">
+			<h3 class="tw-text-primary tw-mb-2">
+				Next steps recommended for you
+			</h3>
 
-		<h3 class="tw-text-primary tw-mb-2">
-			Next steps recommended for you
-		</h3>
-
-		<section
-			:class="{'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperienceInFirstRow}"
-		>
-			<template v-if="showRegionExperienceInFirstRow">
-				<div class="goal-card-container">
-					<JourneyCardCarousel
-						class="carousel carousel-single"
-						user-in-homepage
-						in-lending-stats
-						:disable-drag="true"
-						:goal-progress-loading="goalProgressLoading"
-						:goal-progress="goalProgress"
-						:hero-badge-data="heroBadgeData"
-						:hero-tiered-achievements="heroTieredAchievements"
-						:lender="lender"
-						:slides-number="1"
-						:slides="heroSlides"
-						:user-goal-achieved="userGoalAchieved"
-						:user-goal="userGoal"
-						:categories-loan-count="categoriesLoanCount"
-						:hide-goal-card="hideCompletedGoalCard"
-						:user-info="userInfo"
-						:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-						@open-goal-modal="openGoalModal($event)"
-						@open-impact-insight-modal="showImpactInsightsModal = true"
-					/>
-				</div>
-				<MyKivaRegionExperience
-					class="tw-flex-1 tw-min-w-0"
+			<section
+				:class="{
+					'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperienceInFirstRow
+				}"
+			>
+				<JourneyCardCarousel
+					v-if="showLendingNextStepsCards"
+					class="carousel tw-w-full"
+					user-in-homepage
+					in-lending-stats
+					controls-top-right
+					:goal-editing-enable="goalEditingEnable"
+					:goal-progress-loading="goalProgressLoading"
+					:goal-progress="goalProgress"
+					:hero-badge-data="heroBadgeData"
+					:hero-tiered-achievements="heroTieredAchievements"
+					:lender="lender"
+					:slides-number="3"
+					:slides="heroSlides"
+					:user-goal-achieved="userGoalAchieved"
+					:user-goal="userGoal"
+					:categories-loan-count="categoriesLoanCount"
+					:hide-goal-card="hideCompletedGoalCard"
+					:user-info="userInfo"
+					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+					:show-lending-next-steps-cards="true"
 					:regions-data="regionsData"
-					:loans="loans"
+					@open-goal-modal="openGoalModal($event)"
+					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
-			</template>
-			<JourneyCardCarousel
-				v-else-if="topRowHasContent"
-				class="carousel tw--mt-6"
-				user-in-homepage
-				in-lending-stats
-				:goal-progress-loading="goalProgressLoading"
-				:goal-progress="goalProgress"
-				:hero-badge-data="heroBadgeData"
-				:hero-tiered-achievements="heroTieredAchievements"
-				:lender="lender"
-				:loans="loans"
-				:slides-number="3"
-				:slides="achievementOnlySlides"
-				:user-goal-achieved="userGoalAchieved"
-				:user-goal="userGoal"
-				:hide-goal-card="hideCompletedGoalCard"
-				:latest-loan="latestLoan"
-				:user-info="userInfo"
-				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-				@open-goal-modal="openGoalModal($event)"
-				@open-impact-insight-modal="showImpactInsightsModal = true"
-			/>
-		</section>
+				<template v-else-if="showRegionExperienceInFirstRow">
+					<div class="goal-card-container">
+						<JourneyCardCarousel
+							class="carousel carousel-single"
+							user-in-homepage
+							in-lending-stats
+							:disable-drag="true"
+							:goal-progress-loading="goalProgressLoading"
+							:goal-progress="goalProgress"
+							:hero-badge-data="heroBadgeData"
+							:hero-tiered-achievements="heroTieredAchievements"
+							:lender="lender"
+							:slides-number="1"
+							:slides="heroSlides"
+							:user-goal-achieved="userGoalAchieved"
+							:user-goal="userGoal"
+							:categories-loan-count="categoriesLoanCount"
+							:hide-goal-card="hideCompletedGoalCard"
+							:user-info="userInfo"
+							:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+							:goal-editing-enable="goalEditingEnable"
+							@open-goal-modal="openGoalModal($event)"
+							@open-impact-insight-modal="showImpactInsightsModal = true"
+						/>
+					</div>
+					<MyKivaRegionExperience
+						class="tw-flex-1 tw-min-w-0"
+						:regions-data="regionsData"
+						:loans="loans"
+					/>
+				</template>
+				<div
+					v-else-if="goalProgressLoading"
+					class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden"
+				>
+					<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0" />
+					<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden md:tw-block" />
+					<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden lg:tw-block" />
+				</div>
+				<JourneyCardCarousel
+					v-else-if="topRowHasContent"
+					class="carousel tw--mt-6"
+					user-in-homepage
+					in-lending-stats
+					:goal-progress-loading="goalProgressLoading"
+					:goal-progress="goalProgress"
+					:hero-badge-data="heroBadgeData"
+					:hero-tiered-achievements="heroTieredAchievements"
+					:lender="lender"
+					:loans="loans"
+					:slides-number="3"
+					:slides="achievementOnlySlides"
+					:user-goal-achieved="userGoalAchieved"
+					:user-goal="userGoal"
+					:hide-goal-card="hideCompletedGoalCard"
+					:latest-loan="latestLoan"
+					:user-info="userInfo"
+					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+					:goal-editing-enable="goalEditingEnable"
+					@open-goal-modal="openGoalModal($event)"
+					@open-impact-insight-modal="showImpactInsightsModal = true"
+				/>
+			</section>
+		</template>
 		<div class="tw-flex tw-flex-col">
 			<div :style="{ order: showPostLendingNextStepsCards ? 1 : 2 }">
 				<div>
@@ -126,7 +164,7 @@
 							in-lending-stats
 							user-in-homepage
 							:post-lending-next-steps-enable="true"
-							:show-post-lending-next-steps-cards="true"
+							:show-post-lending-next-steps-cards="!showPostLendingNextStepsCards"
 							:hero-badge-data="null"
 							:hero-tiered-achievements="heroTieredAchievements"
 							:lender="lender"
@@ -139,7 +177,8 @@
 						/>
 					</section>
 
-					<template v-if="!userLentToAllRegions && !showRegionExperienceInFirstRow">
+					<!-- eslint-disable-next-line max-len -->
+					<template v-if="!userLentToAllRegions && (!showRegionExperienceInFirstRow || showLendingNextStepsCards)">
 						<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 							Keep your impact going
 						</h3>
@@ -153,13 +192,21 @@
 					</template>
 				</div>
 			</div>
-			<div v-if="bottomRowAchievementSlides.length > 0" :style="{ order: showPostLendingNextStepsCards ? 2 : 1 }">
+			<div
+				v-if="goalProgressLoading || bottomRowAchievementSlides.length > 0"
+				:style="{ order: showPostLendingNextStepsCards ? 2 : 1 }"
+			>
 				<h3 class="tw-text-primary tw-mt-4 tw-mb-2">
 					Continue with your lifetime achievements
 				</h3>
 
 				<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
-					<template v-if="!isMobile">
+					<template v-if="goalProgressLoading">
+						<KvLoadingPlaceholder class="placeholder-card !tw-rounded" />
+						<KvLoadingPlaceholder class="placeholder-card !tw-rounded tw-hidden md:tw-block" />
+						<KvLoadingPlaceholder class="placeholder-card !tw-rounded tw-hidden lg:tw-block" />
+					</template>
+					<template v-else-if="!isMobile">
 						<MyKivaCard
 							v-for="slide in bottomRowAchievementSlides"
 							:key="slide.badgeKey"
@@ -197,7 +244,7 @@
 						:hero-tiered-achievements="heroTieredAchievements"
 						:lender="lender"
 						:loans="loans"
-						:slides="heroSlides"
+						:slides="bottomRowHeroSlides"
 						:user-goal-achieved="userGoalAchieved"
 						:user-goal="userGoal"
 						:post-lending-next-steps-enable="false"
@@ -259,7 +306,7 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { mdiArrowLeft } from '@mdi/js';
-import { KvMaterialIcon, KvButton } from '@kiva/kv-components';
+import { KvMaterialIcon, KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
 
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
@@ -275,6 +322,7 @@ import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import useBadgeData from '#src/composables/useBadgeData';
 import { isNonBadgeSlide } from '#src/util/achievementUtils';
 import {
+	getRichTextUiSettingsData,
 	getSlideTitle,
 	getSlideSubTitle,
 	getSlidePrimaryCtaText,
@@ -300,7 +348,6 @@ import {
 } from '#src/util/myKiva/myKivaJourneyCardUtils';
 import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 import useBreakpoints from '#src/composables/useBreakpoints';
-import useOptIn from '#src/composables/useOptIn';
 
 defineOptions({ name: 'MyKivaNextStepsContent' });
 
@@ -353,9 +400,12 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	lendingNextStepsVariant: {
+		type: String,
+		default: null,
+	},
 });
 
-const apollo = inject('apollo');
 const cookieStore = inject('cookieStore');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const goalData = inject('goalData');
@@ -380,6 +430,7 @@ const {
 	isTieredAchievementComplete,
 	getActiveTierData,
 	getAllCategoryLoanCounts,
+	allAchievementsCompleted
 } = useBadgeData();
 
 // Local modal/UI state
@@ -404,6 +455,8 @@ const achievementSlides = computed(() => buildAchievementSlides({
 }));
 
 // Sorted version used to determine which achievements land in the top row carousel.
+// Must include userGoalCategory to match the carousel's ordering (goal category pushed to end)
+// so topRowAchievementKeys correctly excludes the right slides from "Continue with your lifetime achievements".
 const sortedAchievementSlides = computed(() => buildAchievementSlides({
 	badgesData: props.heroBadgeData,
 	slides: props.heroSlides,
@@ -411,6 +464,7 @@ const sortedAchievementSlides = computed(() => buildAchievementSlides({
 	getActiveTierData,
 	includeMilestoneDiff: true,
 	sortByMilestoneDiff: true,
+	userGoalCategory: userGoal.value?.category,
 }));
 
 // Only badge slides — passed to the top row carousel so non-badge (contentful) slides
@@ -423,6 +477,16 @@ const showRegionExperienceInFirstRow = computed(() => {
 	return !showPostLendingNextStepsCards.value && !props.userLentToAllRegions;
 });
 
+const showLendingNextStepsCards = computed(
+	() => props.lendingNextStepsVariant === 'b' && !showPostLendingNextStepsCards.value
+);
+
+const hideRecommendedForYouSection = computed(() => {
+	return userGoalAchieved.value
+		&& !showRegionExperienceInFirstRow.value
+		&& allAchievementsCompleted(props.heroTieredAchievements);
+});
+
 // Hide the top row carousel when there is nothing to show (no active goal card,
 // no incomplete achievements, and no post-lending cards). Applies to the fully-completed superlender case.
 const topRowHasContent = computed(() => {
@@ -431,12 +495,13 @@ const topRowHasContent = computed(() => {
 		|| showPostLendingNextStepsCards.value;
 });
 
-const { userHasMailUpdatesOptOut } = useOptIn(apollo, cookieStore);
+const userOptedIn = computed(() => props.userInfo?.communicationSettings?.lenderNews
+	&& props.userInfo?.communicationSettings?.loanUpdates);
 
 const shouldShowEmailMarketingCard = computed(() => checkShouldShowEmailMarketing({
 	showPostLendingNextStepsCards: true,
 	latestLoan: props.latestLoan,
-	hasMailUpdatesOptOut: userHasMailUpdatesOptOut(),
+	hasMailUpdatesOptOut: !userOptedIn.value,
 	loansCount: props.loans.length,
 }));
 
@@ -477,6 +542,14 @@ const topRowAchievementKeys = computed(() => getTopRowAchievementKeys({
 
 const bottomRowAchievementSlides = computed(() => {
 	return achievementSlides.value.filter(s => !topRowAchievementKeys.value.has(s.badgeKey));
+});
+
+// Filtered heroSlides for mobile bottom-row carousel — excludes slides already shown in the top row
+const bottomRowHeroSlides = computed(() => {
+	return (props.heroSlides || []).filter(slide => {
+		const key = getRichTextUiSettingsData(slide)?.achievementKey;
+		return !topRowAchievementKeys.value.has(key);
+	});
 });
 
 const showEmailInBuildSection = computed(
@@ -523,7 +596,7 @@ const openGoalModal = event => {
 
 const setGoal = async preferences => {
 	if (isUpdatingGoal.value) {
-		await updateCurrentGoal(userGoal, preferences);
+		await updateCurrentGoal(userGoal.value, preferences);
 		$kvTrackEvent('portfolio', 'click', 'confirm-edit-goal');
 	} else {
 		await storeGoalPreferences(preferences, false);
@@ -582,25 +655,38 @@ onMounted(async () => {
 </script>
 
 <style lang="postcss" scoped>
+.placeholder-card {
+	min-height: 340px;
+	flex: 0 0 100%;
+
+	@screen md {
+		flex: 0 0 calc((100% - 8px) / 2);
+	}
+
+	@screen lg {
+		flex: 0 0 calc((100% - 32px) / 3);
+	}
+}
+
 .loading-card {
 	@apply tw-w-full tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
 		tw-overflow-hidden tw-bg-white;
 }
 
 .goal-card-container {
-	flex: 0 0 100%;
+	--goal-card-width: 336px;
+
+	width: 100%;
 	min-width: 0;
 	overflow: hidden;
 
 	@screen md {
-		/* md: 2 cards/row — (100% - 1 gap) / 2. -10px offsets goal card box-shadow bleed into adjacent space */
-		flex: 0 0 calc((100% - 1rem) / 2 - 10px);
+		flex: 0 0 var(--goal-card-width);
 		height: 390px;
 	}
 
 	@screen lg {
-		/* lg: 3 cards/row — (100% - 2 gaps) / 3. -10px offsets goal card box-shadow bleed into adjacent space */
-		flex: 0 0 calc((100% - 2rem) / 3 - 10px);
+		flex: 0 0 var(--goal-card-width);
 	}
 }
 

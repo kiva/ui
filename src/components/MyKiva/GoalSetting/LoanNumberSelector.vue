@@ -2,7 +2,7 @@
 	<div
 		class="tw-flex tw-justify-between tw-items-center tw-w-full tw-border-2 tw-border-gray-200 tw-rounded
 			tw-p-2.5 tw-py-1 tw-cursor-pointer tw-relative tw-gap-2"
-		:class="{ 'tw-border-eco-green-3 tw-bg-eco-green-1': selected }"
+		:class="{ '!tw-border-eco-green-3 tw-bg-eco-green-1': selected }"
 	>
 		<div
 			v-if="highlightedText"
@@ -31,7 +31,7 @@
 			>
 				{{ highlightedText }}
 			</div>
-			<div class="tw-text-primary tw-font-medium tw-text-h5 tw-text-center">
+			<div class="tw-text-primary !tw-font-medium tw-text-h5 tw-text-center">
 				{{ optionText }}
 			</div>
 		</div>

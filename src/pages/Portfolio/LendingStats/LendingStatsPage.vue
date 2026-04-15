@@ -65,6 +65,8 @@
 						show-more-id="show-more-fieldpartner"
 						lend-new-id="lend-new-fieldpartner"
 					/>
+					<!-- Badge section anchor used in TY page -->
+					<div id="lend-stat-badges" class="tw-sr-only tw--mt-5"></div>
 					<hr class="tw-border-tertiary tw-mt-4">
 					<badges-section
 						:badges-data="badgesData"

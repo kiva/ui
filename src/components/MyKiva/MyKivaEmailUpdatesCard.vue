@@ -88,12 +88,11 @@ const hash = computed(() => {
 const apollo = inject('apollo');
 const cookieStore = inject('cookieStore');
 const $kvTrackEvent = inject('$kvTrackEvent');
-const { setMailUpdatesOptOutCookie, updateCommunicationSettings } = useOptIn(apollo, cookieStore);
+const { updateCommunicationSettings } = useOptIn(apollo, cookieStore);
 
 const handleEmailOptIn = async () => {
 	const updatedEmailSettings = await updateCommunicationSettings(true, true, false);
 	if (updatedEmailSettings) {
-		setMailUpdatesOptOutCookie(false);
 		emit('accept-email-updates', true);
 	}
 };

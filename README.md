@@ -123,8 +123,8 @@ $ npm run dev -- --config=local (any context outside of kiva vm)
 # visit localhost:8888/ui-site-map to explore some pages (/styleguide or /lend-by-category may be of interest)
 
 # Alternate configs:
-# use `dev-local` to run localhost mode against development Environments
-# use `dev-vm-mac` to run ui on your mac against the kiva vm
+# use `local-dev` to run localhost mode against development Environments
+# use `dev-custom-host` to run with Caddy at https://kiva-ui.local (enables Auth0)
 
 # COMPILED/PROD MODE
 
