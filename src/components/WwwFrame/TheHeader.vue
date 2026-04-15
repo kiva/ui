@@ -595,12 +595,12 @@ import {
 } from '@kiva/kv-components';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import useMyKivaHome from '#src/composables/useMyKivaHome';
+import { COUNTRIES_NOT_LENT_TO_URL } from '#src/util/headerUtils';
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
 const NAV_UPDATE_EXP_KEY = 'home_page'; // Key aligns with key used in Fastly experimentation for cached CPS pages
-const COUNTRIES_NOT_LENT_TO_URL = '/lend/filter?countries-not-lent-to=true';
 
 export default {
 	name: 'TheHeader',

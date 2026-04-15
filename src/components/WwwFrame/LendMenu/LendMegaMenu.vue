@@ -209,10 +209,9 @@
 <script>
 import { mdiArrowRight, mdiChevronLeft } from '@mdi/js';
 import { KvLoadingPlaceholder, KvGrid, KvMaterialIcon } from '@kiva/kv-components';
+import { COUNTRIES_NOT_LENT_TO_URL } from '#src/util/headerUtils';
 import CountryList from './CountryList';
 import SearchList from './SearchList';
-
-const COUNTRIES_NOT_LENT_TO_URL = '/lend/filter?countries-not-lent-to=true';
 
 export default {
 	name: 'LendMegaMenu',
