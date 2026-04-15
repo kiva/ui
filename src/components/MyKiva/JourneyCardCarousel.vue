@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="journey-card-carousel">
 		<KvCarousel
 			:key="`${dynamicOrderedSlides.length}-${shouldDisableDrag}`"
 			:embla-options="emblaOptions"
@@ -403,15 +403,8 @@ const emblaOptions = computed(() => ({
 	...(shouldDisableDrag.value && { watchDrag: false }),
 }));
 
-const singleSlideWidth = computed(() => {
-	if (isLarge.value) {
-		return 'calc((100% - 64px) / 3)';
-	}
-	if (isMedium.value) {
-		return '336px';
-	}
-	return '90%';
-});
+// CSS var keeps the slide width correct during SSR/hydration before useBreakpoints resolves.
+const singleSlideWidth = 'var(--journey-slide-max-width)';
 
 const handleChange = interaction => {
 	const direction = currentIndex.value > interaction.value ? 'prev' : 'next';
@@ -438,6 +431,18 @@ const womenLoansLastYear = computed(() => {
 </script>
 
 <style lang="postcss" scoped>
+.journey-card-carousel {
+	--journey-slide-max-width: 90%;
+
+	@screen md {
+		--journey-slide-max-width: 336px;
+	}
+
+	@screen lg {
+		--journey-slide-max-width: calc((100% - 64px) / 3);
+	}
+}
+
 .kiva-card :deep(h2) {
 	font-size: 22px !important;
 }
