@@ -292,39 +292,8 @@ export default {
 		};
 	},
 	data() {
-		// Pre-populate loan from the Apollo cache. VueHeadMixin's created() hook evaluates
-		// head() before the apollo-plugin's created() hook has a chance to call result(),
-		// because mixin hooks fire in registration order and VueHeadMixin is registered
-		// first in main.js. Without this pre-population, head() runs once with an empty
-		// this.loan, producing titles like "Lend to  in " before the reactive re-run.
-		// Inject is processed before data() in Vue 3 Options API, so this.apollo and
-		// this.cookieStore are already available here.
-		let initialLoan = {};
-		try {
-			const publicId = getPublicId(this.$route);
-			// IMPORTANT: omit basketId entirely. Apollo distinguishes `null` from
-			// `undefined` from omitted in cache keys. The SSR preFetch on the
-			// CDN-cached path runs with cookieStore=null so basketId is undefined
-			// (effectively omitted). Including basketId here under any value would
-			// produce a different cache key than the SSR-populated entry. Omitting
-			// it matches the SSR cache key shape on both paths.
-			const cached = this.apollo?.readQuery?.({
-				query: routingQuery,
-				variables: {
-					loanId: Number(this.$route?.params?.id ?? 0),
-					publicId,
-					getInviter: !!publicId,
-				},
-			});
-			if (cached?.lend?.loan) {
-				initialLoan = cached.lend.loan;
-			}
-		} catch {
-			// Cache miss or schema shape mismatch — fall through to empty and let
-			// the result() callback populate this.loan when it fires.
-		}
 		return {
-			loan: initialLoan,
+			loan: {},
 			lender: {},
 			inviterName: '',
 			inviterIsGuestOrAnonymous: false,
