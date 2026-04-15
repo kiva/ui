@@ -40,11 +40,12 @@ export const shareButtonFragment = gql`
 		id
 		name
 		anonymizationLevel
-		fundraisingPercent
+		fundraisingPercent @client
 		loanAmount
 		loanFundraisingInfo {
 			id
 			fundedAmount
+			reservedAmount
 		}
 	}
 `;
