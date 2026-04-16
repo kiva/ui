@@ -14,7 +14,7 @@
 			</p>
 
 			<button
-				class="tw-flex tw-gap-0.5 tw-items-center tw-text-h5 hover:tw-underline tw-text-action tw-pt-0.5"
+				class="tw-flex tw-gap-0.5 tw-items-center tw-text-h5 hover:tw-underline tw-text-action"
 				v-if="!isModalVariant && goalEditingEnable"
 				@click="handleEditGoal"
 			>
@@ -220,7 +220,7 @@ const containerClass = computed(() => {
 });
 
 const titleContainerClass = computed(() => {
-	return isModalVariant.value ? 'tw-text-center' : 'tw-text-left tw-flex tw-justify-between tw-items-start tw-gap-1';
+	return isModalVariant.value ? 'tw-text-center' : 'tw-text-left tw-flex tw-justify-between tw-items-center tw-gap-1';
 });
 
 const titleClass = computed(() => {

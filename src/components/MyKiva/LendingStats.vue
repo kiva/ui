@@ -271,6 +271,8 @@ import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/ut
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
 import GoalSettingModal from './GoalSettingModal';
 
+const CARD_HEIGHT = 417;
+
 export default {
 	name: 'LendingStats',
 	components: {
@@ -361,6 +363,7 @@ export default {
 			newGoalPrefs: null,
 			showPostLendingNextStepsCards: false,
 			isUpdatingGoal: false,
+			CARD_HEIGHT,
 		};
 	},
 	computed: {
@@ -560,7 +563,7 @@ export default {
 	height: auto;
 
 	@screen md {
-		height: 417px;
+		height: v-bind('`${CARD_HEIGHT}px`');
 	}
 }
 
@@ -569,7 +572,7 @@ export default {
 
 	@screen md {
 		flex: 0 0 336px;
-		height: 417px;
+		height: v-bind('`${CARD_HEIGHT}px`');
 	}
 
 	@screen lg {
