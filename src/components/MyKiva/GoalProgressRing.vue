@@ -220,7 +220,7 @@ const containerClass = computed(() => {
 });
 
 const titleContainerClass = computed(() => {
-	return isModalVariant.value ? 'tw-text-center' : 'tw-text-left tw-flex tw-justify-between tw-items-center';
+	return isModalVariant.value ? 'tw-text-center' : 'tw-text-left tw-flex tw-justify-between tw-items-start tw-gap-1';
 });
 
 const titleClass = computed(() => {

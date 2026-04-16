@@ -560,7 +560,7 @@ export default {
 	height: auto;
 
 	@screen md {
-		height: 390px;
+		height: 417px;
 	}
 }
 
@@ -569,7 +569,7 @@ export default {
 
 	@screen md {
 		flex: 0 0 336px;
-		height: 390px;
+		height: 417px;
 	}
 
 	@screen lg {

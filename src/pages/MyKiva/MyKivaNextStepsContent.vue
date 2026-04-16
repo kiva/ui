@@ -704,7 +704,7 @@ onMounted(async () => {
 
 	@screen md {
 		flex: 0 0 var(--goal-card-width);
-		height: 390px;
+		height: 417px;
 	}
 
 	@screen lg {

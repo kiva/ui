@@ -264,7 +264,7 @@ onBeforeUnmount(() => {
 .stats-wrapper {
 
 	@screen md {
-		height: 390px;
+		height: 417px;
 	}
 }
 
