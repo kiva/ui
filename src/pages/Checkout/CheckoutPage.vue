@@ -74,6 +74,7 @@
 							<upsell-module
 								v-if="upsellLoan.name"
 								:loan="upsellLoan"
+								:is-expiring-soon-exp-enabled="isExpiringSoonExpEnabled"
 								:close-upsell-module="closeUpsellModule"
 								:add-to-basket="addToBasket"
 							/>
@@ -102,12 +103,15 @@
 							data-testid="order-totals-section"
 							:totals="totals"
 							:promo-fund="derivedPromoFund"
+							:open-lightbox="openMatchedLoansLightbox"
+							:is-kiva-credit-replacement-exp-enabled="isKivaCreditReplacementExpEnabled"
 							@refreshtotals="refreshTotals"
 							@updating-totals="setUpdatingTotals"
-							:open-lightbox="openMatchedLoansLightbox"
 						/>
 
-						<basket-verification />
+						<basket-verification
+							:is-kiva-credit-replacement-exp-enabled="isKivaCreditReplacementExpEnabled"
+						/>
 
 						<div ref="checkoutActionsThreshold"></div>
 
@@ -370,6 +374,8 @@ const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_enable';
+const EXPIRING_SOON_EXP_KEY = 'checkout_expiring_soon_upsell';
+const KIVA_CREDIT_REPLACEMENT_EXP_KEY = 'checkout_kiva_credit_copy_replacement';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -484,6 +490,8 @@ export default {
 			lenderLoansIds: [],
 			mdiGiftOutline,
 			isBanditUpsellExpEnabled: false,
+			isExpiringSoonExpEnabled: false,
+			isKivaCreditReplacementExpEnabled: false,
 		};
 	},
 	apollo: {
@@ -521,6 +529,7 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: CHECKOUT_LOGIN_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: KIVA_CREDIT_REPLACEMENT_EXP_KEY } }), // eslint-disable-line max-len
 					]);
 				})
 				.then(response => {
@@ -665,12 +674,27 @@ export default {
 				&& this.totals?.bonusAvailableTotal <= 0 && getPromoCreditBannerCookie(this.cookieStore)) {
 			clearPromoCreditBannerCookie(this.cookieStore);
 		}
+
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			KIVA_CREDIT_REPLACEMENT_EXP_KEY,
+			version => {
+				this.isKivaCreditReplacementExpEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-2577-Apr2026',
+			'basket',
+		);
 	},
 	watch: {
 		async emptyBasket(newValue) {
 			if (!newValue && !this.upsellLoan?.id) {
-				// MyKiva Bandit Upsell Experiment Mar2026 MP-2513
-				await this.initializeBanditUpsellExperiment();
+				await Promise.all([
+					this.initializeBanditUpsellExperiment(),
+					this.initializeExpiringSoonExperiment(),
+				]);
 				this.getUpsellModuleData();
 			}
 		},
@@ -837,6 +861,9 @@ export default {
 				? getKivaLendingCreditCookie(this.cookieStore)
 				: this.totals?.bonusAvailableTotal;
 			return numeral(amount).format('$0,0');
+		},
+		isKivaCreditText() {
+			return this.isKivaCreditReplacementExpEnabled ? 'Account balance' : 'Kiva Credit';
 		},
 	},
 	methods: {
@@ -1015,8 +1042,8 @@ export default {
 			// Handle incoming Instant Donation status
 			const instantDonationStatus = this.$route?.query?.instantDonation ?? null;
 			if (instantDonationStatus === 'insufficient-funds' || instantDonationStatus === 'donation-failed') {
-				const instantDonationFailed = `Heads up! You don't have enough Kiva credit in your account.
-					Hit "Continue" to login to check your Kiva credit balance and adjust your donation
+				const instantDonationFailed = `Heads up! You don't have enough ${this.isKivaCreditText} in your account.
+					Hit "Continue" to login to check your ${this.isKivaCreditText} balance and adjust your donation
 					amount accordingly.`;
 				const toastTimeout = setTimeout(() => {
 					this.$showTipMsg(instantDonationFailed, 'warning', true);
@@ -1071,10 +1098,36 @@ export default {
 				},
 			);
 		},
+		getLoansByExpiringSoon() {
+			return runRecommendationsQuery(
+				this.apollo,
+				{
+					filterObject: {
+						daysUntilExpiration: {
+							range: { gte: 1 },
+						},
+					},
+					sortBy: 'expiringSoon',
+					limit: 20,
+					origin: FLSS_ORIGIN_CHECKOUT_UPSELL,
+				}
+			);
+		},
 		getUpsellModuleData(loanId = 0) {
 			this.addedUpsellLoans.push(loanId);
 
-			if (this.isBanditUpsellExpEnabled) {
+			if (this.isExpiringSoonExpEnabled) {
+				this.getLoansByExpiringSoon()
+					.then(result => {
+						this.continueButtonState = 'active';
+						const loans = result?.loans || [];
+						this.upsellLoan = loans.filter(loan => !this.addedUpsellLoans.includes(loan.id))[0] || {};
+					})
+					.catch(e => {
+						this.continueButtonState = 'active';
+						logReadQueryError(e, 'getLoansByExpiringSoon');
+					});
+			} else if (this.isBanditUpsellExpEnabled) {
 				const balance = parseFloat(this.myBalance);
 				this.apollo.query({
 					query: getCheckoutAlmostFundedRecommendationQuery,
@@ -1290,6 +1343,20 @@ export default {
 				},
 				this.$kvTrackEvent,
 				'EXP-MP-2513-Mar2026',
+			);
+		},
+		async initializeExpiringSoonExperiment() {
+			initializeExperiment(
+				this.cookieStore,
+				this.apollo,
+				this.$route,
+				EXPIRING_SOON_EXP_KEY,
+				version => {
+					this.isExpiringSoonExpEnabled = version === 'b';
+				},
+				this.$kvTrackEvent,
+				'EXP-MP-2615-Apr2026',
+				'basket',
 			);
 		},
 	},

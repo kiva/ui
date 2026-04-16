@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="journey-card-carousel">
 		<KvCarousel
 			:key="`${dynamicOrderedSlides.length}-${shouldDisableDrag}`"
 			:embla-options="emblaOptions"
@@ -250,6 +250,10 @@ const props = defineProps({
 		type: Array,
 		default: () => [],
 	},
+	preBuiltAchievementSlides: {
+		type: Array,
+		default: null,
+	},
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
@@ -289,31 +293,32 @@ const shouldShowGoalCard = computed(() => {
 });
 
 const dynamicOrderedSlides = computed(() => {
-	const achievementSlides = buildAchievementSlides({
-		badgesData: props.heroBadgeData,
-		slides: props.slides,
-		getActiveTierData,
-		isTieredAchievementComplete,
-		includeMilestoneDiff: true,
-		sortByMilestoneDiff: true,
-		userGoalCategory: props.userGoal?.category,
-	});
-	let loanJourneys = [];
+	let sortedSlides;
 
-	const transactionLoans = props.userInfo?.transactions?.values?.filter(t => {
-		const diffInDays = differenceInDays(new Date(), parseISO(t.createTime));
-		return t.type === TRANSACTION_LOANS_KEY && diffInDays <= TRANSACTION_DAYS_LIMIT;
-	});
+	if (props.preBuiltAchievementSlides) {
+		sortedSlides = [...props.preBuiltAchievementSlides];
+	} else {
+		sortedSlides = buildAchievementSlides({
+			badgesData: props.heroBadgeData,
+			slides: props.slides,
+			getActiveTierData,
+			isTieredAchievementComplete,
+			includeMilestoneDiff: true,
+			sortByMilestoneDiff: true,
+			userGoalCategory: props.userGoal?.category,
+		});
 
-	if (transactionLoans?.length) {
-		const transactionLoan = transactionLoans?.[0]?.loan ?? {};
-		loanJourneys = getJourneysByLoan(transactionLoan);
-	}
+		const transactionLoans = props.userInfo?.transactions?.values?.filter(t => {
+			const diffInDays = differenceInDays(new Date(), parseISO(t.createTime));
+			return t.type === TRANSACTION_LOANS_KEY && diffInDays <= TRANSACTION_DAYS_LIMIT;
+		});
 
-	let sortedSlides = achievementSlides;
-
-	if (loanJourneys.length) {
-		sortedSlides.sort((a, b) => loanJourneys.indexOf(b.badgeKey) - loanJourneys.indexOf(a.badgeKey)); // eslint-disable-line max-len
+		if (transactionLoans?.length) {
+			const loanJourneys = getJourneysByLoan(transactionLoans[0]?.loan ?? {});
+			if (loanJourneys.length) {
+				sortedSlides.sort((a, b) => loanJourneys.indexOf(b.badgeKey) - loanJourneys.indexOf(a.badgeKey)); // eslint-disable-line max-len
+			}
+		}
 	}
 
 	if (props.showNonBadgesSlides && nonBadgesSlides.value.length > 0) {
@@ -403,15 +408,8 @@ const emblaOptions = computed(() => ({
 	...(shouldDisableDrag.value && { watchDrag: false }),
 }));
 
-const singleSlideWidth = computed(() => {
-	if (isLarge.value) {
-		return 'calc((100% - 64px) / 3)';
-	}
-	if (isMedium.value) {
-		return '336px';
-	}
-	return '90%';
-});
+// CSS var keeps the slide width correct during SSR/hydration before useBreakpoints resolves.
+const singleSlideWidth = 'var(--journey-slide-max-width)';
 
 const handleChange = interaction => {
 	const direction = currentIndex.value > interaction.value ? 'prev' : 'next';
@@ -438,6 +436,18 @@ const womenLoansLastYear = computed(() => {
 </script>
 
 <style lang="postcss" scoped>
+.journey-card-carousel {
+	--journey-slide-max-width: 90%;
+
+	@screen md {
+		--journey-slide-max-width: 336px;
+	}
+
+	@screen lg {
+		--journey-slide-max-width: calc((100% - 64px) / 3);
+	}
+}
+
 .kiva-card :deep(h2) {
 	font-size: 22px !important;
 }
