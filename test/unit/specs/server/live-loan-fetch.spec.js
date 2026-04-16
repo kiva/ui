@@ -166,6 +166,25 @@ describe('live-loan-fetch', () => {
 			await testSortParsing('', null);
 			await testSortParsing('1234', null);
 		});
+
+		it('converts input strings to valid SortEnum values regardless of casing', async () => {
+			// Uppercase variations
+			await testSortParsing('sort_AMOUNTLEFT', 'amountLeft');
+			await testSortParsing('sort_MOSTRECENT', 'mostRecent');
+
+			// Lowercase variations
+			await testSortParsing('sort_expiringsoon', 'expiringSoon');
+			await testSortParsing('sort_mostrecent', 'mostRecent');
+
+			// Mixed case variations
+			await testSortParsing('sort_AmountLeft', 'amountLeft');
+			await testSortParsing('sort_ExpiRingSoon', 'expiringSoon');
+
+			// Combined filters sort
+			await testSortParsing('sort_amountLeft,gender_female', 'amountLeft');
+			await testSortParsing('gender_female,sort_MOSTRECENT', 'mostRecent');
+			await testSortParsing('sort_EXPIRINGSOON,sector_agriculture', 'expiringSoon');
+		});
 	});
 
 	describe('fetchRecommendationsByFLSS', () => {
