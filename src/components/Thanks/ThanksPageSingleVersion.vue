@@ -75,7 +75,6 @@
 				:loans="loans"
 				:is-guest="isGuest"
 				:number-of-badges="numberOfBadges"
-				:only-donations="false"
 				:achievements-completed="achievementsCompleted"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
