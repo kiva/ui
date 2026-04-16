@@ -267,7 +267,7 @@ import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 
 import logReadQueryError from '#src/util/logReadQueryError';
-import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
+import { checkPostLendingCardCookie, removePostLendingCardCookie, MY_KIVA_CARD_HEIGHT } from '#src/util/myKivaUtils';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
 import GoalSettingModal from './GoalSettingModal';
 
@@ -361,6 +361,7 @@ export default {
 			newGoalPrefs: null,
 			showPostLendingNextStepsCards: false,
 			isUpdatingGoal: false,
+			MY_KIVA_CARD_HEIGHT,
 		};
 	},
 	computed: {
@@ -560,7 +561,7 @@ export default {
 	height: auto;
 
 	@screen md {
-		height: 390px;
+		height: v-bind('`${MY_KIVA_CARD_HEIGHT}px`');
 	}
 }
 
@@ -569,7 +570,7 @@ export default {
 
 	@screen md {
 		flex: 0 0 336px;
-		height: 390px;
+		height: v-bind('`${MY_KIVA_CARD_HEIGHT}px`');
 	}
 
 	@screen lg {

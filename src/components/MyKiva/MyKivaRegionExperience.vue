@@ -142,6 +142,7 @@ import MiddleEast from '#src/assets/images/my-kiva/Middle East.png';
 import NorthAmerica from '#src/assets/images/my-kiva/North America.png';
 import Oceania from '#src/assets/images/my-kiva/Oceania.png';
 import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
+import { MY_KIVA_CARD_HEIGHT } from '#src/util/myKivaUtils';
 
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 
@@ -264,7 +265,7 @@ onBeforeUnmount(() => {
 .stats-wrapper {
 
 	@screen md {
-		height: 390px;
+		height: v-bind('`${MY_KIVA_CARD_HEIGHT}px`');
 	}
 }
 
