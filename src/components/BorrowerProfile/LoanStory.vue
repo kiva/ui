@@ -1,38 +1,9 @@
 <template>
 	<article>
-		<iframe
-			v-if="youtubeId"
-			class="tw-aspect-video tw-mx-auto tw-rounded tw-w-full tw--mb-1.5 md:tw--mb-1"
-			width="560"
-			height="315"
-			:src="`https://www.youtube.com/embed/${youtubeId}?rel=0`"
-			title="YouTube video player"
-			frameborder="0"
-			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; web-share"
-			allowfullscreen
-		></iframe>
-		<borrower-image
-			v-else
-			class="
-				tw-w-full
-				tw-bg-black
-				tw-rounded
-				tw--mb-1.5
-				md:tw--mb-1
-			"
-			data-testid="bp-story-borrower-image"
-			:alt="name"
-			:aspect-ratio="16 / 25"
-			:default-image="{ width: 612 }"
-			:hash="hash"
-			:images="[
-				{ width: 612, viewSize: 1024 },
-				{ width: 580, viewSize: 768 },
-				{ width: 416, viewSize: 480 },
-				{ width: 374, viewSize: 414 },
-				{ width: 335, viewSize: 375 },
-				{ width: 280 },
-			]"
+		<loan-figure-carousel
+			class="tw--mb-1.5 md:tw--mb-1"
+			:figures="figures"
+			:name="name"
 		/>
 		<loan-description
 			class="tw-pt-4"
@@ -48,43 +19,20 @@
 			:story-description="description"
 			:previous-loan-id="previousLoanId"
 		/>
-		<borrower-image
-			v-if="youtubeId"
-			class="
-				tw-w-full
-				tw-bg-black
-				tw-rounded
-				tw--mb-1.5
-				md:tw--mb-1
-			"
-			data-testid="bp-story-borrower-image"
-			:alt="name"
-			:aspect-ratio="16 / 25"
-			:default-image="{ width: 612 }"
-			:hash="hash"
-			:images="[
-				{ width: 612, viewSize: 1024 },
-				{ width: 580, viewSize: 768 },
-				{ width: 416, viewSize: 480 },
-				{ width: 374, viewSize: 414 },
-				{ width: 335, viewSize: 375 },
-				{ width: 280 },
-			]"
-		/>
 	</article>
 </template>
 
 <script>
 import { gql } from 'graphql-tag';
-import BorrowerImage from './BorrowerImage';
 import LoanDescription from './LoanDescription';
+import LoanFigureCarousel from './LoanFigureCarousel';
 
 export default {
 	name: 'LoanStory',
 	inject: ['apollo', 'cookieStore'],
 	components: {
-		BorrowerImage,
 		LoanDescription,
+		LoanFigureCarousel,
 	},
 	props: {
 		loanId: {
@@ -98,14 +46,13 @@ export default {
 			borrowerCount: 0,
 			borrowers: [],
 			name: '',
-			hash: '',
+			figures: [],
 			description: '',
 			descriptionInOriginalLanguage: '',
 			originalLanguage: {},
 			partnerName: '',
 			reviewer: {},
 			previousLoanId: 0,
-			youtubeId: ''
 		};
 	},
 	apollo: {
@@ -123,12 +70,15 @@ export default {
 					description
 					previousLoanId
 					descriptionInOriginalLanguage
-					image {
-						id
-						hash
-					}
-					video {
-						youtubeId
+					figures {
+						__typename
+						... on Image {
+							id
+							hash
+						}
+						... on Video {
+							youtubeId
+						}
 					}
 					name
 					originalLanguage {
@@ -163,13 +113,12 @@ export default {
 			this.borrowers = loan?.borrowers ?? [];
 			this.description = loan?.description ?? '';
 			this.descriptionInOriginalLanguage = loan?.descriptionInOriginalLanguage ?? '';
-			this.hash = loan?.image?.hash ?? '';
+			this.figures = loan?.figures ?? [];
 			this.name = loan?.name ?? '';
 			this.originalLanguage = loan?.originalLanguage ?? {};
 			this.partnerName = loan?.partnerName ?? '';
 			this.reviewer = loan?.reviewer ?? {};
 			this.previousLoanId = loan?.previousLoanId ?? 0;
-			this.youtubeId = loan?.video?.youtubeId ?? '';
 		},
 	},
 };
