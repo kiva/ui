@@ -56,12 +56,11 @@ const validateCustomAmount = event => {
 };
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 /* Chrome, Safari, Edge, Opera */
 .custom-input::-webkit-outer-spin-button,
 .custom-input::-webkit-inner-spin-button {
-  appearance: none;
-  margin: 0;
+    @apply tw-appearance-none tw-m-0
 }
 
 /* Firefox */
