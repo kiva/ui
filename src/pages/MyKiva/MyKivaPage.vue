@@ -92,6 +92,7 @@ export default {
 		provide('goalData', goalDataComposable);
 
 		return {
+			checkCompletedGoal: goalDataComposable.checkCompletedGoal,
 			combineBadgeData,
 			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
 			loadGoalData: goalDataComposable.loadGoalData,
@@ -438,6 +439,7 @@ export default {
 			tieredAchievements: this.currentYearTieredAchievements,
 			transactions: this.transactions,
 		});
+		await this.checkCompletedGoal({ category: 'portfolio' });
 	},
 };
 </script>
