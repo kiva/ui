@@ -80,44 +80,50 @@
 					<!-- Custom goal amount option, only shown if experiment flag is enabled -->
 					<div
 						v-if="customGoalAmountEnable"
-						class="tw-flex lg:tw-flex-col tw-justify-between lg:tw-justify-center tw-items-center
-							tw-border-2 tw-border-gray-200 tw-rounded tw-p-2 tw-cursor-pointer tw-gap-1"
+						class="tw-border-2 tw-border-gray-200 tw-rounded tw-px-2 tw-py-1 lg:tw-py-2 tw-cursor-pointer
+							tw-gap-1"
 						:class="{ '!tw-border-eco-green-3 tw-bg-eco-green-1 !tw-py-1.5 lg:tw-py-2': isCustomIndex }"
 						@click="updateOptionSelection(CUSTOM_LOAN_NUMBER_INDEX)"
 					>
-						<div class="tw-text-eco-green-3 tw-text-center tw-flex tw-items-center tw-gap-1">
-							<span class="tw-text-h1 lg:tw-text-h2 tw--mt-1">
-								&#43;
-							</span>
-							<span class="lg:tw-hidden tw-text-base !tw-font-medium">
-								Custom
-							</span>
-						</div>
-						<div class="tw-text-primary tw-font-medium tw-text-h5 tw-text-center">
-							<span class="tw-hidden lg:tw-inline">
-								Custom
-							</span>
-							<div class="tw-flex tw-flex-col tw-items-start tw-gap-0.5">
-								<span
-									class="tw-font-medium lg:tw-hidden"
-									:class="{ 'tw-text-small': isCustomIndex }"
-								>
-									Set your number
+						<div
+							class="tw-flex lg:tw-flex-col tw-justify-between
+							lg:tw-justify-center tw-items-center tw-gap-1"
+						>
+							<div class="tw-text-eco-green-3 tw-text-center tw-flex tw-items-center tw-gap-1">
+								<span class="tw-text-h1 lg:tw-text-h2 tw--mt-1">
+									&#43;
 								</span>
-								<input
-									v-if="isCustomIndex"
-									type="number"
-									name="customGoalAmount"
-									v-model="customGoalAmount"
-									class="lg:tw-hidden tw-rounded-sm tw-border-2 tw-border-gray-400 tw-px-1.5 tw-py-0.5
-										tw-min-h-5 tw-ring-inset focus:tw-outline-none focus:tw-ring-0
-										focus:tw-border-gray-400 custom-input"
-									placeholder="Add number"
-									style="max-width: 136px;"
-									@input="validateCustomAmount"
-									autofocus
-								>
+								<span class="lg:tw-hidden tw-text-base !tw-font-medium">
+									Custom
+								</span>
 							</div>
+							<div class="tw-text-primary tw-font-medium tw-text-h5 tw-text-center">
+								<span class="tw-hidden lg:tw-inline">
+									Custom
+								</span>
+								<div class="tw-flex tw-flex-col tw-items-start tw-gap-0.5">
+									<span
+										class="tw-font-medium lg:tw-hidden"
+										:class="{ 'tw-text-small': isCustomIndex }"
+									>
+										Set your number
+									</span>
+									<GoalCustomAmountInput
+										v-if="isCustomIndex"
+										class="lg:tw-hidden"
+										is-mobile
+										:valid-custom-amount="validCustomAmount"
+										@validate-custom-amount="validateCustomAmount"
+										style="max-width: 136px;"
+									/>
+								</div>
+							</div>
+						</div>
+						<div
+							v-if="validCustomAmount === false"
+							class="lg:tw-hidden tw-text-danger-highlight tw-text-small tw-mt-1"
+						>
+							{{ warningCustomAmountText }}
 						</div>
 					</div>
 				</template>
@@ -125,23 +131,25 @@
 
 			<div
 				v-if="customGoalAmountEnable && isCustomIndex"
-				class="tw-hidden lg:tw-flex tw-justify-between tw-bg-eco-green-1 tw-px-2.5 tw-py-1.5 tw-w-full
-					tw-rounded-sm tw-items-center"
+				class="tw-hidden lg:tw-flex tw-flex-col tw-bg-eco-green-1 tw-px-2.5 tw-py-1.5 tw-w-full
+					tw-rounded-sm"
 			>
-				<div class="tw-text-base">
-					Customize your number of loans
+				<div class="tw-flex tw-justify-between tw-items-center">
+					<div class="tw-text-base">
+						Customize your number of loans
+					</div>
+					<GoalCustomAmountInput
+						:valid-custom-amount="validCustomAmount"
+						@validate-custom-amount="validateCustomAmount"
+						style="max-width: 148px;"
+					/>
 				</div>
-				<input
-					type="number"
-					name="customGoalAmount"
-					v-model="customGoalAmount"
-					class="tw-rounded-sm tw-border-2 tw-border-gray-400 tw-px-1.5 tw-py-0.5
-						tw-ring-inset focus:tw-outline-none focus:tw-ring-0 focus:tw-border-gray-400 custom-input"
-					placeholder="Add number"
-					style="max-width: 148px;"
-					@input="validateCustomAmount"
-					autofocus
+				<div
+					v-if="validCustomAmount === false"
+					class="tw-text-right tw-text-danger-highlight tw-text-small tw-mt-1"
 				>
+					{{ warningCustomAmountText }}
+				</div>
 			</div>
 
 			<template
@@ -202,7 +210,7 @@
 				<KvButton
 					class="tw-w-full tw-mt-1.5"
 					@click="handleContinue"
-					:disabled="isLoadingData || loadingCurrentYear"
+					:disabled="isLoadingData || loadingCurrentYear || (isCustomIndex && validCustomAmount !== true)"
 				>
 					{{ buttonText }}
 				</KvButton>
@@ -241,6 +249,7 @@ import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL, ID_US_ECONOMIC_EQUALITY } from '#sr
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
+import GoalCustomAmountInput from '#src/components/MyKiva/GoalSetting/GoalCustomAmountInput';
 import useGoalData, { LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
 import useBreakpoints from '#src/composables/useBreakpoints';
 
@@ -413,6 +422,7 @@ const allowBackToCategorySelection = ref(false);
 const isGoalTileOpened = ref(false);
 const goalTileAccordion = ref(null);
 const customGoalAmount = ref(null);
+const validCustomAmount = ref(null);
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -512,6 +522,12 @@ const localGoalProgressPercentage = computed(() => {
 	return Math.min(Math.round((loansThisYear.value / effectiveGoalLoans.value) * 100), 100);
 });
 
+const minCustomAmount = computed(() => {
+	return loansThisYear.value > 1 ? loansThisYear.value : 2;
+});
+
+const warningCustomAmountText = computed(() => `Your goal must be a valid number above ${minCustomAmount.value} loans`);
+
 const resetOptionSelection = selectedIndex => {
 	isGoalTileOpened.value = false;
 	goalTileAccordion.value?.collapse();
@@ -519,6 +535,8 @@ const resetOptionSelection = selectedIndex => {
 		...option,
 		selected: index === selectedIndex,
 	}));
+	validCustomAmount.value = null;
+	customGoalAmount.value = null;
 };
 
 const updateOptionSelection = selectedIndex => {
@@ -536,8 +554,14 @@ const updateOptionSelection = selectedIndex => {
 	}
 };
 
-const validateCustomAmount = () => {
-	emit('set-goal-target', selectedTarget.value);
+const validateCustomAmount = value => {
+	customGoalAmount.value = value;
+	if (customGoalAmount.value < minCustomAmount.value) {
+		validCustomAmount.value = false;
+	} else {
+		validCustomAmount.value = true;
+		emit('set-goal-target', selectedTarget.value);
+	}
 };
 
 const editGoal = () => {
@@ -736,17 +760,5 @@ watch(() => props.selectedCategoryId, async newCategory => {
 
 :deep(.goal-tile-accordion ul li > span svg) {
 	@apply !tw-text-primary;
-}
-
-/* Chrome, Safari, Edge, Opera */
-.custom-input::-webkit-outer-spin-button,
-.custom-input::-webkit-inner-spin-button {
-  appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-.custom-input[type=number] {
-  appearance: textfield;
 }
 </style>
