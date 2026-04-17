@@ -526,7 +526,7 @@ const minCustomAmount = computed(() => {
 	return loansThisYear.value > 1 ? loansThisYear.value + 1 : 2;
 });
 
-const warningCustomAmountText = computed(() => `Your goal must be a valid number above ${minCustomAmount.value} loans`);
+const warningCustomAmountText = computed(() => `Your goal must be a valid number above ${minCustomAmount.value - 1} loans`); // eslint-disable-line max-len
 
 const resetOptionSelection = selectedIndex => {
 	isGoalTileOpened.value = false;
