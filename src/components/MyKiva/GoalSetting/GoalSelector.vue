@@ -523,7 +523,7 @@ const localGoalProgressPercentage = computed(() => {
 });
 
 const minCustomAmount = computed(() => {
-	return loansThisYear.value > 1 ? loansThisYear.value : 2;
+	return loansThisYear.value > 1 ? loansThisYear.value + 1 : 2;
 });
 
 const warningCustomAmountText = computed(() => `Your goal must be a valid number above ${minCustomAmount.value} loans`);

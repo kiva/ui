@@ -2,6 +2,7 @@
 	<div class="tw-relative">
 		<input
 			type="number"
+			v-model="customAmount"
 			name="customGoalAmount"
 			class="tw-rounded-sm tw-border-2 tw-border-gray-400 tw-pl-1.5 tw-py-0.5 tw-pr-4 tw-w-full
                 tw-ring-inset focus:tw-outline-none focus:tw-ring-0 focus:tw-border-gray-400 custom-input"
@@ -13,6 +14,7 @@
 			placeholder="Add number"
 			@input="validateCustomAmount"
 			autofocus
+			inputmode="numeric"
 		>
 		<KvMaterialIcon
 			v-if="validCustomAmount !== null"
@@ -27,6 +29,7 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { mdiCheckCircle, mdiAlertCircle } from '@mdi/js';
 import { KvMaterialIcon } from '@kiva/kv-components';
 
@@ -45,8 +48,11 @@ defineProps({
 	}
 });
 
+const customAmount = ref('');
+
 const validateCustomAmount = event => {
-	emit('validate-custom-amount', event.target.value);
+	customAmount.value = event.target.value.replace(/[^0-9]/g, '');
+	emit('validate-custom-amount', customAmount.value);
 };
 </script>
 
