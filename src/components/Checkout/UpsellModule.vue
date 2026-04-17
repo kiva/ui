@@ -19,8 +19,7 @@
 					Support Another Borrower
 				</h4>
 				<h3 v-if="isExpiringSoonExpEnabled" class="tw-text-h3 tw-mb-2">
-					<!-- eslint-disable-next-line max-len -->
-					Time is running out for {{ loan.name }}. Add {{ $filters.numeral(amountLeft, '$0,0[.]00') }} to help this loan before it expires.
+					Time is running out for {{ possessiveName }} loan. Add $25 before it expires.
 				</h3>
 				<h3 v-else class="tw-text-h3 tw-mb-2">
 					<!-- eslint-disable-next-line max-len -->
@@ -44,7 +43,7 @@
 					<kv-button
 						variant="link"
 						class="tw-w-full md:tw-w-44 tw-mt-2 md:tw-mt-7"
-						@click="addToBasket(loanId, amountLeft)"
+						@click="addToBasket(loanId, reservationAmount)"
 					>
 						Add loan to basket
 					</kv-button>
@@ -59,6 +58,7 @@ import {
 	mdiClose
 } from '@mdi/js';
 import FundraisingStatusMeter from '#src/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
+import { formatPossessiveName } from '#src/util/stringParserUtils';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 
 export default {
@@ -115,6 +115,12 @@ export default {
 			const reservedAmount = this.loan?.loanFundraisingInfo?.reservedAmount ?? 0;
 			const amountLeft = this.loanAmount - fundedAmount - reservedAmount;
 			return amountLeft < 0 ? 0 : amountLeft;
+		},
+		reservationAmount() {
+			return this.isExpiringSoonExpEnabled ? 25 : this.amountLeft;
+		},
+		possessiveName() {
+			return formatPossessiveName(this.loan?.name);
 		},
 		percentRaised() {
 			return (this.loanAmount - this.amountLeft) / this.loanAmount;

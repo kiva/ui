@@ -6,7 +6,7 @@
 			class="tw-rounded-sm tw-border-2 tw-border-gray-400 tw-pl-1.5 tw-py-0.5 tw-pr-4 tw-w-full
                 tw-ring-inset focus:tw-outline-none focus:tw-ring-0 focus:tw-border-gray-400 custom-input"
 			:class="{
-				'focus:!tw-border-brand-400': validCustomAmount,
+				'!tw-border-brand-400': validCustomAmount,
 				'!tw-border-desert-rose': validCustomAmount === false,
 				'tw-min-h-5': isMobile,
 			}"

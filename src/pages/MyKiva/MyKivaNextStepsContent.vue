@@ -349,7 +349,9 @@ import {
 	PRIORITY_CARD_LATEST_LOAN,
 	PRIORITY_CARD_SURVEY,
 } from '#src/util/myKiva/myKivaJourneyCardUtils';
-import { checkPostLendingCardCookie, removePostLendingCardCookie, TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
+import {
+	checkPostLendingCardCookie, removePostLendingCardCookie, TRANSACTION_LOANS_KEY, MY_KIVA_CARD_HEIGHT
+} from '#src/util/myKivaUtils';
 import useBreakpoints from '#src/composables/useBreakpoints';
 
 defineOptions({ name: 'MyKivaNextStepsContent' });
@@ -704,7 +706,7 @@ onMounted(async () => {
 
 	@screen md {
 		flex: 0 0 var(--goal-card-width);
-		height: 390px;
+		height: v-bind('`${MY_KIVA_CARD_HEIGHT}px`');
 	}
 
 	@screen lg {
