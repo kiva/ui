@@ -491,7 +491,8 @@ const titleText = computed(() => {
 
 const subtitleText = computed(() => {
 	if (loansThisYear.value > 0) {
-		return `You've already made ${loansThisYear.value} that will count`;
+		const loanWord = loansThisYear.value === 1 ? 'loan' : 'loans';
+		return `You've already made ${loansThisYear.value} ${loanWord} that will count`;
 	}
 	return '';
 });
