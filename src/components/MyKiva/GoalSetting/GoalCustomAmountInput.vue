@@ -1,6 +1,7 @@
 <template>
 	<div class="tw-relative">
 		<input
+			ref="amountInput"
 			type="number"
 			v-model="customAmount"
 			name="customGoalAmount"
@@ -13,7 +14,6 @@
 			}"
 			placeholder="Add number"
 			@input="validateCustomAmount"
-			autofocus
 			inputmode="numeric"
 		>
 		<KvMaterialIcon
@@ -29,7 +29,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {
+	ref, watch, toRefs, onMounted,
+} from 'vue';
 import { mdiCheckCircle, mdiAlertCircle } from '@mdi/js';
 import { KvMaterialIcon } from '@kiva/kv-components';
 
@@ -37,7 +39,7 @@ const emit = defineEmits([
 	'validate-custom-amount',
 ]);
 
-defineProps({
+const props = defineProps({
 	validCustomAmount: {
 		type: Boolean,
 		required: null
@@ -45,15 +47,30 @@ defineProps({
 	isMobile: {
 		type: Boolean,
 		required: false
+	},
+	loanValue: {
+		type: String,
+		default: '',
 	}
 });
 
+const { loanValue } = toRefs(props);
+
+const amountInput = ref(null);
 const customAmount = ref('');
 
 const validateCustomAmount = event => {
 	customAmount.value = event.target.value.replace(/[^0-9]/g, '');
 	emit('validate-custom-amount', customAmount.value);
 };
+
+watch(() => loanValue.value, newValue => {
+	customAmount.value = newValue;
+});
+
+onMounted(() => {
+	amountInput.value.focus();
+});
 </script>
 
 <style lang="postcss" scoped>

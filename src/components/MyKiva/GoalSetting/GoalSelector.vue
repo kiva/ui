@@ -113,6 +113,7 @@
 										class="lg:tw-hidden"
 										is-mobile
 										:valid-custom-amount="validCustomAmount"
+										:loan-value="customGoalAmount"
 										@validate-custom-amount="validateCustomAmount"
 										style="max-width: 136px;"
 									/>
@@ -140,6 +141,7 @@
 					</div>
 					<GoalCustomAmountInput
 						:valid-custom-amount="validCustomAmount"
+						:loan-value="customGoalAmount"
 						@validate-custom-amount="validateCustomAmount"
 						style="max-width: 148px;"
 					/>
@@ -729,6 +731,10 @@ watch(() => props.selectedCategoryId, async newCategory => {
 	if (newCategory === ID_SUPPORT_ALL) {
 		prevSupportAllCount.value = await getSupportAllLoanCountByYear(LAST_YEAR_KEY);
 	}
+
+	customGoalAmount.value = '';
+	validCustomAmount.value = null;
+	updateOptionSelection(1);
 });
 
 </script>
