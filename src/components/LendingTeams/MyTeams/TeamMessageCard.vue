@@ -77,7 +77,7 @@ export default {
 			return `/team/${teamPublicId}/messages?msgID=${messageId}#msg_${messageId}`;
 		},
 		formatMessageBody(body, teamPublicId) {
-			const escaped = _escape(body);
+			const escaped = _escape(body).replace(/\r\n|\r|\n/g, '<br>');
 
 			// Replace embedded plain text message IDs (e.g. #123456) with direct links
 			// Use negative lookbehind / lookahead to exclude HTML entities that may have been escaped (e.g., &#39;)
