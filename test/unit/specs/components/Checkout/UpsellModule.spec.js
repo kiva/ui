@@ -60,14 +60,32 @@ describe('UpsellModule', () => {
 	describe('variant copy (expiring soon)', () => {
 		it('shows expiring-soon copy when isExpiringSoonExpEnabled is true', () => {
 			renderUpsellModule({ isExpiringSoonExpEnabled: true });
-			expect(screen.getByText(/Time is running out for Maria/)).toBeTruthy();
-			expect(screen.getByText(/to help this loan before it expires/)).toBeTruthy();
+			const copy = /Time is running out for Maria's loan\. Add \$25 before it expires\./;
+			expect(screen.getByText(copy)).toBeTruthy();
 		});
 
-		it('shows dynamic amount in variant copy', () => {
-			renderUpsellModule({ isExpiringSoonExpEnabled: true });
+		it('uses apostrophe-only possessive for names ending in s', () => {
+			renderUpsellModule({
+				isExpiringSoonExpEnabled: true,
+				loan: { ...mockLoan, name: 'Carlos' },
+			});
+			const copy = /Time is running out for Carlos' loan\. Add \$25 before it expires\./;
+			expect(screen.getByText(copy)).toBeTruthy();
+		});
+
+		it('passes fixed $25 to addToBasket in variant', async () => {
+			const addToBasket = vi.fn();
+			const { getByText } = renderUpsellModule({ isExpiringSoonExpEnabled: true, addToBasket });
+			await getByText('Add loan to basket').click();
+			expect(addToBasket).toHaveBeenCalledWith(12345, 25);
+		});
+
+		it('passes dynamic amountLeft to addToBasket in control', async () => {
+			const addToBasket = vi.fn();
+			const { getByText } = renderUpsellModule({ addToBasket });
+			await getByText('Add loan to basket').click();
 			// amountLeft = 500 - 400 - 50 = 50
-			expect(screen.getAllByText(/\$50/).length).toBeGreaterThan(0);
+			expect(addToBasket).toHaveBeenCalledWith(12345, 50);
 		});
 	});
 
