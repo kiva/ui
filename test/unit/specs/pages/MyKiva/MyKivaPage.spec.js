@@ -234,6 +234,7 @@ describe('MyKivaPage', () => {
 					}))
 				},
 				$route: { query: {} },
+				checkCompletedGoal: vi.fn().mockResolvedValue(),
 				loadGoalData: vi.fn().mockResolvedValue(),
 				applyMyKivaFreshProgress,
 				renewAnnualGoal,
@@ -248,6 +249,8 @@ describe('MyKivaPage', () => {
 			expect(applyMyKivaFreshProgress).not.toHaveBeenCalled();
 			expect(renewAnnualGoal).toHaveBeenCalledTimes(1);
 			expect(fixIncorrectlyCompletedGoals).toHaveBeenCalledTimes(1);
+			expect(context.checkCompletedGoal).toHaveBeenCalledTimes(1);
+			expect(context.checkCompletedGoal).toHaveBeenCalledWith({ category: 'portfolio' });
 		});
 	});
 
