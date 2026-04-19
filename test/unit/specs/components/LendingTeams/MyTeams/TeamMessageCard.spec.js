@@ -87,6 +87,19 @@ describe('TeamMessageCard', () => {
 		expect(messageBody.innerHTML).toContain('&amp;');
 	});
 
+	it('replaces line breaks in the body with <br> tags', () => {
+		const bodyWithLineBreaks = 'First line\nSecond line\r\nThird line';
+		const { container } = render(TeamMessageCard, {
+			props: {
+				message: mockMessage(1, { body: bodyWithLineBreaks }),
+			},
+			global: globalOptions,
+		});
+
+		const messageBody = container.querySelector('p');
+		expect(messageBody.innerHTML).toContain('First line<br>Second line<br>Third line');
+	});
+
 	it('sender name links to lender profile', () => {
 		const { container } = render(TeamMessageCard, {
 			props: {
