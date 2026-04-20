@@ -561,6 +561,11 @@ const validateCustomAmount = value => {
 	customGoalAmount.value = value;
 	if (customGoalAmount.value < minCustomAmount.value) {
 		validCustomAmount.value = false;
+		$kvTrackEvent(
+			props.trackingCategory,
+			'show',
+			'custom-goal-error',
+		);
 	} else {
 		validCustomAmount.value = true;
 		emit('set-goal-target', selectedTarget.value);
@@ -609,6 +614,15 @@ const handleContinue = () => {
 		props.selectedCategoryId,
 		selectedTarget.value
 	);
+
+	if (isCustomIndex.value) {
+		$kvTrackEvent(
+			props.trackingCategory,
+			'click',
+			'custom-goal-set',
+			selectedTarget.value
+		);
+	}
 	if (props.isUpdatingGoal) {
 		emit('update-goal', preferences);
 	} else {
