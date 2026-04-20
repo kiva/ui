@@ -297,7 +297,7 @@ function parseSortString(sortString, sortOptions) {
 
 	// only try parsing if the input is valid
 	if (sortString && typeof sortString === 'string') {
-		// start pasring the string
+		// start parsing the string
 		getFilterArrays(sortString)
 			// remove any filter that isn't "sort"
 			.filter(([name]) => name === 'sort')
@@ -556,6 +556,38 @@ const shouldUseFLSS = async filterString => {
 	// Use FLSS by default
 	return true;
 };
+
+// Convert legacy filter string to modern query params
+// e.g., "gender_female,sort_amountLeft" -> { gender: 'female', sortBy: 'amountLeft' }
+export async function convertFiltersToQueryParams(filterString) {
+	if (!filterString) return {};
+
+	const params = {};
+	const filterArrays = getFilterArrays(filterString);
+
+	// Only map filter names that differ from singular query params
+	const filterMapping = {
+		country: 'countries',
+		tag: 'tags',
+		attribute: 'attributes',
+	};
+
+	const sortOptions = await fetchFLSSSorts();
+
+	filterArrays.forEach(([name, value]) => {
+		if (name === 'sort') {
+			const sortOption = sortOptions.find(o => o?.toLowerCase() === value?.toLowerCase());
+			if (sortOption) {
+				params.sortBy = sortOption;
+			}
+		} else {
+			const paramName = filterMapping[name] || name;
+			params[paramName] = value;
+		}
+	});
+
+	return params;
+}
 
 // Export a function that will fetch loans by live-loan type and id
 export default async function fetchLoansByType(type, id, queryType = QUERY_TYPE.DEFAULT) {

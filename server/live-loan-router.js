@@ -2,7 +2,7 @@ import express from 'express';
 import { error, warn } from './util/log.js';
 import { getFromCache, setToCache } from './util/memJsUtils.js';
 import drawLoanCard from './util/live-loan/live-loan-draw.js';
-import fetchLoansByType, { QUERY_TYPE } from './util/live-loan/live-loan-fetch.js';
+import fetchLoansByType, { QUERY_TYPE, convertFiltersToQueryParams } from './util/live-loan/live-loan-fetch.js';
 import { trace } from './util/mockTrace.js';
 
 async function fetchRecommendedLoans(type, id, cache, queryType = QUERY_TYPE.DEFAULT) {
@@ -58,21 +58,21 @@ async function getLoanForRequest(type, cache, req, queryType = QUERY_TYPE.DEFAUL
 
 async function redirectToUrl(type, cache, req, res, queryType = QUERY_TYPE.DEFAULT) {
 	try {
-		const loan = await trace('getLoanForRequest', async () => getLoanForRequest(type, cache, req, queryType));
-		// Standard destination is the borrower profile page
-		let redirect = `/lend/${loan.id}`;
-		// If the original request had query params on it, forward those along
+		const filterString = req.params?.id || '';
+		const filterParams = await convertFiltersToQueryParams(filterString);
+
+		// Add cache key so browse page can fetch the same loan set from email
+		const queryTypeSuffix = queryType !== QUERY_TYPE.DEFAULT ? `-${queryType}` : '';
+		filterParams.loanSet = `recommendations-by-${type}-id-${filterString}${queryTypeSuffix}`;
+
+		// Merge parsed filters with existing query params
 		const requestUrl = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
 		const queryParams = new URLSearchParams(requestUrl.search);
-		if (queryParams) {
-			// Update redirect destination for an Instant Lending add to basket flow
-			if (queryParams.get('atb') === 'true') {
-				const loanShareAmount = queryParams.get('amount') || '25';
-				redirect = `/process-instant-lending/${loan.id}/${loanShareAmount}`;
-			}
-			// Apply and Pass all original query params
-			redirect += `?${queryParams}`;
-		}
+		Object.entries(filterParams).forEach(([key, value]) => queryParams.set(key, value));
+
+		const queryString = queryParams.toString();
+		const redirect = queryString ? `/lend/filter?${queryString}` : '/lend/filter';
+
 		res.redirect(302, redirect);
 	} catch (err) {
 		error(`Error redirecting to url, ${err}`, { error: err, params: req.params, type });
