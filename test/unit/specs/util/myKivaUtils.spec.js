@@ -9,7 +9,6 @@ import {
 	getTransactionTimestamp,
 	RECENT_TRANSACTION_WINDOW_MS,
 	CONTENTFUL_CAROUSEL_KEY,
-	MY_KIVA_HERO_ENABLE_KEY,
 	TRANSACTION_LOANS_KEY,
 } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
@@ -21,7 +20,6 @@ describe('myKivaUtils.js', () => {
 	describe('exported constants', () => {
 		it('exports expected constant values', () => {
 			expect(CONTENTFUL_CAROUSEL_KEY).toBe('my-kiva-hero-carousel');
-			expect(MY_KIVA_HERO_ENABLE_KEY).toBe('new_mykiva_hero_enable');
 			expect(TRANSACTION_LOANS_KEY).toBe('loan_purchase');
 			expect(POST_LENDING_NEXT_STEPS_COOKIE).toBe('my_kiva_post_lending_next_steps');
 			expect(RECENT_TRANSACTION_WINDOW_MS).toBe(15 * 60 * 1000);
