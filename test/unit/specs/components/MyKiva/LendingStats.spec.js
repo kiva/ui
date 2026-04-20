@@ -16,18 +16,14 @@ describe('LendingStats', () => {
 	});
 
 	describe('mounted', () => {
-		it('checks completed goals when next-steps experiment is enabled', async () => {
+		it('completes without error when region experience is off', async () => {
 			const context = {
-				checkCompletedGoal: vi.fn().mockResolvedValue(),
 				showRegionExperience: false,
 				cookieStore: { get: vi.fn() },
 				showPostLendingNextStepsCards: false,
 			};
 
-			await LendingStats.mounted.call(context);
-
-			expect(context.checkCompletedGoal).toHaveBeenCalledTimes(1);
-			expect(context.checkCompletedGoal).toHaveBeenCalledWith({ category: 'portfolio' });
+			await expect(LendingStats.mounted.call(context)).resolves.toBeUndefined();
 		});
 	});
 

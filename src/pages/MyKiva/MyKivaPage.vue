@@ -92,7 +92,6 @@ export default {
 		provide('goalData', goalDataComposable);
 
 		return {
-			checkCompletedGoal: goalDataComposable.checkCompletedGoal,
 			combineBadgeData,
 			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
 			loadGoalData: goalDataComposable.loadGoalData,
@@ -438,8 +437,8 @@ export default {
 			freshProgressLoans: this.recentTransactionLoans,
 			tieredAchievements: this.currentYearTieredAchievements,
 			transactions: this.transactions,
+			checkMyKivaCompletedGoalAfterLoad: true,
 		});
-		await this.checkCompletedGoal({ category: 'portfolio' });
 	},
 };
 </script>
