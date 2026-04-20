@@ -1,6 +1,6 @@
 // @vitest-environment node
 import fetch from '#server/util/fetch';
-import fetchLoansByType from '#server/util/live-loan/live-loan-fetch';
+import fetchLoansByType, { convertFiltersToQueryParams } from '#server/util/live-loan/live-loan-fetch';
 
 // mock out the fetch module so that no real requests are made
 vi.mock('#server/util/fetch');
@@ -197,6 +197,44 @@ describe('live-loan-fetch', () => {
 			expect(query).toBeDefined();
 			expect(query).toContain('loanRecommendations');
 			expect(fetch.mock.results[0].value).toBeDefined();
+		});
+	});
+
+	describe('converting legacy filters to query params', () => {
+		it('returns empty object for empty string', async () => {
+			const result = await convertFiltersToQueryParams('');
+			expect(result).toEqual({});
+		});
+
+		it('returns empty object for null or undefined', async () => {
+			const result1 = await convertFiltersToQueryParams(null);
+			const result2 = await convertFiltersToQueryParams(undefined);
+			expect(result1).toEqual({});
+			expect(result2).toEqual({});
+		});
+
+		it('converts single filter to query param', async () => {
+			const result = await convertFiltersToQueryParams('gender_female');
+			expect(result).toEqual({ gender: 'female' });
+		});
+
+		it('converts filters and sort together', async () => {
+			const result = await convertFiltersToQueryParams('gender_female,sort_amountLeft');
+			expect(result).toEqual({ gender: 'female', sortBy: 'amountLeft' });
+		});
+
+		it('maps plural filter names correctly', async () => {
+			const result = await convertFiltersToQueryParams('country_ph,tag_education,attribute_solar');
+			expect(result).toEqual({
+				countries: 'ph',
+				tags: 'education',
+				attributes: 'solar'
+			});
+		});
+
+		it('ignores invalid sort values', async () => {
+			const result = await convertFiltersToQueryParams('sort_invalidSort,gender_male');
+			expect(result).toEqual({ gender: 'male' });
 		});
 	});
 });
