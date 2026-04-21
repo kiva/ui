@@ -123,15 +123,15 @@
 						<div
 							v-if="validCustomAmount === false"
 							class="lg:tw-hidden tw-text-danger-highlight tw-text-small tw-mt-1"
+							v-html="customGoalAmountError"
 						>
-							{{ warningCustomAmountText }}
 						</div>
 					</div>
 				</template>
 			</div>
 
 			<div
-				v-if="customGoalAmountEnable && isCustomIndex"
+				v-if="customGoalAmountEnable && isCustomIndex && !loadingCurrentYear && !isLoadingData"
 				class="tw-hidden lg:tw-flex tw-flex-col tw-bg-eco-green-1 tw-px-2.5 tw-py-1.5 tw-w-full
 					tw-rounded-sm"
 			>
@@ -149,9 +149,8 @@
 				<div
 					v-if="validCustomAmount === false"
 					class="tw-text-right tw-text-danger-highlight tw-text-small tw-mt-1"
-				>
-					{{ warningCustomAmountText }}
-				</div>
+					v-html="customGoalAmountError"
+				></div>
 			</div>
 
 			<template
@@ -425,6 +424,7 @@ const isGoalTileOpened = ref(false);
 const goalTileAccordion = ref(null);
 const customGoalAmount = ref(null);
 const validCustomAmount = ref(null);
+const customGoalAmountError = ref('');
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -529,8 +529,6 @@ const minCustomAmount = computed(() => {
 	return loansThisYear.value > 1 ? loansThisYear.value + 1 : 2;
 });
 
-const warningCustomAmountText = computed(() => `Your goal must be a valid number above ${minCustomAmount.value - 1} loans`); // eslint-disable-line max-len
-
 const resetOptionSelection = selectedIndex => {
 	isGoalTileOpened.value = false;
 	goalTileAccordion.value?.collapse();
@@ -559,17 +557,27 @@ const updateOptionSelection = selectedIndex => {
 
 const validateCustomAmount = value => {
 	customGoalAmount.value = value;
-	if (customGoalAmount.value < minCustomAmount.value) {
+	const amount = Number(value);
+
+	if (!value || Number.isNaN(amount) || amount <= 1) {
 		validCustomAmount.value = false;
-		$kvTrackEvent(
-			props.trackingCategory,
-			'show',
-			'custom-goal-error',
-		);
-	} else {
-		validCustomAmount.value = true;
-		emit('set-goal-target', selectedTarget.value);
+		customGoalAmountError.value = 'Your goal must be a valid number above 1 loan';
+		$kvTrackEvent(props.trackingCategory, 'show', 'custom-goal-error');
+		return;
 	}
+
+	if (amount < minCustomAmount.value) {
+		const loanWord = loansThisYear.value === 1 ? 'loan' : 'loans';
+		validCustomAmount.value = false;
+		// eslint-disable-next-line max-len
+		customGoalAmountError.value = `Enter a number higher than the <strong>${loansThisYear.value} ${loanWord}</strong> you’ve already made this year`;
+		$kvTrackEvent(props.trackingCategory, 'show', 'custom-goal-error');
+		return;
+	}
+
+	validCustomAmount.value = true;
+	customGoalAmountError.value = '';
+	emit('set-goal-target', selectedTarget.value);
 };
 
 const editGoal = () => {
