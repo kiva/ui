@@ -46,11 +46,18 @@
 				style="height: 190px; width: 190px;"
 			/>
 			<div class="tw-absolute tw-flex tw-flex-col tw-items-center tw-justify-center tw-inset-0 tw--mt-1">
-				<div class="tw-flex tw-items-baseline tw-justify-center tw-gap-0">
-					<h1>{{ visibleGoalLoans }}</h1>
-					<h2 class="tw-text-secondary">
+				<div
+					class="tw-max-w-30 tw-flex tw-items-center tw-justify-center tw-gap-0"
+					:class="useStackedProgressValue
+						? 'tw-flex-col tw-pt-1.5'
+						: 'tw-flex-row tw-items-baseline'"
+				>
+					<component :is="progressValueHeadingTag" class="tw-leading-none">
+						{{ visibleGoalLoans }}
+					</component>
+					<component :is="goalTargetHeadingTag" class="tw-text-secondary tw-leading-tight">
 						/{{ goalLoans }}
-					</h2>
+					</component>
 				</div>
 				<p class="tw-text-secondary">
 					{{ progressCircleDesc }}
@@ -103,6 +110,9 @@ import {
 	ID_US_ECONOMIC_EQUALITY,
 } from '#src/composables/useBadgeData';
 import useBreakpoints from '#src/composables/useBreakpoints';
+
+const STACKED_PROGRESS_DIGIT_THRESHOLD = 3;
+const SMALL_HEADING_DIGIT_THRESHOLD = 5;
 
 const props = defineProps({
 	/**
@@ -199,10 +209,26 @@ const router = useRouter();
 const { isLarge } = useBreakpoints();
 
 const yearToDate = new Date().getFullYear();
+const getDigitCount = value => String(value ?? 0).length;
 
 const visibleGoalLoans = computed(() => {
 	return Math.min(props.goalProgress, props.goalLoans);
 });
+
+const visibleGoalLoanDigits = computed(() => getDigitCount(visibleGoalLoans.value));
+const goalTargetDigits = computed(() => getDigitCount(props.goalLoans));
+
+const useStackedProgressValue = computed(() => {
+	return visibleGoalLoanDigits.value >= STACKED_PROGRESS_DIGIT_THRESHOLD;
+});
+
+const progressValueHeadingTag = computed(() => (
+	visibleGoalLoanDigits.value < SMALL_HEADING_DIGIT_THRESHOLD ? 'h1' : 'h2'
+));
+
+const goalTargetHeadingTag = computed(() => (
+	goalTargetDigits.value < SMALL_HEADING_DIGIT_THRESHOLD ? 'h2' : 'h3'
+));
 
 const progressCircleDesc = computed(() => {
 	if (props.goalLoans === 1) {
