@@ -49,16 +49,14 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
+import { KvCarousel } from '@kiva/kv-components';
 
 export default {
 	name: 'LoanFigureCarousel',
 	components: {
 		BorrowerImage,
-		KvCarousel: defineAsyncComponent(() => import(
-			'@kiva/kv-components/vue/KvCarousel'
-		)),
+		KvCarousel,
 	},
 	props: {
 		figures: {
