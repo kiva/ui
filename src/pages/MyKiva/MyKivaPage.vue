@@ -437,6 +437,7 @@ export default {
 			freshProgressLoans: this.recentTransactionLoans,
 			tieredAchievements: this.currentYearTieredAchievements,
 			transactions: this.transactions,
+			checkMyKivaCompletedGoalAfterLoad: true,
 		});
 	},
 };

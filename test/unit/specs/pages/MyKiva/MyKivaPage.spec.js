@@ -248,6 +248,9 @@ describe('MyKivaPage', () => {
 			expect(applyMyKivaFreshProgress).not.toHaveBeenCalled();
 			expect(renewAnnualGoal).toHaveBeenCalledTimes(1);
 			expect(fixIncorrectlyCompletedGoals).toHaveBeenCalledTimes(1);
+			expect(context.loadGoalData).toHaveBeenCalledWith(
+				expect.objectContaining({ checkMyKivaCompletedGoalAfterLoad: true })
+			);
 		});
 	});
 

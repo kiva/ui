@@ -409,7 +409,6 @@ export default {
 		const goalData = inject('goalData');
 
 		return {
-			checkCompletedGoal: goalData.checkCompletedGoal,
 			hideCompletedGoalCard: goalData.hideGoalCard,
 			goalProgress: goalData.goalProgress,
 			goalProgressLoading: goalData.loading,
@@ -422,8 +421,6 @@ export default {
 		};
 	},
 	async mounted() {
-		await this.checkCompletedGoal({ category: 'portfolio' });
-
 		if (this.showRegionExperience) {
 			// Check region boxes when component comes into view
 			const { delayUntilVisible, disconnect } = useDelayUntilVisible();
