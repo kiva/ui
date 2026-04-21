@@ -49,7 +49,7 @@
 				<div
 					class="tw-max-w-30 tw-flex tw-items-center tw-justify-center tw-gap-0"
 					:class="useStackedProgressValue
-						? 'tw-flex-col tw-pt-1.5'
+						? 'tw-flex-col tw-pt-2'
 						: 'tw-flex-row tw-items-baseline'"
 				>
 					<component :is="progressValueHeadingTag" class="tw-leading-none">

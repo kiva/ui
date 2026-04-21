@@ -48,6 +48,35 @@ export const CompletedGoal = story({
   isAnnualGoal: true,
 });
 
+export const ThreeDigitsGoalLoans = story({
+  goal: {
+    target: 999,
+    category: 'ID_WOMENS_EQUALITY',
+    tierTarget: 1000,
+    totalLoans: 380,
+  },
+  goalProgress: 380,
+});
+
+export const FourDigitsGoalLoans = story({
+  goal: {
+    target: 10000,
+    category: 'ID_WOMENS_EQUALITY',
+    tierTarget: 10000,
+    totalLoans: 3800,
+  },
+  goalProgress: 3800,
+});
+
+export const FiveDigitsGoalLoans = story({
+  goal: {
+    target: 100000,
+    category: 'ID_WOMENS_EQUALITY',
+    tierTarget: 100000,
+    totalLoans: 38000,
+  },
+  goalProgress: 38000,
+});
 
 export const AchievementWomen = story({
   goal: {
@@ -56,6 +85,7 @@ export const AchievementWomen = story({
     category: ID_WOMENS_EQUALITY,
     nextAchievementAt: 1,
     totalLoans: 0,
+    tierTarget: 10,
   },
   goalProgress: 0,
 });
@@ -69,6 +99,7 @@ export const AchievementWomenInProgress = story({
     category: ID_WOMENS_EQUALITY,
     nextAchievementAt: 10,
     totalLoans: 20,
+    tierTarget: 30,
   },
   goalProgress: 4,
 });
@@ -93,6 +124,7 @@ export const AchievementRefugees = story({
     category: ID_REFUGEE_EQUALITY,
     nextAchievementAt: 1,
     totalLoans: 0,
+    tierTarget: 20,
   },
   goalProgress: 0,
 });
@@ -105,6 +137,7 @@ export const AchievementRefugeesInProgress = story({
     category: ID_REFUGEE_EQUALITY,
     nextAchievementAt: 10,
     totalLoans: 20,
+    tierTarget: 30,
   },
   goalProgress: 3,
 });
@@ -128,6 +161,7 @@ export const AchievementClimateAction = story({
     category: ID_CLIMATE_ACTION,
     nextAchievementAt: 1,
     totalLoans: 0,
+    tierTarget: 100,
   },
   goalProgress: 0,
 });
@@ -140,6 +174,7 @@ export const AchievementClimateActionInProgress = story({
     category: ID_CLIMATE_ACTION,
     nextAchievementAt: 10,
     totalLoans: 20,
+    tierTarget: 30,
   },
   goalProgress: 3,
 });
@@ -163,6 +198,7 @@ export const AchievementBasicNeeds = story({
     category: ID_BASIC_NEEDS,
     nextAchievementAt: 1,
     totalLoans: 0,
+    tierTarget: 20,
   },
   goalProgress: 0,
 });
@@ -175,6 +211,7 @@ export const AchievementBasicNeedsInProgress = story({
     category: ID_BASIC_NEEDS,
     nextAchievementAt: 10,
     totalLoans: 20,
+    tierTarget: 30,
   },
   goalProgress: 3,
 });
@@ -199,6 +236,7 @@ export const AchievementUSBusiness = story({
     category: ID_US_ECONOMIC_EQUALITY,
     nextAchievementAt: 1,
     totalLoans: 0,
+    tierTarget: 20,
   },
   goalProgress: 0,
 });

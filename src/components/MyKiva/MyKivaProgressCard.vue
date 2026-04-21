@@ -13,8 +13,18 @@
 				class="progress-circle-content"
 				:class="{'tw-mt-0.5' : goalCompleted && !isAnnualGoal}"
 			>
-				<h5 style="letter-spacing: -0.05rem;">
-					{{ progress }}
+				<h5
+					class="progress-value tw-text-center"
+					:class="shouldWrapProgressValues ? 'tw-flex tw-flex-col tw-leading-tight' : 'tw-whitespace-nowrap'"
+					style="letter-spacing: -0.05rem;"
+				>
+					<span>{{ currentProgress }}</span>
+					<span
+						v-if="target !== null"
+						:class="shouldWrapProgressValues ? '' : 'tw-inline'"
+					>
+						{{ shouldWrapProgressValues ? `/${target}` : ` / ${target}` }}
+					</span>
 				</h5>
 				<p v-if="goalCompleted && !isAnnualGoal" class="tw-text-small">
 					loans
@@ -146,22 +156,46 @@ const description = computed(() => {
 	return `${props.goal?.nextAchievementAt ?? 0} loan${props.goal?.nextAchievementAt !== 1 ? 's' : ''} to unlock next badge.`;
 });
 
-const progress = computed(() => {
+const currentProgress = computed(() => {
 	if (goalCompleted.value && props.isAnnualGoal) {
-		return `${goalTarget.value} / ${goalTarget.value}`;
+		return goalTarget.value;
 	}
 
 	if (props.isAnnualGoal) {
-		return `${props.goalProgress} / ${goalTarget.value}`;
+		return props.goalProgress;
 	}
 
 	if (!goalCompleted.value) {
-		const currentProgress = props.goal?.totalLoans ?? props.goalProgress;
-		return `${currentProgress} / ${goalTarget.value}`;
+		return props.goal?.totalLoans ?? props.goalProgress;
 	}
+
 	// Cap completed tiered badge display at max 100 (matching max loans needed for all tiers)
 	const totalLoans = Math.min(props.goal?.totalLoans ?? 0, MAX_TIERED_BADGE_LOANS);
 	return totalLoans > ONE_K_THRESHOLD ? numeral(totalLoans).format('0.0a') : totalLoans;
+});
+
+const target = computed(() => {
+	if (goalCompleted.value && props.isAnnualGoal) {
+		return goalTarget.value;
+	}
+
+	if (props.isAnnualGoal) {
+		return goalTarget.value;
+	}
+
+	if (!goalCompleted.value) {
+		return goalTarget.value;
+	}
+
+	return null;
+});
+
+// Space threshold in the ring
+const hasMoreThanThreeDigits = value => Number(value) > 999;
+
+const shouldWrapProgressValues = computed(() => {
+	const targetHasMoreThanThreeDigits = target.value !== null && hasMoreThanThreeDigits(target.value);
+	return hasMoreThanThreeDigits(currentProgress.value) || targetHasMoreThanThreeDigits;
 });
 
 const tag = computed(() => {
@@ -215,6 +249,10 @@ const cardColor = computed(() => {
 
 .progress-circle-content {
 	@apply tw-absolute tw-flex tw-flex-col tw-items-center tw-justify-center tw-inset-0;
+}
+
+.progress-value {
+	max-width: 55px;
 }
 
 .card-texture {
