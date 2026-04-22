@@ -75,6 +75,7 @@
 						:option-text="option.optionText"
 						:selected="option.selected"
 						:highlighted-text="option.highlightedText"
+						:custom-goal-amount-enable="customGoalAmountEnable"
 						@click="updateOptionSelection(index)"
 					/>
 					<!-- Custom goal amount option, only shown if experiment flag is enabled -->
