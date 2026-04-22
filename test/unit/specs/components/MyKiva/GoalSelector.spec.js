@@ -380,6 +380,61 @@ describe('GoalSelector', () => {
 		expect(container.textContent).toContain('must be a valid number');
 	});
 
+	it('accepts a valid custom goal amount with no error shown', async () => {
+		// progressForCurrentYear drives loansThisYear (5) -> minCustomAmount = 6
+		const tieredAchievements = [
+			{ id: ID_WOMENS_EQUALITY, progressForYear: 2, progressForCurrentYear: 5 },
+		];
+
+		const CustomTestWrapper = {
+			components: { GoalSelector },
+			props: {
+				tieredAchievements: { type: Array, default: () => [] },
+			},
+			template: `
+				<GoalSelector
+					:is-goal-set="false"
+					:categories-loan-count="{}"
+					tracking-category="post-checkout"
+					:tiered-achievements="tieredAchievements"
+					selected-category-id="${ID_WOMENS_EQUALITY}"
+					selected-category-name="Women"
+					custom-goal-amount-enable
+				/>
+			`,
+		};
+
+		const user = userEvent.setup();
+		const {
+			container,
+			getAllByPlaceholderText,
+			getAllByText,
+		} = render(CustomTestWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: { tieredAchievements },
+		});
+
+		await flushPromises();
+
+		// Select the Custom option
+		await user.click(getAllByText('Custom')[0]);
+		await flushPromises();
+
+		const [input] = getAllByPlaceholderText('Add number');
+
+		// Valid: above minCustomAmount (6)
+		await user.type(input, '10');
+		await flushPromises();
+		expect(container.textContent).not.toContain('Enter a number higher than');
+		expect(container.textContent).not.toContain('must be a valid number');
+	});
+
 	it('fetches support-all loan count via apollo when selecting Choose as I go', async () => {
 		const apolloQueryMock = vi.fn().mockResolvedValue({
 			data: {
