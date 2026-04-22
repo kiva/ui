@@ -566,19 +566,15 @@ const validateCustomAmount = value => {
 		// eslint-disable-next-line max-len
 		customGoalAmountError.value = `Enter a number higher than the <strong>${loansThisYear.value} ${loanWord}</strong> you’ve already made this year`;
 		$kvTrackEvent(props.trackingCategory, 'show', 'custom-goal-error');
-		return;
-	}
-
-	if (!value || Number.isNaN(amount) || amount <= 1) {
+	} else if (!value || Number.isNaN(amount) || amount <= 1) {
 		validCustomAmount.value = false;
 		customGoalAmountError.value = 'Your goal must be a valid number above 1 loan';
 		$kvTrackEvent(props.trackingCategory, 'show', 'custom-goal-error');
-		return;
+	} else {
+		validCustomAmount.value = true;
+		customGoalAmountError.value = '';
+		emit('set-goal-target', selectedTarget.value);
 	}
-
-	validCustomAmount.value = true;
-	customGoalAmountError.value = '';
-	emit('set-goal-target', selectedTarget.value);
 };
 
 const editGoal = () => {
@@ -758,7 +754,7 @@ watch(() => props.selectedCategoryId, async newCategory => {
 
 	customGoalAmount.value = '';
 	validCustomAmount.value = null;
-   customGoalAmountError.value = '';
+	customGoalAmountError.value = '';
 	updateOptionSelection(1);
 });
 
