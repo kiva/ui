@@ -7,8 +7,8 @@ export const QUERY_TYPE = {
 	RECOMMENDATIONS: 'recommendations'
 };
 
-// Number of loans to fetch
-const loanCount = 4;
+// Default number of loans to fetch when caller doesn't specify
+const DEFAULT_LOAN_COUNT = 4;
 
 // Which loan properties to fetch
 const loanData = `
@@ -90,14 +90,14 @@ async function fetchLoansFromGraphQL(request, resultPath) {
 }
 
 // Get per-user recommended loans from the ML service
-async function fetchRecommendationsByLoginId(id, queryType = QUERY_TYPE.DEFAULT) {
+async function fetchRecommendationsByLoginId(id, queryType = QUERY_TYPE.DEFAULT, count = DEFAULT_LOAN_COUNT) {
 	if (queryType === QUERY_TYPE.RECOMMENDATIONS) {
 		return fetchLoansFromGraphQL(
 			{
 				query: `query($userId: Int) {
 					loanRecommendations(
 						userId: $userId,
-						limit: ${loanCount},
+						limit: ${count},
 						origin: "email:live-loans"
 					) {
 						${loanValues}
@@ -115,7 +115,7 @@ async function fetchRecommendationsByLoginId(id, queryType = QUERY_TYPE.DEFAULT)
 				query: `query($userId: Int) {
 					fundraisingLoans(
 						pageNumber: 0,
-						limit: ${loanCount},
+						limit: ${count},
 						userId: $userId,
 						origin: "email:live-loans"
 					) {
@@ -137,7 +137,7 @@ async function fetchRecommendationsByLoginId(id, queryType = QUERY_TYPE.DEFAULT)
 						segment: all
 							loginId: ${id}
 							offset: 0
-							limit: ${loanCount}
+							limit: ${count}
 					) {
 						${loanValues}
 					}
@@ -149,7 +149,7 @@ async function fetchRecommendationsByLoginId(id, queryType = QUERY_TYPE.DEFAULT)
 }
 
 // Get loan-to-loan recommended loans from the ML service
-async function fetchRecommendationsByLoanId(id) {
+async function fetchRecommendationsByLoanId(id, count = DEFAULT_LOAN_COUNT) {
 	return fetchLoansFromGraphQL(
 		{
 			query: `{
@@ -158,7 +158,7 @@ async function fetchRecommendationsByLoanId(id) {
 						loanId: ${id},
 						offset: 0,
 						topics: [story]
-						limit: ${loanCount},
+						limit: ${count},
 					) {
 						${loanValues}
 					}
@@ -390,7 +390,7 @@ const parseFilterStringFLSS = async filterString => {
 };
 
 // Get loans from the Fundraising Loan Search Service matching a set of filters
-async function fetchRecommendationsByFilter(filterString) {
+async function fetchRecommendationsByFilter(filterString, count = DEFAULT_LOAN_COUNT) {
 	const filters = await parseFilterStringFLSS(filterString);
 	const sortOptions = await fetchFLSSSorts();
 	const sortBy = parseSortString(filterString, sortOptions);
@@ -399,7 +399,7 @@ async function fetchRecommendationsByFilter(filterString) {
 			query: `query($filters: [FundraisingLoanSearchFilterInput!], $sortBy: SortEnum) {
 				fundraisingLoans(
 					pageNumber: 0,
-					limit: ${loanCount},
+					limit: ${count},
 					filters: $filters,
 					sortBy: $sortBy,
 					origin: "email:live-loans"
@@ -488,7 +488,7 @@ async function parseFilterStringLegacy(filterString) {
 }
 
 // Get loans from legacy lend search matching a set of filters
-async function fetchRecommendationsByLegacyFilter(filterString) {
+async function fetchRecommendationsByLegacyFilter(filterString, count = DEFAULT_LOAN_COUNT) {
 	const [filters, sortOptions] = await Promise.all([
 		parseFilterStringLegacy(filterString),
 		fetchSorts(),
@@ -498,7 +498,7 @@ async function fetchRecommendationsByLegacyFilter(filterString) {
 		{
 			query: `query($filters: LoanSearchFiltersInput, $sort: LoanSearchSortByEnum) {
 				lend {
-					loans(limit: ${loanCount}, offset: 0, filters: $filters, sortBy: $sort) {
+					loans(limit: ${count}, offset: 0, filters: $filters, sortBy: $sort) {
 						${loanValues}
 					}
 				}
@@ -558,17 +558,17 @@ const shouldUseFLSS = async filterString => {
 };
 
 // Export a function that will fetch loans by live-loan type and id
-export default async function fetchLoansByType(type, id, queryType = QUERY_TYPE.DEFAULT) {
+export default async function fetchLoansByType(type, id, queryType = QUERY_TYPE.DEFAULT, count = DEFAULT_LOAN_COUNT) {
 	if (type === 'user') {
-		return fetchRecommendationsByLoginId(id, queryType);
+		return fetchRecommendationsByLoginId(id, queryType, count);
 	} if (type === 'loan') {
-		return fetchRecommendationsByLoanId(id);
+		return fetchRecommendationsByLoanId(id, count);
 	} if (type === 'filter') {
 		if (await shouldUseFLSS(id)) {
-			return fetchRecommendationsByFilter(id);
+			return fetchRecommendationsByFilter(id, count);
 		}
 		warn(`Using legacy loan search for filter "${id}"`);
-		return fetchRecommendationsByLegacyFilter(id);
+		return fetchRecommendationsByLegacyFilter(id, count);
 	}
 	if (type === 'loanid') {
 		return fetchLoanById(id);
