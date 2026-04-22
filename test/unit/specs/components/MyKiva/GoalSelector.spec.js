@@ -318,13 +318,61 @@ describe('GoalSelector', () => {
 		await user.type(input, '3');
 		await flushPromises();
 		expect(container.textContent).toContain('Enter a number higher than');
+	});
+
+	it('error when a custom goal amount entered by the user is invalid or 1', async () => {
+		const tieredAchievements = [
+			{ id: ID_WOMENS_EQUALITY, progressForYear: 0, progressForCurrentYear: 0 },
+		];
+
+		const CustomTestWrapper = {
+			components: { GoalSelector },
+			props: {
+				tieredAchievements: { type: Array, default: () => [] },
+			},
+			template: `
+				<GoalSelector
+					:is-goal-set="false"
+					:categories-loan-count="{}"
+					tracking-category="post-checkout"
+					:tiered-achievements="tieredAchievements"
+					selected-category-id="${ID_WOMENS_EQUALITY}"
+					selected-category-name="Women"
+					custom-goal-amount-enable
+				/>
+			`,
+		};
+
+		const user = userEvent.setup();
+		const {
+			container,
+			getAllByPlaceholderText,
+			getAllByText,
+		} = render(CustomTestWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: { tieredAchievements },
+		});
+
+		await flushPromises();
+
+		// Select the Custom option
+		await user.click(getAllByText('Custom')[0]);
+		await flushPromises();
+
+		const [input] = getAllByPlaceholderText('Add number');
 
 		// Valid: above minCustomAmount
 		await user.clear(input);
-		await user.type(input, '10');
+		await user.type(input, '1');
 		await flushPromises();
 		expect(container.textContent).not.toContain('Enter a number higher than');
-		expect(container.textContent).not.toContain('must be a valid number');
+		expect(container.textContent).toContain('must be a valid number');
 
 		// Invalid: cleared input (empty string)
 		await user.clear(input);
