@@ -22,7 +22,7 @@
 				@continue-clicked="handleContinue(NON_TIERED_BADGE)"
 				class="tw-mb-2.5"
 			/>
-			<!--  Donation opt-in module -->
+			<!--  Start of donation context -->
 			<OptInModule
 				v-if="showDonationOptInModule"
 				data-testid="donation-opt-in-module"
@@ -33,6 +33,21 @@
 				:achievements-completed="achievementsCompleted"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
+			<AccountReceiptShare
+				v-if="onlyDonations"
+				ref="receiptSection"
+				:is-guest="isGuest"
+				:number-of-badges="numberOfBadges"
+				:receipt="receipt"
+				:lender="lender"
+				:loans="loans"
+				:show-receipt="showReceipt"
+				:only-donations="onlyDonations"
+				:guest-username="guestUsername"
+				class="tw-mb-2.5"
+			/>
+			<!--  End of donation context -->
+
 			<!-- Start goal module variations -->
 			<GoalEntrypoint
 				v-if="!isGuest && goalDataInitialized && isEmptyGoal"
@@ -109,6 +124,7 @@
 				@guest-continue="handleContinue"
 			/>
 			<AccountReceiptShare
+				v-if="!onlyDonations"
 				ref="receiptSection"
 				:is-guest="isGuest"
 				:number-of-badges="numberOfBadges"
