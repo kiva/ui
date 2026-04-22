@@ -757,7 +757,7 @@ watch(() => props.selectedCategoryId, async newCategory => {
 
 	customGoalAmount.value = '';
 	validCustomAmount.value = null;
-  customGoalAmountError.value = '';
+   customGoalAmountError.value = '';
 	updateOptionSelection(1);
 });
 
