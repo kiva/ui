@@ -192,7 +192,8 @@
 		</template>
 		<div
 			v-else-if="goalProgressLoading"
-			class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden tw--mt-6"
+			class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden"
+			:class="{ 'tw--mt-6': isNextStepsExperimentEnabled && !showPostLendingNextStepsCards }"
 		>
 			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0" />
 			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden md:tw-block" />
