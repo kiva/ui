@@ -328,6 +328,9 @@ const dynamicOrderedSlides = computed(() => {
 		];
 	}
 
+	const firstTwoAchievementCards = sortedSlides.slice(0, 2);
+	const remainingSlides = sortedSlides.slice(2);
+
 	// Build the priority card slots for post-lending experience
 	const priorityCards = [];
 
@@ -335,6 +338,8 @@ const dynamicOrderedSlides = computed(() => {
 	if (shouldShowGoalCard.value) {
 		priorityCards.push({}); // Empty object placeholder for goal card component
 	}
+
+	priorityCards.push(...firstTwoAchievementCards);
 
 	// Almost funded and country collecting cards for lending next steps
 	if (props.showLendingNextStepsCards) {
@@ -361,8 +366,7 @@ const dynamicOrderedSlides = computed(() => {
 		priorityCards.push({ isSurveyCard: true });
 	}
 
-	// Prepend priority cards to the sorted slides
-	sortedSlides = [...priorityCards, ...sortedSlides];
+	sortedSlides = [...priorityCards, ...remainingSlides];
 
 	if (props.slidesNumber) {
 		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
