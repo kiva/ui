@@ -1,11 +1,11 @@
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel.vue';
 import {
-	badgeWomensEquality,
+    badgeWomensEquality,
 } from '../mock-data/badge-journey-data-mock';
 
 export default {
-	title: 'MyKiva/JourneyCardCarousel',
-	component: JourneyCardCarousel,
+    title: 'MyKiva/JourneyCardCarousel',
+    component: JourneyCardCarousel,
 };
 
 const slideData = {
@@ -473,27 +473,129 @@ const nonBadgeData = {
 };
 
 const badgesData = [
-	badgeWomensEquality
+    badgeWomensEquality
 ];
 
 const slides = [
-		slideData,
-		nonBadgeData,
+    slideData,
+    nonBadgeData,
 ];
 
+const mockRegionsData = [
+    { region: 'North America', hasLoans: true },
+    { region: 'South America', hasLoans: true },
+    { region: 'Africa', hasLoans: true },
+    { region: 'Asia', hasLoans: false },
+    { region: 'Europe', hasLoans: true },
+];
+
+const mockRegionsDataAllLent = [
+    { region: 'North America', hasLoans: true },
+    { region: 'South America', hasLoans: true },
+    { region: 'Africa', hasLoans: true },
+    { region: 'Asia', hasLoans: true },
+    { region: 'Europe', hasLoans: true },
+];
+
+const mockUserGoal = {
+    category: 'womens-equality',
+    target: 10,
+};
+
+const mockGoalData = {
+    getCtaHref: () => '/lend-by-category/women',
+    getGoalDisplayName: (category) => category === 'womens-equality' ? "Women's equality" : 'Goal',
+    goalProgressPercentage: () => 50,
+    setHideGoalCardPreference: () => { },
+};
+
+const mockApollo = {
+    query: () => Promise.resolve({ data: {} }),
+    mutate: () => Promise.resolve({ data: {} }),
+};
+
+const mockCookieStore = {
+    get: () => null,
+    set: () => { },
+};
+
 const story = (args = {}) => {
-	const template = (_args, { argTypes }) => ({
-		props: Object.keys(argTypes),
-		components: { JourneyCardCarousel },
-		setup() { return { args }; },
-		template: `
+    const template = (_args, { argTypes }) => ({
+        props: Object.keys(argTypes),
+        components: { JourneyCardCarousel },
+        setup() { return { args }; },
+        provide: {
+            goalData: mockGoalData,
+            apollo: mockApollo,
+            cookieStore: mockCookieStore,
+        },
+        template: `
 			<div style="max-width: 1200px;">
 				<journey-card-carousel v-bind="args" />
 			</div>
 		`,
-	});
-	template.args = args;
-	return template;
+    });
+    template.args = args;
+    return template;
 };
 
 export const Default = story({ slides, badgesData });
+
+export const ExperimentDisabled = story({
+    slides,
+    heroBadgeData: badgesData,
+    heroTieredAchievements: [],
+    slidesNumber: 3,
+    showLendingNextStepsCards: false,
+    inLendingStats: true,
+    userGoal: mockUserGoal,
+    userInfo: {},
+    lender: { name: 'Test User' },
+    loans: [],
+});
+
+export const ExperimentEnabledBasic = story({
+    slides,
+    heroBadgeData: badgesData,
+    heroTieredAchievements: [],
+    slidesNumber: 3,
+    showLendingNextStepsCards: true,
+    showPostLendingNextStepsCards: true,
+    regionsData: mockRegionsDataAllLent,
+    inLendingStats: true,
+    userGoal: mockUserGoal,
+    userInfo: {},
+    lender: { name: 'Test User' },
+    loans: [],
+});
+
+export const ExperimentEnabledWithBothCards = story({
+    slides,
+    heroBadgeData: badgesData,
+    heroTieredAchievements: [],
+    slidesNumber: 3,
+    showLendingNextStepsCards: true,
+    showPostLendingNextStepsCards: true,
+    regionsData: mockRegionsData,
+    inLendingStats: true,
+    userGoal: mockUserGoal,
+    userInfo: {},
+    lender: { name: 'Test User' },
+    loans: [],
+});
+
+export const ExperimentEnabledNoGoal = story({
+    slides,
+    heroBadgeData: badgesData,
+    heroTieredAchievements: [],
+    slidesNumber: 3,
+    showLendingNextStepsCards: true,
+    showPostLendingNextStepsCards: true,
+    regionsData: mockRegionsData,
+    inLendingStats: true,
+    userGoal: null,
+    hideGoalCard: true,
+    userInfo: {},
+    lender: { name: 'Test User' },
+    loans: [],
+});
