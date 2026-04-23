@@ -199,4 +199,52 @@ describe('live-loan-fetch', () => {
 			expect(fetch.mock.results[0].value).toBeDefined();
 		});
 	});
+
+	describe('count parameter threading', () => {
+		beforeEach(() => {
+			fetch.mockClear();
+			fetch.mockResolvedValue({ json: () => ({}) });
+		});
+
+		async function queryForCall(callIndex) {
+			return JSON.parse(fetch.mock.calls[callIndex][1].body).query;
+		}
+
+		it('passes count into recommendationsByLoginId (DEFAULT) limit', async () => {
+			await fetchLoansByType('user', 42, 'default', 6);
+			const query = await queryForCall(0);
+			expect(query).toMatch(/recommendationsByLoginId\s*\([^)]*limit\s*:\s*6/);
+		});
+
+		it('passes count into fundraisingLoans (FLSS) limit', async () => {
+			await fetchLoansByType('user', 42, 'flss', 3);
+			const query = await queryForCall(0);
+			expect(query).toMatch(/fundraisingLoans\s*\([^)]*limit\s*:\s*3/);
+		});
+
+		it('passes count into loanRecommendations limit', async () => {
+			await fetchLoansByType('user', 42, 'recommendations', 5);
+			const query = await queryForCall(0);
+			expect(query).toMatch(/loanRecommendations\s*\([^)]*limit\s*:\s*5/);
+		});
+
+		it('defaults count to 4 when not provided (DEFAULT)', async () => {
+			await fetchLoansByType('user', 42);
+			const query = await queryForCall(0);
+			expect(query).toMatch(/recommendationsByLoginId\s*\([^)]*limit\s*:\s*4/);
+		});
+
+		it('passes count into filter (FLSS fundraisingLoans with filters) limit', async () => {
+			await fetchLoansByType('filter', 'sector_arts', 'default', 6);
+			const query = await queryForCall(0);
+			expect(query).toMatch(/fundraisingLoans\s*\([^)]*limit\s*:\s*6/);
+		});
+
+		it('passes count into legacy filter (lend.loans) limit', async () => {
+			// Using sort_random forces legacy loan search
+			await fetchLoansByType('filter', 'sort_random,sector_arts', 'default', 2);
+			const query = await queryForCall(0);
+			expect(query).toMatch(/loans\s*\([^)]*limit\s*:\s*2/);
+		});
+	});
 });
