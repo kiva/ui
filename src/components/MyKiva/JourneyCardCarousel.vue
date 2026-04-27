@@ -366,6 +366,8 @@ const dynamicOrderedSlides = computed(() => {
 	if (props.slidesNumber && props.showLendingNextStepsCards) {
 		const prioritySliced = priorityCards.slice(0, props.slidesNumber);
 		sortedSlides = [...prioritySliced, ...achievementSlides, ...nonBadgesSlides.value];
+	} else if (props.slidesNumber && priorityCards.length > 0) {
+		sortedSlides = [...achievementSlides, ...nonBadgesSlides.value].slice(0, props.slidesNumber);
 	} else if (props.slidesNumber) {
 		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
 	} else {
