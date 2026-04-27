@@ -126,9 +126,9 @@
 						</div>
 
 						<!-- Lend -->
-						<router-link
+						<a
 							:id="lendMenuId"
-							to="/lend-by-category"
+							href="/lend-by-category"
 							data-testid="header-lend"
 							class="header__button header__lend tw-inline-flex"
 							v-kv-track-event="['TopNav','click-Lend']"
@@ -144,7 +144,7 @@
 									:class="{'tw-rotate-180' : isLendMenuVisible}"
 								/>
 							</span>
-						</router-link>
+						</a>
 
 						<transition name="kvfastfade">
 							<div
@@ -898,18 +898,14 @@ export default {
 			if (e.pointerType === 'touch') {
 				this.toggleLendMenu(true);
 			} else {
-				this.$router.push({
-					path: '/lend-by-category'
-				}).catch(() => {});
+				window.location.href = '/lend-by-category';
 			}
 		},
 		onLendLinkClick(e) {
 			if (e.pointerType === 'touch') {
 				return;
 			}
-			this.$router.push({
-				path: '/lend-by-category'
-			}).catch(() => {});
+			window.location.href = '/lend-by-category';
 		},
 		onLendMenuPointerEnter(e) {
 			if (e.pointerType === 'touch') {

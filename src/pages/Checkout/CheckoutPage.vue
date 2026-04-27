@@ -272,15 +272,15 @@
 					<p class="tw-mb-2">
 						But we'd love to help you change that! Please consider
 						supporting one of the borrowers below, or
-						<router-link
-							to="/lend-by-category"
+						<a
+							href="/lend-by-category"
 							data-testid="empty-basket-loans-link"
 							v-kv-track-event="
 								['basket', 'click-empty-basket-browse-all-loans', 'browse all loans']
 							"
 						>
 							browse all loans
-						</router-link>.
+						</a>.
 					</p>
 				</div>
 

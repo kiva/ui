@@ -45,7 +45,7 @@
 			</dl>
 			<kv-button
 				class="tw-col-span-12 lg:tw-col-span-4"
-				to="/lend-by-category"
+				href="/lend-by-category"
 				v-kv-track-event="['portfolio', 'click', 'find-a-loan']"
 			>
 				Find a loan
