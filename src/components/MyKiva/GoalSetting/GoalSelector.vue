@@ -204,11 +204,8 @@
 				</KvAccordionItem>
 			</template>
 
-			<p
-				v-if="subtitleText"
-				v-html="subtitleText"
-				class="tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
-			/>
+			<p v-if="subtitleText" v-html="subtitleText" class="tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
+			</p>
 
 			<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
 				<KvButton
@@ -494,6 +491,7 @@ const titleText = computed(() => {
 			categoryName = `${props.selectedCategoryName?.toLowerCase()}`;
 		}
 
+		// eslint-disable-next-line max-len
 		return `Last year, you helped <br><span class="tw-text-eco-green-3">${loansLastYear.value} ${categoryName}</span> shape their futures!`;
 	}
 
@@ -511,6 +509,7 @@ const titleText = computed(() => {
 const subtitleText = computed(() => {
 	if (loansThisYear.value > 0) {
 		const loanWord = loansThisYear.value === 1 ? 'loan' : 'loans';
+		// eslint-disable-next-line max-len
 		return `You've already made <span class="tw-font-medium">${loansThisYear.value} ${loanWord}</span> that will count`;
 	}
 	return '';
