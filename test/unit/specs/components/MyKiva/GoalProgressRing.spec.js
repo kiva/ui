@@ -100,13 +100,13 @@ describe('GoalProgressRing', () => {
 		it('shows "begins here" copy for support-all', () => {
 			const { container } = renderRing({ categoryId: ID_SUPPORT_ALL, categoryName: 'Choose as I go' });
 			expect(container.querySelector('.modal-description-text').textContent)
-				.toBe(`Your goal to support ${GOAL_LOANS} loans begins here.`);
+				.toBe(`Your support to ${GOAL_LOANS} loans begins here.`);
 		});
 
 		it('shows "begins here" copy with category for women', () => {
 			const { container } = renderRing({});
 			expect(container.querySelector('.modal-description-text').textContent)
-				.toBe(`Your goal to support ${GOAL_LOANS} loans to women begins here.`);
+				.toBe(`Your support to ${GOAL_LOANS} loans for women begins here.`);
 		});
 	});
 
