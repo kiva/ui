@@ -81,7 +81,7 @@
 				</kv-button>
 				<kv-button
 					class="tw-block md:tw-hidden tw-mx-1 md:tw-mb-3 tw-whitespace-nowrap"
-					:to="`/lend-by-category`"
+					:href="`/lend-by-category`"
 					:variant="browseButtonStyle"
 				>
 					Browse all

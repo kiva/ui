@@ -8,14 +8,14 @@
 			>
 				<span>Find a cause</span>
 			</router-link>
-			<router-link
+			<a
 				:id="borrowerMenuId"
-				to="/lend-by-category"
+				href="/lend-by-category"
 				class="header-button"
 				v-kv-track-event="['TopNav','click-mg-exp-borrower', 'Find a borrower']"
 			>
 				<span>Find a borrower <kv-icon class="triangle-icon" name="triangle" :from-sprite="true" /></span>
-			</router-link>
+			</a>
 			<kv-dropdown
 				:controller="borrowerMenuId"
 				@show="onBorrowerMenuShow"
