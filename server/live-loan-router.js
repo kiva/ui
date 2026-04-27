@@ -4,15 +4,26 @@ import { getFromCache, setToCache } from './util/memJsUtils.js';
 import drawLoanCard from './util/live-loan/live-loan-draw.js';
 import fetchLoansByType, { QUERY_TYPE } from './util/live-loan/live-loan-fetch.js';
 import { trace } from './util/mockTrace.js';
+import { resolveBundleSize, DEFAULT_BUNDLE_COUNT } from './util/live-loan/bundle-size.js';
 
-async function fetchRecommendedLoans(type, id, cache, queryType = QUERY_TYPE.DEFAULT) {
+async function fetchRecommendedLoans(type, id, cache, queryType = QUERY_TYPE.DEFAULT, count = DEFAULT_BUNDLE_COUNT) {
 	const queryTypeSuffix = queryType !== QUERY_TYPE.DEFAULT ? `-${queryType}` : '';
 	const loanCachedName = `recommendations-by-${type}-id-${id}${queryTypeSuffix}`;
-	// If we have loan data in memjscache return that quickly
+	// If we have loan data in memjscache return it quickly. For counts up to the default
+	// (4), serve any cached array — matches pre-MP-2713 behavior so legacy URL/IMG and
+	// no-balance bundle routes keep their original cache hit rate even if GraphQL
+	// returned fewer than 4 loans. For counts above the default (balance-bearing bundle
+	// requests), require the cache to hold at least `count` loans so the bundle isn't
+	// short-served from a stale smaller entry.
 	try {
 		const cachedLoanData = await getFromCache(loanCachedName, cache);
 		if (cachedLoanData) {
-			return JSON.parse(cachedLoanData);
+			const parsed = JSON.parse(cachedLoanData);
+			if (Array.isArray(parsed)) {
+				if (count <= DEFAULT_BUNDLE_COUNT || parsed.length >= count) {
+					return parsed;
+				}
+			}
 		}
 	} catch (err) {
 		error(`Error reading from memjs, ${err}`, { error: err });
@@ -22,7 +33,7 @@ async function fetchRecommendedLoans(type, id, cache, queryType = QUERY_TYPE.DEF
 	const loanData = await trace(
 		'fetchLoansByType',
 		{ resource: type },
-		async () => fetchLoansByType(type, id, queryType)
+		async () => fetchLoansByType(type, id, queryType, count)
 	);
 
 	// Set the loan data in memcache, return the loan data
@@ -39,14 +50,14 @@ async function fetchRecommendedLoans(type, id, cache, queryType = QUERY_TYPE.DEF
 	throw new Error('No loans returned');
 }
 
-async function getLoanForRequest(type, cache, req, queryType = QUERY_TYPE.DEFAULT) {
+async function getLoanForRequest(type, cache, req, queryType = QUERY_TYPE.DEFAULT, count = DEFAULT_BUNDLE_COUNT) {
 	// Use default values for id and offset if they are not numeric
 	const id = req.params?.id || 0;
 	const offset = req.params?.offset || 1;
 
 	const loanData = await trace(
 		'fetchRecommendedLoans',
-		async () => fetchRecommendedLoans(type, id, cache, queryType)
+		async () => fetchRecommendedLoans(type, id, cache, queryType, count)
 	);
 
 	// if there are fewer loan results than the offset, return the last result
@@ -82,13 +93,24 @@ async function redirectToUrl(type, cache, req, res, queryType = QUERY_TYPE.DEFAU
 
 async function redirectToBundleUrl(type, cache, req, res, queryType = QUERY_TYPE.DEFAULT) {
 	try {
+		const size = resolveBundleSize(req.query?.balance);
+		if (size.redirect) {
+			res.redirect(302, size.redirect);
+			return;
+		}
+
 		const id = req.params?.id || 0;
+		const { count } = size;
 		const loanData = await trace(
 			'fetchRecommendedLoans',
-			async () => fetchRecommendedLoans(type, id, cache, queryType)
+			async () => fetchRecommendedLoans(type, id, cache, queryType, count)
 		);
 
-		const loanIds = loanData.map(loan => loan.id).filter(Boolean).join(',');
+		const loanIds = loanData
+			.slice(0, count)
+			.map(loan => loan.id)
+			.filter(Boolean)
+			.join(',');
 		if (!loanIds) {
 			res.redirect(302, '/lend-by-category/');
 			return;
@@ -96,11 +118,12 @@ async function redirectToBundleUrl(type, cache, req, res, queryType = QUERY_TYPE
 
 		let redirect = `/add-loan-bundle?loanIds=${loanIds}`;
 
-		// Forward any original query params
+		// Forward original query params, stripping `balance`
 		const requestUrl = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
-		const queryParams = new URLSearchParams(requestUrl.search);
-		if (queryParams.toString()) {
-			redirect += `&${queryParams}`;
+		const forwarded = new URLSearchParams(requestUrl.search);
+		forwarded.delete('balance');
+		if (forwarded.toString()) {
+			redirect += `&${forwarded}`;
 		}
 
 		res.redirect(302, redirect);
@@ -320,6 +343,8 @@ export default function liveLoanRouter(cache) {
 
 	// User Bundle URL Router
 	// Example: /live-loan/u/12345/bundle-url -> redirects to /add-loan-bundle?loanIds=101,202,303,404
+	// With balance: /live-loan/u/12345/bundle-url?balance=75 -> 3 loans (/add-loan-bundle?loanIds=101,202,303)
+	// Balance > 150: /live-loan/u/12345/bundle-url?balance=200 -> redirects to /lend/filter
 	router.use('/u/:id(\\d{0,})/bundle-url', async (req, res) => {
 		await trace('live-loan.user.redirectToBundleUrl', { resource: req.path }, async () => {
 			await redirectToBundleUrl('user', cache, req, res);
@@ -328,6 +353,9 @@ export default function liveLoanRouter(cache) {
 
 	// User Bundle URL Router FLSS
 	// Example: /live-loan/flss/u/12345/bundle-url -> redirects to /add-loan-bundle?loanIds=101,202,303,404
+	// eslint-disable-next-line max-len
+	// With balance: /live-loan/flss/u/12345/bundle-url?balance=125 -> 5 loans (/add-loan-bundle?loanIds=101,202,303,404,505)
+	// Balance > 150: /live-loan/flss/u/12345/bundle-url?balance=500 -> redirects to /lend/filter
 	router.use('/flss/u/:id(\\d{0,})/bundle-url', async (req, res) => {
 		await trace('live-loan.flss.user.redirectToBundleUrl', { resource: req.path }, async () => {
 			await redirectToBundleUrl('user', cache, req, res, QUERY_TYPE.FLSS);
@@ -336,6 +364,8 @@ export default function liveLoanRouter(cache) {
 
 	// User Bundle URL Router Recommendations
 	// Example: /live-loan/recommendations/u/12345/bundle-url -> redirects to /add-loan-bundle?loanIds=101,202,303,404
+	// With balance: /live-loan/recommendations/u/12345/bundle-url?balance=25 -> 1 loan (/add-loan-bundle?loanIds=101)
+	// Balance > 150: /live-loan/recommendations/u/12345/bundle-url?balance=300 -> redirects to /lend/filter
 	router.use('/recommendations/u/:id(\\d{0,})/bundle-url', async (req, res) => {
 		await trace('live-loan.recommendations.user.redirectToBundleUrl', { resource: req.path }, async () => {
 			await redirectToBundleUrl('user', cache, req, res, QUERY_TYPE.RECOMMENDATIONS);
