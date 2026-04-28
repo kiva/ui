@@ -485,7 +485,7 @@ export default {
 				!this.loans.length ? 'empty-state-region-recommendation' : 'region-recommendation',
 				region?.name
 			);
-			this.$router.push(`/lend/filter?country=${region?.countries.join(',')}`);
+			window.location.href = `/lend/filter?country=${region.countries.join(',')}`;
 		},
 		async setGoal(preferences) {
 			if (this.isUpdatingGoal) {

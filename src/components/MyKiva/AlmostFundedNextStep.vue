@@ -54,7 +54,6 @@ import {
 	onBeforeUnmount,
 	inject,
 } from 'vue';
-import { useRouter } from 'vue-router';
 import { mdiCircleSlice7 } from '@mdi/js';
 import { KvMaterialIcon, KvButton } from '@kiva/kv-components';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
@@ -64,13 +63,12 @@ import borrowerSvg from '#src/assets/images/my-kiva/almost-funded-borrower.svg?u
 defineOptions({ name: 'AlmostFundedNextStep' });
 
 const $kvTrackEvent = inject('$kvTrackEvent');
-const router = useRouter();
 const cardElement = ref(null);
 let disconnectObserver = null;
 
 const handleClick = () => {
 	$kvTrackEvent('portfolio', 'click', 'next-step-almost-funded');
-	router.push('/lend/filter?sortBy=amountLeft');
+	window.location.href = '/lend/filter?sortBy=amountLeft';
 };
 
 onMounted(() => {

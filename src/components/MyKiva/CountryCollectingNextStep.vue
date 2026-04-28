@@ -49,7 +49,6 @@ import {
 	onBeforeUnmount,
 	inject,
 } from 'vue';
-import { useRouter } from 'vue-router';
 import { mdiEarth } from '@mdi/js';
 import { KvMaterialIcon, KvButton } from '@kiva/kv-components';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
@@ -95,7 +94,6 @@ const regionImages = {
 };
 
 const $kvTrackEvent = inject('$kvTrackEvent');
-const router = useRouter();
 const cardElement = ref(null);
 let disconnectObserver = null;
 
@@ -118,7 +116,7 @@ const handleClick = () => {
 	const region = recommendedRegion.value;
 	if (!region) return;
 	$kvTrackEvent('portfolio', 'click', 'next-step-intro-lending-stats', region.name);
-	router.push(`/lend/filter?country=${region.countries.join(',')}`);
+	window.location.href = `/lend/filter?country=${region.countries.join(',')}`;
 };
 
 onMounted(() => {
