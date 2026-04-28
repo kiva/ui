@@ -735,7 +735,7 @@ export const GoalEntrypointWithOnlyCurrentYearProgressCustomAmount = story({
 
 	totalLoans: 20,
 	tieredAchievements: mockTieredLendingAchievementsOnlyCurrentYearProgress,
-}, queryResultWithNoGoal, customGoalAmountExperimentEnabledCookie);
+}, queryResultWithNoGoalAndThisAndLastYearProgress, customGoalAmountExperimentEnabledCookie);
 
 // Story: No goal set, custom amount experiment enabled, current and last year progress available
 export const GoalEntrypointWithThisAndLastYearProgressCustomAmount = story({

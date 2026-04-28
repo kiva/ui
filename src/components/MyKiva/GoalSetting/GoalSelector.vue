@@ -475,7 +475,7 @@ const loadLoansThisYear = async () => {
 const titleText = computed(() => {
 	// Default title if no lending history and category is ID_WOMENS_EQUALITY
 	if (props.selectedCategoryId === ID_WOMENS_EQUALITY && loansLastYear.value === 0) {
-		return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
+		return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year!';
 	}
 
 	if (loansLastYear.value > 0) {
