@@ -478,7 +478,7 @@ const titleText = computed(() => {
 		return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
 	}
 
-	if (loansLastYear.value > 0 && loansThisYear.value === 0) {
+	if (loansLastYear.value > 0) {
 		let categoryName = '';
 
 		if (props.selectedCategoryId === ID_SUPPORT_ALL) {

@@ -652,12 +652,26 @@ const mockTieredLendingAchievementsOnlyLastYearProgress = mockTieredLendingAchie
 	totalProgressToAchievement: achievement.totalProgressToAchievement,
 	progressForYear: 20,
 }));
+const mockTieredLendingAchievementsOnlyCurrentYearProgress = mockTieredLendingAchievementsAllCategories.map(achievement => ({
+	id: achievement.id,
+	totalProgressToAchievement: achievement.totalProgressToAchievement,
+	progressForCurrentYear: 20,
+}));
 const mockTieredLendingAchievementsThisAndLastYearProgress = mockTieredLendingAchievementsAllCategories.map(achievement => ({
 	id: achievement.id,
 	totalProgressToAchievement: achievement.totalProgressToAchievement,
 	progressForCurrentYear: 20,
 	progressForYear: 20,
 }));
+const queryResultWithNoGoalAndThisAndLastYearProgress = {
+	data: {
+		...queryResultWithNoGoal.data,
+		userAchievementProgress: {
+			...mockUserAchievementProgress,
+			tieredLendingAchievements: mockTieredLendingAchievementsThisAndLastYearProgress,
+		},
+	}
+};
 
 // Story: No goal set - shows GoalEntrypoint module for goal setup
 export const GoalEntrypoint = story({
@@ -707,6 +721,22 @@ export const GoalEntrypointWithOnlyLastYearProgressCustomAmount = story({
 	tieredAchievements: mockTieredLendingAchievementsOnlyLastYearProgress,
 }, queryResultWithNoGoal, customGoalAmountExperimentEnabledCookie);
 
+// Story: No goal set, custom amount experiment enabled, only current year progress
+export const GoalEntrypointWithOnlyCurrentYearProgressCustomAmount = story({
+	isGuest: false,
+	isOptedIn: false,
+
+	lender: mockLender,
+	loans: [mockLoanMatchingWomensGoal],
+	receipt: receiptWithSingleLoan,	
+
+	badgesAchieved: [],
+	achievementsCompleted: false,
+
+	totalLoans: 20,
+	tieredAchievements: mockTieredLendingAchievementsOnlyCurrentYearProgress,
+}, queryResultWithNoGoal, customGoalAmountExperimentEnabledCookie);
+
 // Story: No goal set, custom amount experiment enabled, current and last year progress available
 export const GoalEntrypointWithThisAndLastYearProgressCustomAmount = story({
 	isGuest: false,
@@ -721,7 +751,7 @@ export const GoalEntrypointWithThisAndLastYearProgressCustomAmount = story({
 
 	totalLoans: 20,
 	tieredAchievements: mockTieredLendingAchievementsThisAndLastYearProgress,
-}, queryResultWithNoGoal, customGoalAmountExperimentEnabledCookie);
+}, queryResultWithNoGoalAndThisAndLastYearProgress, customGoalAmountExperimentEnabledCookie);
 
 
 // Story: Guest user with goals experiment enabled - should NOT show goal modules
