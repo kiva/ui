@@ -2434,7 +2434,7 @@ describe('useGoalData', () => {
 			expect(categories[0]).toEqual({
 				id: '1',
 				name: 'Women',
-				description: 'Open doors for women around the world',
+				description: 'Help women create financial freedom.',
 				eventProp: 'women',
 				customImage: expect.any(String),
 				loanCount: 5,

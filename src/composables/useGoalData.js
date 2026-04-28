@@ -145,7 +145,7 @@ export default function useGoalData({ apollo } = {}) {
 			{
 				id: '1',
 				name: 'Women',
-				description: 'Open doors for women around the world',
+				description: 'Help women create financial freedom.',
 				eventProp: 'women',
 				customImage: womenImg,
 				loanCount: categoriesLoanCount?.[ID_WOMENS_EQUALITY],
