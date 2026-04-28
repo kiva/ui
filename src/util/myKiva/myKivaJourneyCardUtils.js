@@ -207,6 +207,8 @@ export const getTopRowPriorityCards = ({
  * @param {boolean} params.hideCompletedGoalCard
  * @param {Set<string>} params.topRowPriorityCards - Result of getTopRowPriorityCards
  * @param {Array} params.sortedAchievementSlides - Achievement slides sorted by milestoneDiff
+ * @param {boolean} params.showLendingNextStepsCards - Whether lending next steps experiment is enabled
+ * @param {boolean} params.userLentToAllRegions - Whether user has lent to all regions
  * @returns {Set<string>}
  */
 export const getTopRowAchievementKeys = ({
@@ -215,13 +217,31 @@ export const getTopRowAchievementKeys = ({
 	hideCompletedGoalCard,
 	topRowPriorityCards,
 	sortedAchievementSlides,
+	showLendingNextStepsCards = false,
+	userLentToAllRegions = true,
 }) => {
 	if (showRegionExperienceInFirstRow) {
 		// When region is in first row with completed goal, 1 achievement fills the goal card slot
 		const achievementSlots = hideCompletedGoalCard ? 1 : 0;
 		return new Set(sortedAchievementSlides.slice(0, achievementSlots).map(s => s.badgeKey));
 	}
+
 	const topRowSlidesCount = 3;
+
+	// When lending next steps experiment is enabled, calculate how many achievements fill remaining slots
+	if (showLendingNextStepsCards) {
+		// Build array of priority cards
+		const priorityCardsInTopRow = [
+			!hideCompletedGoalCard && 'goal',
+			'almostFunded',
+			!userLentToAllRegions && 'countryCollecting',
+		].filter(Boolean);
+
+		// Achievements fill remaining slots
+		const achievementSlotsInTopRow = Math.max(topRowSlidesCount - priorityCardsInTopRow.length, 0);
+		return new Set(sortedAchievementSlides.slice(0, achievementSlotsInTopRow).map(s => s.badgeKey));
+	}
+
 	const goalSlot = !showPostLendingNextStepsCards && !hideCompletedGoalCard ? 1 : 0;
 	const achievementSlotsInTopRow = Math.max(
 		topRowSlidesCount - goalSlot - topRowPriorityCards.size,

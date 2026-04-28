@@ -332,6 +332,7 @@ const dynamicOrderedSlides = computed(() => {
 
 	// Build the priority card slots for post-lending experience
 	const priorityCards = [];
+	let hasLendingNextStepCards = false;
 
 	// Goal card (set or in-progress goal)
 	if (shouldShowGoalCard.value) {
@@ -340,6 +341,7 @@ const dynamicOrderedSlides = computed(() => {
 
 	// Almost funded and country collecting cards for lending next steps
 	if (props.showLendingNextStepsCards) {
+		hasLendingNextStepCards = true;
 		priorityCards.push({ isAlmostFunded: true });
 		if (props.regionsData.some(r => !r.hasLoans)) {
 			priorityCards.push({ isCountryCollecting: true });
@@ -364,12 +366,13 @@ const dynamicOrderedSlides = computed(() => {
 	}
 
 	if (props.slidesNumber && props.showLendingNextStepsCards) {
-		const prioritySliced = priorityCards.slice(0, props.slidesNumber);
-		sortedSlides = [...prioritySliced, ...achievementSlides, ...nonBadgesSlides.value];
-	} else if (props.slidesNumber && priorityCards.length > 0) {
+		// Top row: priority cards + achievements to fill up to slidesNumber
+		sortedSlides = [...priorityCards, ...achievementSlides].slice(0, props.slidesNumber);
+	} else if (props.slidesNumber && hasLendingNextStepCards && !props.showLendingNextStepsCards) {
+		// Bottom row: only achievements (excluding those shown in top row)
 		sortedSlides = [...achievementSlides, ...nonBadgesSlides.value].slice(0, props.slidesNumber);
 	} else if (props.slidesNumber) {
-		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
+		sortedSlides = [...priorityCards, ...sortedSlides].slice(0, props.slidesNumber);
 	} else {
 		sortedSlides = [...priorityCards, ...sortedSlides];
 	}
