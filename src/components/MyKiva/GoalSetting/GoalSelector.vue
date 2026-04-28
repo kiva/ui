@@ -38,7 +38,6 @@
 				>
 				<h2
 					class="tw-px-4 lg:tw-px-7 tw-text-center"
-					:class="{ 'tw-mb-1.5 lg:tw-mb-3': !subtitleText }"
 					style="line-height: 125%;"
 					v-html="titleText"
 				>
@@ -50,12 +49,9 @@
 				class="!tw-w-full !tw-h-4 !tw-rounded"
 			/>
 
-			<div
-				v-else-if="subtitleText"
-				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
-			>
-				{{ subtitleText }}
-			</div>
+			<p class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
+				How many loans will you make this year?
+			</p>
 
 			<div
 				class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5 tw-my-1"
@@ -207,6 +203,9 @@
 					</div>
 				</KvAccordionItem>
 			</template>
+
+			<p v-if="subtitleText" v-html="subtitleText" class="tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
+			</p>
 
 			<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
 				<KvButton
@@ -476,7 +475,24 @@ const loadLoansThisYear = async () => {
 const titleText = computed(() => {
 	// Default title if no lending history and category is ID_WOMENS_EQUALITY
 	if (props.selectedCategoryId === ID_WOMENS_EQUALITY && loansLastYear.value === 0) {
-		return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
+		return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year!';
+	}
+
+	if (loansLastYear.value > 0) {
+		let categoryName = '';
+
+		if (props.selectedCategoryId === ID_SUPPORT_ALL) {
+			categoryName = 'people';
+		} else if (props.selectedCategoryId === ID_US_ECONOMIC_EQUALITY) {
+			categoryName = 'U.S. entrepreneurs';
+		} else if (props.selectedCategoryId === ID_WOMENS_EQUALITY) {
+			categoryName = 'women';
+		} else {
+			categoryName = `${props.selectedCategoryName?.toLowerCase()}`;
+		}
+
+		// eslint-disable-next-line max-len
+		return `Last year, you helped <br><span class="tw-text-eco-green-3">${loansLastYear.value} ${categoryName}</span> shape their futures!`;
 	}
 
 	// Support All is not a specific category, so use generic language
@@ -493,7 +509,8 @@ const titleText = computed(() => {
 const subtitleText = computed(() => {
 	if (loansThisYear.value > 0) {
 		const loanWord = loansThisYear.value === 1 ? 'loan' : 'loans';
-		return `You've already made ${loansThisYear.value} ${loanWord} that will count`;
+		// eslint-disable-next-line max-len
+		return `You've already made <span class="tw-font-medium">${loansThisYear.value} ${loanWord}</span> that will count`;
 	}
 	return '';
 });
