@@ -11,7 +11,7 @@
 		</div>
 		<template v-else>
 			<div v-if="!userHasGoal" class="tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-between">
-				<h4 v-if="prevYearLoans > 0">
+				<h4 v-if="prevYearLoans > 0 && !isGoalTileExperimentEnabled">
 					LAST YEAR
 				</h4>
 				<h3 class="tw-text-center" v-html="title"></h3>
@@ -69,6 +69,7 @@ import { useRouter } from 'vue-router';
 import confetti from 'canvas-confetti';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
+import { is } from 'date-fns/locale';
 
 const props = defineProps({
 	userGoal: {
