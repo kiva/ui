@@ -69,7 +69,6 @@ import { useRouter } from 'vue-router';
 import confetti from 'canvas-confetti';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
-import { is } from 'date-fns/locale';
 
 const props = defineProps({
 	userGoal: {
