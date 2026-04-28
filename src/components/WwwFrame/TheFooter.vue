@@ -36,13 +36,13 @@
 					</p>
 					<ul class="tw-mb-2 footer-link-list">
 						<li>
-							<router-link
-								:to="lendByCategoryUrl"
+							<a
+								:href="lendByCategoryUrl"
 								v-kv-track-event="['Footer', 'click-Lend-lend now']"
 								class="tw-text-small"
 							>
 								Lend now
-							</router-link>
+							</a>
 						</li>
 						<li>
 							<router-link
