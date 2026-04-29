@@ -2,11 +2,6 @@ import { render, fireEvent } from '@testing-library/vue';
 import CountryCollectingNextStep from '#src/components/MyKiva/CountryCollectingNextStep';
 
 const mockTrackEvent = vi.fn();
-const mockPush = vi.fn();
-
-vi.mock('vue-router', () => ({
-	useRouter: () => ({ push: mockPush }),
-}));
 
 const baseRegionsData = [
 	{
@@ -49,7 +44,6 @@ const renderComponent = (regionsData = baseRegionsData) => {
 describe('CountryCollectingNextStep', () => {
 	beforeEach(() => {
 		mockTrackEvent.mockClear();
-		mockPush.mockClear();
 	});
 
 	it('recommends the first unlent region by priority order', () => {
@@ -71,7 +65,7 @@ describe('CountryCollectingNextStep', () => {
 	it('navigates to combo page filtered by region countries on click', async () => {
 		const { getByText } = renderComponent();
 		await fireEvent.click(getByText('Support a new region'));
-		expect(mockPush).toHaveBeenCalledWith('/lend/filter?country=PE,EC,CO');
+		expect(window.location.href).toContain('/lend/filter?country=PE,EC,CO');
 	});
 
 	it('tracks click with region name', async () => {

@@ -186,12 +186,7 @@ export default {
 	methods: {
 		countryFilterClicked(countryIso) {
 			this.$kvTrackEvent('lender-profile', 'click', 'lender-loans-map-country-fundraising-loans', countryIso);
-			this.$router.push({
-				path: '/lend/filter',
-				query: {
-					country: countryIso,
-				},
-			});
+			window.location.href = `/lend/filter?country=${countryIso}`;
 		},
 		showFundraisingLoansEvent() {
 			this.$kvTrackEvent(

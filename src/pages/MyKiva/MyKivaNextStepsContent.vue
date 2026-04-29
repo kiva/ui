@@ -411,6 +411,10 @@ const props = defineProps({
 		type: String,
 		default: null,
 	},
+	goalRecommendedLoanEnable: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const cookieStore = inject('cookieStore');

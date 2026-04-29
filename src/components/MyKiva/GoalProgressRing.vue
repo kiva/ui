@@ -300,13 +300,13 @@ const modalVariantDescriptionText = computed(() => {
 	}
 
 	if (props.categoryId === ID_SUPPORT_ALL) {
-		return `Your goal to support <span ${brandClass}>${loans} loans</span> begins here.`;
+		return `Your support to <span ${brandClass}>${loans} loans</span> begins here.`;
 	}
 	const formattedCategory = props.categoryId === ID_US_ECONOMIC_EQUALITY
 		? props.categoryName
 		: props.categoryName?.toLowerCase() || '';
 	// eslint-disable-next-line max-len
-	return `Your goal to support <span ${brandClass}>${loans} loans</span> to <span ${brandClass}>${formattedCategory}</span> begins here.`;
+	return `Your support to <span ${brandClass}>${loans} loans</span> for <span ${brandClass}>${formattedCategory}</span> begins here.`;
 });
 
 const titleText = computed(() => {

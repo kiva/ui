@@ -230,6 +230,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Is goal recommended loan enabled
+	 */
+	goalRecommendedLoanEnable: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const isGoalSet = ref(false);

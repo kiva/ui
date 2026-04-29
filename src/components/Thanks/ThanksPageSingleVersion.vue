@@ -252,6 +252,10 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	goalRecommendedLoanEnable: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));

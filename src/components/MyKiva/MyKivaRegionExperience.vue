@@ -128,7 +128,6 @@ import {
 	onBeforeUnmount,
 	nextTick,
 } from 'vue';
-import { useRouter } from 'vue-router';
 import { KvMaterialIcon, KvCheckbox, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 
@@ -163,7 +162,6 @@ const props = defineProps({
 });
 
 const $kvTrackEvent = inject('$kvTrackEvent');
-const router = useRouter();
 
 const regionElement = ref(null);
 
@@ -218,7 +216,7 @@ const handleRecommendRegionClick = region => {
 		!props.loans.length ? 'empty-state-region-recommendation' : 'region-recommendation',
 		region?.name
 	);
-	router.push(`/lend/filter?country=${region?.countries.join(',')}`);
+	window.location.href = `/lend/filter?country=${region.countries.join(',')}`;
 };
 
 const startCheckAnimation = () => {

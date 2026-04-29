@@ -2,11 +2,6 @@ import { render, fireEvent } from '@testing-library/vue';
 import AlmostFundedNextStep from '#src/components/MyKiva/AlmostFundedNextStep';
 
 const mockTrackEvent = vi.fn();
-const mockPush = vi.fn();
-
-vi.mock('vue-router', () => ({
-	useRouter: () => ({ push: mockPush }),
-}));
 
 const renderComponent = () => {
 	return render(AlmostFundedNextStep, {
@@ -21,7 +16,6 @@ const renderComponent = () => {
 describe('AlmostFundedNextStep', () => {
 	beforeEach(() => {
 		mockTrackEvent.mockClear();
-		mockPush.mockClear();
 	});
 
 	it('renders the card with correct heading', () => {
@@ -42,7 +36,7 @@ describe('AlmostFundedNextStep', () => {
 	it('navigates to combo page on CTA click', async () => {
 		const { getByText } = renderComponent();
 		await fireEvent.click(getByText('See almost funded loans'));
-		expect(mockPush).toHaveBeenCalledWith('/lend/filter?sortBy=amountLeft');
+		expect(window.location.href).toContain('/lend/filter?sortBy=amountLeft');
 	});
 
 	it('tracks click event on CTA click', async () => {

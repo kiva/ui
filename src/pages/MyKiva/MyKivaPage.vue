@@ -15,6 +15,7 @@
 			:goal-editing-enable="goalEditingEnable"
 			:user-lent-to-all-regions="userLentToAllRegions"
 			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
+			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 		/>
 		<my-kiva-page-content
 			v-else
@@ -37,6 +38,7 @@
 			:goal-editing-enable="goalEditingEnable"
 			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
+			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 		/>
 	</www-page>
 </template>
@@ -121,6 +123,7 @@ export default {
 			recentTransactionLoans: [],
 			isGoalTileExperimentEnabled: false,
 			lendingNextStepsExperimentVariant: null,
+			goalRecommendedLoanEnable: false,
 		};
 	},
 	computed: {
@@ -302,6 +305,7 @@ export default {
 				this.transactions = myKivaQueryResult.my?.transactions?.values ?? [];
 
 				this.goalEditingEnable = readBoolSetting(myKivaQueryResult, `general.${GOAL_EDITING_KEY}.value`) ?? false; // eslint-disable-line max-len
+				this.goalRecommendedLoanEnable = readBoolSetting(myKivaQueryResult, 'general.goal_recommended_loan_enable.value') ?? false; // eslint-disable-line max-len
 
 				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
 					...myKivaQueryResult.my.latestLoan.values[0].loan,
