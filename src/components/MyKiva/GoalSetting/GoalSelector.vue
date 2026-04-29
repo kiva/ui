@@ -50,7 +50,7 @@
 			/>
 
 			<p
-				v-if="loansLastYear > 0"
+				v-if="showLoanQuestionPrompt"
 				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
 				How many loans will you make this year?
 			</p>
@@ -434,6 +434,10 @@ const loansLastYear = computed(() => {
 	}
 
 	return getCategoryLoansLastYear(props.tieredAchievements, props.selectedCategoryId);
+});
+
+const showLoanQuestionPrompt = computed(() => {
+	return loansLastYear.value > 0 || props.selectedCategoryId === ID_WOMENS_EQUALITY;
 });
 
 // Use progressForCurrentYear from tieredAchievements if available (set on Thanks page),
