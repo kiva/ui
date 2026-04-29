@@ -428,16 +428,16 @@ const customGoalAmount = ref(null);
 const validCustomAmount = ref(null);
 const customGoalAmountError = ref('');
 
-const showLoanQuestionPrompt = computed(() => {
-	return loansLastYear.value > 0 || props.selectedCategoryId === ID_WOMENS_EQUALITY;
-});
-
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
 		return prevSupportAllCount.value;
 	}
 
 	return getCategoryLoansLastYear(props.tieredAchievements, props.selectedCategoryId);
+});
+
+const showLoanQuestionPrompt = computed(() => {
+	return loansLastYear.value > 0 || props.selectedCategoryId === ID_WOMENS_EQUALITY;
 });
 
 // Use progressForCurrentYear from tieredAchievements if available (set on Thanks page),
