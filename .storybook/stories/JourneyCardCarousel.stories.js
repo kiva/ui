@@ -541,7 +541,7 @@ const story = (args = {}) => {
 
 export const Default = story({ slides, badgesData });
 
-export const ExperimentDisabled = story({
+export const LendingNextStepsExpDisabled = story({
     slides,
     heroBadgeData: badgesData,
     heroTieredAchievements: [],
@@ -554,7 +554,7 @@ export const ExperimentDisabled = story({
     loans: [],
 });
 
-export const ExperimentEnabledBasic = story({
+export const LendingNextStepsExpEnabledBasic = story({
     slides,
     heroBadgeData: badgesData,
     heroTieredAchievements: [],
@@ -569,7 +569,7 @@ export const ExperimentEnabledBasic = story({
     loans: [],
 });
 
-export const ExperimentEnabledWithBothCards = story({
+export const LendingNextStepsExpEnabledWithBothCards = story({
     slides,
     heroBadgeData: badgesData,
     heroTieredAchievements: [],
@@ -584,7 +584,7 @@ export const ExperimentEnabledWithBothCards = story({
     loans: [],
 });
 
-export const ExperimentEnabledNoGoal = story({
+export const LendingNextStepsExpEnabledNoGoal = story({
     slides,
     heroBadgeData: badgesData,
     heroTieredAchievements: [],
