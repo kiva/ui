@@ -321,6 +321,8 @@ const dynamicOrderedSlides = computed(() => {
 		}
 	}
 
+	const achievementSlides = sortedSlides.filter(slide => !isNonBadgeSlide(slide));
+
 	if (props.showNonBadgesSlides && nonBadgesSlides.value.length > 0) {
 		sortedSlides = [
 			...sortedSlides,
@@ -361,11 +363,11 @@ const dynamicOrderedSlides = computed(() => {
 		priorityCards.push({ isSurveyCard: true });
 	}
 
-	// Prepend priority cards to the sorted slides
-	sortedSlides = [...priorityCards, ...sortedSlides];
-
-	if (props.slidesNumber) {
-		sortedSlides = sortedSlides.slice(0, props.slidesNumber);
+	if (props.slidesNumber && props.showLendingNextStepsCards) {
+		// Top row: priority cards + achievements to fill up to slidesNumber
+		sortedSlides = [...priorityCards, ...achievementSlides].slice(0, props.slidesNumber);
+	} else if (props.slidesNumber) {
+		sortedSlides = [...priorityCards, ...sortedSlides].slice(0, props.slidesNumber);
 	}
 
 	return sortedSlides;

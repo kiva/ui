@@ -1,11 +1,11 @@
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel.vue';
 import {
-	badgeWomensEquality,
+    badgeWomensEquality,
 } from '../mock-data/badge-journey-data-mock';
 
 export default {
-	title: 'MyKiva/JourneyCardCarousel',
-	component: JourneyCardCarousel,
+    title: 'MyKiva/JourneyCardCarousel',
+    component: JourneyCardCarousel,
 };
 
 const slideData = {
@@ -473,27 +473,144 @@ const nonBadgeData = {
 };
 
 const badgesData = [
-	badgeWomensEquality
+    badgeWomensEquality
 ];
 
 const slides = [
-		slideData,
-		nonBadgeData,
+    slideData,
+    nonBadgeData,
 ];
 
+const mockRegionsData = [
+    { name: 'North America', hasLoans: true, countries: ['US', 'CA'] },
+    { name: 'South America', hasLoans: true, countries: ['BR', 'PE', 'CO'] },
+    { name: 'Africa', hasLoans: true, countries: ['KE', 'UG', 'TZ'] },
+    { name: 'Asia', hasLoans: false, countries: ['PH', 'KH', 'TH'] },
+    { name: 'Eastern Europe', hasLoans: true, countries: ['MD', 'GE', 'AM'] },
+];
+
+const mockRegionsDataAllLent = [
+    { name: 'North America', hasLoans: true, countries: ['US', 'CA'] },
+    { name: 'South America', hasLoans: true, countries: ['BR', 'PE', 'CO'] },
+    { name: 'Africa', hasLoans: true, countries: ['KE', 'UG', 'TZ'] },
+    { name: 'Asia', hasLoans: true, countries: ['PH', 'KH', 'TH'] },
+    { name: 'Eastern Europe', hasLoans: true, countries: ['MD', 'GE', 'AM'] },
+];
+
+const mockUserGoal = {
+    category: 'womens-equality',
+    target: 10,
+};
+
+const mockGoalData = {
+    getCtaHref: () => '/lend-by-category/women',
+    getGoalDisplayName: (target, category) => {
+        if (!target || target > 1) {
+            if (category === 'womens-equality') return 'women';
+            return 'loans';
+        }
+        if (category === 'womens-equality') return 'woman';
+        return 'loan';
+    },
+    goalProgressPercentage: { value: 50 },
+    setHideGoalCardPreference: () => { },
+};
+
+const mockApollo = {
+    query: () => Promise.resolve({ data: {} }),
+    mutate: () => Promise.resolve({ data: {} }),
+};
+
+const mockCookieStore = {
+    get: () => null,
+    set: () => { },
+};
+
 const story = (args = {}) => {
-	const template = (_args, { argTypes }) => ({
-		props: Object.keys(argTypes),
-		components: { JourneyCardCarousel },
-		setup() { return { args }; },
-		template: `
+    const template = (_args, { argTypes }) => ({
+        props: Object.keys(argTypes),
+        components: { JourneyCardCarousel },
+        setup() { return { args }; },
+        provide: {
+            goalData: mockGoalData,
+            apollo: mockApollo,
+            cookieStore: mockCookieStore,
+        },
+        template: `
 			<div style="max-width: 1200px;">
 				<journey-card-carousel v-bind="args" />
 			</div>
 		`,
-	});
-	template.args = args;
-	return template;
+    });
+    template.args = args;
+    return template;
 };
 
 export const Default = story({ slides, badgesData });
+
+export const LendingNextStepsExpDisabled = story({
+    slides,
+    heroBadgeData: badgesData,
+    heroTieredAchievements: [],
+    slidesNumber: 3,
+    showLendingNextStepsCards: false,
+    inLendingStats: true,
+    userGoal: mockUserGoal,
+    goalProgress: 10,
+    goalProgressLoading: false,
+    userInfo: {},
+    lender: { name: 'Test User' },
+    loans: [],
+});
+
+export const LendingNextStepsExpEnabledBasic = story({
+    slides,
+    heroBadgeData: badgesData,
+    heroTieredAchievements: [],
+    slidesNumber: 3,
+    showLendingNextStepsCards: true,
+    showPostLendingNextStepsCards: true,
+    regionsData: mockRegionsDataAllLent,
+    inLendingStats: true,
+    userGoal: mockUserGoal,
+    goalProgress: 10,
+    goalProgressLoading: false,
+    userInfo: {},
+    lender: { name: 'Test User' },
+    loans: [],
+});
+
+export const LendingNextStepsExpEnabledWithGoal = story({
+    slides,
+    heroBadgeData: badgesData,
+    heroTieredAchievements: [],
+    slidesNumber: 3,
+    showLendingNextStepsCards: true,
+    showPostLendingNextStepsCards: true,
+    regionsData: mockRegionsData,
+    inLendingStats: true,
+    userGoal: mockUserGoal,
+    goalProgress: 10,
+    goalProgressLoading: false,
+    userInfo: {},
+    lender: { name: 'Test User' },
+    loans: [],
+});
+
+export const LendingNextStepsExpEnabledNoGoal = story({
+    slides,
+    heroBadgeData: badgesData,
+    heroTieredAchievements: [],
+    slidesNumber: 3,
+    showLendingNextStepsCards: true,
+    showPostLendingNextStepsCards: true,
+    regionsData: mockRegionsData,
+    inLendingStats: true,
+    userGoal: null,
+    hideGoalCard: true,
+    goalProgress: 0,
+    goalProgressLoading: false,
+    userInfo: {},
+    lender: { name: 'Test User' },
+    loans: [],
+});

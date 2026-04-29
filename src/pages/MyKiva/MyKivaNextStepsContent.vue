@@ -566,6 +566,7 @@ const topRowAchievementKeys = computed(() => getTopRowAchievementKeys({
 	hideCompletedGoalCard: hideCompletedGoalCard.value,
 	topRowPriorityCards: topRowPriorityCards.value,
 	sortedAchievementSlides: sortedAchievementSlides.value,
+	showLendingNextStepsCards: showLendingNextStepsCards.value,
 }));
 
 const bottomRowAchievementSlides = computed(() => {

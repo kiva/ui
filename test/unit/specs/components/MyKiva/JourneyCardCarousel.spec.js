@@ -51,33 +51,32 @@ vi.mock('@kiva/kv-components', async importOriginal => {
 
 describe('JourneyCardCarousel', () => {
 	it('renders next-step achievement progress from parent-provided heroBadgeData', () => {
-		const slide = {
-			fields: {
-				richText: {
-					content: [{
-						data: {
-							target: {
-								sys: {
-									contentType: {
-										sys: { id: 'uiSetting' },
-									},
-								},
-								fields: {
-									dataObject: {
-										achievementKey: ID_WOMENS_EQUALITY,
-									},
-								},
-							},
-						},
-					}]
-				},
-			},
-		};
-
 		const wrapper = mount(JourneyCardCarousel, {
 			props: {
 				inLendingStats: true,
-				slides: [slide],
+				slides: [{
+					fields: {
+						richText: {
+							content: [{
+								data: {
+									target: {
+										sys: {
+											contentType: {
+												sys: { id: 'uiSetting' },
+											},
+										},
+										fields: {
+											dataObject: {
+												achievementKey: ID_WOMENS_EQUALITY,
+											},
+										},
+									},
+								},
+							}]
+						},
+					},
+				}],
+				slidesNumber: 3,
 				heroTieredAchievements: [
 					{
 						id: ID_WOMENS_EQUALITY,
@@ -168,33 +167,31 @@ describe('JourneyCardCarousel', () => {
 	});
 
 	it('renders gracefully when heroBadgeData is an empty array', () => {
-		const slide = {
-			fields: {
-				richText: {
-					content: [{
-						data: {
-							target: {
-								sys: {
-									contentType: {
-										sys: { id: 'uiSetting' },
-									},
-								},
-								fields: {
-									dataObject: {
-										achievementKey: ID_WOMENS_EQUALITY,
-									},
-								},
-							},
-						},
-					}]
-				},
-			},
-		};
-
 		const wrapper = mount(JourneyCardCarousel, {
 			props: {
 				inLendingStats: true,
-				slides: [slide],
+				slides: [{
+					fields: {
+						richText: {
+							content: [{
+								data: {
+									target: {
+										sys: {
+											contentType: {
+												sys: { id: 'uiSetting' },
+											},
+										},
+										fields: {
+											dataObject: {
+												achievementKey: ID_WOMENS_EQUALITY,
+											},
+										},
+									},
+								},
+							}]
+						},
+					},
+				}],
 				heroTieredAchievements: [],
 				heroBadgeData: [],
 				userInfo: {
