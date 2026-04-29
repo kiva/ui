@@ -11,7 +11,7 @@
 		</div>
 		<template v-else>
 			<div v-if="!userHasGoal" class="tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-between">
-				<h4 v-if="prevYearLoans > 0">
+				<h4 v-if="prevYearLoans > 0 && !isGoalTileExperimentEnabled">
 					LAST YEAR
 				</h4>
 				<h3 class="tw-text-center" v-html="title"></h3>
@@ -203,7 +203,7 @@ watch(() => [props.loading, props.hideGoalCard], ([newLoading, newHideGoalCard],
 .card-container {
 	min-height: 300px;
 
-	@apply tw-w-full tw-h-full tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
+	@apply tw-w-full tw-h-full tw-relative tw-rounded tw-shadow tw-p-1 tw-py-2 md:tw-p-2 tw-flex tw-flex-col
 		tw-overflow-hidden tw-bg-white tw-shrink-0;
 }
 </style>
