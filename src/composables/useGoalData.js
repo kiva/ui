@@ -606,9 +606,10 @@ export default function useGoalData({ apollo } = {}) {
 			// For ID_SUPPORT_ALL, use totalLoanCount since it tracks total loans, not category-specific progress
 			let loanTotalAtStart;
 			if (updates.category === ID_SUPPORT_ALL) {
-				// When setting a new goal in Thanks page, we don't have a userGoal object, so we have not loaded support-all loan count on loadGoalData.
+				// When setting a new goal in Thanks page, we don't have a userGoal object, 
+				// so we have not loaded support-all loan count on loadGoalData.
 				// We need to get the total loan count in this step.
-				if(!userGoal.value?.category) {
+				if (!userGoal.value?.category) {
 					const stats = await getSupportAllLoanCountByYear(GOALS_CURRENT_YEAR, 'network-only');
 					yearlyLoanCount.value = stats || 0;
 				}
