@@ -208,7 +208,6 @@ export const getTopRowPriorityCards = ({
  * @param {Set<string>} params.topRowPriorityCards - Result of getTopRowPriorityCards
  * @param {Array} params.sortedAchievementSlides - Achievement slides sorted by milestoneDiff
  * @param {boolean} params.showLendingNextStepsCards - Whether lending next steps experiment is enabled
- * @param {boolean} params.userLentToAllRegions - Whether user has lent to all regions
  * @returns {Set<string>}
  */
 export const getTopRowAchievementKeys = ({
@@ -218,7 +217,6 @@ export const getTopRowAchievementKeys = ({
 	topRowPriorityCards,
 	sortedAchievementSlides,
 	showLendingNextStepsCards = false,
-	userLentToAllRegions = true,
 }) => {
 	if (showRegionExperienceInFirstRow) {
 		// When region is in first row with completed goal, 1 achievement fills the goal card slot
@@ -234,7 +232,7 @@ export const getTopRowAchievementKeys = ({
 		const priorityCardsInTopRow = [
 			!hideCompletedGoalCard && 'goal',
 			'almostFunded',
-			!userLentToAllRegions && 'countryCollecting',
+			showRegionExperienceInFirstRow && 'countryCollecting',
 		].filter(Boolean);
 
 		// Achievements fill remaining slots

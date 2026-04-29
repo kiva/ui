@@ -563,7 +563,6 @@ const topRowAchievementKeys = computed(() => getTopRowAchievementKeys({
 	topRowPriorityCards: topRowPriorityCards.value,
 	sortedAchievementSlides: sortedAchievementSlides.value,
 	showLendingNextStepsCards: showLendingNextStepsCards.value,
-	userLentToAllRegions: props.userLentToAllRegions,
 }));
 
 const bottomRowAchievementSlides = computed(() => {
