@@ -49,7 +49,9 @@
 				class="!tw-w-full !tw-h-4 !tw-rounded"
 			/>
 
-			<p class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
+			<p
+				v-if="loansLastYear > 0"
+				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
 				How many loans will you make this year?
 			</p>
 
