@@ -610,8 +610,7 @@ export default function useGoalData({ apollo } = {}) {
 				// so we have not loaded support-all loan count on loadGoalData.
 				// We need to get the total loan count in this step.
 				if (!userGoal.value?.category) {
-					const stats = await getSupportAllLoanCountByYear(GOALS_CURRENT_YEAR, 'network-only');
-					yearlyLoanCount.value = stats || 0;
+					yearlyLoanCount.value = await getSupportAllLoanCountByYear(GOALS_CURRENT_YEAR, 'network-only');
 				}
 				loanTotalAtStart = totalLoanCount.value || 0;
 			} else {
