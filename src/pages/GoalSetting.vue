@@ -8,6 +8,7 @@
 				:email-target="$route.query.target || null"
 				:email-category="$route.query.category || null"
 				:goal-editing-enable="goalEditingEnable"
+				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			/>
 		</KvPageContainer>
 	</WwwPage>
@@ -18,6 +19,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import useBadgeData from '#src/composables/useBadgeData';
 import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
+import goalSettingPageQuery from '#src/graphql/query/goalSettingPage.graphql';
 import { KvPageContainer } from '@kiva/kv-components';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import GoalSettingContainer from '#src/components/GoalSetting/GoalSettingContainer';
@@ -40,6 +42,7 @@ export default {
 			categoriesLoanCount: {},
 			tieredAchievements: [],
 			goalEditingEnable: false,
+			goalRecommendedLoanEnable: false,
 		};
 	},
 	apollo: {
@@ -51,6 +54,7 @@ export default {
 					variables: { year: LAST_YEAR_KEY },
 					fetchPolicy: 'network-only',
 				}),
+				client.query({ query: goalSettingPageQuery }),
 			]).catch(error => {
 				logReadQueryError(error, 'GoalSettingPage Prefetch');
 			});
@@ -78,8 +82,13 @@ export default {
 				logReadQueryError(e, 'GoalSettingPage useGoalDataQuery');
 			}
 		}
+
+		const goalSettingPageResult = this.apollo.readQuery({ query: goalSettingPageQuery });
+
 		// Get feature flag for goal editing
 		this.goalEditingEnable = readBoolSetting(goalDataResult, `general.${GOAL_EDITING_KEY}.value`) ?? false;
+		// Get feature flag for goal recommended loan
+		this.goalRecommendedLoanEnable = readBoolSetting(goalSettingPageResult, 'general.goal_recommended_loan_enable.value') ?? false; // eslint-disable-line max-len
 
 		// Fetch tiered achievements - try cache first, then network
 		const achievementsResult = this.apollo.readQuery({
