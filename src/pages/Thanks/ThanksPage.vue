@@ -13,6 +13,7 @@
 				:achievements-completed="achievementsCompleted"
 				:total-loans="totalLoanCount"
 				:tiered-achievements="achievements"
+				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -100,6 +101,7 @@ import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData'
 import { LAST_YEAR_KEY, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import userYearlyProgressQuery from '#src/graphql/query/userYearlyProgress.graphql';
 import { clearPromoCreditBannerCookie, getPromoCreditBannerCookie } from '#src/util/promoCreditCookie';
+import { readBoolSetting } from '#src/util/settingsUtils';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
@@ -167,6 +169,7 @@ export default {
 			achievementsCompleted: false,
 			totalLoanCount: 0,
 			achievements: [],
+			goalRecommendedLoanEnable: false,
 		};
 	},
 	apollo: {
@@ -320,6 +323,8 @@ export default {
 			imageUrl: data?.my?.lender?.image?.url ?? '',
 			publicId: data?.my?.lender?.publicId ?? '',
 		};
+
+		this.goalRecommendedLoanEnable = readBoolSetting(data, 'general.goal_recommended_loan_enable.value') ?? false;
 
 		this.optedIn = (data?.my?.communicationSettings?.lenderNews && data?.my?.communicationSettings?.loanUpdates)
 			|| this.$route.query?.optedIn === 'true';

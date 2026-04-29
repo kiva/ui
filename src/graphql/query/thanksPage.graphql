@@ -37,4 +37,10 @@ query thanksPage {
 			loanUpdates
 		}
 	}
+	general {
+		goal_recommended_loan_enable: uiConfigSetting(key: "ty_goal_set_recommended_loan") {
+			key
+			value
+		}
+	}
 }
