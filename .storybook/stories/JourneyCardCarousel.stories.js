@@ -482,19 +482,19 @@ const slides = [
 ];
 
 const mockRegionsData = [
-    { region: 'North America', hasLoans: true },
-    { region: 'South America', hasLoans: true },
-    { region: 'Africa', hasLoans: true },
-    { region: 'Asia', hasLoans: false },
-    { region: 'Europe', hasLoans: true },
+    { name: 'North America', hasLoans: true, countries: ['US', 'CA'] },
+    { name: 'South America', hasLoans: true, countries: ['BR', 'PE', 'CO'] },
+    { name: 'Africa', hasLoans: true, countries: ['KE', 'UG', 'TZ'] },
+    { name: 'Asia', hasLoans: false, countries: ['PH', 'KH', 'TH'] },
+    { name: 'Eastern Europe', hasLoans: true, countries: ['MD', 'GE', 'AM'] },
 ];
 
 const mockRegionsDataAllLent = [
-    { region: 'North America', hasLoans: true },
-    { region: 'South America', hasLoans: true },
-    { region: 'Africa', hasLoans: true },
-    { region: 'Asia', hasLoans: true },
-    { region: 'Europe', hasLoans: true },
+    { name: 'North America', hasLoans: true, countries: ['US', 'CA'] },
+    { name: 'South America', hasLoans: true, countries: ['BR', 'PE', 'CO'] },
+    { name: 'Africa', hasLoans: true, countries: ['KE', 'UG', 'TZ'] },
+    { name: 'Asia', hasLoans: true, countries: ['PH', 'KH', 'TH'] },
+    { name: 'Eastern Europe', hasLoans: true, countries: ['MD', 'GE', 'AM'] },
 ];
 
 const mockUserGoal = {
@@ -504,8 +504,15 @@ const mockUserGoal = {
 
 const mockGoalData = {
     getCtaHref: () => '/lend-by-category/women',
-    getGoalDisplayName: (category) => category === 'womens-equality' ? "Women's equality" : 'Goal',
-    goalProgressPercentage: () => 50,
+    getGoalDisplayName: (target, category) => {
+        if (!target || target > 1) {
+            if (category === 'womens-equality') return 'women';
+            return 'loans';
+        }
+        if (category === 'womens-equality') return 'woman';
+        return 'loan';
+    },
+    goalProgressPercentage: { value: 50 },
     setHideGoalCardPreference: () => { },
 };
 
@@ -549,6 +556,8 @@ export const LendingNextStepsExpDisabled = story({
     showLendingNextStepsCards: false,
     inLendingStats: true,
     userGoal: mockUserGoal,
+    goalProgress: 10,
+    goalProgressLoading: false,
     userInfo: {},
     lender: { name: 'Test User' },
     loans: [],
@@ -564,12 +573,14 @@ export const LendingNextStepsExpEnabledBasic = story({
     regionsData: mockRegionsDataAllLent,
     inLendingStats: true,
     userGoal: mockUserGoal,
+    goalProgress: 10,
+    goalProgressLoading: false,
     userInfo: {},
     lender: { name: 'Test User' },
     loans: [],
 });
 
-export const LendingNextStepsExpEnabledWithBothCards = story({
+export const LendingNextStepsExpEnabledWithGoal = story({
     slides,
     heroBadgeData: badgesData,
     heroTieredAchievements: [],
@@ -579,6 +590,8 @@ export const LendingNextStepsExpEnabledWithBothCards = story({
     regionsData: mockRegionsData,
     inLendingStats: true,
     userGoal: mockUserGoal,
+    goalProgress: 10,
+    goalProgressLoading: false,
     userInfo: {},
     lender: { name: 'Test User' },
     loans: [],
@@ -595,6 +608,8 @@ export const LendingNextStepsExpEnabledNoGoal = story({
     inLendingStats: true,
     userGoal: null,
     hideGoalCard: true,
+    goalProgress: 0,
+    goalProgressLoading: false,
     userInfo: {},
     lender: { name: 'Test User' },
     loans: [],
