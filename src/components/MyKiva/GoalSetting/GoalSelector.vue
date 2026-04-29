@@ -50,7 +50,7 @@
 			/>
 
 			<p
-				v-if="loansLastYear > 0"
+				v-if="showLoanQuestionPrompt"
 				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
 				How many loans will you make this year?
 			</p>
@@ -427,6 +427,10 @@ const goalTileAccordion = ref(null);
 const customGoalAmount = ref(null);
 const validCustomAmount = ref(null);
 const customGoalAmountError = ref('');
+
+const showLoanQuestionPrompt = computed(() => {
+	return loansLastYear.value > 0 || props.selectedCategoryId === ID_WOMENS_EQUALITY;
+});
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
