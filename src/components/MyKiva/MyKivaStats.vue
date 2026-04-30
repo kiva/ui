@@ -29,7 +29,7 @@
 		<div class="md:tw-w-3/12 tw-h-full tw-w-full tw-mt-1 tw-pt-1 md:tw-pt-0">
 			<div class="tw-flex tw-flex-col">
 				<KvButton
-					to="/lend-by-category"
+					href="/lend-by-category"
 					v-kv-track-event="['portfolio', 'click', 'find-a-loan']"
 					variant="secondary"
 				>
