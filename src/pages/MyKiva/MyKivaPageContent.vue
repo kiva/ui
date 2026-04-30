@@ -329,6 +329,10 @@ export default {
 			type: String,
 			default: null,
 		},
+		goalRecommendedLoanEnable: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup() {
 		const apollo = inject('apollo');

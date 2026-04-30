@@ -606,6 +606,12 @@ export default function useGoalData({ apollo } = {}) {
 			// For ID_SUPPORT_ALL, use totalLoanCount since it tracks total loans, not category-specific progress
 			let loanTotalAtStart;
 			if (updates.category === ID_SUPPORT_ALL) {
+				// When setting a new goal in Thanks page, we don't have a userGoal object
+				// so we have not loaded support-all loan count on loadGoalData.
+				// We need to get the total loan count in this step.
+				if (!userGoal.value?.category) {
+					yearlyLoanCount.value = await getSupportAllLoanCountByYear(GOALS_CURRENT_YEAR, 'network-only');
+				}
 				loanTotalAtStart = totalLoanCount.value || 0;
 			} else {
 				const categoryProgress = currentYearProgress.value?.find(n => n.id === updates.category);
@@ -695,6 +701,7 @@ export default function useGoalData({ apollo } = {}) {
 		tieredAchievements = [], // Tiered achievements from achievement service to calculate fresh progress
 		transactions = [], // User transactions to get purchase dates for year filtering
 		fetchPolicy = 'cache-first', // Apollo fetch policy for loading preferences
+		checkMyKivaCompletedGoalAfterLoad = false, // Flag to check if completed goal should be checked after load
 	} = {}) {
 		loading.value = true;
 		const parsedPrefs = await loadPreferences(fetchPolicy);
@@ -729,6 +736,9 @@ export default function useGoalData({ apollo } = {}) {
 		}
 		// Check and correct negative progress after loading
 		await correctNegativeProgress();
+		if (checkMyKivaCompletedGoalAfterLoad) {
+			await checkCompletedGoal({ category: 'portfolio' });
+		}
 		loading.value = false;
 	}
 

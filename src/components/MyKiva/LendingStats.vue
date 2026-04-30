@@ -192,7 +192,8 @@
 		</template>
 		<div
 			v-else-if="goalProgressLoading"
-			class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden tw--mt-6"
+			class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden"
+			:class="{ 'tw--mt-6': isNextStepsExperimentEnabled && !showPostLendingNextStepsCards }"
 		>
 			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0" />
 			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden md:tw-block" />
@@ -267,7 +268,7 @@ import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 
 import logReadQueryError from '#src/util/logReadQueryError';
-import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
+import { checkPostLendingCardCookie, removePostLendingCardCookie, MY_KIVA_CARD_HEIGHT } from '#src/util/myKivaUtils';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
 import GoalSettingModal from './GoalSettingModal';
 
@@ -361,6 +362,7 @@ export default {
 			newGoalPrefs: null,
 			showPostLendingNextStepsCards: false,
 			isUpdatingGoal: false,
+			MY_KIVA_CARD_HEIGHT,
 		};
 	},
 	computed: {
@@ -408,7 +410,6 @@ export default {
 		const goalData = inject('goalData');
 
 		return {
-			checkCompletedGoal: goalData.checkCompletedGoal,
 			hideCompletedGoalCard: goalData.hideGoalCard,
 			goalProgress: goalData.goalProgress,
 			goalProgressLoading: goalData.loading,
@@ -421,8 +422,6 @@ export default {
 		};
 	},
 	async mounted() {
-		await this.checkCompletedGoal({ category: 'portfolio' });
-
 		if (this.showRegionExperience) {
 			// Check region boxes when component comes into view
 			const { delayUntilVisible, disconnect } = useDelayUntilVisible();
@@ -486,7 +485,7 @@ export default {
 				!this.loans.length ? 'empty-state-region-recommendation' : 'region-recommendation',
 				region?.name
 			);
-			this.$router.push(`/lend/filter?country=${region?.countries.join(',')}`);
+			window.location.href = `/lend/filter?country=${region.countries.join(',')}`;
 		},
 		async setGoal(preferences) {
 			if (this.isUpdatingGoal) {
@@ -560,7 +559,7 @@ export default {
 	height: auto;
 
 	@screen md {
-		height: 390px;
+		height: v-bind('`${MY_KIVA_CARD_HEIGHT}px`');
 	}
 }
 
@@ -569,7 +568,7 @@ export default {
 
 	@screen md {
 		flex: 0 0 336px;
-		height: 390px;
+		height: v-bind('`${MY_KIVA_CARD_HEIGHT}px`');
 	}
 
 	@screen lg {

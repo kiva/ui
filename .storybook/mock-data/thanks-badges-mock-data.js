@@ -15,6 +15,33 @@ export const mockLoans = mockedReceiptData.items.values
 
 export const MOCK_OLD_BADGE_ID = 'equity';
 export const MOCK_TIERED_BADGE_ID = 'us-economic-equality';
+export const mockTieredLendingAchievementsAllCategories = [
+	{
+		id: 'womens-equality',
+		totalProgressToAchievement: 20,
+		progressForCurrentYear: 20,
+	},
+	{
+		id: 'us-economic-equality',
+		totalProgressToAchievement: 20,
+		progressForCurrentYear: 20,
+	},
+	{
+		id: 'basic-needs',
+		totalProgressToAchievement: 20,
+		progressForCurrentYear: 20,
+	},
+	{
+		id: 'climate-action',
+		totalProgressToAchievement: 20,
+		progressForCurrentYear: 20,
+	},
+	{
+		id: 'refugee-equality',
+		totalProgressToAchievement: 20,
+		progressForCurrentYear: 20,
+	},
+];
 
 export const mockUserAchievementProgress = {
 	"id": "123#class org.kiva.achievements.graphql.entity.UserAchievements",

@@ -1,3 +1,72 @@
+## [3.66.0-rc.1](https://github.com/kiva/ui/compare/v3.65.0...v3.66.0-rc.1) (2026-04-30)
+
+### 🎉 New Features
+
+* [MP-2686] - Remove code for new_mykiva_hero_enable experiment ([b2f2391](https://github.com/kiva/ui/commit/b2f239140a89fa8fa4e1304f7efb3af4f27e17a1))
+* [MP-2705] - Error message updates for custom goal amount ([d8cb1b5](https://github.com/kiva/ui/commit/d8cb1b57bfbc96a960af3643e56cc1b1748affdf))
+* [MP-2705] - eslint fixes ([4c0e539](https://github.com/kiva/ui/commit/4c0e539ecbc7f82fb974601fa2380ba10cd30fe4))
+* [MP-2705] - more extra test case for happy path ([dc45677](https://github.com/kiva/ui/commit/dc45677ee34222aaf7dfb5bc735f8451ea5c8188))
+* [MP-2705] - new test cases for custom goal amount error ([4ea77c0](https://github.com/kiva/ui/commit/4ea77c0189c71a54a7c0d78e7fa3c7516eec4509))
+* [MP-2760] - fix padding top & bottom ([3c3727a](https://github.com/kiva/ui/commit/3c3727abb8b1cf8f350deacf3c766735617c7ef7))
+* [MP-2760] - hidden 'last year' copy for mykiva goal tile variant on goal card ([0f89957](https://github.com/kiva/ui/commit/0f89957799cf21f276a36b8aa4f4e9a8fbbd64be))
+* [MP-2760] - remove auto vs code import ([d6e7b2f](https://github.com/kiva/ui/commit/d6e7b2f049221da2ddccac3ae19c8217e4de594e))
+* add copy changes to thanks page goal module ([64654a5](https://github.com/kiva/ui/commit/64654a55369d34679bb2d5f97050d2aa324bfda2))
+* change bundle size based on balance ([#6858](https://github.com/kiva/ui/issues/6858)) ([5b605ca](https://github.com/kiva/ui/commit/5b605caf56fa3913412f5b5fbd9903689079145e))
+* checkout kiva credit replacement ([#6837](https://github.com/kiva/ui/issues/6837)) ([9b81e3d](https://github.com/kiva/ui/commit/9b81e3d62d1fe795b23d3e5c3bfe10a530259eda))
+* donation context fix (including receipt) ([cb0d306](https://github.com/kiva/ui/commit/cb0d306b6eece09dd57a5d16e3c2e3718f9eed51))
+* donation opt-in module ordering fix ([1cc0d2c](https://github.com/kiva/ui/commit/1cc0d2c92a9d3007d36d5b5170c756dfd211e736))
+* ensuring achievement cards are displayed ([#6855](https://github.com/kiva/ui/issues/6855)) ([eeeb931](https://github.com/kiva/ui/commit/eeeb931ae894442b2b3ceb96f939301b56e1e644))
+* filter routes fixed ([#6869](https://github.com/kiva/ui/issues/6869)) ([3b8fe6b](https://github.com/kiva/ui/commit/3b8fe6ba1d7133b96c1a81822e0400f5501668d0))
+* flag added to ty page for goal recommended loan ([#6871](https://github.com/kiva/ui/issues/6871)) ([ad8ed38](https://github.com/kiva/ui/commit/ad8ed38c14d7d6a894149ca101cd6d168e522e1f))
+* goal custom amount validation ([#6845](https://github.com/kiva/ui/issues/6845)) ([1d5f8df](https://github.com/kiva/ui/commit/1d5f8df266615fc3527b731a153f54ee129ed2f6))
+* goal recommended loan flag added to mykiva an goal setting pages ([#6872](https://github.com/kiva/ui/issues/6872)) ([2cb3d82](https://github.com/kiva/ui/commit/2cb3d82ab82d1e6cdd481f5662ad6c9fdf692a4f))
+* goal selector update for flexible goals ([#6857](https://github.com/kiva/ui/issues/6857)) ([ec97b5c](https://github.com/kiva/ui/commit/ec97b5ce37ddcf60960d20ac6e987ec69511114b))
+* lending pointers update to test ([#6863](https://github.com/kiva/ui/issues/6863)) ([cc88a89](https://github.com/kiva/ui/commit/cc88a8958ed6a2c377d00d2485ae6c30ff95971f))
+* lending routes fix ([#6868](https://github.com/kiva/ui/issues/6868)) ([1aa7dad](https://github.com/kiva/ui/commit/1aa7dad5720b907e11d87fb5e8312c161356cfa7))
+* **LoanStory:** image/video carousel using loan.figures ([4ed62c8](https://github.com/kiva/ui/commit/4ed62c873692898ea3d623749f5f903be04a90ac))
+* more lending links update ([#6866](https://github.com/kiva/ui/issues/6866)) ([a749187](https://github.com/kiva/ui/commit/a7491870275873e7ac76df291a7cd931c79ad1e8))
+* remove tracking events ([#6860](https://github.com/kiva/ui/issues/6860)) ([993a162](https://github.com/kiva/ui/commit/993a1620107b0d345bbaa68a33ad46bdba0c6db4))
+* removed prop initialization ([3a8ae5e](https://github.com/kiva/ui/commit/3a8ae5eaa5a9f5b9d6f2a8e3c321365784899d67))
+* tracking events added for custom goal amount ([#6849](https://github.com/kiva/ui/issues/6849)) ([a633d02](https://github.com/kiva/ui/commit/a633d02f08ad88306e59bb37b5c86242e8ac6315))
+
+### 🐛 Bugfixes
+
+* add completed goal logic to my kiva page ([a2ffc1b](https://github.com/kiva/ui/commit/a2ffc1bafe4fe802fe0e27284ee51672b9a966d3))
+* add condition to avoid repeating copy in header after editing category ([#6873](https://github.com/kiva/ui/issues/6873)) ([15cacb0](https://github.com/kiva/ui/commit/15cacb04bca39a59c8e09213e32c5a6bd1a9b4f6))
+* add constant height to next steps page ([3c32c96](https://github.com/kiva/ui/commit/3c32c962339fbcf13d40113d85dd06033e3c9712))
+* add constant of card height ([6f06ab1](https://github.com/kiva/ui/commit/6f06ab1adebad04c70cbeea6d46171190eeae39a))
+* add extra padding to edit button to align with title ([332a08f](https://github.com/kiva/ui/commit/332a08f8511fbb85831aaced7e93b3466bfda221))
+* adjust spacing in goal card header ([afd7977](https://github.com/kiva/ui/commit/afd7977a792a99952a7ea1a8fdaf468946b05a58))
+* align edit button at the top of the card ([10d53aa](https://github.com/kiva/ui/commit/10d53aa214d6cbf6bae7b89fe9e639f03caaf15b))
+* apply same logic to my kiva progress card ([594c9b1](https://github.com/kiva/ui/commit/594c9b1df52ceaa0514b513a6b286d1d6361a028))
+* cleanup percentiles tabs due to kvtabs fixes ([#6841](https://github.com/kiva/ui/issues/6841)) ([6101b66](https://github.com/kiva/ui/commit/6101b66c540afa662efe52321442cd4592cc79b4))
+* condition to show loan question prompt ([#6874](https://github.com/kiva/ui/issues/6874)) ([6e89c8e](https://github.com/kiva/ui/commit/6e89c8eb987ab5c06d036fb1ae2e4acb2ac3f61d))
+* copy issues and storybook missing config ([a470f5f](https://github.com/kiva/ui/commit/a470f5fe62cc6d32c46a3e307e8fe8fee6a402ac))
+* handle line breaks in team messages [CP-2515] ([#6843](https://github.com/kiva/ui/issues/6843)) ([234bf91](https://github.com/kiva/ui/commit/234bf91ebe1fe02e844dfb3beb5be0a052f74f90))
+* lint ([948c550](https://github.com/kiva/ui/commit/948c55084ff70dca10b1cb1ed511d48d9b0374f6))
+* lint ([2aba085](https://github.com/kiva/ui/commit/2aba085a755ff1703bcc90c4e792ce5af28e74eb))
+* load yearly loan count when setting a goal in ty page ([#6870](https://github.com/kiva/ui/issues/6870)) ([177285a](https://github.com/kiva/ui/commit/177285ac1dd7ae2d3b3d8cc4e48b9c1b63ae2ebd))
+* **LoanFigureCarousel:** import KvCarousel synchronously ([c935b54](https://github.com/kiva/ui/commit/c935b541e4fab4e5f9f5ff885917cb371ca39282))
+* missing exclamation symbol and storybook config ([a9602ed](https://github.com/kiva/ui/commit/a9602edb961a08302c0edfbcca565e1fbbae7b3f))
+* mykiva page test ([c1887b2](https://github.com/kiva/ui/commit/c1887b27378942af9c9efb1ab6a3e2e1b58b5e03))
+* mykiva route fix ([#6875](https://github.com/kiva/ui/issues/6875)) ([5209485](https://github.com/kiva/ui/commit/52094859611518ecbe674e9c300277fcdaa940c0))
+* next year goal card stories and progress ring values ([43b45de](https://github.com/kiva/ui/commit/43b45de4ebc34a36031edd452d66a15dafab7885))
+* one more mykiva next steps loader adjustment ([#6856](https://github.com/kiva/ui/issues/6856)) ([302d3dc](https://github.com/kiva/ui/commit/302d3dc5c727e87ad493c78e03bf204b6c54a742))
+* set card height constant in a shared file ([7942051](https://github.com/kiva/ui/commit/7942051c2a706b118a26eb391ea89045fa121045))
+* situation where achievement cards could be duplicate ([#6838](https://github.com/kiva/ui/issues/6838)) ([0d4be31](https://github.com/kiva/ui/commit/0d4be31d6eb7cd7b662e6c527bdabfc85a41391d))
+* tweaks to expiring soon upsell following qa ([#6842](https://github.com/kiva/ui/issues/6842)) ([f9ab9f7](https://github.com/kiva/ui/commit/f9ab9f74991e04aa90f293284fabdb6f24d676dd))
+* update copy in tests ([6735b8b](https://github.com/kiva/ui/commit/6735b8bd3be304d2daf401a28c6f1f2db274ce8e))
+* update women category description ([eab1483](https://github.com/kiva/ui/commit/eab148307166a35f647fe0724377d7c5dd6ac642))
+
+### 🪚 Refactors
+
+* call completed goal check method on load goal data for my kiva ([3a3e4e5](https://github.com/kiva/ui/commit/3a3e4e543249c81f050be774d16e61135df30d43))
+* **LoanFigureCarousel:** keep video slides at the image aspect ratio ([0038339](https://github.com/kiva/ui/commit/003833930955145113e8d46f16449f950e42a52e))
+
+### 🧹 Chores
+
+* update kv-tokens to v4 along with latest kv-components and kv-shop ([d848060](https://github.com/kiva/ui/commit/d84806066b29eabac4828a4aacb1b52e0520088f))
+
 ## [3.65.0](https://github.com/kiva/ui/compare/v3.64.0...v3.65.0) (2026-04-15)
 
 ### 🎉 New Features

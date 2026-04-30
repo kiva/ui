@@ -38,7 +38,6 @@
 				>
 				<h2
 					class="tw-px-4 lg:tw-px-7 tw-text-center"
-					:class="{ 'tw-mb-1.5 lg:tw-mb-3': !subtitleText }"
 					style="line-height: 125%;"
 					v-html="titleText"
 				>
@@ -50,12 +49,11 @@
 				class="!tw-w-full !tw-h-4 !tw-rounded"
 			/>
 
-			<div
-				v-else-if="subtitleText"
-				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
-			>
-				{{ subtitleText }}
-			</div>
+			<p
+				v-if="showLoanQuestionPrompt"
+				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
+				How many loans will you make this year?
+			</p>
 
 			<div
 				class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5 tw-my-1"
@@ -75,73 +73,83 @@
 						:option-text="option.optionText"
 						:selected="option.selected"
 						:highlighted-text="option.highlightedText"
+						:custom-goal-amount-enable="customGoalAmountEnable"
 						@click="updateOptionSelection(index)"
 					/>
 					<!-- Custom goal amount option, only shown if experiment flag is enabled -->
 					<div
 						v-if="customGoalAmountEnable"
-						class="tw-flex lg:tw-flex-col tw-justify-between lg:tw-justify-center tw-items-center
-							tw-border-2 tw-border-gray-200 tw-rounded tw-p-2 tw-cursor-pointer tw-gap-1"
+						class="tw-border-2 tw-border-gray-200 tw-rounded tw-px-2 tw-py-1 lg:tw-py-2 tw-cursor-pointer
+							tw-gap-1"
 						:class="{ '!tw-border-eco-green-3 tw-bg-eco-green-1 !tw-py-1.5 lg:tw-py-2': isCustomIndex }"
 						@click="updateOptionSelection(CUSTOM_LOAN_NUMBER_INDEX)"
 					>
-						<div class="tw-text-eco-green-3 tw-text-center tw-flex tw-items-center tw-gap-1">
-							<span class="tw-text-h1 lg:tw-text-h2 tw--mt-1">
-								&#43;
-							</span>
-							<span class="lg:tw-hidden tw-text-base !tw-font-medium">
-								Custom
-							</span>
-						</div>
-						<div class="tw-text-primary tw-font-medium tw-text-h5 tw-text-center">
-							<span class="tw-hidden lg:tw-inline">
-								Custom
-							</span>
-							<div class="tw-flex tw-flex-col tw-items-start tw-gap-0.5">
-								<span
-									class="tw-font-medium lg:tw-hidden"
-									:class="{ 'tw-text-small': isCustomIndex }"
-								>
-									Set your number
+						<div
+							class="tw-flex lg:tw-flex-col tw-justify-between
+							lg:tw-justify-center tw-items-center tw-gap-1"
+						>
+							<div class="tw-text-eco-green-3 tw-text-center tw-flex tw-items-center tw-gap-1">
+								<span class="tw-text-h1 lg:tw-text-h2 tw--mt-1">
+									&#43;
 								</span>
-								<input
-									v-if="isCustomIndex"
-									type="number"
-									name="customGoalAmount"
-									v-model="customGoalAmount"
-									class="lg:tw-hidden tw-rounded-sm tw-border-2 tw-border-gray-400 tw-px-1.5 tw-py-0.5
-										tw-min-h-5 tw-ring-inset focus:tw-outline-none focus:tw-ring-0
-										focus:tw-border-gray-400 custom-input"
-									placeholder="Add number"
-									style="max-width: 136px;"
-									@input="validateCustomAmount"
-									autofocus
-								>
+								<span class="lg:tw-hidden tw-text-base !tw-font-medium">
+									Custom
+								</span>
 							</div>
+							<div class="tw-text-primary tw-font-medium tw-text-h5 tw-text-center">
+								<span class="tw-hidden lg:tw-inline">
+									Custom
+								</span>
+								<div class="tw-flex tw-flex-col tw-items-start tw-gap-0.5">
+									<span
+										class="tw-font-medium lg:tw-hidden"
+										:class="{ 'tw-text-small': isCustomIndex }"
+									>
+										Set your number
+									</span>
+									<GoalCustomAmountInput
+										v-if="isCustomIndex"
+										class="lg:tw-hidden"
+										is-mobile
+										:valid-custom-amount="validCustomAmount"
+										:loan-value="customGoalAmount"
+										@validate-custom-amount="validateCustomAmount"
+										style="max-width: 136px;"
+									/>
+								</div>
+							</div>
+						</div>
+						<div
+							v-if="validCustomAmount === false"
+							class="lg:tw-hidden tw-text-danger-highlight tw-text-small tw-mt-1"
+							v-html="customGoalAmountError"
+						>
 						</div>
 					</div>
 				</template>
 			</div>
 
 			<div
-				v-if="customGoalAmountEnable && isCustomIndex"
-				class="tw-hidden lg:tw-flex tw-justify-between tw-bg-eco-green-1 tw-px-2.5 tw-py-1.5 tw-w-full
-					tw-rounded-sm tw-items-center"
+				v-if="customGoalAmountEnable && isCustomIndex && !loadingCurrentYear && !isLoadingData"
+				class="tw-hidden lg:tw-flex tw-flex-col tw-bg-eco-green-1 tw-px-2.5 tw-py-1.5 tw-w-full
+					tw-rounded-sm"
 			>
-				<div class="tw-text-base">
-					Customize your number of loans
+				<div class="tw-flex tw-justify-between tw-items-center">
+					<div class="tw-text-base">
+						Customize your number of loans
+					</div>
+					<GoalCustomAmountInput
+						:valid-custom-amount="validCustomAmount"
+						:loan-value="customGoalAmount"
+						@validate-custom-amount="validateCustomAmount"
+						style="max-width: 148px;"
+					/>
 				</div>
-				<input
-					type="number"
-					name="customGoalAmount"
-					v-model="customGoalAmount"
-					class="tw-rounded-sm tw-border-2 tw-border-gray-400 tw-px-1.5 tw-py-0.5
-						tw-ring-inset focus:tw-outline-none focus:tw-ring-0 focus:tw-border-gray-400 custom-input"
-					placeholder="Add number"
-					style="max-width: 148px;"
-					@input="validateCustomAmount"
-					autofocus
-				>
+				<div
+					v-if="validCustomAmount === false"
+					class="tw-text-right tw-text-danger-highlight tw-text-small tw-mt-1"
+					v-html="customGoalAmountError"
+				></div>
 			</div>
 
 			<template
@@ -198,11 +206,14 @@
 				</KvAccordionItem>
 			</template>
 
+			<p v-if="subtitleText" v-html="subtitleText" class="tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
+			</p>
+
 			<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
 				<KvButton
 					class="tw-w-full tw-mt-1.5"
 					@click="handleContinue"
-					:disabled="isLoadingData || loadingCurrentYear"
+					:disabled="isLoadingData || loadingCurrentYear || (isCustomIndex && validCustomAmount !== true)"
 				>
 					{{ buttonText }}
 				</KvButton>
@@ -241,6 +252,7 @@ import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL, ID_US_ECONOMIC_EQUALITY } from '#sr
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
+import GoalCustomAmountInput from '#src/components/MyKiva/GoalSetting/GoalCustomAmountInput';
 import useGoalData, { LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
 import useBreakpoints from '#src/composables/useBreakpoints';
 
@@ -413,6 +425,8 @@ const allowBackToCategorySelection = ref(false);
 const isGoalTileOpened = ref(false);
 const goalTileAccordion = ref(null);
 const customGoalAmount = ref(null);
+const validCustomAmount = ref(null);
+const customGoalAmountError = ref('');
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -420,6 +434,10 @@ const loansLastYear = computed(() => {
 	}
 
 	return getCategoryLoansLastYear(props.tieredAchievements, props.selectedCategoryId);
+});
+
+const showLoanQuestionPrompt = computed(() => {
+	return loansLastYear.value > 0 || props.selectedCategoryId === ID_WOMENS_EQUALITY;
 });
 
 // Use progressForCurrentYear from tieredAchievements if available (set on Thanks page),
@@ -463,7 +481,24 @@ const loadLoansThisYear = async () => {
 const titleText = computed(() => {
 	// Default title if no lending history and category is ID_WOMENS_EQUALITY
 	if (props.selectedCategoryId === ID_WOMENS_EQUALITY && loansLastYear.value === 0) {
-		return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
+		return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year!';
+	}
+
+	if (loansLastYear.value > 0) {
+		let categoryName = '';
+
+		if (props.selectedCategoryId === ID_SUPPORT_ALL) {
+			categoryName = 'people';
+		} else if (props.selectedCategoryId === ID_US_ECONOMIC_EQUALITY) {
+			categoryName = 'U.S. entrepreneurs';
+		} else if (props.selectedCategoryId === ID_WOMENS_EQUALITY) {
+			categoryName = 'women';
+		} else {
+			categoryName = `${props.selectedCategoryName?.toLowerCase()}`;
+		}
+
+		// eslint-disable-next-line max-len
+		return `Last year, you helped <br><span class="tw-text-eco-green-3">${loansLastYear.value} ${categoryName}</span> shape their futures!`;
 	}
 
 	// Support All is not a specific category, so use generic language
@@ -479,7 +514,9 @@ const titleText = computed(() => {
 
 const subtitleText = computed(() => {
 	if (loansThisYear.value > 0) {
-		return `You've already made ${loansThisYear.value} that will count`;
+		const loanWord = loansThisYear.value === 1 ? 'loan' : 'loans';
+		// eslint-disable-next-line max-len
+		return `You've already made <span class="tw-font-medium">${loansThisYear.value} ${loanWord}</span> that will count`;
 	}
 	return '';
 });
@@ -512,6 +549,10 @@ const localGoalProgressPercentage = computed(() => {
 	return Math.min(Math.round((loansThisYear.value / effectiveGoalLoans.value) * 100), 100);
 });
 
+const minCustomAmount = computed(() => {
+	return loansThisYear.value > 1 ? loansThisYear.value + 1 : 2;
+});
+
 const resetOptionSelection = selectedIndex => {
 	isGoalTileOpened.value = false;
 	goalTileAccordion.value?.collapse();
@@ -519,6 +560,8 @@ const resetOptionSelection = selectedIndex => {
 		...option,
 		selected: index === selectedIndex,
 	}));
+	validCustomAmount.value = null;
+	customGoalAmount.value = null;
 };
 
 const updateOptionSelection = selectedIndex => {
@@ -536,8 +579,23 @@ const updateOptionSelection = selectedIndex => {
 	}
 };
 
-const validateCustomAmount = () => {
-	emit('set-goal-target', selectedTarget.value);
+const validateCustomAmount = value => {
+	customGoalAmount.value = value;
+	const amount = Number(value);
+
+	if (loansThisYear.value > 1 && amount < minCustomAmount.value) {
+		const loanWord = loansThisYear.value === 1 ? 'loan' : 'loans';
+		validCustomAmount.value = false;
+		// eslint-disable-next-line max-len
+		customGoalAmountError.value = `Enter a number higher than the <strong>${loansThisYear.value} ${loanWord}</strong> you’ve already made this year`;
+	} else if (!value || Number.isNaN(amount) || amount <= 1) {
+		validCustomAmount.value = false;
+		customGoalAmountError.value = 'Your goal must be a valid number above 1 loan';
+	} else {
+		validCustomAmount.value = true;
+		customGoalAmountError.value = '';
+		emit('set-goal-target', selectedTarget.value);
+	}
 };
 
 const editGoal = () => {
@@ -582,6 +640,15 @@ const handleContinue = () => {
 		props.selectedCategoryId,
 		selectedTarget.value
 	);
+
+	if (isCustomIndex.value) {
+		$kvTrackEvent(
+			props.trackingCategory,
+			'click',
+			'custom-goal-set',
+			selectedTarget.value
+		);
+	}
 	if (props.isUpdatingGoal) {
 		emit('update-goal', preferences);
 	} else {
@@ -705,6 +772,11 @@ watch(() => props.selectedCategoryId, async newCategory => {
 	if (newCategory === ID_SUPPORT_ALL) {
 		prevSupportAllCount.value = await getSupportAllLoanCountByYear(LAST_YEAR_KEY);
 	}
+
+	customGoalAmount.value = '';
+	validCustomAmount.value = null;
+	customGoalAmountError.value = '';
+	updateOptionSelection(1);
 });
 
 </script>
@@ -736,17 +808,5 @@ watch(() => props.selectedCategoryId, async newCategory => {
 
 :deep(.goal-tile-accordion ul li > span svg) {
 	@apply !tw-text-primary;
-}
-
-/* Chrome, Safari, Edge, Opera */
-.custom-input::-webkit-outer-spin-button,
-.custom-input::-webkit-inner-spin-button {
-  appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-.custom-input[type=number] {
-  appearance: textfield;
 }
 </style>

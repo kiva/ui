@@ -103,12 +103,15 @@
 							data-testid="order-totals-section"
 							:totals="totals"
 							:promo-fund="derivedPromoFund"
+							:open-lightbox="openMatchedLoansLightbox"
+							:is-kiva-credit-replacement-exp-enabled="isKivaCreditReplacementExpEnabled"
 							@refreshtotals="refreshTotals"
 							@updating-totals="setUpdatingTotals"
-							:open-lightbox="openMatchedLoansLightbox"
 						/>
 
-						<basket-verification />
+						<basket-verification
+							:is-kiva-credit-replacement-exp-enabled="isKivaCreditReplacementExpEnabled"
+						/>
 
 						<div ref="checkoutActionsThreshold"></div>
 
@@ -269,15 +272,15 @@
 					<p class="tw-mb-2">
 						But we'd love to help you change that! Please consider
 						supporting one of the borrowers below, or
-						<router-link
-							to="/lend-by-category"
+						<a
+							href="/lend-by-category"
 							data-testid="empty-basket-loans-link"
 							v-kv-track-event="
 								['basket', 'click-empty-basket-browse-all-loans', 'browse all loans']
 							"
 						>
 							browse all loans
-						</router-link>.
+						</a>.
 					</p>
 				</div>
 
@@ -372,6 +375,7 @@ const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_enable';
 const EXPIRING_SOON_EXP_KEY = 'checkout_expiring_soon_upsell';
+const KIVA_CREDIT_REPLACEMENT_EXP_KEY = 'checkout_kiva_credit_copy_replacement';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -487,6 +491,7 @@ export default {
 			mdiGiftOutline,
 			isBanditUpsellExpEnabled: false,
 			isExpiringSoonExpEnabled: false,
+			isKivaCreditReplacementExpEnabled: false,
 		};
 	},
 	apollo: {
@@ -524,6 +529,7 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: CHECKOUT_LOGIN_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: KIVA_CREDIT_REPLACEMENT_EXP_KEY } }), // eslint-disable-line max-len
 					]);
 				})
 				.then(response => {
@@ -668,6 +674,19 @@ export default {
 				&& this.totals?.bonusAvailableTotal <= 0 && getPromoCreditBannerCookie(this.cookieStore)) {
 			clearPromoCreditBannerCookie(this.cookieStore);
 		}
+
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			KIVA_CREDIT_REPLACEMENT_EXP_KEY,
+			version => {
+				this.isKivaCreditReplacementExpEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-2577-Apr2026',
+			'basket',
+		);
 	},
 	watch: {
 		async emptyBasket(newValue) {
@@ -842,6 +861,9 @@ export default {
 				? getKivaLendingCreditCookie(this.cookieStore)
 				: this.totals?.bonusAvailableTotal;
 			return numeral(amount).format('$0,0');
+		},
+		isKivaCreditText() {
+			return this.isKivaCreditReplacementExpEnabled ? 'Account balance' : 'Kiva Credit';
 		},
 	},
 	methods: {
@@ -1020,8 +1042,8 @@ export default {
 			// Handle incoming Instant Donation status
 			const instantDonationStatus = this.$route?.query?.instantDonation ?? null;
 			if (instantDonationStatus === 'insufficient-funds' || instantDonationStatus === 'donation-failed') {
-				const instantDonationFailed = `Heads up! You don't have enough Kiva credit in your account.
-					Hit "Continue" to login to check your Kiva credit balance and adjust your donation
+				const instantDonationFailed = `Heads up! You don't have enough ${this.isKivaCreditText} in your account.
+					Hit "Continue" to login to check your ${this.isKivaCreditText} balance and adjust your donation
 					amount accordingly.`;
 				const toastTimeout = setTimeout(() => {
 					this.$showTipMsg(instantDonationFailed, 'warning', true);

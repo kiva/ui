@@ -52,7 +52,7 @@
 		>
 			<template v-if="showRemoveKivaCredit">
 				<div class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1">
-					{{ isCorporateCampaign ? 'Remaining Kiva credit:' : 'Kiva Credit:' }}
+					{{ removeKivaCreditText }}
 				</div>
 				<div
 					class="tw-flex-none tw-w-auto tw-flex tw-items-center"
@@ -76,7 +76,7 @@
 			</template>
 			<template v-if="showApplyKivaCredit">
 				<div class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1">
-					<del>Kiva Credit:</del>
+					<del>{{ isKivaCreditText }}:</del>
 				</div>
 				<div
 					class="tw-flex-none tw-w-auto tw-flex"
@@ -230,6 +230,7 @@ import {
 } from '#src/util/experiment/experimentUtils';
 import DonationItem from '#src/components/Checkout/DonationItem';
 import { mdiClose } from '@mdi/js';
+import kivaCreditReplacement from '#src/plugins/kiva-credit-replacement-mixin';
 
 export default {
 	name: 'OrderTotals',
@@ -240,6 +241,7 @@ export default {
 		KvMaterialIcon
 	},
 	inject: ['apollo', 'cookieStore'],
+	mixins: [kivaCreditReplacement],
 	emits: [
 		'refreshtotals',
 		'updating-totals',
@@ -257,7 +259,7 @@ export default {
 		openLightbox: {
 			type: Function,
 			default: () => {}
-		}
+		},
 	},
 	data() {
 		return {
@@ -397,6 +399,12 @@ export default {
 		isCorporateCampaign() {
 			return isCCPage(this.$route);
 		},
+		removeKivaCreditText() {
+			// eslint-disable-next-line no-nested-ternary
+			return !this.isCorporateCampaign
+				? (this.isKivaCreditReplacementExpEnabled ? 'Account balance:' : 'Kiva Credit:')
+				: 'Remaining Kiva credit:';
+		}
 	},
 	methods: {
 		addCredit(type) {

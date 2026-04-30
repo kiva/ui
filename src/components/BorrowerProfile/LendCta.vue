@@ -171,7 +171,7 @@
 							v-if="showNonActionableLoanButton"
 							class="tw-inline-flex tw-flex-1"
 							data-testid="bp-lend-cta-non-actionable-loan-button"
-							to="/lend-by-category"
+							href="/lend-by-category"
 							v-kv-track-event="[
 								'Lending',
 								'Non actionable loan',

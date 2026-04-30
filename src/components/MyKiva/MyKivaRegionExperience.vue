@@ -128,7 +128,6 @@ import {
 	onBeforeUnmount,
 	nextTick,
 } from 'vue';
-import { useRouter } from 'vue-router';
 import { KvMaterialIcon, KvCheckbox, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 
@@ -142,6 +141,7 @@ import MiddleEast from '#src/assets/images/my-kiva/Middle East.png';
 import NorthAmerica from '#src/assets/images/my-kiva/North America.png';
 import Oceania from '#src/assets/images/my-kiva/Oceania.png';
 import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
+import { MY_KIVA_CARD_HEIGHT } from '#src/util/myKivaUtils';
 
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 
@@ -162,7 +162,6 @@ const props = defineProps({
 });
 
 const $kvTrackEvent = inject('$kvTrackEvent');
-const router = useRouter();
 
 const regionElement = ref(null);
 
@@ -217,7 +216,7 @@ const handleRecommendRegionClick = region => {
 		!props.loans.length ? 'empty-state-region-recommendation' : 'region-recommendation',
 		region?.name
 	);
-	router.push(`/lend/filter?country=${region?.countries.join(',')}`);
+	window.location.href = `/lend/filter?country=${region.countries.join(',')}`;
 };
 
 const startCheckAnimation = () => {
@@ -264,7 +263,7 @@ onBeforeUnmount(() => {
 .stats-wrapper {
 
 	@screen md {
-		height: 390px;
+		height: v-bind('`${MY_KIVA_CARD_HEIGHT}px`');
 	}
 }
 

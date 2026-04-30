@@ -115,14 +115,7 @@
 				</div>
 			</template>
 			<template #tabPanels>
-				<div
-					v-if="activeTab === TAB_YTD"
-					id="kv-tab-panel-ytd"
-					class="tw--mt-1"
-					role="tabpanel"
-					aria-labelledby="kv-tab-ytd"
-					tabindex="0"
-				>
+				<kv-tab-panel id="ytd" class="tw--mt-1">
 					<!-- Current year Panel -->
 					<kv-loading-placeholder
 						v-if="loading"
@@ -217,15 +210,8 @@
 							</router-link>
 						</div>
 					</kv-grid>
-				</div>
-				<div
-					v-else
-					id="kv-tab-panel-lifetime"
-					class="tw--mt-1"
-					role="tabpanel"
-					aria-labelledby="kv-tab-lifetime"
-					tabindex="0"
-				>
+				</kv-tab-panel>
+				<kv-tab-panel id="lifetime" class="tw--mt-1">
 					<!-- Lifetime Panel -->
 					<kv-grid as="dl" class="stats-overall-container">
 						<!-- Lending percentile -->
@@ -309,7 +295,7 @@
 							</router-link>
 						</div>
 					</kv-grid>
-				</div>
+				</kv-tab-panel>
 			</template>
 		</kv-tabs>
 		<div class="tw-flex tw-items-center tw-justify-center tw-whitespace-nowrap tw-gap-0.5 tw-pt-1">
@@ -330,7 +316,7 @@ import numeral from 'numeral';
 import getCacheKey from '#src/util/getCacheKey';
 import { mdiArrowRight, mdiClockOutline } from '@mdi/js';
 import {
-	KvGrid, KvLoadingPlaceholder, KvMaterialIcon, KvTab, KvTabs,
+	KvGrid, KvLoadingPlaceholder, KvMaterialIcon, KvTab, KvTabPanel, KvTabs,
 } from '@kiva/kv-components';
 import { differenceInCalendarDays } from 'date-fns';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
@@ -355,8 +341,6 @@ const LENDING_INSIGHTS_LIFETIME_QUERY = gql`query lendingInsights {
 	}
 }`;
 
-const TAB_YTD = 'ytd';
-const TAB_LIFETIME = 'lifetime';
 const MAX_PERCENTILE = 99;
 const SUPER_LENDER_THRESHOLD = 10000;
 const DEFAULT_NEXT_THRESHOLD = '$25';
@@ -374,13 +358,13 @@ export default {
 		KvLoadingPlaceholder,
 		KvMaterialIcon,
 		KvTab,
+		KvTabPanel,
 		KvTabs,
 	},
 	inject: ['apollo', 'cookieStore'],
 	serverCacheKey: () => getCacheKey('LendingInsights'),
 	data() {
 		return {
-			TAB_YTD,
 			MAX_PERCENTILE,
 			mdiArrowRight,
 			mdiClockOutline,
@@ -389,7 +373,6 @@ export default {
 			lifetimeLoadingPromise: null,
 			hasCurrentYearStats: false,
 			hasLifetimeStats: false,
-			activeTab: TAB_YTD,
 			currentYearAmountLent: 0,
 			currentYearCountryCount: 0,
 			currentYearNumberOfLoans: 0,
@@ -453,8 +436,7 @@ export default {
 			}
 		},
 		setActiveTab(tab) {
-			this.activeTab = tab === TAB_LIFETIME || tab === 1 ? TAB_LIFETIME : TAB_YTD;
-			if (this.activeTab === TAB_YTD) {
+			if (tab === 0) {
 				this.$kvTrackEvent(
 					'portfolio',
 					'show',

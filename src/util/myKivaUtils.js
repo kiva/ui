@@ -2,11 +2,11 @@ import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchiev
 import logReadQueryError from '#src/util/logReadQueryError';
 
 export const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
-export const MY_KIVA_HERO_ENABLE_KEY = 'new_mykiva_hero_enable';
 export const TRANSACTION_LOANS_KEY = 'loan_purchase';
 export const POST_LENDING_NEXT_STEPS_COOKIE = 'my_kiva_post_lending_next_steps';
 // Fresh-progress reconciliation window: last 15 minutes.
 export const RECENT_TRANSACTION_WINDOW_MS = 15 * 60 * 1000;
+export const MY_KIVA_CARD_HEIGHT = 417;
 
 /**
  * Returns transaction timestamp (ms) preferring effectiveTime with createTime fallback.

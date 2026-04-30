@@ -55,7 +55,7 @@
 						'View',
 						teamName
 					]"
-					:to="`/lend/filter?team=${teamPublicId}`" variant="caution"
+					:href="`/lend/filter?team=${teamPublicId}`" variant="caution"
 				>
 					View
 				</kv-button>

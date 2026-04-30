@@ -14,7 +14,7 @@
 			</p>
 
 			<button
-				class="tw-flex tw-gap-0.5 tw-items-center tw-text-h5 hover:tw-underline tw-text-action"
+				class="tw-flex tw-gap-0.5 tw-items-center tw-text-h5 hover:tw-underline tw-text-action tw-pt-0.5"
 				v-if="!isModalVariant && goalEditingEnable"
 				@click="handleEditGoal"
 			>
@@ -46,11 +46,18 @@
 				style="height: 190px; width: 190px;"
 			/>
 			<div class="tw-absolute tw-flex tw-flex-col tw-items-center tw-justify-center tw-inset-0 tw--mt-1">
-				<div class="tw-flex tw-items-baseline tw-justify-center tw-gap-0">
-					<h1>{{ visibleGoalLoans }}</h1>
-					<h2 class="tw-text-secondary">
+				<div
+					class="tw-max-w-30 tw-flex tw-items-center tw-justify-center tw-gap-0"
+					:class="useStackedProgressValue
+						? 'tw-flex-col tw-pt-2'
+						: 'tw-flex-row tw-items-baseline'"
+				>
+					<component :is="progressValueHeadingTag" class="tw-leading-none">
+						{{ visibleGoalLoans }}
+					</component>
+					<component :is="goalTargetHeadingTag" class="tw-text-secondary tw-leading-tight">
 						/{{ goalLoans }}
-					</h2>
+					</component>
 				</div>
 				<p class="tw-text-secondary">
 					{{ progressCircleDesc }}
@@ -103,6 +110,9 @@ import {
 	ID_US_ECONOMIC_EQUALITY,
 } from '#src/composables/useBadgeData';
 import useBreakpoints from '#src/composables/useBreakpoints';
+
+const STACKED_PROGRESS_DIGIT_THRESHOLD = 3;
+const SMALL_HEADING_DIGIT_THRESHOLD = 5;
 
 const props = defineProps({
 	/**
@@ -199,10 +209,26 @@ const router = useRouter();
 const { isLarge } = useBreakpoints();
 
 const yearToDate = new Date().getFullYear();
+const getDigitCount = value => String(value ?? 0).length;
 
 const visibleGoalLoans = computed(() => {
 	return Math.min(props.goalProgress, props.goalLoans);
 });
+
+const visibleGoalLoanDigits = computed(() => getDigitCount(visibleGoalLoans.value));
+const goalTargetDigits = computed(() => getDigitCount(props.goalLoans));
+
+const useStackedProgressValue = computed(() => {
+	return visibleGoalLoanDigits.value >= STACKED_PROGRESS_DIGIT_THRESHOLD;
+});
+
+const progressValueHeadingTag = computed(() => (
+	visibleGoalLoanDigits.value < SMALL_HEADING_DIGIT_THRESHOLD ? 'h1' : 'h2'
+));
+
+const goalTargetHeadingTag = computed(() => (
+	goalTargetDigits.value < SMALL_HEADING_DIGIT_THRESHOLD ? 'h2' : 'h3'
+));
 
 const progressCircleDesc = computed(() => {
 	if (props.goalLoans === 1) {
@@ -220,7 +246,7 @@ const containerClass = computed(() => {
 });
 
 const titleContainerClass = computed(() => {
-	return isModalVariant.value ? 'tw-text-center' : 'tw-text-left tw-flex tw-justify-between tw-items-center';
+	return isModalVariant.value ? 'tw-text-center' : 'tw-text-left tw-flex tw-justify-between tw-items-start tw-gap-1';
 });
 
 const titleClass = computed(() => {
@@ -274,13 +300,13 @@ const modalVariantDescriptionText = computed(() => {
 	}
 
 	if (props.categoryId === ID_SUPPORT_ALL) {
-		return `Your goal to support <span ${brandClass}>${loans} loans</span> begins here.`;
+		return `Your support to <span ${brandClass}>${loans} loans</span> begins here.`;
 	}
 	const formattedCategory = props.categoryId === ID_US_ECONOMIC_EQUALITY
 		? props.categoryName
 		: props.categoryName?.toLowerCase() || '';
 	// eslint-disable-next-line max-len
-	return `Your goal to support <span ${brandClass}>${loans} loans</span> to <span ${brandClass}>${formattedCategory}</span> begins here.`;
+	return `Your support to <span ${brandClass}>${loans} loans</span> for <span ${brandClass}>${formattedCategory}</span> begins here.`;
 });
 
 const titleText = computed(() => {

@@ -3,9 +3,9 @@
 		v-if="tileSize === 'large' || tileSize === 'medium'" class="tw-mb-6 tw-group"
 		data-testid="all-categories-tiles"
 	>
-		<router-link
+		<a
 			class="remove-link-decoration"
-			:to="`/lend-by-category/${cleanURL}`"
+			:href="`/lend-by-category/${cleanURL}`"
 			v-kv-track-event="['Lending', 'click-Category', categoryName]"
 		>
 			<kv-responsive-image
@@ -38,15 +38,15 @@
 			>
 				{{ numberLoans }} loans
 			</h4>
-		</router-link>
+		</a>
 	</div>
 	<div
 		v-else-if="tileSize === 'small'" class=" tw-mb-6 tw-group"
 		data-testid="all-categories-tiles"
 	>
-		<router-link
+		<a
 			class="remove-link-decoration"
-			:to="`/lend-by-category/${cleanURL}`"
+			:href="`/lend-by-category/${cleanURL}`"
 			v-kv-track-event="['Lending', 'click-Category', categoryName]"
 		>
 			<div class="tw-flex">
@@ -72,7 +72,7 @@
 					</h4>
 				</div>
 			</div>
-		</router-link>
+		</a>
 	</div>
 </template>
 
