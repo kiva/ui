@@ -57,7 +57,7 @@
 			</p>
 
 			<p
-				v-if="showOriginalCopyVersion"
+				v-if="showGoalValuePropsCopy"
 				v-html="subtitleText"
 				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
 			>
@@ -215,7 +215,7 @@
 			</template>
 
 			<p
-				v-if="subtitleText && !showOriginalCopyVersion"
+				v-if="subtitleText && !showGoalValuePropsCopy"
 				v-html="subtitleText"
 				class="tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
 			>
@@ -395,9 +395,9 @@ const props = defineProps({
 		default: false,
 	},
 	/**
-	 * Flag to indicate if the original copy version should be shown
+	 * Flag to indicate if the goal value props copy version should be shown
 	 */
-	showOriginalCopyVersion: {
+	showGoalValuePropsCopy: {
 		type: Boolean,
 		default: false,
 	},
@@ -456,7 +456,7 @@ const loansLastYear = computed(() => {
 });
 
 const showLoanQuestionPrompt = computed(() => {
-	return !props.showOriginalCopyVersion
+	return !props.showGoalValuePropsCopy
 		&& (loansLastYear.value > 0 || props.selectedCategoryId === ID_WOMENS_EQUALITY);
 });
 
@@ -501,14 +501,14 @@ const loadLoansThisYear = async () => {
 const titleText = computed(() => {
 	// Default title if no lending history and category is ID_WOMENS_EQUALITY
 	if (
-		!props.showOriginalCopyVersion
+		!props.showGoalValuePropsCopy
 		&& props.selectedCategoryId === ID_WOMENS_EQUALITY
 		&& loansLastYear.value === 0
 	) {
 		return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year!';
 	}
 
-	if (loansLastYear.value > 0 && !props.showOriginalCopyVersion) {
+	if (loansLastYear.value > 0 && !props.showGoalValuePropsCopy) {
 		let categoryName = '';
 
 		if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -540,7 +540,7 @@ const subtitleText = computed(() => {
 	if (loansThisYear.value > 0) {
 		const loanWord = loansThisYear.value === 1 ? 'loan' : 'loans';
 		// eslint-disable-next-line max-len
-		return `You've already made <span ${props.showOriginalCopyVersion ? '' : 'class="tw-font-medium"'}>${loansThisYear.value} ${loanWord}</span> that will count`;
+		return `You've already made <span ${props.showGoalValuePropsCopy ? '' : 'class="tw-font-medium"'}>${loansThisYear.value} ${loanWord}</span> that will count`;
 	}
 	return '';
 });

@@ -67,7 +67,7 @@
 					:loading-current-year="loadingCurrentYear"
 					:goal-progress="goalProgress"
 					:is-goal-completed="isGoalCompleted"
-					show-original-copy-version
+					show-goal-value-props-copy
 					@set-goal-target="setTarget($event)"
 					@set-goal="setGoal($event)"
 					@update-goal="updateGoal($event)"
