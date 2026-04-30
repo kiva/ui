@@ -51,14 +51,16 @@
 
 			<p
 				v-if="showLoanQuestionPrompt"
-				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
+				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
+			>
 				How many loans will you make this year?
 			</p>
 
 			<p
 				v-if="showOriginalCopyVersion"
 				v-html="subtitleText"
-				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
+				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
+			>
 			</p>
 
 			<div
@@ -215,7 +217,8 @@
 			<p
 				v-if="subtitleText && !showOriginalCopyVersion"
 				v-html="subtitleText"
-				class="tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
+				class="tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
+			>
 			</p>
 
 			<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
@@ -394,7 +397,7 @@ const props = defineProps({
 	/**
 	 * Flag to indicate if the original copy version should be shown
 	 */
-	 showOriginalCopyVersion: {
+	showOriginalCopyVersion: {
 		type: Boolean,
 		default: false,
 	},
