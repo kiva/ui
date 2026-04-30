@@ -70,6 +70,7 @@
 						:number-of-lenders="numLenders"
 						:pfp-min-lenders="pfpMinLenders"
 						:loading="isLoading"
+						:hide-view-profile-links="true"
 					/>
 				</template>
 			</div>
