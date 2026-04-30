@@ -169,6 +169,7 @@
 					:is-updating-goal="isUpdatingGoal"
 					:is-loading-data="isLoadingData"
 					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
+					show-original-copy-version
 					@set-goal-target="setGoalTarget"
 					@set-goal="$emit('set-goal', $event)"
 					@update-goal="$emit('set-goal', $event)"
