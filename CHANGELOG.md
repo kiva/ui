@@ -1,3 +1,9 @@
+## [3.66.1-rc.1](https://github.com/kiva/ui/compare/v3.66.0...v3.66.1-rc.1) (2026-04-30)
+
+### 🐛 Bugfixes
+
+* show new copy updates only in ty page goal entrypoint ([#6879](https://github.com/kiva/ui/issues/6879)) ([1393e5e](https://github.com/kiva/ui/commit/1393e5ebbaec4bc1ac2278fa671ad65d6f00247f))
+
 ## [3.66.0](https://github.com/kiva/ui/compare/v3.65.0...v3.66.0) (2026-04-30)
 
 ### 🎉 New Features
