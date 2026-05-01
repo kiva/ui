@@ -50,13 +50,12 @@
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
-import { KvPageContainer, KvGrid } from '@kiva/kv-components';
+import { KvPageContainer, KvGrid, KvPagination } from '@kiva/kv-components';
 
 import logFormatter from '#src/util/logFormatter';
 import LoanStatsTable from '#src/components/Portfolio/LoanStatsTable';
 import LoanFilterBar from '#src/components/Portfolio/LoanFilterBar';
 import LoanList from '#src/components/Portfolio/LoanList';
-import KvPagination from '#src/components/Kv/KvPagination';
 import myLoansQuery from '#src/graphql/query/portfolio/myLoans.graphql';
 
 const PAGE_LIMIT = 20;
