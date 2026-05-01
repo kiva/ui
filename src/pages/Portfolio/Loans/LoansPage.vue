@@ -23,8 +23,23 @@
 				<div
 					class="tw-col-span-12"
 				>
-					<loan-filter-bar :total-loans="totalLoans" />
-					<loan-list :loans="loans" :loading="loading" />
+					<loan-filter-bar
+						:total-loans="totalLoans"
+					/>
+					<div ref="loanTableTop">
+						<loan-list :loans="loans" :loading="loading" />
+					</div>
+					<kv-pagination
+						v-if="showPagination"
+						class="tw-mt-3"
+						:class="{ 'tw-pointer-events-none tw-opacity-low': loading }"
+						:limit="loanState.limit"
+						:offset="loanState.offset"
+						:aria-disabled="loading ? 'true' : undefined"
+						:scroll-to-top="false"
+						:total="totalLoans"
+						@page-changed="handlePageChange"
+					/>
 				</div>
 			</kv-grid>
 		</kv-page-container>
@@ -41,7 +56,10 @@ import logFormatter from '#src/util/logFormatter';
 import LoanStatsTable from '#src/components/Portfolio/LoanStatsTable';
 import LoanFilterBar from '#src/components/Portfolio/LoanFilterBar';
 import LoanList from '#src/components/Portfolio/LoanList';
+import KvPagination from '#src/components/Kv/KvPagination';
 import myLoansQuery from '#src/graphql/query/portfolio/myLoans.graphql';
+
+const PAGE_LIMIT = 20;
 
 export default {
 	name: 'LoansPage',
@@ -52,6 +70,7 @@ export default {
 		ThePortfolioTertiaryMenu,
 		KvGrid,
 		KvPageContainer,
+		KvPagination,
 		LoanStatsTable,
 		LoanFilterBar,
 		LoanList
@@ -62,6 +81,10 @@ export default {
 			loans: [],
 			totalLoans: 0,
 			loading: true,
+			loanState: {
+				offset: 0,
+				limit: PAGE_LIMIT,
+			},
 			stats: {
 				loanStatuses: {
 					fundraising: 0,
@@ -77,20 +100,55 @@ export default {
 			}
 		};
 	},
+	computed: {
+		showPagination() {
+			return this.totalLoans > this.loanState.limit;
+		},
+	},
 	mounted() {
-		this.apollo.query({
-			query: myLoansQuery,
-			fetchPolicy: 'network-only'
-		}).then(({ data }) => {
-			if (data?.my?.loans) {
-				this.loans = data.my.loans.values || [];
-				this.totalLoans = data.my.loans.totalCount;
+		this.fetchLoans();
+	},
+	methods: {
+		fetchLoans({ clearLoans = false } = {}) {
+			this.loading = true;
+			if (clearLoans) {
+				this.loans = [];
 			}
-		}).catch(error => {
-			logFormatter(`Error fetching loans: ${error}`, 'error');
-		}).finally(() => {
-			this.loading = false;
-		});
+			return this.apollo.query({
+				query: myLoansQuery,
+				variables: {
+					offset: this.loanState.offset,
+					limit: this.loanState.limit,
+				},
+				fetchPolicy: 'network-only'
+			}).then(({ data }) => {
+				if (data?.my?.loans) {
+					this.loans = data.my.loans.values || [];
+					this.totalLoans = data.my.loans.totalCount;
+				}
+			}).catch(error => {
+				logFormatter(`Error fetching loans: ${error}`, 'error');
+			}).finally(() => {
+				this.loading = false;
+			});
+		},
+		handlePageChange({ pageOffset }) {
+			if (this.loading) {
+				return undefined;
+			}
+			this.loanState = {
+				...this.loanState,
+				offset: pageOffset,
+			};
+			this.scrollToLoanTable();
+			return this.fetchLoans({ clearLoans: true });
+		},
+		scrollToLoanTable() {
+			this.$refs.loanTableTop?.scrollIntoView({
+				behavior: 'smooth',
+				block: 'start',
+			});
+		},
 	}
 };
 </script>

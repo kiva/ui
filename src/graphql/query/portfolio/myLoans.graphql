@@ -1,7 +1,13 @@
-query myLoans {
+query myLoans(
+	$offset: Int = 0,
+	$limit: Int = 20
+) {
 	my {
 		id
-		loans {
+		loans(
+			offset: $offset,
+			limit: $limit
+		) {
 			values {
 				id
 				name
