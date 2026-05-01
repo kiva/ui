@@ -20,6 +20,7 @@
 					/>
 					<lending-insights />
 					<my-giving-funds-card
+						v-if="showMyGivingFundsCard"
 						:user-id="userId"
 						class="tw-my-2 tw-mx-0 md:tw-mx-0 tw-rounded-none md:tw-rounded"
 					/>
