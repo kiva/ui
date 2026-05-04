@@ -545,6 +545,51 @@ describe('useGoalData', () => {
 			expect(composable.goalProgress.value).toBe(1);
 		});
 
+		it('should track a unique event when MyKiva page load completes an autolending goal', async () => {
+			const currentYear = new Date().getFullYear();
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_WOMENS_EQUALITY,
+					target: 5,
+					dateStarted: `${currentYear}-01-01`,
+					status: GOAL_STATUS.IN_PROGRESS,
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{ id: ID_WOMENS_EQUALITY, progressForYear: 5, totalProgressToAchievement: 5 },
+							],
+						},
+					},
+				});
+
+			await composable.loadGoalData({ checkMyKivaCompletedGoalAfterLoad: true });
+
+			expect(mockKvTrackEvent).toHaveBeenCalledWith(
+				'portfolio',
+				'show',
+				'autolending-annual-goal-complete',
+				ID_WOMENS_EQUALITY,
+				5
+			);
+		});
+
 		it('should use supportAllCounterLoans for support-all counter initialization when provided', async () => {
 			const mockPrefs = {
 				goals: [{

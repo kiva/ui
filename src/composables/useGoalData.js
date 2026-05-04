@@ -631,7 +631,11 @@ export default function useGoalData({ apollo } = {}) {
 		}
 	}
 
-	async function checkCompletedGoal({ currentGoalProgress = 0, category = 'post-checkout' } = {}) {
+	async function checkCompletedGoal({
+		currentGoalProgress = 0,
+		category = 'post-checkout',
+		eventLabel = 'annual-goal-complete',
+	} = {}) {
 		// Skip if goal is already completed or expired
 		if ([GOAL_STATUS.COMPLETED, GOAL_STATUS.EXPIRED].includes(userGoal.value?.status)) {
 			return;
@@ -651,7 +655,7 @@ export default function useGoalData({ apollo } = {}) {
 			$kvTrackEvent(
 				category,
 				'show',
-				'annual-goal-complete',
+				eventLabel,
 				goalCategory,
 				goalTarget
 			);
@@ -737,7 +741,10 @@ export default function useGoalData({ apollo } = {}) {
 		// Check and correct negative progress after loading
 		await correctNegativeProgress();
 		if (checkMyKivaCompletedGoalAfterLoad) {
-			await checkCompletedGoal({ category: 'portfolio' });
+			await checkCompletedGoal({
+				category: 'portfolio',
+				eventLabel: 'autolending-annual-goal-complete',
+			});
 		}
 		loading.value = false;
 	}
