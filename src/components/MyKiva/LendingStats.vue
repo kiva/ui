@@ -28,7 +28,7 @@
 		ref="loanRegionsElement"
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperience }"
 	>
-		<template v-if="showLendingNextStepsCards">
+		<template v-if="showLendingNextStepsCards && !goalProgressLoading">
 			<JourneyCardCarousel
 				class="carousel carousel-lending-next-steps tw-w-full"
 				user-in-homepage
@@ -55,7 +55,7 @@
 				@open-impact-insight-modal="showImpactInsightsModal = true"
 			/>
 		</template>
-		<template v-else-if="showRegionExperience">
+		<template v-else-if="showRegionExperience && !showLendingNextStepsCards">
 			<div class="goal-card-container">
 				<JourneyCardCarousel
 					class="carousel carousel-single"
