@@ -51,8 +51,16 @@
 
 			<p
 				v-if="showLoanQuestionPrompt"
-				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
+				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
+			>
 				How many loans will you make this year?
+			</p>
+
+			<p
+				v-if="showGoalValuePropsCopy"
+				v-html="subtitleText"
+				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
+			>
 			</p>
 
 			<div
@@ -206,7 +214,11 @@
 				</KvAccordionItem>
 			</template>
 
-			<p v-if="subtitleText" v-html="subtitleText" class="tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center">
+			<p
+				v-if="subtitleText && !showGoalValuePropsCopy"
+				v-html="subtitleText"
+				class="tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
+			>
 			</p>
 
 			<div class="buttons tw-flex tw-flex-col tw-w-full tw-gap-1.5">
@@ -382,6 +394,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Flag to indicate if the goal value props copy version should be shown
+	 */
+	showGoalValuePropsCopy: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits([
@@ -437,7 +456,8 @@ const loansLastYear = computed(() => {
 });
 
 const showLoanQuestionPrompt = computed(() => {
-	return loansLastYear.value > 0 || props.selectedCategoryId === ID_WOMENS_EQUALITY;
+	return !props.showGoalValuePropsCopy
+		&& (loansLastYear.value > 0 || props.selectedCategoryId === ID_WOMENS_EQUALITY);
 });
 
 // Use progressForCurrentYear from tieredAchievements if available (set on Thanks page),
@@ -480,11 +500,15 @@ const loadLoansThisYear = async () => {
 
 const titleText = computed(() => {
 	// Default title if no lending history and category is ID_WOMENS_EQUALITY
-	if (props.selectedCategoryId === ID_WOMENS_EQUALITY && loansLastYear.value === 0) {
+	if (
+		!props.showGoalValuePropsCopy
+		&& props.selectedCategoryId === ID_WOMENS_EQUALITY
+		&& loansLastYear.value === 0
+	) {
 		return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year!';
 	}
 
-	if (loansLastYear.value > 0) {
+	if (loansLastYear.value > 0 && !props.showGoalValuePropsCopy) {
 		let categoryName = '';
 
 		if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -516,7 +540,7 @@ const subtitleText = computed(() => {
 	if (loansThisYear.value > 0) {
 		const loanWord = loansThisYear.value === 1 ? 'loan' : 'loans';
 		// eslint-disable-next-line max-len
-		return `You've already made <span class="tw-font-medium">${loansThisYear.value} ${loanWord}</span> that will count`;
+		return `You've already made <span ${props.showGoalValuePropsCopy ? '' : 'class="tw-font-medium"'}>${loansThisYear.value} ${loanWord}</span> that will count`;
 	}
 	return '';
 });

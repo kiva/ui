@@ -39,7 +39,7 @@
 											`tw-col-span-${placeholder.span}`,
 											placeholder.marginLeft && 'tw-ml-auto'
 										]"
-										style="height: 16px;"
+										style="height: 50px;"
 									/>
 								</div>
 							</td>
