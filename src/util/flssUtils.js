@@ -19,6 +19,7 @@ export const FLSS_ORIGIN_THANKS = 'web:thanks';
 export const FLSS_ORIGIN_PORTFOLIO_OVERVIEW = 'web:portfolio-overview';
 export const FLSS_ORIGIN_CHECKOUT = 'web:empty-checkout';
 export const FLSS_ORIGIN_CHECKOUT_UPSELL = 'web:checkout-upsell';
+export const FLSS_ORIGIN_GOAL_RECOMMENDED_LOAN = 'web:goal-recommended-loan';
 
 /**
  * Gets the filters for FLSS
