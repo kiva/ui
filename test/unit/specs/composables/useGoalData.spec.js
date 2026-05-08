@@ -4076,7 +4076,7 @@ describe('useGoalData', () => {
 				amountLeft: { min: 100 },
 				pageLimit: 4,
 				sortBy: 'personalized',
-			});
+			}, 'web:goal-recommended-loan');
 		});
 
 		it('should return recommended loans for climate action category', async () => {
@@ -4106,7 +4106,7 @@ describe('useGoalData', () => {
 				amountLeft: { min: 100 },
 				pageLimit: 4,
 				sortBy: 'personalized',
-			});
+			}, 'web:goal-recommended-loan');
 		});
 
 		it('should return recommended loans for basic needs category', async () => {
@@ -4135,7 +4135,7 @@ describe('useGoalData', () => {
 				amountLeft: { min: 100 },
 				pageLimit: 4,
 				sortBy: 'personalized',
-			});
+			}, 'web:goal-recommended-loan');
 		});
 
 		it('should return recommended loans for refugees category', async () => {
@@ -4163,7 +4163,7 @@ describe('useGoalData', () => {
 				amountLeft: { min: 100 },
 				pageLimit: 4,
 				sortBy: 'personalized',
-			});
+			}, 'web:goal-recommended-loan');
 		});
 
 		it('should return recommended loans for US entrepreneurs category', async () => {
@@ -4192,7 +4192,7 @@ describe('useGoalData', () => {
 				amountLeft: { min: 100 },
 				pageLimit: 4,
 				sortBy: 'personalized',
-			});
+			}, 'web:goal-recommended-loan');
 		});
 
 		it('should return empty array when no loans are found', async () => {
@@ -4292,7 +4292,7 @@ describe('useGoalData', () => {
 				amountLeft: { min: 100 },
 				pageLimit: 4,
 				sortBy: 'personalized',
-			});
+			}, 'web:goal-recommended-loan');
 		});
 	});
 });

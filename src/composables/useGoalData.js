@@ -12,6 +12,7 @@ import logFormatter from '#src/util/logFormatter';
 import { getTransactionTimestamp } from '#src/util/myKivaUtils';
 import { createUserPreferences, updateUserPreferences, setMyKivaGoal } from '#src/util/userPreferenceUtils';
 import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
+import { FLSS_ORIGIN_GOAL_RECOMMENDED_LOAN } from '#src/util/flssUtils';
 
 import useBadgeData, {
 	calculateFreshProgressAdjustments,
@@ -948,7 +949,7 @@ export default function useGoalData({ apollo } = {}) {
 			sortBy: 'personalized',
 		};
 
-		const result = await runLoansQuery(apolloClient, filterObject);
+		const result = await runLoansQuery(apolloClient, filterObject, FLSS_ORIGIN_GOAL_RECOMMENDED_LOAN);
 		return result?.loans || [];
 	};
 
