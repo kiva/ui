@@ -61,8 +61,21 @@
 </template>
 
 <script>
-import _escape from 'lodash/escape';
 import { formatDistanceToNow } from 'date-fns';
+import linkifyStr from 'linkify-string';
+
+const EMBEDDED_MESSAGE_PATTERN = / #(\d+) /g;
+const MESSAGE_BODY_LINK_CLASS = 'tw-text-link hover:tw-underline tw-break-words';
+const LINKIFY_OPTIONS = {
+	className: MESSAGE_BODY_LINK_CLASS,
+	defaultProtocol: 'https',
+	nl2br: true,
+	rel: 'noopener noreferrer',
+	target: '_blank',
+	validate(value, type) {
+		return type === 'url' && /^(https?:\/\/|www\.)/i.test(value);
+	},
+};
 
 export default {
 	name: 'TeamMessageCard',
@@ -77,13 +90,11 @@ export default {
 			return `/team/${teamPublicId}/messages?msgID=${messageId}#msg_${messageId}`;
 		},
 		formatMessageBody(body, teamPublicId) {
-			const escaped = _escape(body).replace(/\r\n|\r|\n/g, '<br>');
+			const linkedBody = linkifyStr((body || '').replace(/\r\n|\r|\n/g, '\n'), LINKIFY_OPTIONS);
 
-			// Replace embedded plain text message IDs (e.g. #123456) with direct links
-			// Use negative lookbehind / lookahead to exclude HTML entities that may have been escaped (e.g., &#39;)
-			return escaped.replace(/(?<!&)#(\d+)(?!;)/g, (match, msgId) => {
+			return linkedBody.replace(EMBEDDED_MESSAGE_PATTERN, (match, msgId) => {
 				const url = this.getDirectMessageUrl(teamPublicId, msgId);
-				return `<a href="${url}" class="tw-text-link hover:tw-underline">${match}</a>`;
+				return ` <a href="${url}" class="${MESSAGE_BODY_LINK_CLASS}">#${msgId}</a> `;
 			});
 		},
 		formatDate(dateString) {
