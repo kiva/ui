@@ -77,7 +77,8 @@ describe('TeamMessageCard', () => {
 		expect(link.textContent).toBe('https://www.kiva.org/lend');
 		expect(link.getAttribute('target')).toBe('_blank');
 		expect(link.getAttribute('rel')).toBe('noopener noreferrer');
-		expect(link.getAttribute('class')).toBe('tw-text-link hover:tw-underline tw-break-words');
+		expect(link.getAttribute('class')).toBe('tw-text-link hover:tw-underline');
+		expect(container.querySelector('p').getAttribute('class')).toBe('tw-break-words');
 	});
 
 	it('uses https as the default protocol for www URLs', () => {

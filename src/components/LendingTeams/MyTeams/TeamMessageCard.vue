@@ -54,7 +54,10 @@
 		</div>
 
 		<div>
-			<p v-html="formatMessageBody(message.body, message.team.teamPublicId)">
+			<p
+				class="tw-break-words"
+				v-html="formatMessageBody(message.body, message.team.teamPublicId)"
+			>
 			</p>
 		</div>
 	</div>
@@ -65,7 +68,7 @@ import { formatDistanceToNow } from 'date-fns';
 import linkifyStr from 'linkify-string';
 
 const EMBEDDED_MESSAGE_PATTERN = / #(\d+) /g;
-const MESSAGE_BODY_LINK_CLASS = 'tw-text-link hover:tw-underline tw-break-words';
+const MESSAGE_BODY_LINK_CLASS = 'tw-text-link hover:tw-underline';
 const LINKIFY_OPTIONS = {
 	className: MESSAGE_BODY_LINK_CLASS,
 	defaultProtocol: 'https',
