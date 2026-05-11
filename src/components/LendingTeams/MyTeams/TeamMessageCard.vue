@@ -90,8 +90,9 @@ export default {
 			return `/team/${teamPublicId}/messages?msgID=${messageId}#msg_${messageId}`;
 		},
 		formatMessageBody(body, teamPublicId) {
-			const linkedBody = linkifyStr((body || '').replace(/\r\n|\r|\n/g, '\n'), LINKIFY_OPTIONS);
+			const linkedBody = linkifyStr(body || '', LINKIFY_OPTIONS);
 
+			// Replace embedded plain text message IDs (e.g. #123456) with direct links
 			return linkedBody.replace(EMBEDDED_MESSAGE_PATTERN, (match, msgId) => {
 				const url = this.getDirectMessageUrl(teamPublicId, msgId);
 				return ` <a href="${url}" class="${MESSAGE_BODY_LINK_CLASS}">#${msgId}</a> `;
