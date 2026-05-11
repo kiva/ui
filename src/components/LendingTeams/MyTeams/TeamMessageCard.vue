@@ -73,8 +73,6 @@ const LINKIFY_OPTIONS = {
 	className: MESSAGE_BODY_LINK_CLASS,
 	defaultProtocol: 'https',
 	nl2br: true,
-	rel: 'noopener noreferrer',
-	target: '_blank',
 	validate(value, type) {
 		return type === 'url' && /^(https?:\/\/|www\.)/i.test(value);
 	},
