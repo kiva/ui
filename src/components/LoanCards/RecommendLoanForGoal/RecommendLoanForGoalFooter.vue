@@ -1,7 +1,7 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-items-center tw-gap-1">
 		<kv-button
-			class="button"
+			class="goal-footer-button"
 			:to="primaryTo"
 			:variant="primaryButtonVariant"
 			@click="onPrimaryCtaClick"
@@ -10,7 +10,7 @@
 		</kv-button>
 		<kv-button
 			v-if="!expressCheckoutEnabled"
-			class="button"
+			class="goal-footer-button"
 			variant="ghost"
 			:state="isAdding ? 'disabled' : ''"
 			@click="onSecondaryCtaClick"
@@ -110,7 +110,7 @@ const onSecondaryCtaClick = event => {
 </script>
 
 <style lang="scss" scoped>
-.button {
+.goal-footer-button {
 	max-width: 330px;
 
 	@apply tw-w-full !tw-rounded-full;

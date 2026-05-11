@@ -1,9 +1,5 @@
 <template>
-	<div
-		class="tw-mx-auto tw-flex tw-w-full tw-flex-col tw-bg-white"
-		:class="wrapperClasses"
-		:style="wrapperStyle"
-	>
+	<div class="tw-mx-auto tw-flex tw-w-full tw-flex-col tw-bg-white">
 		<RecommendLoanForGoalHeader
 			:title="headerTitle"
 			:details="headerDetails"
@@ -29,15 +25,12 @@
 </template>
 
 <script setup>
-import { computed, useAttrs } from 'vue';
 import RecommendLoanForGoalContent from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalContent';
 import RecommendLoanForGoalFooter from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalFooter';
 import RecommendLoanForGoalHeader from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalHeader';
 
 defineOptions({
 	name: 'RecommendLoanForGoalContainer',
-	// Don’t auto-merge fallthrough attrs onto the root; apply only class/style via useAttrs() below.
-	inheritAttrs: false,
 });
 
 defineProps({
@@ -92,10 +85,4 @@ defineEmits([
 	'checkout-click',
 	'secondary-cta-click',
 ]);
-
-const attrs = useAttrs();
-
-const wrapperClasses = computed(() => attrs.class);
-
-const wrapperStyle = computed(() => attrs.style);
 </script>

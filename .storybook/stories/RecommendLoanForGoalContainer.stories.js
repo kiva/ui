@@ -21,7 +21,7 @@ const baseContentCardProps = {
 };
 
 export default {
-	title: 'Loan Cards/RecommendLoanForGoalContainer',
+	title: 'Loan Cards/Recommend Loan For Goal Container',
 	component: RecommendLoanForGoalContainer,
 	argTypes: {
 		headerTitle: { control: 'text' },
