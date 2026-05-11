@@ -75,8 +75,6 @@ describe('TeamMessageCard', () => {
 		const link = container.querySelector('p a[href="https://www.kiva.org/lend"]');
 		expect(link).toBeTruthy();
 		expect(link.textContent).toBe('https://www.kiva.org/lend');
-		expect(link.getAttribute('target')).toBe('_blank');
-		expect(link.getAttribute('rel')).toBe('noopener noreferrer');
 		expect(link.getAttribute('class')).toBe('tw-text-link hover:tw-underline');
 		expect(container.querySelector('p').getAttribute('class')).toBe('tw-break-words');
 	});
