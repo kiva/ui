@@ -1,5 +1,5 @@
 /* eslint-disable vue/one-component-per-file */
-import { render } from '@testing-library/vue';
+import { render, waitFor } from '@testing-library/vue';
 import { defineComponent, ref } from 'vue';
 import BadgeMilestone from '#src/components/Thanks/SingleVersion/BadgeMilestone';
 import { globalOptions } from '../../../specUtils';
@@ -125,6 +125,40 @@ describe('BadgeMilestone', () => {
 
 			const badgeImg = await findByAltText('Badge');
 			expect(badgeImg.src).toContain('equity-badge.png');
+		});
+
+		it('updates the displayed badge when achieved badge ids change after badge data loads', async () => {
+			mockBadgeContentfulData.value = [eventBadgeContentfulEntry, equityBadgeContentfulEntry];
+			mockBadgeData.value = [
+				{
+					id: 'equity',
+					challengeName: 'Equality Badge',
+					contentfulData: [{ ...equityBadgeContentfulEntry }],
+					achievementData: {},
+				},
+			];
+
+			const { findByAltText, rerender } = render(BadgeMilestone, {
+				props: {
+					badgeAchievedIds: ['equity'],
+					isGuest: false,
+					loans: [{ id: 1 }],
+				},
+				...globalOptions,
+			});
+
+			const badgeImg = await findByAltText('Badge');
+			expect(badgeImg.src).toContain('equity-badge.png');
+
+			await rerender({
+				badgeAchievedIds: ['equity', 'iwd-2024-challenge'],
+				isGuest: false,
+				loans: [{ id: 1 }],
+			});
+
+			await waitFor(() => {
+				expect(badgeImg.src).toContain('iwd-badge.png');
+			});
 		});
 	});
 
