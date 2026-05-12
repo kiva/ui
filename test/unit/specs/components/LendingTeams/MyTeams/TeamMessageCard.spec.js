@@ -37,7 +37,7 @@ describe('TeamMessageCard', () => {
 		expect(screen.getByText('This is message 1')).toBeTruthy();
 	});
 
-	it('converts message ID references to deep links', () => {
+	it('converts space-delimited message ID references to deep links', () => {
 		const bodyWithRef = 'See message #12345 for details';
 		const { container } = render(TeamMessageCard, {
 			props: {
@@ -48,6 +48,80 @@ describe('TeamMessageCard', () => {
 
 		const links = container.querySelectorAll('a[href*="msgID=12345"]');
 		expect(links.length).toBeGreaterThan(0);
+	});
+
+	it('does not convert message ID references that are not space-delimited', () => {
+		const bodyWithRef = 'See (#12345) and prefix#67890 for details';
+		const { container } = render(TeamMessageCard, {
+			props: {
+				message: mockMessage(1, { body: bodyWithRef }),
+			},
+			global: globalOptions,
+		});
+
+		const links = container.querySelectorAll('p a[href*="msgID="]');
+		expect(links.length).toBe(0);
+	});
+
+	it('converts https URLs to external links', () => {
+		const bodyWithUrl = 'Visit https://www.kiva.org/lend for loans';
+		const { container } = render(TeamMessageCard, {
+			props: {
+				message: mockMessage(1, { body: bodyWithUrl }),
+			},
+			global: globalOptions,
+		});
+
+		const link = container.querySelector('p a[href="https://www.kiva.org/lend"]');
+		expect(link).toBeTruthy();
+		expect(link.textContent).toBe('https://www.kiva.org/lend');
+		expect(link.getAttribute('class')).toBe('tw-text-link hover:tw-underline');
+		expect(container.querySelector('p').getAttribute('class')).toBe('tw-break-words');
+	});
+
+	it('uses https as the default protocol for www URLs', () => {
+		const bodyWithUrl = 'Visit www.kiva.org to learn more';
+		const { container } = render(TeamMessageCard, {
+			props: {
+				message: mockMessage(1, { body: bodyWithUrl }),
+			},
+			global: globalOptions,
+		});
+
+		const link = container.querySelector('p a');
+		expect(link).toBeTruthy();
+		expect(link.textContent).toBe('www.kiva.org');
+		expect(link.getAttribute('href')).toBe('https://www.kiva.org');
+	});
+
+	it('does not convert javascript protocols to links', () => {
+		const unsafeUrl = ['java', 'script:alert(1)'].join('');
+		const bodyWithJavascript = `Do not link ${unsafeUrl}`;
+		const { container } = render(TeamMessageCard, {
+			props: {
+				message: mockMessage(1, { body: bodyWithJavascript }),
+			},
+			global: globalOptions,
+		});
+
+		const links = container.querySelectorAll('p a');
+		expect(links.length).toBe(0);
+		expect(container.querySelector('p').textContent).toContain(unsafeUrl);
+	});
+
+	it('does not convert URL fragments into message ID links', () => {
+		const bodyWithFragment = 'Read https://example.com/post#123 today';
+		const { container } = render(TeamMessageCard, {
+			props: {
+				message: mockMessage(1, { body: bodyWithFragment }),
+			},
+			global: globalOptions,
+		});
+
+		const externalLink = container.querySelector('p a[href="https://example.com/post#123"]');
+		const messageLinks = container.querySelectorAll('p a[href*="msgID="]');
+		expect(externalLink).toBeTruthy();
+		expect(messageLinks.length).toBe(0);
 	});
 
 	it('renders deep link to message in header', () => {
@@ -97,7 +171,10 @@ describe('TeamMessageCard', () => {
 		});
 
 		const messageBody = container.querySelector('p');
-		expect(messageBody.innerHTML).toContain('First line<br>Second line<br>Third line');
+		expect(messageBody.querySelectorAll('br').length).toBe(2);
+		expect(messageBody.textContent).toContain('First line');
+		expect(messageBody.textContent).toContain('Second line');
+		expect(messageBody.textContent).toContain('Third line');
 	});
 
 	it('sender name links to lender profile', () => {
