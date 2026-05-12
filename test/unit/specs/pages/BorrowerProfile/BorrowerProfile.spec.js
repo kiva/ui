@@ -5,7 +5,7 @@ import BorrowerProfile from '#src/pages/BorrowerProfile/BorrowerProfile';
 // routing/auth decisions added for AD-248.
 describe('BorrowerProfile.apollo.preFetch', () => {
 	const RESTRICTED_STATUSES = ['reviewed', 'deleted', 'issue', 'inactive', 'inactiveExpired'];
-	const PUBLIC_STATUSES = ['fundraising', 'expired', 'raised', 'payingBack', 'refunded', 'ended', 'defaulted'];
+	const PUBLIC_STATUSES = ['fundraising', 'funded', 'expired', 'raised', 'payingBack', 'refunded', 'ended', 'defaulted'];
 
 	const makeLoan = (status, { isPrivileged = false } = {}) => ({
 		id: 12345,
