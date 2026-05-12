@@ -59,7 +59,8 @@ const EDUCATION_PLACEMENT_EXP = 'education_placement_bp';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 
 // Mirrors monolith Kc_Loan_Psc::getAllPublicStatuses() — non-privileged viewers can only see these.
-const PUBLIC_STATUSES = ['fundraising', 'expired', 'raised', 'payingBack', 'refunded', 'ended', 'defaulted'];
+// `funded` is the value the gateway returns to anon callers for raised/payingBack/ended/defaulted, so it counts as public here.
+const PUBLIC_STATUSES = ['fundraising', 'funded', 'expired', 'raised', 'payingBack', 'refunded', 'ended', 'defaulted'];
 
 // Fields for showFullView routing logic
 const routingFragment = gql`fragment bpRoutingFields on LoanBasic {
