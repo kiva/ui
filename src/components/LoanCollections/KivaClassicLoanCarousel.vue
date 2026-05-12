@@ -34,11 +34,11 @@
 			</template>
 			<!-- Show View more Card -->
 			<template v-if="showViewMoreCard" #view-more>
-				<router-link
+				<a
 					:key="`view-more-card`"
 					class="tw-flex tw-items-center tw-h-full tw-w-full
 						hover:tw-bg-action-highlight hover:tw-text-primary-inverse tw-rounded"
-					:to="cleanUrl"
+					:href="cleanUrl"
 					v-kv-track-event="[
 						'Lending',
 						'click-carousel-view-all-category-loans',
@@ -47,7 +47,7 @@
 					<div class="tw-w-full tw-text-center">
 						<h3>{{ viewAllLoansCategoryTitle }}</h3>
 					</div>
-				</router-link>
+				</a>
 			</template>
 			<template v-if="showCheckBackMessage" #check-back>
 				<div class="tw-flex tw-items-center tw-h-full tw-w-full tw-border-action-highlight tw-rounded">
@@ -75,7 +75,7 @@
 				<kv-button
 					class="tw-mx-1 tw-mb-3 tw-whitespace-nowrap"
 					:variant="categoryButtonStyle"
-					:to="cleanUrl"
+					:href="cleanUrl"
 				>
 					{{ viewAllLoansCategoryTitle }}
 				</kv-button>
@@ -94,6 +94,7 @@
 <script>
 import KivaClassicBasicLoanCard from '#src/components/LoanCards/KivaClassicBasicLoanCard';
 import KvLoadingSpinner from '#src/components/Kv/KvLoadingSpinner';
+import { COUNTRIES_NOT_LENT_TO_URL } from '#src/util/headerUtils';
 import { KvCarousel, KvButton } from '@kiva/kv-components';
 
 export default {
@@ -200,9 +201,8 @@ export default {
 				cleanUrl = '';
 			}
 
-			// retain countries not lent to location in /lend
 			if (this.url.includes('new-countries-for-you')) {
-				return '/lend/countries-not-lent';
+				return COUNTRIES_NOT_LENT_TO_URL;
 			}
 
 			// otherwise transform to use /lend-by-category as root path

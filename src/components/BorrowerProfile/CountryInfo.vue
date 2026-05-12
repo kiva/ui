@@ -175,7 +175,7 @@ export default {
 							countries.push(countryFacets[i].country.isoCode);
 						}
 					}
-					this.loansInRegionLink = `/lend?country=${countries.join(',').toLowerCase()}&sortBy=newest`;
+					this.loansInRegionLink = `/lend/filter?country=${countries.join(',').toLowerCase()}&sortBy=newest`;
 				}
 
 				this.loading = false;

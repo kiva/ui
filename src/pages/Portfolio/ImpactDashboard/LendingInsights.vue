@@ -134,10 +134,10 @@
 							<dt class="percentiles-stat-value">
 								{{ formattedCurrentYearPercentile }}
 							</dt>
-							<router-link
+							<a
 								v-if="nextPercentileMsg && currentYearPercentile < MAX_PERCENTILE"
 								class="percentiles-stat-link tw-mt-auto"
-								to="/lend-category-beta"
+								href="/lend/filter"
 								v-kv-track-event="[
 									'portfolio',
 									'click',
@@ -149,7 +149,7 @@
 									class="tw-ml-0.5 tw-w-2 tw-h-2 lg:tw-hidden"
 									:icon="mdiArrowRight"
 								/>
-							</router-link>
+							</a>
 							<span
 								v-else-if="currentYearPercentile === MAX_PERCENTILE"
 								class="percentiles-stat-link tw-mt-auto"

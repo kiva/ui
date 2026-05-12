@@ -97,7 +97,7 @@ const resetModal = () => {
 
 const handleRedirect = payload => {
 	$kvTrackEvent('basket', 'dismiss', 'basket-modal', payload.type);
-	router.push(payload.path);
+	if (payload.path) window.location.href = payload.path;
 	resetModal();
 };
 

@@ -62,7 +62,7 @@
 			<kv-grid class="tw-bg-secondary tw-mb-5 tw-rounded">
 				<div class="tw-flex tw-items-center tw-justify-center tw-pt-6 tw-pb-6">
 					<kv-button
-						to="/lend"
+						href="/lend/filter"
 						variant="secondary"
 						v-kv-track-event="['Lending', 'click-view-all', 'View All']"
 					>
