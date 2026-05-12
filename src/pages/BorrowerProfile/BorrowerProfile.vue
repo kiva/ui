@@ -58,6 +58,9 @@ const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? 
 const EDUCATION_PLACEMENT_EXP = 'education_placement_bp';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 
+// Mirrors monolith Kc_Loan_Psc::getAllPublicStatuses() — non-privileged viewers can only see these.
+const PUBLIC_STATUSES = ['fundraising', 'expired', 'raised', 'payingBack', 'refunded', 'ended', 'defaulted'];
+
 // Fields for showFullView routing logic
 const routingFragment = gql`fragment bpRoutingFields on LoanBasic {
 	id
@@ -322,7 +325,7 @@ export default {
 	mixins: [fiveDollarsTest, guestComment],
 	apollo: {
 		query: routingQuery,
-		preFetch(_config, client, { route, cookieStore }) {
+		preFetch(_config, client, { route, cookieStore, kvAuth0 }) {
 			const loanId = Number(route?.params?.id ?? 0);
 			const publicId = getPublicId(route);
 
@@ -346,6 +349,18 @@ export default {
 					const amountLeft = loanAmount - fundedAmount;
 					const minimalOverride = route.query?.minimal === 'false';
 					const isPrivileged = loan.userProperties?.isPrivileged ?? false;
+
+					// Anon goes to login (so a lender/trustee can authenticate in); logged-in non-priv goes to /lend.
+					if (!PUBLIC_STATUSES.includes(loan.status) && !isPrivileged) {
+						if (!kvAuth0?.getKivaId()) {
+							return Promise.reject({
+								path: '/ui-login',
+								query: { doneUrl: route.fullPath },
+							});
+						}
+						return Promise.reject({ path: '/lend', query: route.query });
+					}
+
 					const showFullView = (amountLeft && loan.status === 'fundraising')
 						|| isPrivileged
 						|| minimalOverride;
