@@ -22,6 +22,14 @@ vi.mock('#src/util/userPreferenceUtils', () => ({
 	setMyKivaGoal: vi.fn(() => Promise.resolve()),
 }));
 
+vi.mock('#src/util/loanSearch/dataUtils', () => {
+	const mockFn = vi.fn();
+	return {
+		default: mockFn,
+		runLoansQuery: mockFn,
+	};
+});
+
 describe('GOALS_CURRENT_YEAR', () => {
 	it('should be the current year', () => {
 		const currentYear = new Date().getFullYear();
@@ -543,6 +551,51 @@ describe('useGoalData', () => {
 			});
 
 			expect(composable.goalProgress.value).toBe(1);
+		});
+
+		it('should track a unique event when MyKiva page load completes an autolending goal', async () => {
+			const currentYear = new Date().getFullYear();
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_WOMENS_EQUALITY,
+					target: 5,
+					dateStarted: `${currentYear}-01-01`,
+					status: GOAL_STATUS.IN_PROGRESS,
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{ id: ID_WOMENS_EQUALITY, progressForYear: 5, totalProgressToAchievement: 5 },
+							],
+						},
+					},
+				});
+
+			await composable.loadGoalData({ checkMyKivaCompletedGoalAfterLoad: true });
+
+			expect(mockKvTrackEvent).toHaveBeenCalledWith(
+				'portfolio',
+				'show',
+				'autolending-annual-goal-complete',
+				ID_WOMENS_EQUALITY,
+				5
+			);
 		});
 
 		it('should use supportAllCounterLoans for support-all counter initialization when provided', async () => {
@@ -3984,6 +4037,262 @@ describe('useGoalData', () => {
 
 			expect(result[1].totalProgressToAchievement).toBe(3);
 			expect(result[1].progressForYear).toBe(2);
+		});
+	});
+
+	describe('getRecommendedLoans', () => {
+		let mockRunLoansQuery;
+
+		beforeEach(async () => {
+			// Get the mock function from the mocked module
+			const dataUtils = await import('#src/util/loanSearch/dataUtils');
+			mockRunLoansQuery = dataUtils.runLoansQuery;
+			mockRunLoansQuery.mockClear();
+		});
+
+		it('should return recommended loans for women category', async () => {
+			const mockLoans = [
+				{ id: 1, name: 'Loan 1', gender: 'female' },
+				{ id: 2, name: 'Loan 2', gender: 'female' },
+			];
+
+			mockRunLoansQuery.mockResolvedValueOnce({
+				loans: mockLoans,
+				totalCount: 2,
+			});
+
+			const result = await composable.getRecommendedLoans(ID_WOMENS_EQUALITY);
+
+			expect(result).toEqual(mockLoans);
+		});
+
+		it('should call runLoansQuery with correct filter for women category', async () => {
+			mockRunLoansQuery.mockResolvedValueOnce({ loans: [], totalCount: 0 });
+
+			await composable.getRecommendedLoans(ID_WOMENS_EQUALITY);
+
+			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
+				gender: ['female'],
+				amountLeft: { min: 100 },
+				pageLimit: 4,
+				sortBy: 'personalized',
+			}, 'web:goal-recommended-loan');
+		});
+
+		it('should return recommended loans for climate action category', async () => {
+			const mockLoans = [
+				{ id: 10, name: 'Climate Loan 1', tagId: 8 },
+				{ id: 11, name: 'Climate Loan 2', tagId: 9 },
+				{ id: 12, name: 'Climate Loan 3', tagId: 8 },
+			];
+
+			mockRunLoansQuery.mockResolvedValueOnce({
+				loans: mockLoans,
+				totalCount: 3,
+			});
+
+			const result = await composable.getRecommendedLoans(ID_CLIMATE_ACTION);
+
+			expect(result).toEqual(mockLoans);
+		});
+
+		it('should call runLoansQuery with correct filter for climate category', async () => {
+			mockRunLoansQuery.mockResolvedValueOnce({ loans: [], totalCount: 0 });
+
+			await composable.getRecommendedLoans(ID_CLIMATE_ACTION);
+
+			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
+				tagId: [8, 9],
+				amountLeft: { min: 100 },
+				pageLimit: 4,
+				sortBy: 'personalized',
+			}, 'web:goal-recommended-loan');
+		});
+
+		it('should return recommended loans for basic needs category', async () => {
+			const mockLoans = [
+				{ id: 20, name: 'Basic Needs Loan 1', sectorId: 6 },
+				{ id: 21, name: 'Basic Needs Loan 2', sectorId: 10 },
+			];
+
+			mockRunLoansQuery.mockResolvedValueOnce({
+				loans: mockLoans,
+				totalCount: 2,
+			});
+
+			const result = await composable.getRecommendedLoans(ID_BASIC_NEEDS);
+
+			expect(result).toEqual(mockLoans);
+		});
+
+		it('should call runLoansQuery with correct filter for basic needs category', async () => {
+			mockRunLoansQuery.mockResolvedValueOnce({ loans: [], totalCount: 0 });
+
+			await composable.getRecommendedLoans(ID_BASIC_NEEDS);
+
+			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
+				sectorId: [6, 10, 20, 21],
+				amountLeft: { min: 100 },
+				pageLimit: 4,
+				sortBy: 'personalized',
+			}, 'web:goal-recommended-loan');
+		});
+
+		it('should return recommended loans for refugees category', async () => {
+			const mockLoans = [
+				{ id: 30, name: 'Refugee Loan 1', themeId: 28 },
+			];
+
+			mockRunLoansQuery.mockResolvedValueOnce({
+				loans: mockLoans,
+				totalCount: 1,
+			});
+
+			const result = await composable.getRecommendedLoans(ID_REFUGEE_EQUALITY);
+
+			expect(result).toEqual(mockLoans);
+		});
+
+		it('should call runLoansQuery with correct filter for refugees category', async () => {
+			mockRunLoansQuery.mockResolvedValueOnce({ loans: [], totalCount: 0 });
+
+			await composable.getRecommendedLoans(ID_REFUGEE_EQUALITY);
+
+			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
+				themeId: [28],
+				amountLeft: { min: 100 },
+				pageLimit: 4,
+				sortBy: 'personalized',
+			}, 'web:goal-recommended-loan');
+		});
+
+		it('should return recommended loans for US entrepreneurs category', async () => {
+			const mockLoans = [
+				{ id: 40, name: 'US Entrepreneur Loan 1', countryIsoCode: 'US' },
+				{ id: 41, name: 'US Entrepreneur Loan 2', countryIsoCode: 'PR' },
+			];
+
+			mockRunLoansQuery.mockResolvedValueOnce({
+				loans: mockLoans,
+				totalCount: 2,
+			});
+
+			const result = await composable.getRecommendedLoans(ID_US_ECONOMIC_EQUALITY);
+
+			expect(result).toEqual(mockLoans);
+		});
+
+		it('should call runLoansQuery with correct filter for US entrepreneurs category', async () => {
+			mockRunLoansQuery.mockResolvedValueOnce({ loans: [], totalCount: 0 });
+
+			await composable.getRecommendedLoans(ID_US_ECONOMIC_EQUALITY);
+
+			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
+				countryIsoCode: ['PR', 'US'],
+				amountLeft: { min: 100 },
+				pageLimit: 4,
+				sortBy: 'personalized',
+			}, 'web:goal-recommended-loan');
+		});
+
+		it('should return empty array when no loans are found', async () => {
+			mockRunLoansQuery.mockResolvedValueOnce({ loans: [], totalCount: 0 });
+
+			const result = await composable.getRecommendedLoans(ID_WOMENS_EQUALITY);
+
+			expect(result).toEqual([]);
+		});
+
+		it('should return empty array when result is null', async () => {
+			mockRunLoansQuery.mockResolvedValueOnce(null);
+
+			const result = await composable.getRecommendedLoans(ID_WOMENS_EQUALITY);
+
+			expect(result).toEqual([]);
+		});
+
+		it('should include amountLeft, pageLimit, and sortBy in filter', async () => {
+			mockRunLoansQuery.mockResolvedValueOnce({ loans: [], totalCount: 0 });
+
+			await composable.getRecommendedLoans(ID_WOMENS_EQUALITY);
+
+			const filterArg = mockRunLoansQuery.mock.calls[0][1];
+			expect(filterArg).toHaveProperty('amountLeft', { min: 100 });
+			expect(filterArg).toHaveProperty('pageLimit', 4);
+			expect(filterArg).toHaveProperty('sortBy', 'personalized');
+		});
+
+		it('should merge category-specific filter with common filters', async () => {
+			mockRunLoansQuery.mockResolvedValueOnce({ loans: [], totalCount: 0 });
+
+			await composable.getRecommendedLoans(ID_CLIMATE_ACTION);
+
+			const filterArg = mockRunLoansQuery.mock.calls[0][1];
+			expect(filterArg).toEqual({
+				tagId: [8, 9],
+				amountLeft: { min: 100 },
+				pageLimit: 4,
+				sortBy: 'personalized',
+			});
+		});
+
+		it('should handle query errors gracefully', async () => {
+			const error = new Error('Query failed');
+			mockRunLoansQuery.mockRejectedValueOnce(error);
+
+			await expect(composable.getRecommendedLoans(ID_WOMENS_EQUALITY)).rejects.toThrow('Query failed');
+		});
+
+		it('should return different results for different categories', async () => {
+			const womenLoans = [{ id: 1, gender: 'female' }];
+			const climateLoans = [{ id: 2, tagId: 8 }];
+
+			mockRunLoansQuery
+				.mockResolvedValueOnce({ loans: womenLoans, totalCount: 1 })
+				.mockResolvedValueOnce({ loans: climateLoans, totalCount: 1 });
+
+			const womensResult = await composable.getRecommendedLoans(ID_WOMENS_EQUALITY);
+			const climateResult = await composable.getRecommendedLoans(ID_CLIMATE_ACTION);
+
+			expect(womensResult).toEqual(womenLoans);
+			expect(climateResult).toEqual(climateLoans);
+			expect(mockRunLoansQuery).toHaveBeenCalledTimes(2);
+		});
+
+		it('should pass apollo client as first argument', async () => {
+			mockRunLoansQuery.mockResolvedValueOnce({ loans: [], totalCount: 0 });
+
+			await composable.getRecommendedLoans(ID_WOMENS_EQUALITY);
+
+			expect(mockRunLoansQuery.mock.calls[0][0]).toBe(mockApollo);
+		});
+
+		it('should handle multiple sequential calls with different categories', async () => {
+			mockRunLoansQuery
+				.mockResolvedValueOnce({ loans: [{ id: 1 }], totalCount: 1 })
+				.mockResolvedValueOnce({ loans: [{ id: 2 }], totalCount: 1 })
+				.mockResolvedValueOnce({ loans: [{ id: 3 }], totalCount: 1 });
+
+			await composable.getRecommendedLoans(ID_WOMENS_EQUALITY);
+			await composable.getRecommendedLoans(ID_CLIMATE_ACTION);
+			await composable.getRecommendedLoans(ID_BASIC_NEEDS);
+
+			expect(mockRunLoansQuery).toHaveBeenCalledTimes(3);
+			expect(mockRunLoansQuery.mock.calls[0][1]).toHaveProperty('gender');
+			expect(mockRunLoansQuery.mock.calls[1][1]).toHaveProperty('tagId');
+			expect(mockRunLoansQuery.mock.calls[2][1]).toHaveProperty('sectorId');
+		});
+
+		it('should call runLoansQuery with only common filters for support_all category', async () => {
+			mockRunLoansQuery.mockResolvedValueOnce({ loans: [], totalCount: 0 });
+
+			await composable.getRecommendedLoans(ID_SUPPORT_ALL);
+
+			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
+				amountLeft: { min: 100 },
+				pageLimit: 4,
+				sortBy: 'personalized',
+			}, 'web:goal-recommended-loan');
 		});
 	});
 });

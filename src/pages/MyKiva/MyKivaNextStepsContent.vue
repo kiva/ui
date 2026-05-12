@@ -21,7 +21,7 @@
 				}"
 			>
 				<JourneyCardCarousel
-					v-if="showLendingNextStepsCards"
+					v-if="showLendingNextStepsCards && !goalProgressLoading"
 					class="carousel tw-w-full"
 					user-in-homepage
 					in-lending-stats
@@ -46,7 +46,7 @@
 					@open-goal-modal="openGoalModal($event)"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
-				<template v-else-if="showRegionExperienceInFirstRow">
+				<template v-else-if="showRegionExperienceInFirstRow && !showLendingNextStepsCards">
 					<div class="goal-card-container">
 						<JourneyCardCarousel
 							class="carousel carousel-single"
@@ -422,6 +422,9 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const goalData = inject('goalData');
 const router = useRouter();
 const { isMobile } = useBreakpoints();
+const postLendingQueryExists = router.currentRoute.value.query.postLending === 'true';
+const hasPostLendingCookie = checkPostLendingCardCookie(cookieStore);
+const shouldShowPostLendingNextStepsCards = hasPostLendingCookie || postLendingQueryExists;
 
 // Goal data from parent-provided composable
 const {
@@ -452,7 +455,7 @@ const newGoalPrefs = ref(null);
 const isUpdatingGoal = ref(false);
 const isSharingModalVisible = ref(false);
 const acceptedEmailMarketingUpdates = ref(false);
-const showPostLendingNextStepsCards = ref(false);
+const showPostLendingNextStepsCards = ref(shouldShowPostLendingNextStepsCards);
 
 // Computed
 const categoriesLoanCount = computed(() => getAllCategoryLoanCounts(props.heroTieredAchievements));
@@ -675,9 +678,7 @@ watch(() => props.goalRefreshKey, async (newVal, oldVal) => {
 
 onMounted(async () => {
 	await checkCompletedGoal({ category: 'portfolio' });
-	const postLendingQueryExists = router.currentRoute.value.query.postLending === 'true';
-	if (checkPostLendingCardCookie(cookieStore) || postLendingQueryExists) {
-		showPostLendingNextStepsCards.value = true;
+	if (shouldShowPostLendingNextStepsCards) {
 		removePostLendingCardCookie(cookieStore);
 	}
 });

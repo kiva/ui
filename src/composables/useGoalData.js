@@ -11,6 +11,8 @@ import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import logFormatter from '#src/util/logFormatter';
 import { getTransactionTimestamp } from '#src/util/myKivaUtils';
 import { createUserPreferences, updateUserPreferences, setMyKivaGoal } from '#src/util/userPreferenceUtils';
+import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
+import { FLSS_ORIGIN_GOAL_RECOMMENDED_LOAN } from '#src/util/flssUtils';
 
 import useBadgeData, {
 	calculateFreshProgressAdjustments,
@@ -49,6 +51,15 @@ const GOAL_1_DISPLAY_MAP = {
 	[ID_WOMENS_EQUALITY]: 'woman',
 };
 
+// Filters with loanSearchState format to be used directly in graphql queries depending on the category
+const FLSS_FILTERS_BY_GOAL = {
+	[ID_WOMENS_EQUALITY]: { gender: ['female'] },
+	[ID_US_ECONOMIC_EQUALITY]: { countryIsoCode: ['PR', 'US'] },
+	[ID_CLIMATE_ACTION]: { tagId: [8, 9] },
+	[ID_REFUGEE_EQUALITY]: { themeId: [28] },
+	[ID_BASIC_NEEDS]: { sectorId: [6, 10, 20, 21] },
+};
+
 export const GOAL_STATUS = {
 	COMPLETED: 'completed',
 	EXPIRED: 'expired',
@@ -59,6 +70,8 @@ export const GOALS_CURRENT_YEAR = new Date().getFullYear();
 export const LAST_YEAR_KEY = GOALS_CURRENT_YEAR - 1;
 export const COMPLETED_GOAL_THRESHOLD = 100;
 export const HALF_GOAL_THRESHOLD = 50;
+const MIN_CATEGORY_LOANS_AMOUNT = 100;
+const RECOMMENDED_LOANS_LIMIT = 4;
 
 function getGoalDisplayName(target, category) {
 	if (!target || target > 1) return GOAL_DISPLAY_MAP[category] || 'loans';
@@ -631,7 +644,11 @@ export default function useGoalData({ apollo } = {}) {
 		}
 	}
 
-	async function checkCompletedGoal({ currentGoalProgress = 0, category = 'post-checkout' } = {}) {
+	async function checkCompletedGoal({
+		currentGoalProgress = 0,
+		category = 'post-checkout',
+		eventLabel = 'annual-goal-complete',
+	} = {}) {
 		// Skip if goal is already completed or expired
 		if ([GOAL_STATUS.COMPLETED, GOAL_STATUS.EXPIRED].includes(userGoal.value?.status)) {
 			return;
@@ -651,7 +668,7 @@ export default function useGoalData({ apollo } = {}) {
 			$kvTrackEvent(
 				category,
 				'show',
-				'annual-goal-complete',
+				eventLabel,
 				goalCategory,
 				goalTarget
 			);
@@ -737,7 +754,10 @@ export default function useGoalData({ apollo } = {}) {
 		// Check and correct negative progress after loading
 		await correctNegativeProgress();
 		if (checkMyKivaCompletedGoalAfterLoad) {
-			await checkCompletedGoal({ category: 'portfolio' });
+			await checkCompletedGoal({
+				category: 'portfolio',
+				eventLabel: 'autolending-annual-goal-complete',
+			});
 		}
 		loading.value = false;
 	}
@@ -915,6 +935,24 @@ export default function useGoalData({ apollo } = {}) {
 		);
 	});
 
+	/**
+	 * Get recommended loans for a given goal category ID
+	 * @param {*} categoryId - Category ID to get recommendations for
+	 * @returns array of recommended loans for the category
+	 */
+	const getRecommendedLoans = async categoryId => {
+		const flssFilter = FLSS_FILTERS_BY_GOAL?.[categoryId];
+		const filterObject = {
+			...flssFilter,
+			amountLeft: { min: MIN_CATEGORY_LOANS_AMOUNT },
+			pageLimit: RECOMMENDED_LOANS_LIMIT,
+			sortBy: 'personalized',
+		};
+
+		const result = await runLoansQuery(apolloClient, filterObject, FLSS_ORIGIN_GOAL_RECOMMENDED_LOAN);
+		return result?.loans || [];
+	};
+
 	return {
 		applyFreshProgressToGoalData,
 		calculateGoalFreshProgressAdjustments,
@@ -947,5 +985,6 @@ export default function useGoalData({ apollo } = {}) {
 		setGoalState,
 		removeGoalFromPreferences,
 		updateCurrentGoal,
+		getRecommendedLoans,
 	};
 }
