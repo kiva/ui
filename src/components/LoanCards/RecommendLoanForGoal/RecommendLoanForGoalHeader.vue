@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="tw-flex tw-flex-col tw-items-center tw-justify-center
-			tw-bg-gray-50 tw-p-3 tw-pb-2 tw-text-center tw-rounded-t"
+			tw-bg-gray-50 tw-p-3 tw-pb-2 tw-text-center tw-rounded"
 		role="status"
 	>
 		<div
