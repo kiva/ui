@@ -20,7 +20,15 @@
 			v-if="details.length"
 			class="tw-flex tw-flex-wrap tw-items-center tw-justify-center tw-gap-x-1"
 		>
-			<template v-for="(detail, index) in details" :key="index">
+			<KvLoadingPlaceholder
+				v-if="!loadedSetData"
+				style="width: 150px;"
+				class="!tw-h-2 !tw-rounded"
+			/>
+			<template
+				v-else
+				v-for="(detail, index) in details" :key="index"
+			>
 				<span
 					v-if="index > 0"
 					class="tw-inline-block tw-rounded-full tw-bg-tertiary"
@@ -35,7 +43,7 @@
 
 <script setup>
 import { mdiCheck } from '@mdi/js';
-import { KvMaterialIcon } from '@kiva/kv-components';
+import { KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
 
 defineOptions({ name: 'RecommendLoanForGoalHeader' });
 
@@ -47,6 +55,13 @@ defineProps({
 	details: {
 		type: Array,
 		default: () => ([]),
+	},
+	/**
+	 * Flag to indicate if the goal data has been loaded
+	 */
+	loadedSetData: {
+		type: Boolean,
+		default: false,
 	},
 });
 </script>

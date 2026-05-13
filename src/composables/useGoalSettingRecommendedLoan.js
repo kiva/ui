@@ -1,6 +1,5 @@
 import {
 	computed,
-	inject,
 	ref,
 	toRef,
 	watch,
@@ -9,6 +8,9 @@ import { useRouter } from 'vue-router';
 
 /**
  * State and props for the “recommended loan after goal” step in GoalSettingModal.
+ * @param {object} options
+ * @param {import('vue').Ref<object|null>} options.userGoal — annual goal from `useGoalData`.
+ * @param {Function} options.getCtaHref — from `useGoalData`; lend URL + header query.
  */
 export default function useGoalSettingRecommendedLoan({
 	emit,
@@ -18,10 +20,12 @@ export default function useGoalSettingRecommendedLoan({
 	show,
 	goalProgress,
 	getRecommendedLoans,
+	getCtaHref,
+	userGoal,
+	kvTrackEvent,
+	appConfig = {},
 }) {
 	const router = useRouter();
-	const appConfig = inject('$appConfig', {});
-	const $kvTrackEvent = inject('$kvTrackEvent');
 
 	const goalRecommendedLoanEnable = toRef(props, 'goalRecommendedLoanEnable');
 	const basketItems = toRef(props, 'basketItems');
@@ -53,7 +57,7 @@ export default function useGoalSettingRecommendedLoan({
 		const loan = recommendedLoan.value;
 		const photoPath = appConfig?.photoPath ?? '';
 		const kvTrackFunction = (...args) => {
-			$kvTrackEvent(...args);
+			kvTrackEvent?.(...args);
 		};
 		const base = {
 			photoPath,
@@ -81,25 +85,34 @@ export default function useGoalSettingRecommendedLoan({
 		)
 	));
 
-	function resetRecommendedLoanState() {
+	const resetRecommendedLoanState = () => {
 		showPostGoalLoanRecommendation.value = false;
 		recommendedLoan.value = null;
-	}
+	};
 
-	function enterRecommendedLoanStepAfterGoalSave() {
+	const enterRecommendedLoanStepAfterGoalSave = () => {
 		if (goalRecommendedLoanEnable.value) {
 			showPostGoalLoanRecommendation.value = true;
 		}
-	}
+	};
 
-	function onGoalSelectorSetGoal(payload) {
+	const onGoalSelectorSetGoal = payload => {
 		emit('set-goal', payload);
 		enterRecommendedLoanStepAfterGoalSave();
-	}
+	};
 
-	function onGoalSelectorUpdateGoal(payload) {
+	const onGoalSelectorUpdateGoal = payload => {
 		emit('set-goal', payload);
-	}
+	};
+
+	const handleExploreMoreLoans = () => {
+		window.location.href = getCtaHref(
+			userGoal.value?.target,
+			userGoal.value?.category,
+			router,
+			goalProgress.value,
+		);
+	};
 
 	watch(show, visible => {
 		if (!visible) {
@@ -135,5 +148,6 @@ export default function useGoalSettingRecommendedLoan({
 		enterRecommendedLoanStepAfterGoalSave,
 		onGoalSelectorSetGoal,
 		onGoalSelectorUpdateGoal,
+		handleExploreMoreLoans,
 	};
 }

@@ -18,6 +18,7 @@
 				class="!tw-p-0"
 				:title="recommendLoanHeaderTitle"
 				:details="recommendLoanHeaderDetails"
+				:loaded-set-data="loadedSetData"
 			/>
 		</template>
 		<template
@@ -238,6 +239,7 @@
 				:is-adding="isAdding"
 				:is-in-basket="recommendLoanIsInBasket"
 				@primary-cta-click="addToBasket"
+				@secondary-cta-click="handleExploreMoreLoans"
 			/>
 		</template>
 		<template
@@ -302,6 +304,7 @@ const emit = defineEmits([
 
 const { isMobile, isLarge } = useBreakpoints();
 const $kvTrackEvent = inject('$kvTrackEvent');
+const appConfig = inject('$appConfig', {});
 const router = useRouter();
 
 const {
@@ -432,6 +435,7 @@ const {
 	enterRecommendedLoanStepAfterGoalSave,
 	onGoalSelectorSetGoal,
 	onGoalSelectorUpdateGoal,
+	handleExploreMoreLoans,
 } = useGoalSettingRecommendedLoan({
 	emit,
 	props,
@@ -440,6 +444,10 @@ const {
 	show,
 	goalProgress,
 	getRecommendedLoans,
+	getCtaHref,
+	userGoal,
+	kvTrackEvent: $kvTrackEvent,
+	appConfig,
 });
 
 const contentComponent = computed(() => {
@@ -732,6 +740,10 @@ watch(show, async newVal => {
 
 			@apply tw-absolute;
 		}
+	}
+
+	#kvLightboxBody {
+		@apply !tw-pb-0;
 	}
 }
 </style>
