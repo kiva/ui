@@ -38,7 +38,7 @@
 					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
 					:categories-loan-count="categoriesLoanCount"
-					:hide-goal-card="hideCompletedGoalCard"
+					:hide-goal-card="hideGoalCardInNextSteps"
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 					:show-lending-next-steps-cards="true"
@@ -63,7 +63,7 @@
 							:user-goal-achieved="userGoalAchieved"
 							:user-goal="userGoal"
 							:categories-loan-count="categoriesLoanCount"
-							:hide-goal-card="hideCompletedGoalCard"
+							:hide-goal-card="hideGoalCardInNextSteps"
 							:user-info="userInfo"
 							:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 							:goal-editing-enable="goalEditingEnable"
@@ -101,7 +101,7 @@
 					:pre-built-achievement-slides="sortedAchievementSlides"
 					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
-					:hide-goal-card="hideCompletedGoalCard"
+					:hide-goal-card="hideGoalCardInNextSteps"
 					:latest-loan="latestLoan"
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
@@ -526,10 +526,12 @@ const hideRecommendedForYouSection = computed(() => {
 		&& allAchievementsCompleted(props.heroTieredAchievements);
 });
 
+const hideGoalCardInNextSteps = computed(() => hideCompletedGoalCard.value || userGoalAchieved.value);
+
 // Hide the top row carousel when there is nothing to show (no active goal card,
 // no incomplete achievements, and no post-lending cards). Applies to the fully-completed superlender case.
 const topRowHasContent = computed(() => {
-	return !hideCompletedGoalCard.value
+	return !hideGoalCardInNextSteps.value
 		|| achievementSlides.value.length > 0
 		|| showPostLendingNextStepsCards.value;
 });
@@ -561,7 +563,7 @@ const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.heroSlides));
 const topRowPriorityCards = computed(() => getTopRowPriorityCards({
 	showRegionExperienceInFirstRow: showRegionExperienceInFirstRow.value,
 	showPostLendingNextStepsCards: showPostLendingNextStepsCards.value,
-	hideCompletedGoalCard: hideCompletedGoalCard.value,
+	hideCompletedGoalCard: hideGoalCardInNextSteps.value,
 	shouldShowEmailMarketingCard: shouldShowEmailMarketingCard.value,
 	showLatestLoan: showLatestLoan.value,
 	showSurveyCard: showSurveyCard.value,
@@ -574,7 +576,7 @@ const topRowPriorityCards = computed(() => getTopRowPriorityCards({
 const topRowAchievementKeys = computed(() => getTopRowAchievementKeys({
 	showRegionExperienceInFirstRow: showRegionExperienceInFirstRow.value,
 	showPostLendingNextStepsCards: showPostLendingNextStepsCards.value,
-	hideCompletedGoalCard: hideCompletedGoalCard.value,
+	hideCompletedGoalCard: hideGoalCardInNextSteps.value,
 	topRowPriorityCards: topRowPriorityCards.value,
 	sortedAchievementSlides: sortedAchievementSlides.value,
 	showLendingNextStepsCards: showLendingNextStepsCards.value,

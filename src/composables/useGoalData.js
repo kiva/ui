@@ -658,10 +658,8 @@ export default function useGoalData({ apollo } = {}) {
 			parsedPrefs,
 			updatedPreference
 		);
-		userPreferences.value = {
-			...userPreferences.value,
-			preferences: JSON.stringify({ ...parsedPrefs, ...updatedPreference }),
-		};
+		// Persist only; do not copy the hidden preference into local state.
+		// MyKiva renders the completed card once, then hides it on the next page load.
 	}
 
 	async function checkCompletedGoal({
@@ -693,6 +691,7 @@ export default function useGoalData({ apollo } = {}) {
 				status: GOAL_STATUS.COMPLETED
 			};
 			await storeGoalPreferences({ ...userGoal.value });
+			await setHideGoalCardPreference();
 			$kvTrackEvent(
 				category,
 				'show',
