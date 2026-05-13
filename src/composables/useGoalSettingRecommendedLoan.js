@@ -7,10 +7,24 @@ import {
 import { useRouter } from 'vue-router';
 
 /**
- * State and props for the “recommended loan after goal” step in GoalSettingModal.
+ * Recommended-loan step state for {@link GoalSettingModal.vue}.
+ *
+ * The modal owns refs and passes them in; this composable does not call `defineProps` itself.
+ *
  * @param {object} options
- * @param {import('vue').Ref<object|null>} options.userGoal — annual goal from `useGoalData`.
- * @param {Function} options.getCtaHref — from `useGoalData`; lend URL + header query.
+ * @param {Function} options.emit — Modal emit function (`defineEmits`), e.g. `set-goal`.
+ * @param {object} options.props — Same object as GoalSettingModal’s `defineProps(...)`.
+ *   Only `goalRecommendedLoanEnable` and `basketItems` are read here via `toRef`; keep this
+ *   reference stable so those stay reactive.
+ * @param {object} options.selectedGoalNumber — Vue ref from the modal; `.value` is goal target (loan count).
+ * @param {object} options.selectedCategory — Vue ref from the modal; `.value` has `name`, `badgeId`.
+ * @param {object} options.show — Vue ref from the modal; `.value` is whether the lightbox is open.
+ * @param {object} options.goalProgress — Vue ref from `useGoalData`; `.value` is loans toward goal this year.
+ * @param {Function} options.getRecommendedLoans — From `useGoalData`; returns a promise of loans for a category id.
+ * @param {Function} options.getCtaHref — From `useGoalData`; builds lend URL + optional header query.
+ * @param {object} options.userGoal — Vue ref from `useGoalData`; `.value` is saved goal or null (`target`, `category`).
+ * @param {Function} options.kvTrackEvent — Analytics helper from GoalSettingModal (`$kvTrackEvent`).
+ * @param {object} [options.appConfig] — From GoalSettingModal (`$appConfig`), e.g. `photoPath`.
  */
 export default function useGoalSettingRecommendedLoan({
 	emit,
@@ -56,9 +70,6 @@ export default function useGoalSettingRecommendedLoan({
 	const recommendLoanCardProps = computed(() => {
 		const loan = recommendedLoan.value;
 		const photoPath = appConfig?.photoPath ?? '';
-		const kvTrackFunction = (...args) => {
-			kvTrackEvent?.(...args);
-		};
 		const base = {
 			photoPath,
 			showTags: true,
@@ -67,7 +78,7 @@ export default function useGoalSettingRecommendedLoan({
 			showLightView: true,
 			basketItems: basketItems.value ?? [],
 			route: router.currentRoute.value,
-			kvTrackFunction,
+			kvTrackFunction: kvTrackEvent,
 		};
 		if (!loan?.id) {
 			return base;
@@ -131,6 +142,7 @@ export default function useGoalSettingRecommendedLoan({
 				return;
 			}
 			recommendedLoan.value = null;
+			// TODO: handle use case where no loans are returned MP-2746
 			try {
 				const loans = await getRecommendedLoans(categoryId);
 				recommendedLoan.value = loans[0] ?? null;
