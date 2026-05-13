@@ -240,7 +240,7 @@ describe('useGoalSettingRecommendedLoan', () => {
 			expect(composable.showRecommendLoanAfterGoalView.value).toBe(false);
 		});
 
-		it('should refetch recommended loan while modal is hidden if recommend step is still active', async () => {
+		it('should clear recommendedLoan when modal closes without fetching again', async () => {
 			props.goalRecommendedLoanEnable = true;
 			composable.enterRecommendedLoanStepAfterGoalSave();
 			getRecommendedLoans.mockResolvedValue([{ id: 42 }]);
@@ -250,8 +250,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 
 			show.value = false;
 			await flushPromises();
-			expect(getRecommendedLoans).toHaveBeenCalledTimes(2);
-			expect(composable.recommendLoanCardProps.value.loanId).toBe(42);
+			expect(getRecommendedLoans).toHaveBeenCalledTimes(1);
+			expect(composable.recommendLoanCardProps.value.loanId).toBeUndefined();
 		});
 	});
 
