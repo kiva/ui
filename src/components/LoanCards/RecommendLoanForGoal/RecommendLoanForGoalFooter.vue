@@ -10,7 +10,7 @@
 		</kv-button>
 		<kv-button
 			v-if="!expressCheckoutEnabled"
-			class="goal-footer-button tw-pb-1"
+			class="goal-footer-button md:tw-pb-1"
 			variant="ghost"
 			:state="isAdding ? 'disabled' : ''"
 			@click="onSecondaryCtaClick"

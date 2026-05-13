@@ -4,11 +4,12 @@
 		:class="sectionClasses"
 		:style="sectionStyle"
 	>
-		<h3 class="tw-mb-4 tw-text-action-highlight tw-text-center">
+		<h3 class="tw-mb-2 md:tw-mb-4 tw-text-action-highlight tw-text-center">
 			{{ heading }}
 		</h3>
 		<div class="tw-mx-auto tw-w-full" style="max-width: 360px;">
 			<KvCompactLoanCard
+				ref="kvCompactLoanCard"
 				v-bind="cardAttrs"
 				:disabled="isAdding"
 				variant="post-goal"
@@ -18,7 +19,12 @@
 </template>
 
 <script setup>
-import { computed, useAttrs } from 'vue';
+import {
+	computed,
+	useAttrs,
+	ref,
+	defineExpose,
+} from 'vue';
 import { KvCompactLoanCard } from '@kiva/kv-components';
 
 defineOptions({
@@ -40,6 +46,7 @@ defineProps({
 	},
 });
 
+const kvCompactLoanCard = ref(null);
 const attrs = useAttrs();
 
 const sectionClasses = computed(() => attrs.class);
@@ -49,5 +56,13 @@ const sectionStyle = computed(() => attrs.style);
 const cardAttrs = computed(() => {
 	const { class: _c, style: _s, ...rest } = attrs;
 	return rest;
+});
+
+const getSelectedAmount = () => {
+	return kvCompactLoanCard.value?.selectedAmount;
+};
+
+defineExpose({
+	getSelectedAmount,
 });
 </script>
