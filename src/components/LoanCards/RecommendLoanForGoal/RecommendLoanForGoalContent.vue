@@ -19,7 +19,12 @@
 </template>
 
 <script setup>
-import { computed, useAttrs, ref, defineExpose } from 'vue';
+import {
+	computed,
+	useAttrs,
+	ref,
+	defineExpose,
+} from 'vue';
 import { KvCompactLoanCard } from '@kiva/kv-components';
 
 defineOptions({
