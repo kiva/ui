@@ -81,6 +81,7 @@ export default function useGoalSettingRecommendedLoan({
 
 	const recommendLoanIsInBasket = computed(() => (
 		(basketItems.value ?? []).some(
+			// eslint-disable-next-line no-underscore-dangle
 			item => item.__typename === 'LoanReservation' && item.id === recommendedLoan.value?.id
 		)
 	));
