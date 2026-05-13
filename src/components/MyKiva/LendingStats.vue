@@ -193,7 +193,11 @@
 		<div
 			v-else-if="goalProgressLoading"
 			class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden"
-			:class="{ 'tw--mt-6': isNextStepsExperimentEnabled && !showPostLendingNextStepsCards }"
+			:class="{
+				'tw--mt-6': isNextStepsExperimentEnabled && !showPostLendingNextStepsCards
+					&& !showLendingNextStepsCards,
+				'tw-mt-1.5': showLendingNextStepsCards
+			}"
 		>
 			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0" />
 			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden md:tw-block" />
