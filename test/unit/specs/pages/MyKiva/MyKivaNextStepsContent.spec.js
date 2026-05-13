@@ -30,6 +30,10 @@ const MyKivaContainerStub = defineComponent({
 const JourneyCardCarouselStub = defineComponent({
 	name: 'JourneyCardCarousel',
 	props: {
+		hideGoalCard: {
+			type: Boolean,
+			default: false,
+		},
 		showLendingNextStepsCards: {
 			type: Boolean,
 			default: false,
@@ -43,24 +47,30 @@ const KvLoadingPlaceholderStub = defineComponent({
 	template: '<div class="kv-loading-placeholder-stub" />',
 });
 
-const buildGoalData = ({ loading = false } = {}) => ({
+const buildGoalData = ({
+	hideGoalCard = false,
+	loading = false,
+	userGoalAchieved = false,
+} = {}) => ({
 	checkCompletedGoal: vi.fn().mockResolvedValue(),
 	goalProgress: ref(0),
-	hideGoalCard: ref(false),
+	hideGoalCard: ref(hideGoalCard),
 	loading: ref(loading),
 	loadGoalData: vi.fn().mockResolvedValue(),
 	loadPreferences: vi.fn().mockResolvedValue(),
 	storeGoalPreferences: vi.fn().mockResolvedValue(),
 	updateCurrentGoal: vi.fn().mockResolvedValue(),
 	userGoal: ref(null),
-	userGoalAchieved: ref(false),
+	userGoalAchieved: ref(userGoalAchieved),
 });
 
 const createWrapper = ({
 	goalLoading = false,
+	hideGoalCard = false,
 	cookieValue,
 	query = {},
 	props = {},
+	userGoalAchieved = false,
 } = {}) => {
 	routeRef.value = { query };
 	const cookieStore = {
@@ -68,7 +78,7 @@ const createWrapper = ({
 		remove: vi.fn(),
 	};
 
-	const goalData = buildGoalData({ loading: goalLoading });
+	const goalData = buildGoalData({ hideGoalCard, loading: goalLoading, userGoalAchieved });
 
 	const wrapper = mount(MyKivaNextStepsContent, {
 		props: {
@@ -137,5 +147,15 @@ describe('MyKivaNextStepsContent', () => {
 		expect(carousels).toHaveLength(1);
 		expect(carousels[0].props('showLendingNextStepsCards')).toBe(false);
 		expect(cookieStore.remove).toHaveBeenCalledWith(POST_LENDING_NEXT_STEPS_COOKIE);
+	});
+
+	it('hides the goal card in next steps when the goal is achieved for this page view', () => {
+		const { wrapper } = createWrapper({
+			goalLoading: false,
+			userGoalAchieved: true,
+		});
+
+		const carousels = wrapper.findAllComponents({ name: 'JourneyCardCarousel' });
+		expect(carousels[0].props('hideGoalCard')).toBe(true);
 	});
 });

@@ -1328,6 +1328,9 @@ describe('useGoalData', () => {
 
 	describe('checkCompletedGoal', () => {
 		it('should mark goal as completed and track event', async () => {
+			const {
+				updateUserPreferences,
+			} = await import('#src/util/userPreferenceUtils');
 			const currentYear = new Date().getFullYear();
 			const mockPrefs = {
 				goals: [{
@@ -1379,8 +1382,19 @@ describe('useGoalData', () => {
 				});
 
 			await composable.loadGoalData();
+			updateUserPreferences.mockClear();
 			await composable.checkCompletedGoal({ currentGoalProgress: 20 });
 
+			expect(updateUserPreferences).toHaveBeenCalledWith(
+				mockApollo,
+				expect.objectContaining({ id: 'pref-123' }),
+				expect.objectContaining({
+					goals: [
+						expect.objectContaining({ status: GOAL_STATUS.COMPLETED }),
+					],
+				}),
+				{ hideGoalCard: true },
+			);
 			expect(mockKvTrackEvent).toHaveBeenCalledWith(
 				'post-checkout',
 				'show',
@@ -1498,7 +1512,7 @@ describe('useGoalData', () => {
 			expect(composable.userGoalAchievedNow.value).toBe(false);
 		});
 
-		it('should hide an already completed current-year goal when progress is complete', async () => {
+		it('persists hide preference for completed goal without hiding it immediately', async () => {
 			const {
 				setMyKivaGoal,
 				updateUserPreferences,
@@ -1563,7 +1577,7 @@ describe('useGoalData', () => {
 				mockPrefs,
 				{ hideGoalCard: true },
 			);
-			expect(composable.hideGoalCard.value).toBe(true);
+			expect(composable.hideGoalCard.value).toBe(false);
 		});
 
 		it('should not mark completed if goal not achieved', async () => {
@@ -3509,32 +3523,6 @@ describe('useGoalData', () => {
 					fetchPolicy: 'network-only',
 				})
 			);
-		});
-
-		it('should update local hideGoalCard state after setting the preference', async () => {
-			mockApollo.query = vi.fn().mockResolvedValue({
-				data: {
-					my: {
-						userPreferences: {
-							id: 'hide-goal-id',
-							preferences: JSON.stringify({
-								goals: [{
-									goalName: 'goal-us-economic-equality-2026',
-									category: ID_US_ECONOMIC_EQUALITY,
-									target: 5,
-									status: GOAL_STATUS.COMPLETED,
-									dateStarted: '2026-04-03T18:59:12.628Z',
-								}],
-							}),
-						},
-						loans: { totalCount: 5 },
-					},
-				},
-			});
-
-			await composable.setHideGoalCardPreference(true);
-
-			expect(composable.hideGoalCard.value).toBe(true);
 		});
 	});
 
