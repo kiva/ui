@@ -126,6 +126,10 @@ export default function useGoalSettingRecommendedLoan({
 		);
 	};
 
+	const filteredLoanIds = computed(() => {
+		return basketItems.value?.map(item => item.id) ?? [];
+	});
+
 	watch(show, visible => {
 		if (!visible) {
 			recommendedLoan.value = null;
@@ -144,7 +148,7 @@ export default function useGoalSettingRecommendedLoan({
 			recommendedLoan.value = null;
 			// TODO: handle use case where no loans are returned MP-2746
 			try {
-				const loans = await getRecommendedLoans(categoryId);
+				const loans = await getRecommendedLoans(categoryId, filteredLoanIds.value);
 				recommendedLoan.value = loans[0] ?? null;
 			} catch {
 				recommendedLoan.value = null;

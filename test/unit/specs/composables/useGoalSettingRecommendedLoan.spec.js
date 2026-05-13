@@ -256,7 +256,7 @@ describe('useGoalSettingRecommendedLoan', () => {
 	});
 
 	describe('recommended loan fetch', () => {
-		it('should call getRecommendedLoans with category badgeId and set first loan', async () => {
+		it('should call getRecommendedLoans with category badgeId and filtered loan ids, then set first loan', async () => {
 			props.goalRecommendedLoanEnable = true;
 			composable.enterRecommendedLoanStepAfterGoalSave();
 			getRecommendedLoans.mockResolvedValue([
@@ -264,9 +264,19 @@ describe('useGoalSettingRecommendedLoan', () => {
 				{ id: 2, name: 'Second' },
 			]);
 			await flushPromises();
-			expect(getRecommendedLoans).toHaveBeenCalledWith('women-badge');
+			expect(getRecommendedLoans).toHaveBeenCalledWith('women-badge', []);
 			expect(composable.recommendLoanCardProps.value.loanId).toBe(1);
 			expect(composable.recommendLoanCardProps.value.loan.name).toBe('First');
+		});
+
+		it('should pass basket item ids as filteredLoanIds to getRecommendedLoans', async () => {
+			props.goalRecommendedLoanEnable = true;
+			props.basketItems = [{ id: 900 }, { id: 901 }];
+			composable.enterRecommendedLoanStepAfterGoalSave();
+			getRecommendedLoans.mockResolvedValue([{ id: 2, name: 'Next' }]);
+			await flushPromises();
+			expect(getRecommendedLoans).toHaveBeenCalledWith('women-badge', [900, 901]);
+			expect(composable.recommendLoanCardProps.value.loanId).toBe(2);
 		});
 
 		it('should set recommendedLoan to null when fetch returns empty', async () => {
