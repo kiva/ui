@@ -609,11 +609,15 @@ const goToDashboard = position => {
 	router.push('/mykiva');
 };
 
+const navigate = url => {
+	if (url) window.location.href = url;
+};
+
 // CTA handlers
 const handlePrimaryCtaClick = slide => handlePrimaryCtaClickUtil({
 	slide,
 	trackEvent: $kvTrackEvent,
-	navigate: router.push,
+	navigate,
 	modalHandlers: {
 		openSharingModal: () => { isSharingModalVisible.value = true; },
 	},
@@ -622,7 +626,7 @@ const handlePrimaryCtaClick = slide => handlePrimaryCtaClickUtil({
 const handleSecondaryCtaClick = slide => handleSecondaryCtaClickUtil({
 	slide,
 	trackEvent: $kvTrackEvent,
-	navigate: router.push,
+	navigate,
 });
 
 // Goal modal methods

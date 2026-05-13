@@ -99,7 +99,6 @@ import {
 	ref,
 	inject,
 } from 'vue';
-import { useRouter } from 'vue-router';
 import useBreakpoints from '#src/composables/useBreakpoints';
 import { isNonBadgeSlide } from '#src/util/achievementUtils';
 import { TRANSACTION_LOANS_KEY } from '#src/util/myKivaUtils';
@@ -138,7 +137,6 @@ const TRANSACTION_DAYS_LIMIT = 30;
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
-const router = useRouter();
 
 const {
 	getActiveTierData,
@@ -377,7 +375,7 @@ const onPrimaryCtaClick = slide => {
 	handlePrimaryCtaClick({
 		slide,
 		trackEvent: $kvTrackEvent,
-		navigate: url => router.push(url),
+		navigate: url => { if (url) window.location.href = url; },
 		modalHandlers: {
 			openSharingModal: () => { isSharingModalVisible.value = true; },
 		},
@@ -388,7 +386,7 @@ const onSecondaryCtaClick = slide => {
 	handleSecondaryCtaClick({
 		slide,
 		trackEvent: $kvTrackEvent,
-		navigate: url => router.push(url),
+		navigate: url => { if (url) window.location.href = url; },
 		modalHandlers: {
 			updateJourney: achievementKey => emit('update-journey', achievementKey),
 		},

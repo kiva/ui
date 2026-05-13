@@ -58,13 +58,13 @@
 							</li>
 						</template>
 						<li class="tw-border-t tw-border-tertiary">
-							<router-link
-								to="/lend"
+							<a
+								href="/lend/filter"
 								class="lend-link tw-text-primary"
 								v-kv-track-event="['TopNav','click-Lend-All_Loans']"
 							>
 								All loans
-							</router-link>
+							</a>
 						</li>
 						<li>
 							<router-link

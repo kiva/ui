@@ -11,9 +11,9 @@
 			<router-link :to="homePagePath">
 				Home
 			</router-link>
-			<router-link to="/lend">
+			<a href="/lend/filter">
 				Lend
-			</router-link>
+			</a>
 			<router-link to="/borrow">
 				Borrow
 			</router-link>
