@@ -168,7 +168,7 @@ const handleContinueClick = () => {
 
 		return;
 	}
-	router.push(ctaHref.value);
+	window.location.href = ctaHref.value;
 };
 
 const handleEditClick = () => {

@@ -53,6 +53,7 @@ import { gql } from 'graphql-tag';
 import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
 import { readLoanFragment, watchLoanData } from '#src/util/loanUtils';
 import bookmarkLoan from '#src/util/bookmarkUtil';
+import { getFullUrl } from '#src/util/urlUtils';
 import logFormatter from '#src/util/logFormatter';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import percentRaisedMixin from '#src/plugins/loan/percent-raised-mixin';
@@ -460,10 +461,7 @@ export default {
 			}
 
 			if (!_isEqual(currentQuery, query)) {
-				this.$router.push({
-					path: '/lend/filter',
-					query,
-				});
+				window.location.href = getFullUrl('/lend/filter', query);
 			}
 		},
 		getTargetPosition() {

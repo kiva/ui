@@ -86,8 +86,8 @@
 				<p>In order to send a message, you will need to make a loan using your own funds first. This helps us prevent spam and unwanted messages.</p>
 				<p class="tw-mt-2">
 					Please
-					<router-link
-						to="/lend"
+					<a
+						href="/lend/filter"
 						v-kv-track-event="[
 							'lender-profile',
 							'click',
@@ -95,7 +95,7 @@
 						]"
 					>
 						make a loan first
-					</router-link>
+					</a>
 					(note that loans made with bonus credit are not eligible) and then try your message again!
 				</p>
 			</template>

@@ -89,6 +89,7 @@ import { mdiMagnify } from '@mdi/js';
 import lockScrollUtils from '#src/plugins/lock-scroll';
 import getCacheKey from '#src/util/getCacheKey';
 import { hasExcludedQueryParams } from '#src/util/loanSearch/queryParamUtils';
+import { getFullUrl } from '#src/util/urlUtils';
 import { KvTextInput } from '@kiva/kv-components';
 
 const engine = new SearchEngine();
@@ -246,9 +247,13 @@ export default {
 					filterUrl = '/lend';
 				}
 
-				// When already on the filter page, prevent identical paths from being pushed
-				if (this.$router.currentRoute.fullPath !== `${filterUrl}?${new URLSearchParams(query).toString()}`) {
-					this.$router.push({ path: filterUrl, query });
+				const targetUrl = getFullUrl(filterUrl, query);
+				const currentFullPath = this.$router.currentRoute?.value?.fullPath
+					?? this.$router.currentRoute?.fullPath;
+
+				// When already on the filter page, prevent identical paths from being loaded
+				if (currentFullPath !== targetUrl) {
+					window.location.href = targetUrl;
 				}
 
 				// Exit searching state, in case user is already on filter page

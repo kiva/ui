@@ -137,6 +137,12 @@ export default {
 		},
 	},
 	methods: {
+		navigateToLoanFindingUrl(id) {
+			const loanFindingUrl = this.getLoanFindingUrl(id, this.$router.currentRoute.value);
+			if (loanFindingUrl) {
+				window.location.href = loanFindingUrl;
+			}
+		},
 		handleBadgeClicked(badge) {
 			const selectedTier = badge.achievementData?.tiers?.find(tierEl => tierEl.level === badge.level) ?? null;
 			this.tier = selectedTier;
@@ -186,7 +192,7 @@ export default {
 			if (this.isSelectedJourneyComplete) {
 				return this.handleSideSheetClosed();
 			}
-			this.$router.push(this.getLoanFindingUrl(id, this.$router.currentRoute.value.path));
+			this.navigateToLoanFindingUrl(id);
 		},
 		handleBadgeJourneyLevelClicked(payload) {
 			const { id, challengeName, tier: clickedTier } = payload;
@@ -199,7 +205,7 @@ export default {
 				clickedTier.level,
 			);
 
-			this.$router.push(this.getLoanFindingUrl(id, this.$router.currentRoute.value.path));
+			this.navigateToLoanFindingUrl(id);
 		}
 	},
 };
