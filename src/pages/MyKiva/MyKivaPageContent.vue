@@ -35,6 +35,10 @@
 				:goal-editing-enable="goalEditingEnable"
 				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 				:lending-next-steps-variant="lendingNextStepsVariant"
+				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
+				:basket-items="basketItems"
+				:is-adding="isAdding"
+				@add-to-basket="addToBasket"
 			/>
 		</section>
 		<section class="tw-mt-4" id="mykiva-achievements">

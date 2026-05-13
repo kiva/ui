@@ -2,15 +2,26 @@
 	<KvLightbox
 		class="goal-setting-lightbox"
 		:class="{
-			'goal-tile-modal': showGoalTile,
-			'goal-tile-modal-expanded': showGoalTile && showCategories
+			'goal-tile-modal': showGoalTile && !showRecommendLoanAfterGoalView,
+			'goal-tile-modal-expanded': showGoalTile && showCategories && !showRecommendLoanAfterGoalView,
+			'goal-tile-modal-recommend-loan': showRecommendLoanAfterGoalView,
 		}"
 		title=""
 		:visible="show"
 		@lightbox-closed="closeLightbox"
 	>
 		<template
-			v-if="!showGoalTile"
+			v-if="showRecommendLoanAfterGoalView"
+			#header
+		>
+			<RecommendLoanForGoalHeader
+				class="!tw-p-0"
+				:title="recommendLoanHeaderTitle"
+				:details="recommendLoanHeaderDetails"
+			/>
+		</template>
+		<template
+			v-else-if="!showGoalTile"
 			#header
 		>
 			<h2
@@ -21,12 +32,22 @@
 			</h2>
 		</template>
 		<h2
-			v-if="isMobile && (showCategories || isThanksPage)"
+			v-if="!showRecommendLoanAfterGoalView && isMobile && (showCategories || isThanksPage)"
 			class="tw-mb-3 tw-text-left md:tw-text-center"
 		>
 			Choose an impact area
 		</h2>
 		<section
+			v-if="showRecommendLoanAfterGoalView"
+		>
+			<RecommendLoanForGoalContent
+				ref="recommendLoanForGoalContentRef"
+				v-bind="recommendLoanCardProps"
+				:is-adding="isAdding"
+			/>
+		</section>
+		<section
+			v-else
 			:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-0': showGoalTile }"
 		>
 			<div
@@ -171,8 +192,8 @@
 					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 					show-goal-value-props-copy
 					@set-goal-target="setGoalTarget"
-					@set-goal="$emit('set-goal', $event)"
-					@update-goal="$emit('set-goal', $event)"
+					@set-goal="onGoalSelectorSetGoal"
+					@update-goal="onGoalSelectorUpdateGoal"
 					@edit-goal="editGoalCategory"
 					@close-modal="closeLightbox"
 				/>
@@ -192,7 +213,7 @@
 				/>
 				<!-- second continue button for goal tile variant -->
 				<div
-					v-if="showGoalTile && (showCategories || isThanksPage)"
+					v-if="showGoalTile && !showRecommendLoanAfterGoalView && (showCategories || isThanksPage)"
 					class="tw-flex tw-justify-end tw-gap-2 goal-tile-categories-controls"
 				>
 					<KvButton
@@ -209,7 +230,18 @@
 			</div>
 		</section>
 		<template
-			v-if="!showGoalTile && (showCategories || isThanksPage)"
+			v-if="showRecommendLoanAfterGoalView"
+			#controls
+		>
+			<RecommendLoanForGoalFooter
+				class="tw-mx-auto tw-w-full"
+				:is-adding="isAdding"
+				:is-in-basket="recommendLoanIsInBasket"
+				@primary-cta-click="addToBasket"
+			/>
+		</template>
+		<template
+			v-else-if="!showGoalTile && (showCategories || isThanksPage)"
 			#controls
 		>
 			<div
@@ -250,14 +282,23 @@ import { useRouter } from 'vue-router';
 
 import useBreakpoints from '#src/composables/useBreakpoints';
 import useGoalData from '#src/composables/useGoalData';
+import useGoalSettingRecommendedLoan from '#src/composables/useGoalSettingRecommendedLoan';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
+import RecommendLoanForGoalContent from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalContent';
+import RecommendLoanForGoalFooter from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalFooter';
+import RecommendLoanForGoalHeader from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalHeader';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import { mdiCheckBold, mdiCheckCircle, mdiClose } from '@mdi/js';
 
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
 const NumberChoice = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/NumberChoice'));
 
-const emit = defineEmits(['close-goal-modal', 'set-goal', 'update-goal-choices']);
+const emit = defineEmits([
+	'close-goal-modal',
+	'set-goal',
+	'update-goal-choices',
+	'add-to-basket',
+]);
 
 const { isMobile, isLarge } = useBreakpoints();
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -270,6 +311,7 @@ const {
 	goalProgressPercentage,
 	userGoal,
 	loadGoalData,
+	getRecommendedLoans,
 } = useGoalData();
 
 const props = defineProps({
@@ -333,6 +375,34 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * When true, after setting a goal (handleClick save path), swap modal content for recommended loan UI.
+	 */
+	goalRecommendedLoanEnable: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Title for the recommended loan header
+	 */
+	recommendLoanHeaderTitle: {
+		type: String,
+		default: 'Goal set!',
+	},
+	/**
+	 * Flag to indicate if the recommended loan is being added to the basket
+	 */
+	isAdding: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Array of basket items to check if the recommended loan is already in the basket
+	 */
+	basketItems: {
+		type: Array,
+		default: () => ([]),
+	},
 });
 
 const { numberOfLoans, isGoalSet, show } = toRefs(props);
@@ -352,6 +422,25 @@ const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 const hasControlledCategory = props.controlledSelectedCategory
 	&& Object.keys(props.controlledSelectedCategory).length > 0;
 const selectedCategory = ref(hasControlledCategory ? props.controlledSelectedCategory : categories[0]);
+
+const {
+	showRecommendLoanAfterGoalView,
+	recommendLoanHeaderDetails,
+	recommendLoanCardProps,
+	recommendLoanIsInBasket,
+	resetRecommendedLoanState,
+	enterRecommendedLoanStepAfterGoalSave,
+	onGoalSelectorSetGoal,
+	onGoalSelectorUpdateGoal,
+} = useGoalSettingRecommendedLoan({
+	emit,
+	props,
+	selectedGoalNumber,
+	selectedCategory,
+	show,
+	goalProgress,
+	getRecommendedLoans,
+});
 
 const contentComponent = computed(() => {
 	switch (formStep.value) {
@@ -383,6 +472,14 @@ const ctaHref = computed(() => {
 const showGoalTile = computed(() => {
 	return props.isGoalTileExperimentEnabled && isLarge.value;
 });
+
+const recommendLoanForGoalContentRef = ref(null);
+
+const addToBasket = () => {
+	const lendAmount = recommendLoanForGoalContentRef.value?.getSelectedAmount();
+	const { loanId } = recommendLoanCardProps.value;
+	emit('add-to-basket', { loanId, lendAmount });
+};
 
 const handleCategorySelected = categoryId => {
 	const categoryIdx = categoryId - 1;
@@ -453,6 +550,7 @@ const handleClick = () => {
 			dateStarted,
 			status,
 		});
+		enterRecommendedLoanStepAfterGoalSave();
 	}
 };
 
@@ -461,6 +559,7 @@ const resetForm = () => {
 	// Reset selected category to default (women's equality)
 	selectedCategory.value = { ...categories[0] };
 	showCategories.value = false;
+	resetRecommendedLoanState();
 };
 
 const closeLightbox = () => {
@@ -505,17 +604,18 @@ watch(isGoalSet, async newVal => {
 });
 
 watch(show, async newVal => {
-	if (newVal) {
-		isLoadingData.value = true;
-		await loadGoalData();
-		const { target, category: goalCategory } = userGoal.value;
-		const storedCategory = categories.find(c => c.badgeId === goalCategory);
-		if (storedCategory && target) {
-			selectedCategory.value = storedCategory;
-			selectedGoalNumber.value = target;
-		}
-		isLoadingData.value = false;
+	if (!newVal) {
+		return;
 	}
+	isLoadingData.value = true;
+	await loadGoalData();
+	const { target, category: goalCategory } = userGoal.value;
+	const storedCategory = categories.find(c => c.badgeId === goalCategory);
+	if (storedCategory && target) {
+		selectedCategory.value = storedCategory;
+		selectedGoalNumber.value = target;
+	}
+	isLoadingData.value = false;
 });
 </script>
 
@@ -614,6 +714,23 @@ watch(show, async newVal => {
 
 		@screen lg {
 			max-width: 70rem !important;
+		}
+	}
+}
+
+.goal-setting-lightbox.goal-tile-modal-recommend-loan :deep {
+	[data-test=kv-lightbox] > div:first-child,
+	[data-testid=kv-lightbox] > div:first-child {
+		@apply tw-bg-gray-50 !tw-rounded tw-relative;
+
+		@screen md {
+			width: 684px;
+		}
+
+		button {
+			right: 2rem;
+
+			@apply tw-absolute;
 		}
 	}
 }
