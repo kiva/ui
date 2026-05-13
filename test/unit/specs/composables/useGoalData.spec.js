@@ -1498,6 +1498,74 @@ describe('useGoalData', () => {
 			expect(composable.userGoalAchievedNow.value).toBe(false);
 		});
 
+		it('should hide an already completed current-year goal when progress is complete', async () => {
+			const {
+				setMyKivaGoal,
+				updateUserPreferences,
+			} = await import('#src/util/userPreferenceUtils');
+
+			const mockPrefs = {
+				goals: [{
+					goalName: 'goal-us-economic-equality-2026',
+					category: ID_US_ECONOMIC_EQUALITY,
+					target: 5,
+					status: GOAL_STATUS.COMPLETED,
+					dateStarted: '2026-04-03T18:59:12.628Z',
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 5 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{
+									id: ID_US_ECONOMIC_EQUALITY,
+									progressForYear: 5,
+									totalProgressToAchievement: 5,
+								},
+							],
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 5 },
+						},
+					},
+				});
+
+			setMyKivaGoal.mockClear();
+			updateUserPreferences.mockClear();
+
+			await composable.loadGoalData({ checkMyKivaCompletedGoalAfterLoad: true });
+
+			expect(setMyKivaGoal).not.toHaveBeenCalled();
+			expect(updateUserPreferences).toHaveBeenCalledWith(
+				mockApollo,
+				expect.objectContaining({ id: 'pref-123' }),
+				mockPrefs,
+				{ hideGoalCard: true },
+			);
+			expect(composable.hideGoalCard.value).toBe(true);
+		});
+
 		it('should not mark completed if goal not achieved', async () => {
 			const {
 				setMyKivaGoal,
@@ -3441,6 +3509,32 @@ describe('useGoalData', () => {
 					fetchPolicy: 'network-only',
 				})
 			);
+		});
+
+		it('should update local hideGoalCard state after setting the preference', async () => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'hide-goal-id',
+							preferences: JSON.stringify({
+								goals: [{
+									goalName: 'goal-us-economic-equality-2026',
+									category: ID_US_ECONOMIC_EQUALITY,
+									target: 5,
+									status: GOAL_STATUS.COMPLETED,
+									dateStarted: '2026-04-03T18:59:12.628Z',
+								}],
+							}),
+						},
+						loans: { totalCount: 5 },
+					},
+				},
+			});
+
+			await composable.setHideGoalCardPreference(true);
+
+			expect(composable.hideGoalCard.value).toBe(true);
 		});
 	});
 

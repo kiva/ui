@@ -644,24 +644,52 @@ export default function useGoalData({ apollo } = {}) {
 		}
 	}
 
+	const hideGoalCard = computed(() => {
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+		return parsedPrefs.hideGoalCard || false;
+	});
+
+	async function setHideGoalCardPreference(hide = true) {
+		const parsedPrefs = await loadPreferences('network-only');
+		const updatedPreference = { hideGoalCard: hide };
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			updatedPreference
+		);
+		userPreferences.value = {
+			...userPreferences.value,
+			preferences: JSON.stringify({ ...parsedPrefs, ...updatedPreference }),
+		};
+	}
+
 	async function checkCompletedGoal({
 		currentGoalProgress = 0,
 		category = 'post-checkout',
 		eventLabel = 'annual-goal-complete',
 	} = {}) {
-		// Skip if goal is already completed or expired
-		if ([GOAL_STATUS.COMPLETED, GOAL_STATUS.EXPIRED].includes(userGoal.value?.status)) {
+		const goal = userGoal.value;
+		if (!goal || goal.status === GOAL_STATUS.EXPIRED) {
 			return;
 		}
-		if (
-			(currentGoalProgress && (currentGoalProgress >= userGoal.value?.target))
-			|| (userGoal.value && userGoalAchieved.value)
-		) {
+
+		const progress = currentGoalProgress || goalProgress.value;
+		const isGoalComplete = progress >= goal.target;
+
+		if (goal.status === GOAL_STATUS.COMPLETED) {
+			if (isGoalComplete && !hideGoalCard.value) {
+				await setHideGoalCardPreference();
+			}
+			return;
+		}
+
+		if (isGoalComplete) {
 			// Capture goal data before storeGoalPreferences (which may filter out the goal via setGoalState)
-			const goalCategory = userGoal.value.category;
-			const goalTarget = userGoal.value.target;
+			const goalCategory = goal.category;
+			const goalTarget = goal.target;
 			userGoal.value = {
-				...userGoal.value,
+				...goal,
 				status: GOAL_STATUS.COMPLETED
 			};
 			await storeGoalPreferences({ ...userGoal.value });
@@ -910,21 +938,6 @@ export default function useGoalData({ apollo } = {}) {
 
 		return { wasFixed: true };
 	}
-
-	async function setHideGoalCardPreference(hide = true) {
-		const parsedPrefs = await loadPreferences('network-only');
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			{ hideGoalCard: hide }
-		);
-	}
-
-	const hideGoalCard = computed(() => {
-		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
-		return parsedPrefs.hideGoalCard || false;
-	});
 
 	const goalProgressPercentage = computed(() => {
 		const target = Number(userGoal?.value?.target);
