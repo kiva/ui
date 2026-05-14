@@ -683,7 +683,7 @@ watch(() => props.goalRefreshKey, async (newVal, oldVal) => {
 });
 
 onMounted(async () => {
-	await checkCompletedGoal({ category: 'portfolio' });
+	await checkCompletedGoal({ category: 'portfolio', persistHideGoalCard: true });
 	if (shouldShowPostLendingNextStepsCards) {
 		removePostLendingCardCookie(cookieStore);
 	}

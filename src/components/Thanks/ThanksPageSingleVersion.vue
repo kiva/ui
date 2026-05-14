@@ -463,7 +463,8 @@ onMounted(async () => {
 		loans: props.loans,
 		year,
 	});
-	await checkCompletedGoal({ currentGoalProgress: totalProgress });
+	// Thanks can mark the goal complete, but MyKiva owns hiding the completed card after showing it once.
+	await checkCompletedGoal({ currentGoalProgress: totalProgress, persistHideGoalCard: false });
 	goalDataInitialized.value = true;
 	isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
 
