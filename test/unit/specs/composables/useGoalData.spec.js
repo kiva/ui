@@ -1327,7 +1327,7 @@ describe('useGoalData', () => {
 	});
 
 	describe('checkCompletedGoal', () => {
-		it('should mark goal as completed and track event', async () => {
+		it('should mark goal as completed and track event without hiding the goal card', async () => {
 			const {
 				updateUserPreferences,
 			} = await import('#src/util/userPreferenceUtils');
@@ -1385,16 +1385,7 @@ describe('useGoalData', () => {
 			updateUserPreferences.mockClear();
 			await composable.checkCompletedGoal({ currentGoalProgress: 20 });
 
-			expect(updateUserPreferences).toHaveBeenCalledWith(
-				mockApollo,
-				expect.objectContaining({ id: 'pref-123' }),
-				expect.objectContaining({
-					goals: [
-						expect.objectContaining({ status: GOAL_STATUS.COMPLETED }),
-					],
-				}),
-				{ hideGoalCard: true },
-			);
+			expect(updateUserPreferences).not.toHaveBeenCalled();
 			expect(mockKvTrackEvent).toHaveBeenCalledWith(
 				'post-checkout',
 				'show',

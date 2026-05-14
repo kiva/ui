@@ -666,6 +666,7 @@ export default function useGoalData({ apollo } = {}) {
 		currentGoalProgress = 0,
 		category = 'post-checkout',
 		eventLabel = 'annual-goal-complete',
+		persistHideGoalCard = false,
 	} = {}) {
 		const goal = userGoal.value;
 		if (!goal || goal.status === GOAL_STATUS.EXPIRED) {
@@ -676,7 +677,7 @@ export default function useGoalData({ apollo } = {}) {
 		const isGoalComplete = progress >= goal.target;
 
 		if (goal.status === GOAL_STATUS.COMPLETED) {
-			if (isGoalComplete && !hideGoalCard.value) {
+			if (persistHideGoalCard && isGoalComplete && !hideGoalCard.value) {
 				await setHideGoalCardPreference();
 			}
 			return;
@@ -691,7 +692,9 @@ export default function useGoalData({ apollo } = {}) {
 				status: GOAL_STATUS.COMPLETED
 			};
 			await storeGoalPreferences({ ...userGoal.value });
-			await setHideGoalCardPreference();
+			if (persistHideGoalCard) {
+				await setHideGoalCardPreference();
+			}
 			$kvTrackEvent(
 				category,
 				'show',
@@ -784,6 +787,7 @@ export default function useGoalData({ apollo } = {}) {
 			await checkCompletedGoal({
 				category: 'portfolio',
 				eventLabel: 'autolending-annual-goal-complete',
+				persistHideGoalCard: true,
 			});
 		}
 		loading.value = false;
