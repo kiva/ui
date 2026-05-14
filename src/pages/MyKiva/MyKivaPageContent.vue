@@ -35,6 +35,10 @@
 				:goal-editing-enable="goalEditingEnable"
 				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 				:lending-next-steps-variant="lendingNextStepsVariant"
+				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
+				:basket-items="basketItems"
+				:is-adding="isAdding"
+				@add-to-basket="addToBasket"
 			/>
 		</section>
 		<section class="tw-mt-4" id="mykiva-achievements">
@@ -424,9 +428,15 @@ export default {
 		},
 	},
 	methods: {
+		navigateToLoanFindingUrl(id) {
+			const loanFindingUrl = this.getLoanFindingUrl(id, this.$router.currentRoute.value);
+			if (loanFindingUrl) {
+				window.location.href = loanFindingUrl;
+			}
+		},
 		handleBadgeSectionClicked(badge) {
 			if (!badge.hasStarted) {
-				this.$router.push(this.getLoanFindingUrl(badge.id, this.$router.currentRoute.value));
+				this.navigateToLoanFindingUrl(badge.id);
 			} else {
 				this.state = STATE_JOURNEY;
 				this.selectedBadgeData = badge;
@@ -467,7 +477,7 @@ export default {
 			if (this.isSelectedJourneyComplete) {
 				return this.handleComponentClosed();
 			}
-			this.$router.push(this.getLoanFindingUrl(id, this.$router.currentRoute.value));
+			this.navigateToLoanFindingUrl(id);
 		},
 
 		handleBadgeJourneyLevelClicked(payload) {
@@ -480,7 +490,7 @@ export default {
 				challengeName,
 				clickedTier.level,
 			);
-			this.$router.push(this.getLoanFindingUrl(id, this.$router.currentRoute.value));
+			this.navigateToLoanFindingUrl(id);
 		},
 		getFormattedTransactions() {
 			return this.transactionsTypes.map(trx => {

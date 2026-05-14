@@ -213,7 +213,11 @@ watch(() => badgeContentfulData.value, () => {
 	}
 });
 
-watch([() => badgeData.value, () => badgeContentfulData.value], ([newBadgeData]) => {
+watch([
+	() => badgeData.value,
+	() => badgeContentfulData.value,
+	() => props.badgeAchievedIds.join('|'),
+], ([newBadgeData]) => {
 	if (!showEqualityBadge.value && newBadgeData.length) {
 		const filteredBadges = newBadgeData.filter(b => props.badgeAchievedIds.includes(b.id));
 		const nonEquityBadgeOverride = getNonEquityBadgeOverride(

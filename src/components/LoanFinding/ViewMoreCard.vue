@@ -10,7 +10,7 @@
 				View more loans that match your filters on our search page
 			</p>
 			<kv-button
-				:to="viewMoreLink"
+				:href="viewMoreLink"
 				v-kv-track-event="['event-tracking', 'click', 'qf-mobile-view-more']"
 			>
 				<span class="tw-flex tw-items-center">

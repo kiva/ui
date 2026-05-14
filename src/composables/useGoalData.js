@@ -11,6 +11,8 @@ import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import logFormatter from '#src/util/logFormatter';
 import { getTransactionTimestamp } from '#src/util/myKivaUtils';
 import { createUserPreferences, updateUserPreferences, setMyKivaGoal } from '#src/util/userPreferenceUtils';
+import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
+import { FLSS_ORIGIN_GOAL_RECOMMENDED_LOAN } from '#src/util/flssUtils';
 
 import useBadgeData, {
 	calculateFreshProgressAdjustments,
@@ -49,6 +51,15 @@ const GOAL_1_DISPLAY_MAP = {
 	[ID_WOMENS_EQUALITY]: 'woman',
 };
 
+// Filters with loanSearchState format to be used directly in graphql queries depending on the category
+const FLSS_FILTERS_BY_GOAL = {
+	[ID_WOMENS_EQUALITY]: { gender: ['female'] },
+	[ID_US_ECONOMIC_EQUALITY]: { countryIsoCode: ['PR', 'US'] },
+	[ID_CLIMATE_ACTION]: { tagId: [8, 9] },
+	[ID_REFUGEE_EQUALITY]: { themeId: [28] },
+	[ID_BASIC_NEEDS]: { sectorId: [6, 10, 20, 21] },
+};
+
 export const GOAL_STATUS = {
 	COMPLETED: 'completed',
 	EXPIRED: 'expired',
@@ -59,6 +70,8 @@ export const GOALS_CURRENT_YEAR = new Date().getFullYear();
 export const LAST_YEAR_KEY = GOALS_CURRENT_YEAR - 1;
 export const COMPLETED_GOAL_THRESHOLD = 100;
 export const HALF_GOAL_THRESHOLD = 50;
+const MIN_CATEGORY_LOANS_AMOUNT = 100;
+const RECOMMENDED_LOANS_LIMIT = 4;
 
 function getGoalDisplayName(target, category) {
 	if (!target || target > 1) return GOAL_DISPLAY_MAP[category] || 'loans';
@@ -631,27 +644,61 @@ export default function useGoalData({ apollo } = {}) {
 		}
 	}
 
-	async function checkCompletedGoal({ currentGoalProgress = 0, category = 'post-checkout' } = {}) {
-		// Skip if goal is already completed or expired
-		if ([GOAL_STATUS.COMPLETED, GOAL_STATUS.EXPIRED].includes(userGoal.value?.status)) {
+	const hideGoalCard = computed(() => {
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+		return parsedPrefs.hideGoalCard || false;
+	});
+
+	async function setHideGoalCardPreference(hide = true) {
+		const parsedPrefs = await loadPreferences('network-only');
+		const updatedPreference = { hideGoalCard: hide };
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			updatedPreference
+		);
+		// Persist only; do not copy the hidden preference into local state.
+		// MyKiva renders the completed card once, then hides it on the next page load.
+	}
+
+	async function checkCompletedGoal({
+		currentGoalProgress = 0,
+		category = 'post-checkout',
+		eventLabel = 'annual-goal-complete',
+		persistHideGoalCard = false,
+	} = {}) {
+		const goal = userGoal.value;
+		if (!goal || goal.status === GOAL_STATUS.EXPIRED) {
 			return;
 		}
-		if (
-			(currentGoalProgress && (currentGoalProgress >= userGoal.value?.target))
-			|| (userGoal.value && userGoalAchieved.value)
-		) {
+
+		const progress = currentGoalProgress || goalProgress.value;
+		const isGoalComplete = progress >= goal.target;
+
+		if (goal.status === GOAL_STATUS.COMPLETED) {
+			if (persistHideGoalCard && isGoalComplete && !hideGoalCard.value) {
+				await setHideGoalCardPreference();
+			}
+			return;
+		}
+
+		if (isGoalComplete) {
 			// Capture goal data before storeGoalPreferences (which may filter out the goal via setGoalState)
-			const goalCategory = userGoal.value.category;
-			const goalTarget = userGoal.value.target;
+			const goalCategory = goal.category;
+			const goalTarget = goal.target;
 			userGoal.value = {
-				...userGoal.value,
+				...goal,
 				status: GOAL_STATUS.COMPLETED
 			};
 			await storeGoalPreferences({ ...userGoal.value });
+			if (persistHideGoalCard) {
+				await setHideGoalCardPreference();
+			}
 			$kvTrackEvent(
 				category,
 				'show',
-				'annual-goal-complete',
+				eventLabel,
 				goalCategory,
 				goalTarget
 			);
@@ -737,7 +784,11 @@ export default function useGoalData({ apollo } = {}) {
 		// Check and correct negative progress after loading
 		await correctNegativeProgress();
 		if (checkMyKivaCompletedGoalAfterLoad) {
-			await checkCompletedGoal({ category: 'portfolio' });
+			await checkCompletedGoal({
+				category: 'portfolio',
+				eventLabel: 'autolending-annual-goal-complete',
+				persistHideGoalCard: true,
+			});
 		}
 		loading.value = false;
 	}
@@ -891,21 +942,6 @@ export default function useGoalData({ apollo } = {}) {
 		return { wasFixed: true };
 	}
 
-	async function setHideGoalCardPreference(hide = true) {
-		const parsedPrefs = await loadPreferences('network-only');
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			{ hideGoalCard: hide }
-		);
-	}
-
-	const hideGoalCard = computed(() => {
-		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
-		return parsedPrefs.hideGoalCard || false;
-	});
-
 	const goalProgressPercentage = computed(() => {
 		const target = Number(userGoal?.value?.target);
 		if (!target || Number.isNaN(target) || goalProgress.value <= 0) return 0;
@@ -914,6 +950,26 @@ export default function useGoalData({ apollo } = {}) {
 			COMPLETED_GOAL_THRESHOLD
 		);
 	});
+
+	/**
+	 * Get recommended loans for a given goal category ID
+	 * @param {*} categoryId - Category ID to get recommendations for
+	 * @param {number[]} [filteredLoanIds=[]] - Loan ids to exclude (`loanIds.none` in FLSS filter)
+	 * @returns array of recommended loans for the category
+	 */
+	const getRecommendedLoans = async (categoryId, filteredLoanIds = []) => {
+		const flssFilter = FLSS_FILTERS_BY_GOAL?.[categoryId];
+		const filterObject = {
+			...flssFilter,
+			...(filteredLoanIds.length > 0 ? { loanIds: { none: filteredLoanIds } } : {}),
+			amountLeft: { min: MIN_CATEGORY_LOANS_AMOUNT },
+			pageLimit: RECOMMENDED_LOANS_LIMIT,
+			sortBy: 'personalized',
+		};
+
+		const result = await runLoansQuery(apolloClient, filterObject, FLSS_ORIGIN_GOAL_RECOMMENDED_LOAN);
+		return result?.loans || [];
+	};
 
 	return {
 		applyFreshProgressToGoalData,
@@ -947,5 +1003,6 @@ export default function useGoalData({ apollo } = {}) {
 		setGoalState,
 		removeGoalFromPreferences,
 		updateCurrentGoal,
+		getRecommendedLoans,
 	};
 }

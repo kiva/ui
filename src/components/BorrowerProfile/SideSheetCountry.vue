@@ -71,7 +71,7 @@ const loansInRegionLink = computed(() => {
 				countries.push(loanCountryFacets?.value?.[i]?.country?.isoCode);
 			}
 		}
-		return `/lend?country=${countries.join(',').toLowerCase()}&sortBy=newest`;
+		return `/lend/filter?country=${countries.join(',').toLowerCase()}&sortBy=newest`;
 	}
 	return '';
 });

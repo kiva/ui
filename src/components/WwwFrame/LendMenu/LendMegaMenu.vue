@@ -69,13 +69,13 @@
 									</router-link>
 								</li>
 								<li class="tw-w-[11rem]" ref="allLoans">
-									<router-link
+									<a
 										class="lend-menu-link tw-text-primary tw-inline-block tw-py-1"
-										to="/lend"
+										href="/lend/filter"
 										v-kv-track-event="['TopNav','click-Lend-All_Loans']"
 									>
 										All loans
-									</router-link>
+									</a>
 								</li>
 							</ul>
 							<!-- My Kiva -->

@@ -21,7 +21,7 @@
 				}"
 			>
 				<JourneyCardCarousel
-					v-if="showLendingNextStepsCards"
+					v-if="showLendingNextStepsCards && !goalProgressLoading"
 					class="carousel tw-w-full"
 					user-in-homepage
 					in-lending-stats
@@ -38,7 +38,7 @@
 					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
 					:categories-loan-count="categoriesLoanCount"
-					:hide-goal-card="hideCompletedGoalCard"
+					:hide-goal-card="hideGoalCardInNextSteps"
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 					:show-lending-next-steps-cards="true"
@@ -46,7 +46,7 @@
 					@open-goal-modal="openGoalModal($event)"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
-				<template v-else-if="showRegionExperienceInFirstRow">
+				<template v-else-if="showRegionExperienceInFirstRow && !showLendingNextStepsCards">
 					<div class="goal-card-container">
 						<JourneyCardCarousel
 							class="carousel carousel-single"
@@ -63,7 +63,7 @@
 							:user-goal-achieved="userGoalAchieved"
 							:user-goal="userGoal"
 							:categories-loan-count="categoriesLoanCount"
-							:hide-goal-card="hideCompletedGoalCard"
+							:hide-goal-card="hideGoalCardInNextSteps"
 							:user-info="userInfo"
 							:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 							:goal-editing-enable="goalEditingEnable"
@@ -101,7 +101,7 @@
 					:pre-built-achievement-slides="sortedAchievementSlides"
 					:user-goal-achieved="userGoalAchieved"
 					:user-goal="userGoal"
-					:hide-goal-card="hideCompletedGoalCard"
+					:hide-goal-card="hideGoalCardInNextSteps"
 					:latest-loan="latestLoan"
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
@@ -415,6 +415,14 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	isAdding: {
+		type: Boolean,
+		default: false,
+	},
+	basketItems: {
+		type: Array,
+		default: () => ([]),
+	},
 });
 
 const cookieStore = inject('cookieStore');
@@ -422,6 +430,9 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 const goalData = inject('goalData');
 const router = useRouter();
 const { isMobile } = useBreakpoints();
+const postLendingQueryExists = router.currentRoute.value.query.postLending === 'true';
+const hasPostLendingCookie = checkPostLendingCardCookie(cookieStore);
+const shouldShowPostLendingNextStepsCards = hasPostLendingCookie || postLendingQueryExists;
 
 // Goal data from parent-provided composable
 const {
@@ -452,7 +463,7 @@ const newGoalPrefs = ref(null);
 const isUpdatingGoal = ref(false);
 const isSharingModalVisible = ref(false);
 const acceptedEmailMarketingUpdates = ref(false);
-const showPostLendingNextStepsCards = ref(false);
+const showPostLendingNextStepsCards = ref(shouldShowPostLendingNextStepsCards);
 
 // Computed
 const categoriesLoanCount = computed(() => getAllCategoryLoanCounts(props.heroTieredAchievements));
@@ -515,10 +526,12 @@ const hideRecommendedForYouSection = computed(() => {
 		&& allAchievementsCompleted(props.heroTieredAchievements);
 });
 
+const hideGoalCardInNextSteps = computed(() => hideCompletedGoalCard.value || userGoalAchieved.value);
+
 // Hide the top row carousel when there is nothing to show (no active goal card,
 // no incomplete achievements, and no post-lending cards). Applies to the fully-completed superlender case.
 const topRowHasContent = computed(() => {
-	return !hideCompletedGoalCard.value
+	return !hideGoalCardInNextSteps.value
 		|| achievementSlides.value.length > 0
 		|| showPostLendingNextStepsCards.value;
 });
@@ -550,7 +563,7 @@ const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.heroSlides));
 const topRowPriorityCards = computed(() => getTopRowPriorityCards({
 	showRegionExperienceInFirstRow: showRegionExperienceInFirstRow.value,
 	showPostLendingNextStepsCards: showPostLendingNextStepsCards.value,
-	hideCompletedGoalCard: hideCompletedGoalCard.value,
+	hideCompletedGoalCard: hideGoalCardInNextSteps.value,
 	shouldShowEmailMarketingCard: shouldShowEmailMarketingCard.value,
 	showLatestLoan: showLatestLoan.value,
 	showSurveyCard: showSurveyCard.value,
@@ -563,7 +576,7 @@ const topRowPriorityCards = computed(() => getTopRowPriorityCards({
 const topRowAchievementKeys = computed(() => getTopRowAchievementKeys({
 	showRegionExperienceInFirstRow: showRegionExperienceInFirstRow.value,
 	showPostLendingNextStepsCards: showPostLendingNextStepsCards.value,
-	hideCompletedGoalCard: hideCompletedGoalCard.value,
+	hideCompletedGoalCard: hideGoalCardInNextSteps.value,
 	topRowPriorityCards: topRowPriorityCards.value,
 	sortedAchievementSlides: sortedAchievementSlides.value,
 	showLendingNextStepsCards: showLendingNextStepsCards.value,
@@ -598,11 +611,15 @@ const goToDashboard = position => {
 	router.push('/mykiva');
 };
 
+const navigate = url => {
+	if (url) window.location.href = url;
+};
+
 // CTA handlers
 const handlePrimaryCtaClick = slide => handlePrimaryCtaClickUtil({
 	slide,
 	trackEvent: $kvTrackEvent,
-	navigate: router.push,
+	navigate,
 	modalHandlers: {
 		openSharingModal: () => { isSharingModalVisible.value = true; },
 	},
@@ -611,7 +628,7 @@ const handlePrimaryCtaClick = slide => handlePrimaryCtaClickUtil({
 const handleSecondaryCtaClick = slide => handleSecondaryCtaClickUtil({
 	slide,
 	trackEvent: $kvTrackEvent,
-	navigate: router.push,
+	navigate,
 });
 
 // Goal modal methods
@@ -674,10 +691,8 @@ watch(() => props.goalRefreshKey, async (newVal, oldVal) => {
 });
 
 onMounted(async () => {
-	await checkCompletedGoal({ category: 'portfolio' });
-	const postLendingQueryExists = router.currentRoute.value.query.postLending === 'true';
-	if (checkPostLendingCardCookie(cookieStore) || postLendingQueryExists) {
-		showPostLendingNextStepsCards.value = true;
+	await checkCompletedGoal({ category: 'portfolio', persistHideGoalCard: true });
+	if (shouldShowPostLendingNextStepsCards) {
 		removePostLendingCardCookie(cookieStore);
 	}
 });
