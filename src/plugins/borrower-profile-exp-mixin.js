@@ -39,12 +39,16 @@ export default {
 			});
 		},
 		formatAddedLoan() {
+			const loan = this.selectedLoan;
+			if (!loan?.id) {
+				return;
+			}
 			const addedLoan = {
-				id: this.selectedLoan.id,
-				name: this.selectedLoan.name ?? '',
-				gender: this.selectedLoan?.gender ?? '',
-				borrowerCount: this.selectedLoan?.borrowerCount ?? 1,
-				themes: this.selectedLoan?.themes ?? [],
+				id: loan.id,
+				name: loan.name ?? '',
+				gender: loan.gender ?? '',
+				borrowerCount: loan.borrowerCount ?? 1,
+				themes: loan.themes ?? [],
 				basketSize: this.basketSize,
 			};
 			this.handleCartModal(addedLoan);
@@ -85,6 +89,9 @@ export default {
 		},
 		addToBasket({ loanId, lendAmount }) {
 			if (!loanId || !lendAmount) return;
+			// GoalSettingModal only emits loanId + lendAmount;
+			// borrower-profile flows already have called handleSelectedLoan.
+			this.handleSelectedLoan({ loanId });
 			this.$kvTrackEvent(
 				'Lending',
 				'Add to basket',

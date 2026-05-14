@@ -256,6 +256,7 @@ describe('useGoalSettingRecommendedLoan', () => {
 	});
 
 	describe('recommended loan fetch', () => {
+		// eslint-disable-next-line max-len
 		it('should call getRecommendedLoans with category badgeId and filtered loan ids, then set first loan', async () => {
 			props.goalRecommendedLoanEnable = true;
 			composable.enterRecommendedLoanStepAfterGoalSave();
