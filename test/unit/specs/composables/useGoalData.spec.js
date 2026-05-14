@@ -4367,5 +4367,48 @@ describe('useGoalData', () => {
 				sortBy: 'personalized',
 			}, 'web:goal-recommended-loan');
 		});
+
+		it('should merge loanIds.none when filteredLoanIds is non-empty', async () => {
+			mockRunLoansQuery.mockResolvedValueOnce({ loans: [], totalCount: 0 });
+			const filteredLoanIds = [101, 202, 303];
+
+			await composable.getRecommendedLoans(ID_WOMENS_EQUALITY, filteredLoanIds);
+
+			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
+				gender: ['female'],
+				loanIds: { none: filteredLoanIds },
+				amountLeft: { min: 100 },
+				pageLimit: 4,
+				sortBy: 'personalized',
+			}, 'web:goal-recommended-loan');
+		});
+
+		it('should not add loanIds filter when filteredLoanIds is empty', async () => {
+			mockRunLoansQuery.mockResolvedValueOnce({ loans: [], totalCount: 0 });
+
+			await composable.getRecommendedLoans(ID_CLIMATE_ACTION, []);
+
+			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
+				tagId: [8, 9],
+				amountLeft: { min: 100 },
+				pageLimit: 4,
+				sortBy: 'personalized',
+			}, 'web:goal-recommended-loan');
+		});
+
+		it('should combine support_all filters with loanIds.none when excluding loans', async () => {
+			mockRunLoansQuery.mockResolvedValueOnce({ loans: [{ id: 999 }], totalCount: 1 });
+			const filteredLoanIds = [1, 2];
+
+			const result = await composable.getRecommendedLoans(ID_SUPPORT_ALL, filteredLoanIds);
+
+			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
+				loanIds: { none: filteredLoanIds },
+				amountLeft: { min: 100 },
+				pageLimit: 4,
+				sortBy: 'personalized',
+			}, 'web:goal-recommended-loan');
+			expect(result).toEqual([{ id: 999 }]);
+		});
 	});
 });

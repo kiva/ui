@@ -1,3 +1,5 @@
+/* eslint-disable import/no-extraneous-dependencies -- @vue/test-utils devDependency */
+import { flushPromises } from '@vue/test-utils';
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 
 vi.mock('@sentry/vue', () => ({
@@ -27,7 +29,7 @@ describe('borrower-profile-exp-mixin', () => {
 
 	const createComponent = () => {
 		mockApollo = {
-			query: vi.fn(),
+			query: vi.fn().mockResolvedValue({ data: {} }),
 			mutate: vi.fn(),
 		};
 
@@ -222,6 +224,16 @@ describe('borrower-profile-exp-mixin', () => {
 				basketSize: 0,
 			});
 		});
+
+		it('should not call handleCartModal when selectedLoan is missing', () => {
+			createComponent();
+			component.selectedLoan = undefined;
+			component.handleCartModal = vi.fn();
+
+			component.formatAddedLoan();
+
+			expect(component.handleCartModal).not.toHaveBeenCalled();
+		});
 	});
 
 	describe('loadBPData', () => {
@@ -361,6 +373,42 @@ describe('borrower-profile-exp-mixin', () => {
 				123,
 				25
 			);
+		});
+
+		it('should prime selectedLoan so formatAddedLoan works without opening borrower profile', async () => {
+			createComponent();
+			mockApollo.mutate.mockResolvedValue({ errors: null });
+			mockApollo.query
+				.mockResolvedValueOnce({
+					data: { lend: { loan: null } },
+				})
+				.mockResolvedValueOnce({
+					data: {
+						shop: {
+							basket: { items: { values: [] } },
+							nonTrivialItemCount: 1,
+						},
+					},
+				});
+			component.handleCartModal = vi.fn();
+			expect(component.selectedLoan).toBeUndefined();
+
+			component.addToBasket({ loanId: 456, lendAmount: 25 });
+
+			await flushPromises();
+
+			expect(component.selectedLoan).toEqual({ id: 456 });
+
+			vi.advanceTimersByTime(1000);
+
+			expect(component.handleCartModal).toHaveBeenCalledWith({
+				id: 456,
+				name: '',
+				gender: '',
+				borrowerCount: 1,
+				themes: [],
+				basketSize: 1,
+			});
 		});
 
 		it('should set isAdding to true during mutation', () => {

@@ -415,6 +415,14 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	isAdding: {
+		type: Boolean,
+		default: false,
+	},
+	basketItems: {
+		type: Array,
+		default: () => ([]),
+	},
 });
 
 const cookieStore = inject('cookieStore');

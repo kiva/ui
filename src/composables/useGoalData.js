@@ -954,12 +954,14 @@ export default function useGoalData({ apollo } = {}) {
 	/**
 	 * Get recommended loans for a given goal category ID
 	 * @param {*} categoryId - Category ID to get recommendations for
+	 * @param {number[]} [filteredLoanIds=[]] - Loan ids to exclude (`loanIds.none` in FLSS filter)
 	 * @returns array of recommended loans for the category
 	 */
-	const getRecommendedLoans = async categoryId => {
+	const getRecommendedLoans = async (categoryId, filteredLoanIds = []) => {
 		const flssFilter = FLSS_FILTERS_BY_GOAL?.[categoryId];
 		const filterObject = {
 			...flssFilter,
+			...(filteredLoanIds.length > 0 ? { loanIds: { none: filteredLoanIds } } : {}),
 			amountLeft: { min: MIN_CATEGORY_LOANS_AMOUNT },
 			pageLimit: RECOMMENDED_LOANS_LIMIT,
 			sortBy: 'personalized',
