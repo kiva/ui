@@ -13,9 +13,14 @@ import { useRouter } from 'vue-router';
  *
  * @param {object} options
  * @param {Function} options.emit — Modal emit function (`defineEmits`), e.g. `set-goal`.
- * @param {object} options.props — Same object as GoalSettingModal’s `defineProps(...)`.
- *   Only `goalRecommendedLoanEnable` and `basketItems` are read here via `toRef`; keep this
- *   reference stable so those stay reactive.
+ * @param {object} options.props — GoalSettingModal’s full `defineProps` object; this composable only
+ *   reads two keys via `toRef` (pass the same reactive reference the modal uses).
+ *   - **`goalRecommendedLoanEnable`** (`boolean`): feature flag; when false the recommend-loan step
+ *     and related fetch never activate.
+ *   - **`basketItems`** (`Array`): shop/basket line items; each entry’s **`id`** is passed to
+ *     `getRecommendedLoans` as exclusions (`loanIds.none`). Same array is forwarded on loan card
+ *     props. Entries may include GraphQL fields such as **`__typename`** (e.g. `LoanReservation`) for
+ *     “recommended loan already in basket” checks.
  * @param {object} options.selectedGoalNumber — Vue ref from the modal; `.value` is goal target (loan count).
  * @param {object} options.selectedCategory — Vue ref from the modal; `.value` has `name`, `badgeId`.
  * @param {object} options.show — Vue ref from the modal; `.value` is whether the lightbox is open.

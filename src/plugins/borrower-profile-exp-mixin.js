@@ -32,8 +32,11 @@ export default {
 				query: borrowerProfileSideSheetQuery,
 				variables: { loanId },
 				fetchPolicy: fetchPolicy ?? 'cache-first',
-			}).then(({ data }) => {
-				this.selectedLoan = data?.lend?.loan;
+			}).then(result => {
+				const loan = result?.data?.lend?.loan;
+				if (loan) {
+					this.selectedLoan = loan;
+				}
 			}).catch(e => {
 				logReadQueryError(e, 'borrowerProfileSideSheetQuery');
 			});
