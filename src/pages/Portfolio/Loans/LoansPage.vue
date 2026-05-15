@@ -24,7 +24,12 @@
 					class="tw-col-span-12"
 				>
 					<loan-filter-bar
+						:countries="filterOptions.countries"
+						:filters="loanState.filters"
+						:keyword-search="loanState.keywordSearch"
+						:partners="filterOptions.partners"
 						:total-loans="totalLoans"
+						@filters-changed="handleFiltersChanged"
 					/>
 					<div ref="loanTableTop">
 						<loan-list :loans="loans" :loading="loading" />
@@ -60,6 +65,8 @@ import myLoansQuery from '#src/graphql/query/portfolio/myLoans.graphql';
 
 const PAGE_LIMIT = 20;
 
+const sortByName = values => [...(values || [])].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+
 export default {
 	name: 'LoansPage',
 	inject: ['apollo', 'cookieStore'],
@@ -83,7 +90,15 @@ export default {
 			loanState: {
 				offset: 0,
 				limit: PAGE_LIMIT,
+				filters: {},
+				keywordSearch: null,
 			},
+			filterOptions: {
+				countries: [],
+				partners: [],
+			},
+			filterOptionsLoaded: false,
+			loanRequestSequence: 0,
 			stats: {
 				loanStatuses: {
 					fundraising: 0,
@@ -108,27 +123,58 @@ export default {
 		this.fetchLoans();
 	},
 	methods: {
+		buildLoanQueryVariables() {
+			const variables = {
+				offset: this.loanState.offset,
+				limit: this.loanState.limit,
+				includeFilterOptions: !this.filterOptionsLoaded,
+			};
+
+			if (Object.keys(this.loanState.filters).length) {
+				variables.filters = this.loanState.filters;
+			}
+
+			if (this.loanState.keywordSearch) {
+				variables.keywordSearch = this.loanState.keywordSearch;
+			}
+
+			return variables;
+		},
 		fetchLoans({ clearLoans = false } = {}) {
+			const requestSequence = this.loanRequestSequence + 1;
+			this.loanRequestSequence = requestSequence;
 			this.loading = true;
 			if (clearLoans) {
 				this.loans = [];
 			}
 			return this.apollo.query({
 				query: myLoansQuery,
-				variables: {
-					offset: this.loanState.offset,
-					limit: this.loanState.limit,
-				},
+				variables: this.buildLoanQueryVariables(),
 				fetchPolicy: 'network-only'
 			}).then(({ data }) => {
+				if (requestSequence !== this.loanRequestSequence) {
+					return;
+				}
+				if (data?.my?.lendingStats) {
+					this.filterOptions = {
+						countries: sortByName(data.my.lendingStats.countriesLentTo),
+						partners: sortByName(data.my.lendingStats.partnersLentTo),
+					};
+					this.filterOptionsLoaded = true;
+				}
 				if (data?.my?.loans) {
 					this.loans = data.my.loans.values || [];
 					this.totalLoans = data.my.loans.totalCount;
 				}
 			}).catch(error => {
+				if (requestSequence !== this.loanRequestSequence) {
+					return;
+				}
 				logFormatter(`Error fetching loans: ${error}`, 'error');
 			}).finally(() => {
-				this.loading = false;
+				if (requestSequence === this.loanRequestSequence) {
+					this.loading = false;
+				}
 			});
 		},
 		handlePageChange({ pageOffset }) {
@@ -140,6 +186,15 @@ export default {
 				offset: pageOffset,
 			};
 			this.scrollToLoanTable();
+			return this.fetchLoans({ clearLoans: true });
+		},
+		handleFiltersChanged({ filters = {}, keywordSearch = null }) {
+			this.loanState = {
+				...this.loanState,
+				offset: 0,
+				filters,
+				keywordSearch,
+			};
 			return this.fetchLoans({ clearLoans: true });
 		},
 		scrollToLoanTable() {
