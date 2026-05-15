@@ -36,7 +36,6 @@ query myLoans(
 				lenderRepaymentTerm
 				terms {
 					loanAmount
-					disbursalDate
 					expectedPayments {
 						dueToKivaDate
 					}
@@ -45,6 +44,7 @@ query myLoans(
 					loanBalance {
 						amountPurchasedByLender
 						amountRepaidToLender
+						latestSharePurchaseTime
 					}
 				}
 				teams {

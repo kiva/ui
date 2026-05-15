@@ -108,8 +108,11 @@
 									<div class="tw-mb-1">
 										${{ loan.userProperties.loanBalance.amountPurchasedByLender }}
 									</div>
-									<div class="tw-mb-1 tw-text-secondary">
-										{{ formatDate(loan.terms.disbursalDate) || '(Endpoint TBD)' }}
+									<div
+										v-if="loan.userProperties?.loanBalance?.latestSharePurchaseTime"
+										class="tw-mb-1 tw-text-secondary"
+									>
+										{{ formatDate(loan.userProperties.loanBalance.latestSharePurchaseTime) }}
 									</div>
 								</div>
 							</td>
