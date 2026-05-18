@@ -962,7 +962,7 @@ export default function useGoalData({ apollo } = {}) {
 		const filterObject = {
 			...flssFilter,
 			...(filteredLoanIds.length > 0 ? { loanIds: { none: filteredLoanIds } } : {}),
-			amountLeft: { min: MIN_CATEGORY_LOANS_AMOUNT },
+			amountLeft: { range: { gte: MIN_CATEGORY_LOANS_AMOUNT } },
 			pageLimit: RECOMMENDED_LOANS_LIMIT,
 			sortBy: 'personalized',
 		};
