@@ -82,4 +82,50 @@ describe('LendingStats', () => {
 			expect(context.loadGoalData).toHaveBeenCalledTimes(1);
 		});
 	});
+
+	describe('handleViewAllClick', () => {
+		it('tracks the event and navigates to /mykiva/next-steps', () => {
+			const push = vi.fn();
+			const context = {
+				$kvTrackEvent: vi.fn(),
+				$router: { push },
+				showPostLendingNextStepsCards: false,
+			};
+
+			LendingStats.methods.handleViewAllClick.call(context);
+
+			expect(context.$kvTrackEvent).toHaveBeenCalledWith('portfolio', 'click', 'view-all-next-steps');
+			expect(push).toHaveBeenCalledWith('/mykiva/next-steps');
+		});
+
+		it('appends ?postLending=true when showPostLendingNextStepsCards is true', () => {
+			const push = vi.fn();
+			const context = {
+				$kvTrackEvent: vi.fn(),
+				$router: { push },
+				showPostLendingNextStepsCards: true,
+			};
+
+			LendingStats.methods.handleViewAllClick.call(context);
+
+			expect(push).toHaveBeenCalledWith('/mykiva/next-steps?postLending=true');
+		});
+	});
+
+	describe('showLendingNextStepsCards', () => {
+		it('returns true when lendingNextStepsVariant is "b" and showPostLendingNextStepsCards is false', () => {
+			const context = { lendingNextStepsVariant: 'b', showPostLendingNextStepsCards: false };
+			expect(LendingStats.computed.showLendingNextStepsCards.call(context)).toBe(true);
+		});
+
+		it('returns false when lendingNextStepsVariant is not "b"', () => {
+			const context = { lendingNextStepsVariant: 'a', showPostLendingNextStepsCards: false };
+			expect(LendingStats.computed.showLendingNextStepsCards.call(context)).toBe(false);
+		});
+
+		it('returns false when showPostLendingNextStepsCards is true even with variant "b"', () => {
+			const context = { lendingNextStepsVariant: 'b', showPostLendingNextStepsCards: true };
+			expect(LendingStats.computed.showLendingNextStepsCards.call(context)).toBe(false);
+		});
+	});
 });

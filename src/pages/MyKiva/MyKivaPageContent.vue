@@ -31,7 +31,6 @@
 				:latest-loan="latestLoan"
 				:goal-refresh-key="goalRefreshKey"
 				:user-info="userInfo"
-				:next-steps-experiment-variant="nextStepsExperimentVariant"
 				:goal-editing-enable="goalEditingEnable"
 				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 				:lending-next-steps-variant="lendingNextStepsVariant"
@@ -315,11 +314,6 @@ export default {
 		showMyGivingFundsCard: {
 			type: Boolean,
 			default: false
-		},
-		nextStepsExperimentVariant: {
-			type: String,
-			default: 'a',
-			validator: value => ['a', 'b'].includes(value)
 		},
 		goalEditingEnable: {
 			type: Boolean,

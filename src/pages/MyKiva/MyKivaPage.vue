@@ -34,7 +34,6 @@
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:show-my-giving-funds-card="showMyGivingFundsCard"
-			:next-steps-experiment-variant="nextStepsExperimentVariant"
 			:goal-editing-enable="goalEditingEnable"
 			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
@@ -68,7 +67,6 @@ import useBadgeData, {
 import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
-const NEXT_STEPS_REDIRECT_EXP_KEY = 'mykiva_next_steps_redirect';
 const GOAL_EDITING_KEY = 'goal_editing_enable';
 const GOAL_TILE_EXPERIMENT_KEY = 'mykiva_goal_tile';
 const LENDING_NEXT_STEPS_EXP_KEY = 'mykiva_lending_next_steps';
@@ -118,7 +116,6 @@ export default {
 			latestLoan: null,
 			goalRefreshKey: 0,
 			showMyGivingFundsCard: false,
-			nextStepsExperimentVariant: null,
 			goalEditingEnable: false,
 			recentTransactionLoans: [],
 			isGoalTileExperimentEnabled: false,
@@ -197,10 +194,6 @@ export default {
 				client.query({
 					query: contentfulEntriesQuery,
 					variables: { contentType: 'challenge', limit: 200 }
-				}),
-				client.query({
-					query: experimentAssignmentQuery,
-					variables: { id: NEXT_STEPS_REDIRECT_EXP_KEY },
 				}),
 				client.query({
 					query: experimentAssignmentQuery,
@@ -348,18 +341,6 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'MyKivaPage created');
 		}
-
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
-			NEXT_STEPS_REDIRECT_EXP_KEY,
-			version => {
-				this.nextStepsExperimentVariant = version;
-			},
-			this.$kvTrackEvent,
-			'EXP-MP-2417-Feb2026'
-		);
 
 		initializeExperiment(
 			this.cookieStore,
