@@ -32,7 +32,6 @@
 				:goal-refresh-key="goalRefreshKey"
 				:user-info="userInfo"
 				:next-steps-experiment-variant="nextStepsExperimentVariant"
-				:goal-editing-enable="goalEditingEnable"
 				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 				:lending-next-steps-variant="lendingNextStepsVariant"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
@@ -320,10 +319,6 @@ export default {
 			type: String,
 			default: 'a',
 			validator: value => ['a', 'b'].includes(value)
-		},
-		goalEditingEnable: {
-			type: Boolean,
-			default: false
 		},
 		isGoalTileExperimentEnabled: {
 			type: Boolean,
