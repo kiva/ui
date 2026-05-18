@@ -1,3 +1,13 @@
+## [3.67.0-rc.2](https://github.com/kiva/ui/compare/v3.67.0-rc.1...v3.67.0-rc.2) (2026-05-18)
+
+### 🎉 New Features
+
+* loans beta paging filters and search ([#6903](https://github.com/kiva/ui/issues/6903)) ([41ebb00](https://github.com/kiva/ui/commit/41ebb00a1abf8eae586e4a355dfc7f498af18e2a))
+
+### 🐛 Bugfixes
+
+* missing recommended loan query filters ([#6904](https://github.com/kiva/ui/issues/6904)) ([e0dabbd](https://github.com/kiva/ui/commit/e0dabbdb284f473ab1e5009d9f90c94d03bdcef4))
+
 ## [3.67.0-rc.1](https://github.com/kiva/ui/compare/v3.66.1...v3.67.0-rc.1) (2026-05-14)
 
 ### 🎉 New Features
