@@ -28,7 +28,7 @@
 		ref="loanRegionsElement"
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperience }"
 	>
-		<template v-if="showLendingNextStepsCards">
+		<template v-if="showLendingNextStepsCards && !goalProgressLoading">
 			<JourneyCardCarousel
 				class="carousel carousel-lending-next-steps tw-w-full"
 				user-in-homepage
@@ -55,7 +55,7 @@
 				@open-impact-insight-modal="showImpactInsightsModal = true"
 			/>
 		</template>
-		<template v-else-if="showRegionExperience">
+		<template v-else-if="showRegionExperience && !showLendingNextStepsCards">
 			<div class="goal-card-container">
 				<JourneyCardCarousel
 					class="carousel carousel-single"
@@ -193,7 +193,11 @@
 		<div
 			v-else-if="goalProgressLoading"
 			class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden"
-			:class="{ 'tw--mt-6': isNextStepsExperimentEnabled && !showPostLendingNextStepsCards }"
+			:class="{
+				'tw--mt-6': isNextStepsExperimentEnabled && !showPostLendingNextStepsCards
+					&& !showLendingNextStepsCards,
+				'tw-mt-1.5': showLendingNextStepsCards
+			}"
 		>
 			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0" />
 			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden md:tw-block" />
@@ -234,8 +238,12 @@
 			:tiered-achievements="heroTieredAchievements"
 			:is-updating-goal="isUpdatingGoal"
 			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
+			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
+			:basket-items="basketItems"
+			:is-adding="isAdding"
 			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
+			@add-to-basket="$emit('add-to-basket', $event)"
 		/>
 		<MyKivaImpactInsightModal
 			v-if="showPostLendingNextStepsCards && showImpactInsightsModal"
@@ -284,6 +292,7 @@ export default {
 		KvMaterialIcon,
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['add-to-basket'],
 	props: {
 		regionsData: {
 			type: Array,
@@ -348,6 +357,18 @@ export default {
 			type: String,
 			default: null,
 		},
+		goalRecommendedLoanEnable: {
+			type: Boolean,
+			default: false
+		},
+		isAdding: {
+			type: Boolean,
+			default: false
+		},
+		basketItems: {
+			type: Array,
+			default: () => ([]),
+		}
 	},
 	data() {
 		return {

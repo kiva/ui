@@ -39,7 +39,7 @@
 											`tw-col-span-${placeholder.span}`,
 											placeholder.marginLeft && 'tw-ml-auto'
 										]"
-										style="height: 16px;"
+										style="height: 50px;"
 									/>
 								</div>
 							</td>
@@ -83,6 +83,7 @@
 												<kv-flag
 													v-if="loan.geocode?.country?.isoCode"
 													:country="loan.geocode?.country?.isoCode"
+													:name="loan.geocode?.country?.name || ''"
 												/>
 											</div>
 											{{ loan.geocode?.country?.name || '-' }}

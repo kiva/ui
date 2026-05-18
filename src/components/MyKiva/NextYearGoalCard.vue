@@ -111,10 +111,10 @@ const {
 	getCtaHref,
 	getGoalDisplayName,
 	goalProgressPercentage,
-	setHideGoalCardPreference,
 } = goalData;
 
 const isUpdatingGoal = ref(false);
+const hasHandledGoalCompletion = ref(false);
 
 const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);
 
@@ -168,7 +168,7 @@ const handleContinueClick = () => {
 
 		return;
 	}
-	router.push(ctaHref.value);
+	window.location.href = ctaHref.value;
 };
 
 const handleEditClick = () => {
@@ -177,12 +177,29 @@ const handleEditClick = () => {
 	emit('open-goal-modal', { updating: true });
 };
 
+const showCompletedGoalConfetti = () => {
+	if (
+		hasHandledGoalCompletion.value
+		|| props.loading
+		|| props.hideGoalCard
+		|| !userHasGoal.value
+		|| goalProgressPercentage.value !== COMPLETED_GOAL_THRESHOLD
+	) {
+		return;
+	}
+
+	hasHandledGoalCompletion.value = true;
+	showConfetti();
+};
+
+watch(
+	() => [props.loading, props.hideGoalCard, goalProgressPercentage.value, userHasGoal.value],
+	showCompletedGoalConfetti,
+	{ immediate: true }
+);
+
 watch(() => [props.loading, props.hideGoalCard], ([newLoading, newHideGoalCard], [oldLoading]) => {
 	if (!newLoading && oldLoading && !newHideGoalCard) {
-		if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
-			showConfetti();
-			setHideGoalCardPreference();
-		}
 		if (!userHasGoal.value) {
 			$kvTrackEvent(
 				'portfolio',

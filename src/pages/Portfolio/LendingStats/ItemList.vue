@@ -19,12 +19,12 @@
 				:name="iconKey(item)"
 				class="item-icon tw-w-2 tw-h-1.5 tw-mr-0.5 tw-flex-shrink-0"
 			/>
-			<router-link
-				:to="{ path: '/lend', query: { [param]: item[itemKey] }}"
+			<a
+				:href="routeToFilterPage(item)"
 				class="tw-overflow-hidden tw-whitespace-nowrap tw-text-ellipsis"
 			>
 				{{ item.name }}
-			</router-link>
+			</a>
 		</li>
 	</ul>
 </template>
@@ -59,5 +59,13 @@ export default {
 		},
 	},
 	components: { KvIcon, KvFlag },
+	methods: {
+		routeToFilterPage(item) {
+			if (this.param === 'activity') {
+				return `/lend?${this.param}=${item[this.itemKey]}`;
+			}
+			return `/lend/filter?${this.param}=${item[this.itemKey]}`;
+		},
+	},
 };
 </script>

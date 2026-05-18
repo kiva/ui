@@ -24,13 +24,14 @@ let mockUserGoal;
 let mockUserGoalAchievedNow;
 let mockLoading;
 let mockHasContributingLoans;
+let mockCheckCompletedGoal;
 
 vi.mock('#src/composables/useGoalData', async importOriginal => {
 	const actual = await importOriginal();
 	return {
 		...actual,
 		default: () => ({
-			checkCompletedGoal: vi.fn(),
+			checkCompletedGoal: mockCheckCompletedGoal,
 			getPostCheckoutProgressByLoans: vi.fn().mockImplementation(() => ({
 				totalProgress: 5,
 				hasContributingLoans: mockHasContributingLoans,
@@ -136,6 +137,22 @@ describe('ThanksPageSingleVersion', () => {
 		mockUserGoalAchievedNow = ref(false);
 		mockLoading = ref(false);
 		mockHasContributingLoans = true;
+		mockCheckCompletedGoal = vi.fn();
+	});
+
+	it('checks completed goals without persisting the MyKiva hide preference', async () => {
+		mockUserGoal.value = inProgressGoal;
+
+		renderComponent({
+			badgesAchieved: [],
+		});
+
+		await vi.waitFor(() => {
+			expect(mockCheckCompletedGoal).toHaveBeenCalledWith({
+				currentGoalProgress: 5,
+				persistHideGoalCard: false,
+			});
+		});
 	});
 
 	describe('tiered badge ordering', () => {

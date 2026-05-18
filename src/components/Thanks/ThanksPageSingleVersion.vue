@@ -258,7 +258,6 @@ const props = defineProps({
 	},
 });
 
-const badgeAchievedIds = ref(props.badgesAchieved.map(b => b.achievementId));
 const receiptSection = ref(null);
 const showGuestAccountModal = ref(false);
 const showReceipt = ref(false);
@@ -284,6 +283,8 @@ const {
 } = useGoalData({ apollo });
 
 const { getAllCategoryLoanCounts } = useBadgeData();
+
+const badgeAchievedIds = computed(() => props.badgesAchieved.map(b => b.achievementId));
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 const selectedCategory = ref(categories[0]);
@@ -462,7 +463,8 @@ onMounted(async () => {
 		loans: props.loans,
 		year,
 	});
-	await checkCompletedGoal({ currentGoalProgress: totalProgress });
+	// Thanks can mark the goal complete, but MyKiva owns hiding the completed card after showing it once.
+	await checkCompletedGoal({ currentGoalProgress: totalProgress, persistHideGoalCard: false });
 	goalDataInitialized.value = true;
 	isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
 
