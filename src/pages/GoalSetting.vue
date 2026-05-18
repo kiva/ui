@@ -7,7 +7,6 @@
 				:tiered-achievements="tieredAchievements"
 				:email-target="$route.query.target || null"
 				:email-category="$route.query.category || null"
-				:goal-editing-enable="goalEditingEnable"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			/>
 		</KvPageContainer>
@@ -26,8 +25,6 @@ import GoalSettingContainer from '#src/components/GoalSetting/GoalSettingContain
 import { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import { readBoolSetting } from '#src/util/settingsUtils';
 
-const GOAL_EDITING_KEY = 'goal_editing_enable';
-
 export default {
 	name: 'GoalSetting',
 	inject: ['apollo', 'cookieStore'],
@@ -41,7 +38,6 @@ export default {
 			totalLoans: 0,
 			categoriesLoanCount: {},
 			tieredAchievements: [],
-			goalEditingEnable: false,
 			goalRecommendedLoanEnable: false,
 		};
 	},
@@ -85,8 +81,6 @@ export default {
 
 		const goalSettingPageResult = this.apollo.readQuery({ query: goalSettingPageQuery });
 
-		// Get feature flag for goal editing
-		this.goalEditingEnable = readBoolSetting(goalDataResult, `general.${GOAL_EDITING_KEY}.value`) ?? false;
 		// Get feature flag for goal recommended loan
 		this.goalRecommendedLoanEnable = readBoolSetting(goalSettingPageResult, 'general.goal_recommended_loan_enable.value') ?? false; // eslint-disable-line max-len
 

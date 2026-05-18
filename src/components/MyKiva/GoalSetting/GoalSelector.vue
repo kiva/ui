@@ -10,7 +10,6 @@
 			:category-name="selectedCategoryName"
 			:category-id="selectedCategoryId"
 			:go-to-url="goToUrl"
-			:goal-editing-enable="goalEditingEnable"
 			:is-updating-goal="isUpdatingGoal"
 			:is-goal-completed="isGoalCompleted"
 			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
@@ -344,13 +343,6 @@ const props = defineProps({
 	goalProgressPercentage: {
 		type: Number,
 		default: 0,
-	},
-	/**
-	 * Enable edit goal button (only shows when user has a goal set)
-	 */
-	goalEditingEnable: {
-		type: Boolean,
-		default: false,
 	},
 	/**
 	 * Flag to indicate if user is editing an existing goal

@@ -26,7 +26,6 @@
 					user-in-homepage
 					in-lending-stats
 					controls-top-right
-					:goal-editing-enable="goalEditingEnable"
 					:goal-progress-loading="goalProgressLoading"
 					:goal-progress="goalProgress"
 					:hero-badge-data="heroBadgeData"
@@ -66,7 +65,6 @@
 							:hide-goal-card="hideGoalCardInNextSteps"
 							:user-info="userInfo"
 							:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-							:goal-editing-enable="goalEditingEnable"
 							@open-goal-modal="openGoalModal($event)"
 							@open-impact-insight-modal="showImpactInsightsModal = true"
 						/>
@@ -105,7 +103,6 @@
 					:latest-loan="latestLoan"
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-					:goal-editing-enable="goalEditingEnable"
 					@open-goal-modal="openGoalModal($event)"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
 				/>
@@ -398,10 +395,6 @@ const props = defineProps({
 	goalRefreshKey: {
 		type: Number,
 		default: 0,
-	},
-	goalEditingEnable: {
-		type: Boolean,
-		default: false,
 	},
 	userLentToAllRegions: {
 		type: Boolean,

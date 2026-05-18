@@ -21,7 +21,6 @@
 					:user-goal="userGoal"
 					:prev-year-loans="womenLoansLastYear"
 					:hide-goal-card="hideGoalCard"
-					:goal-editing-enable="goalEditingEnable"
 					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 					@open-goal-modal="$emit('open-goal-modal', $event)"
 				/>
@@ -217,10 +216,6 @@ const props = defineProps({
 		default: null
 	},
 	showPostLendingNextStepsCards: {
-		type: Boolean,
-		default: false
-	},
-	goalEditingEnable: {
 		type: Boolean,
 		default: false
 	},

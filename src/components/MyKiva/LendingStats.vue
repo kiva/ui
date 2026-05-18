@@ -34,7 +34,6 @@
 				user-in-homepage
 				in-lending-stats
 				controls-top-right
-				:goal-editing-enable="goalEditingEnable"
 				:goal-progress-loading="goalProgressLoading"
 				:goal-progress="goalProgress"
 				:hero-badge-data="heroBadgeData"
@@ -75,7 +74,6 @@
 					:hide-goal-card="hideCompletedGoalCard"
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-					:goal-editing-enable="goalEditingEnable"
 					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 					@open-goal-modal="openGoalModal($event)"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
@@ -224,7 +222,6 @@
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-			:goal-editing-enable="goalEditingEnable"
 			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			@open-goal-modal="openGoalModal($event)"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
@@ -344,10 +341,6 @@ export default {
 			type: String,
 			default: 'a',
 			validator: value => ['a', 'b'].includes(value)
-		},
-		goalEditingEnable: {
-			type: Boolean,
-			default: false
 		},
 		isGoalTileExperimentEnabled: {
 			type: Boolean,

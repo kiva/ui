@@ -176,12 +176,6 @@ query myKivaQuery {
     }
   }
   general {
-    goal_editing_enable: uiConfigSetting(key: "goal_editing_enable") {
-			key
-			value
-		}
-	}
-  general {
     goal_recommended_loan_enable: uiConfigSetting(key: "goal_set_recommended_loan") {
       key
       value
