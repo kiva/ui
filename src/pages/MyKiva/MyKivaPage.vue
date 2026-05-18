@@ -12,7 +12,6 @@
 			:regions-data="regionsData"
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
-			:goal-editing-enable="goalEditingEnable"
 			:user-lent-to-all-regions="userLentToAllRegions"
 			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
@@ -34,7 +33,6 @@
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:show-my-giving-funds-card="showMyGivingFundsCard"
-			:goal-editing-enable="goalEditingEnable"
 			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
@@ -67,7 +65,6 @@ import useBadgeData, {
 import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
-const GOAL_EDITING_KEY = 'goal_editing_enable';
 const GOAL_TILE_EXPERIMENT_KEY = 'mykiva_goal_tile';
 const LENDING_NEXT_STEPS_EXP_KEY = 'mykiva_lending_next_steps';
 
@@ -116,7 +113,6 @@ export default {
 			latestLoan: null,
 			goalRefreshKey: 0,
 			showMyGivingFundsCard: false,
-			goalEditingEnable: false,
 			recentTransactionLoans: [],
 			isGoalTileExperimentEnabled: false,
 			lendingNextStepsExperimentVariant: null,
@@ -297,7 +293,6 @@ export default {
 				};
 				this.transactions = myKivaQueryResult.my?.transactions?.values ?? [];
 
-				this.goalEditingEnable = readBoolSetting(myKivaQueryResult, `general.${GOAL_EDITING_KEY}.value`) ?? false; // eslint-disable-line max-len
 				this.goalRecommendedLoanEnable = readBoolSetting(myKivaQueryResult, 'general.goal_recommended_loan_enable.value') ?? false; // eslint-disable-line max-len
 
 				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {

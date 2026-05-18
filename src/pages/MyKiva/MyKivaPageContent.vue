@@ -31,7 +31,6 @@
 				:latest-loan="latestLoan"
 				:goal-refresh-key="goalRefreshKey"
 				:user-info="userInfo"
-				:goal-editing-enable="goalEditingEnable"
 				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 				:lending-next-steps-variant="lendingNextStepsVariant"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
@@ -312,10 +311,6 @@ export default {
 			default: 0
 		},
 		showMyGivingFundsCard: {
-			type: Boolean,
-			default: false
-		},
-		goalEditingEnable: {
 			type: Boolean,
 			default: false
 		},
