@@ -1,17 +1,17 @@
 <template>
 	<div
-		:class="{
-			'tw-mb-2': !showLendingNextStepsCards,
-			'next-steps-link': isNextStepsExperimentEnabled,
-			'tw-mb-8': isNextStepsExperimentEnabled && !(showPostLendingNextStepsCards && goalProgressLoading)
-				&& !showRegionExperience && !showLendingNextStepsCards
-		}"
+		:class="[
+			'next-steps-link',
+			{
+				'tw-mb-2': !showLendingNextStepsCards,
+				'tw-mb-8': !(showPostLendingNextStepsCards && goalProgressLoading)
+					&& !showRegionExperience && !showLendingNextStepsCards
+			}]"
 	>
 		<h3 class="tw-text-primary md:tw-mb-1">
 			Next steps recommended for you
 		</h3>
 		<div
-			v-if="isNextStepsExperimentEnabled"
 			class="tw-flex md:tw-gap-1 tw-cursor-pointer tw-w-16 md:tw-w-fit tw-justify-end"
 			@click="handleViewAllClick"
 		>
@@ -192,7 +192,7 @@
 			v-else-if="goalProgressLoading"
 			class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden"
 			:class="{
-				'tw--mt-6': isNextStepsExperimentEnabled && !showPostLendingNextStepsCards
+				'tw--mt-6': !showPostLendingNextStepsCards
 					&& !showLendingNextStepsCards,
 				'tw-mt-1.5': showLendingNextStepsCards
 			}"
@@ -203,8 +203,7 @@
 		</div>
 		<JourneyCardCarousel
 			v-else
-			class="carousel tw--mt-6"
-			:class="{'carousel-spacing': isNextStepsExperimentEnabled}"
+			class="carousel carousel-spacing tw--mt-6"
 			user-in-homepage
 			in-lending-stats
 			controls-top-right
@@ -337,11 +336,6 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
-		nextStepsExperimentVariant: {
-			type: String,
-			default: 'a',
-			validator: value => ['a', 'b'].includes(value)
-		},
 		isGoalTileExperimentEnabled: {
 			type: Boolean,
 			default: false
@@ -412,9 +406,6 @@ export default {
 		categoriesLoanCount() {
 			const { getAllCategoryLoanCounts } = useBadgeData();
 			return getAllCategoryLoanCounts(this.heroTieredAchievements);
-		},
-		isNextStepsExperimentEnabled() {
-			return this.nextStepsExperimentVariant === 'b';
 		},
 		showLendingNextStepsCards() {
 			return this.lendingNextStepsVariant === 'b' && !this.showPostLendingNextStepsCards;
