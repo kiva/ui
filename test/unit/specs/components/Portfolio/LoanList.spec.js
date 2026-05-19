@@ -457,4 +457,3 @@ describe('LoanList — team cell', () => {
 		expect(page.queryByAltText('No Image Team team image')).toBeNull();
 	});
 });
-
