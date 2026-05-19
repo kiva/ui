@@ -30,6 +30,7 @@ export default {
 		expressCheckoutEnabled: { control: 'boolean' },
 		isAdding: { control: 'boolean' },
 		isInBasket: { control: 'boolean' },
+		loadedSetData: { control: 'boolean' },
 		footerProps: { control: 'object' },
 	},
 };
@@ -42,6 +43,7 @@ const story = (overrides = {}) => {
 		expressCheckoutEnabled: false,
 		isAdding: false,
 		isInBasket: false,
+		loadedSetData: true,
 		footerProps: {},
 		...overrides,
 	};
@@ -81,4 +83,8 @@ export const AddingToBasket = story({
 
 export const CheckoutReady = story({
 	isInBasket: true,
+});
+
+export const Loading = story({
+	loadedSetData: false,
 });
