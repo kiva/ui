@@ -1,17 +1,17 @@
 <template>
 	<div
-		:class="{
-			'tw-mb-2': !showLendingNextStepsCards,
-			'next-steps-link': isNextStepsExperimentEnabled,
-			'tw-mb-8': isNextStepsExperimentEnabled && !(showPostLendingNextStepsCards && goalProgressLoading)
-				&& !showRegionExperience && !showLendingNextStepsCards
-		}"
+		:class="[
+			'next-steps-link',
+			{
+				'tw-mb-2': !showLendingNextStepsCards,
+				'tw-mb-8': !(showPostLendingNextStepsCards && goalProgressLoading)
+					&& !showRegionExperience && !showLendingNextStepsCards
+			}]"
 	>
 		<h3 class="tw-text-primary md:tw-mb-1">
 			Next steps recommended for you
 		</h3>
 		<div
-			v-if="isNextStepsExperimentEnabled"
 			class="tw-flex md:tw-gap-1 tw-cursor-pointer tw-w-16 md:tw-w-fit tw-justify-end"
 			@click="handleViewAllClick"
 		>
@@ -34,7 +34,6 @@
 				user-in-homepage
 				in-lending-stats
 				controls-top-right
-				:goal-editing-enable="goalEditingEnable"
 				:goal-progress-loading="goalProgressLoading"
 				:goal-progress="goalProgress"
 				:hero-badge-data="heroBadgeData"
@@ -75,7 +74,6 @@
 					:hide-goal-card="hideCompletedGoalCard"
 					:user-info="userInfo"
 					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-					:goal-editing-enable="goalEditingEnable"
 					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 					@open-goal-modal="openGoalModal($event)"
 					@open-impact-insight-modal="showImpactInsightsModal = true"
@@ -194,7 +192,7 @@
 			v-else-if="goalProgressLoading"
 			class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden"
 			:class="{
-				'tw--mt-6': isNextStepsExperimentEnabled && !showPostLendingNextStepsCards
+				'tw--mt-6': !showPostLendingNextStepsCards
 					&& !showLendingNextStepsCards,
 				'tw-mt-1.5': showLendingNextStepsCards
 			}"
@@ -205,8 +203,7 @@
 		</div>
 		<JourneyCardCarousel
 			v-else
-			class="carousel tw--mt-6"
-			:class="{'carousel-spacing': isNextStepsExperimentEnabled}"
+			class="carousel carousel-spacing tw--mt-6"
 			user-in-homepage
 			in-lending-stats
 			controls-top-right
@@ -224,7 +221,6 @@
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-			:goal-editing-enable="goalEditingEnable"
 			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			@open-goal-modal="openGoalModal($event)"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
@@ -238,8 +234,12 @@
 			:tiered-achievements="heroTieredAchievements"
 			:is-updating-goal="isUpdatingGoal"
 			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
+			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
+			:basket-items="basketItems"
+			:is-adding="isAdding"
 			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
+			@add-to-basket="$emit('add-to-basket', $event)"
 		/>
 		<MyKivaImpactInsightModal
 			v-if="showPostLendingNextStepsCards && showImpactInsightsModal"
@@ -288,6 +288,7 @@ export default {
 		KvMaterialIcon,
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['add-to-basket'],
 	props: {
 		regionsData: {
 			type: Array,
@@ -335,15 +336,6 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
-		nextStepsExperimentVariant: {
-			type: String,
-			default: 'a',
-			validator: value => ['a', 'b'].includes(value)
-		},
-		goalEditingEnable: {
-			type: Boolean,
-			default: false
-		},
 		isGoalTileExperimentEnabled: {
 			type: Boolean,
 			default: false
@@ -352,6 +344,18 @@ export default {
 			type: String,
 			default: null,
 		},
+		goalRecommendedLoanEnable: {
+			type: Boolean,
+			default: false
+		},
+		isAdding: {
+			type: Boolean,
+			default: false
+		},
+		basketItems: {
+			type: Array,
+			default: () => ([]),
+		}
 	},
 	data() {
 		return {
@@ -402,9 +406,6 @@ export default {
 		categoriesLoanCount() {
 			const { getAllCategoryLoanCounts } = useBadgeData();
 			return getAllCategoryLoanCounts(this.heroTieredAchievements);
-		},
-		isNextStepsExperimentEnabled() {
-			return this.nextStepsExperimentVariant === 'b';
 		},
 		showLendingNextStepsCards() {
 			return this.lendingNextStepsVariant === 'b' && !this.showPostLendingNextStepsCards;

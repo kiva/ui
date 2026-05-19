@@ -68,19 +68,25 @@ describe('ExperimentIdLink', () => {
 		it('should add X-Experiments header with experiment assignments', () => {
 			mockPreviousContext.cache.readFragment
 				.mockReturnValueOnce({ version: 'v1' })
-				.mockReturnValueOnce({ version: 'v2' });
+				.mockReturnValueOnce({ version: 'v2' })
+				.mockReturnValueOnce({ version: 'v3' });
 
 			createExperimentIdLink({ cookieStore: mockCookieStore });
 			const result = mockSetContextHandler(mockOperation, mockPreviousContext);
 
-			const expected = 'EXP-ML-Service-Bandit-LendByCategory;v1,EXP-FLSS-Ongoing-Sitewide-3;v2';
+			const expected = [
+				'EXP-ML-Service-Bandit-LendByCategory;v1',
+				'EXP-FLSS-Ongoing-Sitewide-3;v2',
+				'EXP-FLSS-May-2026;v3',
+			].join(',');
 			expect(result.headers['X-Experiments']).toBe(expected);
 		});
 
 		it('should read experiment fragments from cache for target IDs', () => {
 			mockPreviousContext.cache.readFragment
 				.mockReturnValueOnce({ version: 'v1' })
-				.mockReturnValueOnce({ version: 'v2' });
+				.mockReturnValueOnce({ version: 'v2' })
+				.mockReturnValueOnce({ version: 'v3' });
 
 			createExperimentIdLink({ cookieStore: mockCookieStore });
 			mockSetContextHandler(mockOperation, mockPreviousContext);
@@ -93,11 +99,16 @@ describe('ExperimentIdLink', () => {
 				id: 'Experiment:EXP-FLSS-Ongoing-Sitewide-3',
 				fragment: experimentVersionFragment,
 			});
+			expect(mockPreviousContext.cache.readFragment).toHaveBeenCalledWith({
+				id: 'Experiment:EXP-FLSS-May-2026',
+				fragment: experimentVersionFragment,
+			});
 		});
 
 		it('should skip experiments without version', () => {
 			mockPreviousContext.cache.readFragment
 				.mockReturnValueOnce({ version: 'v1' })
+				.mockReturnValueOnce({})
 				.mockReturnValueOnce({});
 
 			createExperimentIdLink({ cookieStore: mockCookieStore });
@@ -109,7 +120,8 @@ describe('ExperimentIdLink', () => {
 		it('should handle null experiment data from cache', () => {
 			mockPreviousContext.cache.readFragment
 				.mockReturnValueOnce(null)
-				.mockReturnValueOnce({ version: 'v2' });
+				.mockReturnValueOnce({ version: 'v2' })
+				.mockReturnValueOnce({});
 
 			createExperimentIdLink({ cookieStore: mockCookieStore });
 			const result = mockSetContextHandler(mockOperation, mockPreviousContext);
@@ -119,6 +131,7 @@ describe('ExperimentIdLink', () => {
 
 		it('should not add X-Experiments header when no experiments have versions', () => {
 			mockPreviousContext.cache.readFragment
+				.mockReturnValueOnce({})
 				.mockReturnValueOnce({})
 				.mockReturnValueOnce({});
 
@@ -142,7 +155,8 @@ describe('ExperimentIdLink', () => {
 		it('should handle multiple experiments with mixed versions', () => {
 			mockPreviousContext.cache.readFragment
 				.mockReturnValueOnce({ version: 'control' })
-				.mockReturnValueOnce({ version: 'variant-a' });
+				.mockReturnValueOnce({ version: 'variant-a' })
+				.mockReturnValueOnce({});
 
 			createExperimentIdLink({ cookieStore: mockCookieStore });
 			const result = mockSetContextHandler(mockOperation, mockPreviousContext);

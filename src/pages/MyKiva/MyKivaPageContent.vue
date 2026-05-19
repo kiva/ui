@@ -31,10 +31,12 @@
 				:latest-loan="latestLoan"
 				:goal-refresh-key="goalRefreshKey"
 				:user-info="userInfo"
-				:next-steps-experiment-variant="nextStepsExperimentVariant"
-				:goal-editing-enable="goalEditingEnable"
 				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 				:lending-next-steps-variant="lendingNextStepsVariant"
+				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
+				:basket-items="basketItems"
+				:is-adding="isAdding"
+				@add-to-basket="addToBasket"
 			/>
 		</section>
 		<section class="tw-mt-4" id="mykiva-achievements">
@@ -309,15 +311,6 @@ export default {
 			default: 0
 		},
 		showMyGivingFundsCard: {
-			type: Boolean,
-			default: false
-		},
-		nextStepsExperimentVariant: {
-			type: String,
-			default: 'a',
-			validator: value => ['a', 'b'].includes(value)
-		},
-		goalEditingEnable: {
 			type: Boolean,
 			default: false
 		},

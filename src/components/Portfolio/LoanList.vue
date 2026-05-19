@@ -83,6 +83,7 @@
 												<kv-flag
 													v-if="loan.geocode?.country?.isoCode"
 													:country="loan.geocode?.country?.isoCode"
+													:name="loan.geocode?.country?.name || ''"
 												/>
 											</div>
 											{{ loan.geocode?.country?.name || '-' }}

@@ -1,5 +1,7 @@
 import pageOffset from '#src/util/loanSearch/filters/pageOffset';
 import pageLimit from '#src/util/loanSearch/filters/pageLimit';
+import amountLeft from '#src/util/loanSearch/filters/amountLeft';
+import loanIds from '#src/util/loanSearch/filters/loanIds';
 import genders from '#src/util/loanSearch/filters/genders';
 import isIndividual from '#src/util/loanSearch/filters/isIndividual';
 import keywordSearch from '#src/util/loanSearch/filters/keywordSearch';
@@ -71,6 +73,8 @@ const config = {
 	activities,
 	isMatchable,
 	flexibleFundraisingEnabled,
+	amountLeft,
+	loanIds,
 };
 
 /**
