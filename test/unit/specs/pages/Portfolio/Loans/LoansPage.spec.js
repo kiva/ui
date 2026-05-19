@@ -9,9 +9,28 @@ const deferred = () => {
 	return { promise, resolve };
 };
 
-const loansResponse = (loanId = '101', totalCount = 45) => ({
+const flushPromises = () => new Promise(resolve => {
+	setTimeout(resolve);
+});
+
+const loansResponse = (
+	loanId = '101',
+	totalCount = 45,
+	{
+		countriesLentTo = [
+			{ id: 'country-1', isoCode: 'PE', name: 'Peru' },
+		],
+		partnersLentTo = [
+			{ id: 44, name: 'Partner 44' },
+		],
+	} = {}
+) => ({
 	my: {
 		id: 'my-id',
+		lendingStats: {
+			countriesLentTo,
+			partnersLentTo,
+		},
 		loans: {
 			totalCount,
 			values: [
@@ -60,16 +79,34 @@ const renderLoansPage = ({ apollo = null, router = null } = {}) => {
 						`,
 					},
 					LoanFilterBar: {
-						props: ['filters', 'queryString', 'countries', 'partners', 'totalLoans'],
+						props: ['filters', 'keywordSearch', 'countries', 'partners', 'totalLoans'],
 						emits: ['filters-changed'],
 						template: `
-							<button
-								type="button"
-								data-testid="filter"
-								@click="$emit('filters-changed', { status: 'delinquent' })"
-							>
-								filter
-							</button>
+							<div>
+								<div data-testid="filter-options">
+									{{ countries.length }} countries {{ partners.length }} partners
+								</div>
+								<div data-testid="filter-countries">
+									{{ countries.map(country => country.name).join(',') }}
+								</div>
+								<div data-testid="filter-partners">
+									{{ partners.map(partner => partner.name).join(',') }}
+								</div>
+								<button
+									type="button"
+									data-testid="filter"
+									@click="$emit('filters-changed', {
+										filters: {
+											status: 'payingBack',
+											country: ['PE'],
+											partner: [44],
+										},
+										keywordSearch: 'Maria'
+									})"
+								>
+									filter
+								</button>
+							</div>
 						`,
 					},
 					KvPagination: {
@@ -125,11 +162,12 @@ describe('LoansPage', () => {
 			variables: {
 				offset: 0,
 				limit: 20,
+				includeFilterOptions: true,
 			},
 		}));
 	});
 
-	it('queries selected pages without adding query strings and scrolls to the table', async () => {
+	it('queries selected pages without updating the route and scrolls to the table', async () => {
 		const page = renderLoansPage();
 
 		await waitFor(() => expect(page.query).toHaveBeenCalledTimes(1));
@@ -145,15 +183,68 @@ describe('LoansPage', () => {
 		expect(page.query.mock.calls[1][0].variables).toEqual({
 			offset: 20,
 			limit: 20,
+			includeFilterOptions: false,
 		});
 		expect(page.query.mock.calls[2][0].variables).toEqual({
 			offset: 40,
 			limit: 20,
+			includeFilterOptions: false,
 		});
 		expect(page.getByTestId('pagination').getAttribute('data-scroll-to-top')).toBe('false');
 		expect(scrollIntoView).toHaveBeenCalledWith({
 			behavior: 'smooth',
 			block: 'start',
+		});
+	});
+
+	it('passes portfolio filter options to the filter bar', async () => {
+		const page = renderLoansPage();
+
+		await waitFor(() => expect(page.query).toHaveBeenCalledTimes(1));
+
+		await waitFor(() => {
+			expect(page.getByTestId('filter-options').textContent).toContain('1 countries 1 partners');
+		});
+	});
+
+	it('resets to the first page and queries with active filters and keyword search', async () => {
+		const page = renderLoansPage();
+
+		await waitFor(() => expect(page.query).toHaveBeenCalledTimes(1));
+		await fireEvent.click(await page.findByTestId('later-page'));
+		await waitFor(() => expect(page.query).toHaveBeenCalledTimes(2));
+		await fireEvent.click(page.getByTestId('filter'));
+		await waitFor(() => expect(page.query).toHaveBeenCalledTimes(3));
+
+		expect(page.query.mock.calls[2][0].variables).toEqual({
+			offset: 0,
+			limit: 20,
+			includeFilterOptions: false,
+			filters: {
+				status: 'payingBack',
+				country: ['PE'],
+				partner: [44],
+			},
+			keywordSearch: 'Maria',
+		});
+	});
+
+	it('only requests portfolio filter options until they are loaded', async () => {
+		const page = renderLoansPage();
+
+		await waitFor(() => expect(page.query).toHaveBeenCalledTimes(1));
+		await fireEvent.click(await page.findByTestId('later-page'));
+		await waitFor(() => expect(page.query).toHaveBeenCalledTimes(2));
+
+		expect(page.query.mock.calls[0][0].variables).toEqual({
+			offset: 0,
+			limit: 20,
+			includeFilterOptions: true,
+		});
+		expect(page.query.mock.calls[1][0].variables).toEqual({
+			offset: 40,
+			limit: 20,
+			includeFilterOptions: false,
 		});
 	});
 
@@ -167,6 +258,54 @@ describe('LoansPage', () => {
 		await waitFor(() => expect(query).toHaveBeenCalled());
 
 		expect(queryByTestId('first-page')).toBeNull();
+	});
+
+	it('sorts portfolio filter options by name', async () => {
+		const query = vi.fn().mockResolvedValue({
+			data: loansResponse('101', 45, {
+				countriesLentTo: [
+					{ id: 'country-2', isoCode: 'ZW', name: 'Zimbabwe' },
+					{ id: 'country-1', isoCode: 'AL', name: 'Albania' },
+				],
+				partnersLentTo: [
+					{ id: 22, name: 'Z Partner' },
+					{ id: 11, name: 'A Partner' },
+				],
+			}),
+		});
+		const page = renderLoansPage({ apollo: { query } });
+
+		await waitFor(() => expect(query).toHaveBeenCalled());
+
+		await waitFor(() => {
+			expect(page.getByTestId('filter-countries').textContent).toContain('Albania,Zimbabwe');
+			expect(page.getByTestId('filter-partners').textContent).toContain('A Partner,Z Partner');
+		});
+	});
+
+	it('ignores stale loan responses when a newer filter request finishes first', async () => {
+		const pageRequest = deferred();
+		const filterRequest = deferred();
+		const query = vi.fn()
+			.mockResolvedValueOnce({ data: loansResponse('101') })
+			.mockReturnValueOnce(pageRequest.promise)
+			.mockReturnValueOnce(filterRequest.promise);
+		const page = renderLoansPage({ apollo: { query } });
+
+		await waitFor(() => expect(page.getByTestId('loan-list').textContent).toContain('loans:101'));
+		await fireEvent.click(await page.findByTestId('later-page'));
+		await waitFor(() => expect(query).toHaveBeenCalledTimes(2));
+		await fireEvent.click(page.getByTestId('filter'));
+		await waitFor(() => expect(query).toHaveBeenCalledTimes(3));
+
+		filterRequest.resolve({ data: loansResponse('303') });
+		await waitFor(() => expect(page.getByTestId('loan-list').textContent).toContain('loans:303'));
+
+		pageRequest.resolve({ data: loansResponse('202') });
+		await flushPromises();
+
+		expect(page.getByTestId('loan-list').textContent).toContain('loans:303');
+		expect(page.getByTestId('loan-list').textContent).not.toContain('loans:202');
 	});
 
 	it('clears previous page loans while the next page is loading', async () => {

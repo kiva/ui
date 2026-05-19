@@ -1,12 +1,29 @@
 query myLoans(
 	$offset: Int = 0,
-	$limit: Int = 20
+	$limit: Int = 20,
+	$filters: MyLoansSearchFilters,
+	$keywordSearch: String,
+	$includeFilterOptions: Boolean = true
 ) {
 	my {
 		id
+		lendingStats @include(if: $includeFilterOptions) {
+			id
+			countriesLentTo {
+				id
+				isoCode
+				name
+			}
+			partnersLentTo {
+				id
+				name
+			}
+		}
 		loans(
 			offset: $offset,
 			limit: $limit
+			filters: $filters,
+			keywordSearch: $keywordSearch
 		) {
 			values {
 				id

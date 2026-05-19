@@ -4146,7 +4146,7 @@ describe('useGoalData', () => {
 
 			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
 				gender: ['female'],
-				amountLeft: { min: 100 },
+				amountLeft: { range: { gte: 100 } },
 				pageLimit: 4,
 				sortBy: 'personalized',
 			}, 'web:goal-recommended-loan');
@@ -4176,7 +4176,7 @@ describe('useGoalData', () => {
 
 			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
 				tagId: [8, 9],
-				amountLeft: { min: 100 },
+				amountLeft: { range: { gte: 100 } },
 				pageLimit: 4,
 				sortBy: 'personalized',
 			}, 'web:goal-recommended-loan');
@@ -4205,7 +4205,7 @@ describe('useGoalData', () => {
 
 			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
 				sectorId: [6, 10, 20, 21],
-				amountLeft: { min: 100 },
+				amountLeft: { range: { gte: 100 } },
 				pageLimit: 4,
 				sortBy: 'personalized',
 			}, 'web:goal-recommended-loan');
@@ -4233,7 +4233,7 @@ describe('useGoalData', () => {
 
 			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
 				themeId: [28],
-				amountLeft: { min: 100 },
+				amountLeft: { range: { gte: 100 } },
 				pageLimit: 4,
 				sortBy: 'personalized',
 			}, 'web:goal-recommended-loan');
@@ -4262,7 +4262,7 @@ describe('useGoalData', () => {
 
 			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
 				countryIsoCode: ['PR', 'US'],
-				amountLeft: { min: 100 },
+				amountLeft: { range: { gte: 100 } },
 				pageLimit: 4,
 				sortBy: 'personalized',
 			}, 'web:goal-recommended-loan');
@@ -4290,7 +4290,7 @@ describe('useGoalData', () => {
 			await composable.getRecommendedLoans(ID_WOMENS_EQUALITY);
 
 			const filterArg = mockRunLoansQuery.mock.calls[0][1];
-			expect(filterArg).toHaveProperty('amountLeft', { min: 100 });
+			expect(filterArg).toHaveProperty('amountLeft', { range: { gte: 100 } });
 			expect(filterArg).toHaveProperty('pageLimit', 4);
 			expect(filterArg).toHaveProperty('sortBy', 'personalized');
 		});
@@ -4303,7 +4303,7 @@ describe('useGoalData', () => {
 			const filterArg = mockRunLoansQuery.mock.calls[0][1];
 			expect(filterArg).toEqual({
 				tagId: [8, 9],
-				amountLeft: { min: 100 },
+				amountLeft: { range: { gte: 100 } },
 				pageLimit: 4,
 				sortBy: 'personalized',
 			});
@@ -4362,7 +4362,7 @@ describe('useGoalData', () => {
 			await composable.getRecommendedLoans(ID_SUPPORT_ALL);
 
 			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
-				amountLeft: { min: 100 },
+				amountLeft: { range: { gte: 100 } },
 				pageLimit: 4,
 				sortBy: 'personalized',
 			}, 'web:goal-recommended-loan');
@@ -4377,7 +4377,7 @@ describe('useGoalData', () => {
 			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
 				gender: ['female'],
 				loanIds: { none: filteredLoanIds },
-				amountLeft: { min: 100 },
+				amountLeft: { range: { gte: 100 } },
 				pageLimit: 4,
 				sortBy: 'personalized',
 			}, 'web:goal-recommended-loan');
@@ -4390,7 +4390,7 @@ describe('useGoalData', () => {
 
 			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
 				tagId: [8, 9],
-				amountLeft: { min: 100 },
+				amountLeft: { range: { gte: 100 } },
 				pageLimit: 4,
 				sortBy: 'personalized',
 			}, 'web:goal-recommended-loan');
@@ -4404,7 +4404,7 @@ describe('useGoalData', () => {
 
 			expect(mockRunLoansQuery).toHaveBeenCalledWith(mockApollo, {
 				loanIds: { none: filteredLoanIds },
-				amountLeft: { min: 100 },
+				amountLeft: { range: { gte: 100 } },
 				pageLimit: 4,
 				sortBy: 'personalized',
 			}, 'web:goal-recommended-loan');

@@ -1,3 +1,45 @@
+## [3.67.0](https://github.com/kiva/ui/compare/v3.66.1...v3.67.0) (2026-05-18)
+
+### 🎉 New Features
+
+* [MP-2759] - figuring out if this changes works ([#6877](https://github.com/kiva/ui/issues/6877)) ([b4b835c](https://github.com/kiva/ui/commit/b4b835cd88ea1bdb962f682e838f36d7748b60ca))
+* add event when goal auto complete from autolending ([#6883](https://github.com/kiva/ui/issues/6883)) ([eda0f1a](https://github.com/kiva/ui/commit/eda0f1a6cd97cdf16be4556648a1cca9cca03394))
+* add pagination to loans-beta page ([#6882](https://github.com/kiva/ui/issues/6882)) ([635592e](https://github.com/kiva/ui/commit/635592e7db64372ad5f040d08ed1ec261d4579a8))
+* create component for goal confirmation with recommended loan ([#6894](https://github.com/kiva/ui/issues/6894)) ([09d3bc3](https://github.com/kiva/ui/commit/09d3bc3c2800cd74c9c1a68a22240e4d6c17e788))
+* function added to usegoaldata composable to fetch recommended loans by category ([#6884](https://github.com/kiva/ui/issues/6884)) ([02e5eeb](https://github.com/kiva/ui/commit/02e5eeb3f960921e0a40b46f3e9540b66bb87b2e))
+* lending stats routes update ([#6889](https://github.com/kiva/ui/issues/6889)) ([16d6b26](https://github.com/kiva/ui/commit/16d6b26b434e88ad6dc1ec800824de51a9c2e8ef))
+* linkify My Teams message links using linkify-string [CP-2620] ([#6893](https://github.com/kiva/ui/issues/6893)) ([e1a18e7](https://github.com/kiva/ui/commit/e1a18e7140a9b7563abe0f5b83280777051ac829))
+* loans beta paging filters and search ([#6903](https://github.com/kiva/ui/issues/6903)) ([41ebb00](https://github.com/kiva/ui/commit/41ebb00a1abf8eae586e4a355dfc7f498af18e2a))
+* mp-2808-loaders-next-steps ([#6876](https://github.com/kiva/ui/issues/6876)) ([e602790](https://github.com/kiva/ui/commit/e602790cd9052e7b559be42681cf2963c3402781))
+* my kiva recommended loan experience (MP-2473) ([#6901](https://github.com/kiva/ui/issues/6901)) ([62e3259](https://github.com/kiva/ui/commit/62e325923375da6023d1127ea65cb969b318b1d2))
+
+### 🐛 Bugfixes
+
+* add logic to get loan amount from card ([#6898](https://github.com/kiva/ui/issues/6898)) ([c60b003](https://github.com/kiva/ui/commit/c60b00309b0b4480c4dccd448737a572850bc155))
+* ensure goal card still appears once on mykiva after completing ([#6900](https://github.com/kiva/ui/issues/6900)) ([d173941](https://github.com/kiva/ui/commit/d1739412910f5a3604f9dc8b785cafd6ace88b3f))
+* ensure the giving funds card is hidden if you have no funds and haven't contributed to any ([38fc9a3](https://github.com/kiva/ui/commit/38fc9a3f8af028ef86800962c94824096c31e52c))
+* missing recommended loan query filters ([#6904](https://github.com/kiva/ui/issues/6904)) ([e0dabbd](https://github.com/kiva/ui/commit/e0dabbdb284f473ab1e5009d9f90c94d03bdcef4))
+* origin added to goal recommended loan data method ([#6888](https://github.com/kiva/ui/issues/6888)) ([e2b32f8](https://github.com/kiva/ui/commit/e2b32f8611c2204b44519d945d11c479634a87a6))
+* remaining tweaks for combo page url change minus deleting old pages ([#6897](https://github.com/kiva/ui/issues/6897)) ([b9a296a](https://github.com/kiva/ui/commit/b9a296a0fdf4d8b1eb689848ff7834768cf04a81))
+* resolve issue where new changes prevented goal card from appearing on mykiva after completion ([#6902](https://github.com/kiva/ui/issues/6902)) ([49bc246](https://github.com/kiva/ui/commit/49bc2462ca299d7878fbddf130b659eb1fb437ee))
+* resolve issues with my kiva loading and initial state ([#6899](https://github.com/kiva/ui/issues/6899)) ([0b2e756](https://github.com/kiva/ui/commit/0b2e7560823df8d947c33d4a9608c3fa881fc8f2))
+* update kv libraries including header fixes across kv-components ([3da0010](https://github.com/kiva/ui/commit/3da001088ee49e7fef8d8b16a9ed7235b7eb7833))
+
+### 🧹 Chores
+
+* **release:** 3.67.0-rc.1 [skip ci] ([5518402](https://github.com/kiva/ui/commit/5518402c07610ff9373fe9949199ec4339397796)), closes [#6877](https://github.com/kiva/ui/issues/6877) [#6883](https://github.com/kiva/ui/issues/6883) [#6882](https://github.com/kiva/ui/issues/6882) [#6894](https://github.com/kiva/ui/issues/6894) [#6884](https://github.com/kiva/ui/issues/6884) [#6889](https://github.com/kiva/ui/issues/6889) [#6893](https://github.com/kiva/ui/issues/6893) [#6876](https://github.com/kiva/ui/issues/6876) [#6901](https://github.com/kiva/ui/issues/6901) [#6898](https://github.com/kiva/ui/issues/6898) [#6900](https://github.com/kiva/ui/issues/6900) [#6888](https://github.com/kiva/ui/issues/6888) [#6897](https://github.com/kiva/ui/issues/6897) [#6902](https://github.com/kiva/ui/issues/6902) [#6899](https://github.com/kiva/ui/issues/6899)
+* **release:** 3.67.0-rc.2 [skip ci] ([e555e7c](https://github.com/kiva/ui/commit/e555e7cdc84b39593548c7031bb7d419963bcdd0)), closes [#6903](https://github.com/kiva/ui/issues/6903) [#6904](https://github.com/kiva/ui/issues/6904)
+
+## [3.67.0-rc.2](https://github.com/kiva/ui/compare/v3.67.0-rc.1...v3.67.0-rc.2) (2026-05-18)
+
+### 🎉 New Features
+
+* loans beta paging filters and search ([#6903](https://github.com/kiva/ui/issues/6903)) ([41ebb00](https://github.com/kiva/ui/commit/41ebb00a1abf8eae586e4a355dfc7f498af18e2a))
+
+### 🐛 Bugfixes
+
+* missing recommended loan query filters ([#6904](https://github.com/kiva/ui/issues/6904)) ([e0dabbd](https://github.com/kiva/ui/commit/e0dabbdb284f473ab1e5009d9f90c94d03bdcef4))
+
 ## [3.67.0-rc.1](https://github.com/kiva/ui/compare/v3.66.1...v3.67.0-rc.1) (2026-05-14)
 
 ### 🎉 New Features

@@ -16,7 +16,7 @@
 				{{ backToCopy }}
 			</button>
 			<KvUtilityMenu
-				v-if="goalEditingEnable && !isGoalCompleted && isGoalSet "
+				v-if="!isGoalCompleted && isGoalSet "
 				menu-position="right-aligned"
 				button-size="small"
 				menu-border-class="tw-border tw-border-tertiary tw-rounded-md"
@@ -61,7 +61,6 @@
 					:selected-category-name="selectedCategory.name"
 					:goal-loans="goalTarget"
 					tracking-category="event-tracking"
-					:goal-editing-enable="goalEditingEnable"
 					:is-updating-goal="userIsEditingGoal"
 					:fetched-current-year-loans="fetchedCurrentYearLoans"
 					:loading-current-year="loadingCurrentYear"
@@ -223,13 +222,6 @@ const props = defineProps({
 	tieredAchievements: {
 		type: Array,
 		default: () => ([]),
-	},
-	/**
-	 * Is goal editing enabled
-	 */
-	goalEditingEnable: {
-		type: Boolean,
-		default: false,
 	},
 	/**
 	 * Is goal recommended loan enabled
