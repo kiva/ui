@@ -142,24 +142,20 @@
 									{{ $filters.numeral(loan.loanFundraisingInfo?.fundedAmount, '$0,0') }} raised
 								</div>
 								<template v-else>
-									<paid-amount-modal :amount="repaidAmountTotal(loan)" />
+									<paid-amount-modal
+										:amount="loan.userProperties?.loanBalance?.amountRepaidToLender || '0'"
+									/>
 									<div
 										v-if="hasRepaidToLender(loan)"
 										class="tw-text-secondary tw-text-small"
 									>
-										{{ $filters.numeral(
-											loan.userProperties.loanBalance.amountRepaidToLender,
-											'$0,0.00'
-										) }} {{ repaidLabel(loan, 'you') }}
+										{{ repaidLabel(loan, 'you') }}
 									</div>
 									<div
 										v-else-if="hasRepaidToPromo(loan)"
 										class="tw-text-secondary tw-text-small"
 									>
-										{{ $filters.numeral(
-											loan.userProperties.loanBalance.amountRepaidToPromo,
-											'$0,0.00'
-										) }} {{ repaidLabel(loan, 'Kiva') }}
+										{{ repaidLabel(loan, 'Kiva') }}
 									</div>
 									<div
 										v-if="hasArrears(loan.sharedArrearsAmount)"
@@ -271,11 +267,6 @@ export default {
 		hasRepaidToPromo(loan) {
 			const amount = loan.userProperties?.loanBalance?.amountRepaidToPromo;
 			return amount != null && parseFloat(amount) > 0;
-		},
-		repaidAmountTotal(loan) {
-			const toLender = parseFloat(loan.userProperties?.loanBalance?.amountRepaidToLender || 0);
-			const toPromo = parseFloat(loan.userProperties?.loanBalance?.amountRepaidToPromo || 0);
-			return String(toLender + toPromo);
 		},
 		isRaisedOrFundraising(status) {
 			return RAISED_OR_FUNDRAISING_STATUSES.has(status);

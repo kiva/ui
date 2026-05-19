@@ -48,10 +48,9 @@ const renderLoanList = ({ loans, loading = false } = {}) => render(LoanList, {
 			KvFlag: { template: '<span class="kv-flag" />' },
 			KvLoadingPlaceholder: { template: '<div class="kv-loading-placeholder" />' },
 			PaidAmountModal: {
-				props: ['amount', 'label'],
-				template:
-					// eslint-disable-next-line no-template-curly-in-string
-					'<span class="paid-amount">${{ amount }}<span v-if="label"> {{ label }}</span></span>',
+				props: ['amount'],
+				// eslint-disable-next-line no-template-curly-in-string
+				template: '<span class="paid-amount">${{ amount }}</span>',
 			},
 		},
 	},
@@ -225,23 +224,24 @@ describe('LoanList — "Paid back or raised" cell', () => {
 		expect(page.getByText('$525 raised')).toBeTruthy();
 	});
 
-	it('renders the lender-repaid breakdown under the clickable total when amountRepaidToLender is positive', () => {
+	it('renders the lender-repaid amount as the clickable trigger with "repaid to you" copy below', () => {
 		const page = renderLoanList({ loans: [makeLoan({ status: 'payingBack' })] });
 
 		expect(page.getByText('$5')).toBeTruthy();
-		expect(page.getByText('$5.00 repaid to you')).toBeTruthy();
+		expect(page.getByText('repaid to you')).toBeTruthy();
+		expect(page.queryByText(/\$5.*repaid to you/)).toBeNull();
 	});
 
-	it('uses "repaid/refunded to you" for refunded loans with lender repayment', () => {
+	it('uses "repaid/refunded to you" copy below the trigger for refunded loans with lender repayment', () => {
 		const page = renderLoanList({
 			loans: [makeLoan({ status: 'refunded' })],
 		});
 
 		expect(page.getByText('$5')).toBeTruthy();
-		expect(page.getByText('$5.00 repaid/refunded to you')).toBeTruthy();
+		expect(page.getByText('repaid/refunded to you')).toBeTruthy();
 	});
 
-	it('renders the promo-only breakdown under the clickable total when only promo was repaid', () => {
+	it('shows the lender share ($0) as the trigger and "repaid to Kiva" copy when only promo was repaid', () => {
 		const page = renderLoanList({
 			loans: [makeLoan({
 				status: 'payingBack',
@@ -257,11 +257,11 @@ describe('LoanList — "Paid back or raised" cell', () => {
 			})],
 		});
 
-		expect(page.getByText('$3.5')).toBeTruthy();
-		expect(page.getByText('$3.50 repaid to Kiva')).toBeTruthy();
+		expect(page.container.querySelector('.paid-amount').textContent.trim()).toBe('$0');
+		expect(page.getByText('repaid to Kiva')).toBeTruthy();
 	});
 
-	it('uses "repaid/refunded to Kiva" for expired loans with only promo repayment', () => {
+	it('uses "repaid/refunded to Kiva" copy for expired loans with only promo repayment', () => {
 		const page = renderLoanList({
 			loans: [makeLoan({
 				status: 'expired',
@@ -277,11 +277,11 @@ describe('LoanList — "Paid back or raised" cell', () => {
 			})],
 		});
 
-		expect(page.getByText('$25')).toBeTruthy();
-		expect(page.getByText('$25.00 repaid/refunded to Kiva')).toBeTruthy();
+		expect(page.container.querySelector('.paid-amount').textContent.trim()).toBe('$0');
+		expect(page.getByText('repaid/refunded to Kiva')).toBeTruthy();
 	});
 
-	it('uses the total (lender + promo) as the clickable amount, not just the lender share', () => {
+	it('uses the lender share only as the clickable amount, not lender + promo', () => {
 		const page = renderLoanList({
 			loans: [makeLoan({
 				status: 'payingBack',
@@ -297,10 +297,10 @@ describe('LoanList — "Paid back or raised" cell', () => {
 			})],
 		});
 
-		// Total = $4 + $1 = $5
-		expect(page.getByText('$5')).toBeTruthy();
-		// Subtext still prefers the lender share when present
-		expect(page.getByText('$4.00 repaid to you')).toBeTruthy();
+		// Lender share only — promo $1 is not added to the trigger
+		expect(page.getByText('$4')).toBeTruthy();
+		expect(page.queryByText('$5')).toBeNull();
+		expect(page.getByText('repaid to you')).toBeTruthy();
 	});
 
 	it('renders shared arrears alongside paid-back amount', () => {
@@ -312,7 +312,7 @@ describe('LoanList — "Paid back or raised" cell', () => {
 		});
 
 		expect(page.getByText('$5')).toBeTruthy();
-		expect(page.getByText('$5.00 repaid to you')).toBeTruthy();
+		expect(page.getByText('repaid to you')).toBeTruthy();
 		expect(page.getByText('(-$1.25 in arrears)')).toBeTruthy();
 	});
 
