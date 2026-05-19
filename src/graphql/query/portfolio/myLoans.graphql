@@ -29,6 +29,7 @@ query myLoans(
 				id
 				name
 				status
+				statusLabel
 				use
 				image {
 					id
@@ -41,16 +42,18 @@ query myLoans(
 						isoCode
 					}
 				}
+				activity {
+					id
+					name
+				}
 				loanAmount
 				loanFundraisingInfo {
 					id
 					fundedAmount
 				}
-				sector {
-					id
-					name
-				}
 				lenderRepaymentTerm
+				arrearsAmount
+				sharedArrearsAmount
 				terms {
 					loanAmount
 					expectedPayments {
@@ -60,23 +63,27 @@ query myLoans(
 				userProperties {
 					loanBalance {
 						amountPurchasedByLender
+						amountPurchasedByPromo
 						amountRepaidToLender
+						amountRepaidToPromo
 						latestSharePurchaseTime
 					}
-				}
-				teams {
-					values {
+					userAttributedTeam {
 						id
 						name
 						image {
+							id
 							url
-              				id
 						}
 					}
 				}
 				... on LoanPartner {
 					partnerName
 					partnerId
+				}
+				... on LoanDirect {
+					trusteeId
+					trusteeName
 				}
 			}
 			totalCount
