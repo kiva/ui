@@ -45,7 +45,21 @@
 			style="max-width: 644px; min-height: 495px;"
 		/>
 		<template v-else>
+			<RecommendLoanForGoalContainer
+				v-if="showRecommendLoanAfterGoalView"
+				class="tw-mx-auto"
+				style="max-width: 700px;"
+				header-title="Goal set!"
+				:header-details="recommendLoanHeaderDetails"
+				:content-card-props="recommendLoanCardProps"
+				:is-adding="isAdding"
+				:is-in-basket="recommendLoanIsInBasket"
+				:loaded-set-data="loadedSetData"
+				@primary-cta-click="addToBasket"
+				@secondary-cta-click="handleExploreMoreLoans"
+			/>
 			<div
+				v-else
 				class="tw-mx-auto"
 				style="max-width: 644px;"
 			>
@@ -150,7 +164,11 @@ import {
 	KvUtilityMenu
 } from '@kiva/kv-components';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
+import RecommendLoanForGoalContainer from
+	'#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalContainer';
 import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
+import useGoalSettingRecommendedLoan from
+	'#src/composables/useGoalSettingRecommendedLoan';
 import { buildEmailFlowGoalData } from '#src/util/goalEmailFlow';
 import logFormatter from '#src/util/logFormatter';
 import {
@@ -165,6 +183,7 @@ import useTipMessage from '#src/composables/useTipMessage';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
+const $appConfig = inject('$appConfig', {});
 const router = useRouter();
 
 const { $showTipMsg } = useTipMessage(apollo);
@@ -182,6 +201,7 @@ const {
 	removeGoalFromPreferences,
 	updateCurrentGoal,
 	userGoalAchieved,
+	getRecommendedLoans,
 } = useGoalData({ apollo });
 
 const props = defineProps({
@@ -230,7 +250,23 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Array of basket items for recommended loan exclusion and in-basket checks
+	 */
+	basketItems: {
+		type: Array,
+		default: () => ([]),
+	},
+	/**
+	 * True while add-to-basket mutation is in flight (provided by parent mixin)
+	 */
+	isAdding: {
+		type: Boolean,
+		default: false,
+	},
 });
+
+const emit = defineEmits(['add-to-basket']);
 
 const isGoalSet = ref(false);
 // Variable used to create/update the goal target based on user selection
@@ -306,6 +342,37 @@ const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
 const selectedCategory = ref(categories[0]);
 
+// Composable for recommended loan state (shared logic with GoalSettingModal)
+const showPage = ref(true);
+const loadedSetData = ref(false);
+const {
+	showRecommendLoanAfterGoalView,
+	recommendLoanHeaderDetails,
+	recommendLoanCardProps,
+	recommendLoanIsInBasket,
+	enterRecommendedLoanStepAfterGoalSave,
+	handleExploreMoreLoans,
+} = useGoalSettingRecommendedLoan({
+	emit: () => {},
+	props,
+	selectedGoalNumber: goalSelectorLoanTarget,
+	selectedCategory,
+	show: showPage,
+	goalProgress,
+	getRecommendedLoans,
+	getCtaHref,
+	userGoal,
+	kvTrackEvent: $kvTrackEvent,
+	appConfig: $appConfig,
+});
+
+const addToBasket = () => {
+	const { loanId } = recommendLoanCardProps.value;
+	if (!loanId) return;
+	// Delegate to parent (GoalSetting.vue) which uses borrower-profile-exp-mixin
+	emit('add-to-basket', { loanId, lendAmount: 25 });
+};
+
 const contentComponent = computed(() => {
 	switch (formStep.value) {
 		case 2: return NumberChoice;
@@ -350,9 +417,13 @@ const updateGoal = async preferences => {
 };
 
 const setGoal = async preferences => {
+	loading.value = true;
 	try {
 		await storeGoalPreferences(preferences);
 		await recalculateGoalInformation();
+		enterRecommendedLoanStepAfterGoalSave();
+		loadedSetData.value = true;
+		loading.value = false;
 	} catch (e) {
 		logFormatter('GoalSettingContainer: failed to setting up this goal', 'error', { error: e });
 		$showTipMsg('There was a problem setting up this goal', 'error');
@@ -456,6 +527,7 @@ async function handleEmailFlow() {
 				category,
 				validEmailTarget.value
 			);
+			enterRecommendedLoanStepAfterGoalSave();
 		} catch (e) {
 			logFormatter('GoalSettingContainer: failed to store email goal', 'error', { error: e });
 			$showTipMsg('There was a problem setting up this goal', 'error');

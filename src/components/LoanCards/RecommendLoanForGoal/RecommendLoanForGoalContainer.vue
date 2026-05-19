@@ -3,6 +3,7 @@
 		<RecommendLoanForGoalHeader
 			:title="headerTitle"
 			:details="headerDetails"
+			:loaded-set-data="loadedSetData"
 		/>
 		<RecommendLoanForGoalContent
 			:heading="contentHeading"
@@ -73,6 +74,13 @@ defineProps({
 	isInBasket: {
 		type: Boolean,
 		default: false,
+	},
+	/**
+	 * Whether goal/loan data has finished loading; controls header loading placeholder.
+	 */
+	loadedSetData: {
+		type: Boolean,
+		default: true,
 	},
 });
 
