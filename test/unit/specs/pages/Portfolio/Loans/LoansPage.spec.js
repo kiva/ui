@@ -23,6 +23,7 @@ const loansResponse = (
 		partnersLentTo = [
 			{ id: 44, name: 'Partner 44' },
 		],
+		avgLenderStatsUpdatedAt = '2026-05-18T12:00:00Z',
 	} = {}
 ) => ({
 	my: {
@@ -36,6 +37,11 @@ const loansResponse = (
 			values: [
 				{ id: loanId, name: 'Maria' },
 			],
+		},
+	},
+	general: {
+		kivaStats: {
+			avgLenderStatsUpdatedAt,
 		},
 	},
 });
@@ -246,6 +252,29 @@ describe('LoansPage', () => {
 			limit: 20,
 			includeFilterOptions: false,
 		});
+	});
+
+	it('renders the average-lender-stats updated-at timestamp from GraphQL', async () => {
+		const page = renderLoansPage();
+
+		await waitFor(() => expect(page.query).toHaveBeenCalledTimes(1));
+
+		await waitFor(() => {
+			expect(page.getByText(/^\*Updated as of /).textContent).toMatch(/May 18, 2026/);
+		});
+	});
+
+	it('hides the updated-as-of line when GraphQL returns a null timestamp', async () => {
+		const query = vi.fn().mockResolvedValue({
+			data: loansResponse('101', 45, { avgLenderStatsUpdatedAt: null }),
+		});
+		const page = renderLoansPage({ apollo: { query } });
+
+		await waitFor(() => expect(query).toHaveBeenCalledTimes(1));
+		await waitFor(() => {
+			expect(page.getByTestId('filter-options').textContent).toContain('1 countries 1 partners');
+		});
+		expect(page.queryByText(/^\*Updated as of /)).toBeNull();
 	});
 
 	it('hides pagination for a single page of results', async () => {

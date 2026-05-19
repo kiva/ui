@@ -82,4 +82,9 @@ query myLoans(
 			totalCount
 		}
 	}
+	general @include(if: $includeFilterOptions) {
+		kivaStats {
+			avgLenderStatsUpdatedAt
+		}
+	}
 }

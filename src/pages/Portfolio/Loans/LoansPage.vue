@@ -14,8 +14,11 @@
 						My loans
 					</h1>
 					<div class="tw-mb-2">
-						<p class="tw-text-right tw-text-tertiary tw-text-small">
-							*Updated as of {{ lastUpdated }}
+						<p
+							v-if="formattedLastUpdated"
+							class="tw-text-right tw-text-tertiary tw-text-small"
+						>
+							*Updated as of {{ formattedLastUpdated }}
 						</p>
 						<loan-stats-table />
 					</div>
@@ -83,7 +86,7 @@ export default {
 	},
 	data() {
 		return {
-			lastUpdated: '(Endpoint TBD)',
+			lastUpdated: null,
 			loans: [],
 			totalLoans: 0,
 			loading: true,
@@ -117,6 +120,18 @@ export default {
 	computed: {
 		showPagination() {
 			return this.totalLoans > this.loanState.limit;
+		},
+		formattedLastUpdated() {
+			if (!this.lastUpdated) return '';
+			const parsed = new Date(this.lastUpdated);
+			if (Number.isNaN(parsed.getTime())) return '';
+			return parsed.toLocaleString('en-US', {
+				month: 'short',
+				day: 'numeric',
+				year: 'numeric',
+				hour: 'numeric',
+				minute: '2-digit',
+			});
 		},
 	},
 	mounted() {
@@ -161,6 +176,9 @@ export default {
 						partners: sortByName(data.my.lendingStats.partnersLentTo),
 					};
 					this.filterOptionsLoaded = true;
+				}
+				if (data?.general?.kivaStats) {
+					this.lastUpdated = data.general.kivaStats.avgLenderStatsUpdatedAt ?? null;
 				}
 				if (data?.my?.loans) {
 					this.loans = data.my.loans.values || [];
