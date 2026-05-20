@@ -150,6 +150,7 @@
 <script setup>
 import {
 	ref,
+	toRef,
 	inject,
 	onMounted,
 	computed,
@@ -356,7 +357,8 @@ const {
 	handleExploreMoreLoans,
 } = useGoalSettingRecommendedLoan({
 	emit: () => {},
-	props,
+	goalRecommendedLoanEnable: toRef(props, 'goalRecommendedLoanEnable'),
+	basketItems: toRef(props, 'basketItems'),
 	selectedGoalNumber: goalSelectorLoanTarget,
 	selectedCategory,
 	show: showPage,
@@ -426,11 +428,11 @@ const setGoal = async preferences => {
 		await recalculateGoalInformation();
 		enterRecommendedLoanStepAfterGoalSave();
 		loadedSetData.value = true;
-		loading.value = false;
 	} catch (e) {
 		logFormatter('GoalSettingContainer: failed to setting up this goal', 'error', { error: e });
 		$showTipMsg('There was a problem setting up this goal', 'error');
 	}
+	loading.value = false;
 };
 
 const handleCategorySelected = categoryId => {

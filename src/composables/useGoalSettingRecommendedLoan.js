@@ -1,27 +1,25 @@
 import {
 	computed,
 	ref,
-	toRef,
 	watch,
 } from 'vue';
 import { useRouter } from 'vue-router';
 import useTipMessage from '#src/composables/useTipMessage';
 
 /**
- * Recommended-loan step state for {@link GoalSettingModal.vue}.
+ * Recommended-loan step state shared by {@link GoalSettingModal.vue} and
+ * {@link GoalSettingContainer.vue}.
  *
- * The modal owns refs and passes them in; this composable does not call `defineProps` itself.
+ * The host component owns refs and passes them in; this composable does not call `defineProps`.
  *
  * @param {object} options
- * @param {Function} options.emit — Modal emit function (`defineEmits`), e.g. `set-goal`.
- * @param {object} options.props — GoalSettingModal’s full `defineProps` object; this composable only
- *   reads two keys via `toRef` (pass the same reactive reference the modal uses).
- *   - **`goalRecommendedLoanEnable`** (`boolean`): feature flag; when false the recommend-loan step
- *     and related fetch never activate.
- *   - **`basketItems`** (`Array`): shop/basket line items; each entry’s **`id`** is passed to
- *     `getRecommendedLoans` as exclusions (`loanIds.none`). Same array is forwarded on loan card
- *     props. Entries may include GraphQL fields such as **`__typename`** (e.g. `LoanReservation`) for
- *     “recommended loan already in basket” checks.
+ * @param {Function} options.emit — Host emit function (`defineEmits`), e.g. `set-goal`.
+ * @param {object} options.goalRecommendedLoanEnable — Vue ref; `.value` is the feature-flag boolean.
+ *   When false the recommend-loan step and related fetch never activate.
+ * @param {object} options.basketItems — Vue ref; `.value` is the shop/basket line items array.
+ *   `LoanReservation` entries’ **`id`** (the loan id) are sent to `getRecommendedLoans` as
+ *   exclusions (`loanIds.none`) and drive the “recommended loan already in basket” check via
+ *   **`__typename`**. The array is also forwarded on the loan card props.
  * @param {object} options.selectedGoalNumber — Vue ref from the modal; `.value` is goal target (loan count).
  * @param {object} options.selectedCategory — Vue ref from the modal; `.value` has `name`, `badgeId`.
  * @param {object} options.show — Vue ref from the modal; `.value` is whether the lightbox is open.
@@ -35,7 +33,8 @@ import useTipMessage from '#src/composables/useTipMessage';
  */
 export default function useGoalSettingRecommendedLoan({
 	emit,
-	props,
+	goalRecommendedLoanEnable,
+	basketItems,
 	selectedGoalNumber,
 	selectedCategory,
 	show,
@@ -50,15 +49,13 @@ export default function useGoalSettingRecommendedLoan({
 	const router = useRouter();
 	const { $showTipMsg } = useTipMessage(apollo);
 
-	const basketItems = toRef(props, 'basketItems');
-
 	const showPostGoalLoanRecommendation = ref(false);
 	const recommendedLoans = ref([]);
 	const recommendedLoanIndex = ref(0);
 	const recommendedLoan = ref(null);
 
 	const showRecommendLoanAfterGoalView = computed(() => (
-		props.goalRecommendedLoanEnable && showPostGoalLoanRecommendation.value
+		goalRecommendedLoanEnable.value && showPostGoalLoanRecommendation.value
 	));
 
 	const recommendLoanHeaderDetails = computed(() => {
@@ -115,7 +112,7 @@ export default function useGoalSettingRecommendedLoan({
 	};
 
 	const enterRecommendedLoanStepAfterGoalSave = () => {
-		if (props.goalRecommendedLoanEnable) {
+		if (goalRecommendedLoanEnable.value) {
 			showPostGoalLoanRecommendation.value = true;
 		}
 	};
@@ -139,7 +136,12 @@ export default function useGoalSettingRecommendedLoan({
 	};
 
 	const filteredLoanIds = computed(() => {
-		return basketItems.value?.map(item => item.id) ?? [];
+		// Only LoanReservation entries carry a loan id; other basket item types
+		// (donations, Kiva Cards, etc.) must not be sent as loan exclusions.
+		return (basketItems.value ?? [])
+			// eslint-disable-next-line no-underscore-dangle
+			.filter(item => item.__typename === 'LoanReservation')
+			.map(item => item.id);
 	});
 
 	watch(show, visible => {

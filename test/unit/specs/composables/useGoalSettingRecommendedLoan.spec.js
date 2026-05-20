@@ -1,5 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies -- devDependency used only in tests */
-import { createApp, reactive, ref } from 'vue';
+import {
+	createApp, reactive, ref, toRef,
+} from 'vue';
 import { flushPromises } from '@vue/test-utils';
 import useGoalSettingRecommendedLoan from '#src/composables/useGoalSettingRecommendedLoan';
 
@@ -48,7 +50,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 			setup() {
 				composable = useGoalSettingRecommendedLoan({
 					emit,
-					props,
+					goalRecommendedLoanEnable: toRef(props, 'goalRecommendedLoanEnable'),
+					basketItems: toRef(props, 'basketItems'),
 					selectedGoalNumber,
 					selectedCategory,
 					show,
@@ -275,12 +278,27 @@ describe('useGoalSettingRecommendedLoan', () => {
 
 		it('should pass basket item ids as filteredLoanIds to getRecommendedLoans', async () => {
 			props.goalRecommendedLoanEnable = true;
-			props.basketItems = [{ id: 900 }, { id: 901 }];
+			props.basketItems = [
+				{ __typename: 'LoanReservation', id: 900 },
+				{ __typename: 'LoanReservation', id: 901 },
+			];
 			composable.enterRecommendedLoanStepAfterGoalSave();
 			getRecommendedLoans.mockResolvedValue([{ id: 2, name: 'Next' }]);
 			await flushPromises();
 			expect(getRecommendedLoans).toHaveBeenCalledWith('women-badge', [900, 901]);
 			expect(composable.recommendLoanCardProps.value.loanId).toBe(2);
+		});
+
+		it('should exclude non-LoanReservation basket items from filteredLoanIds', async () => {
+			props.goalRecommendedLoanEnable = true;
+			props.basketItems = [
+				{ __typename: 'LoanReservation', id: 900 },
+				{ __typename: 'Donation', id: 901 },
+			];
+			composable.enterRecommendedLoanStepAfterGoalSave();
+			getRecommendedLoans.mockResolvedValue([{ id: 2, name: 'Next' }]);
+			await flushPromises();
+			expect(getRecommendedLoans).toHaveBeenCalledWith('women-badge', [900]);
 		});
 
 		it('should set recommendedLoan to null when fetch returns empty', async () => {

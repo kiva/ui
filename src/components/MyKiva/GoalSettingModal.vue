@@ -409,7 +409,9 @@ const props = defineProps({
 	},
 });
 
-const { numberOfLoans, isGoalSet, show } = toRefs(props);
+const {
+	numberOfLoans, isGoalSet, show, goalRecommendedLoanEnable, basketItems,
+} = toRefs(props);
 
 const formStep = ref(1);
 const showCategories = ref(false);
@@ -440,7 +442,8 @@ const {
 	onAddToBasketError,
 } = useGoalSettingRecommendedLoan({
 	emit,
-	props,
+	goalRecommendedLoanEnable,
+	basketItems,
 	selectedGoalNumber,
 	selectedCategory,
 	show,
