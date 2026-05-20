@@ -20,11 +20,13 @@ describe('useGoalSettingRecommendedLoan', () => {
 	let getCtaHref;
 	let userGoal;
 	let mockKvTrackEvent;
+	let mockApollo;
 	let composable;
 	let app;
 
 	const mountComposable = (propOverrides = {}) => {
 		emit = vi.fn();
+		mockApollo = { mutate: vi.fn().mockResolvedValue({}) };
 		props = reactive({
 			goalRecommendedLoanEnable: false,
 			basketItems: [],
@@ -56,6 +58,7 @@ describe('useGoalSettingRecommendedLoan', () => {
 					userGoal,
 					kvTrackEvent: mockKvTrackEvent,
 					appConfig: { photoPath: 'https://example.com/img/' },
+					apollo: mockApollo,
 				});
 				return {};
 			},
