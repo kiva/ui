@@ -305,6 +305,7 @@ const emit = defineEmits([
 const { isMobile, isLarge } = useBreakpoints();
 const $kvTrackEvent = inject('$kvTrackEvent');
 const appConfig = inject('$appConfig', {});
+const apollo = inject('apollo');
 const router = useRouter();
 
 const {
@@ -436,6 +437,7 @@ const {
 	onGoalSelectorSetGoal,
 	onGoalSelectorUpdateGoal,
 	handleExploreMoreLoans,
+	onAddToBasketError,
 } = useGoalSettingRecommendedLoan({
 	emit,
 	props,
@@ -448,6 +450,7 @@ const {
 	userGoal,
 	kvTrackEvent: $kvTrackEvent,
 	appConfig,
+	apollo,
 });
 
 const contentComponent = computed(() => {
@@ -486,7 +489,7 @@ const recommendLoanForGoalContentRef = ref(null);
 const addToBasket = () => {
 	const lendAmount = recommendLoanForGoalContentRef.value?.getSelectedAmount();
 	const { loanId } = recommendLoanCardProps.value;
-	emit('add-to-basket', { loanId, lendAmount });
+	emit('add-to-basket', { loanId, lendAmount, onError: onAddToBasketError });
 };
 
 const handleCategorySelected = categoryId => {
