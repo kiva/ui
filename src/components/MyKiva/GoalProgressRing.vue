@@ -273,23 +273,23 @@ const modalVariantDescriptionText = computed(() => {
 
 	if (props.goalProgress > 0) {
 		const strongTag = `<strong ${brandClass}>${loans} loans</strong>`;
-		const prefix = "You're already on your way to making";
+		const prefix = 'You’re already on your way to making';
 		if (props.categoryId === ID_SUPPORT_ALL) {
-			return `${prefix} ${strongTag} this year`;
+			return `${prefix} ${strongTag} this year.`;
 		}
 		if (props.categoryId === ID_CLIMATE_ACTION) {
-			return `${prefix} <strong ${brandClass}>${loans} eco-friendly loans</strong> this year`;
+			return `${prefix} <strong ${brandClass}>${loans} eco-friendly loans</strong> this year.`;
 		}
 		if (props.categoryId === ID_REFUGEE_EQUALITY) {
-			return `${prefix} ${strongTag} to <strong ${brandClass}>refugees</strong> this year`;
+			return `${prefix} ${strongTag} to <strong ${brandClass}>refugees</strong> this year.`;
 		}
 		if (props.categoryId === ID_BASIC_NEEDS) {
-			return `${prefix} ${strongTag} to <strong ${brandClass}>basic needs</strong> this year`;
+			return `${prefix} ${strongTag} to <strong ${brandClass}>basic needs</strong> this year.`;
 		}
 		if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
-			return `${prefix} ${strongTag} to <strong ${brandClass}>U.S. entrepreneurs</strong> this year`;
+			return `${prefix} ${strongTag} to <strong ${brandClass}>U.S. entrepreneurs</strong> this year.`;
 		}
-		return `${prefix} ${strongTag} to <strong ${brandClass}>women</strong> this year`;
+		return `${prefix} ${strongTag} to <strong ${brandClass}>women</strong> this year.`;
 	}
 
 	if (props.categoryId === ID_SUPPORT_ALL) {

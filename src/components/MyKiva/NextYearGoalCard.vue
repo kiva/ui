@@ -11,9 +11,6 @@
 		</div>
 		<template v-else>
 			<div v-if="!userHasGoal" class="tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-between">
-				<h4 v-if="prevYearLoans > 0 && !isGoalTileExperimentEnabled">
-					LAST YEAR
-				</h4>
 				<h3 class="tw-text-center" v-html="title"></h3>
 				<div class="tw-text-center">
 					<p
@@ -124,12 +121,14 @@ const title = computed(() => {
 		return 'You haven’t set your goal yet!';
 	}
 	if (props.prevYearLoans === 1) {
-		return `You helped <span class="tw-text-action"> ${props.prevYearLoans} woman</span><br>shape her future!`;
+		return `Last year, you helped <span class="tw-text-action">${props.prevYearLoans} woman</span>`
+			+ ' shape her future!';
 	}
 	if (props.prevYearLoans > 1) {
-		return `You helped <span class="tw-text-action"> ${props.prevYearLoans} women</span><br>shape their futures!`;
+		return `Last year, you helped <span class="tw-text-action">${props.prevYearLoans} women</span>`
+			+ ' shape their futures!';
 	}
-	return 'Lenders like you help <span class="tw-text-action"> 3 women</span> a year';
+	return 'Lenders like you help <span class="tw-text-action">3 women</span> a year!';
 });
 
 const categoryName = computed(() => {

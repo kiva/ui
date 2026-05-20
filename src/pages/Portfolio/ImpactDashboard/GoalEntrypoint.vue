@@ -70,7 +70,7 @@ const title = computed(() => {
 		return `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} women</span> shape their futures!`;
 	}
 
-	return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
+	return 'Lenders like you help <span class="tw-text-eco-green-3">3 women</span> a year!';
 });
 
 const goToGoalPage = () => {

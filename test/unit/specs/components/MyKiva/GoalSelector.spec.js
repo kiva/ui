@@ -227,6 +227,111 @@ describe('GoalSelector', () => {
 		expect(getTitleText()).toBe('How many loans will you make this year?');
 	});
 
+	it('shows requested goal question and current-year progress copy', async () => {
+		const tieredAchievements = [
+			{
+				id: ID_WOMENS_EQUALITY,
+				progressForYear: 0,
+				progressForCurrentYear: 1,
+			},
+		];
+
+		const ValuePropsWrapper = {
+			components: { GoalSelector },
+			props: {
+				tieredAchievements: { type: Array, default: () => [] },
+			},
+			template: `
+				<GoalSelector
+					:is-goal-set="false"
+					:categories-loan-count="{}"
+					tracking-category="post-checkout"
+					:tiered-achievements="tieredAchievements"
+					selected-category-id="${ID_WOMENS_EQUALITY}"
+					selected-category-name="Women"
+					show-goal-value-props-copy
+				/>
+			`,
+		};
+
+		const { container, getByRole } = render(ValuePropsWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: { tieredAchievements },
+		});
+
+		await flushPromises();
+
+		expect(getByRole('heading', { level: 2 }).textContent)
+			.toBe('How many loans to women will you make this year?');
+		expect(container.textContent).toContain('You already made 1 loan that will count.');
+	});
+
+	it('uses edit-category progress copy after the user selects a new category', async () => {
+		const tieredAchievements = [
+			{ id: ID_WOMENS_EQUALITY, progressForYear: 0, progressForCurrentYear: 1 },
+			{ id: ID_BASIC_NEEDS, progressForYear: 0, progressForCurrentYear: 2 },
+		];
+
+		const EditCategoryWrapper = {
+			components: { GoalSelector },
+			props: {
+				tieredAchievements: { type: Array, default: () => [] },
+			},
+			data() {
+				return {
+					selectedCategoryId: ID_WOMENS_EQUALITY,
+					selectedCategoryName: 'Women',
+				};
+			},
+			methods: {
+				selectBasicNeeds() {
+					this.selectedCategoryId = ID_BASIC_NEEDS;
+					this.selectedCategoryName = 'Basic Needs';
+				},
+			},
+			template: `
+				<div>
+					<button data-testid="category-basic-needs" @click="selectBasicNeeds">Basic Needs</button>
+					<GoalSelector
+						:is-goal-set="false"
+						:categories-loan-count="{}"
+						tracking-category="post-checkout"
+						:tiered-achievements="tieredAchievements"
+						:selected-category-id="selectedCategoryId"
+						:selected-category-name="selectedCategoryName"
+						show-goal-value-props-copy
+					/>
+				</div>
+			`,
+		};
+
+		const user = userEvent.setup();
+		const { container, getByTestId, getByText } = render(EditCategoryWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: { tieredAchievements },
+		});
+
+		await flushPromises();
+
+		await user.click(getByText('Edit goal category'));
+		await user.click(getByTestId('category-basic-needs'));
+		await flushPromises();
+
+		expect(container.textContent).toContain('You’ve already made 2 loans that will count.');
+	});
+
 	it('shows default goal options when user has 2 or fewer loans from last year and none this year', async () => {
 		const tieredAchievements = [
 			{

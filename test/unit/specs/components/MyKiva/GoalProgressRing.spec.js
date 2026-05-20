@@ -81,12 +81,12 @@ describe('GoalProgressRing', () => {
 	describe('modalVariantDescriptionText - in-progress state', () => {
 		/* eslint-disable max-len */
 		const inProgressCases = [
-			[ID_WOMENS_EQUALITY, 'Women', `You're already on your way to making ${GOAL_LOANS} loans to women this year`],
-			[ID_SUPPORT_ALL, 'Choose as I go', `You're already on your way to making ${GOAL_LOANS} loans this year`],
-			[ID_CLIMATE_ACTION, 'Climate Action', `You're already on your way to making ${GOAL_LOANS} eco-friendly loans this year`],
-			[ID_REFUGEE_EQUALITY, 'Refugees', `You're already on your way to making ${GOAL_LOANS} loans to refugees this year`],
-			[ID_BASIC_NEEDS, 'Basic Needs', `You're already on your way to making ${GOAL_LOANS} loans to basic needs this year`],
-			[ID_US_ECONOMIC_EQUALITY, 'U.S. Entrepreneurs', `You're already on your way to making ${GOAL_LOANS} loans to U.S. entrepreneurs this year`],
+			[ID_WOMENS_EQUALITY, 'Women', `You’re already on your way to making ${GOAL_LOANS} loans to women this year.`],
+			[ID_SUPPORT_ALL, 'Choose as I go', `You’re already on your way to making ${GOAL_LOANS} loans this year.`],
+			[ID_CLIMATE_ACTION, 'Climate Action', `You’re already on your way to making ${GOAL_LOANS} eco-friendly loans this year.`],
+			[ID_REFUGEE_EQUALITY, 'Refugees', `You’re already on your way to making ${GOAL_LOANS} loans to refugees this year.`],
+			[ID_BASIC_NEEDS, 'Basic Needs', `You’re already on your way to making ${GOAL_LOANS} loans to basic needs this year.`],
+			[ID_US_ECONOMIC_EQUALITY, 'U.S. Entrepreneurs', `You’re already on your way to making ${GOAL_LOANS} loans to U.S. entrepreneurs this year.`],
 		];
 		/* eslint-enable max-len */
 
