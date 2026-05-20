@@ -431,8 +431,9 @@ const setGoal = async preferences => {
 	} catch (e) {
 		logFormatter('GoalSettingContainer: failed to setting up this goal', 'error', { error: e });
 		$showTipMsg('There was a problem setting up this goal', 'error');
+	} finally {
+		loading.value = false;
 	}
-	loading.value = false;
 };
 
 const handleCategorySelected = categoryId => {
