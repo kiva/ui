@@ -329,7 +329,7 @@ describe('GoalSelector', () => {
 		await user.click(getByTestId('category-basic-needs'));
 		await flushPromises();
 
-		expect(container.textContent).toContain("You’ve already made 2 loans that will count!");
+		expect(container.textContent).toContain('You’ve already made 2 loans that will count!');
 	});
 
 	it('shows default goal options when user has 2 or fewer loans from last year and none this year', async () => {
