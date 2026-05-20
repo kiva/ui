@@ -498,7 +498,7 @@ const titleText = computed(() => {
 		&& props.selectedCategoryId === ID_WOMENS_EQUALITY
 		&& loansLastYear.value === 0
 	) {
-		return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year!';
+		return 'Lenders like you help <span class="tw-text-eco-green-3">3 women</span> a year!';
 	}
 
 	if (loansLastYear.value > 0 && !props.showGoalValuePropsCopy) {
@@ -515,7 +515,7 @@ const titleText = computed(() => {
 		}
 
 		// eslint-disable-next-line max-len
-		return `Last year, you helped <br><span class="tw-text-eco-green-3">${loansLastYear.value} ${categoryName}</span> shape their futures!`;
+		return `Last year, you helped <span class="tw-text-eco-green-3">${loansLastYear.value} ${categoryName}</span> shape their futures!`;
 	}
 
 	// Support All is not a specific category, so use generic language
@@ -534,7 +534,7 @@ const subtitleText = computed(() => {
 		const loanWord = loansThisYear.value === 1 ? 'loan' : 'loans';
 		const progressCopy = hasEditedCategory.value ? 'You’ve already made' : 'You already made';
 		// eslint-disable-next-line max-len
-		return `${progressCopy} <span ${props.showGoalValuePropsCopy ? '' : 'class="tw-font-medium"'}>${loansThisYear.value} ${loanWord}</span> that will count.`;
+		return `${progressCopy} <span ${props.showGoalValuePropsCopy ? '' : 'class="tw-font-medium"'}>${loansThisYear.value} ${loanWord}</span> that will count!`;
 	}
 	return '';
 });
