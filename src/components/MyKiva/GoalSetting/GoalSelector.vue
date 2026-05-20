@@ -438,7 +438,6 @@ const goalTileAccordion = ref(null);
 const customGoalAmount = ref(null);
 const validCustomAmount = ref(null);
 const customGoalAmountError = ref('');
-const hasEditedCategory = ref(false);
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -532,9 +531,8 @@ const titleText = computed(() => {
 const subtitleText = computed(() => {
 	if (loansThisYear.value > 0) {
 		const loanWord = loansThisYear.value === 1 ? 'loan' : 'loans';
-		const progressCopy = hasEditedCategory.value ? 'You’ve already made' : 'You already made';
 		// eslint-disable-next-line max-len
-		return `${progressCopy} <span ${props.showGoalValuePropsCopy ? '' : 'class="tw-font-medium"'}>${loansThisYear.value} ${loanWord}</span> that will count!`;
+		return `You’ve already made <span ${props.showGoalValuePropsCopy ? '' : 'class="tw-font-medium"'}>${loansThisYear.value} ${loanWord}</span> that will count!`;
 	}
 	return '';
 });
@@ -617,7 +615,6 @@ const validateCustomAmount = value => {
 };
 
 const editGoal = () => {
-	hasEditedCategory.value = true;
 	emit('edit-goal');
 	$kvTrackEvent(
 		props.trackingCategory,
@@ -796,12 +793,6 @@ watch(() => props.selectedCategoryId, async newCategory => {
 	validCustomAmount.value = null;
 	customGoalAmountError.value = '';
 	updateOptionSelection(1);
-});
-
-watch(() => props.isLoadingData, newVal => {
-	if (newVal) {
-		hasEditedCategory.value = false;
-	}
 });
 
 </script>

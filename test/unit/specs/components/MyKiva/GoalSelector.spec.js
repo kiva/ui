@@ -269,10 +269,10 @@ describe('GoalSelector', () => {
 
 		expect(getByRole('heading', { level: 2 }).textContent)
 			.toBe('How many loans to women will you make this year?');
-		expect(container.textContent).toContain('You already made 1 loan that will count!');
+		expect(container.textContent).toContain('You’ve already made 1 loan that will count!');
 	});
 
-	it('uses edit-category progress copy after the user selects a new category', async () => {
+	it('shows current-year progress copy after the user selects a new category', async () => {
 		const tieredAchievements = [
 			{ id: ID_WOMENS_EQUALITY, progressForYear: 0, progressForCurrentYear: 1 },
 			{ id: ID_BASIC_NEEDS, progressForYear: 0, progressForCurrentYear: 2 },
