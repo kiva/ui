@@ -47,6 +47,7 @@
 		<template v-else>
 			<RecommendLoanForGoalContainer
 				v-if="showRecommendLoanAfterGoalView"
+				ref="recommendLoanForGoalRef"
 				class="tw-mx-auto"
 				style="max-width: 700px;"
 				header-title="Goal set!"
@@ -125,7 +126,7 @@
 		<!-- Goal Actions modal -->
 		<KvLightbox
 			:visible="isDeleteGoalModalVisible"
-			title="Delete your 2026 impact goal?"
+			:title="`Delete your ${GOALS_CURRENT_YEAR} impact goal?`"
 			@lightbox-closed="handleKeepGoal"
 		>
 			<!-- eslint-disable-next-line max-len -->
@@ -166,7 +167,7 @@ import {
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import RecommendLoanForGoalContainer from
 	'#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalContainer';
-import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
+import useGoalData, { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import useGoalSettingRecommendedLoan from
 	'#src/composables/useGoalSettingRecommendedLoan';
 import { buildEmailFlowGoalData } from '#src/util/goalEmailFlow';
@@ -282,6 +283,7 @@ const isDeleting = ref(false);
 const fetchedCurrentYearLoans = ref(0);
 // This loading state is specifically for goal options
 const loadingCurrentYear = ref(false);
+const recommendLoanForGoalRef = ref(null);
 
 // Email flow — set during creation so the loading placeholder renders on the first tick
 const emailLoading = ref(props.emailTarget != null);
@@ -369,8 +371,9 @@ const {
 const addToBasket = () => {
 	const { loanId } = recommendLoanCardProps.value;
 	if (!loanId) return;
+	const lendAmount = recommendLoanForGoalRef.value?.getSelectedAmount();
 	// Delegate to parent (GoalSetting.vue) which uses borrower-profile-exp-mixin
-	emit('add-to-basket', { loanId, lendAmount: 25 });
+	emit('add-to-basket', { loanId, lendAmount });
 };
 
 const contentComponent = computed(() => {

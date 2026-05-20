@@ -88,7 +88,9 @@ export default {
 
 		// Get feature flag for goal recommended loan
 		this.goalRecommendedLoanEnable = readBoolSetting(goalSettingPageResult, 'general.goal_recommended_loan_enable.value') ?? false; // eslint-disable-line max-len
-		await this.loadInitialBasketItems();
+		if (this.goalRecommendedLoanEnable) {
+			await this.loadInitialBasketItems();
+		}
 
 		// Fetch tiered achievements - try cache first, then network
 		const achievementsResult = this.apollo.readQuery({

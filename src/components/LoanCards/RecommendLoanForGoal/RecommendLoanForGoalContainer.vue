@@ -6,6 +6,7 @@
 			:loaded-set-data="loadedSetData"
 		/>
 		<RecommendLoanForGoalContent
+			ref="recommendLoanForGoalContentRef"
 			:heading="contentHeading"
 			v-bind="contentCardProps"
 			:is-adding="isAdding"
@@ -26,6 +27,7 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import RecommendLoanForGoalContent from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalContent';
 import RecommendLoanForGoalFooter from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalFooter';
 import RecommendLoanForGoalHeader from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalHeader';
@@ -93,4 +95,12 @@ defineEmits([
 	'checkout-click',
 	'secondary-cta-click',
 ]);
+
+const recommendLoanForGoalContentRef = ref(null);
+
+// Bridge the inner content's selected lend amount so parents using the
+// container (not the content directly) can still read what the user picked.
+defineExpose({
+	getSelectedAmount: () => recommendLoanForGoalContentRef.value?.getSelectedAmount(),
+});
 </script>
