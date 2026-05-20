@@ -5,6 +5,7 @@ import {
 	watch,
 } from 'vue';
 import { useRouter } from 'vue-router';
+import useTipMessage from '#src/composables/useTipMessage';
 
 /**
  * Recommended-loan step state for {@link GoalSettingModal.vue}.
@@ -30,6 +31,7 @@ import { useRouter } from 'vue-router';
  * @param {object} options.userGoal — Vue ref from `useGoalData`; `.value` is saved goal or null (`target`, `category`).
  * @param {Function} options.kvTrackEvent — Analytics helper from GoalSettingModal (`$kvTrackEvent`).
  * @param {object} [options.appConfig] — From GoalSettingModal (`$appConfig`), e.g. `photoPath`.
+ * @param {object} options.apollo — Apollo client instance for tip message mutations.
  */
 export default function useGoalSettingRecommendedLoan({
 	emit,
@@ -43,17 +45,20 @@ export default function useGoalSettingRecommendedLoan({
 	userGoal,
 	kvTrackEvent,
 	appConfig = {},
+	apollo,
 }) {
 	const router = useRouter();
+	const { $showTipMsg } = useTipMessage(apollo);
 
-	const goalRecommendedLoanEnable = toRef(props, 'goalRecommendedLoanEnable');
 	const basketItems = toRef(props, 'basketItems');
 
 	const showPostGoalLoanRecommendation = ref(false);
+	const recommendedLoans = ref([]);
+	const recommendedLoanIndex = ref(0);
 	const recommendedLoan = ref(null);
 
 	const showRecommendLoanAfterGoalView = computed(() => (
-		goalRecommendedLoanEnable.value && showPostGoalLoanRecommendation.value
+		props.goalRecommendedLoanEnable && showPostGoalLoanRecommendation.value
 	));
 
 	const recommendLoanHeaderDetails = computed(() => {
@@ -104,11 +109,13 @@ export default function useGoalSettingRecommendedLoan({
 
 	const resetRecommendedLoanState = () => {
 		showPostGoalLoanRecommendation.value = false;
+		recommendedLoans.value = [];
+		recommendedLoanIndex.value = 0;
 		recommendedLoan.value = null;
 	};
 
 	const enterRecommendedLoanStepAfterGoalSave = () => {
-		if (goalRecommendedLoanEnable.value) {
+		if (props.goalRecommendedLoanEnable) {
 			showPostGoalLoanRecommendation.value = true;
 		}
 	};
@@ -137,6 +144,8 @@ export default function useGoalSettingRecommendedLoan({
 
 	watch(show, visible => {
 		if (!visible) {
+			recommendedLoans.value = [];
+			recommendedLoanIndex.value = 0;
 			recommendedLoan.value = null;
 			return;
 		}
@@ -147,19 +156,30 @@ export default function useGoalSettingRecommendedLoan({
 		() => [showRecommendLoanAfterGoalView.value, selectedCategory.value?.badgeId],
 		async ([visible, categoryId]) => {
 			if (!visible || !categoryId) {
+				recommendedLoans.value = [];
+				recommendedLoanIndex.value = 0;
 				recommendedLoan.value = null;
 				return;
 			}
+			recommendedLoans.value = [];
+			recommendedLoanIndex.value = 0;
 			recommendedLoan.value = null;
-			// TODO: handle use case where no loans are returned MP-2746
 			try {
-				const loans = await getRecommendedLoans(categoryId, filteredLoanIds.value);
-				recommendedLoan.value = loans[0] ?? null;
+				recommendedLoans.value = await getRecommendedLoans(categoryId, filteredLoanIds.value);
+				recommendedLoan.value = recommendedLoans.value[0] ?? null;
 			} catch {
-				recommendedLoan.value = null;
+				$showTipMsg('There was a problem loading a loan.', 'error');
 			}
 		},
 	);
+
+	const onAddToBasketError = () => {
+		recommendedLoan.value = null;
+		setTimeout(() => {
+			recommendedLoanIndex.value += 1;
+			recommendedLoan.value = recommendedLoans.value[recommendedLoanIndex.value] ?? null;
+		}, 500); // brief delay to allow UI showing a loading state for the next loan card
+	};
 
 	return {
 		showRecommendLoanAfterGoalView,
@@ -171,5 +191,6 @@ export default function useGoalSettingRecommendedLoan({
 		onGoalSelectorSetGoal,
 		onGoalSelectorUpdateGoal,
 		handleExploreMoreLoans,
+		onAddToBasketError,
 	};
 }

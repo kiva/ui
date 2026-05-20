@@ -2,7 +2,7 @@
 	<kv-toast
 		ref="tip"
 		@close="closeCurrentMessage"
-		class="tw-fixed tw-top-9 md:tw-top-11 tw-left-0 tw-right-0 tw-z-banner"
+		class="tw-fixed tw-top-9 md:tw-top-11 tw-left-0 tw-right-0 tw-z-modal"
 	/>
 </template>
 

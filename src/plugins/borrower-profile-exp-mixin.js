@@ -90,7 +90,7 @@ export default {
 				this.basketItems = [];
 			}
 		},
-		addToBasket({ loanId, lendAmount }) {
+		addToBasket({ loanId, lendAmount, onError }) {
 			if (!loanId || !lendAmount) return;
 			// GoalSettingModal only emits loanId + lendAmount;
 			// borrower-profile flows already have called handleSelectedLoan.
@@ -136,6 +136,7 @@ export default {
 							// no-op
 						}
 					});
+					onError?.();
 				} else {
 					try {
 						// track facebook add to basket
@@ -167,6 +168,7 @@ export default {
 				logFormatter(error, 'error');
 				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
 				Sentry.captureException(error);
+				onError?.();
 			}).finally(() => {
 				this.isAdding = false;
 			});
