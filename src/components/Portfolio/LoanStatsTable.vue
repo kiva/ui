@@ -89,6 +89,7 @@ export default {
 		KvLoadingPlaceholder
 	},
 	inject: ['apollo', 'cookieStore'],
+	emits: ['updated-as-of'],
 	data() {
 		return {
 			stats: {},
@@ -161,6 +162,7 @@ export default {
 		query: lendingStatsQuery,
 		result({ data }) {
 			this.stats = data?.my?.userStats ?? {};
+			this.$emit('updated-as-of', data?.general?.kivaStats?.avgLenderStatsUpdatedAt ?? null);
 			this.avgStats = {
 				amount_repaid: data?.general?.kivaStats?.avgAmountRepaid ?? null,
 				amount_in_arrears: data?.general?.kivaStats?.avgAmountArrears ?? null,
