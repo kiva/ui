@@ -4,7 +4,7 @@
 			class="tw-text-link tw-cursor-pointer"
 			@click="showModal = true"
 		>
-			${{ formattedAmount }} repaid to you
+			${{ formattedAmount }}
 		</span>
 
 		<kv-lightbox
