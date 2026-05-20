@@ -68,6 +68,11 @@ query myLoans(
 						amountRepaidToPromo
 						latestSharePurchaseTime
 					}
+					repaymentHistory {
+						createTime
+						amount
+						type
+					}
 					userAttributedTeam {
 						id
 						name

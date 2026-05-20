@@ -12,14 +12,16 @@
 			@lightbox-closed="showModal = false"
 			title="Payment history"
 		>
-			<div class="tw-px-4">
-				<div class="tw-grid tw-grid-cols-2">
+			<div class="tw-text-left">
+				<p v-if="!paymentHistory?.length">
+					This loan has no repayments
+				</p>
+				<div v-else class="tw-grid tw-grid-cols-2">
 					<div v-for="(payment, index) in paymentHistory" :key="index" class="tw-contents">
-						<span>{{ payment.date }}:</span>
-						<span class="tw-relative">
-							<span v-if="payment.type === 'loss'" class="tw-absolute tw-right-full">-</span>
-							${{ payment.amount }}
-							{{ payment.type === 'loss' ? 'currency loss' : 'repaid' }}
+						<span>{{ formatDate(payment.createTime) }}:</span>
+						<span>
+							{{ formatAmount(payment.amount) }}
+							{{ isCurrencyLoss(payment.type) ? 'currency loss' : 'repaid' }}
 						</span>
 					</div>
 				</div>
@@ -40,18 +42,28 @@ const props = defineProps({
 	},
 	paymentHistory: {
 		type: Array,
-		default: () => ([
-			// Fake hardcoded example data to use while API endpoints are still being worked on
-			{ date: 'Dec 18, 2024', amount: '2.37', type: 'repaid' },
-			{ date: 'Jan 28, 2025', amount: '0.89', type: 'repaid' },
-			{ date: 'Jan 28, 2025', amount: '0.01', type: 'loss' }
-		])
+		default: () => []
 	}
 });
 
 const showModal = ref(false);
 
-const formattedAmount = computed(() => {
-	return numeral(props.amount).format('0,0.00');
-});
+const formattedAmount = computed(() => numeral(props.amount).format('0,0.00'));
+
+function formatAmount(value) {
+	return numeral(value).format('$0,0.00');
+}
+
+function formatDate(iso) {
+	if (!iso) return '';
+	return new Date(iso).toLocaleDateString('en-US', {
+		month: 'short',
+		day: 'numeric',
+		year: 'numeric'
+	});
+}
+
+function isCurrencyLoss(type) {
+	return typeof type === 'string' && type.endsWith('_currency_loss');
+}
 </script>
