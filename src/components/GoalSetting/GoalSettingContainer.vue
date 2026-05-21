@@ -45,7 +45,22 @@
 			style="max-width: 644px; min-height: 495px;"
 		/>
 		<template v-else>
+			<RecommendLoanForGoalContainer
+				v-if="showRecommendLoanAfterGoalView"
+				ref="recommendLoanForGoalRef"
+				class="tw-mx-auto"
+				style="max-width: 700px;"
+				header-title="Goal set!"
+				:header-details="recommendLoanHeaderDetails"
+				:content-card-props="recommendLoanCardProps"
+				:is-adding="isAdding"
+				:is-in-basket="recommendLoanIsInBasket"
+				:loaded-set-data="loadedSetData"
+				@primary-cta-click="addToBasket"
+				@secondary-cta-click="handleExploreMoreLoans"
+			/>
 			<div
+				v-else
 				class="tw-mx-auto"
 				style="max-width: 644px;"
 			>
@@ -111,7 +126,7 @@
 		<!-- Goal Actions modal -->
 		<KvLightbox
 			:visible="isDeleteGoalModalVisible"
-			title="Delete your 2026 impact goal?"
+			:title="`Delete your ${GOALS_CURRENT_YEAR} impact goal?`"
 			@lightbox-closed="handleKeepGoal"
 		>
 			<!-- eslint-disable-next-line max-len -->
@@ -135,6 +150,7 @@
 <script setup>
 import {
 	ref,
+	toRef,
 	inject,
 	onMounted,
 	computed,
@@ -150,7 +166,11 @@ import {
 	KvUtilityMenu
 } from '@kiva/kv-components';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
-import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
+import RecommendLoanForGoalContainer from
+	'#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalContainer';
+import useGoalData, { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import useGoalSettingRecommendedLoan from
+	'#src/composables/useGoalSettingRecommendedLoan';
 import { buildEmailFlowGoalData } from '#src/util/goalEmailFlow';
 import logFormatter from '#src/util/logFormatter';
 import {
@@ -165,6 +185,7 @@ import useTipMessage from '#src/composables/useTipMessage';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
+const $appConfig = inject('$appConfig', {});
 const router = useRouter();
 
 const { $showTipMsg } = useTipMessage(apollo);
@@ -182,6 +203,7 @@ const {
 	removeGoalFromPreferences,
 	updateCurrentGoal,
 	userGoalAchieved,
+	getRecommendedLoans,
 } = useGoalData({ apollo });
 
 const props = defineProps({
@@ -230,7 +252,23 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Array of basket items for recommended loan exclusion and in-basket checks
+	 */
+	basketItems: {
+		type: Array,
+		default: () => ([]),
+	},
+	/**
+	 * True while add-to-basket mutation is in flight (provided by parent mixin)
+	 */
+	isAdding: {
+		type: Boolean,
+		default: false,
+	},
 });
+
+const emit = defineEmits(['add-to-basket']);
 
 const isGoalSet = ref(false);
 // Variable used to create/update the goal target based on user selection
@@ -246,6 +284,7 @@ const isDeleting = ref(false);
 const fetchedCurrentYearLoans = ref(0);
 // This loading state is specifically for goal options
 const loadingCurrentYear = ref(false);
+const recommendLoanForGoalRef = ref(null);
 
 // Email flow — set during creation so the loading placeholder renders on the first tick
 const emailLoading = ref(props.emailTarget != null);
@@ -306,6 +345,40 @@ const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
 const selectedCategory = ref(categories[0]);
 
+// This container doesn't have the same multi-step flow as the modal,
+// so we can always show the recommended loan section when enabled
+const showPage = true;
+const loadedSetData = ref(false);
+const {
+	showRecommendLoanAfterGoalView,
+	recommendLoanHeaderDetails,
+	recommendLoanCardProps,
+	recommendLoanIsInBasket,
+	enterRecommendedLoanStepAfterGoalSave,
+	handleExploreMoreLoans,
+} = useGoalSettingRecommendedLoan({
+	emit: () => {},
+	goalRecommendedLoanEnable: toRef(props, 'goalRecommendedLoanEnable'),
+	basketItems: toRef(props, 'basketItems'),
+	selectedGoalNumber: goalSelectorLoanTarget,
+	selectedCategory,
+	show: showPage,
+	goalProgress,
+	getRecommendedLoans,
+	getCtaHref,
+	userGoal,
+	kvTrackEvent: $kvTrackEvent,
+	appConfig: $appConfig,
+});
+
+const addToBasket = () => {
+	const { loanId } = recommendLoanCardProps.value;
+	if (!loanId) return;
+	const lendAmount = recommendLoanForGoalRef.value?.getSelectedAmount();
+	// Delegate to parent (GoalSetting.vue) which uses borrower-profile-exp-mixin
+	emit('add-to-basket', { loanId, lendAmount });
+};
+
 const contentComponent = computed(() => {
 	switch (formStep.value) {
 		case 2: return NumberChoice;
@@ -350,12 +423,17 @@ const updateGoal = async preferences => {
 };
 
 const setGoal = async preferences => {
+	loading.value = true;
 	try {
 		await storeGoalPreferences(preferences);
 		await recalculateGoalInformation();
+		enterRecommendedLoanStepAfterGoalSave();
+		loadedSetData.value = true;
 	} catch (e) {
 		logFormatter('GoalSettingContainer: failed to setting up this goal', 'error', { error: e });
 		$showTipMsg('There was a problem setting up this goal', 'error');
+	} finally {
+		loading.value = false;
 	}
 };
 
@@ -456,6 +534,7 @@ async function handleEmailFlow() {
 				category,
 				validEmailTarget.value
 			);
+			enterRecommendedLoanStepAfterGoalSave();
 		} catch (e) {
 			logFormatter('GoalSettingContainer: failed to store email goal', 'error', { error: e });
 			$showTipMsg('There was a problem setting up this goal', 'error');

@@ -8,6 +8,9 @@
 				:email-target="$route.query.target || null"
 				:email-category="$route.query.category || null"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
+				:basket-items="basketItems"
+				:is-adding="isAdding"
+				@add-to-basket="addToBasket"
 			/>
 		</KvPageContainer>
 	</WwwPage>
@@ -24,10 +27,12 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import GoalSettingContainer from '#src/components/GoalSetting/GoalSettingContainer';
 import { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import { readBoolSetting } from '#src/util/settingsUtils';
+import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 
 export default {
 	name: 'GoalSetting',
 	inject: ['apollo', 'cookieStore'],
+	mixins: [borrowerProfileExpMixin],
 	components: {
 		WwwPage,
 		KvPageContainer,
@@ -83,6 +88,9 @@ export default {
 
 		// Get feature flag for goal recommended loan
 		this.goalRecommendedLoanEnable = readBoolSetting(goalSettingPageResult, 'general.goal_recommended_loan_enable.value') ?? false; // eslint-disable-line max-len
+		if (this.goalRecommendedLoanEnable) {
+			await this.loadInitialBasketItems();
+		}
 
 		// Fetch tiered achievements - try cache first, then network
 		const achievementsResult = this.apollo.readQuery({
