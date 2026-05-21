@@ -169,15 +169,15 @@ export default {
 				amount_outstanding: data?.general?.kivaStats?.avgAmountOutstanding ?? null,
 				default_rate: data?.general?.kivaStats?.avgDefaultRate ?? null,
 				amount_defaulted: data?.general?.kivaStats?.avgAmountDefaulted ?? null,
+				amount_refunded: data?.general?.kivaStats?.avgAmountRefunded ?? null,
+				currency_reimbursement: data?.general?.kivaStats?.avgCurrencyLossReimbursement ?? null,
 				// The following fields are not yet available in the current API
 				// TODO: Add these values in once backend issues are resolved
 				amount_of_loans: null,
 				arrears_rate: null,
-				amount_refunded: null,
 				total_ended: null,
 				currency_loss_rate: null,
-				currency_loss: null,
-				currency_reimbursement: null
+				currency_loss: null
 			};
 			this.loading = false;
 

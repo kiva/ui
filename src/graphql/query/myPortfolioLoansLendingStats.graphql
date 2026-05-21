@@ -34,6 +34,8 @@ query myPortfolioLoansLendingStats {
 			avgDefaultRate
 			avgAmountDefaulted
 			avgLenderStatsUpdatedAt
+			avgAmountRefunded
+			avgCurrencyLossReimbursement
 		}
 	}
 }
