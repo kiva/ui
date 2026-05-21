@@ -144,6 +144,7 @@
 								<template v-else>
 									<paid-amount-modal
 										:amount="loan.userProperties?.loanBalance?.amountRepaidToLender || '0'"
+										:payment-history="loan.userProperties?.repaymentHistory"
 									/>
 									<div
 										v-if="hasRepaidToLender(loan)"

@@ -15,7 +15,7 @@
 			#header
 		>
 			<RecommendLoanForGoalHeader
-				class="!tw-p-0"
+				class="!tw-p-0 !tw-pb-2"
 				:title="recommendLoanHeaderTitle"
 				:details="recommendLoanHeaderDetails"
 				:loaded-set-data="loadedSetData"
@@ -735,7 +735,7 @@ watch(show, async newVal => {
 .goal-setting-lightbox.goal-tile-modal-recommend-loan :deep {
 	[data-test=kv-lightbox] > div:first-child,
 	[data-testid=kv-lightbox] > div:first-child {
-		@apply tw-bg-gray-50 !tw-rounded tw-relative;
+		@apply tw-bg-gray-50 !tw-rounded tw-relative tw-p-3 tw-pb-0.5;
 
 		@screen md {
 			width: 684px;
@@ -746,6 +746,12 @@ watch(show, async newVal => {
 
 			@apply tw-absolute;
 		}
+	}
+
+	/* Lightbox footer */
+	[data-test=kv-lightbox] > div:nth-child(3),
+	[data-testid=kv-lightbox] > div:nth-child(3) {
+		@apply tw-px-2 tw-pt-1 tw-pb-2;
 	}
 
 	#kvLightboxBody {

@@ -33,6 +33,7 @@ query myPortfolioLoansLendingStats {
 			avgAmountOutstanding
 			avgDefaultRate
 			avgAmountDefaulted
+			avgLenderStatsUpdatedAt
 		}
 	}
 }
