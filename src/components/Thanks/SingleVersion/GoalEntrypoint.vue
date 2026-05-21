@@ -1,37 +1,63 @@
 <template>
 	<div
-		class="
-			tw-rounded md:tw-rounded-xl tw-bg-white tw-shadow-lg
-			tw-p-2.5 tw-py-2.5 md:tw-px-2.5 md:tw-py-4 tw-overflow-hidden"
+		class="tw-rounded md:tw-rounded-xl tw-bg-white tw-overflow-hidden"
 	>
-		<KvLoadingPlaceholder v-if="loading" class="!tw-h-9 !tw-rounded" />
-		<GoalSelector
-			v-else
-			:is-goal-set="isGoalSet"
-			:categories-loan-count="categoriesLoanCount"
-			:tiered-achievements="tieredAchievements"
-			:is-editing="isEditing"
-			:selected-category-id="selectedCategory.badgeId"
-			:selected-category-name="selectedCategory.name"
-			:goal-loans="goalLoans"
-			:goal-progress="goalProgress"
-			:goal-progress-percentage="goalProgressPercentage"
-			:go-to-url="goToUrl"
-			:custom-goal-amount-enable="customGoalAmountEnable"
-			@set-goal-target="$emit('set-goal-target', $event)"
-			@set-goal="$emit('set-goal', $event)"
-			@edit-goal="$emit('edit-goal')"
-		/>
+		<KvLoadingPlaceholder v-if="loading" class="goal-entrypoint-loading !tw-rounded" />
+		<template v-else>
+			<RecommendLoanForGoalContainer
+				v-if="showRecommendLoanAfterGoalView"
+				ref="recommendLoanForGoalRef"
+				header-title="Goal set!"
+				:header-details="recommendLoanHeaderDetails"
+				:content-card-props="recommendLoanCardProps"
+				express-checkout-enabled
+				:is-adding="isAdding"
+				:is-in-basket="recommendLoanIsInBasket"
+				:loaded-set-data="loadedSetData"
+				@primary-cta-click="handleAddToBasket"
+			/>
+			<div
+				v-else
+				class="
+					tw-shadow-lg
+					tw-p-2.5 tw-py-2.5 md:tw-px-2.5 md:tw-py-4"
+			>
+				<GoalSelector
+					:is-goal-set="isGoalSet"
+					:categories-loan-count="categoriesLoanCount"
+					:tiered-achievements="tieredAchievements"
+					:is-editing="isEditing"
+					:selected-category-id="selectedCategory.badgeId"
+					:selected-category-name="selectedCategory.name"
+					:goal-loans="goalLoans"
+					:goal-progress="goalProgress"
+					:goal-progress-percentage="goalProgressPercentage"
+					:go-to-url="goToUrl"
+					:custom-goal-amount-enable="customGoalAmountEnable"
+					@set-goal-target="$emit('set-goal-target', $event)"
+					@set-goal="$emit('set-goal', $event)"
+					@edit-goal="$emit('edit-goal')"
+				/>
+			</div>
+		</template>
 	</div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
+import RecommendLoanForGoalContainer from
+	'#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalContainer';
 
-defineEmits(['edit-goal', 'set-goal', 'set-goal-target']);
+const emit = defineEmits([
+	'edit-goal',
+	'set-goal',
+	'set-goal-target',
+	'add-to-basket',
+]);
 
-defineProps({
+const props = defineProps({
 	/**
 	 * Whether the component is in a loading state
 	 */
@@ -116,6 +142,69 @@ defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Whether to show the recommended-loan step instead of the goal selector.
+	 * Already accounts for the `goalRecommendedLoanEnable` flag and the goal being set.
+	 */
+	showRecommendLoanAfterGoalView: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Props passed through to the recommended loan card (loan, loanId, photoPath, etc.)
+	 */
+	recommendLoanCardProps: {
+		type: Object,
+		default: () => ({}),
+	},
+	/**
+	 * Header detail segments for the recommended-loan step
+	 */
+	recommendLoanHeaderDetails: {
+		type: Array,
+		default: () => ([]),
+	},
+	/**
+	 * Whether the recommended loan is already in the user's basket
+	 */
+	recommendLoanIsInBasket: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Whether goal/loan data has finished loading; drives the header placeholder
+	 */
+	loadedSetData: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * True while the add-to-basket request is in flight
+	 */
+	isAdding: {
+		type: Boolean,
+		default: false,
+	},
 });
 
+const recommendLoanForGoalRef = ref(null);
+
+const handleAddToBasket = () => {
+	const { loanId } = props.recommendLoanCardProps;
+	if (!loanId) return;
+	const lendAmount = recommendLoanForGoalRef.value?.getSelectedAmount();
+	emit('add-to-basket', { loanId, lendAmount });
+};
 </script>
+
+<style lang="postcss" scoped>
+.goal-entrypoint-loading {
+	min-height: 546px;
+}
+
+@media (width >= 45.875rem) {
+	.goal-entrypoint-loading {
+		min-height: 583px;
+	}
+}
+</style>

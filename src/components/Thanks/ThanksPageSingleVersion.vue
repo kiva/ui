@@ -51,7 +51,7 @@
 			<!-- Start goal module variations -->
 			<GoalEntrypoint
 				v-if="!isGuest && goalDataInitialized && isEmptyGoal"
-				:loading="goalDataLoading"
+				:loading="goalDataLoading || isSettingGoal"
 				:total-loans="totalLoans"
 				:categories-loan-count="categoriesLoanCount"
 				:is-goal-set="isGoalSet"
@@ -62,10 +62,17 @@
 				:goal-progress="goalProgress"
 				:goal-progress-percentage="goalProgressPercentage"
 				:custom-goal-amount-enable="customGoalAmountEnable"
+				:show-recommend-loan-after-goal-view="showRecommendLoanAfterGoalView"
+				:recommend-loan-card-props="recommendLoanCardProps"
+				:recommend-loan-header-details="recommendLoanHeaderDetails"
+				:recommend-loan-is-in-basket="recommendLoanIsInBasket"
+				:loaded-set-data="loadedSetData"
+				:is-adding="isAdding"
 				go-to-url="/mykiva"
 				@edit-goal="editGoalCategory"
 				@set-goal-target="setGoalTarget"
 				@set-goal="setGoal"
+				@add-to-basket="handleAddToBasket"
 				class="tw-mb-2.5"
 			/>
 			<GoalCompleted
@@ -171,6 +178,7 @@ import {
 	inject,
 	onMounted,
 	ref,
+	toRef,
 } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -191,6 +199,7 @@ import GoalEntrypoint from '#src/components/Thanks/SingleVersion/GoalEntrypoint'
 import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import GoalInProgress from '#src/components/Thanks/SingleVersion/GoalInProgress';
 import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
+import useGoalSettingRecommendedLoan from '#src/composables/useGoalSettingRecommendedLoan';
 import useBadgeData from '#src/composables/useBadgeData';
 import { setPostLendingCardCookie } from '#src/util/myKivaUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -204,6 +213,7 @@ const CUSTOM_GOAL_AMOUNT_EXP_KEY = 'custom_goal_amount';
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const cookieStore = inject('cookieStore');
+const $appConfig = inject('$appConfig', {});
 
 const { $showTipMsg } = useTipMessage(apollo);
 
@@ -256,7 +266,17 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	basketItems: {
+		type: Array,
+		default: () => ([]),
+	},
+	isAdding: {
+		type: Boolean,
+		default: false,
+	},
 });
+
+const emit = defineEmits(['add-to-basket']);
 
 const receiptSection = ref(null);
 const showGuestAccountModal = ref(false);
@@ -272,6 +292,8 @@ const customGoalAmountEnable = ref(false);
 const {
 	checkCompletedGoal,
 	getPostCheckoutProgressByLoans,
+	getCtaHref,
+	getRecommendedLoans,
 	goalProgress,
 	goalProgressPercentage,
 	loadGoalData,
@@ -288,6 +310,32 @@ const badgeAchievedIds = computed(() => props.badgesAchieved.map(b => b.achievem
 
 const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 const selectedCategory = ref(categories[0]);
+
+// Recommended-loan-after-goal step (shared logic with GoalSettingContainer)
+const loadedSetData = ref(false);
+const isSettingGoal = ref(false);
+const {
+	showRecommendLoanAfterGoalView,
+	recommendLoanHeaderDetails,
+	recommendLoanCardProps,
+	recommendLoanIsInBasket,
+	enterRecommendedLoanStepAfterGoalSave,
+	onAddToBasketError,
+} = useGoalSettingRecommendedLoan({
+	emit: () => {},
+	goalRecommendedLoanEnable: toRef(props, 'goalRecommendedLoanEnable'),
+	basketItems: toRef(props, 'basketItems'),
+	selectedGoalNumber: goalTarget,
+	selectedCategory,
+	show: ref(true),
+	goalProgress,
+	getRecommendedLoans,
+	getCtaHref,
+	userGoal,
+	kvTrackEvent: $kvTrackEvent,
+	appConfig: $appConfig,
+	apollo,
+});
 
 const goalTargetLoansAmount = computed(() => userGoal.value?.target ?? 0);
 
@@ -418,14 +466,31 @@ const handleContinue = (badgeType = null) => {
 };
 
 const setGoal = async preferences => {
+	isSettingGoal.value = true;
 	try {
 		await storeGoalPreferences(preferences);
 		isGoalSet.value = true;
 		showGoalModal.value = false;
+		// Reflect the chosen category/target so the recommended-loan fetch targets them
+		const storedCategory = categories.find(c => c.badgeId === preferences.category);
+		if (storedCategory) {
+			selectedCategory.value = storedCategory;
+		}
+		if (preferences.target) {
+			goalTarget.value = preferences.target;
+		}
+		loadedSetData.value = true;
+		enterRecommendedLoanStepAfterGoalSave();
 	} catch (error) {
 		logReadQueryError(error, 'MyKivaPage userPreferences watchQuery');
 		$showTipMsg('There was a problem setting up this goal', 'error');
+	} finally {
+		isSettingGoal.value = false;
 	}
+};
+
+const handleAddToBasket = payload => {
+	emit('add-to-basket', { ...payload, onError: onAddToBasketError });
 };
 
 const closeGoalModal = () => {

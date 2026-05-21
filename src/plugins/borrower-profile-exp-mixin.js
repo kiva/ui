@@ -90,7 +90,9 @@ export default {
 				this.basketItems = [];
 			}
 		},
-		addToBasket({ loanId, lendAmount, onError }) {
+		addToBasket({
+			loanId, lendAmount, onError, onSuccess,
+		}) {
 			if (!loanId || !lendAmount) return;
 			// GoalSettingModal only emits loanId + lendAmount;
 			// borrower-profile flows already have called handleSelectedLoan.
@@ -161,6 +163,7 @@ export default {
 					}).then(({ data }) => {
 						this.basketItems = data?.shop?.basket?.items?.values;
 						this.basketSize = data?.shop?.nonTrivialItemCount || 0;
+						onSuccess?.();
 					});
 				}
 			}).catch(error => {
