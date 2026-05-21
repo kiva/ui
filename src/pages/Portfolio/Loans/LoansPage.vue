@@ -14,10 +14,10 @@
 						My loans
 					</h1>
 					<div class="tw-mb-2">
-						<p class="tw-text-right tw-text-tertiary tw-text-small">
+						<p v-if="lastUpdated" class="tw-text-right tw-text-tertiary tw-text-small">
 							*Updated as of {{ lastUpdated }}
 						</p>
-						<loan-stats-table />
+						<loan-stats-table @updated-as-of="handleUpdatedAsOf" />
 					</div>
 				</div>
 				<div
@@ -83,7 +83,7 @@ export default {
 	},
 	data() {
 		return {
-			lastUpdated: '(Endpoint TBD)',
+			lastUpdated: '',
 			loans: [],
 			totalLoans: 0,
 			loading: true,
@@ -187,6 +187,28 @@ export default {
 			};
 			this.scrollToLoanTable();
 			return this.fetchLoans({ clearLoans: true });
+		},
+		handleUpdatedAsOf(iso) {
+			if (!iso) {
+				this.lastUpdated = '';
+				return;
+			}
+			const d = new Date(iso);
+			if (Number.isNaN(d.getTime())) {
+				this.lastUpdated = '';
+				return;
+			}
+			const datePart = d.toLocaleDateString('en-US', {
+				month: 'short',
+				day: 'numeric',
+				year: 'numeric',
+			});
+			const timePart = d.toLocaleTimeString('en-US', {
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: true,
+			}).toLowerCase();
+			this.lastUpdated = `${datePart} ${timePart}`;
 		},
 		handleFiltersChanged({ filters = {}, keywordSearch = null }) {
 			this.loanState = {
