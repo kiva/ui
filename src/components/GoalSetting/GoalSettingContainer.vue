@@ -345,8 +345,9 @@ const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 
 const selectedCategory = ref(categories[0]);
 
-// Composable for recommended loan state (shared logic with GoalSettingModal)
-const showPage = ref(true);
+// This container doesn't have the same multi-step flow as the modal,
+// so we can always show the recommended loan section when enabled
+const showPage = true;
 const loadedSetData = ref(false);
 const {
 	showRecommendLoanAfterGoalView,
