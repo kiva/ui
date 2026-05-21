@@ -1,10 +1,10 @@
 <template>
 	<section
-		class="tw-flex tw-flex-col tw-items-center tw-bg-white tw-py-3"
+		class="tw-flex tw-flex-col tw-items-center tw-bg-white tw-py-2"
 		:class="sectionClasses"
 		:style="sectionStyle"
 	>
-		<h3 class="tw-mb-2 md:tw-mb-4 tw-text-action-highlight tw-text-center">
+		<h3 class="tw-mb-1 md:tw-mb-1.5 tw-text-action-highlight tw-text-center">
 			{{ heading }}
 		</h3>
 		<div class="tw-mx-auto tw-w-full" style="max-width: 360px;">
