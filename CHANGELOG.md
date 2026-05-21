@@ -1,3 +1,11 @@
+## [3.68.0-rc.2](https://github.com/kiva/ui/compare/v3.68.0-rc.1...v3.68.0-rc.2) (2026-05-21)
+
+### 🎉 New Features
+
+* connect repayment data to loans-beta ([#6915](https://github.com/kiva/ui/issues/6915)) ([4dd5757](https://github.com/kiva/ui/commit/4dd57577d38dae2c10506a418954bd24ee0c8138))
+* loans-beta integrate latest purchase date, arrears, term descriptors, attributed team ([#6910](https://github.com/kiva/ui/issues/6910)) ([13fcc4e](https://github.com/kiva/ui/commit/13fcc4e61d75843cf91b5e3ec1151264d31d582b))
+* use newly added updated timestamp on loans-beta ([#6914](https://github.com/kiva/ui/issues/6914)) ([3db8ea4](https://github.com/kiva/ui/commit/3db8ea41582b9f570f885a7c26f3b2e452964e9d))
+
 ## [3.68.0-rc.1](https://github.com/kiva/ui/compare/v3.67.0...v3.68.0-rc.1) (2026-05-20)
 
 ### 🎉 New Features
