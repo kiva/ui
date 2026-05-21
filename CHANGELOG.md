@@ -1,3 +1,20 @@
+## [3.68.0](https://github.com/kiva/ui/compare/v3.67.0...v3.68.0) (2026-05-21)
+
+### 🎉 New Features
+
+* connect repayment data to loans-beta ([#6915](https://github.com/kiva/ui/issues/6915)) ([4dd5757](https://github.com/kiva/ui/commit/4dd57577d38dae2c10506a418954bd24ee0c8138))
+* goal editing flag removed ([#6905](https://github.com/kiva/ui/issues/6905)) ([dc3be6a](https://github.com/kiva/ui/commit/dc3be6ade0a728135b95932180784b9b42f35115))
+* loans-beta integrate latest purchase date, arrears, term descriptors, attributed team ([#6910](https://github.com/kiva/ui/issues/6910)) ([13fcc4e](https://github.com/kiva/ui/commit/13fcc4e61d75843cf91b5e3ec1151264d31d582b))
+* **MP-2818:** remove mykiva_next_steps_redirect flag ([#6907](https://github.com/kiva/ui/issues/6907)) ([38ea2b8](https://github.com/kiva/ui/commit/38ea2b86037a0dd58cefda009f6aff96589f6c96))
+* **MP-2842:** add FLSS May 2026 experiment header support\n\n- Add EXP-FLSS-May-2026 to ExperimentIdLink targetIds\n- Update and expand ExperimentIdLink.spec.js to cover new header\n- All tests and lint pass ([#6908](https://github.com/kiva/ui/issues/6908)) ([186cd0d](https://github.com/kiva/ui/commit/186cd0dc686b4e73c8f3120a4237ba604de3f813))
+* show next recommended loan on error if atb fails ([#6912](https://github.com/kiva/ui/issues/6912)) ([18e0db9](https://github.com/kiva/ui/commit/18e0db911b33f2dddf71192d49dcfdde2dc3a462))
+* use newly added updated timestamp on loans-beta ([#6914](https://github.com/kiva/ui/issues/6914)) ([3db8ea4](https://github.com/kiva/ui/commit/3db8ea41582b9f570f885a7c26f3b2e452964e9d))
+
+### 🧹 Chores
+
+* **release:** 3.68.0-rc.1 [skip ci] ([10e51c8](https://github.com/kiva/ui/commit/10e51c81f4467aa0a640b0a0f22b21f82a1d8466)), closes [#6905](https://github.com/kiva/ui/issues/6905) [#6907](https://github.com/kiva/ui/issues/6907) [#6908](https://github.com/kiva/ui/issues/6908) [#6912](https://github.com/kiva/ui/issues/6912)
+* **release:** 3.68.0-rc.2 [skip ci] ([72396f4](https://github.com/kiva/ui/commit/72396f4da9642ac4f54c98681b1b3a2d908584c3)), closes [#6915](https://github.com/kiva/ui/issues/6915) [#6910](https://github.com/kiva/ui/issues/6910) [#6914](https://github.com/kiva/ui/issues/6914)
+
 ## [3.68.0-rc.2](https://github.com/kiva/ui/compare/v3.68.0-rc.1...v3.68.0-rc.2) (2026-05-21)
 
 ### 🎉 New Features
