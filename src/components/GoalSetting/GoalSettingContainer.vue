@@ -420,6 +420,8 @@ const recalculateGoalInformation = async () => {
 const updateGoal = async preferences => {
 	await updateCurrentGoal(userGoal.value, preferences);
 	await recalculateGoalInformation();
+	enterRecommendedLoanStepAfterGoalSave();
+	loadedSetData.value = true;
 };
 
 const setGoal = async preferences => {
