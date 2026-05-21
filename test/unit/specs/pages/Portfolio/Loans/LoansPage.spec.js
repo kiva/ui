@@ -69,7 +69,27 @@ const renderLoansPage = ({ apollo = null, router = null } = {}) => {
 					ThePortfolioTertiaryMenu: { template: '<div />' },
 					KvPageContainer: { template: '<div><slot /></div>' },
 					KvGrid: { template: '<div><slot /></div>' },
-					LoanStatsTable: { template: '<div />' },
+					LoanStatsTable: {
+						emits: ['updated-as-of'],
+						template: `
+							<div>
+								<button
+									type="button"
+									data-testid="emit-updated-as-of"
+									@click="$emit('updated-as-of', '2026-05-19T21:30:00.000Z')"
+								>
+									emit
+								</button>
+								<button
+									type="button"
+									data-testid="emit-null-updated-as-of"
+									@click="$emit('updated-as-of', null)"
+								>
+									emit null
+								</button>
+							</div>
+						`,
+					},
 					LoanList: {
 						props: ['loans', 'loading'],
 						template: `
@@ -321,6 +341,27 @@ describe('LoansPage', () => {
 
 		expect(page.getByTestId('loan-list').textContent).toContain('loading:true loans:');
 		expect(page.getByTestId('loan-list').textContent).not.toContain('101');
+	});
+
+	it('hides the "Updated as of" line until the stats table emits a timestamp', async () => {
+		const page = renderLoansPage();
+
+		expect(page.queryByText(/Updated as of/)).toBeNull();
+
+		await fireEvent.click(page.getByTestId('emit-updated-as-of'));
+
+		await waitFor(() => expect(page.queryByText(/Updated as of/)).not.toBeNull());
+		expect(page.queryByText(/Updated as of/).textContent).toContain('2026');
+	});
+
+	it('hides the "Updated as of" line when the stats table emits null', async () => {
+		const page = renderLoansPage();
+
+		await fireEvent.click(page.getByTestId('emit-updated-as-of'));
+		await waitFor(() => expect(page.queryByText(/Updated as of/)).not.toBeNull());
+
+		await fireEvent.click(page.getByTestId('emit-null-updated-as-of'));
+		await waitFor(() => expect(page.queryByText(/Updated as of/)).toBeNull());
 	});
 
 	it('disables pagination while the next page is loading', async () => {

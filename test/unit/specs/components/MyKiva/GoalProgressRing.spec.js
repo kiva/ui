@@ -136,4 +136,30 @@ describe('GoalProgressRing', () => {
 			expect(getByRole('button', { name: 'Work towards your goal' })).toBeTruthy();
 		});
 	});
+
+	describe('edit button behavior', () => {
+		it('shows "Edit goal" button when on /goal-setting path and goal not completed', () => {
+			const { getByRole } = renderRing({ isGoalCompleted: false });
+			expect(getByRole('button', { name: /Edit goal/i })).toBeTruthy();
+		});
+
+		it('hides edit button when goal is completed even on /goal-setting path', () => {
+			const { queryByRole } = renderRing({ isGoalCompleted: true });
+			expect(queryByRole('button', { name: /Edit goal/i })).toBeNull();
+		});
+
+		it('emits edit-goal-from-settings when edit button is clicked', async () => {
+			const { getByRole, emitted } = renderRing({ isGoalCompleted: false });
+			const editButton = getByRole('button', { name: /Edit goal/i });
+			await editButton.click();
+			expect(emitted()['edit-goal-from-settings']).toBeTruthy();
+		});
+
+		it('emits edit-button-click when edit icon in card variant is clicked', async () => {
+			const { getByRole, emitted } = renderRing({ variant: 'card' });
+			const editLink = getByRole('button', { name: 'Edit' });
+			await editLink.click();
+			expect(emitted()['edit-button-click']).toBeTruthy();
+		});
+	});
 });

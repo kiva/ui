@@ -15,13 +15,13 @@
 								You loaned
 							</th>
 							<th class="tw-text-right tw-font-medium tw-px-2 tw-py-1">
-								Amount
+								Paid back or raised
 							</th>
 							<th class="tw-text-right tw-font-medium tw-px-2 tw-py-1">
 								Length
 							</th>
 							<th class="tw-text-right tw-font-medium tw-px-2 tw-py-1">
-								Paid back or raised
+								Amount
 							</th>
 							<th class="tw-text-left tw-font-medium tw-px-2 tw-py-1">
 								Team
@@ -55,11 +55,11 @@
 							class="tw-border-b tw-border-tertiary"
 						>
 							<td class="tw-px-2 tw-py-2">
-								<div class="tw-flex tw-items-center">
+								<div class="tw-flex tw-items-start">
 									<img
 										:src="loan.image.url"
 										alt="Loan image"
-										class="loan-image tw-mr-2"
+										class="loan-image tw-mr-2 tw-shrink-0"
 									>
 									<div>
 										<div class="tw-font-semibold">
@@ -76,7 +76,7 @@
 											</a>
 										</div>
 										<div class="tw-text-secondary">
-											{{ loan.sector?.name || '-' }}
+											{{ loan.activity?.name || '-' }}
 										</div>
 										<div class="tw-flex tw-items-center tw-text-secondary">
 											<div class="tw-w-2 tw-h-2 tw-mr-1">
@@ -88,7 +88,15 @@
 											</div>
 											{{ loan.geocode?.country?.name || '-' }}
 										</div>
-										<div class="tw-text-secondary" v-if="loan.partnerName">
+										<div class="tw-text-secondary" v-if="loan.trusteeName">
+											<a
+												:href="getTrusteeUrl(loan.trusteeId)"
+												target="_blank"
+											>
+												{{ loan.trusteeName }}
+											</a>
+										</div>
+										<div class="tw-text-secondary" v-else-if="loan.partnerName">
 											<a
 												:href="getPartnerUrl(loan.partnerId)"
 												target="_blank"
@@ -101,46 +109,91 @@
 							</td>
 							<td class="tw-px-2">
 								<div class="tw-text-secondary">
-									{{ getPrintableStatus(loan.status) }}
+									{{ getStatusLabel(loan) }}
 								</div>
 							</td>
 							<td class="tw-text-right tw-px-2">
 								<div>
 									<div class="tw-mb-1">
-										${{ loan.userProperties.loanBalance.amountPurchasedByLender }}
+										{{ $filters.numeral(
+											loan.userProperties.loanBalance.amountPurchasedByLender,
+											'$0,0'
+										) }}
 									</div>
-									<div class="tw-mb-1 tw-text-secondary">
-										{{ formatDate(loan.terms.disbursalDate) || '(Endpoint TBD)' }}
+									<div
+										v-if="loan.userProperties?.loanBalance?.latestSharePurchaseTime"
+										class="tw-mb-1 tw-text-secondary"
+									>
+										{{ formatDate(loan.userProperties.loanBalance.latestSharePurchaseTime) }}
 									</div>
+									<div
+										v-if="hasPromoCredit(loan)"
+										class="tw-text-secondary tw-text-small"
+									>
+										{{ $filters.numeral(
+											loan.userProperties.loanBalance.amountPurchasedByPromo,
+											'$0,0'
+										) }} free credit
+									</div>
+								</div>
+							</td>
+							<td class="tw-text-right tw-px-2">
+								<div v-if="isRaisedOrFundraising(loan.status)">
+									{{ $filters.numeral(loan.loanFundraisingInfo?.fundedAmount, '$0,0') }} raised
+								</div>
+								<template v-else>
+									<paid-amount-modal
+										:amount="loan.userProperties?.loanBalance?.amountRepaidToLender || '0'"
+										:payment-history="loan.userProperties?.repaymentHistory"
+									/>
+									<div
+										v-if="hasRepaidToLender(loan)"
+										class="tw-text-secondary tw-text-small"
+									>
+										{{ repaidLabel(loan, 'you') }}
+									</div>
+									<div
+										v-else-if="hasRepaidToPromo(loan)"
+										class="tw-text-secondary tw-text-small"
+									>
+										{{ repaidLabel(loan, 'Kiva') }}
+									</div>
+									<div
+										v-if="hasArrears(loan.sharedArrearsAmount)"
+										class="tw-text-secondary tw-text-small"
+									>
+										({{ formatArrearsAmount(loan.sharedArrearsAmount) }} in arrears)
+									</div>
+								</template>
+							</td>
+							<td class="tw-text-right tw-px-2">
+								<div>
+									{{ loan.lenderRepaymentTerm || '-' }} months
 								</div>
 							</td>
 							<td class="tw-text-right tw-px-2">
 								<div>
 									<div>
-										${{ loan.terms.loanAmount }}
+										{{ $filters.numeral(loan.terms.loanAmount, '$0,0') }}
+									</div>
+									<div
+										v-if="hasArrears(loan.arrearsAmount)"
+										class="tw-text-secondary tw-text-small"
+									>
+										({{ formatArrearsAmount(loan.arrearsAmount) }} in arrears)
 									</div>
 								</div>
 							</td>
-							<td class="tw-text-right tw-px-2">
-								<div>
-									{{ loan.lenderRepaymentTerm || '-' }} mos
-								</div>
-							</td>
-							<td class="tw-px-2">
-								<paid-amount-modal
-									:amount="loan.userProperties.loanBalance.amountRepaidToLender"
-								/>
-							</td>
 							<td class="team-cell tw-whitespace-normal tw-break-words tw-px-2">
 								<div class="tw-items-center">
-									<template v-if="loan.teams?.values?.[0]">
+									<template v-if="loan.userProperties?.userAttributedTeam">
 										<img
-											v-if="loan.teams.values[0].image?.url"
-											:src="loan.teams.values[0].image.url"
-											:alt="`${loan.teams.values[0].name} team image`"
+											v-if="loan.userProperties.userAttributedTeam.image?.url"
+											:src="loan.userProperties.userAttributedTeam.image.url"
+											:alt="`${loan.userProperties.userAttributedTeam.name} team image`"
 											class="tw-w-5 tw-h-5"
 										>
-										<span>{{ loan.teams.values[0].name }}</span>
+										<span>{{ loan.userProperties.userAttributedTeam.name }}</span>
 									</template>
 									<span v-else>-</span>
 								</div>
@@ -157,18 +210,15 @@
 <script>
 import { KvFlag, KvLoadingPlaceholder } from '@kiva/kv-components';
 import {
-	DEFAULTED,
-	ENDED,
 	EXPIRED,
-	FUNDED,
 	FUNDRAISING,
-	PAYING_BACK,
 	RAISED,
 	REFUNDED,
 } from '#src/api/fixtures/LoanStatusEnum';
 import PaidAmountModal from '#src/components/Portfolio/PaidAmountModal';
 
-const DELINQUENT = 'payingBackDelinquent';
+const REFUNDED_OR_EXPIRED_STATUSES = new Set([EXPIRED, REFUNDED]);
+const RAISED_OR_FUNDRAISING_STATUSES = new Set([FUNDRAISING, RAISED]);
 
 export default {
 	name: 'LoanList',
@@ -197,24 +247,42 @@ export default {
 				year: 'numeric'
 			});
 		},
-		getPrintableStatus(rawStatus) {
-			const mapping = {
-				[FUNDRAISING]: 'Fundraising',
-				[FUNDED]: 'Funded',
-				[RAISED]: 'Raised',
-				[PAYING_BACK]: 'Paying Back',
-				[ENDED]: 'Ended',
-				[DELINQUENT]: 'Delinquent',
-				[DEFAULTED]: 'Defaulted',
-				[REFUNDED]: 'Refunded',
-				[EXPIRED]: 'Expired'
-			};
-			return mapping[rawStatus] || rawStatus;
+		getStatusLabel(loan) {
+			return loan.statusLabel || loan.status;
+		},
+		hasArrears(amount) {
+			return amount != null && parseFloat(amount) >= 0;
+		},
+		formatArrearsAmount(amount) {
+			const formatted = this.$filters.numeral(amount, '$0,0.00');
+			return parseFloat(amount) > 0 ? `-${formatted}` : formatted;
+		},
+		hasPromoCredit(loan) {
+			const amount = loan.userProperties?.loanBalance?.amountPurchasedByPromo;
+			return amount != null && parseFloat(amount) > 0;
+		},
+		hasRepaidToLender(loan) {
+			const amount = loan.userProperties?.loanBalance?.amountRepaidToLender;
+			return amount != null && parseFloat(amount) > 0;
+		},
+		hasRepaidToPromo(loan) {
+			const amount = loan.userProperties?.loanBalance?.amountRepaidToPromo;
+			return amount != null && parseFloat(amount) > 0;
+		},
+		isRaisedOrFundraising(status) {
+			return RAISED_OR_FUNDRAISING_STATUSES.has(status);
+		},
+		repaidLabel(loan, recipient) {
+			const verb = REFUNDED_OR_EXPIRED_STATUSES.has(loan.status) ? 'repaid/refunded' : 'repaid';
+			return `${verb} to ${recipient}`;
 		},
 	},
 	computed: {
 		getPartnerUrl() {
 			return partnerId => `/about/where-kiva-works/partners/${partnerId}`;
+		},
+		getTrusteeUrl() {
+			return trusteeId => `/trustees/${trusteeId}`;
 		}
 	},
 	data() {
@@ -223,9 +291,9 @@ export default {
 				{ span: 4 },
 				{ span: 1 },
 				{ span: 1, marginLeft: true },
-				{ span: 1, marginLeft: true },
-				{ span: 1, marginLeft: true },
 				{ span: 2, marginLeft: true },
+				{ span: 1, marginLeft: true },
+				{ span: 1, marginLeft: true },
 				{ span: 2 }
 			]
 		};

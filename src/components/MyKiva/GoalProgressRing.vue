@@ -15,7 +15,7 @@
 
 			<button
 				class="tw-flex tw-gap-0.5 tw-items-center tw-text-h5 hover:tw-underline tw-text-action tw-pt-0.5"
-				v-if="!isModalVariant && goalEditingEnable"
+				v-if="!isModalVariant"
 				@click="handleEditGoal"
 			>
 				Edit
@@ -166,13 +166,6 @@ const props = defineProps({
 	goToUrl: {
 		type: String,
 		default: '',
-	},
-	/**
-	 * Enable edit goal button (only shows when user has a goal set)
-	 */
-	goalEditingEnable: {
-		type: Boolean,
-		default: false,
 	},
 	/**
 	 *  Loading state for goal data (used in GoalSelector after loading goal)
@@ -377,9 +370,8 @@ const handleEditGoal = () => {
 };
 
 const showEditGoalButton = computed(() => {
-	return props.goalEditingEnable
-		&& !props.isGoalCompleted
-		&& router.currentRoute.value?.path?.includes('/goal-setting');
+	return !props.isGoalCompleted
+		&& router?.currentRoute.value?.path?.includes('/goal-setting');
 });
 
 </script>
