@@ -1,3 +1,12 @@
+## [3.68.0-rc.1](https://github.com/kiva/ui/compare/v3.67.0...v3.68.0-rc.1) (2026-05-20)
+
+### 🎉 New Features
+
+* goal editing flag removed ([#6905](https://github.com/kiva/ui/issues/6905)) ([dc3be6a](https://github.com/kiva/ui/commit/dc3be6ade0a728135b95932180784b9b42f35115))
+* **MP-2818:** remove mykiva_next_steps_redirect flag ([#6907](https://github.com/kiva/ui/issues/6907)) ([38ea2b8](https://github.com/kiva/ui/commit/38ea2b86037a0dd58cefda009f6aff96589f6c96))
+* **MP-2842:** add FLSS May 2026 experiment header support\n\n- Add EXP-FLSS-May-2026 to ExperimentIdLink targetIds\n- Update and expand ExperimentIdLink.spec.js to cover new header\n- All tests and lint pass ([#6908](https://github.com/kiva/ui/issues/6908)) ([186cd0d](https://github.com/kiva/ui/commit/186cd0dc686b4e73c8f3120a4237ba604de3f813))
+* show next recommended loan on error if atb fails ([#6912](https://github.com/kiva/ui/issues/6912)) ([18e0db9](https://github.com/kiva/ui/commit/18e0db911b33f2dddf71192d49dcfdde2dc3a462))
+
 ## [3.67.0](https://github.com/kiva/ui/compare/v3.66.1...v3.67.0) (2026-05-18)
 
 ### 🎉 New Features
