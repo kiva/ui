@@ -42,9 +42,10 @@ jobs:
       run: npm run unit-coverage
     - name: Merge test coverage reports
       run: npm run coverage:merge
-    - name: Coveralls
-      uses: coverallsapp/github-action@v2
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: 'test/coverage/lcov.info'
-        fail-on-error: false
+    # TODO: re-enable Coveralls coverage reporting when coveralls stability returns
+    # - name: Coveralls
+    #   uses: coverallsapp/github-action@v2
+    #   with:
+    #     github-token: ${{ secrets.GITHUB_TOKEN }}
+    #     path-to-lcov: 'test/coverage/lcov.info'
+    #     fail-on-error: false
