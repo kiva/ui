@@ -23,13 +23,22 @@
 		>
 			{{ secondaryLabel }}
 		</kv-button>
+		<!-- // TODO: Enable when ticket MP-2747 is ready for implementation
+		<div
+			v-else
+			class="tw-mb-3 tw-inline-flex tw-items-center tw-justify-center tw-gap-1 tw-self-center tw-text-small"
+		>
+			<ExpressCheckoutLines class="tw-shrink-0" aria-hidden="true" />
+			<span class="tw-font-medium tw-text-secondary">{{ secondaryLabel }}</span>
+		</div> -->
 	</div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
 import { KvButton, KvLoadingSpinner } from '@kiva/kv-components';
-import ExpressCheckoutLines from '#src/assets/icons/inline/express-checkout-lines.svg';
+// TODO: Enable when ticket MP-2747 is ready for implementation
+// import ExpressCheckoutLines from '#src/assets/icons/inline/express-checkout-lines.svg';
 
 defineOptions({ name: 'RecommendLoanForGoalFooter' });
 
