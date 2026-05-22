@@ -4,9 +4,15 @@
 			class="goal-footer-button"
 			:to="primaryTo"
 			:variant="primaryButtonVariant"
+			:state="primaryButtonState"
 			@click="onPrimaryCtaClick"
 		>
 			{{ primaryLabel }}
+			<kv-loading-spinner
+				v-if="showExpressCheckoutLoading"
+				size="small"
+				class="tw-mr-1"
+			/>
 		</kv-button>
 		<kv-button
 			v-if="!expressCheckoutEnabled"
@@ -29,7 +35,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { KvButton } from '@kiva/kv-components';
+import { KvButton, KvLoadingSpinner } from '@kiva/kv-components';
 import ExpressCheckoutLines from '#src/assets/icons/inline/express-checkout-lines.svg';
 
 defineOptions({ name: 'RecommendLoanForGoalFooter' });
@@ -64,7 +70,20 @@ const props = defineProps({
 
 const emit = defineEmits(['primary-cta-click', 'checkout-click', 'secondary-cta-click']);
 
+// Express checkout: once the loan is in the basket the user is being
+// redirected to checkout — show a disabled loading state meanwhile.
+const showExpressCheckoutLoading = computed(() => (
+	props.expressCheckoutEnabled && props.isInBasket
+));
+
+const primaryButtonState = computed(() => (
+	showExpressCheckoutLoading.value ? 'disabled' : ''
+));
+
 const primaryLabel = computed(() => {
+	if (showExpressCheckoutLoading.value) {
+		return '';
+	}
 	if (props.isAdding) {
 		return ADDING_LABEL;
 	}
@@ -91,7 +110,7 @@ const primaryButtonVariant = computed(() => (
 ));
 
 const onPrimaryCtaClick = event => {
-	if (props.isAdding) {
+	if (props.isAdding || showExpressCheckoutLoading.value) {
 		return;
 	}
 	if (props.isInBasket) {
@@ -109,7 +128,7 @@ const onSecondaryCtaClick = event => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .goal-footer-button {
 	max-width: 330px;
 

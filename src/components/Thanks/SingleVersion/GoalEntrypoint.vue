@@ -8,9 +8,9 @@
 				v-if="showRecommendLoanAfterGoalView"
 				ref="recommendLoanForGoalRef"
 				header-title="Goal set!"
+				express-checkout-enabled
 				:header-details="recommendLoanHeaderDetails"
 				:content-card-props="recommendLoanCardProps"
-				express-checkout-enabled
 				:is-adding="isAdding"
 				:is-in-basket="recommendLoanIsInBasket"
 				:loaded-set-data="loadedSetData"

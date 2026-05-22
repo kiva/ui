@@ -7,9 +7,10 @@
 		/>
 		<RecommendLoanForGoalContent
 			ref="recommendLoanForGoalContentRef"
-			:heading="contentHeading"
 			v-bind="contentCardProps"
+			:heading="contentHeading"
 			:is-adding="isAdding"
+			:class="{ '!tw-opacity-low !tw-pointer-events-none !tw-touch-none': isInBasket && expressCheckoutEnabled}"
 			@add-to-basket="$emit('add-to-basket', $event)"
 			@remove-from-basket="$emit('remove-from-basket', $event)"
 			@jump-filter-page="$emit('jump-filter-page', $event)"

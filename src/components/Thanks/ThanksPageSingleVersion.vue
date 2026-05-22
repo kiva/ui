@@ -327,7 +327,7 @@ const {
 	basketItems: toRef(props, 'basketItems'),
 	selectedGoalNumber: goalTarget,
 	selectedCategory,
-	show: ref(true),
+	show: true,
 	goalProgress,
 	getRecommendedLoans,
 	getCtaHref,
@@ -471,14 +471,6 @@ const setGoal = async preferences => {
 		await storeGoalPreferences(preferences);
 		isGoalSet.value = true;
 		showGoalModal.value = false;
-		// Reflect the chosen category/target so the recommended-loan fetch targets them
-		const storedCategory = categories.find(c => c.badgeId === preferences.category);
-		if (storedCategory) {
-			selectedCategory.value = storedCategory;
-		}
-		if (preferences.target) {
-			goalTarget.value = preferences.target;
-		}
 		loadedSetData.value = true;
 		enterRecommendedLoanStepAfterGoalSave();
 	} catch (error) {
