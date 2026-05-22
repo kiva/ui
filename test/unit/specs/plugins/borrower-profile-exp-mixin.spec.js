@@ -530,5 +530,39 @@ describe('borrower-profile-exp-mixin', () => {
 			// Should log the error but not throw
 			expect(logFormatter).toHaveBeenCalledWith(fbqError, 'error');
 		});
+
+		it('should call onSuccess after a successful add to basket', async () => {
+			createComponent();
+			mockApollo.mutate.mockResolvedValue({ errors: null });
+			mockApollo.query.mockResolvedValue({
+				data: {
+					shop: {
+						basket: { items: { values: [] } },
+						nonTrivialItemCount: 1,
+					},
+				},
+			});
+			const onSuccess = vi.fn();
+
+			component.addToBasket({ loanId: 123, lendAmount: 25, onSuccess });
+			await flushPromises();
+
+			expect(onSuccess).toHaveBeenCalled();
+		});
+
+		it('should not call onSuccess when the add to basket fails', async () => {
+			createComponent();
+			const { hasBasketExpired } = await import('#src/util/basketUtils');
+			hasBasketExpired.mockReturnValue(true);
+			mockApollo.mutate.mockResolvedValue({
+				errors: [{ message: 'Basket has expired', extensions: { code: 'basket.stale' } }],
+			});
+			const onSuccess = vi.fn();
+
+			component.addToBasket({ loanId: 123, lendAmount: 25, onSuccess });
+			await flushPromises();
+
+			expect(onSuccess).not.toHaveBeenCalled();
+		});
 	});
 });
