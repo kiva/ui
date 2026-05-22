@@ -295,7 +295,7 @@ export default {
 			this.addToBasket({
 				...payload,
 				onSuccess: () => {
-					window.location.assign('/basket');
+					this.$router.push('/basket');
 				},
 			});
 		},

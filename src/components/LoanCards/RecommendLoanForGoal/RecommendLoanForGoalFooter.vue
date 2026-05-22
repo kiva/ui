@@ -9,7 +9,7 @@
 		>
 			{{ primaryLabel }}
 			<kv-loading-spinner
-				v-if="showExpressCheckoutLoading"
+				v-if="showRedirectingLoading"
 				size="small"
 				class="tw-mr-1"
 			/>
@@ -23,13 +23,6 @@
 		>
 			{{ secondaryLabel }}
 		</kv-button>
-		<div
-			v-else
-			class="tw-mb-3 tw-inline-flex tw-items-center tw-justify-center tw-gap-1 tw-self-center tw-text-small"
-		>
-			<ExpressCheckoutLines class="tw-shrink-0" aria-hidden="true" />
-			<span class="tw-font-medium tw-text-secondary">{{ secondaryLabel }}</span>
-		</div>
 	</div>
 </template>
 
@@ -72,16 +65,16 @@ const emit = defineEmits(['primary-cta-click', 'checkout-click', 'secondary-cta-
 
 // Express checkout: once the loan is in the basket the user is being
 // redirected to checkout — show a disabled loading state meanwhile.
-const showExpressCheckoutLoading = computed(() => (
+const showRedirectingLoading = computed(() => (
 	props.expressCheckoutEnabled && props.isInBasket
 ));
 
 const primaryButtonState = computed(() => (
-	showExpressCheckoutLoading.value ? 'disabled' : ''
+	showRedirectingLoading.value ? 'disabled' : ''
 ));
 
 const primaryLabel = computed(() => {
-	if (showExpressCheckoutLoading.value) {
+	if (showRedirectingLoading.value) {
 		return '';
 	}
 	if (props.isAdding) {
@@ -110,7 +103,7 @@ const primaryButtonVariant = computed(() => (
 ));
 
 const onPrimaryCtaClick = event => {
-	if (props.isAdding || showExpressCheckoutLoading.value) {
+	if (props.isAdding || showRedirectingLoading.value) {
 		return;
 	}
 	if (props.isInBasket) {
