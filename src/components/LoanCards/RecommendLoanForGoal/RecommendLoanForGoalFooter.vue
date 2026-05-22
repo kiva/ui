@@ -5,6 +5,7 @@
 			:to="primaryTo"
 			:variant="primaryButtonVariant"
 			:state="primaryButtonState"
+			:class="{ 'tw-mb-3' : expressCheckoutEnabled }"
 			@click="onPrimaryCtaClick"
 		>
 			{{ primaryLabel }}
