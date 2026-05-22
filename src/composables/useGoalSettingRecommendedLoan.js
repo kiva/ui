@@ -124,6 +124,7 @@ export default function useGoalSettingRecommendedLoan({
 
 	const onGoalSelectorUpdateGoal = payload => {
 		emit('set-goal', payload);
+		enterRecommendedLoanStepAfterGoalSave();
 	};
 
 	const handleExploreMoreLoans = () => {

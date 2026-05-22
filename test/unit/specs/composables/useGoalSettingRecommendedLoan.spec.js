@@ -195,8 +195,15 @@ describe('useGoalSettingRecommendedLoan', () => {
 	});
 
 	describe('onGoalSelectorUpdateGoal', () => {
-		it('should emit set-goal without entering recommend step', () => {
+		it('should emit set-goal and enter recommend step when enabled', () => {
 			props.goalRecommendedLoanEnable = true;
+			const payload = { goalName: 'g1', target: 9 };
+			composable.onGoalSelectorUpdateGoal(payload);
+			expect(emit).toHaveBeenCalledWith('set-goal', payload);
+			expect(composable.showRecommendLoanAfterGoalView.value).toBe(true);
+		});
+
+		it('should emit set-goal but not show recommend step when disabled', () => {
 			const payload = { goalName: 'g1', target: 9 };
 			composable.onGoalSelectorUpdateGoal(payload);
 			expect(emit).toHaveBeenCalledWith('set-goal', payload);
