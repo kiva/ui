@@ -200,10 +200,8 @@ const handleAddToBasket = () => {
 <style lang="postcss" scoped>
 .goal-entrypoint-loading {
 	min-height: 546px;
-}
 
-@media (width >= 45.875rem) {
-	.goal-entrypoint-loading {
+	@screen md {
 		min-height: 583px;
 	}
 }
