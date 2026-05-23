@@ -291,24 +291,8 @@ export default [
 		redirect: '/lend-by-category',
 	},
 	{
-		path: '/lend-by-category',
-		component: () => import('#src/pages/LoanFinding/LoanFinding'),
-		meta: {
-			unbounceEmailCapture: true,
-		},
-	},
-	{
 		path: '/lend-by-category/recommended-by-lenders',
 		redirect: '/lend-by-category'
-	},
-	{
-		path: '/lend-by-category/:category',
-		component: () => import('#src/pages/Lend/LoanChannelCategoryPage'),
-		meta: {
-			excludeFromStaticSitemap: true,
-			unbounceEmailCapture: true,
-			unbouncePopUp: true,
-		},
 	},
 	{
 		path: '/lend-beta/:id',
@@ -345,14 +329,6 @@ export default [
 			unbounceEmailCapture: true,
 			unbouncePopUp: true,
 		}
-	},
-	{
-		name: 'lend-filter',
-		path: '/lend/filter',
-		component: () => import('#src/pages/Lend/LoanSearchPage'),
-		meta: {
-			unbounceEmailCapture: true,
-		},
 	},
 	{
 		name: 'filter-alpha',
