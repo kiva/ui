@@ -189,7 +189,7 @@
 					:goal-progress="goalProgress"
 					:goal-progress-percentage="goalProgressPercentage"
 					:is-updating-goal="isUpdatingGoal"
-					:is-loading-data="isLoadingData"
+					:is-loading-data="isLoadingData || isLoadingRecommendedLoan"
 					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 					show-goal-value-props-copy
 					@set-goal-target="setGoalTarget"
@@ -430,7 +430,9 @@ const hasControlledCategory = props.controlledSelectedCategory
 const selectedCategory = ref(hasControlledCategory ? props.controlledSelectedCategory : categories[0]);
 
 const {
-	showRecommendLoanAfterGoalView,
+	showRecommendLoanAfterGoalView: showRecommendLoanTrigger,
+	hasRecommendedLoans,
+	isLoadingRecommendedLoan,
 	recommendLoanHeaderDetails,
 	recommendLoanCardProps,
 	recommendLoanIsInBasket,
@@ -455,6 +457,12 @@ const {
 	appConfig,
 	apollo,
 });
+
+// Render the recommended-loan UI only when the trigger fired AND the fetch
+// returned at least one loan; otherwise fall back to the goal-selector flow.
+const showRecommendLoanAfterGoalView = computed(() => (
+	showRecommendLoanTrigger.value && hasRecommendedLoans.value
+));
 
 const contentComponent = computed(() => {
 	switch (formStep.value) {
