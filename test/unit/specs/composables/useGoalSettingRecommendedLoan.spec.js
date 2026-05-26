@@ -335,6 +335,70 @@ describe('useGoalSettingRecommendedLoan', () => {
 		});
 	});
 
+	describe('hasRecommendedLoans', () => {
+		it('is false before any fetch resolves', () => {
+			expect(composable.hasRecommendedLoans.value).toBe(false);
+		});
+
+		it('stays false after the fetch resolves with an empty array', async () => {
+			props.goalRecommendedLoanEnable = true;
+			composable.enterRecommendedLoanStepAfterGoalSave();
+			getRecommendedLoans.mockResolvedValue([]);
+			await flushPromises();
+			expect(composable.hasRecommendedLoans.value).toBe(false);
+		});
+
+		it('becomes true when the fetch returns at least one loan', async () => {
+			props.goalRecommendedLoanEnable = true;
+			composable.enterRecommendedLoanStepAfterGoalSave();
+			getRecommendedLoans.mockResolvedValue([{ id: 7, name: 'Match' }]);
+			await flushPromises();
+			expect(composable.hasRecommendedLoans.value).toBe(true);
+		});
+	});
+
+	describe('isLoadingRecommendedLoan', () => {
+		it('is false initially', () => {
+			expect(composable.isLoadingRecommendedLoan.value).toBe(false);
+		});
+
+		it('flips to true synchronously when entering the recommended-loan step', () => {
+			props.goalRecommendedLoanEnable = true;
+			composable.enterRecommendedLoanStepAfterGoalSave();
+			// Set synchronously so the host's loading state covers the upcoming fetch.
+			expect(composable.isLoadingRecommendedLoan.value).toBe(true);
+		});
+
+		it('stays false when the feature flag is off', () => {
+			composable.enterRecommendedLoanStepAfterGoalSave();
+			expect(composable.isLoadingRecommendedLoan.value).toBe(false);
+		});
+
+		it('clears once the fetch resolves with loans', async () => {
+			props.goalRecommendedLoanEnable = true;
+			composable.enterRecommendedLoanStepAfterGoalSave();
+			getRecommendedLoans.mockResolvedValue([{ id: 1, name: 'A' }]);
+			await flushPromises();
+			expect(composable.isLoadingRecommendedLoan.value).toBe(false);
+		});
+
+		it('clears once the fetch resolves empty', async () => {
+			props.goalRecommendedLoanEnable = true;
+			composable.enterRecommendedLoanStepAfterGoalSave();
+			getRecommendedLoans.mockResolvedValue([]);
+			await flushPromises();
+			expect(composable.isLoadingRecommendedLoan.value).toBe(false);
+		});
+
+		it('clears even when the fetch rejects', async () => {
+			props.goalRecommendedLoanEnable = true;
+			composable.enterRecommendedLoanStepAfterGoalSave();
+			getRecommendedLoans.mockRejectedValue(new Error('network'));
+			await flushPromises();
+			expect(composable.isLoadingRecommendedLoan.value).toBe(false);
+		});
+	});
+
 	describe('tracking events', () => {
 		describe('view event on entering recommended-loan step', () => {
 			it('fires view+confirm-goal-set-recommended-loan with portfolio category', () => {

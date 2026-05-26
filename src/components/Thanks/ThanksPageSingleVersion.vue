@@ -333,7 +333,7 @@ const {
 	basketItems: toRef(props, 'basketItems'),
 	selectedGoalNumber: goalTarget,
 	selectedCategory,
-	show: true,
+	show: ref(true),
 	goalProgress,
 	getRecommendedLoans,
 	getCtaHref,
