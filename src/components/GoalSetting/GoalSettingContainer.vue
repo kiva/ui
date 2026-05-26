@@ -380,7 +380,7 @@ const addToBasket = () => {
 	const { loanId } = recommendLoanCardProps.value;
 	if (!loanId) return;
 	const lendAmount = recommendLoanForGoalRef.value?.getSelectedAmount();
-	trackAddToBasketClick();
+	trackAddToBasketClick(loanId, lendAmount);
 	// Delegate to parent (GoalSetting.vue) which uses borrower-profile-exp-mixin
 	emit('add-to-basket', { loanId, lendAmount });
 };
