@@ -102,6 +102,7 @@ import { useRouter } from 'vue-router';
 
 import { KvButton, KvProgressCircle, KvMaterialIcon } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
+import goalCopy from '#src/util/goalCopy';
 import {
 	ID_SUPPORT_ALL,
 	ID_CLIMATE_ACTION,
@@ -201,7 +202,6 @@ const emit = defineEmits(['button-click', 'edit-button-click', 'edit-goal-from-s
 const router = useRouter();
 const { isLarge } = useBreakpoints();
 
-const yearToDate = new Date().getFullYear();
 const getDigitCount = value => String(value ?? 0).length;
 
 const visibleGoalLoans = computed(() => {
@@ -304,57 +304,57 @@ const modalVariantDescriptionText = computed(() => {
 
 const titleText = computed(() => {
 	if (props.isGoalCompleted && isModalVariant.value) {
-		return 'You did it! You reached your annual goal';
+		return goalCopy.RING_TITLE_GOAL_COMPLETED;
 	}
 	if (props.isUpdatingGoal) {
-		return 'Goal updated!';
+		return goalCopy.RING_TITLE_GOAL_UPDATED;
 	}
 	if (isModalVariant.value) {
-		return 'Goal set!';
+		return goalCopy.RING_TITLE_GOAL_SET;
 	}
 	if (props.categoryId === ID_SUPPORT_ALL) {
-		return `Your ${yearToDate} goal`;
+		return goalCopy.RING_TITLE_SUPPORT_ALL_CARD;
 	}
 	if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
-		return `Your ${yearToDate} goal to U.S entrepreneurs`;
+		return goalCopy.RING_TITLE_US_ENTREPRENEURS_CARD;
 	}
-	return `Your ${yearToDate} goal to ${props.categoryName?.toLowerCase() || ''}`;
+	return goalCopy.ringTitleCategoryCard(props.categoryName?.toLowerCase() || '');
 });
 
 // Card variant only
 const descriptionText = computed(() => {
 	if (props.goalProgressPercentage === 0) {
-		return 'Get started by making a loan!';
+		return goalCopy.RING_DESC_NOT_STARTED;
 	}
 	if (props.goalProgressPercentage > 0 && props.goalProgressPercentage < HALF_GOAL_THRESHOLD) {
-		return 'You\'ve started something powerful.<br>Let\'s keep it growing together.';
+		return goalCopy.RING_DESC_PROGRESS_BEGUN;
 	}
 	if (props.goalProgressPercentage === HALF_GOAL_THRESHOLD) {
-		return 'Halfway to your goal!<br>Every loan fuels a dream.';
+		return goalCopy.RING_DESC_PROGRESS_HALFWAY;
 	}
 	if (props.goalProgressPercentage < COMPLETED_GOAL_THRESHOLD) {
-		return 'You\'ve brought so many dreams<br>within reach. Finish strong!';
+		return goalCopy.RING_DESC_PROGRESS_ALMOST_DONE;
 	}
-	return `Incredible! You reached your ${yearToDate} <br>goal and changed ${props.goalLoans} lives!`;
+	return goalCopy.ringDescProgressCompleted(props.goalLoans);
 });
 
 const buttonText = computed(() => {
 	if (isModalVariant.value) {
 		if (props.isGoalCompleted) {
-			return 'Continue my impact';
+			return goalCopy.RING_BUTTON_GOAL_COMPLETED;
 		}
 		// MyKiva modal: user already has progress, show tracking CTA
 		if (props.goToUrl === '/mykiva' && props.goalProgress > 0) {
-			return 'Track my progress';
+			return goalCopy.RING_BUTTON_HAS_PROGRESS_ON_MYKIVA;
 		}
-		return 'Let\'s do this';
+		return goalCopy.RING_BUTTON_NEW_GOAL;
 	}
 
 	// Card variant
 	if (props.goalProgressPercentage === COMPLETED_GOAL_THRESHOLD) {
-		return 'View impact progress';
+		return goalCopy.RING_BUTTON_CARD_GOAL_COMPLETED;
 	}
-	return 'Work towards your goal';
+	return goalCopy.RING_BUTTON_CARD_IN_PROGRESS;
 });
 
 const handleButtonClick = () => {

@@ -15,11 +15,10 @@
 				<div class="tw-text-center">
 					<p
 						v-if="isGoalTileExperimentEnabled"
-					>
-						Make helping others a habit.<br>We'll help you make it happen.
-					</p>
+						v-html="goalCopy.CARD_HABIT_PROMPT_EXPERIMENT"
+					></p>
 					<p v-else>
-						How many loans will you make this year?
+						{{ goalCopy.TITLE_HOW_MANY_LOANS_GENERIC }}
 					</p>
 				</div>
 				<img
@@ -31,7 +30,7 @@
 					v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
 					@click="$emit('open-goal-modal')"
 				>
-					Set {{ yearToDate }} goal
+					{{ goalCopy.BUTTON_SET_GOAL }}
 				</KvButton>
 			</div>
 			<GoalProgressRing
@@ -61,6 +60,7 @@ import {
 	KvButton, KvLoadingPlaceholder
 } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD } from '#src/composables/useGoalData';
+import goalCopy from '#src/util/goalCopy';
 import { useRouter } from 'vue-router';
 import confetti from 'canvas-confetti';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
@@ -114,21 +114,17 @@ const goalLoans = computed(() => {
 	return props.userGoal?.target || 0;
 });
 
-const yearToDate = new Date().getFullYear();
-
 const title = computed(() => {
 	if (props.isGoalTileExperimentEnabled) {
-		return 'You haven’t set your goal yet!';
+		return goalCopy.CARD_NO_GOAL_YET_EXPERIMENT;
 	}
 	if (props.prevYearLoans === 1) {
-		return `Last year, you helped <span class="tw-text-action">${props.prevYearLoans} woman</span>`
-			+ ' shape her future!';
+		return goalCopy.titleLastYearSingleWoman(props.prevYearLoans, 'tw-text-action');
 	}
 	if (props.prevYearLoans > 1) {
-		return `Last year, you helped <span class="tw-text-action">${props.prevYearLoans} women</span>`
-			+ ' shape their futures!';
+		return goalCopy.titleLastYearMultiplePeople(props.prevYearLoans, 'women', 'tw-text-action');
 	}
-	return 'Lenders like you help <span class="tw-text-action">3 women</span> a year!';
+	return goalCopy.titleNoHistoryWomensDefault('tw-text-action');
 });
 
 const categoryName = computed(() => {
