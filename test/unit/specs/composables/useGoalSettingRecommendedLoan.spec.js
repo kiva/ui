@@ -425,7 +425,43 @@ describe('useGoalSettingRecommendedLoan', () => {
 		});
 
 		describe('trackAddToBasketClick', () => {
-			it('fires click+add-goal-confirmed-loan-to-basket with portfolio category', () => {
+			it('fires click+add-goal-confirmed-loan-to-basket with loanId and lendAmount', () => {
+				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO });
+				composable.trackAddToBasketClick(789, 25);
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'portfolio',
+					'click',
+					'add-goal-confirmed-loan-to-basket',
+					789,
+					25,
+				);
+			});
+
+			it('fires with post-checkout category for POST_CHECKOUT entrypoint', () => {
+				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT });
+				composable.trackAddToBasketClick(101, 50);
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'post-checkout',
+					'click',
+					'add-goal-confirmed-loan-to-basket',
+					101,
+					50,
+				);
+			});
+
+			it('fires with event-tracking category for GOALS_PAGE entrypoint', () => {
+				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE });
+				composable.trackAddToBasketClick(202, 75);
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'event-tracking',
+					'click',
+					'add-goal-confirmed-loan-to-basket',
+					202,
+					75,
+				);
+			});
+
+			it('omits loanId and lendAmount args when caller does not provide them', () => {
 				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO });
 				composable.trackAddToBasketClick();
 				expect(mockKvTrackEvent).toHaveBeenCalledWith(
@@ -435,29 +471,9 @@ describe('useGoalSettingRecommendedLoan', () => {
 				);
 			});
 
-			it('fires with post-checkout category for POST_CHECKOUT entrypoint', () => {
-				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT });
-				composable.trackAddToBasketClick();
-				expect(mockKvTrackEvent).toHaveBeenCalledWith(
-					'post-checkout',
-					'click',
-					'add-goal-confirmed-loan-to-basket',
-				);
-			});
-
-			it('fires with event-tracking category for GOALS_PAGE entrypoint', () => {
-				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE });
-				composable.trackAddToBasketClick();
-				expect(mockKvTrackEvent).toHaveBeenCalledWith(
-					'event-tracking',
-					'click',
-					'add-goal-confirmed-loan-to-basket',
-				);
-			});
-
 			it('does not fire when entrypoint is omitted', () => {
 				mountComposable();
-				composable.trackAddToBasketClick();
+				composable.trackAddToBasketClick(789, 25);
 				expect(mockKvTrackEvent).not.toHaveBeenCalled();
 			});
 		});

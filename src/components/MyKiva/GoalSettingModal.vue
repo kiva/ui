@@ -498,7 +498,7 @@ const recommendLoanForGoalContentRef = ref(null);
 const addToBasket = () => {
 	const lendAmount = recommendLoanForGoalContentRef.value?.getSelectedAmount();
 	const { loanId } = recommendLoanCardProps.value;
-	trackAddToBasketClick();
+	trackAddToBasketClick(loanId, lendAmount);
 	emit('add-to-basket', { loanId, lendAmount, onError: onAddToBasketError });
 };
 

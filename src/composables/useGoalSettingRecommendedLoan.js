@@ -121,13 +121,22 @@ export default function useGoalSettingRecommendedLoan({
 	const trackCategory = ENTRYPOINT_TRACK_CATEGORY[entrypoint];
 	const isPostCheckout = entrypoint === GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT;
 
-	const trackRecommendedLoanEvent = (action, label) => {
+	const trackRecommendedLoanEvent = (action, label, property, value) => {
 		if (!trackCategory || typeof kvTrackEvent !== 'function') return;
-		kvTrackEvent(trackCategory, action, label);
+		if (property && value) {
+			kvTrackEvent(trackCategory, action, label, property, value);
+		} else {
+			kvTrackEvent(trackCategory, action, label);
+		}
 	};
 
-	const trackAddToBasketClick = () => {
-		trackRecommendedLoanEvent('click', 'add-goal-confirmed-loan-to-basket');
+	const trackAddToBasketClick = (loanId, lendAmount) => {
+		trackRecommendedLoanEvent(
+			'click',
+			'add-goal-confirmed-loan-to-basket',
+			loanId,
+			lendAmount,
+		);
 	};
 
 	// On Thanks page the primary "checkout" CTA drives the in-context checkout and is
