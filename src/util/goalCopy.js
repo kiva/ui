@@ -39,6 +39,15 @@ const goalCopy = {
 		return `You’ve already made <span ${attr}>${count} ${loanWord}</span> that will count!`;
 	},
 
+	// ─── Goal selector custom amount validation errors ────────────────────────
+
+	/** Custom amount is less than loans already made this year */
+	// eslint-disable-next-line max-len
+	customAmountBelowYearProgress: (count, loanWord) => `Enter a number higher than the <strong>${count} ${loanWord}</strong> you've already made this year`,
+
+	/** Custom amount is not a valid number above 1 */
+	CUSTOM_AMOUNT_INVALID: 'Your goal must be a valid number above 1 loan',
+
 	// ─── Goal selector / NextYearGoalCard buttons ──────────────────────────────
 
 	/** Primary CTA to confirm setting a new goal */

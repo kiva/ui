@@ -115,6 +115,20 @@ describe('goalCopy', () => {
 		});
 	});
 
+	describe('customAmountBelowYearProgress', () => {
+		it('includes the count and loan word in bold', () => {
+			const result = goalCopy.customAmountBelowYearProgress(3, 'loans');
+			expect(result).toContain('<strong>3 loans</strong>');
+			expect(result).toContain('already made this year');
+		});
+	});
+
+	describe('CUSTOM_AMOUNT_INVALID', () => {
+		it('is a non-empty string', () => {
+			expect(goalCopy.CUSTOM_AMOUNT_INVALID).toBeTruthy();
+		});
+	});
+
 	describe('static copy values', () => {
 		it('TITLE_HOW_MANY_LOANS_GENERIC is defined', () => {
 			expect(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC).toBeTruthy();

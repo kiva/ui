@@ -597,11 +597,10 @@ const validateCustomAmount = value => {
 	if (loansThisYear.value > 1 && amount < minCustomAmount.value) {
 		const loanWord = loansThisYear.value === 1 ? 'loan' : 'loans';
 		validCustomAmount.value = false;
-		// eslint-disable-next-line max-len
-		customGoalAmountError.value = `Enter a number higher than the <strong>${loansThisYear.value} ${loanWord}</strong> you've already made this year`;
+		customGoalAmountError.value = goalCopy.customAmountBelowYearProgress(loansThisYear.value, loanWord);
 	} else if (!value || Number.isNaN(amount) || amount <= 1) {
 		validCustomAmount.value = false;
-		customGoalAmountError.value = 'Your goal must be a valid number above 1 loan';
+		customGoalAmountError.value = goalCopy.CUSTOM_AMOUNT_INVALID;
 	} else {
 		validCustomAmount.value = true;
 		customGoalAmountError.value = '';
