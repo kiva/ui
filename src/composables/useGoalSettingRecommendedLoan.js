@@ -121,13 +121,9 @@ export default function useGoalSettingRecommendedLoan({
 	const trackCategory = ENTRYPOINT_TRACK_CATEGORY[entrypoint];
 	const isPostCheckout = entrypoint === GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT;
 
-	const trackRecommendedLoanEvent = (action, label, property, value) => {
+	const trackRecommendedLoanEvent = (action, label, property = null, value = null) => {
 		if (!trackCategory || typeof kvTrackEvent !== 'function') return;
-		if (property && value) {
-			kvTrackEvent(trackCategory, action, label, property, value);
-		} else {
-			kvTrackEvent(trackCategory, action, label);
-		}
+		kvTrackEvent(trackCategory, action, label, property, value);
 	};
 
 	const trackAddToBasketClick = (loanId, lendAmount) => {

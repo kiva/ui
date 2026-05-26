@@ -347,6 +347,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 					'portfolio',
 					'view',
 					'confirm-goal-set-recommended-loan',
+					null,
+					null,
 				);
 			});
 
@@ -360,6 +362,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 					'post-checkout',
 					'view',
 					'confirm-goal-set-recommended-loan',
+					null,
+					null,
 				);
 			});
 
@@ -373,6 +377,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 					'event-tracking',
 					'view',
 					'confirm-goal-set-recommended-loan',
+					null,
+					null,
 				);
 			});
 
@@ -404,6 +410,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 					'portfolio',
 					'click',
 					'explore-more-loans',
+					null,
+					null,
 				);
 			});
 
@@ -414,6 +422,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 					'event-tracking',
 					'click',
 					'explore-more-loans',
+					null,
+					null,
 				);
 			});
 
@@ -461,13 +471,15 @@ describe('useGoalSettingRecommendedLoan', () => {
 				);
 			});
 
-			it('omits loanId and lendAmount args when caller does not provide them', () => {
+			it('defaults loanId and lendAmount to null when caller does not provide them', () => {
 				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO });
 				composable.trackAddToBasketClick();
 				expect(mockKvTrackEvent).toHaveBeenCalledWith(
 					'portfolio',
 					'click',
 					'add-goal-confirmed-loan-to-basket',
+					null,
+					null,
 				);
 			});
 
@@ -486,6 +498,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 					'portfolio',
 					'click',
 					'go-to-checkout',
+					null,
+					null,
 				);
 			});
 
@@ -496,6 +510,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 					'event-tracking',
 					'click',
 					'go-to-checkout',
+					null,
+					null,
 				);
 			});
 
@@ -506,6 +522,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 					'post-checkout',
 					'click',
 					'complete-order',
+					null,
+					null,
 				);
 			});
 
