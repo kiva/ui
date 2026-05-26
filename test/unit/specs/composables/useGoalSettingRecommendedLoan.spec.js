@@ -3,7 +3,11 @@ import {
 	createApp, reactive, ref, toRef,
 } from 'vue';
 import { flushPromises } from '@vue/test-utils';
-import useGoalSettingRecommendedLoan from '#src/composables/useGoalSettingRecommendedLoan';
+import useGoalSettingRecommendedLoan, {
+	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO,
+	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT,
+	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE,
+} from '#src/composables/useGoalSettingRecommendedLoan';
 
 vi.mock('vue-router', () => ({
 	useRouter: () => ({
@@ -26,7 +30,7 @@ describe('useGoalSettingRecommendedLoan', () => {
 	let composable;
 	let app;
 
-	const mountComposable = (propOverrides = {}) => {
+	const mountComposable = (propOverrides = {}, options = {}) => {
 		emit = vi.fn();
 		mockApollo = { mutate: vi.fn().mockResolvedValue({}) };
 		props = reactive({
@@ -62,6 +66,7 @@ describe('useGoalSettingRecommendedLoan', () => {
 					kvTrackEvent: mockKvTrackEvent,
 					appConfig: { photoPath: 'https://example.com/img/' },
 					apollo: mockApollo,
+					...options,
 				});
 				return {};
 			},
@@ -327,6 +332,172 @@ describe('useGoalSettingRecommendedLoan', () => {
 		it('should not fetch when recommend view is inactive', async () => {
 			await flushPromises();
 			expect(getRecommendedLoans).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('tracking events', () => {
+		describe('view event on entering recommended-loan step', () => {
+			it('fires view+confirm-goal-set-recommended-loan with portfolio category', () => {
+				mountComposable(
+					{ goalRecommendedLoanEnable: true },
+					{ entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO },
+				);
+				composable.enterRecommendedLoanStepAfterGoalSave();
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'portfolio',
+					'view',
+					'confirm-goal-set-recommended-loan',
+				);
+			});
+
+			it('fires with post-checkout category when entrypoint is POST_CHECKOUT', () => {
+				mountComposable(
+					{ goalRecommendedLoanEnable: true },
+					{ entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT },
+				);
+				composable.enterRecommendedLoanStepAfterGoalSave();
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'post-checkout',
+					'view',
+					'confirm-goal-set-recommended-loan',
+				);
+			});
+
+			it('fires with event-tracking category when entrypoint is GOALS_PAGE', () => {
+				mountComposable(
+					{ goalRecommendedLoanEnable: true },
+					{ entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE },
+				);
+				composable.enterRecommendedLoanStepAfterGoalSave();
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'event-tracking',
+					'view',
+					'confirm-goal-set-recommended-loan',
+				);
+			});
+
+			it('does not fire when goalRecommendedLoanEnable is false', () => {
+				mountComposable(
+					{ goalRecommendedLoanEnable: false },
+					{ entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO },
+				);
+				composable.enterRecommendedLoanStepAfterGoalSave();
+				expect(mockKvTrackEvent).not.toHaveBeenCalled();
+			});
+
+			it('does not fire when entrypoint is omitted', () => {
+				mountComposable({ goalRecommendedLoanEnable: true });
+				composable.enterRecommendedLoanStepAfterGoalSave();
+				expect(mockKvTrackEvent).not.toHaveBeenCalled();
+			});
+		});
+
+		describe('explore-more click', () => {
+			beforeEach(() => {
+				vi.spyOn(window.location, 'href', 'set').mockImplementation(() => {});
+			});
+
+			it('fires click+explore-more-loans with portfolio category', () => {
+				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO });
+				composable.handleExploreMoreLoans();
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'portfolio',
+					'click',
+					'explore-more-loans',
+				);
+			});
+
+			it('fires with event-tracking category for GOALS_PAGE entrypoint', () => {
+				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE });
+				composable.handleExploreMoreLoans();
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'event-tracking',
+					'click',
+					'explore-more-loans',
+				);
+			});
+
+			it('does not fire when entrypoint is omitted', () => {
+				mountComposable();
+				composable.handleExploreMoreLoans();
+				expect(mockKvTrackEvent).not.toHaveBeenCalled();
+			});
+		});
+
+		describe('trackAddToBasketClick', () => {
+			it('fires click+add-goal-confirmed-loan-to-basket with portfolio category', () => {
+				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO });
+				composable.trackAddToBasketClick();
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'portfolio',
+					'click',
+					'add-goal-confirmed-loan-to-basket',
+				);
+			});
+
+			it('fires with post-checkout category for POST_CHECKOUT entrypoint', () => {
+				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT });
+				composable.trackAddToBasketClick();
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'post-checkout',
+					'click',
+					'add-goal-confirmed-loan-to-basket',
+				);
+			});
+
+			it('fires with event-tracking category for GOALS_PAGE entrypoint', () => {
+				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE });
+				composable.trackAddToBasketClick();
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'event-tracking',
+					'click',
+					'add-goal-confirmed-loan-to-basket',
+				);
+			});
+
+			it('does not fire when entrypoint is omitted', () => {
+				mountComposable();
+				composable.trackAddToBasketClick();
+				expect(mockKvTrackEvent).not.toHaveBeenCalled();
+			});
+		});
+
+		describe('trackCheckoutClick', () => {
+			it('fires click+go-to-checkout for portfolio entrypoint', () => {
+				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO });
+				composable.trackCheckoutClick();
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'portfolio',
+					'click',
+					'go-to-checkout',
+				);
+			});
+
+			it('fires click+go-to-checkout for goals-page entrypoint', () => {
+				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE });
+				composable.trackCheckoutClick();
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'event-tracking',
+					'click',
+					'go-to-checkout',
+				);
+			});
+
+			it('fires click+complete-order for post-checkout entrypoint', () => {
+				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT });
+				composable.trackCheckoutClick();
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'post-checkout',
+					'click',
+					'complete-order',
+				);
+			});
+
+			it('does not fire when entrypoint is omitted', () => {
+				mountComposable();
+				composable.trackCheckoutClick();
+				expect(mockKvTrackEvent).not.toHaveBeenCalled();
+			});
 		});
 	});
 });
