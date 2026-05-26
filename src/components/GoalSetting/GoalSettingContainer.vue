@@ -40,13 +40,13 @@
 		</div>
 
 		<KvLoadingPlaceholder
-			v-if="loading || emailLoading"
+			v-if="loading || emailLoading || isLoadingRecommendedLoan"
 			class="!tw-rounded tw-mx-auto"
 			style="max-width: 644px; min-height: 495px;"
 		/>
 		<template v-else>
 			<RecommendLoanForGoalContainer
-				v-if="showRecommendLoanAfterGoalView"
+				v-if="showRecommendLoanAfterGoalView && hasRecommendedLoans"
 				ref="recommendLoanForGoalRef"
 				class="tw-mx-auto"
 				style="max-width: 700px;"
@@ -351,6 +351,8 @@ const showPage = true;
 const loadedSetData = ref(false);
 const {
 	showRecommendLoanAfterGoalView,
+	hasRecommendedLoans,
+	isLoadingRecommendedLoan,
 	recommendLoanHeaderDetails,
 	recommendLoanCardProps,
 	recommendLoanIsInBasket,
