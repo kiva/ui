@@ -53,10 +53,16 @@ export default function useGoalSettingRecommendedLoan({
 	const recommendedLoans = ref([]);
 	const recommendedLoanIndex = ref(0);
 	const recommendedLoan = ref(null);
+	const isLoadingRecommendedLoan = ref(false);
 
 	const showRecommendLoanAfterGoalView = computed(() => (
 		goalRecommendedLoanEnable.value && showPostGoalLoanRecommendation.value
 	));
+
+	// True once the fetch has resolved with at least one recommended loan.
+	// Callers gate the recommended-loan UI on `showRecommendLoanAfterGoalView && hasRecommendedLoans`
+	// so the new section is skipped entirely when there is nothing to recommend.
+	const hasRecommendedLoans = computed(() => recommendedLoans.value.length > 0);
 
 	const recommendLoanHeaderDetails = computed(() => {
 		const segments = [];
@@ -113,6 +119,9 @@ export default function useGoalSettingRecommendedLoan({
 
 	const enterRecommendedLoanStepAfterGoalSave = () => {
 		if (goalRecommendedLoanEnable.value) {
+			// Mark in-flight synchronously so the host's loading state covers
+			// the upcoming fetch (avoids a brief "no loan yet" flicker).
+			isLoadingRecommendedLoan.value = true;
 			showPostGoalLoanRecommendation.value = true;
 		}
 	};
@@ -162,16 +171,20 @@ export default function useGoalSettingRecommendedLoan({
 				recommendedLoans.value = [];
 				recommendedLoanIndex.value = 0;
 				recommendedLoan.value = null;
+				isLoadingRecommendedLoan.value = false;
 				return;
 			}
 			recommendedLoans.value = [];
 			recommendedLoanIndex.value = 0;
 			recommendedLoan.value = null;
+			isLoadingRecommendedLoan.value = true;
 			try {
 				recommendedLoans.value = await getRecommendedLoans(categoryId, filteredLoanIds.value);
 				recommendedLoan.value = recommendedLoans.value[0] ?? null;
 			} catch {
 				$showTipMsg('There was a problem loading a loan.', 'error');
+			} finally {
+				isLoadingRecommendedLoan.value = false;
 			}
 		},
 	);
@@ -186,6 +199,8 @@ export default function useGoalSettingRecommendedLoan({
 
 	return {
 		showRecommendLoanAfterGoalView,
+		hasRecommendedLoans,
+		isLoadingRecommendedLoan,
 		recommendLoanHeaderDetails,
 		recommendLoanCardProps,
 		recommendLoanIsInBasket,
