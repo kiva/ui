@@ -57,6 +57,7 @@
 				:is-in-basket="recommendLoanIsInBasket"
 				:loaded-set-data="loadedSetData"
 				@primary-cta-click="addToBasket"
+				@checkout-click="handleCheckoutClick"
 				@secondary-cta-click="handleExploreMoreLoans"
 			/>
 			<div
@@ -169,8 +170,9 @@ import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import RecommendLoanForGoalContainer from
 	'#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalContainer';
 import useGoalData, { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
-import useGoalSettingRecommendedLoan from
-	'#src/composables/useGoalSettingRecommendedLoan';
+import useGoalSettingRecommendedLoan, {
+	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE,
+} from '#src/composables/useGoalSettingRecommendedLoan';
 import { buildEmailFlowGoalData } from '#src/util/goalEmailFlow';
 import logFormatter from '#src/util/logFormatter';
 import {
@@ -358,6 +360,8 @@ const {
 	recommendLoanIsInBasket,
 	enterRecommendedLoanStepAfterGoalSave,
 	handleExploreMoreLoans,
+	trackAddToBasketClick,
+	trackCheckoutClick,
 } = useGoalSettingRecommendedLoan({
 	emit: () => {},
 	goalRecommendedLoanEnable: toRef(props, 'goalRecommendedLoanEnable'),
@@ -370,6 +374,7 @@ const {
 	getCtaHref,
 	userGoal,
 	kvTrackEvent: $kvTrackEvent,
+	entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE,
 	appConfig: $appConfig,
 });
 
@@ -377,8 +382,13 @@ const addToBasket = () => {
 	const { loanId } = recommendLoanCardProps.value;
 	if (!loanId) return;
 	const lendAmount = recommendLoanForGoalRef.value?.getSelectedAmount();
+	trackAddToBasketClick();
 	// Delegate to parent (GoalSetting.vue) which uses borrower-profile-exp-mixin
 	emit('add-to-basket', { loanId, lendAmount });
+};
+
+const handleCheckoutClick = () => {
+	trackCheckoutClick();
 };
 
 const contentComponent = computed(() => {

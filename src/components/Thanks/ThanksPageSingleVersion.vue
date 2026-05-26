@@ -200,7 +200,9 @@ import GoalEntrypoint from '#src/components/Thanks/SingleVersion/GoalEntrypoint'
 import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import GoalInProgress from '#src/components/Thanks/SingleVersion/GoalInProgress';
 import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
-import useGoalSettingRecommendedLoan from '#src/composables/useGoalSettingRecommendedLoan';
+import useGoalSettingRecommendedLoan, {
+	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT,
+} from '#src/composables/useGoalSettingRecommendedLoan';
 import useBadgeData from '#src/composables/useBadgeData';
 import { setPostLendingCardCookie } from '#src/util/myKivaUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -324,6 +326,7 @@ const {
 	recommendLoanIsInBasket,
 	enterRecommendedLoanStepAfterGoalSave,
 	onAddToBasketError,
+	trackCheckoutClick,
 } = useGoalSettingRecommendedLoan({
 	emit: () => {},
 	goalRecommendedLoanEnable: toRef(props, 'goalRecommendedLoanEnable'),
@@ -336,6 +339,7 @@ const {
 	getCtaHref,
 	userGoal,
 	kvTrackEvent: $kvTrackEvent,
+	entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT,
 	appConfig: $appConfig,
 	apollo,
 });
@@ -485,6 +489,8 @@ const setGoal = async preferences => {
 };
 
 const handleAddToBasket = payload => {
+	// Tracking checkout event because of immediate redirect in the goal entry point
+	trackCheckoutClick();
 	emit('add-to-basket', { ...payload, onError: onAddToBasketError });
 };
 
