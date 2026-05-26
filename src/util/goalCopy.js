@@ -1,6 +1,14 @@
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import {
+	ID_SUPPORT_ALL,
+	ID_CLIMATE_ACTION,
+	ID_REFUGEE_EQUALITY,
+	ID_BASIC_NEEDS,
+	ID_US_ECONOMIC_EQUALITY,
+} from '#src/composables/useBadgeData';
 
 const highlight = (text, cssClass) => `<span class="${cssClass}">${text}</span>`;
+const bold = (text, cssClass) => `<strong class="${cssClass}">${text}</strong>`;
 const ecoGreen = text => highlight(text, 'tw-text-eco-green-3');
 
 const goalCopy = {
@@ -69,6 +77,49 @@ const goalCopy = {
 
 	/** Experiment: motivational subtitle in the empty goal tile */
 	CARD_HABIT_PROMPT_EXPERIMENT: "Make helping others a habit.<br>We'll help you make it happen.",
+
+	// ─── GoalProgressRing — modal description text ───────────────────────────────
+
+	/** Modal: goal completed — "Thank you for supporting X [category]..." */
+	modalDescriptionCompleted(loans, categoryId, cssClass = 'tw-text-brand') {
+		const loansTag = highlight(loans, cssClass);
+		const suffix = 'and turning your commitment into impact.';
+		const nouns = {
+			[ID_SUPPORT_ALL]: 'borrowers',
+			[ID_CLIMATE_ACTION]: 'eco-friendly loans',
+			[ID_REFUGEE_EQUALITY]: 'refugees',
+			[ID_BASIC_NEEDS]: 'basic needs loans',
+			[ID_US_ECONOMIC_EQUALITY]: 'U.S. entrepreneurs',
+		};
+		const noun = nouns[categoryId] ?? 'women';
+		return `Thank you for supporting ${loansTag} ${highlight(noun, cssClass)} ${suffix}`;
+	},
+
+	/** Modal: loans in progress — "You’re already on your way to making X loans..." */
+	modalDescriptionInProgress(loans, categoryId, cssClass = 'tw-text-brand') {
+		const prefix = "You're already on your way to making";
+		const loansTag = bold(`${loans} loans`, cssClass);
+		if (categoryId === ID_SUPPORT_ALL) return `${prefix} ${loansTag} this year.`;
+		// eslint-disable-next-line max-len
+		if (categoryId === ID_CLIMATE_ACTION) return `${prefix} ${bold(`${loans} eco-friendly loans`, cssClass)} this year.`;
+		const categoryNouns = {
+			[ID_REFUGEE_EQUALITY]: 'refugees',
+			[ID_BASIC_NEEDS]: 'basic needs',
+			[ID_US_ECONOMIC_EQUALITY]: 'U.S. entrepreneurs',
+		};
+		const noun = categoryNouns[categoryId] ?? 'women';
+		return `${prefix} ${loansTag} to ${bold(noun, cssClass)} this year.`;
+	},
+
+	/** Modal: goal just set, no progress — "Your support to X loans begins here." */
+	modalDescriptionJustSet(loans, categoryId, categoryName, cssClass = 'tw-text-brand') {
+		const loansTag = highlight(`${loans} loans`, cssClass);
+		if (categoryId === ID_SUPPORT_ALL) return `Your support to ${loansTag} begins here.`;
+		const formattedCategory = categoryId === ID_US_ECONOMIC_EQUALITY
+			? categoryName
+			: categoryName?.toLowerCase() || '';
+		return `Your support to ${loansTag} for ${highlight(formattedCategory, cssClass)} begins here.`;
+	},
 
 	// ─── GoalProgressRing — titles ─────────────────────────────────────────────
 

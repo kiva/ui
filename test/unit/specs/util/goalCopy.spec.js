@@ -1,5 +1,15 @@
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import goalCopy from '#src/util/goalCopy';
+import {
+	ID_SUPPORT_ALL,
+	ID_CLIMATE_ACTION,
+	ID_REFUGEE_EQUALITY,
+	ID_BASIC_NEEDS,
+	ID_US_ECONOMIC_EQUALITY,
+	ID_WOMENS_EQUALITY,
+} from '#src/composables/useBadgeData';
+
+const stripHtml = html => html.replace(/<[^>]*>/g, '');
 
 describe('goalCopy', () => {
 	describe('titleNoHistoryWomensDefault', () => {
@@ -167,6 +177,78 @@ describe('goalCopy', () => {
 				goalCopy.RING_BUTTON_CARD_IN_PROGRESS,
 			];
 			expect(new Set(buttons).size).toBe(buttons.length);
+		});
+	});
+
+	describe('modalDescriptionCompleted', () => {
+		const cases = [
+			[ID_WOMENS_EQUALITY, 'women'],
+			[ID_SUPPORT_ALL, 'borrowers'],
+			[ID_CLIMATE_ACTION, 'eco-friendly loans'],
+			[ID_REFUGEE_EQUALITY, 'refugees'],
+			[ID_BASIC_NEEDS, 'basic needs loans'],
+			[ID_US_ECONOMIC_EQUALITY, 'U.S. entrepreneurs'],
+		];
+
+		it.each(cases)('includes correct noun for %s', (categoryId, noun) => {
+			const result = stripHtml(goalCopy.modalDescriptionCompleted(5, categoryId));
+			expect(result).toContain('5');
+			expect(result).toContain(noun);
+			expect(result).toContain('Thank you for supporting');
+			expect(result).toContain('turning your commitment into impact');
+		});
+
+		it('wraps loans and noun in the given cssClass', () => {
+			const result = goalCopy.modalDescriptionCompleted(3, ID_WOMENS_EQUALITY, 'tw-text-action');
+			expect(result).toContain('class="tw-text-action"');
+		});
+	});
+
+	describe('modalDescriptionInProgress', () => {
+		it('support-all ends with loans count and no category noun', () => {
+			const result = stripHtml(goalCopy.modalDescriptionInProgress(4, ID_SUPPORT_ALL));
+			expect(result).toBe("You're already on your way to making 4 loans this year.");
+		});
+
+		it('climate action uses eco-friendly loans label', () => {
+			const result = stripHtml(goalCopy.modalDescriptionInProgress(4, ID_CLIMATE_ACTION));
+			expect(result).toBe("You're already on your way to making 4 eco-friendly loans this year.");
+		});
+
+		it('category-specific cases include "to [noun]"', () => {
+			expect(stripHtml(goalCopy.modalDescriptionInProgress(4, ID_REFUGEE_EQUALITY))).toContain('to refugees');
+			expect(stripHtml(goalCopy.modalDescriptionInProgress(4, ID_BASIC_NEEDS))).toContain('to basic needs');
+			// eslint-disable-next-line max-len
+			expect(stripHtml(goalCopy.modalDescriptionInProgress(4, ID_US_ECONOMIC_EQUALITY))).toContain('to U.S. entrepreneurs');
+			expect(stripHtml(goalCopy.modalDescriptionInProgress(4, ID_WOMENS_EQUALITY))).toContain('to women');
+		});
+
+		it('wraps content in the given cssClass', () => {
+			const result = goalCopy.modalDescriptionInProgress(3, ID_WOMENS_EQUALITY, 'tw-text-action');
+			expect(result).toContain('class="tw-text-action"');
+		});
+	});
+
+	describe('modalDescriptionJustSet', () => {
+		it('support-all returns simple "begins here" without category', () => {
+			const result = stripHtml(goalCopy.modalDescriptionJustSet(4, ID_SUPPORT_ALL, 'Choose as I go'));
+			expect(result).toBe('Your support to 4 loans begins here.');
+		});
+
+		it('lowercases the category name for non-US-econ categories', () => {
+			const result = stripHtml(goalCopy.modalDescriptionJustSet(4, ID_WOMENS_EQUALITY, 'Women'));
+			expect(result).toBe('Your support to 4 loans for women begins here.');
+		});
+
+		it('preserves case for US economic equality', () => {
+		// eslint-disable-next-line max-len
+			const result = stripHtml(goalCopy.modalDescriptionJustSet(4, ID_US_ECONOMIC_EQUALITY, 'U.S. Entrepreneurs'));
+			expect(result).toBe('Your support to 4 loans for U.S. Entrepreneurs begins here.');
+		});
+
+		it('wraps content in the given cssClass', () => {
+			const result = goalCopy.modalDescriptionJustSet(3, ID_WOMENS_EQUALITY, 'Women', 'tw-text-action');
+			expect(result).toContain('class="tw-text-action"');
 		});
 	});
 });
