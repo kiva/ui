@@ -1,5 +1,6 @@
 import { render } from '@testing-library/vue';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
+import goalCopy from '#src/util/goalCopy';
 import {
 	ID_SUPPORT_ALL,
 	ID_CLIMATE_ACTION,
@@ -39,24 +40,22 @@ describe('GoalProgressRing', () => {
 	describe('titleText', () => {
 		it('shows completed title when isGoalCompleted and variant is modal', () => {
 			const { getAllByRole } = renderRing({ isGoalCompleted: true });
-			// eslint-disable-next-line max-len
-			expect(getAllByRole('heading', { level: 2 })[0].textContent).toBe('You did it! You reached your annual goal');
+			expect(getAllByRole('heading', { level: 2 })[0].textContent).toBe(goalCopy.RING_TITLE_GOAL_COMPLETED);
 		});
 
 		it('shows "Goal updated!" when isUpdatingGoal is true', () => {
 			const { getAllByRole } = renderRing({ isUpdatingGoal: true });
-			expect(getAllByRole('heading', { level: 2 })[0].textContent).toBe('Goal updated!');
+			expect(getAllByRole('heading', { level: 2 })[0].textContent).toBe(goalCopy.RING_TITLE_GOAL_UPDATED);
 		});
 
 		it('shows "Goal set!" for modal variant when not completed or updating', () => {
 			const { getAllByRole } = renderRing({});
-			expect(getAllByRole('heading', { level: 2 })[0].textContent).toBe('Goal set!');
+			expect(getAllByRole('heading', { level: 2 })[0].textContent).toBe(goalCopy.RING_TITLE_GOAL_SET);
 		});
 
 		it('isGoalCompleted takes precedence over isUpdatingGoal', () => {
 			const { getAllByRole } = renderRing({ isGoalCompleted: true, isUpdatingGoal: true });
-			// eslint-disable-next-line max-len
-			expect(getAllByRole('heading', { level: 2 })[0].textContent).toBe('You did it! You reached your annual goal');
+			expect(getAllByRole('heading', { level: 2 })[0].textContent).toBe(goalCopy.RING_TITLE_GOAL_COMPLETED);
 		});
 	});
 
@@ -113,27 +112,27 @@ describe('GoalProgressRing', () => {
 	describe('buttonText', () => {
 		it('shows "Continue my impact" when goal is completed', () => {
 			const { getByRole } = renderRing({ isGoalCompleted: true });
-			expect(getByRole('button', { name: 'Continue my impact' })).toBeTruthy();
+			expect(getByRole('button', { name: goalCopy.RING_BUTTON_GOAL_COMPLETED })).toBeTruthy();
 		});
 
 		it('shows "Track my progress" for mykiva url with existing progress', () => {
 			const { getByRole } = renderRing({ goToUrl: '/mykiva', goalProgress: 2 });
-			expect(getByRole('button', { name: 'Track my progress' })).toBeTruthy();
+			expect(getByRole('button', { name: goalCopy.RING_BUTTON_HAS_PROGRESS_ON_MYKIVA })).toBeTruthy();
 		});
 
 		it('shows "Let\'s do this" for modal with no progress', () => {
 			const { getByRole } = renderRing({});
-			expect(getByRole('button', { name: "Let's do this" })).toBeTruthy();
+			expect(getByRole('button', { name: goalCopy.RING_BUTTON_NEW_GOAL })).toBeTruthy();
 		});
 
 		it('shows "View impact progress" for card variant at 100%', () => {
 			const { getByRole } = renderRing({ variant: 'card', goalProgressPercentage: 100 });
-			expect(getByRole('button', { name: 'View impact progress' })).toBeTruthy();
+			expect(getByRole('button', { name: goalCopy.RING_BUTTON_CARD_GOAL_COMPLETED })).toBeTruthy();
 		});
 
 		it('shows "Work towards your goal" for card variant below 100%', () => {
 			const { getByRole } = renderRing({ variant: 'card', goalProgressPercentage: 50 });
-			expect(getByRole('button', { name: 'Work towards your goal' })).toBeTruthy();
+			expect(getByRole('button', { name: goalCopy.RING_BUTTON_CARD_IN_PROGRESS })).toBeTruthy();
 		});
 	});
 

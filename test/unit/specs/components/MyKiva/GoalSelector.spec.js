@@ -1,6 +1,7 @@
 import { render } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
+import goalCopy from '#src/util/goalCopy';
 import {
 	ID_BASIC_NEEDS,
 	ID_CLIMATE_ACTION,
@@ -10,6 +11,8 @@ import {
 	ID_WOMENS_EQUALITY,
 } from '#src/composables/useBadgeData';
 import { globalOptions } from '../../../specUtils';
+
+const stripHtml = html => html.replace(/<[^>]*>/g, '');
 
 const getExpectedGoalOptions = ({ lastYear = 0, ytd = 0, useDefault = false }) => {
 	if (useDefault) {
@@ -224,7 +227,7 @@ describe('GoalSelector', () => {
 		// Choose as I go (support all)
 		await user.click(getByTestId('category-support-all'));
 		await flushPromises();
-		expect(getTitleText()).toBe('How many loans will you make this year?');
+		expect(getTitleText()).toBe(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
 	});
 
 	it('shows requested goal question and current-year progress copy', async () => {
@@ -268,8 +271,8 @@ describe('GoalSelector', () => {
 		await flushPromises();
 
 		expect(getByRole('heading', { level: 2 }).textContent)
-			.toBe('How many loans to women will you make this year?');
-		expect(container.textContent).toContain('You’ve already made 1 loan that will count!');
+			.toBe(stripHtml(goalCopy.titleCategoryHowManyLoans('women')));
+		expect(container.textContent).toContain(stripHtml(goalCopy.subtitleLoansAlreadyMade(1)));
 	});
 
 	it('shows current-year progress copy after the user selects a new category', async () => {
@@ -329,7 +332,7 @@ describe('GoalSelector', () => {
 		await user.click(getByTestId('category-basic-needs'));
 		await flushPromises();
 
-		expect(container.textContent).toContain('You’ve already made 2 loans that will count!');
+		expect(container.textContent).toContain(stripHtml(goalCopy.subtitleLoansAlreadyMade(2)));
 	});
 
 	it('shows default goal options when user has 2 or fewer loans from last year and none this year', async () => {
@@ -422,7 +425,7 @@ describe('GoalSelector', () => {
 		// Invalid: below minCustomAmount (loansThisYear=5 -> min = 6)
 		await user.type(input, '3');
 		await flushPromises();
-		expect(container.textContent).toContain('Enter a number higher than');
+		expect(container.textContent).toContain(stripHtml(goalCopy.customAmountBelowYearProgress(5, 'loans')));
 	});
 
 	it('error when a custom goal amount entered by the user is invalid or 1', async () => {
@@ -476,13 +479,13 @@ describe('GoalSelector', () => {
 		await user.clear(input);
 		await user.type(input, '1');
 		await flushPromises();
-		expect(container.textContent).not.toContain('Enter a number higher than');
-		expect(container.textContent).toContain('must be a valid number');
+		expect(container.textContent).not.toContain(stripHtml(goalCopy.customAmountBelowYearProgress(0, 'loans')));
+		expect(container.textContent).toContain(goalCopy.CUSTOM_AMOUNT_INVALID);
 
 		// Invalid: cleared input (empty string)
 		await user.clear(input);
 		await flushPromises();
-		expect(container.textContent).toContain('must be a valid number');
+		expect(container.textContent).toContain(goalCopy.CUSTOM_AMOUNT_INVALID);
 	});
 
 	it('accepts a valid custom goal amount with no error shown', async () => {
@@ -536,8 +539,8 @@ describe('GoalSelector', () => {
 		// Valid: above minCustomAmount (6)
 		await user.type(input, '10');
 		await flushPromises();
-		expect(container.textContent).not.toContain('Enter a number higher than');
-		expect(container.textContent).not.toContain('must be a valid number');
+		expect(container.textContent).not.toContain(stripHtml(goalCopy.customAmountBelowYearProgress(5, 'loans')));
+		expect(container.textContent).not.toContain(goalCopy.CUSTOM_AMOUNT_INVALID);
 	});
 
 	it('fetches support-all loan count via apollo when selecting Choose as I go', async () => {
