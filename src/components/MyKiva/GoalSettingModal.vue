@@ -795,6 +795,18 @@ watch(show, async newVal => {
 
 	#kvLightboxBody {
 		@apply !tw-pb-0;
+
+		.recommended-goal-card-content {
+			@apply !tw-pt-4 !tw-pb-7 md:!tw-pt-2 md:!tw-pb-3;
+
+			h3 {
+				@apply tw-mb-3 md:tw-mb-1.5;
+			}
+		}
+
+		.recommended-goal-card-container {
+			@apply !tw-px-0;
+		}
 	}
 }
 
