@@ -147,11 +147,20 @@ export default function useGoalSettingRecommendedLoan({
 		trackRecommendedLoanEvent('click', isPostCheckout ? 'complete-order' : 'go-to-checkout');
 	};
 
-	const resetRecommendedLoanState = () => {
-		showPostGoalLoanRecommendation.value = false;
+	// Clears the recommended-loan data + in-flight flag. Does NOT touch
+	// `showPostGoalLoanRecommendation` so that watch handlers can call it
+	// without re-triggering themselves (resetting the step flag from inside
+	// the view watch would cause a recursive flip).
+	const clearRecommendedLoanData = () => {
 		recommendedLoans.value = [];
 		recommendedLoanIndex.value = 0;
 		recommendedLoan.value = null;
+		isLoadingRecommendedLoan.value = false;
+	};
+
+	const resetRecommendedLoanState = () => {
+		clearRecommendedLoanData();
+		showPostGoalLoanRecommendation.value = false;
 	};
 
 	const enterRecommendedLoanStepAfterGoalSave = () => {
@@ -195,9 +204,7 @@ export default function useGoalSettingRecommendedLoan({
 
 	watch(show, visible => {
 		if (!visible) {
-			recommendedLoans.value = [];
-			recommendedLoanIndex.value = 0;
-			recommendedLoan.value = null;
+			clearRecommendedLoanData();
 			return;
 		}
 		showPostGoalLoanRecommendation.value = false;
@@ -207,15 +214,10 @@ export default function useGoalSettingRecommendedLoan({
 		() => [showRecommendLoanAfterGoalView.value, selectedCategory.value?.badgeId],
 		async ([visible, categoryId]) => {
 			if (!visible || !categoryId) {
-				recommendedLoans.value = [];
-				recommendedLoanIndex.value = 0;
-				recommendedLoan.value = null;
-				isLoadingRecommendedLoan.value = false;
+				clearRecommendedLoanData();
 				return;
 			}
-			recommendedLoans.value = [];
-			recommendedLoanIndex.value = 0;
-			recommendedLoan.value = null;
+			clearRecommendedLoanData();
 			isLoadingRecommendedLoan.value = true;
 			try {
 				recommendedLoans.value = await getRecommendedLoans(categoryId, filteredLoanIds.value);
