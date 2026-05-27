@@ -39,7 +39,7 @@
 		>
 			Choose an impact area
 		</h2>
-		<!-- loading state for recommended loans -->
+		<!-- loading state for recommend loan content -->
 		<section
 			v-if="isLoadingRecommendedLoan"
 			class="tw-py-2"
@@ -48,7 +48,7 @@
 				class="goal-recommended-loan-loading !tw-rounded tw-mx-auto"
 			/>
 		</section>
-		<!-- recommended loan -->
+		<!-- recommend loan content -->
 		<section
 			v-else-if="showRecommendLoan"
 		>
@@ -477,13 +477,13 @@ const {
 	apollo,
 });
 
-// Render the recommended-loan UI only when the trigger fired AND the fetch
+// Render the recommend-loan sections only when the trigger fired AND the fetch
 // returned at least one loan; otherwise fall back to the goal-selector flow.
 const showRecommendLoan = computed(() => (
 	showRecommendLoanAfterGoalView.value && hasRecommendedLoans.value
 ));
 
-// True while the recommended-loan area occupies the modal — either fetching
+// True while the recommend-loan area occupies the modal — either fetching
 // the recommendation or already showing it. Used to gate header/controls/
 // layout classes so the pre-recommend UI doesn't flash mid-transition.
 const showRecommendLoanArea = computed(() => (
