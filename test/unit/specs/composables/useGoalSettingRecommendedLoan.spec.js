@@ -301,6 +301,36 @@ describe('useGoalSettingRecommendedLoan', () => {
 			expect(composable.recommendLoanCardProps.value.loanId).toBe(2);
 		});
 
+		it('should merge additionalExcludedLoanIds with basket loan ids', async () => {
+			const extras = ref([700, 701]);
+			mountComposable(
+				{
+					goalRecommendedLoanEnable: true,
+					basketItems: [{ __typename: 'LoanReservation', id: 900 }],
+				},
+				{ additionalExcludedLoanIds: extras },
+			);
+			composable.enterRecommendedLoanStepAfterGoalSave();
+			getRecommendedLoans.mockResolvedValue([{ id: 2, name: 'Next' }]);
+			await flushPromises();
+			expect(getRecommendedLoans).toHaveBeenCalledWith('women-badge', [900, 700, 701]);
+		});
+
+		it('should dedupe ids that appear in both basket and additionalExcludedLoanIds', async () => {
+			const extras = ref([900, 800]);
+			mountComposable(
+				{
+					goalRecommendedLoanEnable: true,
+					basketItems: [{ __typename: 'LoanReservation', id: 900 }],
+				},
+				{ additionalExcludedLoanIds: extras },
+			);
+			composable.enterRecommendedLoanStepAfterGoalSave();
+			getRecommendedLoans.mockResolvedValue([{ id: 3, name: 'Third' }]);
+			await flushPromises();
+			expect(getRecommendedLoans).toHaveBeenCalledWith('women-badge', [900, 800]);
+		});
+
 		it('should exclude non-LoanReservation basket items from filteredLoanIds', async () => {
 			props.goalRecommendedLoanEnable = true;
 			props.basketItems = [

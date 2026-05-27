@@ -27,6 +27,8 @@ import useTipMessage from '#src/composables/useTipMessage';
  * @param {Function} options.getRecommendedLoans — From `useGoalData`; returns a promise of loans for a category id.
  * @param {Function} options.getCtaHref — From `useGoalData`; builds lend URL + optional header query.
  * @param {object} options.userGoal — Vue ref from `useGoalData`; `.value` is saved goal or null (`target`, `category`).
+ * @param {object} [options.additionalExcludedLoanIds] — Optional Vue ref; `.value` is an array of
+ *   loan ids to also exclude from the recommended-loan fetch (e.g. loans the user just made).
  * @param {Function} options.kvTrackEvent — Analytics helper from GoalSettingModal (`$kvTrackEvent`).
  * @param {string} [options.entrypoint] — Where the composable is mounted. Use one of the exported
  *   `GOAL_RECOMMENDED_LOAN_ENTRYPOINT_*` constants; selects the analytics category for
@@ -57,6 +59,7 @@ export default function useGoalSettingRecommendedLoan({
 	userGoal,
 	kvTrackEvent,
 	entrypoint,
+	additionalExcludedLoanIds,
 	appConfig = {},
 	apollo,
 }) {
@@ -196,10 +199,13 @@ export default function useGoalSettingRecommendedLoan({
 	const filteredLoanIds = computed(() => {
 		// Only LoanReservation entries carry a loan id; other basket item types
 		// (donations, Kiva Cards, etc.) must not be sent as loan exclusions.
-		return (basketItems.value ?? [])
+		const fromBasket = (basketItems.value ?? [])
 			// eslint-disable-next-line no-underscore-dangle
 			.filter(item => item.__typename === 'LoanReservation')
 			.map(item => item.id);
+		const additional = additionalExcludedLoanIds?.value ?? [];
+		// Currently is not possible for the same loan id to be in both arrays, but dedupe just in case.
+		return [...new Set([...fromBasket, ...additional])];
 	});
 
 	watch(show, visible => {
