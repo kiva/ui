@@ -1,19 +1,90 @@
 version: 2
 updates:
-- package-ecosystem: npm
-  directory: "/"
-  schedule:
-    interval: daily
-    time: "13:00"
-  open-pull-requests-limit: 10
-  ignore:
-  - dependency-name: vue-instantsearch
-    versions:
-    - ">= 2.7.a"
-  - dependency-name: vue-svg-loader
-    versions:
-    - ">= 0.15.0"
-  # clipboard-copy v4 drops IE11 support
-  - dependency-name: clipboard-copy
-    versions:
-    - ">= 3.2.0"
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "13:00"
+    open-pull-requests-limit: 10
+    groups:
+      kiva-internal:
+        patterns:
+          - "@kiva/*"
+      cypress:
+        patterns:
+          - "cypress"
+          - "cypress-*"
+          - "@testing-library/cypress"
+          - "eslint-plugin-cypress"
+      testing-library:
+        patterns:
+          - "@testing-library/*"
+      sentry:
+        patterns:
+          - "@sentry/*"
+      opentelemetry:
+        patterns:
+          - "@opentelemetry/*"
+      babel:
+        patterns:
+          - "@babel/*"
+          - "babel-*"
+      apollo-and-graphql:
+        patterns:
+          - "@apollo/*"
+          - "apollo-*"
+          - "apollo3-*"
+          - "graphql"
+          - "graphql-tag"
+          - "@graphql-tools/*"
+      eslint:
+        patterns:
+          - "eslint"
+          - "eslint-*"
+          - "@eslint/*"
+      stylelint:
+        patterns:
+          - "stylelint"
+          - "stylelint-*"
+      postcss-and-tailwind:
+        patterns:
+          - "tailwindcss"
+          - "postcss"
+          - "postcss-*"
+          - "autoprefixer"
+          - "cssnano"
+      vue:
+        patterns:
+          - "vue"
+          - "vue-*"
+          - "@vue/*"
+          - "vuelidate"
+          - "@vuelidate/*"
+      vite-and-vitest:
+        patterns:
+          - "vite"
+          - "vite-*"
+          - "@vitejs/*"
+          - "vitest"
+          - "@vitest/*"
+      storybook:
+        patterns:
+          - "storybook"
+          - "@storybook/*"
+      minor-patch-other:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: vue-instantsearch
+        versions:
+          - ">= 2.7.a"
+      - dependency-name: vue-svg-loader
+        versions:
+          - ">= 0.15.0"
+      # clipboard-copy v4 drops IE11 support
+      - dependency-name: clipboard-copy
+        versions:
+          - ">= 3.2.0"
