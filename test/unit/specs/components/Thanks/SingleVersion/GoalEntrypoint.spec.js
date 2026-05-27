@@ -59,11 +59,26 @@ describe('GoalEntrypoint', () => {
 			expect(wrapper.findComponent(RecommendLoanForGoalContainerStub).exists()).toBe(false);
 		});
 
-		it('renders the recommended loan container when the recommend view is on', () => {
-			const wrapper = mountComponent({ loading: false, showRecommendLoanAfterGoalView: true });
+		it('renders the recommended loan container when the view is on and loans are available', () => {
+			const wrapper = mountComponent({
+				loading: false,
+				showRecommendLoanAfterGoalView: true,
+				hasRecommendedLoans: true,
+			});
 
 			expect(wrapper.findComponent(RecommendLoanForGoalContainerStub).exists()).toBe(true);
 			expect(wrapper.findComponent(GoalSelectorStub).exists()).toBe(false);
+		});
+
+		it('falls back to the goal selector when recommend view is on but no recommended loans', () => {
+			const wrapper = mountComponent({
+				loading: false,
+				showRecommendLoanAfterGoalView: true,
+				hasRecommendedLoans: false,
+			});
+
+			expect(wrapper.findComponent(GoalSelectorStub).exists()).toBe(true);
+			expect(wrapper.findComponent(RecommendLoanForGoalContainerStub).exists()).toBe(false);
 		});
 
 		it('keeps showing the placeholder while loading even if the recommend view is on', () => {
@@ -99,6 +114,7 @@ describe('GoalEntrypoint', () => {
 		it('emits add-to-basket with the loan id and selected amount on primary CTA click', () => {
 			const wrapper = mountComponent({
 				showRecommendLoanAfterGoalView: true,
+				hasRecommendedLoans: true,
 				recommendLoanCardProps: { loanId: 999 },
 			});
 
@@ -110,6 +126,7 @@ describe('GoalEntrypoint', () => {
 		it('does not emit add-to-basket when the recommended loan has no id', () => {
 			const wrapper = mountComponent({
 				showRecommendLoanAfterGoalView: true,
+				hasRecommendedLoans: true,
 				recommendLoanCardProps: {},
 			});
 

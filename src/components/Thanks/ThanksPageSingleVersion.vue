@@ -51,7 +51,7 @@
 			<!-- Start goal module variations -->
 			<GoalEntrypoint
 				v-if="!isGuest && goalDataInitialized && isEmptyGoal"
-				:loading="goalDataLoading || isSettingGoal"
+				:loading="goalDataLoading || isSettingGoal || isLoadingRecommendedLoan"
 				:total-loans="totalLoans"
 				:categories-loan-count="categoriesLoanCount"
 				:is-goal-set="isGoalSet"
@@ -63,6 +63,7 @@
 				:goal-progress-percentage="goalProgressPercentage"
 				:custom-goal-amount-enable="customGoalAmountEnable"
 				:show-recommend-loan-after-goal-view="showRecommendLoanAfterGoalView"
+				:has-recommended-loans="hasRecommendedLoans"
 				:recommend-loan-card-props="recommendLoanCardProps"
 				:recommend-loan-header-details="recommendLoanHeaderDetails"
 				:recommend-loan-is-in-basket="recommendLoanIsInBasket"
@@ -318,6 +319,8 @@ const loadedSetData = ref(false);
 const isSettingGoal = ref(false);
 const {
 	showRecommendLoanAfterGoalView,
+	hasRecommendedLoans,
+	isLoadingRecommendedLoan,
 	recommendLoanHeaderDetails,
 	recommendLoanCardProps,
 	recommendLoanIsInBasket,
@@ -330,7 +333,7 @@ const {
 	basketItems: toRef(props, 'basketItems'),
 	selectedGoalNumber: goalTarget,
 	selectedCategory,
-	show: true,
+	show: ref(true),
 	goalProgress,
 	getRecommendedLoans,
 	getCtaHref,
