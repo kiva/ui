@@ -26,6 +26,16 @@ const goalCopy = {
 	// eslint-disable-next-line max-len
 	titleLastYearMultiplePeople: (count, categoryLabel, cssClass = 'tw-text-eco-green-3') => `Last year, you helped ${highlight(`${count} ${categoryLabel}`, cssClass)} shape their futures!`,
 
+	/** User helped loans last year — resolves the per-category noun and delegates to titleLastYearMultiplePeople */
+	titleLastYearForCategory(loans, categoryId, categoryName, cssClass = 'tw-text-eco-green-3') {
+		const labels = {
+			[ID_SUPPORT_ALL]: 'people',
+			[ID_US_ECONOMIC_EQUALITY]: 'U.S. entrepreneurs',
+		};
+		const label = labels[categoryId] ?? categoryName?.toLowerCase() ?? '';
+		return this.titleLastYearMultiplePeople(loans, label, cssClass);
+	},
+
 	// ─── Goal selector title copy ──────────────────────────────────────────────
 
 	/** No category-specific lending history — generic loan count question */

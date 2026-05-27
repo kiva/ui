@@ -502,19 +502,8 @@ const titleText = computed(() => {
 	}
 
 	if (loansLastYear.value > 0 && !props.showGoalValuePropsCopy) {
-		let categoryName = '';
-
-		if (props.selectedCategoryId === ID_SUPPORT_ALL) {
-			categoryName = 'people';
-		} else if (props.selectedCategoryId === ID_US_ECONOMIC_EQUALITY) {
-			categoryName = 'U.S. entrepreneurs';
-		} else if (props.selectedCategoryId === ID_WOMENS_EQUALITY) {
-			categoryName = 'women';
-		} else {
-			categoryName = `${props.selectedCategoryName?.toLowerCase()}`;
-		}
-
-		return goalCopy.titleLastYearMultiplePeople(loansLastYear.value, categoryName);
+		// eslint-disable-next-line max-len
+		return goalCopy.titleLastYearForCategory(loansLastYear.value, props.selectedCategoryId, props.selectedCategoryName);
 	}
 
 	// Support All is not a specific category, so use generic language
