@@ -70,7 +70,6 @@ defineExpose({
 
 <style lang="postcss" scoped>
 .recommended-goal-card-container {
-
 	@screen md {
 		max-width: 360px;
 	}
