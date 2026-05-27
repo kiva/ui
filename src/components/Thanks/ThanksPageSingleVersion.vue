@@ -329,7 +329,7 @@ const {
 	recommendLoanIsInBasket,
 	enterRecommendedLoanStepAfterGoalSave,
 	onAddToBasketError,
-	trackCheckoutClick,
+	trackAddToBasketClick,
 } = useGoalSettingRecommendedLoan({
 	emit: () => {},
 	goalRecommendedLoanEnable: toRef(props, 'goalRecommendedLoanEnable'),
@@ -493,8 +493,7 @@ const setGoal = async preferences => {
 };
 
 const handleAddToBasket = payload => {
-	// Tracking checkout event because of immediate redirect in the goal entry point
-	trackCheckoutClick();
+	trackAddToBasketClick();
 	emit('add-to-basket', { ...payload, onError: onAddToBasketError });
 };
 
