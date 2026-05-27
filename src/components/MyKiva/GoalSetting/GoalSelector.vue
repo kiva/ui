@@ -266,6 +266,7 @@ import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import GoalCustomAmountInput from '#src/components/MyKiva/GoalSetting/GoalCustomAmountInput';
 import useGoalData, { LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
 import useBreakpoints from '#src/composables/useBreakpoints';
+import goalCopy from '#src/util/goalCopy';
 
 const CUSTOM_LOAN_NUMBER_INDEX = 3;
 
@@ -497,53 +498,36 @@ const titleText = computed(() => {
 		&& props.selectedCategoryId === ID_WOMENS_EQUALITY
 		&& loansLastYear.value === 0
 	) {
-		return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year!';
+		return goalCopy.titleNoHistoryWomensDefault();
 	}
 
 	if (loansLastYear.value > 0 && !props.showGoalValuePropsCopy) {
-		let categoryName = '';
-
-		if (props.selectedCategoryId === ID_SUPPORT_ALL) {
-			categoryName = 'people';
-		} else if (props.selectedCategoryId === ID_US_ECONOMIC_EQUALITY) {
-			categoryName = 'U.S. entrepreneurs';
-		} else if (props.selectedCategoryId === ID_WOMENS_EQUALITY) {
-			categoryName = 'women';
-		} else {
-			categoryName = `${props.selectedCategoryName?.toLowerCase()}`;
-		}
-
 		// eslint-disable-next-line max-len
-		return `Last year, you helped <br><span class="tw-text-eco-green-3">${loansLastYear.value} ${categoryName}</span> shape their futures!`;
+		return goalCopy.titleLastYearForCategory(loansLastYear.value, props.selectedCategoryId, props.selectedCategoryName);
 	}
 
 	// Support All is not a specific category, so use generic language
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
-		return 'How many loans will you make this year?';
+		return goalCopy.TITLE_HOW_MANY_LOANS_GENERIC;
 	}
 	if (props.selectedCategoryId === ID_US_ECONOMIC_EQUALITY) {
-		return 'How many loans to <span class="tw-text-eco-green-3">U.S. entrepreneurs</span> will you make this year?';
+		return goalCopy.TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS;
 	}
-	// eslint-disable-next-line max-len
-	return `How many loans to <span class="tw-text-eco-green-3">${props.selectedCategoryName?.toLowerCase()}</span> will you make this year?`;
+	return goalCopy.titleCategoryHowManyLoans(props.selectedCategoryName?.toLowerCase());
 });
 
 const subtitleText = computed(() => {
 	if (loansThisYear.value > 0) {
-		const loanWord = loansThisYear.value === 1 ? 'loan' : 'loans';
-		// eslint-disable-next-line max-len
-		return `You've already made <span ${props.showGoalValuePropsCopy ? '' : 'class="tw-font-medium"'}>${loansThisYear.value} ${loanWord}</span> that will count`;
+		return goalCopy.subtitleLoansAlreadyMade(loansThisYear.value, !props.showGoalValuePropsCopy);
 	}
 	return '';
 });
 
-const yearToDate = new Date().getFullYear();
-
 const buttonText = computed(() => {
 	if (editGoalFromSettings.value || props.isUpdatingGoal) {
-		return `Update ${yearToDate} goal`;
+		return goalCopy.BUTTON_UPDATE_GOAL;
 	}
-	return `Set ${yearToDate} goal`;
+	return goalCopy.BUTTON_SET_GOAL;
 });
 
 const selectedTarget = computed(() => {
@@ -602,11 +586,10 @@ const validateCustomAmount = value => {
 	if (loansThisYear.value > 1 && amount < minCustomAmount.value) {
 		const loanWord = loansThisYear.value === 1 ? 'loan' : 'loans';
 		validCustomAmount.value = false;
-		// eslint-disable-next-line max-len
-		customGoalAmountError.value = `Enter a number higher than the <strong>${loansThisYear.value} ${loanWord}</strong> you’ve already made this year`;
+		customGoalAmountError.value = goalCopy.customAmountBelowYearProgress(loansThisYear.value, loanWord);
 	} else if (!value || Number.isNaN(amount) || amount <= 1) {
 		validCustomAmount.value = false;
-		customGoalAmountError.value = 'Your goal must be a valid number above 1 loan';
+		customGoalAmountError.value = goalCopy.CUSTOM_AMOUNT_INVALID;
 	} else {
 		validCustomAmount.value = true;
 		customGoalAmountError.value = '';
@@ -772,10 +755,10 @@ onMounted(async () => {
 
 const editGoalCopy = computed(() => {
 	if (allowBackToCategorySelection.value || !props.inGoalSettingsPage) {
-		return 'Edit goal category';
+		return goalCopy.BUTTON_EDIT_GOAL_CATEGORY;
 	}
 
-	return 'Edit goal';
+	return goalCopy.BUTTON_EDIT_GOAL;
 });
 
 watch(() => props.selectedCategoryId, async newCategory => {
