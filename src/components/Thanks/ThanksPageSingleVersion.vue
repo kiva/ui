@@ -316,6 +316,9 @@ const selectedCategory = ref(categories[0]);
 // Recommended-loan-after-goal step (shared logic with GoalSettingContainer)
 const loadedSetData = ref(false);
 const isSettingGoal = ref(false);
+// Exclude the loans the user just supported in this transaction so they don't
+// resurface as the recommendation.
+const transactionLoanIds = computed(() => (props.loans ?? []).map(loan => loan?.id).filter(Boolean));
 const {
 	showRecommendLoanAfterGoalView,
 	recommendLoanHeaderDetails,
@@ -337,6 +340,7 @@ const {
 	userGoal,
 	kvTrackEvent: $kvTrackEvent,
 	entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT,
+	additionalExcludedLoanIds: transactionLoanIds,
 	appConfig: $appConfig,
 	apollo,
 });
