@@ -337,6 +337,10 @@ export default [
 		}
 	},
 	{
+		path: '/lend/',
+		redirect: '/lend/filter'
+	},
+	{
 		name: 'borrowerProfile',
 		path: '/lend/:id(\\d+)',
 		component: () => import('#src/pages/BorrowerProfile/BorrowerProfile'),
