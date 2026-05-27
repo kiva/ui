@@ -2,16 +2,16 @@
 	<KvLightbox
 		class="goal-setting-lightbox"
 		:class="{
-			'goal-tile-modal': showGoalTile && !showRecommendLoanAfterGoalView,
-			'goal-tile-modal-expanded': showGoalTile && showCategories && !showRecommendLoanAfterGoalView,
-			'goal-tile-modal-recommend-loan': showRecommendLoanAfterGoalView,
+			'goal-tile-modal': showGoalTile && !showRecommendLoan,
+			'goal-tile-modal-expanded': showGoalTile && showCategories && !showRecommendLoan,
+			'goal-tile-modal-recommend-loan': showRecommendLoan,
 		}"
 		title=""
 		:visible="show"
 		@lightbox-closed="closeLightbox"
 	>
 		<template
-			v-if="showRecommendLoanAfterGoalView"
+			v-if="showRecommendLoan"
 			#header
 		>
 			<RecommendLoanForGoalHeader
@@ -33,13 +33,13 @@
 			</h2>
 		</template>
 		<h2
-			v-if="!showRecommendLoanAfterGoalView && isMobile && (showCategories || isThanksPage)"
+			v-if="!showRecommendLoan && isMobile && (showCategories || isThanksPage)"
 			class="tw-mb-3 tw-text-left md:tw-text-center"
 		>
 			Choose an impact area
 		</h2>
 		<section
-			v-if="showRecommendLoanAfterGoalView"
+			v-if="showRecommendLoan"
 		>
 			<RecommendLoanForGoalContent
 				ref="recommendLoanForGoalContentRef"
@@ -214,7 +214,7 @@
 				/>
 				<!-- second continue button for goal tile variant -->
 				<div
-					v-if="showGoalTile && !showRecommendLoanAfterGoalView && (showCategories || isThanksPage)"
+					v-if="showGoalTile && !showRecommendLoan && (showCategories || isThanksPage)"
 					class="tw-flex tw-justify-end tw-gap-2 goal-tile-categories-controls"
 				>
 					<KvButton
@@ -231,7 +231,7 @@
 			</div>
 		</section>
 		<template
-			v-if="showRecommendLoanAfterGoalView"
+			v-if="showRecommendLoan"
 			#controls
 		>
 			<RecommendLoanForGoalFooter
@@ -433,7 +433,7 @@ const hasControlledCategory = props.controlledSelectedCategory
 const selectedCategory = ref(hasControlledCategory ? props.controlledSelectedCategory : categories[0]);
 
 const {
-	showRecommendLoanAfterGoalView: showRecommendLoanTrigger,
+	showRecommendLoanAfterGoalView,
 	hasRecommendedLoans,
 	isLoadingRecommendedLoan,
 	recommendLoanHeaderDetails,
@@ -466,8 +466,8 @@ const {
 
 // Render the recommended-loan UI only when the trigger fired AND the fetch
 // returned at least one loan; otherwise fall back to the goal-selector flow.
-const showRecommendLoanAfterGoalView = computed(() => (
-	showRecommendLoanTrigger.value && hasRecommendedLoans.value
+const showRecommendLoan = computed(() => (
+	showRecommendLoanAfterGoalView.value && hasRecommendedLoans.value
 ));
 
 const contentComponent = computed(() => {
