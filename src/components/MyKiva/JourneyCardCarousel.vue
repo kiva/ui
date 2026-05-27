@@ -282,7 +282,13 @@ const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.slides));
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
 
-	return (!props.userGoal || !props.userGoalAchieved || props.userGoalAchieved) && !props.hideGoalCard;
+	return (!props.userGoal || !props.userGoalAchieved) && !props.hideGoalCard;
+});
+
+const shouldShowCompletedGoalCard = computed(() => {
+	if (!props.inLendingStats) return false;
+
+	return props.userGoal && props.userGoalAchieved && !props.hideGoalCard;
 });
 
 const dynamicOrderedSlides = computed(() => {
@@ -354,6 +360,11 @@ const dynamicOrderedSlides = computed(() => {
 	// Survey card: shown if no goal card (goal completed) OR user is opted into email marketing
 	if (showSurveyCard.value && (!shouldShowGoalCard.value || !shouldShowEmailMarketingCard.value)) {
 		priorityCards.push({ isSurveyCard: true });
+	}
+
+	// Completed goal card
+	if (shouldShowCompletedGoalCard.value) {
+		priorityCards.push({ isCompletedGoal: true });
 	}
 
 	if (props.slidesNumber && props.showLendingNextStepsCards) {
