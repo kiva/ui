@@ -26,7 +26,7 @@
 				<p
 					class="tw-text-base !tw-font-medium tw-text-center lg:tw-text-left"
 				>
-					How many loans will you make this year?
+					{{ goalCopy.TITLE_HOW_MANY_LOANS_GENERIC }}
 				</p>
 			</div>
 		</div>
@@ -35,7 +35,7 @@
 			class="goal-button tw-whitespace-nowrap tw-mt-2 md:tw-mt-0 tw-w-full lg:tw-w-auto"
 			@click="goToGoalPage"
 		>
-			Set {{ GOALS_CURRENT_YEAR }} goal
+			{{ goalCopy.BUTTON_SET_GOAL }}
 		</KvButton>
 	</AsyncPortfolioSection>
 </template>
@@ -48,7 +48,8 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { useRouter } from 'vue-router';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
-import useGoalData, { LAST_YEAR_KEY, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import goalCopy from '#src/util/goalCopy';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
@@ -62,15 +63,12 @@ const womenLoansLastYear = ref(0);
 
 const title = computed(() => {
 	if (womenLoansLastYear.value === 1) {
-	// eslint-disable-next-line max-len
-		return `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} woman</span> shape her future!`;
+		return goalCopy.titleLastYearSingleWoman(womenLoansLastYear.value);
 	}
 	if (womenLoansLastYear.value > 1) {
-		// eslint-disable-next-line max-len
-		return `Last year, you helped <span class="tw-text-eco-green-3">${womenLoansLastYear.value} women</span> shape their futures!`;
+		return goalCopy.titleLastYearMultiplePeople(womenLoansLastYear.value, 'women');
 	}
-
-	return 'Lenders like you help <br><span class="tw-text-eco-green-3">3 women</span> a year';
+	return goalCopy.titleNoHistoryWomensDefault();
 });
 
 const goToGoalPage = () => {

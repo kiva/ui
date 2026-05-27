@@ -102,11 +102,9 @@ import { useRouter } from 'vue-router';
 
 import { KvButton, KvProgressCircle, KvMaterialIcon } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
+import goalCopy from '#src/util/goalCopy';
 import {
 	ID_SUPPORT_ALL,
-	ID_CLIMATE_ACTION,
-	ID_REFUGEE_EQUALITY,
-	ID_BASIC_NEEDS,
 	ID_US_ECONOMIC_EQUALITY,
 } from '#src/composables/useBadgeData';
 import useBreakpoints from '#src/composables/useBreakpoints';
@@ -201,7 +199,6 @@ const emit = defineEmits(['button-click', 'edit-button-click', 'edit-goal-from-s
 const router = useRouter();
 const { isLarge } = useBreakpoints();
 
-const yearToDate = new Date().getFullYear();
 const getDigitCount = value => String(value ?? 0).length;
 
 const visibleGoalLoans = computed(() => {
@@ -247,114 +244,66 @@ const titleClass = computed(() => {
 });
 
 const modalVariantDescriptionText = computed(() => {
-	const brandClass = 'class="tw-text-brand"';
+	const cssClass = 'tw-text-brand';
 	const loans = props.goalLoans;
-	const loansTag = `<span ${brandClass}>${loans}</span>`;
-
-	if (props.isGoalCompleted) {
-		const suffix = 'and turning your commitment into impact.';
-		if (props.categoryId === ID_SUPPORT_ALL) {
-			return `Thank you for supporting ${loansTag} <span ${brandClass}>borrowers</span> ${suffix}`;
-		}
-		if (props.categoryId === ID_CLIMATE_ACTION) {
-			return `Thank you for supporting ${loansTag} <span ${brandClass}>eco-friendly loans</span> ${suffix}`;
-		}
-		if (props.categoryId === ID_REFUGEE_EQUALITY) {
-			return `Thank you for supporting ${loansTag} <span ${brandClass}>refugees</span> ${suffix}`;
-		}
-		if (props.categoryId === ID_BASIC_NEEDS) {
-			return `Thank you for supporting ${loansTag} <span ${brandClass}>basic needs loans</span> ${suffix}`;
-		}
-		if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
-			return `Thank you for supporting ${loansTag} <span ${brandClass}>U.S. entrepreneurs</span> ${suffix}`;
-		}
-		return `Thank you for supporting ${loansTag} <span ${brandClass}>women</span> ${suffix}`;
-	}
-
-	if (props.goalProgress > 0) {
-		const strongTag = `<strong ${brandClass}>${loans} loans</strong>`;
-		const prefix = "You're already on your way to making";
-		if (props.categoryId === ID_SUPPORT_ALL) {
-			return `${prefix} ${strongTag} this year`;
-		}
-		if (props.categoryId === ID_CLIMATE_ACTION) {
-			return `${prefix} <strong ${brandClass}>${loans} eco-friendly loans</strong> this year`;
-		}
-		if (props.categoryId === ID_REFUGEE_EQUALITY) {
-			return `${prefix} ${strongTag} to <strong ${brandClass}>refugees</strong> this year`;
-		}
-		if (props.categoryId === ID_BASIC_NEEDS) {
-			return `${prefix} ${strongTag} to <strong ${brandClass}>basic needs</strong> this year`;
-		}
-		if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
-			return `${prefix} ${strongTag} to <strong ${brandClass}>U.S. entrepreneurs</strong> this year`;
-		}
-		return `${prefix} ${strongTag} to <strong ${brandClass}>women</strong> this year`;
-	}
-
-	if (props.categoryId === ID_SUPPORT_ALL) {
-		return `Your support to <span ${brandClass}>${loans} loans</span> begins here.`;
-	}
-	const formattedCategory = props.categoryId === ID_US_ECONOMIC_EQUALITY
-		? props.categoryName
-		: props.categoryName?.toLowerCase() || '';
-	// eslint-disable-next-line max-len
-	return `Your support to <span ${brandClass}>${loans} loans</span> for <span ${brandClass}>${formattedCategory}</span> begins here.`;
+	if (props.isGoalCompleted) return goalCopy.modalDescriptionCompleted(loans, props.categoryId, cssClass);
+	if (props.goalProgress > 0) return goalCopy.modalDescriptionInProgress(loans, props.categoryId, cssClass);
+	return goalCopy.modalDescriptionJustSet(loans, props.categoryId, props.categoryName, cssClass);
 });
 
 const titleText = computed(() => {
 	if (props.isGoalCompleted && isModalVariant.value) {
-		return 'You did it! You reached your annual goal';
+		return goalCopy.RING_TITLE_GOAL_COMPLETED;
 	}
 	if (props.isUpdatingGoal) {
-		return 'Goal updated!';
+		return goalCopy.RING_TITLE_GOAL_UPDATED;
 	}
 	if (isModalVariant.value) {
-		return 'Goal set!';
+		return goalCopy.RING_TITLE_GOAL_SET;
 	}
 	if (props.categoryId === ID_SUPPORT_ALL) {
-		return `Your ${yearToDate} goal`;
+		return goalCopy.RING_TITLE_SUPPORT_ALL_CARD;
 	}
 	if (props.categoryId === ID_US_ECONOMIC_EQUALITY) {
-		return `Your ${yearToDate} goal to U.S entrepreneurs`;
+		return goalCopy.RING_TITLE_US_ENTREPRENEURS_CARD;
 	}
-	return `Your ${yearToDate} goal to ${props.categoryName?.toLowerCase() || ''}`;
+	return goalCopy.ringTitleCategoryCard(props.categoryName?.toLowerCase() || '');
 });
 
 // Card variant only
 const descriptionText = computed(() => {
 	if (props.goalProgressPercentage === 0) {
-		return 'Get started by making a loan!';
+		return goalCopy.RING_DESC_NOT_STARTED;
 	}
 	if (props.goalProgressPercentage > 0 && props.goalProgressPercentage < HALF_GOAL_THRESHOLD) {
-		return 'You\'ve started something powerful.<br>Let\'s keep it growing together.';
+		return goalCopy.RING_DESC_PROGRESS_BEGUN;
 	}
 	if (props.goalProgressPercentage === HALF_GOAL_THRESHOLD) {
-		return 'Halfway to your goal!<br>Every loan fuels a dream.';
+		return goalCopy.RING_DESC_PROGRESS_HALFWAY;
 	}
 	if (props.goalProgressPercentage < COMPLETED_GOAL_THRESHOLD) {
-		return 'You\'ve brought so many dreams<br>within reach. Finish strong!';
+		return goalCopy.RING_DESC_PROGRESS_ALMOST_DONE;
 	}
-	return `Incredible! You reached your ${yearToDate} <br>goal and changed ${props.goalLoans} lives!`;
+	return goalCopy.ringDescProgressCompleted(props.goalLoans);
 });
 
 const buttonText = computed(() => {
 	if (isModalVariant.value) {
 		if (props.isGoalCompleted) {
-			return 'Continue my impact';
+			return goalCopy.RING_BUTTON_GOAL_COMPLETED;
 		}
 		// MyKiva modal: user already has progress, show tracking CTA
 		if (props.goToUrl === '/mykiva' && props.goalProgress > 0) {
-			return 'Track my progress';
+			return goalCopy.RING_BUTTON_HAS_PROGRESS_ON_MYKIVA;
 		}
-		return 'Let\'s do this';
+		return goalCopy.RING_BUTTON_NEW_GOAL;
 	}
 
 	// Card variant
 	if (props.goalProgressPercentage === COMPLETED_GOAL_THRESHOLD) {
-		return 'View impact progress';
+		return goalCopy.RING_BUTTON_CARD_GOAL_COMPLETED;
 	}
-	return 'Work towards your goal';
+	return goalCopy.RING_BUTTON_CARD_IN_PROGRESS;
 });
 
 const handleButtonClick = () => {
