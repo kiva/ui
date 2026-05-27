@@ -1,13 +1,14 @@
 <template>
 	<section
-		class="tw-flex tw-flex-col tw-items-center tw-bg-white tw-py-2"
+		class="recommended-goal-card-content tw-flex tw-flex-col tw-items-center
+			tw-bg-white tw-pt-3 md:tw-pt-2 tw-pb-4 md:tw-pb-3"
 		:class="sectionClasses"
 		:style="sectionStyle"
 	>
 		<h3 class="tw-mb-1 md:tw-mb-1.5 tw-text-action-highlight tw-text-center">
 			{{ heading }}
 		</h3>
-		<div class="tw-mx-auto tw-w-full" style="max-width: 360px;">
+		<div class="recommended-goal-card-container tw-px-2.5 md:!tw-px-0 md:!tw-mx-auto tw-w-full">
 			<KvCompactLoanCard
 				ref="kvCompactLoanCard"
 				v-bind="cardAttrs"
@@ -66,3 +67,13 @@ defineExpose({
 	getSelectedAmount,
 });
 </script>
+
+<style lang="postcss" scoped>
+.recommended-goal-card-container {
+	max-width: 100%;
+
+	@screen md {
+		max-width: 360px;
+	}
+}
+</style>
