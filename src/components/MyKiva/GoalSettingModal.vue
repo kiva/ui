@@ -2,23 +2,23 @@
 	<KvLightbox
 		class="goal-setting-lightbox"
 		:class="{
-			'goal-tile-modal': showGoalTile && !showRecommendLoan,
-			'goal-tile-modal-expanded': showGoalTile && showCategories && !showRecommendLoan,
-			'goal-tile-modal-recommend-loan': showRecommendLoan,
+			'goal-tile-modal': showGoalTile && !showRecommendLoanArea,
+			'goal-tile-modal-expanded': showGoalTile && showCategories && !showRecommendLoanArea,
+			'goal-tile-modal-recommend-loan': showRecommendLoanArea,
 		}"
 		title=""
 		:visible="show"
 		@lightbox-closed="closeLightbox"
 	>
 		<template
-			v-if="showRecommendLoan"
+			v-if="showRecommendLoanArea"
 			#header
 		>
 			<RecommendLoanForGoalHeader
 				class="!tw-p-0 !tw-pb-2"
 				:title="recommendLoanHeaderTitle"
 				:details="recommendLoanHeaderDetails"
-				:loaded-set-data="loadedSetData"
+				:loaded-set-data="loadedSetData && !isLoadingRecommendedLoan"
 			/>
 		</template>
 		<template
@@ -33,13 +33,22 @@
 			</h2>
 		</template>
 		<h2
-			v-if="!showRecommendLoan && isMobile && (showCategories || isThanksPage)"
+			v-if="!showRecommendLoanArea && isMobile && (showCategories || isThanksPage)"
 			class="tw-mb-3 tw-text-left md:tw-text-center"
 		>
 			Choose an impact area
 		</h2>
 		<section
-			v-if="showRecommendLoan"
+			v-if="isLoadingRecommendedLoan"
+			class="tw-py-2"
+		>
+			<KvLoadingPlaceholder
+				class="!tw-rounded tw-mx-auto"
+				style="min-height: 360px;"
+			/>
+		</section>
+		<section
+			v-else-if="showRecommendLoan"
 		>
 			<RecommendLoanForGoalContent
 				ref="recommendLoanForGoalContentRef"
@@ -214,7 +223,7 @@
 				/>
 				<!-- second continue button for goal tile variant -->
 				<div
-					v-if="showGoalTile && !showRecommendLoan && (showCategories || isThanksPage)"
+					v-if="showGoalTile && !showRecommendLoanArea && (showCategories || isThanksPage)"
 					class="tw-flex tw-justify-end tw-gap-2 goal-tile-categories-controls"
 				>
 					<KvButton
@@ -244,7 +253,7 @@
 			/>
 		</template>
 		<template
-			v-else-if="!showGoalTile && (showCategories || isThanksPage)"
+			v-else-if="!showGoalTile && !isLoadingRecommendedLoan && (showCategories || isThanksPage)"
 			#controls
 		>
 			<div
@@ -270,7 +279,7 @@
 
 <script setup>
 import {
-	KvLightbox, KvButton, KvMaterialIcon
+	KvLightbox, KvButton, KvLoadingPlaceholder, KvMaterialIcon
 } from '@kiva/kv-components';
 import {
 	ref,
@@ -468,6 +477,13 @@ const {
 // returned at least one loan; otherwise fall back to the goal-selector flow.
 const showRecommendLoan = computed(() => (
 	showRecommendLoanAfterGoalView.value && hasRecommendedLoans.value
+));
+
+// True while the recommended-loan area occupies the modal — either fetching
+// the recommendation or already showing it. Used to gate header/controls/
+// layout classes so the pre-recommend UI doesn't flash mid-transition.
+const showRecommendLoanArea = computed(() => (
+	showRecommendLoan.value || isLoadingRecommendedLoan.value
 ));
 
 const contentComponent = computed(() => {
