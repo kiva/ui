@@ -411,6 +411,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 					'portfolio',
 					'view',
 					'confirm-goal-set-recommended-loan',
+					null,
+					null,
 				);
 			});
 
@@ -424,6 +426,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 					'post-checkout',
 					'view',
 					'confirm-goal-set-recommended-loan',
+					null,
+					null,
 				);
 			});
 
@@ -437,6 +441,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 					'event-tracking',
 					'view',
 					'confirm-goal-set-recommended-loan',
+					null,
+					null,
 				);
 			});
 
@@ -468,6 +474,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 					'portfolio',
 					'click',
 					'explore-more-loans',
+					null,
+					null,
 				);
 			});
 
@@ -478,6 +486,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 					'event-tracking',
 					'click',
 					'explore-more-loans',
+					null,
+					null,
 				);
 			});
 
@@ -489,39 +499,57 @@ describe('useGoalSettingRecommendedLoan', () => {
 		});
 
 		describe('trackAddToBasketClick', () => {
-			it('fires click+add-goal-confirmed-loan-to-basket with portfolio category', () => {
+			it('fires click+add-goal-confirmed-loan-to-basket with loanId and lendAmount', () => {
+				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO });
+				composable.trackAddToBasketClick(789, 25);
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'portfolio',
+					'click',
+					'add-goal-confirmed-loan-to-basket',
+					789,
+					25,
+				);
+			});
+
+			it('fires with post-checkout category for POST_CHECKOUT entrypoint', () => {
+				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT });
+				composable.trackAddToBasketClick(101, 50);
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'post-checkout',
+					'click',
+					'add-goal-confirmed-loan-to-basket',
+					101,
+					50,
+				);
+			});
+
+			it('fires with event-tracking category for GOALS_PAGE entrypoint', () => {
+				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE });
+				composable.trackAddToBasketClick(202, 75);
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'event-tracking',
+					'click',
+					'add-goal-confirmed-loan-to-basket',
+					202,
+					75,
+				);
+			});
+
+			it('defaults loanId and lendAmount to null when caller does not provide them', () => {
 				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO });
 				composable.trackAddToBasketClick();
 				expect(mockKvTrackEvent).toHaveBeenCalledWith(
 					'portfolio',
 					'click',
 					'add-goal-confirmed-loan-to-basket',
-				);
-			});
-
-			it('fires with post-checkout category for POST_CHECKOUT entrypoint', () => {
-				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT });
-				composable.trackAddToBasketClick();
-				expect(mockKvTrackEvent).toHaveBeenCalledWith(
-					'post-checkout',
-					'click',
-					'add-goal-confirmed-loan-to-basket',
-				);
-			});
-
-			it('fires with event-tracking category for GOALS_PAGE entrypoint', () => {
-				mountComposable({}, { entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE });
-				composable.trackAddToBasketClick();
-				expect(mockKvTrackEvent).toHaveBeenCalledWith(
-					'event-tracking',
-					'click',
-					'add-goal-confirmed-loan-to-basket',
+					null,
+					null,
 				);
 			});
 
 			it('does not fire when entrypoint is omitted', () => {
 				mountComposable();
-				composable.trackAddToBasketClick();
+				composable.trackAddToBasketClick(789, 25);
 				expect(mockKvTrackEvent).not.toHaveBeenCalled();
 			});
 		});
@@ -534,6 +562,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 					'portfolio',
 					'click',
 					'go-to-checkout',
+					null,
+					null,
 				);
 			});
 
@@ -544,6 +574,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 					'event-tracking',
 					'click',
 					'go-to-checkout',
+					null,
+					null,
 				);
 			});
 
@@ -554,6 +586,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 					'post-checkout',
 					'click',
 					'complete-order',
+					null,
+					null,
 				);
 			});
 
