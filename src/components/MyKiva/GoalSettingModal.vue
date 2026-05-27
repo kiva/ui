@@ -18,7 +18,7 @@
 				class="!tw-p-0 !tw-pb-2"
 				:title="recommendLoanHeaderTitle"
 				:details="recommendLoanHeaderDetails"
-				:loaded-set-data="loadedSetData && !isLoadingRecommendedLoan"
+				:loaded-set-data="!isLoadingRecommendedLoan"
 			/>
 		</template>
 		<template
@@ -32,21 +32,23 @@
 				Choose an impact area
 			</h2>
 		</template>
+		<!-- header mobile version -->
 		<h2
 			v-if="!showRecommendLoanArea && isMobile && (showCategories || isThanksPage)"
 			class="tw-mb-3 tw-text-left md:tw-text-center"
 		>
 			Choose an impact area
 		</h2>
+		<!-- loading state for recommended loans -->
 		<section
 			v-if="isLoadingRecommendedLoan"
 			class="tw-py-2"
 		>
 			<KvLoadingPlaceholder
-				class="!tw-rounded tw-mx-auto"
-				style="min-height: 360px;"
+				class="goal-recommended-loan-loading !tw-rounded tw-mx-auto"
 			/>
 		</section>
+		<!-- recommended loan -->
 		<section
 			v-else-if="showRecommendLoan"
 		>
@@ -56,6 +58,7 @@
 				:is-adding="isAdding"
 			/>
 		</section>
+		<!-- normal flow with goal tile + progress ring -->
 		<section
 			v-else
 			:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-0': showGoalTile }"
@@ -239,6 +242,7 @@
 				</div>
 			</div>
 		</section>
+		<!-- recommended loan footer -->
 		<template
 			v-if="showRecommendLoan"
 			#controls
@@ -791,6 +795,14 @@ watch(show, async newVal => {
 
 	#kvLightboxBody {
 		@apply !tw-pb-0;
+	}
+}
+
+.goal-recommended-loan-loading {
+	min-height: 230px;
+
+	@screen md {
+		min-height: 275px;
 	}
 }
 </style>
