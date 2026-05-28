@@ -379,12 +379,13 @@ const {
 });
 
 const addToBasket = () => {
-	const { loanId } = recommendLoanCardProps.value;
+	const { loan, loanId } = recommendLoanCardProps.value;
 	if (!loanId) return;
 	const lendAmount = recommendLoanForGoalRef.value?.getSelectedAmount();
 	trackAddToBasketClick(loanId, lendAmount);
-	// Delegate to parent (GoalSetting.vue) which uses borrower-profile-exp-mixin
-	emit('add-to-basket', { loanId, lendAmount });
+	// Delegate to parent (GoalSetting.vue) which uses borrower-profile-exp-mixin.
+	// Pass the recommended loan so the parent can skip borrowerProfileSideSheetQuery.
+	emit('add-to-basket', { loanId, lendAmount, loan });
 };
 
 const handleCheckoutClick = () => {
