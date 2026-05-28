@@ -15,6 +15,7 @@
 			:user-lent-to-all-regions="userLentToAllRegions"
 			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
+			:goals-row-enabled="goalsRowEnabled"
 		/>
 		<my-kiva-page-content
 			v-else
@@ -36,6 +37,7 @@
 			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
+			:goals-row-enabled="goalsRowEnabled"
 		/>
 	</www-page>
 </template>
@@ -67,6 +69,7 @@ import { inject, provide } from 'vue';
 const CURRENT_YEAR = new Date().getFullYear();
 const GOAL_TILE_EXPERIMENT_KEY = 'mykiva_goal_tile';
 const LENDING_NEXT_STEPS_EXP_KEY = 'mykiva_lending_next_steps';
+const GOALS_ROW_EXP_KEY = 'mykiva_goals_row';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -117,6 +120,7 @@ export default {
 			isGoalTileExperimentEnabled: false,
 			lendingNextStepsExperimentVariant: null,
 			goalRecommendedLoanEnable: false,
+			goalsRowEnabled: false,
 		};
 	},
 	computed: {
@@ -198,6 +202,10 @@ export default {
 				client.query({
 					query: experimentAssignmentQuery,
 					variables: { id: LENDING_NEXT_STEPS_EXP_KEY },
+				}),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: GOALS_ROW_EXP_KEY },
 				}),
 			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
@@ -360,6 +368,18 @@ export default {
 			},
 			this.$kvTrackEvent,
 			'EXP-MP-2291-Feb2026'
+		);
+
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			GOALS_ROW_EXP_KEY,
+			version => {
+				this.goalsRowEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-2856-May2026'
 		);
 	},
 	async mounted() {
