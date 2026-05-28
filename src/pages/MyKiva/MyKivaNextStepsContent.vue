@@ -416,6 +416,10 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	goalsRowEnabled: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const cookieStore = inject('cookieStore');
