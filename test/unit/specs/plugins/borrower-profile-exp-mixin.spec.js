@@ -484,7 +484,7 @@ describe('borrower-profile-exp-mixin', () => {
 			await component.addToBasket({ loanId: 123, lendAmount: 25 });
 
 			expect(mockShowTipMsg).toHaveBeenCalledWith(
-				'There was a problem adding the loan to your basket, refreshing the page to try again.',
+				'There was a problem adding the loan to your basket, refresh the page to try again.',
 				'error'
 			);
 			expect(handleInvalidBasket).toHaveBeenCalled();
