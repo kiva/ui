@@ -124,7 +124,7 @@
 		"prom-client": "^15.0.0",
 		"promise": "file:src/util/promise",
 		"qrcode.vue": "^3.4.1",
-		"serialize-javascript": "^7.0.4",
+		"serialize-javascript": "^7.0.5",
 		"store2": "^2.14.4",
 		"timesync": "^1.0.8",
 		"title-case": "^4.3.2",
