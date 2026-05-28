@@ -4,9 +4,16 @@
 			class="goal-footer-button"
 			:to="primaryTo"
 			:variant="primaryButtonVariant"
+			:state="primaryButtonState"
+			:class="{ 'tw-mb-3' : expressCheckoutEnabled }"
 			@click="onPrimaryCtaClick"
 		>
 			{{ primaryLabel }}
+			<kv-loading-spinner
+				v-if="showRedirectingLoading"
+				size="small"
+				class="tw-mr-1"
+			/>
 		</kv-button>
 		<kv-button
 			v-if="!expressCheckoutEnabled"
@@ -17,20 +24,22 @@
 		>
 			{{ secondaryLabel }}
 		</kv-button>
+		<!-- // TODO: Enable when ticket MP-2747 is ready for implementation
 		<div
 			v-else
 			class="tw-mb-3 tw-inline-flex tw-items-center tw-justify-center tw-gap-1 tw-self-center tw-text-small"
 		>
 			<ExpressCheckoutLines class="tw-shrink-0" aria-hidden="true" />
 			<span class="tw-font-medium tw-text-secondary">{{ secondaryLabel }}</span>
-		</div>
+		</div> -->
 	</div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
-import { KvButton } from '@kiva/kv-components';
-import ExpressCheckoutLines from '#src/assets/icons/inline/express-checkout-lines.svg';
+import { KvButton, KvLoadingSpinner } from '@kiva/kv-components';
+// TODO: Enable when ticket MP-2747 is ready for implementation
+// import ExpressCheckoutLines from '#src/assets/icons/inline/express-checkout-lines.svg';
 
 defineOptions({ name: 'RecommendLoanForGoalFooter' });
 
@@ -64,7 +73,20 @@ const props = defineProps({
 
 const emit = defineEmits(['primary-cta-click', 'checkout-click', 'secondary-cta-click']);
 
+// Express checkout: once the loan is in the basket the user is being
+// redirected to checkout — show a disabled loading state meanwhile.
+const showRedirectingLoading = computed(() => (
+	props.expressCheckoutEnabled && props.isInBasket
+));
+
+const primaryButtonState = computed(() => (
+	showRedirectingLoading.value ? 'disabled' : ''
+));
+
 const primaryLabel = computed(() => {
+	if (showRedirectingLoading.value) {
+		return '';
+	}
 	if (props.isAdding) {
 		return ADDING_LABEL;
 	}
@@ -91,7 +113,7 @@ const primaryButtonVariant = computed(() => (
 ));
 
 const onPrimaryCtaClick = event => {
-	if (props.isAdding) {
+	if (props.isAdding || showRedirectingLoading.value) {
 		return;
 	}
 	if (props.isInBasket) {
@@ -109,7 +131,7 @@ const onSecondaryCtaClick = event => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .goal-footer-button {
 	max-width: 330px;
 

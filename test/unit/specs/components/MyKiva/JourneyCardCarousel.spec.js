@@ -22,6 +22,7 @@ vi.mock('#src/composables/useGoalData', () => ({
 	default: () => ({
 		getCategoryLoansLastYear: () => 0,
 	}),
+	GOALS_CURRENT_YEAR: new Date().getFullYear(),
 }));
 
 vi.mock('#src/util/imageUtils', () => ({

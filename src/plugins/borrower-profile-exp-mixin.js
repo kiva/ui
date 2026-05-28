@@ -90,7 +90,9 @@ export default {
 				this.basketItems = [];
 			}
 		},
-		addToBasket({ loanId, lendAmount, onError }) {
+		addToBasket({
+			loanId, lendAmount, onError, onSuccess,
+		}) {
 			if (!loanId || !lendAmount) return;
 			// GoalSettingModal only emits loanId + lendAmount;
 			// borrower-profile flows already have called handleSelectedLoan.
@@ -122,7 +124,7 @@ export default {
 							Sentry.captureMessage(`Add to Basket: ${error.message}`);
 							if (hasBasketExpired(error?.extensions?.code)) {
 								// eslint-disable-next-line max-len
-								this.$showTipMsg('There was a problem adding the loan to your basket, refreshing the page to try again.', 'error');
+								this.$showTipMsg('There was a problem adding the loan to your basket, refresh the page to try again.', 'error');
 								return handleInvalidBasket({
 									cookieStore: this.cookieStore,
 									loan: {
@@ -161,6 +163,7 @@ export default {
 					}).then(({ data }) => {
 						this.basketItems = data?.shop?.basket?.items?.values;
 						this.basketSize = data?.shop?.nonTrivialItemCount || 0;
+						onSuccess?.();
 					});
 				}
 			}).catch(error => {

@@ -14,6 +14,9 @@
 				:total-loans="totalLoanCount"
 				:tiered-achievements="achievements"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
+				:basket-items="basketItems"
+				:is-adding="isAdding"
+				@add-to-basket="handleRecommendedLoanAddToBasket"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -102,6 +105,7 @@ import { LAST_YEAR_KEY, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData'
 import userYearlyProgressQuery from '#src/graphql/query/userYearlyProgress.graphql';
 import { clearPromoCreditBannerCookie, getPromoCreditBannerCookie } from '#src/util/promoCreditCookie';
 import { readBoolSetting } from '#src/util/settingsUtils';
+import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 
 const hasLentBeforeCookie = 'kvu_lb';
 const hasDepositBeforeCookie = 'kvu_db';
@@ -144,6 +148,7 @@ export default {
 		ShareChallenge,
 		ThanksPageSingleVersion,
 	},
+	mixins: [borrowerProfileExpMixin],
 	inject: ['apollo', 'cookieStore'],
 	head() {
 		return {
@@ -284,6 +289,17 @@ export default {
 			return SINGLE_VERSION_VIEW;
 		},
 	},
+	methods: {
+		handleRecommendedLoanAddToBasket(payload) {
+			// Express checkout: add the recommended loan, then send the user to checkout.
+			this.addToBasket({
+				...payload,
+				onSuccess: () => {
+					this.$router.push('/basket');
+				},
+			});
+		},
+	},
 	setup() {
 		const { allAchievementsCompleted } = useBadgeData();
 
@@ -325,6 +341,10 @@ export default {
 		};
 
 		this.goalRecommendedLoanEnable = readBoolSetting(data, 'general.goal_recommended_loan_enable.value') ?? false;
+
+		if (this.goalRecommendedLoanEnable) {
+			this.loadInitialBasketItems();
+		}
 
 		this.optedIn = (data?.my?.communicationSettings?.lenderNews && data?.my?.communicationSettings?.loanUpdates)
 			|| this.$route.query?.optedIn === 'true';

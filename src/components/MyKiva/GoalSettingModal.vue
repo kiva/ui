@@ -2,23 +2,23 @@
 	<KvLightbox
 		class="goal-setting-lightbox"
 		:class="{
-			'goal-tile-modal': showGoalTile && !showRecommendLoanAfterGoalView,
-			'goal-tile-modal-expanded': showGoalTile && showCategories && !showRecommendLoanAfterGoalView,
-			'goal-tile-modal-recommend-loan': showRecommendLoanAfterGoalView,
+			'goal-tile-modal': showGoalTile && !showRecommendLoanArea,
+			'goal-tile-modal-expanded': showGoalTile && showCategories && !showRecommendLoanArea,
+			'goal-tile-modal-recommend-loan': showRecommendLoanArea,
 		}"
 		title=""
 		:visible="show"
 		@lightbox-closed="closeLightbox"
 	>
 		<template
-			v-if="showRecommendLoanAfterGoalView"
+			v-if="showRecommendLoanArea"
 			#header
 		>
 			<RecommendLoanForGoalHeader
-				class="!tw-p-0"
+				class="!tw-p-0 !tw-pb-2"
 				:title="recommendLoanHeaderTitle"
 				:details="recommendLoanHeaderDetails"
-				:loaded-set-data="loadedSetData"
+				:loaded-set-data="!isLoadingRecommendedLoan"
 			/>
 		</template>
 		<template
@@ -32,14 +32,25 @@
 				Choose an impact area
 			</h2>
 		</template>
+		<!-- header mobile version -->
 		<h2
-			v-if="!showRecommendLoanAfterGoalView && isMobile && (showCategories || isThanksPage)"
+			v-if="!showRecommendLoanArea && isMobile && (showCategories || isThanksPage)"
 			class="tw-mb-3 tw-text-left md:tw-text-center"
 		>
 			Choose an impact area
 		</h2>
+		<!-- loading state for recommend loan content -->
 		<section
-			v-if="showRecommendLoanAfterGoalView"
+			v-if="isLoadingRecommendedLoan"
+			class="tw-py-2"
+		>
+			<KvLoadingPlaceholder
+				class="goal-recommended-loan-loading !tw-rounded tw-mx-auto"
+			/>
+		</section>
+		<!-- recommend loan content -->
+		<section
+			v-else-if="showRecommendLoan"
 		>
 			<RecommendLoanForGoalContent
 				ref="recommendLoanForGoalContentRef"
@@ -47,6 +58,7 @@
 				:is-adding="isAdding"
 			/>
 		</section>
+		<!-- normal flow with goal tile + progress ring -->
 		<section
 			v-else
 			:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-0': showGoalTile }"
@@ -189,7 +201,7 @@
 					:goal-progress="goalProgress"
 					:goal-progress-percentage="goalProgressPercentage"
 					:is-updating-goal="isUpdatingGoal"
-					:is-loading-data="isLoadingData"
+					:is-loading-data="isLoadingData || isLoadingRecommendedLoan"
 					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 					show-goal-value-props-copy
 					@set-goal-target="setGoalTarget"
@@ -214,7 +226,7 @@
 				/>
 				<!-- second continue button for goal tile variant -->
 				<div
-					v-if="showGoalTile && !showRecommendLoanAfterGoalView && (showCategories || isThanksPage)"
+					v-if="showGoalTile && !showRecommendLoanArea && (showCategories || isThanksPage)"
 					class="tw-flex tw-justify-end tw-gap-2 goal-tile-categories-controls"
 				>
 					<KvButton
@@ -230,8 +242,9 @@
 				</div>
 			</div>
 		</section>
+		<!-- recommended loan footer -->
 		<template
-			v-if="showRecommendLoanAfterGoalView"
+			v-if="showRecommendLoan"
 			#controls
 		>
 			<RecommendLoanForGoalFooter
@@ -239,11 +252,12 @@
 				:is-adding="isAdding"
 				:is-in-basket="recommendLoanIsInBasket"
 				@primary-cta-click="addToBasket"
+				@checkout-click="handleCheckoutClick"
 				@secondary-cta-click="handleExploreMoreLoans"
 			/>
 		</template>
 		<template
-			v-else-if="!showGoalTile && (showCategories || isThanksPage)"
+			v-else-if="!showGoalTile && !isLoadingRecommendedLoan && (showCategories || isThanksPage)"
 			#controls
 		>
 			<div
@@ -269,7 +283,7 @@
 
 <script setup>
 import {
-	KvLightbox, KvButton, KvMaterialIcon
+	KvLightbox, KvButton, KvLoadingPlaceholder, KvMaterialIcon
 } from '@kiva/kv-components';
 import {
 	ref,
@@ -284,7 +298,9 @@ import { useRouter } from 'vue-router';
 
 import useBreakpoints from '#src/composables/useBreakpoints';
 import useGoalData from '#src/composables/useGoalData';
-import useGoalSettingRecommendedLoan from '#src/composables/useGoalSettingRecommendedLoan';
+import useGoalSettingRecommendedLoan, {
+	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO,
+} from '#src/composables/useGoalSettingRecommendedLoan';
 import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import RecommendLoanForGoalContent from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalContent';
 import RecommendLoanForGoalFooter from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalFooter';
@@ -409,7 +425,9 @@ const props = defineProps({
 	},
 });
 
-const { numberOfLoans, isGoalSet, show } = toRefs(props);
+const {
+	numberOfLoans, isGoalSet, show, goalRecommendedLoanEnable, basketItems,
+} = toRefs(props);
 
 const formStep = ref(1);
 const showCategories = ref(false);
@@ -429,6 +447,8 @@ const selectedCategory = ref(hasControlledCategory ? props.controlledSelectedCat
 
 const {
 	showRecommendLoanAfterGoalView,
+	hasRecommendedLoans,
+	isLoadingRecommendedLoan,
 	recommendLoanHeaderDetails,
 	recommendLoanCardProps,
 	recommendLoanIsInBasket,
@@ -438,9 +458,12 @@ const {
 	onGoalSelectorUpdateGoal,
 	handleExploreMoreLoans,
 	onAddToBasketError,
+	trackAddToBasketClick,
+	trackCheckoutClick,
 } = useGoalSettingRecommendedLoan({
 	emit,
-	props,
+	goalRecommendedLoanEnable,
+	basketItems,
 	selectedGoalNumber,
 	selectedCategory,
 	show,
@@ -449,9 +472,23 @@ const {
 	getCtaHref,
 	userGoal,
 	kvTrackEvent: $kvTrackEvent,
+	entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO,
 	appConfig,
 	apollo,
 });
+
+// Render the recommend-loan sections only when the trigger fired AND the fetch
+// returned at least one loan; otherwise fall back to the goal-selector flow.
+const showRecommendLoan = computed(() => (
+	showRecommendLoanAfterGoalView.value && hasRecommendedLoans.value
+));
+
+// True while the recommend-loan area occupies the modal — either fetching
+// the recommendation or already showing it. Used to gate header/controls/
+// layout classes so the pre-recommend UI doesn't flash mid-transition.
+const showRecommendLoanArea = computed(() => (
+	showRecommendLoan.value || isLoadingRecommendedLoan.value
+));
 
 const contentComponent = computed(() => {
 	switch (formStep.value) {
@@ -489,7 +526,12 @@ const recommendLoanForGoalContentRef = ref(null);
 const addToBasket = () => {
 	const lendAmount = recommendLoanForGoalContentRef.value?.getSelectedAmount();
 	const { loanId } = recommendLoanCardProps.value;
+	trackAddToBasketClick(loanId, lendAmount);
 	emit('add-to-basket', { loanId, lendAmount, onError: onAddToBasketError });
+};
+
+const handleCheckoutClick = () => {
+	trackCheckoutClick();
 };
 
 const handleCategorySelected = categoryId => {
@@ -732,7 +774,7 @@ watch(show, async newVal => {
 .goal-setting-lightbox.goal-tile-modal-recommend-loan :deep {
 	[data-test=kv-lightbox] > div:first-child,
 	[data-testid=kv-lightbox] > div:first-child {
-		@apply tw-bg-gray-50 !tw-rounded tw-relative;
+		@apply tw-bg-gray-50 !tw-rounded tw-relative tw-p-3 tw-pb-0.5;
 
 		@screen md {
 			width: 684px;
@@ -745,8 +787,34 @@ watch(show, async newVal => {
 		}
 	}
 
+	/* Lightbox footer */
+	[data-test=kv-lightbox] > div:nth-child(3),
+	[data-testid=kv-lightbox] > div:nth-child(3) {
+		@apply tw-px-2 tw-pt-1 tw-pb-2;
+	}
+
 	#kvLightboxBody {
 		@apply !tw-pb-0;
+
+		.recommended-goal-card-content {
+			@apply !tw-pt-4 !tw-pb-7 md:!tw-pt-2 md:!tw-pb-3;
+
+			h3 {
+				@apply tw-mb-3 md:tw-mb-1.5;
+			}
+		}
+
+		.recommended-goal-card-container {
+			@apply !tw-px-0;
+		}
+	}
+}
+
+.goal-recommended-loan-loading {
+	min-height: 230px;
+
+	@screen md {
+		min-height: 275px;
 	}
 }
 </style>

@@ -326,6 +326,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		goalsRowEnabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup() {
 		const apollo = inject('apollo');
