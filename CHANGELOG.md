@@ -1,3 +1,19 @@
+## [3.69.0-rc.2](https://github.com/kiva/ui/compare/v3.69.0-rc.1...v3.69.0-rc.2) (2026-05-28)
+
+### 🎉 New Features
+
+* add goals row experiment flag ([86ce3bf](https://github.com/kiva/ui/commit/86ce3bf8b8b398e42bc5102db43892d865613f57))
+
+### 🐛 Bugfixes
+
+* add prop to child components ([05cc418](https://github.com/kiva/ui/commit/05cc4182a61f7b2e6f55255dd0940af7529e9adb))
+* invalid basket error message ([eb62855](https://github.com/kiva/ui/commit/eb62855ca4f1a9fc3de8d5db0d4f24077a289863))
+* typo ([724a497](https://github.com/kiva/ui/commit/724a497826b128bf5641bc13f616b7819422306a))
+
+### 🏗️ Build System
+
+* **dependabot:** group related dependencies AD-255 ([50e22d1](https://github.com/kiva/ui/commit/50e22d140cb4d963a5b0f952e7fc85e3f50dc855))
+
 ## [3.69.0-rc.1](https://github.com/kiva/ui/compare/v3.68.0...v3.69.0-rc.1) (2026-05-27)
 
 ### 🎉 New Features
