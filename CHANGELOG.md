@@ -1,3 +1,72 @@
+## [3.69.0](https://github.com/kiva/ui/compare/v3.68.0...v3.69.0) (2026-05-28)
+
+### 🎉 New Features
+
+* [MP-2744] - adding new storybook for container ([28eceb3](https://github.com/kiva/ui/commit/28eceb3e823f2bfae13ec88cec812669c03b652d))
+* [MP-2744] - adding recommended loan on goal setting page after set a goal ([7ff6ac6](https://github.com/kiva/ui/commit/7ff6ac682f1101eebf9e23629a72837b1cf862b8))
+* [MP-2744] - extra ([6cb3579](https://github.com/kiva/ui/commit/6cb3579a02f7bcf8ed4b472511f4dda2d102687e))
+* [MP-2744] - integrate recommended loan experience after set a goal on goal setting page ([#6911](https://github.com/kiva/ui/issues/6911)) ([cf75c72](https://github.com/kiva/ui/commit/cf75c72d391fb182939c67310445eb74b8abbede))
+* [MP-2744] - PR comments ([0b667ff](https://github.com/kiva/ui/commit/0b667ff98dd5fd952e150909a38bfd4b1e10ad45))
+* [MP-2744] - PR comments ([b4d4bc3](https://github.com/kiva/ui/commit/b4d4bc3933081c7aa5f04cfc304bb29107b594c3))
+* [MP-2744] - small refactor on useGoalSettingRecommendedLoan composable ([e0f6999](https://github.com/kiva/ui/commit/e0f69994ebbb2b1ec5a1e55cadf77812a90f5705))
+* [MP-2745] - adding new story for thanks/singleversion/goalentrypoint ([562a0c0](https://github.com/kiva/ui/commit/562a0c0645f02dd52816b3ff8a9179483be24395))
+* [MP-2745] - adding recommended loan on TY page after set a goal ([f41a95c](https://github.com/kiva/ui/commit/f41a95c06a640f15def961a6d29f9fd5e297f2c4))
+* [MP-2745] - comment + spinner before redirect ([285e813](https://github.com/kiva/ui/commit/285e813f755ce5aa6994de710008622f208c19e3))
+* [MP-2745] - PR comments ([cc36ae8](https://github.com/kiva/ui/commit/cc36ae87d8eb933f1b9501d7ca4ca826174033db))
+* [MP-2745] - style comment ([67ce493](https://github.com/kiva/ui/commit/67ce4934161afb18041112c50b46f1e7f72d7107))
+* [MP-2745] - TODO ([1b8bc49](https://github.com/kiva/ui/commit/1b8bc49a26a0e987dd268527ebc9df028d6cbf41))
+* [MP-2861] - clean code ([da8a56d](https://github.com/kiva/ui/commit/da8a56d72ed890d6009ae5b186a69e652b0204eb))
+* [MP-2861] - rename method ([79c2014](https://github.com/kiva/ui/commit/79c201417083acded5f75c7825c9ec669088ba4c))
+* [MP-2861] - show progress ring if there is not recommend row on Goals Page ([c93d2c2](https://github.com/kiva/ui/commit/c93d2c2ea8099a449156cf358d16bf93b1c54780))
+* [MP-2861] - show progress ring if there is not recommend row on MyKIVA Page ([dafff20](https://github.com/kiva/ui/commit/dafff20c7d8c0ec4a1158efa3b8bdfd79d100cba))
+* [MP-2861] - show progress ring if there is not recommend row on TY Page ([d163a4a](https://github.com/kiva/ui/commit/d163a4a2861d5594fa0fe0b4296837260a633256))
+* [MP-2861] - try to avoid flicker in MyKiva ([18517a8](https://github.com/kiva/ui/commit/18517a8d42e297f916af30f3337bd0ed962b3924))
+* [MP-2861] - try to avoid flicker in MyKiva ([cf1beb7](https://github.com/kiva/ui/commit/cf1beb701f516186d7cb28210e74ba36684afb21))
+* [MP-2861] - working on tests and storybooks (in-progress) ([7c6a4f0](https://github.com/kiva/ui/commit/7c6a4f00b7a51188e09f0140df730a7ffe7e234e))
+* [MP-2883] - adjust spacing on recommended loan after set goal ([c7b4509](https://github.com/kiva/ui/commit/c7b4509cbe1711ce69152bbf90477fbcc51de1b1))
+* [MP-2883] - comments ([0803fd6](https://github.com/kiva/ui/commit/0803fd68450dff6039a903e1490baa68d8aa1a48))
+* [MP-2883] - PR comments ([1a11193](https://github.com/kiva/ui/commit/1a11193a2eaec8c05dd7c5c976f6b2a26d43250f))
+* [MP-2883] - remove extra blank space ([7b68847](https://github.com/kiva/ui/commit/7b6884703c4af8ef5a8068b89f7431e9e2684b59))
+* add goals row experiment flag ([86ce3bf](https://github.com/kiva/ui/commit/86ce3bf8b8b398e42bc5102db43892d865613f57))
+* add loan id and amount to add to basket event ([00ce241](https://github.com/kiva/ui/commit/00ce24120117d47aa1a1f1693dc6120b841367f8))
+* add tracking events for recommended goal loans ([c3117dd](https://github.com/kiva/ui/commit/c3117dd1393eb286ccde6e71ee13fb7f9c7cd6f8))
+* copy update ([e55e469](https://github.com/kiva/ui/commit/e55e4696752d49260f728f4cfcfb671d7db6c64e))
+* filter loan ids from transaction in thank you page goal entrypoint ([5da6813](https://github.com/kiva/ui/commit/5da6813761b1cebb73f11936229f216725c31471))
+* mp-2757 goal copy update ([be2e325](https://github.com/kiva/ui/commit/be2e325d47a3c8f755802c85d20f39c6f37527db))
+* mp-2757 goal copy update ([c4a1dce](https://github.com/kiva/ui/commit/c4a1dce1b8a292abc0ad13adea7bf836b60d254c))
+* mp-2757 goal copy update ([77e715a](https://github.com/kiva/ui/commit/77e715a8f92c99aceee8dd0a84f936ecfa2130ef))
+* mp-2757 goal copy update ([da99510](https://github.com/kiva/ui/commit/da99510ec1d23ca5508b78748da735b5233637ac))
+* mp-2757 goal copy update ([e8ea8d7](https://github.com/kiva/ui/commit/e8ea8d7d6b2df7215975dc8e90cd61dff725f1b8))
+* mp-2757 goal copy update ([112c7d8](https://github.com/kiva/ui/commit/112c7d89a90b695ead97f1de4c85b8ac360ee8d5))
+* mp-2757 goal copy update ([0a27e7c](https://github.com/kiva/ui/commit/0a27e7cab963bd27a8455201f07ce565c6d0c25b))
+* mp-2757 goal copy update ([66301be](https://github.com/kiva/ui/commit/66301bee6d11c9015d8d432cb29713de7aaffe1c))
+* show recommended loan after editing goal ([#6918](https://github.com/kiva/ui/issues/6918)) ([4d0bc2f](https://github.com/kiva/ui/commit/4d0bc2f20e6b22f533dcfc80f477c1b30e5c20e6))
+* utilize new My Teams page at standard teams/my-teams route [CP-2628] ([#6932](https://github.com/kiva/ui/issues/6932)) ([15a1a08](https://github.com/kiva/ui/commit/15a1a0897bec4b4165f8bf4d94a42545a5a1789c))
+
+### 🐛 Bugfixes
+
+* add prop to child components ([05cc418](https://github.com/kiva/ui/commit/05cc4182a61f7b2e6f55255dd0940af7529e9adb))
+* add track events default values ([4514eef](https://github.com/kiva/ui/commit/4514eef243cee3576299d59fccec5fc59ea084e8))
+* invalid basket error message ([eb62855](https://github.com/kiva/ui/commit/eb62855ca4f1a9fc3de8d5db0d4f24077a289863))
+* missing redirect route ([#6930](https://github.com/kiva/ui/issues/6930)) ([950c21f](https://github.com/kiva/ui/commit/950c21f74d664a4389061496a72237c8fcb31ee7))
+* reducing space in modal sections to make it smaller ([#6916](https://github.com/kiva/ui/issues/6916)) ([4673995](https://github.com/kiva/ui/commit/467399526f35c52edfdbc397e16f37f663fa4fea))
+* ty page add to basket tracking in recommended loan ([6bacae4](https://github.com/kiva/ui/commit/6bacae46867d91de3145e5bce3df74cb7c7b7f4b))
+* typo ([724a497](https://github.com/kiva/ui/commit/724a497826b128bf5641bc13f616b7819422306a))
+
+### 🏗️ Build System
+
+* **dependabot:** group related dependencies AD-255 ([50e22d1](https://github.com/kiva/ui/commit/50e22d140cb4d963a5b0f952e7fc85e3f50dc855))
+
+### 🔍 Tests
+
+* add tests for tracking events ([f92f6a2](https://github.com/kiva/ui/commit/f92f6a210e9a2cf7daa0965e991fd7755185f88d))
+
+### 🧹 Chores
+
+* **release:** 3.69.0-rc.1 [skip ci] ([7212823](https://github.com/kiva/ui/commit/7212823c16b51b68c515ec48816b33790454eceb)), closes [#6911](https://github.com/kiva/ui/issues/6911) [#6918](https://github.com/kiva/ui/issues/6918) [#6932](https://github.com/kiva/ui/issues/6932) [#6930](https://github.com/kiva/ui/issues/6930) [#6916](https://github.com/kiva/ui/issues/6916)
+* **release:** 3.69.0-rc.2 [skip ci] ([50e669a](https://github.com/kiva/ui/commit/50e669a1e2e5bbc049774336c3494834ce4d3110))
+* update kv-components for latest recommended loan card ([bbb1e9e](https://github.com/kiva/ui/commit/bbb1e9e15ae66a3ce5b1d7d42f0fa9ddfed2fed2))
+
 ## [3.69.0-rc.2](https://github.com/kiva/ui/compare/v3.69.0-rc.1...v3.69.0-rc.2) (2026-05-28)
 
 ### 🎉 New Features
