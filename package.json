@@ -128,7 +128,7 @@
 		"store2": "^2.14.4",
 		"timesync": "^1.0.8",
 		"title-case": "^4.3.2",
-		"uuid": "^8.3.0",
+		"uuid": "^14.0.0",
 		"vue": "^3.5.15",
 		"vue-focus-lock": "^3.0.0",
 		"vue-observe-visibility": "^1.0.0",
