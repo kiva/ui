@@ -24,6 +24,16 @@
 					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 					@open-goal-modal="$emit('open-goal-modal', $event)"
 				/>
+				<NextYearGoalCard
+					v-else-if="slide?.isCompletedGoal"
+					:goal-progress="slide.goal?.progress || 0"
+					:loading="false"
+					:user-goal="slide.goal"
+					:prev-year-loans="womenLoansLastYear"
+					:hide-goal-card="false"
+					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
+					@open-goal-modal="$emit('open-goal-modal', $event)"
+				/>
 				<MyKivaSurveyCard
 					v-else-if="slide?.isSurveyCard"
 				/>
@@ -247,6 +257,10 @@ const props = defineProps({
 		type: Array,
 		default: null,
 	},
+	completedGoals: {
+		type: Array,
+		default: () => [],
+	},
 });
 
 const { isMobile, isMedium, isLarge } = useBreakpoints();
@@ -285,10 +299,9 @@ const shouldShowGoalCard = computed(() => {
 	return (!props.userGoal || !props.userGoalAchieved) && !props.hideGoalCard;
 });
 
-const shouldShowCompletedGoalCard = computed(() => {
+const shouldShowCompletedGoalCards = computed(() => {
 	if (!props.inLendingStats) return false;
-
-	return props.userGoal && props.userGoalAchieved && !props.hideGoalCard;
+	return props.completedGoals.length > 0 && !props.hideGoalCard;
 });
 
 const dynamicOrderedSlides = computed(() => {
@@ -362,16 +375,19 @@ const dynamicOrderedSlides = computed(() => {
 		priorityCards.push({ isSurveyCard: true });
 	}
 
-	// Completed goal card
-	if (shouldShowCompletedGoalCard.value) {
-		priorityCards.push({ isCompletedGoal: true });
-	}
-
 	if (props.slidesNumber && props.showLendingNextStepsCards) {
 		// Top row: priority cards + achievements to fill up to slidesNumber
 		sortedSlides = [...priorityCards, ...achievementSlides].slice(0, props.slidesNumber);
 	} else if (props.slidesNumber) {
 		sortedSlides = [...priorityCards, ...sortedSlides].slice(0, props.slidesNumber);
+	}
+
+	// Completed goals
+	if (shouldShowCompletedGoalCards.value) {
+		const sorted = [...props.completedGoals].sort((a, b) => b.year - a.year);
+		sorted.forEach(goal => {
+			sortedSlides.push({ isCompletedGoal: true, goal });
+		});
 	}
 
 	return sortedSlides;
