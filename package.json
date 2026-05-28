@@ -101,7 +101,7 @@
 		"graphql-tag": "^2.12.6",
 		"gsap": "^3.12.5",
 		"helmet": "^4.6.0",
-		"js-cookie": "^3.0.1",
+		"js-cookie": "^3.0.7",
 		"jsonwebtoken": "^9.0.2",
 		"libphonenumber-js": "^1.11.4",
 		"linkify-string": "^4.3.2",
