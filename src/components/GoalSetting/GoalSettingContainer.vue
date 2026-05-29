@@ -48,7 +48,7 @@
 			<RecommendLoanForGoalContainer
 				v-if="showRecommendLoanAfterGoalView && hasRecommendedLoans"
 				ref="recommendLoanForGoalRef"
-				class="tw-mx-auto"
+				class="tw-mx-auto recommended-loan-container"
 				style="max-width: 700px;"
 				header-title="Goal set!"
 				:header-details="recommendLoanHeaderDetails"
@@ -618,5 +618,11 @@ onMounted(async () => {
     @apply tw-flex-none tw-mx-auto tw-w-full lg:tw-w-auto;
 
 	min-width: 324px;
+}
+
+.recommended-loan-container :deep(.recommended-loan-footer) {
+	@apply tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-flex tw-flex-col
+		tw-justify-center tw-w-full lg:tw-w-auto tw-z-sticky lg:tw-z-auto
+		tw-bg-white tw-p-2.5 md:tw-p-0;
 }
 </style>
