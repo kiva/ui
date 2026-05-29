@@ -411,6 +411,50 @@ describe('borrower-profile-exp-mixin', () => {
 			});
 		});
 
+		it('should seed selectedLoan from the provided loan and skip borrowerProfileSideSheetQuery', async () => {
+			createComponent();
+			mockApollo.mutate.mockResolvedValue({ errors: null });
+			// Only the post-add loanCardBasketed query should fire — not the side-sheet query.
+			mockApollo.query.mockResolvedValueOnce({
+				data: {
+					shop: {
+						basket: { items: { values: [] } },
+						nonTrivialItemCount: 1,
+					},
+				},
+			});
+			const recommendedLoan = {
+				id: 789,
+				name: 'Recommended Borrower',
+				borrowerCount: 2,
+				themes: ['Women'],
+			};
+			component.handleCartModal = vi.fn();
+
+			component.addToBasket({ loanId: 789, lendAmount: 25, loan: recommendedLoan });
+
+			await flushPromises();
+
+			expect(component.selectedLoan).toEqual(recommendedLoan);
+
+			// One query call total, and it's the basket refresh — not the side-sheet query.
+			expect(mockApollo.query).toHaveBeenCalledTimes(1);
+			expect(mockApollo.query).not.toHaveBeenCalledWith(
+				expect.objectContaining({ variables: { loanId: 789 } })
+			);
+
+			vi.advanceTimersByTime(1000);
+
+			expect(component.handleCartModal).toHaveBeenCalledWith({
+				id: 789,
+				name: 'Recommended Borrower',
+				gender: '',
+				borrowerCount: 2,
+				themes: ['Women'],
+				basketSize: 1,
+			});
+		});
+
 		it('should set isAdding to true during mutation', () => {
 			createComponent();
 			mockApollo.mutate.mockImplementation(
