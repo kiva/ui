@@ -35,7 +35,7 @@ export default {
 		formattedPromoCredits() {
 			return this.appliedPromoCredits.map(credit => {
 				return {
-					amount: credit?.amount ?? 0,
+					amount: credit?.applied ?? credit?.amount ?? 0,
 					displayName: credit?.promoFund?.displayName ?? null
 				};
 			});

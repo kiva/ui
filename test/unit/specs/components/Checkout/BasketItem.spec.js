@@ -93,6 +93,63 @@ describe('BasketItem loan', () => {
 		expect(within(LoanPromoCredit).getByText('Sponsored by:'));
 	});
 
+	it('should not show a promo credit badge when applied is 0', () => {
+		const loan = {
+			...loanReservation,
+			creditsUsed: [{
+				...loanReservation.creditsUsed[0],
+				applied: '0.00',
+			}]
+		};
+		const { queryByTestId } = render(
+			BasketItem,
+			{
+				global: {
+					...globalOptions,
+					stubs: { LoanReservation: { ...emptyComponent } },
+					plugins: [router],
+				},
+				props: {
+					disableRedirects: false,
+					loan,
+					teams: [],
+				},
+			}
+		);
+
+		expect(queryByTestId('basket-loan-promo-credit')).toBeNull();
+	});
+
+	it('should show the applied amount on the promo credit badge, not the total amount', () => {
+		const loan = {
+			...loanReservation,
+			creditsUsed: [{
+				...loanReservation.creditsUsed[0],
+				amount: '25.00',
+				applied: '15.00',
+			}]
+		};
+		const { getByTestId } = render(
+			BasketItem,
+			{
+				global: {
+					...globalOptions,
+					stubs: { LoanReservation: { ...emptyComponent } },
+					plugins: [router],
+				},
+				props: {
+					disableRedirects: false,
+					loan,
+					teams: [],
+				},
+			}
+		);
+
+		const LoanPromoCredit = getByTestId('basket-loan-promo-credit');
+		expect(within(LoanPromoCredit).getByText('15.00 credit applied'));
+		expect(within(LoanPromoCredit).queryByText('25.00 credit applied')).toBeNull();
+	});
+
 	it('should show amounts 1,000 and over for logged in user and huge amount enabled', () => {
 		loanReservation.expiryTime = '2050-09-19T19:02:10Z';
 		render(
