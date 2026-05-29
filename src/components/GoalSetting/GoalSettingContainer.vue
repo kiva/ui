@@ -621,8 +621,16 @@ onMounted(async () => {
 }
 
 .recommended-loan-container :deep(.recommended-loan-footer) {
-	@apply tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-flex tw-flex-col
-		tw-justify-center tw-w-full lg:tw-w-auto tw-z-sticky lg:tw-z-auto
-		tw-bg-white tw-p-2.5 md:tw-p-0;
+	@apply tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-w-full
+		lg:tw-w-auto tw-z-sticky lg:tw-z-auto
+		tw-bg-white tw-p-2.5 lg:tw-p-0;
+}
+
+.recommended-loan-container :deep(.recommended-loan-footer .goal-footer-button) {
+	@apply tw-max-w-full;
+
+	@screen lg {
+		max-width: 330px;
+	}
 }
 </style>
