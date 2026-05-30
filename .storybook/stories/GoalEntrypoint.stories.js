@@ -78,6 +78,7 @@ export const ThreeDigitsLoans = story({
 export const RecommendedLoanExpressCheckout = story({
 	loading: false,
 	showRecommendLoanAfterGoalView: true,
+	hasRecommendedLoans: true,
 	loadedSetData: true,
 	recommendLoanHeaderDetails,
 });
@@ -86,6 +87,7 @@ export const RecommendedLoanExpressCheckout = story({
 export const RecommendedLoanInBasket = story({
 	loading: false,
 	showRecommendLoanAfterGoalView: true,
+	hasRecommendedLoans: true,
 	loadedSetData: true,
 	recommendLoanHeaderDetails,
 	recommendLoanIsInBasket: true,

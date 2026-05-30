@@ -27,6 +27,8 @@ import useTipMessage from '#src/composables/useTipMessage';
  * @param {Function} options.getRecommendedLoans — From `useGoalData`; returns a promise of loans for a category id.
  * @param {Function} options.getCtaHref — From `useGoalData`; builds lend URL + optional header query.
  * @param {object} options.userGoal — Vue ref from `useGoalData`; `.value` is saved goal or null (`target`, `category`).
+ * @param {object} [options.additionalExcludedLoanIds] — Optional Vue ref; `.value` is an array of
+ *   loan ids to also exclude from the recommended-loan fetch (e.g. loans the user just made).
  * @param {Function} options.kvTrackEvent — Analytics helper from GoalSettingModal (`$kvTrackEvent`).
  * @param {string} [options.entrypoint] — Where the composable is mounted. Use one of the exported
  *   `GOAL_RECOMMENDED_LOAN_ENTRYPOINT_*` constants; selects the analytics category for
@@ -57,6 +59,7 @@ export default function useGoalSettingRecommendedLoan({
 	userGoal,
 	kvTrackEvent,
 	entrypoint,
+	additionalExcludedLoanIds,
 	appConfig = {},
 	apollo,
 }) {
@@ -67,10 +70,16 @@ export default function useGoalSettingRecommendedLoan({
 	const recommendedLoans = ref([]);
 	const recommendedLoanIndex = ref(0);
 	const recommendedLoan = ref(null);
+	const isLoadingRecommendedLoan = ref(false);
 
 	const showRecommendLoanAfterGoalView = computed(() => (
 		goalRecommendedLoanEnable.value && showPostGoalLoanRecommendation.value
 	));
+
+	// True once the fetch has resolved with at least one recommended loan.
+	// Callers gate the recommended-loan UI on `showRecommendLoanAfterGoalView && hasRecommendedLoans`
+	// so the new section is skipped entirely when there is nothing to recommend.
+	const hasRecommendedLoans = computed(() => recommendedLoans.value.length > 0);
 
 	const recommendLoanHeaderDetails = computed(() => {
 		const segments = [];
@@ -141,15 +150,27 @@ export default function useGoalSettingRecommendedLoan({
 		trackRecommendedLoanEvent('click', isPostCheckout ? 'complete-order' : 'go-to-checkout');
 	};
 
-	const resetRecommendedLoanState = () => {
-		showPostGoalLoanRecommendation.value = false;
+	// Clears the recommended-loan data + in-flight flag. Does NOT touch
+	// `showPostGoalLoanRecommendation` so that watch handlers can call it
+	// without re-triggering themselves (resetting the step flag from inside
+	// the view watch would cause a recursive flip).
+	const clearRecommendedLoanData = () => {
 		recommendedLoans.value = [];
 		recommendedLoanIndex.value = 0;
 		recommendedLoan.value = null;
+		isLoadingRecommendedLoan.value = false;
+	};
+
+	const resetRecommendedLoanState = () => {
+		clearRecommendedLoanData();
+		showPostGoalLoanRecommendation.value = false;
 	};
 
 	const enterRecommendedLoanStepAfterGoalSave = () => {
 		if (goalRecommendedLoanEnable.value) {
+			// Mark in-flight synchronously so the host's loading state covers
+			// the upcoming fetch (avoids a brief "no loan yet" flicker).
+			isLoadingRecommendedLoan.value = true;
 			showPostGoalLoanRecommendation.value = true;
 			trackRecommendedLoanEvent('view', 'confirm-goal-set-recommended-loan');
 		}
@@ -178,17 +199,18 @@ export default function useGoalSettingRecommendedLoan({
 	const filteredLoanIds = computed(() => {
 		// Only LoanReservation entries carry a loan id; other basket item types
 		// (donations, Kiva Cards, etc.) must not be sent as loan exclusions.
-		return (basketItems.value ?? [])
+		const fromBasket = (basketItems.value ?? [])
 			// eslint-disable-next-line no-underscore-dangle
 			.filter(item => item.__typename === 'LoanReservation')
 			.map(item => item.id);
+		const additional = additionalExcludedLoanIds?.value ?? [];
+		// Currently is not possible for the same loan id to be in both arrays, but dedupe just in case.
+		return [...new Set([...fromBasket, ...additional])];
 	});
 
 	watch(show, visible => {
 		if (!visible) {
-			recommendedLoans.value = [];
-			recommendedLoanIndex.value = 0;
-			recommendedLoan.value = null;
+			clearRecommendedLoanData();
 			return;
 		}
 		showPostGoalLoanRecommendation.value = false;
@@ -198,19 +220,18 @@ export default function useGoalSettingRecommendedLoan({
 		() => [showRecommendLoanAfterGoalView.value, selectedCategory.value?.badgeId],
 		async ([visible, categoryId]) => {
 			if (!visible || !categoryId) {
-				recommendedLoans.value = [];
-				recommendedLoanIndex.value = 0;
-				recommendedLoan.value = null;
+				clearRecommendedLoanData();
 				return;
 			}
-			recommendedLoans.value = [];
-			recommendedLoanIndex.value = 0;
-			recommendedLoan.value = null;
+			clearRecommendedLoanData();
+			isLoadingRecommendedLoan.value = true;
 			try {
 				recommendedLoans.value = await getRecommendedLoans(categoryId, filteredLoanIds.value);
 				recommendedLoan.value = recommendedLoans.value[0] ?? null;
 			} catch {
 				$showTipMsg('There was a problem loading a loan.', 'error');
+			} finally {
+				isLoadingRecommendedLoan.value = false;
 			}
 		},
 	);
@@ -225,6 +246,8 @@ export default function useGoalSettingRecommendedLoan({
 
 	return {
 		showRecommendLoanAfterGoalView,
+		hasRecommendedLoans,
+		isLoadingRecommendedLoan,
 		recommendLoanHeaderDetails,
 		recommendLoanCardProps,
 		recommendLoanIsInBasket,

@@ -171,12 +171,15 @@ export default [
 		component: () => import('#src/pages/LendingTeams/LendingTeams')
 	},
 	{
-		path: '/teams/my-teams-beta',
+		path: '/teams/my-teams',
 		component: () => import('#src/pages/LendingTeams/MyTeamsPage'),
 		meta: {
 			authenticationRequired: true,
-			excludeFromStaticSitemap: true,
 		}
+	},
+	{
+		path: '/teams/my-teams-beta',
+		redirect: '/teams/my-teams'
 	},
 	{
 		path: '/lend-by-category/loans-to-women',
@@ -335,6 +338,10 @@ export default [
 			unbounceEmailCapture: true,
 			unbouncePopUp: true,
 		}
+	},
+	{
+		path: '/lend/',
+		redirect: '/lend/filter'
 	},
 	{
 		name: 'borrowerProfile',

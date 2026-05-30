@@ -51,7 +51,7 @@
 			<!-- Start goal module variations -->
 			<GoalEntrypoint
 				v-if="!isGuest && goalDataInitialized && isEmptyGoal"
-				:loading="goalDataLoading || isSettingGoal"
+				:loading="goalDataLoading || isSettingGoal || isLoadingRecommendedLoan"
 				:total-loans="totalLoans"
 				:categories-loan-count="categoriesLoanCount"
 				:is-goal-set="isGoalSet"
@@ -63,6 +63,7 @@
 				:goal-progress-percentage="goalProgressPercentage"
 				:custom-goal-amount-enable="customGoalAmountEnable"
 				:show-recommend-loan-after-goal-view="showRecommendLoanAfterGoalView"
+				:has-recommended-loans="hasRecommendedLoans"
 				:recommend-loan-card-props="recommendLoanCardProps"
 				:recommend-loan-header-details="recommendLoanHeaderDetails"
 				:recommend-loan-is-in-basket="recommendLoanIsInBasket"
@@ -316,27 +317,33 @@ const selectedCategory = ref(categories[0]);
 // Recommended-loan-after-goal step (shared logic with GoalSettingContainer)
 const loadedSetData = ref(false);
 const isSettingGoal = ref(false);
+// Exclude the loans the user just supported in this transaction so they don't
+// resurface as the recommendation.
+const transactionLoanIds = computed(() => (props.loans ?? []).map(loan => loan?.id).filter(Boolean));
 const {
 	showRecommendLoanAfterGoalView,
+	hasRecommendedLoans,
+	isLoadingRecommendedLoan,
 	recommendLoanHeaderDetails,
 	recommendLoanCardProps,
 	recommendLoanIsInBasket,
 	enterRecommendedLoanStepAfterGoalSave,
 	onAddToBasketError,
-	trackCheckoutClick,
+	trackAddToBasketClick,
 } = useGoalSettingRecommendedLoan({
 	emit: () => {},
 	goalRecommendedLoanEnable: toRef(props, 'goalRecommendedLoanEnable'),
 	basketItems: toRef(props, 'basketItems'),
 	selectedGoalNumber: goalTarget,
 	selectedCategory,
-	show: true,
+	show: ref(true),
 	goalProgress,
 	getRecommendedLoans,
 	getCtaHref,
 	userGoal,
 	kvTrackEvent: $kvTrackEvent,
 	entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT,
+	additionalExcludedLoanIds: transactionLoanIds,
 	appConfig: $appConfig,
 	apollo,
 });
@@ -486,8 +493,7 @@ const setGoal = async preferences => {
 };
 
 const handleAddToBasket = payload => {
-	// Tracking checkout event because of immediate redirect in the goal entry point
-	trackCheckoutClick();
+	trackAddToBasketClick();
 	emit('add-to-basket', { ...payload, onError: onAddToBasketError });
 };
 

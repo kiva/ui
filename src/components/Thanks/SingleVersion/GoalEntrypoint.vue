@@ -5,7 +5,7 @@
 		<KvLoadingPlaceholder v-if="loading" class="goal-entrypoint-loading !tw-rounded" />
 		<template v-else>
 			<RecommendLoanForGoalContainer
-				v-if="showRecommendLoanAfterGoalView"
+				v-if="showRecommendLoanAfterGoalView && hasRecommendedLoans"
 				ref="recommendLoanForGoalRef"
 				header-title="Goal set!"
 				express-checkout-enabled
@@ -147,6 +147,15 @@ const props = defineProps({
 	 * Already accounts for the `goalRecommendedLoanEnable` flag and the goal being set.
 	 */
 	showRecommendLoanAfterGoalView: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * True once the recommended-loan fetch has resolved with at least one loan.
+	 * When false (no loans returned) the recommended-loan section is skipped and
+	 * the original goal-selector flow is shown instead.
+	 */
+	hasRecommendedLoans: {
 		type: Boolean,
 		default: false,
 	},

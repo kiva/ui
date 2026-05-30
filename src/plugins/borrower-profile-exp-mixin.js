@@ -91,12 +91,17 @@ export default {
 			}
 		},
 		addToBasket({
-			loanId, lendAmount, onError, onSuccess,
+			loanId, lendAmount, loan, onError, onSuccess,
 		}) {
 			if (!loanId || !lendAmount) return;
-			// GoalSettingModal only emits loanId + lendAmount;
-			// borrower-profile flows already have called handleSelectedLoan.
-			this.handleSelectedLoan({ loanId });
+			// Recommended-loan flow already has the loan object from the card props,
+			// so skip borrowerProfileSideSheetQuery and seed selectedLoan directly.
+			// Borrower-profile flows have already called handleSelectedLoan elsewhere.
+			if (loan?.id) {
+				this.selectedLoan = loan;
+			} else {
+				this.handleSelectedLoan({ loanId });
+			}
 			this.$kvTrackEvent(
 				'Lending',
 				'Add to basket',
@@ -124,7 +129,7 @@ export default {
 							Sentry.captureMessage(`Add to Basket: ${error.message}`);
 							if (hasBasketExpired(error?.extensions?.code)) {
 								// eslint-disable-next-line max-len
-								this.$showTipMsg('There was a problem adding the loan to your basket, refreshing the page to try again.', 'error');
+								this.$showTipMsg('There was a problem adding the loan to your basket, refresh the page to try again.', 'error');
 								return handleInvalidBasket({
 									cookieStore: this.cookieStore,
 									loan: {
