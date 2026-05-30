@@ -217,6 +217,7 @@
 			:slides="heroSlides"
 			:user-goal-achieved="userGoalAchieved"
 			:user-goal="userGoal"
+			:completed-goals="completedGoals"
 			:hide-goal-card="hideCompletedGoalCard"
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
@@ -423,6 +424,7 @@ export default {
 			storeGoalPreferences: goalData.storeGoalPreferences,
 			userGoal: goalData.userGoal,
 			userGoalAchieved: goalData.userGoalAchieved,
+			completedGoals: goalData.completedGoals,
 			updateCurrentGoal: goalData.updateCurrentGoal,
 		};
 	},
