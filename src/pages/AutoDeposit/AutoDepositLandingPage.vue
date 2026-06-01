@@ -4,7 +4,7 @@
 			<!-- Auto Deposit Text -->
 			<div class="row">
 				<div class="small-12 columns">
-					<h1 class="tw-mb-4">
+					<h1 class="tw-text-display tw-mb-4">
 						{{ headerAreaHeadline }}
 					</h1>
 				</div>
