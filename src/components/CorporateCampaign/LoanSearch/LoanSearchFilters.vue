@@ -21,7 +21,10 @@
 						class="tw-inline-flex"
 						@click="showFilters()"
 					>
-						<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-border-r tw-border-tertiary tw-px-1.5">
+						<h4
+							class="tw-text-upper tw-font-medium tw-text-action
+								tw-border-r tw-border-tertiary tw-px-1.5"
+						>
 							Filter loans
 						</h4>
 					</span>
@@ -33,7 +36,7 @@
 							v-show="activeLoanDisplay === 'grid'"
 							@click="setLoanDisplayMode('rows')"
 						>
-							<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-px-1">
+							<h4 class="tw-text-upper tw-font-medium tw-text-action tw-px-1">
 								Row View
 							</h4>
 							<kv-material-icon
@@ -52,7 +55,7 @@
 							v-show="activeLoanDisplay === 'rows'"
 							@click="setLoanDisplayMode('grid')"
 						>
-							<h4 class="tw-text-h4 tw-font-medium tw-text-action tw-px-1">
+							<h4 class="tw-text-upper tw-font-medium tw-text-action tw-px-1">
 								Grid View
 							</h4>
 							<kv-material-icon
