@@ -178,10 +178,6 @@ export default [
 		}
 	},
 	{
-		path: '/teams/my-teams-beta',
-		redirect: '/teams/my-teams'
-	},
-	{
 		path: '/lend-by-category/loans-to-women',
 		redirect: '/lend-by-category/women'
 	},

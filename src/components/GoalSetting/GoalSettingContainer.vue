@@ -48,7 +48,7 @@
 			<RecommendLoanForGoalContainer
 				v-if="showRecommendLoanAfterGoalView && hasRecommendedLoans"
 				ref="recommendLoanForGoalRef"
-				class="tw-mx-auto"
+				class="tw-mx-auto recommended-loan-container"
 				style="max-width: 700px;"
 				header-title="Goal set!"
 				:header-details="recommendLoanHeaderDetails"
@@ -379,12 +379,13 @@ const {
 });
 
 const addToBasket = () => {
-	const { loanId } = recommendLoanCardProps.value;
+	const { loan, loanId } = recommendLoanCardProps.value;
 	if (!loanId) return;
 	const lendAmount = recommendLoanForGoalRef.value?.getSelectedAmount();
 	trackAddToBasketClick(loanId, lendAmount);
-	// Delegate to parent (GoalSetting.vue) which uses borrower-profile-exp-mixin
-	emit('add-to-basket', { loanId, lendAmount });
+	// Delegate to parent (GoalSetting.vue) which uses borrower-profile-exp-mixin.
+	// Pass the recommended loan so the parent can skip borrowerProfileSideSheetQuery.
+	emit('add-to-basket', { loanId, lendAmount, loan });
 };
 
 const handleCheckoutClick = () => {
@@ -617,5 +618,19 @@ onMounted(async () => {
     @apply tw-flex-none tw-mx-auto tw-w-full lg:tw-w-auto;
 
 	min-width: 324px;
+}
+
+.recommended-loan-container :deep(.recommended-loan-footer) {
+	@apply tw-fixed lg:tw-static tw-bottom-0 tw-left-0 tw-w-full
+		lg:tw-w-auto tw-z-sticky lg:tw-z-auto
+		tw-bg-white tw-p-2.5 lg:tw-p-0;
+}
+
+.recommended-loan-container :deep(.recommended-loan-footer .goal-footer-button) {
+	@apply tw-max-w-full;
+
+	@screen lg {
+		max-width: 330px;
+	}
 }
 </style>

@@ -224,7 +224,8 @@ export default {
 		appliedPromoCredits() {
 			if (this.creditsUsed.length) {
 				const appliedCredits = this.creditsUsed.filter(credit => {
-					return credit.creditType !== 'kiva_credit';
+					return credit.creditType !== 'kiva_credit'
+						&& (credit.applied === null || parseFloat(credit.applied) > 0);
 				});
 				return appliedCredits.length ? appliedCredits : [];
 			}

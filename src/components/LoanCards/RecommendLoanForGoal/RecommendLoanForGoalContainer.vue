@@ -17,6 +17,7 @@
 			@close-button="$emit('close-button', $event)"
 		/>
 		<RecommendLoanForGoalFooter
+			class="recommended-loan-footer"
 			:is-adding="isAdding"
 			:is-in-basket="isInBasket"
 			:express-checkout-enabled="expressCheckoutEnabled"
