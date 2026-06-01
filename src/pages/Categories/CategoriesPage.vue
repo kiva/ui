@@ -2,7 +2,7 @@
 	<www-page>
 		<kv-page-container>
 			<kv-grid class="tw-pt-4 md:tw-pt-6 lg:tw-pt-8 tw-mb-4">
-				<h1 class="tw-mb-2">
+				<h1 class="tw-text-display tw-mb-2">
 					Make a loan, change a life
 				</h1>
 				<p class="tw-mb-4 tw-text-subhead tw-text-secondary">
