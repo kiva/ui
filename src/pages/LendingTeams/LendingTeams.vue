@@ -9,7 +9,7 @@
 					class="tw-col-span-12"
 				>
 					<h1
-						class="tw-text-h1 tw-mt-4 tw-mb-2"
+						class="tw-text-display tw-mt-4 tw-mb-2"
 					>
 						Lending Teams
 					</h1>
