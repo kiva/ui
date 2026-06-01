@@ -3,7 +3,7 @@
 		<div class="tw-flex tw-items-center tw-gap-1 tw-px-1 lg:tw-px-2">
 			<!-- eslint-disable max-len -->
 			<img :src="images('megaphone.svg')" alt="mfi_recommendations">
-			<h3 class="tw-text-h4 tw-text-primary tw-whitespace-nowrap">
+			<h3 class="tw-text-upper tw-text-primary tw-whitespace-nowrap">
 				{{ sectionTitle }}
 			</h3>
 		</div>
@@ -38,21 +38,21 @@
 					<li v-if="getSubhead(0)" class="tw-flex tw-items-center tw-gap-1">
 						<!-- eslint-disable max-len -->
 						<img class="tw-w-4" :src="images('heart.svg')" alt="Anti-poverty focus">
-						<h4 class="tw-uppercase tw-text-h4">
+						<h4 class="tw-uppercase tw-text-upper">
 							{{ getSubhead(0) }}
 						</h4>
 					</li>
 					<li v-if="getSubhead(1)" class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
 						<!-- eslint-disable max-len -->
 						<img class="tw-w-4" :src="images('savings.svg')" alt="Facilitation of savings">
-						<h4 class="tw-uppercase tw-text-h4">
+						<h4 class="tw-uppercase tw-text-upper">
 							{{ getSubhead(1) }}
 						</h4>
 					</li>
 					<li v-if="getSubhead(2)" class="tw-flex tw-items-center tw-gap-1 tw-mt-2">
 						<!-- eslint-disable max-len -->
 						<img class="tw-w-4" :src="images('empowerment.svg')" alt="Family & Community Empowerment">
-						<h4 class="tw-uppercase tw-text-h4">
+						<h4 class="tw-uppercase tw-text-upper">
 							{{ getSubhead(2) }}
 						</h4>
 					</li>
