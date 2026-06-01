@@ -26,7 +26,7 @@
 					</div>
 				</div>
 			</div>
-			<h1 class="tw-text-h2 tw-mb-2">
+			<h1 class="tw-text-headline tw-mb-2">
 				{{ !partnerContentId ? 'One last thing!' : 'Almost there!' }}
 			</h1>
 			<p class="tw-mb-4">
