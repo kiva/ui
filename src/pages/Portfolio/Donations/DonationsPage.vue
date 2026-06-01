@@ -61,7 +61,7 @@
 							<div class="tw-col-span-12 md:tw-col-span-8">
 								<KvGrid class="tw-grid-cols-12">
 									<div class="tw-col-span-6">
-										<h4>{{ donationInfo?.currentYear }} Donations</h4>
+										<h4 class="tw-text-upper">{{ donationInfo?.currentYear }} Donations</h4>
 										<KvLoadingPlaceholder
 											v-if="loading"
 											class="md:!tw-mt-2 !tw-w-1/2"
@@ -72,7 +72,7 @@
 										</h2>
 									</div>
 									<div class="tw-col-span-6">
-										<h4>{{ donationInfo?.latestTaxYear }} Donations</h4>
+										<h4 class="tw-text-upper">{{ donationInfo?.latestTaxYear }} Donations</h4>
 										<KvLoadingPlaceholder
 											v-if="loading"
 											class="md:!tw-mt-2 !tw-w-1/2"

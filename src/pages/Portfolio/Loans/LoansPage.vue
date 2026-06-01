@@ -10,7 +10,7 @@
 					class="tw-col-span-12 md:tw-col-span-9 tw-pt-4
 					md:tw-pt-6 lg:tw-pt-8"
 				>
-					<h1 class="tw-mb-2">
+					<h1 class="tw-text-display tw-mb-2">
 						My loans
 					</h1>
 					<div class="tw-mb-2">

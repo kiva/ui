@@ -40,7 +40,7 @@
 					</router-link>
 					<!-- total attributed to team -->
 					<kv-loading-placeholder v-if="loading" class="lent-amount-placeholder" />
-					<span class="tw-text-h4 tw-text-secondary">
+					<span class="tw-text-upper tw-text-secondary">
 						{{ team.amount }}
 					</span>
 				</div>

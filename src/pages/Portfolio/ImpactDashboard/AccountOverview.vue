@@ -1,6 +1,6 @@
 <template>
 	<section class="tw-mb-3 tw-px-2 tw-rounded md:tw-bg-primary md:tw-p-3" data-testid="account-overview">
-		<h1 class="tw-text-h3 tw-mb-2">
+		<h1 class="tw-text-headline-two tw-mb-2">
 			Account overview
 		</h1>
 		<kv-grid class="tw-grid-cols-12">
@@ -13,7 +13,7 @@
 				"
 			>
 				<div class="tw-col-span-6">
-					<dt class="tw-text-h4">
+					<dt class="tw-text-upper">
 						Available to lend
 					</dt>
 					<kv-loading-placeholder
@@ -30,7 +30,7 @@
 					</dd>
 				</div>
 				<div class="tw-col-span-6">
-					<dt class="tw-text-h4">
+					<dt class="tw-text-upper">
 						Outstanding loans
 					</dt>
 					<kv-loading-placeholder
