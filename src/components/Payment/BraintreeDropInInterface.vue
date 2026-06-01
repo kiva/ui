@@ -494,7 +494,7 @@ $border-width: 1px;
 	#dropin-container [data-braintree-id=apple-pay-sheet-header] .braintree-sheet__label,
 	#dropin-container [data-braintree-id=google-pay-sheet-header] .braintree-sheet__label,
 	#dropin-container [data-braintree-id=card-sheet-header] .braintree-sheet__label {
-		@apply tw-ml-0 tw-text-h4 tw-text-primary tw-text-left;
+		@apply tw-ml-0 tw-text-upper tw-text-primary tw-text-left;
 	}
 
 	/* Saved payment methods container
@@ -531,7 +531,7 @@ $border-width: 1px;
 	/* 'Choose another way to pay' text */
 	#dropin-container [data-braintree-id=toggle],
 	#dropin-container [data-braintree-id=toggle]:hover {
-		@apply tw-bg-transparent tw-text-h4 tw-text-link;
+		@apply tw-bg-transparent tw-text-upper tw-text-link;
 	}
 
 	#dropin-container [data-braintree-id=toggle] span,
