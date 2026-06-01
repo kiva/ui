@@ -16,7 +16,7 @@
 					</legend>
 					<div class="tw-mb-4">
 						<label
-							class="tw-text-h4 tw-mb-1 tw-block"
+							class="tw-text-upper tw-mb-1 tw-block"
 							for="phone_input"
 						>
 							Enter your phone number here:
@@ -41,7 +41,7 @@
 						</ul>
 					</div>
 
-					<h3 class="tw-text-h4 tw-mb-1 tw-block">
+					<h3 class="tw-text-upper tw-mb-1 tw-block">
 						How do you want to get codes?
 					</h3>
 					<kv-loading-spinner
@@ -83,7 +83,7 @@
 					</p>
 					<label
 						for="verification_code"
-						class="phone-authentication__label tw-text-h4 tw-mb-1"
+						class="phone-authentication__label tw-text-upper tw-mb-1"
 					>
 						Enter your 6-digit code here:
 					</label>

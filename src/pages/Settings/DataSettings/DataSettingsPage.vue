@@ -8,7 +8,7 @@
 		</template>
 
 		<kv-default-wrapper>
-			<h1 class="tw-mb-2">
+			<h1 class="tw-text-display tw-mb-2">
 				Data Settings
 			</h1>
 			<p class="tw-mb-4">
