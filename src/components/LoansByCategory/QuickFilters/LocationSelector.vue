@@ -4,7 +4,7 @@
 		class="tw-relative tw-flex tw-flex-col"
 		v-click-outside="closeRegions"
 	>
-		<label class="tw-text-h4" for="location">
+		<label class="tw-text-upper" for="location">
 			Location
 		</label>
 		<kv-text-input
