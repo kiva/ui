@@ -39,7 +39,7 @@
 								</div>
 								<div class="carousel__body-header">
 									<h3>{{ slide.year }}</h3>
-									<h4>{{ slide.title }}</h4>
+									<h4 class="tw-text-upper">{{ slide.title }}</h4>
 								</div>
 
 								<div class="carousel__body-content-wrap">
