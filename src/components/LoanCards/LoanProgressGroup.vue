@@ -1,6 +1,6 @@
 <template>
 	<figure>
-		<h4 class="tw-mb-0.5">
+		<h4 class="tw-text-upper tw-mb-0.5">
 			{{ fundingText }}
 		</h4>
 		<kv-progress-bar
