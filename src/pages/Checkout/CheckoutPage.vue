@@ -20,7 +20,7 @@
 				:class="{'pre-login': !preCheckoutStep}"
 			>
 				<div class="checkout-header hide-for-print tw-pb-3">
-					<h1 class="tw-text-h2 tw-mb-3">
+					<h1 class="tw-text-headline tw-mb-3">
 						Your basket
 					</h1>
 					<hr class="tw-border-tertiary tw-my-3">
@@ -266,7 +266,7 @@
 
 			<div v-if="emptyBasket" class="empty-basket tw-relative tw-mx-auto" data-testid="empty-basket">
 				<div class="checkout-header-empty tw-mb-4">
-					<h1 class="tw-text-h2 tw-mb-2">
+					<h1 class="tw-text-headline tw-mb-2">
 						Your basket is empty!
 					</h1>
 					<p class="tw-mb-2">

@@ -15,7 +15,7 @@
 				<img :src="imageUrl" class="tw-rounded-full tw-w-6 md:tw-w-16">
 			</div>
 			<div class="tw-grow tw-flex tw-flex-col tw-justify-center upsellLoanDetails">
-				<h4 class="tw-text-h4 tw-text-action tw-mb-0.5">
+				<h4 class="tw-text-upper tw-text-action tw-mb-0.5">
 					Support Another Borrower
 				</h4>
 				<h3 v-if="isExpiringSoonExpEnabled" class="tw-text-h3 tw-mb-2">
@@ -33,7 +33,7 @@
 						:short-meter="true"
 						class="tw-mb-1"
 					/>
-					<p class="tw-text-h4 tw-m-0">
+					<p class="tw-text-upper tw-m-0">
 						{{ $filters.numeral(amountLeft, '$0,0[.]00') }} to go
 					</p>
 				</div>
