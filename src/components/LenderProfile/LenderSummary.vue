@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1 class="data-hj-suppress">
+		<h1 class="tw-text-display data-hj-suppress">
 			Kiva Lender {{ lenderName }}
 		</h1>
 		<div class="tw-flex tw-flex-col md:tw-flex-row tw-items-start tw-gap-y-2 md:tw-gap-x-8 tw-pt-2">
