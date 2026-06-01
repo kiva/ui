@@ -1,7 +1,7 @@
 <template>
 	<www-page>
 		<build-page-wrapper class="tw-prose">
-			<h1>Styleguide</h1>
+			<h1 class="tw-text-display">Styleguide</h1>
 
 			<p class="tw-text-subhead tw-text-secondary">
 				Kiva.org's frontend is built using a Vue.js component library
