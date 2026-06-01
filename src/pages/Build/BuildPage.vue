@@ -5,7 +5,7 @@
 		</template>
 
 		<build-page-wrapper class="tw-prose">
-			<h1>Developer Home</h1>
+			<h1 class="tw-text-display">Developer Home</h1>
 
 			<h2>Hello! We're Open!</h2>
 			<p>

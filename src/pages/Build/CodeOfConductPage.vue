@@ -4,7 +4,7 @@
 			<developer-secondary-menu />
 		</template>
 		<build-page-wrapper class="tw-prose">
-			<h1>Code Of Conduct</h1>
+			<h1 class="tw-text-display">Code Of Conduct</h1>
 			<p>
 				We really want you to be creative and have a fun time using the Kiva API,
 				but you can easily spoil the fun for yourself or everyone if you write

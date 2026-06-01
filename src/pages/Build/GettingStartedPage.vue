@@ -4,7 +4,7 @@
 			<developer-secondary-menu />
 		</template>
 		<build-page-wrapper class="tw-prose">
-			<h1>Getting Started</h1>
+			<h1 class="tw-text-display">Getting Started</h1>
 			<p>Here are some tips to help you get started.</p>
 
 			<h2>Step 1: Read the developer Terms Of Service and Code Of Conduct</h2>

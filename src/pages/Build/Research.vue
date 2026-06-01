@@ -4,7 +4,7 @@
 			<developer-secondary-menu />
 		</template>
 		<build-page-wrapper class="tw-prose">
-			<h1>Research</h1>
+			<h1 class="tw-text-display">Research</h1>
 			<p>
 				Kiva is proud to have worked with the academic and research community for over 10 years.
 				Some of Kiva's research and education partners include: Stanford University,

@@ -4,7 +4,7 @@
 			<developer-secondary-menu />
 		</template>
 		<build-page-wrapper class="tw-prose">
-			<h1>Data Snapshots</h1>
+			<h1 class="tw-text-display">Data Snapshots</h1>
 			<div class="tw-bg-caution tw-text-black tw-p-3 tw-my-1">
 				<strong class="tw-hidden md:tw-inline">Important Note:</strong>
 				<!-- eslint-disable-next-line max-len -->

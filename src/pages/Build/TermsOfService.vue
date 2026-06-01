@@ -4,7 +4,7 @@
 			<developer-secondary-menu />
 		</template>
 		<build-page-wrapper class="tw-prose">
-			<h1 class="tw-text-center">
+			<h1 class="tw-text-display tw-text-center">
 				KIVA DEVELOPER TERMS OF SERVICE
 			</h1>
 			<p class="tw-text-center">

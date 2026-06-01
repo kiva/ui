@@ -4,7 +4,7 @@
 			<developer-secondary-menu />
 		</template>
 		<build-page-wrapper class="tw-prose">
-			<h1>Developer Docs</h1>
+			<h1 class="tw-text-display">Developer Docs</h1>
 			<p>
 				We created the Kiva API so that anyone with a good idea and some
 				software savvy can help us expand the reach of Kiva, taking it into
