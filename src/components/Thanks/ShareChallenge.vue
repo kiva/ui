@@ -35,7 +35,7 @@
 									<rewards-icon class="tw-h-7 tw-w-6" />
 								</div>
 							</div>
-							<h4>
+							<h4 class="tw-text-upper">
 								Challenge
 								<a
 									:href="teamChallengePath"

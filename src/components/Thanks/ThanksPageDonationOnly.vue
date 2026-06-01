@@ -3,7 +3,7 @@
 		<kv-page-container>
 			<kv-grid class="tw-grid-cols-12 tw-my-8">
 				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
-					<h1 class="tw-text-h1 tw-text-center tw-mb-2" data-testid="thanks-message">
+					<h1 class="tw-text-display tw-text-center tw-mb-2" data-testid="thanks-message">
 						{{ headerMsg }}
 					</h1>
 					<p v-if="showDafThanks" class="tw-text-center tw-mb-2 tw-text-subhead">
