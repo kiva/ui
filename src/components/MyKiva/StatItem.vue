@@ -7,7 +7,7 @@
 			>
 				{{ prefix }}
 			</span>
-			<p class="tw-text-h1">
+			<p class="tw-text-display">
 				{{ parsedValue(value) }}
 			</p>
 		</div>

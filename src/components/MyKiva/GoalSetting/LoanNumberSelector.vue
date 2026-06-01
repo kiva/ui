@@ -20,8 +20,8 @@
 			:class="{'lg:!tw-flex-row lg:!tw-items-baseline lg:tw-gap-0.5': customGoalAmountEnable}"
 		>
 			<span
-				class="tw-text-h1 tw-text-center"
-				:class="{ '!tw-text-h2': isThreeDigitsNumber || customGoalAmountEnable }"
+				class="tw-text-display tw-text-center"
+				:class="{ '!tw-text-headline': isThreeDigitsNumber || customGoalAmountEnable }"
 				style="line-height: 1;"
 			>
 				{{ loansNumber }}

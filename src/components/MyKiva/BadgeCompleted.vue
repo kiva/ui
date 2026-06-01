@@ -24,7 +24,7 @@
 					class="tw-underline tw-text-desert-rose-4 hover:tw-text-desert-rose-4"
 				> Learn more</a>
 			</h2>
-			<h4 class="tw-text-secondary tw-text-center">
+			<h4 class="tw-text-upper tw-text-secondary tw-text-center">
 				{{ earnedBadgeDateAndReason }}
 			</h4>
 		</div>

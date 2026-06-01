@@ -96,7 +96,7 @@
 							lg:tw-justify-center tw-items-center tw-gap-1"
 						>
 							<div class="tw-text-eco-green-3 tw-text-center tw-flex tw-items-center tw-gap-1">
-								<span class="tw-text-h1 lg:tw-text-h2 tw--mt-1">
+								<span class="tw-text-display lg:tw-text-headline tw--mt-1">
 									&#43;
 								</span>
 								<span class="lg:tw-hidden tw-text-base !tw-font-medium">
