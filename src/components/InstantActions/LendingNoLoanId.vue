@@ -4,12 +4,12 @@
 			v-if="loanNotFound || tokenValidationFailed"
 		>
 			<template v-if="loanNotFound">
-				<h1>We couldn't find that loan.</h1>
+				<h1 class="tw-text-display">We couldn't find that loan.</h1>
 				<p>This loan may have already been funded.</p>
 				<p>Find another loan</p>
 			</template>
 			<template v-else-if="tokenValidationFailed">
-				<h1>Validation of your unique email link failed.</h1>
+				<h1 class="tw-text-display">Validation of your unique email link failed.</h1>
 				<p>Find another loan</p>
 			</template>
 		</div>

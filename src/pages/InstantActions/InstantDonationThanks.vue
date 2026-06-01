@@ -29,7 +29,7 @@
 					</div>
 					<h1
 						v-if="headline"
-						class="tw-text-h2 tw-pb-4 tw-text-center"
+						class="tw-text-headline tw-pb-4 tw-text-center"
 						v-html="headline"
 					></h1>
 					<h3 v-if="subHeadline" class="tw-pb-2 tw-text-center" v-html="subHeadline"></h3>

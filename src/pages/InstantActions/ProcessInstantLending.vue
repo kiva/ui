@@ -30,7 +30,7 @@
 
 					<h1
 						v-if="headline"
-						class="tw-text-h2 tw-mb-2 tw-text-center"
+						class="tw-text-headline tw-mb-2 tw-text-center"
 						v-html="headline"
 					></h1>
 					<h3 v-if="subHeadline" class="tw-mb-2 tw-text-center" v-html="subHeadline"></h3>

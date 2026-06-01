@@ -18,7 +18,7 @@
 				</div>
 				<h1
 					v-if="headline"
-					class="tw-text-h2 tw-mb-2"
+					class="tw-text-headline tw-mb-2"
 					v-html="headline"
 				></h1>
 				<h2 v-if="subHeadline" class="tw-text-h3 tw-mb-2" v-html="subHeadline"></h2>
