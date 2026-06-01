@@ -2,7 +2,7 @@
 <template>
 	<!-- eslint-disable max-len -->
 	<div class="small-12 large-10 columns tw-prose">
-		<h1>
+		<h1 class="tw-text-display">
 			Kiva Terms of Use Agreement
 		</h1>
 
