@@ -2,7 +2,7 @@
 	<www-page>
 		<kv-default-wrapper class="monthly-good-thanks-page row align-center">
 			<div class="small-12 medium-11 large-9 column tw-text-center">
-				<h1 class="tw-text-center tw-mb-2">
+				<h1 class="tw-text-display tw-text-center tw-mb-2">
 					<kv-material-icon
 						:icon="mdiCheckCircle"
 						style="height: 1em; width: 1em; margin-top: -0.25em;"

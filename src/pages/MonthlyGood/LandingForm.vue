@@ -2,7 +2,7 @@
 	<form @submit.prevent.stop="submit" novalidate>
 		<div class="tw-flex tw-flex-col tw-gap-2">
 			<fieldset class="tw-basis-full">
-				<p class="tw-text-h4 tw-mb-2">
+				<p class="tw-text-upper tw-mb-2">
 					CHOOSE A CATEGORY
 				</p>
 				<label for="borrower-categories" class="tw-sr-only">Lending category to support</label>

@@ -10,7 +10,7 @@
 		</div>
 		<div class="small-12 large-6 columns">
 			<div class="tw-py-4 md:tw-py-6 lg:tw-py-8">
-				<h2 class="tw-text-h1 tw-mb-4">
+				<h2 class="tw-text-display tw-mb-4">
 					Monthly Good, delivered to your inbox
 				</h2>
 				<p>
