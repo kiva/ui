@@ -23,7 +23,7 @@
 				/>
 				<div v-else class="tw-flex tw-items-start tw-pb-8">
 					<div class="tw-flex-1">
-						<h1 class="tw-mb-2">
+						<h1 class="tw-text-display tw-mb-2">
 							Make a loan, change a life
 						</h1>
 						<p class="tw-text-h3 tw-text-secondary md:tw-w-2/3 tw-mb-3p tw-hidden md:tw-block">

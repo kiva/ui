@@ -5,7 +5,7 @@
 			@click="openModal"
 		>
 			<icon-add class="tw-mr-1 tw-inline-block" />
-			<h4 class="tw-text-h4 tw-font-medium tw-text-action">
+			<h4 class="tw-text-upper tw-font-medium tw-text-action">
 				Save This Search
 			</h4>
 		</div>
@@ -26,7 +26,7 @@
 			<div>
 				<label
 					for="savedSearchName"
-					class="tw-text-h4 tw-block tw-pb-1 tw-text-secondary"
+					class="tw-text-upper tw-block tw-pb-1 tw-text-secondary"
 				>
 					Saved Search Name
 				</label>

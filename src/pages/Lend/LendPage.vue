@@ -5,7 +5,7 @@
 	>
 		<div class="row">
 			<div class="small-12 columns tw-mt-3 tw-p-2">
-				<h1 class="tw-mb-2">
+				<h1 class="tw-text-display tw-mb-2">
 					Make a loan, change a life
 				</h1>
 				<p class="tw-mb-4 tw-max-w-screen-lg">
