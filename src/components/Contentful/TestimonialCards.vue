@@ -48,7 +48,7 @@
 
 								<h4
 									v-html="singleCard.title"
-									class="tw-text-secondary tw-pb-4"
+									class="tw-text-upper tw-text-secondary tw-pb-4"
 								>
 								</h4>
 							</figcaption>
