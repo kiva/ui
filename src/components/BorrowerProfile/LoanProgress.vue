@@ -31,10 +31,10 @@
 						This loan is fully funded!
 					</p>
 					<div class="md:tw-flex tw-gap-2">
-						<p class="tw-text-h4 tw-text-secondary tw-block">
+						<p class="tw-text-upper tw-text-secondary tw-block">
 							100% funded
 						</p>
-						<p v-if="!hideViewProfileLinks" class="tw-text-h4 tw-text-action tw-block">
+						<p v-if="!hideViewProfileLinks" class="tw-text-upper tw-text-action tw-block">
 							<router-link
 								:to="`/lend-classic/${routeId}?minimal=false`"
 								v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
@@ -50,10 +50,10 @@
 					This loan has expired
 				</p>
 				<div class="md:tw-flex tw-gap-2">
-					<p class="tw-text-h4 tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
+					<p class="tw-text-upper tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
 						{{ progressPercentRounded }} funded
 					</p>
-					<p v-if="!hideViewProfileLinks" class="tw-text-h4 tw-text-action tw-block">
+					<p v-if="!hideViewProfileLinks" class="tw-text-upper tw-text-action tw-block">
 						<router-link
 							:to="`/lend-classic/${routeId}?minimal=false`"
 							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
@@ -68,10 +68,10 @@
 					This loan is inactive
 				</p>
 				<div class="md:tw-flex tw-gap-2">
-					<p class="tw-text-h4 tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
+					<p class="tw-text-upper tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
 						{{ progressPercentRounded }} funded
 					</p>
-					<p v-if="!hideViewProfileLinks" class="tw-text-h4 tw-text-action tw-block">
+					<p v-if="!hideViewProfileLinks" class="tw-text-upper tw-text-action tw-block">
 						<router-link
 							:to="`/lend-classic/${routeId}?minimal=false`"
 							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
@@ -91,7 +91,7 @@
 						<span class="tw-text-h3 tw-block tw-m-0">
 							{{ timeLeft }} left
 						</span>
-						<span class="tw-text-h4 tw-text-secondary tw-block">
+						<span class="tw-text-upper tw-text-secondary tw-block">
 							in private fundraising
 						</span>
 					</p>
@@ -99,7 +99,7 @@
 						<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-lenders-to-go">
 							{{ numberOfLenders }}/{{ pfpMinLenders }} lenders
 						</p>
-						<p class="tw-text-h4 tw-text-secondary" data-testid="bp-summary-amount-to-go">
+						<p class="tw-text-upper tw-text-secondary" data-testid="bp-summary-amount-to-go">
 							{{ $filters.numeral(moneyLeft, '$0,0[.]00') }} to go
 						</p>
 					</div>
@@ -115,7 +115,7 @@
 						<span class="tw-text-h3 tw-block tw-m-0">
 							{{ timeLeft }}
 						</span>
-						<span class="tw-text-h4 tw-text-secondary tw-block">
+						<span class="tw-text-upper tw-text-secondary tw-block">
 							remaining
 						</span>
 					</p>
@@ -123,7 +123,7 @@
 						<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
 							{{ $filters.numeral(moneyLeft, '$0,0[.]00') }} to go
 						</p>
-						<p class="tw-text-h4 tw-text-secondary" data-testid="bp-summary-percent-funded">
+						<p class="tw-text-upper tw-text-secondary" data-testid="bp-summary-percent-funded">
 							{{ progressPercentRounded }} funded
 						</p>
 					</div>

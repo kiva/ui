@@ -25,7 +25,7 @@
 					<span class="tw-block tw-text-h2" data-testid="bp-country-aai-value">
 						{{ avgAnnualIncomeFormatted }}
 					</span>
-					<span class="tw-block tw-text-h4 tw-text-secondary">
+					<span class="tw-block tw-text-upper tw-text-secondary">
 						Average annual income (USD)
 					</span>
 				</p>
@@ -33,7 +33,7 @@
 					<span class="tw-block tw-text-h2" data-testid="bp-country-loans-fundraising-value">
 						{{ numLoansFundraising }}
 					</span>
-					<span class="tw-block tw-text-h4 tw-text-secondary">
+					<span class="tw-block tw-text-upper tw-text-secondary">
 						Loans currently fundraising
 					</span>
 				</p>

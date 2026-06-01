@@ -217,14 +217,14 @@
 					<slot v-if="!isSticky" name="sharebutton"></slot>
 					<p
 						v-if="freeCreditWarning"
-						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
+						class="tw-text-upper tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
 						data-testid="bp-lend-cta-not-eligible-for-credit"
 					>
 						Not eligible for lending credit
 					</p>
 					<p
 						v-if="allSharesReserved"
-						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
+						class="tw-text-upper tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
 						data-testid="bp-lend-cta-all-shares-reserved"
 					>
 						All shares reserved
@@ -303,7 +303,7 @@
 							'tw-mb-1 tw-p-1',
 							'tw-rounded',
 							'tw-bg-primary',
-							'tw-text-h4',
+							'tw-text-upper',
 							'tw-flex tw-justify-center',
 							'tw-mt-1',
 							{

@@ -21,14 +21,14 @@
 		<h3 v-if="sector" class="tw-mb-0" data-testid="bp-direct-business-industry">
 			{{ sector }}
 		</h3>
-		<p class="tw-text-h4 tw-text-secondary tw-mb-2">
+		<p class="tw-text-upper tw-text-secondary tw-mb-2">
 			Industry
 		</p>
 
 		<h3 class="tw-mb-0" data-testid="bp-direct-business-years">
 			{{ yearsInBusinessFormatted }}
 		</h3>
-		<p class="tw-text-h4 tw-text-secondary">
+		<p class="tw-text-upper tw-text-secondary">
 			Years in operation
 		</p>
 

@@ -7,7 +7,7 @@
 					v-if="loading"
 					:style="{width: 60 + (Math.random() * 15) + '%', height: '1rem'}"
 				/>
-				<h4 v-else>
+				<h4 class="tw-text-upper" v-else>
 					HOW THIS MONEY HELPS
 				</h4>
 				<KvLoadingPlaceholder v-if="loading" class="tw-mt-0.5 tw-h-2" />

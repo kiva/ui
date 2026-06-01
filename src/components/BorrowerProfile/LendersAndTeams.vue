@@ -19,7 +19,7 @@
 				/>
 				<span
 					v-else
-					class="tw-text-h4"
+					class="tw-text-upper"
 					:data-testid="`bp-powered-by-${displayType}-message`"
 				>
 					{{ poweredByText }}
