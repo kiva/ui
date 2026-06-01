@@ -11,7 +11,7 @@
 					<kv-responsive-image :images="images" alt="" />
 				</div>
 				<div class="columns small-12 large-7">
-					<h1 class="headline">
+					<h1 class="headline tw-text-display">
 						{{ headline }}
 					</h1>
 					<h3 class="subheadline">
