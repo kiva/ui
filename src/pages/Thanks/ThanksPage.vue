@@ -16,6 +16,7 @@
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 				:basket-items="basketItems"
 				:is-adding="isAdding"
+				:is-redirecting="isRedirecting"
 				@add-to-basket="handleRecommendedLoanAddToBasket"
 			/>
 		</template>
@@ -76,6 +77,14 @@
 				</kv-button>
 			</div>
 		</template>
+		<ExpressCheckoutModal
+			v-if="activeView === SINGLE_VERSION_VIEW && goalRecommendedLoanEnable"
+			ref="expressCheckoutModal"
+			:loan="expressCheckoutLoan"
+			:is-logged-in="!isGuest"
+			@checkout-complete="handleExpressCheckoutComplete"
+			@close="handleExpressCheckoutClose"
+		/>
 	</www-page>
 </template>
 
@@ -99,6 +108,8 @@ import { fetchGoals } from '#src/util/teamsUtil';
 import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
 import { fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
 import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
+import ExpressCheckoutModal from '#src/components/Thanks/ExpressCheckout/ExpressCheckoutModal';
+import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import { LAST_YEAR_KEY, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
@@ -147,6 +158,7 @@ export default {
 		ChallengeHeader,
 		ShareChallenge,
 		ThanksPageSingleVersion,
+		ExpressCheckoutModal,
 	},
 	mixins: [borrowerProfileExpMixin],
 	inject: ['apollo', 'cookieStore'],
@@ -175,6 +187,8 @@ export default {
 			totalLoanCount: 0,
 			achievements: [],
 			goalRecommendedLoanEnable: false,
+			expressCheckoutLoan: null,
+			isRedirecting: false,
 		};
 	},
 	apollo: {
@@ -290,14 +304,77 @@ export default {
 		},
 	},
 	methods: {
-		handleRecommendedLoanAddToBasket(payload) {
-			// Express checkout: add the recommended loan, then send the user to checkout.
+		async handleRecommendedLoanAddToBasket(payload) {
+			// If the user's basket already has items we should send them to /basket for the full
+			// checkout. Only when the basket is empty do we open the in-page
+			// express checkout modal for this single recommended loan.
+			await this.loadInitialBasketItems();
+			const items = this.basketItems ?? [];
+			let isBasketEmpty = items.length === 0;
+
+			// If the only items in the basket are donations, clear them
+			// so the express checkout shows only the recommended loan and
+			// the user pays the visualized amount.
+			// Abort the flow on failure to avoid charging an unexpected total.
+			// eslint-disable-next-line no-underscore-dangle
+			const onlyDonation = items.find(item => item.__typename === 'Donation');
+			if (onlyDonation && items.length === 1) {
+				const basketId = this.cookieStore.get('kvbskt');
+				try {
+					const donation = items[0];
+					const { errors } = await this.apollo.mutate({
+						mutation: updateDonation,
+						variables: {
+							price: '0.00',
+							isTip: donation.isTip ?? true,
+							basketId,
+						},
+					});
+					if (errors?.length) {
+						throw new Error(errors[0]?.message ?? 'Failed to clear donation');
+					}
+					this.basketItems = [];
+					isBasketEmpty = true;
+				} catch (error) {
+					this.$showTipMsg(
+						'Something went wrong. Please, refresh the page and try again.',
+						'error',
+					);
+					logFormatter(error, 'error');
+					return;
+				}
+			}
+
+			if (!isBasketEmpty) {
+				this.isRedirecting = true;
+			}
+
+			const previousOnError = payload.onError;
 			this.addToBasket({
 				...payload,
 				onSuccess: () => {
-					this.$router.push('/basket');
+					if (isBasketEmpty) {
+						this.expressCheckoutLoan = payload.loan ?? null;
+						this.$refs.expressCheckoutModal?.openLightbox();
+					} else {
+						// this.$router.push('/basket');
+						console.error('HP > redirecting to /basket');
+					}
+				},
+				onError: () => {
+					this.isRedirecting = false;
+					previousOnError?.();
 				},
 			});
+		},
+		handleExpressCheckoutComplete({ transactionId }) {
+			if (!transactionId) return;
+			this.$router.push(`/thanks?kiva_transaction_id=${transactionId}`);
+		},
+		handleExpressCheckoutClose() {
+			// Reset add-to-basket flag so the "Support now" CTA recovers from any
+			// in-flight state if the user dismisses the modal before completing.
+			this.isAdding = false;
 		},
 	},
 	setup() {

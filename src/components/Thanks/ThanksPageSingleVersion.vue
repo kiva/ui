@@ -69,6 +69,7 @@
 				:recommend-loan-is-in-basket="recommendLoanIsInBasket"
 				:loaded-set-data="loadedSetData"
 				:is-adding="isAdding"
+				:is-redirecting="isRedirecting"
 				go-to-url="/mykiva"
 				@edit-goal="editGoalCategory"
 				@set-goal-target="setGoalTarget"
@@ -274,6 +275,10 @@ const props = defineProps({
 		default: () => ([]),
 	},
 	isAdding: {
+		type: Boolean,
+		default: false,
+	},
+	isRedirecting: {
 		type: Boolean,
 		default: false,
 	},

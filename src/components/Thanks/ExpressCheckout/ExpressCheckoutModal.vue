@@ -1,0 +1,238 @@
+<template>
+	<KvLightbox
+		title="Confirm Payment"
+		:visible="lightboxOpen"
+		@lightbox-closed="closeLightbox"
+	>
+		<form
+			v-if="lightboxOpen"
+			style="max-width: 25rem;"
+			class="tw-mx-auto"
+			action="."
+			@submit.prevent="onSubmit"
+		>
+			<ExpressCheckoutTotals
+				:loan="loan"
+				:is-logged-in="isLoggedIn"
+				@credit-toggled="isUsingKivaCredit = $event"
+			/>
+
+			<KvPaymentSelect
+				v-if="depositRequired"
+				:amount="totalDue"
+				:auth-token="dropInAuthToken"
+				:drop-in-name="dropInName"
+				flow="checkout"
+				:google-pay-merchant-id="googlePayMerchantId"
+				:preselect-vaulted-payment-method="true"
+				@transactions-enabled="transactionsEnabled = $event"
+				@error="$showTipMsg($event, 'error')"
+			/>
+
+			<p
+				class="tw-text-caption tw-my-1"
+				style="font-weight: 611;"
+			>
+				By clicking &ldquo;Confirm payment&rdquo; you will be funding this loan
+				and we&rsquo;ll charge your payment method for the selected amount.
+			</p>
+
+			<KvButton
+				:state="paymentButtonState"
+				type="submit"
+				class="tw-w-full tw-my-1"
+				@click="onSubmit"
+			>
+				Complete order
+			</KvButton>
+
+			<ExpressCheckoutPaymentDisclaimer v-if="depositRequired" />
+		</form>
+	</KvLightbox>
+</template>
+
+<script setup>
+import {
+	computed,
+	inject,
+	onBeforeUnmount,
+	ref,
+} from 'vue';
+import numeral from 'numeral';
+import {
+	basketTotalsQuery,
+	createBasket,
+	executeOneTimeCheckout,
+	getBasketID,
+	getClientToken,
+	KvPaymentSelect,
+	trackTransactionEvent,
+	useBraintreeDropIn,
+	watchBasketTotals,
+} from '@kiva/kv-shop';
+import { KvButton, KvLightbox } from '@kiva/kv-components';
+import ExpressCheckoutTotals from '#src/components/Thanks/ExpressCheckout/ExpressCheckoutTotals';
+import ExpressCheckoutPaymentDisclaimer from '#src/components/Thanks/ExpressCheckout/ExpressCheckoutPaymentDisclaimer';
+import useTipMessage from '#src/composables/useTipMessage';
+import logFormatter from '#src/util/logFormatter';
+
+const props = defineProps({
+	loan: {
+		type: Object,
+		default: () => ({}),
+	},
+	isLoggedIn: {
+		type: Boolean,
+		default: false,
+	},
+	analyticsCategory: {
+		type: String,
+		default: 'post-checkout-express',
+	},
+});
+
+const emit = defineEmits(['close', 'checkout-complete']);
+
+const apollo = inject('apollo');
+const $appConfig = inject('$appConfig', {});
+const { $showTipMsg } = useTipMessage(apollo);
+
+const googlePayMerchantId = $appConfig?.googlePay?.merchantId ?? '';
+const braintreeTokenKey = $appConfig?.btTokenKey ?? '';
+const dropInName = 'express-checkout';
+
+const lightboxOpen = ref(false);
+const paying = ref(false);
+const totalDue = ref('0.00');
+const transactionsEnabled = ref(false);
+const dropInAuthToken = ref('');
+const isUsingKivaCredit = ref(false);
+let totalsSubscription = null;
+
+const depositRequired = computed(() => (numeral(totalDue.value).value() ?? 0) > 0);
+
+const paymentButtonState = computed(() => {
+	if (depositRequired.value && !transactionsEnabled.value) {
+		return 'disabled';
+	}
+	if (paying.value) {
+		return 'loading';
+	}
+	return '';
+});
+
+const subscribeTotals = () => {
+	totalsSubscription?.unsubscribe();
+	totalsSubscription = watchBasketTotals(apollo).subscribe({
+		next: ({ data }) => {
+			totalDue.value = data?.shop?.basket?.totals?.creditAmountNeeded || '0.00';
+		},
+		error: e => {
+			logFormatter(`ExpressCheckoutModal: ${e}`, 'error');
+		},
+	});
+};
+
+const closeLightbox = () => {
+	lightboxOpen.value = false;
+	totalsSubscription?.unsubscribe();
+	totalsSubscription = null;
+	emit('close');
+};
+
+const openLightbox = async () => {
+	try {
+		// Prime the basket totals cache so the watch subscription (and the
+		// totals component) bind to the freshly-mutated basket. The
+		// updateLoanReservation mutation that runs before this modal opens
+		// does not include totals in its response, so Apollo has no way to
+		// invalidate the cached totals on its own.
+		await apollo.query({
+			query: basketTotalsQuery,
+			variables: { basketId: getBasketID() },
+			fetchPolicy: 'network-only',
+		});
+
+		if (props.isLoggedIn) {
+			dropInAuthToken.value = await getClientToken(apollo) ?? '';
+		} else {
+			dropInAuthToken.value = braintreeTokenKey;
+		}
+	} catch (e) {
+		const message = e?.message || 'Something went wrong. Please, refresh the page and try again.';
+		$showTipMsg(message, 'error');
+		// TODO(MP-2747): track fail event for open-express-checkout
+		return false;
+	}
+
+	subscribeTotals();
+	lightboxOpen.value = true;
+	// TODO(MP-2747): track 'show' event for express-checkout modal
+	return true;
+};
+
+const onSubmit = async () => {
+	if (paying.value) return;
+	paying.value = true;
+
+	// TODO(MP-2747): track 'submit' event for express-checkout
+
+	try {
+		const options = { apollo, deactivateRedirect: true };
+		if (depositRequired.value) {
+			options.braintree = useBraintreeDropIn(dropInName);
+		}
+
+		const transactionResult = await executeOneTimeCheckout(options);
+
+		const checkoutId = transactionResult?.data?.checkoutStatus?.receipt?.checkoutId ?? 0;
+		await trackTransactionEvent({
+			apollo,
+			transactionId: Number(checkoutId),
+		});
+
+		await createBasket(apollo);
+
+		if (transactionResult?.data?.checkoutStatus?.status !== 'COMPLETED') {
+			throw new Error('Checkout failed');
+		}
+
+		// TODO(MP-2747): track 'success' event for express-checkout
+		emit('checkout-complete', {
+			transactionId: checkoutId,
+			amount: numeral(totalDue.value).format('0.00'),
+			transactionInfo: transactionResult?.data?.checkoutStatus,
+		});
+		closeLightbox();
+	} catch (e) {
+		// TODO(MP-2747): track 'fail' event for express-checkout
+
+		if (e?.code === 'shop.failedCheckoutValidation') {
+			window.location.href = '/checkout';
+			return;
+		}
+
+		if (e?.code === 'shop.dropinNoPaymentMethod') {
+			// eslint-disable-next-line max-len
+			$showTipMsg('There was a problem validating your payment information. Please double-check the details and try again.', 'error');
+		} else if (e?.message && e?.code !== 'shop.dropinRequired') {
+			$showTipMsg(e.message, 'error');
+		} else {
+			$showTipMsg('Something went wrong. Please, refresh the page and try again.', 'error');
+		}
+
+		closeLightbox();
+	} finally {
+		paying.value = false;
+	}
+};
+
+onBeforeUnmount(() => {
+	totalsSubscription?.unsubscribe();
+	totalsSubscription = null;
+});
+
+defineExpose({
+	openLightbox,
+});
+</script>

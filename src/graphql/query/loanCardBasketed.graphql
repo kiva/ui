@@ -7,6 +7,10 @@ query loanCardBasketed($id: Int!, $basketId: String) {
 			items {
 				values {
 					id
+					... on Donation {
+						id
+						isTip
+					}
 				}
 			}
 		}
