@@ -8,7 +8,7 @@
 					:id="`${index}-region`"
 					class="country-filters__region-section"
 				>
-					<h4 class="tw-text-upper tw-mb-1">
+					<h4 class="tw-text-base tw-text-upper tw-mb-1">
 						{{ name }}
 					</h4>
 					<check-list

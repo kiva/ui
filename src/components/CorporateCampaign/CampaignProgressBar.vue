@@ -17,13 +17,13 @@
 			"
 	>
 		<div class="tw-flex-grow">
-			<h4 v-if="creditLeft === promoAmount" class="tw-text-upper tw-mb-1 tw-px-3">
+			<h4 v-if="creditLeft === promoAmount" class="tw-text-base tw-text-upper tw-mb-1 tw-px-3">
 				Let's Get Started
 			</h4>
-			<h4 v-else-if="creditLeft > 0" class="tw-text-upper tw-mb-1 tw-px-3">
+			<h4 v-else-if="creditLeft > 0" class="tw-text-base tw-text-upper tw-mb-1 tw-px-3">
 				Keep Going!
 			</h4>
-			<h4 v-else-if="creditLeft === 0" class="tw-text-upper tw-mb-1 tw-px-3">
+			<h4 v-else-if="creditLeft === 0" class="tw-text-base tw-text-upper tw-mb-1 tw-px-3">
 				You Did It!
 			</h4>
 			<h3 class="tw-text-title tw-mb-2 tw-px-3">
