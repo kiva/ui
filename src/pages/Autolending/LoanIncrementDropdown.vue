@@ -1,6 +1,6 @@
 <template>
 	<div class="loan-increment-dropdown">
-		<h3 class="tw-mb-2">
+		<h3 class="tw-text-title tw-mb-2">
 			Max loan amount
 		</h3>
 		<kv-select v-model="loanIncrement">
