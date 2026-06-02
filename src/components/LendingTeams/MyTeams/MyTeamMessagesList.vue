@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h3 class="tw-mb-2">
+		<h3 class="tw-text-title tw-mb-2">
 			Team Messages
 		</h3>
 
@@ -27,7 +27,7 @@
 			v-if="!loading && messages.length === 0"
 			class="tw-text-center tw-py-4"
 		>
-			<h3 class="tw-mb-2 tw-text-secondary">
+			<h3 class="tw-text-title tw-mb-2 tw-text-secondary">
 				No team messages yet.
 			</h3>
 			<p class="tw-text-secondary">

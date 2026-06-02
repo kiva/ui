@@ -14,7 +14,7 @@
 						Lending Teams
 					</h1>
 					<h2
-						class="tw-text-h3 tw-mb-4"
+						class="tw-text-title tw-mb-4"
 					>
 						Connect with Kiva's Lender Community
 					</h2>
