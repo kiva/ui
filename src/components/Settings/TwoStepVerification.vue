@@ -5,7 +5,7 @@
 			class="two-step-card-wrapper__two-step-card"
 		>
 			<template #content>
-				<h3 class="tw-mb-2">
+				<h3 class="tw-text-title tw-mb-2">
 					Status:
 					<kv-loading-placeholder
 						class="tw-inline-block tw-w-4"

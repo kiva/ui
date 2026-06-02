@@ -19,10 +19,10 @@
 							href="/settings/account"
 							data-testid="account-settings-lnk"
 						>
-							<h2 class="section__title">Account settings</h2>
+							<h2 class="tw-text-headline section__title">Account settings</h2>
 							<ul class="section__list">
 								<li>
-									<h3>Personal info</h3>
+									<h3 class="tw-text-title">Personal info</h3>
 									<p>
 										Your private account info: email,
 										<span v-if="!isMfaActive">password, </span>
@@ -30,7 +30,7 @@
 									</p>
 								</li>
 								<li>
-									<h3>Lender profile</h3>
+									<h3 class="tw-text-title">Lender profile</h3>
 									<p>What displays publicly on Kiva: name, location, occupation</p>
 								</li>
 							</ul>
@@ -46,16 +46,16 @@
 							to="/settings/security"
 							data-testid="security-settings-lnk"
 						>
-							<h2 class="section__title">
+							<h2 class="tw-text-headline section__title">
 								Security settings
 							</h2>
 							<ul class="section__list">
 								<li>
-									<h3>Password</h3>
+									<h3 class="tw-text-title">Password</h3>
 									<p>Change your password</p>
 								</li>
 								<li>
-									<h3>2-step verification</h3>
+									<h3 class="tw-text-title">2-step verification</h3>
 									<p>Turn on or off 2-step verification</p>
 								</li>
 							</ul>
@@ -67,30 +67,30 @@
 							href="/settings/credit"
 							data-testid="credit-settings-lnk"
 						>
-							<h2 class="section__title">Credit settings</h2>
+							<h2 class="tw-text-headline section__title">Credit settings</h2>
 							<ul class="section__list">
 								<li>
-									<h3>Repayment settings</h3>
+									<h3 class="tw-text-title">Repayment settings</h3>
 									<p>Where you want your money to go when it's repaid</p>
 								</li>
 								<li>
-									<h3>Inactivity settings</h3>
+									<h3 class="tw-text-title">Inactivity settings</h3>
 									<p>Where you want your money to go if your account becomes inactive</p>
 								</li>
 								<li
 									v-if="!isSubscriber"
 									class="section__subsection"
 								>
-									<h3>Auto lending settings</h3>
+									<h3 class="tw-text-title">Auto lending settings</h3>
 									<p>Turn auto lending on or off, and put your idle credit to good use</p>
 								</li>
 								<li class="section__subsection">
 									<template v-if="isSubscriber">
-										<h3>Monthly Good settings</h3>
+										<h3 class="tw-text-title">Monthly Good settings</h3>
 										<p>Automatically support borrowers in need each month</p>
 									</template>
 									<template v-if="!isSubscriber">
-										<h3>Auto deposit</h3>
+										<h3 class="tw-text-title">Auto deposit</h3>
 										<p>Increase your impact - make regular deposits or
 											donations into your Kiva account</p>
 									</template>
@@ -104,10 +104,10 @@
 							href="/settings/payments"
 							data-testid="payment-settings-lnk"
 						>
-							<h2 class="section__title">Payment settings</h2>
+							<h2 class="tw-text-headline section__title">Payment settings</h2>
 							<ul class="section__list">
 								<li>
-									<h3>Payment methods</h3>
+									<h3 class="tw-text-title">Payment methods</h3>
 									<p>Update your payment method details</p>
 								</li>
 							</ul>
@@ -119,18 +119,18 @@
 							href="/settings/email"
 							data-testid="email-settings-lnk"
 						>
-							<h2 class="section__title">Email preferences</h2>
+							<h2 class="tw-text-headline section__title">Email preferences</h2>
 							<ul class="section__list">
 								<li>
-									<h3>Account and loan updates</h3>
+									<h3 class="tw-text-title">Account and loan updates</h3>
 									<p>Receive borrower updates and repayment notifications</p>
 								</li>
 								<li>
-									<h3>News from Kiva</h3>
+									<h3 class="tw-text-title">News from Kiva</h3>
 									<p>Hear about what’s new at Kiva and how you can get more involved</p>
 								</li>
 								<li>
-									<h3>Lender and team messages</h3>
+									<h3 class="tw-text-title">Lender and team messages</h3>
 									<p>Get notifications from other lenders and teams you belong to</p>
 								</li>
 							</ul>
@@ -142,7 +142,7 @@
 							href="/trustees/apply"
 							data-testid="trustee-settings-lnk"
 						>
-							<h2 class="section__title">Trustee settings</h2>
+							<h2 class="tw-text-headline section__title">Trustee settings</h2>
 						</a>
 					</section>
 					<section data-testid="data-settings-section" class="section">
@@ -151,18 +151,18 @@
 							href="/settings/data"
 							data-testid="data-settings-lnk"
 						>
-							<h2 class="section__title">Data settings</h2>
+							<h2 class="tw-text-headline section__title">Data settings</h2>
 							<ul class="section__list">
 								<li>
-									<h3>Cookie preferences</h3>
+									<h3 class="tw-text-title">Cookie preferences</h3>
 									<p>Change your Kiva cookie preferences</p>
 								</li>
 								<li>
-									<h3>Advertising data sharing preferences</h3>
+									<h3 class="tw-text-title">Advertising data sharing preferences</h3>
 									<p>Change your Kiva data sharing preferences for advertising purposes</p>
 								</li>
 								<li>
-									<h3>Account termination</h3>
+									<h3 class="tw-text-title">Account termination</h3>
 									<p>Close your Kiva account</p>
 								</li>
 							</ul>
