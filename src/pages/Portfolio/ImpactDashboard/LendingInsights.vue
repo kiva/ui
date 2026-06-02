@@ -5,7 +5,7 @@
 		data-testid="lending-insights"
 		class="!tw-bg-eco-green-4"
 	>
-		<h2 class="tw-text-title tw-mb-3 md:tw-mb-2 tw-text-white tw-text-center md:tw-text-left">
+		<h2 class="tw-text-title !tw-font-serif tw-mb-3 md:tw-mb-2 tw-text-white tw-text-center md:tw-text-left">
 			Your lending insights
 		</h2>
 		<kv-grid as="dl" class="stats-container">
@@ -83,7 +83,7 @@
 			<template #tabNav>
 				<div class="percentiles-header">
 					<h3
-						class="tw-text-title tw-text-eco-green-4 tw-text-left
+						class="tw-text-title !tw-font-serif tw-text-eco-green-4 tw-text-left
 							tw-self-end lg:tw-self-auto tw-pb-0.5 lg:tw-pb-0"
 					>
 						Your lending insights
