@@ -20,7 +20,7 @@
 						{{ categoryName }}
 					</h3>
 					<h4
-						class="tw-text-upper tw-mt-2 tw-mb-2"
+						class="tw-text-base tw-text-upper tw-mt-2 tw-mb-2"
 						:class="tileSize === 'medium' ? 'md:tw-hidden' : ''"
 					>
 						{{ numberLoans }} loans
@@ -34,7 +34,7 @@
 			</div>
 			<h4
 				v-if="tileSize === 'medium'"
-				class="tw-text-upper tw-mt-1 tw-mb-2 tw-hidden md:tw-block"
+				class="tw-text-base tw-text-upper tw-mt-1 tw-mb-2 tw-hidden md:tw-block"
 			>
 				{{ numberLoans }} loans
 			</h4>
@@ -67,7 +67,7 @@
 							{{ categoryDescription }}
 						</span>
 					</div>
-					<h4 class="tw-text-upper tw-mt-1 tw-mb-1 ">
+					<h4 class="tw-text-base tw-text-upper tw-mt-1 tw-mb-1 ">
 						{{ numberLoans }} loans
 					</h4>
 				</div>
