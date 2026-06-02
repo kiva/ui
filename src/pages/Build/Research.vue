@@ -24,7 +24,7 @@
 				the open web.
 			</p>
 			<div v-for="year in years" :key="year">
-				<h2>{{ year }}</h2>
+				<h2 class="tw-text-headline">{{ year }}</h2>
 				<template v-for="(paper, index) in papers">
 					<div v-if="paper.year === year" :key="index">
 						<p>

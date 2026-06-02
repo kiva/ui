@@ -7,7 +7,7 @@
 			<h1 class="tw-text-display">Getting Started</h1>
 			<p>Here are some tips to help you get started.</p>
 
-			<h2>Step 1: Read the developer Terms Of Service and Code Of Conduct</h2>
+			<h2 class="tw-text-headline">Step 1: Read the developer Terms Of Service and Code Of Conduct</h2>
 			<p>
 				We know you are eager to start working with code, but it is important
 				that you read and understand the
@@ -21,7 +21,7 @@
 				the spirit of our terms for use of the API.
 			</p>
 
-			<h2>Step 2: Play around with the loan search method</h2>
+			<h2 class="tw-text-headline">Step 2: Play around with the loan search method</h2>
 			<p>Our GraphQL API methods can be tested easily with most any browser</p>
 			<p>
 				As an example, try out this GraphQL that will return the newest
@@ -42,7 +42,7 @@
 				about the GraphQL data schema.
 			</p>
 
-			<h2>Step 3: Start designing your application!</h2>
+			<h2 class="tw-text-headline">Step 3: Start designing your application!</h2>
 			<p>
 				Think about the experience you'd like to create for Kiva users.
 				Maybe you want to create a notification system for a particular type of

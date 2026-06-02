@@ -7,13 +7,13 @@
 		<build-page-wrapper class="tw-prose">
 			<h1 class="tw-text-display">Developer Home</h1>
 
-			<h2>Hello! We're Open!</h2>
+			<h2 class="tw-text-headline">Hello! We're Open!</h2>
 			<p>
 				Developers worldwide are helping us make it easy and transparent to
 				lend to the working poor via microfinance and the Kiva API.
 				This is the home for all the information and tools you need to join us!
 			</p>
-			<h2>Ready to Explore?</h2>
+			<h2 class="tw-text-headline">Ready to Explore?</h2>
 			<p>
 				The documentation section of the site is a manual of sorts for
 				working with the API. We talk about conventions and best practices,
@@ -24,7 +24,7 @@
 			<p>
 				Check out our <a href="https://gateway.production.kiva.org/graphql"> GraphQL API methods</a>.
 			</p>
-			<h2>Discussion</h2>
+			<h2 class="tw-text-headline">Discussion</h2>
 			<p>
 				Here are recent topics from our developer forum.
 				Join our <a href="http://groups.google.com/group/build-kiva">Google Group</a>

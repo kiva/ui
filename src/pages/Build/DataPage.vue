@@ -18,7 +18,7 @@
 				<!-- eslint-disable-next-line max-len -->
 				A data snapshot is composed of three data files, delivered in a single compressed ZIP archive. Data snapshots are available in CSV and JSON formats. For the most part, the format of the JSON snapshots are the same as an API response, with a few exceptions.
 			</p>
-			<h2>Downloading Snapshots</h2>
+			<h2 class="tw-text-headline">Downloading Snapshots</h2>
 			<p>
 				<!-- eslint-disable-next-line max-len -->
 				The latest data snapshots are available in the format of your choice at the following URLs:
@@ -34,14 +34,14 @@
 					http://s3.kiva.org/snapshots/kiva_ds_csv.zip
 				</a>
 			</p>
-			<h2>Archive Structure</h2>
+			<h2 class="tw-text-headline">Archive Structure</h2>
 			<p>
 				<!-- eslint-disable-next-line max-len -->
 				When you decompress and extract a data snapshot you'll have a collection of documents with the following structure (CSV files will have the .csv file format):
 				<kv-code-block :code="fileStructure" />
 			</p>
-			<h2>File Format</h2>
-			<h3>JSON snapshot</h3>
+			<h2 class="tw-text-headline">File Format</h2>
+			<h3 class="tw-text-title">JSON snapshot</h3>
 			<p>
 				<!-- eslint-disable-next-line max-len -->
 				As mentioned, the format of the JSON snapshot is very similar to the API format. The main difference is the loans_lenders mapping file, which maps between the loans and lenders files. The format of the loans_lenders.json might look like this:
@@ -51,7 +51,7 @@
 				<!-- eslint-disable-next-line max-len -->
 				Where the loan_id field references the id of the loan and the lender_ids are the ids of the lenders to that loan.
 			</p>
-			<h3>CSV snapshot</h3>
+			<h3 class="tw-text-title">CSV snapshot</h3>
 			<p>
 				<!-- eslint-disable-next-line max-len -->
 				The CSV snapshot is a direct translation of the JSON snapshot. Fields that are reprented as arrays in the JSON snapshot are translated to comma separated lists. For instance, consider the following record in loans.json:
