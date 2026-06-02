@@ -33,7 +33,7 @@
 						v-kv-track-event="['portfolio', 'click', 'featured-set-a-goal']"
 						@click="$emit('set-goal-click')"
 					>
-						Set {{ currentYear }} goal
+						Set {{ GOALS_CURRENT_YEAR }} goal
 					</KvButton>
 				</div>
 			</div>
@@ -50,7 +50,7 @@
 							name="annual-goal-flag"
 						/>
 						<h5 class="tw-text-secondary">
-							Your {{ currentYear }} goal to support {{ categoryName }}
+							Your {{ GOALS_CURRENT_YEAR }} goal to support {{ categoryName }}
 						</h5>
 					</div>
 					<KvUtilityMenu
@@ -108,13 +108,13 @@
 						class="tw-flex tw-flex-col tw-gap-1.5 md:tw-flex-row md:tw-items-center md:tw-gap-3 tw-flex-1"
 					>
 						<div class="featured-goal-card__active-body tw-flex tw-flex-col tw-gap-0.5 tw-flex-1">
-							<div class="tw-flex tw-items-center tw-gap-0.5 tw-pb-2 !tw-hidden md:!tw-flex">
+							<div class="tw-items-center tw-gap-0.5 tw-pb-2 tw-hidden md:tw-flex">
 								<KvIcon
 									class="tw-w-2 tw-h-2 tw-text-gray-400"
 									name="annual-goal-flag"
 								/>
 								<h5 class="tw-text-secondary">
-									Your {{ currentYear }} goal to support {{ categoryName }}
+									Your {{ GOALS_CURRENT_YEAR }} goal to support {{ categoryName }}
 								</h5>
 							</div>
 							<p class="tw-font-medium tw-text-primary">
@@ -147,6 +147,7 @@ import {
 } from '@kiva/kv-components';
 import KvIcon from '#src/components/Kv/KvIcon';
 import goalCopy from '#src/util/goalCopy';
+import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 
 const HALF_GOAL_THRESHOLD = 50;
 const COMPLETED_GOAL_THRESHOLD = 100;
@@ -188,8 +189,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['set-goal-click', 'cta-click', 'edit-click']);
-
-const currentYear = new Date().getFullYear();
 
 const menuActions = [
 	{ label: 'Edit goal', value: 'edit-goal' },
