@@ -1,16 +1,11 @@
 import regions, {
 	transformIsoCodes,
-	getCountryIsoCodesFromQueryParam,
-	getUpdatedRegions
+	getCountryIsoCodesFromQueryParam
 } from '#src/util/loanSearch/filters/regions';
 import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
 import {
 	mockTransformedRegions,
 	mockAllFacets,
-	mockTransformedMiddleEast,
-	mockTransformedChile,
-	mockTransformedColombia,
-	mockTransformedSouthAmerica,
 	mockState,
 } from '../../../../fixtures/mockLoanSearchData';
 
@@ -293,45 +288,6 @@ describe('regions.js', () => {
 			const result = getCountryIsoCodesFromQueryParam(param, mockAllFacets);
 
 			expect(result).toEqual(['US', 'CA']);
-		});
-	});
-
-	describe('getUpdatedRegions', () => {
-		it('should handle undefined and empty', () => {
-			expect(getUpdatedRegions(undefined, [])).toEqual([]);
-			expect(getUpdatedRegions([], [])).toEqual([]);
-		});
-
-		it('should update numLoansFundraising', () => {
-			// Next regions have no Middle East and different fundraising numbers
-			const nextSouthAmerica = mockTransformedSouthAmerica(
-				[mockTransformedChile(1), mockTransformedColombia(2)],
-				3
-			);
-
-			expect(getUpdatedRegions(mockTransformedRegions, [nextSouthAmerica])).toEqual([
-				mockTransformedMiddleEast(0),
-				nextSouthAmerica
-			]);
-		});
-
-		it('should add missing regions', () => {
-			const southAmerica = mockTransformedSouthAmerica();
-			const middleEast = mockTransformedMiddleEast();
-			const updatedSouthAmerica = mockTransformedSouthAmerica(
-				[mockTransformedChile(0), mockTransformedColombia(0)],
-				0
-			);
-
-			expect(getUpdatedRegions([southAmerica], [middleEast])).toEqual([middleEast, updatedSouthAmerica]);
-		});
-
-		it('should default to nextRegions when regions is undefined', () => {
-			const nextRegions = [mockTransformedMiddleEast(), mockTransformedSouthAmerica()];
-
-			const result = getUpdatedRegions(undefined, nextRegions);
-
-			expect(result).toEqual(nextRegions);
 		});
 	});
 });

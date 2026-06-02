@@ -34,8 +34,7 @@ extend type Mutation {
 	autolending: AutolendingMutation
 	showVerificationLightbox: Boolean
 	closeVerificationLightbox: Boolean
-	updateLoanSearch(searchParams: JSONObject): LoanSearchState
-}
+	}
 
 extend type Query {
 	experiment(id: String): Experiment
@@ -46,7 +45,6 @@ extend type Query {
 	autolending: Autolending
 	verificationLightbox: VerificationLightbox
 	hasEverLoggedIn: Boolean
-	loanSearchState: LoanSearchState
 }
 
 extend type My {
@@ -75,29 +73,6 @@ extend type LoanDirect {
 	fundraisingTimeLeft: String!
 	fundraisingTimeLeftMilliseconds: String!
 	unreservedAmount: Money!
-}
-
-type LoanSearchState {
-	id: String
-	gender: String
-	countryIsoCode: [String]
-	sectorId: [Int]
-	sortBy: String
-	themeId: [Int]
-	tagId: [Int]
-	pageOffset: [Int]
-	pageLimit: [Int]
-	distributionModel: String
-	isIndividual: Boolean
-	lenderRepaymentTerm: MinMaxRange
-	keywordSearch: String
-	partnerId: [Int]
-	partnerRiskRating: MinMaxRange
-	partnerDefaultRate: MinMaxRange
-	partnerAvgProfitability: MinMaxRange
-	isMatchable: Boolean
-	flexibleFundraisingEnabled: Boolean
-	activityId: [Int]
 }
 
 type TipMessage {

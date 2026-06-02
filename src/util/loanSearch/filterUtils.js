@@ -1,5 +1,3 @@
-import _orderBy from 'lodash/orderBy';
-
 /**
  * FLSS API query type
  */
@@ -79,41 +77,6 @@ export function getFilterKeyFromValue(value, valueMap) {
  * [{
  *   id: 1,
  *   name: '',
- *   numLoansFundraising: 1,
- * }]
- *
- * @param {Array<Object>} items The items previously displayed in the filter
- * @param {Array<Object>} next The items returned by the FLSS facets query
- * @returns {Array<Object>} The updated items list
- */
-export function getUpdatedNumLoansFundraising(items, next) {
-	const updated = [];
-
-	// Get updated numLoansFundraising
-	items?.forEach(item => {
-		const nextItem = next.find(a => a.id === item.id);
-
-		// Some facets don't have loan counts in FLSS
-		const hasNumLoans = typeof item.numLoansFundraising !== 'undefined';
-
-		const updatedItem = {
-			...item,
-			numLoansFundraising: hasNumLoans ? nextItem?.numLoansFundraising || 0 : undefined,
-		};
-
-		updated.push(updatedItem);
-	});
-
-	// Add missing items that have been added since previous query
-	next?.forEach(item => {
-		if (!updated.find(a => a.id === item.id)) {
-			updated.push({ ...item });
-		}
-	});
-
-	return _orderBy(updated, 'name');
-}
-
 /**
  * Returns the item label with fundraising amount in parens
  *

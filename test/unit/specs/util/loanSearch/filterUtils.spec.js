@@ -1,5 +1,4 @@
 import {
-	getUpdatedNumLoansFundraising,
 	getCheckboxLabel,
 	transformRadioGroupOptions,
 	getFilterKeyFromValue,
@@ -76,54 +75,6 @@ describe('filterUtils.js', () => {
 			);
 
 			expect(result).toEqual(EIGHT_MONTHS_KEY);
-		});
-	});
-
-	describe('getUpdatedNumLoansFundraising', () => {
-		const mockASector = (numLoansFundraising = 6) => ({ id: 7, name: 'c', numLoansFundraising });
-		const mockBSector = (numLoansFundraising = 3) => ({ id: 2, name: 'd', numLoansFundraising });
-		const mockTransformedSectors = [mockASector(), mockBSector()];
-		const mockATheme = (numLoansFundraising = 5) => ({ id: 6, name: 'a', numLoansFundraising });
-		const mockBTheme = (numLoansFundraising = 4) => ({ id: 3, name: 'b', numLoansFundraising });
-
-		it('should handle undefined and empty', () => {
-			expect(getUpdatedNumLoansFundraising(undefined, [])).toEqual([]);
-			expect(getUpdatedNumLoansFundraising([], [])).toEqual([]);
-		});
-
-		it('should update theme numLoansFundraising', () => {
-			const nextA = mockATheme(9);
-
-			const results = getUpdatedNumLoansFundraising([mockATheme(), mockBTheme()], [nextA]);
-
-			expect(results).toEqual([nextA, mockBTheme(0)]);
-		});
-
-		it('should add missing themes', () => {
-			const a = mockATheme();
-			const nextB = mockBTheme();
-
-			expect(getUpdatedNumLoansFundraising([a], [a, nextB])).toEqual([a, nextB]);
-		});
-
-		it('should update sector numLoansFundraising', () => {
-			const nextA = mockASector(9);
-
-			expect(getUpdatedNumLoansFundraising(mockTransformedSectors, [nextA])).toEqual([nextA, mockBSector(0)]);
-		});
-
-		it('should add missing sectors', () => {
-			const a = mockASector();
-			const nextB = mockBSector();
-
-			expect(getUpdatedNumLoansFundraising([a], [a, nextB])).toEqual([a, nextB]);
-		});
-
-		it('should handle missing numLoansFundraising', () => {
-			const a = { id: 1, name: 'a' };
-			const nextA = { id: 1, name: 'a' };
-
-			expect(getUpdatedNumLoansFundraising([a], [nextA])).toEqual([{ ...nextA }]);
 		});
 	});
 

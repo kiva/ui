@@ -1,5 +1,7 @@
-import { getDefaultLoanSearchState } from '#src/api/localResolvers/loanSearch';
 import { isNumber } from '#src/util/numberUtils';
+
+// Default page offset value (was previously in src/api/localResolvers/loanSearch)
+const DEFAULT_PAGE_OFFSET = 0;
 
 export default {
 	uiConfig: {
@@ -27,7 +29,7 @@ export default {
 	getValidatedSearchState: loanSearchState => ({
 		pageOffset: isNumber(loanSearchState?.pageOffset)
 			? loanSearchState.pageOffset
-			: getDefaultLoanSearchState().pageOffset
+			: DEFAULT_PAGE_OFFSET
 	}),
 	getFilterFromQuery: (query, _allFacets, pageLimit) => {
 		// Convert query param 1-based page to pager 0-based page and ensure page is an integer

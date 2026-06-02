@@ -350,14 +350,6 @@ export default [
 		}
 	},
 	{
-		name: 'lend-filter',
-		path: '/lend/filter',
-		component: () => import('#src/pages/Lend/LoanSearchPage'),
-		meta: {
-			unbounceEmailCapture: true,
-		},
-	},
-	{
 		name: 'filter-alpha',
 		path: '/lend/filter-alpha',
 		redirect: '/lend/filter'

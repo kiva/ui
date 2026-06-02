@@ -1,7 +1,5 @@
 import {
-	getIsoCodes,
 	isoToCountryName,
-	mapIsoCodesToCountryNames,
 	sortRegions
 } from '#src/util/loanSearch/countryUtils';
 import {
@@ -27,21 +25,6 @@ describe('countryUtils.js', () => {
 		});
 	});
 
-	describe('getIsoCodes', () => {
-		it('should handle empty', () => {
-			expect(getIsoCodes([], {})).toEqual([]);
-			expect(getIsoCodes([], { test: 'test' })).toEqual([]);
-		});
-
-		it('should return codes', () => {
-			expect(getIsoCodes(mockTransformedRegions, { 'South America': ['Chile'] })).toEqual(['CL']);
-			expect(getIsoCodes(mockTransformedRegions, {
-				'Middle East': ['Jordan'],
-				'South America': ['Chile'],
-			}).sort()).toEqual(['JO', 'CL'].sort());
-		});
-	});
-
 	describe('isoToCountryName', () => {
 		it('should return corresponding country name', () => {
 			const mappedName = isoToCountryName('JO', mockTransformedMiddleEast().countries);
@@ -57,28 +40,6 @@ describe('countryUtils.js', () => {
 			expect(isoToCountryName('JO', [])).toBe(null);
 			expect(isoToCountryName('JO', undefined)).toBe(null);
 			expect(isoToCountryName('JO')).toBe(null);
-		});
-	});
-
-	describe('mapIsoCodesToCountryNames', () => {
-		const targetIsos = ['JO', 'CL', 'CO'];
-
-		it('should return an empty object if no ISO codes are passed', () => {
-			expect(mapIsoCodesToCountryNames(undefined, mockTransformedRegions)).toEqual({});
-			expect(mapIsoCodesToCountryNames([], mockTransformedRegions)).toEqual({});
-		});
-
-		it('should return an empty object if no regions are passed', () => {
-			expect(mapIsoCodesToCountryNames(targetIsos, undefined)).toEqual({});
-			expect(mapIsoCodesToCountryNames(targetIsos, [])).toEqual({});
-		});
-
-		it('should return region keyed object with array of country names', () => {
-			const selectedCountries = mapIsoCodesToCountryNames(targetIsos, mockTransformedRegions);
-			expect(selectedCountries).toEqual({
-				'Middle East': ['Jordan'],
-				'South America': ['Chile', 'Colombia']
-			});
 		});
 	});
 });

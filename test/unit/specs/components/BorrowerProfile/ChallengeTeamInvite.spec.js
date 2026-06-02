@@ -14,7 +14,7 @@ const mocks = {
 };
 const show = vi.fn();
 
-describe('ChallengeCallout', () => {
+describe('ChallengeTeamInvite', () => {
 	it('should display team name', () => {
 		const { getByText } = render(ChallengeTeamInvite, {
 			global: {
