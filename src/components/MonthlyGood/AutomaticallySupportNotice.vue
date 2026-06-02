@@ -9,7 +9,7 @@
 		>
 			<h2
 				v-html="valueHeadline"
-				class="tw-mb-4"
+				class="tw-text-headline tw-mb-4"
 			></h2>
 			<p v-html="valueBody"></p>
 		</div>

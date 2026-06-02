@@ -6,7 +6,7 @@
 				v-if="balance > autoDepositNoticeThreshold"
 			>
 				<div class="small-12 medium-11 large-10 column">
-					<h2 class="tw-mb-4">
+					<h2 class="tw-text-headline tw-mb-4">
 						Heads up! You have {{ $filters.numeral(balance, '$0') }} available to lend.
 					</h2>
 					<p class="tw-mb-2">

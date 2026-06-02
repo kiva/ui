@@ -10,7 +10,7 @@
 			]"
 			id="mobileMonthlyGoodSelectorButton"
 		>
-			<span class="tw-flex tw-items-center tw-text-h3">
+			<span class="tw-flex tw-items-center tw-text-title">
 				Get started
 				<kv-material-icon class="tw-w-3.5 tw-h-3.5" :icon="mdiChevronRight" />
 			</span>

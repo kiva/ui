@@ -7,7 +7,7 @@
 		<div class="tw-flex tw-justify-center tw-w-full">
 			<kiva-logo-mg />
 		</div>
-		<h2 class="tw-text-h2 tw-py-3 tw-mx-auto tw-text-center">
+		<h2 class="tw-text-headline tw-py-3 tw-mx-auto tw-text-center">
 			<!-- eslint-disable-next-line max-len -->
 			Kiva is an international nonprofit that believes in financial access for all.
 		</h2>
