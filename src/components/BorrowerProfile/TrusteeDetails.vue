@@ -67,7 +67,9 @@
 			{{ noTrusteeState ? 'More about loans without endorsements' : 'More about this trustee' }}
 		</kv-text-link>
 		<div v-if="endorsement" class="tw-prose tw-my-3" data-testid="bp-details-trustee-endorsement">
-			<h3 class="tw-text-title">{{ endorsementTitle }}</h3>
+			<h3 class="tw-text-title">
+				{{ endorsementTitle }}
+			</h3>
 			<blockquote>
 				<p data-testid="bp-details-trustee-endorsement-text">
 					{{ endorsement }}

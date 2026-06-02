@@ -38,8 +38,12 @@
 									>
 								</div>
 								<div class="carousel__body-header">
-									<h3 class="tw-text-title">{{ slide.year }}</h3>
-									<h4 class="tw-text-base tw-text-upper">{{ slide.title }}</h4>
+									<h3 class="tw-text-title">
+										{{ slide.year }}
+									</h3>
+									<h4 class="tw-text-base tw-text-upper">
+										{{ slide.title }}
+									</h4>
 								</div>
 
 								<div class="carousel__body-content-wrap">
