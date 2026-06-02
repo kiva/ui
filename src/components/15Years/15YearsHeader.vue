@@ -26,7 +26,7 @@
 				</div>
 				<div v-else class="country_cta small-12 large-8 xlarge-7 xxlarge-6">
 					<div class="columns country-name-container">
-						<h2 :class="'country-name ' + globekitCountrySelected.nameClass">
+						<h2 class="tw-text-headline" :class="'country-name ' + globekitCountrySelected.nameClass">
 							{{ globekitCountrySelected.name }}
 						</h2>
 					</div>
@@ -34,7 +34,9 @@
 						<div class="columns">
 							<div class="row">
 								<div class="loan-number">
-									<h3>{{ $filters.numeral(globekitCountrySelected.total, '0,0') }}</h3>
+									<h3 class="tw-text-title">
+										{{ $filters.numeral(globekitCountrySelected.total, '0,0') }}
+									</h3>
 								</div>
 								<div class="loan-label">
 									<h5>total <br>loans</h5>
@@ -42,7 +44,9 @@
 							</div>
 							<div class="row">
 								<div class="loan-number">
-									<h3>{{ $filters.numeral(globekitCountrySelected.active, '0,0') }}</h3>
+									<h3 class="tw-text-title">
+										{{ $filters.numeral(globekitCountrySelected.active, '0,0') }}
+									</h3>
 								</div>
 								<div class="loan-label">
 									<h5>active <br>loans</h5>
