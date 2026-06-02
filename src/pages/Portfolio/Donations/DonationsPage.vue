@@ -12,7 +12,7 @@
 						<p class="tw-text-gray-500 tw-font-medium">
 							Donor name:
 						</p>
-						<h2 class="tw-mb-2 tw-break-words">
+						<h2 class="tw-text-headline tw-mb-2 tw-break-words">
 							<KvLoadingPlaceholder
 								v-if="loading"
 								class="md:!tw-mt-1 !tw-w-1/4"
@@ -67,7 +67,7 @@
 											class="md:!tw-mt-2 !tw-w-1/2"
 											style="height: 32px; margin-top: 10px;"
 										/>
-										<h2 v-else class="tw-text-eco-green tw-break-words">
+										<h2 v-else class="tw-text-headline tw-text-eco-green tw-break-words">
 											{{ numeral(donationInfo?.currentYearDonations ?? 0).format('$0,0.00') }}
 										</h2>
 									</div>
@@ -78,7 +78,7 @@
 											class="md:!tw-mt-2 !tw-w-1/2"
 											style="height: 32px; margin-top: 10px;"
 										/>
-										<h2 v-else class="tw-text-eco-green tw-break-words">
+										<h2 v-else class="tw-text-headline tw-text-eco-green tw-break-words">
 											{{ numeral(donationInfo?.latestTaxYearDonations ?? 0).format('$0,0.00') }}
 										</h2>
 									</div>
@@ -174,7 +174,7 @@
 						<template v-else>
 							<KvGrid class="tw-grid-cols-12 tw-text-center md:tw-text-left">
 								<div class="tw-col-span-12 md:tw-col-span-6">
-									<h3 class="tw-mb-1">
+									<h3 class="tw-text-title tw-mb-1">
 										Kiva's EIN/Tax ID number
 									</h3>
 									<div>
@@ -188,7 +188,7 @@
 									</div>
 								</div>
 								<div v-if="hasDonations" class="tw-col-span-12 md:tw-col-span-6">
-									<h3 class="tw-mb-1">
+									<h3 class="tw-text-title tw-mb-1">
 										Print tax receipts
 									</h3>
 									<div

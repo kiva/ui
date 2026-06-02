@@ -2,7 +2,7 @@
 	<async-portfolio-section @visible="fetchAsyncData" data-testid="your-teams">
 		<!-- title -->
 		<kv-loading-placeholder v-if="loading" class="header-placeholder" />
-		<h2 v-if="!loading" class="tw-mb-2">
+		<h2 v-if="!loading" class="tw-text-headline tw-mb-2">
 			<template v-if="hasTeams">
 				Your Teams
 			</template>

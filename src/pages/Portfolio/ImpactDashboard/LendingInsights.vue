@@ -5,7 +5,7 @@
 		data-testid="lending-insights"
 		class="!tw-bg-eco-green-4"
 	>
-		<h2 class="tw-text-h3 tw-mb-3 md:tw-mb-2 tw-text-white tw-text-center md:tw-text-left">
+		<h2 class="tw-text-title tw-mb-3 md:tw-mb-2 tw-text-white tw-text-center md:tw-text-left">
 			Your lending insights
 		</h2>
 		<kv-grid as="dl" class="stats-container">
@@ -82,7 +82,10 @@
 		<kv-tabs @tab-changed="setActiveTab">
 			<template #tabNav>
 				<div class="percentiles-header">
-					<h3 class="tw-text-eco-green-4 tw-text-left tw-self-end lg:tw-self-auto tw-pb-0.5 lg:tw-pb-0">
+					<h3
+						class="tw-text-title tw-text-eco-green-4 tw-text-left
+							tw-self-end lg:tw-self-auto tw-pb-0.5 lg:tw-pb-0"
+					>
 						Your lending insights
 					</h3>
 					<div class="percentiles-controls">
@@ -585,7 +588,7 @@ export default {
 }
 
 .stat-value {
-	@apply tw-text-h2 tw-text-eco-green-2 tw-pb-0.5;
+	@apply tw-text-headline tw-text-eco-green-2 tw-pb-0.5;
 }
 
 .stat-def {
@@ -663,7 +666,7 @@ export default {
 }
 
 .percentiles-stat-value {
-	@apply tw-text-h3 tw-text-eco-green-4 tw-pb-0.5;
+	@apply tw-text-title tw-text-eco-green-4 tw-pb-0.5;
 
 	line-height: 1.1;
 }

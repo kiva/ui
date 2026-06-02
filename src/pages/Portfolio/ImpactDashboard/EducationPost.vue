@@ -17,7 +17,7 @@
 		<a
 			:href="url"
 			@click="trackEvent('blog-headline')"
-			class="tw-text-h3 text-overflow tw-decoration-white tw-cursor-pointer"
+			class="tw-text-title text-overflow tw-decoration-white tw-cursor-pointer"
 			:class="{ 'tw-line-clamp-2' : truncateHeadline }"
 		>
 			{{ headline }}

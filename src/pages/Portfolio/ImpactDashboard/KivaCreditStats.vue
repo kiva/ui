@@ -1,6 +1,6 @@
 <template>
 	<async-portfolio-section @visible="whenVisible" data-testid="credit-stats">
-		<h2 class="tw-mb-0.5">
+		<h2 class="tw-text-headline tw-mb-0.5">
 			The Kiva effect
 		</h2>
 		<kv-grid class="tw-grid-cols-12">

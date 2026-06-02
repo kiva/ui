@@ -21,7 +21,7 @@
 						class="placeholder tw-my-0.5 lg:tw-my-1"
 						style="width: 6rem;"
 					/>
-					<dd v-else class="tw-text-h2 tw-text-brand">
+					<dd v-else class="tw-text-headline tw-text-brand">
 						{{ $filters.numeral(availableBalance, '$0,0.00') }}
 					</dd>
 					<dd v-if="promoBalance > 0" class="tw-text-small tw-text-secondary">
@@ -38,7 +38,7 @@
 						class="placeholder tw-my-0.5 lg:tw-my-1"
 						style="width: 6rem;"
 					/>
-					<dd v-else class="tw-text-h2 tw-text-secondary">
+					<dd v-else class="tw-text-headline tw-text-secondary">
 						{{ $filters.numeral(amountOutstanding, '$0,0.00') }}
 					</dd>
 				</div>

@@ -21,7 +21,7 @@
 				<h3
 					v-else
 					v-html="title"
-					class="tw-text-center md:tw-text-left"
+					class="tw-text-title tw-text-center md:tw-text-left"
 				></h3>
 				<p
 					class="tw-text-base !tw-font-medium tw-text-center lg:tw-text-left"

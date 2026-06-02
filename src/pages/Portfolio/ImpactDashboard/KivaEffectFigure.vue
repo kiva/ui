@@ -26,7 +26,7 @@
 						tw-flex tw-flex-col tw-items-center tw-justify-center
 					"
 				>
-					<span class="tw-text-h3" style="line-height: 1;">
+					<span class="tw-text-title" style="line-height: 1;">
 						{{ depositFormatted }}
 					</span>
 					<span class="tw-text-small" style="line-height: 1;">
@@ -49,7 +49,7 @@
 						tw-flex tw-flex-col tw-items-center tw-justify-center
 					"
 				>
-					<span class="tw-text-h3" style="line-height: 1;">
+					<span class="tw-text-title" style="line-height: 1;">
 						{{ lendFormatted }}
 					</span>
 					<span class="tw-text-small" style="line-height: 1;">

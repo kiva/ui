@@ -8,7 +8,7 @@
 				<div class="tw-mr-0 md:tw-mr-2 tw-bg-primary tw-h-12 tw-p-1 tw-rounded tw-w-12">
 					<img class="tw-w-10 tw-h-10" alt="Leaf heart" :src="leafHeartUrl">
 				</div>
-				<h2 class="tw-mb-0.5 md:tw-text-left tw-text-center">
+				<h2 class="tw-text-headline tw-mb-0.5 md:tw-text-left tw-text-center">
 					Donations power progress
 				</h2>
 				<p class="tw-text-subhead md:tw-text-left tw-text-center">
