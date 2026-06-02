@@ -23,7 +23,7 @@
 		>
 			<div class="tw-pb-3" v-html="monthlySubscriptionCopy"></div>
 			<div v-if="selectedGroup">
-				<h4 class="tw-text-upper tw-py-1">
+				<h4 class="tw-text-base tw-text-upper tw-py-1">
 					Your cause
 				</h4>
 				<button
