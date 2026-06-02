@@ -1,4 +1,4 @@
-<template>
+add<template>
 	<www-page id="lend-filter" class="tw-bg-secondary">
 		<kv-atb-modal-container
 			:added-loan="addedLoan"
