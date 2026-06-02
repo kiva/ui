@@ -19,7 +19,7 @@
 						<div>
 							<div class="tw-w-full tw-flex">
 								<h2
-									class="tw-flex-1 md:tw-flex-grow tw-text-h3"
+									class="tw-flex-1 md:tw-flex-grow tw-text-title"
 									data-testid="basket-donation-title"
 								>
 									{{ basketDonationHeader }}
@@ -259,7 +259,7 @@
 			data-testid="basket-donation-how-kiva-uses-lightbox"
 		>
 			<template #header>
-				<h2>
+				<h2 class="tw-text-headline">
 					Loans change lives. Your donations make them possible.
 				</h2>
 			</template>

@@ -18,14 +18,14 @@
 				{{ itemTotal }}
 			</span>
 			<div
-				class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1 tw-text-h3"
+				class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1 tw-text-title"
 				v-if="!isCorporateCampaign"
 			>
 				Order Total:
 			</div>
 			<span
 				v-if="!isCorporateCampaign"
-				class="tw-float-right md:tw-float-none tw-text-right tw-pl-2 tw-text-h3"
+				class="tw-float-right md:tw-float-none tw-text-right tw-pl-2 tw-text-title"
 			>
 				{{ itemTotal }}
 			</span>
@@ -47,7 +47,7 @@
 
 		<div
 			v-if="showKivaCredit"
-			:class="`tw-flex tw-flex-row tw-w-full tw-mb-2${isCorporateCampaign ? '' : ' tw-text-h3' }`"
+			:class="`tw-flex tw-flex-row tw-w-full tw-mb-2${isCorporateCampaign ? '' : ' tw-text-title' }`"
 			data-testid="basket-kiva-credit"
 		>
 			<template v-if="showRemoveKivaCredit">
@@ -101,7 +101,7 @@
 				class="tw-mb-2 tw-text-left md:tw-text-right
 			tw-flex tw-justify-end tw-items-center" data-testid="basket-promo-total"
 			>
-				<span class="tw-w-full tw-text-h3 " v-if="!isCorporateCampaign">
+				<span class="tw-w-full tw-text-title " v-if="!isCorporateCampaign">
 					<template v-if="availablePromoTotal">
 						{{ availablePromoTotal }}{{ ' ' }}
 					</template>
@@ -119,7 +119,7 @@
 					<span
 						v-if="!isCorporateCampaign"
 						data-testid="promo-amount"
-						class="tw-pl-2 tw-text-right tw-whitespace-nowrap tw-text-h3 "
+						class="tw-pl-2 tw-text-right tw-whitespace-nowrap tw-text-title "
 					>- {{ appliedPromoTotal }}</span>
 					<span
 						v-else
@@ -169,7 +169,7 @@
 			</kv-tooltip>
 		</div>
 
-		<div class="tw-text-h3 tw-mb-1 tw-text-right" data-testid="total-due">
+		<div class="tw-text-title tw-mb-1 tw-text-right" data-testid="total-due">
 			<div class="tw-flex tw-w-full tw-justify-end tw-items-center">
 				<div
 					class="tw-w-auto tw-text-left md:tw-text-right tw-flex-1"
