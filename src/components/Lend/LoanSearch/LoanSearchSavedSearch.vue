@@ -16,7 +16,7 @@
 		>
 			<template #header>
 				<icon-add />
-				<h2 class="tw-text-h2">
+				<h2 class="tw-text-headline">
 					Save this search
 				</h2>
 				<h3 class="tw-text-base">

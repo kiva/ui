@@ -16,7 +16,7 @@
 					</h4>
 					<h2
 						v-if="challengeName"
-						class="tw-text-h2"
+						class="tw-text-headline"
 					>
 						{{ challengeName }}
 					</h2>
