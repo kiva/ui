@@ -46,7 +46,7 @@
 						</div>
 					</div>
 					<div class="tw-text-center md:tw-text-left">
-						<h3 class="tw-inline" v-html="headline"></h3>
+						<h3 class="tw-text-title tw-inline" v-html="headline"></h3>
 						<a
 							v-if="disclaimer"
 							@click="scrollToSection('#disclaimers')"
