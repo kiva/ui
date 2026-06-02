@@ -255,7 +255,7 @@ const onSelect = action => {
 
 <style lang="postcss" scoped>
 .featured-goal-card {
-	background-color: #FAFAFA;
+	@apply tw-bg-gray-50;
 }
 
 .featured-goal-card__loading {
@@ -268,7 +268,7 @@ const onSelect = action => {
 
 @screen md {
 	.featured-goal-card__content--no-goal {
-		width: 100%;
+		@apply tw-w-full
 	}
 }
 
@@ -277,8 +277,7 @@ const onSelect = action => {
 }
 
 .featured-goal-card__progress-ring {
-	width: 100px;
-	height: 100px;
+	@apply tw-w-12.5 tw-h-12.5;
 }
 
 .featured-goal-card__progress-value {
@@ -311,7 +310,7 @@ const onSelect = action => {
 }
 
 .featured-goal-card__cta--active-goal :deep(span) {
-	min-height: auto;
+	@apply tw-h-auto;
 }
 
 /* State-conditional background images */
