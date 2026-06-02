@@ -14,19 +14,27 @@
 			<div class="kiva-card-info">
 				<div class="tw-flex tw-mb-0.5">
 					<!-- Print Kiva Card -->
-					<h2 class="tw-text-title" v-if="cardType == 'print'" data-testid="basket-kiva-card-title">
+					<h2
+						v-if="cardType == 'print'"
+						class="tw-text-title !tw-font-serif"
+						data-testid="basket-kiva-card-title"
+					>
 						Print-it-yourself Kiva Card
 						<span v-if="quantity > 1">({{ quantity }})</span>
 					</h2>
 					<!-- Postal Kiva Card -->
-					<h2 class="tw-text-title" v-if="cardType == 'postal'" data-testid="basket-kiva-card-title">
+					<h2
+						v-if="cardType == 'postal'"
+						class="tw-text-title !tw-font-serif"
+						data-testid="basket-kiva-card-title"
+					>
 						Postal delivery Kiva Card
 						<span v-if="quantity > 1">({{ quantity }})</span>
 					</h2>
 					<!-- Email or Lender Kiva Card -->
 					<h2
-						class="tw-text-title"
 						v-if="cardType === 'email' || cardType === 'lender'"
+						class="tw-text-title !tw-font-serif"
 						data-testid="basket-kiva-card-title"
 					>
 						Email delivery Kiva Card

@@ -19,7 +19,7 @@
 						<div>
 							<div class="tw-w-full tw-flex">
 								<h2
-									class="tw-flex-1 md:tw-flex-grow tw-text-title"
+									class="tw-flex-1 md:tw-flex-grow tw-text-title !tw-font-serif"
 									data-testid="basket-donation-title"
 								>
 									{{ basketDonationHeader }}
