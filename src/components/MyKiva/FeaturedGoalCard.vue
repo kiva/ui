@@ -314,7 +314,7 @@ const onSelect = action => {
 	min-height: auto;
 }
 
-/* State-conditional background images*/
+/* State-conditional background images */
 .featured-goal-card--no-goal {
 	background-image: url('src/assets/images/my-kiva/featured-goal-card/mobile-no-goal-state.svg');
 }
