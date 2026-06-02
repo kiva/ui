@@ -8,7 +8,7 @@
 			</h3>
 		</div>
 		<div class="tw-mt-2 lg:tw-mt-4 tw-px-2">
-			<h2 v-html="headline" class="tw-text-h2 tw-text-primary"></h2>
+			<h2 v-html="headline" class="tw-text-headline tw-text-primary"></h2>
 			<h6 class="tw-text-small tw-text-primary tw-mt-1">
 				{{ subheadline }}
 			</h6>
