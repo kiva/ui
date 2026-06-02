@@ -8,7 +8,7 @@
 		/>
 		<div class="tw-p-1 tw-absolute tw-bottom-0">
 			<div class="tw-flex tw-flex-col tw-gap-1 md:tw-gap-0.5" style="color: #F5F5F5;">
-				<h3 class="tw-mb-1 tw-text-h2 md:tw-text-h3">
+				<h3 class="tw-mb-1 tw-text-headline md:tw-text-title">
 					Make a monthly impact
 				</h3>
 				<p class="tw-text-base" v-if="categoryLabel">

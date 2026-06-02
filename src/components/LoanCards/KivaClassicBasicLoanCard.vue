@@ -66,7 +66,7 @@
 
 		<borrower-name
 			v-if="!isLoading"
-			class="tw-mb-1 tw-text-h3"
+			class="tw-mb-1 tw-text-title"
 			:max-length="50"
 			:name="borrowerName"
 			:style="{minHeight: showActionButton ? 0 : '3rem'}"

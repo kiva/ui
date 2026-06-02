@@ -47,10 +47,10 @@
 			/>
 			<div class="rec-loan-card__summary">
 				<kv-loading-placeholder
-					class="rec-loan-card__name tw-text-h3 rec-loan-card__name--loading"
+					class="rec-loan-card__name tw-text-title rec-loan-card__name--loading"
 					v-if="isLoading"
 				/>
-				<h2 class="rec-loan-card__name tw-text-h3 tw-mb-1" v-show="!isLoading">
+				<h2 class="rec-loan-card__name tw-text-title tw-mb-1" v-show="!isLoading">
 					{{ borrowerName }}
 				</h2>
 				<kv-loading-paragraph
