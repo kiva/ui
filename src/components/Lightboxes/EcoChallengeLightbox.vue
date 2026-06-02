@@ -5,10 +5,10 @@
 		@lightbox-closed="closeLightbox"
 	>
 		<div class="tw-block md:tw-flex tw-justify-between tw-items-center">
-			<h2 class="tw-pb-3 tw-pr-5 tw-basis-9/12" v-if="missingMilestones.length === 0">
+			<h2 class="tw-text-headline tw-pb-3 tw-pr-5 tw-basis-9/12" v-if="missingMilestones.length === 0">
 				Way to go! You’re all set to complete the Climate Challenge.
 			</h2>
-			<h2 class="tw-pb-3 tw-pr-5 tw-basis-9/12" v-else>
+			<h2 class="tw-text-headline tw-pb-3 tw-pr-5 tw-basis-9/12" v-else>
 				Alright! Now you just need to make a {{ categoriesMissingString }} loan to complete the challenge.
 			</h2>
 			<div class="tw-pb-3 tw-flex tw-justify-between tw-pr-4 tw-basis-1/3">
@@ -55,7 +55,7 @@
 					>
 						{{ missingMilestones.length === 1 ? 'Last' : 'Next' }} Step
 					</h4>
-					<h3>
+					<h3 class="tw-text-title">
 						Find a loan for {{ $filters.changeCase(step.name, 'noCase') }}!
 					</h3>
 				</div>
