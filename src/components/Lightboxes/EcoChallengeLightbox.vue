@@ -51,7 +51,7 @@
 			>
 				<div class="tw-mr-2">
 					<h4
-						class="tw-text-upper"
+						class="tw-text-base tw-text-upper"
 					>
 						{{ missingMilestones.length === 1 ? 'Last' : 'Next' }} Step
 					</h4>
