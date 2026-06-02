@@ -10,7 +10,7 @@
 				<div>
 					<h4
 						v-if="teamName"
-						class="tw-text-upper"
+						class="tw-text-base tw-text-upper"
 					>
 						{{ teamName }} CHALLENGE:
 					</h4>

@@ -5,7 +5,7 @@
 			@click="openModal"
 		>
 			<icon-add class="tw-mr-1 tw-inline-block" />
-			<h4 class="tw-text-upper tw-font-medium tw-text-action">
+			<h4 class="tw-text-base tw-text-upper tw-font-medium tw-text-action">
 				Save This Search
 			</h4>
 		</div>
