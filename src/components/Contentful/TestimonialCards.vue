@@ -7,7 +7,7 @@
 						<h2
 							v-if="testimonialHeadline"
 							v-html="testimonialHeadline"
-							class="tw-py-4 tw-col-span-12"
+							class="tw-text-headline tw-py-4 tw-col-span-12"
 						>
 						</h2>
 
@@ -42,7 +42,7 @@
 							<figcaption>
 								<h3
 									v-html="singleCard.name + ','"
-									class="tw-pb-2"
+									class="tw-text-title tw-pb-2"
 								>
 								</h3>
 
