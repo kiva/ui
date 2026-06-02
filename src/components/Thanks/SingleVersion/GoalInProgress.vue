@@ -11,7 +11,7 @@
 				:lender-image-url="loanImageUrl"
 				class="tw-mx-auto tw-w-6 tw-h-6 tw-mb-1"
 			/>
-			<h2 v-html="moduleTitle" class="tw-text-center tw-my-2" style="line-height: 1.25;"></h2>
+			<h2 v-html="moduleTitle" class="tw-text-headline tw-text-center tw-my-2" style="line-height: 1.25;"></h2>
 			<img :src="HandsPlant" alt="plant inside of hands" class="img-dimensions tw-mx-auto tw-w-full tw-mb-1">
 			<KvButton class="text-copy-centering tw-w-full tw-items-center tw-my-0.5" @click="handleSeeProgressClicked">
 				See my progress

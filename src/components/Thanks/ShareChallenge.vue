@@ -46,7 +46,7 @@
 								</a>
 							</h4>
 						</div>
-						<h2 class="tw-text-center tw-mb-2.5">
+						<h2 class="tw-text-headline tw-text-center tw-mb-2.5">
 							Help your team complete this challenge by sharing it with a friend!
 						</h2>
 						<div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-between tw-gap-1 tw-w-full">

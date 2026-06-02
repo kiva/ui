@@ -20,7 +20,7 @@
 			</div>
 			<KvExpandable easing="ease-in-out">
 				<div v-show="openCreateAccount">
-					<h2 class="tw-pt-2 tw-pb-3 tw-text-center">
+					<h2 class="tw-text-headline tw-pt-2 tw-pb-3 tw-text-center">
 						Before you go!
 					</h2>
 					<p>Finish setting up your account to track and relend your money as you are paid back.</p>

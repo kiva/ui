@@ -8,7 +8,7 @@
 		<template v-else>
 			<!-- Borrower images -->
 			<BorrowerAvatarsContainer v-if="showAvatars" :loans="avatars" />
-			<h2 v-html="moduleTitle" style="line-height: 1.25;"></h2>
+			<h2 class="tw-text-headline" v-html="moduleTitle" style="line-height: 1.25;"></h2>
 			<div class="tw-relative">
 				<BgRays v-show="!isLoading" style="top: -50px;" />
 				<BadgeContainer :show-shine="true">
@@ -23,7 +23,7 @@
 					>
 				</BadgeContainer>
 			</div>
-			<h3 v-if="loansCount">
+			<h3 class="tw-text-title" v-if="loansCount">
 				{{ badgeLevelName }}
 			</h3>
 			<p
