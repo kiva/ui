@@ -122,7 +122,7 @@
 						tw-m-0 tw-py-1"
 				>
 					<div class="tw-mx-2">
-						<h4 class="tw-text-upper tw-inline" v-html="headline"></h4>
+						<h4 class="tw-text-base tw-text-upper tw-inline" v-html="headline"></h4>
 						<a
 							v-if="disclaimer"
 							href="#disclaimers"
