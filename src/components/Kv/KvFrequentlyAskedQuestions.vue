@@ -1,7 +1,7 @@
 <template>
 	<kv-grid>
 		<div v-if="headline">
-			<h2 class="tw-text-h2">
+			<h2 class="tw-text-headline">
 				{{ headline }}
 			</h2>
 		</div>

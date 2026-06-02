@@ -2,7 +2,7 @@
 	<kv-button
 		class="
 		icon-btn
-		tw-text-h3"
+		tw-text-title"
 		:style="cssVars"
 	>
 		<div class="icon-btn__icon-background">
