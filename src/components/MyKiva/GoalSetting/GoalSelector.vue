@@ -36,7 +36,7 @@
 					class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5 tw-mx-auto"
 				>
 				<h2
-					class="tw-px-4 lg:tw-px-7 tw-text-center"
+					class="tw-text-headline tw-px-4 lg:tw-px-7 tw-text-center"
 					style="line-height: 125%;"
 					v-html="titleText"
 				>

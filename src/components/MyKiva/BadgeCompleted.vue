@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<div class="badge-container tw-flex-col tw-mb-4">
-			<h2 class="tw-text-center tw-mb-2">
+			<h2 class="tw-text-headline tw-text-center tw-mb-2">
 				{{ badgeData.tierName }}
 			</h2>
 			<div class="tw-relative tw-z-1 tw-mb-3" :style="{ minWidth: '16rem'}">
@@ -17,7 +17,7 @@
 					:alt="badgeData.tierName"
 				>
 			</div>
-			<h2 class="tw-text-h3 tw-italic tw-text-desert-rose-4 tw-mb-2 tw-text-center">
+			<h2 class="tw-text-title tw-italic tw-text-desert-rose-4 tw-mb-2 tw-text-center">
 				{{ funFact }} <span v-if="funFactSource">*</span> <a
 					:href="learnMoreLink"
 					@click="trackLearnMore"

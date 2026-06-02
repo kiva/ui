@@ -25,7 +25,7 @@
 			/>
 		</div>
 		<div class="tw-flex tw-flex-col tw-pt-1 tw-grow">
-			<h3>
+			<h3 class="tw-text-title">
 				Follow {{ borrowerName }} journey
 			</h3>
 			<p class="tw-font-medium tw-text-base tw-pt-0.5 tw-grow">

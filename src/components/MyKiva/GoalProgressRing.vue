@@ -6,7 +6,7 @@
 				class="tw-w-3.5 tw-h-3.5 tw-text-brand tw-mx-auto tw-mb-2"
 				:icon="mdiCheckCircle"
 			/>
-			<h2 v-if="isModalVariant" class="tw-font-medium" :class="titleClass">
+			<h2 v-if="isModalVariant" class="tw-text-headline tw-font-medium" :class="titleClass">
 				{{ titleText }}
 			</h2>
 			<p v-else class="tw-font-medium" :class="titleClass">
