@@ -2,7 +2,7 @@
 	<section>
 		<!-- Display Content -->
 		<div>
-			<h2 class="tw-text-h2" :data-testid="`bp-${displayType}-header`">
+			<h2 class="tw-text-headline" :data-testid="`bp-${displayType}-header`">
 				{{ sectionTitle }}
 			</h2>
 
@@ -91,7 +91,7 @@
 			@lightbox-closed="isLightboxVisible = false"
 		>
 			<template #header>
-				<h2 class="tw-text-h2">
+				<h2 class="tw-text-headline">
 					{{ sectionTitle }}
 				</h2>
 				<div class="tw-mb-3">

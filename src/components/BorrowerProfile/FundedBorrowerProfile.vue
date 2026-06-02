@@ -62,7 +62,7 @@
 				Similar borrowers that need your support
 			</p>
 			<div :key="index" v-for="(category, index) in categories" class="tw-my-6">
-				<p class="tw-text-h2">
+				<p class="tw-text-headline">
 					{{ category.heading }}
 				</p>
 				<p v-if="category.subHeading" class="tw-text-subhead">

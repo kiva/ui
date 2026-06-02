@@ -50,7 +50,7 @@
 						'lg:tw-pt-1 lg:tw-pb-1',
 					]"
 				>
-					<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
+					<p class="tw-text-title tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
 						{{ lgScreenheadline }}
 					</p>
 					<span class="tw-flex tw-flex-wrap tw-pb-1 lg:tw-pb-2 tw-relative">
@@ -343,7 +343,7 @@
 								key="loanMatchingText"
 							>
 								<!-- eslint-disable-next-line max-len -->
-								<span class="tw-text-h3 tw-inline-block tw-pr-1 tw-align-middle">🎉</span>{{ matchRatio + 1 }}X MATCHED LOAN
+								<span class="tw-text-title tw-inline-block tw-pr-1 tw-align-middle">🎉</span>{{ matchRatio + 1 }}X MATCHED LOAN
 							</span>
 						</transition>
 					</div>

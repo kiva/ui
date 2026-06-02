@@ -7,7 +7,7 @@
 			/>
 		</div>
 
-		<h2 class="tw-sr-only">
+		<h2 class="tw-text-headline tw-sr-only">
 			Loan Comments
 		</h2>
 		<div
@@ -48,7 +48,7 @@
 						</div>
 						<!-- comment -->
 						<div>
-							<h2>
+							<h2 class="tw-text-headline">
 								<em class="tw-break-words">"{{ shortComment(comment.body) }}"</em>
 							</h2>
 						</div>
@@ -85,7 +85,7 @@
 										v-else-if="!comment.isAnonymous && isDefaultProfilePic(comment.hash)"
 										class="
 										tw-rounded-full
-										tw-text-h2
+										tw-text-headline
 										tw-w-full tw-h-full
 										tw-flex tw-align-center tw-justify-center"
 										:class="randomizedUserClass()"
@@ -110,7 +110,7 @@
 								</div>
 								<!-- name and team info -->
 								<div class="tw-m-auto">
-									<h3>
+									<h3 class="tw-text-title">
 										{{ comment.authorName }}
 									</h3>
 									<h4 class="tw-text-upper" v-if="comment.lenderTeam && comment.lenderTeamPublicId">
@@ -146,10 +146,10 @@
 			@lightbox-closed="isReportLightboxVisible = false"
 		>
 			<template #header>
-				<h2>
+				<h2 class="tw-text-headline">
 					Report Comment
 				</h2>
-				<h3 class="tw-mt-2">
+				<h3 class="tw-text-title tw-mt-2">
 					Why are you reporting this comment?
 				</h3>
 			</template>
@@ -197,7 +197,7 @@
 			title=""
 			@lightbox-closed="isCommentLightboxVisible = false"
 		>
-			<h2>
+			<h2 class="tw-text-headline">
 				<em class="tw-break-words">"{{ selectedCommentBody }}"</em>
 			</h2>
 		</kv-lightbox>
