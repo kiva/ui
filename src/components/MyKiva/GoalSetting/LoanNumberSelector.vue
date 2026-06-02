@@ -35,7 +35,7 @@
 			>
 				{{ highlightedText }}
 			</div>
-			<div class="tw-text-primary !tw-font-medium tw-text-h5 tw-text-center">
+			<div class="tw-text-primary !tw-font-medium tw-text-label tw-text-center">
 				{{ optionText }}
 			</div>
 		</div>

@@ -35,6 +35,7 @@
 							:icon="mdiGiftOutline"
 						/>
 						<h5
+							class="tw-text-label"
 							data-testid="bonus-available-banner"
 						>
 							Use your {{ bonusAvailableTotal }} gift - while funds last!

@@ -91,7 +91,7 @@
 					<div class="percentiles-controls">
 						<div class="percentiles-banner">
 							<p
-								class="tw-text-h5 tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0
+								class="tw-text-label tw-pl-0.5 tw-flex-shrink-0 tw-flex tw-items-center tw-m-0
 										tw-leading-normal"
 							>
 								<span class="lg:tw-hidden">New!</span>

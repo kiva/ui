@@ -21,13 +21,32 @@
 			</div>
 			<div
 				v-if="!loading"
-				class="tw-flex tw-items-center tw-gap-1 tw-rounded-full tw-px-1 tw-py-0.5
-				tw-bg-white tw-absolute tw-bottom-1 md:tw-bottom-2 tw-left-2"
 			>
-				<KvMaterialIcon :icon="mdiMapMarker" class="tw-text-primary tw-w-2 tw-h-2" />
-				<h5 style="line-height: 1;">
-					{{ country }}
-				</h5>
+				<p
+					class="
+						tw-absolute
+						tw-bottom-1
+						tw-left-1
+						tw-text-primary
+						tw-bg-white
+						tw-rounded
+						tw-p-1
+						tw-mb-0
+						tw-mr-2
+						tw-text-label
+						tw-flex
+						tw-items-center
+						tw-h-3"
+					style="padding: 2px 6px; text-transform: capitalize;"
+				>
+					<KvMaterialIcon
+						:icon="mdiMapMarker"
+						class="tw-w-2 tw-h-2"
+					/>
+					<span style="margin-top: 0.125rem;">
+						{{ country }}
+					</span>
+				</p>
 			</div>
 		</div>
 		<KvLoadingPlaceholder v-if="loading" class="!tw-w-1/2 tw-mx-auto tw-my-2 tw-h-4" />

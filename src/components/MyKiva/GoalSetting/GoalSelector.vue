@@ -103,7 +103,7 @@
 									Custom
 								</span>
 							</div>
-							<div class="tw-text-primary tw-font-medium tw-text-h5 tw-text-center">
+							<div class="tw-text-primary tw-font-medium tw-text-label tw-text-center">
 								<span class="tw-hidden lg:tw-inline">
 									Custom
 								</span>

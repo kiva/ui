@@ -14,7 +14,7 @@
 			</p>
 
 			<button
-				class="tw-flex tw-gap-0.5 tw-items-center tw-text-h5 hover:tw-underline tw-text-action tw-pt-0.5"
+				class="tw-flex tw-gap-0.5 tw-items-center tw-text-label hover:tw-underline tw-text-action tw-pt-0.5"
 				v-if="!isModalVariant"
 				@click="handleEditGoal"
 			>

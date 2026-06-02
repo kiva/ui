@@ -37,7 +37,16 @@
 									]"
 								/>
 							</div>
-							<h5 class="tw-text-center tw-text-ellipsis tw-line-clamp-2 tw-whitespace-normal tw-pt-0.5">
+							<h5
+								class="
+									tw-text-center
+									tw-text-label
+									tw-text-ellipsis
+									tw-line-clamp-2
+									tw-whitespace-normal
+									tw-pt-0.5
+								"
+							>
 								{{ getBorrowerName(loan) }}
 							</h5>
 						</div>
