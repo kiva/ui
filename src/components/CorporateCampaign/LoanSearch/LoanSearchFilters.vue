@@ -3,7 +3,7 @@
 		<div class="loan-filters__top-row">
 			<span class="tw-mb-2 md:tw-mb-0">
 				<div class="tw-inline-flex tw-items-center">
-					<h2>
+					<h2 class="tw-text-headline">
 						Support causes you care about.
 					</h2>
 				</div>
@@ -129,7 +129,7 @@
 							class="loan-filters__lightbox tw-mb-0.5"
 							id="gender-filter-container"
 						>
-							<h3 class="tw-py-1 tw-p-2 tw-inline-block">
+							<h3 class="tw-text-title tw-py-1 tw-p-2 tw-inline-block">
 								Gender
 							</h3>
 
@@ -147,7 +147,7 @@
 							class="loan-filters__lightbox tw-flex-grow"
 							id="sort-filter-container"
 						>
-							<h3 class="tw-py-1 tw-p-2 tw-inline-block">
+							<h3 class="tw-text-title tw-py-1 tw-p-2 tw-inline-block">
 								Sort By
 							</h3>
 							<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-my-2 tw-p-1">
@@ -168,7 +168,7 @@
 					id="region-accordian"
 				>
 					<template #header>
-						<h3 class="tw-py-1">
+						<h3 class="tw-text-title tw-py-1">
 							Countries
 						</h3>
 					</template>
@@ -186,7 +186,7 @@
 					id="sectors-accordian"
 				>
 					<template #header>
-						<h3 class="tw-py-1">
+						<h3 class="tw-text-title tw-py-1">
 							Sectors
 						</h3>
 					</template>
@@ -204,7 +204,7 @@
 					id="attributes-accordian"
 				>
 					<template #header>
-						<h3 class="tw-py-1">
+						<h3 class="tw-text-title tw-py-1">
 							Attributes
 						</h3>
 					</template>
@@ -222,7 +222,7 @@
 					id="tags-accordian"
 				>
 					<template #header>
-						<h3 class="tw-py-1">
+						<h3 class="tw-text-title tw-py-1">
 							Tags
 						</h3>
 					</template>

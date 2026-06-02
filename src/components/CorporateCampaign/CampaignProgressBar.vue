@@ -26,7 +26,7 @@
 			<h4 v-else-if="creditLeft === 0" class="tw-text-upper tw-mb-1 tw-px-3">
 				You Did It!
 			</h4>
-			<h3 class="tw-mb-2 tw-px-3">
+			<h3 class="tw-text-title tw-mb-2 tw-px-3">
 				You have ${{ creditLeft }} in credit left
 				<span v-if="campaignPartnerName"> from {{ campaignPartnerName }} </span>
 			</h3>
