@@ -40,90 +40,81 @@
 		<!-- Active goal -->
 		<div
 			v-else-if="resolvedState === 'active-goal'"
-			class="featured-goal-card__content featured-goal-card__content--active"
 		>
-			<div class="featured-goal-card__ring tw-relative tw-z-docked">
-				<KvProgressCircle
-					class="progress-circle"
-					:stroke-width="20"
-					:value="clampedPercentage"
-					:max="goalTarget"
-					:rotate="180"
-					color="brand"
-				/>
-				<div class="progress-circle-content">
-					<h5
-						class="progress-value tw-text-center"
-						:class="progressValueClass"
-						style="letter-spacing: -0.05rem;"
-					>
-						<span>{{ activeCurrentProgress }}</span>
-						<span :class="shouldWrapProgressValues ? '' : 'tw-inline'">
-							{{ shouldWrapProgressValues ? `/${goalTarget}` : ` / ${goalTarget}` }}
-						</span>
+			<div class="md:tw-hidden tw-pb-1 featured-goal-card__heading-row">
+				<div class="featured-goal-card__tag">
+					<KvIcon
+						class="featured-goal-card__tag-icon tw-text-gray-400"
+						name="annual-goal-flag"
+					/>
+					<h5 class="tw-text-secondary">
+						Your {{ currentYear }} goal to support {{ categoryName }}
 					</h5>
 				</div>
+				<button
+					type="button"
+					class="featured-goal-card__edit"
+					aria-label="Edit goal"
+					@click="$emit('edit-click')"
+				>
+					Edit
+				</button>
 			</div>
-			<div class="featured-goal-card__text">
-				<div class="featured-goal-card__heading-row">
-					<div class="featured-goal-card__tag">
-						<KvIcon
-							class="featured-goal-card__tag-icon tw-text-gray-400"
-							name="annual-goal-flag"
-						/>
-						<h5 class="tw-text-secondary">
-							{{ currentYear }} annual goal
+			<div class="featured-goal-card__content featured-goal-card__content--active">
+				<div class="featured-goal-card__ring tw-relative tw-z-docked">
+					<KvProgressCircle
+						class="progress-circle"
+						:stroke-width="20"
+						:value="clampedPercentage"
+						:max="goalTarget"
+						:rotate="180"
+						color="brand"
+					/>
+					<div class="progress-circle-content tw-hidden">
+						<h5
+							class="progress-value tw-text-center tw-flex tw-items-baseline"
+							:class="progressValueClass"
+							style="letter-spacing: -0.05rem;"
+						>
+							<h3>{{ activeCurrentProgress }}</h3>
+							<span :class="shouldWrapProgressValues ? '' : 'tw-inline'">
+								{{ shouldWrapProgressValues ? `/${goalTarget}` : ` / ${goalTarget}` }}
+							</span>
 						</h5>
+						<p class="tw-font-book tw-text-secondary">
+							Loans
+						</p>
 					</div>
-					<button
-						type="button"
-						class="featured-goal-card__edit"
-						aria-label="Edit goal"
-						@click="$emit('edit-click')"
-					>
-						Edit
-					</button>
 				</div>
-				<p class="featured-goal-card__title">
-					{{ activeGoalTitle }}
-				</p>
-				<p class="featured-goal-card__description">
-					{{ activeGoalDescription }}
-				</p>
-				<KvButton
-					class="featured-goal-card__cta"
-					variant="primary"
-					v-kv-track-event="['portfolio', 'click', 'featured-continue-towards-goal']"
-					@click="$emit('cta-click')"
-				>
-					{{ activeGoalCta }}
-				</KvButton>
-			</div>
-		</div>
-
-		<!-- Completed goal -->
-		<div
-			v-else
-			class="featured-goal-card__content"
-		>
-			<div class="featured-goal-card__text">
-				<p class="featured-goal-card__eyebrow featured-goal-card__eyebrow--celebrate">
-					{{ currentYear }} annual goal · Complete
-				</p>
-				<h2 class="featured-goal-card__title">
-					{{ completedTitle }}
-				</h2>
-				<p class="featured-goal-card__description">
-					{{ completedDescription }}
-				</p>
-				<KvButton
-					class="featured-goal-card__cta"
-					variant="primary"
-					v-kv-track-event="['portfolio', 'click', 'featured-view-impact']"
-					@click="$emit('cta-click')"
-				>
-					View your impact
-				</KvButton>
+				<div class="tw-flex tw-flex-col md:tw-flex-row tw-justify-between tw-items-center tw-gap-1.5 md:tw-gap-5">
+					<div>
+						<div class="featured-goal-card__heading-row tw-hidden md:tw-block">
+							<div class="featured-goal-card__tag tw-pb-2">
+								<KvIcon
+									class="featured-goal-card__tag-icon tw-text-gray-400"
+									name="annual-goal-flag"
+								/>
+								<h5 class="tw-text-secondary">
+									Your {{ currentYear }} goal to support {{ categoryName }}
+								</h5>
+							</div>
+						</div>
+						<p class="featured-goal-card__title">
+							{{ activeGoalTitle }}
+						</p>
+						<p class="featured-goal-card__description">
+							{{ activeGoalDescription }}
+						</p>
+					</div>
+					<KvButton
+						class="feature-goal-card__cta--active-goal featured-goal-card__cta"
+						variant="primary"
+						v-kv-track-event="['portfolio', 'click', 'featured-continue-towards-goal']"
+						@click="$emit('cta-click')"
+					>
+						{{ activeGoalCta }}
+					</KvButton>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -168,6 +159,10 @@ const props = defineProps({
 		type: String,
 		default: 'default',
 	},
+	userName: {
+		type: String,
+		default: '',
+	},
 });
 
 defineEmits(['set-goal-click', 'cta-click', 'edit-click']);
@@ -206,28 +201,35 @@ const activeCurrentProgress = computed(() => (
 ));
 
 const activeGoalTitle = computed(() => {
-	if (props.copyVariant === 'momentum') {
-		return "You're building something powerful — keep going!";
-	}
-	if (goalCompleted.value) {
-		return 'You reached your goal!';
-	}
 	if (clampedPercentage.value === 0) {
-		return 'Your goal is set. Make your first loan to get started!';
+		return 'Start with your first loan';
 	}
 	if (clampedPercentage.value < HALF_GOAL_THRESHOLD) {
-		return "You're off to a great start!";
+		return 'You\'ve started something powerful.';
+	}
+	if (clampedPercentage.value === HALF_GOAL_THRESHOLD) {
+		return 'You\'re half way there!';
 	}
 	if (clampedPercentage.value < COMPLETED_GOAL_THRESHOLD) {
-		return 'Halfway there — finish strong!';
+		return 'You\'re close to the impact you imagined';
 	}
-	return "You're so close to your goal!";
+	return `You did it, ${props.userName}! You made it happen`;
 });
 
 const activeGoalDescription = computed(() => {
-	if (goalCompleted.value) return 'You’ve completed your goal!';
-	if (goalRemainingLoans.value === 1) return '1 loan to complete your goal.';
-	return `${goalRemainingLoans.value} loans to complete your goal.`;
+	if (clampedPercentage.value === 0) {
+		return 'Turn your intention into consistent impact.';
+	}
+	if (clampedPercentage.value < HALF_GOAL_THRESHOLD) {
+		return 'Let\'s keep it growing together.';
+	}
+	if (clampedPercentage.value === HALF_GOAL_THRESHOLD) {
+		return 'You\'ve made real progress and real impact. Keep it going.';
+	}
+	if (clampedPercentage.value < COMPLETED_GOAL_THRESHOLD) {
+		return 'Continue creating opportunity for others. Finish strong!';
+	}
+	return `Achieving your goal means you've changed ${props.goalTarget} lives this year;`;
 });
 
 const activeGoalCta = computed(() => {
@@ -236,19 +238,6 @@ const activeGoalCta = computed(() => {
 	return 'Continue';
 });
 
-const completedTitle = computed(() => {
-	if (props.copyVariant === 'year-end') {
-		return `You did it! A ${currentYear} to remember.`;
-	}
-	return 'You reached your goal!';
-});
-
-const completedDescription = computed(() => {
-	if (props.copyVariant === 'year-end') {
-		return `Look back on the lives you helped change in ${currentYear}.`;
-	}
-	return `Incredible work. Celebrate the impact you made in ${currentYear}.`;
-});
 </script>
 
 <style lang="postcss" scoped>
@@ -257,8 +246,11 @@ const completedDescription = computed(() => {
 	@apply tw-transition-shadow tw-duration-200 tw-w-full tw-px-1.5 tw-py-2.5 lg:tw-px-2 lg:tw-py-4;
 	background-repeat: no-repeat;
 	background-size: cover;
+	background-position: right;
+}
+
+.featured-goal-card--no-goal {
 	background-color: #F3F1EF;
-	background-position: bottom;
 }
 
 .featured-goal-card:hover {
@@ -288,7 +280,7 @@ const completedDescription = computed(() => {
 }
 
 .featured-goal-card__heading-row {
-	@apply tw-flex tw-items-start tw-justify-between tw-gap-1;
+	@apply tw-flex tw-items-center tw-justify-between tw-gap-1;
 }
 
 .featured-goal-card__eyebrow {
@@ -330,8 +322,15 @@ const completedDescription = computed(() => {
 
 .progress-circle,
 .progress-circle-content {
-	width: 72px;
-	height: 72px;
+	@apply tw-z-docked;
+
+	width: 100px;
+	height: 100px;
+
+	@screen md {
+		width: 140px;
+		height: 140px;
+	}
 }
 
 .progress-circle-content {
@@ -352,7 +351,6 @@ const completedDescription = computed(() => {
 }
 
 .featured-goal-card__cta {
-	@apply tw-mt-1 md:tw-self-start;
 	width: 100%;
 }
 
@@ -372,6 +370,18 @@ const completedDescription = computed(() => {
 	@screen md {
 		width: 304px;
 	}
+}
+
+.feature-goal-card__cta--active-goal {
+	width: 100%;
+
+	@screen md {
+		width: 182px;
+	}
+}
+
+.feature-goal-card__cta--active-goal :deep(span) {
+	min-height: auto;
 }
 
 .featured-goal-card--no-goal:not(.featured-goal-card--loading) {
