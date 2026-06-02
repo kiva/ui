@@ -6,11 +6,7 @@ export default {
 	argTypes: {
 		state: {
 			control: { type: 'select' },
-			options: ['no-goal', 'active-goal', 'completed-goal'],
-		},
-		copyVariant: {
-			control: { type: 'select' },
-			options: ['default', 'momentum', 'year-end'],
+			options: ['no-goal', 'active-goal'],
 		},
 	},
 };
@@ -21,7 +17,7 @@ const story = (args = {}, { width = '100%' } = {}) => {
 		components: { FeaturedGoalCard },
 		setup() { return { args, width }; },
 		template: `
-			<div :style="{ width: width, maxWidth: '1200px', padding: '24px', background: 'white' }">
+			<div :style="{ width: width, maxWidth: '1072px', padding: '2px', background: 'white' }">
 				<FeaturedGoalCard v-bind="args" />
 			</div>
 		`,
@@ -68,31 +64,21 @@ export const ActiveGoalAlmostDone = story({
 	categoryName: 'refugees',
 });
 
-export const ActiveGoalMomentumCopy = story({
+export const ActiveGoalCompleted = story({
 	state: 'active-goal',
-	goalTarget: 25,
-	goalProgress: 15,
-	goalProgressPercentage: 60,
-	categoryName: 'basic needs',
-	copyVariant: 'momentum',
-});
-
-// ─── Completed-goal state ───────────────────────────────────────────────────
-export const CompletedGoal = story({
-	state: 'completed-goal',
 	goalTarget: 10,
 	goalProgress: 10,
 	goalProgressPercentage: 100,
 	categoryName: 'women',
+	userName: 'Christian',
 });
 
-export const CompletedGoalYearEndCopy = story({
-	state: 'completed-goal',
-	goalTarget: 10,
-	goalProgress: 10,
-	goalProgressPercentage: 100,
+export const ActiveGoalLargeTarget = story({
+	state: 'active-goal',
+	goalTarget: 2500,
+	goalProgress: 1234,
+	goalProgressPercentage: 49,
 	categoryName: 'women',
-	copyVariant: 'year-end',
 });
 
 // ─── Loading state ──────────────────────────────────────────────────────────
@@ -100,28 +86,3 @@ export const Loading = story({
 	state: 'no-goal',
 	loading: true,
 });
-
-// ─── Breakpoint snapshots ───────────────────────────────────────────────────
-export const MobileWidth = story({
-	state: 'active-goal',
-	goalTarget: 10,
-	goalProgress: 4,
-	goalProgressPercentage: 40,
-	categoryName: 'women',
-}, { width: '375px' });
-
-export const TabletWidth = story({
-	state: 'active-goal',
-	goalTarget: 10,
-	goalProgress: 4,
-	goalProgressPercentage: 40,
-	categoryName: 'women',
-}, { width: '768px' });
-
-export const DesktopWidth = story({
-	state: 'active-goal',
-	goalTarget: 10,
-	goalProgress: 4,
-	goalProgressPercentage: 40,
-	categoryName: 'women',
-}, { width: '1200px' });
