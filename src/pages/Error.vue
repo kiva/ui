@@ -12,7 +12,7 @@
 			</template>
 			<template v-else>
 				<h1 class="tw-text-display">Oh no, something went wrong!</h1>
-				<h2 v-if="description">
+				<h2 class="tw-text-headline" v-if="description">
 					{{ description }}
 				</h2>
 				<p class="message" v-if="loginRedirectUrl">
