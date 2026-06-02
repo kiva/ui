@@ -16,7 +16,7 @@
 							alt="loan to loan relending graphic"
 						>
 					</div>
-					<h1 class="tw-mb-3 tw-text-center">
+					<h1 class="tw-text-display tw-mb-3 tw-text-center">
 						<span>Thank you!</span>
 					</h1>
 					<p class="tw-text-subhead tw-mb-3 tw-text-left md:tw-text-center">

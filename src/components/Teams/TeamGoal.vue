@@ -25,7 +25,7 @@
 					class="tw-w-8 tw-h-8 tw-flex-none tw-rounded-xs tw-mr-2"
 					:src="teamImage"
 				>
-				<h3>{{ goal.name }}</h3>
+				<h3 class="tw-text-title">{{ goal.name }}</h3>
 			</div>
 			<p class="tw-line-clamp-1 tw-mt-1">
 				{{ challengeDescription }}

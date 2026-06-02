@@ -39,7 +39,7 @@
 						</p>
 					</div>
 					<div class="tw-mt-2 tw-mb-6">
-						<h3>
+						<h3 class="tw-text-title">
 							Challenge
 							<a :href="teamChallengePath" data-testid="percentage-funded" class="tw-text-eco-green-3">
 								{{ percentageFunded }}% complete
@@ -47,7 +47,7 @@
 						</h3>
 					</div>
 					<div class="tw-flex tw-flex-col tw-items-center">
-						<h2 class="tw-text-center tw-mb-2">
+						<h2 class="tw-text-headline tw-text-center tw-mb-2">
 							<!-- eslint-disable-next-line max-len -->
 							<span>We’ll announce whether the team has won the challenge before the next challenge on the </span><span class="tw-text-brand">20th of March</span><span>. Until then, we’d love your feedback!</span>
 						</h2>

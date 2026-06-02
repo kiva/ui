@@ -30,10 +30,10 @@
 
 					<h1
 						v-if="headline"
-						class="tw-text-h2 tw-mb-2 tw-text-center"
+						class="tw-text-headline tw-mb-2 tw-text-center"
 						v-html="headline"
 					></h1>
-					<h3 v-if="subHeadline" class="tw-mb-2 tw-text-center" v-html="subHeadline"></h3>
+					<h3 v-if="subHeadline" class="tw-text-title tw-mb-2 tw-text-center" v-html="subHeadline"></h3>
 					<div v-if="bodyCopy" class="tw-mb-5 tw-text-center tw-prose" v-html="bodyCopy"></div>
 
 					<div class="tw-flex tw-justify-center tw-mb-5">

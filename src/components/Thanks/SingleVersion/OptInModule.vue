@@ -2,7 +2,7 @@
 	<transition-group name="collapse" tag="div">
 		<template v-if="!newConsentAnswered">
 			<div class="module-container">
-				<h2 style="line-height: 1.25;">
+				<h2 class="tw-text-headline" style="line-height: 1.25;">
 					{{ title }}
 				</h2>
 				<BorrowerAvatarsContainer
@@ -10,7 +10,7 @@
 					:loans="loansToDisplay"
 					show-large-avatars
 				/>
-				<h3 class="tw-font-book">
+				<h3 class="tw-text-title tw-font-book">
 					{{ description }}
 				</h3>
 				<div class="tw-w-full tw-flex tw-flex-col tw-gap-2">

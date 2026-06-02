@@ -13,7 +13,7 @@
 			</div>
 			<!-- eslint-disable-next-line max-len -->
 			<div class="small-10 large-6 xlarge-7 align-self-middle columns">
-				<h1 class="tw-mb-4">
+				<h1 class="tw-text-display tw-mb-4">
 					<template v-if="headline">
 						{{ headline }}
 					</template>

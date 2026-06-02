@@ -27,7 +27,7 @@
 		>
 			<h2
 				v-if="!isMobile && (showCategories || isThanksPage)"
-				class="tw-mb-3 tw-text-left md:tw-text-center"
+				class="tw-text-headline tw-mb-3 tw-text-left md:tw-text-center"
 			>
 				Choose an impact area
 			</h2>
@@ -35,7 +35,7 @@
 		<!-- header mobile version -->
 		<h2
 			v-if="!showRecommendLoanArea && isMobile && (showCategories || isThanksPage)"
-			class="tw-mb-3 tw-text-left md:tw-text-center"
+			class="tw-text-headline tw-mb-3 tw-text-left md:tw-text-center"
 		>
 			Choose an impact area
 		</h2>
@@ -180,7 +180,7 @@
 				<!-- second title for goal tile variant -->
 				<h2
 					v-if="showGoalTile && showCategories"
-					class="tw-mb-3 tw-text-left md:tw-text-center"
+					class="tw-text-headline tw-mb-3 tw-text-left md:tw-text-center"
 				>
 					Choose an impact area
 				</h2>
@@ -679,7 +679,7 @@ watch(show, async newVal => {
 
 <style lang="postcss" scoped>
 .goal-setting-lightbox :deep(h2) {
-	@apply tw-text-h2;
+	@apply tw-text-headline;
 }
 
 /* Style for components when Goal Tile experiment is enabled */

@@ -10,7 +10,7 @@
 			>
 				<div class="join-team-lightbox__content">
 					<div v-if="showForm" class="tw-text-center">
-						<h2>{{ campaignTitleText }}</h2>
+						<h2 class="tw-text-headline">{{ campaignTitleText }}</h2>
 						<p>
 							Lending Teams are self-organized groups on Kiva.org where you can
 							connect and rally around shared lending goals. By joining the
@@ -24,13 +24,15 @@
 					</div>
 					<div v-if="showSuccess" class="tw-text-center">
 						<div v-if="isMember">
-							<h2>Congratulations! You've joined the {{ teamName }} Lending Team.</h2>
+							<h2 class="tw-text-headline">
+								Congratulations! You've joined the {{ teamName }} Lending Team.
+							</h2>
 							<p>
 								When you make loans, you'll now have the option to count those loans towards this team.
 							</p>
 						</div>
 						<div v-else>
-							<h2>You've requested to join the {{ teamName }} Lending Team.</h2>
+							<h2 class="tw-text-headline">You've requested to join the {{ teamName }} Lending Team.</h2>
 							<p>
 								Once your request is approved, you'll have the option to count loans towards this team.
 							</p>

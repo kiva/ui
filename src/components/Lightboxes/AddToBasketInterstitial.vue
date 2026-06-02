@@ -14,7 +14,9 @@
 							</div>
 						</div>
 						<div class="loan-title columns small-8">
-							<h3><span>${{ $filters.numeral(loan.price, '0,0') }}</span> to {{ loan.loan.name }}</h3>
+							<h3 class="tw-text-title">
+								<span>${{ $filters.numeral(loan.price, '0,0') }}</span> to {{ loan.loan.name }}
+							</h3>
 							<loan-reservation
 								class="popup-reservation-text"
 								:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
@@ -68,7 +70,7 @@
 			</div>
 			<div class="lightbox-lyml-wrapper" v-if="loan.loan && showLoansYouMightLike">
 				<div class="additional-loans">
-					<h2>Support more loans like {{ loan.loan.name }}</h2>
+					<h2 class="tw-text-headline">Support more loans like {{ loan.loan.name }}</h2>
 					<l-y-m-l
 						v-if="loans && loan.id"
 						:basketed-loans="loans"

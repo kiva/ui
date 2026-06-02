@@ -1,6 +1,6 @@
 <template>
 	<section class="tw-bg-primary tw-p-3 tw-mb-3">
-		<h2 class="tw-text-h3 tw-mb-1">
+		<h2 class="tw-text-title tw-mb-1">
 			{{ title }}
 		</h2>
 		<p class="tw-mb-0">

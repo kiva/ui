@@ -12,7 +12,7 @@
 			v-if="zeroLoans"
 			class="zero-loans-state"
 		>
-			<h3 class="tw-mb-2">
+			<h3 class="tw-text-title tw-mb-2">
 				All borrowers matching this search have been funded.
 			</h3>
 			<p>
@@ -59,7 +59,7 @@
 						'Load More loans']"
 				>
 					<div class="see-all-card__link">
-						<h3>Load More</h3>
+						<h3 class="tw-text-title">Load More</h3>
 					</div>
 				</button>
 			</template>

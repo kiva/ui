@@ -7,10 +7,10 @@
 			/>
 		</div>
 
-		<h2 class="tw-sr-only">
+		<h2 class="tw-text-headline tw-sr-only">
 			Why this loan is special
 		</h2>
-		<p v-if="!loading" class="tw-text-h2 tw-my-1">
+		<p v-if="!loading" class="tw-text-headline tw-my-1">
 			{{ fullWhySpecial }}
 		</p>
 	</article>

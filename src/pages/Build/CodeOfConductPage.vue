@@ -4,13 +4,13 @@
 			<developer-secondary-menu />
 		</template>
 		<build-page-wrapper class="tw-prose">
-			<h1>Code Of Conduct</h1>
+			<h1 class="tw-text-display">Code Of Conduct</h1>
 			<p>
 				We really want you to be creative and have a fun time using the Kiva API,
 				but you can easily spoil the fun for yourself or everyone if you write
 				an application that (unknowingly or not) doesn't play by the rules.
 			</p>
-			<h2>1. Abide by the developer Terms of Service</h2>
+			<h2 class="tw-text-headline">1. Abide by the developer Terms of Service</h2>
 			<p>
 				<!-- eslint-disable-next-line max-len -->
 				Before you develop an application on the Kiva API we must insist you
@@ -22,14 +22,14 @@
 				worked really hard on these to protect you, Kiva, and our lenders.
 				You must understand and abide by these terms
 			</p>
-			<h2>2. Respect our users and their dignity</h2>
+			<h2 class="tw-text-headline">2. Respect our users and their dignity</h2>
 			<p>
 				Both borrowers and lenders have profiles on Kiva for the purposes of
 				eradicating poverty through microfinance. Please respect the dignity
 				of both, and create experiences that help us toward our mission.
 				Disrespect of our users will not be tolerated.
 			</p>
-			<h2>3. Don't misrepresent the data</h2>
+			<h2 class="tw-text-headline">3. Don't misrepresent the data</h2>
 			<p>
 				To the best of your ability, please reflect data from the API accurately.
 				For example, don't make an application that uses Kiva photos or
@@ -47,14 +47,14 @@
 				but it is your responsibility to fix egregious mistakes if we or others
 				find them.
 			</p>
-			<h2>4. Do not use the API for commercial use</h2>
+			<h2 class="tw-text-headline">4. Do not use the API for commercial use</h2>
 			<p>
 				<!-- eslint-disable-next-line max-len -->
 				Kiva is a 501(c)(3) non-profit and, by law, we cannot allow our resources to be used for commercial purposes. Commercial entities can use the API to charitable ends in line with Kiva's mission, but if you have any doubts that what you are doing is within our <router-link to="/build/terms-of-service">
 					Terms of Service
 				</router-link>, please contact us.
 			</p>
-			<h2>5. Be your own brand</h2>
+			<h2 class="tw-text-headline">5. Be your own brand</h2>
 			<p>
 				We're excited that you want to help us build applications and experiences
 				for the Kiva community, but we do ask that you maintain your own brand.
@@ -64,7 +64,7 @@
 				just don't call your application "Kiva Mobile." A name like "Mobile Loaner"
 				might be more appropriate.
 			</p>
-			<h2>6. Be nice to the API servers</h2>
+			<h2 class="tw-text-headline">6. Be nice to the API servers</h2>
 			<p>
 				Share and share alike. The more often you make calls to the API,
 				the less resources there are available for other developers and the more
@@ -77,7 +77,7 @@
 				please bring up your situation in the forums so we can help you or modify
 				the API to make what you want to do faster and less demanding on the system.
 			</p>
-			<h2>7. Link images back to Kiva whenever possible</h2>
+			<h2 class="tw-text-headline">7. Link images back to Kiva whenever possible</h2>
 			<p>
 				When writing applications that use Kiva images, we'd like you to hyperlink
 				those images back to Kiva — either to a full-size image hosted by Kiva or
@@ -87,7 +87,7 @@
 				data on Kiva somewhere in the application flow. This helps you communicate
 				copyright of the data back to Kiva.
 			</p>
-			<h2>8. Use app_id in your requests</h2>
+			<h2 class="tw-text-headline">8. Use app_id in your requests</h2>
 			<p>
 				When making API calls or linking back to Kiva, please pass an App ID
 				in your request. Currently, this isn't required by the
@@ -98,13 +98,13 @@
 				using the API. In the future we hope to return the favor by giving you
 				stats on how your app is doing.
 			</p>
-			<h2>9. Offer your users the ability to donate to Kiva</h2>
+			<h2 class="tw-text-headline">9. Offer your users the ability to donate to Kiva</h2>
 			<p>
 				Kiva relies on the donations we ask for at checkout. Either ask your
 				users for a donation and set it in the request to the basket, or
 				leave it blank so we can set it to our suggested default amount.
 			</p>
-			<h2>10. Keep your data in sync with the API</h2>
+			<h2 class="tw-text-headline">10. Keep your data in sync with the API</h2>
 			<p>
 				We understand the need to download Kiva's data and store it locally.
 				However, for regulatory and policy reasons, such data can only be stored

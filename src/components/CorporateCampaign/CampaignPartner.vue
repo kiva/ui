@@ -13,7 +13,7 @@
 				/>
 			</div>
 			<div class="small-10 large-6 columns">
-				<h2 v-if="headline" class="tw-mb-4">
+				<h2 v-if="headline" class="tw-text-headline tw-mb-4">
 					{{ headline }}
 				</h2>
 				<div

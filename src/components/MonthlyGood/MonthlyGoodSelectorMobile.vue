@@ -10,7 +10,7 @@
 			]"
 			id="mobileMonthlyGoodSelectorButton"
 		>
-			<span class="tw-flex tw-items-center tw-text-h3">
+			<span class="tw-flex tw-items-center tw-text-title">
 				Get started
 				<kv-material-icon class="tw-w-3.5 tw-h-3.5" :icon="mdiChevronRight" />
 			</span>
@@ -23,7 +23,7 @@
 		>
 			<div class="tw-pb-3" v-html="monthlySubscriptionCopy"></div>
 			<div v-if="selectedGroup">
-				<h4 class="tw-py-1">
+				<h4 class="tw-text-base tw-text-upper tw-py-1">
 					Your cause
 				</h4>
 				<button
@@ -61,7 +61,7 @@
 				</button>
 			</div>
 			<div class="tw-mt-2 tw-mb-4" v-if="lightboxStep === 'amount'">
-				<label class="tw-text-h4 tw-py-1" for="mgAmountDropdown">
+				<label class="tw-text-upper tw-py-1" for="mgAmountDropdown">
 					Choose your amount
 				</label>
 				<kv-ui-select

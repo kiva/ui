@@ -2,7 +2,7 @@
 	<async-portfolio-section @visible="fetchAsyncData" data-testid="your-teams">
 		<!-- title -->
 		<kv-loading-placeholder v-if="loading" class="header-placeholder" />
-		<h2 v-if="!loading" class="tw-mb-2">
+		<h2 v-if="!loading" class="tw-text-headline tw-mb-2">
 			<template v-if="hasTeams">
 				Your Teams
 			</template>
@@ -40,7 +40,7 @@
 					</router-link>
 					<!-- total attributed to team -->
 					<kv-loading-placeholder v-if="loading" class="lent-amount-placeholder" />
-					<span class="tw-text-h4 tw-text-secondary">
+					<span class="tw-text-upper tw-text-secondary">
 						{{ team.amount }}
 					</span>
 				</div>

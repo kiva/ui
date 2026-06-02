@@ -17,7 +17,7 @@
 					</div>
 					<div class="column small-12 large-6">
 						<div class="borrower-info-wrapper">
-							<borrower-info-name :name="loan.name" :loan-id="loan.id" class="name tw-text-h3" />
+							<borrower-info-name :name="loan.name" :loan-id="loan.id" class="name tw-text-title" />
 							<div class="country tw-text-secondary tw-font-medium">
 								<!-- eslint-disable-next-line max-len -->
 								{{ loan.geocode.country.name }} <span v-if="loan.activity.name">/ {{ loan.activity.name }}</span>

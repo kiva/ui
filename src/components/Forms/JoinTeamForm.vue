@@ -1,10 +1,10 @@
 <template>
 	<div class="tw-prose tw-text-center tw-relative">
 		<div v-if="showForm">
-			<h1 v-if="inviterDisplayName">
+			<h1 class="tw-text-display" v-if="inviterDisplayName">
 				{{ inviterDisplayName }} invited you to the {{ teamName }} team!
 			</h1>
-			<h1 v-else>
+			<h1 class="tw-text-display" v-else>
 				You're invited to the {{ teamName }} team!
 			</h1>
 			<p>
@@ -28,13 +28,13 @@
 		</div>
 		<div v-if="showSuccess">
 			<div v-if="isMember">
-				<h1>Congratulations! You've joined the {{ teamName }} Lending Team.</h1>
+				<h1 class="tw-text-display">Congratulations! You've joined the {{ teamName }} Lending Team.</h1>
 				<p>
 					When you make loans, you'll now have the option to count those loans towards this team.
 				</p>
 			</div>
 			<div v-else>
-				<h1>You've requested to join the {{ teamName }} Lending Team.</h1>
+				<h1 class="tw-text-display">You've requested to join the {{ teamName }} Lending Team.</h1>
 				<p>
 					Once your request is approved, you'll have the option to count loans towards this team.
 				</p>

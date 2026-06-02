@@ -1,15 +1,7 @@
 <template>
 	<span class="tw-flex tw-items-center">
 		<span
-			class="
-				tw-text-h4
-				tw-mr-1
-				tw-text-center
-				tw-h-3
-				tw-w-3
-				tw-rounded-full
-				tw-bg-brand-100
-			"
+			class="tw-text-upper tw-mr-1 tw-text-center tw-h-3 tw-w-3 tw-rounded-full tw-bg-brand-100"
 			:style="{border: '1px solid #2AA967'}"
 		>
 			<img
@@ -19,7 +11,7 @@
 				:style="{ padding: '4px 0 2px 0', height: '1.2rem'}"
 			>
 		</span>
-		<h4 class="tw-inline-block">
+		<h4 class="tw-text-base tw-text-upper tw-inline-block">
 			{{ constructedMatchingText }}
 		</h4>
 	</span>

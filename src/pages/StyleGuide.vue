@@ -1,7 +1,7 @@
 <template>
 	<www-page>
 		<build-page-wrapper class="tw-prose">
-			<h1>Styleguide</h1>
+			<h1 class="tw-text-display">Styleguide</h1>
 
 			<p class="tw-text-subhead tw-text-secondary">
 				Kiva.org's frontend is built using a Vue.js component library
@@ -9,21 +9,21 @@
 			</p>
 
 			<section class="tw-mb-8">
-				<h2>Technical resources</h2>
+				<h2 class="tw-text-headline">Technical resources</h2>
 				<!-- eslint-disable max-len -->
 				<ul>
 					<li>
-						<h3>
+						<h3 class="tw-text-title">
 							<a href="https://github.com/kiva/kv-ui-elements/tree/main/%40kiva/kv-components">Component Library <kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiGithub" /></a>
 						</h3>
 					</li>
 					<li>
-						<h3>
+						<h3 class="tw-text-title">
 							<a href="https://github.com/kiva/kv-ui-elements/tree/main/%40kiva/kv-tokens">Design Tokens &amp; Tailwind Config <kv-material-icon class="tw-w-3 tw-h-3" :icon="mdiGithub" /></a>
 						</h3>
 					</li>
 					<li>
-						<h3>
+						<h3 class="tw-text-title">
 							<a href="https://main--608b4cf87f686c00213841b1.chromatic.com/?path=/docs/base-styling-primitives--primitives">Storybook</a>
 						</h3>
 					</li>
@@ -31,10 +31,10 @@
 				<!-- eslint-enable max-len -->
 			</section>
 			<section class="tw-mb-8">
-				<h2>Brand guidelines</h2>
+				<h2 class="tw-text-headline">Brand guidelines</h2>
 				<ul>
 					<li>
-						<h3>
+						<h3 class="tw-text-title">
 							<router-link to="/design">
 								kiva.org/design
 							</router-link>

@@ -2,7 +2,7 @@
 	<www-page class="ui-error-page">
 		<kv-default-wrapper class="tw-text-center tw-prose">
 			<template v-if="errorDescription === 'force_password_reset'">
-				<h1>{{ messages.headline }}</h1>
+				<h1 class="tw-text-display">{{ messages.headline }}</h1>
 				<p>{{ messages.reason }}</p>
 				<p class="message" v-if="loginRedirectUrl">
 					{{ messages.please }}
@@ -11,8 +11,8 @@
 				</p>
 			</template>
 			<template v-else>
-				<h1>Oh no, something went wrong!</h1>
-				<h2 v-if="description">
+				<h1 class="tw-text-display">Oh no, something went wrong!</h1>
+				<h2 class="tw-text-headline" v-if="description">
 					{{ description }}
 				</h2>
 				<p class="message" v-if="loginRedirectUrl">

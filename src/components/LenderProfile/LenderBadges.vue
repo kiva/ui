@@ -8,7 +8,7 @@
 				class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8 tw-pt-4"
 				style="max-width: 1200px;"
 			>
-				<h2 class="data-hj-suppress">
+				<h2 class="tw-text-headline data-hj-suppress">
 					{{ badgesTitle }}
 				</h2>
 				<!-- eslint-disable-next-line max-len -->

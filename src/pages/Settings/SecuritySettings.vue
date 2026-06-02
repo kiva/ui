@@ -8,7 +8,7 @@
 		</template>
 		<kv-default-wrapper>
 			<div class="row column">
-				<h1 class="tw-mb-4">
+				<h1 class="tw-text-display tw-mb-4">
 					Security and login
 				</h1>
 			</div>

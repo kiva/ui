@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h3 class="tw-mb-2">
+		<h3 class="tw-text-title tw-mb-2">
 			Lending Partners
 		</h3>
 		<kv-radio

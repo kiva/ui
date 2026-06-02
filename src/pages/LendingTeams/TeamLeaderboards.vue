@@ -1,6 +1,6 @@
 <template>
 	<div class="tw-col-span-12 md:tw-col-span-4">
-		<h3 class="tw-mb-0">
+		<h3 class="tw-text-title tw-mb-0">
 			Team Leaderboards
 		</h3>
 		<p class="tw-text-small  tw-mb-2">

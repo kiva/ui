@@ -2,7 +2,7 @@
 	<section>
 		<!-- Display Content -->
 		<div>
-			<h2 class="tw-text-h2" :data-testid="`bp-${displayType}-header`">
+			<h2 class="tw-text-headline" :data-testid="`bp-${displayType}-header`">
 				{{ sectionTitle }}
 			</h2>
 
@@ -19,7 +19,7 @@
 				/>
 				<span
 					v-else
-					class="tw-text-h4"
+					class="tw-text-upper"
 					:data-testid="`bp-powered-by-${displayType}-message`"
 				>
 					{{ poweredByText }}
@@ -91,7 +91,7 @@
 			@lightbox-closed="isLightboxVisible = false"
 		>
 			<template #header>
-				<h2 class="tw-text-h2">
+				<h2 class="tw-text-headline">
 					{{ sectionTitle }}
 				</h2>
 				<div class="tw-mb-3">

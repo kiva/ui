@@ -3,7 +3,7 @@
 		<div class="campaign-thanks__container">
 			<template v-if="loans.length > 0">
 				<header class="campaign-thanks__header hide-for-print">
-					<h2 class="tw-mb-4">
+					<h2 class="tw-text-headline tw-mb-4">
 						Thanks for supporting {{ borrowerSupport }}!
 					</h2>
 					<p class="tw-text-subhead">
@@ -19,7 +19,7 @@
 				</section>
 				<kv-accordion-item id="thanks-share">
 					<template #header>
-						<h2>Share the Good</h2>
+						<h2 class="tw-text-headline">Share the Good</h2>
 					</template>
 					<social-share-v2
 						class="campaign-thanks__social-share"
@@ -29,7 +29,7 @@
 				</kv-accordion-item>
 				<kv-accordion-item id="thanks-receipt">
 					<template #header>
-						<h2>Receipt</h2>
+						<h2 class="tw-text-headline">Receipt</h2>
 					</template>
 					<checkout-receipt
 						v-if="showReceipt"

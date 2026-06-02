@@ -1,7 +1,7 @@
 <template>
 	<div class="frequently-asked-questions-section-wrapper row align-center" id="frequently-asked-questions">
 		<div class="small-12 columns tw-text-center">
-			<h2>
+			<h2 class="tw-text-headline">
 				Frequently asked questions
 			</h2>
 		</div>

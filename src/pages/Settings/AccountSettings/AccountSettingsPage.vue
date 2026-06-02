@@ -8,7 +8,7 @@
 
 		<kv-default-wrapper>
 			<div>
-				<h1 class="tw-mb-4">
+				<h1 class="tw-text-display tw-mb-4">
 					Account Settings
 				</h1>
 			</div>

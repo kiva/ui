@@ -55,8 +55,10 @@
 				ref="profileBodyWrapper"
 			>
 				<div class="profile__body">
-					<h3>{{ person.name }}</h3>
-					<h4>
+					<h3 class="tw-text-title">
+						{{ person.name }}
+					</h3>
+					<h4 class="tw-text-base tw-text-upper">
 						{{ person.title }}<br>
 						{{ person.location }}
 					</h4>

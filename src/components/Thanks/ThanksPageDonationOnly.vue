@@ -3,7 +3,7 @@
 		<kv-page-container>
 			<kv-grid class="tw-grid-cols-12 tw-my-8">
 				<div class="tw-col-span-12 lg:tw-col-span-8 lg:tw-col-start-3 tw-pt-2 tw-mb-4 hide-for-print">
-					<h1 class="tw-text-h1 tw-text-center tw-mb-2" data-testid="thanks-message">
+					<h1 class="tw-text-display tw-text-center tw-mb-2" data-testid="thanks-message">
 						{{ headerMsg }}
 					</h1>
 					<p v-if="showDafThanks" class="tw-text-center tw-mb-2 tw-text-subhead">
@@ -15,7 +15,7 @@
 						As a donor, you help Kiva provide loans to underserved communities and unlock financial access. Watch Manal’s story:
 					</p>
 					<div class="tw-my-4">
-						<h2 v-if="showDafThanks" class="tw-mb-2">
+						<h2 v-if="showDafThanks" class="tw-text-headline tw-mb-2">
 							Watch Manal’s story:
 						</h2>
 						<iframe
@@ -29,7 +29,7 @@
 							allowfullscreen
 						></iframe>
 					</div>
-					<h2 class="tw-text-h2 tw-my-2">
+					<h2 class="tw-text-headline tw-my-2">
 						How a Kiva loan helped Manal grow her business in Palestine
 					</h2>
 					<p class="tw-mb-2">
@@ -44,7 +44,7 @@
 						With the help of a Kiva loan, Manal has not only succeeded but expanded—showing the naysayers
 						that she has a firm handle on her ventures and her livelihood.
 					</p>
-					<h3	class="tw-mt-1 tw-mb-3 tw-text-left">
+					<h3	class="tw-text-title tw-mt-1 tw-mb-3 tw-text-left">
 						Share this story and your impact
 					</h3>
 					<div class="social tw-mt-4 tw-max-w-sm tw-mx-auto">

@@ -5,7 +5,7 @@
 				v-show="showOverlay"
 				style="opacity: 0.5;" class="tw-fixed tw-inset-0 tw-bg-black tw-z-3"
 			></div>
-			<h2 class="tw-text-h2 tw-mb-1 tw-text-primary">
+			<h2 class="tw-text-headline tw-mb-1 tw-text-primary">
 				Find a loan by category and location
 			</h2>
 			<quick-filters

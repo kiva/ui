@@ -3,7 +3,7 @@
 		<h3
 			v-if="hasActiveLoans"
 			v-html="title"
-			class="tw-mt-4 tw-mb-2"
+			class="tw-text-title tw-mt-4 tw-mb-2"
 		></h3>
 		<div v-if="hasActiveLoans" class="tw-relative">
 			<KvTabs
@@ -37,7 +37,16 @@
 									]"
 								/>
 							</div>
-							<h5 class="tw-text-center tw-text-ellipsis tw-line-clamp-2 tw-whitespace-normal tw-pt-0.5">
+							<h5
+								class="
+									tw-text-center
+									tw-text-label
+									tw-text-ellipsis
+									tw-line-clamp-2
+									tw-whitespace-normal
+									tw-pt-0.5
+								"
+							>
 								{{ getBorrowerName(loan) }}
 							</h5>
 						</div>

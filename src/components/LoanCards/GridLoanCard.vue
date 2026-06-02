@@ -1,6 +1,6 @@
 <template>
 	<div class="column column-block">
-		<h3 v-if="title">
+		<h3 class="tw-text-title" v-if="title">
 			{{ title }}
 		</h3>
 		<div class="grid-loan-card tw-bg-primary tw-border tw-border-tertiary">

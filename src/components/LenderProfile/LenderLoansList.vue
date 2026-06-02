@@ -1,7 +1,7 @@
 <template>
 	<section v-if="lenderLoans.length > 0" class="tw-my-8" id="lender-loans">
 		<div v-if="totalCount > 0">
-			<h2 class="data-hj-suppress tw-mb-1">
+			<h2 class="tw-text-headline data-hj-suppress tw-mb-1">
 				{{ lenderLoansTitle }}
 			</h2>
 			<p class="tw-mb-2">

@@ -99,12 +99,12 @@
 						<h1
 							v-if="heroHeadline"
 							v-html="heroHeadline"
-							class="tw-mb-2 md:tw-mb-3"
+							class="tw-text-display tw-mb-2 md:tw-mb-3"
 						></h1>
 						<h2
 							v-if="heroSubHeadline"
 							v-html="heroSubHeadline"
-							class="tw-mb-2 md:tw-mb-3"
+							class="tw-text-headline tw-mb-2 md:tw-mb-3"
 						></h2>
 						<div v-if="heroBody" class="tw-mb-2 md:tw-mb-3" ref="heroBodyCopy">
 							<dynamic-rich-text

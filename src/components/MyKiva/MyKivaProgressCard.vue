@@ -14,7 +14,7 @@
 				:class="{'tw-mt-0.5' : goalCompleted && !isAnnualGoal}"
 			>
 				<h5
-					class="progress-value tw-text-center"
+					class="progress-value tw-text-center tw-text-label tw-font-medium"
 					:class="shouldWrapProgressValues ? 'tw-flex tw-flex-col tw-leading-tight' : 'tw-whitespace-nowrap'"
 					style="letter-spacing: -0.05rem;"
 				>
@@ -37,7 +37,7 @@
 					class="tw-text-gray-400 tw-h-2 tw-w-2"
 					:name="isAnnualGoal ? 'annual-goal-flag' : 'progress-checkmark'"
 				/>
-				<h5 class="tw-text-secondary">
+				<h5 class="tw-text-secondary tw-text-label tw-font-medium">
 					{{ tag }}
 				</h5>
 			</div>

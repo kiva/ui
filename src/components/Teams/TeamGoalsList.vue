@@ -10,7 +10,7 @@
 							<TwoHands class="tw-w-10 tw-h-10 tw-text-primary" />
 						</div>
 						<div>
-							<h2>{{ activeGoals.length }} teams with active challenges!</h2>
+							<h2 class="tw-text-headline">{{ activeGoals.length }} teams with active challenges!</h2>
 							<p>
 								Don’t see your team on this list? <a
 									v-kv-track-event="[

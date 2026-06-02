@@ -2,7 +2,7 @@
 <template>
 	<section id="updates">
 		<!-- Display Content -->
-		<h2 class="tw-text-h2 tw-mb-3" :data-testid="`bp-updates-header`">
+		<h2 class="tw-text-headline tw-mb-3" :data-testid="`bp-updates-header`">
 			<!-- eslint-disable-next-line max-len -->
 			{{ sectionTitle }} <kv-loading-placeholder v-if="firstLoading" class="tw-inline-block tw-align-middle tw-mb-0.5" :style="{width: '27%', height: '28px' }" />
 		</h2>

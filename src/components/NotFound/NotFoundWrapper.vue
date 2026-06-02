@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h2 class="tw-text-center tw-mb-2">
+		<h2 class="tw-text-headline tw-text-center tw-mb-2">
 			The page you're looking for has gone missing!
 		</h2>
 		<p class="tw-text-center">

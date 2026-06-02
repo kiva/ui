@@ -2,7 +2,7 @@
 	<div>
 		<div class="tw-flex tw-justify-between tw-items-end tw-mb-2.5" v-if="showChallengeHeader">
 			<div>
-				<h2 class="tw-text-h2">
+				<h2 class="tw-text-headline">
 					Find a loan, Support your team!
 				</h2>
 				<p class="tw-text-base">
@@ -126,7 +126,7 @@
 				</div>
 				<template v-if="initialLoadComplete && totalCount === 0">
 					<div class="tw-mt-2" v-if="!showChallengeHeader">
-						<h3 class="tw-text-center">
+						<h3 class="tw-text-title tw-text-center">
 							All borrowers matching this search have been funded.
 						</h3>
 						<p class="tw-text-center tw-mt-2">
@@ -134,7 +134,7 @@
 							<a class="tw-cursor-pointer" @click="clickZeroLoansReset">start a new search.</a>
 						</p>
 					</div>
-					<h3 v-else class="tw-text-center tw-mt-2">
+					<h3 v-else class="tw-text-title tw-text-center tw-mt-2">
 						There are no team picks matching your filters.
 					</h3>
 				</template>
