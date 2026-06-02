@@ -234,5 +234,6 @@ onBeforeUnmount(() => {
 
 defineExpose({
 	openLightbox,
+	lightboxOpen,
 });
 </script>
