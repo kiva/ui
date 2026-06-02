@@ -35,7 +35,7 @@
 							class="tw-bg-white tw-rounded tw-p-1.5 tw-absolute tw-right-1 tw-top-0"
 							style="box-shadow: 0 4px 12px rgb(0 0 0 / 8%); width: 15rem;"
 						>
-							<h4 class="tw-text-upper tw-text-secondary tw-mb-1">
+							<h4 class="tw-text-base tw-text-upper tw-text-secondary tw-mb-1">
 								More options
 							</h4>
 							<ul>
@@ -113,7 +113,10 @@
 									<h3 class="tw-text-title">
 										{{ comment.authorName }}
 									</h3>
-									<h4 class="tw-text-upper" v-if="comment.lenderTeam && comment.lenderTeamPublicId">
+									<h4
+										class="tw-text-base tw-text-upper"
+										v-if="comment.lenderTeam && comment.lenderTeamPublicId"
+									>
 										<router-link
 											:to="`/team/${comment.lenderTeamPublicId}`"
 											class="tw-text-primary"
