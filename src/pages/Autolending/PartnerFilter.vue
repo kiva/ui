@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h4 class="tw-text-upper tw-mb-2">
+		<h4 class="tw-text-base tw-text-upper tw-mb-2">
 			Lending Partners
 		</h4>
 		<div class="row collapse">
