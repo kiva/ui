@@ -45,14 +45,14 @@
 						`${viewAllLoansCategoryTitle}`]"
 				>
 					<div class="tw-w-full tw-text-center">
-						<h3>{{ viewAllLoansCategoryTitle }}</h3>
+						<h3 class="tw-text-title">{{ viewAllLoansCategoryTitle }}</h3>
 					</div>
 				</a>
 			</template>
 			<template v-if="showCheckBackMessage" #check-back>
 				<div class="tw-flex tw-items-center tw-h-full tw-w-full tw-border-action-highlight tw-rounded">
 					<div class="tw-w-full tw-text-center">
-						<h3>Check back later, we add new loans everyday.</h3>
+						<h3 class="tw-text-title">Check back later, we add new loans everyday.</h3>
 					</div>
 				</div>
 			</template>
