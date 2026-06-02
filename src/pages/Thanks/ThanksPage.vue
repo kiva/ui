@@ -109,7 +109,12 @@ import teamsGoalsQuery from '#src/graphql/query/teamsGoals.graphql';
 import { fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
 import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
 import ExpressCheckoutModal from '#src/components/Thanks/ExpressCheckout/ExpressCheckoutModal';
-import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
+import {
+	clearBasketDonation,
+	hasOnlyOneDonation,
+	isBasketEmpty,
+	shouldReopenExpressCheckout,
+} from '#src/util/thanksPage/thanksPageUtils';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import { LAST_YEAR_KEY, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
@@ -305,36 +310,24 @@ export default {
 	},
 	methods: {
 		async handleRecommendedLoanAddToBasket(payload) {
-			// If the user's basket already has items we should send them to /basket for the full
-			// checkout. Only when the basket is empty do we open the in-page
-			// express checkout modal for this single recommended loan.
+			// Decide between the three express-checkout sub-flows based on the
+			// current basket state: open the modal, re-open it (Checkout now
+			// re-entry), or redirect to /basket for the full checkout.
 			await this.loadInitialBasketItems();
-			const items = this.basketItems ?? [];
-			let isBasketEmpty = items.length === 0;
+			let items = this.basketItems ?? [];
 
-			// If the only items in the basket are donations, clear them
-			// so the express checkout shows only the recommended loan and
-			// the user pays the visualized amount.
-			// Abort the flow on failure to avoid charging an unexpected total.
-			// eslint-disable-next-line no-underscore-dangle
-			const onlyDonation = items.find(item => item.__typename === 'Donation');
-			if (onlyDonation && items.length === 1) {
-				const basketId = this.cookieStore.get('kvbskt');
+			// Clear an auto-added tip donation when it's the only thing in the
+			// basket so the express checkout total reflects only the recommended
+			// loan. Abort on failure to avoid charging an unexpected total.
+			if (hasOnlyOneDonation(items)) {
 				try {
-					const donation = items[0];
-					const { errors } = await this.apollo.mutate({
-						mutation: updateDonation,
-						variables: {
-							price: '0.00',
-							isTip: donation.isTip ?? true,
-							basketId,
-						},
+					await clearBasketDonation({
+						apollo: this.apollo,
+						basketId: this.cookieStore.get('kvbskt'),
+						donation: items[0],
 					});
-					if (errors?.length) {
-						throw new Error(errors[0]?.message ?? 'Failed to clear donation');
-					}
 					this.basketItems = [];
-					isBasketEmpty = true;
+					items = [];
 				} catch (error) {
 					this.$showTipMsg(
 						'Something went wrong. Please, refresh the page and try again.',
@@ -345,7 +338,16 @@ export default {
 				}
 			}
 
-			if (!isBasketEmpty) {
+			// Re-entry via "Checkout now": the recommended loan is already in
+			// the basket — reopen the modal without re-adding it.
+			if (shouldReopenExpressCheckout(items, payload)) {
+				this.expressCheckoutLoan = payload.loan ?? null;
+				this.$refs.expressCheckoutModal?.openLightbox();
+				return;
+			}
+
+			const empty = isBasketEmpty(items);
+			if (!empty) {
 				this.isRedirecting = true;
 			}
 
@@ -353,12 +355,11 @@ export default {
 			this.addToBasket({
 				...payload,
 				onSuccess: () => {
-					if (isBasketEmpty) {
+					if (empty) {
 						this.expressCheckoutLoan = payload.loan ?? null;
 						this.$refs.expressCheckoutModal?.openLightbox();
 					} else {
-						// this.$router.push('/basket');
-						console.error('HP > redirecting to /basket');
+						this.$router.push('/basket');
 					}
 				},
 				onError: () => {
