@@ -32,7 +32,7 @@
 						class="tw-text-headline tw-pb-4 tw-text-center"
 						v-html="headline"
 					></h1>
-					<h3 v-if="subHeadline" class="tw-pb-2 tw-text-center" v-html="subHeadline"></h3>
+					<h3 v-if="subHeadline" class="tw-text-title tw-pb-2 tw-text-center" v-html="subHeadline"></h3>
 					<div
 						v-if="userConfirmation"
 						class="data-hj-suppress tw-pb-2 tw-prose"

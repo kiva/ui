@@ -21,7 +21,7 @@
 					class="tw-text-headline tw-mb-2"
 					v-html="headline"
 				></h1>
-				<h2 v-if="subHeadline" class="tw-text-h3 tw-mb-2" v-html="subHeadline"></h2>
+				<h2 v-if="subHeadline" class="tw-text-title tw-mb-2" v-html="subHeadline"></h2>
 				<div v-if="bodyCopy" class="tw-mb-2 tw-prose" v-html="bodyCopy"></div>
 				<hr class="tw-border-tertiary">
 				<dl class="tw-mb-2">
@@ -46,10 +46,10 @@
 				<hr class="tw-border-tertiary">
 				<dl class="tw-mb-3">
 					<div class="tw-flex tw-justify-between tw-mt-2.5">
-						<dt class="tw-text-h3 tw-flex-1">
+						<dt class="tw-text-title tw-flex-1">
 							Total payment:
 						</dt>
-						<dd class="tw-text-h3">
+						<dd class="tw-text-title">
 							$0.00
 						</dd>
 					</div>
