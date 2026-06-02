@@ -16,7 +16,7 @@
 			/>
 			<div>
 				<div class="tw-text-center tw-flex tw-justify-between">
-					<h3 class="tw-mt-2 tw-mb-2 group-hover:tw-underline">
+					<h3 class="tw-text-title tw-mt-2 tw-mb-2 group-hover:tw-underline">
 						{{ categoryName }}
 					</h3>
 					<h4
@@ -59,7 +59,7 @@
 					/>
 				</div>
 				<div class="tw-grow">
-					<h3 class=" tw-mb-2 group-hover:tw-underline">
+					<h3 class="tw-text-title  tw-mb-2 group-hover:tw-underline">
 						{{ categoryName }}
 					</h3>
 					<div>

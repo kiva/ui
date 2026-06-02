@@ -23,7 +23,7 @@
 		</div>
 		<kv-page-container>
 			<kv-grid class="tw-pt-6">
-				<h2>
+				<h2 class="tw-text-headline">
 					Find loans by category
 				</h2>
 			</kv-grid>
