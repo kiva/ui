@@ -15,7 +15,7 @@
 					class="tw-flex tw-flex-col tw-justify-between
 						lg:tw-flex-row tw-items-start lg:tw-items-center tw-gap-1 tw-mb-2"
 				>
-					<h2>
+					<h2 class="tw-text-headline">
 						Portfolio distribution
 					</h2>
 					<kv-switch
