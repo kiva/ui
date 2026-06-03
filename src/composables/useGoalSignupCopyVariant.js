@@ -10,10 +10,10 @@ import { computed } from 'vue';
  *   Apr 1 – Dec 31  -> 'no-goal-yet'
  */
 
-export const GOAL_SIGNUP_COPY_VARIANT = Object.freeze({
+export const GOAL_SIGNUP_COPY_VARIANT = {
 	LAST_YEAR: 'last-year',
 	NO_GOAL_YET: 'no-goal-yet',
-});
+};
 
 // April (Date#getMonth is 0-indexed) is the earliest 'no-goal-yet' month.
 const NO_GOAL_YET_START_MONTH = 3;
