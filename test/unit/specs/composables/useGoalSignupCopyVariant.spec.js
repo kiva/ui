@@ -1,4 +1,3 @@
-import { describe, it, expect } from 'vitest';
 import {
 	GOAL_SIGNUP_COPY_VARIANT,
 	resolveGoalSignupCopyVariant,
@@ -39,6 +38,28 @@ describe('useGoalSignupCopyVariant', () => {
 		it('returns no-goal-yet for mid-year in a future year (evergreen)', () => {
 			const result = resolveGoalSignupCopyVariant(new Date('2027-07-04T12:00:00'));
 			expect(result).toBe(GOAL_SIGNUP_COPY_VARIANT.NO_GOAL_YET);
+		});
+	});
+
+	describe('useGoalSignupCopyVariant (composable)', () => {
+		it('exposes variant via a computed ref using injected now', async () => {
+			const { default: useGoalSignupCopyVariant } = await import(
+				'#src/composables/useGoalSignupCopyVariant'
+			);
+			const { variant } = useGoalSignupCopyVariant({
+				now: new Date('2026-05-15T12:00:00'),
+			});
+			expect(variant.value).toBe(GOAL_SIGNUP_COPY_VARIANT.NO_GOAL_YET);
+		});
+
+		it('defaults to current date when now is omitted', async () => {
+			const { default: useGoalSignupCopyVariant } = await import(
+				'#src/composables/useGoalSignupCopyVariant'
+			);
+			const { variant } = useGoalSignupCopyVariant();
+			// Just assert it returns one of the two known values; the variant
+			// for "today" depends on the calendar but must always be valid.
+			expect(Object.values(GOAL_SIGNUP_COPY_VARIANT)).toContain(variant.value);
 		});
 	});
 });
