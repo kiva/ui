@@ -172,7 +172,7 @@
 			@set-goal="setGoal"
 		/>
 		<ExpressCheckoutModal
-			v-if="goalRecommendedLoanEnable"
+			v-if="!isGuest && goalRecommendedLoanEnable"
 			ref="expressCheckoutModalRef"
 			:loan="expressCheckoutLoan"
 			:is-logged-in="!isGuest"

@@ -8,7 +8,6 @@ query loanCardBasketed($id: Int!, $basketId: String) {
 				values {
 					id
 					... on Donation {
-						id
 						isTip
 					}
 				}

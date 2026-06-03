@@ -14,7 +14,6 @@
 			<ExpressCheckoutTotals
 				:loan="loan"
 				:is-logged-in="isLoggedIn"
-				@credit-toggled="isUsingKivaCredit = $event"
 			/>
 
 			<KvPaymentSelect
@@ -41,7 +40,6 @@
 				:state="paymentButtonState"
 				type="submit"
 				class="tw-w-full tw-my-1"
-				@click="onSubmit"
 			>
 				Complete order
 			</KvButton>
@@ -63,6 +61,7 @@ import {
 	onBeforeUnmount,
 	ref,
 } from 'vue';
+import { useRouter } from 'vue-router';
 import numeral from 'numeral';
 import {
 	basketTotalsQuery,
@@ -80,7 +79,7 @@ import ExpressCheckoutTotals from '#src/components/Thanks/ExpressCheckout/Expres
 import useTipMessage from '#src/composables/useTipMessage';
 import logFormatter from '#src/util/logFormatter';
 
-const props = defineProps({
+defineProps({
 	loan: {
 		type: Object,
 		default: () => ({}),
@@ -100,9 +99,9 @@ const emit = defineEmits(['close', 'checkout-complete']);
 const apollo = inject('apollo');
 const $appConfig = inject('$appConfig', {});
 const { $showTipMsg } = useTipMessage(apollo);
+const router = useRouter();
 
 const googlePayMerchantId = $appConfig?.googlePay?.merchantId ?? '';
-const braintreeTokenKey = $appConfig?.btTokenKey ?? '';
 const dropInName = 'express-checkout';
 
 const lightboxOpen = ref(false);
@@ -110,7 +109,6 @@ const paying = ref(false);
 const totalDue = ref('0.00');
 const transactionsEnabled = ref(false);
 const dropInAuthToken = ref('');
-const isUsingKivaCredit = ref(false);
 let totalsSubscription = null;
 
 const depositRequired = computed(() => (numeral(totalDue.value).value() ?? 0) > 0);
@@ -157,11 +155,10 @@ const openLightbox = async () => {
 			fetchPolicy: 'network-only',
 		});
 
-		if (props.isLoggedIn) {
-			dropInAuthToken.value = await getClientToken(apollo) ?? '';
-		} else {
-			dropInAuthToken.value = braintreeTokenKey;
-		}
+		// Only renders this modal for logged-in users
+		// (GoalEntrypoint is gated by `v-if="!isGuest"`), so we always fetch
+		// the customer-scoped client token here.
+		dropInAuthToken.value = await getClientToken(apollo) ?? '';
 	} catch (e) {
 		const message = e?.message || 'Something went wrong. Please, refresh the page and try again.';
 		$showTipMsg(message, 'error');
@@ -212,7 +209,7 @@ const onSubmit = async () => {
 		// TODO(MP-2747): track 'fail' event for express-checkout
 
 		if (e?.code === 'shop.failedCheckoutValidation') {
-			window.location.href = '/checkout';
+			router.push('/checkout');
 			return;
 		}
 
@@ -238,6 +235,5 @@ onBeforeUnmount(() => {
 
 defineExpose({
 	openLightbox,
-	lightboxOpen,
 });
 </script>

@@ -1,4 +1,4 @@
-import { inject, ref } from 'vue';
+import { inject, ref, unref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import useTipMessage from '#src/composables/useTipMessage';
@@ -48,7 +48,7 @@ export default function useExpressCheckoutModal({
 		// current basket state: open the modal, re-open it (Checkout now
 		// re-entry), or redirect to /basket for the full checkout.
 		await loadInitialBasketItems();
-		let items = basketItems.value ?? [];
+		let items = unref(basketItems) ?? [];
 
 		// Clear an auto-added tip donation when it's the only thing in the
 		// basket so the express checkout total reflects only the recommended
@@ -61,7 +61,7 @@ export default function useExpressCheckoutModal({
 					donation: items[0],
 				});
 				await loadInitialBasketItems();
-				items = basketItems.value ?? [];
+				items = unref(basketItems) ?? [];
 			} catch (error) {
 				$showTipMsg(
 					'Something went wrong. Please, refresh the page and try again.',
@@ -75,6 +75,7 @@ export default function useExpressCheckoutModal({
 		// Re-entry via "Checkout now": the recommended loan is already in
 		// the basket — reopen the modal without re-adding it.
 		if (shouldReopenExpressCheckout(items, payload)) {
+			// TODO(MP-2747): track 'reopen-from-checkout-now' event
 			expressCheckoutLoan.value = payload.loan ?? null;
 			expressCheckoutModalRef.value?.openLightbox();
 			return;
@@ -90,13 +91,16 @@ export default function useExpressCheckoutModal({
 			...payload,
 			onSuccess: () => {
 				if (empty) {
+					// TODO(MP-2747): track 'open-modal' event (empty-basket path)
 					expressCheckoutLoan.value = payload.loan ?? null;
 					expressCheckoutModalRef.value?.openLightbox();
 				} else {
+					// TODO(MP-2747): track 'redirect-to-basket' event (non-empty-basket path)
 					router.push('/basket');
 				}
 			},
 			onError: () => {
+				// TODO(MP-2747): track 'add-to-basket-failed' event
 				isRedirecting.value = false;
 				previousOnError?.();
 			},
