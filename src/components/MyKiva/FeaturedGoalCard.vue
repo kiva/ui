@@ -11,11 +11,14 @@
 	>
 		<section
 			class="featured-goal-card tw-relative tw-w-full tw-rounded-md tw-overflow-hidden
-				tw-px-1.5 md:tw-px-3 tw-pt-1 tw-pb-4.5 md:!tw-py-2.5
-				tw-bg-no-repeat tw-bg-cover tw-bg-bottom"
+				tw-px-1 md:tw-px-3 tw-pt-1 tw-pb-4.5 md:!tw-py-2.5
+				tw-bg-no-repeat tw-bg-cover"
 			:class="[
 				`featured-goal-card--${resolvedState}`,
-				{ '!tw-px-1 !tw-py-3 md:!tw-py-4 md:!tw-px-2': resolvedState === STATE_NO_GOAL },
+				{ '!tw-py-3 md:!tw-py-4 md:!tw-px-2': resolvedState === STATE_NO_GOAL,
+					'tw-bg-bottom' : resolvedState === STATE_NO_GOAL,
+					'tw-bg-right': resolvedState === STATE_ACTIVE_GOAL
+				},
 			]"
 		>
 			<!-- No goal -->
@@ -78,7 +81,7 @@
 				</div>
 
 				<div
-					class="tw-flex tw-flex-row tw-items-center tw-gap-2 tw-w-full tw-pt-5 md:tw-pt-0"
+					class="tw-flex tw-flex-row tw-items-center tw-gap-1.5 md:tw-gap-2 tw-w-full tw-pt-6 md:tw-pt-0"
 				>
 					<div class="tw-relative tw-shrink-0">
 						<KvProgressCircle
@@ -294,7 +297,7 @@ const onSelect = action => {
 }
 
 .featured-goal-card__content--no-goal {
-	width: 185px;
+	width: 175px;
 }
 
 @screen md {
@@ -344,8 +347,12 @@ const onSelect = action => {
 	}
 }
 
-.featured-goal-card__cta--active-goal :deep(span) {
-	@apply !tw-min-h-4.5 md:tw-h-auto;
+.featured-goal-card__cta :deep(span) {
+	@apply !tw-min-h-4.5 md:tw-h-auto ;
+}
+
+.featured-goal-card__cta :deep(span > span) {
+	@apply !tw-px-0;
 }
 
 /* State-conditional background images */

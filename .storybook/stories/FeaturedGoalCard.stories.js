@@ -17,7 +17,7 @@ const story = (args = {}, { width = '100%' } = {}) => {
 		components: { FeaturedGoalCard },
 		setup() { return { args, width }; },
 		template: `
-			<div :style="{ width: width, maxWidth: '1072px', padding: '2px', background: 'white' }">
+			<div :style="{ width: width, maxWidth: '1072px', padding: '0px', background: 'white' }">
 				<FeaturedGoalCard v-bind="args" />
 			</div>
 		`,
