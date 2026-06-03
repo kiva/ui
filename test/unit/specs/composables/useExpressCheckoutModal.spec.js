@@ -182,11 +182,6 @@ describe('useExpressCheckoutModal', () => {
 				});
 			});
 
-			it('refreshes basket items a second time after the donation is cleared', async () => {
-				await composable.handleAddRecommendedLoanToBasket({ loanId: 1, lendAmount: '25' });
-				expect(mockLoadInitialBasketItems).toHaveBeenCalledTimes(2);
-			});
-
 			it('proceeds to addToBasket once the basket is empty', async () => {
 				mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
 
@@ -323,9 +318,9 @@ describe('useExpressCheckoutModal', () => {
 	});
 
 	describe('handleExpressCheckoutComplete', () => {
-		it('redirects to /thanks with the transaction id', () => {
+		it('redirects to /checkout/thanks with the transaction id', () => {
 			composable.handleExpressCheckoutComplete({ transactionId: 'tx-789' });
-			expect(mockPush).toHaveBeenCalledWith('/thanks?kiva_transaction_id=tx-789');
+			expect(mockPush).toHaveBeenCalledWith('/checkout/thanks?kiva_transaction_id=tx-789');
 		});
 
 		it('is a no-op when transactionId is missing', () => {

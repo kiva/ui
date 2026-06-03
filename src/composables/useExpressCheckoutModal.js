@@ -60,8 +60,7 @@ export default function useExpressCheckoutModal({
 					basketId: cookieStore.get('kvbskt'),
 					donation: items[0],
 				});
-				await loadInitialBasketItems();
-				items = unref(basketItems) ?? [];
+				items = [];
 			} catch (error) {
 				$showTipMsg(
 					'Something went wrong. Please, refresh the page and try again.',
@@ -109,7 +108,7 @@ export default function useExpressCheckoutModal({
 
 	function handleExpressCheckoutComplete({ transactionId }) {
 		if (!transactionId) return;
-		router.push(`/thanks?kiva_transaction_id=${transactionId}`);
+		router.push(`/checkout/thanks?kiva_transaction_id=${transactionId}`);
 	}
 
 	function handleExpressCheckoutClose() {

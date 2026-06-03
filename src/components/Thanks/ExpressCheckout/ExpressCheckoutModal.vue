@@ -209,7 +209,7 @@ const onSubmit = async () => {
 		// TODO(MP-2747): track 'fail' event for express-checkout
 
 		if (e?.code === 'shop.failedCheckoutValidation') {
-			router.push('/checkout');
+			router.push('/basket');
 			return;
 		}
 
