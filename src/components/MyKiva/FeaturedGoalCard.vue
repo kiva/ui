@@ -95,7 +95,11 @@
 								:class="progressValueWrapClass"
 							>
 								<span class="featured-goal-card__visible-progress">{{ visibleProgress }}</span>
-								<span class="tw-text-secondary" style="font-size: 1rem" :class="progressTargetMarginClass">
+								<span
+									style="font-size: 1rem"
+									class="tw-text-secondary"
+									:class="progressTargetMarginClass"
+								>
 									/{{ goalTarget }}
 								</span>
 							</p>
