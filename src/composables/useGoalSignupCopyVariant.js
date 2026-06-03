@@ -20,13 +20,12 @@ const NO_GOAL_YET_START_MONTH = 3;
 const NO_GOAL_YET_START_DAY = 1;
 
 /**
- * Pure resolver. Exported so tests can hit boundary dates directly without
- * mounting a Vue tree.
+ * Pure resolver.
  *
  * @param {Date} [date] - Date to evaluate; defaults to now.
  * @returns {'last-year' | 'no-goal-yet'}
  */
-export function resolveGoalSignupCopyVariant(date = new Date()) {
+function resolveGoalSignupCopyVariant(date = new Date()) {
 	const month = date.getMonth();
 	const day = date.getDate();
 	const onOrAfterApr1 = month > NO_GOAL_YET_START_MONTH
