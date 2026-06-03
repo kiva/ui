@@ -34,7 +34,7 @@ extend type Mutation {
 	autolending: AutolendingMutation
 	showVerificationLightbox: Boolean
 	closeVerificationLightbox: Boolean
-	}
+}
 
 extend type Query {
 	experiment(id: String): Experiment
