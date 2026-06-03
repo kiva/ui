@@ -1,5 +1,3 @@
-import { computed } from 'vue';
-
 /**
  * Calendar-driven copy variant for goal sign-up entrypoints.
  * Foundation for MP-2855: a single source of truth that the Thanks page,
@@ -36,18 +34,13 @@ function resolveGoalSignupCopyVariant(date = new Date()) {
 }
 
 /**
- * Vue composable returning the current goal signup copy variant.
- *
- * The `computed` wrapper has no reactive input — `now ?? new Date()` is
- * resolved once at composable-call time. Across a realistic SSR + first-render
- * lifespan the variant cannot flip mid-session unless the page is kept open
- * across Jan 1 or Apr 1 midnight, which is an explicit non-goal.
+ * Returns the current goal signup copy variant. The value is captured once
+ * at call time and does not react to midnight rollover (explicit non-goal).
  *
  * @param {object} [options]
  * @param {Date}   [options.now] - Override date (used by tests to pin a boundary).
- * @returns {{ variant: import('vue').ComputedRef<'last-year' | 'no-goal-yet'> }}
+ * @returns {'last-year' | 'no-goal-yet'}
  */
 export default function useGoalSignupCopyVariant({ now } = {}) {
-	const variant = computed(() => resolveGoalSignupCopyVariant(now ?? new Date()));
-	return { variant };
+	return resolveGoalSignupCopyVariant(now ?? new Date());
 }
