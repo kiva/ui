@@ -12,10 +12,10 @@
 		<section
 			class="featured-goal-card tw-relative tw-w-full tw-rounded-md tw-overflow-hidden
 				tw-px-1.5 md:tw-px-3 tw-pt-1 tw-pb-4.5 md:!tw-py-2.5
-				tw-bg-no-repeat tw-bg-cover tw-bg-right"
+				tw-bg-no-repeat tw-bg-cover tw-bg-bottom"
 			:class="[
 				`featured-goal-card--${resolvedState}`,
-				{ 'tw-pb-4': resolvedState === STATE_NO_GOAL },
+				{ '!tw-px-1 !tw-py-3 md:!tw-py-4 md:!tw-px-2': resolvedState === STATE_NO_GOAL },
 			]"
 		>
 			<!-- No goal -->
@@ -23,9 +23,9 @@
 				v-if="resolvedState === STATE_NO_GOAL"
 				class="featured-goal-card__content--no-goal tw-flex tw-flex-col"
 			>
-				<div class="tw-flex tw-flex-col md:tw-w-full md:tw-gap-0.5 lg:tw-gap-1">
-					<h3 class="tw-text-title" v-html="goalCopy.titleNoHistoryWomensDefault()"></h3>
-					<p class="tw-text-small md:tw-text-base">
+				<div class="tw-flex tw-flex-col md:tw-w-full">
+					<h3 class="tw-text-title tw-pb-1" v-html="goalCopy.titleNoHistoryWomensDefault()"></h3>
+					<p class="tw-text-small md:tw-text-base tw-pb-3 md:tw-pb-2">
 						{{ goalCopy.TITLE_HOW_MANY_LOANS_GENERIC }}
 					</p>
 					<KvButton
@@ -94,8 +94,8 @@
 								class="featured-goal-card__progress-value tw-flex tw-items-baseline tw-justify-center"
 								:class="progressValueWrapClass"
 							>
-								<span class="tw-font-medium tw-text-h3">{{ visibleProgress }}</span>
-								<span class="tw-text-secondary" :class="progressTargetMarginClass">
+								<span class="featured-goal-card__visible-progress">{{ visibleProgress }}</span>
+								<span class="tw-text-secondary" style="font-size: 1rem" :class="progressTargetMarginClass">
 									/{{ goalTarget }}
 								</span>
 							</p>
@@ -254,6 +254,33 @@ const onSelect = action => {
 </script>
 
 <style lang="postcss" scoped>
+
+.tw-text-title {
+	font-size: 1rem;
+
+	@screen md {
+		font-size: 1.25rem;
+	}
+}
+
+.tw-text-label {
+	font-size: 0.875rem;
+
+	@screen md {
+		font-size: 1rem;
+	}
+}
+
+.featured-goal-card__visible-progress {
+	@apply tw-font-medium tw-text-h3;
+
+	font-size: 1.25rem;
+
+	@screen md {
+		font-size: 1.625rem;
+	}
+}
+
 .featured-goal-card {
 	@apply tw-bg-gray-50;
 }
@@ -319,20 +346,20 @@ const onSelect = action => {
 
 /* State-conditional background images */
 .featured-goal-card--no-goal {
-	background-image: url('/src/assets/images/my-kiva/featured-goal-card/mobile-no-goal-state.svg');
+	background-image: url('/src/assets/images/my-kiva/featured-goal-card/mobile-no-goal-state.png');
 }
 
 .featured-goal-card--active-goal {
-	background-image: url('/src/assets/images/my-kiva/featured-goal-card/mobile-in-progress-state.svg');
+	background-image: url('/src/assets/images/my-kiva/featured-goal-card/mobile-in-progress-state.png');
 }
 
 @screen md {
 	.featured-goal-card--no-goal {
-		background-image: url('/src/assets/images/my-kiva/featured-goal-card/no-goal-state.svg');
+		background-image: url('/src/assets/images/my-kiva/featured-goal-card/no-goal-state.png');
 	}
 
 	.featured-goal-card--active-goal {
-		background-image: url('/src/assets/images/my-kiva/featured-goal-card/in-progress-state.svg');
+		background-image: url('/src/assets/images/my-kiva/featured-goal-card/in-progress-state.png');
 	}
 }
 </style>
