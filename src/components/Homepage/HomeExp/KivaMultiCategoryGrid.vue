@@ -2,7 +2,7 @@
 	<kv-grid class="tw-grid-cols-12">
 		<div class="tw-col-span-12 md:tw-col-span-3">
 			<div class="tw-mr-4">
-				<h4 class="tw-mb-4">
+				<h4 class="tw-text-base tw-text-upper tw-mb-4">
 					I want to support
 				</h4>
 				<loan-category-selector-home-exp

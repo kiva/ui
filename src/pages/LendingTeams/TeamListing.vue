@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div>
-			<h3 class="tw-mb-0">
+			<h3 class="tw-text-title tw-mb-0">
 				Team Listing
 			</h3>
 			<p class="tw-text-small tw-mb-2">
@@ -140,7 +140,7 @@
 							]"
 						>
 							<h3
-								class="tw-font-medium tw-text-h3 tw-text-primary tw-overflow-hidden tw-text-ellipsis"
+								class="tw-font-medium tw-text-title tw-text-primary tw-overflow-hidden tw-text-ellipsis"
 							>
 								{{ team.name }}
 							</h3>
@@ -229,7 +229,7 @@
 			</div>
 		</div>
 		<div v-if="teams.length === 0 && !loading">
-			<h3 class="tw-text-h3 tw-mb-4 tw-text-secondary tw-text-center">
+			<h3 class="tw-text-title tw-mb-4 tw-text-secondary tw-text-center">
 				No teams found
 			</h3>
 		</div>

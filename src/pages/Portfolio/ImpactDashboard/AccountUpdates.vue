@@ -1,6 +1,6 @@
 <template>
 	<async-portfolio-section v-show="totalCount > 0 || loading" @visible="fetchAsyncData" data-testid="account-updates">
-		<h2 class="tw-mb-4">
+		<h2 class="tw-text-headline tw-mb-4">
 			Updates from borrowers
 		</h2>
 		<ul>
@@ -27,7 +27,7 @@
 						class="tw-mt-0.5"
 						style="width: 6rem; height: 1.5rem; margin-bottom: 18px;"
 					/>
-					<h3 v-if="!loading" class="tw-mb-1">
+					<h3 v-if="!loading" class="tw-text-title tw-mb-1">
 						<router-link
 							:to="update.url"
 							v-kv-track-event="['portfolio', 'click', 'borrower-update-subject', update.id]"

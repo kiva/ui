@@ -36,7 +36,7 @@
 					class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5 tw-mx-auto"
 				>
 				<h2
-					class="tw-px-4 lg:tw-px-7 tw-text-center"
+					class="tw-text-headline tw-px-4 lg:tw-px-7 tw-text-center"
 					style="line-height: 125%;"
 					v-html="titleText"
 				>
@@ -96,14 +96,14 @@
 							lg:tw-justify-center tw-items-center tw-gap-1"
 						>
 							<div class="tw-text-eco-green-3 tw-text-center tw-flex tw-items-center tw-gap-1">
-								<span class="tw-text-h1 lg:tw-text-h2 tw--mt-1">
+								<span class="tw-text-display lg:tw-text-headline tw--mt-1">
 									&#43;
 								</span>
 								<span class="lg:tw-hidden tw-text-base !tw-font-medium">
 									Custom
 								</span>
 							</div>
-							<div class="tw-text-primary tw-font-medium tw-text-h5 tw-text-center">
+							<div class="tw-text-primary tw-font-medium tw-text-label tw-text-center">
 								<span class="tw-hidden lg:tw-inline">
 									Custom
 								</span>

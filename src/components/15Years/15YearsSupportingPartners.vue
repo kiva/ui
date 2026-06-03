@@ -1,7 +1,7 @@
 <template>
 	<section class="supporting-partners tw-text-center">
 		<div class="supporting-partners__selected">
-			<h4>
+			<h4 class="tw-text-base tw-text-upper">
 				Strategic partners supporting this celebration
 			</h4>
 			<ul class="supporting-partners__list row align-center">

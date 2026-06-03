@@ -91,7 +91,7 @@
 										class="tw-inline-block tw-align-middle"
 										style="height: 1rem; display: inline-block;"
 									/>
-									<span class="tw-inline-block tw-text-h4">&nbsp;</span>
+									<span class="tw-inline-block tw-text-upper">&nbsp;</span>
 								</div>
 							</template>
 						</kv-accordion-item>
@@ -104,7 +104,7 @@
 							ref="regionAccordions"
 						>
 							<template #header>
-								<h3 class="tw-text-h4">
+								<h3 class="tw-text-upper">
 									<span v-kv-track-event="['TopNav','click-Lend-Region', region.name]">
 										{{ region.name }}
 									</span>

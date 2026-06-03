@@ -14,7 +14,7 @@
 		>
 			<div class="md:tw-max-w-sm tw-bg-white tw-rounded md:tw-p-2">
 				<div class="md:tw-ml-1">
-					<h1 class="tw-text-black tw-text-h2 tw-pt-2 md:tw-pt-0">
+					<h1 class="tw-text-black tw-text-headline tw-pt-2 md:tw-pt-0">
 						Join Monthly Good
 					</h1>
 					<p class="tw-mt-2 tw-mb-2 tw-text-subhead tw-text-black">

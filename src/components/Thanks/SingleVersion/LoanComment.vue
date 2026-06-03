@@ -9,7 +9,7 @@
 			:lender-image-url="loanImageUrl"
 			class="tw-mx-auto tw-w-6 tw-h-6"
 		/>
-		<h2	class="tw-mt-1 tw-mb-3 tw-text-center" style="line-height: 1.25;">
+		<h2	class="tw-text-headline tw-mt-1 tw-mb-3 tw-text-center" style="line-height: 1.25;">
 			Tell others why you love this loan to <span class="data-hj-suppress">{{ loanName }}</span>
 		</h2>
 		<div class="tw-relative">
@@ -61,7 +61,7 @@
 				<p>
 					Kiva is about connecting people to alleviate poverty. Please show respect for each other and our borrowers. Your comments are often passed to borrowers to give them a confidence boost.
 				</p>
-				<h3>Do</h3>
+				<h3 class="tw-text-title">Do</h3>
 				<ul class="tw-mt-0">
 					<li>Share why you supported a particular borrower, or lending partner.</li>
 					<li>
@@ -70,7 +70,7 @@
 						Chime in on a comment another lender has written.
 					</li>
 				</ul>
-				<h3>Don't</h3>
+				<h3 class="tw-text-title">Don't</h3>
 				<ul class="tw-mt-0">
 					<li>Don't write comments about Kiva itself. Don't write comments about issues relating to historical repayments from the lending partner. Keep it on topic.</li>
 					<li>

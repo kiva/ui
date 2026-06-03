@@ -3,7 +3,7 @@
 		<kv-section-modal-loader :loading="loading" :rounded="true" />
 		<button class="tw-flex tw-items-center tw-mb-2 tw-h-[22px]" @click="resetFilters">
 			<kv-material-icon :icon="mdiClose" class="tw-w-2.5 tw-h-2.5" />
-			<p class="tw-text-h4 tw-inline-block tw-ml-3">
+			<p class="tw-text-upper tw-inline-block tw-ml-3">
 				Reset All
 			</p>
 		</button>
@@ -15,13 +15,13 @@
 					class="tw-mb-0.5"
 				>
 					<template #header v-if="filterConfig.config[key].uiConfig.hasAccordion">
-						<h2 class="tw-text-h4">
+						<h2 class="tw-text-upper">
 							{{ filterConfig.config[key].uiConfig.title }}
 						</h2>
 					</template>
 					<template v-if="!filterConfig.config[key].uiConfig.hasAccordion">
 						<hr v-if="filterConfig.config[key].uiConfig.topLine" class="tw-border-tertiary tw-my-1">
-						<h2 v-if="filterConfig.config[key].uiConfig.title" class="tw-text-h4 tw-pt-1">
+						<h2 v-if="filterConfig.config[key].uiConfig.title" class="tw-text-upper tw-pt-1">
 							{{ filterConfig.config[key].uiConfig.title }}
 						</h2>
 					</template>
@@ -107,12 +107,12 @@
 			<hr class="tw-border-tertiary tw-my-1">
 			<kv-accordion-item id="acc-advanced" :open="false">
 				<template #header>
-					<h2 class="tw-text-h4">
+					<h2 class="tw-text-upper">
 						Advanced filters
 					</h2>
 				</template>
 				<button class="tw-mt-2" @click="advancedFilters">
-					<h2 class="tw-text-h4 tw-flex tw-items-center">
+					<h2 class="tw-text-upper tw-flex tw-items-center">
 						Legacy filters
 						<kv-material-icon :icon="mdiArrowRight" class="tw-w-2.5 tw-h-2.5 tw-ml-1" />
 					</h2>
@@ -121,7 +121,7 @@
 		</template>
 		<template v-else>
 			<button class="tw-mt-2" @click="advancedFilters">
-				<h2 class="tw-text-h4 tw-flex tw-items-center">
+				<h2 class="tw-text-upper tw-flex tw-items-center">
 					Advanced filters
 					<kv-material-icon :icon="mdiArrowRight" class="tw-w-2.5 tw-h-2.5 tw-ml-1" />
 				</h2>

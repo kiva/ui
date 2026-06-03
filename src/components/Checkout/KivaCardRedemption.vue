@@ -15,7 +15,7 @@
 		</div>
 		<div class="tw-w-full">
 			<button
-				class="tw-text-h3 tw-text-left accordion-title"
+				class="tw-text-title tw-text-left accordion-title"
 				@click="toggleAccordion"
 				data-testid="basket-code-entry-toggle-text"
 			>

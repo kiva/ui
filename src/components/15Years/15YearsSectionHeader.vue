@@ -1,6 +1,6 @@
 <template>
 	<div class="section-header">
-		<h2 class="section-header__h2">
+		<h2 class="tw-text-headline section-header__h2">
 			<slot name="header"></slot>
 		</h2>
 		<div class="section-header__line"></div>

@@ -4,7 +4,7 @@
 			<slot name="header"></slot>
 		</div>
 		<div class="card-body tw-text-center tw-text-base tw-pt-4 tw-pb-2">
-			<h2 class="tw-pb-2">
+			<h2 class="tw-text-headline tw-pb-2">
 				Thank you!
 			</h2>
 			<slot name="content"></slot>

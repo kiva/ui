@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<h2 class="tw-mb-2">
+		<h2 class="tw-text-headline tw-mb-2">
 			How the Kiva team expands financial access
 		</h2>
 		<p class="tw-mb-4">
@@ -15,7 +15,7 @@
 				>
 			</div>
 			<div>
-				<p class="tw-text-h3">
+				<p class="tw-text-title">
 					{{ associateNameAndTitle }}
 				</p>
 			</div>

@@ -6,7 +6,7 @@
 	>
 		<div class="row">
 			<div class="small-12 columns">
-				<h2 class="tw-text-h1 tw-mb-4">
+				<h2 class="tw-text-display tw-mb-4">
 					{{ title }}
 				</h2>
 			</div>

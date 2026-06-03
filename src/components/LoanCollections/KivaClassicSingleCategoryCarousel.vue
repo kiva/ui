@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div>
-			<h2 class="tw-mb-2 tw-block md:tw-inline">
+			<h2 class="tw-text-headline tw-mb-2 tw-block md:tw-inline">
 				{{ name }}
 			</h2>
 		</div>

@@ -1,3 +1,39 @@
+## [3.70.0](https://github.com/kiva/ui/compare/v3.69.0...v3.70.0) (2026-06-01)
+
+### 🎉 New Features
+
+* goal setting page tweaks and improvement in borrower profile mixin ([ec7b41a](https://github.com/kiva/ui/commit/ec7b41a674b6d023e5792cb3959ba0931dfd8eb7))
+* mp-2821-fixing the apply credit at checkout ([018c4e3](https://github.com/kiva/ui/commit/018c4e3f0bb0ee770f2a1fd7d9e8d3ef622bc9f7))
+* rm My Teams beta redirect now that it's unnecessary [CP-2628] ([#6948](https://github.com/kiva/ui/issues/6948)) ([673c4ee](https://github.com/kiva/ui/commit/673c4eef0ee4e96aa8bfdc974833c3f56953c5e9))
+
+### 🐛 Bugfixes
+
+* buttons width on tablet size ([26c629c](https://github.com/kiva/ui/commit/26c629cf6be65b0ded858bc01f6477557b2173b1))
+
+### 🪚 Refactors
+
+* avoiding calling borrower profile sidesheet query on recommended loan feature ([0a136a0](https://github.com/kiva/ui/commit/0a136a0c2b501fad7f25c2aee328ef8eeda00bf6))
+
+### 🧹 Chores
+
+* **release:** 3.70.0-rc.1 [skip ci] ([064ab73](https://github.com/kiva/ui/commit/064ab738e479bd84e47f965e855b87134dc29e2c)), closes [#6948](https://github.com/kiva/ui/issues/6948)
+
+## [3.70.0-rc.1](https://github.com/kiva/ui/compare/v3.69.0...v3.70.0-rc.1) (2026-06-01)
+
+### 🎉 New Features
+
+* goal setting page tweaks and improvement in borrower profile mixin ([ec7b41a](https://github.com/kiva/ui/commit/ec7b41a674b6d023e5792cb3959ba0931dfd8eb7))
+* mp-2821-fixing the apply credit at checkout ([018c4e3](https://github.com/kiva/ui/commit/018c4e3f0bb0ee770f2a1fd7d9e8d3ef622bc9f7))
+* rm My Teams beta redirect now that it's unnecessary [CP-2628] ([#6948](https://github.com/kiva/ui/issues/6948)) ([673c4ee](https://github.com/kiva/ui/commit/673c4eef0ee4e96aa8bfdc974833c3f56953c5e9))
+
+### 🐛 Bugfixes
+
+* buttons width on tablet size ([26c629c](https://github.com/kiva/ui/commit/26c629cf6be65b0ded858bc01f6477557b2173b1))
+
+### 🪚 Refactors
+
+* avoiding calling borrower profile sidesheet query on recommended loan feature ([0a136a0](https://github.com/kiva/ui/commit/0a136a0c2b501fad7f25c2aee328ef8eeda00bf6))
+
 ## [3.69.0](https://github.com/kiva/ui/compare/v3.68.0...v3.69.0) (2026-05-28)
 
 ### 🎉 New Features

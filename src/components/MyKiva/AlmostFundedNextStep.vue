@@ -32,7 +32,10 @@
 		</div>
 
 		<div class="tw-p-2 tw-pt-0 tw-flex tw-flex-col tw-gap-2">
-			<h3 class="tw-text-2xl tw-font-medium tw-text-primary tw-leading-tight tw-text-center tw-pb-0.5 tw-px-1">
+			<h3
+				class="tw-text-title tw-text-2xl tw-font-medium tw-text-primary
+					tw-leading-tight tw-text-center tw-pb-0.5 tw-px-1"
+			>
 				Help these borrowers over the finish line
 			</h3>
 

@@ -8,7 +8,7 @@
 		</template>
 		<kv-default-wrapper>
 			<div class="row column">
-				<h1 class="tw-mb-4">
+				<h1 class="tw-text-display tw-mb-4">
 					Payment Methods
 				</h1>
 			</div>
@@ -115,7 +115,7 @@
 			:visible="showRemoveLightbox"
 			@lightbox-closed="showRemoveLightbox = false"
 		>
-			<h2 class="data-hj-suppress tw-mb-4">
+			<h2 class="tw-text-headline data-hj-suppress tw-mb-4">
 				Are you sure you want to remove the card {{ lowerCaseDescription }}?
 			</h2>
 			<p class="tw-mb-4">
@@ -148,7 +148,7 @@
 			:visible="showActiveLightbox"
 			@lightbox-closed="showActiveLightbox = false"
 		>
-			<h2 class="data-hj-suppress tw-mb-4">
+			<h2 class="tw-text-headline data-hj-suppress tw-mb-4">
 				Unable to remove card {{ lowerCaseDescription }}
 			</h2>
 			<p class="tw-mb-4">

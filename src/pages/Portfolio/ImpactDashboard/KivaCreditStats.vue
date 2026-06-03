@@ -1,6 +1,6 @@
 <template>
 	<async-portfolio-section @visible="whenVisible" data-testid="credit-stats">
-		<h2 class="tw-mb-0.5">
+		<h2 class="tw-text-headline tw-mb-0.5">
 			The Kiva effect
 		</h2>
 		<kv-grid class="tw-grid-cols-12">
@@ -9,21 +9,21 @@
 			</div>
 			<div class="tw-col-span-12 lg:tw-col-span-6">
 				<dl class="tw-flex tw-flex-wrap tw-justify-between tw-items-center">
-					<dt class="tw-text-h4">
+					<dt class="tw-text-upper">
 						Total deposits
 					</dt>
 					<kv-loading-placeholder v-if="loading" style="width: 40px; height: 16px;" />
-					<dd v-if="!loading" class="tw-text-action tw-text-h4">
+					<dd v-if="!loading" class="tw-text-action tw-text-upper">
 						{{ $filters.numeral(depositAmount, '$0,0.00') }}
 					</dd>
 					<dd class="tw-basis-full tw-text-secondary tw-text-small tw-mt-0.5 tw-mb-3 tw-pr-8">
 						The total amount of funds you've deposited into your Kiva account.
 					</dd>
-					<dt class="tw-text-h4">
+					<dt class="tw-text-upper">
 						Total amount lent
 					</dt>
 					<kv-loading-placeholder v-if="loading" style="width: 56px; height: 16px;" />
-					<dd v-if="!loading" class="tw-text-brand tw-text-h4">
+					<dd v-if="!loading" class="tw-text-brand tw-text-upper">
 						{{ $filters.numeral(lendAmount, '$0,0.00') }}
 					</dd>
 					<dd class="tw-basis-full tw-text-secondary tw-text-small tw-mt-0.5 tw-mb-3 tw-pr-8">

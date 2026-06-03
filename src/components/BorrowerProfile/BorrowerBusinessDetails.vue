@@ -3,7 +3,7 @@
 		class="tw-rounded tw-border-tertiary tw-bg-primary tw-p-2.5 md:tw-p-3.5 lg:tw-p-4"
 		data-test-id="bp-direct-business-info"
 	>
-		<h2 class="tw-mt-0 tw-mb-1" data-testid="bp-direct-business-name">
+		<h2 class="tw-text-headline tw-mt-0 tw-mb-1" data-testid="bp-direct-business-name">
 			About {{ borrowerBusinessName }}
 		</h2>
 
@@ -18,17 +18,17 @@
 			View Website
 		</kv-text-link>
 
-		<h3 v-if="sector" class="tw-mb-0" data-testid="bp-direct-business-industry">
+		<h3 v-if="sector" class="tw-text-title tw-mb-0" data-testid="bp-direct-business-industry">
 			{{ sector }}
 		</h3>
-		<p class="tw-text-h4 tw-text-secondary tw-mb-2">
+		<p class="tw-text-upper tw-text-secondary tw-mb-2">
 			Industry
 		</p>
 
-		<h3 class="tw-mb-0" data-testid="bp-direct-business-years">
+		<h3 class="tw-text-title tw-mb-0" data-testid="bp-direct-business-years">
 			{{ yearsInBusinessFormatted }}
 		</h3>
-		<p class="tw-text-h4 tw-text-secondary">
+		<p class="tw-text-upper tw-text-secondary">
 			Years in operation
 		</p>
 

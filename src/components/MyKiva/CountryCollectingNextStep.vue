@@ -26,7 +26,7 @@
 		</div>
 
 		<div class="tw-p-2 tw-flex tw-flex-col tw-gap-2 tw-mt-auto">
-			<h3 class="tw-text-2xl tw-font-medium tw-text-primary tw-leading-tight tw-pb-0.5 tw-px-1">
+			<h3 class="tw-text-title tw-text-2xl tw-font-medium tw-text-primary tw-leading-tight tw-pb-0.5 tw-px-1">
 				Help your first person in {{ recommendedRegion.name }}
 			</h3>
 

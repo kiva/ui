@@ -46,7 +46,7 @@
 						:name="loan.name"
 						:loan-id="loan.id"
 						:disable-link="disableRedirects"
-						class="tw-text-h2 tw-whitespace-nowrap"
+						class="tw-text-headline tw-whitespace-nowrap"
 						@track-loan-card-interaction="trackInteractionBorrowerInfoName"
 					/>
 					<div class="location-sector-row">
@@ -149,7 +149,7 @@
 			<div>
 				<router-link
 					:to="`/lend/${loan.id}`"
-					class="tw-text-h3"
+					class="tw-text-title"
 					v-kv-track-event="[
 						'Lending',
 						'click-Read full borrower details',

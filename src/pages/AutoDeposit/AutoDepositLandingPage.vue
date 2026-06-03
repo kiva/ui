@@ -4,7 +4,7 @@
 			<!-- Auto Deposit Text -->
 			<div class="row">
 				<div class="small-12 columns">
-					<h1 class="tw-mb-4">
+					<h1 class="tw-text-display tw-mb-4">
 						{{ headerAreaHeadline }}
 					</h1>
 				</div>
@@ -24,7 +24,7 @@
 			<div class="row" v-if="(hasAutoDeposits || hasLegacySubscription) && !isMonthlyGoodSubscriber">
 				<div class="small-12 columns">
 					<div class="tw-p-2 tw-mb-4 tw-bg-caution tw-text-black">
-						<p class="tw-text-h3">
+						<p class="tw-text-title">
 							You already have an existing auto deposit.
 							Changes can be made in your
 							<a href="/settings/subscriptions">subscription settings</a>.
@@ -37,7 +37,7 @@
 			<div class="row" v-if="isMonthlyGoodSubscriber">
 				<div class="small-12 columns">
 					<div class="tw-p-2 tw-mb-4 tw-bg-caution tw-text-black">
-						<p class="tw-text-h3">
+						<p class="tw-text-title">
 							Auto Deposit is not available to Monthly Good subscribers.
 							Changes can be made in your
 							<a href="/settings/subscriptions">subscription settings</a>.
@@ -50,7 +50,7 @@
 			<div class="row" v-if="hasModernSub && !isMonthlyGoodSubscriber">
 				<div class="small-12 columns">
 					<div class="tw-p-2 tw-mb-4 tw-bg-caution tw-text-black">
-						<p class="tw-text-h3">
+						<p class="tw-text-title">
 							Auto Deposit is not available to current subscribers.
 							Changes can be made in your
 							<a href="/settings/subscriptions">subscription settings</a>.
@@ -62,7 +62,7 @@
 		<!-- Auto Deposit What To Expect -->
 		<section class="tw-py-4 md:tw-py-6 lg:tw-py-8 tw-text-center tw-bg-secondary">
 			<div class="row">
-				<h2 class="small-12 column tw-mb-4">
+				<h2 class="tw-text-headline small-12 column tw-mb-4">
 					{{ whatToExpectHeadline }}
 				</h2>
 				<div class="small-12 large-4 column" v-for="(item, index) in whatToExpect" :key="item.key">
@@ -82,7 +82,7 @@
 						style="fill: #fff;"
 					/>
 
-					<h3 class="tw-text-brand tw-mb-2">
+					<h3 class="tw-text-title tw-text-brand tw-mb-2">
 						{{ item.name }}
 					</h3>
 					<div class="tw-prose" v-html="convertFromRichTextToHtml(item.richText)">

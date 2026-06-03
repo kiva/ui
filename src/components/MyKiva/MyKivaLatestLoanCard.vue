@@ -43,7 +43,7 @@
 		</div>
 		<div class="tw-flex tw-flex-col tw--mt-3.5 tw-justify-between tw-grow">
 			<div>
-				<h3>
+				<h3 class="tw-text-title">
 					Step closer to {{ borrowerName }} story
 				</h3>
 				<p class="tw-font-medium tw-text-base tw-pt-0.5">

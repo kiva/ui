@@ -6,16 +6,16 @@
 					class="tw-col-span-12 md:tw-col-start-3 md:tw-col-span-8"
 				>
 					<div v-if="isLoading" class="tw-flex tw-items-center tw-flex-col">
-						<h2>Joining team {{ teamName }}</h2>
+						<h2 class="tw-text-headline">Joining team {{ teamName }}</h2>
 						<div>
 							<kv-loading-spinner class="tw-mt-2" />
 						</div>
 					</div>
 					<div v-else class="tw-text-center">
-						<h2 v-if="isPending">
+						<h2 class="tw-text-headline" v-if="isPending">
 							Your request to join the {{ teamName }} team is pending. Please check back later.
 						</h2>
-						<h2 v-if="isMember">
+						<h2 class="tw-text-headline" v-if="isMember">
 							You are a member of the {{ teamName }} team.
 						</h2>
 					</div>

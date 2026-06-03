@@ -5,7 +5,7 @@
 		novalidate
 	>
 		<!-- Amount and Day Input -->
-		<div class="row column align-middle tw-text-h3">
+		<div class="row column align-middle tw-text-title">
 			<span>
 				Deposit
 			</span>
@@ -70,7 +70,7 @@
 
 		<!-- Donation -->
 		<div class="row collapse align-middle">
-			<div class="columns shrink tw-text-h3">
+			<div class="columns shrink tw-text-title">
 				<kv-checkbox
 					id="donation-checkbox"
 					class="tw--mt-1"

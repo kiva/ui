@@ -18,7 +18,7 @@
 		</div>
 		<h2
 			id="nudge-donation-top-header"
-			class="tw-px-10"
+			class="tw-text-headline tw-px-10"
 		>
 			{{ props.header }}
 		</h2>

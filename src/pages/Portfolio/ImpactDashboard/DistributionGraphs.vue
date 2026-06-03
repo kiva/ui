@@ -1,6 +1,6 @@
 <template>
 	<async-portfolio-section data-testid="distribution-graphs">
-		<h2 class="tw-mb-2">
+		<h2 class="tw-text-headline tw-mb-2">
 			Portfolio distribution
 		</h2>
 		<!-- tabs -->

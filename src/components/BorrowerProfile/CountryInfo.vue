@@ -17,23 +17,23 @@
 		</div>
 
 		<div v-else>
-			<h2 class="tw-text-h2 tw-mb-4" data-testid="bp-country-header">
+			<h2 class="tw-text-headline tw-mb-4" data-testid="bp-country-header">
 				{{ countryName }} at a glance
 			</h2>
 			<div class="tw-flex tw-mb-4">
 				<p class="tw-flex-auto" data-testid="bp-country-aai">
-					<span class="tw-block tw-text-h2" data-testid="bp-country-aai-value">
+					<span class="tw-block tw-text-headline" data-testid="bp-country-aai-value">
 						{{ avgAnnualIncomeFormatted }}
 					</span>
-					<span class="tw-block tw-text-h4 tw-text-secondary">
+					<span class="tw-block tw-text-upper tw-text-secondary">
 						Average annual income (USD)
 					</span>
 				</p>
 				<p class="tw-flex-auto" data-testid="bp-country-loans-fundraising">
-					<span class="tw-block tw-text-h2" data-testid="bp-country-loans-fundraising-value">
+					<span class="tw-block tw-text-headline" data-testid="bp-country-loans-fundraising-value">
 						{{ numLoansFundraising }}
 					</span>
-					<span class="tw-block tw-text-h4 tw-text-secondary">
+					<span class="tw-block tw-text-upper tw-text-secondary">
 						Loans currently fundraising
 					</span>
 				</p>

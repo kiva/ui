@@ -23,7 +23,7 @@
 						>
 							<div class="strategic-partners__total-impact">
 								<h3
-									class="strategic-partners__total-impact-headline"
+									class="tw-text-title strategic-partners__total-impact-headline"
 								>
 									Our<br>
 									strategic<br>
@@ -35,7 +35,7 @@
 									class="strategic-partners__stats strategic-partners__stats--total-impact shown"
 								>
 									<li class="row align-bottom collapse">
-										<h3 class="shrink column">
+										<h3 class="tw-text-title shrink column">
 											${{ totalImpactDonations }}M
 										</h3>
 										<h5 class="column">
@@ -43,7 +43,7 @@
 										</h5>
 									</li>
 									<li class="row align-bottom collapse">
-										<h3 class="shrink column">
+										<h3 class="tw-text-title shrink column">
 											${{ totalImpactDisbursed }}M
 										</h3>
 										<h5 class="column">
@@ -51,7 +51,7 @@
 										</h5>
 									</li>
 									<li class="row align-bottom collapse">
-										<h3 class="shrink column">
+										<h3 class="tw-text-title shrink column">
 											{{ totalImpactBorrowersFunded }}M
 										</h3>
 										<h5 class="column">
@@ -81,7 +81,7 @@
 										v-for="(partnerStats, index) in partner.stats"
 										:key="index"
 									>
-										<h3 class="shrink column">
+										<h3 class="tw-text-title shrink column">
 											{{ partnerStats[0] }}
 										</h3>
 										<h5 class="column">

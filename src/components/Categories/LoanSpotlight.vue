@@ -1,6 +1,6 @@
 <template>
 	<div data-testid="all-categories-loan-spotlight">
-		<h2 class="md:tw-hidden tw-pb-2">
+		<h2 class="tw-text-headline md:tw-hidden tw-pb-2">
 			Today's loan spotlight
 		</h2>
 		<div class="md:tw-flex md:tw-pt-8 md:tw-pb-8">
@@ -18,10 +18,10 @@
 				/>
 			</div>
 			<div class="md:tw-grow">
-				<h2 class="tw-hidden md:tw-block tw-pt-1">
+				<h2 class="tw-text-headline tw-hidden md:tw-block tw-pt-1">
 					Today's loan spotlight
 				</h2>
-				<h3 class="tw-pt-2 tw-mb-1">
+				<h3 class="tw-text-title tw-pt-2 tw-mb-1">
 					{{ getSpotlightLoanLocation }}
 				</h3>
 				<kv-loading-paragraph

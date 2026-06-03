@@ -9,7 +9,7 @@
 
 		<kv-default-wrapper>
 			<div class="row column">
-				<h1 class="tw-mb-4">
+				<h1 class="tw-text-display tw-mb-4">
 					Email Settings
 				</h1>
 			</div>

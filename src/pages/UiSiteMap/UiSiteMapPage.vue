@@ -1,7 +1,7 @@
 <template>
 	<www-page>
 		<kv-default-wrapper>
-			<h1 class="tw-mb-4">
+			<h1 class="tw-text-display tw-mb-4">
 				Available Routes
 			</h1>
 			<route-listing />

@@ -40,7 +40,7 @@
 					`${viewAllLoansCategoryTitle}`]"
 			>
 				<div class="tw-w-full tw-text-center">
-					<h3>{{ viewAllLoansCategoryTitle }}</h3>
+					<h3 class="tw-text-title">{{ viewAllLoansCategoryTitle }}</h3>
 				</div>
 			</router-link>
 		</kv-carousel>

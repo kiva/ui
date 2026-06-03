@@ -4,7 +4,7 @@
 			<developer-secondary-menu />
 		</template>
 		<build-page-wrapper class="tw-prose">
-			<h1>Developer Docs</h1>
+			<h1 class="tw-text-display">Developer Docs</h1>
 			<p>
 				We created the Kiva API so that anyone with a good idea and some
 				software savvy can help us expand the reach of Kiva, taking it into
@@ -13,7 +13,7 @@
 				True to the name of our developer destination, we want you to help us
 				build Kiva.org.
 			</p>
-			<h2>API Spotlight</h2>
+			<h2 class="tw-text-headline">API Spotlight</h2>
 			<p>
 				In order to make the API as fast, usable, and mobile-friendly as
 				possible we decided to use GraphQL. One of the great things about
@@ -26,7 +26,7 @@
 				The GraphiQL Explorer allows you to practice writing queries
 				and viewing the returned results. Try it out!
 			</p>
-			<h3>GraphQL Samples</h3>
+			<h3 class="tw-text-title">GraphQL Samples</h3>
 			<p>
 				<kv-multi-code-block nowrap :code="code" />
 			</p>

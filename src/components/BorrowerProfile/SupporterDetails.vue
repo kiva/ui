@@ -74,13 +74,13 @@
 		>
 			<span
 				v-if="name"
-				:class="`${ displayType === 'teams' ? 'tw-text-h4' : ''}`"
+				:class="`${ displayType === 'teams' ? 'tw-text-upper' : ''}`"
 			>
 				{{ name }}
 			</span><br>
 			<span
 				v-if="whereabouts"
-				class="tw-text-h4"
+				class="tw-text-upper"
 			>
 				{{ whereabouts }}
 			</span>

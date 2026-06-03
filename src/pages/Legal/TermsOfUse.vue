@@ -2,11 +2,11 @@
 <template>
 	<!-- eslint-disable max-len -->
 	<div class="small-12 large-10 columns tw-prose">
-		<h1>
+		<h1 class="tw-text-display">
 			Kiva Terms of Use Agreement
 		</h1>
 
-		<p class="tw-text-h3">
+		<p class="tw-text-title">
 			(Last updated Oct 8th, 2025)*
 		</p>
 		<p class="light">
@@ -65,7 +65,7 @@
 		</p>
 
 		<section>
-			<h2 id="participation">
+			<h2 class="tw-text-headline" id="participation">
 				1. Participation in the Program
 			</h2>
 
@@ -537,7 +537,7 @@
 		</section>
 
 		<section>
-			<h2 id="acceptable-use">
+			<h2 class="tw-text-headline" id="acceptable-use">
 				2. Acceptable Use
 			</h2>
 
@@ -628,7 +628,7 @@
 		</section>
 
 		<section>
-			<h2 id="proprietary-rights">
+			<h2 class="tw-text-headline" id="proprietary-rights">
 				3. Proprietary Rights
 			</h2>
 
@@ -783,7 +783,7 @@
 		</section>
 
 		<section>
-			<h2 id="disclaimers">
+			<h2 class="tw-text-headline" id="disclaimers">
 				4. Disclaimers; Limitation of Liability
 			</h2>
 
@@ -849,7 +849,7 @@
 		</section>
 
 		<section>
-			<h2 id="disputes">
+			<h2 class="tw-text-headline" id="disputes">
 				5. Governing Law; Resolution of Disputes; Arbitration and Waivers
 			</h2>
 
@@ -879,7 +879,7 @@
 		</section>
 
 		<section>
-			<h2 id="indemnity">
+			<h2 class="tw-text-headline" id="indemnity">
 				6. Indemnity
 			</h2>
 
@@ -901,7 +901,7 @@
 		</section>
 
 		<section>
-			<h2 id="termination">
+			<h2 class="tw-text-headline" id="termination">
 				7. Term; Termination
 			</h2>
 
@@ -925,7 +925,7 @@
 		</section>
 
 		<section id="final-section-padding-termsofuse">
-			<h2 id="agreement">
+			<h2 class="tw-text-headline" id="agreement">
 				8. Entire Agreement; Severability; Assignment
 			</h2>
 

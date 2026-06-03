@@ -10,13 +10,13 @@
 				<div>
 					<h4
 						v-if="teamName"
-						class="tw-text-h4"
+						class="tw-text-base tw-text-upper"
 					>
 						{{ teamName }} CHALLENGE:
 					</h4>
 					<h2
 						v-if="challengeName"
-						class="tw-text-h2"
+						class="tw-text-headline"
 					>
 						{{ challengeName }}
 					</h2>
@@ -38,7 +38,7 @@
 				/>
 				<p
 					v-if="authorName"
-					class="tw-text-h4"
+					class="tw-text-upper"
 				>
 					{{ authorName }}, TEAM CAPTAIN
 				</p>

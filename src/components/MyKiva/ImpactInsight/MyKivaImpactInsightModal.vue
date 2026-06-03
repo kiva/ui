@@ -8,14 +8,14 @@
 		<template #header>
 			<h2
 				v-if="!isMobile"
-				class="tw-mb-3 !tw-text-left"
+				class="tw-text-headline tw-mb-3 !tw-text-left"
 			>
 				A closer look at <u>{{ borrowerName }} world</u>
 			</h2>
 		</template>
 		<h2
 			v-if="isMobile"
-			class="tw-mb-3 !tw-text-left"
+			class="tw-text-headline tw-mb-3 !tw-text-left"
 		>
 			A closer look at <u>{{ borrowerName }} world</u>
 		</h2>

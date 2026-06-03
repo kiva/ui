@@ -77,7 +77,7 @@
 					|| partnerLoansCurrentlyFundraising
 					|| directLoansCurrentlyFundraising"
 			>
-				<h3 class="tw-mb-1 tw-mt-4">
+				<h3 class="tw-text-title tw-mb-1 tw-mt-4">
 					{{ country }} country facts
 				</h3>
 				<dl>
@@ -114,7 +114,7 @@
 				</dl>
 			</template>
 			<div v-if="whySpecial">
-				<h3 class="tw-mb-1 tw-mt-4">
+				<h3 class="tw-text-title tw-mb-1 tw-mt-4">
 					This loan is special because
 				</h3>
 				<p class="tw-text-brand">

@@ -1,6 +1,6 @@
 <template>
 	<div class="recovery-code-confirm">
-		<h2 class="tw-mb-2">
+		<h2 class="tw-text-headline tw-mb-2">
 			2-step verification is on
 		</h2>
 		<p class="tw-mb-2">

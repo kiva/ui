@@ -1,13 +1,13 @@
 <template>
 	<div class="tw-bg-primary tw-p-4">
-		<h2 class="tw-text-h3 tw-mb-2">
+		<h2 class="tw-text-title tw-mb-2">
 			Level up your security with 2-step verfication
 		</h2>
 		<p class="tw-mb-4">
 			2-step verification protects your Kiva account by requiring an
 			additional code when you log in on a device we don't recognize.
 		</p>
-		<h3 class="tw-mb-2">
+		<h3 class="tw-text-title tw-mb-2">
 			FAQ
 		</h3>
 		<ul>

@@ -59,7 +59,7 @@
 		</template>
 		<template v-if="activeView === LOGIN_REQUIRED_VIEW">
 			<div class="page-content tw-flex tw-flex-col tw-items-center tw-text-center">
-				<h2 class="tw-m-4">
+				<h2 class="tw-text-headline tw-m-4">
 					Please log in to see your receipt.
 				</h2>
 				<kv-button

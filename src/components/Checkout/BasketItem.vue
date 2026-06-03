@@ -12,7 +12,7 @@
 		<div class="tw-flex-auto borrower-info-wrapper">
 			<div class="borrower-info" data-testid="basket-loan-info">
 				<div class="tw-flex tw-mb-1">
-					<h2 class="tw-text-h3 tw-flex-grow" data-testid="basket-loan-name">
+					<h2 class="tw-text-title !tw-font-serif tw-flex-grow" data-testid="basket-loan-name">
 						{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
 					</h2>
 					<remove-basket-item

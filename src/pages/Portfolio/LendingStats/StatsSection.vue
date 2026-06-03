@@ -1,6 +1,6 @@
 <template>
 	<section :data-testid="sectionId" class="stats-section">
-		<h2 class="tw-flex tw-gap-2 tw-mb-4">
+		<h2 class="tw-text-headline tw-flex tw-gap-2 tw-mb-4">
 			<span>{{ title }}</span>
 			<span class="lent-count tw-text-base tw-bg-brand tw-text-white tw-py-0.5 tw-px-1 tw-self-center">
 				{{ lentTo.length }}/{{ itemCount }}
@@ -8,7 +8,7 @@
 		</h2>
 		<div class="row tw-overflow-hidden" ref="list">
 			<div class="columns small-6">
-				<h3 class="tw-pb-2">
+				<h3 class="tw-text-title tw-pb-2">
 					You've lent to
 				</h3>
 				<item-list
@@ -20,7 +20,7 @@
 			</div>
 			<div class="columns small-6">
 				<template v-if="hasUnlent">
-					<h3 class="tw-pb-2">
+					<h3 class="tw-text-title tw-pb-2">
 						You haven't lent to
 					</h3>
 					<item-list
@@ -35,7 +35,7 @@
 						class="tw-text-brand tw-w-4 tw-h-4 md:tw-w-6 md:tw-h-6"
 						:icon="mdiCheckCircle"
 					/>
-					<h3 class="tw-text-h2 tw-text-brand">
+					<h3 class="tw-text-headline tw-text-brand">
 						Great job!
 					</h3>
 				</div>

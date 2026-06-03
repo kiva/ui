@@ -50,7 +50,7 @@
 						'lg:tw-pt-1 lg:tw-pb-1',
 					]"
 				>
-					<p class="tw-text-h3 tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
+					<p class="tw-text-title tw-pt-3 lg:tw-mb-3 tw-hidden lg:tw-inline-block">
 						{{ lgScreenheadline }}
 					</p>
 					<span class="tw-flex tw-flex-wrap tw-pb-1 lg:tw-pb-2 tw-relative">
@@ -217,14 +217,14 @@
 					<slot v-if="!isSticky" name="sharebutton"></slot>
 					<p
 						v-if="freeCreditWarning"
-						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
+						class="tw-text-upper tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
 						data-testid="bp-lend-cta-not-eligible-for-credit"
 					>
 						Not eligible for lending credit
 					</p>
 					<p
 						v-if="allSharesReserved"
-						class="tw-text-h4 tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
+						class="tw-text-upper tw-text-secondary tw-inline-block tw-text-center tw-w-full tw-mb-3"
 						data-testid="bp-lend-cta-all-shares-reserved"
 					>
 						All shares reserved
@@ -303,7 +303,7 @@
 							'tw-mb-1 tw-p-1',
 							'tw-rounded',
 							'tw-bg-primary',
-							'tw-text-h4',
+							'tw-text-upper',
 							'tw-flex tw-justify-center',
 							'tw-mt-1',
 							{
@@ -343,7 +343,7 @@
 								key="loanMatchingText"
 							>
 								<!-- eslint-disable-next-line max-len -->
-								<span class="tw-text-h3 tw-inline-block tw-pr-1 tw-align-middle">🎉</span>{{ matchRatio + 1 }}X MATCHED LOAN
+								<span class="tw-text-title tw-inline-block tw-pr-1 tw-align-middle">🎉</span>{{ matchRatio + 1 }}X MATCHED LOAN
 							</span>
 						</transition>
 					</div>
