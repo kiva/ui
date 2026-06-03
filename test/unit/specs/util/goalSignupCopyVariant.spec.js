@@ -1,10 +1,10 @@
-import useGoalSignupCopyVariant, {
+import getGoalSignupCopyVariant, {
 	GOAL_SIGNUP_COPY_VARIANT,
-} from '#src/composables/useGoalSignupCopyVariant';
+} from '#src/util/goalSignupCopyVariant';
 
-const variantAt = now => useGoalSignupCopyVariant({ now });
+const variantAt = now => getGoalSignupCopyVariant({ now });
 
-describe('useGoalSignupCopyVariant', () => {
+describe('getGoalSignupCopyVariant', () => {
 	it('returns last-year on Jan 1 (start-of-year boundary)', () => {
 		expect(variantAt(new Date('2026-01-01T00:00:00'))).toBe(GOAL_SIGNUP_COPY_VARIANT.LAST_YEAR);
 	});
@@ -35,6 +35,6 @@ describe('useGoalSignupCopyVariant', () => {
 
 	it('defaults to current date when now is omitted', () => {
 		// Variant for "today" depends on the calendar but must always be valid.
-		expect(Object.values(GOAL_SIGNUP_COPY_VARIANT)).toContain(useGoalSignupCopyVariant());
+		expect(Object.values(GOAL_SIGNUP_COPY_VARIANT)).toContain(getGoalSignupCopyVariant());
 	});
 });
