@@ -10,7 +10,8 @@
 			hover:tw-shadow focus-within:tw-shadow"
 	>
 		<section
-			class="featured-goal-card tw-relative tw-w-full tw-rounded-md tw-overflow-hidden tw-px-1.5 tw-py-2.5
+			class="featured-goal-card tw-relative tw-w-full tw-rounded-md tw-overflow-hidden
+				tw-px-1.5 md:tw-px-3 tw-pt-1 tw-pb-4.5 md:!tw-py-2.5
 				tw-bg-no-repeat tw-bg-cover tw-bg-right"
 			:class="[
 				`featured-goal-card--${resolvedState}`,
@@ -49,7 +50,7 @@
 							class="tw-w-2 tw-h-2 tw-text-gray-400"
 							name="annual-goal-flag"
 						/>
-						<h5 class="tw-text-label">
+						<h5 class="tw-text-label tw-text-secondary">
 							Your {{ GOALS_CURRENT_YEAR }} goal to support {{ categoryName }}
 						</h5>
 					</div>
@@ -57,7 +58,7 @@
 						menu-position="right-aligned"
 						button-size="small"
 						menu-border-class="tw-border tw-border-tertiary tw-rounded-md"
-						class="tw-top-0 tw-right-0"
+						class="tw-top-0 tw-right-0 md:tw--mt-1.5"
 					>
 						<ul class="tw-m-0 tw-p-0">
 							<li
@@ -77,7 +78,7 @@
 				</div>
 
 				<div
-					class="tw-flex tw-flex-row tw-items-center tw-gap-2 tw-w-full tw-pt-5 md:tw-pt-2"
+					class="tw-flex tw-flex-row tw-items-center tw-gap-2 tw-w-full tw-pt-5 md:tw-pt-0"
 				>
 					<div class="tw-relative tw-shrink-0">
 						<KvProgressCircle
@@ -113,13 +114,13 @@
 									class="tw-w-2 tw-h-2 tw-text-gray-400"
 									name="annual-goal-flag"
 								/>
-								<h5 class="tw-text-label">
+								<h5 class="tw-text-label tw-text-secondary">
 									Your {{ GOALS_CURRENT_YEAR }} goal to support {{ categoryName }}
 								</h5>
 							</div>
-							<p class="tw-font-medium tw-text-primary">
+							<h3 class="tw-text-title">
 								{{ activeGoalTitle }}
-							</p>
+							</h3>
 							<p class="tw-text-small md:tw-text-base">
 								{{ activeGoalDescription }}
 							</p>
@@ -279,6 +280,10 @@ const onSelect = action => {
 	@apply tw-w-12.5 tw-h-12.5;
 }
 
+.featured-goal-card__progress-ring :deep(circle.tw-text-primary-inverse) {
+	@apply tw-text-gray-200;
+}
+
 .featured-goal-card__progress-value {
 	letter-spacing: -0.05rem;
 }
@@ -309,25 +314,25 @@ const onSelect = action => {
 }
 
 .featured-goal-card__cta--active-goal :deep(span) {
-	@apply tw-h-auto;
+	@apply !tw-min-h-4.5 md:tw-h-auto;
 }
 
 /* State-conditional background images */
 .featured-goal-card--no-goal {
-	background-image: url('src/assets/images/my-kiva/featured-goal-card/mobile-no-goal-state.svg');
+	background-image: url('/src/assets/images/my-kiva/featured-goal-card/mobile-no-goal-state.svg');
 }
 
 .featured-goal-card--active-goal {
-	background-image: url('src/assets/images/my-kiva/featured-goal-card/mobile-in-progress-state.svg');
+	background-image: url('/src/assets/images/my-kiva/featured-goal-card/mobile-in-progress-state.svg');
 }
 
 @screen md {
 	.featured-goal-card--no-goal {
-		background-image: url('src/assets/images/my-kiva/featured-goal-card/no-goal-state.svg');
+		background-image: url('/src/assets/images/my-kiva/featured-goal-card/no-goal-state.svg');
 	}
 
 	.featured-goal-card--active-goal {
-		background-image: url('src/assets/images/my-kiva/featured-goal-card/in-progress-state.svg');
+		background-image: url('/src/assets/images/my-kiva/featured-goal-card/in-progress-state.svg');
 	}
 }
 </style>
