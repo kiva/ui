@@ -1,10 +1,6 @@
 <template>
 	<div
-		class="tw-grid tw-grid-cols-2 tw-place-content-between tw-mb-2"
-		:class="{
-			'tw-gap-2' : !loan?.matchingText,
-			'tw-gap-4' : loan?.matchingText,
-		}"
+		class="tw-grid tw-grid-cols-2 tw-gap-2 tw-place-content-between tw-mb-2"
 	>
 		<div>
 			<p class="tw-font-medium">
@@ -35,10 +31,10 @@
 			</p>
 		</template>
 
-		<p class="tw-font-medium tw-pt-1">
+		<p class="tw-font-medium">
 			Total due:
 		</p>
-		<p class="tw-text-right tw-font-medium tw-pt-1">
+		<p class="tw-text-right tw-font-medium">
 			{{ formattedTotalDue }}
 		</p>
 	</div>

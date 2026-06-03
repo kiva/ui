@@ -93,6 +93,17 @@ const stubs = {
 	GoalSettingModal: { template: '<div data-testid="goal-setting-modal"><slot /></div>' },
 	KvLightbox: { template: '<div><slot /></div>' },
 	GuestAccountCreation: { template: '<div><slot /></div>' },
+	ExpressCheckoutModal: { template: '<div data-testid="express-checkout-modal" />' },
+};
+
+// Minimal stub for the provide bridge ThanksPage exposes — the tests don't
+// exercise the express-checkout flow, but the setup destructures these values.
+const thanksPageBasketStub = {
+	basketItems: ref([]),
+	isAdding: ref(false),
+	addToBasket: vi.fn(),
+	loadInitialBasketItems: vi.fn(),
+	resetIsAdding: vi.fn(),
 };
 
 const tieredBadge = { achievementId: 'badge-1', preCheckoutTier: 1 };
@@ -116,6 +127,7 @@ function renderComponent(propsOverrides = {}) {
 			provide: {
 				...globalOptions.provide,
 				$kvTrackEvent: vi.fn(),
+				thanksPageBasket: thanksPageBasketStub,
 			},
 			stubs,
 		},

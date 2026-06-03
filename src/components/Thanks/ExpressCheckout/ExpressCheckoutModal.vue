@@ -30,7 +30,7 @@
 			/>
 
 			<p
-				class="tw-text-caption tw-my-1"
+				class="tw-text-caption tw-mt-1 tw-mb-7 md:!tw-mb-2"
 				style="font-weight: 611;"
 			>
 				By clicking &ldquo;Confirm payment&rdquo; you will be funding this loan
@@ -46,7 +46,12 @@
 				Complete order
 			</KvButton>
 
-			<ExpressCheckoutPaymentDisclaimer v-if="depositRequired" />
+			<p
+				v-if="depositRequired"
+				class="tw-text-small tw-text-secondary tw-text-center"
+			>
+				Thanks to PayPal, Kiva receives free payment processing for all transactions.
+			</p>
 		</form>
 	</KvLightbox>
 </template>
@@ -72,7 +77,6 @@ import {
 } from '@kiva/kv-shop';
 import { KvButton, KvLightbox } from '@kiva/kv-components';
 import ExpressCheckoutTotals from '#src/components/Thanks/ExpressCheckout/ExpressCheckoutTotals';
-import ExpressCheckoutPaymentDisclaimer from '#src/components/Thanks/ExpressCheckout/ExpressCheckoutPaymentDisclaimer';
 import useTipMessage from '#src/composables/useTipMessage';
 import logFormatter from '#src/util/logFormatter';
 

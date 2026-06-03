@@ -1,6 +1,9 @@
+import { within, userEvent } from '@storybook/test';
 import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
+import thanksPageBasketStoryMixin from '../mixins/thanks-page-basket-story-mixin';
+import loanDataMock from '../mock-data/loan-data-mock';
 import {
 	mockedReceiptData,
 	mockLender,
@@ -140,11 +143,15 @@ const receiptWithDonationsAndLoans = {
 	},
 };
 
-const story = (args = {}, result = queryResult, cookies = {}) => {
+const story = (args = {}, result = queryResult, cookies = {}, basketStub = {}) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
 		components: { ThanksPageSingleVersion },
-		mixins: [apolloStoryMixin({ queryResult: result }), cookieStoreStoryMixin({ cookies })],
+		mixins: [
+			apolloStoryMixin({ queryResult: result }),
+			cookieStoreStoryMixin({ cookies }),
+			thanksPageBasketStoryMixin(basketStub),
+		],
 		setup() { return { args }; },
 		template: '<ThanksPageSingleVersion v-bind="args" />',
 	});
@@ -728,7 +735,7 @@ export const GoalEntrypointWithOnlyCurrentYearProgressCustomAmount = story({
 
 	lender: mockLender,
 	loans: [mockLoanMatchingWomensGoal],
-	receipt: receiptWithSingleLoan,	
+	receipt: receiptWithSingleLoan,
 
 	badgesAchieved: [],
 	achievementsCompleted: false,
@@ -909,3 +916,61 @@ export const NoGoalWithBadge = story({
 	totalLoans: 10,
 	tieredAchievements: mockUserAchievementProgress.tieredLendingAchievements,
 }, queryResultNoGoalWithBadge);
+
+// Query result for the express checkout entry point story. Combines the
+// "no goal set" state (so GoalEntrypoint renders) with a mocked
+// `fundraisingLoans` payload that `getRecommendedLoans` will pick up after the
+// user saves a goal — this is what populates `hasRecommendedLoans` and lets
+// `RecommendLoanForGoalContainer` render.
+const queryResultRecommendedLoanGoalAndExpressCheckoutModal = {
+	data: {
+		...queryResultWithNoGoal.data,
+		fundraisingLoans: {
+			totalCount: 1,
+			values: [loanDataMock[0]],
+		},
+	},
+};
+
+// Basket stub for the express checkout entry point story. The default mixin
+// stub is a no-op `() => {}`, which means the composable's `onSuccess`
+// callback (the one that opens the modal) never fires when "Support now" is
+// clicked. Overriding `addToBasket` to synchronously invoke `onSuccess` lets
+// the modal actually open in the story.
+const expressCheckoutBasketStub = {
+	addToBasket: ({ onSuccess } = {}) => {
+		onSuccess?.();
+	},
+};
+
+// Story: Express checkout entry point — no goal set yet, recommended loan
+// feature flag enabled. The `play` function clicks the "Set goal" button so
+// the recommended-loan card renders (otherwise the user would only see the
+// GoalSelector). Clicking "Support now" then opens the ExpressCheckoutModal.
+export const RecommendedLoanGoalAndExpressCheckoutModal = story({
+	isGuest: false,
+	isOptedIn: true,
+
+	lender: mockLender,
+	loans: [mockLoanMatchingWomensGoal],
+	receipt: receiptWithSingleLoan,
+
+	badgesAchieved: [],
+	achievementsCompleted: false,
+
+	totalLoans: 10,
+	tieredAchievements: mockUserAchievementProgress.tieredLendingAchievements,
+	goalRecommendedLoanEnable: true,
+}, queryResultRecommendedLoanGoalAndExpressCheckoutModal, {}, expressCheckoutBasketStub);
+
+RecommendedLoanGoalAndExpressCheckoutModal.play = async ({ canvasElement }) => {
+	const canvas = within(canvasElement);
+	// GoalSelector renders the primary CTA labeled `Set <year> goal`. Clicking
+	// it dispatches the `set-goal` event handled by Single's `setGoal`, which
+	// in turn calls `enterRecommendedLoanStepAfterGoalSave()` — flipping the
+	// composable's `showRecommendLoanAfterGoalView` to true. The watcher then
+	// fetches recommended loans from the mocked Apollo response and the
+	// RecommendLoanForGoalContainer renders.
+	const setGoalButton = await canvas.findByRole('button', { name: /^Set \d{4} goal$/ });
+	await userEvent.click(setGoalButton);
+};
