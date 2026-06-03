@@ -14,7 +14,7 @@
 			{{ formattedItemTotal }}
 		</p>
 
-		<template v-if="isLoggedIn && (isCreditApplied || isCreditAvailable)">
+		<template v-if="isCreditApplied || isCreditAvailable">
 			<KvSwitch
 				v-model="creditAppliedModel"
 				:disabled="changingCredit"
@@ -54,10 +54,6 @@ const props = defineProps({
 	loan: {
 		type: Object,
 		default: () => ({}),
-	},
-	isLoggedIn: {
-		type: Boolean,
-		default: false,
 	},
 });
 

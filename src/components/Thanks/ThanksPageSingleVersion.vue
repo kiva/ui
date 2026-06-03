@@ -175,7 +175,6 @@
 			v-if="!isGuest && goalRecommendedLoanEnable"
 			ref="expressCheckoutModalRef"
 			:loan="expressCheckoutLoan"
-			:is-logged-in="!isGuest"
 			@checkout-complete="handleExpressCheckoutComplete"
 			@close="handleExpressCheckoutClose"
 		/>

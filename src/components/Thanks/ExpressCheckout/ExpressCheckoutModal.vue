@@ -8,12 +8,10 @@
 			v-if="lightboxOpen"
 			style="max-width: 25rem;"
 			class="tw-mx-auto"
-			action="."
 			@submit.prevent="onSubmit"
 		>
 			<ExpressCheckoutTotals
 				:loan="loan"
-				:is-logged-in="isLoggedIn"
 			/>
 
 			<KvPaymentSelect
@@ -83,10 +81,6 @@ defineProps({
 	loan: {
 		type: Object,
 		default: () => ({}),
-	},
-	isLoggedIn: {
-		type: Boolean,
-		default: false,
 	},
 	analyticsCategory: {
 		type: String,
@@ -213,15 +207,15 @@ const onSubmit = async () => {
 			return;
 		}
 
+		let errorMsg = 'Something went wrong. Please, refresh the page and try again.';
+
 		if (e?.code === 'shop.dropinNoPaymentMethod') {
 			// eslint-disable-next-line max-len
-			$showTipMsg('There was a problem validating your payment information. Please double-check the details and try again.', 'error');
+			errorMsg = 'There was a problem validating your payment information. Please double-check the details and try again.';
 		} else if (e?.message && e?.code !== 'shop.dropinRequired') {
-			$showTipMsg(e.message, 'error');
-		} else {
-			$showTipMsg('Something went wrong. Please, refresh the page and try again.', 'error');
+			errorMsg = e.message;
 		}
-
+		$showTipMsg(errorMsg, 'error');
 		closeLightbox();
 	} finally {
 		paying.value = false;
