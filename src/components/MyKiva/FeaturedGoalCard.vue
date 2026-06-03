@@ -23,7 +23,7 @@
 				class="featured-goal-card__content--no-goal tw-flex tw-flex-col"
 			>
 				<div class="tw-flex tw-flex-col md:tw-w-full md:tw-gap-0.5 lg:tw-gap-1">
-					<h3 class="tw-font-medium tw-text-primary" v-html="goalCopy.titleNoHistoryWomensDefault()"></h3>
+					<h3 class="tw-text-title" v-html="goalCopy.titleNoHistoryWomensDefault()"></h3>
 					<p class="tw-text-small md:tw-text-base">
 						{{ goalCopy.TITLE_HOW_MANY_LOANS_GENERIC }}
 					</p>
@@ -49,7 +49,7 @@
 							class="tw-w-2 tw-h-2 tw-text-gray-400"
 							name="annual-goal-flag"
 						/>
-						<h5 class="tw-text-secondary">
+						<h5 class="tw-text-label">
 							Your {{ GOALS_CURRENT_YEAR }} goal to support {{ categoryName }}
 						</h5>
 					</div>
@@ -113,7 +113,7 @@
 									class="tw-w-2 tw-h-2 tw-text-gray-400"
 									name="annual-goal-flag"
 								/>
-								<h5 class="tw-text-secondary">
+								<h5 class="tw-text-label">
 									Your {{ GOALS_CURRENT_YEAR }} goal to support {{ categoryName }}
 								</h5>
 							</div>
