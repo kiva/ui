@@ -302,7 +302,7 @@ const onSelect = action => {
 
 @screen md {
 	.featured-goal-card__content--no-goal {
-		@apply tw-w-full
+		@apply tw-w-full;
 	}
 }
 
@@ -348,7 +348,7 @@ const onSelect = action => {
 }
 
 .featured-goal-card__cta :deep(span) {
-	@apply !tw-min-h-4.5 md:tw-h-auto ;
+	@apply !tw-min-h-4.5 md:tw-h-auto;
 }
 
 .featured-goal-card__cta :deep(span > span) {
