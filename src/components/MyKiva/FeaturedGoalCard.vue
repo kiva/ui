@@ -45,7 +45,7 @@
 					class="tw-flex tw-items-center tw-justify-between tw-gap-1 tw-pb-1
 						tw-absolute tw-right-0 tw-px-1.5 tw-w-full md:tw-w-fit"
 				>
-					<div class="tw-flex tw-items-center tw-gap-0.5 md:!tw-hidden">
+					<div class="tw-flex tw-items-baseline tw-gap-0.5 md:!tw-hidden">
 						<KvIcon
 							class="tw-w-2 tw-h-2 tw-text-gray-400"
 							name="annual-goal-flag"
@@ -109,7 +109,7 @@
 						class="tw-flex tw-flex-col tw-gap-1.5 md:tw-flex-row md:tw-items-center md:tw-gap-3 tw-flex-1"
 					>
 						<div class="featured-goal-card__active-body tw-flex tw-flex-col tw-gap-0.5 tw-flex-1">
-							<div class="tw-items-center tw-gap-0.5 tw-pb-2 tw-hidden md:tw-flex">
+							<div class="tw-items-baseline tw-gap-0.5 tw-pb-2 tw-hidden md:tw-flex">
 								<KvIcon
 									class="tw-w-2 tw-h-2 tw-text-gray-400"
 									name="annual-goal-flag"
