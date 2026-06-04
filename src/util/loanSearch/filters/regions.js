@@ -67,68 +67,6 @@ export function getCountryIsoCodesFromQueryParam(param, allFacets) {
 	}, []);
 }
 
-/**
- * Gets an updated regions list to display in the filter with updated numLoansFundraising
- *
- * @param {Array<Object>} regions The regions previously displayed in the filter
- * @param {Array<Object>} nextRegions The regions returned by the latest FLSS facets query
- * @returns {Array<Object>} The updated regions list
- */
-export function getUpdatedRegions(regions, nextRegions) {
-	// Default to nextRegions
-	if (!regions) return nextRegions;
-
-	const updated = [];
-
-	// Get updated numLoansFundraising
-	regions.forEach(region => {
-		const nextRegion = nextRegions.find(r => r.region === region.region);
-		const nextRegionExists = !!nextRegion;
-		const updatedRegion = {
-			region: region.region,
-			numLoansFundraising: nextRegionExists ? nextRegion.numLoansFundraising : 0,
-			countries: []
-		};
-
-		updated.push(updatedRegion);
-
-		region.countries.forEach(country => {
-			const updatedCountry = { ...country };
-
-			if (!nextRegionExists) {
-				updatedCountry.numLoansFundraising = 0;
-			} else {
-				const nextCountry = nextRegion.countries.find(c => c.name === updatedCountry.name);
-				updatedCountry.numLoansFundraising = nextCountry?.numLoansFundraising || 0;
-			}
-
-			updatedRegion.countries.push(updatedCountry);
-		});
-	});
-
-	// Add missing regions that have been added since previous query
-	nextRegions.forEach(region => {
-		let updatedRegion = updated.find(r => r.region === region.region);
-
-		if (!updatedRegion) {
-			updatedRegion = {
-				region: region.region,
-				numLoansFundraising: region.numLoansFundraising,
-				countries: []
-			};
-			updated.push(updatedRegion);
-		}
-
-		region.countries.forEach(country => {
-			if (!updatedRegion.countries.find(c => c.name === country.name)) {
-				updatedRegion.countries.push({ ...country });
-			}
-		});
-	});
-
-	return sortRegions(updated);
-}
-
 export default {
 	uiConfig: {
 		type: filterUiType.location,

@@ -17,7 +17,7 @@ describe('Header Navigation', () => {
 		cy.wait('@gqlloanSearchSuggestionsQuery');
 		// Click on the "Fabrics" tag in the search results
 		cy.contains('Fabrics').click();
-		// Expect to visit the lend page
+		// Expect to visit the /lend/filter page
 		cy.location('pathname', { timeout: 10000 }).should('eq', '/lend/filter');
 		// Wait for loan facets to load
 		cy.wait('@gqlflssLoanFacetsQuery');
@@ -25,3 +25,4 @@ describe('Header Navigation', () => {
 		cy.contains('Fabrics').should('exist');
 	});
 });
+
