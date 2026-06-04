@@ -7,6 +7,7 @@ import HttpLinkCreator from './HttpLink';
 import NetworkErrorLoggingLink from './NetworkErrorLoggingLink';
 import NetworkErrorRetryLink from './NetworkErrorRetryLink';
 import SnowplowSessionLink from './SnowplowSessionLink';
+import UserIdMismatchLink from './UserIdMismatchLink';
 import { initState, setLocalState } from './localState';
 
 export default function createApolloClient({
@@ -57,6 +58,7 @@ export default function createApolloClient({
 			Auth0LinkCreator({ cookieStore, kvAuth0 }),
 			BasketLinkCreator({ cookieStore }),
 			ContentfulPreviewLink({ route }),
+			UserIdMismatchLink({ kvAuth0 }),
 			NetworkErrorLoggingLink(),
 			NetworkErrorRetryLink({
 				activateRetry: appConfig?.apolloNetworkErrorRetryActive,
