@@ -17,16 +17,6 @@ export const mockState = {
 	activityId: [9],
 };
 
-export const savedSearchParams = {
-	name: 'test saved search',
-	queryString: '{"gender":"female","country":"PH"}',
-	filters: {
-		gender: 'female',
-		country: ['PH']
-	},
-	isAlert: true,
-};
-
 export const mockAllFacets = {
 	countryFacets: [
 		{

@@ -1,5 +1,7 @@
-import { getDefaultLoanSearchState } from '#src/api/localResolvers/loanSearch';
 import { isNumber } from '#src/util/numberUtils';
+
+// Default page limit value (was previously in src/api/localResolvers/loanSearch)
+const DEFAULT_PAGE_LIMIT = 15;
 
 export default {
 	uiConfig: {
@@ -27,7 +29,7 @@ export default {
 	getValidatedSearchState: loanSearchState => ({
 		pageLimit: isNumber(loanSearchState?.pageLimit)
 			? loanSearchState.pageLimit
-			: getDefaultLoanSearchState().pageLimit
+			: DEFAULT_PAGE_LIMIT
 	}),
 	getFilterFromQuery: (_query, _allFacets, pageLimit) => ({ pageLimit }),
 	getQueryFromFilter: () => ({}),
