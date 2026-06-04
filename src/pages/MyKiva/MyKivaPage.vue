@@ -1,9 +1,5 @@
 <template>
 	<www-page main-class="tw-bg-secondary tw-overflow-hidden tw-relative" class="tw-relative">
-		<FeaturedGoalCard
-			:key="`featured-goal-card-${goalRefreshKey}`"
-			@set-goal-click="$router.push('/mykiva/goals')"
-		/>
 		<MyKivaNextStepsContent
 			v-if="isNextStepsRoute"
 			:user-info="userInfo"
@@ -69,7 +65,6 @@ import useBadgeData, {
 	getContentfulLevelData
 } from '#src/composables/useBadgeData';
 import { inject, provide } from 'vue';
-import FeaturedGoalCard from '#src/components/MyKiva/FeaturedGoalCard';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const GOAL_TILE_EXPERIMENT_KEY = 'mykiva_goal_tile';
@@ -88,7 +83,6 @@ export default {
 		MyKivaPageContent,
 		MyKivaNextStepsContent,
 		WwwPage,
-		FeaturedGoalCard,
 	},
 	setup() {
 		const apollo = inject('apollo');
