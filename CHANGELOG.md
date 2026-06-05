@@ -1,3 +1,9 @@
+## [3.71.1-rc.1](https://github.com/kiva/ui/compare/v3.71.0...v3.71.1-rc.1) (2026-06-05)
+
+### 🧹 Chores
+
+* update kv-tokens + kv-components ([b58a4ca](https://github.com/kiva/ui/commit/b58a4caeca7cdc0abfa91ed90ce25e69371dead0))
+
 ## [3.71.0](https://github.com/kiva/ui/compare/v3.70.0...v3.71.0) (2026-06-05)
 
 ### 🎉 New Features
