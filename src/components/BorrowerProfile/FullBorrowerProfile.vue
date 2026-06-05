@@ -57,6 +57,19 @@
 						/>
 					</template>
 				</lend-cta>
+				<transition name="kvfastfade">
+					<div
+						v-if="showDetailsInRail"
+						data-testid="bp-rail-details"
+						class="bp-rail-details tw-hidden lg:tw-block tw-pointer-events-auto tw-mt-1.5 tw-bg-primary"
+					>
+						<details-tabs
+							:loan-id="loanId"
+							name="bp-rail-details-tabs"
+							:is-privileged="isPrivileged"
+						/>
+					</div>
+				</transition>
 			</sidebar-container>
 		</div>
 		<content-container class="tw-mt-4 md:tw-mt-3 lg:tw-mt-6">
@@ -126,6 +139,11 @@
 		</content-container>
 		<div class="tw-bg-primary">
 			<content-container>
+				<loan-details-rail-toggle
+					:checked="showDetailsInRail"
+					:loan-id="loanId"
+					@change="onToggleRailDetails"
+				/>
 				<details-tabs id="loanDetails" :loan-id="loanId" name="bp-details" :is-privileged="isPrivileged" />
 			</content-container>
 		</div>
@@ -160,6 +178,13 @@ import JournalUpdates from '#src/components/BorrowerProfile/JournalUpdates';
 import BorrowerEducationPlacement from '#src/components/BorrowerProfile/BorrowerEducationPlacement';
 import LoanTags from '#src/components/BorrowerProfile/LoanTags';
 import LoanComments from '#src/components/BorrowerProfile/LoanComments';
+import LoanDetailsRailToggle from '#src/components/BorrowerProfile/LoanDetailsRailToggle';
+import {
+	getLocalRailPreference,
+	readAccountRailPreference,
+	resolveRailPreference,
+	persistRailPreference,
+} from '#src/util/loanDetailsRailPreference';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
@@ -206,6 +231,7 @@ export default {
 		BorrowerEducationPlacement,
 		LoanTags,
 		LoanComments,
+		LoanDetailsRailToggle,
 		KvLoadingPlaceholder,
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -219,6 +245,13 @@ export default {
 						...bpFullProfileFields
 					}
 				}
+				my {
+					id
+					userPreferences {
+						id
+						preferences
+					}
+				}
 			}
 		`,
 		variables() {
@@ -228,6 +261,12 @@ export default {
 		},
 		result({ data }) {
 			this.loanData = data?.lend?.loan ?? {};
+			this.railMy = data?.my ?? null;
+			// Reconcile with localStorage (client-only); account preference still wins.
+			this.showDetailsInRail = resolveRailPreference({
+				accountPref: readAccountRailPreference(this.railMy?.userPreferences),
+				local: getLocalRailPreference(),
+			});
 		},
 	},
 	emits: ['subscription-toggled'],
@@ -264,6 +303,10 @@ export default {
 			type: String,
 			default: '',
 		},
+		initialShowDetailsInRail: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
@@ -274,6 +317,9 @@ export default {
 			showLenders: true,
 			showTeams: true,
 			isMobile: false,
+			// Initialize from the SSR-resolved prop so logged-in opted-in renders without flash.
+			showDetailsInRail: this.initialShowDetailsInRail,
+			railMy: null,
 		};
 	},
 	computed: {
@@ -321,6 +367,18 @@ export default {
 		throttledResize: _throttle(function throttledResize() {
 			this.determineIfMobile();
 		}, 200),
+		onToggleRailDetails(value) {
+			this.showDetailsInRail = value;
+			persistRailPreference(this.apollo, { value, my: this.railMy });
+		},
 	},
 };
 </script>
+
+<style lang="scss" scoped>
+// Tune the reused DetailsTabs for the narrower rail without editing the component.
+.bp-rail-details :deep(section) {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+</style>
