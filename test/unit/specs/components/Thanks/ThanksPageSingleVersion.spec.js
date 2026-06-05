@@ -88,17 +88,12 @@ const stubs = {
 		],
 	},
 	GoalEntrypoint: {
-		template: `
-			<div data-testid="goal-entrypoint" :data-custom-goal-amount-enable="customGoalAmountEnable">
-				<slot></slot>
-			</div>
-		`,
+		template: '<div data-testid="goal-entrypoint"><slot></slot></div>',
 		props: [
 			'loading', 'totalLoans', 'categoriesLoanCount', 'isGoalSet',
 			'tieredAchievements', 'selectedCategory', 'isEditing',
 			'goalLoans', 'goalProgress', 'goalProgressPercentage', 'goToUrl',
-			'customGoalAmountEnable', 'showRecommendLoanAfterGoalView',
-			'hasRecommendedLoans', 'recommendLoanCardProps',
+			'showRecommendLoanAfterGoalView', 'hasRecommendedLoans', 'recommendLoanCardProps',
 			'recommendLoanHeaderDetails', 'recommendLoanIsInBasket',
 			'loadedSetData', 'isAdding',
 		],
@@ -394,18 +389,6 @@ describe('ThanksPageSingleVersion', () => {
 			await vi.waitFor(() => {
 				const ids = getOrderedModules(container);
 				expect(ids).toEqual(['goal-entrypoint', 'badge-milestone']);
-			});
-		});
-
-		it('enables the custom goal amount option on the thank you goal entrypoint', async () => {
-			mockUserGoal.value = null;
-
-			const { getByTestId } = renderComponent({
-				badgesAchieved: [],
-			});
-
-			await vi.waitFor(() => {
-				expect(getByTestId('goal-entrypoint').getAttribute('data-custom-goal-amount-enable')).toBe('true');
 			});
 		});
 

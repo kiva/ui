@@ -401,7 +401,6 @@ describe('GoalSelector', () => {
 					:tiered-achievements="tieredAchievements"
 					selected-category-id="${ID_WOMENS_EQUALITY}"
 					selected-category-name="Women"
-					custom-goal-amount-enable
 				/>
 			`,
 		};
@@ -454,7 +453,6 @@ describe('GoalSelector', () => {
 					:tiered-achievements="tieredAchievements"
 					selected-category-id="${ID_WOMENS_EQUALITY}"
 					selected-category-name="Women"
-					custom-goal-amount-enable
 				/>
 			`,
 		};
@@ -515,7 +513,6 @@ describe('GoalSelector', () => {
 					:tiered-achievements="tieredAchievements"
 					selected-category-id="${ID_WOMENS_EQUALITY}"
 					selected-category-name="Women"
-					custom-goal-amount-enable
 				/>
 			`,
 		};

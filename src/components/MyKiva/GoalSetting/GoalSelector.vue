@@ -80,12 +80,10 @@
 						:option-text="option.optionText"
 						:selected="option.selected"
 						:highlighted-text="option.highlightedText"
-						:custom-goal-amount-enable="customGoalAmountEnable"
 						@click="updateOptionSelection(index)"
 					/>
 					<!-- Custom goal amount option -->
 					<div
-						v-if="customGoalAmountEnable"
 						class="tw-border-2 tw-border-gray-200 tw-rounded tw-px-2 tw-py-1 lg:tw-py-2 tw-cursor-pointer
 							tw-gap-1"
 						:class="{ '!tw-border-eco-green-3 tw-bg-eco-green-1 !tw-py-1.5 lg:tw-py-2': isCustomIndex }"
@@ -137,7 +135,7 @@
 			</div>
 
 			<div
-				v-if="customGoalAmountEnable && isCustomIndex && !loadingCurrentYear && !isLoadingData"
+				v-if="isCustomIndex && !loadingCurrentYear && !isLoadingData"
 				class="tw-hidden lg:tw-flex tw-flex-col tw-bg-eco-green-1 tw-px-2.5 tw-py-1.5 tw-w-full
 					tw-rounded-sm"
 			>
@@ -381,13 +379,6 @@ const props = defineProps({
 		default: false,
 	},
 	/**
-	 * Whether the custom goal amount feature is enabled
-	 */
-	customGoalAmountEnable: {
-		type: Boolean,
-		default: true,
-	},
-	/**
 	 * Flag to indicate if the goal value props copy version should be shown
 	 */
 	showGoalValuePropsCopy: {
@@ -439,7 +430,7 @@ const goalTileAccordion = ref(null);
 const customGoalAmount = ref(null);
 const validCustomAmount = ref(null);
 const customGoalAmountError = ref('');
-const goalSignupCopyVariant = computed(() => goalCopy.getGoalSignupCopyVariant());
+const goalSignupCopyVariant = goalCopy.getGoalSignupCopyVariant();
 
 const loansLastYear = computed(() => {
 	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
@@ -450,7 +441,7 @@ const loansLastYear = computed(() => {
 });
 
 const showLoanQuestionPrompt = computed(() => {
-	return goalSignupCopyVariant.value === GOAL_SIGNUP_COPY_NO_GOAL_YET
+	return goalSignupCopyVariant === GOAL_SIGNUP_COPY_NO_GOAL_YET
 		|| (!props.showGoalValuePropsCopy
 			&& (loansLastYear.value > 0 || props.selectedCategoryId === ID_WOMENS_EQUALITY));
 });
@@ -494,7 +485,7 @@ const loadLoansThisYear = async () => {
 };
 
 const titleText = computed(() => {
-	if (goalSignupCopyVariant.value === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
+	if (goalSignupCopyVariant === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
 		return goalCopy.CARD_NO_GOAL_YET_EXPERIMENT;
 	}
 

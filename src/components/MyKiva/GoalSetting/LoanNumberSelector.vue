@@ -1,10 +1,10 @@
 <template>
 	<div
 		class="tw-flex tw-justify-between tw-items-center tw-w-full tw-border-2 tw-border-gray-200 tw-rounded
-			tw-p-2.5 tw-py-1 tw-cursor-pointer tw-relative tw-gap-2"
+			tw-p-2.5 tw-py-1 tw-cursor-pointer tw-relative tw-gap-2 lg:tw-flex-col lg:!tw-px-1.5 lg:!tw-gap-1
+			lg:tw-py-1.5"
 		:class="{
 			'!tw-border-eco-green-3 tw-bg-eco-green-1': selected,
-			'lg:tw-flex-col lg:!tw-px-1.5 lg:!tw-gap-1 lg:tw-py-1.5': customGoalAmountEnable,
 		}"
 	>
 		<div
@@ -16,12 +16,10 @@
 		</div>
 		<div
 			class="tw-flex lg:tw-flex-col tw-gap-1 lg:tw-gap-0 tw-items-baseline lg:tw-items-center
-						tw-text-eco-green-3"
-			:class="{'lg:!tw-flex-row lg:!tw-items-baseline lg:tw-gap-0.5': customGoalAmountEnable}"
+						tw-text-eco-green-3 lg:!tw-flex-row lg:!tw-items-baseline lg:tw-gap-0.5"
 		>
 			<span
-				class="tw-text-display tw-text-center"
-				:class="{ '!tw-text-headline': isThreeDigitsNumber || customGoalAmountEnable }"
+				class="tw-text-display tw-text-center !tw-text-headline"
 				style="line-height: 1;"
 			>
 				{{ loansNumber }}
@@ -43,9 +41,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-
-const props = defineProps({
+defineProps({
 	selected: {
 		type: Boolean,
 		default: false,
@@ -62,17 +58,5 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
-	/**
-	 * Whether the custom goal amount feature is enabled
-	 */
-	customGoalAmountEnable: {
-		type: Boolean,
-		default: false,
-	},
-});
-
-const isThreeDigitsNumber = computed(() => {
-	const numString = Math.abs(props.loansNumber).toString();
-	return numString.length >= 3;
 });
 </script>

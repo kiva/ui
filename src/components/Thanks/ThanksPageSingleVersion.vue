@@ -61,7 +61,6 @@
 				:goal-loans="goalTarget"
 				:goal-progress="goalProgress"
 				:goal-progress-percentage="goalProgressPercentage"
-				:custom-goal-amount-enable="customGoalAmountEnable"
 				:show-recommend-loan-after-goal-view="showRecommendLoanAfterGoalView"
 				:has-recommended-loans="hasRecommendedLoans"
 				:recommend-loan-card-props="recommendLoanCardProps"
@@ -292,7 +291,6 @@ const showGoalInProgressModule = ref(false);
 const isGoalSet = ref(false);
 const isEmptyGoal = ref(true);
 const goalTarget = ref(0);
-const customGoalAmountEnable = ref(true);
 const goalSignupThanksViewCapped = ref(false);
 
 const {
