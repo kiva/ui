@@ -21,6 +21,7 @@
 			:team-name="teamName"
 			:show-education-placement-exp="showEducationPlacementExp"
 			:loan-region="loanRegion"
+			:initial-show-details-in-rail="initialShowDetailsInRail"
 		/>
 		<article v-else>
 			<minimal-borrower-profile
@@ -51,6 +52,7 @@ import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.
 import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
 import teamBasicInfoQuery from '#src/graphql/query/teamBasicInfo.graphql';
 import ChallengeTeamInvite from '#src/components/BorrowerProfile/ChallengeTeamInvite';
+import { readAccountRailPreference, resolveRailPreference } from '#src/util/loanDetailsRailPreference';
 import { getKivaImageUrl } from '@kiva/kv-components';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
@@ -59,7 +61,6 @@ const EDUCATION_PLACEMENT_EXP = 'education_placement_bp';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 
 // Mirrors monolith Kc_Loan_Psc::getAllPublicStatuses() — non-privileged viewers can only see these.
-// `funded` is the value the gateway returns to anon callers for raised/payingBack/ended/defaulted, so it counts as public here.
 const PUBLIC_STATUSES = ['fundraising', 'funded', 'expired', 'raised', 'payingBack', 'refunded', 'ended', 'defaulted'];
 
 // Fields for showFullView routing logic
@@ -161,6 +162,13 @@ const fullProfileQuery = gql`
 			loan(id: $loanId) {
 				id
 				...bpFullProfileFields
+			}
+		}
+		my {
+			id
+			userPreferences {
+				id
+				preferences
 			}
 		}
 	}
@@ -298,6 +306,8 @@ export default {
 		return {
 			loan: {},
 			lender: {},
+			// SSR-resolved rail preference (logged-in only); reconciled client-side in the component.
+			initialShowDetailsInRail: false,
 			inviterName: '',
 			inviterIsGuestOrAnonymous: false,
 			itemsInBasket: [],
@@ -406,6 +416,7 @@ export default {
 			const routingLoan = result?.data?.lend?.loan ?? {};
 			// Prefer the enriched full-profile entry; minimal-view paths fall back to routingLoan below.
 			let fullLoan = null;
+			let fullMy = null;
 			if (routingLoan.id) {
 				try {
 					const cached = this.apollo.readQuery({
@@ -413,6 +424,7 @@ export default {
 						variables: { loanId: routingLoan.id },
 					});
 					fullLoan = cached?.lend?.loan;
+					fullMy = cached?.my;
 				} catch {
 					// Not in cache; fall back below.
 				}
@@ -423,6 +435,13 @@ export default {
 			this.itemsInBasket = result?.data?.shop?.basket?.items?.values ?? [];
 			this.loanRegion = this.loan?.geocode?.country?.region ?? '';
 			this.regionBelongsToExp = this.expRegionList.includes(this.loanRegion);
+
+			// SSR initial rail state from the account preference (localStorage is reconciled
+			// client-side in FullBorrowerProfile); null for anon, so this stays false.
+			this.initialShowDetailsInRail = resolveRailPreference({
+				accountPref: readAccountRailPreference(fullMy?.userPreferences),
+				local: null,
+			});
 		},
 	},
 	async mounted() {
