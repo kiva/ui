@@ -1,7 +1,8 @@
 import pageOffset from '#src/util/loanSearch/filters/pageOffset';
 import { FLSS_QUERY_TYPE } from '#src/util/loanSearch/filterUtils';
-import { getDefaultLoanSearchState } from '#src/api/localResolvers/loanSearch';
 import { mockAllFacets, mockState } from '../../../../fixtures/mockLoanSearchData';
+
+const DEFAULT_PAGE_OFFSET = 0;
 
 describe('pageOffset.js', () => {
 	describe('pageOffset', () => {
@@ -17,7 +18,7 @@ describe('pageOffset.js', () => {
 			it('should handle undefined', () => {
 				const result = pageOffset.getValidatedSearchState({}, mockAllFacets, FLSS_QUERY_TYPE);
 
-				expect(result).toEqual({ pageOffset: getDefaultLoanSearchState().pageOffset });
+				expect(result).toEqual({ pageOffset: DEFAULT_PAGE_OFFSET });
 			});
 
 			it('should validate pageOffset', () => {

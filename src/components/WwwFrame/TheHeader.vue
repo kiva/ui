@@ -3,7 +3,7 @@
 		class="tw-transition-all tw-duration-1000 tw-ease-in-out"
 		:class="isInExperimentPages ? 'tw-sticky tw-top-0 tw-z-sticky' : ''"
 	>
-		<KvWwwHeader
+		<KvWwwHeaderBasic
 			v-if="isNavUpdateExp"
 			class="tw-bg-primary tw-border-b tw-border-tertiary tw-relative"
 			ref="newExpHeader"
@@ -20,8 +20,12 @@
 			:is-basket-data-loading="isBasketLoading"
 			:style="esiCssVarBridge"
 			:countries-not-lent-to-url="COUNTRIES_NOT_LENT_TO_URL"
+			:app-origin="appOrigin"
+			:search-suggestions="searchSuggestions"
 			show-m-g-upsell-link
 			@load-lend-menu-data="loadMenu"
+			@load-search-data="loadSearchData"
+			@search-submit="onSearchSubmit"
 		/>
 		<nav
 			v-else
@@ -591,9 +595,11 @@ import { readBoolSetting } from '#src/util/settingsUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import addToBasketMixin from '#src/plugins/add-to-basket-mixin';
 import {
-	KvButton, KvLoadingPlaceholder, KvMaterialIcon, KvPageContainer, KvWwwHeader
+	KvButton, KvLoadingPlaceholder, KvMaterialIcon, KvPageContainer, KvWwwHeaderBasic
 } from '@kiva/kv-components';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import loanSearchSuggestionsQuery from '#src/graphql/query/loanSearchSuggestions.graphql';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import useMyKivaHome from '#src/composables/useMyKivaHome';
 import { COUNTRIES_NOT_LENT_TO_URL } from '#src/util/headerUtils';
 import SearchBar from './SearchBar';
@@ -617,7 +623,7 @@ export default {
 		KvButton,
 		TheLendMenu: defineAsyncComponent(() => import('#src/components/WwwFrame/LendMenu/TheLendMenu')),
 		TeamsMenu,
-		KvWwwHeader,
+		KvWwwHeaderBasic,
 	},
 	inject: {
 		apollo: { default: null },
@@ -649,6 +655,8 @@ export default {
 			profilePic: '',
 			profilePicId: null,
 			searchOpen: false,
+			searchSuggestions: [],
+			searchDataRequested: false,
 			teams: null,
 			teamsMenuEnabled: false,
 			trusteeId: null,
@@ -707,6 +715,9 @@ export default {
 				'--user-avatar-legacy-display': 'var(--ui-data-user-avatar-legacy-display)',
 				'--user-avatar': 'var(--ui-data-user-avatar)',
 			};
+		},
+		appOrigin() {
+			return `${this.$appConfig.transport}://${this.$appConfig.host}`;
 		},
 		isVisitor() {
 			return !this.userId && !this.$renderConfig?.cdnNotedLoggedIn;
@@ -806,15 +817,14 @@ export default {
 		this.isBasketLoading = this.$renderConfig?.useCDNCaching ?? false;
 		this.isUserDataLoading = this.$renderConfig?.useCDNCaching && this.$renderConfig?.cdnNotedLoggedIn;
 
-		// TODO: uncomment when nav experiment is to be enabled again, experiment key temporarily used for AI loan pills
-		// const navExperiment = trackExperimentVersion(
-		// 	this.apollo,
-		// 	this.$kvTrackEvent,
-		// 	'event-tracking',
-		// 	NAV_UPDATE_EXP_KEY,
-		// 	'EXP-MP-1696-Aug2025'
-		// );
-		// this.isNavUpdateExp = navExperiment?.version === 'b';
+		const navExperiment = trackExperimentVersion(
+			this.apollo,
+			this.$kvTrackEvent,
+			'event-tracking',
+			NAV_UPDATE_EXP_KEY,
+			'EXP-CIT-4367-June2026'
+		);
+		this.isNavUpdateExp = navExperiment?.version === 'b';
 	},
 	mounted() {
 		const { version } = this.apollo.readFragment({
@@ -847,6 +857,11 @@ export default {
 
 		this.determineIfMobile();
 		window.addEventListener('resize', this.throttledDetermineIfMobile);
+
+		// Prefetch the new header's search suggestions on mount, only when the experiment is active.
+		if (this.isNavUpdateExp) {
+			this.loadSearchData();
+		}
 	},
 	beforeUnmount() {
 		window.removeEventListener('resize', this.throttledDetermineIfMobile);
@@ -961,6 +976,26 @@ export default {
 			if (this.$refs.newExpHeader) {
 				this.$refs.newExpHeader.loadMenuData(this.apollo);
 			}
+		},
+		// The loadSearchData and onSearchSubmit methods below exist solely to power the
+		// search bar inside the new KvWwwHeaderBasic experiment header. They reuse the same
+		// loanSearchSuggestions query as the legacy SearchBar; the new header owns the
+		// typeahead engine, the Gifts suggestions, grouping and URL building, so here we only
+		// supply the raw dataset and perform navigation on submit.
+		loadSearchData() {
+			if (this.searchDataRequested) return;
+			this.searchDataRequested = true;
+			this.apollo.query({ query: loanSearchSuggestionsQuery }).then(({ data }) => {
+				this.searchSuggestions = data?.lend?.loanSearchSuggestions ?? [];
+			});
+		},
+		onSearchSubmit(payload) {
+			// KvWwwHeaderBasic emits a payload whose `url` is the origin + path only, with the
+			// query params returned separately; recombine them before navigating.
+			const href = payload.query
+				? `${payload.url}?${new URLSearchParams(payload.query).toString()}`
+				: payload.url;
+			window.location.href = href;
 		},
 	},
 	watch: {

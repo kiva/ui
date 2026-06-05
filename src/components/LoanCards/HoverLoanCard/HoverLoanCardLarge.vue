@@ -25,7 +25,7 @@
 					<borrower-info-name
 						:name="loan.name"
 						:loan-id="loan.id"
-						class="name tw-text-h3"
+						class="name tw-text-title"
 						@track-loan-card-interaction="trackInteractionBorrowerInfoName"
 					/>
 				</div>

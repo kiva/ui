@@ -4,7 +4,7 @@
 		class="tw-relative tw-flex tw-flex-col"
 		v-click-outside="closeRegions"
 	>
-		<label class="tw-text-h4" for="location">
+		<label class="tw-text-upper" for="location">
 			Location
 		</label>
 		<kv-text-input
@@ -53,7 +53,7 @@
 			<div class="tw-w-full md:tw-w-auto">
 				<div class="md:tw-hidden tw-flex tw-justify-between tw-items-center tw-mt-1 tw-mb-2">
 					<div>
-						<h3>Location selector</h3>
+						<h3 class="tw-text-title">Location selector</h3>
 					</div>
 					<button @click="toggleRegions()">
 						<kv-material-icon

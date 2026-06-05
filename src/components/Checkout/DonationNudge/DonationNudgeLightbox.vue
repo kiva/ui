@@ -8,7 +8,7 @@
 		:title="title"
 	>
 		<template #header>
-			<h2 class="tw-flex-1">
+			<h2 class="tw-text-headline tw-flex-1">
 				{{ title }}
 			</h2>
 		</template>
@@ -50,7 +50,7 @@
 							subtitle="Your donation is eligible for a tax deduction if you live in the U.S."
 						/>
 						<div v-else class="charity-overhead tw-text-center tw-my-1">
-							<h3>
+							<h3 class="tw-text-title">
 								<kv-material-icon name="info" icon="mdiInformation" class="info-icon" />
 								<span>Did you know?</span>
 							</h3>

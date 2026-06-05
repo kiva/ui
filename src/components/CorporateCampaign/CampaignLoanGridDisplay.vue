@@ -33,7 +33,7 @@
 		</div>
 
 		<div v-if="zeroLoans" class="zero-loans-state">
-			<h3 class="tw-mb-2">
+			<h3 class="tw-text-title tw-mb-2">
 				All borrowers matching this search have been funded.
 			</h3>
 			<p>

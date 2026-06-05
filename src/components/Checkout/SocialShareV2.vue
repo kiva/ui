@@ -1,7 +1,7 @@
 <template>
 	<section class="share hide-for-print">
 		<div>
-			<h2 class="share__headline" data-testid="share-headline">
+			<h2 class="tw-text-headline share__headline" data-testid="share-headline">
 				Help {{ selectedLoan.name }} spread the word.
 			</h2>
 			<p class="share__small__message">

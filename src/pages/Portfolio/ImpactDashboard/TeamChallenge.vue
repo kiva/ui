@@ -18,7 +18,7 @@
 						>
 							New! Community Challenge
 						</span>
-						<h2 class="tw-text-h2 tw-mt-1">
+						<h2 class="tw-text-headline tw-mt-1">
 							The {{ teamData.team.name }} Community Challenge has started!
 						</h2>
 					</div>

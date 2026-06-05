@@ -11,7 +11,7 @@
 		</div>
 		<template v-else>
 			<div v-if="!userHasGoal" class="tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-between">
-				<h3 class="tw-text-center" v-html="title"></h3>
+				<h3 class="tw-text-title tw-text-center" v-html="title"></h3>
 				<div class="tw-text-center">
 					<p
 						v-if="isGoalTileExperimentEnabled"

@@ -93,7 +93,7 @@
 					v-show="showCategories"
 				>
 					<h2
-						class="tw-mb-3 tw-text-left lg:tw-text-center"
+						class="tw-text-headline tw-mb-3 tw-text-left lg:tw-text-center"
 					>
 						Choose an impact area
 					</h2>

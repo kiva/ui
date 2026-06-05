@@ -12,8 +12,8 @@
 				class="tw-space-y-12"
 			>
 				<div>
-					<h3>You completed your goal!</h3>
-					<h3>
+					<h3 class="tw-text-title">You completed your goal!</h3>
+					<h3 class="tw-text-title">
 						By supporting {{ currentGoal.target }} {{ goalDisplayName }} you're making real change.
 					</h3>
 				</div>

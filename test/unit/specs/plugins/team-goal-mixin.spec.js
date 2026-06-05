@@ -210,25 +210,4 @@ describe('team-goal-mixin.js', () => {
 			expect(component.participants).toHaveProperty('amountLent', '500');
 		});
 	});
-
-	describe('challengeActivity', () => {
-		it('should combine activities by same lender', () => {
-			const activity = component.challengeActivity;
-
-			expect(activity).toHaveLength(2);
-			// Alice's activities (100 + 50 = 150)
-			expect(activity[0].lender.id).toBe('1');
-			expect(parseFloat(activity[0].amountLent)).toBe(150);
-			// Bob's activity
-			expect(activity[1].lender.id).toBe('2');
-			expect(parseFloat(activity[1].amountLent)).toBe(150);
-		});
-
-		it('should handle empty participation values', () => {
-			component.goal.participation.values = [];
-			const activity = component.challengeActivity;
-
-			expect(activity).toEqual([]);
-		});
-	});
 });

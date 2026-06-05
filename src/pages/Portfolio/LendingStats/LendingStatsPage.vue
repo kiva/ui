@@ -14,7 +14,7 @@
 						lg:tw-pt-8 lg:tw-pb-16
 					"
 				>
-					<h1 class="tw-mb-4">
+					<h1 class="tw-text-display tw-mb-4">
 						Lending stats
 					</h1>
 					<p class="tw-mb-2">

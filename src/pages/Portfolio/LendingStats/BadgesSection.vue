@@ -1,6 +1,6 @@
 <template>
 	<section data-testid="lend-stat-badges" class="tw-py-4">
-		<h2 class="tw-flex tw-gap-2 tw-mb-4">
+		<h2 class="tw-text-headline tw-flex tw-gap-2 tw-mb-4">
 			<span>My Achievements</span>
 			<span
 				v-if="!isLoading"

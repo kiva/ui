@@ -22,7 +22,7 @@
 						{{ appeal }}
 					</div>
 					<p
-						class="tw-hidden md:tw-block tw-text-h3 md:tw-flex-grow md:tw-my-2 tw-text-center"
+						class="tw-hidden md:tw-block tw-text-title md:tw-flex-grow md:tw-my-2 tw-text-center"
 						data-testid="`donation-amount-${index}`"
 					>
 						${{ getDonationByPercent(percentage) }}

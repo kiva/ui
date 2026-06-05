@@ -11,7 +11,7 @@
 				/>
 			</div>
 			<div v-else>
-				<h2 class="data-hj-suppress tw-mb-2">
+				<h2 class="tw-text-headline data-hj-suppress tw-mb-2">
 					{{ lenderMapTitle }}
 				</h2>
 				<kv-map

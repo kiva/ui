@@ -3,7 +3,7 @@
 		<kiva-logo class="tw-h-4 tw-text-brand" />
 		<span
 			v-if="corporateLogoUrl"
-			class="tw-text-secondary tw-inline-block tw-mx-2 tw-text-h2"
+			class="tw-text-secondary tw-inline-block tw-mx-2 tw-text-headline"
 			aria-hidden="true"
 		>+</span>
 		<kv-contentful-img

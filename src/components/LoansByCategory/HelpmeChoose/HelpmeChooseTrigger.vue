@@ -5,7 +5,7 @@
 	>
 		<component v-if="imgSource" :is="imgSource" class="tw-hidden lg:tw-block tw-w-3" />
 		<!-- eslint-disable-next-line max-len -->
-		<h3 class="tw-text-base lg:tw-text-h3 tw-py-0.5 lg:tw-py-0 tw-text-primary-inverse lg:tw-mt-5 tw-text-center lg:tw-text-left">
+		<h3 class="tw-text-base lg:tw-text-title tw-py-0.5 lg:tw-py-0 tw-text-primary-inverse lg:tw-mt-5 tw-text-center lg:tw-text-left">
 			{{ title }}
 		</h3>
 	</div>

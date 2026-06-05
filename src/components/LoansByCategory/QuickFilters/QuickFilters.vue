@@ -2,7 +2,7 @@
 	<div class="tw-flex tw-flex-col tw-mb-2 tw-w-full tw-z-4">
 		<div v-if="!withCategories" class="tw-flex tw-items-center tw-mb-2">
 			<div class="tw-flex tw-items-center">
-				<h3 class="tw-text-h3">
+				<h3 class="tw-text-title">
 					Quick filters
 				</h3>
 				<span v-show="filtersLoaded" class="tw-ml-2 tw-text-small">Showing {{ totalLoans }} loans</span>
@@ -17,7 +17,7 @@
 		<div class="tw-flex tw-gap-2 tw-flex-col lg:tw-flex-row tw-w-full">
 			<div v-if="withCategories" class="tw-flex tw-flex-col">
 				<label
-					class="tw-text-h4"
+					class="tw-text-upper"
 					for="category"
 				>
 					Category
@@ -43,7 +43,7 @@
 			>
 				<div v-if="!removeGenderDropdown" class="tw-flex tw-flex-col tw-grow">
 					<label
-						class="tw-text-h4"
+						class="tw-text-upper"
 						for="gender"
 					>
 						Gender
@@ -85,7 +85,7 @@
 				class="tw-flex tw-flex-col tw-grow"
 			>
 				<label
-					class="tw-text-h4"
+					class="tw-text-upper"
 					for="sortBy"
 				>
 					Sort By

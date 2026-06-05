@@ -8,6 +8,7 @@ import HttpLinkCreator from '#src/api/HttpLink';
 import NetworkErrorLoggingLink from '#src/api/NetworkErrorLoggingLink';
 import NetworkErrorRetryLink from '#src/api/NetworkErrorRetryLink';
 import SnowplowSessionLink from '#src/api/SnowplowSessionLink';
+import UserIdMismatchLink from '#src/api/UserIdMismatchLink';
 import { initState, setLocalState } from '#src/api/localState';
 
 // Mock all the dependencies
@@ -59,6 +60,10 @@ vi.mock('#src/api/NetworkErrorRetryLink', () => ({
 
 vi.mock('#src/api/SnowplowSessionLink', () => ({
 	default: vi.fn(config => ({ type: 'SnowplowSessionLink', config })),
+}));
+
+vi.mock('#src/api/UserIdMismatchLink', () => ({
+	default: vi.fn(config => ({ type: 'UserIdMismatchLink', config })),
 }));
 
 vi.mock('#src/api/localState', () => ({
@@ -179,6 +184,7 @@ describe('createApolloClient', () => {
 		});
 		expect(vi.mocked(BasketLinkCreator)).toHaveBeenCalledWith({ cookieStore: mockCookieStore });
 		expect(vi.mocked(ContentfulPreviewLink)).toHaveBeenCalledWith({ route: mockRoute });
+		expect(vi.mocked(UserIdMismatchLink)).toHaveBeenCalledWith({ kvAuth0: mockKvAuth0 });
 		expect(vi.mocked(NetworkErrorLoggingLink)).toHaveBeenCalled();
 		expect(vi.mocked(NetworkErrorRetryLink)).toHaveBeenCalledWith({
 			activateRetry: true,

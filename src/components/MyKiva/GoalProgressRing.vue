@@ -6,7 +6,7 @@
 				class="tw-w-3.5 tw-h-3.5 tw-text-brand tw-mx-auto tw-mb-2"
 				:icon="mdiCheckCircle"
 			/>
-			<h2 v-if="isModalVariant" class="tw-font-medium" :class="titleClass">
+			<h2 v-if="isModalVariant" class="tw-text-headline tw-font-medium" :class="titleClass">
 				{{ titleText }}
 			</h2>
 			<p v-else class="tw-font-medium" :class="titleClass">
@@ -14,7 +14,7 @@
 			</p>
 
 			<button
-				class="tw-flex tw-gap-0.5 tw-items-center tw-text-h5 hover:tw-underline tw-text-action tw-pt-0.5"
+				class="tw-flex tw-gap-0.5 tw-items-center tw-text-label hover:tw-underline tw-text-action tw-pt-0.5"
 				v-if="!isModalVariant"
 				@click="handleEditGoal"
 			>

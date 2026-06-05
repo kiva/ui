@@ -110,7 +110,7 @@ export default {
 <style lang="postcss" scoped>
 
 #mfiCarousel :deep(h2) {
-	@apply tw-text-h4 tw-mb-0 tw-text-action;
+	@apply tw-text-upper tw-mb-0 tw-text-action;
 }
 
 #mfiCarousel :deep(section) {

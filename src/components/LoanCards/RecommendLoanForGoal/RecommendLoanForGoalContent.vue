@@ -5,7 +5,7 @@
 		:class="sectionClasses"
 		:style="sectionStyle"
 	>
-		<h3 class="tw-mb-1 md:tw-mb-1.5 tw-text-action-highlight tw-text-center">
+		<h3 class="tw-text-title tw-mb-1 md:tw-mb-1.5 tw-text-action-highlight tw-text-center">
 			{{ heading }}
 		</h3>
 		<div class="recommended-goal-card-container tw-max-w-full tw-px-2.5 md:!tw-px-0 md:!tw-mx-auto">

@@ -7,7 +7,7 @@
 			/>
 		</div>
 
-		<h2 class="tw-sr-only">
+		<h2 class="tw-text-headline tw-sr-only">
 			Loan Comments
 		</h2>
 		<div
@@ -35,7 +35,7 @@
 							class="tw-bg-white tw-rounded tw-p-1.5 tw-absolute tw-right-1 tw-top-0"
 							style="box-shadow: 0 4px 12px rgb(0 0 0 / 8%); width: 15rem;"
 						>
-							<h4 class="tw-text-h4 tw-text-secondary tw-mb-1">
+							<h4 class="tw-text-base tw-text-upper tw-text-secondary tw-mb-1">
 								More options
 							</h4>
 							<ul>
@@ -48,7 +48,7 @@
 						</div>
 						<!-- comment -->
 						<div>
-							<h2>
+							<h2 class="tw-text-headline">
 								<em class="tw-break-words">"{{ shortComment(comment.body) }}"</em>
 							</h2>
 						</div>
@@ -85,7 +85,7 @@
 										v-else-if="!comment.isAnonymous && isDefaultProfilePic(comment.hash)"
 										class="
 										tw-rounded-full
-										tw-text-h2
+										tw-text-headline
 										tw-w-full tw-h-full
 										tw-flex tw-align-center tw-justify-center"
 										:class="randomizedUserClass()"
@@ -110,10 +110,13 @@
 								</div>
 								<!-- name and team info -->
 								<div class="tw-m-auto">
-									<h3>
+									<h3 class="tw-text-title">
 										{{ comment.authorName }}
 									</h3>
-									<h4 v-if="comment.lenderTeam && comment.lenderTeamPublicId">
+									<h4
+										class="tw-text-base tw-text-upper"
+										v-if="comment.lenderTeam && comment.lenderTeamPublicId"
+									>
 										<router-link
 											:to="`/team/${comment.lenderTeamPublicId}`"
 											class="tw-text-primary"
@@ -146,10 +149,10 @@
 			@lightbox-closed="isReportLightboxVisible = false"
 		>
 			<template #header>
-				<h2>
+				<h2 class="tw-text-headline">
 					Report Comment
 				</h2>
-				<h3 class="tw-mt-2">
+				<h3 class="tw-text-title tw-mt-2">
 					Why are you reporting this comment?
 				</h3>
 			</template>
@@ -197,7 +200,7 @@
 			title=""
 			@lightbox-closed="isCommentLightboxVisible = false"
 		>
-			<h2>
+			<h2 class="tw-text-headline">
 				<em class="tw-break-words">"{{ selectedCommentBody }}"</em>
 			</h2>
 		</kv-lightbox>

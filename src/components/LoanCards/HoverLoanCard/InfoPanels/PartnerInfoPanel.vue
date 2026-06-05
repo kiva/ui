@@ -80,7 +80,7 @@
 				</div>
 			</dl>
 			<div v-if="loanAlertText && loanAlertText != ''">
-				<h3 class="tw-mb-1 tw-mt-4">
+				<h3 class="tw-text-title tw-mb-1 tw-mt-4">
 					Why Kiva works with this partner:
 				</h3>
 				<p class="tw-prose" v-html="loanAlertText"></p>

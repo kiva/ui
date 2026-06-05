@@ -21,7 +21,7 @@
 					</router-link> >
 					<span class="show-for-large">{{ loanChannelName }}</span>
 				</p>
-				<h1 class="tw-mb-2">
+				<h1 class="tw-text-display tw-mb-2">
 					{{ pageHeadline }}
 				</h1>
 				<p

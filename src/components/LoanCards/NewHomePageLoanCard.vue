@@ -61,7 +61,7 @@
 
 			<borrower-name
 				v-if="!isLoading"
-				class="tw-mb-1 tw-text-h3 tw-mt-1 tw-overflow-hidden tw-text-ellipsis tw-line-clamp-1"
+				class="tw-mb-1 tw-text-title tw-mt-1 tw-overflow-hidden tw-text-ellipsis tw-line-clamp-1"
 				:max-length="50"
 				:name="borrowerName"
 				style="min-height: 2rem;"
@@ -96,7 +96,7 @@
 					<figcaption class="tw-flex">
 						<div class="tw-flex-auto tw-text-left">
 							<p
-								class="tw-text-h3 tw-m-0 progress-text tw-mb-2 tw-mt-2"
+								class="tw-text-title tw-m-0 progress-text tw-mb-2 tw-mt-2"
 								data-testid="bp-summary-amount-to-go"
 							>
 								{{ Math.floor(fundraisingPercent) }}% FUNDED

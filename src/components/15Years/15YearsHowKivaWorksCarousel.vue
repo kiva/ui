@@ -27,10 +27,10 @@
 						</video>
 					</div>
 					<div class="carousel__body-header">
-						<p class="tw-text-h4">
+						<p class="tw-text-upper">
 							{{ slide.step }}
 						</p>
-						<h3 class="tw-text-h2 tw-mb-2">
+						<h3 class="tw-text-headline tw-mb-2">
 							{{ slide.title }}
 						</h3>
 					</div>

@@ -8,7 +8,7 @@
 			:loans="loansToDisplay"
 		/>
 		<h2
-			class="tw-text-center tw-text-primary"
+			class="tw-text-headline tw-text-center tw-text-primary"
 			style="line-height: 1.25;"
 		>
 			<span

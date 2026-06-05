@@ -18,7 +18,7 @@
 				</option>
 			</kv-select>
 		</div>
-		<p v-else class="tw-text-h3 tw-mb-0">
+		<p v-else class="tw-text-title tw-mb-0">
 			${{ price }}
 		</p>
 		<remove-basket-item

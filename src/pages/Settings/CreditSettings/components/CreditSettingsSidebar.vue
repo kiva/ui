@@ -2,7 +2,7 @@
 	<aside class="credit-settings-sidebar tw-bg-primary tw-p-3">
 		<div class="tw-flex tw-items-baseline tw-gap-1">
 			<kv-loading-placeholder v-if="loading" style="width: 72px; height: 32px;" />
-			<p v-else class="tw-text-h1 tw-text-action tw-mb-0">
+			<p v-else class="tw-text-display tw-text-action tw-mb-0">
 				{{ $filters.numeral(availableBalance, '$0,0.00') }}
 			</p>
 		</div>
@@ -47,7 +47,7 @@
 
 		<hr class="tw-my-3 tw-border-secondary">
 
-		<h3 class="tw-text-h4 tw-mb-1">
+		<h3 class="tw-text-upper tw-mb-1">
 			Important note:
 		</h3>
 		<p class="tw-text-small tw-text-secondary tw-mb-2">
@@ -65,7 +65,7 @@
 			</button>
 		</p>
 
-		<h3 class="tw-text-h4 tw-mb-1">
+		<h3 class="tw-text-upper tw-mb-1">
 			FAQ
 		</h3>
 		<ul class="tw-text-small tw-mb-0">

@@ -23,7 +23,7 @@
 					:alt="backgroundImage.description"
 				/>
 			</component>
-			<p class="story-card__imageCard-title tw-text-h4" v-if="!cardLink">
+			<p class="story-card__imageCard-title tw-text-upper" v-if="!cardLink">
 				{{ backgroundImage.title }}
 			</p>
 		</div>

@@ -1,14 +1,14 @@
 <template>
 	<!-- eslint-disable max-len -->
 	<div class="small-12 large-10 columns tw-prose">
-		<h1>
+		<h1 class="tw-text-display">
 			Promotional Lending Terms and Conditions
 		</h1>
 		<p>
 			From time to time, Kiva may offer promotions that enable you to make a loan on the Kiva website using credit supplied by Kiva, a Kiva affiliate, or a third-party sponsor (“Promotional Credit”) in lieu of your own personal funds. By participating in a promotion that offers Promotional Credit or otherwise claiming or using Promotional Credit, you agree to be bound by the following terms and conditions:
 		</p>
 		<section>
-			<h2>
+			<h2 class="tw-text-headline">
 				Claiming Promotional Credit.
 			</h2>
 			<p>
@@ -16,7 +16,7 @@
 			</p>
 		</section>
 		<section>
-			<h2>
+			<h2 class="tw-text-headline">
 				Using Promotional Credit.
 			</h2>
 			<p>
@@ -30,7 +30,7 @@
 			</p>
 		</section>
 		<section>
-			<h2>
+			<h2 class="tw-text-headline">
 				Donor Advised Fund.
 			</h2>
 			<p>
@@ -38,7 +38,7 @@
 			</p>
 		</section>
 		<section>
-			<h2>
+			<h2 class="tw-text-headline">
 				Legal Disclaimers.
 			</h2>
 			<p>

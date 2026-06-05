@@ -9,7 +9,7 @@
 
 		<kv-default-wrapper>
 			<div class="row column">
-				<h1 class="tw-mb-2">
+				<h1 class="tw-text-display tw-mb-2">
 					Auto-lending settings
 				</h1>
 				<p class="tw-text-subhead tw-mb-4">

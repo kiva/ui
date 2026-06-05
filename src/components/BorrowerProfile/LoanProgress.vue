@@ -27,14 +27,14 @@
 					<KvLoadingPlaceholder style="height: 2rem; width: 100px" class="tw-text-right" />
 				</div>
 				<div v-else>
-					<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
+					<p class="tw-text-title tw-m-0" data-testid="bp-summary-amount-to-go">
 						This loan is fully funded!
 					</p>
 					<div class="md:tw-flex tw-gap-2">
-						<p class="tw-text-h4 tw-text-secondary tw-block">
+						<p class="tw-text-upper tw-text-secondary tw-block">
 							100% funded
 						</p>
-						<p v-if="!hideViewProfileLinks" class="tw-text-h4 tw-text-action tw-block">
+						<p v-if="!hideViewProfileLinks" class="tw-text-upper tw-text-action tw-block">
 							<router-link
 								:to="`/lend-classic/${routeId}?minimal=false`"
 								v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
@@ -46,14 +46,14 @@
 				</div>
 			</div>
 			<div v-else-if="loanStatus === 'expired'">
-				<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
+				<p class="tw-text-title tw-m-0" data-testid="bp-summary-amount-to-go">
 					This loan has expired
 				</p>
 				<div class="md:tw-flex tw-gap-2">
-					<p class="tw-text-h4 tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
+					<p class="tw-text-upper tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
 						{{ progressPercentRounded }} funded
 					</p>
-					<p v-if="!hideViewProfileLinks" class="tw-text-h4 tw-text-action tw-block">
+					<p v-if="!hideViewProfileLinks" class="tw-text-upper tw-text-action tw-block">
 						<router-link
 							:to="`/lend-classic/${routeId}?minimal=false`"
 							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
@@ -64,14 +64,14 @@
 				</div>
 			</div>
 			<div v-else-if="loanStatus === 'inactive'">
-				<p class="tw-text-h3 tw-m-0">
+				<p class="tw-text-title tw-m-0">
 					This loan is inactive
 				</p>
 				<div class="md:tw-flex tw-gap-2">
-					<p class="tw-text-h4 tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
+					<p class="tw-text-upper tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
 						{{ progressPercentRounded }} funded
 					</p>
-					<p v-if="!hideViewProfileLinks" class="tw-text-h4 tw-text-action tw-block">
+					<p v-if="!hideViewProfileLinks" class="tw-text-upper tw-text-action tw-block">
 						<router-link
 							:to="`/lend-classic/${routeId}?minimal=false`"
 							v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
@@ -88,18 +88,18 @@
 				</div>
 				<div v-else class="tw-flex tw-flex-auto">
 					<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
-						<span class="tw-text-h3 tw-block tw-m-0">
+						<span class="tw-text-title tw-block tw-m-0">
 							{{ timeLeft }} left
 						</span>
-						<span class="tw-text-h4 tw-text-secondary tw-block">
+						<span class="tw-text-upper tw-text-secondary tw-block">
 							in private fundraising
 						</span>
 					</p>
 					<div class="tw-flex-auto tw-text-right">
-						<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-lenders-to-go">
+						<p class="tw-text-title tw-m-0" data-testid="bp-summary-lenders-to-go">
 							{{ numberOfLenders }}/{{ pfpMinLenders }} lenders
 						</p>
-						<p class="tw-text-h4 tw-text-secondary" data-testid="bp-summary-amount-to-go">
+						<p class="tw-text-upper tw-text-secondary" data-testid="bp-summary-amount-to-go">
 							{{ $filters.numeral(moneyLeft, '$0,0[.]00') }} to go
 						</p>
 					</div>
@@ -112,18 +112,18 @@
 				</div>
 				<div v-else class="tw-flex tw-flex-auto">
 					<p class="tw-flex-auto" data-testid="bp-summary-timeleft">
-						<span class="tw-text-h3 tw-block tw-m-0">
+						<span class="tw-text-title tw-block tw-m-0">
 							{{ timeLeft }}
 						</span>
-						<span class="tw-text-h4 tw-text-secondary tw-block">
+						<span class="tw-text-upper tw-text-secondary tw-block">
 							remaining
 						</span>
 					</p>
 					<div class="tw-flex-auto tw-text-right">
-						<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
+						<p class="tw-text-title tw-m-0" data-testid="bp-summary-amount-to-go">
 							{{ $filters.numeral(moneyLeft, '$0,0[.]00') }} to go
 						</p>
-						<p class="tw-text-h4 tw-text-secondary" data-testid="bp-summary-percent-funded">
+						<p class="tw-text-upper tw-text-secondary" data-testid="bp-summary-percent-funded">
 							{{ progressPercentRounded }} funded
 						</p>
 					</div>

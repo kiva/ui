@@ -1,7 +1,8 @@
 <template>
 	<div class="tw-bg-primary tw-mb-4 tw-rounded tw-drop-shadow-lg tw-overflow-hidden">
 		<h4
-			class="tw-bg-action tw-text-primary-inverse tw-w-full tw-px-1 tw-py-1.5 tw-mb-1 tw-inline-block"
+			class="tw-text-base tw-text-upper tw-bg-action tw-text-primary-inverse tw-w-full
+				tw-px-1 tw-py-1.5 tw-mb-1 tw-inline-block"
 		>
 			<template v-if="!isNewMembers">
 				Amount Funded:
@@ -18,21 +19,21 @@
 			<template #tabNav>
 				<kv-tab
 					for-panel="thisMonth"
-					class="tw-text-h4"
+					class="tw-text-upper"
 					:class="{'tw-text-secondary' :selectedTabIndex !== 0}"
 				>
 					This Month
 				</kv-tab>
 				<kv-tab
 					for-panel="lastMonth"
-					class="tw-text-h4"
+					class="tw-text-upper"
 					:class="{'tw-text-secondary' :selectedTabIndex !== 1}"
 				>
 					Last Month
 				</kv-tab>
 				<kv-tab
 					for-panel="allTime"
-					class="tw-text-h4"
+					class="tw-text-upper"
 					:class="{'tw-text-secondary' :selectedTabIndex !== 2}"
 				>
 					All Time

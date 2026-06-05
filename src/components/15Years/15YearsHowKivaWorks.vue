@@ -11,7 +11,7 @@
 					</template>
 				</fifteen-years-section-header>
 
-				<p class="works__subhead tw-text-h2">
+				<p class="works__subhead tw-text-headline">
 					By lending as little as $25 on Kiva, you can support the causes you care
 					about and make a real personal impact.
 				</p>

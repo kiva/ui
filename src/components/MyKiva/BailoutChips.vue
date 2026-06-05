@@ -1,7 +1,7 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-gap-4">
 		<div>
-			<h3 class="tw-mb-1.5">
+			<h3 class="tw-text-title tw-mb-1.5">
 				Featured
 			</h3>
 			<PillsContainer
@@ -11,7 +11,7 @@
 			/>
 		</div>
 		<div v-if="categories.length">
-			<h3 class="tw-mb-1.5">
+			<h3 class="tw-text-title tw-mb-1.5">
 				Find borrowers by category
 			</h3>
 			<PillsContainer
@@ -22,7 +22,7 @@
 			/>
 		</div>
 		<div v-if="regionItems.length">
-			<h3 class="tw-mb-1.5">
+			<h3 class="tw-text-title tw-mb-1.5">
 				Find borrowers by location
 			</h3>
 			<PillsContainer

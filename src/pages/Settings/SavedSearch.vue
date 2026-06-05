@@ -7,7 +7,7 @@
 		</template>
 		<kv-default-wrapper>
 			<kv-grid>
-				<h1 class="tw-mb-2">
+				<h1 class="tw-text-display tw-mb-2">
 					Saved Searches
 				</h1>
 			</kv-grid>

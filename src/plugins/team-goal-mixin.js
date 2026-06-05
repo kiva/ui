@@ -67,25 +67,5 @@ export default {
 		participants() {
 			return this.goal?.participation ?? {};
 		},
-		challengeActivity() {
-			const activities = this.goal?.participation?.values ?? [];
-			const data = [];
-
-			activities
-				// Show one activity item per lender with the amounts summed
-				.forEach(activity => {
-					const existing = data.find(a => a?.lender?.id === activity?.lender?.id);
-					if (existing) {
-						const existingAmount = parseFloat(existing?.amountLent ?? 0);
-						const activityAmount = parseFloat(activity?.amountLent ?? 0);
-						existing.amountLent = existingAmount + activityAmount;
-					} else {
-						// Shallow copy the read-only object so we can sum the amountLent
-						data.push({ ...activity });
-					}
-				});
-
-			return data;
-		},
 	},
 };

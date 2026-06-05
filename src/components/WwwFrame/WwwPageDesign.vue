@@ -89,7 +89,7 @@
 					<div class="tw-col-span-8">
 						<kv-grid class="tw-grid-cols-4 md:tw-grid-cols-8 tw-gap-y-6">
 							<div class="tw-col-span-2">
-								<h2 class="tw-text-h4 tw-mb-1 md:tw-mb-2">
+								<h2 class="tw-text-upper tw-mb-1 md:tw-mb-2">
 									Downloads
 								</h2>
 								<ul class="tw-flex tw-flex-col tw-gap-0.5">
@@ -110,7 +110,7 @@
 								</ul>
 							</div>
 							<div class="tw-col-span-2">
-								<h2 class="tw-text-h4 tw-mb-1 md:tw-mb-2">
+								<h2 class="tw-text-upper tw-mb-1 md:tw-mb-2">
 									Our Sites
 								</h2>
 								<ul class="tw-flex tw-flex-col tw-gap-0.5">
@@ -127,7 +127,7 @@
 								</ul>
 							</div>
 							<div class="tw-col-span-2">
-								<h2 class="tw-text-h4 tw-mb-1 md:tw-mb-2">
+								<h2 class="tw-text-upper tw-mb-1 md:tw-mb-2">
 									Contact Us
 								</h2>
 								<ul class="tw-flex tw-flex-col tw-gap-0.5">
@@ -137,7 +137,7 @@
 								</ul>
 							</div>
 							<div class="tw-col-span-2">
-								<h2 class="tw-text-h4 tw-mb-1 md:tw-mb-2">
+								<h2 class="tw-text-upper tw-mb-1 md:tw-mb-2">
 									Legal
 								</h2>
 								<ul class="tw-flex tw-flex-col tw-gap-0.5">

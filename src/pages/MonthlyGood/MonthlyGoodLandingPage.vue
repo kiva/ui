@@ -24,7 +24,7 @@
 					>
 						<h1
 							class="tw-text-primary
-						tw-text-h2" v-html="heroHeadline"
+						tw-text-headline" v-html="heroHeadline"
 						></h1>
 						<p class="tw-mt-2 tw-mb-3 tw-text-subhead tw-text-primary" v-html="heroBody"></p>
 						<landing-form
@@ -51,7 +51,7 @@
 		<div class="tw-bg-white tw-rounded md:tw-hidden tw-px-2" v-if="isClientReady">
 			<h1
 				class="tw-text-primary tw-shadow-transparent tw-mt-2
-			tw-text-h2" v-html="heroHeadline"
+			tw-text-headline" v-html="heroHeadline"
 			></h1>
 			<p class="tw-text-subhead tw-text-primary tw-my-2" v-html="heroBody"></p>
 			<landing-form

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="tw-w-full tw-py-2 tw-px-1">
-			<h2 class="tw-text-h2 tw-text-primary">
+			<h2 class="tw-text-headline tw-text-primary">
 				{{ welcomeTitle }}
 			</h2>
 			<p class="tw-text-base tw-text-secondary">

@@ -22,7 +22,7 @@
 					</div>
 					<div class="tw-text-center md:tw-text-left">
 						<div class="md:tw-max-w-lg tw-whitespace-prewrap">
-							<h3 class="tw-inline" v-html="headline"></h3>
+							<h3 class="tw-text-title tw-inline" v-html="headline"></h3>
 							<a
 								v-if="disclaimer"
 								v-kv-track-event="['promo', 'click-disclaimer-superscript', 'donation-banner', '1']"

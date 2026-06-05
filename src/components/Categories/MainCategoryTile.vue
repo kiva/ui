@@ -16,11 +16,11 @@
 			/>
 			<div>
 				<div class="tw-text-center tw-flex tw-justify-between">
-					<h3 class="tw-mt-2 tw-mb-2 group-hover:tw-underline">
+					<h3 class="tw-text-title tw-mt-2 tw-mb-2 group-hover:tw-underline">
 						{{ categoryName }}
 					</h3>
 					<h4
-						class="tw-mt-2 tw-mb-2"
+						class="tw-text-base tw-text-upper tw-mt-2 tw-mb-2"
 						:class="tileSize === 'medium' ? 'md:tw-hidden' : ''"
 					>
 						{{ numberLoans }} loans
@@ -34,7 +34,7 @@
 			</div>
 			<h4
 				v-if="tileSize === 'medium'"
-				class="tw-mt-1 tw-mb-2 tw-hidden md:tw-block"
+				class="tw-text-base tw-text-upper tw-mt-1 tw-mb-2 tw-hidden md:tw-block"
 			>
 				{{ numberLoans }} loans
 			</h4>
@@ -59,7 +59,7 @@
 					/>
 				</div>
 				<div class="tw-grow">
-					<h3 class=" tw-mb-2 group-hover:tw-underline">
+					<h3 class="tw-text-title  tw-mb-2 group-hover:tw-underline">
 						{{ categoryName }}
 					</h3>
 					<div>
@@ -67,7 +67,7 @@
 							{{ categoryDescription }}
 						</span>
 					</div>
-					<h4 class="tw-mt-1 tw-mb-1 ">
+					<h4 class="tw-text-base tw-text-upper tw-mt-1 tw-mb-1 ">
 						{{ numberLoans }} loans
 					</h4>
 				</div>

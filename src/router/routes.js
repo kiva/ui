@@ -336,10 +336,6 @@ export default [
 		}
 	},
 	{
-		path: '/lend/',
-		redirect: '/lend/filter'
-	},
-	{
 		name: 'borrowerProfile',
 		path: '/lend/:id(\\d+)',
 		component: () => import('#src/pages/BorrowerProfile/BorrowerProfile'),
@@ -348,19 +344,6 @@ export default [
 			unbounceEmailCapture: true,
 			unbouncePopUp: true,
 		}
-	},
-	{
-		name: 'lend-filter',
-		path: '/lend/filter',
-		component: () => import('#src/pages/Lend/LoanSearchPage'),
-		meta: {
-			unbounceEmailCapture: true,
-		},
-	},
-	{
-		name: 'filter-alpha',
-		path: '/lend/filter-alpha',
-		redirect: '/lend/filter'
 	},
 	{
 		path: '/lend/:category',

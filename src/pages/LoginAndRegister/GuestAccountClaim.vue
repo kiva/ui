@@ -1,7 +1,7 @@
 <template>
 	<system-page>
 		<div class="page-content" style="max-width: 20rem;">
-			<h1 class="tw-text-h2 tw-mb-2">
+			<h1 class="tw-text-headline tw-mb-2">
 				One last thing!
 			</h1>
 			<p class="tw-mb-4">

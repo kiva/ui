@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div v-if="prodRoutes.length">
-			<h2 class="tw-mb-4">
+			<h2 class="tw-text-headline tw-mb-4">
 				Prod Routes
 			</h2>
 			<ul class="tw-list-disc tw-list-inside tw-mb-4">
@@ -22,7 +22,7 @@
 			</ul>
 		</div>
 		<div v-if="devRoutes.length">
-			<h2 class="tw-mb-4">
+			<h2 class="tw-text-headline tw-mb-4">
 				Dev Routes
 			</h2>
 			<ul class="tw-list-disc tw-list-inside tw-mb-4">
@@ -43,7 +43,7 @@
 			</ul>
 		</div>
 		<div v-if="redirectRoutes.length">
-			<h2 class="tw-mb-4">
+			<h2 class="tw-text-headline tw-mb-4">
 				Redirects
 			</h2>
 			<ul class="tw-list-disc tw-list-inside tw-mb-4">

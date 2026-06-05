@@ -16,7 +16,7 @@
 			easing="ease-in-out"
 		>
 			<div>
-				<h2 data-testid="bp-story-previous-loan-header">
+				<h2 class="tw-text-headline" data-testid="bp-story-previous-loan-header">
 					Previous loan details
 				</h2>
 

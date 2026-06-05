@@ -86,7 +86,7 @@
 				</div>
 			</dl>
 			<div v-if="endorsement && endorsement != ''">
-				<h3 class="tw-mb-1 tw-mt-4">
+				<h3 class="tw-text-title tw-mb-1 tw-mt-4">
 					Why are you endorsing this borrower?
 				</h3>
 				<p class="tw-prose">

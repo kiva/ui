@@ -8,7 +8,7 @@
 		</template>
 		<kv-default-wrapper>
 			<div class="row column">
-				<h1 class="tw-mb-4">
+				<h1 class="tw-text-display tw-mb-4">
 					2-step verification
 				</h1>
 			</div>
@@ -62,7 +62,7 @@
 									class="two-step-verification__method"
 									v-for="(mfaMethod, index) in mfaMethods" :key="index"
 								>
-									<h3 class="tw-mb-1">
+									<h3 class="tw-text-title tw-mb-1">
 										{{ readableAuthName(mfaMethod.authenticator_type) }}
 									</h3>
 									<!-- Phone number related to authentication method -->
@@ -101,7 +101,7 @@
 								</p>
 								<!-- Phone verification disabled since not currently functional -->
 								<template v-if="false">
-									<h3 class="tw-mb-2">
+									<h3 class="tw-text-title tw-mb-2">
 										Text message or phone call
 									</h3>
 									<p class="tw-mb-2">
@@ -116,7 +116,7 @@
 							</div>
 
 							<div class="two-step-verification__sub-section">
-								<h3 class="tw-mb-2">
+								<h3 class="tw-text-title tw-mb-2">
 									Authentication app
 								</h3>
 								<p class="tw-mb-2">

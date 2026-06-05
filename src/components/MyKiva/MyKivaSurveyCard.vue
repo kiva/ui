@@ -22,7 +22,7 @@
 
 		<div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
 			<MyKivaLightningImg />
-			<h3 class="tw-text-center">
+			<h3 class="tw-text-title tw-text-center">
 				<u>Help Kiva</u> by answering one question
 			</h3>
 		</div>

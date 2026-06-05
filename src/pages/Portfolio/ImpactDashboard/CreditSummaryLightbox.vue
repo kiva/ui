@@ -28,7 +28,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr class="tw-text-h3">
+					<tr class="tw-text-title">
 						<td class="tw-py-1">
 							Total deposits
 						</td>
@@ -62,7 +62,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr class="tw-text-h3">
+					<tr class="tw-text-title">
 						<td class="tw-py-1">
 							Total deductions
 						</td>
@@ -96,7 +96,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr class="tw-text-h3">
+					<tr class="tw-text-title">
 						<td class="tw-py-1">
 							Total credit in Kiva
 						</td>

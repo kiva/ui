@@ -6,7 +6,7 @@
 		<five-dollars-banner v-if="showFiveDollarsBanner" class="tw-mb-2" />
 		<!-- eslint-disable-next-line max-len -->
 		<div v-if="showWelcomeMsg" class="tw-mx-auto tw-p-2 tw-py-1 lg:tw-pt-3 tw-px-2.5 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
-			<h3 class="tw-text-h3 tw-text-primary">
+			<h3 class="tw-text-title tw-text-primary">
 				Welcome back{{ firstName ? ', ' : '' }}
 				<span v-if="firstName" class="tw-text-action data-hj-suppress">{{ firstName }}</span>
 			</h3>

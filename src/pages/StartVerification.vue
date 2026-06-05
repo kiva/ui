@@ -4,7 +4,7 @@
 			<kv-default-wrapper>
 				<div class="tw-prose tw-text-center" data-testid="withdraw-verification-text">
 					<template v-if="!sent">
-						<h1>Email verification required</h1>
+						<h1 class="tw-text-display">Email verification required</h1>
 						<p>To ensure your safety, we added an extra layer of security.</p>
 						<p>Once we verify your account, you can continue {{ process }}!</p>
 						<kv-button
@@ -16,7 +16,7 @@
 						</kv-button>
 					</template>
 					<template v-else>
-						<h1>Email verification pending</h1>
+						<h1 class="tw-text-display">Email verification pending</h1>
 						<p>
 							We sent a validation link
 							<span v-if="email" class="email data-hj-suppress">to {{ email }}</span>.
