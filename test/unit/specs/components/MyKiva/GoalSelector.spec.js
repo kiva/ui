@@ -45,6 +45,10 @@ describe('GoalSelector', () => {
 		setTimeout(resolve, 0);
 	});
 
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
 	const TestWrapper = {
 		components: { GoalSelector },
 		props: {
@@ -145,7 +149,7 @@ describe('GoalSelector', () => {
 
 		const getLoanNumbers = () => Array.from(
 			container.querySelectorAll('span.tw-text-display')
-		).map(el => Number(el.textContent.trim()));
+		).map(el => Number(el.textContent.trim())).filter(Number.isFinite);
 
 		// Helper to click a category and assert expected goal options
 		const expectCategoryOptions = async (testId, expected) => {
@@ -174,6 +178,8 @@ describe('GoalSelector', () => {
 	});
 
 	it('renders the selected category name in the title when the user changes category', async () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-01-15T12:00:00'));
 		const tieredAchievements = [
 			{
 				id: ID_WOMENS_EQUALITY,
@@ -185,7 +191,7 @@ describe('GoalSelector', () => {
 			},
 		];
 
-		const user = userEvent.setup();
+		const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
 		const { getByRole, getByTestId } = render(TestWrapper, {
 			global: {
 				...globalOptions,
@@ -197,7 +203,7 @@ describe('GoalSelector', () => {
 			props: { tieredAchievements },
 		});
 
-		await flushPromises();
+		await vi.runAllTimersAsync();
 
 		const getTitleText = () => getByRole('heading', { level: 2 }).innerHTML;
 
@@ -206,28 +212,29 @@ describe('GoalSelector', () => {
 
 		// Refugees
 		await user.click(getByTestId('category-refugees'));
-		await flushPromises();
+		await vi.runAllTimersAsync();
 		expect(getTitleText()).toContain('refugees');
 
 		// Climate Action
 		await user.click(getByTestId('category-climate'));
-		await flushPromises();
+		await vi.runAllTimersAsync();
 		expect(getTitleText()).toContain('climate action');
 
 		// U.S. Entrepreneurs
 		await user.click(getByTestId('category-us'));
-		await flushPromises();
+		await vi.runAllTimersAsync();
 		expect(getTitleText()).toContain('U.S. entrepreneurs');
 
 		// Basic Needs
 		await user.click(getByTestId('category-basic-needs'));
-		await flushPromises();
+		await vi.runAllTimersAsync();
 		expect(getTitleText()).toContain('basic needs');
 
 		// Choose as I go (support all)
 		await user.click(getByTestId('category-support-all'));
-		await flushPromises();
+		await vi.runAllTimersAsync();
 		expect(getTitleText()).toBe(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
+		vi.useRealTimers();
 	});
 
 	it('shows requested goal question and current-year progress copy', async () => {
@@ -271,7 +278,8 @@ describe('GoalSelector', () => {
 		await flushPromises();
 
 		expect(getByRole('heading', { level: 2 }).textContent)
-			.toBe(stripHtml(goalCopy.titleCategoryHowManyLoans('women')));
+			.toBe(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
+		expect(container.textContent).toContain('How many loans will you make this year?');
 		expect(container.textContent).toContain(stripHtml(goalCopy.subtitleLoansAlreadyMade(1)));
 	});
 
@@ -363,7 +371,7 @@ describe('GoalSelector', () => {
 
 		const getLoanNumbers = () => Array.from(
 			container.querySelectorAll('span.tw-text-display')
-		).map(el => Number(el.textContent.trim()));
+		).map(el => Number(el.textContent.trim())).filter(Number.isFinite);
 
 		// Women category: 1 loan last year, 0 this year -> default options
 		expect(getLoanNumbers()).toEqual([3, 4, 5]);
@@ -577,7 +585,7 @@ describe('GoalSelector', () => {
 
 		const getLoanNumbers = () => Array.from(
 			container.querySelectorAll('span.tw-text-display')
-		).map(el => Number(el.textContent.trim()));
+		).map(el => Number(el.textContent.trim())).filter(Number.isFinite);
 
 		// Initial category (Women) with no history falls back to default options
 		expect(getLoanNumbers()).toEqual(getExpectedGoalOptions({ useDefault: true }));

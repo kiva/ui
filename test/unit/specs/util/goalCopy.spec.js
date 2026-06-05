@@ -1,5 +1,8 @@
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
-import goalCopy from '#src/util/goalCopy';
+import goalCopy, {
+	GOAL_SIGNUP_COPY_LAST_YEAR,
+	GOAL_SIGNUP_COPY_NO_GOAL_YET,
+} from '#src/util/goalCopy';
 import {
 	ID_SUPPORT_ALL,
 	ID_CLIMATE_ACTION,
@@ -24,6 +27,20 @@ describe('goalCopy', () => {
 			const result = goalCopy.titleNoHistoryWomensDefault('tw-text-action');
 			expect(result).toContain('class="tw-text-action"');
 			expect(result).not.toContain('tw-text-eco-green-3');
+		});
+	});
+
+	describe('getGoalSignupCopyVariant', () => {
+		it('uses last-year copy from January 1 through March 31', () => {
+			expect(goalCopy.getGoalSignupCopyVariant(new Date('2026-01-01T12:00:00'))).toBe(GOAL_SIGNUP_COPY_LAST_YEAR);
+			expect(goalCopy.getGoalSignupCopyVariant(new Date('2026-03-31T12:00:00'))).toBe(GOAL_SIGNUP_COPY_LAST_YEAR);
+		});
+
+		it('uses no-goal-yet copy starting April 1', () => {
+			expect(goalCopy.getGoalSignupCopyVariant(new Date('2026-04-01T12:00:00')))
+				.toBe(GOAL_SIGNUP_COPY_NO_GOAL_YET);
+			expect(goalCopy.getGoalSignupCopyVariant(new Date('2026-12-31T12:00:00')))
+				.toBe(GOAL_SIGNUP_COPY_NO_GOAL_YET);
 		});
 	});
 

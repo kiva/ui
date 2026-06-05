@@ -49,7 +49,7 @@ import { KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { useRouter } from 'vue-router';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
-import goalCopy from '#src/util/goalCopy';
+import goalCopy, { GOAL_SIGNUP_COPY_NO_GOAL_YET } from '#src/util/goalCopy';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
@@ -62,6 +62,9 @@ const router = useRouter();
 const womenLoansLastYear = ref(0);
 
 const title = computed(() => {
+	if (goalCopy.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
+		return goalCopy.CARD_NO_GOAL_YET_EXPERIMENT;
+	}
 	if (womenLoansLastYear.value === 1) {
 		return goalCopy.titleLastYearSingleWoman(womenLoansLastYear.value);
 	}

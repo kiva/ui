@@ -63,7 +63,7 @@ const props = defineProps({
 		default: '',
 	},
 	/**
-	 * Whether the custom goal amount feature is enabled (from experiment)
+	 * Whether the custom goal amount feature is enabled
 	 */
 	customGoalAmountEnable: {
 		type: Boolean,

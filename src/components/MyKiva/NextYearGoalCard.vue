@@ -60,7 +60,7 @@ import {
 	KvButton, KvLoadingPlaceholder
 } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD } from '#src/composables/useGoalData';
-import goalCopy from '#src/util/goalCopy';
+import goalCopy, { GOAL_SIGNUP_COPY_NO_GOAL_YET } from '#src/util/goalCopy';
 import { useRouter } from 'vue-router';
 import confetti from 'canvas-confetti';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
@@ -115,7 +115,10 @@ const goalLoans = computed(() => {
 });
 
 const title = computed(() => {
-	if (props.isGoalTileExperimentEnabled) {
+	if (
+		goalCopy.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET
+		|| props.isGoalTileExperimentEnabled
+	) {
 		return goalCopy.CARD_NO_GOAL_YET_EXPERIMENT;
 	}
 	if (props.prevYearLoans === 1) {

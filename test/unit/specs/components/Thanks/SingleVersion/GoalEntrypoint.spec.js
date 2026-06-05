@@ -23,6 +23,7 @@ const RecommendLoanForGoalContainerStub = {
 
 const GoalSelectorStub = {
 	name: 'GoalSelector',
+	props: ['customGoalAmountEnable'],
 	emits: ['set-goal', 'set-goal-target', 'edit-goal'],
 	template: '<div />',
 };
@@ -57,6 +58,12 @@ describe('GoalEntrypoint', () => {
 
 			expect(wrapper.findComponent(GoalSelectorStub).exists()).toBe(true);
 			expect(wrapper.findComponent(RecommendLoanForGoalContainerStub).exists()).toBe(false);
+		});
+
+		it('passes custom goal amount enablement to the selector', () => {
+			const wrapper = mountComponent({ customGoalAmountEnable: true });
+
+			expect(wrapper.findComponent(GoalSelectorStub).props('customGoalAmountEnable')).toBe(true);
 		});
 
 		it('renders the recommended loan container when the view is on and loans are available', () => {

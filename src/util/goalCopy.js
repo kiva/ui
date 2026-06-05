@@ -1,4 +1,7 @@
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import getGoalSignupCopyVariant, {
+	GOAL_SIGNUP_COPY_VARIANT,
+} from '#src/util/goalSignupCopyVariant';
 import {
 	ID_SUPPORT_ALL,
 	ID_CLIMATE_ACTION,
@@ -11,8 +14,19 @@ const highlight = (text, cssClass) => `<span class="${cssClass}">${text}</span>`
 const bold = (text, cssClass) => `<strong class="${cssClass}">${text}</strong>`;
 const ecoGreen = text => highlight(text, 'tw-text-eco-green-3');
 
+export const GOAL_SIGNUP_COPY_LAST_YEAR = GOAL_SIGNUP_COPY_VARIANT.LAST_YEAR;
+export const GOAL_SIGNUP_COPY_NO_GOAL_YET = GOAL_SIGNUP_COPY_VARIANT.NO_GOAL_YET;
+
 const goalCopy = {
 	// ─── Shared title copy (GoalEntrypoint, NextYearGoalCard, GoalSelector) ────
+
+	/**
+	 * Jan 1 through Mar 31 uses prior-year impact copy; Apr 1 onward uses
+	 * the direct no-goal-yet copy for the new annual goal cycle.
+	 */
+	getGoalSignupCopyVariant(date) {
+		return getGoalSignupCopyVariant(date ? { now: date } : undefined);
+	},
 
 	/** No lending history and default womens category */
 	// eslint-disable-next-line max-len
