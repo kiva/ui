@@ -73,7 +73,9 @@
 						@tool-tip-visible="handleToolTipVisible"
 					>
 						<template #title>
-							<h5 class="tw-text-label">Annual goals and achievements</h5>
+							<h5 class="tw-text-label">
+								Annual goals and achievements
+							</h5>
 						</template>
 						<p class="tw-text-small">
 							<!-- eslint-disable-next-line max-len -->
@@ -433,7 +435,6 @@ export default {
 	},
 	methods: {
 		openGoalSettingModal() {
-			// Reuses the GoalSettingModal already mounted inside LendingStats.
 			this.$refs.lendingStatsRef?.openGoalModal?.();
 		},
 		openEditGoalSettingModal() {

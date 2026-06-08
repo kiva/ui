@@ -117,7 +117,6 @@ watch(
 );
 
 const handleSetGoalClick = () => {
-	// Parent (MyKivaPageContent) opens the existing GoalSettingModal mounted in LendingStats.
 	emit('set-goal-click');
 };
 
@@ -144,7 +143,6 @@ const handleCtaClick = () => {
 };
 
 const handleEditClick = () => {
-	// Parent (MyKivaPageContent) opens the existing GoalSettingModal in edit mode.
 	emit('edit-click');
 };
 </script>
