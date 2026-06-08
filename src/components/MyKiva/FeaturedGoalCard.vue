@@ -58,6 +58,7 @@
 						</h5>
 					</div>
 					<KvUtilityMenu
+						v-if="!goalCompleted"
 						menu-position="right-aligned"
 						button-size="small"
 						menu-border-class="tw-border tw-border-tertiary tw-rounded-md"
@@ -204,7 +205,7 @@ const props = defineProps({
 const emit = defineEmits(['set-goal-click', 'cta-click', 'edit-click']);
 
 const menuActions = [
-	{ label: 'Edit goal', value: 'edit-goal' },
+	{ label: 'Edit', value: 'edit-goal' },
 ];
 
 const resolvedState = computed(() => (
@@ -371,10 +372,6 @@ watch(
 	.featured-goal-card__cta--active-goal {
 		width: 286px;
 	}
-}
-
-.featured-goal-card__cta :deep(span) {
-	@apply !tw-min-h-4.5 md:tw-h-auto;
 }
 
 .featured-goal-card__cta :deep(span > span) {
