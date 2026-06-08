@@ -66,10 +66,30 @@ describe('NextYearGoalCard', () => {
 		vi.clearAllMocks();
 	});
 
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
 	it('shows confetti when mounted with a completed visible goal', () => {
 		const { goalData } = mountCard();
 
 		expect(confetti).toHaveBeenCalledTimes(1);
 		expect(goalData.setHideGoalCardPreference).not.toHaveBeenCalled();
+	});
+
+	it('uses date-based title copy even when the goal tile experiment is enabled', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-03-15T12:00:00'));
+
+		const { wrapper } = mountCard({
+			props: {
+				userGoal: null,
+				prevYearLoans: 2,
+				isGoalTileExperimentEnabled: true,
+			},
+		});
+
+		expect(wrapper.text()).toContain('Last year, you helped 2 women shape their futures!');
+		expect(wrapper.text()).not.toContain("You haven't set your goal yet!");
 	});
 });

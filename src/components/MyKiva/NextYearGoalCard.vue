@@ -115,10 +115,7 @@ const goalLoans = computed(() => {
 });
 
 const title = computed(() => {
-	if (
-		goalCopy.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET
-		|| props.isGoalTileExperimentEnabled
-	) {
+	if (goalCopy.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
 		return goalCopy.CARD_NO_GOAL_YET_EXPERIMENT;
 	}
 	if (props.prevYearLoans === 1) {
