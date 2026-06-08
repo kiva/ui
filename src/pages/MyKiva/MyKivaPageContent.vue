@@ -18,8 +18,16 @@
 				:user-id="userInfo?.id"
 			/>
 		</section>
+		<MyKivaFeaturedSlot
+			v-if="goalsRowEnabled"
+			:key="`featured-slot-${goalRefreshKey}`"
+			:user-first-name="userInfo?.userAccount?.firstName"
+			@set-goal-click="openGoalSettingModal"
+			@edit-click="openEditGoalSettingModal"
+		/>
 		<section v-if="clientRendered" class="!tw-mt-2">
 			<LendingStats
+				ref="lendingStatsRef"
 				:regions-data="lendingStats.regionsData"
 				:user-lent-to-all-regions="userLentToAllRegions"
 				:hero-slides="heroSlides"
@@ -34,6 +42,7 @@
 				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 				:lending-next-steps-variant="lendingNextStepsVariant"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
+				:goals-row-enabled="goalsRowEnabled"
 				:basket-items="basketItems"
 				:is-adding="isAdding"
 				@add-to-basket="addToBasket"
@@ -206,6 +215,7 @@ import LendingCategorySection from '#src/components/LoanFinding/LendingCategoryS
 import JourneySideSheet from '#src/components/Badges/JourneySideSheet';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 import LendingStats from '#src/components/MyKiva/LendingStats';
+import MyKivaFeaturedSlot from '#src/components/MyKiva/MyKivaFeaturedSlot';
 import BailoutChips from '#src/components/MyKiva/BailoutChips';
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
@@ -248,6 +258,7 @@ export default {
 		MyGivingFundsCard,
 		MyKivaStats,
 		LendingStats,
+		MyKivaFeaturedSlot,
 		BailoutChips,
 		BadgesSectionV2,
 		KvMaterialIcon,
@@ -421,6 +432,13 @@ export default {
 		},
 	},
 	methods: {
+		openGoalSettingModal() {
+			// Reuses the GoalSettingModal already mounted inside LendingStats.
+			this.$refs.lendingStatsRef?.openGoalModal?.();
+		},
+		openEditGoalSettingModal() {
+			this.$refs.lendingStatsRef?.openGoalModal?.({ updating: true });
+		},
 		navigateToLoanFindingUrl(id) {
 			const loanFindingUrl = this.getLoanFindingUrl(id, this.$router.currentRoute.value);
 			if (loanFindingUrl) {

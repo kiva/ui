@@ -1,7 +1,7 @@
 <template>
 	<KvLoadingPlaceholder
 		v-if="loading"
-		class="featured-goal-card__loading tw-rounded-lg tw-w-full"
+		class="featured-goal-card__loading !tw-rounded-lg tw-w-full"
 		aria-busy="true"
 	/>
 	<div
@@ -149,13 +149,14 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import {
 	KvButton, KvLoadingPlaceholder, KvProgressCircle, KvUtilityMenu,
 } from '@kiva/kv-components';
 import KvIcon from '#src/components/Kv/KvIcon';
 import goalCopy from '#src/util/goalCopy';
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import { showConfetti } from '#src/util/animation/confettiUtils';
 
 const HALF_GOAL_THRESHOLD = 50;
 const COMPLETED_GOAL_THRESHOLD = 100;
@@ -193,6 +194,10 @@ const props = defineProps({
 	userName: {
 		type: String,
 		default: '',
+	},
+	suppressCompletionConfetti: {
+		type: Boolean,
+		default: false,
 	},
 });
 
@@ -258,6 +263,27 @@ const activeGoalCta = computed(() => {
 const onSelect = action => {
 	if (action.value === 'edit-goal') emit('edit-click');
 };
+
+const hasFiredCompletionConfetti = ref(false);
+
+const fireCompletionConfettiIfReady = () => {
+	if (
+		hasFiredCompletionConfetti.value
+		|| props.loading
+		|| props.suppressCompletionConfetti
+		|| clampedPercentage.value !== COMPLETED_GOAL_THRESHOLD
+	) {
+		return;
+	}
+	hasFiredCompletionConfetti.value = true;
+	showConfetti();
+};
+
+watch(
+	() => [props.loading, props.suppressCompletionConfetti, clampedPercentage.value],
+	fireCompletionConfettiIfReady,
+	{ immediate: true }
+);
 </script>
 
 <style lang="postcss" scoped>
