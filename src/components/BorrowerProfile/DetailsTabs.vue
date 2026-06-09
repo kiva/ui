@@ -20,24 +20,24 @@
 			<template #tabNav>
 				<kv-tab
 					:for-panel="loanTabId"
-					data-testid="bp-detail-loan-details-tab"
-					v-kv-track-event="['Borrower Profile', `click-Loan-Details-tab`, 'Loan Details']"
+					:data-testid="`${testidPrefix}-loan-details-tab`"
+					v-kv-track-event="['Borrower Profile', `${trackPrefix}-Loan-Details-tab`, 'Loan Details']"
 				>
 					Loan details
 				</kv-tab>
 				<kv-tab
 					:for-panel="partnerTabId" v-if="isPartnerLoan"
-					data-testid="bp-detail-field-partner-tab"
-					v-kv-track-event="['Borrower Profile', `click-Field-Partner-tab`, 'Field Partner']"
+					:data-testid="`${testidPrefix}-field-partner-tab`"
+					v-kv-track-event="['Borrower Profile', `${trackPrefix}-Field-Partner-tab`, 'Field Partner']"
 				>
 					Lending Partner
 				</kv-tab>
 				<kv-tab
 					:for-panel="trusteeTabId" v-if="hasTrustee"
-					data-testid="bp-detail-trustee-tab"
+					:data-testid="`${testidPrefix}-trustee-tab`"
 					v-kv-track-event="[
 						'Borrower Profile',
-						'click-Trustee-tab',
+						`${trackPrefix}-Trustee-tab`,
 						noTrusteeState ? 'No Trustee' : 'Trustee'
 					]"
 				>
@@ -45,7 +45,7 @@
 				</kv-tab>
 			</template>
 			<template #tabPanels>
-				<kv-tab-panel :id="loanTabId" data-testid="bp-detail-loan-detail-panel">
+				<kv-tab-panel :id="loanTabId" :data-testid="`${testidPrefix}-loan-detail-panel`">
 					<loan-details
 						:status="loan.status"
 						:charges-fees-interest="partner.chargesFeesInterest"
@@ -71,7 +71,7 @@
 				</kv-tab-panel>
 				<kv-tab-panel
 					:id="partnerTabId" v-if="isPartnerLoan"
-					data-testid="bp-detail-field-partner-panel"
+					:data-testid="`${testidPrefix}-field-partner-panel`"
 				>
 					<field-partner-details
 						:arrears-rate="partner.arrearsRate"
@@ -93,7 +93,7 @@
 				</kv-tab-panel>
 				<kv-tab-panel
 					:id="trusteeTabId" v-if="hasTrustee"
-					data-testid="bp-detail-trustee-panel"
+					:data-testid="`${testidPrefix}-trustee-panel`"
 				>
 					<trustee-details
 						:borrower-name="loan.name"
@@ -156,6 +156,15 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		condensed: {
+			type: Boolean,
+			default: false,
+		},
+	},
+	provide() {
+		return {
+			condensed: this.condensed,
+		};
 	},
 	data() {
 		return {
@@ -164,6 +173,15 @@ export default {
 		};
 	},
 	computed: {
+		tabIdPrefix() {
+			return this.condensed ? 'rail-tab-panel' : 'tab-panel';
+		},
+		testidPrefix() {
+			return this.condensed ? 'bp-detail-rail' : 'bp-detail';
+		},
+		trackPrefix() {
+			return this.condensed ? 'click-rail' : 'click';
+		},
 		isPartnerLoan() {
 			return !!this.partner?.name;
 		},
@@ -171,16 +189,16 @@ export default {
 			return !this.isPartnerLoan && this.trustee?.name;
 		},
 		loanTabId() {
-			return `tab-panel-${this.name}-loan-details`;
+			return `${this.tabIdPrefix}-${this.name}-loan-details`;
 		},
 		noTrusteeState() {
 			return this.trustee?.name === 'No Trustee Endorsement';
 		},
 		partnerTabId() {
-			return `tab-panel-${this.name}-field-partner`;
+			return `${this.tabIdPrefix}-${this.name}-field-partner`;
 		},
 		trusteeTabId() {
-			return `tab-panel-${this.name}-trustee`;
+			return `${this.tabIdPrefix}-${this.name}-trustee`;
 		},
 		displayRepaymentSchedule() {
 			// Don't show repayment schedule for fully anonymized loans
