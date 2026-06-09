@@ -1,7 +1,7 @@
 <template>
 	<KvLoadingPlaceholder
 		v-if="loading"
-		class="featured-goal-card__loading tw-rounded-lg tw-w-full"
+		class="featured-goal-card__loading !tw-rounded-lg tw-w-full"
 		aria-busy="true"
 	/>
 	<div
@@ -58,6 +58,7 @@
 						</h5>
 					</div>
 					<KvUtilityMenu
+						v-if="!goalCompleted"
 						menu-position="right-aligned"
 						button-size="small"
 						menu-border-class="tw-border tw-border-tertiary tw-rounded-md"
@@ -149,13 +150,14 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import {
 	KvButton, KvLoadingPlaceholder, KvProgressCircle, KvUtilityMenu,
 } from '@kiva/kv-components';
 import KvIcon from '#src/components/Kv/KvIcon';
 import goalCopy from '#src/util/goalCopy';
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import { showConfetti } from '#src/util/animation/confettiUtils';
 
 const HALF_GOAL_THRESHOLD = 50;
 const COMPLETED_GOAL_THRESHOLD = 100;
@@ -194,12 +196,16 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
+	suppressCompletionConfetti: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits(['set-goal-click', 'cta-click', 'edit-click']);
 
 const menuActions = [
-	{ label: 'Edit goal', value: 'edit-goal' },
+	{ label: 'Edit', value: 'edit-goal' },
 ];
 
 const resolvedState = computed(() => (
@@ -258,6 +264,27 @@ const activeGoalCta = computed(() => {
 const onSelect = action => {
 	if (action.value === 'edit-goal') emit('edit-click');
 };
+
+const hasFiredCompletionConfetti = ref(false);
+
+const fireCompletionConfettiIfReady = () => {
+	if (
+		hasFiredCompletionConfetti.value
+		|| props.loading
+		|| props.suppressCompletionConfetti
+		|| clampedPercentage.value !== COMPLETED_GOAL_THRESHOLD
+	) {
+		return;
+	}
+	hasFiredCompletionConfetti.value = true;
+	showConfetti();
+};
+
+watch(
+	() => [props.loading, props.suppressCompletionConfetti, clampedPercentage.value],
+	fireCompletionConfettiIfReady,
+	{ immediate: true }
+);
 </script>
 
 <style lang="postcss" scoped>
@@ -345,10 +372,6 @@ const onSelect = action => {
 	.featured-goal-card__cta--active-goal {
 		width: 286px;
 	}
-}
-
-.featured-goal-card__cta :deep(span) {
-	@apply !tw-min-h-4.5 md:tw-h-auto;
 }
 
 .featured-goal-card__cta :deep(span > span) {
