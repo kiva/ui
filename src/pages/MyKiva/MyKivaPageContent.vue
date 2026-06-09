@@ -343,8 +343,7 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		// When false, the featured slot would only render to hide itself,
-		// so we skip mounting it
+		// Flag to indicate if the goal row should be rendered (loading and loaded state)
 		shouldRenderFeaturedSlot: {
 			type: Boolean,
 			default: true,
