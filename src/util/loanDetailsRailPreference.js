@@ -1,5 +1,5 @@
 import store2 from 'store2';
-import { createUserPreferences, updateUserPreferences } from '#src/util/userPreferenceUtils';
+import { getUserPreference, setUserPreference } from '#src/util/userPreferenceUtils';
 
 // Single source of truth for both the localStorage key and the userPreferences JSON key.
 export const RAIL_PREF_KEY = 'showLoanDetailsInRail';
@@ -25,19 +25,14 @@ export function setLocalRailPreference(value) {
 }
 
 /**
- * Parse the rail preference out of a `my.userPreferences` node.
+ * Read the rail preference out of a `my.userPreferences` node.
  *
  * @param {{preferences?: string}|null} userPreferences
  * @returns {boolean|null} the stored boolean, or null when absent/unparseable.
  */
 export function readAccountRailPreference(userPreferences) {
-	if (!userPreferences?.preferences) return null;
-	try {
-		const parsed = JSON.parse(userPreferences.preferences);
-		return typeof parsed[RAIL_PREF_KEY] === 'boolean' ? parsed[RAIL_PREF_KEY] : null;
-	} catch {
-		return null;
-	}
+	const value = getUserPreference(userPreferences, RAIL_PREF_KEY);
+	return typeof value === 'boolean' ? value : null;
 }
 
 /**
@@ -57,28 +52,16 @@ export function resolveRailPreference({ accountPref = null, local = null } = {})
 
 /**
  * Persist the preference: always localStorage; additionally the account
- * userPreferences blob when a logged-in `my` context is present (create if
- * there's no record yet, else merge-update).
+ * userPreferences blob when logged in.
  *
  * @param {object} apollo Apollo client
  * @param {object} opts
  * @param {boolean} opts.value
- * @param {{id?: number, userPreferences?: {id?: number, preferences?: string}}|null} opts.my
+ * @param {{id?: number, preferences?: string}|null} opts.userPreferences
+ * @param {boolean} opts.isLoggedIn
  */
-export async function persistRailPreference(apollo, { value, my }) {
+export async function persistRailPreference(apollo, { value, userPreferences, isLoggedIn }) {
 	setLocalRailPreference(value);
-	if (!my?.id) return;
-
-	const userPreferences = my.userPreferences ?? null;
-	if (userPreferences?.id) {
-		let parsed = {};
-		try {
-			parsed = JSON.parse(userPreferences.preferences || '{}');
-		} catch {
-			parsed = {};
-		}
-		await updateUserPreferences(apollo, userPreferences, parsed, { [RAIL_PREF_KEY]: value });
-	} else {
-		await createUserPreferences(apollo, { [RAIL_PREF_KEY]: value });
-	}
+	if (!isLoggedIn) return;
+	await setUserPreference(apollo, userPreferences, RAIL_PREF_KEY, value);
 }
