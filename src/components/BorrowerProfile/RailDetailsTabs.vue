@@ -20,24 +20,24 @@
 			<template #tabNav>
 				<kv-tab
 					:for-panel="loanTabId"
-					data-testid="bp-detail-loan-details-tab"
-					v-kv-track-event="['Borrower Profile', `click-Loan-Details-tab`, 'Loan Details']"
+					data-testid="bp-detail-rail-loan-details-tab"
+					v-kv-track-event="['Borrower Profile', `click-rail-Loan-Details-tab`, 'Loan Details']"
 				>
 					Loan details
 				</kv-tab>
 				<kv-tab
 					:for-panel="partnerTabId" v-if="isPartnerLoan"
-					data-testid="bp-detail-field-partner-tab"
-					v-kv-track-event="['Borrower Profile', `click-Field-Partner-tab`, 'Field Partner']"
+					data-testid="bp-detail-rail-field-partner-tab"
+					v-kv-track-event="['Borrower Profile', `click-rail-Field-Partner-tab`, 'Field Partner']"
 				>
 					Lending Partner
 				</kv-tab>
 				<kv-tab
 					:for-panel="trusteeTabId" v-if="hasTrustee"
-					data-testid="bp-detail-trustee-tab"
+					data-testid="bp-detail-rail-trustee-tab"
 					v-kv-track-event="[
 						'Borrower Profile',
-						'click-Trustee-tab',
+						'click-rail-Trustee-tab',
 						noTrusteeState ? 'No Trustee' : 'Trustee'
 					]"
 				>
@@ -126,7 +126,7 @@ import DetailsDefinitionsLightbox from './DetailsDefinitionsLightbox';
 import { loanDetailsQuery, mapLoanDetailsResult } from './loanDetailsQuery';
 
 export default {
-	name: 'DetailsTabs',
+	name: 'RailDetailsTabs',
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		DetailsDefinitionsLightbox,
@@ -146,7 +146,7 @@ export default {
 		},
 		name: {
 			type: String,
-			required: true,
+			default: 'bp-rail-details-tabs',
 		},
 		useSalesForce: {
 			type: Boolean,
@@ -171,16 +171,16 @@ export default {
 			return !this.isPartnerLoan && this.trustee?.name;
 		},
 		loanTabId() {
-			return `tab-panel-${this.name}-loan-details`;
+			return `rail-tab-panel-${this.name}-loan-details`;
 		},
 		noTrusteeState() {
 			return this.trustee?.name === 'No Trustee Endorsement';
 		},
 		partnerTabId() {
-			return `tab-panel-${this.name}-field-partner`;
+			return `rail-tab-panel-${this.name}-field-partner`;
 		},
 		trusteeTabId() {
-			return `tab-panel-${this.name}-trustee`;
+			return `rail-tab-panel-${this.name}-trustee`;
 		},
 		displayRepaymentSchedule() {
 			// Don't show repayment schedule for fully anonymized loans
