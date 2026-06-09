@@ -700,6 +700,30 @@ export default function useGoalData({ apollo } = {}) {
 		// MyKiva renders the completed card once, then hides it on the next page load.
 	}
 
+	const viewedGoalCompleteByYear = computed(() => {
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+		return parsedPrefs.viewedGoalComplete || {};
+	});
+
+	function hasViewedCompletedGoalForYear(year) {
+		return Boolean(viewedGoalCompleteByYear.value?.[year]);
+	}
+
+	async function setViewedGoalCompletePreference(year = GOALS_CURRENT_YEAR) {
+		if (!year) return;
+		const parsedPrefs = await loadPreferences('network-only');
+		const prev = parsedPrefs?.viewedGoalComplete || {};
+		// Year-keyed flag so next year's celebration is not suppressed by a prior year's view.
+		if (prev[year]) return;
+		const updatedPreference = { viewedGoalComplete: { ...prev, [year]: true } };
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			updatedPreference
+		);
+	}
+
 	async function checkCompletedGoal({
 		currentGoalProgress = 0,
 		category = 'post-checkout',
@@ -1051,6 +1075,9 @@ export default function useGoalData({ apollo } = {}) {
 		renewAnnualGoal,
 		hideGoalCard,
 		setHideGoalCardPreference,
+		viewedGoalCompleteByYear,
+		hasViewedCompletedGoalForYear,
+		setViewedGoalCompletePreference,
 		getSupportAllLoanCountByYear,
 		setGoalState,
 		removeGoalFromPreferences,
