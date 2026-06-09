@@ -233,6 +233,7 @@
 						class="lg:tw-block tw-border-tertiary tw-w-full tw-my-2"
 						:class="[
 							{
+								'lg:tw-hidden': showDetailsInRail,
 								'tw-hidden': isSticky,
 								'tw-block': !isSticky,
 							}
@@ -245,6 +246,7 @@
 								'tw-justify-between': isLoggedIn,
 								'tw-justify-end': !isLoggedIn,
 								'tw-hidden': isSticky,
+								'lg:tw-hidden': showDetailsInRail,
 							}
 						]"
 					>
@@ -504,6 +506,10 @@ export default {
 			default: () => ({}),
 		},
 		enableFiveDollarsNotes: {
+			type: Boolean,
+			default: false,
+		},
+		showDetailsInRail: {
 			type: Boolean,
 			default: false,
 		},
