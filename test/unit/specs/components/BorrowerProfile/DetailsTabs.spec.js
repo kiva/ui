@@ -22,3 +22,23 @@ describe('DetailsTabs condensed prefixes', () => {
 			.toBe('rail-tab-panel-bp-rail-details-loan-details');
 	});
 });
+
+describe('DetailsTabs discriminator', () => {
+	const { computed } = DetailsTabs;
+
+	it('treats a LoanPartner as a partner loan', () => {
+		expect(computed.isPartnerLoan.call({ loanType: 'LoanPartner' })).toBe(true);
+		expect(computed.isPartnerLoan.call({ loanType: 'LoanDirect' })).toBe(false);
+	});
+
+	it('shows the trustee tab only for a direct loan with a trustee', () => {
+		expect(computed.hasTrustee.call({ loanType: 'LoanDirect', trusteeName: 'Accion' })).toBe(true);
+		expect(computed.hasTrustee.call({ loanType: 'LoanDirect', trusteeName: '' })).toBe(false);
+		expect(computed.hasTrustee.call({ loanType: 'LoanPartner', trusteeName: 'Accion' })).toBe(false);
+	});
+
+	it('detects the no-trustee endorsement state', () => {
+		expect(computed.noTrusteeState.call({ trusteeName: 'No Trustee Endorsement' })).toBe(true);
+		expect(computed.noTrusteeState.call({ trusteeName: 'Accion' })).toBe(false);
+	});
+});
