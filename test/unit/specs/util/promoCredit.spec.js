@@ -164,36 +164,28 @@ describe('promoCredit', () => {
 	});
 
 	describe('isAdminRewardTipEligible', () => {
-		const adminRewardData = {
-			shop: { promoCampaign: { managedAccount: { managementType: 'Admin Reward' } } },
-		};
-		const otherTypeData = {
-			shop: { promoCampaign: { managedAccount: { managementType: 'lending_reward' } } },
-		};
-		const noPromoData = { shop: {} };
+		const adminRewardPromo = { managedAccount: { managementType: 'Admin Reward' } };
+		const otherTypePromo = { managedAccount: { managementType: 'lending_reward' } };
 
 		it('returns true when flag is on and managementType is Admin Reward', () => {
-			expect(isAdminRewardTipEligible(adminRewardData, true)).toBe(true);
+			expect(isAdminRewardTipEligible(adminRewardPromo, true)).toBe(true);
 		});
 
 		it('returns false when flag is off, even for Admin Reward', () => {
-			expect(isAdminRewardTipEligible(adminRewardData, false)).toBe(false);
+			expect(isAdminRewardTipEligible(adminRewardPromo, false)).toBe(false);
 		});
 
 		it('returns false for other managementType values when flag is on', () => {
-			expect(isAdminRewardTipEligible(otherTypeData, true)).toBe(false);
+			expect(isAdminRewardTipEligible(otherTypePromo, true)).toBe(false);
 		});
 
-		it('returns false for non-promotional checkouts (no promoCampaign) when flag is on', () => {
-			expect(isAdminRewardTipEligible(noPromoData, true)).toBe(false);
+		it('returns false for non-promotional checkouts (no promoData) when flag is on', () => {
+			expect(isAdminRewardTipEligible(undefined, true)).toBe(false);
+			expect(isAdminRewardTipEligible({}, true)).toBe(false);
 		});
 
 		it('returns false when flag is null (setting absent)', () => {
-			expect(isAdminRewardTipEligible(adminRewardData, null)).toBe(false);
-		});
-
-		it('returns false when data is undefined', () => {
-			expect(isAdminRewardTipEligible(undefined, true)).toBe(false);
+			expect(isAdminRewardTipEligible(adminRewardPromo, null)).toBe(false);
 		});
 	});
 });

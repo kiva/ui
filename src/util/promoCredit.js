@@ -122,13 +122,13 @@ export function hasPromoSession(data) {
  *   2. The current checkout's promoCampaign managed account has a
  *      `managementType` of exactly `'Admin Reward'`.
  *
- * @param {Object} data - GraphQL result with `shop.promoCampaign.managedAccount.managementType`.
+ * @param {Object} promoData - The `shop.promoCampaign` sub-tree from a checkout query.
  * @param {boolean} flagEnabled - The resolved boolean value of the feature flag.
  * @returns {boolean}
  */
-export function isAdminRewardTipEligible(data, flagEnabled) {
+export function isAdminRewardTipEligible(promoData, flagEnabled) {
 	if (flagEnabled !== true) return false;
-	return data?.shop?.promoCampaign?.managedAccount?.managementType === 'Admin Reward';
+	return promoData?.managedAccount?.managementType === 'Admin Reward';
 }
 
 /**

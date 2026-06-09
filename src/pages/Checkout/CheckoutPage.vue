@@ -495,7 +495,6 @@ export default {
 			isExpiringSoonExpEnabled: false,
 			isKivaCreditReplacementExpEnabled: false,
 			enableAdminRewardTipFlag: false,
-			apolloData: null,
 		};
 	},
 	apollo: {
@@ -830,7 +829,7 @@ export default {
 			return this.promoData?.managedAccount?.id ?? null;
 		},
 		adminRewardTipEligible() {
-			return isAdminRewardTipEligible(this.apolloData, this.enableAdminRewardTipFlag);
+			return isAdminRewardTipEligible(this.promoData, this.enableAdminRewardTipFlag);
 		},
 		promoFundId() {
 			return this.promoData?.promoFund?.id ?? null;
@@ -1064,7 +1063,6 @@ export default {
 		getPromoInformationFromBasket() {
 			getPromoFromBasket(this.derivedPromoFund?.id, this.apollo).then(({ data }) => {
 				this.promoData = data?.shop?.promoCampaign;
-				this.apolloData = data;
 
 				this.$nextTick(() => {
 					if (
