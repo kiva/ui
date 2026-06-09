@@ -1773,6 +1773,69 @@ describe('useGoalData', () => {
 			// and fires the goal-complete email), since the user has not truly reached the goal.
 			expect(setMyKivaGoal).not.toHaveBeenCalled();
 		});
+
+		it('does not persist completed when only client-side fresh progress reaches the target', async () => {
+			const { setMyKivaGoal } = await import('#src/util/userPreferenceUtils');
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_WOMENS_EQUALITY,
+					target: 1,
+					dateStarted: '2026-01-01',
+					loanTotalAtStart: 0,
+					status: GOAL_STATUS.IN_PROGRESS,
+				}],
+			};
+			// A recent loan the UI maps to the women's category but the achievement service
+			// has not attributed (authoritative progressForYear stays 0).
+			const recentFemaleLoan = {
+				id: 101,
+				gender: 'female',
+				geocode: { country: { isoCode: 'KE' } },
+				themes: [],
+				tags: [],
+				sector: { id: 1 },
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 0, progressForYear: 0 },
+							],
+						},
+					},
+				});
+
+			// MyKiva-style load: fresh progress inflates goalProgress to the target (1),
+			// while the authoritative achievement progress is still 0.
+			await composable.loadGoalData({
+				year: 2026,
+				freshProgressLoans: [recentFemaleLoan],
+				tieredAchievements: [{ id: ID_WOMENS_EQUALITY, loanPurchases: [] }],
+				transactions: [{ loan: { id: 101 }, effectiveTime: '2026-02-01T12:00:00Z' }],
+			});
+			expect(composable.goalProgress.value).toBe(1);
+
+			setMyKivaGoal.mockClear();
+			// MyKiva passes no optimistic projection; the only thing pushing it over the target
+			// is the client-side fresh-progress adjustment, which must not count toward persistence.
+			await composable.checkCompletedGoal();
+
+			expect(setMyKivaGoal).not.toHaveBeenCalled();
+		});
 	});
 
 	describe('getPostCheckoutProgressByLoans', () => {
