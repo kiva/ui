@@ -25,7 +25,7 @@ export default ({
 						// subscribe positionally, so the mock must accept both forms.
 						subscribe: (...args) => {
 							const next = typeof args[0] === 'function' ? args[0] : args[0]?.next;
-							if (typeof next === 'function') {
+							if (typeof next === 'function' && !loading) {
 								next(queryData);
 							}
 							return { unsubscribe: () => {} };
