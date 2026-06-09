@@ -493,6 +493,7 @@ export default {
 			isBanditUpsellExpEnabled: false,
 			isExpiringSoonExpEnabled: false,
 			isKivaCreditReplacementExpEnabled: false,
+			enableAdminRewardTipFlag: false,
 		};
 	},
 	apollo: {
@@ -568,6 +569,9 @@ export default {
 			this.isFtdMessageEnable = readBoolSetting(data, 'general.ftd_message_enable.value');
 			this.ftdCreditAmount = data?.general?.ftd_message_amount?.value ?? '';
 			this.ftdValidDate = data?.general?.ftd_message_valid_date?.value ?? '';
+
+			// Enable admin reward tip flag from settings
+			this.enableAdminRewardTipFlag = readBoolSetting(data, 'general.admin_reward_tip_flag.value');
 
 			// Deposit incentive experiment MP-72
 			this.depositIncentiveAmountToLend = numeral(data?.my?.depositIncentiveAmountToLend ?? 0).value();
