@@ -17,6 +17,9 @@
 <script>
 export default {
 	name: 'DescriptionListItem',
+	inject: {
+		condensed: { default: false },
+	},
 	emits: ['show-definition'],
 	props: {
 		term: {
