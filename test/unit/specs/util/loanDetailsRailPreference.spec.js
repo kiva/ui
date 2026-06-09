@@ -9,9 +9,11 @@ import {
 } from '#src/util/loanDetailsRailPreference';
 import * as userPreferenceUtils from '#src/util/userPreferenceUtils';
 
-vi.mock('#src/util/userPreferenceUtils', () => ({
-	createUserPreferences: vi.fn().mockResolvedValue({}),
-	updateUserPreferences: vi.fn().mockResolvedValue({}),
+// Keep getUserPreference real (so readAccountRailPreference exercises real parsing);
+// mock only the account write so we can assert delegation.
+vi.mock('#src/util/userPreferenceUtils', async importOriginal => ({
+	...(await importOriginal()),
+	setUserPreference: vi.fn().mockResolvedValue({}),
 }));
 
 afterEach(() => {
@@ -57,31 +59,19 @@ describe('loanDetailsRailPreference', () => {
 	});
 
 	describe('persistRailPreference', () => {
-		it('always writes localStorage and skips the account when there is no my context', async () => {
-			await persistRailPreference(null, { value: true, my: null });
+		it('always writes localStorage and skips the account when not logged in', async () => {
+			await persistRailPreference(null, { value: true, userPreferences: null, isLoggedIn: false });
 			expect(getLocalRailPreference()).toBe(true);
-			expect(userPreferenceUtils.createUserPreferences).not.toHaveBeenCalled();
-			expect(userPreferenceUtils.updateUserPreferences).not.toHaveBeenCalled();
+			expect(userPreferenceUtils.setUserPreference).not.toHaveBeenCalled();
 		});
 
-		it('creates account prefs when logged in with no existing record', async () => {
+		it('delegates the account write to setUserPreference when logged in', async () => {
 			const apollo = {};
-			await persistRailPreference(apollo, { value: true, my: { id: 1, userPreferences: null } });
-			expect(getLocalRailPreference()).toBe(true);
-			expect(userPreferenceUtils.createUserPreferences)
-				.toHaveBeenCalledWith(apollo, { showLoanDetailsInRail: true });
-		});
-
-		it('merge-updates account prefs when a record already exists', async () => {
-			const apollo = {};
-			const my = { id: 1, userPreferences: { id: 7, preferences: '{"goals":[1]}' } };
-			await persistRailPreference(apollo, { value: false, my });
-			expect(userPreferenceUtils.updateUserPreferences).toHaveBeenCalledWith(
-				apollo,
-				my.userPreferences,
-				{ goals: [1] },
-				{ showLoanDetailsInRail: false },
-			);
+			const userPreferences = { id: 7, preferences: '{"goals":[1]}' };
+			await persistRailPreference(apollo, { value: false, userPreferences, isLoggedIn: true });
+			expect(getLocalRailPreference()).toBe(false);
+			expect(userPreferenceUtils.setUserPreference)
+				.toHaveBeenCalledWith(apollo, userPreferences, RAIL_PREF_KEY, false);
 		});
 	});
 });
