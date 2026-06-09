@@ -667,7 +667,7 @@ export default {
 			COUNTRIES_NOT_LENT_TO_URL,
 		};
 	},
-	emits: ['show-basket', 'enable-multi-matching'],
+	emits: ['show-basket'],
 	props: {
 		hideSearchInHeader: {
 			type: Boolean,
@@ -778,7 +778,6 @@ export default {
 			result({ data }) {
 				this.teamsMenuEnabled = readBoolSetting(data, 'general.teamsMenuEnabled.value');
 				this.enableMultiMatching = readBoolSetting(data, 'general.multiMatchingEnabled.value') ?? false;
-				this.$emit('enable-multi-matching', this.enableMultiMatching);
 			},
 		},
 		{
