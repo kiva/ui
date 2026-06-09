@@ -315,6 +315,7 @@ import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
 import { readBoolSetting } from '#src/util/settingsUtils';
+import { isAdminRewardTipEligible } from '#src/util/promoCredit';
 import { preFetchAll } from '#src/util/apolloPreFetch';
 import syncDate from '#src/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
@@ -493,6 +494,7 @@ export default {
 			isBanditUpsellExpEnabled: false,
 			isExpiringSoonExpEnabled: false,
 			isKivaCreditReplacementExpEnabled: false,
+			enableAdminRewardTipFlag: false,
 		};
 	},
 	apollo: {
@@ -568,6 +570,9 @@ export default {
 			this.isFtdMessageEnable = readBoolSetting(data, 'general.ftd_message_enable.value');
 			this.ftdCreditAmount = data?.general?.ftd_message_amount?.value ?? '';
 			this.ftdValidDate = data?.general?.ftd_message_valid_date?.value ?? '';
+
+			// Enable admin reward tip flag from settings
+			this.enableAdminRewardTipFlag = readBoolSetting(data, 'general.admin_reward_tip_flag.value');
 
 			// Deposit incentive experiment MP-72
 			this.depositIncentiveAmountToLend = numeral(data?.my?.depositIncentiveAmountToLend ?? 0).value();
@@ -822,6 +827,9 @@ export default {
 		},
 		managedAccountId() {
 			return this.promoData?.managedAccount?.id ?? null;
+		},
+		adminRewardTipEligible() {
+			return isAdminRewardTipEligible(this.promoData, this.enableAdminRewardTipFlag);
 		},
 		promoFundId() {
 			return this.promoData?.promoFund?.id ?? null;

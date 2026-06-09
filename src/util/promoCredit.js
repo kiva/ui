@@ -114,6 +114,24 @@ export function hasPromoSession(data) {
 }
 
 /**
+ * Determine whether the optional tip section is eligible to be shown for an
+ * Admin Reward lending-credit checkout.
+ *
+ * Returns true only when ALL of the following are true:
+ *   1. The `enable_tip_for_admin_reward_lc` feature flag is enabled.
+ *   2. The current checkout's promoCampaign managed account has a
+ *      `managementType` of exactly `'Admin Reward'`.
+ *
+ * @param {Object} promoData - The `shop.promoCampaign` sub-tree from a checkout query.
+ * @param {boolean} flagEnabled - The resolved boolean value of the feature flag.
+ * @returns {boolean}
+ */
+export function isAdminRewardTipEligible(promoData, flagEnabled) {
+	if (flagEnabled !== true) return false;
+	return promoData?.managedAccount?.managementType === 'Admin Reward';
+}
+
+/**
  * Determine if the route or URL indicates that the user is coming from the Impact Dashboard.
  *
  * @param {Object|URL} routeOrUrl - The route object or URL to check.
