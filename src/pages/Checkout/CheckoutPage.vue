@@ -315,6 +315,7 @@ import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
 import { readBoolSetting } from '#src/util/settingsUtils';
+import { isAdminRewardTipEligible } from '#src/util/promoCredit';
 import { preFetchAll } from '#src/util/apolloPreFetch';
 import syncDate from '#src/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
@@ -494,6 +495,7 @@ export default {
 			isExpiringSoonExpEnabled: false,
 			isKivaCreditReplacementExpEnabled: false,
 			enableAdminRewardTipFlag: false,
+			apolloData: null,
 		};
 	},
 	apollo: {
@@ -827,6 +829,9 @@ export default {
 		managedAccountId() {
 			return this.promoData?.managedAccount?.id ?? null;
 		},
+		adminRewardTipEligible() {
+			return isAdminRewardTipEligible(this.apolloData, this.enableAdminRewardTipFlag);
+		},
 		promoFundId() {
 			return this.promoData?.promoFund?.id ?? null;
 		},
@@ -1059,6 +1064,7 @@ export default {
 		getPromoInformationFromBasket() {
 			getPromoFromBasket(this.derivedPromoFund?.id, this.apollo).then(({ data }) => {
 				this.promoData = data?.shop?.promoCampaign;
+				this.apolloData = data;
 
 				this.$nextTick(() => {
 					if (
