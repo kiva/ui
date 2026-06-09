@@ -1,0 +1,24 @@
+import DetailsTabs from '#src/components/BorrowerProfile/DetailsTabs';
+
+describe('DetailsTabs condensed prefixes', () => {
+	const callComputed = (name, condensed) => DetailsTabs.computed[name].call({ condensed });
+
+	it('uses default prefixes when not condensed', () => {
+		expect(callComputed('tabIdPrefix', false)).toBe('tab-panel');
+		expect(callComputed('testidPrefix', false)).toBe('bp-detail');
+		expect(callComputed('trackPrefix', false)).toBe('click');
+	});
+
+	it('uses rail prefixes when condensed', () => {
+		expect(callComputed('tabIdPrefix', true)).toBe('rail-tab-panel');
+		expect(callComputed('testidPrefix', true)).toBe('bp-detail-rail');
+		expect(callComputed('trackPrefix', true)).toBe('click-rail');
+	});
+
+	it('composes prefix + name into tab panel ids (so main and rail never collide)', () => {
+		expect(DetailsTabs.computed.loanTabId.call({ tabIdPrefix: 'tab-panel', name: 'bp-details' }))
+			.toBe('tab-panel-bp-details-loan-details');
+		expect(DetailsTabs.computed.loanTabId.call({ tabIdPrefix: 'rail-tab-panel', name: 'bp-rail-details' }))
+			.toBe('rail-tab-panel-bp-rail-details-loan-details');
+	});
+});
