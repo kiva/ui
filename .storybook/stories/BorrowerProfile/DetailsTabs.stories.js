@@ -10,7 +10,7 @@ import {
 	directLoanWithTrustee,
 } from './mockLoanFixtures';
 
-function detailsTabsStory(loan, { loading = false } = {}) {
+function detailsTabsStory(loan, { loading = false, condensed = false } = {}) {
 	return () => ({
 		components: { DetailsTabs },
 		mixins: [
@@ -21,7 +21,8 @@ function detailsTabsStory(loan, { loading = false } = {}) {
 		template: `
 			<details-tabs
 				:loan-id="${loan.id}"
-				name="${loan.name}"
+				name="details-${loan.id}"
+				:condensed="${condensed}"
 			/>
 		`,
 	});
@@ -43,3 +44,15 @@ DirectLoanNoTrustee.storyName = 'Direct Loan (No Trustee)';
 
 export const Loading = detailsTabsStory(fundraisingPartnerLoan, { loading: true });
 Loading.storyName = 'Loading (skeleton)';
+
+export const CondensedPartnerLoan = detailsTabsStory(fundraisingPartnerLoan, { condensed: true });
+CondensedPartnerLoan.storyName = 'Condensed — Partner Loan (Lending Partner Tab)';
+
+export const CondensedDirectLoanWithTrustee = detailsTabsStory(directLoanWithTrustee, { condensed: true });
+CondensedDirectLoanWithTrustee.storyName = 'Condensed — Direct Loan (Trustee Tab)';
+
+export const CondensedDirectLoanNoTrustee = detailsTabsStory(fundraisingDirectLoan, { condensed: true });
+CondensedDirectLoanNoTrustee.storyName = 'Condensed — Direct Loan (No Trustee)';
+
+export const CondensedLoading = detailsTabsStory(fundraisingPartnerLoan, { loading: true, condensed: true });
+CondensedLoading.storyName = 'Condensed — Loading (skeleton)';
