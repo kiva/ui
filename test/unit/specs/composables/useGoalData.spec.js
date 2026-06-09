@@ -4411,4 +4411,93 @@ describe('useGoalData', () => {
 			expect(result).toEqual([{ id: 999 }]);
 		});
 	});
+
+	describe('viewedGoalComplete flag', () => {
+		// `setViewedGoalCompletePreference` internally calls `loadPreferences('network-only')`
+		// before writing, so the apollo mock must return the same response on every call —
+		// not just once — or the function's own load will hit an empty mock and treat prefs
+		// as cleared.
+		const loadPrefsOnce = async prefsObject => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-vgc',
+							preferences: JSON.stringify(prefsObject),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+			await composable.loadPreferences('network-only');
+		};
+
+		it('hasViewedCompletedGoalForYear returns false when key missing', async () => {
+			await loadPrefsOnce({ goals: [] });
+			expect(composable.hasViewedCompletedGoalForYear(GOALS_CURRENT_YEAR)).toBe(false);
+		});
+
+		it('hasViewedCompletedGoalForYear returns true when year flag is set', async () => {
+			await loadPrefsOnce({ viewedGoalComplete: { [GOALS_CURRENT_YEAR]: true } });
+			expect(composable.hasViewedCompletedGoalForYear(GOALS_CURRENT_YEAR)).toBe(true);
+		});
+
+		it('hasViewedCompletedGoalForYear is year-keyed (no cross-year leakage)', async () => {
+			await loadPrefsOnce({ viewedGoalComplete: { [GOALS_CURRENT_YEAR - 1]: true } });
+			expect(composable.hasViewedCompletedGoalForYear(GOALS_CURRENT_YEAR - 1)).toBe(true);
+			expect(composable.hasViewedCompletedGoalForYear(GOALS_CURRENT_YEAR)).toBe(false);
+		});
+
+		it('setViewedGoalCompletePreference persists a year-keyed flag', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			updateUserPreferences.mockClear();
+
+			await loadPrefsOnce({ goals: [], hideGoalCard: false });
+			await composable.setViewedGoalCompletePreference(GOALS_CURRENT_YEAR);
+
+			expect(updateUserPreferences).toHaveBeenCalledTimes(1);
+			const [, , , updatedPreference] = updateUserPreferences.mock.calls[0];
+			expect(updatedPreference).toEqual({
+				viewedGoalComplete: { [GOALS_CURRENT_YEAR]: true },
+			});
+		});
+
+		it('setViewedGoalCompletePreference merges with existing year entries', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			updateUserPreferences.mockClear();
+
+			await loadPrefsOnce({
+				viewedGoalComplete: { [GOALS_CURRENT_YEAR - 1]: true },
+			});
+			await composable.setViewedGoalCompletePreference(GOALS_CURRENT_YEAR);
+
+			expect(updateUserPreferences).toHaveBeenCalledTimes(1);
+			const [, , , updatedPreference] = updateUserPreferences.mock.calls[0];
+			expect(updatedPreference).toEqual({
+				viewedGoalComplete: {
+					[GOALS_CURRENT_YEAR - 1]: true,
+					[GOALS_CURRENT_YEAR]: true,
+				},
+			});
+		});
+
+		it('setViewedGoalCompletePreference is idempotent — no write when year already set', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			updateUserPreferences.mockClear();
+
+			await loadPrefsOnce({ viewedGoalComplete: { [GOALS_CURRENT_YEAR]: true } });
+			await composable.setViewedGoalCompletePreference(GOALS_CURRENT_YEAR);
+
+			expect(updateUserPreferences).not.toHaveBeenCalled();
+		});
+
+		it('setViewedGoalCompletePreference is a no-op when called with a falsy year', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			updateUserPreferences.mockClear();
+
+			await composable.setViewedGoalCompletePreference(0);
+
+			expect(updateUserPreferences).not.toHaveBeenCalled();
+		});
+	});
 });
