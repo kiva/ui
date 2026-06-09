@@ -40,6 +40,11 @@ fragment loanCardFields on LoanBasic {
 	matchingText
 	matchRatio
 	isMatchable
+	simultaneousMatching {
+		managedAccountId
+		displayName
+		ratio
+	}
 	userProperties {
 		favorited
 		lentTo

@@ -315,6 +315,7 @@ import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
 import { readBoolSetting } from '#src/util/settingsUtils';
+import { isAdminRewardTipEligible } from '#src/util/promoCredit';
 import { preFetchAll } from '#src/util/apolloPreFetch';
 import syncDate from '#src/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
@@ -377,6 +378,7 @@ const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_enable';
 const EXPIRING_SOON_EXP_KEY = 'checkout_expiring_soon_upsell';
 const KIVA_CREDIT_REPLACEMENT_EXP_KEY = 'checkout_kiva_credit_copy_replacement';
+const STOP_HIDING_TIP_EXP_KEY = 'stop_hiding_tip_campaign';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -493,6 +495,8 @@ export default {
 			isBanditUpsellExpEnabled: false,
 			isExpiringSoonExpEnabled: false,
 			isKivaCreditReplacementExpEnabled: false,
+			enableAdminRewardTipFlag: false,
+			isStopHidingTipExpEnabled: false,
 		};
 	},
 	apollo: {
@@ -568,6 +572,9 @@ export default {
 			this.isFtdMessageEnable = readBoolSetting(data, 'general.ftd_message_enable.value');
 			this.ftdCreditAmount = data?.general?.ftd_message_amount?.value ?? '';
 			this.ftdValidDate = data?.general?.ftd_message_valid_date?.value ?? '';
+
+			// Enable admin reward tip flag from settings
+			this.enableAdminRewardTipFlag = readBoolSetting(data, 'general.admin_reward_tip_flag.value');
 
 			// Deposit incentive experiment MP-72
 			this.depositIncentiveAmountToLend = numeral(data?.my?.depositIncentiveAmountToLend ?? 0).value();
@@ -1056,6 +1063,12 @@ export default {
 			getPromoFromBasket(this.derivedPromoFund?.id, this.apollo).then(({ data }) => {
 				this.promoData = data?.shop?.promoCampaign;
 
+				const adminRewardTipEligible = isAdminRewardTipEligible(this.promoData, this.enableAdminRewardTipFlag);
+				// If user is eligible for admin reward tip, initialize experiment to stop hiding tip for them
+				if (adminRewardTipEligible) {
+					this.initializeStopHidingTipExperiment();
+				}
+
 				this.$nextTick(() => {
 					if (
 						this.isLoggedIn
@@ -1357,6 +1370,20 @@ export default {
 				},
 				this.$kvTrackEvent,
 				'EXP-MP-2615-Apr2026',
+				'basket',
+			);
+		},
+		initializeStopHidingTipExperiment() {
+			initializeExperiment(
+				this.cookieStore,
+				this.apollo,
+				this.$route,
+				STOP_HIDING_TIP_EXP_KEY,
+				version => {
+					this.isStopHidingTipExpEnabled = version === 'b';
+				},
+				this.$kvTrackEvent,
+				'EXP-MP-2852-Jun2026',
 				'basket',
 			);
 		},
