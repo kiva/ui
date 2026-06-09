@@ -87,6 +87,9 @@ import { KvTextLink } from '@kiva/kv-components';
 
 export default {
 	name: 'TrusteeDetails',
+	inject: {
+		condensed: { default: false },
+	},
 	components: {
 		DescriptionListItem,
 		KvTextLink,
