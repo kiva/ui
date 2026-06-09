@@ -1,4 +1,9 @@
-import { isFromImpactDashboard, bonusBalance, hasPromoSession } from '#src/util/promoCredit';
+import {
+	isFromImpactDashboard,
+	bonusBalance,
+	hasPromoSession,
+	isAdminRewardTipEligible,
+} from '#src/util/promoCredit';
 
 describe('promoCredit', () => {
 	describe('isFromImpactDashboard', () => {
@@ -155,6 +160,32 @@ describe('promoCredit', () => {
 			expect(hasPromoSession({})).toBe(false);
 			expect(hasPromoSession({ my: {} })).toBe(false);
 			expect(hasPromoSession({ shop: {} })).toBe(false);
+		});
+	});
+
+	describe('isAdminRewardTipEligible', () => {
+		const adminRewardPromo = { managedAccount: { managementType: 'Admin Reward' } };
+		const otherTypePromo = { managedAccount: { managementType: 'lending_reward' } };
+
+		it('returns true when flag is on and managementType is Admin Reward', () => {
+			expect(isAdminRewardTipEligible(adminRewardPromo, true)).toBe(true);
+		});
+
+		it('returns false when flag is off, even for Admin Reward', () => {
+			expect(isAdminRewardTipEligible(adminRewardPromo, false)).toBe(false);
+		});
+
+		it('returns false for other managementType values when flag is on', () => {
+			expect(isAdminRewardTipEligible(otherTypePromo, true)).toBe(false);
+		});
+
+		it('returns false for non-promotional checkouts (no promoData) when flag is on', () => {
+			expect(isAdminRewardTipEligible(undefined, true)).toBe(false);
+			expect(isAdminRewardTipEligible({}, true)).toBe(false);
+		});
+
+		it('returns false when flag is null (setting absent)', () => {
+			expect(isAdminRewardTipEligible(adminRewardPromo, null)).toBe(false);
 		});
 	});
 });
