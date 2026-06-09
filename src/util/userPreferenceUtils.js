@@ -73,6 +73,45 @@ export const updateUserPreferences = async (apollo, userPreferences, parsedPrefe
 };
 
 /**
+ * Read a single key out of a userPreferences node's JSON `preferences` blob.
+ *
+ * @param {{preferences?: string}|null} userPreferences
+ * @param {string} key
+ * @returns {*} the stored value, or null when absent/unparseable.
+ */
+export const getUserPreference = (userPreferences, key) => {
+	if (!userPreferences?.preferences) return null;
+	try {
+		return JSON.parse(userPreferences.preferences)[key] ?? null;
+	} catch {
+		return null;
+	}
+};
+
+/**
+ * Upsert a single preference key for the current user: merge-update when a
+ * record exists, otherwise create one.
+ *
+ * @param {object} apollo The current Apollo client
+ * @param {{id?: number, preferences?: string}|null} userPreferences
+ * @param {string} key
+ * @param {*} value
+ * @returns The result of the underlying create/update mutation
+ */
+export const setUserPreference = async (apollo, userPreferences, key, value) => {
+	if (userPreferences?.id) {
+		let parsed = {};
+		try {
+			parsed = JSON.parse(userPreferences.preferences || '{}');
+		} catch {
+			parsed = {};
+		}
+		return updateUserPreferences(apollo, userPreferences, parsed, { [key]: value });
+	}
+	return createUserPreferences(apollo, { [key]: value });
+};
+
+/**
  * Set a My Kiva goal using the setMyKivaGoal mutation
  *
  * @param apollo The current Apollo client
