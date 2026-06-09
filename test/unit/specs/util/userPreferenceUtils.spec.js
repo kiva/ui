@@ -1,6 +1,8 @@
 import {
 	createUserPreferences,
 	updateUserPreferences,
+	getUserPreference,
+	setUserPreference,
 	createUserPreferencesMutation,
 	updateUserPreferencesMutation,
 } from '#src/util/userPreferenceUtils';
@@ -115,6 +117,47 @@ describe('userPreferenceUtils.ts', () => {
 
 			expect(result).toBeUndefined();
 			expect(logReadQueryError).toHaveBeenCalledWith(error, 'userPreferenceUtils updateUserPreferencesMutation');
+		});
+	});
+
+	describe('getUserPreference', () => {
+		it('returns null for a missing node, missing key, or unparseable blob', () => {
+			expect(getUserPreference(null, 'showLoanDetailsInRail')).toBe(null);
+			expect(getUserPreference({ preferences: '{}' }, 'showLoanDetailsInRail')).toBe(null);
+			expect(getUserPreference({ preferences: 'not json' }, 'showLoanDetailsInRail')).toBe(null);
+		});
+
+		it('returns the stored value when the key is present', () => {
+			expect(getUserPreference({ preferences: '{"showLoanDetailsInRail":true}' }, 'showLoanDetailsInRail'))
+				.toBe(true);
+		});
+	});
+
+	describe('setUserPreference', () => {
+		it('creates a record (single key) when there is no existing id', async () => {
+			const apolloMock = { mutate: vi.fn().mockResolvedValueOnce({ data: {} }) };
+
+			await setUserPreference(apolloMock, null, 'showLoanDetailsInRail', true);
+
+			expect(apolloMock.mutate).toHaveBeenCalledWith({
+				mutation: createUserPreferencesMutation,
+				variables: { preferences: JSON.stringify({ showLoanDetailsInRail: true }) },
+			});
+		});
+
+		it('merge-updates the existing blob when a record id is present', async () => {
+			const apolloMock = { mutate: vi.fn().mockResolvedValueOnce({ data: {} }) };
+			const userPreferences = { id: 7, preferences: '{"goals":[1]}' };
+
+			await setUserPreference(apolloMock, userPreferences, 'showLoanDetailsInRail', false);
+
+			expect(apolloMock.mutate).toHaveBeenCalledWith({
+				mutation: updateUserPreferencesMutation,
+				variables: {
+					updateUserPreferencesId: 7,
+					preferences: JSON.stringify({ goals: [1], showLoanDetailsInRail: false }),
+				},
+			});
 		});
 	});
 });
