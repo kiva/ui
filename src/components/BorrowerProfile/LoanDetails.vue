@@ -81,6 +81,9 @@ import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionList
 
 export default {
 	name: 'LoanDetails',
+	inject: {
+		condensed: { default: false },
+	},
 	components: {
 		DescriptionListItem,
 	},

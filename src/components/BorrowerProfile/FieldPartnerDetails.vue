@@ -151,6 +151,9 @@ import { KvMaterialIcon, KvTextLink } from '@kiva/kv-components';
 
 export default {
 	name: 'FieldPartnerDetails',
+	inject: {
+		condensed: { default: false },
+	},
 	components: {
 		DescriptionListItem,
 		KvMaterialIcon,
