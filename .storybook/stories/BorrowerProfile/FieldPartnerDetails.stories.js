@@ -1,56 +1,32 @@
 import FieldPartnerDetails from '#src/components/BorrowerProfile/FieldPartnerDetails';
 
+import apolloStoryMixin from '../../mixins/apollo-story-mixin';
+import cookieStoreStoryMixin from '../../mixins/cookie-store-story-mixin';
+import kvAuth0StoryMixin from '../../mixins/kv-auth0-story-mixin';
+import { createQueryResult, fundraisingPartnerLoan } from './mockLoanFixtures';
+
+function fieldPartnerDetailsStory(loan, { loading = false, condensed = false } = {}) {
+	return () => ({
+		components: { FieldPartnerDetails },
+		mixins: [
+			apolloStoryMixin({ queryResult: createQueryResult(loan), loading }),
+			cookieStoreStoryMixin(),
+			kvAuth0StoryMixin,
+		],
+		provide: { condensed },
+		template: `<field-partner-details :loan-id="${loan.id}" />`,
+	});
+}
+
 export default {
 	title: 'Components/BorrowerProfile/FieldPartnerDetails',
 	component: FieldPartnerDetails,
 };
 
-const basePartner = {
-	partnerId: 100,
-	partnerName: 'AFODENIC',
-	avgBorrowerCost: 35,
-	avgBorrowerCostType: 'interest',
-	avgProfitability: 2.5,
-	arrearsRate: 0.02,
-	loansAtRiskRate: 3,
-	defaultRate: 1.25,
-	riskRating: 3.5,
-	currencyExchangeLossRate: 0.05,
-	startDate: '2018-06-01',
-	loansPosted: 12450,
-	totalAmountRaised: 18500000,
-	avgLoanSizePercentPerCapitaIncome: 42.5,
-};
+export const Default = fieldPartnerDetailsStory(fundraisingPartnerLoan);
+Default.storyName = 'Partner';
 
-function monthsAgoIso(months) {
-	const d = new Date();
-	d.setMonth(d.getMonth() - months);
-	return d.toISOString().slice(0, 10);
-}
+export const Loading = fieldPartnerDetailsStory(fundraisingPartnerLoan, { loading: true });
+Loading.storyName = 'Loading (skeleton)';
 
-export const AllMetrics = () => ({
-	components: { FieldPartnerDetails },
-	data: () => ({ ...basePartner }),
-	template: '<field-partner-details v-bind="$data" />',
-});
-
-export const LessThanOneYear = () => ({
-	components: { FieldPartnerDetails },
-	data: () => ({
-		...basePartner,
-		startDate: monthsAgoIso(3),
-	}),
-	template: '<field-partner-details v-bind="$data" />',
-});
-
-export const MissingOptionalFields = () => ({
-	components: { FieldPartnerDetails },
-	data: () => ({
-		...basePartner,
-		startDate: '',
-		loansPosted: 0,
-		totalAmountRaised: 0,
-		avgLoanSizePercentPerCapitaIncome: 0,
-	}),
-	template: '<field-partner-details v-bind="$data" />',
-});
+export const Condensed = fieldPartnerDetailsStory(fundraisingPartnerLoan, { condensed: true });
