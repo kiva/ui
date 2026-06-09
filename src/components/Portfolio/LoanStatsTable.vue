@@ -36,8 +36,12 @@
 		</tbody>
 
 		<tbody v-else>
-			<tr v-for="row in statsRows" :key="row.key">
-				<td class="tw-p-1">
+			<tr
+				v-for="row in statsRows"
+				:key="row.key"
+				:class="{ 'tw-bg-white': row.showInWhite, 'tw-bg-gray-50': row.showInGray }"
+			>
+				<td class="tw-p-1" :class="{ 'tw-pl-6': row.isTabbed }">
 					{{ row.label }}
 				</td>
 				<td class="tw-text-right tw-p-1">
@@ -95,20 +99,84 @@ export default {
 			stats: {},
 			avgStats: {},
 			loading: true,
+			// isTabbed / showInWhite / showInGray mirror the legacy setupCompareStat() flags
+			// in LoansView.php: tabbed rows indent under their parent metric, and the explicit
+			// white/gray banding groups related rows (replacing the flat migrated grid).
 			statsRows: [
-				{ label: 'Amount lent', key: 'amount_of_loans', type: 'currency' },
-				{ label: 'Amount repaid', key: 'amount_repaid', type: 'currency' },
-				{ label: 'Amount lost', key: 'amount_defaulted', type: 'currency' },
-				{ label: 'Amount refunded', key: 'amount_refunded', type: 'currency' },
-				{ label: 'Delinquency rate', key: 'arrears_rate', type: 'percentage' },
-				{ label: 'Amount in arrears', key: 'amount_in_arrears', type: 'currency' },
-				{ label: 'Outstanding loans', key: 'amount_outstanding', type: 'currency' },
-				{ label: 'Default rate', key: 'default_rate', type: 'percentage' },
-				{ label: 'Amount defaulted', key: 'amount_defaulted', type: 'currency' },
-				{ label: 'Amount ended', key: 'total_ended', type: 'currency' },
-				{ label: 'Currency loss rate', key: 'currency_loss_rate', type: 'currencyLossRate' },
-				{ label: 'Amount of currency loss', key: 'currency_loss', type: 'currencyNegative' },
-				{ label: 'Currency loss reimbursement', key: 'currency_reimbursement', type: 'currency' }
+				{ label: 'Amount lent', key: 'amount_lent', type: 'currency' },
+				{
+					label: 'Amount repaid',
+					key: 'amount_repaid',
+					type: 'currency',
+					showInGray: true,
+				},
+				{ label: 'Amount lost', key: 'amount_lost', type: 'currency' },
+				{
+					label: 'Amount refunded',
+					key: 'amount_refunded',
+					type: 'currency',
+					showInGray: true,
+				},
+				{
+					label: 'Delinquency rate',
+					key: 'arrears_rate',
+					type: 'percentage',
+					showInWhite: true,
+				},
+				{
+					label: 'Amount in arrears',
+					key: 'amount_in_arrears',
+					type: 'currency',
+					isTabbed: true,
+					showInWhite: true,
+				},
+				{
+					label: 'Outstanding loans',
+					key: 'amount_outstanding',
+					type: 'currency',
+					isTabbed: true,
+					showInWhite: true,
+				},
+				{
+					label: 'Default rate',
+					key: 'default_rate',
+					type: 'percentage',
+					showInGray: true,
+				},
+				{
+					label: 'Amount defaulted',
+					key: 'amount_defaulted',
+					type: 'currency',
+					isTabbed: true,
+					showInGray: true,
+				},
+				{
+					label: 'Amount ended',
+					key: 'amount_ended',
+					type: 'currency',
+					isTabbed: true,
+					showInGray: true,
+				},
+				{
+					label: 'Currency loss rate',
+					key: 'currency_loss_rate',
+					type: 'currencyLossRate',
+					showInWhite: true,
+				},
+				{
+					label: 'Amount of currency loss',
+					key: 'currency_loss',
+					type: 'currencyLossAmount',
+					isTabbed: true,
+					showInWhite: true,
+				},
+				{
+					label: 'Currency loss reimbursement',
+					key: 'currency_loss_reimbursement',
+					type: 'currency',
+					isTabbed: true,
+					showInWhite: true,
+				}
 			],
 			loanCounts: {
 				fundraising: 0,
@@ -136,12 +204,15 @@ export default {
 	},
 	methods: {
 		formatValue(value, type) {
-			if (value === undefined || value === null) {
-				return 'Endpoint TBD';
-			}
+			// Currency-loss rate/amount mirror the legacy page: they read "Not available"
+			// when the backend has no value, instead of falling back to zero.
+			const showsNotAvailable = type === 'currencyLossRate' || type === 'currencyLossAmount';
 
-			if (!value) {
-				return type === 'percentage' || type === 'currencyLossRate' ? '0.00%' : '$0.00';
+			if (value === undefined || value === null) {
+				if (showsNotAvailable) {
+					return 'Not available';
+				}
+				return type === 'percentage' ? '0.00%' : '$0.00';
 			}
 
 			const num = Number(value);
@@ -150,8 +221,8 @@ export default {
 					return `${num.toFixed(2)}%`;
 				case 'percentage':
 					return `${(num * 100).toFixed(2)}%`;
-				case 'currencyNegative':
-					return `$${(num * -1).toFixed(2)}`;
+				case 'currencyLossAmount':
+					return `$${Math.abs(num).toFixed(2)}`;
 				case 'currency':
 				default:
 					return `$${num.toFixed(2)}`;
@@ -161,37 +232,94 @@ export default {
 	apollo: {
 		query: lendingStatsQuery,
 		result({ data }) {
-			this.stats = data?.my?.userStats ?? {};
-			this.$emit('updated-as-of', data?.general?.kivaStats?.avgLenderStatsUpdatedAt ?? null);
+			const userStats = data?.my?.userStats ?? {};
+			const kivaStats = data?.general?.kivaStats ?? {};
+			// Money scalar values arrive as legacy number_format strings, so amounts of
+			// $1,000+ carry thousands separators (e.g. "12,500.00"). Strip any grouping or
+			// symbol characters before coercing — otherwise Number() yields NaN and the cell
+			// renders "$NaN". Returns null for missing/unparseable values so the row falls
+			// back to its "$0.00" / "Not available" display.
+			const money = value => {
+				if (value === null || value === undefined || value === '') {
+					return null;
+				}
+				const parsed = Number(String(value).replace(/[^0-9.-]/g, ''));
+				return Number.isNaN(parsed) ? null : parsed;
+			};
+			const num = value => money(value) ?? 0;
+
+			this.$emit('updated-as-of', kivaStats.avgLenderStatsUpdatedAt ?? null);
+
+			// The legacy page hides the currency-loss rate/amount together unless both the
+			// rate is present and the loss amount is non-null.
+			const currencyLossAvailable = userStats.currency_loss_rate !== null
+				&& userStats.currency_loss_rate !== undefined
+				&& userStats.currency_loss !== null
+				&& userStats.currency_loss !== undefined;
+
+			// My stats, applying the legacy row formulas.
+			this.stats = {
+				amount_lent: money(userStats.amount_of_loans),
+				amount_repaid: money(userStats.amount_repaid),
+				amount_lost: Math.abs(-num(userStats.amount_defaulted) + num(userStats.currency_loss)),
+				amount_refunded: money(userStats.amount_refunded),
+				arrears_rate: userStats.arrears_rate,
+				amount_in_arrears: money(userStats.amount_in_arrears),
+				amount_outstanding: money(userStats.amount_outstanding),
+				default_rate: userStats.default_rate,
+				amount_defaulted: Math.abs(num(userStats.amount_defaulted)),
+				amount_ended: num(userStats.total_ended) + num(userStats.total_defaulted),
+				currency_loss_rate: currencyLossAvailable ? userStats.currency_loss_rate : null,
+				currency_loss: currencyLossAvailable ? money(userStats.currency_loss) : null,
+				currency_loss_reimbursement: money(userStats.currency_loss_reimbursement)
+			};
+
+			// Avg Kiva lender stats come from precomputed kivaStats avg* fields.
+			const avgDefaulted = money(kivaStats.avgAmountDefaulted);
 			this.avgStats = {
-				amount_repaid: data?.general?.kivaStats?.avgAmountRepaid ?? null,
-				amount_in_arrears: data?.general?.kivaStats?.avgAmountArrears ?? null,
-				amount_outstanding: data?.general?.kivaStats?.avgAmountOutstanding ?? null,
-				default_rate: data?.general?.kivaStats?.avgDefaultRate ?? null,
-				amount_defaulted: data?.general?.kivaStats?.avgAmountDefaulted ?? null,
-				// The following fields are not yet available in the current API
-				// TODO: Add these values in once backend issues are resolved
-				amount_of_loans: null,
-				arrears_rate: null,
-				amount_refunded: null,
-				total_ended: null,
-				currency_loss_rate: null,
-				currency_loss: null,
-				currency_reimbursement: null
+				amount_lent: money(kivaStats.avgAmountLent),
+				amount_repaid: money(kivaStats.avgAmountRepaid),
+				amount_lost: money(kivaStats.avgTotalAmountLost),
+				amount_refunded: money(kivaStats.avgAmountRefunded),
+				arrears_rate: kivaStats.avgDelinquencyRate ?? null,
+				amount_in_arrears: money(kivaStats.avgAmountArrears),
+				amount_outstanding: money(kivaStats.avgAmountOutstanding),
+				default_rate: kivaStats.avgDefaultRate ?? null,
+				amount_defaulted: avgDefaulted === null ? null : Math.abs(avgDefaulted),
+				amount_ended: money(kivaStats.avgTotalEnded),
+				currency_loss_rate: kivaStats.avgCurrencyLossRate ?? null,
+				currency_loss: money(kivaStats.avgCurrencyLoss),
+				currency_loss_reimbursement: money(kivaStats.avgCurrencyLossReimbursement)
 			};
 			this.loading = false;
 
-			// Update loan counts from stats
+			// The ended-with-currency-loss count is not exposed on userStats, so we derive it
+			// from the loans search the way the legacy getStatusCounts() does. The search's
+			// `ended_with_loss` status filter resolves to `defaulted OR (ended AND currency loss)`,
+			// so it also matches every defaulted loan; subtract the defaulted bucket (same search
+			// source) to recover just the ended-with-currency-loss loans. "Repaid" is then the
+			// remaining ended loans: ended total - ended-with-loss.
+			const endedTotal = data?.my?.endedLoans?.totalCount ?? 0;
+			const endedWithLossOrDefaulted = data?.my?.endedWithLossLoans?.totalCount ?? 0;
+			const searchedDefaulted = data?.my?.defaultedLoans?.totalCount ?? 0;
+			const endedWithLoss = Math.max(endedWithLossOrDefaulted - searchedDefaulted, 0);
+
+			// Update loan counts. Note this table mixes two sources: the ended-state rows
+			// (repaid, repaidWithCurrencyLoss, defaulted) are derived together from the loans
+			// search so they reconcile against one snapshot (ended total = repaid + with-loss,
+			// and defaulted shares that source), while the unrelated rows come from userStats
+			// num_* counts. A future backend loanStatusCounts field would let the whole table
+			// come from a single source (see legacy API::user()->getStatusCounts()).
 			this.loanCounts = {
-				fundraising: this.stats.num_fund_raising || 0,
-				funded: this.stats.num_raised || 0,
-				payingBack: this.stats.num_paying_back || 0,
-				payingBackDelinquent: this.stats.number_delinquent || 0,
-				repaid: this.stats.num_ended - (this.stats.currency_loss ? 1 : 0) || 0,
-				repaidWithCurrencyLoss: this.stats.currency_loss ? 1 : 0,
-				defaulted: this.stats.num_defaulted || 0,
-				refunded: this.stats.num_refunded || 0,
-				expired: this.stats.num_expired || 0
+				fundraising: userStats.num_fund_raising || 0,
+				funded: userStats.num_raised || 0,
+				payingBack: userStats.num_paying_back || 0,
+				payingBackDelinquent: userStats.number_delinquent || 0,
+				repaid: Math.max(endedTotal - endedWithLoss, 0),
+				repaidWithCurrencyLoss: endedWithLoss,
+				defaulted: searchedDefaulted,
+				refunded: userStats.num_refunded || 0,
+				expired: userStats.num_expired || 0
 			};
 		}
 	}
