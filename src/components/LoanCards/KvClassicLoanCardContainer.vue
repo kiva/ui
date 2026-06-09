@@ -58,7 +58,7 @@ import { getFullUrl } from '#src/util/urlUtils';
 import logFormatter from '#src/util/logFormatter';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import percentRaisedMixin from '#src/plugins/loan/percent-raised-mixin';
-import multiMatchingMixin from '#src/plugins/multi-matching-mixin';
+import useMultiMatching from '#src/composables/useMultiMatching';
 import loanCardFieldsExtendedFragment from '#src/graphql/fragments/loanCardFieldsExtended.graphql';
 import loanActivitiesQuery from '#src/graphql/query/loanActivities.graphql';
 import _isEqual from 'lodash/isEqual';
@@ -179,7 +179,10 @@ export default {
 		apollo: { default: null },
 		cookieStore: { default: null },
 	},
-	mixins: [percentRaisedMixin, multiMatchingMixin],
+	mixins: [percentRaisedMixin],
+	setup() {
+		return useMultiMatching();
+	},
 	components: {
 		KvClassicLoanCard,
 		KvUserAvatar,

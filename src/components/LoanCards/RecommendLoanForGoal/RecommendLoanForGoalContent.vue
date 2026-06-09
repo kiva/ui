@@ -26,11 +26,9 @@ import {
 	useAttrs,
 	ref,
 	defineExpose,
-	inject,
 } from 'vue';
 import { KvCompactLoanCard } from '@kiva/kv-components';
-import multiMatchingQuery from '#src/graphql/query/multiMatchingEnabled.graphql';
-import { readBoolSetting } from '#src/util/settingsUtils';
+import useMultiMatching from '#src/composables/useMultiMatching';
 
 defineOptions({
 	name: 'RecommendLoanForGoalContent',
@@ -51,11 +49,7 @@ defineProps({
 	},
 });
 
-const apollo = inject('apollo');
-const enableMultiMatching = ref(false);
-apollo.query({ query: multiMatchingQuery }).then(({ data }) => {
-	enableMultiMatching.value = readBoolSetting(data, 'general.multiMatchingEnabled.value') ?? false;
-});
+const { enableMultiMatching } = useMultiMatching();
 const kvCompactLoanCard = ref(null);
 const attrs = useAttrs();
 
