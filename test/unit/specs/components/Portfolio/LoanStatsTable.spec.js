@@ -325,4 +325,104 @@ describe('LoanStatsTable', () => {
 			expect(countRow(container, 'Expired')).toEqual(['Expired', '0']);
 		});
 	});
+
+	describe('locale-formatted Money values', () => {
+		// The Money scalar arrives as legacy number_format strings, so amounts of $1,000+
+		// carry thousands separators (e.g. "12,500.00"). Number() can't parse those, which
+		// rendered "$NaN" for large My-stats and Avg totals (amount lent/repaid/ended).
+		const formatted = () => fullData({
+			userStats: {
+				amount_of_loans: '12,500.00',
+				amount_repaid: '9,800.50',
+				amount_refunded: '1,025.00',
+				amount_defaulted: '50.00',
+				currency_loss: '-12.50',
+				total_ended: '8,200.00',
+				total_defaulted: '1,050.00',
+			},
+			kivaStats: {
+				avgAmountLent: '1,500.00',
+			},
+		});
+
+		it('parses My-stats Money strings that contain thousands separators', () => {
+			const { ctx } = runResult(formatted());
+
+			expect(ctx.stats.amount_lent).toBeCloseTo(12500);
+			expect(ctx.stats.amount_repaid).toBeCloseTo(9800.5);
+			expect(ctx.stats.amount_refunded).toBeCloseTo(1025);
+			// amount_ended = total_ended + total_defaulted = 8200 + 1050
+			expect(ctx.stats.amount_ended).toBeCloseTo(9250);
+		});
+
+		it('parses Avg-column Money strings that contain thousands separators', () => {
+			const { ctx } = runResult(formatted());
+			expect(ctx.avgStats.amount_lent).toBeCloseTo(1500);
+		});
+
+		it('renders parsed dollar amounts instead of $NaN', async () => {
+			const { getVm, container } = renderTable();
+			const vm = getVm();
+			vm.$options.apollo.result.call(vm, { data: formatted() });
+			await nextTick();
+
+			expect(statsRow(container, 'Amount lent')[1]).toBe('$12500.00');
+			expect(statsRow(container, 'Amount repaid')[1]).toBe('$9800.50');
+			expect(statsRow(container, 'Amount ended')[1]).toBe('$9250.00');
+			expect(statsRow(container, 'Amount lent')[2]).toBe('$1500.00');
+		});
+	});
+
+	describe('legacy row banding and indent', () => {
+		// Based on the legacy setupCompareStat($label, ..., $is_tabbed, $show_in_white,
+		// $show_in_gray) flags in LoansView.php (MP-2859), plus product-requested gray banding
+		// on the Amount repaid / Amount refunded rows. `bg` is the expected explicit row
+		// background (null = default); `tabbed` indents the label under its parent metric.
+		const expected = {
+			'Amount lent': { tabbed: false, bg: null },
+			'Amount repaid': { tabbed: false, bg: 'tw-bg-gray-50' },
+			'Amount lost': { tabbed: false, bg: null },
+			'Amount refunded': { tabbed: false, bg: 'tw-bg-gray-50' },
+			'Delinquency rate': { tabbed: false, bg: 'tw-bg-white' },
+			'Amount in arrears': { tabbed: true, bg: 'tw-bg-white' },
+			'Outstanding loans': { tabbed: true, bg: 'tw-bg-white' },
+			'Default rate': { tabbed: false, bg: 'tw-bg-gray-50' },
+			'Amount defaulted': { tabbed: true, bg: 'tw-bg-gray-50' },
+			'Amount ended': { tabbed: true, bg: 'tw-bg-gray-50' },
+			'Currency loss rate': { tabbed: false, bg: 'tw-bg-white' },
+			'Amount of currency loss': { tabbed: true, bg: 'tw-bg-white' },
+			'Currency loss reimbursement': { tabbed: true, bg: 'tw-bg-white' },
+		};
+
+		const renderRows = async () => {
+			const { getVm, container } = renderTable();
+			const vm = getVm();
+			vm.$options.apollo.result.call(vm, { data: fullData() });
+			await nextTick();
+			return container;
+		};
+
+		const trByLabel = (container, label) => [...container.querySelectorAll('tbody tr')]
+			.find(tr => tr.querySelector('td')?.textContent.trim() === label);
+
+		it('applies the legacy white/gray banding per row', async () => {
+			const container = await renderRows();
+			Object.entries(expected).forEach(([label, { bg }]) => {
+				const tr = trByLabel(container, label);
+				expect(tr, `row "${label}" should render`).toBeTruthy();
+				expect(tr.classList.contains('tw-bg-white'), `${label} white banding`)
+					.toBe(bg === 'tw-bg-white');
+				expect(tr.classList.contains('tw-bg-gray-50'), `${label} gray banding`)
+					.toBe(bg === 'tw-bg-gray-50');
+			});
+		});
+
+		it('indents the tabbed rows under their parent metric', async () => {
+			const container = await renderRows();
+			Object.entries(expected).forEach(([label, { tabbed }]) => {
+				const labelCell = trByLabel(container, label).querySelector('td');
+				expect(labelCell.classList.contains('tw-pl-6'), `${label} indent`).toBe(tabbed);
+			});
+		});
+	});
 });

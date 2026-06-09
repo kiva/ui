@@ -36,8 +36,12 @@
 		</tbody>
 
 		<tbody v-else>
-			<tr v-for="row in statsRows" :key="row.key">
-				<td class="tw-p-1">
+			<tr
+				v-for="row in statsRows"
+				:key="row.key"
+				:class="{ 'tw-bg-white': row.showInWhite, 'tw-bg-gray-50': row.showInGray }"
+			>
+				<td class="tw-p-1" :class="{ 'tw-pl-6': row.isTabbed }">
 					{{ row.label }}
 				</td>
 				<td class="tw-text-right tw-p-1">
@@ -95,20 +99,84 @@ export default {
 			stats: {},
 			avgStats: {},
 			loading: true,
+			// isTabbed / showInWhite / showInGray mirror the legacy setupCompareStat() flags
+			// in LoansView.php: tabbed rows indent under their parent metric, and the explicit
+			// white/gray banding groups related rows (replacing the flat migrated grid).
 			statsRows: [
 				{ label: 'Amount lent', key: 'amount_lent', type: 'currency' },
-				{ label: 'Amount repaid', key: 'amount_repaid', type: 'currency' },
+				{
+					label: 'Amount repaid',
+					key: 'amount_repaid',
+					type: 'currency',
+					showInGray: true,
+				},
 				{ label: 'Amount lost', key: 'amount_lost', type: 'currency' },
-				{ label: 'Amount refunded', key: 'amount_refunded', type: 'currency' },
-				{ label: 'Delinquency rate', key: 'arrears_rate', type: 'percentage' },
-				{ label: 'Amount in arrears', key: 'amount_in_arrears', type: 'currency' },
-				{ label: 'Outstanding loans', key: 'amount_outstanding', type: 'currency' },
-				{ label: 'Default rate', key: 'default_rate', type: 'percentage' },
-				{ label: 'Amount defaulted', key: 'amount_defaulted', type: 'currency' },
-				{ label: 'Amount ended', key: 'amount_ended', type: 'currency' },
-				{ label: 'Currency loss rate', key: 'currency_loss_rate', type: 'currencyLossRate' },
-				{ label: 'Amount of currency loss', key: 'currency_loss', type: 'currencyLossAmount' },
-				{ label: 'Currency loss reimbursement', key: 'currency_loss_reimbursement', type: 'currency' }
+				{
+					label: 'Amount refunded',
+					key: 'amount_refunded',
+					type: 'currency',
+					showInGray: true,
+				},
+				{
+					label: 'Delinquency rate',
+					key: 'arrears_rate',
+					type: 'percentage',
+					showInWhite: true,
+				},
+				{
+					label: 'Amount in arrears',
+					key: 'amount_in_arrears',
+					type: 'currency',
+					isTabbed: true,
+					showInWhite: true,
+				},
+				{
+					label: 'Outstanding loans',
+					key: 'amount_outstanding',
+					type: 'currency',
+					isTabbed: true,
+					showInWhite: true,
+				},
+				{
+					label: 'Default rate',
+					key: 'default_rate',
+					type: 'percentage',
+					showInGray: true,
+				},
+				{
+					label: 'Amount defaulted',
+					key: 'amount_defaulted',
+					type: 'currency',
+					isTabbed: true,
+					showInGray: true,
+				},
+				{
+					label: 'Amount ended',
+					key: 'amount_ended',
+					type: 'currency',
+					isTabbed: true,
+					showInGray: true,
+				},
+				{
+					label: 'Currency loss rate',
+					key: 'currency_loss_rate',
+					type: 'currencyLossRate',
+					showInWhite: true,
+				},
+				{
+					label: 'Amount of currency loss',
+					key: 'currency_loss',
+					type: 'currencyLossAmount',
+					isTabbed: true,
+					showInWhite: true,
+				},
+				{
+					label: 'Currency loss reimbursement',
+					key: 'currency_loss_reimbursement',
+					type: 'currency',
+					isTabbed: true,
+					showInWhite: true,
+				}
 			],
 			loanCounts: {
 				fundraising: 0,
@@ -166,7 +234,19 @@ export default {
 		result({ data }) {
 			const userStats = data?.my?.userStats ?? {};
 			const kivaStats = data?.general?.kivaStats ?? {};
-			const num = value => (value === null || value === undefined ? 0 : Number(value));
+			// Money scalar values arrive as legacy number_format strings, so amounts of
+			// $1,000+ carry thousands separators (e.g. "12,500.00"). Strip any grouping or
+			// symbol characters before coercing — otherwise Number() yields NaN and the cell
+			// renders "$NaN". Returns null for missing/unparseable values so the row falls
+			// back to its "$0.00" / "Not available" display.
+			const money = value => {
+				if (value === null || value === undefined || value === '') {
+					return null;
+				}
+				const parsed = Number(String(value).replace(/[^0-9.-]/g, ''));
+				return Number.isNaN(parsed) ? null : parsed;
+			};
+			const num = value => money(value) ?? 0;
 
 			this.$emit('updated-as-of', kivaStats.avgLenderStatsUpdatedAt ?? null);
 
@@ -179,38 +259,37 @@ export default {
 
 			// My stats, applying the legacy row formulas.
 			this.stats = {
-				amount_lent: userStats.amount_of_loans,
-				amount_repaid: userStats.amount_repaid,
+				amount_lent: money(userStats.amount_of_loans),
+				amount_repaid: money(userStats.amount_repaid),
 				amount_lost: Math.abs(-num(userStats.amount_defaulted) + num(userStats.currency_loss)),
-				amount_refunded: userStats.amount_refunded,
+				amount_refunded: money(userStats.amount_refunded),
 				arrears_rate: userStats.arrears_rate,
-				amount_in_arrears: userStats.amount_in_arrears,
-				amount_outstanding: userStats.amount_outstanding,
+				amount_in_arrears: money(userStats.amount_in_arrears),
+				amount_outstanding: money(userStats.amount_outstanding),
 				default_rate: userStats.default_rate,
 				amount_defaulted: Math.abs(num(userStats.amount_defaulted)),
 				amount_ended: num(userStats.total_ended) + num(userStats.total_defaulted),
 				currency_loss_rate: currencyLossAvailable ? userStats.currency_loss_rate : null,
-				currency_loss: currencyLossAvailable ? userStats.currency_loss : null,
-				currency_loss_reimbursement: userStats.currency_loss_reimbursement
+				currency_loss: currencyLossAvailable ? money(userStats.currency_loss) : null,
+				currency_loss_reimbursement: money(userStats.currency_loss_reimbursement)
 			};
 
 			// Avg Kiva lender stats come from precomputed kivaStats avg* fields.
+			const avgDefaulted = money(kivaStats.avgAmountDefaulted);
 			this.avgStats = {
-				amount_lent: kivaStats.avgAmountLent ?? null,
-				amount_repaid: kivaStats.avgAmountRepaid ?? null,
-				amount_lost: kivaStats.avgTotalAmountLost ?? null,
-				amount_refunded: kivaStats.avgAmountRefunded ?? null,
+				amount_lent: money(kivaStats.avgAmountLent),
+				amount_repaid: money(kivaStats.avgAmountRepaid),
+				amount_lost: money(kivaStats.avgTotalAmountLost),
+				amount_refunded: money(kivaStats.avgAmountRefunded),
 				arrears_rate: kivaStats.avgDelinquencyRate ?? null,
-				amount_in_arrears: kivaStats.avgAmountArrears ?? null,
-				amount_outstanding: kivaStats.avgAmountOutstanding ?? null,
+				amount_in_arrears: money(kivaStats.avgAmountArrears),
+				amount_outstanding: money(kivaStats.avgAmountOutstanding),
 				default_rate: kivaStats.avgDefaultRate ?? null,
-				amount_defaulted: kivaStats.avgAmountDefaulted == null
-					? null
-					: Math.abs(Number(kivaStats.avgAmountDefaulted)),
-				amount_ended: kivaStats.avgTotalEnded ?? null,
+				amount_defaulted: avgDefaulted === null ? null : Math.abs(avgDefaulted),
+				amount_ended: money(kivaStats.avgTotalEnded),
 				currency_loss_rate: kivaStats.avgCurrencyLossRate ?? null,
-				currency_loss: kivaStats.avgCurrencyLoss ?? null,
-				currency_loss_reimbursement: kivaStats.avgCurrencyLossReimbursement ?? null
+				currency_loss: money(kivaStats.avgCurrencyLoss),
+				currency_loss_reimbursement: money(kivaStats.avgCurrencyLossReimbursement)
 			};
 			this.loading = false;
 
