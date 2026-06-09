@@ -1,4 +1,4 @@
-import DetailsTabs from '#src/components/BorrowerProfile/DetailsTabs';
+import RailDetailsTabs from '#src/components/BorrowerProfile/RailDetailsTabs';
 
 import apolloStoryMixin from '../../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../../mixins/cookie-store-story-mixin';
@@ -10,36 +10,35 @@ import {
 	directLoanWithTrustee,
 } from './mockLoanFixtures';
 
-function detailsTabsStory(loan, { loading = false } = {}) {
+function railDetailsTabsStory(loan, { loading = false } = {}) {
 	return () => ({
-		components: { DetailsTabs },
+		components: { RailDetailsTabs },
 		mixins: [
 			apolloStoryMixin({ queryResult: createQueryResult(loan), loading }),
 			cookieStoreStoryMixin(),
 			kvAuth0StoryMixin,
 		],
 		template: `
-			<details-tabs
+			<rail-details-tabs
 				:loan-id="${loan.id}"
-				name="${loan.name}"
 			/>
 		`,
 	});
 }
 
 export default {
-	title: 'Components/BorrowerProfile/DetailsTabs',
-	component: DetailsTabs,
+	title: 'Components/BorrowerProfile/RailDetailsTabs',
+	component: RailDetailsTabs,
 };
 
-export const PartnerLoan = detailsTabsStory(fundraisingPartnerLoan);
+export const PartnerLoan = railDetailsTabsStory(fundraisingPartnerLoan);
 PartnerLoan.storyName = 'Partner Loan (Lending Partner Tab)';
 
-export const DirectLoanWithTrustee = detailsTabsStory(directLoanWithTrustee);
+export const DirectLoanWithTrustee = railDetailsTabsStory(directLoanWithTrustee);
 DirectLoanWithTrustee.storyName = 'Direct Loan (Trustee Tab)';
 
-export const DirectLoanNoTrustee = detailsTabsStory(fundraisingDirectLoan);
+export const DirectLoanNoTrustee = railDetailsTabsStory(fundraisingDirectLoan);
 DirectLoanNoTrustee.storyName = 'Direct Loan (No Trustee)';
 
-export const Loading = detailsTabsStory(fundraisingPartnerLoan, { loading: true });
+export const Loading = railDetailsTabsStory(fundraisingPartnerLoan, { loading: true });
 Loading.storyName = 'Loading (skeleton)';
