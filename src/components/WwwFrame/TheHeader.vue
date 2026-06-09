@@ -659,7 +659,6 @@ export default {
 			searchDataRequested: false,
 			teams: null,
 			teamsMenuEnabled: false,
-			enableMultiMatching: false,
 			trusteeId: null,
 			userId: null,
 			isNavUpdateExp: false,
@@ -777,7 +776,6 @@ export default {
 			preFetch: true,
 			result({ data }) {
 				this.teamsMenuEnabled = readBoolSetting(data, 'general.teamsMenuEnabled.value');
-				this.enableMultiMatching = readBoolSetting(data, 'general.multiMatchingEnabled.value') ?? false;
 			},
 		},
 		{
