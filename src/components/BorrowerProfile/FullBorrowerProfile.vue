@@ -65,9 +65,11 @@
 						class="tw-hidden lg:tw-block tw-pointer-events-auto
 							tw-bg-primary tw-rounded tw-mt-1.5 tw-px-4 tw-py-2"
 					>
-						<rail-details-tabs
+						<details-tabs
+							name="bp-rail-details"
 							:loan-id="loanId"
 							:is-privileged="isPrivileged"
+							condensed
 						/>
 					</div>
 				</transition>
@@ -164,7 +166,6 @@ import SummaryCard, { summaryCardFragment } from '#src/components/BorrowerProfil
 import LendCta, { lendCtaFragment } from '#src/components/BorrowerProfile/LendCta';
 import LoanStory, { loanStoryFragment } from '#src/components/BorrowerProfile/LoanStory';
 import DetailsTabs from '#src/components/BorrowerProfile/DetailsTabs';
-import RailDetailsTabs from '#src/components/BorrowerProfile/RailDetailsTabs';
 import BorrowerCountry from '#src/components/BorrowerProfile/BorrowerCountry';
 import ContributingPartners from '#src/components/BorrowerProfile/ContributingPartners';
 import LendersAndTeams from '#src/components/BorrowerProfile/LendersAndTeams';
@@ -218,7 +219,6 @@ export default {
 		LendCta,
 		LoanStory,
 		DetailsTabs,
-		RailDetailsTabs,
 		BorrowerCountry,
 		ContributingPartners,
 		LendersAndTeams,
