@@ -3,7 +3,15 @@ import LoanDetails from '#src/components/BorrowerProfile/LoanDetails';
 import apolloStoryMixin from '../../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../../mixins/cookie-store-story-mixin';
 import kvAuth0StoryMixin from '../../mixins/kv-auth0-story-mixin';
-import { createQueryResult, fundraisingPartnerLoan, fundraisingDirectLoan } from './mockLoanFixtures';
+import {
+	createQueryResult,
+	fundraisingPartnerLoan,
+	fundraisingDirectLoan,
+	expiredLoan,
+	defaultedLoan,
+	endedLoan,
+	refundedLoan,
+} from './mockLoanFixtures';
 
 function loanDetailsStory(loan, { loading = false, condensed = false } = {}) {
 	return () => ({
@@ -26,6 +34,14 @@ export default {
 export const PartnerLoan = loanDetailsStory(fundraisingPartnerLoan);
 
 export const DirectLoan = loanDetailsStory(fundraisingDirectLoan);
+
+export const ExpiredDate = loanDetailsStory(expiredLoan);
+
+export const DefaultedDate = loanDetailsStory(defaultedLoan);
+
+export const EndedDate = loanDetailsStory(endedLoan);
+
+export const RefundedDate = loanDetailsStory(refundedLoan);
 
 export const Loading = loanDetailsStory(fundraisingPartnerLoan, { loading: true });
 Loading.storyName = 'Loading (skeleton)';
