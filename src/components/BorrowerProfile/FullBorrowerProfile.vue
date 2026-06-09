@@ -36,6 +36,7 @@
 					:loan-id="loanId"
 					:loan-data="loanData"
 					:enable-five-dollars-notes="enableFiveDollarsNotes"
+					:show-details-in-rail="showDetailsInRail"
 					:team-id="teamId"
 					:team-name="teamName"
 				>
@@ -61,11 +62,11 @@
 					<div
 						v-if="showDetailsInRail"
 						data-testid="bp-rail-details"
-						class="bp-rail-details tw-hidden lg:tw-block tw-pointer-events-auto tw-mt-1.5 tw-bg-primary"
+						class="tw-hidden lg:tw-block tw-pointer-events-auto
+							tw-bg-primary tw-rounded tw-mt-1.5 tw-px-4 tw-py-2"
 					>
-						<details-tabs
+						<rail-details-tabs
 							:loan-id="loanId"
-							name="bp-rail-details-tabs"
 							:is-privileged="isPrivileged"
 						/>
 					</div>
@@ -137,14 +138,10 @@
 			/>
 			<loan-tags :loan-id="loanId" :is-logged-in="isLoggedIn" />
 		</content-container>
-		<div class="tw-bg-primary">
+		<div class="tw-bg-primary tw-py-4 md:tw-py-6 lg:tw-py-8">
 			<content-container>
-				<loan-details-rail-toggle
-					:checked="showDetailsInRail"
-					:loan-id="loanId"
-					@change="onToggleRailDetails"
-				/>
 				<details-tabs id="loanDetails" :loan-id="loanId" name="bp-details" :is-privileged="isPrivileged" />
+				<loan-details-rail-toggle class="tw-hidden lg:tw-flex tw-mt-6" v-model="showDetailsInRailModel" />
 			</content-container>
 		</div>
 		<content-container>
@@ -167,6 +164,7 @@ import SummaryCard, { summaryCardFragment } from '#src/components/BorrowerProfil
 import LendCta, { lendCtaFragment } from '#src/components/BorrowerProfile/LendCta';
 import LoanStory, { loanStoryFragment } from '#src/components/BorrowerProfile/LoanStory';
 import DetailsTabs from '#src/components/BorrowerProfile/DetailsTabs';
+import RailDetailsTabs from '#src/components/BorrowerProfile/RailDetailsTabs';
 import BorrowerCountry from '#src/components/BorrowerProfile/BorrowerCountry';
 import ContributingPartners from '#src/components/BorrowerProfile/ContributingPartners';
 import LendersAndTeams from '#src/components/BorrowerProfile/LendersAndTeams';
@@ -220,6 +218,7 @@ export default {
 		LendCta,
 		LoanStory,
 		DetailsTabs,
+		RailDetailsTabs,
 		BorrowerCountry,
 		ContributingPartners,
 		LendersAndTeams,
@@ -261,10 +260,10 @@ export default {
 		},
 		result({ data }) {
 			this.loanData = data?.lend?.loan ?? {};
-			this.railMy = data?.my ?? null;
+			this.userPreferences = data?.my?.userPreferences ?? null;
 			// Reconcile with localStorage (client-only); account preference still wins.
 			this.showDetailsInRail = resolveRailPreference({
-				accountPref: readAccountRailPreference(this.railMy?.userPreferences),
+				accountPref: readAccountRailPreference(this.userPreferences),
 				local: getLocalRailPreference(),
 			});
 		},
@@ -319,7 +318,7 @@ export default {
 			isMobile: false,
 			// Initialize from the SSR-resolved prop so logged-in opted-in renders without flash.
 			showDetailsInRail: this.initialShowDetailsInRail,
-			railMy: null,
+			userPreferences: null,
 		};
 	},
 	computed: {
@@ -352,6 +351,26 @@ export default {
 		shareBtnVariant() {
 			return this.isMobile ? 'secondary' : 'caution';
 		},
+		showDetailsInRailModel: {
+			get() {
+				return this.showDetailsInRail;
+			},
+			set(value) {
+				this.showDetailsInRail = value;
+				this.$kvTrackEvent(
+					'borrower-profile',
+					'toggle',
+					'loan-details-sidebar',
+					value ? 'on' : 'off',
+					this.loanId,
+				);
+				persistRailPreference(this.apollo, {
+					value,
+					userPreferences: this.userPreferences,
+					isLoggedIn: this.isLoggedIn,
+				});
+			},
+		},
 	},
 	mounted() {
 		this.determineIfMobile();
@@ -367,18 +386,6 @@ export default {
 		throttledResize: _throttle(function throttledResize() {
 			this.determineIfMobile();
 		}, 200),
-		onToggleRailDetails(value) {
-			this.showDetailsInRail = value;
-			persistRailPreference(this.apollo, { value, my: this.railMy });
-		},
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-// Tune the reused DetailsTabs for the narrower rail without editing the component.
-.bp-rail-details :deep(section) {
-	padding-top: 0;
-	padding-bottom: 0;
-}
-</style>
