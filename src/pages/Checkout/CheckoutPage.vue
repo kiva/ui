@@ -378,6 +378,7 @@ const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_enable';
 const EXPIRING_SOON_EXP_KEY = 'checkout_expiring_soon_upsell';
 const KIVA_CREDIT_REPLACEMENT_EXP_KEY = 'checkout_kiva_credit_copy_replacement';
+const STOP_HIDING_TIP_EXP_KEY = 'stop_hiding_tip_campaign';
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -495,6 +496,7 @@ export default {
 			isExpiringSoonExpEnabled: false,
 			isKivaCreditReplacementExpEnabled: false,
 			enableAdminRewardTipFlag: false,
+			isStopHidingTipExpEnabled: false,
 		};
 	},
 	apollo: {
@@ -828,9 +830,6 @@ export default {
 		managedAccountId() {
 			return this.promoData?.managedAccount?.id ?? null;
 		},
-		adminRewardTipEligible() {
-			return isAdminRewardTipEligible(this.promoData, this.enableAdminRewardTipFlag);
-		},
 		promoFundId() {
 			return this.promoData?.promoFund?.id ?? null;
 		},
@@ -1063,6 +1062,12 @@ export default {
 		getPromoInformationFromBasket() {
 			getPromoFromBasket(this.derivedPromoFund?.id, this.apollo).then(({ data }) => {
 				this.promoData = data?.shop?.promoCampaign;
+
+				const adminRewardTipEligible = isAdminRewardTipEligible(this.promoData, this.enableAdminRewardTipFlag);
+				// If user is eligible for admin reward tip, initialize experiment to stop hiding tip for them
+				if (adminRewardTipEligible) {
+					this.initializeStopHidingTipExperiment();
+				}
 
 				this.$nextTick(() => {
 					if (
@@ -1365,6 +1370,20 @@ export default {
 				},
 				this.$kvTrackEvent,
 				'EXP-MP-2615-Apr2026',
+				'basket',
+			);
+		},
+		initializeStopHidingTipExperiment() {
+			initializeExperiment(
+				this.cookieStore,
+				this.apollo,
+				this.$route,
+				STOP_HIDING_TIP_EXP_KEY,
+				version => {
+					this.isStopHidingTipExpEnabled = version === 'b';
+				},
+				this.$kvTrackEvent,
+				'EXP-MP-2852-Jun2026',
 				'basket',
 			);
 		},
