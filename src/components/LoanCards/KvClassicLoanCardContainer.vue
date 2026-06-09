@@ -175,10 +175,7 @@ export default {
 			default: () => ([])
 		},
 	},
-	inject: {
-		apollo: { default: null },
-		cookieStore: { default: null },
-	},
+	inject: ['apollo', 'cookieStore'],
 	mixins: [percentRaisedMixin],
 	setup() {
 		return useMultiMatching();
