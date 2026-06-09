@@ -1150,6 +1150,117 @@ describe('useGoalData', () => {
 				status: GOAL_STATUS.IN_PROGRESS,
 			});
 		});
+
+		it('downgrades a completed status to in-progress when authoritative progress is below target', async () => {
+			const { setMyKivaGoal } = await import('#src/util/userPreferenceUtils');
+
+			const mockPrefs = {
+				goals: [{
+					goalName: 'existing-goal',
+					category: ID_BASIC_NEEDS,
+					target: 10,
+					dateStarted: '2026-01-01',
+					status: GOAL_STATUS.IN_PROGRESS,
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 9 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							// Authoritative yearly progress is one short of the target
+							tieredLendingAchievements: [
+								{ id: ID_BASIC_NEEDS, totalProgressToAchievement: 9, progressForYear: 9 },
+							],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			setMyKivaGoal.mockClear();
+			// Any caller that tries to persist a completed status it can't substantiate
+			// must be downgraded at this write boundary before reaching the backend.
+			await composable.storeGoalPreferences({
+				goalName: 'existing-goal',
+				category: ID_BASIC_NEEDS,
+				target: 10,
+				dateStarted: '2026-01-01',
+				status: GOAL_STATUS.COMPLETED,
+			});
+
+			expect(setMyKivaGoal).toHaveBeenCalledWith(mockApollo, {
+				category: ID_BASIC_NEEDS,
+				target: 10,
+				dateStarted: '2026-01-01',
+				status: GOAL_STATUS.IN_PROGRESS,
+			});
+		});
+
+		it('persists a completed status when authoritative progress meets the target', async () => {
+			const { setMyKivaGoal } = await import('#src/util/userPreferenceUtils');
+
+			const mockPrefs = {
+				goals: [{
+					goalName: 'existing-goal',
+					category: ID_BASIC_NEEDS,
+					target: 10,
+					dateStarted: '2026-01-01',
+					status: GOAL_STATUS.IN_PROGRESS,
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 10 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{ id: ID_BASIC_NEEDS, totalProgressToAchievement: 10, progressForYear: 10 },
+							],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			setMyKivaGoal.mockClear();
+			await composable.storeGoalPreferences({
+				goalName: 'existing-goal',
+				category: ID_BASIC_NEEDS,
+				target: 10,
+				dateStarted: '2026-01-01',
+				status: GOAL_STATUS.COMPLETED,
+			});
+
+			expect(setMyKivaGoal).toHaveBeenCalledWith(mockApollo, {
+				category: ID_BASIC_NEEDS,
+				target: 10,
+				dateStarted: '2026-01-01',
+				status: GOAL_STATUS.COMPLETED,
+			});
+		});
 	});
 
 	describe('removeGoalFromPreferences', () => {
@@ -1611,6 +1722,56 @@ describe('useGoalData', () => {
 
 			expect(setMyKivaGoal).not.toHaveBeenCalled();
 			expect(composable.userGoalAchievedNow.value).toBe(false);
+		});
+
+		it('does not persist completed when authoritative progress is below target', async () => {
+			const {
+				setMyKivaGoal,
+			} = await import('#src/util/userPreferenceUtils');
+			const currentYear = new Date().getFullYear();
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_WOMENS_EQUALITY,
+					target: 10,
+					dateStarted: `${currentYear}-01-01`,
+					status: GOAL_STATUS.IN_PROGRESS,
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 9 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							// Authoritative achievement-service progress is one short of target
+							tieredLendingAchievements: [
+								{ id: ID_WOMENS_EQUALITY, progressForYear: 9, totalProgressToAchievement: 9 },
+							],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+			setMyKivaGoal.mockClear();
+
+			// Thanks page passes an optimistic post-checkout projection that meets the target,
+			// but the authoritative yearly progress (9) is still below the target (10).
+			await composable.checkCompletedGoal({ currentGoalProgress: 10 });
+
+			// The persisted status must NOT flip to completed (this is what syncs to Iterable
+			// and fires the goal-complete email), since the user has not truly reached the goal.
+			expect(setMyKivaGoal).not.toHaveBeenCalled();
 		});
 	});
 
