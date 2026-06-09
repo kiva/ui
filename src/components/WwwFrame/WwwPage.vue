@@ -4,6 +4,7 @@
 		<the-header
 			v-show="!isKivaAppReferral"
 			:hide-search-in-header="hideSearchInHeader"
+			@enable-multi-matching="enableMultiMatching = $event"
 		/>
 		<slot name="secondary" v-if="!isKivaAppReferral"></slot>
 
@@ -21,6 +22,7 @@
 import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
 import { userHasEverLoggedInBefore } from '#src/util/optimizelyUserMetrics';
 import logReadQueryError from '#src/util/logReadQueryError';
+import { computed } from 'vue';
 import CookieBanner from '#src/components/WwwFrame/CookieBanner';
 import GlobalPromoContentful from './PromotionalBanner/GlobalPromotionalBannerContentful';
 import TheHeader from './TheHeader';
@@ -33,6 +35,11 @@ export default {
 		'apollo',
 		'cookieStore',
 	],
+	provide() {
+		return {
+			enableMultiMatching: computed(() => this.enableMultiMatching),
+		};
+	},
 	components: {
 		CookieBanner,
 		GlobalPromoContentful,
@@ -57,6 +64,7 @@ export default {
 	data() {
 		return {
 			isKivaAppReferral: false,
+			enableMultiMatching: false,
 		};
 	},
 	created() {

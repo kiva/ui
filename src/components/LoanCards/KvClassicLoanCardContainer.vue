@@ -28,6 +28,7 @@
 			:error-msg="errorMsg"
 			:custom-href="customHref"
 			:custom-callouts="customCallouts"
+			:enable-multi-matching="enableMultiMatching"
 			@toggle-bookmark="toggleBookmark"
 			@jump-filter-page="jumpFilterPage"
 			@add-to-basket="addToBasket"
@@ -173,7 +174,11 @@ export default {
 			default: () => ([])
 		},
 	},
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { default: null },
+		cookieStore: { default: null },
+		enableMultiMatching: { default: false },
+	},
 	mixins: [percentRaisedMixin],
 	components: {
 		KvClassicLoanCard,

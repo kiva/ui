@@ -4,5 +4,9 @@ query wwwHeaderPublic {
 			key
 			value
 		}
+		multiMatchingEnabled: featureSetting(key: "create_multi_match_reservations.enabled") {
+			key
+			value
+		}
 	}
 }

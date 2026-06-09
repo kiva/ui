@@ -14,6 +14,7 @@
 				v-bind="cardAttrs"
 				:disabled="isAdding"
 				variant="post-goal"
+				:enable-multi-matching="enableMultiMatching"
 			/>
 		</div>
 	</section>
@@ -25,6 +26,7 @@ import {
 	useAttrs,
 	ref,
 	defineExpose,
+	inject,
 } from 'vue';
 import { KvCompactLoanCard } from '@kiva/kv-components';
 
@@ -47,6 +49,7 @@ defineProps({
 	},
 });
 
+const enableMultiMatching = inject('enableMultiMatching', false);
 const kvCompactLoanCard = ref(null);
 const attrs = useAttrs();
 
