@@ -1,5 +1,13 @@
 <template>
-	<section>
+	<div v-if="loading">
+		<kv-loading-placeholder class="tw-mb-1.5" style="width: 90%; height: 3rem;" />
+		<kv-loading-placeholder class="tw-mb-2" style="width: 50%; height: 1.5rem;" />
+		<div v-for="i in 4" :key="i" class="tw-flex tw-justify-between tw-h-2 tw-mb-3">
+			<kv-loading-placeholder :style="{width: 25 + (Math.random() * 20) + '%'}" />
+			<kv-loading-placeholder :style="{width: 5 + (Math.random() * 5) + '%'}" />
+		</div>
+	</div>
+	<section v-else>
 		<p class="tw-mb-1.5" data-testid="bp-details-trustee-description">
 			Trustees are organizations that refer potential U.S.-based
 			borrowers to Kiva and publicly vouch for them on Kiva.org.
@@ -80,51 +88,49 @@
 </template>
 
 <script>
+import { gql } from 'graphql-tag';
 import { mdiArrowRight } from '@mdi/js';
 import numeral from 'numeral';
 import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionListItem';
-import { KvTextLink } from '@kiva/kv-components';
+import { KvTextLink, KvLoadingPlaceholder } from '@kiva/kv-components';
+
+const trusteeQuery = gql`query borrowerProfileTrustee($loanId: Int!) {
+	lend {
+		loan(id: $loanId) {
+			id
+			name
+			... on LoanDirect {
+				endorsement
+				trustee {
+					id
+					organizationName
+					stats {
+						id
+						numDefaultedLoans
+						numLoansEndorsedPublic
+						repaymentRate
+						totalLoansValue
+					}
+				}
+			}
+		}
+	}
+}`;
 
 export default {
 	name: 'TrusteeDetails',
 	inject: {
+		apollo: {},
 		condensed: { default: false },
 	},
 	components: {
 		DescriptionListItem,
 		KvTextLink,
+		KvLoadingPlaceholder,
 	},
 	emits: ['show-definition'],
 	props: {
-		borrowerName: {
-			type: String,
-			default: '',
-		},
-		endorsement: { // endorsement
-			type: String,
-			default: '',
-		},
-		trusteeName: { // LoanDirect.trusteeName
-			type: String,
-			default: '',
-		},
-		numLoansEndorsedPublic: { // TrusteeStats.numLoansEndorsedPublic
-			type: Number,
-			default: 0,
-		},
-		totalLoansValue: { // TrusteeStats.totalLoansValue
-			type: String,
-			default: '0.00',
-		},
-		numDefaultedLoans: { // TrusteeStats.numDefaultedLoans
-			type: Number,
-			default: 0,
-		},
-		repaymentRate: { // TrusteeStats.repaymentRate
-			type: Number,
-			default: 0,
-		},
-		trusteeId: { // TrusteeStats.trusteeId
+		loanId: {
 			type: Number,
 			default: 0,
 		},
@@ -132,7 +138,36 @@ export default {
 	data() {
 		return {
 			mdiArrowRight,
+			borrowerName: '',
+			endorsement: '',
+			trusteeName: '',
+			numLoansEndorsedPublic: 0,
+			totalLoansValue: '0.00',
+			numDefaultedLoans: 0,
+			repaymentRate: 0,
+			trusteeId: 0,
+			loading: true,
 		};
+	},
+	apollo: {
+		lazy: true,
+		query: trusteeQuery,
+		variables() {
+			return { loanId: this.loanId };
+		},
+		result({ data }) {
+			const loan = data?.lend?.loan;
+			const trustee = loan?.trustee;
+			this.borrowerName = loan?.name ?? '';
+			this.endorsement = loan?.endorsement ?? '';
+			this.trusteeName = trustee?.organizationName ?? '';
+			this.trusteeId = trustee?.id ?? 0;
+			this.numLoansEndorsedPublic = trustee?.stats?.numLoansEndorsedPublic ?? 0;
+			this.totalLoansValue = trustee?.stats?.totalLoansValue ?? '0.00';
+			this.numDefaultedLoans = trustee?.stats?.numDefaultedLoans ?? 0;
+			this.repaymentRate = trustee?.stats?.repaymentRate ?? 0;
+			this.loading = false;
+		},
 	},
 	computed: {
 		endorsementTitle() {

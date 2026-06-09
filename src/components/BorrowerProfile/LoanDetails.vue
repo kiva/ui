@@ -1,149 +1,199 @@
 <template>
-	<dl>
-		<description-list-item
-			data-testid="bp-loan-detail-loan-length"
-			:term="'Loan length'"
-			:details="`${loanLength} months`"
-			@show-definition="$emit('show-definition', {
-				cid: 'bp-def-loan-length',
-				sfid: '50150000000Ry3z',
-				panelName: 'Loan-Details',
-				linkText: 'Loan length'
-			})"
+	<div v-if="loading">
+		<div v-for="i in 6" :key="i" class="tw-flex tw-justify-between tw-h-2 tw-mb-3">
+			<kv-loading-placeholder :style="{width: 20 + (Math.random() * 20) + '%'}" />
+			<kv-loading-placeholder :style="{width: 5 + (Math.random() * 5) + '%'}" />
+		</div>
+		<div class="tw-flex tw-h-2 tw-mt-6.5">
+			<kv-loading-placeholder style="width: 233px;" />
+		</div>
+	</div>
+	<div v-else>
+		<dl>
+			<description-list-item
+				data-testid="bp-loan-detail-loan-length"
+				:term="'Loan length'"
+				:details="`${loanLength} months`"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-loan-length',
+					sfid: '50150000000Ry3z',
+					panelName: 'Loan-Details',
+					linkText: 'Loan length'
+				})"
+			/>
+			<description-list-item
+				data-testid="bp-loan-detail-repayment-schedule"
+				:term="'Repayment schedule'"
+				:details="repaymentSchedule"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-repayment-schedule',
+					sfid: '50150000000Ry44',
+					panelName: 'Loan-Details',
+					linkText: 'Repayment schedule'
+				})"
+			/>
+			<description-list-item
+				data-testid="bp-loan-detail-disbursed-date"
+				:term="'Disbursed date'"
+				:details="disbursedDate"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-disbursed-date',
+					sfid: '50150000000RyAs',
+					panelName: 'Loan-Details',
+					linkText: 'Disbursed date'
+				})"
+			/>
+			<description-list-item
+				v-if="terminalDateInfo"
+				data-testid="bp-loan-detail-terminal-date"
+				:term="terminalDateInfo.label"
+				:details="formattedTerminalDate"
+			/>
+			<description-list-item
+				data-testid="bp-loan-detail-funding-model"
+				:term="'Funding model'"
+				:details="fundingModel"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-funding-model',
+					sfid: '5011T000001GNKy',
+					panelName: 'Loan-Details',
+					linkText: 'Funding model'
+				})"
+			/>
+			<description-list-item
+				data-testid="bp-loan-detail-currency-loss"
+				:term="currencyLossScenarioTerm"
+				:details="currencyLossScenarioDetails"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-partner-covers-currency-loss',
+					sfid: '50150000000J5kV',
+					panelName: 'Loan-Details',
+					linkText: currencyLossScenarioTerm
+				})"
+			/>
+			<description-list-item
+				data-testid="bp-loan-detail-paying-interest"
+				:term="'Is borrower paying interest?'"
+				:details="borrowerPayingInterest"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-do-borrowers-pay-interest',
+					sfid: '50150000000IIav',
+					panelName: 'Loan-Details',
+					linkText: 'Is borrower paying interest?'
+				})"
+			/>
+		</dl>
+		<repayment-schedule
+			v-if="displayRepaymentSchedule"
+			:loan-id="loanId"
+			:status="status"
 		/>
-		<description-list-item
-			data-testid="bp-loan-detail-repayment-schedule"
-			:term="'Repayment schedule'"
-			:details="repaymentSchedule"
-			@show-definition="$emit('show-definition', {
-				cid: 'bp-def-repayment-schedule',
-				sfid: '50150000000Ry44',
-				panelName: 'Loan-Details',
-				linkText: 'Repayment schedule'
-			})"
-		/>
-		<description-list-item
-			data-testid="bp-loan-detail-disbursed-date"
-			:term="'Disbursed date'"
-			:details="disbursedDate"
-			@show-definition="$emit('show-definition', {
-				cid: 'bp-def-disbursed-date',
-				sfid: '50150000000RyAs',
-				panelName: 'Loan-Details',
-				linkText: 'Disbursed date'
-			})"
-		/>
-		<description-list-item
-			v-if="terminalDateInfo"
-			data-testid="bp-loan-detail-terminal-date"
-			:term="terminalDateInfo.label"
-			:details="formattedTerminalDate"
-		/>
-		<description-list-item
-			data-testid="bp-loan-detail-funding-model"
-			:term="'Funding model'"
-			:details="fundingModel"
-			@show-definition="$emit('show-definition', {
-				cid: 'bp-def-funding-model',
-				sfid: '5011T000001GNKy',
-				panelName: 'Loan-Details',
-				linkText: 'Funding model'
-			})"
-		/>
-		<description-list-item
-			data-testid="bp-loan-detail-currency-loss"
-			:term="currencyLossScenarioTerm"
-			:details="currencyLossScenarioDetails"
-			@show-definition="$emit('show-definition', {
-				cid: 'bp-def-partner-covers-currency-loss',
-				sfid: '50150000000J5kV',
-				panelName: 'Loan-Details',
-				linkText: currencyLossScenarioTerm
-			})"
-		/>
-		<description-list-item
-			data-testid="bp-loan-detail-paying-interest"
-			:term="'Is borrower paying interest?'"
-			:details="borrowerPayingInterest"
-			@show-definition="$emit('show-definition', {
-				cid: 'bp-def-do-borrowers-pay-interest',
-				sfid: '50150000000IIav',
-				panelName: 'Loan-Details',
-				linkText: 'Is borrower paying interest?'
-			})"
-		/>
-	</dl>
+	</div>
 </template>
 
 <script>
+import { gql } from 'graphql-tag';
 import { format, parseISO } from 'date-fns';
+import { KvLoadingPlaceholder } from '@kiva/kv-components';
 import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionListItem';
+import RepaymentSchedule from '#src/components/BorrowerProfile/RepaymentSchedule';
+
+const loanDetailsQuery = gql`query borrowerProfileLoanDetails($loanId: Int!) {
+	lend {
+		loan(id: $loanId) {
+			id
+			status
+			lenderRepaymentTerm
+			repaymentInterval
+			disbursalDate
+			anonymizationLevel
+			expiredDate
+			refundedDate
+			defaultedDate
+			endedDate
+			terms {
+				currency
+				flexibleFundraisingEnabled
+				lenderRepaymentTerm
+				lossLiabilityCurrencyExchange
+			}
+			... on LoanPartner {
+				partner {
+					id
+					name
+					chargesFeesInterest
+				}
+			}
+		}
+	}
+}`;
 
 export default {
 	name: 'LoanDetails',
-	inject: {
-		condensed: { default: false },
-	},
 	components: {
 		DescriptionListItem,
+		KvLoadingPlaceholder,
+		RepaymentSchedule,
+	},
+	inject: {
+		apollo: {},
+		condensed: { default: false },
 	},
 	emits: ['show-definition'],
 	props: {
-		partnerName: { // LoanPartner.partnerName
-			type: String,
-			default: '',
-		},
-		loanLenderRepaymentTerm: { // LoanBasic.lenderRepaymentTerm
+		loanId: {
 			type: Number,
 			default: 0,
 		},
-		loanTermLenderRepaymentTerm: { // LoanTerm.lenderRepaymentTerm
-			type: Number,
-			default: 0,
-		},
-		repaymentInterval: { // LoanBasic.repaymentInterval
-			type: String,
-			default: '',
-		},
-		flexibleFundraisingEnabled: { // LoanTerm.flexibleFundraisingEnabled
+		isPrivileged: {
 			type: Boolean,
 			default: false,
 		},
-		chargesFeesInterest: { // Partner.chargesFeesInterest
-			type: Boolean,
-			default: false,
+	},
+	data() {
+		return {
+			status: '',
+			partnerName: '',
+			chargesFeesInterest: false,
+			loanLenderRepaymentTerm: 0,
+			loanTermLenderRepaymentTerm: 0,
+			repaymentInterval: '',
+			flexibleFundraisingEnabled: false,
+			currency: '',
+			lossLiabilityCurrencyExchange: '',
+			disbursalDate: '',
+			anonymizationLevel: 'none',
+			expiredDate: '',
+			refundedDate: '',
+			defaultedDate: '',
+			endedDate: '',
+			loading: true,
+		};
+	},
+	apollo: {
+		lazy: true,
+		query: loanDetailsQuery,
+		variables() {
+			return { loanId: this.loanId };
 		},
-		currency: { // LoanTerm.currency
-			type: String,
-			default: '',
-		},
-		lossLiabilityCurrencyExchange: { // LoanTerm.lossLiabilityCurrencyExchange
-			type: String,
-			default: '',
-		},
-		disbursalDate: { // LoanBasic.disbursalDate
-			type: String,
-			default: '',
-		},
-		status: {
-			type: String,
-			default: '',
-		},
-		expiredDate: {
-			type: String,
-			default: '',
-		},
-		refundedDate: {
-			type: String,
-			default: '',
-		},
-		defaultedDate: {
-			type: String,
-			default: '',
-		},
-		endedDate: {
-			type: String,
-			default: '',
+		result({ data }) {
+			const loan = data?.lend?.loan;
+			this.status = loan?.status ?? '';
+			this.partnerName = loan?.partner?.name ?? '';
+			this.chargesFeesInterest = loan?.partner?.chargesFeesInterest ?? false;
+			this.loanLenderRepaymentTerm = loan?.lenderRepaymentTerm ?? 0;
+			this.loanTermLenderRepaymentTerm = loan?.terms?.lenderRepaymentTerm ?? 0;
+			this.repaymentInterval = loan?.repaymentInterval ?? '';
+			this.flexibleFundraisingEnabled = loan?.terms?.flexibleFundraisingEnabled ?? false;
+			this.currency = loan?.terms?.currency ?? '';
+			this.lossLiabilityCurrencyExchange = loan?.terms?.lossLiabilityCurrencyExchange ?? '';
+			this.disbursalDate = loan?.disbursalDate ?? '';
+			this.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
+			this.expiredDate = loan?.expiredDate ?? '';
+			this.refundedDate = loan?.refundedDate ?? '';
+			this.defaultedDate = loan?.defaultedDate ?? '';
+			this.endedDate = loan?.endedDate ?? '';
+			this.loading = false;
 		},
 	},
 	computed: {
@@ -216,6 +266,18 @@ export default {
 			}
 
 			return '';
+		},
+		displayRepaymentSchedule() {
+			// Don't show repayment schedule for fully anonymized loans
+			if (this.anonymizationLevel === 'full') {
+				return false;
+			}
+			// Always show for fundraising loans
+			if (this.status === 'fundraising') {
+				return true;
+			}
+			// For non-fundraising loans, only show to privileged users
+			return this.isPrivileged;
 		},
 	}
 };

@@ -1,5 +1,12 @@
 <template>
-	<section>
+	<div v-if="loading">
+		<kv-loading-placeholder class="tw-mb-2" style="width: 60%; height: 1.5rem;" />
+		<div v-for="i in 10" :key="i" class="tw-flex tw-justify-between tw-h-2 tw-mb-3">
+			<kv-loading-placeholder :style="{width: 25 + (Math.random() * 20) + '%'}" />
+			<kv-loading-placeholder :style="{width: 5 + (Math.random() * 5) + '%'}" />
+		</div>
+	</div>
+	<section v-else>
 		<h2 class="tw-mb-2">
 			{{ partnerName }}
 		</h2>
@@ -139,6 +146,7 @@
 </template>
 
 <script>
+import { gql } from 'graphql-tag';
 import {
 	mdiArrowRight,
 	mdiStar,
@@ -147,17 +155,52 @@ import {
 } from '@mdi/js';
 import numeral from 'numeral';
 import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionListItem';
-import { KvMaterialIcon, KvTextLink } from '@kiva/kv-components';
+import { KvLoadingPlaceholder, KvMaterialIcon, KvTextLink } from '@kiva/kv-components';
+
+const fieldPartnerQuery = gql`query borrowerProfileFieldPartner($loanId: Int!) {
+	lend {
+		loan(id: $loanId) {
+			id
+			... on LoanPartner {
+				partner {
+					id
+					name
+					avgBorrowerCost
+					avgBorrowerCostType
+					avgProfitability
+					arrearsRate
+					loansAtRiskRate
+					defaultRate
+					riskRating
+					currencyExchangeLossRate
+					startDate
+					loansPosted
+					totalAmountRaised
+					avgLoanSizePercentPerCapitaIncome
+				}
+			}
+		}
+	}
+}`;
 
 export default {
 	name: 'FieldPartnerDetails',
 	inject: {
+		apollo: {},
 		condensed: { default: false },
 	},
 	components: {
 		DescriptionListItem,
+		KvLoadingPlaceholder,
 		KvMaterialIcon,
 		KvTextLink,
+	},
+	emits: ['show-definition'],
+	props: {
+		loanId: {
+			type: Number,
+			default: 0,
+		},
 	},
 	data() {
 		return {
@@ -165,65 +208,46 @@ export default {
 			mdiStar,
 			mdiStarOutline,
 			mdiStarHalfFull,
+			partnerId: 0,
+			partnerName: '',
+			avgBorrowerCost: 0,
+			avgBorrowerCostType: '',
+			avgProfitability: 0,
+			arrearsRate: 0,
+			loansAtRiskRate: 0,
+			defaultRate: 0,
+			riskRating: 0,
+			currencyExchangeLossRate: 0,
+			startDate: '',
+			loansPosted: 0,
+			totalAmountRaised: '',
+			avgLoanSizePercentPerCapitaIncome: 0,
+			loading: true,
 		};
 	},
-	emits: ['show-definition'],
-	props: {
-		partnerId: { // Partner.id
-			type: Number,
-			default: 0,
+	apollo: {
+		lazy: true,
+		query: fieldPartnerQuery,
+		variables() {
+			return { loanId: this.loanId };
 		},
-		partnerName: { // Partner.name
-			type: String,
-			default: '',
-		},
-		avgBorrowerCost: { // Partner.avgBorrowerCost
-			type: Number,
-			default: 0,
-		},
-		avgBorrowerCostType: { // Partner.avgBorrowerCostType
-			type: String,
-			default: '',
-		},
-		avgProfitability: { // Partner.avgProfitability
-			type: Number,
-			default: 0,
-		},
-		arrearsRate: { // Partner.arrearsRate
-			type: Number,
-			default: 0,
-		},
-		loansAtRiskRate: { // Partner.loansAtRiskRate
-			type: Number,
-			default: 0,
-		},
-		defaultRate: { // Partner.defaultRate
-			type: Number,
-			default: 0,
-		},
-		riskRating: { // Partner.riskRating
-			type: Number,
-			default: 0,
-		},
-		currencyExchangeLossRate: { // Partner.currencyExchangeLossRate
-			type: Number,
-			default: 0,
-		},
-		startDate: { // Partner.startDate (ISO date string)
-			type: String,
-			default: '',
-		},
-		loansPosted: { // Partner.loansPosted
-			type: Number,
-			default: 0,
-		},
-		totalAmountRaised: { // Partner.totalAmountRaised — Money scalar, serialized as a string like '75.00' or null
-			type: String,
-			default: '',
-		},
-		avgLoanSizePercentPerCapitaIncome: { // Partner.avgLoanSizePercentPerCapitaIncome
-			type: Number,
-			default: 0,
+		result({ data }) {
+			const partner = data?.lend?.loan?.partner;
+			this.partnerId = partner?.id ?? 0;
+			this.partnerName = partner?.name ?? '';
+			this.avgBorrowerCost = partner?.avgBorrowerCost ?? 0;
+			this.avgBorrowerCostType = partner?.avgBorrowerCostType ?? '';
+			this.avgProfitability = partner?.avgProfitability ?? 0;
+			this.arrearsRate = partner?.arrearsRate ?? 0;
+			this.loansAtRiskRate = partner?.loansAtRiskRate ?? 0;
+			this.defaultRate = partner?.defaultRate ?? 0;
+			this.riskRating = partner?.riskRating ?? 0;
+			this.currencyExchangeLossRate = partner?.currencyExchangeLossRate ?? 0;
+			this.startDate = partner?.startDate ?? '';
+			this.loansPosted = partner?.loansPosted ?? 0;
+			this.totalAmountRaised = partner?.totalAmountRaised ?? '';
+			this.avgLoanSizePercentPerCapitaIncome = partner?.avgLoanSizePercentPerCapitaIncome ?? 0;
+			this.loading = false;
 		},
 	},
 	computed: {
