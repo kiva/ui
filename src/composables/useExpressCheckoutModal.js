@@ -134,7 +134,7 @@ export default function useExpressCheckoutModal({
 	function handleExpressCheckoutComplete({ transactionId }) {
 		if (!transactionId) return;
 		kvTrackEvent?.(EVENT_CATEGORY, 'click', 'complete-order');
-		router.push(`/checkout/thanks?kiva_transaction_id=${transactionId}`);
+		window.location.assign(`/checkout/thanks?kiva_transaction_id=${transactionId}`);
 	}
 
 	function handleExpressCheckoutClose() {

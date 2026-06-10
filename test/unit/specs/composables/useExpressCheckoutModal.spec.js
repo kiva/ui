@@ -16,6 +16,7 @@ describe('useExpressCheckoutModal', () => {
 	let mockLoadInitialBasketItems;
 	let mockOnResetAdding;
 	let mockKvTrackEvent;
+	let mockLocationAssign;
 	let basketItems;
 	let composable;
 	let app;
@@ -66,10 +67,12 @@ describe('useExpressCheckoutModal', () => {
 
 	beforeEach(() => {
 		mockPush.mockClear();
+		mockLocationAssign = vi.spyOn(window.location, 'assign').mockImplementation(() => {});
 		mountComposable();
 	});
 
 	afterEach(() => {
+		mockLocationAssign?.mockRestore();
 		app?.unmount();
 	});
 
@@ -322,19 +325,20 @@ describe('useExpressCheckoutModal', () => {
 	});
 
 	describe('handleExpressCheckoutComplete', () => {
-		it('redirects to /checkout/thanks with the transaction id', () => {
+		it('hard-navigates to /checkout/thanks with the transaction id', () => {
 			composable.handleExpressCheckoutComplete({ transactionId: 'tx-789' });
-			expect(mockPush).toHaveBeenCalledWith('/checkout/thanks?kiva_transaction_id=tx-789');
+			expect(mockLocationAssign).toHaveBeenCalledWith('/checkout/thanks?kiva_transaction_id=tx-789');
+			expect(mockPush).not.toHaveBeenCalled();
 		});
 
 		it('is a no-op when transactionId is missing', () => {
 			composable.handleExpressCheckoutComplete({});
-			expect(mockPush).not.toHaveBeenCalled();
+			expect(mockLocationAssign).not.toHaveBeenCalled();
 		});
 
 		it('is a no-op when transactionId is falsy', () => {
 			composable.handleExpressCheckoutComplete({ transactionId: 0 });
-			expect(mockPush).not.toHaveBeenCalled();
+			expect(mockLocationAssign).not.toHaveBeenCalled();
 		});
 	});
 
