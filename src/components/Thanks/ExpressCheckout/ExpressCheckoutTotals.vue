@@ -20,17 +20,6 @@
 			</p>
 			<div class="tw-flex tw-items-center tw-justify-end">
 				<span>-{{ formattedRedemptionApplied }}</span>
-				<!-- <button
-					:disabled="removingPromotion"
-					class="tw-ml-1 tw-h-2.5 tw-flex"
-					data-testid="express-checkout-remove-promotion"
-					@click="removePromotion"
-				>
-					<KvMaterialIcon
-						class="tw-w-2.5 tw-text-secondary"
-						:icon="mdiClose"
-					/>
-				</button> -->
 			</div>
 		</template>
 
@@ -40,17 +29,6 @@
 			</p>
 			<div class="tw-flex tw-items-center tw-justify-end">
 				<span>-{{ formattedBonusApplied }}</span>
-				<!-- <button
-					:disabled="removingKivaPromotion"
-					class="tw-ml-1 tw-h-2.5 tw-flex"
-					data-testid="express-checkout-remove-kiva-promotion"
-					@click="removeKivaPromotion"
-				>
-					<KvMaterialIcon
-						class="tw-w-2.5 tw-text-secondary"
-						:icon="mdiClose"
-					/>
-				</button> -->
 			</div>
 		</template>
 
@@ -135,7 +113,6 @@ const toggleCredit = async apply => {
 		} else {
 			await removeKivaCredit(apollo);
 		}
-		// TODO: track success event for apply/remove kiva credit
 	} catch (e) {
 		const verb = apply ? 'applying' : 'removing';
 		const message = e?.message
@@ -147,7 +124,6 @@ const toggleCredit = async apply => {
 		// `watchBasketTotals` subscription won't re-fire (the cache didn't
 		// change because the mutation failed).
 		creditAppliedModel.value = isCreditApplied.value;
-		// TODO: track fail event for apply/remove kiva credit
 	} finally {
 		changingCredit.value = false;
 	}

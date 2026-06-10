@@ -156,21 +156,17 @@ const openLightbox = async () => {
 	} catch (e) {
 		const message = e?.message || 'Something went wrong. Please, refresh the page and try again.';
 		$showTipMsg(message, 'error');
-		// TODO(MP-2747): track fail event for open-express-checkout
 		return false;
 	}
 
 	subscribeTotals();
 	lightboxOpen.value = true;
-	// TODO(MP-2747): track 'show' event for express-checkout modal
 	return true;
 };
 
 const onSubmit = async () => {
 	if (paying.value) return;
 	paying.value = true;
-
-	// TODO(MP-2747): track 'submit' event for express-checkout
 
 	try {
 		const options = { apollo, deactivateRedirect: true };
@@ -204,7 +200,6 @@ const onSubmit = async () => {
 
 		await createBasket(apollo);
 
-		// TODO(MP-2747): track 'success' event for express-checkout
 		emit('checkout-complete', {
 			transactionId: checkoutId,
 			amount: numeral(totalDue.value).format('0.00'),
@@ -212,8 +207,6 @@ const onSubmit = async () => {
 		});
 		closeLightbox();
 	} catch (e) {
-		// TODO(MP-2747): track 'fail' event for express-checkout
-
 		if (e?.code === 'shop.failedCheckoutValidation') {
 			closeLightbox();
 			router.push('/basket');

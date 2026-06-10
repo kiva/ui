@@ -133,6 +133,7 @@ export default function useExpressCheckoutModal({
 
 	function handleExpressCheckoutComplete({ transactionId }) {
 		if (!transactionId) return;
+		kvTrackEvent?.(EVENT_CATEGORY, 'close', 'complete-order');
 		router.push(`/checkout/thanks?kiva_transaction_id=${transactionId}`);
 	}
 
