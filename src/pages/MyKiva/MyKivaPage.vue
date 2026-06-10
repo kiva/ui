@@ -38,6 +38,7 @@
 			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goals-row-enabled="goalsRowEnabled"
+			:should-render-featured-slot="shouldRenderFeaturedSlot"
 		/>
 	</www-page>
 </template>
@@ -47,6 +48,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { CONTENTFUL_CAROUSEL_KEY, getRecentTransactionLoans } from '#src/util/myKivaUtils';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
 import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
+import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
@@ -121,6 +123,7 @@ export default {
 			lendingNextStepsExperimentVariant: null,
 			goalRecommendedLoanEnable: false,
 			goalsRowEnabled: false,
+			shouldRenderFeaturedSlot: true,
 		};
 	},
 	computed: {
@@ -168,6 +171,10 @@ export default {
 			return Promise.all([
 				client.query({ query: myKivaQuery }),
 				client.query({ query: lendingStatsQuery }),
+				// Prefetch user preferences so MyKivaFeaturedSlot can decide
+				// synchronously whether to mount
+				// If Goal is completed-and-viewed, slot stays hidden
+				client.query({ query: useGoalDataQuery }),
 				client.query({
 					query: userAchievementProgressQuery,
 					variables: {
@@ -232,8 +239,24 @@ export default {
 				return [];
 			}
 		},
+		readShouldRenderFeaturedSlot() {
+			// The viewedGoalComplete[currentYear] flag is set only after a user has
+			// already seen and persisted the completed-goal celebration.
+			// If it's true, the slot would only render to hide itself
+			try {
+				const goalDataResult = this.apollo.readQuery({ query: useGoalDataQuery });
+				const prefsString = goalDataResult?.my?.userPreferences?.preferences;
+				if (!prefsString) return true;
+				const parsed = JSON.parse(prefsString);
+				return !parsed.viewedGoalComplete?.[CURRENT_YEAR];
+			} catch (e) {
+				// Fall through to default: render the slot.
+				return true;
+			}
+		},
 		fetchMyKivaData() {
 			try {
+				this.shouldRenderFeaturedSlot = this.readShouldRenderFeaturedSlot();
 				const myKivaQueryResult = this.apollo.readQuery({ query: myKivaQuery });
 				const lendingStatsQueryResult = this.apollo.readQuery({ query: lendingStatsQuery });
 				const loanId = this.$router.currentRoute?.value?.query?.loanId ?? null;

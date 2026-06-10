@@ -34,7 +34,7 @@
 					<KvButton
 						class="featured-goal-card__cta featured-goal-card__cta--set-goal tw-w-full"
 						variant="primary"
-						v-kv-track-event="['portfolio', 'click', 'featured-set-a-goal']"
+						v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
 						@click="$emit('set-goal-click')"
 					>
 						Set {{ GOALS_CURRENT_YEAR }} goal
@@ -102,7 +102,6 @@
 								<span
 									style="font-size: 1rem"
 									class="tw-text-secondary"
-									:class="progressTargetMarginClass"
 								>
 									/{{ goalTarget }}
 								</span>
@@ -137,7 +136,7 @@
 						<KvButton
 							class="featured-goal-card__cta featured-goal-card__cta--active-goal tw-w-full"
 							variant="primary"
-							v-kv-track-event="['portfolio', 'click', 'featured-continue-towards-goal']"
+							v-kv-track-event="['portfolio', 'click', 'continue-towards-goal']"
 							@click="$emit('cta-click')"
 						>
 							{{ activeGoalCta }}
@@ -150,7 +149,9 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue';
+import {
+	computed, inject, ref, watch,
+} from 'vue';
 import {
 	KvButton, KvLoadingPlaceholder, KvProgressCircle, KvUtilityMenu,
 } from '@kiva/kv-components';
@@ -231,10 +232,6 @@ const progressValueWrapClass = computed(() => (
 	hasManyDigits.value ? 'tw-flex-col tw-items-center' : null
 ));
 
-const progressTargetMarginClass = computed(() => (
-	hasManyDigits.value ? 'tw-ml-0' : 'tw-ml-0.5'
-));
-
 const activeGoalTitle = computed(() => {
 	if (clampedPercentage.value === 0) return 'Start with your first loan';
 	if (clampedPercentage.value < HALF_GOAL_THRESHOLD) return 'You\'ve started something powerful.';
@@ -261,8 +258,13 @@ const activeGoalCta = computed(() => {
 	return 'Work toward your goal';
 });
 
+const $kvTrackEvent = inject('$kvTrackEvent');
+
 const onSelect = action => {
-	if (action.value === 'edit-goal') emit('edit-click');
+	if (action.value === 'edit-goal') {
+		$kvTrackEvent?.('portfolio', 'click', 'edit-goal');
+		emit('edit-click');
+	}
 };
 
 const hasFiredCompletionConfetti = ref(false);
@@ -320,7 +322,7 @@ watch(
 }
 
 .featured-goal-card__loading {
-	height: 191px;
+	height: 196px;
 }
 
 .featured-goal-card__content--no-goal {
