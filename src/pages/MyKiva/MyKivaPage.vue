@@ -16,6 +16,7 @@
 			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goals-row-enabled="goalsRowEnabled"
+			:should-render-featured-slot="shouldRenderFeaturedSlot"
 		/>
 		<my-kiva-page-content
 			v-else

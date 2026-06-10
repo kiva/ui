@@ -10,6 +10,14 @@
 			/>
 			Back to dashboard
 		</button>
+		<MyKivaFeaturedSlot
+			v-if="goalsRowEnabled && shouldRenderFeaturedSlot"
+			class="tw-mb-2"
+			:key="`featured-slot-${goalRefreshKey}`"
+			:user-first-name="userInfo?.userAccount?.firstName"
+			@set-goal-click="openGoalModal"
+			@edit-click="openGoalModal({ updating: true })"
+		/>
 		<template v-if="!hideRecommendedForYouSection">
 			<h3 class="tw-text-title tw-text-primary tw-mb-2">
 				Next steps recommended for you
@@ -312,6 +320,7 @@ import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
+import MyKivaFeaturedSlot from '#src/components/MyKiva/MyKivaFeaturedSlot';
 import MyKivaRegionExperience from '#src/components/MyKiva/MyKivaRegionExperience';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
@@ -420,6 +429,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	shouldRenderFeaturedSlot: {
+		type: Boolean,
+		default: true,
+	},
 });
 
 const cookieStore = inject('cookieStore');
@@ -523,7 +536,9 @@ const hideRecommendedForYouSection = computed(() => {
 		&& allAchievementsCompleted(props.heroTieredAchievements);
 });
 
-const hideGoalCardInNextSteps = computed(() => hideCompletedGoalCard.value || userGoalAchieved.value);
+const hideGoalCardInNextSteps = computed(
+	() => hideCompletedGoalCard.value || userGoalAchieved.value || props.goalsRowEnabled,
+);
 
 // Hide the top row carousel when there is nothing to show (no active goal card,
 // no incomplete achievements, and no post-lending cards). Applies to the fully-completed superlender case.
