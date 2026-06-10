@@ -137,6 +137,7 @@ export default {
 	},
 	inject: {
 		apollo: {},
+		cookieStore: {},
 		condensed: { default: false },
 	},
 	emits: ['show-definition'],
