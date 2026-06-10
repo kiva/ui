@@ -35,7 +35,6 @@
 					:goal-progress="goalProgress"
 					:goal-progress-percentage="goalProgressPercentage"
 					:go-to-url="goToUrl"
-					:custom-goal-amount-enable="customGoalAmountEnable"
 					@set-goal-target="$emit('set-goal-target', $event)"
 					@set-goal="$emit('set-goal', $event)"
 					@edit-goal="$emit('edit-goal')"
@@ -136,13 +135,6 @@ const props = defineProps({
 	goToUrl: {
 		type: String,
 		default: '/mykiva',
-	},
-	/**
-	 * Whether the custom goal amount feature is enabled (from experiment)
-	 */
-	customGoalAmountEnable: {
-		type: Boolean,
-		default: false,
 	},
 	/**
 	 * Whether to show the recommended-loan step instead of the goal selector.

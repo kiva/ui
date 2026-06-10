@@ -50,7 +50,7 @@
 
 			<!-- Start goal module variations -->
 			<GoalEntrypoint
-				v-if="!isGuest && goalDataInitialized && isEmptyGoal"
+				v-if="showGoalEntrypoint"
 				:loading="goalDataLoading || isSettingGoal || isLoadingRecommendedLoan"
 				:total-loans="totalLoans"
 				:categories-loan-count="categoriesLoanCount"
@@ -61,7 +61,6 @@
 				:goal-loans="goalTarget"
 				:goal-progress="goalProgress"
 				:goal-progress-percentage="goalProgressPercentage"
-				:custom-goal-amount-enable="customGoalAmountEnable"
 				:show-recommend-loan-after-goal-view="showRecommendLoanAfterGoalView"
 				:has-recommended-loans="hasRecommendedLoans"
 				:recommend-loan-card-props="recommendLoanCardProps"
@@ -214,14 +213,16 @@ import useGoalSettingRecommendedLoan, {
 } from '#src/composables/useGoalSettingRecommendedLoan';
 import useExpressCheckoutModal from '#src/composables/useExpressCheckoutModal';
 import useBadgeData from '#src/composables/useBadgeData';
-import { setPostLendingCardCookie } from '#src/util/myKivaUtils';
+import {
+	incrementGoalSignupThanksViewCount,
+	isGoalSignupThanksViewCapped,
+	setPostLendingCardCookie,
+} from '#src/util/myKivaUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import useTipMessage from '#src/composables/useTipMessage';
-import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 
 const EVENT_CATEGORY = 'post-checkout';
 const NON_TIERED_BADGE = 'non-tiered-badge';
-const CUSTOM_GOAL_AMOUNT_EXP_KEY = 'custom_goal_amount';
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -294,7 +295,7 @@ const showGoalInProgressModule = ref(false);
 const isGoalSet = ref(false);
 const isEmptyGoal = ref(true);
 const goalTarget = ref(0);
-const customGoalAmountEnable = ref(false);
+const goalSignupThanksViewCapped = ref(false);
 
 // Basket primitives are owned by ThanksPage's borrowerProfileExpMixin and
 // bridged down via provide/inject so we don't duplicate addToBasket /
@@ -435,6 +436,12 @@ const showJourneyModule = computed(() => {
 	return !userGoalAchievedNow.value;
 });
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
+const showGoalEntrypoint = computed(() => {
+	return !props.isGuest
+		&& goalDataInitialized.value
+		&& isEmptyGoal.value
+		&& !goalSignupThanksViewCapped.value;
+});
 
 // Only tiered when all achieved badges are tiered; non-tiered takes precedence
 const hasOnlyTieredBadgesAchieved = computed(() => {
@@ -562,6 +569,12 @@ onMounted(async () => {
 	await checkCompletedGoal({ currentGoalProgress: totalProgress, persistHideGoalCard: false });
 	goalDataInitialized.value = true;
 	isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
+	goalSignupThanksViewCapped.value = !props.isGuest
+		&& isEmptyGoal.value
+		&& isGoalSignupThanksViewCapped(cookieStore);
+	if (!props.isGuest && isEmptyGoal.value && !goalSignupThanksViewCapped.value) {
+		incrementGoalSignupThanksViewCount(cookieStore);
+	}
 
 	// Show goal in progress module when:
 	// - User is logged in (not a guest)
@@ -610,22 +623,6 @@ onMounted(async () => {
 	}
 
 	setPostLendingCardCookie(cookieStore, props.loans?.length);
-
-	// Initialize experiment and set customGoalAmountEnable based on assigned version
-	if (isEmptyGoal.value) {
-		initializeExperiment(
-			cookieStore,
-			apollo,
-			router,
-			CUSTOM_GOAL_AMOUNT_EXP_KEY,
-			version => {
-				customGoalAmountEnable.value = Boolean(version === 'b');
-			},
-			$kvTrackEvent,
-			'EXP-MP-2605-Apr2026',
-			'post-checkout',
-		);
-	}
 });
 </script>
 

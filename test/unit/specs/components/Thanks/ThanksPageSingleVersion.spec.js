@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { createRouter, createMemoryHistory } from 'vue-router';
 import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
 import { GOAL_STATUS } from '#src/composables/useGoalData';
+import { GOAL_SIGNUP_THANKS_VIEWS_COOKIE } from '#src/util/myKivaUtils';
 import { globalOptions } from '../../../specUtils';
 
 const router = createRouter({
@@ -15,6 +16,18 @@ vi.mock('canvas-confetti', () => ({ default: vi.fn() }));
 
 // Mock myKivaUtils
 vi.mock('#src/util/myKivaUtils', () => ({
+	GOAL_SIGNUP_THANKS_VIEWS_COOKIE: 'kv_goal_signup_thanks_views',
+	incrementGoalSignupThanksViewCount: vi.fn(cookieStore => {
+		const current = Number(cookieStore?.get('kv_goal_signup_thanks_views')) || 0;
+		cookieStore?.set('kv_goal_signup_thanks_views', String(Math.min(current + 1, 3)), {
+			path: '/',
+			expires: new Date(2027, 0, 1),
+		});
+		return Math.min(current + 1, 3);
+	}),
+	isGoalSignupThanksViewCapped: vi.fn(cookieStore => {
+		return (Number(cookieStore?.get('kv_goal_signup_thanks_views')) || 0) >= 3;
+	}),
 	setGuestAssignmentCookie: vi.fn(),
 	setPostLendingCardCookie: vi.fn(),
 }));
@@ -122,8 +135,7 @@ const stubs = {
 			'loading', 'totalLoans', 'categoriesLoanCount', 'isGoalSet',
 			'tieredAchievements', 'selectedCategory', 'isEditing',
 			'goalLoans', 'goalProgress', 'goalProgressPercentage', 'goToUrl',
-			'customGoalAmountEnable', 'showRecommendLoanAfterGoalView',
-			'hasRecommendedLoans', 'recommendLoanCardProps',
+			'showRecommendLoanAfterGoalView', 'hasRecommendedLoans', 'recommendLoanCardProps',
 			'recommendLoanHeaderDetails', 'recommendLoanIsInBasket',
 			'loadedSetData', 'isAdding', 'isRedirecting',
 		],
@@ -163,14 +175,26 @@ const MODULE_IDS = [
 
 function renderComponent(propsOverrides = {}, options = {}) {
 	const kvTrackEvent = options.kvTrackEvent ?? vi.fn();
+	const cookieValues = propsOverrides.cookieValues ?? {};
 	const thanksPageBasket = options.thanksPageBasket ?? thanksPageBasketStub;
-	const result = render(ThanksPageSingleVersion, {
+	const props = { ...propsOverrides };
+	delete props.cookieValues;
+	const cookieStore = {
+		get: vi.fn(name => cookieValues[name]),
+		set: vi.fn((name, value) => {
+			cookieValues[name] = value;
+		}),
+		remove: vi.fn(),
+	};
+
+	const renderResult = render(ThanksPageSingleVersion, {
 		global: {
 			...globalOptions,
 			plugins: [router],
 			provide: {
 				...globalOptions.provide,
 				$kvTrackEvent: kvTrackEvent,
+				cookieStore,
 				thanksPageBasket,
 			},
 			stubs,
@@ -183,14 +207,16 @@ function renderComponent(propsOverrides = {}, options = {}) {
 				items: { values: [{ basketItemType: 'loan' }] },
 				totals: { itemTotal: '25.00', donationTotal: '0.00' },
 			},
-			...propsOverrides,
+			...props,
 		},
 	});
 
 	return {
-		...result,
+		...renderResult,
+		cookieStore,
+		cookieValues,
 		kvTrackEvent,
-		thanksPageBasket,
+		thanksPageBasket
 	};
 }
 
@@ -494,6 +520,62 @@ describe('ThanksPageSingleVersion', () => {
 			await vi.waitFor(() => {
 				const ids = getOrderedModules(container);
 				expect(ids).toEqual(['goal-entrypoint', 'badge-milestone']);
+			});
+		});
+
+		it('increments the thank you goal signup view counter when the ask renders', async () => {
+			mockUserGoal.value = null;
+
+			const { cookieStore, getByTestId } = renderComponent({
+				badgesAchieved: [],
+			});
+
+			await vi.waitFor(() => {
+				expect(getByTestId('goal-entrypoint')).toBeTruthy();
+				expect(cookieStore.set).toHaveBeenCalledWith(GOAL_SIGNUP_THANKS_VIEWS_COOKIE, '1', {
+					path: '/',
+					expires: expect.any(Date),
+				});
+			});
+		});
+
+		it('allows the third thank you goal signup view and stores the capped count', async () => {
+			mockUserGoal.value = null;
+
+			const { cookieStore, getByTestId } = renderComponent({
+				badgesAchieved: [],
+				cookieValues: {
+					[GOAL_SIGNUP_THANKS_VIEWS_COOKIE]: '2',
+				},
+			});
+
+			await vi.waitFor(() => {
+				expect(getByTestId('goal-entrypoint')).toBeTruthy();
+				expect(cookieStore.set).toHaveBeenCalledWith(GOAL_SIGNUP_THANKS_VIEWS_COOKIE, '3', {
+					path: '/',
+					expires: expect.any(Date),
+				});
+			});
+		});
+
+		it('hides the thank you goal signup ask after the view cap and shows fallback content', async () => {
+			mockUserGoal.value = null;
+
+			const { queryByTestId, getByTestId, cookieStore } = renderComponent({
+				badgesAchieved: [],
+				cookieValues: {
+					[GOAL_SIGNUP_THANKS_VIEWS_COOKIE]: '3',
+				},
+			});
+
+			await vi.waitFor(() => {
+				expect(queryByTestId('goal-entrypoint')).toBeNull();
+				expect(getByTestId('journey-general-prompt')).toBeTruthy();
+				expect(cookieStore.set).not.toHaveBeenCalledWith(
+					GOAL_SIGNUP_THANKS_VIEWS_COOKIE,
+					expect.anything(),
+					expect.anything()
+				);
 			});
 		});
 
