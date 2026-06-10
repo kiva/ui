@@ -403,6 +403,21 @@ describe('LoanList — arrears rendering', () => {
 	});
 });
 
+describe('LoanList — row banding', () => {
+	const makeLoans = count => Array.from({ length: count }, (_, i) => makeLoan({ id: 2000 + i }));
+
+	it('applies alternating gray banding to every other data row, starting on the second', () => {
+		const page = renderLoanList({ loans: makeLoans(4) });
+		const rows = [...page.container.querySelectorAll('tbody tr')];
+
+		expect(rows).toHaveLength(4);
+		expect(rows[0].classList.contains('tw-bg-gray-50')).toBe(false);
+		expect(rows[1].classList.contains('tw-bg-gray-50')).toBe(true);
+		expect(rows[2].classList.contains('tw-bg-gray-50')).toBe(false);
+		expect(rows[3].classList.contains('tw-bg-gray-50')).toBe(true);
+	});
+});
+
 describe('LoanList — team cell', () => {
 	it('renders the user-attributed team name and image when present', () => {
 		const page = renderLoanList({

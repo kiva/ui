@@ -13,6 +13,8 @@
 			:balance="balance"
 			:is-borrower="isBorrower"
 			:is-trustee="isTrustee"
+			:trustee-id="trusteeId"
+			:most-recent-borrowed-loan-id="loanId"
 			:user-id="userId"
 			:is-mobile="isMobile"
 			:lender-image-url="profilePic"
@@ -20,8 +22,6 @@
 			:is-basket-data-loading="isBasketLoading"
 			:style="esiCssVarBridge"
 			:countries-not-lent-to-url="COUNTRIES_NOT_LENT_TO_URL"
-			:app-origin="appOrigin"
-			:search-suggestions="searchSuggestions"
 			show-m-g-upsell-link
 			@load-lend-menu-data="loadMenu"
 			@load-search-data="loadSearchData"
@@ -598,7 +598,6 @@ import {
 	KvButton, KvLoadingPlaceholder, KvMaterialIcon, KvPageContainer, KvWwwHeaderBasic
 } from '@kiva/kv-components';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-import loanSearchSuggestionsQuery from '#src/graphql/query/loanSearchSuggestions.graphql';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import useMyKivaHome from '#src/composables/useMyKivaHome';
 import { COUNTRIES_NOT_LENT_TO_URL } from '#src/util/headerUtils';
@@ -655,8 +654,6 @@ export default {
 			profilePic: '',
 			profilePicId: null,
 			searchOpen: false,
-			searchSuggestions: [],
-			searchDataRequested: false,
 			teams: null,
 			teamsMenuEnabled: false,
 			trusteeId: null,
@@ -715,9 +712,6 @@ export default {
 				'--user-avatar-legacy-display': 'var(--ui-data-user-avatar-legacy-display)',
 				'--user-avatar': 'var(--ui-data-user-avatar)',
 			};
-		},
-		appOrigin() {
-			return `${this.$appConfig.transport}://${this.$appConfig.host}`;
 		},
 		isVisitor() {
 			return !this.userId && !this.$renderConfig?.cdnNotedLoggedIn;
@@ -977,17 +971,13 @@ export default {
 				this.$refs.newExpHeader.loadMenuData(this.apollo);
 			}
 		},
-		// The loadSearchData and onSearchSubmit methods below exist solely to power the
-		// search bar inside the new KvWwwHeaderBasic experiment header. They reuse the same
-		// loanSearchSuggestions query as the legacy SearchBar; the new header owns the
-		// typeahead engine, the Gifts suggestions, grouping and URL building, so here we only
-		// supply the raw dataset and perform navigation on submit.
+		// loadSearchData delegates to the new header's exposed loadSearchSuggestions method so the
+		// component fetches its own loan-search-suggestion dataset (mirrors loadMenu → loadMenuData).
+		// onSearchSubmit still performs navigation since the header emits the search payload.
 		loadSearchData() {
-			if (this.searchDataRequested) return;
-			this.searchDataRequested = true;
-			this.apollo.query({ query: loanSearchSuggestionsQuery }).then(({ data }) => {
-				this.searchSuggestions = data?.lend?.loanSearchSuggestions ?? [];
-			});
+			if (this.$refs.newExpHeader) {
+				this.$refs.newExpHeader.loadSearchSuggestions(this.apollo);
+			}
 		},
 		onSearchSubmit(payload) {
 			// KvWwwHeaderBasic emits a payload whose `url` is the origin + path only, with the

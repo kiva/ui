@@ -13,9 +13,35 @@ export const GOAL_SIGNUP_COPY_VARIANT = {
 	NO_GOAL_YET: 'no-goal-yet',
 };
 
+export const GOAL_SIGNUP_DATE_QUERY_PARAM = 'goalSignupDate';
+
 // April (Date#getMonth is 0-indexed) is the earliest 'no-goal-yet' month.
 const NO_GOAL_YET_START_MONTH = 3;
 const NO_GOAL_YET_START_DAY = 1;
+const GOAL_SIGNUP_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+function parseGoalSignupDateParam(value) {
+	const match = typeof value === 'string' ? value.match(GOAL_SIGNUP_DATE_PATTERN) : null;
+	if (!match) return null;
+
+	const [, yearString, monthString, dayString] = match;
+	const year = Number(yearString);
+	const monthIndex = Number(monthString) - 1;
+	const day = Number(dayString);
+	const date = new Date(year, monthIndex, day);
+	const isValidDate = date.getFullYear() === year
+		&& date.getMonth() === monthIndex
+		&& date.getDate() === day;
+
+	return isValidDate ? date : null;
+}
+
+function getGoalSignupDateOverride() {
+	if (typeof window === 'undefined') return null;
+
+	const params = new URLSearchParams(window.location?.search || '');
+	return parseGoalSignupDateParam(params.get(GOAL_SIGNUP_DATE_QUERY_PARAM));
+}
 
 /**
  * Pure resolver.
@@ -39,8 +65,9 @@ function resolveGoalSignupCopyVariant(date = new Date()) {
  *
  * @param {object} [options]
  * @param {Date}   [options.now] - Override date (used by tests to pin a boundary).
+ * Query param override: ?goalSignupDate=YYYY-MM-DD only affects this copy decision.
  * @returns {'last-year' | 'no-goal-yet'}
  */
 export default function useGoalSignupCopyVariant({ now } = {}) {
-	return resolveGoalSignupCopyVariant(now ?? new Date());
+	return resolveGoalSignupCopyVariant(now ?? getGoalSignupDateOverride() ?? new Date());
 }

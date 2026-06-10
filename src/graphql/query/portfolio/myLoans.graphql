@@ -30,7 +30,6 @@ query myLoans(
 				name
 				status
 				statusLabel
-				use
 				image {
 					id
 					url
@@ -46,7 +45,6 @@ query myLoans(
 					id
 					name
 				}
-				loanAmount
 				loanFundraisingInfo {
 					id
 					fundedAmount
@@ -56,9 +54,6 @@ query myLoans(
 				sharedArrearsAmount
 				terms {
 					loanAmount
-					expectedPayments {
-						dueToKivaDate
-					}
 				}
 				userProperties {
 					loanBalance {
