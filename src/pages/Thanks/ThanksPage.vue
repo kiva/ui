@@ -14,6 +14,7 @@
 				:total-loans="totalLoanCount"
 				:tiered-achievements="achievements"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
+				:is-express-checkout-modal-enabled="isExpressCheckoutModalEnabled"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -187,6 +188,7 @@ export default {
 			totalLoanCount: 0,
 			achievements: [],
 			goalRecommendedLoanEnable: false,
+			expressCheckoutEnabled: false,
 		};
 	},
 	apollo: {
@@ -258,6 +260,9 @@ export default {
 	computed: {
 		showDafThanks() {
 			return !!this.$route?.query?.show_daf_thanks;
+		},
+		isExpressCheckoutModalEnabled() {
+			return this.expressCheckoutEnabled;
 		},
 		borrowerSupport() {
 			const loanNames = this.loans.map(loan => loan.name);
@@ -342,6 +347,7 @@ export default {
 		};
 
 		this.goalRecommendedLoanEnable = readBoolSetting(data, 'general.goal_recommended_loan_enable.value') ?? false;
+		this.expressCheckoutEnabled = readBoolSetting(data, 'general.ty_page_express_checkout_enabled.value') ?? false;
 
 		if (this.goalRecommendedLoanEnable) {
 			this.loadInitialBasketItems();

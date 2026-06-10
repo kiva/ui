@@ -27,12 +27,17 @@ import {
  * @param {Function} [deps.onResetAdding]         Optional hook called from the
  *   modal close handler to reset the mixin's `isAdding` flag so the "Support
  *   now" CTA recovers if the user dismisses the modal before completing.
+ * @param {object}   [deps.isExpressCheckoutEnabled] Ref/computed boolean from the
+ *   `enable_ty_page_express_checkout` UI config flag. When false, the handler
+ *   skips the modal flow entirely and sends the user to /basket — preserving
+ *   the original recommendation behaviour while the feature is rolled out.
  */
 export default function useExpressCheckoutModal({
 	addToBasket,
 	loadInitialBasketItems,
 	basketItems,
 	onResetAdding,
+	isExpressCheckoutEnabled,
 }) {
 	const apollo = inject('apollo');
 	const cookieStore = inject('cookieStore');
@@ -44,6 +49,23 @@ export default function useExpressCheckoutModal({
 	const isRedirecting = ref(false);
 
 	async function handleAddRecommendedLoanToBasket(payload) {
+		// Feature flag off → skip the modal flow entirely. Add the recommended
+		// loan to the basket and redirect to /basket, matching the pre-express
+		// behaviour. No donation cleanup, no re-entry detection, no modal.
+		if (!unref(isExpressCheckoutEnabled)) {
+			isRedirecting.value = true;
+			const previousOnError = payload.onError;
+			addToBasket({
+				...payload,
+				onSuccess: () => router.push('/basket'),
+				onError: () => {
+					isRedirecting.value = false;
+					previousOnError?.();
+				},
+			});
+			return;
+		}
+
 		// Decide between the three express-checkout sub-flows based on the
 		// current basket state: open the modal, re-open it (Checkout now
 		// re-entry), or redirect to /basket for the full checkout.
@@ -94,12 +116,10 @@ export default function useExpressCheckoutModal({
 					expressCheckoutLoan.value = payload.loan ?? null;
 					expressCheckoutModalRef.value?.openLightbox();
 				} else {
-					// TODO(MP-2747): track 'redirect-to-basket' event (non-empty-basket path)
 					router.push('/basket');
 				}
 			},
 			onError: () => {
-				// TODO(MP-2747): track 'add-to-basket-failed' event
 				isRedirecting.value = false;
 				previousOnError?.();
 			},

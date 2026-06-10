@@ -47,6 +47,7 @@ describe('useExpressCheckoutModal', () => {
 					loadInitialBasketItems: mockLoadInitialBasketItems,
 					basketItems,
 					onResetAdding: mockOnResetAdding,
+					isExpressCheckoutEnabled: ref(true),
 					...overrides,
 				});
 				return {};

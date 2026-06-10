@@ -172,7 +172,7 @@
 			@set-goal="setGoal"
 		/>
 		<ExpressCheckoutModal
-			v-if="!isGuest && goalRecommendedLoanEnable"
+			v-if="!isGuest && isExpressCheckoutModalEnabled"
 			ref="expressCheckoutModalRef"
 			:loan="expressCheckoutLoan"
 			@checkout-complete="handleExpressCheckoutComplete"
@@ -279,6 +279,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	isExpressCheckoutModalEnabled: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const receiptSection = ref(null);
@@ -310,6 +314,7 @@ const {
 	loadInitialBasketItems: thanksPageBasket.loadInitialBasketItems,
 	basketItems: thanksPageBasket.basketItems,
 	onResetAdding: thanksPageBasket.resetIsAdding,
+	isExpressCheckoutEnabled: toRef(props, 'isExpressCheckoutModalEnabled'),
 });
 
 const {
