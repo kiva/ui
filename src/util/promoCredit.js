@@ -119,8 +119,8 @@ export function hasPromoSession(data) {
  *
  * Returns true only when ALL of the following are true:
  *   1. The `enable_tip_for_admin_reward_lc` feature flag is enabled.
- *   2. The current checkout's promoCampaign managed account has a
- *      `managementType` of exactly `'Admin Reward'`.
+ *   2. The current checkout's promoCampaign promoGroup has a
+ *      `type` of exactly `'reward_credit'`.
  *
  * @param {Object} promoData - The `shop.promoCampaign` sub-tree from a checkout query.
  * @param {boolean} flagEnabled - The resolved boolean value of the feature flag.
@@ -128,7 +128,7 @@ export function hasPromoSession(data) {
  */
 export function isAdminRewardTipEligible(promoData, flagEnabled) {
 	if (flagEnabled !== true) return false;
-	return promoData?.managedAccount?.managementType === 'Admin Reward';
+	return promoData?.promoGroup?.type === 'reward_credit';
 }
 
 /**

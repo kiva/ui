@@ -164,18 +164,18 @@ describe('promoCredit', () => {
 	});
 
 	describe('isAdminRewardTipEligible', () => {
-		const adminRewardPromo = { managedAccount: { managementType: 'Admin Reward' } };
-		const otherTypePromo = { managedAccount: { managementType: 'lending_reward' } };
+		const adminRewardPromo = { promoGroup: { type: 'reward_credit' } };
+		const otherTypePromo = { promoGroup: { type: 'lending_reward' } };
 
-		it('returns true when flag is on and managementType is Admin Reward', () => {
+		it('returns true when flag is on and promoGroup type is reward_credit', () => {
 			expect(isAdminRewardTipEligible(adminRewardPromo, true)).toBe(true);
 		});
 
-		it('returns false when flag is off, even for Admin Reward', () => {
+		it('returns false when flag is off, even for reward_credit', () => {
 			expect(isAdminRewardTipEligible(adminRewardPromo, false)).toBe(false);
 		});
 
-		it('returns false for other managementType values when flag is on', () => {
+		it('returns false for other promoGroup type values when flag is on', () => {
 			expect(isAdminRewardTipEligible(otherTypePromo, true)).toBe(false);
 		});
 
