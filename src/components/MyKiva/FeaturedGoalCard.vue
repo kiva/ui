@@ -27,7 +27,7 @@
 				class="featured-goal-card__content--no-goal tw-flex tw-flex-col"
 			>
 				<div class="tw-flex tw-flex-col md:tw-w-full">
-					<h3 class="tw-text-title tw-pb-1" v-html="goalCopy.titleNoHistoryWomensDefault()"></h3>
+					<h3 class="tw-text-title tw-pb-1" v-html="noGoalTitle"></h3>
 					<p class="tw-text-small md:tw-text-base tw-pb-3 md:tw-pb-2">
 						{{ goalCopy.TITLE_HOW_MANY_LOANS_GENERIC }}
 					</p>
@@ -155,7 +155,7 @@ import {
 	KvButton, KvLoadingPlaceholder, KvProgressCircle, KvUtilityMenu,
 } from '@kiva/kv-components';
 import KvIcon from '#src/components/Kv/KvIcon';
-import goalCopy from '#src/util/goalCopy';
+import goalCopy, { GOAL_SIGNUP_COPY_NO_GOAL_YET } from '#src/util/goalCopy';
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import { showConfetti } from '#src/util/animation/confettiUtils';
 
@@ -211,6 +211,13 @@ const menuActions = [
 const resolvedState = computed(() => (
 	VALID_STATES.includes(props.state) ? props.state : STATE_NO_GOAL
 ));
+
+const noGoalTitle = computed(() => {
+	if (goalCopy.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
+		return goalCopy.CARD_NO_GOAL_YET_EXPERIMENT;
+	}
+	return goalCopy.titleNoHistoryWomensDefault();
+});
 
 const visibleProgress = computed(() => Math.min(props.goalProgress, props.goalTarget));
 
