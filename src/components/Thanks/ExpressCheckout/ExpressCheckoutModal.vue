@@ -84,7 +84,7 @@ defineProps({
 	},
 	analyticsCategory: {
 		type: String,
-		default: 'post-checkout-express',
+		default: 'post-checkout',
 	},
 });
 
