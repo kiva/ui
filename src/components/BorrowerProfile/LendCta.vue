@@ -678,7 +678,6 @@ export default {
 				let nextStatIndex = possibleStats.indexOf(this.currentSlotStat) + 1;
 				nextStatIndex = nextStatIndex >= possibleStats.length ? 0 : nextStatIndex;
 				this.currentSlotStat = possibleStats[nextStatIndex] ?? '';
-				console.log(possibleStats);
 			};
 
 			// Set initial stat
