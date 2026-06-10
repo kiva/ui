@@ -141,6 +141,12 @@ const toggleCredit = async apply => {
 		const message = e?.message
 			|| `Something went wrong ${verb} your Kiva Credit. Please, refresh the page and try again.`;
 		$showTipMsg(message, 'error');
+		// Revert the switch to the actual basket state. Without this the
+		// switch stays stuck on the user's selected position while the
+		// credit was never applied/removed on the server — and the
+		// `watchBasketTotals` subscription won't re-fire (the cache didn't
+		// change because the mutation failed).
+		creditAppliedModel.value = isCreditApplied.value;
 		// TODO: track fail event for apply/remove kiva credit
 	} finally {
 		changingCredit.value = false;

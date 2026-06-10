@@ -180,17 +180,29 @@ const onSubmit = async () => {
 
 		const transactionResult = await executeOneTimeCheckout(options);
 
-		const checkoutId = transactionResult?.data?.checkoutStatus?.receipt?.checkoutId ?? 0;
+		// Validate the result BEFORE side effects. `executeOneTimeCheckout`
+		// only throws when GraphQL errors are present — a declined card may
+		// return cleanly with `status !== 'COMPLETED'`. Without this guard
+		// we'd track a phantom transaction and wipe the basket via
+		// `createBasket` before the user can retry.
+		if (transactionResult?.data?.checkoutStatus?.status !== 'COMPLETED') {
+			throw new Error('Checkout failed');
+		}
+
+		const checkoutId = transactionResult?.data?.checkoutStatus?.receipt?.checkoutId;
+		if (!checkoutId) {
+			// Defensive: status is COMPLETED but the receipt id is missing.
+			// Throw so the user gets a tip message instead of silently
+			// paying without ever reaching the new Thanks page.
+			throw new Error('Checkout completed but receipt is missing');
+		}
+
 		await trackTransactionEvent({
 			apollo,
 			transactionId: Number(checkoutId),
 		});
 
 		await createBasket(apollo);
-
-		if (transactionResult?.data?.checkoutStatus?.status !== 'COMPLETED') {
-			throw new Error('Checkout failed');
-		}
 
 		// TODO(MP-2747): track 'success' event for express-checkout
 		emit('checkout-complete', {
@@ -203,6 +215,7 @@ const onSubmit = async () => {
 		// TODO(MP-2747): track 'fail' event for express-checkout
 
 		if (e?.code === 'shop.failedCheckoutValidation') {
+			closeLightbox();
 			router.push('/basket');
 			return;
 		}
