@@ -187,6 +187,7 @@ export default {
 	name: 'FieldPartnerDetails',
 	inject: {
 		apollo: {},
+		cookieStore: {},
 		condensed: { default: false },
 	},
 	components: {
