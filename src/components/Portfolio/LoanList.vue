@@ -50,9 +50,10 @@
 							</td>
 						</tr>
 						<tr
-							v-for="loan in loans"
+							v-for="(loan, index) in loans"
 							:key="loan.id"
 							class="tw-border-b tw-border-tertiary"
+							:class="{ 'tw-bg-gray-50': index % 2 === 1 }"
 						>
 							<td class="tw-px-2 tw-py-2">
 								<div class="tw-flex tw-items-start">

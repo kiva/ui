@@ -203,7 +203,7 @@
 					:is-updating-goal="isUpdatingGoal"
 					:is-loading-data="isLoadingData || isLoadingRecommendedLoan"
 					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
-					show-goal-value-props-copy
+					:show-goal-value-props-copy="showGoalValuePropsCopy && !isGoalTileExperimentEnabled"
 					@set-goal-target="setGoalTarget"
 					@set-goal="onGoalSelectorSetGoal"
 					@update-goal="onGoalSelectorUpdateGoal"
@@ -394,6 +394,13 @@ const props = defineProps({
 	isGoalTileExperimentEnabled: {
 		type: Boolean,
 		default: false,
+	},
+	/**
+	 * Flag to indicate if the goal value props copy version should be shown
+	 */
+	showGoalValuePropsCopy: {
+		type: Boolean,
+		default: true,
 	},
 	/**
 	 * When true, after setting a goal (handleClick save path), swap modal content for recommended loan UI.

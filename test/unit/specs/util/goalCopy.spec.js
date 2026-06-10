@@ -1,5 +1,8 @@
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
-import goalCopy from '#src/util/goalCopy';
+import goalCopy, {
+	GOAL_SIGNUP_COPY_LAST_YEAR,
+	GOAL_SIGNUP_COPY_NO_GOAL_YET,
+} from '#src/util/goalCopy';
 import {
 	ID_SUPPORT_ALL,
 	ID_CLIMATE_ACTION,
@@ -24,6 +27,73 @@ describe('goalCopy', () => {
 			const result = goalCopy.titleNoHistoryWomensDefault('tw-text-action');
 			expect(result).toContain('class="tw-text-action"');
 			expect(result).not.toContain('tw-text-eco-green-3');
+		});
+	});
+
+	describe('titleNoGoalYetWomensDefault', () => {
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		it('uses original no-history copy from January 1 through March 31', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-03-31T12:00:00'));
+
+			const result = goalCopy.titleNoGoalYetWomensDefault();
+			expect(result).toContain('Lenders like you help');
+			expect(result).toContain('3 women');
+		});
+
+		it('uses no-goal-yet copy starting April 1', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-04-01T12:00:00'));
+
+			expect(goalCopy.titleNoGoalYetWomensDefault()).toBe(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
+		});
+	});
+
+	describe('getGoalSignupCopyVariant', () => {
+		it('uses last-year copy from January 1 through March 31', () => {
+			expect(goalCopy.getGoalSignupCopyVariant(new Date('2026-01-01T12:00:00'))).toBe(GOAL_SIGNUP_COPY_LAST_YEAR);
+			expect(goalCopy.getGoalSignupCopyVariant(new Date('2026-03-31T12:00:00'))).toBe(GOAL_SIGNUP_COPY_LAST_YEAR);
+		});
+
+		it('uses no-goal-yet copy starting April 1', () => {
+			expect(goalCopy.getGoalSignupCopyVariant(new Date('2026-04-01T12:00:00')))
+				.toBe(GOAL_SIGNUP_COPY_NO_GOAL_YET);
+			expect(goalCopy.getGoalSignupCopyVariant(new Date('2026-12-31T12:00:00')))
+				.toBe(GOAL_SIGNUP_COPY_NO_GOAL_YET);
+		});
+	});
+
+	describe('titleGoalSignupWomensLastYear', () => {
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		it('uses last-year singular copy from January 1 through March 31', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-03-31T12:00:00'));
+
+			expect(stripHtml(goalCopy.titleGoalSignupWomensLastYear(1))).toContain(
+				'Last year, you helped 1 woman shape her future!'
+			);
+		});
+
+		it('uses last-year plural copy from January 1 through March 31', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-03-31T12:00:00'));
+
+			expect(stripHtml(goalCopy.titleGoalSignupWomensLastYear(2))).toContain(
+				'Last year, you helped 2 women shape their futures!'
+			);
+		});
+
+		it('uses no-goal-yet copy starting April 1 regardless of last-year loans', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-04-01T12:00:00'));
+
+			expect(goalCopy.titleGoalSignupWomensLastYear(2)).toBe(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
 		});
 	});
 

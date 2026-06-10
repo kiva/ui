@@ -114,18 +114,7 @@ const goalLoans = computed(() => {
 	return props.userGoal?.target || 0;
 });
 
-const title = computed(() => {
-	if (props.isGoalTileExperimentEnabled) {
-		return goalCopy.CARD_NO_GOAL_YET_EXPERIMENT;
-	}
-	if (props.prevYearLoans === 1) {
-		return goalCopy.titleLastYearSingleWoman(props.prevYearLoans, 'tw-text-action');
-	}
-	if (props.prevYearLoans > 1) {
-		return goalCopy.titleLastYearMultiplePeople(props.prevYearLoans, 'women', 'tw-text-action');
-	}
-	return goalCopy.titleNoHistoryWomensDefault('tw-text-action');
-});
+const title = computed(() => goalCopy.titleGoalSignupWomensLastYear(props.prevYearLoans, 'tw-text-action'));
 
 const categoryName = computed(() => {
 	return getGoalDisplayName(props.userGoal?.target, props.userGoal?.category);
