@@ -315,6 +315,7 @@ const {
 	basketItems: thanksPageBasket.basketItems,
 	onResetAdding: thanksPageBasket.resetIsAdding,
 	isExpressCheckoutEnabled: toRef(props, 'isExpressCheckoutModalEnabled'),
+	kvTrackEvent: $kvTrackEvent,
 });
 
 const {

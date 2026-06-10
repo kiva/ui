@@ -7,10 +7,16 @@ import GoalEntrypoint from '#src/components/Thanks/SingleVersion/GoalEntrypoint'
 // KvLoadingPlaceholder is left real — it is a simple presentational component.
 const RecommendLoanForGoalContainerStub = {
 	name: 'RecommendLoanForGoalContainer',
-	props: [
-		'headerTitle', 'headerDetails', 'contentCardProps',
-		'expressCheckoutEnabled', 'isAdding', 'isInBasket', 'isRedirecting', 'loadedSetData',
-	],
+	props: {
+		headerTitle: { type: String, default: '' },
+		headerDetails: { type: Array, default: () => [] },
+		contentCardProps: { type: Object, default: () => ({}) },
+		expressCheckoutEnabled: { type: Boolean, default: false },
+		isAdding: { type: Boolean, default: false },
+		isInBasket: { type: Boolean, default: false },
+		isRedirecting: { type: Boolean, default: false },
+		loadedSetData: { type: Boolean, default: false },
+	},
 	emits: ['primary-cta-click', 'checkout-click'],
 	methods: {
 		// Mirrors the real component's exposed method.
@@ -162,6 +168,15 @@ describe('GoalEntrypoint', () => {
 	});
 
 	describe('prop propagation', () => {
+		it('enables express checkout on RecommendLoanForGoalContainer', () => {
+			const wrapper = mountComponent({
+				showRecommendLoanAfterGoalView: true,
+				hasRecommendedLoans: true,
+			});
+
+			expect(wrapper.findComponent(RecommendLoanForGoalContainerStub).props('expressCheckoutEnabled')).toBe(true);
+		});
+
 		it('forwards isRedirecting to RecommendLoanForGoalContainer', () => {
 			const wrapper = mountComponent({
 				showRecommendLoanAfterGoalView: true,

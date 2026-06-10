@@ -10,6 +10,8 @@ import {
 	shouldReopenExpressCheckout,
 } from '#src/util/thanksPage/thanksPageUtils';
 
+const EVENT_CATEGORY = 'post-checkout';
+
 /**
  * Owns the express checkout (Thanks page) modal flow: modal ref, modal-local
  * state and the three event handlers wired to the recommendation footer
@@ -31,6 +33,8 @@ import {
  *   `enable_ty_page_express_checkout` UI config flag. When false, the handler
  *   skips the modal flow entirely and sends the user to /basket — preserving
  *   the original recommendation behaviour while the feature is rolled out.
+ * @param {Function} [deps.kvTrackEvent]          Analytics helper (`$kvTrackEvent`).
+ *   Optional — when omitted, tracking calls are silently skipped.
  */
 export default function useExpressCheckoutModal({
 	addToBasket,
@@ -38,6 +42,7 @@ export default function useExpressCheckoutModal({
 	basketItems,
 	onResetAdding,
 	isExpressCheckoutEnabled,
+	kvTrackEvent,
 }) {
 	const apollo = inject('apollo');
 	const cookieStore = inject('cookieStore');
@@ -96,7 +101,7 @@ export default function useExpressCheckoutModal({
 		// Re-entry via "Checkout now": the recommended loan is already in
 		// the basket — reopen the modal without re-adding it.
 		if (shouldReopenExpressCheckout(items, payload)) {
-			// TODO(MP-2747): track 'reopen-from-checkout-now' event
+			kvTrackEvent?.(EVENT_CATEGORY, 'open', 'open-express-checkout');
 			expressCheckoutLoan.value = payload.loan ?? null;
 			expressCheckoutModalRef.value?.openLightbox();
 			return;
@@ -112,7 +117,7 @@ export default function useExpressCheckoutModal({
 			...payload,
 			onSuccess: () => {
 				if (empty) {
-					// TODO(MP-2747): track 'open-modal' event (empty-basket path)
+					kvTrackEvent?.(EVENT_CATEGORY, 'open', 'open-express-checkout');
 					expressCheckoutLoan.value = payload.loan ?? null;
 					expressCheckoutModalRef.value?.openLightbox();
 				} else {
@@ -132,6 +137,7 @@ export default function useExpressCheckoutModal({
 	}
 
 	function handleExpressCheckoutClose() {
+		kvTrackEvent?.(EVENT_CATEGORY, 'close', 'close-express-checkout');
 		onResetAdding?.();
 	}
 

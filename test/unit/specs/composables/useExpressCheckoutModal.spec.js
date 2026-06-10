@@ -15,6 +15,7 @@ describe('useExpressCheckoutModal', () => {
 	let mockAddToBasket;
 	let mockLoadInitialBasketItems;
 	let mockOnResetAdding;
+	let mockKvTrackEvent;
 	let basketItems;
 	let composable;
 	let app;
@@ -38,6 +39,7 @@ describe('useExpressCheckoutModal', () => {
 		mockAddToBasket = vi.fn();
 		mockLoadInitialBasketItems = vi.fn(() => Promise.resolve());
 		mockOnResetAdding = vi.fn();
+		mockKvTrackEvent = vi.fn();
 		basketItems = ref([]);
 
 		const TestComponent = {
@@ -48,6 +50,7 @@ describe('useExpressCheckoutModal', () => {
 					basketItems,
 					onResetAdding: mockOnResetAdding,
 					isExpressCheckoutEnabled: ref(true),
+					kvTrackEvent: mockKvTrackEvent,
 					...overrides,
 				});
 				return {};
@@ -346,6 +349,149 @@ describe('useExpressCheckoutModal', () => {
 			mountComposable({ onResetAdding: undefined });
 
 			expect(() => composable.handleExpressCheckoutClose()).not.toThrow();
+		});
+	});
+
+	describe('feature flag disabled (isExpressCheckoutEnabled = false)', () => {
+		beforeEach(() => {
+			app?.unmount();
+			mountComposable({ isExpressCheckoutEnabled: ref(false) });
+		});
+
+		it('skips loadInitialBasketItems entirely', async () => {
+			await composable.handleAddRecommendedLoanToBasket({ loanId: 1, lendAmount: '25' });
+			expect(mockLoadInitialBasketItems).not.toHaveBeenCalled();
+		});
+
+		it('sets isRedirecting=true before addToBasket runs', async () => {
+			let observedIsRedirecting = null;
+			mockAddToBasket.mockImplementation(() => {
+				observedIsRedirecting = composable.isRedirecting.value;
+			});
+
+			await composable.handleAddRecommendedLoanToBasket({ loanId: 999, lendAmount: '25' });
+
+			expect(observedIsRedirecting).toBe(true);
+		});
+
+		it('redirects to /basket on addToBasket success without opening the modal', async () => {
+			mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
+			const modalMock = { openLightbox: vi.fn() };
+			composable.expressCheckoutModalRef.value = modalMock;
+
+			await composable.handleAddRecommendedLoanToBasket({
+				loanId: 999,
+				lendAmount: '25',
+				loan: { id: 999 },
+			});
+
+			expect(mockPush).toHaveBeenCalledWith('/basket');
+			expect(modalMock.openLightbox).not.toHaveBeenCalled();
+			expect(composable.expressCheckoutLoan.value).toBeNull();
+		});
+
+		it('ignores recommendLoanIsInBasket re-entry and still redirects', async () => {
+			basketItems.value = [loanItem({ id: 'recommended' })];
+			mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
+
+			await composable.handleAddRecommendedLoanToBasket({
+				loanId: 'recommended',
+				lendAmount: '25',
+				loan: { id: 'recommended' },
+				recommendLoanIsInBasket: true,
+			});
+
+			expect(mockAddToBasket).toHaveBeenCalledTimes(1);
+			expect(mockPush).toHaveBeenCalledWith('/basket');
+		});
+
+		it('resets isRedirecting and calls previous onError on failure', async () => {
+			const previousOnError = vi.fn();
+			mockAddToBasket.mockImplementation(({ onError }) => onError?.());
+
+			await composable.handleAddRecommendedLoanToBasket({
+				loanId: 1,
+				lendAmount: '25',
+				onError: previousOnError,
+			});
+
+			expect(composable.isRedirecting.value).toBe(false);
+			expect(previousOnError).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	describe('tracking events', () => {
+		it("fires 'post-checkout / open / open-express-checkout' when the modal opens on empty basket", async () => {
+			basketItems.value = [];
+			const modalMock = { openLightbox: vi.fn() };
+			composable.expressCheckoutModalRef.value = modalMock;
+			mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
+
+			await composable.handleAddRecommendedLoanToBasket({
+				loanId: 1,
+				lendAmount: '25',
+				loan: { id: 1 },
+			});
+
+			expect(mockKvTrackEvent).toHaveBeenCalledWith(
+				'post-checkout',
+				'open',
+				'open-express-checkout',
+			);
+		});
+
+		it("fires 'post-checkout / open / open-express-checkout' on Checkout now re-entry", async () => {
+			basketItems.value = [loanItem({ id: 'recommended' })];
+			const modalMock = { openLightbox: vi.fn() };
+			composable.expressCheckoutModalRef.value = modalMock;
+
+			await composable.handleAddRecommendedLoanToBasket({
+				loanId: 'recommended',
+				lendAmount: '25',
+				loan: { id: 'recommended' },
+				recommendLoanIsInBasket: true,
+			});
+
+			expect(mockKvTrackEvent).toHaveBeenCalledWith(
+				'post-checkout',
+				'open',
+				'open-express-checkout',
+			);
+		});
+
+		it("fires 'post-checkout / close / close-express-checkout' on handleExpressCheckoutClose", () => {
+			composable.handleExpressCheckoutClose();
+			expect(mockKvTrackEvent).toHaveBeenCalledWith(
+				'post-checkout',
+				'close',
+				'close-express-checkout',
+			);
+		});
+
+		it('does not fire any tracking event in the non-empty redirect path', async () => {
+			basketItems.value = [loanItem({ id: 'other' })];
+			mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
+
+			await composable.handleAddRecommendedLoanToBasket({
+				loanId: 999,
+				lendAmount: '25',
+			});
+
+			expect(mockKvTrackEvent).not.toHaveBeenCalled();
+		});
+
+		it('does not throw when kvTrackEvent is not provided (silently skips)', async () => {
+			app?.unmount();
+			mountComposable({ kvTrackEvent: undefined });
+			basketItems.value = [];
+			const modalMock = { openLightbox: vi.fn() };
+			composable.expressCheckoutModalRef.value = modalMock;
+			mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
+
+			await expect(
+				composable.handleAddRecommendedLoanToBasket({ loanId: 1, lendAmount: '25' }),
+			).resolves.not.toThrow();
+			expect(modalMock.openLightbox).toHaveBeenCalledTimes(1);
 		});
 	});
 });

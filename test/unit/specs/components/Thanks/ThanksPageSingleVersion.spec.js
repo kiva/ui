@@ -1,4 +1,4 @@
-import { render } from '@testing-library/vue';
+import { fireEvent, render } from '@testing-library/vue';
 import { ref } from 'vue';
 import { createRouter, createMemoryHistory } from 'vue-router';
 import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
@@ -26,6 +26,22 @@ let mockLoading;
 let mockHasContributingLoans;
 let mockCheckCompletedGoal;
 
+const {
+	mockUseExpressCheckoutModal,
+	mockHandleAddRecommendedLoanToBasket,
+	mockHandleExpressCheckoutComplete,
+	mockHandleExpressCheckoutClose,
+	mockExpressCheckoutState,
+} = vi.hoisted(() => ({
+	mockUseExpressCheckoutModal: vi.fn(),
+	mockHandleAddRecommendedLoanToBasket: vi.fn(),
+	mockHandleExpressCheckoutComplete: vi.fn(),
+	mockHandleExpressCheckoutClose: vi.fn(),
+	mockExpressCheckoutState: {
+		isRedirecting: false,
+	},
+}));
+
 vi.mock('#src/composables/useGoalData', async importOriginal => {
 	const actual = await importOriginal();
 	return {
@@ -47,6 +63,23 @@ vi.mock('#src/composables/useGoalData', async importOriginal => {
 			userGoalAchievedNow: mockUserGoalAchievedNow,
 			getCategories: () => [{ id: 'womens-equality', name: 'Women' }],
 		}),
+	};
+});
+
+vi.mock('#src/composables/useExpressCheckoutModal', async () => {
+	const { ref: vueRef } = await import('vue');
+	return {
+		default: deps => {
+			mockUseExpressCheckoutModal(deps);
+			return {
+				expressCheckoutModalRef: vueRef(null),
+				expressCheckoutLoan: vueRef(null),
+				isRedirecting: vueRef(mockExpressCheckoutState.isRedirecting),
+				handleAddRecommendedLoanToBasket: mockHandleAddRecommendedLoanToBasket,
+				handleExpressCheckoutComplete: mockHandleExpressCheckoutComplete,
+				handleExpressCheckoutClose: mockHandleExpressCheckoutClose,
+			};
+		},
 	};
 });
 
@@ -75,7 +108,16 @@ const stubs = {
 		],
 	},
 	GoalEntrypoint: {
-		template: '<div data-testid="goal-entrypoint"><slot /></div>',
+		template: `
+			<button
+				data-testid="goal-entrypoint"
+				:data-is-redirecting="String(isRedirecting)"
+				@click="$emit('add-to-basket', { loanId: 123, loan: { id: 123 } })"
+			>
+				<slot />
+			</button>
+		`,
+		emits: ['add-to-basket'],
 		props: [
 			'loading', 'totalLoans', 'categoriesLoanCount', 'isGoalSet',
 			'tieredAchievements', 'selectedCategory', 'isEditing',
@@ -83,7 +125,7 @@ const stubs = {
 			'customGoalAmountEnable', 'showRecommendLoanAfterGoalView',
 			'hasRecommendedLoans', 'recommendLoanCardProps',
 			'recommendLoanHeaderDetails', 'recommendLoanIsInBasket',
-			'loadedSetData', 'isAdding',
+			'loadedSetData', 'isAdding', 'isRedirecting',
 		],
 	},
 	OptInModule: { template: '<div data-testid="opt-in-module"><slot /></div>' },
@@ -119,15 +161,17 @@ const MODULE_IDS = [
 	'donation-opt-in-module',
 ];
 
-function renderComponent(propsOverrides = {}) {
-	return render(ThanksPageSingleVersion, {
+function renderComponent(propsOverrides = {}, options = {}) {
+	const kvTrackEvent = options.kvTrackEvent ?? vi.fn();
+	const thanksPageBasket = options.thanksPageBasket ?? thanksPageBasketStub;
+	const result = render(ThanksPageSingleVersion, {
 		global: {
 			...globalOptions,
 			plugins: [router],
 			provide: {
 				...globalOptions.provide,
-				$kvTrackEvent: vi.fn(),
-				thanksPageBasket: thanksPageBasketStub,
+				$kvTrackEvent: kvTrackEvent,
+				thanksPageBasket,
 			},
 			stubs,
 		},
@@ -142,6 +186,12 @@ function renderComponent(propsOverrides = {}) {
 			...propsOverrides,
 		},
 	});
+
+	return {
+		...result,
+		kvTrackEvent,
+		thanksPageBasket,
+	};
 }
 
 function getOrderedModules(container) {
@@ -157,6 +207,14 @@ describe('ThanksPageSingleVersion', () => {
 		mockLoading = ref(false);
 		mockHasContributingLoans = true;
 		mockCheckCompletedGoal = vi.fn();
+		mockUseExpressCheckoutModal.mockClear();
+		mockHandleAddRecommendedLoanToBasket.mockClear();
+		mockHandleExpressCheckoutComplete.mockClear();
+		mockHandleExpressCheckoutClose.mockClear();
+		mockExpressCheckoutState.isRedirecting = false;
+		thanksPageBasketStub.addToBasket.mockClear();
+		thanksPageBasketStub.loadInitialBasketItems.mockClear();
+		thanksPageBasketStub.resetIsAdding.mockClear();
 	});
 
 	it('checks completed goals without persisting the MyKiva hide preference', async () => {
@@ -171,6 +229,66 @@ describe('ThanksPageSingleVersion', () => {
 				currentGoalProgress: 5,
 				persistHideGoalCard: false,
 			});
+		});
+	});
+
+	describe('express checkout modal', () => {
+		it('passes $kvTrackEvent to useExpressCheckoutModal', () => {
+			const kvTrackEvent = vi.fn();
+
+			renderComponent({}, { kvTrackEvent });
+
+			expect(mockUseExpressCheckoutModal).toHaveBeenCalledWith(expect.objectContaining({
+				kvTrackEvent,
+			}));
+		});
+
+		it('does not render ExpressCheckoutModal when the flag is disabled', () => {
+			const { queryByTestId } = renderComponent({
+				isExpressCheckoutModalEnabled: false,
+			});
+
+			expect(queryByTestId('express-checkout-modal')).toBeNull();
+		});
+
+		it('renders ExpressCheckoutModal for signed-in users when the flag is enabled', () => {
+			const { queryByTestId } = renderComponent({
+				isExpressCheckoutModalEnabled: true,
+			});
+
+			expect(queryByTestId('express-checkout-modal')).toBeTruthy();
+		});
+
+		it('does not render ExpressCheckoutModal for guests even when the flag is enabled', () => {
+			const { queryByTestId } = renderComponent({
+				isGuest: true,
+				isExpressCheckoutModalEnabled: true,
+			});
+
+			expect(queryByTestId('express-checkout-modal')).toBeNull();
+		});
+
+		it('forwards composable isRedirecting to GoalEntrypoint', async () => {
+			mockExpressCheckoutState.isRedirecting = true;
+			mockUserGoal.value = null;
+
+			const { findByTestId } = renderComponent();
+			const goalEntrypoint = await findByTestId('goal-entrypoint');
+
+			expect(goalEntrypoint.getAttribute('data-is-redirecting')).toBe('true');
+		});
+
+		it('routes GoalEntrypoint add-to-basket through useExpressCheckoutModal', async () => {
+			mockUserGoal.value = null;
+
+			const { findByTestId } = renderComponent();
+			await fireEvent.click(await findByTestId('goal-entrypoint'));
+
+			expect(mockHandleAddRecommendedLoanToBasket).toHaveBeenCalledWith(expect.objectContaining({
+				loanId: 123,
+				loan: { id: 123 },
+				onError: expect.any(Function),
+			}));
 		});
 	});
 

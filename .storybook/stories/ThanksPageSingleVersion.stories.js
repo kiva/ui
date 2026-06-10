@@ -117,29 +117,33 @@ const receiptWithOnlyDonations = {
 	...mockedReceiptData,
 	items: { values: mockedReceiptData.items.values.filter(item => item.basketItemType === 'donation') },
 	totals: {
-		itemTotal: "960.25",
-		donationTotal: "960.25",
-		kivaCardTotal: "0.00",
+		itemTotal: '960.25',
+		donationTotal: '960.25',
+		kivaCardTotal: '0.00',
 		depositTotals: {
-			depositTotal: "960.25",
-			kivaCreditAdded: "0.00",
-			kivaCreditUsed: "0.00"
+			depositTotal: '960.25',
+			kivaCreditAdded: '0.00',
+			kivaCreditUsed: '0.00'
 		},
-		kivaCreditAppliedTotal: "960.25"
+		kivaCreditAppliedTotal: '960.25'
 	},
 };
 
 const receiptWithKivaCardsAndLoans = {
 	...mockedReceiptData,
 	items: {
-		values: mockedReceiptData.items.values.filter(item => ['loan_reservation', 'kiva_card'].includes(item.basketItemType)),
+		values: mockedReceiptData.items.values.filter(
+			item => ['loan_reservation', 'kiva_card'].includes(item.basketItemType)
+		),
 	},
 };
 
 const receiptWithDonationsAndLoans = {
 	...mockedReceiptData,
 	items: {
-		values: mockedReceiptData.items.values.filter(item => ['loan_reservation', 'donation'].includes(item.basketItemType)),
+		values: mockedReceiptData.items.values.filter(
+			item => ['loan_reservation', 'donation'].includes(item.basketItemType)
+		),
 	},
 };
 
@@ -654,22 +658,25 @@ const queryResultWithNoGoal = {
 const customGoalAmountExperimentEnabledCookie = {
 	uiab: 'custom_goal_amount:b:12345:1:false',
 };
-const mockTieredLendingAchievementsOnlyLastYearProgress = mockTieredLendingAchievementsAllCategories.map(achievement => ({
-	id: achievement.id,
-	totalProgressToAchievement: achievement.totalProgressToAchievement,
-	progressForYear: 20,
-}));
-const mockTieredLendingAchievementsOnlyCurrentYearProgress = mockTieredLendingAchievementsAllCategories.map(achievement => ({
-	id: achievement.id,
-	totalProgressToAchievement: achievement.totalProgressToAchievement,
-	progressForCurrentYear: 20,
-}));
-const mockTieredLendingAchievementsThisAndLastYearProgress = mockTieredLendingAchievementsAllCategories.map(achievement => ({
-	id: achievement.id,
-	totalProgressToAchievement: achievement.totalProgressToAchievement,
-	progressForCurrentYear: 20,
-	progressForYear: 20,
-}));
+const mockTieredLendingAchievementsOnlyLastYearProgress = mockTieredLendingAchievementsAllCategories
+	.map(achievement => ({
+		id: achievement.id,
+		totalProgressToAchievement: achievement.totalProgressToAchievement,
+		progressForYear: 20,
+	}));
+const mockTieredLendingAchievementsOnlyCurrentYearProgress = mockTieredLendingAchievementsAllCategories
+	.map(achievement => ({
+		id: achievement.id,
+		totalProgressToAchievement: achievement.totalProgressToAchievement,
+		progressForCurrentYear: 20,
+	}));
+const mockTieredLendingAchievementsThisAndLastYearProgress = mockTieredLendingAchievementsAllCategories
+	.map(achievement => ({
+		id: achievement.id,
+		totalProgressToAchievement: achievement.totalProgressToAchievement,
+		progressForCurrentYear: 20,
+		progressForYear: 20,
+	}));
 const queryResultWithNoGoalAndThisAndLastYearProgress = {
 	data: {
 		...queryResultWithNoGoal.data,
@@ -759,7 +766,6 @@ export const GoalEntrypointWithThisAndLastYearProgressCustomAmount = story({
 	totalLoans: 20,
 	tieredAchievements: mockTieredLendingAchievementsThisAndLastYearProgress,
 }, queryResultWithNoGoalAndThisAndLastYearProgress, customGoalAmountExperimentEnabledCookie);
-
 
 // Story: Guest user with goals experiment enabled - should NOT show goal modules
 export const GuestWithGoalsExperiment = story({
@@ -961,6 +967,7 @@ export const RecommendedLoanGoalAndExpressCheckoutModal = story({
 	totalLoans: 10,
 	tieredAchievements: mockUserAchievementProgress.tieredLendingAchievements,
 	goalRecommendedLoanEnable: true,
+	isExpressCheckoutModalEnabled: true,
 }, queryResultRecommendedLoanGoalAndExpressCheckoutModal, {}, expressCheckoutBasketStub);
 
 RecommendedLoanGoalAndExpressCheckoutModal.play = async ({ canvasElement }) => {
