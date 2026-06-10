@@ -2,6 +2,7 @@
 import { mount } from '@vue/test-utils';
 import FeaturedGoalCard from '#src/components/MyKiva/FeaturedGoalCard';
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import goalCopy from '#src/util/goalCopy';
 
 vi.mock('#src/util/animation/confettiUtils', () => ({
 	showConfetti: vi.fn(),
@@ -63,6 +64,10 @@ describe('FeaturedGoalCard copy', () => {
 		vi.clearAllMocks();
 	});
 
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
 	describe('loading state', () => {
 		it('renders the loading placeholder when loading=true and no body content', () => {
 			const wrapper = mountCard({ loading: true });
@@ -74,11 +79,24 @@ describe('FeaturedGoalCard copy', () => {
 	describe('no-goal state', () => {
 		const buildNoGoal = () => mountCard({ state: 'no-goal' });
 
-		it('renders the "3 women" title from goalCopy.titleNoHistoryWomensDefault', () => {
+		it('renders the original "3 women" title from January 1 through March 31', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-03-31T12:00:00'));
+
 			const wrapper = buildNoGoal();
 			expect(wrapper.html()).toContain('Lenders like you help');
 			expect(wrapper.html()).toContain('3 women');
 			expect(wrapper.html()).toContain('a year!');
+			expect(wrapper.text()).not.toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
+		});
+
+		it('renders the no-goal-yet title starting April 1', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-04-01T12:00:00'));
+
+			const wrapper = buildNoGoal();
+			expect(wrapper.text()).toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
+			expect(wrapper.html()).not.toContain('Lenders like you help');
 		});
 
 		it('renders the generic loans-this-year subtitle', () => {

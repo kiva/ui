@@ -18,7 +18,18 @@ export default ({
 				},
 				watchQuery() {
 					return {
-						subscribe: ({ next }) => { next(queryData); }
+						// Handle both Apollo Observable subscribe signatures:
+						//   subscribe({ next, error, complete })  — observer object
+						//   subscribe(nextFn, errorFn, completeFn) — positional
+						// kv-shop's `watchShopQuery` wraps the observable and re-calls
+						// subscribe positionally, so the mock must accept both forms.
+						subscribe: (...args) => {
+							const next = typeof args[0] === 'function' ? args[0] : args[0]?.next;
+							if (typeof next === 'function') {
+								next(queryData);
+							}
+							return { unsubscribe: () => {} };
+						},
 					};
 				},
 				query() {

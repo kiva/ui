@@ -27,7 +27,7 @@
 				class="featured-goal-card__content--no-goal tw-flex tw-flex-col"
 			>
 				<div class="tw-flex tw-flex-col md:tw-w-full">
-					<h3 class="tw-text-title tw-pb-1" v-html="goalCopy.titleNoHistoryWomensDefault()"></h3>
+					<h3 class="tw-text-title tw-pb-1" v-html="noGoalTitle"></h3>
 					<p class="tw-text-small md:tw-text-base tw-pb-3 md:tw-pb-2">
 						{{ goalCopy.TITLE_HOW_MANY_LOANS_GENERIC }}
 					</p>
@@ -212,6 +212,8 @@ const menuActions = [
 const resolvedState = computed(() => (
 	VALID_STATES.includes(props.state) ? props.state : STATE_NO_GOAL
 ));
+
+const noGoalTitle = computed(() => goalCopy.titleNoGoalYetWomensDefault());
 
 const visibleProgress = computed(() => Math.min(props.goalProgress, props.goalTarget));
 

@@ -61,15 +61,7 @@ const loading = ref(true);
 const router = useRouter();
 const womenLoansLastYear = ref(0);
 
-const title = computed(() => {
-	if (womenLoansLastYear.value === 1) {
-		return goalCopy.titleLastYearSingleWoman(womenLoansLastYear.value);
-	}
-	if (womenLoansLastYear.value > 1) {
-		return goalCopy.titleLastYearMultiplePeople(womenLoansLastYear.value, 'women');
-	}
-	return goalCopy.titleNoHistoryWomensDefault();
-});
+const title = computed(() => goalCopy.titleGoalSignupWomensLastYear(womenLoansLastYear.value));
 
 const goToGoalPage = () => {
 	$kvTrackEvent('portfolio', 'click', 'set-goal-portfolio');
