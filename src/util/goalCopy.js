@@ -32,6 +32,14 @@ const goalCopy = {
 	// eslint-disable-next-line max-len
 	titleNoHistoryWomensDefault: (cssClass = 'tw-text-eco-green-3') => `Lenders like you help ${highlight('3 women', cssClass)} a year!`,
 
+	/** Date-aware no-goal title for default womens category */
+	titleNoGoalYetWomensDefault(cssClass = 'tw-text-eco-green-3') {
+		if (this.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
+			return this.CARD_NO_GOAL_YET_EXPERIMENT;
+		}
+		return this.titleNoHistoryWomensDefault(cssClass);
+	},
+
 	/** User helped exactly 1 woman last year */
 	// eslint-disable-next-line max-len
 	titleLastYearSingleWoman: (count, cssClass = 'tw-text-eco-green-3') => `Last year, you helped ${highlight(`${count} woman`, cssClass)} shape her future!`,
@@ -39,6 +47,20 @@ const goalCopy = {
 	/** User helped multiple people last year (any category) */
 	// eslint-disable-next-line max-len
 	titleLastYearMultiplePeople: (count, categoryLabel, cssClass = 'tw-text-eco-green-3') => `Last year, you helped ${highlight(`${count} ${categoryLabel}`, cssClass)} shape their futures!`,
+
+	/** Date-aware title for the womens category using last-year lending history when available */
+	titleGoalSignupWomensLastYear(loansLastYear = 0, cssClass = 'tw-text-eco-green-3') {
+		if (this.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
+			return this.CARD_NO_GOAL_YET_EXPERIMENT;
+		}
+		if (loansLastYear === 1) {
+			return this.titleLastYearSingleWoman(loansLastYear, cssClass);
+		}
+		if (loansLastYear > 1) {
+			return this.titleLastYearMultiplePeople(loansLastYear, 'women', cssClass);
+		}
+		return this.titleNoHistoryWomensDefault(cssClass);
+	},
 
 	/** User helped loans last year — resolves the per-category noun and delegates to titleLastYearMultiplePeople */
 	titleLastYearForCategory(loans, categoryId, categoryName, cssClass = 'tw-text-eco-green-3') {

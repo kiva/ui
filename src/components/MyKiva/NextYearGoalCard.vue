@@ -60,7 +60,7 @@ import {
 	KvButton, KvLoadingPlaceholder
 } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD } from '#src/composables/useGoalData';
-import goalCopy, { GOAL_SIGNUP_COPY_NO_GOAL_YET } from '#src/util/goalCopy';
+import goalCopy from '#src/util/goalCopy';
 import { useRouter } from 'vue-router';
 import confetti from 'canvas-confetti';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
@@ -114,18 +114,7 @@ const goalLoans = computed(() => {
 	return props.userGoal?.target || 0;
 });
 
-const title = computed(() => {
-	if (goalCopy.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
-		return goalCopy.CARD_NO_GOAL_YET_EXPERIMENT;
-	}
-	if (props.prevYearLoans === 1) {
-		return goalCopy.titleLastYearSingleWoman(props.prevYearLoans, 'tw-text-action');
-	}
-	if (props.prevYearLoans > 1) {
-		return goalCopy.titleLastYearMultiplePeople(props.prevYearLoans, 'women', 'tw-text-action');
-	}
-	return goalCopy.titleNoHistoryWomensDefault('tw-text-action');
-});
+const title = computed(() => goalCopy.titleGoalSignupWomensLastYear(props.prevYearLoans, 'tw-text-action'));
 
 const categoryName = computed(() => {
 	return getGoalDisplayName(props.userGoal?.target, props.userGoal?.category);

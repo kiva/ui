@@ -19,23 +19,6 @@ export const GOAL_SIGNUP_DATE_QUERY_PARAM = 'goalSignupDate';
 const NO_GOAL_YET_START_MONTH = 3;
 const NO_GOAL_YET_START_DAY = 1;
 const GOAL_SIGNUP_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
-const LOW_ENV_HOST_PATTERNS = [
-	/^localhost$/,
-	/^127\.0\.0\.1$/,
-	/^\[?::1\]?$/,
-	/^kiva-ui\.local$/,
-	/(^|\.)development\.kiva\.org$/,
-	/(^|\.)dev\.kiva\.org$/,
-	/(^|\.)stage\.kiva\.org$/,
-	/(^|\.)test\.kiva\.org$/,
-	/(^|\.)qa\.kiva\.org$/,
-	/(^|\.)audit\.kiva\.org$/,
-	/^ui-(dev|stage|test|qa|audit)\.dk1\.kiva\.org$/,
-];
-
-function isLowEnvironment(hostname = '') {
-	return LOW_ENV_HOST_PATTERNS.some(pattern => pattern.test(hostname.toLowerCase()));
-}
 
 function parseGoalSignupDateParam(value) {
 	const match = typeof value === 'string' ? value.match(GOAL_SIGNUP_DATE_PATTERN) : null;
@@ -56,11 +39,6 @@ function parseGoalSignupDateParam(value) {
 function getGoalSignupDateOverride() {
 	if (typeof window === 'undefined') return null;
 
-	const appConfig = Object.getOwnPropertyDescriptor(window, '__KV_CONFIG__')?.value;
-	const hostname = appConfig?.host || window.location?.hostname || '';
-	if (!isLowEnvironment(hostname)) return null;
-
-	// QA-only scoped override for this copy resolver. This is not a global Date mock.
 	const params = new URLSearchParams(window.location?.search || '');
 	return parseGoalSignupDateParam(params.get(GOAL_SIGNUP_DATE_QUERY_PARAM));
 }
@@ -87,8 +65,7 @@ function resolveGoalSignupCopyVariant(date = new Date()) {
  *
  * @param {object} [options]
  * @param {Date}   [options.now] - Override date (used by tests to pin a boundary).
- * Query param override: ?goalSignupDate=YYYY-MM-DD works only in low environments
- * and only affects this goal-signup copy decision.
+ * Query param override: ?goalSignupDate=YYYY-MM-DD only affects this copy decision.
  * @returns {'last-year' | 'no-goal-yet'}
  */
 export default function useGoalSignupCopyVariant({ now } = {}) {

@@ -155,7 +155,7 @@ import {
 	KvButton, KvLoadingPlaceholder, KvProgressCircle, KvUtilityMenu,
 } from '@kiva/kv-components';
 import KvIcon from '#src/components/Kv/KvIcon';
-import goalCopy, { GOAL_SIGNUP_COPY_NO_GOAL_YET } from '#src/util/goalCopy';
+import goalCopy from '#src/util/goalCopy';
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import { showConfetti } from '#src/util/animation/confettiUtils';
 
@@ -212,12 +212,7 @@ const resolvedState = computed(() => (
 	VALID_STATES.includes(props.state) ? props.state : STATE_NO_GOAL
 ));
 
-const noGoalTitle = computed(() => {
-	if (goalCopy.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
-		return goalCopy.CARD_NO_GOAL_YET_EXPERIMENT;
-	}
-	return goalCopy.titleNoHistoryWomensDefault();
-});
+const noGoalTitle = computed(() => goalCopy.titleNoGoalYetWomensDefault());
 
 const visibleProgress = computed(() => Math.min(props.goalProgress, props.goalTarget));
 
