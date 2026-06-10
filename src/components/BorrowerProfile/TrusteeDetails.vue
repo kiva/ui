@@ -121,6 +121,7 @@ export default {
 	name: 'TrusteeDetails',
 	inject: {
 		apollo: {},
+		cookieStore: {},
 		condensed: { default: false },
 	},
 	components: {
