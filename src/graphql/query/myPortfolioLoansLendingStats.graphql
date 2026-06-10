@@ -14,25 +14,42 @@ query myPortfolioLoansLendingStats {
 			amount_outstanding
 			default_rate
 			total_ended
+			total_defaulted
 			currency_loss_rate
 			currency_loss
+			currency_loss_reimbursement
 			num_fund_raising
 			num_raised
 			num_paying_back
 			number_delinquent
-			num_ended
-			num_defaulted
 			num_refunded
 			num_expired
+		}
+		endedLoans: loans(filters: { status: ended }, limit: 1) {
+			totalCount
+		}
+		endedWithLossLoans: loans(filters: { status: ended_with_loss }, limit: 1) {
+			totalCount
+		}
+		defaultedLoans: loans(filters: { status: defaulted }, limit: 1) {
+			totalCount
 		}
 	}
 	general {
 		kivaStats {
+			avgAmountLent
 			avgAmountRepaid
+			avgTotalAmountLost
+			avgAmountRefunded
+			avgDelinquencyRate
 			avgAmountArrears
 			avgAmountOutstanding
 			avgDefaultRate
 			avgAmountDefaulted
+			avgTotalEnded
+			avgCurrencyLossRate
+			avgCurrencyLoss
+			avgCurrencyLossReimbursement
 			avgLenderStatsUpdatedAt
 		}
 	}
