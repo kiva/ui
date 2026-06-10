@@ -237,7 +237,71 @@ describe('GoalSelector', () => {
 		vi.useRealTimers();
 	});
 
+	it('shows original last-year copy from January 1 through March 31', async () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-03-31T12:00:00'));
+
+		const tieredAchievements = [
+			{
+				id: ID_WOMENS_EQUALITY,
+				progressForYear: 2,
+				progressForCurrentYear: 0,
+			},
+		];
+
+		const { getByRole, queryByText } = render(TestWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: { tieredAchievements },
+		});
+
+		await vi.runAllTimersAsync();
+
+		expect(getByRole('heading', { level: 2 }).textContent)
+			.toContain('Last year, you helped 2 women shape their futures!');
+		expect(queryByText(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT)).toBeNull();
+	});
+
+	it('shows no-goal-yet copy starting April 1', async () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-04-01T12:00:00'));
+
+		const tieredAchievements = [
+			{
+				id: ID_WOMENS_EQUALITY,
+				progressForYear: 0,
+				progressForCurrentYear: 1,
+			},
+		];
+
+		const { container, getByRole } = render(TestWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: { tieredAchievements },
+		});
+
+		await vi.runAllTimersAsync();
+
+		expect(getByRole('heading', { level: 2 }).textContent)
+			.toBe(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
+		expect(container.textContent).toContain('How many loans will you make this year?');
+		expect(container.textContent).toContain(stripHtml(goalCopy.subtitleLoansAlreadyMade(1)));
+	});
+
 	it('shows requested goal question and current-year progress copy', async () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-04-01T12:00:00'));
+
 		const tieredAchievements = [
 			{
 				id: ID_WOMENS_EQUALITY,
@@ -275,7 +339,7 @@ describe('GoalSelector', () => {
 			props: { tieredAchievements },
 		});
 
-		await flushPromises();
+		await vi.runAllTimersAsync();
 
 		expect(getByRole('heading', { level: 2 }).textContent)
 			.toBe(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
