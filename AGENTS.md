@@ -109,6 +109,7 @@ npm run dev -- --config=local   # Dev server at localhost:8888
 npm run dev -- --config=dev-custom-host  # With Caddy at https://kiva-ui.local
 npm run unit                    # Vitest unit tests
 npm run lint                    # ESLint + Stylelint + GraphQL lint
+npm run fetchSchema             # Fetch latest GraphQL schema from the API and update build/schema.graphql
 npm run build                   # Production build
 ```
 
