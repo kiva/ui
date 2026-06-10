@@ -68,6 +68,7 @@
 				:recommend-loan-is-in-basket="recommendLoanIsInBasket"
 				:loaded-set-data="loadedSetData"
 				:is-adding="isAdding"
+				:is-redirecting="isRedirecting"
 				go-to-url="/mykiva"
 				@edit-goal="editGoalCategory"
 				@set-goal-target="setGoalTarget"
@@ -169,6 +170,13 @@
 			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
 		/>
+		<ExpressCheckoutModal
+			v-if="!isGuest && isExpressCheckoutModalEnabled"
+			ref="expressCheckoutModalRef"
+			:loan="expressCheckoutLoan"
+			@checkout-complete="handleExpressCheckoutComplete"
+			@close="handleExpressCheckoutClose"
+		/>
 	</div>
 </template>
 
@@ -198,10 +206,12 @@ import BadgeMilestone from '#src/components/Thanks/SingleVersion/BadgeMilestone'
 import GoalEntrypoint from '#src/components/Thanks/SingleVersion/GoalEntrypoint';
 import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import GoalInProgress from '#src/components/Thanks/SingleVersion/GoalInProgress';
+import ExpressCheckoutModal from '#src/components/Thanks/ExpressCheckout/ExpressCheckoutModal';
 import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
 import useGoalSettingRecommendedLoan, {
 	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT,
 } from '#src/composables/useGoalSettingRecommendedLoan';
+import useExpressCheckoutModal from '#src/composables/useExpressCheckoutModal';
 import useBadgeData from '#src/composables/useBadgeData';
 import {
 	incrementGoalSignupThanksViewCount,
@@ -270,17 +280,11 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	basketItems: {
-		type: Array,
-		default: () => ([]),
-	},
-	isAdding: {
+	isExpressCheckoutModalEnabled: {
 		type: Boolean,
 		default: false,
 	},
 });
-
-const emit = defineEmits(['add-to-basket']);
 
 const receiptSection = ref(null);
 const showGuestAccountModal = ref(false);
@@ -292,6 +296,28 @@ const isGoalSet = ref(false);
 const isEmptyGoal = ref(true);
 const goalTarget = ref(0);
 const goalSignupThanksViewCapped = ref(false);
+
+// Basket primitives are owned by ThanksPage's borrowerProfileExpMixin and
+// bridged down via provide/inject so we don't duplicate addToBasket /
+// loadInitialBasketItems here.
+const thanksPageBasket = inject('thanksPageBasket');
+const { basketItems, isAdding } = thanksPageBasket;
+
+const {
+	expressCheckoutModalRef,
+	expressCheckoutLoan,
+	isRedirecting,
+	handleAddRecommendedLoanToBasket,
+	handleExpressCheckoutComplete,
+	handleExpressCheckoutClose,
+} = useExpressCheckoutModal({
+	addToBasket: thanksPageBasket.addToBasket,
+	loadInitialBasketItems: thanksPageBasket.loadInitialBasketItems,
+	basketItems: thanksPageBasket.basketItems,
+	onResetAdding: thanksPageBasket.resetIsAdding,
+	isExpressCheckoutEnabled: toRef(props, 'isExpressCheckoutModalEnabled'),
+	kvTrackEvent: $kvTrackEvent,
+});
 
 const {
 	checkCompletedGoal,
@@ -334,7 +360,7 @@ const {
 } = useGoalSettingRecommendedLoan({
 	emit: () => {},
 	goalRecommendedLoanEnable: toRef(props, 'goalRecommendedLoanEnable'),
-	basketItems: toRef(props, 'basketItems'),
+	basketItems,
 	selectedGoalNumber: goalTarget,
 	selectedCategory,
 	show: ref(true),
@@ -501,7 +527,7 @@ const setGoal = async preferences => {
 
 const handleAddToBasket = payload => {
 	trackAddToBasketClick();
-	emit('add-to-basket', { ...payload, onError: onAddToBasketError });
+	handleAddRecommendedLoanToBasket({ ...payload, onError: onAddToBasketError });
 };
 
 const closeGoalModal = () => {

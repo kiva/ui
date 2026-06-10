@@ -7,11 +7,17 @@ import GoalEntrypoint from '#src/components/Thanks/SingleVersion/GoalEntrypoint'
 // KvLoadingPlaceholder is left real — it is a simple presentational component.
 const RecommendLoanForGoalContainerStub = {
 	name: 'RecommendLoanForGoalContainer',
-	props: [
-		'headerTitle', 'headerDetails', 'contentCardProps',
-		'expressCheckoutEnabled', 'isAdding', 'isInBasket', 'loadedSetData',
-	],
-	emits: ['primary-cta-click'],
+	props: {
+		headerTitle: { type: String, default: '' },
+		headerDetails: { type: Array, default: () => [] },
+		contentCardProps: { type: Object, default: () => ({}) },
+		expressCheckoutEnabled: { type: Boolean, default: false },
+		isAdding: { type: Boolean, default: false },
+		isInBasket: { type: Boolean, default: false },
+		isRedirecting: { type: Boolean, default: false },
+		loadedSetData: { type: Boolean, default: false },
+	},
+	emits: ['primary-cta-click', 'checkout-click'],
 	methods: {
 		// Mirrors the real component's exposed method.
 		getSelectedAmount() {
@@ -111,16 +117,41 @@ describe('GoalEntrypoint', () => {
 	});
 
 	describe('add to basket', () => {
-		it('emits add-to-basket with the loan id and selected amount on primary CTA click', () => {
+		const recommendedLoan = { id: 999, name: 'Jacqueline' };
+
+		it('emits add-to-basket with loan, lend amount and recommendLoanIsInBasket on primary CTA click', () => {
 			const wrapper = mountComponent({
 				showRecommendLoanAfterGoalView: true,
 				hasRecommendedLoans: true,
-				recommendLoanCardProps: { loanId: 999 },
+				recommendLoanCardProps: { loanId: 999, loan: recommendedLoan },
 			});
 
 			wrapper.findComponent(RecommendLoanForGoalContainerStub).vm.$emit('primary-cta-click');
 
-			expect(wrapper.emitted('add-to-basket')[0]).toEqual([{ loanId: 999, lendAmount: 75 }]);
+			expect(wrapper.emitted('add-to-basket')[0]).toEqual([{
+				loanId: 999,
+				lendAmount: 75,
+				loan: recommendedLoan,
+				recommendLoanIsInBasket: false,
+			}]);
+		});
+
+		it('emits add-to-basket on checkout-click (Checkout now re-entry) with recommendLoanIsInBasket=true', () => {
+			const wrapper = mountComponent({
+				showRecommendLoanAfterGoalView: true,
+				hasRecommendedLoans: true,
+				recommendLoanCardProps: { loanId: 999, loan: recommendedLoan },
+				recommendLoanIsInBasket: true,
+			});
+
+			wrapper.findComponent(RecommendLoanForGoalContainerStub).vm.$emit('checkout-click');
+
+			expect(wrapper.emitted('add-to-basket')[0]).toEqual([{
+				loanId: 999,
+				lendAmount: 75,
+				loan: recommendedLoan,
+				recommendLoanIsInBasket: true,
+			}]);
 		});
 
 		it('does not emit add-to-basket when the recommended loan has no id', () => {
@@ -133,6 +164,37 @@ describe('GoalEntrypoint', () => {
 			wrapper.findComponent(RecommendLoanForGoalContainerStub).vm.$emit('primary-cta-click');
 
 			expect(wrapper.emitted('add-to-basket')).toBeUndefined();
+		});
+	});
+
+	describe('prop propagation', () => {
+		it('enables express checkout on RecommendLoanForGoalContainer', () => {
+			const wrapper = mountComponent({
+				showRecommendLoanAfterGoalView: true,
+				hasRecommendedLoans: true,
+			});
+
+			expect(wrapper.findComponent(RecommendLoanForGoalContainerStub).props('expressCheckoutEnabled')).toBe(true);
+		});
+
+		it('forwards isRedirecting to RecommendLoanForGoalContainer', () => {
+			const wrapper = mountComponent({
+				showRecommendLoanAfterGoalView: true,
+				hasRecommendedLoans: true,
+				isRedirecting: true,
+			});
+
+			expect(wrapper.findComponent(RecommendLoanForGoalContainerStub).props('isRedirecting')).toBe(true);
+		});
+
+		it('forwards isInBasket from recommendLoanIsInBasket', () => {
+			const wrapper = mountComponent({
+				showRecommendLoanAfterGoalView: true,
+				hasRecommendedLoans: true,
+				recommendLoanIsInBasket: true,
+			});
+
+			expect(wrapper.findComponent(RecommendLoanForGoalContainerStub).props('isInBasket')).toBe(true);
 		});
 	});
 });

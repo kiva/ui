@@ -13,8 +13,10 @@
 				:content-card-props="recommendLoanCardProps"
 				:is-adding="isAdding"
 				:is-in-basket="recommendLoanIsInBasket"
+				:is-redirecting="isRedirecting"
 				:loaded-set-data="loadedSetData"
 				@primary-cta-click="handleAddToBasket"
+				@checkout-click="handleAddToBasket"
 			/>
 			<div
 				v-else
@@ -186,15 +188,25 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * True when the page is redirecting to /basket instead of opening the
+	 * express checkout modal (i.e. the basket already contained other items).
+	 */
+	isRedirecting: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const recommendLoanForGoalRef = ref(null);
 
 const handleAddToBasket = () => {
-	const { loanId } = props.recommendLoanCardProps;
+	const { loanId, loan } = props.recommendLoanCardProps;
 	if (!loanId) return;
 	const lendAmount = recommendLoanForGoalRef.value?.getSelectedAmount();
-	emit('add-to-basket', { loanId, lendAmount });
+	emit('add-to-basket', {
+		loanId, lendAmount, loan, recommendLoanIsInBasket: Boolean(props.recommendLoanIsInBasket)
+	});
 };
 </script>
 
