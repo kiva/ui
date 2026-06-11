@@ -8,7 +8,8 @@ import {
 	hasOnlyOneDonation,
 	isBasketEmpty,
 	shouldReopenExpressCheckout,
-} from '#src/util/thanksPage/thanksPageUtils';
+} from '#src/util/thanksPage/expressCheckoutUtils';
+import initializeCheckout from '#src/graphql/query/checkout/initializeCheckout.graphql';
 
 const EVENT_CATEGORY = 'post-checkout';
 
@@ -52,6 +53,33 @@ export default function useExpressCheckoutModal({
 	const expressCheckoutModalRef = ref(null);
 	const expressCheckoutLoan = ref(null);
 	const isRedirecting = ref(false);
+
+	async function initializeExpressCheckoutBasket() {
+		try {
+			await apollo.query({
+				query: initializeCheckout,
+				variables: { basketId: cookieStore.get('kvbskt') },
+				fetchPolicy: 'network-only',
+			});
+			return true;
+		} catch (error) {
+			$showTipMsg(
+				'Something went wrong. Please, refresh the page and try again.',
+				'error',
+			);
+			logFormatter(error, 'error');
+			return false;
+		}
+	}
+
+	async function openExpressCheckout(payload) {
+		const initialized = await initializeExpressCheckoutBasket();
+		if (!initialized) return;
+
+		kvTrackEvent?.(EVENT_CATEGORY, 'open', 'open-express-checkout');
+		expressCheckoutLoan.value = payload.loan ?? null;
+		expressCheckoutModalRef.value?.openLightbox();
+	}
 
 	async function handleAddRecommendedLoanToBasket(payload) {
 		// Feature flag off → skip the modal flow entirely. Add the recommended
@@ -101,9 +129,7 @@ export default function useExpressCheckoutModal({
 		// Re-entry via "Checkout now": the recommended loan is already in
 		// the basket — reopen the modal without re-adding it.
 		if (shouldReopenExpressCheckout(items, payload)) {
-			kvTrackEvent?.(EVENT_CATEGORY, 'open', 'open-express-checkout');
-			expressCheckoutLoan.value = payload.loan ?? null;
-			expressCheckoutModalRef.value?.openLightbox();
+			await openExpressCheckout(payload);
 			return;
 		}
 
@@ -115,11 +141,9 @@ export default function useExpressCheckoutModal({
 		const previousOnError = payload.onError;
 		addToBasket({
 			...payload,
-			onSuccess: () => {
+			onSuccess: async () => {
 				if (empty) {
-					kvTrackEvent?.(EVENT_CATEGORY, 'open', 'open-express-checkout');
-					expressCheckoutLoan.value = payload.loan ?? null;
-					expressCheckoutModalRef.value?.openLightbox();
+					await openExpressCheckout(payload);
 				} else {
 					router.push('/basket');
 				}

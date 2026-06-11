@@ -4,7 +4,7 @@ import {
 	hasOnlyOneDonation,
 	isBasketEmpty,
 	shouldReopenExpressCheckout,
-} from '#src/util/thanksPage/thanksPageUtils';
+} from '#src/util/thanksPage/expressCheckoutUtils';
 
 const donation = (overrides = {}) => ({
 	id: overrides.id ?? 'donation-1',
@@ -19,7 +19,7 @@ const loan = (overrides = {}) => ({
 	...overrides,
 });
 
-describe('thanksPageUtils.js', () => {
+describe('expressCheckoutUtils.js', () => {
 	describe('isBasketEmpty', () => {
 		it('returns true for an empty array', () => {
 			expect(isBasketEmpty([])).toBe(true);
