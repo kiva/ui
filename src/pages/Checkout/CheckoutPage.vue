@@ -1403,7 +1403,7 @@ export default {
 							id: updated.id,
 							price: updated.price,
 							isTip: updated.isTip,
-							isUserEdited: false,
+							isUserEdited: updated.isUserEdited,
 							metadata: updated.metadata ?? null,
 						});
 					} else {
@@ -1412,7 +1412,7 @@ export default {
 							id: updated.id,
 							price: updated.price,
 							isTip: updated.isTip,
-							isUserEdited: false,
+							isUserEdited: updated.isUserEdited,
 							metadata: updated.metadata ?? null,
 						});
 					}
