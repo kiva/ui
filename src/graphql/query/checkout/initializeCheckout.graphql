@@ -79,6 +79,11 @@ query initializeCheckout($basketId: String) {
 							use
 							status
 							matchingText
+							simultaneousMatching {
+								managedAccountId
+								displayName
+								ratio
+							}
 							loanAmount
 							minNoteSize
 							plannedExpirationDate

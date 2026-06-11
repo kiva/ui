@@ -150,6 +150,80 @@ describe('BasketItem loan', () => {
 		expect(within(LoanPromoCredit).queryByText('25.00 credit applied')).toBeNull();
 	});
 
+	describe('simultaneous matching', () => {
+		const matchers = [
+			{
+				managedAccountId: 203995508, displayName: 'Capital One', ratio: 3, logo: null
+			},
+			{
+				managedAccountId: 204181523, displayName: 'the Tripadvisor Foundation', ratio: 1, logo: null
+			},
+		];
+
+		it('shows simultaneous matching text when simultaneousMatching is present and matchingText is empty', () => {
+			const loan = {
+				...loanReservation,
+				loan: {
+					...loanReservation.loan,
+					matchingText: '',
+					simultaneousMatching: matchers,
+				},
+			};
+			const { getByTestId } = render(BasketItem, {
+				global: {
+					...globalOptions,
+					stubs: { LoanReservation: { ...emptyComponent } },
+					plugins: [router],
+				},
+				props: { disableRedirects: false, loan, teams: [] },
+			});
+			// Capital One 4x + Tripadvisor 2x = 6x total
+			const matchingText = getByTestId('basket-loan-matching-text').textContent;
+			expect(matchingText).toContain('6x matching by contributing partners');
+		});
+
+		it('shows simultaneous matching text even when matchingText is also present', () => {
+			const loan = {
+				...loanReservation,
+				loan: {
+					...loanReservation.loan,
+					matchingText: 'Coca Cola Foundation',
+					simultaneousMatching: matchers,
+				},
+			};
+			const { getByTestId } = render(BasketItem, {
+				global: {
+					...globalOptions,
+					stubs: { LoanReservation: { ...emptyComponent } },
+					plugins: [router],
+				},
+				props: { disableRedirects: false, loan, teams: [] },
+			});
+			const matchingText = getByTestId('basket-loan-matching-text').textContent;
+			expect(matchingText).toContain('6x matching by contributing partners');
+		});
+
+		it('falls back to matchingText when simultaneousMatching is empty', () => {
+			const loan = {
+				...loanReservation,
+				loan: {
+					...loanReservation.loan,
+					matchingText: 'Coca Cola Foundation',
+					simultaneousMatching: [],
+				},
+			};
+			const { getByTestId } = render(BasketItem, {
+				global: {
+					...globalOptions,
+					stubs: { LoanReservation: { ...emptyComponent } },
+					plugins: [router],
+				},
+				props: { disableRedirects: false, loan, teams: [] },
+			});
+			expect(getByTestId('basket-loan-matching-text').textContent).toContain('Matched by Coca Cola Foundation');
+		});
+	});
+
 	it('should show amounts 1,000 and over for logged in user and huge amount enabled', () => {
 		loanReservation.expiryTime = '2050-09-19T19:02:10Z';
 		render(
