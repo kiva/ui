@@ -17,7 +17,7 @@
 			</div>
 			<div>
 				<p class="tw-text-upper">
-					{{ matcher.ratio + 1 }}X MATCHING
+					{{ (matcher.ratio ?? 0) + 1 }}X MATCHING
 				</p>
 				<p class="tw-mt-0.5">
 					{{ matcher.displayName || 'A Kiva supporter' }}
