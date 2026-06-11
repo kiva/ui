@@ -347,7 +347,18 @@ export default [
 	},
 	{
 		path: '/lend/:category',
-		redirect: '/lend-by-category/:category'
+		beforeEnter(to) {
+			const url = to.params.category
+				? `/lend-by-category/${to.params.category}`
+				: '/lend-by-category';
+			if (typeof window !== 'undefined') {
+				window.location.href = url;
+			} else {
+				// SSR: triggers res.redirect in server/vue-middleware.js
+				// eslint-disable-next-line no-throw-literal
+				throw { url, code: 301 };
+			}
+		}
 	},
 	{
 		path: '/lp/own-the-change-gender-equality',
