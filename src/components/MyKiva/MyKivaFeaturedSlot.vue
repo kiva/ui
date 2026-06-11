@@ -61,6 +61,7 @@ const emit = defineEmits(['set-goal-click', 'cta-click', 'edit-click']);
 
 const router = useRouter();
 const goalData = inject('goalData');
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const cardLoading = computed(() => Boolean(goalData?.loading?.value));
 const goalStatus = computed(() => goalData?.userGoal?.value?.status || null);
@@ -114,6 +115,39 @@ watch(
 		}
 	},
 	{ immediate: true }
+);
+
+// Mirror the carousel goal-tile's view / show tracking events (see
+// NextYearGoalCard) so analytics from the control surface carry
+// over to the featured slot. Fires once on the loading transition,
+//  only if the slot is actually rendering.
+const hasFiredImpressionEvent = ref(false);
+watch(
+	() => [cardLoading.value, shouldRender.value],
+	([nowLoading], [wasLoading]) => {
+		if (hasFiredImpressionEvent.value) return;
+		if (nowLoading || wasLoading === undefined) return;
+		if (!shouldRender.value) return;
+		if (!goalStatus.value) {
+			$kvTrackEvent?.('portfolio', 'view', 'set-annual-goal');
+			hasFiredImpressionEvent.value = true;
+			return;
+		}
+		if (
+			goalStatus.value === GOAL_STATUS.IN_PROGRESS
+			&& goalProgressPercentageValue.value !== COMPLETED_GOAL_THRESHOLD
+		) {
+			const goal = goalData?.userGoal?.value;
+			$kvTrackEvent?.(
+				'portfolio',
+				'show',
+				'goal-set',
+				goal?.category,
+				goal?.target,
+			);
+			hasFiredImpressionEvent.value = true;
+		}
+	},
 );
 
 const handleSetGoalClick = () => {
