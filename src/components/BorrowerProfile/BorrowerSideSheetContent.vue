@@ -39,6 +39,7 @@
 		<div class="tw-px-4 tw-py-2 tw-space-y-6">
 			<MoreAboutLoan :loan-id="loanId" />
 			<BorrowerCountry :loan-id="loanId" />
+			<ContributingPartners :loan-id="loanId" />
 			<LendersAndTeams v-if="!!lenderCount" :loan-id="loanId" />
 			<LendersAndTeams v-if="!!teamCount" :loan-id="loanId" display-type="teams" />
 		</div>
@@ -85,6 +86,7 @@ import { FUNDRAISING, ENDED } from '#src/api/fixtures/LoanStatusEnum';
 import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
 import CommentsAndWhySpecial from './CommentsAndWhySpecial';
 import BorrowerCountry from './BorrowerCountry';
+import ContributingPartners from './ContributingPartners';
 import DetailsTabs from './DetailsTabs';
 import LendersAndTeams from './LendersAndTeams';
 import LoanProgress from './LoanProgress';
@@ -99,6 +101,7 @@ export default {
 	components: {
 		BorrowerCountry,
 		CommentsAndWhySpecial,
+		ContributingPartners,
 		DetailsTabs,
 		KvLendCta,
 		LendersAndTeams,

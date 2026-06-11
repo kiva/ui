@@ -38,10 +38,11 @@
 					</template>
 				</KvCartPill>
 				<loan-matcher
-					class="tw-mb-1"
+					class="tw-my-1"
 					data-testid="basket-loan-matching-text"
-					v-if="loan.loan.matchingText"
+					v-if="loan.loan.matchingText || loan.loan.simultaneousMatching?.length > 0"
 					:matching-text="loan.loan.matchingText"
+					:simultaneous-matching="loan.loan.simultaneousMatching || []"
 				/>
 				<loan-reservation
 					class="tw-mb-1"

@@ -106,6 +106,11 @@
 					:loan-id="loanId"
 				/>
 				<borrower-country data-testid="bp-country" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
+				<contributing-partners
+					data-testid="bp-contributing-partners"
+					class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
+					:loan-id="loanId"
+				/>
 				<lenders-and-teams
 					v-if="showLenders"
 					data-testid="bp-lenders"
@@ -165,6 +170,7 @@ import LoanStory from '#src/components/BorrowerProfile/LoanStory';
 import FundedBorrowerProfile from '#src/components/BorrowerProfile/FundedBorrowerProfile';
 import DetailsTabs from '#src/components/BorrowerProfile/DetailsTabs';
 import BorrowerCountry from '#src/components/BorrowerProfile/BorrowerCountry';
+import ContributingPartners from '#src/components/BorrowerProfile/ContributingPartners';
 import LendersAndTeams from '#src/components/BorrowerProfile/LendersAndTeams';
 import MoreAboutLoan from '#src/components/BorrowerProfile/MoreAboutLoan';
 import CommentsAndWhySpecial from '#src/components/BorrowerProfile/CommentsAndWhySpecial';
@@ -300,6 +306,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		BorrowerCountry,
+		ContributingPartners,
 		ContentContainer,
 		DetailsTabs,
 		HeroBackground,
