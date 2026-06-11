@@ -982,6 +982,12 @@ export default {
 				if (hasFreeCredits && refreshEvent === 'kiva-card-applied') {
 					this.disableGuestCheckout();
 				}
+				if (this.isStopHidingTipExpEnabled) {
+					const items = _get(data, 'shop.basket.items.values');
+					if (items) {
+						this.donations = _filter(items, { __typename: 'Donation' });
+					}
+				}
 				setTimeout(() => {
 					this.setUpdatingTotals(false);
 				}, 2500);
@@ -1391,30 +1397,9 @@ export default {
 			this.setUpdatingTotals(true);
 			setDonationAmount({ apollo: this.apollo, donationAmount })
 				.then(result => {
-					const updated = result?.data?.shop?.updateDonation;
-					if (!updated) {
+					if (!result?.data?.shop?.updateDonation) {
 						this.setUpdatingTotals(false);
 						return;
-					}
-					const existingIdx = this.donations.findIndex(d => d.isTip);
-					if (existingIdx >= 0) {
-						this.donations.splice(existingIdx, 1, {
-							...this.donations[existingIdx],
-							id: updated.id,
-							price: updated.price,
-							isTip: updated.isTip,
-							isUserEdited: updated.isUserEdited,
-							metadata: updated.metadata ?? null,
-						});
-					} else {
-						this.donations.push({
-							__typename: 'Donation',
-							id: updated.id,
-							price: updated.price,
-							isTip: updated.isTip,
-							isUserEdited: updated.isUserEdited,
-							metadata: updated.metadata ?? null,
-						});
 					}
 					this.refreshTotals();
 				})

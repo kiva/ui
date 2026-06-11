@@ -108,7 +108,7 @@ describe('CheckoutPage ensureTipDonationExists', () => {
 		expect(setDonationAmount).toHaveBeenCalledWith({ apollo: context.apollo, donationAmount: 2.6 });
 	});
 
-	it('pushes a new tip donation onto donations and calls refreshTotals when none existed', async () => {
+	it('calls refreshTotals when the mutation succeeds and no tip existed', async () => {
 		setDonationAmount.mockResolvedValue({
 			data: {
 				shop: {
@@ -125,20 +125,11 @@ describe('CheckoutPage ensureTipDonationExists', () => {
 		CheckoutPage.methods.ensureTipDonationExists.call(context);
 
 		await vi.waitFor(() => {
-			expect(context.donations).toHaveLength(1);
+			expect(context.refreshTotals).toHaveBeenCalledTimes(1);
 		});
-		expect(context.donations[0]).toEqual({
-			__typename: 'Donation',
-			id: '42',
-			price: '5.00',
-			isTip: true,
-			isUserEdited: false,
-			metadata: null,
-		});
-		expect(context.refreshTotals).toHaveBeenCalledTimes(1);
 	});
 
-	it('splice-replaces an existing $0 tip donation with the updated one on success', async () => {
+	it('calls refreshTotals when an existing $0 tip donation is updated successfully', async () => {
 		setDonationAmount.mockResolvedValue({
 			data: {
 				shop: {
@@ -164,11 +155,8 @@ describe('CheckoutPage ensureTipDonationExists', () => {
 		CheckoutPage.methods.ensureTipDonationExists.call(context);
 
 		await vi.waitFor(() => {
-			expect(context.donations[0].id).toBe('42');
+			expect(context.refreshTotals).toHaveBeenCalledTimes(1);
 		});
-		expect(context.donations).toHaveLength(1);
-		expect(context.donations[0].price).toBe('5.00');
-		expect(context.refreshTotals).toHaveBeenCalledTimes(1);
 	});
 
 	it('resets setUpdatingTotals(false) and does not push donations when the mutation returns no data', async () => {
