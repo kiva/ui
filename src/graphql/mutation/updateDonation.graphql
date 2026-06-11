@@ -13,6 +13,7 @@ mutation updateDonation($price: Money!, $isTip: Boolean!, $basketId: String, $cl
 			metadata {
 				campaignId
 			}
+			isUserEdited
 		}
 	}
 }

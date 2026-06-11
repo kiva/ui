@@ -113,7 +113,7 @@ describe('CheckoutPage ensureTipDonationExists', () => {
 			data: {
 				shop: {
 					updateDonation: {
-						id: '42', price: '5.00', isTip: true, metadata: null,
+						id: '42', price: '5.00', isTip: true, isUserEdited: false, metadata: null,
 					},
 				},
 			},
