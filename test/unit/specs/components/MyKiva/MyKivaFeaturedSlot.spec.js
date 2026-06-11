@@ -38,7 +38,7 @@ const buildGoalData = ({
 	setViewedGoalCompletePreference: vi.fn(() => Promise.resolve()),
 });
 
-const mountSlot = ({ goalData = buildGoalData(), props = {} } = {}) => {
+const mountSlot = ({ goalData = buildGoalData(), props = {}, trackEvent = vi.fn() } = {}) => {
 	const wrapper = mount(MyKivaFeaturedSlot, {
 		props: {
 			userFirstName: 'Ada',
@@ -47,7 +47,7 @@ const mountSlot = ({ goalData = buildGoalData(), props = {} } = {}) => {
 		global: {
 			provide: {
 				goalData,
-				$kvTrackEvent: vi.fn(),
+				$kvTrackEvent: trackEvent,
 			},
 			stubs: {
 				FeaturedGoalCard: FEATURED_CARD_STUB,
@@ -55,7 +55,7 @@ const mountSlot = ({ goalData = buildGoalData(), props = {} } = {}) => {
 			},
 		},
 	});
-	return { wrapper, goalData };
+	return { wrapper, goalData, trackEvent };
 };
 
 describe('MyKivaFeaturedSlot', () => {
@@ -189,6 +189,80 @@ describe('MyKivaFeaturedSlot', () => {
 			});
 			await wrapper.findComponent(FEATURED_CARD_STUB).vm.$emit('edit-click');
 			expect(wrapper.emitted('edit-click')).toHaveLength(1);
+		});
+	});
+
+	describe('impression tracking on loading→loaded transition', () => {
+		it('fires `view`/`set-annual-goal` when the slot resolves to the no-goal state', async () => {
+			const goalData = buildGoalData({ status: null, loading: true });
+			const trackEvent = vi.fn();
+			mountSlot({ goalData, trackEvent });
+			// Flip loading off after first render to trigger the watcher.
+			goalData.loading.value = false;
+			await nextTick();
+			expect(trackEvent).toHaveBeenCalledWith('portfolio', 'view', 'set-annual-goal');
+		});
+
+		it('fires `show`/`goal-set` with category + target for in-progress goals', async () => {
+			const goalData = buildGoalData({
+				status: GOAL_STATUS.IN_PROGRESS,
+				loading: true,
+				target: 5,
+				percentage: 40,
+			});
+			const trackEvent = vi.fn();
+			mountSlot({ goalData, trackEvent });
+			goalData.loading.value = false;
+			await nextTick();
+			expect(trackEvent).toHaveBeenCalledWith(
+				'portfolio',
+				'show',
+				'goal-set',
+				ID_US_ECONOMIC_EQUALITY,
+				5,
+			);
+		});
+
+		it('does not fire impression events for completed goals', async () => {
+			const goalData = buildGoalData({
+				status: GOAL_STATUS.COMPLETED,
+				loading: true,
+				percentage: 100,
+			});
+			const trackEvent = vi.fn();
+			mountSlot({ goalData, trackEvent });
+			goalData.loading.value = false;
+			await nextTick();
+			expect(trackEvent).not.toHaveBeenCalledWith(
+				'portfolio',
+				'view',
+				'set-annual-goal',
+			);
+			expect(trackEvent).not.toHaveBeenCalledWith(
+				'portfolio',
+				'show',
+				'goal-set',
+				expect.anything(),
+				expect.anything(),
+			);
+		});
+
+		it('fires the impression event only once even if loading toggles again', async () => {
+			const goalData = buildGoalData({ status: null, loading: true });
+			const trackEvent = vi.fn();
+			mountSlot({ goalData, trackEvent });
+			goalData.loading.value = false;
+			await nextTick();
+			goalData.loading.value = true;
+			await nextTick();
+			goalData.loading.value = false;
+			await nextTick();
+			const impressionCalls = trackEvent.mock.calls.filter(
+				([category, action, label]) => category === 'portfolio'
+					&& action === 'view'
+					&& label === 'set-annual-goal',
+			);
+			expect(impressionCalls).toHaveLength(1);
 		});
 	});
 

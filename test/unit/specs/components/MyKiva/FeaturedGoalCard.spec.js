@@ -39,6 +39,8 @@ vi.mock('#src/components/Kv/KvIcon', () => ({
 	},
 }));
 
+const trackEventSpy = vi.fn();
+
 const mountCard = (props = {}) => mount(FeaturedGoalCard, {
 	props: {
 		state: 'no-goal',
@@ -54,6 +56,9 @@ const mountCard = (props = {}) => mount(FeaturedGoalCard, {
 	global: {
 		directives: {
 			kvTrackEvent: () => ({}),
+		},
+		provide: {
+			$kvTrackEvent: trackEventSpy,
 		},
 	},
 });
@@ -233,6 +238,42 @@ describe('FeaturedGoalCard copy', () => {
 			});
 			expect(wrapper.text()).toContain('View your achievements');
 			expect(wrapper.text()).not.toContain('Work toward your goal');
+		});
+	});
+
+	describe('active-goal CTA tracking', () => {
+		it('fires `continue-towards-goal` when CTA clicked while in progress', async () => {
+			const wrapper = mountCard({
+				state: 'active-goal',
+				goalTarget: 5,
+				goalProgress: 2,
+				goalProgressPercentage: 40,
+			});
+			const ctaButton = wrapper.find('.featured-goal-card__cta--active-goal');
+			await ctaButton.trigger('click');
+			expect(trackEventSpy).toHaveBeenCalledWith('portfolio', 'click', 'continue-towards-goal');
+		});
+
+		it('fires `goal-completed-cta` when CTA clicked after completion', async () => {
+			const wrapper = mountCard({
+				state: 'active-goal',
+				goalTarget: 5,
+				goalProgress: 5,
+				goalProgressPercentage: 100,
+				userName: 'Ada',
+			});
+			const ctaButton = wrapper.find('.featured-goal-card__cta--active-goal');
+			await ctaButton.trigger('click');
+			expect(trackEventSpy).toHaveBeenCalledWith(
+				'portfolio',
+				'click',
+				'goal-completed-cta',
+			);
+			expect(trackEventSpy).not.toHaveBeenCalledWith(
+				'portfolio',
+				'click',
+				'continue-towards-goal',
+			);
 		});
 	});
 

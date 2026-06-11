@@ -71,7 +71,8 @@
 								class="tw-list-none"
 							>
 								<button
-									class="tw-w-full tw-px-2 tw-py-2 tw-rounded-md hover:tw-bg-secondary tw-font-medium"
+									class="tw-w-full tw-px-2 tw-py-2 tw-rounded-md
+										hover:tw-bg-secondary tw-font-medium tw-text-left"
 									@click.prevent="onSelect(action)"
 								>
 									{{ action.label }}
@@ -136,8 +137,7 @@
 						<KvButton
 							class="featured-goal-card__cta featured-goal-card__cta--active-goal tw-w-full"
 							variant="primary"
-							v-kv-track-event="['portfolio', 'click', 'continue-towards-goal']"
-							@click="$emit('cta-click')"
+							@click="handleActiveGoalCtaClick"
 						>
 							{{ activeGoalCta }}
 						</KvButton>
@@ -250,7 +250,7 @@ const activeGoalDescription = computed(() => {
 	if (pct < COMPLETED_GOAL_THRESHOLD) {
 		return 'Continue creating opportunity for others. Finish strong!';
 	}
-	return `Achieving your goal means you've changed ${props.goalTarget} lives this year;`;
+	return `Achieving your goal means you've changed ${props.goalTarget} lives this year.`;
 });
 
 const activeGoalCta = computed(() => {
@@ -259,6 +259,17 @@ const activeGoalCta = computed(() => {
 });
 
 const $kvTrackEvent = inject('$kvTrackEvent');
+
+const handleActiveGoalCtaClick = () => {
+	// Fire a distinct label when the user reaches the completed celebration so
+	// analytics can separate "still working on it" from "viewing achievements."
+	$kvTrackEvent?.(
+		'portfolio',
+		'click',
+		goalCompleted.value ? 'goal-completed-cta' : 'continue-towards-goal',
+	);
+	emit('cta-click');
+};
 
 const onSelect = action => {
 	if (action.value === 'edit-goal') {
