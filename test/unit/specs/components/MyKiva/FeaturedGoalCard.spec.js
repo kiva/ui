@@ -254,7 +254,7 @@ describe('FeaturedGoalCard copy', () => {
 			expect(trackEventSpy).toHaveBeenCalledWith('portfolio', 'click', 'continue-towards-goal');
 		});
 
-		it('fires `goal-completed-cta` when CTA clicked after completion', async () => {
+		it('fires `goal-complete-view-achievements` when CTA clicked after completion', async () => {
 			const wrapper = mountCard({
 				state: 'active-goal',
 				goalTarget: 5,
@@ -267,7 +267,7 @@ describe('FeaturedGoalCard copy', () => {
 			expect(trackEventSpy).toHaveBeenCalledWith(
 				'portfolio',
 				'click',
-				'goal-completed-cta',
+				'goal-complete-view-achievements',
 			);
 			expect(trackEventSpy).not.toHaveBeenCalledWith(
 				'portfolio',

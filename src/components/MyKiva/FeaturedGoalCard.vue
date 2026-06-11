@@ -266,7 +266,7 @@ const handleActiveGoalCtaClick = () => {
 	$kvTrackEvent?.(
 		'portfolio',
 		'click',
-		goalCompleted.value ? 'goal-completed-cta' : 'continue-towards-goal',
+		goalCompleted.value ? 'goal-complete-view-achievements' : 'continue-towards-goal',
 	);
 	emit('cta-click');
 };
