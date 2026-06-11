@@ -2,6 +2,7 @@
 	<KvLightbox
 		title="Confirm Payment"
 		:visible="lightboxOpen"
+		:prevent-close="paying"
 		@lightbox-closed="closeLightbox"
 	>
 		<form
