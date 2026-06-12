@@ -1,10 +1,7 @@
 <template>
-	<div v-if="loading">
-		<div v-for="i in 6" :key="i" class="tw-flex tw-justify-between tw-h-2 tw-mb-3">
-			<kv-loading-placeholder :style="{width: 20 + (Math.random() * 20) + '%'}" />
-			<kv-loading-placeholder :style="{width: 5 + (Math.random() * 5) + '%'}" />
-		</div>
-		<div class="tw-flex tw-h-2 tw-mt-6.5">
+	<div v-if="loading" class="tw-pt-1.5">
+		<description-list-loading :lines="6" />
+		<div class="tw-flex tw-h-2" :class="condensed ? 'tw-mt-4.5' : 'tw-mt-6.5'">
 			<kv-loading-placeholder style="width: 233px;" />
 		</div>
 	</div>
@@ -96,6 +93,7 @@ import { gql } from 'graphql-tag';
 import { format, parseISO } from 'date-fns';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionListItem';
+import DescriptionListLoading from '#src/components/BorrowerProfile/DescriptionListLoading';
 import RepaymentSchedule from '#src/components/BorrowerProfile/RepaymentSchedule';
 
 const loanDetailsQuery = gql`query borrowerProfileLoanDetails($loanId: Int!) {
@@ -132,6 +130,7 @@ export default {
 	name: 'LoanDetails',
 	components: {
 		DescriptionListItem,
+		DescriptionListLoading,
 		KvLoadingPlaceholder,
 		RepaymentSchedule,
 	},
