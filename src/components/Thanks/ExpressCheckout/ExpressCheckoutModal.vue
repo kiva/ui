@@ -205,7 +205,6 @@ const onSubmit = async () => {
 			amount: numeral(totalDue.value).format('0.00'),
 			transactionInfo: transactionResult?.data?.checkoutStatus,
 		});
-		closeLightbox();
 	} catch (e) {
 		if (e?.code === 'shop.failedCheckoutValidation') {
 			closeLightbox();
@@ -221,10 +220,9 @@ const onSubmit = async () => {
 		} else if (e?.message && e?.code !== 'shop.dropinRequired') {
 			errorMsg = e.message;
 		}
+		paying.value = false;
 		$showTipMsg(errorMsg, 'error');
 		closeLightbox();
-	} finally {
-		paying.value = false;
 	}
 };
 
