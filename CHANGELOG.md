@@ -1,3 +1,10 @@
+## [3.71.1](https://github.com/kiva/ui/compare/v3.71.0...v3.71.1) (2026-06-11)
+
+### 🧹 Chores
+
+* **release:** 3.71.1-rc.1 [skip ci] ([df03cff](https://github.com/kiva/ui/commit/df03cffb455b8d96260b5cdf0f7e653829455eb0))
+* update kv-tokens + kv-components ([b58a4ca](https://github.com/kiva/ui/commit/b58a4caeca7cdc0abfa91ed90ce25e69371dead0))
+
 ## [3.71.1-rc.1](https://github.com/kiva/ui/compare/v3.71.0...v3.71.1-rc.1) (2026-06-05)
 
 ### 🧹 Chores

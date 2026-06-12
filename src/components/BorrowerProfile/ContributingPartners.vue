@@ -8,13 +8,20 @@
 			:key="matcher.managedAccountId"
 			class="tw-flex tw-items-center tw-mb-4 last:tw-mb-0"
 		>
-			<div class="tw-flex-none tw-w-12 tw-h-12 tw-rounded-full tw-overflow-hidden tw-shadow tw-mr-2">
+			<component
+				:is="matcher.partnerContentfulPage ? 'a' : 'div'"
+				:href="matcher.partnerContentfulPage ? `/impact-dashboard/${matcher.partnerContentfulPage}` : undefined"
+				v-kv-track-event="matcher.partnerContentfulPage
+					? ['borrower-profile', 'click', 'contributing-partner-avatar', matcher.partnerContentfulPage]
+					: undefined"
+				class="tw-flex-none tw-w-12 tw-h-12 tw-rounded-full tw-overflow-hidden tw-shadow tw-mr-2"
+			>
 				<kv-user-avatar
 					class="tw-w-full tw-h-full"
 					:lender-name="matcher.displayName || 'Anonymous'"
 					:lender-image-url="matcher.logo && matcher.logo.url ? matcher.logo.url : ''"
 				/>
-			</div>
+			</component>
 			<div>
 				<p class="tw-text-upper">
 					{{ (matcher.ratio ?? 0) + 1 }}X MATCHING
@@ -63,6 +70,7 @@ export default {
 							managedAccountId
 							displayName
 							ratio
+							partnerContentfulPage
 							logo {
 								id
 								url
