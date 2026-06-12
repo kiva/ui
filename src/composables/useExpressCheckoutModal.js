@@ -119,10 +119,10 @@ export default function useExpressCheckoutModal({
 				if (empty) {
 					kvTrackEvent?.(EVENT_CATEGORY, 'open', 'open-express-checkout');
 					expressCheckoutLoan.value = payload.loan ?? null;
-					expressCheckoutModalRef.value?.openLightbox();
-				} else {
-					router.push('/basket');
+					return expressCheckoutModalRef.value?.openLightbox();
 				}
+				router.push('/basket');
+				return undefined;
 			},
 			onError: () => {
 				isRedirecting.value = false;

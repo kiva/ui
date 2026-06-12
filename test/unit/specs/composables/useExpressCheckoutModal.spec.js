@@ -116,6 +116,25 @@ describe('useExpressCheckoutModal', () => {
 				expect(mockPush).not.toHaveBeenCalled();
 			});
 
+			it('returns the openLightbox promise from the addToBasket onSuccess callback', async () => {
+				basketItems.value = [];
+				const openLightboxPromise = Promise.resolve(true);
+				const modalMock = { openLightbox: vi.fn(() => openLightboxPromise) };
+				composable.expressCheckoutModalRef.value = modalMock;
+				let addToBasketOnSuccess;
+				mockAddToBasket.mockImplementation(({ onSuccess }) => {
+					addToBasketOnSuccess = onSuccess;
+				});
+
+				await composable.handleAddRecommendedLoanToBasket({
+					loanId: 999,
+					lendAmount: '25',
+					loan: { id: 999 },
+				});
+
+				expect(addToBasketOnSuccess()).toBe(openLightboxPromise);
+			});
+
 			it('does not flip isRedirecting in the empty path', async () => {
 				basketItems.value = [];
 				mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
