@@ -975,8 +975,8 @@ export default {
 		// component fetches its own loan-search-suggestion dataset (mirrors loadMenu → loadMenuData).
 		// onSearchSubmit still performs navigation since the header emits the search payload.
 		loadSearchData() {
-			if (!this.$refs?.newExpHeader) {
-				this.$refs?.newExpHeader?.loadSearchSuggestions(this.apollo);
+			if (this.$refs.newExpHeader) {
+				this.$refs.newExpHeader.loadSearchSuggestions(this.apollo);
 			}
 		},
 		onSearchSubmit(payload) {
