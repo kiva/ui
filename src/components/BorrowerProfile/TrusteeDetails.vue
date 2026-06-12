@@ -1,10 +1,23 @@
 <template>
 	<div v-if="loading">
-		<kv-loading-placeholder class="tw-mb-1.5" style="width: 90%; height: 3rem;" />
-		<kv-loading-placeholder class="tw-mb-2" style="width: 50%; height: 1.5rem;" />
-		<div v-for="i in 4" :key="i" class="tw-flex tw-justify-between tw-h-2 tw-mb-3">
-			<kv-loading-placeholder :style="{width: 25 + (Math.random() * 20) + '%'}" />
-			<kv-loading-placeholder :style="{width: 5 + (Math.random() * 5) + '%'}" />
+		<div
+			class="tw-flex"
+			:class="condensed ? 'tw-mb-1.5 tw-h-6 md:tw-h-3' : 'tw-mb-1.5 tw-h-8 md:tw-h-6 lg:tw-h-3'"
+		>
+			<kv-loading-placeholder style="width: 90%;" />
+		</div>
+		<kv-loading-placeholder class="tw-mb-2" style="width: 50%; height: 2.25rem;" />
+		<description-list-loading :lines="4" />
+		<!-- Loading placeholder for the more about link -->
+		<div class="tw-flex tw-h-2" :class="condensed ? 'tw-mt-2.5' : 'tw-mt-4'">
+			<kv-loading-placeholder style="width: 200px;" />
+		</div>
+		<!-- Loading placeholders for the endorsement title and quote -->
+		<div class="tw-flex tw-mt-4 tw-h-4">
+			<kv-loading-placeholder style="width: 250px;" />
+		</div>
+		<div class="tw-flex tw-mt-2 tw-h-8 md:tw-h-5.5">
+			<kv-loading-placeholder />
 		</div>
 	</div>
 	<section v-else>
@@ -92,6 +105,7 @@ import { gql } from 'graphql-tag';
 import { mdiArrowRight } from '@mdi/js';
 import numeral from 'numeral';
 import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionListItem';
+import DescriptionListLoading from '#src/components/BorrowerProfile/DescriptionListLoading';
 import { KvTextLink, KvLoadingPlaceholder } from '@kiva/kv-components';
 
 const trusteeQuery = gql`query borrowerProfileTrustee($loanId: Int!) {
@@ -126,6 +140,7 @@ export default {
 	},
 	components: {
 		DescriptionListItem,
+		DescriptionListLoading,
 		KvTextLink,
 		KvLoadingPlaceholder,
 	},

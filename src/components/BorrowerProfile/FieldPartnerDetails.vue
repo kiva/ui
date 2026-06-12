@@ -1,9 +1,10 @@
 <template>
 	<div v-if="loading">
-		<kv-loading-placeholder class="tw-mb-2" style="width: 60%; height: 1.5rem;" />
-		<div v-for="i in 10" :key="i" class="tw-flex tw-justify-between tw-h-2 tw-mb-3">
-			<kv-loading-placeholder :style="{width: 25 + (Math.random() * 20) + '%'}" />
-			<kv-loading-placeholder :style="{width: 5 + (Math.random() * 5) + '%'}" />
+		<kv-loading-placeholder class="tw-mb-3.5" style="width: 60%; height: 2.25rem;" />
+		<description-list-loading :lines="11" />
+		<!-- Loading placeholder for the more about link -->
+		<div class="tw-flex tw-h-2 tw-mt-3.5">
+			<kv-loading-placeholder style="width: 233px;" />
 		</div>
 	</div>
 	<section v-else>
@@ -155,6 +156,7 @@ import {
 } from '@mdi/js';
 import numeral from 'numeral';
 import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionListItem';
+import DescriptionListLoading from '#src/components/BorrowerProfile/DescriptionListLoading';
 import { KvLoadingPlaceholder, KvMaterialIcon, KvTextLink } from '@kiva/kv-components';
 
 const fieldPartnerQuery = gql`query borrowerProfileFieldPartner($loanId: Int!) {
@@ -192,6 +194,7 @@ export default {
 	},
 	components: {
 		DescriptionListItem,
+		DescriptionListLoading,
 		KvLoadingPlaceholder,
 		KvMaterialIcon,
 		KvTextLink,
