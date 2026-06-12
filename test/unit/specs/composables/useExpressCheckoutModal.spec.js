@@ -143,6 +143,26 @@ describe('useExpressCheckoutModal', () => {
 				}));
 			});
 
+			it('resolves the addToBasket onSuccess callback with the openLightbox result', async () => {
+				basketItems.value = [];
+				const openLightboxPromise = Promise.resolve(true);
+				const modalMock = { openLightbox: vi.fn(() => openLightboxPromise) };
+				composable.expressCheckoutModalRef.value = modalMock;
+				let addToBasketOnSuccess;
+				mockAddToBasket.mockImplementation(({ onSuccess }) => {
+					addToBasketOnSuccess = onSuccess;
+				});
+
+				await composable.handleAddRecommendedLoanToBasket({
+					loanId: 999,
+					lendAmount: '25',
+					loan: { id: 999 },
+				});
+
+				await expect(addToBasketOnSuccess()).resolves.toBe(true);
+				expect(mockPush).not.toHaveBeenCalled();
+			});
+
 			it('does not flip isRedirecting in the empty path', async () => {
 				basketItems.value = [];
 				mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());

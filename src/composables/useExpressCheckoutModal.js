@@ -74,11 +74,11 @@ export default function useExpressCheckoutModal({
 
 	async function openExpressCheckout(payload) {
 		const initialized = await initializeExpressCheckoutBasket();
-		if (!initialized) return;
+		if (!initialized) return false;
 
 		kvTrackEvent?.(EVENT_CATEGORY, 'open', 'open-express-checkout');
 		expressCheckoutLoan.value = payload.loan ?? null;
-		expressCheckoutModalRef.value?.openLightbox();
+		return expressCheckoutModalRef.value?.openLightbox();
 	}
 
 	async function handleAddRecommendedLoanToBasket(payload) {
@@ -143,10 +143,9 @@ export default function useExpressCheckoutModal({
 			...payload,
 			onSuccess: async () => {
 				if (empty) {
-					await openExpressCheckout(payload);
-				} else {
-					router.push('/basket');
+					return openExpressCheckout(payload);
 				}
+				return router.push('/basket');
 			},
 			onError: () => {
 				isRedirecting.value = false;
