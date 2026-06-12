@@ -122,7 +122,8 @@
 						<kv-material-icon
 							v-for="i in 5"
 							:key="i"
-							class="tw-text-primary tw-w-3 tw-h-3"
+							class="tw-text-primary"
+							:class="condensed ? 'tw-w-2 tw-h-2' : 'tw-w-3 tw-h-3'"
 							:icon="getStarIcon(i)"
 						/>
 					</div>
