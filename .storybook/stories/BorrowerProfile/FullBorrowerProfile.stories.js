@@ -7,6 +7,7 @@ import {
 	createQueryResult,
 	loggedInUser,
 	fundraisingPartnerLoan,
+	multiMatchedLoan,
 	pfpLoan,
 	raisedLoan,
 	payingBackLoan,
@@ -66,6 +67,8 @@ export default {
 // --- Public statuses ---
 
 export const Fundraising = fullProfileStory(fundraisingPartnerLoan, loggedInUser);
+
+export const MultiMatched = fullProfileStory(multiMatchedLoan, loggedInUser);
 
 export const PrivateFundraisingPeriod = fullProfileStory(pfpLoan, loggedInUser);
 
