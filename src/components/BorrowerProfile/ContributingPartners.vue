@@ -9,8 +9,8 @@
 			class="tw-flex tw-items-center tw-mb-4 last:tw-mb-0"
 		>
 			<component
-				:is="matcher.partnerContentfulPage ? 'router-link' : 'div'"
-				:to="matcher.partnerContentfulPage ? `/impact-dashboard/${matcher.partnerContentfulPage}` : undefined"
+				:is="matcher.partnerContentfulPage ? 'a' : 'div'"
+				:href="matcher.partnerContentfulPage ? `/impact-dashboard/${matcher.partnerContentfulPage}` : undefined"
 				v-kv-track-event="matcher.partnerContentfulPage
 					? ['borrower-profile', 'click', 'contributing-partner-avatar', matcher.partnerContentfulPage]
 					: undefined"
