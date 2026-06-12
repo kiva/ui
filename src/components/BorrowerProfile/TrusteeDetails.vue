@@ -21,7 +21,10 @@
 		</div>
 	</div>
 	<section v-else>
-		<p class="tw-mb-1.5" data-testid="bp-details-trustee-description">
+		<p
+			:class="condensed ? 'tw-mb-1 tw-text-small' : 'tw-mb-1.5'"
+			data-testid="bp-details-trustee-description"
+		>
 			Trustees are organizations that refer potential U.S.-based
 			borrowers to Kiva and publicly vouch for them on Kiva.org.
 		</p>
