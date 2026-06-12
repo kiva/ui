@@ -1,0 +1,14 @@
+import{C as h}from"./entry-ContributingPartners-DvcuYmVKam.js";import{a as v}from"./entry-apollo-story-mixin-NCMtMfZ7e5.js";import{c as x}from"./entry-cookie-store-story-mixin-Bv_t57ys9l.js";import"./entry-index-CWclSTHHJk.js";import"./entry-vue.esm-bundler-D6rjCHbx5a.js";import"./entry-KvWwwHeaderBasic-4oh2xxIPzA.js";import"./entry-numeral-xVHG5DEP0A.js";import"./entry-_commonjsHelpers-Cpj98o6Yn6.js";import"./entry-tailwind.config-DnDN25xoV6.js";import"./entry-index-B_VjIxz4TE.js";import"./iframe-CU7a1Js9.js";import"./entry-useMultiMatching-BiI1aeyHJI.js";import"./entry-settingsUtils-XGNYGjbQmx.js";import"./entry-get-7eV6H4dYCO.js";import"./entry-get-ClabG2OWPD.js";import"./entry-isSymbol-5pnFTpIKM9.js";import"./entry-logReadQueryError-Codcl0QZ_g.js";import"./entry-logFormatter-DhjghUk5Me.js";import"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";const S={managedAccountId:203995508,displayName:"Capital One",ratio:3,logo:null},A={managedAccountId:204181523,displayName:"the Tripadvisor Foundation",ratio:1,logo:null};function b(n){return{data:{general:{multiMatchingEnabled:{key:"multiMatchingEnabled",value:"true"}},lend:{loan:{id:3175014,status:"fundraising",simultaneousMatching:n}}}}}const e=n=>()=>({components:{ContributingPartners:h},mixins:[v({queryResult:b(n)}),x()],template:'<contributing-partners :loan-id="3175014" />'}),z={title:"Components/BorrowerProfile/ContributingPartners",component:h},r=e([S,A]),o=e([S]),t=e([{managedAccountId:1,displayName:null,ratio:1,logo:null}]),a=e([{managedAccountId:1,displayName:"Visa",ratio:1,logo:{id:10,url:"https://via.placeholder.com/96/0070d2/ffffff?text=V"}},A]);var i,s,m;r.parameters={...r.parameters,docs:{...(i=r.parameters)==null?void 0:i.docs,source:{originalSource:"story([capitalOne, tripadvisor])",...(m=(s=r.parameters)==null?void 0:s.docs)==null?void 0:m.source}}};var p,c,l;o.parameters={...o.parameters,docs:{...(p=o.parameters)==null?void 0:p.docs,source:{originalSource:"story([capitalOne])",...(l=(c=o.parameters)==null?void 0:c.docs)==null?void 0:l.source}}};var d,u,g;t.parameters={...t.parameters,docs:{...(d=t.parameters)==null?void 0:d.docs,source:{originalSource:`story([{
+  managedAccountId: 1,
+  displayName: null,
+  ratio: 1,
+  logo: null
+}])`,...(g=(u=t.parameters)==null?void 0:u.docs)==null?void 0:g.source}}};var f,y,P;a.parameters={...a.parameters,docs:{...(f=a.parameters)==null?void 0:f.docs,source:{originalSource:`story([{
+  managedAccountId: 1,
+  displayName: 'Visa',
+  ratio: 1,
+  logo: {
+    id: 10,
+    url: 'https://via.placeholder.com/96/0070d2/ffffff?text=V'
+  }
+}, tripadvisor])`,...(P=(y=a.parameters)==null?void 0:y.docs)==null?void 0:P.source}}};const D=["TwoPartners","SinglePartner","AnonymousPartner","WithLogo"];export{t as AnonymousPartner,o as SinglePartner,r as TwoPartners,a as WithLogo,D as __namedExportsOrder,z as default};
