@@ -4724,4 +4724,81 @@ describe('useGoalData', () => {
 			expect(updateUserPreferences).not.toHaveBeenCalled();
 		});
 	});
+
+	describe('completedGoalsHistory (MP-2876)', () => {
+		// Lock the clock to make year math deterministic — the composable reads
+		// new Date().getFullYear() at compute time, so any drift between
+		// build-time and run-time captures would break the assertions.
+		beforeEach(() => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-06-15T12:00:00Z'));
+		});
+
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		const loadPrefsWithGoals = async goals => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-history',
+							preferences: JSON.stringify({ goals }),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+			await composable.loadPreferences('network-only');
+		};
+
+		it('returns an empty array when no goals exist', async () => {
+			await loadPrefsWithGoals([]);
+			expect(composable.completedGoalsHistory.value).toEqual([]);
+		});
+
+		it('excludes in-progress and expired goals', async () => {
+			await loadPrefsWithGoals([
+				{ status: GOAL_STATUS.IN_PROGRESS, dateStarted: '2025-06-15', target: 5 },
+				{ status: GOAL_STATUS.EXPIRED, dateStarted: '2024-06-15', target: 4 },
+			]);
+			expect(composable.completedGoalsHistory.value).toEqual([]);
+		});
+
+		it('excludes the current-year completed goal (still surfaced via userGoal)', async () => {
+			await loadPrefsWithGoals([
+				{ status: GOAL_STATUS.COMPLETED, dateStarted: '2026-02-15', target: 8 },
+			]);
+			expect(composable.completedGoalsHistory.value).toEqual([]);
+		});
+
+		it('includes prior-year completed goals', async () => {
+			await loadPrefsWithGoals([
+				{ status: GOAL_STATUS.COMPLETED, dateStarted: '2025-06-10', target: 6 },
+			]);
+			expect(composable.completedGoalsHistory.value).toHaveLength(1);
+			expect(composable.completedGoalsHistory.value[0].target).toBe(6);
+		});
+
+		it('sorts prior-year completed goals newest year first', async () => {
+			// Use mid-year dates so timezone offsets can't bump the year boundary.
+			await loadPrefsWithGoals([
+				{ status: GOAL_STATUS.COMPLETED, dateStarted: '2023-06-15', target: 3 },
+				{ status: GOAL_STATUS.COMPLETED, dateStarted: '2025-06-15', target: 10 },
+				{ status: GOAL_STATUS.COMPLETED, dateStarted: '2024-06-15', target: 7 },
+			]);
+			const years = composable.completedGoalsHistory.value.map(
+				g => new Date(g.dateStarted).getFullYear(),
+			);
+			expect(years).toEqual([2025, 2024, 2023]);
+		});
+
+		it('excludes completed goals without dateStarted (defensive)', async () => {
+			await loadPrefsWithGoals([
+				{ status: GOAL_STATUS.COMPLETED, target: 5 },
+			]);
+			expect(composable.completedGoalsHistory.value).toEqual([]);
+		});
+	});
 });

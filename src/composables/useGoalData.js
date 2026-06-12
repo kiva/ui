@@ -152,6 +152,24 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
+	 * Completed goals from prior years, exposed for the Impact Progress row.
+	 * Current-year completed goals stay surfaced via `userGoal` so the featured
+	 * slot and carousel keep working unchanged. Sorted by start-year, newest
+	 * first.
+	 */
+	const completedGoalsHistory = computed(() => {
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+		const goals = parsedPrefs.goals || [];
+
+		return goals
+			.filter(g => g.status === GOAL_STATUS.COMPLETED && g.dateStarted)
+			.filter(g => new Date(g.dateStarted).getFullYear() < GOALS_CURRENT_YEAR)
+			.sort((a, b) => (
+				new Date(b.dateStarted).getFullYear() - new Date(a.dateStarted).getFullYear()
+			));
+	});
+
+	/**
 	 * Get Goal Categories for Goal Selection
 	 * @param {*} categoriesLoanCount Categories Loan Count
 	 * @param {*} totalLoans Total Loans
@@ -1070,6 +1088,7 @@ export default function useGoalData({ apollo } = {}) {
 		userGoalAchieved,
 		userGoalAchievedNow,
 		userPreferences,
+		completedGoalsHistory,
 		// Goal Entry for 2026 Goals
 		fixIncorrectlyCompletedGoals,
 		renewAnnualGoal,
