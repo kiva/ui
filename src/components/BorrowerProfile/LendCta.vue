@@ -1,7 +1,7 @@
 <template>
 	<div
 		ref="wrapper"
-		:class="['lg:tw-mb-1.5', { 'md:tw-px-4': isSticky }]"
+		:class="['lg:tw-mb-1', { 'md:tw-px-4': isSticky }]"
 		:style="wrapperStyle"
 	>
 		<kv-atb-modal-container

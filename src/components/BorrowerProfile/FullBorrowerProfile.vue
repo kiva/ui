@@ -31,48 +31,51 @@
 			<sidebar-container
 				class="lg:tw-sticky lg:tw-mt-10 lg:tw-pb-8 lg:tw-top-12"
 			>
-				<lend-cta
-					class="tw-pointer-events-auto"
-					:loan-id="loanId"
-					:loan-data="loanData"
-					:enable-five-dollars-notes="enableFiveDollarsNotes"
-					:show-details-in-rail="showDetailsInRail"
-					:team-id="teamId"
-					:team-name="teamName"
-				>
-					<template #sharebutton>
-						<!-- Share button -->
-						<template v-if="loading">
-							<kv-loading-placeholder style="height: 2rem; width: 100%;" />
-						</template>
-						<share-button
-							v-else
-							class="tw-block lg:tw-mb-1.5"
-							:loan="loanData"
-							:variant="shareBtnVariant"
-							:lender="lender"
-							:campaign="shareCampaign"
-							:in-pfp="inPfp"
-							:pfp-min-lenders="pfpMinLenders"
-							:num-lenders="numLenders"
-						/>
-					</template>
-				</lend-cta>
-				<transition name="kvfastfade">
-					<div
-						v-if="showDetailsInRail"
-						data-testid="bp-rail-details"
-						class="tw-hidden lg:tw-block tw-pointer-events-auto
-							tw-bg-primary tw-rounded tw-mt-1.5 tw-px-4 tw-py-2"
+				<div class="tw-flex tw-flex-col" style="max-height: calc(100vh - 7.5rem)">
+					<lend-cta
+						class="tw-pointer-events-auto"
+						:loan-id="loanId"
+						:loan-data="loanData"
+						:enable-five-dollars-notes="enableFiveDollarsNotes"
+						:show-details-in-rail="showDetailsInRail"
+						:team-id="teamId"
+						:team-name="teamName"
 					>
-						<details-tabs
-							name="bp-rail-details"
-							:loan-id="loanId"
-							:is-privileged="isPrivileged"
-							condensed
-						/>
-					</div>
-				</transition>
+						<template #sharebutton>
+							<!-- Share button -->
+							<template v-if="loading">
+								<kv-loading-placeholder style="height: 2rem; width: 100%;" />
+							</template>
+							<share-button
+								v-else
+								class="tw-block lg:tw-mb-1.5"
+								:loan="loanData"
+								:variant="shareBtnVariant"
+								:lender="lender"
+								:campaign="shareCampaign"
+								:in-pfp="inPfp"
+								:pfp-min-lenders="pfpMinLenders"
+								:num-lenders="numLenders"
+							/>
+						</template>
+					</lend-cta>
+					<transition name="kvfastfade">
+						<div
+							v-if="showDetailsInRail"
+							data-testid="bp-rail-details"
+							class="tw-hidden lg:tw-block tw-pointer-events-auto
+								tw-bg-primary tw-rounded tw-p-4
+								tw-shrink tw-overflow-scroll"
+						>
+							<details-tabs
+								name="bp-rail-details"
+								:loan-id="loanId"
+								:is-privileged="isPrivileged"
+								condensed
+							/>
+						</div>
+					</transition>
+				</div>
 			</sidebar-container>
 		</div>
 		<content-container class="tw-mt-4 md:tw-mt-3 lg:tw-mt-6">
