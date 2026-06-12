@@ -24,6 +24,7 @@
 				</kv-tab>
 				<kv-tab
 					:for-panel="partnerTabId" v-if="isPartnerLoan"
+					:selected="initialTab === 'partner'"
 					:data-testid="`${testidPrefix}-field-partner-tab`"
 					v-kv-track-event="['Borrower Profile', `${trackPrefix}-Field-Partner-tab`, 'Field Partner']"
 				>
@@ -31,6 +32,7 @@
 				</kv-tab>
 				<kv-tab
 					:for-panel="trusteeTabId" v-if="hasTrustee"
+					:selected="initialTab === 'trustee'"
 					:data-testid="`${testidPrefix}-trustee-tab`"
 					v-kv-track-event="[
 						'Borrower Profile',
@@ -128,6 +130,11 @@ export default {
 		condensed: {
 			type: Boolean,
 			default: false,
+		},
+		initialTab: {
+			type: String,
+			default: 'loanDetails',
+			validator: value => ['loanDetails', 'partner', 'trustee'].includes(value),
 		},
 	},
 	provide() {
