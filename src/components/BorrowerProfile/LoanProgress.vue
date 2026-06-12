@@ -75,9 +75,6 @@
 					This loan is inactive
 				</p>
 				<div class="md:tw-flex tw-gap-2">
-					<p class="tw-text-upper tw-text-secondary tw-block" data-testid="bp-summary-percent-funded">
-						{{ progressPercentRounded }} funded
-					</p>
 					<p v-if="!hideViewProfileLinks" class="tw-text-upper tw-text-action tw-block">
 						<router-link
 							:to="`/lend/${routeId}?minimal=false`"
@@ -118,14 +115,17 @@
 					<KvLoadingPlaceholder class="tw-h-8 tw-w-[100px] tw-text-right" />
 				</div>
 				<div v-else class="tw-flex tw-flex-auto">
-					<p class="tw-flex-auto" data-testid="bp-summary-repaid-percent">
-						<span class="tw-text-h3 tw-block tw-m-0">
-							{{ progressPercentRounded }} repaid
-						</span>
-						<span class="tw-text-h4 tw-text-secondary tw-block">
+					<span class="tw-text-h3 tw-block tw-m-0">
+						Paying back
+					</span>
+					<div class="tw-flex-auto tw-text-right">
+						<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
 							{{ $filters.numeral(moneyLeft, '$0,0[.]00') }} to go
-						</span>
-					</p>
+						</p>
+						<p class="tw-text-h4 tw-text-secondary" data-testid="bp-summary-percent-repaid">
+							{{ progressPercentRounded }} repaid
+						</p>
+					</div>
 				</div>
 			</template>
 			<template v-else-if="loanStatus === 'fundraising'">
