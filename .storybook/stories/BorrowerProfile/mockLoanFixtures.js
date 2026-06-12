@@ -70,6 +70,15 @@ const mockTeams = [
 	},
 ];
 
+export const mockSimultaneousMatching = [
+	{
+		managedAccountId: 203995508, displayName: 'Capital One', ratio: 3, logo: null
+	},
+	{
+		managedAccountId: 204181523, displayName: 'the Tripadvisor Foundation', ratio: 1, logo: null
+	},
+];
+
 const mockUpdates = [
 	{
 		id: 301,
@@ -184,6 +193,7 @@ export function createMockLoan(overrides = {}) {
 		matchingText: '',
 		matchRatio: 0,
 		unreservedAmount: '75.00',
+		simultaneousMatching: [],
 		// LoanStory fields
 		description: 'Aisha is a 35-year-old woman living in Kyrgyzstan. She has been raising cattle for 10 years and wants to expand her dairy farm.',
 		descriptionInOriginalLanguage: '',
@@ -265,7 +275,10 @@ export function createQueryResult(loan, myUser = null) {
 				nonTrivialItemCount: 0,
 			},
 			my: myUser || { id: null },
-			general: { uiExperimentSetting: null },
+			general: {
+				uiExperimentSetting: null,
+				multiMatchingEnabled: { key: 'multiMatchingEnabled', value: 'true' },
+			},
 			community: { lender: null },
 		},
 	};
@@ -481,6 +494,12 @@ export const groupLoan = createMockLoan({
 			id: 3, firstName: 'Nadia', gender: 'female', isPrimary: false
 		},
 	],
+});
+
+/** Fundraising loan with simultaneous matching partners. */
+export const multiMatchedLoan = createMockLoan({
+	id: 2000018,
+	simultaneousMatching: mockSimultaneousMatching,
 });
 
 /** Repeat borrower loan (has previous loan). */
