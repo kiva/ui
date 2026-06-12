@@ -6,6 +6,12 @@
 				<kv-loading-placeholder class="tw-mr-2.5 md:tw-mr-5 lg:tw-mr-6" style="width: 113px;" />
 				<kv-loading-placeholder style="width: 157px;" />
 			</div>
+			<!-- Loading placeholder for description-list-item elements -->
+			<description-list-loading :lines="6" />
+			<!-- Loading placeholder for the detailed repayment schedule link -->
+			<div class="tw-flex tw-h-2" :class="condensed ? 'tw-mt-4.5' : 'tw-mt-6.5'">
+				<kv-loading-placeholder style="width: 233px;" />
+			</div>
 		</div>
 		<kv-tabs v-else>
 			<template #tabNav>
@@ -67,6 +73,7 @@ import { gql } from 'graphql-tag';
 import {
 	KvLoadingPlaceholder, KvTab, KvTabPanel, KvTabs
 } from '@kiva/kv-components';
+import DescriptionListLoading from './DescriptionListLoading';
 import FieldPartnerDetails from './FieldPartnerDetails';
 import LoanDetails from './LoanDetails';
 import TrusteeDetails from './TrusteeDetails';
@@ -91,6 +98,7 @@ export default {
 	name: 'DetailsTabs',
 	inject: ['apollo', 'cookieStore'],
 	components: {
+		DescriptionListLoading,
 		DetailsDefinitionsLightbox,
 		FieldPartnerDetails,
 		KvLoadingPlaceholder,
