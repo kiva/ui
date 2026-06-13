@@ -1,42 +1,33 @@
 <template>
 	<AsyncPortfolioSection
 		@visible="fetchUserAchievementProgress"
-		class="tw-flex tw-flex-col lg:tw-flex-row tw-items-center tw-justify-between tw-gap-4 !tw-px-2 !tw-py-3
-            lg:!tw-p-3"
+		class="goal-entrypoint !tw-px-2 !tw-py-2.5 lg:!tw-px-3 lg:!tw-py-2.5"
 	>
 		<div
-			class="tw-flex tw-flex-col lg:tw-flex-row tw-items-center tw-gap-3"
+			class="goal-entrypoint__content tw-flex tw-flex-col tw-justify-center tw-gap-0.5 tw-z-base"
 		>
-			<img
-				:src="HandsPlant"
-				class="tw-w-10"
+			<KvLoadingPlaceholder
+				v-if="loading"
+				class="!tw-w-full !tw-h-2.5"
+			/>
+			<h3
+				v-else
+				v-html="title"
+				class="goal-entrypoint__title tw-font-medium"
+			></h3>
+			<p
+				class="goal-entrypoint__subtitle"
+				v-html="subtitle"
 			>
-			<div
-				class="tw-flex tw-flex-col tw-gap-1"
+			</p>
+			<KvButton
+				variant="secondary"
+				class="goal-button tw-z-base tw-mt-1"
+				@click="goToGoalPage"
 			>
-				<KvLoadingPlaceholder
-					v-if="loading"
-					class="!tw-w-full !tw-h-5"
-				/>
-				<h3
-					v-else
-					v-html="title"
-					class="tw-text-title tw-text-center md:tw-text-left"
-				></h3>
-				<p
-					class="tw-text-base !tw-font-medium tw-text-center lg:tw-text-left"
-				>
-					{{ goalCopy.TITLE_HOW_MANY_LOANS_GENERIC }}
-				</p>
-			</div>
+				{{ goalCopy.BUTTON_SET_GOAL }}
+			</KvButton>
 		</div>
-		<KvButton
-			variant="secondary"
-			class="goal-button tw-whitespace-nowrap tw-mt-2 md:tw-mt-0 tw-w-full lg:tw-w-auto"
-			@click="goToGoalPage"
-		>
-			{{ goalCopy.BUTTON_SET_GOAL }}
-		</KvButton>
 	</AsyncPortfolioSection>
 </template>
 
@@ -50,7 +41,6 @@ import { useRouter } from 'vue-router';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import goalCopy from '#src/util/goalCopy';
-import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 const { getCategoryLoansLastYear } = useGoalData();
@@ -62,6 +52,7 @@ const router = useRouter();
 const womenLoansLastYear = ref(0);
 
 const title = computed(() => goalCopy.titleGoalSignupWomensLastYear(womenLoansLastYear.value));
+const subtitle = goalCopy.subtitleNoGoalYetEntrypoint();
 
 const goToGoalPage = () => {
 	$kvTrackEvent('portfolio', 'click', 'set-goal-portfolio');
@@ -90,7 +81,43 @@ onMounted(() => {
 </script>
 
 <style lang="postcss" scoped>
+.goal-entrypoint {
+	background-image: url('/src/assets/images/my-kiva/featured-goal-card/mobile-no-goal-state.png');
+	background-position: right bottom;
+	background-repeat: no-repeat;
+	background-size: auto 100%;
+	box-shadow: inset 0 0 0 4px #fff;
+	min-height: 98px;
+	overflow: hidden;
+}
+
+.goal-entrypoint__content {
+	max-width: 28rem;
+}
+
+.goal-entrypoint__title {
+	font-size: 1.125rem;
+	line-height: 1.2;
+}
+
+.goal-entrypoint__subtitle {
+	font-size: 0.8125rem;
+	line-height: 1.25;
+}
+
+.goal-button {
+	width: min(100%, 14rem);
+}
+
 .goal-button :deep(span) {
-	@apply tw-px-4 tw-py-0.5;
+	@apply tw-px-2 tw-py-0.5;
+
+	min-height: 2rem;
+}
+
+@screen md {
+	.goal-entrypoint {
+		background-image: url('/src/assets/images/my-kiva/featured-goal-card/no-goal-state.png');
+	}
 }
 </style>

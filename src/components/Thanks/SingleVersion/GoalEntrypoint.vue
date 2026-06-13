@@ -35,6 +35,7 @@
 					:goal-progress="goalProgress"
 					:goal-progress-percentage="goalProgressPercentage"
 					:go-to-url="goToUrl"
+					compact-no-goal-yet-title
 					@set-goal-target="$emit('set-goal-target', $event)"
 					@set-goal="$emit('set-goal', $event)"
 					@edit-goal="$emit('edit-goal')"

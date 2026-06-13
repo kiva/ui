@@ -84,6 +84,7 @@ describe('Portfolio GoalEntrypoint', () => {
 		await flushPromises();
 
 		expect(wrapper.text()).toContain('Lenders like you help 3 women a year!');
+		expect(wrapper.text()).toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
 		expect(wrapper.text()).toContain(goalCopy.BUTTON_SET_GOAL);
 		expect(wrapper.text()).not.toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
 	});
@@ -97,6 +98,7 @@ describe('Portfolio GoalEntrypoint', () => {
 		await flushPromises();
 
 		expect(wrapper.text()).toContain('Last year, you helped 2 women shape their futures!');
+		expect(wrapper.text()).toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
 		expect(wrapper.text()).toContain(goalCopy.BUTTON_SET_GOAL);
 		expect(wrapper.text()).not.toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
 	});
@@ -110,8 +112,10 @@ describe('Portfolio GoalEntrypoint', () => {
 		await flushPromises();
 
 		expect(wrapper.text()).toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
+		expect(wrapper.text()).toContain(goalCopy.CARD_HABIT_PROMPT_SINGLE_LINE);
 		expect(wrapper.text()).toContain(goalCopy.BUTTON_SET_GOAL);
 		expect(wrapper.text()).not.toContain('Last year, you helped');
 		expect(wrapper.text()).not.toContain('Lenders like you');
+		expect(wrapper.text()).not.toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
 	});
 });

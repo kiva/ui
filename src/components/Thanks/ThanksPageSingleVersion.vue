@@ -296,6 +296,7 @@ const isGoalSet = ref(false);
 const isEmptyGoal = ref(true);
 const goalTarget = ref(0);
 const goalSignupThanksViewCapped = ref(false);
+const goalSignupThanksViewCounted = ref(false);
 
 // Basket primitives are owned by ThanksPage's borrowerProfileExpMixin and
 // bridged down via provide/inject so we don't duplicate addToBasket /
@@ -572,8 +573,12 @@ onMounted(async () => {
 	goalSignupThanksViewCapped.value = !props.isGuest
 		&& isEmptyGoal.value
 		&& isGoalSignupThanksViewCapped(cookieStore);
-	if (!props.isGuest && isEmptyGoal.value && !goalSignupThanksViewCapped.value) {
+	if (!props.isGuest
+		&& isEmptyGoal.value
+		&& !goalSignupThanksViewCapped.value
+		&& !goalSignupThanksViewCounted.value) {
 		incrementGoalSignupThanksViewCount(cookieStore);
+		goalSignupThanksViewCounted.value = true;
 	}
 
 	// Show goal in progress module when:
