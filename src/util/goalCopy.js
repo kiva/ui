@@ -40,6 +40,14 @@ const goalCopy = {
 		return this.titleNoHistoryWomensDefault(cssClass);
 	},
 
+	/** Date-aware no-goal subtitle for goal card entrypoints */
+	subtitleNoGoalYetEntrypoint() {
+		if (this.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
+			return this.CARD_HABIT_PROMPT_SINGLE_LINE;
+		}
+		return this.TITLE_HOW_MANY_LOANS_GENERIC;
+	},
+
 	/** User helped exactly 1 woman last year */
 	// eslint-disable-next-line max-len
 	titleLastYearSingleWoman: (count, cssClass = 'tw-text-eco-green-3') => `Last year, you helped ${highlight(`${count} woman`, cssClass)} shape her future!`,
@@ -79,10 +87,31 @@ const goalCopy = {
 
 	/** US Economic Equality category */
 	// eslint-disable-next-line max-len
-	TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS: `How many loans to ${ecoGreen('U.S. entrepreneurs')} will you make this year?`,
+	TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS: `How many loans to ${ecoGreen('U.S. entrepreneurs')}<br>will you make this year?`,
 
 	/** Specific named category */
-	titleCategoryHowManyLoans: categoryName => `How many loans to ${ecoGreen(categoryName)} will you make this year?`,
+	titleCategoryHowManyLoans: categoryName => (
+		`How many loans to ${ecoGreen(categoryName)}<br>will you make this year?`
+	),
+
+	/** Direct no-goal-yet title used by selector entrypoints */
+	titleNoGoalYetSelectorEntrypoint({ compactIntro = false } = {}) {
+		const intro = compactIntro
+			? `<span class="tw-text-base tw-font-book">${this.CARD_NO_GOAL_YET_EXPERIMENT}</span>`
+			: this.CARD_NO_GOAL_YET_EXPERIMENT;
+		return `${intro}<br>${this.CARD_HABIT_PROMPT_SHORT}`;
+	},
+
+	/** Generic category question used by direct goal-selector flows */
+	titleLoanQuestionForCategory(categoryId, categoryName) {
+		if (categoryId === ID_SUPPORT_ALL) {
+			return this.TITLE_HOW_MANY_LOANS_GENERIC;
+		}
+		if (categoryId === ID_US_ECONOMIC_EQUALITY) {
+			return this.TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS;
+		}
+		return this.titleCategoryHowManyLoans(categoryName?.toLowerCase());
+	},
 
 	// ─── Goal selector subtitle ────────────────────────────────────────────────
 
@@ -123,6 +152,12 @@ const goalCopy = {
 
 	/** Experiment: motivational subtitle in the empty goal tile */
 	CARD_HABIT_PROMPT_EXPERIMENT: "Make helping others a habit.<br>We'll help you make it happen.",
+
+	/** Single-line habit prompt used where the subtitle should not force a line break */
+	CARD_HABIT_PROMPT_SINGLE_LINE: "Make helping others a habit. We'll help you make it happen.",
+
+	/** Short habit prompt used inside the goal selector title */
+	CARD_HABIT_PROMPT_SHORT: 'Make helping others a habit.',
 
 	// ─── GoalProgressRing — modal description text ───────────────────────────────
 

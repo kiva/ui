@@ -29,6 +29,12 @@ const RecommendLoanForGoalContainerStub = {
 
 const GoalSelectorStub = {
 	name: 'GoalSelector',
+	props: {
+		compactNoGoalYetTitle: {
+			type: Boolean,
+			default: false,
+		},
+	},
 	emits: ['set-goal', 'set-goal-target', 'edit-goal'],
 	template: '<div />',
 };
@@ -63,6 +69,12 @@ describe('GoalEntrypoint', () => {
 
 			expect(wrapper.findComponent(GoalSelectorStub).exists()).toBe(true);
 			expect(wrapper.findComponent(RecommendLoanForGoalContainerStub).exists()).toBe(false);
+		});
+
+		it('requests compact no-goal title sizing for the thank-you page selector', () => {
+			const wrapper = mountComponent({ loading: false, showRecommendLoanAfterGoalView: false });
+
+			expect(wrapper.findComponent(GoalSelectorStub).props('compactNoGoalYetTitle')).toBe(true);
 		});
 
 		it('renders the recommended loan container when the view is on and loans are available', () => {

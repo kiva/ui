@@ -204,6 +204,7 @@
 					:is-loading-data="isLoadingData || isLoadingRecommendedLoan"
 					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 					:show-goal-value-props-copy="showGoalValuePropsCopy && !isGoalTileExperimentEnabled"
+					use-direct-question-title
 					@set-goal-target="setGoalTarget"
 					@set-goal="onGoalSelectorSetGoal"
 					@update-goal="onGoalSelectorUpdateGoal"

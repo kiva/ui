@@ -4,6 +4,8 @@ import FeaturedGoalCard from '#src/components/MyKiva/FeaturedGoalCard';
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import goalCopy from '#src/util/goalCopy';
 
+const stripHtml = html => html.replace(/<[^>]*>/g, '');
+
 vi.mock('#src/util/animation/confettiUtils', () => ({
 	showConfetti: vi.fn(),
 }));
@@ -89,23 +91,27 @@ describe('FeaturedGoalCard copy', () => {
 			vi.setSystemTime(new Date('2026-03-31T12:00:00'));
 
 			const wrapper = buildNoGoal();
-			expect(wrapper.html()).toContain('Lenders like you help');
-			expect(wrapper.html()).toContain('3 women');
-			expect(wrapper.html()).toContain('a year!');
+			expect(wrapper.text()).toContain(stripHtml(goalCopy.titleNoHistoryWomensDefault()));
 			expect(wrapper.text()).not.toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
 		});
 
-		it('renders the no-goal-yet title starting April 1', () => {
+		it('renders the no-goal-yet title and habit prompt starting April 1', () => {
 			vi.useFakeTimers();
 			vi.setSystemTime(new Date('2026-04-01T12:00:00'));
 
 			const wrapper = buildNoGoal();
 			expect(wrapper.text()).toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
-			expect(wrapper.html()).not.toContain('Lenders like you help');
+			expect(wrapper.text()).toContain(goalCopy.CARD_HABIT_PROMPT_SINGLE_LINE);
+			expect(wrapper.html()).not.toContain('<br>');
+			expect(wrapper.text()).not.toContain(stripHtml(goalCopy.titleNoHistoryWomensDefault()));
+			expect(wrapper.text()).not.toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
 		});
 
-		it('renders the generic loans-this-year subtitle', () => {
-			expect(buildNoGoal().text()).toContain('How many loans will you make this year?');
+		it('renders the generic loans-this-year subtitle from January 1 through March 31', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-03-31T12:00:00'));
+
+			expect(buildNoGoal().text()).toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
 		});
 
 		it('renders the year-stamped Set Goal CTA', () => {
@@ -322,8 +328,11 @@ describe('FeaturedGoalCard copy', () => {
 
 	describe('state validator fallback', () => {
 		it('renders no-goal copy when an unrecognized state value is passed', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-03-31T12:00:00'));
+
 			const wrapper = mountCard({ state: 'something-unsupported' });
-			expect(wrapper.text()).toContain('How many loans will you make this year?');
+			expect(wrapper.text()).toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
 			expect(wrapper.text()).toContain(`Set ${GOALS_CURRENT_YEAR} goal`);
 		});
 	});

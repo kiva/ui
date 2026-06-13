@@ -50,9 +50,9 @@
 
 			<p
 				v-if="showLoanQuestionPrompt"
+				v-html="loanQuestionPrompt"
 				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
 			>
-				How many loans will you make this year?
 			</p>
 
 			<p
@@ -257,7 +257,7 @@ import {
 	KvButton, KvMaterialIcon, KvLoadingPlaceholder, KvAccordionItem
 } from '@kiva/kv-components';
 
-import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL, ID_US_ECONOMIC_EQUALITY } from '#src/composables/useBadgeData';
+import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
@@ -385,6 +385,20 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Whether the selector should use the direct loan question instead of entrypoint-style headline copy.
+	 */
+	useDirectQuestionTitle: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Whether the no-goal-yet intro line should render smaller than the main title.
+	 */
+	compactNoGoalYetTitle: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits([
@@ -441,9 +455,17 @@ const loansLastYear = computed(() => {
 });
 
 const showLoanQuestionPrompt = computed(() => {
+	if (props.useDirectQuestionTitle) return false;
 	return goalSignupCopyVariant === GOAL_SIGNUP_COPY_NO_GOAL_YET
 		|| (!props.showGoalValuePropsCopy
 			&& (loansLastYear.value > 0 || props.selectedCategoryId === ID_WOMENS_EQUALITY));
+});
+
+const loanQuestionPrompt = computed(() => {
+	if (goalSignupCopyVariant === GOAL_SIGNUP_COPY_NO_GOAL_YET && !props.useDirectQuestionTitle) {
+		return goalCopy.titleLoanQuestionForCategory(props.selectedCategoryId, props.selectedCategoryName);
+	}
+	return goalCopy.TITLE_HOW_MANY_LOANS_GENERIC;
 });
 
 // Use progressForCurrentYear from tieredAchievements if available (set on Thanks page),
@@ -485,8 +507,12 @@ const loadLoansThisYear = async () => {
 };
 
 const titleText = computed(() => {
+	if (props.useDirectQuestionTitle) {
+		return goalCopy.titleLoanQuestionForCategory(props.selectedCategoryId, props.selectedCategoryName);
+	}
+
 	if (goalSignupCopyVariant === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
-		return goalCopy.CARD_NO_GOAL_YET_EXPERIMENT;
+		return goalCopy.titleNoGoalYetSelectorEntrypoint({ compactIntro: props.compactNoGoalYetTitle });
 	}
 
 	// Default title if no lending history and category is ID_WOMENS_EQUALITY
@@ -503,14 +529,7 @@ const titleText = computed(() => {
 		return goalCopy.titleLastYearForCategory(loansLastYear.value, props.selectedCategoryId, props.selectedCategoryName);
 	}
 
-	// Support All is not a specific category, so use generic language
-	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
-		return goalCopy.TITLE_HOW_MANY_LOANS_GENERIC;
-	}
-	if (props.selectedCategoryId === ID_US_ECONOMIC_EQUALITY) {
-		return goalCopy.TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS;
-	}
-	return goalCopy.titleCategoryHowManyLoans(props.selectedCategoryName?.toLowerCase());
+	return goalCopy.titleLoanQuestionForCategory(props.selectedCategoryId, props.selectedCategoryName);
 });
 
 const subtitleText = computed(() => {

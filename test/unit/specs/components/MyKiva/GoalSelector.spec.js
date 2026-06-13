@@ -56,6 +56,14 @@ describe('GoalSelector', () => {
 				type: Array,
 				default: () => [],
 			},
+			useDirectQuestionTitle: {
+				type: Boolean,
+				default: false,
+			},
+			compactNoGoalYetTitle: {
+				type: Boolean,
+				default: false,
+			},
 		},
 		data() {
 			return {
@@ -104,6 +112,8 @@ describe('GoalSelector', () => {
 					:tiered-achievements="tieredAchievements"
 					:selected-category-id="selectedCategoryId"
 					:selected-category-name="selectedCategoryName"
+					:use-direct-question-title="useDirectQuestionTitle"
+					:compact-no-goal-yet-title="compactNoGoalYetTitle"
 				/>
 			</div>
 		`,
@@ -263,11 +273,11 @@ describe('GoalSelector', () => {
 		await vi.runAllTimersAsync();
 
 		expect(getByRole('heading', { level: 2 }).textContent)
-			.toContain('Last year, you helped 2 women shape their futures!');
+			.toContain(stripHtml(goalCopy.titleLastYearForCategory(2, ID_WOMENS_EQUALITY, 'Women')));
 		expect(queryByText(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT)).toBeNull();
 	});
 
-	it('shows no-goal-yet copy starting April 1', async () => {
+	it('keeps the selector question starting April 1', async () => {
 		vi.useFakeTimers();
 		vi.setSystemTime(new Date('2026-04-01T12:00:00'));
 
@@ -287,18 +297,19 @@ describe('GoalSelector', () => {
 					$kvTrackEvent: vi.fn(),
 				},
 			},
-			props: { tieredAchievements },
+			props: { tieredAchievements, useDirectQuestionTitle: true },
 		});
 
 		await vi.runAllTimersAsync();
 
 		expect(getByRole('heading', { level: 2 }).textContent)
-			.toBe(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
-		expect(container.textContent).toContain('How many loans will you make this year?');
+			.toContain(stripHtml(goalCopy.titleLoanQuestionForCategory(ID_WOMENS_EQUALITY, 'Women')));
+		expect(container.textContent).not.toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
+		expect(container.textContent).not.toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
 		expect(container.textContent).toContain(stripHtml(goalCopy.subtitleLoansAlreadyMade(1)));
 	});
 
-	it('shows requested goal question and current-year progress copy', async () => {
+	it('shows no-goal-yet entrypoint title and category question starting April 1', async () => {
 		vi.useFakeTimers();
 		vi.setSystemTime(new Date('2026-04-01T12:00:00'));
 
@@ -342,9 +353,34 @@ describe('GoalSelector', () => {
 		await vi.runAllTimersAsync();
 
 		expect(getByRole('heading', { level: 2 }).textContent)
-			.toBe(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
-		expect(container.textContent).toContain('How many loans will you make this year?');
+			.toContain(stripHtml(goalCopy.titleNoGoalYetSelectorEntrypoint()));
+		expect(container.textContent).toContain(stripHtml(
+			goalCopy.titleLoanQuestionForCategory(ID_WOMENS_EQUALITY, 'Women')
+		));
 		expect(container.textContent).toContain(stripHtml(goalCopy.subtitleLoansAlreadyMade(1)));
+	});
+
+	it('can render a compact no-goal-yet intro line starting April 1', async () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-04-01T12:00:00'));
+
+		const { container } = render(TestWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: { compactNoGoalYetTitle: true },
+		});
+
+		await vi.runAllTimersAsync();
+
+		const heading = container.querySelector('h2');
+		expect(heading.innerHTML).toContain('tw-text-base');
+		expect(heading.textContent).toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
+		expect(heading.textContent).toContain(goalCopy.CARD_HABIT_PROMPT_SHORT);
 	});
 
 	it('shows current-year progress copy after the user selects a new category', async () => {
