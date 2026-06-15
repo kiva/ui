@@ -322,10 +322,6 @@ export default [
 		}
 	},
 	{
-		path: '/lending-home',
-		redirect: '/lend-by-category',
-	},
-	{
 		name: 'lenderProfile',
 		path: '/lender/:publicId',
 		component: () => import('#src/pages/LenderProfile/LenderProfile'),
