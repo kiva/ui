@@ -594,6 +594,39 @@ describe('borrower-profile-exp-mixin', () => {
 			expect(onSuccess).toHaveBeenCalled();
 		});
 
+		it('should keep isAdding true until an async onSuccess resolves', async () => {
+			createComponent();
+			mockApollo.mutate.mockResolvedValue({ errors: null });
+			mockApollo.query.mockResolvedValue({
+				data: {
+					shop: {
+						basket: { items: { values: [] } },
+						nonTrivialItemCount: 1,
+					},
+				},
+			});
+			let resolveOnSuccess;
+			const onSuccess = vi.fn(() => new Promise(resolve => {
+				resolveOnSuccess = resolve;
+			}));
+
+			component.addToBasket({
+				loanId: 123,
+				lendAmount: 25,
+				loan: { id: 123 },
+				onSuccess,
+			});
+			await flushPromises();
+
+			expect(onSuccess).toHaveBeenCalled();
+			expect(component.isAdding).toBe(true);
+
+			resolveOnSuccess();
+			await flushPromises();
+
+			expect(component.isAdding).toBe(false);
+		});
+
 		it('should not call onSuccess when the add to basket fails', async () => {
 			createComponent();
 			const { hasBasketExpired } = await import('#src/util/basketUtils');

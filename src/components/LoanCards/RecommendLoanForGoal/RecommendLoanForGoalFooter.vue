@@ -108,7 +108,7 @@ const primaryTo = computed(() => (
 ));
 
 const primaryButtonVariant = computed(() => (
-	props.isInBasket ? 'secondary' : 'primary'
+	props.isInBasket && !props.isAdding ? 'secondary' : 'primary'
 ));
 
 const onPrimaryCtaClick = event => {
