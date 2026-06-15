@@ -251,4 +251,78 @@ describe('BasketItem loan', () => {
 		expect(within(LoanPrice).getByRole('option', { name: '$2,000' }));
 		expect(within(LoanPrice).getByRole('option', { name: '$3,685' }));
 	});
+
+	describe('achievement / goal pill suppression (MP-2875)', () => {
+		const renderItem = (props = {}) => render(BasketItem, {
+			global: {
+				...globalOptions,
+				plugins: [router],
+				stubs: {
+					LoanReservation: { ...emptyComponent },
+					KvCartPill: {
+						name: 'KvCartPill',
+						props: ['customMessage'],
+						template: '<div data-testid="cart-pill">{{ customMessage }}<slot name="icon" /></div>',
+					},
+				},
+			},
+			props: {
+				disableMatching: false,
+				disableRedirects: false,
+				loan: loanReservation,
+				teams: basketLoanTeams,
+				...props,
+			},
+		});
+
+		it('shows the achievement pill when nudges are not suppressed and loan contributes to an achievement', () => {
+			const { queryByTestId } = renderItem({
+				contributesInAchievement: true,
+				suppressAchievementNudges: false,
+				loadingGoalData: false,
+			});
+			expect(queryByTestId('cart-pill')).not.toBeNull();
+		});
+
+		it('hides the achievement pill when nudges are suppressed and the loan does not contribute to the goal', () => {
+			const { queryByTestId } = renderItem({
+				contributesInAchievement: true,
+				suppressAchievementNudges: true,
+				loanContributesToGoal: false,
+				loadingGoalData: false,
+			});
+			expect(queryByTestId('cart-pill')).toBeNull();
+		});
+
+		it('does not show the first-loan pill while nudges are suppressed', () => {
+			const { queryByTestId } = renderItem({
+				contributesInAchievement: false,
+				suppressAchievementNudges: true,
+				loanContributesToGoal: false,
+				isFirstLoan: true,
+				loadingGoalData: false,
+			});
+			expect(queryByTestId('cart-pill')).toBeNull();
+		});
+
+		it('still shows the goal-progress pill when nudges are suppressed and the loan contributes to the goal', () => {
+			const { queryByTestId, getByText } = renderItem({
+				contributesInAchievement: false,
+				suppressAchievementNudges: true,
+				loanContributesToGoal: true,
+				loadingGoalData: false,
+			});
+			expect(queryByTestId('cart-pill')).not.toBeNull();
+			expect(getByText('Supporting this loan reaches your annual goal!')).toBeTruthy();
+		});
+
+		it('hides the pill while goal data is still loading even when nudges are not suppressed', () => {
+			const { queryByTestId } = renderItem({
+				contributesInAchievement: true,
+				suppressAchievementNudges: false,
+				loadingGoalData: true,
+			});
+			expect(queryByTestId('cart-pill')).toBeNull();
+		});
+	});
 });

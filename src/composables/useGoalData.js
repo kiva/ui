@@ -727,6 +727,21 @@ export default function useGoalData({ apollo } = {}) {
 		return Boolean(viewedGoalCompleteByYear.value?.[year]);
 	}
 
+	/**
+	 * True while the lender has a goal whose completion celebration they
+	 * have not yet acknowledged. Drives the basket / ATB-modal achievement
+	 * nudges so they stay out of the way during the goal experience and
+	 * resume only after the viewed-goal-complete flag is set (or the lender
+	 * has no goal at all).
+	 */
+	const suppressAchievementNudges = computed(() => {
+		// Matches the truthy + non-empty convention used by userHasGoal in
+		// BadgesSectionV2 — setGoalState writes an empty object for "no goal"
+		// rather than null, so a plain Boolean check would misfire.
+		const hasGoal = !!userGoal.value && Object.keys(userGoal.value).length > 0;
+		return hasGoal && !hasViewedCompletedGoalForYear(GOALS_CURRENT_YEAR);
+	});
+
 	async function setViewedGoalCompletePreference(year = GOALS_CURRENT_YEAR) {
 		if (!year) return;
 		const parsedPrefs = await loadPreferences('network-only');
@@ -1087,6 +1102,7 @@ export default function useGoalData({ apollo } = {}) {
 		userGoal,
 		userGoalAchieved,
 		userGoalAchievedNow,
+		suppressAchievementNudges,
 		userPreferences,
 		completedGoalsHistory,
 		// Goal Entry for 2026 Goals

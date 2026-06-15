@@ -202,7 +202,7 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		hasGoal: {
+		suppressAchievementNudges: {
 			type: Boolean,
 			default: false
 		}
@@ -245,9 +245,8 @@ export default {
 			return this.loan.team ? this.loan.team.id : 0;
 		},
 		showPill() {
-			if (this.hasGoal) {
-				if (this.loanContributesToGoal) return true;
-				return false;
+			if (this.suppressAchievementNudges) {
+				return this.loanContributesToGoal;
 			}
 			return (this.contributesInAchievement || this.isFirstLoan)
 			|| this.pillMessage.length > 0;

@@ -4801,4 +4801,77 @@ describe('useGoalData', () => {
 			expect(composable.completedGoalsHistory.value).toEqual([]);
 		});
 	});
+
+	describe('suppressAchievementNudges (MP-2875)', () => {
+		// Lock the clock so the year-keyed viewedGoalComplete check is deterministic.
+		beforeEach(() => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-06-15T12:00:00Z'));
+		});
+
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		const loadPrefs = async prefs => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-suppress',
+							preferences: JSON.stringify(prefs),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+			await composable.loadPreferences('network-only');
+			// loadPreferences only populates the prefs ref; userGoal is set by
+			// setGoalState (normally called by loadGoalData). Set it explicitly
+			// so the computed sees the right active goal.
+			composable.setGoalState(prefs);
+		};
+
+		it('is false when the lender has no goal', async () => {
+			await loadPrefs({ goals: [] });
+			expect(composable.suppressAchievementNudges.value).toBe(false);
+		});
+
+		it('is true while the lender has an in-progress goal', async () => {
+			await loadPrefs({
+				goals: [{
+					status: GOAL_STATUS.IN_PROGRESS,
+					dateStarted: '2026-02-10T12:00:00.000Z',
+					category: 'womens-equality',
+					target: 5,
+				}],
+			});
+			expect(composable.suppressAchievementNudges.value).toBe(true);
+		});
+
+		it('is true when the goal is completed but the celebration has not been viewed', async () => {
+			await loadPrefs({
+				goals: [{
+					status: GOAL_STATUS.COMPLETED,
+					dateStarted: '2026-02-10T12:00:00.000Z',
+					category: 'womens-equality',
+					target: 5,
+				}],
+			});
+			expect(composable.suppressAchievementNudges.value).toBe(true);
+		});
+
+		it('flips back to false once viewedGoalComplete is set for the current year', async () => {
+			await loadPrefs({
+				goals: [{
+					status: GOAL_STATUS.COMPLETED,
+					dateStarted: '2026-02-10T12:00:00.000Z',
+					category: 'womens-equality',
+					target: 5,
+				}],
+				viewedGoalComplete: { 2026: true },
+			});
+			expect(composable.suppressAchievementNudges.value).toBe(false);
+		});
+	});
 });

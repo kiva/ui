@@ -13,7 +13,7 @@
 					:is-first-loan="isFirstLoan(index)"
 					:loan-contributes-to-goal="loansContributingToGoal[index]"
 					:loading-goal-data="loadingGoalData"
-					:has-goal="userGoal !== null && userGoal?.status === 'in-progress'"
+					:suppress-achievement-nudges="suppressAchievementNudges"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
@@ -245,6 +245,7 @@ export default {
 			userGoal,
 			goalProgress,
 			getPostCheckoutProgressByLoans,
+			suppressAchievementNudges,
 		} = useGoalData({ apollo });
 
 		return {
@@ -253,6 +254,7 @@ export default {
 			goalProgress,
 			getPostCheckoutProgressByLoans,
 			getJourneysByLoan,
+			suppressAchievementNudges,
 		};
 	},
 	async mounted() {
