@@ -24,3 +24,32 @@ const story = (args) => {
 export const Default = story({
 	participants: activities.lend.loan.lendingActions,
 });
+
+export const Empty = story({
+	participants: {
+		values: [],
+		__typename: 'LendingActionCollection',
+	},
+});
+
+export const CurrentUserHighlighted = story({
+	participants: {
+		values: [
+			{
+				latestSharePurchaseDate: '2023-11-15T08:00:00Z',
+				lender: {
+					name: 'You',
+					image: {
+						url: 'https://www.development.kiva.org/img/s100/4d844ac2c0b77a8a522741b908ea5c32.jpg',
+					},
+					publicId: 'current-user',
+				},
+				shareAmount: '50.00',
+				isCurrentUser: true,
+				__typename: 'LendingAction',
+			},
+			...activities.lend.loan.lendingActions.values,
+		],
+		__typename: 'LendingActionCollection',
+	},
+});
