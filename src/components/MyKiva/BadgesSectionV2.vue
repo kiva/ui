@@ -28,6 +28,7 @@
 					:goal="badge.goal"
 					:is-annual-goal="badge.isAnnualGoal"
 					:goal-progress="badge.goalProgress"
+					:year="badge.year ?? GOALS_CURRENT_YEAR"
 					class="tw-self-start tw-mx-auto"
 				/>
 			</div>
@@ -49,7 +50,7 @@ import useBadgeData from '#src/composables/useBadgeData';
 import { KvCarousel, KvLoadingPlaceholder } from '@kiva/kv-components';
 import MyKivaProgressCard from '#src/components/MyKiva/MyKivaProgressCard';
 import { useRouter } from 'vue-router';
-import { COMPLETED_GOAL_THRESHOLD } from '#src/composables/useGoalData';
+import { COMPLETED_GOAL_THRESHOLD, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 
 const CARD_MIN_HEIGHT = '111px';
 const SINGLE_SLIDE_WIDTH = '336px';
@@ -91,9 +92,28 @@ const {
 	goalProgressPercentage,
 	userGoal,
 	userGoalAchieved,
+	completedGoalsHistory,
 } = goalData;
 
 const userHasGoal = computed(() => !!userGoal.value && Object.keys(userGoal.value).length > 0);
+
+const formatHistoricalGoal = goal => {
+	const year = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
+	return {
+		id: `annual-goal-${year}`,
+		goal: {
+			target: goal.target || 0,
+			name: goal.name || '',
+			category: goal.category || '',
+			nextAchievementAt: null,
+			totalLoans: null,
+		},
+		goalProgress: goal.target || 0,
+		isAnnualGoal: true,
+		isHistoricalGoal: true,
+		year,
+	};
+};
 
 const formattedBadgeData = badges => {
 	return badges.map(badge => {
@@ -146,6 +166,9 @@ const visibleBadges = computed(() => {
 			},
 			goalProgress: goalProgress.value || 0,
 			isAnnualGoal: true,
+			year: userGoal.value?.dateStarted
+				? new Date(userGoal.value.dateStarted).getFullYear()
+				: GOALS_CURRENT_YEAR,
 		};
 
 		if (userGoalAchieved.value) {
@@ -153,6 +176,12 @@ const visibleBadges = computed(() => {
 		} else {
 			showedSlides.unshift(formattedUserGoal);
 		}
+	}
+
+	// Append prior-year completed goals at the end of the row.
+	const historyGoals = completedGoalsHistory?.value ?? [];
+	if (historyGoals.length) {
+		showedSlides.push(...historyGoals.map(formatHistoricalGoal));
 	}
 
 	return showedSlides;
@@ -170,6 +199,10 @@ const badgeClicked = badge => {
 		emit('badge-clicked', badge);
 		return;
 	}
+
+	// Historical goal tiles are info-only — no continue-toward-goal navigation
+	// since they're already completed.
+	if (badge?.isHistoricalGoal) return;
 
 	$kvTrackEvent('portfolio', 'click', 'click-annual-goal-progress-continue');
 	window.location.href = getCtaHref(userGoal.value?.target, userGoal.value?.category, router, goalProgress.value);

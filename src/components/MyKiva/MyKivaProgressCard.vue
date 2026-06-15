@@ -69,6 +69,7 @@ import KvButton from '#src/components/Kv/KvButton';
 import {
 	ID_WOMENS_EQUALITY, ID_BASIC_NEEDS, ID_CLIMATE_ACTION, ID_REFUGEE_EQUALITY, MAX_TIERED_BADGE_LOANS
 } from '#src/composables/useBadgeData';
+import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import numeral from 'numeral';
 import { metaGlobReader } from '#src/util/importHelpers';
 
@@ -90,6 +91,11 @@ const props = defineProps({
 	isAnnualGoal: {
 		type: Boolean,
 		default: false,
+	},
+	// Year shown in the annual-goal tag; historical tiles override this.
+	year: {
+		type: Number,
+		default: () => GOALS_CURRENT_YEAR,
 	},
 });
 
@@ -199,7 +205,7 @@ const shouldWrapProgressValues = computed(() => {
 });
 
 const tag = computed(() => {
-	return props.isAnnualGoal ? '2026 annual goal' : 'Lifetime achievement';
+	return props.isAnnualGoal ? `${props.year} annual goal` : 'Lifetime achievement';
 });
 
 const btnCta = computed(() => {
