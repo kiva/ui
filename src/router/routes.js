@@ -178,22 +178,6 @@ export default [
 		}
 	},
 	{
-		path: '/lend-by-category',
-		component: () => import('#src/pages/LoanFinding/LoanFinding'),
-		meta: {
-			unbounceEmailCapture: true,
-		},
-	},
-	{
-		path: '/lend-by-category/:category',
-		component: () => import('#src/pages/Lend/LoanChannelCategoryPage'),
-		meta: {
-			excludeFromStaticSitemap: true,
-			unbounceEmailCapture: true,
-			unbouncePopUp: true,
-		},
-	},
-	{
 		path: '/lend-beta/:id',
 		redirect: '/lend/:id'
 	},
