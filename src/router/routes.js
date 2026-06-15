@@ -322,10 +322,6 @@ export default [
 		}
 	},
 	{
-		path: '/lending-home',
-		redirect: '/lend-by-category',
-	},
-	{
 		name: 'lenderProfile',
 		path: '/lender/:publicId',
 		component: () => import('#src/pages/LenderProfile/LenderProfile'),
@@ -347,17 +343,18 @@ export default [
 	},
 	{
 		path: '/lend/:category',
-		beforeEnter(to) {
-			const url = to.params.category
-				? `/lend-by-category/${to.params.category}`
-				: '/lend-by-category';
-			if (typeof window !== 'undefined') {
-				window.location.href = url;
-			} else {
+		// /lend-by-category is served externally, so we hand off via a full browser
+		// navigation on the client and a server-side 301 on SSR rather than a
+		// router-level redirect.
+		redirect: to => {
+			const url = `/lend-by-category/${to.params.category}`;
+			if (typeof window === 'undefined') {
 				// SSR: triggers res.redirect in server/vue-middleware.js
 				// eslint-disable-next-line no-throw-literal
 				throw { url, code: 301 };
 			}
+			window.location.href = url;
+			return url;
 		}
 	},
 	{
