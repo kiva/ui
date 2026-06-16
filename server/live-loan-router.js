@@ -234,6 +234,13 @@ export default function liveLoanRouter(cache) {
 		});
 	});
 
+	// User IMG Router (Bundle Legacy - no CTA)
+	router.use('/u/:id(\\d{0,})/bundle-img-legacy/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', 'bundle-legacy', cache, req, res, QUERY_TYPE.DEFAULT, MAX_BUNDLE_COUNT);
+		});
+	});
+
 	// User URL Router FLSS
 	router.use('/flss/u/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.flss.user.redirectToUrl', { resource: req.path }, async () => {
@@ -262,6 +269,13 @@ export default function liveLoanRouter(cache) {
 		});
 	});
 
+	// User IMG Router FLSS (Bundle Legacy - no CTA)
+	router.use('/flss/u/:id(\\d{0,})/bundle-img-legacy/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.flss.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', 'bundle-legacy', cache, req, res, QUERY_TYPE.FLSS, MAX_BUNDLE_COUNT);
+		});
+	});
+
 	// User URL Router Recommendations
 	router.use('/recommendations/u/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.flss.user.redirectToUrl', { resource: req.path }, async () => {
@@ -287,6 +301,13 @@ export default function liveLoanRouter(cache) {
 	router.use('/recommendations/u/:id(\\d{0,})/bundle-img/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.recommendations.user.serveImg', { resource: req.path }, async () => {
 			await serveImg('user', 'bundle', cache, req, res, QUERY_TYPE.RECOMMENDATIONS, MAX_BUNDLE_COUNT);
+		});
+	});
+
+	// User IMG Router Recommendations (Bundle Legacy - no CTA)
+	router.use('/recommendations/u/:id(\\d{0,})/bundle-img-legacy/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.recommendations.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', 'bundle-legacy', cache, req, res, QUERY_TYPE.RECOMMENDATIONS, MAX_BUNDLE_COUNT);
 		});
 	});
 

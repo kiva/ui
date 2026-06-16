@@ -447,4 +447,63 @@ describe('live-loan-router bundle-url routes', () => {
 			);
 		});
 	});
+
+	describe('serveImg - bundle-img-legacy routes', () => {
+		beforeEach(() => {
+			drawLoanCard.mockResolvedValue({ buffer: Buffer.from('jpeg-bytes'), hasBorrowerImage: true });
+		});
+
+		it('serves jpeg for /u/:id/bundle-img-legacy/:offset with bundle-legacy style', async () => {
+			liveLoanFetch.default.mockResolvedValue([
+				{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 },
+			]);
+
+			const app = createApp(cache);
+			const result = await makeRequest(app, '/live-loan/u/42/bundle-img-legacy/1');
+
+			expect(result.statusCode).toBe(200);
+			expect(result.headers['content-type']).toBe('image/jpeg');
+			expect(drawLoanCard).toHaveBeenCalledWith({ id: 1 }, 'bundle-legacy');
+			expect(liveLoanFetch.default).toHaveBeenCalledWith(
+				'user',
+				'42',
+				liveLoanFetch.QUERY_TYPE.DEFAULT,
+				6,
+			);
+		});
+
+		it('FLSS bundle-img-legacy route passes FLSS query type and bundle-legacy style', async () => {
+			liveLoanFetch.default.mockResolvedValue([{ id: 11 }, { id: 22 }]);
+
+			const app = createApp(cache);
+			const result = await makeRequest(app, '/live-loan/flss/u/42/bundle-img-legacy/2');
+
+			expect(result.statusCode).toBe(200);
+			expect(result.headers['content-type']).toBe('image/jpeg');
+			expect(drawLoanCard).toHaveBeenCalledWith({ id: 22 }, 'bundle-legacy');
+			expect(liveLoanFetch.default).toHaveBeenCalledWith(
+				'user',
+				'42',
+				liveLoanFetch.QUERY_TYPE.FLSS,
+				6,
+			);
+		});
+
+		it('recommendations bundle-img-legacy route passes recommendations query type and bundle-legacy style', async () => { // eslint-disable-line max-len
+			liveLoanFetch.default.mockResolvedValue([{ id: 33 }]);
+
+			const app = createApp(cache);
+			const result = await makeRequest(app, '/live-loan/recommendations/u/42/bundle-img-legacy/1');
+
+			expect(result.statusCode).toBe(200);
+			expect(result.headers['content-type']).toBe('image/jpeg');
+			expect(drawLoanCard).toHaveBeenCalledWith({ id: 33 }, 'bundle-legacy');
+			expect(liveLoanFetch.default).toHaveBeenCalledWith(
+				'user',
+				'42',
+				liveLoanFetch.QUERY_TYPE.RECOMMENDATIONS,
+				6,
+			);
+		});
+	});
 });
