@@ -154,14 +154,20 @@ const handleSetGoalClick = () => {
 	emit('set-goal-click');
 };
 
+const ACHIEVEMENTS_ANCHOR = '#mykiva-achievements';
+const MYKIVA_PATH = '/mykiva';
+
 const handleCtaClick = () => {
 	emit('cta-click');
 	if (goalProgressPercentageValue.value >= COMPLETED_GOAL_THRESHOLD) {
-		const el = typeof document !== 'undefined'
-			? document.querySelector('#mykiva-achievements')
+		const onMyKivaHome = router?.currentRoute?.value?.path === MYKIVA_PATH;
+		const el = onMyKivaHome && typeof document !== 'undefined'
+			? document.querySelector(ACHIEVEMENTS_ANCHOR)
 			: null;
 		if (el) {
 			el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		} else if (typeof window !== 'undefined') {
+			window.location.href = `${MYKIVA_PATH}${ACHIEVEMENTS_ANCHOR}`;
 		}
 		return;
 	}

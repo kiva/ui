@@ -1,6 +1,6 @@
 {
 	"name": "kvue",
-	"version": "3.71.1",
+	"version": "3.72.0-rc.3",
 	"description": "The Kiva ui",
 	"author": "braincrave",
 	"private": true,
@@ -44,8 +44,8 @@
 		"@godaddy/terminus": "^4.11.0",
 		"@graphql-tools/load": "^7.7.0",
 		"@graphql-tools/url-loader": "^7.17.18",
-		"@kiva/kv-components": "^8.17.1",
-		"@kiva/kv-shop": "^3.7.87",
+		"@kiva/kv-components": "^8.18.1",
+		"@kiva/kv-shop": "^3.7.89",
 		"@kiva/kv-tokens": "^4.2.0",
 		"@mdi/js": "^7.4.47",
 		"@opentelemetry/api": "^1.7.0",

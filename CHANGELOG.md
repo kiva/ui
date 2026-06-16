@@ -1,3 +1,85 @@
+## [3.72.0-rc.3](https://github.com/kiva/ui/compare/v3.72.0-rc.2...v3.72.0-rc.3) (2026-06-16)
+
+### 🐛 Bugfixes
+
+* **kv-components:** update with latest analytics link and basket visibility fixes in KvWwwHeaderBasic ([85fe1e8](https://github.com/kiva/ui/commit/85fe1e8f1b410476eac45116bbfe4f9a78fb2a74))
+
+## [3.72.0-rc.2](https://github.com/kiva/ui/compare/v3.72.0-rc.1...v3.72.0-rc.2) (2026-06-16)
+
+### 🐛 Bugfixes
+
+* redirect to my kiva impact on view achievements click in Next steps page ([3303cca](https://github.com/kiva/ui/commit/3303cca01700a26a0f265fd2e60b165e64af74cf))
+
+### 🧹 Chores
+
+* remove lend-by-category page code ([#6993](https://github.com/kiva/ui/issues/6993)) ([7fea234](https://github.com/kiva/ui/commit/7fea234ac2d5e3a483d07f4d49815f6169cbed25))
+
+## [3.72.0-rc.1](https://github.com/kiva/ui/compare/v3.71.1...v3.72.0-rc.1) (2026-06-15)
+
+### 🎉 New Features
+
+* [MP-2747] - add promotions rows, fix switch and start MP-2900 ([f87dc83](https://github.com/kiva/ui/commit/f87dc83340f46be8ddbfe1b7532c78a3bde0bade))
+* [MP-2747] - AI recommendations ([c1f7922](https://github.com/kiva/ui/commit/c1f792230c1fed5af0d0d0c1e3e5a9bb10c4c7ce))
+* [MP-2747] - clean code ([cac6e16](https://github.com/kiva/ui/commit/cac6e1612ca409c4b30a206e378803e198a76ed4))
+* [MP-2747] - clean code ([83f93c4](https://github.com/kiva/ui/commit/83f93c427eb7aeb978c3ca297c3b227950744e4f))
+* [MP-2747] - events action ([c91027b](https://github.com/kiva/ui/commit/c91027b35f8825c5777b2610fa6b4c377c391a4d))
+* [MP-2747] - extra changes requested in QaVA ([218019b](https://github.com/kiva/ui/commit/218019b9366e3177a5270facb26148217bd1198e))
+* [MP-2747] - fix URL redirect when transaction is completed ([4cf78ad](https://github.com/kiva/ui/commit/4cf78ad92e21857a7862eeef26bd7172287daa6a))
+* [MP-2747] - force refresh ty page when transaction id has changed ([a9d02a2](https://github.com/kiva/ui/commit/a9d02a22291e4150b6c0612b24e6a00184e88542))
+* [MP-2747] - missed stash ([436022e](https://github.com/kiva/ui/commit/436022e2972bf8b31431c42c2a2aec93f0f7db7c))
+* [MP-2747] - more tests and recording modal open-close events ([2a16a8a](https://github.com/kiva/ui/commit/2a16a8ab358a7ca0561fb36c9b6a6b9a4c36367b))
+* [MP-2747] - PR comments ([7d6bae8](https://github.com/kiva/ui/commit/7d6bae877c7b0b501d3694d99952e58119046c6d))
+* [MP-2747] - REMOVE comments ([c8b8bba](https://github.com/kiva/ui/commit/c8b8bba9b4c77c545779fac887337062be8fa8b8))
+* [MP-2747] - thankYouPage new express checkout modal after set goal ([7c78256](https://github.com/kiva/ui/commit/7c78256899c530012c843ab48c06cf4c0fb914fe))
+* [MP-2747] - thankYouPage new express checkout modal after set goal ([93ea708](https://github.com/kiva/ui/commit/93ea708049736e0c093c0e0770f0bfba37975d3a))
+* [MP-2747] - updated unit tests and some stories ([aa54440](https://github.com/kiva/ui/commit/aa54440eb9c3999e2b662c20e3576b56566118b3))
+* add completed goal to impact progress row ([dd09a2f](https://github.com/kiva/ui/commit/dd09a2ffb9b4285cf289393db2dcbccb107e0946))
+* add contributing partners to borrower profile and sidesheet ([f03dd15](https://github.com/kiva/ui/commit/f03dd157bb627a74163c4e19647ad5a85ea4affa))
+* add matching line for simultaneous matching to basket ([9fbd75d](https://github.com/kiva/ui/commit/9fbd75d70555f2e0c14bb261fa7e74ad3c282d9c))
+* add remaining stats to loans beta page and missing graph bg on rows ([#6968](https://github.com/kiva/ui/issues/6968)) ([39dd232](https://github.com/kiva/ui/commit/39dd2326a98089e4bcece9d953555b7967536159))
+* add tests for copy in goal card row ([eb13d24](https://github.com/kiva/ui/commit/eb13d24d13e3562070365750e5e8ca63f41a7b04))
+* added matching info in the sidebar for multi matching ([a497c44](https://github.com/kiva/ui/commit/a497c44a670c2a15a427045674fe828315ca3355))
+* admin reward tip helper ([#6967](https://github.com/kiva/ui/issues/6967)) ([77735f8](https://github.com/kiva/ui/commit/77735f863941277d62d5f3ddaec444f733237ab8))
+* bucket admin-reward-tip-eligible users into stop-hiding-tip experiment ([#6970](https://github.com/kiva/ui/issues/6970)) ([0309e8b](https://github.com/kiva/ui/commit/0309e8bf061a72f6d101e190ec3095171400205b))
+* integrate goal row in my kiva while adjusting next steps logic ([908b6ce](https://github.com/kiva/ui/commit/908b6ce37b927aae6fd2bd4a318ec904b6152430))
+* integrate goal row to next steps page ([45d849a](https://github.com/kiva/ui/commit/45d849af438f95bc4182e90df3a9e92beecf2a82))
+* link contributing partners to dash ([6eb83d8](https://github.com/kiva/ui/commit/6eb83d8878f181f8ae142feb92643c1847f9eb4a))
+* mp-2868-goal setting copy change + thank you cap ([#6963](https://github.com/kiva/ui/issues/6963)) ([862222c](https://github.com/kiva/ui/commit/862222c94dbf543383cfe193eac4a953b226449e))
+* multi matching for loan cards ([698cd68](https://github.com/kiva/ui/commit/698cd687407ddb452b918c204d0287bbe26bfa82))
+* render optional tip section in admin reward LC checkout variant b (MP-2840) ([#6977](https://github.com/kiva/ui/issues/6977)) ([0405693](https://github.com/kiva/ui/commit/040569385c0bf5fbd2bc59df65f14ab0c27ed5d8)), closes [#6967](https://github.com/kiva/ui/issues/6967) [#6970](https://github.com/kiva/ui/issues/6970)
+* route guard added to test ([#6981](https://github.com/kiva/ui/issues/6981)) ([080874b](https://github.com/kiva/ui/commit/080874bde67132a2772f03217a3067a91848c31e))
+
+### 🐛 Bugfixes
+
+* add goal row section if it is going to be visible and tracking adjustments ([f687eed](https://github.com/kiva/ui/commit/f687eed221b2f78bb9d5dfff687631328bbc954d))
+* buttons height and hide menu on completed goal state ([33b6432](https://github.com/kiva/ui/commit/33b6432ce378c87fdba43d96396bf5bd2c489a1d))
+* completed goal tracking ([852c58f](https://github.com/kiva/ui/commit/852c58f8c68686f812bb5fa972fa528692a7970c))
+* convert /lend/:category guard to redirect ([#6987](https://github.com/kiva/ui/issues/6987)) ([4209df0](https://github.com/kiva/ui/commit/4209df06cd6b5f770237ae49de3455f7fb7855dc))
+* data mismatch ([#6969](https://github.com/kiva/ui/issues/6969)) ([e993a91](https://github.com/kiva/ui/commit/e993a91ebc7fcc82a31e5f5deb1b3de29bed5d45))
+* disable loan pill experiment while we run just on combo page ([#6990](https://github.com/kiva/ui/issues/6990)) ([5964305](https://github.com/kiva/ui/commit/59643053726b7b2634323c9c7f23911c5e9c89d0))
+* enhance flag comment ([9511840](https://github.com/kiva/ui/commit/9511840d9cf754eac14eb6ce89dcb397811f36cd))
+* missing tracking events to match goal card and minor style changes ([b3075af](https://github.com/kiva/ui/commit/b3075affaf0ddfcf8e6120450bb4c247edfeb7b7))
+* mykiva goal fields off for some users ([#6972](https://github.com/kiva/ui/issues/6972)) ([be4af66](https://github.com/kiva/ui/commit/be4af66f85feb89019accbbfd6de0972f45c6e19))
+* pr comments ([acd2aaf](https://github.com/kiva/ui/commit/acd2aaf6d78e25915055f413a6db1e4ef11ba3d4))
+* refactor composable ([455a6f9](https://github.com/kiva/ui/commit/455a6f97128c69d464b9ad88280c1d7d2b1b1e0c))
+* remove console log ([a7aa2bd](https://github.com/kiva/ui/commit/a7aa2bd698351f8e01f1a4ee8fadd8b729b94fc8))
+* remove default injection value ([f59fb05](https://github.com/kiva/ui/commit/f59fb0548088c414d1da9382a98e07b3af7502d2))
+* remove unnecesary code ([aba58ad](https://github.com/kiva/ui/commit/aba58ad4ac3eb34d0a99b4252e7525ca1f7da604))
+* revert changes ([dceb60c](https://github.com/kiva/ui/commit/dceb60c6fbb954f7657315170173598bbc7900bf))
+* router link ([e9f23d9](https://github.com/kiva/ui/commit/e9f23d9965eeab9117bb4e311796f7cdf68a773a))
+* update kv-components and loanSearchSuggestions fetch for KvWwwHeaderBasic ([3d78644](https://github.com/kiva/ui/commit/3d7864426cd11044704cb81d213922f0d2ea41d0))
+
+### 🪚 Refactors
+
+* composable pattern ([d03ad75](https://github.com/kiva/ui/commit/d03ad75f918901928b3872b57dd36e641479c385))
+* remove unused code ([bd19e10](https://github.com/kiva/ui/commit/bd19e107cf6a2f9ac2fbe71fd091811df9952ba8))
+* use composable ([1656cde](https://github.com/kiva/ui/commit/1656cde4f6684f5c7dff845bd90c1b553ecd7615))
+* use mixin for multi matching feature ([e040107](https://github.com/kiva/ui/commit/e040107268ad8c7fb3d431c84d627c249eb46c89))
+
+### 🧹 Chores
+
+* [MP-2895] remove dead /lend-by-category redirects ([#6988](https://github.com/kiva/ui/issues/6988)) ([cf5c14e](https://github.com/kiva/ui/commit/cf5c14e2bc237743e9331938a0a721fe49e78a95))
+
 ## [3.71.1](https://github.com/kiva/ui/compare/v3.71.0...v3.71.1) (2026-06-11)
 
 ### 🧹 Chores
