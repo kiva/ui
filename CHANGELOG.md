@@ -1,3 +1,13 @@
+## [3.72.0-rc.2](https://github.com/kiva/ui/compare/v3.72.0-rc.1...v3.72.0-rc.2) (2026-06-16)
+
+### 🐛 Bugfixes
+
+* redirect to my kiva impact on view achievements click in Next steps page ([3303cca](https://github.com/kiva/ui/commit/3303cca01700a26a0f265fd2e60b165e64af74cf))
+
+### 🧹 Chores
+
+* remove lend-by-category page code ([#6993](https://github.com/kiva/ui/issues/6993)) ([7fea234](https://github.com/kiva/ui/commit/7fea234ac2d5e3a483d07f4d49815f6169cbed25))
+
 ## [3.72.0-rc.1](https://github.com/kiva/ui/compare/v3.71.1...v3.72.0-rc.1) (2026-06-15)
 
 ### 🎉 New Features
