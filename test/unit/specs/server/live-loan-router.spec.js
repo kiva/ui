@@ -370,4 +370,57 @@ describe('live-loan-router bundle-url routes', () => {
 			expect(liveLoanFetch.default).not.toHaveBeenCalled();
 		});
 	});
+
+	describe('serveImg - bundle-img routes', () => {
+		let drawLoanCard;
+
+		beforeEach(async () => {
+			const drawModule = await import('#server/util/live-loan/live-loan-draw');
+			drawLoanCard = drawModule.default;
+			drawLoanCard.mockResolvedValue({ buffer: Buffer.from('jpeg-bytes'), hasBorrowerImage: true });
+		});
+
+		it('serves jpeg for /u/:id/bundle-img/:offset with bundle style', async () => {
+			liveLoanFetch.default.mockResolvedValue([{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]);
+
+			const app = createApp(cache);
+			const result = await makeRequest(app, '/live-loan/u/42/bundle-img/1');
+
+			expect(result.statusCode).toBe(200);
+			expect(result.headers['content-type']).toBe('image/jpeg');
+			expect(drawLoanCard).toHaveBeenCalledWith({ id: 1 }, 'bundle');
+		});
+
+		it('FLSS bundle-img route passes FLSS query type and bundle style', async () => {
+			liveLoanFetch.default.mockResolvedValue([{ id: 11 }, { id: 22 }]);
+
+			const app = createApp(cache);
+			const result = await makeRequest(app, '/live-loan/flss/u/42/bundle-img/2');
+
+			expect(result.statusCode).toBe(200);
+			expect(drawLoanCard).toHaveBeenCalledWith({ id: 22 }, 'bundle');
+			expect(liveLoanFetch.default).toHaveBeenCalledWith(
+				'user',
+				'42',
+				liveLoanFetch.QUERY_TYPE.FLSS,
+				4,
+			);
+		});
+
+		it('recommendations bundle-img route passes recommendations query type and bundle style', async () => {
+			liveLoanFetch.default.mockResolvedValue([{ id: 33 }]);
+
+			const app = createApp(cache);
+			const result = await makeRequest(app, '/live-loan/recommendations/u/42/bundle-img/1');
+
+			expect(result.statusCode).toBe(200);
+			expect(drawLoanCard).toHaveBeenCalledWith({ id: 33 }, 'bundle');
+			expect(liveLoanFetch.default).toHaveBeenCalledWith(
+				'user',
+				'42',
+				liveLoanFetch.QUERY_TYPE.RECOMMENDATIONS,
+				4,
+			);
+		});
+	});
 });
