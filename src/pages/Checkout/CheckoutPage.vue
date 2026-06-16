@@ -316,6 +316,7 @@ import _filter from 'lodash/filter';
 import numeral from 'numeral';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import { isAdminRewardTipEligible } from '#src/util/promoCredit';
+import { setDonationAmount } from '#src/util/basketUtils';
 import { preFetchAll } from '#src/util/apolloPreFetch';
 import syncDate from '#src/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
@@ -379,6 +380,7 @@ const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_enable';
 const EXPIRING_SOON_EXP_KEY = 'checkout_expiring_soon_upsell';
 const KIVA_CREDIT_REPLACEMENT_EXP_KEY = 'checkout_kiva_credit_copy_replacement';
 const STOP_HIDING_TIP_EXP_KEY = 'stop_hiding_tip_campaign';
+const TIP_PERCENTAGE = 0.2;
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -705,6 +707,9 @@ export default {
 				]);
 				this.getUpsellModuleData();
 			}
+			if (!newValue && this.isStopHidingTipExpEnabled) {
+				this.ensureTipDonationExists();
+			}
 		},
 	},
 	async mounted() {
@@ -976,6 +981,12 @@ export default {
 				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 				if (hasFreeCredits && refreshEvent === 'kiva-card-applied') {
 					this.disableGuestCheckout();
+				}
+				if (this.isStopHidingTipExpEnabled) {
+					const items = _get(data, 'shop.basket.items.values');
+					if (items) {
+						this.donations = _filter(items, { __typename: 'Donation' });
+					}
 				}
 				setTimeout(() => {
 					this.setUpdatingTotals(false);
@@ -1373,6 +1384,30 @@ export default {
 				'basket',
 			);
 		},
+		ensureTipDonationExists() {
+			if (this.emptyBasket) return;
+			const loanTotal = numeral(this.totals?.loanReservationTotal).value() ?? 0;
+			const kivaCardTotal = numeral(this.totals?.kivaCardTotal).value() ?? 0;
+			const donationAmount = Math.round((loanTotal + kivaCardTotal) * TIP_PERCENTAGE * 100) / 100;
+			const existingTip = this.donations.find(d => d.isTip);
+			if (existingTip) {
+				const existingPrice = numeral(existingTip.price).value() ?? 0;
+				if (existingPrice !== 0 || existingPrice === donationAmount) return;
+			}
+			this.setUpdatingTotals(true);
+			setDonationAmount({ apollo: this.apollo, donationAmount })
+				.then(result => {
+					if (!result?.data?.shop?.updateDonation) {
+						this.setUpdatingTotals(false);
+						return;
+					}
+					this.refreshTotals();
+				})
+				.catch(error => {
+					this.setUpdatingTotals(false);
+					logReadQueryError(error, 'CheckoutPage ensureTipDonationExists');
+				});
+		},
 		initializeStopHidingTipExperiment() {
 			initializeExperiment(
 				this.cookieStore,
@@ -1381,6 +1416,9 @@ export default {
 				STOP_HIDING_TIP_EXP_KEY,
 				version => {
 					this.isStopHidingTipExpEnabled = version === 'b';
+					if (this.isStopHidingTipExpEnabled) {
+						this.ensureTipDonationExists();
+					}
 				},
 				this.$kvTrackEvent,
 				'EXP-MP-2852-Jun2026',

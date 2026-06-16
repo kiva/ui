@@ -14,9 +14,7 @@
 				:total-loans="totalLoanCount"
 				:tiered-achievements="achievements"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
-				:basket-items="basketItems"
-				:is-adding="isAdding"
-				@add-to-basket="handleRecommendedLoanAddToBasket"
+				:is-express-checkout-modal-enabled="isExpressCheckoutModalEnabled"
 			/>
 		</template>
 		<template v-if="activeView === DONATION_ONLY_VIEW">
@@ -80,6 +78,7 @@
 </template>
 
 <script>
+import { computed } from 'vue';
 import numeral from 'numeral';
 import logReadQueryError from '#src/util/logReadQueryError';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
@@ -150,6 +149,20 @@ export default {
 	},
 	mixins: [borrowerProfileExpMixin],
 	inject: ['apollo', 'cookieStore'],
+	// Bridge the mixin's basket primitives down to ThanksPageSingleVersion (and
+	// `useExpressCheckoutModal` inside it). The mixin remains the single
+	// source of truth for basket state.
+	provide() {
+		return {
+			thanksPageBasket: {
+				addToBasket: (...args) => this.addToBasket(...args),
+				loadInitialBasketItems: () => this.loadInitialBasketItems(),
+				basketItems: computed(() => this.basketItems),
+				isAdding: computed(() => this.isAdding),
+				resetIsAdding: () => { this.isAdding = false; },
+			},
+		};
+	},
 	head() {
 		return {
 			title: 'Thank you!'
@@ -175,6 +188,7 @@ export default {
 			totalLoanCount: 0,
 			achievements: [],
 			goalRecommendedLoanEnable: false,
+			expressCheckoutEnabled: false,
 		};
 	},
 	apollo: {
@@ -247,6 +261,9 @@ export default {
 		showDafThanks() {
 			return !!this.$route?.query?.show_daf_thanks;
 		},
+		isExpressCheckoutModalEnabled() {
+			return this.expressCheckoutEnabled;
+		},
 		borrowerSupport() {
 			const loanNames = this.loans.map(loan => loan.name);
 			if (loanNames.length > 3) {
@@ -287,17 +304,6 @@ export default {
 				return LOGIN_REQUIRED_VIEW;
 			}
 			return SINGLE_VERSION_VIEW;
-		},
-	},
-	methods: {
-		handleRecommendedLoanAddToBasket(payload) {
-			// Express checkout: add the recommended loan, then send the user to checkout.
-			this.addToBasket({
-				...payload,
-				onSuccess: () => {
-					this.$router.push('/basket');
-				},
-			});
 		},
 	},
 	setup() {
@@ -341,6 +347,7 @@ export default {
 		};
 
 		this.goalRecommendedLoanEnable = readBoolSetting(data, 'general.goal_recommended_loan_enable.value') ?? false;
+		this.expressCheckoutEnabled = readBoolSetting(data, 'general.ty_page_express_checkout_enabled.value') ?? false;
 
 		if (this.goalRecommendedLoanEnable) {
 			this.loadInitialBasketItems();

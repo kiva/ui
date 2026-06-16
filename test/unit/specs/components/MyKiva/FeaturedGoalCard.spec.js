@@ -2,6 +2,7 @@
 import { mount } from '@vue/test-utils';
 import FeaturedGoalCard from '#src/components/MyKiva/FeaturedGoalCard';
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import goalCopy from '#src/util/goalCopy';
 
 vi.mock('#src/util/animation/confettiUtils', () => ({
 	showConfetti: vi.fn(),
@@ -39,6 +40,8 @@ vi.mock('#src/components/Kv/KvIcon', () => ({
 	},
 }));
 
+const trackEventSpy = vi.fn();
+
 const mountCard = (props = {}) => mount(FeaturedGoalCard, {
 	props: {
 		state: 'no-goal',
@@ -55,12 +58,19 @@ const mountCard = (props = {}) => mount(FeaturedGoalCard, {
 		directives: {
 			kvTrackEvent: () => ({}),
 		},
+		provide: {
+			$kvTrackEvent: trackEventSpy,
+		},
 	},
 });
 
 describe('FeaturedGoalCard copy', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
 	});
 
 	describe('loading state', () => {
@@ -74,11 +84,24 @@ describe('FeaturedGoalCard copy', () => {
 	describe('no-goal state', () => {
 		const buildNoGoal = () => mountCard({ state: 'no-goal' });
 
-		it('renders the "3 women" title from goalCopy.titleNoHistoryWomensDefault', () => {
+		it('renders the original "3 women" title from January 1 through March 31', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-03-31T12:00:00'));
+
 			const wrapper = buildNoGoal();
 			expect(wrapper.html()).toContain('Lenders like you help');
 			expect(wrapper.html()).toContain('3 women');
 			expect(wrapper.html()).toContain('a year!');
+			expect(wrapper.text()).not.toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
+		});
+
+		it('renders the no-goal-yet title starting April 1', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-04-01T12:00:00'));
+
+			const wrapper = buildNoGoal();
+			expect(wrapper.text()).toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
+			expect(wrapper.html()).not.toContain('Lenders like you help');
 		});
 
 		it('renders the generic loans-this-year subtitle', () => {
@@ -233,6 +256,42 @@ describe('FeaturedGoalCard copy', () => {
 			});
 			expect(wrapper.text()).toContain('View your achievements');
 			expect(wrapper.text()).not.toContain('Work toward your goal');
+		});
+	});
+
+	describe('active-goal CTA tracking', () => {
+		it('fires `continue-towards-goal` when CTA clicked while in progress', async () => {
+			const wrapper = mountCard({
+				state: 'active-goal',
+				goalTarget: 5,
+				goalProgress: 2,
+				goalProgressPercentage: 40,
+			});
+			const ctaButton = wrapper.find('.featured-goal-card__cta--active-goal');
+			await ctaButton.trigger('click');
+			expect(trackEventSpy).toHaveBeenCalledWith('portfolio', 'click', 'continue-towards-goal');
+		});
+
+		it('fires `goal-complete-view-achievements` when CTA clicked after completion', async () => {
+			const wrapper = mountCard({
+				state: 'active-goal',
+				goalTarget: 5,
+				goalProgress: 5,
+				goalProgressPercentage: 100,
+				userName: 'Ada',
+			});
+			const ctaButton = wrapper.find('.featured-goal-card__cta--active-goal');
+			await ctaButton.trigger('click');
+			expect(trackEventSpy).toHaveBeenCalledWith(
+				'portfolio',
+				'click',
+				'goal-complete-view-achievements',
+			);
+			expect(trackEventSpy).not.toHaveBeenCalledWith(
+				'portfolio',
+				'click',
+				'continue-towards-goal',
+			);
 		});
 	});
 

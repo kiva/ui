@@ -1,7 +1,7 @@
 <template>
 	<div class="row align-center wrd-banner">
-		<router-link
-			to="/lend-by-category/world-refugee-day"
+		<a
+			href="/lend-by-category/world-refugee-day"
 			class="banner-link"
 			v-kv-track-event="['TopNav','click-Promo','WRD 2019 Banner']"
 		>
@@ -10,6 +10,6 @@
 					<br class="show-for-small-only"> refugees</span>
 				for World Refugee Day.
 			</div>
-		</router-link>
+		</a>
 	</div>
 </template>

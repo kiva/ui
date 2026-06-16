@@ -4,6 +4,8 @@ import logReadQueryError from '#src/util/logReadQueryError';
 export const CONTENTFUL_CAROUSEL_KEY = 'my-kiva-hero-carousel';
 export const TRANSACTION_LOANS_KEY = 'loan_purchase';
 export const POST_LENDING_NEXT_STEPS_COOKIE = 'my_kiva_post_lending_next_steps';
+export const GOAL_SIGNUP_THANKS_VIEWS_COOKIE = 'kv_goal_signup_thanks_views';
+export const GOAL_SIGNUP_THANKS_VIEW_CAP = 3;
 // Fresh-progress reconciliation window: last 15 minutes.
 export const RECENT_TRANSACTION_WINDOW_MS = 15 * 60 * 1000;
 export const MY_KIVA_CARD_HEIGHT = 417;
@@ -127,4 +129,33 @@ export const checkPostLendingCardCookie = cookieStore => {
  */
 export const removePostLendingCardCookie = cookieStore => {
 	return cookieStore?.remove(POST_LENDING_NEXT_STEPS_COOKIE);
+};
+
+export const getGoalSignupThanksCookieExpiry = (date = new Date()) => {
+	return new Date(date.getFullYear() + 1, 0, 1);
+};
+
+export const getGoalSignupThanksViewCount = cookieStore => {
+	const value = Number(cookieStore?.get(GOAL_SIGNUP_THANKS_VIEWS_COOKIE));
+	return Number.isFinite(value) && value > 0 ? value : 0;
+};
+
+export const isGoalSignupThanksViewCapped = cookieStore => {
+	return getGoalSignupThanksViewCount(cookieStore) >= GOAL_SIGNUP_THANKS_VIEW_CAP;
+};
+
+export const incrementGoalSignupThanksViewCount = (cookieStore, date = new Date()) => {
+	const nextCount = Math.min(getGoalSignupThanksViewCount(cookieStore) + 1, GOAL_SIGNUP_THANKS_VIEW_CAP);
+	/**
+	 * Cookie contract for the thank-you page annual-goal signup cap:
+	 * name: kv_goal_signup_thanks_views
+	 * path: /
+	 * domain: host-only (no explicit domain, scoped to the current Kiva host)
+	 * expiry: January 1 of the next calendar year so the ask resets annually.
+	 */
+	cookieStore?.set(GOAL_SIGNUP_THANKS_VIEWS_COOKIE, String(nextCount), {
+		path: '/',
+		expires: getGoalSignupThanksCookieExpiry(date),
+	});
+	return nextCount;
 };

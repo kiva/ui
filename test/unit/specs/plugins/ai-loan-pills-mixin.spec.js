@@ -7,7 +7,9 @@ describe('ai-loan-pills-mixin.js', () => {
 	let context;
 
 	beforeEach(() => {
-		vi.mocked(trackExperimentVersion).mockReturnValue({ version: 'a' });
+		// Default to the treatment variant to prove the feature stays off regardless,
+		// since the experiment is currently disabled in the ui repo.
+		vi.mocked(trackExperimentVersion).mockReturnValue({ version: 'b' });
 
 		// Create a mock context simulating a Vue component
 		context = {
@@ -22,42 +24,25 @@ describe('ai-loan-pills-mixin.js', () => {
 		Object.assign(context, aiLoanPillsMixin.methods);
 	});
 
+	it('exports the experiment key', () => {
+		expect(AI_LOAN_PILLS_EXP_KEY).toBe('ai_loan_pills_combo_page');
+	});
+
 	it('should initialize with enableAILoanPills set to false', () => {
 		expect(context.enableAILoanPills).toBe(false);
 	});
 
-	it('should call trackExperimentVersion with correct parameters in initializeAILoanPills', () => {
-		vi.mocked(trackExperimentVersion).mockReturnValue({ version: 'a' });
-
+	// The experiment is currently disabled in the ui repo — it runs only on the combo
+	// page (lend-category-beta) in cms-page-server. While disabled, the mixin must not
+	// enroll or track users on these pages.
+	it('does not enroll in the experiment while disabled', () => {
 		context.initializeAILoanPills();
 
-		expect(trackExperimentVersion).toHaveBeenCalledWith(
-			context.apollo,
-			context.$kvTrackEvent,
-			'event-tracking',
-			AI_LOAN_PILLS_EXP_KEY,
-			'EXP-MP-2050-Sept2025'
-		);
+		expect(trackExperimentVersion).not.toHaveBeenCalled();
 	});
 
-	it('should set enableAILoanPills to true when version is b', () => {
+	it('keeps enableAILoanPills false while disabled, even for the "b" variant', () => {
 		vi.mocked(trackExperimentVersion).mockReturnValue({ version: 'b' });
-
-		context.initializeAILoanPills();
-
-		expect(context.enableAILoanPills).toBe(true);
-	});
-
-	it('should set enableAILoanPills to false when version is a', () => {
-		vi.mocked(trackExperimentVersion).mockReturnValue({ version: 'a' });
-
-		context.initializeAILoanPills();
-
-		expect(context.enableAILoanPills).toBe(false);
-	});
-
-	it('should set enableAILoanPills to false when version is control', () => {
-		vi.mocked(trackExperimentVersion).mockReturnValue({ version: 'control' });
 
 		context.initializeAILoanPills();
 

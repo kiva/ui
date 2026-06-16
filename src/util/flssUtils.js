@@ -11,8 +11,6 @@ import filterConfig from '#src/util/loanSearch/filterConfig';
  * Each query that resolves loans from FLSS should provide a descriptive origin formatted as web:##page-context##
  */
 export const FLSS_ORIGIN_NOT_SPECIFIED = 'web:no-context';
-export const FLSS_ORIGIN_CATEGORY = 'web:category';
-export const FLSS_ORIGIN_LEND_BY_CATEGORY = 'web:lend-by-category';
 export const FLSS_ORIGIN_BP_FUNDED = 'web:bp-funded';
 export const FLSS_ORIGIN_THANKS = 'web:thanks';
 export const FLSS_ORIGIN_PORTFOLIO_OVERVIEW = 'web:portfolio-overview';

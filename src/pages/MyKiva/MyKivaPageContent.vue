@@ -19,7 +19,7 @@
 			/>
 		</section>
 		<MyKivaFeaturedSlot
-			v-if="goalsRowEnabled"
+			v-if="goalsRowEnabled && shouldRenderFeaturedSlot"
 			:key="`featured-slot-${goalRefreshKey}`"
 			:user-first-name="userInfo?.userAccount?.firstName"
 			@set-goal-click="openGoalSettingModal"
@@ -342,6 +342,11 @@ export default {
 		goalsRowEnabled: {
 			type: Boolean,
 			default: false,
+		},
+		// Flag to indicate if the goal row should be rendered (loading and loaded state)
+		shouldRenderFeaturedSlot: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	setup() {

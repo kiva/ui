@@ -168,7 +168,7 @@ export default {
 					}).then(({ data }) => {
 						this.basketItems = data?.shop?.basket?.items?.values;
 						this.basketSize = data?.shop?.nonTrivialItemCount || 0;
-						onSuccess?.();
+						return onSuccess?.();
 					});
 				}
 			}).catch(error => {

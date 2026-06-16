@@ -5,7 +5,6 @@
 			:to="primaryTo"
 			:variant="primaryButtonVariant"
 			:state="primaryButtonState"
-			:class="{ 'tw-mb-3' : expressCheckoutEnabled }"
 			@click="onPrimaryCtaClick"
 		>
 			{{ primaryLabel }}
@@ -24,22 +23,20 @@
 		>
 			{{ secondaryLabel }}
 		</kv-button>
-		<!-- // TODO: Enable when ticket MP-2747 is ready for implementation
 		<div
 			v-else
 			class="tw-mb-3 tw-inline-flex tw-items-center tw-justify-center tw-gap-1 tw-self-center tw-text-small"
 		>
 			<ExpressCheckoutLines class="tw-shrink-0" aria-hidden="true" />
 			<span class="tw-font-medium tw-text-secondary">{{ secondaryLabel }}</span>
-		</div> -->
+		</div>
 	</div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
 import { KvButton, KvLoadingSpinner } from '@kiva/kv-components';
-// TODO: Enable when ticket MP-2747 is ready for implementation
-// import ExpressCheckoutLines from '#src/assets/icons/inline/express-checkout-lines.svg';
+import ExpressCheckoutLines from '#src/assets/icons/inline/express-checkout-lines.svg';
 
 defineOptions({ name: 'RecommendLoanForGoalFooter' });
 
@@ -69,22 +66,24 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Resolved by the parent container: true when express checkout is enabled and the
+	 * page is about to redirect to /basket (basket already has other items).
+	 */
+	showRedirectingLoading: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits(['primary-cta-click', 'checkout-click', 'secondary-cta-click']);
 
-// Express checkout: once the loan is in the basket the user is being
-// redirected to checkout — show a disabled loading state meanwhile.
-const showRedirectingLoading = computed(() => (
-	props.expressCheckoutEnabled && props.isInBasket
-));
-
 const primaryButtonState = computed(() => (
-	showRedirectingLoading.value ? 'disabled' : ''
+	props.showRedirectingLoading ? 'disabled' : ''
 ));
 
 const primaryLabel = computed(() => {
-	if (showRedirectingLoading.value) {
+	if (props.showRedirectingLoading) {
 		return '';
 	}
 	if (props.isAdding) {
@@ -105,15 +104,15 @@ const secondaryLabel = computed(() => {
 });
 
 const primaryTo = computed(() => (
-	props.isInBasket ? CHECKOUT_TO : undefined
+	props.isInBasket && !props.expressCheckoutEnabled ? CHECKOUT_TO : undefined
 ));
 
 const primaryButtonVariant = computed(() => (
-	props.isInBasket ? 'secondary' : 'primary'
+	props.isInBasket && !props.isAdding ? 'secondary' : 'primary'
 ));
 
 const onPrimaryCtaClick = event => {
-	if (props.isAdding || showRedirectingLoading.value) {
+	if (props.isAdding || props.showRedirectingLoading) {
 		return;
 	}
 	if (props.isInBasket) {

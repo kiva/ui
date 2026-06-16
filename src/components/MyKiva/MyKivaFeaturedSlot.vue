@@ -5,7 +5,7 @@
 	>
 		<KvLoadingPlaceholder
 			v-if="cardLoading"
-			class="!tw-h-5 tw-mb-2"
+			class="!tw-h-3 tw-mb-2"
 			:style="{ width: '15rem'}"
 		/>
 		<h3 v-else class="tw-text-title tw-mb-2">
@@ -61,6 +61,7 @@ const emit = defineEmits(['set-goal-click', 'cta-click', 'edit-click']);
 
 const router = useRouter();
 const goalData = inject('goalData');
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const cardLoading = computed(() => Boolean(goalData?.loading?.value));
 const goalStatus = computed(() => goalData?.userGoal?.value?.status || null);
@@ -116,18 +117,57 @@ watch(
 	{ immediate: true }
 );
 
+// Mirror the carousel goal-tile's view / show tracking events (see
+// NextYearGoalCard) so analytics from the control surface carry
+// over to the featured slot. Fires once on the loading transition,
+//  only if the slot is actually rendering.
+const hasFiredImpressionEvent = ref(false);
+watch(
+	() => [cardLoading.value, shouldRender.value],
+	([nowLoading], [wasLoading]) => {
+		if (hasFiredImpressionEvent.value) return;
+		if (nowLoading || wasLoading === undefined) return;
+		if (!shouldRender.value) return;
+		if (!goalStatus.value) {
+			$kvTrackEvent?.('portfolio', 'view', 'set-annual-goal');
+			hasFiredImpressionEvent.value = true;
+			return;
+		}
+		if (
+			goalStatus.value === GOAL_STATUS.IN_PROGRESS
+			&& goalProgressPercentageValue.value !== COMPLETED_GOAL_THRESHOLD
+		) {
+			const goal = goalData?.userGoal?.value;
+			$kvTrackEvent?.(
+				'portfolio',
+				'show',
+				'goal-set',
+				goal?.category,
+				goal?.target,
+			);
+			hasFiredImpressionEvent.value = true;
+		}
+	},
+);
+
 const handleSetGoalClick = () => {
 	emit('set-goal-click');
 };
 
+const ACHIEVEMENTS_ANCHOR = '#mykiva-achievements';
+const MYKIVA_PATH = '/mykiva';
+
 const handleCtaClick = () => {
 	emit('cta-click');
 	if (goalProgressPercentageValue.value >= COMPLETED_GOAL_THRESHOLD) {
-		const el = typeof document !== 'undefined'
-			? document.querySelector('#mykiva-achievements')
+		const onMyKivaHome = router?.currentRoute?.value?.path === MYKIVA_PATH;
+		const el = onMyKivaHome && typeof document !== 'undefined'
+			? document.querySelector(ACHIEVEMENTS_ANCHOR)
 			: null;
 		if (el) {
 			el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		} else if (typeof window !== 'undefined') {
+			window.location.href = `${MYKIVA_PATH}${ACHIEVEMENTS_ANCHOR}`;
 		}
 		return;
 	}

@@ -1,7 +1,7 @@
 <template>
 	<div class="row align-center iwd-banner">
-		<router-link
-			to="/lend/international-womens-day"
+		<a
+			href="/lend/international-womens-day"
 			class="banner-link"
 			v-kv-track-event="['TopNav','click-Promo','IWD 2019 Banner']"
 		>
@@ -10,7 +10,7 @@
 				<span class="call-to-action-text">Help us fund 10,000 loans to women</span>
 				this International Women’s Day
 			</div>
-		</router-link>
+		</a>
 	</div>
 </template>
 
