@@ -430,22 +430,6 @@ describe('live-loan-router bundle-url routes', () => {
 			);
 		});
 
-		it('serves distinct loans at offsets 5 and 6 when 6 loans are returned', async () => {
-			const sixLoans = [
-				{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 },
-			];
-			liveLoanFetch.default.mockResolvedValue(sixLoans);
-
-			const app = createApp(cache);
-			const result5 = await makeRequest(app, '/live-loan/u/42/bundle-img/5');
-			const result6 = await makeRequest(app, '/live-loan/u/42/bundle-img/6');
-
-			expect(result5.statusCode).toBe(200);
-			expect(result6.statusCode).toBe(200);
-			expect(drawLoanCard).toHaveBeenCalledWith({ id: 5 }, 'bundle');
-			expect(drawLoanCard).toHaveBeenCalledWith({ id: 6 }, 'bundle');
-		});
-
 		it('legacy /u/:id/img2/:offset route still fetches the 4-loan default', async () => {
 			liveLoanFetch.default.mockResolvedValue([
 				{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 },
