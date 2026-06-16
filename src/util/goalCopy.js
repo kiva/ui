@@ -87,12 +87,13 @@ const goalCopy = {
 
 	/** US Economic Equality category */
 	// eslint-disable-next-line max-len
-	TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS: `How many loans to ${ecoGreen('U.S. entrepreneurs')}<br>will you make this year?`,
+	TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS: `How many loans to ${ecoGreen('U.S. entrepreneurs')} will you make this year?`,
 
 	/** Specific named category */
-	titleCategoryHowManyLoans: categoryName => (
-		`How many loans to ${ecoGreen(categoryName)}<br>will you make this year?`
-	),
+	titleCategoryHowManyLoans(categoryName, { splitQuestion = false } = {}) {
+		const separator = splitQuestion ? '<br>' : ' ';
+		return `How many loans to ${ecoGreen(categoryName)}${separator}will you make this year?`;
+	},
 
 	/** Direct no-goal-yet title used by selector entrypoints */
 	titleNoGoalYetSelectorEntrypoint({ compactIntro = false } = {}) {
@@ -103,14 +104,17 @@ const goalCopy = {
 	},
 
 	/** Generic category question used by direct goal-selector flows */
-	titleLoanQuestionForCategory(categoryId, categoryName) {
+	titleLoanQuestionForCategory(categoryId, categoryName, options = {}) {
 		if (categoryId === ID_SUPPORT_ALL) {
 			return this.TITLE_HOW_MANY_LOANS_GENERIC;
 		}
 		if (categoryId === ID_US_ECONOMIC_EQUALITY) {
+			if (options.splitQuestion) {
+				return this.titleCategoryHowManyLoans('U.S. entrepreneurs', options);
+			}
 			return this.TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS;
 		}
-		return this.titleCategoryHowManyLoans(categoryName?.toLowerCase());
+		return this.titleCategoryHowManyLoans(categoryName?.toLowerCase(), options);
 	},
 
 	// ─── Goal selector subtitle ────────────────────────────────────────────────

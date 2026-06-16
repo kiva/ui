@@ -87,6 +87,10 @@ const GoalSelectorStub = {
 			type: Boolean,
 			default: false,
 		},
+		compactLayout: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	template: '<div data-testid="goal-selector"></div>',
 };
@@ -144,5 +148,21 @@ describe('GoalSettingModal', () => {
 
 		expect(selector.exists()).toBe(true);
 		expect(selector.props('showGoalValuePropsCopy')).toBe(false);
+	});
+
+	it('passes compact-layout to GoalSelector in the standard selector state', () => {
+		const wrapper = mountModal({
+			showGoalTile: false,
+			showRecommendLoanArea: false,
+			isThanksPage: false,
+		});
+
+		expect(wrapper.findComponent(GoalSelectorStub).props('compactLayout')).toBe(true);
+	});
+
+	it('does not pass compact-layout when on the thanks page', () => {
+		const wrapper = mountModal({ isThanksPage: true });
+
+		expect(wrapper.findComponent(GoalSelectorStub).props('compactLayout')).toBe(false);
 	});
 });

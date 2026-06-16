@@ -64,6 +64,10 @@ describe('GoalSelector', () => {
 				type: Boolean,
 				default: false,
 			},
+			compactLayout: {
+				type: Boolean,
+				default: false,
+			},
 		},
 		data() {
 			return {
@@ -114,6 +118,7 @@ describe('GoalSelector', () => {
 					:selected-category-name="selectedCategoryName"
 					:use-direct-question-title="useDirectQuestionTitle"
 					:compact-no-goal-yet-title="compactNoGoalYetTitle"
+					:compact-layout="compactLayout"
 				/>
 			</div>
 		`,
@@ -302,8 +307,8 @@ describe('GoalSelector', () => {
 
 		await vi.runAllTimersAsync();
 
-		expect(getByRole('heading', { level: 2 }).textContent)
-			.toContain(stripHtml(goalCopy.titleLoanQuestionForCategory(ID_WOMENS_EQUALITY, 'Women')));
+		expect(getByRole('heading', { level: 2 }).innerHTML)
+			.toContain(goalCopy.titleLoanQuestionForCategory(ID_WOMENS_EQUALITY, 'Women', { splitQuestion: true }));
 		expect(container.textContent).not.toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
 		expect(container.textContent).not.toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
 		expect(container.textContent).toContain(stripHtml(goalCopy.subtitleLoansAlreadyMade(1)));
@@ -381,6 +386,23 @@ describe('GoalSelector', () => {
 		expect(heading.innerHTML).toContain('tw-text-base');
 		expect(heading.textContent).toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
 		expect(heading.textContent).toContain(goalCopy.CARD_HABIT_PROMPT_SHORT);
+	});
+
+	it('can render the compact layout class for thank-you page spacing', async () => {
+		const { container } = render(TestWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: { compactLayout: true },
+		});
+
+		await flushPromises();
+
+		expect(container.querySelector('.goal-selector--compact')).toBeTruthy();
 	});
 
 	it('shows current-year progress copy after the user selects a new category', async () => {

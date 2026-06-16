@@ -154,7 +154,14 @@ describe('goalCopy', () => {
 		it('wraps the category name in an eco-green span', () => {
 			const result = goalCopy.titleCategoryHowManyLoans('refugees');
 			expect(result).toContain('<span class="tw-text-eco-green-3">refugees</span>');
-			expect(result).toContain('<br>will you make this year?');
+			expect(result).toContain(' will you make this year?');
+			expect(result).not.toContain('<br>');
+		});
+
+		it('can split the category question after the category name', () => {
+			const result = goalCopy.titleCategoryHowManyLoans('women', { splitQuestion: true });
+
+			expect(result).toContain('<span class="tw-text-eco-green-3">women</span><br>will you make this year?');
 		});
 	});
 
@@ -182,7 +189,19 @@ describe('goalCopy', () => {
 		it('uses the U.S. Entrepreneurs copy for US Economic Equality', () => {
 			expect(goalCopy.titleLoanQuestionForCategory(ID_US_ECONOMIC_EQUALITY, 'U.S. Entrepreneurs'))
 				.toBe(goalCopy.TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS);
-			expect(goalCopy.TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS).toContain('<br>will you make this year?');
+			expect(goalCopy.TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS).toContain(' will you make this year?');
+			expect(goalCopy.TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS).not.toContain('<br>');
+		});
+
+		it('can split the U.S. Entrepreneurs copy after the category name', () => {
+			const result = goalCopy.titleLoanQuestionForCategory(
+				ID_US_ECONOMIC_EQUALITY,
+				'U.S. Entrepreneurs',
+				{ splitQuestion: true }
+			);
+
+			expect(result)
+				.toContain('<span class="tw-text-eco-green-3">U.S. entrepreneurs</span><br>will you make this year?');
 		});
 
 		it('uses category-specific copy for other categories', () => {
