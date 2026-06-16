@@ -1,10 +1,11 @@
 export const DEFAULT_BUNDLE_COUNT = 4;
+export const MAX_BUNDLE_COUNT = 6;
 
 const REDIRECT_PATH = '/lend/filter';
 const MAX_BALANCE = 150;
 const TIER_STEP = 25;
 const MIN_LOANS = 1;
-const MAX_LOANS = 6;
+const MAX_LOANS = MAX_BUNDLE_COUNT;
 
 /**
  * Resolves how many loans should be included in a live-loan email bundle, based on the
