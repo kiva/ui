@@ -3,6 +3,7 @@ import express from 'express';
 import liveLoanRouter from '#server/live-loan-router';
 import * as liveLoanFetch from '#server/util/live-loan/live-loan-fetch';
 import * as memJsUtils from '#server/util/memJsUtils';
+import drawLoanCard from '#server/util/live-loan/live-loan-draw';
 
 // Mock out modules to prevent real network/cache calls
 vi.mock('#server/util/live-loan/live-loan-fetch');
@@ -372,11 +373,7 @@ describe('live-loan-router bundle-url routes', () => {
 	});
 
 	describe('serveImg - bundle-img routes', () => {
-		let drawLoanCard;
-
-		beforeEach(async () => {
-			const drawModule = await import('#server/util/live-loan/live-loan-draw');
-			drawLoanCard = drawModule.default;
+		beforeEach(() => {
 			drawLoanCard.mockResolvedValue({ buffer: Buffer.from('jpeg-bytes'), hasBorrowerImage: true });
 		});
 
@@ -389,6 +386,12 @@ describe('live-loan-router bundle-url routes', () => {
 			expect(result.statusCode).toBe(200);
 			expect(result.headers['content-type']).toBe('image/jpeg');
 			expect(drawLoanCard).toHaveBeenCalledWith({ id: 1 }, 'bundle');
+			expect(liveLoanFetch.default).toHaveBeenCalledWith(
+				'user',
+				'42',
+				liveLoanFetch.QUERY_TYPE.DEFAULT,
+				4,
+			);
 		});
 
 		it('FLSS bundle-img route passes FLSS query type and bundle style', async () => {
