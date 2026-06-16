@@ -23,6 +23,8 @@ polyfillPath2D(global);
 const resizeFactor = 3;
 const cardWidth = 300 * resizeFactor;
 const cardHeight = 525 * resizeFactor;
+// Bundle Legacy is the legacy card with the CTA removed; shrink height to ~20px below the fundraising row
+const bundleLegacyCardHeight = 450 * resizeFactor;
 
 // Kiva Classic styling constants
 const classicResizeFactor = 3;
@@ -51,17 +53,25 @@ trace('registerFonts', () => {
 const legacyCanvasPool = deePool.create(function makeCanvas() {
 	return trace('createLegacyCanvas', () => createCanvas(cardWidth, cardHeight));
 });
+// eslint-disable-next-line prefer-arrow-callback
+const bundleLegacyCanvasPool = deePool.create(function makeCanvas() {
+	return trace('createBundleLegacyCanvas', () => createCanvas(cardWidth, bundleLegacyCardHeight));
+});
 
 // eslint-disable-next-line prefer-arrow-callback
 const classicCanvasPool = deePool.create(function makeCanvas() {
 	return trace('createClassicCanvas', () => createCanvas(classicCardWidth, classicCardHeight));
 });
 legacyCanvasPool.grow(2);
+bundleLegacyCanvasPool.grow(2);
 classicCanvasPool.grow(2);
 
 async function drawLegacy(loanData, { skipButton = false } = {}) {
+	const pool = skipButton ? bundleLegacyCanvasPool : legacyCanvasPool;
+	const poolTraceName = skipButton ? 'bundleLegacyCanvasPool' : 'legacyCanvasPool';
+	const effectiveCardHeight = skipButton ? bundleLegacyCardHeight : cardHeight;
 	// Get canvas & context
-	const canvas = trace('legacyCanvasPool.use', () => legacyCanvasPool.use());
+	const canvas = trace(`${poolTraceName}.use`, () => pool.use());
 	const ctx = trace('canvas.getContext', () => canvas.getContext('2d', { alpha: false }));
 	const borderThickness = 2 * resizeFactor;
 	const bodyWidth = cardWidth * 0.85;
@@ -82,7 +92,7 @@ async function drawLegacy(loanData, { skipButton = false } = {}) {
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'top';
 			ctx.fillStyle = '#fff';
-			ctx.fillRect(0, 0, cardWidth, cardHeight);
+			ctx.fillRect(0, 0, cardWidth, effectiveCardHeight);
 		});
 
 		// Borrower name
@@ -177,7 +187,7 @@ async function drawLegacy(loanData, { skipButton = false } = {}) {
 				borderThickness / 2,
 				borderThickness / 2,
 				cardWidth - borderThickness,
-				cardHeight - borderThickness
+				effectiveCardHeight - borderThickness
 			);
 		});
 
@@ -185,13 +195,13 @@ async function drawLegacy(loanData, { skipButton = false } = {}) {
 		const buffer = trace('export-jpeg', () => canvas.toBuffer('image/jpeg', { quality: 0.5 }));
 
 		// Recycle canvas for use in other requests
-		trace('legacyCanvasPool.recycle', () => legacyCanvasPool.recycle(canvas));
+		trace(`${poolTraceName}.recycle`, () => pool.recycle(canvas));
 
 		return { buffer, hasBorrowerImage };
 	} catch (e) {
 		// Recycle canvas for use in other requests
 		if (canvas) {
-			trace('legacyCanvasPool.recycle', () => legacyCanvasPool.recycle(canvas));
+			trace(`${poolTraceName}.recycle`, () => pool.recycle(canvas));
 		}
 		throw e;
 	}
