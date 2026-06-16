@@ -489,7 +489,7 @@ describe('live-loan-router bundle-url routes', () => {
 			);
 		});
 
-		it('recommendations bundle-img-legacy route passes recommendations query type and bundle-legacy style', async () => { // eslint-disable-line max-len
+		it('recommendations bundle-img-legacy route uses recs query type and bundle-legacy style', async () => {
 			liveLoanFetch.default.mockResolvedValue([{ id: 33 }]);
 
 			const app = createApp(cache);
