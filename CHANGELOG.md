@@ -1,3 +1,9 @@
+## [3.72.0-rc.3](https://github.com/kiva/ui/compare/v3.72.0-rc.2...v3.72.0-rc.3) (2026-06-16)
+
+### 🐛 Bugfixes
+
+* **kv-components:** update with latest analytics link and basket visibility fixes in KvWwwHeaderBasic ([85fe1e8](https://github.com/kiva/ui/commit/85fe1e8f1b410476eac45116bbfe4f9a78fb2a74))
+
 ## [3.72.0-rc.2](https://github.com/kiva/ui/compare/v3.72.0-rc.1...v3.72.0-rc.2) (2026-06-16)
 
 ### 🐛 Bugfixes
