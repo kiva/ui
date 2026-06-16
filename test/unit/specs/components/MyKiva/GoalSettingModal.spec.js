@@ -91,6 +91,10 @@ const GoalSelectorStub = {
 			type: Boolean,
 			default: false,
 		},
+		progressSubtitleBeforeOptions: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	template: '<div data-testid="goal-selector"></div>',
 };
@@ -160,9 +164,25 @@ describe('GoalSettingModal', () => {
 		expect(wrapper.findComponent(GoalSelectorStub).props('compactLayout')).toBe(true);
 	});
 
+	it('places the progress subtitle before options in the standard selector state', () => {
+		const wrapper = mountModal({
+			showGoalTile: false,
+			showRecommendLoanArea: false,
+			isThanksPage: false,
+		});
+
+		expect(wrapper.findComponent(GoalSelectorStub).props('progressSubtitleBeforeOptions')).toBe(true);
+	});
+
 	it('does not pass compact-layout when on the thanks page', () => {
 		const wrapper = mountModal({ isThanksPage: true });
 
 		expect(wrapper.findComponent(GoalSelectorStub).props('compactLayout')).toBe(false);
+	});
+
+	it('keeps the progress subtitle below options on the thanks page', () => {
+		const wrapper = mountModal({ isThanksPage: true });
+
+		expect(wrapper.findComponent(GoalSelectorStub).props('progressSubtitleBeforeOptions')).toBe(false);
 	});
 });

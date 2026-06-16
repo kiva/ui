@@ -199,6 +199,10 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
+	prevYearLoans: {
+		type: Number,
+		default: 0,
+	},
 	suppressCompletionConfetti: {
 		type: Boolean,
 		default: false,
@@ -215,7 +219,7 @@ const resolvedState = computed(() => (
 	VALID_STATES.includes(props.state) ? props.state : STATE_NO_GOAL
 ));
 
-const noGoalTitle = goalCopy.titleNoGoalYetWomensDefault();
+const noGoalTitle = computed(() => goalCopy.titleGoalSignupWomensLastYear(props.prevYearLoans));
 const noGoalSubtitle = goalCopy.subtitleNoGoalYetEntrypoint();
 
 const visibleProgress = computed(() => Math.min(props.goalProgress, props.goalTarget));

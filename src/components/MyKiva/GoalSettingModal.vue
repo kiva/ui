@@ -205,7 +205,8 @@
 					:is-loading-data="isLoadingData || isLoadingRecommendedLoan"
 					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 					:show-goal-value-props-copy="showGoalValuePropsCopy && !isGoalTileExperimentEnabled"
-					:compact-layout="!showGoalTile && !showRecommendLoanArea && !isThanksPage"
+					:compact-layout="isStandardSelectorLayout"
+					:progress-subtitle-before-options="isStandardSelectorLayout"
 					use-direct-question-title
 					@set-goal-target="setGoalTarget"
 					@set-goal="onGoalSelectorSetGoal"
@@ -530,6 +531,10 @@ const ctaHref = computed(() => {
 const showGoalTile = computed(() => {
 	return props.isGoalTileExperimentEnabled && isLarge.value;
 });
+
+const isStandardSelectorLayout = computed(
+	() => !showGoalTile.value && !showRecommendLoanArea.value && !props.isThanksPage
+);
 
 const recommendLoanForGoalContentRef = ref(null);
 

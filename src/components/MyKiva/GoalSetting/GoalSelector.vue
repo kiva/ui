@@ -66,6 +66,14 @@
 			>
 			</p>
 
+			<p
+				v-if="subtitleText && !showGoalValuePropsCopy && progressSubtitleBeforeOptions"
+				v-html="subtitleText"
+				class="goal-selector__prompt tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2
+					tw-text-center"
+			>
+			</p>
+
 			<div
 				class="goal-selector__options tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5
 					tw-my-1"
@@ -217,7 +225,7 @@
 			</template>
 
 			<p
-				v-if="subtitleText && !showGoalValuePropsCopy"
+				v-if="subtitleText && !showGoalValuePropsCopy && !progressSubtitleBeforeOptions"
 				v-html="subtitleText"
 				class="tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
 			>
@@ -408,6 +416,13 @@ const props = defineProps({
 	 * Whether to use the tighter thank-you page goal selector spacing.
 	 */
 	compactLayout: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Whether the current-year progress subtitle should render before the loan options.
+	 */
+	progressSubtitleBeforeOptions: {
 		type: Boolean,
 		default: false,
 	},

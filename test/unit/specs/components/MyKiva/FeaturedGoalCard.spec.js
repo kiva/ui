@@ -95,6 +95,15 @@ describe('FeaturedGoalCard copy', () => {
 			expect(wrapper.text()).not.toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
 		});
 
+		it('renders the last-year women title from January 1 through March 31 when previous-year loans exist', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-03-31T12:00:00'));
+
+			const wrapper = mountCard({ state: 'no-goal', prevYearLoans: 2 });
+			expect(wrapper.text()).toContain('Last year, you helped 2 women shape their futures!');
+			expect(wrapper.text()).not.toContain(stripHtml(goalCopy.titleNoHistoryWomensDefault()));
+		});
+
 		it('renders the no-goal-yet title and habit prompt starting April 1', () => {
 			vi.useFakeTimers();
 			vi.setSystemTime(new Date('2026-04-01T12:00:00'));

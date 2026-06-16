@@ -68,6 +68,10 @@ describe('GoalSelector', () => {
 				type: Boolean,
 				default: false,
 			},
+			progressSubtitleBeforeOptions: {
+				type: Boolean,
+				default: false,
+			},
 		},
 		data() {
 			return {
@@ -119,6 +123,7 @@ describe('GoalSelector', () => {
 					:use-direct-question-title="useDirectQuestionTitle"
 					:compact-no-goal-yet-title="compactNoGoalYetTitle"
 					:compact-layout="compactLayout"
+					:progress-subtitle-before-options="progressSubtitleBeforeOptions"
 				/>
 			</div>
 		`,
@@ -190,6 +195,38 @@ describe('GoalSelector', () => {
 
 		// Choose as I go (support all) -> default options
 		await expectCategoryOptions('category-support-all', getExpectedGoalOptions({ useDefault: true }));
+	});
+
+	it('can render current-year progress copy before loan number options', async () => {
+		const tieredAchievements = [
+			{
+				id: ID_WOMENS_EQUALITY,
+				progressForCurrentYear: 1,
+				progressForYear: 0,
+			},
+		];
+
+		const { container } = render(TestWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: {
+				tieredAchievements,
+				progressSubtitleBeforeOptions: true,
+			},
+		});
+
+		await flushPromises();
+
+		const progressCopy = Array.from(container.querySelectorAll('p'))
+			.find(el => el.textContent.includes('You’ve already made 1 loan that will count!'));
+		const options = container.querySelector('.goal-selector__options');
+
+		expect(progressCopy.compareDocumentPosition(options)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 	});
 
 	it('renders the selected category name in the title when the user changes category', async () => {
