@@ -5,6 +5,12 @@ import {
 	checkPostLendingCardCookie,
 	removePostLendingCardCookie,
 	POST_LENDING_NEXT_STEPS_COOKIE,
+	GOAL_SIGNUP_THANKS_VIEWS_COOKIE,
+	GOAL_SIGNUP_THANKS_VIEW_CAP,
+	getGoalSignupThanksCookieExpiry,
+	getGoalSignupThanksViewCount,
+	isGoalSignupThanksViewCapped,
+	incrementGoalSignupThanksViewCount,
 	getRecentTransactionLoans,
 	getTransactionTimestamp,
 	RECENT_TRANSACTION_WINDOW_MS,
@@ -22,6 +28,8 @@ describe('myKivaUtils.js', () => {
 			expect(CONTENTFUL_CAROUSEL_KEY).toBe('my-kiva-hero-carousel');
 			expect(TRANSACTION_LOANS_KEY).toBe('loan_purchase');
 			expect(POST_LENDING_NEXT_STEPS_COOKIE).toBe('my_kiva_post_lending_next_steps');
+			expect(GOAL_SIGNUP_THANKS_VIEWS_COOKIE).toBe('kv_goal_signup_thanks_views');
+			expect(GOAL_SIGNUP_THANKS_VIEW_CAP).toBe(3);
 			expect(RECENT_TRANSACTION_WINDOW_MS).toBe(15 * 60 * 1000);
 		});
 	});
@@ -264,6 +272,46 @@ describe('myKivaUtils.js', () => {
 			removePostLendingCardCookie(cookieStore);
 
 			expect(cookieStore.remove).toHaveBeenCalledWith(POST_LENDING_NEXT_STEPS_COOKIE);
+		});
+	});
+
+	describe('goal signup thanks view cap cookie', () => {
+		it('expires on January 1 of the next calendar year', () => {
+			expect(getGoalSignupThanksCookieExpiry(new Date('2026-06-04T12:00:00'))).toEqual(new Date(2027, 0, 1));
+		});
+
+		it('reads valid positive counts and treats missing or invalid values as zero', () => {
+			expect(getGoalSignupThanksViewCount({ get: vi.fn().mockReturnValue('2') })).toBe(2);
+			expect(getGoalSignupThanksViewCount({ get: vi.fn().mockReturnValue('bad') })).toBe(0);
+			expect(getGoalSignupThanksViewCount(undefined)).toBe(0);
+		});
+
+		it('detects capped counts', () => {
+			expect(isGoalSignupThanksViewCapped({ get: vi.fn().mockReturnValue('2') })).toBe(false);
+			expect(isGoalSignupThanksViewCapped({ get: vi.fn().mockReturnValue('3') })).toBe(true);
+		});
+
+		it('increments the count with the documented path and annual expiry', () => {
+			const cookieStore = {
+				get: vi.fn().mockReturnValue('2'),
+				set: vi.fn(),
+			};
+			const date = new Date('2026-06-04T12:00:00');
+
+			expect(incrementGoalSignupThanksViewCount(cookieStore, date)).toBe(3);
+			expect(cookieStore.set).toHaveBeenCalledWith(GOAL_SIGNUP_THANKS_VIEWS_COOKIE, '3', {
+				path: '/',
+				expires: new Date(2027, 0, 1),
+			});
+		});
+
+		it('does not increment above the cap', () => {
+			const cookieStore = {
+				get: vi.fn().mockReturnValue('3'),
+				set: vi.fn(),
+			};
+
+			expect(incrementGoalSignupThanksViewCount(cookieStore)).toBe(3);
 		});
 	});
 });

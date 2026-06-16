@@ -7,7 +7,7 @@ fragment loanCardFieldsExtended on LoanBasic {
 	geocode {
 		# city added for DetailedLoanCard Query Cache
 		city
-		# state is used for US loans on LoanChannelCategoryPage
+		# state is used for US loan display
 		state
 		country {
 			id
@@ -40,6 +40,11 @@ fragment loanCardFieldsExtended on LoanBasic {
 	matchingText
 	matchRatio
 	isMatchable
+	simultaneousMatching {
+		managedAccountId
+		displayName
+		ratio
+	}
 	userProperties {
 		favorited
 		lentTo

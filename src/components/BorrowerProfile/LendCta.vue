@@ -269,12 +269,14 @@
 			>
 				<!-- Hide grid on mobile when matchingHighlightExpShown is on -->
 				<kv-grid
-					v-show="lenderCountVisibility || matchingTextVisibility"
+					v-show="lenderCountVisibility || matchingTextVisibility || simultaneousMatchingVisibility"
 					key="grid"
 					:class="[
 						'tw-grid-cols-12',
 						'tw-order-first',
 						'tw-w-full',
+						'lg:!tw-gap-1',
+						'md:!tw-gap-1',
 						{
 							'tw-bottom-14': freeCreditWarning || allSharesReserved,
 							'tw-bottom-8': !freeCreditWarning && !allSharesReserved,
@@ -295,6 +297,7 @@
 					]"
 				>
 					<div
+						v-if="lenderCountVisibility || matchingTextVisibility"
 						key="wrapper"
 						:class="[
 							'tw-h-5',
@@ -347,6 +350,14 @@
 							</span>
 						</transition>
 					</div>
+
+					<simultaneous-matching-info
+						v-if="simultaneousMatchingVisibility && !isSticky"
+						key="simultaneous-matching"
+						class="tw-col-span-12"
+						:simultaneous-matching="simultaneousMatching"
+						:lend-amount="Number(selectedOption)"
+					/>
 				</kv-grid>
 			</transition>
 		</div>
@@ -373,10 +384,12 @@ import {
 
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 
+import useMultiMatching from '#src/composables/useMultiMatching';
 import JumpLinks from '#src/components/BorrowerProfile/JumpLinks';
 import LoanBookmark from '#src/components/BorrowerProfile/LoanBookmark';
 import LendAmountButton from '#src/components/LoanCards/Buttons/LendAmountButton';
 import CompleteLoanWrapper from '#src/components/BorrowerProfile/CompleteLoanWrapper';
+import SimultaneousMatchingInfo from '#src/components/BorrowerProfile/SimultaneousMatchingInfo';
 
 import KvIcon from '#src/components/Kv/KvIcon';
 import {
@@ -415,6 +428,11 @@ export default {
 		LoanBookmark,
 		CompleteLoanWrapper,
 		KvAtbModalContainer,
+		SimultaneousMatchingInfo,
+	},
+	setup() {
+		const { enableMultiMatching } = useMultiMatching();
+		return { enableMultiMatching };
 	},
 	data() {
 		return {
@@ -452,6 +470,7 @@ export default {
 			userBalance: undefined,
 			loan: null,
 			basketSize: 0,
+			simultaneousMatching: [],
 		};
 	},
 	apollo: {
@@ -485,6 +504,15 @@ export default {
 						}
 						lenders{
 							totalCount
+						}
+						simultaneousMatching {
+							managedAccountId
+							displayName
+							ratio
+							logo {
+								id
+								url
+							}
 						}
 					}
 				}
@@ -546,6 +574,7 @@ export default {
 			this.name = loan?.name ?? '';
 			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
 			this.inPfp = loan?.inPfp ?? false;
+			this.simultaneousMatching = loan?.simultaneousMatching ?? [];
 			this.userBalance = result?.data?.my?.userAccount?.balance;
 			if (this.status === 'fundraising' && this.numLenders > 0) {
 				this.lenderCountVisibility = true;
@@ -718,6 +747,11 @@ export default {
 		isInBasket() {
 			// eslint-disable-next-line no-underscore-dangle
 			return this.basketItems.some(item => item.__typename === 'LoanReservation' && item.id === this.loanId);
+		},
+		simultaneousMatchingVisibility() {
+			return this.enableMultiMatching
+				&& this.simultaneousMatching.length > 0
+				&& this.status === 'fundraising';
 		},
 		isMatchAtRisk() {
 			const mockLoan = {

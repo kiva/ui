@@ -114,6 +114,13 @@ const createWrapper = ({
 				KvMaterialIcon: true,
 				KvButton: true,
 				KvLoadingPlaceholder: KvLoadingPlaceholderStub,
+				MyKivaFeaturedSlot: defineComponent({
+					name: 'MyKivaFeaturedSlot',
+					props: {
+						userFirstName: { type: String, default: '' },
+					},
+					template: '<div data-testid="featured-slot" />',
+				}),
 			},
 		},
 	});
@@ -157,5 +164,60 @@ describe('MyKivaNextStepsContent', () => {
 
 		const carousels = wrapper.findAllComponents({ name: 'JourneyCardCarousel' });
 		expect(carousels[0].props('hideGoalCard')).toBe(true);
+	});
+
+	describe('MyKivaFeaturedSlot integration', () => {
+		it('does not mount the slot when goalsRowEnabled is false', () => {
+			const { wrapper } = createWrapper({
+				props: { goalsRowEnabled: false, shouldRenderFeaturedSlot: true },
+			});
+			expect(wrapper.find('[data-testid="featured-slot"]').exists()).toBe(false);
+		});
+
+		it('does not mount the slot when shouldRenderFeaturedSlot is false', () => {
+			const { wrapper } = createWrapper({
+				props: { goalsRowEnabled: true, shouldRenderFeaturedSlot: false },
+			});
+			expect(wrapper.find('[data-testid="featured-slot"]').exists()).toBe(false);
+		});
+
+		it('mounts the slot when both goalsRowEnabled and shouldRenderFeaturedSlot are true', () => {
+			const { wrapper } = createWrapper({
+				props: { goalsRowEnabled: true, shouldRenderFeaturedSlot: true },
+			});
+			expect(wrapper.find('[data-testid="featured-slot"]').exists()).toBe(true);
+		});
+
+		it('passes the lender first name from userInfo.userAccount.firstName', () => {
+			const { wrapper } = createWrapper({
+				props: {
+					goalsRowEnabled: true,
+					shouldRenderFeaturedSlot: true,
+					userInfo: {
+						userAccount: { firstName: 'Ada' },
+						userPreferences: { preferences: '{}' },
+						communicationSettings: { lenderNews: false, loanUpdates: false },
+					},
+				},
+			});
+			const slot = wrapper.findComponent({ name: 'MyKivaFeaturedSlot' });
+			expect(slot.props('userFirstName')).toBe('Ada');
+		});
+
+		it('suppresses the in-carousel goal tile when goalsRowEnabled is true', () => {
+			const { wrapper } = createWrapper({
+				props: { goalsRowEnabled: true, shouldRenderFeaturedSlot: true },
+			});
+			const carousels = wrapper.findAllComponents({ name: 'JourneyCardCarousel' });
+			expect(carousels[0].props('hideGoalCard')).toBe(true);
+		});
+
+		it('does not suppress the in-carousel goal tile when goalsRowEnabled is false', () => {
+			const { wrapper } = createWrapper({
+				props: { goalsRowEnabled: false, shouldRenderFeaturedSlot: true },
+			});
+			const carousels = wrapper.findAllComponents({ name: 'JourneyCardCarousel' });
+			expect(carousels[0].props('hideGoalCard')).toBe(false);
+		});
 	});
 });

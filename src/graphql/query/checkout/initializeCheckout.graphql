@@ -31,6 +31,10 @@ query initializeCheckout($basketId: String) {
 			value
 			description
 		}
+		admin_reward_tip_flag: uiConfigSetting(key: "enable_tip_for_admin_reward_lc") {
+			key
+			value
+		}
 	}
 	shop (basketId: $basketId) {
 		id
@@ -75,6 +79,11 @@ query initializeCheckout($basketId: String) {
 							use
 							status
 							matchingText
+							simultaneousMatching {
+								managedAccountId
+								displayName
+								ratio
+							}
 							loanAmount
 							minNoteSize
 							plannedExpirationDate

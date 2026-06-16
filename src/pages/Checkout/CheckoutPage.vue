@@ -315,6 +315,8 @@ import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
 import { readBoolSetting } from '#src/util/settingsUtils';
+import { isAdminRewardTipEligible } from '#src/util/promoCredit';
+import { setDonationAmount } from '#src/util/basketUtils';
 import { preFetchAll } from '#src/util/apolloPreFetch';
 import syncDate from '#src/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
@@ -377,6 +379,8 @@ const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_enable';
 const EXPIRING_SOON_EXP_KEY = 'checkout_expiring_soon_upsell';
 const KIVA_CREDIT_REPLACEMENT_EXP_KEY = 'checkout_kiva_credit_copy_replacement';
+const STOP_HIDING_TIP_EXP_KEY = 'stop_hiding_tip_campaign';
+const TIP_PERCENTAGE = 0.2;
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -493,6 +497,8 @@ export default {
 			isBanditUpsellExpEnabled: false,
 			isExpiringSoonExpEnabled: false,
 			isKivaCreditReplacementExpEnabled: false,
+			enableAdminRewardTipFlag: false,
+			isStopHidingTipExpEnabled: false,
 		};
 	},
 	apollo: {
@@ -568,6 +574,9 @@ export default {
 			this.isFtdMessageEnable = readBoolSetting(data, 'general.ftd_message_enable.value');
 			this.ftdCreditAmount = data?.general?.ftd_message_amount?.value ?? '';
 			this.ftdValidDate = data?.general?.ftd_message_valid_date?.value ?? '';
+
+			// Enable admin reward tip flag from settings
+			this.enableAdminRewardTipFlag = readBoolSetting(data, 'general.admin_reward_tip_flag.value');
 
 			// Deposit incentive experiment MP-72
 			this.depositIncentiveAmountToLend = numeral(data?.my?.depositIncentiveAmountToLend ?? 0).value();
@@ -697,6 +706,9 @@ export default {
 					this.initializeExpiringSoonExperiment(),
 				]);
 				this.getUpsellModuleData();
+			}
+			if (!newValue && this.isStopHidingTipExpEnabled) {
+				this.ensureTipDonationExists();
 			}
 		},
 	},
@@ -970,6 +982,12 @@ export default {
 				if (hasFreeCredits && refreshEvent === 'kiva-card-applied') {
 					this.disableGuestCheckout();
 				}
+				if (this.isStopHidingTipExpEnabled) {
+					const items = _get(data, 'shop.basket.items.values');
+					if (items) {
+						this.donations = _filter(items, { __typename: 'Donation' });
+					}
+				}
 				setTimeout(() => {
 					this.setUpdatingTotals(false);
 				}, 2500);
@@ -1055,6 +1073,12 @@ export default {
 		getPromoInformationFromBasket() {
 			getPromoFromBasket(this.derivedPromoFund?.id, this.apollo).then(({ data }) => {
 				this.promoData = data?.shop?.promoCampaign;
+
+				const adminRewardTipEligible = isAdminRewardTipEligible(this.promoData, this.enableAdminRewardTipFlag);
+				// If user is eligible for admin reward tip, initialize experiment to stop hiding tip for them
+				if (adminRewardTipEligible) {
+					this.initializeStopHidingTipExperiment();
+				}
 
 				this.$nextTick(() => {
 					if (
@@ -1357,6 +1381,47 @@ export default {
 				},
 				this.$kvTrackEvent,
 				'EXP-MP-2615-Apr2026',
+				'basket',
+			);
+		},
+		ensureTipDonationExists() {
+			if (this.emptyBasket) return;
+			const loanTotal = numeral(this.totals?.loanReservationTotal).value() ?? 0;
+			const kivaCardTotal = numeral(this.totals?.kivaCardTotal).value() ?? 0;
+			const donationAmount = Math.round((loanTotal + kivaCardTotal) * TIP_PERCENTAGE * 100) / 100;
+			const existingTip = this.donations.find(d => d.isTip);
+			if (existingTip) {
+				const existingPrice = numeral(existingTip.price).value() ?? 0;
+				if (existingPrice !== 0 || existingPrice === donationAmount) return;
+			}
+			this.setUpdatingTotals(true);
+			setDonationAmount({ apollo: this.apollo, donationAmount })
+				.then(result => {
+					if (!result?.data?.shop?.updateDonation) {
+						this.setUpdatingTotals(false);
+						return;
+					}
+					this.refreshTotals();
+				})
+				.catch(error => {
+					this.setUpdatingTotals(false);
+					logReadQueryError(error, 'CheckoutPage ensureTipDonationExists');
+				});
+		},
+		initializeStopHidingTipExperiment() {
+			initializeExperiment(
+				this.cookieStore,
+				this.apollo,
+				this.$route,
+				STOP_HIDING_TIP_EXP_KEY,
+				version => {
+					this.isStopHidingTipExpEnabled = version === 'b';
+					if (this.isStopHidingTipExpEnabled) {
+						this.ensureTipDonationExists();
+					}
+				},
+				this.$kvTrackEvent,
+				'EXP-MP-2852-Jun2026',
 				'basket',
 			);
 		},

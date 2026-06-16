@@ -90,6 +90,10 @@ export default function useGoalData({ apollo } = {}) {
 	const apolloClient = apollo || inject('apollo');
 	const $kvTrackEvent = inject('$kvTrackEvent');
 	const currentYearProgress = ref([]);
+	// Raw achievement-service progress with NO client-side fresh-progress added. Used to verify a
+	// goal is genuinely complete before persisting a completed status, so optimistic adjustments
+	// can drive UI without ever marking a goal complete the achievement service doesn't support.
+	const rawCurrentYearProgress = ref([]);
 	const goalCurrentLoanCount = ref(0); // In-page counter for tracking loans added to basket
 	const loading = ref(true);
 	const totalLoanCount = ref(null);
@@ -146,6 +150,24 @@ export default function useGoalData({ apollo } = {}) {
 		});
 		userGoal.value = { ...activeGoals[0] };
 	}
+
+	/**
+	 * Completed goals from prior years, exposed for the Impact Progress row.
+	 * Current-year completed goals stay surfaced via `userGoal` so the featured
+	 * slot and carousel keep working unchanged. Sorted by start-year, newest
+	 * first.
+	 */
+	const completedGoalsHistory = computed(() => {
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+		const goals = parsedPrefs.goals || [];
+
+		return goals
+			.filter(g => g.status === GOAL_STATUS.COMPLETED && g.dateStarted)
+			.filter(g => new Date(g.dateStarted).getFullYear() < GOALS_CURRENT_YEAR)
+			.sort((a, b) => (
+				new Date(b.dateStarted).getFullYear() - new Date(a.dateStarted).getFullYear()
+			));
+	});
 
 	/**
 	 * Get Goal Categories for Goal Selection
@@ -447,6 +469,8 @@ export default function useGoalData({ apollo } = {}) {
 	async function loadProgress(year, freshProgressAdjustments = {}) {
 		try {
 			const progress = await getCategoriesProgressByYear(year);
+			// Preserve the raw achievement-service progress before applying optimistic adjustments.
+			rawCurrentYearProgress.value = progress?.map(p => ({ ...p })) || [];
 			currentYearProgress.value = applyFreshProgressToGoalData(progress, freshProgressAdjustments);
 		} catch (error) {
 			logFormatter(error, 'Failed to load progress');
@@ -596,6 +620,23 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
+	 * Authoritative current-year progress for a goal category, using the raw achievement-service
+	 * data only (no client-side fresh-progress adjustments). Used to verify a goal is genuinely
+	 * complete before persisting a completed status, so neither the post-checkout projection nor
+	 * the fresh-progress adjustment can mark a goal complete the achievement service doesn't yet
+	 * reflect. Support-all uses the yearly loan count, which is already authoritative.
+	 * @param {string} category - Goal category id
+	 * @returns {number} Raw current-year progress for the category
+	 */
+	function getVerifiedYearProgress(category) {
+		if (category === ID_SUPPORT_ALL) {
+			return yearlyLoanCount.value || 0;
+		}
+		const categoryProgress = rawCurrentYearProgress.value?.find(n => n.id === category);
+		return categoryProgress?.progressForYear || 0;
+	}
+
+	/**
 	 * Store goal preferences to backend
 	 * @param {Object} updates - Goal data to store
 	 * @param {boolean} updateLocalState - Whether to update local userGoal state (default: true)
@@ -633,6 +674,21 @@ export default function useGoalData({ apollo } = {}) {
 			goalToStore = { ...updates, loanTotalAtStart };
 			goals.push(goalToStore);
 		}
+		// Write-boundary guard: this is the single point through which every goal-status write
+		// reaches the backend, which syncs to Iterable and fires the goal-complete email.
+		// Never persist a completed status unless authoritative achievement progress confirms the
+		// target was reached, so no caller can mark a goal complete one loan short.
+		if (goalToStore.status === GOAL_STATUS.COMPLETED) {
+			const verifiedProgress = getVerifiedYearProgress(goalToStore.category);
+			if (verifiedProgress < goalToStore.target) {
+				logFormatter('Prevented persisting completed goal below target', 'warn', {
+					category: goalToStore.category,
+					target: goalToStore.target,
+					verifiedProgress,
+				});
+				goalToStore.status = GOAL_STATUS.IN_PROGRESS;
+			}
+		}
 		await setMyKivaGoal(apolloClient, {
 			category: goalToStore.category,
 			target: goalToStore.target,
@@ -662,6 +718,30 @@ export default function useGoalData({ apollo } = {}) {
 		// MyKiva renders the completed card once, then hides it on the next page load.
 	}
 
+	const viewedGoalCompleteByYear = computed(() => {
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+		return parsedPrefs.viewedGoalComplete || {};
+	});
+
+	function hasViewedCompletedGoalForYear(year) {
+		return Boolean(viewedGoalCompleteByYear.value?.[year]);
+	}
+
+	async function setViewedGoalCompletePreference(year = GOALS_CURRENT_YEAR) {
+		if (!year) return;
+		const parsedPrefs = await loadPreferences('network-only');
+		const prev = parsedPrefs?.viewedGoalComplete || {};
+		// Year-keyed flag so next year's celebration is not suppressed by a prior year's view.
+		if (prev[year]) return;
+		const updatedPreference = { viewedGoalComplete: { ...prev, [year]: true } };
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			updatedPreference
+		);
+	}
+
 	async function checkCompletedGoal({
 		currentGoalProgress = 0,
 		category = 'post-checkout',
@@ -673,8 +753,17 @@ export default function useGoalData({ apollo } = {}) {
 			return;
 		}
 
+		// Optimistic progress (e.g. the post-checkout projection passed by the Thanks page)
+		// drives the in-session celebration UX. It can include just-purchased loans that the
+		// achievement service has not yet — or may never — attribute to the goal category.
 		const progress = currentGoalProgress || goalProgress.value;
 		const isGoalComplete = progress >= goal.target;
+		// Raw achievement-service progress gates what we persist. The persisted status is what
+		// syncs to Iterable and fires the goal-complete email, so we must never write "completed"
+		// unless the achievement service confirms the target was reached — independent of the
+		// post-checkout projection (Thanks page) or the fresh-progress adjustment (MyKiva page),
+		// both of which were marking goals complete one loan short.
+		const isVerifiedComplete = getVerifiedYearProgress(goal.category) >= goal.target;
 
 		if (goal.status === GOAL_STATUS.COMPLETED) {
 			if (persistHideGoalCard && isGoalComplete && !hideGoalCard.value) {
@@ -687,13 +776,18 @@ export default function useGoalData({ apollo } = {}) {
 			// Capture goal data before storeGoalPreferences (which may filter out the goal via setGoalState)
 			const goalCategory = goal.category;
 			const goalTarget = goal.target;
-			userGoal.value = {
-				...goal,
-				status: GOAL_STATUS.COMPLETED
-			};
-			await storeGoalPreferences({ ...userGoal.value });
-			if (persistHideGoalCard) {
-				await setHideGoalCardPreference();
+			// Only persist the completed status when authoritative progress confirms it.
+			// When the projection is ahead of the achievement service (indexing lag), the goal
+			// is left in-progress and completed for real on a later load once progress catches up.
+			if (isVerifiedComplete) {
+				userGoal.value = {
+					...goal,
+					status: GOAL_STATUS.COMPLETED
+				};
+				await storeGoalPreferences({ ...userGoal.value });
+				if (persistHideGoalCard) {
+					await setHideGoalCardPreference();
+				}
 			}
 			$kvTrackEvent(
 				category,
@@ -994,11 +1088,15 @@ export default function useGoalData({ apollo } = {}) {
 		userGoalAchieved,
 		userGoalAchievedNow,
 		userPreferences,
+		completedGoalsHistory,
 		// Goal Entry for 2026 Goals
 		fixIncorrectlyCompletedGoals,
 		renewAnnualGoal,
 		hideGoalCard,
 		setHideGoalCardPreference,
+		viewedGoalCompleteByYear,
+		hasViewedCompletedGoalForYear,
+		setViewedGoalCompletePreference,
 		getSupportAllLoanCountByYear,
 		setGoalState,
 		removeGoalFromPreferences,

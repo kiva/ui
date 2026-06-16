@@ -1,8 +1,9 @@
-import { render } from '@testing-library/vue';
+import { fireEvent, render } from '@testing-library/vue';
 import { ref } from 'vue';
 import { createRouter, createMemoryHistory } from 'vue-router';
 import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
 import { GOAL_STATUS } from '#src/composables/useGoalData';
+import { GOAL_SIGNUP_THANKS_VIEWS_COOKIE } from '#src/util/myKivaUtils';
 import { globalOptions } from '../../../specUtils';
 
 const router = createRouter({
@@ -15,6 +16,18 @@ vi.mock('canvas-confetti', () => ({ default: vi.fn() }));
 
 // Mock myKivaUtils
 vi.mock('#src/util/myKivaUtils', () => ({
+	GOAL_SIGNUP_THANKS_VIEWS_COOKIE: 'kv_goal_signup_thanks_views',
+	incrementGoalSignupThanksViewCount: vi.fn(cookieStore => {
+		const current = Number(cookieStore?.get('kv_goal_signup_thanks_views')) || 0;
+		cookieStore?.set('kv_goal_signup_thanks_views', String(Math.min(current + 1, 3)), {
+			path: '/',
+			expires: new Date(2027, 0, 1),
+		});
+		return Math.min(current + 1, 3);
+	}),
+	isGoalSignupThanksViewCapped: vi.fn(cookieStore => {
+		return (Number(cookieStore?.get('kv_goal_signup_thanks_views')) || 0) >= 3;
+	}),
 	setGuestAssignmentCookie: vi.fn(),
 	setPostLendingCardCookie: vi.fn(),
 }));
@@ -25,6 +38,22 @@ let mockUserGoalAchievedNow;
 let mockLoading;
 let mockHasContributingLoans;
 let mockCheckCompletedGoal;
+
+const {
+	mockUseExpressCheckoutModal,
+	mockHandleAddRecommendedLoanToBasket,
+	mockHandleExpressCheckoutComplete,
+	mockHandleExpressCheckoutClose,
+	mockExpressCheckoutState,
+} = vi.hoisted(() => ({
+	mockUseExpressCheckoutModal: vi.fn(),
+	mockHandleAddRecommendedLoanToBasket: vi.fn(),
+	mockHandleExpressCheckoutComplete: vi.fn(),
+	mockHandleExpressCheckoutClose: vi.fn(),
+	mockExpressCheckoutState: {
+		isRedirecting: false,
+	},
+}));
 
 vi.mock('#src/composables/useGoalData', async importOriginal => {
 	const actual = await importOriginal();
@@ -47,6 +76,23 @@ vi.mock('#src/composables/useGoalData', async importOriginal => {
 			userGoalAchievedNow: mockUserGoalAchievedNow,
 			getCategories: () => [{ id: 'womens-equality', name: 'Women' }],
 		}),
+	};
+});
+
+vi.mock('#src/composables/useExpressCheckoutModal', async () => {
+	const { ref: vueRef } = await import('vue');
+	return {
+		default: deps => {
+			mockUseExpressCheckoutModal(deps);
+			return {
+				expressCheckoutModalRef: vueRef(null),
+				expressCheckoutLoan: vueRef(null),
+				isRedirecting: vueRef(mockExpressCheckoutState.isRedirecting),
+				handleAddRecommendedLoanToBasket: mockHandleAddRecommendedLoanToBasket,
+				handleExpressCheckoutComplete: mockHandleExpressCheckoutComplete,
+				handleExpressCheckoutClose: mockHandleExpressCheckoutClose,
+			};
+		},
 	};
 });
 
@@ -75,15 +121,23 @@ const stubs = {
 		],
 	},
 	GoalEntrypoint: {
-		template: '<div data-testid="goal-entrypoint"><slot /></div>',
+		template: `
+			<button
+				data-testid="goal-entrypoint"
+				:data-is-redirecting="String(isRedirecting)"
+				@click="$emit('add-to-basket', { loanId: 123, loan: { id: 123 } })"
+			>
+				<slot />
+			</button>
+		`,
+		emits: ['add-to-basket'],
 		props: [
 			'loading', 'totalLoans', 'categoriesLoanCount', 'isGoalSet',
 			'tieredAchievements', 'selectedCategory', 'isEditing',
 			'goalLoans', 'goalProgress', 'goalProgressPercentage', 'goToUrl',
-			'customGoalAmountEnable', 'showRecommendLoanAfterGoalView',
-			'hasRecommendedLoans', 'recommendLoanCardProps',
+			'showRecommendLoanAfterGoalView', 'hasRecommendedLoans', 'recommendLoanCardProps',
 			'recommendLoanHeaderDetails', 'recommendLoanIsInBasket',
-			'loadedSetData', 'isAdding',
+			'loadedSetData', 'isAdding', 'isRedirecting',
 		],
 	},
 	OptInModule: { template: '<div data-testid="opt-in-module"><slot /></div>' },
@@ -93,6 +147,17 @@ const stubs = {
 	GoalSettingModal: { template: '<div data-testid="goal-setting-modal"><slot /></div>' },
 	KvLightbox: { template: '<div><slot /></div>' },
 	GuestAccountCreation: { template: '<div><slot /></div>' },
+	ExpressCheckoutModal: { template: '<div data-testid="express-checkout-modal" />' },
+};
+
+// Minimal stub for the provide bridge ThanksPage exposes — the tests don't
+// exercise the express-checkout flow, but the setup destructures these values.
+const thanksPageBasketStub = {
+	basketItems: ref([]),
+	isAdding: ref(false),
+	addToBasket: vi.fn(),
+	loadInitialBasketItems: vi.fn(),
+	resetIsAdding: vi.fn(),
 };
 
 const tieredBadge = { achievementId: 'badge-1', preCheckoutTier: 1 };
@@ -108,14 +173,29 @@ const MODULE_IDS = [
 	'donation-opt-in-module',
 ];
 
-function renderComponent(propsOverrides = {}) {
-	return render(ThanksPageSingleVersion, {
+function renderComponent(propsOverrides = {}, options = {}) {
+	const kvTrackEvent = options.kvTrackEvent ?? vi.fn();
+	const cookieValues = propsOverrides.cookieValues ?? {};
+	const thanksPageBasket = options.thanksPageBasket ?? thanksPageBasketStub;
+	const props = { ...propsOverrides };
+	delete props.cookieValues;
+	const cookieStore = {
+		get: vi.fn(name => cookieValues[name]),
+		set: vi.fn((name, value) => {
+			cookieValues[name] = value;
+		}),
+		remove: vi.fn(),
+	};
+
+	const renderResult = render(ThanksPageSingleVersion, {
 		global: {
 			...globalOptions,
 			plugins: [router],
 			provide: {
 				...globalOptions.provide,
-				$kvTrackEvent: vi.fn(),
+				$kvTrackEvent: kvTrackEvent,
+				cookieStore,
+				thanksPageBasket,
 			},
 			stubs,
 		},
@@ -127,9 +207,17 @@ function renderComponent(propsOverrides = {}) {
 				items: { values: [{ basketItemType: 'loan' }] },
 				totals: { itemTotal: '25.00', donationTotal: '0.00' },
 			},
-			...propsOverrides,
+			...props,
 		},
 	});
+
+	return {
+		...renderResult,
+		cookieStore,
+		cookieValues,
+		kvTrackEvent,
+		thanksPageBasket
+	};
 }
 
 function getOrderedModules(container) {
@@ -145,6 +233,14 @@ describe('ThanksPageSingleVersion', () => {
 		mockLoading = ref(false);
 		mockHasContributingLoans = true;
 		mockCheckCompletedGoal = vi.fn();
+		mockUseExpressCheckoutModal.mockClear();
+		mockHandleAddRecommendedLoanToBasket.mockClear();
+		mockHandleExpressCheckoutComplete.mockClear();
+		mockHandleExpressCheckoutClose.mockClear();
+		mockExpressCheckoutState.isRedirecting = false;
+		thanksPageBasketStub.addToBasket.mockClear();
+		thanksPageBasketStub.loadInitialBasketItems.mockClear();
+		thanksPageBasketStub.resetIsAdding.mockClear();
 	});
 
 	it('checks completed goals without persisting the MyKiva hide preference', async () => {
@@ -159,6 +255,66 @@ describe('ThanksPageSingleVersion', () => {
 				currentGoalProgress: 5,
 				persistHideGoalCard: false,
 			});
+		});
+	});
+
+	describe('express checkout modal', () => {
+		it('passes $kvTrackEvent to useExpressCheckoutModal', () => {
+			const kvTrackEvent = vi.fn();
+
+			renderComponent({}, { kvTrackEvent });
+
+			expect(mockUseExpressCheckoutModal).toHaveBeenCalledWith(expect.objectContaining({
+				kvTrackEvent,
+			}));
+		});
+
+		it('does not render ExpressCheckoutModal when the flag is disabled', () => {
+			const { queryByTestId } = renderComponent({
+				isExpressCheckoutModalEnabled: false,
+			});
+
+			expect(queryByTestId('express-checkout-modal')).toBeNull();
+		});
+
+		it('renders ExpressCheckoutModal for signed-in users when the flag is enabled', () => {
+			const { queryByTestId } = renderComponent({
+				isExpressCheckoutModalEnabled: true,
+			});
+
+			expect(queryByTestId('express-checkout-modal')).toBeTruthy();
+		});
+
+		it('does not render ExpressCheckoutModal for guests even when the flag is enabled', () => {
+			const { queryByTestId } = renderComponent({
+				isGuest: true,
+				isExpressCheckoutModalEnabled: true,
+			});
+
+			expect(queryByTestId('express-checkout-modal')).toBeNull();
+		});
+
+		it('forwards composable isRedirecting to GoalEntrypoint', async () => {
+			mockExpressCheckoutState.isRedirecting = true;
+			mockUserGoal.value = null;
+
+			const { findByTestId } = renderComponent();
+			const goalEntrypoint = await findByTestId('goal-entrypoint');
+
+			expect(goalEntrypoint.getAttribute('data-is-redirecting')).toBe('true');
+		});
+
+		it('routes GoalEntrypoint add-to-basket through useExpressCheckoutModal', async () => {
+			mockUserGoal.value = null;
+
+			const { findByTestId } = renderComponent();
+			await fireEvent.click(await findByTestId('goal-entrypoint'));
+
+			expect(mockHandleAddRecommendedLoanToBasket).toHaveBeenCalledWith(expect.objectContaining({
+				loanId: 123,
+				loan: { id: 123 },
+				onError: expect.any(Function),
+			}));
 		});
 	});
 
@@ -364,6 +520,62 @@ describe('ThanksPageSingleVersion', () => {
 			await vi.waitFor(() => {
 				const ids = getOrderedModules(container);
 				expect(ids).toEqual(['goal-entrypoint', 'badge-milestone']);
+			});
+		});
+
+		it('increments the thank you goal signup view counter when the ask renders', async () => {
+			mockUserGoal.value = null;
+
+			const { cookieStore, getByTestId } = renderComponent({
+				badgesAchieved: [],
+			});
+
+			await vi.waitFor(() => {
+				expect(getByTestId('goal-entrypoint')).toBeTruthy();
+				expect(cookieStore.set).toHaveBeenCalledWith(GOAL_SIGNUP_THANKS_VIEWS_COOKIE, '1', {
+					path: '/',
+					expires: expect.any(Date),
+				});
+			});
+		});
+
+		it('allows the third thank you goal signup view and stores the capped count', async () => {
+			mockUserGoal.value = null;
+
+			const { cookieStore, getByTestId } = renderComponent({
+				badgesAchieved: [],
+				cookieValues: {
+					[GOAL_SIGNUP_THANKS_VIEWS_COOKIE]: '2',
+				},
+			});
+
+			await vi.waitFor(() => {
+				expect(getByTestId('goal-entrypoint')).toBeTruthy();
+				expect(cookieStore.set).toHaveBeenCalledWith(GOAL_SIGNUP_THANKS_VIEWS_COOKIE, '3', {
+					path: '/',
+					expires: expect.any(Date),
+				});
+			});
+		});
+
+		it('hides the thank you goal signup ask after the view cap and shows fallback content', async () => {
+			mockUserGoal.value = null;
+
+			const { queryByTestId, getByTestId, cookieStore } = renderComponent({
+				badgesAchieved: [],
+				cookieValues: {
+					[GOAL_SIGNUP_THANKS_VIEWS_COOKIE]: '3',
+				},
+			});
+
+			await vi.waitFor(() => {
+				expect(queryByTestId('goal-entrypoint')).toBeNull();
+				expect(getByTestId('journey-general-prompt')).toBeTruthy();
+				expect(cookieStore.set).not.toHaveBeenCalledWith(
+					GOAL_SIGNUP_THANKS_VIEWS_COOKIE,
+					expect.anything(),
+					expect.anything()
+				);
 			});
 		});
 

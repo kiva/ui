@@ -10,8 +10,17 @@ const mockLoans = mockLoansArray(3);
 
 const queryResult = {
 	data: {
+		general: {
+			multiMatchingEnabled: { key: 'multiMatchingEnabled', value: 'true' },
+		},
 		lend: {
-			loan: mockLoans[0]
+			loan: {
+				...mockLoans[0],
+				simultaneousMatching: [
+					{ managedAccountId: 203995508, displayName: 'Capital One', ratio: 3, logo: null },
+					{ managedAccountId: 204181523, displayName: 'the Tripadvisor Foundation', ratio: 1, logo: null },
+				],
+			},
 		},
 		fundraisingLoans: {
 			values: [

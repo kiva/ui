@@ -26,8 +26,8 @@ vi.mock('#src/components/MyKiva/MyKivaProgressCard', () => ({
 	default: defineComponent({
 		name: 'MyKivaProgressCard',
 		// eslint-disable-next-line vue/require-prop-types
-		props: ['goal', 'isAnnualGoal', 'goalProgress'],
-		template: '<div data-testid="progress-card">{{ goal?.name }}</div>',
+		props: ['goal', 'isAnnualGoal', 'goalProgress', 'year'],
+		template: '<div data-testid="progress-card" :data-year="year">{{ goal?.name }}</div>',
 	}),
 }));
 
@@ -82,6 +82,7 @@ const createGoalData = (overrides = {}) => ({
 	loading: ref(overrides.loading ?? true),
 	userGoal: ref(overrides.userGoal ?? null),
 	userGoalAchieved: ref(overrides.userGoalAchieved ?? false),
+	completedGoalsHistory: ref(overrides.completedGoalsHistory ?? []),
 });
 
 const renderComponent = (props = {}, goalData = createGoalData()) => {
@@ -186,6 +187,122 @@ describe('BadgesSectionV2', () => {
 			await fireEvent.click(cards[0].closest('[class*="cursor-pointer"]'));
 
 			expect(emitted()['badge-clicked']).toBeTruthy();
+		});
+	});
+
+	describe('completed-goals history (MP-2876)', () => {
+		const historyEntry = (year, target = 5, category = 'womens-equality') => ({
+			status: 'completed',
+			// Mid-year so timezone offsets can't shift the parsed year.
+			dateStarted: `${year}-06-15T12:00:00.000Z`,
+			target,
+			category,
+			name: `Goal ${year}`,
+		});
+
+		it('does not render any historical cards when history is empty', async () => {
+			const goalData = createGoalData({ loading: false, completedGoalsHistory: [] });
+			const { getAllByTestId } = await renderComponent(
+				{ badgeData: defaultBadgeData },
+				goalData,
+			);
+			const cards = getAllByTestId('progress-card');
+			expect(cards.length).toBe(defaultBadgeData.length);
+		});
+
+		it('appends a historical card per prior-year completed goal', async () => {
+			const goalData = createGoalData({
+				loading: false,
+				completedGoalsHistory: [historyEntry(2025), historyEntry(2024)],
+			});
+			const { getAllByTestId } = await renderComponent(
+				{ badgeData: defaultBadgeData },
+				goalData,
+			);
+			const cards = getAllByTestId('progress-card');
+			expect(cards.length).toBe(defaultBadgeData.length + 2);
+		});
+
+		it('renders active in-progress goal first, achievements next, then historical', async () => {
+			const goalData = createGoalData({
+				loading: false,
+				userGoal: { target: 10, name: 'Active', category: 'womens-equality' },
+				goalProgress: 3,
+				userGoalAchieved: false,
+				completedGoalsHistory: [historyEntry(2025)],
+			});
+			const { getAllByTestId } = await renderComponent(
+				{ badgeData: defaultBadgeData },
+				goalData,
+			);
+			const cards = getAllByTestId('progress-card');
+			// One active goal at front + one historical at end + 5 achievements
+			expect(cards.length).toBe(defaultBadgeData.length + 2);
+		});
+
+		it('renders current-year completed goal before prior-year historicals', async () => {
+			const goalData = createGoalData({
+				loading: false,
+				userGoal: { target: 10, name: 'Current', category: 'womens-equality' },
+				userGoalAchieved: true,
+				completedGoalsHistory: [historyEntry(2025), historyEntry(2024)],
+			});
+			const { getAllByTestId } = await renderComponent(
+				{ badgeData: defaultBadgeData },
+				goalData,
+			);
+			const cards = getAllByTestId('progress-card');
+			// 5 achievements + 1 current-year completed + 2 historical = 8
+			expect(cards.length).toBe(defaultBadgeData.length + 3);
+		});
+
+		it('does not cap the row when there are many prior-year goals', async () => {
+			const goalData = createGoalData({
+				loading: false,
+				completedGoalsHistory: [
+					historyEntry(2025), historyEntry(2024), historyEntry(2023),
+					historyEntry(2022), historyEntry(2021),
+				],
+			});
+			const { getAllByTestId } = await renderComponent(
+				{ badgeData: defaultBadgeData },
+				goalData,
+			);
+			const cards = getAllByTestId('progress-card');
+			expect(cards.length).toBe(defaultBadgeData.length + 5);
+		});
+
+		it('passes the historical goal\'s actual year to MyKivaProgressCard for the tag', async () => {
+			const goalData = createGoalData({
+				loading: false,
+				completedGoalsHistory: [historyEntry(2025), historyEntry(2024)],
+			});
+			const { getAllByTestId } = await renderComponent(
+				{ badgeData: [] },
+				goalData,
+			);
+			const years = getAllByTestId('progress-card').map(el => el.dataset.year);
+			expect(years).toContain('2025');
+			expect(years).toContain('2024');
+		});
+
+		it('derives the current-year goal\'s year from its dateStarted', async () => {
+			const goalData = createGoalData({
+				loading: false,
+				userGoal: {
+					target: 5,
+					name: 'Active',
+					category: 'womens-equality',
+					dateStarted: '2026-06-15T10:00:00.000Z',
+				},
+				goalProgress: 2,
+			});
+			const { getAllByTestId } = await renderComponent(
+				{ badgeData: [] },
+				goalData,
+			);
+			const years = getAllByTestId('progress-card').map(el => el.dataset.year);
+			expect(years).toContain('2026');
 		});
 	});
 });

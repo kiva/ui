@@ -1150,6 +1150,117 @@ describe('useGoalData', () => {
 				status: GOAL_STATUS.IN_PROGRESS,
 			});
 		});
+
+		it('downgrades a completed status to in-progress when authoritative progress is below target', async () => {
+			const { setMyKivaGoal } = await import('#src/util/userPreferenceUtils');
+
+			const mockPrefs = {
+				goals: [{
+					goalName: 'existing-goal',
+					category: ID_BASIC_NEEDS,
+					target: 10,
+					dateStarted: '2026-01-01',
+					status: GOAL_STATUS.IN_PROGRESS,
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 9 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							// Authoritative yearly progress is one short of the target
+							tieredLendingAchievements: [
+								{ id: ID_BASIC_NEEDS, totalProgressToAchievement: 9, progressForYear: 9 },
+							],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			setMyKivaGoal.mockClear();
+			// Any caller that tries to persist a completed status it can't substantiate
+			// must be downgraded at this write boundary before reaching the backend.
+			await composable.storeGoalPreferences({
+				goalName: 'existing-goal',
+				category: ID_BASIC_NEEDS,
+				target: 10,
+				dateStarted: '2026-01-01',
+				status: GOAL_STATUS.COMPLETED,
+			});
+
+			expect(setMyKivaGoal).toHaveBeenCalledWith(mockApollo, {
+				category: ID_BASIC_NEEDS,
+				target: 10,
+				dateStarted: '2026-01-01',
+				status: GOAL_STATUS.IN_PROGRESS,
+			});
+		});
+
+		it('persists a completed status when authoritative progress meets the target', async () => {
+			const { setMyKivaGoal } = await import('#src/util/userPreferenceUtils');
+
+			const mockPrefs = {
+				goals: [{
+					goalName: 'existing-goal',
+					category: ID_BASIC_NEEDS,
+					target: 10,
+					dateStarted: '2026-01-01',
+					status: GOAL_STATUS.IN_PROGRESS,
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 10 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{ id: ID_BASIC_NEEDS, totalProgressToAchievement: 10, progressForYear: 10 },
+							],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+
+			setMyKivaGoal.mockClear();
+			await composable.storeGoalPreferences({
+				goalName: 'existing-goal',
+				category: ID_BASIC_NEEDS,
+				target: 10,
+				dateStarted: '2026-01-01',
+				status: GOAL_STATUS.COMPLETED,
+			});
+
+			expect(setMyKivaGoal).toHaveBeenCalledWith(mockApollo, {
+				category: ID_BASIC_NEEDS,
+				target: 10,
+				dateStarted: '2026-01-01',
+				status: GOAL_STATUS.COMPLETED,
+			});
+		});
 	});
 
 	describe('removeGoalFromPreferences', () => {
@@ -1611,6 +1722,119 @@ describe('useGoalData', () => {
 
 			expect(setMyKivaGoal).not.toHaveBeenCalled();
 			expect(composable.userGoalAchievedNow.value).toBe(false);
+		});
+
+		it('does not persist completed when authoritative progress is below target', async () => {
+			const {
+				setMyKivaGoal,
+			} = await import('#src/util/userPreferenceUtils');
+			const currentYear = new Date().getFullYear();
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_WOMENS_EQUALITY,
+					target: 10,
+					dateStarted: `${currentYear}-01-01`,
+					status: GOAL_STATUS.IN_PROGRESS,
+				}],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 9 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							// Authoritative achievement-service progress is one short of target
+							tieredLendingAchievements: [
+								{ id: ID_WOMENS_EQUALITY, progressForYear: 9, totalProgressToAchievement: 9 },
+							],
+						},
+					},
+				});
+
+			await composable.loadGoalData();
+			setMyKivaGoal.mockClear();
+
+			// Thanks page passes an optimistic post-checkout projection that meets the target,
+			// but the authoritative yearly progress (9) is still below the target (10).
+			await composable.checkCompletedGoal({ currentGoalProgress: 10 });
+
+			// The persisted status must NOT flip to completed (this is what syncs to Iterable
+			// and fires the goal-complete email), since the user has not truly reached the goal.
+			expect(setMyKivaGoal).not.toHaveBeenCalled();
+		});
+
+		it('does not persist completed when only client-side fresh progress reaches the target', async () => {
+			const { setMyKivaGoal } = await import('#src/util/userPreferenceUtils');
+			const mockPrefs = {
+				goals: [{
+					goalName: 'test-goal',
+					category: ID_WOMENS_EQUALITY,
+					target: 1,
+					dateStarted: '2026-01-01',
+					loanTotalAtStart: 0,
+					status: GOAL_STATUS.IN_PROGRESS,
+				}],
+			};
+			// A recent loan the UI maps to the women's category but the achievement service
+			// has not attributed (authoritative progressForYear stays 0).
+			const recentFemaleLoan = {
+				id: 101,
+				gender: 'female',
+				geocode: { country: { isoCode: 'KE' } },
+				themes: [],
+				tags: [],
+				sector: { id: 1 },
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-123',
+								preferences: JSON.stringify(mockPrefs),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{ id: ID_WOMENS_EQUALITY, totalProgressToAchievement: 0, progressForYear: 0 },
+							],
+						},
+					},
+				});
+
+			// MyKiva-style load: fresh progress inflates goalProgress to the target (1),
+			// while the authoritative achievement progress is still 0.
+			await composable.loadGoalData({
+				year: 2026,
+				freshProgressLoans: [recentFemaleLoan],
+				tieredAchievements: [{ id: ID_WOMENS_EQUALITY, loanPurchases: [] }],
+				transactions: [{ loan: { id: 101 }, effectiveTime: '2026-02-01T12:00:00Z' }],
+			});
+			expect(composable.goalProgress.value).toBe(1);
+
+			setMyKivaGoal.mockClear();
+			// MyKiva passes no optimistic projection; the only thing pushing it over the target
+			// is the client-side fresh-progress adjustment, which must not count toward persistence.
+			await composable.checkCompletedGoal();
+
+			expect(setMyKivaGoal).not.toHaveBeenCalled();
 		});
 	});
 
@@ -4409,6 +4633,172 @@ describe('useGoalData', () => {
 				sortBy: 'personalized',
 			}, 'web:goal-recommended-loan');
 			expect(result).toEqual([{ id: 999 }]);
+		});
+	});
+
+	describe('viewedGoalComplete flag', () => {
+		// `setViewedGoalCompletePreference` internally calls `loadPreferences('network-only')`
+		// before writing, so the apollo mock must return the same response on every call —
+		// not just once — or the function's own load will hit an empty mock and treat prefs
+		// as cleared.
+		const loadPrefsOnce = async prefsObject => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-vgc',
+							preferences: JSON.stringify(prefsObject),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+			await composable.loadPreferences('network-only');
+		};
+
+		it('hasViewedCompletedGoalForYear returns false when key missing', async () => {
+			await loadPrefsOnce({ goals: [] });
+			expect(composable.hasViewedCompletedGoalForYear(GOALS_CURRENT_YEAR)).toBe(false);
+		});
+
+		it('hasViewedCompletedGoalForYear returns true when year flag is set', async () => {
+			await loadPrefsOnce({ viewedGoalComplete: { [GOALS_CURRENT_YEAR]: true } });
+			expect(composable.hasViewedCompletedGoalForYear(GOALS_CURRENT_YEAR)).toBe(true);
+		});
+
+		it('hasViewedCompletedGoalForYear is year-keyed (no cross-year leakage)', async () => {
+			await loadPrefsOnce({ viewedGoalComplete: { [GOALS_CURRENT_YEAR - 1]: true } });
+			expect(composable.hasViewedCompletedGoalForYear(GOALS_CURRENT_YEAR - 1)).toBe(true);
+			expect(composable.hasViewedCompletedGoalForYear(GOALS_CURRENT_YEAR)).toBe(false);
+		});
+
+		it('setViewedGoalCompletePreference persists a year-keyed flag', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			updateUserPreferences.mockClear();
+
+			await loadPrefsOnce({ goals: [], hideGoalCard: false });
+			await composable.setViewedGoalCompletePreference(GOALS_CURRENT_YEAR);
+
+			expect(updateUserPreferences).toHaveBeenCalledTimes(1);
+			const [, , , updatedPreference] = updateUserPreferences.mock.calls[0];
+			expect(updatedPreference).toEqual({
+				viewedGoalComplete: { [GOALS_CURRENT_YEAR]: true },
+			});
+		});
+
+		it('setViewedGoalCompletePreference merges with existing year entries', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			updateUserPreferences.mockClear();
+
+			await loadPrefsOnce({
+				viewedGoalComplete: { [GOALS_CURRENT_YEAR - 1]: true },
+			});
+			await composable.setViewedGoalCompletePreference(GOALS_CURRENT_YEAR);
+
+			expect(updateUserPreferences).toHaveBeenCalledTimes(1);
+			const [, , , updatedPreference] = updateUserPreferences.mock.calls[0];
+			expect(updatedPreference).toEqual({
+				viewedGoalComplete: {
+					[GOALS_CURRENT_YEAR - 1]: true,
+					[GOALS_CURRENT_YEAR]: true,
+				},
+			});
+		});
+
+		it('setViewedGoalCompletePreference is idempotent — no write when year already set', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			updateUserPreferences.mockClear();
+
+			await loadPrefsOnce({ viewedGoalComplete: { [GOALS_CURRENT_YEAR]: true } });
+			await composable.setViewedGoalCompletePreference(GOALS_CURRENT_YEAR);
+
+			expect(updateUserPreferences).not.toHaveBeenCalled();
+		});
+
+		it('setViewedGoalCompletePreference is a no-op when called with a falsy year', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			updateUserPreferences.mockClear();
+
+			await composable.setViewedGoalCompletePreference(0);
+
+			expect(updateUserPreferences).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('completedGoalsHistory (MP-2876)', () => {
+		// Lock the clock to make year math deterministic — the composable reads
+		// new Date().getFullYear() at compute time, so any drift between
+		// build-time and run-time captures would break the assertions.
+		beforeEach(() => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-06-15T12:00:00Z'));
+		});
+
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		const loadPrefsWithGoals = async goals => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-history',
+							preferences: JSON.stringify({ goals }),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+			await composable.loadPreferences('network-only');
+		};
+
+		it('returns an empty array when no goals exist', async () => {
+			await loadPrefsWithGoals([]);
+			expect(composable.completedGoalsHistory.value).toEqual([]);
+		});
+
+		it('excludes in-progress and expired goals', async () => {
+			await loadPrefsWithGoals([
+				{ status: GOAL_STATUS.IN_PROGRESS, dateStarted: '2025-06-15', target: 5 },
+				{ status: GOAL_STATUS.EXPIRED, dateStarted: '2024-06-15', target: 4 },
+			]);
+			expect(composable.completedGoalsHistory.value).toEqual([]);
+		});
+
+		it('excludes the current-year completed goal (still surfaced via userGoal)', async () => {
+			await loadPrefsWithGoals([
+				{ status: GOAL_STATUS.COMPLETED, dateStarted: '2026-02-15', target: 8 },
+			]);
+			expect(composable.completedGoalsHistory.value).toEqual([]);
+		});
+
+		it('includes prior-year completed goals', async () => {
+			await loadPrefsWithGoals([
+				{ status: GOAL_STATUS.COMPLETED, dateStarted: '2025-06-10', target: 6 },
+			]);
+			expect(composable.completedGoalsHistory.value).toHaveLength(1);
+			expect(composable.completedGoalsHistory.value[0].target).toBe(6);
+		});
+
+		it('sorts prior-year completed goals newest year first', async () => {
+			// Use mid-year dates so timezone offsets can't bump the year boundary.
+			await loadPrefsWithGoals([
+				{ status: GOAL_STATUS.COMPLETED, dateStarted: '2023-06-15', target: 3 },
+				{ status: GOAL_STATUS.COMPLETED, dateStarted: '2025-06-15', target: 10 },
+				{ status: GOAL_STATUS.COMPLETED, dateStarted: '2024-06-15', target: 7 },
+			]);
+			const years = composable.completedGoalsHistory.value.map(
+				g => new Date(g.dateStarted).getFullYear(),
+			);
+			expect(years).toEqual([2025, 2024, 2023]);
+		});
+
+		it('excludes completed goals without dateStarted (defensive)', async () => {
+			await loadPrefsWithGoals([
+				{ status: GOAL_STATUS.COMPLETED, target: 5 },
+			]);
+			expect(composable.completedGoalsHistory.value).toEqual([]);
 		});
 	});
 });

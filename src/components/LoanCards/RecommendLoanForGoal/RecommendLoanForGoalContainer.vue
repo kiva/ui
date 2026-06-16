@@ -10,7 +10,7 @@
 			v-bind="contentCardProps"
 			:heading="contentHeading"
 			:is-adding="isAdding"
-			:class="{ '!tw-opacity-low !tw-pointer-events-none !tw-touch-none': isInBasket && expressCheckoutEnabled}"
+			:class="{ '!tw-opacity-low !tw-pointer-events-none !tw-touch-none': showRedirectingLoading }"
 			@add-to-basket="$emit('add-to-basket', $event)"
 			@remove-from-basket="$emit('remove-from-basket', $event)"
 			@jump-filter-page="$emit('jump-filter-page', $event)"
@@ -21,6 +21,7 @@
 			:is-adding="isAdding"
 			:is-in-basket="isInBasket"
 			:express-checkout-enabled="expressCheckoutEnabled"
+			:show-redirecting-loading="showRedirectingLoading"
 			@primary-cta-click="$emit('primary-cta-click', $event)"
 			@checkout-click="$emit('checkout-click', $event)"
 			@secondary-cta-click="$emit('secondary-cta-click', $event)"
@@ -29,7 +30,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import RecommendLoanForGoalContent from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalContent';
 import RecommendLoanForGoalFooter from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalFooter';
 import RecommendLoanForGoalHeader from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalHeader';
@@ -38,7 +39,7 @@ defineOptions({
 	name: 'RecommendLoanForGoalContainer',
 });
 
-defineProps({
+const props = defineProps({
 	headerTitle: {
 		type: String,
 		required: true,
@@ -86,7 +87,20 @@ defineProps({
 		type: Boolean,
 		default: true,
 	},
+	/**
+	 * When we're redirecting to /basket instead of opening the express checkout modal.
+	 */
+	isRedirecting: {
+		type: Boolean,
+		default: false,
+	},
 });
+
+// Express checkout: when the parent signals a pending redirect to /basket,
+// dim the content card and switch the footer to a disabled loading state.
+const showRedirectingLoading = computed(() => (
+	props.expressCheckoutEnabled && props.isRedirecting
+));
 
 defineEmits([
 	'add-to-basket',

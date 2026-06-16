@@ -55,7 +55,10 @@
 			/>
 		</template>
 		<template v-else-if="showRegionExperience && !showLendingNextStepsCards">
-			<div class="goal-card-container">
+			<div
+				class="goal-card-container"
+				:class="{ 'tw-order-last': goalsRowEnabled }"
+			>
 				<JourneyCardCarousel
 					class="carousel carousel-single"
 					user-in-homepage
@@ -234,6 +237,7 @@
 			:tiered-achievements="heroTieredAchievements"
 			:is-updating-goal="isUpdatingGoal"
 			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
+			:show-goal-value-props-copy="!goalsRowEnabled"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:basket-items="basketItems"
 			:is-adding="isAdding"
@@ -251,7 +255,7 @@
 </template>
 
 <script>
-import { inject } from 'vue';
+import { computed, inject } from 'vue';
 import { KvMaterialIcon, KvCheckbox, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { mdiArrowTopRight, mdiArrowRight } from '@mdi/js';
 
@@ -355,7 +359,11 @@ export default {
 		basketItems: {
 			type: Array,
 			default: () => ([]),
-		}
+		},
+		goalsRowEnabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
@@ -411,11 +419,17 @@ export default {
 			return this.lendingNextStepsVariant === 'b' && !this.showPostLendingNextStepsCards;
 		},
 	},
-	setup() {
+	setup(props) {
 		const goalData = inject('goalData');
 
+		// When the featured-goal-slot experiment is on, the in-carousel goal tile is
+		// suppressed in favor of the slot rendered above LendingStats.
+		const hideCompletedGoalCard = computed(
+			() => props.goalsRowEnabled || Boolean(goalData.hideGoalCard?.value)
+		);
+
 		return {
-			hideCompletedGoalCard: goalData.hideGoalCard,
+			hideCompletedGoalCard,
 			goalProgress: goalData.goalProgress,
 			goalProgressLoading: goalData.loading,
 			loadGoalData: goalData.loadGoalData,

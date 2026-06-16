@@ -1,7 +1,7 @@
 <template>
 	<KvLoadingPlaceholder
 		v-if="loading"
-		class="featured-goal-card__loading tw-rounded-lg tw-w-full"
+		class="featured-goal-card__loading !tw-rounded-lg tw-w-full"
 		aria-busy="true"
 	/>
 	<div
@@ -27,14 +27,14 @@
 				class="featured-goal-card__content--no-goal tw-flex tw-flex-col"
 			>
 				<div class="tw-flex tw-flex-col md:tw-w-full">
-					<h3 class="tw-text-title tw-pb-1" v-html="goalCopy.titleNoHistoryWomensDefault()"></h3>
+					<h3 class="tw-text-title tw-pb-1" v-html="noGoalTitle"></h3>
 					<p class="tw-text-small md:tw-text-base tw-pb-3 md:tw-pb-2">
 						{{ goalCopy.TITLE_HOW_MANY_LOANS_GENERIC }}
 					</p>
 					<KvButton
 						class="featured-goal-card__cta featured-goal-card__cta--set-goal tw-w-full"
 						variant="primary"
-						v-kv-track-event="['portfolio', 'click', 'featured-set-a-goal']"
+						v-kv-track-event="['portfolio', 'click', 'set-a-goal']"
 						@click="$emit('set-goal-click')"
 					>
 						Set {{ GOALS_CURRENT_YEAR }} goal
@@ -58,6 +58,7 @@
 						</h5>
 					</div>
 					<KvUtilityMenu
+						v-if="!goalCompleted"
 						menu-position="right-aligned"
 						button-size="small"
 						menu-border-class="tw-border tw-border-tertiary tw-rounded-md"
@@ -70,7 +71,8 @@
 								class="tw-list-none"
 							>
 								<button
-									class="tw-w-full tw-px-2 tw-py-2 tw-rounded-md hover:tw-bg-secondary tw-font-medium"
+									class="tw-w-full tw-px-2 tw-py-2 tw-rounded-md
+										hover:tw-bg-secondary tw-font-medium tw-text-left"
 									@click.prevent="onSelect(action)"
 								>
 									{{ action.label }}
@@ -101,7 +103,6 @@
 								<span
 									style="font-size: 1rem"
 									class="tw-text-secondary"
-									:class="progressTargetMarginClass"
 								>
 									/{{ goalTarget }}
 								</span>
@@ -136,8 +137,7 @@
 						<KvButton
 							class="featured-goal-card__cta featured-goal-card__cta--active-goal tw-w-full"
 							variant="primary"
-							v-kv-track-event="['portfolio', 'click', 'featured-continue-towards-goal']"
-							@click="$emit('cta-click')"
+							@click="handleActiveGoalCtaClick"
 						>
 							{{ activeGoalCta }}
 						</KvButton>
@@ -149,13 +149,16 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import {
+	computed, inject, ref, watch,
+} from 'vue';
 import {
 	KvButton, KvLoadingPlaceholder, KvProgressCircle, KvUtilityMenu,
 } from '@kiva/kv-components';
 import KvIcon from '#src/components/Kv/KvIcon';
 import goalCopy from '#src/util/goalCopy';
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import { showConfetti } from '#src/util/animation/confettiUtils';
 
 const HALF_GOAL_THRESHOLD = 50;
 const COMPLETED_GOAL_THRESHOLD = 100;
@@ -194,17 +197,23 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
+	suppressCompletionConfetti: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits(['set-goal-click', 'cta-click', 'edit-click']);
 
 const menuActions = [
-	{ label: 'Edit goal', value: 'edit-goal' },
+	{ label: 'Edit', value: 'edit-goal' },
 ];
 
 const resolvedState = computed(() => (
 	VALID_STATES.includes(props.state) ? props.state : STATE_NO_GOAL
 ));
+
+const noGoalTitle = computed(() => goalCopy.titleNoGoalYetWomensDefault());
 
 const visibleProgress = computed(() => Math.min(props.goalProgress, props.goalTarget));
 
@@ -225,10 +234,6 @@ const progressValueWrapClass = computed(() => (
 	hasManyDigits.value ? 'tw-flex-col tw-items-center' : null
 ));
 
-const progressTargetMarginClass = computed(() => (
-	hasManyDigits.value ? 'tw-ml-0' : 'tw-ml-0.5'
-));
-
 const activeGoalTitle = computed(() => {
 	if (clampedPercentage.value === 0) return 'Start with your first loan';
 	if (clampedPercentage.value < HALF_GOAL_THRESHOLD) return 'You\'ve started something powerful.';
@@ -247,7 +252,7 @@ const activeGoalDescription = computed(() => {
 	if (pct < COMPLETED_GOAL_THRESHOLD) {
 		return 'Continue creating opportunity for others. Finish strong!';
 	}
-	return `Achieving your goal means you've changed ${props.goalTarget} lives this year;`;
+	return `Achieving your goal means you've changed ${props.goalTarget} lives this year.`;
 });
 
 const activeGoalCta = computed(() => {
@@ -255,9 +260,46 @@ const activeGoalCta = computed(() => {
 	return 'Work toward your goal';
 });
 
-const onSelect = action => {
-	if (action.value === 'edit-goal') emit('edit-click');
+const $kvTrackEvent = inject('$kvTrackEvent');
+
+const handleActiveGoalCtaClick = () => {
+	// Fire a distinct label when the user reaches the completed celebration so
+	// analytics can separate "still working on it" from "viewing achievements."
+	$kvTrackEvent?.(
+		'portfolio',
+		'click',
+		goalCompleted.value ? 'goal-complete-view-achievements' : 'continue-towards-goal',
+	);
+	emit('cta-click');
 };
+
+const onSelect = action => {
+	if (action.value === 'edit-goal') {
+		$kvTrackEvent?.('portfolio', 'click', 'edit-goal');
+		emit('edit-click');
+	}
+};
+
+const hasFiredCompletionConfetti = ref(false);
+
+const fireCompletionConfettiIfReady = () => {
+	if (
+		hasFiredCompletionConfetti.value
+		|| props.loading
+		|| props.suppressCompletionConfetti
+		|| clampedPercentage.value !== COMPLETED_GOAL_THRESHOLD
+	) {
+		return;
+	}
+	hasFiredCompletionConfetti.value = true;
+	showConfetti();
+};
+
+watch(
+	() => [props.loading, props.suppressCompletionConfetti, clampedPercentage.value],
+	fireCompletionConfettiIfReady,
+	{ immediate: true }
+);
 </script>
 
 <style lang="postcss" scoped>
@@ -293,7 +335,7 @@ const onSelect = action => {
 }
 
 .featured-goal-card__loading {
-	height: 191px;
+	height: 196px;
 }
 
 .featured-goal-card__content--no-goal {
@@ -345,10 +387,6 @@ const onSelect = action => {
 	.featured-goal-card__cta--active-goal {
 		width: 286px;
 	}
-}
-
-.featured-goal-card__cta :deep(span) {
-	@apply !tw-min-h-4.5 md:tw-h-auto;
 }
 
 .featured-goal-card__cta :deep(span > span) {
