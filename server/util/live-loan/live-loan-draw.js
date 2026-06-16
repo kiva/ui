@@ -195,7 +195,7 @@ async function drawLegacy(loanData) {
 	}
 }
 
-async function drawClassic(loanData) {
+async function drawClassic(loanData, { skipButton = false } = {}) {
 	// Get canvas & context
 	const canvas = trace('classicCanvasPool.use', () => classicCanvasPool.use());
 	const ctx = trace('canvas.getContext', () => canvas.getContext('2d', { alpha: false }));
@@ -314,26 +314,28 @@ async function drawClassic(loanData) {
 		});
 
 		// Button
-		trace('button', () => {
-			const btnXPos = 252 * classicResizeFactor;
-			const btnYPos = 454 * classicResizeFactor;
-			const btnHeight = 48 * classicResizeFactor;
-			const btnWidth = 180 * classicResizeFactor;
-			const btnBorderRadius = 14 * classicResizeFactor;
-			const btnFontSize = 17 * classicResizeFactor;
-			const btnTxtXPos = btnXPos + (btnWidth / 2);
-			const btnTxtYPos = btnYPos + (btnHeight / 2) - (btnFontSize / 2);
-			// Button background
-			roundRect(ctx, btnXPos, btnYPos, btnWidth, btnHeight, btnBorderRadius);
-			ctx.fillStyle = kivaColors.action;
-			ctx.fill();
-			// Button Text
-			ctx.fillStyle = kivaColors.white;
-			ctx.font = `500 ${btnFontSize}px "Kiva Post Grot"`;
-			ctx.textAlign = 'center';
-			ctx.fillText('Lend now', btnTxtXPos, btnTxtYPos);
-			ctx.textAlign = 'left';
-		});
+		if (!skipButton) {
+			trace('button', () => {
+				const btnXPos = 252 * classicResizeFactor;
+				const btnYPos = 454 * classicResizeFactor;
+				const btnHeight = 48 * classicResizeFactor;
+				const btnWidth = 180 * classicResizeFactor;
+				const btnBorderRadius = 14 * classicResizeFactor;
+				const btnFontSize = 17 * classicResizeFactor;
+				const btnTxtXPos = btnXPos + (btnWidth / 2);
+				const btnTxtYPos = btnYPos + (btnHeight / 2) - (btnFontSize / 2);
+				// Button background
+				roundRect(ctx, btnXPos, btnYPos, btnWidth, btnHeight, btnBorderRadius);
+				ctx.fillStyle = kivaColors.action;
+				ctx.fill();
+				// Button Text
+				ctx.fillStyle = kivaColors.white;
+				ctx.font = `500 ${btnFontSize}px "Kiva Post Grot"`;
+				ctx.textAlign = 'center';
+				ctx.fillText('Lend now', btnTxtXPos, btnTxtYPos);
+				ctx.textAlign = 'left';
+			});
+		}
 
 		// Export to jpeg
 		const buffer = trace('export-jpeg', () => canvas.toBuffer('image/jpeg', { quality: 0.25 }));
@@ -353,6 +355,8 @@ async function drawClassic(loanData) {
 
 export default async function draw(loanData, style) {
 	switch (style) {
+		case 'bundle':
+			return drawClassic(loanData, { skipButton: true });
 		case 'classic':
 			return drawClassic(loanData);
 		case 'legacy':
