@@ -59,7 +59,7 @@ const classicCanvasPool = deePool.create(function makeCanvas() {
 legacyCanvasPool.grow(2);
 classicCanvasPool.grow(2);
 
-async function drawLegacy(loanData) {
+async function drawLegacy(loanData, { skipButton = false } = {}) {
 	// Get canvas & context
 	const canvas = trace('legacyCanvasPool.use', () => legacyCanvasPool.use());
 	const ctx = trace('canvas.getContext', () => canvas.getContext('2d', { alpha: false }));
@@ -138,27 +138,29 @@ async function drawLegacy(loanData) {
 		});
 
 		// Button
-		trace('button', () => {
-			const btnXPos = (cardWidth - bodyWidth) / 2;
-			const btnYPos = 450 * resizeFactor;
-			const btnHeight = 50 * resizeFactor;
-			const btnBorderRadius = 14 * resizeFactor;
-			const btnFontSize = 19;
-			const btnFontRenderSize = btnFontSize * resizeFactor;
-			const btnTxtXPos = cardWidth / 2;
-			const btnTxtYPos = btnYPos + (btnHeight / 2) - (btnFontRenderSize / 2);
-			// ctx.shadowBlur = 0;
-			// ctx.shadowOffsetX = 0;
-			// ctx.shadowOffsetY = 2 * resizeFactor;
-			// ctx.shadowColor = kivaColors.darkBlue;
-			roundRect(ctx, btnXPos, btnYPos, bodyWidth, btnHeight, btnBorderRadius);
-			ctx.fillStyle = kivaColors.action;
-			ctx.fill();
-			ctx.shadowColor = 'transparent';
-			ctx.fillStyle = kivaColors.white;
-			ctx.font = `500 ${btnFontSize * resizeFactor}px "Kiva Post Grot"`;
-			ctx.fillText('Lend now', btnTxtXPos, btnTxtYPos);
-		});
+		if (!skipButton) {
+			trace('button', () => {
+				const btnXPos = (cardWidth - bodyWidth) / 2;
+				const btnYPos = 450 * resizeFactor;
+				const btnHeight = 50 * resizeFactor;
+				const btnBorderRadius = 14 * resizeFactor;
+				const btnFontSize = 19;
+				const btnFontRenderSize = btnFontSize * resizeFactor;
+				const btnTxtXPos = cardWidth / 2;
+				const btnTxtYPos = btnYPos + (btnHeight / 2) - (btnFontRenderSize / 2);
+				// ctx.shadowBlur = 0;
+				// ctx.shadowOffsetX = 0;
+				// ctx.shadowOffsetY = 2 * resizeFactor;
+				// ctx.shadowColor = kivaColors.darkBlue;
+				roundRect(ctx, btnXPos, btnYPos, bodyWidth, btnHeight, btnBorderRadius);
+				ctx.fillStyle = kivaColors.action;
+				ctx.fill();
+				ctx.shadowColor = 'transparent';
+				ctx.fillStyle = kivaColors.white;
+				ctx.font = `500 ${btnFontSize * resizeFactor}px "Kiva Post Grot"`;
+				ctx.fillText('Lend now', btnTxtXPos, btnTxtYPos);
+			});
+		}
 
 		// Borrower Image
 		const hasBorrowerImage = await trace('borrower-image', async () => {
@@ -359,6 +361,8 @@ export default async function draw(loanData, style) {
 			return drawClassic(loanData, { skipButton: true });
 		case 'classic':
 			return drawClassic(loanData);
+		case 'bundle-legacy':
+			return drawLegacy(loanData, { skipButton: true });
 		case 'legacy':
 		default:
 			return drawLegacy(loanData);
