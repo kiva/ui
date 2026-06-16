@@ -398,6 +398,7 @@ describe('live-loan-router bundle-url routes', () => {
 			const result = await makeRequest(app, '/live-loan/flss/u/42/bundle-img/2');
 
 			expect(result.statusCode).toBe(200);
+			expect(result.headers['content-type']).toBe('image/jpeg');
 			expect(drawLoanCard).toHaveBeenCalledWith({ id: 22 }, 'bundle');
 			expect(liveLoanFetch.default).toHaveBeenCalledWith(
 				'user',
@@ -414,6 +415,7 @@ describe('live-loan-router bundle-url routes', () => {
 			const result = await makeRequest(app, '/live-loan/recommendations/u/42/bundle-img/1');
 
 			expect(result.statusCode).toBe(200);
+			expect(result.headers['content-type']).toBe('image/jpeg');
 			expect(drawLoanCard).toHaveBeenCalledWith({ id: 33 }, 'bundle');
 			expect(liveLoanFetch.default).toHaveBeenCalledWith(
 				'user',
