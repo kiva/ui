@@ -98,13 +98,7 @@
 			</template>
 		</kv-tabs>
 
-		<kv-lightbox
-			:visible="isLightboxVisible"
-			:title="lightboxTitle"
-			@lightbox-closed="closeLightbox"
-		>
-			<div v-html="lightboxContent" class="tw-prose"></div>
-		</kv-lightbox>
+		<content-lightbox ref="lightbox" />
 	</section>
 </template>
 
@@ -113,9 +107,11 @@ import { gql } from 'graphql-tag';
 import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 
 import {
-	KvLoadingPlaceholder, KvLightbox, KvTab, KvTabPanel, KvTabs
+	KvLoadingPlaceholder, KvTab, KvTabPanel, KvTabs
 } from '@kiva/kv-components';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
+import { fetchSalesforceSolution } from '#src/util/salesforceSolution';
+import ContentLightbox from './ContentLightbox';
 import FieldPartnerDetails from './FieldPartnerDetails';
 import LoanDetails from './LoanDetails';
 import TrusteeDetails from './TrusteeDetails';
@@ -125,8 +121,8 @@ export default {
 	name: 'DetailsTabs',
 	inject: ['apollo'],
 	components: {
+		ContentLightbox,
 		FieldPartnerDetails,
-		KvLightbox,
 		KvLoadingPlaceholder,
 		KvTab,
 		KvTabPanel,
@@ -152,9 +148,6 @@ export default {
 	data() {
 		return {
 			contentfulDefinitions: null,
-			isLightboxVisible: false,
-			lightboxContent: null,
-			lightboxTitle: '',
 			loan: {
 				name: '',
 				currency: '',
@@ -232,15 +225,6 @@ export default {
 		}
 	},
 	methods: {
-		closeLightbox() {
-			// close lightbox
-			this.isLightboxVisible = false;
-			setTimeout(() => {
-				// clear content
-				this.lightboxTitle = '';
-				this.lightboxContent = null;
-			}, 500); // Delay to allow modal to close before clearing content
-		},
 		loadContentfulDefinitions(contentEntryKey) {
 			this.apollo.query({
 				query: gql`query contentfulDefinitions {
@@ -365,9 +349,10 @@ export default {
 			const contentfulEntry = this.contentfulDefinitions.find(entry => entry.key === contentKey);
 			// setup and show lightbox content
 			if (contentfulEntry) {
-				this.lightboxTitle = contentfulEntry.name;
-				this.lightboxContent = documentToHtmlString(contentfulEntry.richText);
-				this.isLightboxVisible = true;
+				this.$refs.lightbox.open({
+					title: contentfulEntry.name,
+					content: documentToHtmlString(contentfulEntry.richText),
+				});
 			}
 		},
 		showDefinition(payload) {
@@ -380,31 +365,11 @@ export default {
 				this.showContentfulEntry(payload.cid);
 			}
 		},
-		showSalesforceSolution(solutionId) {
-			// fetch data
-			this.apollo.query({
-				query: gql`query salesforceSolution($id: String!) {
-					general {
-						salesforceSolution(id: $id) {
-							name
-							note
-						}
-					}
-				}`,
-				variables: {
-					id: solutionId
-				}
-			}).then(result => {
-				// assign and show lightbox content
-				const solutionData = result?.data?.general?.salesforceSolution ?? null;
-				const solutionTitle = solutionData?.name ?? '';
-				const solutionContent = solutionData?.note ?? null;
-				if (solutionData) {
-					this.lightboxTitle = solutionTitle;
-					this.lightboxContent = solutionContent;
-					this.isLightboxVisible = true;
-				}
-			});
+		async showSalesforceSolution(solutionId) {
+			const solution = await fetchSalesforceSolution(this.apollo, solutionId);
+			if (solution) {
+				this.$refs.lightbox.open(solution);
+			}
 		},
 	},
 	mounted() {
