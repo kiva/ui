@@ -4,7 +4,7 @@ import { getFromCache, setToCache } from './util/memJsUtils.js';
 import drawLoanCard from './util/live-loan/live-loan-draw.js';
 import fetchLoansByType, { QUERY_TYPE } from './util/live-loan/live-loan-fetch.js';
 import { trace } from './util/mockTrace.js';
-import { resolveBundleSize, DEFAULT_BUNDLE_COUNT } from './util/live-loan/bundle-size.js';
+import { resolveBundleSize, DEFAULT_BUNDLE_COUNT, MAX_BUNDLE_COUNT } from './util/live-loan/bundle-size.js';
 
 async function fetchRecommendedLoans(type, id, cache, queryType = QUERY_TYPE.DEFAULT, count = DEFAULT_BUNDLE_COUNT) {
 	const queryTypeSuffix = queryType !== QUERY_TYPE.DEFAULT ? `-${queryType}` : '';
@@ -133,13 +133,13 @@ async function redirectToBundleUrl(type, cache, req, res, queryType = QUERY_TYPE
 	}
 }
 
-async function serveImg(type, style, cache, req, res, queryType = QUERY_TYPE.DEFAULT) {
+async function serveImg(type, style, cache, req, res, queryType = QUERY_TYPE.DEFAULT, count = DEFAULT_BUNDLE_COUNT) {
 	let loan;
 	let loanImg;
 	let hasBorrowerImage = true;
 
 	try {
-		loan = await trace('getLoanForRequest', async () => getLoanForRequest(type, cache, req, queryType));
+		loan = await trace('getLoanForRequest', async () => getLoanForRequest(type, cache, req, queryType, count));
 		const queryTypeSuffix = queryType !== QUERY_TYPE.DEFAULT ? `-${queryType}` : '';
 		const imgCachedName = `loan-card-img-${style}-${loan.id}${queryTypeSuffix}`;
 		const cachedLoanImg = await getFromCache(imgCachedName, cache);
@@ -227,6 +227,20 @@ export default function liveLoanRouter(cache) {
 		});
 	});
 
+	// User IMG Router (Bundle - no CTA)
+	router.use('/u/:id(\\d{0,})/bundle-img/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', 'bundle', cache, req, res, QUERY_TYPE.DEFAULT, MAX_BUNDLE_COUNT);
+		});
+	});
+
+	// User IMG Router (Bundle Legacy - no CTA)
+	router.use('/u/:id(\\d{0,})/bundle-img-legacy/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', 'bundle-legacy', cache, req, res, QUERY_TYPE.DEFAULT, MAX_BUNDLE_COUNT);
+		});
+	});
+
 	// User URL Router FLSS
 	router.use('/flss/u/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.flss.user.redirectToUrl', { resource: req.path }, async () => {
@@ -248,6 +262,20 @@ export default function liveLoanRouter(cache) {
 		});
 	});
 
+	// User IMG Router FLSS (Bundle - no CTA)
+	router.use('/flss/u/:id(\\d{0,})/bundle-img/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.flss.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', 'bundle', cache, req, res, QUERY_TYPE.FLSS, MAX_BUNDLE_COUNT);
+		});
+	});
+
+	// User IMG Router FLSS (Bundle Legacy - no CTA)
+	router.use('/flss/u/:id(\\d{0,})/bundle-img-legacy/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.flss.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', 'bundle-legacy', cache, req, res, QUERY_TYPE.FLSS, MAX_BUNDLE_COUNT);
+		});
+	});
+
 	// User URL Router Recommendations
 	router.use('/recommendations/u/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.flss.user.redirectToUrl', { resource: req.path }, async () => {
@@ -266,6 +294,20 @@ export default function liveLoanRouter(cache) {
 	router.use('/recommendations/u/:id(\\d{0,})/img2/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.recommendations.user.serveImg', { resource: req.path }, async () => {
 			await serveImg('user', 'classic', cache, req, res, QUERY_TYPE.RECOMMENDATIONS);
+		});
+	});
+
+	// User IMG Router Recommendations (Bundle - no CTA)
+	router.use('/recommendations/u/:id(\\d{0,})/bundle-img/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.recommendations.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', 'bundle', cache, req, res, QUERY_TYPE.RECOMMENDATIONS, MAX_BUNDLE_COUNT);
+		});
+	});
+
+	// User IMG Router Recommendations (Bundle Legacy - no CTA)
+	router.use('/recommendations/u/:id(\\d{0,})/bundle-img-legacy/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.recommendations.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', 'bundle-legacy', cache, req, res, QUERY_TYPE.RECOMMENDATIONS, MAX_BUNDLE_COUNT);
 		});
 	});
 
