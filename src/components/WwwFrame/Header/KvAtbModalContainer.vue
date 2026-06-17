@@ -207,11 +207,7 @@ const fetchPostCheckoutAchievements = async loanIds => {
 		return;
 	}
 
-	// If added loan is not related to user goal, proceed with achievements logic.
-	// This condition will prevent any conflict between goal and achievement messages.
-	// While the lender has an active goal experience we also suppress achievement
-	// nudges entirely so they don't compete with the goal flow.
-	if (!isLoanGoal.value && !suppressAchievementNudges.value) {
+	if (!suppressAchievementNudges.value) {
 		await apollo.query({
 			query: postCheckoutAchievementsQuery,
 			variables: { loanIds }

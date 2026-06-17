@@ -4803,16 +4803,6 @@ describe('useGoalData', () => {
 	});
 
 	describe('suppressAchievementNudges (MP-2875)', () => {
-		// Lock the clock so the year-keyed viewedGoalComplete check is deterministic.
-		beforeEach(() => {
-			vi.useFakeTimers();
-			vi.setSystemTime(new Date('2026-06-15T12:00:00Z'));
-		});
-
-		afterEach(() => {
-			vi.useRealTimers();
-		});
-
 		const loadPrefs = async prefs => {
 			mockApollo.query = vi.fn().mockResolvedValue({
 				data: {
@@ -4826,9 +4816,6 @@ describe('useGoalData', () => {
 				},
 			});
 			await composable.loadPreferences('network-only');
-			// loadPreferences only populates the prefs ref; userGoal is set by
-			// setGoalState (normally called by loadGoalData). Set it explicitly
-			// so the computed sees the right active goal.
 			composable.setGoalState(prefs);
 		};
 
@@ -4849,7 +4836,7 @@ describe('useGoalData', () => {
 			expect(composable.suppressAchievementNudges.value).toBe(true);
 		});
 
-		it('is true when the goal is completed but the celebration has not been viewed', async () => {
+		it('flips back to false as soon as the goal is completed', async () => {
 			await loadPrefs({
 				goals: [{
 					status: GOAL_STATUS.COMPLETED,
@@ -4857,19 +4844,6 @@ describe('useGoalData', () => {
 					category: 'womens-equality',
 					target: 5,
 				}],
-			});
-			expect(composable.suppressAchievementNudges.value).toBe(true);
-		});
-
-		it('flips back to false once viewedGoalComplete is set for the current year', async () => {
-			await loadPrefs({
-				goals: [{
-					status: GOAL_STATUS.COMPLETED,
-					dateStarted: '2026-02-10T12:00:00.000Z',
-					category: 'womens-equality',
-					target: 5,
-				}],
-				viewedGoalComplete: { 2026: true },
 			});
 			expect(composable.suppressAchievementNudges.value).toBe(false);
 		});
