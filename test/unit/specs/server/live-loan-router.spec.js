@@ -3,6 +3,7 @@ import express from 'express';
 import liveLoanRouter from '#server/live-loan-router';
 import * as liveLoanFetch from '#server/util/live-loan/live-loan-fetch';
 import * as memJsUtils from '#server/util/memJsUtils';
+import drawLoanCard from '#server/util/live-loan/live-loan-draw';
 
 // Mock out modules to prevent real network/cache calls
 vi.mock('#server/util/live-loan/live-loan-fetch');
@@ -368,6 +369,141 @@ describe('live-loan-router bundle-url routes', () => {
 			expect(result.statusCode).toBe(302);
 			expect(result.location).toBe('/add-loan-bundle?loanIds=1,2,3,4');
 			expect(liveLoanFetch.default).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('serveImg - bundle-img routes', () => {
+		beforeEach(() => {
+			drawLoanCard.mockResolvedValue({ buffer: Buffer.from('jpeg-bytes'), hasBorrowerImage: true });
+		});
+
+		it('serves jpeg for /u/:id/bundle-img/:offset with bundle style', async () => {
+			liveLoanFetch.default.mockResolvedValue([
+				{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 },
+			]);
+
+			const app = createApp(cache);
+			const result = await makeRequest(app, '/live-loan/u/42/bundle-img/1');
+
+			expect(result.statusCode).toBe(200);
+			expect(result.headers['content-type']).toBe('image/jpeg');
+			expect(drawLoanCard).toHaveBeenCalledWith({ id: 1 }, 'bundle');
+			expect(liveLoanFetch.default).toHaveBeenCalledWith(
+				'user',
+				'42',
+				liveLoanFetch.QUERY_TYPE.DEFAULT,
+				6,
+			);
+		});
+
+		it('FLSS bundle-img route passes FLSS query type and bundle style', async () => {
+			liveLoanFetch.default.mockResolvedValue([{ id: 11 }, { id: 22 }]);
+
+			const app = createApp(cache);
+			const result = await makeRequest(app, '/live-loan/flss/u/42/bundle-img/2');
+
+			expect(result.statusCode).toBe(200);
+			expect(result.headers['content-type']).toBe('image/jpeg');
+			expect(drawLoanCard).toHaveBeenCalledWith({ id: 22 }, 'bundle');
+			expect(liveLoanFetch.default).toHaveBeenCalledWith(
+				'user',
+				'42',
+				liveLoanFetch.QUERY_TYPE.FLSS,
+				6,
+			);
+		});
+
+		it('recommendations bundle-img route passes recommendations query type and bundle style', async () => {
+			liveLoanFetch.default.mockResolvedValue([{ id: 33 }]);
+
+			const app = createApp(cache);
+			const result = await makeRequest(app, '/live-loan/recommendations/u/42/bundle-img/1');
+
+			expect(result.statusCode).toBe(200);
+			expect(result.headers['content-type']).toBe('image/jpeg');
+			expect(drawLoanCard).toHaveBeenCalledWith({ id: 33 }, 'bundle');
+			expect(liveLoanFetch.default).toHaveBeenCalledWith(
+				'user',
+				'42',
+				liveLoanFetch.QUERY_TYPE.RECOMMENDATIONS,
+				6,
+			);
+		});
+
+		it('legacy /u/:id/img2/:offset route still fetches the 4-loan default', async () => {
+			liveLoanFetch.default.mockResolvedValue([
+				{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 },
+			]);
+
+			const app = createApp(cache);
+			const result = await makeRequest(app, '/live-loan/u/42/img2/1');
+
+			expect(result.statusCode).toBe(200);
+			expect(liveLoanFetch.default).toHaveBeenCalledWith(
+				'user',
+				'42',
+				liveLoanFetch.QUERY_TYPE.DEFAULT,
+				4,
+			);
+		});
+	});
+
+	describe('serveImg - bundle-img-legacy routes', () => {
+		beforeEach(() => {
+			drawLoanCard.mockResolvedValue({ buffer: Buffer.from('jpeg-bytes'), hasBorrowerImage: true });
+		});
+
+		it('serves jpeg for /u/:id/bundle-img-legacy/:offset with bundle-legacy style', async () => {
+			liveLoanFetch.default.mockResolvedValue([
+				{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 },
+			]);
+
+			const app = createApp(cache);
+			const result = await makeRequest(app, '/live-loan/u/42/bundle-img-legacy/1');
+
+			expect(result.statusCode).toBe(200);
+			expect(result.headers['content-type']).toBe('image/jpeg');
+			expect(drawLoanCard).toHaveBeenCalledWith({ id: 1 }, 'bundle-legacy');
+			expect(liveLoanFetch.default).toHaveBeenCalledWith(
+				'user',
+				'42',
+				liveLoanFetch.QUERY_TYPE.DEFAULT,
+				6,
+			);
+		});
+
+		it('FLSS bundle-img-legacy route passes FLSS query type and bundle-legacy style', async () => {
+			liveLoanFetch.default.mockResolvedValue([{ id: 11 }, { id: 22 }]);
+
+			const app = createApp(cache);
+			const result = await makeRequest(app, '/live-loan/flss/u/42/bundle-img-legacy/2');
+
+			expect(result.statusCode).toBe(200);
+			expect(result.headers['content-type']).toBe('image/jpeg');
+			expect(drawLoanCard).toHaveBeenCalledWith({ id: 22 }, 'bundle-legacy');
+			expect(liveLoanFetch.default).toHaveBeenCalledWith(
+				'user',
+				'42',
+				liveLoanFetch.QUERY_TYPE.FLSS,
+				6,
+			);
+		});
+
+		it('recommendations bundle-img-legacy route uses recs query type and bundle-legacy style', async () => {
+			liveLoanFetch.default.mockResolvedValue([{ id: 33 }]);
+
+			const app = createApp(cache);
+			const result = await makeRequest(app, '/live-loan/recommendations/u/42/bundle-img-legacy/1');
+
+			expect(result.statusCode).toBe(200);
+			expect(result.headers['content-type']).toBe('image/jpeg');
+			expect(drawLoanCard).toHaveBeenCalledWith({ id: 33 }, 'bundle-legacy');
+			expect(liveLoanFetch.default).toHaveBeenCalledWith(
+				'user',
+				'42',
+				liveLoanFetch.QUERY_TYPE.RECOMMENDATIONS,
+				6,
+			);
 		});
 	});
 });

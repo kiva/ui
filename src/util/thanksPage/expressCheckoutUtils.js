@@ -1,4 +1,6 @@
+import { basketTotalsQuery } from '@kiva/kv-shop';
 import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
+import removeCreditByType from '#src/graphql/mutation/shopRemoveCreditByType.graphql';
 
 const DONATION_TYPENAME = 'Donation';
 
@@ -55,3 +57,34 @@ export async function clearBasketDonation({ apollo, basketId, donation }) {
 export const shouldReopenExpressCheckout = (items = [], payload = {}) => (
 	!!payload?.recommendLoanIsInBasket && filterOutDonations(items).length === 1
 );
+
+/**
+ * Removes an applied credit from the basket (e.g. a redemption code promotion
+ * or a bonus credit) and then forces a fresh fetch of the basket totals so
+ * any active `watchBasketTotals` subscription emits the updated values.
+ *
+ * Mirrors the `OrderTotals` → `CheckoutPage.refreshTotals` pattern: the
+ * mutation alone does not return totals, so the cache must be invalidated by
+ * a `network-only` re-fetch of the watched query.
+ *
+ * Throws if either the mutation or the refetch returns GraphQL errors so the
+ * caller can surface a tip message.
+ *
+ * TODO: (optional) we could use the method 'removePromoCredit' from
+ * <kv-ui-elements/@kiva/kv-shop/src/basketCredits.ts> if we fix it in the future
+ * then remove this one.
+ */
+export async function removeBasketCredit({ apollo, basketId, creditType }) {
+	const { errors } = await apollo.mutate({
+		mutation: removeCreditByType,
+		variables: { creditType, basketId },
+	});
+	if (errors?.length) {
+		throw new Error(errors[0]?.message ?? `Failed to remove ${creditType}`);
+	}
+	await apollo.query({
+		query: basketTotalsQuery,
+		variables: { basketId },
+		fetchPolicy: 'network-only',
+	});
+}

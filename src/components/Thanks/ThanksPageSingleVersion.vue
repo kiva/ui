@@ -572,7 +572,9 @@ onMounted(async () => {
 	goalSignupThanksViewCapped.value = !props.isGuest
 		&& isEmptyGoal.value
 		&& isGoalSignupThanksViewCapped(cookieStore);
-	if (!props.isGuest && isEmptyGoal.value && !goalSignupThanksViewCapped.value) {
+	if (!props.isGuest
+		&& isEmptyGoal.value
+		&& !goalSignupThanksViewCapped.value) {
 		incrementGoalSignupThanksViewCount(cookieStore);
 	}
 

@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import { nextTick, ref } from 'vue';
 import MyKivaFeaturedSlot from '#src/components/MyKiva/MyKivaFeaturedSlot';
 import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
-import { ID_US_ECONOMIC_EQUALITY } from '#src/composables/useBadgeData';
+import { ID_US_ECONOMIC_EQUALITY, ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 
 vi.mock('vue-router', () => ({
 	useRouter: () => ({}),
@@ -15,8 +15,9 @@ vi.mock('#src/util/logReadQueryError', () => ({
 
 const FEATURED_CARD_STUB = {
 	name: 'FeaturedGoalCard',
-	props: ['state', 'loading', 'suppressCompletionConfetti'],
+	props: ['state', 'loading', 'prevYearLoans', 'suppressCompletionConfetti'],
 	template: '<div data-testid="featured-goal-card" :data-state="state" '
+		+ ':data-prev-year-loans="String(prevYearLoans)" '
 		+ ':data-suppress-confetti="String(suppressCompletionConfetti)" />',
 };
 
@@ -46,6 +47,7 @@ const mountSlot = ({ goalData = buildGoalData(), props = {}, trackEvent = vi.fn(
 		},
 		global: {
 			provide: {
+				apollo: {},
 				goalData,
 				$kvTrackEvent: trackEvent,
 			},
@@ -69,6 +71,19 @@ describe('MyKivaFeaturedSlot', () => {
 			const card = wrapper.find('[data-testid="featured-goal-card"]');
 			expect(card.exists()).toBe(true);
 			expect(card.attributes('data-state')).toBe('no-goal');
+		});
+
+		it('passes previous-year women loan count to the no-goal card', () => {
+			const { wrapper } = mountSlot({
+				goalData: buildGoalData({ status: null }),
+				props: {
+					heroTieredAchievements: [
+						{ id: ID_WOMENS_EQUALITY, progressForYear: 2 },
+					],
+				},
+			});
+			const card = wrapper.find('[data-testid="featured-goal-card"]');
+			expect(card.attributes('data-prev-year-loans')).toBe('2');
 		});
 
 		it('renders active-goal state when the lender has an in-progress goal', () => {

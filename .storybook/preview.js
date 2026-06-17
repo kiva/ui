@@ -1,7 +1,7 @@
 import { setup } from '@storybook/vue3';
 import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
 import { VueHeadMixin, createHead } from '@unhead/vue';
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createMemoryHistory } from 'vue-router';
 import { KvThemeProvider } from '@kiva/kv-components';
 import { defaultTheme } from '@kiva/kv-tokens';
 import changeCaseFilter from '../src/plugins/change-case-filter';
@@ -24,8 +24,15 @@ import config from '../config/local';
 setup((app) => {
 	// Create a new router instance
 	const router = createRouter({
-		history: createWebHistory(),
-		routes: [],
+		// Memory history keeps route changes in-memory instead of modifying the
+		// browser URL. Without this, stories that call $router.replace() or
+		// $router.push() navigate the iframe away from Storybook's URL.
+		history: createMemoryHistory(),
+		routes: [
+			// The catch-all route ensures vue-router can resolve any path/query
+			// combination without throwing "No match found" errors.
+			{ path: '/:catchAll(.*)*', component: { template: '' } },
+		],
 	});
 	app.use(router);
 

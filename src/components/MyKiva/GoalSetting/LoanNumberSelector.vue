@@ -19,7 +19,7 @@
 						tw-text-eco-green-3 lg:!tw-flex-row lg:!tw-items-baseline lg:tw-gap-0.5"
 		>
 			<span
-				class="tw-text-display tw-text-center !tw-text-headline"
+				class="loan-number-selector__number tw-text-display tw-text-center !tw-text-headline"
 				style="line-height: 1;"
 			>
 				{{ loansNumber }}
@@ -33,7 +33,7 @@
 			>
 				{{ highlightedText }}
 			</div>
-			<div class="tw-text-primary !tw-font-medium tw-text-label tw-text-center">
+			<div class="tw-text-primary !tw-font-medium tw-text-label tw-text-center lg:tw-whitespace-nowrap">
 				{{ optionText }}
 			</div>
 		</div>

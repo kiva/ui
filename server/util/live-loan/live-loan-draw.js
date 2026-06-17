@@ -23,6 +23,8 @@ polyfillPath2D(global);
 const resizeFactor = 3;
 const cardWidth = 300 * resizeFactor;
 const cardHeight = 525 * resizeFactor;
+// Bundle Legacy is the legacy card with the CTA removed; shrink height to ~20px below the fundraising row
+const bundleLegacyCardHeight = 450 * resizeFactor;
 
 // Kiva Classic styling constants
 const classicResizeFactor = 3;
@@ -51,17 +53,25 @@ trace('registerFonts', () => {
 const legacyCanvasPool = deePool.create(function makeCanvas() {
 	return trace('createLegacyCanvas', () => createCanvas(cardWidth, cardHeight));
 });
+// eslint-disable-next-line prefer-arrow-callback
+const bundleLegacyCanvasPool = deePool.create(function makeCanvas() {
+	return trace('createBundleLegacyCanvas', () => createCanvas(cardWidth, bundleLegacyCardHeight));
+});
 
 // eslint-disable-next-line prefer-arrow-callback
 const classicCanvasPool = deePool.create(function makeCanvas() {
 	return trace('createClassicCanvas', () => createCanvas(classicCardWidth, classicCardHeight));
 });
 legacyCanvasPool.grow(2);
+bundleLegacyCanvasPool.grow(2);
 classicCanvasPool.grow(2);
 
-async function drawLegacy(loanData) {
+async function drawLegacy(loanData, { skipButton = false } = {}) {
+	const pool = skipButton ? bundleLegacyCanvasPool : legacyCanvasPool;
+	const poolTraceName = skipButton ? 'bundleLegacyCanvasPool' : 'legacyCanvasPool';
+	const effectiveCardHeight = skipButton ? bundleLegacyCardHeight : cardHeight;
 	// Get canvas & context
-	const canvas = trace('legacyCanvasPool.use', () => legacyCanvasPool.use());
+	const canvas = trace(`${poolTraceName}.use`, () => pool.use());
 	const ctx = trace('canvas.getContext', () => canvas.getContext('2d', { alpha: false }));
 	const borderThickness = 2 * resizeFactor;
 	const bodyWidth = cardWidth * 0.85;
@@ -82,7 +92,7 @@ async function drawLegacy(loanData) {
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'top';
 			ctx.fillStyle = '#fff';
-			ctx.fillRect(0, 0, cardWidth, cardHeight);
+			ctx.fillRect(0, 0, cardWidth, effectiveCardHeight);
 		});
 
 		// Borrower name
@@ -138,27 +148,29 @@ async function drawLegacy(loanData) {
 		});
 
 		// Button
-		trace('button', () => {
-			const btnXPos = (cardWidth - bodyWidth) / 2;
-			const btnYPos = 450 * resizeFactor;
-			const btnHeight = 50 * resizeFactor;
-			const btnBorderRadius = 14 * resizeFactor;
-			const btnFontSize = 19;
-			const btnFontRenderSize = btnFontSize * resizeFactor;
-			const btnTxtXPos = cardWidth / 2;
-			const btnTxtYPos = btnYPos + (btnHeight / 2) - (btnFontRenderSize / 2);
-			// ctx.shadowBlur = 0;
-			// ctx.shadowOffsetX = 0;
-			// ctx.shadowOffsetY = 2 * resizeFactor;
-			// ctx.shadowColor = kivaColors.darkBlue;
-			roundRect(ctx, btnXPos, btnYPos, bodyWidth, btnHeight, btnBorderRadius);
-			ctx.fillStyle = kivaColors.action;
-			ctx.fill();
-			ctx.shadowColor = 'transparent';
-			ctx.fillStyle = kivaColors.white;
-			ctx.font = `500 ${btnFontSize * resizeFactor}px "Kiva Post Grot"`;
-			ctx.fillText('Lend now', btnTxtXPos, btnTxtYPos);
-		});
+		if (!skipButton) {
+			trace('button', () => {
+				const btnXPos = (cardWidth - bodyWidth) / 2;
+				const btnYPos = 450 * resizeFactor;
+				const btnHeight = 50 * resizeFactor;
+				const btnBorderRadius = 14 * resizeFactor;
+				const btnFontSize = 19;
+				const btnFontRenderSize = btnFontSize * resizeFactor;
+				const btnTxtXPos = cardWidth / 2;
+				const btnTxtYPos = btnYPos + (btnHeight / 2) - (btnFontRenderSize / 2);
+				// ctx.shadowBlur = 0;
+				// ctx.shadowOffsetX = 0;
+				// ctx.shadowOffsetY = 2 * resizeFactor;
+				// ctx.shadowColor = kivaColors.darkBlue;
+				roundRect(ctx, btnXPos, btnYPos, bodyWidth, btnHeight, btnBorderRadius);
+				ctx.fillStyle = kivaColors.action;
+				ctx.fill();
+				ctx.shadowColor = 'transparent';
+				ctx.fillStyle = kivaColors.white;
+				ctx.font = `500 ${btnFontSize * resizeFactor}px "Kiva Post Grot"`;
+				ctx.fillText('Lend now', btnTxtXPos, btnTxtYPos);
+			});
+		}
 
 		// Borrower Image
 		const hasBorrowerImage = await trace('borrower-image', async () => {
@@ -175,7 +187,7 @@ async function drawLegacy(loanData) {
 				borderThickness / 2,
 				borderThickness / 2,
 				cardWidth - borderThickness,
-				cardHeight - borderThickness
+				effectiveCardHeight - borderThickness
 			);
 		});
 
@@ -183,19 +195,19 @@ async function drawLegacy(loanData) {
 		const buffer = trace('export-jpeg', () => canvas.toBuffer('image/jpeg', { quality: 0.5 }));
 
 		// Recycle canvas for use in other requests
-		trace('legacyCanvasPool.recycle', () => legacyCanvasPool.recycle(canvas));
+		trace(`${poolTraceName}.recycle`, () => pool.recycle(canvas));
 
 		return { buffer, hasBorrowerImage };
 	} catch (e) {
 		// Recycle canvas for use in other requests
 		if (canvas) {
-			trace('legacyCanvasPool.recycle', () => legacyCanvasPool.recycle(canvas));
+			trace(`${poolTraceName}.recycle`, () => pool.recycle(canvas));
 		}
 		throw e;
 	}
 }
 
-async function drawClassic(loanData) {
+async function drawClassic(loanData, { skipButton = false } = {}) {
 	// Get canvas & context
 	const canvas = trace('classicCanvasPool.use', () => classicCanvasPool.use());
 	const ctx = trace('canvas.getContext', () => canvas.getContext('2d', { alpha: false }));
@@ -314,26 +326,28 @@ async function drawClassic(loanData) {
 		});
 
 		// Button
-		trace('button', () => {
-			const btnXPos = 252 * classicResizeFactor;
-			const btnYPos = 454 * classicResizeFactor;
-			const btnHeight = 48 * classicResizeFactor;
-			const btnWidth = 180 * classicResizeFactor;
-			const btnBorderRadius = 14 * classicResizeFactor;
-			const btnFontSize = 17 * classicResizeFactor;
-			const btnTxtXPos = btnXPos + (btnWidth / 2);
-			const btnTxtYPos = btnYPos + (btnHeight / 2) - (btnFontSize / 2);
-			// Button background
-			roundRect(ctx, btnXPos, btnYPos, btnWidth, btnHeight, btnBorderRadius);
-			ctx.fillStyle = kivaColors.action;
-			ctx.fill();
-			// Button Text
-			ctx.fillStyle = kivaColors.white;
-			ctx.font = `500 ${btnFontSize}px "Kiva Post Grot"`;
-			ctx.textAlign = 'center';
-			ctx.fillText('Lend now', btnTxtXPos, btnTxtYPos);
-			ctx.textAlign = 'left';
-		});
+		if (!skipButton) {
+			trace('button', () => {
+				const btnXPos = 252 * classicResizeFactor;
+				const btnYPos = 454 * classicResizeFactor;
+				const btnHeight = 48 * classicResizeFactor;
+				const btnWidth = 180 * classicResizeFactor;
+				const btnBorderRadius = 14 * classicResizeFactor;
+				const btnFontSize = 17 * classicResizeFactor;
+				const btnTxtXPos = btnXPos + (btnWidth / 2);
+				const btnTxtYPos = btnYPos + (btnHeight / 2) - (btnFontSize / 2);
+				// Button background
+				roundRect(ctx, btnXPos, btnYPos, btnWidth, btnHeight, btnBorderRadius);
+				ctx.fillStyle = kivaColors.action;
+				ctx.fill();
+				// Button Text
+				ctx.fillStyle = kivaColors.white;
+				ctx.font = `500 ${btnFontSize}px "Kiva Post Grot"`;
+				ctx.textAlign = 'center';
+				ctx.fillText('Lend now', btnTxtXPos, btnTxtYPos);
+				ctx.textAlign = 'left';
+			});
+		}
 
 		// Export to jpeg
 		const buffer = trace('export-jpeg', () => canvas.toBuffer('image/jpeg', { quality: 0.25 }));
@@ -353,8 +367,12 @@ async function drawClassic(loanData) {
 
 export default async function draw(loanData, style) {
 	switch (style) {
+		case 'bundle':
+			return drawClassic(loanData, { skipButton: true });
 		case 'classic':
 			return drawClassic(loanData);
+		case 'bundle-legacy':
+			return drawLegacy(loanData, { skipButton: true });
 		case 'legacy':
 		default:
 			return drawLegacy(loanData);

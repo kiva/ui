@@ -1,5 +1,11 @@
 <template>
-	<div class="tw-flex tw-flex-col tw-justify-center tw-gap-0 lg:tw-gap-1.5 tw-items-center">
+	<div
+		class="tw-flex tw-flex-col tw-justify-center tw-gap-0 lg:tw-gap-1.5 tw-items-center"
+		:class="{
+			'goal-selector--compact': compactLayout,
+			'goal-selector--base-prompt': basePromptText,
+		}"
+	>
 		<!-- Goal Progress Ring (shown after goal is set) -->
 		<GoalProgressRing
 			v-if="isGoalSet && !editGoalFromSettings"
@@ -21,7 +27,7 @@
 			<img
 				v-if="!isGoalTileExperimentEnabled"
 				:src="HandsPlant"
-				class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
+				class="goal-selector__image lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
 			>
 			<KvLoadingPlaceholder
 				v-if="isLoadingData"
@@ -33,11 +39,10 @@
 				<img
 					v-if="isGoalTileExperimentEnabled && !isGoalSet && !isLarge"
 					:src="HandsPlant"
-					class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5 tw-mx-auto"
+					class="goal-selector__image lg:tw-mb-1 tw-w-10 lg:tw-w-12.5 tw-mx-auto"
 				>
 				<h2
-					class="tw-text-headline tw-px-4 lg:tw-px-7 tw-text-center"
-					style="line-height: 125%;"
+					class="goal-selector__title tw-text-headline tw-px-4 lg:tw-px-7 tw-text-center"
 					v-html="titleText"
 				>
 				</h2>
@@ -50,20 +55,31 @@
 
 			<p
 				v-if="showLoanQuestionPrompt"
-				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
+				v-html="loanQuestionPrompt"
+				class="goal-selector__prompt tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2
+					tw-text-center"
 			>
-				How many loans will you make this year?
 			</p>
 
 			<p
 				v-if="showGoalValuePropsCopy"
 				v-html="subtitleText"
-				class="tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
+				class="goal-selector__prompt tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2
+					tw-text-center"
+			>
+			</p>
+
+			<p
+				v-if="subtitleText && !showGoalValuePropsCopy && progressSubtitleBeforeOptions"
+				v-html="subtitleText"
+				class="goal-selector__prompt tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2
+					tw-text-center"
 			>
 			</p>
 
 			<div
-				class="tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5 tw-my-1"
+				class="goal-selector__options tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-1 lg:tw-gap-1.5
+					tw-my-1"
 			>
 				<template v-if="loadingCurrentYear || isLoadingData">
 					<KvLoadingPlaceholder
@@ -212,7 +228,7 @@
 			</template>
 
 			<p
-				v-if="subtitleText && !showGoalValuePropsCopy"
+				v-if="subtitleText && !showGoalValuePropsCopy && !progressSubtitleBeforeOptions"
 				v-html="subtitleText"
 				class="tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
 			>
@@ -257,8 +273,8 @@ import {
 	KvButton, KvMaterialIcon, KvLoadingPlaceholder, KvAccordionItem
 } from '@kiva/kv-components';
 
-import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL, ID_US_ECONOMIC_EQUALITY } from '#src/composables/useBadgeData';
-import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
+import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
+import HandsPlant from '#src/assets/images/thanks-page/hands-plant-v3.png';
 import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSelector';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import GoalCustomAmountInput from '#src/components/MyKiva/GoalSetting/GoalCustomAmountInput';
@@ -385,6 +401,41 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Whether the selector should use the direct loan question instead of entrypoint-style headline copy.
+	 */
+	useDirectQuestionTitle: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Whether the no-goal-yet intro line should render smaller than the main title.
+	 */
+	compactNoGoalYetTitle: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Whether to use the tighter thank-you page goal selector spacing.
+	 */
+	compactLayout: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Whether the current-year progress subtitle should render before the loan options.
+	 */
+	progressSubtitleBeforeOptions: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Whether prompt copy should keep base text size in compact layout.
+	 */
+	basePromptText: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits([
@@ -441,9 +492,17 @@ const loansLastYear = computed(() => {
 });
 
 const showLoanQuestionPrompt = computed(() => {
+	if (props.useDirectQuestionTitle) return false;
 	return goalSignupCopyVariant === GOAL_SIGNUP_COPY_NO_GOAL_YET
 		|| (!props.showGoalValuePropsCopy
 			&& (loansLastYear.value > 0 || props.selectedCategoryId === ID_WOMENS_EQUALITY));
+});
+
+const loanQuestionPrompt = computed(() => {
+	if (goalSignupCopyVariant === GOAL_SIGNUP_COPY_NO_GOAL_YET && !props.useDirectQuestionTitle) {
+		return goalCopy.titleLoanQuestionForCategory(props.selectedCategoryId, props.selectedCategoryName);
+	}
+	return goalCopy.TITLE_HOW_MANY_LOANS_GENERIC;
 });
 
 // Use progressForCurrentYear from tieredAchievements if available (set on Thanks page),
@@ -485,8 +544,14 @@ const loadLoansThisYear = async () => {
 };
 
 const titleText = computed(() => {
+	if (props.useDirectQuestionTitle) {
+		return goalCopy.titleLoanQuestionForCategory(props.selectedCategoryId, props.selectedCategoryName, {
+			splitQuestion: true,
+		});
+	}
+
 	if (goalSignupCopyVariant === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
-		return goalCopy.CARD_NO_GOAL_YET_EXPERIMENT;
+		return goalCopy.titleNoGoalYetSelectorEntrypoint({ compactIntro: props.compactNoGoalYetTitle });
 	}
 
 	// Default title if no lending history and category is ID_WOMENS_EQUALITY
@@ -503,14 +568,7 @@ const titleText = computed(() => {
 		return goalCopy.titleLastYearForCategory(loansLastYear.value, props.selectedCategoryId, props.selectedCategoryName);
 	}
 
-	// Support All is not a specific category, so use generic language
-	if (props.selectedCategoryId === ID_SUPPORT_ALL) {
-		return goalCopy.TITLE_HOW_MANY_LOANS_GENERIC;
-	}
-	if (props.selectedCategoryId === ID_US_ECONOMIC_EQUALITY) {
-		return goalCopy.TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS;
-	}
-	return goalCopy.titleCategoryHowManyLoans(props.selectedCategoryName?.toLowerCase());
+	return goalCopy.titleLoanQuestionForCategory(props.selectedCategoryId, props.selectedCategoryName);
 });
 
 const subtitleText = computed(() => {
@@ -778,6 +836,58 @@ watch(() => props.selectedCategoryId, async newCategory => {
 </script>
 
 <style lang="postcss" scoped>
+.goal-selector__title {
+	line-height: 1.25;
+
+	@screen lg {
+		font-size: 1.625rem;
+		line-height: 1.25;
+	}
+}
+
+.goal-selector--compact {
+	@apply lg:tw-gap-0.5;
+}
+
+.goal-selector--compact .goal-selector__image {
+	width: 4.5rem;
+}
+
+.goal-selector--compact .goal-selector__title {
+	/* Same values as the @screen lg rule above, applied at all breakpoints in compact mode */
+	font-size: 1.625rem;
+	line-height: 1.25;
+}
+
+.goal-selector--compact .goal-selector__prompt {
+	@apply tw-my-1;
+
+	font-size: 0.875rem;
+	line-height: 1.25;
+}
+
+.goal-selector--compact.goal-selector--base-prompt .goal-selector__prompt {
+	font-size: 1.1rem;
+}
+
+.goal-selector--compact.goal-selector--base-prompt .goal-selector__title {
+	@apply lg:tw-px-0;
+}
+
+.goal-selector--compact .goal-selector__options {
+	@apply tw-my-1.5 lg:tw-gap-1;
+}
+
+.goal-selector--compact .buttons {
+	@apply tw-gap-1;
+
+	max-width: 19rem;
+}
+
+.goal-selector--compact .buttons :deep(button:first-child) {
+	@apply tw-mt-1;
+}
+
 .edit-goal-button :deep(span) {
 	@apply tw-flex;
 }
