@@ -69,6 +69,10 @@ export const shouldReopenExpressCheckout = (items = [], payload = {}) => (
  *
  * Throws if either the mutation or the refetch returns GraphQL errors so the
  * caller can surface a tip message.
+ *
+ * TODO: (optional) we could use the method 'removePromoCredit' from
+ * <kv-ui-elements/@kiva/kv-shop/src/basketCredits.ts> if we fix it in the future
+ * then remove this one.
  */
 export async function removeBasketCredit({ apollo, basketId, creditType }) {
 	const { errors } = await apollo.mutate({
