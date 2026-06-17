@@ -38,6 +38,10 @@ const GoalSelectorStub = {
 			type: Boolean,
 			default: false,
 		},
+		basePromptText: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['set-goal', 'set-goal-target', 'edit-goal'],
 	template: '<div />',
@@ -81,6 +85,7 @@ describe('GoalEntrypoint', () => {
 
 			expect(selector.props('compactNoGoalYetTitle')).toBe(true);
 			expect(selector.props('compactLayout')).toBe(true);
+			expect(selector.props('basePromptText')).toBe(true);
 		});
 
 		it('renders the recommended loan container when the view is on and loans are available', () => {

@@ -72,6 +72,10 @@ describe('GoalSelector', () => {
 				type: Boolean,
 				default: false,
 			},
+			basePromptText: {
+				type: Boolean,
+				default: false,
+			},
 		},
 		data() {
 			return {
@@ -124,6 +128,7 @@ describe('GoalSelector', () => {
 					:compact-no-goal-yet-title="compactNoGoalYetTitle"
 					:compact-layout="compactLayout"
 					:progress-subtitle-before-options="progressSubtitleBeforeOptions"
+					:base-prompt-text="basePromptText"
 				/>
 			</div>
 		`,
@@ -440,6 +445,26 @@ describe('GoalSelector', () => {
 		await flushPromises();
 
 		expect(container.querySelector('.goal-selector--compact')).toBeTruthy();
+	});
+
+	it('can keep compact prompt copy at base text size', async () => {
+		const { container } = render(TestWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: {
+				compactLayout: true,
+				basePromptText: true,
+			},
+		});
+
+		await flushPromises();
+
+		expect(container.querySelector('.goal-selector--base-prompt')).toBeTruthy();
 	});
 
 	it('shows current-year progress copy after the user selects a new category', async () => {

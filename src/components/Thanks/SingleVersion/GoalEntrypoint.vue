@@ -37,6 +37,7 @@
 					:go-to-url="goToUrl"
 					compact-no-goal-yet-title
 					compact-layout
+					base-prompt-text
 					@set-goal-target="$emit('set-goal-target', $event)"
 					@set-goal="$emit('set-goal', $event)"
 					@edit-goal="$emit('edit-goal')"

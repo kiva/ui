@@ -30,7 +30,7 @@ const goalCopy = {
 
 	/** No lending history and default womens category */
 	// eslint-disable-next-line max-len
-	titleNoHistoryWomensDefault: (cssClass = 'tw-text-eco-green-3') => `Lenders like you help ${highlight('3 women', cssClass)} a year!`,
+	titleNoHistoryWomensDefault: (cssClass = 'tw-text-eco-green-3') => `Lenders like you help ${highlight('3 women', cssClass)} a year`,
 
 	/** Date-aware no-goal title for default womens category */
 	titleNoGoalYetWomensDefault(cssClass = 'tw-text-eco-green-3') {

@@ -20,7 +20,7 @@ describe('goalCopy', () => {
 			const result = goalCopy.titleNoHistoryWomensDefault();
 			expect(result).toContain('class="tw-text-eco-green-3"');
 			expect(result).toContain('3 women');
-			expect(result).toContain('a year!');
+			expect(result).toContain('a year');
 		});
 
 		it('accepts a custom CSS class', () => {

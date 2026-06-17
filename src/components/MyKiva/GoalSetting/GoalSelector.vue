@@ -1,7 +1,10 @@
 <template>
 	<div
 		class="tw-flex tw-flex-col tw-justify-center tw-gap-0 lg:tw-gap-1.5 tw-items-center"
-		:class="{ 'goal-selector--compact': compactLayout }"
+		:class="{
+			'goal-selector--compact': compactLayout,
+			'goal-selector--base-prompt': basePromptText,
+		}"
 	>
 		<!-- Goal Progress Ring (shown after goal is set) -->
 		<GoalProgressRing
@@ -426,6 +429,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Whether prompt copy should keep base text size in compact layout.
+	 */
+	basePromptText: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits([
@@ -830,8 +840,8 @@ watch(() => props.selectedCategoryId, async newCategory => {
 	line-height: 1.25;
 
 	@screen lg {
-		font-size: 2rem;
-		line-height: 1.2;
+		font-size: 1.625rem;
+		line-height: 1.25;
 	}
 }
 
@@ -845,8 +855,8 @@ watch(() => props.selectedCategoryId, async newCategory => {
 
 .goal-selector--compact .goal-selector__title {
 	/* Same values as the @screen lg rule above, applied at all breakpoints in compact mode */
-	font-size: 2rem;
-	line-height: 1.2;
+	font-size: 1.625rem;
+	line-height: 1.25;
 }
 
 .goal-selector--compact .goal-selector__prompt {
@@ -854,6 +864,14 @@ watch(() => props.selectedCategoryId, async newCategory => {
 
 	font-size: 0.875rem;
 	line-height: 1.25;
+}
+
+.goal-selector--compact.goal-selector--base-prompt .goal-selector__prompt {
+	font-size: 1.1rem;
+}
+
+.goal-selector--compact.goal-selector--base-prompt .goal-selector__title {
+	@apply lg:tw-px-0;
 }
 
 .goal-selector--compact .goal-selector__options {
