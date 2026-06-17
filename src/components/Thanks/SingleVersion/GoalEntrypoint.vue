@@ -22,7 +22,7 @@
 				v-else
 				class="
 					tw-shadow-lg
-					tw-p-2.5 tw-py-2.5 md:tw-px-2.5 md:tw-py-4"
+					tw-p-2.5 tw-py-2.5 md:tw-px-2.5 md:tw-py-3"
 			>
 				<GoalSelector
 					:is-goal-set="isGoalSet"
@@ -35,6 +35,9 @@
 					:goal-progress="goalProgress"
 					:goal-progress-percentage="goalProgressPercentage"
 					:go-to-url="goToUrl"
+					compact-no-goal-yet-title
+					compact-layout
+					base-prompt-text
 					@set-goal-target="$emit('set-goal-target', $event)"
 					@set-goal="$emit('set-goal', $event)"
 					@edit-goal="$emit('edit-goal')"

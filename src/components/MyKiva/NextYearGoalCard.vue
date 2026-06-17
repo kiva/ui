@@ -64,7 +64,7 @@ import goalCopy from '#src/util/goalCopy';
 import { useRouter } from 'vue-router';
 import confetti from 'canvas-confetti';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
-import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
+import HandsPlant from '#src/assets/images/thanks-page/hands-plant-v3.png';
 
 const props = defineProps({
 	userGoal: {

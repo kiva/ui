@@ -19,6 +19,7 @@
 			:goal-progress-percentage="goalProgressPercentageValue"
 			:category-name="categoryName"
 			:user-name="userFirstName"
+			:prev-year-loans="womenLoansLastYear"
 			:suppress-completion-confetti="suppressCompletionConfetti"
 			@set-goal-click="handleSetGoalClick"
 			@cta-click="handleCtaClick"
@@ -33,7 +34,7 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import FeaturedGoalCard from '#src/components/MyKiva/FeaturedGoalCard';
-import {
+import useGoalData, {
 	GOAL_STATUS,
 	GOALS_CURRENT_YEAR,
 	COMPLETED_GOAL_THRESHOLD,
@@ -50,10 +51,14 @@ const SLOT_TITLES = {
 	completed: 'Goal Achieved!',
 };
 
-defineProps({
+const props = defineProps({
 	userFirstName: {
 		type: String,
 		default: '',
+	},
+	heroTieredAchievements: {
+		type: Array,
+		default: () => [],
 	},
 });
 
@@ -62,12 +67,14 @@ const emit = defineEmits(['set-goal-click', 'cta-click', 'edit-click']);
 const router = useRouter();
 const goalData = inject('goalData');
 const $kvTrackEvent = inject('$kvTrackEvent');
+const { getCategoryLoansLastYear } = useGoalData();
 
 const cardLoading = computed(() => Boolean(goalData?.loading?.value));
 const goalStatus = computed(() => goalData?.userGoal?.value?.status || null);
 const goalTarget = computed(() => goalData?.userGoal?.value?.target || 0);
 const goalProgressValue = computed(() => goalData?.goalProgress?.value || 0);
 const goalProgressPercentageValue = computed(() => goalData?.goalProgressPercentage?.value || 0);
+const womenLoansLastYear = computed(() => getCategoryLoansLastYear(props.heroTieredAchievements));
 
 const categoryName = computed(() => {
 	const target = goalData?.userGoal?.value?.target;

@@ -22,6 +22,7 @@
 			v-if="goalsRowEnabled && shouldRenderFeaturedSlot"
 			:key="`featured-slot-${goalRefreshKey}`"
 			:user-first-name="userInfo?.userAccount?.firstName"
+			:hero-tiered-achievements="heroTieredAchievements"
 			@set-goal-click="openGoalSettingModal"
 			@edit-click="openEditGoalSettingModal"
 		/>

@@ -3,7 +3,10 @@ import { ref } from 'vue';
 import { createRouter, createMemoryHistory } from 'vue-router';
 import ThanksPageSingleVersion from '#src/components/Thanks/ThanksPageSingleVersion';
 import { GOAL_STATUS } from '#src/composables/useGoalData';
-import { GOAL_SIGNUP_THANKS_VIEWS_COOKIE } from '#src/util/myKivaUtils';
+import {
+	GOAL_SIGNUP_THANKS_VIEWS_COOKIE,
+	incrementGoalSignupThanksViewCount,
+} from '#src/util/myKivaUtils';
 import { globalOptions } from '../../../specUtils';
 
 const router = createRouter({
@@ -525,6 +528,7 @@ describe('ThanksPageSingleVersion', () => {
 
 		it('increments the thank you goal signup view counter when the ask renders', async () => {
 			mockUserGoal.value = null;
+			incrementGoalSignupThanksViewCount.mockClear();
 
 			const { cookieStore, getByTestId } = renderComponent({
 				badgesAchieved: [],
@@ -532,6 +536,7 @@ describe('ThanksPageSingleVersion', () => {
 
 			await vi.waitFor(() => {
 				expect(getByTestId('goal-entrypoint')).toBeTruthy();
+				expect(incrementGoalSignupThanksViewCount).toHaveBeenCalledTimes(1);
 				expect(cookieStore.set).toHaveBeenCalledWith(GOAL_SIGNUP_THANKS_VIEWS_COOKIE, '1', {
 					path: '/',
 					expires: expect.any(Date),
