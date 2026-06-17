@@ -34,6 +34,22 @@
 					class="tw-mb-0.5"
 					:name="name"
 				/>
+				<button
+					v-if="anonymizationLevel === 'pii'"
+					type="button"
+					class="tw-align-super tw-ml-0.5"
+					data-testid="bp-summary-pii-info"
+					aria-label="Why is this borrower anonymous?"
+					@click="showSalesforceLightbox('501VB00000F1gHW')"
+					v-kv-track-event="[
+						'Borrower profile',
+						'click-PII-anonymization-info',
+						'PII anonymization',
+						loanId
+					]"
+				>
+					<kv-material-icon :icon="mdiInformationOutline" class="tw-w-3 tw-h-3 tw-text-secondary" />
+				</button>
 				<template v-if="isLoading">
 					<div class="tw-flex tw-flex-wrap tw-mb-3">
 						<kv-loading-placeholder class="tw-mb-1" style="height: 0.5rem;" />
@@ -76,6 +92,21 @@
 		</div>
 		<p class="tw-flex-none tw-w-full tw-mb-2 tw-text-headline" data-testid="bp-summary-loan-use">
 			{{ use }}
+			<button
+				v-if="anonymizationLevel === 'full'"
+				type="button"
+				class="tw-text-action hover:tw-text-action-highlight tw-underline"
+				data-testid="bp-summary-anonymous-learn-more"
+				@click="showSalesforceLightbox('50150000000SXVz')"
+				v-kv-track-event="[
+					'Borrower profile',
+					'click-anonymous-loan-use-info',
+					'Anonymous loan use',
+					loanId
+				]"
+			>
+				Learn more
+			</button>
 		</p>
 		<div class="tw-flex-auto tw-inline-flex tw-w-full">
 			<template v-if="isLoading">
@@ -106,16 +137,19 @@
 			/>
 		</div>
 		<slot name="sharebutton"></slot>
+		<content-lightbox ref="lightbox" />
 	</section>
 </template>
 
 <script>
 import { gql } from 'graphql-tag';
-import { mdiMapMarker } from '@mdi/js';
+import { mdiMapMarker, mdiInformationOutline } from '@mdi/js';
 import HeartComment from '#src/assets/icons/inline/heart-comment.svg';
 import { KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
+import { fetchSalesforceSolution } from '#src/util/salesforceSolution';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
+import ContentLightbox from './ContentLightbox';
 import LoanProgress from './LoanProgress';
 import SummaryTag from './SummaryTag';
 import LoanBookmark from './LoanBookmark';
@@ -196,6 +230,7 @@ export default {
 	components: {
 		BorrowerImage,
 		BorrowerName,
+		ContentLightbox,
 		KvMaterialIcon,
 		LoanProgress,
 		SummaryTag,
@@ -207,11 +242,13 @@ export default {
 		return {
 			isLoading: true,
 			isLoggedIn: false,
+			anonymizationLevel: '',
 			activityName: '',
 			countryName: '',
 			fundraisingPercent: 0,
 			hash: '',
 			mdiMapMarker,
+			mdiInformationOutline,
 			name: '',
 			status: '',
 			timeLeft: '',
@@ -269,7 +306,13 @@ export default {
 			}
 			this.totalComments = loan?.comments?.totalCount ?? 0;
 			this.isLoading = false;
-		}
+		},
+		async showSalesforceLightbox(id) {
+			const solution = await fetchSalesforceSolution(this.apollo, id);
+			if (solution) {
+				this.$refs.lightbox.open(solution);
+			}
+		},
 	},
 	mounted() {
 		this.fetchSummaryCardData();
@@ -302,6 +345,7 @@ export default {
 			this.name = loan?.name ?? '';
 			this.status = loan?.status ?? '';
 			this.use = loan?.fullLoanUse ?? '';
+			this.anonymizationLevel = loan?.anonymizationLevel ?? '';
 		},
 	},
 };
