@@ -70,7 +70,7 @@ export const PartnerLoan = () => ({
 export const Loading = () => ({
 	components: { MoreAboutLoan },
 	mixins: [
-		apolloStoryMixin({ queryResult: new Promise(() => {}) }),
+		apolloStoryMixin({ queryResult: createQueryResult(fundraisingPartnerLoan), loading: true }),
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],

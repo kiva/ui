@@ -51,7 +51,7 @@ export const FallsBackToCountryGeocode = () => ({
 export const Loading = () => ({
 	components: { BorrowerCountry },
 	mixins: [
-		apolloStoryMixin({ queryResult: new Promise(() => {}) }),
+		apolloStoryMixin({ queryResult: createQueryResult(fundraisingPartnerLoan), loading: true }),
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
