@@ -786,7 +786,7 @@ watch(show, async newVal => {
 .goal-setting-lightbox.goal-tile-modal-recommend-loan :deep {
 	[data-test=kv-lightbox] > div:first-child,
 	[data-testid=kv-lightbox] > div:first-child {
-		@apply tw-bg-gray-50 !tw-rounded tw-relative tw-p-3 tw-pb-0.5;
+		@apply tw-bg-gray-50 !tw-rounded-t tw-relative tw-p-3 tw-pb-0.5;
 
 		@screen md {
 			width: 684px;
