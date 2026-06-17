@@ -252,7 +252,7 @@ describe('BasketItem loan', () => {
 		expect(within(LoanPrice).getByRole('option', { name: '$3,685' }));
 	});
 
-	describe('achievement / goal pill suppression (MP-2875)', () => {
+	describe('achievement / goal pill suppression', () => {
 		const renderItem = (props = {}) => render(BasketItem, {
 			global: {
 				...globalOptions,

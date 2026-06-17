@@ -82,11 +82,7 @@ const milestonesProgress = ref({});
 const hasEverLoggedIn = ref(false);
 const basketTotal = ref(0);
 const loanGoalProgress = ref(0);
-// Tracks whether the just-added loan actually contributes to the goal's
-// category (e.g. a male loan does not contribute to a women-equality goal).
-// loanGoalProgress alone is the cumulative yearly total and stays > 0 across
-// non-contributing adds, so we need this flag to correctly identify a goal
-// add vs. an unrelated achievement add.
+// Tracks whether the just-added loan actually contributes to the goal's category
 const loanContributesToGoal = ref(false);
 
 const basketCount = computed(() => {
@@ -213,10 +209,8 @@ const fetchPostCheckoutAchievements = async loanIds => {
 
 	// If added loan is not related to user goal, proceed with achievements logic.
 	// This condition will prevent any conflict between goal and achievement messages.
-	// While the lender has an active goal experience (in-progress, or completed but
-	// the celebration hasn't been acknowledged yet) we also suppress achievement
-	// nudges entirely so they don't compete with the goal flow — they resume once
-	// the viewed-goal-complete flag is set or the lender has no goal at all.
+	// While the lender has an active goal experience we also suppress achievement
+	// nudges entirely so they don't compete with the goal flow.
 	if (!isLoanGoal.value && !suppressAchievementNudges.value) {
 		await apollo.query({
 			query: postCheckoutAchievementsQuery,
