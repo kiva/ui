@@ -50,10 +50,12 @@ Object.defineProperty(window.HTMLElement.prototype, 'scrollIntoView', {
 const renderLoansPage = ({ apollo = null, router = null } = {}) => {
 	const query = vi.fn().mockResolvedValue({ data: loansResponse() });
 	const push = vi.fn();
+	const showTipMsg = vi.fn();
 
 	return {
 		query,
 		push,
+		showTipMsg,
 		...render(LoansPage, {
 			global: {
 				provide: {
@@ -62,6 +64,7 @@ const renderLoansPage = ({ apollo = null, router = null } = {}) => {
 				},
 				mocks: {
 					$router: router || { push },
+					$showTipMsg: showTipMsg,
 				},
 				stubs: {
 					WwwPage: { template: '<div><slot name="secondary" /><slot /></div>' },
@@ -91,10 +94,20 @@ const renderLoansPage = ({ apollo = null, router = null } = {}) => {
 						`,
 					},
 					LoanList: {
-						props: ['loans', 'loading'],
+						props: ['loans', 'loading', 'lendingTeams', 'reassigningLoanIds', 'reassignNonce'],
+						emits: ['reassign-team'],
 						template: `
 							<div data-testid="loan-list">
 								loading:{{ loading }} loans:{{ loans.map(loan => loan.id).join(",") }}
+								teams:{{ (lendingTeams || []).map(team => team.name).join(",") }}
+								attributed:{{ loans.map(l => l.userProperties?.userAttributedTeam?.name).join(",") }}
+								<button
+									type="button"
+									data-testid="reassign"
+									@click="$emit('reassign-team', { loanId: 101, teamId: 2 })"
+								>
+									reassign
+								</button>
 							</div>
 						`,
 					},
@@ -362,6 +375,122 @@ describe('LoansPage', () => {
 
 		await fireEvent.click(page.getByTestId('emit-null-updated-as-of'));
 		await waitFor(() => expect(page.queryByText(/Updated as of/)).toBeNull());
+	});
+
+	it('passes the viewer lending teams to the loan list', async () => {
+		const base = loansResponse();
+		const query = vi.fn().mockResolvedValue({
+			data: {
+				my: {
+					...base.my,
+					teams: {
+						values: [
+							{ id: 10, team: { id: 1, name: 'Team One' } },
+							{ id: 20, team: { id: 2, name: 'Team Two' } },
+						],
+					},
+				},
+			},
+		});
+		const page = renderLoansPage({ apollo: { query } });
+
+		await waitFor(() => expect(query).toHaveBeenCalled());
+		await waitFor(() => {
+			expect(page.getByTestId('loan-list').textContent).toContain('teams:Team One,Team Two');
+		});
+	});
+
+	it('reassigns a loan team via mutation and updates the row in place without refetching', async () => {
+		const base = loansResponse();
+		const query = vi.fn().mockResolvedValue({
+			data: {
+				my: {
+					...base.my,
+					teams: {
+						values: [
+							{ id: 10, team: { id: 1, name: 'Team One' } },
+							{ id: 20, team: { id: 2, name: 'Team Two' } },
+						],
+					},
+				},
+			},
+		});
+		const mutate = vi.fn().mockResolvedValue({ data: { my: { reassignLoanTeam: 1 } } });
+		const page = renderLoansPage({ apollo: { query, mutate } });
+
+		await waitFor(() => expect(query).toHaveBeenCalledTimes(1));
+		await fireEvent.click(await page.findByTestId('reassign'));
+
+		await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
+		expect(mutate.mock.calls[0][0]).toEqual(expect.objectContaining({
+			variables: { loanId: 101, teamId: 2 },
+		}));
+		// Legacy parity: the row's attributed team updates in place — no full-list refetch
+		// (which would flash the loading skeleton over the whole table).
+		await waitFor(() => expect(page.showTipMsg).toHaveBeenCalledWith('Team updated.'));
+		await waitFor(() => {
+			expect(page.getByTestId('loan-list').textContent).toContain('attributed:Team Two');
+		});
+		expect(query).toHaveBeenCalledTimes(1);
+	});
+
+	it('updates the row in place even when Apollo has frozen the loan objects', async () => {
+		// Apollo Client freezes query results, so assigning to loan.userProperties directly
+		// throws "Cannot assign to read only property". The handler must replace the loan
+		// immutably rather than mutate the frozen object.
+		const deepFreeze = obj => {
+			if (obj && typeof obj === 'object') {
+				Object.values(obj).forEach(deepFreeze);
+				Object.freeze(obj);
+			}
+			return obj;
+		};
+		const base = loansResponse();
+		const query = vi.fn().mockResolvedValue({
+			data: deepFreeze({
+				my: {
+					...base.my,
+					teams: {
+						values: [
+							{ id: 20, team: { id: 2, name: 'Team Two' } },
+						],
+					},
+					loans: {
+						totalCount: 45,
+						values: [
+							{ id: '101', name: 'Maria', userProperties: { userAttributedTeam: null } },
+						],
+					},
+				},
+			}),
+		});
+		const mutate = vi.fn().mockResolvedValue({ data: { my: { reassignLoanTeam: 1 } } });
+		const page = renderLoansPage({ apollo: { query, mutate } });
+
+		await waitFor(() => expect(query).toHaveBeenCalledTimes(1));
+		await fireEvent.click(await page.findByTestId('reassign'));
+
+		await waitFor(() => expect(page.showTipMsg).toHaveBeenCalledWith('Team updated.'));
+		await waitFor(() => {
+			expect(page.getByTestId('loan-list').textContent).toContain('attributed:Team Two');
+		});
+	});
+
+	it('surfaces an error and does not refetch when the reassignment is rejected', async () => {
+		const query = vi.fn().mockResolvedValue({ data: loansResponse() });
+		const mutate = vi.fn().mockResolvedValue({ data: { my: { reassignLoanTeam: 0 } } });
+		const page = renderLoansPage({ apollo: { query, mutate } });
+
+		await waitFor(() => expect(query).toHaveBeenCalledTimes(1));
+		await fireEvent.click(await page.findByTestId('reassign'));
+
+		await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
+		await waitFor(() => expect(page.showTipMsg).toHaveBeenCalledWith(
+			'That loan can no longer be reassigned.',
+			'error',
+		));
+		// A rejected change (0 purchases updated) must not trigger a list refetch.
+		expect(query).toHaveBeenCalledTimes(1);
 	});
 
 	it('disables pagination while the next page is loading', async () => {
