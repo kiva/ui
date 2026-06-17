@@ -85,10 +85,11 @@ const mockUpdates = [
  * @param {object} overrides - Properties to spread on top of the defaults.
  * @returns {object} A full loan object.
  */
-export function createMockLoan(overrides = {}) {
-	const expirationDate = new Date();
-	expirationDate.setDate(expirationDate.getDate() + 30);
+// Fixed expiration date keeps story fixtures deterministic for visual
+// regression (avoids `new Date()`, which made snapshots drift day to day).
+const PLANNED_EXPIRATION_DATE = '2026-12-31T00:00:00.000Z';
 
+export function createMockLoan(overrides = {}) {
 	return {
 		id: 1975833,
 		__typename: 'LoanPartner',
@@ -121,7 +122,7 @@ export function createMockLoan(overrides = {}) {
 			hash: '9673d0722a7675b9b8d11f90849d9b44',
 			__typename: 'Image',
 		},
-		plannedExpirationDate: expirationDate.toISOString(),
+		plannedExpirationDate: PLANNED_EXPIRATION_DATE,
 		anonymizationLevel: 'none',
 		loanAmount: '600.00',
 		status: 'fundraising',
