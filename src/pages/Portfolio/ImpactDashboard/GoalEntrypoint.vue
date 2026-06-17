@@ -1,10 +1,10 @@
 <template>
 	<AsyncPortfolioSection
 		@visible="fetchUserAchievementProgress"
-		class="goal-entrypoint !tw-px-2 !tw-py-2.5 lg:!tw-px-3 lg:!tw-py-2.5"
+		class="goal-entrypoint !tw-px-2 !tw-py-3 lg:!tw-px-3 lg:!tw-py-3"
 	>
 		<div
-			class="goal-entrypoint__content tw-flex tw-flex-col tw-justify-center tw-gap-0.5 tw-z-base"
+			class="goal-entrypoint__content tw-flex tw-flex-col tw-justify-center tw-gap-1 tw-z-base"
 		>
 			<KvLoadingPlaceholder
 				v-if="loading"
@@ -22,7 +22,7 @@
 			</p>
 			<KvButton
 				variant="secondary"
-				class="goal-button tw-z-base tw-mt-1"
+				class="goal-button tw-z-base tw-mt-0.5"
 				@click="goToGoalPage"
 			>
 				{{ goalCopy.BUTTON_SET_GOAL }}
@@ -87,7 +87,7 @@ onMounted(() => {
 	background-repeat: no-repeat;
 	background-size: auto 100%;
 	box-shadow: inset 0 0 0 4px #fff;
-	min-height: 98px;
+	min-height: 112px;
 	overflow: hidden;
 }
 
@@ -107,12 +107,6 @@ onMounted(() => {
 
 .goal-button {
 	width: min(100%, 14rem);
-}
-
-.goal-button :deep(span) {
-	@apply tw-px-2 tw-py-0.5;
-
-	min-height: 2rem;
 }
 
 @screen md {
