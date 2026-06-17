@@ -1,6 +1,5 @@
 import _get from 'lodash/get';
 import * as Sentry from '@sentry/vue';
-import shopValidateBasket from '#src/graphql/mutation/shopValidatePreCheckout.graphql';
 import shopValidateGuestBasket from '#src/graphql/mutation/shopValidateGuestPreCheckout.graphql';
 import validateLenderEmailForPromo from '#src/graphql/mutation/checkout/validateLenderEmailForPromo.graphql';
 import shopCheckout from '#src/graphql/mutation/shopCheckout.graphql';
@@ -8,6 +7,7 @@ import shopCheckoutAsync from '#src/graphql/mutation/shopCheckoutAsync.graphql';
 import showVerificationLightbox from '#src/graphql/mutation/checkout/showVerificationLightbox.graphql';
 import logFormatter from '#src/util/logFormatter';
 import checkInjections from '#src/util/injectionCheck';
+import { validatePreCheckoutBasket } from '#src/util/checkout/checkoutValidationUtils';
 
 const injections = ['apollo', 'cookieStore'];
 
@@ -22,28 +22,13 @@ export default {
 		validateBasket() {
 			checkInjections(this, injections);
 
-			return new Promise((resolve, reject) => {
-				this.apollo.mutate({
-					mutation: shopValidateBasket
-				}).then(data => {
-					const validationResult = _get(data, 'data.shop.validatePreCheckout');
-
-					// currently the success node is never populated
-					// If the validation passed an empty array is returned
-					if (typeof validationResult !== 'undefined' && validationResult.length === 0) {
-						this.$kvTrackEvent('basket', 'Validate Basket', 'Validation Success');
-						// previously the api returned true if validation succeeded so we pass true
-						resolve(true);
-					} else {
-						// validation failed resolve with array of errors
-						this.$kvTrackEvent('basket', 'Validate Basket', 'Validation Failure');
-						resolve(validationResult);
-					}
-				}).catch(errorResponse => {
-					logFormatter(errorResponse, 'error');
-					Sentry.captureException(errorResponse);
-					reject(errorResponse);
-				});
+			return validatePreCheckoutBasket({
+				apollo: this.apollo,
+				kvTrackEvent: this.$kvTrackEvent
+			}).catch(errorResponse => {
+				logFormatter(errorResponse, 'error');
+				Sentry.captureException(errorResponse);
+				throw errorResponse;
 			});
 		},
 
