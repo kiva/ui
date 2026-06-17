@@ -141,7 +141,6 @@
 				display-type="teams"
 				@hide-section="showTeams = false"
 			/>
-			<loan-tags :loan-id="loanId" :is-logged-in="isLoggedIn" />
 		</content-container>
 		<div class="tw-bg-primary tw-py-4 md:tw-py-6 lg:tw-py-8">
 			<content-container>
@@ -150,6 +149,7 @@
 			</content-container>
 		</div>
 		<content-container>
+			<loan-tags :loan-id="loanId" :is-logged-in="isLoggedIn" />
 			<loan-comments
 				class="tw-my-5 md:tw-my-6 lg:tw-my-8"
 				:loan-id="loanId"
