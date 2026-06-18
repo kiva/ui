@@ -293,33 +293,25 @@ export default {
 			};
 			this.loading = false;
 
-			// The ended-with-currency-loss count is not exposed on userStats, so we derive it
-			// from the loans search the way the legacy getStatusCounts() does. The search's
-			// `ended_with_loss` status filter resolves to `defaulted OR (ended AND currency loss)`,
-			// so it also matches every defaulted loan; subtract the defaulted bucket (same search
-			// source) to recover just the ended-with-currency-loss loans. "Repaid" is then the
-			// remaining ended loans: ended total - ended-with-loss.
-			const endedTotal = data?.my?.endedLoans?.totalCount ?? 0;
-			const endedWithLossOrDefaulted = data?.my?.endedWithLossLoans?.totalCount ?? 0;
-			const searchedDefaulted = data?.my?.defaultedLoans?.totalCount ?? 0;
-			const endedWithLoss = Math.max(endedWithLossOrDefaulted - searchedDefaulted, 0);
-
-			// Update loan counts. Note this table mixes two sources: the ended-state rows
-			// (repaid, repaidWithCurrencyLoss, defaulted) are derived together from the loans
-			// search so they reconcile against one snapshot (ended total = repaid + with-loss,
-			// and defaulted shares that source), while the unrelated rows come from userStats
-			// num_* counts. A future backend loanStatusCounts field would let the whole table
-			// come from a single source (see legacy API::user()->getStatusCounts()).
+			// Every status count comes from the my.loans search (Sphinx). On the live path the
+			// status buckets are mutually exclusive — `ended` excludes currency-loss ends,
+			// `ended_with_loss` is ended-with-currency-loss only, and `defaulted` is separate —
+			// so each totalCount maps straight to its row with no subtraction. This matches the
+			// legacy getStatusCounts() split (Repaid = ended_without_loss, Repaid with currency
+			// loss = ended_with_loss, Ended in default = defaulted) and keeps large lenders off
+			// the slow user-stats count path. See MP-2817.
+			const count = bucket => bucket?.totalCount ?? 0;
+			const my = data?.my ?? {};
 			this.loanCounts = {
-				fundraising: userStats.num_fund_raising || 0,
-				funded: userStats.num_raised || 0,
-				payingBack: userStats.num_paying_back || 0,
-				payingBackDelinquent: userStats.number_delinquent || 0,
-				repaid: Math.max(endedTotal - endedWithLoss, 0),
-				repaidWithCurrencyLoss: endedWithLoss,
-				defaulted: searchedDefaulted,
-				refunded: userStats.num_refunded || 0,
-				expired: userStats.num_expired || 0
+				fundraising: count(my.fundRaisingLoans),
+				funded: count(my.raisedLoans),
+				payingBack: count(my.payingBackLoans),
+				payingBackDelinquent: count(my.delinquentLoans),
+				repaid: count(my.endedLoans),
+				repaidWithCurrencyLoss: count(my.endedWithLossLoans),
+				defaulted: count(my.defaultedLoans),
+				refunded: count(my.refundedLoans),
+				expired: count(my.expiredLoans)
 			};
 		}
 	}
