@@ -9,6 +9,7 @@
 				ref="recommendLoanForGoalRef"
 				header-title="Goal set!"
 				express-checkout-enabled
+				class="recommended-goal-card-wrapper"
 				:header-details="recommendLoanHeaderDetails"
 				:content-card-props="recommendLoanCardProps"
 				:is-adding="isAdding"
@@ -219,6 +220,12 @@ const handleAddToBasket = () => {
 
 	@screen md {
 		min-height: 583px;
+	}
+}
+
+.recommended-goal-card-wrapper :deep {
+	.recommended-goal-card-header {
+		@apply !tw-rounded-b-none;
 	}
 }
 </style>
