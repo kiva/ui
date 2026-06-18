@@ -35,7 +35,10 @@ describe('useExpressCheckoutModal', () => {
 	});
 
 	const mountComposable = (overrides = {}) => {
-		mockApollo = { mutate: vi.fn().mockResolvedValue({ data: {} }) };
+		mockApollo = {
+			mutate: vi.fn().mockResolvedValue({ data: {} }),
+			query: vi.fn().mockResolvedValue({ data: {} }),
+		};
 		mockCookieStore = { get: vi.fn(() => 'basket-123') };
 		mockAddToBasket = vi.fn();
 		mockLoadInitialBasketItems = vi.fn(() => Promise.resolve());
@@ -111,12 +114,36 @@ describe('useExpressCheckoutModal', () => {
 				});
 
 				expect(mockAddToBasket).toHaveBeenCalledTimes(1);
-				expect(composable.expressCheckoutLoan.value).toEqual(loan);
-				expect(modalMock.openLightbox).toHaveBeenCalledTimes(1);
+				await vi.waitFor(() => {
+					expect(composable.expressCheckoutLoan.value).toEqual(loan);
+					expect(modalMock.openLightbox).toHaveBeenCalledTimes(1);
+				});
 				expect(mockPush).not.toHaveBeenCalled();
 			});
 
-			it('returns the openLightbox promise from the addToBasket onSuccess callback', async () => {
+			it('initializes checkout before opening the modal', async () => {
+				basketItems.value = [];
+				const order = [];
+				const modalMock = { openLightbox: vi.fn(() => order.push('open')) };
+				composable.expressCheckoutModalRef.value = modalMock;
+				mockApollo.query.mockImplementationOnce(async () => {
+					order.push('initialize');
+					return { data: {} };
+				});
+				mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
+
+				await composable.handleAddRecommendedLoanToBasket({ loanId: 1, lendAmount: '25' });
+
+				await vi.waitFor(() => {
+					expect(order).toEqual(['initialize', 'open']);
+				});
+				expect(mockApollo.query).toHaveBeenCalledWith(expect.objectContaining({
+					variables: { basketId: 'basket-123' },
+					fetchPolicy: 'network-only',
+				}));
+			});
+
+			it('resolves the addToBasket onSuccess callback with the openLightbox result', async () => {
 				basketItems.value = [];
 				const openLightboxPromise = Promise.resolve(true);
 				const modalMock = { openLightbox: vi.fn(() => openLightboxPromise) };
@@ -132,7 +159,8 @@ describe('useExpressCheckoutModal', () => {
 					loan: { id: 999 },
 				});
 
-				expect(addToBasketOnSuccess()).toBe(openLightboxPromise);
+				await expect(addToBasketOnSuccess()).resolves.toBe(true);
+				expect(mockPush).not.toHaveBeenCalled();
 			});
 
 			it('does not flip isRedirecting in the empty path', async () => {
@@ -152,8 +180,24 @@ describe('useExpressCheckoutModal', () => {
 
 				await composable.handleAddRecommendedLoanToBasket({ loanId: 1, lendAmount: '25' });
 
-				expect(composable.expressCheckoutLoan.value).toBeNull();
-				expect(modalMock.openLightbox).toHaveBeenCalledTimes(1);
+				await vi.waitFor(() => {
+					expect(composable.expressCheckoutLoan.value).toBeNull();
+					expect(modalMock.openLightbox).toHaveBeenCalledTimes(1);
+				});
+			});
+
+			it('does not open the modal when checkout initialization fails', async () => {
+				basketItems.value = [];
+				const modalMock = { openLightbox: vi.fn() };
+				composable.expressCheckoutModalRef.value = modalMock;
+				mockApollo.query.mockRejectedValueOnce(new Error('initialize failed'));
+				mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
+
+				await composable.handleAddRecommendedLoanToBasket({ loanId: 1, lendAmount: '25' });
+
+				await new Promise(resolve => { setTimeout(resolve, 0); });
+				expect(modalMock.openLightbox).not.toHaveBeenCalled();
+				expect(mockKvTrackEvent).not.toHaveBeenCalled();
 			});
 		});
 
@@ -276,8 +320,10 @@ describe('useExpressCheckoutModal', () => {
 					recommendLoanIsInBasket: true,
 				});
 
-				expect(modalMock.openLightbox).toHaveBeenCalledTimes(1);
-				expect(composable.expressCheckoutLoan.value).toEqual(loan);
+				await vi.waitFor(() => {
+					expect(modalMock.openLightbox).toHaveBeenCalledTimes(1);
+					expect(composable.expressCheckoutLoan.value).toEqual(loan);
+				});
 				expect(mockAddToBasket).not.toHaveBeenCalled();
 			});
 
@@ -311,7 +357,9 @@ describe('useExpressCheckoutModal', () => {
 				});
 
 				expect(mockAddToBasket).toHaveBeenCalledTimes(1);
-				expect(modalMock.openLightbox).toHaveBeenCalledTimes(1);
+				await vi.waitFor(() => {
+					expect(modalMock.openLightbox).toHaveBeenCalledTimes(1);
+				});
 			});
 		});
 
@@ -456,11 +504,13 @@ describe('useExpressCheckoutModal', () => {
 				loan: { id: 1 },
 			});
 
-			expect(mockKvTrackEvent).toHaveBeenCalledWith(
-				'post-checkout',
-				'open',
-				'open-express-checkout',
-			);
+			await vi.waitFor(() => {
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'post-checkout',
+					'open',
+					'open-express-checkout',
+				);
+			});
 		});
 
 		it("fires 'post-checkout / open / open-express-checkout' on Checkout now re-entry", async () => {
@@ -475,11 +525,13 @@ describe('useExpressCheckoutModal', () => {
 				recommendLoanIsInBasket: true,
 			});
 
-			expect(mockKvTrackEvent).toHaveBeenCalledWith(
-				'post-checkout',
-				'open',
-				'open-express-checkout',
-			);
+			await vi.waitFor(() => {
+				expect(mockKvTrackEvent).toHaveBeenCalledWith(
+					'post-checkout',
+					'open',
+					'open-express-checkout',
+				);
+			});
 		});
 
 		it("fires 'post-checkout / close / close-express-checkout' on handleExpressCheckoutClose", () => {
@@ -514,7 +566,9 @@ describe('useExpressCheckoutModal', () => {
 			await expect(
 				composable.handleAddRecommendedLoanToBasket({ loanId: 1, lendAmount: '25' }),
 			).resolves.not.toThrow();
-			expect(modalMock.openLightbox).toHaveBeenCalledTimes(1);
+			await vi.waitFor(() => {
+				expect(modalMock.openLightbox).toHaveBeenCalledTimes(1);
+			});
 		});
 	});
 });

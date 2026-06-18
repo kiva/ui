@@ -27,7 +27,7 @@
 					{{ (matcher.ratio ?? 0) + 1 }}X MATCHING
 				</p>
 				<p class="tw-mt-0.5">
-					{{ matcher.displayName || 'A Kiva supporter' }}
+					{{ getDisplayName(matcher) }}
 				</p>
 			</div>
 		</div>
@@ -95,6 +95,13 @@ export default {
 			return this.enableMultiMatching
 				&& this.simultaneousMatching.length > 0
 				&& this.status === 'fundraising';
+		},
+	},
+	methods: {
+		getDisplayName(matcher) {
+			return matcher.displayName && matcher.displayName !== 'Anonymous'
+				? matcher.displayName
+				: 'A Kiva supporter';
 		},
 	},
 };

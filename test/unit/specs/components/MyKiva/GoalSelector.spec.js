@@ -56,6 +56,26 @@ describe('GoalSelector', () => {
 				type: Array,
 				default: () => [],
 			},
+			useDirectQuestionTitle: {
+				type: Boolean,
+				default: false,
+			},
+			compactNoGoalYetTitle: {
+				type: Boolean,
+				default: false,
+			},
+			compactLayout: {
+				type: Boolean,
+				default: false,
+			},
+			progressSubtitleBeforeOptions: {
+				type: Boolean,
+				default: false,
+			},
+			basePromptText: {
+				type: Boolean,
+				default: false,
+			},
 		},
 		data() {
 			return {
@@ -104,6 +124,11 @@ describe('GoalSelector', () => {
 					:tiered-achievements="tieredAchievements"
 					:selected-category-id="selectedCategoryId"
 					:selected-category-name="selectedCategoryName"
+					:use-direct-question-title="useDirectQuestionTitle"
+					:compact-no-goal-yet-title="compactNoGoalYetTitle"
+					:compact-layout="compactLayout"
+					:progress-subtitle-before-options="progressSubtitleBeforeOptions"
+					:base-prompt-text="basePromptText"
 				/>
 			</div>
 		`,
@@ -175,6 +200,38 @@ describe('GoalSelector', () => {
 
 		// Choose as I go (support all) -> default options
 		await expectCategoryOptions('category-support-all', getExpectedGoalOptions({ useDefault: true }));
+	});
+
+	it('can render current-year progress copy before loan number options', async () => {
+		const tieredAchievements = [
+			{
+				id: ID_WOMENS_EQUALITY,
+				progressForCurrentYear: 1,
+				progressForYear: 0,
+			},
+		];
+
+		const { container } = render(TestWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: {
+				tieredAchievements,
+				progressSubtitleBeforeOptions: true,
+			},
+		});
+
+		await flushPromises();
+
+		const progressCopy = Array.from(container.querySelectorAll('p'))
+			.find(el => el.textContent.includes('You’ve already made 1 loan that will count!'));
+		const options = container.querySelector('.goal-selector__options');
+
+		expect(progressCopy.compareDocumentPosition(options)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 	});
 
 	it('renders the selected category name in the title when the user changes category', async () => {
@@ -263,11 +320,11 @@ describe('GoalSelector', () => {
 		await vi.runAllTimersAsync();
 
 		expect(getByRole('heading', { level: 2 }).textContent)
-			.toContain('Last year, you helped 2 women shape their futures!');
+			.toContain(stripHtml(goalCopy.titleLastYearForCategory(2, ID_WOMENS_EQUALITY, 'Women')));
 		expect(queryByText(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT)).toBeNull();
 	});
 
-	it('shows no-goal-yet copy starting April 1', async () => {
+	it('keeps the selector question starting April 1', async () => {
 		vi.useFakeTimers();
 		vi.setSystemTime(new Date('2026-04-01T12:00:00'));
 
@@ -287,18 +344,19 @@ describe('GoalSelector', () => {
 					$kvTrackEvent: vi.fn(),
 				},
 			},
-			props: { tieredAchievements },
+			props: { tieredAchievements, useDirectQuestionTitle: true },
 		});
 
 		await vi.runAllTimersAsync();
 
-		expect(getByRole('heading', { level: 2 }).textContent)
-			.toBe(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
-		expect(container.textContent).toContain('How many loans will you make this year?');
+		expect(getByRole('heading', { level: 2 }).innerHTML)
+			.toContain(goalCopy.titleLoanQuestionForCategory(ID_WOMENS_EQUALITY, 'Women', { splitQuestion: true }));
+		expect(container.textContent).not.toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
+		expect(container.textContent).not.toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
 		expect(container.textContent).toContain(stripHtml(goalCopy.subtitleLoansAlreadyMade(1)));
 	});
 
-	it('shows requested goal question and current-year progress copy', async () => {
+	it('shows no-goal-yet entrypoint title and category question starting April 1', async () => {
 		vi.useFakeTimers();
 		vi.setSystemTime(new Date('2026-04-01T12:00:00'));
 
@@ -342,9 +400,71 @@ describe('GoalSelector', () => {
 		await vi.runAllTimersAsync();
 
 		expect(getByRole('heading', { level: 2 }).textContent)
-			.toBe(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
-		expect(container.textContent).toContain('How many loans will you make this year?');
+			.toContain(stripHtml(goalCopy.titleNoGoalYetSelectorEntrypoint()));
+		expect(container.textContent).toContain(stripHtml(
+			goalCopy.titleLoanQuestionForCategory(ID_WOMENS_EQUALITY, 'Women')
+		));
 		expect(container.textContent).toContain(stripHtml(goalCopy.subtitleLoansAlreadyMade(1)));
+	});
+
+	it('can render a compact no-goal-yet intro line starting April 1', async () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-04-01T12:00:00'));
+
+		const { container } = render(TestWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: { compactNoGoalYetTitle: true },
+		});
+
+		await vi.runAllTimersAsync();
+
+		const heading = container.querySelector('h2');
+		expect(heading.innerHTML).toContain('tw-text-base');
+		expect(heading.textContent).toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
+		expect(heading.textContent).toContain(goalCopy.CARD_HABIT_PROMPT_SHORT);
+	});
+
+	it('can render the compact layout class for thank-you page spacing', async () => {
+		const { container } = render(TestWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: { compactLayout: true },
+		});
+
+		await flushPromises();
+
+		expect(container.querySelector('.goal-selector--compact')).toBeTruthy();
+	});
+
+	it('can keep compact prompt copy at base text size', async () => {
+		const { container } = render(TestWrapper, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					$kvTrackEvent: vi.fn(),
+				},
+			},
+			props: {
+				compactLayout: true,
+				basePromptText: true,
+			},
+		});
+
+		await flushPromises();
+
+		expect(container.querySelector('.goal-selector--base-prompt')).toBeTruthy();
 	});
 
 	it('shows current-year progress copy after the user selects a new category', async () => {

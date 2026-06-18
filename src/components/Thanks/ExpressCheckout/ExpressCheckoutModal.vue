@@ -2,6 +2,7 @@
 	<KvLightbox
 		title="Confirm Payment"
 		:visible="lightboxOpen"
+		:prevent-close="paying"
 		@lightbox-closed="closeLightbox"
 	>
 		<form
@@ -75,6 +76,10 @@ import {
 import { KvButton, KvLightbox } from '@kiva/kv-components';
 import ExpressCheckoutTotals from '#src/components/Thanks/ExpressCheckout/ExpressCheckoutTotals';
 import useTipMessage from '#src/composables/useTipMessage';
+import {
+	formatPreCheckoutValidationErrors,
+	validatePreCheckoutBasket,
+} from '#src/util/checkout/checkoutValidationUtils';
 import logFormatter from '#src/util/logFormatter';
 
 defineProps({
@@ -169,6 +174,16 @@ const onSubmit = async () => {
 	paying.value = true;
 
 	try {
+		const validationStatus = await validatePreCheckoutBasket({ apollo });
+		if (validationStatus !== true) {
+			const validationMessage = formatPreCheckoutValidationErrors(validationStatus);
+			logFormatter(`ExpressCheckoutModal validation failed: ${validationMessage}`, 'error');
+			paying.value = false;
+			closeLightbox();
+			router.push('/basket');
+			return;
+		}
+
 		const options = { apollo, deactivateRedirect: true };
 		if (depositRequired.value) {
 			options.braintree = useBraintreeDropIn(dropInName);

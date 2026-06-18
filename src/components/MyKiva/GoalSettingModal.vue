@@ -5,6 +5,7 @@
 			'goal-tile-modal': showGoalTile && !showRecommendLoanArea,
 			'goal-tile-modal-expanded': showGoalTile && showCategories && !showRecommendLoanArea,
 			'goal-tile-modal-recommend-loan': showRecommendLoanArea,
+			'goal-selector-modal-compact': showGoalSelector && !showGoalTile && !showRecommendLoanArea && !isThanksPage,
 		}"
 		title=""
 		:visible="show"
@@ -204,6 +205,9 @@
 					:is-loading-data="isLoadingData || isLoadingRecommendedLoan"
 					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 					:show-goal-value-props-copy="showGoalValuePropsCopy && !isGoalTileExperimentEnabled"
+					:compact-layout="isStandardSelectorLayout"
+					:progress-subtitle-before-options="isStandardSelectorLayout"
+					use-direct-question-title
 					@set-goal-target="setGoalTarget"
 					@set-goal="onGoalSelectorSetGoal"
 					@update-goal="onGoalSelectorUpdateGoal"
@@ -305,7 +309,7 @@ import GoalSelector from '#src/components/MyKiva/GoalSetting/GoalSelector';
 import RecommendLoanForGoalContent from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalContent';
 import RecommendLoanForGoalFooter from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalFooter';
 import RecommendLoanForGoalHeader from '#src/components/LoanCards/RecommendLoanForGoal/RecommendLoanForGoalHeader';
-import HandsPlant from '#src/assets/images/thanks-page/hands-plant.gif';
+import HandsPlant from '#src/assets/images/thanks-page/hands-plant-v3.png';
 import { mdiCheckBold, mdiCheckCircle, mdiClose } from '@mdi/js';
 
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
@@ -528,6 +532,10 @@ const showGoalTile = computed(() => {
 	return props.isGoalTileExperimentEnabled && isLarge.value;
 });
 
+const isStandardSelectorLayout = computed(
+	() => !showGoalTile.value && !showRecommendLoanArea.value && !props.isThanksPage
+);
+
 const recommendLoanForGoalContentRef = ref(null);
 
 const addToBasket = () => {
@@ -689,6 +697,62 @@ watch(show, async newVal => {
 	@apply tw-text-headline;
 }
 
+.goal-selector-modal-compact :deep {
+	[data-test=kv-lightbox],
+	[data-testid=kv-lightbox] {
+		@screen lg {
+			width: 44rem !important;
+			max-width: 44rem !important;
+		}
+	}
+
+	#kvLightboxBody {
+		@apply lg:!tw-px-4 lg:!tw-pt-0 lg:!tw-pb-2;
+
+		overflow: visible !important;
+	}
+
+	.goal-selector-container {
+		@apply lg:tw-mx-auto;
+
+		max-width: 40rem !important;
+
+		@screen lg {
+			transform: translateY(-1.75rem);
+		}
+	}
+
+	/* compact-layout prop handles image width; only modal-specific margins remain */
+	.goal-selector__image {
+		@screen lg {
+			margin-top: 0;
+			margin-bottom: 0.25rem;
+		}
+	}
+
+	.goal-selector__options > div {
+		@apply lg:tw-min-h-8;
+
+		@screen lg {
+			padding-right: 1rem;
+			padding-left: 1rem;
+		}
+	}
+
+	.goal-selector__options :deep(.loan-number-selector__number) {
+		@screen lg {
+			font-size: 2.375rem;
+		}
+	}
+
+	/* compact-layout handles gap and mt; only modal-specific sizing remains */
+	.buttons {
+		@apply lg:tw-mx-auto;
+
+		max-width: 31rem;
+	}
+}
+
 /* Style for components when Goal Tile experiment is enabled */
 :deep(.goal-modal-controls) {
 	@apply tw-mx-auto tw-my-0;
@@ -786,7 +850,7 @@ watch(show, async newVal => {
 .goal-setting-lightbox.goal-tile-modal-recommend-loan :deep {
 	[data-test=kv-lightbox] > div:first-child,
 	[data-testid=kv-lightbox] > div:first-child {
-		@apply tw-bg-gray-50 !tw-rounded tw-relative tw-p-3 tw-pb-0.5;
+		@apply tw-bg-gray-50 !tw-rounded-t tw-relative tw-p-3 tw-pb-0.5;
 
 		@screen md {
 			width: 684px;

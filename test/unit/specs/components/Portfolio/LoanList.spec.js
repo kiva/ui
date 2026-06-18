@@ -1,4 +1,4 @@
-import { render } from '@testing-library/vue';
+import { render, fireEvent } from '@testing-library/vue';
 import LoanList from '#src/components/Portfolio/LoanList';
 import numeralFilter from '#src/plugins/numeral-filter';
 
@@ -34,8 +34,12 @@ const makeLoan = (overrides = {}) => ({
 	...overrides,
 });
 
-const renderLoanList = ({ loans, loading = false } = {}) => render(LoanList, {
-	props: { loans, loading },
+const renderLoanList = ({
+	loans, loading = false, lendingTeams = [], reassigningLoanIds = [], reassignNonce = {},
+} = {}) => render(LoanList, {
+	props: {
+		loans, loading, lendingTeams, reassigningLoanIds, reassignNonce,
+	},
 	global: {
 		provide: {
 			cookieStore: { get: () => null, set: () => {} },
@@ -441,13 +445,14 @@ describe('LoanList — team cell', () => {
 		expect(page.getByAltText('Cat Lovers team image')).toBeTruthy();
 	});
 
-	it('renders a placeholder when there is no user-attributed team', () => {
+	it('renders an empty cell when there is no user-attributed team', () => {
 		const page = renderLoanList({
 			loans: [makeLoan()],
 		});
 
-		// Placeholder dash for missing team.
-		expect(page.getAllByText('-').length).toBeGreaterThan(0);
+		// Legacy parity: a loan with no team (and no reassignment dropdown) shows an
+		// empty cell, not a placeholder dash.
+		expect(page.container.querySelector('.team-cell').textContent.trim()).toBe('');
 	});
 
 	it('renders the team name without an image when image is missing', () => {
@@ -470,5 +475,159 @@ describe('LoanList — team cell', () => {
 
 		expect(page.getByText('No Image Team')).toBeTruthy();
 		expect(page.queryByAltText('No Image Team team image')).toBeNull();
+	});
+});
+
+describe('LoanList — team reassignment', () => {
+	const lendingTeams = [
+		{ id: 1, name: 'Team One' },
+		{ id: 2, name: 'Team Two' },
+	];
+
+	const eligibleLoan = (overrides = {}) => makeLoan({
+		userProperties: {
+			loanBalance: {
+				amountPurchasedByLender: '25',
+				amountRepaidToLender: '5',
+				latestSharePurchaseTime: '2026-03-15T12:00:00Z',
+			},
+			userAttributedTeam: { id: 1, name: 'Team One' },
+			canChangeTeamAssignment: true,
+		},
+		...overrides,
+	});
+
+	const teamSelect = container => container.querySelector('.team-cell select');
+
+	it('renders a team dropdown for eligible loans: current team then other teams (no detach option)', () => {
+		const page = renderLoanList({ loans: [eligibleLoan()], lendingTeams });
+
+		const select = teamSelect(page.container);
+		expect(select).not.toBeNull();
+
+		// Legacy parity: a loan that already has a team offers only real teams — there is
+		// no "None"/detach entry, since the backend's reassignLoanTeam requires a team.
+		const options = [...select.querySelectorAll('option')]
+			.map(o => ({ value: o.value, label: o.textContent.trim() }));
+		expect(options).toEqual([
+			{ value: '1', label: 'Team One' },
+			{ value: '2', label: 'Team Two' },
+		]);
+		expect(select.value).toBe('1');
+	});
+
+	it('renders read-only team text (no dropdown) for ineligible loans', () => {
+		const loan = eligibleLoan({
+			userProperties: {
+				loanBalance: {
+					amountPurchasedByLender: '25',
+					amountRepaidToLender: '5',
+					latestSharePurchaseTime: '2026-03-15T12:00:00Z',
+				},
+				userAttributedTeam: { id: 1, name: 'Team One' },
+				canChangeTeamAssignment: false,
+			},
+		});
+		const page = renderLoanList({ loans: [loan], lendingTeams });
+
+		expect(teamSelect(page.container)).toBeNull();
+		expect(page.container.querySelector('.team-cell').textContent).toContain('Team One');
+	});
+
+	it('renders read-only team text (no dropdown) for an eligible loan when the user has no teams', () => {
+		// Legacy parity: with zero teams there is nothing to reassign to, so the cell stays
+		// read-only even though canChangeTeamAssignment is true.
+		const page = renderLoanList({ loans: [eligibleLoan()], lendingTeams: [] });
+
+		expect(teamSelect(page.container)).toBeNull();
+		expect(page.container.querySelector('.team-cell').textContent).toContain('Team One');
+	});
+
+	it('shows a selected "None" placeholder first for an eligible loan with no attributed team', () => {
+		const loan = eligibleLoan({
+			userProperties: {
+				loanBalance: {
+					amountPurchasedByLender: '25',
+					amountRepaidToLender: '5',
+					latestSharePurchaseTime: '2026-03-15T12:00:00Z',
+				},
+				userAttributedTeam: null,
+				canChangeTeamAssignment: true,
+			},
+		});
+		const page = renderLoanList({ loans: [loan], lendingTeams });
+
+		const select = teamSelect(page.container);
+		expect(select.value).toBe('');
+		// Legacy parity: the "None" placeholder leads and is selected to show the current
+		// teamless state, followed by the user's real teams.
+		const options = [...select.querySelectorAll('option')]
+			.map(o => ({ value: o.value, label: o.textContent.trim() }));
+		expect(options).toEqual([
+			{ value: '', label: 'None' },
+			{ value: '1', label: 'Team One' },
+			{ value: '2', label: 'Team Two' },
+		]);
+	});
+
+	it('emits reassign-team with the chosen team id on change', async () => {
+		const page = renderLoanList({ loans: [eligibleLoan({ id: 101 })], lendingTeams });
+
+		const select = teamSelect(page.container);
+		select.value = '2';
+		await fireEvent.change(select);
+
+		expect(page.emitted()['reassign-team'][0]).toEqual([{ loanId: 101, teamId: 2 }]);
+	});
+
+	it('does not emit reassign-team when the "None" placeholder is chosen (no detach)', async () => {
+		const loan = eligibleLoan({
+			id: 202,
+			userProperties: {
+				loanBalance: {
+					amountPurchasedByLender: '25',
+					amountRepaidToLender: '5',
+					latestSharePurchaseTime: '2026-03-15T12:00:00Z',
+				},
+				userAttributedTeam: null,
+				canChangeTeamAssignment: true,
+			},
+		});
+		const page = renderLoanList({ loans: [loan], lendingTeams });
+
+		const select = teamSelect(page.container);
+		select.value = '';
+		await fireEvent.change(select);
+
+		// The backend has no detach; selecting "None" is a no-op, not a teamId: null emit.
+		expect(page.emitted()['reassign-team']).toBeUndefined();
+	});
+
+	it('disables the team dropdown for the row whose reassignment is in flight', () => {
+		const page = renderLoanList({
+			loans: [eligibleLoan({ id: 303 })],
+			lendingTeams,
+			reassigningLoanIds: [303],
+		});
+
+		expect(teamSelect(page.container).disabled).toBe(true);
+	});
+
+	it('reverts the dropdown to the attributed team when this loan\'s nonce changes', async () => {
+		const loan = eligibleLoan({ id: 404 }); // attributed to Team One (id 1)
+		const page = renderLoanList({ loans: [loan], lendingTeams, reassignNonce: {} });
+
+		const select = teamSelect(page.container);
+		select.value = '2';
+		await fireEvent.change(select);
+		expect(teamSelect(page.container).value).toBe('2');
+
+		// Parent bumps only this loan's nonce when the (rejected) reassignment settles; the
+		// loan's attributed team is unchanged, so the remounted control snaps back to Team One.
+		await page.rerender({
+			loans: [loan], loading: false, lendingTeams, reassigningLoanIds: [], reassignNonce: { 404: 1 },
+		});
+
+		expect(teamSelect(page.container).value).toBe('1');
 	});
 });

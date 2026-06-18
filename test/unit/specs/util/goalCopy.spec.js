@@ -20,7 +20,7 @@ describe('goalCopy', () => {
 			const result = goalCopy.titleNoHistoryWomensDefault();
 			expect(result).toContain('class="tw-text-eco-green-3"');
 			expect(result).toContain('3 women');
-			expect(result).toContain('a year!');
+			expect(result).toContain('a year');
 		});
 
 		it('accepts a custom CSS class', () => {
@@ -49,6 +49,26 @@ describe('goalCopy', () => {
 			vi.setSystemTime(new Date('2026-04-01T12:00:00'));
 
 			expect(goalCopy.titleNoGoalYetWomensDefault()).toBe(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);
+		});
+	});
+
+	describe('subtitleNoGoalYetEntrypoint', () => {
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		it('uses the loan question from January 1 through March 31', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-03-31T12:00:00'));
+
+			expect(goalCopy.subtitleNoGoalYetEntrypoint()).toBe(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
+		});
+
+		it('uses the habit prompt starting April 1', () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-04-01T12:00:00'));
+
+			expect(goalCopy.subtitleNoGoalYetEntrypoint()).toBe(goalCopy.CARD_HABIT_PROMPT_SINGLE_LINE);
 		});
 	});
 
@@ -134,7 +154,59 @@ describe('goalCopy', () => {
 		it('wraps the category name in an eco-green span', () => {
 			const result = goalCopy.titleCategoryHowManyLoans('refugees');
 			expect(result).toContain('<span class="tw-text-eco-green-3">refugees</span>');
-			expect(result).toContain('will you make this year?');
+			expect(result).toContain(' will you make this year?');
+			expect(result).not.toContain('<br>');
+		});
+
+		it('can split the category question after the category name', () => {
+			const result = goalCopy.titleCategoryHowManyLoans('women', { splitQuestion: true });
+
+			expect(result).toContain('<span class="tw-text-eco-green-3">women</span><br>will you make this year?');
+		});
+	});
+
+	describe('titleNoGoalYetSelectorEntrypoint', () => {
+		it('combines the no-goal-yet title with the short habit prompt', () => {
+			expect(stripHtml(goalCopy.titleNoGoalYetSelectorEntrypoint()))
+				.toBe(`${goalCopy.CARD_NO_GOAL_YET_EXPERIMENT}${goalCopy.CARD_HABIT_PROMPT_SHORT}`);
+		});
+
+		it('can render a compact intro line', () => {
+			const result = goalCopy.titleNoGoalYetSelectorEntrypoint({ compactIntro: true });
+
+			expect(result).toContain(`>${goalCopy.CARD_NO_GOAL_YET_EXPERIMENT}</span>`);
+			expect(result).toContain('tw-text-base');
+			expect(result).toContain(goalCopy.CARD_HABIT_PROMPT_SHORT);
+		});
+	});
+
+	describe('titleLoanQuestionForCategory', () => {
+		it('uses generic copy for Support All', () => {
+			expect(goalCopy.titleLoanQuestionForCategory(ID_SUPPORT_ALL, 'Choose as I go'))
+				.toBe(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
+		});
+
+		it('uses the U.S. Entrepreneurs copy for US Economic Equality', () => {
+			expect(goalCopy.titleLoanQuestionForCategory(ID_US_ECONOMIC_EQUALITY, 'U.S. Entrepreneurs'))
+				.toBe(goalCopy.TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS);
+			expect(goalCopy.TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS).toContain(' will you make this year?');
+			expect(goalCopy.TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS).not.toContain('<br>');
+		});
+
+		it('can split the U.S. Entrepreneurs copy after the category name', () => {
+			const result = goalCopy.titleLoanQuestionForCategory(
+				ID_US_ECONOMIC_EQUALITY,
+				'U.S. Entrepreneurs',
+				{ splitQuestion: true }
+			);
+
+			expect(result)
+				.toContain('<span class="tw-text-eco-green-3">U.S. entrepreneurs</span><br>will you make this year?');
+		});
+
+		it('uses category-specific copy for other categories', () => {
+			expect(stripHtml(goalCopy.titleLoanQuestionForCategory(ID_WOMENS_EQUALITY, 'Women')))
+				.toBe(stripHtml(goalCopy.titleCategoryHowManyLoans('women')));
 		});
 	});
 

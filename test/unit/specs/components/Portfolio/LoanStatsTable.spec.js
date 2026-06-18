@@ -21,22 +21,21 @@ const fullData = (overrides = {}) => ({
 			currency_loss_rate: 1.5,
 			currency_loss: -12.5,
 			currency_loss_reimbursement: 7.25,
-			num_fund_raising: 3,
-			num_raised: 4,
-			num_paying_back: 5,
-			number_delinquent: 1,
-			num_ended: 9,
-			num_defaulted: 2,
-			num_refunded: 1,
-			num_expired: 0,
 			...overrides.userStats,
 		},
-		// endedWithLossLoans is the `ended_with_loss` search bucket, which the backend
-		// resolves to `defaulted OR (ended AND currency loss)` — so it = defaulted (2) +
-		// ended-with-currency-loss (3). The component subtracts defaultedLoans to recover 3.
-		endedLoans: { totalCount: 9, ...overrides.endedLoans },
-		endedWithLossLoans: { totalCount: 5, ...overrides.endedWithLossLoans },
+		// Every status count comes from the my.loans search. On the live (Sphinx) path the
+		// status buckets are mutually exclusive: `ended` excludes currency-loss ends,
+		// `ended_with_loss` is ended-with-currency-loss only, and `defaulted` is separate —
+		// so each totalCount maps directly to its row with no subtraction.
+		fundRaisingLoans: { totalCount: 3, ...overrides.fundRaisingLoans },
+		raisedLoans: { totalCount: 4, ...overrides.raisedLoans },
+		payingBackLoans: { totalCount: 5, ...overrides.payingBackLoans },
+		delinquentLoans: { totalCount: 1, ...overrides.delinquentLoans },
+		endedLoans: { totalCount: 6, ...overrides.endedLoans },
+		endedWithLossLoans: { totalCount: 3, ...overrides.endedWithLossLoans },
 		defaultedLoans: { totalCount: 2, ...overrides.defaultedLoans },
+		refundedLoans: { totalCount: 1, ...overrides.refundedLoans },
+		expiredLoans: { totalCount: 0, ...overrides.expiredLoans },
 	},
 	general: {
 		kivaStats: {
@@ -180,19 +179,14 @@ describe('LoanStatsTable', () => {
 			expect(ctx.stats.currency_loss).toBe(-12.5);
 		});
 
-		it('maps loan status counts, subtracting defaulted from the ended-with-loss bucket', () => {
-			const { ctx } = runResult(fullData({
-				endedLoans: { totalCount: 9 },
-				endedWithLossLoans: { totalCount: 5 }, // defaulted (2) + ended-with-loss (3)
-				defaultedLoans: { totalCount: 2 },
-			}));
+		it('maps each loan status count directly from its my.loans search bucket', () => {
+			const { ctx } = runResult(fullData());
 
 			expect(ctx.loanCounts).toEqual({
 				fundraising: 3,
 				funded: 4,
 				payingBack: 5,
 				payingBackDelinquent: 1,
-				// Repaid = ended total (9) - ended-with-loss-only (5 - 2 = 3)
 				repaid: 6,
 				repaidWithCurrencyLoss: 3,
 				defaulted: 2,
@@ -201,50 +195,53 @@ describe('LoanStatsTable', () => {
 			});
 		});
 
-		it('does not count defaulted loans as repaid-with-currency-loss', () => {
-			// The `ended_with_loss` search bucket here is entirely defaulted loans
-			// (no real currency-loss ends), so the split must show zero with-loss.
+		it('keeps defaulted and repaid-with-currency-loss as separate buckets', () => {
+			// On the live search path `ended_with_loss` excludes defaulted loans, so the
+			// with-loss count is the bucket value directly and defaulted is independent —
+			// no subtraction, no overlap.
 			const { ctx } = runResult(fullData({
-				endedLoans: { totalCount: 10 },
-				endedWithLossLoans: { totalCount: 5 },
+				endedWithLossLoans: { totalCount: 7 },
 				defaultedLoans: { totalCount: 5 },
 			}));
 
-			expect(ctx.loanCounts.repaidWithCurrencyLoss).toBe(0);
-			expect(ctx.loanCounts.repaid).toBe(10);
+			expect(ctx.loanCounts.repaidWithCurrencyLoss).toBe(7);
+			expect(ctx.loanCounts.defaulted).toBe(5);
 		});
 
-		it('sources the defaulted count from the search, not userStats', () => {
+		it('sources the defaulted count from the defaulted search bucket', () => {
 			const { ctx } = runResult(fullData({
-				userStats: { num_defaulted: 99 },
 				defaultedLoans: { totalCount: 4 },
-				endedWithLossLoans: { totalCount: 4 },
 			}));
 
 			expect(ctx.loanCounts.defaulted).toBe(4);
 		});
 
-		it('derives the ended split from search buckets, not the currency loss amount', () => {
+		it('derives the ended split from search buckets, not the currency-loss amount', () => {
 			const { ctx } = runResult(fullData({
 				userStats: { currency_loss: -99999 },
-				endedLoans: { totalCount: 20 },
+				endedLoans: { totalCount: 15 },
 				endedWithLossLoans: { totalCount: 5 },
-				defaultedLoans: { totalCount: 0 },
 			}));
 
 			expect(ctx.loanCounts.repaidWithCurrencyLoss).toBe(5);
 			expect(ctx.loanCounts.repaid).toBe(15);
 		});
 
-		it('never reports negative repaid or with-loss counts', () => {
+		it('renders zero for empty status buckets', () => {
+			const zero = { totalCount: 0 };
 			const { ctx } = runResult(fullData({
-				endedLoans: { totalCount: 0 },
-				endedWithLossLoans: { totalCount: 0 },
-				defaultedLoans: { totalCount: 0 },
+				fundRaisingLoans: zero,
+				raisedLoans: zero,
+				payingBackLoans: zero,
+				delinquentLoans: zero,
+				endedLoans: zero,
+				endedWithLossLoans: zero,
+				defaultedLoans: zero,
+				refundedLoans: zero,
+				expiredLoans: zero,
 			}));
 
-			expect(ctx.loanCounts.repaid).toBe(0);
-			expect(ctx.loanCounts.repaidWithCurrencyLoss).toBe(0);
+			Object.values(ctx.loanCounts).forEach(value => expect(value).toBe(0));
 		});
 
 		it('emits the avg-lender snapshot timestamp as updated-as-of', () => {

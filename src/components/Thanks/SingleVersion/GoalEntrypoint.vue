@@ -9,6 +9,7 @@
 				ref="recommendLoanForGoalRef"
 				header-title="Goal set!"
 				express-checkout-enabled
+				class="recommended-goal-card-wrapper"
 				:header-details="recommendLoanHeaderDetails"
 				:content-card-props="recommendLoanCardProps"
 				:is-adding="isAdding"
@@ -22,7 +23,7 @@
 				v-else
 				class="
 					tw-shadow-lg
-					tw-p-2.5 tw-py-2.5 md:tw-px-2.5 md:tw-py-4"
+					tw-p-2.5 tw-py-2.5 md:tw-px-2.5 md:tw-py-3"
 			>
 				<GoalSelector
 					:is-goal-set="isGoalSet"
@@ -35,6 +36,9 @@
 					:goal-progress="goalProgress"
 					:goal-progress-percentage="goalProgressPercentage"
 					:go-to-url="goToUrl"
+					compact-no-goal-yet-title
+					compact-layout
+					base-prompt-text
 					@set-goal-target="$emit('set-goal-target', $event)"
 					@set-goal="$emit('set-goal', $event)"
 					@edit-goal="$emit('edit-goal')"
@@ -216,6 +220,12 @@ const handleAddToBasket = () => {
 
 	@screen md {
 		min-height: 583px;
+	}
+}
+
+.recommended-goal-card-wrapper :deep {
+	.recommended-goal-card-header {
+		@apply !tw-rounded-b-none;
 	}
 }
 </style>

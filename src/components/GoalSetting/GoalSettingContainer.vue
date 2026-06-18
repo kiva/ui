@@ -83,6 +83,7 @@
 					:goal-progress="goalProgress"
 					:is-goal-completed="isGoalCompleted"
 					show-goal-value-props-copy
+					use-direct-question-title
 					@set-goal-target="setTarget($event)"
 					@set-goal="setGoal($event)"
 					@update-goal="updateGoal($event)"

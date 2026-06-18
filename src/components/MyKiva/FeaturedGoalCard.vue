@@ -28,8 +28,10 @@
 			>
 				<div class="tw-flex tw-flex-col md:tw-w-full">
 					<h3 class="tw-text-title tw-pb-1" v-html="noGoalTitle"></h3>
-					<p class="tw-text-small md:tw-text-base tw-pb-3 md:tw-pb-2">
-						{{ goalCopy.TITLE_HOW_MANY_LOANS_GENERIC }}
+					<p
+						class="tw-text-small md:tw-text-base tw-pb-3 md:tw-pb-2"
+						v-html="noGoalSubtitle"
+					>
 					</p>
 					<KvButton
 						class="featured-goal-card__cta featured-goal-card__cta--set-goal tw-w-full"
@@ -197,6 +199,10 @@ const props = defineProps({
 		type: String,
 		default: '',
 	},
+	prevYearLoans: {
+		type: Number,
+		default: 0,
+	},
 	suppressCompletionConfetti: {
 		type: Boolean,
 		default: false,
@@ -213,7 +219,8 @@ const resolvedState = computed(() => (
 	VALID_STATES.includes(props.state) ? props.state : STATE_NO_GOAL
 ));
 
-const noGoalTitle = computed(() => goalCopy.titleNoGoalYetWomensDefault());
+const noGoalTitle = computed(() => goalCopy.titleGoalSignupWomensLastYear(props.prevYearLoans));
+const noGoalSubtitle = goalCopy.subtitleNoGoalYetEntrypoint();
 
 const visibleProgress = computed(() => Math.min(props.goalProgress, props.goalTarget));
 

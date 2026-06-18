@@ -30,7 +30,7 @@ const goalCopy = {
 
 	/** No lending history and default womens category */
 	// eslint-disable-next-line max-len
-	titleNoHistoryWomensDefault: (cssClass = 'tw-text-eco-green-3') => `Lenders like you help ${highlight('3 women', cssClass)} a year!`,
+	titleNoHistoryWomensDefault: (cssClass = 'tw-text-eco-green-3') => `Lenders like you help ${highlight('3 women', cssClass)} a year`,
 
 	/** Date-aware no-goal title for default womens category */
 	titleNoGoalYetWomensDefault(cssClass = 'tw-text-eco-green-3') {
@@ -38,6 +38,14 @@ const goalCopy = {
 			return this.CARD_NO_GOAL_YET_EXPERIMENT;
 		}
 		return this.titleNoHistoryWomensDefault(cssClass);
+	},
+
+	/** Date-aware no-goal subtitle for goal card entrypoints */
+	subtitleNoGoalYetEntrypoint() {
+		if (this.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
+			return this.CARD_HABIT_PROMPT_SINGLE_LINE;
+		}
+		return this.TITLE_HOW_MANY_LOANS_GENERIC;
 	},
 
 	/** User helped exactly 1 woman last year */
@@ -82,7 +90,32 @@ const goalCopy = {
 	TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS: `How many loans to ${ecoGreen('U.S. entrepreneurs')} will you make this year?`,
 
 	/** Specific named category */
-	titleCategoryHowManyLoans: categoryName => `How many loans to ${ecoGreen(categoryName)} will you make this year?`,
+	titleCategoryHowManyLoans(categoryName, { splitQuestion = false } = {}) {
+		const separator = splitQuestion ? '<br>' : ' ';
+		return `How many loans to ${ecoGreen(categoryName)}${separator}will you make this year?`;
+	},
+
+	/** Direct no-goal-yet title used by selector entrypoints */
+	titleNoGoalYetSelectorEntrypoint({ compactIntro = false } = {}) {
+		const intro = compactIntro
+			? `<span class="tw-text-base tw-font-book">${this.CARD_NO_GOAL_YET_EXPERIMENT}</span>`
+			: this.CARD_NO_GOAL_YET_EXPERIMENT;
+		return `${intro}<br>${this.CARD_HABIT_PROMPT_SHORT}`;
+	},
+
+	/** Generic category question used by direct goal-selector flows */
+	titleLoanQuestionForCategory(categoryId, categoryName, options = {}) {
+		if (categoryId === ID_SUPPORT_ALL) {
+			return this.TITLE_HOW_MANY_LOANS_GENERIC;
+		}
+		if (categoryId === ID_US_ECONOMIC_EQUALITY) {
+			if (options.splitQuestion) {
+				return this.titleCategoryHowManyLoans('U.S. entrepreneurs', options);
+			}
+			return this.TITLE_US_ENTREPRENEURS_HOW_MANY_LOANS;
+		}
+		return this.titleCategoryHowManyLoans(categoryName?.toLowerCase(), options);
+	},
 
 	// ─── Goal selector subtitle ────────────────────────────────────────────────
 
@@ -123,6 +156,12 @@ const goalCopy = {
 
 	/** Experiment: motivational subtitle in the empty goal tile */
 	CARD_HABIT_PROMPT_EXPERIMENT: "Make helping others a habit.<br>We'll help you make it happen.",
+
+	/** Single-line habit prompt used where the subtitle should not force a line break */
+	CARD_HABIT_PROMPT_SINGLE_LINE: "Make helping others a habit. We'll help you make it happen.",
+
+	/** Short habit prompt used inside the goal selector title */
+	CARD_HABIT_PROMPT_SHORT: 'Make helping others a habit.',
 
 	// ─── GoalProgressRing — modal description text ───────────────────────────────
 

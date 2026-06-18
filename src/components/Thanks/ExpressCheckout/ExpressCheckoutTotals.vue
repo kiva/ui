@@ -21,6 +21,14 @@
 			<div class="tw-flex tw-items-center tw-justify-end">
 				<span>-{{ formattedRedemptionApplied }}</span>
 			</div>
+			<button
+				:disabled="removingPromotion"
+				class="tw-w-full tw-col-span-2 tw-h-2.5 tw-flex tw-text-action tw-justify-start"
+				data-testid="express-checkout-remove-promotion"
+				@click="removePromotion"
+			>
+				Remove
+			</button>
 		</template>
 
 		<template v-if="hasBonusCredit">
@@ -30,6 +38,14 @@
 			<div class="tw-flex tw-items-center tw-justify-end">
 				<span>-{{ formattedBonusApplied }}</span>
 			</div>
+			<button
+				:disabled="removingKivaPromotion"
+				class="tw-w-full tw-col-span-2 tw-h-2.5 tw-flex tw-text-action tw-justify-start"
+				data-testid="express-checkout-remove-kiva-promotion"
+				@click="removeKivaPromotion"
+			>
+				Remove
+			</button>
 		</template>
 
 		<template v-if="isCreditApplied || isCreditAvailable">
@@ -44,6 +60,8 @@
 				{{ isCreditApplied ? `-${formattedAppliedCredit}` : '' }}
 			</p>
 		</template>
+
+		<hr class="tw-flex tw-col-span-2">
 
 		<p class="tw-font-medium">
 			Total due:
@@ -63,6 +81,7 @@ import { applyKivaCredit, removeKivaCredit, watchBasketTotals } from '@kiva/kv-s
 import { KvSwitch } from '@kiva/kv-components';
 import useTipMessage from '#src/composables/useTipMessage';
 import logFormatter from '#src/util/logFormatter';
+import { removeBasketCredit } from '#src/util/thanksPage/expressCheckoutUtils';
 
 const props = defineProps({
 	loan: {
@@ -74,6 +93,7 @@ const props = defineProps({
 const emit = defineEmits(['credit-toggled']);
 
 const apollo = inject('apollo');
+const cookieStore = inject('cookieStore');
 const { $showTipMsg } = useTipMessage(apollo);
 
 const itemTotal = ref('0.00');
@@ -84,6 +104,8 @@ const changingCredit = ref(false);
 const creditAppliedModel = ref(false);
 const redemptionCodeAppliedTotal = ref('0.00');
 const bonusAppliedTotal = ref('0.00');
+const removingPromotion = ref(false);
+const removingKivaPromotion = ref(false);
 let totalsSubscription = null;
 
 const loanLabel = computed(() => {
@@ -135,6 +157,42 @@ watch(creditAppliedModel, value => {
 	}
 	emit('credit-toggled', value);
 });
+
+const removePromotion = async () => {
+	removingPromotion.value = true;
+	try {
+		await removeBasketCredit({
+			apollo,
+			basketId: cookieStore.get('kvbskt'),
+			creditType: 'redemption_code',
+		});
+	} catch (e) {
+		const message = e?.message
+			|| 'Something went wrong removing your Promotion. Please, refresh the page and try again.';
+		$showTipMsg(message, 'error');
+		logFormatter(e, 'error');
+	} finally {
+		removingPromotion.value = false;
+	}
+};
+
+const removeKivaPromotion = async () => {
+	removingKivaPromotion.value = true;
+	try {
+		await removeBasketCredit({
+			apollo,
+			basketId: cookieStore.get('kvbskt'),
+			creditType: 'bonus_credit',
+		});
+	} catch (e) {
+		const message = e?.message
+			|| 'Something went wrong removing your Kiva Promotion. Please, refresh the page and try again.';
+		$showTipMsg(message, 'error');
+		logFormatter(e, 'error');
+	} finally {
+		removingKivaPromotion.value = false;
+	}
+};
 
 onMounted(() => {
 	totalsSubscription = watchBasketTotals(apollo).subscribe({
