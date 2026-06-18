@@ -72,7 +72,7 @@ const queryResultPfp = {
 	}
 };
 
-// AD-229: PII anonymization shows the borrower's name plus an info icon in the summary card.
+// PII anonymization shows the borrower's name plus an info icon in the summary card.
 const queryResultPiiAnonymized = {
 	...queryResult,
 	data: {
@@ -86,7 +86,7 @@ const queryResultPiiAnonymized = {
 	}
 };
 
-// AD-230: Full anonymization replaces the loan use with a privacy message + "Learn more" link.
+// Full anonymization replaces the loan use with a privacy message + "Learn more" link.
 const queryResultFullyAnonymized = {
 	...queryResult,
 	data: {
@@ -142,7 +142,7 @@ export const PrivateFundraisingPeriod = () => ({
 
 });
 
-// AD-229: borrower name with the PII anonymization info icon (anonymizationLevel === 'pii').
+// Borrower name with the PII anonymization info icon (anonymizationLevel === 'pii').
 export const PiiAnonymized = () => ({
 	components: { BorrowerProfile },
 	parameters: {
@@ -156,7 +156,7 @@ export const PiiAnonymized = () => ({
 	template: `<borrower-profile />`,
 });
 
-// AD-230: fully anonymized loan use with the "Learn more" link (anonymizationLevel === 'full').
+// Fully anonymized loan use with the "Learn more" link (anonymizationLevel === 'full').
 export const FullyAnonymized = () => ({
 	components: { BorrowerProfile },
 	parameters: {
