@@ -40,7 +40,7 @@
 					class="tw-align-super tw-ml-0.5"
 					data-testid="bp-summary-pii-info"
 					aria-label="Why is this borrower anonymous?"
-					@click="showSalesforceLightbox('501VB00000F1gHW')"
+					@click="showSalesforceLightbox('501US00000NRTYa')"
 					v-kv-track-event="[
 						'Borrower profile',
 						'click-PII-anonymization-info',
