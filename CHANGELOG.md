@@ -1,3 +1,46 @@
+## [3.73.0-rc.1](https://github.com/kiva/ui/compare/v3.72.0...v3.73.0-rc.1) (2026-06-18)
+
+### 🎉 New Features
+
+* [MP-2900-2905] - allow removal promotion rows in TY page express checkout modal and prevent close it ([fdaa794](https://github.com/kiva/ui/commit/fdaa794773697e66eb8a48c6a5c4043a721d5e1a))
+* [MP-2903] - fix borders ([78a27bf](https://github.com/kiva/ui/commit/78a27bf27ed5f6c6f08fe65a958e7a190c74ae62))
+* [MP-2903] - revert remove rounded bottom border in goal page ([#7007](https://github.com/kiva/ui/issues/7007)) ([6f11356](https://github.com/kiva/ui/commit/6f11356ee02bbd427a167352232241680b3cde84))
+* **live-loan:** bundle img card style for ERL bundle emails ([#6998](https://github.com/kiva/ui/issues/6998)) ([9ed376c](https://github.com/kiva/ui/commit/9ed376cdb9cbfec835510e7b309613d0ed4156a1))
+* mp-2855-goal copy updates ([1582e4b](https://github.com/kiva/ui/commit/1582e4bf53566aa1ccb66add4e7555d73330b828))
+* mp-2855-goal copy updates ([f8250d6](https://github.com/kiva/ui/commit/f8250d61d244df8d3190118e545b9f5b0cffe176))
+* mp-2855-goal copy updates ([6bf39e8](https://github.com/kiva/ui/commit/6bf39e8b94b74a6a802dcd6b7a791896e072bc25))
+* mp-2855-goal copy updates ([8a1730d](https://github.com/kiva/ui/commit/8a1730dfb2f3fd6d2f1ca369b0be3b3268cd7719))
+* mp-2855-goal copy updates ([6b02379](https://github.com/kiva/ui/commit/6b023793773e477ed2a8824620b79740bc380edd))
+* mp-2855-goal copy updates ([54fe41e](https://github.com/kiva/ui/commit/54fe41e04d1606e68710db2cf95168305585cdf8))
+* restore team reassignment parity to loans-beta ([#7004](https://github.com/kiva/ui/issues/7004)) ([504b356](https://github.com/kiva/ui/commit/504b356eff3d17272885111d9f7e3ab1bba90a90))
+* suppress achievement messages when goal is active ([7f6595c](https://github.com/kiva/ui/commit/7f6595cc62319e5141272547744bf82f81dff498))
+
+### 🐛 Bugfixes
+
+* add no loans cta to loans-beta and cleaned up stats ([#7006](https://github.com/kiva/ui/issues/7006)) ([e6f729b](https://github.com/kiva/ui/commit/e6f729b7756550c7433cae4eb86cb29cc2377c4b))
+* clarifying comments and reverting unused files ([02235f9](https://github.com/kiva/ui/commit/02235f9b1484a32eb8e9c4541c36b93c4bda2fd7))
+* display a kiva supporter for anonymous contributing partners, bump kv-ui-elements ([466e415](https://github.com/kiva/ui/commit/466e415e377fd7539507cba0681c7b6c9dfd251c))
+* simplify logic and resume achievements messages after goal is complete ([7675369](https://github.com/kiva/ui/commit/76753693273e0811b1ca1fad755f4103edc0f789))
+* **storybook:** exercise real props in FieldPartnerDetails story variants ([f2bf3c3](https://github.com/kiva/ui/commit/f2bf3c3ef61ec90cdb2253fefb771b05be4a2119))
+* **storybook:** make borrower-profile Loading stories show loading state ([e05278b](https://github.com/kiva/ui/commit/e05278bf97b162fe3702243b96624c0def7dea81))
+* **storybook:** pin borrower-profile fixture expiration date ([d77981f](https://github.com/kiva/ui/commit/d77981f06a74fae6e21f846c88966d5f27b4b30b))
+
+### 🪚 Refactors
+
+* **storybook:** drop unused loan binding from SummaryCard stories ([e8f9d05](https://github.com/kiva/ui/commit/e8f9d05161e1079437004eae95ba6eab16b057d6))
+
+### 📚 Documentation Changes
+
+* **storybook:** add borrower-profile component coverage ([26bcfe3](https://github.com/kiva/ui/commit/26bcfe34b032f4bcfe0e85056936725d8a5ce2bd))
+
+### 💅 Code Style Changes
+
+* **storybook:** colocate router config comments with their code ([0f7f3d4](https://github.com/kiva/ui/commit/0f7f3d4af3272586c40de7f2565579a8fc48b08e))
+
+### 🧹 Chores
+
+* **storybook:** harden story harness for self-fetching components ([80ce022](https://github.com/kiva/ui/commit/80ce02271bcd436c284dca412d40a5d53da16960))
+
 ## [3.72.0](https://github.com/kiva/ui/compare/v3.71.1...v3.72.0) (2026-06-16)
 
 ### 🎉 New Features
