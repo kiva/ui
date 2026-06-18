@@ -32,7 +32,14 @@
 						@filters-changed="handleFiltersChanged"
 					/>
 					<div ref="loanTableTop">
-						<loan-list :loans="loans" :loading="loading" />
+						<loan-list
+							:loans="loans"
+							:loading="loading"
+							:lending-teams="lendingTeams"
+							:reassigning-loan-ids="reassigningLoanIds"
+							:reassign-nonce="reassignNonce"
+							@reassign-team="handleReassignTeam"
+						/>
 					</div>
 					<kv-pagination
 						v-if="showPagination"
@@ -62,6 +69,7 @@ import LoanStatsTable from '#src/components/Portfolio/LoanStatsTable';
 import LoanFilterBar from '#src/components/Portfolio/LoanFilterBar';
 import LoanList from '#src/components/Portfolio/LoanList';
 import myLoansQuery from '#src/graphql/query/portfolio/myLoans.graphql';
+import reassignLoanTeamMutation from '#src/graphql/mutation/reassignLoanTeam.graphql';
 
 const PAGE_LIMIT = 20;
 
@@ -85,6 +93,9 @@ export default {
 		return {
 			lastUpdated: '',
 			loans: [],
+			lendingTeams: [],
+			reassigningLoanIds: [],
+			reassignNonce: {},
 			totalLoans: 0,
 			loading: true,
 			loanState: {
@@ -162,6 +173,13 @@ export default {
 					};
 					this.filterOptionsLoaded = true;
 				}
+				if (data?.my?.teams?.values) {
+					// my.teams is the user's active team memberships (TeamLender records);
+					// the reassignment picker only needs each underlying team.
+					this.lendingTeams = sortByName(
+						data.my.teams.values.map(member => member.team).filter(Boolean)
+					);
+				}
 				if (data?.my?.loans) {
 					this.loans = data.my.loans.values || [];
 					this.totalLoans = data.my.loans.totalCount;
@@ -209,6 +227,64 @@ export default {
 				hour12: true,
 			}).toLowerCase();
 			this.lastUpdated = `${datePart} ${timePart}`;
+		},
+		handleReassignTeam({ loanId, teamId }) {
+			// Disable this row's control until its mutation settles. Tracked per loan id so a
+			// second row's reassignment can't lift this one's disabled state.
+			this.reassigningLoanIds.push(loanId);
+			return this.apollo.mutate({
+				mutation: reassignLoanTeamMutation,
+				variables: { loanId, teamId },
+			}).then(({ data }) => {
+				const numChanged = data?.my?.reassignLoanTeam ?? 0;
+				if (numChanged > 0) {
+					// Update just this row's attributed team in place (legacy parity) rather
+					// than refetching the page: a reassignment can't change eligibility
+					// (status + 14-day window are unaffected), so a full reload would only
+					// flash the loading skeleton over the whole table for no new data.
+					this.applyTeamAssignment(loanId, teamId);
+					this.$showTipMsg('Team updated.');
+					return;
+				}
+				// The backend rejected the change — eligibility lapsed between render
+				// and submit (status, window, or ownership). Leave the row untouched.
+				this.$showTipMsg('That loan can no longer be reassigned.', 'error');
+			}).catch(error => {
+				logFormatter(`Error reassigning loan team: ${error}`, 'error');
+				this.$showTipMsg('Something went wrong updating the team. Please try again.', 'error');
+			}).finally(() => {
+				this.reassigningLoanIds = this.reassigningLoanIds.filter(id => id !== loanId);
+				// Remount only this row's select so it re-syncs to the attributed team — this
+				// reverts the visible selection if the change was rejected or failed.
+				this.reassignNonce = {
+					...this.reassignNonce,
+					[loanId]: (this.reassignNonce[loanId] || 0) + 1,
+				};
+			});
+		},
+		applyTeamAssignment(loanId, teamId) {
+			const index = this.loans.findIndex(item => String(item.id) === String(loanId));
+			if (index === -1) {
+				return;
+			}
+			const loan = this.loans[index];
+			const team = this.lendingTeams.find(item => String(item.id) === String(teamId));
+			// Apollo freezes query results, so the loan and its userProperties are read-only.
+			// Replace the row with a fresh object instead of mutating the frozen one in place.
+			const updatedLoan = {
+				...loan,
+				userProperties: {
+					...loan.userProperties,
+					userAttributedTeam: team
+						? { id: team.id, name: team.name, image: team.image ?? null }
+						: null,
+				},
+			};
+			this.loans = [
+				...this.loans.slice(0, index),
+				updatedLoan,
+				...this.loans.slice(index + 1),
+			];
 		},
 		handleFiltersChanged({ filters = {}, keywordSearch = null }) {
 			this.loanState = {

@@ -187,7 +187,32 @@
 							</td>
 							<td class="team-cell tw-whitespace-normal tw-break-words tw-px-2">
 								<div class="tw-items-center">
-									<template v-if="loan.userProperties?.userAttributedTeam">
+									<!-- Legacy parity: eligible loans show an inline team dropdown
+										directly in the cell using the shared KvSelect. The control is
+										disabled while its reassignment is in flight, and ineligible
+										loans stay read-only. The :key includes this loan's own
+										reassignNonce entry so only this row's control remounts once its
+										reassignment settles, snapping back to the attributed team if
+										the change was rejected. -->
+									<kv-select
+										v-if="canReassignTeam(loan)"
+										:key="`reassign-team-${loan.id}-${reassignNonce[loan.id] || 0}`"
+										:id="`reassign-team-${loan.id}`"
+										class="tw-w-full"
+										:model-value="currentTeamId(loan)"
+										:disabled="reassigningLoanIds.includes(loan.id)"
+										:aria-label="`Reassign team for ${loan.name}`"
+										@update:model-value="onTeamChange(loan, $event)"
+									>
+										<option
+											v-for="option in teamOptions(loan)"
+											:key="option.id === null ? 'none' : option.id"
+											:value="option.id === null ? '' : String(option.id)"
+										>
+											{{ option.name }}
+										</option>
+									</kv-select>
+									<template v-else-if="loan.userProperties?.userAttributedTeam">
 										<img
 											v-if="loan.userProperties.userAttributedTeam.image?.url"
 											:src="loan.userProperties.userAttributedTeam.image.url"
@@ -196,7 +221,6 @@
 										>
 										<span>{{ loan.userProperties.userAttributedTeam.name }}</span>
 									</template>
-									<span v-else>-</span>
 								</div>
 							</td>
 						</tr>
@@ -209,7 +233,7 @@
 </template>
 
 <script>
-import { KvFlag, KvLoadingPlaceholder } from '@kiva/kv-components';
+import { KvFlag, KvLoadingPlaceholder, KvSelect } from '@kiva/kv-components';
 import {
 	EXPIRED,
 	FUNDRAISING,
@@ -232,11 +256,25 @@ export default {
 		loading: {
 			type: Boolean,
 			default: true
+		},
+		lendingTeams: {
+			type: Array,
+			default: () => []
+		},
+		reassigningLoanIds: {
+			type: Array,
+			default: () => []
+		},
+		reassignNonce: {
+			type: Object,
+			default: () => ({})
 		}
 	},
+	emits: ['reassign-team'],
 	components: {
 		KvFlag,
 		KvLoadingPlaceholder,
+		KvSelect,
 		PaidAmountModal
 	},
 	methods: {
@@ -276,6 +314,43 @@ export default {
 		repaidLabel(loan, recipient) {
 			const verb = REFUNDED_OR_EXPIRED_STATUSES.has(loan.status) ? 'repaid/refunded' : 'repaid';
 			return `${verb} to ${recipient}`;
+		},
+		canReassignTeam(loan) {
+			// Legacy parity: the dropdown only appears when the loan is eligible AND the
+			// user actually belongs to at least one team to reassign to. With no teams there
+			// is nothing to pick (and no "None" detach), so the cell stays read-only.
+			return Boolean(loan.userProperties?.canChangeTeamAssignment) && this.lendingTeams.length > 0;
+		},
+		currentTeamId(loan) {
+			const team = loan.userProperties?.userAttributedTeam;
+			return team ? String(team.id) : '';
+		},
+		teamOptions(loan) {
+			const current = loan.userProperties?.userAttributedTeam;
+			const options = [];
+			// Legacy parity: when the loan has no attributed team, the first entry is a
+			// non-actionable "None" placeholder that shows the current (teamless) state.
+			// There is no detach option — the backend's reassignLoanTeam requires a target
+			// team (teamId is non-null), so "None" is never emitted as a reassignment.
+			if (current) {
+				options.push({ id: current.id, name: current.name });
+			} else {
+				options.push({ id: null, name: 'None' });
+			}
+			this.lendingTeams.forEach(team => {
+				if (!current || team.id !== current.id) {
+					options.push({ id: team.id, name: team.name });
+				}
+			});
+			return options;
+		},
+		onTeamChange(loan, value) {
+			// The "None" placeholder (empty value) is not a reassignment target; ignore it
+			// so we never send a detach the backend can't honor.
+			if (value === '') {
+				return;
+			}
+			this.$emit('reassign-team', { loanId: loan.id, teamId: Number(value) });
 		},
 	},
 	computed: {
