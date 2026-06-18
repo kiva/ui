@@ -13,7 +13,8 @@
 					<h1 class="tw-text-display tw-mb-2">
 						My loans
 					</h1>
-					<div class="tw-mb-2">
+					<loans-first-loan-cta v-if="showFirstLoanCta" />
+					<div v-else class="tw-mb-2">
 						<p v-if="lastUpdated" class="tw-text-right tw-text-tertiary tw-text-small">
 							*Updated as of {{ lastUpdated }}
 						</p>
@@ -21,6 +22,7 @@
 					</div>
 				</div>
 				<div
+					v-if="!showFirstLoanCta"
 					class="tw-col-span-12"
 				>
 					<loan-filter-bar
@@ -61,6 +63,7 @@ import logFormatter from '#src/util/logFormatter';
 import LoanStatsTable from '#src/components/Portfolio/LoanStatsTable';
 import LoanFilterBar from '#src/components/Portfolio/LoanFilterBar';
 import LoanList from '#src/components/Portfolio/LoanList';
+import LoansFirstLoanCta from '#src/components/Portfolio/LoansFirstLoanCta';
 import myLoansQuery from '#src/graphql/query/portfolio/myLoans.graphql';
 
 const PAGE_LIMIT = 20;
@@ -79,7 +82,8 @@ export default {
 		KvPagination,
 		LoanStatsTable,
 		LoanFilterBar,
-		LoanList
+		LoanList,
+		LoansFirstLoanCta
 	},
 	data() {
 		return {
@@ -87,6 +91,10 @@ export default {
 			loans: [],
 			totalLoans: 0,
 			loading: true,
+			// null until the first unfiltered fetch resolves; false only when the lender has
+			// never lent (lifetime loan count is 0), which swaps the page for the first-loan CTA.
+			// Set only from unfiltered requests so a filtered no-results page stays "No loans found".
+			hasEverLent: null,
 			loanState: {
 				offset: 0,
 				limit: PAGE_LIMIT,
@@ -118,6 +126,9 @@ export default {
 		showPagination() {
 			return this.totalLoans > this.loanState.limit;
 		},
+		showFirstLoanCta() {
+			return this.hasEverLent === false;
+		},
 	},
 	mounted() {
 		this.fetchLoans();
@@ -147,9 +158,13 @@ export default {
 			if (clearLoans) {
 				this.loans = [];
 			}
+			const variables = this.buildLoanQueryVariables();
+			// An unfiltered request returns the lender's lifetime loan count, so it's the only
+			// request allowed to set the never-lent signal (filtered no-results must not).
+			const isUnfilteredRequest = !variables.filters && !variables.keywordSearch;
 			return this.apollo.query({
 				query: myLoansQuery,
-				variables: this.buildLoanQueryVariables(),
+				variables,
 				fetchPolicy: 'network-only'
 			}).then(({ data }) => {
 				if (requestSequence !== this.loanRequestSequence) {
@@ -165,6 +180,9 @@ export default {
 				if (data?.my?.loans) {
 					this.loans = data.my.loans.values || [];
 					this.totalLoans = data.my.loans.totalCount;
+					if (isUnfilteredRequest) {
+						this.hasEverLent = (data.my.loans.totalCount || 0) > 0;
+					}
 				}
 			}).catch(error => {
 				if (requestSequence !== this.loanRequestSequence) {
