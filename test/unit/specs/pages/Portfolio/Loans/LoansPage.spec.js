@@ -111,6 +111,7 @@ const renderLoansPage = ({ apollo = null, router = null } = {}) => {
 							</div>
 						`,
 					},
+					LoansFirstLoanCta: { template: '<div data-testid="first-loan-cta" />' },
 					LoanFilterBar: {
 						props: ['filters', 'keywordSearch', 'countries', 'partners', 'totalLoans'],
 						emits: ['filters-changed'],
@@ -183,6 +184,37 @@ const renderLoansPage = ({ apollo = null, router = null } = {}) => {
 describe('LoansPage', () => {
 	beforeEach(() => {
 		scrollIntoView.mockClear();
+	});
+
+	it('shows the first-loan CTA and hides the stats/filter/list when the lender has never lent', async () => {
+		const query = vi.fn().mockResolvedValue({ data: loansResponse('101', 0) });
+		const page = renderLoansPage({ apollo: { query } });
+
+		await waitFor(() => expect(page.queryByTestId('first-loan-cta')).not.toBeNull());
+		expect(page.queryByTestId('loan-list')).toBeNull();
+		expect(page.queryByTestId('pagination')).toBeNull();
+		expect(page.queryByTestId('filter')).toBeNull();
+	});
+
+	it('shows the normal page and no first-loan CTA when the lender has loans', async () => {
+		const page = renderLoansPage();
+
+		await waitFor(() => expect(page.getByTestId('loan-list')).toBeTruthy());
+		expect(page.queryByTestId('first-loan-cta')).toBeNull();
+	});
+
+	it('keeps the no-results page (not the CTA) when filters match zero loans for a lender who has lent', async () => {
+		const query = vi.fn()
+			.mockResolvedValueOnce({ data: loansResponse('101', 45) })
+			.mockResolvedValueOnce({ data: loansResponse('101', 0) });
+		const page = renderLoansPage({ apollo: { query } });
+
+		await waitFor(() => expect(page.getByTestId('loan-list')).toBeTruthy());
+		await fireEvent.click(page.getByTestId('filter'));
+		await waitFor(() => expect(query).toHaveBeenCalledTimes(2));
+
+		expect(page.queryByTestId('first-loan-cta')).toBeNull();
+		expect(page.getByTestId('loan-list')).toBeTruthy();
 	});
 
 	it('queries my loans with first page paging variables', async () => {

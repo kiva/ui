@@ -18,12 +18,23 @@ query myPortfolioLoansLendingStats {
 			currency_loss_rate
 			currency_loss
 			currency_loss_reimbursement
-			num_fund_raising
-			num_raised
-			num_paying_back
-			number_delinquent
-			num_refunded
-			num_expired
+		}
+		# Status counts come from the my.loans search (Sphinx) rather than userStats num_*
+		# counts: the search buckets are mutually exclusive (ended excludes currency-loss
+		# ends, ended_with_loss is ended-with-loss only, defaulted is separate), so each
+		# totalCount maps directly to a row, and large lenders avoid the slow user-stats
+		# count calculation.
+		fundRaisingLoans: loans(filters: { status: fundraising }, limit: 1) {
+			totalCount
+		}
+		raisedLoans: loans(filters: { status: raised }, limit: 1) {
+			totalCount
+		}
+		payingBackLoans: loans(filters: { status: payingBack }, limit: 1) {
+			totalCount
+		}
+		delinquentLoans: loans(filters: { status: delinquent }, limit: 1) {
+			totalCount
 		}
 		endedLoans: loans(filters: { status: ended }, limit: 1) {
 			totalCount
@@ -32,6 +43,12 @@ query myPortfolioLoansLendingStats {
 			totalCount
 		}
 		defaultedLoans: loans(filters: { status: defaulted }, limit: 1) {
+			totalCount
+		}
+		refundedLoans: loans(filters: { status: refunded }, limit: 1) {
+			totalCount
+		}
+		expiredLoans: loans(filters: { status: expired }, limit: 1) {
 			totalCount
 		}
 	}
