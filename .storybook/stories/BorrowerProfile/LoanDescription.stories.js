@@ -53,7 +53,7 @@ export const GroupLoan = () => ({
 });
 
 // Anonymized group loan: members' names are scrubbed, so the "In this group: …"
-// list is HIDDEN (AD-271).
+// list is HIDDEN.
 export const GroupLoanAnonymized = () => ({
 	components: { LoanDescription },
 	data: () => ({ ...baseArgs, ...groupArgs, anonymizationLevel: 'pii' }),
