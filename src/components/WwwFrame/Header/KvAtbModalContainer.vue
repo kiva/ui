@@ -66,6 +66,7 @@ const {
 	loadGoalData,
 	getPostCheckoutProgressByLoans,
 	isProgressCompletingGoal,
+	suppressAchievementNudges,
 } = useGoalData({ apollo });
 
 const userData = ref({});
@@ -81,6 +82,8 @@ const milestonesProgress = ref({});
 const hasEverLoggedIn = ref(false);
 const basketTotal = ref(0);
 const loanGoalProgress = ref(0);
+// Tracks whether the just-added loan actually contributes to the goal's category
+const loanContributesToGoal = ref(false);
 
 const basketCount = computed(() => {
 	return addedLoan.value?.basketSize ?? 0;
@@ -93,6 +96,7 @@ const resetModal = () => {
 	oneLoanAwayFilteredUrl.value = '';
 	oneLoanAwayCategory.value = '';
 	modalVisible.value = false;
+	loanContributesToGoal.value = false;
 };
 
 const handleRedirect = payload => {
@@ -146,7 +150,7 @@ const isFirstLoan = computed(() => {
 });
 
 // eslint-disable-next-line max-len
-const isLoanGoal = computed(() => loanGoalProgress.value > 0 && userGoal.value?.status === 'in-progress' && loanGoalProgress.value <= userGoal.value?.target);
+const isLoanGoal = computed(() => loanContributesToGoal.value && loanGoalProgress.value > 0 && userGoal.value?.status === 'in-progress' && loanGoalProgress.value <= userGoal.value?.target);
 
 const isCompletingGoal = computed(() => isProgressCompletingGoal(loanGoalProgress.value));
 
@@ -179,12 +183,13 @@ const fetchPostCheckoutAchievements = async loanIds => {
 	// Use yearly progress with current year
 	const year = new Date().getFullYear();
 	// Increment counter per add-to-basket action
-	const { totalProgress } = await getPostCheckoutProgressByLoans({
+	const { totalProgress, hasContributingLoans } = await getPostCheckoutProgressByLoans({
 		loans: loanIds.map(id => ({ id })),
 		year,
 		increment: true,
 	});
 	loanGoalProgress.value = totalProgress;
+	loanContributesToGoal.value = hasContributingLoans;
 	const userTarget = userGoal.value?.target || 0;
 	const isOneLoanAwayFromGoal = userTarget - totalProgress === 1;
 	const goalAchieved = loanGoalProgress.value === userTarget;
@@ -202,9 +207,7 @@ const fetchPostCheckoutAchievements = async loanIds => {
 		return;
 	}
 
-	// If added loan is not related to user goal, proceed with achievements logic.
-	// This condition will prevent any conflict between goal and achievement messages.
-	if (!isLoanGoal.value) {
+	if (!suppressAchievementNudges.value) {
 		await apollo.query({
 			query: postCheckoutAchievementsQuery,
 			variables: { loanIds }

@@ -727,6 +727,15 @@ export default function useGoalData({ apollo } = {}) {
 		return Boolean(viewedGoalCompleteByYear.value?.[year]);
 	}
 
+	/**
+	 * Drives the basket / ATB-modal achievement nudges so they stay out of the
+	 * way while a goal is in progress and resume as soon as the goal is
+	 * completed (or the lender has no goal at all).
+	 */
+	const suppressAchievementNudges = computed(() => (
+		userGoal.value?.status === GOAL_STATUS.IN_PROGRESS
+	));
+
 	async function setViewedGoalCompletePreference(year = GOALS_CURRENT_YEAR) {
 		if (!year) return;
 		const parsedPrefs = await loadPreferences('network-only');
@@ -1087,6 +1096,7 @@ export default function useGoalData({ apollo } = {}) {
 		userGoal,
 		userGoalAchieved,
 		userGoalAchievedNow,
+		suppressAchievementNudges,
 		userPreferences,
 		completedGoalsHistory,
 		// Goal Entry for 2026 Goals

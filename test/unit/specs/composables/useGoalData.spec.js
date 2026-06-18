@@ -4801,4 +4801,51 @@ describe('useGoalData', () => {
 			expect(composable.completedGoalsHistory.value).toEqual([]);
 		});
 	});
+
+	describe('suppressAchievementNudges (MP-2875)', () => {
+		const loadPrefs = async prefs => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-suppress',
+							preferences: JSON.stringify(prefs),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+			await composable.loadPreferences('network-only');
+			composable.setGoalState(prefs);
+		};
+
+		it('is false when the lender has no goal', async () => {
+			await loadPrefs({ goals: [] });
+			expect(composable.suppressAchievementNudges.value).toBe(false);
+		});
+
+		it('is true while the lender has an in-progress goal', async () => {
+			await loadPrefs({
+				goals: [{
+					status: GOAL_STATUS.IN_PROGRESS,
+					dateStarted: '2026-02-10T12:00:00.000Z',
+					category: 'womens-equality',
+					target: 5,
+				}],
+			});
+			expect(composable.suppressAchievementNudges.value).toBe(true);
+		});
+
+		it('flips back to false as soon as the goal is completed', async () => {
+			await loadPrefs({
+				goals: [{
+					status: GOAL_STATUS.COMPLETED,
+					dateStarted: '2026-02-10T12:00:00.000Z',
+					category: 'womens-equality',
+					target: 5,
+				}],
+			});
+			expect(composable.suppressAchievementNudges.value).toBe(false);
+		});
+	});
 });
