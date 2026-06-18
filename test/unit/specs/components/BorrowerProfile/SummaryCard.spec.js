@@ -51,7 +51,7 @@ describe('SummaryCard', () => {
 		await flushPromises();
 
 		expect(query).toHaveBeenCalledWith(
-			expect.objectContaining({ variables: { id: '501VB00000F1gHW' } })
+			expect.objectContaining({ variables: { id: '501US00000NRTYa' } })
 		);
 		expect(wrapper.findComponent({ name: 'KvLightbox' }).props('visible')).toBe(true);
 		expect(wrapper.findComponent({ name: 'KvLightbox' }).props('title')).toBe(salesforceSolution.name);
