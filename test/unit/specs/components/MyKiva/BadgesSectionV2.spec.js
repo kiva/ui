@@ -190,7 +190,7 @@ describe('BadgesSectionV2', () => {
 		});
 	});
 
-	describe('completed-goals history (MP-2876)', () => {
+	describe('completed-goals history', () => {
 		const historyEntry = (year, target = 5, category = 'womens-equality') => ({
 			status: 'completed',
 			// Mid-year so timezone offsets can't shift the parsed year.

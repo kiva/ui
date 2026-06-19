@@ -2688,7 +2688,10 @@ describe('useGoalData', () => {
 			expect(result.showRenewedAnnualGoalToast).toBe(false);
 		});
 
-		it('should not show toast when the expired 2026 goal was already completed', async () => {
+		// Completed prior-year goals keep their COMPLETED status so the
+		// impact-progress row continues to surface them across years — they
+		// are not expired.
+		it('preserves a prior-year completed goal instead of expiring it', async () => {
 			mockApollo.query = vi.fn().mockResolvedValue({
 				data: {
 					my: {
@@ -2708,8 +2711,7 @@ describe('useGoalData', () => {
 			const today = new Date('2027-01-15T00:00:00Z');
 			const result = await composable.renewAnnualGoal(today);
 
-			expect(result.expiredGoals).toHaveLength(1);
-			expect(result.expiredGoals[0].status).toBe(GOAL_STATUS.EXPIRED);
+			expect(result.expiredGoals).toHaveLength(0);
 			expect(result.showRenewedAnnualGoalToast).toBe(false);
 		});
 
@@ -4725,7 +4727,7 @@ describe('useGoalData', () => {
 		});
 	});
 
-	describe('completedGoalsHistory (MP-2876)', () => {
+	describe('completedGoalsHistory', () => {
 		// Lock the clock to make year math deterministic — the composable reads
 		// new Date().getFullYear() at compute time, so any drift between
 		// build-time and run-time captures would break the assertions.
@@ -4758,10 +4760,16 @@ describe('useGoalData', () => {
 			expect(composable.completedGoalsHistory.value).toEqual([]);
 		});
 
-		it('excludes in-progress and expired goals', async () => {
+		it('excludes in-progress goals', async () => {
 			await loadPrefsWithGoals([
 				{ status: GOAL_STATUS.IN_PROGRESS, dateStarted: '2025-06-15', target: 5 },
-				{ status: GOAL_STATUS.EXPIRED, dateStarted: '2024-06-15', target: 4 },
+			]);
+			expect(composable.completedGoalsHistory.value).toEqual([]);
+		});
+
+		it('excludes expired goals with loansTowardGoal explicitly set to 0', async () => {
+			await loadPrefsWithGoals([
+				{ status: GOAL_STATUS.EXPIRED, dateStarted: '2024-06-15', target: 4, loansTowardGoal: 0 },
 			]);
 			expect(composable.completedGoalsHistory.value).toEqual([]);
 		});
@@ -4800,9 +4808,51 @@ describe('useGoalData', () => {
 			]);
 			expect(composable.completedGoalsHistory.value).toEqual([]);
 		});
+
+		// Incomplete prior-year goals with progress > 0 also appear in the
+		// history row; 0-progress goals stay hidden.
+		it('includes prior-year EXPIRED goals where loansTowardGoal > 0', async () => {
+			await loadPrefsWithGoals([
+				{
+					status: GOAL_STATUS.EXPIRED,
+					dateStarted: '2025-06-15',
+					category: 'womens-equality',
+					target: 5,
+					loansTowardGoal: 3,
+				},
+			]);
+			expect(composable.completedGoalsHistory.value).toHaveLength(1);
+			expect(composable.completedGoalsHistory.value[0].loansTowardGoal).toBe(3);
+		});
+
+		it('excludes prior-year EXPIRED goals where loansTowardGoal is 0', async () => {
+			await loadPrefsWithGoals([
+				{
+					status: GOAL_STATUS.EXPIRED,
+					dateStarted: '2025-06-15',
+					category: 'womens-equality',
+					target: 5,
+					loansTowardGoal: 0,
+				},
+			]);
+			expect(composable.completedGoalsHistory.value).toEqual([]);
+		});
+
+		it('excludes prior-year EXPIRED goals with zero progress', async () => {
+			await loadPrefsWithGoals([
+				{
+					status: GOAL_STATUS.EXPIRED,
+					dateStarted: '2025-06-15',
+					category: 'womens-equality',
+					target: 5,
+					loansTowardGoal: 0,
+				},
+			]);
+			expect(composable.completedGoalsHistory.value).toEqual([]);
+		});
 	});
 
-	describe('suppressAchievementNudges (MP-2875)', () => {
+	describe('suppressAchievementNudges', () => {
 		const loadPrefs = async prefs => {
 			mockApollo.query = vi.fn().mockResolvedValue({
 				data: {
