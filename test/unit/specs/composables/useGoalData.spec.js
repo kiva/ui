@@ -4769,7 +4769,9 @@ describe('useGoalData', () => {
 
 		it('excludes expired goals with loansTowardGoal explicitly set to 0', async () => {
 			await loadPrefsWithGoals([
-				{ status: GOAL_STATUS.EXPIRED, dateStarted: '2024-06-15', target: 4, loansTowardGoal: 0 },
+				{
+					status: GOAL_STATUS.EXPIRED, dateStarted: '2024-06-15', target: 4, loansTowardGoal: 0
+				},
 			]);
 			expect(composable.completedGoalsHistory.value).toEqual([]);
 		});
