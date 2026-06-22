@@ -9,7 +9,9 @@ export default function setVisitorIdCookie(cookieStore) {
 		// Store visitor id as 'uiv' cookie
 		cookieStore.set('uiv', uuidv4(), {
 			expires,
-			sameSite: true,
+			// Lax (not Strict) so the visitor id is sent on top-level cross-site
+			// navigations (ads, email, search), keeping experiment assignments stable.
+			sameSite: 'lax',
 			secure: true,
 			path: '/',
 		});

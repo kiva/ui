@@ -77,6 +77,14 @@ export default function createMiddleware({ config, vite }) {
 		// Get cookies from the request
 		const cookies = parseCookie(req.get('Cookie') || '');
 
+		// Fastly assigns the authoritative visitor id (uiv) at the edge and forwards it
+		// via the Fastly-KV-UIV header. Seed it so the app reads (and never re-mints) the
+		// edge value — re-minting would set a competing cookie that overwrites the edge
+		// value and re-randomizes experiment assignments on the next page load.
+		if (!cookies.uiv && req.headers['fastly-kv-uiv']) {
+			cookies.uiv = req.headers['fastly-kv-uiv'];
+		}
+
 		// Get device information from the user agent
 		const userAgent = req.get('User-Agent');
 		const device = userAgent ? Bowser.getParser(userAgent).parse().parsedResult : null;
