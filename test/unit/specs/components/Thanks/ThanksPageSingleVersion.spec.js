@@ -584,6 +584,40 @@ describe('ThanksPageSingleVersion', () => {
 			});
 		});
 
+		it('shows goal progress after the view cap when checkout loans advanced the goal', async () => {
+			mockUserGoal.value = inProgressGoal;
+			mockHasContributingLoans = true;
+
+			const { getByTestId, queryByTestId } = renderComponent({
+				badgesAchieved: [],
+				cookieValues: {
+					[GOAL_SIGNUP_THANKS_VIEWS_COOKIE]: '3',
+				},
+			});
+
+			await vi.waitFor(() => {
+				expect(getByTestId('goal-in-progress')).toBeTruthy();
+				expect(queryByTestId('goal-entrypoint')).toBeNull();
+			});
+		});
+
+		it('does not show goal progress when checkout loans did not advance the goal', async () => {
+			mockUserGoal.value = inProgressGoal;
+			mockHasContributingLoans = false;
+
+			const { queryByTestId, getByTestId } = renderComponent({
+				badgesAchieved: [],
+				cookieValues: {
+					[GOAL_SIGNUP_THANKS_VIEWS_COOKIE]: '3',
+				},
+			});
+
+			await vi.waitFor(() => {
+				expect(queryByTestId('goal-in-progress')).toBeNull();
+				expect(getByTestId('journey-general-prompt')).toBeTruthy();
+			});
+		});
+
 		it('shows BadgeMilestone for guest user with no goal modules', async () => {
 			const { container, queryByTestId } = renderComponent({
 				isGuest: true,
