@@ -74,7 +74,7 @@ query myLoans(
 						amountPurchasedByLender
 						amountPurchasedByPromo
 						amountRepaidToLender
-						amountRepaidToPromo
+						amountReturnedTotal
 						latestSharePurchaseTime
 					}
 					repaymentHistory {

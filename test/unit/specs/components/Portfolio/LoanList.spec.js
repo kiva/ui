@@ -24,7 +24,7 @@ const makeLoan = (overrides = {}) => ({
 			amountPurchasedByLender: '25',
 			amountPurchasedByPromo: null,
 			amountRepaidToLender: '5',
-			amountRepaidToPromo: null,
+			amountReturnedTotal: '5',
 			latestSharePurchaseTime: '2026-03-15T12:00:00Z',
 		},
 		userAttributedTeam: null,
@@ -188,7 +188,7 @@ describe('LoanList — "You loaned" cell', () => {
 						amountPurchasedByLender: '25',
 						amountPurchasedByPromo: '10',
 						amountRepaidToLender: '5',
-						amountRepaidToPromo: null,
+						amountReturnedTotal: '5',
 						latestSharePurchaseTime: '2026-03-15T12:00:00Z',
 					},
 				},
@@ -245,7 +245,8 @@ describe('LoanList — "Paid back or raised" cell', () => {
 		expect(page.getByText('repaid/refunded to you')).toBeTruthy();
 	});
 
-	it('shows the lender share ($0) as the trigger and "repaid to Kiva" copy when only promo was repaid', () => {
+	it('shows the total returned ($3.50) as the trigger and "repaid to Kiva" copy '
+		+ 'when nothing went to the lender', () => {
 		const page = renderLoanList({
 			loans: [makeLoan({
 				status: 'payingBack',
@@ -254,14 +255,14 @@ describe('LoanList — "Paid back or raised" cell', () => {
 						amountPurchasedByLender: '0',
 						amountPurchasedByPromo: '25',
 						amountRepaidToLender: '0',
-						amountRepaidToPromo: '3.50',
+						amountReturnedTotal: '3.50',
 						latestSharePurchaseTime: null,
 					},
 				},
 			})],
 		});
 
-		expect(page.container.querySelector('.paid-amount').textContent.trim()).toBe('$0');
+		expect(page.container.querySelector('.paid-amount').textContent.trim()).toBe('$3.50');
 		expect(page.getByText('repaid to Kiva')).toBeTruthy();
 	});
 
@@ -274,14 +275,14 @@ describe('LoanList — "Paid back or raised" cell', () => {
 						amountPurchasedByLender: '0',
 						amountPurchasedByPromo: '25',
 						amountRepaidToLender: '0',
-						amountRepaidToPromo: '25.00',
+						amountReturnedTotal: '25',
 						latestSharePurchaseTime: null,
 					},
 				},
 			})],
 		});
 
-		expect(page.container.querySelector('.paid-amount').textContent.trim()).toBe('$0');
+		expect(page.container.querySelector('.paid-amount').textContent.trim()).toBe('$25');
 		expect(page.getByText('repaid/refunded to Kiva')).toBeTruthy();
 	});
 
@@ -294,7 +295,7 @@ describe('LoanList — "Paid back or raised" cell', () => {
 						amountPurchasedByLender: '20',
 						amountPurchasedByPromo: '5',
 						amountRepaidToLender: '4',
-						amountRepaidToPromo: '1',
+						amountReturnedTotal: '5',
 						latestSharePurchaseTime: null,
 					},
 				},
@@ -320,6 +321,68 @@ describe('LoanList — "Paid back or raised" cell', () => {
 		expect(page.getByText('(-$1.25 in arrears)')).toBeTruthy();
 	});
 
+	it('shows "repaid to Kiva" when the share returned via a non-lender path '
+		+ '(dedicated/buyback) with nothing to the lender (MP-2932)', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				status: 'payingBack',
+				userProperties: {
+					loanBalance: {
+						amountPurchasedByLender: '25',
+						amountPurchasedByPromo: null,
+						amountRepaidToLender: '0',
+						amountReturnedTotal: '6',
+						latestSharePurchaseTime: null,
+					},
+				},
+			})],
+		});
+
+		expect(page.container.querySelector('.paid-amount').textContent.trim()).toBe('$6');
+		expect(page.getByText('repaid to Kiva')).toBeTruthy();
+	});
+
+	it('gates "repaid to you" on the returned-to-lender amount, so a refund-only '
+		+ 'lender share (returned > 0, repaid 0) still shows the line (MP-2932)', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				status: 'refunded',
+				userProperties: {
+					loanBalance: {
+						amountPurchasedByLender: '25',
+						amountPurchasedByPromo: null,
+						amountRepaidToLender: '25',
+						amountReturnedTotal: '25',
+						latestSharePurchaseTime: null,
+					},
+				},
+			})],
+		});
+
+		expect(page.container.querySelector('.paid-amount').textContent.trim()).toBe('$25');
+		expect(page.getByText('repaid/refunded to you')).toBeTruthy();
+		expect(page.queryByText(/to Kiva/)).toBeNull();
+	});
+
+	it('shows no repaid line when nothing was returned on the share (MP-2932)', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				status: 'payingBack',
+				userProperties: {
+					loanBalance: {
+						amountPurchasedByLender: '25',
+						amountPurchasedByPromo: null,
+						amountRepaidToLender: '0',
+						amountReturnedTotal: '0',
+						latestSharePurchaseTime: null,
+					},
+				},
+			})],
+		});
+
+		expect(page.queryByText(/repaid/)).toBeNull();
+	});
+
 	it('renders a clickable $0 placeholder when there is nothing repaid and the loan is not fundraising', () => {
 		const page = renderLoanList({
 			loans: [makeLoan({
@@ -329,7 +392,7 @@ describe('LoanList — "Paid back or raised" cell', () => {
 						amountPurchasedByLender: '25',
 						amountPurchasedByPromo: null,
 						amountRepaidToLender: '0',
-						amountRepaidToPromo: null,
+						amountReturnedTotal: '0',
 						latestSharePurchaseTime: null,
 					},
 				},
@@ -367,7 +430,7 @@ describe('LoanList — arrears rendering', () => {
 		expect(page.queryByText(/in arrears/)).toBeNull();
 	});
 
-	it('renders "$0.00 in arrears" without a negative sign when amounts are zero', () => {
+	it('renders no arrears line when arrears amounts are zero (MP-2932)', () => {
 		const page = renderLoanList({
 			loans: [makeLoan({
 				arrearsAmount: '0',
@@ -375,7 +438,7 @@ describe('LoanList — arrears rendering', () => {
 			})],
 		});
 
-		expect(page.getAllByText('($0.00 in arrears)').length).toBe(2);
+		expect(page.queryByText(/in arrears/)).toBeNull();
 	});
 
 	it('formats arrears with thousand-separators and cents', () => {
