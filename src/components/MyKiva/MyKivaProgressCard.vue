@@ -44,10 +44,10 @@
 			<p class="tw-font-medium">
 				{{ title }}
 			</p>
-			<p class="tw-text-small">
+			<p v-if="description" class="tw-text-small">
 				{{ description }}
 			</p>
-			<div class="tw-w-full tw-flex tw-justify-end tw-mt-1">
+			<div v-if="btnCta" class="tw-w-full tw-flex tw-justify-end tw-mt-1">
 				<KvButton class="text-link tw-font-medium !tw-text-eco-green-3">
 					{{ btnCta }}
 				</KvButton>
@@ -97,6 +97,10 @@ const props = defineProps({
 		type: Number,
 		default: () => GOALS_CURRENT_YEAR,
 	},
+	isHistoricalGoal: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const goalProgressPercentage = computed(() => {
@@ -137,12 +141,19 @@ const goalRemainingLoans = computed(() => {
 
 const title = computed(() => {
 	if (props.isAnnualGoal) {
-		return 'Your goal';
+		return props.isHistoricalGoal ? `Your ${props.year} goal` : 'Your goal';
 	}
 	return props.goal.name;
 });
 
 const description = computed(() => {
+	if (props.isHistoricalGoal) {
+		const progress = props.goalProgress ?? 0;
+		const total = goalTarget.value;
+		const noun = total === 1 ? 'loan' : 'loans';
+		return `Completed ${progress} of ${total} ${noun}`;
+	}
+
 	if (props.isAnnualGoal && goalCompleted.value) {
 		return 'You’ve completed your goal!';
 	}
@@ -205,11 +216,13 @@ const shouldWrapProgressValues = computed(() => {
 });
 
 const tag = computed(() => {
-	return props.isAnnualGoal ? `${props.year} annual goal` : 'Lifetime achievement';
+	if (!props.isAnnualGoal) return 'Lifetime achievement';
+	return props.isHistoricalGoal ? 'Annual goal' : `${props.year} annual goal`;
 });
 
 const btnCta = computed(() => {
 	if (props.isAnnualGoal && goalCompleted.value) return '';
+	if (props.isHistoricalGoal) return '';
 	const completedProgress = props.isAnnualGoal
 		? (props.goalProgress ?? 0)
 		: (props.goal?.totalLoans ?? props.goalProgress ?? 0);

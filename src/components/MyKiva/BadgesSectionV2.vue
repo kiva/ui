@@ -27,6 +27,7 @@
 					v-if="badge?.goal"
 					:goal="badge.goal"
 					:is-annual-goal="badge.isAnnualGoal"
+					:is-historical-goal="badge.isHistoricalGoal"
 					:goal-progress="badge.goalProgress"
 					:year="badge.year ?? GOALS_CURRENT_YEAR"
 					class="tw-self-start tw-mx-auto"
