@@ -291,7 +291,7 @@ const showGuestAccountModal = ref(false);
 const showReceipt = ref(false);
 const router = useRouter();
 const showGoalModal = ref(false);
-const showGoalInProgressModule = ref(false);
+const hasContributingLoans = ref(false);
 const isGoalSet = ref(false);
 const isEmptyGoal = ref(true);
 const goalTarget = ref(0);
@@ -419,6 +419,12 @@ const showGoalCompletedModule = computed(() => {
 	// Guests don't have goals, so never show for guests
 	if (props.isGuest) return false;
 	return userGoalAchievedNow.value;
+});
+const showGoalInProgressModule = computed(() => {
+	return !props.isGuest
+		&& userGoal.value?.status === GOAL_STATUS.IN_PROGRESS
+		&& !userGoalAchievedNow.value
+		&& hasContributingLoans.value;
 });
 const showBadgeModule = computed(() => {
 	// Don't show badge module while loading goal data when experiment is enabled
@@ -561,10 +567,11 @@ onMounted(async () => {
 	await loadGoalData();
 	const year = new Date().getFullYear();
 	// Loans already in totalLoanCount after checkout
-	const { totalProgress, hasContributingLoans } = await getPostCheckoutProgressByLoans({
+	const { totalProgress, hasContributingLoans: contributingLoans } = await getPostCheckoutProgressByLoans({
 		loans: props.loans,
 		year,
 	});
+	hasContributingLoans.value = contributingLoans;
 	// Thanks can mark the goal complete, but MyKiva owns hiding the completed card after showing it once.
 	await checkCompletedGoal({ currentGoalProgress: totalProgress, persistHideGoalCard: false });
 	goalDataInitialized.value = true;
@@ -578,15 +585,6 @@ onMounted(async () => {
 		incrementGoalSignupThanksViewCount(cookieStore);
 	}
 
-	// Show goal in progress module when:
-	// - User is logged in (not a guest)
-	// - User has an in-progress goal (not completed or expired)
-	// - Goal not completed this checkout
-	// - Current checkout loans contributed to goal progress
-	showGoalInProgressModule.value = !props.isGuest
-		&& userGoal.value?.status === GOAL_STATUS.IN_PROGRESS
-		&& !userGoalAchievedNow.value
-		&& hasContributingLoans;
 	if (!props.isGuest
 		&& userGoal.value?.status === GOAL_STATUS.IN_PROGRESS) {
 		$kvTrackEvent('post-checkout', 'show', userGoal.value?.category, goalProgress?.value, userGoal.value?.target);
