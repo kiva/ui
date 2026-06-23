@@ -70,9 +70,11 @@ query myLoans(
 				}
 				userProperties {
 					canChangeTeamAssignment
+					wasMatched
 					loanBalance {
 						amountPurchasedByLender
 						amountPurchasedByPromo
+						promoTypeLabel
 						amountRepaidToLender
 						amountReturnedTotal
 						latestSharePurchaseTime

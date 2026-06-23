@@ -45,8 +45,12 @@
 							</td>
 						</tr>
 						<tr v-else-if="!loans.length">
-							<td class="tw-text-center tw-text-secondary tw-px-2" colspan="7">
-								No loans found
+							<td
+								class="tw-text-center tw-text-secondary tw-px-2 tw-pt-4"
+								colspan="7"
+								data-testid="no-loans-message"
+							>
+								You haven't made any loans that match this search.
 							</td>
 						</tr>
 						<tr
@@ -57,11 +61,20 @@
 						>
 							<td class="tw-px-2 tw-py-2">
 								<div class="tw-flex tw-items-start">
-									<img
-										:src="loan.image.url"
-										alt="Loan image"
-										class="loan-image tw-mr-2 tw-shrink-0"
-									>
+									<div class="tw-mr-2 tw-shrink-0 tw-text-center">
+										<img
+											:src="loan.image.url"
+											alt="Loan image"
+											class="loan-image"
+										>
+										<div
+											v-if="loan.userProperties?.wasMatched"
+											class="tw-text-small tw-text-secondary tw-mt-1"
+											data-testid="matched-badge"
+										>
+											Matched
+										</div>
+									</div>
 									<div>
 										<div class="tw-font-semibold">
 											<a
@@ -134,7 +147,9 @@
 										{{ $filters.numeral(
 											loan.userProperties.loanBalance.amountPurchasedByPromo,
 											'$0,0'
-										) }} free credit
+										) }} {{
+											loan.userProperties.loanBalance.promoTypeLabel || 'promotional credit'
+										}}
 									</div>
 								</div>
 							</td>

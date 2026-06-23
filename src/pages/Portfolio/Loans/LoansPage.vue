@@ -104,7 +104,8 @@ export default {
 			loading: true,
 			// null until the first unfiltered fetch resolves; false only when the lender has
 			// never lent (lifetime loan count is 0), which swaps the page for the first-loan CTA.
-			// Set only from unfiltered requests so a filtered no-results page stays "No loans found".
+			// Set only from unfiltered requests so a filtered no-results page keeps the
+			// no-match empty state ("You haven't made any loans that match this search.").
 			hasEverLent: null,
 			loanState: {
 				offset: 0,
