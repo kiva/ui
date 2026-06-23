@@ -243,7 +243,6 @@ export default {
 	},
 	data() {
 		return {
-			definitions: null,
 			isLoading: true,
 			isLoggedIn: false,
 			anonymizationLevel: '',
