@@ -145,5 +145,28 @@ describe('useBorrowerProfileDefinitions', () => {
 			// loadDefinitions should only fire once even after two resolveDefinition calls
 			expect(mockApollo.query).toHaveBeenCalledTimes(1);
 		});
+
+		it('bypasses Contentful and calls Salesforce directly when forceSalesforce is true', async () => {
+			const mockApollo = {
+				query: vi.fn().mockResolvedValueOnce({
+					// Salesforce response (the only call that should happen)
+					data: { general: { salesforceSolution: { name: 'SF Title', note: 'SF content' } } },
+				}),
+			};
+			const composable = useBorrowerProfileDefinitions(mockApollo);
+
+			const result = await composable.resolveDefinition({
+				cid: 'bp-def-loan-length',
+				sfid: '50150000000SXVz',
+				forceSalesforce: true,
+			});
+
+			// Contentful query must NOT fire — only the Salesforce query
+			expect(mockApollo.query).toHaveBeenCalledTimes(1);
+			expect(mockApollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({ variables: { id: '50150000000SXVz' } })
+			);
+			expect(result).toEqual({ title: 'SF Title', content: 'SF content' });
+		});
 	});
 });
