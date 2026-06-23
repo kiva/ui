@@ -119,70 +119,72 @@
 		<div class="tw-flex tw-flex-col">
 			<div :style="{ order: showPostLendingNextStepsCards ? 1 : 2 }">
 				<div>
-					<h3 class="tw-text-title tw-text-primary tw-mt-2 tw-mb-2">
-						Build impact beyond your loan
-					</h3>
-					<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
-						<template v-if="latestLoan !== null && !isMobile">
-							<MyKivaEmailUpdatesTransition
-								v-if="showEmailInBuildSection"
-								:accepted="acceptedEmailMarketingUpdates"
+					<template v-if="showBuildImpactSection">
+						<h3 class="tw-text-title tw-text-primary tw-mt-2 tw-mb-2">
+							Build impact beyond your loan
+						</h3>
+						<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
+							<template v-if="latestLoan !== null && !isMobile">
+								<MyKivaEmailUpdatesTransition
+									v-if="showEmailInBuildSection"
+									:accepted="acceptedEmailMarketingUpdates"
+									:loans="loans"
+									:latest-loan="latestLoan"
+									@accept-email-updates="acceptedEmailMarketingUpdates = true"
+								/>
+								<MyKivaLatestLoanCard
+									v-if="showLatestLoanInBuildSection"
+									:loan="latestLoan"
+									@open-impact-insight-modal="showImpactInsightsModal = true"
+								/>
+							</template>
+							<template v-if="!isMobile">
+								<MyKivaSurveyCard
+									v-if="showSurveyInBuildSection"
+								/>
+								<MyKivaCard
+									v-for="slide in nonBadgesSlides"
+									:key="slide.badgeKey"
+									class="card-container tw-w-full tw-h-full"
+									:bg-image="getSlideBackgroundImg(slide, isNonBadgeSlide(slide), false)"
+									:is-bg-top-aligned="isNonBadgeSlide(slide)"
+									:has-gradient="!isNonBadgeSlide(slide)"
+									:title="getSlideTitle(slide)"
+									:subtitle="getSlideSubTitle(slide, isNonBadgeSlide(slide))"
+									:is-black-subtitle="isNonBadgeSlide(slide)"
+									:secondary-cta-text="getSlideSecondaryCtaText(slide)"
+									:primary-cta-text="getSlidePrimaryCtaText(slide)"
+									:primary-cta-variant="getSlidePrimaryCtaVariant(slide)"
+									:is-full-width-primary-cta="isNonBadgeSlide(slide)"
+									:is-title-font-sans="isSlideTitleFontSans(slide)"
+									:title-color="getSlideTitleColor(slide, isNonBadgeSlide(slide))"
+									@primary-cta-clicked="handlePrimaryCtaClick(slide)"
+									@secondary-cta-clicked="handleSecondaryCtaClick(slide)"
+								/>
+							</template>
+							<!-- Mobile carousel: post-lending cards + survey -->
+							<JourneyCardCarousel
+								v-else
+								:key="'beyond-loan-row'"
+								class="carousel tw--mt-6"
+								controls-top-right
+								hide-goal-card
+								in-lending-stats
+								user-in-homepage
+								:post-lending-next-steps-enable="true"
+								:show-post-lending-next-steps-cards="!showPostLendingNextStepsCards"
+								:hero-badge-data="null"
+								:hero-tiered-achievements="heroTieredAchievements"
+								:lender="lender"
 								:loans="loans"
+								:slides="heroSlides"
 								:latest-loan="latestLoan"
-								@accept-email-updates="acceptedEmailMarketingUpdates = true"
-							/>
-							<MyKivaLatestLoanCard
-								v-if="showLatestLoanInBuildSection"
-								:loan="latestLoan"
+								:user-info="userInfo"
+								:enable-slide-limit="false"
 								@open-impact-insight-modal="showImpactInsightsModal = true"
 							/>
-						</template>
-						<template v-if="!isMobile">
-							<MyKivaSurveyCard
-								v-if="showSurveyInBuildSection"
-							/>
-							<MyKivaCard
-								v-for="slide in nonBadgesSlides"
-								:key="slide.badgeKey"
-								class="card-container tw-w-full tw-h-full"
-								:bg-image="getSlideBackgroundImg(slide, isNonBadgeSlide(slide), false)"
-								:is-bg-top-aligned="isNonBadgeSlide(slide)"
-								:has-gradient="!isNonBadgeSlide(slide)"
-								:title="getSlideTitle(slide)"
-								:subtitle="getSlideSubTitle(slide, isNonBadgeSlide(slide))"
-								:is-black-subtitle="isNonBadgeSlide(slide)"
-								:secondary-cta-text="getSlideSecondaryCtaText(slide)"
-								:primary-cta-text="getSlidePrimaryCtaText(slide)"
-								:primary-cta-variant="getSlidePrimaryCtaVariant(slide)"
-								:is-full-width-primary-cta="isNonBadgeSlide(slide)"
-								:is-title-font-sans="isSlideTitleFontSans(slide)"
-								:title-color="getSlideTitleColor(slide, isNonBadgeSlide(slide))"
-								@primary-cta-clicked="handlePrimaryCtaClick(slide)"
-								@secondary-cta-clicked="handleSecondaryCtaClick(slide)"
-							/>
-						</template>
-						<!-- Mobile carousel: post-lending cards + survey -->
-						<JourneyCardCarousel
-							v-else
-							:key="'beyond-loan-row'"
-							class="carousel tw--mt-6"
-							controls-top-right
-							hide-goal-card
-							in-lending-stats
-							user-in-homepage
-							:post-lending-next-steps-enable="true"
-							:show-post-lending-next-steps-cards="!showPostLendingNextStepsCards"
-							:hero-badge-data="null"
-							:hero-tiered-achievements="heroTieredAchievements"
-							:lender="lender"
-							:loans="loans"
-							:slides="heroSlides"
-							:latest-loan="latestLoan"
-							:user-info="userInfo"
-							:enable-slide-limit="false"
-							@open-impact-insight-modal="showImpactInsightsModal = true"
-						/>
-					</section>
+						</section>
+					</template>
 
 					<!-- eslint-disable-next-line max-len -->
 					<template v-if="!userLentToAllRegions && (!showRegionExperienceInFirstRow || showLendingNextStepsCards)">
@@ -617,6 +619,22 @@ const showLatestLoanInBuildSection = computed(
 const showSurveyInBuildSection = computed(
 	() => showSurveyCard.value && !topRowPriorityCards.value.has(PRIORITY_CARD_SURVEY)
 );
+
+// Aggregates the same per-card conditions already used to render each card below, so the
+// "Build impact beyond your loan" header never renders with an empty grid underneath,
+// whether that's because no card is eligible or because Contentful returned no slides.
+const showBuildImpactSection = computed(() => {
+	if (nonBadgesSlides.value.length > 0) return true;
+
+	if (isMobile.value && !showPostLendingNextStepsCards.value) {
+		return shouldShowEmailMarketingCard.value || showLatestLoan.value || showSurveyCard.value;
+	}
+
+	const showLoanDependentCard = props.latestLoan !== null
+		&& (showEmailInBuildSection.value || showLatestLoanInBuildSection.value);
+
+	return showLoanDependentCard || showSurveyInBuildSection.value;
+});
 
 // Navigation
 const goToDashboard = position => {

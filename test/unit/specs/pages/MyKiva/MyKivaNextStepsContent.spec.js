@@ -131,6 +131,29 @@ const createWrapper = ({
 	};
 };
 
+const buildNonBadgeSlide = achievementKey => ({
+	fields: {
+		richText: {
+			content: [
+				{
+					data: {
+						target: {
+							sys: { contentType: { sys: { id: 'uiSetting' } } },
+							fields: {
+								dataObject: {
+									achievementKey,
+									title: 'Invite friends',
+									contentText: 'Share Kiva with someone new.',
+								},
+							},
+						},
+					},
+				},
+			],
+		},
+	},
+});
+
 describe('MyKivaNextStepsContent', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -218,6 +241,62 @@ describe('MyKivaNextStepsContent', () => {
 			});
 			const carousels = wrapper.findAllComponents({ name: 'JourneyCardCarousel' });
 			expect(carousels[0].props('hideGoalCard')).toBe(false);
+		});
+	});
+
+	describe('build impact section', () => {
+		it('hides the section when there are no Contentful slides and no other eligible cards', () => {
+			const { wrapper } = createWrapper({
+				cookieValue: 'true',
+				props: { heroSlides: [], latestLoan: null },
+			});
+
+			expect(wrapper.text()).not.toContain('Build impact beyond your loan');
+		});
+
+		it('shows the section when a non-badge Contentful slide is available', () => {
+			const { wrapper } = createWrapper({
+				cookieValue: 'true',
+				props: { heroSlides: [buildNonBadgeSlide('invite-friends')] },
+			});
+
+			expect(wrapper.text()).toContain('Build impact beyond your loan');
+		});
+
+		it('hides the section when an email card is eligible but no latest loan is available', () => {
+			const { wrapper } = createWrapper({
+				props: {
+					heroSlides: [],
+					latestLoan: null,
+					loans: [{ id: 1 }],
+					userInfo: {
+						userPreferences: {
+							preferences: JSON.stringify({ savedForms: [{ formName: 'mykiva-input-form' }] }),
+						},
+						communicationSettings: { lenderNews: false, loanUpdates: false },
+					},
+				},
+			});
+
+			expect(wrapper.text()).not.toContain('Build impact beyond your loan');
+		});
+
+		it('shows the section when a non-anonymous latest loan makes the latest-loan card eligible', () => {
+			const { wrapper } = createWrapper({
+				props: {
+					heroSlides: [],
+					latestLoan: { id: 42, anonymizationLevel: null },
+					loans: [{ id: 42 }],
+					userInfo: {
+						userPreferences: {
+							preferences: JSON.stringify({ savedForms: [{ formName: 'mykiva-input-form' }] }),
+						},
+						communicationSettings: { lenderNews: true, loanUpdates: true },
+					},
+				},
+			});
+
+			expect(wrapper.text()).toContain('Build impact beyond your loan');
 		});
 	});
 });
