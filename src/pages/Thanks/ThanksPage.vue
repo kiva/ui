@@ -14,6 +14,7 @@
 				:total-loans="totalLoanCount"
 				:tiered-achievements="achievements"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
+				:recent-loan-ids="recentLoanIds"
 				:is-express-checkout-modal-enabled="isExpressCheckoutModalEnabled"
 			/>
 		</template>
@@ -186,6 +187,7 @@ export default {
 			guestUsername: '',
 			achievementsCompleted: false,
 			totalLoanCount: 0,
+			recentLoanIds: [],
 			achievements: [],
 			goalRecommendedLoanEnable: false,
 			expressCheckoutEnabled: false,
@@ -455,6 +457,8 @@ export default {
 		userHasDepositBefore(hasDepositBefore);
 
 		this.totalLoanCount = data?.my?.loans?.totalCount ?? 0;
+		// Exclude the user's most recent loans from the recommended-loan fetch.
+		this.recentLoanIds = (data?.my?.loans?.values ?? []).map(loan => loan?.id).filter(Boolean);
 		const isFirstLoan = this.loans.length && this.totalLoanCount === this.loans.length;
 		const hasDirectLoan = this.loans.findIndex(loan => loan.distributionModel === 'direct') > -1;
 		const hasCoreLoan = this.loans.findIndex(loan => loan.distributionModel === 'fieldPartner') > -1;
