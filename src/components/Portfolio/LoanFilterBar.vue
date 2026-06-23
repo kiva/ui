@@ -73,7 +73,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="tw-flex tw-items-center tw-mt-2">
+		<div class="tw-flex tw-items-center tw-gap-3 tw-mt-2">
+			<span class="tw-text-secondary" data-testid="loans-count">{{ loanCountLabel }}</span>
 			<button
 				v-if="hasActiveFilters"
 				type="button"
@@ -223,6 +224,11 @@ function emitDraftKeywordSearchIfChanged() {
 function getLegacyExportStatus(status) {
 	return status === FUNDRAISING ? LEGACY_FUNDRAISING_STATUS : status;
 }
+
+const loanCountLabel = computed(() => {
+	const count = props.totalLoans || 0;
+	return `${count.toLocaleString('en-US')} ${count === 1 ? 'loan' : 'loans'}`;
+});
 
 const hasActiveFilters = computed(() => (
 	selectedStatus.value !== ALL_FILTERS_VALUE

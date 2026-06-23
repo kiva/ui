@@ -204,6 +204,36 @@ describe('LoanFilterBar', () => {
 		expect(page.queryByTestId('clear-filters')).not.toBeNull();
 	});
 
+	it('renders a comma-formatted, pluralized loans count', () => {
+		const page = renderLoanFilterBar({ props: { totalLoans: 1234 } });
+
+		expect(page.getByTestId('loans-count').textContent.trim()).toBe('1,234 loans');
+	});
+
+	it('renders the singular loans count for exactly one loan', () => {
+		const page = renderLoanFilterBar({ props: { totalLoans: 1 } });
+
+		expect(page.getByTestId('loans-count').textContent.trim()).toBe('1 loan');
+	});
+
+	it('renders "0 loans" when there are no results', () => {
+		const page = renderLoanFilterBar({ props: { totalLoans: 0 } });
+
+		expect(page.getByTestId('loans-count').textContent.trim()).toBe('0 loans');
+	});
+
+	it('places the loans count next to the clear-filters control when filters are active', () => {
+		const page = renderLoanFilterBar({
+			props: { totalLoans: 12, filters: { status: 'payingBack' } },
+		});
+
+		const count = page.getByTestId('loans-count');
+		const clear = page.getByTestId('clear-filters');
+		// Same flex row, count immediately before clear-filters (spacing comes from the row's gap).
+		expect(count.parentElement).toBe(clear.parentElement);
+		expect(count.nextElementSibling).toBe(clear);
+	});
+
 	it('resets all filters and the keyword search when clear-filters is clicked', async () => {
 		const page = renderLoanFilterBar({
 			props: {

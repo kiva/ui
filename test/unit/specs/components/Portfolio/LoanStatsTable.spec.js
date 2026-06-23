@@ -422,4 +422,153 @@ describe('LoanStatsTable', () => {
 			});
 		});
 	});
+
+	describe('Salesforce help-text tooltips (MP-2858)', () => {
+		const flushPromises = () => new Promise(resolve => { setTimeout(resolve); });
+
+		const solutionResponse = (name, note) => ({
+			data: { general: { salesforceSolution: { name, note } } },
+		});
+
+		// Mirror the suite's direct-handler style: drive fetchSolution against a bare context
+		// carrying its own apollo + cache state and the component's real sanitizeNote.
+		const makeCtx = (overrides = {}) => ({
+			solutions: {},
+			pendingSolutions: {},
+			sanitizeNote: LoanStatsTable.methods.sanitizeNote,
+			...overrides,
+		});
+		const callFetch = (ctx, row) => LoanStatsTable.methods.fetchSolution.call(ctx, row);
+
+		// Context for the visibility path: onTooltipVisible calls this.fetchSolution when the
+		// tooltip opens, so bind the real methods together against shared state.
+		const makeVisibleCtx = (overrides = {}) => {
+			const ctx = makeCtx(overrides);
+			ctx.fetchSolution = row => LoanStatsTable.methods.fetchSolution.call(ctx, row);
+			return ctx;
+		};
+		const callVisible = (ctx, row, isVisible) => LoanStatsTable.methods
+			.onTooltipVisible.call(ctx, row, isVisible);
+
+		const amountLentRow = { key: 'amount_lent', salesforceId: '50150000000S8sy' };
+
+		it('renders a help-text info-icon trigger for every row mapped to a Salesforce solution', async () => {
+			const { getVm, container } = renderTable();
+			const vm = getVm();
+			vm.$options.apollo.result.call(vm, { data: fullData() });
+			await nextTick();
+
+			vm.statsRows.forEach(row => {
+				const trigger = container.querySelector(`[data-testid="stat-tooltip-trigger-${row.key}"]`);
+				if (row.salesforceId) {
+					expect(trigger, `trigger for ${row.key}`).not.toBeNull();
+				} else {
+					expect(trigger, `no trigger for ${row.key}`).toBeNull();
+				}
+			});
+			// 12 of the 13 comparison rows are mapped; Currency loss rate has no help-text
+			// content, so it intentionally renders no info icon.
+			const mapped = vm.statsRows.filter(row => row.salesforceId);
+			expect(mapped).toHaveLength(12);
+			expect(container.querySelectorAll('[data-testid^="stat-tooltip-trigger-"]')).toHaveLength(12);
+			expect(container.querySelector('[data-testid="stat-tooltip-trigger-currency_loss_rate"]')).toBeNull();
+		});
+
+		it('lazy-fetches the solution when the tooltip becomes visible', async () => {
+			const query = vi.fn().mockResolvedValue(solutionResponse('Amount lent', '<p>note</p>'));
+			const ctx = makeVisibleCtx({ apollo: { query } });
+
+			callVisible(ctx, amountLentRow, true);
+			await flushPromises();
+
+			expect(query).toHaveBeenCalledTimes(1);
+		});
+
+		it('does not fetch while the tooltip is not visible', () => {
+			const query = vi.fn();
+			const ctx = makeVisibleCtx({ apollo: { query } });
+
+			callVisible(ctx, amountLentRow, false);
+
+			expect(query).not.toHaveBeenCalled();
+		});
+
+		it('lazy-fetches and caches the solution the first time a tooltip opens', async () => {
+			const query = vi.fn().mockResolvedValue(solutionResponse('Amount lent', '<p>How much you lent.</p>'));
+			const ctx = makeCtx({ apollo: { query } });
+
+			callFetch(ctx, amountLentRow);
+			await flushPromises();
+
+			expect(query).toHaveBeenCalledTimes(1);
+			expect(query.mock.calls[0][0]).toEqual(expect.objectContaining({
+				variables: { id: '50150000000S8sy' },
+			}));
+			expect(ctx.solutions.amount_lent).toEqual({
+				name: 'Amount lent',
+				note: '<p>How much you lent.</p>',
+			});
+		});
+
+		it('does not refetch a solution already cached for a row', async () => {
+			const query = vi.fn().mockResolvedValue(solutionResponse('Amount lent', '<p>note</p>'));
+			const ctx = makeCtx({ apollo: { query } });
+
+			callFetch(ctx, amountLentRow);
+			await flushPromises();
+			callFetch(ctx, amountLentRow);
+			await flushPromises();
+
+			expect(query).toHaveBeenCalledTimes(1);
+		});
+
+		it('does not issue a second request while the first is still in flight', async () => {
+			let resolveQuery;
+			const query = vi.fn().mockReturnValue(new Promise(resolve => { resolveQuery = resolve; }));
+			const ctx = makeCtx({ apollo: { query } });
+
+			callFetch(ctx, amountLentRow);
+			callFetch(ctx, amountLentRow);
+
+			expect(query).toHaveBeenCalledTimes(1);
+
+			resolveQuery(solutionResponse('Amount lent', '<p>note</p>'));
+			await flushPromises();
+		});
+
+		it('skips rows that have no mapped Salesforce id', () => {
+			const query = vi.fn();
+			const ctx = makeCtx({ apollo: { query } });
+
+			callFetch(ctx, { key: 'unmapped', salesforceId: undefined });
+
+			expect(query).not.toHaveBeenCalled();
+		});
+
+		it('strips the legacy-forbidden tags and inline styles from the note before caching', async () => {
+			const dirtyNote = '<p style="color:red">Keep this'
+				+ '<span>drop span</span>'
+				+ '<font>drop font</font>'
+				+ '<blockquote>drop quote</blockquote>'
+				+ '<img src="x">'
+				+ '<iframe src="evil"></iframe>'
+				+ '<script>alert(1)</script>'
+				+ '</p>';
+			const query = vi.fn().mockResolvedValue(solutionResponse('Amount lent', dirtyNote));
+			const ctx = makeCtx({ apollo: { query } });
+
+			callFetch(ctx, amountLentRow);
+			await flushPromises();
+
+			const { note } = ctx.solutions.amount_lent;
+			expect(note).toContain('Keep this');
+			expect(note).not.toContain('<span');
+			expect(note).not.toContain('<font');
+			expect(note).not.toContain('<blockquote');
+			expect(note).not.toContain('<img');
+			expect(note).not.toContain('<iframe');
+			expect(note).not.toContain('<script');
+			expect(note).not.toContain('style=');
+		});
+	});
 });

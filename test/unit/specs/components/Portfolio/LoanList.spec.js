@@ -23,11 +23,13 @@ const makeLoan = (overrides = {}) => ({
 		loanBalance: {
 			amountPurchasedByLender: '25',
 			amountPurchasedByPromo: null,
+			promoTypeLabel: null,
 			amountRepaidToLender: '5',
 			amountReturnedTotal: '5',
 			latestSharePurchaseTime: '2026-03-15T12:00:00Z',
 		},
 		userAttributedTeam: null,
+		wasMatched: false,
 	},
 	partnerName: 'Partner 44',
 	partnerId: 44,
@@ -58,6 +60,24 @@ const renderLoanList = ({
 			},
 		},
 	},
+});
+
+describe('LoanList — no-results empty state', () => {
+	it('renders the live legacy no-match copy when a filter/search returns no loans', () => {
+		const page = renderLoanList({ loans: [], loading: false });
+
+		expect(page.getByTestId('no-loans-message').textContent.trim())
+			.toBe("You haven't made any loans that match this search.");
+		// Legacy parity: this is the filtered no-match state, not the tombstoned
+		// DataTables "No loans found" / "No loans returned" strings.
+		expect(page.queryByText('No loans found')).toBeNull();
+	});
+
+	it('does not render the no-results copy while loans are still loading', () => {
+		const page = renderLoanList({ loans: [], loading: true });
+
+		expect(page.queryByTestId('no-loans-message')).toBeNull();
+	});
 });
 
 describe('LoanList — column order', () => {
@@ -180,13 +200,14 @@ describe('LoanList — "You loaned" cell', () => {
 		expect(page.queryByText('Invalid Date')).toBeNull();
 	});
 
-	it('renders free credit when amountPurchasedByPromo is positive', () => {
+	it('renders the typed promo label when promoTypeLabel is present', () => {
 		const page = renderLoanList({
 			loans: [makeLoan({
 				userProperties: {
 					loanBalance: {
 						amountPurchasedByLender: '25',
 						amountPurchasedByPromo: '10',
+						promoTypeLabel: 'free credit',
 						amountRepaidToLender: '5',
 						amountReturnedTotal: '5',
 						latestSharePurchaseTime: '2026-03-15T12:00:00Z',
@@ -198,9 +219,48 @@ describe('LoanList — "You loaned" cell', () => {
 		expect(page.getByText('$10 free credit')).toBeTruthy();
 	});
 
-	it('omits free credit line when amountPurchasedByPromo is null or zero', () => {
+	it('renders the "free trial" promo label when promoTypeLabel is "free trial"', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				userProperties: {
+					loanBalance: {
+						amountPurchasedByLender: '25',
+						amountPurchasedByPromo: '10',
+						promoTypeLabel: 'free trial',
+						amountRepaidToLender: '5',
+						amountRepaidToPromo: null,
+						latestSharePurchaseTime: '2026-03-15T12:00:00Z',
+					},
+				},
+			})],
+		});
+
+		expect(page.getByText('$10 free trial')).toBeTruthy();
+	});
+
+	it('falls back to "promotional credit" when promoTypeLabel is null', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				userProperties: {
+					loanBalance: {
+						amountPurchasedByLender: '25',
+						amountPurchasedByPromo: '10',
+						promoTypeLabel: null,
+						amountRepaidToLender: '5',
+						amountRepaidToPromo: null,
+						latestSharePurchaseTime: '2026-03-15T12:00:00Z',
+					},
+				},
+			})],
+		});
+
+		expect(page.getByText('$10 promotional credit')).toBeTruthy();
+	});
+
+	it('omits the promo line when amountPurchasedByPromo is null or zero', () => {
 		const page = renderLoanList({ loans: [makeLoan()] });
 
+		expect(page.queryByText(/promotional credit/)).toBeNull();
 		expect(page.queryByText(/free credit/)).toBeNull();
 	});
 });
@@ -482,6 +542,56 @@ describe('LoanList — row banding', () => {
 		expect(rows[1].classList.contains('tw-bg-gray-50')).toBe(true);
 		expect(rows[2].classList.contains('tw-bg-gray-50')).toBe(false);
 		expect(rows[3].classList.contains('tw-bg-gray-50')).toBe(true);
+	});
+});
+
+describe('LoanList — matched badge', () => {
+	it('renders the "Matched" badge when the lender\'s purchase was matched (wasMatched true)', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				userProperties: {
+					wasMatched: true,
+					loanBalance: {
+						amountPurchasedByLender: '25',
+						amountPurchasedByPromo: null,
+						promoTypeLabel: null,
+						amountRepaidToLender: '5',
+						amountReturnedTotal: '5',
+						latestSharePurchaseTime: '2026-03-15T12:00:00Z',
+					},
+					userAttributedTeam: null,
+				},
+			})],
+		});
+
+		expect(page.getByTestId('matched-badge').textContent.trim()).toBe('Matched');
+	});
+
+	it('does not render the "Matched" badge when wasMatched is false', () => {
+		const page = renderLoanList({ loans: [makeLoan()] });
+
+		expect(page.queryByTestId('matched-badge')).toBeNull();
+	});
+
+	it('does not render the "Matched" badge when wasMatched is null (no logged-in user)', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				userProperties: {
+					wasMatched: null,
+					loanBalance: {
+						amountPurchasedByLender: '25',
+						amountPurchasedByPromo: null,
+						promoTypeLabel: null,
+						amountRepaidToLender: '5',
+						amountReturnedTotal: '5',
+						latestSharePurchaseTime: '2026-03-15T12:00:00Z',
+					},
+					userAttributedTeam: null,
+				},
+			})],
+		});
+
+		expect(page.queryByTestId('matched-badge')).toBeNull();
 	});
 });
 
