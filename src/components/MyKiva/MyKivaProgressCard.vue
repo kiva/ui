@@ -141,7 +141,7 @@ const goalRemainingLoans = computed(() => {
 
 const title = computed(() => {
 	if (props.isAnnualGoal) {
-		return props.isHistoricalGoal ? `Your ${props.year} goal` : 'Your goal';
+		return `Your ${props.year} goal`;
 	}
 	return props.goal.name;
 });
@@ -216,8 +216,7 @@ const shouldWrapProgressValues = computed(() => {
 });
 
 const tag = computed(() => {
-	if (!props.isAnnualGoal) return 'Lifetime achievement';
-	return props.isHistoricalGoal ? 'Annual goal' : `${props.year} annual goal`;
+	return props.isAnnualGoal ? 'Annual goal' : 'Lifetime achievement';
 });
 
 const btnCta = computed(() => {

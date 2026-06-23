@@ -969,27 +969,25 @@ export default function useGoalData({ apollo } = {}) {
 			return goalYear < currentYear && g.status === GOAL_STATUS.COMPLETED;
 		});
 
-		const renewedResults = await Promise.all(goals.map(async goal => {
-			const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
-			if (goalYear === null || goalYear >= currentYear) {
-				return { goal, expired: false };
-			}
-			if (goal.status === GOAL_STATUS.COMPLETED) {
-				// Preserve so the impact-progress row keeps showing completed prior years.
-				return { goal, expired: false };
-			}
-			const loansTowardGoal = await getCategoryLoanCountByYear(goal.category, goalYear);
-			return {
-				goal: {
-					...goal,
-					status: GOAL_STATUS.EXPIRED,
-					loansTowardGoal: loansTowardGoal || 0,
-				},
-				expired: true,
-			};
-		}));
-		const renewedGoals = renewedResults.map(r => r.goal);
-		const expiredGoals = renewedResults.filter(r => r.expired).map(r => r.goal);
+		const expiredGoals = await Promise.all(
+			goals
+				.filter(g => {
+					const goalYear = g.dateStarted ? new Date(g.dateStarted).getFullYear() : null;
+					return goalYear !== null
+						&& goalYear < currentYear
+						&& g.status !== GOAL_STATUS.COMPLETED;
+				})
+				.map(async goal => {
+					const goalYear = new Date(goal.dateStarted).getFullYear();
+					const loansTowardGoal = await getCategoryLoanCountByYear(goal.category, goalYear);
+					return {
+						...goal,
+						status: GOAL_STATUS.EXPIRED,
+						loansTowardGoal: loansTowardGoal || 0,
+					};
+				}),
+		);
+		const renewedGoals = goals.map(g => expiredGoals.find(e => e.goalName === g.goalName) ?? g);
 
 		if (expiredGoals.length > 0) {
 			const firstExpired = expiredGoals[0];
