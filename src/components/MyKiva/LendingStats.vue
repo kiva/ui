@@ -237,7 +237,7 @@
 			:tiered-achievements="heroTieredAchievements"
 			:is-updating-goal="isUpdatingGoal"
 			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
-			:show-goal-value-props-copy="!goalsRowEnabled"
+			:show-goal-value-props-copy="false"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:basket-items="basketItems"
 			:is-adding="isAdding"

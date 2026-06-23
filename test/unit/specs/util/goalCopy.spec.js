@@ -96,7 +96,7 @@ describe('goalCopy', () => {
 			vi.setSystemTime(new Date('2026-03-31T12:00:00'));
 
 			expect(stripHtml(goalCopy.titleGoalSignupWomensLastYear(1))).toContain(
-				'Last year, you helped 1 woman shape her future!'
+				'Last year, you helped 1 woman shape her future'
 			);
 		});
 
@@ -105,7 +105,7 @@ describe('goalCopy', () => {
 			vi.setSystemTime(new Date('2026-03-31T12:00:00'));
 
 			expect(stripHtml(goalCopy.titleGoalSignupWomensLastYear(2))).toContain(
-				'Last year, you helped 2 women shape their futures!'
+				'Last year, you helped 2 women shape their futures'
 			);
 		});
 
@@ -121,7 +121,7 @@ describe('goalCopy', () => {
 		it('formats singular woman copy with count and default class', () => {
 			const result = goalCopy.titleLastYearSingleWoman(1);
 			expect(result).toContain('1 woman');
-			expect(result).toContain('shape her future!');
+			expect(result).toContain('shape her future');
 			expect(result).toContain('class="tw-text-eco-green-3"');
 		});
 
@@ -135,7 +135,7 @@ describe('goalCopy', () => {
 		it('formats plural copy with count, label, and default class', () => {
 			const result = goalCopy.titleLastYearMultiplePeople(5, 'women');
 			expect(result).toContain('5 women');
-			expect(result).toContain('shape their futures!');
+			expect(result).toContain('shape their futures');
 			expect(result).toContain('class="tw-text-eco-green-3"');
 		});
 
