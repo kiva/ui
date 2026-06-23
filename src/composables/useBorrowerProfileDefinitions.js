@@ -15,23 +15,26 @@ export default function useBorrowerProfileDefinitions(apollo) {
 	// only one network fetch occurs per page load regardless of how many callers
 	// invoke loadDefinitions().
 	let contentfulDefinitions = null;
+	let loadPromise = null;
 
 	async function loadDefinitions() {
-		const result = await apollo.query({ query: contentfulDefinitionsQuery });
-		const contentfulData = result.data?.contentful?.entries?.items ?? null;
-		if (contentfulData) {
-			const formatted = formatContentGroupsFlat(contentfulData);
-			contentfulDefinitions = formatted.borrowerProfileDefinitions?.contents ?? null;
-		}
+		if (loadPromise) return loadPromise;
+		loadPromise = apollo.query({ query: contentfulDefinitionsQuery }).then(result => {
+			const contentfulData = result.data?.contentful?.entries?.items ?? null;
+			if (contentfulData) {
+				const formatted = formatContentGroupsFlat(contentfulData);
+				contentfulDefinitions = formatted.borrowerProfileDefinitions?.contents ?? null;
+			}
+		});
+		return loadPromise;
 	}
 
 	async function resolveDefinition({ cid, sfid, forceSalesforce = false }) {
-		if (contentfulDefinitions === null) {
-			await loadDefinitions();
-		}
-
-		if (!forceSalesforce && contentfulDefinitions) {
-			const entry = contentfulDefinitions.find(e => e.key === cid);
+		if (!forceSalesforce) {
+			if (contentfulDefinitions === null) {
+				await loadDefinitions();
+			}
+			const entry = contentfulDefinitions?.find(e => e.key === cid);
 			if (entry) {
 				return {
 					title: entry.name,
