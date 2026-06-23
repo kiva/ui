@@ -162,8 +162,13 @@ export default function useGoalData({ apollo } = {}) {
 		const goals = parsedPrefs.goals || [];
 
 		return goals
-			.filter(g => g.status === GOAL_STATUS.COMPLETED && g.dateStarted)
+			.filter(g => g.dateStarted)
 			.filter(g => new Date(g.dateStarted).getFullYear() < GOALS_CURRENT_YEAR)
+			.filter(g => {
+				if (g.status === GOAL_STATUS.COMPLETED) return true;
+				if (g.status === GOAL_STATUS.EXPIRED) return (g.loansTowardGoal || 0) > 0;
+				return false;
+			})
 			.sort((a, b) => (
 				new Date(b.dateStarted).getFullYear() - new Date(a.dateStarted).getFullYear()
 			));
@@ -844,6 +849,47 @@ export default function useGoalData({ apollo } = {}) {
 		}
 	}
 
+	// Fills loansTowardGoal for expired prior-year goals that predate the field.
+	// Only persist when there's actual progress to surface — zero-progress goals
+	// are already hidden by the completedGoalsHistory filter.
+	async function backfillExpiredGoalProgress(parsedPrefs) {
+		const goals = parsedPrefs?.goals || [];
+		const missing = goals
+			.map((g, i) => ({ g, i }))
+			.filter(({ g }) => (
+				g.status === GOAL_STATUS.EXPIRED
+				&& g.dateStarted
+				&& new Date(g.dateStarted).getFullYear() < GOALS_CURRENT_YEAR
+				&& g.loansTowardGoal === undefined
+			));
+		if (!missing.length) return;
+
+		const resolved = await Promise.all(missing.map(async ({ g, i }) => {
+			const goalYear = new Date(g.dateStarted).getFullYear();
+			const loansTowardGoal = await getCategoryLoanCountByYear(g.category, goalYear);
+			return { i, loansTowardGoal: loansTowardGoal || 0 };
+		}));
+
+		const withProgress = resolved.filter(r => r.loansTowardGoal > 0);
+		if (!withProgress.length) return;
+
+		const patched = [...goals];
+		withProgress.forEach(({ i, loansTowardGoal }) => {
+			patched[i] = { ...patched[i], loansTowardGoal };
+		});
+
+		userPreferences.value = {
+			...userPreferences.value,
+			preferences: JSON.stringify({ ...parsedPrefs, goals: patched }),
+		};
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			{ goals: patched },
+		);
+	}
+
 	async function loadGoalData({
 		freshProgressLoans = [], // Loans used to reconcile missing achievement progress (e.g. recent transactions)
 		supportAllCounterLoans = [], // Loans used to initialize in-page support-all counter state
@@ -855,6 +901,7 @@ export default function useGoalData({ apollo } = {}) {
 	} = {}) {
 		loading.value = true;
 		const parsedPrefs = await loadPreferences(fetchPolicy);
+		await backfillExpiredGoalProgress(parsedPrefs);
 
 		// Calculate fresh progress adjustments if loans and achievements provided
 		let freshProgressAdjustments = { allTime: {}, yearSpecific: {} };
@@ -897,9 +944,11 @@ export default function useGoalData({ apollo } = {}) {
 	}
 
 	/**
-	 * This method renew goals annually.
-	 * It invalidates all goals on Jan 1st of 2026
-	 * @return {Array} - expiredGoals
+	 * Annual goal renewal — runs once per calendar year on the lender's first
+	 * MyKiva visit. Prior-year in-progress goals are expired (and their final
+	 * loan count toward the goal is captured so the impact-progress row can
+	 * decide whether to surface them). Prior-year completed goals keep their
+	 * COMPLETED status so they continue to appear in the row across years.
 	 */
 	async function renewAnnualGoal(today = new Date()) {
 		const parsedPrefs = await loadPreferences();
@@ -915,35 +964,47 @@ export default function useGoalData({ apollo } = {}) {
 			};
 		}
 
-		// Renew goals every following year
 		const hadCompletedGoal = goals.some(g => {
 			const goalYear = g.dateStarted ? new Date(g.dateStarted).getFullYear() : null;
 			return goalYear < currentYear && g.status === GOAL_STATUS.COMPLETED;
 		});
-		const expiredGoals = goals.map(goal => {
-			const goalYear = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
-			if (goalYear < currentYear) {
-				return {
-					...goal,
-					status: GOAL_STATUS.EXPIRED
-				};
-			}
-			return null;
-		}).filter(goal => goal !== null);
 
-		if (expiredGoals.some(goal => goal.status === GOAL_STATUS.EXPIRED)) {
-			parsedPrefs.goals = expiredGoals;
-			parsedPrefs.goalsRenewedDate = today.toISOString();
-			if (expiredGoals.length > 0) {
-				const firstExpired = expiredGoals[0];
-				await setMyKivaGoal(apolloClient, {
-					category: firstExpired.category,
-					target: firstExpired.target,
-					dateStarted: firstExpired.dateStarted,
-					status: firstExpired.status,
-				});
-			}
-			setGoalState({ goals: expiredGoals });
+		const expiredGoals = await Promise.all(
+			goals
+				.filter(g => {
+					const goalYear = g.dateStarted ? new Date(g.dateStarted).getFullYear() : null;
+					return goalYear !== null
+						&& goalYear < currentYear
+						&& g.status !== GOAL_STATUS.COMPLETED;
+				})
+				.map(async goal => {
+					const goalYear = new Date(goal.dateStarted).getFullYear();
+					const loansTowardGoal = await getCategoryLoanCountByYear(goal.category, goalYear);
+					return {
+						...goal,
+						status: GOAL_STATUS.EXPIRED,
+						loansTowardGoal: loansTowardGoal || 0,
+					};
+				}),
+		);
+		const renewedGoals = goals.map(g => expiredGoals.find(e => e.goalName === g.goalName) ?? g);
+
+		if (expiredGoals.length > 0) {
+			const firstExpired = expiredGoals[0];
+			await setMyKivaGoal(apolloClient, {
+				category: firstExpired.category,
+				target: firstExpired.target,
+				dateStarted: firstExpired.dateStarted,
+				status: firstExpired.status,
+			});
+			const fresh = await loadPreferences('network-only');
+			await updateUserPreferences(
+				apolloClient,
+				userPreferences.value,
+				fresh,
+				{ goals: renewedGoals, goalsRenewedDate: today.toISOString() },
+			);
+			setGoalState({ goals: renewedGoals });
 		}
 
 		const showRenewedAnnualGoalToast = !!expiredGoals.length && !hadCompletedGoal;
