@@ -18,7 +18,7 @@ describe('setVisitorIdCookie', () => {
 			MOCK_UUID,
 			expect.objectContaining({
 				expires: expect.any(Date),
-				sameSite: true,
+				sameSite: 'lax',
 				secure: true,
 				path: '/',
 			})
@@ -94,7 +94,7 @@ describe('setVisitorIdCookie', () => {
 		expect(setCallArgs[2].secure).toBe(true);
 	});
 
-	it('should set cookie with sameSite flag', () => {
+	it('should set cookie with sameSite lax', () => {
 		const cookieStore = {
 			has: vi.fn().mockReturnValue(false),
 			set: vi.fn(),
@@ -103,7 +103,7 @@ describe('setVisitorIdCookie', () => {
 		setVisitorIdCookie(cookieStore);
 
 		const setCallArgs = cookieStore.set.mock.calls[0];
-		expect(setCallArgs[2].sameSite).toBe(true);
+		expect(setCallArgs[2].sameSite).toBe('lax');
 	});
 
 	it('should use uuid v4 for generating visitor id', () => {
