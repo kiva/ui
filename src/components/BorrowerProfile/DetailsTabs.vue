@@ -144,7 +144,6 @@ export default {
 	},
 	data() {
 		return {
-			definitions: null,
 			loan: {
 				name: '',
 				currency: '',
