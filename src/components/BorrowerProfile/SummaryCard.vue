@@ -40,7 +40,7 @@
 					class="tw-align-super tw-ml-0.5"
 					data-testid="bp-summary-pii-info"
 					aria-label="Why is this borrower anonymous?"
-					@click="showSalesforceLightbox('501US00000NRTYa')"
+					@click="showDefinition({ cid: 'bp-def-anonymized-loan', sfid: '501US00000NRTYa' })"
 					v-kv-track-event="[
 						'Borrower profile',
 						'click-PII-anonymization-info',
@@ -97,7 +97,7 @@
 				type="button"
 				class="tw-text-action hover:tw-text-action-highlight tw-underline"
 				data-testid="bp-summary-anonymous-learn-more"
-				@click="showSalesforceLightbox('50150000000SXVz')"
+				@click="showDefinition({ cid: 'bp-def-anonymous-description', sfid: '50150000000SXVz' })"
 				v-kv-track-event="[
 					'Borrower profile',
 					'click-anonymous-loan-use-info',
@@ -146,7 +146,7 @@ import { gql } from 'graphql-tag';
 import { mdiMapMarker, mdiInformationOutline } from '@mdi/js';
 import HeartComment from '#src/assets/icons/inline/heart-comment.svg';
 import { KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
-import { fetchSalesforceSolution } from '#src/util/salesforceSolution';
+import useBorrowerProfileDefinitions from '#src/composables/useBorrowerProfileDefinitions';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
 import ContentLightbox from './ContentLightbox';
@@ -238,8 +238,12 @@ export default {
 		KvLoadingPlaceholder,
 		HeartComment,
 	},
+	created() {
+		this.definitions = useBorrowerProfileDefinitions(this.apollo);
+	},
 	data() {
 		return {
+			definitions: null,
 			isLoading: true,
 			isLoggedIn: false,
 			anonymizationLevel: '',
@@ -307,10 +311,10 @@ export default {
 			this.totalComments = loan?.comments?.totalCount ?? 0;
 			this.isLoading = false;
 		},
-		async showSalesforceLightbox(id) {
-			const solution = await fetchSalesforceSolution(this.apollo, id);
-			if (solution) {
-				this.$refs.lightbox.open(solution);
+		async showDefinition({ cid, sfid }) {
+			const result = await this.definitions.resolveDefinition({ cid, sfid });
+			if (result) {
+				this.$refs.lightbox.open(result);
 			}
 		},
 	},
