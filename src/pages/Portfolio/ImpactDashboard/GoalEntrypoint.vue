@@ -104,8 +104,9 @@ onMounted(() => {
 }
 
 .goal-entrypoint__content {
+	@apply tw-w-full;
+
 	max-width: 14rem;
-	width: min(100%, 14rem);
 }
 
 .goal-entrypoint__title {
@@ -129,7 +130,6 @@ onMounted(() => {
 
 	.goal-entrypoint__content {
 		max-width: 28rem;
-		width: 100%;
 	}
 }
 </style>
