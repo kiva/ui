@@ -104,13 +104,10 @@
 
 <script>
 import { gql } from 'graphql-tag';
-import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
-
 import {
 	KvLoadingPlaceholder, KvTab, KvTabPanel, KvTabs
 } from '@kiva/kv-components';
-import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
-import { fetchSalesforceSolution } from '#src/util/salesforceSolution';
+import useBorrowerProfileDefinitions from '#src/composables/useBorrowerProfileDefinitions';
 import ContentLightbox from './ContentLightbox';
 import FieldPartnerDetails from './FieldPartnerDetails';
 import LoanDetails from './LoanDetails';
@@ -147,7 +144,7 @@ export default {
 	},
 	data() {
 		return {
-			contentfulDefinitions: null,
+			definitions: null,
 			loan: {
 				name: '',
 				currency: '',
@@ -225,24 +222,6 @@ export default {
 		}
 	},
 	methods: {
-		loadContentfulDefinitions(contentEntryKey) {
-			this.apollo.query({
-				query: gql`query contentfulDefinitions {
-					contentful {
-						entries(contentKey: "borrower-profile-definitions", contentType: "contentGroup")
-					}
-				}`,
-			}).then(result => {
-				// assign and show lightbox content
-				const contentfulData = result.data?.contentful?.entries?.items ?? null;
-				if (contentfulData) {
-					const contentfulDataFormatted = formatContentGroupsFlat(contentfulData);
-					this.contentfulDefinitions = contentfulDataFormatted.borrowerProfileDefinitions?.contents ?? null;
-					// show originally requested entry
-					this.showContentfulEntry(contentEntryKey);
-				}
-			});
-		},
 		loadData() {
 			this.apollo.query({
 				query: gql`query loanDetails($loanId: Int!) {
@@ -339,38 +318,20 @@ export default {
 				this.loading = false;
 			});
 		},
-		showContentfulEntry(contentKey) {
-			// check for loaded data
-			if (!this.contentfulDefinitions) {
-				this.loadContentfulDefinitions(contentKey);
-				return false;
-			}
-			// extract target entry
-			const contentfulEntry = this.contentfulDefinitions.find(entry => entry.key === contentKey);
-			// setup and show lightbox content
-			if (contentfulEntry) {
-				this.$refs.lightbox.open({
-					title: contentfulEntry.name,
-					content: documentToHtmlString(contentfulEntry.richText),
-				});
-			}
-		},
-		showDefinition(payload) {
-			// track definition pop up click
+		async showDefinition(payload) {
 			this.$kvTrackEvent('Borrower Profile', `click-${payload.panelName}-tab-definition-link`, payload.linkText);
-
-			if (this.useSalesForce) {
-				this.showSalesforceSolution(payload.sfid);
-			} else {
-				this.showContentfulEntry(payload.cid);
+			const result = await this.definitions.resolveDefinition({
+				cid: payload.cid,
+				sfid: payload.sfid,
+				forceSalesforce: this.useSalesForce,
+			});
+			if (result) {
+				this.$refs.lightbox.open(result);
 			}
 		},
-		async showSalesforceSolution(solutionId) {
-			const solution = await fetchSalesforceSolution(this.apollo, solutionId);
-			if (solution) {
-				this.$refs.lightbox.open(solution);
-			}
-		},
+	},
+	created() {
+		this.definitions = useBorrowerProfileDefinitions(this.apollo);
 	},
 	mounted() {
 		this.loadData();
