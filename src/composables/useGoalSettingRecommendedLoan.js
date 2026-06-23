@@ -209,10 +209,10 @@ export default function useGoalSettingRecommendedLoan({
 	});
 
 	watch(show, visible => {
-		if (!visible) {
-			clearRecommendedLoanData();
-			return;
-		}
+		if (!visible) return;
+		// Reset on open so the recommended-loan view stays rendered through
+		// the previous close animation and starts fresh on the next session.
+		clearRecommendedLoanData();
 		showPostGoalLoanRecommendation.value = false;
 	});
 
