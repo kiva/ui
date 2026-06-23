@@ -62,7 +62,7 @@ const goalSignupDateOverride = computed(() => {
 });
 
 const title = computed(() => (
-	goalCopy.titleGoalSignupWomensLastYear(womenLoansLastYear.value, undefined, goalSignupDateOverride.value)
+	goalCopy.titleGoalSignupWomensLastYear(womenLoansLastYear.value, { date: goalSignupDateOverride.value })
 ));
 const subtitle = computed(() => goalCopy.subtitleNoGoalYetEntrypoint(goalSignupDateOverride.value));
 

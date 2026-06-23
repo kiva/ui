@@ -108,7 +108,9 @@ const goalLoans = computed(() => {
 	return props.userGoal?.target || 0;
 });
 
-const title = computed(() => goalCopy.titleGoalSignupWomensLastYear(props.prevYearLoans, 'tw-text-action'));
+const title = computed(() => (
+	goalCopy.titleGoalSignupWomensLastYear(props.prevYearLoans, { cssClass: 'tw-text-action' })
+));
 const subtitle = computed(() => {
 	if (
 		props.isGoalTileExperimentEnabled
