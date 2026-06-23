@@ -434,10 +434,18 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	/**
+	 * Loan ids to exclude from the recommended-loan fetch (e.g. the user's most
+	 * recent loans). Forwarded to the composable as `additionalExcludedLoanIds`.
+	 */
+	excludedLoanIds: {
+		type: Array,
+		default: () => ([]),
+	},
 });
 
 const {
-	numberOfLoans, isGoalSet, show, goalRecommendedLoanEnable, basketItems,
+	numberOfLoans, isGoalSet, show, goalRecommendedLoanEnable, basketItems, excludedLoanIds,
 } = toRefs(props);
 
 const formStep = ref(1);
@@ -484,6 +492,7 @@ const {
 	userGoal,
 	kvTrackEvent: $kvTrackEvent,
 	entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO,
+	additionalExcludedLoanIds: excludedLoanIds,
 	appConfig,
 	apollo,
 });

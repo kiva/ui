@@ -239,6 +239,7 @@
 			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			:show-goal-value-props-copy="!goalsRowEnabled"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
+			:excluded-loan-ids="recentLoanIds"
 			:basket-items="basketItems"
 			:is-adding="isAdding"
 			@close-goal-modal="closeGoalModal"
@@ -382,6 +383,10 @@ export default {
 		};
 	},
 	computed: {
+		// Exclude the user's most recent loans (schema default limit) from the recommended-loan fetch.
+		recentLoanIds() {
+			return (this.loans ?? []).map(loan => loan?.id).filter(Boolean);
+		},
 		showRegionExperience() {
 			return !this.showPostLendingNextStepsCards && !this.userLentToAllRegions;
 		},

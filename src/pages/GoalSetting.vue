@@ -9,6 +9,7 @@
 				:email-category="$route.query.category || null"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 				:basket-items="basketItems"
+				:excluded-loan-ids="recentLoanIds"
 				:is-adding="isAdding"
 				@add-to-basket="addToBasket"
 			/>
@@ -41,6 +42,7 @@ export default {
 	data() {
 		return {
 			totalLoans: 0,
+			recentLoanIds: [],
 			categoriesLoanCount: {},
 			tieredAchievements: [],
 			goalRecommendedLoanEnable: false,
@@ -68,17 +70,25 @@ export default {
 			getAllCategoryLoanCounts,
 		};
 	},
+	methods: {
+		// Exclude the user's most recent loans from the recommended-loan fetch.
+		setRecentLoanIds(data) {
+			this.recentLoanIds = (data?.my?.loans?.values ?? []).map(loan => loan?.id).filter(Boolean);
+		},
+	},
 	async mounted() {
 		// Try to read from cache first (populated by preFetch on SSR)
 		// readQuery returns null if data not in cache (Apollo Client 3.x)
 		const goalDataResult = this.apollo.readQuery({ query: useGoalDataQuery });
 		if (goalDataResult) {
 			this.totalLoans = goalDataResult?.my?.loans?.totalCount ?? 0;
+			this.setRecentLoanIds(goalDataResult);
 		} else {
 			// Cache miss - fetch from network
 			try {
 				const { data } = await this.apollo.query({ query: useGoalDataQuery });
 				this.totalLoans = data?.my?.loans?.totalCount ?? 0;
+				this.setRecentLoanIds(data);
 			} catch (e) {
 				logReadQueryError(e, 'GoalSettingPage useGoalDataQuery');
 			}

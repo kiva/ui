@@ -269,6 +269,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Loan ids to exclude from the recommended-loan fetch (e.g. the user's most recent loans).
+	 */
+	excludedLoanIds: {
+		type: Array,
+		default: () => ([]),
+	},
 });
 
 const emit = defineEmits(['add-to-basket']);
@@ -376,6 +383,7 @@ const {
 	userGoal,
 	kvTrackEvent: $kvTrackEvent,
 	entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE,
+	additionalExcludedLoanIds: toRef(props, 'excludedLoanIds'),
 	appConfig: $appConfig,
 });
 
