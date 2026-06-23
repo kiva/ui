@@ -5,8 +5,12 @@ import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import goalCopy from '#src/util/goalCopy';
 
 const routerPush = vi.fn();
+let routeQuery = {};
 
 vi.mock('vue-router', () => ({
+	useRoute: () => ({
+		query: routeQuery,
+	}),
 	useRouter: () => ({
 		push: routerPush,
 	}),
@@ -34,10 +38,12 @@ const AsyncPortfolioSectionStub = {
 
 function mountComponent({
 	now = new Date('2026-03-15T12:00:00'),
+	query = {},
 	womenLoansLastYear = 0,
 } = {}) {
 	vi.useFakeTimers();
 	vi.setSystemTime(now);
+	routeQuery = query;
 
 	const apollo = {
 		query: vi.fn().mockResolvedValue({
@@ -73,6 +79,7 @@ describe('Portfolio GoalEntrypoint', () => {
 	afterEach(() => {
 		vi.useRealTimers();
 		vi.clearAllMocks();
+		routeQuery = {};
 	});
 
 	it('renders the no-history last-year copy from January 1 through March 31', async () => {
@@ -117,5 +124,19 @@ describe('Portfolio GoalEntrypoint', () => {
 		expect(wrapper.text()).not.toContain('Last year, you helped');
 		expect(wrapper.text()).not.toContain('Lenders like you');
 		expect(wrapper.text()).not.toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
+	});
+
+	it('uses the goalSignupDate query override for the January through March copy', async () => {
+		const { wrapper } = mountComponent({
+			now: new Date('2026-06-22T12:00:00'),
+			query: { goalSignupDate: '2026-03-31' },
+			womenLoansLastYear: 0,
+		});
+
+		await flushPromises();
+
+		expect(wrapper.text()).toContain('Lenders like you help 3 women a year');
+		expect(wrapper.text()).toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
+		expect(wrapper.text()).not.toContain(goalCopy.CARD_HABIT_PROMPT_SINGLE_LINE);
 	});
 });

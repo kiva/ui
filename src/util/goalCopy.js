@@ -41,8 +41,8 @@ const goalCopy = {
 	},
 
 	/** Date-aware no-goal subtitle for goal card entrypoints */
-	subtitleNoGoalYetEntrypoint() {
-		if (this.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
+	subtitleNoGoalYetEntrypoint(date) {
+		if (this.getGoalSignupCopyVariant(date) === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
 			return this.CARD_HABIT_PROMPT_SINGLE_LINE;
 		}
 		return this.TITLE_HOW_MANY_LOANS_GENERIC;
@@ -57,8 +57,8 @@ const goalCopy = {
 	titleLastYearMultiplePeople: (count, categoryLabel, cssClass = 'tw-text-eco-green-3') => `Last year, you helped ${highlight(`${count} ${categoryLabel}`, cssClass)} shape their futures!`,
 
 	/** Date-aware title for the womens category using last-year lending history when available */
-	titleGoalSignupWomensLastYear(loansLastYear = 0, cssClass = 'tw-text-eco-green-3') {
-		if (this.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
+	titleGoalSignupWomensLastYear(loansLastYear = 0, cssClass = 'tw-text-eco-green-3', date) {
+		if (this.getGoalSignupCopyVariant(date) === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
 			return this.CARD_NO_GOAL_YET_EXPERIMENT;
 		}
 		if (loansLastYear === 1) {

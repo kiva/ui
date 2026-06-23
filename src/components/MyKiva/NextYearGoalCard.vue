@@ -13,13 +13,7 @@
 			<div v-if="!userHasGoal" class="tw-h-full tw-flex tw-flex-col tw-items-center tw-justify-between">
 				<h3 class="tw-text-title tw-text-center" v-html="title"></h3>
 				<div class="tw-text-center">
-					<p
-						v-if="isGoalTileExperimentEnabled"
-						v-html="goalCopy.CARD_HABIT_PROMPT_EXPERIMENT"
-					></p>
-					<p v-else>
-						{{ goalCopy.TITLE_HOW_MANY_LOANS_GENERIC }}
-					</p>
+					<p v-html="subtitle"></p>
 				</div>
 				<img
 					:src="HandsPlant"
@@ -60,7 +54,7 @@ import {
 	KvButton, KvLoadingPlaceholder
 } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD } from '#src/composables/useGoalData';
-import goalCopy from '#src/util/goalCopy';
+import goalCopy, { GOAL_SIGNUP_COPY_NO_GOAL_YET } from '#src/util/goalCopy';
 import { useRouter } from 'vue-router';
 import confetti from 'canvas-confetti';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
@@ -115,6 +109,15 @@ const goalLoans = computed(() => {
 });
 
 const title = computed(() => goalCopy.titleGoalSignupWomensLastYear(props.prevYearLoans, 'tw-text-action'));
+const subtitle = computed(() => {
+	if (
+		props.isGoalTileExperimentEnabled
+		&& goalCopy.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET
+	) {
+		return goalCopy.CARD_HABIT_PROMPT_EXPERIMENT;
+	}
+	return goalCopy.TITLE_HOW_MANY_LOANS_GENERIC;
+});
 
 const categoryName = computed(() => {
 	return getGoalDisplayName(props.userGoal?.target, props.userGoal?.category);
