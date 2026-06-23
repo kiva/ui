@@ -1,3 +1,19 @@
+## [3.74.0-rc.1](https://github.com/kiva/ui/compare/v3.73.0...v3.74.0-rc.1) (2026-06-23)
+
+### 🎉 New Features
+
+* mp-2870-more-copy-updates ([d3cb686](https://github.com/kiva/ui/commit/d3cb686d3f5101b1c573bf6bc082fe5fc6c63eec))
+* mp-2870-more-copy-updates ([5021158](https://github.com/kiva/ui/commit/502115852a98893786ac8ef72a0f9b2507c859d8))
+* mp-2870-more-copy-updates ([a8d8385](https://github.com/kiva/ui/commit/a8d83859c3f8b55a3f728839104bb5c9c4938929))
+* mp-2912-hidden goal progress ([a37e938](https://github.com/kiva/ui/commit/a37e938a7965b5e405f8724bd56becfd552277e7))
+* mp-2912-hidden goal progress ([9033a2b](https://github.com/kiva/ui/commit/9033a2b9a0fe57511be7d045a7b0faa976b685e0))
+* mp-2913-build-impact-contentful-issue ([4ebf79b](https://github.com/kiva/ui/commit/4ebf79b4f4e4a9cf1d7026279d5e24d3339cf3dd))
+
+### 🐛 Bugfixes
+
+* cover some returned total edge cases ([#7010](https://github.com/kiva/ui/issues/7010)) ([54ea2c4](https://github.com/kiva/ui/commit/54ea2c43241007b28a7319fd36651e56c2072b01))
+* ensure uiv does not get overridden ([#7013](https://github.com/kiva/ui/issues/7013)) ([9cde729](https://github.com/kiva/ui/commit/9cde72935a2efcc21215e0575e209b5f5e3a436c))
+
 ## [3.73.0](https://github.com/kiva/ui/compare/v3.72.0...v3.73.0) (2026-06-18)
 
 ### 🎉 New Features

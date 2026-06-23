@@ -1,4 +1,9 @@
 import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
+import logReadQueryError from '#src/util/logReadQueryError';
+
+vi.mock('#src/util/logReadQueryError', () => ({
+	default: vi.fn(),
+}));
 
 describe('MyKivaPage', () => {
 	const getTimestampMinutesAgo = minutesAgo => {
@@ -6,6 +11,10 @@ describe('MyKivaPage', () => {
 		date.setTime(date.getTime() - (minutesAgo * 60 * 1000));
 		return date.toISOString();
 	};
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
 
 	describe('methods', () => {
 		it('applyMyKivaFreshProgress centralizes and applies fresh progress to hero achievements', () => {
@@ -179,6 +188,110 @@ describe('MyKivaPage', () => {
 				variables: { year: 2025, loanPurchasesLimit: 20 },
 			});
 		});
+
+		it('readContentfulSlides returns slides when Contentful has carousel content', () => {
+			const slides = [{ fields: { richText: {} } }];
+			const cachedResult = { contentful: { entries: { items: [{ fields: { slides } }] } } };
+			const context = {
+				apollo: {
+					readQuery: vi.fn().mockReturnValue(cachedResult),
+				},
+			};
+
+			const result = MyKivaPage.methods.readContentfulSlides.call(context);
+
+			expect(result).toEqual(slides);
+		});
+
+		it('readContentfulSlides returns empty array when Contentful has no carousel entries', () => {
+			const context = {
+				apollo: {
+					readQuery: vi.fn().mockReturnValue({ contentful: { entries: { items: [] } } }),
+				},
+			};
+
+			const result = MyKivaPage.methods.readContentfulSlides.call(context);
+
+			expect(result).toEqual([]);
+		});
+
+		it('readContentfulSlides returns empty array when the cache read throws', () => {
+			const error = new Error('cache miss');
+			const context = {
+				apollo: {
+					readQuery: vi.fn().mockImplementation(() => { throw error; }),
+				},
+			};
+
+			const result = MyKivaPage.methods.readContentfulSlides.call(context);
+
+			expect(result).toEqual([]);
+			expect(logReadQueryError).toHaveBeenCalledWith(error, 'MyKivaPage readContentfulSlides');
+		});
+
+		it('readContentfulBadgeData normalizes challenge entries when Contentful has content', () => {
+			const context = {
+				apollo: {
+					readQuery: vi.fn().mockReturnValue({
+						contentful: {
+							entries: {
+								items: [
+									{
+										fields: {
+											key: 'womens-equality-level-2',
+											levelName: '2',
+											challengeName: 'Women',
+											badgeImage: { fields: { file: { url: '/badge-2.svg' } } },
+										}
+									}
+								]
+							}
+						}
+					}),
+				},
+			};
+
+			const result = MyKivaPage.methods.readContentfulBadgeData.call(context);
+
+			expect(result).toEqual([
+				{
+					id: 'womens-equality',
+					level: 2,
+					levelName: '2',
+					challengeName: 'Women',
+					imageUrl: '/badge-2.svg',
+					shareFact: '',
+					shareFactFootnote: '',
+					shareFactUrl: '',
+				}
+			]);
+		});
+
+		it('readContentfulBadgeData returns empty array when Contentful has no challenge entries', () => {
+			const context = {
+				apollo: {
+					readQuery: vi.fn().mockReturnValue({ contentful: { entries: { items: [] } } }),
+				},
+			};
+
+			const result = MyKivaPage.methods.readContentfulBadgeData.call(context);
+
+			expect(result).toEqual([]);
+		});
+
+		it('readContentfulBadgeData returns empty array when the cache read throws', () => {
+			const error = new Error('network error');
+			const context = {
+				apollo: {
+					readQuery: vi.fn().mockImplementation(() => { throw error; }),
+				},
+			};
+
+			const result = MyKivaPage.methods.readContentfulBadgeData.call(context);
+
+			expect(result).toEqual([]);
+			expect(logReadQueryError).toHaveBeenCalledWith(error, 'MyKivaPage readContentfulBadgeData');
+		});
 	});
 
 	describe('computed', () => {
@@ -264,12 +377,11 @@ describe('MyKivaPage', () => {
 					.mockReturnValueOnce(heroTieredAchievements)
 					.mockReturnValueOnce(currentYearTieredAchievements),
 				applyMyKivaFreshProgress: vi.fn(),
+				readContentfulSlides: vi.fn().mockReturnValue([]),
+				readContentfulBadgeData: vi.fn().mockReturnValue([]),
 				heroTieredAchievements: [],
 				currentYearTieredAchievements: [],
 				apollo: {
-					readQuery: vi.fn()
-						.mockReturnValueOnce({ contentful: { entries: { items: [] } } })
-						.mockReturnValueOnce({ contentful: { entries: { items: [{ fields: { slides: [] } }] } } }),
 					readFragment: vi.fn().mockReturnValue(undefined),
 				},
 				cookieStore: {
@@ -290,35 +402,21 @@ describe('MyKivaPage', () => {
 				.toBeLessThan(context.applyMyKivaFreshProgress.mock.invocationCallOrder[0]);
 		});
 
-		it('normalizes challenge contentful entries in parent before passing to children', () => {
+		it('wires heroSlides and heroBadgeContentfulData from the isolated Contentful readers', () => {
+			const slides = [{ fields: { slides: [] } }];
+			const badgeData = [{ id: 'womens-equality' }];
 			const context = {
 				fetchMyKivaData: vi.fn(),
 				readTieredAchievementsFromCache: vi.fn()
 					.mockReturnValueOnce([])
 					.mockReturnValueOnce([]),
 				applyMyKivaFreshProgress: vi.fn(),
+				readContentfulSlides: vi.fn().mockReturnValue(slides),
+				readContentfulBadgeData: vi.fn().mockReturnValue(badgeData),
 				heroTieredAchievements: [],
 				currentYearTieredAchievements: [],
 				heroBadgeContentfulData: [],
 				apollo: {
-					readQuery: vi.fn()
-						.mockReturnValueOnce({
-							contentful: {
-								entries: {
-									items: [
-										{
-											fields: {
-												key: 'womens-equality-level-2',
-												levelName: '2',
-												challengeName: 'Women',
-												badgeImage: { fields: { file: { url: '/badge-2.svg' } } },
-											}
-										}
-									]
-								}
-							}
-						})
-						.mockReturnValueOnce({ contentful: { entries: { items: [{ fields: { slides: [] } }] } } }),
 					readFragment: vi.fn().mockReturnValue(undefined),
 				},
 				cookieStore: {
@@ -330,18 +428,8 @@ describe('MyKivaPage', () => {
 
 			MyKivaPage.created.call(context);
 
-			expect(context.heroBadgeContentfulData).toEqual([
-				{
-					id: 'womens-equality',
-					level: 2,
-					levelName: '2',
-					challengeName: 'Women',
-					imageUrl: '/badge-2.svg',
-					shareFact: '',
-					shareFactFootnote: '',
-					shareFactUrl: '',
-				}
-			]);
+			expect(context.heroSlides).toEqual(slides);
+			expect(context.heroBadgeContentfulData).toEqual(badgeData);
 		});
 	});
 });

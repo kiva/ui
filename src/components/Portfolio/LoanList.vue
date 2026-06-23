@@ -144,7 +144,7 @@
 								</div>
 								<template v-else>
 									<paid-amount-modal
-										:amount="loan.userProperties?.loanBalance?.amountRepaidToLender || '0'"
+										:amount="repaidAmount(loan)"
 										:payment-history="loan.userProperties?.repaymentHistory"
 									/>
 									<div
@@ -154,7 +154,7 @@
 										{{ repaidLabel(loan, 'you') }}
 									</div>
 									<div
-										v-else-if="hasRepaidToPromo(loan)"
+										v-else-if="hasRepaidToKiva(loan)"
 										class="tw-text-secondary tw-text-small"
 									>
 										{{ repaidLabel(loan, 'Kiva') }}
@@ -290,7 +290,8 @@ export default {
 			return loan.statusLabel || loan.status;
 		},
 		hasArrears(amount) {
-			return amount != null && parseFloat(amount) >= 0;
+			// Only a positive amount is "in arrears"; zero/absent renders no line.
+			return amount != null && parseFloat(amount) > 0;
 		},
 		formatArrearsAmount(amount) {
 			const formatted = this.$filters.numeral(amount, '$0,0.00');
@@ -301,12 +302,24 @@ export default {
 			return amount != null && parseFloat(amount) > 0;
 		},
 		hasRepaidToLender(loan) {
+			// "repaid/refunded to you": amountRepaidToLender (includes refunds, net of FX).
 			const amount = loan.userProperties?.loanBalance?.amountRepaidToLender;
 			return amount != null && parseFloat(amount) > 0;
 		},
-		hasRepaidToPromo(loan) {
-			const amount = loan.userProperties?.loanBalance?.amountRepaidToPromo;
-			return amount != null && parseFloat(amount) > 0;
+		hasRepaidToKiva(loan) {
+			// "repaid to Kiva": something returned on the share overall but none to the lender.
+			const amount = loan.userProperties?.loanBalance?.amountReturnedTotal;
+			return amount != null && parseFloat(amount) > 0 && !this.hasRepaidToLender(loan);
+		},
+		repaidAmount(loan) {
+			// Legacy parity (LoanRowView mustache): headline is repaidAmountToYou when the
+			// lender got something, else repaidAmountTotal — so a Kiva-only return shows the
+			// Kiva figure, not $0. The "repaid to …" subtitle carries the label only.
+			const balance = loan.userProperties?.loanBalance;
+			const amount = this.hasRepaidToLender(loan)
+				? balance?.amountRepaidToLender
+				: balance?.amountReturnedTotal;
+			return amount || '0';
 		},
 		isRaisedOrFundraising(status) {
 			return RAISED_OR_FUNDRAISING_STATUSES.has(status);

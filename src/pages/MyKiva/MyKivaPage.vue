@@ -240,6 +240,34 @@ export default {
 				return [];
 			}
 		},
+		readContentfulSlides() {
+			try {
+				const slidesResult = this.apollo.readQuery({
+					query: contentfulEntriesQuery,
+					variables: {
+						contentType: 'carousel',
+						contentKey: CONTENTFUL_CAROUSEL_KEY,
+					}
+				});
+				return slidesResult.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
+			} catch (e) {
+				logReadQueryError(e, 'MyKivaPage readContentfulSlides');
+				return [];
+			}
+		},
+		readContentfulBadgeData() {
+			try {
+				const contentfulChallengeResult = this.apollo.readQuery({
+					query: contentfulEntriesQuery,
+					variables: { contentType: 'challenge', limit: 200 }
+				});
+				return (contentfulChallengeResult.contentful?.entries?.items ?? [])
+					.map(entry => getContentfulLevelData(entry));
+			} catch (e) {
+				logReadQueryError(e, 'MyKivaPage readContentfulBadgeData');
+				return [];
+			}
+		},
 		readShouldRenderFeaturedSlot() {
 			// The viewedGoalComplete[currentYear] flag is set only after a user has
 			// already seen and persisted the completed-goal celebration.
@@ -351,20 +379,8 @@ export default {
 			this.currentYearTieredAchievements = this.readTieredAchievementsFromCache(CURRENT_YEAR);
 			// Apply centralized fresh progress during creation to avoid initial stale render.
 			this.applyMyKivaFreshProgress();
-			const contentfulChallengeResult = this.apollo.readQuery({
-				query: contentfulEntriesQuery,
-				variables: { contentType: 'challenge', limit: 200 }
-			});
-			const slidesResult = this.apollo.readQuery({
-				query: contentfulEntriesQuery,
-				variables: {
-					contentType: 'carousel',
-					contentKey: CONTENTFUL_CAROUSEL_KEY,
-				}
-			});
-			this.heroSlides = slidesResult.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
-			this.heroBadgeContentfulData = (contentfulChallengeResult.contentful?.entries?.items ?? [])
-				.map(entry => getContentfulLevelData(entry));
+			this.heroSlides = this.readContentfulSlides();
+			this.heroBadgeContentfulData = this.readContentfulBadgeData();
 		} catch (e) {
 			logReadQueryError(e, 'MyKivaPage created');
 		}

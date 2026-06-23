@@ -37,10 +37,14 @@ import {
 } from 'vue';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { KvButton, KvLoadingPlaceholder } from '@kiva/kv-components';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import goalCopy from '#src/util/goalCopy';
+import {
+	GOAL_SIGNUP_DATE_QUERY_PARAM,
+	parseGoalSignupDateParam,
+} from '#src/util/goalSignupCopyVariant';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
 const { getCategoryLoansLastYear } = useGoalData();
@@ -48,11 +52,19 @@ const { getCategoryLoansLastYear } = useGoalData();
 const $kvTrackEvent = inject('$kvTrackEvent');
 const apollo = inject('apollo');
 const loading = ref(true);
+const route = useRoute();
 const router = useRouter();
 const womenLoansLastYear = ref(0);
 
-const title = computed(() => goalCopy.titleGoalSignupWomensLastYear(womenLoansLastYear.value));
-const subtitle = goalCopy.subtitleNoGoalYetEntrypoint();
+const goalSignupDateOverride = computed(() => {
+	const value = route.query?.[GOAL_SIGNUP_DATE_QUERY_PARAM];
+	return parseGoalSignupDateParam(Array.isArray(value) ? value[0] : value);
+});
+
+const title = computed(() => (
+	goalCopy.titleGoalSignupWomensLastYear(womenLoansLastYear.value, { date: goalSignupDateOverride.value })
+));
+const subtitle = computed(() => goalCopy.subtitleNoGoalYetEntrypoint(goalSignupDateOverride.value));
 
 const goToGoalPage = () => {
 	$kvTrackEvent('portfolio', 'click', 'set-goal-portfolio');
@@ -82,8 +94,8 @@ onMounted(() => {
 
 <style lang="postcss" scoped>
 .goal-entrypoint {
-	background-image: url('/src/assets/images/my-kiva/featured-goal-card/mobile-no-goal-state.png');
-	background-position: right bottom;
+	background-image: url('/src/assets/images/my-kiva/featured-goal-card/no-goal-state.png');
+	background-position: calc(100% + clamp(100px, calc(420px - 50vw), 260px)) center;
 	background-repeat: no-repeat;
 	background-size: auto 100%;
 	box-shadow: inset 0 0 0 4px #fff;
@@ -92,7 +104,9 @@ onMounted(() => {
 }
 
 .goal-entrypoint__content {
-	max-width: 28rem;
+	@apply tw-w-full;
+
+	max-width: 14rem;
 }
 
 .goal-entrypoint__title {
@@ -109,9 +123,13 @@ onMounted(() => {
 	width: min(100%, 14rem);
 }
 
-@screen md {
+@screen lg {
 	.goal-entrypoint {
-		background-image: url('/src/assets/images/my-kiva/featured-goal-card/no-goal-state.png');
+		background-position: right center;
+	}
+
+	.goal-entrypoint__content {
+		max-width: 28rem;
 	}
 }
 </style>

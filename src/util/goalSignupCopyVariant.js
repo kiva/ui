@@ -20,7 +20,7 @@ const NO_GOAL_YET_START_MONTH = 3;
 const NO_GOAL_YET_START_DAY = 1;
 const GOAL_SIGNUP_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
 
-function parseGoalSignupDateParam(value) {
+export function parseGoalSignupDateParam(value) {
 	const match = typeof value === 'string' ? value.match(GOAL_SIGNUP_DATE_PATTERN) : null;
 	if (!match) return null;
 
