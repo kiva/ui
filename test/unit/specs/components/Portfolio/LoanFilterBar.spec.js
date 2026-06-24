@@ -204,6 +204,22 @@ describe('LoanFilterBar', () => {
 		expect(page.queryByTestId('clear-filters')).not.toBeNull();
 	});
 
+	it('keeps the clear-filters control hidden while search text is only a draft', async () => {
+		const page = renderLoanFilterBar();
+
+		// Typing without Enter/blur is a draft — the search is not applied yet, so "Clear filters"
+		// must stay hidden until there is something actually applied to clear.
+		await fireEvent.update(page.container.querySelector('#loan-filter-text-input'), 'Maria');
+
+		expect(page.queryByTestId('clear-filters')).toBeNull();
+	});
+
+	it('shows the clear-filters control when a keyword search has been applied', () => {
+		const page = renderLoanFilterBar({ props: { keywordSearch: 'Maria' } });
+
+		expect(page.queryByTestId('clear-filters')).not.toBeNull();
+	});
+
 	it('renders a comma-formatted, pluralized loans count', () => {
 		const page = renderLoanFilterBar({ props: { totalLoans: 1234 } });
 
