@@ -65,4 +65,35 @@ describe('ContentLightbox', () => {
 			vi.useRealTimers();
 		}
 	});
+
+	it('does not clear content reopened before the previous close timer fires', async () => {
+		vi.useFakeTimers();
+		try {
+			const wrapper = mountContentLightbox();
+
+			// Open the first definition, then close it.
+			wrapper.vm.open(solution);
+			await wrapper.vm.$nextTick();
+			wrapper.vm.close();
+
+			// Reopen with new content partway through the close animation.
+			const second = {
+				title: 'Why is this loan anonymous?',
+				content: '<p>The loan details were removed.</p>',
+			};
+			vi.advanceTimersByTime(200);
+			wrapper.vm.open(second);
+			await wrapper.vm.$nextTick();
+
+			// The stale clear timer from the first close must not wipe the reopened content.
+			vi.advanceTimersByTime(500);
+			await wrapper.vm.$nextTick();
+
+			expect(wrapper.vm.visible).toBe(true);
+			expect(wrapper.vm.title).toBe(second.title);
+			expect(wrapper.vm.content).toBe(second.content);
+		} finally {
+			vi.useRealTimers();
+		}
+	});
 });
