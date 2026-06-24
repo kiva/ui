@@ -21,6 +21,7 @@ const makeLoan = (overrides = {}) => ({
 	},
 	userProperties: {
 		loanBalance: {
+			totalAmountPurchased: '25',
 			amountPurchasedByLender: '25',
 			amountPurchasedByPromo: null,
 			promoTypeLabel: null,
@@ -271,6 +272,7 @@ describe('LoanList — "You loaned" cell', () => {
 			loans: [makeLoan({
 				userProperties: {
 					loanBalance: {
+						totalAmountPurchased: '25',
 						amountPurchasedByLender: '25',
 						amountRepaidToLender: '5',
 						latestSharePurchaseTime: null,
@@ -347,6 +349,29 @@ describe('LoanList — "You loaned" cell', () => {
 		expect(page.queryByText(/promotional credit/)).toBeNull();
 		expect(page.queryByText(/free credit/)).toBeNull();
 	});
+
+	it('shows the gross share (totalAmountPurchased), not the lender net cash, when promo credit was applied', () => {
+		// Legacy parity (MP-2943): the "You loaned" headline is the GROSS share — sum of every
+		// purchase_amt (totalAmountPurchased), matching legacy's $loan_lender->shareAmount. A $25
+		// share bought partly/entirely with free credit has amountPurchasedByLender of $20/$0 (net
+		// of promo), which would understate or zero out what the lender loaned.
+		const page = renderLoanList({
+			loans: [makeLoan({
+				userProperties: {
+					loanBalance: {
+						totalAmountPurchased: '25',
+						amountPurchasedByLender: '0',
+						amountPurchasedByPromo: '25',
+						promoTypeLabel: 'free credit',
+						latestSharePurchaseTime: null,
+					},
+				},
+			})],
+		});
+
+		expect(page.getByText('$25.00')).toBeTruthy();
+		expect(page.queryByText('$0.00')).toBeNull();
+	});
 });
 
 describe('LoanList — cents formatting (MP-2936)', () => {
@@ -358,6 +383,7 @@ describe('LoanList — cents formatting (MP-2936)', () => {
 			loans: [makeLoan({
 				userProperties: {
 					loanBalance: {
+						totalAmountPurchased: '10.50',
 						amountPurchasedByLender: '10.50',
 						amountRepaidToLender: '5',
 						latestSharePurchaseTime: null,
@@ -892,6 +918,7 @@ describe('LoanList — team cell', () => {
 			loans: [makeLoan({
 				userProperties: {
 					loanBalance: {
+						totalAmountPurchased: '25',
 						amountPurchasedByLender: '25',
 						amountRepaidToLender: '5',
 						latestSharePurchaseTime: null,
@@ -925,6 +952,7 @@ describe('LoanList — team cell', () => {
 			loans: [makeLoan({
 				userProperties: {
 					loanBalance: {
+						totalAmountPurchased: '25',
 						amountPurchasedByLender: '25',
 						amountRepaidToLender: '5',
 						latestSharePurchaseTime: null,

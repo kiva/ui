@@ -109,6 +109,7 @@
 </template>
 
 <script>
+import numeral from 'numeral';
 import { mdiInformationOutline } from '@mdi/js';
 import lendingStatsQuery from '#src/graphql/query/myPortfolioLoansLendingStats.graphql';
 import salesforceQuery from '#src/graphql/query/salesforceQuery.graphql';
@@ -343,10 +344,10 @@ export default {
 				case 'percentage':
 					return `${(num * 100).toFixed(2)}%`;
 				case 'currencyLossAmount':
-					return `$${Math.abs(num).toFixed(2)}`;
+					return numeral(Math.abs(num)).format('$0,0.00');
 				case 'currency':
 				default:
-					return `$${num.toFixed(2)}`;
+					return numeral(num).format('$0,0.00');
 			}
 		}
 	},
