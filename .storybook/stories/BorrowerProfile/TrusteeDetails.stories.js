@@ -6,11 +6,9 @@ export default {
 };
 
 const baseTrustee = {
-	borrowerName: 'Maria',
-	trusteeName: 'Community Hope Trust',
-	endorsement: 'We have worked alongside Maria for several years through our local '
-		+ 'entrepreneurship program. She is hardworking and reliable, and we are proud to '
-		+ 'vouch for her on Kiva.',
+	borrowerName: 'Sample borrower',
+	trusteeName: 'Willy Wonka',
+	endorsement: 'This borrower has been endorsed by a local Kiva trustee.',
 	numLoansEndorsedPublic: 342,
 	totalLoansValue: '1875000.00',
 	numDefaultedLoans: 7,
