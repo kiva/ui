@@ -37,6 +37,7 @@
 						<loan-list
 							:loans="loans"
 							:loading="loading"
+							:has-error="loadError"
 							:lending-teams="lendingTeams"
 							:reassigning-loan-ids="reassigningLoanIds"
 							:reassign-nonce="reassignNonce"
@@ -102,6 +103,9 @@ export default {
 			reassignNonce: {},
 			totalLoans: 0,
 			loading: true,
+			// Set when a loans fetch rejects so the list can show a distinct error state
+			// instead of the "no loans match this search" empty copy.
+			loadError: false,
 			// null until the first unfiltered fetch resolves; false only when the lender has
 			// never lent (lifetime loan count is 0), which swaps the page for the first-loan CTA.
 			// Set only from unfiltered requests so a filtered no-results page keeps the
@@ -167,6 +171,7 @@ export default {
 			const requestSequence = this.loanRequestSequence + 1;
 			this.loanRequestSequence = requestSequence;
 			this.loading = true;
+			this.loadError = false;
 			if (clearLoans) {
 				this.loans = [];
 			}
@@ -207,6 +212,7 @@ export default {
 				if (requestSequence !== this.loanRequestSequence) {
 					return;
 				}
+				this.loadError = true;
 				logFormatter(`Error fetching loans: ${error}`, 'error');
 			}).finally(() => {
 				if (requestSequence === this.loanRequestSequence) {

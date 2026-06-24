@@ -222,6 +222,38 @@ describe('LoanFilterBar', () => {
 		expect(page.getByTestId('loans-count').textContent.trim()).toBe('0 loans');
 	});
 
+	it('labels the raised status "Funded" (legacy parity), not "Raised"', () => {
+		const page = renderLoanFilterBar();
+
+		const labels = Array.from(getSelect(page.container, 'loan-status-select').querySelectorAll('option'))
+			.map(option => option.textContent.trim());
+		// Legacy + the stats grid both call this bucket "Funded"; the dropdown must match.
+		expect(labels).toContain('Funded');
+		expect(labels).not.toContain('Raised');
+	});
+
+	it('uses the legacy default filter option labels', () => {
+		const page = renderLoanFilterBar();
+
+		const firstOption = id => getSelect(page.container, id).querySelector('option').textContent.trim();
+		expect(firstOption('loan-status-select')).toBe('All loans');
+		expect(firstOption('loan-country-select')).toBe('Location');
+		expect(firstOption('loan-partner-select')).toBe('Partner');
+	});
+
+	it('toggles the small-screen filter accordion via the Filters button', async () => {
+		const page = renderLoanFilterBar();
+
+		const toggle = page.getByTestId('filters-toggle');
+		expect(toggle.textContent.trim()).toBe('Filters');
+		expect(toggle.getAttribute('aria-expanded')).toBe('false');
+
+		await fireEvent.click(toggle);
+
+		expect(toggle.textContent.trim()).toBe('Hide filters');
+		expect(toggle.getAttribute('aria-expanded')).toBe('true');
+	});
+
 	it('places the loans count next to the clear-filters control when filters are active', () => {
 		const page = renderLoanFilterBar({
 			props: { totalLoans: 12, filters: { status: 'payingBack' } },

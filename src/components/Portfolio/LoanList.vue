@@ -44,6 +44,15 @@
 								</div>
 							</td>
 						</tr>
+						<tr v-else-if="hasError">
+							<td
+								class="tw-text-center tw-text-danger tw-px-2 tw-pt-4"
+								colspan="7"
+								data-testid="loans-error-message"
+							>
+								We couldn't load your loans right now. Please refresh the page and try again.
+							</td>
+						</tr>
 						<tr v-else-if="!loans.length">
 							<td
 								class="tw-text-center tw-text-secondary tw-px-2 tw-pt-4"
@@ -65,21 +74,21 @@
 										<img
 											:src="loan.image.url"
 											alt="Loan image"
-											class="loan-image"
+											class="loan-image data-hj-suppress"
 										>
 										<div
 											v-if="loan.userProperties?.wasMatched"
 											class="tw-text-small tw-text-secondary tw-mt-1"
 											data-testid="matched-badge"
 										>
-											Matched
+											{{ matchedLabel(loan) }}
 										</div>
 									</div>
 									<div>
 										<div class="tw-font-semibold">
 											<a
 												:href="`/lend/${loan.id}`"
-												class="tw-text-action"
+												class="tw-text-action data-hj-suppress"
 												v-kv-track-event="[
 													'portfolio', 'click', 'View borrower details', loan.name, loan.id]"
 											>
@@ -106,6 +115,7 @@
 											<a
 												:href="getTrusteeUrl(loan.trusteeId)"
 												target="_blank"
+												class="data-hj-suppress"
 											>
 												{{ loan.trusteeName }}
 											</a>
@@ -114,9 +124,46 @@
 											<a
 												:href="getPartnerUrl(loan.partnerId)"
 												target="_blank"
+												class="data-hj-suppress"
 											>
 												{{ loan.partnerName }}
 											</a>
+										</div>
+										<!-- The logged-in lender's own dedication on this loan. A named recipient shows
+											a heart + link to the dedication page with the "repayments donated to
+											Kiva" footer; a to-Kiva dedication shows the thank-you line with no
+											link. Viewer-relative — the field is null when this lender has no
+											dedication on the loan. -->
+										<div
+											v-if="getDedication(loan)"
+											class="tw-mt-1"
+											data-testid="loan-dedication"
+										>
+											<a
+												v-if="getDedication(loan).recipientName"
+												:href="getDedication(loan).dedicationUrl"
+												class="tw-flex tw-items-center tw-text-action tw-text-small
+													data-hj-suppress"
+											>
+												<kv-material-icon
+													class="tw-w-2 tw-h-2 tw-mr-1 tw-shrink-0"
+													:icon="mdiHeart"
+												/>
+												Dedicated to {{ getDedication(loan).recipientName }}
+											</a>
+											<div
+												v-else-if="getDedication(loan).toKiva"
+												class="tw-text-secondary tw-text-small"
+											>
+												You opted to donate repayments from this loan to Kiva (Thanks!)
+											</div>
+											<div
+												v-if="getDedication(loan).recipientName"
+												class="tw-text-secondary tw-text-small"
+												data-testid="loan-dedication-footer"
+											>
+												Repayments for dedications are donated to Kiva
+											</div>
 										</div>
 									</div>
 								</div>
@@ -131,7 +178,7 @@
 									<div class="tw-mb-1">
 										{{ $filters.numeral(
 											loan.userProperties.loanBalance.amountPurchasedByLender,
-											'$0,0'
+											'$0,0.00'
 										) }}
 									</div>
 									<div
@@ -146,7 +193,7 @@
 									>
 										{{ $filters.numeral(
 											loan.userProperties.loanBalance.amountPurchasedByPromo,
-											'$0,0'
+											'$0,0[.]00'
 										) }} {{
 											loan.userProperties.loanBalance.promoTypeLabel || 'promotional credit'
 										}}
@@ -155,7 +202,7 @@
 							</td>
 							<td class="tw-text-right tw-px-2">
 								<div v-if="isRaisedOrFundraising(loan.status)">
-									{{ $filters.numeral(loan.loanFundraisingInfo?.fundedAmount, '$0,0') }} raised
+									{{ $filters.numeral(loan.loanFundraisingInfo?.fundedAmount, '$0,0.00') }} raised
 								</div>
 								<template v-else>
 									<paid-amount-modal
@@ -184,13 +231,13 @@
 							</td>
 							<td class="tw-text-right tw-px-2">
 								<div>
-									{{ loan.lenderRepaymentTerm || '-' }} months
+									{{ loan.lenderRepaymentTerm || '-' }} mos
 								</div>
 							</td>
 							<td class="tw-text-right tw-px-2">
 								<div>
 									<div>
-										{{ $filters.numeral(loan.terms.loanAmount, '$0,0') }}
+										{{ $filters.numeral(loan.terms.loanAmount, '$0,0.00') }}
 									</div>
 									<div
 										v-if="hasArrears(loan.arrearsAmount)"
@@ -213,7 +260,7 @@
 										v-if="canReassignTeam(loan)"
 										:key="`reassign-team-${loan.id}-${reassignNonce[loan.id] || 0}`"
 										:id="`reassign-team-${loan.id}`"
-										class="tw-w-full"
+										class="tw-w-full data-hj-suppress"
 										:model-value="currentTeamId(loan)"
 										:disabled="reassigningLoanIds.includes(loan.id)"
 										:aria-label="`Reassign team for ${loan.name}`"
@@ -227,15 +274,22 @@
 											{{ option.name }}
 										</option>
 									</kv-select>
-									<template v-else-if="loan.userProperties?.userAttributedTeam">
+									<!-- A read-only attributed team links to its team page. Renders an unlinked span
+										when no teamPublicId is resolvable. -->
+									<component
+										:is="teamUrl(loan.userProperties.userAttributedTeam) ? 'a' : 'span'"
+										v-else-if="loan.userProperties?.userAttributedTeam"
+										:href="teamUrl(loan.userProperties.userAttributedTeam)"
+										class="tw-flex tw-items-center data-hj-suppress"
+									>
 										<img
 											v-if="loan.userProperties.userAttributedTeam.image?.url"
 											:src="loan.userProperties.userAttributedTeam.image.url"
 											:alt="`${loan.userProperties.userAttributedTeam.name} team image`"
-											class="tw-w-5 tw-h-5"
+											class="tw-w-5 tw-h-5 tw-mr-1"
 										>
-										<span>{{ loan.userProperties.userAttributedTeam.name }}</span>
-									</template>
+										<span>{{ truncateTeamName(loan.userProperties.userAttributedTeam.name) }}</span>
+									</component>
 								</div>
 							</td>
 						</tr>
@@ -248,7 +302,10 @@
 </template>
 
 <script>
-import { KvFlag, KvLoadingPlaceholder, KvSelect } from '@kiva/kv-components';
+import { mdiHeart } from '@mdi/js';
+import {
+	KvFlag, KvLoadingPlaceholder, KvMaterialIcon, KvSelect
+} from '@kiva/kv-components';
 import {
 	EXPIRED,
 	FUNDRAISING,
@@ -272,6 +329,10 @@ export default {
 			type: Boolean,
 			default: true
 		},
+		hasError: {
+			type: Boolean,
+			default: false
+		},
 		lendingTeams: {
 			type: Array,
 			default: () => []
@@ -289,12 +350,16 @@ export default {
 	components: {
 		KvFlag,
 		KvLoadingPlaceholder,
+		KvMaterialIcon,
 		KvSelect,
 		PaidAmountModal
 	},
 	methods: {
 		formatDate(date) {
 			if (!date) return '';
+			// Intentionally formats in the lender's browser timezone (no `timeZone` option). The
+			// field is a full ISO-8601 instant and rows render client-side, so the displayed day
+			// is the lender's local day.
 			return new Date(date).toLocaleDateString('en-US', {
 				month: 'short',
 				day: 'numeric',
@@ -303,6 +368,18 @@ export default {
 		},
 		getStatusLabel(loan) {
 			return loan.statusLabel || loan.status;
+		},
+		matchedLabel(loan) {
+			// The matched badge shows "Nx matched" when the loan's match ratio is known, otherwise a bare "Matched".
+			// The badge itself stays gated on the viewer-relative wasMatched flag; matchRatio
+			// is the loan-level multiplier the lender's matched share was purchased at.
+			const ratio = loan.matchRatio;
+			return ratio ? `${ratio}x matched` : 'Matched';
+		},
+		getDedication(loan) {
+			// Viewer-relative dedication for this loan (LoanUserProperties.dedication);
+			// null when the logged-in lender has no dedication on it, or no logged-in user.
+			return loan.userProperties?.dedication || null;
 		},
 		hasArrears(amount) {
 			// Only a positive amount is "in arrears"; zero/absent renders no line.
@@ -343,8 +420,19 @@ export default {
 			const verb = REFUNDED_OR_EXPIRED_STATUSES.has(loan.status) ? 'repaid/refunded' : 'repaid';
 			return `${verb} to ${recipient}`;
 		},
+		teamUrl(team) {
+			// Legacy parity: the read-only attributed team links to its team page,
+			// keyed off the human-readable teamPublicId (legacy `viewTeamSummary`).
+			// Null when no slug is resolvable, so the cell falls back to plain text.
+			return team?.teamPublicId ? `/team/${team.teamPublicId}` : null;
+		},
+		truncateTeamName(name) {
+			// The read-only attributed team name is truncated to 20 characters with a trailing ellipsis.
+			if (!name) return '';
+			return name.length > 20 ? `${name.slice(0, 20)}...` : name;
+		},
 		canReassignTeam(loan) {
-			// Legacy parity: the dropdown only appears when the loan is eligible AND the
+			// The dropdown only appears when the loan is eligible AND the
 			// user actually belongs to at least one team to reassign to. With no teams there
 			// is nothing to pick (and no "None" detach), so the cell stays read-only.
 			return Boolean(loan.userProperties?.canChangeTeamAssignment) && this.lendingTeams.length > 0;
@@ -391,6 +479,7 @@ export default {
 	},
 	data() {
 		return {
+			mdiHeart,
 			placeholders: [
 				{ span: 4 },
 				{ span: 1 },

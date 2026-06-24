@@ -9,8 +9,26 @@
 				@keyup.enter.prevent="emitDraftKeywordSearchIfChanged"
 				@blur="emitDraftKeywordSearchIfChanged"
 			/>
+			<!-- On small screens the status/location/partner filters collapse behind a Filters/Hide filters toggle;
+				they are always shown from the lg breakpoint up. -->
+			<button
+				type="button"
+				class="lg:tw-hidden tw-self-start tw-text-action tw-text-small tw-underline tw-mt-2"
+				:aria-expanded="filtersExpanded ? 'true' : 'false'"
+				aria-controls="loan-filters"
+				data-testid="filters-toggle"
+				@click="filtersExpanded = !filtersExpanded"
+			>
+				{{ filtersExpanded ? 'Hide filters' : 'Filters' }}
+			</button>
 			<div class="tw-flex tw-flex-row tw-flex-wrap tw-items-center tw-gap-2 tw-mt-2">
-				<div class="tw-flex tw-items-center tw-gap-2">
+				<div
+					id="loan-filters"
+					:class="[
+						filtersExpanded ? 'tw-flex' : 'tw-hidden',
+						'lg:tw-flex tw-items-center tw-gap-2'
+					]"
+				>
 					<span class="tw-text-secondary">Status:</span>
 					<kv-select
 						id="loan-status-select"
@@ -26,7 +44,12 @@
 						</option>
 					</kv-select>
 				</div>
-				<div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
+				<div
+					:class="[
+						filtersExpanded ? 'tw-flex' : 'tw-hidden',
+						'lg:tw-flex tw-flex-row tw-items-center tw-gap-2'
+					]"
+				>
 					<span class="tw-text-secondary">Filter by:</span>
 					<kv-select
 						id="loan-country-select"
@@ -34,7 +57,7 @@
 						@update:model-value="emitFiltersChanged()"
 					>
 						<option value="all">
-							All countries
+							Location
 						</option>
 						<option
 							v-for="country in countries"
@@ -50,7 +73,7 @@
 						@update:model-value="emitFiltersChanged()"
 					>
 						<option value="all">
-							All partners
+							Partner
 						</option>
 						<option
 							v-for="partner in partners"
@@ -74,7 +97,7 @@
 			</div>
 		</div>
 		<div class="tw-flex tw-items-center tw-gap-3 tw-mt-2">
-			<span class="tw-text-secondary" data-testid="loans-count">{{ loanCountLabel }}</span>
+			<span class="tw-text-subhead" data-testid="loans-count">{{ loanCountLabel }}</span>
 			<button
 				v-if="hasActiveFilters"
 				type="button"
@@ -114,9 +137,12 @@ const ENDED_WITH_LOSS = 'ended_with_loss';
 const LEGACY_FUNDRAISING_STATUS = 'fundRaising';
 
 const statusOptions = [
-	{ value: ALL_FILTERS_VALUE, label: 'All statuses' },
+	{ value: ALL_FILTERS_VALUE, label: 'All loans' },
 	{ value: FUNDRAISING, label: 'Fundraising' },
-	{ value: RAISED, label: 'Raised' },
+	// Legacy parity: the `raised` status is labelled "Funded" everywhere on the legacy
+	// page (getHumanizedStatusFromString) and in the new stats grid, so the filter
+	// dropdown matches rather than showing "Raised".
+	{ value: RAISED, label: 'Funded' },
 	{ value: PAYING_BACK, label: 'Paying back' },
 	{ value: DELINQUENT, label: 'Delinquent' },
 	{ value: ENDED, label: 'Repaid' },
@@ -168,6 +194,8 @@ const searchText = ref(props.keywordSearch || '');
 const selectedStatus = ref(getSelectedStatus(props.filters));
 const selectedCountry = ref(getFirstFilterValue(props.filters.country));
 const selectedPartner = ref(getFirstFilterValue(props.filters.partner));
+// Small-screen filter accordion: collapsed by default; the lg breakpoint shows the filters regardless of this flag.
+const filtersExpanded = ref(false);
 
 function buildActiveFilters() {
 	const filters = {};
