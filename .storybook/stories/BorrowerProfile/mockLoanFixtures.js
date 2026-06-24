@@ -240,6 +240,75 @@ export function createMockLoan(overrides = {}) {
 }
 
 // ---------------------------------------------------------------------------
+// Definition lightbox content
+// ---------------------------------------------------------------------------
+
+function richTextDefinition(key, name, text) {
+	return {
+		sys: { contentType: { sys: { id: 'richTextContent' } } },
+		fields: {
+			key,
+			name,
+			richText: {
+				nodeType: 'document',
+				data: {},
+				content: [{
+					nodeType: 'paragraph',
+					data: {},
+					content: [{
+						nodeType: 'text', value: text, marks: [], data: {},
+					}],
+				}],
+			},
+		},
+	};
+}
+
+export const borrowerProfileDefinitions = {
+	entries: {
+		items: [{
+			sys: { contentType: { sys: { id: 'contentGroup' } } },
+			fields: {
+				key: 'borrower-profile-definitions',
+				name: 'Borrower Profile Definitions',
+				type: null,
+				contents: [
+					richTextDefinition(
+						'bp-def-anonymized-loan',
+						'Why is this borrower anonymous?',
+						'To protect this borrower\'s privacy, identifying details have been removed from their profile.',
+					),
+					richTextDefinition(
+						'bp-def-anonymous-description',
+						'Why is this loan anonymous?',
+						'To protect this borrower\'s privacy, the details of this loan have been removed from their profile.',
+					),
+				],
+			},
+		}],
+	},
+};
+
+export const salesforceDefinitionFallback = {
+	name: 'About this detail',
+	note: '<p>In production this explanation is loaded from Contentful or Salesforce. '
+		+ 'This placeholder lets the lightbox be previewed in Storybook.</p>',
+};
+
+// ---------------------------------------------------------------------------
+// Real PII-anonymized loan content
+// ---------------------------------------------------------------------------
+
+export const ANONYMIZED_BORROWER_NAME = 'Anonymized Kivan';
+export const ANONYMIZED_GROUP_NAME = 'Anonymized Kivans';
+
+export const anonymizedLoanDescription = 'This loan supported a farmer’s plan to buy two cows for work on '
+	+ 'her rice field and for breeding, with the aim of creating additional income through animal raising.';
+
+export const anonymizedGroupLoanDescription = 'This loan supported a grocer’s plan to build a house for '
+	+ 'herself and her husband, with the aim of living apart from their parents.';
+
+// ---------------------------------------------------------------------------
 // Query result wrapper
 // ---------------------------------------------------------------------------
 
@@ -265,8 +334,9 @@ export function createQueryResult(loan, myUser = null) {
 				nonTrivialItemCount: 0,
 			},
 			my: myUser || { id: null },
-			general: { uiExperimentSetting: null },
+			general: { uiExperimentSetting: null, salesforceSolution: salesforceDefinitionFallback },
 			community: { lender: null },
+			contentful: borrowerProfileDefinitions,
 		},
 	};
 }

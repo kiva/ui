@@ -1,4 +1,10 @@
 import LoanDescription from '#src/components/BorrowerProfile/LoanDescription';
+import {
+	ANONYMIZED_BORROWER_NAME,
+	ANONYMIZED_GROUP_NAME,
+	anonymizedLoanDescription,
+	anonymizedGroupLoanDescription,
+} from './mockLoanFixtures';
 
 export default {
 	title: 'Components/BorrowerProfile/LoanDescription',
@@ -32,7 +38,13 @@ export const PartnerLoanTranslated = () => ({
 // counterpart, so the "Translated from…" note is HIDDEN even for a non-English partner loan.
 export const PiiAnonymized = () => ({
 	components: { LoanDescription },
-	data: () => ({ ...baseArgs, anonymizationLevel: 'pii' }),
+	data: () => ({
+		...baseArgs,
+		anonymizationLevel: 'pii',
+		borrowerOrGroupName: ANONYMIZED_BORROWER_NAME,
+		storyDescription: anonymizedLoanDescription,
+		descriptionInOriginalLanguage: '',
+	}),
 	template: '<loan-description v-bind="$data" />',
 });
 
@@ -57,6 +69,18 @@ export const GroupLoan = () => ({
 // list is HIDDEN.
 export const GroupLoanAnonymized = () => ({
 	components: { LoanDescription },
-	data: () => ({ ...baseArgs, ...groupArgs, anonymizationLevel: 'pii' }),
+	data: () => ({
+		...baseArgs,
+		...groupArgs,
+		anonymizationLevel: 'pii',
+		borrowerOrGroupName: ANONYMIZED_GROUP_NAME,
+		borrowers: [
+			{ id: 1, firstName: ANONYMIZED_BORROWER_NAME },
+			{ id: 2, firstName: ANONYMIZED_BORROWER_NAME },
+			{ id: 3, firstName: ANONYMIZED_BORROWER_NAME },
+		],
+		storyDescription: anonymizedGroupLoanDescription,
+		descriptionInOriginalLanguage: '',
+	}),
 	template: '<loan-description v-bind="$data" />',
 });
