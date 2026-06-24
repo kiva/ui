@@ -78,7 +78,7 @@ import { computed, ref, inject } from 'vue';
 import { toParagraphs } from '#src/util/loanUtils';
 import { KvLightbox } from '@kiva/kv-components';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
-import PreviousLoanDescription from './PreviousLoanDescription';
+import PreviousLoanDescription from '#src/components/BorrowerProfile/PreviousLoanDescription';
 
 const borrowerProfile = inject('borrowerProfile');
 
