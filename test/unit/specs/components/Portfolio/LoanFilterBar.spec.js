@@ -237,8 +237,8 @@ describe('LoanFilterBar', () => {
 
 		const firstOption = id => getSelect(page.container, id).querySelector('option').textContent.trim();
 		expect(firstOption('loan-status-select')).toBe('All loans');
-		expect(firstOption('loan-country-select')).toBe('Location');
-		expect(firstOption('loan-partner-select')).toBe('Partner');
+		expect(firstOption('loan-country-select')).toBe('All locations');
+		expect(firstOption('loan-partner-select')).toBe('All partners');
 	});
 
 	it('toggles the small-screen filter accordion via the Filters button', async () => {
@@ -254,16 +254,14 @@ describe('LoanFilterBar', () => {
 		expect(toggle.getAttribute('aria-expanded')).toBe('true');
 	});
 
-	it('places the loans count next to the clear-filters control when filters are active', () => {
-		const page = renderLoanFilterBar({
-			props: { totalLoans: 12, filters: { status: 'payingBack' } },
-		});
+	it('right-aligns the loans count on the export button row', () => {
+		const page = renderLoanFilterBar({ props: { totalLoans: 12 } });
 
 		const count = page.getByTestId('loans-count');
-		const clear = page.getByTestId('clear-filters');
-		// Same flex row, count immediately before clear-filters (spacing comes from the row's gap).
-		expect(count.parentElement).toBe(clear.parentElement);
-		expect(count.nextElementSibling).toBe(clear);
+		expect(count.textContent.trim()).toBe('12 loans');
+		// Pushed to the right of the export row (tw-ml-auto), sharing the row with the export button.
+		expect(count.classList.contains('tw-ml-auto')).toBe(true);
+		expect(count.parentElement.textContent).toContain('Export 12 loans');
 	});
 
 	it('resets all filters and the keyword search when clear-filters is clicked', async () => {

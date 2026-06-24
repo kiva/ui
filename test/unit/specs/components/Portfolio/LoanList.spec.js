@@ -422,7 +422,7 @@ describe('LoanList — cents formatting (MP-2936)', () => {
 			})],
 		});
 
-		expect(page.getByText('$300.25 raised')).toBeTruthy();
+		expect(page.container.textContent.replace(/\s+/g, ' ')).toContain('$300.25 raised');
 	});
 });
 
@@ -435,7 +435,7 @@ describe('LoanList — "Paid back or raised" cell', () => {
 			})],
 		});
 
-		expect(page.getByText('$300.00 raised')).toBeTruthy();
+		expect(page.container.textContent.replace(/\s+/g, ' ')).toContain('$300.00 raised');
 	});
 
 	it('renders "raised" amount for raised loans', () => {
@@ -446,7 +446,7 @@ describe('LoanList — "Paid back or raised" cell', () => {
 			})],
 		});
 
-		expect(page.getByText('$525.00 raised')).toBeTruthy();
+		expect(page.container.textContent.replace(/\s+/g, ' ')).toContain('$525.00 raised');
 	});
 
 	it('renders the lender-repaid amount as the clickable trigger with "repaid to you" copy below', () => {
@@ -694,15 +694,15 @@ describe('LoanList — arrears rendering', () => {
 describe('LoanList — row banding', () => {
 	const makeLoans = count => Array.from({ length: count }, (_, i) => makeLoan({ id: 2000 + i }));
 
-	it('applies alternating gray banding to every other data row, starting on the second', () => {
+	it('applies alternating banding to every other data row, starting on the second', () => {
 		const page = renderLoanList({ loans: makeLoans(4) });
 		const rows = [...page.container.querySelectorAll('tbody tr')];
 
 		expect(rows).toHaveLength(4);
-		expect(rows[0].classList.contains('tw-bg-gray-50')).toBe(false);
-		expect(rows[1].classList.contains('tw-bg-gray-50')).toBe(true);
-		expect(rows[2].classList.contains('tw-bg-gray-50')).toBe(false);
-		expect(rows[3].classList.contains('tw-bg-gray-50')).toBe(true);
+		expect(rows[0].classList.contains('tw-bg-secondary')).toBe(false);
+		expect(rows[1].classList.contains('tw-bg-secondary')).toBe(true);
+		expect(rows[2].classList.contains('tw-bg-secondary')).toBe(false);
+		expect(rows[3].classList.contains('tw-bg-secondary')).toBe(true);
 	});
 });
 

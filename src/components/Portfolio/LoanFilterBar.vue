@@ -11,9 +11,9 @@
 			/>
 			<!-- On small screens the status/location/partner filters collapse behind a Filters/Hide filters toggle;
 				they are always shown from the lg breakpoint up. -->
-			<button
-				type="button"
-				class="lg:tw-hidden tw-self-start tw-text-action tw-text-small tw-underline tw-mt-2"
+			<kv-button
+				class="lg:tw-hidden tw-self-start tw-mt-2"
+				variant="secondary"
 				:aria-expanded="filtersExpanded ? 'true' : 'false'"
 				aria-controls="loan-filters"
 				data-testid="filters-toggle"
@@ -21,16 +21,16 @@
 				@click="filtersExpanded = !filtersExpanded"
 			>
 				{{ filtersExpanded ? 'Hide filters' : 'Filters' }}
-			</button>
-			<div class="tw-flex tw-flex-row tw-flex-wrap tw-items-center tw-gap-2 tw-mt-2">
-				<div
-					id="loan-filters"
-					:class="[
-						filtersExpanded ? 'tw-flex' : 'tw-hidden',
-						'lg:tw-flex tw-items-center tw-gap-2'
-					]"
-				>
-					<span class="tw-text-secondary">Status:</span>
+			</kv-button>
+			<div
+				id="loan-filters"
+				:class="[
+					filtersExpanded ? 'tw-flex' : 'tw-hidden',
+					'lg:tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-2 tw-mt-2'
+				]"
+			>
+				<div class="tw-flex tw-items-center tw-gap-2">
+					<span class="tw-text-secondary tw-whitespace-nowrap">Status:</span>
 					<kv-select
 						id="loan-status-select"
 						v-model="selectedStatus"
@@ -45,20 +45,15 @@
 						</option>
 					</kv-select>
 				</div>
-				<div
-					:class="[
-						filtersExpanded ? 'tw-flex' : 'tw-hidden',
-						'lg:tw-flex tw-flex-row tw-items-center tw-gap-2'
-					]"
-				>
-					<span class="tw-text-secondary">Filter by:</span>
+				<div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-2">
+					<span class="tw-text-secondary tw-whitespace-nowrap">Filter by:</span>
 					<kv-select
 						id="loan-country-select"
 						v-model="selectedCountry"
 						@update:model-value="emitFiltersChanged()"
 					>
 						<option value="all">
-							Location
+							All locations
 						</option>
 						<option
 							v-for="country in countries"
@@ -74,7 +69,7 @@
 						@update:model-value="emitFiltersChanged()"
 					>
 						<option value="all">
-							Partner
+							All partners
 						</option>
 						<option
 							v-for="partner in partners"
@@ -85,20 +80,19 @@
 						</option>
 					</kv-select>
 				</div>
-				<div class="lg:tw-ml-auto">
-					<kv-button
-						class="tw-text-sm"
-						variant="primary"
-						v-kv-track-event="['portfolio', 'click', 'export-loans']"
-						@click="handleExportClick"
-					>
-						Export {{ totalLoans }} loans
-					</kv-button>
-				</div>
+			</div>
+			<div :class="[filtersExpanded ? 'tw-mt-2' : 'tw-mt-1.5', 'lg:tw-mt-2 tw-flex tw-items-center tw-gap-2']">
+				<kv-button
+					variant="primary"
+					v-kv-track-event="['portfolio', 'click', 'export-loans']"
+					@click="handleExportClick"
+				>
+					Export {{ totalLoans }} loans
+				</kv-button>
+				<span class="tw-ml-auto tw-text-subhead" data-testid="loans-count">{{ loanCountLabel }}</span>
 			</div>
 		</div>
-		<div class="tw-flex tw-items-center tw-gap-3 tw-mt-2">
-			<span class="tw-text-subhead" data-testid="loans-count">{{ loanCountLabel }}</span>
+		<div class="tw-flex tw-items-center tw-gap-2 tw-mt-1 lg:tw-mt-0">
 			<button
 				v-if="hasActiveFilters"
 				type="button"
@@ -109,7 +103,7 @@
 			>
 				Clear filters
 			</button>
-			<span class="tw-ml-auto tw-text-secondary">Sorted by date posted on Kiva</span>
+			<span class="tw-ml-auto tw-text-secondary tw-text-small">Sorted by date posted on Kiva</span>
 		</div>
 	</div>
 </template>

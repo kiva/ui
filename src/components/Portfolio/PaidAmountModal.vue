@@ -1,22 +1,29 @@
 <template>
 	<div>
-		<span
+		<a
 			class="tw-text-link tw-cursor-pointer"
+			role="button"
 			@click="showModal = true"
+			@keydown.enter="showModal = true"
 		>
 			${{ formattedAmount }}
-		</span>
+		</a>
 
 		<kv-lightbox
 			:visible="showModal"
 			@lightbox-closed="showModal = false"
 			title="Payment history"
 		>
+			<template #header>
+				<h2 class="tw-text-headline tw-flex-1 tw-text-left">
+					Payment history
+				</h2>
+			</template>
 			<div class="tw-text-left">
 				<p v-if="!paymentHistory?.length">
 					This loan has no repayments
 				</p>
-				<div v-else class="tw-grid tw-grid-cols-2">
+				<div v-else class="tw-grid tw-grid-cols-2 tw-gap-x-6 tw-gap-y-1">
 					<div v-for="(payment, index) in sortedHistory" :key="index" class="tw-contents">
 						<span>{{ formatDate(payment.createTime) }}:</span>
 						<span>
@@ -85,3 +92,34 @@ function formatDate(iso) {
 	});
 }
 </script>
+
+<style lang="postcss" scoped>
+/*
+ * On mobile, KvLightbox's bottom sheet only fades opacity while its layout settles, so a brief
+ * full-height frame is visible on open. Slide the sheet up from below instead: it starts
+ * off-screen and animates into its settled position, so the unsettled frame happens off-screen.
+ * The animation re-runs each time the dialog flips from display:none to visible (KvLightbox uses
+ * v-show), and the deep selector targets the dialog (.tw-min-h-half-screen is its mobile class).
+ * KvLightbox switches from the bottom sheet to a centered dialog at the md breakpoint via its
+ * md: utilities, so the slide-up only applies below md and is disabled at md and above.
+ */
+:deep(.tw-min-h-half-screen) {
+	animation: paid-amount-sheet-up 0.15s ease-out;
+}
+
+@screen md {
+	:deep(.tw-min-h-half-screen) {
+		animation: none;
+	}
+}
+
+@keyframes paid-amount-sheet-up {
+	from {
+		transform: translateY(100%);
+	}
+
+	to {
+		transform: translateY(0);
+	}
+}
+</style>
