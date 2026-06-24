@@ -176,7 +176,7 @@ export default {
 			return this.isAnonymizationLevelPii || this.isAnonymizationLevelFull;
 		},
 		storyTranslation() {
-			return !this.isAnonymizationLevelPii
+			return !this.areBorrowerNamesAnonymized
 				&& this.isPartnerLoan
 				&& parseInt(this.originalLanguage?.id ?? 0, 10) !== 1;
 		},
