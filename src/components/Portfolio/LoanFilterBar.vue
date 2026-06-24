@@ -17,6 +17,7 @@
 				:aria-expanded="filtersExpanded ? 'true' : 'false'"
 				aria-controls="loan-filters"
 				data-testid="filters-toggle"
+				v-kv-track-event="['portfolio', 'click', 'toggle-loan-filters']"
 				@click="filtersExpanded = !filtersExpanded"
 			>
 				{{ filtersExpanded ? 'Hide filters' : 'Filters' }}

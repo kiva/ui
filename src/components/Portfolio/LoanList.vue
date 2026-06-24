@@ -144,6 +144,8 @@
 												:href="getDedication(loan).dedicationUrl"
 												class="tw-flex tw-items-center tw-text-action tw-text-small
 													data-hj-suppress"
+												v-kv-track-event="[
+													'portfolio', 'click', 'View loan dedication', loan.id]"
 											>
 												<kv-material-icon
 													class="tw-w-2 tw-h-2 tw-mr-1 tw-shrink-0"
