@@ -18,6 +18,7 @@ import {
 	isLessThan25,
 	isBetween25And50,
 	isBetween25And500,
+	isActivelyInPfp,
 } from '#src/util/loanUtils';
 
 describe('loanUtils.js', () => {
@@ -61,6 +62,30 @@ describe('loanUtils.js', () => {
 				}
 			};
 			expect(isLoanFundraising(loan)).toBe(true);
+		});
+	});
+
+	describe('isActivelyInPfp', () => {
+		it('should return true when inPfp is set and the loan is still fundraising', () => {
+			expect(isActivelyInPfp({ inPfp: true, status: 'fundraising' })).toBe(true);
+		});
+
+		it('should return false for a PFP loan that has expired', () => {
+			expect(isActivelyInPfp({ inPfp: true, status: 'expired' })).toBe(false);
+		});
+
+		it('should return false when inPfp is not set even while fundraising', () => {
+			expect(isActivelyInPfp({ inPfp: false, status: 'fundraising' })).toBe(false);
+		});
+
+		it('should return false for a camelCase fundRaising status', () => {
+			expect(isActivelyInPfp({ inPfp: true, status: 'fundRaising' })).toBe(false);
+		});
+
+		it('should return false when the loan is missing or empty', () => {
+			expect(isActivelyInPfp(undefined)).toBe(false);
+			expect(isActivelyInPfp(null)).toBe(false);
+			expect(isActivelyInPfp({})).toBe(false);
 		});
 	});
 

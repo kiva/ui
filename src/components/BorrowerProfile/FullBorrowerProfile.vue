@@ -187,6 +187,7 @@ import {
 	resolveRailPreference,
 	persistRailPreference,
 } from '#src/util/loanDetailsRailPreference';
+import { isActivelyInPfp } from '#src/util/loanUtils';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
@@ -329,7 +330,7 @@ export default {
 			return Number(this.$route?.params?.id ?? 0);
 		},
 		inPfp() {
-			return this.loanData?.inPfp ?? false;
+			return isActivelyInPfp(this.loanData);
 		},
 		pfpMinLenders() {
 			return this.loanData?.pfpMinLenders ?? 0;
