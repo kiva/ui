@@ -5,13 +5,21 @@ import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../mixins/cookie-store-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
 import { mockLoansArray } from '../utils';
+import {
+	borrowerProfileDefinitions,
+	salesforceDefinitionFallback,
+	ANONYMIZED_BORROWER_NAME,
+	anonymizedLoanDescription,
+} from './BorrowerProfile/mockLoanFixtures';
 
 const mockLoans = mockLoansArray(3);
 
 const queryResult = {
 	data: {
+		contentful: borrowerProfileDefinitions,
 		general: {
 			multiMatchingEnabled: { key: 'multiMatchingEnabled', value: 'true' },
+			salesforceSolution: salesforceDefinitionFallback,
 		},
 		lend: {
 			loan: {
@@ -81,6 +89,9 @@ const queryResultPiiAnonymized = {
 			loan: {
 				...mockLoans[0],
 				anonymizationLevel: 'pii',
+				name: ANONYMIZED_BORROWER_NAME,
+				description: anonymizedLoanDescription,
+				descriptionInOriginalLanguage: '',
 			}
 		}
 	}
@@ -95,6 +106,10 @@ const queryResultFullyAnonymized = {
 			loan: {
 				...mockLoans[0],
 				anonymizationLevel: 'full',
+				name: ANONYMIZED_BORROWER_NAME,
+				description: '',
+				descriptionInOriginalLanguage: '',
+				use: '',
 				fullLoanUse: 'For the borrower\'s privacy, this loan has been made anonymous.',
 			}
 		}
