@@ -233,7 +233,7 @@
 							</td>
 							<td class="tw-text-right tw-px-2">
 								<div>
-									{{ loan.lenderRepaymentTerm || '-' }} mos
+									{{ loan.lenderRepaymentTerm || '-' }} months
 								</div>
 							</td>
 							<td class="tw-text-right tw-px-2">

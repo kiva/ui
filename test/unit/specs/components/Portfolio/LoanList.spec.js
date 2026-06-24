@@ -822,18 +822,17 @@ describe('LoanList — matched badge', () => {
 });
 
 describe('LoanList — "Length" cell', () => {
-	it('renders the legacy "mos" abbreviation, not "months"', () => {
+	it('renders the "months" suffix on the repayment term', () => {
 		const page = renderLoanList({ loans: [makeLoan({ lenderRepaymentTerm: 8 })] });
 
-		// Legacy parity (07-my-loans-table-row.mustache:97): "{term} mos", not "months".
-		expect(page.getByText('8 mos')).toBeTruthy();
-		expect(page.queryByText('8 months')).toBeNull();
+		expect(page.getByText('8 months')).toBeTruthy();
+		expect(page.queryByText('8 mos')).toBeNull();
 	});
 
-	it('renders a dash with "mos" when the repayment term is missing', () => {
+	it('renders a dash with "months" when the repayment term is missing', () => {
 		const page = renderLoanList({ loans: [makeLoan({ lenderRepaymentTerm: null })] });
 
-		expect(page.getByText('- mos')).toBeTruthy();
+		expect(page.getByText('- months')).toBeTruthy();
 	});
 });
 
