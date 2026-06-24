@@ -7,7 +7,7 @@
 			<kv-loading-placeholder style="width: 90%;" />
 		</div>
 		<kv-loading-placeholder class="tw-mb-2" style="width: 50%; height: 2.25rem;" />
-		<description-list-loading :lines="4" />
+		<description-list-loading :lines="10" />
 		<!-- Loading placeholder for the more about link -->
 		<div class="tw-flex tw-h-2" :class="condensed ? 'tw-mt-2.5' : 'tw-mt-4'">
 			<kv-loading-placeholder style="width: 200px;" />
@@ -33,6 +33,28 @@
 		</h2>
 		<dl>
 			<description-list-item
+				data-testid="bp-details-trustee-tier"
+				:term="'Tier'"
+				:details="tierFormatted"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-trustee-tier',
+					sfid: '50150000000s2c4',
+					panelName: 'Trustee',
+					linkText: 'Tier'
+				})"
+			/>
+			<description-list-item
+				data-testid="bp-details-trustee-location"
+				:term="'Location'"
+				:details="location"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-trustee-location',
+					sfid: '50150000000s2c9',
+					panelName: 'Trustee',
+					linkText: 'Location'
+				})"
+			/>
+			<description-list-item
 				data-testid="bp-details-trustee-kiva-borrowers"
 				:term="'Kiva borrowers'"
 				:details="numLoansEndorsedPublicFormatted"
@@ -52,6 +74,50 @@
 					sfid: '50150000000s2cO',
 					panelName: 'Trustee',
 					linkText: 'Total loans'
+				})"
+			/>
+			<description-list-item
+				data-testid="bp-details-trustee-fundraising-or-raised"
+				:term="'Fundraising/raised'"
+				:details="numFundraisingLoansFormatted"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-trustee-fundraising-or-raised',
+					sfid: '50150000000s2cT',
+					panelName: 'Trustee',
+					linkText: 'Fundraising/raised'
+				})"
+			/>
+			<description-list-item
+				data-testid="bp-details-trustee-paying-on-time"
+				:term="'Paying on time'"
+				:details="numPayingOnTimeLoansFormatted"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-trustee-paying-on-time',
+					sfid: '50150000000s2cY',
+					panelName: 'Trustee',
+					linkText: 'Paying on time'
+				})"
+			/>
+			<description-list-item
+				data-testid="bp-details-trustee-paying-back-late"
+				:term="'Paying back late'"
+				:details="numPayingBackDelinquentLoansFormatted"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-trustee-paying-back-late',
+					sfid: '50150000000s2cd',
+					panelName: 'Trustee',
+					linkText: 'Paying back late'
+				})"
+			/>
+			<description-list-item
+				data-testid="bp-details-trustee-repaid-in-full"
+				:term="'Repaid in full'"
+				:details="numRepaidInFullLoansFormatted"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-trustee-repaid-in-full',
+					sfid: '50150000000s2ci',
+					panelName: 'Trustee',
+					linkText: 'Repaid in full'
 				})"
 			/>
 			<description-list-item
@@ -121,10 +187,24 @@ const trusteeQuery = gql`query borrowerProfileTrustee($loanId: Int!) {
 				trustee {
 					id
 					organizationName
+					tier
+					contactRecord {
+						city
+						state
+						country {
+							id
+							name
+							isoCode
+						}
+					}
 					stats {
 						id
 						numDefaultedLoans
 						numLoansEndorsedPublic
+						numFundraisingLoans
+						numPayingOnTimeLoans
+						numPayingBackDelinquentLoans
+						numRepaidInFullLoans
 						repaymentRate
 						totalLoansValue
 					}
@@ -164,6 +244,12 @@ export default {
 			totalLoansValue: '0.00',
 			numDefaultedLoans: 0,
 			repaymentRate: 0,
+			tier: '',
+			contactRecord: null,
+			numFundraisingLoans: 0,
+			numPayingOnTimeLoans: 0,
+			numPayingBackDelinquentLoans: 0,
+			numRepaidInFullLoans: 0,
 			trusteeId: 0,
 			loading: true,
 		};
@@ -185,6 +271,12 @@ export default {
 			this.totalLoansValue = trustee?.stats?.totalLoansValue ?? '0.00';
 			this.numDefaultedLoans = trustee?.stats?.numDefaultedLoans ?? 0;
 			this.repaymentRate = trustee?.stats?.repaymentRate ?? 0;
+			this.tier = trustee?.tier ?? '';
+			this.contactRecord = trustee?.contactRecord ?? null;
+			this.numFundraisingLoans = trustee?.stats?.numFundraisingLoans ?? 0;
+			this.numPayingOnTimeLoans = trustee?.stats?.numPayingOnTimeLoans ?? 0;
+			this.numPayingBackDelinquentLoans = trustee?.stats?.numPayingBackDelinquentLoans ?? 0;
+			this.numRepaidInFullLoans = trustee?.stats?.numRepaidInFullLoans ?? 0;
 			this.loading = false;
 		},
 	},
@@ -206,6 +298,33 @@ export default {
 		},
 		numDefaultedLoansFormatted() {
 			return numeral(this.numDefaultedLoans).format('0,0');
+		},
+		tierFormatted() {
+			if (!this.tier || this.tier === 'NO_STATUS') return 'N/A';
+			return this.tier
+				.toLowerCase()
+				.split('_')
+				.map(word => word.charAt(0).toUpperCase() + word.slice(1))
+				.join(' ');
+		},
+		location() {
+			const contact = this.contactRecord;
+			if (!contact) return '';
+			const isUnitedStates = contact.country?.isoCode === 'US';
+			const region = isUnitedStates ? contact.state : contact.country?.name;
+			return [contact.city, region].filter(Boolean).join(', ');
+		},
+		numFundraisingLoansFormatted() {
+			return numeral(this.numFundraisingLoans).format('0,0');
+		},
+		numPayingOnTimeLoansFormatted() {
+			return numeral(this.numPayingOnTimeLoans).format('0,0');
+		},
+		numPayingBackDelinquentLoansFormatted() {
+			return numeral(this.numPayingBackDelinquentLoans).format('0,0');
+		},
+		numRepaidInFullLoansFormatted() {
+			return numeral(this.numRepaidInFullLoans).format('0,0');
 		}
 	},
 };
