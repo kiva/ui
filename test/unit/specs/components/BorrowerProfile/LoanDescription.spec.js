@@ -4,9 +4,9 @@ import LoanDescription from '#src/components/BorrowerProfile/LoanDescription';
 import { globalOptions } from '../../../specUtils';
 
 const groupBorrowers = [
-	{ id: 1, firstName: 'Aisha' },
-	{ id: 2, firstName: 'Fatima' },
-	{ id: 3, firstName: 'Nadia' },
+	{ id: 1, firstName: 'Wanda' },
+	{ id: 2, firstName: 'Lucy' },
+	{ id: 3, firstName: 'Rita' },
 ];
 
 const BORROWER_LIST = '[data-testid="bp-story-borrower-list"]';
@@ -16,10 +16,10 @@ function mountLoanDescription(props) {
 		global: { ...globalOptions },
 		props: {
 			loanId: 2000015,
-			borrowerOrGroupName: 'Aisha\'s Group',
+			borrowerOrGroupName: 'Sample Group',
 			borrowerCount: 3,
 			borrowers: groupBorrowers,
-			storyDescription: 'A group of farmers working together to grow their businesses.',
+			storyDescription: 'Wanda runs a small market stall and would like a loan to buy more inventory.',
 			...props,
 		},
 	});
@@ -31,7 +31,7 @@ describe('LoanDescription', () => {
 
 		const list = wrapper.find(BORROWER_LIST);
 		expect(list.exists()).toBe(true);
-		expect(list.text()).toBe('In this group: Aisha, Fatima, Nadia');
+		expect(list.text()).toBe('In this group: Wanda, Lucy, Rita');
 	});
 
 	// Both levels scrub borrower names, so the member list is meaningless and hidden (AD-271).

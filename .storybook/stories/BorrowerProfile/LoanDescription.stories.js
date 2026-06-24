@@ -8,15 +8,16 @@ export default {
 const baseArgs = {
 	loanId: 2413188,
 	anonymizationLevel: '',
-	borrowerOrGroupName: 'Maria',
+	borrowerOrGroupName: 'Wanda',
 	borrowerCount: 1,
 	borrowers: [],
-	storyDescription: 'Maria is a hardworking farmer who is requesting a loan to buy seeds and fertilizer.',
-	descriptionInOriginalLanguage: 'María es una agricultora trabajadora que solicita un préstamo'
-		+ ' para comprar semillas y fertilizante.',
+	storyDescription: 'Wanda runs a small market stall and would like a loan to buy more inventory. '
+		+ '(Placeholder text for layout testing.)',
+	descriptionInOriginalLanguage: 'Wanda tiene un pequeño puesto en el mercado y desea un préstamo '
+		+ 'para comprar más inventario. (Texto de ejemplo.)',
 	originalLanguage: { id: '2', name: 'Spanish' },
-	partnerName: 'Kiva Field Partner',
-	reviewer: { bylineName: 'Jane Volunteer', showName: true },
+	partnerName: 'AFODENIC',
+	reviewer: { bylineName: 'Rita Rocket', showName: true },
 	previousLoanId: 0,
 };
 
@@ -36,12 +37,12 @@ export const PiiAnonymized = () => ({
 });
 
 const groupArgs = {
-	borrowerOrGroupName: 'Aisha\'s Group',
+	borrowerOrGroupName: 'Sample Group',
 	borrowerCount: 3,
 	borrowers: [
-		{ id: 1, firstName: 'Aisha' },
-		{ id: 2, firstName: 'Fatima' },
-		{ id: 3, firstName: 'Nadia' },
+		{ id: 1, firstName: 'Wanda' },
+		{ id: 2, firstName: 'Lucy' },
+		{ id: 3, firstName: 'Rita' },
 	],
 };
 
