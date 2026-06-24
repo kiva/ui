@@ -15,9 +15,17 @@
 					</h1>
 					<loans-first-loan-cta v-if="showFirstLoanCta" />
 					<div v-else class="tw-mb-2">
-						<p v-if="lastUpdated" class="tw-text-right tw-text-tertiary tw-text-small">
-							*Updated as of {{ lastUpdated }}
-						</p>
+						<div
+							class="tw-flex tw-justify-end tw-text-tertiary tw-text-small tw-mb-1"
+							style="min-height: 1.3rem;"
+						>
+							<span v-if="lastUpdated">*Updated as of {{ lastUpdated }}</span>
+							<kv-loading-placeholder
+								v-else-if="!statsLoaded"
+								class="tw-self-center"
+								style="width: 11rem; height: 0.875rem;"
+							/>
+						</div>
 						<loan-stats-table @updated-as-of="handleUpdatedAsOf" />
 					</div>
 				</div>
@@ -65,7 +73,9 @@
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
-import { KvPageContainer, KvGrid, KvPagination } from '@kiva/kv-components';
+import {
+	KvPageContainer, KvGrid, KvPagination, KvLoadingPlaceholder
+} from '@kiva/kv-components';
 
 import logFormatter from '#src/util/logFormatter';
 import LoanStatsTable from '#src/components/Portfolio/LoanStatsTable';
@@ -89,6 +99,7 @@ export default {
 		KvGrid,
 		KvPageContainer,
 		KvPagination,
+		KvLoadingPlaceholder,
 		LoanStatsTable,
 		LoanFilterBar,
 		LoanList,
@@ -97,6 +108,10 @@ export default {
 	data() {
 		return {
 			lastUpdated: '',
+			// Set once the stats table has reported its updated-as-of (with or without a value), so
+			// the "Updated as of" line shows a loading placeholder only while stats are in flight
+			// rather than lingering when there is legitimately no timestamp.
+			statsLoaded: false,
 			loans: [],
 			lendingTeams: [],
 			reassigningLoanIds: [],
@@ -232,6 +247,7 @@ export default {
 			return this.fetchLoans({ clearLoans: true });
 		},
 		handleUpdatedAsOf(iso) {
+			this.statsLoaded = true;
 			if (!iso) {
 				this.lastUpdated = '';
 				return;
