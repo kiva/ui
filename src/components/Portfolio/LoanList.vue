@@ -244,7 +244,7 @@
 									</div>
 								</template>
 							</td>
-							<td class="tw-text-right tw-px-2">
+							<td class="tw-text-left tw-px-2">
 								<div>
 									{{ loan.lenderRepaymentTerm || '-' }} months
 								</div>
