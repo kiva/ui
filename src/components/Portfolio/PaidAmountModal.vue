@@ -92,3 +92,28 @@ function formatDate(iso) {
 	});
 }
 </script>
+
+<style lang="postcss" scoped>
+/*
+ * On mobile, KvLightbox's bottom sheet only fades opacity while its layout settles, so a brief
+ * full-height frame is visible on open. Slide the sheet up from below instead: it starts
+ * off-screen and animates into its settled position, so the unsettled frame happens off-screen.
+ * The animation re-runs each time the dialog flips from display:none to visible (KvLightbox uses
+ * v-show), and the deep selector targets the dialog (.tw-min-h-half-screen is its mobile class).
+ */
+@media (width < 768px) {
+	:deep(.tw-min-h-half-screen) {
+		animation: paid-amount-sheet-up 0.15s ease-out;
+	}
+}
+
+@keyframes paid-amount-sheet-up {
+	from {
+		transform: translateY(100%);
+	}
+
+	to {
+		transform: translateY(0);
+	}
+}
+</style>
