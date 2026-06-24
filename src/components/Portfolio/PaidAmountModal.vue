@@ -1,22 +1,29 @@
 <template>
 	<div>
-		<span
+		<a
 			class="tw-text-link tw-cursor-pointer"
+			role="button"
 			@click="showModal = true"
+			@keydown.enter="showModal = true"
 		>
 			${{ formattedAmount }}
-		</span>
+		</a>
 
 		<kv-lightbox
 			:visible="showModal"
 			@lightbox-closed="showModal = false"
 			title="Payment history"
 		>
+			<template #header>
+				<h2 class="tw-text-headline tw-flex-1 tw-text-left">
+					Payment history
+				</h2>
+			</template>
 			<div class="tw-text-left">
 				<p v-if="!paymentHistory?.length">
 					This loan has no repayments
 				</p>
-				<div v-else class="tw-grid tw-grid-cols-2">
+				<div v-else class="tw-grid tw-grid-cols-2 tw-gap-x-6 tw-gap-y-1">
 					<div v-for="(payment, index) in sortedHistory" :key="index" class="tw-contents">
 						<span>{{ formatDate(payment.createTime) }}:</span>
 						<span>
