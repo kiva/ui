@@ -29,27 +29,28 @@
 				/>
 			</div>
 			<div class="tw-flex-auto">
-				<borrower-name
-					data-testid="bp-summary-borrower-name"
-					class="tw-mb-0.5"
-					:name="name"
-				/>
-				<button
-					v-if="anonymizationLevel === 'pii'"
-					type="button"
-					class="tw-align-super tw-ml-0.5"
-					data-testid="bp-summary-pii-info"
-					aria-label="Why is this borrower anonymous?"
-					@click="showDefinition({ cid: 'bp-def-anonymized-loan', sfid: '501US00000NRTYa' })"
-					v-kv-track-event="[
-						'Borrower profile',
-						'click-PII-anonymization-info',
-						'PII anonymization',
-						loanId
-					]"
-				>
-					<kv-material-icon :icon="mdiInformationOutline" class="tw-w-3 tw-h-3 tw-text-secondary" />
-				</button>
+				<div class="tw-flex tw-items-start tw-mb-0.5">
+					<borrower-name
+						data-testid="bp-summary-borrower-name"
+						:name="name"
+					/>
+					<button
+						v-if="anonymizationLevel === 'pii'"
+						type="button"
+						class="tw-ml-0.5 tw-shrink-0"
+						data-testid="bp-summary-pii-info"
+						aria-label="Why is this borrower anonymous?"
+						@click="showDefinition({ cid: 'bp-def-anonymized-loan', sfid: '501US00000NRTYa' })"
+						v-kv-track-event="[
+							'Borrower profile',
+							'click-PII-anonymization-info',
+							'PII anonymization',
+							loanId
+						]"
+					>
+						<kv-material-icon :icon="mdiInformationOutline" class="tw-w-3 tw-h-3 tw-text-secondary" />
+					</button>
+				</div>
 				<template v-if="isLoading">
 					<div class="tw-flex tw-flex-wrap tw-mb-3">
 						<kv-loading-placeholder class="tw-mb-1" style="height: 0.5rem;" />
