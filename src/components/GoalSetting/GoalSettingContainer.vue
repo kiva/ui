@@ -116,6 +116,7 @@
 						<KvButton
 							class="tw-flex-none tw-mx-auto tw-w-full lg:tw-w-auto"
 							style="min-width: 324px;"
+							:disabled="isSubmitting"
 							@click="handleClick"
 						>
 							{{ ctaCopy }}
@@ -288,6 +289,7 @@ const ctaHref = ref('');
 const categoryFormKey = ref(0);
 const isEditing = ref(false);
 const formStep = ref(1);
+const isSubmitting = ref(false);
 const isDeleteGoalModalVisible = ref(false);
 const userIsEditingGoal = ref(false);
 const isDeleting = ref(false);
@@ -448,6 +450,7 @@ const updateGoal = async preferences => {
 
 const setGoal = async preferences => {
 	loading.value = true;
+	isSubmitting.value = true;
 	try {
 		await storeGoalPreferences(preferences);
 		await recalculateGoalInformation();
@@ -458,6 +461,7 @@ const setGoal = async preferences => {
 		$showTipMsg('There was a problem setting up this goal', 'error');
 	} finally {
 		loading.value = false;
+		isSubmitting.value = false;
 	}
 };
 
@@ -482,6 +486,7 @@ const handleClick = () => {
 
 		return;
 	}
+	if (isSubmitting.value) return;
 	const categorySelected = selectedCategory.value?.badgeId;
 
 	const currentYear = new Date().getFullYear();
