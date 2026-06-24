@@ -83,24 +83,48 @@
 				data-testid="bp-field-partner-details-time-on-kiva"
 				:term="'Time on Kiva'"
 				:details="timeOnKivaFormatted"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-partner-time-on-kiva',
+					sfid: '50150000000RyCJ',
+					panelName: 'Field-Partner',
+					linkText: 'Time on Kiva'
+				})"
 			/>
 			<description-list-item
 				v-if="loansPosted"
 				data-testid="bp-field-partner-details-loans-posted"
 				:term="'Kiva borrowers'"
 				:details="loansPostedFormatted"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-partner-kiva-borrowers',
+					sfid: '50150000000S178',
+					panelName: 'Field-Partner',
+					linkText: 'Kiva borrowers'
+				})"
 			/>
 			<description-list-item
 				v-if="Number(totalAmountRaised) > 0"
 				data-testid="bp-field-partner-details-total-loans"
 				:term="'Total loans'"
 				:details="totalAmountRaisedFormatted"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-partner-total-loans',
+					sfid: '50150000000S17D',
+					panelName: 'Field-Partner',
+					linkText: 'Total loans'
+				})"
 			/>
 			<description-list-item
 				v-if="avgLoanSizePercentPerCapitaIncome"
 				data-testid="bp-field-partner-details-avg-loan-size"
 				:term="'Avg loan size (% per capita)'"
 				:details="avgLoanSizePercentFormatted"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-partner-avg-loan-size',
+					sfid: '50150000000S17m',
+					panelName: 'Field-Partner',
+					linkText: 'Avg loan size (% per capita)'
+				})"
 			/>
 			<div class="tw-flex tw-mb-1.5" data-testid="bp-field-partner-details-partner-risk-rate">
 				<dt class="tw-flex-1 tw-mb-0">
