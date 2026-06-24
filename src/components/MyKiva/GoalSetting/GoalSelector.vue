@@ -238,7 +238,7 @@
 				<KvButton
 					class="tw-w-full tw-mt-1.5"
 					@click="handleContinue"
-					:disabled="isLoadingData || loadingCurrentYear || (isCustomIndex && validCustomAmount !== true)"
+					:disabled="isContinueDisabled"
 				>
 					{{ buttonText }}
 				</KvButton>
@@ -476,6 +476,7 @@ const prevSupportAllCount = ref(0);
 const selectedIdx = ref(1);
 const editGoalFromSettings = ref(false);
 const allowBackToCategorySelection = ref(false);
+const isSubmitting = ref(false);
 const isGoalTileOpened = ref(false);
 const goalTileAccordion = ref(null);
 const customGoalAmount = ref(null);
@@ -520,6 +521,13 @@ const loansThisYear = computed(() => {
 });
 
 const isCustomIndex = computed(() => selectedIdx.value === CUSTOM_LOAN_NUMBER_INDEX);
+
+const isContinueDisabled = computed(() => (
+	props.isLoadingData
+	|| props.loadingCurrentYear
+	|| isSubmitting.value
+	|| (isCustomIndex.value && validCustomAmount.value !== true)
+));
 
 /**
  * Fetch current year loan count when not provided via props.
@@ -671,6 +679,10 @@ const handleSuccessContinue = () => {
 };
 
 const handleContinue = () => {
+	if (!props.isUpdatingGoal) {
+		if (isSubmitting.value) return;
+		isSubmitting.value = true;
+	}
 	const currentYear = new Date().getFullYear();
 	const goalName = `goal-${props.selectedCategoryId}-${currentYear}`;
 	const target = selectedTarget.value;
