@@ -104,7 +104,7 @@ describe('Portfolio GoalEntrypoint', () => {
 
 		await flushPromises();
 
-		expect(wrapper.text()).toContain('Last year, you helped 2 women shape their futures!');
+		expect(wrapper.text()).toContain('Last year, you helped 2 women shape their futures');
 		expect(wrapper.text()).toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
 		expect(wrapper.text()).toContain(goalCopy.BUTTON_SET_GOAL);
 		expect(wrapper.text()).not.toContain(goalCopy.CARD_NO_GOAL_YET_EXPERIMENT);

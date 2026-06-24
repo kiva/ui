@@ -90,7 +90,7 @@ describe('NextYearGoalCard', () => {
 			},
 		});
 
-		expect(wrapper.text()).toContain('Last year, you helped 2 women shape their futures!');
+		expect(wrapper.text()).toContain('Last year, you helped 2 women shape their futures');
 		expect(wrapper.text()).not.toContain("You haven't set your goal yet!");
 	});
 
@@ -106,7 +106,7 @@ describe('NextYearGoalCard', () => {
 			},
 		});
 
-		expect(wrapper.text()).toContain('Last year, you helped 30 women shape their futures!');
+		expect(wrapper.text()).toContain('Last year, you helped 30 women shape their futures');
 		expect(wrapper.text()).toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
 		expect(wrapper.text()).not.toContain(goalCopy.CARD_HABIT_PROMPT_SINGLE_LINE);
 	});
