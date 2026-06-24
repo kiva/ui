@@ -376,6 +376,7 @@ import {
 	isLessThan25,
 	isBetween25And500,
 	getLendCtaSelectedOption,
+	isActivelyInPfp,
 }	from '#src/util/loanUtils';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import { createIntersectionObserver } from '#src/util/observerUtils';
@@ -573,7 +574,7 @@ export default {
 			slotMachineInterval: null,
 			currentSlotStat: '',
 			matchingHighlightExpShown: false,
-			inPfp: loan?.inPfp ?? false,
+			inPfp: isActivelyInPfp(loan),
 			userBalance: undefined,
 			loan: hasData ? loan : null,
 			basketSize: 0,
@@ -596,7 +597,7 @@ export default {
 				this.status = loan?.status ?? '';
 				this.minNoteSize = loan?.minNoteSize ?? '';
 				this.name = loan?.name ?? '';
-				this.inPfp = loan?.inPfp ?? false;
+				this.inPfp = isActivelyInPfp(loan);
 				this.numLenders = loan?.lenders?.totalCount ?? 0;
 				this.fundedAmount = loan?.loanFundraisingInfo?.fundedAmount ?? '';
 				this.reservedAmount = loan?.loanFundraisingInfo?.reservedAmount ?? '';

@@ -33,6 +33,18 @@ export function isLoanFundraising(loan) {
 }
 
 /**
+ * Returns true only while a loan is in an active Private Funding Phase — the
+ * in_pfp flag is set and the loan is still fundraising. A loan posted via PFP
+ * that has since expired or otherwise ended returns false.
+ *
+ * @param {object} loan from LoanBasic
+ * @returns {boolean}
+ */
+export function isActivelyInPfp(loan) {
+	return loan?.inPfp === true && loan?.status === 'fundraising';
+}
+
+/**
  * Returns the why special string for the loan if it is defined
  *
  * @param {string} whySpecial from LoanBasic.whySpecial

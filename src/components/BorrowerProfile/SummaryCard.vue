@@ -115,6 +115,7 @@ import { gql } from 'graphql-tag';
 import { mdiMapMarker } from '@mdi/js';
 import HeartComment from '#src/assets/icons/inline/heart-comment.svg';
 import { KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
+import { isActivelyInPfp } from '#src/util/loanUtils';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
 import LoanProgress from './LoanProgress';
@@ -173,6 +174,7 @@ const mountQuery = gql`
 		lend {
 			loan(id: $loanId) {
 				id
+				status
 				activity {
 					id
 					name
@@ -250,7 +252,7 @@ export default {
 			distributionModel: this.loan?.distributionModel ?? '',
 			city: this.loan?.geocode?.city ?? '',
 			state: this.loan?.geocode?.state ?? '',
-			inPfp: this.loan?.inPfp ?? false,
+			inPfp: isActivelyInPfp(this.loan),
 			pfpMinLenders: this.loan?.pfpMinLenders ?? 0,
 			numLenders: this.loan?.lenders?.totalCount ?? 0,
 			totalComments: this.loan?.comments?.totalCount ?? 0,
@@ -301,7 +303,7 @@ export default {
 		result({ data }) {
 			const loan = data?.lend?.loan;
 			this.$kvTrackEvent('Borrower profile', 'borrower profile status', loan?.status);
-			this.inPfp = loan?.inPfp ?? false;
+			this.inPfp = isActivelyInPfp(loan);
 			this.pfpMinLenders = loan?.pfpMinLenders ?? 0;
 			this.numLenders = loan?.lenders?.totalCount ?? 0;
 			this.activityName = loan?.activity?.name ?? '';
