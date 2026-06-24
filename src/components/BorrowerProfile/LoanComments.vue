@@ -53,6 +53,17 @@
 			You must be a lender to comment on this loan.
 		</p>
 
+		<!-- Conversation guidelines -->
+		<p class="tw-mb-3">
+			<button
+				class="tw-text-action tw-underline"
+				data-testid="bp-comment-guidelines-link"
+				@click="showGuidelines"
+			>
+				Kiva conversation guidelines
+			</button>
+		</p>
+
 		<!-- Comment list -->
 		<ul v-if="visibleComments.length" class="tw-list-none tw-p-0 tw-m-0">
 			<li
@@ -157,6 +168,8 @@
 			@close="isReportLightboxVisible = false"
 			@reported="onCommentReported"
 		/>
+
+		<details-definitions-lightbox ref="definitions" />
 	</section>
 </template>
 
@@ -165,6 +178,7 @@ import { gql } from 'graphql-tag';
 import { format, parseISO } from 'date-fns';
 import { KvButton, KvLightbox } from '@kiva/kv-components';
 import CommentReportLightbox from '#src/components/BorrowerProfile/CommentReportLightbox';
+import DetailsDefinitionsLightbox from '#src/components/BorrowerProfile/DetailsDefinitionsLightbox';
 import addCommentMutation from '#src/graphql/mutation/loanAddComment.graphql';
 import logFormatter from '#src/util/logFormatter';
 
@@ -218,6 +232,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		CommentReportLightbox,
+		DetailsDefinitionsLightbox,
 		KvButton,
 		KvLightbox,
 	},
@@ -307,6 +322,14 @@ export default {
 		formatDate(dateStr) {
 			if (!dateStr) return '';
 			return format(parseISO(dateStr), 'MMMM d, yyyy');
+		},
+		showGuidelines() {
+			this.$refs.definitions.showDefinition({
+				cid: 'bp-def-conversation-guidelines',
+				sfid: '50150000000SmZE',
+				panelName: 'Comments',
+				linkText: 'Kiva conversation guidelines',
+			});
 		},
 		async submitComment() {
 			if (!this.newCommentText.trim()) return;
