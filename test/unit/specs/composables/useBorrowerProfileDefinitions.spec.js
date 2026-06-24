@@ -146,6 +146,49 @@ describe('useBorrowerProfileDefinitions', () => {
 			expect(mockApollo.query).toHaveBeenCalledTimes(1);
 		});
 
+		it('falls back to Salesforce when the Contentful query rejects', async () => {
+			const mockApollo = {
+				query: vi.fn()
+					.mockRejectedValueOnce(new Error('Contentful unavailable'))
+					.mockResolvedValueOnce({
+						data: { general: { salesforceSolution: { name: 'SF Title', note: 'SF content' } } },
+					}),
+			};
+			const composable = useBorrowerProfileDefinitions(mockApollo);
+
+			const result = await composable.resolveDefinition({
+				cid: 'bp-def-loan-length',
+				sfid: '50150000000SXVz',
+			});
+
+			// Contentful failure must not short-circuit the Salesforce fallback
+			expect(result).toEqual({ title: 'SF Title', content: 'SF content' });
+			expect(mockApollo.query).toHaveBeenCalledTimes(2);
+		});
+
+		it('retries the Contentful load after an earlier rejection instead of caching it', async () => {
+			const mockApollo = {
+				query: vi.fn()
+					.mockRejectedValueOnce(new Error('Contentful unavailable'))
+					.mockResolvedValueOnce(
+						makeContentfulResponse([
+							makeRichTextEntry('bp-def-loan-length', 'Loan length', 'Recovered text'),
+						])
+					),
+			};
+			const composable = useBorrowerProfileDefinitions(mockApollo);
+
+			// First call: Contentful rejects and no sfid is given, so it resolves to null
+			const first = await composable.resolveDefinition({ cid: 'bp-def-loan-length' });
+			expect(first).toBeNull();
+
+			// Second call: the rejected promise was not cached, so the load is retried and succeeds
+			const second = await composable.resolveDefinition({ cid: 'bp-def-loan-length' });
+			expect(second.title).toBe('Loan length');
+			expect(second.content).toContain('Recovered text');
+			expect(mockApollo.query).toHaveBeenCalledTimes(2);
+		});
+
 		it('bypasses Contentful and calls Salesforce directly when forceSalesforce is true', async () => {
 			const mockApollo = {
 				query: vi.fn().mockResolvedValueOnce({
