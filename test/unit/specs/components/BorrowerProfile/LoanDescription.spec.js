@@ -10,6 +10,7 @@ const groupBorrowers = [
 ];
 
 const BORROWER_LIST = '[data-testid="bp-story-borrower-list"]';
+const TRANSLATE_INFO = '[data-testid="bp-story-translate-info"]';
 
 function mountLoanDescription(props) {
 	return mount(LoanDescription, {
@@ -41,6 +42,31 @@ describe('LoanDescription', () => {
 			const wrapper = mountLoanDescription({ anonymizationLevel });
 
 			expect(wrapper.find(BORROWER_LIST).exists()).toBe(false);
+		},
+	);
+
+	it('shows the translation note for a non-anonymized non-English partner loan', () => {
+		const wrapper = mountLoanDescription({
+			anonymizationLevel: 'none',
+			partnerName: 'AFODENIC',
+			originalLanguage: { id: '2', name: 'Spanish' },
+		});
+
+		expect(wrapper.find(TRANSLATE_INFO).exists()).toBe(true);
+	});
+
+	// Anonymization scrubs the story, so a "Translated from…" banner would be misleading.
+	// `full` keeps a real partnerName + originalLanguage, so it must be suppressed too — not just `pii`.
+	it.each(['pii', 'full'])(
+		'hides the translation note when a non-English partner loan is %s anonymized',
+		anonymizationLevel => {
+			const wrapper = mountLoanDescription({
+				anonymizationLevel,
+				partnerName: 'AFODENIC',
+				originalLanguage: { id: '2', name: 'Spanish' },
+			});
+
+			expect(wrapper.find(TRANSLATE_INFO).exists()).toBe(false);
 		},
 	);
 });
