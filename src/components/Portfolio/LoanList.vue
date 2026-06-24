@@ -191,7 +191,7 @@
 								<div>
 									<div class="tw-mb-1">
 										{{ $filters.numeral(
-											loan.userProperties.loanBalance.amountPurchasedByLender,
+											loan.userProperties.loanBalance.totalAmountPurchased,
 											'$0,0.00'
 										) }}
 									</div>

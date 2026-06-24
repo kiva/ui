@@ -106,7 +106,7 @@ describe('LoanStatsTable', () => {
 		const { formatValue } = LoanStatsTable.methods;
 
 		it('formats currency, percentage, and currency-loss rate values', () => {
-			expect(formatValue(1234.5, 'currency')).toBe('$1234.50');
+			expect(formatValue(1234.5, 'currency')).toBe('$1,234.50');
 			expect(formatValue(0.0123, 'percentage')).toBe('1.23%');
 			expect(formatValue(1.5, 'currencyLossRate')).toBe('1.50%');
 		});
@@ -262,8 +262,8 @@ describe('LoanStatsTable', () => {
 			vm.$options.apollo.result.call(vm, { data: fullData() });
 			await nextTick();
 
-			expect(statsRow(container, 'Amount lent')).toEqual(['Amount lent', '$1000.00', '$1500.00']);
-			expect(statsRow(container, 'Amount repaid')).toEqual(['Amount repaid', '$800.00', '$1200.00']);
+			expect(statsRow(container, 'Amount lent')).toEqual(['Amount lent', '$1,000.00', '$1,500.00']);
+			expect(statsRow(container, 'Amount repaid')).toEqual(['Amount repaid', '$800.00', '$1,200.00']);
 			expect(statsRow(container, 'Amount lost')).toEqual(['Amount lost', '$62.50', '$60.00']);
 			expect(statsRow(container, 'Amount refunded')).toEqual(['Amount refunded', '$25.00', '$30.00']);
 			expect(statsRow(container, 'Delinquency rate')).toEqual(['Delinquency rate', '1.23%', '2.00%']);
@@ -363,10 +363,10 @@ describe('LoanStatsTable', () => {
 			vm.$options.apollo.result.call(vm, { data: formatted() });
 			await nextTick();
 
-			expect(statsRow(container, 'Amount lent')[1]).toBe('$12500.00');
-			expect(statsRow(container, 'Amount repaid')[1]).toBe('$9800.50');
-			expect(statsRow(container, 'Amount ended')[1]).toBe('$9250.00');
-			expect(statsRow(container, 'Amount lent')[2]).toBe('$1500.00');
+			expect(statsRow(container, 'Amount lent')[1]).toBe('$12,500.00');
+			expect(statsRow(container, 'Amount repaid')[1]).toBe('$9,800.50');
+			expect(statsRow(container, 'Amount ended')[1]).toBe('$9,250.00');
+			expect(statsRow(container, 'Amount lent')[2]).toBe('$1,500.00');
 		});
 	});
 

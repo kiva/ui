@@ -78,6 +78,7 @@ query myLoans(
 						dedicationUrl
 					}
 					loanBalance {
+						totalAmountPurchased
 						amountPurchasedByLender
 						amountPurchasedByPromo
 						promoTypeLabel

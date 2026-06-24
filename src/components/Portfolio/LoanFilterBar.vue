@@ -92,7 +92,7 @@
 				<span class="tw-ml-auto tw-text-subhead" data-testid="loans-count">{{ loanCountLabel }}</span>
 			</div>
 		</div>
-		<div class="tw-flex tw-items-center tw-gap-2 tw-mt-1 lg:tw-mt-0">
+		<div class="tw-flex tw-items-center tw-gap-2 tw-mt-1">
 			<button
 				v-if="hasActiveFilters"
 				type="button"
@@ -257,7 +257,10 @@ const hasActiveFilters = computed(() => (
 	selectedStatus.value !== ALL_FILTERS_VALUE
 	|| selectedCountry.value !== ALL_FILTERS_VALUE
 	|| selectedPartner.value !== ALL_FILTERS_VALUE
-	|| normalizeKeywordSearch(searchText.value) !== null
+	// Gate on the APPLIED keyword search, not the draft input — the status/location/partner
+	// selects apply on change, but search is a draft until Enter/blur, so typing alone must
+	// not surface "Clear filters" before the search is actually applied.
+	|| appliedKeywordSearch() !== null
 ));
 
 function clearAllFilters() {
