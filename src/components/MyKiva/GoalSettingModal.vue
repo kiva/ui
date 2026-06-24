@@ -277,7 +277,7 @@
 				>
 					Back
 				</KvButton>
-				<KvButton @click="handleClick">
+				<KvButton :disabled="isSubmitting" @click="handleClick">
 					{{ ctaCopy }}
 				</KvButton>
 			</div>
@@ -450,6 +450,7 @@ const {
 
 const formStep = ref(1);
 const showCategories = ref(false);
+const isSubmitting = ref(false);
 const selectedLoanNumber = ref(0);
 const isEditing = ref(props.controlledIsEditing);
 // eslint-disable-next-line max-len
@@ -611,6 +612,11 @@ const handleClick = () => {
 		formStep.value = 1;
 		emit('update-goal-choices', selectedCategory.value);
 	} else {
+		// Guard against the same click emitting twice
+		// since each emit triggers a goal write.
+		if (isSubmitting.value) return;
+		isSubmitting.value = true;
+
 		const categorySelected = selectedCategory.value?.badgeId;
 		$kvTrackEvent(
 			props.isThanksPage ? 'post-checkout' : 'portfolio',
@@ -641,6 +647,7 @@ const resetForm = () => {
 	// Reset selected category to default (women's equality)
 	selectedCategory.value = { ...categories[0] };
 	showCategories.value = false;
+	isSubmitting.value = false;
 	resetRecommendedLoanState();
 };
 
