@@ -1,29 +1,29 @@
 <template>
-	<div class="tw-mt-4">
+	<div class="tw-mt-2">
 		<div class="tw-relative">
 			<div class="tw-overflow-x-auto tw-min-w-full">
-				<table class="tw-w-full">
+				<table class="tw-w-full tw-border-collapse tw-text-small lg:tw-text-base">
 					<thead>
-						<tr class="tw-border-y tw-border-tertiary">
-							<th class="tw-text-left tw-font-medium tw-px-2 tw-py-1">
+						<tr class="tw-bg-brand">
+							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
 								Loan details
 							</th>
-							<th class="tw-text-left tw-font-medium tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
 								Status
 							</th>
-							<th class="tw-text-right tw-font-medium tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
 								You loaned
 							</th>
-							<th class="tw-text-right tw-font-medium tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
 								Paid back or raised
 							</th>
-							<th class="tw-text-right tw-font-medium tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
 								Length
 							</th>
-							<th class="tw-text-right tw-font-medium tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
 								Amount
 							</th>
-							<th class="tw-text-left tw-font-medium tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
 								Team
 							</th>
 						</tr>
@@ -31,16 +31,29 @@
 					<tbody>
 						<tr v-if="loading">
 							<td colspan="7" class="tw-px-2 tw-py-4">
-								<div v-for="i in 3" :key="i" class="tw-grid tw-grid-cols-12 tw-gap-4 tw-mb-4">
-									<kv-loading-placeholder
-										v-for="(placeholder, index) in placeholders"
-										:key="index"
-										:class="[
-											`tw-col-span-${placeholder.span}`,
-											placeholder.marginLeft && 'tw-ml-auto'
-										]"
-										style="height: 50px;"
-									/>
+								<div
+									v-for="i in skeletonRowCount"
+									:key="i"
+									class="tw-grid tw-grid-cols-12 tw-gap-4 tw-mb-4 tw-items-start"
+								>
+									<div class="tw-col-span-4 tw-flex tw-items-start">
+										<kv-loading-placeholder
+											class="tw-mr-2 tw-shrink-0"
+											style="width: 3.125rem; height: 3.125rem;"
+										/>
+										<div class="tw-flex-1">
+											<kv-loading-placeholder class="tw-mb-1" style="height: 1rem;" />
+											<kv-loading-placeholder class="tw-mb-1" style="height: 0.875rem;" />
+											<kv-loading-placeholder class="tw-mb-1" style="height: 0.875rem;" />
+											<kv-loading-placeholder style="height: 0.875rem;" />
+										</div>
+									</div>
+									<kv-loading-placeholder class="tw-col-span-1" style="height: 0.875rem;" />
+									<kv-loading-placeholder class="tw-col-span-1" style="height: 0.875rem;" />
+									<kv-loading-placeholder class="tw-col-span-2" style="height: 0.875rem;" />
+									<kv-loading-placeholder class="tw-col-span-1" style="height: 0.875rem;" />
+									<kv-loading-placeholder class="tw-col-span-1" style="height: 0.875rem;" />
+									<kv-loading-placeholder class="tw-col-span-2" style="height: 0.875rem;" />
 								</div>
 							</td>
 						</tr>
@@ -66,9 +79,9 @@
 							v-for="(loan, index) in loans"
 							:key="loan.id"
 							class="tw-border-b tw-border-tertiary"
-							:class="{ 'tw-bg-gray-50': index % 2 === 1 }"
+							:class="{ 'tw-bg-secondary': index % 2 === 1 }"
 						>
-							<td class="tw-px-2 tw-py-2">
+							<td class="loan-details-cell tw-break-words tw-px-2 tw-py-2">
 								<div class="tw-flex tw-items-start">
 									<div class="tw-mr-2 tw-shrink-0 tw-text-center">
 										<img
@@ -98,10 +111,10 @@
 												</div>
 											</a>
 										</div>
-										<div class="tw-text-secondary">
+										<div>
 											{{ loan.activity?.name || '-' }}
 										</div>
-										<div class="tw-flex tw-items-center tw-text-secondary">
+										<div class="tw-flex tw-items-center">
 											<div class="tw-w-2 tw-h-2 tw-mr-1">
 												<kv-flag
 													v-if="loan.geocode?.country?.isoCode"
@@ -111,7 +124,7 @@
 											</div>
 											{{ loan.geocode?.country?.name || '-' }}
 										</div>
-										<div class="tw-text-secondary" v-if="loan.trusteeName">
+										<div v-if="loan.trusteeName">
 											<a
 												:href="getTrusteeUrl(loan.trusteeId)"
 												target="_blank"
@@ -120,7 +133,7 @@
 												{{ loan.trusteeName }}
 											</a>
 										</div>
-										<div class="tw-text-secondary" v-else-if="loan.partnerName">
+										<div v-else-if="loan.partnerName">
 											<a
 												:href="getPartnerUrl(loan.partnerId)"
 												target="_blank"
@@ -171,7 +184,7 @@
 								</div>
 							</td>
 							<td class="tw-px-2">
-								<div class="tw-text-secondary">
+								<div>
 									{{ getStatusLabel(loan) }}
 								</div>
 							</td>
@@ -185,7 +198,7 @@
 									</div>
 									<div
 										v-if="loan.userProperties?.loanBalance?.latestSharePurchaseTime"
-										class="tw-mb-1 tw-text-secondary"
+										class="tw-mb-1 tw-text-secondary tw-text-small"
 									>
 										{{ formatDate(loan.userProperties.loanBalance.latestSharePurchaseTime) }}
 									</div>
@@ -204,7 +217,8 @@
 							</td>
 							<td class="tw-text-right tw-px-2">
 								<div v-if="isRaisedOrFundraising(loan.status)">
-									{{ $filters.numeral(loan.loanFundraisingInfo?.fundedAmount, '$0,0.00') }} raised
+									{{ $filters.numeral(loan.loanFundraisingInfo?.fundedAmount, '$0,0.00') }}
+									<span class="tw-text-secondary tw-text-small">raised</span>
 								</div>
 								<template v-else>
 									<paid-amount-modal
@@ -249,7 +263,7 @@
 									</div>
 								</div>
 							</td>
-							<td class="team-cell tw-whitespace-normal tw-break-words tw-px-2">
+							<td class="team-cell tw-whitespace-normal tw-break-words tw-pl-2 tw-pr-4">
 								<div class="tw-items-center">
 									<!-- Legacy parity: eligible loans show an inline team dropdown
 										directly in the cell using the shared KvSelect. The control is
@@ -298,7 +312,8 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="scroll-gradient"></div>
+			<div class="scroll-gradient scroll-gradient--left lg:tw-hidden"></div>
+			<div class="scroll-gradient scroll-gradient--right lg:tw-hidden"></div>
 		</div>
 	</div>
 </template>
@@ -482,15 +497,10 @@ export default {
 	data() {
 		return {
 			mdiHeart,
-			placeholders: [
-				{ span: 4 },
-				{ span: 1 },
-				{ span: 1, marginLeft: true },
-				{ span: 2, marginLeft: true },
-				{ span: 1, marginLeft: true },
-				{ span: 1, marginLeft: true },
-				{ span: 2 }
-			]
+			// Number of skeleton rows shown while loading. Each row mirrors a real row's
+			// height (image + stacked detail lines) so the table reserves representative
+			// space and the swap to loaded content doesn't jump.
+			skeletonRowCount: 5
 		};
 	}
 };
@@ -498,18 +508,34 @@ export default {
 
 <style lang="postcss" scoped>
 .scroll-gradient {
-	@apply tw-pointer-events-none tw-absolute tw-top-0 tw-right-0 tw-h-full;
+	@apply tw-pointer-events-none tw-absolute tw-top-0 tw-bottom-0;
 
-	width: 2rem;
-	background: linear-gradient(to left, #fff, rgb(255 255 255 / 0%));
+	width: 1.5rem;
+}
+
+.scroll-gradient--left {
+	@apply tw-left-0;
+
+	background: linear-gradient(to right, rgb(0 0 0 / 12%), rgb(0 0 0 / 0%));
+}
+
+.scroll-gradient--right {
+	@apply tw-right-0;
+
+	background: linear-gradient(to left, rgb(0 0 0 / 12%), rgb(0 0 0 / 0%));
+}
+
+.loan-details-cell {
+	max-width: 18rem;
 }
 
 .loan-image {
-	width: 50px;
-	height: 50px;
+	width: 3.125rem;
+	height: 3.125rem;
 }
 
 .team-cell {
-	max-width: 150px;
+	min-width: 10rem;
+	max-width: 13rem;
 }
 </style>
