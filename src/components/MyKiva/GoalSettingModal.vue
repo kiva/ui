@@ -646,10 +646,6 @@ const resetForm = () => {
 
 const closeLightbox = () => {
 	emit('close-goal-modal');
-	// Avoid showing category choice step when closing the modal
-	setTimeout(() => {
-		resetForm();
-	}, 300);
 };
 
 const editGoalCategory = () => {
@@ -689,6 +685,7 @@ watch(show, async newVal => {
 	if (!newVal) {
 		return;
 	}
+	resetForm();
 	isLoadingData.value = true;
 	await loadGoalData();
 	const { target, category: goalCategory } = userGoal.value;
