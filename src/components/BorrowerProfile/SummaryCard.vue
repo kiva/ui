@@ -29,15 +29,16 @@
 				/>
 			</div>
 			<div class="tw-flex-auto">
-				<div class="tw-flex tw-items-start tw-mb-0.5">
+				<div class="tw-flex tw-items-center tw-mb-0.5">
 					<borrower-name
 						data-testid="bp-summary-borrower-name"
 						:name="name"
 					/>
-					<button
+					<kv-icon-button
 						v-if="anonymizationLevel === 'pii'"
-						type="button"
-						class="tw-ml-0.5 tw-shrink-0"
+						:icon="mdiInformationOutline"
+						size="small"
+						class="tw-ml-0.5 tw-shrink-0 tw--my-2 tw-text-secondary"
 						data-testid="bp-summary-pii-info"
 						aria-label="Why is this borrower anonymous?"
 						@click="showDefinition({ cid: 'bp-def-anonymized-loan', sfid: '501US00000NRTYa' })"
@@ -47,9 +48,7 @@
 							'PII anonymization',
 							loanId
 						]"
-					>
-						<kv-material-icon :icon="mdiInformationOutline" class="tw-w-3 tw-h-3 tw-text-secondary" />
-					</button>
+					/>
 				</div>
 				<template v-if="isLoading">
 					<div class="tw-flex tw-flex-wrap tw-mb-3">
@@ -93,10 +92,8 @@
 		</div>
 		<p class="tw-flex-none tw-w-full tw-mb-2 tw-text-headline" data-testid="bp-summary-loan-use">
 			{{ use }}
-			<button
+			<kv-text-link
 				v-if="anonymizationLevel === 'full'"
-				type="button"
-				class="tw-text-action hover:tw-text-action-highlight tw-underline"
 				data-testid="bp-summary-anonymous-learn-more"
 				@click="showDefinition({ cid: 'bp-def-anonymous-description', sfid: '50150000000SXVz' })"
 				v-kv-track-event="[
@@ -107,7 +104,7 @@
 				]"
 			>
 				Learn more
-			</button>
+			</kv-text-link>
 		</p>
 		<div class="tw-flex-auto tw-inline-flex tw-w-full">
 			<template v-if="isLoading">
@@ -146,7 +143,9 @@
 import { gql } from 'graphql-tag';
 import { mdiMapMarker, mdiInformationOutline } from '@mdi/js';
 import HeartComment from '#src/assets/icons/inline/heart-comment.svg';
-import { KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
+import {
+	KvIconButton, KvMaterialIcon, KvLoadingPlaceholder, KvTextLink,
+} from '@kiva/kv-components';
 import useBorrowerProfileDefinitions from '#src/composables/useBorrowerProfileDefinitions';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
@@ -232,7 +231,9 @@ export default {
 		BorrowerImage,
 		BorrowerName,
 		ContentLightbox,
+		KvIconButton,
 		KvMaterialIcon,
+		KvTextLink,
 		LoanProgress,
 		SummaryTag,
 		LoanBookmark,
