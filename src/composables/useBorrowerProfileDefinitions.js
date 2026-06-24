@@ -25,6 +25,10 @@ export default function useBorrowerProfileDefinitions(apollo) {
 				const formatted = formatContentGroupsFlat(contentfulData);
 				contentfulDefinitions = formatted.borrowerProfileDefinitions?.contents ?? null;
 			}
+		}).catch(error => {
+			// Don't cache the rejection — let a later call retry the load.
+			loadPromise = null;
+			throw error;
 		});
 		return loadPromise;
 	}
@@ -32,7 +36,11 @@ export default function useBorrowerProfileDefinitions(apollo) {
 	async function resolveDefinition({ cid, sfid, forceSalesforce = false }) {
 		if (!forceSalesforce) {
 			if (contentfulDefinitions === null) {
-				await loadDefinitions();
+				try {
+					await loadDefinitions();
+				} catch {
+					// Contentful failed — fall through to the Salesforce fallback below.
+				}
 			}
 			const entry = contentfulDefinitions?.find(e => e.key === cid);
 			if (entry) {
