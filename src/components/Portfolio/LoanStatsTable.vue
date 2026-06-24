@@ -16,20 +16,17 @@
 			<tr v-for="i in statsRows.length" :key="i">
 				<td>
 					<kv-loading-placeholder
-						class="tw-my-1"
-						style="width: 7.5rem; height: 1.25rem;"
+						class="tw-my-1 !tw-w-15 !tw-h-2.5"
 					/>
 				</td>
 				<td class="tw-text-right tw-my-1">
 					<kv-loading-placeholder
-						class="tw-ml-auto"
-						style="width: 5rem; height: 1.25rem;"
+						class="tw-ml-auto !tw-w-10 !tw-h-2.5"
 					/>
 				</td>
 				<td class="tw-text-right tw-my-1">
 					<kv-loading-placeholder
-						class="tw-ml-auto"
-						style="width: 5rem; height: 1.25rem;"
+						class="tw-ml-auto !tw-w-10 !tw-h-2.5"
 					/>
 				</td>
 			</tr>

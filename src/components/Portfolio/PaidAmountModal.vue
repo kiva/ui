@@ -100,10 +100,16 @@ function formatDate(iso) {
  * off-screen and animates into its settled position, so the unsettled frame happens off-screen.
  * The animation re-runs each time the dialog flips from display:none to visible (KvLightbox uses
  * v-show), and the deep selector targets the dialog (.tw-min-h-half-screen is its mobile class).
+ * KvLightbox switches from the bottom sheet to a centered dialog at the md breakpoint via its
+ * md: utilities, so the slide-up only applies below md and is disabled at md and above.
  */
-@media (width < 768px) {
+:deep(.tw-min-h-half-screen) {
+	animation: paid-amount-sheet-up 0.15s ease-out;
+}
+
+@screen md {
 	:deep(.tw-min-h-half-screen) {
-		animation: paid-amount-sheet-up 0.15s ease-out;
+		animation: none;
 	}
 }
 

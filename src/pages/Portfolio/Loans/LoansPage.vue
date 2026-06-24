@@ -16,8 +16,7 @@
 					<loans-first-loan-cta v-if="showFirstLoanCta" />
 					<div v-else class="tw-mb-2">
 						<div
-							class="tw-flex tw-justify-end tw-text-tertiary tw-text-small tw-mb-1"
-							style="min-height: 1.3rem;"
+							class="tw-flex tw-justify-end tw-text-tertiary tw-text-small tw-mb-1 tw-min-h-2.5"
 						>
 							<span v-if="lastUpdated">*Updated as of {{ lastUpdated }}</span>
 							<kv-loading-placeholder

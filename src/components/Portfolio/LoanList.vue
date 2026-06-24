@@ -38,8 +38,7 @@
 								>
 									<div class="tw-col-span-4 tw-flex tw-items-start">
 										<kv-loading-placeholder
-											class="tw-mr-2 tw-shrink-0"
-											style="width: 3.125rem; height: 3.125rem;"
+											class="tw-mr-2 tw-shrink-0 !tw-w-6.5 !tw-h-6.5"
 										/>
 										<div class="tw-flex-1">
 											<kv-loading-placeholder class="tw-mb-1" style="height: 1rem;" />
