@@ -37,7 +37,7 @@ const mockComments = [
 			teams: ['Kiva Lending Team'],
 			lender: { id: 201, teams: { values: [{ id: 1, name: 'Kiva Lending Team', teamPublicId: 'kiva' }] } },
 		},
-		body: 'This journal is so happy! I am really great to be a part of this loan.',
+		body: 'I second your view.',
 	},
 	{
 		id: 102,
