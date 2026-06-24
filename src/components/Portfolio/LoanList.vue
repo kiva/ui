@@ -372,11 +372,11 @@ export default {
 			return loan.statusLabel || loan.status;
 		},
 		matchedLabel(loan) {
-			// The matched badge shows "Nx matched" when the loan's match ratio is known, otherwise a bare "Matched".
-			// The badge itself stays gated on the viewer-relative wasMatched flag; matchRatio
-			// is the loan-level multiplier the lender's matched share was purchased at.
+			// Show "Nx matched" only when the ratio is greater than 1; a 1:1 match
+			// (ratio 1, or absent) shows a bare "Matched". The badge itself stays gated
+			// on the viewer-relative wasMatched flag.
 			const ratio = loan.matchRatio;
-			return ratio ? `${ratio}x matched` : 'Matched';
+			return ratio > 1 ? `${ratio}x matched` : 'Matched';
 		},
 		getDedication(loan) {
 			// Viewer-relative dedication for this loan (LoanUserProperties.dedication);

@@ -774,6 +774,25 @@ describe('LoanList — matched badge', () => {
 		expect(page.getByTestId('matched-badge').textContent.trim()).toBe('2x matched');
 	});
 
+	it('renders a bare "Matched" when the match ratio is exactly 1 (legacy parity — no "1x matched")', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				matchRatio: 1,
+				userProperties: {
+					wasMatched: true,
+					loanBalance: {
+						amountPurchasedByLender: '25',
+						amountRepaidToLender: '5',
+						latestSharePurchaseTime: '2026-03-15T12:00:00Z',
+					},
+					userAttributedTeam: null,
+				},
+			})],
+		});
+
+		expect(page.getByTestId('matched-badge').textContent.trim()).toBe('Matched');
+	});
+
 	it('falls back to a bare "Matched" when wasMatched is true but the ratio is absent', () => {
 		const page = renderLoanList({
 			loans: [makeLoan({
