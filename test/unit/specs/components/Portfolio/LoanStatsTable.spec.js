@@ -377,18 +377,18 @@ describe('LoanStatsTable', () => {
 		// background (null = default); `tabbed` indents the label under its parent metric.
 		const expected = {
 			'Amount lent': { tabbed: false, bg: null },
-			'Amount repaid': { tabbed: false, bg: 'tw-bg-gray-50' },
+			'Amount repaid': { tabbed: false, bg: 'tw-bg-secondary' },
 			'Amount lost': { tabbed: false, bg: null },
-			'Amount refunded': { tabbed: false, bg: 'tw-bg-gray-50' },
-			'Delinquency rate': { tabbed: false, bg: 'tw-bg-white' },
-			'Amount in arrears': { tabbed: true, bg: 'tw-bg-white' },
-			'Outstanding loans': { tabbed: true, bg: 'tw-bg-white' },
-			'Default rate': { tabbed: false, bg: 'tw-bg-gray-50' },
-			'Amount defaulted': { tabbed: true, bg: 'tw-bg-gray-50' },
-			'Amount ended': { tabbed: true, bg: 'tw-bg-gray-50' },
-			'Currency loss rate': { tabbed: false, bg: 'tw-bg-white' },
-			'Amount of currency loss': { tabbed: true, bg: 'tw-bg-white' },
-			'Currency loss reimbursement': { tabbed: true, bg: 'tw-bg-white' },
+			'Amount refunded': { tabbed: false, bg: 'tw-bg-secondary' },
+			'Delinquency rate': { tabbed: false, bg: 'tw-bg-primary' },
+			'Amount in arrears': { tabbed: true, bg: 'tw-bg-primary' },
+			'Outstanding loans': { tabbed: true, bg: 'tw-bg-primary' },
+			'Default rate': { tabbed: false, bg: 'tw-bg-secondary' },
+			'Amount defaulted': { tabbed: true, bg: 'tw-bg-secondary' },
+			'Amount ended': { tabbed: true, bg: 'tw-bg-secondary' },
+			'Currency loss rate': { tabbed: false, bg: 'tw-bg-primary' },
+			'Amount of currency loss': { tabbed: true, bg: 'tw-bg-primary' },
+			'Currency loss reimbursement': { tabbed: true, bg: 'tw-bg-primary' },
 		};
 
 		const renderRows = async () => {
@@ -407,10 +407,10 @@ describe('LoanStatsTable', () => {
 			Object.entries(expected).forEach(([label, { bg }]) => {
 				const tr = trByLabel(container, label);
 				expect(tr, `row "${label}" should render`).toBeTruthy();
-				expect(tr.classList.contains('tw-bg-white'), `${label} white banding`)
-					.toBe(bg === 'tw-bg-white');
-				expect(tr.classList.contains('tw-bg-gray-50'), `${label} gray banding`)
-					.toBe(bg === 'tw-bg-gray-50');
+				expect(tr.classList.contains('tw-bg-primary'), `${label} white banding`)
+					.toBe(bg === 'tw-bg-primary');
+				expect(tr.classList.contains('tw-bg-secondary'), `${label} gray banding`)
+					.toBe(bg === 'tw-bg-secondary');
 			});
 		});
 
@@ -418,7 +418,7 @@ describe('LoanStatsTable', () => {
 			const container = await renderRows();
 			Object.entries(expected).forEach(([label, { tabbed }]) => {
 				const labelCell = trByLabel(container, label).querySelector('td');
-				expect(labelCell.classList.contains('tw-pl-6'), `${label} indent`).toBe(tabbed);
+				expect(labelCell.classList.contains('tw-pl-3'), `${label} indent`).toBe(tabbed);
 			});
 		});
 	});

@@ -1,35 +1,35 @@
 <template>
-	<table class="tw-w-full">
+	<table class="tw-w-full tw-text-small lg:tw-text-base">
 		<thead>
-			<tr class="tw-bg-gray-200">
-				<th class="tw-flex-1 tw-p-2"></th>
-				<th class="tw-flex-1 tw-text-right tw-font-medium tw-p-2">
+			<tr class="tw-bg-brand">
+				<th class="tw-px-1 lg:tw-px-2 tw-py-1"></th>
+				<th class="tw-text-right tw-font-bold tw-text-white tw-px-1 lg:tw-px-2 tw-py-1">
 					My stats
 				</th>
-				<th class="tw-flex-1 tw-text-right tw-font-medium tw-p-2">
+				<th class="tw-text-right tw-font-bold tw-text-white tw-px-1 lg:tw-px-2 tw-py-1">
 					Avg Kiva lender
 				</th>
 			</tr>
 		</thead>
 
 		<tbody v-if="loading">
-			<tr v-for="i in 5" :key="i">
+			<tr v-for="i in statsRows.length" :key="i">
 				<td>
 					<kv-loading-placeholder
 						class="tw-my-1"
-						style="width: 120px; height: 16px;"
+						style="width: 7.5rem; height: 1.25rem;"
 					/>
 				</td>
 				<td class="tw-text-right tw-my-1">
 					<kv-loading-placeholder
 						class="tw-ml-auto"
-						style="width: 80px; height: 16px;"
+						style="width: 5rem; height: 1.25rem;"
 					/>
 				</td>
 				<td class="tw-text-right tw-my-1">
 					<kv-loading-placeholder
 						class="tw-ml-auto"
-						style="width: 80px; height: 16px;"
+						style="width: 5rem; height: 1.25rem;"
 					/>
 				</td>
 			</tr>
@@ -39,11 +39,10 @@
 			<tr
 				v-for="row in statsRows"
 				:key="row.key"
-				:class="{ 'tw-bg-white': row.showInWhite, 'tw-bg-gray-50': row.showInGray }"
+				:class="{ 'tw-bg-primary': row.showInWhite, 'tw-bg-secondary': row.showInGray }"
 			>
-				<td class="tw-p-1" :class="{ 'tw-pl-6': row.isTabbed }">
-					<span class="tw-inline-flex tw-items-center tw-gap-1">
-						{{ row.label }}
+				<td class="tw-px-1 lg:tw-px-2 tw-py-1" :class="{ 'tw-pl-3 lg:tw-pl-6': row.isTabbed }">
+					<span class="tw-inline-flex tw-items-center tw-gap-0.5">
 						<template v-if="row.salesforceId">
 							<button
 								:id="tooltipTriggerId(row.key)"
@@ -72,16 +71,17 @@
 								<div v-if="solutions[row.key]" v-html="solutions[row.key].note"></div>
 								<kv-loading-placeholder
 									v-else
-									style="width: 160px; height: 14px;"
+									style="width: 10rem; height: 0.875rem;"
 								/>
 							</kv-tooltip>
 						</template>
+						{{ row.label }}
 					</span>
 				</td>
-				<td class="tw-text-right tw-p-1">
+				<td class="tw-text-right tw-px-1 lg:tw-px-2 tw-py-1">
 					{{ formatValue(stats[row.key], row.type) }}
 				</td>
-				<td class="tw-text-right tw-p-1">
+				<td class="tw-text-right tw-px-1 lg:tw-px-2 tw-py-1">
 					{{ formatValue(avgStats[row.key], row.type) }}
 				</td>
 			</tr>
@@ -91,26 +91,20 @@
 	<hr class="tw-border-tertiary tw-my-4">
 
 	<div
-		class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-x-2"
+		class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-x-6 tw-gap-y-1"
 		role="table"
 		aria-label="Loan count statistics"
 	>
 		<div
 			v-for="row in loanCountRows"
 			:key="row.key"
-			class="tw-grid tw-grid-cols-6 tw-gap-0 tw-font-medium"
+			class="tw-flex tw-justify-between tw-gap-x-2 tw-font-medium"
 			role="row"
 		>
-			<div
-				class="tw-col-span-4"
-				role="cell"
-			>
+			<div role="cell">
 				{{ row.label }}
 			</div>
-			<div
-				class="tw-col-span-2 tw-text-right"
-				role="cell"
-			>
+			<div class="tw-text-right" role="cell">
 				{{ loanCounts[row.key] }}
 			</div>
 		</div>
