@@ -94,13 +94,14 @@ const renderLoansPage = ({ apollo = null, router = null } = {}) => {
 						`,
 					},
 					LoanList: {
-						props: ['loans', 'loading', 'lendingTeams', 'reassigningLoanIds', 'reassignNonce'],
+						props: ['loans', 'loading', 'hasError', 'lendingTeams', 'reassigningLoanIds', 'reassignNonce'],
 						emits: ['reassign-team'],
 						template: `
 							<div data-testid="loan-list">
 								loading:{{ loading }} loans:{{ loans.map(loan => loan.id).join(",") }}
 								teams:{{ (lendingTeams || []).map(team => team.name).join(",") }}
 								attributed:{{ loans.map(l => l.userProperties?.userAttributedTeam?.name).join(",") }}
+								error:{{ hasError }}
 								<button
 									type="button"
 									data-testid="reassign"
@@ -201,6 +202,17 @@ describe('LoansPage', () => {
 
 		await waitFor(() => expect(page.getByTestId('loan-list')).toBeTruthy());
 		expect(page.queryByTestId('first-loan-cta')).toBeNull();
+	});
+
+	it('flags the list with an error (and shows no first-loan CTA) when the loans query rejects', async () => {
+		const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+		const query = vi.fn().mockRejectedValue(new Error('boom'));
+		const page = renderLoansPage({ apollo: { query } });
+
+		await waitFor(() => expect(page.getByTestId('loan-list').textContent).toContain('error:true'));
+		// The never-lent signal stays unknown on error, so we never flip to the first-loan CTA.
+		expect(page.queryByTestId('first-loan-cta')).toBeNull();
+		consoleError.mockRestore();
 	});
 
 	it('keeps the no-results page (not the CTA) when filters match zero loans for a lender who has lent', async () => {

@@ -37,10 +37,10 @@ const makeLoan = (overrides = {}) => ({
 });
 
 const renderLoanList = ({
-	loans, loading = false, lendingTeams = [], reassigningLoanIds = [], reassignNonce = {},
+	loans, loading = false, hasError = false, lendingTeams = [], reassigningLoanIds = [], reassignNonce = {},
 } = {}) => render(LoanList, {
 	props: {
-		loans, loading, lendingTeams, reassigningLoanIds, reassignNonce,
+		loans, loading, hasError, lendingTeams, reassigningLoanIds, reassignNonce,
 	},
 	global: {
 		provide: {
@@ -53,6 +53,7 @@ const renderLoanList = ({
 		stubs: {
 			KvFlag: { template: '<span class="kv-flag" />' },
 			KvLoadingPlaceholder: { template: '<div class="kv-loading-placeholder" />' },
+			KvMaterialIcon: { props: ['icon'], template: '<span class="kv-material-icon" />' },
 			PaidAmountModal: {
 				props: ['amount'],
 				// eslint-disable-next-line no-template-curly-in-string
@@ -77,6 +78,88 @@ describe('LoanList — no-results empty state', () => {
 		const page = renderLoanList({ loans: [], loading: true });
 
 		expect(page.queryByTestId('no-loans-message')).toBeNull();
+	});
+});
+
+describe('LoanList — error state', () => {
+	it('shows a distinct error message (not the no-match copy) when hasError is set', () => {
+		const page = renderLoanList({ loans: [], loading: false, hasError: true });
+
+		expect(page.getByTestId('loans-error-message').textContent.trim())
+			.toBe("We couldn't load your loans right now. Please refresh the page and try again.");
+		// A backend failure must NOT masquerade as the filtered "no loans match" empty state.
+		expect(page.queryByTestId('no-loans-message')).toBeNull();
+	});
+
+	it('does not render the error message while loans are still loading', () => {
+		const page = renderLoanList({ loans: [], loading: true, hasError: true });
+
+		expect(page.queryByTestId('loans-error-message')).toBeNull();
+	});
+});
+
+describe('LoanList — Hotjar PII suppression (legacy parity)', () => {
+	// Legacy tagged every borrower-identifying surface with the data-hj-suppress hook so
+	// names, loan IDs, and dedication recipients are masked in Hotjar recordings.
+	const piiLoan = () => makeLoan({
+		partnerName: 'Partner 44',
+		partnerId: 44,
+		userProperties: {
+			loanBalance: {
+				amountPurchasedByLender: '25',
+				amountPurchasedByPromo: null,
+				promoTypeLabel: null,
+				amountRepaidToLender: '5',
+				amountReturnedTotal: '5',
+				latestSharePurchaseTime: '2026-03-15T12:00:00Z',
+			},
+			wasMatched: false,
+			canChangeTeamAssignment: false,
+			dedication: { recipientName: 'Grandma Rosa', dedicationUrl: '/dedicate/1', toKiva: false },
+			userAttributedTeam: {
+				id: 7, name: 'Team Kiva', teamPublicId: 'team-kiva', image: { url: '/t.jpg' },
+			},
+		},
+	});
+
+	it('suppresses the borrower image, name/ID link, partner link, dedication link, and read-only team link', () => {
+		const page = renderLoanList({ loans: [piiLoan()] });
+
+		expect(page.container.querySelector('img.loan-image').classList.contains('data-hj-suppress')).toBe(true);
+		expect(
+			page.container.querySelector('a[href="/lend/1208499"]').classList.contains('data-hj-suppress')
+		).toBe(true);
+		expect(page.getByText('Partner 44').closest('a').classList.contains('data-hj-suppress')).toBe(true);
+		expect(
+			page.container.querySelector('[data-testid="loan-dedication"] a').classList.contains('data-hj-suppress')
+		).toBe(true);
+		expect(page.getByText('Team Kiva').closest('a').classList.contains('data-hj-suppress')).toBe(true);
+	});
+
+	it('suppresses the team reassignment select for eligible loans', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				userProperties: {
+					loanBalance: {
+						amountPurchasedByLender: '25',
+						amountPurchasedByPromo: null,
+						promoTypeLabel: null,
+						amountRepaidToLender: '5',
+						amountReturnedTotal: '5',
+						latestSharePurchaseTime: '2026-03-15T12:00:00Z',
+					},
+					wasMatched: false,
+					canChangeTeamAssignment: true,
+					userAttributedTeam: null,
+				},
+			})],
+			lendingTeams: [{ id: 7, name: 'Team Kiva' }],
+		});
+
+		const select = page.container.querySelector('#reassign-team-1208499');
+		expect(select).not.toBeNull();
+		// The suppress hook may sit on the select or a KvSelect wrapper; either masks the subtree.
+		expect(select.closest('.data-hj-suppress')).not.toBeNull();
 	});
 });
 
@@ -178,7 +261,8 @@ describe('LoanList — "You loaned" cell', () => {
 	it('renders the formatted latest share purchase date under the amount', () => {
 		const page = renderLoanList({ loans: [makeLoan()] });
 
-		expect(page.getByText('$25')).toBeTruthy();
+		// Legacy parity (MP-2936): lender share uses $0,0.00 — always two decimals.
+		expect(page.getByText('$25.00')).toBeTruthy();
 		expect(page.getByText('Mar 15, 2026')).toBeTruthy();
 	});
 
@@ -195,7 +279,7 @@ describe('LoanList — "You loaned" cell', () => {
 			})],
 		});
 
-		expect(page.getByText('$25')).toBeTruthy();
+		expect(page.getByText('$25.00')).toBeTruthy();
 		expect(page.queryByText('Mar 15, 2026')).toBeNull();
 		expect(page.queryByText('Invalid Date')).toBeNull();
 	});
@@ -265,6 +349,83 @@ describe('LoanList — "You loaned" cell', () => {
 	});
 });
 
+describe('LoanList — cents formatting (MP-2936)', () => {
+	// Legacy parity: fractional amounts must keep their cents instead of rounding to
+	// whole dollars ($10.50 -> $11). Legacy uses an always-two-decimal $0,0.00 for the
+	// lender / raised / loan-amount figures and a cents-when-present $0,0[.]00 for promo.
+	it('renders the lender share with cents, not rounded to whole dollars', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				userProperties: {
+					loanBalance: {
+						amountPurchasedByLender: '10.50',
+						amountRepaidToLender: '5',
+						latestSharePurchaseTime: null,
+					},
+				},
+			})],
+		});
+
+		expect(page.getByText('$10.50')).toBeTruthy();
+		expect(page.queryByText('$11')).toBeNull();
+	});
+
+	it('renders the promo amount with cents when present', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				userProperties: {
+					loanBalance: {
+						amountPurchasedByLender: '25',
+						amountPurchasedByPromo: '10.50',
+						promoTypeLabel: 'free trial',
+						latestSharePurchaseTime: null,
+					},
+				},
+			})],
+		});
+
+		expect(page.getByText('$10.50 free trial')).toBeTruthy();
+	});
+
+	it('renders a whole-dollar promo amount without trailing .00 (legacy [.]00 behavior)', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				userProperties: {
+					loanBalance: {
+						amountPurchasedByLender: '25',
+						amountPurchasedByPromo: '10',
+						promoTypeLabel: 'free trial',
+						latestSharePurchaseTime: null,
+					},
+				},
+			})],
+		});
+
+		// Promo is the one field whose cents are conditional: $10, not $10.00.
+		expect(page.getByText('$10 free trial')).toBeTruthy();
+	});
+
+	it('renders the loan amount with cents, not rounded', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({ terms: { loanAmount: '525.50', expectedPayments: [] } })],
+		});
+
+		expect(page.getByText('$525.50')).toBeTruthy();
+		expect(page.queryByText('$526')).toBeNull();
+	});
+
+	it('renders the "raised" amount with cents, not rounded', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				status: 'fundraising',
+				loanFundraisingInfo: { id: 1, fundedAmount: '300.25' },
+			})],
+		});
+
+		expect(page.getByText('$300.25 raised')).toBeTruthy();
+	});
+});
+
 describe('LoanList — "Paid back or raised" cell', () => {
 	it('renders "raised" amount for fundraising loans', () => {
 		const page = renderLoanList({
@@ -274,7 +435,7 @@ describe('LoanList — "Paid back or raised" cell', () => {
 			})],
 		});
 
-		expect(page.getByText('$300 raised')).toBeTruthy();
+		expect(page.getByText('$300.00 raised')).toBeTruthy();
 	});
 
 	it('renders "raised" amount for raised loans', () => {
@@ -285,7 +446,7 @@ describe('LoanList — "Paid back or raised" cell', () => {
 			})],
 		});
 
-		expect(page.getByText('$525 raised')).toBeTruthy();
+		expect(page.getByText('$525.00 raised')).toBeTruthy();
 	});
 
 	it('renders the lender-repaid amount as the clickable trigger with "repaid to you" copy below', () => {
@@ -510,7 +671,7 @@ describe('LoanList — arrears rendering', () => {
 			})],
 		});
 
-		expect(page.getByText('$50,000')).toBeTruthy();
+		expect(page.getByText('$50,000.00')).toBeTruthy();
 		expect(page.getByText('(-$1,234.56 in arrears)')).toBeTruthy();
 		expect(page.getByText('(-$61.73 in arrears)')).toBeTruthy();
 	});
@@ -593,10 +754,90 @@ describe('LoanList — matched badge', () => {
 
 		expect(page.queryByTestId('matched-badge')).toBeNull();
 	});
+
+	it('renders "Nx matched" when the matched loan carries a match ratio (legacy parity)', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				matchRatio: 2,
+				userProperties: {
+					wasMatched: true,
+					loanBalance: {
+						amountPurchasedByLender: '25',
+						amountRepaidToLender: '5',
+						latestSharePurchaseTime: '2026-03-15T12:00:00Z',
+					},
+					userAttributedTeam: null,
+				},
+			})],
+		});
+
+		expect(page.getByTestId('matched-badge').textContent.trim()).toBe('2x matched');
+	});
+
+	it('renders a bare "Matched" when the match ratio is exactly 1 (legacy parity — no "1x matched")', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				matchRatio: 1,
+				userProperties: {
+					wasMatched: true,
+					loanBalance: {
+						amountPurchasedByLender: '25',
+						amountRepaidToLender: '5',
+						latestSharePurchaseTime: '2026-03-15T12:00:00Z',
+					},
+					userAttributedTeam: null,
+				},
+			})],
+		});
+
+		expect(page.getByTestId('matched-badge').textContent.trim()).toBe('Matched');
+	});
+
+	it('falls back to a bare "Matched" when wasMatched is true but the ratio is absent', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				matchRatio: null,
+				userProperties: {
+					wasMatched: true,
+					loanBalance: {
+						amountPurchasedByLender: '25',
+						amountRepaidToLender: '5',
+						latestSharePurchaseTime: '2026-03-15T12:00:00Z',
+					},
+					userAttributedTeam: null,
+				},
+			})],
+		});
+
+		expect(page.getByTestId('matched-badge').textContent.trim()).toBe('Matched');
+	});
+
+	it('does not render the badge from a match ratio alone when wasMatched is false', () => {
+		// The viewer-relative wasMatched flag is the gate; a loan-level ratio on an
+		// unmatched-for-this-lender share must not surface a badge.
+		const page = renderLoanList({ loans: [makeLoan({ matchRatio: 3 })] });
+
+		expect(page.queryByTestId('matched-badge')).toBeNull();
+	});
+});
+
+describe('LoanList — "Length" cell', () => {
+	it('renders the "months" suffix on the repayment term', () => {
+		const page = renderLoanList({ loans: [makeLoan({ lenderRepaymentTerm: 8 })] });
+
+		expect(page.getByText('8 months')).toBeTruthy();
+		expect(page.queryByText('8 mos')).toBeNull();
+	});
+
+	it('renders a dash with "months" when the repayment term is missing', () => {
+		const page = renderLoanList({ loans: [makeLoan({ lenderRepaymentTerm: null })] });
+
+		expect(page.getByText('- months')).toBeTruthy();
+	});
 });
 
 describe('LoanList — team cell', () => {
-	it('renders the user-attributed team name and image when present', () => {
+	it('renders the user-attributed team name and image, linked to the team page, when present', () => {
 		const page = renderLoanList({
 			loans: [makeLoan({
 				userProperties: {
@@ -608,6 +849,7 @@ describe('LoanList — team cell', () => {
 					userAttributedTeam: {
 						id: 42,
 						name: 'Cat Lovers',
+						teamPublicId: 'cat_lovers',
 						image: { id: 5, url: '/img/team-cat.jpg' },
 					},
 				},
@@ -616,6 +858,56 @@ describe('LoanList — team cell', () => {
 
 		expect(page.getByText('Cat Lovers')).toBeTruthy();
 		expect(page.getByAltText('Cat Lovers team image')).toBeTruthy();
+		// Legacy parity: the read-only team wraps name + image in an anchor to its team page.
+		const link = page.container.querySelector('.team-cell a');
+		expect(link).not.toBeNull();
+		expect(link.getAttribute('href')).toBe('/team/cat_lovers');
+	});
+
+	it('truncates a read-only attributed team name longer than 20 characters (legacy parity)', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				userProperties: {
+					loanBalance: {
+						amountPurchasedByLender: '25',
+						amountRepaidToLender: '5',
+						latestSharePurchaseTime: '2026-03-15T12:00:00Z',
+					},
+					userAttributedTeam: {
+						id: 42,
+						name: 'A Really Long Team Name That Exceeds Twenty',
+						teamPublicId: 'long_team',
+					},
+				},
+			})],
+		});
+
+		// Legacy LoanRowView truncates to 20 chars + "..." ("A Really Long Team N").
+		expect(page.getByText('A Really Long Team N...')).toBeTruthy();
+		expect(page.queryByText('A Really Long Team Name That Exceeds Twenty')).toBeNull();
+	});
+
+	it('renders the read-only team unlinked when no teamPublicId is resolvable', () => {
+		const page = renderLoanList({
+			loans: [makeLoan({
+				userProperties: {
+					loanBalance: {
+						amountPurchasedByLender: '25',
+						amountRepaidToLender: '5',
+						latestSharePurchaseTime: null,
+					},
+					userAttributedTeam: {
+						id: 7,
+						name: 'No Slug Team',
+						teamPublicId: null,
+						image: null,
+					},
+				},
+			})],
+		});
+
+		expect(page.getByText('No Slug Team')).toBeTruthy();
+		expect(page.container.querySelector('.team-cell a')).toBeNull();
 	});
 
 	it('renders an empty cell when there is no user-attributed team', () => {
@@ -802,5 +1094,91 @@ describe('LoanList — team reassignment', () => {
 		});
 
 		expect(teamSelect(page.container).value).toBe('1');
+	});
+});
+
+describe('LoanList — dedication indicator (MP-2847)', () => {
+	// Override userProperties wholesale (loanBalance must stay for the "You loaned" cell)
+	// so each test fully controls the viewer-relative dedication shape.
+	const dedicatedLoan = dedication => makeLoan({
+		userProperties: {
+			loanBalance: {
+				amountPurchasedByLender: '25',
+				amountRepaidToLender: '5',
+				amountReturnedTotal: '5',
+				latestSharePurchaseTime: '2026-03-15T12:00:00Z',
+			},
+			userAttributedTeam: null,
+			dedication,
+		},
+	});
+
+	it('renders no dedication block when the lender has no dedication on the loan', () => {
+		// makeLoan's default userProperties omits `dedication` entirely (field resolves null
+		// for a loan this lender never dedicated, or when there is no logged-in user).
+		const page = renderLoanList({ loans: [makeLoan()] });
+
+		expect(page.queryByTestId('loan-dedication')).toBeNull();
+	});
+
+	it('renders no dedication block when dedication is null', () => {
+		const page = renderLoanList({ loans: [dedicatedLoan(null)] });
+
+		expect(page.queryByTestId('loan-dedication')).toBeNull();
+	});
+
+	it('renders a heart + "Dedicated to {name}" linking to the dedication page for a named recipient', () => {
+		const page = renderLoanList({
+			loans: [dedicatedLoan({
+				recipientName: 'Jane Doe',
+				toKiva: false,
+				dedicationUrl: '/dedication/1208499',
+			})],
+		});
+
+		const block = page.getByTestId('loan-dedication');
+		// Legacy copy: "Dedicated to {name}" with no colon.
+		expect(block.textContent).toContain('Dedicated to Jane Doe');
+		expect(block.textContent).not.toContain('Dedicated to:');
+
+		// The whole indicator is the link to /dedication/{loanId} (legacy parity).
+		const link = block.querySelector('a');
+		expect(link.getAttribute('href')).toBe('/dedication/1208499');
+		expect(link.querySelector('.kv-material-icon')).not.toBeNull();
+
+		// Named dedications carry the legacy footer about repayments going to Kiva.
+		expect(page.getByTestId('loan-dedication-footer').textContent.trim())
+			.toBe('Repayments for dedications are donated to Kiva');
+	});
+
+	it('renders the legacy "multiple recipients" label when the loan was dedicated to more than one person', () => {
+		const page = renderLoanList({
+			loans: [dedicatedLoan({
+				recipientName: 'multiple recipients',
+				toKiva: false,
+				dedicationUrl: '/dedication/1208499',
+			})],
+		});
+
+		expect(page.getByTestId('loan-dedication').textContent).toContain('Dedicated to multiple recipients');
+	});
+
+	it('renders the to-Kiva thank-you copy with no link and no footer for a Kiva dedication', () => {
+		const page = renderLoanList({
+			loans: [dedicatedLoan({
+				recipientName: null,
+				toKiva: true,
+				dedicationUrl: null,
+			})],
+		});
+
+		const block = page.getByTestId('loan-dedication');
+		expect(block.textContent).toContain('You opted to donate repayments from this loan to Kiva (Thanks!)');
+		// Legacy parity: to-Kiva dedications render without a link, without the footer note,
+		// and without the heart icon (the heart is reserved for named recipients).
+		expect(block.querySelector('a')).toBeNull();
+		expect(block.querySelector('.kv-material-icon')).toBeNull();
+		expect(page.queryByTestId('loan-dedication-footer')).toBeNull();
+		expect(page.queryByText('Dedicated to', { exact: false })).toBeNull();
 	});
 });
