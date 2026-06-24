@@ -218,7 +218,7 @@
 							<td class="tw-text-right tw-px-2">
 								<div v-if="isRaisedOrFundraising(loan.status)">
 									{{ $filters.numeral(loan.loanFundraisingInfo?.fundedAmount, '$0,0.00') }}
-									<span class="tw-text-secondary tw-text-small">raised</span>
+									<span class="tw-block tw-text-secondary tw-text-small">raised</span>
 								</div>
 								<template v-else>
 									<paid-amount-modal
