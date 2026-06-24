@@ -280,6 +280,18 @@ describe('LoanFilterBar', () => {
 		expect(count.parentElement.textContent).toContain('Export 12 loans');
 	});
 
+	it('renders the singular export label for exactly one loan', () => {
+		const page = renderLoanFilterBar({ props: { totalLoans: 1 } });
+
+		expect(page.getByText('Export 1 loan')).toBeTruthy();
+	});
+
+	it('comma-formats the export label count', () => {
+		const page = renderLoanFilterBar({ props: { totalLoans: 1234 } });
+
+		expect(page.getByText('Export 1,234 loans')).toBeTruthy();
+	});
+
 	it('resets all filters and the keyword search when clear-filters is clicked', async () => {
 		const page = renderLoanFilterBar({
 			props: {

@@ -87,7 +87,7 @@
 					v-kv-track-event="['portfolio', 'click', 'export-loans']"
 					@click="handleExportClick"
 				>
-					Export {{ totalLoans }} loans
+					{{ exportLabel }}
 				</kv-button>
 				<span class="tw-ml-auto tw-text-subhead" data-testid="loans-count">{{ loanCountLabel }}</span>
 			</div>
@@ -251,6 +251,11 @@ function getLegacyExportStatus(status) {
 const loanCountLabel = computed(() => {
 	const count = props.totalLoans || 0;
 	return `${count.toLocaleString('en-US')} ${count === 1 ? 'loan' : 'loans'}`;
+});
+
+const exportLabel = computed(() => {
+	const count = props.totalLoans || 0;
+	return `Export ${count.toLocaleString('en-US')} ${count === 1 ? 'loan' : 'loans'}`;
 });
 
 const hasActiveFilters = computed(() => (
