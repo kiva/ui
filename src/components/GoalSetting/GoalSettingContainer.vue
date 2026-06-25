@@ -116,6 +116,7 @@
 						<KvButton
 							class="tw-flex-none tw-mx-auto tw-w-full lg:tw-w-auto"
 							style="min-width: 324px;"
+							:disabled="isSubmitting"
 							@click="handleClick"
 						>
 							{{ ctaCopy }}
@@ -269,6 +270,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Loan ids to exclude from the recommended-loan fetch (e.g. the user's most recent loans).
+	 */
+	excludedLoanIds: {
+		type: Array,
+		default: () => ([]),
+	},
 });
 
 const emit = defineEmits(['add-to-basket']);
@@ -281,6 +289,7 @@ const ctaHref = ref('');
 const categoryFormKey = ref(0);
 const isEditing = ref(false);
 const formStep = ref(1);
+const isSubmitting = ref(false);
 const isDeleteGoalModalVisible = ref(false);
 const userIsEditingGoal = ref(false);
 const isDeleting = ref(false);
@@ -376,6 +385,7 @@ const {
 	userGoal,
 	kvTrackEvent: $kvTrackEvent,
 	entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE,
+	additionalExcludedLoanIds: toRef(props, 'excludedLoanIds'),
 	appConfig: $appConfig,
 });
 
@@ -440,6 +450,7 @@ const updateGoal = async preferences => {
 
 const setGoal = async preferences => {
 	loading.value = true;
+	isSubmitting.value = true;
 	try {
 		await storeGoalPreferences(preferences);
 		await recalculateGoalInformation();
@@ -450,6 +461,7 @@ const setGoal = async preferences => {
 		$showTipMsg('There was a problem setting up this goal', 'error');
 	} finally {
 		loading.value = false;
+		isSubmitting.value = false;
 	}
 };
 
@@ -474,6 +486,7 @@ const handleClick = () => {
 
 		return;
 	}
+	if (isSubmitting.value) return;
 	const categorySelected = selectedCategory.value?.badgeId;
 
 	const currentYear = new Date().getFullYear();

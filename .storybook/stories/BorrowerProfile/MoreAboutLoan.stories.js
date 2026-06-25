@@ -17,19 +17,18 @@ export default {
 const directLoan = {
 	...fundraisingDirectLoan,
 	__typename: 'LoanDirect',
-	businessName: 'Maria\'s Bakery',
-	businessDescription: 'A family-owned bakery specializing in artisan breads, pastries, and seasonal treats. '
-		+ 'Maria has been baking since she was a child, learning recipes from her grandmother.',
-	purpose: 'To buy a commercial oven and expand production so the bakery can serve more local customers '
-		+ 'and supply nearby cafes.',
+	businessName: 'Sample Business',
+	businessDescription: 'This business sells household goods and would like a loan to buy more '
+		+ 'inventory. (Placeholder text.)',
+	purpose: 'To buy more inventory for the business.',
 	yearsInBusiness: 5,
 	socialLinks: {
 		etsy: null,
-		facebook: 'https://facebook.com/marias-bakery',
-		instagram: 'https://instagram.com/marias-bakery',
+		facebook: null,
+		instagram: null,
 		linkedin: null,
 		twitter: null,
-		website: 'https://marias-bakery.example.com',
+		website: 'https://example.com',
 		yelp: null,
 	},
 };
@@ -37,14 +36,14 @@ const directLoan = {
 const partnerLoan = {
 	...fundraisingPartnerLoan,
 	__typename: 'LoanPartner',
-	partnerName: 'Bai Tushum Bank',
+	partnerName: 'AFODENIC',
 	partner: {
 		id: 100,
 		loanAlertText: '',
 	},
 	dualStatementNote: '',
-	moreInfoAboutLoan: 'This loan helps rural farmers in Kyrgyzstan invest in livestock and grow their dairy '
-		+ 'operations, providing food and income for their families.',
+	moreInfoAboutLoan: 'This loan helps small-business owners invest in their businesses and support '
+		+ 'their families.',
 };
 
 export const DirectLoan = () => ({

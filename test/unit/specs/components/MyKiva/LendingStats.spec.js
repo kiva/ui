@@ -15,6 +15,19 @@ describe('LendingStats', () => {
 		});
 	});
 
+	describe('recentLoanIds', () => {
+		it('maps loan ids from the loans prop', () => {
+			const context = { loans: [{ id: 1 }, { id: 2 }, { id: 3 }] };
+			expect(LendingStats.computed.recentLoanIds.call(context)).toEqual([1, 2, 3]);
+		});
+
+		it('filters out falsy ids and returns empty array when loans is empty', () => {
+			expect(LendingStats.computed.recentLoanIds.call({ loans: [{ id: 1 }, {}, { id: null }] }))
+				.toEqual([1]);
+			expect(LendingStats.computed.recentLoanIds.call({ loans: [] })).toEqual([]);
+		});
+	});
+
 	describe('mounted', () => {
 		it('completes without error when region experience is off', async () => {
 			const context = {

@@ -71,8 +71,17 @@ const renderLoanFilterBar = ({
 						`,
 					},
 					KvButton: {
+						props: ['state'],
 						emits: ['click'],
-						template: '<button type="button" @click="$emit(\'click\', $event)"><slot /></button>',
+						template: `
+							<button
+								type="button"
+								:disabled="state === 'disabled' || state === 'loading'"
+								@click="$emit('click', $event)"
+							>
+								<slot />
+							</button>
+						`,
 					},
 				},
 			},
@@ -202,6 +211,106 @@ describe('LoanFilterBar', () => {
 		});
 
 		expect(page.queryByTestId('clear-filters')).not.toBeNull();
+	});
+
+	it('keeps the clear-filters control hidden while search text is only a draft', async () => {
+		const page = renderLoanFilterBar();
+
+		// Typing without Enter/blur is a draft — the search is not applied yet, so "Clear filters"
+		// must stay hidden until there is something actually applied to clear.
+		await fireEvent.update(page.container.querySelector('#loan-filter-text-input'), 'Maria');
+
+		expect(page.queryByTestId('clear-filters')).toBeNull();
+	});
+
+	it('shows the clear-filters control when a keyword search has been applied', () => {
+		const page = renderLoanFilterBar({ props: { keywordSearch: 'Maria' } });
+
+		expect(page.queryByTestId('clear-filters')).not.toBeNull();
+	});
+
+	it('renders a comma-formatted, pluralized loans count', () => {
+		const page = renderLoanFilterBar({ props: { totalLoans: 1234 } });
+
+		expect(page.getByTestId('loans-count').textContent.trim()).toBe('1,234 loans');
+	});
+
+	it('renders the singular loans count for exactly one loan', () => {
+		const page = renderLoanFilterBar({ props: { totalLoans: 1 } });
+
+		expect(page.getByTestId('loans-count').textContent.trim()).toBe('1 loan');
+	});
+
+	it('renders "0 loans" when there are no results', () => {
+		const page = renderLoanFilterBar({ props: { totalLoans: 0 } });
+
+		expect(page.getByTestId('loans-count').textContent.trim()).toBe('0 loans');
+	});
+
+	it('labels the raised status "Funded" (legacy parity), not "Raised"', () => {
+		const page = renderLoanFilterBar();
+
+		const labels = Array.from(getSelect(page.container, 'loan-status-select').querySelectorAll('option'))
+			.map(option => option.textContent.trim());
+		// Legacy + the stats grid both call this bucket "Funded"; the dropdown must match.
+		expect(labels).toContain('Funded');
+		expect(labels).not.toContain('Raised');
+	});
+
+	it('uses the legacy default filter option labels', () => {
+		const page = renderLoanFilterBar();
+
+		const firstOption = id => getSelect(page.container, id).querySelector('option').textContent.trim();
+		expect(firstOption('loan-status-select')).toBe('All loans');
+		expect(firstOption('loan-country-select')).toBe('All locations');
+		expect(firstOption('loan-partner-select')).toBe('All partners');
+	});
+
+	it('toggles the small-screen filter accordion via the Filters button', async () => {
+		const page = renderLoanFilterBar();
+
+		const toggle = page.getByTestId('filters-toggle');
+		expect(toggle.textContent.trim()).toBe('Filters');
+		expect(toggle.getAttribute('aria-expanded')).toBe('false');
+
+		await fireEvent.click(toggle);
+
+		expect(toggle.textContent.trim()).toBe('Hide filters');
+		expect(toggle.getAttribute('aria-expanded')).toBe('true');
+	});
+
+	it('right-aligns the loans count on the export button row', () => {
+		const page = renderLoanFilterBar({ props: { totalLoans: 12 } });
+
+		const count = page.getByTestId('loans-count');
+		expect(count.textContent.trim()).toBe('12 loans');
+		// Pushed to the right of the export row (tw-ml-auto), sharing the row with the export button.
+		expect(count.classList.contains('tw-ml-auto')).toBe(true);
+		expect(count.parentElement.textContent).toContain('Export 12 loans');
+	});
+
+	it('renders the singular export label for exactly one loan', () => {
+		const page = renderLoanFilterBar({ props: { totalLoans: 1 } });
+
+		expect(page.getByText('Export 1 loan')).toBeTruthy();
+	});
+
+	it('comma-formats the export label count', () => {
+		const page = renderLoanFilterBar({ props: { totalLoans: 1234 } });
+
+		expect(page.getByText('Export 1,234 loans')).toBeTruthy();
+	});
+
+	it('disables the export button when there are no loans to export', () => {
+		const page = renderLoanFilterBar({ props: { totalLoans: 0 } });
+
+		expect(page.getByText('Export 0 loans').closest('button').disabled).toBe(true);
+	});
+
+	it('enables the export button when there are loans to export', () => {
+		const page = renderLoanFilterBar({ props: { totalLoans: 45 } });
+
+		expect(page.getByText('Export 45 loans').closest('button').disabled).toBe(false);
 	});
 
 	it('resets all filters and the keyword search when clear-filters is clicked', async () => {

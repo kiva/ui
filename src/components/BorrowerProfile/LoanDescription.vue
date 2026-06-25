@@ -154,7 +154,7 @@ export default {
 	},
 	computed: {
 		borrowersList() {
-			if (this.borrowerCount <= 1) {
+			if (this.borrowerCount <= 1 || this.areBorrowerNamesAnonymized) {
 				return '';
 			}
 			const names = this.borrowers.map(({ firstName }) => firstName);
@@ -169,8 +169,16 @@ export default {
 		isAnonymizationLevelFull() {
 			return this.anonymizationLevel === 'full';
 		},
+		isAnonymizationLevelPii() {
+			return this.anonymizationLevel === 'pii';
+		},
+		areBorrowerNamesAnonymized() {
+			return this.isAnonymizationLevelPii || this.isAnonymizationLevelFull;
+		},
 		storyTranslation() {
-			return this.isPartnerLoan && parseInt(this.originalLanguage?.id ?? 0, 10) !== 1;
+			return !this.areBorrowerNamesAnonymized
+				&& this.isPartnerLoan
+				&& parseInt(this.originalLanguage?.id ?? 0, 10) !== 1;
 		},
 		language() {
 			return this.originalLanguage?.name ?? '';

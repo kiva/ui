@@ -9,9 +9,28 @@
 				@keyup.enter.prevent="emitDraftKeywordSearchIfChanged"
 				@blur="emitDraftKeywordSearchIfChanged"
 			/>
-			<div class="tw-flex tw-flex-row tw-flex-wrap tw-items-center tw-gap-2 tw-mt-2">
+			<!-- On small screens the status/location/partner filters collapse behind a Filters/Hide filters toggle;
+				they are always shown from the lg breakpoint up. -->
+			<kv-button
+				class="lg:tw-hidden tw-self-start tw-mt-2"
+				variant="secondary"
+				:aria-expanded="filtersExpanded ? 'true' : 'false'"
+				aria-controls="loan-filters"
+				data-testid="filters-toggle"
+				v-kv-track-event="['portfolio', 'click', 'toggle-loan-filters']"
+				@click="filtersExpanded = !filtersExpanded"
+			>
+				{{ filtersExpanded ? 'Hide filters' : 'Filters' }}
+			</kv-button>
+			<div
+				id="loan-filters"
+				:class="[
+					filtersExpanded ? 'tw-flex' : 'tw-hidden',
+					'lg:tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-2 tw-mt-2'
+				]"
+			>
 				<div class="tw-flex tw-items-center tw-gap-2">
-					<span class="tw-text-secondary">Status:</span>
+					<span class="tw-text-secondary tw-whitespace-nowrap">Status:</span>
 					<kv-select
 						id="loan-status-select"
 						v-model="selectedStatus"
@@ -26,15 +45,15 @@
 						</option>
 					</kv-select>
 				</div>
-				<div class="tw-flex tw-flex-row tw-items-center tw-gap-2">
-					<span class="tw-text-secondary">Filter by:</span>
+				<div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-2">
+					<span class="tw-text-secondary tw-whitespace-nowrap">Filter by:</span>
 					<kv-select
 						id="loan-country-select"
 						v-model="selectedCountry"
 						@update:model-value="emitFiltersChanged()"
 					>
 						<option value="all">
-							All countries
+							All locations
 						</option>
 						<option
 							v-for="country in countries"
@@ -61,19 +80,20 @@
 						</option>
 					</kv-select>
 				</div>
-				<div class="lg:tw-ml-auto">
-					<kv-button
-						class="tw-text-sm"
-						variant="primary"
-						v-kv-track-event="['portfolio', 'click', 'export-loans']"
-						@click="handleExportClick"
-					>
-						Export {{ totalLoans }} loans
-					</kv-button>
-				</div>
+			</div>
+			<div :class="[filtersExpanded ? 'tw-mt-2' : 'tw-mt-1.5', 'lg:tw-mt-2 tw-flex tw-items-center tw-gap-2']">
+				<kv-button
+					variant="primary"
+					:state="totalLoans ? '' : 'disabled'"
+					v-kv-track-event="['portfolio', 'click', 'export-loans']"
+					@click="handleExportClick"
+				>
+					{{ exportLabel }}
+				</kv-button>
+				<span class="tw-ml-auto tw-text-subhead" data-testid="loans-count">{{ loanCountLabel }}</span>
 			</div>
 		</div>
-		<div class="tw-flex tw-items-center tw-mt-2">
+		<div class="tw-flex tw-items-center tw-gap-2 tw-mt-1">
 			<button
 				v-if="hasActiveFilters"
 				type="button"
@@ -84,7 +104,7 @@
 			>
 				Clear filters
 			</button>
-			<span class="tw-ml-auto tw-text-secondary">Sorted by date posted on Kiva</span>
+			<span class="tw-ml-auto tw-text-secondary tw-text-small">Sorted by date posted on Kiva</span>
 		</div>
 	</div>
 </template>
@@ -113,9 +133,12 @@ const ENDED_WITH_LOSS = 'ended_with_loss';
 const LEGACY_FUNDRAISING_STATUS = 'fundRaising';
 
 const statusOptions = [
-	{ value: ALL_FILTERS_VALUE, label: 'All statuses' },
+	{ value: ALL_FILTERS_VALUE, label: 'All loans' },
 	{ value: FUNDRAISING, label: 'Fundraising' },
-	{ value: RAISED, label: 'Raised' },
+	// Legacy parity: the `raised` status is labelled "Funded" everywhere on the legacy
+	// page (getHumanizedStatusFromString) and in the new stats grid, so the filter
+	// dropdown matches rather than showing "Raised".
+	{ value: RAISED, label: 'Funded' },
 	{ value: PAYING_BACK, label: 'Paying back' },
 	{ value: DELINQUENT, label: 'Delinquent' },
 	{ value: ENDED, label: 'Repaid' },
@@ -167,6 +190,8 @@ const searchText = ref(props.keywordSearch || '');
 const selectedStatus = ref(getSelectedStatus(props.filters));
 const selectedCountry = ref(getFirstFilterValue(props.filters.country));
 const selectedPartner = ref(getFirstFilterValue(props.filters.partner));
+// Small-screen filter accordion: collapsed by default; the lg breakpoint shows the filters regardless of this flag.
+const filtersExpanded = ref(false);
 
 function buildActiveFilters() {
 	const filters = {};
@@ -224,11 +249,24 @@ function getLegacyExportStatus(status) {
 	return status === FUNDRAISING ? LEGACY_FUNDRAISING_STATUS : status;
 }
 
+const loanCountLabel = computed(() => {
+	const count = props.totalLoans || 0;
+	return `${count.toLocaleString('en-US')} ${count === 1 ? 'loan' : 'loans'}`;
+});
+
+const exportLabel = computed(() => {
+	const count = props.totalLoans || 0;
+	return `Export ${count.toLocaleString('en-US')} ${count === 1 ? 'loan' : 'loans'}`;
+});
+
 const hasActiveFilters = computed(() => (
 	selectedStatus.value !== ALL_FILTERS_VALUE
 	|| selectedCountry.value !== ALL_FILTERS_VALUE
 	|| selectedPartner.value !== ALL_FILTERS_VALUE
-	|| normalizeKeywordSearch(searchText.value) !== null
+	// Gate on the APPLIED keyword search, not the draft input — the status/location/partner
+	// selects apply on change, but search is a draft until Enter/blur, so typing alone must
+	// not surface "Clear filters" before the search is actually applied.
+	|| appliedKeywordSearch() !== null
 ));
 
 function clearAllFilters() {

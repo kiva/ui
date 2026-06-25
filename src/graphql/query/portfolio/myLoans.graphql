@@ -43,6 +43,7 @@ query myLoans(
 				name
 				status
 				statusLabel
+				matchRatio
 				image {
 					id
 					url
@@ -70,9 +71,17 @@ query myLoans(
 				}
 				userProperties {
 					canChangeTeamAssignment
+					wasMatched
+					dedication {
+						recipientName
+						toKiva
+						dedicationUrl
+					}
 					loanBalance {
+						totalAmountPurchased
 						amountPurchasedByLender
 						amountPurchasedByPromo
+						promoTypeLabel
 						amountRepaidToLender
 						amountReturnedTotal
 						latestSharePurchaseTime
@@ -85,6 +94,7 @@ query myLoans(
 					userAttributedTeam {
 						id
 						name
+						teamPublicId
 						image {
 							id
 							url

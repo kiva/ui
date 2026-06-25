@@ -14,8 +14,8 @@ const loanWithParityFields = {
 	...fundraisingPartnerLoan,
 	terms: {
 		...fundraisingPartnerLoan.terms,
-		currency: 'KGS',
-		currencyFullName: 'Kyrgyzstani Som',
+		currency: 'NIO',
+		currencyFullName: 'Nicaraguan Córdoba',
 	},
 	geocode: {
 		...fundraisingPartnerLoan.geocode,

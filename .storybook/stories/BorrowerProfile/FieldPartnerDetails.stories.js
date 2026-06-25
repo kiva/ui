@@ -9,7 +9,7 @@ export default {
 // loansPosted, totalAmountRaised or avgLoanSizePercentPerCapitaIncome.)
 const basePartner = {
 	partnerId: 100,
-	partnerName: 'Bai Tushum Bank',
+	partnerName: 'AFODENIC',
 	avgBorrowerCost: 35,
 	avgBorrowerCostType: 'interest',
 	avgProfitability: 2.5,

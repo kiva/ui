@@ -1,29 +1,29 @@
 <template>
-	<div class="tw-mt-4">
+	<div class="tw-mt-2">
 		<div class="tw-relative">
 			<div class="tw-overflow-x-auto tw-min-w-full">
-				<table class="tw-w-full">
+				<table class="tw-w-full tw-border-collapse tw-text-small lg:tw-text-base">
 					<thead>
-						<tr class="tw-border-y tw-border-tertiary">
-							<th class="tw-text-left tw-font-medium tw-px-2 tw-py-1">
+						<tr class="tw-bg-brand">
+							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
 								Loan details
 							</th>
-							<th class="tw-text-left tw-font-medium tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
 								Status
 							</th>
-							<th class="tw-text-right tw-font-medium tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
 								You loaned
 							</th>
-							<th class="tw-text-right tw-font-medium tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
 								Paid back or raised
 							</th>
-							<th class="tw-text-right tw-font-medium tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
 								Length
 							</th>
-							<th class="tw-text-right tw-font-medium tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
 								Amount
 							</th>
-							<th class="tw-text-left tw-font-medium tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
 								Team
 							</th>
 						</tr>
@@ -31,42 +31,76 @@
 					<tbody>
 						<tr v-if="loading">
 							<td colspan="7" class="tw-px-2 tw-py-4">
-								<div v-for="i in 3" :key="i" class="tw-grid tw-grid-cols-12 tw-gap-4 tw-mb-4">
-									<kv-loading-placeholder
-										v-for="(placeholder, index) in placeholders"
-										:key="index"
-										:class="[
-											`tw-col-span-${placeholder.span}`,
-											placeholder.marginLeft && 'tw-ml-auto'
-										]"
-										style="height: 50px;"
-									/>
+								<div
+									v-for="i in skeletonRowCount"
+									:key="i"
+									class="tw-grid tw-grid-cols-12 tw-gap-4 tw-mb-4 tw-items-start"
+								>
+									<div class="tw-col-span-4 tw-flex tw-items-start">
+										<kv-loading-placeholder
+											class="tw-mr-2 tw-shrink-0 !tw-w-6.5 !tw-h-6.5"
+										/>
+										<div class="tw-flex-1">
+											<kv-loading-placeholder class="tw-mb-1" style="height: 1rem;" />
+											<kv-loading-placeholder class="tw-mb-1" style="height: 0.875rem;" />
+											<kv-loading-placeholder class="tw-mb-1" style="height: 0.875rem;" />
+											<kv-loading-placeholder style="height: 0.875rem;" />
+										</div>
+									</div>
+									<kv-loading-placeholder class="tw-col-span-1" style="height: 0.875rem;" />
+									<kv-loading-placeholder class="tw-col-span-1" style="height: 0.875rem;" />
+									<kv-loading-placeholder class="tw-col-span-2" style="height: 0.875rem;" />
+									<kv-loading-placeholder class="tw-col-span-1" style="height: 0.875rem;" />
+									<kv-loading-placeholder class="tw-col-span-1" style="height: 0.875rem;" />
+									<kv-loading-placeholder class="tw-col-span-2" style="height: 0.875rem;" />
 								</div>
 							</td>
 						</tr>
+						<tr v-else-if="hasError">
+							<td
+								class="tw-text-center tw-text-danger tw-px-2 tw-pt-4"
+								colspan="7"
+								data-testid="loans-error-message"
+							>
+								We couldn't load your loans right now. Please refresh the page and try again.
+							</td>
+						</tr>
 						<tr v-else-if="!loans.length">
-							<td class="tw-text-center tw-text-secondary tw-px-2" colspan="7">
-								No loans found
+							<td
+								class="tw-text-center tw-text-secondary tw-px-2 tw-pt-4"
+								colspan="7"
+								data-testid="no-loans-message"
+							>
+								You haven't made any loans that match this search.
 							</td>
 						</tr>
 						<tr
 							v-for="(loan, index) in loans"
 							:key="loan.id"
 							class="tw-border-b tw-border-tertiary"
-							:class="{ 'tw-bg-gray-50': index % 2 === 1 }"
+							:class="{ 'tw-bg-secondary': index % 2 === 1 }"
 						>
-							<td class="tw-px-2 tw-py-2">
+							<td class="loan-details-cell tw-break-words tw-px-2 tw-py-2">
 								<div class="tw-flex tw-items-start">
-									<img
-										:src="loan.image.url"
-										alt="Loan image"
-										class="loan-image tw-mr-2 tw-shrink-0"
-									>
+									<div class="tw-mr-2 tw-shrink-0 tw-text-center">
+										<img
+											:src="loan.image.url"
+											alt="Loan image"
+											class="loan-image data-hj-suppress"
+										>
+										<div
+											v-if="loan.userProperties?.wasMatched"
+											class="tw-text-small tw-text-secondary tw-mt-1"
+											data-testid="matched-badge"
+										>
+											{{ matchedLabel(loan) }}
+										</div>
+									</div>
 									<div>
 										<div class="tw-font-semibold">
 											<a
 												:href="`/lend/${loan.id}`"
-												class="tw-text-action"
+												class="tw-text-action data-hj-suppress"
 												v-kv-track-event="[
 													'portfolio', 'click', 'View borrower details', loan.name, loan.id]"
 											>
@@ -76,10 +110,10 @@
 												</div>
 											</a>
 										</div>
-										<div class="tw-text-secondary">
+										<div>
 											{{ loan.activity?.name || '-' }}
 										</div>
-										<div class="tw-flex tw-items-center tw-text-secondary">
+										<div class="tw-flex tw-items-center">
 											<div class="tw-w-2 tw-h-2 tw-mr-1">
 												<kv-flag
 													v-if="loan.geocode?.country?.isoCode"
@@ -89,27 +123,67 @@
 											</div>
 											{{ loan.geocode?.country?.name || '-' }}
 										</div>
-										<div class="tw-text-secondary" v-if="loan.trusteeName">
+										<div v-if="loan.trusteeName">
 											<a
 												:href="getTrusteeUrl(loan.trusteeId)"
 												target="_blank"
+												class="data-hj-suppress"
 											>
 												{{ loan.trusteeName }}
 											</a>
 										</div>
-										<div class="tw-text-secondary" v-else-if="loan.partnerName">
+										<div v-else-if="loan.partnerName">
 											<a
 												:href="getPartnerUrl(loan.partnerId)"
 												target="_blank"
+												class="data-hj-suppress"
 											>
 												{{ loan.partnerName }}
 											</a>
+										</div>
+										<!-- The logged-in lender's own dedication on this loan. A named recipient shows
+											a heart + link to the dedication page with the "repayments donated to
+											Kiva" footer; a to-Kiva dedication shows the thank-you line with no
+											link. Viewer-relative — the field is null when this lender has no
+											dedication on the loan. -->
+										<div
+											v-if="getDedication(loan)"
+											class="tw-mt-1"
+											data-testid="loan-dedication"
+										>
+											<a
+												v-if="getDedication(loan).recipientName"
+												:href="getDedication(loan).dedicationUrl"
+												class="tw-flex tw-items-center tw-text-action tw-text-small
+													data-hj-suppress"
+												v-kv-track-event="[
+													'portfolio', 'click', 'View loan dedication', loan.id]"
+											>
+												<kv-material-icon
+													class="tw-w-2 tw-h-2 tw-mr-1 tw-shrink-0"
+													:icon="mdiHeart"
+												/>
+												Dedicated to {{ getDedication(loan).recipientName }}
+											</a>
+											<div
+												v-else-if="getDedication(loan).toKiva"
+												class="tw-text-secondary tw-text-small"
+											>
+												You opted to donate repayments from this loan to Kiva (Thanks!)
+											</div>
+											<div
+												v-if="getDedication(loan).recipientName"
+												class="tw-text-secondary tw-text-small"
+												data-testid="loan-dedication-footer"
+											>
+												Repayments for dedications are donated to Kiva
+											</div>
 										</div>
 									</div>
 								</div>
 							</td>
 							<td class="tw-px-2">
-								<div class="tw-text-secondary">
+								<div>
 									{{ getStatusLabel(loan) }}
 								</div>
 							</td>
@@ -117,13 +191,13 @@
 								<div>
 									<div class="tw-mb-1">
 										{{ $filters.numeral(
-											loan.userProperties.loanBalance.amountPurchasedByLender,
-											'$0,0'
+											loan.userProperties.loanBalance.totalAmountPurchased,
+											'$0,0.00'
 										) }}
 									</div>
 									<div
 										v-if="loan.userProperties?.loanBalance?.latestSharePurchaseTime"
-										class="tw-mb-1 tw-text-secondary"
+										class="tw-mb-1 tw-text-secondary tw-text-small"
 									>
 										{{ formatDate(loan.userProperties.loanBalance.latestSharePurchaseTime) }}
 									</div>
@@ -133,14 +207,17 @@
 									>
 										{{ $filters.numeral(
 											loan.userProperties.loanBalance.amountPurchasedByPromo,
-											'$0,0'
-										) }} free credit
+											'$0,0[.]00'
+										) }} {{
+											loan.userProperties.loanBalance.promoTypeLabel || 'promotional credit'
+										}}
 									</div>
 								</div>
 							</td>
 							<td class="tw-text-right tw-px-2">
 								<div v-if="isRaisedOrFundraising(loan.status)">
-									{{ $filters.numeral(loan.loanFundraisingInfo?.fundedAmount, '$0,0') }} raised
+									{{ $filters.numeral(loan.loanFundraisingInfo?.fundedAmount, '$0,0.00') }}
+									<span class="tw-block tw-text-secondary tw-text-small">raised</span>
 								</div>
 								<template v-else>
 									<paid-amount-modal
@@ -167,7 +244,7 @@
 									</div>
 								</template>
 							</td>
-							<td class="tw-text-right tw-px-2">
+							<td class="tw-text-left tw-px-2">
 								<div>
 									{{ loan.lenderRepaymentTerm || '-' }} months
 								</div>
@@ -175,7 +252,7 @@
 							<td class="tw-text-right tw-px-2">
 								<div>
 									<div>
-										{{ $filters.numeral(loan.terms.loanAmount, '$0,0') }}
+										{{ $filters.numeral(loan.terms.loanAmount, '$0,0.00') }}
 									</div>
 									<div
 										v-if="hasArrears(loan.arrearsAmount)"
@@ -185,7 +262,7 @@
 									</div>
 								</div>
 							</td>
-							<td class="team-cell tw-whitespace-normal tw-break-words tw-px-2">
+							<td class="team-cell tw-whitespace-normal tw-break-words tw-pl-2 tw-pr-4">
 								<div class="tw-items-center">
 									<!-- Legacy parity: eligible loans show an inline team dropdown
 										directly in the cell using the shared KvSelect. The control is
@@ -198,7 +275,7 @@
 										v-if="canReassignTeam(loan)"
 										:key="`reassign-team-${loan.id}-${reassignNonce[loan.id] || 0}`"
 										:id="`reassign-team-${loan.id}`"
-										class="tw-w-full"
+										class="tw-w-full data-hj-suppress"
 										:model-value="currentTeamId(loan)"
 										:disabled="reassigningLoanIds.includes(loan.id)"
 										:aria-label="`Reassign team for ${loan.name}`"
@@ -212,28 +289,39 @@
 											{{ option.name }}
 										</option>
 									</kv-select>
-									<template v-else-if="loan.userProperties?.userAttributedTeam">
+									<!-- A read-only attributed team links to its team page. Renders an unlinked span
+										when no teamPublicId is resolvable. -->
+									<component
+										:is="teamUrl(loan.userProperties.userAttributedTeam) ? 'a' : 'span'"
+										v-else-if="loan.userProperties?.userAttributedTeam"
+										:href="teamUrl(loan.userProperties.userAttributedTeam)"
+										class="tw-flex tw-items-center data-hj-suppress"
+									>
 										<img
 											v-if="loan.userProperties.userAttributedTeam.image?.url"
 											:src="loan.userProperties.userAttributedTeam.image.url"
 											:alt="`${loan.userProperties.userAttributedTeam.name} team image`"
-											class="tw-w-5 tw-h-5"
+											class="tw-w-5 tw-h-5 tw-mr-1"
 										>
-										<span>{{ loan.userProperties.userAttributedTeam.name }}</span>
-									</template>
+										<span>{{ truncateTeamName(loan.userProperties.userAttributedTeam.name) }}</span>
+									</component>
 								</div>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
-			<div class="scroll-gradient"></div>
+			<div class="scroll-gradient scroll-gradient--left lg:tw-hidden"></div>
+			<div class="scroll-gradient scroll-gradient--right lg:tw-hidden"></div>
 		</div>
 	</div>
 </template>
 
 <script>
-import { KvFlag, KvLoadingPlaceholder, KvSelect } from '@kiva/kv-components';
+import { mdiHeart } from '@mdi/js';
+import {
+	KvFlag, KvLoadingPlaceholder, KvMaterialIcon, KvSelect
+} from '@kiva/kv-components';
 import {
 	EXPIRED,
 	FUNDRAISING,
@@ -257,6 +345,10 @@ export default {
 			type: Boolean,
 			default: true
 		},
+		hasError: {
+			type: Boolean,
+			default: false
+		},
 		lendingTeams: {
 			type: Array,
 			default: () => []
@@ -274,12 +366,16 @@ export default {
 	components: {
 		KvFlag,
 		KvLoadingPlaceholder,
+		KvMaterialIcon,
 		KvSelect,
 		PaidAmountModal
 	},
 	methods: {
 		formatDate(date) {
 			if (!date) return '';
+			// Intentionally formats in the lender's browser timezone (no `timeZone` option). The
+			// field is a full ISO-8601 instant and rows render client-side, so the displayed day
+			// is the lender's local day.
 			return new Date(date).toLocaleDateString('en-US', {
 				month: 'short',
 				day: 'numeric',
@@ -288,6 +384,18 @@ export default {
 		},
 		getStatusLabel(loan) {
 			return loan.statusLabel || loan.status;
+		},
+		matchedLabel(loan) {
+			// Show "Nx matched" only when the ratio is greater than 1; a 1:1 match
+			// (ratio 1, or absent) shows a bare "Matched". The badge itself stays gated
+			// on the viewer-relative wasMatched flag.
+			const ratio = loan.matchRatio;
+			return ratio > 1 ? `${ratio}x matched` : 'Matched';
+		},
+		getDedication(loan) {
+			// Viewer-relative dedication for this loan (LoanUserProperties.dedication);
+			// null when the logged-in lender has no dedication on it, or no logged-in user.
+			return loan.userProperties?.dedication || null;
 		},
 		hasArrears(amount) {
 			// Only a positive amount is "in arrears"; zero/absent renders no line.
@@ -328,8 +436,19 @@ export default {
 			const verb = REFUNDED_OR_EXPIRED_STATUSES.has(loan.status) ? 'repaid/refunded' : 'repaid';
 			return `${verb} to ${recipient}`;
 		},
+		teamUrl(team) {
+			// Legacy parity: the read-only attributed team links to its team page,
+			// keyed off the human-readable teamPublicId (legacy `viewTeamSummary`).
+			// Null when no slug is resolvable, so the cell falls back to plain text.
+			return team?.teamPublicId ? `/team/${team.teamPublicId}` : null;
+		},
+		truncateTeamName(name) {
+			// The read-only attributed team name is truncated to 20 characters with a trailing ellipsis.
+			if (!name) return '';
+			return name.length > 20 ? `${name.slice(0, 20)}...` : name;
+		},
 		canReassignTeam(loan) {
-			// Legacy parity: the dropdown only appears when the loan is eligible AND the
+			// The dropdown only appears when the loan is eligible AND the
 			// user actually belongs to at least one team to reassign to. With no teams there
 			// is nothing to pick (and no "None" detach), so the cell stays read-only.
 			return Boolean(loan.userProperties?.canChangeTeamAssignment) && this.lendingTeams.length > 0;
@@ -376,15 +495,11 @@ export default {
 	},
 	data() {
 		return {
-			placeholders: [
-				{ span: 4 },
-				{ span: 1 },
-				{ span: 1, marginLeft: true },
-				{ span: 2, marginLeft: true },
-				{ span: 1, marginLeft: true },
-				{ span: 1, marginLeft: true },
-				{ span: 2 }
-			]
+			mdiHeart,
+			// Number of skeleton rows shown while loading. Each row mirrors a real row's
+			// height (image + stacked detail lines) so the table reserves representative
+			// space and the swap to loaded content doesn't jump.
+			skeletonRowCount: 5
 		};
 	}
 };
@@ -392,18 +507,34 @@ export default {
 
 <style lang="postcss" scoped>
 .scroll-gradient {
-	@apply tw-pointer-events-none tw-absolute tw-top-0 tw-right-0 tw-h-full;
+	@apply tw-pointer-events-none tw-absolute tw-top-0 tw-bottom-0;
 
-	width: 2rem;
-	background: linear-gradient(to left, #fff, rgb(255 255 255 / 0%));
+	width: 1.5rem;
+}
+
+.scroll-gradient--left {
+	@apply tw-left-0;
+
+	background: linear-gradient(to right, rgb(0 0 0 / 12%), rgb(0 0 0 / 0%));
+}
+
+.scroll-gradient--right {
+	@apply tw-right-0;
+
+	background: linear-gradient(to left, rgb(0 0 0 / 12%), rgb(0 0 0 / 0%));
+}
+
+.loan-details-cell {
+	max-width: 18rem;
 }
 
 .loan-image {
-	width: 50px;
-	height: 50px;
+	width: 3.125rem;
+	height: 3.125rem;
 }
 
 .team-cell {
-	max-width: 150px;
+	min-width: 10rem;
+	max-width: 13rem;
 }
 </style>

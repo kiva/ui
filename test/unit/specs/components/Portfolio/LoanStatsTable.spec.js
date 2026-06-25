@@ -106,7 +106,7 @@ describe('LoanStatsTable', () => {
 		const { formatValue } = LoanStatsTable.methods;
 
 		it('formats currency, percentage, and currency-loss rate values', () => {
-			expect(formatValue(1234.5, 'currency')).toBe('$1234.50');
+			expect(formatValue(1234.5, 'currency')).toBe('$1,234.50');
 			expect(formatValue(0.0123, 'percentage')).toBe('1.23%');
 			expect(formatValue(1.5, 'currencyLossRate')).toBe('1.50%');
 		});
@@ -262,8 +262,8 @@ describe('LoanStatsTable', () => {
 			vm.$options.apollo.result.call(vm, { data: fullData() });
 			await nextTick();
 
-			expect(statsRow(container, 'Amount lent')).toEqual(['Amount lent', '$1000.00', '$1500.00']);
-			expect(statsRow(container, 'Amount repaid')).toEqual(['Amount repaid', '$800.00', '$1200.00']);
+			expect(statsRow(container, 'Amount lent')).toEqual(['Amount lent', '$1,000.00', '$1,500.00']);
+			expect(statsRow(container, 'Amount repaid')).toEqual(['Amount repaid', '$800.00', '$1,200.00']);
 			expect(statsRow(container, 'Amount lost')).toEqual(['Amount lost', '$62.50', '$60.00']);
 			expect(statsRow(container, 'Amount refunded')).toEqual(['Amount refunded', '$25.00', '$30.00']);
 			expect(statsRow(container, 'Delinquency rate')).toEqual(['Delinquency rate', '1.23%', '2.00%']);
@@ -363,10 +363,10 @@ describe('LoanStatsTable', () => {
 			vm.$options.apollo.result.call(vm, { data: formatted() });
 			await nextTick();
 
-			expect(statsRow(container, 'Amount lent')[1]).toBe('$12500.00');
-			expect(statsRow(container, 'Amount repaid')[1]).toBe('$9800.50');
-			expect(statsRow(container, 'Amount ended')[1]).toBe('$9250.00');
-			expect(statsRow(container, 'Amount lent')[2]).toBe('$1500.00');
+			expect(statsRow(container, 'Amount lent')[1]).toBe('$12,500.00');
+			expect(statsRow(container, 'Amount repaid')[1]).toBe('$9,800.50');
+			expect(statsRow(container, 'Amount ended')[1]).toBe('$9,250.00');
+			expect(statsRow(container, 'Amount lent')[2]).toBe('$1,500.00');
 		});
 	});
 
@@ -377,18 +377,18 @@ describe('LoanStatsTable', () => {
 		// background (null = default); `tabbed` indents the label under its parent metric.
 		const expected = {
 			'Amount lent': { tabbed: false, bg: null },
-			'Amount repaid': { tabbed: false, bg: 'tw-bg-gray-50' },
+			'Amount repaid': { tabbed: false, bg: 'tw-bg-secondary' },
 			'Amount lost': { tabbed: false, bg: null },
-			'Amount refunded': { tabbed: false, bg: 'tw-bg-gray-50' },
-			'Delinquency rate': { tabbed: false, bg: 'tw-bg-white' },
-			'Amount in arrears': { tabbed: true, bg: 'tw-bg-white' },
-			'Outstanding loans': { tabbed: true, bg: 'tw-bg-white' },
-			'Default rate': { tabbed: false, bg: 'tw-bg-gray-50' },
-			'Amount defaulted': { tabbed: true, bg: 'tw-bg-gray-50' },
-			'Amount ended': { tabbed: true, bg: 'tw-bg-gray-50' },
-			'Currency loss rate': { tabbed: false, bg: 'tw-bg-white' },
-			'Amount of currency loss': { tabbed: true, bg: 'tw-bg-white' },
-			'Currency loss reimbursement': { tabbed: true, bg: 'tw-bg-white' },
+			'Amount refunded': { tabbed: false, bg: 'tw-bg-secondary' },
+			'Delinquency rate': { tabbed: false, bg: 'tw-bg-primary' },
+			'Amount in arrears': { tabbed: true, bg: 'tw-bg-primary' },
+			'Outstanding loans': { tabbed: true, bg: 'tw-bg-primary' },
+			'Default rate': { tabbed: false, bg: 'tw-bg-secondary' },
+			'Amount defaulted': { tabbed: true, bg: 'tw-bg-secondary' },
+			'Amount ended': { tabbed: true, bg: 'tw-bg-secondary' },
+			'Currency loss rate': { tabbed: false, bg: 'tw-bg-primary' },
+			'Amount of currency loss': { tabbed: true, bg: 'tw-bg-primary' },
+			'Currency loss reimbursement': { tabbed: true, bg: 'tw-bg-primary' },
 		};
 
 		const renderRows = async () => {
@@ -407,10 +407,10 @@ describe('LoanStatsTable', () => {
 			Object.entries(expected).forEach(([label, { bg }]) => {
 				const tr = trByLabel(container, label);
 				expect(tr, `row "${label}" should render`).toBeTruthy();
-				expect(tr.classList.contains('tw-bg-white'), `${label} white banding`)
-					.toBe(bg === 'tw-bg-white');
-				expect(tr.classList.contains('tw-bg-gray-50'), `${label} gray banding`)
-					.toBe(bg === 'tw-bg-gray-50');
+				expect(tr.classList.contains('tw-bg-primary'), `${label} white banding`)
+					.toBe(bg === 'tw-bg-primary');
+				expect(tr.classList.contains('tw-bg-secondary'), `${label} gray banding`)
+					.toBe(bg === 'tw-bg-secondary');
 			});
 		});
 
@@ -418,8 +418,157 @@ describe('LoanStatsTable', () => {
 			const container = await renderRows();
 			Object.entries(expected).forEach(([label, { tabbed }]) => {
 				const labelCell = trByLabel(container, label).querySelector('td');
-				expect(labelCell.classList.contains('tw-pl-6'), `${label} indent`).toBe(tabbed);
+				expect(labelCell.classList.contains('tw-pl-3'), `${label} indent`).toBe(tabbed);
 			});
+		});
+	});
+
+	describe('Salesforce help-text tooltips (MP-2858)', () => {
+		const flushPromises = () => new Promise(resolve => { setTimeout(resolve); });
+
+		const solutionResponse = (name, note) => ({
+			data: { general: { salesforceSolution: { name, note } } },
+		});
+
+		// Mirror the suite's direct-handler style: drive fetchSolution against a bare context
+		// carrying its own apollo + cache state and the component's real sanitizeNote.
+		const makeCtx = (overrides = {}) => ({
+			solutions: {},
+			pendingSolutions: {},
+			sanitizeNote: LoanStatsTable.methods.sanitizeNote,
+			...overrides,
+		});
+		const callFetch = (ctx, row) => LoanStatsTable.methods.fetchSolution.call(ctx, row);
+
+		// Context for the visibility path: onTooltipVisible calls this.fetchSolution when the
+		// tooltip opens, so bind the real methods together against shared state.
+		const makeVisibleCtx = (overrides = {}) => {
+			const ctx = makeCtx(overrides);
+			ctx.fetchSolution = row => LoanStatsTable.methods.fetchSolution.call(ctx, row);
+			return ctx;
+		};
+		const callVisible = (ctx, row, isVisible) => LoanStatsTable.methods
+			.onTooltipVisible.call(ctx, row, isVisible);
+
+		const amountLentRow = { key: 'amount_lent', salesforceId: '50150000000S8sy' };
+
+		it('renders a help-text info-icon trigger for every row mapped to a Salesforce solution', async () => {
+			const { getVm, container } = renderTable();
+			const vm = getVm();
+			vm.$options.apollo.result.call(vm, { data: fullData() });
+			await nextTick();
+
+			vm.statsRows.forEach(row => {
+				const trigger = container.querySelector(`[data-testid="stat-tooltip-trigger-${row.key}"]`);
+				if (row.salesforceId) {
+					expect(trigger, `trigger for ${row.key}`).not.toBeNull();
+				} else {
+					expect(trigger, `no trigger for ${row.key}`).toBeNull();
+				}
+			});
+			// 12 of the 13 comparison rows are mapped; Currency loss rate has no help-text
+			// content, so it intentionally renders no info icon.
+			const mapped = vm.statsRows.filter(row => row.salesforceId);
+			expect(mapped).toHaveLength(12);
+			expect(container.querySelectorAll('[data-testid^="stat-tooltip-trigger-"]')).toHaveLength(12);
+			expect(container.querySelector('[data-testid="stat-tooltip-trigger-currency_loss_rate"]')).toBeNull();
+		});
+
+		it('lazy-fetches the solution when the tooltip becomes visible', async () => {
+			const query = vi.fn().mockResolvedValue(solutionResponse('Amount lent', '<p>note</p>'));
+			const ctx = makeVisibleCtx({ apollo: { query } });
+
+			callVisible(ctx, amountLentRow, true);
+			await flushPromises();
+
+			expect(query).toHaveBeenCalledTimes(1);
+		});
+
+		it('does not fetch while the tooltip is not visible', () => {
+			const query = vi.fn();
+			const ctx = makeVisibleCtx({ apollo: { query } });
+
+			callVisible(ctx, amountLentRow, false);
+
+			expect(query).not.toHaveBeenCalled();
+		});
+
+		it('lazy-fetches and caches the solution the first time a tooltip opens', async () => {
+			const query = vi.fn().mockResolvedValue(solutionResponse('Amount lent', '<p>How much you lent.</p>'));
+			const ctx = makeCtx({ apollo: { query } });
+
+			callFetch(ctx, amountLentRow);
+			await flushPromises();
+
+			expect(query).toHaveBeenCalledTimes(1);
+			expect(query.mock.calls[0][0]).toEqual(expect.objectContaining({
+				variables: { id: '50150000000S8sy' },
+			}));
+			expect(ctx.solutions.amount_lent).toEqual({
+				name: 'Amount lent',
+				note: '<p>How much you lent.</p>',
+			});
+		});
+
+		it('does not refetch a solution already cached for a row', async () => {
+			const query = vi.fn().mockResolvedValue(solutionResponse('Amount lent', '<p>note</p>'));
+			const ctx = makeCtx({ apollo: { query } });
+
+			callFetch(ctx, amountLentRow);
+			await flushPromises();
+			callFetch(ctx, amountLentRow);
+			await flushPromises();
+
+			expect(query).toHaveBeenCalledTimes(1);
+		});
+
+		it('does not issue a second request while the first is still in flight', async () => {
+			let resolveQuery;
+			const query = vi.fn().mockReturnValue(new Promise(resolve => { resolveQuery = resolve; }));
+			const ctx = makeCtx({ apollo: { query } });
+
+			callFetch(ctx, amountLentRow);
+			callFetch(ctx, amountLentRow);
+
+			expect(query).toHaveBeenCalledTimes(1);
+
+			resolveQuery(solutionResponse('Amount lent', '<p>note</p>'));
+			await flushPromises();
+		});
+
+		it('skips rows that have no mapped Salesforce id', () => {
+			const query = vi.fn();
+			const ctx = makeCtx({ apollo: { query } });
+
+			callFetch(ctx, { key: 'unmapped', salesforceId: undefined });
+
+			expect(query).not.toHaveBeenCalled();
+		});
+
+		it('strips the legacy-forbidden tags and inline styles from the note before caching', async () => {
+			const dirtyNote = '<p style="color:red">Keep this'
+				+ '<span>drop span</span>'
+				+ '<font>drop font</font>'
+				+ '<blockquote>drop quote</blockquote>'
+				+ '<img src="x">'
+				+ '<iframe src="evil"></iframe>'
+				+ '<script>alert(1)</script>'
+				+ '</p>';
+			const query = vi.fn().mockResolvedValue(solutionResponse('Amount lent', dirtyNote));
+			const ctx = makeCtx({ apollo: { query } });
+
+			callFetch(ctx, amountLentRow);
+			await flushPromises();
+
+			const { note } = ctx.solutions.amount_lent;
+			expect(note).toContain('Keep this');
+			expect(note).not.toContain('<span');
+			expect(note).not.toContain('<font');
+			expect(note).not.toContain('<blockquote');
+			expect(note).not.toContain('<img');
+			expect(note).not.toContain('<iframe');
+			expect(note).not.toContain('<script');
+			expect(note).not.toContain('style=');
 		});
 	});
 });

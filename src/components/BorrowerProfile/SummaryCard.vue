@@ -29,11 +29,27 @@
 				/>
 			</div>
 			<div class="tw-flex-auto">
-				<borrower-name
-					data-testid="bp-summary-borrower-name"
-					class="tw-mb-0.5"
-					:name="name"
-				/>
+				<div class="tw-flex tw-items-center tw-mb-0.5">
+					<borrower-name
+						data-testid="bp-summary-borrower-name"
+						:name="name"
+					/>
+					<kv-icon-button
+						v-if="anonymizationLevel === 'pii'"
+						:icon="mdiInformationOutline"
+						size="small"
+						class="tw-ml-0.5 tw-shrink-0 tw--my-2 tw-text-secondary"
+						data-testid="bp-summary-pii-info"
+						aria-label="Why is this borrower anonymous?"
+						@click="showDefinition({ cid: 'bp-def-anonymized-loan', sfid: '501US00000NRTYa' })"
+						v-kv-track-event="[
+							'Borrower profile',
+							'click-PII-anonymization-info',
+							'PII anonymization',
+							loanId
+						]"
+					/>
+				</div>
 				<template v-if="isLoading">
 					<div class="tw-flex tw-flex-wrap tw-mb-3">
 						<kv-loading-placeholder class="tw-mb-1" style="height: 0.5rem;" />
@@ -76,6 +92,19 @@
 		</div>
 		<p class="tw-flex-none tw-w-full tw-mb-2 tw-text-headline" data-testid="bp-summary-loan-use">
 			{{ use }}
+			<kv-text-link
+				v-if="anonymizationLevel === 'full'"
+				data-testid="bp-summary-anonymous-learn-more"
+				@click="showDefinition({ cid: 'bp-def-anonymous-description', sfid: '50150000000SXVz' })"
+				v-kv-track-event="[
+					'Borrower profile',
+					'click-anonymous-loan-use-info',
+					'Anonymous loan use',
+					loanId
+				]"
+			>
+				Learn more
+			</kv-text-link>
 		</p>
 		<div class="tw-flex-auto tw-inline-flex tw-w-full">
 			<template v-if="isLoading">
@@ -106,16 +135,21 @@
 			/>
 		</div>
 		<slot name="sharebutton"></slot>
+		<content-lightbox ref="lightbox" />
 	</section>
 </template>
 
 <script>
 import { gql } from 'graphql-tag';
-import { mdiMapMarker } from '@mdi/js';
+import { mdiMapMarker, mdiInformationOutline } from '@mdi/js';
 import HeartComment from '#src/assets/icons/inline/heart-comment.svg';
-import { KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
+import {
+	KvIconButton, KvMaterialIcon, KvLoadingPlaceholder, KvTextLink,
+} from '@kiva/kv-components';
+import useBorrowerProfileDefinitions from '#src/composables/useBorrowerProfileDefinitions';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
+import ContentLightbox from './ContentLightbox';
 import LoanProgress from './LoanProgress';
 import SummaryTag from './SummaryTag';
 import LoanBookmark from './LoanBookmark';
@@ -196,22 +230,30 @@ export default {
 	components: {
 		BorrowerImage,
 		BorrowerName,
+		ContentLightbox,
+		KvIconButton,
 		KvMaterialIcon,
+		KvTextLink,
 		LoanProgress,
 		SummaryTag,
 		LoanBookmark,
 		KvLoadingPlaceholder,
 		HeartComment,
 	},
+	created() {
+		this.definitions = useBorrowerProfileDefinitions(this.apollo);
+	},
 	data() {
 		return {
 			isLoading: true,
 			isLoggedIn: false,
+			anonymizationLevel: '',
 			activityName: '',
 			countryName: '',
 			fundraisingPercent: 0,
 			hash: '',
 			mdiMapMarker,
+			mdiInformationOutline,
 			name: '',
 			status: '',
 			timeLeft: '',
@@ -269,7 +311,13 @@ export default {
 			}
 			this.totalComments = loan?.comments?.totalCount ?? 0;
 			this.isLoading = false;
-		}
+		},
+		async showDefinition({ cid, sfid }) {
+			const result = await this.definitions.resolveDefinition({ cid, sfid });
+			if (result) {
+				this.$refs.lightbox.open(result);
+			}
+		},
 	},
 	mounted() {
 		this.fetchSummaryCardData();
@@ -302,6 +350,7 @@ export default {
 			this.name = loan?.name ?? '';
 			this.status = loan?.status ?? '';
 			this.use = loan?.fullLoanUse ?? '';
+			this.anonymizationLevel = loan?.anonymizationLevel ?? '';
 		},
 	},
 };

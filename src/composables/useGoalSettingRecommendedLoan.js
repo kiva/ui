@@ -6,6 +6,16 @@ import {
 import { useRouter } from 'vue-router';
 import useTipMessage from '#src/composables/useTipMessage';
 
+export const GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO = 'portfolio';
+export const GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT = 'post-checkout';
+export const GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE = 'goals-page';
+
+const ENTRYPOINT_TRACK_CATEGORY = {
+	[GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO]: 'portfolio',
+	[GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT]: 'post-checkout',
+	[GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE]: 'event-tracking',
+};
+
 /**
  * Recommended-loan step state shared by {@link GoalSettingModal.vue} and
  * {@link GoalSettingContainer.vue}.
@@ -36,16 +46,6 @@ import useTipMessage from '#src/composables/useTipMessage';
  * @param {object} [options.appConfig] — From GoalSettingModal (`$appConfig`), e.g. `photoPath`.
  * @param {object} options.apollo — Apollo client instance for tip message mutations.
  */
-export const GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO = 'portfolio';
-export const GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT = 'post-checkout';
-export const GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE = 'goals-page';
-
-const ENTRYPOINT_TRACK_CATEGORY = {
-	[GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO]: 'portfolio',
-	[GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT]: 'post-checkout',
-	[GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE]: 'event-tracking',
-};
-
 export default function useGoalSettingRecommendedLoan({
 	emit,
 	goalRecommendedLoanEnable,
@@ -209,10 +209,10 @@ export default function useGoalSettingRecommendedLoan({
 	});
 
 	watch(show, visible => {
-		if (!visible) {
-			clearRecommendedLoanData();
-			return;
-		}
+		if (!visible) return;
+		// Reset on open so the recommended-loan view stays rendered through
+		// the previous close animation and starts fresh on the next session.
+		clearRecommendedLoanData();
 		showPostGoalLoanRecommendation.value = false;
 	});
 

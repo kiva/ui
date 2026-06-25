@@ -284,6 +284,14 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * The user's most recent loan ids (from `my.loans`), excluded from the
+	 * recommended-loan fetch alongside this checkout's loans.
+	 */
+	recentLoanIds: {
+		type: Array,
+		default: () => ([]),
+	},
 });
 
 const receiptSection = ref(null);
@@ -344,9 +352,12 @@ const selectedCategory = ref(categories[0]);
 // Recommended-loan-after-goal step (shared logic with GoalSettingContainer)
 const loadedSetData = ref(false);
 const isSettingGoal = ref(false);
-// Exclude the loans the user just supported in this transaction so they don't
-// resurface as the recommendation.
-const transactionLoanIds = computed(() => (props.loans ?? []).map(loan => loan?.id).filter(Boolean));
+// Exclude the loans the user just supported in this transaction plus their most
+// recent loans (`my.loans`) so none of them resurface as the recommendation.
+const excludedLoanIds = computed(() => {
+	const transactionLoanIds = (props.loans ?? []).map(loan => loan?.id).filter(Boolean);
+	return [...new Set([...transactionLoanIds, ...props.recentLoanIds])];
+});
 const {
 	showRecommendLoanAfterGoalView,
 	hasRecommendedLoans,
@@ -370,7 +381,7 @@ const {
 	userGoal,
 	kvTrackEvent: $kvTrackEvent,
 	entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT,
-	additionalExcludedLoanIds: transactionLoanIds,
+	additionalExcludedLoanIds: excludedLoanIds,
 	appConfig: $appConfig,
 	apollo,
 });

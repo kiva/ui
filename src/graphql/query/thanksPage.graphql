@@ -31,6 +31,9 @@ query thanksPage {
 		}
 		loans {
 			totalCount
+			values {
+				id
+			}
 		}
 		communicationSettings {
 			lenderNews

@@ -277,7 +277,7 @@
 				>
 					Back
 				</KvButton>
-				<KvButton @click="handleClick">
+				<KvButton :disabled="isSubmitting" @click="handleClick">
 					{{ ctaCopy }}
 				</KvButton>
 			</div>
@@ -434,14 +434,23 @@ const props = defineProps({
 		type: Array,
 		default: () => ([]),
 	},
+	/**
+	 * Loan ids to exclude from the recommended-loan fetch (e.g. the user's most
+	 * recent loans). Forwarded to the composable as `additionalExcludedLoanIds`.
+	 */
+	excludedLoanIds: {
+		type: Array,
+		default: () => ([]),
+	},
 });
 
 const {
-	numberOfLoans, isGoalSet, show, goalRecommendedLoanEnable, basketItems,
+	numberOfLoans, isGoalSet, show, goalRecommendedLoanEnable, basketItems, excludedLoanIds,
 } = toRefs(props);
 
 const formStep = ref(1);
 const showCategories = ref(false);
+const isSubmitting = ref(false);
 const selectedLoanNumber = ref(0);
 const isEditing = ref(props.controlledIsEditing);
 // eslint-disable-next-line max-len
@@ -484,6 +493,7 @@ const {
 	userGoal,
 	kvTrackEvent: $kvTrackEvent,
 	entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO,
+	additionalExcludedLoanIds: excludedLoanIds,
 	appConfig,
 	apollo,
 });
@@ -602,6 +612,11 @@ const handleClick = () => {
 		formStep.value = 1;
 		emit('update-goal-choices', selectedCategory.value);
 	} else {
+		// Guard against the same click emitting twice
+		// since each emit triggers a goal write.
+		if (isSubmitting.value) return;
+		isSubmitting.value = true;
+
 		const categorySelected = selectedCategory.value?.badgeId;
 		$kvTrackEvent(
 			props.isThanksPage ? 'post-checkout' : 'portfolio',
@@ -632,15 +647,12 @@ const resetForm = () => {
 	// Reset selected category to default (women's equality)
 	selectedCategory.value = { ...categories[0] };
 	showCategories.value = false;
+	isSubmitting.value = false;
 	resetRecommendedLoanState();
 };
 
 const closeLightbox = () => {
 	emit('close-goal-modal');
-	// Avoid showing category choice step when closing the modal
-	setTimeout(() => {
-		resetForm();
-	}, 300);
 };
 
 const editGoalCategory = () => {
@@ -680,6 +692,7 @@ watch(show, async newVal => {
 	if (!newVal) {
 		return;
 	}
+	resetForm();
 	isLoadingData.value = true;
 	await loadGoalData();
 	const { target, category: goalCategory } = userGoal.value;

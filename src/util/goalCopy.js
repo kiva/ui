@@ -50,11 +50,11 @@ const goalCopy = {
 
 	/** User helped exactly 1 woman last year */
 	// eslint-disable-next-line max-len
-	titleLastYearSingleWoman: (count, cssClass = 'tw-text-eco-green-3') => `Last year, you helped ${highlight(`${count} woman`, cssClass)} shape her future!`,
+	titleLastYearSingleWoman: (count, cssClass = 'tw-text-eco-green-3') => `Last year, you helped ${highlight(`${count} woman`, cssClass)} shape her future`,
 
 	/** User helped multiple people last year (any category) */
 	// eslint-disable-next-line max-len
-	titleLastYearMultiplePeople: (count, categoryLabel, cssClass = 'tw-text-eco-green-3') => `Last year, you helped ${highlight(`${count} ${categoryLabel}`, cssClass)} shape their futures!`,
+	titleLastYearMultiplePeople: (count, categoryLabel, cssClass = 'tw-text-eco-green-3') => `Last year, you helped ${highlight(`${count} ${categoryLabel}`, cssClass)} shape their futures`,
 
 	/** Date-aware title for the womens category using last-year lending history when available */
 	titleGoalSignupWomensLastYear(loansLastYear = 0, { cssClass = 'tw-text-eco-green-3', date } = {}) {
