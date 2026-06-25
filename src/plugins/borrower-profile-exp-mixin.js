@@ -91,7 +91,7 @@ export default {
 			}
 		},
 		addToBasket({
-			loanId, lendAmount, loan, onError, onSuccess,
+			loanId, lendAmount, loan, onError, onSuccess, skipAddedToBasketModal = false,
 		}) {
 			if (!loanId || !lendAmount) return;
 			// Recommended-loan flow already has the loan object from the card props,
@@ -154,10 +154,15 @@ export default {
 						logFormatter(e, 'error');
 					}
 					const basketId = this.cookieStore.get('kvbskt');
-					// Show modal after 1s (Defined in CSS)
-					setTimeout(() => {
-						this.formatAddedLoan();
-					}, 1000);
+					// Show modal after 1s (Defined in CSS), unless the caller opts out.
+					// The goal-set recommended-loan flow adds to basket while its own
+					// modal lightbox is open, so the standalone add-to-basket modal
+					// would otherwise stack behind it and look confusing.
+					if (!skipAddedToBasketModal) {
+						setTimeout(() => {
+							this.formatAddedLoan();
+						}, 1000);
+					}
 					return this.apollo.query({
 						query: loanCardBasketed,
 						variables: {

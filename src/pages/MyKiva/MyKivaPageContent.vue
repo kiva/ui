@@ -46,7 +46,7 @@
 				:goals-row-enabled="goalsRowEnabled"
 				:basket-items="basketItems"
 				:is-adding="isAdding"
-				@add-to-basket="addToBasket"
+				@add-to-basket="addGoalRecommendedLoanToBasket"
 			/>
 		</section>
 		<section class="tw-mt-4" id="mykiva-achievements">
@@ -440,6 +440,13 @@ export default {
 		},
 	},
 	methods: {
+		// Add-to-basket from the goal-setting recommended-loan flow. The goal
+		// modal lightbox is open over the page, so suppress the standalone
+		// add-to-basket modal that would otherwise stack behind it and look
+		// confusing. Other loan sections keep the modal.
+		addGoalRecommendedLoanToBasket(payload) {
+			this.addToBasket({ ...payload, skipAddedToBasketModal: true });
+		},
 		openGoalSettingModal() {
 			this.$refs.lendingStatsRef?.openGoalModal?.();
 		},
