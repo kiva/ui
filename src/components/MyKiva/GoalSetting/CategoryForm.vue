@@ -10,7 +10,6 @@
 					? 'tw-border-2 tw-border-action'
 					: 'tw-border-2 tw-border-transparent'
 			"
-			:style="isLarge && isGoalTileExperimentEnabled ? { minWidth: DESKTOP_WIDTH } : {}"
 			@click="selectCategory(category.id)"
 		>
 			<div
@@ -52,7 +51,7 @@ const DESKTOP_HEIGHT = '174px';
 
 const emit = defineEmits(['category-selected']);
 
-const { isMedium, isLarge } = useBreakpoints();
+const { isMedium } = useBreakpoints();
 
 const props = defineProps({
 	categories: {
@@ -62,10 +61,6 @@ const props = defineProps({
 	preSelectedCategory: {
 		type: String,
 		default: '1',
-	},
-	isGoalTileExperimentEnabled: {
-		type: Boolean,
-		default: false,
 	},
 });
 

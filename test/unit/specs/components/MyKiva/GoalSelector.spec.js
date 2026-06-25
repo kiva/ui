@@ -368,7 +368,7 @@ describe('GoalSelector', () => {
 			},
 		];
 
-		const ValuePropsWrapper = {
+		const NoGoalCopyWrapper = {
 			components: { GoalSelector },
 			props: {
 				tieredAchievements: { type: Array, default: () => [] },
@@ -385,7 +385,7 @@ describe('GoalSelector', () => {
 			`,
 		};
 
-		const { container, getByRole } = render(ValuePropsWrapper, {
+		const { container, getByRole } = render(NoGoalCopyWrapper, {
 			global: {
 				...globalOptions,
 				provide: {

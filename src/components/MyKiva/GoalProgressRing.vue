@@ -1,11 +1,6 @@
 <template>
 	<div class="tw-h-full tw-flex tw-flex-col tw-justify-between" :class="containerClass">
 		<div :class="titleContainerClass">
-			<kv-material-icon
-				v-if="isGoalTileExperimentEnabled && !isLarge && isModalVariant && !isUpdatingGoal"
-				class="tw-w-3.5 tw-h-3.5 tw-text-brand tw-mx-auto tw-mb-2"
-				:icon="mdiCheckCircle"
-			/>
 			<h2 v-if="isModalVariant" class="tw-text-headline tw-font-medium" :class="titleClass">
 				{{ titleText }}
 			</h2>
@@ -97,7 +92,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { mdiPencilOutline, mdiCheckCircle } from '@mdi/js';
+import { mdiPencilOutline } from '@mdi/js';
 import { useRouter } from 'vue-router';
 
 import { KvButton, KvProgressCircle, KvMaterialIcon } from '@kiva/kv-components';
@@ -107,7 +102,6 @@ import {
 	ID_SUPPORT_ALL,
 	ID_US_ECONOMIC_EQUALITY,
 } from '#src/composables/useBadgeData';
-import useBreakpoints from '#src/composables/useBreakpoints';
 
 const STACKED_PROGRESS_DIGIT_THRESHOLD = 3;
 const SMALL_HEADING_DIGIT_THRESHOLD = 5;
@@ -186,18 +180,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	/**
-	 * Experiment flag to enable new goal tile design
-	 */
-	isGoalTileExperimentEnabled: {
-		type: Boolean,
-		default: false,
-	},
 });
 
 const emit = defineEmits(['button-click', 'edit-button-click', 'edit-goal-from-settings']);
 const router = useRouter();
-const { isLarge } = useBreakpoints();
 
 const getDigitCount = value => String(value ?? 0).length;
 

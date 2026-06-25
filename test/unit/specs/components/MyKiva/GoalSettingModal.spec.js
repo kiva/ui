@@ -126,8 +126,8 @@ describe('GoalSettingModal', () => {
 		vi.clearAllMocks();
 	});
 
-	it('does not render the green goal tile value-props panel when the old experiment flag is present', () => {
-		const wrapper = mountModal({ isGoalTileExperimentEnabled: true });
+	it('does not render the removed green goal tile value-props panel', () => {
+		const wrapper = mountModal();
 		const selector = wrapper.findComponent(GoalSelectorStub);
 
 		expect(selector.exists()).toBe(true);
