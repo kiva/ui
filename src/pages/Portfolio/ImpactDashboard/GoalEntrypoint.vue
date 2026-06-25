@@ -123,7 +123,7 @@ onMounted(() => {
 	width: min(100%, 14rem);
 }
 
-@screen md {
+@screen lg {
 	.goal-entrypoint {
 		background-image: url('/src/assets/images/my-kiva/featured-goal-card/no-goal-state.png');
 		background-position: calc(100% + 160px) bottom;
@@ -132,12 +132,6 @@ onMounted(() => {
 
 	.goal-entrypoint__content {
 		max-width: 28rem;
-	}
-}
-
-@screen lg {
-	.goal-entrypoint {
-		background-size: auto 100%;
 	}
 }
 </style>
