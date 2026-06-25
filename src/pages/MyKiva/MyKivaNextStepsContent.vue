@@ -276,7 +276,6 @@
 			:show-goal-selector="true"
 			:tiered-achievements="heroTieredAchievements"
 			:is-updating-goal="isUpdatingGoal"
-			:show-goal-value-props-copy="false"
 			@close-goal-modal="closeGoalModal"
 			@set-goal="setGoal"
 		/>

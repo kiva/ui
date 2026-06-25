@@ -381,7 +381,6 @@ describe('GoalSelector', () => {
 					:tiered-achievements="tieredAchievements"
 					selected-category-id="${ID_WOMENS_EQUALITY}"
 					selected-category-name="Women"
-					show-goal-value-props-copy
 				/>
 			`,
 		};
@@ -500,7 +499,6 @@ describe('GoalSelector', () => {
 						:tiered-achievements="tieredAchievements"
 						:selected-category-id="selectedCategoryId"
 						:selected-category-name="selectedCategoryName"
-						show-goal-value-props-copy
 					/>
 				</div>
 			`,

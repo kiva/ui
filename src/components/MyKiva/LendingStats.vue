@@ -236,8 +236,6 @@
 			:show-goal-selector="true"
 			:tiered-achievements="heroTieredAchievements"
 			:is-updating-goal="isUpdatingGoal"
-			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
-			:show-goal-value-props-copy="false"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:excluded-loan-ids="recentLoanIds"
 			:basket-items="basketItems"
