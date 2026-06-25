@@ -29,11 +29,27 @@
 				/>
 			</div>
 			<div class="tw-flex-auto">
-				<borrower-name
-					data-testid="bp-summary-borrower-name"
-					class="tw-mb-0.5"
-					:name="name"
-				/>
+				<div class="tw-flex tw-items-center tw-mb-0.5">
+					<borrower-name
+						data-testid="bp-summary-borrower-name"
+						:name="name"
+					/>
+					<kv-icon-button
+						v-if="anonymizationLevel === 'pii'"
+						:icon="mdiInformationOutline"
+						size="small"
+						class="tw-ml-0.5 tw-shrink-0 tw--my-2 tw-text-secondary"
+						data-testid="bp-summary-pii-info"
+						aria-label="Why is this borrower anonymous?"
+						@click="openDefinition({ cid: 'bp-def-anonymized-loan', sfid: '501US00000NRTYa' })"
+						v-kv-track-event="[
+							'Borrower profile',
+							'click-PII-anonymization-info',
+							'PII anonymization',
+							loanId
+						]"
+					/>
+				</div>
 				<template v-if="isLoading">
 					<div class="tw-flex tw-flex-wrap tw-mb-3">
 						<kv-loading-placeholder class="tw-mb-1 tw-h-2" />
@@ -77,6 +93,19 @@
 		</div>
 		<p class="tw-flex-none tw-w-full tw-mb-2 tw-text-headline" data-testid="bp-summary-loan-use">
 			{{ use }}
+			<kv-text-link
+				v-if="anonymizationLevel === 'full'"
+				data-testid="bp-summary-anonymous-learn-more"
+				@click="openDefinition({ cid: 'bp-def-anonymous-description', sfid: '50150000000SXVz' })"
+				v-kv-track-event="[
+					'Borrower profile',
+					'click-anonymous-loan-use-info',
+					'Anonymous loan use',
+					loanId
+				]"
+			>
+				Learn more
+			</kv-text-link>
 		</p>
 		<div class="tw-flex-auto tw-inline-flex tw-w-full">
 			<template v-if="isLoading">
@@ -112,9 +141,11 @@
 
 <script>
 import { gql } from 'graphql-tag';
-import { mdiMapMarker } from '@mdi/js';
+import { mdiMapMarker, mdiInformationOutline } from '@mdi/js';
 import HeartComment from '#src/assets/icons/inline/heart-comment.svg';
-import { KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
+import {
+	KvMaterialIcon, KvLoadingPlaceholder, KvIconButton, KvTextLink,
+} from '@kiva/kv-components';
 import { isActivelyInPfp } from '#src/util/loanUtils';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
@@ -215,11 +246,17 @@ const mountQuery = gql`
 
 export default {
 	name: 'SummaryCard',
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { from: 'apollo' },
+		cookieStore: { from: 'cookieStore' },
+		openDefinition: { from: 'openDefinition', default: () => () => {} },
+	},
 	components: {
 		BorrowerImage,
 		BorrowerName,
+		KvIconButton,
 		KvMaterialIcon,
+		KvTextLink,
 		LoanProgress,
 		SummaryTag,
 		LoanBookmark,
@@ -247,6 +284,7 @@ export default {
 			countryName: this.loan?.geocode?.country?.name ?? '',
 			fundraisingPercent: hasLoanData ? (this.loan?.fundraisingPercent ?? 0) : 0,
 			mdiMapMarker,
+			mdiInformationOutline,
 			timeLeft: this.loan?.fundraisingTimeLeft ?? '',
 			unreservedAmount: this.loan?.unreservedAmount ?? '0',
 			distributionModel: this.loan?.distributionModel ?? '',
@@ -274,6 +312,9 @@ export default {
 		},
 		use() {
 			return this.loan?.fullLoanUse ?? '';
+		},
+		anonymizationLevel() {
+			return this.loan?.anonymizationLevel ?? '';
 		},
 		effectiveProgressPercent() {
 			if (this.status === 'payingBack') {
