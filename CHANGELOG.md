@@ -1,3 +1,60 @@
+## [3.75.0](https://github.com/kiva/ui/compare/v3.74.0...v3.75.0) (2026-06-25)
+
+### 🎉 New Features
+
+* [MP-2904] - exclude last loans on recommended loan component ([#7016](https://github.com/kiva/ui/issues/7016)) ([1c5eee0](https://github.com/kiva/ui/commit/1c5eee0ff38fb64fff333ce661fbb05a1ec7abc5))
+* adding guard to create goal to avoid duplicate creation ([916adb7](https://github.com/kiva/ui/commit/916adb79c10e43f45a86532c39141c4b2bbb9bf5))
+* implement several fe features for loans-beta ([#7018](https://github.com/kiva/ui/issues/7018)) ([6412584](https://github.com/kiva/ui/commit/641258489d0ae1163b79ac29579d68b52fd9ebde))
+* **LoanDescription:** hide borrower names when anonymized ([39ebd1e](https://github.com/kiva/ui/commit/39ebd1e331463ba61a6c9b7ac641a8fc813225f9))
+* make visible previous years goals with progress in impact row ([491066e](https://github.com/kiva/ui/commit/491066efd0dfdba3dd83abb41aac7f88b4335089))
+* mp-2870-fix-mobile-bg-image ([bcf4a35](https://github.com/kiva/ui/commit/bcf4a3520123d5cf6e8abc295fcbab1e1a3a11fc))
+* mp-2870-fix-mobile-bg-image ([a901648](https://github.com/kiva/ui/commit/a901648b9c92a275eac0548e907371c2c895a211))
+* mp-2872-more-copy-updates ([557799a](https://github.com/kiva/ui/commit/557799a6ed42a90a02cfa28786e2bd11dbd7eb79))
+* remaining changes for functionality parity between loans and loans-beta ([#7020](https://github.com/kiva/ui/issues/7020)) ([0244639](https://github.com/kiva/ui/commit/0244639a777b5b32a024906f0c7cc733176b784f))
+* **SummaryCard:** add anonymization affordances ([537aaa5](https://github.com/kiva/ui/commit/537aaa56f854150b652b033917138a977e24ce9d))
+* **SummaryCard:** use Contentful-first definitions for PII and anon-loan-use lightboxes ([b1fad96](https://github.com/kiva/ui/commit/b1fad96e50d5bc79a730faa2324becab75c58b59))
+* update copy used for previous goals ([873d19f](https://github.com/kiva/ui/commit/873d19f03f6944997cd21201546279eb33b2e4c9))
+* **useBorrowerProfileDefinitions:** extract shared definitions composable ([0ecfcd8](https://github.com/kiva/ui/commit/0ecfcd8df9e0a6bca4f7a8f37e6185807ec7d03e))
+
+### 🐛 Bugfixes
+
+* avoid progress-ring or form flash when closing goal modal ([5cdb940](https://github.com/kiva/ui/commit/5cdb940a6409258f5c99631a944542784781b43b))
+* **BorrowerProfile:** guard delayed ContentLightbox clear against reopen ([7d84d79](https://github.com/kiva/ui/commit/7d84d79d1c86e0d567e79a03123c31f55c4be397))
+* **BorrowerProfile:** keep PII info icon inline with the borrower name ([07f2290](https://github.com/kiva/ui/commit/07f229054325680c8671c3848b61ea4d489cfb2d))
+* **BorrowerProfile:** remove definitions from data() in DetailsTabs and SummaryCard ([02b5264](https://github.com/kiva/ui/commit/02b5264234a4a38593d076b00909cae35445a07d))
+* **BorrowerProfile:** retry definition load and fall back when Contentful fails ([872a97f](https://github.com/kiva/ui/commit/872a97f2f1cab64665a287b364cdca17544ba8c7))
+* **BorrowerProfile:** suppress translation note on fully anonymized loans ([c81cbe6](https://github.com/kiva/ui/commit/c81cbe642c4a731296a5a556ef6b182710f452c7))
+* lint ([4fa970d](https://github.com/kiva/ui/commit/4fa970d7d1ee04553e71140667ad449ab5d916d8))
+* loans page styling polish design ([#7022](https://github.com/kiva/ui/issues/7022)) ([368a24f](https://github.com/kiva/ui/commit/368a24f1c9e5b195c235374c69c37fb9fd39c6b8))
+* matching line display in basket ([535b7b5](https://github.com/kiva/ui/commit/535b7b5bcfda740c2323d67bd0bdd017e0179560))
+* more loans beta parity ([#7025](https://github.com/kiva/ui/issues/7025)) ([40f6a04](https://github.com/kiva/ui/commit/40f6a047c389db9dedd7cac7c2b07ede27749232))
+* parity issues resolved following automated comparions ([#7024](https://github.com/kiva/ui/issues/7024)) ([3d66432](https://github.com/kiva/ui/commit/3d66432faf7f70075e6ea7e5ec4e6f4d822a38ef))
+* solve comments and update copy for current goal ([6fcc8dc](https://github.com/kiva/ui/commit/6fcc8dc9c89378d44870cb03f3d857076a50f81a))
+* **SummaryCard:** point PII lightbox at populated Salesforce solution ([e817162](https://github.com/kiva/ui/commit/e8171624967dfe40b4bf6b35bba844185975921a))
+* **useBorrowerProfileDefinitions:** add promise guard, fix forceSalesforce path ([3e42479](https://github.com/kiva/ui/commit/3e4247908d0a657f130b15b8ee552510a912ce67))
+
+### 🪚 Refactors
+
+* **borrower-profile:** extract shared ContentLightbox shell ([92b3519](https://github.com/kiva/ui/commit/92b3519e02b97e1d2db1fd283c2306d6f148245d))
+* **BorrowerProfile:** use KvTextLink and KvIconButton in SummaryCard ([818c877](https://github.com/kiva/ui/commit/818c8778a66dffb0a312b0107ab4b1b92753b742))
+* **DetailsTabs:** use shared useBorrowerProfileDefinitions composable ([6b58617](https://github.com/kiva/ui/commit/6b586178b73c065ecbb8c9633ae5e56da6589728))
+
+### 📚 Documentation Changes
+
+* **stories:** remove ticket numbers from comments ([0dcaaaf](https://github.com/kiva/ui/commit/0dcaaaf1ac4d4709b04d77aed125db35f15cbcf5))
+
+### 🔍 Tests
+
+* **useBorrowerProfileDefinitions:** add tests and update SummaryCard for Contentful-first ([eafb84f](https://github.com/kiva/ui/commit/eafb84f0a7c7239d008cc478bb4e558a51e0e123))
+
+### 🧹 Chores
+
+* adding guard for different goal creation entrypoints ([260c1a4](https://github.com/kiva/ui/commit/260c1a4a6eb77a12895fde75087daffe2e09e373))
+* **BorrowerProfile:** fix anonymization Storybook stories ([ef76d84](https://github.com/kiva/ui/commit/ef76d84f7c1b103888d11717cc86acf01e1fad69))
+* **BorrowerProfile:** replace fabricated mock data with approved placeholders ([43e3c74](https://github.com/kiva/ui/commit/43e3c74212745ce4dc8351cf3816e6969d2db1b9))
+* **BorrowerProfile:** use approved fixture line for mock comment ([6be4705](https://github.com/kiva/ui/commit/6be47059326491db3387c8064c5ba6be1fd56612))
+* **release:** 3.75.0-rc.1 [skip ci] ([29164f5](https://github.com/kiva/ui/commit/29164f55a2fc407e6662c0d3fa398322541d71a6)), closes [#7016](https://github.com/kiva/ui/issues/7016) [#7018](https://github.com/kiva/ui/issues/7018) [#7020](https://github.com/kiva/ui/issues/7020) [#7022](https://github.com/kiva/ui/issues/7022) [#7025](https://github.com/kiva/ui/issues/7025) [#7024](https://github.com/kiva/ui/issues/7024)
+
 ## [3.75.0-rc.1](https://github.com/kiva/ui/compare/v3.74.0...v3.75.0-rc.1) (2026-06-25)
 
 ### 🎉 New Features
