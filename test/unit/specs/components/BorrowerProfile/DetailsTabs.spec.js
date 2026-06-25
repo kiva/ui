@@ -42,3 +42,22 @@ describe('DetailsTabs discriminator', () => {
 		expect(computed.noTrusteeState.call({ trusteeName: 'Accion' })).toBe(false);
 	});
 });
+
+describe('DetailsTabs showDefinition', () => {
+	it('forwards cid/sfid to the injected opener with forceSalesforce and a tracking tuple', () => {
+		const openDefinition = vi.fn();
+		DetailsTabs.methods.showDefinition.call(
+			{ openDefinition, useSalesForce: true },
+			{
+				cid: 'bp-def-loan-length', sfid: 'sf-1', panelName: 'Loan-Details', linkText: 'Loan length',
+			},
+		);
+
+		expect(openDefinition).toHaveBeenCalledWith({
+			cid: 'bp-def-loan-length',
+			sfid: 'sf-1',
+			forceSalesforce: true,
+			track: ['Borrower Profile', 'click-Loan-Details-tab-definition-link', 'Loan length'],
+		});
+	});
+});

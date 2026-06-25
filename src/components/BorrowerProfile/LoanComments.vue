@@ -168,8 +168,6 @@
 			@close="isReportLightboxVisible = false"
 			@reported="onCommentReported"
 		/>
-
-		<details-definitions-lightbox ref="definitions" />
 	</section>
 </template>
 
@@ -178,7 +176,6 @@ import { gql } from 'graphql-tag';
 import { format, parseISO } from 'date-fns';
 import { KvButton, KvLightbox } from '@kiva/kv-components';
 import CommentReportLightbox from '#src/components/BorrowerProfile/CommentReportLightbox';
-import DetailsDefinitionsLightbox from '#src/components/BorrowerProfile/DetailsDefinitionsLightbox';
 import addCommentMutation from '#src/graphql/mutation/loanAddComment.graphql';
 import logFormatter from '#src/util/logFormatter';
 
@@ -229,10 +226,13 @@ const loanSubscribeMutation = gql`mutation subscribeLoan($loanId: Int!, $subscri
 
 export default {
 	name: 'LoanComments',
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { from: 'apollo' },
+		cookieStore: { from: 'cookieStore' },
+		openDefinition: { from: 'openDefinition', default: () => () => {} },
+	},
 	components: {
 		CommentReportLightbox,
-		DetailsDefinitionsLightbox,
 		KvButton,
 		KvLightbox,
 	},
@@ -324,11 +324,10 @@ export default {
 			return format(parseISO(dateStr), 'MMMM d, yyyy');
 		},
 		showGuidelines() {
-			this.$refs.definitions.showDefinition({
+			this.openDefinition({
 				cid: 'bp-def-conversation-guidelines',
 				sfid: '50150000000SmZE',
-				panelName: 'Comments',
-				linkText: 'Kiva conversation guidelines',
+				track: ['Borrower Profile', 'click-Comments-tab-definition-link', 'Kiva conversation guidelines'],
 			});
 		},
 		async submitComment() {

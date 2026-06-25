@@ -50,7 +50,6 @@
 				</button>
 			</div>
 		</kv-expandable>
-		<details-definitions-lightbox ref="definitions" />
 	</section>
 </template>
 
@@ -60,7 +59,6 @@ import { toParagraphs } from '#src/util/loanUtils';
 import { gql } from 'graphql-tag';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import KvExpandable from '#src/components/Kv/KvExpandable';
-import DetailsDefinitionsLightbox from '#src/components/BorrowerProfile/DetailsDefinitionsLightbox';
 import { KvTextLink, KvMaterialIcon } from '@kiva/kv-components';
 
 const previousLoanQuery = gql`query previousLoanQuery($id: Int!) {
@@ -78,7 +76,6 @@ export default {
 		KvTextLink,
 		KvMaterialIcon,
 		KvExpandable,
-		DetailsDefinitionsLightbox,
 	},
 	data() {
 		return {
@@ -87,7 +84,10 @@ export default {
 			previousLoanDescription: '',
 		};
 	},
-	inject: ['apollo'],
+	inject: {
+		apollo: { from: 'apollo' },
+		openDefinition: { from: 'openDefinition', default: () => () => {} },
+	},
 	props: {
 		loanId: {
 			type: Number,
@@ -131,11 +131,14 @@ export default {
 			}
 		},
 		showSuccessiveConcurrentDefinition() {
-			this.$refs.definitions.showDefinition({
+			this.openDefinition({
 				cid: 'bp-def-successive-concurrent-loans',
 				sfid: '50150000000cckn',
-				panelName: 'Loan-Details',
-				linkText: 'Learn more about successive and concurrent loans',
+				track: [
+					'Borrower Profile',
+					'click-Loan-Details-tab-definition-link',
+					'Learn more about successive and concurrent loans',
+				],
 			});
 		},
 	}
