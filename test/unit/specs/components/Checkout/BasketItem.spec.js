@@ -1,5 +1,7 @@
 import BasketItem from '#src/components/Checkout/BasketItem';
 import { render, within } from '@testing-library/vue';
+/* eslint-disable-next-line import/no-extraneous-dependencies -- devDependency used only in tests */
+import { flushPromises } from '@vue/test-utils';
 import { createRouter, createWebHistory } from 'vue-router';
 import routes from '#src/router/routes';
 import loanReservation from '../../../fixtures/MatchedPromoLoanReservation.json';
@@ -160,7 +162,39 @@ describe('BasketItem loan', () => {
 			},
 		];
 
-		it('shows simultaneous matching text when simultaneousMatching is present and matchingText is empty', () => {
+		// Mock apollo returning the multiMatchingEnabled setting that useMultiMatching reads.
+		function matchingApollo(multiMatchingEnabled = true) {
+			return {
+				readFragment: () => {},
+				readQuery: () => {},
+				query: () => Promise.resolve({
+					data: {
+						general: {
+							multiMatchingEnabled: {
+								key: 'multiMatchingEnabled',
+								value: String(multiMatchingEnabled),
+							},
+						},
+					},
+				}),
+				mutate: () => Promise.resolve({}),
+			};
+		}
+
+		function renderWithFlag(loan, multiMatchingEnabled = true) {
+			return render(BasketItem, {
+				global: {
+					...globalOptions,
+					provide: { ...globalOptions.provide, apollo: matchingApollo(multiMatchingEnabled) },
+					stubs: { LoanReservation: { ...emptyComponent } },
+					plugins: [router],
+				},
+				props: { disableRedirects: false, loan, teams: [] },
+			});
+		}
+
+		it('shows simultaneous matching text when the flag is on, simultaneousMatching is present '
+			+ 'and matchingText is empty', async () => {
 			const loan = {
 				...loanReservation,
 				loan: {
@@ -169,20 +203,14 @@ describe('BasketItem loan', () => {
 					simultaneousMatching: matchers,
 				},
 			};
-			const { getByTestId } = render(BasketItem, {
-				global: {
-					...globalOptions,
-					stubs: { LoanReservation: { ...emptyComponent } },
-					plugins: [router],
-				},
-				props: { disableRedirects: false, loan, teams: [] },
-			});
+			const { getByTestId } = renderWithFlag(loan);
+			await flushPromises();
 			// Capital One 4x + Tripadvisor 2x = 6x total
 			const matchingText = getByTestId('basket-loan-matching-text').textContent;
 			expect(matchingText).toContain('6x matching by contributing partners');
 		});
 
-		it('shows simultaneous matching text even when matchingText is also present', () => {
+		it('shows simultaneous matching text even when matchingText is also present', async () => {
 			const loan = {
 				...loanReservation,
 				loan: {
@@ -191,19 +219,41 @@ describe('BasketItem loan', () => {
 					simultaneousMatching: matchers,
 				},
 			};
-			const { getByTestId } = render(BasketItem, {
-				global: {
-					...globalOptions,
-					stubs: { LoanReservation: { ...emptyComponent } },
-					plugins: [router],
-				},
-				props: { disableRedirects: false, loan, teams: [] },
-			});
+			const { getByTestId } = renderWithFlag(loan);
+			await flushPromises();
 			const matchingText = getByTestId('basket-loan-matching-text').textContent;
 			expect(matchingText).toContain('6x matching by contributing partners');
 		});
 
-		it('falls back to matchingText when simultaneousMatching is empty', () => {
+		it('falls back to matchingText when the multiMatching flag is off, even if matchers are present', async () => {
+			const loan = {
+				...loanReservation,
+				loan: {
+					...loanReservation.loan,
+					matchingText: 'Coca Cola Foundation',
+					simultaneousMatching: matchers,
+				},
+			};
+			const { getByTestId } = renderWithFlag(loan, false);
+			await flushPromises();
+			expect(getByTestId('basket-loan-matching-text').textContent).toContain('Matched by Coca Cola Foundation');
+		});
+
+		it('does not render the matcher when the flag is off and only simultaneousMatching is present', async () => {
+			const loan = {
+				...loanReservation,
+				loan: {
+					...loanReservation.loan,
+					matchingText: '',
+					simultaneousMatching: matchers,
+				},
+			};
+			const { queryByTestId } = renderWithFlag(loan, false);
+			await flushPromises();
+			expect(queryByTestId('basket-loan-matching-text')).toBeNull();
+		});
+
+		it('falls back to matchingText when simultaneousMatching is empty', async () => {
 			const loan = {
 				...loanReservation,
 				loan: {
@@ -212,14 +262,8 @@ describe('BasketItem loan', () => {
 					simultaneousMatching: [],
 				},
 			};
-			const { getByTestId } = render(BasketItem, {
-				global: {
-					...globalOptions,
-					stubs: { LoanReservation: { ...emptyComponent } },
-					plugins: [router],
-				},
-				props: { disableRedirects: false, loan, teams: [] },
-			});
+			const { getByTestId } = renderWithFlag(loan);
+			await flushPromises();
 			expect(getByTestId('basket-loan-matching-text').textContent).toContain('Matched by Coca Cola Foundation');
 		});
 	});
