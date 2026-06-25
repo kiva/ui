@@ -71,8 +71,17 @@ const renderLoanFilterBar = ({
 						`,
 					},
 					KvButton: {
+						props: ['state'],
 						emits: ['click'],
-						template: '<button type="button" @click="$emit(\'click\', $event)"><slot /></button>',
+						template: `
+							<button
+								type="button"
+								:disabled="state === 'disabled' || state === 'loading'"
+								@click="$emit('click', $event)"
+							>
+								<slot />
+							</button>
+						`,
 					},
 				},
 			},
@@ -290,6 +299,18 @@ describe('LoanFilterBar', () => {
 		const page = renderLoanFilterBar({ props: { totalLoans: 1234 } });
 
 		expect(page.getByText('Export 1,234 loans')).toBeTruthy();
+	});
+
+	it('disables the export button when there are no loans to export', () => {
+		const page = renderLoanFilterBar({ props: { totalLoans: 0 } });
+
+		expect(page.getByText('Export 0 loans').closest('button').disabled).toBe(true);
+	});
+
+	it('enables the export button when there are loans to export', () => {
+		const page = renderLoanFilterBar({ props: { totalLoans: 45 } });
+
+		expect(page.getByText('Export 45 loans').closest('button').disabled).toBe(false);
 	});
 
 	it('resets all filters and the keyword search when clear-filters is clicked', async () => {

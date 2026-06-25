@@ -84,6 +84,7 @@
 			<div :class="[filtersExpanded ? 'tw-mt-2' : 'tw-mt-1.5', 'lg:tw-mt-2 tw-flex tw-items-center tw-gap-2']">
 				<kv-button
 					variant="primary"
+					:state="totalLoans ? '' : 'disabled'"
 					v-kv-track-event="['portfolio', 'click', 'export-loans']"
 					@click="handleExportClick"
 				>
