@@ -76,4 +76,26 @@ describe('MyKivaPageContent', () => {
 			expect(callComputed(undefined)).toBeUndefined();
 		});
 	});
+
+	describe('addGoalRecommendedLoanToBasket', () => {
+		it('forwards the payload to addToBasket with skipAddedToBasketModal: true', () => {
+			const addToBasket = vi.fn();
+			const context = { addToBasket };
+
+			MyKivaPageContent.methods.addGoalRecommendedLoanToBasket.call(context, {
+				loanId: 123,
+				lendAmount: 25,
+				loan: { id: 123 },
+				onError: undefined,
+			});
+
+			expect(addToBasket).toHaveBeenCalledWith({
+				loanId: 123,
+				lendAmount: 25,
+				loan: { id: 123 },
+				onError: undefined,
+				skipAddedToBasketModal: true,
+			});
+		});
+	});
 });
