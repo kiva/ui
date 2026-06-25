@@ -65,6 +65,7 @@
 				@add-to-basket="addToBasket"
 			/>
 		</div>
+		<DefinitionsLightbox ref="definitionsLightbox" />
 	</div>
 </template>
 
@@ -74,7 +75,8 @@ import {
 	inject,
 	onBeforeUnmount,
 	onMounted,
-	provide
+	provide,
+	ref
 } from 'vue';
 import { useRouter } from 'vue-router';
 import { KvLendCta } from '@kiva/kv-components';
@@ -91,6 +93,7 @@ import DetailsTabs from '#src/components/BorrowerProfile/DetailsTabs';
 import LendersAndTeams from '#src/components/BorrowerProfile/LendersAndTeams';
 import LoanProgress from '#src/components/BorrowerProfile/LoanProgress';
 import MoreAboutLoan from '#src/components/BorrowerProfile/MoreAboutLoan';
+import DefinitionsLightbox from '#src/components/BorrowerProfile/DefinitionsLightbox';
 import SideSheetHeader from './SideSheetHeader';
 import SideSheetLoanHowMoneyHelps from './SideSheetLoanHowMoneyHelps';
 import SideSheetLoanStory from './SideSheetLoanStory';
@@ -112,6 +115,7 @@ export default {
 		SideSheetLoanStory,
 		SideSheetLoanTags,
 		LoanNextSteps,
+		DefinitionsLightbox,
 	},
 	emits: ['add-to-basket'],
 	inject: ['$kvTrackEvent'],
@@ -150,6 +154,10 @@ export default {
 		const borrowerProfile = useBorrowerProfileData(apollo, cookieStore);
 		// Provide borrower profile data to child components
 		provide('borrowerProfile', borrowerProfile);
+
+		const definitionsLightbox = ref(null);
+		// One definitions lightbox for the side sheet; children call this with their cid/sfid.
+		provide('openDefinition', payload => definitionsLightbox.value?.open(payload));
 
 		const aiPills = [];
 		if (props.enableAiLoanPills) {
@@ -246,6 +254,7 @@ export default {
 			weeksToRepay,
 			loanStatus,
 			aiPills,
+			definitionsLightbox,
 		};
 	}
 };

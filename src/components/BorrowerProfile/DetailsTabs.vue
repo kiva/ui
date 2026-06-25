@@ -65,8 +65,6 @@
 				</kv-tab-panel>
 			</template>
 		</kv-tabs>
-
-		<details-definitions-lightbox ref="definitions" :use-sales-force="useSalesForce" />
 	</section>
 </template>
 
@@ -79,7 +77,6 @@ import DescriptionListLoading from './DescriptionListLoading';
 import FieldPartnerDetails from './FieldPartnerDetails';
 import LoanDetails from './LoanDetails';
 import TrusteeDetails from './TrusteeDetails';
-import DetailsDefinitionsLightbox from './DetailsDefinitionsLightbox';
 
 const detailsTabsTypeQuery = gql`query borrowerProfileDetailsTabsType($loanId: Int!) {
 	lend {
@@ -98,10 +95,13 @@ const detailsTabsTypeQuery = gql`query borrowerProfileDetailsTabsType($loanId: I
 
 export default {
 	name: 'DetailsTabs',
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { from: 'apollo' },
+		cookieStore: { from: 'cookieStore' },
+		openDefinition: { from: 'openDefinition', default: () => () => {} },
+	},
 	components: {
 		DescriptionListLoading,
-		DetailsDefinitionsLightbox,
 		FieldPartnerDetails,
 		KvLoadingPlaceholder,
 		KvTab,
@@ -193,7 +193,12 @@ export default {
 	},
 	methods: {
 		showDefinition(payload) {
-			this.$refs.definitions.showDefinition(payload);
+			this.openDefinition({
+				cid: payload.cid,
+				sfid: payload.sfid,
+				forceSalesforce: this.useSalesForce,
+				track: ['Borrower Profile', `click-${payload.panelName}-tab-definition-link`, payload.linkText],
+			});
 		},
 	},
 };

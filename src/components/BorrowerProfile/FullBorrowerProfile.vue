@@ -156,6 +156,7 @@
 				:is-privileged="isPrivileged"
 			/>
 		</content-container>
+		<definitions-lightbox ref="definitionsLightbox" />
 	</article>
 </template>
 
@@ -181,6 +182,7 @@ import BorrowerEducationPlacement from '#src/components/BorrowerProfile/Borrower
 import LoanTags from '#src/components/BorrowerProfile/LoanTags';
 import LoanComments from '#src/components/BorrowerProfile/LoanComments';
 import LoanDetailsRailToggle from '#src/components/BorrowerProfile/LoanDetailsRailToggle';
+import DefinitionsLightbox from '#src/components/BorrowerProfile/DefinitionsLightbox';
 import {
 	getLocalRailPreference,
 	readAccountRailPreference,
@@ -236,8 +238,15 @@ export default {
 		LoanComments,
 		LoanDetailsRailToggle,
 		KvLoadingPlaceholder,
+		DefinitionsLightbox,
 	},
 	inject: ['apollo', 'cookieStore'],
+	provide() {
+		return {
+			// One definitions lightbox for the BP page; children call this with their cid/sfid.
+			openDefinition: payload => this.$refs.definitionsLightbox?.open(payload),
+		};
+	},
 	apollo: {
 		query: gql`
 			${fullProfileFragment}
