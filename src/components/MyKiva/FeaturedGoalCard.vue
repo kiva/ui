@@ -412,6 +412,8 @@ watch(
 @screen md {
 	.featured-goal-card--no-goal {
 		background-image: url('/src/assets/images/my-kiva/featured-goal-card/no-goal-state.png');
+		background-position: calc(100% + 160px) bottom;
+		background-size: auto 100%;
 	}
 
 	.featured-goal-card--active-goal {

@@ -94,10 +94,10 @@ onMounted(() => {
 
 <style lang="postcss" scoped>
 .goal-entrypoint {
-	background-image: url('/src/assets/images/my-kiva/featured-goal-card/no-goal-state.png');
-	background-position: calc(100% + clamp(100px, calc(420px - 50vw), 260px)) center;
+	background-image: url('/src/assets/images/my-kiva/featured-goal-card/mobile-no-goal-state.png');
+	background-position: bottom;
 	background-repeat: no-repeat;
-	background-size: auto 100%;
+	background-size: cover;
 	box-shadow: inset 0 0 0 4px #fff;
 	min-height: 112px;
 	overflow: hidden;
@@ -123,13 +123,21 @@ onMounted(() => {
 	width: min(100%, 14rem);
 }
 
-@screen lg {
+@screen md {
 	.goal-entrypoint {
-		background-position: right center;
+		background-image: url('/src/assets/images/my-kiva/featured-goal-card/no-goal-state.png');
+		background-position: calc(100% + 160px) bottom;
+		background-size: auto 100%;
 	}
 
 	.goal-entrypoint__content {
 		max-width: 28rem;
+	}
+}
+
+@screen lg {
+	.goal-entrypoint {
+		background-size: auto 100%;
 	}
 }
 </style>
