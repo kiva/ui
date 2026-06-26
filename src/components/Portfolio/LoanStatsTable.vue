@@ -1,12 +1,12 @@
 <template>
 	<table class="tw-w-full tw-text-small lg:tw-text-base">
 		<thead>
-			<tr class="tw-bg-brand">
+			<tr class="tw-bg-gray-200">
 				<th class="tw-px-1 lg:tw-px-2 tw-py-1"></th>
-				<th class="tw-text-right tw-font-bold tw-text-white tw-px-1 lg:tw-px-2 tw-py-1">
+				<th class="tw-text-right tw-font-bold tw-px-1 lg:tw-px-2 tw-py-1">
 					My stats
 				</th>
-				<th class="tw-text-right tw-font-bold tw-text-white tw-px-1 lg:tw-px-2 tw-py-1">
+				<th class="tw-text-right tw-font-bold tw-px-1 lg:tw-px-2 tw-py-1">
 					Avg Kiva lender
 				</th>
 			</tr>
@@ -95,7 +95,7 @@
 	<hr class="tw-border-tertiary tw-my-4">
 
 	<div
-		class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-x-6 tw-gap-y-1"
+		class="tw-grid loan-count-grid tw-gap-x-6 tw-gap-y-1"
 		role="table"
 		aria-label="Loan count statistics"
 	>
@@ -446,3 +446,19 @@ export default {
 	}
 };
 </script>
+
+<style scoped>
+/* Loan-count summary: a single column on mobile, then three uneven columns from the md
+   breakpoint up. The narrow middle column holds the short labels (Funded/Repaid/Refunded)
+   while the wider side columns carry the longer labels; the first column is trimmed slightly
+   to tighten the gap between its labels and counts. */
+.loan-count-grid {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+@media (width >= 768px) {
+	.loan-count-grid {
+		grid-template-columns: 1.15fr 0.4fr 1.3fr;
+	}
+}
+</style>

@@ -49,6 +49,7 @@
 					<span class="tw-text-secondary tw-whitespace-nowrap">Filter by:</span>
 					<kv-select
 						id="loan-country-select"
+						class="loan-filter-select tw-min-w-0"
 						v-model="selectedCountry"
 						@update:model-value="emitFiltersChanged()"
 					>
@@ -65,6 +66,7 @@
 					</kv-select>
 					<kv-select
 						id="loan-partner-select"
+						class="loan-filter-select tw-min-w-0"
 						v-model="selectedPartner"
 						@update:model-value="emitFiltersChanged()"
 					>
@@ -334,3 +336,20 @@ const handleExportClick = async () => {
 	}
 };
 </script>
+
+<style lang="postcss" scoped>
+/* From the lg breakpoint up the filters lay out in a row; give the location and partner
+   selects an equal flex-basis there so they render at the same width (below lg they stack
+   full-width, so no basis is applied — it would otherwise size their height in the column). */
+@media (width >= 1024px) {
+	.loan-filter-select {
+		flex-basis: 12rem;
+	}
+}
+
+/* Make each inner native select fill its (equal-basis) container so both dropdowns match
+   width; without this the longer partner names stretch the partner select wider. */
+.loan-filter-select :deep(select) {
+	@apply tw-w-full tw-min-w-0;
+}
+</style>

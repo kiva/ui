@@ -1,29 +1,29 @@
 <template>
 	<div class="tw-mt-2">
 		<div class="tw-relative">
-			<div class="tw-overflow-x-auto tw-min-w-full">
+			<div ref="scrollContainer" class="tw-overflow-x-auto tw-min-w-full" @scroll="updateScrollGradients">
 				<table class="tw-w-full tw-border-collapse tw-text-small lg:tw-text-base">
 					<thead>
-						<tr class="tw-bg-brand">
-							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
+						<tr class="tw-bg-gray-200">
+							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
 								Loan details
 							</th>
-							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
 								Status
 							</th>
-							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
 								You loaned
 							</th>
-							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
 								Paid back or raised
 							</th>
-							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
 								Length
 							</th>
-							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
 								Amount
 							</th>
-							<th class="tw-text-left tw-font-bold tw-text-white tw-px-2 tw-py-1">
+							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
 								Team
 							</th>
 						</tr>
@@ -78,7 +78,7 @@
 							v-for="(loan, index) in loans"
 							:key="loan.id"
 							class="tw-border-b tw-border-tertiary"
-							:class="{ 'tw-bg-secondary': index % 2 === 1 }"
+							:class="{ 'tw-bg-gray-50': index % 2 === 1 }"
 						>
 							<td class="loan-details-cell tw-break-words tw-px-2 tw-py-2">
 								<div class="tw-flex tw-items-start">
@@ -311,8 +311,8 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="scroll-gradient scroll-gradient--left lg:tw-hidden"></div>
-			<div class="scroll-gradient scroll-gradient--right lg:tw-hidden"></div>
+			<div v-show="canScrollLeft" class="scroll-gradient scroll-gradient--left"></div>
+			<div v-show="canScrollRight" class="scroll-gradient scroll-gradient--right"></div>
 		</div>
 	</div>
 </template>
@@ -371,6 +371,20 @@ export default {
 		PaidAmountModal
 	},
 	methods: {
+		// Toggle the left/right scroll-gradient overlays from the table's scroll position:
+		// each shows only when the table can still scroll that direction. Recomputed on
+		// scroll, on resize, and after the row set changes (see mounted/watch).
+		updateScrollGradients() {
+			const el = this.$refs.scrollContainer;
+			if (!el) {
+				this.canScrollLeft = false;
+				this.canScrollRight = false;
+				return;
+			}
+			// 1px tolerance so sub-pixel rounding at the extremes doesn't leave a gradient on.
+			this.canScrollLeft = el.scrollLeft > 1;
+			this.canScrollRight = el.scrollLeft < (el.scrollWidth - el.clientWidth - 1);
+		},
 		formatDate(date) {
 			if (!date) return '';
 			// Intentionally formats in the lender's browser timezone (no `timeZone` option). The
@@ -499,8 +513,35 @@ export default {
 			// Number of skeleton rows shown while loading. Each row mirrors a real row's
 			// height (image + stacked detail lines) so the table reserves representative
 			// space and the swap to loaded content doesn't jump.
-			skeletonRowCount: 5
+			skeletonRowCount: 5,
+			canScrollLeft: false,
+			canScrollRight: false
 		};
+	},
+	watch: {
+		loans() {
+			this.$nextTick(this.updateScrollGradients);
+		},
+		loading() {
+			this.$nextTick(this.updateScrollGradients);
+		}
+	},
+	mounted() {
+		this.$nextTick(this.updateScrollGradients);
+		// Available width changes on viewport resize and the row set changes on load/pagination;
+		// neither fires a scroll event, so recompute on both.
+		window.addEventListener('resize', this.updateScrollGradients);
+		if (typeof ResizeObserver !== 'undefined' && this.$refs.scrollContainer) {
+			this.scrollResizeObserver = new ResizeObserver(() => this.updateScrollGradients());
+			this.scrollResizeObserver.observe(this.$refs.scrollContainer);
+		}
+	},
+	beforeUnmount() {
+		window.removeEventListener('resize', this.updateScrollGradients);
+		if (this.scrollResizeObserver) {
+			this.scrollResizeObserver.disconnect();
+			this.scrollResizeObserver = null;
+		}
 	}
 };
 </script>
@@ -525,7 +566,8 @@ export default {
 }
 
 .loan-details-cell {
-	max-width: 18rem;
+	min-width: 20rem;
+	max-width: 24rem;
 }
 
 .loan-image {
