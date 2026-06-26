@@ -2,7 +2,7 @@
 	<div
 		:class="[
 			// eslint-disable-next-line max-len
-			'tw-w-full tw-relative tw-rounded tw-bg-center tw-select-none tw-bg-white journey-card tw-flex tw-flex-col tw-h-full tw-bg-cover',
+			'tw-w-full tw-relative tw-rounded tw-bg-center tw-select-none tw-bg-primary journey-card tw-flex tw-flex-col tw-h-full tw-bg-cover',
 			{ 'tw-bg-top tw-bg-no-repeat': isBgTopAligned },
 			{ 'single-image': hasSingleBorrowerImage }
 		]"
@@ -45,13 +45,12 @@
 				tw-rounded
 				tw-px-1.5
 				tw-py-0.5
-				tw-text-small
+				tw-text-label
 				tw-left-1.5
 				tw-top-1.5
 				md:tw-left-2.5
 				md:tw-top-2.5
 				tw-drop-shadow-sm
-				tw-font-medium
 				tw-flex
 				tw-items-center"
 		>
@@ -88,9 +87,9 @@
 					</h2>
 					<p
 						v-if="subtitle"
-						class="tw-text-small tw-font-medium"
+						class="tw-text-small"
 						:class="{
-							'tw-my-1 lg:tw-my-1.5 !tw-text-base !tw-text-gray-800': isBlackSubtitle,
+							'tw-my-1 lg:tw-my-1.5 !tw-text-base !tw-text-primary': isBlackSubtitle,
 						}"
 					>
 						{{ subtitle }}
@@ -102,7 +101,8 @@
 						@click="emit('secondary-cta-clicked')"
 						variant="tertiary"
 						class="tw-inline-flex tw-justify-center tw-items-center tw-rounded tw-py-1 tw-px-3
-									tw-border tw-border-white tw-font-medium tw-text-center tw-text-white"
+									tw-border tw-border-primary-inverse tw-text-button-link tw-text-center
+									tw-text-primary-inverse"
 					>
 						{{ secondaryCtaText }}
 					</button>

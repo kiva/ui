@@ -6,13 +6,13 @@
 						md:tw-flex-row md:tw-items-center md:!tw-justify-center"
 			>
 				<div
-					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-brand-500
-							tw-bg-eco-green-1 tw-text-center min-circle-size"
+					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-action
+								tw-bg-secondary tw-text-center min-circle-size"
 				>
 					<div class="tw-items-center tw-gap-3">
 						<div
 							class="borrower-img-size tw-overflow-hidden tw-rounded-full
-									tw-border-4 tw-border-white tw-my-0 tw-mx-auto"
+										tw-border-4 tw-border-primary tw-my-0 tw-mx-auto"
 						>
 							<KvBorrowerImage
 								class="tw-w-full tw-h-full tw-object-cover"
@@ -25,7 +25,7 @@
 							/>
 						</div>
 
-						<div class="borrower-name tw-text-lg tw-font-semibold tw-text-slate-900">
+						<div class="borrower-name tw-text-base tw-text-primary">
 							<strong class="tw-line-clamp-1 tw-truncate">{{ name }}</strong>
 						</div>
 					</div>
@@ -35,8 +35,8 @@
 				>
 					<p
 						v-html="loanDescription"
-						class="tw-rounded-2xl tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3
-							tw-text-base tw-leading-relaxed tw-bg-gray-100 tw-rounded-md md:tw-text-lg"
+						class="tw-rounded-md tw-bg-secondary tw-py-2 tw-px-2 md:!tw-px-3
+								tw-text-base"
 					></p>
 				</div>
 			</div>
@@ -84,10 +84,10 @@ const amount = computed(() => {
 
 const loanDescription = computed(() => {
 	let text = `Your ${amount.value} loan helps ${name.value} build stability and success in `
-		+ `<strong class="tw-text-brand">${countryName.value}</strong>`;
+			+ `<strong class="tw-text-action">${countryName.value}</strong>`;
 
 	if (countryPPP.value) {
-		text += `, where the average <strong class="tw-text-brand">annual income is ${countryPPP.value} USD</strong>`;
+		text += `, where the average <strong class="tw-text-action">annual income is ${countryPPP.value} USD</strong>`;
 	}
 
 	text += '.';

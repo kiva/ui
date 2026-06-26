@@ -8,18 +8,18 @@
 					&& !showRegionExperience && !showLendingNextStepsCards
 			}]"
 	>
-		<h3 class="tw-text-title tw-text-primary md:tw-mb-1">
+		<h2 class="tw-text-title tw-text-primary md:tw-mb-1">
 			Next steps recommended for you
-		</h3>
+		</h2>
 		<div
 			class="tw-flex md:tw-gap-1 tw-cursor-pointer tw-w-16 md:tw-w-fit tw-justify-end"
 			@click="handleViewAllClick"
 		>
-			<p class="tw-text-eco-green-3 tw-font-medium tw-cursor-pointer">
+			<p class="tw-text-action tw-text-button-link tw-cursor-pointer">
 				View all
 			</p>
 			<KvMaterialIcon
-				class="tw-w-3 tw-h-3 tw-text-eco-green-3 tw-align-middle"
+				class="tw-w-3 tw-h-3 tw-text-action tw-align-middle"
 				:icon="mdiArrowRight"
 			/>
 		</div>
@@ -83,8 +83,8 @@
 				/>
 			</div>
 			<div
-				class="stats-wrapper tw-bg-white tw-rounded
-			tw-shadow tw-p-1 md:tw-p-2 tw-flex-1 tw-min-w-0 tw-flex tw-flex-col"
+				class="stats-wrapper tw-bg-primary tw-rounded
+				tw-shadow tw-p-1 md:tw-p-2 tw-flex-1 tw-min-w-0 tw-flex tw-flex-col"
 			>
 				<div>
 					<span
@@ -92,11 +92,11 @@
 						class="
 						tw-inline-flex tw-items-center tw-gap-1
 						tw-mb-2 tw-rounded
-						tw-bg-eco-green-1 tw-px-1.5 tw-py-1"
+						tw-bg-secondary tw-px-1.5 tw-py-1"
 						title="Your lending reach"
 					>
-						<GlobeSearchIcon class="tw-w-2.5 tw-h-2.5 tw-text-brand-550 tw-align-middle" />
-						<span class="tw-text-primary tw-font-medium tw-align-middle" style="font-size: 0.875rem;">
+						<GlobeSearchIcon class="tw-w-2.5 tw-h-2.5 tw-text-action tw-align-middle" />
+						<span class="tw-text-primary tw-text-label tw-align-middle">
 							{{ pillHeader }}
 						</span>
 					</span>
@@ -121,8 +121,8 @@
 								/>
 								<div class="tw-flex-1 tw-min-w-0 tw-overflow-hidden">
 									<span
-										class="tw-font-medium md:tw-text-lg tw-text-primary
-									tw-block tw-whitespace-nowrap tw-truncate tw-min-w-0 tw-w-full tw-align-bottom"
+										class="tw-text-title tw-text-primary
+										tw-block tw-whitespace-nowrap tw-truncate tw-min-w-0 tw-w-full tw-align-bottom"
 
 										:title="region.name"
 									>
@@ -135,7 +135,7 @@
 				</div>
 				<hr
 					v-if="loanRegions"
-					class="tw-mt-2.5 tw-mb-2 tw-mx-auto tw-border-none tw-bg-eco-green-2 tw-rounded"
+					class="tw-mt-2.5 tw-mb-2 tw-mx-auto tw-border-none tw-bg-secondary tw-rounded"
 					style="width: 219px; height: 1px;"
 				>
 				<div class="tw-flex tw-flex-col tw-grow tw-min-h-0">
@@ -153,7 +153,7 @@
 							<div
 								class="
 								tw-flex tw-flex-col tw-w-full
-								tw-bg-white tw-rounded tw-shadow hover:tw-shadow-lg
+								tw-bg-primary tw-rounded tw-shadow hover:tw-shadow-lg
 								tw-transition-shadow tw-duration-200"
 							>
 								<div
@@ -179,7 +179,7 @@
 								"
 									:title="region?.name"
 								>
-									<span class="tw-font-medium">Lend in {{ region?.name }}</span>
+									<span class="tw-text-button-link">Lend in {{ region?.name }}</span>
 									<KvMaterialIcon
 										class="tw-w-3 tw-h-3 tw-shrink-0"
 										:icon="mdiArrowTopRight"
@@ -409,7 +409,7 @@ export default {
 		formattedPendingRegions() {
 			const regions = this.pendingRegions;
 			if (!regions || regions.length === 0) return '';
-			const formattedNames = regions.map(region => `<span class="tw-font-medium">
+			const formattedNames = regions.map(region => `<span class="tw-text-action">
 				${region.name === 'Middle East' ? 'the Middle East' : region.name}
 				</span>`);
 			if (formattedNames.length === 1) return formattedNames[0];

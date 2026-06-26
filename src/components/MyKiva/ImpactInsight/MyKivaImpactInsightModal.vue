@@ -65,15 +65,15 @@
 						<button
 							v-if="currentSlide > 0 && !isMobile"
 							class="tw-w-11 tw-text-center tw-border tw-rounded-lg
-								tw-bg-white tw-text-gray-900 tw-font-medium"
+									tw-bg-primary tw-text-primary tw-text-button-link"
 							:disabled="currentSlide === 0"
 							@click="goToPrev"
 						>
 							Back
 						</button>
 						<button
-							class="tw-w-full md:tw-w-11 tw-text-center tw-rounded-lg tw-bg-action tw-text-white
-								tw-font-medium hover:tw-bg-action-highlight"
+							class="tw-w-full md:tw-w-11 tw-text-center tw-rounded-lg tw-bg-action
+									tw-text-primary-inverse tw-text-button-link hover:tw-bg-action-highlight"
 							@click="handleNextOrDone"
 						>
 							{{ isLastSlide ? 'Done' : 'Next' }}

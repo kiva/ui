@@ -12,20 +12,20 @@
 				<!-- 4 rings layout (when partner exists) -->
 				<div
 					v-if="isLoanPartner"
-					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-stone-2
-							tw-bg-stone-1 tw-text-center min-stone-circle-size"
+					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-secondary
+								tw-bg-tertiary tw-text-center min-stone-circle-size"
 				>
 					<div
 						class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4
-							tw-border-desert-rose-2 tw-text-center min-rose-circle-size"
+								tw-border-danger tw-text-center min-rose-circle-size"
 					>
 						<div
 							class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4
-							tw-border-marigold tw-text-center min-marigold-circle-size"
+								tw-border-caution tw-text-center min-marigold-circle-size"
 						>
 							<div
 								class="tw-flex tw-items-center tw-justify-center tw-rounded-full
-							tw-border-4 tw-border-brand-500 tw-text-center min-circle-size"
+								tw-border-4 tw-border-action tw-text-center min-circle-size"
 							>
 								<div class="tw-items-center tw-gap-3">
 									<div
@@ -37,7 +37,7 @@
 										/>
 									</div>
 
-									<div class="tw-text-lg tw-font-semibold tw-text-slate-900">
+									<div class="tw-text-base tw-text-primary">
 										<strong>Global change</strong>
 									</div>
 								</div>
@@ -48,16 +48,16 @@
 				<!-- 3 rings layout (when no partner) -->
 				<div
 					v-else
-					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-desert-rose-2
-							tw-bg-danger-highlight tw-text-center min-ext-circle-size"
+					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-danger
+								tw-bg-danger-highlight tw-text-center min-ext-circle-size"
 				>
 					<div
-						class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-marigold
-							tw-text-center min-big-circle-size"
+						class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-caution
+								tw-text-center min-big-circle-size"
 					>
 						<div
 							class="tw-flex tw-items-center tw-justify-center tw-rounded-full
-							tw-border-4 tw-border-brand-500 tw-text-center min-circle-size"
+								tw-border-4 tw-border-action tw-text-center min-circle-size"
 						>
 							<div class="tw-items-center tw-gap-3">
 								<div
@@ -69,7 +69,7 @@
 									/>
 								</div>
 
-								<div class="tw-text-lg tw-font-semibold tw-text-slate-900">
+								<div class="tw-text-base tw-text-primary">
 									<strong>Global change</strong>
 								</div>
 							</div>
@@ -81,8 +81,8 @@
 				>
 					<p
 						v-html="description"
-						class="tw-rounded-2xl tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3
-							tw-text-base tw-leading-relaxed tw-bg-gray-100 tw-rounded-md md:tw-text-lg"
+						class="tw-rounded-md tw-bg-secondary tw-py-2 tw-px-2 md:!tw-px-3
+								tw-text-base"
 					></p>
 				</div>
 			</div>
@@ -108,9 +108,9 @@ const props = defineProps({
 
 const description = computed(() => {
 	const text = props.latestLoan?.gender === 'female'
-		? '<strong class="tw-text-brand">8 out of 10 women</strong> earned more income after getting their Kiva loan'
+		? '<strong class="tw-text-action">8 out of 10 women</strong> earned more income after getting their Kiva loan'
 		// eslint-disable-next-line max-len
-		: '<strong class="tw-text-brand">89%</strong> of people said their <strong class="tw-text-brand">quality of life improved</strong> after their Kiva loan';
+		: '<strong class="tw-text-action">89%</strong> of people said their <strong class="tw-text-action">quality of life improved</strong> after their Kiva loan';
 
 	return `${text}.`;
 });

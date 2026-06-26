@@ -3,13 +3,13 @@
 		<div :class="titleContainerClass">
 			<kv-material-icon
 				v-if="isGoalTileExperimentEnabled && !isLarge && isModalVariant && !isUpdatingGoal"
-				class="tw-w-3.5 tw-h-3.5 tw-text-brand tw-mx-auto tw-mb-2"
+				class="tw-w-3.5 tw-h-3.5 tw-text-action tw-mx-auto tw-mb-2"
 				:icon="mdiCheckCircle"
 			/>
-			<h2 v-if="isModalVariant" class="tw-text-headline tw-font-medium" :class="titleClass">
+			<h2 v-if="isModalVariant" class="tw-text-headline" :class="titleClass">
 				{{ titleText }}
 			</h2>
-			<p v-else class="tw-font-medium" :class="titleClass">
+			<p v-else class="tw-text-base" :class="titleClass">
 				{{ titleText }}
 			</p>
 
@@ -32,7 +32,7 @@
 		>
 			<p
 				v-html="modalVariantDescriptionText"
-				class="modal-description-text tw-text-subhead !tw-font-medium" style="line-height: 1.5rem;"
+				class="modal-description-text tw-text-subheadline"
 			></p>
 		</div>
 
@@ -52,10 +52,10 @@
 						? 'tw-flex-col tw-pt-2'
 						: 'tw-flex-row tw-items-baseline'"
 				>
-					<component :is="progressValueHeadingTag" class="tw-leading-none">
+					<component :is="progressValueHeadingTag">
 						{{ visibleGoalLoans }}
 					</component>
-					<component :is="goalTargetHeadingTag" class="tw-text-secondary tw-leading-tight">
+					<component :is="goalTargetHeadingTag" class="tw-text-secondary">
 						/{{ goalLoans }}
 					</component>
 				</div>
@@ -68,8 +68,7 @@
 		<p
 			v-if="!isModalVariant"
 			v-html="descriptionText"
-			class="tw-font-medium tw-py-1"
-			style="line-height: 1.5rem;"
+			class="tw-text-base tw-py-1"
 		>
 		</p>
 
@@ -244,7 +243,7 @@ const titleClass = computed(() => {
 });
 
 const modalVariantDescriptionText = computed(() => {
-	const cssClass = 'tw-text-brand';
+	const cssClass = 'tw-text-action';
 	const loans = props.goalLoans;
 	if (props.isGoalCompleted) return goalCopy.modalDescriptionCompleted(loans, props.categoryId, cssClass);
 	if (props.goalProgress > 0) return goalCopy.modalDescriptionInProgress(loans, props.categoryId, cssClass);

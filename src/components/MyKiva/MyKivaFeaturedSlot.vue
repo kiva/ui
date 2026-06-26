@@ -8,9 +8,9 @@
 			class="!tw-h-3 tw-mb-2"
 			:style="{ width: '15rem'}"
 		/>
-		<h3 v-else class="tw-text-title tw-mb-2">
+		<h2 v-else class="tw-text-title tw-mb-2">
 			{{ slotTitle }}
-		</h3>
+		</h2>
 		<FeaturedGoalCard
 			:state="slotState"
 			:loading="cardLoading"

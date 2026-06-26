@@ -6,16 +6,16 @@
 						md:tw-flex-row md:tw-items-center md:!tw-justify-center"
 			>
 				<div
-					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-desert-rose-2
-							tw-bg-danger-highlight tw-text-center min-ext-circle-size"
+					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-danger
+								tw-bg-danger-highlight tw-text-center min-ext-circle-size"
 				>
 					<div
-						class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-marigold
-							tw-text-center min-big-circle-size"
+						class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-caution
+								tw-text-center min-big-circle-size"
 					>
 						<div
 							class="tw-flex tw-items-center tw-justify-center tw-rounded-full
-							tw-border-4 tw-border-brand-500 tw-text-center min-circle-size"
+								tw-border-4 tw-border-action tw-text-center min-circle-size"
 						>
 							<div class="tw-items-center tw-gap-3">
 								<div
@@ -27,7 +27,7 @@
 									/>
 								</div>
 
-								<div class="tw-text-lg tw-font-semibold tw-text-slate-900">
+								<div class="tw-text-base tw-text-primary">
 									<strong>Their community</strong>
 								</div>
 							</div>
@@ -38,12 +38,12 @@
 					class="tw-px-0 screen-description"
 				>
 					<p
-						class="tw-rounded-2xl tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3
-							tw-text-base tw-leading-relaxed tw-bg-gray-100 tw-rounded-md md:tw-text-lg"
+						class="tw-rounded-md tw-bg-secondary tw-py-2 tw-px-2 md:!tw-px-3
+								tw-text-base"
 					>
 						{{ name }} isn't on this journey alone. They're working with a
 						Kiva lending partner that's already given
-						<strong class="tw-text-brand">{{ loansPosted }} loans</strong> to
+						<strong class="tw-text-action">{{ loansPosted }} loans</strong> to
 						support their region.
 					</p>
 				</div>
