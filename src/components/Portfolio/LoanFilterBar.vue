@@ -30,9 +30,10 @@
 				]"
 			>
 				<div class="tw-flex tw-items-center tw-gap-2">
-					<span class="tw-text-secondary tw-whitespace-nowrap">Status:</span>
+					<span class="tw-whitespace-nowrap">Status:</span>
 					<kv-select
 						id="loan-status-select"
+						class="loan-status-select"
 						v-model="selectedStatus"
 						@update:model-value="emitFiltersChanged()"
 					>
@@ -46,9 +47,10 @@
 					</kv-select>
 				</div>
 				<div class="tw-flex tw-flex-col lg:tw-flex-row lg:tw-items-center tw-gap-2">
-					<span class="tw-text-secondary tw-whitespace-nowrap">Filter by:</span>
+					<span class="tw-whitespace-nowrap">Filter by:</span>
 					<kv-select
 						id="loan-country-select"
+						class="loan-filter-select tw-min-w-0"
 						v-model="selectedCountry"
 						@update:model-value="emitFiltersChanged()"
 					>
@@ -65,6 +67,7 @@
 					</kv-select>
 					<kv-select
 						id="loan-partner-select"
+						class="loan-filter-select tw-min-w-0"
 						v-model="selectedPartner"
 						@update:model-value="emitFiltersChanged()"
 					>
@@ -334,3 +337,40 @@ const handleExportClick = async () => {
 	}
 };
 </script>
+
+<style lang="postcss" scoped>
+/* From the lg breakpoint up the filters lay out in a row; give the location and partner
+   selects an equal flex-basis there so they render at the same width (below lg they stack
+   full-width, so no basis is applied — it would otherwise size their height in the column). */
+@screen lg {
+	.loan-filter-select {
+		flex-basis: 12rem;
+	}
+}
+
+/* Make each inner native select fill its (equal-basis) container so both dropdowns match
+   width; without this the longer partner names stretch the partner select wider. */
+.loan-filter-select :deep(select) {
+	@apply tw-w-full tw-min-w-0;
+}
+
+/* Below lg the filters stack, so let the Status select grow to fill the row width (and its
+   inner native select fill that container); from lg up it returns to its natural size. */
+.loan-status-select {
+	@apply tw-flex-1;
+}
+
+.loan-status-select :deep(select) {
+	@apply tw-w-full tw-min-w-0;
+}
+
+@screen lg {
+	.loan-status-select {
+		@apply tw-flex-initial;
+	}
+
+	.loan-status-select :deep(select) {
+		@apply tw-w-auto;
+	}
+}
+</style>

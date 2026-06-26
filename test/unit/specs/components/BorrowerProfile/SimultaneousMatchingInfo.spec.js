@@ -24,39 +24,45 @@ function renderComponent(props) {
 describe('SimultaneousMatchingInfo', () => {
 	describe('matched amount calculation', () => {
 		it('calculates correctly for multiple matchers from real loan data', () => {
-			// $25 (you) + $25*(3+1) Capital One + $25*(1+1) Tripadvisor = $25 + $100 + $50 = $175
+			// $25 (you) + $25*3 Capital One + $25*1 Tripadvisor = $25 + $75 + $25 = $125
 			const { getByText } = renderComponent({ simultaneousMatching: loanMatchers, lendAmount: 25 });
-			getByText(/\$25 becomes \$175/);
+			getByText(/\$25 becomes \$125/);
 		});
 
-		it('calculates correctly for a single 4x matcher', () => {
-			// $25 (you) + $25*(3+1) Capital One = $25 + $100 = $125
+		it('calculates correctly for a single 3x matcher', () => {
+			// $25 (you) + $25*3 Capital One = $25 + $75 = $100
 			const { getByText } = renderComponent({
 				simultaneousMatching: [loanMatchers[0]],
 				lendAmount: 25,
 			});
-			getByText(/\$25 becomes \$125/);
+			getByText(/\$25 becomes \$100/);
 		});
 
-		it('calculates correctly for a single 2x matcher', () => {
-			// $25 (you) + $25*(1+1) Tripadvisor = $25 + $50 = $75
+		it('calculates correctly for a single 1x matcher', () => {
+			// $25 (you) + $25*1 Tripadvisor = $25 + $25 = $50
 			const { getByText } = renderComponent({
 				simultaneousMatching: [loanMatchers[1]],
 				lendAmount: 25,
 			});
-			getByText(/\$25 becomes \$75/);
+			getByText(/\$25 becomes \$50/);
 		});
 
 		it('respects the lendAmount prop', () => {
-			// $100 (you) + $100*4 Capital One + $100*2 Tripadvisor = $100 + $400 + $200 = $700
+			// $100 (you) + $100*3 Capital One + $100*1 Tripadvisor = $100 + $300 + $100 = $500
 			const { getByText } = renderComponent({ simultaneousMatching: loanMatchers, lendAmount: 100 });
-			getByText(/\$100 becomes \$700/);
+			getByText(/\$100 becomes \$500/);
 		});
 
 		it('defaults to $25 lend amount', () => {
-			// $25 (you) + $25*(3+1) Capital One = $125
+			// $25 (you) + $25*3 Capital One = $100
 			const { getByText } = renderComponent({ simultaneousMatching: [loanMatchers[0]] });
-			getByText(/\$25 becomes \$125/);
+			getByText(/\$25 becomes \$100/);
+		});
+
+		it('formats large amounts with thousands separators', () => {
+			// $1,000 (you) + $1,000*3 Capital One + $1,000*1 Tripadvisor = $1,000 + $3,000 + $1,000 = $5,000
+			const { getByText } = renderComponent({ simultaneousMatching: loanMatchers, lendAmount: 1000 });
+			getByText(/\$1,000 becomes \$5,000/);
 		});
 	});
 

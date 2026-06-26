@@ -12,13 +12,14 @@
 			/>
 		</div>
 		<p class="md:tw-text-left lg:tw-text-center">
-			${{ lendAmount }} becomes ${{ matchedAmount }} with partner matching
+			${{ formattedLendAmount }} becomes ${{ formattedMatchedAmount }} with partner matching
 			by {{ formattedNames }} while funds last.
 		</p>
 	</div>
 </template>
 
 <script>
+import numeral from 'numeral';
 import { KvUserAvatar } from '@kiva/kv-components';
 
 export default {
@@ -39,10 +40,16 @@ export default {
 	computed: {
 		matchedAmount() {
 			const matcherTotal = this.simultaneousMatching.reduce(
-				(sum, matcher) => sum + this.lendAmount * ((matcher.ratio ?? 0) + 1),
+				(sum, matcher) => sum + this.lendAmount * (matcher.ratio ?? 0),
 				0,
 			);
 			return Math.round(this.lendAmount + matcherTotal);
+		},
+		formattedLendAmount() {
+			return numeral(this.lendAmount).format('0,0');
+		},
+		formattedMatchedAmount() {
+			return numeral(this.matchedAmount).format('0,0');
 		},
 		formattedNames() {
 			const names = this.simultaneousMatching.map(m => m.displayName || 'a Kiva supporter');
