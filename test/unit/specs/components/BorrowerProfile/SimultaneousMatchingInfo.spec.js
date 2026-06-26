@@ -58,6 +58,12 @@ describe('SimultaneousMatchingInfo', () => {
 			const { getByText } = renderComponent({ simultaneousMatching: [loanMatchers[0]] });
 			getByText(/\$25 becomes \$100/);
 		});
+
+		it('formats large amounts with thousands separators', () => {
+			// $1,000 (you) + $1,000*3 Capital One + $1,000*1 Tripadvisor = $1,000 + $3,000 + $1,000 = $5,000
+			const { getByText } = renderComponent({ simultaneousMatching: loanMatchers, lendAmount: 1000 });
+			getByText(/\$1,000 becomes \$5,000/);
+		});
 	});
 
 	describe('partner name formatting', () => {
