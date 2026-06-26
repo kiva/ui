@@ -356,7 +356,7 @@
 						key="simultaneous-matching"
 						class="tw-col-span-12"
 						:simultaneous-matching="simultaneousMatching"
-						:lend-amount="Number(selectedOption)"
+						:lend-amount="selectedLendAmount"
 					/>
 				</kv-grid>
 			</transition>
@@ -572,7 +572,10 @@ export default {
 			this.matchingText = loan?.matchingText ?? '';
 			this.matchRatio = loan?.matchRatio ?? 0;
 			this.name = loan?.name ?? '';
-			this.matchingTextVisibility = this.status === 'fundraising' && this.matchingText && !this.isMatchAtRisk;
+			this.matchingTextVisibility = this.status === 'fundraising'
+				&& this.matchingText
+				&& !this.isMatchAtRisk
+				&& !this.enableMultiMatching;
 			this.inPfp = loan?.inPfp ?? false;
 			this.simultaneousMatching = loan?.simultaneousMatching ?? [];
 			this.userBalance = result?.data?.my?.userAccount?.balance;
@@ -669,8 +672,11 @@ export default {
 				if (this.status === 'fundraising' && this.numLenders > 0) {
 					possibleStats.push('lenderCount');
 				}
-				// Add matching text
-				if (this.status === 'fundraising' && this.matchingText.length && !this.isMatchAtRisk) {
+				// Add matching text (hidden when multi matching is enabled so the slot is skipped entirely)
+				if (this.status === 'fundraising'
+					&& this.matchingText.length
+					&& !this.isMatchAtRisk
+					&& !this.enableMultiMatching) {
 					possibleStats.push('matchingText');
 				}
 				// Cycle through the possible stats in the order they were added.
@@ -888,10 +894,15 @@ export default {
 			return isLessThan25(this.unreservedAmount) || isBetween25And500(this.unreservedAmount);
 		},
 		showSparkles() {
-			return this.isCompleteLoanActive && Number(this.unreservedAmount).toFixed() === Number(this.selectedOption).toFixed(); // eslint-disable-line max-len
+			return this.isCompleteLoanActive && Number(this.unreservedAmount).toFixed() === this.selectedLendAmount.toFixed(); // eslint-disable-line max-len
 		},
 		isLendAmountButton() {
 			return (this.lendButtonVisibility || this.state === 'lent-to') && (isLessThan25(this.unreservedAmount)); // eslint-disable-line max-len
+		},
+		// Large dropdown amounts are formatted with a thousands separator (e.g. "1,000"),
+		// so strip non-numeric characters before coercing to a Number to avoid NaN.
+		selectedLendAmount() {
+			return Number(String(this.selectedOption).replace(/[^0-9.]/g, ''));
 		},
 	},
 	mounted() {
