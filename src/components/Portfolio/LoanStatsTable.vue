@@ -72,6 +72,13 @@
 								/>
 							</kv-tooltip>
 						</template>
+						<!-- Spacer matching the info-icon button width so labels without a
+							tooltip trigger stay left-aligned with those that have one. -->
+						<span
+							v-else
+							class="tw-inline-block tw-w-2.5"
+							aria-hidden="true"
+						></span>
 						{{ row.label }}
 					</span>
 				</td>

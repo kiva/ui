@@ -84,10 +84,11 @@
 			<div :class="[filtersExpanded ? 'tw-mt-2' : 'tw-mt-1.5', 'lg:tw-mt-2 tw-flex tw-items-center tw-gap-2']">
 				<kv-button
 					variant="primary"
+					:state="totalLoans ? '' : 'disabled'"
 					v-kv-track-event="['portfolio', 'click', 'export-loans']"
 					@click="handleExportClick"
 				>
-					Export {{ totalLoans }} loans
+					{{ exportLabel }}
 				</kv-button>
 				<span class="tw-ml-auto tw-text-subhead" data-testid="loans-count">{{ loanCountLabel }}</span>
 			</div>
@@ -251,6 +252,11 @@ function getLegacyExportStatus(status) {
 const loanCountLabel = computed(() => {
 	const count = props.totalLoans || 0;
 	return `${count.toLocaleString('en-US')} ${count === 1 ? 'loan' : 'loans'}`;
+});
+
+const exportLabel = computed(() => {
+	const count = props.totalLoans || 0;
+	return `Export ${count.toLocaleString('en-US')} ${count === 1 ? 'loan' : 'loans'}`;
 });
 
 const hasActiveFilters = computed(() => (

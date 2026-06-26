@@ -510,6 +510,50 @@ describe('borrower-profile-exp-mixin', () => {
 			expect(component.formatAddedLoan).toHaveBeenCalled();
 		});
 
+		it('should not show modal on success when skipAddedToBasketModal is true', async () => {
+			createComponent();
+			mockApollo.mutate.mockResolvedValue({ errors: null });
+			mockApollo.query.mockResolvedValue({
+				data: {
+					shop: {
+						basket: { items: { values: [] } },
+						nonTrivialItemCount: 1,
+					},
+				},
+			});
+			component.selectedLoan = { id: 123, name: 'Test' };
+			component.formatAddedLoan = vi.fn();
+
+			await component.addToBasket({ loanId: 123, lendAmount: 25, skipAddedToBasketModal: true });
+
+			vi.advanceTimersByTime(1000);
+
+			expect(component.formatAddedLoan).not.toHaveBeenCalled();
+		});
+
+		it('should show modal on success when skipAddedToBasketModal is explicitly false', async () => {
+			createComponent();
+			mockApollo.mutate.mockResolvedValue({ errors: null });
+			mockApollo.query.mockResolvedValue({
+				data: {
+					shop: {
+						basket: { items: { values: [] } },
+						nonTrivialItemCount: 1,
+					},
+				},
+			});
+			component.selectedLoan = { id: 123, name: 'Test' };
+			component.formatAddedLoan = vi.fn();
+
+			await component.addToBasket({ loanId: 123, lendAmount: 25, skipAddedToBasketModal: false });
+
+			expect(component.formatAddedLoan).not.toHaveBeenCalled();
+
+			vi.advanceTimersByTime(1000);
+
+			expect(component.formatAddedLoan).toHaveBeenCalled();
+		});
+
 		it.skip('should update basket items after successful add', async () => {
 			// Skip: async timing issue with basketItems update
 		});

@@ -1,6 +1,6 @@
 <template>
 	<p class="tw-text-small tw-text-secondary matching-text">
-		<template v-if="simultaneousMatching.length > 0">
+		<template v-if="enableMultiMatching && simultaneousMatching.length > 0">
 			{{ totalRatio }}x matching by contributing partners
 		</template>
 		<template v-else>
@@ -20,6 +20,10 @@ export default {
 		simultaneousMatching: {
 			type: Array,
 			default: () => []
+		},
+		enableMultiMatching: {
+			type: Boolean,
+			default: false
 		},
 	},
 	computed: {
