@@ -894,7 +894,7 @@ export default {
 			return isLessThan25(this.unreservedAmount) || isBetween25And500(this.unreservedAmount);
 		},
 		showSparkles() {
-			return this.isCompleteLoanActive && Number(this.unreservedAmount).toFixed() === Number(this.selectedOption).toFixed(); // eslint-disable-line max-len
+			return this.isCompleteLoanActive && Number(this.unreservedAmount).toFixed() === this.selectedLendAmount.toFixed(); // eslint-disable-line max-len
 		},
 		isLendAmountButton() {
 			return (this.lendButtonVisibility || this.state === 'lent-to') && (isLessThan25(this.unreservedAmount)); // eslint-disable-line max-len
