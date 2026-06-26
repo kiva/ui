@@ -36,7 +36,8 @@
 			<tr
 				v-for="row in statsRows"
 				:key="row.key"
-				:class="{ 'tw-bg-primary': row.showInWhite, 'tw-bg-secondary': row.showInGray }"
+				class="tw-bg-primary"
+				:class="{ '!tw-bg-gray-50': row.showInGray }"
 			>
 				<td class="tw-px-1 lg:tw-px-2 tw-py-1" :class="{ 'tw-pl-3 lg:tw-pl-6': row.isTabbed }">
 					<span class="tw-inline-flex tw-items-center tw-gap-0.5">
@@ -447,7 +448,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 /* Loan-count summary: a single column on mobile, then three uneven columns from the md
    breakpoint up. The narrow middle column holds the short labels (Funded/Repaid/Refunded)
    while the wider side columns carry the longer labels; the first column is trimmed slightly
@@ -456,7 +457,7 @@ export default {
 	grid-template-columns: minmax(0, 1fr);
 }
 
-@media (width >= 768px) {
+@screen md {
 	.loan-count-grid {
 		grid-template-columns: 1.15fr 0.4fr 1.3fr;
 	}

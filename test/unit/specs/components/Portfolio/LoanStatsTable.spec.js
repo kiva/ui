@@ -373,22 +373,22 @@ describe('LoanStatsTable', () => {
 	describe('legacy row banding and indent', () => {
 		// Based on the legacy setupCompareStat($label, ..., $is_tabbed, $show_in_white,
 		// $show_in_gray) flags in LoansView.php (MP-2859), plus product-requested gray banding
-		// on the Amount repaid / Amount refunded rows. `bg` is the expected explicit row
-		// background (null = default); `tabbed` indents the label under its parent metric.
+		// on the Amount repaid / Amount refunded rows. `gray` marks the rows that carry the
+		// gray banding override; `tabbed` indents the label under its parent metric.
 		const expected = {
-			'Amount lent': { tabbed: false, bg: null },
-			'Amount repaid': { tabbed: false, bg: 'tw-bg-secondary' },
-			'Amount lost': { tabbed: false, bg: null },
-			'Amount refunded': { tabbed: false, bg: 'tw-bg-secondary' },
-			'Delinquency rate': { tabbed: false, bg: 'tw-bg-primary' },
-			'Amount in arrears': { tabbed: true, bg: 'tw-bg-primary' },
-			'Outstanding loans': { tabbed: true, bg: 'tw-bg-primary' },
-			'Default rate': { tabbed: false, bg: 'tw-bg-secondary' },
-			'Amount defaulted': { tabbed: true, bg: 'tw-bg-secondary' },
-			'Amount ended': { tabbed: true, bg: 'tw-bg-secondary' },
-			'Currency loss rate': { tabbed: false, bg: 'tw-bg-primary' },
-			'Amount of currency loss': { tabbed: true, bg: 'tw-bg-primary' },
-			'Currency loss reimbursement': { tabbed: true, bg: 'tw-bg-primary' },
+			'Amount lent': { tabbed: false, gray: false },
+			'Amount repaid': { tabbed: false, gray: true },
+			'Amount lost': { tabbed: false, gray: false },
+			'Amount refunded': { tabbed: false, gray: true },
+			'Delinquency rate': { tabbed: false, gray: false },
+			'Amount in arrears': { tabbed: true, gray: false },
+			'Outstanding loans': { tabbed: true, gray: false },
+			'Default rate': { tabbed: false, gray: true },
+			'Amount defaulted': { tabbed: true, gray: true },
+			'Amount ended': { tabbed: true, gray: true },
+			'Currency loss rate': { tabbed: false, gray: false },
+			'Amount of currency loss': { tabbed: true, gray: false },
+			'Currency loss reimbursement': { tabbed: true, gray: false },
 		};
 
 		const renderRows = async () => {
@@ -404,13 +404,15 @@ describe('LoanStatsTable', () => {
 
 		it('applies the legacy white/gray banding per row', async () => {
 			const container = await renderRows();
-			Object.entries(expected).forEach(([label, { bg }]) => {
+			Object.entries(expected).forEach(([label, { gray }]) => {
 				const tr = trByLabel(container, label);
 				expect(tr, `row "${label}" should render`).toBeTruthy();
-				expect(tr.classList.contains('tw-bg-primary'), `${label} white banding`)
-					.toBe(bg === 'tw-bg-primary');
-				expect(tr.classList.contains('tw-bg-secondary'), `${label} gray banding`)
-					.toBe(bg === 'tw-bg-secondary');
+				// Every row carries an explicit white base so the banding holds on the
+				// transparent (mobile) card background; gray rows override it.
+				expect(tr.classList.contains('tw-bg-primary'), `${label} white base`)
+					.toBe(true);
+				expect(tr.classList.contains('!tw-bg-gray-50'), `${label} gray banding`)
+					.toBe(gray);
 			});
 		});
 

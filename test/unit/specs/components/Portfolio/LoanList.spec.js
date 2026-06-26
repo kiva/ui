@@ -725,10 +725,10 @@ describe('LoanList — row banding', () => {
 		const rows = [...page.container.querySelectorAll('tbody tr')];
 
 		expect(rows).toHaveLength(4);
-		expect(rows[0].classList.contains('tw-bg-gray-50')).toBe(false);
-		expect(rows[1].classList.contains('tw-bg-gray-50')).toBe(true);
-		expect(rows[2].classList.contains('tw-bg-gray-50')).toBe(false);
-		expect(rows[3].classList.contains('tw-bg-gray-50')).toBe(true);
+		expect(rows[0].classList.contains('!tw-bg-gray-50')).toBe(false);
+		expect(rows[1].classList.contains('!tw-bg-gray-50')).toBe(true);
+		expect(rows[2].classList.contains('!tw-bg-gray-50')).toBe(false);
+		expect(rows[3].classList.contains('!tw-bg-gray-50')).toBe(true);
 	});
 });
 
