@@ -156,7 +156,6 @@
 									:primary-cta-text="getSlidePrimaryCtaText(slide)"
 									:primary-cta-variant="getSlidePrimaryCtaVariant(slide)"
 									:is-full-width-primary-cta="isNonBadgeSlide(slide)"
-									:is-title-font-sans="isSlideTitleFontSans(slide)"
 									:title-color="getSlideTitleColor(slide, isNonBadgeSlide(slide))"
 									@primary-cta-clicked="handlePrimaryCtaClick(slide)"
 									@secondary-cta-clicked="handleSecondaryCtaClick(slide)"
@@ -230,7 +229,6 @@
 							:primary-cta-text="getSlidePrimaryCtaText(slide)"
 							:primary-cta-variant="getSlidePrimaryCtaVariant(slide)"
 							:is-full-width-primary-cta="isNonBadgeSlide(slide)"
-							:is-title-font-sans="isSlideTitleFontSans(slide)"
 							:title-color="getSlideTitleColor(slide, isNonBadgeSlide(slide))"
 							@primary-cta-clicked="handlePrimaryCtaClick(slide)"
 							@secondary-cta-clicked="handleSecondaryCtaClick(slide)"
@@ -340,7 +338,6 @@ import {
 	getSlidePrimaryCtaText,
 	getSlidePrimaryCtaVariant,
 	getSlideSecondaryCtaText,
-	isSlideTitleFontSans,
 	getSlideTitleColor,
 	getSlideBackgroundImg
 } from '#src/util/myKiva/myKivaContentfulUtils';

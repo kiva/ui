@@ -217,13 +217,6 @@ const props = defineProps({
 		default: 'secondary',
 	},
 	/**
-	 * Whether the title should use a sans-serif font.
-	 */
-	isTitleFontSans: {
-		type: Boolean,
-		default: false,
-	},
-	/**
 	 * Color class for the title text. If provided, it will be applied to the title.
 	 * This can be a Tailwind CSS color class like 'tw-text-gray-800'
 	 */
@@ -274,10 +267,6 @@ const showSecondaryCta = computed(() => !!props.secondaryCtaText);
 
 const titleClass = computed(() => {
 	let className = '';
-
-	if (props.isTitleFontSans) {
-		className += 'tw-font-sans';
-	}
 
 	if (props.titleColor) {
 		className += ` ${props.titleColor}`;

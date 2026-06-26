@@ -6,7 +6,6 @@ import {
 	getSlidePrimaryCtaText,
 	getSlidePrimaryCtaVariant,
 	getSlideSecondaryCtaText,
-	isSlideTitleFontSans,
 	getSlideTitleColor,
 	getSlideMediaImgUrl,
 	getSlideBackgroundImg,
@@ -133,23 +132,6 @@ describe('myKivaContentfulUtils.js', () => {
 		it('returns empty string when not set', () => {
 			const slide = buildSlide({});
 			expect(getSlideSecondaryCtaText(slide)).toBe('');
-		});
-	});
-
-	describe('isSlideTitleFontSans', () => {
-		it('returns true when titleSans is "true"', () => {
-			const slide = buildSlide({ titleSans: 'true' });
-			expect(isSlideTitleFontSans(slide)).toBe(true);
-		});
-
-		it('returns false when titleSans is not "true"', () => {
-			const slide = buildSlide({ titleSans: 'false' });
-			expect(isSlideTitleFontSans(slide)).toBe(false);
-		});
-
-		it('returns false when titleSans is not set', () => {
-			const slide = buildSlide({});
-			expect(isSlideTitleFontSans(slide)).toBe(false);
 		});
 	});
 
