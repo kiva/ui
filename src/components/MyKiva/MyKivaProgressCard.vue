@@ -14,9 +14,8 @@
 				:class="{'tw-mt-0.5' : goalCompleted && !isAnnualGoal}"
 			>
 				<h5
-					class="progress-value tw-text-center tw-text-label tw-font-medium"
-					:class="shouldWrapProgressValues ? 'tw-flex tw-flex-col tw-leading-tight' : 'tw-whitespace-nowrap'"
-					style="letter-spacing: -0.05rem;"
+					class="progress-value tw-text-center tw-text-label"
+					:class="shouldWrapProgressValues ? 'tw-flex tw-flex-col' : 'tw-whitespace-nowrap'"
 				>
 					<span>{{ currentProgress }}</span>
 					<span
@@ -34,21 +33,21 @@
 		<div class="tw-w-full">
 			<div class="tw-flex tw-items-center tw-gap-0.5">
 				<KvIcon
-					class="tw-text-gray-400 tw-h-2 tw-w-2"
+					class="tw-text-secondary tw-h-2 tw-w-2"
 					:name="isAnnualGoal ? 'annual-goal-flag' : 'progress-checkmark'"
 				/>
-				<h5 class="tw-text-secondary tw-text-label tw-font-medium">
+				<h5 class="tw-text-secondary tw-text-label">
 					{{ tag }}
 				</h5>
 			</div>
-			<p class="tw-font-medium">
+			<p class="tw-text-title">
 				{{ title }}
 			</p>
 			<p v-if="description" class="tw-text-small">
 				{{ description }}
 			</p>
 			<div v-if="btnCta" class="tw-w-full tw-flex tw-justify-end tw-mt-1">
-				<KvButton class="text-link tw-font-medium !tw-text-eco-green-3">
+				<KvButton class="text-link !tw-text-action">
 					{{ btnCta }}
 				</KvButton>
 			</div>
@@ -257,7 +256,7 @@ const cardColor = computed(() => {
     max-width: 336px;
 	height: 112px;
 
-	@apply tw-flex tw-bg-white tw-p-1 tw-shadow tw-rounded-md tw-gap-2.5;
+	@apply tw-flex tw-bg-primary tw-p-1 tw-shadow tw-rounded-md tw-gap-2.5;
 }
 
 .progress-circle, .progress-circle-content {

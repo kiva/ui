@@ -1,18 +1,18 @@
 <template>
 	<div
 		class="tw-w-full tw-relative tw-rounded tw-shadow tw-p-2 tw-flex tw-flex-col
-			tw-bg-white tw-shrink-0 tw-overflow-hidden tw-h-full tw-select-none"
+			tw-bg-primary tw-shrink-0 tw-overflow-hidden tw-h-full tw-select-none"
 	>
 		<span
 			class="tw-inline-flex tw-items-center tw-gap-1 tw-mb-2
-						tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5
+						tw-rounded-md tw-bg-secondary tw-px-1.5 tw-py-0.5
 						tw-absolute tw-top-2.5 tw-left-2.5 tw-z-1"
 		>
 			<KvMaterialIcon
 				class="tw-w-2 tw-h-2 tw-shrink-0"
 				:icon="mdiEarth"
 			/>
-			<span class="tw-text-primary tw-font-medium tw-align-middle" style="font-size: 0.875rem;">
+			<span class="tw-text-primary tw-text-label tw-align-middle">
 				Your latest loan
 			</span>
 		</span>
@@ -46,7 +46,7 @@
 				<h3 class="tw-text-title">
 					Step closer to {{ borrowerName }} story
 				</h3>
-				<p class="tw-font-medium tw-text-base tw-pt-0.5">
+				<p class="tw-text-base tw-pt-0.5">
 					See how your loan improves {{ pronoun }}.
 				</p>
 			</div>

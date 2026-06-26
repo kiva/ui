@@ -5,15 +5,14 @@
 	>
 		<div>
 			<span
-				class="tw-inline-flex tw-items-center tw-gap-1 tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5"
+				class="tw-inline-flex tw-items-center tw-gap-1 tw-rounded-md tw-bg-secondary tw-px-1.5 tw-py-0.5"
 			>
 				<KvMaterialIcon
 					class="tw-w-2 tw-h-2 tw-shrink-0"
 					:icon="mdiLightningBoltOutline"
 				/>
 				<span
-					class="tw-text-primary tw-font-medium tw-align-middle"
-					style="font-size: 0.875rem;"
+					class="tw-text-primary tw-text-label tw-align-middle"
 				>
 					10-second poll
 				</span>

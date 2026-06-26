@@ -1,7 +1,7 @@
 <template>
 	<div
 		v-if="isUserDataLoading"
-		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
+		class="tw-bg-action tw-text-primary-inverse tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
 		data-testid="banner-placeholder"
 		style="display: var(--ui-data-promo-credit-banner-display, block);"
 	>
@@ -9,15 +9,15 @@
 	</div>
 	<div
 		v-else-if="showUpcCampaignBanner"
-		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
+		class="tw-bg-action tw-text-primary-inverse tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
 		data-testid="upc-campaign-banner"
 	>
 		<a
 			:href="upcCampaignLink"
 			class="
-					tw-text-white
-					hover:tw-text-white
-					active:tw-text-white visited:tw-text-white focus:tw-text-white"
+					tw-text-primary-inverse
+					hover:tw-text-primary-inverse
+					active:tw-text-primary-inverse visited:tw-text-primary-inverse focus:tw-text-primary-inverse"
 			data-testid="impact-dashboard-promo-banner"
 			v-kv-track-event="['TopNav','click-Promo','UPC Campaign Banner']"
 		>
@@ -26,15 +26,15 @@
 	</div>
 	<div
 		v-else-if="isFromImpactDashboard"
-		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
+		class="tw-bg-action tw-text-primary-inverse tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
 		data-testid="lending-reward-banner-impact-dashboard"
 	>
 		<a
 			:href="impactDashboardLink"
 			class="
-					tw-text-white
-					tw-no-underline hover:tw-no-underline hover:tw-text-white
-					active:tw-text-white visited:tw-text-white focus:tw-text-white"
+					tw-text-primary-inverse
+					tw-no-underline hover:tw-no-underline hover:tw-text-primary-inverse
+					active:tw-text-primary-inverse visited:tw-text-primary-inverse focus:tw-text-primary-inverse"
 			data-testid="impact-dashboard-promo-banner"
 			v-kv-track-event="['TopNav','click-Promo','Lending Reward Banner']"
 		>
@@ -45,16 +45,16 @@
 	</div>
 	<div
 		v-else-if="lendingRewardOffered"
-		class="tw-bg-brand tw-text-white tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
+		class="tw-bg-action tw-text-primary-inverse tw-text-center tw-py-1 md:tw-py-1.5 tw-px-2"
 		data-testid="lending-reward-banner"
 	>
 		<template v-if="promoFundDisplayName && managedAccountPageId">
 			<router-link
 				:to="`/cc/${managedAccountPageId}`"
 				class="
-					tw-text-white
-					tw-no-underline hover:tw-no-underline hover:tw-text-white
-					active:tw-text-white visited:tw-text-white focus:tw-text-white"
+					tw-text-primary-inverse
+					tw-no-underline hover:tw-no-underline hover:tw-text-primary-inverse
+					active:tw-text-primary-inverse visited:tw-text-primary-inverse focus:tw-text-primary-inverse"
 				data-testid="cc-promo-banner"
 				v-kv-track-event="['TopNav','click-Promo','Lending Reward Banner']"
 			>
@@ -84,24 +84,24 @@
 			v-if="!managedAccountPageId"
 			href="/lend/filter"
 			class="
-				tw-text-white
-				tw-no-underline hover:tw-no-underline hover:tw-text-white
-				active:tw-text-white visited:tw-text-white focus:tw-text-white"
+				tw-text-primary-inverse
+				tw-no-underline hover:tw-no-underline hover:tw-text-primary-inverse
+				active:tw-text-primary-inverse visited:tw-text-primary-inverse focus:tw-text-primary-inverse"
 			data-testid="free-credit-banner"
 			v-kv-track-event="['TopNav','click-Promo','Bonus Banner']"
 		>
 			<div>
 				<!-- eslint-disable-next-line max-len -->
-				<p :class="{'tw-text-title': !isScrolled, 'tw-text-h5': isScrolled}">Your {{ $filters.numeral(effectiveBonusBalance, '$0') }} in lending credits will be applied at checkout!</p>
+				<p :class="{'tw-text-title': !isScrolled, 'tw-text-label': isScrolled}">Your {{ $filters.numeral(effectiveBonusBalance, '$0') }} in lending credits will be applied at checkout!</p>
 			</div>
 		</a>
 		<router-link
 			v-if="managedAccountPageId"
 			:to="`/cc/${managedAccountPageId}`"
 			class="
-				tw-text-white
-				tw-no-underline hover:tw-no-underline hover:tw-text-white
-				active:tw-text-white visited:tw-text-white focus:tw-text-white"
+				tw-text-primary-inverse
+				tw-no-underline hover:tw-no-underline hover:tw-text-primary-inverse
+				active:tw-text-primary-inverse visited:tw-text-primary-inverse focus:tw-text-primary-inverse"
 			data-testid="cc-promo-banner"
 			v-kv-track-event="['TopNav','click-Promo','MVP Bonus Banner']"
 		>
