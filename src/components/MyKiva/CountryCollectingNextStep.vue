@@ -2,18 +2,18 @@
 	<div
 		v-if="recommendedRegion"
 		ref="cardElement"
-		class="tw-bg-white tw-rounded tw-shadow tw-flex tw-flex-col tw-h-full tw-overflow-hidden tw-relative"
+		class="tw-bg-primary tw-rounded tw-shadow tw-flex tw-flex-col tw-h-full tw-overflow-hidden tw-relative"
 	>
 		<span
 			class="tw-inline-flex tw-items-center tw-gap-1
-				tw-rounded tw-bg-eco-green-1 tw-px-1.5 tw-py-1
-				tw-absolute tw-m-2.5 tw-z-1 tw-text-small"
+				tw-rounded tw-bg-secondary tw-px-1.5 tw-py-1
+				tw-absolute tw-m-2.5 tw-z-1 tw-text-label"
 		>
 			<KvMaterialIcon
 				:icon="mdiEarth"
 				class="tw-w-2.5 tw-h-2.5 tw-align-middle"
 			/>
-			<span class="tw-text-primary tw-font-medium tw-align-middle">
+			<span class="tw-text-primary tw-align-middle">
 				Make a global impact
 			</span>
 		</span>
@@ -26,7 +26,7 @@
 		</div>
 
 		<div class="tw-p-2 tw-flex tw-flex-col tw-gap-2 tw-mt-auto">
-			<h3 class="tw-text-title tw-text-2xl tw-font-medium tw-text-primary tw-leading-tight tw-pb-0.5 tw-px-1">
+			<h3 class="tw-text-title tw-text-primary tw-pb-0.5 tw-px-1">
 				Help your first person in {{ recommendedRegion.name }}
 			</h3>
 

@@ -6,7 +6,7 @@
 	/>
 	<div
 		v-else
-		class="tw-bg-white tw-rounded-lg tw-shadow tw-transition-shadow tw-duration-200 tw-p-1
+		class="tw-bg-primary tw-rounded-lg tw-shadow tw-transition-shadow tw-duration-200 tw-p-1
 			hover:tw-shadow focus-within:tw-shadow"
 	>
 		<section
@@ -52,12 +52,12 @@
 				>
 					<div class="tw-flex tw-items-baseline tw-gap-0.5 md:!tw-hidden">
 						<KvIcon
-							class="tw-w-2 tw-h-2 tw-text-gray-400"
+							class="tw-w-2 tw-h-2 tw-text-secondary"
 							name="annual-goal-flag"
 						/>
-						<h5 class="tw-text-label tw-text-secondary">
+						<p class="tw-text-label tw-text-secondary">
 							Your {{ GOALS_CURRENT_YEAR }} goal to support {{ categoryName }}
-						</h5>
+						</p>
 					</div>
 					<KvUtilityMenu
 						v-if="!goalCompleted"
@@ -74,7 +74,7 @@
 							>
 								<button
 									class="tw-w-full tw-px-2 tw-py-2 tw-rounded-md
-										hover:tw-bg-secondary tw-font-medium tw-text-left"
+											hover:tw-bg-secondary tw-text-button-link tw-text-left"
 									@click.prevent="onSelect(action)"
 								>
 									{{ action.label }}
@@ -102,10 +102,7 @@
 								:class="progressValueWrapClass"
 							>
 								<span class="featured-goal-card__visible-progress">{{ visibleProgress }}</span>
-								<span
-									style="font-size: 1rem"
-									class="tw-text-secondary"
-								>
+								<span class="tw-text-secondary tw-text-base">
 									/{{ goalTarget }}
 								</span>
 							</p>
@@ -121,12 +118,12 @@
 						<div class="featured-goal-card__active-body tw-flex tw-flex-col tw-gap-0.5 tw-flex-1">
 							<div class="tw-items-baseline tw-gap-0.5 tw-pb-2 tw-hidden md:tw-flex">
 								<KvIcon
-									class="tw-w-2 tw-h-2 tw-text-gray-400"
+									class="tw-w-2 tw-h-2 tw-text-secondary"
 									name="annual-goal-flag"
 								/>
-								<h5 class="tw-text-label tw-text-secondary">
+								<p class="tw-text-label tw-text-secondary">
 									Your {{ GOALS_CURRENT_YEAR }} goal to support {{ categoryName }}
-								</h5>
+								</p>
 							</div>
 							<h3 class="tw-text-title">
 								{{ activeGoalTitle }}
@@ -319,26 +316,12 @@ watch(
 	}
 }
 
-.tw-text-label {
-	font-size: 0.875rem;
-
-	@screen md {
-		font-size: 1rem;
-	}
-}
-
 .featured-goal-card__visible-progress {
-	@apply tw-font-medium tw-text-h3;
-
-	font-size: 1.25rem;
-
-	@screen md {
-		font-size: 1.625rem;
-	}
+	@apply tw-text-headline;
 }
 
 .featured-goal-card {
-	@apply tw-bg-gray-50;
+	@apply tw-bg-secondary;
 }
 
 .featured-goal-card__loading {
@@ -364,11 +347,7 @@ watch(
 }
 
 .featured-goal-card__progress-ring :deep(circle.tw-text-primary-inverse) {
-	@apply tw-text-gray-200;
-}
-
-.featured-goal-card__progress-value {
-	letter-spacing: -0.05rem;
+	@apply tw-text-secondary;
 }
 
 .featured-goal-card__cta:active {

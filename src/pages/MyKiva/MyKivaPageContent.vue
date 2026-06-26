@@ -772,10 +772,6 @@ export default {
 	@apply !tw-rounded-t;
 }
 
-:deep(#recommended-loans h2) {
-	@apply !tw-text-title;
-}
-
 :deep(#recommended-loans > div) {
 	@apply !tw-px-0;
 }

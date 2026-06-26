@@ -13,7 +13,7 @@
 				:icon="mdiCheck"
 			/>
 		</div>
-		<h2 class="tw-text-headline tw-mt-1 tw-mb-2 tw-font-bold tw-text-action-highlight">
+		<h2 class="tw-text-headline tw-mt-1 tw-mb-2 tw-text-action-highlight">
 			{{ title }}
 		</h2>
 		<p

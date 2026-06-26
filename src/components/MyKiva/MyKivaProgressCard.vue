@@ -13,7 +13,7 @@
 				class="progress-circle-content"
 				:class="{'tw-mt-0.5' : goalCompleted && !isAnnualGoal}"
 			>
-				<h5
+				<p
 					class="progress-value tw-text-center tw-text-label"
 					:class="shouldWrapProgressValues ? 'tw-flex tw-flex-col' : 'tw-whitespace-nowrap'"
 				>
@@ -24,7 +24,7 @@
 					>
 						{{ shouldWrapProgressValues ? `/${target}` : ` / ${target}` }}
 					</span>
-				</h5>
+				</p>
 				<p v-if="goalCompleted && !isAnnualGoal" class="tw-text-small">
 					loans
 				</p>
@@ -36,9 +36,9 @@
 					class="tw-text-secondary tw-h-2 tw-w-2"
 					:name="isAnnualGoal ? 'annual-goal-flag' : 'progress-checkmark'"
 				/>
-				<h5 class="tw-text-secondary tw-text-label">
+				<p class="tw-text-secondary tw-text-label">
 					{{ tag }}
-				</h5>
+				</p>
 			</div>
 			<p class="tw-text-title">
 				{{ title }}

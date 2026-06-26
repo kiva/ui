@@ -1,19 +1,18 @@
 <template>
 	<div
 		ref="cardElement"
-		class="tw-bg-white tw-rounded tw-shadow tw-flex tw-flex-col tw-h-full tw-overflow-hidden tw-relative"
+		class="tw-bg-primary tw-rounded tw-shadow tw-flex tw-flex-col tw-h-full tw-overflow-hidden tw-relative"
 	>
 		<span
 			class="tw-inline-flex tw-items-center tw-gap-1
-				tw-rounded tw-bg-eco-green-1 tw-px-1.5 tw-py-1
-				tw-absolute tw-m-2.5 tw-z-1 tw-text-small"
+				tw-rounded tw-bg-secondary tw-px-1.5 tw-py-1
+				tw-absolute tw-m-2.5 tw-z-1 tw-text-label"
 		>
 			<KvMaterialIcon
 				:icon="mdiCircleSlice7"
-				class="tw-w-2.5 tw-h-2.5 tw-align-middle"
-				style="color: #CE4A00;"
+				class="tw-w-2.5 tw-h-2.5 tw-align-middle tw-text-danger-highlight"
 			/>
-			<span class="tw-font-medium tw-align-middle" style="color: #CE4A00;">
+			<span class="tw-text-danger-highlight tw-align-middle">
 				Almost funded!
 			</span>
 		</span>
@@ -32,10 +31,7 @@
 		</div>
 
 		<div class="tw-p-2 tw-pt-0 tw-flex tw-flex-col tw-gap-2">
-			<h3
-				class="tw-text-title tw-text-2xl tw-font-medium tw-text-primary
-					tw-leading-tight tw-text-center tw-pb-0.5 tw-px-1"
-			>
+			<h3 class="tw-text-title tw-text-primary tw-text-center tw-pb-0.5 tw-px-1">
 				Help these borrowers over the finish line
 			</h3>
 
