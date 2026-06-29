@@ -1,7 +1,7 @@
 <template>
 	<li>
 		<!-- deposit incentive progress -->
-		<h3 class="tw-text-title tw-mb-1">
+		<h3 class="tw-mb-1">
 			Earn your $25 Reward¹
 		</h3>
 		<p class="tw-w-full tw-mb-1 tw-text-small tw-inline-flex tw-items-center">

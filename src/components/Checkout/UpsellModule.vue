@@ -15,13 +15,13 @@
 				<img :src="imageUrl" class="tw-rounded-full tw-w-6 md:tw-w-16">
 			</div>
 			<div class="tw-grow tw-flex tw-flex-col tw-justify-center upsellLoanDetails">
-				<h4 class="tw-text-base tw-text-upper tw-text-action tw-mb-0.5">
+				<h4 class="tw-text-upper tw-text-action tw-mb-0.5">
 					Support Another Borrower
 				</h4>
-				<h3 v-if="isExpiringSoonExpEnabled" class="tw-text-title tw-mb-2">
+				<h3 v-if="isExpiringSoonExpEnabled" class="tw-mb-2">
 					Time is running out for {{ possessiveName }} loan. Add $25 before it expires.
 				</h3>
-				<h3 v-else class="tw-text-title tw-mb-2">
+				<h3 v-else class="tw-mb-2">
 					<!-- eslint-disable-next-line max-len -->
 					{{ loan.name }} is missing just {{ $filters.numeral(amountLeft, '$0,0[.]00') }}! Be the person to complete their loan.
 				</h3>

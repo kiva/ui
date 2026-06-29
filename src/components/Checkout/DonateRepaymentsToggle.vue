@@ -26,7 +26,7 @@
 				<span
 					id="donate-repayments-tooltip"
 					data-testid="donate-repayments-tooltip"
-					class="tw-text-small tw-font-medium tw-sr-only"
+					class="tw-text-label tw-sr-only"
 				>
 					Donate loan repayments instead?
 				</span>
