@@ -1,5 +1,5 @@
 <template>
-	<h1 class="tw-text-headline">
+	<h1>
 		{{ name }}
 	</h1>
 </template>

@@ -58,9 +58,9 @@
 			</div>
 		</article>
 		<article class="tw-mx-2 tw-overflow-auto lg:tw-mx-auto loans-container">
-			<p class="tw-text-center tw-text-display tw-my-6">
+			<h2 class="tw-text-center tw-my-6">
 				Similar borrowers that need your support
-			</p>
+			</h2>
 			<div :key="index" v-for="(category, index) in categories" class="tw-my-6">
 				<p class="tw-text-headline">
 					{{ category.heading }}
