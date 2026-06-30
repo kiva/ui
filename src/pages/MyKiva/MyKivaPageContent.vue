@@ -4,7 +4,7 @@
 	/>
 	<MyKivaContainer class="page-container">
 		<section>
-			<h1 class="tw-text-title tw-mt-4">
+			<h1 class="tw-mt-4">
 				<u>{{ lenderPossessiveName }}</u> impact overview
 			</h1>
 			<MyKivaStats
@@ -51,7 +51,7 @@
 		</section>
 		<section class="tw-mt-4" id="mykiva-achievements">
 			<div class="tw-flex tw-items-center tw-gap-1 tw-z-tooltip tw-pb-6">
-				<h2 id="my-achievements" class="tw-text-title tw-min-h-4">
+				<h2 id="my-achievements" class="tw-min-h-4">
 					Impact progress
 				</h2>
 				<div>
@@ -138,7 +138,7 @@
 			/>
 		</section>
 		<section v-if="moreWaysToHelpSlides.length" class="tw-my-4">
-			<h2 class="tw-text-title">
+			<h2>
 				More ways to help
 			</h2>
 			<JourneyCardCarousel

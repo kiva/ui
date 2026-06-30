@@ -6,7 +6,7 @@
 				<div class="tw-w-full lg:tw-w-auto">
 					<div class="tw-flex tw-items-center">
 						<img v-if="titleIcon" :src="titleIcon" class="tw-mr-1 tw-w-4">
-						<h2 v-if="title" v-html="title" class="tw-text-title tw-text-primary"></h2>
+						<h2 v-if="title" v-html="title" class="tw-text-primary"></h2>
 					</div>
 					<p
 						v-if="subtitle"

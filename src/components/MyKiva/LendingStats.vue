@@ -8,7 +8,7 @@
 					&& !showRegionExperience && !showLendingNextStepsCards
 			}]"
 	>
-		<h2 class="tw-text-title tw-text-primary md:tw-mb-1">
+		<h2 class="tw-text-primary md:tw-mb-1">
 			Next steps recommended for you
 		</h2>
 		<div
