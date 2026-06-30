@@ -1,9 +1,9 @@
 <template>
 	<li>
 		<!-- deposit incentive progress -->
-		<h3 class="tw-mb-1">
+		<h4 class="tw-mb-1">
 			Earn your $25 Reward¹
-		</h3>
+		</h4>
 		<p class="tw-w-full tw-mb-1 tw-text-small tw-inline-flex tw-items-center">
 			<kv-icon name="present" id="present-icon" class="tw-h-2.5 tw-w-2.5 tw--rotate-12 tw-mr-0.5" />
 			<span v-if="!loadingProgress">
