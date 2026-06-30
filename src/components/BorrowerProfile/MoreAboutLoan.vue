@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<h2 class="tw-text-headline" data-testid="bp-more-about-header">
+		<h2 data-testid="bp-more-about-header">
 			More about this loan
 		</h2>
 		<div ref="body">
@@ -16,7 +16,7 @@
 					</div>
 
 					<div v-if="loanAlertText" data-testid="bp-more-about-alert-text">
-						<h3 class="tw-text-title">
+						<h3>
 							About {{ partnerName }}:
 						</h3>
 						<p
@@ -26,7 +26,7 @@
 						</p>
 					</div>
 					<div v-if="dualStatementNote" data-testid="bp-more-about-dual-statement">
-						<h3 class="tw-text-title">
+						<h3>
 							Important Note About This Loan
 						</h3>
 						<div v-html="dualStatementNote">
@@ -36,7 +36,7 @@
 			</div>
 			<div v-if="!partnerName && !loading">
 				<div class="tw-prose tw-my-2">
-					<h3 class="tw-text-title">
+					<h3>
 						Business description
 					</h3>
 					<div data-testid="bp-more-about-direct-description">
@@ -59,7 +59,7 @@
 				/>
 
 				<div class="tw-prose" data-testid="bp-direct-loan-purpose">
-					<h3 class="tw-text-title">
+					<h3>
 						What is the purpose of this loan?
 					</h3>
 					<div data-testid="bp-more-about-purpose">

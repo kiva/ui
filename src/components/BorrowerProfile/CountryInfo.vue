@@ -17,7 +17,7 @@
 		</div>
 
 		<div v-else>
-			<h2 class="tw-text-headline tw-mb-4" data-testid="bp-country-header">
+			<h2 class="tw-mb-4" data-testid="bp-country-header">
 				{{ countryName }} at a glance
 			</h2>
 			<div class="tw-flex tw-mb-4">

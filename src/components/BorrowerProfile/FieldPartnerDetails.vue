@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<h2 class="tw-text-headline tw-mb-2">
+		<h2 class="tw-mb-2">
 			{{ partnerName }}
 		</h2>
 		<dl>

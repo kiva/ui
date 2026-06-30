@@ -1,6 +1,6 @@
 <template>
 	<section v-if="showSection">
-		<h2 class="tw-text-headline tw-mb-4">
+		<h2 class="tw-mb-4">
 			Contributing partners
 		</h2>
 		<div
