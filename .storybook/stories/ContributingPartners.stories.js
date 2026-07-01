@@ -45,3 +45,13 @@ export const WithLogo = story([
 	},
 	tripadvisor,
 ]);
+export const WithAvatar = story([
+	{
+		managedAccountId: 1,
+		displayName: 'Visa',
+		ratio: 1,
+		avatar: { id: 20, url: 'https://via.placeholder.com/96/2e7d32/ffffff?text=A' },
+		logo: { id: 10, url: 'https://via.placeholder.com/96/0070d2/ffffff?text=V' },
+	},
+	tripadvisor,
+]);

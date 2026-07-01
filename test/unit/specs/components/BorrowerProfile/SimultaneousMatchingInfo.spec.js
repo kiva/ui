@@ -146,6 +146,36 @@ describe('SimultaneousMatchingInfo', () => {
 			});
 			getByText('C');
 		});
+
+		it('renders the avatar image when avatar url is provided', () => {
+			const withAvatar = [
+				{
+					managedAccountId: 1,
+					displayName: 'Visa',
+					ratio: 1,
+					avatar: { id: 20, url: 'https://example.com/visa-avatar.png' },
+					logo: { id: 10, url: 'https://example.com/visa-logo.png' },
+				},
+			];
+			const { getByAltText } = renderComponent({ simultaneousMatching: withAvatar, lendAmount: 25 });
+			const img = getByAltText('Image of lender', { hidden: true });
+			expect(img.src).toBe('https://example.com/visa-avatar.png');
+		});
+
+		it('falls back to the logo image when avatar is null', () => {
+			const logoOnly = [
+				{
+					managedAccountId: 1,
+					displayName: 'Visa',
+					ratio: 1,
+					avatar: null,
+					logo: { id: 10, url: 'https://example.com/visa-logo.png' },
+				},
+			];
+			const { getByAltText } = renderComponent({ simultaneousMatching: logoOnly, lendAmount: 25 });
+			const img = getByAltText('Image of lender', { hidden: true });
+			expect(img.src).toBe('https://example.com/visa-logo.png');
+		});
 	});
 
 	it('is hidden on mobile via tw-hidden class on the wrapper', () => {

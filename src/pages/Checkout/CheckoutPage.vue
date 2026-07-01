@@ -20,7 +20,7 @@
 				:class="{'pre-login': !preCheckoutStep}"
 			>
 				<div class="checkout-header hide-for-print tw-pb-3">
-					<h1 class="tw-text-headline tw-mb-3">
+					<h1 class="tw-mb-3">
 						Your basket
 					</h1>
 					<hr class="tw-border-tertiary tw-my-3">
@@ -34,12 +34,12 @@
 							class="tw-w-2 tw-h-2"
 							:icon="mdiGiftOutline"
 						/>
-						<h5
+						<p
 							class="tw-text-label"
 							data-testid="bonus-available-banner"
 						>
 							Use your {{ bonusAvailableTotal }} gift - while funds last!
-						</h5>
+						</p>
 					</div>
 
 					<ftds-message
@@ -267,7 +267,7 @@
 
 			<div v-if="emptyBasket" class="empty-basket tw-relative tw-mx-auto" data-testid="empty-basket">
 				<div class="checkout-header-empty tw-mb-4">
-					<h1 class="tw-text-headline tw-mb-2">
+					<h1 class="tw-mb-2">
 						Your basket is empty!
 					</h1>
 					<p class="tw-mb-2">

@@ -16,7 +16,6 @@
 					<!-- Print Kiva Card -->
 					<h2
 						v-if="cardType == 'print'"
-						class="tw-text-title !tw-font-serif"
 						data-testid="basket-kiva-card-title"
 					>
 						Print-it-yourself Kiva Card
@@ -25,7 +24,6 @@
 					<!-- Postal Kiva Card -->
 					<h2
 						v-if="cardType == 'postal'"
-						class="tw-text-title !tw-font-serif"
 						data-testid="basket-kiva-card-title"
 					>
 						Postal delivery Kiva Card
@@ -34,7 +32,6 @@
 					<!-- Email or Lender Kiva Card -->
 					<h2
 						v-if="cardType === 'email' || cardType === 'lender'"
-						class="tw-text-title !tw-font-serif"
 						data-testid="basket-kiva-card-title"
 					>
 						Email delivery Kiva Card

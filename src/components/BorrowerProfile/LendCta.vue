@@ -509,6 +509,10 @@ export default {
 							managedAccountId
 							displayName
 							ratio
+							avatar {
+								id
+								url
+							}
 							logo {
 								id
 								url
