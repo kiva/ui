@@ -80,6 +80,7 @@
 			<div class="tw-flex tw-flex-col tw-justify-end tw-shrink-0 tw-gap-0.5">
 				<div class="text-content tw-text-primary-inverse">
 					<h2
+						class="tw-text-title"
 						:class="titleClass"
 					>
 						{{ title }}
