@@ -8,7 +8,7 @@
 				is-small
 				:class="{ '-tw-ml-2': index > 0 }"
 				:lender-name="matcher.displayName || 'Anonymous'"
-				:lender-image-url="matcher.logo && matcher.logo.url ? matcher.logo.url : ''"
+				:lender-image-url="matcher.avatar?.url || matcher.logo?.url || ''"
 			/>
 		</div>
 		<p class="md:tw-text-left lg:tw-text-center">
