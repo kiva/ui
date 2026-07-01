@@ -65,6 +65,21 @@ WithLogo.args = {
 	lendAmount: 25,
 };
 
+export const WithAvatar = story.bind({});
+WithAvatar.args = {
+	simultaneousMatching: [
+		{
+			managedAccountId: 1,
+			displayName: 'Visa',
+			ratio: 1,
+			avatar: { id: 20, url: 'https://via.placeholder.com/40/2e7d32/ffffff?text=A' },
+			logo: { id: 10, url: 'https://via.placeholder.com/40/0070d2/ffffff?text=L' },
+		},
+		tripadvisor,
+	],
+	lendAmount: 25,
+};
+
 export const LargeLendAmount = story.bind({});
 LargeLendAmount.args = {
 	simultaneousMatching: [capitalOne, tripadvisor],
