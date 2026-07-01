@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="tw-flex tw-justify-between tw-items-center tw-w-full tw-border-2 tw-border-secondary tw-rounded
+		class="tw-flex tw-justify-between tw-items-center tw-w-full tw-border-2 tw-border-gray-200 tw-rounded
 			tw-p-2.5 tw-py-1 tw-cursor-pointer tw-relative tw-gap-2 lg:tw-flex-col lg:!tw-px-1.5 lg:!tw-gap-1
 			lg:tw-py-1.5"
 		:class="{
@@ -9,7 +9,7 @@
 	>
 		<div
 			v-if="highlightedText"
-			class="tw-bg-caution-highlight tw-rounded-lg tw-text-label tw-drop-shadow-md tw-hidden lg:tw-block
+			class="tw-bg-marigold-2 tw-rounded-lg tw-text-label tw-drop-shadow-md tw-hidden lg:tw-block
 				tw-absolute tw--top-1.5 tw-px-1.5 tw-left-1/2 tw--translate-x-1/2 tw-whitespace-nowrap"
 		>
 			{{ highlightedText }}
@@ -28,7 +28,7 @@
 		<div class="tw-flex tw-flex-col tw-gap-1">
 			<div
 				v-if="highlightedText"
-				class="tw-bg-caution-highlight tw-rounded-lg tw-text-label tw-drop-shadow-md lg:tw-hidden tw-px-1.5"
+				class="tw-bg-marigold-2 tw-rounded-lg tw-text-label tw-drop-shadow-md lg:tw-hidden tw-px-1.5"
 			>
 				{{ highlightedText }}
 			</div>

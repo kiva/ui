@@ -22,7 +22,7 @@
 				title="Your lending reach"
 			>
 				<GlobeSearchIcon class="tw-w-2.5 tw-h-2.5 tw-text-brand-550 tw-align-middle" />
-				<span class="tw-text-primary tw-font-medium tw-align-middle" style="font-size: 0.875rem;">
+				<span class="tw-text-primary tw-text-label tw-align-middle">
 					{{ pillHeader }}
 				</span>
 			</span>

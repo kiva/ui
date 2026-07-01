@@ -100,7 +100,7 @@
 					/>
 					<!-- Custom goal amount option -->
 					<div
-						class="tw-border-2 tw-border-secondary tw-rounded tw-px-2 tw-py-1 lg:tw-py-2 tw-cursor-pointer
+						class="tw-border-2 tw-border-gray-200 tw-rounded tw-px-2 tw-py-1 lg:tw-py-2 tw-cursor-pointer
 							tw-gap-1"
 						:class="{ '!tw-border-action tw-bg-secondary !tw-py-1.5 lg:tw-py-2': isCustomIndex }"
 						@click="updateOptionSelection(CUSTOM_LOAN_NUMBER_INDEX)"
