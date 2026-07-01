@@ -16,19 +16,17 @@ const mockComments = Array.from({ length: 20 }, (_, i) => ({
 }));
 
 function commentsMixin(comments, opts = {}) {
-	const { isLoggedIn = true, lentTo = true, isSubscribed = false } = opts;
+	const { isAdmin = false, subscribed = false } = opts;
 	const mockData = {
 		data: {
 			lend: {
 				loan: {
 					id: 123,
 					comments: { values: comments },
-					userProperties: { lentTo, subscribed: isSubscribed },
+					userProperties: { subscribed },
 				},
 			},
-			my: isLoggedIn
-				? { id: 'user-1', userAccount: { id: 123 } }
-				: { id: null },
+			my: { id: 123, isAdmin },
 		},
 	};
 	return {
@@ -56,17 +54,17 @@ export const WithComments = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: '<loan-comments :loan-id="123" :is-privileged="true" />',
+	template: '<loan-comments :loan-id="123" />',
 });
 
 export const WithCommentsAdmin = () => ({
 	components: { LoanComments },
 	mixins: [
-		commentsMixin(mockComments),
+		commentsMixin(mockComments, { isAdmin: true }),
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: '<loan-comments :loan-id="123" :is-privileged="true" :is-admin="true" />',
+	template: '<loan-comments :loan-id="123" />',
 });
 WithCommentsAdmin.storyName = 'With Comments (Admin)';
 
@@ -77,40 +75,18 @@ export const FewComments = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: '<loan-comments :loan-id="123" :is-privileged="true" />',
+	template: '<loan-comments :loan-id="123" />',
 });
 
 export const Subscribed = () => ({
 	components: { LoanComments },
 	mixins: [
-		commentsMixin(mockComments.slice(0, 5), { isSubscribed: true }),
+		commentsMixin(mockComments.slice(0, 5), { subscribed: true }),
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: '<loan-comments :loan-id="123" :is-privileged="true" />',
+	template: '<loan-comments :loan-id="123" />',
 });
-
-export const NotLentTo = () => ({
-	components: { LoanComments },
-	mixins: [
-		commentsMixin(mockComments.slice(0, 5), { lentTo: false }),
-		cookieStoreStoryMixin(),
-		kvAuth0StoryMixin,
-	],
-	template: '<loan-comments :loan-id="123" :is-privileged="true" />',
-});
-NotLentTo.storyName = 'Logged In, Not Lent To (No Form)';
-
-export const Anonymous = () => ({
-	components: { LoanComments },
-	mixins: [
-		commentsMixin(mockComments.slice(0, 5), { isLoggedIn: false, lentTo: false }),
-		cookieStoreStoryMixin(),
-		kvAuth0StoryMixin,
-	],
-	template: '<loan-comments :loan-id="123" :is-privileged="true" />',
-});
-Anonymous.storyName = 'Anonymous (No Form, No Actions)';
 
 export const Empty = () => ({
 	components: { LoanComments },
@@ -119,16 +95,5 @@ export const Empty = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: '<loan-comments :loan-id="123" :is-privileged="true" />',
+	template: '<loan-comments :loan-id="123" />',
 });
-
-export const NotPrivileged = () => ({
-	components: { LoanComments },
-	mixins: [
-		commentsMixin(mockComments),
-		cookieStoreStoryMixin(),
-		kvAuth0StoryMixin,
-	],
-	template: '<loan-comments :loan-id="123" :is-privileged="false" />',
-});
-NotPrivileged.storyName = 'Not Privileged (Hidden)';

@@ -151,9 +151,9 @@
 		<content-container>
 			<loan-tags :loan-id="loanId" :is-logged-in="isLoggedIn" />
 			<loan-comments
+				v-if="isPrivileged"
 				class="tw-my-5 md:tw-my-6 lg:tw-my-8"
 				:loan-id="loanId"
-				:is-privileged="isPrivileged"
 			/>
 		</content-container>
 		<definitions-lightbox ref="definitionsLightbox" />

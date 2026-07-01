@@ -1,12 +1,12 @@
 <template>
-	<section v-if="isPrivileged">
+	<section>
 		<a id="loanComments"></a>
 		<h2 class="tw-text-h2 tw-mb-2">
 			Comments ({{ comments.length }})
 		</h2>
 
 		<!-- Comment form -->
-		<div v-if="allowCommenting" class="tw-mb-3">
+		<div class="tw-mb-3">
 			<label for="bp-comment-field" class="tw-sr-only">
 				Comment
 			</label>
@@ -26,7 +26,7 @@
 				>
 					Comment
 				</kv-button>
-				<div v-if="allowSubscribing" class="tw-flex tw-items-center tw-gap-1">
+				<div class="tw-flex tw-items-center tw-gap-1">
 					<kv-button
 						v-if="!isSubscribed"
 						variant="link"
@@ -49,9 +49,6 @@
 				</div>
 			</div>
 		</div>
-		<p v-else-if="!isLoggedIn" class="tw-text-secondary tw-mb-2">
-			You must be a lender to comment on this loan.
-		</p>
 
 		<!-- Conversation guidelines -->
 		<p class="tw-mb-3">
@@ -110,7 +107,7 @@
 							Delete
 						</button>
 						<button
-							v-if="isLoggedIn && !comment.isFlagged"
+							v-if="!comment.isFlagged"
 							class="tw-text-secondary hover:tw-underline"
 							data-testid="bp-comment-flag"
 							@click="openReportLightbox(comment.id)"
@@ -198,7 +195,6 @@ const commentsQuery = gql`query loanCommentsFullList($loanId: Int!) {
 				}
 			}
 			userProperties {
-				lentTo
 				subscribed
 			}
 		}
@@ -206,9 +202,6 @@ const commentsQuery = gql`query loanCommentsFullList($loanId: Int!) {
 	my {
 		id
 		isAdmin
-		userAccount {
-			id
-		}
 	}
 }`;
 
@@ -241,10 +234,6 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		isPrivileged: {
-			type: Boolean,
-			default: false,
-		},
 	},
 	apollo: {
 		lazy: true,
@@ -260,9 +249,7 @@ export default {
 	data() {
 		return {
 			comments: [],
-			isLoggedIn: false,
 			isAdmin: false,
-			lentTo: false,
 			isSubscribed: false,
 			newCommentText: '',
 			isSubmitting: false,
@@ -274,12 +261,6 @@ export default {
 		};
 	},
 	computed: {
-		allowCommenting() {
-			return this.isLoggedIn && this.lentTo;
-		},
-		allowSubscribing() {
-			return this.isLoggedIn;
-		},
 		hasSpillover() {
 			return this.comments.length > INITIAL_COMMENT_COUNT;
 		},
@@ -301,9 +282,7 @@ export default {
 				isBorrower: c.author?.role === 'borrower',
 				isFlagged: false,
 			}));
-			this.lentTo = loan?.userProperties?.lentTo ?? false;
 			this.isSubscribed = loan?.userProperties?.subscribed ?? false;
-			this.isLoggedIn = !!data?.my?.userAccount?.id;
 			this.isAdmin = data?.my?.isAdmin ?? false;
 		},
 		async refreshComments() {
