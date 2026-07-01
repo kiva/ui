@@ -47,7 +47,7 @@
 						/>
 						<div class="tw-flex-1 tw-min-w-0 tw-overflow-hidden">
 							<span
-								class="tw-font-medium md:tw-text-lg tw-text-primary
+								class="tw-text-title tw-text-primary
 							tw-block tw-whitespace-nowrap tw-truncate tw-min-w-0 tw-w-full tw-align-bottom"
 
 								:title="region.name"

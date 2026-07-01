@@ -10,7 +10,7 @@
 					</div>
 					<p
 						v-if="subtitle"
-						class="tw-text-subhead tw-text-primary"
+						class="tw-text-subheadline tw-text-primary"
 					>
 						{{ subtitle }}
 					</p>
