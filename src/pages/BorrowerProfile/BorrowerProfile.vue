@@ -71,7 +71,9 @@ const routingFragment = gql`fragment bpRoutingFields on LoanBasic {
 	loanFundraisingInfo {
 		id
 		fundedAmount
+		reservedAmount
 	}
+	unreservedAmount @client
 	userProperties {
 		isPrivileged
 	}
@@ -355,9 +357,7 @@ export default {
 					}
 
 					// Routing decision
-					const loanAmount = Number(loan.loanAmount ?? 0);
-					const fundedAmount = Number(loan.loanFundraisingInfo?.fundedAmount ?? 0);
-					const amountLeft = loanAmount - fundedAmount;
+					const unreservedAmount = Number(loan.unreservedAmount ?? 0);
 					const minimalOverride = route.query?.minimal === 'false';
 					const isPrivileged = loan.userProperties?.isPrivileged ?? false;
 
@@ -372,7 +372,7 @@ export default {
 						return Promise.reject({ path: '/lend', query: route.query });
 					}
 
-					const showFullView = (amountLeft && loan.status === 'fundraising')
+					const showFullView = (unreservedAmount > 0 && loan.status === 'fundraising')
 						|| isPrivileged
 						|| minimalOverride;
 
@@ -512,18 +512,16 @@ export default {
 		hash() {
 			return this.loan?.image?.hash ?? '';
 		},
-		amountLeft() {
-			const loanAmount = this.loan?.loanAmount ?? '0';
-			const fundedAmount = this.loan?.loanFundraisingInfo?.fundedAmount ?? '0';
-			return Number(loanAmount) - Number(fundedAmount);
+		unreservedAmount() {
+			return Number(this.loan?.unreservedAmount ?? 0);
 		},
 		isPrivileged() {
 			return this.loan?.userProperties?.isPrivileged ?? false;
 		},
 		showFullView() {
-			// Fully-reserved fundraising loans (amountLeft === 0) show the minimal view
+			// Fully-reserved fundraising loans (unreservedAmount === 0) show the minimal view
 			// for non-privileged users since there's nothing left to lend.
-			return (this.amountLeft && this.loan?.status === 'fundraising')
+			return (this.unreservedAmount > 0 && this.loan?.status === 'fundraising')
 				|| this.isPrivileged
 				|| this.$route.query.minimal === 'false';
 		},

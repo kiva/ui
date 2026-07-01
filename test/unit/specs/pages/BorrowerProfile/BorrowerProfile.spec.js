@@ -1,4 +1,5 @@
 import BorrowerProfile from '#src/pages/BorrowerProfile/BorrowerProfile';
+import { getOperationName } from '../../../specUtils';
 
 // We invoke apollo.preFetch directly with a mock apollo client and a plain
 // context object. This avoids mounting the SSR app and exercises exactly the
@@ -9,11 +10,12 @@ describe('BorrowerProfile.apollo.preFetch', () => {
 		'fundraising', 'funded', 'expired', 'raised', 'payingBack', 'refunded', 'ended', 'defaulted',
 	];
 
-	const makeLoan = (status, { isPrivileged = false } = {}) => ({
+	const makeLoan = (status, { isPrivileged = false, unreservedAmount = '400' } = {}) => ({
 		id: 12345,
 		status,
 		loanAmount: '500',
 		loanFundraisingInfo: { id: 1, fundedAmount: '100' },
+		unreservedAmount,
 		userProperties: { isPrivileged },
 	});
 
@@ -26,6 +28,13 @@ describe('BorrowerProfile.apollo.preFetch', () => {
 		cookieStore: { get: vi.fn() },
 		kvAuth0: { getKivaId: () => kivaId },
 	});
+
+	const getChildProfileOperationName = client => {
+		const call = client.query.mock.calls.find(([{ query }]) => (
+			['fullBorrowerProfileData', 'minimalBorrowerProfileData'].includes(getOperationName(query))
+		));
+		return getOperationName(call[0].query);
+	};
 
 	it.each(RESTRICTED_STATUSES)(
 		'redirects anonymous viewers to /ui-login for restricted status %s',
@@ -76,4 +85,19 @@ describe('BorrowerProfile.apollo.preFetch', () => {
 		await expect(BorrowerProfile.apollo.preFetch({}, client, context))
 			.rejects.toEqual({ path: '/lend', query: {} });
 	});
+
+	it.each([
+		['0', 'minimalBorrowerProfileData'],
+		['400', 'fullBorrowerProfileData'],
+	])(
+		'routes a fundraising loan with unreservedAmount %s to %s for anonymous viewers (AD-297)',
+		async (unreservedAmount, expectedOperation) => {
+			const client = makeClient(makeLoan('fundraising', { unreservedAmount }));
+			const context = makeContext({ kivaId: undefined });
+
+			await BorrowerProfile.apollo.preFetch({}, client, context);
+
+			expect(getChildProfileOperationName(client)).toBe(expectedOperation);
+		}
+	);
 });
