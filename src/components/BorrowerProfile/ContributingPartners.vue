@@ -71,6 +71,10 @@ export default {
 							displayName
 							ratio
 							partnerContentfulPage
+							avatar {
+								id
+								url
+							}
 							logo {
 								id
 								url
