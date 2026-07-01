@@ -94,7 +94,7 @@
 						<kv-button
 							variant="secondary"
 							v-show="isVisitor"
-							class="tw-bg-primary tw-whitespace-nowrap"
+							class="tw-bg-white tw-whitespace-nowrap"
 							:to="loginUrl"
 							data-testid="header-log-in"
 							v-kv-track-event="['TopNav','click-Sign-in']"
@@ -383,13 +383,13 @@
 								<router-link
 									to="/basket"
 									data-testid="header-basket"
-									class="tw-flex tw-items-center tw-relative md:tw-hidden tw-text-action"
+									class="tw-flex tw-items-center tw-relative md:tw-hidden tw-text-eco-green-4"
 									v-kv-track-event="['TopNav','click-Basket']"
 								>
 									<span
 										class="tw-absolute tw-w-4 tw-h-4 tw-pt-0.5
 											tw-flex tw-items-center tw-justify-center
-											tw-text-primary-inverse tw-text-label"
+											tw-text-white tw-text-small tw-font-medium"
 									>
 										<div v-if="isBasketLoading" class="tw-w-1 tw-h-1.5">
 											<kv-loading-placeholder />
@@ -408,7 +408,7 @@
 							<!-- Log in Link -->
 							<router-link
 								v-show="isVisitor"
-								class="header__button tw-bg-primary tw-whitespace-nowrap tw-inline-flex"
+								class="header__button tw-bg-white tw-whitespace-nowrap tw-inline-flex"
 								:to="loginUrl"
 								data-testid="header-log-in"
 								v-kv-track-event="['TopNav','click-Sign-in']"
@@ -420,7 +420,7 @@
 							<kv-button
 								variant="secondary"
 								v-show="!isMobile"
-								class="tw-hidden md:tw-block tw-bg-primary tw-whitespace-nowrap"
+								class="tw-hidden md:tw-block tw-bg-white tw-whitespace-nowrap"
 								href="/donate/supportus"
 								data-testid="header-support-kiva"
 								v-kv-track-event="['TopNav', 'click-Support-Kiva']"
@@ -1018,7 +1018,7 @@ export default {
 <style lang="postcss" scoped>
 .header__button {
 	@apply tw-items-center tw-flex-shrink-0;
-	@apply tw-text-button-link tw-text-primary hover:tw-text-action-highlight;
+	@apply tw-font-medium tw-text-primary hover:tw-text-action-highlight;
 	@apply tw-no-underline hover:tw-no-underline focus:tw-no-underline;
 	@apply tw-h-8 md:tw-h-9 tw-whitespace-nowrap tw-flex-shrink-0;
 }
@@ -1028,7 +1028,7 @@ export default {
 }
 
 .dropdown-list a {
-	@apply tw-text-button-link tw-text-primary tw-block tw-w-full tw-py-1;
+	@apply tw-font-medium tw-text-primary tw-block tw-w-full tw-py-1;
 	@apply tw-no-underline hover:tw-underline hover:tw-text-action active:tw-text-action-highlight;
 }
 
@@ -1072,8 +1072,8 @@ export default {
 }
 
 .bubble-count {
-	@apply tw-bottom-0 tw-right-0 tw-absolute tw-rounded-full tw-w-2.5 tw-h-2.5 tw-text-primary-inverse
-		tw-text-center tw-text-label tw-bg-action tw-z-3 tw-mr-0.5 md:tw-mr-1 tw-cursor-pointer;
+	@apply tw-bottom-0 tw-right-0 tw-absolute tw-rounded-full tw-w-2.5 tw-h-2.5 tw-text-white
+		tw-text-center tw-text-small tw-bg-brand tw-z-3 tw-mr-0.5 md:tw-mr-1 tw-cursor-pointer;
 }
 
 .user-avatar :deep(img),
