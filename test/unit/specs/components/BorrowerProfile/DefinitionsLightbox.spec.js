@@ -29,6 +29,8 @@ function mountLightbox() {
 					props: ['visible', 'title'],
 					template: '<div v-if="visible" data-testid="stub-lightbox"><slot /></div>',
 				},
+				// Render Teleport content in place so it stays within the wrapper's query scope.
+				teleport: true,
 			},
 		},
 	});

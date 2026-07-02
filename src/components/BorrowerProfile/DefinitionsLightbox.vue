@@ -1,11 +1,13 @@
 <template>
-	<kv-lightbox
-		:visible="visible"
-		:title="title"
-		@lightbox-closed="close"
-	>
-		<div v-html="content" class="tw-prose"></div>
-	</kv-lightbox>
+	<Teleport to="body">
+		<kv-lightbox
+			:visible="visible"
+			:title="title"
+			@lightbox-closed="close"
+		>
+			<div v-html="content" class="tw-prose"></div>
+		</kv-lightbox>
+	</Teleport>
 </template>
 
 <script>
