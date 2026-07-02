@@ -62,14 +62,16 @@
 				</p>
 			</section>
 		</div>
-		<KvLightbox :visible="isLightboxVisible" :title="lightboxTitle" @lightbox-closed="closeLightbox">
-			<!-- eslint-disable vue/no-v-html -->
-			<p
-				v-for="(paragraph, index) in descriptionInOriginalLanguageParagraphs"
-				:key="`originalLanguageParagraph-${index}`" class="tw-prose" v-html="paragraph"
-			></p>
-			<!-- eslint-enable vue/no-v-html -->
-		</KvLightbox>
+		<Teleport to="body">
+			<KvLightbox :visible="isLightboxVisible" :title="lightboxTitle" @lightbox-closed="closeLightbox">
+				<!-- eslint-disable vue/no-v-html -->
+				<p
+					v-for="(paragraph, index) in descriptionInOriginalLanguageParagraphs"
+					:key="`originalLanguageParagraph-${index}`" class="tw-prose" v-html="paragraph"
+				></p>
+				<!-- eslint-enable vue/no-v-html -->
+			</KvLightbox>
+		</Teleport>
 	</div>
 </template>
 
