@@ -146,6 +146,32 @@ describe('hotJarUtils.js', () => {
 				'Has core loan': false,
 			});
 		});
+
+		it('should coerce null attributes to false', () => {
+			const userData = {
+				userId: '55555',
+				hasEverLoggedIn: null,
+				hasLentBefore: null,
+				hasDepositBefore: null,
+				isFirstLoan: true,
+				hasDirectLoan: null,
+				hasCoreLoan: null,
+			};
+
+			setHotJarUserAttributes(userData);
+
+			expect(mockHj).toHaveBeenCalledTimes(2);
+			expect(mockHj).toHaveBeenNthCalledWith(1, 'identify', '55555', {
+				'Has ever logged in': false,
+				'Has lent before': false,
+				'Has deposit before': false,
+			});
+			expect(mockHj).toHaveBeenNthCalledWith(2, 'identify', '55555', {
+				'First loan': true,
+				'Has direct loan': false,
+				'Has core loan': false,
+			});
+		});
 	});
 
 	describe('fireHotJarEvent', () => {
