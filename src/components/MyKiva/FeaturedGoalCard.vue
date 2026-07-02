@@ -6,7 +6,7 @@
 	/>
 	<div
 		v-else
-		class="tw-bg-primary tw-rounded-lg tw-shadow tw-transition-shadow tw-duration-200 tw-p-1
+		class="tw-bg-white tw-rounded-lg tw-shadow tw-transition-shadow tw-duration-200 tw-p-1
 			hover:tw-shadow focus-within:tw-shadow"
 	>
 		<section

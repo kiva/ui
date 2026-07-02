@@ -64,7 +64,7 @@
 						<span
 							id="impact-progress-tooltip"
 							class="tw-sr-only tw-absolute tw--mt-2 tw-inset-x-1
-								md:tw-inset-x-4 md:tw-mt-1 tw-text-primary"
+							md:tw-inset-x-4 md:tw-mt-1 tw-text-stone-3"
 						>Tooltip controller</span>
 					</div>
 					<kv-tooltip
@@ -174,7 +174,7 @@
 			<LatestBlogCarousel controls-top-right :blog-cards="blogCards" />
 		</section>
 	</MyKivaContainer>
-	<section class="tw-mt-4 tw-bg-primary tw-py-4">
+	<section class="tw-mt-4 tw-bg-white tw-py-4">
 		<div
 			style="max-width: 1200px;"
 			class="tw-mx-auto tw-px-2.5 md:tw-px-4 lg:tw-px-8"

@@ -2,7 +2,7 @@
 	<div
 		:class="[
 			// eslint-disable-next-line max-len
-			'tw-w-full tw-relative tw-rounded tw-bg-center tw-select-none tw-bg-primary journey-card tw-flex tw-flex-col tw-h-full tw-bg-cover',
+			'tw-w-full tw-relative tw-rounded tw-bg-center tw-select-none tw-bg-white journey-card tw-flex tw-flex-col tw-h-full tw-bg-cover',
 			{ 'tw-bg-top tw-bg-no-repeat': isBgTopAligned },
 			{ 'single-image': hasSingleBorrowerImage }
 		]"
@@ -89,7 +89,7 @@
 						v-if="subtitle"
 						class="tw-text-small"
 						:class="{
-							'tw-my-1 lg:tw-my-1.5 !tw-text-base !tw-text-primary': isBlackSubtitle,
+							'tw-my-1 lg:tw-my-1.5 !tw-text-base !tw-text-gray-800': isBlackSubtitle,
 						}"
 					>
 						{{ subtitle }}

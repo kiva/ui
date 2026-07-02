@@ -19,7 +19,7 @@
 				View all
 			</p>
 			<KvMaterialIcon
-				class="tw-w-3 tw-h-3 tw-text-action tw-align-middle"
+				class="tw-w-3 tw-h-3 tw-text-eco-green-3 tw-align-middle"
 				:icon="mdiArrowRight"
 			/>
 		</div>
@@ -83,7 +83,7 @@
 				/>
 			</div>
 			<div
-				class="stats-wrapper tw-bg-primary tw-rounded
+				class="stats-wrapper tw-bg-white tw-rounded
 				tw-shadow tw-p-1 md:tw-p-2 tw-flex-1 tw-min-w-0 tw-flex tw-flex-col"
 			>
 				<div>
@@ -92,10 +92,10 @@
 						class="
 						tw-inline-flex tw-items-center tw-gap-1
 						tw-mb-2 tw-rounded
-						tw-bg-secondary tw-px-1.5 tw-py-1"
+						tw-bg-eco-green-1 tw-px-1.5 tw-py-1"
 						title="Your lending reach"
 					>
-						<GlobeSearchIcon class="tw-w-2.5 tw-h-2.5 tw-text-action tw-align-middle" />
+						<GlobeSearchIcon class="tw-w-2.5 tw-h-2.5 tw-text-brand-550 tw-align-middle" />
 						<span class="tw-text-primary tw-text-label tw-align-middle">
 							{{ pillHeader }}
 						</span>
@@ -135,7 +135,7 @@
 				</div>
 				<hr
 					v-if="loanRegions"
-					class="tw-mt-2.5 tw-mb-2 tw-mx-auto tw-border-none tw-bg-secondary tw-rounded"
+					class="tw-mt-2.5 tw-mb-2 tw-mx-auto tw-border-none tw-bg-eco-green-2 tw-rounded"
 					style="width: 219px; height: 1px;"
 				>
 				<div class="tw-flex tw-flex-col tw-grow tw-min-h-0">
@@ -153,7 +153,7 @@
 							<div
 								class="
 								tw-flex tw-flex-col tw-w-full
-								tw-bg-primary tw-rounded tw-shadow hover:tw-shadow-lg
+								tw-bg-white tw-rounded tw-shadow hover:tw-shadow-lg
 								tw-transition-shadow tw-duration-200"
 							>
 								<div

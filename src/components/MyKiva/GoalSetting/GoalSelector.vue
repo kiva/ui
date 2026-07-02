@@ -102,14 +102,14 @@
 					<div
 						class="tw-border-2 tw-border-gray-200 tw-rounded tw-px-2 tw-py-1 lg:tw-py-2 tw-cursor-pointer
 							tw-gap-1"
-						:class="{ '!tw-border-action tw-bg-secondary !tw-py-1.5 lg:tw-py-2': isCustomIndex }"
+						:class="{ '!tw-border-eco-green-3 tw-bg-eco-green-1 !tw-py-1.5 lg:tw-py-2': isCustomIndex }"
 						@click="updateOptionSelection(CUSTOM_LOAN_NUMBER_INDEX)"
 					>
 						<div
 							class="tw-flex lg:tw-flex-col tw-justify-between
 							lg:tw-justify-center tw-items-center tw-gap-1"
 						>
-							<div class="tw-text-action tw-text-center tw-flex tw-items-center tw-gap-1">
+							<div class="tw-text-eco-green-3 tw-text-center tw-flex tw-items-center tw-gap-1">
 								<span class="tw-text-display lg:tw-text-headline tw--mt-1">
 									&#43;
 								</span>
@@ -152,7 +152,7 @@
 
 			<div
 				v-if="isCustomIndex && !loadingCurrentYear && !isLoadingData"
-				class="tw-hidden lg:tw-flex tw-flex-col tw-bg-secondary tw-px-2.5 tw-py-1.5 tw-w-full
+				class="tw-hidden lg:tw-flex tw-flex-col tw-bg-eco-green-1 tw-px-2.5 tw-py-1.5 tw-w-full
 					tw-rounded-sm"
 			>
 				<div class="tw-flex tw-justify-between tw-items-center">
@@ -921,7 +921,7 @@ watch(() => props.selectedCategoryId, async newCategory => {
 }
 
 :deep(.goal-tile-accordion span svg) {
-	@apply !tw-text-action;
+	@apply !tw-text-brand-900;
 }
 
 :deep(.goal-tile-accordion ul li > span svg) {

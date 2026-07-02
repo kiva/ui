@@ -2,7 +2,7 @@
 	<div class="card-container tw-h-full">
 		<span
 			class="tw-inline-flex tw-items-center tw-gap-1 tw-mb-2
-						tw-rounded-md tw-bg-secondary tw-px-1.5 tw-py-0.5
+						tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5
 						tw-absolute md:!tw-top-2.5 md:!tw-left-2.5 tw-top-1.5 tw-left-1.5 tw-z-1"
 		>
 			<KvMaterialIcon
@@ -108,7 +108,7 @@ onMounted(() => {
 	z-index: 1;
 
 	@apply tw-w-full tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
-		tw-overflow-hidden tw-bg-primary tw-shrink-0;
+		tw-overflow-hidden tw-bg-white tw-shrink-0;
 }
 
 .image-container :deep(picture) {

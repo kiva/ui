@@ -5,7 +5,7 @@
 	>
 		<div>
 			<span
-				class="tw-inline-flex tw-items-center tw-gap-1 tw-rounded-md tw-bg-secondary tw-px-1.5 tw-py-0.5"
+				class="tw-inline-flex tw-items-center tw-gap-1 tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5"
 			>
 				<KvMaterialIcon
 					class="tw-w-2 tw-h-2 tw-shrink-0"

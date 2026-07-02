@@ -4,7 +4,7 @@
 			tw-p-2.5 tw-py-1 tw-cursor-pointer tw-relative tw-gap-2 lg:tw-flex-col lg:!tw-px-1.5 lg:!tw-gap-1
 			lg:tw-py-1.5"
 		:class="{
-			'!tw-border-action tw-bg-secondary': selected,
+			'!tw-border-eco-green-3 tw-bg-eco-green-1': selected,
 		}"
 	>
 		<div
@@ -16,7 +16,7 @@
 		</div>
 		<div
 			class="tw-flex tw-gap-1 tw-items-baseline
-						tw-text-action lg:!tw-flex-row lg:!tw-items-baseline lg:tw-gap-0.5"
+						tw-text-eco-green-3 lg:!tw-flex-row lg:!tw-items-baseline lg:tw-gap-0.5"
 		>
 			<span
 				class="loan-number-selector__number tw-text-headline tw-text-center"

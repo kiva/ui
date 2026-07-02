@@ -1,11 +1,11 @@
 <template>
 	<div
 		class="tw-w-full tw-relative tw-rounded tw-shadow tw-p-2 tw-flex tw-flex-col
-			tw-bg-primary tw-shrink-0 tw-overflow-hidden tw-h-full tw-select-none"
+			tw-bg-white tw-shrink-0 tw-overflow-hidden tw-h-full tw-select-none"
 	>
 		<span
 			class="tw-inline-flex tw-items-center tw-gap-1 tw-mb-2
-						tw-rounded-md tw-bg-secondary tw-px-1.5 tw-py-0.5
+						tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5
 						tw-absolute tw-top-2.5 tw-left-2.5 tw-z-1"
 		>
 			<KvMaterialIcon

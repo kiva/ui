@@ -6,13 +6,13 @@
 						md:tw-flex-row md:tw-items-center md:!tw-justify-center"
 			>
 				<div
-					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-action
-								tw-bg-secondary tw-text-center min-circle-size"
+					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-brand-500
+							tw-bg-eco-green-1 tw-text-center min-circle-size"
 				>
 					<div class="tw-items-center tw-gap-3">
 						<div
 							class="borrower-img-size tw-overflow-hidden tw-rounded-full
-										tw-border-4 tw-border-primary tw-my-0 tw-mx-auto"
+									tw-border-4 tw-border-white tw-my-0 tw-mx-auto"
 						>
 							<KvBorrowerImage
 								class="tw-w-full tw-h-full tw-object-cover"

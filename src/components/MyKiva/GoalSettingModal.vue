@@ -66,7 +66,7 @@
 		>
 			<div
 				v-if="showGoalTile"
-				class="goal-tile-container tw-flex tw-h-full tw-bg-primary-inverse tw-justify-center"
+				class="goal-tile-container tw-flex tw-h-full tw-bg-eco-green-4 tw-justify-center"
 			>
 				<div
 					class="tw-self-center tw-text-center"
@@ -78,7 +78,7 @@
 							:src="HandsPlant"
 							class="lg:tw-mb-1 tw-w-10 lg:tw-w-12.5 tw-mx-auto"
 						>
-						<div class="tw-text-center tw-text-primary-inverse tw-text-base">
+						<div class="tw-text-center tw-text-brand-50 tw-text-base">
 							<p class="tw-mb-2">
 								<strong>Set your annual goal</strong>
 							</p>
@@ -124,10 +124,10 @@
 					</template>
 					<template v-else>
 						<kv-material-icon
-							class="tw-w-3.5 tw-h-3.5 tw-text-primary-inverse tw-mx-auto tw-mb-3"
+							class="tw-w-3.5 tw-h-3.5 tw-text-brand tw-mx-auto tw-mb-3"
 							:icon="mdiCheckCircle"
 						/>
-						<div class="tw-text-center tw-text-primary-inverse tw-text-base">
+						<div class="tw-text-center tw-text-brand-50 tw-text-base">
 							<p class="tw-mb-2">
 								<strong>A year of impact</strong>
 							</p>
@@ -777,7 +777,7 @@ watch(show, async newVal => {
 
 .goal-tile-modal :deep {
 	[data-test=kv-lightbox] {
-		@apply lg:!tw-bg-primary-inverse;
+		@apply lg:!tw-bg-eco-green-4;
 	}
 
 	div:has(#kvLightboxBody) {
@@ -863,7 +863,7 @@ watch(show, async newVal => {
 .goal-setting-lightbox.goal-tile-modal-recommend-loan :deep {
 	[data-test=kv-lightbox] > div:first-child,
 	[data-testid=kv-lightbox] > div:first-child {
-		@apply tw-bg-secondary !tw-rounded-t tw-relative tw-p-3 tw-pb-0.5;
+		@apply tw-bg-gray-50 !tw-rounded-t tw-relative tw-p-3 tw-pb-0.5;
 
 		@screen md {
 			width: 684px;
