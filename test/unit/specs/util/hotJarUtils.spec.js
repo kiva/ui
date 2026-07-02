@@ -99,6 +99,79 @@ describe('hotJarUtils.js', () => {
 				'Has core loan': true,
 			});
 		});
+
+		it('should coerce undefined hasEverLoggedIn to false', () => {
+			const userData = {
+				userId: '22222',
+				hasLentBefore: true,
+				hasDepositBefore: true,
+			};
+
+			setHotJarUserAttributes(userData);
+
+			expect(mockHj).toHaveBeenCalledWith('identify', '22222', {
+				'Has ever logged in': false,
+				'Has lent before': true,
+				'Has deposit before': true,
+			});
+		});
+
+		it('should coerce all user attributes to false when undefined', () => {
+			const userData = { userId: '33333' };
+
+			setHotJarUserAttributes(userData);
+
+			expect(mockHj).toHaveBeenCalledWith('identify', '33333', {
+				'Has ever logged in': false,
+				'Has lent before': false,
+				'Has deposit before': false,
+			});
+		});
+
+		it('should coerce loan attributes to false when undefined', () => {
+			const userData = {
+				userId: '44444',
+				hasEverLoggedIn: true,
+				hasLentBefore: true,
+				hasDepositBefore: true,
+				isFirstLoan: true,
+			};
+
+			setHotJarUserAttributes(userData);
+
+			expect(mockHj).toHaveBeenCalledTimes(2);
+			expect(mockHj).toHaveBeenNthCalledWith(2, 'identify', '44444', {
+				'First loan': true,
+				'Has direct loan': false,
+				'Has core loan': false,
+			});
+		});
+
+		it('should coerce null attributes to false', () => {
+			const userData = {
+				userId: '55555',
+				hasEverLoggedIn: null,
+				hasLentBefore: null,
+				hasDepositBefore: null,
+				isFirstLoan: true,
+				hasDirectLoan: null,
+				hasCoreLoan: null,
+			};
+
+			setHotJarUserAttributes(userData);
+
+			expect(mockHj).toHaveBeenCalledTimes(2);
+			expect(mockHj).toHaveBeenNthCalledWith(1, 'identify', '55555', {
+				'Has ever logged in': false,
+				'Has lent before': false,
+				'Has deposit before': false,
+			});
+			expect(mockHj).toHaveBeenNthCalledWith(2, 'identify', '55555', {
+				'First loan': true,
+				'Has direct loan': false,
+				'Has core loan': false,
+			});
+		});
 	});
 
 	describe('fireHotJarEvent', () => {
