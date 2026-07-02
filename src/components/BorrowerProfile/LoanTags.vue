@@ -1,60 +1,68 @@
 <template>
-	<section v-if="selectedTags.length > 0 || isLoggedIn" class="tw-mb-4">
-		<h2>
-			Tags
-		</h2>
-		<!-- Applied tags -->
-		<div v-if="selectedTags.length > 0" class="tw-mb-2">
-			<span v-for="(tag, index) in selectedTags" :key="tag.id || 0">
-				<router-link
-					:to="`/lend/filter?tag=${tag.id}`"
-					class="tw-no-underline tw-font-medium"
-					data-testid="bp-loan-tag"
-				>
-					{{ tag.name }}
-				</router-link>{{ getTagDivider(index) }}
-			</span>
+	<section class="tw-mb-4">
+		<div v-if="loading" class="tw-w-full">
+			<kv-loading-placeholder class="tw-w-1/5 tw-mb-2" :style="{height: '1.5rem'}" />
+			<kv-loading-placeholder class="tw-w-4/5 md:tw-w-2/5 tw-mb-1" :style="{height: '1rem'}" />
+			<kv-loading-placeholder class="tw-w-3/5 md:tw-w-1/4" :style="{height: '1rem'}" />
 		</div>
 
-		<p>
-			Loan tags help lenders find loans that match certain areas of interest.
-		</p>
-
-		<!-- Toggle link for logged-in users -->
-		<p v-if="isLoggedIn">
-			<span class="tw-text-secondary">
-				Select the tags below to add up to 5 of your own tags for this loan.
-			</span>
-			<button
-				class="tw-text-action tw-font-medium"
-				data-testid="bp-loan-tag-toggle"
-				@click="selectorVisible = !selectorVisible"
-			>
-				Add {{ selectedTags.length > 0 ? 'more ' : '' }}tags
-			</button>
-		</p>
-
-		<!-- Tag selector (toggled) -->
-		<div v-if="selectorVisible" class="tw-mt-2">
-			<div class="tw-grid tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
-				<div
-					v-for="tag in availableTags"
-					:key="tag.id || 0"
-					class="tw-flex tw-items-start tw-space-x-3"
-				>
-					<kv-checkbox
-						:model-value="tagStates[tag.id || 0]"
-						class="tag-checkbox"
-						data-testid="bp-loan-tag-checkbox"
-						@update:model-value="handleTagToggle(tag.id || 0, $event)"
+		<div v-else>
+			<h2>
+				Tags
+			</h2>
+			<!-- Applied tags -->
+			<div v-if="selectedTags.length > 0" class="tw-mb-2">
+				<span v-for="(tag, index) in selectedTags" :key="tag.id || 0">
+					<router-link
+						:to="`/lend/filter?tag=${tag.id}`"
+						class="tw-no-underline tw-font-medium"
+						data-testid="bp-loan-tag"
 					>
-						<div class="tw-font-medium -tw-mt-1">
-							{{ tag.name }}
-						</div>
-						<div class="tw-text-sm">
-							{{ tag.description }}
-						</div>
-					</kv-checkbox>
+						{{ tag.name }}
+					</router-link>{{ getTagDivider(index) }}
+				</span>
+			</div>
+
+			<p>
+				Loan tags help lenders find loans that match certain areas of interest.
+			</p>
+
+			<!-- Toggle link for logged-in users -->
+			<p v-if="isLoggedIn">
+				<span class="tw-text-secondary">
+					Select the tags below to add up to 5 of your own tags for this loan.
+				</span>
+				<button
+					class="tw-text-action tw-font-medium"
+					data-testid="bp-loan-tag-toggle"
+					@click="selectorVisible = !selectorVisible"
+				>
+					Add {{ selectedTags.length > 0 ? 'more ' : '' }}tags
+				</button>
+			</p>
+
+			<!-- Tag selector (toggled) -->
+			<div v-if="selectorVisible" class="tw-mt-2">
+				<div class="tw-grid tw-grid-cols-2 tw-gap-x-6 tw-gap-y-4">
+					<div
+						v-for="tag in availableTags"
+						:key="tag.id || 0"
+						class="tw-flex tw-items-start tw-space-x-3"
+					>
+						<kv-checkbox
+							:model-value="tagStates[tag.id || 0]"
+							class="tag-checkbox"
+							data-testid="bp-loan-tag-checkbox"
+							@update:model-value="handleTagToggle(tag.id || 0, $event)"
+						>
+							<div class="tw-font-medium -tw-mt-1">
+								{{ tag.name }}
+							</div>
+							<div class="tw-text-sm">
+								{{ tag.description }}
+							</div>
+						</kv-checkbox>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -65,7 +73,7 @@
 import loanTagsQuery from '#src/graphql/query/borrowerProfileLoanTags.graphql';
 import availableTagsQuery from '#src/graphql/query/availableTags.graphql';
 import addOrRemoveTagOnLoan from '#src/graphql/mutation/addOrRemoveTagOnLoan.graphql';
-import { KvCheckbox } from '@kiva/kv-components';
+import { KvCheckbox, KvLoadingPlaceholder } from '@kiva/kv-components';
 
 // Exclude automated tag that users shouldn't select
 const excludedTagIds = [28]; // #Repeat Borrower - automated tag
@@ -75,7 +83,9 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		KvCheckbox,
+		KvLoadingPlaceholder,
 	},
+	emits: ['hide-section'],
 	props: {
 		loanId: {
 			type: Number,
@@ -105,6 +115,8 @@ export default {
 							return 0;
 						});
 				}
+				this.availableTagsLoaded = true;
+				this.emitHideSectionIfEmpty();
 			},
 		},
 		{
@@ -118,6 +130,8 @@ export default {
 				if (data?.lend?.loan?.tags) {
 					this.currentTagNames = data.lend.loan.tags;
 				}
+				this.loanTagsLoaded = true;
+				this.emitHideSectionIfEmpty();
 			},
 		},
 	],
@@ -126,9 +140,14 @@ export default {
 			availableTags: [],
 			currentTagNames: [],
 			selectorVisible: false,
+			availableTagsLoaded: false,
+			loanTagsLoaded: false,
 		};
 	},
 	computed: {
+		loading() {
+			return !this.availableTagsLoaded || !this.loanTagsLoaded;
+		},
 		tagStates() {
 			const states = {};
 			this.availableTags.forEach(tag => {
@@ -146,6 +165,11 @@ export default {
 		},
 	},
 	methods: {
+		emitHideSectionIfEmpty() {
+			if (!this.loading && this.selectedTags.length === 0 && !this.isLoggedIn) {
+				this.$emit('hide-section');
+			}
+		},
 		getTagDivider(index) {
 			return index < this.selectedTagCount - 1 ? ' | ' : '';
 		},

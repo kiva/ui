@@ -149,7 +149,12 @@
 			</content-container>
 		</div>
 		<content-container>
-			<loan-tags :loan-id="loanId" :is-logged-in="isLoggedIn" />
+			<loan-tags
+				v-if="showTags"
+				:loan-id="loanId"
+				:is-logged-in="isLoggedIn"
+				@hide-section="showTags = false"
+			/>
 			<loan-comments
 				v-if="isPrivileged"
 				class="tw-my-5 md:tw-my-6 lg:tw-my-8"
@@ -328,6 +333,7 @@ export default {
 			showUpdates: true,
 			showLenders: true,
 			showTeams: true,
+			showTags: true,
 			isMobile: false,
 			// Initialize from the SSR-resolved prop so logged-in opted-in renders without flash.
 			showDetailsInRail: this.initialShowDetailsInRail,

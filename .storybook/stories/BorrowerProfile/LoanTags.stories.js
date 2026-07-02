@@ -107,7 +107,10 @@ export const NoTags = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: '<loan-tags :loan-id="23456" />',
+	data() {
+		return { showTags: true };
+	},
+	template: '<loan-tags v-if="showTags" :loan-id="23456" @hide-section="showTags = false" />',
 });
 NoTags.storyName = 'No Tags (Anonymous)';
 
