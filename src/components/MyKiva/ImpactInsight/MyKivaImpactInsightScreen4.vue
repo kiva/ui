@@ -81,8 +81,8 @@
 				>
 					<p
 						v-html="description"
-						class="tw-rounded-md tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3
-								tw-text-base tw-bg-gray-100"
+						class="tw-rounded-2xl tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3
+								tw-text-base tw-bg-gray-100 tw-rounded-md"
 					></p>
 				</div>
 			</div>

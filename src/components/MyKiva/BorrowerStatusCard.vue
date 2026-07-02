@@ -2,7 +2,7 @@
 	<div class="card-container">
 		<div
 			v-if="loanStatus"
-			class="tw-bg-white tw-absolute tw-top-1 tw-left-1 tw-rounded-full tw-px-1 tw-py-0.5 tw-text-label"
+			class="tw-bg-white tw-absolute tw-top-1 tw-left-1 tw-rounded tw-px-1 tw-py-0.5 tw-text-label"
 		>
 			{{ loanStatus }}
 		</div>

@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="blog-card tw-w-full tw-relative tw-rounded-lg tw-bg-cover
+		class="blog-card tw-w-full tw-relative tw-rounded tw-bg-cover
 				tw-bg-center tw-bg-white tw-block focus:tw-outline-none cursor-pointer hover:tw-shadow-md"
 		@click="handleCardClick"
 		role="link"

@@ -38,8 +38,8 @@
 					class="tw-px-0 screen-description"
 				>
 					<p
-						class="tw-rounded-md tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3
-								tw-text-base tw-bg-gray-100"
+						class="tw-rounded-2xl tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3
+								tw-text-base tw-bg-gray-100 tw-rounded-md"
 					>
 						{{ name }} isn't on this journey alone. They're working with a
 						Kiva lending partner that's already given
