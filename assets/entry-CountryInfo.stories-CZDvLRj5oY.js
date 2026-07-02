@@ -1,0 +1,9 @@
+import{C as a}from"./entry-CountryInfo-vcqRUpwAgr.js";import{a as m}from"./entry-apollo-story-mixin-8ULRtAv_Ha.js";import{c as s}from"./entry-cookie-store-story-mixin-Bv_t57ys9l.js";import{k as p}from"./entry-kv-auth0-story-mixin-BRHRk4UM8F.js";import{f as o,c}from"./entry-mockLoanFixtures-B2md5mnOC8.js";import"./entry-index-CWclSTHHJk.js";import"./entry-numeral-xVHG5DEP0A.js";import"./entry-_commonjsHelpers-Cpj98o6Yn6.js";import"./entry-observerUtils-DveHpw6JZJ.js";import"./entry-vue.esm-bundler-Du63x9n7zJ.js";import"./entry-KvWwwHeaderBasic-DMkxmXVWpl.js";import"./entry-tailwind.config-DnDN25xoV6.js";import"./entry-index-CovN8vffBz.js";import"./entry-index-DaZG7dZWP2.js";import"./entry-index-jQMUY8qRYX.js";import"./iframe-LCVN7OV2.js";import"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";import"./entry-syncDate-BCBV0fzsYm.js";import"./entry-_commonjs-dynamic-modules-TDtrdbi37h.js";import"./entry-logFormatter-DhjghUk5Me.js";const v={title:"Components/BorrowerProfile/CountryInfo",component:a},t={...o,terms:{...o.terms,currency:"NIO",currencyFullName:"Nicaraguan Córdoba"},geocode:{...o.geocode,country:{...o.geocode.country,fundsLentInCountry:1245e4}}},r=()=>({components:{CountryInfo:a},mixins:[m({queryResult:c(t)}),s(),p],template:`<country-info :loan-id="${t.id}" />`});var e,i,n;r.parameters={...r.parameters,docs:{...(e=r.parameters)==null?void 0:e.docs,source:{originalSource:`() => ({
+  components: {
+    CountryInfo
+  },
+  mixins: [apolloStoryMixin({
+    queryResult: createQueryResult(loanWithParityFields)
+  }), cookieStoreStoryMixin(), kvAuth0StoryMixin],
+  template: \`<country-info :loan-id="\${loanWithParityFields.id}" />\`
+})`,...(n=(i=r.parameters)==null?void 0:i.docs)==null?void 0:n.source}}};const A=["Default"];export{r as Default,A as __namedExportsOrder,v as default};

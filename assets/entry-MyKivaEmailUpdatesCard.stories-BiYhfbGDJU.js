@@ -1,0 +1,9 @@
+import{M as n}from"./entry-MyKivaEmailUpdatesCard-Cg6yZCoMcF.js";import{a as y}from"./entry-apollo-story-mixin-8ULRtAv_Ha.js";import"./entry-vue.esm-bundler-Du63x9n7zJ.js";import"./entry-KvWwwHeaderBasic-DMkxmXVWpl.js";import"./entry-index-CWclSTHHJk.js";import"./entry-numeral-xVHG5DEP0A.js";import"./entry-_commonjsHelpers-Cpj98o6Yn6.js";import"./entry-tailwind.config-DnDN25xoV6.js";import"./entry-index-CovN8vffBz.js";import"./entry-index-DaZG7dZWP2.js";import"./entry-index-jQMUY8qRYX.js";import"./iframe-LCVN7OV2.js";import"./entry-useOptIn-BjhkM6n-X1.js";import"./entry-logReadQueryError-Codcl0QZ_g.js";import"./entry-logFormatter-DhjghUk5Me.js";import"./entry-stringParserUtils-DNVsfKTBwa.js";import"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";const D={title:"MyKiva/MyKivaEmailUpdatesCard",component:n},c=[{id:2722925,name:"Moses",image:{hash:"093374973a7cfb1f18652d3aac5bbd05"}},{id:1975833,name:"Alan",image:{hash:"9673d0722a7675b9b8d11f90849d9b44"}}],l=(r={})=>{const t=(b,{argTypes:u})=>({props:Object.keys(u),components:{MyKivaEmailUpdatesCard:n},mixins:[y()],setup(){return{args:r}},template:`
+            <div style="width: 336px;">
+                <MyKivaEmailUpdatesCard v-bind="args" />
+            </div>
+        `});return t.args=r,t},a=l({loans:[c[0]]}),o=l({loans:[c[1]]});var s,e,i;a.parameters={...a.parameters,docs:{...(s=a.parameters)==null?void 0:s.docs,source:{originalSource:`story({
+  loans: [mockEmailUpdatesLoans[0]]
+})`,...(i=(e=a.parameters)==null?void 0:e.docs)==null?void 0:i.source}}};var m,p,d;o.parameters={...o.parameters,docs:{...(m=o.parameters)==null?void 0:m.docs,source:{originalSource:`story({
+  loans: [mockEmailUpdatesLoans[1]]
+})`,...(d=(p=o.parameters)==null?void 0:p.docs)==null?void 0:d.source}}};const O=["Default","AdditionalBorrower"];export{o as AdditionalBorrower,a as Default,O as __namedExportsOrder,D as default};
