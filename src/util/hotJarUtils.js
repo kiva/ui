@@ -9,16 +9,16 @@ export function setHotJarUserAttributes(userData) {
 
 	if (window.hj) {
 		window.hj('identify', userData?.userId, {
-			'Has ever logged in': userData?.hasEverLoggedIn,
-			'Has lent before': userData?.hasLentBefore,
-			'Has deposit before': userData?.hasDepositBefore,
+			'Has ever logged in': userData?.hasEverLoggedIn ?? false,
+			'Has lent before': userData?.hasLentBefore ?? false,
+			'Has deposit before': userData?.hasDepositBefore ?? false,
 		});
 
 		if (userData?.isFirstLoan !== undefined) {
 			window.hj('identify', userData?.userId, {
-				'First loan': userData?.isFirstLoan,
-				'Has direct loan': userData?.hasDirectLoan,
-				'Has core loan': userData?.hasCoreLoan,
+				'First loan': userData?.isFirstLoan ?? false,
+				'Has direct loan': userData?.hasDirectLoan ?? false,
+				'Has core loan': userData?.hasCoreLoan ?? false,
 			});
 		}
 	}
