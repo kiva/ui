@@ -2,7 +2,7 @@
 	<div class="card-container">
 		<div
 			v-if="loanStatus"
-			class="tw-bg-primary tw-absolute tw-top-1 tw-left-1 tw-rounded-full tw-px-1 tw-py-0.5 tw-text-label"
+			class="tw-bg-white tw-absolute tw-top-1 tw-left-1 tw-rounded-full tw-px-1 tw-py-0.5 tw-text-label"
 		>
 			{{ loanStatus }}
 		</div>
@@ -12,7 +12,7 @@
 		>
 			<div class="tw-relative">
 				<button
-					class="tw-bg-primary tw-rounded-full tw-w-4 tw-h-4 tw-flex tw-items-center tw-justify-center
+					class="tw-bg-white tw-rounded-full tw-w-4 tw-h-4 tw-flex tw-items-center tw-justify-center
 						tw-absolute tw-right-0 menu-trigger"
 					v-kv-track-event="['portfolio', 'click', '3-dot-menu']"
 					@click="menuOpen = true"
@@ -24,14 +24,14 @@
 				<div
 					ref="optionsMenu"
 					v-if="menuOpen"
-					class="tw-absolute tw-right-0 tw-rounded tw-border tw-border-tertiary tw-bg-primary tw-z-1
+					class="tw-absolute tw-right-0 tw-rounded tw-border tw-border-tertiary tw-bg-white tw-z-1
 						vertical-menu"
 					style="width: 236px;"
 				>
 					<div
 						v-for="(item) in menuOptions"
 						:key="item.id"
-						class="tw-px-3 tw-py-1.5 tw-border-b tw-border-secondary last:tw-border-b-0"
+						class="tw-px-3 tw-py-1.5 tw-border-b tw-border-gray-100 last:tw-border-b-0"
 					>
 						<button
 							@click="menuAction(item.id)"
@@ -51,7 +51,7 @@
 			>
 				<div class="tw-text-center md:tw-text-left tw-flex-grow md:tw-flex-1">
 					<div
-						class="tw-w-10 tw-h-10 tw-mx-auto md:tw-mx-0 tw-border-primary tw-border-4
+						class="tw-w-10 tw-h-10 tw-mx-auto md:tw-mx-0 tw-border-white tw-border-4
 							tw-rounded-full tw-shadow tw--mt-5"
 					>
 						<BorrowerImage
@@ -262,7 +262,7 @@ watch(() => menuOpen.value, () => {
 	width: 336px;
 	min-height: 268px;
 
-	@apply tw-flex tw-flex-col tw-justify-center tw-items-center tw-rounded tw-bg-primary tw-relative;
+	@apply tw-flex tw-flex-col tw-justify-center tw-items-center tw-rounded tw-bg-white tw-relative;
 }
 
 .menu-trigger, .vertical-menu {

@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-rounded tw-bg-primary tw-p-2 update-card tw-h-full tw-flex tw-flex-col">
+	<div class="tw-rounded tw-bg-white tw-p-2 update-card tw-h-full tw-flex tw-flex-col">
 		<div class="tw-flex tw-gap-1">
 			<!-- Show triple image for repayment summary cards -->
 			<div v-if="update.isRepayment && update.status === 'repayment-summary' && repaymentImages.length">
@@ -12,7 +12,7 @@
 			>
 				<BorrowerImage
 					v-if="hash"
-					class="tw-w-full tw-rounded-full tw-bg-action"
+					class="tw-w-full tw-rounded-full tw-bg-brand"
 					:alt="borrowerName"
 					:aspect-ratio="1"
 					:default-image="{ width: 80, faceZoom: 50 }"
@@ -32,7 +32,7 @@
 				<p class="tw-mb-0.5 tw-text-title tw-line-clamp-1">
 					{{ update.title || title }}
 				</p>
-				<div class="tw-py-0.5 tw-px-1 tw-text-label tw-bg-secondary tw-rounded tw-w-auto">
+				<div class="tw-py-0.5 tw-px-1 tw-text-label tw-bg-eco-green-1 tw-rounded tw-w-auto">
 					{{ loanStatus }}
 				</div>
 			</div>

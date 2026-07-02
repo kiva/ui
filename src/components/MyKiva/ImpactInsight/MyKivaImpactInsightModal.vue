@@ -65,7 +65,7 @@
 						<button
 							v-if="currentSlide > 0 && !isMobile"
 							class="tw-w-11 tw-text-center tw-border tw-rounded-lg
-									tw-bg-primary tw-text-primary tw-text-button-link"
+									tw-bg-white tw-text-gray-900 tw-text-button-link"
 							:disabled="currentSlide === 0"
 							@click="goToPrev"
 						>
@@ -73,7 +73,7 @@
 						</button>
 						<button
 							class="tw-w-full md:tw-w-11 tw-text-center tw-rounded-lg tw-bg-action
-									tw-text-primary-inverse tw-text-button-link hover:tw-bg-action-highlight"
+									tw-text-white tw-text-button-link hover:tw-bg-action-highlight"
 							@click="handleNextOrDone"
 						>
 							{{ isLastSlide ? 'Done' : 'Next' }}

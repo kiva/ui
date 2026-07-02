@@ -101,8 +101,8 @@
 						@click="emit('secondary-cta-clicked')"
 						variant="tertiary"
 						class="tw-inline-flex tw-justify-center tw-items-center tw-rounded tw-py-1 tw-px-3
-									tw-border tw-border-primary-inverse tw-text-button-link tw-text-center
-									tw-text-primary-inverse"
+									tw-border tw-border-white tw-text-button-link tw-text-center
+									tw-text-white"
 					>
 						{{ secondaryCtaText }}
 					</button>

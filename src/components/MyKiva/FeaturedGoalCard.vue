@@ -52,7 +52,7 @@
 				>
 					<div class="tw-flex tw-items-baseline tw-gap-0.5 md:!tw-hidden">
 						<KvIcon
-							class="tw-w-2 tw-h-2 tw-text-secondary"
+							class="tw-w-2 tw-h-2 tw-text-gray-400"
 							name="annual-goal-flag"
 						/>
 						<p class="tw-text-label tw-text-secondary">
@@ -118,7 +118,7 @@
 						<div class="featured-goal-card__active-body tw-flex tw-flex-col tw-gap-0.5 tw-flex-1">
 							<div class="tw-items-baseline tw-gap-0.5 tw-pb-2 tw-hidden md:tw-flex">
 								<KvIcon
-									class="tw-w-2 tw-h-2 tw-text-secondary"
+									class="tw-w-2 tw-h-2 tw-text-gray-400"
 									name="annual-goal-flag"
 								/>
 								<p class="tw-text-label tw-text-secondary">
@@ -321,7 +321,7 @@ watch(
 }
 
 .featured-goal-card {
-	@apply tw-bg-secondary;
+	@apply tw-bg-gray-50;
 }
 
 .featured-goal-card__loading {
@@ -347,7 +347,7 @@ watch(
 }
 
 .featured-goal-card__progress-ring :deep(circle.tw-text-primary-inverse) {
-	@apply tw-text-secondary;
+	@apply tw-text-gray-200;
 }
 
 .featured-goal-card__cta:active {

@@ -15,7 +15,7 @@
 			class="tw-flex md:tw-gap-1 tw-cursor-pointer tw-w-16 md:tw-w-fit tw-justify-end"
 			@click="handleViewAllClick"
 		>
-			<p class="tw-text-action tw-text-button-link tw-cursor-pointer">
+			<p class="tw-text-eco-green-3 tw-text-button-link tw-cursor-pointer">
 				View all
 			</p>
 			<KvMaterialIcon

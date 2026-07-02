@@ -2,11 +2,11 @@
 	<div
 		v-if="recommendedRegion"
 		ref="cardElement"
-		class="tw-bg-primary tw-rounded tw-shadow tw-flex tw-flex-col tw-h-full tw-overflow-hidden tw-relative"
+		class="tw-bg-white tw-rounded tw-shadow tw-flex tw-flex-col tw-h-full tw-overflow-hidden tw-relative"
 	>
 		<span
 			class="tw-inline-flex tw-items-center tw-gap-1
-				tw-rounded tw-bg-secondary tw-px-1.5 tw-py-1
+				tw-rounded tw-bg-eco-green-1 tw-px-1.5 tw-py-1
 				tw-absolute tw-m-2.5 tw-z-1 tw-text-label"
 		>
 			<KvMaterialIcon

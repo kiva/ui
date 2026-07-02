@@ -3,7 +3,7 @@
 		<div :class="titleContainerClass">
 			<kv-material-icon
 				v-if="isGoalTileExperimentEnabled && !isLarge && isModalVariant && !isUpdatingGoal"
-				class="tw-w-3.5 tw-h-3.5 tw-text-action tw-mx-auto tw-mb-2"
+				class="tw-w-3.5 tw-h-3.5 tw-text-brand tw-mx-auto tw-mb-2"
 				:icon="mdiCheckCircle"
 			/>
 			<h2 v-if="isModalVariant" class="tw-text-headline" :class="titleClass">
@@ -243,7 +243,7 @@ const titleClass = computed(() => {
 });
 
 const modalVariantDescriptionText = computed(() => {
-	const cssClass = 'tw-text-action';
+	const cssClass = 'tw-text-brand';
 	const loans = props.goalLoans;
 	if (props.isGoalCompleted) return goalCopy.modalDescriptionCompleted(loans, props.categoryId, cssClass);
 	if (props.goalProgress > 0) return goalCopy.modalDescriptionInProgress(loans, props.categoryId, cssClass);

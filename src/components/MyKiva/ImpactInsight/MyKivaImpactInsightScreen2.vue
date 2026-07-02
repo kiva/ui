@@ -6,11 +6,11 @@
 						md:tw-flex-row md:tw-items-center md:!tw-justify-center"
 			>
 				<div
-					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-caution
+					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-marigold
 								tw-bg-caution-highlight tw-text-center min-big-circle-size"
 				>
 					<div
-						class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-action
+						class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-brand-500
 								tw-text-center min-circle-size"
 					>
 						<div class="tw-items-center tw-gap-3">
@@ -22,7 +22,7 @@
 								/>
 							</div>
 
-							<div class="tw-text-base tw-text-primary">
+							<div class="tw-text-base tw-text-slate-900">
 								<strong>Their loan</strong>
 							</div>
 						</div>
@@ -32,10 +32,10 @@
 					class="tw-px-0 screen-description"
 				>
 					<p
-						class="tw-rounded-md tw-bg-secondary tw-py-2 tw-px-2 md:!tw-px-3
-								tw-text-base"
+						class="tw-rounded-md tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3
+								tw-text-base tw-bg-gray-100"
 					>
-						<strong class="tw-text-action">This loan is special because</strong>
+						<strong class="tw-text-brand">This loan is special because</strong>
 						{{ whySpecial }}
 					</p>
 				</div>

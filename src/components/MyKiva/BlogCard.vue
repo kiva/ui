@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="blog-card tw-w-full tw-relative tw-rounded-lg tw-bg-cover
-				tw-bg-center tw-bg-primary tw-block focus:tw-outline-none cursor-pointer hover:tw-shadow-md"
+				tw-bg-center tw-bg-white tw-block focus:tw-outline-none cursor-pointer hover:tw-shadow-md"
 		@click="handleCardClick"
 		role="link"
 		@keydown.enter="handleCardClick"
@@ -15,21 +15,22 @@
 			<span
 				v-if="category"
 				class="loan-callout tw-text-ellipsis tw-overflow-hidden tw-rounded-full
-				tw-py-0.5 tw-px-1 tw-mr-0.5 tw-mb-0.5 tw-text-label tw-bg-secondary"
+				tw-py-0.5 tw-px-1 tw-mr-0.5 tw-mb-0.5 tw-text-label"
 				:title="category"
+				style="background-color: #f1f1f1;"
 			>
 				{{ category }}
 			</span>
 		</div>
 
 		<div class="tw-px-2 tw-pt-1.5 tw-flex-1 tw-flex tw-flex-col">
-			<p class="tw-text-base tw-line-clamp-3 tw-text-primary">
-				<span class="blog-card-title tw-text-primary tw-no-underline">
+			<p class="tw-text-base tw-line-clamp-3 tw-text-black">
+				<span class="blog-card-title tw-text-black tw-no-underline">
 					{{ title }}
 				</span>
 			</p>
 		</div>
-		<div class="tw-absolute tw-left-0 tw-bottom-0 tw-pl-2 tw-pb-2 tw-text-secondary tw-text-caption">
+		<div class="tw-absolute tw-left-0 tw-bottom-0 tw-pl-2 tw-pb-2 tw-text-gray-500 tw-text-caption">
 			<p v-if="date">
 				{{ formattedDate }}
 			</p>

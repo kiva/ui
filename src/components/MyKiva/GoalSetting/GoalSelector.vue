@@ -180,7 +180,7 @@
 					<template
 						#header
 					>
-						<p class="tw-text-action tw-text-button-link" @click="handleOpenGoalTile">
+						<p class="tw-text-brand-900 tw-text-button-link" @click="handleOpenGoalTile">
 							Why set a goal?
 						</p>
 					</template>
