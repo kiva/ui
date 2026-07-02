@@ -41,7 +41,7 @@
 		</fieldset>
 		<p
 			v-if="v$.selectedComms?.$error"
-			class="input-error tw-text-danger tw-text-base tw-mb-2 tw-text-small"
+			class="input-error tw-text-danger tw-mb-2 tw-text-small"
 		>
 			Choose your communication preferences.
 		</p>

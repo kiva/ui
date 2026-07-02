@@ -29,10 +29,10 @@
 				/>
 			</div>
 			<div class="tw-flex tw-flex-col tw-items-start">
-				<p class="tw-mb-0.5 tw-font-medium tw-line-clamp-1">
+				<p class="tw-mb-0.5 tw-text-title tw-line-clamp-1">
 					{{ update.title || title }}
 				</p>
-				<div class="tw-py-0.5 tw-px-1 tw-font-medium tw-text-small tw-bg-eco-green-1 tw-rounded tw-w-auto">
+				<div class="tw-py-0.5 tw-px-1 tw-text-label tw-bg-eco-green-1 tw-rounded tw-w-auto">
 					{{ loanStatus }}
 				</div>
 			</div>
@@ -84,7 +84,7 @@
 						:icon="mdiExportVariant"
 					/>
 				</div>
-				<span class="tw-text-small tw-font-medium">Share</span>
+				<span class="tw-text-label">Share</span>
 			</button>
 
 			<div class="tw-flex tw-text-secondary tw-text-small">

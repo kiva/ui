@@ -9,7 +9,7 @@
 				class="tw-w-2 tw-h-2 tw-shrink-0"
 				:icon="mdiEmailOutline"
 			/>
-			<span class="tw-text-primary tw-font-medium tw-align-middle" style="font-size: 0.875rem;">
+			<span class="tw-text-primary tw-text-label tw-align-middle">
 				Email updates
 			</span>
 		</span>
@@ -28,7 +28,7 @@
 			<h3 class="tw-text-title">
 				Follow {{ borrowerName }} journey
 			</h3>
-			<p class="tw-font-medium tw-text-base tw-pt-0.5 tw-grow">
+			<p class="tw-text-base tw-pt-0.5 tw-grow">
 				Don't miss out on borrower updates, stories, and new ways to help.
 			</p>
 			<div class="tw-pt-1">

@@ -19,7 +19,7 @@
 							/>
 						</div>
 						<div>
-							<h3 class="tw-text-title">
+							<h3>
 								This loan is in the private funding stage.
 							</h3>
 						</div>

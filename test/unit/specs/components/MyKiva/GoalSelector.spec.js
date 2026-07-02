@@ -173,7 +173,7 @@ describe('GoalSelector', () => {
 		await flushPromises();
 
 		const getLoanNumbers = () => Array.from(
-			container.querySelectorAll('span.tw-text-display')
+			container.querySelectorAll('.loan-number-selector__number')
 		).map(el => Number(el.textContent.trim())).filter(Number.isFinite);
 
 		// Helper to click a category and assert expected goal options
@@ -552,7 +552,7 @@ describe('GoalSelector', () => {
 		await flushPromises();
 
 		const getLoanNumbers = () => Array.from(
-			container.querySelectorAll('span.tw-text-display')
+			container.querySelectorAll('.loan-number-selector__number')
 		).map(el => Number(el.textContent.trim())).filter(Number.isFinite);
 
 		// Women category: 1 loan last year, 0 this year -> default options
@@ -763,7 +763,7 @@ describe('GoalSelector', () => {
 		await flushPromises();
 
 		const getLoanNumbers = () => Array.from(
-			container.querySelectorAll('span.tw-text-display')
+			container.querySelectorAll('.loan-number-selector__number')
 		).map(el => Number(el.textContent.trim())).filter(Number.isFinite);
 
 		// Initial category (Women) with no history falls back to default options

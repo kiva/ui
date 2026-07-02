@@ -45,13 +45,12 @@
 				tw-rounded
 				tw-px-1.5
 				tw-py-0.5
-				tw-text-small
+				tw-text-label
 				tw-left-1.5
 				tw-top-1.5
 				md:tw-left-2.5
 				md:tw-top-2.5
 				tw-drop-shadow-sm
-				tw-font-medium
 				tw-flex
 				tw-items-center"
 		>
@@ -81,14 +80,14 @@
 			<div class="tw-flex tw-flex-col tw-justify-end tw-shrink-0 tw-gap-0.5">
 				<div class="text-content tw-text-primary-inverse">
 					<h2
-						class="tw-text-title"
+						class="tw-font-sans"
 						:class="titleClass"
 					>
 						{{ title }}
 					</h2>
 					<p
 						v-if="subtitle"
-						class="tw-text-small tw-font-medium"
+						class="tw-text-small"
 						:class="{
 							'tw-my-1 lg:tw-my-1.5 !tw-text-base !tw-text-gray-800': isBlackSubtitle,
 						}"
@@ -102,7 +101,8 @@
 						@click="emit('secondary-cta-clicked')"
 						variant="tertiary"
 						class="tw-inline-flex tw-justify-center tw-items-center tw-rounded tw-py-1 tw-px-3
-									tw-border tw-border-white tw-font-medium tw-text-center tw-text-white"
+									tw-border tw-border-white tw-text-button-link tw-text-center
+									tw-text-white"
 					>
 						{{ secondaryCtaText }}
 					</button>
@@ -217,13 +217,6 @@ const props = defineProps({
 		default: 'secondary',
 	},
 	/**
-	 * Whether the title should use a sans-serif font.
-	 */
-	isTitleFontSans: {
-		type: Boolean,
-		default: false,
-	},
-	/**
 	 * Color class for the title text. If provided, it will be applied to the title.
 	 * This can be a Tailwind CSS color class like 'tw-text-gray-800'
 	 */
@@ -274,10 +267,6 @@ const showSecondaryCta = computed(() => !!props.secondaryCtaText);
 
 const titleClass = computed(() => {
 	let className = '';
-
-	if (props.isTitleFontSans) {
-		className += 'tw-font-sans';
-	}
 
 	if (props.titleColor) {
 		className += ` ${props.titleColor}`;

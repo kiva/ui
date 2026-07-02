@@ -7,7 +7,7 @@
 			/>
 		</div>
 
-		<h2 class="tw-text-headline tw-sr-only">
+		<h2 class="tw-sr-only">
 			Loan Comments
 		</h2>
 		<div
@@ -48,7 +48,7 @@
 						</div>
 						<!-- comment -->
 						<div>
-							<h2 class="tw-text-headline">
+							<h2>
 								<em class="tw-break-words">"{{ shortComment(comment.body) }}"</em>
 							</h2>
 						</div>
@@ -110,7 +110,7 @@
 								</div>
 								<!-- name and team info -->
 								<div class="tw-m-auto">
-									<h3 class="tw-text-title">
+									<h3>
 										{{ comment.authorName }}
 									</h3>
 									<h4
@@ -149,10 +149,10 @@
 			@lightbox-closed="isReportLightboxVisible = false"
 		>
 			<template #header>
-				<h2 class="tw-text-headline">
+				<h2>
 					Report Comment
 				</h2>
-				<h3 class="tw-text-title tw-mt-2">
+				<h3 class="tw-mt-2">
 					Why are you reporting this comment?
 				</h3>
 			</template>
@@ -200,7 +200,7 @@
 			title=""
 			@lightbox-closed="isCommentLightboxVisible = false"
 		>
-			<h2 class="tw-text-headline">
+			<h2>
 				<em class="tw-break-words">"{{ selectedCommentBody }}"</em>
 			</h2>
 		</kv-lightbox>

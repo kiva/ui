@@ -4,7 +4,7 @@
 			Trustees are organizations that refer potential U.S.-based
 			borrowers to Kiva and publicly vouch for them on Kiva.org.
 		</p>
-		<h2 class="tw-text-headline tw-mb-2" data-testid="bp-details-trustee-name">
+		<h2 class="tw-mb-2" data-testid="bp-details-trustee-name">
 			{{ trusteeName }}
 		</h2>
 		<dl>
@@ -67,7 +67,7 @@
 			{{ noTrusteeState ? 'More about loans without endorsements' : 'More about this trustee' }}
 		</kv-text-link>
 		<div v-if="endorsement" class="tw-prose tw-my-3" data-testid="bp-details-trustee-endorsement">
-			<h3 class="tw-text-title">
+			<h3>
 				{{ endorsementTitle }}
 			</h3>
 			<blockquote>

@@ -12,7 +12,7 @@
 		<div class="tw-flex-auto borrower-info-wrapper">
 			<div class="borrower-info" data-testid="basket-loan-info">
 				<div class="tw-flex tw-mb-1">
-					<h2 class="tw-text-title !tw-font-serif tw-flex-grow" data-testid="basket-loan-name">
+					<h2 class="tw-flex-grow" data-testid="basket-loan-name">
 						{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
 					</h2>
 					<remove-basket-item
@@ -40,9 +40,11 @@
 				<loan-matcher
 					class="tw-my-1"
 					data-testid="basket-loan-matching-text"
-					v-if="loan.loan.matchingText || loan.loan.simultaneousMatching?.length > 0"
+					v-if="loan.loan.matchingText
+						|| (enableMultiMatching && loan.loan.simultaneousMatching?.length > 0)"
 					:matching-text="loan.loan.matchingText"
 					:simultaneous-matching="loan.loan.simultaneousMatching || []"
+					:enable-multi-matching="enableMultiMatching"
 				/>
 				<loan-reservation
 					class="tw-mb-1"
@@ -142,6 +144,7 @@ import { getForcedTeamId, removeLoansFromChallengeCookie } from '#src/util/teamC
 import { KvCartPill } from '@kiva/kv-components';
 import IconChoice from '#src/assets/icons/inline/achievements/icon_choice.svg';
 import EquityBadge from '#src/assets/icons/inline/achievements/equity-badge.svg';
+import useMultiMatching from '#src/composables/useMultiMatching';
 
 export default {
 	name: 'BasketItem',
@@ -158,6 +161,10 @@ export default {
 		EquityBadge,
 	},
 	inject: ['apollo', 'cookieStore'],
+	setup() {
+		const { enableMultiMatching } = useMultiMatching();
+		return { enableMultiMatching };
+	},
 	emits: [
 		'refreshtotals',
 		'updating-totals',

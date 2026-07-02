@@ -1,13 +1,10 @@
 <template>
 	<section>
 		<div class="tw-prose" data-testid="bp-story-header">
-			<h2
-				class="tw-text-headline"
-				v-if="isAnonymizationLevelFull"
-			>
+			<h2 v-if="isAnonymizationLevelFull">
 				Story
 			</h2>
-			<h2 class="tw-text-headline" v-if="!isAnonymizationLevelFull">
+			<h2 v-if="!isAnonymizationLevelFull">
 				{{ borrowerPossessiveName }} story
 			</h2>
 		</div>

@@ -403,22 +403,24 @@ describe('LoansPage', () => {
 	it('hides the "Updated as of" line until the stats table emits a timestamp', async () => {
 		const page = renderLoansPage();
 
-		expect(page.queryByText(/Updated as of/)).toBeNull();
+		// Rendered twice (a desktop copy on the heading line, a mobile copy in the stats box),
+		// both gated on the same timestamp — so assert on the count rather than a single node.
+		expect(page.queryAllByText(/Updated as of/)).toHaveLength(0);
 
 		await fireEvent.click(page.getByTestId('emit-updated-as-of'));
 
-		await waitFor(() => expect(page.queryByText(/Updated as of/)).not.toBeNull());
-		expect(page.queryByText(/Updated as of/).textContent).toContain('2026');
+		await waitFor(() => expect(page.queryAllByText(/Updated as of/).length).toBeGreaterThan(0));
+		expect(page.queryAllByText(/Updated as of/)[0].textContent).toContain('2026');
 	});
 
 	it('hides the "Updated as of" line when the stats table emits null', async () => {
 		const page = renderLoansPage();
 
 		await fireEvent.click(page.getByTestId('emit-updated-as-of'));
-		await waitFor(() => expect(page.queryByText(/Updated as of/)).not.toBeNull());
+		await waitFor(() => expect(page.queryAllByText(/Updated as of/).length).toBeGreaterThan(0));
 
 		await fireEvent.click(page.getByTestId('emit-null-updated-as-of'));
-		await waitFor(() => expect(page.queryByText(/Updated as of/)).toBeNull());
+		await waitFor(() => expect(page.queryAllByText(/Updated as of/)).toHaveLength(0));
 	});
 
 	it('passes the viewer lending teams to the loan list', async () => {

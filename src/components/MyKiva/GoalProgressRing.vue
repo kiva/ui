@@ -4,7 +4,7 @@
 			<h2 v-if="isModalVariant" class="tw-text-headline tw-font-medium" :class="titleClass">
 				{{ titleText }}
 			</h2>
-			<p v-else class="tw-font-medium" :class="titleClass">
+			<p v-else class="tw-text-base" :class="titleClass">
 				{{ titleText }}
 			</p>
 
@@ -27,7 +27,7 @@
 		>
 			<p
 				v-html="modalVariantDescriptionText"
-				class="modal-description-text tw-text-subhead !tw-font-medium" style="line-height: 1.5rem;"
+				class="modal-description-text tw-text-subheadline"
 			></p>
 		</div>
 
@@ -47,10 +47,10 @@
 						? 'tw-flex-col tw-pt-2'
 						: 'tw-flex-row tw-items-baseline'"
 				>
-					<component :is="progressValueHeadingTag" class="tw-leading-none">
+					<component :is="progressValueHeadingTag">
 						{{ visibleGoalLoans }}
 					</component>
-					<component :is="goalTargetHeadingTag" class="tw-text-secondary tw-leading-tight">
+					<component :is="goalTargetHeadingTag" class="tw-text-secondary">
 						/{{ goalLoans }}
 					</component>
 				</div>
@@ -63,8 +63,7 @@
 		<p
 			v-if="!isModalVariant"
 			v-html="descriptionText"
-			class="tw-font-medium tw-py-1"
-			style="line-height: 1.5rem;"
+			class="tw-text-base tw-py-1"
 		>
 		</p>
 
