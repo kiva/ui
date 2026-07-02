@@ -1,5 +1,5 @@
 <template>
-	<table class="tw-w-full tw-text-small lg:tw-text-base">
+	<table class="tw-w-full tw-text-small">
 		<thead>
 			<tr class="tw-bg-gray-200">
 				<th class="tw-px-1 lg:tw-px-2 tw-py-1"></th>
@@ -96,7 +96,7 @@
 	<hr class="tw-border-tertiary tw-my-4">
 
 	<div
-		class="tw-grid loan-count-grid tw-gap-x-6 tw-gap-y-1"
+		class="tw-grid loan-count-grid tw-text-small tw-gap-x-6 tw-gap-y-3"
 		role="table"
 		aria-label="Loan count statistics"
 	>
@@ -449,17 +449,16 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-/* Loan-count summary: a single column on mobile, then three uneven columns from the md
-   breakpoint up. The narrow middle column holds the short labels (Funded/Repaid/Refunded)
-   while the wider side columns carry the longer labels; the first column is trimmed slightly
-   to tighten the gap between its labels and counts. */
+/* Loan-count summary: a single column on mobile, then three equal-width columns from the md
+   breakpoint up. Equal columns (plus the shared tw-gap-x-6 / tw-justify-between on each cell)
+   keep the label-to-count spacing and count alignment consistent across every row and column. */
 .loan-count-grid {
 	grid-template-columns: minmax(0, 1fr);
 }
 
 @screen md {
 	.loan-count-grid {
-		grid-template-columns: 1.15fr 0.4fr 1.3fr;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 	}
 }
 </style>
