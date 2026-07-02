@@ -7,9 +7,13 @@ vi.mock('#src/util/logFormatter', () => ({
 	default: vi.fn()
 }));
 
-vi.mock('#src/util/loanUtils', () => ({
-	watchLoanData: vi.fn()
-}));
+vi.mock('#src/util/loanUtils', async importOriginal => {
+	const actual = await importOriginal();
+	return {
+		...actual,
+		watchLoanData: vi.fn()
+	};
+});
 
 vi.mock('#src/graphql/query/postCheckoutAchievements.graphql', () => ({
 	default: 'postCheckoutAchievementsQuery'
@@ -279,6 +283,68 @@ describe('useBorrowerProfileData.js', () => {
 			// Should update computed name
 			await waitFor(() => {
 				expect(getByTestId('loanName').textContent).toBe('Test Borrower');
+			});
+		});
+
+		it('should derive inPfp as true for an active PFP loan', async () => {
+			let callbackFn;
+			watchLoanData.mockImplementation(({ callback }) => {
+				callbackFn = callback;
+				return mockWatchedQuery;
+			});
+
+			const composable = useBorrowerProfileData(mockApollo, mockCookieStore);
+			composable.loadBPData(123);
+
+			await waitFor(() => {
+				expect(callbackFn).toBeDefined();
+			});
+
+			callbackFn({
+				data: {
+					lend: {
+						loan: {
+							id: 123,
+							inPfp: true,
+							status: 'fundraising'
+						}
+					}
+				}
+			});
+
+			await waitFor(() => {
+				expect(composable.inPfp.value).toBe(true);
+			});
+		});
+
+		it('should derive inPfp as false for an expired PFP loan', async () => {
+			let callbackFn;
+			watchLoanData.mockImplementation(({ callback }) => {
+				callbackFn = callback;
+				return mockWatchedQuery;
+			});
+
+			const composable = useBorrowerProfileData(mockApollo, mockCookieStore);
+			composable.loadBPData(124);
+
+			await waitFor(() => {
+				expect(callbackFn).toBeDefined();
+			});
+
+			callbackFn({
+				data: {
+					lend: {
+						loan: {
+							id: 124,
+							inPfp: true,
+							status: 'expired'
+						}
+					}
+				}
+			});
+
+			await waitFor(() => {
+				expect(composable.inPfp.value).toBe(false);
 			});
 		});
 
