@@ -19,9 +19,9 @@
 			@edit-click="openGoalModal({ updating: true })"
 		/>
 		<template v-if="!hideRecommendedForYouSection">
-			<h3 class="tw-text-title tw-text-primary tw-mb-2">
+			<h1 class="tw-text-primary tw-mb-2">
 				Next steps recommended for you
-			</h3>
+			</h1>
 
 			<section
 				:class="{
@@ -120,9 +120,9 @@
 			<div :style="{ order: showPostLendingNextStepsCards ? 1 : 2 }">
 				<div>
 					<template v-if="showBuildImpactSection">
-						<h3 class="tw-text-title tw-text-primary tw-mt-2 tw-mb-2">
+						<h2 class="tw-text-primary tw-mt-2 tw-mb-2">
 							Build impact beyond your loan
-						</h3>
+						</h2>
 						<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
 							<template v-if="latestLoan !== null && !isMobile">
 								<MyKivaEmailUpdatesTransition
@@ -187,9 +187,9 @@
 
 					<!-- eslint-disable-next-line max-len -->
 					<template v-if="!userLentToAllRegions && (!showRegionExperienceInFirstRow || showLendingNextStepsCards)">
-						<h3 class="tw-text-title tw-text-primary tw-mt-4 tw-mb-2">
+						<h2 class="tw-text-primary tw-mt-4 tw-mb-2">
 							Keep your impact going
-						</h3>
+						</h2>
 						<section class="tw-grid md:tw-grid-cols-3 tw-gap-4">
 							<MyKivaRegionExperience
 								class="md:tw-col-span-2"
@@ -204,9 +204,9 @@
 				v-if="goalProgressLoading || bottomRowAchievementSlides.length > 0"
 				:style="{ order: showPostLendingNextStepsCards ? 2 : 1 }"
 			>
-				<h3 class="tw-text-title tw-text-primary tw-mt-4 tw-mb-2">
+				<h2 class="tw-text-primary tw-mt-4 tw-mb-2">
 					Continue with your lifetime achievements
-				</h3>
+				</h2>
 
 				<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
 					<template v-if="goalProgressLoading">
