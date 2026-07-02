@@ -79,15 +79,6 @@ export const getSlideSecondaryCtaText = slide => {
 };
 
 /**
- * Checks if the slide title should use a sans-serif font
- * @param {Object} slide - Contentful slide entry
- * @returns {boolean} Whether the title font is sans
- */
-export const isSlideTitleFontSans = slide => {
-	return getRichTextUiSettingsData(slide).titleSans?.toLowerCase() === 'true';
-};
-
-/**
  * Returns the title color class for a slide
  * @param {Object} slide - Contentful slide entry
  * @param {boolean} isNonBadge - Whether the slide is a non-badge content slide

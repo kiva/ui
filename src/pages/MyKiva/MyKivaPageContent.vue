@@ -4,9 +4,9 @@
 	/>
 	<MyKivaContainer class="page-container">
 		<section>
-			<h3 class="tw-text-title tw-mt-4">
+			<h1 class="tw-mt-4">
 				<u>{{ lenderPossessiveName }}</u> impact overview
-			</h3>
+			</h1>
 			<MyKivaStats
 				class="tw-mt-2"
 				:user-balance="userBalance"
@@ -51,9 +51,9 @@
 		</section>
 		<section class="tw-mt-4" id="mykiva-achievements">
 			<div class="tw-flex tw-items-center tw-gap-1 tw-z-tooltip tw-pb-6">
-				<h3 id="my-achievements" class="tw-text-title tw-min-h-4">
+				<h2 id="my-achievements" class="tw-min-h-4">
 					Impact progress
-				</h3>
+				</h2>
 				<div>
 					<div class="tw-relative">
 						<KvMaterialIcon
@@ -74,15 +74,15 @@
 						@tool-tip-visible="handleToolTipVisible"
 					>
 						<template #title>
-							<h5 class="tw-text-label">
+							<p class="tw-text-label">
 								Annual goals and achievements
-							</h5>
+							</p>
 						</template>
 						<p class="tw-text-small">
 							<!-- eslint-disable-next-line max-len -->
-							Loans you make automatically build toward <span class="tw-font-medium">Lifetime achievements</span> where you can earn badges along the way.<br><br>
+							Loans you make automatically build toward <strong class="tw-text-label">Lifetime achievements</strong> where you can earn badges along the way.<br><br>
 							<!-- eslint-disable-next-line max-len -->
-							Set an <span class="tw-font-medium">Annual goal</span> to stay accountable and watch your impact grow.
+							Set an <strong class="tw-text-label">Annual goal</strong> to stay accountable and watch your impact grow.
 						</p>
 					</kv-tooltip>
 				</div>
@@ -138,9 +138,9 @@
 			/>
 		</section>
 		<section v-if="moreWaysToHelpSlides.length" class="tw-my-4">
-			<h3 class="tw-text-title">
+			<h2>
 				More ways to help
-			</h3>
+			</h2>
 			<JourneyCardCarousel
 				class="tw--mt-4"
 				controls-top-right
@@ -770,10 +770,6 @@ export default {
 
 :deep(#recommended-loans #customizedCarousel div:first-child > div > div.loan-card-active-hover a picture) {
 	@apply !tw-rounded-t;
-}
-
-:deep(#recommended-loans h2) {
-	@apply !tw-text-title !tw-font-sans;
 }
 
 :deep(#recommended-loans > div) {

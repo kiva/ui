@@ -1,8 +1,8 @@
 <template>
 	<div v-if="updates.length > 0">
-		<h3 class="tw-text-title tw-mt-4 tw-mb-2">
+		<h2 class="tw-mt-4 tw-mb-2">
 			Updates
-		</h3>
+		</h2>
 		<KvCarousel
 			class="tw-w-full updates-carousel"
 			:class="{ 'tw--mt-6': controlsTopRight }"

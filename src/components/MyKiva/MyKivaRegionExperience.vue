@@ -22,7 +22,7 @@
 				title="Your lending reach"
 			>
 				<GlobeSearchIcon class="tw-w-2.5 tw-h-2.5 tw-text-brand-550 tw-align-middle" />
-				<span class="tw-text-primary tw-font-medium tw-align-middle" style="font-size: 0.875rem;">
+				<span class="tw-text-primary tw-text-label tw-align-middle">
 					{{ pillHeader }}
 				</span>
 			</span>
@@ -47,7 +47,7 @@
 						/>
 						<div class="tw-flex-1 tw-min-w-0 tw-overflow-hidden">
 							<span
-								class="tw-font-medium md:tw-text-lg tw-text-primary
+								class="tw-text-title tw-text-primary
 							tw-block tw-whitespace-nowrap tw-truncate tw-min-w-0 tw-w-full tw-align-bottom"
 
 								:title="region.name"
@@ -105,7 +105,7 @@
 						"
 							:title="region?.name"
 						>
-							<span class="tw-font-medium">Lend in {{ region?.name }}</span>
+							<span class="tw-text-button-link">Lend in {{ region?.name }}</span>
 							<KvMaterialIcon
 								class="tw-w-3 tw-h-3 tw-shrink-0"
 								:icon="mdiArrowTopRight"
@@ -186,9 +186,9 @@ const pendingRegions = computed(() => props.regionsData.filter(region => !region
 const formattedPendingRegions = computed(() => {
 	const regions = pendingRegions.value;
 	if (!regions || regions.length === 0) return '';
-	const formattedNames = regions.map(region => `<span class="tw-font-medium">
+	const formattedNames = regions.map(region => `<strong class="tw-text-button-link">
 		${region.name === 'Middle East' ? 'the Middle East' : region.name}
-		</span>`);
+		</strong>`);
 	if (formattedNames.length === 1) return formattedNames[0];
 	if (formattedNames.length === 2) return `${formattedNames[0]} and ${formattedNames[1]}`;
 	return `${formattedNames.slice(0, -1).join(', ')}, and ${formattedNames[formattedNames.length - 1]}`;

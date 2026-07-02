@@ -13,19 +13,19 @@
 				<div
 					v-if="isLoanPartner"
 					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-stone-2
-							tw-bg-stone-1 tw-text-center min-stone-circle-size"
+								tw-bg-stone-1 tw-text-center min-stone-circle-size"
 				>
 					<div
 						class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4
-							tw-border-desert-rose-2 tw-text-center min-rose-circle-size"
+								tw-border-desert-rose-2 tw-text-center min-rose-circle-size"
 					>
 						<div
 							class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4
-							tw-border-marigold tw-text-center min-marigold-circle-size"
+								tw-border-marigold tw-text-center min-marigold-circle-size"
 						>
 							<div
 								class="tw-flex tw-items-center tw-justify-center tw-rounded-full
-							tw-border-4 tw-border-brand-500 tw-text-center min-circle-size"
+								tw-border-4 tw-border-brand-500 tw-text-center min-circle-size"
 							>
 								<div class="tw-items-center tw-gap-3">
 									<div
@@ -37,7 +37,7 @@
 										/>
 									</div>
 
-									<div class="tw-text-lg tw-font-semibold tw-text-slate-900">
+									<div class="tw-text-base tw-text-slate-900">
 										<strong>Global change</strong>
 									</div>
 								</div>
@@ -49,15 +49,15 @@
 				<div
 					v-else
 					class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-desert-rose-2
-							tw-bg-danger-highlight tw-text-center min-ext-circle-size"
+								tw-bg-danger-highlight tw-text-center min-ext-circle-size"
 				>
 					<div
 						class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-border-4 tw-border-marigold
-							tw-text-center min-big-circle-size"
+								tw-text-center min-big-circle-size"
 					>
 						<div
 							class="tw-flex tw-items-center tw-justify-center tw-rounded-full
-							tw-border-4 tw-border-brand-500 tw-text-center min-circle-size"
+								tw-border-4 tw-border-brand-500 tw-text-center min-circle-size"
 						>
 							<div class="tw-items-center tw-gap-3">
 								<div
@@ -69,7 +69,7 @@
 									/>
 								</div>
 
-								<div class="tw-text-lg tw-font-semibold tw-text-slate-900">
+								<div class="tw-text-base tw-text-slate-900">
 									<strong>Global change</strong>
 								</div>
 							</div>
@@ -82,7 +82,7 @@
 					<p
 						v-html="description"
 						class="tw-rounded-2xl tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3
-							tw-text-base tw-leading-relaxed tw-bg-gray-100 tw-rounded-md md:tw-text-lg"
+								tw-text-base tw-bg-gray-100 tw-rounded-md"
 					></p>
 				</div>
 			</div>

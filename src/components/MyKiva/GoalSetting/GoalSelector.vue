@@ -18,14 +18,12 @@
 			:go-to-url="goToUrl"
 			:is-updating-goal="isUpdatingGoal"
 			:is-goal-completed="isGoalCompleted"
-			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			@edit-goal-from-settings="handleEditGoalFromSettings"
 			@button-click="handleSuccessContinue"
 		/>
 		<!-- Goal Selection Form (shown before goal is set) -->
 		<template v-else>
 			<img
-				v-if="!isGoalTileExperimentEnabled"
 				:src="HandsPlant"
 				class="goal-selector__image lg:tw-mb-1 tw-w-10 lg:tw-w-12.5"
 			>
@@ -36,11 +34,6 @@
 			<template
 				v-else
 			>
-				<img
-					v-if="isGoalTileExperimentEnabled && !isGoalSet && !isLarge"
-					:src="HandsPlant"
-					class="goal-selector__image lg:tw-mb-1 tw-w-10 lg:tw-w-12.5 tw-mx-auto"
-				>
 				<h2
 					class="goal-selector__title tw-text-headline tw-px-4 lg:tw-px-7 tw-text-center"
 					v-html="titleText"
@@ -56,23 +49,15 @@
 			<p
 				v-if="showLoanQuestionPrompt"
 				v-html="loanQuestionPrompt"
-				class="goal-selector__prompt tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2
+				class="goal-selector__prompt tw-text-base lg:tw-text-subheadline tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2
 					tw-text-center"
 			>
 			</p>
 
 			<p
-				v-if="showGoalValuePropsCopy"
+				v-if="subtitleText && progressSubtitleBeforeOptions"
 				v-html="subtitleText"
-				class="goal-selector__prompt tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2
-					tw-text-center"
-			>
-			</p>
-
-			<p
-				v-if="subtitleText && !showGoalValuePropsCopy && progressSubtitleBeforeOptions"
-				v-html="subtitleText"
-				class="goal-selector__prompt tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2
+				class="goal-selector__prompt tw-text-base lg:tw-text-subheadline tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2
 					tw-text-center"
 			>
 			</p>
@@ -113,17 +98,17 @@
 								<span class="tw-text-display lg:tw-text-headline tw--mt-1">
 									&#43;
 								</span>
-								<span class="lg:tw-hidden tw-text-base !tw-font-medium">
+								<span class="lg:tw-hidden tw-text-button-link">
 									Custom
 								</span>
 							</div>
-							<div class="tw-text-primary tw-font-medium tw-text-label tw-text-center">
+							<div class="tw-text-primary tw-text-label tw-text-center">
 								<span class="tw-hidden lg:tw-inline">
 									Custom
 								</span>
 								<div class="tw-flex tw-flex-col tw-items-start tw-gap-0.5">
 									<span
-										class="tw-font-medium lg:tw-hidden"
+										class="tw-text-label lg:tw-hidden"
 										:class="{ 'tw-text-small': isCustomIndex }"
 									>
 										Set your number
@@ -173,62 +158,8 @@
 				></div>
 			</div>
 
-			<template
-				v-if="isGoalTileExperimentEnabled && !isLarge && !isGoalSet"
-			>
-				<KvAccordionItem ref="goalTileAccordion" id="goal-tile-accordion-body" class="goal-tile-accordion">
-					<template
-						#header
-					>
-						<p class="tw-text-brand-900 !tw-font-semibold" @click="handleOpenGoalTile">
-							Why set a goal?
-						</p>
-					</template>
-					<div class="tw-text-justify tw-text-primary tw-text-base">
-						<ul class="tw-inline-block">
-							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
-								<KvMaterialIcon
-									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
-									:icon="mdiCheckBold"
-								/>
-								<p class="tw-text-left">
-									Build a habit of helping others
-								</p>
-							</li>
-							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
-								<KvMaterialIcon
-									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
-									:icon="mdiCheckBold"
-								/>
-								<p class="tw-text-left">
-									Track your impact as it grows
-								</p>
-							</li>
-							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
-								<KvMaterialIcon
-									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
-									:icon="mdiCheckBold"
-								/>
-								<p class="tw-text-left">
-									Stay consistent with reminders
-								</p>
-							</li>
-							<li class="tw-flex tw-items-start tw-gap-1 tw-mb-1">
-								<KvMaterialIcon
-									class="tw-w-1.5 tw-h-1.5 tw-text-base tw-flex-shrink-0 tw-self-center"
-									:icon="mdiCheckBold"
-								/>
-								<p class="tw-text-left">
-									Edit anytime
-								</p>
-							</li>
-						</ul>
-					</div>
-				</KvAccordionItem>
-			</template>
-
 			<p
-				v-if="subtitleText && !showGoalValuePropsCopy && !progressSubtitleBeforeOptions"
+				v-if="subtitleText && !progressSubtitleBeforeOptions"
 				v-html="subtitleText"
 				class="tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2 tw-text-center"
 			>
@@ -268,9 +199,9 @@ import {
 	ref,
 	watch,
 } from 'vue';
-import { mdiPencilOutline, mdiCheckBold } from '@mdi/js';
+import { mdiPencilOutline } from '@mdi/js';
 import {
-	KvButton, KvMaterialIcon, KvLoadingPlaceholder, KvAccordionItem
+	KvButton, KvMaterialIcon, KvLoadingPlaceholder
 } from '@kiva/kv-components';
 
 import { ID_WOMENS_EQUALITY, ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
@@ -279,7 +210,6 @@ import LoanNumberSelector from '#src/components/MyKiva/GoalSetting/LoanNumberSel
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import GoalCustomAmountInput from '#src/components/MyKiva/GoalSetting/GoalCustomAmountInput';
 import useGoalData, { LAST_YEAR_KEY, GOAL_STATUS } from '#src/composables/useGoalData';
-import useBreakpoints from '#src/composables/useBreakpoints';
 import goalCopy, { GOAL_SIGNUP_COPY_NO_GOAL_YET } from '#src/util/goalCopy';
 
 const CUSTOM_LOAN_NUMBER_INDEX = 3;
@@ -388,20 +318,6 @@ const props = defineProps({
 		default: false,
 	},
 	/**
-	 * Flag to indicate if the goal tile experiment is enabled
-	 */
-	isGoalTileExperimentEnabled: {
-		type: Boolean,
-		default: false,
-	},
-	/**
-	 * Flag to indicate if the goal value props copy version should be shown
-	 */
-	showGoalValuePropsCopy: {
-		type: Boolean,
-		default: false,
-	},
-	/**
 	 * Whether the selector should use the direct loan question instead of entrypoint-style headline copy.
 	 */
 	useDirectQuestionTitle: {
@@ -447,8 +363,6 @@ const emit = defineEmits([
 	'update-goal'
 ]);
 
-const { isLarge } = useBreakpoints();
-
 const DEFAULT_GOAL_OPTIONS = [
 	{
 		loansNumber: 3,
@@ -477,8 +391,6 @@ const selectedIdx = ref(1);
 const editGoalFromSettings = ref(false);
 const allowBackToCategorySelection = ref(false);
 const isSubmitting = ref(false);
-const isGoalTileOpened = ref(false);
-const goalTileAccordion = ref(null);
 const customGoalAmount = ref(null);
 const validCustomAmount = ref(null);
 const customGoalAmountError = ref('');
@@ -495,8 +407,8 @@ const loansLastYear = computed(() => {
 const showLoanQuestionPrompt = computed(() => {
 	if (props.useDirectQuestionTitle) return false;
 	return goalSignupCopyVariant === GOAL_SIGNUP_COPY_NO_GOAL_YET
-		|| (!props.showGoalValuePropsCopy
-			&& (loansLastYear.value > 0 || props.selectedCategoryId === ID_WOMENS_EQUALITY));
+		|| loansLastYear.value > 0
+		|| props.selectedCategoryId === ID_WOMENS_EQUALITY;
 });
 
 const loanQuestionPrompt = computed(() => {
@@ -524,7 +436,7 @@ const isCustomIndex = computed(() => selectedIdx.value === CUSTOM_LOAN_NUMBER_IN
 
 const isContinueDisabled = computed(() => (
 	props.isLoadingData
-	|| props.loadingCurrentYear
+	|| loadingCurrentYear.value
 	|| isSubmitting.value
 	|| (isCustomIndex.value && validCustomAmount.value !== true)
 ));
@@ -564,14 +476,13 @@ const titleText = computed(() => {
 
 	// Default title if no lending history and category is ID_WOMENS_EQUALITY
 	if (
-		!props.showGoalValuePropsCopy
-		&& props.selectedCategoryId === ID_WOMENS_EQUALITY
+		props.selectedCategoryId === ID_WOMENS_EQUALITY
 		&& loansLastYear.value === 0
 	) {
 		return goalCopy.titleNoHistoryWomensDefault();
 	}
 
-	if (loansLastYear.value > 0 && !props.showGoalValuePropsCopy) {
+	if (loansLastYear.value > 0) {
 		// eslint-disable-next-line max-len
 		return goalCopy.titleLastYearForCategory(loansLastYear.value, props.selectedCategoryId, props.selectedCategoryName);
 	}
@@ -581,7 +492,7 @@ const titleText = computed(() => {
 
 const subtitleText = computed(() => {
 	if (loansThisYear.value > 0) {
-		return goalCopy.subtitleLoansAlreadyMade(loansThisYear.value, !props.showGoalValuePropsCopy);
+		return goalCopy.subtitleLoansAlreadyMade(loansThisYear.value);
 	}
 	return '';
 });
@@ -617,8 +528,6 @@ const minCustomAmount = computed(() => {
 });
 
 const resetOptionSelection = selectedIndex => {
-	isGoalTileOpened.value = false;
-	goalTileAccordion.value?.collapse();
 	goalOptions.value = goalOptions.value.map((option, index) => ({
 		...option,
 		selected: index === selectedIndex,
@@ -794,19 +703,6 @@ const handleEditGoalFromSettings = () => {
 	emit('edit-goal-from-settings');
 };
 
-const handleOpenGoalTile = () => {
-	if (props.isGoalTileExperimentEnabled && props.trackingCategory === 'portfolio' && !isGoalTileOpened.value) {
-		$kvTrackEvent(
-			'portfolio',
-			'click',
-			'why-set-a-goal'
-		);
-		isGoalTileOpened.value = true;
-		return;
-	}
-	isGoalTileOpened.value = false;
-};
-
 onMounted(async () => {
 	await loadLoansThisYear();
 	updateGoalOptions();
@@ -910,21 +806,5 @@ watch(() => props.selectedCategoryId, async newCategory => {
 	@screen lg {
 		min-height: 82px;
 	}
-}
-
-:deep(.goal-tile-accordion) {
-	@apply tw-w-full !tw-border-b-0;
-}
-
-:deep(.goal-tile-accordion button:first-child) {
-	@apply !tw-w-auto !tw-pt-3 !tw-pb-2 tw-place-self-center tw-font-medium;
-}
-
-:deep(.goal-tile-accordion span svg) {
-	@apply !tw-text-brand-900;
-}
-
-:deep(.goal-tile-accordion ul li > span svg) {
-	@apply !tw-text-primary;
 }
 </style>
