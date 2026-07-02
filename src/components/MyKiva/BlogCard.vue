@@ -15,7 +15,7 @@
 			<span
 				v-if="category"
 				class="loan-callout tw-text-ellipsis tw-overflow-hidden tw-rounded-full
-				tw-font-medium tw-py-0.5 tw-px-1 tw-mr-0.5 tw-mb-0.5 tw-text-small"
+				tw-py-0.5 tw-px-1 tw-mr-0.5 tw-mb-0.5 tw-text-label"
 				:title="category"
 				style="background-color: #f1f1f1;"
 			>
@@ -24,13 +24,13 @@
 		</div>
 
 		<div class="tw-px-2 tw-pt-1.5 tw-flex-1 tw-flex tw-flex-col">
-			<p class="tw-font-medium tw-leading-snug tw-line-clamp-3 tw-text-black">
-				<span class="blog-card-title tw-text-black tw-font-bold tw-no-underline">
+			<p class="tw-text-base tw-line-clamp-3 tw-text-black">
+				<span class="blog-card-title tw-text-black tw-no-underline">
 					{{ title }}
 				</span>
 			</p>
 		</div>
-		<div class="tw-absolute tw-left-0 tw-bottom-0 tw-pl-2 tw-pb-2 tw-text-gray-500 tw-text-small">
+		<div class="tw-absolute tw-left-0 tw-bottom-0 tw-pl-2 tw-pb-2 tw-text-gray-500 tw-text-caption">
 			<p v-if="date">
 				{{ formattedDate }}
 			</p>

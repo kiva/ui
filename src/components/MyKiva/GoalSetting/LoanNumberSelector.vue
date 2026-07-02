@@ -9,31 +9,30 @@
 	>
 		<div
 			v-if="highlightedText"
-			class="tw-bg-marigold-2 tw-rounded-lg tw-text-small tw-drop-shadow-md tw-hidden lg:tw-block
+			class="tw-bg-marigold-2 tw-rounded-lg tw-text-label tw-drop-shadow-md tw-hidden lg:tw-block
 				tw-absolute tw--top-1.5 tw-px-1.5 tw-left-1/2 tw--translate-x-1/2 tw-whitespace-nowrap"
 		>
 			{{ highlightedText }}
 		</div>
 		<div
-			class="tw-flex lg:tw-flex-col tw-gap-1 lg:tw-gap-0 tw-items-baseline lg:tw-items-center
+			class="tw-flex tw-gap-1 tw-items-baseline
 						tw-text-eco-green-3 lg:!tw-flex-row lg:!tw-items-baseline lg:tw-gap-0.5"
 		>
 			<span
-				class="loan-number-selector__number tw-text-display tw-text-center !tw-text-headline"
-				style="line-height: 1;"
+				class="loan-number-selector__number tw-text-headline tw-text-center"
 			>
 				{{ loansNumber }}
 			</span>
-			<span class="tw-text-small tw-text-center">loans</span>
+			<span class="tw-text-caption tw-text-center">loans</span>
 		</div>
 		<div class="tw-flex tw-flex-col tw-gap-1">
 			<div
 				v-if="highlightedText"
-				class="tw-bg-marigold-2 tw-rounded-lg tw-text-small tw-drop-shadow-md lg:tw-hidden tw-px-1.5"
+				class="tw-bg-marigold-2 tw-rounded-lg tw-text-label tw-drop-shadow-md lg:tw-hidden tw-px-1.5"
 			>
 				{{ highlightedText }}
 			</div>
-			<div class="tw-text-primary !tw-font-medium tw-text-label tw-text-center lg:tw-whitespace-nowrap">
+			<div class="tw-text-primary tw-text-label tw-text-center lg:tw-whitespace-nowrap">
 				{{ optionText }}
 			</div>
 		</div>

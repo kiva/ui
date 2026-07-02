@@ -813,7 +813,7 @@ watch(show, async newVal => {
 			@apply tw-text-justify;
 
 			li > p {
-				@apply tw-text-small tw-font-medium;
+				@apply tw-text-label;
 
 				span {
 					@apply tw-mr-1;

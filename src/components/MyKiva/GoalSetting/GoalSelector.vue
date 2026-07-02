@@ -56,7 +56,7 @@
 			<p
 				v-if="showLoanQuestionPrompt"
 				v-html="loanQuestionPrompt"
-				class="goal-selector__prompt tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2
+				class="goal-selector__prompt tw-text-base lg:tw-text-subheadline tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2
 					tw-text-center"
 			>
 			</p>
@@ -64,7 +64,7 @@
 			<p
 				v-if="showGoalValuePropsCopy"
 				v-html="subtitleText"
-				class="goal-selector__prompt tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2
+				class="goal-selector__prompt tw-text-base lg:tw-text-subheadline tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2
 					tw-text-center"
 			>
 			</p>
@@ -72,7 +72,7 @@
 			<p
 				v-if="subtitleText && !showGoalValuePropsCopy && progressSubtitleBeforeOptions"
 				v-html="subtitleText"
-				class="goal-selector__prompt tw-text-base lg:tw-text-subhead tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2
+				class="goal-selector__prompt tw-text-base lg:tw-text-subheadline tw-my-1.5 lg:tw-mb-1 lg:tw-mt-2
 					tw-text-center"
 			>
 			</p>
@@ -113,17 +113,17 @@
 								<span class="tw-text-display lg:tw-text-headline tw--mt-1">
 									&#43;
 								</span>
-								<span class="lg:tw-hidden tw-text-base !tw-font-medium">
+								<span class="lg:tw-hidden tw-text-button-link">
 									Custom
 								</span>
 							</div>
-							<div class="tw-text-primary tw-font-medium tw-text-label tw-text-center">
+							<div class="tw-text-primary tw-text-label tw-text-center">
 								<span class="tw-hidden lg:tw-inline">
 									Custom
 								</span>
 								<div class="tw-flex tw-flex-col tw-items-start tw-gap-0.5">
 									<span
-										class="tw-font-medium lg:tw-hidden"
+										class="tw-text-label lg:tw-hidden"
 										:class="{ 'tw-text-small': isCustomIndex }"
 									>
 										Set your number
@@ -180,7 +180,7 @@
 					<template
 						#header
 					>
-						<p class="tw-text-brand-900 !tw-font-semibold" @click="handleOpenGoalTile">
+						<p class="tw-text-brand-900 tw-text-button-link" @click="handleOpenGoalTile">
 							Why set a goal?
 						</p>
 					</template>
@@ -917,7 +917,7 @@ watch(() => props.selectedCategoryId, async newCategory => {
 }
 
 :deep(.goal-tile-accordion button:first-child) {
-	@apply !tw-w-auto !tw-pt-3 !tw-pb-2 tw-place-self-center tw-font-medium;
+	@apply !tw-w-auto !tw-pt-3 !tw-pb-2 tw-place-self-center tw-text-button-link;
 }
 
 :deep(.goal-tile-accordion span svg) {
