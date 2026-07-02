@@ -409,9 +409,9 @@ export default {
 		formattedPendingRegions() {
 			const regions = this.pendingRegions;
 			if (!regions || regions.length === 0) return '';
-			const formattedNames = regions.map(region => `<span class="tw-text-action">
+			const formattedNames = regions.map(region => `<strong class="tw-text-button-link">
 				${region.name === 'Middle East' ? 'the Middle East' : region.name}
-				</span>`);
+				</strong>`);
 			if (formattedNames.length === 1) return formattedNames[0];
 			if (formattedNames.length === 2) return `${formattedNames[0]} and ${formattedNames[1]}`;
 			return `${formattedNames.slice(0, -1).join(', ')}, and ${formattedNames[formattedNames.length - 1]}`;

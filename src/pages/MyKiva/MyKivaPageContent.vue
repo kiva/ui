@@ -80,9 +80,9 @@
 						</template>
 						<p class="tw-text-small">
 							<!-- eslint-disable-next-line max-len -->
-							Loans you make automatically build toward <span class="tw-font-medium">Lifetime achievements</span> where you can earn badges along the way.<br><br>
+							Loans you make automatically build toward <strong class="tw-text-label">Lifetime achievements</strong> where you can earn badges along the way.<br><br>
 							<!-- eslint-disable-next-line max-len -->
-							Set an <span class="tw-font-medium">Annual goal</span> to stay accountable and watch your impact grow.
+							Set an <strong class="tw-text-label">Annual goal</strong> to stay accountable and watch your impact grow.
 						</p>
 					</kv-tooltip>
 				</div>

@@ -1,7 +1,7 @@
 <template>
 	<MyKivaContainer>
 		<button
-			class="tw-flex tw-gap-1 tw-items-center tw-font-medium tw-mt-3 tw-mb-2 md:tw-my-5"
+			class="tw-flex tw-gap-1 tw-items-center tw-text-button-link tw-mt-3 tw-mb-2 md:tw-my-5"
 			@click="goToDashboard('top')"
 		>
 			<KvMaterialIcon
