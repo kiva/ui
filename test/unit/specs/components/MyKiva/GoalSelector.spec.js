@@ -368,7 +368,7 @@ describe('GoalSelector', () => {
 			},
 		];
 
-		const ValuePropsWrapper = {
+		const NoGoalCopyWrapper = {
 			components: { GoalSelector },
 			props: {
 				tieredAchievements: { type: Array, default: () => [] },
@@ -381,12 +381,11 @@ describe('GoalSelector', () => {
 					:tiered-achievements="tieredAchievements"
 					selected-category-id="${ID_WOMENS_EQUALITY}"
 					selected-category-name="Women"
-					show-goal-value-props-copy
 				/>
 			`,
 		};
 
-		const { container, getByRole } = render(ValuePropsWrapper, {
+		const { container, getByRole } = render(NoGoalCopyWrapper, {
 			global: {
 				...globalOptions,
 				provide: {
@@ -500,7 +499,6 @@ describe('GoalSelector', () => {
 						:tiered-achievements="tieredAchievements"
 						:selected-category-id="selectedCategoryId"
 						:selected-category-name="selectedCategoryName"
-						show-goal-value-props-copy
 					/>
 				</div>
 			`,
