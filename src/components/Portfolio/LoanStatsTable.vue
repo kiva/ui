@@ -96,7 +96,7 @@
 	<hr class="tw-border-tertiary tw-my-4">
 
 	<div
-		class="tw-grid loan-count-grid tw-text-small tw-gap-x-6 tw-gap-y-3"
+		class="tw-grid loan-count-grid tw-text-small tw-gap-x-6 tw-gap-y-2"
 		role="table"
 		aria-label="Loan count statistics"
 	>
