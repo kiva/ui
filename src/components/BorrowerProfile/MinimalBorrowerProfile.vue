@@ -46,7 +46,7 @@
 											data-testid="bp-summary-progress"
 											class="tw-mb-2"
 											:progress-percent="progressPercent"
-											:loading="isLoading"
+											:loading="isSummaryLoading"
 											:loan-status="loanStatus"
 										/>
 									</div>
@@ -219,6 +219,7 @@ export default {
 			if (data?.lend?.loan) {
 				this.loanData = data.lend.loan;
 			}
+			this.isSummaryLoading = false;
 		},
 	},
 	props: {
@@ -245,6 +246,7 @@ export default {
 		return {
 			viewportObserver: null,
 			isLoading: true,
+			isSummaryLoading: true,
 			categories: [],
 			rows: null,
 			isVisitor: true,

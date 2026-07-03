@@ -29,3 +29,21 @@ describe('MinimalBorrowerProfile.apollo.result', () => {
 		expect(ctx.loanData).toEqual(seeded);
 	});
 });
+
+describe('MinimalBorrowerProfile.apollo.result isSummaryLoading', () => {
+	const invokeResult = (ctx, data) => {
+		MinimalBorrowerProfile.apollo.result.call(ctx, { data });
+	};
+
+	it('clears isSummaryLoading once the query resolves with a loan', () => {
+		const ctx = { loanData: {}, isSummaryLoading: true };
+		invokeResult(ctx, { lend: { loan: { id: 123, name: 'Maria', status: 'refunded' } } });
+		expect(ctx.isSummaryLoading).toBe(false);
+	});
+
+	it('still clears isSummaryLoading when the response is missing a loan', () => {
+		const ctx = { loanData: { id: 123, name: 'Maria' }, isSummaryLoading: true };
+		invokeResult(ctx, { lend: { loan: null } });
+		expect(ctx.isSummaryLoading).toBe(false);
+	});
+});
