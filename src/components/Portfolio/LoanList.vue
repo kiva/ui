@@ -2,7 +2,7 @@
 	<div class="tw-mt-2">
 		<div class="tw-relative">
 			<div ref="scrollContainer" class="tw-overflow-x-auto tw-min-w-full" @scroll="updateScrollGradients">
-				<table class="tw-w-full tw-border-collapse tw-text-small lg:tw-text-base">
+				<table class="tw-w-full tw-border-collapse tw-text-small">
 					<thead>
 						<tr class="tw-bg-gray-200">
 							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
@@ -14,7 +14,7 @@
 							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
 								You loaned
 							</th>
-							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
+							<th class="paid-back-cell tw-text-left tw-font-bold tw-px-2 tw-py-1">
 								Paid back or raised
 							</th>
 							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
@@ -214,7 +214,7 @@
 									</div>
 								</div>
 							</td>
-							<td class="tw-text-right tw-px-2">
+							<td class="paid-back-cell tw-text-right tw-px-2">
 								<div v-if="isRaisedOrFundraising(loan.status)">
 									{{ $filters.numeral(loan.loanFundraisingInfo?.fundedAmount, '$0,0.00') }}
 									<span class="tw-block tw-text-secondary tw-text-small">raised</span>
@@ -566,8 +566,12 @@ export default {
 }
 
 .loan-details-cell {
-	min-width: 20rem;
-	max-width: 24rem;
+	min-width: 10rem;
+	max-width: 13rem;
+}
+
+.paid-back-cell {
+	max-width: 6rem;
 }
 
 .loan-image {

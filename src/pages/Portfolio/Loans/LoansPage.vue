@@ -42,41 +42,41 @@
 							<loan-stats-table @updated-as-of="handleUpdatedAsOf" />
 						</template>
 					</div>
-					<div
-						v-if="!showFirstLoanCta"
-						class="tw-rounded-none md:tw-rounded tw-py-3 tw-px-2 md:tw-px-3 md:tw-mt-3 md:tw-bg-primary"
-					>
-						<loan-filter-bar
-							:countries="filterOptions.countries"
-							:filters="loanState.filters"
-							:keyword-search="loanState.keywordSearch"
-							:partners="filterOptions.partners"
-							:total-loans="totalLoans"
-							@filters-changed="handleFiltersChanged"
-						/>
-						<div ref="loanTableTop">
-							<loan-list
-								:loans="loans"
-								:loading="loading"
-								:has-error="loadError"
-								:lending-teams="lendingTeams"
-								:reassigning-loan-ids="reassigningLoanIds"
-								:reassign-nonce="reassignNonce"
-								@reassign-team="handleReassignTeam"
-							/>
-						</div>
-						<kv-pagination
-							v-if="showPagination"
-							class="tw-mt-3"
-							:class="{ 'tw-pointer-events-none tw-opacity-low': loading }"
-							:limit="loanState.limit"
-							:offset="loanState.offset"
-							:aria-disabled="loading ? 'true' : undefined"
-							:scroll-to-top="false"
-							:total="totalLoans"
-							@page-changed="handlePageChange"
+				</div>
+				<div
+					v-if="!showFirstLoanCta"
+					class="tw-col-span-12 tw-rounded-none md:tw-rounded tw-py-3 tw-px-2 md:tw-px-3 md:tw-bg-primary"
+				>
+					<loan-filter-bar
+						:countries="filterOptions.countries"
+						:filters="loanState.filters"
+						:keyword-search="loanState.keywordSearch"
+						:partners="filterOptions.partners"
+						:total-loans="totalLoans"
+						@filters-changed="handleFiltersChanged"
+					/>
+					<div ref="loanTableTop">
+						<loan-list
+							:loans="loans"
+							:loading="loading"
+							:has-error="loadError"
+							:lending-teams="lendingTeams"
+							:reassigning-loan-ids="reassigningLoanIds"
+							:reassign-nonce="reassignNonce"
+							@reassign-team="handleReassignTeam"
 						/>
 					</div>
+					<kv-pagination
+						v-if="showPagination"
+						class="tw-mt-3"
+						:class="{ 'tw-pointer-events-none tw-opacity-low': loading }"
+						:limit="loanState.limit"
+						:offset="loanState.offset"
+						:aria-disabled="loading ? 'true' : undefined"
+						:scroll-to-top="false"
+						:total="totalLoans"
+						@page-changed="handlePageChange"
+					/>
 				</div>
 			</kv-grid>
 		</kv-page-container>
