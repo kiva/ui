@@ -20,7 +20,7 @@
 								v-if="redeemer.image?.url"
 								:src="redeemer.image.url"
 								:alt="`${redeemer.name} profile image`"
-								class="redeemer-image"
+								class="tw-rounded-full tw-object-cover tw-w-10 tw-h-10"
 							>
 						</a>
 						<a
@@ -258,12 +258,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="postcss" scoped>
-.redeemer-image {
-	width: 5rem;
-	height: 5rem;
-
-	@apply tw-rounded-full tw-object-cover;
-}
-</style>

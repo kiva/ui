@@ -9,16 +9,16 @@
 			>
 				<KvGrid class="tw-grid-cols-12 tw-gap-2">
 					<div class="tw-col-span-12 md:tw-col-span-5">
-						<KvLoadingPlaceholder class="tw-mb-1 !tw-w-1/2" style="height: 0.875rem;" />
-						<KvLoadingPlaceholder class="!tw-w-3/4" style="height: 0.875rem;" />
+						<KvLoadingPlaceholder class="tw-mb-1 !tw-w-1/2 !tw-h-2" />
+						<KvLoadingPlaceholder class="!tw-w-3/4 !tw-h-2" />
 					</div>
 					<div class="tw-col-span-12 md:tw-col-span-3">
-						<KvLoadingPlaceholder class="tw-mb-1 !tw-w-1/2" style="height: 0.875rem;" />
-						<KvLoadingPlaceholder class="!tw-w-3/4" style="height: 0.875rem;" />
+						<KvLoadingPlaceholder class="tw-mb-1 !tw-w-1/2 !tw-h-2" />
+						<KvLoadingPlaceholder class="!tw-w-3/4 !tw-h-2" />
 					</div>
 					<div class="tw-col-span-12 md:tw-col-span-4">
-						<KvLoadingPlaceholder class="tw-mb-1 !tw-w-1/2" style="height: 0.875rem;" />
-						<KvLoadingPlaceholder class="!tw-w-3/4" style="height: 0.875rem;" />
+						<KvLoadingPlaceholder class="tw-mb-1 !tw-w-1/2 !tw-h-2" />
+						<KvLoadingPlaceholder class="!tw-w-3/4 !tw-h-2" />
 					</div>
 				</KvGrid>
 			</div>
