@@ -1,0 +1,47 @@
+query MyKivaCards($offset: Int = 0, $limit: Int = 10, $sortBy: KivaCardSortByEnum = purchasedDate) {
+	my {
+		id
+		userAccount {
+			id
+			purchasedKivaCards(offset: $offset, limit: $limit, sortBy: $sortBy) {
+				total
+				canWithdraw
+				values {
+					id
+					amount
+					code
+					status
+					createTime
+					redeemTime
+					deliveryType
+					recipientName
+					recipientEmail
+					recipientLender
+					notifyRecipient
+					expiresOn
+					cancelTime
+					scheduledDeliveryDate
+					actualDeliveryDate
+					mailing {
+						firstName
+						lastName
+						address
+						address2
+						city
+						state
+						zip
+					}
+					redeemer {
+						isPublic
+						name
+						lenderPublicId
+						image {
+							id
+							url
+						}
+					}
+				}
+			}
+		}
+	}
+}
