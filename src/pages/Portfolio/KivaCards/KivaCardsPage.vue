@@ -185,7 +185,7 @@ export default {
 			sortOptions: SORT_OPTIONS,
 			cards: [],
 			total: 0,
-                        canWithdraw: false,
+			canWithdraw: false,
 			loading: true,
 			// Set when a fetch rejects so the list shows a distinct error state.
 			loadError: false,
