@@ -1,6 +1,13 @@
 <template>
+	<div
+		v-if="loading"
+		class="tw-w-full tw-rounded tw-inline-block tw-relative tw-overflow-hidden"
+		:style="`padding-bottom: ${aspectRatio * 100}%;`"
+	>
+		<kv-loading-placeholder class="!tw-absolute" />
+	</div>
 	<borrower-image
-		v-if="figures.length === 1"
+		v-else-if="!loading && figures.length === 1"
 		class="tw-w-full tw-bg-black tw-rounded"
 		data-testid="bp-story-borrower-image"
 		:alt="name"
@@ -10,7 +17,7 @@
 		:images="imagePreset"
 	/>
 	<kv-carousel
-		v-else-if="figures.length > 1"
+		v-else-if="!loading && figures.length > 1"
 		:embla-options="{ loop: false }"
 		class="loan-figure-carousel"
 	>
@@ -50,13 +57,14 @@
 
 <script>
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
-import { KvCarousel } from '@kiva/kv-components';
+import { KvCarousel, KvLoadingPlaceholder } from '@kiva/kv-components';
 
 export default {
 	name: 'LoanFigureCarousel',
 	components: {
 		BorrowerImage,
 		KvCarousel,
+		KvLoadingPlaceholder,
 	},
 	props: {
 		figures: {
@@ -80,6 +88,11 @@ export default {
 				{ width: 280 },
 			],
 		};
+	},
+	computed: {
+		loading() {
+			return !this.figures || this.figures.length === 0;
+		},
 	},
 };
 </script>
