@@ -1,7 +1,7 @@
 <template>
 	<section>
 		<a id="loanComments"></a>
-		<h2 class="tw-text-h2 tw-mb-2">
+		<h2 class="tw-text-headline tw-mb-2">
 			Comments ({{ comments.length }})
 		</h2>
 

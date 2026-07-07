@@ -151,13 +151,14 @@
 		<content-container>
 			<loan-tags
 				v-if="showTags"
+				class="tw-my-5 md:tw-my-6 lg:tw-my-8"
 				:loan-id="loanId"
 				:is-logged-in="isLoggedIn"
 				@hide-section="showTags = false"
 			/>
 			<loan-comments
 				v-if="isPrivileged"
-				class="tw-my-5 md:tw-my-6 lg:tw-my-8"
+				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
 				:loan-id="loanId"
 			/>
 		</content-container>

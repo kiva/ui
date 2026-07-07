@@ -6,12 +6,12 @@
 			<kv-loading-placeholder class="tw-w-3/5 md:tw-w-1/4" :style="{height: '1rem'}" />
 		</div>
 
-		<div v-else>
-			<h2>
+		<div v-else class="tw-prose">
+			<h2 class="tw-text-headline">
 				Tags
 			</h2>
 			<!-- Applied tags -->
-			<div v-if="selectedTags.length > 0" class="tw-mb-2">
+			<p v-if="selectedTags.length > 0">
 				<span v-for="(tag, index) in selectedTags" :key="tag.id || 0">
 					<router-link
 						:to="`/lend/filter?tag=${tag.id}`"
@@ -21,7 +21,7 @@
 						{{ tag.name }}
 					</router-link>{{ getTagDivider(index) }}
 				</span>
-			</div>
+			</p>
 
 			<p>
 				Loan tags help lenders find loans that match certain areas of interest.
