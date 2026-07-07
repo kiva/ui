@@ -130,6 +130,14 @@ export function createMockLoan(overrides = {}) {
 			hash: '9673d0722a7675b9b8d11f90849d9b44',
 			__typename: 'Image',
 		},
+		// LoanStory figures (image/video carousel)
+		figures: [
+			{
+				__typename: 'Image',
+				id: 3838911,
+				hash: '9673d0722a7675b9b8d11f90849d9b44',
+			},
+		],
 		plannedExpirationDate: expirationDate.toISOString(),
 		anonymizationLevel: 'none',
 		loanAmount: '600.00',
