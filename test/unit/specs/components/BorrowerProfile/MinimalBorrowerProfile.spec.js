@@ -1,9 +1,6 @@
 import MinimalBorrowerProfile from '#src/components/BorrowerProfile/MinimalBorrowerProfile';
 
 describe('MinimalBorrowerProfile.apollo.result', () => {
-	// We test result() by invoking it directly against a plain context object.
-	// This avoids mounting + mocking the entire apollo plugin for a one-line fix,
-	// and exercises exactly the assignment behaviour we care about.
 	const invokeResult = (ctx, data) => {
 		expect(typeof MinimalBorrowerProfile.apollo.result).toBe('function');
 		MinimalBorrowerProfile.apollo.result.call(ctx, { data });

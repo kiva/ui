@@ -1,9 +1,6 @@
 import BorrowerProfile from '#src/pages/BorrowerProfile/BorrowerProfile';
 import { getOperationName } from '../../../specUtils';
 
-// We invoke apollo.preFetch directly with a mock apollo client and a plain
-// context object. This avoids mounting the SSR app and exercises exactly the
-// routing/auth decisions added for AD-248.
 describe('BorrowerProfile.apollo.preFetch', () => {
 	const RESTRICTED_STATUSES = ['reviewed', 'deleted', 'issue', 'inactive', 'inactiveExpired'];
 	const PUBLIC_STATUSES = [

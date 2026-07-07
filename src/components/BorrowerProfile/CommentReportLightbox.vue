@@ -105,8 +105,6 @@ export default {
 	},
 	methods: {
 		reportComment() {
-			// KvButton's click handler emits regardless of state, so the visual
-			// disabled/loading state alone doesn't prevent a second submission.
 			if (this.isSubmitting) return;
 			this.isSubmitting = true;
 			this.apollo.mutate({

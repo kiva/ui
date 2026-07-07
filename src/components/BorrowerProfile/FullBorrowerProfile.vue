@@ -329,7 +329,6 @@ export default {
 	data() {
 		return {
 			// Initialize from loan prop so SSR renders real content.
-			// The watch query will refresh with latest data client-side.
 			loanData: this.loan?.id ? { ...this.loan } : {},
 			showUpdates: true,
 			showLenders: true,

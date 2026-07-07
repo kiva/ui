@@ -209,13 +209,6 @@ export default {
 			};
 		},
 		result({ data }) {
-			// Preserve the prop-seeded loanData (see data() comment) when the
-			// query response is missing. Without this guard, a transient null
-			// or missing-loan response would overwrite the seed and the
-			// "undefined from undefined's" title flicker would return.
-			// Truthy check is intentional: loan is always an object or null,
-			// never a primitive, so this is equivalent to `!= null` at runtime
-			// but is shorter and matches the optional-chaining idiom above.
 			if (data?.lend?.loan) {
 				this.loanData = data.lend.loan;
 			}
@@ -237,12 +230,6 @@ export default {
 		}
 	},
 	data() {
-		// Initialize from the loan prop (populated by the parent page's routingQuery,
-		// which carries shareMetaFragment fields including name and country). Without
-		// this, SSR renders with loanData={} and head() produces the broken
-		// "undefined from undefined's loan has been funded!" title, because
-		// MinimalBorrowerProfile's own apollo query isn't preFetched and
-		// setupWatchQuery is client-only in the apollo plugin.
 		return {
 			viewportObserver: null,
 			isLoading: true,
@@ -251,6 +238,10 @@ export default {
 			rows: null,
 			isVisitor: true,
 			loanRowsCount: 4,
+			// Initialize from the loan prop (populated by the parent page's routingQuery,
+			// which carries shareMetaFragment fields including name and country). Without
+			// this, SSR renders with loanData={} and head() produces the broken
+			// "undefined from undefined's loan has been funded!" title
 			loanData: this.loan?.id ? { ...this.loan } : {},
 		};
 	},

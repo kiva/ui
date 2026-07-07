@@ -3,9 +3,6 @@ import { mount } from '@vue/test-utils';
 import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
 import { globalOptions } from '../../../specUtils';
 
-// SummaryCard no longer owns a lightbox: it renders the anonymization affordances
-// and delegates to the injected `openDefinition` (provided once per page by
-// FullBorrowerProfile / BorrowerSideSheetContent). These tests assert that contract.
 function mountSummaryCard({ anonymizationLevel } = {}) {
 	const openDefinition = vi.fn();
 	const wrapper = mount(SummaryCard, {

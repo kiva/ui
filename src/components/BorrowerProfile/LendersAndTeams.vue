@@ -251,8 +251,6 @@ export default {
 		},
 	},
 	// Select the correct items query based on displayType before the apollo plugin processes it.
-	// Props are resolved before beforeCreate, so this.displayType is available.
-	// The plugin's created() hook runs after this, picking up the updated query.
 	beforeCreate() {
 		this.$options.apollo = this.$options.apollo.map(op => ({ ...op }));
 		const itemsOp = this.$options.apollo[0];
