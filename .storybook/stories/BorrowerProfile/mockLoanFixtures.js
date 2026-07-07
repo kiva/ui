@@ -258,6 +258,19 @@ export function createMockLoan(overrides = {}) {
 }
 
 // ---------------------------------------------------------------------------
+// Real PII-anonymized loan content
+// ---------------------------------------------------------------------------
+
+export const ANONYMIZED_BORROWER_NAME = 'Anonymized Kivan';
+export const ANONYMIZED_GROUP_NAME = 'Anonymized Kivans';
+
+export const anonymizedLoanDescription = 'This loan supported a farmer’s plan to buy two cows for work on '
+	+ 'her rice field and for breeding, with the aim of creating additional income through animal raising.';
+
+export const anonymizedGroupLoanDescription = 'This loan supported a grocer’s plan to build a house for '
+	+ 'herself and her husband, with the aim of living apart from their parents.';
+
+// ---------------------------------------------------------------------------
 // Query result wrapper
 // ---------------------------------------------------------------------------
 
