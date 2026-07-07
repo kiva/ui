@@ -366,6 +366,14 @@ export default [
 		}
 	},
 	{
+		path: '/portfolio/kiva-cards-beta',
+		component: () => import('#src/pages/Portfolio/KivaCards/KivaCardsPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
 		path: '/possibility',
 		component: () => import('#src/pages/Possibility/Possibility'),
 		children: [
