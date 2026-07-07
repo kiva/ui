@@ -17,7 +17,7 @@
 		<template
 			v-for="(figure, index) in figures"
 			#[`slide${index}`]
-			:key="figure.id ?? index"
+			:key="figure.id ?? figure.videoId ?? index"
 		>
 			<div
 				v-if="figure.__typename === 'Video'"

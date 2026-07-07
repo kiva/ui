@@ -77,7 +77,7 @@ export default {
 							hash
 						}
 						... on Video {
-							id
+							videoId: id
 							youtubeId
 						}
 					}
