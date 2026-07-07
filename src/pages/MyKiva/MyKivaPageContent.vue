@@ -41,7 +41,6 @@
 				:goal-refresh-key="goalRefreshKey"
 				:user-info="userInfo"
 				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
-				:lending-next-steps-variant="lendingNextStepsVariant"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 				:goals-row-enabled="goalsRowEnabled"
 				:basket-items="basketItems"
@@ -331,10 +330,6 @@ export default {
 		isGoalTileExperimentEnabled: {
 			type: Boolean,
 			default: false
-		},
-		lendingNextStepsVariant: {
-			type: String,
-			default: null,
 		},
 		goalRecommendedLoanEnable: {
 			type: Boolean,

@@ -28,32 +28,7 @@
 					'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperienceInFirstRow
 				}"
 			>
-				<JourneyCardCarousel
-					v-if="showLendingNextStepsCards && !goalProgressLoading"
-					class="carousel tw-w-full"
-					user-in-homepage
-					in-lending-stats
-					controls-top-right
-					:goal-progress-loading="goalProgressLoading"
-					:goal-progress="goalProgress"
-					:hero-badge-data="heroBadgeData"
-					:hero-tiered-achievements="heroTieredAchievements"
-					:lender="lender"
-					:slides-number="3"
-					:slides="heroSlides"
-					:pre-built-achievement-slides="sortedAchievementSlides"
-					:user-goal-achieved="userGoalAchieved"
-					:user-goal="userGoal"
-					:categories-loan-count="categoriesLoanCount"
-					:hide-goal-card="hideGoalCardInNextSteps"
-					:user-info="userInfo"
-					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-					:show-lending-next-steps-cards="true"
-					:regions-data="regionsData"
-					@open-goal-modal="openGoalModal($event)"
-					@open-impact-insight-modal="showImpactInsightsModal = true"
-				/>
-				<template v-else-if="showRegionExperienceInFirstRow && !showLendingNextStepsCards">
+				<template v-if="showRegionExperienceInFirstRow">
 					<div class="goal-card-container">
 						<JourneyCardCarousel
 							class="carousel carousel-single"
@@ -185,13 +160,19 @@
 						</section>
 					</template>
 
-					<!-- eslint-disable-next-line max-len -->
-					<template v-if="!userLentToAllRegions && (!showRegionExperienceInFirstRow || showLendingNextStepsCards)">
+					<template v-if="!showPostLendingNextStepsCards || !userLentToAllRegions">
 						<h2 class="tw-text-primary tw-mt-4 tw-mb-2">
 							Keep your impact going
 						</h2>
 						<section class="tw-grid md:tw-grid-cols-3 tw-gap-4">
+							<!--
+								Non-post-lending lenders (including superlenders) get the Almost Funded
+								next step at its natural single-column width; post-lending lenders keep
+								the 2-tile lending stats card, which spans two of the three columns.
+							-->
+							<AlmostFundedNextStep v-if="!showPostLendingNextStepsCards" />
 							<MyKivaRegionExperience
+								v-else
 								class="md:tw-col-span-2"
 								:regions-data="regionsData"
 								:loans="loans"
@@ -322,6 +303,7 @@ import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import MyKivaFeaturedSlot from '#src/components/MyKiva/MyKivaFeaturedSlot';
 import MyKivaRegionExperience from '#src/components/MyKiva/MyKivaRegionExperience';
+import AlmostFundedNextStep from '#src/components/MyKiva/AlmostFundedNextStep';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
@@ -407,10 +389,6 @@ const props = defineProps({
 	userLentToAllRegions: {
 		type: Boolean,
 		default: false,
-	},
-	lendingNextStepsVariant: {
-		type: String,
-		default: null,
 	},
 	goalRecommendedLoanEnable: {
 		type: Boolean,
@@ -525,10 +503,6 @@ const showRegionExperienceInFirstRow = computed(() => {
 	return !showPostLendingNextStepsCards.value && !props.userLentToAllRegions;
 });
 
-const showLendingNextStepsCards = computed(
-	() => props.lendingNextStepsVariant === 'b' && !showPostLendingNextStepsCards.value
-);
-
 const hideRecommendedForYouSection = computed(() => {
 	return userGoalAchieved.value
 		&& !showRegionExperienceInFirstRow.value
@@ -590,7 +564,6 @@ const topRowAchievementKeys = computed(() => getTopRowAchievementKeys({
 	hideCompletedGoalCard: hideGoalCardInNextSteps.value,
 	topRowPriorityCards: topRowPriorityCards.value,
 	sortedAchievementSlides: sortedAchievementSlides.value,
-	showLendingNextStepsCards: showLendingNextStepsCards.value,
 }));
 
 const bottomRowAchievementSlides = computed(() => {

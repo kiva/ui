@@ -43,11 +43,6 @@
 					v-else-if="slide?.isAlmostFunded"
 					class="tw-h-full"
 				/>
-				<CountryCollectingNextStep
-					v-else-if="slide?.isCountryCollecting"
-					class="tw-h-full"
-					:regions-data="regionsData"
-				/>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
 					class="kiva-card"
@@ -109,7 +104,6 @@ import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpda
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import AlmostFundedNextStep from '#src/components/MyKiva/AlmostFundedNextStep';
-import CountryCollectingNextStep from '#src/components/MyKiva/CountryCollectingNextStep';
 import {
 	getSlideTitle,
 	getSlideSubTitle,
@@ -232,13 +226,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
+	// When true, injects the Almost Funded next-step card as a priority slide.
 	showLendingNextStepsCards: {
 		type: Boolean,
 		default: false
-	},
-	regionsData: {
-		type: Array,
-		default: () => [],
 	},
 	preBuiltAchievementSlides: {
 		type: Array,
@@ -328,12 +319,9 @@ const dynamicOrderedSlides = computed(() => {
 		priorityCards.push({}); // Empty object placeholder for goal card component
 	}
 
-	// Almost funded and country collecting cards for lending next steps
+	// Almost funded next step card
 	if (props.showLendingNextStepsCards) {
 		priorityCards.push({ isAlmostFunded: true });
-		if (props.regionsData.some(r => !r.hasLoans)) {
-			priorityCards.push({ isCountryCollecting: true });
-		}
 	}
 
 	// Email marketing card if user isn't opted in, otherwise Latest Loan card

@@ -3,9 +3,9 @@
 		:class="[
 			'next-steps-link',
 			{
-				'tw-mb-2': !showLendingNextStepsCards,
+				'tw-mb-2': !showAlmostFundedCard,
 				'tw-mb-8': !(showPostLendingNextStepsCards && goalProgressLoading)
-					&& !showRegionExperience && !showLendingNextStepsCards
+					&& !showRegionExperience && !showAlmostFundedCard
 			}]"
 	>
 		<h2 class="tw-text-primary md:tw-mb-1">
@@ -28,7 +28,7 @@
 		ref="loanRegionsElement"
 		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperience }"
 	>
-		<template v-if="showLendingNextStepsCards && !goalProgressLoading">
+		<template v-if="showAlmostFundedCard && !goalProgressLoading">
 			<JourneyCardCarousel
 				class="carousel carousel-lending-next-steps tw-w-full"
 				user-in-homepage
@@ -48,13 +48,12 @@
 				:user-info="userInfo"
 				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 				:show-lending-next-steps-cards="true"
-				:regions-data="regionsData"
 				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 				@open-goal-modal="openGoalModal($event)"
 				@open-impact-insight-modal="showImpactInsightsModal = true"
 			/>
 		</template>
-		<template v-else-if="showRegionExperience && !showLendingNextStepsCards">
+		<template v-else-if="showRegionExperience && !showAlmostFunded">
 			<div
 				class="goal-card-container"
 				:class="{ 'tw-order-last': goalsRowEnabled }"
@@ -196,8 +195,8 @@
 			class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden"
 			:class="{
 				'tw--mt-6': !showPostLendingNextStepsCards
-					&& !showLendingNextStepsCards,
-				'tw-mt-1.5': showLendingNextStepsCards
+					&& !showAlmostFundedCard,
+				'tw-mt-1.5': showAlmostFundedCard
 			}"
 		>
 			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0" />
@@ -343,10 +342,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		lendingNextStepsVariant: {
-			type: String,
-			default: null,
-		},
 		goalRecommendedLoanEnable: {
 			type: Boolean,
 			default: false
@@ -377,6 +372,8 @@ export default {
 			newGoalPrefs: null,
 			showPostLendingNextStepsCards: false,
 			isUpdatingGoal: false,
+			// Show the Almost Funded next step; set false to fall back to the 2-tile lending stats card.
+			showAlmostFunded: true,
 			MY_KIVA_CARD_HEIGHT,
 		};
 	},
@@ -387,6 +384,11 @@ export default {
 		},
 		showRegionExperience() {
 			return !this.showPostLendingNextStepsCards && !this.userLentToAllRegions;
+		},
+		// True when the Almost Funded carousel is shown — for all non-post-lending lenders,
+		// including superlenders. The 2-tile lending stats card is the flag-off fallback.
+		showAlmostFundedCard() {
+			return !this.showPostLendingNextStepsCards && this.showAlmostFunded;
 		},
 		totalRegions() {
 			return this.regionsData.length;
@@ -418,15 +420,11 @@ export default {
 			const { getAllCategoryLoanCounts } = useBadgeData();
 			return getAllCategoryLoanCounts(this.heroTieredAchievements);
 		},
-		showLendingNextStepsCards() {
-			return this.lendingNextStepsVariant === 'b' && !this.showPostLendingNextStepsCards;
-		},
 	},
 	setup(props) {
 		const goalData = inject('goalData');
 
-		// When the featured-goal-slot experiment is on, the in-carousel goal tile is
-		// suppressed in favor of the slot rendered above LendingStats.
+		// Hide the in-carousel goal tile when a goal card is already shown elsewhere on the page.
 		const hideCompletedGoalCard = computed(
 			() => props.goalsRowEnabled || Boolean(goalData.hideGoalCard?.value)
 		);
@@ -444,7 +442,9 @@ export default {
 		};
 	},
 	async mounted() {
-		if (this.showRegionExperience) {
+		// Only the 2-tile stats card renders the region checkboxes; skip the reveal animation
+		// when the Almost Funded card is shown instead (its checkboxes never mount).
+		if (this.showRegionExperience && !this.showAlmostFunded) {
 			// Check region boxes when component comes into view
 			const { delayUntilVisible, disconnect } = useDelayUntilVisible();
 			delayUntilVisible(() => {

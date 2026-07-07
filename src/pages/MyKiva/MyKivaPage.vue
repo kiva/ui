@@ -13,7 +13,6 @@
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:user-lent-to-all-regions="userLentToAllRegions"
-			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goals-row-enabled="goalsRowEnabled"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
@@ -36,7 +35,6 @@
 			:goal-refresh-key="goalRefreshKey"
 			:show-my-giving-funds-card="showMyGivingFundsCard"
 			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
-			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goals-row-enabled="goalsRowEnabled"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
@@ -71,7 +69,6 @@ import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const GOAL_TILE_EXPERIMENT_KEY = 'mykiva_goal_tile';
-const LENDING_NEXT_STEPS_EXP_KEY = 'mykiva_lending_next_steps';
 const GOALS_ROW_EXP_KEY = 'mykiva_goals_row';
 
 /**
@@ -121,7 +118,6 @@ export default {
 			showMyGivingFundsCard: false,
 			recentTransactionLoans: [],
 			isGoalTileExperimentEnabled: false,
-			lendingNextStepsExperimentVariant: null,
 			goalRecommendedLoanEnable: false,
 			goalsRowEnabled: false,
 			shouldRenderFeaturedSlot: true,
@@ -206,10 +202,6 @@ export default {
 				client.query({
 					query: experimentAssignmentQuery,
 					variables: { id: GOAL_TILE_EXPERIMENT_KEY },
-				}),
-				client.query({
-					query: experimentAssignmentQuery,
-					variables: { id: LENDING_NEXT_STEPS_EXP_KEY },
 				}),
 				client.query({
 					query: experimentAssignmentQuery,
@@ -396,18 +388,6 @@ export default {
 			this.$kvTrackEvent,
 			'EXP-MP-2565-Mar2026',
 			'portfolio'
-		);
-
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
-			LENDING_NEXT_STEPS_EXP_KEY,
-			version => {
-				this.lendingNextStepsExperimentVariant = version;
-			},
-			this.$kvTrackEvent,
-			'EXP-MP-2291-Feb2026'
 		);
 
 		initializeExperiment(
