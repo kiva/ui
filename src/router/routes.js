@@ -1,3 +1,5 @@
+import { WITHDRAW_ROUTE, WITHDRAW_PROCESS } from '#src/pages/Withdraw/withdrawConstants';
+
 export default [
 	{
 		path: '/homepage-classic',
@@ -364,6 +366,45 @@ export default [
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
 		}
+	},
+	{
+		path: WITHDRAW_ROUTE.BASE,
+		component: () => import('#src/pages/Withdraw/WithdrawPage'),
+		meta: {
+			recentLoginRequired: true,
+			mfaRequired: true,
+			excludeFromStaticSitemap: true,
+			process: WITHDRAW_PROCESS,
+		},
+	},
+	{
+		path: WITHDRAW_ROUTE.CONFIRM,
+		component: () => import('#src/pages/Withdraw/WithdrawConfirmPage'),
+		meta: {
+			recentLoginRequired: true,
+			mfaRequired: true,
+			excludeFromStaticSitemap: true,
+			process: WITHDRAW_PROCESS,
+		},
+	},
+	{
+		path: WITHDRAW_ROUTE.CHECK_INBOX,
+		component: () => import('#src/pages/Withdraw/WithdrawCheckInboxPage'),
+		meta: {
+			recentLoginRequired: true,
+			excludeFromStaticSitemap: true,
+		},
+	},
+	{
+		path: WITHDRAW_ROUTE.AUTHORIZE,
+		component: () => import('#src/pages/Withdraw/WithdrawAuthorizePage'),
+		meta: {
+			recentLoginRequired: true,
+			excludeFromStaticSitemap: true,
+		},
+		props: route => ({
+			token: route.query.token,
+		}),
 	},
 	{
 		path: '/portfolio/kiva-cards-beta',

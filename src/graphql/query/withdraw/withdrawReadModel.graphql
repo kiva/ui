@@ -1,0 +1,29 @@
+query WithdrawReadModel {
+    my {
+        id
+        lender {
+            id
+            name
+            image {
+                id
+                url(customSize: "s100")
+            }
+        }
+        userAccount {
+            id
+            email
+            balance
+            withdrawal {
+                withdrawableBalance
+                maxWithdrawalAmount
+                canWithdraw
+                emailAllowed
+                pendingRequests {
+                    id
+                    price
+                    requestedAt
+                }
+            }
+        }
+    }
+}
