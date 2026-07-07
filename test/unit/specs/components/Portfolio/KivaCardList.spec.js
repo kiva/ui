@@ -4,6 +4,9 @@ import KivaCardList from '#src/components/Portfolio/KivaCardList';
 const renderList = props => render(KivaCardList, {
 	props,
 	global: {
+		directives: {
+			'kv-track-event': {},
+		},
 		stubs: {
 			KvGrid: { template: '<div><slot /></div>' },
 			KvLoadingPlaceholder: { template: '<div data-testid="skeleton" />' },
