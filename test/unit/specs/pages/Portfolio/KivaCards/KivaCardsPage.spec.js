@@ -32,13 +32,18 @@ const kivaCardsResponse = (purchasedKivaCards = {}) => ({
 
 const renderPage = ({ query } = {}) => {
 	const queryFn = query || vi.fn().mockResolvedValue({ data: kivaCardsResponse() });
+	const kvTrackEvent = vi.fn();
 
 	return {
 		query: queryFn,
+		kvTrackEvent,
 		...render(KivaCardsPage, {
 			global: {
 				provide: {
 					apollo: { query: queryFn },
+				},
+				mocks: {
+					$kvTrackEvent: kvTrackEvent,
 				},
 				directives: {
 					'kv-track-event': {},
@@ -61,11 +66,19 @@ const renderPage = ({ query } = {}) => {
 						>sort</button>`,
 					},
 					KvPagination: {
-						props: ['limit', 'offset', 'total'],
+						// Mirrors @kiva/kv-components KvPagination: its built-in tracking only
+						// fires when both kvTrackFunction and trackEventCategory are supplied.
+						props: ['limit', 'offset', 'total', 'trackEventCategory', 'kvTrackFunction'],
 						emits: ['page-changed'],
+						methods: {
+							goToNextPage() {
+								this.kvTrackFunction?.(this.trackEventCategory, 'click', 'pagination-next', null, 2);
+								this.$emit('page-changed', { pageOffset: 10 });
+							},
+						},
 						template: `<button
 							data-testid="page"
-							@click="$emit('page-changed', { pageOffset: 10 })"
+							@click="goToNextPage"
 						>page</button>`,
 					},
 					KivaCardList: {
@@ -120,6 +133,41 @@ describe('KivaCardsPage', () => {
 		expect(query).toHaveBeenLastCalledWith(expect.objectContaining({
 			variables: { offset: 0, limit: 10, sortBy: 'redeemedDate' },
 		}));
+	});
+
+	it('tracks a sort event when the sort selection changes', async () => {
+		const { kvTrackEvent, getByTestId, getByText } = renderPage();
+
+		await waitFor(() => expect(getByText('3 Kiva Cards purchased')).toBeTruthy());
+
+		await fireEvent.click(getByTestId('sort'));
+
+		expect(kvTrackEvent).toHaveBeenCalledWith('portfolio', 'click', 'Sort Kiva Cards', 'redeemedDate');
+	});
+
+	it('does not track a sort event when the selection is unchanged', async () => {
+		// The stub always emits 'redeemedDate'; a second click is a no-op change.
+		const { kvTrackEvent, getByTestId, getByText } = renderPage();
+
+		await waitFor(() => expect(getByText('3 Kiva Cards purchased')).toBeTruthy());
+
+		await fireEvent.click(getByTestId('sort'));
+		await flushPromises();
+		kvTrackEvent.mockClear();
+		await fireEvent.click(getByTestId('sort'));
+
+		expect(kvTrackEvent).not.toHaveBeenCalled();
+	});
+
+	it('wires the pagination track function and category so page changes are tracked', async () => {
+		const query = vi.fn().mockResolvedValue({ data: kivaCardsResponse({ total: 25 }) });
+		const { kvTrackEvent, getByTestId, getByText } = renderPage({ query });
+
+		await waitFor(() => expect(getByText('25 Kiva Cards purchased')).toBeTruthy());
+
+		await fireEvent.click(getByTestId('page'));
+
+		expect(kvTrackEvent).toHaveBeenCalledWith('portfolio', 'click', 'pagination-next', null, 2);
 	});
 
 	it('re-queries with the new offset on page change', async () => {

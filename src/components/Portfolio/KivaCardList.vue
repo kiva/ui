@@ -40,7 +40,11 @@
 			data-testid="no-kiva-cards-message"
 		>
 			You have purchased no
-			<a href="/gifts/kiva-cards" class="tw-no-underline">Kiva Cards</a>
+			<a
+				href="/gifts/kiva-cards"
+				class="tw-no-underline"
+				v-kv-track-event="['portfolio', 'click', 'Kiva Cards empty state purchase']"
+			>Kiva Cards</a>
 			at this point in time.
 		</div>
 

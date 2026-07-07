@@ -127,6 +127,8 @@
 							:aria-disabled="loading ? 'true' : undefined"
 							:scroll-to-top="false"
 							:total="total"
+							:kv-track-function="$kvTrackEvent"
+							track-event-category="portfolio"
 							@page-changed="handlePageChange"
 						/>
 					</div>
@@ -256,6 +258,9 @@ export default {
 			if (this.loading || value === this.sortBy) {
 				return undefined;
 			}
+			// KvSelect emits update:model-value (not a DOM click), so the
+			// v-kv-track-event directive can't cover this; track it here.
+			this.$kvTrackEvent('portfolio', 'click', 'Sort Kiva Cards', value);
 			this.sortBy = value;
 			this.offset = 0;
 			return this.fetchKivaCards({ clearCards: true });
