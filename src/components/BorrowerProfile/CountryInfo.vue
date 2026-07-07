@@ -34,8 +34,8 @@
 			<h2 class="tw-mb-4" data-testid="bp-country-header">
 				{{ countryName }} at a glance
 			</h2>
-			<div class="tw-flex tw-mb-4">
-				<p class="tw-flex-auto" data-testid="bp-country-aai">
+			<div class="tw-flex tw-gap-2 tw-mb-4">
+				<p class="tw-flex-1" data-testid="bp-country-aai">
 					<span class="tw-block tw-text-headline" data-testid="bp-country-aai-value">
 						{{ avgAnnualIncomeFormatted }}
 					</span>
@@ -43,7 +43,7 @@
 						Average annual income (USD)
 					</span>
 				</p>
-				<p class="tw-flex-auto" data-testid="bp-country-loans-fundraising">
+				<p class="tw-flex-1" data-testid="bp-country-loans-fundraising">
 					<span class="tw-block tw-text-headline" data-testid="bp-country-loans-fundraising-value">
 						{{ numLoansFundraising }}
 					</span>
@@ -52,8 +52,8 @@
 					</span>
 				</p>
 			</div>
-			<div v-if="fundsLentInCountry || loanCurrencyLabel" class="tw-flex tw-mb-4">
-				<p v-if="fundsLentInCountry" class="tw-flex-auto" data-testid="bp-country-funds-lent">
+			<div v-if="fundsLentInCountry || loanCurrencyLabel" class="tw-flex tw-gap-2 tw-mb-4">
+				<p v-if="fundsLentInCountry" class="tw-flex-1" data-testid="bp-country-funds-lent">
 					<span class="tw-block tw-text-headline" data-testid="bp-country-funds-lent-value">
 						{{ fundsLentInCountryFormatted }}
 					</span>
@@ -61,7 +61,7 @@
 						Funds lent in country
 					</span>
 				</p>
-				<p v-if="loanCurrencyLabel" class="tw-flex-auto" data-testid="bp-country-loan-currency">
+				<p v-if="loanCurrencyLabel" class="tw-flex-1" data-testid="bp-country-loan-currency">
 					<span class="tw-block tw-text-headline" data-testid="bp-country-loan-currency-value">
 						{{ loanCurrencyLabel }}
 					</span>
