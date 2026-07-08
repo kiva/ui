@@ -16,28 +16,18 @@ const stubs = {
 };
 
 function renderLoanCommentsWithReport(dataOverrides = {}) {
-	const mockComments = [
+	const mockRawComments = [
 		{
 			id: 1,
-			authorName: 'Sarah',
-			authorImageUrl: 'https://example.com/img.jpg',
-			authorRole: 'Lender',
+			author: { name: 'Sarah', imageUrl: 'https://example.com/img.jpg', role: 'lender' },
 			body: 'Great loan!',
 			date: '2025-03-15T12:00:00Z',
-			timeFlagged: null,
-			isBorrower: false,
-			isFlagged: false,
 		},
 		{
 			id: 2,
-			authorName: 'Aisha',
-			authorImageUrl: null,
-			authorRole: 'Borrower',
+			author: { name: 'Aisha', imageUrl: null, role: 'borrower' },
 			body: 'Thank you!',
 			date: '2025-03-16T12:00:00Z',
-			timeFlagged: null,
-			isBorrower: true,
-			isFlagged: false,
 		},
 	];
 
@@ -46,7 +36,7 @@ function renderLoanCommentsWithReport(dataOverrides = {}) {
 		data() {
 			return {
 				...LoanComments.data.call(this),
-				comments: mockComments,
+				rawComments: mockRawComments,
 				isLoggedIn: true,
 				lentTo: true,
 				isSubscribed: false,
@@ -183,6 +173,45 @@ describe('CommentReportLightbox direct submit behaviour', () => {
 
 		expect(showTipMsg).toHaveBeenCalledWith(expect.any(String), 'error');
 		expect(emitted().reported).toBeFalsy();
+	});
+
+	it('tracks lightbox open, submit, and cancel events with the live comment id (AD-333)', async () => {
+		const mutate = vi.fn(() => Promise.resolve({ data: { loan: { flagComment: true } } }));
+		const kvTrackEvent = vi.fn();
+		const Component = { ...CommentReportLightbox, apollo: undefined };
+
+		// Mounted hidden with no comment selected yet, like the LoanComments singleton
+		const { getByLabelText, getByText, rerender } = render(Component, {
+			props: { visible: false, loanId: 42, commentId: null },
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					apollo: { ...globalOptions.provide.apollo, mutate },
+				},
+				mocks: {
+					...globalOptions.mocks,
+					$showTipMsg: vi.fn(),
+					$kvTrackEvent: kvTrackEvent,
+				},
+			},
+		});
+
+		await rerender({ visible: true, commentId: 7 });
+		expect(kvTrackEvent).toHaveBeenCalledWith('borrower-profile', 'view', 'comment-report-lightbox', null, 7);
+
+		await fireEvent.click(getByText('Cancel'));
+		expect(kvTrackEvent).toHaveBeenCalledWith('borrower-profile', 'click', 'comment-report-cancel', null, 7);
+
+		await fireEvent.click(getByLabelText('I find it offensive'));
+		await fireEvent.click(getByText('Submit report'));
+		expect(kvTrackEvent).toHaveBeenCalledWith(
+			'borrower-profile',
+			'click',
+			'comment-report-submit',
+			'I find it offensive',
+			7,
+		);
 	});
 
 	it('does not call mutate a second time while a submission is in flight', async () => {

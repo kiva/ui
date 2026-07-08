@@ -39,7 +39,7 @@
 			<template #controls>
 				<kv-button
 					variant="secondary"
-					@click="$emit('close')"
+					@click="cancel"
 				>
 					Cancel
 				</kv-button>
@@ -98,15 +98,28 @@ export default {
 	},
 	watch: {
 		visible(newVal) {
-			if (!newVal) {
+			if (newVal) {
+				this.$kvTrackEvent('borrower-profile', 'view', 'comment-report-lightbox', null, this.commentId);
+			} else {
 				this.selectedReason = '';
 			}
 		},
 	},
 	methods: {
+		cancel() {
+			this.$kvTrackEvent('borrower-profile', 'click', 'comment-report-cancel', null, this.commentId);
+			this.$emit('close');
+		},
 		reportComment() {
 			if (this.isSubmitting) return;
 			this.isSubmitting = true;
+			this.$kvTrackEvent(
+				'borrower-profile',
+				'click',
+				'comment-report-submit',
+				this.selectedReason,
+				this.commentId,
+			);
 			this.apollo.mutate({
 				mutation: reportLoanCommentMutation,
 				variables: {
