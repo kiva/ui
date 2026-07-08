@@ -2,7 +2,7 @@
 	<div class="card-container">
 		<div
 			v-if="loanStatus"
-			class="tw-bg-white tw-absolute tw-top-1 tw-left-1 tw-rounded tw-px-1 tw-py-0.5 tw-font-medium"
+			class="tw-bg-white tw-absolute tw-top-1 tw-left-1 tw-rounded tw-px-1 tw-py-0.5 tw-text-label"
 		>
 			{{ loanStatus }}
 		</div>
@@ -67,7 +67,7 @@
 							]"
 						/>
 					</div>
-					<div class="tw-text-center md:tw-text-left tw-mb-1 tw-line-clamp-2 tw-font-medium">
+					<div class="tw-text-center md:tw-text-left tw-mb-1 tw-line-clamp-2 tw-text-base">
 						{{ title }}
 					</div>
 					<p class="tw-text-center md:tw-text-left tw-line-clamp-2">
@@ -78,8 +78,8 @@
 						@click="showLoanDetails"
 					>
 						<p
-							class="tw-text-action tw-font-medium
-								md:tw-w-full md:tw-text-left"
+							class="tw-text-action tw-text-button-link
+									md:tw-w-full md:tw-text-left"
 						>
 							{{ stepsCopy }}
 						</p>

@@ -1,12 +1,12 @@
 <template>
-	<table class="tw-w-full tw-text-small lg:tw-text-base">
+	<table class="tw-w-full tw-text-small">
 		<thead>
-			<tr class="tw-bg-brand">
+			<tr class="tw-bg-gray-200">
 				<th class="tw-px-1 lg:tw-px-2 tw-py-1"></th>
-				<th class="tw-text-right tw-font-bold tw-text-white tw-px-1 lg:tw-px-2 tw-py-1">
+				<th class="tw-text-right tw-font-bold tw-px-1 lg:tw-px-2 tw-py-1">
 					My stats
 				</th>
-				<th class="tw-text-right tw-font-bold tw-text-white tw-px-1 lg:tw-px-2 tw-py-1">
+				<th class="tw-text-right tw-font-bold tw-px-1 lg:tw-px-2 tw-py-1">
 					Avg Kiva lender
 				</th>
 			</tr>
@@ -36,7 +36,8 @@
 			<tr
 				v-for="row in statsRows"
 				:key="row.key"
-				:class="{ 'tw-bg-primary': row.showInWhite, 'tw-bg-secondary': row.showInGray }"
+				class="tw-bg-primary"
+				:class="{ '!tw-bg-gray-50': row.showInGray }"
 			>
 				<td class="tw-px-1 lg:tw-px-2 tw-py-1" :class="{ 'tw-pl-3 lg:tw-pl-6': row.isTabbed }">
 					<span class="tw-inline-flex tw-items-center tw-gap-0.5">
@@ -95,7 +96,7 @@
 	<hr class="tw-border-tertiary tw-my-4">
 
 	<div
-		class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-x-6 tw-gap-y-1"
+		class="tw-grid loan-count-grid tw-text-small tw-gap-x-6 tw-gap-y-2"
 		role="table"
 		aria-label="Loan count statistics"
 	>
@@ -446,3 +447,18 @@ export default {
 	}
 };
 </script>
+
+<style lang="postcss" scoped>
+/* Loan-count summary: a single column on mobile, then three equal-width columns from the md
+   breakpoint up. Equal columns (plus the shared tw-gap-x-6 / tw-justify-between on each cell)
+   keep the label-to-count spacing and count alignment consistent across every row and column. */
+.loan-count-grid {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+@screen md {
+	.loan-count-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+</style>

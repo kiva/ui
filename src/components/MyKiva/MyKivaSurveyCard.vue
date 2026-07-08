@@ -12,8 +12,7 @@
 					:icon="mdiLightningBoltOutline"
 				/>
 				<span
-					class="tw-text-primary tw-font-medium tw-align-middle"
-					style="font-size: 0.875rem;"
+					class="tw-text-primary tw-text-label tw-align-middle"
 				>
 					10-second poll
 				</span>

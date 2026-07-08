@@ -32,7 +32,7 @@
 						class="social-button__icon social-button__icon--facebook"
 						:icon="mdiFacebook"
 					/>
-					<span class="tw-font-medium">Facebook</span>
+					<span class="tw-text-button-link">Facebook</span>
 				</KvButton>
 				<KvButton
 					variant="ghost"
@@ -46,7 +46,7 @@
 						class="social-button__icon social-button__icon--bluesky"
 						:icon="KvBlueskyIcon"
 					/>
-					<span class="tw-font-medium">Bluesky</span>
+					<span class="tw-text-button-link">Bluesky</span>
 				</KvButton>
 				<KvButton
 					variant="ghost"
@@ -60,7 +60,7 @@
 						class="social-button__icon social-button__icon--linkedin"
 						:icon="mdiLinkedin"
 					/>
-					<span class="tw-font-medium">LinkedIn</span>
+					<span class="tw-text-button-link">LinkedIn</span>
 				</KvButton>
 				<KvButton
 					variant="ghost"
@@ -73,7 +73,7 @@
 						class="tw-w-4.5 tw-h-4.5 tw-pointer-events-none tw-inline-block tw-align-middle"
 						:icon="mdiLink"
 					/>
-					<span class="tw-font-medium">{{ copyStatus.text }}</span>
+					<span class="tw-text-button-link">{{ copyStatus.text }}</span>
 				</KvButton>
 			</div>
 		</KvLightbox>

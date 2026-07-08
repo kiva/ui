@@ -1,10 +1,10 @@
 <template>
 	<div>
-		<h3
+		<h2
 			v-if="hasActiveLoans"
 			v-html="title"
-			class="tw-text-title tw-mt-4 tw-mb-2"
-		></h3>
+			class="tw-mt-4 tw-mb-2"
+		></h2>
 		<div v-if="hasActiveLoans" class="tw-relative">
 			<KvTabs
 				v-show="filteredLoans.length > 1 && showCarouselTabs"
@@ -37,7 +37,7 @@
 									]"
 								/>
 							</div>
-							<h5
+							<p
 								class="
 									tw-text-center
 									tw-text-label
@@ -48,7 +48,7 @@
 								"
 							>
 								{{ getBorrowerName(loan) }}
-							</h5>
+							</p>
 						</div>
 					</KvTab>
 				</template>

@@ -173,7 +173,7 @@ describe('GoalSelector', () => {
 		await flushPromises();
 
 		const getLoanNumbers = () => Array.from(
-			container.querySelectorAll('span.tw-text-display')
+			container.querySelectorAll('.loan-number-selector__number')
 		).map(el => Number(el.textContent.trim())).filter(Number.isFinite);
 
 		// Helper to click a category and assert expected goal options
@@ -368,7 +368,7 @@ describe('GoalSelector', () => {
 			},
 		];
 
-		const ValuePropsWrapper = {
+		const NoGoalCopyWrapper = {
 			components: { GoalSelector },
 			props: {
 				tieredAchievements: { type: Array, default: () => [] },
@@ -381,12 +381,11 @@ describe('GoalSelector', () => {
 					:tiered-achievements="tieredAchievements"
 					selected-category-id="${ID_WOMENS_EQUALITY}"
 					selected-category-name="Women"
-					show-goal-value-props-copy
 				/>
 			`,
 		};
 
-		const { container, getByRole } = render(ValuePropsWrapper, {
+		const { container, getByRole } = render(NoGoalCopyWrapper, {
 			global: {
 				...globalOptions,
 				provide: {
@@ -500,7 +499,6 @@ describe('GoalSelector', () => {
 						:tiered-achievements="tieredAchievements"
 						:selected-category-id="selectedCategoryId"
 						:selected-category-name="selectedCategoryName"
-						show-goal-value-props-copy
 					/>
 				</div>
 			`,
@@ -554,7 +552,7 @@ describe('GoalSelector', () => {
 		await flushPromises();
 
 		const getLoanNumbers = () => Array.from(
-			container.querySelectorAll('span.tw-text-display')
+			container.querySelectorAll('.loan-number-selector__number')
 		).map(el => Number(el.textContent.trim())).filter(Number.isFinite);
 
 		// Women category: 1 loan last year, 0 this year -> default options
@@ -765,7 +763,7 @@ describe('GoalSelector', () => {
 		await flushPromises();
 
 		const getLoanNumbers = () => Array.from(
-			container.querySelectorAll('span.tw-text-display')
+			container.querySelectorAll('.loan-number-selector__number')
 		).map(el => Number(el.textContent.trim())).filter(Number.isFinite);
 
 		// Initial category (Women) with no history falls back to default options

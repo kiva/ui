@@ -34,15 +34,3 @@ export const Default = story({
 		[ID_BASIC_NEEDS]: 7,
 	},
 });
-
-export const GoalTileExperiment = story({
-	totalLoans: 42,
-	categoriesLoanCount: {
-		[ID_WOMENS_EQUALITY]: 1,
-		[ID_REFUGEE_EQUALITY]: 5,
-		[ID_CLIMATE_ACTION]: 8,
-		[ID_US_ECONOMIC_EQUALITY]: 1,
-		[ID_BASIC_NEEDS]: 7,
-	},
-	isGoalTileExperimentEnabled: true,
-});

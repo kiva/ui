@@ -1,36 +1,51 @@
 <template>
-	<www-page>
+	<www-page main-class="tw-bg-secondary tw-pb-3">
 		<template #secondary>
 			<the-my-kiva-secondary-menu />
 		</template>
 		<kv-page-container>
-			<kv-grid class="tw-grid-cols-12">
+			<kv-grid class="tw-grid-cols-12 tw--mx-2.5 md:tw-mx-0">
 				<the-portfolio-tertiary-menu class="tw-pt-2 tw-col-span-3 tw-hidden md:tw-block" />
-				<div
-					class="tw-col-span-12 md:tw-col-span-9 tw-pt-4
-					md:tw-pt-6 lg:tw-pt-8"
-				>
-					<h1 class="tw-text-display tw-mb-2">
-						My loans
-					</h1>
-					<loans-first-loan-cta v-if="showFirstLoanCta" />
-					<div v-else class="tw-mb-2">
-						<div
-							class="tw-flex tw-justify-end tw-text-tertiary tw-text-small tw-mb-1 tw-min-h-2.5"
-						>
-							<span v-if="lastUpdated">*Updated as of {{ lastUpdated }}</span>
-							<kv-loading-placeholder
-								v-else-if="!statsLoaded"
-								class="tw-self-center"
-								style="width: 11rem; height: 0.875rem;"
-							/>
+				<div class="tw-col-span-12 md:tw-col-span-9 tw-pt-1.5 md:tw-pt-3">
+					<div class="tw-rounded-none md:tw-rounded-t tw-py-3 md:tw-pb-0 tw-px-2 md:tw-px-3 md:tw-bg-primary">
+						<div class="md:tw-flex md:tw-items-baseline md:tw-justify-between">
+							<h1 class="tw-text-display">
+								My loans
+							</h1>
+							<div
+								v-if="!showFirstLoanCta"
+								class="tw-hidden md:tw-flex tw-justify-end tw-text-tertiary tw-text-small tw-min-h-2.5"
+							>
+								<span v-if="lastUpdated">*Updated as of {{ lastUpdated }}</span>
+								<kv-loading-placeholder
+									v-else-if="!statsLoaded"
+									class="tw-self-center"
+									style="width: 11rem; height: 0.875rem;"
+								/>
+							</div>
 						</div>
-						<loan-stats-table @updated-as-of="handleUpdatedAsOf" />
+					</div>
+					<div class="tw-rounded-none md:tw-rounded-b tw-py-3 lg:tw-pt-1 tw-px-2 md:tw-px-3 tw-bg-primary">
+						<loans-first-loan-cta v-if="showFirstLoanCta" />
+						<template v-else>
+							<div
+								class="md:tw-hidden tw-flex tw-justify-end tw-text-tertiary tw-text-small tw-min-h-2.5
+									tw-mb-0.5"
+							>
+								<span v-if="lastUpdated">*Updated as of {{ lastUpdated }}</span>
+								<kv-loading-placeholder
+									v-else-if="!statsLoaded"
+									class="tw-self-center"
+									style="width: 11rem; height: 0.875rem;"
+								/>
+							</div>
+							<loan-stats-table @updated-as-of="handleUpdatedAsOf" />
+						</template>
 					</div>
 				</div>
 				<div
 					v-if="!showFirstLoanCta"
-					class="tw-col-span-12"
+					class="tw-col-span-12 tw-rounded-none md:tw-rounded tw-py-3 tw-px-2 md:tw-px-3 md:tw-bg-primary"
 				>
 					<loan-filter-bar
 						:countries="filterOptions.countries"

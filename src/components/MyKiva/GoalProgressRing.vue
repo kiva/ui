@@ -1,15 +1,10 @@
 <template>
 	<div class="tw-h-full tw-flex tw-flex-col tw-justify-between" :class="containerClass">
 		<div :class="titleContainerClass">
-			<kv-material-icon
-				v-if="isGoalTileExperimentEnabled && !isLarge && isModalVariant && !isUpdatingGoal"
-				class="tw-w-3.5 tw-h-3.5 tw-text-brand tw-mx-auto tw-mb-2"
-				:icon="mdiCheckCircle"
-			/>
 			<h2 v-if="isModalVariant" class="tw-text-headline tw-font-medium" :class="titleClass">
 				{{ titleText }}
 			</h2>
-			<p v-else class="tw-font-medium" :class="titleClass">
+			<p v-else class="tw-text-base" :class="titleClass">
 				{{ titleText }}
 			</p>
 
@@ -32,7 +27,7 @@
 		>
 			<p
 				v-html="modalVariantDescriptionText"
-				class="modal-description-text tw-text-subhead !tw-font-medium" style="line-height: 1.5rem;"
+				class="modal-description-text tw-text-subheadline"
 			></p>
 		</div>
 
@@ -52,10 +47,10 @@
 						? 'tw-flex-col tw-pt-2'
 						: 'tw-flex-row tw-items-baseline'"
 				>
-					<component :is="progressValueHeadingTag" class="tw-leading-none">
+					<component :is="progressValueHeadingTag">
 						{{ visibleGoalLoans }}
 					</component>
-					<component :is="goalTargetHeadingTag" class="tw-text-secondary tw-leading-tight">
+					<component :is="goalTargetHeadingTag" class="tw-text-secondary">
 						/{{ goalLoans }}
 					</component>
 				</div>
@@ -68,8 +63,7 @@
 		<p
 			v-if="!isModalVariant"
 			v-html="descriptionText"
-			class="tw-font-medium tw-py-1"
-			style="line-height: 1.5rem;"
+			class="tw-text-base tw-py-1"
 		>
 		</p>
 
@@ -97,7 +91,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { mdiPencilOutline, mdiCheckCircle } from '@mdi/js';
+import { mdiPencilOutline } from '@mdi/js';
 import { useRouter } from 'vue-router';
 
 import { KvButton, KvProgressCircle, KvMaterialIcon } from '@kiva/kv-components';
@@ -107,7 +101,6 @@ import {
 	ID_SUPPORT_ALL,
 	ID_US_ECONOMIC_EQUALITY,
 } from '#src/composables/useBadgeData';
-import useBreakpoints from '#src/composables/useBreakpoints';
 
 const STACKED_PROGRESS_DIGIT_THRESHOLD = 3;
 const SMALL_HEADING_DIGIT_THRESHOLD = 5;
@@ -186,18 +179,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	/**
-	 * Experiment flag to enable new goal tile design
-	 */
-	isGoalTileExperimentEnabled: {
-		type: Boolean,
-		default: false,
-	},
 });
 
 const emit = defineEmits(['button-click', 'edit-button-click', 'edit-goal-from-settings']);
 const router = useRouter();
-const { isLarge } = useBreakpoints();
 
 const getDigitCount = value => String(value ?? 0).length;
 

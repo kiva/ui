@@ -25,7 +25,7 @@
 							/>
 						</div>
 
-						<div class="borrower-name tw-text-lg tw-font-semibold tw-text-slate-900">
+						<div class="borrower-name tw-text-base tw-text-slate-900">
 							<strong class="tw-line-clamp-1 tw-truncate">{{ name }}</strong>
 						</div>
 					</div>
@@ -36,7 +36,7 @@
 					<p
 						v-html="loanDescription"
 						class="tw-rounded-2xl tw-bg-slate-100 tw-py-2 tw-px-2 md:!tw-px-3
-							tw-text-base tw-leading-relaxed tw-bg-gray-100 tw-rounded-md md:tw-text-lg"
+								tw-text-base tw-bg-gray-100 tw-rounded-md"
 					></p>
 				</div>
 			</div>
@@ -84,7 +84,7 @@ const amount = computed(() => {
 
 const loanDescription = computed(() => {
 	let text = `Your ${amount.value} loan helps ${name.value} build stability and success in `
-		+ `<strong class="tw-text-brand">${countryName.value}</strong>`;
+			+ `<strong class="tw-text-brand">${countryName.value}</strong>`;
 
 	if (countryPPP.value) {
 		text += `, where the average <strong class="tw-text-brand">annual income is ${countryPPP.value} USD</strong>`;

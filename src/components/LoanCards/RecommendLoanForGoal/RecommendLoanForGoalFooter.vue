@@ -28,7 +28,7 @@
 			class="tw-mb-3 tw-inline-flex tw-items-center tw-justify-center tw-gap-1 tw-self-center tw-text-small"
 		>
 			<ExpressCheckoutLines class="tw-shrink-0" aria-hidden="true" />
-			<span class="tw-font-medium tw-text-secondary">{{ secondaryLabel }}</span>
+			<span class="tw-text-label tw-text-secondary">{{ secondaryLabel }}</span>
 		</div>
 	</div>
 </template>

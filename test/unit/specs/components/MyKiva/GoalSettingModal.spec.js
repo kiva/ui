@@ -83,10 +83,6 @@ vi.mock('@kiva/kv-components', () => ({
 const GoalSelectorStub = {
 	name: 'GoalSelector',
 	props: {
-		showGoalValuePropsCopy: {
-			type: Boolean,
-			default: false,
-		},
 		compactLayout: {
 			type: Boolean,
 			default: false,
@@ -130,33 +126,19 @@ describe('GoalSettingModal', () => {
 		vi.clearAllMocks();
 	});
 
-	it('keeps the existing value-props copy path by default', () => {
-		const wrapper = mountModal({ isGoalTileExperimentEnabled: false });
+	it('does not render the removed green goal tile value-props panel', () => {
+		const wrapper = mountModal();
 		const selector = wrapper.findComponent(GoalSelectorStub);
 
 		expect(selector.exists()).toBe(true);
-		expect(selector.props('showGoalValuePropsCopy')).toBe(true);
-	});
-
-	it('removes value-props copy for the goal tile experiment', () => {
-		const wrapper = mountModal({ isGoalTileExperimentEnabled: true });
-		const selector = wrapper.findComponent(GoalSelectorStub);
-
-		expect(selector.exists()).toBe(true);
-		expect(selector.props('showGoalValuePropsCopy')).toBe(false);
-	});
-
-	it('removes value-props copy when the caller opts out', () => {
-		const wrapper = mountModal({ showGoalValuePropsCopy: false });
-		const selector = wrapper.findComponent(GoalSelectorStub);
-
-		expect(selector.exists()).toBe(true);
-		expect(selector.props('showGoalValuePropsCopy')).toBe(false);
+		expect(wrapper.text()).not.toContain('Set your annual goal');
+		expect(wrapper.text()).not.toContain('Build a habit of helping others');
+		expect(wrapper.text()).not.toContain('Track your impact as it grows');
+		expect(wrapper.text()).not.toContain('Stay consistent with reminders');
 	});
 
 	it('passes compact-layout to GoalSelector in the standard selector state', () => {
 		const wrapper = mountModal({
-			showGoalTile: false,
 			showRecommendLoanArea: false,
 			isThanksPage: false,
 		});
@@ -166,7 +148,6 @@ describe('GoalSettingModal', () => {
 
 	it('places the progress subtitle before options in the standard selector state', () => {
 		const wrapper = mountModal({
-			showGoalTile: false,
 			showRecommendLoanArea: false,
 			isThanksPage: false,
 		});

@@ -73,6 +73,7 @@ query BorrowerProfileSideSheet($loanId: Int!) {
 				}
 			}
 			video {
+				id
 				youtubeId
 			}
 			originalLanguage {

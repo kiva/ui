@@ -1,4 +1,4 @@
-import { setHotJarUserAttributes, fireHotJarEvent } from '#src/util/hotJarUtils';
+import { setHotJarUserAttributes, fireHotJarEvent, fireNewUserHotJarEvent } from '#src/util/hotJarUtils';
 
 describe('hotJarUtils.js', () => {
 	let mockHj;
@@ -99,6 +99,79 @@ describe('hotJarUtils.js', () => {
 				'Has core loan': true,
 			});
 		});
+
+		it('should coerce undefined hasEverLoggedIn to false', () => {
+			const userData = {
+				userId: '22222',
+				hasLentBefore: true,
+				hasDepositBefore: true,
+			};
+
+			setHotJarUserAttributes(userData);
+
+			expect(mockHj).toHaveBeenCalledWith('identify', '22222', {
+				'Has ever logged in': false,
+				'Has lent before': true,
+				'Has deposit before': true,
+			});
+		});
+
+		it('should coerce all user attributes to false when undefined', () => {
+			const userData = { userId: '33333' };
+
+			setHotJarUserAttributes(userData);
+
+			expect(mockHj).toHaveBeenCalledWith('identify', '33333', {
+				'Has ever logged in': false,
+				'Has lent before': false,
+				'Has deposit before': false,
+			});
+		});
+
+		it('should coerce loan attributes to false when undefined', () => {
+			const userData = {
+				userId: '44444',
+				hasEverLoggedIn: true,
+				hasLentBefore: true,
+				hasDepositBefore: true,
+				isFirstLoan: true,
+			};
+
+			setHotJarUserAttributes(userData);
+
+			expect(mockHj).toHaveBeenCalledTimes(2);
+			expect(mockHj).toHaveBeenNthCalledWith(2, 'identify', '44444', {
+				'First loan': true,
+				'Has direct loan': false,
+				'Has core loan': false,
+			});
+		});
+
+		it('should coerce null attributes to false', () => {
+			const userData = {
+				userId: '55555',
+				hasEverLoggedIn: null,
+				hasLentBefore: null,
+				hasDepositBefore: null,
+				isFirstLoan: true,
+				hasDirectLoan: null,
+				hasCoreLoan: null,
+			};
+
+			setHotJarUserAttributes(userData);
+
+			expect(mockHj).toHaveBeenCalledTimes(2);
+			expect(mockHj).toHaveBeenNthCalledWith(1, 'identify', '55555', {
+				'Has ever logged in': false,
+				'Has lent before': false,
+				'Has deposit before': false,
+			});
+			expect(mockHj).toHaveBeenNthCalledWith(2, 'identify', '55555', {
+				'First loan': true,
+				'Has direct loan': false,
+				'Has core loan': false,
+			});
+		});
 	});
 
 	describe('fireHotJarEvent', () => {
@@ -124,6 +197,32 @@ describe('hotJarUtils.js', () => {
 			global.window.hj = undefined;
 
 			expect(() => fireHotJarEvent('test_event')).not.toThrow();
+		});
+	});
+
+	describe('fireNewUserHotJarEvent', () => {
+		it('should fire the new_user event when the user has never logged in', () => {
+			fireNewUserHotJarEvent(false);
+
+			expect(mockHj).toHaveBeenCalledWith('event', 'new_user');
+		});
+
+		it('should not fire the event when the user has logged in before', () => {
+			fireNewUserHotJarEvent(true);
+
+			expect(mockHj).not.toHaveBeenCalled();
+		});
+
+		it('should not fire the event when hasEverLoggedIn is unknown (undefined)', () => {
+			fireNewUserHotJarEvent(undefined);
+
+			expect(mockHj).not.toHaveBeenCalled();
+		});
+
+		it('should not throw when window.hj is undefined', () => {
+			global.window.hj = undefined;
+
+			expect(() => fireNewUserHotJarEvent(false)).not.toThrow();
 		});
 	});
 });

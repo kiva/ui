@@ -1,3 +1,43 @@
+## [3.76.0-rc.1](https://github.com/kiva/ui/compare/v3.75.0...v3.76.0-rc.1) (2026-07-08)
+
+### 🎉 New Features
+
+* [MP-2924] - audit mykiva page with design system ai skills ([#7032](https://github.com/kiva/ui/issues/7032)) ([3bfbf1f](https://github.com/kiva/ui/commit/3bfbf1f383345128344932d45052670e3608f9ae))
+* **CIT-4468:** render avatar with logo fallback in ContributingPartners ([4b610fe](https://github.com/kiva/ui/commit/4b610fe5564fb056f8f34d823ee58c66b3a4ebd6))
+* **CIT-4468:** render avatar with logo fallback in SimultaneousMatchingInfo ([b67d1d2](https://github.com/kiva/ui/commit/b67d1d2508b331551f38dadd6eb74e389a0dcf7f))
+* **CIT-4468:** request simultaneousMatching.avatar in UI queries ([c47e669](https://github.com/kiva/ui/commit/c47e66989754d113c4db5484ec512e51538674af))
+* implement kiva-cards-beta page and functionality ([#7038](https://github.com/kiva/ui/issues/7038)) ([341feb2](https://github.com/kiva/ui/commit/341feb23f5a09b902b3df6faba0f526a994b1568))
+* mp-2945-full-remove-green-props ([1a358dd](https://github.com/kiva/ui/commit/1a358dd1c24123d5eccc8f354f0c6d4885284369))
+* mp-2945-full-remove-green-props ([f6dfe4b](https://github.com/kiva/ui/commit/f6dfe4bfb188ea32808e9577f472b72e736d3ac0))
+* update borrower profile typography heading to new ecosystem ([8105c67](https://github.com/kiva/ui/commit/8105c6792267015101119ab408551848ff197db6))
+* update checkout page typography heading to new ecosystem ([0c9ea30](https://github.com/kiva/ui/commit/0c9ea307953ed4577d6f2ec2944410e8095611e0))
+
+### 🐛 Bugfixes
+
+* add missing analytics to kiva-cards-beta ([#7040](https://github.com/kiva/ui/issues/7040)) ([25c506c](https://github.com/kiva/ui/commit/25c506c6b3300fdd1dcf862fd1bed69a6810e519))
+* add new hj event for new user sessions ([#7045](https://github.com/kiva/ui/issues/7045)) ([5998ac2](https://github.com/kiva/ui/commit/5998ac2cb24edb9fc4380219a9ade7e5f8eea0ed))
+* don't show atb modal on mykiva when loan added to basket after goal set ([#7029](https://github.com/kiva/ui/issues/7029)) ([bb62283](https://github.com/kiva/ui/commit/bb62283850dafb454b95d368c62cad89e3607b62))
+* **graphql:** add id field for Video queries ([66e20e5](https://github.com/kiva/ui/commit/66e20e5a19894885e12cda5e1a27a3d87394b15f))
+* loans beta styling update to match other new portfolio pages ([#7031](https://github.com/kiva/ui/issues/7031)) ([cff7406](https://github.com/kiva/ui/commit/cff7406eb8127ca2d35f12e2a2bd49d769bb7627))
+* loans-beta small spacing adjustments ([#7039](https://github.com/kiva/ui/issues/7039)) ([c66e207](https://github.com/kiva/ui/commit/c66e207acd5b158e1da6c91c8fa63ecba883ef51))
+* **MP-2279:** send false instead of unknown for missing Hotjar identify attributes ([#7037](https://github.com/kiva/ui/issues/7037)) ([74f879b](https://github.com/kiva/ui/commit/74f879b6b82118ca0ce50d7505eb995c61e4eb39))
+* normalize selectedOption in showSparkles to handle thousands separators ([44c5538](https://github.com/kiva/ui/commit/44c5538f6768361991283132287f72c20217b319))
+* remove blank line causing padded-blocks lint error ([9f3f8bb](https://github.com/kiva/ui/commit/9f3f8bb2020b1d24c934ebc0c72406ba4fe8af30))
+* remove null ratio guard and test, ratio is Int! in schema ([cba42f1](https://github.com/kiva/ui/commit/cba42f1d4ab9df0fc71a8c078334b60eb5e6dc3f))
+* restore null safety on ratio, update ContributingPartners tests to new format ([cfdf8b7](https://github.com/kiva/ui/commit/cfdf8b74610c845db07dfeb340b62788eda244d2))
+* simultaneous matching on borrower profile fixes ([35b6320](https://github.com/kiva/ui/commit/35b63204d8f180baac8e7debd5c318a39412ccf4))
+* update ratio display format, fix totalRatio calculation, add matching tooltip ([fa035f9](https://github.com/kiva/ui/commit/fa035f9c9b425bafcb3839f82aacce72d8a840ac))
+* upsell experiment heading ([4ced42d](https://github.com/kiva/ui/commit/4ced42d863ba293f0d9c21a76d19a6e2aac087b5))
+* upsell typography ([a1dd237](https://github.com/kiva/ui/commit/a1dd237491044a2e2db72775431f9aec2ffd233a))
+
+### 🔍 Tests
+
+* assert thousands-separator formatting for large lend amounts ([453047f](https://github.com/kiva/ui/commit/453047f6332c72379847fc517690952f569f97b8))
+
+### 🧹 Chores
+
+* **CIT-4468:** add avatar fixtures to matching stories ([74ec682](https://github.com/kiva/ui/commit/74ec682d6997ae24895551be9402bee0640ab8eb))
+
 ## [3.75.0](https://github.com/kiva/ui/compare/v3.74.0...v3.75.0) (2026-06-25)
 
 ### 🎉 New Features

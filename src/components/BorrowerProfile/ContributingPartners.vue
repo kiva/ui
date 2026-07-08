@@ -1,6 +1,6 @@
 <template>
 	<section v-if="showSection">
-		<h2 class="tw-text-headline tw-mb-4">
+		<h2 class="tw-mb-4">
 			Contributing partners
 		</h2>
 		<div
@@ -19,12 +19,12 @@
 				<kv-user-avatar
 					class="tw-w-full tw-h-full"
 					:lender-name="matcher.displayName || 'Anonymous'"
-					:lender-image-url="matcher.logo && matcher.logo.url ? matcher.logo.url : ''"
+					:lender-image-url="matcher.avatar?.url || matcher.logo?.url || ''"
 				/>
 			</component>
 			<div>
 				<p class="tw-text-upper">
-					{{ (matcher.ratio ?? 0) + 1 }}X MATCHING
+					{{ matcher.ratio }}:1 MATCHING
 				</p>
 				<p class="tw-mt-0.5">
 					{{ getDisplayName(matcher) }}
@@ -71,6 +71,10 @@ export default {
 							displayName
 							ratio
 							partnerContentfulPage
+							avatar {
+								id
+								url
+							}
 							logo {
 								id
 								url
