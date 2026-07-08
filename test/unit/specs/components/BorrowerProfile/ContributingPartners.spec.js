@@ -93,7 +93,6 @@ describe('ContributingPartners', () => {
 			// Tripadvisor ratio=1 → 1:1 MATCHING
 			await findByText('1:1 MATCHING');
 		});
-
 	});
 
 	describe('partner name display', () => {
