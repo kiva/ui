@@ -17,10 +17,10 @@
 		</div>
 
 		<div v-else>
-			<h2 class="tw-mb-4" data-testid="bp-country-header">
+			<h2 class="tw-mb-3" data-testid="bp-country-header">
 				{{ countryName }} at a glance
 			</h2>
-			<div class="tw-flex tw-mb-4">
+			<div class="tw-flex tw-mb-3">
 				<p class="tw-flex-auto" data-testid="bp-country-aai">
 					<span class="tw-block tw-text-headline" data-testid="bp-country-aai-value">
 						{{ avgAnnualIncomeFormatted }}
