@@ -24,7 +24,7 @@
 			</component>
 			<div>
 				<p class="tw-text-upper">
-					{{ matcher.ratio }}:1 MATCHING
+					{{ matcher.ratio ?? 0 }}:1 MATCHING
 				</p>
 				<p class="tw-mt-0.5">
 					{{ getDisplayName(matcher) }}
