@@ -221,8 +221,6 @@ export const fullProfileFragment = gql`
 	}
 `;
 
-// Single source of truth for this component's data; the parent page imports this
-// to warm the SSR cache with the exact same operation.
 export const fullProfileQuery = gql`
 	${fullProfileFragment}
 	query fullBorrowerProfileData($loanId: Int!) {

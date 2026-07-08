@@ -274,6 +274,7 @@ export default {
 	data() {
 		return {
 			loan: {},
+			routingLoan: {},
 			lender: {},
 			// SSR-resolved rail preference (logged-in only); reconciled client-side in the component.
 			initialShowDetailsInRail: false,
@@ -397,10 +398,11 @@ export default {
 				}
 			}
 			this.loan = fullLoan ?? routingLoan;
+			this.routingLoan = routingLoan;
 			this.inviterName = this.inviterIsGuestOrAnonymous
 				? '' : result?.data?.community?.lender?.name ?? '';
 			this.itemsInBasket = result?.data?.shop?.basket?.items?.values ?? [];
-			this.loanRegion = this.loan?.geocode?.country?.region ?? '';
+			this.loanRegion = this.routingLoan?.geocode?.country?.region ?? '';
 			this.regionBelongsToExp = this.expRegionList.includes(this.loanRegion);
 
 			// SSR initial rail state from the account preference (localStorage is reconciled
@@ -471,13 +473,13 @@ export default {
 			return Number(this.$route.params.id || 0);
 		},
 		name() {
-			return this.loan?.name ?? '';
+			return this.routingLoan?.name ?? '';
 		},
 		countryName() {
-			return this.loan?.geocode?.country?.name ?? '';
+			return this.routingLoan?.geocode?.country?.name ?? '';
 		},
 		hash() {
-			return this.loan?.image?.hash ?? '';
+			return this.routingLoan?.image?.hash ?? '';
 		},
 		unreservedAmount() {
 			return Number(this.loan?.unreservedAmount ?? 0);
@@ -514,8 +516,8 @@ export default {
 		},
 		facebookPageTitle() {
 			let displayName = this.name;
-			if (this.loan?.businessName) {
-				displayName = `${displayName}, ${this.loan.businessName}`;
+			if (this.routingLoan?.businessName) {
+				displayName = `${displayName}, ${this.routingLoan.businessName}`;
 			}
 			return `${displayName} - ${this.countryName}`;
 		},
@@ -523,10 +525,10 @@ export default {
 			return `Lend to ${this.name} in ${this.countryName}`;
 		},
 		pageDescription() {
-			return this.loan?.fullLoanUse ?? '';
+			return this.routingLoan?.fullLoanUse ?? '';
 		},
 		shareTitle() {
-			if (this.loan?.anonymizationLevel === 'full') {
+			if (this.routingLoan?.anonymizationLevel === 'full') {
 				return 'Can you help support this loan?';
 			}
 			if (this.inviterName === '' || this.$route.query.share === 'true') {
@@ -539,10 +541,10 @@ export default {
 			return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
 		},
 		numLenders() {
-			return this.loan?.lenders?.totalCount ?? 0;
+			return this.routingLoan?.lenders?.totalCount ?? 0;
 		},
 		endDate() {
-			const d = this.loan?.plannedExpirationDate;
+			const d = this.routingLoan?.plannedExpirationDate;
 			return d ? format(parseISO(d), 'M/d') : '';
 		},
 		showChallengeCallout() {
