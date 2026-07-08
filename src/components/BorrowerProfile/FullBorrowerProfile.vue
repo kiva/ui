@@ -221,6 +221,27 @@ export const fullProfileFragment = gql`
 	}
 `;
 
+// Single source of truth for this component's data; the parent page imports this
+// to warm the SSR cache with the exact same operation.
+export const fullProfileQuery = gql`
+	${fullProfileFragment}
+	query fullBorrowerProfileData($loanId: Int!) {
+		lend {
+			loan(id: $loanId) {
+				id
+				...bpFullProfileFields
+			}
+		}
+		my {
+			id
+			userPreferences {
+				id
+				preferences
+			}
+		}
+	}
+`;
+
 export default {
 	name: 'FullBorrowerProfile',
 	components: {
@@ -254,24 +275,7 @@ export default {
 		};
 	},
 	apollo: {
-		query: gql`
-			${fullProfileFragment}
-			query fullBorrowerProfileData($loanId: Int!) {
-				lend {
-					loan(id: $loanId) {
-						id
-						...bpFullProfileFields
-					}
-				}
-				my {
-					id
-					userPreferences {
-						id
-						preferences
-					}
-				}
-			}
-		`,
+		query: fullProfileQuery,
 		variables() {
 			return {
 				loanId: this.loanId,

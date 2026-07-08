@@ -147,6 +147,20 @@ export const minimalProfileFragment = gql`fragment minimalProfileFields on LoanB
 	}
 }`;
 
+// Single source of truth for this component's data; the parent page imports this
+// to warm the SSR cache with the exact same operation.
+export const minimalProfileQuery = gql`
+	${minimalProfileFragment}
+	query minimalBorrowerProfileData($loanId: Int!) {
+		lend {
+			loan(id: $loanId) {
+				id
+				...minimalProfileFields
+			}
+		}
+	}
+`;
+
 export default {
 	name: 'MinimalBorrowerProfile',
 	head() {
@@ -192,17 +206,7 @@ export default {
 	},
 	inject: ['apollo', 'cookieStore'],
 	apollo: {
-		query: gql`
-			${minimalProfileFragment}
-			query minimalBorrowerProfileData($loanId: Int!) {
-				lend {
-					loan(id: $loanId) {
-						id
-						...minimalProfileFields
-					}
-				}
-			}
-		`,
+		query: minimalProfileQuery,
 		variables() {
 			return {
 				loanId: Number(this.$route?.params?.id ?? 0),

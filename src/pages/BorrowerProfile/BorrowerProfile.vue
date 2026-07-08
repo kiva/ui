@@ -44,8 +44,8 @@ import {
 	trackExperimentVersion
 } from '#src/util/experiment/experimentUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
-import MinimalBorrowerProfile, { minimalProfileFragment } from '#src/components/BorrowerProfile/MinimalBorrowerProfile';
-import FullBorrowerProfile, { fullProfileFragment } from '#src/components/BorrowerProfile/FullBorrowerProfile';
+import MinimalBorrowerProfile, { minimalProfileQuery } from '#src/components/BorrowerProfile/MinimalBorrowerProfile';
+import FullBorrowerProfile, { fullProfileQuery } from '#src/components/BorrowerProfile/FullBorrowerProfile';
 import { shareButtonFragment } from '#src/components/BorrowerProfile/ShareButton';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
@@ -151,39 +151,6 @@ const routingQuery = gql`
 						id
 					}
 				}
-			}
-		}
-	}
-`;
-
-// Phase 2: full profile data (when showFullView is true)
-const fullProfileQuery = gql`
-	${fullProfileFragment}
-	query fullBorrowerProfileData($loanId: Int!) {
-		lend {
-			loan(id: $loanId) {
-				id
-				...bpFullProfileFields
-			}
-		}
-		my {
-			id
-			userPreferences {
-				id
-				preferences
-			}
-		}
-	}
-`;
-
-// Phase 2: minimal profile data (when showFullView is false)
-const minimalProfileQuery = gql`
-	${minimalProfileFragment}
-	query minimalBorrowerProfileData($loanId: Int!) {
-		lend {
-			loan(id: $loanId) {
-				id
-				...minimalProfileFields
 			}
 		}
 	}
