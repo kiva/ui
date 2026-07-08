@@ -95,8 +95,10 @@ export default {
 			return `${this.htmlSafeBody?.substring(0, 205)}... `;
 		},
 		htmlSafeBody() {
-			// eslint-disable-next-line max-len
-			return DOMPurify.sanitize(this.body, { ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'h4'] });
+			return DOMPurify.sanitize(this.body, {
+				ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'h1', 'h2', 'h3', 'h4'],
+				ALLOWED_ATTR: ['href'],
+			});
 		},
 		shareMessage() {
 			let shareMsgString = '';

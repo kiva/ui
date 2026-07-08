@@ -92,8 +92,7 @@
 						-->{{ comment.authorRole ? `, ${comment.authorRole}` : '' }}
 						| {{ formatDate(comment.date) }}
 					</div>
-					<!-- comment.body is HTML sanitized server-side
-						(same as old PHP BP which used triple-stash unescaped rendering) -->
+					<!-- comment.body is sanitized -->
 					<div class="tw-text-base" v-html="comment.body"></div>
 					<!-- Actions -->
 					<div class="tw-flex tw-gap-2 tw-mt-0.5 tw-text-small">
@@ -168,6 +167,7 @@
 
 <script>
 import { gql } from 'graphql-tag';
+import DOMPurify from 'dompurify';
 import { format, parseISO } from 'date-fns';
 import { KvButton, KvLightbox, KvTextLink } from '@kiva/kv-components';
 import CommentReportLightbox from '#src/components/BorrowerProfile/CommentReportLightbox';
@@ -278,7 +278,10 @@ export default {
 					authorName: c.author?.name,
 					authorImageUrl: c.author?.imageUrl,
 					authorRole: c.author?.role,
-					body: c.body,
+					body: DOMPurify.sanitize(c.body ?? '', {
+						ALLOWED_TAGS: ['b', 'i', 'a', 'br'],
+						ALLOWED_ATTR: ['href'],
+					}),
 					date: c.date,
 					isBorrower: c.author?.role === 'borrower',
 					isFlagged: !!this.flaggedById[c.id],
