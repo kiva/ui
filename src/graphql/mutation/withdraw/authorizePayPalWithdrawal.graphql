@@ -1,0 +1,8 @@
+mutation AuthorizePayPalWithdrawal($token: String!) {
+    my {
+        authorizePayPalWithdrawal(token: $token) {
+            status
+            message
+        }
+    }
+}
