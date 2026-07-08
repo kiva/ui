@@ -481,22 +481,6 @@ const slides = [
     nonBadgeData,
 ];
 
-const mockRegionsData = [
-    { name: 'North America', hasLoans: true, countries: ['US', 'CA'] },
-    { name: 'South America', hasLoans: true, countries: ['BR', 'PE', 'CO'] },
-    { name: 'Africa', hasLoans: true, countries: ['KE', 'UG', 'TZ'] },
-    { name: 'Asia', hasLoans: false, countries: ['PH', 'KH', 'TH'] },
-    { name: 'Eastern Europe', hasLoans: true, countries: ['MD', 'GE', 'AM'] },
-];
-
-const mockRegionsDataAllLent = [
-    { name: 'North America', hasLoans: true, countries: ['US', 'CA'] },
-    { name: 'South America', hasLoans: true, countries: ['BR', 'PE', 'CO'] },
-    { name: 'Africa', hasLoans: true, countries: ['KE', 'UG', 'TZ'] },
-    { name: 'Asia', hasLoans: true, countries: ['PH', 'KH', 'TH'] },
-    { name: 'Eastern Europe', hasLoans: true, countries: ['MD', 'GE', 'AM'] },
-];
-
 const mockUserGoal = {
     category: 'womens-equality',
     target: 10,
@@ -548,7 +532,7 @@ const story = (args = {}) => {
 
 export const Default = story({ slides, badgesData });
 
-export const LendingNextStepsExpDisabled = story({
+export const AlmostFundedDisabled = story({
     slides,
     heroBadgeData: badgesData,
     heroTieredAchievements: [],
@@ -563,14 +547,13 @@ export const LendingNextStepsExpDisabled = story({
     loans: [],
 });
 
-export const LendingNextStepsExpEnabledBasic = story({
+export const AlmostFundedBasic = story({
     slides,
     heroBadgeData: badgesData,
     heroTieredAchievements: [],
     slidesNumber: 3,
     showLendingNextStepsCards: true,
     showPostLendingNextStepsCards: true,
-    regionsData: mockRegionsDataAllLent,
     inLendingStats: true,
     userGoal: mockUserGoal,
     goalProgress: 10,
@@ -580,14 +563,13 @@ export const LendingNextStepsExpEnabledBasic = story({
     loans: [],
 });
 
-export const LendingNextStepsExpEnabledWithGoal = story({
+export const AlmostFundedWithGoal = story({
     slides,
     heroBadgeData: badgesData,
     heroTieredAchievements: [],
     slidesNumber: 3,
     showLendingNextStepsCards: true,
     showPostLendingNextStepsCards: true,
-    regionsData: mockRegionsData,
     inLendingStats: true,
     userGoal: mockUserGoal,
     goalProgress: 10,
@@ -597,14 +579,13 @@ export const LendingNextStepsExpEnabledWithGoal = story({
     loans: [],
 });
 
-export const LendingNextStepsExpEnabledNoGoal = story({
+export const AlmostFundedNoGoal = story({
     slides,
     heroBadgeData: badgesData,
     heroTieredAchievements: [],
     slidesNumber: 3,
     showLendingNextStepsCards: true,
     showPostLendingNextStepsCards: true,
-    regionsData: mockRegionsData,
     inLendingStats: true,
     userGoal: null,
     hideGoalCard: true,

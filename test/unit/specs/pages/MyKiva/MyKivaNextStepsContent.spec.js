@@ -34,10 +34,6 @@ const JourneyCardCarouselStub = defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		showLendingNextStepsCards: {
-			type: Boolean,
-			default: false,
-		},
 	},
 	template: '<div class="journey-card-carousel-stub" />',
 });
@@ -82,7 +78,6 @@ const createWrapper = ({
 
 	const wrapper = mount(MyKivaNextStepsContent, {
 		props: {
-			lendingNextStepsVariant: 'b',
 			userInfo: {
 				userPreferences: {
 					preferences: '{}',
@@ -160,10 +155,39 @@ describe('MyKivaNextStepsContent', () => {
 		routeRef.value = { query: {} };
 	});
 
-	it('shows loading placeholders instead of lending-focused carousel while goal data is loading', () => {
-		const { wrapper } = createWrapper({ goalLoading: true });
+	it('shows the 2-tile region card in row 1 and Almost Funded in "Keep your impact going" when eligible', () => {
+		const { wrapper } = createWrapper({ goalLoading: false });
 
-		expect(wrapper.findAll('.journey-card-carousel-stub')).toHaveLength(0);
+		// Row 1 "Next steps recommended for you": 2-tile region card
+		expect(wrapper.findComponent({ name: 'MyKivaRegionExperience' }).exists()).toBe(true);
+		// "Keep your impact going": Almost Funded next step at its natural card width (no column-span override)
+		expect(wrapper.text()).toContain('Keep your impact going');
+		const almostFunded = wrapper.findComponent({ name: 'AlmostFundedNextStep' });
+		expect(almostFunded.exists()).toBe(true);
+		expect(almostFunded.classes()).not.toContain('md:tw-col-span-2');
+		expect(almostFunded.classes()).not.toContain('md:tw-col-span-3');
+	});
+
+	it('keeps the region card (not Almost Funded) in "Keep your impact going" for post-lending lenders', () => {
+		const { wrapper } = createWrapper({ cookieValue: 'true' });
+
+		expect(wrapper.text()).toContain('Keep your impact going');
+		expect(wrapper.findComponent({ name: 'MyKivaRegionExperience' }).exists()).toBe(true);
+		expect(wrapper.findComponent({ name: 'AlmostFundedNextStep' }).exists()).toBe(false);
+	});
+
+	it('shows Almost Funded in "Keep your impact going" for members who have lent to every region', () => {
+		const { wrapper } = createWrapper({ props: { userLentToAllRegions: true } });
+
+		expect(wrapper.text()).toContain('Keep your impact going');
+		expect(wrapper.findComponent({ name: 'AlmostFundedNextStep' }).exists()).toBe(true);
+	});
+
+	it('hides "Keep your impact going" for post-lending members who have lent to every region', () => {
+		const { wrapper } = createWrapper({ cookieValue: 'true', props: { userLentToAllRegions: true } });
+
+		expect(wrapper.text()).not.toContain('Keep your impact going');
+		expect(wrapper.findComponent({ name: 'AlmostFundedNextStep' }).exists()).toBe(false);
 	});
 
 	it('initializes post-lending mode before first render when post-lending cookie exists', async () => {
@@ -175,7 +199,6 @@ describe('MyKivaNextStepsContent', () => {
 
 		const carousels = wrapper.findAllComponents({ name: 'JourneyCardCarousel' });
 		expect(carousels).toHaveLength(1);
-		expect(carousels[0].props('showLendingNextStepsCards')).toBe(false);
 		expect(cookieStore.remove).toHaveBeenCalledWith(POST_LENDING_NEXT_STEPS_COOKIE);
 	});
 
