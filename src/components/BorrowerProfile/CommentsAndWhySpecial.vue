@@ -231,17 +231,16 @@ export default {
 			// adds quasi computed properties to comments.
 			// isAnonymous boolean, lender name first letter, and image hash from url
 			return this.comments.map(comment => {
-				const imageFileName = comment.authorImageUrl?.split('/').pop();
-				const teamNameForThisComment = comment.authorLendingAction?.teams?.[0];
-				const teamInfo = comment.authorLendingAction?.lender?.teams?.values.find(team => {
-					return team.name === comment.authorLendingAction?.teams?.[0];
-				});
+				const authorName = comment.author?.name ?? null;
+				const imageFileName = comment.author?.imageUrl?.split('/').pop();
+				const supportingTeam = comment.author?.lendingAction?.supportingTeams?.values?.[0];
 				return {
 					...comment,
-					isAnonymous: comment.authorName === 'Anonymous' || comment.authorName === null,
-					lenderNameFirstLetter: comment.authorName?.substring(0, 1).toUpperCase(),
-					lenderTeam: teamNameForThisComment,
-					lenderTeamPublicId: teamInfo?.teamPublicId ?? null,
+					authorName,
+					isAnonymous: authorName === 'Anonymous' || authorName === null,
+					lenderNameFirstLetter: authorName?.substring(0, 1).toUpperCase(),
+					lenderTeam: supportingTeam?.name ?? null,
+					lenderTeamPublicId: supportingTeam?.teamPublicId ?? null,
 					hash: imageFileName?.split('.')[0]
 				};
 			});
@@ -256,13 +255,11 @@ export default {
 					comments {
 						values {
 							id
-							authorName
-							authorImageUrl
-							authorLendingAction {
-								teams
-								lender {
-									id
-									teams(limit: 100) { #arbitrary limit for lenders that have a lot of teams
+							author {
+								name
+								imageUrl
+								lendingAction {
+									supportingTeams(limit: 1) {
 										values {
 											id
 											name
