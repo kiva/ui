@@ -79,7 +79,7 @@
 					<loan-progress
 						data-testid="bp-summary-progress"
 						class="tw-mb-2 tw-mt-1.5"
-						:money-left="unreservedAmount"
+						:money-left="moneyLeft"
 						:progress-percent="effectiveProgressPercent"
 						:time-left="timeLeft"
 						:loan-status="inPfp ? 'pfp' : status"
@@ -316,12 +316,24 @@ export default {
 		anonymizationLevel() {
 			return this.loan?.anonymizationLevel ?? '';
 		},
+		loanAmountNumber() {
+			return parseFloat(this.loan?.loanAmount ?? '0');
+		},
 		effectiveProgressPercent() {
+			// Clamped so a final-payment overage can't render more than 100% repaid
 			if (this.status === 'payingBack') {
-				const loanAmount = parseFloat(this.loan?.loanAmount ?? '0');
-				return loanAmount > 0 ? parseFloat(this.paidAmount) / loanAmount : 0;
+				return this.loanAmountNumber > 0
+					? Math.min(parseFloat(this.paidAmount) / this.loanAmountNumber, 1)
+					: 0;
 			}
 			return this.fundraisingPercent;
+		},
+		moneyLeft() {
+			// payingBack renders "to go" as the amount left to repay, not to fundraise
+			if (this.status === 'payingBack') {
+				return Math.max(this.loanAmountNumber - parseFloat(this.paidAmount), 0).toFixed(2);
+			}
+			return this.unreservedAmount;
 		},
 		formattedLocation() {
 			if (this.distributionModel === 'direct') {

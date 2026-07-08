@@ -9,6 +9,7 @@ import {
 	fundraisingPartnerLoan,
 	fullyFundedLoan,
 	payingBackLoan,
+	overpaidPayingBackLoan,
 	endedLoan,
 	pfpLoan,
 } from './mockLoanFixtures';
@@ -43,6 +44,9 @@ export const Fundraising = summaryCardStory(fundraisingPartnerLoan, loggedInUser
 export const FullyFunded = summaryCardStory(fullyFundedLoan);
 
 export const PayingBack = summaryCardStory(payingBackLoan, loggedInUser);
+
+export const PayingBackOverpaid = summaryCardStory(overpaidPayingBackLoan, loggedInUser);
+PayingBackOverpaid.storyName = 'Paying Back (overpaid)';
 
 export const Ended = summaryCardStory(endedLoan, loggedInUser);
 

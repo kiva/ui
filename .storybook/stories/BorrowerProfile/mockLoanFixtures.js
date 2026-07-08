@@ -392,6 +392,18 @@ export const payingBackLoan = createMockLoan({
 	unreservedAmount: '0.00',
 });
 
+/** Paying back loan whose repayments exceed the loan amount (final-payment overage). */
+export const overpaidPayingBackLoan = createMockLoan({
+	id: 2000009,
+	status: 'payingBack',
+	fundraisingPercent: 1,
+	paidAmount: '615.00',
+	loanFundraisingInfo: {
+		id: 2000009, fundedAmount: '600.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
+	},
+	unreservedAmount: '0.00',
+});
+
 /** Ended loan (privileged-only; public sees "funded"). */
 export const endedLoan = createMockLoan({
 	id: 2000006,
