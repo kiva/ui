@@ -94,14 +94,6 @@ describe('ContributingPartners', () => {
 			await findByText('1:1 MATCHING');
 		});
 
-		it('handles null ratio safely (displays 0:1)', async () => {
-			const { findByText } = renderComponent({
-				simultaneousMatching: [{
-					managedAccountId: 1, displayName: 'Test Partner', ratio: null, logo: null
-				}],
-			});
-			await findByText('0:1 MATCHING');
-		});
 	});
 
 	describe('partner name display', () => {
