@@ -88,7 +88,11 @@
 				<p>
 					Enter the amount you'd like to withdraw to your PayPal account in US dollars.
 					Withdrawals typically take 1-2 weeks to process. Please note: Kiva's
-					<a href="/legal/terms" class="tw-no-underline">Terms of Use</a> require that all funds
+					<a
+						href="/legal/terms"
+						class="tw-no-underline"
+						v-kv-track-event="['portfolio', 'click', 'Withdraw terms of use']"
+					>Terms of Use</a> require that all funds
 					be used to make a loan before they can be withdrawn.
 				</p>
 
@@ -192,7 +196,11 @@
 					</p>
 					<p class="tw-mt-1">
 						Have questions about your withdrawal? Email us at
-						<a href="mailto:contactus@kiva.org" class="tw-no-underline">contactus@kiva.org</a>.
+						<a
+							href="mailto:contactus@kiva.org"
+							class="tw-no-underline"
+							v-kv-track-event="['portfolio', 'click', 'Withdraw contact us']"
+						>contactus@kiva.org</a>.
 					</p>
 				</div>
 			</template>
@@ -211,7 +219,7 @@ import PortfolioShell from '#src/components/WwwFrame/PortfolioShell';
 import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 import logFormatter from '#src/util/logFormatter';
 import withdrawReadModelQuery from '#src/graphql/query/withdraw/withdrawReadModel.graphql';
-import { WITHDRAW_ROUTE, WITHDRAW_STATE_KEY, WITHDRAW_PROCESS } from './withdrawConstants';
+import { WITHDRAW_ROUTE, WITHDRAW_STATE_KEY, WITHDRAW_PROCESS } from '#src/util/withdraw/withdrawConstants';
 
 // Mirrors API_Withdrawal::MAX_WITHDRAWAL_AMOUNT
 const MAX_WITHDRAWAL_AMOUNT = 10000;

@@ -37,7 +37,7 @@
 <script>
 import { KvButton } from '@kiva/kv-components';
 import PortfolioShell from '#src/components/WwwFrame/PortfolioShell';
-import { WITHDRAW_STATE_KEY } from './withdrawConstants';
+import { WITHDRAW_STATE_KEY } from '#src/util/withdraw/withdrawConstants';
 
 export default {
 	name: 'WithdrawCheckInboxPage',

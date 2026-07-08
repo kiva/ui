@@ -29,7 +29,11 @@
 				<p class="tw-mt-1">
 					We've added your withdrawal request to the queue and Kiva's Community team will reach
 					out in 1-4 days to confirm your request. If you have any questions, please email
-					<a href="mailto:contactus@kiva.org" class="tw-no-underline">contactus@kiva.org</a>.
+					<a
+						href="mailto:contactus@kiva.org"
+						class="tw-no-underline"
+						v-kv-track-event="['portfolio', 'click', 'Withdraw in review contact us']"
+					>contactus@kiva.org</a>.
 				</p>
 				<KvButton
 					to="/portfolio"
@@ -157,7 +161,7 @@ import PaypalIcon from '#src/assets/icons/inline/paypal.svg';
 import logFormatter from '#src/util/logFormatter';
 import withdrawReadModelQuery from '#src/graphql/query/withdraw/withdrawReadModel.graphql';
 import requestPayPalWithdrawalMutation from '#src/graphql/mutation/withdraw/requestPayPalWithdrawal.graphql';
-import { WITHDRAWAL_STATUS, WITHDRAW_ROUTE, WITHDRAW_STATE_KEY } from './withdrawConstants';
+import { WITHDRAWAL_STATUS, WITHDRAW_ROUTE, WITHDRAW_STATE_KEY } from '#src/util/withdraw/withdrawConstants';
 
 export default {
 	name: 'WithdrawConfirmPage',

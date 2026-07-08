@@ -51,7 +51,7 @@ import { KvButton, KvLoadingSpinner } from '@kiva/kv-components';
 import PortfolioShell from '#src/components/WwwFrame/PortfolioShell';
 import logFormatter from '#src/util/logFormatter';
 import authorizePayPalWithdrawalMutation from '#src/graphql/mutation/withdraw/authorizePayPalWithdrawal.graphql';
-import { WITHDRAWAL_STATUS, WITHDRAW_ROUTE } from './withdrawConstants';
+import { WITHDRAWAL_STATUS, WITHDRAW_ROUTE } from '#src/util/withdraw/withdrawConstants';
 
 const DEFAULT_ERROR = 'Your authorization link is invalid or has expired. '
 	+ 'Please submit a new withdrawal request.';

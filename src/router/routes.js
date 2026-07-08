@@ -1,4 +1,4 @@
-import { WITHDRAW_ROUTE, WITHDRAW_PROCESS } from '#src/pages/Withdraw/withdrawConstants';
+import { WITHDRAW_ROUTE, WITHDRAW_PROCESS } from '#src/util/withdraw/withdrawConstants';
 
 export default [
 	{
