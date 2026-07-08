@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
 import { globalOptions } from '../../../specUtils';
 
-function mountSummaryCard({ anonymizationLevel, loan } = {}) {
+function mountSummaryCard({ anonymizationLevel } = {}) {
 	const openDefinition = vi.fn();
 	const wrapper = mount(SummaryCard, {
 		props: {
@@ -12,7 +12,6 @@ function mountSummaryCard({ anonymizationLevel, loan } = {}) {
 				name: 'Test Borrower',
 				fullLoanUse: 'A loan of $600 helps...',
 				anonymizationLevel,
-				...loan,
 			},
 		},
 		global: {
@@ -67,4 +66,3 @@ describe('SummaryCard anonymization affordances', () => {
 		expect(wrapper.find('[data-testid="bp-summary-anonymous-learn-more"]').exists()).toBe(true);
 	});
 });
-

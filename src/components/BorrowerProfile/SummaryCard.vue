@@ -347,6 +347,13 @@ export default {
 			return this.countryName;
 		}
 	},
+	watch: {
+		loanId(newId, oldId) {
+			if (newId && newId !== oldId) {
+				this.isLoading = true;
+			}
+		},
+	},
 	apollo: {
 		query: mountQuery,
 		preFetch: false,
