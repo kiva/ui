@@ -157,24 +157,7 @@ const routingQuery = gql`
 `;
 
 const mountedQuery = gql`
-	query borrowerProfileMeta(
-		$loanId: Int!,
-	) {
-		lend {
-			loan(id: $loanId) {
-				id
-				...on LoanPartner {
-					partnerName
-					partner {
-						id
-						countries {
-							id
-							name
-						}
-					}
-				}
-			}
-		}
+	query borrowerProfileMeta {
 		my {
 			id
 			userAccount {
@@ -415,12 +398,7 @@ export default {
 	},
 	async mounted() {
 		// Async data fetch for MARS-317
-		const { data } = await this.apollo.query({
-			query: mountedQuery,
-			variables: {
-				loanId: this.loanId,
-			},
-		});
+		const { data } = await this.apollo.query({ query: mountedQuery });
 		this.lender = data?.my?.userAccount ?? {};
 
 		if (this.regionBelongsToExp) {
