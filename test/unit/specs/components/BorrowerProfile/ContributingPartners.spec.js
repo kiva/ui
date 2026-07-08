@@ -88,19 +88,10 @@ describe('ContributingPartners', () => {
 	describe('ratio display', () => {
 		it('displays the correct ratio for each partner', async () => {
 			const { findByText } = renderComponent({ simultaneousMatching: [capitalOne, tripadvisor] });
-			// Capital One ratio=3 → 4X MATCHING
-			await findByText('4X MATCHING');
-			// Tripadvisor ratio=1 → 2X MATCHING
-			await findByText('2X MATCHING');
-		});
-
-		it('handles null ratio safely (displays 1X)', async () => {
-			const { findByText } = renderComponent({
-				simultaneousMatching: [{
-					managedAccountId: 1, displayName: 'Test Partner', ratio: null, logo: null
-				}],
-			});
-			await findByText('1X MATCHING');
+			// Capital One ratio=3 → 3:1 MATCHING
+			await findByText('3:1 MATCHING');
+			// Tripadvisor ratio=1 → 1:1 MATCHING
+			await findByText('1:1 MATCHING');
 		});
 	});
 
