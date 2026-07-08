@@ -65,7 +65,7 @@
 							data-testid="bp-rail-details"
 							class="tw-hidden lg:tw-block tw-pointer-events-auto
 								tw-bg-primary tw-rounded tw-p-4
-								tw-shrink tw-overflow-scroll"
+								tw-shrink tw-overflow-y-auto"
 						>
 							<details-tabs
 								name="bp-rail-details"
