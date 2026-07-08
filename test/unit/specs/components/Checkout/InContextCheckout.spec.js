@@ -1,16 +1,14 @@
 import InContextCheckout from '#src/components/Checkout/InContext/InContextCheckout';
+import logFormatter from '#src/util/logFormatter';
 
-describe('InContextCheckout donation credit variant tracking', () => {
+vi.mock('#src/util/logFormatter', () => ({
+	default: vi.fn(),
+}));
+
+describe('InContextCheckout donation credit default', () => {
 	const makeContext = (overrides = {}) => ({
 		apollo: {
-			query: vi.fn().mockResolvedValue({
-				data: {
-					shop: {
-						id: 'shop',
-						donationsApplyKivaCreditOffVariant: 'b',
-					},
-				},
-			}),
+			mutate: vi.fn().mockResolvedValue({ data: {} }),
 		},
 		cookieStore: {
 			get: vi.fn().mockReturnValue('basket-id'),
@@ -18,79 +16,85 @@ describe('InContextCheckout donation credit variant tracking', () => {
 		$route: {
 			path: '/donate/supportus',
 		},
-		$kvTrackEvent: vi.fn(),
-		hasTrackedDonationCreditVariant: false,
+		isLoggedIn: true,
+		hasRequestedDonationCreditDefault: false,
+		donations: [{
+			id: '1',
+			isTip: false,
+		}],
+		loans: [],
+		kivaCards: [],
+		setUpdatingTotals: vi.fn(),
+		$emit: vi.fn(),
+		shouldApplyDonationCreditDefault: InContextCheckout.methods.shouldApplyDonationCreditDefault,
 		...overrides,
 	});
 
-	it('queries the backend variant and tracks it on the supportus donation route', async () => {
+	beforeEach(() => {
+		logFormatter.mockReset();
+	});
+
+	it('requests the backend donation credit default for the supportus modal donation basket', async () => {
 		const context = makeContext();
 
-		await InContextCheckout.methods.trackDonationCreditVariant.call(context);
+		await InContextCheckout.methods.applyDonationCreditDefault.call(context);
 
-		expect(context.apollo.query).toHaveBeenCalledWith({
-			query: expect.any(Object),
+		expect(context.apollo.mutate).toHaveBeenCalledWith({
+			mutation: expect.any(Object),
 			variables: {
 				basketId: 'basket-id',
+				applyDonationCreditDefault: true,
 			},
 		});
-		expect(context.$kvTrackEvent).toHaveBeenCalledWith(
-			'experiment-tracking',
-			'EXP-MP-2827-May2026',
-			'b'
-		);
-		expect(context.hasTrackedDonationCreditVariant).toBe(true);
+		expect(context.hasRequestedDonationCreditDefault).toBe(true);
+		expect(context.$emit).toHaveBeenCalledWith('refreshtotals');
+		expect(context.setUpdatingTotals).toHaveBeenNthCalledWith(1, true);
+		expect(context.setUpdatingTotals).toHaveBeenLastCalledWith(false);
 	});
 
-	it('does not query or track outside the supportus donation route', async () => {
+	it('does not request the default for supportusprocess basket checkout', async () => {
 		const context = makeContext({
 			$route: {
-				path: '/checkout',
+				path: '/donate/supportusprocess',
 			},
 		});
 
-		await InContextCheckout.methods.trackDonationCreditVariant.call(context);
+		await InContextCheckout.methods.applyDonationCreditDefault.call(context);
 
-		expect(context.apollo.query).not.toHaveBeenCalled();
-		expect(context.$kvTrackEvent).not.toHaveBeenCalled();
+		expect(context.apollo.mutate).not.toHaveBeenCalled();
 	});
 
-	it('does not track unexpected variant values', async () => {
+	it('does not request the default for guests', async () => {
 		const context = makeContext({
-			apollo: {
-				query: vi.fn().mockResolvedValue({
-					data: {
-						shop: {
-							id: 'shop',
-							donationsApplyKivaCreditOffVariant: null,
-						},
-					},
-				}),
-			},
+			isLoggedIn: false,
 		});
 
-		await InContextCheckout.methods.trackDonationCreditVariant.call(context);
+		await InContextCheckout.methods.applyDonationCreditDefault.call(context);
 
-		expect(context.$kvTrackEvent).not.toHaveBeenCalled();
-		expect(context.hasTrackedDonationCreditVariant).toBe(false);
+		expect(context.apollo.mutate).not.toHaveBeenCalled();
 	});
 
-	it('ignores missing backend field errors while the backend rollout is in progress', async () => {
+	it('does not request the default for non-donation-only baskets', async () => {
+		const context = makeContext({
+			loans: [{ id: 'loan-id' }],
+		});
+
+		await InContextCheckout.methods.applyDonationCreditDefault.call(context);
+
+		expect(context.apollo.mutate).not.toHaveBeenCalled();
+	});
+
+	it('logs setup errors and clears the loading state', async () => {
+		const error = new Error('setup failed');
 		const context = makeContext({
 			apollo: {
-				query: vi.fn().mockRejectedValue({
-					graphQLErrors: [{
-						message: 'Cannot query field "donationsApplyKivaCreditOffVariant" on type "Shop".',
-					}],
-				}),
+				mutate: vi.fn().mockRejectedValue(error),
 			},
 		});
 
-		await expect(
-			InContextCheckout.methods.trackDonationCreditVariant.call(context)
-		).resolves.toBeUndefined();
+		await InContextCheckout.methods.applyDonationCreditDefault.call(context);
 
-		expect(context.$kvTrackEvent).not.toHaveBeenCalled();
-		expect(context.hasTrackedDonationCreditVariant).toBe(false);
+		expect(logFormatter).toHaveBeenCalledWith(error, 'error');
+		expect(context.setUpdatingTotals).toHaveBeenLastCalledWith(false);
 	});
 });
