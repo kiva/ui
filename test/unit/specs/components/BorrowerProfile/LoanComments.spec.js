@@ -173,6 +173,42 @@ describe('LoanComments', () => {
 		expect(getByTestId('bp-comment-subscribe')).toBeTruthy();
 	});
 
+	it('keeps a comment flagged after posting a new comment refetches the list (AD-314)', async () => {
+		const {
+			getAllByTestId, getByTestId, getByText, queryByText, mutate, query
+		} = renderLoanComments();
+		query.mockResolvedValue({ data: buildApiResponse(mockApiComments) });
+
+		// Flag the first comment through the report lightbox
+		mutate.mockResolvedValueOnce({ data: { loan: { flagComment: true } } });
+		await fireEvent.click(getAllByTestId('bp-comment-flag')[0]);
+		await fireEvent.click(getByText('I find it offensive'));
+		await fireEvent.click(getByText('Submit report'));
+		expect(queryByText(/Flagged on/)).toBeTruthy();
+
+		// Posting a comment refetches the list; the flag must survive
+		await fireEvent.update(getByTestId('bp-comment-form-textarea'), 'Another comment');
+		await fireEvent.click(getByTestId('bp-comment-form-submit'));
+
+		expect(queryByText(/Flagged on/)).toBeTruthy();
+	});
+
+	it('clears in-session flag state when the instance is reused for another loan (AD-314)', async () => {
+		const {
+			getAllByTestId, getByText, queryByText, mutate, rerender
+		} = renderLoanComments();
+
+		mutate.mockResolvedValueOnce({ data: { loan: { flagComment: true } } });
+		await fireEvent.click(getAllByTestId('bp-comment-flag')[0]);
+		await fireEvent.click(getByText('I find it offensive'));
+		await fireEvent.click(getByText('Submit report'));
+		expect(queryByText(/Flagged on/)).toBeTruthy();
+
+		await rerender({ loanId: 456 });
+
+		expect(queryByText(/Flagged on/)).toBeNull();
+	});
+
 	it('show all reveals spillover comments', async () => {
 		const manyApiComments = Array.from({ length: 20 }, (_, i) => ({
 			id: i + 1,
@@ -181,7 +217,7 @@ describe('LoanComments', () => {
 			date: '2025-03-15T12:00:00Z',
 		}));
 		const mapped = applyMockData(manyApiComments);
-		const { getByTestId, queryByText } = renderLoanComments({ comments: mapped.comments });
+		const { getByTestId, queryByText } = renderLoanComments({ rawComments: mapped.rawComments });
 
 		expect(queryByText('Comment 19')).toBeNull();
 

@@ -235,6 +235,13 @@ export default {
 			default: 0,
 		},
 	},
+	watch: {
+		// Reset the session overlays when the loan id changes
+		loanId() {
+			this.flaggedById = {};
+			this.deletedIds = [];
+		},
+	},
 	apollo: {
 		lazy: true,
 		query: commentsQuery,
@@ -248,7 +255,10 @@ export default {
 	},
 	data() {
 		return {
-			comments: [],
+			// Comment values from the last query result
+			rawComments: [],
+			flaggedById: {},
+			deletedIds: [],
 			isAdmin: false,
 			isSubscribed: false,
 			newCommentText: '',
@@ -261,6 +271,21 @@ export default {
 		};
 	},
 	computed: {
+		comments() {
+			return this.rawComments
+				.filter(c => !this.deletedIds.includes(c.id))
+				.map(c => ({
+					id: c.id,
+					authorName: c.author?.name,
+					authorImageUrl: c.author?.imageUrl,
+					authorRole: c.author?.role,
+					body: c.body,
+					date: c.date,
+					isBorrower: c.author?.role === 'borrower',
+					isFlagged: !!this.flaggedById[c.id],
+					timeFlagged: this.flaggedById[c.id],
+				}));
+		},
 		hasSpillover() {
 			return this.comments.length > INITIAL_COMMENT_COUNT;
 		},
@@ -272,16 +297,7 @@ export default {
 	methods: {
 		applyCommentsData(data) {
 			const loan = data?.lend?.loan;
-			this.comments = (loan?.comments?.values ?? []).map(c => ({
-				id: c.id,
-				authorName: c.author?.name,
-				authorImageUrl: c.author?.imageUrl,
-				authorRole: c.author?.role,
-				body: c.body,
-				date: c.date,
-				isBorrower: c.author?.role === 'borrower',
-				isFlagged: false,
-			}));
+			this.rawComments = loan?.comments?.values ?? [];
 			this.isSubscribed = loan?.userProperties?.subscribed ?? false;
 			this.isAdmin = data?.my?.isAdmin ?? false;
 		},
@@ -335,7 +351,7 @@ export default {
 					mutation: removeCommentMutation,
 					variables: { loanId: this.loanId, commentId },
 				});
-				this.comments = this.comments.filter(c => c.id !== commentId);
+				this.deletedIds.push(commentId);
 				this.$showTipMsg('Comment deleted');
 			} catch (e) {
 				logFormatter(e, 'error');
@@ -347,11 +363,8 @@ export default {
 			this.isReportLightboxVisible = true;
 		},
 		onCommentReported(commentId) {
-			const comment = this.comments.find(c => c.id === commentId);
-			if (comment) {
-				comment.isFlagged = true;
-				comment.timeFlagged = new Date().toISOString();
-			}
+			if (!this.rawComments.some(c => c.id === commentId)) return;
+			this.flaggedById = { ...this.flaggedById, [commentId]: new Date().toISOString() };
 		},
 		async subscribe() {
 			try {
