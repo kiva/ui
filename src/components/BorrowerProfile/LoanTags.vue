@@ -73,6 +73,7 @@
 import loanTagsQuery from '#src/graphql/query/borrowerProfileLoanTags.graphql';
 import availableTagsQuery from '#src/graphql/query/availableTags.graphql';
 import addOrRemoveTagOnLoan from '#src/graphql/mutation/addOrRemoveTagOnLoan.graphql';
+import logFormatter from '#src/util/logFormatter';
 import { KvCheckbox, KvLoadingPlaceholder } from '@kiva/kv-components';
 
 // Exclude automated tag that users shouldn't select
@@ -181,7 +182,7 @@ export default {
 				return;
 			}
 
-			// Optimistic update
+			// Optimistic update; the refetched tag list reconciles it with the server
 			if (checked) {
 				this.currentTagNames = [...this.currentTagNames, tag.name];
 			} else {
@@ -189,21 +190,27 @@ export default {
 			}
 
 			try {
-				await this.apollo.mutate({
+				const { data } = await this.apollo.mutate({
 					mutation: addOrRemoveTagOnLoan,
 					variables: {
 						loanId: this.loanId,
 						tagId,
 						checked,
 					},
+					refetchQueries: [{ query: loanTagsQuery, variables: { loanId: this.loanId } }],
 				});
-			} catch {
+				if (!data?.addOrRemoveTagOnLoan) {
+					this.$showTipMsg('There was a problem saving the tag change', 'error');
+				}
+			} catch (e) {
+				logFormatter(e, 'error');
 				// Revert
 				if (checked) {
 					this.currentTagNames = this.currentTagNames.filter(n => n !== tag.name);
 				} else {
 					this.currentTagNames = [...this.currentTagNames, tag.name];
 				}
+				this.$showTipMsg('There was a problem saving the tag change', 'error');
 			}
 		},
 	},
