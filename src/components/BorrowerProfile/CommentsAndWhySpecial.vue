@@ -163,10 +163,10 @@
 </template>
 
 <script>
-import _throttle from 'lodash/throttle';
 import { mdiDotsHorizontalCircle } from '@mdi/js';
 import { gql } from 'graphql-tag';
 
+import useIsMobile from '#src/composables/useIsMobile';
 import WhySpecial from '#src/components/BorrowerProfile/WhySpecial';
 import CommentReportLightbox from '#src/components/BorrowerProfile/CommentReportLightbox';
 import clickOutside from '#src/plugins/click-outside';
@@ -189,6 +189,10 @@ export default {
 		WhySpecial,
 	},
 	mixins: [clickOutside],
+	setup() {
+		const { isMobile } = useIsMobile();
+		return { isMobile };
+	},
 	props: {
 		loanId: {
 			type: Number,
@@ -220,7 +224,6 @@ export default {
 				{ color: 'tw-text-primary-inverse', bg: 'tw-bg-action' },
 				{ color: 'tw-text-white', bg: 'tw-bg-black' },
 			],
-			isMobile: false,
 		};
 	},
 	computed: {
@@ -283,13 +286,6 @@ export default {
 		},
 		fetchPolicy: 'network-only',
 	},
-	mounted() {
-		window.addEventListener('resize', this.throttledResize);
-		this.determineIfMobile();
-	},
-	beforeUnmount() {
-		window.removeEventListener('resize', this.throttledResize);
-	},
 	methods: {
 		openCommentMenu() {
 			this.commentMenuShown = true;
@@ -308,14 +304,8 @@ export default {
 			const randomStyle = this.userCardStyleOptions[Math.floor(Math.random() * this.userCardStyleOptions.length)];
 			return `${randomStyle.color} ${randomStyle.bg}`;
 		},
-		determineIfMobile() {
-			this.isMobile = document.documentElement.clientWidth < 735;
-		},
 		isDefaultProfilePic(commentHash) {
 			return isLegacyPlaceholderAvatar(commentHash);
-		},
-		throttledResize() {
-			return _throttle(this.determineIfMobile, 200);
 		},
 		isTruncatedComment(commentBody) {
 			const commentLength = commentBody?.length ?? 0;

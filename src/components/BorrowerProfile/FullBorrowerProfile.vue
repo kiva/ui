@@ -168,7 +168,7 @@
 
 <script>
 import { gql } from 'graphql-tag';
-import _throttle from 'lodash/throttle';
+import useIsMobile from '#src/composables/useIsMobile';
 import ContentContainer from '#src/components/BorrowerProfile/ContentContainer';
 import SidebarContainer from '#src/components/BorrowerProfile/SidebarContainer';
 import HeroBackground from '#src/components/BorrowerProfile/HeroBackground';
@@ -272,6 +272,10 @@ export default {
 			openDefinition: payload => this.$refs.definitionsLightbox?.open(payload),
 		};
 	},
+	setup() {
+		const { isMobile } = useIsMobile();
+		return { isMobile };
+	},
 	apollo: {
 		query: fullProfileQuery,
 		variables() {
@@ -336,7 +340,6 @@ export default {
 			showLenders: true,
 			showTeams: true,
 			showTags: true,
-			isMobile: false,
 			// Initialize from the SSR-resolved prop so logged-in opted-in renders without flash.
 			showDetailsInRail: this.initialShowDetailsInRail,
 			userPreferences: null,
@@ -392,21 +395,6 @@ export default {
 				});
 			},
 		},
-	},
-	mounted() {
-		this.determineIfMobile();
-		window.addEventListener('resize', this.throttledResize);
-	},
-	beforeUnmount() {
-		window.removeEventListener('resize', this.throttledResize);
-	},
-	methods: {
-		determineIfMobile() {
-			this.isMobile = document.documentElement.clientWidth < 735;
-		},
-		throttledResize: _throttle(function throttledResize() {
-			this.determineIfMobile();
-		}, 200),
 	},
 };
 </script>
