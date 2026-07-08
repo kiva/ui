@@ -52,13 +52,12 @@
 
 		<!-- Conversation guidelines -->
 		<p class="tw-mb-3">
-			<button
-				class="tw-text-action tw-underline"
+			<kv-text-link
 				data-testid="bp-comment-guidelines-link"
 				@click="showGuidelines"
 			>
 				Kiva conversation guidelines
-			</button>
+			</kv-text-link>
 		</p>
 
 		<!-- Comment list -->
@@ -98,22 +97,22 @@
 					<div class="tw-text-base" v-html="comment.body"></div>
 					<!-- Actions -->
 					<div class="tw-flex tw-gap-2 tw-mt-0.5 tw-text-small">
-						<button
+						<kv-text-link
 							v-if="isAdmin"
-							class="tw-text-danger hover:tw-underline"
+							class="!tw-text-danger hover:!tw-text-danger-highlight"
 							data-testid="bp-comment-delete"
 							@click="pendingDeleteCommentId = comment.id; isDeleteConfirmVisible = true"
 						>
 							Delete
-						</button>
-						<button
+						</kv-text-link>
+						<kv-text-link
 							v-if="!comment.isFlagged"
-							class="tw-text-secondary hover:tw-underline"
+							class="!tw-text-secondary"
 							data-testid="bp-comment-flag"
 							@click="openReportLightbox(comment.id)"
 						>
 							Flag as inappropriate
-						</button>
+						</kv-text-link>
 						<span
 							v-if="comment.isFlagged"
 							class="tw-text-secondary"
@@ -126,21 +125,20 @@
 		</ul>
 
 		<!-- Show all / hide -->
-		<button
-			v-if="hasSpillover && !showAll"
-			class="tw-text-action tw-underline tw-block tw-mx-auto tw-mb-2"
-			data-testid="bp-comment-show-all"
-			@click="showAll = true"
-		>
-			Show all comments
-		</button>
-		<button
-			v-if="hasSpillover && showAll"
-			class="tw-text-action tw-underline tw-block tw-mx-auto tw-mb-2"
-			@click="showAll = false"
-		>
-			Hide
-		</button>
+		<div v-if="hasSpillover" class="tw-text-center tw-mb-2">
+			<kv-button
+				variant="secondary"
+				data-testid="bp-comment-show-all"
+				@click="showAll = !showAll"
+			>
+				<template v-if="!showAll">
+					Show all comments
+				</template>
+				<template v-else>
+					Hide
+				</template>
+			</kv-button>
+		</div>
 
 		<kv-lightbox
 			:visible="isDeleteConfirmVisible"
@@ -171,7 +169,7 @@
 <script>
 import { gql } from 'graphql-tag';
 import { format, parseISO } from 'date-fns';
-import { KvButton, KvLightbox } from '@kiva/kv-components';
+import { KvButton, KvLightbox, KvTextLink } from '@kiva/kv-components';
 import CommentReportLightbox from '#src/components/BorrowerProfile/CommentReportLightbox';
 import addCommentMutation from '#src/graphql/mutation/loanAddComment.graphql';
 import logFormatter from '#src/util/logFormatter';
@@ -228,6 +226,7 @@ export default {
 		CommentReportLightbox,
 		KvButton,
 		KvLightbox,
+		KvTextLink,
 	},
 	props: {
 		loanId: {
