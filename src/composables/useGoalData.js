@@ -7,6 +7,7 @@ import {
 import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import useGoalDataProgressQuery from '#src/graphql/query/useGoalDataProgress.graphql';
 import useGoalDataYearlyProgressQuery from '#src/graphql/query/useGoalDataYearlyProgress.graphql';
+import goalSummaryAchievementQuery from '#src/graphql/query/goalSummaryAchievement.graphql';
 import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import logFormatter from '#src/util/logFormatter';
 import { getTransactionTimestamp } from '#src/util/myKivaUtils';
@@ -69,6 +70,11 @@ export const GOAL_STATUS = {
 export const GOALS_CURRENT_YEAR = new Date().getFullYear();
 export const LAST_YEAR_KEY = GOALS_CURRENT_YEAR - 1;
 export const COMPLETED_GOAL_THRESHOLD = 100;
+
+// Matches achievements-service's rolling-window cap (MAX_ROLLING_WINDOW_SIZE); the
+// service can't return more loanPurchases than this in one query, so it's the largest
+// useful limit for summing borrowerCount.
+export const GOAL_SUMMARY_LOAN_PURCHASES_LIMIT = 1000;
 export const HALF_GOAL_THRESHOLD = 50;
 const MIN_CATEGORY_LOANS_AMOUNT = 100;
 const RECOMMENDED_LOANS_LIMIT = 4;
@@ -373,6 +379,104 @@ export default function useGoalData({ apollo } = {}) {
 			logFormatter(error, 'Failed to load preferences');
 			return null;
 		}
+	}
+
+	function findMostRecentActiveGoal(goals) {
+		const currentYear = new Date().getFullYear();
+		return goals.find(g => {
+			if (g.status === GOAL_STATUS.EXPIRED) return false;
+			if (g.status === GOAL_STATUS.COMPLETED && g.dateStarted) {
+				return new Date(g.dateStarted).getFullYear() >= currentYear;
+			}
+			return true;
+		});
+	}
+
+	/**
+	 * Returns a normalized summary for a user's MyKiva goal.
+	 *
+	 * Support-all goals are not handled here yet — they will route through the
+	 * `my.goalSummary` monolith endpoint once that ships (kiva/kiva MP-2948);
+	 * callers get `null` for support-all until then.
+	 *
+	 * For badge-journey goals, `count`, `percent`, and `borrowerCount` come from
+	 * achievements-service. `amount` stays null: LoanPurchase doesn't expose a
+	 * per-share money field, so we can't compute what the user actually lent
+	 * without an achievements-service extension.
+	 *
+	 * `borrowerCount` is summed from the federated `loanPurchases.loan.borrowerCount`.
+	 * achievements-service retains `loanPurchases` in a rolling window of
+	 * MAX_ROLLING_WINDOW_SIZE (1000) loans, so we request that many
+	 * (`GOAL_SUMMARY_LOAN_PURCHASES_LIMIT`) — the most the service can return in one
+	 * call, accurate for any lender with <=1000 qualifying loans that year. Beyond
+	 * that the service has already trimmed the loan IDs, so no FE query can do better;
+	 * those users route through the `my.goalSummary` monolith endpoint.
+	 *
+	 * @param {string} [goalName] - Specific goal name to summarize.
+	 * @returns {Promise<Object|null>} Goal summary or null when no matching goal.
+	 */
+	async function getGoalSummary(goalName) {
+		const prefs = await loadPreferences();
+		const goals = prefs?.goals || [];
+		const goal = goalName
+			? goals.find(g => g.goalName === goalName)
+			: findMostRecentActiveGoal(goals);
+		if (!goal) return null;
+
+		// TODO(MP-2948): route support-all through `my.goalSummary` once that
+		// backend endpoint ships (kiva/kiva branch support-all-goal-in-review-MP-2948).
+		if (goal.category === ID_SUPPORT_ALL) return null;
+
+		const year = new Date(goal.dateStarted).getFullYear();
+		// TEMP(MP-2948): gate query-timing logs behind ?goalSummaryTiming so we can
+		// measure latency on superlender accounts without logging for normal traffic.
+		const timingEnabled = typeof window !== 'undefined'
+			&& new URLSearchParams(window.location.search).has('goalSummaryTiming');
+		let achievement = null;
+		try {
+			const start = timingEnabled ? performance.now() : 0;
+			const response = await apolloClient.query({
+				query: goalSummaryAchievementQuery,
+				variables: { year, loanPurchasesLimit: GOAL_SUMMARY_LOAN_PURCHASES_LIMIT },
+				fetchPolicy: 'no-cache',
+			});
+			const tiered = response.data?.userAchievementProgress?.tieredLendingAchievements;
+			achievement = tiered?.find(e => e.id === goal.category) || null;
+			if (timingEnabled) {
+				logFormatter('goalSummary achievement query timing', 'info', {
+					durationMs: Math.round(performance.now() - start),
+					loanPurchaseCount: achievement?.loanPurchases?.length || 0,
+					progressForYear: achievement?.progressForYear ?? null,
+					category: goal.category,
+					year,
+				});
+			}
+		} catch (error) {
+			logFormatter(error, 'Failed to fetch goal summary achievement');
+		}
+
+		const count = achievement?.progressForYear || 0;
+		const target = goal.target || 0;
+		const percent = target > 0 ? Math.min(100, Math.round((count / target) * 100)) : 0;
+
+		let borrowerCount = null;
+		if (achievement) {
+			borrowerCount = (achievement.loanPurchases || [])
+				.filter(p => p.purchaseTime && new Date(p.purchaseTime).getFullYear() === year)
+				.reduce((sum, p) => sum + (p.loan?.borrowerCount || 0), 0);
+		}
+
+		return {
+			goalName: goal.goalName,
+			category: goal.category,
+			dateStarted: goal.dateStarted,
+			target: goal.target || null,
+			status: goal.status || null,
+			count,
+			borrowerCount,
+			amount: null,
+			percent,
+		};
 	}
 
 	/**
@@ -1145,6 +1249,7 @@ export default function useGoalData({ apollo } = {}) {
 		getCategoryLoansLastYear,
 		getCtaHref,
 		getGoalDisplayName,
+		getGoalSummary,
 		getLoanStatsByYear,
 		getPostCheckoutProgressByLoans,
 		goalProgress,

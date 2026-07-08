@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import useGoalData, {
 	GOAL_STATUS,
 	GOALS_CURRENT_YEAR,
+	GOAL_SUMMARY_LOAN_PURCHASES_LIMIT,
 } from '#src/composables/useGoalData';
 import {
 	ID_BASIC_NEEDS,
@@ -4851,6 +4852,345 @@ describe('useGoalData', () => {
 				},
 			]);
 			expect(composable.completedGoalsHistory.value).toEqual([]);
+		});
+	});
+
+	describe('getGoalSummary', () => {
+		it('defaults to most recent active goal when goalName is omitted', async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-06-15T00:00:00Z'));
+
+			const expiredOld = {
+				goalName: 'goal-basic-needs-2025',
+				category: ID_BASIC_NEEDS,
+				target: 5,
+				status: GOAL_STATUS.EXPIRED,
+				dateStarted: '2025-01-01T00:00:00.000Z',
+			};
+			const activeCurrent = {
+				goalName: 'goal-womens-equality-2026',
+				category: ID_WOMENS_EQUALITY,
+				target: 10,
+				status: GOAL_STATUS.IN_PROGRESS,
+				dateStarted: '2026-02-01T00:00:00.000Z',
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-1',
+								preferences: JSON.stringify({ goals: [expiredOld, activeCurrent] }),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{ id: ID_WOMENS_EQUALITY, progressForYear: 4 },
+							],
+						},
+					},
+				});
+
+			const summary = await composable.getGoalSummary();
+
+			expect(summary).toEqual({
+				goalName: 'goal-womens-equality-2026',
+				category: ID_WOMENS_EQUALITY,
+				dateStarted: '2026-02-01T00:00:00.000Z',
+				target: 10,
+				status: GOAL_STATUS.IN_PROGRESS,
+				count: 4,
+				borrowerCount: 0,
+				amount: null,
+				percent: 40,
+			});
+
+			vi.useRealTimers();
+		});
+
+		it('returns badge-journey summary from userAchievementProgress', async () => {
+			const goal = {
+				goalName: 'goal-womens-equality-2026',
+				category: ID_WOMENS_EQUALITY,
+				target: 10,
+				status: GOAL_STATUS.IN_PROGRESS,
+				dateStarted: '2026-02-01T00:00:00.000Z',
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-1',
+								preferences: JSON.stringify({ goals: [goal] }),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{ id: ID_WOMENS_EQUALITY, progressForYear: 4 },
+							],
+						},
+					},
+				});
+
+			const summary = await composable.getGoalSummary('goal-womens-equality-2026');
+
+			expect(summary).toEqual({
+				goalName: 'goal-womens-equality-2026',
+				category: ID_WOMENS_EQUALITY,
+				dateStarted: '2026-02-01T00:00:00.000Z',
+				target: 10,
+				status: GOAL_STATUS.IN_PROGRESS,
+				count: 4,
+				borrowerCount: 0,
+				amount: null,
+				percent: 40,
+			});
+		});
+
+		it('returns null when the named goal does not exist in preferences', async () => {
+			const goal = {
+				goalName: 'goal-womens-equality-2026',
+				category: ID_WOMENS_EQUALITY,
+				target: 10,
+				status: GOAL_STATUS.IN_PROGRESS,
+				dateStarted: '2026-02-01T00:00:00.000Z',
+			};
+
+			mockApollo.query = vi.fn().mockResolvedValueOnce({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-1',
+							preferences: JSON.stringify({ goals: [goal] }),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+
+			const summary = await composable.getGoalSummary('goal-does-not-exist');
+
+			expect(summary).toBeNull();
+			expect(mockApollo.query).toHaveBeenCalledTimes(1); // no achievement fetch
+		});
+
+		it('returns percent=0 when target is 0 (no divide-by-zero)', async () => {
+			const goal = {
+				goalName: 'goal-womens-equality-2026',
+				category: ID_WOMENS_EQUALITY,
+				target: 0,
+				status: GOAL_STATUS.IN_PROGRESS,
+				dateStarted: '2026-02-01T00:00:00.000Z',
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-1',
+								preferences: JSON.stringify({ goals: [goal] }),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{ id: ID_WOMENS_EQUALITY, progressForYear: 4 },
+							],
+						},
+					},
+				});
+
+			const summary = await composable.getGoalSummary('goal-womens-equality-2026');
+
+			expect(summary.percent).toBe(0);
+			expect(summary.count).toBe(4);
+		});
+
+		it('excludes loanPurchases from other years when summing borrowerCount', async () => {
+			const goal = {
+				goalName: 'goal-womens-equality-2026',
+				category: ID_WOMENS_EQUALITY,
+				target: 10,
+				status: GOAL_STATUS.IN_PROGRESS,
+				dateStarted: '2026-02-01T00:00:00.000Z',
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-1',
+								preferences: JSON.stringify({ goals: [goal] }),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [{
+								id: ID_WOMENS_EQUALITY,
+								progressForYear: 2,
+								loanPurchases: [
+									{ purchaseTime: '2025-12-31T00:00:00.000Z', loan: { id: 1, borrowerCount: 99 } },
+									{ purchaseTime: '2026-04-01T00:00:00.000Z', loan: { id: 2, borrowerCount: 5 } },
+									{ purchaseTime: '2026-05-01T00:00:00.000Z', loan: { id: 3, borrowerCount: 1 } },
+								],
+							}],
+						},
+					},
+				});
+
+			const summary = await composable.getGoalSummary('goal-womens-equality-2026');
+
+			expect(summary.borrowerCount).toBe(6);
+		});
+
+		it('sums borrowerCount from loanPurchases within the goal year', async () => {
+			const goal = {
+				goalName: 'goal-womens-equality-2026',
+				category: ID_WOMENS_EQUALITY,
+				target: 10,
+				status: GOAL_STATUS.IN_PROGRESS,
+				dateStarted: '2026-02-01T00:00:00.000Z',
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-1',
+								preferences: JSON.stringify({ goals: [goal] }),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [{
+								id: ID_WOMENS_EQUALITY,
+								progressForYear: 3,
+								loanPurchases: [
+									{ purchaseTime: '2026-03-01T00:00:00.000Z', loan: { id: 1, borrowerCount: 2 } },
+									{ purchaseTime: '2026-04-01T00:00:00.000Z', loan: { id: 2, borrowerCount: 5 } },
+									{ purchaseTime: '2026-05-01T00:00:00.000Z', loan: { id: 3, borrowerCount: 1 } },
+								],
+							}],
+						},
+					},
+				});
+
+			const summary = await composable.getGoalSummary('goal-womens-equality-2026');
+
+			expect(summary.borrowerCount).toBe(8);
+		});
+
+		it('requests the achievements-service rolling-window limit of loan purchases', async () => {
+			const goal = {
+				goalName: 'goal-womens-equality-2026',
+				category: ID_WOMENS_EQUALITY,
+				target: 10,
+				status: GOAL_STATUS.IN_PROGRESS,
+				dateStarted: '2026-02-01T00:00:00.000Z',
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-1',
+								preferences: JSON.stringify({ goals: [goal] }),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: {
+						userAchievementProgress: {
+							tieredLendingAchievements: [
+								{ id: ID_WOMENS_EQUALITY, progressForYear: 7, loanPurchases: [] },
+							],
+						},
+					},
+				});
+
+			await composable.getGoalSummary('goal-womens-equality-2026');
+
+			// single achievement call requests the full rolling window, sized to the service cap
+			expect(mockApollo.query).toHaveBeenCalledTimes(2);
+			expect(mockApollo.query.mock.calls[1][0].variables).toEqual({
+				year: 2026,
+				loanPurchasesLimit: GOAL_SUMMARY_LOAN_PURCHASES_LIMIT,
+			});
+		});
+
+		// support-all is intentionally not covered here — that path will be
+		// implemented once the `my.goalSummary` monolith endpoint ships (MP-2948).
+		it('degrades to count=0, percent=0 when userAchievementProgress fetch fails', async () => {
+			const logFormatter = (await import('#src/util/logFormatter')).default;
+			logFormatter.mockClear();
+
+			const goal = {
+				goalName: 'goal-womens-equality-2026',
+				category: ID_WOMENS_EQUALITY,
+				target: 10,
+				status: GOAL_STATUS.IN_PROGRESS,
+				dateStarted: '2026-02-01T00:00:00.000Z',
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-1',
+								preferences: JSON.stringify({ goals: [goal] }),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockRejectedValueOnce(new Error('achievements service down'));
+
+			const summary = await composable.getGoalSummary('goal-womens-equality-2026');
+
+			expect(summary).toEqual({
+				goalName: 'goal-womens-equality-2026',
+				category: ID_WOMENS_EQUALITY,
+				dateStarted: '2026-02-01T00:00:00.000Z',
+				target: 10,
+				status: GOAL_STATUS.IN_PROGRESS,
+				count: 0,
+				borrowerCount: null,
+				amount: null,
+				percent: 0,
+			});
+			expect(logFormatter).toHaveBeenCalled();
 		});
 	});
 
