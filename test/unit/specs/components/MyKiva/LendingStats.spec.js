@@ -29,29 +29,28 @@ describe('LendingStats', () => {
 	});
 
 	describe('mounted', () => {
-		it('completes without error when region experience is off', async () => {
+		it('does not enable the post-lending experience when the cookie is absent', () => {
 			const context = {
-				showRegionExperience: false,
-				cookieStore: { get: vi.fn() },
+				cookieStore: { get: vi.fn(), remove: vi.fn() },
 				showPostLendingNextStepsCards: false,
 			};
 
-			await expect(LendingStats.mounted.call(context)).resolves.toBeUndefined();
+			LendingStats.mounted.call(context);
+
+			expect(context.showPostLendingNextStepsCards).toBe(false);
+			expect(context.cookieStore.remove).not.toHaveBeenCalled();
 		});
 
-		it('does not start the region-checkbox animation while the Almost Funded card is shown', async () => {
+		it('enables the post-lending experience and clears the cookie when it is present', () => {
 			const context = {
-				showRegionExperience: true,
-				showAlmostFunded: true,
-				cookieStore: { get: vi.fn() },
+				cookieStore: { get: vi.fn().mockReturnValue('true'), remove: vi.fn() },
 				showPostLendingNextStepsCards: false,
 			};
 
-			await LendingStats.mounted.call(context);
+			LendingStats.mounted.call(context);
 
-			// The reveal animation only drives the 2-tile card's checkboxes, which aren't rendered here.
-			expect(context.disconnectRegionWatcher).toBeUndefined();
-			expect(context.interval).toBeUndefined();
+			expect(context.showPostLendingNextStepsCards).toBe(true);
+			expect(context.cookieStore.remove).toHaveBeenCalled();
 		});
 	});
 
@@ -76,7 +75,6 @@ describe('LendingStats', () => {
 			const context = {
 				storeGoalPreferences: vi.fn().mockResolvedValue(),
 				loadGoalData: vi.fn().mockResolvedValue(),
-				newGoalPrefs: null,
 				isGoalSet: false,
 				showGoalModal: true,
 			};
@@ -85,7 +83,6 @@ describe('LendingStats', () => {
 
 			expect(context.storeGoalPreferences).toHaveBeenCalledTimes(1);
 			expect(context.storeGoalPreferences).toHaveBeenCalledWith(preferences);
-			expect(context.newGoalPrefs).toEqual(preferences);
 			expect(context.isGoalSet).toBe(true);
 			expect(context.showGoalModal).toBe(true);
 			expect(context.loadGoalData).not.toHaveBeenCalled();
@@ -99,7 +96,6 @@ describe('LendingStats', () => {
 				$kvTrackEvent: vi.fn(),
 				isGoalSet: true,
 				recordedGoalSet: false,
-				newGoalPrefs: { category: 'women', target: 5 },
 				loadGoalData: vi.fn().mockResolvedValue(),
 			};
 
@@ -140,52 +136,20 @@ describe('LendingStats', () => {
 		});
 	});
 
-	describe('showRegionExperience', () => {
-		it('returns true when not post-lending and the user has not lent to all regions', () => {
-			const context = { showPostLendingNextStepsCards: false, userLentToAllRegions: false };
-			expect(LendingStats.computed.showRegionExperience.call(context)).toBe(true);
+	describe('showAlmostFundedCard', () => {
+		it('shows the Almost Funded card when not post-lending', () => {
+			const context = { showPostLendingNextStepsCards: false };
+			expect(LendingStats.computed.showAlmostFundedCard.call(context)).toBe(true);
 		});
 
-		it('returns false when the user has lent to all regions', () => {
+		it('shows the Almost Funded card for superlenders (not gated on region experience)', () => {
 			const context = { showPostLendingNextStepsCards: false, userLentToAllRegions: true };
-			expect(LendingStats.computed.showRegionExperience.call(context)).toBe(false);
+			expect(LendingStats.computed.showAlmostFundedCard.call(context)).toBe(true);
 		});
 
-		it('returns false during the post-lending experience', () => {
-			const context = { showPostLendingNextStepsCards: true, userLentToAllRegions: false };
-			expect(LendingStats.computed.showRegionExperience.call(context)).toBe(false);
-		});
-	});
-
-	describe('Almost Funded rollout', () => {
-		it('shows the Almost Funded next step by default (2-tile card is the fallback)', () => {
-			expect(LendingStats.data.call({ regionsData: [] }).showAlmostFunded).toBe(true);
-		});
-
-		describe('showAlmostFundedCard', () => {
-			it('shows the Almost Funded card when not post-lending and the flag is on', () => {
-				const context = { showPostLendingNextStepsCards: false, showAlmostFunded: true };
-				expect(LendingStats.computed.showAlmostFundedCard.call(context)).toBe(true);
-			});
-
-			it('shows the Almost Funded card for superlenders (not gated on region experience)', () => {
-				const context = {
-					showPostLendingNextStepsCards: false,
-					userLentToAllRegions: true,
-					showAlmostFunded: true,
-				};
-				expect(LendingStats.computed.showAlmostFundedCard.call(context)).toBe(true);
-			});
-
-			it('falls back to the 2-tile card when the flag is off', () => {
-				const context = { showPostLendingNextStepsCards: false, showAlmostFunded: false };
-				expect(LendingStats.computed.showAlmostFundedCard.call(context)).toBe(false);
-			});
-
-			it('is false during the post-lending experience', () => {
-				const context = { showPostLendingNextStepsCards: true, showAlmostFunded: true };
-				expect(LendingStats.computed.showAlmostFundedCard.call(context)).toBe(false);
-			});
+		it('is false during the post-lending experience', () => {
+			const context = { showPostLendingNextStepsCards: true };
+			expect(LendingStats.computed.showAlmostFundedCard.call(context)).toBe(false);
 		});
 	});
 });

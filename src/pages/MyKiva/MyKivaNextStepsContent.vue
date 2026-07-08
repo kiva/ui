@@ -446,7 +446,6 @@ const {
 const showGoalModal = ref(false);
 const showImpactInsightsModal = ref(false);
 const isGoalSet = ref(false);
-const newGoalPrefs = ref(null);
 const isUpdatingGoal = ref(false);
 const isSharingModalVisible = ref(false);
 const acceptedEmailMarketingUpdates = ref(false);
@@ -647,7 +646,6 @@ const setGoal = async preferences => {
 	} else {
 		await storeGoalPreferences(preferences, false);
 	}
-	newGoalPrefs.value = preferences;
 	isGoalSet.value = true;
 };
 
@@ -712,11 +710,6 @@ onMounted(async () => {
 	}
 }
 
-.loading-card {
-	@apply tw-w-full tw-relative tw-rounded tw-shadow tw-p-1 md:tw-p-2 tw-flex tw-flex-col
-		tw-overflow-hidden tw-bg-white;
-}
-
 .goal-card-container {
 	--goal-card-width: 336px;
 
@@ -738,14 +731,6 @@ onMounted(async () => {
 	font-size: 22px !important;
 }
 
-.region-image {
-	height: 145px;
-
-	@screen md {
-		height: 191px;
-	}
-}
-
 .carousel-single > :deep(section > div > div) {
 	@apply !tw-min-w-full;
 }
@@ -764,16 +749,6 @@ onMounted(async () => {
 
 :deep(.kv-carousel > div:first-child) {
 	@apply tw-gap-2 lg:tw-gap-4;
-}
-
-.region-section {
-	.card-container:first-child {
-		@apply tw-mb-2 md:tw-mb-0;
-	}
-
-	@screen md {
-		grid-template-columns: minmax(321px, 1fr) 2fr;
-	}
 }
 
 .badges-section {

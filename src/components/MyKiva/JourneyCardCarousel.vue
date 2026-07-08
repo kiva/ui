@@ -226,7 +226,6 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
-	// When true, injects the Almost Funded next-step card as a priority slide.
 	showLendingNextStepsCards: {
 		type: Boolean,
 		default: false
