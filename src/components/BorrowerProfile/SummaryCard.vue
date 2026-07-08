@@ -53,8 +53,8 @@
 				<template v-if="isLoading">
 					<div class="tw-flex tw-flex-wrap tw-mb-3">
 						<kv-loading-placeholder class="tw-mb-1 tw-h-2" />
-						<kv-loading-placeholder class="tw-h-[2.8rem]" :style="{width: '30%'}" />
-						<kv-loading-placeholder class="tw-h-[2.8rem] tw-ml-auto" :style="{width: '30%'}" />
+						<kv-loading-placeholder class="tw-h-5.5" :style="{width: '30%'}" />
+						<kv-loading-placeholder class="tw-h-5.5 tw-ml-auto" :style="{width: '30%'}" />
 					</div>
 				</template>
 				<template v-else>
@@ -109,7 +109,7 @@
 		</p>
 		<div class="tw-flex-auto tw-inline-flex tw-w-full">
 			<template v-if="isLoading">
-				<kv-loading-placeholder class="tw-h-[1.9rem]" :style="{width: '50%'}" />
+				<kv-loading-placeholder class="tw-h-4" :style="{width: '50%'}" />
 			</template>
 			<template v-else>
 				<summary-tag v-if="countryName">
