@@ -22,7 +22,7 @@
 			</h2>
 			<div class="tw-flex tw-mb-3">
 				<p class="tw-flex-auto" data-testid="bp-country-aai">
-					<span class="tw-block tw-text-headline" data-testid="bp-country-aai-value">
+					<span class="tw-block tw-text-headline-two" data-testid="bp-country-aai-value">
 						{{ avgAnnualIncomeFormatted }}
 					</span>
 					<span class="tw-block tw-text-upper tw-text-secondary">
@@ -30,7 +30,7 @@
 					</span>
 				</p>
 				<p class="tw-flex-auto" data-testid="bp-country-loans-fundraising">
-					<span class="tw-block tw-text-headline" data-testid="bp-country-loans-fundraising-value">
+					<span class="tw-block tw-text-headline-two" data-testid="bp-country-loans-fundraising-value">
 						{{ numLoansFundraising }}
 					</span>
 					<span class="tw-block tw-text-upper tw-text-secondary">
