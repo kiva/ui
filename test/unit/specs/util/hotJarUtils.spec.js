@@ -1,4 +1,4 @@
-import { setHotJarUserAttributes, fireHotJarEvent } from '#src/util/hotJarUtils';
+import { setHotJarUserAttributes, fireHotJarEvent, fireNewUserHotJarEvent } from '#src/util/hotJarUtils';
 
 describe('hotJarUtils.js', () => {
 	let mockHj;
@@ -197,6 +197,32 @@ describe('hotJarUtils.js', () => {
 			global.window.hj = undefined;
 
 			expect(() => fireHotJarEvent('test_event')).not.toThrow();
+		});
+	});
+
+	describe('fireNewUserHotJarEvent', () => {
+		it('should fire the new_user event when the user has never logged in', () => {
+			fireNewUserHotJarEvent(false);
+
+			expect(mockHj).toHaveBeenCalledWith('event', 'new_user');
+		});
+
+		it('should not fire the event when the user has logged in before', () => {
+			fireNewUserHotJarEvent(true);
+
+			expect(mockHj).not.toHaveBeenCalled();
+		});
+
+		it('should not fire the event when hasEverLoggedIn is unknown (undefined)', () => {
+			fireNewUserHotJarEvent(undefined);
+
+			expect(mockHj).not.toHaveBeenCalled();
+		});
+
+		it('should not throw when window.hj is undefined', () => {
+			global.window.hj = undefined;
+
+			expect(() => fireNewUserHotJarEvent(false)).not.toThrow();
 		});
 	});
 });
