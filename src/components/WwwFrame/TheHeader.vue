@@ -576,7 +576,7 @@ import {
 	userHasLentBefore,
 	userHasDepositBefore,
 } from '#src/util/optimizelyUserMetrics';
-import { setHotJarUserAttributes } from '#src/util/hotJarUtils';
+import { setHotJarUserAttributes, fireNewUserHotJarEvent } from '#src/util/hotJarUtils';
 import headerQueryPrivate from '#src/graphql/query/wwwHeaderPrivate.graphql';
 import headerQueryPublic from '#src/graphql/query/wwwHeaderPublic.graphql';
 import KivaLogo from '#src/assets/inline-svgs/logos/kiva-logo.svg';
@@ -793,6 +793,11 @@ export default {
 				this.hasEverLoggedIn = data?.hasEverLoggedIn;
 				this.basketTotal = numeral(data.shop?.basket?.totals?.itemTotal).value() || 0;
 				this.teams = data?.my?.teams ?? {};
+
+				// Fire a Hotjar new_user event for brand-new visitors. Done here
+				// (not in mounted) because hasEverLoggedIn is only authoritative once the
+				// query resolves; firing earlier risks tagging a logged-in user as new.
+				fireNewUserHotJarEvent(this.hasEverLoggedIn);
 			},
 		},
 		{
