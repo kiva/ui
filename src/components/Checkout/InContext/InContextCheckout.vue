@@ -154,22 +154,15 @@
 import numeral from 'numeral';
 import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
 import { isCCPage } from '#src/util/urlUtils';
-import logFormatter from '#src/util/logFormatter';
 import checkoutUtils from '#src/plugins/checkout-utils-mixin';
 import CheckoutDropInPaymentWrapper from '#src/components/Checkout/CheckoutDropInPaymentWrapper';
 import KivaCreditPayment from '#src/components/Checkout/KivaCreditPayment';
 import KivaCreditGuestPayment from '#src/components/Checkout/KivaCreditGuestPayment';
-import setupDonationBasketForUserMutation from '#src/graphql/mutation/shopSetupDonationBasketForUser.graphql';
 import KvLoadingOverlay from '#src/components/Kv/KvLoadingOverlay';
 import BasketItemsList from '#src/components/Checkout/BasketItemsList';
 import OrderTotals from '#src/components/Checkout/OrderTotals';
 import KvIcon from '#src/components/Kv/KvIcon';
 import { KvButton, KvGrid } from '@kiva/kv-components';
-
-const isSupportUsDonationRoute = route => {
-	const path = route?.path ?? (typeof window !== 'undefined' ? window.location.pathname : '');
-	return path === '/donate/supportus';
-};
 
 export default {
 	name: 'InContextCheckout',
@@ -267,17 +260,8 @@ export default {
 		return {
 			updatingTotals: false,
 			continueAsGuest: false,
-			continueAsExistingUser: false,
-			hasRequestedDonationCreditDefault: false,
+			continueAsExistingUser: false
 		};
-	},
-	watch: {
-		donations() {
-			this.applyDonationCreditDefault();
-		},
-		isLoggedIn() {
-			this.applyDonationCreditDefault();
-		}
 	},
 	computed: {
 		creditNeeded() {
@@ -356,41 +340,7 @@ export default {
 		},
 		setUpdatingTotals(payload) {
 			this.updatingTotals = payload;
-		},
-		shouldApplyDonationCreditDefault() {
-			return isSupportUsDonationRoute(this.$route)
-				&& this.isLoggedIn
-				&& !this.hasRequestedDonationCreditDefault
-				&& this.donations?.length === 1
-				&& this.loans?.length === 0
-				&& this.kivaCards?.length === 0
-				&& !this.donations[0]?.isTip;
-		},
-		applyDonationCreditDefault() {
-			if (!this.shouldApplyDonationCreditDefault()) {
-				return Promise.resolve();
-			}
-
-			this.hasRequestedDonationCreditDefault = true;
-			this.setUpdatingTotals(true);
-
-			return this.apollo.mutate({
-				mutation: setupDonationBasketForUserMutation,
-				variables: {
-					basketId: this.cookieStore.get('kvbskt'),
-					applyDonationCreditDefault: true,
-				}
-			}).then(() => {
-				this.$emit('refreshtotals');
-			}).catch(error => {
-				logFormatter(error, 'error');
-			}).finally(() => {
-				this.setUpdatingTotals(false);
-			});
 		}
-	},
-	mounted() {
-		this.applyDonationCreditDefault();
 	}
 };
 </script>

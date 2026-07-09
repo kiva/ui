@@ -1,6 +1,0 @@
-mutation setupDonationBasketForUser($basketId: String, $applyDonationCreditDefault: Boolean) {
-	shop (basketId: $basketId) {
-		id
-		setupBasketForUser(applyDonationCreditDefault: $applyDonationCreditDefault)
-	}
-}
