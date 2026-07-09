@@ -92,7 +92,7 @@ export default {
 	computed: {
 		buttonState() {
 			if (this.isSubmitting) return 'loading';
-			if (!this.selectedReason) return 'disabled';
+			if (!this.selectedReason || !this.commentId) return 'disabled';
 			return '';
 		},
 	},
@@ -111,7 +111,7 @@ export default {
 			this.$emit('close');
 		},
 		reportComment() {
-			if (this.isSubmitting) return;
+			if (this.isSubmitting || !this.commentId) return;
 			this.isSubmitting = true;
 			this.$kvTrackEvent(
 				'borrower-profile',
