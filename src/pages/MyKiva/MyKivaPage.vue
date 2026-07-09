@@ -93,6 +93,8 @@ export default {
 		return {
 			combineBadgeData,
 			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
+			// TESTING ONLY (remove later).
+			getGoalSummary: goalDataComposable.getGoalSummary,
 			loadGoalData: goalDataComposable.loadGoalData,
 			renewAnnualGoal: goalDataComposable.renewAnnualGoal,
 			setHideGoalCardPreference: goalDataComposable.setHideGoalCardPreference,
@@ -403,6 +405,11 @@ export default {
 	},
 	async mounted() {
 		try {
+			// TESTING ONLY (remove later): fire goalSummary timing via ?goalSummaryTiming.
+			if (new URLSearchParams(window.location.search).has('goalSummaryTiming')) {
+				this.getGoalSummary();
+			}
+
 			this.apollo.watchQuery({
 				query: gql`
 					query UserPreferences {

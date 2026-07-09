@@ -7,6 +7,7 @@ import {
 import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import useGoalDataProgressQuery from '#src/graphql/query/useGoalDataProgress.graphql';
 import useGoalDataYearlyProgressQuery from '#src/graphql/query/useGoalDataYearlyProgress.graphql';
+import goalSummaryQuery from '#src/graphql/query/goalSummary.graphql';
 import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import logFormatter from '#src/util/logFormatter';
 import { getTransactionTimestamp } from '#src/util/myKivaUtils';
@@ -373,6 +374,100 @@ export default function useGoalData({ apollo } = {}) {
 			logFormatter(error, 'Failed to load preferences');
 			return null;
 		}
+	}
+
+	function findMostRecentActiveGoal(goals) {
+		const currentYear = new Date().getFullYear();
+		return goals.find(g => {
+			if (g.status === GOAL_STATUS.EXPIRED) return false;
+			if (g.status === GOAL_STATUS.COMPLETED && g.dateStarted) {
+				return new Date(g.dateStarted).getFullYear() >= currentYear;
+			}
+			return true;
+		});
+	}
+
+	/**
+	 * Returns a normalized summary for a user's MyKiva goal.
+	 *
+	 * @param {string} [goalName] - Goal to summarize; defaults to the most recent active goal.
+	 * @returns {Promise<Object|null>} The goal summary, or null when there's no matching goal.
+	 */
+	async function computeGoalSummary(goalName) {
+		const prefs = await loadPreferences();
+		const goals = prefs?.goals || [];
+		const goal = goalName
+			? goals.find(g => g.goalName === goalName)
+			: findMostRecentActiveGoal(goals);
+		if (!goal) return null;
+
+		// Support-all is computed server-side by the monolith; it returns the full summary shape.
+		if (goal.category === ID_SUPPORT_ALL) {
+			try {
+				const response = await apolloClient.query({
+					query: goalSummaryQuery,
+					variables: { goalName: goal.goalName },
+					fetchPolicy: 'no-cache',
+				});
+				return response.data?.my?.goalSummary || null;
+			} catch (error) {
+				logFormatter('Failed to fetch support-all goal summary', 'error', { error: error?.message });
+				return null;
+			}
+		}
+
+		const year = new Date(goal.dateStarted).getFullYear();
+		let achievement = null;
+		try {
+			const response = await apolloClient.query({
+				query: useGoalDataYearlyProgressQuery,
+				variables: { year },
+				fetchPolicy: 'no-cache',
+			});
+			const tiered = response.data?.userAchievementProgress?.tieredLendingAchievements;
+			achievement = tiered?.find(e => e.id === goal.category) || null;
+		} catch (error) {
+			logFormatter('Failed to fetch goal summary achievement', 'error', { error: error?.message });
+		}
+
+		const count = achievement?.progressForYear || 0;
+		const target = goal.target || 0;
+		const percent = target > 0 ? Math.min(100, Math.round((count / target) * 100)) : 0;
+
+		const borrowerCount = achievement ? count : null;
+
+		return {
+			goalName: goal.goalName,
+			category: goal.category,
+			dateStarted: goal.dateStarted,
+			target: goal.target || null,
+			status: goal.status || null,
+			count,
+			borrowerCount,
+			amount: null,
+			percent,
+		};
+	}
+
+	// TESTING ONLY (remove later): super-lender timing via ?goalSummaryTiming.
+	async function getGoalSummary(goalName) {
+		const timingEnabled = typeof window !== 'undefined'
+			&& new URLSearchParams(window.location.search).has('goalSummaryTiming');
+		if (!timingEnabled) {
+			return computeGoalSummary(goalName);
+		}
+		const start = performance.now();
+		const result = await computeGoalSummary(goalName);
+		let path = 'none (no goal or fetch error)';
+		if (result) {
+			path = result.category === ID_SUPPORT_ALL ? 'monolith:my.goalSummary' : 'achievements-service';
+		}
+		logFormatter('TESTING ONLY (remove later): super-lender goalSummary timing', 'info', {
+			durationMs: Math.round(performance.now() - start),
+			path,
+			goalName: result?.goalName ?? goalName ?? null,
+		});
+		return result;
 	}
 
 	/**
@@ -1145,6 +1240,7 @@ export default function useGoalData({ apollo } = {}) {
 		getCategoryLoansLastYear,
 		getCtaHref,
 		getGoalDisplayName,
+		getGoalSummary,
 		getLoanStatsByYear,
 		getPostCheckoutProgressByLoans,
 		goalProgress,
