@@ -53,15 +53,13 @@ import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.gra
 import teamBasicInfoQuery from '#src/graphql/query/teamBasicInfo.graphql';
 import ChallengeTeamInvite from '#src/components/BorrowerProfile/ChallengeTeamInvite';
 import { readAccountRailPreference, resolveRailPreference } from '#src/util/loanDetailsRailPreference';
+import { isPublicLoanStatus } from '#src/util/loanUtils';
 import { getKivaImageUrl } from '@kiva/kv-components';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
 
 const EDUCATION_PLACEMENT_EXP = 'education_placement_bp';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
-
-// Mirrors monolith Kc_Loan_Psc::getAllPublicStatuses() — non-privileged viewers can only see these.
-const PUBLIC_STATUSES = ['fundraising', 'funded', 'expired', 'raised', 'payingBack', 'refunded', 'ended', 'defaulted'];
 
 // Fields for showFullView routing logic
 const routingFragment = gql`fragment bpRoutingFields on LoanBasic {
@@ -313,7 +311,7 @@ export default {
 					const isPrivileged = loan.userProperties?.isPrivileged ?? false;
 
 					// Anon goes to login (so a lender/trustee can authenticate in); logged-in non-priv goes to /lend.
-					if (!PUBLIC_STATUSES.includes(loan.status) && !isPrivileged) {
+					if (!isPublicLoanStatus(loan.status) && !isPrivileged) {
 						if (!kvAuth0?.getKivaId()) {
 							return Promise.reject({
 								path: '/ui-login',

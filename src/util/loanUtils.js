@@ -1,9 +1,15 @@
 import numeral from 'numeral';
 import _get from 'lodash/get';
+import {
+	FUNDRAISING, FUNDED, EXPIRED, RAISED, PAYING_BACK, REFUNDED, ENDED, DEFAULTED
+} from '#src/api/fixtures/LoanStatusEnum';
 
 export const ERL_COOKIE_NAME = 'kverlfivedollarnotes';
 export const TOP_UP_CAMPAIGN = 'TOPUP-VB-BALANCE-MPV1';
 export const BASE_CAMPAIGN = 'BASE-VB_BALANCE_MPV1';
+
+// Mirrors monolith Kc_Loan_Psc::getAllPublicStatuses() — non-privileged viewers can only see these.
+const PUBLIC_STATUSES = [FUNDRAISING, FUNDED, EXPIRED, RAISED, PAYING_BACK, REFUNDED, ENDED, DEFAULTED];
 
 /**
  * Returns true if loan is fundraising / can be lent to
@@ -42,6 +48,16 @@ export function isLoanFundraising(loan) {
  */
 export function isActivelyInPfp(loan) {
 	return loan?.inPfp === true && loan?.status === 'fundraising';
+}
+
+/**
+ * Returns true if the given loan status is publicly visible to non-privileged viewers.
+ *
+ * @param {string} status
+ * @returns {boolean}
+ */
+export function isPublicLoanStatus(status) {
+	return PUBLIC_STATUSES.includes(status);
 }
 
 /**

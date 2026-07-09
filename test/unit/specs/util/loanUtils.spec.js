@@ -19,6 +19,7 @@ import {
 	isBetween25And50,
 	isBetween25And500,
 	isActivelyInPfp,
+	isPublicLoanStatus,
 } from '#src/util/loanUtils';
 
 describe('loanUtils.js', () => {
@@ -981,6 +982,20 @@ describe('loanUtils.js', () => {
 		it('should return false when amount is greater than 50', () => {
 			expect(isBetween25And50(50.01)).toBe(false);
 			expect(isBetween25And50(100)).toBe(false);
+		});
+	});
+
+	describe('isPublicLoanStatus', () => {
+		it.each([
+			'fundraising', 'funded', 'expired', 'raised', 'payingBack', 'refunded', 'ended', 'defaulted',
+		])('should return true for public status %s', status => {
+			expect(isPublicLoanStatus(status)).toBe(true);
+		});
+
+		it.each([
+			'reviewed', 'deleted', 'issue', 'inactive', 'inactiveExpired',
+		])('should return false for restricted status %s', status => {
+			expect(isPublicLoanStatus(status)).toBe(false);
 		});
 	});
 
