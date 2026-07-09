@@ -31,12 +31,12 @@
 		</div>
 
 		<div v-else>
-			<h2 class="tw-mb-4" data-testid="bp-country-header">
+			<h2 class="tw-mb-3" data-testid="bp-country-header">
 				{{ countryName }} at a glance
 			</h2>
 			<div class="tw-flex tw-gap-2 tw-mb-4">
 				<p class="tw-flex-1" data-testid="bp-country-aai">
-					<span class="tw-block tw-text-headline" data-testid="bp-country-aai-value">
+					<span class="tw-block tw-text-headline-two" data-testid="bp-country-aai-value">
 						{{ avgAnnualIncomeFormatted }}
 					</span>
 					<span class="tw-block tw-text-upper tw-text-secondary">
@@ -44,7 +44,7 @@
 					</span>
 				</p>
 				<p class="tw-flex-1" data-testid="bp-country-loans-fundraising">
-					<span class="tw-block tw-text-headline" data-testid="bp-country-loans-fundraising-value">
+					<span class="tw-block tw-text-headline-two" data-testid="bp-country-loans-fundraising-value">
 						{{ numLoansFundraising }}
 					</span>
 					<span class="tw-block tw-text-upper tw-text-secondary">
@@ -54,7 +54,7 @@
 			</div>
 			<div v-if="fundsLentInCountry || loanCurrencyLabel" class="tw-flex tw-gap-2 tw-mb-4">
 				<p v-if="fundsLentInCountry" class="tw-flex-1" data-testid="bp-country-funds-lent">
-					<span class="tw-block tw-text-headline" data-testid="bp-country-funds-lent-value">
+					<span class="tw-block tw-text-headline-two" data-testid="bp-country-funds-lent-value">
 						{{ fundsLentInCountryFormatted }}
 					</span>
 					<span class="tw-block tw-text-upper tw-text-secondary">
@@ -62,7 +62,7 @@
 					</span>
 				</p>
 				<p v-if="loanCurrencyLabel" class="tw-flex-1" data-testid="bp-country-loan-currency">
-					<span class="tw-block tw-text-headline" data-testid="bp-country-loan-currency-value">
+					<span class="tw-block tw-text-headline-two" data-testid="bp-country-loan-currency-value">
 						{{ loanCurrencyLabel }}
 					</span>
 					<span class="tw-block tw-text-upper tw-text-secondary">

@@ -30,6 +30,12 @@ export default {
 			type: [Number, String],
 			required: true,
 		},
+		// When true, a zero value renders as an empty field while focused so the user can
+		// type straight away instead of having to clear a leading "0".
+		clearZeroOnFocus: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
@@ -41,6 +47,10 @@ export default {
 		displayValue: {
 			get() {
 				if (this.isInputActive) {
+					// Show an empty field instead of "0" so the user can type immediately.
+					if (this.clearZeroOnFocus && !Number(this.value)) {
+						return '';
+					}
 					// Cursor is inside the input field. unformat display value for user
 					return this.value.toString();
 				}

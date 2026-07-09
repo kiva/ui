@@ -117,17 +117,17 @@
 				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
 				:loan-id="loanId"
 			/>
-			<borrower-country data-testid="bp-country" class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8" :loan-id="loanId" />
+			<borrower-country data-testid="bp-country" class="tw-mb-4" :loan-id="loanId" />
 			<contributing-partners
 				data-testid="bp-contributing-partners"
-				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
+				class="tw-mb-4"
 				:loan-id="loanId"
 			/>
 			<lenders-and-teams
 				v-if="showLenders"
 				data-testid="bp-lenders"
 				key="lenders"
-				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
+				class="tw-mb-4"
 				:loan-id="loanId"
 				display-type="lenders"
 				@hide-section="showLenders = false"
@@ -136,7 +136,7 @@
 				v-if="showTeams"
 				data-testid="bp-teams"
 				key="teams"
-				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
+				class="tw-mb-4"
 				:loan-id="loanId"
 				display-type="teams"
 				@hide-section="showTeams = false"

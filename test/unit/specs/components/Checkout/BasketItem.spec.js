@@ -205,9 +205,9 @@ describe('BasketItem loan', () => {
 			};
 			const { getByTestId } = renderWithFlag(loan);
 			await flushPromises();
-			// Capital One 4x + Tripadvisor 2x = 6x total
+			// 1 base + Capital One ratio 3 + Tripadvisor ratio 1 = 5x
 			const matchingText = getByTestId('basket-loan-matching-text').textContent;
-			expect(matchingText).toContain('6x matching by contributing partners');
+			expect(matchingText).toContain('5x matching by contributing partners');
 		});
 
 		it('shows simultaneous matching text even when matchingText is also present', async () => {
@@ -222,7 +222,7 @@ describe('BasketItem loan', () => {
 			const { getByTestId } = renderWithFlag(loan);
 			await flushPromises();
 			const matchingText = getByTestId('basket-loan-matching-text').textContent;
-			expect(matchingText).toContain('6x matching by contributing partners');
+			expect(matchingText).toContain('5x matching by contributing partners');
 		});
 
 		it('falls back to matchingText when the multiMatching flag is off, even if matchers are present', async () => {

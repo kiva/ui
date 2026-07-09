@@ -13,7 +13,6 @@
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:user-lent-to-all-regions="userLentToAllRegions"
-			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goals-row-enabled="goalsRowEnabled"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
@@ -29,14 +28,12 @@
 			:hero-tiered-achievements="heroTieredAchievements"
 			:lending-stats="lendingStats"
 			:transactions="transactions"
-			:user-lent-to-all-regions="userLentToAllRegions"
 			:enable-ai-loan-pills="enableAILoanPills"
 			:sidesheet-loan="sidesheetLoan"
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:show-my-giving-funds-card="showMyGivingFundsCard"
 			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
-			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goals-row-enabled="goalsRowEnabled"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
@@ -71,7 +68,6 @@ import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const GOAL_TILE_EXPERIMENT_KEY = 'mykiva_goal_tile';
-const LENDING_NEXT_STEPS_EXP_KEY = 'mykiva_lending_next_steps';
 const GOALS_ROW_EXP_KEY = 'mykiva_goals_row';
 
 /**
@@ -97,6 +93,8 @@ export default {
 		return {
 			combineBadgeData,
 			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
+			// TESTING ONLY (remove later).
+			getGoalSummary: goalDataComposable.getGoalSummary,
 			loadGoalData: goalDataComposable.loadGoalData,
 			renewAnnualGoal: goalDataComposable.renewAnnualGoal,
 			setHideGoalCardPreference: goalDataComposable.setHideGoalCardPreference,
@@ -121,7 +119,6 @@ export default {
 			showMyGivingFundsCard: false,
 			recentTransactionLoans: [],
 			isGoalTileExperimentEnabled: false,
-			lendingNextStepsExperimentVariant: null,
 			goalRecommendedLoanEnable: false,
 			goalsRowEnabled: false,
 			shouldRenderFeaturedSlot: true,
@@ -206,10 +203,6 @@ export default {
 				client.query({
 					query: experimentAssignmentQuery,
 					variables: { id: GOAL_TILE_EXPERIMENT_KEY },
-				}),
-				client.query({
-					query: experimentAssignmentQuery,
-					variables: { id: LENDING_NEXT_STEPS_EXP_KEY },
 				}),
 				client.query({
 					query: experimentAssignmentQuery,
@@ -402,18 +395,6 @@ export default {
 			this.cookieStore,
 			this.apollo,
 			this.$route,
-			LENDING_NEXT_STEPS_EXP_KEY,
-			version => {
-				this.lendingNextStepsExperimentVariant = version;
-			},
-			this.$kvTrackEvent,
-			'EXP-MP-2291-Feb2026'
-		);
-
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
 			GOALS_ROW_EXP_KEY,
 			version => {
 				this.goalsRowEnabled = version === 'b';
@@ -424,6 +405,11 @@ export default {
 	},
 	async mounted() {
 		try {
+			// TESTING ONLY (remove later): fire goalSummary timing via ?goalSummaryTiming.
+			if (new URLSearchParams(window.location.search).has('goalSummaryTiming')) {
+				this.getGoalSummary();
+			}
+
 			this.apollo.watchQuery({
 				query: gql`
 					query UserPreferences {

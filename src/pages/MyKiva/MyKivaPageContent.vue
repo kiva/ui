@@ -29,8 +29,6 @@
 		<section v-if="clientRendered" class="!tw-mt-2">
 			<LendingStats
 				ref="lendingStatsRef"
-				:regions-data="lendingStats.regionsData"
-				:user-lent-to-all-regions="userLentToAllRegions"
 				:hero-slides="heroSlides"
 				:loans="loans"
 				:lender="lender"
@@ -41,7 +39,6 @@
 				:goal-refresh-key="goalRefreshKey"
 				:user-info="userInfo"
 				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
-				:lending-next-steps-variant="lendingNextStepsVariant"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 				:goals-row-enabled="goalsRowEnabled"
 				:basket-items="basketItems"
@@ -304,10 +301,6 @@ export default {
 			type: Array,
 			default: () => [],
 		},
-		userLentToAllRegions: {
-			type: Boolean,
-			default: false,
-		},
 		enableAiLoanPills: {
 			type: Boolean,
 			default: false
@@ -331,10 +324,6 @@ export default {
 		isGoalTileExperimentEnabled: {
 			type: Boolean,
 			default: false
-		},
-		lendingNextStepsVariant: {
-			type: String,
-			default: null,
 		},
 		goalRecommendedLoanEnable: {
 			type: Boolean,

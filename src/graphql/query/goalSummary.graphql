@@ -1,0 +1,16 @@
+query goalSummary($goalName: String) {
+  my {
+    id
+    goalSummary(goalName: $goalName) {
+      goalName
+      category
+      dateStarted
+      target
+      status
+      count
+      borrowerCount
+      amount
+      percent
+    }
+  }
+}
