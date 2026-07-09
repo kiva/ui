@@ -5149,8 +5149,82 @@ describe('useGoalData', () => {
 			});
 		});
 
-		// support-all is intentionally not covered here — that path will be
-		// implemented once the `my.goalSummary` monolith endpoint ships (MP-2948).
+		it('routes support-all through the my.goalSummary monolith endpoint', async () => {
+			const goal = {
+				goalName: 'goal-support-all-2026',
+				category: ID_SUPPORT_ALL,
+				target: 198,
+				status: GOAL_STATUS.IN_PROGRESS,
+				dateStarted: '2026-07-09T14:35:35.691Z',
+			};
+			const monolithSummary = {
+				goalName: 'goal-support-all-2026',
+				category: ID_SUPPORT_ALL,
+				dateStarted: '2026-07-09T14:35:35.691Z',
+				target: 198,
+				status: GOAL_STATUS.IN_PROGRESS,
+				count: 42,
+				borrowerCount: 57,
+				amount: 1050,
+				percent: 21,
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-1',
+								preferences: JSON.stringify({ goals: [goal] }),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: { my: { id: 1, goalSummary: monolithSummary } },
+				});
+
+			const summary = await composable.getGoalSummary('goal-support-all-2026');
+
+			// returns the monolith payload verbatim, and does not hit achievements-service
+			expect(summary).toEqual(monolithSummary);
+			expect(mockApollo.query).toHaveBeenCalledTimes(2);
+			expect(mockApollo.query.mock.calls[1][0].variables).toEqual({ goalName: 'goal-support-all-2026' });
+		});
+
+		it('returns null when the support-all monolith query fails', async () => {
+			const logFormatter = (await import('#src/util/logFormatter')).default;
+			logFormatter.mockClear();
+
+			const goal = {
+				goalName: 'goal-support-all-2026',
+				category: ID_SUPPORT_ALL,
+				target: 198,
+				status: GOAL_STATUS.IN_PROGRESS,
+				dateStarted: '2026-07-09T14:35:35.691Z',
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: {
+								id: 'pref-1',
+								preferences: JSON.stringify({ goals: [goal] }),
+							},
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockRejectedValueOnce(new Error('monolith down'));
+
+			const summary = await composable.getGoalSummary('goal-support-all-2026');
+
+			expect(summary).toBeNull();
+			expect(logFormatter).toHaveBeenCalled();
+		});
+
 		it('degrades to count=0, percent=0 when userAchievementProgress fetch fails', async () => {
 			const logFormatter = (await import('#src/util/logFormatter')).default;
 			logFormatter.mockClear();

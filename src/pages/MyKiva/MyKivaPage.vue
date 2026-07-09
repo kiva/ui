@@ -97,7 +97,7 @@ export default {
 		return {
 			combineBadgeData,
 			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
-			// TEMP(MP-2948): exposed only to drive goal-summary query timing in dev; remove with the trigger below.
+			// TESTING ONLY (remove later).
 			getGoalSummary: goalDataComposable.getGoalSummary,
 			loadGoalData: goalDataComposable.loadGoalData,
 			renewAnnualGoal: goalDataComposable.renewAnnualGoal,
@@ -426,8 +426,7 @@ export default {
 	},
 	async mounted() {
 		try {
-			// TEMP(MP-2948): load ?goalSummaryTiming to fire getGoalSummary once and log its
-			// query duration (see useGoalData). Lets us measure superlender latency in dev. Remove when done.
+			// TESTING ONLY (remove later): fire goalSummary timing via ?goalSummaryTiming.
 			if (new URLSearchParams(window.location.search).has('goalSummaryTiming')) {
 				this.getGoalSummary();
 			}
