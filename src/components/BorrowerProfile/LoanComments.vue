@@ -31,7 +31,7 @@
 						v-if="!isSubscribed"
 						variant="link"
 						data-testid="bp-comment-subscribe"
-						@click="subscribe"
+						@click="setSubscription(true)"
 					>
 						Subscribe
 					</kv-button>
@@ -39,7 +39,7 @@
 						v-else
 						variant="link"
 						data-testid="bp-comment-unsubscribe"
-						@click="unsubscribe"
+						@click="setSubscription(false)"
 					>
 						Unsubscribe
 					</kv-button>
@@ -371,28 +371,16 @@ export default {
 			if (!this.rawComments.some(c => c.id === commentId)) return;
 			this.flaggedById = { ...this.flaggedById, [commentId]: new Date().toISOString() };
 		},
-		async subscribe() {
+		async setSubscription(subscribe) {
 			try {
 				await this.apollo.mutate({
 					mutation: loanSubscribeMutation,
-					variables: { loanId: this.loanId, subscribe: true },
+					variables: { loanId: this.loanId, subscribe },
 				});
-				this.isSubscribed = true;
+				this.isSubscribed = subscribe;
 			} catch (e) {
 				logFormatter(e, 'error');
-				this.$showTipMsg('There was a problem subscribing', 'error');
-			}
-		},
-		async unsubscribe() {
-			try {
-				await this.apollo.mutate({
-					mutation: loanSubscribeMutation,
-					variables: { loanId: this.loanId, subscribe: false },
-				});
-				this.isSubscribed = false;
-			} catch (e) {
-				logFormatter(e, 'error');
-				this.$showTipMsg('There was a problem unsubscribing', 'error');
+				this.$showTipMsg(`There was a problem ${subscribe ? 'subscribing' : 'unsubscribing'}`, 'error');
 			}
 		},
 	},
