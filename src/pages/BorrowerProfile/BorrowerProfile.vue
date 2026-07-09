@@ -179,8 +179,8 @@ export default {
 		ChallengeTeamInvite,
 	},
 	head() {
-		const title = this.anonymizationLevel === 'full' ? undefined : this.pageTitle;
-		const description = this.anonymizationLevel === 'full' ? undefined : this.pageDescription;
+		const title = this.routingLoan?.anonymizationLevel === 'full' ? undefined : this.pageTitle;
+		const description = this.routingLoan?.anonymizationLevel === 'full' ? undefined : this.pageDescription;
 		const isSclePresent = this.$route.query?.utm_campaign?.includes('scle');
 
 		return {
