@@ -201,7 +201,7 @@ export default {
 				}
 			} catch (e) {
 				logFormatter(e, 'error');
-				// Revert
+				// Revert the optimistic update
 				if (checked) {
 					this.currentTagNames = this.currentTagNames.filter(n => n !== tag.name);
 				} else {
