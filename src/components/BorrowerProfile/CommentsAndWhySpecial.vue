@@ -148,7 +148,6 @@
 			:loan-id="loanId"
 			:comment-id="selectedCommentId"
 			@close="isReportLightboxVisible = false"
-			@reported="onCommentReported"
 		/>
 		<kv-lightbox
 			:visible="isCommentLightboxVisible"
@@ -293,9 +292,6 @@ export default {
 		openReportModal(commentId) {
 			this.selectedCommentId = commentId;
 			this.isReportLightboxVisible = true;
-		},
-		onCommentReported() {
-			this.isReportLightboxVisible = false;
 		},
 		randomizedUserClass() {
 			const randomStyle = this.userCardStyleOptions[Math.floor(Math.random() * this.userCardStyleOptions.length)];
