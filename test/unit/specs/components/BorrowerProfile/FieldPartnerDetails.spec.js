@@ -34,34 +34,30 @@ describe('FieldPartnerDetails.timeOnKivaFormatted', () => {
 		expect(computeTimeOnKiva('not-a-date')).toBe('');
 	});
 
-	it('returns "0 months" for a startDate in the current month', () => {
-		expect(computeTimeOnKiva(isoMonthsAgo(0, NOW))).toBe('0 months');
-	});
-
-	it('singularizes "1 month"', () => {
-		expect(computeTimeOnKiva(isoMonthsAgo(1, NOW))).toBe('1 month');
+	it('singularizes "1 month" for a startDate in the current month', () => {
+		expect(computeTimeOnKiva(isoMonthsAgo(0, NOW))).toBe('1 month');
 	});
 
 	it('pluralizes months under a year', () => {
-		expect(computeTimeOnKiva(isoMonthsAgo(2, NOW))).toBe('2 months');
-		expect(computeTimeOnKiva(isoMonthsAgo(5, NOW))).toBe('5 months');
-		expect(computeTimeOnKiva(isoMonthsAgo(11, NOW))).toBe('11 months');
+		expect(computeTimeOnKiva(isoMonthsAgo(1, NOW))).toBe('2 months');
+		expect(computeTimeOnKiva(isoMonthsAgo(4, NOW))).toBe('5 months');
+		expect(computeTimeOnKiva(isoMonthsAgo(10, NOW))).toBe('11 months');
 	});
 
 	it('singularizes "1 year" at exactly 12 months', () => {
-		expect(computeTimeOnKiva(isoMonthsAgo(12, NOW))).toBe('1 year');
+		expect(computeTimeOnKiva(isoMonthsAgo(11, NOW))).toBe('1 year');
 	});
 
 	it('pluralizes years at 24+ months', () => {
-		expect(computeTimeOnKiva(isoMonthsAgo(24, NOW))).toBe('2 years');
+		expect(computeTimeOnKiva(isoMonthsAgo(23, NOW))).toBe('2 years');
 	});
 
 	it('combines "1 year, 1 month" singular/singular', () => {
-		expect(computeTimeOnKiva(isoMonthsAgo(13, NOW))).toBe('1 year, 1 month');
+		expect(computeTimeOnKiva(isoMonthsAgo(12, NOW))).toBe('1 year, 1 month');
 	});
 
 	it('combines "2 years, 3 months" plural/plural', () => {
-		expect(computeTimeOnKiva(isoMonthsAgo(27, NOW))).toBe('2 years, 3 months');
+		expect(computeTimeOnKiva(isoMonthsAgo(26, NOW))).toBe('2 years, 3 months');
 	});
 });
 

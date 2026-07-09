@@ -180,6 +180,7 @@ import {
 	mdiStarHalfFull
 } from '@mdi/js';
 import numeral from 'numeral';
+import getMonthsCount from '#src/util/dateUtils';
 import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionListItem';
 import DescriptionListLoading from '#src/components/BorrowerProfile/DescriptionListLoading';
 import { KvLoadingPlaceholder, KvMaterialIcon, KvTextLink } from '@kiva/kv-components';
@@ -304,8 +305,7 @@ export default {
 			if (!this.startDate) return '';
 			const start = new Date(this.startDate);
 			if (Number.isNaN(start.getTime())) return '';
-			const now = new Date();
-			let months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+			let months = getMonthsCount(this.startDate);
 			if (months < 0) months = 0;
 			const pluralize = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 			if (months < 12) return pluralize(months, 'month');
