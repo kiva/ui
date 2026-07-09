@@ -173,6 +173,7 @@
 import { gql } from 'graphql-tag';
 import { mdiArrowRight } from '@mdi/js';
 import numeral from 'numeral';
+import { capitalCase } from 'change-case';
 import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionListItem';
 import DescriptionListLoading from '#src/components/BorrowerProfile/DescriptionListLoading';
 import { KvTextLink, KvLoadingPlaceholder } from '@kiva/kv-components';
@@ -301,11 +302,7 @@ export default {
 		},
 		tierFormatted() {
 			if (!this.tier || this.tier === 'NO_STATUS') return 'N/A';
-			return this.tier
-				.toLowerCase()
-				.split('_')
-				.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-				.join(' ');
+			return capitalCase(this.tier);
 		},
 		location() {
 			const contact = this.contactRecord;
