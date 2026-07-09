@@ -278,10 +278,7 @@ export default {
 					authorName: c.author?.name,
 					authorImageUrl: c.author?.imageUrl,
 					authorRole: c.author?.role,
-					body: DOMPurify.sanitize(c.body ?? '', {
-						ALLOWED_TAGS: ['b', 'i', 'a', 'br'],
-						ALLOWED_ATTR: ['href'],
-					}),
+					body: c.body,
 					date: c.date,
 					isBorrower: c.author?.role === 'borrower',
 					isFlagged: !!this.flaggedById[c.id],
@@ -299,7 +296,13 @@ export default {
 	methods: {
 		applyCommentsData(data) {
 			const loan = data?.lend?.loan;
-			this.rawComments = loan?.comments?.values ?? [];
+			this.rawComments = (loan?.comments?.values ?? []).map(c => ({
+				...c,
+				body: DOMPurify.sanitize(c.body ?? '', {
+					ALLOWED_TAGS: ['b', 'i', 'a', 'br'],
+					ALLOWED_ATTR: ['href'],
+				}),
+			}));
 			this.isSubscribed = loan?.userProperties?.subscribed ?? false;
 			this.isAdmin = data?.my?.isAdmin ?? false;
 		},
