@@ -100,7 +100,7 @@
 							v-if="isAdmin"
 							class="!tw-text-danger hover:!tw-text-danger-highlight"
 							data-testid="bp-comment-delete"
-							@click="pendingDeleteCommentId = comment.id; isDeleteConfirmVisible = true"
+							@click="openDeleteConfirm(comment.id)"
 						>
 							Delete
 						</kv-text-link>
@@ -128,7 +128,7 @@
 			<kv-button
 				variant="secondary"
 				data-testid="bp-comment-show-all"
-				@click="showAll = !showAll"
+				@click="toggleShowAll"
 			>
 				<template v-if="!showAll">
 					Show all comments
@@ -146,7 +146,7 @@
 		>
 			This action cannot be undone.
 			<template #controls>
-				<kv-button variant="secondary" @click="isDeleteConfirmVisible = false">
+				<kv-button variant="secondary" data-testid="bp-comment-delete-cancel" @click="cancelDeleteComment">
 					Cancel
 				</kv-button>
 				<kv-button @click="confirmDeleteComment">
@@ -333,6 +333,7 @@ export default {
 		async submitComment() {
 			if (!this.newCommentText.trim()) return;
 			this.isSubmitting = true;
+			this.$kvTrackEvent('borrower-profile', 'click', 'comment-submit', null, this.loanId);
 			try {
 				await this.apollo.mutate({
 					mutation: addCommentMutation,
@@ -347,8 +348,18 @@ export default {
 				this.isSubmitting = false;
 			}
 		},
+		openDeleteConfirm(commentId) {
+			this.pendingDeleteCommentId = commentId;
+			this.isDeleteConfirmVisible = true;
+			this.$kvTrackEvent('borrower-profile', 'view', 'comment-delete-lightbox', null, commentId);
+		},
+		cancelDeleteComment() {
+			this.$kvTrackEvent('borrower-profile', 'click', 'comment-delete-cancel', null, this.pendingDeleteCommentId);
+			this.isDeleteConfirmVisible = false;
+		},
 		async confirmDeleteComment() {
 			const commentId = this.pendingDeleteCommentId;
+			this.$kvTrackEvent('borrower-profile', 'click', 'comment-delete-confirm', null, commentId);
 			this.isDeleteConfirmVisible = false;
 			this.pendingDeleteCommentId = null;
 			try {
@@ -364,6 +375,7 @@ export default {
 			}
 		},
 		openReportLightbox(commentId) {
+			this.$kvTrackEvent('borrower-profile', 'click', 'comment-flag-click', null, commentId);
 			this.reportingCommentId = commentId;
 			this.isReportLightboxVisible = true;
 		},
@@ -372,6 +384,8 @@ export default {
 			this.flaggedById = { ...this.flaggedById, [commentId]: new Date().toISOString() };
 		},
 		async setSubscription(subscribe) {
+			const label = subscribe ? 'comment-subscribe' : 'comment-unsubscribe';
+			this.$kvTrackEvent('borrower-profile', 'click', label, null, this.loanId);
 			try {
 				await this.apollo.mutate({
 					mutation: loanSubscribeMutation,
@@ -382,6 +396,11 @@ export default {
 				logFormatter(e, 'error');
 				this.$showTipMsg(`There was a problem ${subscribe ? 'subscribing' : 'unsubscribing'}`, 'error');
 			}
+		},
+		toggleShowAll() {
+			this.showAll = !this.showAll;
+			const label = this.showAll ? 'comment-show-all' : 'comment-hide';
+			this.$kvTrackEvent('borrower-profile', 'click', label, null, this.loanId);
 		},
 	},
 };

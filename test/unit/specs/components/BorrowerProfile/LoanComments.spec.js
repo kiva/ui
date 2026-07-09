@@ -41,6 +41,7 @@ function renderLoanComments(dataOverrides = {}, propsOverrides = {}) {
 	const mutate = vi.fn(() => Promise.resolve({ data: {} }));
 	const query = vi.fn(() => Promise.resolve({ data: {} }));
 	const showTipMsg = vi.fn();
+	const kvTrackEvent = vi.fn();
 	const mapped = applyMockData(mockApiComments);
 	const Component = {
 		...LoanComments,
@@ -68,6 +69,7 @@ function renderLoanComments(dataOverrides = {}, propsOverrides = {}) {
 				mocks: {
 					...globalOptions.mocks,
 					$showTipMsg: showTipMsg,
+					$kvTrackEvent: kvTrackEvent,
 				},
 			},
 			props: {
@@ -77,12 +79,13 @@ function renderLoanComments(dataOverrides = {}, propsOverrides = {}) {
 		mutate,
 		query,
 		showTipMsg,
+		kvTrackEvent,
 	};
 }
 
 describe('LoanComments', () => {
 	it('submit comment calls addComment mutation and clears textarea', async () => {
-		const { getByTestId, mutate } = renderLoanComments();
+		const { getByTestId, mutate, kvTrackEvent } = renderLoanComments();
 		const textarea = getByTestId('bp-comment-form-textarea');
 		await fireEvent.update(textarea, 'New comment text');
 		await fireEvent.click(getByTestId('bp-comment-form-submit'));
@@ -93,6 +96,7 @@ describe('LoanComments', () => {
 			}),
 		);
 		expect(textarea.value).toBe('');
+		expect(kvTrackEvent).toHaveBeenCalledWith('borrower-profile', 'click', 'comment-submit', null, 123);
 	});
 
 	it('submit ignores empty or whitespace-only input', async () => {
@@ -114,11 +118,13 @@ describe('LoanComments', () => {
 
 	it('delete comment removes it from the list after confirmation', async () => {
 		const {
-			getAllByTestId, getByText, queryByText, mutate
+			getAllByTestId, getByText, queryByText, mutate, kvTrackEvent
 		} = renderLoanComments({ isAdmin: true });
 		await fireEvent.click(getAllByTestId('bp-comment-delete')[0]);
 
 		expect(getByText('Delete this comment?')).toBeTruthy();
+		expect(kvTrackEvent).toHaveBeenCalledWith('borrower-profile', 'view', 'comment-delete-lightbox', null, 1);
+
 		await fireEvent.click(getByText('Delete comment'));
 
 		expect(mutate).toHaveBeenCalledWith(
@@ -127,6 +133,19 @@ describe('LoanComments', () => {
 			}),
 		);
 		expect(queryByText('Great loan!')).toBeNull();
+		expect(kvTrackEvent).toHaveBeenCalledWith('borrower-profile', 'click', 'comment-delete-confirm', null, 1);
+	});
+
+	it('cancelling the delete confirmation tracks the cancel and leaves the comment intact', async () => {
+		const {
+			getAllByTestId, getByTestId, queryByText, mutate, kvTrackEvent
+		} = renderLoanComments({ isAdmin: true });
+		await fireEvent.click(getAllByTestId('bp-comment-delete')[0]);
+		await fireEvent.click(getByTestId('bp-comment-delete-cancel'));
+
+		expect(kvTrackEvent).toHaveBeenCalledWith('borrower-profile', 'click', 'comment-delete-cancel', null, 1);
+		expect(mutate).not.toHaveBeenCalled();
+		expect(queryByText('Great loan!')).toBeTruthy();
 	});
 
 	it('delete shows error on failure', async () => {
@@ -141,14 +160,17 @@ describe('LoanComments', () => {
 	});
 
 	it('flag comment opens report lightbox', async () => {
-		const { getAllByTestId, getByText } = renderLoanComments();
+		const { getAllByTestId, getByText, kvTrackEvent } = renderLoanComments();
 		await fireEvent.click(getAllByTestId('bp-comment-flag')[0]);
 
 		expect(getByText('Report Comment')).toBeTruthy();
+		expect(kvTrackEvent).toHaveBeenCalledWith('borrower-profile', 'click', 'comment-flag-click', null, 1);
 	});
 
 	it('subscribe calls mutation and toggles to unsubscribe button', async () => {
-		const { getByTestId, queryByTestId, mutate } = renderLoanComments();
+		const {
+			getByTestId, queryByTestId, mutate, kvTrackEvent
+		} = renderLoanComments();
 		await fireEvent.click(getByTestId('bp-comment-subscribe'));
 
 		expect(mutate).toHaveBeenCalledWith(
@@ -158,10 +180,13 @@ describe('LoanComments', () => {
 		);
 		expect(queryByTestId('bp-comment-subscribe')).toBeNull();
 		expect(getByTestId('bp-comment-unsubscribe')).toBeTruthy();
+		expect(kvTrackEvent).toHaveBeenCalledWith('borrower-profile', 'click', 'comment-subscribe', null, 123);
 	});
 
 	it('unsubscribe calls mutation and toggles to subscribe button', async () => {
-		const { getByTestId, queryByTestId, mutate } = renderLoanComments({ isSubscribed: true });
+		const {
+			getByTestId, queryByTestId, mutate, kvTrackEvent
+		} = renderLoanComments({ isSubscribed: true });
 		await fireEvent.click(getByTestId('bp-comment-unsubscribe'));
 
 		expect(mutate).toHaveBeenCalledWith(
@@ -171,6 +196,7 @@ describe('LoanComments', () => {
 		);
 		expect(queryByTestId('bp-comment-unsubscribe')).toBeNull();
 		expect(getByTestId('bp-comment-subscribe')).toBeTruthy();
+		expect(kvTrackEvent).toHaveBeenCalledWith('borrower-profile', 'click', 'comment-unsubscribe', null, 123);
 	});
 
 	it('keeps a comment flagged after posting a new comment refetches the list (AD-314)', async () => {
@@ -209,7 +235,7 @@ describe('LoanComments', () => {
 		expect(queryByText(/Flagged on/)).toBeNull();
 	});
 
-	it('show all reveals spillover comments', async () => {
+	it('show all reveals spillover comments and tracks show-all then hide', async () => {
 		const manyApiComments = Array.from({ length: 20 }, (_, i) => ({
 			id: i + 1,
 			author: { name: `User ${i}`, imageUrl: null, role: 'lender' },
@@ -217,11 +243,18 @@ describe('LoanComments', () => {
 			date: '2025-03-15T12:00:00Z',
 		}));
 		const mapped = applyMockData(manyApiComments);
-		const { getByTestId, queryByText } = renderLoanComments({ rawComments: mapped.rawComments });
+		const {
+			getByTestId, queryByText, kvTrackEvent
+		} = renderLoanComments({ rawComments: mapped.rawComments });
 
 		expect(queryByText('Comment 19')).toBeNull();
 
 		await fireEvent.click(getByTestId('bp-comment-show-all'));
 		expect(queryByText('Comment 19')).toBeTruthy();
+		expect(kvTrackEvent).toHaveBeenCalledWith('borrower-profile', 'click', 'comment-show-all', null, 123);
+
+		await fireEvent.click(getByTestId('bp-comment-show-all'));
+		expect(queryByText('Comment 19')).toBeNull();
+		expect(kvTrackEvent).toHaveBeenCalledWith('borrower-profile', 'click', 'comment-hide', null, 123);
 	});
 });
