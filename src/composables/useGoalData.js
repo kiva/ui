@@ -7,7 +7,6 @@ import {
 import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import useGoalDataProgressQuery from '#src/graphql/query/useGoalDataProgress.graphql';
 import useGoalDataYearlyProgressQuery from '#src/graphql/query/useGoalDataYearlyProgress.graphql';
-import goalSummaryAchievementQuery from '#src/graphql/query/goalSummaryAchievement.graphql';
 import goalSummaryQuery from '#src/graphql/query/goalSummary.graphql';
 import loanStatsByYearQuery from '#src/graphql/query/loanStatsByYear.graphql';
 import logFormatter from '#src/util/logFormatter';
@@ -71,11 +70,6 @@ export const GOAL_STATUS = {
 export const GOALS_CURRENT_YEAR = new Date().getFullYear();
 export const LAST_YEAR_KEY = GOALS_CURRENT_YEAR - 1;
 export const COMPLETED_GOAL_THRESHOLD = 100;
-
-// Matches achievements-service's rolling-window cap (MAX_ROLLING_WINDOW_SIZE); the
-// service can't return more loanPurchases than this in one query, so it's the largest
-// useful limit for summing borrowerCount.
-export const GOAL_SUMMARY_LOAN_PURCHASES_LIMIT = 1000;
 export const HALF_GOAL_THRESHOLD = 50;
 const MIN_CATEGORY_LOANS_AMOUNT = 100;
 const RECOMMENDED_LOANS_LIMIT = 4;
@@ -396,25 +390,8 @@ export default function useGoalData({ apollo } = {}) {
 	/**
 	 * Returns a normalized summary for a user's MyKiva goal.
 	 *
-	 * Support-all goals route through the `my.goalSummary` monolith endpoint, which
-	 * loads the user's lending history server-side and returns the full summary shape
-	 * (super lenders have too many transactions to compute on the FE).
-	 *
-	 * For badge-journey goals, `count`, `percent`, and `borrowerCount` come from
-	 * achievements-service. `amount` stays null: LoanPurchase doesn't expose a
-	 * per-share money field, so we can't compute what the user actually lent
-	 * without an achievements-service extension.
-	 *
-	 * `borrowerCount` is summed from the federated `loanPurchases.loan.borrowerCount`.
-	 * achievements-service retains `loanPurchases` in a rolling window of
-	 * MAX_ROLLING_WINDOW_SIZE (1000) loans, so we request that many
-	 * (`GOAL_SUMMARY_LOAN_PURCHASES_LIMIT`) — the most the service can return in one
-	 * call, accurate for any lender with <=1000 qualifying loans that year. Beyond
-	 * that the service has already trimmed the loan IDs, so no FE query can do better;
-	 * those users route through the `my.goalSummary` monolith endpoint.
-	 *
-	 * @param {string} [goalName] - Specific goal name to summarize.
-	 * @returns {Promise<Object|null>} Goal summary or null when no matching goal.
+	 * @param {string} [goalName] - Goal to summarize; defaults to the most recent active goal.
+	 * @returns {Promise<Object|null>} The goal summary, or null when there's no matching goal.
 	 */
 	async function computeGoalSummary(goalName) {
 		const prefs = await loadPreferences();
@@ -443,8 +420,8 @@ export default function useGoalData({ apollo } = {}) {
 		let achievement = null;
 		try {
 			const response = await apolloClient.query({
-				query: goalSummaryAchievementQuery,
-				variables: { year, loanPurchasesLimit: GOAL_SUMMARY_LOAN_PURCHASES_LIMIT },
+				query: useGoalDataYearlyProgressQuery,
+				variables: { year },
 				fetchPolicy: 'no-cache',
 			});
 			const tiered = response.data?.userAchievementProgress?.tieredLendingAchievements;
@@ -457,12 +434,7 @@ export default function useGoalData({ apollo } = {}) {
 		const target = goal.target || 0;
 		const percent = target > 0 ? Math.min(100, Math.round((count / target) * 100)) : 0;
 
-		let borrowerCount = null;
-		if (achievement) {
-			borrowerCount = (achievement.loanPurchases || [])
-				.filter(p => p.purchaseTime && new Date(p.purchaseTime).getFullYear() === year)
-				.reduce((sum, p) => sum + (p.loan?.borrowerCount || 0), 0);
-		}
+		const borrowerCount = achievement ? count : null;
 
 		return {
 			goalName: goal.goalName,

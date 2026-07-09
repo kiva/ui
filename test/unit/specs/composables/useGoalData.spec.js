@@ -2,7 +2,6 @@ import { createApp } from 'vue';
 import useGoalData, {
 	GOAL_STATUS,
 	GOALS_CURRENT_YEAR,
-	GOAL_SUMMARY_LOAN_PURCHASES_LIMIT,
 } from '#src/composables/useGoalData';
 import {
 	ID_BASIC_NEEDS,
@@ -4906,7 +4905,7 @@ describe('useGoalData', () => {
 				target: 10,
 				status: GOAL_STATUS.IN_PROGRESS,
 				count: 4,
-				borrowerCount: 0,
+				borrowerCount: 4,
 				amount: null,
 				percent: 40,
 			});
@@ -4954,7 +4953,7 @@ describe('useGoalData', () => {
 				target: 10,
 				status: GOAL_STATUS.IN_PROGRESS,
 				count: 4,
-				borrowerCount: 0,
+				borrowerCount: 4,
 				amount: null,
 				percent: 40,
 			});
@@ -5024,91 +5023,7 @@ describe('useGoalData', () => {
 			expect(summary.count).toBe(4);
 		});
 
-		it('excludes loanPurchases from other years when summing borrowerCount', async () => {
-			const goal = {
-				goalName: 'goal-womens-equality-2026',
-				category: ID_WOMENS_EQUALITY,
-				target: 10,
-				status: GOAL_STATUS.IN_PROGRESS,
-				dateStarted: '2026-02-01T00:00:00.000Z',
-			};
-
-			mockApollo.query = vi.fn()
-				.mockResolvedValueOnce({
-					data: {
-						my: {
-							userPreferences: {
-								id: 'pref-1',
-								preferences: JSON.stringify({ goals: [goal] }),
-							},
-							loans: { totalCount: 0 },
-						},
-					},
-				})
-				.mockResolvedValueOnce({
-					data: {
-						userAchievementProgress: {
-							tieredLendingAchievements: [{
-								id: ID_WOMENS_EQUALITY,
-								progressForYear: 2,
-								loanPurchases: [
-									{ purchaseTime: '2025-12-31T00:00:00.000Z', loan: { id: 1, borrowerCount: 99 } },
-									{ purchaseTime: '2026-04-01T00:00:00.000Z', loan: { id: 2, borrowerCount: 5 } },
-									{ purchaseTime: '2026-05-01T00:00:00.000Z', loan: { id: 3, borrowerCount: 1 } },
-								],
-							}],
-						},
-					},
-				});
-
-			const summary = await composable.getGoalSummary('goal-womens-equality-2026');
-
-			expect(summary.borrowerCount).toBe(6);
-		});
-
-		it('sums borrowerCount from loanPurchases within the goal year', async () => {
-			const goal = {
-				goalName: 'goal-womens-equality-2026',
-				category: ID_WOMENS_EQUALITY,
-				target: 10,
-				status: GOAL_STATUS.IN_PROGRESS,
-				dateStarted: '2026-02-01T00:00:00.000Z',
-			};
-
-			mockApollo.query = vi.fn()
-				.mockResolvedValueOnce({
-					data: {
-						my: {
-							userPreferences: {
-								id: 'pref-1',
-								preferences: JSON.stringify({ goals: [goal] }),
-							},
-							loans: { totalCount: 0 },
-						},
-					},
-				})
-				.mockResolvedValueOnce({
-					data: {
-						userAchievementProgress: {
-							tieredLendingAchievements: [{
-								id: ID_WOMENS_EQUALITY,
-								progressForYear: 3,
-								loanPurchases: [
-									{ purchaseTime: '2026-03-01T00:00:00.000Z', loan: { id: 1, borrowerCount: 2 } },
-									{ purchaseTime: '2026-04-01T00:00:00.000Z', loan: { id: 2, borrowerCount: 5 } },
-									{ purchaseTime: '2026-05-01T00:00:00.000Z', loan: { id: 3, borrowerCount: 1 } },
-								],
-							}],
-						},
-					},
-				});
-
-			const summary = await composable.getGoalSummary('goal-womens-equality-2026');
-
-			expect(summary.borrowerCount).toBe(8);
-		});
-
-		it('requests the achievements-service rolling-window limit of loan purchases', async () => {
+		it('sets borrowerCount to progressForYear and queries by year only (no loan records)', async () => {
 			const goal = {
 				goalName: 'goal-womens-equality-2026',
 				category: ID_WOMENS_EQUALITY,
@@ -5133,20 +5048,20 @@ describe('useGoalData', () => {
 					data: {
 						userAchievementProgress: {
 							tieredLendingAchievements: [
-								{ id: ID_WOMENS_EQUALITY, progressForYear: 7, loanPurchases: [] },
+								{ id: ID_WOMENS_EQUALITY, progressForYear: 7 },
 							],
 						},
 					},
 				});
 
-			await composable.getGoalSummary('goal-womens-equality-2026');
+			const summary = await composable.getGoalSummary('goal-womens-equality-2026');
 
-			// single achievement call requests the full rolling window, sized to the service cap
+			// borrowers are counted as loans, so both mirror progressForYear
+			expect(summary.count).toBe(7);
+			expect(summary.borrowerCount).toBe(7);
+			// no loan-record fetch: the achievement query is keyed on year only
 			expect(mockApollo.query).toHaveBeenCalledTimes(2);
-			expect(mockApollo.query.mock.calls[1][0].variables).toEqual({
-				year: 2026,
-				loanPurchasesLimit: GOAL_SUMMARY_LOAN_PURCHASES_LIMIT,
-			});
+			expect(mockApollo.query.mock.calls[1][0].variables).toEqual({ year: 2026 });
 		});
 
 		it('routes support-all through the my.goalSummary monolith endpoint', async () => {
