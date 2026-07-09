@@ -161,9 +161,6 @@ export default {
 		selectedTags() {
 			return this.availableTags.filter(tag => this.tagStates[tag.id] === true);
 		},
-		selectedTagCount() {
-			return this.selectedTags.length;
-		},
 	},
 	methods: {
 		emitHideSectionIfEmpty() {
@@ -172,13 +169,13 @@ export default {
 			}
 		},
 		getTagDivider(index) {
-			return index < this.selectedTagCount - 1 ? ' | ' : '';
+			return index < this.selectedTags.length - 1 ? ' | ' : '';
 		},
 		async handleTagToggle(tagId, checked) {
 			const tag = this.availableTags.find(t => t.id === tagId);
 			if (!tag?.name) return;
 
-			if (checked && this.selectedTagCount >= 5) {
+			if (checked && this.selectedTags.length >= 5) {
 				return;
 			}
 
