@@ -1,5 +1,13 @@
 <template>
-	<section>
+	<div v-if="loading">
+		<kv-loading-placeholder class="tw-mb-3.5" style="width: 60%; height: 2.25rem;" />
+		<description-list-loading :lines="11" />
+		<!-- Loading placeholder for the more about link -->
+		<div class="tw-flex tw-h-2 tw-mt-3.5">
+			<kv-loading-placeholder style="width: 233px;" />
+		</div>
+	</div>
+	<section v-else>
 		<h2 class="tw-mb-2">
 			{{ partnerName }}
 		</h2>
@@ -70,6 +78,54 @@
 					linkText: 'Currency exchange loss rate'
 				})"
 			/>
+			<description-list-item
+				v-if="startDate"
+				data-testid="bp-field-partner-details-time-on-kiva"
+				:term="'Time on Kiva'"
+				:details="timeOnKivaFormatted"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-partner-time-on-kiva',
+					sfid: '50150000000RyCJ',
+					panelName: 'Field-Partner',
+					linkText: 'Time on Kiva'
+				})"
+			/>
+			<description-list-item
+				v-if="loansPosted"
+				data-testid="bp-field-partner-details-loans-posted"
+				:term="'Kiva borrowers'"
+				:details="loansPostedFormatted"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-partner-kiva-borrowers',
+					sfid: '50150000000S178',
+					panelName: 'Field-Partner',
+					linkText: 'Kiva borrowers'
+				})"
+			/>
+			<description-list-item
+				v-if="Number(totalAmountRaised) > 0"
+				data-testid="bp-field-partner-details-total-loans"
+				:term="'Total loans'"
+				:details="totalAmountRaisedFormatted"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-partner-total-loans',
+					sfid: '50150000000S17D',
+					panelName: 'Field-Partner',
+					linkText: 'Total loans'
+				})"
+			/>
+			<description-list-item
+				v-if="avgLoanSizePercentPerCapitaIncome"
+				data-testid="bp-field-partner-details-avg-loan-size"
+				:term="'Avg loan size (% per capita)'"
+				:details="avgLoanSizePercentFormatted"
+				@show-definition="$emit('show-definition', {
+					cid: 'bp-def-partner-avg-loan-size',
+					sfid: '50150000000S17m',
+					panelName: 'Field-Partner',
+					linkText: 'Avg loan size (% per capita)'
+				})"
+			/>
 			<div class="tw-flex tw-mb-1.5" data-testid="bp-field-partner-details-partner-risk-rate">
 				<dt class="tw-flex-1 tw-mb-0">
 					<button
@@ -90,7 +146,8 @@
 						<kv-material-icon
 							v-for="i in 5"
 							:key="i"
-							class="tw-text-primary tw-w-3 tw-h-3"
+							class="tw-text-primary"
+							:class="condensed ? 'tw-w-2 tw-h-2' : 'tw-w-3 tw-h-3'"
 							:icon="getStarIcon(i)"
 						/>
 					</div>
@@ -115,6 +172,7 @@
 </template>
 
 <script>
+import { gql } from 'graphql-tag';
 import {
 	mdiArrowRight,
 	mdiStar,
@@ -122,15 +180,57 @@ import {
 	mdiStarHalfFull
 } from '@mdi/js';
 import numeral from 'numeral';
+import getMonthsCount from '#src/util/dateUtils';
 import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionListItem';
-import { KvMaterialIcon, KvTextLink } from '@kiva/kv-components';
+import DescriptionListLoading from '#src/components/BorrowerProfile/DescriptionListLoading';
+import { KvLoadingPlaceholder, KvMaterialIcon, KvTextLink } from '@kiva/kv-components';
+
+const fieldPartnerQuery = gql`query borrowerProfileFieldPartner($loanId: Int!) {
+	lend {
+		loan(id: $loanId) {
+			id
+			... on LoanPartner {
+				partner {
+					id
+					name
+					avgBorrowerCost
+					avgBorrowerCostType
+					avgProfitability
+					arrearsRate
+					loansAtRiskRate
+					defaultRate
+					riskRating
+					currencyExchangeLossRate
+					startDate
+					loansPosted
+					totalAmountRaised
+					avgLoanSizePercentPerCapitaIncome
+				}
+			}
+		}
+	}
+}`;
 
 export default {
 	name: 'FieldPartnerDetails',
+	inject: {
+		apollo: {},
+		cookieStore: {},
+		condensed: { default: false },
+	},
 	components: {
 		DescriptionListItem,
+		DescriptionListLoading,
+		KvLoadingPlaceholder,
 		KvMaterialIcon,
 		KvTextLink,
+	},
+	emits: ['show-definition'],
+	props: {
+		loanId: {
+			type: Number,
+			default: 0,
+		},
 	},
 	data() {
 		return {
@@ -138,50 +238,47 @@ export default {
 			mdiStar,
 			mdiStarOutline,
 			mdiStarHalfFull,
+			partnerId: 0,
+			partnerName: '',
+			avgBorrowerCost: 0,
+			avgBorrowerCostType: '',
+			avgProfitability: 0,
+			arrearsRate: 0,
+			loansAtRiskRate: 0,
+			defaultRate: 0,
+			riskRating: 0,
+			currencyExchangeLossRate: 0,
+			startDate: '',
+			loansPosted: 0,
+			totalAmountRaised: '',
+			avgLoanSizePercentPerCapitaIncome: 0,
+			loading: true,
 		};
 	},
-	emits: ['show-definition'],
-	props: {
-		partnerId: { // Partner.id
-			type: Number,
-			default: 0,
+	apollo: {
+		lazy: true,
+		query: fieldPartnerQuery,
+		variables() {
+			return { loanId: this.loanId };
 		},
-		partnerName: { // Partner.name
-			type: String,
-			default: '',
+		result({ data }) {
+			const partner = data?.lend?.loan?.partner;
+			this.partnerId = partner?.id ?? 0;
+			this.partnerName = partner?.name ?? '';
+			this.avgBorrowerCost = partner?.avgBorrowerCost ?? 0;
+			this.avgBorrowerCostType = partner?.avgBorrowerCostType ?? '';
+			this.avgProfitability = partner?.avgProfitability ?? 0;
+			this.arrearsRate = partner?.arrearsRate ?? 0;
+			this.loansAtRiskRate = partner?.loansAtRiskRate ?? 0;
+			this.defaultRate = partner?.defaultRate ?? 0;
+			this.riskRating = partner?.riskRating ?? 0;
+			this.currencyExchangeLossRate = partner?.currencyExchangeLossRate ?? 0;
+			this.startDate = partner?.startDate ?? '';
+			this.loansPosted = partner?.loansPosted ?? 0;
+			this.totalAmountRaised = partner?.totalAmountRaised ?? '';
+			this.avgLoanSizePercentPerCapitaIncome = partner?.avgLoanSizePercentPerCapitaIncome ?? 0;
+			this.loading = false;
 		},
-		avgBorrowerCost: { // Partner.avgBorrowerCost
-			type: Number,
-			default: 0,
-		},
-		avgBorrowerCostType: { // Partner.avgBorrowerCostType
-			type: String,
-			default: '',
-		},
-		avgProfitability: { // Partner.avgProfitability
-			type: Number,
-			default: 0,
-		},
-		arrearsRate: { // Partner.arrearsRate
-			type: Number,
-			default: 0,
-		},
-		loansAtRiskRate: { // Partner.loansAtRiskRate
-			type: Number,
-			default: 0,
-		},
-		defaultRate: { // Partner.defaultRate
-			type: Number,
-			default: 0,
-		},
-		riskRating: { // Partner.riskRating
-			type: Number,
-			default: 0,
-		},
-		currencyExchangeLossRate: { // Partner.currencyExchangeLossRate
-			type: Number,
-			default: 0,
-		}
 	},
 	computed: {
 		avgBorrowerCostFormatted() {
@@ -203,6 +300,28 @@ export default {
 		},
 		currencyExchangeLossRateFormatted() {
 			return numeral(this.currencyExchangeLossRate / 100).format('0[.]00%');
+		},
+		timeOnKivaFormatted() {
+			if (!this.startDate) return '';
+			const start = new Date(this.startDate);
+			if (Number.isNaN(start.getTime())) return '';
+			let months = getMonthsCount(this.startDate);
+			if (months < 0) months = 0;
+			const pluralize = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+			if (months < 12) return pluralize(months, 'month');
+			const years = Math.floor(months / 12);
+			const remMonths = months % 12;
+			if (remMonths === 0) return pluralize(years, 'year');
+			return `${pluralize(years, 'year')}, ${pluralize(remMonths, 'month')}`;
+		},
+		loansPostedFormatted() {
+			return numeral(this.loansPosted).format('0,0');
+		},
+		totalAmountRaisedFormatted() {
+			return numeral(this.totalAmountRaised).format('$0,0');
+		},
+		avgLoanSizePercentFormatted() {
+			return `${numeral(this.avgLoanSizePercentPerCapitaIncome).format('0.0')}%`;
 		},
 	},
 	methods: {

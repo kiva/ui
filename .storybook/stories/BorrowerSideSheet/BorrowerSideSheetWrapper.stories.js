@@ -1,12 +1,12 @@
-import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
+import BorrowerSideSheetWrapper from '#src/components/BorrowerSideSheet/BorrowerSideSheetWrapper';
 
 import apolloStoryMixin from '../../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../../mixins/cookie-store-story-mixin';
 import kvAuth0StoryMixin from '../../mixins/kv-auth0-story-mixin';
-import { fundraisingPartnerLoan, createQueryResult } from './mockLoanFixtures';
+import { fundraisingPartnerLoan, createQueryResult } from '../BorrowerProfile/mockLoanFixtures';
 
 export default {
-	title: 'Components/BorrowerProfile/BorrowerSideSheetWrapper',
+	title: 'Components/BorrowerSideSheet/BorrowerSideSheetWrapper',
 	component: BorrowerSideSheetWrapper,
 };
 

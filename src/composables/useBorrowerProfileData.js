@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue';
 import logFormatter from '#src/util/logFormatter';
-import { watchLoanData } from '#src/util/loanUtils';
+import { watchLoanData, isActivelyInPfp } from '#src/util/loanUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 
@@ -72,7 +72,7 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 	const comments = computed(() => loan.value?.comments?.values ?? []);
 	const disbursalDate = computed(() => loan.value?.disbursalDate ?? '');
 	const endorsement = computed(() => (loan.value && 'endorsement' in loan.value ? loan.value.endorsement : ''));
-	const inPfp = computed(() => loan.value?.inPfp ?? false);
+	const inPfp = computed(() => isActivelyInPfp(loan.value));
 	const lenderCount = computed(() => loan.value?.lenders?.totalCount);
 	const lenders = computed(() => loan.value?.lenders ?? null);
 	const loanAmount = computed(() => loan.value?.loanAmount || 0);

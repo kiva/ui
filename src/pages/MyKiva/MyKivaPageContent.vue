@@ -199,7 +199,7 @@ import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import useContentful from '#src/composables/useContentful';
 
-import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
+import BorrowerSideSheetWrapper from '#src/components/BorrowerSideSheet/BorrowerSideSheetWrapper';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';

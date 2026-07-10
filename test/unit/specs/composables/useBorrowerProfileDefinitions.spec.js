@@ -1,4 +1,6 @@
-import useBorrowerProfileDefinitions from '#src/composables/useBorrowerProfileDefinitions';
+import useBorrowerProfileDefinitions, {
+	resetBorrowerProfileDefinitions,
+} from '#src/composables/useBorrowerProfileDefinitions';
 
 // Builds a Contentful apollo response containing a borrower-profile-definitions content group.
 // entries is an array of richTextContent-typed items to include as the group's contents.
@@ -48,6 +50,12 @@ function makeRichTextEntry(key, name, text) {
 }
 
 describe('useBorrowerProfileDefinitions', () => {
+	// The definitions cache is module-level (shared across callers within a request),
+	// so clear it between cases to keep them independent.
+	afterEach(() => {
+		resetBorrowerProfileDefinitions();
+	});
+
 	describe('resolveDefinition', () => {
 		it('returns Contentful title and rendered HTML when cid matches', async () => {
 			const mockApollo = {

@@ -27,7 +27,7 @@ import {
 import { KvMap } from '@kiva/kv-components';
 import logFormatter from '#src/util/logFormatter';
 import loanFacetsQuery from '#src/graphql/query/loanFacetsQuery.graphql';
-import CountryInfo from './CountryInfo';
+import CountryInfo from '#src/components/BorrowerProfile/CountryInfo';
 
 const apollo = inject('apollo');
 const borrowerProfile = inject('borrowerProfile');

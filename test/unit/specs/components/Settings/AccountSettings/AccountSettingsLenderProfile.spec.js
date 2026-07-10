@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 import { render } from '@testing-library/vue';
 import AccountSettingsLenderProfile from '#src/pages/Settings/AccountSettings/components/AccountSettingsLenderProfile';
-import { globalOptions } from '../../../../specUtils';
+import { globalOptions, getOperationName } from '../../../../specUtils';
 
 /** Minimal country list for country dropdown (sourced from general.allCountriesIsoMap in app) */
 const mockCountries = [{ isoCode: 'US', name: 'United States' }];
@@ -46,7 +46,7 @@ function getProfileWrapper(apolloOverrides = {}) {
 	const childRef = { current: null };
 	const showTipMsg = vi.fn();
 	const Mutate = apolloOverrides.mutate ?? vi.fn(({ mutation }) => {
-		const name = mutation?.definitions?.[0]?.name?.value || 'updateDisplayName';
+		const name = getOperationName(mutation) || 'updateDisplayName';
 		return Promise.resolve(mutationSuccess(name));
 	});
 	const query = apolloOverrides.query ?? vi.fn(() => Promise.resolve({ data: {} }));
@@ -185,7 +185,7 @@ describe('AccountSettingsLenderProfile', () => {
 
 		it('runs multiple mutations in sequence, each with only its variables', async () => {
 			const mutate = vi.fn(({ mutation }) => {
-				const name = mutation?.definitions?.[0]?.name?.value || 'unknown';
+				const name = getOperationName(mutation) || 'unknown';
 				return Promise.resolve({ data: { my: { [name]: { success: true } } } });
 			});
 			const { getVm } = getProfileWrapper({ mutate });

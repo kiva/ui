@@ -64,6 +64,7 @@
 				@add-to-basket="addToBasket"
 			/>
 		</div>
+		<DefinitionsLightbox ref="definitionsLightbox" />
 	</div>
 </template>
 
@@ -84,13 +85,14 @@ import { fetchAiLoanPills } from '#src/util/aiLoanPillsUtils';
 import { addMonths, differenceInWeeks } from 'date-fns';
 import { FUNDRAISING, ENDED } from '#src/api/fixtures/LoanStatusEnum';
 import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
-import CommentsAndWhySpecial from './CommentsAndWhySpecial';
-import BorrowerCountry from './BorrowerCountry';
-import ContributingPartners from './ContributingPartners';
-import DetailsTabs from './DetailsTabs';
-import LendersAndTeams from './LendersAndTeams';
-import LoanProgress from './LoanProgress';
-import MoreAboutLoan from './MoreAboutLoan';
+import CommentsAndWhySpecial from '#src/components/BorrowerProfile/CommentsAndWhySpecial';
+import BorrowerCountry from '#src/components/BorrowerProfile/BorrowerCountry';
+import ContributingPartners from '#src/components/BorrowerProfile/ContributingPartners';
+import DetailsTabs from '#src/components/BorrowerProfile/DetailsTabs';
+import LendersAndTeams from '#src/components/BorrowerProfile/LendersAndTeams';
+import LoanProgress from '#src/components/BorrowerProfile/LoanProgress';
+import MoreAboutLoan from '#src/components/BorrowerProfile/MoreAboutLoan';
+import DefinitionsLightbox from '#src/components/BorrowerProfile/DefinitionsLightbox';
 import SideSheetHeader from './SideSheetHeader';
 import SideSheetLoanHowMoneyHelps from './SideSheetLoanHowMoneyHelps';
 import SideSheetLoanStory from './SideSheetLoanStory';
@@ -112,6 +114,7 @@ export default {
 		SideSheetLoanStory,
 		SideSheetLoanTags,
 		LoanNextSteps,
+		DefinitionsLightbox,
 	},
 	emits: ['add-to-basket'],
 	inject: ['$kvTrackEvent'],
@@ -146,6 +149,10 @@ export default {
 		const borrowerProfile = useBorrowerProfileData(apollo, cookieStore);
 		// Provide borrower profile data to child components
 		provide('borrowerProfile', borrowerProfile);
+
+		const definitionsLightbox = ref(null);
+		// One definitions lightbox for the side sheet; children call this with their cid/sfid.
+		provide('openDefinition', payload => definitionsLightbox.value?.open(payload));
 
 		const aiPills = ref([]);
 		fetchAiLoanPills(apollo, [props.loanId]).then(result => {
@@ -239,6 +246,7 @@ export default {
 			weeksToRepay,
 			loanStatus,
 			aiPills,
+			definitionsLightbox,
 		};
 	}
 };

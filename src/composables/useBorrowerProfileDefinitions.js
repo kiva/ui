@@ -9,15 +9,21 @@ const contentfulDefinitionsQuery = gql`query contentfulDefinitions {
 	}
 }`;
 
-export default function useBorrowerProfileDefinitions(apollo) {
-	// Cached after first successful load within this composable instance.
-	// Apollo cache-first is the true dedup mechanism across components —
-	// only one network fetch occurs per page load regardless of how many callers
-	// invoke loadDefinitions().
-	let contentfulDefinitions = null;
-	let loadPromise = null;
+// Module-level cache shared by every caller. Each SSR request runs in its own
+// process, so this is request-scoped on the server and session-scoped on the
+// client: the definitions are fetched and parsed once, no matter how many
+// components resolve a definition.
+let contentfulDefinitions = null;
+let loadPromise = null;
 
-	async function loadDefinitions() {
+// Test-only: clear the module cache so specs don't leak state between cases.
+export function resetBorrowerProfileDefinitions() {
+	contentfulDefinitions = null;
+	loadPromise = null;
+}
+
+export default function useBorrowerProfileDefinitions(apollo) {
+	function loadDefinitions() {
 		if (loadPromise) return loadPromise;
 		loadPromise = apollo.query({ query: contentfulDefinitionsQuery }).then(result => {
 			const contentfulData = result.data?.contentful?.entries?.items ?? null;

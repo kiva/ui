@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { mount } from '@vue/test-utils';
-import SideSheetLoanTags from '#src/components/BorrowerProfile/SideSheetLoanTags';
+import SideSheetLoanTags from '#src/components/BorrowerSideSheet/SideSheetLoanTags';
 
 vi.mock('@kiva/kv-components', () => ({
 	loanCardComputedProperties: () => ({

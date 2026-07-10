@@ -50,7 +50,7 @@ export default {
 			type: String,
 			required: true,
 		},
-		teamId: {
+		teamPublicId: {
 			type: String,
 			default: ''
 		},
@@ -74,7 +74,7 @@ export default {
 				: 'Help ';
 		},
 		teamLink() {
-			return `/lend/filter?team=${this.teamId ?? ''}`;
+			return `/lend/filter?team=${this.teamPublicId ?? ''}`;
 		},
 	},
 	methods: {

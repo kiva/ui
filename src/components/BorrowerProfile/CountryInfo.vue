@@ -1,18 +1,32 @@
 <template>
 	<section>
-		<div v-if="loading" class="">
-			<kv-loading-placeholder
-				class="tw-mb-2" :style="{width: 30 + (Math.random() * 15) + '%', height: '1.6rem'}"
-			/>
-			<div class="tw-flex lg:tw-mb-3">
-				<div v-for="i in 2" :key="i" class="tw-flex-auto">
-					<kv-loading-placeholder
-						class="tw-block tw-mb-2" :style="{width: 10 + (Math.random() * 15) + '%', height: '1.6rem'}"
-					/>
-					<kv-loading-placeholder
-						class="tw-block tw-mb-2" :style="{width: 40 + (Math.random() * 15) + '%', height: '1.0rem'}"
-					/>
+		<div v-if="loading">
+			<div class="tw-h-4 lg:tw-h-4.5 tw-w-3/5 md:tw-w-1/4 lg:tw-w-1/5 tw-mb-4">
+				<kv-loading-placeholder />
+			</div>
+			<!-- First-row labels are long enough to wrap to two lines below md; second-row labels stay on one line -->
+			<div class="tw-flex tw-mb-4">
+				<div v-for="i in 2" :key="i" class="tw-flex-1">
+					<div class="tw-h-3.5 lg:tw-h-4 tw-w-1/2 md:tw-w-1/4 lg:tw-w-1/6 tw-mb-0.5">
+						<kv-loading-placeholder />
+					</div>
+					<div class="tw-h-4 md:tw-h-2 tw-w-4/5 md:tw-w-1/2 lg:tw-w-1/3">
+						<kv-loading-placeholder />
+					</div>
 				</div>
+			</div>
+			<div class="tw-flex tw-mb-4">
+				<div v-for="i in 2" :key="i" class="tw-flex-1">
+					<div class="tw-h-3.5 lg:tw-h-4 tw-w-1/2 md:tw-w-1/4 lg:tw-w-1/6 tw-mb-0.5">
+						<kv-loading-placeholder />
+					</div>
+					<div class="tw-h-2 tw-w-4/5 md:tw-w-2/5 lg:tw-w-1/4">
+						<kv-loading-placeholder />
+					</div>
+				</div>
+			</div>
+			<div class="tw-h-6 tw-w-3/4 md:tw-w-2/5 lg:tw-w-1/4">
+				<kv-loading-placeholder />
 			</div>
 		</div>
 
@@ -20,8 +34,8 @@
 			<h2 class="tw-mb-3" data-testid="bp-country-header">
 				{{ countryName }} at a glance
 			</h2>
-			<div class="tw-flex tw-mb-3">
-				<p class="tw-flex-auto" data-testid="bp-country-aai">
+			<div class="tw-flex tw-gap-2 tw-mb-4">
+				<p class="tw-flex-1" data-testid="bp-country-aai">
 					<span class="tw-block tw-text-headline-two" data-testid="bp-country-aai-value">
 						{{ avgAnnualIncomeFormatted }}
 					</span>
@@ -29,12 +43,30 @@
 						Average annual income (USD)
 					</span>
 				</p>
-				<p class="tw-flex-auto" data-testid="bp-country-loans-fundraising">
+				<p class="tw-flex-1" data-testid="bp-country-loans-fundraising">
 					<span class="tw-block tw-text-headline-two" data-testid="bp-country-loans-fundraising-value">
 						{{ numLoansFundraising }}
 					</span>
 					<span class="tw-block tw-text-upper tw-text-secondary">
 						Loans currently fundraising
+					</span>
+				</p>
+			</div>
+			<div v-if="fundsLentInCountry || loanCurrencyLabel" class="tw-flex tw-gap-2 tw-mb-4">
+				<p v-if="fundsLentInCountry" class="tw-flex-1" data-testid="bp-country-funds-lent">
+					<span class="tw-block tw-text-headline-two" data-testid="bp-country-funds-lent-value">
+						{{ fundsLentInCountryFormatted }}
+					</span>
+					<span class="tw-block tw-text-upper tw-text-secondary">
+						Funds lent in country
+					</span>
+				</p>
+				<p v-if="loanCurrencyLabel" class="tw-flex-1" data-testid="bp-country-loan-currency">
+					<span class="tw-block tw-text-headline-two" data-testid="bp-country-loan-currency-value">
+						{{ loanCurrencyLabel }}
+					</span>
+					<span class="tw-block tw-text-upper tw-text-secondary">
+						Loan transacted in
 					</span>
 				</p>
 			</div>
@@ -63,7 +95,6 @@
 <script>
 import { gql } from 'graphql-tag';
 import numeral from 'numeral';
-import { createIntersectionObserver } from '#src/util/observerUtils';
 
 import { KvLoadingPlaceholder, KvButton as KvUiButton } from '@kiva/kv-components';
 
@@ -85,11 +116,76 @@ export default {
 			avgAnnualIncome: '',
 			countryIsoCode: '',
 			countryName: '',
+			fundsLentInCountry: 0,
+			loanCurrency: '',
+			loanCurrencyFullName: '',
 			loading: true,
 			loansInRegionLink: '',
 			numLoansFundraising: 0,
 			regionName: '',
 		};
+	},
+	apollo: {
+		lazy: true,
+		query: gql`query borrowerCountryInfo($loanId: Int!) {
+			lend {
+				loan(id: $loanId) {
+					id
+					terms {
+						currency
+						currencyFullName
+					}
+					geocode {
+						latitude
+						longitude
+						country {
+							id
+							numLoansFundraising
+							ppp
+							isoCode
+							name
+							region
+							fundsLentInCountry
+						}
+					}
+				}
+				countryFacets {
+					country {
+						id
+						isoCode
+						region
+					}
+				}
+			}
+		}`,
+		variables() {
+			return { loanId: this.loanId };
+		},
+		result({ data }) {
+			const loan = data?.lend?.loan;
+			const geocode = loan?.geocode;
+			this.numLoansFundraising = geocode?.country?.numLoansFundraising ?? 0;
+			this.avgAnnualIncome = geocode?.country?.ppp ?? '';
+			this.countryIsoCode = geocode?.country?.isoCode ?? '';
+			this.countryName = geocode?.country?.name ?? '';
+			this.regionName = geocode?.country?.region ?? '';
+			this.fundsLentInCountry = geocode?.country?.fundsLentInCountry ?? 0;
+			this.loanCurrency = loan?.terms?.currency ?? '';
+			this.loanCurrencyFullName = loan?.terms?.currencyFullName ?? '';
+
+			const countries = [];
+			const countryFacets = data?.lend?.countryFacets ?? [];
+			if (countryFacets.length) {
+				for (let i = 0; i < countryFacets.length; i += 1) {
+					if (countryFacets[i].country.region === this.regionName) {
+						countries.push(countryFacets[i].country.isoCode);
+					}
+				}
+				this.loansInRegionLink = `/lend/filter?country=${countries.join(',').toLowerCase()}&sortBy=newest`;
+			}
+
+			this.loading = false;
+		},
 	},
 	computed: {
 		showFindMoreLoansInCountryButton() {
@@ -101,92 +197,12 @@ export default {
 		avgAnnualIncomeFormatted() {
 			return numeral(this.avgAnnualIncome).format('$0,0[.]00');
 		},
-	},
-	methods: {
-		createObserver() {
-			// Watch for this element being close to entering the viewport
-			this.observer = createIntersectionObserver({
-				targets: [this.$el],
-				rootMargin: '500px',
-				callback: entries => {
-					entries.forEach(entry => {
-						if (entry.target === this.$el && entry.intersectionRatio > 0) {
-							// This element is close to being in the viewport, so load the data.
-							// Because of the apollo cache it's safe to call this repeatedly.
-							this.loadData();
-						}
-					});
-				}
-			});
-			if (!this.observer) {
-				// Observer was not created, so call loadData right away as a fallback.
-				this.loadData();
-			}
+		fundsLentInCountryFormatted() {
+			return numeral(this.fundsLentInCountry).format('$0,0');
 		},
-		destroyObserver() {
-			if (this.observer) {
-				this.observer.disconnect();
-			}
+		loanCurrencyLabel() {
+			return this.loanCurrencyFullName || this.loanCurrency || '';
 		},
-		loadData() {
-			this.apollo.query({
-				query: gql`query borrowerCountryInfo($loanId: Int!) {
-					lend {
-						loan(id: $loanId) {
-							id
-							geocode {
-								latitude
-								longitude
-								country {
-									id
-									numLoansFundraising
-									ppp
-									isoCode
-									name
-									region
-								}
-							}
-						}
-						countryFacets {
-							country {
-								id
-								isoCode
-								region
-							}
-						}
-					}
-				}`,
-				variables: {
-					loanId: this.loanId
-				},
-			}).then(result => {
-				const geocode = result?.data?.lend?.loan?.geocode;
-				this.numLoansFundraising = geocode?.country?.numLoansFundraising ?? 0;
-				this.avgAnnualIncome = geocode?.country?.ppp ?? '';
-				this.countryIsoCode = geocode?.country?.isoCode ?? '';
-				this.countryName = geocode?.country?.name ?? '';
-				this.regionName = geocode?.country?.region ?? '';
-
-				const countries = [];
-				const countryFacets = result?.data?.lend?.countryFacets ?? [];
-				if (countryFacets.length) {
-					for (let i = 0; i < countryFacets.length; i += 1) {
-						if (countryFacets[i].country.region === this.regionName) {
-							countries.push(countryFacets[i].country.isoCode);
-						}
-					}
-					this.loansInRegionLink = `/lend/filter?country=${countries.join(',').toLowerCase()}&sortBy=newest`;
-				}
-
-				this.loading = false;
-			});
-		},
-	},
-	mounted() {
-		this.createObserver();
-	},
-	beforeUnmount() {
-		this.destroyObserver();
 	},
 };
 

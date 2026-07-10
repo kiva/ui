@@ -1,0 +1,3 @@
+mutation AddOrRemoveTagOnLoan($loanId: Int!, $tagId: Int!, $checked: Boolean!) {
+	addOrRemoveTagOnLoan(loanId: $loanId, tagId: $tagId, checked: $checked)
+}

@@ -1,44 +1,32 @@
 import TrusteeDetails from '#src/components/BorrowerProfile/TrusteeDetails';
 
+import apolloStoryMixin from '../../mixins/apollo-story-mixin';
+import cookieStoreStoryMixin from '../../mixins/cookie-store-story-mixin';
+import kvAuth0StoryMixin from '../../mixins/kv-auth0-story-mixin';
+import { createQueryResult, directLoanWithTrustee } from './mockLoanFixtures';
+
+function trusteeDetailsStory(loan, { loading = false, condensed = false } = {}) {
+	return () => ({
+		components: { TrusteeDetails },
+		mixins: [
+			apolloStoryMixin({ queryResult: createQueryResult(loan), loading }),
+			cookieStoreStoryMixin(),
+			kvAuth0StoryMixin,
+		],
+		provide: { condensed },
+		template: `<trustee-details :loan-id="${loan.id}" />`,
+	});
+}
+
 export default {
 	title: 'Components/BorrowerProfile/TrusteeDetails',
 	component: TrusteeDetails,
 };
 
-const baseTrustee = {
-	borrowerName: 'Sample borrower',
-	trusteeName: 'Willy Wonka',
-	endorsement: 'This borrower has been endorsed by a local Kiva trustee.',
-	numLoansEndorsedPublic: 342,
-	totalLoansValue: '1875000.00',
-	numDefaultedLoans: 7,
-	repaymentRate: 98,
-	trusteeId: 12345,
-};
+export const Default = trusteeDetailsStory(directLoanWithTrustee);
+Default.storyName = 'Trustee';
 
-export const WithEndorsement = () => ({
-	components: { TrusteeDetails },
-	data: () => ({ ...baseTrustee }),
-	template: '<trustee-details v-bind="$data" />',
-});
-WithEndorsement.storyName = 'Trustee (with endorsement)';
+export const Loading = trusteeDetailsStory(directLoanWithTrustee, { loading: true });
+Loading.storyName = 'Loading (skeleton)';
 
-export const WithoutEndorsementText = () => ({
-	components: { TrusteeDetails },
-	data: () => ({ ...baseTrustee, endorsement: '' }),
-	template: '<trustee-details v-bind="$data" />',
-});
-
-export const NoTrusteeEndorsement = () => ({
-	components: { TrusteeDetails },
-	data: () => ({
-		...baseTrustee,
-		trusteeName: 'No Trustee Endorsement',
-		endorsement: '',
-		numLoansEndorsedPublic: 0,
-		totalLoansValue: '0.00',
-		numDefaultedLoans: 0,
-		repaymentRate: 0,
-	}),
-	template: '<trustee-details v-bind="$data" />',
-});
+export const Condensed = trusteeDetailsStory(directLoanWithTrustee, { condensed: true });

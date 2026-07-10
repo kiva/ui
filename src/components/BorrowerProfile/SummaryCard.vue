@@ -41,7 +41,7 @@
 						class="tw-ml-0.5 tw-shrink-0 tw--my-2 tw-text-secondary"
 						data-testid="bp-summary-pii-info"
 						aria-label="Why is this borrower anonymous?"
-						@click="showDefinition({ cid: 'bp-def-anonymized-loan', sfid: '501US00000NRTYa' })"
+						@click="openDefinition({ cid: 'bp-def-anonymized-loan', sfid: '501US00000NRTYa' })"
 						v-kv-track-event="[
 							'Borrower profile',
 							'click-PII-anonymization-info',
@@ -52,9 +52,9 @@
 				</div>
 				<template v-if="isLoading">
 					<div class="tw-flex tw-flex-wrap tw-mb-3">
-						<kv-loading-placeholder class="tw-mb-1" style="height: 0.5rem;" />
-						<kv-loading-placeholder style="height: 2.8rem; width: 30%;" />
-						<kv-loading-placeholder style="height: 2.8rem; width: 30%; margin-left: auto;" />
+						<kv-loading-placeholder class="tw-mb-1 tw-h-2" />
+						<kv-loading-placeholder class="tw-h-5.5" :style="{width: '30%'}" />
+						<kv-loading-placeholder class="tw-h-5.5 tw-ml-auto" :style="{width: '30%'}" />
 					</div>
 				</template>
 				<template v-else>
@@ -79,13 +79,14 @@
 					<loan-progress
 						data-testid="bp-summary-progress"
 						class="tw-mb-2 tw-mt-1.5"
-						:money-left="unreservedAmount"
-						:progress-percent="fundraisingPercent"
+						:money-left="moneyLeft"
+						:progress-percent="effectiveProgressPercent"
 						:time-left="timeLeft"
-						:loan-status="inPfp ? 'pfp' : 'fundraising'"
+						:loan-status="inPfp ? 'pfp' : status"
 						:number-of-lenders="numLenders"
 						:pfp-min-lenders="pfpMinLenders"
 						:loading="isLoading"
+						:hide-view-profile-links="true"
 					/>
 				</template>
 			</div>
@@ -95,7 +96,7 @@
 			<kv-text-link
 				v-if="anonymizationLevel === 'full'"
 				data-testid="bp-summary-anonymous-learn-more"
-				@click="showDefinition({ cid: 'bp-def-anonymous-description', sfid: '50150000000SXVz' })"
+				@click="openDefinition({ cid: 'bp-def-anonymous-description', sfid: '50150000000SXVz' })"
 				v-kv-track-event="[
 					'Borrower profile',
 					'click-anonymous-loan-use-info',
@@ -108,7 +109,7 @@
 		</p>
 		<div class="tw-flex-auto tw-inline-flex tw-w-full">
 			<template v-if="isLoading">
-				<kv-loading-placeholder style="height: 1.9rem; width: 50%;" />
+				<kv-loading-placeholder class="tw-h-4" :style="{width: '50%'}" />
 			</template>
 			<template v-else>
 				<summary-tag v-if="countryName">
@@ -135,7 +136,6 @@
 			/>
 		</div>
 		<slot name="sharebutton"></slot>
-		<content-lightbox ref="lightbox" />
 	</section>
 </template>
 
@@ -144,49 +144,68 @@ import { gql } from 'graphql-tag';
 import { mdiMapMarker, mdiInformationOutline } from '@mdi/js';
 import HeartComment from '#src/assets/icons/inline/heart-comment.svg';
 import {
-	KvIconButton, KvMaterialIcon, KvLoadingPlaceholder, KvTextLink,
+	KvMaterialIcon, KvLoadingPlaceholder, KvIconButton, KvTextLink,
 } from '@kiva/kv-components';
-import useBorrowerProfileDefinitions from '#src/composables/useBorrowerProfileDefinitions';
+import { isActivelyInPfp } from '#src/util/loanUtils';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
-import ContentLightbox from './ContentLightbox';
 import LoanProgress from './LoanProgress';
 import SummaryTag from './SummaryTag';
 import LoanBookmark from './LoanBookmark';
 
-const preFetchQuery = gql`
-	query summaryCard($loanId: Int!) {
-		lend {
-			loan(id: $loanId) {
-				id
-				image {
-					id
-					hash
-				}
-				name
-				status
-				use
-				# for fullLoanUse
-				anonymizationLevel
-				borrowerCount
-				loanAmount
-				fullLoanUse @client
-			}
-		}
-		my {
+export const summaryCardFragment = gql`fragment summaryCardFields on LoanBasic {
+	id
+	image {
+		id
+		hash
+	}
+	name
+	status
+	use
+	anonymizationLevel
+	borrowerCount
+	loanAmount
+	fullLoanUse @client
+	activity {
+		id
+		name
+	}
+	distributionModel
+	fundraisingPercent @client
+	fundraisingTimeLeft @client
+	fundraisingTimeLeftMilliseconds @client
+	geocode {
+		city
+		state
+		country {
 			id
-			userAccount {
-				id
-			}
+			name
 		}
 	}
-`;
+	paidAmount
+	loanFundraisingInfo {
+		id
+		fundedAmount
+		reservedAmount
+	}
+	plannedExpirationDate
+	unreservedAmount @client
+	inPfp
+	pfpMinLenders
+	lenders {
+		totalCount
+	}
+	comments {
+		totalCount
+	}
+}`;
 
 const mountQuery = gql`
 	query summaryCard($loanId: Int!) {
 		lend {
 			loan(id: $loanId) {
 				id
+				status
 				activity {
 					id
 					name
@@ -204,6 +223,7 @@ const mountQuery = gql`
 					}
 				}
 				loanAmount
+				paidAmount
 				loanFundraisingInfo {
 					id
 					fundedAmount
@@ -226,11 +246,14 @@ const mountQuery = gql`
 
 export default {
 	name: 'SummaryCard',
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { from: 'apollo' },
+		cookieStore: { from: 'cookieStore' },
+		openDefinition: { from: 'openDefinition', default: () => () => {} },
+	},
 	components: {
 		BorrowerImage,
 		BorrowerName,
-		ContentLightbox,
 		KvIconButton,
 		KvMaterialIcon,
 		KvTextLink,
@@ -240,37 +263,77 @@ export default {
 		KvLoadingPlaceholder,
 		HeartComment,
 	},
-	created() {
-		this.definitions = useBorrowerProfileDefinitions(this.apollo);
+	props: {
+		loan: {
+			type: Object,
+			default: () => ({}),
+		},
+		isLoggedIn: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
+		// Initialize from loan prop when available (e.g. SSR with cache-warmed data)
+		// so the component renders real content instead of loading skeletons.
+		// The mount query will refresh these values client-side.
+		const hasLoanData = !!this.loan?.id;
 		return {
-			isLoading: true,
-			isLoggedIn: false,
-			anonymizationLevel: '',
-			activityName: '',
-			countryName: '',
-			fundraisingPercent: 0,
-			hash: '',
+			isLoading: !hasLoanData,
+			activityName: this.loan?.activity?.name ?? '',
+			countryName: this.loan?.geocode?.country?.name ?? '',
+			fundraisingPercent: hasLoanData ? (this.loan?.fundraisingPercent ?? 0) : 0,
 			mdiMapMarker,
 			mdiInformationOutline,
-			name: '',
-			status: '',
-			timeLeft: '',
-			unreservedAmount: '0',
-			use: '',
-			distributionModel: '',
-			city: '',
-			state: '',
-			inPfp: false,
-			pfpMinLenders: 0,
-			numLenders: 0,
-			totalComments: 0,
+			timeLeft: this.loan?.fundraisingTimeLeft ?? '',
+			unreservedAmount: this.loan?.unreservedAmount ?? '0',
+			distributionModel: this.loan?.distributionModel ?? '',
+			city: this.loan?.geocode?.city ?? '',
+			state: this.loan?.geocode?.state ?? '',
+			inPfp: isActivelyInPfp(this.loan),
+			pfpMinLenders: this.loan?.pfpMinLenders ?? 0,
+			numLenders: this.loan?.lenders?.totalCount ?? 0,
+			totalComments: this.loan?.comments?.totalCount ?? 0,
+			paidAmount: this.loan?.paidAmount ?? '0.00',
 		};
 	},
 	computed: {
 		loanId() {
-			return Number(this.$route?.params?.id ?? 0);
+			return this.loan?.id ?? 0;
+		},
+		hash() {
+			return this.loan?.image?.hash ?? '';
+		},
+		name() {
+			return this.loan?.name ?? '';
+		},
+		status() {
+			return this.loan?.status ?? '';
+		},
+		use() {
+			return this.loan?.fullLoanUse ?? '';
+		},
+		anonymizationLevel() {
+			return this.loan?.anonymizationLevel ?? '';
+		},
+		loanAmountNumber() {
+			return parseFloat(this.loan?.loanAmount ?? '0');
+		},
+		effectiveProgressPercent() {
+			// Clamped so a final-payment overage can't render more than 100% repaid
+			if (this.status === 'payingBack') {
+				return this.loanAmountNumber > 0
+					? Math.min(parseFloat(this.paidAmount) / this.loanAmountNumber, 1)
+					: 0;
+			}
+			return this.fundraisingPercent;
+		},
+		moneyLeft() {
+			// payingBack renders "to go" as the amount left to repay, not to fundraise
+			if (this.status === 'payingBack') {
+				return Math.max(this.loanAmountNumber - parseFloat(this.paidAmount), 0).toFixed(2);
+			}
+			return this.unreservedAmount;
 		},
 		formattedLocation() {
 			if (this.distributionModel === 'direct') {
@@ -284,17 +347,23 @@ export default {
 			return this.countryName;
 		}
 	},
-	methods: {
-		async fetchSummaryCardData() {
-			this.$kvTrackEvent(
-				'Borrower profile',
-				'borrower profile status',
-				this.status
-			);
-
-			const { data } = await this.apollo.query({ query: mountQuery, variables: { loanId: this.loanId } });
+	watch: {
+		loanId(newId, oldId) {
+			if (newId && newId !== oldId) {
+				this.isLoading = true;
+			}
+		},
+	},
+	apollo: {
+		query: mountQuery,
+		preFetch: false,
+		variables() {
+			return { loanId: this.loanId };
+		},
+		result({ data }) {
 			const loan = data?.lend?.loan;
-			this.inPfp = loan?.inPfp ?? false;
+			this.$kvTrackEvent('Borrower profile', 'borrower profile status', loan?.status);
+			this.inPfp = isActivelyInPfp(loan);
 			this.pfpMinLenders = loan?.pfpMinLenders ?? 0;
 			this.numLenders = loan?.lenders?.totalCount ?? 0;
 			this.activityName = loan?.activity?.name ?? '';
@@ -310,47 +379,8 @@ export default {
 				this.fundraisingPercent = 1;
 			}
 			this.totalComments = loan?.comments?.totalCount ?? 0;
+			this.paidAmount = loan?.paidAmount ?? '0.00';
 			this.isLoading = false;
-		},
-		async showDefinition({ cid, sfid }) {
-			const result = await this.definitions.resolveDefinition({ cid, sfid });
-			if (result) {
-				this.$refs.lightbox.open(result);
-			}
-		},
-	},
-	mounted() {
-		this.fetchSummaryCardData();
-	},
-	watch: {
-		'$route.params.id': {
-			handler() {
-				this.isLoading = true;
-				this.fetchSummaryCardData();
-			}
-		}
-	},
-	apollo: {
-		query: preFetchQuery,
-		preFetch: true,
-		preFetchVariables({ route }) {
-			return {
-				loanId: Number(route?.params?.id ?? 0),
-			};
-		},
-		variables() {
-			return {
-				loanId: this.loanId,
-			};
-		},
-		result(result) {
-			const loan = result?.data?.lend?.loan;
-			this.isLoggedIn = result?.data?.my?.userAccount?.id !== undefined || false;
-			this.hash = loan?.image?.hash ?? '';
-			this.name = loan?.name ?? '';
-			this.status = loan?.status ?? '';
-			this.use = loan?.fullLoanUse ?? '';
-			this.anonymizationLevel = loan?.anonymizationLevel ?? '';
 		},
 	},
 };

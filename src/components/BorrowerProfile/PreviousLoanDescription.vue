@@ -16,9 +16,25 @@
 			easing="ease-in-out"
 		>
 			<div>
-				<h2 data-testid="bp-story-previous-loan-header">
-					Previous loan details
-				</h2>
+				<div class="tw-flex tw-items-center">
+					<h2 data-testid="bp-story-previous-loan-header">
+						Previous loan details
+					</h2>
+					<kv-icon-button
+						:icon="mdiInformationOutline"
+						size="small"
+						class="tw-ml-0.5 tw-shrink-0"
+						data-testid="bp-story-successive-concurrent-info"
+						aria-label="Learn more about successive and concurrent loans"
+						@click="showSuccessiveConcurrentDefinition"
+						v-kv-track-event="[
+							'Borrower profile',
+							'click-successive-concurrent-info',
+							'Learn more about successive and concurrent loans',
+							loanId
+						]"
+					/>
+				</div>
 
 				<p
 					v-for="(paragraph, index) in formattedPreviousLoanDescription"
@@ -47,12 +63,12 @@
 </template>
 
 <script>
-import { mdiChevronDown } from '@mdi/js';
+import { mdiChevronDown, mdiInformationOutline } from '@mdi/js';
 import { toParagraphs } from '#src/util/loanUtils';
 import { gql } from 'graphql-tag';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import KvExpandable from '#src/components/Kv/KvExpandable';
-import { KvTextLink, KvMaterialIcon } from '@kiva/kv-components';
+import { KvTextLink, KvMaterialIcon, KvIconButton } from '@kiva/kv-components';
 
 const previousLoanQuery = gql`query previousLoanQuery($id: Int!) {
 	lend {
@@ -68,16 +84,21 @@ export default {
 	components: {
 		KvTextLink,
 		KvMaterialIcon,
+		KvIconButton,
 		KvExpandable,
 	},
 	data() {
 		return {
 			mdiChevronDown,
+			mdiInformationOutline,
 			previousLoanDetailsOpen: false,
 			previousLoanDescription: '',
 		};
 	},
-	inject: ['apollo'],
+	inject: {
+		apollo: { from: 'apollo' },
+		openDefinition: { from: 'openDefinition', default: () => () => {} },
+	},
 	props: {
 		loanId: {
 			type: Number,
@@ -119,6 +140,17 @@ export default {
 			if (this.previousLoanDescription === '') {
 				this.fetchPreviousLoanDescription();
 			}
+		},
+		showSuccessiveConcurrentDefinition() {
+			this.openDefinition({
+				cid: 'bp-def-successive-concurrent-loans',
+				sfid: '50150000000cckn',
+				track: [
+					'Borrower Profile',
+					'click-Loan-Details-tab-definition-link',
+					'Learn more about successive and concurrent loans',
+				],
+			});
 		},
 	}
 };

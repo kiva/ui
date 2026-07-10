@@ -10,6 +10,10 @@ const emptyComponent = {
 	template: '<div></div>',
 };
 
+// Extracts the operation name from a gql document, e.g. to assert which
+// query/mutation a mocked apollo client call received.
+const getOperationName = query => query?.definitions?.find(d => d.kind === 'OperationDefinition')?.name?.value;
+
 const globalOptions = {
 	directives: { kvTrackEvent: () => {} },
 	provide: {
@@ -39,5 +43,6 @@ const globalOptions = {
 export {
 	mockRouter,
 	emptyComponent,
-	globalOptions
+	globalOptions,
+	getOperationName
 };

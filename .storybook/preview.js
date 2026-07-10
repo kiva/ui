@@ -29,8 +29,8 @@ setup((app) => {
 		// $router.push() navigate the iframe away from Storybook's URL.
 		history: createMemoryHistory(),
 		routes: [
-			// The catch-all route ensures vue-router can resolve any path/query
-			// combination without throwing "No match found" errors.
+		// The catch-all route ensures vue-router can resolve any path/query
+		// combination without throwing "No match found" errors.
 			{ path: '/:catchAll(.*)*', component: { template: '' } },
 		],
 	});

@@ -130,6 +130,8 @@ export default async function renderPage({
 			// Turn off SSR for local development to prevent component FOUC (Flash of Unstyled Content)
 			// https://github.com/vitejs/vite/issues/6887#issuecomment-1038664078
 			appHtml: isDev ? '' : appHtml,
+			// Inject Teleport markup collected during SSR into the #teleports container
+			teleports: isDev ? '' : (context.teleports?.['#teleports'] ?? ''),
 			appState,
 			appConfig: renderConfigGlobal(config),
 			externals: renderExternals(config),

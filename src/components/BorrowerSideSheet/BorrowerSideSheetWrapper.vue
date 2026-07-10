@@ -21,8 +21,7 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
-import BorrowerSideSheetContent from '#src/components/BorrowerProfile/BorrowerSideSheetContent';
+import BorrowerSideSheetContent from '#src/components/BorrowerSideSheet/BorrowerSideSheetContent';
 import { KvSideSheet } from '@kiva/kv-components';
 
 const props = defineProps({

@@ -26,9 +26,9 @@
 										<borrower-image
 											data-testid="bp-summary-image"
 											class="tw-w-full tw-rounded-full tw-bg-brand"
-											:alt="loan.name"
+											:alt="loanData?.name ?? ''"
 											:aspect-ratio="1"
-											:hash="hash"
+											:hash="loanData?.image?.hash ?? ''"
 											:default-image="{ width: 80, faceZoom: 50 }"
 											:images="[
 												{ width: 80, faceZoom: 50, viewSize: 1024 },
@@ -40,13 +40,13 @@
 									<div class="tw-flex-auto">
 										<borrower-name
 											data-testid="bp-summary-borrower-name"
-											:name="loan.name"
+											:name="loanData.name"
 										/>
 										<loan-progress
 											data-testid="bp-summary-progress"
 											class="tw-mb-2"
 											:progress-percent="progressPercent"
-											:loading="isLoading"
+											:loading="isSummaryLoading"
 											:loan-status="loanStatus"
 										/>
 									</div>
@@ -59,14 +59,14 @@
 		</article>
 		<article class="tw-mx-2 tw-overflow-auto lg:tw-mx-auto loans-container">
 			<h2 class="tw-text-center tw-my-6">
-				Similar borrowers that need your support
+				{{ similarBorrowersHeading }}
 			</h2>
 			<div :key="index" v-for="(category, index) in categories" class="tw-my-6">
 				<p class="tw-text-headline">
 					{{ category.heading }}
 				</p>
 				<p v-if="category.subHeading" class="tw-text-subhead">
-					{{ category.subHeading }} {{ loan.name }}'s loan.
+					{{ category.subHeading }} {{ loanData.name }}'s loan.
 				</p>
 				<div v-if="!category.loan">
 					<kiva-classic-loan-carousel
@@ -116,17 +116,59 @@ import mlLoansYouMightLikeData from '#src/graphql/query/loansYouMightLike/mlLoan
 import LoanCardController from '#src/components/LoanCards/LoanCardController';
 import { FLSS_ORIGIN_BP_FUNDED } from '#src/util/flssUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
+import { gql } from 'graphql-tag';
+
+export const minimalProfileFragment = gql`fragment minimalProfileFields on LoanBasic {
+	id
+	name
+	status
+	use
+	anonymizationLevel
+	loanAmount
+	gender
+	image {
+		id
+		hash
+	}
+	sector {
+		id
+		name
+	}
+	geocode {
+		country {
+			id
+			name
+			isoCode
+		}
+	}
+	loanFundraisingInfo {
+		id
+		fundedAmount
+	}
+}`;
+
+export const minimalProfileQuery = gql`
+	${minimalProfileFragment}
+	query minimalBorrowerProfileData($loanId: Int!) {
+		lend {
+			loan(id: $loanId) {
+				id
+				...minimalProfileFields
+			}
+		}
+	}
+`;
 
 export default {
-	name: 'FundedBorrowerProfile',
+	name: 'MinimalBorrowerProfile',
 	head() {
 		return {
-			title: `${this.loan.name} from ${this.loan.geocode?.country?.name}'s loan has been funded!`,
+			title: this.pageTitle,
 			meta: [
 				{
 					vmid: 'description',
 					name: 'description',
-					content: `A loan helped ${this.loan.use}`,
+					content: `A loan helped ${this.loanData?.use ?? ''}`,
 				}
 			].concat(
 				[
@@ -161,14 +203,24 @@ export default {
 		LoanCardController,
 	},
 	inject: ['apollo', 'cookieStore'],
+	apollo: {
+		query: minimalProfileQuery,
+		variables() {
+			return {
+				loanId: Number(this.$route?.params?.id ?? 0),
+			};
+		},
+		result({ data }) {
+			if (data?.lend?.loan) {
+				this.loanData = data.lend.loan;
+			}
+			this.isSummaryLoading = false;
+		},
+	},
 	props: {
 		loan: {
 			type: Object,
-			default: () => {}
-		},
-		hash: {
-			type: String,
-			default: ''
+			default: () => ({}),
 		},
 		itemsInBasket: {
 			type: Array,
@@ -183,18 +235,27 @@ export default {
 		return {
 			viewportObserver: null,
 			isLoading: true,
+			isSummaryLoading: true,
 			categories: [],
 			rows: null,
 			isVisitor: true,
 			loanRowsCount: 4,
+			// Initialize from the loan prop (populated by the parent page's routingQuery,
+			// which carries shareMetaFragment fields including name and country). Without
+			// this, SSR renders with loanData={} and head() produces the broken
+			// "undefined from undefined's loan has been funded!" title
+			loanData: this.loan?.id ? { ...this.loan } : {},
 		};
 	},
 	computed: {
 		shareTitle() {
-			if (this.loan?.anonymizationLevel !== 'full') {
-				return `A loan of $${this.loan?.loanAmount} made a difference for ${this.loan.name}`;
+			if (this.loanStatus === 'expired' || this.loanStatus === 'refunded') {
+				return `Help fund a loan on Kiva for someone like ${this.loanData.name}`;
 			}
-			return `A loan of $${this.loan?.loanAmount} made a difference`;
+			if (this.loanData?.anonymizationLevel !== 'full') {
+				return `A loan of $${this.loanData?.loanAmount} made a difference for ${this.loanData.name}`;
+			}
+			return `A loan of $${this.loanData?.loanAmount} made a difference`;
 		},
 		shareDescription() {
 			// eslint-disable-next-line max-len
@@ -202,16 +263,33 @@ export default {
 		},
 		loanStatus() {
 			// Loan may still be fundraising, but all shares are reserved
-			if (this.loan?.status === 'fundraising') {
+			if (this.loanData?.status === 'fundraising') {
 				return 'funded';
 			}
-			return this.loan?.status ?? 'funded';
+			return this.loanData?.status ?? 'funded';
 		},
 		progressPercent() {
 			if (this.loanStatus === 'funded') {
 				return 1;
 			}
-			return (this.loan?.loanFundraisingInfo?.fundedAmount ?? 0) / (this.loan?.loanAmount ?? 0);
+			return (this.loanData?.loanFundraisingInfo?.fundedAmount ?? 0) / (this.loanData?.loanAmount ?? 0);
+		},
+		pageTitle() {
+			const { name } = this.loanData;
+			const country = this.loanData.geocode?.country?.name;
+			if (this.loanStatus === 'expired') {
+				return `${name} from ${country}'s loan has expired`;
+			}
+			if (this.loanStatus === 'refunded') {
+				return `${name} from ${country}'s loan has been refunded`;
+			}
+			return `${name} from ${country}'s loan has been funded!`;
+		},
+		similarBorrowersHeading() {
+			if (this.loanStatus === 'expired' || this.loanStatus === 'refunded') {
+				return 'Other borrowers that need your support';
+			}
+			return 'Similar borrowers that need your support';
 		},
 	},
 	mounted() {
@@ -224,7 +302,7 @@ export default {
 				subHeading: '',
 				onlyLoan: false,
 				limit: 3,
-				filter: { sector: { eq: this.loan?.sector?.name } },
+				filter: { sector: { eq: this.loanData?.sector?.name } },
 				loanIds: []
 			},
 			{
@@ -244,7 +322,7 @@ export default {
 				subHeading: '',
 				onlyLoan: false,
 				limit: 3,
-				filter: { gender: { eq: this.loan?.gender } },
+				filter: { gender: { eq: this.loanData?.gender } },
 				loanIds: []
 			},
 			{
@@ -254,7 +332,7 @@ export default {
 				subHeading: '',
 				onlyLoan: false,
 				limit: 3,
-				filter: { countryIsoCode: { eq: this.loan?.geocode?.country?.isoCode } },
+				filter: { countryIsoCode: { eq: this.loanData?.geocode?.country?.isoCode } },
 				loanIds: []
 			},
 		];
@@ -315,16 +393,16 @@ export default {
 							let finalHeading = '';
 							let expLabel = '';
 							if (row?.filter?.gender) {
-								finalHeading = this.loan?.gender.includes('female') ? 'women' : 'men';
-								expLabel = this.loan?.gender;
+								finalHeading = this.loanData?.gender.includes('female') ? 'women' : 'men';
+								expLabel = this.loanData?.gender;
 							}
 							if (row?.filter?.countryIsoCode) {
-								finalHeading = this.loan?.geocode?.country?.name;
-								expLabel = this.loan?.geocode?.country?.isoCode;
+								finalHeading = this.loanData?.geocode?.country?.name;
+								expLabel = this.loanData?.geocode?.country?.isoCode;
 							}
 							if (row?.filter?.sector) {
-								finalHeading = `${this.loan?.sector?.name} loans`;
-								expLabel = String(this.loan?.sector?.id);
+								finalHeading = `${this.loanData?.sector?.name} loans`;
+								expLabel = String(this.loanData?.sector?.id);
 							}
 							this.categories = [
 								...this.categories, {
@@ -342,15 +420,15 @@ export default {
 							}
 						});
 					} catch (e) {
-						logReadQueryError(e, 'FundedBorrowerProfile personalizedLoansQuery');
+						logReadQueryError(e, 'MinimalBorrowerProfile personalizedLoansQuery');
 						this.isLoading = false;
 					}
-				} else if (this.loan?.id) {
+				} else if (this.loanData?.id) {
 					try {
 						return this.apollo.query({
 							query: mlLoansYouMightLikeData,
 							variables: {
-								loanId: parseInt(this.loan.id, 10),
+								loanId: parseInt(this.loanData.id, 10),
 								limit: row.limit
 							}
 						}).then(({ data }) => {
@@ -368,7 +446,7 @@ export default {
 							}
 						});
 					} catch (e) {
-						logReadQueryError(e, 'FundedBorrowerProfile mlLoansYouMightLikeData');
+						logReadQueryError(e, 'MinimalBorrowerProfile mlLoansYouMightLikeData');
 						this.isLoading = false;
 					}
 				}

@@ -9,6 +9,7 @@ import {
 	fundraisingPartnerLoan,
 	fullyFundedLoan,
 	payingBackLoan,
+	overpaidPayingBackLoan,
 	endedLoan,
 	pfpLoan,
 } from './mockLoanFixtures';
@@ -22,9 +23,14 @@ function summaryCardStory(loan, myUser = null) {
 			cookieStoreStoryMixin(),
 			kvAuth0StoryMixin,
 		],
-		// SummaryCard takes no props; it derives loanId from the route and
-		// fetches the loan via Apollo (mocked by apolloStoryMixin above).
-		template: '<summary-card />',
+		setup() {
+			return { loan };
+		},
+		template: `
+			<summary-card
+				:loan="loan"
+			/>
+		`,
 	});
 }
 
@@ -39,6 +45,9 @@ export const FullyFunded = summaryCardStory(fullyFundedLoan);
 
 export const PayingBack = summaryCardStory(payingBackLoan, loggedInUser);
 
+export const PayingBackOverpaid = summaryCardStory(overpaidPayingBackLoan, loggedInUser);
+PayingBackOverpaid.storyName = 'Paying Back (overpaid)';
+
 export const Ended = summaryCardStory(endedLoan, loggedInUser);
 
 export const PFP = summaryCardStory(pfpLoan, loggedInUser);
@@ -51,5 +60,12 @@ export const Loading = () => ({
 		cookieStoreStoryMixin(),
 		kvAuth0StoryMixin,
 	],
-	template: '<summary-card />',
+	setup() {
+		return { loan: fundraisingPartnerLoan };
+	},
+	template: `
+		<summary-card
+			:loan="loan"
+		/>
+	`,
 });
