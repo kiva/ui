@@ -1,7 +1,7 @@
 <template>
 	<transition name="kvfade">
 		<div
-			v-if="suggestedLoans.length"
+			v-if="randomLoans.length"
 			class="
 				section-wrapper
 				suggested-loan-cards
@@ -13,19 +13,19 @@
 		>
 			<div class="section-container tw-mx-auto tw-my-0">
 				<kv-carousel
-					v-if="suggestedLoans.length > 0 && !loading"
+					v-if="randomLoans.length > 0 && !loading"
 					class="tw-w-full tw-overflow-visible md:tw-overflow-hidden"
 					data-testid="random-loan-card-carousel"
 					:embla-options="{
 						loop: false,
 					}"
-					ref="suggestedLoansCarousel"
+					ref="randomLoansCarousel"
 					:multiple-slides-visible="true"
 					slides-to-scroll="visible"
 					:slide-max-width="singleSlideWidth"
 					@interact-carousel="onInteractCarousel"
 				>
-					<template v-for="(loan, index) in suggestedLoans" #[`slide${index}`] :key="`loan-card-${index}`">
+					<template v-for="(loan, index) in randomLoans" #[`slide${index}`] :key="`loan-card-${index}`">
 						<kv-classic-loan-card-container
 							:loan-id="loan?.id"
 							:use-full-width="true"
@@ -48,7 +48,7 @@ import _throttle from 'lodash/throttle';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
 import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_CHECKOUT } from '#src/util/flssUtils';
-import { withAiPills } from '#src/util/aiLoanPIillsUtils';
+import { withAiPills } from '#src/util/aiLoanPillsUtils';
 import { KvCarousel } from '@kiva/kv-components';
 
 export default {
@@ -66,7 +66,7 @@ export default {
 	},
 	data() {
 		return {
-			suggestedLoans: [],
+			randomLoans: [],
 			loading: false,
 			windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,
 			handleResize: _throttle(this.isWindowWidth, 200)
@@ -96,10 +96,10 @@ export default {
 				FLSS_ORIGIN_CHECKOUT
 			);
 			// Show loans and clear loading first; AI pills load after so they don't block the carousel.
-			this.suggestedLoans = loans ?? [];
+			this.randomLoans = loans ?? [];
 			this.$emit('updating-totals', false);
 
-			this.suggestedLoans = await withAiPills(this.apollo, this.suggestedLoans);
+			this.randomLoans = await withAiPills(this.apollo, this.randomLoans);
 		},
 		onInteractCarousel(interaction) {
 			this.$kvTrackEvent('carousel', 'click-carousel-horizontal-scroll', interaction);

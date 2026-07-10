@@ -80,7 +80,7 @@ import { useRouter } from 'vue-router';
 import { KvLendCta } from '@kiva/kv-components';
 import useBorrowerProfileData from '#src/composables/useBorrowerProfileData';
 import logFormatter from '#src/util/logFormatter';
-import { fetchAiLoanPills } from '#src/util/aiLoanPIillsUtils';
+import { fetchAiLoanPills } from '#src/util/aiLoanPillsUtils';
 import { addMonths, differenceInWeeks } from 'date-fns';
 import { FUNDRAISING, ENDED } from '#src/api/fixtures/LoanStatusEnum';
 import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';

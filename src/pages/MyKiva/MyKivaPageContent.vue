@@ -225,7 +225,7 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { withAiPills } from '#src/util/aiLoanPIillsUtils';
+import { withAiPills } from '#src/util/aiLoanPillsUtils';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import BadgesSectionV2 from '#src/components/MyKiva/BadgesSectionV2';
 

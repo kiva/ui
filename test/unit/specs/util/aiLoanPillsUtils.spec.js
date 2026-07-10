@@ -3,7 +3,7 @@ import {
 	fetchAiLoanPills,
 	addAiPillsToLoans,
 	withAiPills,
-} from '#src/util/aiLoanPIillsUtils';
+} from '#src/util/aiLoanPillsUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 
 vi.mock('#src/util/logReadQueryError');
