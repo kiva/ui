@@ -3,6 +3,8 @@ import { mount, flushPromises } from '@vue/test-utils';
 import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
 import { globalOptions } from '../../../specUtils';
 
+vi.mock('#src/util/logReadQueryError');
+
 // Builds a Contentful apollo response containing a borrower-profile-definitions group.
 function makeContentfulResponse(entries) {
 	return {
@@ -140,6 +142,7 @@ describe('SummaryCard', () => {
 		};
 		const query = vi.fn()
 			.mockResolvedValueOnce({}) // mountQuery from mounted()
+			.mockResolvedValueOnce({ data: { getLoanPills: { values: [] } } }) // aiLoanPills from mounted()
 			.mockResolvedValueOnce(makeContentfulResponse([])) // Contentful: no matching entry
 			.mockResolvedValueOnce({ // Salesforce fallback
 				data: { general: { salesforceSolution } },
@@ -161,5 +164,139 @@ describe('SummaryCard', () => {
 		expect(wrapper.findComponent({ name: 'KvLightbox' }).props('visible')).toBe(true);
 		expect(wrapper.findComponent({ name: 'KvLightbox' }).props('title')).toBe(salesforceSolution.name);
 		expect(wrapper.get('[data-testid="stub-lightbox"]').html()).toContain(salesforceSolution.note);
+	});
+});
+
+describe('SummaryCard AI pills', () => {
+	const loanResponse = {
+		data: {
+			lend: {
+				loan: {
+					id: 12345,
+					activity: { id: 1, name: 'Retail' },
+					distributionModel: 'fieldPartner',
+					fundraisingPercent: 0.5,
+					fundraisingTimeLeft: '5 days',
+					fundraisingTimeLeftMilliseconds: 1,
+					geocode: { city: 'Lima', state: '', country: { id: 1, name: 'Peru' } },
+					loanAmount: '600',
+					loanFundraisingInfo: { id: 1, fundedAmount: '300', reservedAmount: '0' },
+					plannedExpirationDate: '2026-12-01',
+					unreservedAmount: '300',
+					inPfp: false,
+					pfpMinLenders: 0,
+					lenders: { totalCount: 3 },
+					comments: { totalCount: 0 },
+				},
+			},
+		},
+	};
+
+	// Mounts SummaryCard with a controllable apollo.query mock; callers queue the
+	// mount-query response first, then the AI-pills response.
+	function mountWithQuery(query) {
+		return mount(SummaryCard, {
+			global: {
+				...globalOptions,
+				mocks: {
+					...globalOptions.mocks,
+					$route: { params: { id: '12345' } },
+				},
+				provide: {
+					...globalOptions.provide,
+					apollo: { ...globalOptions.provide.apollo, query },
+				},
+				stubs: {
+					KvLightbox: {
+						name: 'KvLightbox',
+						props: ['visible', 'title'],
+						template: '<div v-if="visible"><slot /></div>',
+					},
+				},
+			},
+		});
+	}
+
+	it('renders a single AI pill in place of the activity tag when pills are returned', async () => {
+		const query = vi.fn()
+			.mockResolvedValueOnce(loanResponse) // mountQuery
+			.mockResolvedValueOnce({
+				data: {
+					getLoanPills: {
+						values: [
+							{ loanId: 12345, pills: ['Woman-owned', 'First loan'] },
+						]
+					}
+				}
+			}); // aiLoanPills
+		const wrapper = mountWithQuery(query);
+		await flushPromises();
+
+		const pill = wrapper.find('[data-testid="bp-summary-ai-pill"]');
+		expect(pill.exists()).toBe(true);
+		expect(pill.text()).toBe('Woman-owned'); // only the first pill
+		expect(wrapper.findAll('[data-testid="bp-summary-ai-pill"]')).toHaveLength(1);
+		expect(wrapper.find('[data-testid="bp-summary-country-tag"]').exists()).toBe(true);
+		expect(wrapper.find('[data-testid="bp-summary-activity-tag"]').exists()).toBe(false);
+		expect(query).toHaveBeenNthCalledWith(2, expect.objectContaining({ variables: { loanIds: [12345] } }));
+	});
+
+	it('falls back to the activity tag when no pills are returned', async () => {
+		const query = vi.fn()
+			.mockResolvedValueOnce(loanResponse) // mountQuery
+			.mockResolvedValueOnce({ data: { getLoanPills: { values: [] } } }); // aiLoanPills
+		const wrapper = mountWithQuery(query);
+		await flushPromises();
+
+		expect(wrapper.find('[data-testid="bp-summary-ai-pill"]').exists()).toBe(false);
+		expect(wrapper.find('[data-testid="bp-summary-activity-tag"]').text()).toBe('Retail');
+		expect(wrapper.find('[data-testid="bp-summary-country-tag"]').exists()).toBe(true);
+	});
+
+	it('falls back to the activity tag when the loan entry has an empty pills list', async () => {
+		const query = vi.fn()
+			.mockResolvedValueOnce(loanResponse) // mountQuery
+			.mockResolvedValueOnce({
+				data: { getLoanPills: { values: [{ loanId: 12345, pills: [] }] } },
+			}); // aiLoanPills: loan entry present, but no pills for it
+		const wrapper = mountWithQuery(query);
+		await flushPromises();
+
+		expect(wrapper.find('[data-testid="bp-summary-ai-pill"]').exists()).toBe(false);
+		expect(wrapper.find('[data-testid="bp-summary-activity-tag"]').text()).toBe('Retail');
+	});
+
+	it('falls back to the activity tag when the pills query rejects', async () => {
+		const query = vi.fn()
+			.mockResolvedValueOnce(loanResponse) // mountQuery
+			.mockRejectedValueOnce(new Error('network error')); // aiLoanPills fails
+		const wrapper = mountWithQuery(query);
+		await flushPromises();
+
+		expect(wrapper.find('[data-testid="bp-summary-ai-pill"]').exists()).toBe(false);
+		expect(wrapper.find('[data-testid="bp-summary-activity-tag"]').text()).toBe('Retail');
+	});
+
+	it('keeps the loader until the pills fetch resolves (no activity-then-pill pop)', async () => {
+		let resolvePills;
+		const pillsPromise = new Promise(resolve => { resolvePills = resolve; });
+		const query = vi.fn()
+			.mockResolvedValueOnce(loanResponse) // mountQuery
+			.mockReturnValueOnce(pillsPromise); // aiLoanPills still pending
+		const wrapper = mountWithQuery(query);
+		await flushPromises();
+
+		// The mount query has resolved but pills are still in flight, so the card is
+		// still loading: the tags must not render the activity tag (which would then
+		// pop to the pill once pills arrive).
+		expect(wrapper.find('[data-testid="bp-summary-activity-tag"]').exists()).toBe(false);
+		expect(wrapper.find('[data-testid="bp-summary-ai-pill"]').exists()).toBe(false);
+
+		resolvePills({
+			data: { getLoanPills: { values: [{ loanId: 12345, pills: ['Woman-owned'] }] } },
+		});
+		await flushPromises();
+
+		expect(wrapper.find('[data-testid="bp-summary-ai-pill"]').text()).toBe('Woman-owned');
 	});
 });

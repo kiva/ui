@@ -121,7 +121,10 @@
 					</span>
 				</summary-tag>
 
-				<summary-tag data-testid="bp-summary-activity-tag" v-if="activityName">
+				<summary-tag v-if="aiPill" data-testid="bp-summary-ai-pill">
+					{{ aiPill }}
+				</summary-tag>
+				<summary-tag v-else-if="activityName" data-testid="bp-summary-activity-tag">
 					{{ activityName }}
 				</summary-tag>
 			</template>
@@ -147,6 +150,7 @@ import {
 	KvIconButton, KvMaterialIcon, KvLoadingPlaceholder, KvTextLink,
 } from '@kiva/kv-components';
 import useBorrowerProfileDefinitions from '#src/composables/useBorrowerProfileDefinitions';
+import { fetchAiLoanPills } from '#src/util/aiLoanPillsUtils';
 import BorrowerImage from './BorrowerImage';
 import BorrowerName from './BorrowerName';
 import ContentLightbox from './ContentLightbox';
@@ -266,6 +270,7 @@ export default {
 			pfpMinLenders: 0,
 			numLenders: 0,
 			totalComments: 0,
+			aiPill: '',
 		};
 	},
 	computed: {
@@ -286,13 +291,20 @@ export default {
 	},
 	methods: {
 		async fetchSummaryCardData() {
+			this.aiPill = '';
 			this.$kvTrackEvent(
 				'Borrower profile',
 				'borrower profile status',
 				this.status
 			);
 
-			const { data } = await this.apollo.query({ query: mountQuery, variables: { loanId: this.loanId } });
+			// Fetch AI pills alongside the summary data so the loader stays up until both
+			// resolve, letting the pill (or activity fallback) render once instead of
+			// popping in after the summary.
+			const [{ data }] = await Promise.all([
+				this.apollo.query({ query: mountQuery, variables: { loanId: this.loanId } }),
+				this.fetchAiPills(),
+			]);
 			const loan = data?.lend?.loan;
 			this.inPfp = loan?.inPfp ?? false;
 			this.pfpMinLenders = loan?.pfpMinLenders ?? 0;
@@ -311,6 +323,10 @@ export default {
 			}
 			this.totalComments = loan?.comments?.totalCount ?? 0;
 			this.isLoading = false;
+		},
+		async fetchAiPills() {
+			const result = await fetchAiLoanPills(this.apollo, [this.loanId]);
+			this.aiPill = result?.[0]?.pills?.[0] ?? '';
 		},
 		async showDefinition({ cid, sfid }) {
 			const result = await this.definitions.resolveDefinition({ cid, sfid });
