@@ -28,7 +28,6 @@
 			:hero-tiered-achievements="heroTieredAchievements"
 			:lending-stats="lendingStats"
 			:transactions="transactions"
-			:enable-ai-loan-pills="enableAILoanPills"
 			:sidesheet-loan="sidesheetLoan"
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
@@ -53,7 +52,6 @@ import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
 import MyKivaNextStepsContent from '#src/pages/MyKiva/MyKivaNextStepsContent';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import { gql } from 'graphql-tag';
-import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
@@ -77,7 +75,6 @@ const GOALS_ROW_EXP_KEY = 'mykiva_goals_row';
 export default {
 	name: 'MyKivaPage',
 	inject: ['apollo', 'cookieStore'],
-	mixins: [aiLoanPillsTest],
 	components: {
 		MyKivaPageContent,
 		MyKivaNextStepsContent,

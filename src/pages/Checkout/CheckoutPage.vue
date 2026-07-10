@@ -292,7 +292,6 @@
 				>
 					<empty-basket-carousel
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
-						:enable-ai-loan-pills="enableAILoanPills"
 						@updating-totals="setUpdatingTotals"
 						@refreshtotals="refreshTotals"
 					/>
@@ -359,7 +358,6 @@ import {
 import { fetchPostCheckoutAchievements } from '#src/util/myKivaUtils';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import getCheckoutAlmostFundedRecommendationQuery from '#src/graphql/query/checkout/getCheckoutAlmostFundedRecommendation.graphql'; // eslint-disable-line max-len
-import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { mdiGiftOutline } from '@mdi/js';
 import {
@@ -439,7 +437,7 @@ export default {
 		KvMaterialIcon,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
-	mixins: [checkoutUtils, fiveDollarsTest, aiLoanPillsTest],
+	mixins: [checkoutUtils, fiveDollarsTest],
 	head: {
 		title: 'Checkout'
 	},

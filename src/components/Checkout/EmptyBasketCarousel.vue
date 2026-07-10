@@ -4,7 +4,7 @@
 			v-if="randomLoans.length"
 			class="
 				section-wrapper
-				random-loan-cards
+				suggested-loan-cards
 				tw-py-4
 				tw-relative
 				tw-border-t
@@ -31,7 +31,6 @@
 							:use-full-width="true"
 							:show-tags="true"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
-							:enable-ai-loan-pills="enableAiLoanPills"
 							:ai-pills="loan?.aiPills"
 							@updating-totals="$emit('updating-totals', $event)"
 							@add-to-basket="addToBasket(index)"
@@ -49,7 +48,7 @@ import _throttle from 'lodash/throttle';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
 import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_CHECKOUT } from '#src/util/flssUtils';
-import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
+import { withAiPills } from '#src/util/aiLoanPillsUtils';
 import { KvCarousel } from '@kiva/kv-components';
 
 export default {
@@ -61,10 +60,6 @@ export default {
 	emits: ['updating-totals', 'refreshtotals'],
 	props: {
 		enableFiveDollarsNotes: {
-			type: Boolean,
-			default: false
-		},
-		enableAiLoanPills: {
 			type: Boolean,
 			default: false
 		},
@@ -100,15 +95,11 @@ export default {
 				{ pageLimit: 15 },
 				FLSS_ORIGIN_CHECKOUT
 			);
-			let processedLoans = loans ?? [];
-			if (this.enableAiLoanPills) {
-				const loanIds = getLoansIds(processedLoans);
-				const aiLoansPills = await fetchAiLoanPills(this.apollo, loanIds);
-				processedLoans = addAiPillsToLoans(processedLoans, aiLoansPills);
-			}
-			this.randomLoans = processedLoans;
-
+			// Show loans and clear loading first; AI pills load after so they don't block the carousel.
+			this.randomLoans = loans ?? [];
 			this.$emit('updating-totals', false);
+
+			this.randomLoans = await withAiPills(this.apollo, this.randomLoans);
 		},
 		onInteractCarousel(interaction) {
 			this.$kvTrackEvent('carousel', 'click-carousel-horizontal-scroll', interaction);

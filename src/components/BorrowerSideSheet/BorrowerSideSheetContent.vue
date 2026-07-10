@@ -3,7 +3,6 @@
 		<div class="tw-px-4 tw-py-2">
 			<SideSheetHeader />
 			<SideSheetLoanTags
-				:enable-ai-loan-pills="enableAiLoanPills"
 				:ai-loan-pills="aiPills"
 			/>
 			<LoanProgress
@@ -82,7 +81,7 @@ import { useRouter } from 'vue-router';
 import { KvLendCta } from '@kiva/kv-components';
 import useBorrowerProfileData from '#src/composables/useBorrowerProfileData';
 import logFormatter from '#src/util/logFormatter';
-import { fetchAiLoanPills } from '#src/util/aiLoanPIillsUtils';
+import { fetchAiLoanPills } from '#src/util/aiLoanPillsUtils';
 import { addMonths, differenceInWeeks } from 'date-fns';
 import { FUNDRAISING, ENDED } from '#src/api/fixtures/LoanStatusEnum';
 import LoanNextSteps from '#src/components/Thanks/LoanNextSteps';
@@ -136,10 +135,6 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		enableAiLoanPills: {
-			type: Boolean,
-			default: false
-		},
 	},
 	setup(props, { emit }) {
 		const apollo = inject('apollo');
@@ -159,16 +154,13 @@ export default {
 		// One definitions lightbox for the side sheet; children call this with their cid/sfid.
 		provide('openDefinition', payload => definitionsLightbox.value?.open(payload));
 
-		const aiPills = [];
-		if (props.enableAiLoanPills) {
-			fetchAiLoanPills(apollo, [props.loanId]).then(result => {
-				const pills = result?.[0].pills ?? [];
-				const labeledPills = pills.map(pill => ({
-					label: pill,
-				}));
-				aiPills.push(...labeledPills);
-			});
-		}
+		const aiPills = ref([]);
+		fetchAiLoanPills(apollo, [props.loanId]).then(result => {
+			const pills = result?.[0]?.pills ?? [];
+			aiPills.value = pills.map(pill => ({
+				label: pill,
+			}));
+		});
 
 		const inPfp = computed(() => borrowerProfile.inPfp.value);
 		const loan = computed(() => borrowerProfile.loan.value);
