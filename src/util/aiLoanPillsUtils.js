@@ -4,6 +4,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 /**
  * Retrieves the IDs of the provided loans
  *
+ * @param {Array} loans The loans to extract IDs from
  * @returns The IDs of the loans
  */
 export const getLoansIds = loans => {
@@ -15,6 +16,7 @@ export const getLoansIds = loans => {
  *
  * @param apollo The current Apollo client
  * @param loanIds The loan IDs to fetch pills
+ * @returns The AI loan pills for the provided loan IDs
  */
 export const fetchAiLoanPills = async (apollo, loanIds) => {
 	try {
@@ -41,9 +43,27 @@ export const addAiPillsToLoans = (loans, pillsLoans) => {
 
 		return {
 			...loan,
-			aiPills: pills.length ? pills : [],
+			aiPills: pills,
 		};
 	});
 
 	return loansWithPills;
+};
+
+/**
+ * Fetches AI pills for the provided loans and returns them with the pills attached.
+ * Skips the network request when there are no loans to enrich.
+ *
+ * @param apollo The current Apollo client
+ * @param {Array} loans The loans to enrich with AI pills
+ * @returns The loans with their AI pills attached
+ */
+export const withAiPills = async (apollo, loans) => {
+	const safeLoans = loans ?? [];
+	const loanIds = getLoansIds(safeLoans);
+	if (!loanIds.length) {
+		return safeLoans;
+	}
+	const pillsLoans = await fetchAiLoanPills(apollo, loanIds);
+	return addAiPillsToLoans(safeLoans, pillsLoans ?? []);
 };

@@ -166,10 +166,6 @@ export default {
 			type: String,
 			default: '',
 		},
-		enableAiLoanPills: {
-			type: Boolean,
-			default: false
-		},
 		aiPills: {
 			type: Array,
 			default: () => ([])
@@ -563,7 +559,7 @@ export default {
 			return this.loan?.image?.url ?? '';
 		},
 		showAiLoanPills() {
-			return this.enableAiLoanPills && this.aiPills && this.aiPills.length > 0;
+			return this.aiPills && this.aiPills.length > 0;
 		},
 		customCallouts() {
 			const callouts = [];

@@ -1,4 +1,9 @@
-import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
+import {
+	getLoansIds,
+	fetchAiLoanPills,
+	addAiPillsToLoans,
+	withAiPills,
+} from '#src/util/aiLoanPillsUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 
 vi.mock('#src/util/logReadQueryError');
@@ -71,5 +76,51 @@ describe('addAiPillsToLoans', () => {
 	it('should handle null or undefined loans', () => {
 		const result = addAiPillsToLoans(undefined, []);
 		expect(result).toEqual([]);
+	});
+});
+
+describe('withAiPills', () => {
+	it('skips the query and returns the loans unchanged when there are no loans', async () => {
+		const query = vi.fn();
+		const result = await withAiPills({ query }, []);
+
+		expect(result).toEqual([]);
+		expect(query).not.toHaveBeenCalled();
+	});
+
+	it('returns an empty array when loans is null or undefined', async () => {
+		const query = vi.fn();
+
+		expect(await withAiPills({ query }, undefined)).toEqual([]);
+		expect(query).not.toHaveBeenCalled();
+	});
+
+	it('fetches pills and attaches them to the loans', async () => {
+		const query = vi.fn().mockResolvedValue({
+			data: { getLoanPills: { values: [{ loanId: 1, pills: ['pillA'] }] } }
+		});
+
+		const result = await withAiPills({ query }, [{ id: 1 }, { id: 2 }]);
+
+		expect(query).toHaveBeenCalledWith({
+			query: expect.anything(),
+			variables: { loanIds: [1, 2] }
+		});
+		expect(result).toEqual([
+			{ id: 1, aiPills: ['pillA'] },
+			{ id: 2, aiPills: [] }
+		]);
+	});
+
+	it('returns the loans with empty pills when the query fails', async () => {
+		const query = vi.fn().mockRejectedValue(new Error('network error'));
+
+		const result = await withAiPills({ query }, [{ id: 1 }, { id: 2 }]);
+
+		expect(query).toHaveBeenCalled();
+		expect(result).toEqual([
+			{ id: 1, aiPills: [] },
+			{ id: 2, aiPills: [] }
+		]);
 	});
 });
