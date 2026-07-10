@@ -62,7 +62,7 @@
 				</p>
 			</section>
 		</div>
-		<Teleport to="body">
+		<Teleport to="#teleports">
 			<KvLightbox :visible="isLightboxVisible" :title="lightboxTitle" @lightbox-closed="closeLightbox">
 				<!-- eslint-disable vue/no-v-html -->
 				<p

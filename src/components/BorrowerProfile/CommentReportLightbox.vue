@@ -1,5 +1,5 @@
 <template>
-	<Teleport to="body">
+	<Teleport to="#teleports">
 		<kv-lightbox
 			:visible="visible"
 			title="Report comment"
