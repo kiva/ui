@@ -47,3 +47,20 @@ export const addAiPillsToLoans = (loans, pillsLoans) => {
 
 	return loansWithPills;
 };
+
+/**
+ * Fetches AI pills for the provided loans and returns them with the pills attached.
+ * Skips the network request when there are no loans to enrich.
+ *
+ * @param apollo The current Apollo client
+ * @param {Array} loans The loans to enrich with AI pills
+ * @returns The loans with their AI pills attached
+ */
+export const withAiPills = async (apollo, loans) => {
+	const loanIds = getLoansIds(loans ?? []);
+	if (!loanIds.length) {
+		return loans ?? [];
+	}
+	const pillsLoans = await fetchAiLoanPills(apollo, loanIds);
+	return addAiPillsToLoans(loans, pillsLoans ?? []);
+};

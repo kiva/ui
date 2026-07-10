@@ -19,10 +19,6 @@ import {
 import { loanCardComputedProperties, KvLoanCallouts, KvLoadingPlaceholder } from '@kiva/kv-components';
 
 const props = defineProps({
-	enableAiLoanPills: {
-		type: Boolean,
-		default: () => false,
-	},
 	aiLoanPills: {
 		type: Array,
 		default: () => ([]),
@@ -45,7 +41,7 @@ const computedPropertiesVariables = reactive({
 const { loanCallouts } = loanCardComputedProperties(computedPropertiesVariables);
 
 const visibleCallouts = computed(() => {
-	return props.enableAiLoanPills && props.aiLoanPills.length
+	return props.aiLoanPills.length
 		? props.aiLoanPills
 		: loanCallouts.value;
 });

@@ -38,7 +38,6 @@
 						:use-full-width="true"
 						:user-balance="userBalance"
 						:custom-href="getCustomHref($router, loan.id)"
-						:enable-ai-loan-pills="enableAiLoanPills"
 						:ai-pills="loan.aiPills"
 						@add-to-basket="addToBasket"
 						@show-cart-modal="showCartModal"
@@ -125,10 +124,6 @@ export default {
 		pageLimit: {
 			type: Number,
 			default: 6
-		},
-		enableAiLoanPills: {
-			type: Boolean,
-			default: false
 		},
 		controlsTopRight: {
 			type: Boolean,

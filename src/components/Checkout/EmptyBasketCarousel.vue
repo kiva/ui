@@ -1,10 +1,10 @@
 <template>
 	<transition name="kvfade">
 		<div
-			v-if="randomLoans.length"
+			v-if="suggestedLoans.length"
 			class="
 				section-wrapper
-				random-loan-cards
+				suggested-loan-cards
 				tw-py-4
 				tw-relative
 				tw-border-t
@@ -13,25 +13,24 @@
 		>
 			<div class="section-container tw-mx-auto tw-my-0">
 				<kv-carousel
-					v-if="randomLoans.length > 0 && !loading"
+					v-if="suggestedLoans.length > 0 && !loading"
 					class="tw-w-full tw-overflow-visible md:tw-overflow-hidden"
 					data-testid="random-loan-card-carousel"
 					:embla-options="{
 						loop: false,
 					}"
-					ref="randomLoansCarousel"
+					ref="suggestedLoansCarousel"
 					:multiple-slides-visible="true"
 					slides-to-scroll="visible"
 					:slide-max-width="singleSlideWidth"
 					@interact-carousel="onInteractCarousel"
 				>
-					<template v-for="(loan, index) in randomLoans" #[`slide${index}`] :key="`loan-card-${index}`">
+					<template v-for="(loan, index) in suggestedLoans" #[`slide${index}`] :key="`loan-card-${index}`">
 						<kv-classic-loan-card-container
 							:loan-id="loan?.id"
 							:use-full-width="true"
 							:show-tags="true"
 							:enable-five-dollars-notes="enableFiveDollarsNotes"
-							:enable-ai-loan-pills="enableAiLoanPills"
 							:ai-pills="loan?.aiPills"
 							@updating-totals="$emit('updating-totals', $event)"
 							@add-to-basket="addToBasket(index)"
@@ -49,7 +48,7 @@ import _throttle from 'lodash/throttle';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
 import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_CHECKOUT } from '#src/util/flssUtils';
-import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
+import { withAiPills } from '#src/util/aiLoanPIillsUtils';
 import { KvCarousel } from '@kiva/kv-components';
 
 export default {
@@ -64,14 +63,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		enableAiLoanPills: {
-			type: Boolean,
-			default: false
-		},
 	},
 	data() {
 		return {
-			randomLoans: [],
+			suggestedLoans: [],
 			loading: false,
 			windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,
 			handleResize: _throttle(this.isWindowWidth, 200)
@@ -100,15 +95,11 @@ export default {
 				{ pageLimit: 15 },
 				FLSS_ORIGIN_CHECKOUT
 			);
-			let processedLoans = loans ?? [];
-			if (this.enableAiLoanPills) {
-				const loanIds = getLoansIds(processedLoans);
-				const aiLoansPills = await fetchAiLoanPills(this.apollo, loanIds);
-				processedLoans = addAiPillsToLoans(processedLoans, aiLoansPills);
-			}
-			this.randomLoans = processedLoans;
-
+			// Show loans and clear loading first; AI pills load after so they don't block the carousel.
+			this.suggestedLoans = loans ?? [];
 			this.$emit('updating-totals', false);
+
+			this.suggestedLoans = await withAiPills(this.apollo, this.suggestedLoans);
 		},
 		onInteractCarousel(interaction) {
 			this.$kvTrackEvent('carousel', 'click-carousel-horizontal-scroll', interaction);

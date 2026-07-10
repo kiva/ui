@@ -127,7 +127,6 @@
 				:title="recommendedLoansTitle"
 				:loans="recommendedLoans"
 				:user-balance="userBalance"
-				:enable-ai-loan-pills="enableAiLoanPills"
 				@add-to-basket="trackCategory($event, 'recommended')"
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails($event)"
@@ -161,7 +160,6 @@
 			:show-side-sheet="showBPSideSheet"
 			:show-next-steps="showNextSteps"
 			:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
-			:enable-ai-loan-pills="enableAiLoanPills"
 			:is-animated="animatedSideSheet"
 			@add-to-basket="addToBasket"
 			@go-to-link="goToLink"
@@ -227,7 +225,7 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
+import { withAiPills } from '#src/util/aiLoanPIillsUtils';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import BadgesSectionV2 from '#src/components/MyKiva/BadgesSectionV2';
 
@@ -300,10 +298,6 @@ export default {
 		transactions: {
 			type: Array,
 			default: () => [],
-		},
-		enableAiLoanPills: {
-			type: Boolean,
-			default: false
 		},
 		sidesheetLoan: {
 			type: Object,
@@ -630,13 +624,9 @@ export default {
 				origin: 'web:my_kiva_page',
 				limit: 15
 			}).then(async result => {
-				let processedLoans = result?.loans ?? [];
-				if (this.enableAiLoanPills) {
-					const loanIds = getLoansIds(processedLoans);
-					const aiLoansPills = await fetchAiLoanPills(this.apollo, loanIds);
-					processedLoans = addAiPillsToLoans(processedLoans, aiLoansPills);
-				}
-				this.recommendedLoans = processedLoans;
+				// Show loans first, then enrich with AI pills so the grid doesn't block on the pills query.
+				this.recommendedLoans = result?.loans ?? [];
+				this.recommendedLoans = await withAiPills(this.apollo, this.recommendedLoans);
 			}).catch(e => {
 				logReadQueryError(e, 'MyKivaPage fetchRecommendedLoans');
 			});
