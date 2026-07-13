@@ -9,7 +9,7 @@
 				<div class="tw-col-span-12 md:tw-col-span-9 tw-pt-1.5 md:tw-pt-3">
 					<div class="tw-rounded-none md:tw-rounded-t tw-py-3 md:tw-pb-0 tw-px-2 md:tw-px-3 md:tw-bg-primary">
 						<div class="md:tw-flex md:tw-items-baseline md:tw-justify-between">
-							<h1 class="tw-text-display">
+							<h1>
 								My loans
 							</h1>
 							<div

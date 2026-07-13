@@ -9,7 +9,7 @@
 				<div class="tw-col-span-12 md:tw-col-span-9 tw-pt-1.5 md:tw-pt-3">
 					<!-- Intro / hero -->
 					<div class="tw-rounded-none md:tw-rounded tw-py-3 tw-px-2 md:tw-px-3 md:tw-bg-primary">
-						<h1 class="tw-text-display tw-mb-2">
+						<h1 class="tw-mb-2">
 							Kiva Cards
 						</h1>
 						<KvGrid class="tw-grid-cols-12 tw-gap-2 tw-items-center">
