@@ -42,6 +42,7 @@ vi.mock('#src/composables/useGoalSettingRecommendedLoan', () => ({
 		hasRecommendedLoans: ref(false),
 		isLoadingRecommendedLoan: ref(false),
 		recommendLoanHeaderDetails: ref(''),
+		recommendedLoan: ref(null),
 		recommendLoanCardProps: ref({}),
 		recommendLoanIsInBasket: ref(false),
 		resetRecommendedLoanState: vi.fn(),

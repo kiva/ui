@@ -8,11 +8,16 @@ import useGoalSettingRecommendedLoan, {
 	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT,
 	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE,
 } from '#src/composables/useGoalSettingRecommendedLoan';
+import { fetchAiLoanPills } from '#src/util/aiLoanPillsUtils';
 
 vi.mock('vue-router', () => ({
 	useRouter: () => ({
 		currentRoute: { value: { path: '/mykiva', name: 'my-kiva' } },
 	}),
+}));
+
+vi.mock('#src/util/aiLoanPillsUtils', () => ({
+	fetchAiLoanPills: vi.fn(),
 }));
 
 describe('useGoalSettingRecommendedLoan', () => {
@@ -79,6 +84,8 @@ describe('useGoalSettingRecommendedLoan', () => {
 
 	beforeEach(() => {
 		mockKvTrackEvent = vi.fn();
+		fetchAiLoanPills.mockReset();
+		fetchAiLoanPills.mockResolvedValue([]);
 		mountComposable();
 	});
 
@@ -628,6 +635,230 @@ describe('useGoalSettingRecommendedLoan', () => {
 				composable.trackCheckoutClick();
 				expect(mockKvTrackEvent).not.toHaveBeenCalled();
 			});
+		});
+	});
+
+	describe('AI loan pills', () => {
+		const mountEnabledWithLoan = async (loan, pills) => {
+			fetchAiLoanPills.mockResolvedValue(pills);
+			mountComposable({ goalRecommendedLoanEnable: true });
+			composable.enterRecommendedLoanStepAfterGoalSave();
+			getRecommendedLoans.mockResolvedValue([loan]);
+			await flushPromises();
+		};
+
+		// The pills fetch stays gated behind the recommended-loan feature flag.
+		it('does not fetch pills when the recommended-loan feature is disabled', async () => {
+			// Default mount has goalRecommendedLoanEnable: false.
+			composable.enterRecommendedLoanStepAfterGoalSave();
+			getRecommendedLoans.mockResolvedValue([{ id: 55, name: 'First' }]);
+			await flushPromises();
+			expect(fetchAiLoanPills).not.toHaveBeenCalled();
+		});
+
+		it('fetches pills for the recommended loan id', async () => {
+			await mountEnabledWithLoan(
+				{ id: 55, name: 'Pillable' },
+				[{ loanId: 55, pills: ['AI pick'] }],
+			);
+			expect(fetchAiLoanPills).toHaveBeenCalledWith(mockApollo, [55]);
+		});
+
+		// Pills replace the loan's own callouts: the card would otherwise append them, so the
+		// loan's callout sources are blanked to leave only the pills.
+		it('passes pills as customCallouts and blanks the loan-derived callout fields', async () => {
+			await mountEnabledWithLoan(
+				{
+					id: 55,
+					name: 'Pillable',
+					activity: { id: 1, name: 'Farming' },
+					sector: { id: 2, name: 'Agriculture' },
+					tags: ['#Eco-friendly'],
+					themes: ['Growing businesses'],
+				},
+				[{ loanId: 55, pills: ['Repaid on time', 'Woman-owned'] }],
+			);
+			const card = composable.recommendLoanCardProps.value;
+			expect(card.customCallouts).toEqual(['Repaid on time', 'Woman-owned']);
+			expect(card.loan.activity).toEqual({});
+			expect(card.loan.sector).toEqual({});
+			expect(card.loan.tags).toEqual([]);
+			expect(card.loan.themes).toEqual([]);
+			// Non-callout fields are preserved so the card still renders normally.
+			expect(card.loan.name).toBe('Pillable');
+			expect(card.loanId).toBe(55);
+		});
+
+		// No pills → the card keeps its own loan-derived callouts (the fallback path).
+		it('leaves loan callouts intact and sets no customCallouts when no pills are returned', async () => {
+			await mountEnabledWithLoan(
+				{
+					id: 55,
+					name: 'Pillable',
+					activity: { id: 1, name: 'Farming' },
+					tags: ['#Eco-friendly'],
+				},
+				[],
+			);
+			const card = composable.recommendLoanCardProps.value;
+			expect(card.customCallouts).toBeUndefined();
+			expect(card.loan.activity).toEqual({ id: 1, name: 'Farming' });
+			expect(card.loan.tags).toEqual(['#Eco-friendly']);
+		});
+
+		// A failed pills query degrades gracefully to the loan's own callouts.
+		it('falls back to loan callouts when the pills query errors (resolves undefined)', async () => {
+			// fetchAiLoanPills swallows errors and resolves undefined.
+			await mountEnabledWithLoan(
+				{ id: 55, name: 'Pillable', tags: ['#Eco-friendly'] },
+				undefined,
+			);
+			const card = composable.recommendLoanCardProps.value;
+			expect(card.customCallouts).toBeUndefined();
+			expect(card.loan.tags).toEqual(['#Eco-friendly']);
+		});
+
+		// Advancing to a different recommended loan refetches pills for the new id.
+		it('refetches pills when the recommended loan changes', async () => {
+			await mountEnabledWithLoan({ id: 55, name: 'First' }, [{ loanId: 55, pills: ['P1'] }]);
+			expect(composable.recommendLoanCardProps.value.customCallouts).toEqual(['P1']);
+
+			fetchAiLoanPills.mockResolvedValue([{ loanId: 66, pills: ['P2'] }]);
+			getRecommendedLoans.mockResolvedValue([{ id: 66, name: 'Second' }]);
+			selectedCategory.value = { id: '2', name: 'Climate', badgeId: 'climate-badge' };
+			await flushPromises();
+
+			expect(fetchAiLoanPills).toHaveBeenLastCalledWith(mockApollo, [66]);
+			expect(composable.recommendLoanCardProps.value.customCallouts).toEqual(['P2']);
+		});
+
+		// Advancing to a pill-less loan clears the previous pills and un-blanks the callouts,
+		// so stale pill state can't leak onto the next loan.
+		it('clears pills and restores loan callouts when the next loan has none', async () => {
+			await mountEnabledWithLoan(
+				{ id: 55, name: 'First', tags: ['#Eco-friendly'] },
+				[{ loanId: 55, pills: ['P1'] }],
+			);
+			expect(composable.recommendLoanCardProps.value.customCallouts).toEqual(['P1']);
+
+			// Advance to a loan the backend returns no pills for.
+			fetchAiLoanPills.mockResolvedValue([]);
+			getRecommendedLoans.mockResolvedValue([{ id: 66, name: 'Second', tags: ['#Refugees'] }]);
+			selectedCategory.value = { id: '2', name: 'Climate', badgeId: 'climate-badge' };
+			await flushPromises();
+
+			const card = composable.recommendLoanCardProps.value;
+			expect(card.customCallouts).toBeUndefined();
+			// Loan callouts are restored (not left blanked from the previous loan).
+			expect(card.loan.tags).toEqual(['#Refugees']);
+			expect(card.loanId).toBe(66);
+		});
+
+		// Out-of-order responses: a slow fetch for a loan we've moved past must not clobber
+		// the current loan's pills.
+		it('ignores a stale pills response for a loan that is no longer recommended', async () => {
+			let resolveStale;
+			const stalePills = new Promise(resolve => { resolveStale = resolve; });
+			fetchAiLoanPills.mockReturnValueOnce(stalePills);
+
+			mountComposable({ goalRecommendedLoanEnable: true });
+			composable.enterRecommendedLoanStepAfterGoalSave();
+			getRecommendedLoans.mockResolvedValue([{ id: 55, name: 'First' }]);
+			await flushPromises();
+
+			// Advance to a new loan whose pills resolve immediately.
+			fetchAiLoanPills.mockResolvedValue([{ loanId: 66, pills: ['fresh'] }]);
+			getRecommendedLoans.mockResolvedValue([{ id: 66, name: 'Second' }]);
+			selectedCategory.value = { id: '2', name: 'Climate', badgeId: 'climate-badge' };
+			await flushPromises();
+			expect(composable.recommendLoanCardProps.value.customCallouts).toEqual(['fresh']);
+
+			// The slow response for loan 55 arrives late and must not overwrite loan 66's pills.
+			resolveStale([{ loanId: 55, pills: ['stale'] }]);
+			await flushPromises();
+			expect(composable.recommendLoanCardProps.value.customCallouts).toEqual(['fresh']);
+			expect(composable.recommendLoanCardProps.value.loanId).toBe(66);
+			// The ignored stale response must not leave the skeleton stuck loading.
+			expect(composable.isLoadingRecommendedLoan.value).toBe(false);
+		});
+
+		// The skeleton stays up through the pills fetch so the card appears once, instead of
+		// showing the loan's tags and then popping to the AI pills.
+		it('stays in the loading state until the pills query resolves', async () => {
+			let resolvePills;
+			const pendingPills = new Promise(resolve => { resolvePills = resolve; });
+			fetchAiLoanPills.mockReturnValue(pendingPills);
+
+			mountComposable({ goalRecommendedLoanEnable: true });
+			composable.enterRecommendedLoanStepAfterGoalSave();
+			getRecommendedLoans.mockResolvedValue([{ id: 55, name: 'First' }]);
+			await flushPromises();
+
+			// Loan resolved but pills still in flight: keep the skeleton up so the
+			// callouts do not pop from the loan's own tags to the AI pills.
+			expect(composable.isLoadingRecommendedLoan.value).toBe(true);
+
+			resolvePills([{ loanId: 55, pills: ['AI pick'] }]);
+			await flushPromises();
+
+			expect(composable.isLoadingRecommendedLoan.value).toBe(false);
+			expect(composable.recommendLoanCardProps.value.customCallouts).toEqual(['AI pick']);
+		});
+
+		// Add-to-basket needs the real loan (themes/tags), not the display-blanked card copy —
+		// the parent's add-to-basket flow reads those fields.
+		it('exposes the raw recommended loan (not the blanked card loan) for domain actions', async () => {
+			await mountEnabledWithLoan(
+				{
+					id: 55,
+					name: 'Pillable',
+					activity: { id: 1, name: 'Farming' },
+					sector: { id: 2, name: 'Agriculture' },
+					tags: ['#Eco-friendly'],
+					themes: ['Growing businesses'],
+				},
+				[{ loanId: 55, pills: ['AI pick'] }],
+			);
+			// The card-facing loan is blanked for display...
+			expect(composable.recommendLoanCardProps.value.loan.themes).toEqual([]);
+			// ...but the exposed recommended loan keeps its real fields for add-to-basket.
+			expect(composable.recommendedLoan.value).toMatchObject({
+				activity: { id: 1, name: 'Farming' },
+				sector: { id: 2, name: 'Agriculture' },
+				tags: ['#Eco-friendly'],
+				themes: ['Growing businesses'],
+			});
+		});
+
+		// Empty pills result still clears loading (the skeleton must not hang) and leaves the
+		// card on its own callouts.
+		it('clears the loading state when the pills query resolves with none', async () => {
+			await mountEnabledWithLoan(
+				{ id: 55, name: 'Pillable', tags: ['#Eco-friendly'] },
+				[],
+			);
+			expect(composable.isLoadingRecommendedLoan.value).toBe(false);
+			expect(composable.recommendLoanCardProps.value.customCallouts).toBeUndefined();
+		});
+
+		// A basket/route change recomputes the card props but must reuse the same blanked-loan
+		// object, so the card is not needlessly re-rendered.
+		it('keeps the card-facing loan reference stable across basket changes', async () => {
+			await mountEnabledWithLoan(
+				{ id: 55, name: 'Pillable', tags: ['#Eco-friendly'] },
+				[{ loanId: 55, pills: ['AI pick'] }],
+			);
+			const loanBefore = composable.recommendLoanCardProps.value.loan;
+
+			props.basketItems = [{ __typename: 'LoanReservation', id: 1 }];
+			await flushPromises();
+
+			const cardAfter = composable.recommendLoanCardProps.value;
+			// The props object recomputed (new basketItems)...
+			expect(cardAfter.basketItems).toEqual([{ __typename: 'LoanReservation', id: 1 }]);
+			// ...but the blanked loan is unchanged, so its reference must stay stable
+			// to avoid re-rendering the card.
+			expect(cardAfter.loan).toBe(loanBefore);
 		});
 	});
 });
