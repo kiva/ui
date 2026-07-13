@@ -358,7 +358,6 @@ const selectedCategory = ref(categories[0]);
 
 // This container doesn't have the same multi-step flow as the modal,
 // so we can always show the recommended loan section when enabled.
-// A reactive ref (not a bare boolean) so the composable can watch it.
 const showPage = ref(true);
 const loadedSetData = ref(false);
 const {
