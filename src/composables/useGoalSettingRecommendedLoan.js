@@ -309,8 +309,7 @@ export default function useGoalSettingRecommendedLoan({
 		recommendLoanHeaderDetails,
 		// Raw recommended loan for domain actions (add-to-basket); its callout fields are never blanked.
 		recommendedLoan,
-		// Loan-card props. `loan` here is callout-blanked for display when pills exist —
-		// use `recommendedLoan` for domain actions instead.
+		// Loan-card props; its `loan` is the display-blanked counterpart of `recommendedLoan`.
 		recommendLoanCardProps,
 		recommendLoanIsInBasket,
 		resetRecommendedLoanState,
