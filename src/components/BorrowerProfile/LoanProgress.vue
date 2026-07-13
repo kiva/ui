@@ -116,7 +116,7 @@
 				</div>
 				<div v-else class="tw-flex tw-flex-auto">
 					<span class="tw-text-h3 tw-block tw-m-0">
-						Paying back
+						{{ isDelinquent ? 'Paying back delinquent' : 'Paying back' }}
 					</span>
 					<div class="tw-flex-auto tw-text-right">
 						<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
@@ -191,6 +191,10 @@ export default {
 		loanStatus: {
 			type: String,
 			default: 'fundraising',
+		},
+		isDelinquent: {
+			type: Boolean,
+			default: false,
 		},
 		numberOfLenders: {
 			type: Number,
