@@ -655,9 +655,6 @@ const queryResultWithNoGoal = {
 	}
 };
 
-const customGoalAmountExperimentEnabledCookie = {
-	uiab: 'custom_goal_amount:b:12345:1:false',
-};
 const mockTieredLendingAchievementsOnlyLastYearProgress = mockTieredLendingAchievementsAllCategories
 	.map(achievement => ({
 		id: achievement.id,
@@ -717,7 +714,7 @@ export const GoalEntrypointCustomGoalAmountEnabled = story({
 
 	totalLoans: 0,
 	tieredAchievements: [],
-}, queryResultWithNoGoal, customGoalAmountExperimentEnabledCookie);
+}, queryResultWithNoGoal);
 
 // Story: No goal set, custom amount experiment enabled, only last year progress
 export const GoalEntrypointWithOnlyLastYearProgressCustomAmount = story({
@@ -733,7 +730,7 @@ export const GoalEntrypointWithOnlyLastYearProgressCustomAmount = story({
 
 	totalLoans: 20,
 	tieredAchievements: mockTieredLendingAchievementsOnlyLastYearProgress,
-}, queryResultWithNoGoal, customGoalAmountExperimentEnabledCookie);
+}, queryResultWithNoGoal);
 
 // Story: No goal set, custom amount experiment enabled, only current year progress
 export const GoalEntrypointWithOnlyCurrentYearProgressCustomAmount = story({
@@ -749,7 +746,7 @@ export const GoalEntrypointWithOnlyCurrentYearProgressCustomAmount = story({
 
 	totalLoans: 20,
 	tieredAchievements: mockTieredLendingAchievementsOnlyCurrentYearProgress,
-}, queryResultWithNoGoalAndThisAndLastYearProgress, customGoalAmountExperimentEnabledCookie);
+}, queryResultWithNoGoalAndThisAndLastYearProgress);
 
 // Story: No goal set, custom amount experiment enabled, current and last year progress available
 export const GoalEntrypointWithThisAndLastYearProgressCustomAmount = story({
@@ -765,7 +762,7 @@ export const GoalEntrypointWithThisAndLastYearProgressCustomAmount = story({
 
 	totalLoans: 20,
 	tieredAchievements: mockTieredLendingAchievementsThisAndLastYearProgress,
-}, queryResultWithNoGoalAndThisAndLastYearProgress, customGoalAmountExperimentEnabledCookie);
+}, queryResultWithNoGoalAndThisAndLastYearProgress);
 
 // Story: Guest user with goals experiment enabled - should NOT show goal modules
 export const GuestWithGoalsExperiment = story({
