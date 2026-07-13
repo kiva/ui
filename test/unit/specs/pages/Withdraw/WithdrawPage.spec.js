@@ -140,6 +140,21 @@ describe('WithdrawPage', () => {
 		});
 	});
 
+	it('shows the mismatch error only once when the confirm email is empty', async () => {
+		const { getByLabelText, getAllByText } = renderPage();
+		await waitFor(() => getByLabelText('Confirm PayPal account email'));
+
+		// First field has a value, confirm field is touched then left empty.
+		await fireEvent.update(getByLabelText('Your PayPal account email'), 'a@example.org');
+		await fireEvent.update(getByLabelText('Confirm PayPal account email'), 'x');
+		await fireEvent.update(getByLabelText('Confirm PayPal account email'), '');
+
+		await waitFor(() => {
+			// `required` and the match check must not both fire the identical message.
+			expect(getAllByText('Email addresses do not match.')).toHaveLength(1);
+		});
+	});
+
 	it('does not advance when the confirm email does not match', async () => {
 		const { getByLabelText, getByTestId, push } = renderPage();
 		await waitFor(() => getByTestId('withdraw-continue'));

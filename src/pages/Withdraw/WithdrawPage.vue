@@ -212,7 +212,7 @@
 import numeral from 'numeral';
 import { useVuelidate } from '@vuelidate/core';
 import {
-	required, email, sameAs, minValue, maxValue, helpers,
+	required, email, minValue, maxValue, helpers,
 } from '@vuelidate/validators';
 import { KvButton, KvLoadingPlaceholder, KvTextInput } from '@kiva/kv-components';
 import PortfolioShell from '#src/components/WwwFrame/PortfolioShell';
@@ -279,9 +279,11 @@ export default {
 			},
 			paypalEmailConfirm: {
 				required: helpers.withMessage('Email addresses do not match.', required),
+				// Skip the match check when the field is empty so `required` owns the empty
+				// case; otherwise both validators fire and render the same message twice.
 				sameAsEmail: helpers.withMessage(
 					'Email addresses do not match.',
-					sameAs(this.paypalEmail),
+					value => !helpers.req(value) || value === this.paypalEmail,
 				),
 			},
 		};
