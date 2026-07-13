@@ -160,19 +160,19 @@
 						</section>
 					</template>
 
-					<template v-if="!showPostLendingNextStepsCards || !userLentToAllRegions">
+					<template v-if="!showRegionExperienceInFirstRow">
 						<h2 class="tw-text-primary tw-mt-4 tw-mb-2">
 							Keep your impact going
 						</h2>
 						<section class="tw-grid md:tw-grid-cols-3 tw-gap-4">
 							<!--
-								Non-post-lending lenders (including superlenders) get the Almost Funded
-								next step at its natural single-column width; post-lending lenders keep
-								the 2-tile lending stats card, which spans two of the three columns.
+								Shown whenever the region card is not already in row 1 (post-lending
+								lenders and superlenders): the Almost Funded next step sits at its natural
+								single-column width alongside the 2-tile lending stats card, which spans
+								the remaining two of the three columns.
 							-->
-							<AlmostFundedNextStep v-if="!showPostLendingNextStepsCards" />
+							<AlmostFundedNextStep />
 							<MyKivaRegionExperience
-								v-else
 								class="md:tw-col-span-2"
 								:regions-data="regionsData"
 								:loans="loans"
