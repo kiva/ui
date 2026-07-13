@@ -26,6 +26,19 @@ export const Fundraising = () => ({
 	template: `<lend-cta :loan-id="${fundraisingPartnerLoan.id}" />`,
 });
 
+export const LoadingUserState = () => ({
+	components: { LendCta },
+	mixins: [
+		apolloStoryMixin({
+			queryResult: createQueryResult(fundraisingPartnerLoan),
+			loadingQueries: ['lendCtaUser'],
+		}),
+		cookieStoreStoryMixin(),
+		kvAuth0StoryMixin,
+	],
+	template: `<lend-cta :loan-id="${fundraisingPartnerLoan.id}" />`,
+});
+
 export const MultiMatched = () => ({
 	components: { LendCta },
 	mixins: [
