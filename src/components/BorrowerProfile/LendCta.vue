@@ -541,9 +541,7 @@ export default {
 		return { enableMultiMatching };
 	},
 	data() {
-		// Initialize from loanData prop when available (e.g. SSR with cache-warmed data)
-		// so the CTA renders with real content instead of a loading state.
-		// The loan query will refresh these values client-side.
+		// Seed initial values from the loanData prop when it's present.
 		const loan = this.loanData;
 		const hasData = !!loan?.id;
 		return {
@@ -568,7 +566,8 @@ export default {
 			matchRatio: loan?.matchRatio ?? 0,
 			basketItems: [],
 			isAdding: false,
-			isLoading: !hasData,
+			loanLoading: !hasData,
+			userLoading: true,
 			hasFreeCredit: false,
 			isSticky: false,
 			wrapperHeight: 0,
@@ -613,8 +612,7 @@ export default {
 				this.matchingTextVisibility = this.status === 'fundraising'
 					&& this.matchingText && !this.isMatchAtRisk && !this.enableMultiMatching;
 
-				// CTA is ready to render once loan data is available
-				this.isLoading = false;
+				this.loanLoading = false;
 
 				if (this.status === 'fundraising' && this.numLenders > 0) {
 					this.lenderCountVisibility = true;
@@ -639,6 +637,7 @@ export default {
 				this.basketItems = basket?.items?.values ?? [];
 				this.userBalance = data?.my?.userAccount?.balance;
 				this.basketSize = data?.shop?.nonTrivialItemCount || 0;
+				this.userLoading = false;
 
 				this.initializeMatchingHighlightExp();
 			},
@@ -886,6 +885,9 @@ export default {
 				return true;
 			}
 			return false;
+		},
+		isLoading() {
+			return this.loanLoading || this.userLoading;
 		},
 		state() {
 			if (this.isLoading) {
