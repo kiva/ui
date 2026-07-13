@@ -78,7 +78,7 @@ describe('NextYearGoalCard', () => {
 		expect(goalData.setHideGoalCardPreference).not.toHaveBeenCalled();
 	});
 
-	it('uses date-based title copy even when the goal tile experiment is enabled', () => {
+	it('uses date-based title copy', () => {
 		vi.useFakeTimers();
 		vi.setSystemTime(new Date('2026-03-15T12:00:00'));
 
@@ -86,7 +86,6 @@ describe('NextYearGoalCard', () => {
 			props: {
 				userGoal: null,
 				prevYearLoans: 2,
-				isGoalTileExperimentEnabled: true,
 			},
 		});
 
@@ -94,7 +93,7 @@ describe('NextYearGoalCard', () => {
 		expect(wrapper.text()).not.toContain("You haven't set your goal yet!");
 	});
 
-	it('uses the loan question subtitle before April even when the goal tile experiment is enabled', () => {
+	it('uses the loan question subtitle before April', () => {
 		vi.useFakeTimers();
 		vi.setSystemTime(new Date('2026-03-31T12:00:00'));
 
@@ -102,16 +101,15 @@ describe('NextYearGoalCard', () => {
 			props: {
 				userGoal: null,
 				prevYearLoans: 30,
-				isGoalTileExperimentEnabled: true,
 			},
 		});
 
 		expect(wrapper.text()).toContain('Last year, you helped 30 women shape their futures');
 		expect(wrapper.text()).toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
-		expect(wrapper.text()).not.toContain(goalCopy.CARD_HABIT_PROMPT_SINGLE_LINE);
+		expect(wrapper.text()).not.toContain('Make helping others a habit.');
 	});
 
-	it('uses the habit prompt subtitle starting April when the goal tile experiment is enabled', () => {
+	it('uses the habit prompt subtitle starting April', () => {
 		vi.useFakeTimers();
 		vi.setSystemTime(new Date('2026-04-01T12:00:00'));
 
@@ -119,7 +117,6 @@ describe('NextYearGoalCard', () => {
 			props: {
 				userGoal: null,
 				prevYearLoans: 30,
-				isGoalTileExperimentEnabled: true,
 			},
 		});
 

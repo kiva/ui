@@ -32,7 +32,6 @@
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:show-my-giving-funds-card="showMyGivingFundsCard"
-			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goals-row-enabled="goalsRowEnabled"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
@@ -65,7 +64,6 @@ import useBadgeData, {
 import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
-const GOAL_TILE_EXPERIMENT_KEY = 'mykiva_goal_tile';
 const GOALS_ROW_EXP_KEY = 'mykiva_goals_row';
 
 /**
@@ -115,7 +113,6 @@ export default {
 			goalRefreshKey: 0,
 			showMyGivingFundsCard: false,
 			recentTransactionLoans: [],
-			isGoalTileExperimentEnabled: false,
 			goalRecommendedLoanEnable: false,
 			goalsRowEnabled: false,
 			shouldRenderFeaturedSlot: true,
@@ -196,10 +193,6 @@ export default {
 				client.query({
 					query: contentfulEntriesQuery,
 					variables: { contentType: 'challenge', limit: 200 }
-				}),
-				client.query({
-					query: experimentAssignmentQuery,
-					variables: { id: GOAL_TILE_EXPERIMENT_KEY },
 				}),
 				client.query({
 					query: experimentAssignmentQuery,
@@ -374,19 +367,6 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'MyKivaPage created');
 		}
-
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
-			GOAL_TILE_EXPERIMENT_KEY,
-			version => {
-				this.isGoalTileExperimentEnabled = Boolean(version === 'b') && !this.isNextStepsRoute.value;
-			},
-			this.$kvTrackEvent,
-			'EXP-MP-2565-Mar2026',
-			'portfolio'
-		);
 
 		initializeExperiment(
 			this.cookieStore,

@@ -38,7 +38,6 @@
 				:latest-loan="latestLoan"
 				:goal-refresh-key="goalRefreshKey"
 				:user-info="userInfo"
-				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 				:goals-row-enabled="goalsRowEnabled"
 				:basket-items="basketItems"
@@ -312,10 +311,6 @@ export default {
 			default: 0
 		},
 		showMyGivingFundsCard: {
-			type: Boolean,
-			default: false
-		},
-		isGoalTileExperimentEnabled: {
 			type: Boolean,
 			default: false
 		},
