@@ -96,6 +96,21 @@ export const PayingBack = () => ({
 	`,
 });
 
+export const PayingBackDelinquent = () => ({
+	components: { LoanProgress },
+	template: `
+		<loan-progress
+			loan-status="payingBack"
+			:is-delinquent="true"
+			:progress-percent="0.60"
+			money-left="400.00"
+			:loading="false"
+			:loan-id="123"
+		/>
+	`,
+});
+PayingBackDelinquent.storyName = 'Paying Back / Delinquent';
+
 export const Ended = () => ({
 	components: { LoanProgress },
 	template: `

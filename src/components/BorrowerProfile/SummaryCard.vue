@@ -83,6 +83,7 @@
 						:progress-percent="effectiveProgressPercent"
 						:time-left="timeLeft"
 						:loan-status="inPfp ? 'pfp' : status"
+						:is-delinquent="delinquent"
 						:number-of-lenders="numLenders"
 						:pfp-min-lenders="pfpMinLenders"
 						:loading="isLoading"
@@ -161,6 +162,7 @@ export const summaryCardFragment = gql`fragment summaryCardFields on LoanBasic {
 	}
 	name
 	status
+	delinquent
 	use
 	anonymizationLevel
 	borrowerCount
@@ -205,43 +207,11 @@ const mountQuery = gql`
 		lend {
 			loan(id: $loanId) {
 				id
-				status
-				activity {
-					id
-					name
-				}
-				distributionModel
-				fundraisingPercent @client
-				fundraisingTimeLeft @client
-				fundraisingTimeLeftMilliseconds @client
-				geocode {
-					city
-					state
-					country {
-						id
-						name
-					}
-				}
-				loanAmount
-				paidAmount
-				loanFundraisingInfo {
-					id
-					fundedAmount
-					reservedAmount
-				}
-				plannedExpirationDate
-				unreservedAmount @client
-				inPfp
-				pfpMinLenders
-				lenders {
-					totalCount
-				}
-				comments {
-					totalCount
-				}
+				...summaryCardFields
 			}
 		}
 	}
+	${summaryCardFragment}
 `;
 
 export default {
@@ -309,6 +279,9 @@ export default {
 		},
 		status() {
 			return this.loan?.status ?? '';
+		},
+		delinquent() {
+			return this.loan?.delinquent ?? false;
 		},
 		use() {
 			return this.loan?.fullLoanUse ?? '';
