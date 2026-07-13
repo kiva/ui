@@ -5,6 +5,7 @@ import {
 } from 'vue';
 import { useRouter } from 'vue-router';
 import useTipMessage from '#src/composables/useTipMessage';
+import { fetchAiLoanPills } from '#src/util/aiLoanPillsUtils';
 
 export const GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO = 'portfolio';
 export const GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT = 'post-checkout';
@@ -17,10 +18,11 @@ const ENTRYPOINT_TRACK_CATEGORY = {
 };
 
 /**
- * Recommended-loan step state shared by {@link GoalSettingModal.vue} and
- * {@link GoalSettingContainer.vue}.
+ * Recommended-loan step state shared by the goal-setting hosts (the goal modal, the
+ * goals page, and the post-checkout thanks page).
  *
- * The host component owns refs and passes them in; this composable does not call `defineProps`.
+ * The host component owns the reactive inputs and passes them in; this composable does
+ * not declare its own props.
  *
  * @param {object} options
  * @param {Function} options.emit — Host emit function (`defineEmits`), e.g. `set-goal`.
@@ -30,21 +32,23 @@ const ENTRYPOINT_TRACK_CATEGORY = {
  *   `LoanReservation` entries’ **`id`** (the loan id) are sent to `getRecommendedLoans` as
  *   exclusions (`loanIds.none`) and drive the “recommended loan already in basket” check via
  *   **`__typename`**. The array is also forwarded on the loan card props.
- * @param {object} options.selectedGoalNumber — Vue ref from the modal; `.value` is goal target (loan count).
- * @param {object} options.selectedCategory — Vue ref from the modal; `.value` has `name`, `badgeId`.
- * @param {object} options.show — Vue ref from the modal; `.value` is whether the lightbox is open.
- * @param {object} options.goalProgress — Vue ref from `useGoalData`; `.value` is loans toward goal this year.
- * @param {Function} options.getRecommendedLoans — From `useGoalData`; returns a promise of loans for a category id.
- * @param {Function} options.getCtaHref — From `useGoalData`; builds lend URL + optional header query.
- * @param {object} options.userGoal — Vue ref from `useGoalData`; `.value` is saved goal or null (`target`, `category`).
+ * @param {object} options.selectedGoalNumber — Vue ref; `.value` is the goal target (loan count).
+ * @param {object} options.selectedCategory — Vue ref; `.value` has `name`, `badgeId`.
+ * @param {object} options.show — Vue ref (must be reactive, not a bare boolean); `.value` is
+ *   whether the recommended-loan view is active — a modal's lightbox-open flag, or a constant
+ *   `true` in hosts that always show the view.
+ * @param {object} options.goalProgress — Vue ref; `.value` is loans completed toward the goal this year.
+ * @param {Function} options.getRecommendedLoans — Returns a promise of recommended loans for a category id.
+ * @param {Function} options.getCtaHref — Builds the lend URL with an optional header query.
+ * @param {object} options.userGoal — Vue ref; `.value` is the saved goal or null (`target`, `category`).
  * @param {object} [options.additionalExcludedLoanIds] — Optional Vue ref; `.value` is an array of
  *   loan ids to also exclude from the recommended-loan fetch (e.g. loans the user just made).
- * @param {Function} options.kvTrackEvent — Analytics helper from GoalSettingModal (`$kvTrackEvent`).
+ * @param {Function} options.kvTrackEvent — Analytics tracking function.
  * @param {string} [options.entrypoint] — Where the composable is mounted. Use one of the exported
  *   `GOAL_RECOMMENDED_LOAN_ENTRYPOINT_*` constants; selects the analytics category for
  *   recommended-loan events. Omit to disable recommended-loan tracking.
- * @param {object} [options.appConfig] — From GoalSettingModal (`$appConfig`), e.g. `photoPath`.
- * @param {object} options.apollo — Apollo client instance for tip message mutations.
+ * @param {object} [options.appConfig] — App config values, e.g. `photoPath`.
+ * @param {object} options.apollo — Apollo client instance for tip message mutations and AI loan pill fetches.
  */
 export default function useGoalSettingRecommendedLoan({
 	emit,
@@ -70,7 +74,16 @@ export default function useGoalSettingRecommendedLoan({
 	const recommendedLoans = ref([]);
 	const recommendedLoanIndex = ref(0);
 	const recommendedLoan = ref(null);
-	const isLoadingRecommendedLoan = ref(false);
+	const isLoadingRecommendedLoanData = ref(false);
+	const isLoadingRecommendedLoanPills = ref(false);
+	const recommendedLoanPills = ref([]);
+
+	// Keep the host's loading skeleton up until BOTH the loan and its AI pills have
+	// resolved, so the card appears once with its final callouts instead of rendering
+	// the loan's own tags and then popping them out when the pills arrive.
+	const isLoadingRecommendedLoan = computed(() => (
+		isLoadingRecommendedLoanData.value || isLoadingRecommendedLoanPills.value
+	));
 
 	const showRecommendLoanAfterGoalView = computed(() => (
 		goalRecommendedLoanEnable.value && showPostGoalLoanRecommendation.value
@@ -97,6 +110,25 @@ export default function useGoalSettingRecommendedLoan({
 		return segments;
 	});
 
+	// The loan object handed to the card. When AI pills are present, blank the loan's
+	// own callout sources (activity/sector/tags/themes) so the loan card renders only
+	// the pills instead of appending them after its default callouts. Derived on its own
+	// so the (cloned) loan reference stays stable across basket/route changes and the card
+	// doesn't needlessly re-process it.
+	const recommendedLoanForCard = computed(() => {
+		const loan = recommendedLoan.value;
+		if (!loan?.id || !recommendedLoanPills.value.length) {
+			return loan;
+		}
+		return {
+			...loan,
+			activity: {},
+			sector: {},
+			tags: [],
+			themes: [],
+		};
+	});
+
 	const recommendLoanCardProps = computed(() => {
 		const loan = recommendedLoan.value;
 		const photoPath = appConfig?.photoPath ?? '';
@@ -113,10 +145,12 @@ export default function useGoalSettingRecommendedLoan({
 		if (!loan?.id) {
 			return base;
 		}
+		const pills = recommendedLoanPills.value;
 		return {
 			...base,
-			loan,
+			loan: recommendedLoanForCard.value,
 			loanId: loan.id,
+			...(pills.length ? { customCallouts: pills } : {}),
 		};
 	});
 
@@ -150,15 +184,17 @@ export default function useGoalSettingRecommendedLoan({
 		trackRecommendedLoanEvent('click', isPostCheckout ? 'complete-order' : 'go-to-checkout');
 	};
 
-	// Clears the recommended-loan data + in-flight flag. Does NOT touch
-	// `showPostGoalLoanRecommendation` so that watch handlers can call it
+	// Clears the recommended-loan data (loan + pills) and both in-flight flags. Does NOT
+	// touch `showPostGoalLoanRecommendation` so that watch handlers can call it
 	// without re-triggering themselves (resetting the step flag from inside
 	// the view watch would cause a recursive flip).
 	const clearRecommendedLoanData = () => {
 		recommendedLoans.value = [];
 		recommendedLoanIndex.value = 0;
 		recommendedLoan.value = null;
-		isLoadingRecommendedLoan.value = false;
+		recommendedLoanPills.value = [];
+		isLoadingRecommendedLoanData.value = false;
+		isLoadingRecommendedLoanPills.value = false;
 	};
 
 	const resetRecommendedLoanState = () => {
@@ -170,7 +206,7 @@ export default function useGoalSettingRecommendedLoan({
 		if (goalRecommendedLoanEnable.value) {
 			// Mark in-flight synchronously so the host's loading state covers
 			// the upcoming fetch (avoids a brief "no loan yet" flicker).
-			isLoadingRecommendedLoan.value = true;
+			isLoadingRecommendedLoanData.value = true;
 			showPostGoalLoanRecommendation.value = true;
 			trackRecommendedLoanEvent('view', 'confirm-goal-set-recommended-loan');
 		}
@@ -224,17 +260,39 @@ export default function useGoalSettingRecommendedLoan({
 				return;
 			}
 			clearRecommendedLoanData();
-			isLoadingRecommendedLoan.value = true;
+			isLoadingRecommendedLoanData.value = true;
 			try {
 				recommendedLoans.value = await getRecommendedLoans(categoryId, filteredLoanIds.value);
 				recommendedLoan.value = recommendedLoans.value[0] ?? null;
 			} catch {
 				$showTipMsg('There was a problem loading a loan.', 'error');
 			} finally {
-				isLoadingRecommendedLoan.value = false;
+				isLoadingRecommendedLoanData.value = false;
 			}
 		},
 	);
+
+	// Fetch AI loan pills for whichever loan is currently recommended, refetching when
+	// the recommended loan advances. The pills-loading flag folds into the host skeleton
+	// (see `isLoadingRecommendedLoan`) so the card waits for pills and appears once with
+	// its final callouts. Leaves pills empty (card falls back to its own callouts) when
+	// the query returns nothing or errors.
+	watch(() => recommendedLoan.value?.id, async loanId => {
+		recommendedLoanPills.value = [];
+		if (!loanId) {
+			isLoadingRecommendedLoanPills.value = false;
+			return;
+		}
+		isLoadingRecommendedLoanPills.value = true;
+		const result = await fetchAiLoanPills(apollo, [loanId]);
+		// Ignore a late response if the recommended loan advanced while awaiting; the
+		// newer invocation owns the loading flag from here.
+		if (recommendedLoan.value?.id !== loanId) {
+			return;
+		}
+		recommendedLoanPills.value = result?.[0]?.pills ?? [];
+		isLoadingRecommendedLoanPills.value = false;
+	});
 
 	const onAddToBasketError = () => {
 		recommendedLoan.value = null;
@@ -249,6 +307,10 @@ export default function useGoalSettingRecommendedLoan({
 		hasRecommendedLoans,
 		isLoadingRecommendedLoan,
 		recommendLoanHeaderDetails,
+		// Raw recommended loan for domain actions (add-to-basket); its callout fields are never blanked.
+		recommendedLoan,
+		// Loan-card props. `loan` here is callout-blanked for display when pills exist —
+		// use `recommendedLoan` for domain actions instead.
 		recommendLoanCardProps,
 		recommendLoanIsInBasket,
 		resetRecommendedLoanState,

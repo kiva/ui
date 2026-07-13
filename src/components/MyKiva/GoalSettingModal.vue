@@ -304,6 +304,7 @@ const {
 	hasRecommendedLoans,
 	isLoadingRecommendedLoan,
 	recommendLoanHeaderDetails,
+	recommendedLoan,
 	recommendLoanCardProps,
 	recommendLoanIsInBasket,
 	resetRecommendedLoanState,
@@ -380,12 +381,13 @@ const recommendLoanForGoalContentRef = ref(null);
 
 const addToBasket = () => {
 	const lendAmount = recommendLoanForGoalContentRef.value?.getSelectedAmount();
-	const { loan, loanId } = recommendLoanCardProps.value;
+	const { loanId } = recommendLoanCardProps.value;
 	trackAddToBasketClick(loanId, lendAmount);
 	emit('add-to-basket', {
 		loanId,
 		lendAmount,
-		loan,
+		// Raw recommended loan, not the card's blanked copy.
+		loan: recommendedLoan.value,
 		onError: onAddToBasketError,
 	});
 };
