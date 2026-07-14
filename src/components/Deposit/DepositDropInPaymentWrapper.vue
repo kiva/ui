@@ -1,39 +1,65 @@
 <template>
 	<div class="dropin-payment-holder tw-px-0 tw-mt-2">
-		<braintree-drop-in-interface
-			v-if="isClientReady"
-			ref="braintreeDropInInterface"
-			:amount="formattedAmount"
-			flow="checkout"
-			:payment-types="['paypal', 'card']"
-			@transactions-enabled="enableConfirmButton = $event"
-		/>
-
-		<div id="dropin-submit">
+		<!-- Token fetch failed -->
+		<div v-if="tokenError" data-testid="deposit-payment-error">
+			<p>We couldn't load payment options. Please try again.</p>
 			<kv-button
-				class="tw-w-full md:tw-w-auto tw-mt-2"
-				:state="buttonState"
-				data-testid="deposit-submit"
-				@click="submit"
-				v-kv-track-event="['portfolio', 'click', 'Deposit continue']"
+				class="tw-mt-2"
+				@click="loadClientToken"
+				v-kv-track-event="['portfolio', 'click', 'Deposit retry payment load']"
 			>
-				<span class="tw-inline-flex tw-items-center tw-justify-center">
-					<kv-material-icon class="tw-w-3 tw-h-3 tw-mr-0.5" :icon="mdiLock" />
-					Add credit
-				</span>
+				Try again
 			</kv-button>
 		</div>
 
-		<p class="tw-text-small tw-text-secondary tw-mt-3">
-			Thanks to PayPal, Kiva receives free payment processing.
-		</p>
+		<!-- Once the client token resolves, KvPaymentSelect renders and owns its own
+			loading spinner while the Braintree drop-in initializes. -->
+		<template v-else-if="authToken">
+			<!-- Lock the payment selection while a charge is in flight so the user can't
+				swap the payment method mid-submit. -->
+			<div
+				data-testid="deposit-payment-wrap"
+				:class="{ 'tw-pointer-events-none tw-opacity-low': submitting }"
+				:inert="submitting || undefined"
+			>
+				<KvPaymentSelect
+					ref="paymentSelect"
+					:amount="formattedAmount"
+					:auth-token="authToken"
+					drop-in-name="deposit"
+					flow="vault"
+					:payment-types="paymentTypes"
+					@transactions-enabled="enableConfirmButton = $event"
+					@error="onPaymentError"
+				/>
+			</div>
+
+			<div id="dropin-submit">
+				<kv-button
+					class="tw-w-full md:tw-w-auto tw-mt-2"
+					:state="buttonState"
+					data-testid="deposit-submit"
+					@click="submit"
+					v-kv-track-event="['portfolio', 'click', 'Deposit continue']"
+				>
+					<span class="tw-inline-flex tw-items-center tw-justify-center">
+						<kv-material-icon class="tw-w-3 tw-h-3 tw-mr-0.5" :icon="mdiLock" />
+						Add credit
+					</span>
+				</kv-button>
+			</div>
+
+			<p class="tw-text-small tw-text-secondary tw-mt-3">
+				Thanks to PayPal, Kiva receives free payment processing.
+			</p>
+		</template>
 	</div>
 </template>
 
 <script>
 import numeral from 'numeral';
-import { defineAsyncComponent } from 'vue';
 import { mdiLock } from '@mdi/js';
+import { getClientToken, KvPaymentSelect } from '@kiva/kv-shop';
 import braintreeDropInError from '#src/plugins/braintree-dropin-error-mixin';
 import logFormatter from '#src/util/logFormatter';
 import depositWithBraintreeNonceMutation from '#src/graphql/mutation/deposit/depositWithBraintreeNonce.graphql';
@@ -44,9 +70,7 @@ export default {
 	components: {
 		KvButton,
 		KvMaterialIcon,
-		BraintreeDropInInterface: defineAsyncComponent(() => import(
-			'#src/components/Payment/BraintreeDropInInterface'
-		)),
+		KvPaymentSelect,
 	},
 	mixins: [braintreeDropInError],
 	inject: ['apollo'],
@@ -66,7 +90,10 @@ export default {
 	data() {
 		return {
 			mdiLock,
-			isClientReady: false,
+			// Preserve the original deposit payment options (PayPal + card) and order.
+			paymentTypes: ['paypal', 'card'],
+			authToken: '',
+			tokenError: false,
 			enableConfirmButton: false,
 			submitting: false,
 		};
@@ -92,7 +119,25 @@ export default {
 		},
 	},
 	methods: {
-		submit() {
+		async loadClientToken() {
+			this.tokenError = false;
+			try {
+				// Deposit is behind auth, so we always fetch a customer-scoped token
+				// (getClientToken queries with useCustomerId: true) to support vaulting.
+				this.authToken = await getClientToken(this.apollo) ?? '';
+				if (!this.authToken) {
+					this.tokenError = true;
+				}
+			} catch (error) {
+				this.tokenError = true;
+				logFormatter(`Deposit getClientToken error: ${error}`, 'error');
+			}
+		},
+		onPaymentError(message) {
+			const errorMsg = message || 'Something went wrong. Please refresh the page and try again.';
+			this.$showTipMsg(errorMsg, 'error');
+		},
+		async submit() {
 			if (this.disabled || !this.enableConfirmButton || this.submitting) {
 				return;
 			}
@@ -100,22 +145,20 @@ export default {
 			// Snapshot the amount at submit time so the charge and the confirmation reflect the amount
 			// the user confirmed, even if the input changes while the request is in flight.
 			const { amount } = this;
-			this.$refs.braintreeDropInInterface.btDropinInstance.requestPaymentMethod()
-				.then(paymentMethod => {
-					const nonce = paymentMethod?.nonce;
-					const deviceData = paymentMethod?.deviceData;
-					const paymentType = paymentMethod?.type;
-					if (!nonce) {
-						this.submitting = false;
-						return;
-					}
-					this.recordDeposit(nonce, deviceData, paymentType, amount);
-				})
-				.catch(error => {
-					// requestPaymentMethod rejects when no valid payment method is selected.
+			try {
+				const paymentMethod = await this.$refs.paymentSelect.requestPaymentMethod();
+				const nonce = paymentMethod?.nonce;
+				if (!nonce) {
+					// No requestable payment method (e.g. selection cleared). Let the user retry.
 					this.submitting = false;
-					logFormatter(`Braintree requestPaymentMethod error: ${error}`, 'error');
-				});
+					return;
+				}
+				this.recordDeposit(nonce, paymentMethod?.deviceData, paymentMethod?.type, amount);
+			} catch (error) {
+				// requestPaymentMethod rejects when no valid payment method is selected.
+				this.submitting = false;
+				logFormatter(`KvPaymentSelect requestPaymentMethod error: ${error}`, 'error');
+			}
 		},
 		recordDeposit(nonce, deviceData, paymentType, amount) {
 			this.apollo.mutate({
@@ -160,12 +203,23 @@ export default {
 			this.submitting = false;
 			// Shows the standard payment-error tip + fires the error event (shared with checkout / auto-deposit).
 			this.processBraintreeDropInError('Deposit', response);
-			// Clear the failed payment selection so the lender can retry.
-			this.$refs.braintreeDropInInterface?.btDropinInstance?.clearSelectedPaymentMethod?.();
 		},
 	},
 	mounted() {
-		this.isClientReady = typeof window !== 'undefined';
+		this.loadClientToken();
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+/*
+ * While the Braintree drop-in initializes it renders its own loader inside the
+ * container, and KvPaymentSelect additionally renders its own KvLoadingSpinner
+ * (a direct <svg> child of .kv-payment-select) — showing two spinners at once.
+ * Hide the redundant KvPaymentSelect spinner and let the drop-in's own loader
+ * be the single loading indicator.
+ */
+:deep(.kv-payment-select > svg) {
+	@apply tw-hidden;
+}
+</style>
