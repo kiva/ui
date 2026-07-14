@@ -1,3 +1,9 @@
+## [3.77.0-rc.3](https://github.com/kiva/ui/compare/v3.77.0-rc.2...v3.77.0-rc.3) (2026-07-14)
+
+### 🐛 Bugfixes
+
+* capture tooltip id in setup instead of computed ([cefde31](https://github.com/kiva/ui/commit/cefde316763364795cb72651b0977dfa9c48236e))
+
 ## [3.77.0-rc.2](https://github.com/kiva/ui/compare/v3.77.0-rc.1...v3.77.0-rc.2) (2026-07-14)
 
 ### 🐛 Bugfixes
