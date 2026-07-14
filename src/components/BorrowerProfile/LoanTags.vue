@@ -11,8 +11,8 @@
 				Tags
 			</h2>
 			<!-- Applied tags -->
-			<p v-if="selectedTags.length > 0">
-				<span v-for="(tag, index) in selectedTags" :key="tag.id || 0">
+			<p v-if="visibleTags.length > 0">
+				<span v-for="(tag, index) in visibleTags" :key="tag.id || 0">
 					<router-link
 						:to="`/lend/filter?tag=${tag.id}`"
 						class="tw-no-underline tw-font-medium"
@@ -128,9 +128,11 @@ export default {
 				return { loanId: this.loanId };
 			},
 			result({ data }) {
-				if (data?.lend?.loan?.tags) {
-					this.currentTagNames = data.lend.loan.tags;
+				const loan = data?.lend?.loan;
+				if (loan?.tags) {
+					this.loanTagNames = loan.tags;
 				}
+				this.userTagNames = loan?.userProperties?.appliedTags ?? [];
 				this.loanTagsLoaded = true;
 				this.emitHideSectionIfEmpty();
 			},
@@ -139,7 +141,8 @@ export default {
 	data() {
 		return {
 			availableTags: [],
-			currentTagNames: [],
+			loanTagNames: [],
+			userTagNames: [],
 			selectorVisible: false,
 			availableTagsLoaded: false,
 			loanTagsLoaded: false,
@@ -153,23 +156,29 @@ export default {
 			const states = {};
 			this.availableTags.forEach(tag => {
 				if (tag.id != null && tag.name != null) {
-					states[tag.id] = this.currentTagNames.includes(tag.name);
+					states[tag.id] = this.userTagNames.includes(tag.name);
 				}
 			});
 			return states;
 		},
+		// Tags this user personally applied.
 		selectedTags() {
 			return this.availableTags.filter(tag => this.tagStates[tag.id] === true);
+		},
+		// The displayed list: every tag applied to the loan (by anyone) plus this user's own.
+		visibleTags() {
+			return this.availableTags.filter(tag => tag.name != null
+				&& (this.loanTagNames.includes(tag.name) || this.userTagNames.includes(tag.name)));
 		},
 	},
 	methods: {
 		emitHideSectionIfEmpty() {
-			if (!this.loading && this.selectedTags.length === 0 && !this.isLoggedIn) {
+			if (!this.loading && this.visibleTags.length === 0 && !this.isLoggedIn) {
 				this.$emit('hide-section');
 			}
 		},
 		getTagDivider(index) {
-			return index < this.selectedTags.length - 1 ? ' | ' : '';
+			return index < this.visibleTags.length - 1 ? ' | ' : '';
 		},
 		async handleTagToggle(tagId, checked) {
 			const tag = this.availableTags.find(t => t.id === tagId);
@@ -179,11 +188,12 @@ export default {
 				return;
 			}
 
-			// Optimistic update; the refetched tag list reconciles it with the server
+			// Optimistically update this user's own tags only; the loan-level list is a
+			// server-side aggregate over all users, so the network-only refetch reconciles it.
 			if (checked) {
-				this.currentTagNames = [...this.currentTagNames, tag.name];
+				this.userTagNames = [...this.userTagNames, tag.name];
 			} else {
-				this.currentTagNames = this.currentTagNames.filter(n => n !== tag.name);
+				this.userTagNames = this.userTagNames.filter(n => n !== tag.name);
 			}
 
 			try {
@@ -203,9 +213,9 @@ export default {
 				logFormatter(e, 'error');
 				// Revert the optimistic update
 				if (checked) {
-					this.currentTagNames = this.currentTagNames.filter(n => n !== tag.name);
+					this.userTagNames = this.userTagNames.filter(n => n !== tag.name);
 				} else {
-					this.currentTagNames = [...this.currentTagNames, tag.name];
+					this.userTagNames = [...this.userTagNames, tag.name];
 				}
 				this.$showTipMsg('There was a problem saving the tag change', 'error');
 			}

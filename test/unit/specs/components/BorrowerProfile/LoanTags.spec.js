@@ -35,7 +35,10 @@ function renderLoanTags(dataOverrides = {}, propsOverrides = {}) {
 			return {
 				...LoanTags.data.call(this),
 				availableTags: mockAvailableTags,
-				currentTagNames: ['Education', 'Sustainable Agriculture'],
+				// Both tags are applied to the loan, but the current user only applied Education;
+				// Sustainable Agriculture was applied by another lender.
+				loanTagNames: ['Education', 'Sustainable Agriculture'],
+				userTagNames: ['Education'],
 				availableTagsLoaded: true,
 				loanTagsLoaded: true,
 				...dataOverrides,
@@ -78,6 +81,30 @@ describe('LoanTags', () => {
 		const { getByTestId, getAllByTestId } = renderLoanTags();
 		await fireEvent.click(getByTestId('bp-loan-tag-toggle'));
 		expect(getAllByTestId('bp-loan-tag-checkbox')).toHaveLength(3);
+	});
+
+	it('displays every tag applied to the loan, regardless of who applied it', () => {
+		const { getAllByTestId } = renderLoanTags();
+		const displayed = getAllByTestId('bp-loan-tag').map(el => el.textContent.trim());
+		expect(displayed).toEqual(['Education', 'Sustainable Agriculture']);
+	});
+
+	it('checks only tags the current user applied, not tags applied by others (AD-357)', async () => {
+		const { getByTestId, getAllByTestId } = renderLoanTags();
+		await fireEvent.click(getByTestId('bp-loan-tag-toggle'));
+		const checked = getAllByTestId('bp-loan-tag-checkbox')
+			.map(el => el.querySelector('input').checked);
+		// availableTags order: Education, Sustainable Agriculture, Women-Owned Business
+		expect(checked).toEqual([true, false, false]);
+	});
+
+	it('optimistically checks a tag the user selects', async () => {
+		const { getByTestId, getAllByTestId } = renderLoanTags();
+		await fireEvent.click(getByTestId('bp-loan-tag-toggle'));
+		const womenOwned = getAllByTestId('bp-loan-tag-checkbox')[2].querySelector('input');
+		expect(womenOwned.checked).toBe(false);
+		await fireEvent.click(womenOwned);
+		expect(womenOwned.checked).toBe(true);
 	});
 
 	it('calls the mutation and refetches the tag list when toggling a tag', async () => {
