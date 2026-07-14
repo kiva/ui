@@ -3,6 +3,9 @@ query BorrowerProfileLoanTags($loanId: Int!) {
 		loan(id: $loanId) {
 			id
 			tags
+			userProperties {
+				appliedTags
+			}
 		}
 	}
 }
