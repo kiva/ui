@@ -81,10 +81,6 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	isGoalTileExperimentEnabled: {
-		type: Boolean,
-		default: false,
-	},
 });
 
 const emit = defineEmits(['open-goal-modal']);
@@ -112,10 +108,7 @@ const title = computed(() => (
 	goalCopy.titleGoalSignupWomensLastYear(props.prevYearLoans, { cssClass: 'tw-text-action' })
 ));
 const subtitle = computed(() => {
-	if (
-		props.isGoalTileExperimentEnabled
-		&& goalCopy.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET
-	) {
+	if (goalCopy.getGoalSignupCopyVariant() === GOAL_SIGNUP_COPY_NO_GOAL_YET) {
 		return goalCopy.CARD_HABIT_PROMPT_EXPERIMENT;
 	}
 	return goalCopy.TITLE_HOW_MANY_LOANS_GENERIC;

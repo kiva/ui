@@ -45,7 +45,6 @@
 				:user-info="userInfo"
 				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 				:show-lending-next-steps-cards="true"
-				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 				@open-goal-modal="openGoalModal($event)"
 				@open-impact-insight-modal="showImpactInsightsModal = true"
 			/>
@@ -83,7 +82,6 @@
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			@open-goal-modal="openGoalModal($event)"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
 		/>
@@ -174,10 +172,6 @@ export default {
 		userInfo: {
 			type: Object,
 			default: () => ({}),
-		},
-		isGoalTileExperimentEnabled: {
-			type: Boolean,
-			default: false
 		},
 		goalRecommendedLoanEnable: {
 			type: Boolean,

@@ -1,3 +1,30 @@
+## [3.77.0-rc.1](https://github.com/kiva/ui/compare/v3.76.0...v3.77.0-rc.1) (2026-07-14)
+
+### 🎉 New Features
+
+* add new helper to retrieve goal in review information and test query timing ([5c93e00](https://github.com/kiva/ui/commit/5c93e0021b562dcd455c25d6cd78bbea155a0d75))
+* borrower profile migration AD-1 ([#7044](https://github.com/kiva/ui/issues/7044)) ([8647a8d](https://github.com/kiva/ui/commit/8647a8d21b4a227bdc34d1d6dd1208594b960fbd))
+* implement migrated withdraw-beta pages ([#7043](https://github.com/kiva/ui/issues/7043)) ([45bef37](https://github.com/kiva/ui/commit/45bef37a17f2f4c8a07275c862dcc0c9b95ea598))
+* **MP-2947:** roll out Almost Funded next step, remove lending stat experiment ([#7042](https://github.com/kiva/ui/issues/7042)) ([9667beb](https://github.com/kiva/ui/commit/9667beb70867c0ccf1a6b50d60346c3479787bb6))
+* **MP-3036:** add AI loan pills to the goal recommended-loan card ([#7056](https://github.com/kiva/ui/issues/7056)) ([bec1b6f](https://github.com/kiva/ui/commit/bec1b6f3e1aadda2f378ff4dc780ddf1a2d1f71f))
+* roll out AI loan pills across My Kiva, Checkout, and borrower profile ([#7051](https://github.com/kiva/ui/issues/7051)) ([94fbc2d](https://github.com/kiva/ui/commit/94fbc2d200e3298a574e5bf6e2e698534802a20c))
+
+### 🐛 Bugfixes
+
+* add goal summary monolith query ([d382045](https://github.com/kiva/ui/commit/d382045d241a1a4fc3e6466d2c37b0246be6c18c))
+* beta page fixes ([#7057](https://github.com/kiva/ui/issues/7057)) ([b491a07](https://github.com/kiva/ui/commit/b491a070efea001b22b3bc48c48fa3b1bb32c956))
+* **BorrowerProfile:** show delinquent status on the borrower profile ([2a520d8](https://github.com/kiva/ui/commit/2a520d897fb227435cebae1884d442b09711829c))
+* **LendCta:** keep CTA in loading state until user query resolves ([9f37605](https://github.com/kiva/ui/commit/9f37605f757279d9f49ec4fb000d22d08600f88b))
+* **MP-2947:** pair Almost Funded with lending stats in Keep your impact going ([#7054](https://github.com/kiva/ui/issues/7054)) ([dd84819](https://github.com/kiva/ui/commit/dd848191de40f2ef68a18c968eac58d8e461fe6e))
+* resolve comments to avoid extending the loan purchase work to rely on progress per year ([ef65943](https://github.com/kiva/ui/commit/ef65943bcded6a476dab696fd0be60bcaa952eac))
+* spacing issues in bp ([82aa729](https://github.com/kiva/ui/commit/82aa72985c6d3c63bb7401a0a7ba6b5d55201be0))
+* update stats typography in borrower profile ([79eb2d2](https://github.com/kiva/ui/commit/79eb2d25711ee49145413f4410177f92467ffc81))
+* use kv avatar component with integration fallback ([#7053](https://github.com/kiva/ui/issues/7053)) ([7b0c563](https://github.com/kiva/ui/commit/7b0c5632883948646f8adbd57dbb338cd6c97130))
+
+### 🔍 Tests
+
+* **LendCta:** add story for loading state while user query pending ([7e6d3e4](https://github.com/kiva/ui/commit/7e6d3e41fb36a2a15d68e8b2e64f2ae5f9f4038a))
+
 ## [3.76.0](https://github.com/kiva/ui/compare/v3.75.0...v3.76.0) (2026-07-08)
 
 ### 🎉 New Features
