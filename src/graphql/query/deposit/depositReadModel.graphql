@@ -1,0 +1,13 @@
+query DepositReadModel {
+    my {
+        id
+        userAccount {
+            id
+            balance
+            deposit {
+                canDeposit
+                maxDepositAmount
+            }
+        }
+    }
+}
