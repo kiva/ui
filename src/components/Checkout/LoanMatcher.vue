@@ -34,8 +34,12 @@ export default {
 		KvMaterialIcon,
 		KvTooltip,
 	},
-	data() {
-		return { mdiInformationOutline };
+	setup() {
+		const { uid } = getCurrentInstance();
+		return {
+			tooltipId: `loan-matcher-tooltip-${uid}`,
+			mdiInformationOutline,
+		};
 	},
 	props: {
 		matchingText: {
@@ -52,9 +56,6 @@ export default {
 		},
 	},
 	computed: {
-		tooltipId() {
-			return `loan-matcher-tooltip-${getCurrentInstance().uid}`;
-		},
 		totalRatio() {
 			// 1 base match + each org's ratio. e.g. 3 orgs each with ratio 1 => 1 + 1 + 1 + 1 = 4x
 			// or 1 org at ratio 2 + 2 orgs at ratio 1 => 1 + 2 + 1 + 1 = 5x
