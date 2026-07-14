@@ -1,3 +1,13 @@
+## [3.77.0-rc.2](https://github.com/kiva/ui/compare/v3.77.0-rc.1...v3.77.0-rc.2) (2026-07-14)
+
+### 🐛 Bugfixes
+
+* **LoanTags:** derive selected tag state from the current user's tags ([5e5e490](https://github.com/kiva/ui/commit/5e5e49002d1710da476115526be1622f384be956))
+
+### 🧹 Chores
+
+* **MP-2992:** roll out mykiva_goal_tile experiment, remove assignment code ([#7059](https://github.com/kiva/ui/issues/7059)) ([b16316c](https://github.com/kiva/ui/commit/b16316c3c4a812e08a78a02ba8ac16f4fcf53ea4))
+
 ## [3.77.0-rc.1](https://github.com/kiva/ui/compare/v3.76.0...v3.77.0-rc.1) (2026-07-14)
 
 ### 🎉 New Features
