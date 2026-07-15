@@ -27,99 +27,91 @@ import { gql } from 'graphql-tag';
 import LoanDescription from './LoanDescription';
 import LoanFigureCarousel from './LoanFigureCarousel';
 
+export const loanStoryFragment = gql`fragment loanStoryFields on LoanBasic {
+	id
+	anonymizationLevel
+	borrowerCount
+	borrowers {
+		id
+		firstName
+	}
+	description
+	previousLoanId
+	descriptionInOriginalLanguage
+	figures {
+		__typename
+		... on Image {
+			id
+			hash
+		}
+		... on Video {
+			id
+			youtubeId
+		}
+	}
+	name
+	originalLanguage {
+		id
+		name
+	}
+	... on LoanPartner {
+		partnerName
+		reviewer {
+			id
+			bylineName
+			showName
+		}
+	}
+}`;
+
 export default {
 	name: 'LoanStory',
-	inject: ['apollo', 'cookieStore'],
 	components: {
 		LoanDescription,
 		LoanFigureCarousel,
 	},
 	props: {
-		loanId: {
-			type: Number,
-			default: 0,
+		loan: {
+			type: Object,
+			default: () => ({}),
 		},
 	},
-	data() {
-		return {
-			anonymizationLevel: '',
-			borrowerCount: 0,
-			borrowers: [],
-			name: '',
-			figures: [],
-			description: '',
-			descriptionInOriginalLanguage: '',
-			originalLanguage: {},
-			partnerName: '',
-			reviewer: {},
-			previousLoanId: 0,
-		};
-	},
-	apollo: {
-		preFetch: true,
-		query: gql`query loanStory($loanId: Int!) {
-			lend {
-				loan(id: $loanId) {
-					id
-					anonymizationLevel
-					borrowerCount
-					borrowers {
-						id
-						firstName
-					}
-					description
-					previousLoanId
-					descriptionInOriginalLanguage
-					figures {
-						__typename
-						... on Image {
-							id
-							hash
-						}
-						... on Video {
-							id
-							youtubeId
-						}
-					}
-					name
-					originalLanguage {
-						id
-						name
-					}
-					... on LoanPartner {
-						partnerName
-						reviewer {
-							id
-							bylineName
-							showName
-						}
-					}
-				}
-			}
-		}`,
-		preFetchVariables({ route }) {
-			return {
-				loanId: Number(route?.params?.id ?? 0),
-			};
+	computed: {
+		loanId() {
+			return this.loan?.id ?? 0;
 		},
-		variables() {
-			return {
-				loanId: this.loanId,
-			};
+		anonymizationLevel() {
+			return this.loan?.anonymizationLevel ?? '';
 		},
-		result(result) {
-			const loan = result?.data?.lend?.loan;
-			this.anonymizationLevel = loan?.anonymizationLevel ?? '';
-			this.borrowerCount = loan?.borrowerCount ?? 0;
-			this.borrowers = loan?.borrowers ?? [];
-			this.description = loan?.description ?? '';
-			this.descriptionInOriginalLanguage = loan?.descriptionInOriginalLanguage ?? '';
-			this.figures = loan?.figures ?? [];
-			this.name = loan?.name ?? '';
-			this.originalLanguage = loan?.originalLanguage ?? {};
-			this.partnerName = loan?.partnerName ?? '';
-			this.reviewer = loan?.reviewer ?? {};
-			this.previousLoanId = loan?.previousLoanId ?? 0;
+		borrowerCount() {
+			return this.loan?.borrowerCount ?? 0;
+		},
+		borrowers() {
+			return this.loan?.borrowers ?? [];
+		},
+		description() {
+			return this.loan?.description ?? '';
+		},
+		descriptionInOriginalLanguage() {
+			return this.loan?.descriptionInOriginalLanguage ?? '';
+		},
+		figures() {
+			return this.loan?.figures ?? [];
+		},
+		name() {
+			return this.loan?.name ?? '';
+		},
+		originalLanguage() {
+			return this.loan?.originalLanguage ?? {};
+		},
+		partnerName() {
+			return this.loan?.partnerName ?? '';
+		},
+		reviewer() {
+			return this.loan?.reviewer ?? {};
+		},
+		previousLoanId() {
+			return this.loan?.previousLoanId ?? 0;
 		},
 	},
 };

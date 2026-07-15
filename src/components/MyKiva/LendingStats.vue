@@ -3,9 +3,9 @@
 		:class="[
 			'next-steps-link',
 			{
-				'tw-mb-2': !showLendingNextStepsCards,
+				'tw-mb-2': !showAlmostFundedCard,
 				'tw-mb-8': !(showPostLendingNextStepsCards && goalProgressLoading)
-					&& !showRegionExperience && !showLendingNextStepsCards
+					&& !showAlmostFundedCard
 			}]"
 	>
 		<h2 class="tw-text-primary md:tw-mb-1">
@@ -24,11 +24,8 @@
 			/>
 		</div>
 	</div>
-	<div
-		ref="loanRegionsElement"
-		:class="{ 'tw-flex tw-flex-col md:tw-flex-row tw-gap-4': showRegionExperience }"
-	>
-		<template v-if="showLendingNextStepsCards && !goalProgressLoading">
+	<div>
+		<template v-if="showAlmostFundedCard && !goalProgressLoading">
 			<JourneyCardCarousel
 				class="carousel carousel-lending-next-steps tw-w-full"
 				user-in-homepage
@@ -48,156 +45,17 @@
 				:user-info="userInfo"
 				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 				:show-lending-next-steps-cards="true"
-				:regions-data="regionsData"
-				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 				@open-goal-modal="openGoalModal($event)"
 				@open-impact-insight-modal="showImpactInsightsModal = true"
 			/>
-		</template>
-		<template v-else-if="showRegionExperience && !showLendingNextStepsCards">
-			<div
-				class="goal-card-container"
-				:class="{ 'tw-order-last': goalsRowEnabled }"
-			>
-				<JourneyCardCarousel
-					class="carousel carousel-single"
-					user-in-homepage
-					in-lending-stats
-					:disable-drag="true"
-					:goal-progress-loading="goalProgressLoading"
-					:goal-progress="goalProgress"
-					:hero-badge-data="heroBadgeData"
-					:hero-tiered-achievements="heroTieredAchievements"
-					:lender="lender"
-					:slides-number="1"
-					:slides="heroSlides"
-					:user-goal-achieved="userGoalAchieved"
-					:user-goal="userGoal"
-					:categories-loan-count="categoriesLoanCount"
-					:hide-goal-card="hideCompletedGoalCard"
-					:user-info="userInfo"
-					:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-					:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
-					@open-goal-modal="openGoalModal($event)"
-					@open-impact-insight-modal="showImpactInsightsModal = true"
-				/>
-			</div>
-			<div
-				class="stats-wrapper tw-bg-white tw-rounded
-				tw-shadow tw-p-1 md:tw-p-2 tw-flex-1 tw-min-w-0 tw-flex tw-flex-col"
-			>
-				<div>
-					<span
-						v-if="pillHeader"
-						class="
-						tw-inline-flex tw-items-center tw-gap-1
-						tw-mb-2 tw-rounded
-						tw-bg-eco-green-1 tw-px-1.5 tw-py-1"
-						title="Your lending reach"
-					>
-						<GlobeSearchIcon class="tw-w-2.5 tw-h-2.5 tw-text-brand-550 tw-align-middle" />
-						<span class="tw-text-primary tw-text-label tw-align-middle">
-							{{ pillHeader }}
-						</span>
-					</span>
-					<div v-if="loanRegions" class="tw-flex tw-flex-col md:tw-flex-row tw-gap-y-2 md:tw-gap-x-6">
-						<ul
-							class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-3 md:tw-grid-cols-4 tw-gap-y-1 tw-gap-x-0.5
-							tw-w-full"
-						>
-							<li
-								v-for="(region, idx) in regionsData"
-								:key="region.name"
-								class="tw-flex tw-items-center tw-min-w-0 tw-overflow-hidden tw-w-full"
-							>
-								<kv-checkbox
-									:id="`continent-checkbox-${idx}`"
-									:model-value="checkedArr[idx]"
-									class="tw-mr-0.5"
-									:readonly="true"
-									:disabled="true"
-									variant="round"
-									:blur-on-disabled="false"
-								/>
-								<div class="tw-flex-1 tw-min-w-0 tw-overflow-hidden">
-									<span
-										class="tw-text-title tw-text-primary
-										tw-block tw-whitespace-nowrap tw-truncate tw-min-w-0 tw-w-full tw-align-bottom"
-
-										:title="region.name"
-									>
-										{{ region.name }}
-									</span>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<hr
-					v-if="loanRegions"
-					class="tw-mt-2.5 tw-mb-2 tw-mx-auto tw-border-none tw-bg-eco-green-2 tw-rounded"
-					style="width: 219px; height: 1px;"
-				>
-				<div class="tw-flex tw-flex-col tw-grow tw-min-h-0">
-					<div
-						class="tw-w-full tw-pb-1.5"
-						v-html="`Make your first loan in ${formattedPendingRegions}`"
-					></div>
-					<div class="tw-w-full tw-flex tw-flex-row tw-gap-2 tw-min-h-0 tw-grow">
-						<a
-							v-for="(region, idx) in pendingRegions"
-							:key="idx"
-							class="tw-flex tw-w-1/2 tw-cursor-pointer"
-							@click="handleRecommendRegionClick(region)"
-						>
-							<div
-								class="
-								tw-flex tw-flex-col tw-w-full
-								tw-bg-white tw-rounded tw-shadow hover:tw-shadow-lg
-								tw-transition-shadow tw-duration-200"
-							>
-								<div
-									:style="{ backgroundImage: `url(${regionImageSource(region)})` }"
-									class="
-										region-image
-										tw-w-full
-										tw-rounded-t
-										tw-bg-center
-										tw-bg-cover
-										tw-min-h-0
-										tw-grow
-									"
-								></div>
-								<div
-									class="
-									tw-flex
-									tw-justify-between
-									tw-w-full
-									tw-p-1
-									md:tw-px-2
-									tw-items-start
-								"
-									:title="region?.name"
-								>
-									<span class="tw-text-button-link">Lend in {{ region?.name }}</span>
-									<KvMaterialIcon
-										class="tw-w-3 tw-h-3 tw-shrink-0"
-										:icon="mdiArrowTopRight"
-									/>
-								</div>
-							</div>
-						</a>
-					</div>
-				</div>
-			</div>
 		</template>
 		<div
 			v-else-if="goalProgressLoading"
 			class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden"
 			:class="{
 				'tw--mt-6': !showPostLendingNextStepsCards
-					&& !showLendingNextStepsCards,
-				'tw-mt-1.5': showLendingNextStepsCards
+					&& !showAlmostFundedCard,
+				'tw-mt-1.5': showAlmostFundedCard
 			}"
 		>
 			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0" />
@@ -224,7 +82,6 @@
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
-			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
 			@open-goal-modal="openGoalModal($event)"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
 		/>
@@ -255,57 +112,34 @@
 
 <script>
 import { computed, inject } from 'vue';
-import { KvMaterialIcon, KvCheckbox, KvLoadingPlaceholder } from '@kiva/kv-components';
-import { mdiArrowTopRight, mdiArrowRight } from '@mdi/js';
+import { KvMaterialIcon, KvLoadingPlaceholder } from '@kiva/kv-components';
+import { mdiArrowRight } from '@mdi/js';
 
 import useBadgeData from '#src/composables/useBadgeData';
 
-import GlobeSearchIcon from '#src/assets/icons/inline/globe-search.svg';
-
-import Africa from '#src/assets/images/my-kiva/Africa.png';
-import Asia from '#src/assets/images/my-kiva/Asia.png';
-import CentralAmerica from '#src/assets/images/my-kiva/Central America.png';
-import EasternEurope from '#src/assets/images/my-kiva/Eastern Europe.png';
-import MiddleEast from '#src/assets/images/my-kiva/Middle East.png';
-import NorthAmerica from '#src/assets/images/my-kiva/North America.png';
-import Oceania from '#src/assets/images/my-kiva/Oceania.png';
-import SouthAmerica from '#src/assets/images/my-kiva/South America.png';
-
-import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 
 import logReadQueryError from '#src/util/logReadQueryError';
-import { checkPostLendingCardCookie, removePostLendingCardCookie, MY_KIVA_CARD_HEIGHT } from '#src/util/myKivaUtils';
+import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
 import GoalSettingModal from './GoalSettingModal';
 
 export default {
 	name: 'LendingStats',
 	components: {
-		GlobeSearchIcon,
 		JourneyCardCarousel,
 		GoalSettingModal,
 		MyKivaImpactInsightModal,
-		KvCheckbox,
 		KvLoadingPlaceholder,
 		KvMaterialIcon,
 	},
 	inject: ['apollo', 'cookieStore'],
 	emits: ['add-to-basket'],
 	props: {
-		regionsData: {
-			type: Array,
-			default: () => [],
-			required: true,
-		},
 		loans: {
 			type: Array,
 			default: () => ([]),
 			required: true,
-		},
-		userLentToAllRegions: {
-			type: Boolean,
-			default: false,
 		},
 		heroSlides: {
 			type: Array,
@@ -339,14 +173,6 @@ export default {
 			type: Object,
 			default: () => ({}),
 		},
-		isGoalTileExperimentEnabled: {
-			type: Boolean,
-			default: false
-		},
-		lendingNextStepsVariant: {
-			type: String,
-			default: null,
-		},
 		goalRecommendedLoanEnable: {
 			type: Boolean,
 			default: false
@@ -367,17 +193,11 @@ export default {
 	data() {
 		return {
 			mdiArrowRight,
-			mdiArrowTopRight,
-			interval: null,
-			disconnectRegionWatcher: null,
 			showGoalModal: false,
 			showImpactInsightsModal: false,
-			checkedArr: this.regionsData.map(() => false),
 			isGoalSet: false,
-			newGoalPrefs: null,
 			showPostLendingNextStepsCards: false,
 			isUpdatingGoal: false,
-			MY_KIVA_CARD_HEIGHT,
 		};
 	},
 	computed: {
@@ -385,48 +205,19 @@ export default {
 		recentLoanIds() {
 			return (this.loans ?? []).map(loan => loan?.id).filter(Boolean);
 		},
-		showRegionExperience() {
-			return !this.showPostLendingNextStepsCards && !this.userLentToAllRegions;
-		},
-		totalRegions() {
-			return this.regionsData.length;
-		},
-		loanRegions() {
-			return this.regionsData.filter(region => region.hasLoans).length;
-		},
-		pillHeader() {
-			if (this.totalRegions === 0) return '';
-			if (this.loanRegions === 0) return 'Make a global impact';
-			return `${this.loanRegions}/${this.totalRegions} Regions supported`;
-		},
-		pendingRegions() {
-			return this.regionsData.filter(region => !region.hasLoans)
-				.sort((a, b) => b.count - a.count)
-				.slice(0, 2);
-		},
-		formattedPendingRegions() {
-			const regions = this.pendingRegions;
-			if (!regions || regions.length === 0) return '';
-			const formattedNames = regions.map(region => `<strong class="tw-text-button-link">
-				${region.name === 'Middle East' ? 'the Middle East' : region.name}
-				</strong>`);
-			if (formattedNames.length === 1) return formattedNames[0];
-			if (formattedNames.length === 2) return `${formattedNames[0]} and ${formattedNames[1]}`;
-			return `${formattedNames.slice(0, -1).join(', ')}, and ${formattedNames[formattedNames.length - 1]}`;
+		// True when the Almost Funded carousel is shown — for all non-post-lending lenders, including superlenders.
+		showAlmostFundedCard() {
+			return !this.showPostLendingNextStepsCards;
 		},
 		categoriesLoanCount() {
 			const { getAllCategoryLoanCounts } = useBadgeData();
 			return getAllCategoryLoanCounts(this.heroTieredAchievements);
 		},
-		showLendingNextStepsCards() {
-			return this.lendingNextStepsVariant === 'b' && !this.showPostLendingNextStepsCards;
-		},
 	},
 	setup(props) {
 		const goalData = inject('goalData');
 
-		// When the featured-goal-slot experiment is on, the in-carousel goal tile is
-		// suppressed in favor of the slot rendered above LendingStats.
+		// Hide the in-carousel goal tile when a goal card is already shown elsewhere on the page.
 		const hideCompletedGoalCard = computed(
 			() => props.goalsRowEnabled || Boolean(goalData.hideGoalCard?.value)
 		);
@@ -443,38 +234,12 @@ export default {
 			updateCurrentGoal: goalData.updateCurrentGoal,
 		};
 	},
-	async mounted() {
-		if (this.showRegionExperience) {
-			// Check region boxes when component comes into view
-			const { delayUntilVisible, disconnect } = useDelayUntilVisible();
-			delayUntilVisible(() => {
-				setTimeout(() => {
-					let currentIdx = 0;
-					this.interval = setInterval(() => {
-						currentIdx = this.regionsData.findIndex(
-							(region, i) => region.hasLoans && !this.checkedArr[i] && i >= currentIdx
-						);
-						if (currentIdx !== -1) {
-							this.checkedArr[currentIdx] = true;
-							currentIdx += 1;
-						} else {
-							clearInterval(this.interval);
-						}
-					}, 200);
-				}, 800);
-			}, [this.$refs.loanRegionsElement]);
-			this.disconnectRegionWatcher = disconnect;
-		}
-
+	mounted() {
 		// Show post-lending next steps cards in My Kiva
 		if (checkPostLendingCardCookie(this.cookieStore)) {
 			this.showPostLendingNextStepsCards = true;
 			removePostLendingCardCookie(this.cookieStore);
 		}
-	},
-	beforeUnmount() {
-		if (this.interval) clearInterval(this.interval);
-		if (this.disconnectRegionWatcher) this.disconnectRegionWatcher();
 	},
 	watch: {
 		async goalRefreshKey(newVal, oldVal) {
@@ -487,28 +252,6 @@ export default {
 		}
 	},
 	methods: {
-		regionImageSource(region) {
-			const regionImages = {
-				Africa,
-				Asia,
-				'Central America': CentralAmerica,
-				'Eastern Europe': EasternEurope,
-				'Middle East': MiddleEast,
-				'North America': NorthAmerica,
-				Oceania,
-				'South America': SouthAmerica,
-			};
-			return regionImages[region?.name] || '';
-		},
-		handleRecommendRegionClick(region) {
-			this.$kvTrackEvent(
-				'event-tracking',
-				'click',
-				!this.loans.length ? 'empty-state-region-recommendation' : 'region-recommendation',
-				region?.name
-			);
-			window.location.href = `/lend/filter?country=${region.countries.join(',')}`;
-		},
 		async setGoal(preferences) {
 			if (this.isUpdatingGoal) {
 				await this.updateCurrentGoal(this.userGoal, preferences);
@@ -521,7 +264,6 @@ export default {
 					return;
 				}
 			}
-			this.newGoalPrefs = preferences;
 			this.isGoalSet = true;
 		},
 		async closeGoalModal() {
@@ -577,37 +319,8 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.stats-wrapper {
-	height: auto;
-
-	@screen md {
-		height: v-bind('`${MY_KIVA_CARD_HEIGHT}px`');
-	}
-}
-
-.goal-card-container {
-	width: 100%;
-
-	@screen md {
-		flex: 0 0 336px;
-		height: v-bind('`${MY_KIVA_CARD_HEIGHT}px`');
-	}
-
-	@screen lg {
-		flex: 0 0 336px;
-	}
-}
-
 .kiva-card :deep(h2) {
 	font-size: 22px !important;
-}
-
-.region-image {
-	height: 145px;
-
-	@screen md {
-		height: 191px;
-	}
 }
 
 .placeholder-card {
@@ -623,10 +336,6 @@ export default {
 	}
 }
 
-.carousel-single > :deep(section > div > div) {
-	@apply !tw-min-w-full;
-}
-
 .carousel, .carousel > :deep(section), .carousel > :deep(section > div:first-of-type) {
 	@apply tw-h-full;
 }
@@ -635,7 +344,7 @@ export default {
 	@apply lg:tw-hidden;
 }
 
-.carousel:not(.carousel-single, .carousel-lending-next-steps) :deep(.kv-carousel) {
+.carousel:not(.carousel-lending-next-steps) :deep(.kv-carousel) {
 	@apply tw-pt-0 md:tw-pt-6 lg:tw-pt-0;
 }
 

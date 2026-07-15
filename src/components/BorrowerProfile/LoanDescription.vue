@@ -1,15 +1,23 @@
 <template>
 	<section>
 		<div class="tw-prose" data-testid="bp-story-header">
-			<h2 v-if="isAnonymizationLevelFull">
+			<div v-if="loading" class="tw-w-16 tw-h-4 tw-mb-2">
+				<kv-loading-placeholder />
+			</div>
+			<h2
+				v-else-if="!loading && isAnonymizationLevelFull"
+			>
 				Story
 			</h2>
-			<h2 v-if="!isAnonymizationLevelFull">
+			<h2 v-else-if="!loading && !isAnonymizationLevelFull">
 				{{ borrowerPossessiveName }} story
 			</h2>
 		</div>
 		<div class="tw-prose">
-			<section v-if="storyDescription">
+			<div v-if="loading">
+				<kv-loading-paragraph v-for="n in 2" :key="n" class="tw-mb-2" />
+			</div>
+			<section v-else-if="!loading && storyDescription">
 				<p
 					v-for="(paragraph, index) in storyDescriptionParagraphs"
 					:data-testid="`bp-story-description-${index}`"
@@ -88,15 +96,18 @@
 
 <script>
 import { toParagraphs } from '#src/util/loanUtils';
-import previousLoanDescription from '#src/components/BorrowerProfile/PreviousLoanDescription';
-import { KvLightbox } from '@kiva/kv-components';
+import PreviousLoanDescription from '#src/components/BorrowerProfile/PreviousLoanDescription';
+import KvLoadingParagraph from '#src/components/Kv/KvLoadingParagraph';
+import { KvLightbox, KvLoadingPlaceholder } from '@kiva/kv-components';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 
 export default {
 	name: 'LoanDescription',
 	components: {
 		KvLightbox,
-		previousLoanDescription,
+		KvLoadingParagraph,
+		KvLoadingPlaceholder,
+		PreviousLoanDescription,
 	},
 	props: {
 		partnerName: { // LoanPartner.partnerName
@@ -150,6 +161,9 @@ export default {
 		};
 	},
 	computed: {
+		loading() {
+			return !this.loanId;
+		},
 		borrowersList() {
 			if (this.borrowerCount <= 1 || this.areBorrowerNamesAnonymized) {
 				return '';
@@ -175,7 +189,7 @@ export default {
 		storyTranslation() {
 			return !this.areBorrowerNamesAnonymized
 				&& this.isPartnerLoan
-				&& parseInt(this.originalLanguage?.id ?? 0, 10) !== 1;
+				&& parseInt(this.originalLanguage?.id ?? 1, 10) !== 1;
 		},
 		language() {
 			return this.originalLanguage?.name ?? '';

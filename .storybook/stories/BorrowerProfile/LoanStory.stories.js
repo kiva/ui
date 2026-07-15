@@ -31,6 +31,8 @@ export default {
 	component: LoanStory,
 };
 
+export const Loading = loanStoryStory({});
+
 export const SingleBorrower = loanStoryStory(fundraisingPartnerLoan);
 
 export const GroupLoan = loanStoryStory(groupLoan);

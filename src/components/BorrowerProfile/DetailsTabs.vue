@@ -1,39 +1,42 @@
 <template>
-	<section class="tw-py-4 md:tw-py-6 lg:tw-py-8">
+	<section>
 		<div v-if="loading">
 			<!-- Loading placeholder for kv-tab elements -->
-			<div class="tw-flex tw-mb-4.5 md:tw-mb-5 tw-h-2.5 md:tw-h-3 lg:tw-h-4">
-				<kv-loading-placeholder class="tw-mr-2.5 md:tw-mr-5 lg:tw-mr-6" style="width: 22%;" />
-				<kv-loading-placeholder style="width: 22%;" />
+			<div class="tw-flex tw-mb-6 tw-h-3 lg:tw-h-4 tw-mt-0.5">
+				<kv-loading-placeholder class="tw-mr-2.5 md:tw-mr-5 lg:tw-mr-6" style="width: 113px;" />
+				<kv-loading-placeholder style="width: 157px;" />
 			</div>
 			<!-- Loading placeholder for description-list-item elements -->
-			<div v-for="i in 5" :key="i" class="tw-flex tw-justify-between tw-h-2 tw-mb-4">
-				<kv-loading-placeholder :style="{width: 20 + (Math.random() * 20) + '%'}" />
-				<kv-loading-placeholder :style="{width: 5 + (Math.random() * 5) + '%'}" />
+			<description-list-loading :lines="6" />
+			<!-- Loading placeholder for the detailed repayment schedule link -->
+			<div class="tw-flex tw-h-2" :class="condensed ? 'tw-mt-4.5' : 'tw-mt-6.5'">
+				<kv-loading-placeholder style="width: 233px;" />
 			</div>
 		</div>
 		<kv-tabs v-else>
 			<template #tabNav>
 				<kv-tab
 					:for-panel="loanTabId"
-					data-testid="bp-detail-loan-details-tab"
-					v-kv-track-event="['Borrower Profile', `click-Loan-Details-tab`, 'Loan Details']"
+					:data-testid="`${testidPrefix}-loan-details-tab`"
+					v-kv-track-event="['Borrower Profile', `${trackPrefix}-Loan-Details-tab`, 'Loan Details']"
 				>
 					Loan details
 				</kv-tab>
 				<kv-tab
 					:for-panel="partnerTabId" v-if="isPartnerLoan"
-					data-testid="bp-detail-field-partner-tab"
-					v-kv-track-event="['Borrower Profile', `click-Field-Partner-tab`, 'Field Partner']"
+					:selected="initialTab === 'partner'"
+					:data-testid="`${testidPrefix}-field-partner-tab`"
+					v-kv-track-event="['Borrower Profile', `${trackPrefix}-Field-Partner-tab`, 'Field Partner']"
 				>
 					Lending Partner
 				</kv-tab>
 				<kv-tab
 					:for-panel="trusteeTabId" v-if="hasTrustee"
-					data-testid="bp-detail-trustee-tab"
+					:selected="initialTab === 'trustee'"
+					:data-testid="`${testidPrefix}-trustee-tab`"
 					v-kv-track-event="[
 						'Borrower Profile',
-						'click-Trustee-tab',
+						`${trackPrefix}-Trustee-tab`,
 						noTrusteeState ? 'No Trustee' : 'Trustee'
 					]"
 				>
@@ -41,64 +44,27 @@
 				</kv-tab>
 			</template>
 			<template #tabPanels>
-				<kv-tab-panel :id="loanTabId" data-testid="bp-detail-loan-detail-panel">
+				<kv-tab-panel :id="loanTabId" :data-testid="`${testidPrefix}-loan-detail-panel`">
 					<loan-details
-						:status="loan.status"
-						:charges-fees-interest="partner.chargesFeesInterest"
-						:currency="loan.currency"
-						:flexible-fundraising-enabled="loan.flexibleFundraisingEnabled"
-						:loan-lender-repayment-term="loan.loanLenderRepaymentTerm"
-						:loan-term-lender-repayment-term="loan.loanTermLenderRepaymentTerm"
-						:loss-liability-currency-exchange="loan.lossLiabilityCurrencyExchange"
-						:partner-name="partner.name"
-						:repayment-interval="loan.repaymentInterval"
-						:disbursal-date="loan.disbursalDate"
-						@show-definition="showDefinition"
-					/>
-					<repayment-schedule
-						v-if="displayRepaymentSchedule"
 						:loan-id="loanId"
-						:status="loan.status"
+						:is-privileged="isPrivileged"
+						@show-definition="showDefinition"
 					/>
 				</kv-tab-panel>
 				<kv-tab-panel
 					:id="partnerTabId" v-if="isPartnerLoan"
-					data-testid="bp-detail-field-partner-panel"
+					:data-testid="`${testidPrefix}-field-partner-panel`"
 				>
-					<field-partner-details
-						:arrears-rate="partner.arrearsRate"
-						:avg-borrower-cost="partner.avgBorrowerCost"
-						:avg-borrower-cost-type="partner.avgBorrowerCostType"
-						:avg-profitability="partner.avgProfitability"
-						:default-rate="partner.defaultRate"
-						:loans-at-risk-rate="partner.loansAtRiskRate"
-						:partner-id="partner.id"
-						:partner-name="partner.name"
-						:risk-rating="partner.riskRating"
-						:currency-exchange-loss-rate="partner.currencyExchangeLossRate"
-						@show-definition="showDefinition"
-					/>
+					<field-partner-details :loan-id="loanId" @show-definition="showDefinition" />
 				</kv-tab-panel>
 				<kv-tab-panel
 					:id="trusteeTabId" v-if="hasTrustee"
-					data-testid="bp-detail-trustee-panel"
+					:data-testid="`${testidPrefix}-trustee-panel`"
 				>
-					<trustee-details
-						:borrower-name="loan.name"
-						:endorsement="trustee.endorsement"
-						:num-defaulted-loans="trustee.numDefaultedLoans"
-						:num-loans-endorsed-public="trustee.numLoansEndorsedPublic"
-						:repayment-rate="trustee.repaymentRate"
-						:trustee-id="trustee.id"
-						:trustee-name="trustee.name"
-						:total-loans-value="trustee.totalLoansValue"
-						@show-definition="showDefinition"
-					/>
+					<trustee-details :loan-id="loanId" @show-definition="showDefinition" />
 				</kv-tab-panel>
 			</template>
 		</kv-tabs>
-
-		<content-lightbox ref="lightbox" />
 	</section>
 </template>
 
@@ -107,18 +73,35 @@ import { gql } from 'graphql-tag';
 import {
 	KvLoadingPlaceholder, KvTab, KvTabPanel, KvTabs
 } from '@kiva/kv-components';
-import useBorrowerProfileDefinitions from '#src/composables/useBorrowerProfileDefinitions';
-import ContentLightbox from './ContentLightbox';
+import DescriptionListLoading from './DescriptionListLoading';
 import FieldPartnerDetails from './FieldPartnerDetails';
 import LoanDetails from './LoanDetails';
 import TrusteeDetails from './TrusteeDetails';
-import RepaymentSchedule from './RepaymentSchedule';
+
+const detailsTabsTypeQuery = gql`query borrowerProfileDetailsTabsType($loanId: Int!) {
+	lend {
+		loan(id: $loanId) {
+			id
+			__typename
+			... on LoanDirect {
+				trustee {
+					id
+					organizationName
+				}
+			}
+		}
+	}
+}`;
 
 export default {
 	name: 'DetailsTabs',
-	inject: ['apollo'],
+	inject: {
+		apollo: { from: 'apollo' },
+		cookieStore: { from: 'cookieStore' },
+		openDefinition: { from: 'openDefinition', default: () => () => {} },
+	},
 	components: {
-		ContentLightbox,
+		DescriptionListLoading,
 		FieldPartnerDetails,
 		KvLoadingPlaceholder,
 		KvTab,
@@ -126,7 +109,6 @@ export default {
 		KvTabs,
 		LoanDetails,
 		TrusteeDetails,
-		RepaymentSchedule,
 	},
 	props: {
 		loanId: {
@@ -140,201 +122,84 @@ export default {
 		useSalesForce: {
 			type: Boolean,
 			default: false,
-		}
+		},
+		isPrivileged: {
+			type: Boolean,
+			default: false,
+		},
+		condensed: {
+			type: Boolean,
+			default: false,
+		},
+		initialTab: {
+			type: String,
+			default: 'loanDetails',
+			validator: value => ['loanDetails', 'partner', 'trustee'].includes(value),
+		},
+	},
+	provide() {
+		return {
+			condensed: this.condensed,
+		};
 	},
 	data() {
 		return {
-			loan: {
-				name: '',
-				currency: '',
-				flexibleFundraisingEnabled: false,
-				loanLenderRepaymentTerm: 0,
-				loanTermLenderRepaymentTerm: 0,
-				lossLiabilityCurrencyExchange: '',
-				repaymentInterval: '',
-				anonymizationLevel: '',
-				lentTo: false,
-			},
+			loanType: '',
+			trusteeName: '',
 			loading: true,
-			observer: null,
-			partner: {
-				arrearsRate: 0,
-				avgBorrowerCost: 0,
-				avgBorrowerCostType: '',
-				avgProfitability: 0,
-				chargesFeesInterest: false,
-				defaultRate: 0,
-				id: 0,
-				loansAtRiskRate: 0,
-				name: '',
-				riskRating: 0,
-			},
-			trustee: {
-				id: 0,
-				name: '',
-				numDefaultedLoans: 0,
-				numLoansEndorsedPublic: 0,
-				repaymentRate: 0,
-				totalLoansValue: '0',
-				endorsement: '',
-			},
 		};
 	},
 	computed: {
+		tabIdPrefix() {
+			return this.condensed ? 'rail-tab-panel' : 'tab-panel';
+		},
+		testidPrefix() {
+			return this.condensed ? 'bp-detail-rail' : 'bp-detail';
+		},
+		trackPrefix() {
+			return this.condensed ? 'click-rail' : 'click';
+		},
 		isPartnerLoan() {
-			return !!this.partner?.name;
+			return this.loanType === 'LoanPartner';
 		},
 		hasTrustee() {
-			return !this.isPartnerLoan && this.trustee?.name;
-		},
-		loanTabId() {
-			return `tab-panel-${this.name}-loan-details`;
+			return this.loanType === 'LoanDirect' && !!this.trusteeName;
 		},
 		noTrusteeState() {
-			return this.trustee?.name === 'No Trustee Endorsement';
+			return this.trusteeName === 'No Trustee Endorsement';
+		},
+		loanTabId() {
+			return `${this.tabIdPrefix}-${this.name}-loan-details`;
 		},
 		partnerTabId() {
-			return `tab-panel-${this.name}-field-partner`;
+			return `${this.tabIdPrefix}-${this.name}-field-partner`;
 		},
 		trusteeTabId() {
-			return `tab-panel-${this.name}-trustee`;
+			return `${this.tabIdPrefix}-${this.name}-trustee`;
 		},
-		isSupporter() {
-			return this.loan?.lentTo || false;
+	},
+	apollo: {
+		lazy: true,
+		query: detailsTabsTypeQuery,
+		variables() {
+			return { loanId: this.loanId };
 		},
-		displayRepaymentSchedule() {
-			// check anonymization of loan, if it's not set to
-			// full anonymization, continue
-			if (this.loan.anonymizationLevel !== 'full') {
-				// if loan is fundraising, always display the repayment schedule
-				if (this.loan.status === 'fundraising') {
-					return true;
-				}
-				// otherwise look at the isSupporter flag to determine if
-				// the repayment schedule should be shown to current user,
-				// if they are logged in
-				return this.isSupporter;
-			}
-			// if loan is set to full anonymization, return false
-			// because the repayment schedule should not be shown.
-			return false;
-		}
+		result({ data }) {
+			const loan = data?.lend?.loan;
+			this.loanType = loan?.__typename ?? ''; // eslint-disable-line no-underscore-dangle
+			this.trusteeName = loan?.trustee?.organizationName ?? '';
+			this.loading = false;
+		},
 	},
 	methods: {
-		loadData() {
-			this.apollo.query({
-				query: gql`query loanDetails($loanId: Int!) {
-					lend {
-						loan(id: $loanId) {
-							id
-							name
-							status
-							lenderRepaymentTerm
-							repaymentInterval
-							disbursalDate
-							anonymizationLevel
-							userProperties {
-								lentTo
-							}
-							terms {
-								currency
-								flexibleFundraisingEnabled
-								lenderRepaymentTerm
-								lossLiabilityCurrencyExchange
-							}
-							... on LoanDirect {
-								trustee {
-									id
-									organizationName
-									stats {
-										id
-										numDefaultedLoans
-										numLoansEndorsedPublic
-										repaymentRate
-										totalLoansValue
-									}
-								}
-								endorsement
-							}
-							... on LoanPartner {
-								partner {
-									arrearsRate
-									avgBorrowerCost
-									avgBorrowerCostType
-									avgProfitability
-									chargesFeesInterest
-									defaultRate
-									id
-									loansAtRiskRate
-									name
-									riskRating
-									currencyExchangeLossRate
-								}
-							}
-						}
-					}
-				}`,
-				variables: {
-					loanId: this.loanId
-				},
-			}).then(result => {
-				const loan = result?.data?.lend?.loan;
-				const partner = loan?.partner;
-				const trustee = loan?.trustee;
-
-				this.loan.currency = loan?.terms?.currency ?? '';
-				this.loan.flexibleFundraisingEnabled = loan?.terms?.flexibleFundraisingEnabled ?? false;
-				this.loan.loanLenderRepaymentTerm = loan?.lenderRepaymentTerm ?? 0;
-				this.loan.loanTermLenderRepaymentTerm = loan?.terms?.lenderRepaymentTerm ?? 0;
-				this.loan.lossLiabilityCurrencyExchange = loan?.terms?.lossLiabilityCurrencyExchange ?? '';
-				this.loan.repaymentInterval = loan?.repaymentInterval ?? '';
-				this.loan.disbursalDate = loan?.disbursalDate ?? '';
-				this.loan.status = loan?.status ?? '';
-				this.loan.name = loan?.name ?? '';
-				this.loan.anonymizationLevel = loan?.anonymizationLevel ?? 'none';
-				this.loan.lentTo = loan?.userProperties?.lendTo ?? false;
-
-				this.partner.arrearsRate = partner?.arrearsRate ?? 0;
-				this.partner.avgBorrowerCost = partner?.avgBorrowerCost ?? 0;
-				this.partner.avgBorrowerCostType = partner?.avgBorrowerCostType ?? '';
-				this.partner.avgProfitability = partner?.avgProfitability ?? 0;
-				this.partner.chargesFeesInterest = partner?.chargesFeesInterest ?? false;
-				this.partner.defaultRate = partner?.defaultRate ?? 0;
-				this.partner.id = partner?.id ?? 0;
-				this.partner.loansAtRiskRate = partner?.loansAtRiskRate ?? 0;
-				this.partner.name = partner?.name ?? '';
-				this.partner.riskRating = partner?.riskRating ?? 0;
-				this.partner.currencyExchangeLossRate = partner?.currencyExchangeLossRate ?? 0;
-
-				this.trustee.endorsement = loan?.endorsement ?? '';
-				this.trustee.id = trustee?.id ?? 0;
-				this.trustee.name = trustee?.organizationName ?? '';
-				this.trustee.numDefaultedLoans = trustee?.stats?.numDefaultedLoans ?? 0;
-				this.trustee.numLoansEndorsedPublic = trustee?.stats?.numLoansEndorsedPublic ?? 0;
-				this.trustee.repaymentRate = trustee?.stats?.repaymentRate ?? 0;
-				this.trustee.totalLoansValue = trustee?.stats?.totalLoansValue ?? '0';
-
-				this.loading = false;
-			});
-		},
-		async showDefinition(payload) {
-			this.$kvTrackEvent('Borrower Profile', `click-${payload.panelName}-tab-definition-link`, payload.linkText);
-			const result = await this.definitions.resolveDefinition({
+		showDefinition(payload) {
+			this.openDefinition({
 				cid: payload.cid,
 				sfid: payload.sfid,
 				forceSalesforce: this.useSalesForce,
+				track: ['Borrower Profile', `click-${payload.panelName}-tab-definition-link`, payload.linkText],
 			});
-			if (result) {
-				this.$refs.lightbox.open(result);
-			}
 		},
 	},
-	created() {
-		this.definitions = useBorrowerProfileDefinitions(this.apollo);
-	},
-	mounted() {
-		this.loadData();
-	},
-
 };
 </script>

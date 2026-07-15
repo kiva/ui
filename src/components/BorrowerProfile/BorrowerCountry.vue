@@ -28,7 +28,6 @@ import { gql } from 'graphql-tag';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
 import KvMap from '#src/components/Kv/KvMap';
-import logReadQueryError from '#src/util/logReadQueryError';
 
 import CountryInfo from './CountryInfo';
 
@@ -57,51 +56,40 @@ export default {
 			loading: true,
 		};
 	},
-	watch: {
-		loanId(newId, oldId) {
-			if (newId !== oldId && newId) this.loadCoordinates();
-		}
-	},
-	mounted() {
-		this.loadCoordinates();
-	},
-	methods: {
-		loadCoordinates() {
-			if (!this.loanId) return;
-			return this.apollo.query({
-				query: gql`query borrowerCountryCoords($loanId: Int!) {
-					lend {
-						loan(id: $loanId) {
+	apollo: {
+		lazy: true,
+		query: gql`query borrowerCountryCoords($loanId: Int!) {
+			lend {
+				loan(id: $loanId) {
+					id
+					geocode {
+						latitude
+						longitude
+						country {
 							id
 							geocode {
 								latitude
 								longitude
-								country {
-									id
-									geocode {
-										latitude
-										longitude
-									}
-								}
 							}
 						}
 					}
-				}`,
-				variables: { loanId: this.loanId }
-			}).then(({ data }) => {
-				const geocode = data?.lend?.loan?.geocode;
-				this.mapLat = geocode?.latitude ?? null;
-				this.mapLong = geocode?.longitude ?? null;
-				// fallback to country level lat/long if loan level is missing
-				if (!this.mapLat || !this.mapLong) {
-					this.mapLat = geocode?.country?.geocode?.latitude ?? null;
-					this.mapLong = geocode?.country?.geocode?.longitude ?? null;
 				}
-				this.loading = false;
-			}).catch(e => {
-				logReadQueryError(e, 'borrowerProfileSideSheetQuery');
-			});
-		}
+			}
+		}`,
+		variables() {
+			return { loanId: this.loanId };
+		},
+		result({ data }) {
+			const geocode = data?.lend?.loan?.geocode;
+			this.mapLat = geocode?.latitude ?? null;
+			this.mapLong = geocode?.longitude ?? null;
+			// fallback to country level lat/long if loan level is missing
+			if (!this.mapLat || !this.mapLong) {
+				this.mapLat = geocode?.country?.geocode?.latitude ?? null;
+				this.mapLong = geocode?.country?.geocode?.longitude ?? null;
+			}
+			this.loading = false;
+		},
 	},
 };
 </script>

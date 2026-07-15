@@ -357,14 +357,15 @@ const categories = getCategories(props.categoriesLoanCount, props.totalLoans);
 const selectedCategory = ref(categories[0]);
 
 // This container doesn't have the same multi-step flow as the modal,
-// so we can always show the recommended loan section when enabled
-const showPage = true;
+// so we can always show the recommended loan section when enabled.
+const showPage = ref(true);
 const loadedSetData = ref(false);
 const {
 	showRecommendLoanAfterGoalView,
 	hasRecommendedLoans,
 	isLoadingRecommendedLoan,
 	recommendLoanHeaderDetails,
+	recommendedLoan,
 	recommendLoanCardProps,
 	recommendLoanIsInBasket,
 	enterRecommendedLoanStepAfterGoalSave,
@@ -386,16 +387,17 @@ const {
 	entrypoint: GOAL_RECOMMENDED_LOAN_ENTRYPOINT_GOALS_PAGE,
 	additionalExcludedLoanIds: toRef(props, 'excludedLoanIds'),
 	appConfig: $appConfig,
+	apollo,
 });
 
 const addToBasket = () => {
-	const { loan, loanId } = recommendLoanCardProps.value;
+	const { loanId } = recommendLoanCardProps.value;
 	if (!loanId) return;
 	const lendAmount = recommendLoanForGoalRef.value?.getSelectedAmount();
 	trackAddToBasketClick(loanId, lendAmount);
-	// Delegate to parent (GoalSetting.vue) which uses borrower-profile-exp-mixin.
-	// Pass the recommended loan so the parent can skip borrowerProfileSideSheetQuery.
-	emit('add-to-basket', { loanId, lendAmount, loan });
+	// Delegate to the parent, which owns the add-to-basket flow. Pass the raw recommended
+	// loan (not the card's blanked copy) so the parent can skip re-fetching it.
+	emit('add-to-basket', { loanId, lendAmount, loan: recommendedLoan.value });
 };
 
 const handleCheckoutClick = () => {

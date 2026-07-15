@@ -363,6 +363,7 @@ const {
 	hasRecommendedLoans,
 	isLoadingRecommendedLoan,
 	recommendLoanHeaderDetails,
+	recommendedLoan,
 	recommendLoanCardProps,
 	recommendLoanIsInBasket,
 	enterRecommendedLoanStepAfterGoalSave,
@@ -544,7 +545,12 @@ const setGoal = async preferences => {
 
 const handleAddToBasket = payload => {
 	trackAddToBasketClick();
-	handleAddRecommendedLoanToBasket({ ...payload, onError: onAddToBasketError });
+	// Prefer the raw recommended loan over the card's blanked copy in the forwarded payload.
+	handleAddRecommendedLoanToBasket({
+		...payload,
+		loan: recommendedLoan.value ?? payload.loan,
+		onError: onAddToBasketError,
+	});
 };
 
 const closeGoalModal = () => {

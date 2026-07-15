@@ -152,7 +152,6 @@
 <script>
 import { mdiLightningBolt } from '@mdi/js';
 import { gql } from 'graphql-tag';
-import { createIntersectionObserver } from '#src/util/observerUtils';
 
 import {
 	KvLoadingPlaceholder, KvButton, KvLightbox, KvMaterialIcon, KvTextLink
@@ -251,6 +250,65 @@ export default {
 			default: 0,
 		},
 	},
+	// Select the correct items query based on displayType before the apollo plugin processes it.
+	beforeCreate() {
+		this.$options.apollo = this.$options.apollo.map(op => ({ ...op }));
+		const itemsOp = this.$options.apollo[0];
+		itemsOp.query = this.displayType === 'teams' ? teamsQuery : lendersQuery;
+	},
+	apollo: [
+		{
+			lazy: true,
+			query: lendersQuery, // replaced in beforeCreate based on displayType
+			variables() {
+				const vars = {
+					loanId: this.loanId,
+					limit: this.itemQueryLimit,
+					offset: this.itemQueryOffset,
+				};
+				if (this.displayType === 'teams') {
+					vars.sortBy = this.sortBy;
+				}
+				return vars;
+			},
+			result({ data }) {
+				this.totalItemCount = data?.lend?.loan?.[this.displayType]?.totalCount ?? 0;
+				if (!this.totalItemCount) {
+					this.$emit('hide-section');
+				}
+				const values = data?.lend?.loan?.[this.displayType]?.values ?? [];
+
+				// Check if current user has lent to loan (lenders query only)
+				if (this.displayType === 'lenders') {
+					const lentTo = data?.lend?.loan?.userProperties?.lentTo ?? false;
+					if (lentTo) {
+						this.supporterOfLoan = true;
+					}
+				}
+
+				// Replace items on initial load, append on pagination
+				if (this.itemQueryOffset === 0) {
+					this.items = values;
+				} else {
+					this.items = [...this.items, ...values];
+				}
+
+				this.loading = false;
+				this.fetchingLightboxItems = false;
+			},
+		},
+		{
+			query: userQuery,
+			result({ data }) {
+				const lender = data?.my?.lender;
+				this.userId = lender?.id ?? '';
+				this.userImageHash = lender?.image?.hash ?? '';
+				this.userName = lender?.name ?? '';
+				this.userWhereabouts = lender?.lenderPage?.whereabouts ?? '';
+				this.lenderPageUrl = lender?.lenderPage?.url ?? '';
+			},
+		},
+	],
 	data() {
 		return {
 			fetchingLightboxItems: false,
@@ -259,7 +317,7 @@ export default {
 			items: [],
 			loading: true,
 			mdiLightningBolt,
-			observer: null,
+			itemQueryOffset: 0,
 			itemQueryLimit: 20,
 			sortBy: 'memberCount',
 			totalItemCount: 0,
@@ -274,9 +332,6 @@ export default {
 		};
 	},
 	computed: {
-		itemQueryOffset() {
-			return this.items?.length ?? 0;
-		},
 		countAwareName() {
 			const pluralName = this.displayType;
 			const singularName = pluralName.slice(0, -1);
@@ -318,77 +373,9 @@ export default {
 		},
 	},
 	methods: {
-		createObserver() {
-			// Watch for this element being close to entering the viewport
-			this.observer = createIntersectionObserver({
-				targets: [this.$el],
-				rootMargin: '500px',
-				callback: entries => {
-					entries.forEach(entry => {
-						if (entry.target === this.$el && entry.intersectionRatio > 0) {
-							// exit if already initialized
-							if (this.items.length) return false;
-							// This element is close to being in the viewport, so load the data.
-							// Because of the apollo cache it's safe to call this repeatedly.
-							this.fetchItems();
-						}
-					});
-				}
-			});
-			if (!this.observer) {
-				// Observer was not created, so call loadData right away as a fallback.
-				this.fetchItems();
-			}
-		},
-		destroyObserver() {
-			if (this.observer) {
-				this.observer.disconnect();
-			}
-		},
-		fetchItems(fromLightbox = false) {
-			if (this.loanId === 0) return false;
-
-			const teamVars = {
-				loanId: this.loanId,
-				limit: this.itemQueryLimit,
-				offset: this.itemQueryOffset,
-				sortBy: this.sortBy
-			};
-			const lenderVars = {
-				loanId: this.loanId,
-				limit: this.itemQueryLimit,
-				offset: this.itemQueryOffset
-			};
-
-			// run apollo query
-			this.apollo.query({
-				query: this.displayType === 'teams' ? teamsQuery : lendersQuery,
-				variables: this.displayType === 'teams' ? teamVars : lenderVars,
-			}).then(({ data }) => {
-				this.totalItemCount = data?.lend?.loan?.[this.displayType]?.totalCount ?? 0;
-				if (!this.totalItemCount) {
-					this.$emit('hide-section');
-				}
-				const items = data?.lend?.loan?.[this.displayType]?.values ?? 0;
-				this.lentTo = data?.lend?.loan?.userProperties?.lentTo ?? false;
-
-				// Check if current user has lent to loan
-				if (this.lentTo) {
-					this.supporterOfLoan = true;
-				}
-
-				// patch in list items
-				this.items = [...this.items, ...items];
-
-				this.loading = false;
-				if (fromLightbox) {
-					this.fetchingLightboxItems = false;
-				}
-			});
-		},
 		loadMore() {
 			this.fetchingLightboxItems = true;
-			this.fetchItems(true);
+			this.itemQueryOffset += this.itemQueryLimit;
 		},
 		openLightbox() {
 			this.isLightboxVisible = true;
@@ -396,26 +383,6 @@ export default {
 				this.loadMore();
 			}
 		},
-		gatherCurrentUserData() {
-			this.apollo.query({
-				query: userQuery,
-			}).then(({ data }) => {
-				// Gather user data if available
-				const lender = data?.my?.lender;
-				this.userId = lender?.id ?? '';
-				this.userImageHash = lender?.image.hash ?? '';
-				this.userName = lender?.name ?? '';
-				this.userWhereabouts = lender?.lenderPage?.whereabouts ?? '';
-				this.lenderPageUrl = lender?.lenderPage?.url ?? '';
-			});
-		}
-	},
-	mounted() {
-		this.createObserver();
-		this.gatherCurrentUserData();
-	},
-	beforeUnmount() {
-		this.destroyObserver();
 	},
 };
 </script>

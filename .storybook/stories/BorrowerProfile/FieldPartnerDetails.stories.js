@@ -1,41 +1,32 @@
 import FieldPartnerDetails from '#src/components/BorrowerProfile/FieldPartnerDetails';
 
+import apolloStoryMixin from '../../mixins/apollo-story-mixin';
+import cookieStoreStoryMixin from '../../mixins/cookie-store-story-mixin';
+import kvAuth0StoryMixin from '../../mixins/kv-auth0-story-mixin';
+import { createQueryResult, fundraisingPartnerLoan } from './mockLoanFixtures';
+
+function fieldPartnerDetailsStory(loan, { loading = false, condensed = false } = {}) {
+	return () => ({
+		components: { FieldPartnerDetails },
+		mixins: [
+			apolloStoryMixin({ queryResult: createQueryResult(loan), loading }),
+			cookieStoreStoryMixin(),
+			kvAuth0StoryMixin,
+		],
+		provide: { condensed },
+		template: `<field-partner-details :loan-id="${loan.id}" />`,
+	});
+}
+
 export default {
 	title: 'Components/BorrowerProfile/FieldPartnerDetails',
 	component: FieldPartnerDetails,
 };
 
-// Only props the component actually renders. (It does not accept startDate,
-// loansPosted, totalAmountRaised or avgLoanSizePercentPerCapitaIncome.)
-const basePartner = {
-	partnerId: 100,
-	partnerName: 'AFODENIC',
-	avgBorrowerCost: 35,
-	avgBorrowerCostType: 'interest',
-	avgProfitability: 2.5,
-	arrearsRate: 0.02,
-	loansAtRiskRate: 3,
-	defaultRate: 1.25,
-	riskRating: 3.5,
-	currencyExchangeLossRate: 0.05,
-};
+export const Default = fieldPartnerDetailsStory(fundraisingPartnerLoan);
+Default.storyName = 'Partner';
 
-export const AllMetrics = () => ({
-	components: { FieldPartnerDetails },
-	data: () => ({ ...basePartner }),
-	template: '<field-partner-details v-bind="$data" />',
-});
+export const Loading = fieldPartnerDetailsStory(fundraisingPartnerLoan, { loading: true });
+Loading.storyName = 'Loading (skeleton)';
 
-// avgBorrowerCost of 0 makes the "Average cost to borrower" metric render as "N/A".
-export const NoAverageCost = () => ({
-	components: { FieldPartnerDetails },
-	data: () => ({ ...basePartner, avgBorrowerCost: 0 }),
-	template: '<field-partner-details v-bind="$data" />',
-});
-
-// riskRating drives the star rating display (5 full stars vs the default 3.5).
-export const HighRiskRating = () => ({
-	components: { FieldPartnerDetails },
-	data: () => ({ ...basePartner, riskRating: 5 }),
-	template: '<field-partner-details v-bind="$data" />',
-});
+export const Condensed = fieldPartnerDetailsStory(fundraisingPartnerLoan, { condensed: true });

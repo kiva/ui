@@ -29,14 +29,28 @@ describe('LendingStats', () => {
 	});
 
 	describe('mounted', () => {
-		it('completes without error when region experience is off', async () => {
+		it('does not enable the post-lending experience when the cookie is absent', () => {
 			const context = {
-				showRegionExperience: false,
-				cookieStore: { get: vi.fn() },
+				cookieStore: { get: vi.fn(), remove: vi.fn() },
 				showPostLendingNextStepsCards: false,
 			};
 
-			await expect(LendingStats.mounted.call(context)).resolves.toBeUndefined();
+			LendingStats.mounted.call(context);
+
+			expect(context.showPostLendingNextStepsCards).toBe(false);
+			expect(context.cookieStore.remove).not.toHaveBeenCalled();
+		});
+
+		it('enables the post-lending experience and clears the cookie when it is present', () => {
+			const context = {
+				cookieStore: { get: vi.fn().mockReturnValue('true'), remove: vi.fn() },
+				showPostLendingNextStepsCards: false,
+			};
+
+			LendingStats.mounted.call(context);
+
+			expect(context.showPostLendingNextStepsCards).toBe(true);
+			expect(context.cookieStore.remove).toHaveBeenCalled();
 		});
 	});
 
@@ -61,7 +75,6 @@ describe('LendingStats', () => {
 			const context = {
 				storeGoalPreferences: vi.fn().mockResolvedValue(),
 				loadGoalData: vi.fn().mockResolvedValue(),
-				newGoalPrefs: null,
 				isGoalSet: false,
 				showGoalModal: true,
 			};
@@ -70,7 +83,6 @@ describe('LendingStats', () => {
 
 			expect(context.storeGoalPreferences).toHaveBeenCalledTimes(1);
 			expect(context.storeGoalPreferences).toHaveBeenCalledWith(preferences);
-			expect(context.newGoalPrefs).toEqual(preferences);
 			expect(context.isGoalSet).toBe(true);
 			expect(context.showGoalModal).toBe(true);
 			expect(context.loadGoalData).not.toHaveBeenCalled();
@@ -84,7 +96,6 @@ describe('LendingStats', () => {
 				$kvTrackEvent: vi.fn(),
 				isGoalSet: true,
 				recordedGoalSet: false,
-				newGoalPrefs: { category: 'women', target: 5 },
 				loadGoalData: vi.fn().mockResolvedValue(),
 			};
 
@@ -125,20 +136,20 @@ describe('LendingStats', () => {
 		});
 	});
 
-	describe('showLendingNextStepsCards', () => {
-		it('returns true when lendingNextStepsVariant is "b" and showPostLendingNextStepsCards is false', () => {
-			const context = { lendingNextStepsVariant: 'b', showPostLendingNextStepsCards: false };
-			expect(LendingStats.computed.showLendingNextStepsCards.call(context)).toBe(true);
+	describe('showAlmostFundedCard', () => {
+		it('shows the Almost Funded card when not post-lending', () => {
+			const context = { showPostLendingNextStepsCards: false };
+			expect(LendingStats.computed.showAlmostFundedCard.call(context)).toBe(true);
 		});
 
-		it('returns false when lendingNextStepsVariant is not "b"', () => {
-			const context = { lendingNextStepsVariant: 'a', showPostLendingNextStepsCards: false };
-			expect(LendingStats.computed.showLendingNextStepsCards.call(context)).toBe(false);
+		it('shows the Almost Funded card for superlenders (not gated on region experience)', () => {
+			const context = { showPostLendingNextStepsCards: false, userLentToAllRegions: true };
+			expect(LendingStats.computed.showAlmostFundedCard.call(context)).toBe(true);
 		});
 
-		it('returns false when showPostLendingNextStepsCards is true even with variant "b"', () => {
-			const context = { lendingNextStepsVariant: 'b', showPostLendingNextStepsCards: true };
-			expect(LendingStats.computed.showLendingNextStepsCards.call(context)).toBe(false);
+		it('is false during the post-lending experience', () => {
+			const context = { showPostLendingNextStepsCards: true };
+			expect(LendingStats.computed.showAlmostFundedCard.call(context)).toBe(false);
 		});
 	});
 });

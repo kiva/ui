@@ -45,13 +45,19 @@ export default async function createApp({
 	const useCDNCaching = route.meta?.useCDNCaching;
 	renderConfig.useCDNCaching = useCDNCaching;
 
+	// Register kivaPlugins (which installs the apollo mixin) before the head
+	// mixins so the apollo mixin's created() hook — which synchronously
+	// populates component data from the prefetched Apollo cache — fires
+	// before VueHeadMixin's created() evaluates head(). Otherwise head()
+	// runs once against empty data before the reactive re-run.
+	app.use(kivaPlugins);
+
 	const head = createHead();
 	// head for composition api
 	app.use(head);
 	// head for options api
 	app.mixin(VueHeadMixin);
 
-	app.use(kivaPlugins);
 	app.use(kvAnalytics);
 	app.use(Vue3TouchEvents);
 	// Vue progress bar exports an object with a 'default' property on the server

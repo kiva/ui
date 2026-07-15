@@ -27,6 +27,11 @@ const baseArgs = {
 	previousLoanId: 0,
 };
 
+export const Loading = () => ({
+	components: { LoanDescription },
+	template: '<loan-description />',
+});
+
 // Non-PII partner loan in a non-English language: the "Translated from…" note SHOWS.
 export const PartnerLoanTranslated = () => ({
 	components: { LoanDescription },

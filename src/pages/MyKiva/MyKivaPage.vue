@@ -13,7 +13,6 @@
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:user-lent-to-all-regions="userLentToAllRegions"
-			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goals-row-enabled="goalsRowEnabled"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
@@ -29,14 +28,10 @@
 			:hero-tiered-achievements="heroTieredAchievements"
 			:lending-stats="lendingStats"
 			:transactions="transactions"
-			:user-lent-to-all-regions="userLentToAllRegions"
-			:enable-ai-loan-pills="enableAILoanPills"
 			:sidesheet-loan="sidesheetLoan"
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:show-my-giving-funds-card="showMyGivingFundsCard"
-			:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
-			:lending-next-steps-variant="lendingNextStepsExperimentVariant"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goals-row-enabled="goalsRowEnabled"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
@@ -56,7 +51,6 @@ import MyKivaPageContent from '#src/pages/MyKiva/MyKivaPageContent';
 import MyKivaNextStepsContent from '#src/pages/MyKiva/MyKivaNextStepsContent';
 import userAchievementProgressQuery from '#src/graphql/query/userAchievementProgress.graphql';
 import { gql } from 'graphql-tag';
-import aiLoanPillsTest from '#src/plugins/ai-loan-pills-mixin';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
@@ -70,8 +64,6 @@ import useBadgeData, {
 import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
-const GOAL_TILE_EXPERIMENT_KEY = 'mykiva_goal_tile';
-const LENDING_NEXT_STEPS_EXP_KEY = 'mykiva_lending_next_steps';
 const GOALS_ROW_EXP_KEY = 'mykiva_goals_row';
 
 /**
@@ -81,7 +73,6 @@ const GOALS_ROW_EXP_KEY = 'mykiva_goals_row';
 export default {
 	name: 'MyKivaPage',
 	inject: ['apollo', 'cookieStore'],
-	mixins: [aiLoanPillsTest],
 	components: {
 		MyKivaPageContent,
 		MyKivaNextStepsContent,
@@ -97,6 +88,8 @@ export default {
 		return {
 			combineBadgeData,
 			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
+			// TESTING ONLY (remove later).
+			getGoalSummary: goalDataComposable.getGoalSummary,
 			loadGoalData: goalDataComposable.loadGoalData,
 			renewAnnualGoal: goalDataComposable.renewAnnualGoal,
 			setHideGoalCardPreference: goalDataComposable.setHideGoalCardPreference,
@@ -120,8 +113,6 @@ export default {
 			goalRefreshKey: 0,
 			showMyGivingFundsCard: false,
 			recentTransactionLoans: [],
-			isGoalTileExperimentEnabled: false,
-			lendingNextStepsExperimentVariant: null,
 			goalRecommendedLoanEnable: false,
 			goalsRowEnabled: false,
 			shouldRenderFeaturedSlot: true,
@@ -202,14 +193,6 @@ export default {
 				client.query({
 					query: contentfulEntriesQuery,
 					variables: { contentType: 'challenge', limit: 200 }
-				}),
-				client.query({
-					query: experimentAssignmentQuery,
-					variables: { id: GOAL_TILE_EXPERIMENT_KEY },
-				}),
-				client.query({
-					query: experimentAssignmentQuery,
-					variables: { id: LENDING_NEXT_STEPS_EXP_KEY },
 				}),
 				client.query({
 					query: experimentAssignmentQuery,
@@ -389,31 +372,6 @@ export default {
 			this.cookieStore,
 			this.apollo,
 			this.$route,
-			GOAL_TILE_EXPERIMENT_KEY,
-			version => {
-				this.isGoalTileExperimentEnabled = Boolean(version === 'b') && !this.isNextStepsRoute.value;
-			},
-			this.$kvTrackEvent,
-			'EXP-MP-2565-Mar2026',
-			'portfolio'
-		);
-
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
-			LENDING_NEXT_STEPS_EXP_KEY,
-			version => {
-				this.lendingNextStepsExperimentVariant = version;
-			},
-			this.$kvTrackEvent,
-			'EXP-MP-2291-Feb2026'
-		);
-
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
 			GOALS_ROW_EXP_KEY,
 			version => {
 				this.goalsRowEnabled = version === 'b';
@@ -424,6 +382,11 @@ export default {
 	},
 	async mounted() {
 		try {
+			// TESTING ONLY (remove later): fire goalSummary timing via ?goalSummaryTiming.
+			if (new URLSearchParams(window.location.search).has('goalSummaryTiming')) {
+				this.getGoalSummary();
+			}
+
 			this.apollo.watchQuery({
 				query: gql`
 					query UserPreferences {

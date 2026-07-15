@@ -1,0 +1,136 @@
+import LoanTags from '#src/components/BorrowerProfile/LoanTags';
+
+import cookieStoreStoryMixin from '../../mixins/cookie-store-story-mixin';
+import kvAuth0StoryMixin from '../../mixins/kv-auth0-story-mixin';
+
+const mockAvailableTags = [
+	{
+		id: 1, name: 'Education', description: 'Loans for education purposes', status: 'active', vocabularyId: 2
+	},
+	{
+		id: 2, name: 'Sustainable Agriculture', description: 'Farming practices that are environmentally friendly', status: 'active', vocabularyId: 2
+	},
+	{
+		id: 3, name: 'Women-Owned Business', description: 'Businesses owned and operated by women', status: 'active', vocabularyId: 2
+	},
+	{
+		id: 4, name: 'First-Time Borrower', description: 'Borrower applying for their first loan', status: 'active', vocabularyId: 2
+	},
+	{
+		id: 5, name: 'Rural Area', description: 'Located in a rural community', status: 'active', vocabularyId: 2
+	},
+];
+
+/**
+ * Creates a mock apollo provider where query() returns different data
+ * depending on whether the query has a loanId variable (loan tags query)
+ * or not (available tags query).
+ */
+function loanTagsMixin(appliedTagNames = []) {
+	function getMockData(variables) {
+		if (variables?.loanId) {
+			return {
+				data: {
+					lend: {
+						loan: {
+							id: variables.loanId,
+							tags: appliedTagNames,
+						},
+					},
+				},
+			};
+		}
+		return {
+			data: {
+				lend: {
+					tag: mockAvailableTags,
+				},
+			},
+		};
+	}
+	return {
+		provide: {
+			apollo: {
+				mutate() {
+					return Promise.resolve({});
+				},
+				readQuery() {
+					return {};
+				},
+				watchQuery({ variables } = {}) {
+					const mockData = getMockData(variables);
+					return {
+						subscribe: ({ next }) => { next(mockData); },
+						setVariables() {},
+					};
+				},
+				query({ variables } = {}) {
+					return Promise.resolve(getMockData(variables));
+				},
+				readFragment() {
+					return null;
+				},
+			},
+		},
+	};
+}
+
+export default {
+	title: 'Components/BorrowerProfile/LoanTags',
+	component: LoanTags,
+};
+
+export const WithTags = () => ({
+	components: { LoanTags },
+	mixins: [
+		loanTagsMixin(['Education', 'Sustainable Agriculture', 'Women-Owned Business']),
+		cookieStoreStoryMixin(),
+		kvAuth0StoryMixin,
+	],
+	template: '<loan-tags :loan-id="12345" />',
+});
+
+export const WithTagsLoggedIn = () => ({
+	components: { LoanTags },
+	mixins: [
+		loanTagsMixin(['Education', 'Sustainable Agriculture']),
+		cookieStoreStoryMixin(),
+		kvAuth0StoryMixin,
+	],
+	template: '<loan-tags :loan-id="12345" :is-logged-in="true" />',
+});
+
+export const NoTags = () => ({
+	components: { LoanTags },
+	mixins: [
+		loanTagsMixin([]),
+		cookieStoreStoryMixin(),
+		kvAuth0StoryMixin,
+	],
+	data() {
+		return { showTags: true };
+	},
+	template: '<loan-tags v-if="showTags" :loan-id="23456" @hide-section="showTags = false" />',
+});
+NoTags.storyName = 'No Tags (Anonymous)';
+
+export const NoTagsLoggedIn = () => ({
+	components: { LoanTags },
+	mixins: [
+		loanTagsMixin([]),
+		cookieStoreStoryMixin(),
+		kvAuth0StoryMixin,
+	],
+	template: '<loan-tags :loan-id="23456" :is-logged-in="true" />',
+});
+NoTagsLoggedIn.storyName = 'No Tags (Logged In)';
+
+export const MaxTagsReached = () => ({
+	components: { LoanTags },
+	mixins: [
+		loanTagsMixin(['Education', 'Sustainable Agriculture', 'Women-Owned Business', 'First-Time Borrower', 'Rural Area']),
+		cookieStoreStoryMixin(),
+		kvAuth0StoryMixin,
+	],
+	template: '<loan-tags :loan-id="34567" :is-logged-in="true" />',
+});

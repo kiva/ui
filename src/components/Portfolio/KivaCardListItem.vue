@@ -16,12 +16,11 @@
 								'portfolio', 'click', 'View Kiva Card redeemer', redeemer.lenderPublicId
 							]"
 						>
-							<img
-								v-if="redeemer.image?.url"
-								:src="redeemer.image.url"
-								:alt="`${redeemer.name} profile image`"
-								class="tw-rounded-full tw-object-cover tw-w-10 tw-h-10"
-							>
+							<KvUserAvatar
+								:lender-name="redeemer.name"
+								:lender-image-url="redeemer.image?.url || ''"
+								class="tw-w-10 tw-h-10"
+							/>
 						</a>
 						<a
 							:href="lenderUrl"
@@ -155,7 +154,7 @@
 </template>
 
 <script>
-import { KvGrid } from '@kiva/kv-components';
+import { KvGrid, KvUserAvatar } from '@kiva/kv-components';
 import {
 	ACTIVE, REDEEMED, EXPIRED, CANCELLED,
 } from '#src/api/fixtures/KivaCardStatusEnum';
@@ -165,6 +164,7 @@ export default {
 	name: 'KivaCardListItem',
 	components: {
 		KvGrid,
+		KvUserAvatar,
 	},
 	props: {
 		card: {

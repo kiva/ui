@@ -101,7 +101,7 @@
 
 <script>
 import { getCurrentInstance } from 'vue';
-import _throttle from 'lodash/throttle';
+import useIsMobile from '#src/composables/useIsMobile';
 import { KvTooltip } from '@kiva/kv-components';
 import BorrowerImage from './BorrowerImage';
 import kivaKUrl from '#src/assets/images/kiva_k.svg?url';
@@ -111,6 +111,10 @@ export default {
 	components: {
 		BorrowerImage,
 		KvTooltip
+	},
+	setup() {
+		const { isMobile } = useIsMobile();
+		return { isMobile };
 	},
 	props: {
 		name: {
@@ -146,7 +150,6 @@ export default {
 		return {
 			kivaKUrl,
 			anonymousSupporterCard: false,
-			isMobile: false,
 			userCardStyleOptions: [
 				{ color: 'tw-text-action', bg: 'tw-bg-brand-50' },
 				{ color: 'tw-text-black', bg: 'tw-bg-brand-100' },
@@ -205,25 +208,10 @@ export default {
 			return this.displayType === 'teams' ? teamElementId : lenderElementId;
 		}
 	},
-	methods: {
-		determineIfMobile() {
-			this.isMobile = document.documentElement.clientWidth < 735;
-		},
-	},
-	beforeUnmount() {
-		window.removeEventListener('resize', _throttle(() => {
-			this.determineIfMobile();
-		}, 200));
-	},
 	mounted() {
-		window.addEventListener('resize', _throttle(() => {
-			this.determineIfMobile();
-		}, 200));
-
 		if (this.hasAnonymousSupporters) {
 			this.anonymousSupporterCard = true;
 		}
-		this.determineIfMobile();
 	},
 };
 </script>

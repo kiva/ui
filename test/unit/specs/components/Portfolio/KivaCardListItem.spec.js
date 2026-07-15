@@ -33,6 +33,10 @@ const renderItem = card => render(KivaCardListItem, {
 		},
 		stubs: {
 			KvGrid: { template: '<div><slot /></div>' },
+			KvUserAvatar: {
+				props: ['lenderName', 'lenderImageUrl'],
+				template: '<div data-testid="avatar" :data-name="lenderName" :data-image="lenderImageUrl"></div>',
+			},
 		},
 	},
 });
@@ -65,6 +69,36 @@ describe('KivaCardListItem', () => {
 		const link = getByText('Casey');
 		expect(link.getAttribute('href')).toBe('/lender/casey8526');
 		expect(getByText('Redeemed on Date:')).toBeTruthy();
+	});
+
+	it('passes the redeemer photo to the avatar when present', () => {
+		const { getByTestId } = renderItem({
+			status: 'redeemed',
+			redeemTime: 1487000000,
+			redeemer: {
+				isPublic: true,
+				name: 'Casey',
+				lenderPublicId: 'casey8526',
+				image: { id: '1', url: 'https://example.com/a.jpg' },
+			},
+		});
+		expect(getByTestId('avatar').getAttribute('data-image')).toBe('https://example.com/a.jpg');
+	});
+
+	it('renders a fallback avatar for a public redeemer with no profile photo', () => {
+		const { getByTestId } = renderItem({
+			status: 'redeemed',
+			redeemTime: 1487000000,
+			redeemer: {
+				isPublic: true,
+				name: 'Jane',
+				lenderPublicId: 'jane1',
+				image: null,
+			},
+		});
+		const avatar = getByTestId('avatar');
+		expect(avatar.getAttribute('data-name')).toBe('Jane');
+		expect(avatar.getAttribute('data-image')).toBe('');
 	});
 
 	it('shows the private redeemer name without a profile link', () => {

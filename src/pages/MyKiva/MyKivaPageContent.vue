@@ -29,8 +29,6 @@
 		<section v-if="clientRendered" class="!tw-mt-2">
 			<LendingStats
 				ref="lendingStatsRef"
-				:regions-data="lendingStats.regionsData"
-				:user-lent-to-all-regions="userLentToAllRegions"
 				:hero-slides="heroSlides"
 				:loans="loans"
 				:lender="lender"
@@ -40,8 +38,6 @@
 				:latest-loan="latestLoan"
 				:goal-refresh-key="goalRefreshKey"
 				:user-info="userInfo"
-				:is-goal-tile-experiment-enabled="isGoalTileExperimentEnabled"
-				:lending-next-steps-variant="lendingNextStepsVariant"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 				:goals-row-enabled="goalsRowEnabled"
 				:basket-items="basketItems"
@@ -130,7 +126,6 @@
 				:title="recommendedLoansTitle"
 				:loans="recommendedLoans"
 				:user-balance="userBalance"
-				:enable-ai-loan-pills="enableAiLoanPills"
 				@add-to-basket="trackCategory($event, 'recommended')"
 				@show-cart-modal="handleCartModal"
 				@show-loan-details="showLoanDetails($event)"
@@ -164,7 +159,6 @@
 			:show-side-sheet="showBPSideSheet"
 			:show-next-steps="showNextSteps"
 			:width-dimensions="{ default: '100%', xl:'600px', lg: '50%', md:'50%', sm: '100%' }"
-			:enable-ai-loan-pills="enableAiLoanPills"
 			:is-animated="animatedSideSheet"
 			@add-to-basket="addToBasket"
 			@go-to-link="goToLink"
@@ -204,7 +198,7 @@ import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import useContentful from '#src/composables/useContentful';
 
-import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
+import BorrowerSideSheetWrapper from '#src/components/BorrowerSideSheet/BorrowerSideSheetWrapper';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';
@@ -230,7 +224,7 @@ import { defaultBadges } from '#src/util/achievementUtils';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { getLoansIds, fetchAiLoanPills, addAiPillsToLoans } from '#src/util/aiLoanPIillsUtils';
+import { withAiPills } from '#src/util/aiLoanPillsUtils';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import BadgesSectionV2 from '#src/components/MyKiva/BadgesSectionV2';
 
@@ -304,14 +298,6 @@ export default {
 			type: Array,
 			default: () => [],
 		},
-		userLentToAllRegions: {
-			type: Boolean,
-			default: false,
-		},
-		enableAiLoanPills: {
-			type: Boolean,
-			default: false
-		},
 		sidesheetLoan: {
 			type: Object,
 			default: () => ({}),
@@ -327,14 +313,6 @@ export default {
 		showMyGivingFundsCard: {
 			type: Boolean,
 			default: false
-		},
-		isGoalTileExperimentEnabled: {
-			type: Boolean,
-			default: false
-		},
-		lendingNextStepsVariant: {
-			type: String,
-			default: null,
 		},
 		goalRecommendedLoanEnable: {
 			type: Boolean,
@@ -641,13 +619,9 @@ export default {
 				origin: 'web:my_kiva_page',
 				limit: 15
 			}).then(async result => {
-				let processedLoans = result?.loans ?? [];
-				if (this.enableAiLoanPills) {
-					const loanIds = getLoansIds(processedLoans);
-					const aiLoansPills = await fetchAiLoanPills(this.apollo, loanIds);
-					processedLoans = addAiPillsToLoans(processedLoans, aiLoansPills);
-				}
-				this.recommendedLoans = processedLoans;
+				// Show loans first, then enrich with AI pills so the grid doesn't block on the pills query.
+				this.recommendedLoans = result?.loans ?? [];
+				this.recommendedLoans = await withAiPills(this.apollo, this.recommendedLoans);
 			}).catch(e => {
 				logReadQueryError(e, 'MyKivaPage fetchRecommendedLoans');
 			});

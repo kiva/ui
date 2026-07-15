@@ -30,34 +30,34 @@ export const loggedInUser = {
 const mockComments = [
 	{
 		id: 101,
-		authorName: 'Super Kiva Lender',
+		authorName: 'Sarah',
 		authorImageUrl: 'https://www.kiva.org/img/s100/4d844ac2c0b77a8a522741b908ea5c32.jpg',
 		authorRole: 'Lender',
 		authorLendingAction: {
 			teams: ['Kiva Lending Team'],
 			lender: { id: 201, teams: { values: [{ id: 1, name: 'Kiva Lending Team', teamPublicId: 'kiva' }] } },
 		},
-		body: 'I second your view.',
+		body: 'Best wishes for your business! I hope this loan helps you achieve your goals.',
 	},
 	{
 		id: 102,
-		authorName: 'New Kiva Lender',
-		authorImageUrl: 'https://www.kiva.org/img/s100/4d844ac2c0b77a8a522741b908ea5c32.jpg',
-		authorRole: 'Lender',
+		authorName: 'Aisha',
+		authorImageUrl: 'https://www.kiva.org/img/s100/9673d0722a7675b9b8d11f90849d9b44.jpg',
+		authorRole: 'Borrower',
 		authorLendingAction: null,
-		body: 'Thanks for your positive comments.',
+		body: 'Thank you so much for your support! I will use this loan wisely.',
 	},
 ];
 
 const mockLenders = [
 	{
-		id: 201, name: 'Lucy D', publicId: 'lucy', image: { hash: 'abc123' }, lenderPage: { whereabouts: 'Beverly Hills, CA' }
+		id: 201, name: 'Sarah', publicId: 'sarah123', image: { hash: 'abc123' }, lenderPage: { whereabouts: 'Portland, OR' }
 	},
 	{
-		id: 202, name: 'Erica', publicId: 'erica', image: { hash: 'def456' }, lenderPage: { whereabouts: 'Anytown, CA' }
+		id: 202, name: 'Mike', publicId: 'mike456', image: { hash: 'def456' }, lenderPage: { whereabouts: 'Austin, TX' }
 	},
 	{
-		id: 203, name: 'Joy', publicId: 'joy', image: { hash: 'ghi789' }, lenderPage: { whereabouts: 'San Francisco, CA' }
+		id: 203, name: 'Emma', publicId: 'emma789', image: { hash: 'ghi789' }, lenderPage: { whereabouts: 'London, UK' }
 	},
 ];
 
@@ -66,15 +66,24 @@ const mockTeams = [
 		id: 1, name: 'Kiva Lending Team', teamPublicId: 'kiva', image: { hash: 'team1' }, lenderCount: 500, lenderCountForLoan: 3
 	},
 	{
-		id: 2, name: 'The A Team', teamPublicId: 'theateam', image: { hash: 'team2' }, lenderCount: 200, lenderCountForLoan: 1
+		id: 2, name: 'Women Empowerment', teamPublicId: 'women', image: { hash: 'team2' }, lenderCount: 200, lenderCountForLoan: 1
+	},
+];
+
+export const mockSimultaneousMatching = [
+	{
+		managedAccountId: 203995508, displayName: 'Capital One', ratio: 3, logo: null
+	},
+	{
+		managedAccountId: 204181523, displayName: 'the Tripadvisor Foundation', ratio: 1, logo: null
 	},
 ];
 
 const mockUpdates = [
 	{
 		id: 301,
-		body: 'When in doubt, yell!',
-		subject: 'Just another Journal Entry',
+		body: 'Business is going well! I have bought two new heifers and milk production has increased.',
+		subject: 'Update from Aisha',
 		date: '2024-09-15T00:00:00Z',
 		image: { url: 'https://www.kiva.org/img/w480h360/9673d0722a7675b9b8d11f90849d9b44.webp' },
 	},
@@ -85,31 +94,30 @@ const mockUpdates = [
  * @param {object} overrides - Properties to spread on top of the defaults.
  * @returns {object} A full loan object.
  */
-// Fixed expiration date keeps story fixtures deterministic for visual
-// regression (avoids `new Date()`, which made snapshots drift day to day).
-const PLANNED_EXPIRATION_DATE = '2026-12-31T00:00:00.000Z';
-
 export function createMockLoan(overrides = {}) {
+	const expirationDate = new Date();
+	expirationDate.setDate(expirationDate.getDate() + 30);
+
 	return {
 		id: 1975833,
 		__typename: 'LoanPartner',
 		borrowerCount: 1,
-		name: 'Wanda',
+		name: 'Aisha',
 		businessName: '',
 		gender: 'female',
 		geocode: {
-			city: 'Managua',
-			state: 'Managua',
-			latitude: 12.1364,
-			longitude: -86.2514,
+			city: 'Kochkor district, Naryn region',
+			state: 'Naryn Region',
+			latitude: 41.5,
+			longitude: 75.8,
 			country: {
 				id: 1,
-				name: 'Nicaragua',
-				isoCode: 'NI',
-				region: 'Central America',
+				name: 'Kyrgyzstan',
+				isoCode: 'KG',
+				region: 'Asia',
 				numLoansFundraising: 342,
-				ppp: '5470',
-				geocode: { latitude: 12.8654, longitude: -85.2072 },
+				ppp: '3870',
+				geocode: { latitude: 41.2, longitude: 74.8 },
 				__typename: 'Country',
 			},
 			__typename: 'Geocode',
@@ -122,12 +130,20 @@ export function createMockLoan(overrides = {}) {
 			hash: '9673d0722a7675b9b8d11f90849d9b44',
 			__typename: 'Image',
 		},
-		plannedExpirationDate: PLANNED_EXPIRATION_DATE,
+		// LoanStory figures (image/video carousel)
+		figures: [
+			{
+				__typename: 'Image',
+				id: 3838911,
+				hash: '9673d0722a7675b9b8d11f90849d9b44',
+			},
+		],
+		plannedExpirationDate: expirationDate.toISOString(),
 		anonymizationLevel: 'none',
 		loanAmount: '600.00',
 		status: 'fundraising',
-		use: 'to buy more inventory for her market stall.',
-		fullLoanUse: 'A loan of $600 helps to buy more inventory for her market stall.',
+		use: 'to purchase heifers to increase headcount of cattle and sales of organic milk.',
+		fullLoanUse: 'A loan of $600 helps to purchase heifers to increase headcount of cattle and sales of organic milk.',
 		fundraisingPercent: 0.875,
 		fundraisingTimeLeft: '30 days',
 		fundraisingTimeLeftMilliseconds: 2592000000,
@@ -140,8 +156,8 @@ export function createMockLoan(overrides = {}) {
 		},
 		inPfp: false,
 		pfpMinLenders: 0,
-		sector: { id: 1, name: 'Clothing', __typename: 'Sector' },
-		activity: { id: 2, name: 'Clothing Sales', __typename: 'Activity' },
+		sector: { id: 1, name: 'Agriculture', __typename: 'Sector' },
+		activity: { id: 61, name: 'Dairy', __typename: 'Activity' },
 		paidAmount: '0.00',
 		expiredDate: '',
 		refundedDate: '',
@@ -149,16 +165,19 @@ export function createMockLoan(overrides = {}) {
 		endedDate: '',
 		disbursalDate: '2024-06-15T00:00:00Z',
 		distributionModel: 'partner',
-		partnerName: 'AFODENIC',
+		partnerName: 'Bai Tushum Bank',
 		partner: {
 			id: 100,
-			name: 'AFODENIC',
-			countries: [{ id: 1, name: 'Nicaragua', __typename: 'Country' }],
+			name: 'Bai Tushum Bank',
+			countries: [{ id: 1, name: 'Kyrgyzstan', __typename: 'Country' }],
 			arrearsRate: 0.02,
 			avgBorrowerCost: 15.5,
 			avgBorrowerCostType: 'interest',
 			chargesFeesInterest: true,
 			defaultRate: 0.01,
+			avgProfitability: 2.5,
+			loansAtRiskRate: 0.04,
+			currencyExchangeLossRate: 0.01,
 			loanAlertText: '',
 			riskRating: 3.5,
 			totalAmountRaised: '5000000.00',
@@ -182,16 +201,15 @@ export function createMockLoan(overrides = {}) {
 		matchingText: '',
 		matchRatio: 0,
 		unreservedAmount: '75.00',
+		simultaneousMatching: [],
 		// LoanStory fields
-		description: 'Wanda runs a small market stall and would like a loan to buy more inventory. '
-			+ '(Placeholder text for layout testing.)',
-		descriptionInOriginalLanguage: 'Wanda tiene un pequeño puesto en el mercado y desea un préstamo '
-			+ 'para comprar más inventario. (Texto de ejemplo.)',
-		originalLanguage: { id: '2', name: 'Spanish' },
+		description: 'Aisha is a 35-year-old woman living in Kyrgyzstan. She has been raising cattle for 10 years and wants to expand her dairy farm.',
+		descriptionInOriginalLanguage: '',
+		originalLanguage: null,
 		borrowers: [{
-			id: 1, firstName: 'Wanda', gender: 'female', isPrimary: true
+			id: 1, firstName: 'Aisha', gender: 'female', isPrimary: true
 		}],
-		reviewer: { bylineName: 'Rita Rocket', showName: true },
+		reviewer: null,
 		previousLoanId: null,
 		video: null,
 		// Comments
@@ -221,8 +239,8 @@ export function createMockLoan(overrides = {}) {
 		lenderRepaymentTerm: 26,
 		repaymentInterval: 'monthly',
 		terms: {
-			currency: 'NIO',
-			currencyFullName: 'Nicaraguan Córdoba',
+			currency: 'KGS',
+			currencyFullName: 'Kyrgyzstani Som',
 			flexibleFundraisingEnabled: false,
 			lenderRepaymentTerm: 26,
 			lossLiabilityCurrencyExchange: 'shared',
@@ -231,69 +249,13 @@ export function createMockLoan(overrides = {}) {
 		trustee: null,
 		endorsement: null,
 		// MoreAboutLoan fields
-		whySpecial: 'It supports women in a country where financing options are scarce.',
+		whySpecial: 'It supports organic farming and includes a lower interest rate.',
 		dualStatementNote: '',
-		moreInfoAboutLoan: 'This loan helps small-business owners invest in their businesses and support their families.',
+		moreInfoAboutLoan: 'This loan helps rural farmers in Kyrgyzstan.',
 		tags: ['user_favorite'],
 		...overrides,
 	};
 }
-
-// ---------------------------------------------------------------------------
-// Definition lightbox content
-// ---------------------------------------------------------------------------
-
-function richTextDefinition(key, name, text) {
-	return {
-		sys: { contentType: { sys: { id: 'richTextContent' } } },
-		fields: {
-			key,
-			name,
-			richText: {
-				nodeType: 'document',
-				data: {},
-				content: [{
-					nodeType: 'paragraph',
-					data: {},
-					content: [{
-						nodeType: 'text', value: text, marks: [], data: {},
-					}],
-				}],
-			},
-		},
-	};
-}
-
-export const borrowerProfileDefinitions = {
-	entries: {
-		items: [{
-			sys: { contentType: { sys: { id: 'contentGroup' } } },
-			fields: {
-				key: 'borrower-profile-definitions',
-				name: 'Borrower Profile Definitions',
-				type: null,
-				contents: [
-					richTextDefinition(
-						'bp-def-anonymized-loan',
-						'Why is this borrower anonymous?',
-						'To protect this borrower\'s privacy, identifying details have been removed from their profile.',
-					),
-					richTextDefinition(
-						'bp-def-anonymous-description',
-						'Why is this loan anonymous?',
-						'To protect this borrower\'s privacy, the details of this loan have been removed from their profile.',
-					),
-				],
-			},
-		}],
-	},
-};
-
-export const salesforceDefinitionFallback = {
-	name: 'About this detail',
-	note: '<p>In production this explanation is loaded from Contentful or Salesforce. '
-		+ 'This placeholder lets the lightbox be previewed in Storybook.</p>',
-};
 
 // ---------------------------------------------------------------------------
 // Real PII-anonymized loan content
@@ -334,9 +296,11 @@ export function createQueryResult(loan, myUser = null) {
 				nonTrivialItemCount: 0,
 			},
 			my: myUser || { id: null },
-			general: { uiExperimentSetting: null, salesforceSolution: salesforceDefinitionFallback },
+			general: {
+				uiExperimentSetting: null,
+				multiMatchingEnabled: { key: 'multiMatchingEnabled', value: 'true' },
+			},
 			community: { lender: null },
-			contentful: borrowerProfileDefinitions,
 		},
 	};
 }
@@ -348,26 +312,24 @@ export function createQueryResult(loan, myUser = null) {
 /** Fundraising partner loan (default). */
 export const fundraisingPartnerLoan = createMockLoan();
 
-const directLoanDescription = 'This business sells household goods and would like a loan to buy more '
-	+ 'inventory. (Placeholder text.)';
-
-const directLoanOverrides = {
+/** Fundraising direct loan (US-based). */
+export const fundraisingDirectLoan = createMockLoan({
+	id: 2000001,
 	__typename: 'LoanDirect',
 	distributionModel: 'direct',
 	partnerName: '',
 	partner: null,
-	name: 'Sample borrower',
-	gender: 'male',
-	businessName: 'Sample Business',
-	businessDescription: directLoanDescription,
-	purpose: 'To buy more inventory for the business.',
+	name: 'Maria',
+	businessName: 'Maria\'s Bakery',
+	businessDescription: 'A family-owned bakery specializing in artisan breads.',
+	purpose: 'To buy a commercial oven and expand production.',
 	yearsInBusiness: 5,
 	socialLinks: {},
 	geocode: {
-		city: 'San Francisco',
-		state: 'California',
-		latitude: 37.7749,
-		longitude: -122.4194,
+		city: 'Portland',
+		state: 'Oregon',
+		latitude: 45.5,
+		longitude: -122.7,
 		country: {
 			id: 2,
 			name: 'United States',
@@ -378,27 +340,14 @@ const directLoanOverrides = {
 		},
 		__typename: 'Geocode',
 	},
-	use: 'to buy more inventory for the business.',
-	fullLoanUse: 'A loan of $750 helps to buy more inventory for the business.',
-	description: directLoanDescription,
-	descriptionInOriginalLanguage: '',
-	originalLanguage: { id: '1', name: 'English' },
-	reviewer: { bylineName: 'Rita Rocket', showName: true },
-	borrowers: [{
-		id: 1, firstName: 'Sample', gender: 'male', isPrimary: true
-	}],
-};
-
-/** Fundraising direct loan (US-based). */
-export const fundraisingDirectLoan = createMockLoan({
-	id: 2000001,
-	...directLoanOverrides,
-	loanAmount: '750.00',
+	use: 'to expand her bakery business and buy new equipment.',
+	fullLoanUse: 'A loan of $5,000 helps to expand her bakery business and buy new equipment.',
+	loanAmount: '5000.00',
 	loanFundraisingInfo: {
-		id: 2000001, fundedAmount: '500.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
+		id: 2000001, fundedAmount: '3750.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
 	},
-	unreservedAmount: '250.00',
-	fundraisingPercent: 0.67,
+	unreservedAmount: '1250.00',
+	fundraisingPercent: 0.75,
 });
 
 /** Private fundraising period loan. */
@@ -439,6 +388,18 @@ export const payingBackLoan = createMockLoan({
 	paidAmount: '275.00',
 	loanFundraisingInfo: {
 		id: 2000005, fundedAmount: '600.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
+	},
+	unreservedAmount: '0.00',
+});
+
+/** Paying back loan whose repayments exceed the loan amount (final-payment overage). */
+export const overpaidPayingBackLoan = createMockLoan({
+	id: 2000009,
+	status: 'payingBack',
+	fundraisingPercent: 1,
+	paidAmount: '615.00',
+	loanFundraisingInfo: {
+		id: 2000009, fundedAmount: '600.00', reservedAmount: '0.00', isExpiringSoon: false, __typename: 'LoanFundraisingInfo'
 	},
 	unreservedAmount: '0.00',
 });
@@ -553,19 +514,25 @@ export const issueLoan = createMockLoan({
 /** Group loan (multiple borrowers). */
 export const groupLoan = createMockLoan({
 	id: 2000015,
-	name: 'Sample Group',
+	name: 'Aisha\'s Group',
 	borrowerCount: 3,
 	borrowers: [
 		{
-			id: 1, firstName: 'Wanda', gender: 'female', isPrimary: true
+			id: 1, firstName: 'Aisha', gender: 'female', isPrimary: true
 		},
 		{
-			id: 2, firstName: 'Lucy', gender: 'female', isPrimary: false
+			id: 2, firstName: 'Fatima', gender: 'female', isPrimary: false
 		},
 		{
-			id: 3, firstName: 'Rita', gender: 'female', isPrimary: false
+			id: 3, firstName: 'Nadia', gender: 'female', isPrimary: false
 		},
 	],
+});
+
+/** Fundraising loan with simultaneous matching partners. */
+export const multiMatchedLoan = createMockLoan({
+	id: 2000018,
+	simultaneousMatching: mockSimultaneousMatching,
 });
 
 /** Repeat borrower loan (has previous loan). */
@@ -577,16 +544,21 @@ export const repeatBorrowerLoan = createMockLoan({
 /** Direct loan with trustee. */
 export const directLoanWithTrustee = createMockLoan({
 	id: 2000017,
-	...directLoanOverrides,
+	__typename: 'LoanDirect',
+	distributionModel: 'direct',
+	partnerName: '',
+	partner: null,
+	name: 'James',
 	trustee: {
 		id: 50,
-		organizationName: 'Willy Wonka',
+		organizationName: 'Accion',
 		stats: {
+			id: 1,
 			numDefaultedLoans: 0,
 			numLoansEndorsedPublic: 120,
 			repaymentRate: 0.98,
-			totalLoansValue: 2000000,
+			totalLoansValue: '2000000.00',
 		},
 	},
-	endorsement: 'This borrower has been endorsed by a local Kiva trustee.',
+	endorsement: 'Accion endorses this loan for responsible lending.',
 });

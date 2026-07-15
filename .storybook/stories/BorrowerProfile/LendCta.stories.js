@@ -6,6 +6,7 @@ import kvAuth0StoryMixin from '../../mixins/kv-auth0-story-mixin';
 import {
 	fundraisingPartnerLoan,
 	fullyFundedLoan,
+	multiMatchedLoan,
 	payingBackLoan,
 	createQueryResult,
 } from './mockLoanFixtures';
@@ -23,6 +24,29 @@ export const Fundraising = () => ({
 		kvAuth0StoryMixin,
 	],
 	template: `<lend-cta :loan-id="${fundraisingPartnerLoan.id}" />`,
+});
+
+export const LoadingUserState = () => ({
+	components: { LendCta },
+	mixins: [
+		apolloStoryMixin({
+			queryResult: createQueryResult(fundraisingPartnerLoan),
+			loadingQueries: ['lendCtaUser'],
+		}),
+		cookieStoreStoryMixin(),
+		kvAuth0StoryMixin,
+	],
+	template: `<lend-cta :loan-id="${fundraisingPartnerLoan.id}" />`,
+});
+
+export const MultiMatched = () => ({
+	components: { LendCta },
+	mixins: [
+		apolloStoryMixin({ queryResult: createQueryResult(multiMatchedLoan) }),
+		cookieStoreStoryMixin(),
+		kvAuth0StoryMixin,
+	],
+	template: `<lend-cta :loan-id="${multiMatchedLoan.id}" />`,
 });
 
 export const FullyFunded = () => ({

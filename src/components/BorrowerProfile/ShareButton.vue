@@ -35,6 +35,21 @@ import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
 import { KvMaterialIcon } from '@kiva/kv-components';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 
+export const shareButtonFragment = gql`
+	fragment shareButtonFields on LoanBasic {
+		id
+		name
+		anonymizationLevel
+		fundraisingPercent @client
+		loanAmount
+		loanFundraisingInfo {
+			id
+			fundedAmount
+			reservedAmount
+		}
+	}
+`;
+
 export default {
 	name: 'ShareButton',
 	components: {
@@ -146,7 +161,7 @@ export default {
 				: `Get ${this.name}'s loan back on track`;
 		},
 		name() {
-			if (this.loan.name && this.loan.anonymization !== 'full') {
+			if (this.loan.name && this.loan.anonymizationLevel !== 'full') {
 				return this.loan.name;
 			}
 			return 'this lender';

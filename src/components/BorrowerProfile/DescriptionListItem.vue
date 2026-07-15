@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-flex tw-items-center tw-mb-2.5">
+	<div class="tw-flex tw-items-center" :class="condensed ? 'tw-mb-0.5' : 'tw-mb-2.5'">
 		<dt class="tw-flex-1 tw-mb-0">
 			<button
 				@click="$emit('show-definition')" class="tw-underline tw-font-book"
@@ -17,6 +17,9 @@
 <script>
 export default {
 	name: 'DescriptionListItem',
+	inject: {
+		condensed: { default: false },
+	},
 	emits: ['show-definition'],
 	props: {
 		term: {

@@ -229,4 +229,39 @@ describe('JourneyCardCarousel', () => {
 		// Should not crash; card does not render when no badge matches the slide
 		expect(wrapper.find('.my-kiva-card-title').exists()).toBe(false);
 	});
+
+	const mountForAlmostFunded = showLendingNextStepsCards => mount(JourneyCardCarousel, {
+		props: {
+			inLendingStats: true,
+			showLendingNextStepsCards,
+			slidesNumber: 3,
+			slides: [],
+			heroTieredAchievements: [],
+			heroBadgeData: [],
+			userInfo: { userPreferences: { preferences: '{}' } },
+		},
+		global: {
+			provide: { apollo: {}, cookieStore: {}, $kvTrackEvent: vi.fn() },
+			directives: { kvTrackEvent: () => ({}) },
+			stubs: {
+				MyKivaCard: true,
+				MyKivaSharingModal: true,
+				NextYearGoalCard: true,
+				MyKivaEmailUpdatesTransition: true,
+				MyKivaLatestLoanCard: true,
+				MyKivaSurveyCard: true,
+				AlmostFundedNextStep: true,
+			},
+		},
+	});
+
+	it('injects and renders the Almost Funded next step when showLendingNextStepsCards is true', () => {
+		const wrapper = mountForAlmostFunded(true);
+		expect(wrapper.findComponent({ name: 'AlmostFundedNextStep' }).exists()).toBe(true);
+	});
+
+	it('does not render the Almost Funded next step when showLendingNextStepsCards is false', () => {
+		const wrapper = mountForAlmostFunded(false);
+		expect(wrapper.findComponent({ name: 'AlmostFundedNextStep' }).exists()).toBe(false);
+	});
 });

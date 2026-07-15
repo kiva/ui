@@ -20,7 +20,6 @@ beforeAll(async () => {
 		default: {},
 		FIVE_DOLLARS_NOTES_EXP: 'five_dollars_notes',
 	}));
-	vi.mock('#src/plugins/ai-loan-pills-mixin', () => ({ default: {} }));
 	vi.mock('#src/util/experiment/experimentUtils', () => ({
 		initializeExperiment: vi.fn(),
 	}));

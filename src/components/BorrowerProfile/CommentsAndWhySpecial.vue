@@ -143,58 +143,12 @@
 				</template>
 			</kv-carousel>
 		</div>
-		<kv-lightbox
+		<comment-report-lightbox
 			:visible="isReportLightboxVisible"
-			title="Report comment"
-			@lightbox-closed="isReportLightboxVisible = false"
-		>
-			<template #header>
-				<h2>
-					Report Comment
-				</h2>
-				<h3 class="tw-mt-2">
-					Why are you reporting this comment?
-				</h3>
-			</template>
-
-			<fieldset class="tw-flex tw-flex-col tw-gap-2 tw-mt-1 tw-mb-2">
-				<kv-radio
-					value="I find it offensive"
-					name="reportReason"
-					v-model="selectedReason"
-				>
-					I find it offensive
-				</kv-radio>
-				<kv-radio
-					value="It's spam or misleading"
-					name="reportReason" v-model="selectedReason"
-				>
-					It's spam or misleading
-				</kv-radio>
-				<kv-radio
-					value="It is harmful, violent, or could cause harm"
-					name="reportReason" v-model="selectedReason"
-				>
-					It is harmful, violent, or could cause harm
-				</kv-radio>
-			</fieldset>
-
-			<template #controls>
-				<kv-button
-					variant="secondary"
-					@click="isReportLightboxVisible = false"
-				>
-					Cancel
-				</kv-button>
-				<kv-button
-					variant="primary"
-					:state="buttonState"
-					@click="reportComment"
-				>
-					Submit report
-				</kv-button>
-			</template>
-		</kv-lightbox>
+			:loan-id="loanId"
+			:comment-id="selectedCommentId"
+			@close="isReportLightboxVisible = false"
+		/>
 		<kv-lightbox
 			:visible="isCommentLightboxVisible"
 			title=""
@@ -208,16 +162,16 @@
 </template>
 
 <script>
-import _throttle from 'lodash/throttle';
 import { mdiDotsHorizontalCircle } from '@mdi/js';
 import { gql } from 'graphql-tag';
-import { createIntersectionObserver } from '#src/util/observerUtils';
-import logFormatter from '#src/util/logFormatter';
+
+import useIsMobile from '#src/composables/useIsMobile';
 import WhySpecial from '#src/components/BorrowerProfile/WhySpecial';
+import CommentReportLightbox from '#src/components/BorrowerProfile/CommentReportLightbox';
 import clickOutside from '#src/plugins/click-outside';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import {
-	isLegacyPlaceholderAvatar, KvCarousel, KvMaterialIcon, KvLoadingPlaceholder, KvLightbox, KvRadio, KvButton
+	isLegacyPlaceholderAvatar, KvCarousel, KvMaterialIcon, KvLoadingPlaceholder, KvLightbox
 } from '@kiva/kv-components';
 import kivaKUrl from '#src/assets/images/kiva_k.svg?url';
 
@@ -226,15 +180,18 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		BorrowerImage,
-		KvButton,
+		CommentReportLightbox,
 		KvCarousel,
 		KvLightbox,
 		KvLoadingPlaceholder,
 		KvMaterialIcon,
-		KvRadio,
 		WhySpecial,
 	},
 	mixins: [clickOutside],
+	setup() {
+		const { isMobile } = useIsMobile();
+		return { isMobile };
+	},
 	props: {
 		loanId: {
 			type: Number,
@@ -254,8 +211,7 @@ export default {
 			commentMenuShown: false,
 			isReportLightboxVisible: false,
 			isCommentLightboxVisible: false,
-			selectedReason: '',
-			selectedCommentId: '',
+			selectedCommentId: null,
 			selectedCommentBody: '',
 			userCardStyleOptions: [
 				{ color: 'tw-text-action', bg: 'tw-bg-brand-50' },
@@ -267,115 +223,66 @@ export default {
 				{ color: 'tw-text-primary-inverse', bg: 'tw-bg-action' },
 				{ color: 'tw-text-white', bg: 'tw-bg-black' },
 			],
-			isMobile: false,
 		};
 	},
 	computed: {
-		buttonState() {
-			if (this.loading) return 'loading';
-			if (!this.selectedReason) return 'disabled';
-			return '';
-		},
 		enhancedComments() {
 			// adds quasi computed properties to comments.
 			// isAnonymous boolean, lender name first letter, and image hash from url
 			return this.comments.map(comment => {
-				const imageFileName = comment.authorImageUrl?.split('/').pop();
-				const teamNameForThisComment = comment.authorLendingAction?.teams?.[0];
-				const teamInfo = comment.authorLendingAction?.lender?.teams?.values.find(team => {
-					return team.name === comment.authorLendingAction?.teams?.[0];
-				});
+				const authorName = comment.author?.name ?? null;
+				const imageFileName = comment.author?.imageUrl?.split('/').pop();
+				const supportingTeam = comment.author?.lendingAction?.supportingTeams?.values?.[0];
 				return {
 					...comment,
-					isAnonymous: comment.authorName === 'Anonymous' || comment.authorName === null,
-					lenderNameFirstLetter: comment.authorName?.substring(0, 1).toUpperCase(),
-					lenderTeam: teamNameForThisComment,
-					lenderTeamPublicId: teamInfo?.teamPublicId ?? null,
+					authorName,
+					isAnonymous: authorName === 'Anonymous' || authorName === null,
+					lenderNameFirstLetter: authorName?.substring(0, 1).toUpperCase(),
+					lenderTeam: supportingTeam?.name ?? null,
+					lenderTeamPublicId: supportingTeam?.teamPublicId ?? null,
 					hash: imageFileName?.split('.')[0]
 				};
 			});
 		},
 	},
-	watch: {
-		loanId(newId, oldId) {
-			if (newId !== oldId && newId) this.loadData();
-		},
-	},
-	mounted() {
-		this.createObserver();
-		window.addEventListener('resize', this.throttledResize);
-		this.determineIfMobile();
-	},
-	beforeUnmount() {
-		this.destroyObserver();
-		window.removeEventListener('resize', this.throttledResize);
-	},
-	methods: {
-		createObserver() {
-			// Watch for this element being close to entering the viewport
-			this.observer = createIntersectionObserver({
-				targets: [this.$el],
-				rootMargin: '500px',
-				callback: entries => {
-					entries.forEach(entry => {
-						if (entry.target === this.$el && entry.intersectionRatio > 0) {
-							// This element is close to being in the viewport, so load the data.
-							// Because of the apollo cache it's safe to call this repeatedly.
-							this.loadData();
-						}
-					});
-				}
-			});
-			if (!this.observer) {
-				// Observer was not created, so call loadData right away as a fallback.
-				this.loadData();
-			}
-		},
-		destroyObserver() {
-			if (this.observer) {
-				this.observer.disconnect();
-			}
-		},
-		loadData() {
-			if (!this.loanId) return;
-			this.apollo.query({
-				query: gql`query loanComments($loanId: Int!) {
-					lend {
-						loan(id: $loanId) {
+	apollo: {
+		lazy: true,
+		query: gql`query loanComments($loanId: Int!) {
+			lend {
+				loan(id: $loanId) {
+					id
+					comments {
+						values {
 							id
-							comments {
-								values {
-									id
-									authorName
-									authorImageUrl
-									authorLendingAction {
-										teams
-										lender {
+							author {
+								name
+								imageUrl
+								lendingAction {
+									supportingTeams(limit: 1) {
+										values {
 											id
-											teams(limit: 100) { #arbitrary limit for lenders that have a lot of teams
-												values {
-													id
-													name
-													teamPublicId
-												}
-											}
+											name
+											teamPublicId
 										}
 									}
-									body
 								}
 							}
+							body
 						}
 					}
-				}`,
-				variables: {
-					loanId: this.loanId
-				},
-				fetchPolicy: 'network-only',
-			}).then(result => {
-				this.comments = result?.data?.lend?.loan?.comments?.values ?? [];
-				this.loading = false;
-			});
+				}
+			}
+		}`,
+		variables() {
+			return { loanId: this.loanId };
 		},
+		result({ data }) {
+			this.comments = data?.lend?.loan?.comments?.values ?? [];
+			this.loading = false;
+		},
+		fetchPolicy: 'network-only',
+	},
+	methods: {
 		openCommentMenu() {
 			this.commentMenuShown = true;
 		},
@@ -386,48 +293,12 @@ export default {
 			this.selectedCommentId = commentId;
 			this.isReportLightboxVisible = true;
 		},
-		reportComment() {
-			this.loading = true;
-			this.apollo.mutate({
-				mutation: gql`mutation flagLoanComment($id: Int!, $description: String, $commentId: Int!) {
-					loan(id: $id) {
-						flagComment(description: $description, commentId: $commentId)
-					}
-				}`,
-				variables: {
-					id: this.loanId,
-					commentId: this.selectedCommentId,
-					description: this.selectedReason
-				}
-			}).then(({ data, errors }) => {
-				// comment was added successfully
-				if (data.loan.flagComment) {
-					this.$showTipMsg('Thank you for reporting this comment!');
-				} else if (errors[0].message) {
-					this.$showTipMsg(errors[0].message);
-				} else {
-					throw new Error('There was a problem reporting this comment');
-				}
-			}).catch(e => {
-				logFormatter(e, 'error');
-				this.$showTipMsg('There was a problem reporting this comment', 'error');
-			}).finally(() => {
-				this.isReportLightboxVisible = false;
-				this.loading = false;
-			});
-		},
 		randomizedUserClass() {
 			const randomStyle = this.userCardStyleOptions[Math.floor(Math.random() * this.userCardStyleOptions.length)];
 			return `${randomStyle.color} ${randomStyle.bg}`;
 		},
-		determineIfMobile() {
-			this.isMobile = document.documentElement.clientWidth < 735;
-		},
 		isDefaultProfilePic(commentHash) {
 			return isLegacyPlaceholderAvatar(commentHash);
-		},
-		throttledResize() {
-			return _throttle(this.determineIfMobile, 200);
 		},
 		isTruncatedComment(commentBody) {
 			const commentLength = commentBody?.length ?? 0;

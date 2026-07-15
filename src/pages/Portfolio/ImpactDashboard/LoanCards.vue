@@ -33,7 +33,7 @@
 <script>
 import { gql } from 'graphql-tag';
 import BorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
-import BorrowerSideSheetWrapper from '#src/components/BorrowerProfile/BorrowerSideSheetWrapper';
+import BorrowerSideSheetWrapper from '#src/components/BorrowerSideSheet/BorrowerSideSheetWrapper';
 import logReadQueryError from '#src/util/logReadQueryError';
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 import AsyncPortfolioSection from './AsyncPortfolioSection';

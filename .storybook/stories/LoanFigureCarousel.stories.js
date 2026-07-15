@@ -40,6 +40,8 @@ const story = (args) => {
 	return template;
 };
 
+export const Loading = story({});
+
 export const SingleImage = story({
 	name: 'Maria',
 	figures: [IMAGE_A],
