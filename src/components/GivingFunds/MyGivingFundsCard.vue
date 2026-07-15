@@ -3,7 +3,7 @@
 		class="giving-fund-card tw-rounded tw-bg-white tw-p-2 tw-w-full tw-flex tw-flex-col tw-gap-2 tw-items-stretch
 			md:tw-flex-row md:tw-items-center md:tw-justify-between md:tw-gap-3 md:tw-p-2.5"
 	>
-		<h2 class="tw-text-center md:tw-text-left md:tw-flex-1">
+		<h2 class="tw-text-center md:tw-text-left md:tw-flex-1 !tw-text-subheadline">
 			Check in on your giving funds
 		</h2>
 		<div class="tw-text-center md:tw-text-left md:tw-flex-1">

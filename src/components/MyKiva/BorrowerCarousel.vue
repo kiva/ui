@@ -3,7 +3,7 @@
 		<h2
 			v-if="hasActiveLoans"
 			v-html="title"
-			class="tw-mt-4 tw-mb-2"
+			class="tw-mt-4 tw-mb-2 !tw-text-subheadline"
 		></h2>
 		<div v-if="hasActiveLoans" class="tw-relative">
 			<KvTabs

@@ -8,7 +8,7 @@
 					&& !showAlmostFundedCard
 			}]"
 	>
-		<h2 class="tw-text-primary md:tw-mb-1">
+		<h2 class="tw-text-primary md:tw-mb-1 !tw-text-subheadline">
 			Next steps recommended for you
 		</h2>
 		<div

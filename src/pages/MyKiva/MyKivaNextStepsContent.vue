@@ -19,7 +19,7 @@
 			@edit-click="openGoalModal({ updating: true })"
 		/>
 		<template v-if="!hideRecommendedForYouSection">
-			<h1 class="tw-text-primary tw-mb-2">
+			<h1 class="tw-text-primary tw-mb-2 !tw-text-subheadline">
 				Next steps recommended for you
 			</h1>
 
@@ -95,7 +95,7 @@
 			<div :style="{ order: showPostLendingNextStepsCards ? 1 : 2 }">
 				<div>
 					<template v-if="showBuildImpactSection">
-						<h2 class="tw-text-primary tw-mt-2 tw-mb-2">
+						<h2 class="tw-text-primary tw-mt-2 tw-mb-2 !tw-text-subheadline">
 							Build impact beyond your loan
 						</h2>
 						<section class="badges-section tw-grid tw-grid-cols-1 tw-gap-4">
@@ -161,7 +161,7 @@
 					</template>
 
 					<template v-if="!showRegionExperienceInFirstRow">
-						<h2 class="tw-text-primary tw-mt-4 tw-mb-2">
+						<h2 class="tw-text-primary tw-mt-4 tw-mb-2 !tw-text-subheadline">
 							Keep your impact going
 						</h2>
 						<section class="tw-grid md:tw-grid-cols-3 tw-gap-4">
@@ -185,7 +185,7 @@
 				v-if="goalProgressLoading || bottomRowAchievementSlides.length > 0"
 				:style="{ order: showPostLendingNextStepsCards ? 2 : 1 }"
 			>
-				<h2 class="tw-text-primary tw-mt-4 tw-mb-2">
+				<h2 class="tw-text-primary tw-mt-4 tw-mb-2 !tw-text-subheadline">
 					Continue with your lifetime achievements
 				</h2>
 
