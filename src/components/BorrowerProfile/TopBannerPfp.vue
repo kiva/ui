@@ -27,11 +27,11 @@
 					<div class="tw-flex-auto">
 						<!-- eslint-disable-next-line max-len -->
 						<p>{{ borrowerName }} has {{ daysLeftLanguage }} to earn the support of {{ lendersNeeded }} lenders through their network. Once they reach this goal, we'll share their loan with Kiva's global lending community.</p>
-						<p class="tw-mt-2">
+						<p>
 							<!-- eslint-disable-next-line max-len -->
 							The <strong>Private Fundraising Period</strong> is a core part of Kiva's social underwriting model, which relies on community trust rather than credit scores or collateral. Your contribution is a signal that says: <em>“I know this person. I trust their character. I believe they will use this loan responsibly and repay it.”</em>
 						</p>
-						<p class="tw-mt-2">
+						<p>
 							<strong>Your loan is not a donation</strong>
 							—you'll be repaid as the borrower makes scheduled loan payments.
 						</p>
