@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h2 class="tw-mb-4 !tw-text-subheadline">
+		<h2 class="tw-mb-4 !tw-text-title">
 			Impact in action
 		</h2>
 		<KvCarousel

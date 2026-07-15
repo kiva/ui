@@ -8,7 +8,7 @@
 			class="!tw-h-3 tw-mb-2"
 			:style="{ width: '15rem'}"
 		/>
-		<h2 v-else class="tw-mb-2 !tw-text-subheadline">
+		<h2 v-else class="tw-mb-2 !tw-text-title">
 			{{ slotTitle }}
 		</h2>
 		<FeaturedGoalCard

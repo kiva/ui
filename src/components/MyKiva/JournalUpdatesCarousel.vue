@@ -1,6 +1,6 @@
 <template>
 	<div v-if="updates.length > 0">
-		<h2 class="tw-mt-4 tw-mb-2 !tw-text-subheadline">
+		<h2 class="tw-mt-4 tw-mb-2 !tw-text-title">
 			Updates
 		</h2>
 		<KvCarousel
