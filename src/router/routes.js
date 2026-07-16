@@ -416,7 +416,7 @@ export default [
 		},
 	},
 	{
-		path: '/portfolio/kiva-cards-beta',
+		path: '/portfolio/kiva-cards',
 		component: () => import('#src/pages/Portfolio/KivaCards/KivaCardsPage'),
 		meta: {
 			authenticationRequired: true,
