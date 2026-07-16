@@ -47,7 +47,7 @@
 						/>
 						<div class="tw-flex-1 tw-min-w-0 tw-overflow-hidden">
 							<span
-								class="tw-text-title tw-text-primary
+								class="tw-text-primary tw-text-left
 							tw-block tw-whitespace-nowrap tw-truncate tw-min-w-0 tw-w-full tw-align-bottom"
 
 								:title="region.name"
@@ -105,7 +105,7 @@
 						"
 							:title="region?.name"
 						>
-							<span class="tw-text-button-link">Lend in {{ region?.name }}</span>
+							<span>Lend in {{ region?.name }}</span>
 							<KvMaterialIcon
 								class="tw-w-3 tw-h-3 tw-shrink-0"
 								:icon="mdiArrowTopRight"
@@ -186,7 +186,7 @@ const pendingRegions = computed(() => props.regionsData.filter(region => !region
 const formattedPendingRegions = computed(() => {
 	const regions = pendingRegions.value;
 	if (!regions || regions.length === 0) return '';
-	const formattedNames = regions.map(region => `<strong class="tw-text-button-link">
+	const formattedNames = regions.map(region => `<strong>
 		${region.name === 'Middle East' ? 'the Middle East' : region.name}
 		</strong>`);
 	if (formattedNames.length === 1) return formattedNames[0];
