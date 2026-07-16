@@ -1,0 +1,5 @@
+mutation DepositWithBraintreeNonce($amount: Money!, $nonce: String!, $deviceData: String!) {
+    my {
+        depositWithBraintreeNonce(amount: $amount, nonce: $nonce, deviceData: $deviceData)
+    }
+}

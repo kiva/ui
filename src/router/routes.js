@@ -1,4 +1,5 @@
 import { WITHDRAW_ROUTE, WITHDRAW_PROCESS } from '#src/util/withdraw/withdrawConstants';
+import { DEPOSIT_ROUTE } from '#src/util/deposit/depositConstants';
 
 export default [
 	{
@@ -407,7 +408,15 @@ export default [
 		}),
 	},
 	{
-		path: '/portfolio/kiva-cards-beta',
+		path: DEPOSIT_ROUTE.BASE,
+		component: () => import('#src/pages/Deposit/DepositPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		},
+	},
+	{
+		path: '/portfolio/kiva-cards',
 		component: () => import('#src/pages/Portfolio/KivaCards/KivaCardsPage'),
 		meta: {
 			authenticationRequired: true,

@@ -25,7 +25,7 @@
 			</content-container>
 		</div>
 		<div
-			:class="inPfp ? 'lg:tw-pt-16' : 'lg:tw-pt-8'"
+			:class="inPfp ? 'lg:tw-pt-16 lg:tw-mt-4' : 'lg:tw-pt-8'"
 			class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0 tw-z-docked"
 		>
 			<sidebar-container
