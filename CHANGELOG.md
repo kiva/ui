@@ -1,3 +1,19 @@
+## [3.78.0](https://github.com/kiva/ui/compare/v3.77.0...v3.78.0) (2026-07-16)
+
+### 🎉 New Features
+
+* implement portfolio credit deposit migration ([#7060](https://github.com/kiva/ui/issues/7060)) ([97c3cef](https://github.com/kiva/ui/commit/97c3cefca64f862cceedfa65d2d5939c90c8aec4))
+* update pfp top banner copy (KUSPMTM-29) ([45ba326](https://github.com/kiva/ui/commit/45ba3269db628bf441fdd39b28b8088a47d6a2be))
+
+### 🐛 Bugfixes
+
+* adjust spacing on new copy ([8a17434](https://github.com/kiva/ui/commit/8a1743452bb607ccec123548be02e1e2d0485672))
+* remove before from kiva-cards route ([#7065](https://github.com/kiva/ui/issues/7065)) ([6ce10f6](https://github.com/kiva/ui/commit/6ce10f6ebe7afc8556b667e3c337867ae510fa24))
+
+### 🧹 Chores
+
+* **release:** 3.78.0-rc.1 [skip ci] ([b37757c](https://github.com/kiva/ui/commit/b37757c135afb4db9c41e91b756d48174949aeec)), closes [#7060](https://github.com/kiva/ui/issues/7060) [#7065](https://github.com/kiva/ui/issues/7065)
+
 ## [3.78.0-rc.1](https://github.com/kiva/ui/compare/v3.77.0...v3.78.0-rc.1) (2026-07-16)
 
 ### 🎉 New Features
