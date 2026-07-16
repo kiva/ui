@@ -46,14 +46,14 @@
 							:blur-on-disabled="false"
 						/>
 						<div class="tw-flex-1 tw-min-w-0 tw-overflow-hidden">
-							<button
+							<span
 								class="tw-text-primary tw-text-left
 							tw-block tw-whitespace-nowrap tw-truncate tw-min-w-0 tw-w-full tw-align-bottom"
 
 								:title="region.name"
 							>
-								<strong>{{ region.name }}</strong>
-							</button>
+								{{ region.name }}
+							</span>
 						</div>
 					</li>
 				</ul>
@@ -105,7 +105,7 @@
 						"
 							:title="region?.name"
 						>
-							<button><strong>Lend in {{ region?.name }}</strong></button>
+							<span>Lend in {{ region?.name }}</span>
 							<KvMaterialIcon
 								class="tw-w-3 tw-h-3 tw-shrink-0"
 								:icon="mdiArrowTopRight"
