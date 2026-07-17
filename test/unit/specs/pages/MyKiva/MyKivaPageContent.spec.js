@@ -98,4 +98,45 @@ describe('MyKivaPageContent', () => {
 			});
 		});
 	});
+
+	describe('handleGoToDeepLink', () => {
+		const makeContext = overrides => ({
+			isGoalInReviewEligible: true,
+			loadGoalInReview: vi.fn().mockResolvedValue({}),
+			showGoalInReviewModal: false,
+			smoothScrollTo: vi.fn(),
+			...overrides,
+		});
+
+		it('opens the goal recap for eligible users', async () => {
+			const context = makeContext();
+
+			await MyKivaPageContent.methods.handleGoToDeepLink.call(context, 'goal-recap');
+
+			expect(context.loadGoalInReview).toHaveBeenCalledTimes(1);
+			expect(context.showGoalInReviewModal).toBe(true);
+		});
+
+		it('does not open the goal recap for ineligible users', async () => {
+			const context = makeContext({ isGoalInReviewEligible: false });
+
+			await MyKivaPageContent.methods.handleGoToDeepLink.call(context, 'goal-recap');
+
+			expect(context.loadGoalInReview).toHaveBeenCalledTimes(1);
+			expect(context.showGoalInReviewModal).toBe(false);
+		});
+
+		it('keeps normal goTo section scrolling for non-recap deep links', async () => {
+			const querySelector = vi.spyOn(document, 'querySelector').mockReturnValue({ offsetTop: 230 });
+			const context = makeContext();
+
+			await MyKivaPageContent.methods.handleGoToDeepLink.call(context, 'mykiva-achievements');
+
+			expect(context.loadGoalInReview).not.toHaveBeenCalled();
+			expect(querySelector).toHaveBeenCalledWith('#mykiva-achievements');
+			expect(context.smoothScrollTo).toHaveBeenCalledWith({ yPosition: 200, millisecondsToAnimate: 750 });
+
+			querySelector.mockRestore();
+		});
+	});
 });
