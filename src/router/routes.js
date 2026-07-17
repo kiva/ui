@@ -368,6 +368,14 @@ export default [
 		}
 	},
 	{
+		path: '/portfolio/credit/bonus-history-beta',
+		component: () => import('#src/pages/Portfolio/BonusCreditHistory/BonusCreditHistoryPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
 		path: WITHDRAW_ROUTE.BASE,
 		component: () => import('#src/pages/Withdraw/WithdrawPage'),
 		meta: {
