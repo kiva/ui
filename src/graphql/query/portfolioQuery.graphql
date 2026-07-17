@@ -45,5 +45,9 @@ query portfolioQuery {
 			key
 			value
 		}
+		goal_in_review_enable: uiConfigSetting(key: "goal_in_review_enable") {
+			key
+			value
+		}
 	}
 }
