@@ -55,7 +55,7 @@ import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSid
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import useGoalData, { LAST_YEAR_KEY, isWithinGoalInReviewWindow } from '#src/composables/useGoalData';
+import useGoalData, { LAST_YEAR_KEY, hasGoalInReviewStarted } from '#src/composables/useGoalData';
 import useBadgeData, {
 	applyFreshProgressToAchievements,
 	FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
@@ -340,7 +340,7 @@ export default {
 				this.goalRecommendedLoanEnable = readBoolSetting(myKivaQueryResult, 'general.goal_recommended_loan_enable.value') ?? false; // eslint-disable-line max-len
 
 				const goalInReviewFlag = readBoolSetting(myKivaQueryResult, 'general.goal_in_review_enable.value') ?? false; // eslint-disable-line max-len
-				this.goalInReviewEnable = goalInReviewFlag && isWithinGoalInReviewWindow();
+				this.goalInReviewEnable = goalInReviewFlag && hasGoalInReviewStarted(this.$route);
 
 				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
 					...myKivaQueryResult.my.latestLoan.values[0].loan,

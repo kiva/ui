@@ -72,13 +72,12 @@ export const LAST_YEAR_KEY = GOALS_CURRENT_YEAR - 1;
 export const COMPLETED_GOAL_THRESHOLD = 100;
 export const HALF_GOAL_THRESHOLD = 50;
 
-// TODO(MP-3053): update these placeholder dates once the exact release window is confirmed.
+// TODO(MP-3053): update this placeholder date once the exact release date is confirmed.
 export const GOAL_IN_REVIEW_START_DATE = new Date('2026-11-15T00:00:00-08:00');
-export const GOAL_IN_REVIEW_END_DATE = new Date('2027-01-15T23:59:59-08:00');
 
-export function isWithinGoalInReviewWindow() {
-	const now = new Date();
-	return now >= GOAL_IN_REVIEW_START_DATE && now <= GOAL_IN_REVIEW_END_DATE;
+export function hasGoalInReviewStarted(route) {
+	if (route?.query?.goal_in_review === 'true') return true;
+	return new Date() >= GOAL_IN_REVIEW_START_DATE;
 }
 const MIN_CATEGORY_LOANS_AMOUNT = 100;
 const RECOMMENDED_LOANS_LIMIT = 4;
