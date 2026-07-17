@@ -215,6 +215,7 @@ export default {
 				this.loanData = data.lend.loan;
 			}
 			this.isSummaryLoading = false;
+			this.initRecommendations();
 		},
 	},
 	props: {
@@ -293,51 +294,59 @@ export default {
 		},
 	},
 	mounted() {
-		this.createViewportObserver();
-		this.rows = [
-			{
-				identifier: 'sector',
-				rowIndex: 1,
-				heading: 'Support these ',
-				subHeading: '',
-				onlyLoan: false,
-				limit: 3,
-				filter: { sector: { eq: this.loanData?.sector?.name } },
-				loanIds: []
-			},
-			{
-				identifier: 'recommended',
-				rowIndex: 2,
-				heading: 'Recommended Borrower',
-				subHeading: 'We selected this loan for you because it\'s similar to ',
-				onlyLoan: true,
-				limit: 1,
-				filter: null,
-				loan: null
-			},
-			{
-				identifier: 'gender',
-				rowIndex: 3,
-				heading: 'Support these ',
-				subHeading: '',
-				onlyLoan: false,
-				limit: 3,
-				filter: { gender: { eq: this.loanData?.gender } },
-				loanIds: []
-			},
-			{
-				identifier: 'country',
-				rowIndex: 4,
-				heading: 'Support these borrowers in ',
-				subHeading: '',
-				onlyLoan: false,
-				limit: 3,
-				filter: { countryIsoCode: { eq: this.loanData?.geocode?.country?.isoCode } },
-				loanIds: []
-			},
-		];
+		this.initRecommendations();
 	},
 	methods: {
+		initRecommendations() {
+			// Build the rows only once the loan's own query has populated loanData
+			// (loanData.sector); building from an empty loan yields "undefined" headings.
+			if (this.rows || !this.loanData?.sector?.name) {
+				return;
+			}
+			this.rows = [
+				{
+					identifier: 'sector',
+					rowIndex: 1,
+					heading: 'Support these ',
+					subHeading: '',
+					onlyLoan: false,
+					limit: 3,
+					filter: { sector: { eq: this.loanData?.sector?.name } },
+					loanIds: []
+				},
+				{
+					identifier: 'recommended',
+					rowIndex: 2,
+					heading: 'Recommended Borrower',
+					subHeading: 'We selected this loan for you because it\'s similar to ',
+					onlyLoan: true,
+					limit: 1,
+					filter: null,
+					loan: null
+				},
+				{
+					identifier: 'gender',
+					rowIndex: 3,
+					heading: 'Support these ',
+					subHeading: '',
+					onlyLoan: false,
+					limit: 3,
+					filter: { gender: { eq: this.loanData?.gender } },
+					loanIds: []
+				},
+				{
+					identifier: 'country',
+					rowIndex: 4,
+					heading: 'Support these borrowers in ',
+					subHeading: '',
+					onlyLoan: false,
+					limit: 3,
+					filter: { countryIsoCode: { eq: this.loanData?.geocode?.country?.isoCode } },
+					loanIds: []
+				},
+			];
+			this.createViewportObserver();
+		},
 		refIsVisible() {
 			const { top, bottom } = this.$refs?.preBottom?.getBoundingClientRect() ?? {};
 			const vHeight = (window.innerHeight || document.documentElement.clientHeight);
