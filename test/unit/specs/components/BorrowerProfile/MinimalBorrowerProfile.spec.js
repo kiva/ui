@@ -3,6 +3,7 @@ import MinimalBorrowerProfile from '#src/components/BorrowerProfile/MinimalBorro
 describe('MinimalBorrowerProfile.apollo.result', () => {
 	const invokeResult = (ctx, data) => {
 		expect(typeof MinimalBorrowerProfile.apollo.result).toBe('function');
+		ctx.initRecommendations = ctx.initRecommendations ?? (() => {});
 		MinimalBorrowerProfile.apollo.result.call(ctx, { data });
 	};
 
@@ -29,6 +30,7 @@ describe('MinimalBorrowerProfile.apollo.result', () => {
 
 describe('MinimalBorrowerProfile.apollo.result isSummaryLoading', () => {
 	const invokeResult = (ctx, data) => {
+		ctx.initRecommendations = ctx.initRecommendations ?? (() => {});
 		MinimalBorrowerProfile.apollo.result.call(ctx, { data });
 	};
 
@@ -42,5 +44,45 @@ describe('MinimalBorrowerProfile.apollo.result isSummaryLoading', () => {
 		const ctx = { loanData: { id: 123, name: 'Maria' }, isSummaryLoading: true };
 		invokeResult(ctx, { lend: { loan: null } });
 		expect(ctx.isSummaryLoading).toBe(false);
+	});
+});
+
+describe('MinimalBorrowerProfile.methods.initRecommendations', () => {
+	const invokeInit = ctx => MinimalBorrowerProfile.methods.initRecommendations.call(ctx);
+
+	it('defers building the rows until the loan has loaded (no sector yet)', () => {
+		const createViewportObserver = vi.fn();
+		const ctx = { rows: null, loanData: {}, createViewportObserver };
+		invokeInit(ctx);
+		expect(ctx.rows).toBeNull();
+		expect(createViewportObserver).not.toHaveBeenCalled();
+	});
+
+	it('builds all four rows from the loaded loan and starts the observer', () => {
+		const createViewportObserver = vi.fn();
+		const ctx = {
+			rows: null,
+			loanData: {
+				sector: { name: 'Retail' },
+				gender: 'female',
+				geocode: { country: { isoCode: 'GT' } },
+			},
+			createViewportObserver,
+		};
+		invokeInit(ctx);
+		expect(ctx.rows).toHaveLength(4);
+		expect(ctx.rows[0].filter).toEqual({ sector: { eq: 'Retail' } });
+		expect(ctx.rows[2].filter).toEqual({ gender: { eq: 'female' } });
+		expect(ctx.rows[3].filter).toEqual({ countryIsoCode: { eq: 'GT' } });
+		expect(createViewportObserver).toHaveBeenCalledOnce();
+	});
+
+	it('does not rebuild the rows once they are already built', () => {
+		const createViewportObserver = vi.fn();
+		const existing = [{ identifier: 'sector' }];
+		const ctx = { rows: existing, loanData: { sector: { name: 'Retail' } }, createViewportObserver };
+		invokeInit(ctx);
+		expect(ctx.rows).toBe(existing);
+		expect(createViewportObserver).not.toHaveBeenCalled();
 	});
 });
