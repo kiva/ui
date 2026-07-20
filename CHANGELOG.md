@@ -1,3 +1,23 @@
+## [3.79.0](https://github.com/kiva/ui/compare/v3.78.0...v3.79.0) (2026-07-20)
+
+### 🎉 New Features
+
+* [MP-2924] - mykiva typography audit update ([#7063](https://github.com/kiva/ui/issues/7063)) ([3bc7d30](https://github.com/kiva/ui/commit/3bc7d303e471aeb43fddb5256a60c098c2efd135))
+* [MP-2924] more mykiva typo updates ([#7071](https://github.com/kiva/ui/issues/7071)) ([5edd1da](https://github.com/kiva/ui/commit/5edd1da330b100db5222cb327da148cc6b0b4793))
+* add goal in review flag and date range validation ([5ccfcd2](https://github.com/kiva/ui/commit/5ccfcd2aeaf003e7fa10593f24bf1a63b4ae0307))
+* implement fe for /portfolio/credit/bonus-history migration ([#7069](https://github.com/kiva/ui/issues/7069)) ([220c1bc](https://github.com/kiva/ui/commit/220c1bc3c1e71e00ecb26bbb5e7388c2bd92a2cf))
+* release deposit migration ([#7072](https://github.com/kiva/ui/issues/7072)) ([8cc841a](https://github.com/kiva/ui/commit/8cc841a29b5e0fde2017568d2cc05d7b59355b7a))
+
+### 🐛 Bugfixes
+
+* add query param override and remove end date ([44944df](https://github.com/kiva/ui/commit/44944dfcb578384bc322362acb97c0983bde5b00))
+* **MinimalBorrowerProfile:** defer recommendations until loan loads ([75cb6ee](https://github.com/kiva/ui/commit/75cb6eebfe9eb5e598ed480175c1db5dbc868b03))
+
+### 🧹 Chores
+
+* **release:** 3.79.0-rc.1 [skip ci] ([10fe759](https://github.com/kiva/ui/commit/10fe759496832d7bf69c5daddc9ff9f44fdd7fa9)), closes [#7063](https://github.com/kiva/ui/issues/7063) [#7071](https://github.com/kiva/ui/issues/7071) [#7069](https://github.com/kiva/ui/issues/7069) [#7072](https://github.com/kiva/ui/issues/7072)
+* update kv libs to latest versions ([e93160c](https://github.com/kiva/ui/commit/e93160c3625be65f09802b2d5720df19baa9ddf9))
+
 ## [3.79.0-rc.1](https://github.com/kiva/ui/compare/v3.78.0...v3.79.0-rc.1) (2026-07-20)
 
 ### 🎉 New Features
