@@ -382,7 +382,7 @@ const STOP_HIDING_TIP_EXP_KEY = 'stop_hiding_tip_campaign';
 const CUSTOM_TIP_DEFAULT_EXP_KEY = 'custom_tip_default';
 const TIP_PERCENTAGE = 0.2;
 
-// Experiments assigned during SSR preFetch so versions are cached before hydration
+// Assigned during SSR so versions are available before hydration
 const PREFETCH_EXPERIMENT_IDS = [
 	DEPOSIT_REWARD_EXP_KEY,
 	ASYNC_CHECKOUT_EXP,
