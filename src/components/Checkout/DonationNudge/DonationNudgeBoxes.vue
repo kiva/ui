@@ -101,6 +101,7 @@ export default {
 		KvTextInput
 	},
 	inject: {
+		// Tip experiment version provided by the checkout page; null when rendered elsewhere
 		customTipDefaultVersion: { default: null },
 	},
 	props: {

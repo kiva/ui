@@ -452,6 +452,7 @@ export default {
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
 	provide() {
 		return {
+			// Computed so injecting descendants stay reactive to version reassignment
 			customTipDefaultVersion: computed(() => this.customTipDefaultVersion),
 		};
 	},
