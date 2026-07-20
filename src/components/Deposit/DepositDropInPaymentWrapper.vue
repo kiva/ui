@@ -180,13 +180,13 @@ export default {
 			});
 		},
 		handleSuccess(transactionId, paymentType, amount) {
-			// Legacy parity: mirrors DepositView.js trackAddCredit — the value is the deposit in cents.
+			// Add Credit event: the value is the deposit amount
 			this.$kvTrackEvent(
 				'Lending',
 				'Add Credit',
 				'Add Credit Page',
 				null,
-				Math.round(numeral(amount).value() * 100),
+				amount,
 			);
 			// Braintree drop-in success event, mirroring the sibling payment wrappers.
 			this.$kvTrackEvent(

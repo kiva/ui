@@ -161,7 +161,6 @@ export default {
 			processing: false,
 			depositComplete: false,
 			depositedAmount: 0,
-			amountFocusTracked: false,
 		};
 	},
 	validations() {
@@ -211,10 +210,6 @@ export default {
 			this.v$.amount.$touch();
 		},
 		trackAmountFocus() {
-			if (this.amountFocusTracked) {
-				return;
-			}
-			this.amountFocusTracked = true;
 			this.$kvTrackEvent('portfolio', 'click', 'Deposit amount field');
 		},
 		onDepositComplete({ amount }) {
