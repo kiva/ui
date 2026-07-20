@@ -382,6 +382,17 @@ const STOP_HIDING_TIP_EXP_KEY = 'stop_hiding_tip_campaign';
 const CUSTOM_TIP_DEFAULT_EXP_KEY = 'custom_tip_default';
 const TIP_PERCENTAGE = 0.2;
 
+// Experiments assigned during SSR preFetch so versions are cached before hydration
+const PREFETCH_EXPERIMENT_IDS = [
+	DEPOSIT_REWARD_EXP_KEY,
+	ASYNC_CHECKOUT_EXP,
+	CHECKOUT_LOGIN_CTA_EXP,
+	GUEST_CHECKOUT_CTA_EXP,
+	FIVE_DOLLARS_NOTES_EXP,
+	KIVA_CREDIT_REPLACEMENT_EXP_KEY,
+	CUSTOM_TIP_DEFAULT_EXP_KEY,
+];
+
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
 	my {
@@ -537,13 +548,9 @@ export default {
 				.then(() => {
 					return Promise.all([
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: DEPOSIT_REWARD_EXP_KEY } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: ASYNC_CHECKOUT_EXP } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: CHECKOUT_LOGIN_CTA_EXP } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: KIVA_CREDIT_REPLACEMENT_EXP_KEY } }), // eslint-disable-line max-len
-						client.query({ query: experimentAssignmentQuery, variables: { id: CUSTOM_TIP_DEFAULT_EXP_KEY } }), // eslint-disable-line max-len
+						...PREFETCH_EXPERIMENT_IDS.map(
+							id => client.query({ query: experimentAssignmentQuery, variables: { id } })
+						),
 					]);
 				})
 				.then(response => {

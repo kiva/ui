@@ -1,6 +1,7 @@
 import { reactive } from 'vue';
 import { setDonationAmount } from '#src/util/basketUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
+import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 
 vi.mock('#src/util/basketUtils', () => ({
 	setDonationAmount: vi.fn(),
@@ -10,7 +11,6 @@ vi.mock('#src/util/logReadQueryError', () => ({
 }));
 
 let CheckoutPage;
-let initializeExperiment;
 
 beforeAll(async () => {
 	vi.mock('#src/graphql/query/checkout/getCheckoutAlmostFundedRecommendation.graphql', () => ({ default: 'mock' }));
@@ -28,7 +28,6 @@ beforeAll(async () => {
 
 	const mod = await import('#src/pages/Checkout/CheckoutPage');
 	CheckoutPage = mod.default;
-	({ initializeExperiment } = await import('#src/util/experiment/experimentUtils'));
 });
 
 describe('CheckoutPage ensureTipDonationExists', () => {
@@ -195,34 +194,31 @@ describe('CheckoutPage ensureTipDonationExists', () => {
 });
 
 describe('CheckoutPage initializeCustomTipDefaultExperiment', () => {
+	const makeContext = () => ({
+		cookieStore: {},
+		apollo: {},
+		$route: {},
+		customTipDefaultVersion: null,
+	});
+
 	beforeEach(() => {
 		initializeExperiment.mockClear();
 	});
 
 	it('assigns the experiment without exposure tracking args', () => {
-		const context = {
-			cookieStore: {},
-			apollo: {},
-			$route: {},
-			customTipDefaultVersion: null,
-		};
+		const context = makeContext();
 
 		CheckoutPage.methods.initializeCustomTipDefaultExperiment.call(context);
 
 		expect(initializeExperiment).toHaveBeenCalledTimes(1);
 		const args = initializeExperiment.mock.calls[0];
 		expect(args[3]).toBe('custom_tip_default');
-		// Only 5 args passed, so trackEvent stays null and no exposure event can fire
-		expect(args.length).toBe(5);
+		// The trackEvent slot must stay empty so no exposure event can fire
+		expect(args[5]).toBeUndefined();
 	});
 
 	it('stores the assigned version in component state', () => {
-		const context = {
-			cookieStore: {},
-			apollo: {},
-			$route: {},
-			customTipDefaultVersion: null,
-		};
+		const context = makeContext();
 
 		CheckoutPage.methods.initializeCustomTipDefaultExperiment.call(context);
 		const callback = initializeExperiment.mock.calls[0][4];
