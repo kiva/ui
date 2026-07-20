@@ -24,6 +24,9 @@ beforeAll(async () => {
 	vi.mock('#src/util/experiment/experimentUtils', () => ({
 		initializeExperiment: vi.fn(),
 	}));
+	vi.mock('#src/util/myKivaUtils', () => ({
+		fetchPostCheckoutAchievements: vi.fn(),
+	}));
 	vi.mock('@sentry/vue', () => ({ captureException: vi.fn(), captureMessage: vi.fn() }));
 
 	const mod = await import('#src/pages/Checkout/CheckoutPage');
@@ -228,6 +231,21 @@ describe('CheckoutPage initializeCustomTipDefaultExperiment', () => {
 
 		callback(undefined);
 		expect(context.customTipDefaultVersion).toBe(null);
+	});
+});
+
+describe('CheckoutPage apollo preFetch', () => {
+	it('prefetches the custom tip default experiment assignment during SSR', async () => {
+		const client = {
+			mutate: vi.fn().mockResolvedValue({}),
+			query: vi.fn().mockResolvedValue({ data: {} }),
+		};
+
+		await CheckoutPage.apollo.preFetch(CheckoutPage.apollo, client);
+
+		expect(client.query).toHaveBeenCalledWith(
+			expect.objectContaining({ variables: { id: 'custom_tip_default' } })
+		);
 	});
 });
 
