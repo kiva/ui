@@ -1,0 +1,21 @@
+query bonusCreditHistory {
+	my {
+		id
+		userAccount {
+			id
+			lenderPromoCredits {
+				id
+				amountAtCreation
+				amountUnredeemed
+				expireTime
+				createTime
+				awardType
+				promoFund {
+					id
+					displayName
+				}
+				status
+			}
+		}
+	}
+}
