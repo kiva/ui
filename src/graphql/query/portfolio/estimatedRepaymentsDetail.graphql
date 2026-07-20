@@ -1,0 +1,22 @@
+query EstimatedRepaymentsDetail($year: Int, $month: Int) {
+	my {
+		id
+		userAccount {
+			id
+			expectedRepaymentsDetail(year: $year, month: $month) {
+				repaymentDate
+				amount
+				userAmount
+				promoAmount
+				isDelinquent
+				pastRepayments
+				totalRepayments
+				promoType
+				loan {
+					id
+					name
+				}
+			}
+		}
+	}
+}

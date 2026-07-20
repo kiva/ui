@@ -1,5 +1,6 @@
 import { WITHDRAW_ROUTE, WITHDRAW_PROCESS } from '#src/util/withdraw/withdrawConstants';
 import { DEPOSIT_ROUTE } from '#src/util/deposit/depositConstants';
+import { ESTIMATED_REPAYMENTS_ROUTE } from '#src/util/estimatedRepayments/estimatedRepaymentsConstants';
 
 export default [
 	{
@@ -371,6 +372,14 @@ export default [
 	{
 		path: '/portfolio/credit/bonus-history-beta',
 		component: () => import('#src/pages/Portfolio/BonusCreditHistory/BonusCreditHistoryPage'),
+		meta: {
+			authenticationRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
+		path: ESTIMATED_REPAYMENTS_ROUTE,
+		component: () => import('#src/pages/Portfolio/EstimatedRepayments/EstimatedRepaymentsPage'),
 		meta: {
 			authenticationRequired: true,
 			excludeFromStaticSitemap: true,
