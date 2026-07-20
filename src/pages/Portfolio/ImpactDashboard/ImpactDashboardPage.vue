@@ -55,7 +55,7 @@ import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSeco
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { gql } from 'graphql-tag';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import { GOAL_STATUS, GOALS_CURRENT_YEAR, hasGoalInReviewStarted } from '#src/composables/useGoalData';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
@@ -115,6 +115,7 @@ export default {
 			showMyKivaPage: false,
 			showTeamChallenge: false,
 			teamsChallengeEnable: false,
+			goalInReviewEnable: false,
 			userPreferences: null,
 			goalsEntrypointEnable: false,
 			isEmptyGoal: true,
@@ -177,6 +178,10 @@ export default {
 		});
 
 		this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
+
+		this.goalInReviewEnable = (readBoolSetting(portfolioQueryData, 'general.goal_in_review_enable.value') ?? false)
+			&& hasGoalInReviewStarted(this.$route);
+
 		this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
 
 		const parsedPrefs = JSON.parse(this.userPreferences?.preferences || '{}');
