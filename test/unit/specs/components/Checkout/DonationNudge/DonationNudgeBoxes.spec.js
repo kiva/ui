@@ -112,4 +112,31 @@ describe('DonationNudgeBoxes custom tip prefill on open', () => {
 
 		expect(wrapper.vm.customDonationAmount).toBe('$5.00');
 	});
+
+	it('submits the prefilled amount when the custom option is selected', () => {
+		const setDonationAndClose = vi.fn();
+		const wrapper = mountBoxes({
+			version: 'b',
+			props: { currentDonationAmount: '$0.00', setDonationAndClose },
+		});
+
+		wrapper.vm.afterLightboxOpens();
+		wrapper.vm.setCustomDonationAndClose();
+
+		expect(setDonationAndClose).toHaveBeenCalledWith(1, 'Custom amount');
+	});
+
+	it('submits zero when the user edits the prefill back to $0.00', () => {
+		const setDonationAndClose = vi.fn();
+		const wrapper = mountBoxes({
+			version: 'b',
+			props: { currentDonationAmount: '$0.00', setDonationAndClose },
+		});
+
+		wrapper.vm.afterLightboxOpens();
+		wrapper.vm.setInputs('$0.00');
+		wrapper.vm.setCustomDonationAndClose();
+
+		expect(setDonationAndClose).toHaveBeenCalledWith(0, 'Custom amount');
+	});
 });
