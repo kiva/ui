@@ -1,3 +1,4 @@
+import { reactive } from 'vue';
 import { setDonationAmount } from '#src/util/basketUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 
@@ -231,5 +232,18 @@ describe('CheckoutPage initializeCustomTipDefaultExperiment', () => {
 
 		callback(undefined);
 		expect(context.customTipDefaultVersion).toBe(null);
+	});
+});
+
+describe('CheckoutPage provide', () => {
+	it('provides customTipDefaultVersion as a reactive computed', () => {
+		const context = reactive({ customTipDefaultVersion: null });
+
+		const provided = CheckoutPage.provide.call(context);
+
+		expect(provided.customTipDefaultVersion.value).toBe(null);
+
+		context.customTipDefaultVersion = 'b';
+		expect(provided.customTipDefaultVersion.value).toBe('b');
 	});
 });

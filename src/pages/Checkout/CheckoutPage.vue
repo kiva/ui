@@ -309,6 +309,7 @@
 </template>
 
 <script>
+import { computed } from 'vue';
 import { gql } from 'graphql-tag';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
@@ -438,6 +439,11 @@ export default {
 		KvMaterialIcon,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
+	provide() {
+		return {
+			customTipDefaultVersion: computed(() => this.customTipDefaultVersion),
+		};
+	},
 	mixins: [checkoutUtils, fiveDollarsTest],
 	head: {
 		title: 'Checkout'

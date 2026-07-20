@@ -100,6 +100,9 @@ export default {
 		KvButton,
 		KvTextInput
 	},
+	inject: {
+		customTipDefaultVersion: { default: null },
+	},
 	props: {
 		loanReservationTotal: {
 			type: Number,
