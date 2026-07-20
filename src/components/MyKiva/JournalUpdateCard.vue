@@ -29,7 +29,7 @@
 				/>
 			</div>
 			<div class="tw-flex tw-flex-col tw-items-start">
-				<p class="tw-mb-0.5 tw-text-title tw-line-clamp-1">
+				<p class="tw-mb-0.5 tw-text-button-link tw-line-clamp-1">
 					{{ update.title || title }}
 				</p>
 				<div class="tw-py-0.5 tw-px-1 tw-text-label tw-bg-eco-green-1 tw-rounded tw-w-auto">

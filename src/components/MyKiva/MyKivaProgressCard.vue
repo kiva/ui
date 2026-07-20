@@ -40,10 +40,8 @@
 					{{ tag }}
 				</p>
 			</div>
-			<p class="tw-text-title">
-				{{ title }}
-			</p>
-			<p v-if="description" class="tw-text-small">
+			<p class="tw-text-button-link">{{ title }}</p>
+			<p v-if="description" class="tw-text-caption">
 				{{ description }}
 			</p>
 			<div v-if="btnCta" class="tw-w-full tw-flex tw-justify-end tw-mt-1">
