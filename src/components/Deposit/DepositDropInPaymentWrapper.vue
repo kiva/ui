@@ -180,7 +180,7 @@ export default {
 			});
 		},
 		handleSuccess(transactionId, paymentType, amount) {
-			// Legacy parity: mirrors DepositView.js trackAddCredit — the value is the deposit in cents.
+			// The tracked value is the deposit in cents.
 			this.$kvTrackEvent(
 				'Lending',
 				'Add Credit',

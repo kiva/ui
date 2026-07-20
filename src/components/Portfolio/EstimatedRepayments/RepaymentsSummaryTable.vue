@@ -18,7 +18,7 @@
 		</thead>
 		<tbody>
 			<template v-for="month in months" :key="`${month.year}-${month.month}`">
-				<!-- Year sub-header row, emitted when the year changes (legacy parity) -->
+				<!-- Year sub-header row, emitted when the year changes -->
 				<tr v-if="month.showYearHeader" class="tw-bg-gray-200">
 					<th
 						scope="colgroup"
@@ -28,9 +28,9 @@
 						{{ month.year }}
 					</th>
 				</tr>
-				<!-- The whole row is clickable (legacy parity); the inner button keeps the
-					interaction keyboard-accessible. @click.stop on the button prevents the
-					row handler from double-firing when the button itself is clicked. -->
+				<!-- The whole row is clickable; the inner button keeps the interaction keyboard-accessible.
+					@click.stop on the button prevents the row handler from double-firing when the button itself
+					is clicked. -->
 				<tr
 					class="tw-bg-primary hover:tw-bg-secondary tw-cursor-pointer"
 					:class="{ '!tw-bg-brand-100': isSelected(month) }"

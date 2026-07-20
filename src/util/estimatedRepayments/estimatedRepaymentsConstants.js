@@ -14,11 +14,9 @@ export const DETAIL_LIMIT = 500;
 export const PROMO_CREDIT_FALLBACK_LABEL = 'promotional credit';
 
 // Human-readable labels for the raw `promoType` enum returned by
-// expectedRepaymentsDetail. Ported verbatim from the legacy view's switch
-// (kiva: Portfolio_EstimatedRepaymentsByMonthSubView::initializeData) so the
-// detail note reads "bonus credit" rather than the raw `reward_credit`. Any
-// type not listed here falls back to PROMO_CREDIT_FALLBACK_LABEL, mirroring the
-// legacy `default` branch.
+// expectedRepaymentsDetail, so the detail note reads "bonus credit" rather than
+// the raw `reward_credit`. Any type not listed here falls back to
+// PROMO_CREDIT_FALLBACK_LABEL.
 export const PROMO_TYPE_LABELS = {
 	reward_credit: 'bonus credit',
 	free_trial: 'free trial credit',
