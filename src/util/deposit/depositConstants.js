@@ -1,7 +1,7 @@
-// Route path for the deposit-beta (Add credit) page. Imported by the router and the
-// page so the navigation target resolves to a single source of truth.
+// Route path for the deposit (Add credit) page — the canonical URL served in every
+// environment. Imported by the router.
 export const DEPOSIT_ROUTE = {
-	BASE: '/portfolio/credit/deposit-beta',
+	BASE: '/portfolio/credit/deposit',
 };
 
 // Where "Make a monthly deposit" links (the recurring auto-deposit flow), matching
