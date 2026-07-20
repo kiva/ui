@@ -153,11 +153,10 @@ export default {
 	},
 	computed: {
 		// The graph shows a 12-month window anchored to the FIRST repayment month
-		// (inclusive of both endpoints → up to 13 bars), matching legacy
-		// (kiva: Portfolio_EstimatedRepaymentsView::initializeData). Anchoring to
-		// the first repayment month rather than "now" keeps the final month visible
-		// when repayments start next month (e.g. today is the 17th and the 1st has
-		// already passed). It stays readable no matter how long the full schedule
+		// (inclusive of both endpoints → up to 13 bars), matching legacy behavior.
+		// Anchoring to the first repayment month rather than "now" keeps the final
+		// month visible when repayments start next month (e.g. today is the 17th and
+		// the 1st has already passed). It stays readable no matter how long the full schedule
 		// is; the summary table below still lists every month. Because repayment
 		// months are chronological, this is always a leading prefix of `months`.
 		chartMonths() {
