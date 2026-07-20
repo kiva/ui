@@ -100,6 +100,10 @@ export default {
 		KvButton,
 		KvTextInput
 	},
+	inject: {
+		// Assigned version provided by the checkout page; null when rendered elsewhere
+		customTipDefaultVersion: { default: null },
+	},
 	props: {
 		loanReservationTotal: {
 			type: Number,
