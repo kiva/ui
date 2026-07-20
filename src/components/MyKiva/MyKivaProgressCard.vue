@@ -40,7 +40,7 @@
 					{{ tag }}
 				</p>
 			</div>
-			<p>{{ title }}</p>
+			<p class="tw-text-button-link">{{ title }}</p>
 			<p v-if="description" class="tw-text-caption">
 				{{ description }}
 			</p>

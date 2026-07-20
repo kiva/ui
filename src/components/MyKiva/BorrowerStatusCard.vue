@@ -67,7 +67,10 @@
 							]"
 						/>
 					</div>
-					<div class="tw-text-center md:tw-text-left tw-mb-1 tw-line-clamp-2 tw-text-base">
+					<div
+						class="tw-text-button-link tw-text-center
+							md:tw-text-left tw-mb-1 tw-line-clamp-2 tw-text-base"
+					>
 						{{ title }}
 					</div>
 					<p class="tw-text-center md:tw-text-left tw-line-clamp-2">

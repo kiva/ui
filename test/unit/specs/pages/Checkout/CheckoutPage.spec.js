@@ -1,5 +1,7 @@
+import { reactive } from 'vue';
 import { setDonationAmount } from '#src/util/basketUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
+import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 
 vi.mock('#src/util/basketUtils', () => ({
 	setDonationAmount: vi.fn(),
@@ -21,6 +23,9 @@ beforeAll(async () => {
 	}));
 	vi.mock('#src/util/experiment/experimentUtils', () => ({
 		initializeExperiment: vi.fn(),
+	}));
+	vi.mock('#src/util/myKivaUtils', () => ({
+		fetchPostCheckoutAchievements: vi.fn(),
 	}));
 	vi.mock('@sentry/vue', () => ({ captureException: vi.fn(), captureMessage: vi.fn() }));
 
@@ -188,5 +193,71 @@ describe('CheckoutPage ensureTipDonationExists', () => {
 		expect(context.setUpdatingTotals).toHaveBeenCalledWith(false);
 		expect(context.donations).toHaveLength(0);
 		expect(context.refreshTotals).not.toHaveBeenCalled();
+	});
+});
+
+describe('CheckoutPage initializeCustomTipDefaultExperiment', () => {
+	const makeContext = () => ({
+		cookieStore: {},
+		apollo: {},
+		$route: {},
+		customTipDefaultVersion: null,
+	});
+
+	beforeEach(() => {
+		initializeExperiment.mockClear();
+	});
+
+	it('assigns the experiment without exposure tracking args', () => {
+		const context = makeContext();
+
+		CheckoutPage.methods.initializeCustomTipDefaultExperiment.call(context);
+
+		expect(initializeExperiment).toHaveBeenCalledTimes(1);
+		const args = initializeExperiment.mock.calls[0];
+		expect(args[3]).toBe('custom_tip_default');
+		// The trackEvent slot must stay empty so no exposure event can fire
+		expect(args[5]).toBeUndefined();
+	});
+
+	it('stores the assigned version in component state', () => {
+		const context = makeContext();
+
+		CheckoutPage.methods.initializeCustomTipDefaultExperiment.call(context);
+		const callback = initializeExperiment.mock.calls[0][4];
+
+		callback('b');
+		expect(context.customTipDefaultVersion).toBe('b');
+
+		callback(undefined);
+		expect(context.customTipDefaultVersion).toBe(null);
+	});
+});
+
+describe('CheckoutPage apollo preFetch', () => {
+	it('prefetches the custom tip default experiment assignment during SSR', async () => {
+		const client = {
+			mutate: vi.fn().mockResolvedValue({}),
+			query: vi.fn().mockResolvedValue({ data: {} }),
+		};
+
+		await CheckoutPage.apollo.preFetch(CheckoutPage.apollo, client);
+
+		expect(client.query).toHaveBeenCalledWith(
+			expect.objectContaining({ variables: { id: 'custom_tip_default' } })
+		);
+	});
+});
+
+describe('CheckoutPage provide', () => {
+	it('provides customTipDefaultVersion as a reactive computed', () => {
+		const context = reactive({ customTipDefaultVersion: null });
+
+		const provided = CheckoutPage.provide.call(context);
+
+		expect(provided.customTipDefaultVersion.value).toBe(null);
+
+		context.customTipDefaultVersion = 'b';
+		expect(provided.customTipDefaultVersion.value).toBe('b');
 	});
 });

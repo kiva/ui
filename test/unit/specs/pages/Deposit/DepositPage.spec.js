@@ -140,13 +140,18 @@ describe('DepositPage', () => {
 		expect(getByTestId('deposit-amount-paid').textContent).toContain('$50.00');
 	});
 
-	it('tracks the amount field on first focus', async () => {
+	it('tracks the amount field on each focus', async () => {
 		const { getByLabelText, getByTestId, kvTrackEvent } = renderPage();
 		await waitFor(() => getByTestId('deposit-submit'));
 
-		await fireEvent.focusIn(getByLabelText('Amount to deposit'));
+		const amountField = getByLabelText('Amount to deposit');
+		await fireEvent.focusIn(amountField);
+		await fireEvent.focusIn(amountField);
 
-		expect(kvTrackEvent).toHaveBeenCalledWith('portfolio', 'click', 'Deposit amount field');
+		const amountFieldCalls = kvTrackEvent.mock.calls.filter(
+			call => call[0] === 'portfolio' && call[1] === 'click' && call[2] === 'Deposit amount field',
+		);
+		expect(amountFieldCalls).toHaveLength(2);
 	});
 
 	it('disables the amount input while a deposit is processing', async () => {
