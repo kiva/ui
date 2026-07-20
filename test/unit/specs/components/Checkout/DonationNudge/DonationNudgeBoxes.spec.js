@@ -87,7 +87,7 @@ describe('DonationNudgeBoxes custom tip prefill on open', () => {
 		expect(wrapper.vm.customDonationAmount).toBe('$7.50');
 	});
 
-	it('does not touch the input when the amount matches a preset in the treatment variant', () => {
+	it('prefills $1.00 in the treatment variant when the tip matches a preset and the input is empty', () => {
 		const wrapper = mountBoxes({
 			version: 'b',
 			props: {
@@ -102,6 +102,43 @@ describe('DonationNudgeBoxes custom tip prefill on open', () => {
 
 		wrapper.vm.afterLightboxOpens();
 
+		expect(wrapper.vm.customDonationAmount).toBe('$1.00');
+	});
+
+	it('leaves the input empty for the control variant when the tip matches a preset', () => {
+		const wrapper = mountBoxes({
+			version: 'a',
+			props: {
+				currentDonationAmount: '$15.00',
+				loanReservationTotal: 100,
+				percentageRows: [
+					{ percentage: 15, appeal: 'first' },
+					{ percentage: 20, appeal: 'second' },
+				],
+			},
+		});
+
+		wrapper.vm.afterLightboxOpens();
+
 		expect(wrapper.vm.customDonationAmount).toBe(null);
+	});
+
+	it('preserves a typed but unsubmitted amount on reopen in the treatment variant', () => {
+		const wrapper = mountBoxes({
+			version: 'b',
+			props: {
+				currentDonationAmount: '$15.00',
+				loanReservationTotal: 100,
+				percentageRows: [
+					{ percentage: 15, appeal: 'first' },
+					{ percentage: 20, appeal: 'second' },
+				],
+			},
+		});
+
+		wrapper.vm.setInputs('$5.00');
+		wrapper.vm.afterLightboxOpens();
+
+		expect(wrapper.vm.customDonationAmount).toBe('$5.00');
 	});
 });

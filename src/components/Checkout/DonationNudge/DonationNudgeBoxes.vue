@@ -146,12 +146,14 @@ export default {
 			customInputButton.click();
 		},
 		afterLightboxOpens() {
-			const currentAmount = numeral(this.currentDonationAmount).value() ?? 0;
-			if (this.customTipDefaultVersion === 'b' && currentAmount === 0) {
-				// Suggest a starting amount when the tip is zero; the user's entry always wins
-				this.setInputs(numeral(TREATMENT_PREFILL_AMOUNT).format('$0,0.00'));
-			} else if (this.currentDonationAmount && this.customDonationSelected) {
+			if (this.currentDonationAmount && this.customDonationSelected) {
 				this.setInputs(this.currentDonationAmount);
+			}
+
+			const inputAmount = numeral(this.customDonationAmount).value() ?? 0;
+			if (this.customTipDefaultVersion === 'b' && inputAmount === 0) {
+				// Suggest a starting amount when the input would show zero or empty; the user's entry always wins
+				this.setInputs(numeral(TREATMENT_PREFILL_AMOUNT).format('$0,0.00'));
 			}
 
 			this.$nextTick(() => {
