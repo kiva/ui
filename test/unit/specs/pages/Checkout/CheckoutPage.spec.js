@@ -9,6 +9,7 @@ vi.mock('#src/util/logReadQueryError', () => ({
 }));
 
 let CheckoutPage;
+let initializeExperiment;
 
 beforeAll(async () => {
 	vi.mock('#src/graphql/query/checkout/getCheckoutAlmostFundedRecommendation.graphql', () => ({ default: 'mock' }));
@@ -26,6 +27,7 @@ beforeAll(async () => {
 
 	const mod = await import('#src/pages/Checkout/CheckoutPage');
 	CheckoutPage = mod.default;
+	({ initializeExperiment } = await import('#src/util/experiment/experimentUtils'));
 });
 
 describe('CheckoutPage ensureTipDonationExists', () => {
@@ -188,5 +190,46 @@ describe('CheckoutPage ensureTipDonationExists', () => {
 		expect(context.setUpdatingTotals).toHaveBeenCalledWith(false);
 		expect(context.donations).toHaveLength(0);
 		expect(context.refreshTotals).not.toHaveBeenCalled();
+	});
+});
+
+describe('CheckoutPage initializeCustomTipDefaultExperiment', () => {
+	beforeEach(() => {
+		initializeExperiment.mockClear();
+	});
+
+	it('assigns the experiment without exposure tracking args', () => {
+		const context = {
+			cookieStore: {},
+			apollo: {},
+			$route: {},
+			customTipDefaultVersion: null,
+		};
+
+		CheckoutPage.methods.initializeCustomTipDefaultExperiment.call(context);
+
+		expect(initializeExperiment).toHaveBeenCalledTimes(1);
+		const args = initializeExperiment.mock.calls[0];
+		expect(args[3]).toBe('custom_tip_default');
+		// Only 5 args passed, so trackEvent stays null and no exposure event can fire
+		expect(args.length).toBe(5);
+	});
+
+	it('stores the assigned version in component state', () => {
+		const context = {
+			cookieStore: {},
+			apollo: {},
+			$route: {},
+			customTipDefaultVersion: null,
+		};
+
+		CheckoutPage.methods.initializeCustomTipDefaultExperiment.call(context);
+		const callback = initializeExperiment.mock.calls[0][4];
+
+		callback('b');
+		expect(context.customTipDefaultVersion).toBe('b');
+
+		callback(undefined);
+		expect(context.customTipDefaultVersion).toBe(null);
 	});
 });

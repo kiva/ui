@@ -378,6 +378,7 @@ const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_enable';
 const EXPIRING_SOON_EXP_KEY = 'checkout_expiring_soon_upsell';
 const KIVA_CREDIT_REPLACEMENT_EXP_KEY = 'checkout_kiva_credit_copy_replacement';
 const STOP_HIDING_TIP_EXP_KEY = 'stop_hiding_tip_campaign';
+const CUSTOM_TIP_DEFAULT_EXP_KEY = 'custom_tip_default';
 const TIP_PERCENTAGE = 0.2;
 
 // Query to gather user Teams
@@ -497,6 +498,7 @@ export default {
 			isKivaCreditReplacementExpEnabled: false,
 			enableAdminRewardTipFlag: false,
 			isStopHidingTipExpEnabled: false,
+			customTipDefaultVersion: null,
 		};
 	},
 	apollo: {
@@ -535,6 +537,7 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
 						client.query({ query: experimentAssignmentQuery, variables: { id: KIVA_CREDIT_REPLACEMENT_EXP_KEY } }), // eslint-disable-line max-len
+						client.query({ query: experimentAssignmentQuery, variables: { id: CUSTOM_TIP_DEFAULT_EXP_KEY } }), // eslint-disable-line max-len
 					]);
 				})
 				.then(response => {
@@ -695,6 +698,8 @@ export default {
 			'EXP-MP-2577-Apr2026',
 			'basket',
 		);
+
+		this.initializeCustomTipDefaultExperiment();
 	},
 	watch: {
 		async emptyBasket(newValue) {
@@ -1421,6 +1426,18 @@ export default {
 				this.$kvTrackEvent,
 				'EXP-MP-2852-Jun2026',
 				'basket',
+			);
+		},
+		initializeCustomTipDefaultExperiment() {
+			// Assignment only; exposure is tracked separately when the tip modal is viewed
+			initializeExperiment(
+				this.cookieStore,
+				this.apollo,
+				this.$route,
+				CUSTOM_TIP_DEFAULT_EXP_KEY,
+				version => {
+					this.customTipDefaultVersion = version ?? null;
+				},
 			);
 		},
 	},
