@@ -129,6 +129,11 @@ function parseRepaymentDate(raw) {
 
 export default {
 	name: 'EstimatedRepaymentsPage',
+	head() {
+		return {
+			title: 'Estimated Repayments',
+		};
+	},
 	components: {
 		PortfolioShell,
 		KvButton,
@@ -258,9 +263,18 @@ export default {
 			try {
 				const response = await this.apollo.query({
 					query: expectedRepaymentsDetailQuery,
-					variables: { year: month.year, month: month.month },
+					// Pass the cap explicitly so the truncation check below stays correct
+					// even if the resolver's default limit changes.
+					variables: { year: month.year, month: month.month, limit: DETAIL_LIMIT },
 					fetchPolicy: 'network-only',
 				});
+				// The queries are network-only and unguarded, so responses can resolve
+				// out of order (e.g. click Aug while Jul is still in flight). Discard any
+				// response whose month is no longer selected so it can't overwrite the
+				// current month's rows.
+				if (this.selectedMonth !== month) {
+					return;
+				}
 				const rows = response?.data?.my?.userAccount?.expectedRepaymentsDetail ?? [];
 				this.detailRows = rows;
 				// The list length maxes out at the server cap, so it can't reveal truncation
@@ -270,10 +284,18 @@ export default {
 				this.detailTruncated = rows.length >= DETAIL_LIMIT
 					&& (month.loansMakingRepayments ?? 0) > DETAIL_LIMIT;
 			} catch (error) {
+				// A stale request that errored must not wipe the current month's rows.
+				if (this.selectedMonth !== month) {
+					return;
+				}
 				this.detailRows = [];
 				logFormatter(`Error fetching estimated repayment detail: ${error}`, 'error');
 			} finally {
-				this.detailLoading = false;
+				// Only the request for the still-selected month owns the spinner; a stale
+				// request returning early must not clear it for the newer in-flight one.
+				if (this.selectedMonth === month) {
+					this.detailLoading = false;
+				}
 			}
 		},
 	},

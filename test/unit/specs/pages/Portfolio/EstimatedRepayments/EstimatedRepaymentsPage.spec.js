@@ -1,4 +1,6 @@
 import { render, fireEvent, waitFor } from '@testing-library/vue';
+// eslint-disable-next-line import/no-extraneous-dependencies -- devDependency used only in tests
+import { flushPromises } from '@vue/test-utils';
 import numeral from 'numeral';
 import EstimatedRepaymentsPage from '#src/pages/Portfolio/EstimatedRepayments/EstimatedRepaymentsPage';
 
@@ -119,8 +121,51 @@ describe('EstimatedRepaymentsPage', () => {
 		await fireEvent.click(getByText('Aug'));
 		await waitFor(() => expect(getByText('Amara')).toBeTruthy());
 		expect(query).toHaveBeenCalledWith(expect.objectContaining({
-			variables: { year: 2026, month: 8 },
+			variables: { year: 2026, month: 8, limit: 500 },
 		}));
+	});
+
+	it('ignores a stale detail response that resolves after a newer month is selected', async () => {
+		// Select July (auto), then August while July is still in flight, and make July
+		// resolve LAST. The stale July response must not overwrite August's rows.
+		let resolveJuly;
+		const query = vi.fn().mockImplementation(({ variables } = {}) => {
+			if (!variables) {
+				return Promise.resolve({ data: listResponse() });
+			}
+			if (variables.month === 7) {
+				return new Promise(resolve => { resolveJuly = () => resolve({ data: detailResponse(julyDetail) }); });
+			}
+			return Promise.resolve({ data: detailResponse(augustDetail) });
+		});
+		const { getByText, queryByText } = render(EstimatedRepaymentsPage, {
+			global: {
+				provide: { apollo: { query }, cookieStore: {} },
+				mocks: {
+					$router: { push: vi.fn() },
+					$kvTrackEvent: vi.fn(),
+					$filters: { numeral: (value, format) => numeral(value).format(format) },
+				},
+				directives: { 'kv-track-event': {} },
+				stubs: {
+					PortfolioShell: { template: '<div><slot /></div>' },
+					KvButton: { props: ['to'], template: '<button><slot /></button>' },
+					KvLoadingPlaceholder: { template: '<div data-testid="loading" />' },
+					KvStackedBarGraph: { props: ['points'], template: '<div data-testid="chart" />' },
+				},
+			},
+		});
+		// July is auto-selected on load and its detail request is pending (unresolved).
+		await waitFor(() => expect(getByText('Aug')).toBeTruthy());
+		// Select August; its detail resolves immediately.
+		await fireEvent.click(getByText('Aug'));
+		await waitFor(() => expect(getByText('Amara')).toBeTruthy());
+		// Now let the stale July response resolve and flush its continuation + re-render.
+		// It must be discarded: August's rows stay, July's never appear.
+		resolveJuly();
+		await flushPromises();
+		expect(getByText('Amara')).toBeTruthy();
+		expect(queryByText('Maria')).toBeNull();
 	});
 
 	it('anchors the 12-month graph window to the first repayment month, not "now"', async () => {

@@ -1,9 +1,9 @@
-query EstimatedRepaymentsDetail($year: Int, $month: Int) {
+query EstimatedRepaymentsDetail($year: Int, $month: Int, $limit: Int) {
 	my {
 		id
 		userAccount {
 			id
-			expectedRepaymentsDetail(year: $year, month: $month) {
+			expectedRepaymentsDetail(year: $year, month: $month, limit: $limit) {
 				repaymentDate
 				amount
 				userAmount
