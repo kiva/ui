@@ -20,6 +20,7 @@ const mountBoxes = ({ version = null, props = {} } = {}) => shallowMount(Donatio
 	},
 });
 
+// The amount equals the 15% preset for this total, so the restore path is skipped
 const presetMatchProps = {
 	currentDonationAmount: '$15.00',
 	loanReservationTotal: 100,
