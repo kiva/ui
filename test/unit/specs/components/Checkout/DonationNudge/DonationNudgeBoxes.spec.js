@@ -9,29 +9,29 @@ const defaultProps = {
 	setDonationAndClose: () => {},
 };
 
-const mountBoxes = ({ version, props = {} } = {}) => shallowMount(DonationNudgeBoxes, {
+const mountBoxes = ({ version = null, props = {} } = {}) => shallowMount(DonationNudgeBoxes, {
 	props: { ...defaultProps, ...props },
 	global: {
 		...globalOptions,
 		provide: {
 			...globalOptions.provide,
-			...(version !== undefined ? { customTipDefaultVersion: computed(() => version) } : {}),
+			customTipDefaultVersion: computed(() => version),
 		},
 	},
 });
 
+const presetMatchProps = {
+	currentDonationAmount: '$15.00',
+	loanReservationTotal: 100,
+	percentageRows: [
+		{ percentage: 15, appeal: 'first' },
+		{ percentage: 20, appeal: 'second' },
+	],
+};
+
 describe('DonationNudgeBoxes custom tip default experiment', () => {
 	it('resolves the provided experiment version synchronously', () => {
-		const wrapper = shallowMount(DonationNudgeBoxes, {
-			props: defaultProps,
-			global: {
-				...globalOptions,
-				provide: {
-					...globalOptions.provide,
-					customTipDefaultVersion: computed(() => 'b'),
-				},
-			},
-		});
+		const wrapper = mountBoxes({ version: 'b' });
 
 		expect(wrapper.vm.customTipDefaultVersion).toBe('b');
 	});
@@ -71,7 +71,7 @@ describe('DonationNudgeBoxes custom tip prefill on open', () => {
 		expect(wrapper.vm.customDonationAmount).toBe('$0.00');
 	});
 
-	it('keeps $0.00 when no version is provided and the tip is zero', () => {
+	it('keeps $0.00 when the provided version is null and the tip is zero', () => {
 		const wrapper = mountBoxes({ props: { currentDonationAmount: '$0.00' } });
 
 		wrapper.vm.afterLightboxOpens();
@@ -88,17 +88,7 @@ describe('DonationNudgeBoxes custom tip prefill on open', () => {
 	});
 
 	it('prefills $1.00 in the treatment variant when the tip matches a preset and the input is empty', () => {
-		const wrapper = mountBoxes({
-			version: 'b',
-			props: {
-				currentDonationAmount: '$15.00',
-				loanReservationTotal: 100,
-				percentageRows: [
-					{ percentage: 15, appeal: 'first' },
-					{ percentage: 20, appeal: 'second' },
-				],
-			},
-		});
+		const wrapper = mountBoxes({ version: 'b', props: presetMatchProps });
 
 		wrapper.vm.afterLightboxOpens();
 
@@ -106,17 +96,7 @@ describe('DonationNudgeBoxes custom tip prefill on open', () => {
 	});
 
 	it('leaves the input empty for the control variant when the tip matches a preset', () => {
-		const wrapper = mountBoxes({
-			version: 'a',
-			props: {
-				currentDonationAmount: '$15.00',
-				loanReservationTotal: 100,
-				percentageRows: [
-					{ percentage: 15, appeal: 'first' },
-					{ percentage: 20, appeal: 'second' },
-				],
-			},
-		});
+		const wrapper = mountBoxes({ version: 'a', props: presetMatchProps });
 
 		wrapper.vm.afterLightboxOpens();
 
@@ -124,17 +104,7 @@ describe('DonationNudgeBoxes custom tip prefill on open', () => {
 	});
 
 	it('preserves a typed but unsubmitted amount on reopen in the treatment variant', () => {
-		const wrapper = mountBoxes({
-			version: 'b',
-			props: {
-				currentDonationAmount: '$15.00',
-				loanReservationTotal: 100,
-				percentageRows: [
-					{ percentage: 15, appeal: 'first' },
-					{ percentage: 20, appeal: 'second' },
-				],
-			},
-		});
+		const wrapper = mountBoxes({ version: 'b', props: presetMatchProps });
 
 		wrapper.vm.setInputs('$5.00');
 		wrapper.vm.afterLightboxOpens();

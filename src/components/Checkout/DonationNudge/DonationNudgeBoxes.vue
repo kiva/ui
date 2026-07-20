@@ -94,7 +94,7 @@
 import numeral from 'numeral';
 import { KvTextInput, KvButton } from '@kiva/kv-components';
 
-const TREATMENT_PREFILL_AMOUNT = 1;
+const TREATMENT_PREFILL_AMOUNT = '$1.00';
 
 export default {
 	name: 'DonationNudgeBoxes',
@@ -150,10 +150,9 @@ export default {
 				this.setInputs(this.currentDonationAmount);
 			}
 
-			const inputAmount = numeral(this.customDonationAmount).value() ?? 0;
-			if (this.customTipDefaultVersion === 'b' && inputAmount === 0) {
+			if (this.customTipDefaultVersion === 'b' && (numeral(this.customDonationAmount).value() ?? 0) === 0) {
 				// Suggest a starting amount when the input would show zero or empty; the user's entry always wins
-				this.setInputs(numeral(TREATMENT_PREFILL_AMOUNT).format('$0,0.00'));
+				this.setInputs(TREATMENT_PREFILL_AMOUNT);
 			}
 
 			this.$nextTick(() => {
