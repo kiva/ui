@@ -149,7 +149,7 @@ describe('DepositPage', () => {
 		await fireEvent.focusIn(amountField);
 
 		const amountFieldCalls = kvTrackEvent.mock.calls.filter(
-			(call) => call[0] === 'portfolio' && call[1] === 'click' && call[2] === 'Deposit amount field',
+			call => call[0] === 'portfolio' && call[1] === 'click' && call[2] === 'Deposit amount field',
 		);
 		expect(amountFieldCalls).toHaveLength(2);
 	});
