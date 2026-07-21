@@ -7,18 +7,21 @@
 
 		<!-- Comment form -->
 		<div class="tw-mb-3">
-			<label for="bp-comment-field" class="tw-sr-only">
-				Comment
-			</label>
-			<textarea
-				id="bp-comment-field"
-				v-model="newCommentText"
-				class="tw-w-full tw-border tw-border-tertiary tw-rounded tw-p-1 tw-mb-1"
-				rows="4"
-				data-testid="bp-comment-form-textarea"
-			></textarea>
+			<template v-if="canAddComment">
+				<label for="bp-comment-field" class="tw-sr-only">
+					Comment
+				</label>
+				<textarea
+					id="bp-comment-field"
+					v-model="newCommentText"
+					class="tw-w-full tw-border tw-border-tertiary tw-rounded tw-p-1 tw-mb-1"
+					rows="4"
+					data-testid="bp-comment-form-textarea"
+				></textarea>
+			</template>
 			<div class="tw-flex tw-items-center tw-gap-2">
 				<kv-button
+					v-if="canAddComment"
 					variant="secondary"
 					data-testid="bp-comment-form-submit"
 					:state="isSubmitting ? 'loading' : ''"
@@ -180,6 +183,11 @@ const commentsQuery = gql`query loanCommentsFullList($loanId: Int!) {
 	lend {
 		loan(id: $loanId) {
 			id
+			status
+			borrowers {
+				id
+				firstName
+			}
 			comments {
 				values {
 					id
@@ -193,13 +201,26 @@ const commentsQuery = gql`query loanCommentsFullList($loanId: Int!) {
 				}
 			}
 			userProperties {
+				isPrivileged
 				subscribed
+			}
+			... on LoanDirect {
+				trustee {
+					id
+				}
 			}
 		}
 	}
 	my {
 		id
 		isAdmin
+		trustee {
+			id
+		}
+		lender {
+			id
+			loanCount
+		}
 	}
 }`;
 
@@ -260,6 +281,14 @@ export default {
 			deletedIds: [],
 			isAdmin: false,
 			isSubscribed: false,
+			// Fields backing the add-comment permission check
+			loanStatus: '',
+			loanBorrowerIds: [],
+			loanTrusteeId: null,
+			isLoanPrivileged: false,
+			myId: null,
+			myTrusteeId: null,
+			myLoanCount: 0,
 			newCommentText: '',
 			isSubmitting: false,
 			showAll: false,
@@ -285,6 +314,32 @@ export default {
 					timeFlagged: this.flaggedById[c.id],
 				}));
 		},
+		isFundraising() {
+			return this.loanStatus === 'fundraising';
+		},
+		// The logged-in user is a trustee (of any loan)
+		isTrustee() {
+			return !!this.myTrusteeId;
+		},
+		// The logged-in user is the trustee for this specific loan
+		isTrusteeToLoan() {
+			return !!this.myTrusteeId && this.myTrusteeId === this.loanTrusteeId;
+		},
+		// The logged-in user is one of the borrowers/entrepreneurs on this loan
+		isBorrowerOfLoan() {
+			return this.myId != null && this.loanBorrowerIds.includes(this.myId);
+		},
+		// The logged-in user has lent to at least one loan
+		hasLentToAnyLoan() {
+			return this.myLoanCount >= 1;
+		},
+		canAddComment() {
+			return this.isFundraising
+				|| this.isTrustee
+				|| this.isAdmin
+				|| this.isTrusteeToLoan
+				|| (this.isLoanPrivileged && (this.hasLentToAnyLoan || this.isBorrowerOfLoan));
+		},
 		hasSpillover() {
 			return this.comments.length > INITIAL_COMMENT_COUNT;
 		},
@@ -305,6 +360,13 @@ export default {
 			}));
 			this.isSubscribed = loan?.userProperties?.subscribed ?? false;
 			this.isAdmin = data?.my?.isAdmin ?? false;
+			this.loanStatus = loan?.status ?? '';
+			this.loanBorrowerIds = (loan?.borrowers ?? []).map(b => b.id);
+			this.loanTrusteeId = loan?.trustee?.id ?? null;
+			this.isLoanPrivileged = loan?.userProperties?.isPrivileged ?? false;
+			this.myId = data?.my?.id ?? null;
+			this.myTrusteeId = data?.my?.trustee?.id ?? null;
+			this.myLoanCount = data?.my?.lender?.loanCount ?? 0;
 		},
 		async refreshComments() {
 			if (!this.loanId) return;
@@ -331,6 +393,7 @@ export default {
 			});
 		},
 		async submitComment() {
+			if (!this.canAddComment) return;
 			if (!this.newCommentText.trim()) return;
 			this.isSubmitting = true;
 			this.$kvTrackEvent('borrower-profile', 'click', 'comment-submit', null, this.loanId);
