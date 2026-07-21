@@ -64,6 +64,20 @@ const renderTransactionFilterBar = ({ props = {} } = {}) => render(TransactionFi
 					</button>
 				`,
 			},
+			// KvDatePicker's model is a Date and it emits update:model-value + change (like the real
+			// component). Emit both from a native input so v-model syncs before @change reads it.
+			KvDatePicker: {
+				props: ['id', 'modelValue'],
+				emits: ['update:model-value', 'change'],
+				methods: {
+					onChange(event) {
+						const value = event.target.value ? new Date(`${event.target.value}T00:00:00`) : null;
+						this.$emit('update:model-value', value);
+						this.$emit('change', value);
+					},
+				},
+				template: '<input :id="id" @change="onChange">',
+			},
 		},
 	},
 });

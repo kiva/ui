@@ -51,25 +51,33 @@
 				<div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-2">
 					<div class="tw-flex tw-items-center tw-gap-2 md:tw-flex-1 md:tw-min-w-0">
 						<span class="tw-whitespace-nowrap">From:</span>
-						<kv-text-input
-							id="transaction-start-date"
-							class="transaction-filter-control"
-							v-model="startDate"
-							type="date"
-							:max="endDate || undefined"
-							@change="handleDateChange"
-						/>
+						<div class="transaction-filter-control">
+							<kv-date-picker
+								id="transaction-start-date"
+								v-model="startDate"
+								:enable-time-picker="false"
+								:clearable="true"
+								:teleport="true"
+								format="yyyy-MM-dd"
+								:max-date="endDate || undefined"
+								@change="handleDateChange"
+							/>
+						</div>
 					</div>
 					<div class="tw-flex tw-items-center tw-gap-2 md:tw-flex-1 md:tw-min-w-0">
 						<span class="tw-whitespace-nowrap">To:</span>
-						<kv-text-input
-							id="transaction-end-date"
-							class="transaction-filter-control"
-							v-model="endDate"
-							type="date"
-							:min="startDate || undefined"
-							@change="handleDateChange"
-						/>
+						<div class="transaction-filter-control">
+							<kv-date-picker
+								id="transaction-end-date"
+								v-model="endDate"
+								:enable-time-picker="false"
+								:clearable="true"
+								:teleport="true"
+								format="yyyy-MM-dd"
+								:min-date="startDate || undefined"
+								@change="handleDateChange"
+							/>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -103,10 +111,43 @@
 </template>
 
 <script>
-import { KvSelect, KvTextInput, KvButton } from '@kiva/kv-components';
+import {
+	KvSelect, KvTextInput, KvButton, KvDatePicker,
+} from '@kiva/kv-components';
 
 const ALL_CATEGORIES_VALUE = 'all';
 const DEFAULT_SORT = 'newest';
+
+// KvDatePicker's model is a Date, but the filter contract (GraphQL filter + the legacy export URL)
+// is a `yyyy-mm-dd` string. Convert using LOCAL date parts on both sides so a date never shifts a
+// day across the UTC boundary (which `toISOString()`/`new Date('yyyy-mm-dd')` would do).
+function fromIsoDate(value) {
+	if (!value) {
+		return null;
+	}
+	if (value instanceof Date) {
+		return value;
+	}
+	const [year, month, day] = String(value).split('-').map(Number);
+	if (!year || !month || !day) {
+		return null;
+	}
+	return new Date(year, month - 1, day);
+}
+
+function toIsoDate(value) {
+	if (!value) {
+		return '';
+	}
+	const date = value instanceof Date ? value : new Date(value);
+	if (Number.isNaN(date.getTime())) {
+		return '';
+	}
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+	return `${year}-${month}-${day}`;
+}
 
 const categoryOptions = [
 	{ value: ALL_CATEGORIES_VALUE, label: 'All categories' },
@@ -128,6 +169,7 @@ export default {
 		KvSelect,
 		KvTextInput,
 		KvButton,
+		KvDatePicker,
 	},
 	props: {
 		totalTransactions: {
@@ -151,8 +193,9 @@ export default {
 			searchText: this.keywordSearch || '',
 			selectedCategory: this.filters.category || ALL_CATEGORIES_VALUE,
 			selectedSort: this.filters.sortBy || DEFAULT_SORT,
-			startDate: this.filters.startDate || '',
-			endDate: this.filters.endDate || '',
+			// Held as Date|null for KvDatePicker; converted to `yyyy-mm-dd` in buildActiveFilters.
+			startDate: fromIsoDate(this.filters.startDate),
+			endDate: fromIsoDate(this.filters.endDate),
 		};
 	},
 	computed: {
@@ -207,8 +250,8 @@ export default {
 			handler(filters) {
 				this.selectedCategory = filters.category || ALL_CATEGORIES_VALUE;
 				this.selectedSort = filters.sortBy || DEFAULT_SORT;
-				this.startDate = filters.startDate || '';
-				this.endDate = filters.endDate || '';
+				this.startDate = fromIsoDate(filters.startDate);
+				this.endDate = fromIsoDate(filters.endDate);
 			},
 			deep: true,
 		},
@@ -232,11 +275,13 @@ export default {
 			if (this.selectedCategory !== ALL_CATEGORIES_VALUE) {
 				filters.category = this.selectedCategory;
 			}
-			if (this.startDate) {
-				filters.startDate = this.startDate;
+			const startDate = toIsoDate(this.startDate);
+			const endDate = toIsoDate(this.endDate);
+			if (startDate) {
+				filters.startDate = startDate;
 			}
-			if (this.endDate) {
-				filters.endDate = this.endDate;
+			if (endDate) {
+				filters.endDate = endDate;
 			}
 
 			return filters;
@@ -291,8 +336,8 @@ export default {
 			this.$kvTrackEvent('portfolio', 'click', 'transactions-clear-filters');
 			this.selectedCategory = ALL_CATEGORIES_VALUE;
 			this.selectedSort = DEFAULT_SORT;
-			this.startDate = '';
-			this.endDate = '';
+			this.startDate = null;
+			this.endDate = null;
 			this.searchText = '';
 			this.$emit('filters-changed', { filters: { sortBy: DEFAULT_SORT }, keywordSearch: null });
 		},
@@ -310,6 +355,14 @@ export default {
 
 .transaction-filter-control :deep(select),
 .transaction-filter-control :deep(input) {
+	@apply tw-w-full tw-min-w-0;
+}
+
+/* KvDatePicker nests VueDatePicker a few levels deep; stretch each wrapper so the picker input
+   fills the half-width cell like the selects do. */
+.transaction-filter-control :deep(.kv-datepicker),
+.transaction-filter-control :deep(.kv-datepicker__content),
+.transaction-filter-control :deep(.dp__main) {
 	@apply tw-w-full tw-min-w-0;
 }
 </style>
