@@ -1,7 +1,12 @@
 <template>
 	<KvLightbox
 		class="goal-in-review-modal tw-p-14 max-md:tw-flex max-md:tw-items-end
-			max-md:tw-overflow-y-hidden max-md:tw-p-0"
+			max-md:tw-overflow-y-hidden max-md:tw-p-0
+			[&_#kvLightboxBody]:!tw-p-0 [&_#kvLightboxBody]:tw-max-h-[calc(90vh-3.5rem)]
+			[&_#kvLightboxBody]:tw-overflow-y-auto [&_#kvLightboxBody]:tw-[scrollbar-width:none]
+			[&_#kvLightboxBody]:tw-[-ms-overflow-style:none]
+			[&_#kvLightboxBody::-webkit-scrollbar]:tw-hidden
+			md:[&_#kvLightboxBody]:tw-max-h-[calc(100vh-14rem)]"
 		:visible="show"
 		title=""
 		@lightbox-closed="handleClose"
@@ -63,7 +68,8 @@ const handleClose = () => {
 	[data-test=kv-lightbox] {
 		max-height: 90vh !important;
 
-		@apply !tw-w-screen !tw-mt-auto !tw-mb-0 !tw-rounded-t !tw-rounded-b-none tw-overflow-hidden tw-relative;
+		@apply !tw-w-screen !tw-mt-auto !tw-mb-0 !tw-rounded-t !tw-rounded-b-none
+			tw-bg-eco-green-4 tw-overflow-hidden tw-relative;
 	}
 
 	[data-test=kv-lightbox] > div:first-child {
@@ -86,13 +92,6 @@ const handleClose = () => {
 		stroke: currentcolor !important;
 	}
 
-	#kvLightboxBody {
-		max-height: calc(90vh - 3.5rem);
-		scrollbar-width: none;
-		-ms-overflow-style: none;
-
-		@apply !tw-p-0 tw-overflow-y-auto;
-	}
 }
 
 @screen md {
@@ -102,13 +101,5 @@ const handleClose = () => {
 
 		@apply !tw-m-auto !tw-rounded;
 	}
-
-	.goal-in-review-modal #kvLightboxBody {
-		max-height: calc(100vh - 14rem);
-	}
-}
-
-.goal-in-review-modal #kvLightboxBody::-webkit-scrollbar {
-	display: none;
 }
 </style>

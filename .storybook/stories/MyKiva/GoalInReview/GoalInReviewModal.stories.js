@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
-import { buildSampleGoalInReviewData } from './goalInReviewSampleData';
+import { buildSampleGoalInReviewData } from '../../../mock-data/goalInReviewSampleData';
 
 export default {
 	title: 'MyKiva/GoalInReview/GoalInReviewModal',

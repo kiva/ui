@@ -3,8 +3,9 @@ import {
 	ref,
 } from 'vue';
 
-import { buildSampleGoalInReviewData } from '../../.storybook/stories/MyKiva/GoalInReview/goalInReviewSampleData';
+import { buildSampleGoalInReviewData } from '../../.storybook/mock-data/goalInReviewSampleData';
 
+// Open the Goal In Review recap from MyKiva with /mykiva?goTo=goal-recap.
 export const GOAL_RECAP_DEEP_LINK = 'goal-recap';
 
 /**
