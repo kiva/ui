@@ -255,7 +255,7 @@ describe('kv-analytics-plugin', () => {
 		it('should track pageview with Facebook pixel', () => {
 			app.config.globalProperties.$fireAsyncPageView('/test', '/home');
 
-			expect(mockWindow.fbq).toHaveBeenCalledWith('track', 'PageView');
+			expect(mockWindow.fbq).toHaveBeenCalledWith('track', 'PageView', { user_type: 'non-transactor' });
 		});
 
 		it('should not set referrer for initial page load', () => {
@@ -424,8 +424,29 @@ describe('kv-analytics-plugin', () => {
 
 			// Should track custom FB event for kiva cards
 			expect(mockWindow.fbq).toHaveBeenCalledWith('trackCustom', 'transactionContainsKivaCards', {
-				kivaCardTotal: 100
+				kivaCardTotal: 100,
+				value: 100,
+				currency: 'USD'
 			});
+		});
+
+		it('should not track Facebook Purchase when itemTotal is empty', () => {
+			const transactionData = {
+				transactionId: 'TXN000',
+				itemTotal: '',
+				loanTotal: 0,
+				donationTotal: 0,
+				depositTotal: 0,
+				loans: [],
+				donations: [],
+				isFTD: false,
+				kivaCards: [],
+				kivaCardTotal: 0
+			};
+
+			app.config.globalProperties.$kvTrackTransaction(transactionData);
+
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith('track', 'Purchase', expect.anything());
 		});
 
 		it('should not track when transaction ID is empty', () => {

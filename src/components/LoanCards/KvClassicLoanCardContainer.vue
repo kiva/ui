@@ -52,6 +52,7 @@
 import * as Sentry from '@sentry/vue';
 import { gql } from 'graphql-tag';
 import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
+import { trackAddToCart } from '@kiva/kv-analytics';
 import { readLoanFragment, watchLoanData } from '#src/util/loanUtils';
 import bookmarkLoan from '#src/util/bookmarkUtil';
 import { getFullUrl } from '#src/util/urlUtils';
@@ -328,6 +329,8 @@ export default {
 					this.loanId,
 					this.lessThan25 ? this.amountLeft : 25
 				);
+				// Track facebook add to basket
+				trackAddToCart('Loan');
 			}).catch(e => {
 				this.$emit('add-to-basket', { loanId: this.loanId, success: false });
 				const msg = e?.[0]?.extensions?.code === 'reached_anonymous_basket_limit'

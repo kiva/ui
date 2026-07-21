@@ -5,6 +5,7 @@ import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.g
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
+import { trackAddToCart } from '@kiva/kv-analytics';
 
 import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -146,10 +147,8 @@ export default {
 					onError?.();
 				} else {
 					try {
-						// track facebook add to basket
-						if (typeof window !== 'undefined' && typeof fbq === 'function') {
-							window.fbq('track', 'AddToCart', { content_category: 'Loan' });
-						}
+						// Track facebook add to basket
+						trackAddToCart('Loan');
 					} catch (e) {
 						logFormatter(e, 'error');
 					}

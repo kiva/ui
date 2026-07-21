@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import logFormatter from '#src/util/logFormatter';
 import SimpleQueue from '#src/util/simpleQueue';
+import { trackFBCustomEvent } from '@kiva/kv-analytics';
 
 // install method for plugin
 export default {
@@ -63,9 +64,11 @@ export default {
 
 				// facebook pixel pageview
 				if (fbLoaded) {
-					// we used to pass a user_type but it's always empty across the site
-					// { user_type: '???'}
-					window.fbq('track', 'PageView');
+					// Segment by transactor status (has ever lent or deposited) via the kvu_lb / kvu_db cookies
+					const cookies = typeof document !== 'undefined' ? document.cookie : '';
+					const isTransactor = /(?:^|;\s*)kvu_lb=true(?:;|$)/.test(cookies)
+						|| /(?:^|;\s*)kvu_db=true(?:;|$)/.test(cookies);
+					window.fbq('track', 'PageView', { user_type: isTransactor ? 'transactor' : 'non-transactor' });
 				}
 			},
 			setCustomUrl: url => {
@@ -195,12 +198,6 @@ export default {
 					}
 				}
 			},
-			// https://developers.facebook.com/docs/facebook-pixel/implementation/conversion-tracking#tracking-custom-events
-			trackFBCustomEvent: (eventName, eventData = null) => {
-				if (fbLoaded) {
-					window.fbq('trackCustom', eventName, eventData);
-				}
-			},
 			parseEventProperties: eventValue => {
 				// Ensure we have a non-empty array to begin with
 				if (Array.isArray(eventValue) && eventValue.length) {
@@ -232,8 +229,9 @@ export default {
 				}
 			},
 			trackFBTransaction: transactionData => {
-				const itemTotal = transactionData.itemTotal || '';
-				if (typeof window.fbq !== 'undefined' && typeof itemTotal !== 'undefined') {
+				const itemTotal = Number(transactionData.itemTotal) || 0;
+				// Skip Purchase when there's no valid amount (omit rather than send a $0/invalid-value purchase)
+				if (typeof window.fbq === 'function' && itemTotal > 0) {
 					window.fbq('track', 'Purchase', {
 						currency: 'USD',
 						value: itemTotal,
@@ -243,19 +241,23 @@ export default {
 
 				// signify transaction has kiva cards
 				if (transactionData.kivaCards && transactionData.kivaCards.length) {
-					kvActions.trackFBCustomEvent(
+					trackFBCustomEvent(
 						'transactionContainsKivaCards',
 						{
-							kivaCardTotal: transactionData.kivaCardTotal
+							kivaCardTotal: transactionData.kivaCardTotal,
+							value: Number(transactionData.kivaCardTotal) || 0,
+							currency: 'USD'
 						}
 					);
 				}
 				// signifiy transaction ftd status
-				if (transactionData.isFTD && typeof itemTotal !== 'undefined') {
-					kvActions.trackFBCustomEvent(
+				if (transactionData.isFTD) {
+					trackFBCustomEvent(
 						'firstTimeDepositorTransaction',
 						{
-							itemTotal
+							itemTotal,
+							value: itemTotal,
+							currency: 'USD'
 						}
 					);
 				}
@@ -437,7 +439,7 @@ export default {
 
 		// eslint-disable-next-line no-param-reassign
 		app.config.globalProperties.$kvTrackFBCustomEvent = (eventName, eventData = null) => {
-			kvActions.trackFBCustomEvent(eventName, eventData);
+			trackFBCustomEvent(eventName, eventData);
 		};
 	}
 };

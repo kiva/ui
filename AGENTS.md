@@ -101,6 +101,9 @@ Use the directive for click tracking:
 ```
 Or inject `$kvTrackEvent` for programmatic tracking.
 
+### Meta (Facebook) Pixel parity when migrating
+When migrating a page or flow (monolith → ui, or between apps), carry over its Meta `fbq` events too — not just `$kvTrackEvent`. Use the shared helpers from `@kiva/kv-analytics` (`trackAddToCart(category)`, `trackFBCustomEvent(name, params)`) rather than calling `window.fbq` inline; a dropped `fbq` call is a silent Meta tracking gap.
+
 ## Development Commands
 ```bash
 nvm use                         # Use required Node version
