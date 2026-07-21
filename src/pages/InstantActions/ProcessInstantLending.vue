@@ -300,7 +300,7 @@ export default {
 				} else {
 					try {
 						// Track facebook add to basket
-						trackAddToCart('Loan');
+						trackAddToCart('Loan', this.lendAmount);
 					} catch (e) {
 						// no-op
 					}

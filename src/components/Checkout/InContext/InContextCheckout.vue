@@ -313,13 +313,9 @@ export default {
 				this.donations,
 				this.totals
 			);
-			// check ftd status
-			const myFtd = myFTDQuery(this.apollo);
-			myFtd.then(({ data }) => {
-				const isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
-				// update transaction data
-				transactionData.isFTD = isFTD;
-				// send analytics event
+			// send analytics event + redirect. Wrapped so a failed FTD lookup can't swallow the
+			// Purchase event or the redirect.
+			const finalizeTransaction = () => {
 				this.$kvTrackTransaction(transactionData);
 
 				// redirect to thanks
@@ -331,9 +327,23 @@ export default {
 						800
 					);
 				}
-			});
+			};
+
+			// check ftd status, then track + redirect whether or not the lookup succeeds
+			const trackingComplete = myFTDQuery(this.apollo)
+				.then(({ data }) => {
+					// update transaction data
+					transactionData.isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
+				})
+				.catch(() => {
+					// FTD status unknown — leave it undefined so no content_type is asserted downstream
+					transactionData.isFTD = undefined;
+				})
+				.then(finalizeTransaction);
 
 			this.$emit('transaction-complete', transactionData);
+
+			return trackingComplete;
 		},
 		handleCheckoutFailure(payload) {
 			this.$emit('checkout-failure', payload);

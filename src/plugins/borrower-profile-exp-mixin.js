@@ -148,7 +148,7 @@ export default {
 				} else {
 					try {
 						// Track facebook add to basket
-						trackAddToCart('Loan');
+						trackAddToCart('Loan', lendAmount);
 					} catch (e) {
 						logFormatter(e, 'error');
 					}

@@ -1025,15 +1025,9 @@ export default {
 				this.totals
 			);
 
-			// Fetch FTD Status
-			const myFTDQueryUtil = myFTDQuery(this.apollo);
-
-			myFTDQueryUtil.then(({ data }) => {
-				// determine ftd status
-				const isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
-				transactionData.isFTD = isFTD;
-
-				// fire transaction events
+			// Fire the transaction event and hand off to the thanks page. Wrapped so a failed
+			// FTD lookup can't swallow the Purchase event or the redirect.
+			const finalizeTransaction = () => {
 				this.$kvTrackTransaction(transactionData);
 
 				let checkoutAdditionalQueryParams = this.challengeRedirectQueryParam;
@@ -1051,7 +1045,19 @@ export default {
 					},
 					800
 				);
-			});
+			};
+
+			// Fetch FTD Status, then track + redirect whether or not the lookup succeeds
+			const trackingComplete = myFTDQuery(this.apollo)
+				.then(({ data }) => {
+					// Determine ftd status
+					transactionData.isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
+				})
+				.catch(() => {
+					// FTD status unknown — leave it undefined so no content_type is asserted downstream
+					transactionData.isFTD = undefined;
+				})
+				.then(finalizeTransaction);
 
 			removeLoansFromChallengeCookie(this.cookieStore, this.loanIdsInBasket);
 
@@ -1061,6 +1067,8 @@ export default {
 			if (bonusUsed) {
 				clearKivaLendingCreditCookie(this.cookieStore);
 			}
+
+			return trackingComplete;
 		},
 		setUpdatingTotals(state) {
 			this.updatingTotals = state;
@@ -1295,7 +1303,7 @@ export default {
 					this.showUpsellModule = false;
 					this.refreshTotals();
 					// Track facebook add to basket
-					trackAddToCart('Loan');
+					trackAddToCart('Loan', amountLeft);
 				}
 			}).catch(error => {
 				this.$showTipMsg('Failed to add loan. Please try again.', 'error');

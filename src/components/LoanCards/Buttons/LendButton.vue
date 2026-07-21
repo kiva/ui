@@ -91,7 +91,7 @@ export default {
 				} else {
 					try {
 						// Track facebook add to basket
-						trackAddToCart('Loan');
+						trackAddToCart('Loan', this.price);
 					} catch (e) {
 						console.error(e);
 					}

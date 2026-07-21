@@ -330,7 +330,7 @@ export default {
 					this.lessThan25 ? this.amountLeft : 25
 				);
 				// Track facebook add to basket
-				trackAddToCart('Loan');
+				trackAddToCart('Loan', lendAmount);
 			}).catch(e => {
 				this.$emit('add-to-basket', { loanId: this.loanId, success: false });
 				const msg = e?.[0]?.extensions?.code === 'reached_anonymous_basket_limit'
