@@ -1,6 +1,6 @@
 <template>
 	<section
-		class="tw-w-full tw-bg-gray-50 goal-in-review-slide-1"
+		class="tw-w-full tw-bg-gray-50"
 		data-testid="goal-in-review-slide-1"
 	>
 		<div class="tw-relative" data-testid="goal-in-review-slide-1-header">
@@ -72,10 +72,10 @@
 				</ul>
 
 				<div class="tw-mt-4 tw-text-action">
-					<p class="tw-text-base tw-mb-0.5">
+					<p class="tw-text-base tw-mb-1.5">
 						Scroll to explore the stories behind your goal
 					</p>
-					<KvMaterialIcon :icon="mdiArrowDown" />
+					<ScrollArrow class="scroll-arrow tw-block tw-mx-auto" aria-hidden="true" />
 				</div>
 			</div>
 		</div>
@@ -85,8 +85,7 @@
 <script setup>
 import { computed } from 'vue';
 import numeral from 'numeral';
-import { KvMaterialIcon } from '@kiva/kv-components';
-import { mdiArrowDown } from '@mdi/js';
+import ScrollArrow from '#src/assets/images/my-kiva/goal-in-review/scroll-arrow.svg';
 import slide1Image1 from '#src/assets/images/my-kiva/goal-in-review/slide1-1.png';
 import slide1Image2 from '#src/assets/images/my-kiva/goal-in-review/slide1-2.png';
 import slide1Image3 from '#src/assets/images/my-kiva/goal-in-review/slide1-3.png';
@@ -175,16 +174,43 @@ const stats = computed(() => [
 /* Hill background sits behind the stats, with the flagged hilltop peeking above them */
 .stats-hill {
 	padding-top: 80px;
+	padding-bottom: 16px;
 	background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-mobile-hill.png');
 	background-repeat: no-repeat;
 	background-position: top center;
-	background-size: 100% auto;
+	background-size: 100% 421px;
 }
 
 @screen md {
 	.stats-hill {
 		padding-top: 75px;
 		background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-desktop-hill.png');
+	}
+}
+
+.scroll-arrow {
+	animation: scroll-arrow-hint 1.5s ease-in-out infinite;
+}
+
+@keyframes scroll-arrow-hint {
+	0% {
+		opacity: 0;
+		transform: translateY(-4px);
+	}
+
+	50% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.scroll-arrow {
+		animation: none;
 	}
 }
 </style>
