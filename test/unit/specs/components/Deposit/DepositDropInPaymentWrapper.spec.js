@@ -101,8 +101,8 @@ describe('DepositDropInPaymentWrapper', () => {
 		expect(mutate).toHaveBeenCalledWith(expect.objectContaining({
 			variables: expect.objectContaining({ amount: '50.00', nonce: 'fake-nonce', deviceData: 'dd' }),
 		}));
-		// Legacy parity event: category/action/label + value in cents (50 * 100).
-		expect(kvTrackEvent).toHaveBeenCalledWith('Lending', 'Add Credit', 'Add Credit Page', null, 5000);
+		// Add Credit event: category/action/label + deposit amount.
+		expect(kvTrackEvent).toHaveBeenCalledWith('Lending', 'Add Credit', 'Add Credit Page', null, 50);
 		// Braintree drop-in success event.
 		expect(kvTrackEvent).toHaveBeenCalledWith(
 			'portfolio',

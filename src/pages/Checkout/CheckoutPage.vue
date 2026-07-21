@@ -309,6 +309,7 @@
 </template>
 
 <script>
+import { computed } from 'vue';
 import { gql } from 'graphql-tag';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
@@ -347,6 +348,7 @@ import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.g
 import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
 import MatchedLoansLightbox from '#src/components/Checkout/MatchedLoansLightbox';
+import { CUSTOM_TIP_DEFAULT_EXP_KEY } from '#src/components/Checkout/DonationNudge/DonationNudgeBoxes';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
 import FtdsMessage from '#src/components/Checkout/FtdsMessage';
@@ -379,6 +381,17 @@ const EXPIRING_SOON_EXP_KEY = 'checkout_expiring_soon_upsell';
 const KIVA_CREDIT_REPLACEMENT_EXP_KEY = 'checkout_kiva_credit_copy_replacement';
 const STOP_HIDING_TIP_EXP_KEY = 'stop_hiding_tip_campaign';
 const TIP_PERCENTAGE = 0.2;
+
+// Assigned during SSR so versions are available before hydration
+const PREFETCH_EXPERIMENT_IDS = [
+	DEPOSIT_REWARD_EXP_KEY,
+	ASYNC_CHECKOUT_EXP,
+	CHECKOUT_LOGIN_CTA_EXP,
+	GUEST_CHECKOUT_CTA_EXP,
+	FIVE_DOLLARS_NOTES_EXP,
+	KIVA_CREDIT_REPLACEMENT_EXP_KEY,
+	CUSTOM_TIP_DEFAULT_EXP_KEY,
+];
 
 // Query to gather user Teams
 const myTeamsQuery = gql`query myTeamsQuery {
@@ -437,6 +450,12 @@ export default {
 		KvMaterialIcon,
 	},
 	inject: ['apollo', 'cookieStore', 'kvAuth0'],
+	provide() {
+		return {
+			// Computed so injecting descendants stay reactive to version reassignment
+			customTipDefaultVersion: computed(() => this.customTipDefaultVersion),
+		};
+	},
 	mixins: [checkoutUtils, fiveDollarsTest],
 	head: {
 		title: 'Checkout'
@@ -497,6 +516,7 @@ export default {
 			isKivaCreditReplacementExpEnabled: false,
 			enableAdminRewardTipFlag: false,
 			isStopHidingTipExpEnabled: false,
+			customTipDefaultVersion: null,
 		};
 	},
 	apollo: {
@@ -529,12 +549,9 @@ export default {
 				.then(() => {
 					return Promise.all([
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: DEPOSIT_REWARD_EXP_KEY } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: ASYNC_CHECKOUT_EXP } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: CHECKOUT_LOGIN_CTA_EXP } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: GUEST_CHECKOUT_CTA_EXP } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: FIVE_DOLLARS_NOTES_EXP } }),
-						client.query({ query: experimentAssignmentQuery, variables: { id: KIVA_CREDIT_REPLACEMENT_EXP_KEY } }), // eslint-disable-line max-len
+						...PREFETCH_EXPERIMENT_IDS.map(
+							id => client.query({ query: experimentAssignmentQuery, variables: { id } })
+						),
 					]);
 				})
 				.then(response => {
@@ -695,6 +712,8 @@ export default {
 			'EXP-MP-2577-Apr2026',
 			'basket',
 		);
+
+		this.initializeCustomTipDefaultExperiment();
 	},
 	watch: {
 		async emptyBasket(newValue) {
@@ -1421,6 +1440,18 @@ export default {
 				this.$kvTrackEvent,
 				'EXP-MP-2852-Jun2026',
 				'basket',
+			);
+		},
+		initializeCustomTipDefaultExperiment() {
+			// Assignment only; exposure is tracked separately when the tip modal is viewed
+			initializeExperiment(
+				this.cookieStore,
+				this.apollo,
+				this.$route,
+				CUSTOM_TIP_DEFAULT_EXP_KEY,
+				version => {
+					this.customTipDefaultVersion = version ?? null;
+				},
 			);
 		},
 	},

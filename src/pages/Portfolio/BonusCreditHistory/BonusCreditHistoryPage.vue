@@ -118,8 +118,7 @@ import bonusCreditHistoryQuery from '#src/graphql/query/portfolio/bonusCreditHis
 // and paged in the browser (mirrors the design's "paginate client-side" decision).
 const PAGE_LIMIT = 10;
 
-// Maps the FreeCreditStatus enum to a human label + badge colour. Labels preserve the
-// legacy BonusHistoryView wording ("Part redeemed", etc.).
+// Maps the FreeCreditStatus enum to a human label + badge colour ("Part redeemed", etc.).
 const STATUS_META = {
 	AVAILABLE: { label: 'Available', badge: 'tw-bg-eco-green-1 tw-text-eco-green-4' },
 	PART_REDEEMED: { label: 'Part redeemed', badge: 'tw-bg-marigold-1 tw-text-marigold-3' },
@@ -226,9 +225,8 @@ export default {
 		statusBadgeClass(status) {
 			return STATUS_META[status]?.badge ?? STATUS_META.REDEEMED.badge;
 		},
-		// Reproduces the legacy award-type sentences (BonusHistoryView::initializeData). For a
-		// partially-redeemed credit it appends the unredeemed amount, "expired" once past the
-		// expiration date and "remaining" otherwise.
+		// Composes the award-type sentence. For a partially-redeemed credit it appends the unredeemed amount,
+		// "expired" once past the expiration date and "remaining" otherwise.
 		composeNote(record) {
 			const date = this.getFormattedDate(record.createTime);
 			let note;
