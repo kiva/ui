@@ -146,12 +146,10 @@ export default {
 			// Guards against duplicate in-flight requests if a tooltip re-fires `show` before
 			// its fetch resolves. Plain (non-reactive) guard — nothing in the template reads it.
 			pendingSolutions: {},
-			// isTabbed / showInWhite / showInGray mirror the legacy setupCompareStat() flags
-			// in LoansView.php: tabbed rows indent under their parent metric, and the explicit
-			// white/gray banding groups related rows (replacing the flat migrated grid).
-			// salesforceId mirrors the legacy setupCompareStat($salesforce_id) wiring in
-			// LoansView.php; each row's help-text tooltip lazy-fetches general.salesforceSolution
-			// for this id.
+			// isTabbed / showInWhite / showInGray control row grouping: tabbed rows indent
+			// under their parent metric, and the explicit white/gray banding groups related
+			// rows (replacing the flat migrated grid). salesforceId wires each row's help-text
+			// tooltip to lazy-fetch general.salesforceSolution for this id.
 			statsRows: [
 				{
 					label: 'Amount lent',

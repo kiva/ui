@@ -293,10 +293,9 @@ export default {
 			}).then(({ data }) => {
 				const numChanged = data?.my?.reassignLoanTeam ?? 0;
 				if (numChanged > 0) {
-					// Update just this row's attributed team in place (legacy parity) rather
-					// than refetching the page: a reassignment can't change eligibility
-					// (status + 14-day window are unaffected), so a full reload would only
-					// flash the loading skeleton over the whole table for no new data.
+					// Update just this row's attributed team in place rather than refetching the page:
+					// a reassignment can't change eligibility (status + 14-day window are unaffected),
+					// so a full reload would only flash the loading skeleton over the whole table for no new data.
 					this.applyTeamAssignment(loanId, teamId);
 					this.$showTipMsg('Team updated.');
 					return;
