@@ -3,62 +3,38 @@ import {
 	ref,
 } from 'vue';
 
+import { buildSampleGoalInReviewData } from '../../.storybook/stories/MyKiva/GoalInReview/goalInReviewSampleData';
+
 export const GOAL_RECAP_DEEP_LINK = 'goal-recap';
 
+/**
+ * Gets the recap year from the provided date.
+ *
+ * @param {Date} date Source date for determining the recap year.
+ * @returns {number} Full year used for Goal In Review data.
+ */
 export function getGoalInReviewTargetYear(date = new Date()) {
 	return date.getFullYear();
 }
 
-function buildSampleGoalInReviewData(year) {
-	return {
-		year,
-		isEligible: true,
-		goalSummary: {
-			goalName: `${year} impact goal`,
-			category: 'women',
-			target: 14,
-			status: 'completed',
-			setMonth: 'January',
-		},
-		loanStats: {
-			totalLent: 1025,
-			borrowers: 14,
-			percentComplete: 100,
-		},
-		borrowerList: [
-			{
-				name: 'Sample borrower',
-				country: 'Sample country',
-				sector: 'Sample sector',
-			},
-		],
-		geography: {
-			countries: ['Sample country'],
-			bordersCrossed: 1,
-		},
-		sectors: [
-			{
-				name: 'Sample sector',
-				percentage: 100,
-			},
-		],
-		goalInsights: {
-			setMonth: 'January',
-			percentile: 95,
-		},
-		wrapUp: {
-			headline: 'Your goal changed everything.',
-			shareUrl: null,
-		},
-	};
-}
-
+/**
+ * Provides Goal In Review modal state and loads the shared recap payload.
+ *
+ * @returns {object} Goal In Review state, eligibility, and loading function.
+ */
 export default function useGoalInReview() {
 	const loading = ref(false);
 	const goalInReviewData = ref(null);
 
 	const isEligible = computed(() => Boolean(goalInReviewData.value?.isEligible));
 
+	/**
+	 * Loads the recap data used by the modal and its slides.
+	 *
+	 * @param {object} options Load options.
+	 * @param {number} options.year Recap year to load.
+	 * @returns {Promise<object>} Goal In Review data payload.
+	 */
 	async function loadGoalInReview({
 		year = getGoalInReviewTargetYear(),
 	} = {}) {

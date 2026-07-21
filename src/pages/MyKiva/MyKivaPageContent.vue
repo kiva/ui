@@ -343,7 +343,6 @@ export default {
 		const { isMobile } = useBreakpoints();
 		const {
 			goalInReviewData,
-			isEligible: isGoalInReviewEligible,
 			loadGoalInReview,
 		} = useGoalInReview();
 
@@ -357,7 +356,6 @@ export default {
 			isTieredAchievementComplete,
 			getMostRecentBlogPost,
 			goalInReviewData,
-			isGoalInReviewEligible,
 			isMobile,
 			loadGoalInReview,
 		};
@@ -712,8 +710,8 @@ export default {
 		},
 		async handleGoToDeepLink(sectionId) {
 			if (sectionId === GOAL_RECAP_DEEP_LINK) {
-				await this.loadGoalInReview();
-				if (this.isGoalInReviewEligible) {
+				const goalInReview = await this.loadGoalInReview();
+				if (goalInReview?.isEligible) {
 					this.showGoalInReviewModal = true;
 				}
 				return;

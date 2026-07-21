@@ -1,7 +1,10 @@
 <template>
 	<section
-		class="goal-in-review-slide tw-px-3 tw-py-4 md:tw-px-6"
-		:class="{ 'goal-in-review-slide--light': slideNumber % 2 === 0 }"
+		class="tw-min-h-[calc(100vh-14rem)] tw-px-3 tw-py-4
+			max-md:tw-min-h-[calc(90vh-3.5rem)] md:tw-px-6"
+		:class="slideNumber % 2 === 0
+			? 'tw-bg-white tw-text-primary'
+			: 'tw-bg-eco-green-4 tw-text-white'"
 	>
 		<div class="tw-w-full">
 			<p class="tw-text-small tw-mb-1">
@@ -33,22 +36,3 @@ defineProps({
 	},
 });
 </script>
-
-<style lang="postcss" scoped>
-.goal-in-review-slide {
-	min-height: calc(100vh - 13.75rem);
-	background-color: #123c2b;
-
-	@apply tw-text-white;
-}
-
-.goal-in-review-slide--light {
-	@apply tw-bg-white tw-text-primary;
-}
-
-@media (width < 768px) {
-	.goal-in-review-slide {
-		min-height: calc(90vh - 3.5rem);
-	}
-}
-</style>

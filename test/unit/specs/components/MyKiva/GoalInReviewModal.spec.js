@@ -27,8 +27,14 @@ vi.mock('@kiva/kv-components', () => ({
 }));
 
 describe('GoalInReviewModal', () => {
-	const renderModal = () => render(GoalInReviewModal, {
-		global: globalOptions,
+	const renderModal = ({ trackEvent = vi.fn() } = {}) => render(GoalInReviewModal, {
+		global: {
+			...globalOptions,
+			provide: {
+				...globalOptions.provide,
+				$kvTrackEvent: trackEvent,
+			},
+		},
 		props: {
 			show: true,
 			data: {
@@ -37,19 +43,19 @@ describe('GoalInReviewModal', () => {
 		},
 	});
 
-	it('renders the seven placeholder slides', () => {
-		const { getByText } = renderModal();
+	it('renders the seven placeholder slides', async () => {
+		const { findByText } = renderModal();
 
-		[1, 2, 3, 4, 5, 6, 7].forEach(slideNumber => {
-			getByText(`Slide ${slideNumber}`);
-		});
+		await Promise.all([1, 2, 3, 4, 5, 6, 7].map(slideNumber => findByText(`Slide ${slideNumber}`)));
 	});
 
 	it('emits close when the lightbox closes', async () => {
-		const { emitted, getByRole } = renderModal();
+		const trackEvent = vi.fn();
+		const { emitted, getByRole } = renderModal({ trackEvent });
 
 		await fireEvent.click(getByRole('button', { name: 'Close' }));
 
+		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', 'goal-in-review-close');
 		expect(emitted().close).toHaveLength(1);
 	});
 });

@@ -101,8 +101,7 @@ describe('MyKivaPageContent', () => {
 
 	describe('handleGoToDeepLink', () => {
 		const makeContext = overrides => ({
-			isGoalInReviewEligible: true,
-			loadGoalInReview: vi.fn().mockResolvedValue({}),
+			loadGoalInReview: vi.fn().mockResolvedValue({ isEligible: true }),
 			showGoalInReviewModal: false,
 			smoothScrollTo: vi.fn(),
 			...overrides,
@@ -118,7 +117,9 @@ describe('MyKivaPageContent', () => {
 		});
 
 		it('does not open the goal recap for ineligible users', async () => {
-			const context = makeContext({ isGoalInReviewEligible: false });
+			const context = makeContext({
+				loadGoalInReview: vi.fn().mockResolvedValue({ isEligible: false }),
+			});
 
 			await MyKivaPageContent.methods.handleGoToDeepLink.call(context, 'goal-recap');
 
