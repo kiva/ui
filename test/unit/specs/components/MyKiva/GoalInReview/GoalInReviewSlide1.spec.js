@@ -8,7 +8,7 @@ const baseProps = {
 	year: 2026,
 	amountLent: 1025,
 	borrowerCount: 14,
-	category: 'Women',
+	category: 'women',
 	percentComplete: 100,
 };
 

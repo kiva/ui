@@ -144,7 +144,9 @@ const borrowerCountDisplay = computed(() => (props.borrowerCount
 	? numeral(props.borrowerCount).format('0,0')
 	: MISSING));
 
-const categoryDisplay = computed(() => props.category || MISSING);
+const categoryDisplay = computed(() => (props.category
+	? props.category.charAt(0).toUpperCase() + props.category.slice(1)
+	: MISSING));
 
 const percentCompleteDisplay = computed(() => (props.percentComplete
 	? `${Math.round(Number(props.percentComplete))}%`
