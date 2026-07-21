@@ -24,6 +24,11 @@ vi.mock('@kiva/kv-components', () => ({
 			</div>
 		`,
 	},
+	KvMaterialIcon: {
+		name: 'KvMaterialIcon',
+		props: ['icon'],
+		template: '<span></span>',
+	},
 }));
 
 describe('GoalInReviewModal', () => {
@@ -43,10 +48,12 @@ describe('GoalInReviewModal', () => {
 		},
 	});
 
-	it('renders the seven placeholder slides', async () => {
+	it('renders slide 1 and the six placeholder slides', async () => {
 		const { findByText } = renderModal();
 
-		await Promise.all([1, 2, 3, 4, 5, 6, 7].map(slideNumber => findByText(`Slide ${slideNumber}`)));
+		// Slide 1 is a real component; slides 2-7 are still placeholders
+		await findByText('Your 2026 impact goal recap');
+		await Promise.all([2, 3, 4, 5, 6, 7].map(slideNumber => findByText(`Slide ${slideNumber}`)));
 	});
 
 	it('emits close when the lightbox closes', async () => {
