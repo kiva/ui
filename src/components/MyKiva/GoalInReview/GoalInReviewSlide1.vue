@@ -44,7 +44,7 @@
 					</template>
 				</template>
 				<template v-else>
-					Your goal moved <span class="tw-text-marigold">lives forward</span>
+					Your goal moved <br> <span class="tw-text-marigold">lives forward</span>
 				</template>
 			</h1>
 
@@ -174,11 +174,11 @@ const stats = computed(() => [
 /* Hill background sits behind the stats, with the flagged hilltop peeking above them */
 .stats-hill {
 	padding-top: 80px;
-	padding-bottom: 16px;
+	margin-bottom: 16px;
 	background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-mobile-hill.png');
 	background-repeat: no-repeat;
 	background-position: top center;
-	background-size: 100% 421px;
+	background-size: 100% auto;
 }
 
 @screen md {
