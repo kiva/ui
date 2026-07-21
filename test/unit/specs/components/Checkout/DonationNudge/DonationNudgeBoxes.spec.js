@@ -9,13 +9,31 @@ const defaultProps = {
 	setDonationAndClose: () => {},
 };
 
-const mountBoxes = ({ version = null, props = {} } = {}) => shallowMount(DonationNudgeBoxes, {
+const mountBoxes = ({
+	version = null,
+	props = {},
+	experimentVersion,
+	kvTrackEvent = vi.fn(),
+} = {}) => shallowMount(DonationNudgeBoxes, {
 	props: { ...defaultProps, ...props },
 	global: {
 		...globalOptions,
 		provide: {
 			...globalOptions.provide,
+			apollo: {
+				...globalOptions.provide.apollo,
+				// Require the exact cache id so a drifted experiment key fails these tests
+				readFragment: ({ id }) => (
+					id === 'Experiment:custom_tip_default' && experimentVersion
+						? { version: experimentVersion }
+						: null
+				),
+			},
 			customTipDefaultVersion: computed(() => version),
+		},
+		mocks: {
+			...globalOptions.mocks,
+			$kvTrackEvent: kvTrackEvent,
 		},
 	},
 });
@@ -138,5 +156,75 @@ describe('DonationNudgeBoxes custom tip prefill on open', () => {
 		wrapper.vm.setCustomDonationAndClose();
 
 		expect(setDonationAndClose).toHaveBeenCalledWith(0, 'Custom amount');
+	});
+});
+
+describe('DonationNudgeBoxes experiment exposure on open', () => {
+	it('fires the exposure event with the control label when the modal opens', () => {
+		const kvTrackEvent = vi.fn();
+		const wrapper = mountBoxes({ version: 'a', experimentVersion: 'a', kvTrackEvent });
+
+		wrapper.vm.afterLightboxOpens();
+
+		expect(kvTrackEvent).toHaveBeenCalledWith('basket', 'EXP-MP-3039-July2026', 'a', undefined);
+	});
+
+	it('fires the exposure event with the treatment label and still prefills when the modal opens', () => {
+		const kvTrackEvent = vi.fn();
+		const wrapper = mountBoxes({
+			version: 'b',
+			experimentVersion: 'b',
+			kvTrackEvent,
+			props: { currentDonationAmount: '$0.00' },
+		});
+
+		wrapper.vm.afterLightboxOpens();
+
+		expect(kvTrackEvent).toHaveBeenCalledWith('basket', 'EXP-MP-3039-July2026', 'b', undefined);
+		expect(wrapper.vm.customDonationAmount).toBe('$1.00');
+	});
+
+	it('fires once per open with no de-duplication', () => {
+		const kvTrackEvent = vi.fn();
+		const wrapper = mountBoxes({ version: 'a', experimentVersion: 'a', kvTrackEvent });
+
+		wrapper.vm.afterLightboxOpens();
+		wrapper.vm.afterLightboxOpens();
+
+		expect(kvTrackEvent).toHaveBeenCalledTimes(2);
+	});
+
+	it('does not fire from rendering alone before the modal is opened', () => {
+		const kvTrackEvent = vi.fn();
+		mountBoxes({ version: 'a', experimentVersion: 'a', kvTrackEvent });
+
+		expect(kvTrackEvent).not.toHaveBeenCalled();
+	});
+
+	it('does not fire when the user is unassigned', () => {
+		const kvTrackEvent = vi.fn();
+		const wrapper = mountBoxes({ version: 'unassigned', experimentVersion: 'unassigned', kvTrackEvent });
+
+		wrapper.vm.afterLightboxOpens();
+
+		expect(kvTrackEvent).not.toHaveBeenCalled();
+	});
+
+	it('does not fire when no assignment exists in the cache', () => {
+		const kvTrackEvent = vi.fn();
+		const wrapper = mountBoxes({ version: 'a', kvTrackEvent });
+
+		wrapper.vm.afterLightboxOpens();
+
+		expect(kvTrackEvent).not.toHaveBeenCalled();
+	});
+
+	it('does not fire without a provided version even if the cache holds an assignment', () => {
+		const kvTrackEvent = vi.fn();
+		const wrapper = mountBoxes({ experimentVersion: 'a', kvTrackEvent });
+
+		wrapper.vm.afterLightboxOpens();
+
+		expect(kvTrackEvent).not.toHaveBeenCalled();
 	});
 });

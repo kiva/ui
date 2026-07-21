@@ -348,6 +348,7 @@ import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.g
 import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
 import MatchedLoansLightbox from '#src/components/Checkout/MatchedLoansLightbox';
+import { CUSTOM_TIP_DEFAULT_EXP_KEY } from '#src/components/Checkout/DonationNudge/DonationNudgeBoxes';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
 import FtdsMessage from '#src/components/Checkout/FtdsMessage';
@@ -379,7 +380,6 @@ const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_enable';
 const EXPIRING_SOON_EXP_KEY = 'checkout_expiring_soon_upsell';
 const KIVA_CREDIT_REPLACEMENT_EXP_KEY = 'checkout_kiva_credit_copy_replacement';
 const STOP_HIDING_TIP_EXP_KEY = 'stop_hiding_tip_campaign';
-const CUSTOM_TIP_DEFAULT_EXP_KEY = 'custom_tip_default';
 const TIP_PERCENTAGE = 0.2;
 
 // Assigned during SSR so versions are available before hydration

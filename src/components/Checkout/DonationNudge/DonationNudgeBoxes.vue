@@ -93,6 +93,9 @@
 <script>
 import numeral from 'numeral';
 import { KvTextInput, KvButton } from '@kiva/kv-components';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+
+export const CUSTOM_TIP_DEFAULT_EXP_KEY = 'custom_tip_default';
 
 const TREATMENT_PREFILL_AMOUNT = '$1.00';
 
@@ -103,6 +106,7 @@ export default {
 		KvTextInput
 	},
 	inject: {
+		apollo: { from: 'apollo' },
 		// Assigned version provided by the checkout page; null when rendered elsewhere
 		customTipDefaultVersion: { default: null },
 	},
@@ -146,6 +150,17 @@ export default {
 			customInputButton.click();
 		},
 		afterLightboxOpens() {
+			// Count exposure only where the treatment could apply, using the same provided version as the prefill
+			if (this.customTipDefaultVersion) {
+				trackExperimentVersion(
+					this.apollo,
+					this.$kvTrackEvent,
+					'basket',
+					CUSTOM_TIP_DEFAULT_EXP_KEY,
+					'EXP-MP-3039-July2026',
+				);
+			}
+
 			if (this.currentDonationAmount && this.customDonationSelected) {
 				this.setInputs(this.currentDonationAmount);
 			}
