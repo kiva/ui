@@ -111,12 +111,28 @@ const goalInReviewCopy = {
 	},
 
 	/**
-	 * Impact-habit card copy based on lending sessions during the year.
+	 * Impact-habit card copy. Top-percentile lenders take precedence; everyone
+	 * else is keyed to lending sessions during the year.
 	 *
-	 * @param {number} transactionSessionCount Sessions with a transaction.
+	 * TODO(next step): `lifetimePercentile` is supplied by the parent page once
+	 * the percentile query is integrated. Until then it is absent, so the guard
+	 * below falls through to the session tiers (today's behavior).
+	 *
+	 * @param {object} data Habit inputs.
+	 * @param {number} [data.transactionSessionCount] Sessions with a transaction.
+	 * @param {number} [data.lifetimePercentile] The lender's lifetime percentile.
 	 * @returns {{title: string, content: string}} Card title and body.
 	 */
-	getImpactHabit(transactionSessionCount) {
+	getImpactHabit({ transactionSessionCount, lifetimePercentile } = {}) {
+		// The Number.isFinite guard is load-bearing: when the percentile is absent
+		// (undefined -> NaN) or otherwise below threshold, we fall straight through
+		// to the session tiers, so nothing changes in production until the page
+		// supplies a real percentile.
+		const percentile = Number(lifetimePercentile);
+		if (Number.isFinite(percentile) && percentile >= LIFETIME_PERCENTILE_THRESHOLD) {
+			return this.getImpactHabitTopPercentile(percentile);
+		}
+
 		const count = Number(transactionSessionCount) || 0;
 		const timeWord = count === 1 ? 'time' : 'times';
 		if (count >= KIVA_CHAMPION_MIN_SESSIONS) {
@@ -133,10 +149,10 @@ const goalInReviewCopy = {
 	},
 
 	/**
-	 * Impact-habit card copy for top-percentile lenders.
+	 * Impact-habit card copy for top-percentile lenders (>= threshold).
 	 *
-	 * TODO(next step): percentile data isn't fetched yet — wire this into
-	 * getImpactHabit and confirm the copy/threshold semantics once available.
+	 * TODO(next step): confirm the copy/threshold semantics with design once the
+	 * percentile data source is available.
 	 *
 	 * @param {number} lifetimePercentile The lender's lifetime percentile.
 	 * @returns {{title: string, content: string}} Card title and body.

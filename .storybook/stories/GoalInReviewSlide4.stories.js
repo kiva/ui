@@ -11,8 +11,11 @@ export default {
 	},
 };
 
-const story = (goalSummaryOverrides = {}) => {
-	const args = { goalSummary: { ...baseGoalSummary, ...goalSummaryOverrides } };
+const story = ({ lifetimePercentile = null, ...goalSummaryOverrides } = {}) => {
+	const args = {
+		goalSummary: { ...baseGoalSummary, ...goalSummaryOverrides },
+		lifetimePercentile,
+	};
 	const template = () => ({
 		components: { GoalInReviewSlide4 },
 		setup() { return { args }; },
@@ -52,3 +55,8 @@ export const IdentityCauseAdvocate = story({ category: 'basic-needs' });
 
 // Impact-habit variant: fewer than 5 sessions -> "Rising Kiva champion".
 export const HabitRisingChampion = story({ transactionSessionCount: 3 });
+
+// Impact-habit variant: top-percentile lender -> "Top X%".
+// TODO: lifetimePercentile is dummy data here — the parent page will supply the
+// real value once the percentile query is integrated.
+export const HabitTopPercentile = story({ lifetimePercentile: 92 });
