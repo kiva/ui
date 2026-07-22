@@ -67,12 +67,14 @@ import {
 	createBasket,
 	executeOneTimeCheckout,
 	getBasketID,
+	getCheckoutTrackingData,
 	getClientToken,
 	KvPaymentSelect,
 	trackTransactionEvent,
 	useBraintreeDropIn,
 	watchBasketTotals,
 } from '@kiva/kv-shop';
+import { trackFBTransaction } from '@kiva/kv-analytics';
 import { KvButton, KvLightbox } from '@kiva/kv-components';
 import ExpressCheckoutTotals from '#src/components/Thanks/ExpressCheckout/ExpressCheckoutTotals';
 import useTipMessage from '#src/composables/useTipMessage';
@@ -212,6 +214,20 @@ const onSubmit = async () => {
 			apollo,
 			transactionId: Number(checkoutId),
 		});
+
+		// Fire the Meta Purchase pixel for the express transaction — parity with the main checkout,
+		// which the thanks page this modal lives on does not otherwise fire. Best-effort: a tracking
+		// failure must not block the basket reset or the redirect.
+		try {
+			const trackingData = await getCheckoutTrackingData(
+				apollo,
+				checkoutId,
+				depositRequired.value ? 'deposit' : '',
+			);
+			trackFBTransaction(trackingData);
+		} catch (trackingException) {
+			logFormatter(`ExpressCheckoutModal Meta tracking failed: ${trackingException}`, 'error');
+		}
 
 		await createBasket(apollo);
 

@@ -16,6 +16,7 @@ import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.g
 import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
 import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
 import { KvButton } from '@kiva/kv-components';
+import { trackFBAddToCart } from '@kiva/kv-analytics';
 
 export default {
 	name: 'LendButton',
@@ -88,14 +89,8 @@ export default {
 						}
 					});
 				} else {
-					try {
-						// track facebook add to basket
-						if (typeof window !== 'undefined' && typeof fbq === 'function') {
-							window.fbq('track', 'AddToCart', { content_category: 'Loan' });
-						}
-					} catch (e) {
-						console.error(e);
-					}
+					// Track facebook add to basket
+					trackFBAddToCart('Loan', this.price);
 
 					return this.apollo.query({
 						query: loanCardBasketed,

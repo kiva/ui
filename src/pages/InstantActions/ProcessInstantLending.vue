@@ -99,6 +99,7 @@ import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
 import logFormatter from '#src/util/logFormatter';
+import { trackFBAddToCart } from '@kiva/kv-analytics';
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
@@ -297,14 +298,8 @@ export default {
 						this.handleErrorRedirect();
 					});
 				} else {
-					try {
-						// track facebook add to basket
-						if (typeof window !== 'undefined' && typeof fbq === 'function') {
-							window.fbq('track', 'AddToCart', { content_category: 'Loan' });
-						}
-					} catch (e) {
-						// no-op
-					}
+					// Track facebook add to basket
+					trackFBAddToCart('Loan', this.lendAmount);
 					// signify loan added to basket
 					this.loanAdded = true;
 					// start redirect process

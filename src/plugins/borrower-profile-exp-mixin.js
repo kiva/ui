@@ -5,6 +5,7 @@ import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.g
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
+import { trackFBAddToCart } from '@kiva/kv-analytics';
 
 import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
@@ -145,14 +146,8 @@ export default {
 					});
 					onError?.();
 				} else {
-					try {
-						// track facebook add to basket
-						if (typeof window !== 'undefined' && typeof fbq === 'function') {
-							window.fbq('track', 'AddToCart', { content_category: 'Loan' });
-						}
-					} catch (e) {
-						logFormatter(e, 'error');
-					}
+					// Track facebook add to basket
+					trackFBAddToCart('Loan', lendAmount);
 					const basketId = this.cookieStore.get('kvbskt');
 					// Show modal after 1s (Defined in CSS), unless the caller opts out.
 					// The goal-set recommended-loan flow adds to basket while its own

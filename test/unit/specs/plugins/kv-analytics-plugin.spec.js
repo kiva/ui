@@ -255,7 +255,31 @@ describe('kv-analytics-plugin', () => {
 		it('should track pageview with Facebook pixel', () => {
 			app.config.globalProperties.$fireAsyncPageView('/test', '/home');
 
-			expect(mockWindow.fbq).toHaveBeenCalledWith('track', 'PageView');
+			expect(mockWindow.fbq).toHaveBeenCalledWith('track', 'PageView', { user_type: 'non-transactor' });
+		});
+
+		it('should mark the pageview user_type as transactor when the has-lent cookie is set', () => {
+			global.document.cookie = 'foo=bar; kvu_lb=true; baz=qux';
+
+			app.config.globalProperties.$fireAsyncPageView('/test', '/home');
+
+			expect(mockWindow.fbq).toHaveBeenCalledWith('track', 'PageView', { user_type: 'transactor' });
+		});
+
+		it('should mark the pageview user_type as transactor when the has-deposit cookie is set', () => {
+			global.document.cookie = 'kvu_db=true';
+
+			app.config.globalProperties.$fireAsyncPageView('/test', '/home');
+
+			expect(mockWindow.fbq).toHaveBeenCalledWith('track', 'PageView', { user_type: 'transactor' });
+		});
+
+		it('should mark the pageview user_type as non-transactor when the cookie value is false', () => {
+			global.document.cookie = 'kvu_lb=false; kvu_db=false';
+
+			app.config.globalProperties.$fireAsyncPageView('/test', '/home');
+
+			expect(mockWindow.fbq).toHaveBeenCalledWith('track', 'PageView', { user_type: 'non-transactor' });
 		});
 
 		it('should not set referrer for initial page load', () => {
@@ -424,8 +448,29 @@ describe('kv-analytics-plugin', () => {
 
 			// Should track custom FB event for kiva cards
 			expect(mockWindow.fbq).toHaveBeenCalledWith('trackCustom', 'transactionContainsKivaCards', {
-				kivaCardTotal: 100
+				kivaCardTotal: 100,
+				value: 100,
+				currency: 'USD'
 			});
+		});
+
+		it('should not track Facebook Purchase when itemTotal is empty', () => {
+			const transactionData = {
+				transactionId: 'TXN000',
+				itemTotal: '',
+				loanTotal: 0,
+				donationTotal: 0,
+				depositTotal: 0,
+				loans: [],
+				donations: [],
+				isFTD: false,
+				kivaCards: [],
+				kivaCardTotal: 0
+			};
+
+			app.config.globalProperties.$kvTrackTransaction(transactionData);
+
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith('track', 'Purchase', expect.anything());
 		});
 
 		it('should not track when transaction ID is empty', () => {
@@ -440,6 +485,51 @@ describe('kv-analytics-plugin', () => {
 
 			expect(mockWindow.fbq).not.toHaveBeenCalled();
 			expect(mockWindow.gtag).not.toHaveBeenCalled();
+		});
+
+		it('should track a given transaction id only once', () => {
+			const transactionData = {
+				transactionId: 'TXN-DUP',
+				itemTotal: 25,
+				loanTotal: 25,
+				donationTotal: 0,
+				depositTotal: 0,
+				loans: [{ id: '1', __typename: 'Loan', price: 25 }],
+				donations: [],
+				isFTD: false,
+				kivaCards: [],
+				kivaCardTotal: 0
+			};
+
+			app.config.globalProperties.$kvTrackTransaction(transactionData);
+			app.config.globalProperties.$kvTrackTransaction(transactionData);
+
+			const purchaseCalls = mockWindow.fbq.mock.calls.filter(
+				call => call[0] === 'track' && call[1] === 'Purchase'
+			);
+			expect(purchaseCalls).toHaveLength(1);
+		});
+
+		it('should omit content_type when FTD status is unknown (guest checkout)', () => {
+			const transactionData = {
+				transactionId: 'TXN-GUEST',
+				itemTotal: 25,
+				loanTotal: 25,
+				donationTotal: 0,
+				depositTotal: 0,
+				loans: [{ id: '1', __typename: 'Loan', price: 25 }],
+				donations: [],
+				isFTD: undefined,
+				kivaCards: [],
+				kivaCardTotal: 0
+			};
+
+			app.config.globalProperties.$kvTrackTransaction(transactionData);
+
+			expect(mockWindow.fbq).toHaveBeenCalledWith('track', 'Purchase', {
+				currency: 'USD',
+				value: 25
+			});
 		});
 
 		it('should track deposit in Optimizely', () => {

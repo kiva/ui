@@ -44,6 +44,7 @@
 		"@godaddy/terminus": "^4.11.0",
 		"@graphql-tools/load": "^7.7.0",
 		"@graphql-tools/url-loader": "^7.17.18",
+		"@kiva/kv-analytics": "^1.3.5",
 		"@kiva/kv-components": "^8.22.2",
 		"@kiva/kv-shop": "^3.7.100",
 		"@kiva/kv-tokens": "^4.3.0",

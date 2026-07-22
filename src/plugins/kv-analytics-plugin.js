@@ -1,6 +1,20 @@
 /* eslint-disable no-underscore-dangle */
 import logFormatter from '#src/util/logFormatter';
 import SimpleQueue from '#src/util/simpleQueue';
+import { getUserType, trackFBCustomEvent } from '@kiva/kv-analytics';
+import { hasLentBeforeCookie, hasDepositBeforeCookie } from '#src/util/optimizelyUserMetrics';
+
+// Best-effort Meta pixel call: no-ops when fbq is absent and never throws into the caller even if
+// a broken/blocked fbq shim throws when invoked (mirrors fireFbq in @kiva/kv-analytics).
+function fireFbq(...args) {
+	if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+		try {
+			window.fbq(...args);
+		} catch (e) {
+			logFormatter(e, 'error');
+		}
+	}
+}
 
 // install method for plugin
 export default {
@@ -11,6 +25,9 @@ export default {
 		let fbLoaded;
 		let optimizelyLoaded;
 		const queue = new SimpleQueue();
+		// Transaction ids already tracked — guards against a Purchase firing twice for one order
+		// (double-submit, retry, or component re-mount).
+		const trackedTransactionIds = new Set();
 
 		const kvActions = {
 			checkLibs: () => {
@@ -63,9 +80,18 @@ export default {
 
 				// facebook pixel pageview
 				if (fbLoaded) {
-					// we used to pass a user_type but it's always empty across the site
-					// { user_type: '???'}
-					window.fbq('track', 'PageView');
+					// Segment by transactor status (has ever lent or deposited) via the kvu_lb / kvu_db
+					// cookies. Uses the shared cookie-name constants and matches the exact 'true' value
+					// the cookies are written with (see optimizelyUserMetrics.setUserDataCookies), so the
+					// read stays in step with how cms derives the same flag.
+					const readCookie = name => {
+						const cookies = (typeof document !== 'undefined' && document.cookie) || '';
+						const match = cookies.split(';').map(c => c.trim()).find(c => c.startsWith(`${name}=`));
+						return match ? match.slice(name.length + 1) : '';
+					};
+					const hasLentBefore = readCookie(hasLentBeforeCookie) === 'true';
+					const hasDepositBefore = readCookie(hasDepositBeforeCookie) === 'true';
+					fireFbq('track', 'PageView', { user_type: getUserType(hasLentBefore || hasDepositBefore) });
 				}
 			},
 			setCustomUrl: url => {
@@ -195,12 +221,6 @@ export default {
 					}
 				}
 			},
-			// https://developers.facebook.com/docs/facebook-pixel/implementation/conversion-tracking#tracking-custom-events
-			trackFBCustomEvent: (eventName, eventData = null) => {
-				if (fbLoaded) {
-					window.fbq('trackCustom', eventName, eventData);
-				}
-			},
 			parseEventProperties: eventValue => {
 				// Ensure we have a non-empty array to begin with
 				if (Array.isArray(eventValue) && eventValue.length) {
@@ -221,6 +241,13 @@ export default {
 					return false;
 				}
 
+				// Only track a given transaction once
+				const transactionKey = String(transactionData.transactionId);
+				if (trackedTransactionIds.has(transactionKey)) {
+					return false;
+				}
+				trackedTransactionIds.add(transactionKey);
+
 				if (fbLoaded) {
 					kvActions.trackFBTransaction(transactionData);
 				}
@@ -232,30 +259,40 @@ export default {
 				}
 			},
 			trackFBTransaction: transactionData => {
-				const itemTotal = transactionData.itemTotal || '';
-				if (typeof window.fbq !== 'undefined' && typeof itemTotal !== 'undefined') {
-					window.fbq('track', 'Purchase', {
+				const itemTotal = Number(transactionData.itemTotal) || 0;
+				// Skip Purchase when there's no valid amount (omit rather than send a $0/invalid-value purchase)
+				if (itemTotal > 0) {
+					const purchase = {
 						currency: 'USD',
-						value: itemTotal,
-						content_type: transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender'
-					});
+						value: itemTotal
+					};
+					// Only assert content_type when FTD status is actually known. Guest checkouts have no
+					// FTD lookup, and defaulting to 'ReturningLender' would be a false claim.
+					if (typeof transactionData.isFTD === 'boolean') {
+						purchase.content_type = transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender';
+					}
+					fireFbq('track', 'Purchase', purchase);
 				}
 
 				// signify transaction has kiva cards
 				if (transactionData.kivaCards && transactionData.kivaCards.length) {
-					kvActions.trackFBCustomEvent(
+					trackFBCustomEvent(
 						'transactionContainsKivaCards',
 						{
-							kivaCardTotal: transactionData.kivaCardTotal
+							kivaCardTotal: transactionData.kivaCardTotal,
+							value: Number(transactionData.kivaCardTotal) || 0,
+							currency: 'USD'
 						}
 					);
 				}
 				// signifiy transaction ftd status
-				if (transactionData.isFTD && typeof itemTotal !== 'undefined') {
-					kvActions.trackFBCustomEvent(
+				if (transactionData.isFTD) {
+					trackFBCustomEvent(
 						'firstTimeDepositorTransaction',
 						{
-							itemTotal
+							itemTotal,
+							value: itemTotal,
+							currency: 'USD'
 						}
 					);
 				}
@@ -437,7 +474,7 @@ export default {
 
 		// eslint-disable-next-line no-param-reassign
 		app.config.globalProperties.$kvTrackFBCustomEvent = (eventName, eventData = null) => {
-			kvActions.trackFBCustomEvent(eventName, eventData);
+			trackFBCustomEvent(eventName, eventData);
 		};
 	}
 };
