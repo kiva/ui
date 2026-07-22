@@ -23,10 +23,9 @@ function buildApiResponse(comments, {
 	// Defaults make canAddComment true (fundraising loan) so form-focused tests render the form.
 	status = 'fundraising',
 	isPrivileged = false,
-	borrowers = [],
 	loanTrusteeId = null,
 	isAdmin = false,
-	myId = 1,
+	borrowedLoanId = null,
 	myTrusteeId = null,
 	loanCount = 0,
 } = {}) {
@@ -35,7 +34,6 @@ function buildApiResponse(comments, {
 			loan: {
 				id: 123,
 				status,
-				borrowers,
 				comments: { values: comments },
 				userProperties: { isPrivileged, subscribed },
 				trustee: loanTrusteeId ? { id: loanTrusteeId } : null,
@@ -43,13 +41,14 @@ function buildApiResponse(comments, {
 		},
 		my: loggedIn
 			? {
-				id: myId,
+				id: 1,
 				isAdmin,
+				mostRecentBorrowedLoan: borrowedLoanId ? { id: borrowedLoanId } : null,
 				trustee: myTrusteeId ? { id: myTrusteeId } : null,
 				lender: { id: 1, loanCount },
 			}
 			: {
-				id: null, isAdmin: false, trustee: null, lender: null,
+				id: null, isAdmin: false, mostRecentBorrowedLoan: null, trustee: null, lender: null,
 			},
 	};
 }
@@ -269,8 +268,7 @@ describe('LoanComments', () => {
 			myTrusteeId: null,
 			loanTrusteeId: null,
 			loanCount: 0,
-			borrowers: [],
-			myId: 1,
+			borrowedLoanId: null,
 		};
 
 		function renderWith(responseOverrides) {
@@ -317,16 +315,13 @@ describe('LoanComments', () => {
 		});
 
 		it('shows the form for the loan borrower even when they have not lent to any loan', () => {
-			const { getByTestId } = renderWith({
-				isPrivileged: true, loanCount: 0, borrowers: [{ id: 1, firstName: 'Aisha' }], myId: 1,
-			});
+			// loanId is 123; the viewer's most recent borrowed loan is this loan.
+			const { getByTestId } = renderWith({ isPrivileged: true, loanCount: 0, borrowedLoanId: 123 });
 			expect(getByTestId('bp-comment-form-submit')).toBeTruthy();
 		});
 
-		it('does not treat a privileged non-borrower whose id is absent from borrowers as the borrower', () => {
-			const { queryByTestId } = renderWith({
-				isPrivileged: true, loanCount: 0, borrowers: [{ id: 999, firstName: 'Someone' }], myId: 1,
-			});
+		it('does not treat a privileged user whose most recent borrowed loan is a different loan as borrower', () => {
+			const { queryByTestId } = renderWith({ isPrivileged: true, loanCount: 0, borrowedLoanId: 456 });
 			expect(queryByTestId('bp-comment-form-submit')).toBeNull();
 		});
 	});

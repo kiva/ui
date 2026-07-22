@@ -184,10 +184,6 @@ const commentsQuery = gql`query loanCommentsFullList($loanId: Int!) {
 		loan(id: $loanId) {
 			id
 			status
-			borrowers {
-				id
-				firstName
-			}
 			comments {
 				values {
 					id
@@ -214,6 +210,9 @@ const commentsQuery = gql`query loanCommentsFullList($loanId: Int!) {
 	my {
 		id
 		isAdmin
+		mostRecentBorrowedLoan {
+			id
+		}
 		trustee {
 			id
 		}
@@ -283,10 +282,9 @@ export default {
 			isSubscribed: false,
 			// Fields backing the add-comment permission check
 			loanStatus: '',
-			loanBorrowerIds: [],
 			loanTrusteeId: null,
 			isLoanPrivileged: false,
-			myId: null,
+			myBorrowedLoanId: null,
 			myTrusteeId: null,
 			myLoanCount: 0,
 			newCommentText: '',
@@ -325,9 +323,11 @@ export default {
 		isTrusteeToLoan() {
 			return !!this.myTrusteeId && this.myTrusteeId === this.loanTrusteeId;
 		},
-		// The logged-in user is one of the borrowers/entrepreneurs on this loan
+		// The logged-in user is the borrower of this loan. The API has no per-loan borrower
+		// flag, so we approximate with the viewer's most recent borrowed loan id (the same
+		// signal ShareButton uses). This misses borrowers whose most recent loan isn't this one.
 		isBorrowerOfLoan() {
-			return this.myId != null && this.loanBorrowerIds.includes(this.myId);
+			return this.myBorrowedLoanId != null && Number(this.myBorrowedLoanId) === this.loanId;
 		},
 		// The logged-in user has lent to at least one loan
 		hasLentToAnyLoan() {
@@ -361,10 +361,9 @@ export default {
 			this.isSubscribed = loan?.userProperties?.subscribed ?? false;
 			this.isAdmin = data?.my?.isAdmin ?? false;
 			this.loanStatus = loan?.status ?? '';
-			this.loanBorrowerIds = (loan?.borrowers ?? []).map(b => b.id);
 			this.loanTrusteeId = loan?.trustee?.id ?? null;
 			this.isLoanPrivileged = loan?.userProperties?.isPrivileged ?? false;
-			this.myId = data?.my?.id ?? null;
+			this.myBorrowedLoanId = data?.my?.mostRecentBorrowedLoan?.id ?? null;
 			this.myTrusteeId = data?.my?.trustee?.id ?? null;
 			this.myLoanCount = data?.my?.lender?.loanCount ?? 0;
 		},
