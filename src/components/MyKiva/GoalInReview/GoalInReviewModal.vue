@@ -12,7 +12,15 @@
 			</h2>
 		</template>
 		<div class="tw-bg-secondary">
-			<GoalInReviewSlide1 :goal-summary="data?.goalSummary" />
+			<GoalInReviewSlide1
+				:goal-status="data?.goalSummary?.status"
+				:first-name="data?.firstName"
+				:year="data?.year"
+				:amount-lent="data?.loanStats?.totalLent"
+				:borrower-count="data?.loanStats?.borrowers"
+				:category="data?.goalSummary?.category"
+				:percent-complete="data?.loanStats?.percentComplete"
+			/>
 			<GoalInReviewSlide2 :loan-stats="data?.loanStats" />
 			<GoalInReviewSlide3 :borrower-list="data?.borrowerList" />
 			<GoalInReviewSlide4 :geography="data?.geography" />
