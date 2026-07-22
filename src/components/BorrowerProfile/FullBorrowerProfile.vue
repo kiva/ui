@@ -373,10 +373,15 @@ export default {
 			const level = this.loanData?.anonymizationLevel;
 			return level === 'full' || level === 'pii';
 		},
+		isFundraising() {
+			return this.loanData?.status === 'fundraising';
+		},
 		showComments() {
-			// Comments remain privileged-only; additionally hide the section entirely on
-			// anonymized (full/pii) loans.
-			return this.isPrivileged && !this.isAnonymized;
+			// Mirrors legacy showSocialInfo: logged-in users see the section unless
+			// the loan is anonymized (full/pii); logged-out visitors see it only on
+			// fundraising loans with no anonymization at all.
+			if (this.isLoggedIn) return !this.isAnonymized;
+			return this.isFundraising && (this.loanData?.anonymizationLevel ?? 'none') === 'none';
 		},
 		shareCampaign() {
 			return this.inPfp ? 'social_share_bp_pfp' : 'social_share_bp';

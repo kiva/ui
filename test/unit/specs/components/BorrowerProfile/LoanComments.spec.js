@@ -303,6 +303,21 @@ describe('LoanComments', () => {
 			expect(queryByTestId('bp-comment-form-submit')).toBeNull();
 		});
 
+		it('shows the must-be-lender message on a fundraising loan the user has not lent to', () => {
+			const { getByTestId } = renderWith({ status: 'fundraising', lentTo: false });
+			expect(getByTestId('bp-comment-must-be-lender')).toBeTruthy();
+		});
+
+		it('does not show the must-be-lender message when the user can comment', () => {
+			const { queryByTestId } = renderWith({ status: 'fundraising', lentTo: true });
+			expect(queryByTestId('bp-comment-must-be-lender')).toBeNull();
+		});
+
+		it('does not show the must-be-lender message when the loan is not fundraising', () => {
+			const { queryByTestId } = renderWith({ status: 'ended', lentTo: false });
+			expect(queryByTestId('bp-comment-must-be-lender')).toBeNull();
+		});
+
 		it('shows the form for an admin', () => {
 			const { getByTestId } = renderWith({ isAdmin: true });
 			expect(getByTestId('bp-comment-form-submit')).toBeTruthy();

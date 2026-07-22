@@ -19,6 +19,13 @@
 					data-testid="bp-comment-form-textarea"
 				></textarea>
 			</template>
+			<p
+				v-else-if="showMustBeLenderMessage"
+				class="tw-text-secondary tw-mb-1"
+				data-testid="bp-comment-must-be-lender"
+			>
+				You must be a lender to comment on this loan.
+			</p>
 			<div class="tw-flex tw-items-center tw-gap-2">
 				<kv-button
 					v-if="canAddComment"
@@ -344,6 +351,11 @@ export default {
 				|| this.isAdmin
 				|| this.isTrusteeToLoan
 				|| (this.isLoanPrivileged && (this.hasLentToAnyLoan || this.isBorrowerOfLoan));
+		},
+		// Prompt shown in place of the form on fundraising loans when the viewer
+		// is not eligible to comment (i.e. has not lent to this loan).
+		showMustBeLenderMessage() {
+			return this.isFundraising && !this.canAddComment;
 		},
 		hasSpillover() {
 			return this.comments.length > INITIAL_COMMENT_COUNT;
