@@ -20,8 +20,10 @@ const mockApiComments = [
 function buildApiResponse(comments, {
 	subscribed = false,
 	loggedIn = true,
-	// Defaults make canAddComment true (fundraising loan) so form-focused tests render the form.
+	// Defaults make canAddComment true (fundraising loan the user has lent to) so
+	// form-focused tests render the form.
 	status = 'fundraising',
+	lentTo = true,
 	isPrivileged = false,
 	loanTrusteeId = null,
 	isAdmin = false,
@@ -35,7 +37,7 @@ function buildApiResponse(comments, {
 				id: 123,
 				status,
 				comments: { values: comments },
-				userProperties: { isPrivileged, subscribed },
+				userProperties: { isPrivileged, lentTo, subscribed },
 				trustee: loanTrusteeId ? { id: loanTrusteeId } : null,
 			},
 		},
@@ -259,10 +261,12 @@ describe('LoanComments', () => {
 	});
 
 	describe('add-comment permission gating', () => {
-		// Base response that on its own does NOT allow commenting: ended loan, not privileged,
-		// not admin, not a trustee, no loans lent, not a borrower on this loan.
+		// Base response that on its own does NOT allow commenting: ended loan, not a lender
+		// on this loan, not privileged, not admin, not a trustee, no loans lent, not a
+		// borrower on this loan.
 		const notAllowedResponse = {
 			status: 'ended',
+			lentTo: false,
 			isPrivileged: false,
 			isAdmin: false,
 			myTrusteeId: null,
@@ -284,9 +288,19 @@ describe('LoanComments', () => {
 			expect(queryByTestId('bp-comment-subscribe')).toBeTruthy();
 		});
 
-		it('shows the form when the loan is fundraising', () => {
-			const { getByTestId } = renderWith({ status: 'fundraising' });
+		it('shows the form when the loan is fundraising and the user has lent to it', () => {
+			const { getByTestId } = renderWith({ status: 'fundraising', lentTo: true });
 			expect(getByTestId('bp-comment-form-submit')).toBeTruthy();
+		});
+
+		it('hides the form when the loan is fundraising but the user has not lent to it', () => {
+			const { queryByTestId } = renderWith({ status: 'fundraising', lentTo: false });
+			expect(queryByTestId('bp-comment-form-submit')).toBeNull();
+		});
+
+		it('hides the form for a lender on the loan when it is no longer fundraising', () => {
+			const { queryByTestId } = renderWith({ status: 'ended', lentTo: true });
+			expect(queryByTestId('bp-comment-form-submit')).toBeNull();
 		});
 
 		it('shows the form for an admin', () => {
