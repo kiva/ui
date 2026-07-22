@@ -23,7 +23,7 @@
 			/>
 			<GoalInReviewSlide2 :loan-stats="data?.loanStats" />
 			<GoalInReviewSlide3 :borrower-list="data?.borrowerList" />
-			<GoalInReviewSlide4 :geography="data?.geography" />
+			<GoalInReviewSlide4 :goal-summary="data?.goalSummary" />
 			<GoalInReviewSlide5 :sectors="data?.sectors" />
 			<GoalInReviewSlide6 :goal-insights="data?.goalInsights" />
 			<GoalInReviewSlide7 :wrap-up="data?.wrapUp" />

@@ -5,10 +5,12 @@ export function buildSampleGoalInReviewData(year) {
 		firstName: 'Alexandra',
 		goalSummary: {
 			goalName: `${year} impact goal`,
-			category: 'women',
+			category: 'womens-equality',
 			target: 14,
 			status: 'completed',
 			setMonth: 'January',
+			dateStarted: `${year}-01-15`,
+			transactionSessionCount: 6,
 		},
 		loanStats: {
 			totalLent: 1025,

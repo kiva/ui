@@ -33,12 +33,10 @@
 					Your origin story
 				</p>
 				<h2 class="!tw-text-headline tw-text-eco-green-4 tw-mb-0.5">
-					Spark starter
+					{{ originStory.title }}
 				</h2>
 				<p class="tw-text-base tw-text-eco-green-4 tw-m-0">
-					You began in <strong class="tw-font-medium">January</strong>, when
-					possibilities feel endless. Optimistic and action-oriented, you
-					believe big change starts with a single decision.
+					{{ originStory.content }}
 				</p>
 			</li>
 
@@ -58,12 +56,10 @@
 					Your impact identity
 				</p>
 				<h2 class="!tw-text-headline tw-text-eco-green-4 tw-mb-0.5">
-					Barrier breaker
+					{{ impactIdentity.title }}
 				</h2>
 				<p class="tw-text-base tw-text-eco-green-4 tw-m-0">
-					You chose to support <strong class="tw-font-medium">women entrepreneurs</strong>
-					this year, helping expand access to opportunity, independence, and
-					economic growth.
+					{{ impactIdentity.content }}
 				</p>
 			</li>
 
@@ -83,11 +79,10 @@
 					Your impact habit
 				</p>
 				<h2 class="!tw-text-headline tw-text-eco-green-4 tw-mb-0.5">
-					Kiva champion
+					{{ impactHabit.title }}
 				</h2>
 				<p class="tw-text-base tw-text-eco-green-4 tw-m-0">
-					You showed up <strong class="tw-font-medium">6 times</strong> this
-					year, turning your commitment to impact into a lasting habit.
+					{{ impactHabit.content }}
 				</p>
 			</li>
 		</ul>
@@ -95,14 +90,20 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+import goalInReviewCopy from '#src/util/goalInReviewCopy';
 import CloudSun from '#src/assets/images/my-kiva/goal-in-review/cloud-sun.svg';
 import DoubleHandsAndHeart from '#src/assets/images/my-kiva/goal-in-review/double-hands-and-heart.svg';
 import GreenPuzzle from '#src/assets/images/my-kiva/goal-in-review/green-puzzle.svg';
 
-defineProps({
-	geography: {
+const props = defineProps({
+	goalSummary: {
 		type: Object,
 		default: null,
 	},
 });
+
+const originStory = computed(() => goalInReviewCopy.getOriginStory(props.goalSummary?.dateStarted));
+const impactIdentity = computed(() => goalInReviewCopy.getImpactIdentity(props.goalSummary?.category));
+const impactHabit = computed(() => goalInReviewCopy.getImpactHabit(props.goalSummary?.transactionSessionCount));
 </script>
