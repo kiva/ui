@@ -1,6 +1,7 @@
 <template>
 	<section
 		class="tw-w-full tw-bg-gray-50 tw-bg-no-repeat tw-bg-bottom goal-in-review-slide-1"
+		:class="{ 'goal-in-review-slide-1--in-progress': !isComplete }"
 		data-testid="goal-in-review-slide-1"
 	>
 		<div class="tw-relative" data-testid="goal-in-review-slide-1-header">
@@ -179,6 +180,10 @@ const stats = computed(() => [
 @screen md {
 	.goal-in-review-slide-1 {
 		background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-desktop-hill.png');
+		background-size: auto 245px;
+	}
+
+	.goal-in-review-slide-1--in-progress {
 		background-size: auto 290px;
 	}
 }
@@ -186,12 +191,13 @@ const stats = computed(() => [
 @screen lg {
 	.goal-in-review-slide-1 {
 		background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-desktop-hill.png');
-		background-size: auto 290px;
 	}
 }
 
 .scroll-arrow {
 	animation: scroll-arrow-hint 1.5s ease-in-out infinite;
+
+	@apply motion-reduce:tw-animate-none;
 }
 
 @keyframes scroll-arrow-hint {
@@ -207,12 +213,6 @@ const stats = computed(() => [
 	100% {
 		opacity: 0;
 		transform: translateY(6px);
-	}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.scroll-arrow {
-		animation: none;
 	}
 }
 </style>
