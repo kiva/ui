@@ -17,16 +17,39 @@ const mockApiComments = [
 	},
 ];
 
-function buildApiResponse(comments, { lentTo = true, subscribed = false, loggedIn = true } = {}) {
+function buildApiResponse(comments, {
+	subscribed = false,
+	loggedIn = true,
+	// Defaults make canAddComment true (fundraising loan) so form-focused tests render the form.
+	status = 'fundraising',
+	isPrivileged = false,
+	loanTrusteeId = null,
+	isAdmin = false,
+	borrowedLoanIds = [],
+	myTrusteeId = null,
+	loanCount = 0,
+} = {}) {
 	return {
 		lend: {
 			loan: {
 				id: 123,
+				status,
 				comments: { values: comments },
-				userProperties: { lentTo, subscribed },
+				userProperties: { isPrivileged, subscribed },
+				trustee: loanTrusteeId ? { id: loanTrusteeId } : null,
 			},
 		},
-		my: loggedIn ? { id: 1, userAccount: { id: 1 } } : { id: null, userAccount: null },
+		my: loggedIn
+			? {
+				id: 1,
+				isAdmin,
+				borrowedLoans: borrowedLoanIds.map(id => ({ id })),
+				trustee: myTrusteeId ? { id: myTrusteeId } : null,
+				lender: { id: 1, loanCount },
+			}
+			: {
+				id: null, isAdmin: false, borrowedLoans: [], trustee: null, lender: null,
+			},
 	};
 }
 
@@ -233,6 +256,74 @@ describe('LoanComments', () => {
 		await rerender({ loanId: 456 });
 
 		expect(queryByText(/Flagged on/)).toBeNull();
+	});
+
+	describe('add-comment permission gating', () => {
+		// Base response that on its own does NOT allow commenting: ended loan, not privileged,
+		// not admin, not a trustee, no loans lent, not a borrower on this loan.
+		const notAllowedResponse = {
+			status: 'ended',
+			isPrivileged: false,
+			isAdmin: false,
+			myTrusteeId: null,
+			loanTrusteeId: null,
+			loanCount: 0,
+			borrowedLoanIds: [],
+		};
+
+		function renderWith(responseOverrides) {
+			const mapped = applyMockData(mockApiComments, { ...notAllowedResponse, ...responseOverrides });
+			return renderLoanComments(mapped);
+		}
+
+		it('hides the comment form when the user is not allowed to add a comment', () => {
+			const { queryByTestId } = renderWith({});
+			expect(queryByTestId('bp-comment-form-textarea')).toBeNull();
+			expect(queryByTestId('bp-comment-form-submit')).toBeNull();
+			// Subscribe controls remain available
+			expect(queryByTestId('bp-comment-subscribe')).toBeTruthy();
+		});
+
+		it('shows the form when the loan is fundraising', () => {
+			const { getByTestId } = renderWith({ status: 'fundraising' });
+			expect(getByTestId('bp-comment-form-submit')).toBeTruthy();
+		});
+
+		it('shows the form for an admin', () => {
+			const { getByTestId } = renderWith({ isAdmin: true });
+			expect(getByTestId('bp-comment-form-submit')).toBeTruthy();
+		});
+
+		it('shows the form for a trustee (of any loan)', () => {
+			const { getByTestId } = renderWith({ myTrusteeId: 55 });
+			expect(getByTestId('bp-comment-form-submit')).toBeTruthy();
+		});
+
+		it('shows the form for the trustee of this loan', () => {
+			const { getByTestId } = renderWith({ myTrusteeId: 55, loanTrusteeId: 55 });
+			expect(getByTestId('bp-comment-form-submit')).toBeTruthy();
+		});
+
+		it('shows the form for a privileged user who has lent to at least one loan', () => {
+			const { getByTestId } = renderWith({ isPrivileged: true, loanCount: 3 });
+			expect(getByTestId('bp-comment-form-submit')).toBeTruthy();
+		});
+
+		it('hides the form for a privileged user who has not lent and is not the borrower', () => {
+			const { queryByTestId } = renderWith({ isPrivileged: true, loanCount: 0 });
+			expect(queryByTestId('bp-comment-form-submit')).toBeNull();
+		});
+
+		it('shows the form for the loan borrower even when they have not lent to any loan', () => {
+			// loanId is 123; this loan is among the viewer's borrowed loans (not necessarily the most recent).
+			const { getByTestId } = renderWith({ isPrivileged: true, loanCount: 0, borrowedLoanIds: [456, 123] });
+			expect(getByTestId('bp-comment-form-submit')).toBeTruthy();
+		});
+
+		it('does not treat a privileged user who has not borrowed this loan as the borrower', () => {
+			const { queryByTestId } = renderWith({ isPrivileged: true, loanCount: 0, borrowedLoanIds: [456, 789] });
+			expect(queryByTestId('bp-comment-form-submit')).toBeNull();
+		});
 	});
 
 	it('show all reveals spillover comments and tracks show-all then hide', async () => {
