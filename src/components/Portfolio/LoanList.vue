@@ -102,7 +102,7 @@
 												:href="`/lend/${loan.id}`"
 												class="tw-text-action data-hj-suppress"
 												v-kv-track-event="[
-													'portfolio', 'click', 'View borrower details', loan.name, loan.id]"
+													'portfolio', 'click', 'View borrower details', null, loan.id]"
 											>
 												{{ loan.name }}
 												<div>

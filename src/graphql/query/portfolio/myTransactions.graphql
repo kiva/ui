@@ -1,0 +1,41 @@
+query myTransactions(
+	$offset: Int = 0,
+	$limit: Int = 50,
+	$filter: TransactionSearchFilters
+) {
+	my {
+		id
+		transactions(offset: $offset, limit: $limit, filter: $filter) {
+			totalCount
+			values {
+				createTime
+				displayName
+				description
+				category
+				type
+				paymentTransactionId
+				amount
+				newBalance
+				loan(resolveForAllLoanItems: true) {
+					id
+					name
+					geocode {
+						country {
+							id
+							name
+							isoCode
+						}
+					}
+					... on LoanPartner {
+						partnerName
+						partnerId
+					}
+					... on LoanDirect {
+						trusteeId
+						trusteeName
+					}
+				}
+			}
+		}
+	}
+}

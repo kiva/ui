@@ -386,6 +386,14 @@ export default [
 		}
 	},
 	{
+		path: '/portfolio/transactions-beta',
+		component: () => import('#src/pages/Portfolio/Transactions/TransactionsPage'),
+		meta: {
+			activeLoginRequired: true,
+			excludeFromStaticSitemap: true,
+		}
+	},
+	{
 		path: WITHDRAW_ROUTE.BASE,
 		component: () => import('#src/pages/Withdraw/WithdrawPage'),
 		meta: {
