@@ -4,6 +4,18 @@ import SimpleQueue from '#src/util/simpleQueue';
 import { getUserType, trackFBCustomEvent } from '@kiva/kv-analytics';
 import { hasLentBeforeCookie, hasDepositBeforeCookie } from '#src/util/optimizelyUserMetrics';
 
+// Best-effort Meta pixel call: no-ops when fbq is absent and never throws into the caller even if
+// a broken/blocked fbq shim throws when invoked (mirrors fireFbq in @kiva/kv-analytics).
+function fireFbq(...args) {
+	if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+		try {
+			window.fbq(...args);
+		} catch (e) {
+			logFormatter(e, 'error');
+		}
+	}
+}
+
 // install method for plugin
 export default {
 	install: app => {
@@ -79,7 +91,7 @@ export default {
 					};
 					const hasLentBefore = readCookie(hasLentBeforeCookie) === 'true';
 					const hasDepositBefore = readCookie(hasDepositBeforeCookie) === 'true';
-					window.fbq('track', 'PageView', { user_type: getUserType(hasLentBefore || hasDepositBefore) });
+					fireFbq('track', 'PageView', { user_type: getUserType(hasLentBefore || hasDepositBefore) });
 				}
 			},
 			setCustomUrl: url => {
@@ -249,7 +261,7 @@ export default {
 			trackFBTransaction: transactionData => {
 				const itemTotal = Number(transactionData.itemTotal) || 0;
 				// Skip Purchase when there's no valid amount (omit rather than send a $0/invalid-value purchase)
-				if (typeof window.fbq === 'function' && itemTotal > 0) {
+				if (itemTotal > 0) {
 					const purchase = {
 						currency: 'USD',
 						value: itemTotal
@@ -259,7 +271,7 @@ export default {
 					if (typeof transactionData.isFTD === 'boolean') {
 						purchase.content_type = transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender';
 					}
-					window.fbq('track', 'Purchase', purchase);
+					fireFbq('track', 'Purchase', purchase);
 				}
 
 				// signify transaction has kiva cards

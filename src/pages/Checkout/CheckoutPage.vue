@@ -320,7 +320,7 @@ import { setDonationAmount } from '#src/util/basketUtils';
 import { preFetchAll } from '#src/util/apolloPreFetch';
 import syncDate from '#src/util/syncDate';
 import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
-import { trackAddToCart } from '@kiva/kv-analytics';
+import { trackFBAddToCart } from '@kiva/kv-analytics';
 import { getPromoFromBasket } from '#src/util/campaignUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import checkoutSettings from '#src/graphql/query/checkout/checkoutSettings.graphql';
@@ -1303,7 +1303,7 @@ export default {
 					this.showUpsellModule = false;
 					this.refreshTotals();
 					// Track facebook add to basket
-					trackAddToCart('Loan', amountLeft);
+					trackFBAddToCart('Loan', amountLeft);
 				}
 			}).catch(error => {
 				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
