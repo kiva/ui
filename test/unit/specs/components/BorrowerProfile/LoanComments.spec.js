@@ -25,7 +25,7 @@ function buildApiResponse(comments, {
 	isPrivileged = false,
 	loanTrusteeId = null,
 	isAdmin = false,
-	borrowedLoanId = null,
+	borrowedLoanIds = [],
 	myTrusteeId = null,
 	loanCount = 0,
 } = {}) {
@@ -43,12 +43,12 @@ function buildApiResponse(comments, {
 			? {
 				id: 1,
 				isAdmin,
-				mostRecentBorrowedLoan: borrowedLoanId ? { id: borrowedLoanId } : null,
+				borrowedLoans: borrowedLoanIds.map(id => ({ id })),
 				trustee: myTrusteeId ? { id: myTrusteeId } : null,
 				lender: { id: 1, loanCount },
 			}
 			: {
-				id: null, isAdmin: false, mostRecentBorrowedLoan: null, trustee: null, lender: null,
+				id: null, isAdmin: false, borrowedLoans: [], trustee: null, lender: null,
 			},
 	};
 }
@@ -268,7 +268,7 @@ describe('LoanComments', () => {
 			myTrusteeId: null,
 			loanTrusteeId: null,
 			loanCount: 0,
-			borrowedLoanId: null,
+			borrowedLoanIds: [],
 		};
 
 		function renderWith(responseOverrides) {
@@ -315,13 +315,13 @@ describe('LoanComments', () => {
 		});
 
 		it('shows the form for the loan borrower even when they have not lent to any loan', () => {
-			// loanId is 123; the viewer's most recent borrowed loan is this loan.
-			const { getByTestId } = renderWith({ isPrivileged: true, loanCount: 0, borrowedLoanId: 123 });
+			// loanId is 123; this loan is among the viewer's borrowed loans (not necessarily the most recent).
+			const { getByTestId } = renderWith({ isPrivileged: true, loanCount: 0, borrowedLoanIds: [456, 123] });
 			expect(getByTestId('bp-comment-form-submit')).toBeTruthy();
 		});
 
-		it('does not treat a privileged user whose most recent borrowed loan is a different loan as borrower', () => {
-			const { queryByTestId } = renderWith({ isPrivileged: true, loanCount: 0, borrowedLoanId: 456 });
+		it('does not treat a privileged user who has not borrowed this loan as the borrower', () => {
+			const { queryByTestId } = renderWith({ isPrivileged: true, loanCount: 0, borrowedLoanIds: [456, 789] });
 			expect(queryByTestId('bp-comment-form-submit')).toBeNull();
 		});
 	});

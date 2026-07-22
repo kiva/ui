@@ -379,7 +379,8 @@ export default {
 		showComments() {
 			// Comments remain privileged-only; additionally hide the section entirely on
 			// anonymized (full/pii) loans for anyone who is not an admin.
-			return this.isPrivileged && !(this.isAnonymized && !this.isAdmin);
+			const nonAdminViewingAnonymousLoan = this.isAnonymized && !this.isAdmin;
+			return this.isPrivileged && !nonAdminViewingAnonymousLoan;
 		},
 		shareCampaign() {
 			return this.inPfp ? 'social_share_bp_pfp' : 'social_share_bp';

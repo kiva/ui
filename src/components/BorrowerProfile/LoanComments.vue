@@ -210,7 +210,7 @@ const commentsQuery = gql`query loanCommentsFullList($loanId: Int!) {
 	my {
 		id
 		isAdmin
-		mostRecentBorrowedLoan {
+		borrowedLoans {
 			id
 		}
 		trustee {
@@ -284,7 +284,7 @@ export default {
 			loanStatus: '',
 			loanTrusteeId: null,
 			isLoanPrivileged: false,
-			myBorrowedLoanId: null,
+			myBorrowedLoanIds: [],
 			myTrusteeId: null,
 			myLoanCount: 0,
 			newCommentText: '',
@@ -323,11 +323,10 @@ export default {
 		isTrusteeToLoan() {
 			return !!this.myTrusteeId && this.myTrusteeId === this.loanTrusteeId;
 		},
-		// The logged-in user is the borrower of this loan. The API has no per-loan borrower
-		// flag, so we approximate with the viewer's most recent borrowed loan id (the same
-		// signal ShareButton uses). This misses borrowers whose most recent loan isn't this one.
+		// The logged-in user is the borrower of this loan, i.e. this loan is in the full
+		// collection of loans they have borrowed (my.borrowedLoans).
 		isBorrowerOfLoan() {
-			return this.myBorrowedLoanId != null && Number(this.myBorrowedLoanId) === this.loanId;
+			return this.myBorrowedLoanIds.includes(this.loanId);
 		},
 		// The logged-in user has lent to at least one loan
 		hasLentToAnyLoan() {
@@ -363,7 +362,7 @@ export default {
 			this.loanStatus = loan?.status ?? '';
 			this.loanTrusteeId = loan?.trustee?.id ?? null;
 			this.isLoanPrivileged = loan?.userProperties?.isPrivileged ?? false;
-			this.myBorrowedLoanId = data?.my?.mostRecentBorrowedLoan?.id ?? null;
+			this.myBorrowedLoanIds = (data?.my?.borrowedLoans ?? []).map(l => l.id);
 			this.myTrusteeId = data?.my?.trustee?.id ?? null;
 			this.myLoanCount = data?.my?.lender?.loanCount ?? 0;
 		},
