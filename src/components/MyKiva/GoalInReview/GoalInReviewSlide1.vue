@@ -93,6 +93,7 @@ import slide1Image2 from '#src/assets/images/my-kiva/goal-in-review/slide1-2.png
 import slide1Image3 from '#src/assets/images/my-kiva/goal-in-review/slide1-3.png';
 import slide1Image4 from '#src/assets/images/my-kiva/goal-in-review/slide1-4.png';
 import slide1Bottom from '#src/assets/images/my-kiva/goal-in-review/slide1-bottom.png';
+import { capitalize } from '#src/util/stringParserUtils';
 
 const headerImages = [
 	{ src: slide1Image1, focus: '85% 25%', alt: 'A woman smiling while doing an activity' },
@@ -147,7 +148,7 @@ const borrowerCountDisplay = computed(() => (props.borrowerCount
 	: MISSING));
 
 const categoryDisplay = computed(() => (props.category
-	? props.category.charAt(0).toUpperCase() + props.category.slice(1)
+	? capitalize(props.category)
 	: MISSING));
 
 const percentCompleteDisplay = computed(() => (props.percentComplete

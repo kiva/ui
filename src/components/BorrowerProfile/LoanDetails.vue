@@ -95,6 +95,7 @@ import { KvLoadingPlaceholder } from '@kiva/kv-components';
 import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionListItem';
 import DescriptionListLoading from '#src/components/BorrowerProfile/DescriptionListLoading';
 import RepaymentSchedule from '#src/components/BorrowerProfile/RepaymentSchedule';
+import { capitalize } from '#src/util/stringParserUtils';
 
 const loanDetailsQuery = gql`query borrowerProfileLoanDetails($loanId: Int!) {
 	lend {
@@ -208,8 +209,7 @@ export default {
 			const schedule = this.isPartnerLoan
 				? intervalMap[this.repaymentInterval]
 				|| this.repaymentInterval : 'Monthly';
-			const scheduleUpperCase = schedule.toString().charAt(0).toUpperCase() + schedule.toString().slice(1);
-			return scheduleUpperCase;
+			return capitalize(schedule.toString());
 		},
 		fundingModel() {
 			return this.isPartnerLoan && this.flexibleFundraisingEnabled ? 'Flexible' : 'Fixed';
