@@ -1,13 +1,13 @@
 import {
 	format,
 	getMonth,
-	isValid,
-	parseISO,
 } from 'date-fns';
 import {
 	ID_SUPPORT_ALL,
 	ID_WOMENS_EQUALITY,
 } from '#src/composables/useBadgeData';
+import { toValidDate } from '#src/util/dateUtils';
+import { capitalize } from '#src/util/stringParserUtils';
 
 /**
  * Variant copy for GoalInReviewSlide4 ("What your goal says about you").
@@ -28,9 +28,6 @@ export const LIFETIME_PERCENTILE_THRESHOLD = 80;
 // Wraps emphasized copy in a medium-weight <strong>. The base layer resets
 // <strong> to normal weight, so the class restores emphasis. Rendered via v-html.
 const bold = text => `<strong class="tw-font-medium">${text}</strong>`;
-
-// Capitalizes the first letter (month names are interpolated mid-sentence).
-const capitalize = value => (value ? value.charAt(0).toUpperCase() + value.slice(1) : value);
 
 // Origin-story variants indexed by calendar quarter (Q1 = Jan–Mar … Q4 = Oct–Dec).
 // `content` is a function so the real start month can be interpolated in.
@@ -57,20 +54,6 @@ const ORIGIN_STORY_VARIANTS = [
 	},
 ];
 
-/**
- * Parses the goal start date into a valid Date, or null when unusable.
- *
- * @param {string|number|Date} dateStarted The goal start date.
- * @returns {Date|null} A valid Date, or null.
- */
-const parseStartDate = dateStarted => {
-	if (!dateStarted) {
-		return null;
-	}
-	const parsed = typeof dateStarted === 'string' ? parseISO(dateStarted) : new Date(dateStarted);
-	return isValid(parsed) ? parsed : null;
-};
-
 const goalInReviewCopy = {
 	/**
 	 * Origin-story card copy, keyed to the quarter the goal started in.
@@ -79,7 +62,7 @@ const goalInReviewCopy = {
 	 * @returns {{title: string, content: string}} Card title and body.
 	 */
 	getOriginStory(dateStarted) {
-		const date = parseStartDate(dateStarted);
+		const date = toValidDate(dateStarted);
 		const monthIndex = date ? getMonth(date) : 0;
 		const monthName = date ? format(date, 'MMMM') : 'January';
 		const variant = ORIGIN_STORY_VARIANTS[Math.floor(monthIndex / 3)];

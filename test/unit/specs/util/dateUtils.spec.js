@@ -1,6 +1,35 @@
-import getMonthsCount from '#src/util/dateUtils';
+import getMonthsCount, { toValidDate } from '#src/util/dateUtils';
 
 describe('dateUtils.js', () => {
+	describe('toValidDate', () => {
+		it('parses an ISO string into a valid Date', () => {
+			const date = toValidDate('2025-02-10');
+			expect(date).toBeInstanceOf(Date);
+			expect(date.getMonth()).toBe(1); // February (0-indexed)
+		});
+
+		it('parses a numeric timestamp', () => {
+			const date = toValidDate(1674172800000);
+			expect(date).toBeInstanceOf(Date);
+			expect(Number.isNaN(date.getTime())).toBe(false);
+		});
+
+		it('passes a Date through when it is valid', () => {
+			const input = new Date('2024-06-15');
+			expect(toValidDate(input)).toBeInstanceOf(Date);
+		});
+
+		it('returns null for falsy input', () => {
+			expect(toValidDate(null)).toBe(null);
+			expect(toValidDate(undefined)).toBe(null);
+			expect(toValidDate('')).toBe(null);
+		});
+
+		it('returns null for an unparseable string', () => {
+			expect(toValidDate('not-a-date')).toBe(null);
+		});
+	});
+
 	const startTimestamp = 1674172800000; // Start subscription on Jan 20th
 
 	it('should count the first month', () => {

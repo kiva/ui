@@ -1,4 +1,14 @@
 /**
+ * Capitalizes the first letter of a string, leaving the rest unchanged.
+ *
+ * @param {string} value
+ * @returns {string}
+ */
+export function capitalize(value) {
+	return value ? value.charAt(0).toUpperCase() + value.slice(1) : value;
+}
+
+/**
  * Returns a possessive name
  *
  * @param {string} name
