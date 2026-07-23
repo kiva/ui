@@ -19,6 +19,13 @@
 					data-testid="bp-comment-form-textarea"
 				></textarea>
 			</template>
+			<p
+				v-else-if="showMustBeLenderMessage"
+				class="tw-text-secondary tw-mb-1"
+				data-testid="bp-comment-must-be-lender"
+			>
+				You must be a lender to comment on this loan.
+			</p>
 			<div class="tw-flex tw-items-center tw-gap-2">
 				<kv-button
 					v-if="canAddComment"
@@ -198,6 +205,7 @@ const commentsQuery = gql`query loanCommentsFullList($loanId: Int!) {
 			}
 			userProperties {
 				isPrivileged
+				lentTo
 				subscribed
 			}
 			... on LoanDirect {
@@ -284,6 +292,7 @@ export default {
 			loanStatus: '',
 			loanTrusteeId: null,
 			isLoanPrivileged: false,
+			lentToLoan: false,
 			myBorrowedLoanIds: [],
 			myTrusteeId: null,
 			myLoanCount: 0,
@@ -332,12 +341,21 @@ export default {
 		hasLentToAnyLoan() {
 			return this.myLoanCount >= 1;
 		},
+		// The logged-in user has lent to this specific loan
+		isLenderOfLoan() {
+			return this.lentToLoan;
+		},
 		canAddComment() {
-			return this.isFundraising
+			return (this.isFundraising && this.isLenderOfLoan)
 				|| this.isTrustee
 				|| this.isAdmin
 				|| this.isTrusteeToLoan
 				|| (this.isLoanPrivileged && (this.hasLentToAnyLoan || this.isBorrowerOfLoan));
+		},
+		// Prompt shown in place of the form on fundraising loans when the viewer
+		// is not eligible to comment (i.e. has not lent to this loan).
+		showMustBeLenderMessage() {
+			return this.isFundraising && !this.canAddComment;
 		},
 		hasSpillover() {
 			return this.comments.length > INITIAL_COMMENT_COUNT;
@@ -362,6 +380,7 @@ export default {
 			this.loanStatus = loan?.status ?? '';
 			this.loanTrusteeId = loan?.trustee?.id ?? null;
 			this.isLoanPrivileged = loan?.userProperties?.isPrivileged ?? false;
+			this.lentToLoan = loan?.userProperties?.lentTo ?? false;
 			this.myBorrowedLoanIds = (data?.my?.borrowedLoans ?? []).map(l => l.id);
 			this.myTrusteeId = data?.my?.trustee?.id ?? null;
 			this.myLoanCount = data?.my?.lender?.loanCount ?? 0;
