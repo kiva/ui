@@ -1,3 +1,43 @@
+## [3.80.0-rc.1](https://github.com/kiva/ui/compare/v3.79.0...v3.80.0-rc.1) (2026-07-23)
+
+### 🎉 New Features
+
+* [CP-2930] gate borrower profile comment section by anonymization and add-permission ([88dbe51](https://github.com/kiva/ui/commit/88dbe517db507f0a28344594747073f0ef96c006))
+* [MP-3046] assign custom tip default experiment and provide variant to tip modal ([#7074](https://github.com/kiva/ui/issues/7074)) ([3ef9d11](https://github.com/kiva/ui/commit/3ef9d1196f2bc39f4bc06daff7f21dcdd27285cf))
+* [MP-3047] prefill custom tip input with $1.00 in the treatment variant ([#7076](https://github.com/kiva/ui/issues/7076)) ([4ffd6ff](https://github.com/kiva/ui/commit/4ffd6ff22ce227fffa33a5feb18fbc3807020621))
+* [MP-3049] fire experiment exposure when tip modal is viewed ([#7078](https://github.com/kiva/ui/issues/7078)) ([239719d](https://github.com/kiva/ui/commit/239719d1d60b900e3579a651e2653fc337839a6d))
+* add first slide of goal in review ([c220424](https://github.com/kiva/ui/commit/c220424ef308b59b78668de7aa4ef95cc2b09647))
+* implement fe for /portfolio/transactions-beta ([#7079](https://github.com/kiva/ui/issues/7079)) ([140a78e](https://github.com/kiva/ui/commit/140a78ea5142a66e6e3f445afc3f3004e34c48f3))
+* implement fe of the /portfolio/estimated-repayments migration ([#7075](https://github.com/kiva/ui/issues/7075)) ([d65e84a](https://github.com/kiva/ui/commit/d65e84a936f8c020c94826c007958015259c7945))
+* mp-3009-container-deep-link ([a752118](https://github.com/kiva/ui/commit/a752118a7313dc1ae5959ece9e7d7d13eae6290b))
+* mp-3009-container-deep-link ([2a8547c](https://github.com/kiva/ui/commit/2a8547c44af9346dd401994c58a383a20060bb5f))
+* mp-3009-container-deep-link ([605c775](https://github.com/kiva/ui/commit/605c7756ff4cfe9b9aa84e3638449f94483ce43b))
+* mp-3009-container-deep-link ([a3ee538](https://github.com/kiva/ui/commit/a3ee53889ce053b689fc5a09d6a479c8fbf09d8d))
+
+### 🐛 Bugfixes
+
+* [CP-2930] detect loan borrower via full borrowedLoans collection ([86b5a47](https://github.com/kiva/ui/commit/86b5a47a8972bde943f96ad595ad15b622200cfb))
+* [CP-2930] determine loan borrower via mostRecentBorrowedLoan id ([b51285f](https://github.com/kiva/ui/commit/b51285f5762b171d86840cd3ed6a65afd81498bf))
+* bg hill image ([7edcdd2](https://github.com/kiva/ui/commit/7edcdd2cc397571f6587843349486dc09dba8e10))
+* capitalize first letter of goal category ([f9dacf5](https://github.com/kiva/ui/commit/f9dacf52225b56356500b66ad4a1963d6e5f1547))
+* hill position depending on goal status ([c5a8e34](https://github.com/kiva/ui/commit/c5a8e34c7888e47b2d67bceebd5657d181e2f15c))
+* hill position to avoid distortion ([6c5039d](https://github.com/kiva/ui/commit/6c5039d6bd3de6124793ce71bad73876ed2c2c49))
+* remove repeated code from slide1 ([11f58a0](https://github.com/kiva/ui/commit/11f58a0bd50dc62c04f21beb0ce578bafd5d6dd1))
+* small design tweaks ([f01eb7d](https://github.com/kiva/ui/commit/f01eb7dc7aae42aa25ac37b2bc29bba31773d117))
+* solve conflicts ([bb17268](https://github.com/kiva/ui/commit/bb172683f291dae71650bfb7f6f6f0f07333ea02))
+* update kv libs with fix for maplibre-gl ([91e3115](https://github.com/kiva/ui/commit/91e3115272e2f0d704fc02da3c4cb754392f9e12))
+
+### 🧹 Chores
+
+* **deps-dev:** bump brace-expansion from 1.1.12 to 1.1.15 ([8a7137e](https://github.com/kiva/ui/commit/8a7137eddd55c909419098f11fd6441386c4f027))
+* **deps-dev:** bump fast-uri from 3.0.6 to 3.1.4 ([4f9bca2](https://github.com/kiva/ui/commit/4f9bca2029110a294cf600e6c4540a95a5d956f9))
+* **deps-dev:** bump flatted from 3.3.3 to 3.4.3 ([0276f5a](https://github.com/kiva/ui/commit/0276f5ab20f6aa221d656c6da07784c7db6411ae))
+* **deps-dev:** bump postcss from 8.5.6 to 8.5.10 ([dee7627](https://github.com/kiva/ui/commit/dee7627c5de038076da0e963a6b1482111b9bb4f))
+* **deps:** bump @protobufjs/utf8 from 1.1.0 to 1.1.1 ([699a069](https://github.com/kiva/ui/commit/699a06970aa0bab0303ff531848d6fb66976d5a2))
+* **deps:** bump follow-redirects from 1.15.11 to 1.16.0 ([a5abaf3](https://github.com/kiva/ui/commit/a5abaf3ed10dd6161593e6fc796c35c7bf6e764b))
+* **deps:** bump ip-address from 10.1.0 to 10.2.0 ([f768837](https://github.com/kiva/ui/commit/f76883757d355cdeece733a0cc9b53753d803559))
+* **deps:** bump tmp from 0.2.4 to 0.2.7 ([362815c](https://github.com/kiva/ui/commit/362815c2095b34c2e9f7ce1fe1954715d237a624))
+
 ## [3.79.0](https://github.com/kiva/ui/compare/v3.78.0...v3.79.0) (2026-07-20)
 
 ### 🎉 New Features
