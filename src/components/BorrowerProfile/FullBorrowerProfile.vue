@@ -157,7 +157,7 @@
 				@hide-section="showTags = false"
 			/>
 			<loan-comments
-				v-if="showComments"
+				v-if="showAddCommentsSection"
 				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
 				:loan-id="loanId"
 			/>
@@ -373,7 +373,7 @@ export default {
 			const level = this.loanData?.anonymizationLevel;
 			return level === 'full' || level === 'pii';
 		},
-		showComments() {
+		showAddCommentsSection() {
 			// Only privileged users (e.g. lenders on this loan) can see the comment
 			// section, and only while the loan is not anonymized (full/pii).
 			return this.isPrivileged && !this.isAnonymized;

@@ -1,6 +1,6 @@
 import FullBorrowerProfile from '#src/components/BorrowerProfile/FullBorrowerProfile';
 
-const { isAnonymized, isPrivileged, showComments } = FullBorrowerProfile.computed;
+const { isAnonymized, isPrivileged, showAddCommentsSection } = FullBorrowerProfile.computed;
 
 // Evaluates a computed with a mock `this` context, resolving other computeds it depends on.
 function evalShowComments({ privileged = false, anonymizationLevel = 'none' } = {}) {
@@ -12,7 +12,7 @@ function evalShowComments({ privileged = false, anonymizationLevel = 'none' } = 
 	};
 	context.isAnonymized = isAnonymized.call(context);
 	context.isPrivileged = isPrivileged.call(context);
-	return showComments.call(context);
+	return showAddCommentsSection.call(context);
 }
 
 describe('FullBorrowerProfile comment section visibility', () => {
