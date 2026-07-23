@@ -2,6 +2,7 @@ export function buildSampleGoalInReviewData(year) {
 	return {
 		year,
 		isEligible: true,
+		firstName: 'Alexandra',
 		goalSummary: {
 			goalName: `${year} impact goal`,
 			category: 'women',

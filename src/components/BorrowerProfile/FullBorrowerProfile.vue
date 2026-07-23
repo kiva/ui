@@ -157,7 +157,7 @@
 				@hide-section="showTags = false"
 			/>
 			<loan-comments
-				v-if="isPrivileged"
+				v-if="showComments"
 				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
 				:loan-id="loanId"
 			/>
@@ -368,6 +368,20 @@ export default {
 		},
 		isPrivileged() {
 			return this.loanData?.userProperties?.isPrivileged ?? false;
+		},
+		isAnonymized() {
+			const level = this.loanData?.anonymizationLevel;
+			return level === 'full' || level === 'pii';
+		},
+		isFundraising() {
+			return this.loanData?.status === 'fundraising';
+		},
+		showComments() {
+			// Mirrors legacy showSocialInfo: logged-in users see the section unless
+			// the loan is anonymized (full/pii); logged-out visitors see it only on
+			// fundraising loans with no anonymization at all.
+			if (this.isLoggedIn) return !this.isAnonymized;
+			return this.isFundraising && (this.loanData?.anonymizationLevel ?? 'none') === 'none';
 		},
 		shareCampaign() {
 			return this.inPfp ? 'social_share_bp_pfp' : 'social_share_bp';
