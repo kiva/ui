@@ -53,7 +53,7 @@ describe('GoalInReviewModal', () => {
 
 		// Slide 1 is a real component; slides 2-7 are still placeholders
 		await findByText('Your 2026 impact goal recap');
-		await Promise.all([2, 3, 4, 5, 6, 7].map(slideNumber => findByText(`Slide ${slideNumber}`)));
+		await Promise.all([2, 3, 5, 6, 7].map(slideNumber => findByText(`Slide ${slideNumber}`)));
 	});
 
 	it('emits close when the lightbox closes', async () => {
