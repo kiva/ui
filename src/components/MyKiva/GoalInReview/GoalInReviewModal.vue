@@ -109,7 +109,7 @@ const handleClose = () => {
 
 @screen md {
 	.goal-in-review-modal [data-test=kv-lightbox] {
-		width: min(calc(100vw - 14rem), 875px) !important;
+		max-width: min(calc(100vw - 4rem), 1020px) !important;
 		max-height: calc(100vh - 14rem) !important;
 
 		@apply !tw-m-auto !tw-rounded;
