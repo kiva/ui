@@ -131,10 +131,6 @@ const goalInReviewCopy = {
 	 * @returns {{title: string, content: string}} Card title and body.
 	 */
 	getImpactHabit({ transactionSessionCount, lifetimePercentile } = {}) {
-		// The Number.isFinite guard is load-bearing: when the percentile is absent
-		// (undefined -> NaN) or otherwise below threshold, we fall straight through
-		// to the session tiers, so nothing changes in production until the page
-		// supplies a real percentile.
 		const percentile = Number(lifetimePercentile);
 		if (Number.isFinite(percentile) && percentile >= LIFETIME_PERCENTILE_THRESHOLD) {
 			return this.getImpactHabitTopPercentile(percentile);
@@ -157,9 +153,6 @@ const goalInReviewCopy = {
 
 	/**
 	 * Impact-habit card copy for top-percentile lenders (>= threshold).
-	 *
-	 * TODO(next step): confirm the copy/threshold semantics with design once the
-	 * percentile data source is available.
 	 *
 	 * @param {number} lifetimePercentile The lender's lifetime percentile.
 	 * @returns {{title: string, content: string}} Card title and body.

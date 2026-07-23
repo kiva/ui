@@ -3,7 +3,7 @@
 		class="tw-w-full tw-bg-gray-50 tw-px-2.5 tw-py-4 md:tw-px-4 md:tw-py-7.5"
 		data-testid="goal-in-review-slide-4"
 	>
-		<p class="tw-text-base tw-text-eco-green-3 tw-mb-1">
+		<p class="tw-text-eco-green-3 tw-mb-1">
 			Giving insights
 		</p>
 
@@ -29,13 +29,13 @@
 					/>
 				</div>
 
-				<p class="tw-text-base tw-text-marigold-3 tw-mb-0.5">
+				<p class="tw-text-marigold-3 tw-mb-0.5">
 					Your origin story
 				</p>
 				<h2 class="!tw-text-headline tw-text-eco-green-4 tw-mb-0.5">
 					{{ originStory.title }}
 				</h2>
-				<p class="tw-text-base tw-text-eco-green-4 tw-m-0" v-html="originStory.content"></p>
+				<p class="tw-text-eco-green-4 tw-m-0" v-html="originStory.content"></p>
 			</li>
 
 			<li
@@ -50,13 +50,13 @@
 					/>
 				</div>
 
-				<p class="tw-text-base tw-text-desert-rose tw-mb-0.5">
+				<p class="tw-text-desert-rose tw-mb-0.5">
 					Your impact identity
 				</p>
 				<h2 class="!tw-text-headline tw-text-eco-green-4 tw-mb-0.5">
 					{{ impactIdentity.title }}
 				</h2>
-				<p class="tw-text-base tw-text-eco-green-4 tw-m-0" v-html="impactIdentity.content"></p>
+				<p class="tw-text-eco-green-4 tw-m-0" v-html="impactIdentity.content"></p>
 			</li>
 
 			<li
@@ -71,13 +71,13 @@
 					/>
 				</div>
 
-				<p class="tw-text-base tw-text-eco-green-3 tw-mb-0.5">
+				<p class="tw-text-eco-green-3 tw-mb-0.5">
 					Your impact habit
 				</p>
 				<h2 class="!tw-text-headline tw-text-eco-green-4 tw-mb-0.5">
 					{{ impactHabit.title }}
 				</h2>
-				<p class="tw-text-base tw-text-eco-green-4 tw-m-0" v-html="impactHabit.content"></p>
+				<p class="tw-text-eco-green-4 tw-m-0" v-html="impactHabit.content"></p>
 			</li>
 		</ul>
 	</section>
