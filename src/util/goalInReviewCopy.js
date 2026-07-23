@@ -25,28 +25,35 @@ export const KIVA_CHAMPION_MIN_SESSIONS = 5;
 /** Lifetime percentile at/above which the "Top X%" habit variant applies. */
 export const LIFETIME_PERCENTILE_THRESHOLD = 80;
 
+// Wraps emphasized copy in a medium-weight <strong>. The base layer resets
+// <strong> to normal weight, so the class restores emphasis. Rendered via v-html.
+const bold = text => `<strong class="tw-font-medium">${text}</strong>`;
+
+// Capitalizes the first letter (month names are interpolated mid-sentence).
+const capitalize = value => (value ? value.charAt(0).toUpperCase() + value.slice(1) : value);
+
 // Origin-story variants indexed by calendar quarter (Q1 = Jan–Mar … Q4 = Oct–Dec).
 // `content` is a function so the real start month can be interpolated in.
 const ORIGIN_STORY_VARIANTS = [
 	{
 		title: 'The spark starters',
 		// eslint-disable-next-line max-len
-		content: month => `You began in ${month}. As a natural trailblazer, you aren’t afraid to go first. You don’t wait for change - you help create it, showing others what’s possible.`,
+		content: month => `You began in ${bold(capitalize(month))}. As a natural trailblazer, you aren’t afraid to go first. You don’t wait for change - you help create it, showing others what’s possible.`,
 	},
 	{
 		title: 'The bloom chasers',
 		// eslint-disable-next-line max-len
-		content: month => `You began in ${month}, a season of growth. Intentional and progress-driven, you believe small actions, nurtured over time, create lasting impact.`,
+		content: month => `You began in ${bold(capitalize(month))}, a season of growth. Intentional and progress-driven, you believe small actions, nurtured over time, create lasting impact.`,
 	},
 	{
 		title: 'The sun chasers',
 		// eslint-disable-next-line max-len
-		content: month => `You started in ${month}, when long days inspire big dreams. Driven by possibility, you believe the future is shaped by the actions we take, and the impact we choose to make.`,
+		content: month => `You started in ${bold(capitalize(month))}, when long days inspire big dreams. Driven by possibility, you believe the future is shaped by the actions we take, and the impact we choose to make.`,
 	},
 	{
 		title: 'The Reflectionist',
 		// eslint-disable-next-line max-len
-		content: month => `You started in ${month}, a season of reflection and giving. Thoughtful and driven, you know the best time to make an impact is whenever you’re ready.`,
+		content: month => `You started in ${bold(capitalize(month))}, a season of reflection and giving. Thoughtful and driven, you know the best time to make an impact is whenever you’re ready.`,
 	},
 ];
 
@@ -93,7 +100,7 @@ const goalInReviewCopy = {
 			return {
 				title: 'Barrier Breaker',
 				// eslint-disable-next-line max-len
-				content: 'You chose to support women, helping break down barriers to opportunity, financial independence, and brighter futures.',
+				content: `You chose to support ${bold('women entrepreneurs')}, helping break down barriers to opportunity, financial independence, and brighter futures.`,
 			};
 		}
 		if (categoryId === ID_SUPPORT_ALL) {
@@ -139,12 +146,12 @@ const goalInReviewCopy = {
 			return {
 				title: 'Kiva champion',
 				// eslint-disable-next-line max-len
-				content: `You showed up ${count} ${timeWord} this year, turning your commitment to impact into a lasting habit.`,
+				content: `You showed up ${bold(`${count} ${timeWord}`)} this year, turning your commitment to impact into a lasting habit.`,
 			};
 		}
 		return {
 			title: 'Rising Kiva champion',
-			content: `You showed up ${count} ${timeWord} this year and started building a habit of impact.`,
+			content: `You showed up ${bold(`${count} ${timeWord}`)} this year and started building a habit of impact.`,
 		};
 	},
 

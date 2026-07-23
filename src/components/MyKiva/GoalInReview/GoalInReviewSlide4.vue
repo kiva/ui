@@ -35,9 +35,7 @@
 				<h2 class="!tw-text-headline tw-text-eco-green-4 tw-mb-0.5">
 					{{ originStory.title }}
 				</h2>
-				<p class="tw-text-base tw-text-eco-green-4 tw-m-0">
-					{{ originStory.content }}
-				</p>
+				<p class="tw-text-base tw-text-eco-green-4 tw-m-0" v-html="originStory.content"></p>
 			</li>
 
 			<li
@@ -58,9 +56,7 @@
 				<h2 class="!tw-text-headline tw-text-eco-green-4 tw-mb-0.5">
 					{{ impactIdentity.title }}
 				</h2>
-				<p class="tw-text-base tw-text-eco-green-4 tw-m-0">
-					{{ impactIdentity.content }}
-				</p>
+				<p class="tw-text-base tw-text-eco-green-4 tw-m-0" v-html="impactIdentity.content"></p>
 			</li>
 
 			<li
@@ -81,9 +77,7 @@
 				<h2 class="!tw-text-headline tw-text-eco-green-4 tw-mb-0.5">
 					{{ impactHabit.title }}
 				</h2>
-				<p class="tw-text-base tw-text-eco-green-4 tw-m-0">
-					{{ impactHabit.content }}
-				</p>
+				<p class="tw-text-base tw-text-eco-green-4 tw-m-0" v-html="impactHabit.content"></p>
 			</li>
 		</ul>
 	</section>

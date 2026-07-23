@@ -6,46 +6,49 @@ vi.mock('#src/composables/useBadgeData', () => ({
 	ID_SUPPORT_ALL: 'support-all',
 }));
 
+// Mirrors the medium-weight <strong> emphasis the copy module wraps values in.
+const strong = text => `<strong class="tw-font-medium">${text}</strong>`;
+
 describe('goalInReviewCopy.js', () => {
 	describe('getOriginStory', () => {
-		it('returns the Jan–Mar variant with the real month interpolated', () => {
+		it('returns the Jan–Mar variant with the month emphasized and capitalized', () => {
 			const { title, content } = goalInReviewCopy.getOriginStory('2025-02-10');
 			expect(title).toBe('The spark starters');
-			expect(content).toContain('You began in February.');
+			expect(content).toContain(`You began in ${strong('February')}.`);
 		});
 
 		it('returns the Apr–Jun variant', () => {
 			const { title, content } = goalInReviewCopy.getOriginStory('2025-04-01');
 			expect(title).toBe('The bloom chasers');
-			expect(content).toContain('You began in April,');
+			expect(content).toContain(`You began in ${strong('April')},`);
 		});
 
 		it('returns the Jul–Sep variant', () => {
 			const { title, content } = goalInReviewCopy.getOriginStory('2025-09-30');
 			expect(title).toBe('The sun chasers');
-			expect(content).toContain('You started in September,');
+			expect(content).toContain(`You started in ${strong('September')},`);
 		});
 
 		it('returns the Oct–Dec variant', () => {
 			const { title, content } = goalInReviewCopy.getOriginStory('2025-12-15');
 			expect(title).toBe('The Reflectionist');
-			expect(content).toContain('You started in December,');
+			expect(content).toContain(`You started in ${strong('December')},`);
 		});
 
 		it('falls back to the first variant with January when the date is missing or invalid', () => {
 			expect(goalInReviewCopy.getOriginStory(undefined)).toEqual({
 				title: 'The spark starters',
-				content: expect.stringContaining('You began in January.'),
+				content: expect.stringContaining(`You began in ${strong('January')}.`),
 			});
 			expect(goalInReviewCopy.getOriginStory('not-a-date').title).toBe('The spark starters');
 		});
 	});
 
 	describe('getImpactIdentity', () => {
-		it('matches the women’s equality badge id', () => {
+		it('matches the women’s equality badge id and emphasizes "women entrepreneurs"', () => {
 			const { title, content } = goalInReviewCopy.getImpactIdentity('womens-equality');
 			expect(title).toBe('Barrier Breaker');
-			expect(content).toContain('support women');
+			expect(content).toContain(`support ${strong('women entrepreneurs')},`);
 		});
 
 		it('matches the support-all badge id', () => {
@@ -82,27 +85,27 @@ describe('goalInReviewCopy.js', () => {
 			expect(goalInReviewCopy.getImpactHabit({ transactionSessionCount: 6 }).title).toBe('Kiva champion');
 		});
 
-		it('returns Kiva champion for 5 or more sessions with the count interpolated', () => {
+		it('returns Kiva champion for 5 or more sessions with the count emphasized', () => {
 			const { title, content } = goalInReviewCopy.getImpactHabit({ transactionSessionCount: 6 });
 			expect(title).toBe('Kiva champion');
-			expect(content).toContain('You showed up 6 times this year');
+			expect(content).toContain(`You showed up ${strong('6 times')} this year`);
 		});
 
 		it('returns Rising Kiva champion for 1–4 sessions', () => {
 			const { title, content } = goalInReviewCopy.getImpactHabit({ transactionSessionCount: 4 });
 			expect(title).toBe('Rising Kiva champion');
-			expect(content).toContain('You showed up 4 times this year');
+			expect(content).toContain(`You showed up ${strong('4 times')} this year`);
 		});
 
 		it('pluralizes correctly for a single session', () => {
 			expect(goalInReviewCopy.getImpactHabit({ transactionSessionCount: 1 }).content)
-				.toContain('You showed up 1 time this year');
+				.toContain(`You showed up ${strong('1 time')} this year`);
 		});
 
 		it('defaults to zero sessions when nothing is provided', () => {
 			const { title, content } = goalInReviewCopy.getImpactHabit();
 			expect(title).toBe('Rising Kiva champion');
-			expect(content).toContain('You showed up 0 times this year');
+			expect(content).toContain(`You showed up ${strong('0 times')} this year`);
 		});
 	});
 });
