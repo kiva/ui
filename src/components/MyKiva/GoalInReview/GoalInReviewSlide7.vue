@@ -17,7 +17,7 @@
 			<div class="tw-flex tw-flex-col tw-gap-2 tw-text-base tw-text-eco-green-1 tw-mb-3">
 				<p>
 					Behind every number is a name. Behind every loan is a dream.
-					Thank you for helping make <strong>{{ dreamsCopy }}</strong> more possible {{ timeframe }}.
+					{{ contributionLead }} <strong>{{ dreamsCopy }}</strong> more possible {{ timeframe }}.
 				</p>
 				<p v-if="isPastGoalYear">
 					Imagine what another year of lending could make possible.
@@ -96,6 +96,11 @@ const isPastGoalYear = computed(() => Boolean(props.year) && new Date().getFullY
 const dreamsCopy = computed(() => (props.loanCount ? `${props.loanCount} dreams` : 'more dreams'));
 
 const timeframe = computed(() => (isPastGoalYear.value ? 'last year' : 'this year'));
+
+// In-progress goals in the current year get an "already helped" lead; everything else is a thank-you.
+const contributionLead = computed(() => (!isComplete.value && !isPastGoalYear.value
+	? "You've already helped make"
+	: 'Thank you for helping make'));
 
 const primaryCta = computed(() => {
 	if (isPastGoalYear.value) {

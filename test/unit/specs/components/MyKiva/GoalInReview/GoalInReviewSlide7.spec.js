@@ -22,6 +22,25 @@ describe('GoalInReviewSlide7', () => {
 		getByText(/14 dreams/);
 	});
 
+	describe('contribution lead copy', () => {
+		it('thanks the lender for a completed goal', () => {
+			const { getByText } = renderSlide({ goalStatus: 'completed', year: currentYear });
+			getByText(/Thank you for helping make/);
+		});
+
+		it('uses an "already helped" lead for an in-progress goal in the current year', () => {
+			const { getByText, queryByText } = renderSlide({ goalStatus: 'in-progress', year: currentYear });
+			getByText(/already helped make/);
+			expect(queryByText(/Thank you for helping make/)).toBeNull();
+		});
+
+		it('keeps the thank-you lead for an in-progress goal in the next year', () => {
+			const { getByText, queryByText } = renderSlide({ goalStatus: 'in-progress', year: currentYear - 1 });
+			getByText(/Thank you for helping make/);
+			expect(queryByText(/already helped make/)).toBeNull();
+		});
+	});
+
 	describe('primary CTA — current goal year', () => {
 		it('complete: "Back to Kiva"', async () => {
 			const { getByText, emitted } = renderSlide({ goalStatus: 'completed', year: currentYear });
