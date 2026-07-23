@@ -75,7 +75,6 @@ const handleClose = () => {
 	emit('close');
 };
 
-// Track the slide 7 primary CTA, then forward the action for the container to wire (origin/goal-modal).
 const handleCta = event => {
 	$kvTrackEvent('portfolio', 'click', `goal-in-review-${event}`);
 	emit(event);
