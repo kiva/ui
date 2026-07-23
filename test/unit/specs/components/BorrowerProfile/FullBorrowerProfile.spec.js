@@ -1,0 +1,53 @@
+import FullBorrowerProfile from '#src/components/BorrowerProfile/FullBorrowerProfile';
+
+const { isAnonymized, showComments } = FullBorrowerProfile.computed;
+
+// Evaluates a computed with a mock `this` context, resolving other computeds it depends on.
+function evalShowComments({ isPrivileged = false, isAdmin = false, anonymizationLevel = 'none' } = {}) {
+	const context = {
+		isPrivileged,
+		isAdmin,
+		loanData: { anonymizationLevel },
+	};
+	context.isAnonymized = isAnonymized.call(context);
+	return showComments.call(context);
+}
+
+describe('FullBorrowerProfile comment section visibility', () => {
+	describe('isAnonymized', () => {
+		it.each([
+			['full', true],
+			['pii', true],
+			['none', false],
+			[undefined, false],
+			['', false],
+		])('anonymizationLevel "%s" -> %s', (level, expected) => {
+			expect(isAnonymized.call({ loanData: { anonymizationLevel: level } })).toBe(expected);
+		});
+	});
+
+	describe('showComments', () => {
+		it('hides for a non-privileged user regardless of anonymization', () => {
+			expect(evalShowComments({ isPrivileged: false, anonymizationLevel: 'none' })).toBe(false);
+			expect(evalShowComments({ isPrivileged: false, anonymizationLevel: 'full' })).toBe(false);
+		});
+
+		it('shows for a privileged user on a non-anonymized loan', () => {
+			expect(evalShowComments({ isPrivileged: true, anonymizationLevel: 'none' })).toBe(true);
+		});
+
+		it('hides for a privileged non-admin user on a full/pii anonymized loan', () => {
+			expect(evalShowComments({ isPrivileged: true, isAdmin: false, anonymizationLevel: 'full' })).toBe(false);
+			expect(evalShowComments({ isPrivileged: true, isAdmin: false, anonymizationLevel: 'pii' })).toBe(false);
+		});
+
+		it('shows for an admin (privileged) on a full/pii anonymized loan', () => {
+			expect(evalShowComments({ isPrivileged: true, isAdmin: true, anonymizationLevel: 'full' })).toBe(true);
+			expect(evalShowComments({ isPrivileged: true, isAdmin: true, anonymizationLevel: 'pii' })).toBe(true);
+		});
+
+		it('still hides for a non-privileged admin (section stays privileged-only)', () => {
+			expect(evalShowComments({ isPrivileged: false, isAdmin: true, anonymizationLevel: 'full' })).toBe(false);
+		});
+	});
+});

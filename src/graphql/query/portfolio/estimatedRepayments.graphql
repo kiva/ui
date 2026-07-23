@@ -1,0 +1,14 @@
+query EstimatedRepayments {
+	my {
+		id
+		userAccount {
+			id
+			expectedRepayments {
+				repaymentDate
+				userRepayments
+				promoRepayments
+				loansMakingRepayments
+			}
+		}
+	}
+}

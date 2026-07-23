@@ -102,7 +102,7 @@
 												:href="`/lend/${loan.id}`"
 												class="tw-text-action data-hj-suppress"
 												v-kv-track-event="[
-													'portfolio', 'click', 'View borrower details', loan.name, loan.id]"
+													'portfolio', 'click', 'View borrower details', null, loan.id]"
 											>
 												{{ loan.name }}
 												<div>
@@ -434,9 +434,8 @@ export default {
 			return amount != null && parseFloat(amount) > 0 && !this.hasRepaidToLender(loan);
 		},
 		repaidAmount(loan) {
-			// Legacy parity (LoanRowView mustache): headline is repaidAmountToYou when the
-			// lender got something, else repaidAmountTotal — so a Kiva-only return shows the
-			// Kiva figure, not $0. The "repaid to …" subtitle carries the label only.
+			// The headline is repaidAmountToYou when the lender got something, else repaidAmountTotal —
+			// so a Kiva-only return shows the Kiva figure, not $0. The "repaid to …" subtitle carries the label only.
 			const balance = loan.userProperties?.loanBalance;
 			const amount = this.hasRepaidToLender(loan)
 				? balance?.amountRepaidToLender

@@ -187,6 +187,12 @@
 		@continue-journey-clicked="handleContinueJourneyClicked"
 		@sidesheet-closed="handleComponentClosed"
 	/>
+	<GoalInReviewModal
+		v-if="showGoalInReviewModal"
+		:show="showGoalInReviewModal"
+		:data="goalInReviewData"
+		@close="closeGoalInReviewModal"
+	/>
 </template>
 
 <script>
@@ -197,6 +203,7 @@ import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql
 
 import { STATE_JOURNEY, STATE_EARNED } from '#src/composables/useBadgeModal';
 import useContentful from '#src/composables/useContentful';
+import useGoalInReview, { GOAL_RECAP_DEEP_LINK } from '#src/composables/useGoalInReview';
 
 import BorrowerSideSheetWrapper from '#src/components/BorrowerSideSheet/BorrowerSideSheetWrapper';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
@@ -214,6 +221,7 @@ import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalConta
 import LendingStats from '#src/components/MyKiva/LendingStats';
 import MyKivaFeaturedSlot from '#src/components/MyKiva/MyKivaFeaturedSlot';
 import BailoutChips from '#src/components/MyKiva/BailoutChips';
+import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import { KvMaterialIcon, KvTooltip } from '@kiva/kv-components';
@@ -258,6 +266,7 @@ export default {
 		MyKivaFeaturedSlot,
 		BailoutChips,
 		BadgesSectionV2,
+		GoalInReviewModal,
 		KvMaterialIcon,
 		KvTooltip,
 	},
@@ -332,6 +341,10 @@ export default {
 		const apollo = inject('apollo');
 		const { getMostRecentBlogPost } = useContentful(apollo);
 		const { isMobile } = useBreakpoints();
+		const {
+			goalInReviewData,
+			loadGoalInReview,
+		} = useGoalInReview();
 
 		const {
 			getLoanFindingUrl,
@@ -342,7 +355,9 @@ export default {
 			getLoanFindingUrl,
 			isTieredAchievementComplete,
 			getMostRecentBlogPost,
-			isMobile
+			goalInReviewData,
+			isMobile,
+			loadGoalInReview,
 		};
 	},
 	data() {
@@ -371,6 +386,7 @@ export default {
 			updatesOffset: 3,
 			clientRendered: false,
 			tooltipVisible: false,
+			showGoalInReviewModal: false,
 			mdiInformationOutline,
 		};
 	},
@@ -692,6 +708,22 @@ export default {
 		toggleTooltip() {
 			this.tooltipVisible = !this.tooltipVisible;
 		},
+		async handleGoToDeepLink(sectionId) {
+			if (sectionId === GOAL_RECAP_DEEP_LINK) {
+				const goalInReview = await this.loadGoalInReview();
+				if (goalInReview?.isEligible) {
+					this.showGoalInReviewModal = true;
+				}
+				return;
+			}
+
+			const elementToScrollTo = document.querySelector(`#${sectionId}`);
+			const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 30;
+			this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+		},
+		closeGoalInReviewModal() {
+			this.showGoalInReviewModal = false;
+		},
 	},
 	created() {
 		if (this.sidesheetLoan?.id) {
@@ -705,9 +737,7 @@ export default {
 		nextTick(() => {
 			const sectionId = this.$route?.query?.goTo || '';
 			if (sectionId) {
-				const elementToScrollTo = document.querySelector(`#${sectionId}`);
-				const topOfSectionToScrollTo = (elementToScrollTo?.offsetTop ?? 0) - 30 ?? 0;
-				this.smoothScrollTo({ yPosition: topOfSectionToScrollTo, millisecondsToAnimate: 750 });
+				this.handleGoToDeepLink(sectionId);
 			}
 		});
 
