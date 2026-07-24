@@ -71,7 +71,7 @@
 		"@vuelidate/validators": "^2.0.4",
 		"apollo-server-express": "^2.18.2",
 		"apollo3-cache-persist": "^0.15.0",
-		"auth0-js": "^9.19.2",
+		"auth0-js": "^10.0.0",
 		"body-parser": "^1.20.6",
 		"bowser": "^2.14.1",
 		"braintree-web-drop-in": "^1.47.0",
