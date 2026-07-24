@@ -7,28 +7,18 @@
 
 		<!-- Comment form -->
 		<div class="tw-mb-3">
-			<template v-if="canAddComment">
-				<label for="bp-comment-field" class="tw-sr-only">
-					Comment
-				</label>
-				<textarea
-					id="bp-comment-field"
-					v-model="newCommentText"
-					class="tw-w-full tw-border tw-border-tertiary tw-rounded tw-p-1 tw-mb-1"
-					rows="4"
-					data-testid="bp-comment-form-textarea"
-				></textarea>
-			</template>
-			<p
-				v-else-if="showMustBeLenderMessage"
-				class="tw-text-secondary tw-mb-1"
-				data-testid="bp-comment-must-be-lender"
-			>
-				You must be a lender to comment on this loan.
-			</p>
+			<label for="bp-comment-field" class="tw-sr-only">
+				Comment
+			</label>
+			<textarea
+				id="bp-comment-field"
+				v-model="newCommentText"
+				class="tw-w-full tw-border tw-border-tertiary tw-rounded tw-p-1 tw-mb-1"
+				rows="4"
+				data-testid="bp-comment-form-textarea"
+			></textarea>
 			<div class="tw-flex tw-items-center tw-gap-2">
 				<kv-button
-					v-if="canAddComment"
 					variant="secondary"
 					data-testid="bp-comment-form-submit"
 					:state="isSubmitting ? 'loading' : ''"
@@ -190,7 +180,6 @@ const commentsQuery = gql`query loanCommentsFullList($loanId: Int!) {
 	lend {
 		loan(id: $loanId) {
 			id
-			status
 			comments {
 				values {
 					id
@@ -204,30 +193,13 @@ const commentsQuery = gql`query loanCommentsFullList($loanId: Int!) {
 				}
 			}
 			userProperties {
-				isPrivileged
-				lentTo
 				subscribed
-			}
-			... on LoanDirect {
-				trustee {
-					id
-				}
 			}
 		}
 	}
 	my {
 		id
 		isAdmin
-		borrowedLoans {
-			id
-		}
-		trustee {
-			id
-		}
-		lender {
-			id
-			loanCount
-		}
 	}
 }`;
 
@@ -288,14 +260,6 @@ export default {
 			deletedIds: [],
 			isAdmin: false,
 			isSubscribed: false,
-			// Fields backing the add-comment permission check
-			loanStatus: '',
-			loanTrusteeId: null,
-			isLoanPrivileged: false,
-			lentToLoan: false,
-			myBorrowedLoanIds: [],
-			myTrusteeId: null,
-			myLoanCount: 0,
 			newCommentText: '',
 			isSubmitting: false,
 			showAll: false,
@@ -321,42 +285,6 @@ export default {
 					timeFlagged: this.flaggedById[c.id],
 				}));
 		},
-		isFundraising() {
-			return this.loanStatus === 'fundraising';
-		},
-		// The logged-in user is a trustee (of any loan)
-		isTrustee() {
-			return !!this.myTrusteeId;
-		},
-		// The logged-in user is the trustee for this specific loan
-		isTrusteeToLoan() {
-			return !!this.myTrusteeId && this.myTrusteeId === this.loanTrusteeId;
-		},
-		// The logged-in user is the borrower of this loan, i.e. this loan is in the full
-		// collection of loans they have borrowed (my.borrowedLoans).
-		isBorrowerOfLoan() {
-			return this.myBorrowedLoanIds.includes(this.loanId);
-		},
-		// The logged-in user has lent to at least one loan
-		hasLentToAnyLoan() {
-			return this.myLoanCount >= 1;
-		},
-		// The logged-in user has lent to this specific loan
-		isLenderOfLoan() {
-			return this.lentToLoan;
-		},
-		canAddComment() {
-			return (this.isFundraising && this.isLenderOfLoan)
-				|| this.isTrustee
-				|| this.isAdmin
-				|| this.isTrusteeToLoan
-				|| (this.isLoanPrivileged && (this.hasLentToAnyLoan || this.isBorrowerOfLoan));
-		},
-		// Prompt shown in place of the form on fundraising loans when the viewer
-		// is not eligible to comment (i.e. has not lent to this loan).
-		showMustBeLenderMessage() {
-			return this.isFundraising && !this.canAddComment;
-		},
 		hasSpillover() {
 			return this.comments.length > INITIAL_COMMENT_COUNT;
 		},
@@ -377,13 +305,6 @@ export default {
 			}));
 			this.isSubscribed = loan?.userProperties?.subscribed ?? false;
 			this.isAdmin = data?.my?.isAdmin ?? false;
-			this.loanStatus = loan?.status ?? '';
-			this.loanTrusteeId = loan?.trustee?.id ?? null;
-			this.isLoanPrivileged = loan?.userProperties?.isPrivileged ?? false;
-			this.lentToLoan = loan?.userProperties?.lentTo ?? false;
-			this.myBorrowedLoanIds = (data?.my?.borrowedLoans ?? []).map(l => l.id);
-			this.myTrusteeId = data?.my?.trustee?.id ?? null;
-			this.myLoanCount = data?.my?.lender?.loanCount ?? 0;
 		},
 		async refreshComments() {
 			if (!this.loanId) return;
@@ -410,7 +331,6 @@ export default {
 			});
 		},
 		async submitComment() {
-			if (!this.canAddComment) return;
 			if (!this.newCommentText.trim()) return;
 			this.isSubmitting = true;
 			this.$kvTrackEvent('borrower-profile', 'click', 'comment-submit', null, this.loanId);

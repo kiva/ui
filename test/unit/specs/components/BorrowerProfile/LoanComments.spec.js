@@ -20,38 +20,17 @@ const mockApiComments = [
 function buildApiResponse(comments, {
 	subscribed = false,
 	loggedIn = true,
-	// Defaults make canAddComment true (fundraising loan the user has lent to) so
-	// form-focused tests render the form.
-	status = 'fundraising',
-	lentTo = true,
-	isPrivileged = false,
-	loanTrusteeId = null,
 	isAdmin = false,
-	borrowedLoanIds = [],
-	myTrusteeId = null,
-	loanCount = 0,
 } = {}) {
 	return {
 		lend: {
 			loan: {
 				id: 123,
-				status,
 				comments: { values: comments },
-				userProperties: { isPrivileged, lentTo, subscribed },
-				trustee: loanTrusteeId ? { id: loanTrusteeId } : null,
+				userProperties: { subscribed },
 			},
 		},
-		my: loggedIn
-			? {
-				id: 1,
-				isAdmin,
-				borrowedLoans: borrowedLoanIds.map(id => ({ id })),
-				trustee: myTrusteeId ? { id: myTrusteeId } : null,
-				lender: { id: 1, loanCount },
-			}
-			: {
-				id: null, isAdmin: false, borrowedLoans: [], trustee: null, lender: null,
-			},
+		my: loggedIn ? { id: 1, isAdmin } : { id: null, isAdmin: false },
 	};
 }
 
@@ -260,99 +239,10 @@ describe('LoanComments', () => {
 		expect(queryByText(/Flagged on/)).toBeNull();
 	});
 
-	describe('add-comment permission gating', () => {
-		// Base response that on its own does NOT allow commenting: ended loan, not a lender
-		// on this loan, not privileged, not admin, not a trustee, no loans lent, not a
-		// borrower on this loan.
-		const notAllowedResponse = {
-			status: 'ended',
-			lentTo: false,
-			isPrivileged: false,
-			isAdmin: false,
-			myTrusteeId: null,
-			loanTrusteeId: null,
-			loanCount: 0,
-			borrowedLoanIds: [],
-		};
-
-		function renderWith(responseOverrides) {
-			const mapped = applyMockData(mockApiComments, { ...notAllowedResponse, ...responseOverrides });
-			return renderLoanComments(mapped);
-		}
-
-		it('hides the comment form when the user is not allowed to add a comment', () => {
-			const { queryByTestId } = renderWith({});
-			expect(queryByTestId('bp-comment-form-textarea')).toBeNull();
-			expect(queryByTestId('bp-comment-form-submit')).toBeNull();
-			// Subscribe controls remain available
-			expect(queryByTestId('bp-comment-subscribe')).toBeTruthy();
-		});
-
-		it('shows the form when the loan is fundraising and the user has lent to it', () => {
-			const { getByTestId } = renderWith({ status: 'fundraising', lentTo: true });
-			expect(getByTestId('bp-comment-form-submit')).toBeTruthy();
-		});
-
-		it('hides the form when the loan is fundraising but the user has not lent to it', () => {
-			const { queryByTestId } = renderWith({ status: 'fundraising', lentTo: false });
-			expect(queryByTestId('bp-comment-form-submit')).toBeNull();
-		});
-
-		it('hides the form for a lender on the loan when it is no longer fundraising', () => {
-			const { queryByTestId } = renderWith({ status: 'ended', lentTo: true });
-			expect(queryByTestId('bp-comment-form-submit')).toBeNull();
-		});
-
-		it('shows the must-be-lender message on a fundraising loan the user has not lent to', () => {
-			const { getByTestId } = renderWith({ status: 'fundraising', lentTo: false });
-			expect(getByTestId('bp-comment-must-be-lender')).toBeTruthy();
-		});
-
-		it('does not show the must-be-lender message when the user can comment', () => {
-			const { queryByTestId } = renderWith({ status: 'fundraising', lentTo: true });
-			expect(queryByTestId('bp-comment-must-be-lender')).toBeNull();
-		});
-
-		it('does not show the must-be-lender message when the loan is not fundraising', () => {
-			const { queryByTestId } = renderWith({ status: 'ended', lentTo: false });
-			expect(queryByTestId('bp-comment-must-be-lender')).toBeNull();
-		});
-
-		it('shows the form for an admin', () => {
-			const { getByTestId } = renderWith({ isAdmin: true });
-			expect(getByTestId('bp-comment-form-submit')).toBeTruthy();
-		});
-
-		it('shows the form for a trustee (of any loan)', () => {
-			const { getByTestId } = renderWith({ myTrusteeId: 55 });
-			expect(getByTestId('bp-comment-form-submit')).toBeTruthy();
-		});
-
-		it('shows the form for the trustee of this loan', () => {
-			const { getByTestId } = renderWith({ myTrusteeId: 55, loanTrusteeId: 55 });
-			expect(getByTestId('bp-comment-form-submit')).toBeTruthy();
-		});
-
-		it('shows the form for a privileged user who has lent to at least one loan', () => {
-			const { getByTestId } = renderWith({ isPrivileged: true, loanCount: 3 });
-			expect(getByTestId('bp-comment-form-submit')).toBeTruthy();
-		});
-
-		it('hides the form for a privileged user who has not lent and is not the borrower', () => {
-			const { queryByTestId } = renderWith({ isPrivileged: true, loanCount: 0 });
-			expect(queryByTestId('bp-comment-form-submit')).toBeNull();
-		});
-
-		it('shows the form for the loan borrower even when they have not lent to any loan', () => {
-			// loanId is 123; this loan is among the viewer's borrowed loans (not necessarily the most recent).
-			const { getByTestId } = renderWith({ isPrivileged: true, loanCount: 0, borrowedLoanIds: [456, 123] });
-			expect(getByTestId('bp-comment-form-submit')).toBeTruthy();
-		});
-
-		it('does not treat a privileged user who has not borrowed this loan as the borrower', () => {
-			const { queryByTestId } = renderWith({ isPrivileged: true, loanCount: 0, borrowedLoanIds: [456, 789] });
-			expect(queryByTestId('bp-comment-form-submit')).toBeNull();
-		});
+	it('renders the comment form for any viewer of the section', () => {
+		const { getByTestId } = renderLoanComments();
+		expect(getByTestId('bp-comment-form-textarea')).toBeTruthy();
+		expect(getByTestId('bp-comment-form-submit')).toBeTruthy();
 	});
 
 	it('show all reveals spillover comments and tracks show-all then hide', async () => {
