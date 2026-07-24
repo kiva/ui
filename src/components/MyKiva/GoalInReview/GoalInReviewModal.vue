@@ -23,7 +23,10 @@
 			/>
 			<GoalInReviewSlide2 :loan-stats="data?.loanStats" />
 			<GoalInReviewSlide3 :borrower-list="data?.borrowerList" />
-			<GoalInReviewSlide4 :geography="data?.geography" />
+			<GoalInReviewSlide4
+				:goal-summary="data?.goalSummary"
+				:lifetime-percentile="data?.lifetimePercentile"
+			/>
 			<GoalInReviewSlide5 :sectors="data?.sectors" />
 			<GoalInReviewSlide6 :goal-insights="data?.goalInsights" />
 			<GoalInReviewSlide7 :wrap-up="data?.wrapUp" />
@@ -106,7 +109,7 @@ const handleClose = () => {
 
 @screen md {
 	.goal-in-review-modal [data-test=kv-lightbox] {
-		width: min(calc(100vw - 14rem), 817px) !important;
+		max-width: min(calc(100vw - 4rem), 1020px) !important;
 		max-height: calc(100vh - 14rem) !important;
 
 		@apply !tw-m-auto !tw-rounded;
