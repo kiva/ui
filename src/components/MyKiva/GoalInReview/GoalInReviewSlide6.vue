@@ -5,6 +5,7 @@
 	>
 		<img
 			:src="slide6TopBorder"
+			alt="Image with design to separate two sections"
 			class="tw-block tw-w-full tw-bg-marigold-1"
 		>
 
@@ -33,11 +34,11 @@
 
 				<span class="tw-block tw-text-jumbo tw-text-secondary tw-text-right" aria-hidden="true">"</span>
 
-				<div class="tw-flex tw-items-center tw-justify-between tw-mt-6">
+				<div class="tw-flex tw-items-center tw-justify-between">
 					<div class="tw-flex tw-items-center tw-gap-2">
 						<img
 							:src="vishalAvatar"
-							alt=""
+							alt="Kiva CEO Vishal G photo"
 							class="tw-w-6 tw-h-6 tw-rounded-full"
 						>
 						<div>
@@ -78,9 +79,8 @@ defineProps({
 <style lang="postcss" scoped>
 .goal-in-review-slide-6 {
 	background-image: url('/src/assets/images/my-kiva/goal-in-review/slide6-paper.png');
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: cover;
+
+	@apply tw-bg-no-repeat tw-bg-center tw-bg-cover;
 }
 
 .year-pill {

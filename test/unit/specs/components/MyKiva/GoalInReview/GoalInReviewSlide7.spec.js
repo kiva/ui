@@ -80,4 +80,16 @@ describe('GoalInReviewSlide7', () => {
 		await fireEvent.click(getByText('Share your feedback'));
 		getByTestId('goal-in-review-slide-7-feedback-placeholder');
 	});
+
+	it('tracks opening the feedback survey', async () => {
+		const trackEvent = vi.fn();
+		const { getByText } = render(GoalInReviewSlide7, {
+			global: { ...globalOptions, provide: { ...globalOptions.provide, $kvTrackEvent: trackEvent } },
+			props: { goalStatus: 'completed', loanCount: 14, year: currentYear },
+		});
+
+		await fireEvent.click(getByText('Share your feedback'));
+
+		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', 'goal-in-review-share-feedback');
+	});
 });

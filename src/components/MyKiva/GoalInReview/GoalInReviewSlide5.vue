@@ -24,7 +24,7 @@
 					:class="idx > 0 ? 'tw-border-t' : ''"
 				>
 					<div class="tw-text-left md:tw-text-center">
-						<p class="tw-text-base tw-text-tertiary">
+						<p class="tw-text-base tw-text-gray-500">
 							{{ stat.label }}
 						</p>
 						<p class="tw-text-jumbo" :class="stat.numberClass">
@@ -36,7 +36,9 @@
 							v-for="line in stat.lines"
 							:key="line.text"
 							class="tw-text-base"
-							:class="line.bold ? 'tw-font-medium tw-text-primary' : 'tw-text-tertiary'"
+							:class="line.bold
+								? 'stat-term tw-text-primary !tw-font-medium'
+								: 'tw-text-gray-500'"
 						>
 							{{ line.text }}
 						</p>
@@ -74,3 +76,9 @@ const stats = [
 	},
 ];
 </script>
+
+<style lang="postcss" scoped>
+.stat-term {
+	font-size: 20px;
+}
+</style>

@@ -6,7 +6,7 @@
 		<div class="tw-mx-auto tw-max-w-lg">
 			<img
 				:src="leafHeart"
-				alt=""
+				alt="Leaf heart"
 				class="tw-w-8.5 tw-h-8.5  tw-mx-auto tw-mb-3"
 			>
 
@@ -38,7 +38,7 @@
 						type="button"
 						class="tw-inline-flex tw-items-center tw-gap-0.5 tw-text-brand-300 tw-font-medium"
 						data-testid="goal-in-review-slide-7-feedback-toggle"
-						@click="feedbackOpen = !feedbackOpen"
+						@click="toggleFeedback"
 					>
 						Share your feedback
 						<KvMaterialIcon
@@ -64,7 +64,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiChevronDown } from '@mdi/js';
 import leafHeart from '#src/assets/images/leaf_heart.svg?url';
@@ -86,7 +86,16 @@ const props = defineProps({
 
 const emit = defineEmits(['back-to-kiva', 'finish-goal', 'set-goal']);
 
+const $kvTrackEvent = inject('$kvTrackEvent', () => {});
+
 const feedbackOpen = ref(false);
+
+const toggleFeedback = () => {
+	feedbackOpen.value = !feedbackOpen.value;
+	if (feedbackOpen.value) {
+		$kvTrackEvent('portfolio', 'click', 'goal-in-review-share-feedback');
+	}
+};
 
 const isComplete = computed(() => props.goalStatus === 'completed');
 
