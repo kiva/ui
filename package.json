@@ -136,7 +136,7 @@
 		"vue-smooth-reflow": "^0.1.12",
 		"vue3-touch-events": "^4.1.8",
 		"vuelidate": "^0.7.6",
-		"web-vitals": "^3.5.2",
+		"web-vitals": "^6.0.0",
 		"whatwg-fetch": "^3.6.20",
 		"winston": "^3.19.0"
 	},
