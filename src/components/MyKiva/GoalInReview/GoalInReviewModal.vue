@@ -24,9 +24,19 @@
 			<GoalInReviewSlide2 :loan-stats="data?.loanStats" />
 			<GoalInReviewSlide3 :borrower-list="data?.borrowerList" />
 			<GoalInReviewSlide4 :geography="data?.geography" />
-			<GoalInReviewSlide5 :sectors="data?.sectors" />
-			<GoalInReviewSlide6 :goal-insights="data?.goalInsights" />
-			<GoalInReviewSlide7 :wrap-up="data?.wrapUp" />
+			<GoalInReviewSlide5 />
+			<GoalInReviewSlide6
+				v-if="data?.goalSummary?.status === 'completed'"
+				:year="data?.year"
+			/>
+			<GoalInReviewSlide7
+				:goal-status="data?.goalSummary?.status"
+				:loan-count="data?.loanStats?.borrowers"
+				:year="data?.year"
+				@back-to-kiva="handleCta('back-to-kiva')"
+				@finish-goal="handleCta('finish-goal')"
+				@set-goal="handleCta('set-goal')"
+			/>
 		</div>
 	</KvLightbox>
 </template>
@@ -57,12 +67,17 @@ defineProps({
 	},
 });
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'back-to-kiva', 'finish-goal', 'set-goal']);
 const $kvTrackEvent = inject('$kvTrackEvent', () => {});
 
 const handleClose = () => {
 	$kvTrackEvent('portfolio', 'click', 'goal-in-review-close');
 	emit('close');
+};
+
+const handleCta = event => {
+	$kvTrackEvent('portfolio', 'click', `goal-in-review-${event}`);
+	emit(event);
 };
 </script>
 
