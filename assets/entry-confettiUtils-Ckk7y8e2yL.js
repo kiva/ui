@@ -1,0 +1,1 @@
+import{c as o}from"./entry-confetti.module-B5JVzsfHJX.js";const e=()=>{o({origin:{y:.2},particleCount:150,spread:200,colors:["#6AC395","#223829","#95D4B3"],disableForReducedMotion:!0})};export{e as s};
