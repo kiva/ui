@@ -33,6 +33,7 @@
 				:goal-status="data?.goalSummary?.status"
 				:loan-count="data?.loanStats?.borrowers"
 				:year="data?.year"
+				:current-year="currentYear"
 				@back-to-kiva="handleCta('back-to-kiva')"
 				@finish-goal="handleCta('finish-goal')"
 				@set-goal="handleCta('set-goal')"
@@ -47,6 +48,7 @@ import {
 	inject,
 } from 'vue';
 import { KvLightbox } from '@kiva/kv-components';
+import { getGoalInReviewCurrentYear } from '#src/composables/useGoalInReview';
 
 const GoalInReviewSlide1 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide1'));
 const GoalInReviewSlide2 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide2'));
@@ -69,6 +71,9 @@ defineProps({
 
 const emit = defineEmits(['close', 'back-to-kiva', 'finish-goal', 'set-goal']);
 const $kvTrackEvent = inject('$kvTrackEvent', () => {});
+
+// Single source of truth for "now". Add ?recapDate=YYYY-MM-DD to the url for QA specific dates
+const currentYear = getGoalInReviewCurrentYear();
 
 const handleClose = () => {
 	$kvTrackEvent('portfolio', 'click', 'goal-in-review-close');

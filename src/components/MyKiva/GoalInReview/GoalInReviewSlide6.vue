@@ -84,6 +84,6 @@ defineProps({
 }
 
 .year-pill {
-	background-color: rgb(var(--bg-action), 30%);
+	background-color: rgba(var(--bg-action), 0.3);
 }
 </style>

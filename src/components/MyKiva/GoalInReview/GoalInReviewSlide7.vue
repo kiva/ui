@@ -82,6 +82,10 @@ const props = defineProps({
 		type: [Number, String],
 		default: null,
 	},
+	currentYear: {
+		type: [Number, String],
+		default: null,
+	},
 });
 
 const emit = defineEmits(['back-to-kiva', 'finish-goal', 'set-goal']);
@@ -100,7 +104,11 @@ const toggleFeedback = () => {
 const isComplete = computed(() => props.goalStatus === 'completed');
 
 // After Jan 1 of the year following the goal year, the recap points forward to next year's goal.
-const isPastGoalYear = computed(() => Boolean(props.year) && new Date().getFullYear() > Number(props.year));
+// currentYear is passed down from the container; falls back to false (current-year state) when absent.
+const isPastGoalYear = computed(() => {
+	if (!props.year || props.currentYear == null) return false;
+	return Number(props.currentYear) > Number(props.year);
+});
 
 const dreamsCopy = computed(() => (props.loanCount ? `${props.loanCount} dreams` : 'more dreams'));
 
