@@ -57,11 +57,12 @@ describe('GoalInReviewModal', () => {
 	it('renders the real slides and the remaining placeholders', async () => {
 		const { findByText } = renderModal();
 
-		// Slides 1, 5 and 7 are real components; slides 2-4 are still placeholders
+		// Slides 1, 4, 5 and 7 are real components; slides 2–3 are still placeholders
 		await findByText('Your 2026 impact goal recap');
+		await findByText('Giving insights');
 		await findByText(/Goal Setters create something/);
 		await findByText('Thank you!');
-		await Promise.all([2, 3, 4].map(slideNumber => findByText(`Slide ${slideNumber}`)));
+		await Promise.all([2, 3].map(slideNumber => findByText(`Slide ${slideNumber}`)));
 	});
 
 	it('tracks and forwards the slide 7 primary CTA', async () => {

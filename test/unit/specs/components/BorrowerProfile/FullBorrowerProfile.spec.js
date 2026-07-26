@@ -1,16 +1,18 @@
 import FullBorrowerProfile from '#src/components/BorrowerProfile/FullBorrowerProfile';
 
-const { isAnonymized, showComments } = FullBorrowerProfile.computed;
+const { isAnonymized, isPrivileged, showAddCommentsSection } = FullBorrowerProfile.computed;
 
 // Evaluates a computed with a mock `this` context, resolving other computeds it depends on.
-function evalShowComments({ isPrivileged = false, isAdmin = false, anonymizationLevel = 'none' } = {}) {
+function evalShowComments({ privileged = false, anonymizationLevel = 'none' } = {}) {
 	const context = {
-		isPrivileged,
-		isAdmin,
-		loanData: { anonymizationLevel },
+		loanData: {
+			anonymizationLevel,
+			userProperties: { isPrivileged: privileged },
+		},
 	};
 	context.isAnonymized = isAnonymized.call(context);
-	return showComments.call(context);
+	context.isPrivileged = isPrivileged.call(context);
+	return showAddCommentsSection.call(context);
 }
 
 describe('FullBorrowerProfile comment section visibility', () => {
@@ -26,28 +28,35 @@ describe('FullBorrowerProfile comment section visibility', () => {
 		});
 	});
 
+	describe('isPrivileged', () => {
+		it('defaults to false when userProperties are missing', () => {
+			expect(isPrivileged.call({ loanData: {} })).toBe(false);
+			expect(isPrivileged.call({})).toBe(false);
+		});
+	});
+
 	describe('showComments', () => {
-		it('hides for a non-privileged user regardless of anonymization', () => {
-			expect(evalShowComments({ isPrivileged: false, anonymizationLevel: 'none' })).toBe(false);
-			expect(evalShowComments({ isPrivileged: false, anonymizationLevel: 'full' })).toBe(false);
+		describe('privileged user', () => {
+			it('shows when the loan is not anonymized', () => {
+				expect(evalShowComments({ privileged: true, anonymizationLevel: 'none' })).toBe(true);
+			});
+
+			it('treats a missing anonymizationLevel as none', () => {
+				expect(evalShowComments({ privileged: true, anonymizationLevel: undefined })).toBe(true);
+			});
+
+			it('hides on a full/pii anonymized loan', () => {
+				expect(evalShowComments({ privileged: true, anonymizationLevel: 'full' })).toBe(false);
+				expect(evalShowComments({ privileged: true, anonymizationLevel: 'pii' })).toBe(false);
+			});
 		});
 
-		it('shows for a privileged user on a non-anonymized loan', () => {
-			expect(evalShowComments({ isPrivileged: true, anonymizationLevel: 'none' })).toBe(true);
-		});
-
-		it('hides for a privileged non-admin user on a full/pii anonymized loan', () => {
-			expect(evalShowComments({ isPrivileged: true, isAdmin: false, anonymizationLevel: 'full' })).toBe(false);
-			expect(evalShowComments({ isPrivileged: true, isAdmin: false, anonymizationLevel: 'pii' })).toBe(false);
-		});
-
-		it('shows for an admin (privileged) on a full/pii anonymized loan', () => {
-			expect(evalShowComments({ isPrivileged: true, isAdmin: true, anonymizationLevel: 'full' })).toBe(true);
-			expect(evalShowComments({ isPrivileged: true, isAdmin: true, anonymizationLevel: 'pii' })).toBe(true);
-		});
-
-		it('still hides for a non-privileged admin (section stays privileged-only)', () => {
-			expect(evalShowComments({ isPrivileged: false, isAdmin: true, anonymizationLevel: 'full' })).toBe(false);
+		describe('non-privileged user', () => {
+			it('hides regardless of anonymization', () => {
+				expect(evalShowComments({ privileged: false, anonymizationLevel: 'none' })).toBe(false);
+				expect(evalShowComments({ privileged: false, anonymizationLevel: 'full' })).toBe(false);
+				expect(evalShowComments({ privileged: false, anonymizationLevel: 'pii' })).toBe(false);
+			});
 		});
 	});
 });
