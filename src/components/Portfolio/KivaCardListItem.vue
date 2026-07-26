@@ -159,6 +159,7 @@ import {
 	ACTIVE, REDEEMED, EXPIRED, CANCELLED,
 } from '#src/api/fixtures/KivaCardStatusEnum';
 import { LENDER, POSTAL } from '#src/api/fixtures/KivaCardDeliveryEnum';
+import { capitalize } from '#src/util/stringParserUtils';
 
 export default {
 	name: 'KivaCardListItem',
@@ -203,7 +204,7 @@ export default {
 		},
 		deliveryLabel() {
 			if (!this.deliveryType) return '';
-			return this.deliveryType.charAt(0).toUpperCase() + this.deliveryType.slice(1);
+			return capitalize(this.deliveryType);
 		},
 		formattedAmount() {
 			return this.$filters.numeral(this.card.amount, '$0,0.00');

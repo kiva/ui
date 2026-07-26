@@ -45,6 +45,7 @@
 
 <script>
 import StatsTable from '#src/components/Stats/StatsTable';
+import { capitalize } from '#src/util/stringParserUtils';
 import { KvLoadingPlaceholder, KvSwitch } from '@kiva/kv-components';
 import AsyncLenderSection from './AsyncLenderSection';
 
@@ -93,7 +94,7 @@ export default {
 		},
 		genderStats() {
 			return this.statsWithPercent((this.lenderStats?.statsPerGender?.values ?? []).map(stat => ({
-				label: `${stat.gender.charAt(0).toUpperCase()}${stat.gender.slice(1)}`,
+				label: capitalize(stat.gender),
 				value: stat.loanCount,
 			})));
 		},
