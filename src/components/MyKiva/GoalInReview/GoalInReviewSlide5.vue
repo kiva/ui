@@ -37,7 +37,7 @@
 							:key="line.text"
 							class="tw-text-base"
 							:class="line.bold
-								? 'stat-term tw-text-primary !tw-font-medium'
+								? 'tw-text-h3 tw-text-primary !tw-font-medium'
 								: 'tw-text-gray-500'"
 						>
 							{{ line.text }}
@@ -48,7 +48,7 @@
 
 			<p class="tw-text-base tw-text-center tw-border-t md:tw-border-t-0 tw-border-gray-200 tw-pt-3 md:tw-pt-1">
 				Kiva goal setters create extraordinary impact.
-				<span class="tw-block tw-font-medium">And you were part of it!</span>
+				<span class="tw-text-h3 tw-block !tw-font-medium">And you were part of it!</span>
 			</p>
 		</div>
 	</section>
@@ -76,9 +76,3 @@ const stats = [
 	},
 ];
 </script>
-
-<style lang="postcss" scoped>
-.stat-term {
-	font-size: 20px;
-}
-</style>
