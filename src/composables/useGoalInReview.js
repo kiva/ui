@@ -9,13 +9,43 @@ import { buildSampleGoalInReviewData } from '../../.storybook/mock-data/goalInRe
 export const GOAL_RECAP_DEEP_LINK = 'goal-recap';
 
 /**
+ * Returns the current date, applying the ?recapDate=YYYY-MM-DD URL override for dev/QA use only.
+ * Once dev/QA testing is complete, this override will be removed.
+ *
+ * Example: /mykiva?goTo=goal-recap&recapDate=2027-01-01
+ *
+ * @returns {Date} The effective "now" for Goal In Review logic.
+ */
+export function getGoalInReviewNow() {
+	if (typeof window !== 'undefined') {
+		const param = new URLSearchParams(window.location.search).get('recapDate');
+		if (param) {
+			const override = new Date(param);
+			if (!Number.isNaN(override.getTime())) {
+				return override;
+			}
+		}
+	}
+	return new Date();
+}
+
+/**
  * Gets the recap year from the provided date.
  *
  * @param {Date} date Source date for determining the recap year.
  * @returns {number} Full year used for Goal In Review data.
  */
-export function getGoalInReviewTargetYear(date = new Date()) {
+export function getGoalInReviewTargetYear(date = getGoalInReviewNow()) {
 	return date.getFullYear();
+}
+
+/**
+ * Returns the current year, honoring the ?recapDate dev/QA override via getGoalInReviewNow().
+ *
+ * @returns {number} The current year.
+ */
+export function getGoalInReviewCurrentYear() {
+	return getGoalInReviewNow().getFullYear();
 }
 
 /**
