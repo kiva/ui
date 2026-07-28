@@ -96,7 +96,7 @@ describe('BadgeMilestone', () => {
 					isGuest: false,
 					loans: [{ id: 1 }],
 				},
-				...globalOptions,
+				global: globalOptions,
 			});
 
 			const badgeImg = await findByAltText('Badge');
@@ -120,7 +120,7 @@ describe('BadgeMilestone', () => {
 					isGuest: false,
 					loans: [{ id: 1 }],
 				},
-				...globalOptions,
+				global: globalOptions,
 			});
 
 			const badgeImg = await findByAltText('Badge');
@@ -144,7 +144,7 @@ describe('BadgeMilestone', () => {
 					isGuest: false,
 					loans: [{ id: 1 }],
 				},
-				...globalOptions,
+				global: globalOptions,
 			});
 
 			const badgeImg = await findByAltText('Badge');
@@ -170,7 +170,7 @@ describe('BadgeMilestone', () => {
 					badgeAchievedIds: [],
 					loans: [{ id: 1 }],
 				},
-				...globalOptions,
+				global: globalOptions,
 			});
 
 			// Trigger the contentful data watch by setting after render
@@ -190,7 +190,7 @@ describe('BadgeMilestone', () => {
 					badgeAchievedIds: [],
 					loans: [],
 				},
-				...globalOptions,
+				global: globalOptions,
 			});
 
 			expect(queryByRole('button', { name: /continue/i })).toBeNull();
@@ -206,7 +206,7 @@ describe('BadgeMilestone', () => {
 					badgeAchievedIds: [],
 					loans: [{ id: 1 }],
 				},
-				...globalOptions,
+				global: globalOptions,
 			});
 
 			// Trigger the badge data watch to resolve loading state
@@ -238,7 +238,7 @@ describe('BadgeMilestone', () => {
 					isGuest: false,
 					loans: [{ id: 1 }],
 				},
-				...globalOptions,
+				global: globalOptions,
 			});
 
 			await findByText('Women are change makers', { exact: false });
@@ -254,7 +254,7 @@ describe('BadgeMilestone', () => {
 					achievementsCompleted: false,
 					loans: [],
 				},
-				...globalOptions,
+				global: globalOptions,
 			});
 
 			expect(queryByRole('button', { name: /continue/i })).toBeNull();

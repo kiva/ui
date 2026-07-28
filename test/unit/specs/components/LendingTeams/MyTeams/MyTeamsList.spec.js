@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import MyTeamsList from '#src/components/LendingTeams/MyTeams/MyTeamsList';
-import { globalOptions } from '../../../../specUtils';
+import { globalOptions, routerLinkStub } from '../../../../specUtils';
 
 const mockTeam = (id, overrides = {}) => ({
 	id,
@@ -36,6 +36,7 @@ describe('MyTeamsList', () => {
 			global: {
 				...globalOptions,
 				stubs: {
+					RouterLink: routerLinkStub,
 					KvButton: { template: '<button><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div class="skeleton"></div>' },
 					TeamCard: { template: '<div></div>' },
@@ -61,6 +62,7 @@ describe('MyTeamsList', () => {
 					},
 				},
 				stubs: {
+					RouterLink: routerLinkStub,
 					KvButton: { template: '<button><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div></div>' },
 					TeamCard: { template: '<div></div>' },
@@ -88,6 +90,7 @@ describe('MyTeamsList', () => {
 					},
 				},
 				stubs: {
+					RouterLink: routerLinkStub,
 					KvButton: { template: '<button><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div></div>' },
 					TeamCard: { template: '<div><slot /></div>' },
@@ -116,6 +119,7 @@ describe('MyTeamsList', () => {
 					},
 				},
 				stubs: {
+					RouterLink: routerLinkStub,
 					KvButton: { template: '<button><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div></div>' },
 					TeamCard: { template: '<div></div>' },
@@ -160,6 +164,7 @@ describe('MyTeamsList', () => {
 					},
 				},
 				stubs: {
+					RouterLink: routerLinkStub,
 					KvButton: { template: '<button @click="$attrs.onClick"><slot /></button>' },
 					KvLoadingPlaceholder: { template: '<div></div>' },
 					TeamCard: { template: '<div></div>' },

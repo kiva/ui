@@ -8,6 +8,12 @@ import {
 	ID_WOMENS_EQUALITY,
 } from '#src/composables/useBadgeData';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
+import { routerKey } from 'vue-router';
+import { mockRouterObject } from '../../specUtils';
+
+// GoalProgressRing calls useRouter() in setup(), so it needs the router
+// injection even though these tests only assert on rendered copy.
+const global = { provide: { [routerKey]: mockRouterObject } };
 
 describe('GoalProgressRing.vue', () => {
 	describe('modalDescriptionText computed property', () => {
@@ -21,6 +27,7 @@ describe('GoalProgressRing.vue', () => {
 
 			const { container } = render(GoalProgressRing, {
 				props: testProps,
+				global,
 			});
 
 			const description = container.querySelector('.modal-description-text');
@@ -39,6 +46,7 @@ describe('GoalProgressRing.vue', () => {
 
 			const { container } = render(GoalProgressRing, {
 				props: testProps,
+				global,
 			});
 
 			const description = container.querySelector('.modal-description-text');
@@ -57,6 +65,7 @@ describe('GoalProgressRing.vue', () => {
 
 			const { container } = render(GoalProgressRing, {
 				props: testProps,
+				global,
 			});
 
 			const description = container.querySelector('.modal-description-text');
@@ -75,6 +84,7 @@ describe('GoalProgressRing.vue', () => {
 
 			const { container } = render(GoalProgressRing, {
 				props: testProps,
+				global,
 			});
 
 			const description = container.querySelector('.modal-description-text');
@@ -93,6 +103,7 @@ describe('GoalProgressRing.vue', () => {
 
 			const { container } = render(GoalProgressRing, {
 				props: testProps,
+				global,
 			});
 
 			const description = container.querySelector('.modal-description-text');
@@ -111,6 +122,7 @@ describe('GoalProgressRing.vue', () => {
 
 			const { container } = render(GoalProgressRing, {
 				props: testProps,
+				global,
 			});
 
 			const description = container.querySelector('.modal-description-text');
