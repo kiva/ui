@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { mount } from '@vue/test-utils';
 import PreviousLoanDescription from '#src/components/BorrowerProfile/PreviousLoanDescription';
-import { globalOptions } from '../../../specUtils';
+import { globalOptions, routerLinkStub } from '../../../specUtils';
 
 function mountPreviousLoanDescription() {
 	const openDefinition = vi.fn();
@@ -13,6 +13,7 @@ function mountPreviousLoanDescription() {
 		},
 		global: {
 			...globalOptions,
+			stubs: { RouterLink: routerLinkStub },
 			provide: {
 				...globalOptions.provide,
 				openDefinition,

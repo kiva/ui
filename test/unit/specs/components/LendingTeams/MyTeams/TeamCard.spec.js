@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/vue';
 import TeamCard from '#src/components/LendingTeams/MyTeams/TeamCard';
-import { globalOptions } from '../../../../specUtils';
+import { globalOptions, routerLinkStub } from '../../../../specUtils';
 
 const mockTeam = {
 	id: 1,
@@ -18,6 +18,7 @@ describe('TeamCard', () => {
 			global: {
 				...globalOptions,
 				stubs: {
+					RouterLink: routerLinkStub,
 					KvMaterialIcon: { template: '<span></span>' },
 					KvDropdown: { template: '<div><slot /></div>' },
 				},
@@ -37,6 +38,7 @@ describe('TeamCard', () => {
 			global: {
 				...globalOptions,
 				stubs: {
+					RouterLink: routerLinkStub,
 					KvMaterialIcon: { template: '<span></span>' },
 					KvDropdown: { template: '<div><slot /></div>' },
 				},
