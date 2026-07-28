@@ -305,7 +305,7 @@ export default {
 	},
 	methods: {
 		completeTransaction(transactionId) {
-			// compile transaction data
+			// Compile transaction data
 			const transactionData = formatTransactionData(
 				numeral(transactionId).value(),
 				this.loans,
@@ -313,12 +313,12 @@ export default {
 				this.donations,
 				this.totals
 			);
-			// send analytics event + redirect. Wrapped so a failed FTD lookup can't swallow the
+			// Send analytics event + redirect. Wrapped so a failed FTD lookup can't swallow the
 			// Purchase event or the redirect.
 			const finalizeTransaction = () => {
 				this.$kvTrackTransaction(transactionData);
 
-				// redirect to thanks
+				// Redirect to thanks
 				if (this.autoRedirectToThanks) {
 					window.setTimeout(
 						() => {
@@ -329,10 +329,10 @@ export default {
 				}
 			};
 
-			// check ftd status, then track + redirect whether or not the lookup succeeds
+			// Check ftd status, then track + redirect whether or not the lookup succeeds
 			const trackingComplete = myFTDQuery(this.apollo)
 				.then(({ data }) => {
-					// update transaction data
+					// Update transaction data
 					transactionData.isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
 				})
 				.catch(() => {
