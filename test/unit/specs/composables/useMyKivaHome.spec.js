@@ -30,7 +30,16 @@ describe('useMyKivaHome.js', () => {
 			}
 		});
 
-		const composable = useMyKivaHome(mockApollo);
+		let composable;
+		const TestComponent = {
+			template: '<div></div>',
+			setup() {
+				composable = useMyKivaHome(mockApollo);
+				return composable;
+			}
+		};
+
+		render(TestComponent);
 
 		expect(composable.homePagePath).toBeDefined();
 		expect(composable.portfolioPath).toBeDefined();
@@ -231,9 +240,22 @@ describe('useMyKivaHome.js', () => {
 			}
 		});
 
-		const { homePagePath, portfolioPath } = useMyKivaHome(mockApollo);
+		let homePagePath;
+		let portfolioPath;
+		const TestComponent = {
+			template: '<div></div>',
+			setup() {
+				const composable = useMyKivaHome(mockApollo);
+				({ homePagePath, portfolioPath } = composable);
+				return composable;
+			}
+		};
 
-		// Before mount completes, should be false
+		render(TestComponent);
+
+		// Asserted synchronously: onMounted has fired, but its apollo query
+		// resolves on a later microtask, so the paths are still at their
+		// pre-fetch defaults here.
 		expect(homePagePath.value).toBe('/');
 		expect(portfolioPath.value).toBe('/portfolio');
 	});
