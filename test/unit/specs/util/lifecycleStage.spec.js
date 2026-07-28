@@ -18,8 +18,6 @@ const lenderResponse = ({
 	memberSince,
 	totalCount,
 	lastLoanPurchase,
-	lastDeposit,
-	lastDonation,
 }) => ({
 	my: {
 		id: 1,
@@ -28,8 +26,6 @@ const lenderResponse = ({
 			totalCount,
 			values: lastLoanPurchase ? [{ effectiveTime: lastLoanPurchase }] : [],
 		},
-		lastDeposit: { values: lastDeposit ? [{ effectiveTime: lastDeposit }] : [] },
-		lastDonation: { values: lastDonation ? [{ effectiveTime: lastDonation }] : [] },
 	},
 });
 
@@ -219,7 +215,6 @@ describe('lifecycleStage.js', () => {
 			expect(result).toEqual({
 				stage: LIFECYCLE_STAGES.LAPSED_CHURNED,
 				daysSinceLastLoan: 800,
-				alreadyReEngaged: false,
 			});
 		});
 
@@ -235,7 +230,6 @@ describe('lifecycleStage.js', () => {
 			expect(result).toEqual({
 				stage: LIFECYCLE_STAGES.REGISTERED,
 				daysSinceLastLoan: null,
-				alreadyReEngaged: false,
 			});
 		});
 
@@ -256,108 +250,8 @@ describe('lifecycleStage.js', () => {
 			expect(result).toEqual({
 				stage: LIFECYCLE_STAGES.LAPSED_CHURNED,
 				daysSinceLastLoan: 800,
-				alreadyReEngaged: false,
 			});
 		});
-
-		// "re-engaged" marks the return itself. Only a loan purchase ends an inactive
-		// period, so a deposit or donation after it began means we already reported them.
-		describe('alreadyReEngaged', () => {
-			// idle since day 90; a deposit on day 300 falls inside the inactive period
-			it('is true when a deposit followed the start of the inactive period', async () => {
-				const apollo = mockApollo(lenderResponse({
-					memberSince: daysAgo(1000),
-					totalCount: 4,
-					lastLoanPurchase: daysAgo(800),
-					lastDeposit: daysAgo(300),
-				}));
-
-				const result = await getLifecycleData(apollo, NOW);
-
-				expect(result.alreadyReEngaged).toBe(true);
-			});
-
-			it('is true when a donation followed the start of the inactive period', async () => {
-				const apollo = mockApollo(lenderResponse({
-					memberSince: daysAgo(1000),
-					totalCount: 4,
-					lastLoanPurchase: daysAgo(800),
-					lastDonation: daysAgo(300),
-				}));
-
-				const result = await getLifecycleData(apollo, NOW);
-
-				expect(result.alreadyReEngaged).toBe(true);
-			});
-
-			// a deposit made alongside the last loan purchase predates the inactive period
-			it('is false when the only deposit accompanied the last loan purchase', async () => {
-				const apollo = mockApollo(lenderResponse({
-					memberSince: daysAgo(1000),
-					totalCount: 4,
-					lastLoanPurchase: daysAgo(800),
-					lastDeposit: daysAgo(800),
-				}));
-
-				const result = await getLifecycleData(apollo, NOW);
-
-				expect(result.alreadyReEngaged).toBe(false);
-			});
-
-			it('is false when the lender has never deposited or donated', async () => {
-				const apollo = mockApollo(lenderResponse({
-					memberSince: daysAgo(1000),
-					totalCount: 4,
-					lastLoanPurchase: daysAgo(800),
-				}));
-
-				const result = await getLifecycleData(apollo, NOW);
-
-				expect(result.alreadyReEngaged).toBe(false);
-			});
-
-			// day 710 of an 800 day gap is the exact moment the inactive period began
-			it('is false on the boundary day the inactive period started', async () => {
-				const apollo = mockApollo(lenderResponse({
-					memberSince: daysAgo(1000),
-					totalCount: 4,
-					lastLoanPurchase: daysAgo(800),
-					lastDeposit: daysAgo(710),
-				}));
-
-				const result = await getLifecycleData(apollo, NOW);
-
-				expect(result.alreadyReEngaged).toBe(false);
-			});
-
-			it('uses whichever of deposit or donation is more recent', async () => {
-				const apollo = mockApollo(lenderResponse({
-					memberSince: daysAgo(1000),
-					totalCount: 4,
-					lastLoanPurchase: daysAgo(800),
-					lastDeposit: daysAgo(780),
-					lastDonation: daysAgo(100),
-				}));
-
-				const result = await getLifecycleData(apollo, NOW);
-
-				expect(result.alreadyReEngaged).toBe(true);
-			});
-
-			it('is false for a lender who has never purchased a loan', async () => {
-				const apollo = mockApollo(lenderResponse({
-					memberSince: daysAgo(30),
-					totalCount: 0,
-					lastLoanPurchase: null,
-					lastDonation: daysAgo(5),
-				}));
-
-				const result = await getLifecycleData(apollo, NOW);
-
-				expect(result.alreadyReEngaged).toBe(false);
-			});
-		});
-
 		it('returns null for guests, who have no lender record', async () => {
 			const apollo = mockApollo({ my: null });
 
@@ -380,9 +274,14 @@ describe('lifecycleStage.js', () => {
 
 		it('returns null rather than throwing when the query fails', async () => {
 			const apollo = { query: vi.fn().mockRejectedValue(new Error('network')) };
-			vi.spyOn(console, 'error').mockImplementation(() => {});
+			const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
 
 			expect(await getLifecycleData(apollo, NOW)).toBeNull();
+			expect(consoleError).toHaveBeenCalledWith(JSON.stringify({
+				meta: { error: 'network' },
+				level: 'error',
+				message: 'Failed to fetch lifecycle data',
+			}));
 		});
 	});
 });

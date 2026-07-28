@@ -2,6 +2,7 @@ import { differenceInDays } from 'date-fns';
 import lifecycleStageGqlQuery from '#src/graphql/query/lifecycleStage.graphql';
 import { getTransactionTimestamp } from '#src/util/myKivaUtils';
 import { toValidDate } from '#src/util/dateUtils';
+import logFormatter from '#src/util/logFormatter';
 
 export const LIFECYCLE_STAGES = {
 	REGISTERED: 'registered',
@@ -28,15 +29,12 @@ export const RE_ENGAGEMENT_EVENTS = {
  * https://kiva.atlassian.net/wiki/spaces/ANA/pages/2472640597/Lifecycle+stages
  */
 
-// a lender's inactive period begins once this many days pass without a loan purchase
-const IDLE_START_DAYS = 90;
-
 // days since the most recent loan purchase
 const IDLE_LADDER = [
 	[730, LIFECYCLE_STAGES.LAPSED_CHURNED],
 	[365, LIFECYCLE_STAGES.IDLE_365],
 	[180, LIFECYCLE_STAGES.IDLE_180],
-	[IDLE_START_DAYS, LIFECYCLE_STAGES.IDLE_90],
+	[90, LIFECYCLE_STAGES.IDLE_90],
 ];
 
 // days since registration, for lenders who have never purchased a loan
@@ -142,29 +140,6 @@ function lifecycleStageQuery(apollo) {
 }
 
 /**
- * Whether the lender already had a qualifying deposit or donation after their
- * inactive period began.
- *
- * Only a loan purchase ends an inactive period, so a deposit or donation since it
- * started means we have already reported this lender as re-engaged. Without this,
- * a churned lender who deposits monthly would fire the event every month.
- *
- * Works in elapsed days rather than dates: the inactive period began
- * (daysSinceLastLoan - IDLE_START_DAYS) days ago.
- *
- * @param {Number} daysSinceLastLoan
- * @param {Number} daysSinceLastGift Days since the newest deposit or donation, or Infinity
- * @returns {Boolean}
- */
-function hasReEngagedSinceIdle(daysSinceLastLoan, daysSinceLastGift) {
-	if (daysSinceLastLoan === null) {
-		return false;
-	}
-	// Infinity for a lender who has never given, which is never inside the period
-	return daysSinceLastGift < (daysSinceLastLoan - IDLE_START_DAYS);
-}
-
-/**
  * Fetches and derives the lender's current lifecycle stage.
  *
  * Must be called before the transaction completes. The purchase being tracked is
@@ -187,12 +162,6 @@ export async function getLifecycleData(apollo, now = new Date()) {
 			return null;
 		}
 
-		// Infinity rather than null when absent, so Math.min below does not coerce to 0
-		const daysSinceNewest = collection => daysSince(
-			getTransactionTimestamp(collection?.values?.[0]),
-			now,
-		) ?? Infinity;
-
 		const loanPurchaseCount = data?.my?.transactions?.totalCount ?? 0;
 		// effectiveTime with a createTime fallback, matching the rest of the codebase
 		const lastLoanPurchase = getTransactionTimestamp(data?.my?.transactions?.values?.[0]);
@@ -201,14 +170,9 @@ export async function getLifecycleData(apollo, now = new Date()) {
 		return {
 			stage: deriveLifecycleStage({ memberSince, loanPurchaseCount, lastLoanPurchase }, now),
 			daysSinceLastLoan,
-			alreadyReEngaged: hasReEngagedSinceIdle(
-				daysSinceLastLoan,
-				// whichever of the two happened more recently
-				Math.min(daysSinceNewest(data?.my?.lastDeposit), daysSinceNewest(data?.my?.lastDonation)),
-			),
 		};
 	} catch (e) {
-		console.error(e);
+		logFormatter('Failed to fetch lifecycle data', 'error', { error: e?.message });
 		return null;
 	}
 }

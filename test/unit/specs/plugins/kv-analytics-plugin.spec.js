@@ -579,7 +579,6 @@ describe('kv-analytics-plugin', () => {
 			lifecycleStage: null,
 			daysSinceLastLoan: null,
 			reEngagementEvent: null,
-			reEngagementTriggers: ['loan', 'deposit'],
 			...overrides,
 		});
 
@@ -591,10 +590,7 @@ describe('kv-analytics-plugin', () => {
 			}));
 
 			expect(mockWindow.fbq).toHaveBeenCalledWith('trackCustom', 'lapsedLenderReEngaged', {
-				triggerTypes: 'loan,deposit',
 				loanTotal: 25,
-				donationTotal: 0,
-				depositTotal: 25,
 				itemTotal: 50,
 				lifecycleStage: 'lapsedChurned',
 				daysSinceLastLoan: 900,
@@ -618,41 +614,21 @@ describe('kv-analytics-plugin', () => {
 			}
 		);
 
-		// marketing needs to tell a deposit-only return apart from one that included a loan
-		it.each([
-			[['deposit'], 'deposit'],
-			[['donation'], 'donation'],
-			[['loan'], 'loan'],
-			[['loan', 'deposit', 'donation'], 'loan,deposit,donation'],
-		])('reports %s as triggerTypes %s', (triggers, expected) => {
-			app.config.globalProperties.$kvTrackTransaction(transaction({
-				lifecycleStage: 'idle180',
-				daysSinceLastLoan: 200,
-				reEngagementEvent: 'idleLenderReEngaged',
-				reEngagementTriggers: triggers,
-			}));
-
-			expect(mockWindow.fbq).toHaveBeenCalledWith(
-				'trackCustom',
-				'idleLenderReEngaged',
-				expect.objectContaining({ triggerTypes: expected })
-			);
-		});
-
-		it('fires on a deposit with no loan in the basket', () => {
+		it('does not fire on a deposit or donation without a loan purchase', () => {
 			app.config.globalProperties.$kvTrackTransaction(transaction({
 				lifecycleStage: 'lapsedChurned',
 				daysSinceLastLoan: 900,
 				reEngagementEvent: 'lapsedLenderReEngaged',
-				reEngagementTriggers: ['deposit'],
 				loans: [],
 				loanTotal: 0,
+				donations: [{ id: 'd1', __typename: 'Donation', price: 5 }],
+				donationTotal: 5,
 			}));
 
-			expect(mockWindow.fbq).toHaveBeenCalledWith(
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith(
 				'trackCustom',
 				'lapsedLenderReEngaged',
-				expect.objectContaining({ triggerTypes: 'deposit', loanTotal: 0 })
+				expect.anything()
 			);
 		});
 
@@ -671,13 +647,11 @@ describe('kv-analytics-plugin', () => {
 			);
 		});
 
-		// a Kiva Card bought purely with existing credit is none of deposit, LSP or donation
-		it('fires neither event when the transaction contains no qualifying action', () => {
+		it('fires neither event when the transaction contains no loan purchase', () => {
 			app.config.globalProperties.$kvTrackTransaction(transaction({
 				lifecycleStage: 'lapsedChurned',
 				daysSinceLastLoan: 900,
 				reEngagementEvent: 'lapsedLenderReEngaged',
-				reEngagementTriggers: [],
 				loans: [],
 				loanTotal: 0,
 				kivaCards: [{ id: 'kc1', __typename: 'KivaCard', price: 50 }],

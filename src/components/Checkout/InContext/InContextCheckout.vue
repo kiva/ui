@@ -151,10 +151,8 @@
 </template>
 
 <script>
-import { inject } from 'vue';
 import numeral from 'numeral';
-import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
-import useLifecycleCapture from '#src/composables/useLifecycleCapture';
+import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
 import { isCCPage } from '#src/util/urlUtils';
 import checkoutUtils from '#src/plugins/checkout-utils-mixin';
 import CheckoutDropInPaymentWrapper from '#src/components/Checkout/CheckoutDropInPaymentWrapper';
@@ -168,9 +166,6 @@ import { KvButton, KvGrid } from '@kiva/kv-components';
 
 export default {
 	name: 'InContextCheckout',
-	setup() {
-		return useLifecycleCapture(inject('apollo'));
-	},
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		BasketItemsList,
@@ -265,20 +260,8 @@ export default {
 		return {
 			updatingTotals: false,
 			continueAsGuest: false,
-			continueAsExistingUser: false,
+			continueAsExistingUser: false
 		};
-	},
-	watch: {
-		// Resolve the lifecycle stage as soon as we have a logged-in lender, which may
-		// be on mount or partway through the flow if they log in from here.
-		isLoggedIn: {
-			immediate: true,
-			handler(isLoggedIn) {
-				if (isLoggedIn) {
-					this.startLifecycleCapture();
-				}
-			},
-		},
 	},
 	computed: {
 		creditNeeded() {
@@ -346,11 +329,16 @@ export default {
 				}
 			};
 
-			const trackingComplete = getTransactionAnalyticsData(this.apollo, this.lifecycleDataPromise)
-				.then(analyticsData => {
-					Object.assign(transactionData, analyticsData);
+			// Check ftd status, then track + redirect whether or not the lookup succeeds
+			const trackingComplete = myFTDQuery(this.apollo)
+				.then(({ data }) => {
+					// Update transaction data
+					transactionData.isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
 				})
-				.catch(() => {})
+				.catch(() => {
+					// FTD status unknown — leave it undefined so no content_type is asserted downstream
+					transactionData.isFTD = undefined;
+				})
 				.then(finalizeTransaction);
 
 			this.$emit('transaction-complete', transactionData);

@@ -20,20 +20,5 @@ query lifecycleStageQuery {
 				createTime
 			}
 		}
-		# Used to fire the re-engagement events only once per inactive period. A deposit
-		# or donation after the lender went idle means we have already reported them as
-		# re-engaged, since neither moves them out of the stage.
-		lastDeposit: transactions(limit: 1, filter: { category: deposit, sortBy: newest }) {
-			values {
-				effectiveTime
-				createTime
-			}
-		}
-		lastDonation: transactions(limit: 1, filter: { category: donation, sortBy: newest }) {
-			values {
-				effectiveTime
-				createTime
-			}
-		}
 	}
 }

@@ -218,22 +218,17 @@ export default {
 				trackFBTransaction(transactionData);
 				const {
 					reEngagementEvent,
-					reEngagementTriggers,
 					lifecycleStage,
 					daysSinceLastLoan,
 					loanTotal,
-					donationTotal,
-					depositTotal,
 					itemTotal,
+					loans,
 				} = transactionData;
-				if (reEngagementEvent && reEngagementTriggers?.length) {
+				if (reEngagementEvent && loans?.length) {
 					trackFBCustomEvent(
 						reEngagementEvent,
 						{
-							triggerTypes: reEngagementTriggers.join(','),
 							loanTotal,
-							donationTotal,
-							depositTotal,
 							itemTotal,
 							lifecycleStage,
 							daysSinceLastLoan,

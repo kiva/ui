@@ -31,7 +31,6 @@ describe('InContextCheckout completeTransaction', () => {
 
 	it('still fires the transaction and redirects when the FTD lookup fails', async () => {
 		vi.useFakeTimers();
-		vi.spyOn(console, 'error').mockImplementation(() => {});
 		const context = makeContext({
 			apollo: { query: vi.fn().mockRejectedValue(new Error('network')) },
 		});
@@ -42,22 +41,5 @@ describe('InContextCheckout completeTransaction', () => {
 		vi.runAllTimers();
 		expect(context.redirectToThanks).toHaveBeenCalledWith('12345');
 		vi.useRealTimers();
-	});
-
-	it('adds lifecycle data captured before the transaction', async () => {
-		const context = makeContext({
-			lifecycleDataPromise: Promise.resolve({
-				stage: 'idle180',
-				daysSinceLastLoan: 200,
-				alreadyReEngaged: false,
-			}),
-		});
-
-		await InContextCheckout.methods.completeTransaction.call(context, '12345');
-
-		expect(context.$kvTrackTransaction).toHaveBeenCalledWith(expect.objectContaining({
-			lifecycleStage: 'idle180',
-			reEngagementEvent: 'idleLenderReEngaged',
-		}));
 	});
 });
