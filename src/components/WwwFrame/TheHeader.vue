@@ -570,9 +570,8 @@
 
 <script>
 import { defineAsyncComponent, inject } from 'vue';
+import { getTransactorFlagsFromCookies } from '@kiva/kv-analytics';
 import {
-	hasLentBeforeCookie,
-	hasDepositBeforeCookie,
 	userHasLentBefore,
 	userHasDepositBefore,
 } from '#src/util/optimizelyUserMetrics';
@@ -836,8 +835,9 @@ export default {
 		}
 
 		// MARS-194 User Metrics for Optimizely A/B experiment
-		const hasLentBefore = this.cookieStore.get(hasLentBeforeCookie) === 'true';
-		const hasDepositBefore = this.cookieStore.get(hasDepositBeforeCookie) === 'true';
+		const { hasLentBefore, hasDepositBefore } = getTransactorFlagsFromCookies(
+			name => this.cookieStore.get(name),
+		);
 
 		userHasLentBefore(hasLentBefore);
 		userHasDepositBefore(hasDepositBefore);

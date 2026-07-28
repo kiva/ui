@@ -56,6 +56,7 @@ import _includes from 'lodash/includes';
 import LoanCardImage from '#src/components/LoanCards/LoanCardImage';
 import FundraisingStatusMeter from '#src/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
+import { trackFBAddToCart, FB_CONTENT_CATEGORY_LOAN } from '@kiva/kv-analytics';
 
 export default {
 	name: 'AdaptiveMicroLoanCard',
@@ -135,11 +136,12 @@ export default {
 	methods: {
 		addToBasket() {
 			this.$emit('processing-add-to-basket');
+			const price = numeral(25).format('0.00');
 			this.apollo.mutate({
 				mutation: updateLoanReservation,
 				variables: {
 					loanId: this.loan.id,
-					price: numeral(25).format('0.00'),
+					price,
 				},
 			}).then(({ errors }) => {
 				this.$emit('add-to-basket', {
@@ -152,6 +154,9 @@ export default {
 					_forEach(errors, ({ message }) => {
 						this.$showTipMsg(message, 'error');
 					});
+				} else {
+					// Track facebook add to basket
+					trackFBAddToCart(FB_CONTENT_CATEGORY_LOAN, price);
 				}
 
 				this.$kvTrackEvent(

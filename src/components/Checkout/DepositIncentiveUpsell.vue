@@ -77,6 +77,7 @@ import * as Sentry from '@sentry/vue';
 import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
+import { trackFBAddToCart, FB_CONTENT_CATEGORY_LOAN } from '@kiva/kv-analytics';
 import KvIcon from '#src/components/Kv/KvIcon';
 import {
 	KvButton, KvCarousel, KvLoadingPlaceholder, KvProgressBar
@@ -232,6 +233,8 @@ export default {
 				} else {
 					// If no errors, track success
 					this.$kvTrackEvent('basket', 'add-to-basket', 'incentive-upsell-add-to-basket', loanId, amount);
+					// Track facebook add to basket
+					trackFBAddToCart(FB_CONTENT_CATEGORY_LOAN, amount);
 				}
 			}).catch(error => {
 				this.$emit('done-adding');

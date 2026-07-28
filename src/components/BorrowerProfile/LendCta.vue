@@ -62,7 +62,7 @@
 							v-if="matchingHighlightExpShown"
 						>{{ matchRatio + 1 }}x matched by {{ matchingText }}!</span>
 						<!-- eslint-disable-next-line max-len -->
-						<form v-if="useFormSubmit" @submit.prevent="addToBasket" class="tw-w-full tw-flex">
+						<form v-if="useFormSubmit" @submit.prevent="addToBasket()" class="tw-w-full tw-flex">
 							<fieldset
 								class="tw-w-full tw-flex" :disabled="isAdding"
 								data-testid="bp-lend-cta-select-and-button"
@@ -133,7 +133,7 @@
 											:loan-id="loanId"
 											:show-now="true"
 											:amount-left="unreservedAmount"
-											@add-to-basket="addToBasket"
+											@add-to-basket="addToBasket($event)"
 											:complete-loan="isCompleteLoanActive"
 											v-if="isLendAmountButton && !enableFiveDollarsNotes"
 										/>
@@ -370,6 +370,7 @@
 import { mdiLightningBolt } from '@mdi/js';
 import { gql } from 'graphql-tag';
 import { setLendAmount, INVALID_BASKET_ERROR } from '#src/util/basketUtils';
+import { trackFBAddToCart, FB_CONTENT_CATEGORY_LOAN } from '@kiva/kv-analytics';
 import {
 	getDropdownPriceArray,
 	isMatchAtRisk,
@@ -644,7 +645,12 @@ export default {
 		},
 	],
 	methods: {
-		async addToBasket() {
+		async addToBasket(childResult = null) {
+			// `childResult` is the payload from a child LendButton's `add-to-basket` emit
+			// (`{ loanId, success }`), or null for a direct add via the form. When a child already
+			// added the loan (and fired its own AddToCart), don't add or track it a second time — just
+			// run the post-add UI. A child whose add FAILED falls through to our own add as a retry.
+			const addedByChild = childResult?.success === true;
 			if (this.teamId) {
 				const challenge = {
 					teamId: this.teamId,
@@ -655,13 +661,21 @@ export default {
 			}
 			const amount = isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption;
 			this.isAdding = true;
-			setLendAmount({
-				amount,
-				apollo: this.apollo,
-				loanId: this.loanId,
-			}).then(() => {
+			// Skip the basket mutation when a child already added the loan; otherwise add it ourselves.
+			const added = addedByChild
+				? Promise.resolve()
+				: setLendAmount({
+					amount,
+					apollo: this.apollo,
+					loanId: this.loanId,
+				});
+			added.then(() => {
 				this.isAdding = false;
 				this.$kvTrackEvent('Lending', 'Add to basket', this.ctaButtonText);
+				// Fire Meta AddToCart only when this component added the loan — a child LendButton fires its own event
+				if (!addedByChild) {
+					trackFBAddToCart(FB_CONTENT_CATEGORY_LOAN, amount);
+				}
 				if (this.isCompleteLoanActive) {
 					// eslint-disable-next-line max-len
 					this.$kvTrackEvent('Borrower profile', 'Complete loan', 'click-amount-left-cta', this.loanId, this.selectedOption);
