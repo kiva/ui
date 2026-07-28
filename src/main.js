@@ -58,7 +58,7 @@ export default async function createApp({
 	// head for options api
 	app.mixin(VueHeadMixin);
 
-	app.use(kvAnalytics);
+	app.use(kvAnalytics, { cookieStore });
 	app.use(Vue3TouchEvents);
 	// Vue progress bar exports an object with a 'default' property on the server
 	app.use(VueProgressBar.default ?? VueProgressBar, {

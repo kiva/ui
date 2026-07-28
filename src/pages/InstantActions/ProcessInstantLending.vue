@@ -99,7 +99,7 @@ import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import * as Sentry from '@sentry/vue';
 import logFormatter from '#src/util/logFormatter';
-import { trackFBAddToCart } from '@kiva/kv-analytics';
+import { trackFBAddToCart, FB_CONTENT_CATEGORY_LOAN } from '@kiva/kv-analytics';
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
@@ -299,7 +299,7 @@ export default {
 					});
 				} else {
 					// Track facebook add to basket
-					trackFBAddToCart('Loan', this.lendAmount);
+					trackFBAddToCart(FB_CONTENT_CATEGORY_LOAN, this.lendAmount);
 					// signify loan added to basket
 					this.loanAdded = true;
 					// start redirect process

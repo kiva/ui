@@ -179,7 +179,9 @@ describe('ExpressCheckoutModal', () => {
 		});
 	});
 
-	it('fires the Meta Purchase pixel for the completed express transaction', async () => {
+	// executeOneTimeCheckout runs trackSuccess internally (kv-shop), which fires Meta Purchase + GA +
+	// Optimizely for this checkoutId. Tracking again here would double-count the Purchase.
+	it('does not track the transaction itself — kv-shop already did', async () => {
 		await mountComponent();
 		mockValidatePreCheckoutBasket.mockResolvedValue(true);
 		mockExecuteOneTimeCheckout.mockResolvedValue({
@@ -190,13 +192,12 @@ describe('ExpressCheckoutModal', () => {
 				},
 			},
 		});
-		const trackingData = { transactionId: '456', itemTotal: '25.00', isFTD: false };
-		mockGetCheckoutTrackingData.mockResolvedValue(trackingData);
 
 		await wrapper.find('form').trigger('submit');
 		await flushPromises();
 
-		expect(mockGetCheckoutTrackingData).toHaveBeenCalledWith(apollo, '456', expect.any(String));
-		expect(mockTrackFBTransaction).toHaveBeenCalledWith(trackingData);
+		expect(mockExecuteOneTimeCheckout).toHaveBeenCalled();
+		expect(mockTrackFBTransaction).not.toHaveBeenCalled();
+		expect(mockGetCheckoutTrackingData).not.toHaveBeenCalled();
 	});
 });

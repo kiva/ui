@@ -1,40 +1,27 @@
 /* eslint-disable no-underscore-dangle */
 import logFormatter from '#src/util/logFormatter';
 import SimpleQueue from '#src/util/simpleQueue';
-import { getUserType, trackFBCustomEvent } from '@kiva/kv-analytics';
-import { hasLentBeforeCookie, hasDepositBeforeCookie } from '#src/util/optimizelyUserMetrics';
-
-// Best-effort Meta pixel call: no-ops when fbq is absent and never throws into the caller even if
-// a broken/blocked fbq shim throws when invoked (mirrors fireFbq in @kiva/kv-analytics).
-function fireFbq(...args) {
-	if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
-		try {
-			window.fbq(...args);
-		} catch (e) {
-			logFormatter(e, 'error');
-		}
-	}
-}
+import {
+	getUserTypeFromCookies,
+	trackFBCustomEvent,
+	trackFBPageView,
+	trackFBTransaction,
+} from '@kiva/kv-analytics';
 
 // install method for plugin
 export default {
-	install: app => {
+	install: (app, { cookieStore } = {}) => {
 		const inBrowser = typeof window !== 'undefined';
 		let snowplowLoaded;
 		let gtagLoaded;
-		let fbLoaded;
 		let optimizelyLoaded;
 		const queue = new SimpleQueue();
-		// Transaction ids already tracked — guards against a Purchase firing twice for one order
-		// (double-submit, retry, or component re-mount).
-		const trackedTransactionIds = new Set();
 
 		const kvActions = {
 			checkLibs: () => {
 				gtagLoaded = inBrowser && typeof window.gtag === 'function';
 				snowplowLoaded = inBrowser && typeof window.snowplow === 'function';
-				fbLoaded = inBrowser && typeof window.fbq === 'function';
-				optimizelyLoaded = inBrowser && typeof window.optimizely === 'object';
+				optimizelyLoaded = inBrowser && typeof window.optimizely?.push === 'function';
 
 				if (typeof window.gtag === 'function' && typeof window.snowplow === 'function') {
 					return true;
@@ -78,21 +65,9 @@ export default {
 					});
 				}
 
-				// facebook pixel pageview
-				if (fbLoaded) {
-					// Segment by transactor status (has ever lent or deposited) via the kvu_lb / kvu_db
-					// cookies. Uses the shared cookie-name constants and matches the exact 'true' value
-					// the cookies are written with (see optimizelyUserMetrics.setUserDataCookies), so the
-					// read stays in step with how cms derives the same flag.
-					const readCookie = name => {
-						const cookies = (typeof document !== 'undefined' && document.cookie) || '';
-						const match = cookies.split(';').map(c => c.trim()).find(c => c.startsWith(`${name}=`));
-						return match ? match.slice(name.length + 1) : '';
-					};
-					const hasLentBefore = readCookie(hasLentBeforeCookie) === 'true';
-					const hasDepositBefore = readCookie(hasDepositBeforeCookie) === 'true';
-					fireFbq('track', 'PageView', { user_type: getUserType(hasLentBefore || hasDepositBefore) });
-				}
+				// Facebook pixel pageview
+				const userType = getUserTypeFromCookies(name => cookieStore?.get(name));
+				trackFBPageView(userType);
 			},
 			setCustomUrl: url => {
 				if (snowplowLoaded) {
@@ -236,65 +211,16 @@ export default {
 			},
 			trackTransaction: transactionData => {
 				kvActions.checkLibs();
-				// Nothing to track
-				if (transactionData.transactionId === '') {
+				if (!transactionData.transactionId) {
 					return false;
 				}
 
-				// Only track a given transaction once
-				const transactionKey = String(transactionData.transactionId);
-				if (trackedTransactionIds.has(transactionKey)) {
-					return false;
-				}
-				trackedTransactionIds.add(transactionKey);
-
-				if (fbLoaded) {
-					kvActions.trackFBTransaction(transactionData);
-				}
+				trackFBTransaction(transactionData);
 				if (gtagLoaded) {
 					kvActions.trackGATransaction(transactionData);
 				}
 				if (optimizelyLoaded) {
 					kvActions.trackOPTransaction(transactionData);
-				}
-			},
-			trackFBTransaction: transactionData => {
-				const itemTotal = Number(transactionData.itemTotal) || 0;
-				// Skip Purchase when there's no valid amount (omit rather than send a $0/invalid-value purchase)
-				if (itemTotal > 0) {
-					const purchase = {
-						currency: 'USD',
-						value: itemTotal
-					};
-					// Only assert content_type when FTD status is actually known. Guest checkouts have no
-					// FTD lookup, and defaulting to 'ReturningLender' would be a false claim.
-					if (typeof transactionData.isFTD === 'boolean') {
-						purchase.content_type = transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender';
-					}
-					fireFbq('track', 'Purchase', purchase);
-				}
-
-				// signify transaction has kiva cards
-				if (transactionData.kivaCards && transactionData.kivaCards.length) {
-					trackFBCustomEvent(
-						'transactionContainsKivaCards',
-						{
-							kivaCardTotal: transactionData.kivaCardTotal,
-							value: Number(transactionData.kivaCardTotal) || 0,
-							currency: 'USD'
-						}
-					);
-				}
-				// signifiy transaction ftd status
-				if (transactionData.isFTD) {
-					trackFBCustomEvent(
-						'firstTimeDepositorTransaction',
-						{
-							itemTotal,
-							value: itemTotal,
-							currency: 'USD'
-						}
-					);
 				}
 			},
 			trackGATransaction: transactionData => {
@@ -307,7 +233,9 @@ export default {
 				}
 
 				// Add each purchased item to the tracker
-				const allItems = transactionData.loans.concat(transactionData.donations);
+				const allItems = transactionData.loans
+					.concat(transactionData.donations)
+					.concat(transactionData.kivaCards);
 
 				// Setup purchased items
 				const purchasedItems = allItems.map(item => {

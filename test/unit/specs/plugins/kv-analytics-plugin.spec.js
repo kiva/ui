@@ -1,15 +1,32 @@
 import { createApp } from 'vue';
 import kvAnalyticsPlugin from '#src/plugins/kv-analytics-plugin';
 
+const { mockTrackFBTransaction } = vi.hoisted(() => ({ mockTrackFBTransaction: vi.fn() }));
+
+// The Meta transaction behavior (Purchase gating, content_type, kivaCard/FTD signals) belongs to
+// @kiva/kv-analytics and is tested there; here only the delegation is asserted. Everything else
+// (trackFBPageView, trackFBCustomEvent) runs the real package code against the mocked window.fbq.
+vi.mock('@kiva/kv-analytics', async importOriginal => ({
+	...(await importOriginal()),
+	trackFBTransaction: mockTrackFBTransaction,
+}));
+
 describe('kv-analytics-plugin', () => {
 	let app;
 	let mockWindow;
+	let cookieValues;
+	let mockCookieStore;
 
 	beforeEach(() => {
+		mockTrackFBTransaction.mockClear();
 		// Create a fresh app instance for each test
 		app = createApp({
 			name: 'TestApp'
 		});
+
+		// Mock the isomorphic cookieStore the plugin reads transactor cookies through
+		cookieValues = {};
+		mockCookieStore = { get: name => cookieValues[name] };
 
 		// Mock window object and analytics libraries
 		mockWindow = {
@@ -206,7 +223,7 @@ describe('kv-analytics-plugin', () => {
 
 	describe('$fireAsyncPageView', () => {
 		beforeEach(() => {
-			app.use(kvAnalyticsPlugin);
+			app.use(kvAnalyticsPlugin, { cookieStore: mockCookieStore });
 		});
 
 		it('should track pageview with route objects', () => {
@@ -259,7 +276,7 @@ describe('kv-analytics-plugin', () => {
 		});
 
 		it('should mark the pageview user_type as transactor when the has-lent cookie is set', () => {
-			global.document.cookie = 'foo=bar; kvu_lb=true; baz=qux';
+			cookieValues.kvu_lb = 'true';
 
 			app.config.globalProperties.$fireAsyncPageView('/test', '/home');
 
@@ -267,7 +284,7 @@ describe('kv-analytics-plugin', () => {
 		});
 
 		it('should mark the pageview user_type as transactor when the has-deposit cookie is set', () => {
-			global.document.cookie = 'kvu_db=true';
+			cookieValues.kvu_db = 'true';
 
 			app.config.globalProperties.$fireAsyncPageView('/test', '/home');
 
@@ -275,7 +292,8 @@ describe('kv-analytics-plugin', () => {
 		});
 
 		it('should mark the pageview user_type as non-transactor when the cookie value is false', () => {
-			global.document.cookie = 'kvu_lb=false; kvu_db=false';
+			cookieValues.kvu_lb = 'false';
+			cookieValues.kvu_db = 'false';
 
 			app.config.globalProperties.$fireAsyncPageView('/test', '/home');
 
@@ -289,6 +307,20 @@ describe('kv-analytics-plugin', () => {
 			app.config.globalProperties.$fireAsyncPageView(to, from);
 
 			expect(mockWindow.snowplow).not.toHaveBeenCalledWith('setReferrerUrl', expect.anything());
+		});
+	});
+
+	describe('$fireAsyncPageView without a cookieStore', () => {
+		// Installed without the cookieStore option, as some consumers do (e.g. LoanReservation.spec)
+		beforeEach(() => {
+			app.use(kvAnalyticsPlugin);
+		});
+
+		it('should default to non-transactor without throwing', () => {
+			expect(() => {
+				app.config.globalProperties.$fireAsyncPageView('/test', '/home');
+			}).not.toThrow();
+			expect(mockWindow.fbq).toHaveBeenCalledWith('track', 'PageView', { user_type: 'non-transactor' });
 		});
 	});
 
@@ -361,12 +393,8 @@ describe('kv-analytics-plugin', () => {
 
 			app.config.globalProperties.$kvTrackTransaction(transactionData);
 
-			// Facebook tracking
-			expect(mockWindow.fbq).toHaveBeenCalledWith('track', 'Purchase', {
-				currency: 'USD',
-				value: 100,
-				content_type: 'ReturningLender'
-			});
+			// Facebook tracking is delegated to the shared package
+			expect(mockTrackFBTransaction).toHaveBeenCalledExactlyOnceWith(transactionData);
 
 			// Google Analytics tracking
 			expect(mockWindow.gtag).toHaveBeenCalledWith('event', 'purchase', {
@@ -407,58 +435,33 @@ describe('kv-analytics-plugin', () => {
 			});
 		});
 
-		it('should handle first time depositor transaction', () => {
+		it('should include kiva cards in the GA purchase items', () => {
 			const transactionData = {
-				transactionId: 'TXN456',
-				itemTotal: 50,
-				loanTotal: 50,
-				donationTotal: 0,
-				depositTotal: 0,
-				loans: [{ id: '1', __typename: 'Loan', price: 50 }],
-				donations: [],
-				isFTD: true,
-				kivaCards: [],
-				kivaCardTotal: 0
-			};
-
-			app.config.globalProperties.$kvTrackTransaction(transactionData);
-
-			expect(mockWindow.fbq).toHaveBeenCalledWith('track', 'Purchase', {
-				currency: 'USD',
-				value: 50,
-				content_type: 'FirstTimeDepositor'
-			});
-		});
-
-		it('should track kiva cards in transaction', () => {
-			const transactionData = {
-				transactionId: 'TXN789',
+				transactionId: 'TXN-KC',
 				itemTotal: 100,
-				loanTotal: 0,
+				loanTotal: 25,
 				donationTotal: 0,
 				depositTotal: 0,
-				loans: [],
+				loans: [{ id: '1', __typename: 'Loan', price: 25 }],
 				donations: [],
 				isFTD: false,
-				kivaCards: [{ id: 'KC1', price: 100 }],
-				kivaCardTotal: 100
+				kivaCards: [{ id: '2', __typename: 'KivaCard', price: 75 }],
+				kivaCardTotal: 75
 			};
 
 			app.config.globalProperties.$kvTrackTransaction(transactionData);
 
-			// Should track custom FB event for kiva cards
-			expect(mockWindow.fbq).toHaveBeenCalledWith('trackCustom', 'transactionContainsKivaCards', {
-				kivaCardTotal: 100,
-				value: 100,
-				currency: 'USD'
-			});
+			const purchaseCall = mockWindow.gtag.mock.calls.find(call => call[1] === 'purchase');
+			expect(purchaseCall[2].items).toHaveLength(2);
+			expect(purchaseCall[2].items.map(item => item.id)).toEqual(['1', '2']);
 		});
 
-		it('should not track Facebook Purchase when itemTotal is empty', () => {
+		it('should not track when the transaction ID is null', () => {
+			// callers pass numeral(id).value(), which yields null — not '' — for a missing id
 			const transactionData = {
-				transactionId: 'TXN000',
-				itemTotal: '',
-				loanTotal: 0,
+				transactionId: null,
+				itemTotal: 25,
+				loanTotal: 25,
 				donationTotal: 0,
 				depositTotal: 0,
 				loans: [],
@@ -470,7 +473,28 @@ describe('kv-analytics-plugin', () => {
 
 			app.config.globalProperties.$kvTrackTransaction(transactionData);
 
-			expect(mockWindow.fbq).not.toHaveBeenCalledWith('track', 'Purchase', expect.anything());
+			expect(mockTrackFBTransaction).not.toHaveBeenCalled();
+			expect(mockWindow.gtag).not.toHaveBeenCalled();
+		});
+
+		it('should not throw when window.optimizely is null', () => {
+			// typeof null === 'object', so a naive guard would treat this as loaded and throw on .push
+			mockWindow.optimizely = null;
+			const transactionData = {
+				transactionId: 'TXN-OPT',
+				itemTotal: 25,
+				loanTotal: 25,
+				donationTotal: 0,
+				depositTotal: 0,
+				loans: [],
+				donations: [],
+				isFTD: false,
+				kivaCards: [],
+				kivaCardTotal: 0
+			};
+
+			expect(() => app.config.globalProperties.$kvTrackTransaction(transactionData)).not.toThrow();
+			expect(mockTrackFBTransaction).toHaveBeenCalledExactlyOnceWith(transactionData);
 		});
 
 		it('should not track when transaction ID is empty', () => {
@@ -483,53 +507,8 @@ describe('kv-analytics-plugin', () => {
 
 			app.config.globalProperties.$kvTrackTransaction(transactionData);
 
-			expect(mockWindow.fbq).not.toHaveBeenCalled();
+			expect(mockTrackFBTransaction).not.toHaveBeenCalled();
 			expect(mockWindow.gtag).not.toHaveBeenCalled();
-		});
-
-		it('should track a given transaction id only once', () => {
-			const transactionData = {
-				transactionId: 'TXN-DUP',
-				itemTotal: 25,
-				loanTotal: 25,
-				donationTotal: 0,
-				depositTotal: 0,
-				loans: [{ id: '1', __typename: 'Loan', price: 25 }],
-				donations: [],
-				isFTD: false,
-				kivaCards: [],
-				kivaCardTotal: 0
-			};
-
-			app.config.globalProperties.$kvTrackTransaction(transactionData);
-			app.config.globalProperties.$kvTrackTransaction(transactionData);
-
-			const purchaseCalls = mockWindow.fbq.mock.calls.filter(
-				call => call[0] === 'track' && call[1] === 'Purchase'
-			);
-			expect(purchaseCalls).toHaveLength(1);
-		});
-
-		it('should omit content_type when FTD status is unknown (guest checkout)', () => {
-			const transactionData = {
-				transactionId: 'TXN-GUEST',
-				itemTotal: 25,
-				loanTotal: 25,
-				donationTotal: 0,
-				depositTotal: 0,
-				loans: [{ id: '1', __typename: 'Loan', price: 25 }],
-				donations: [],
-				isFTD: undefined,
-				kivaCards: [],
-				kivaCardTotal: 0
-			};
-
-			app.config.globalProperties.$kvTrackTransaction(transactionData);
-
-			expect(mockWindow.fbq).toHaveBeenCalledWith('track', 'Purchase', {
-				currency: 'USD',
-				value: 25
-			});
 		});
 
 		it('should track deposit in Optimizely', () => {
