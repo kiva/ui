@@ -1,6 +1,11 @@
 import { render, screen } from '@testing-library/vue';
 import TeamMessageCard from '#src/components/LendingTeams/MyTeams/TeamMessageCard';
-import { globalOptions } from '../../../../specUtils';
+import { globalOptions, routerLinkStub } from '../../../../specUtils';
+
+const globalWithRouterLink = {
+	...globalOptions,
+	stubs: { RouterLink: routerLinkStub },
+};
 
 const mockMessage = (id, overrides = {}) => ({
 	id: `${id}`,
@@ -29,7 +34,7 @@ describe('TeamMessageCard', () => {
 			props: {
 				message: mockMessage(1),
 			},
-			global: globalOptions,
+			global: globalWithRouterLink,
 		});
 
 		expect(screen.getByText('Sender 1')).toBeTruthy();
@@ -43,7 +48,7 @@ describe('TeamMessageCard', () => {
 			props: {
 				message: mockMessage(1, { body: bodyWithRef }),
 			},
-			global: globalOptions,
+			global: globalWithRouterLink,
 		});
 
 		const links = container.querySelectorAll('a[href*="msgID=12345"]');
@@ -56,7 +61,7 @@ describe('TeamMessageCard', () => {
 			props: {
 				message: mockMessage(1, { body: bodyWithRef }),
 			},
-			global: globalOptions,
+			global: globalWithRouterLink,
 		});
 
 		const links = container.querySelectorAll('p a[href*="msgID="]');
@@ -69,7 +74,7 @@ describe('TeamMessageCard', () => {
 			props: {
 				message: mockMessage(1, { body: bodyWithUrl }),
 			},
-			global: globalOptions,
+			global: globalWithRouterLink,
 		});
 
 		const link = container.querySelector('p a[href="https://www.kiva.org/lend"]');
@@ -85,7 +90,7 @@ describe('TeamMessageCard', () => {
 			props: {
 				message: mockMessage(1, { body: bodyWithUrl }),
 			},
-			global: globalOptions,
+			global: globalWithRouterLink,
 		});
 
 		const link = container.querySelector('p a');
@@ -101,7 +106,7 @@ describe('TeamMessageCard', () => {
 			props: {
 				message: mockMessage(1, { body: bodyWithJavascript }),
 			},
-			global: globalOptions,
+			global: globalWithRouterLink,
 		});
 
 		const links = container.querySelectorAll('p a');
@@ -115,7 +120,7 @@ describe('TeamMessageCard', () => {
 			props: {
 				message: mockMessage(1, { body: bodyWithFragment }),
 			},
-			global: globalOptions,
+			global: globalWithRouterLink,
 		});
 
 		const externalLink = container.querySelector('p a[href="https://example.com/post#123"]');
@@ -129,7 +134,7 @@ describe('TeamMessageCard', () => {
 			props: {
 				message: mockMessage(1),
 			},
-			global: globalOptions,
+			global: globalWithRouterLink,
 		});
 
 		const deepLink = container.querySelector('a[href*="msgID=1#msg_1"]');
@@ -143,7 +148,7 @@ describe('TeamMessageCard', () => {
 			props: {
 				message: mockMessage(1, { body: bodyWithSpecialChars }),
 			},
-			global: globalOptions,
+			global: globalWithRouterLink,
 		});
 
 		// Should not create links from numbers that appear in escaped HTML entities
@@ -167,7 +172,7 @@ describe('TeamMessageCard', () => {
 			props: {
 				message: mockMessage(1, { body: bodyWithLineBreaks }),
 			},
-			global: globalOptions,
+			global: globalWithRouterLink,
 		});
 
 		const messageBody = container.querySelector('p');
@@ -187,7 +192,7 @@ describe('TeamMessageCard', () => {
 					},
 				}),
 			},
-			global: globalOptions,
+			global: globalWithRouterLink,
 		});
 
 		const senderLink = container.querySelector('router-link[to="/lender/sender123"]');
