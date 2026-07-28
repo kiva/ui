@@ -234,11 +234,16 @@ export default {
 			trackFBTransaction: transactionData => {
 				const itemTotal = transactionData.itemTotal || '';
 				if (typeof window.fbq !== 'undefined' && typeof itemTotal !== 'undefined') {
-					window.fbq('track', 'Purchase', {
+					const purchaseParams = {
 						currency: 'USD',
 						value: itemTotal,
 						content_type: transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender'
-					});
+					};
+					// guests have no lender record, so no stage to report
+					if (transactionData.lifecycleStage) {
+						purchaseParams.lifecycleStage = transactionData.lifecycleStage;
+					}
+					window.fbq('track', 'Purchase', purchaseParams);
 				}
 
 				// signify transaction has kiva cards
@@ -256,6 +261,33 @@ export default {
 						'firstTimeDepositorTransaction',
 						{
 							itemTotal
+						}
+					);
+				}
+
+				// signify a previously idle or lapsed lender has re-engaged. Qualifies on a
+				// deposit, loan purchase or donation; triggerTypes reports which of those
+				// the transaction actually contained, since a basket can hold several.
+				const {
+					reEngagementEvent,
+					reEngagementTriggers,
+					lifecycleStage,
+					daysSinceLastLoan,
+					loanTotal,
+					donationTotal,
+					depositTotal
+				} = transactionData;
+				if (reEngagementEvent && reEngagementTriggers?.length) {
+					kvActions.trackFBCustomEvent(
+						reEngagementEvent,
+						{
+							triggerTypes: reEngagementTriggers.join(','),
+							loanTotal,
+							donationTotal,
+							depositTotal,
+							itemTotal,
+							lifecycleStage,
+							daysSinceLastLoan
 						}
 					);
 				}

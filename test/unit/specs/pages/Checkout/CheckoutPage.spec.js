@@ -2,12 +2,17 @@ import { reactive } from 'vue';
 import { setDonationAmount } from '#src/util/basketUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
+import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
 
 vi.mock('#src/util/basketUtils', () => ({
 	setDonationAmount: vi.fn(),
 }));
 vi.mock('#src/util/logReadQueryError', () => ({
 	default: vi.fn(),
+}));
+vi.mock('#src/util/checkoutUtils', () => ({
+	formatTransactionData: vi.fn(),
+	getTransactionAnalyticsData: vi.fn(),
 }));
 
 let CheckoutPage;
@@ -259,5 +264,55 @@ describe('CheckoutPage provide', () => {
 
 		context.customTipDefaultVersion = 'b';
 		expect(provided.customTipDefaultVersion.value).toBe('b');
+	});
+});
+
+describe('CheckoutPage completeTransaction lifecycle handling', () => {
+	beforeEach(() => {
+		formatTransactionData.mockReturnValue({ itemTotal: '25.00', loans: [{ id: '1' }] });
+	});
+
+	// Regression: the stage used to be read synchronously from component state, so a
+	// checkout that completed before the query returned silently dropped the event.
+	it('waits for a lifecycle request that is still in flight', async () => {
+		let resolveAnalytics;
+		const context = {
+			apollo: {},
+			loans: [{ id: '1', __typename: 'LoanReservation', price: '25.00' }],
+			kivaCards: [],
+			donations: [],
+			totals: { itemTotal: '25.00' },
+			cookieStore: { get: vi.fn(), set: vi.fn() },
+			loanIdsInBasket: [],
+			challengeRedirectQueryParam: '',
+			checkingOutAsGuest: false,
+			lifecycleDataPromise: Promise.resolve(),
+			$kvTrackTransaction: vi.fn(),
+			redirectToThanks: vi.fn(),
+		};
+		getTransactionAnalyticsData.mockReturnValue(new Promise(resolve => { resolveAnalytics = resolve; }));
+
+		CheckoutPage.methods.completeTransaction.call(context, '999');
+		await Promise.resolve();
+
+		// checkout finished first, so nothing should have been reported yet
+		expect(context.$kvTrackTransaction).not.toHaveBeenCalled();
+
+		resolveAnalytics({
+			isFTD: false,
+			lifecycleStage: 'lapsedChurned',
+			daysSinceLastLoan: 900,
+			reEngagementEvent: 'lapsedLenderReEngaged',
+		});
+		await new Promise(resolve => { setTimeout(resolve, 0); });
+
+		expect(getTransactionAnalyticsData).toHaveBeenCalledWith(context.apollo, context.lifecycleDataPromise);
+		expect(context.$kvTrackTransaction).toHaveBeenCalledWith(
+			expect.objectContaining({
+				lifecycleStage: 'lapsedChurned',
+				daysSinceLastLoan: 900,
+				reEngagementEvent: 'lapsedLenderReEngaged',
+			})
+		);
 	});
 });

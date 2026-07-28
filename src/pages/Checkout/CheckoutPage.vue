@@ -309,7 +309,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 import { gql } from 'graphql-tag';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
@@ -319,7 +319,8 @@ import { isAdminRewardTipEligible } from '#src/util/promoCredit';
 import { setDonationAmount } from '#src/util/basketUtils';
 import { preFetchAll } from '#src/util/apolloPreFetch';
 import syncDate from '#src/util/syncDate';
-import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
+import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
+import useLifecycleCapture from '#src/composables/useLifecycleCapture';
 import { getPromoFromBasket } from '#src/util/campaignUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import checkoutSettings from '#src/graphql/query/checkout/checkoutSettings.graphql';
@@ -426,6 +427,9 @@ const getLoanIds = loans => (loans ?? []).map(l => l.id).filter(id => !!id);
 
 export default {
 	name: 'CheckoutPage',
+	setup() {
+		return useLifecycleCapture(inject('apollo'));
+	},
 	components: {
 		WwwPage,
 		KivaCreditPayment,
@@ -567,6 +571,10 @@ export default {
 			// user data
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
+			// resolve lifecycle stage now, while it still reflects pre-transaction state
+			if (this.myId) {
+				this.startLifecycleCapture();
+			}
 			this.teams = _get(data, 'my.lender.teams.values');
 			this.hasEverLoggedIn = _get(data, 'hasEverLoggedIn', false);
 			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
@@ -1024,13 +1032,8 @@ export default {
 				this.totals
 			);
 
-			// Fetch FTD Status
-			const myFTDQueryUtil = myFTDQuery(this.apollo);
-
-			myFTDQueryUtil.then(({ data }) => {
-				// determine ftd status
-				const isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
-				transactionData.isFTD = isFTD;
+			getTransactionAnalyticsData(this.apollo, this.lifecycleDataPromise).then(analyticsData => {
+				Object.assign(transactionData, analyticsData);
 
 				// fire transaction events
 				this.$kvTrackTransaction(transactionData);

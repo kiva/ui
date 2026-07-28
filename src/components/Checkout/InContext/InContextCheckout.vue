@@ -151,8 +151,10 @@
 </template>
 
 <script>
+import { inject } from 'vue';
 import numeral from 'numeral';
-import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
+import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
+import useLifecycleCapture from '#src/composables/useLifecycleCapture';
 import { isCCPage } from '#src/util/urlUtils';
 import checkoutUtils from '#src/plugins/checkout-utils-mixin';
 import CheckoutDropInPaymentWrapper from '#src/components/Checkout/CheckoutDropInPaymentWrapper';
@@ -166,6 +168,9 @@ import { KvButton, KvGrid } from '@kiva/kv-components';
 
 export default {
 	name: 'InContextCheckout',
+	setup() {
+		return useLifecycleCapture(inject('apollo'));
+	},
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		BasketItemsList,
@@ -260,8 +265,20 @@ export default {
 		return {
 			updatingTotals: false,
 			continueAsGuest: false,
-			continueAsExistingUser: false
+			continueAsExistingUser: false,
 		};
+	},
+	watch: {
+		// Resolve the lifecycle stage as soon as we have a logged-in lender, which may
+		// be on mount or partway through the flow if they log in from here.
+		isLoggedIn: {
+			immediate: true,
+			handler(isLoggedIn) {
+				if (isLoggedIn) {
+					this.startLifecycleCapture();
+				}
+			},
+		},
 	},
 	computed: {
 		creditNeeded() {
@@ -313,12 +330,9 @@ export default {
 				this.donations,
 				this.totals
 			);
-			// check ftd status
-			const myFtd = myFTDQuery(this.apollo);
-			myFtd.then(({ data }) => {
-				const isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
-				// update transaction data
-				transactionData.isFTD = isFTD;
+
+			getTransactionAnalyticsData(this.apollo, this.lifecycleDataPromise).then(analyticsData => {
+				Object.assign(transactionData, analyticsData);
 				// send analytics event
 				this.$kvTrackTransaction(transactionData);
 

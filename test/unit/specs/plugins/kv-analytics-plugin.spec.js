@@ -491,6 +491,174 @@ describe('kv-analytics-plugin', () => {
 		});
 	});
 
+	describe('lifecycle re-engagement events', () => {
+		beforeEach(() => {
+			app.use(kvAnalyticsPlugin);
+		});
+
+		const transaction = overrides => ({
+			transactionId: 'TXN222',
+			itemTotal: 50,
+			loanTotal: 25,
+			donationTotal: 0,
+			depositTotal: 25,
+			loans: [{ id: '1', __typename: 'Loan', price: 25 }],
+			donations: [],
+			isFTD: false,
+			kivaCards: [],
+			kivaCardTotal: 0,
+			lifecycleStage: null,
+			daysSinceLastLoan: null,
+			reEngagementEvent: null,
+			reEngagementTriggers: ['loan', 'deposit'],
+			...overrides,
+		});
+
+		it('fires lapsedLenderReEngaged when a churned lender transacts', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({
+				lifecycleStage: 'lapsedChurned',
+				daysSinceLastLoan: 900,
+				reEngagementEvent: 'lapsedLenderReEngaged',
+			}));
+
+			expect(mockWindow.fbq).toHaveBeenCalledWith('trackCustom', 'lapsedLenderReEngaged', {
+				triggerTypes: 'loan,deposit',
+				loanTotal: 25,
+				donationTotal: 0,
+				depositTotal: 25,
+				itemTotal: 50,
+				lifecycleStage: 'lapsedChurned',
+				daysSinceLastLoan: 900,
+			});
+		});
+
+		it.each(['idle90', 'idle180', 'idle365'])(
+			'fires idleLenderReEngaged for %s, recording the bucket',
+			stage => {
+				app.config.globalProperties.$kvTrackTransaction(transaction({
+					lifecycleStage: stage,
+					daysSinceLastLoan: 200,
+					reEngagementEvent: 'idleLenderReEngaged',
+				}));
+
+				expect(mockWindow.fbq).toHaveBeenCalledWith(
+					'trackCustom',
+					'idleLenderReEngaged',
+					expect.objectContaining({ lifecycleStage: stage, daysSinceLastLoan: 200 })
+				);
+			}
+		);
+
+		// marketing needs to tell a deposit-only return apart from one that included a loan
+		it.each([
+			[['deposit'], 'deposit'],
+			[['donation'], 'donation'],
+			[['loan'], 'loan'],
+			[['loan', 'deposit', 'donation'], 'loan,deposit,donation'],
+		])('reports %s as triggerTypes %s', (triggers, expected) => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({
+				lifecycleStage: 'idle180',
+				daysSinceLastLoan: 200,
+				reEngagementEvent: 'idleLenderReEngaged',
+				reEngagementTriggers: triggers,
+			}));
+
+			expect(mockWindow.fbq).toHaveBeenCalledWith(
+				'trackCustom',
+				'idleLenderReEngaged',
+				expect.objectContaining({ triggerTypes: expected })
+			);
+		});
+
+		it('fires on a deposit with no loan in the basket', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({
+				lifecycleStage: 'lapsedChurned',
+				daysSinceLastLoan: 900,
+				reEngagementEvent: 'lapsedLenderReEngaged',
+				reEngagementTriggers: ['deposit'],
+				loans: [],
+				loanTotal: 0,
+			}));
+
+			expect(mockWindow.fbq).toHaveBeenCalledWith(
+				'trackCustom',
+				'lapsedLenderReEngaged',
+				expect.objectContaining({ triggerTypes: 'deposit', loanTotal: 0 })
+			);
+		});
+
+		it.each(['new', 'engaged', 'registered'])('fires neither event for %s lenders', stage => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({ lifecycleStage: stage }));
+
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith(
+				'trackCustom',
+				'lapsedLenderReEngaged',
+				expect.anything()
+			);
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith(
+				'trackCustom',
+				'idleLenderReEngaged',
+				expect.anything()
+			);
+		});
+
+		// a Kiva Card bought purely with existing credit is none of deposit, LSP or donation
+		it('fires neither event when the transaction contains no qualifying action', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({
+				lifecycleStage: 'lapsedChurned',
+				daysSinceLastLoan: 900,
+				reEngagementEvent: 'lapsedLenderReEngaged',
+				reEngagementTriggers: [],
+				loans: [],
+				loanTotal: 0,
+				kivaCards: [{ id: 'kc1', __typename: 'KivaCard', price: 50 }],
+				kivaCardTotal: 50,
+			}));
+
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith(
+				'trackCustom',
+				'lapsedLenderReEngaged',
+				expect.anything()
+			);
+		});
+
+		it('fires neither event for guests, who have no lifecycle stage', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({ lifecycleStage: null }));
+
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith(
+				'trackCustom',
+				'lapsedLenderReEngaged',
+				expect.anything()
+			);
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith(
+				'trackCustom',
+				'idleLenderReEngaged',
+				expect.anything()
+			);
+		});
+
+		it('adds lifecycleStage to the Purchase event', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({ lifecycleStage: 'engaged' }));
+
+			expect(mockWindow.fbq).toHaveBeenCalledWith('track', 'Purchase', {
+				currency: 'USD',
+				value: 50,
+				content_type: 'ReturningLender',
+				lifecycleStage: 'engaged',
+			});
+		});
+
+		it('omits lifecycleStage from Purchase for guests', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({ lifecycleStage: null }));
+
+			expect(mockWindow.fbq).toHaveBeenCalledWith('track', 'Purchase', {
+				currency: 'USD',
+				value: 50,
+				content_type: 'ReturningLender',
+			});
+		});
+	});
+
 	describe('$kvTrackFBCustomEvent', () => {
 		beforeEach(() => {
 			app.use(kvAnalyticsPlugin);

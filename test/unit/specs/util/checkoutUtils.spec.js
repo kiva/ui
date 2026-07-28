@@ -1,5 +1,6 @@
 import {
 	formatTransactionData,
+	getTransactionAnalyticsData,
 	myFTDQuery,
 	removeCredit
 } from '#src/util/checkoutUtils';
@@ -169,6 +170,57 @@ describe('checkoutUtils.js', () => {
 
 			expect(result.itemTotal).toBe('100.00');
 		});
+
+		describe('reEngagementTriggers', () => {
+			const loan = { __typename: 'Loan', id: 1, price: '25.00' };
+			const donation = { __typename: 'Donation', id: 'd1', price: '5.00' };
+			const kivaCard = { __typename: 'KivaCard', id: 'kc1', price: '50.00' };
+
+			it('reports a loan purchase', () => {
+				const result = formatTransactionData(1, [loan], [], [], { creditAmountNeeded: '0.00' });
+
+				expect(result.reEngagementTriggers).toEqual(['loan']);
+			});
+
+			it('reports a deposit', () => {
+				const result = formatTransactionData(1, [], [], [], { creditAmountNeeded: '25.00' });
+
+				expect(result.reEngagementTriggers).toEqual(['deposit']);
+			});
+
+			it('reports a donation', () => {
+				const result = formatTransactionData(1, [], [], [donation], { creditAmountNeeded: '0.00' });
+
+				expect(result.reEngagementTriggers).toEqual(['donation']);
+			});
+
+			it('does not report a zero-dollar donation', () => {
+				const zeroDonation = { ...donation, price: '0.00' };
+				const result = formatTransactionData(1, [], [], [zeroDonation], { creditAmountNeeded: '0.00' });
+
+				expect(result.reEngagementTriggers).toEqual([]);
+			});
+
+			it('reports every qualifying action a single basket contains', () => {
+				const result = formatTransactionData(1, [loan], [], [donation], { creditAmountNeeded: '30.00' });
+
+				expect(result.reEngagementTriggers).toEqual(['loan', 'deposit', 'donation']);
+			});
+
+			// a Kiva Card paid for with existing credit is none of the three
+			it('reports nothing for a Kiva Card bought without a deposit', () => {
+				const result = formatTransactionData(1, [], [kivaCard], [], { creditAmountNeeded: '0.00' });
+
+				expect(result.reEngagementTriggers).toEqual([]);
+			});
+
+			// creditAmountNeeded is absent on credit-only baskets, and must not read as a deposit
+			it('reports nothing when the deposit amount is missing', () => {
+				const result = formatTransactionData(1, [], [], [], {});
+
+				expect(result.reEngagementTriggers).toEqual([]);
+			});
+		});
 	});
 
 	describe('myFTDQuery', () => {
@@ -224,6 +276,100 @@ describe('checkoutUtils.js', () => {
 			// Verify the query was called with expected structure
 			const callArgs = mockApollo.query.mock.calls[0][0];
 			expect(callArgs).toHaveProperty('query');
+		});
+	});
+
+	describe('getTransactionAnalyticsData', () => {
+		const ftdApollo = isFirstTimeDepositor => ({
+			query: vi.fn().mockResolvedValue({ data: { my: { userAccount: { isFirstTimeDepositor } } } }),
+		});
+
+		it('combines FTD and pre-transaction lifecycle data', async () => {
+			const lifecycleDataPromise = Promise.resolve({
+				stage: 'idle180',
+				daysSinceLastLoan: 200,
+			});
+
+			const result = await getTransactionAnalyticsData(ftdApollo(false), lifecycleDataPromise);
+
+			expect(result).toEqual({
+				isFTD: false,
+				lifecycleStage: 'idle180',
+				daysSinceLastLoan: 200,
+				reEngagementEvent: 'idleLenderReEngaged',
+			});
+		});
+
+		it('resolves the event name from the stage', async () => {
+			const lifecycleDataPromise = Promise.resolve({
+				stage: 'lapsedChurned',
+				daysSinceLastLoan: 900,
+			});
+
+			const result = await getTransactionAnalyticsData(ftdApollo(false), lifecycleDataPromise);
+
+			expect(result.reEngagementEvent).toBe('lapsedLenderReEngaged');
+		});
+
+		// fires once per inactive period, so a lender who already returned is not re-reported
+		it('reports no event when the lender already re-engaged this inactive period', async () => {
+			const lifecycleDataPromise = Promise.resolve({
+				stage: 'lapsedChurned',
+				daysSinceLastLoan: 900,
+				alreadyReEngaged: true,
+			});
+
+			const result = await getTransactionAnalyticsData(ftdApollo(false), lifecycleDataPromise);
+
+			expect(result.reEngagementEvent).toBeNull();
+			// the stage itself is still reported on the Purchase event
+			expect(result.lifecycleStage).toBe('lapsedChurned');
+		});
+
+		it('reports no event for a lender who was never idle', async () => {
+			const lifecycleDataPromise = Promise.resolve({ stage: 'engaged', daysSinceLastLoan: 10 });
+
+			const result = await getTransactionAnalyticsData(ftdApollo(false), lifecycleDataPromise);
+
+			expect(result.reEngagementEvent).toBeNull();
+		});
+
+		it('uses null lifecycle values when no request was made', async () => {
+			const result = await getTransactionAnalyticsData(ftdApollo(true), null);
+
+			expect(result).toEqual({
+				isFTD: true,
+				lifecycleStage: null,
+				daysSinceLastLoan: null,
+				reEngagementEvent: null,
+			});
+		});
+
+		// analytics must never strand a lender who has already paid
+		it('resolves rather than hanging when a query never settles', async () => {
+			vi.useFakeTimers();
+			const stalledApollo = { query: vi.fn().mockReturnValue(new Promise(() => {})) };
+
+			const pending = getTransactionAnalyticsData(stalledApollo, null);
+			await vi.advanceTimersByTimeAsync(10000);
+
+			expect(await pending).toEqual({
+				isFTD: undefined,
+				lifecycleStage: null,
+				daysSinceLastLoan: null,
+				reEngagementEvent: null,
+			});
+			vi.useRealTimers();
+		});
+
+		it('resolves rather than throwing when a query fails', async () => {
+			const failingApollo = { query: vi.fn().mockRejectedValue(new Error('network')) };
+			vi.spyOn(console, 'error').mockImplementation(() => {});
+
+			const result = await getTransactionAnalyticsData(failingApollo, null);
+
+			expect(result.lifecycleStage).toBeNull();
+			expect(result.reEngagementEvent).toBeNull();
 		});
 	});
 

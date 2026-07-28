@@ -1,0 +1,39 @@
+query lifecycleStageQuery {
+	my {
+		id
+		lender {
+			id
+			memberSince
+		}
+		transactions(
+			limit: 1
+			filter: {
+				# matches the latestLoan filter in myKiva.graphql. Narrower than
+				# category: loan, which also covers non-purchase loan transactions.
+				type: ["loan_purchase", "direct_loan_purchase"]
+				sortBy: newest
+			}
+		) {
+			totalCount
+			values {
+				effectiveTime
+				createTime
+			}
+		}
+		# Used to fire the re-engagement events only once per inactive period. A deposit
+		# or donation after the lender went idle means we have already reported them as
+		# re-engaged, since neither moves them out of the stage.
+		lastDeposit: transactions(limit: 1, filter: { category: deposit, sortBy: newest }) {
+			values {
+				effectiveTime
+				createTime
+			}
+		}
+		lastDonation: transactions(limit: 1, filter: { category: donation, sortBy: newest }) {
+			values {
+				effectiveTime
+				createTime
+			}
+		}
+	}
+}
