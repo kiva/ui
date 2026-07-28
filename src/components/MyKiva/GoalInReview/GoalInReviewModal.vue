@@ -28,8 +28,21 @@
 				:lifetime-percentile="data?.lifetimePercentile"
 			/>
 			<GoalInReviewSlide5 :sectors="data?.sectors" />
-			<GoalInReviewSlide6 :goal-insights="data?.goalInsights" />
-			<GoalInReviewSlide7 :wrap-up="data?.wrapUp" />
+			<GoalInReviewSlide6
+				v-if="data?.goalSummary?.status === 'completed'"
+				:year="data?.year"
+				:goal-insights="data?.goalInsights"
+			/>
+			<GoalInReviewSlide7
+				:goal-status="data?.goalSummary?.status"
+				:loan-count="data?.loanStats?.borrowers"
+				:year="data?.year"
+				:current-year="currentYear"
+				:wrap-up="data?.wrapUp"
+				@back-to-kiva="handleCta('back-to-kiva')"
+				@finish-goal="handleCta('finish-goal')"
+				@set-goal="handleCta('set-goal')"
+			/>
 		</div>
 	</KvLightbox>
 </template>
@@ -40,6 +53,7 @@ import {
 	inject,
 } from 'vue';
 import { KvLightbox } from '@kiva/kv-components';
+import { getGoalInReviewCurrentYear } from '#src/composables/useGoalInReview';
 
 const GoalInReviewSlide1 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide1'));
 const GoalInReviewSlide2 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide2'));
@@ -60,12 +74,20 @@ defineProps({
 	},
 });
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'back-to-kiva', 'finish-goal', 'set-goal']);
 const $kvTrackEvent = inject('$kvTrackEvent', () => {});
+
+// Single source of truth for "now". Add ?recapDate=YYYY-MM-DD to the url for QA specific dates
+const currentYear = getGoalInReviewCurrentYear();
 
 const handleClose = () => {
 	$kvTrackEvent('portfolio', 'click', 'goal-in-review-close');
 	emit('close');
+};
+
+const handleCta = event => {
+	$kvTrackEvent('portfolio', 'click', `goal-in-review-${event}`);
+	emit(event);
 };
 </script>
 
