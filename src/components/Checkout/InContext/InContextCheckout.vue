@@ -322,7 +322,7 @@ export default {
 	},
 	methods: {
 		completeTransaction(transactionId) {
-			// compile transaction data
+			// Compile transaction data
 			const transactionData = formatTransactionData(
 				numeral(transactionId).value(),
 				this.loans,
@@ -330,13 +330,12 @@ export default {
 				this.donations,
 				this.totals
 			);
-
-			getTransactionAnalyticsData(this.apollo, this.lifecycleDataPromise).then(analyticsData => {
-				Object.assign(transactionData, analyticsData);
-				// send analytics event
+			// Send analytics event + redirect. Wrapped so a failed FTD lookup can't swallow the
+			// Purchase event or the redirect.
+			const finalizeTransaction = () => {
 				this.$kvTrackTransaction(transactionData);
 
-				// redirect to thanks
+				// Redirect to thanks
 				if (this.autoRedirectToThanks) {
 					window.setTimeout(
 						() => {
@@ -345,9 +344,18 @@ export default {
 						800
 					);
 				}
-			});
+			};
+
+			const trackingComplete = getTransactionAnalyticsData(this.apollo, this.lifecycleDataPromise)
+				.then(analyticsData => {
+					Object.assign(transactionData, analyticsData);
+				})
+				.catch(() => {})
+				.then(finalizeTransaction);
 
 			this.$emit('transaction-complete', transactionData);
+
+			return trackingComplete;
 		},
 		handleCheckoutFailure(payload) {
 			this.$emit('checkout-failure', payload);

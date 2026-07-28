@@ -246,6 +246,7 @@ import LoanProgressGroup from '#src/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '#src/components/LoanCards/LoanMatchingText';
 import SummaryTag from '#src/components/BorrowerProfile/SummaryTag';
 import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
+import { trackFBAddToCart, FB_CONTENT_CATEGORY_LOAN } from '@kiva/kv-analytics';
 import loanCardFieldsFragment from '#src/graphql/fragments/loanCardFields.graphql';
 import ActionButton from '#src/components/LoanCards/Buttons/ActionButton';
 import LoanTag from '#src/components/LoanCards/LoanTags/LoanTag';
@@ -555,6 +556,8 @@ export default {
 				loanId: this.loanId,
 			}).then(() => {
 				this.isAdding = false;
+				// Track facebook add to basket
+				trackFBAddToCart(FB_CONTENT_CATEGORY_LOAN, this.lendAmount);
 				this.$emit('add-to-basket', { loanId: this.loanId, success: true });
 			}).catch(e => {
 				this.isAdding = false;

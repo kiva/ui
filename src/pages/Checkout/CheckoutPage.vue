@@ -321,6 +321,7 @@ import { preFetchAll } from '#src/util/apolloPreFetch';
 import syncDate from '#src/util/syncDate';
 import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
 import useLifecycleCapture from '#src/composables/useLifecycleCapture';
+import { trackFBAddToCart, FB_CONTENT_CATEGORY_LOAN } from '@kiva/kv-analytics';
 import { getPromoFromBasket } from '#src/util/campaignUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import checkoutSettings from '#src/graphql/query/checkout/checkoutSettings.graphql';
@@ -1032,10 +1033,9 @@ export default {
 				this.totals
 			);
 
-			getTransactionAnalyticsData(this.apollo, this.lifecycleDataPromise).then(analyticsData => {
-				Object.assign(transactionData, analyticsData);
-
-				// fire transaction events
+			// Fire the transaction event and hand off to the thanks page. Wrapped so a failed
+			// FTD lookup can't swallow the Purchase event or the redirect.
+			const finalizeTransaction = () => {
 				this.$kvTrackTransaction(transactionData);
 
 				let checkoutAdditionalQueryParams = this.challengeRedirectQueryParam;
@@ -1053,7 +1053,14 @@ export default {
 					},
 					800
 				);
-			});
+			};
+
+			const trackingComplete = getTransactionAnalyticsData(this.apollo, this.lifecycleDataPromise)
+				.then(analyticsData => {
+					Object.assign(transactionData, analyticsData);
+				})
+				.catch(() => {})
+				.then(finalizeTransaction);
 
 			removeLoansFromChallengeCookie(this.cookieStore, this.loanIdsInBasket);
 
@@ -1063,6 +1070,8 @@ export default {
 			if (bonusUsed) {
 				clearKivaLendingCreditCookie(this.cookieStore);
 			}
+
+			return trackingComplete;
 		},
 		setUpdatingTotals(state) {
 			this.updatingTotals = state;
@@ -1296,6 +1305,8 @@ export default {
 					);
 					this.showUpsellModule = false;
 					this.refreshTotals();
+					// Track facebook add to basket
+					trackFBAddToCart(FB_CONTENT_CATEGORY_LOAN, amountLeft);
 				}
 			}).catch(error => {
 				this.$showTipMsg('Failed to add loan. Please try again.', 'error');

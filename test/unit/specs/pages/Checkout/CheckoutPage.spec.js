@@ -267,35 +267,63 @@ describe('CheckoutPage provide', () => {
 	});
 });
 
-describe('CheckoutPage completeTransaction lifecycle handling', () => {
-	beforeEach(() => {
-		formatTransactionData.mockReturnValue({ itemTotal: '25.00', loans: [{ id: '1' }] });
+describe('CheckoutPage completeTransaction', () => {
+	const makeContext = (overrides = {}) => ({
+		apollo: {},
+		loans: [],
+		kivaCards: [],
+		donations: [],
+		totals: { itemTotal: '25.00', bonusAppliedTotal: '0.00' },
+		challengeRedirectQueryParam: '',
+		checkingOutAsGuest: false,
+		userOptedIn: false,
+		loanIdsInBasket: [],
+		cookieStore: { get: vi.fn(), set: vi.fn(), remove: vi.fn() },
+		$kvTrackTransaction: vi.fn(),
+		redirectToThanks: vi.fn(),
+		...overrides,
 	});
 
-	// Regression: the stage used to be read synchronously from component state, so a
-	// checkout that completed before the query returned silently dropped the event.
-	it('waits for a lifecycle request that is still in flight', async () => {
+	beforeEach(() => {
+		formatTransactionData.mockReturnValue({ itemTotal: '25.00', loans: [] });
+		getTransactionAnalyticsData.mockResolvedValue({
+			isFTD: true,
+			lifecycleStage: null,
+			daysSinceLastLoan: null,
+			reEngagementEvent: null,
+		});
+	});
+
+	it('fires the transaction with the resolved analytics data', async () => {
+		const context = makeContext();
+
+		await CheckoutPage.methods.completeTransaction.call(context, '12345');
+
+		expect(context.$kvTrackTransaction).toHaveBeenCalledTimes(1);
+		expect(context.$kvTrackTransaction).toHaveBeenCalledWith(expect.objectContaining({ isFTD: true }));
+	});
+
+	it('still fires the transaction and redirects when analytics lookup fails', async () => {
+		vi.useFakeTimers();
+		const context = makeContext();
+		getTransactionAnalyticsData.mockRejectedValue(new Error('network'));
+
+		await CheckoutPage.methods.completeTransaction.call(context, '12345');
+
+		expect(context.$kvTrackTransaction).toHaveBeenCalledTimes(1);
+		vi.runAllTimers();
+		expect(context.redirectToThanks).toHaveBeenCalled();
+		vi.useRealTimers();
+	});
+
+	it('waits for lifecycle analytics already in flight', async () => {
 		let resolveAnalytics;
-		const context = {
-			apollo: {},
-			loans: [{ id: '1', __typename: 'LoanReservation', price: '25.00' }],
-			kivaCards: [],
-			donations: [],
-			totals: { itemTotal: '25.00' },
-			cookieStore: { get: vi.fn(), set: vi.fn() },
-			loanIdsInBasket: [],
-			challengeRedirectQueryParam: '',
-			checkingOutAsGuest: false,
-			lifecycleDataPromise: Promise.resolve(),
-			$kvTrackTransaction: vi.fn(),
-			redirectToThanks: vi.fn(),
-		};
+		const lifecycleDataPromise = Promise.resolve();
+		const context = makeContext({ lifecycleDataPromise });
 		getTransactionAnalyticsData.mockReturnValue(new Promise(resolve => { resolveAnalytics = resolve; }));
 
-		CheckoutPage.methods.completeTransaction.call(context, '999');
+		const trackingComplete = CheckoutPage.methods.completeTransaction.call(context, '999');
 		await Promise.resolve();
-
-		// checkout finished first, so nothing should have been reported yet
 		expect(context.$kvTrackTransaction).not.toHaveBeenCalled();
 
 		resolveAnalytics({
@@ -304,15 +332,12 @@ describe('CheckoutPage completeTransaction lifecycle handling', () => {
 			daysSinceLastLoan: 900,
 			reEngagementEvent: 'lapsedLenderReEngaged',
 		});
-		await new Promise(resolve => { setTimeout(resolve, 0); });
+		await trackingComplete;
 
-		expect(getTransactionAnalyticsData).toHaveBeenCalledWith(context.apollo, context.lifecycleDataPromise);
-		expect(context.$kvTrackTransaction).toHaveBeenCalledWith(
-			expect.objectContaining({
-				lifecycleStage: 'lapsedChurned',
-				daysSinceLastLoan: 900,
-				reEngagementEvent: 'lapsedLenderReEngaged',
-			})
-		);
+		expect(getTransactionAnalyticsData).toHaveBeenCalledWith(context.apollo, lifecycleDataPromise);
+		expect(context.$kvTrackTransaction).toHaveBeenCalledWith(expect.objectContaining({
+			lifecycleStage: 'lapsedChurned',
+			reEngagementEvent: 'lapsedLenderReEngaged',
+		}));
 	});
 });
