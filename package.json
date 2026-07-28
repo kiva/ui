@@ -216,5 +216,17 @@
 	},
 	"browserslist": [
 		"defaults and fully supports es6-module-dynamic-import"
-	]
+	],
+	"allowScripts": {
+		"core-js@3.37.0": true,
+		"@apollo/protobufjs@1.2.2": true,
+		"@parcel/watcher@2.5.1": true,
+		"vue-demi@0.13.11": true,
+		"canvas@3.2.3": true,
+		"core-js-pure@3.16.0": true,
+		"cypress@13.13.3": true,
+		"esbuild@0.25.4": true,
+		"fsevents@2.3.3": true,
+		"protobufjs@7.6.3": true
+	}
 }
