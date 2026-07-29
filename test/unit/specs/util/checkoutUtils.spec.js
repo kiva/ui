@@ -294,19 +294,18 @@ describe('checkoutUtils.js', () => {
 			});
 		});
 
+		// leaves isFTD undefined so no content_type is asserted downstream
 		it('resolves rather than throwing when a query fails', async () => {
 			const failingApollo = { query: vi.fn().mockRejectedValue(new Error('network')) };
-			const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
 
 			const result = await getTransactionAnalyticsData(failingApollo, null);
 
-			expect(result.lifecycleStage).toBeNull();
-			expect(result.reEngagementEvent).toBeNull();
-			expect(consoleError).toHaveBeenCalledWith(JSON.stringify({
-				meta: { error: 'network' },
-				level: 'error',
-				message: 'Failed to resolve FTD status for transaction analytics',
-			}));
+			expect(result).toEqual({
+				isFTD: undefined,
+				lifecycleStage: null,
+				daysSinceLastLoan: null,
+				reEngagementEvent: null,
+			});
 		});
 	});
 

@@ -2,7 +2,6 @@ import numeral from 'numeral';
 import myFTD from '#src/graphql/query/myFTD.graphql';
 import { getReEngagementEvent } from '#src/util/lifecycleStage';
 import removeCreditByTypeMutation from '#src/graphql/mutation/shopRemoveCreditByType.graphql';
-import logFormatter from '#src/util/logFormatter';
 
 /** Format Transaction Data for Analtyics events
 * @param {Number} transactionId
@@ -124,23 +123,16 @@ export function myFTDQuery(apollo) {
  */
 export async function getTransactionAnalyticsData(apollo, lifecycleDataPromise) {
 	// Only the FTD query starts here; the lifecycle request began at checkout entry and
-	// is usually settled already. They are awaited together so neither blocks the other.
-	const [ftdResult, lifecycleResult] = await Promise.allSettled([
-		myFTDQuery(apollo),
+	// is usually settled already. They are awaited together so neither blocks the other,
+	// and a failed FTD lookup does not discard the lifecycle stage.
+	const [ftdResponse, lifecycleData] = await Promise.all([
+		myFTDQuery(apollo).catch(() => null),
 		lifecycleDataPromise,
 	]);
 
-	if (ftdResult.status === 'rejected') {
-		logFormatter('Failed to resolve FTD status for transaction analytics', 'error', {
-			error: ftdResult.reason?.message,
-		});
-	}
-
-	// Unrelated signals, so losing one must not discard the other
-	const lifecycleData = lifecycleResult.status === 'fulfilled' ? lifecycleResult.value : null;
-
 	return {
-		isFTD: ftdResult.value?.data?.my?.userAccount?.isFirstTimeDepositor,
+		// undefined when the lookup failed, so no content_type is asserted downstream
+		isFTD: ftdResponse?.data?.my?.userAccount?.isFirstTimeDepositor,
 		lifecycleStage: lifecycleData?.stage ?? null,
 		daysSinceLastLoan: lifecycleData?.daysSinceLastLoan ?? null,
 		reEngagementEvent: getReEngagementEvent(lifecycleData?.stage),
