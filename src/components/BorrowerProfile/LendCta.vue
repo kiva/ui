@@ -399,7 +399,6 @@ import KvIcon from '#src/components/Kv/KvIcon';
 import {
 	KvSelect as KvUiSelect, KvMaterialIcon, KvButton as KvUiButton, KvGrid
 } from '@kiva/kv-components';
-import { setChallengeCookieData } from '#src/util/teamChallengeUtils';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 
@@ -514,14 +513,6 @@ export default {
 		showDetailsInRail: {
 			type: Boolean,
 			default: false,
-		},
-		teamId: {
-			type: Number,
-			default: null,
-		},
-		teamName: {
-			type: String,
-			default: '',
 		},
 	},
 	components: {
@@ -651,14 +642,6 @@ export default {
 			// added the loan (and fired its own AddToCart), don't add or track it a second time — just
 			// run the post-add UI. A child whose add FAILED falls through to our own add as a retry.
 			const addedByChild = childResult?.success === true;
-			if (this.teamId) {
-				const challenge = {
-					teamId: this.teamId,
-					teamName: this.teamName,
-					loanId: this.loanId,
-				};
-				setChallengeCookieData(this.cookieStore, challenge);
-			}
 			const amount = isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption;
 			this.isAdding = true;
 			// Skip the basket mutation when a child already added the loan; otherwise add it ourselves.
