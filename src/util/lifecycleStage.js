@@ -1,5 +1,7 @@
+import lifecycleStageGqlQuery from '#src/graphql/query/lifecycleStage.graphql';
 import { getTransactionTimestamp } from '#src/util/myKivaUtils';
 import { daysSince } from '#src/util/dateUtils';
+import logFormatter from '#src/util/logFormatter';
 
 export const LIFECYCLE_STAGES = {
 	REGISTERED: 'registered',
@@ -111,35 +113,61 @@ export function getReEngagementEvent(stage) {
 }
 
 /**
- * Reads lifecycle facts out of an initializeCheckout response.
+ * lifecycleStage query
  *
- * Must be read before the transaction completes. The purchase being tracked is itself
- * what moves a lender out of an idle or lapsed stage, so deriving this afterwards
+ * Kept out of initializeCheckout deliberately: that query gates checkout render, and
+ * this is optional analytics that should not be able to slow or break it.
+ *
+ * @param {Object} apollo Apollo Client instance
+ * @returns {Promise}
+ */
+function lifecycleStageQuery(apollo) {
+	return apollo.query({
+		query: lifecycleStageGqlQuery,
+		// the stage changes the moment a lender buys a loan, so a cached result from
+		// earlier in the session would misclassify them
+		fetchPolicy: 'network-only',
+	});
+}
+
+/**
+ * Fetches and derives the lender's current lifecycle stage.
+ *
+ * Must be started before the transaction completes. The purchase being tracked is
+ * itself what moves a lender out of an idle or lapsed stage, so querying afterwards
  * reports every lender as "engaged" and the re-engagement events never fire.
  *
- * @param {Object} data An initializeCheckout query result
+ * Never throws. Tracking must not be able to break checkout.
+ *
+ * @param {Object} apollo Apollo Client instance
  * @param {Date} now
- * @returns {Object|null} { stage, daysSinceLastLoan }, or null for guests
+ * @returns {Promise<Object|null>} { stage, daysSinceLastLoan }, or null for guests
  */
-export function getLifecycleData(data, now = new Date()) {
-	// Guests have no lender record, so there is no lifecycle stage to report
-	const memberSince = data?.my?.lender?.memberSince;
-	if (!memberSince) {
+export async function getLifecycleData(apollo, now = new Date()) {
+	try {
+		const { data } = await lifecycleStageQuery(apollo);
+
+		// Guests have no lender record, so there is no lifecycle stage to report
+		const memberSince = data?.my?.lender?.memberSince;
+		if (!memberSince) {
+			return null;
+		}
+
+		// Capped at two rows by the query, which is all the stage distinguishes
+		const purchases = data?.my?.loanPurchases?.values ?? [];
+		// effectiveTime with a createTime fallback, matching the rest of the codebase
+		const lastLoanPurchase = getTransactionTimestamp(purchases[0]);
+
+		return {
+			stage: deriveLifecycleStage({
+				memberSince,
+				loanPurchaseCount: purchases.length,
+				lastLoanPurchase,
+			}, now),
+			daysSinceLastLoan: daysSince(lastLoanPurchase, now),
+		};
+	} catch (e) {
+		logFormatter('Failed to fetch lifecycle data', 'error', { error: e?.message });
 		return null;
 	}
-
-	// Capped at two rows by the query, which is all the stage distinguishes
-	const purchases = data?.my?.loanPurchases?.values ?? [];
-	// effectiveTime with a createTime fallback, matching the rest of the codebase
-	const lastLoanPurchase = getTransactionTimestamp(purchases[0]);
-	const daysSinceLastLoan = daysSince(lastLoanPurchase, now);
-
-	return {
-		stage: deriveLifecycleStage({
-			memberSince,
-			loanPurchaseCount: purchases.length,
-			lastLoanPurchase,
-		}, now),
-		daysSinceLastLoan,
-	};
 }

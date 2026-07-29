@@ -318,12 +318,12 @@ describe('CheckoutPage completeTransaction', () => {
 		vi.useRealTimers();
 	});
 
-	// The stage is read from the first initializeCheckout response and held in component
-	// state, because the purchase being tracked is what moves a lender out of idle/lapsed.
-	it('passes the stage captured on checkout entry through to analytics', async () => {
+	// Regression: the stage was once read synchronously from component state, so a
+	// checkout completing before the lookup returned silently dropped the event.
+	it('waits for the lifecycle lookup started on checkout entry', async () => {
 		let resolveAnalytics;
-		const lifecycleData = { stage: 'lapsedChurned', daysSinceLastLoan: 900 };
-		const context = makeContext({ lifecycleData });
+		const lifecycleDataPromise = Promise.resolve({ stage: 'lapsedChurned', daysSinceLastLoan: 900 });
+		const context = makeContext({ lifecycleDataPromise });
 		getTransactionAnalyticsData.mockReturnValue(new Promise(resolve => { resolveAnalytics = resolve; }));
 
 		const trackingComplete = CheckoutPage.methods.completeTransaction.call(context, '999');
@@ -338,7 +338,7 @@ describe('CheckoutPage completeTransaction', () => {
 		});
 		await trackingComplete;
 
-		expect(getTransactionAnalyticsData).toHaveBeenCalledWith(context.apollo, lifecycleData);
+		expect(getTransactionAnalyticsData).toHaveBeenCalledWith(context.apollo, lifecycleDataPromise);
 		expect(context.$kvTrackTransaction).toHaveBeenCalledWith(expect.objectContaining({
 			lifecycleStage: 'lapsedChurned',
 			reEngagementEvent: 'lapsedLenderReEngaged',
@@ -346,24 +346,13 @@ describe('CheckoutPage completeTransaction', () => {
 	});
 });
 
+// The once-only behaviour belongs to useLifecycleCapture and is tested there. These
+// cover the part CheckoutPage owns: starting the lookup at entry, for lenders only.
 describe('CheckoutPage lifecycle capture', () => {
-	const NOW_ISH = new Date();
-	const daysAgo = n => new Date(NOW_ISH.getTime() - (n * 24 * 60 * 60 * 1000)).toISOString();
-
-	const response = ({ memberSince, purchases }) => ({
-		my: {
-			id: 1,
-			userAccount: { id: 1, balance: '0' },
-			lender: { id: 1, memberSince, teams: { values: [] } },
-			loanPurchases: { values: purchases },
-			loans: { totalCount: purchases.length },
-		},
-		general: {},
-		shop: { basket: {} },
-	});
+	const response = my => ({ my, general: {}, shop: { basket: {} } });
 
 	const makeContext = () => ({
-		lifecycleData: null,
+		startLifecycleCapture: vi.fn(),
 		setUpdatingTotals: vi.fn(),
 		ensureTipDonationExists: vi.fn(),
 		initializeCustomTipDefaultExperiment: vi.fn(),
@@ -376,40 +365,22 @@ describe('CheckoutPage lifecycle capture', () => {
 		$route: { query: {} },
 	});
 
-	// The stage must reflect the lender as they arrived. This query re-runs on basket
-	// changes and after login, so a later response must not overwrite the captured value.
-	it('keeps the stage captured from the first response', () => {
+	// starting at entry is what keeps the stage pre-transaction
+	it('starts the lookup when the checkout query identifies a lender', () => {
 		const context = makeContext();
 
-		// arrives lapsed: last purchase 800 days ago
 		CheckoutPage.apollo.result.call(context, {
-			data: response({ memberSince: daysAgo(1000), purchases: [{ effectiveTime: daysAgo(800) }] }),
-		});
-		const captured = context.lifecycleData;
-
-		// a later response showing a fresh purchase must not overwrite it
-		CheckoutPage.apollo.result.call(context, {
-			data: response({
-				memberSince: daysAgo(1000),
-				purchases: [{ effectiveTime: daysAgo(0) }, { effectiveTime: daysAgo(800) }],
-			}),
+			data: response({ id: 1, userAccount: { id: 1 }, lender: { id: 1, teams: { values: [] } } }),
 		});
 
-		expect(context.lifecycleData).toBe(captured);
-		expect(context.lifecycleData.stage).toBe('lapsedChurned');
+		expect(context.startLifecycleCapture).toHaveBeenCalled();
 	});
 
-	// guests have no lender record, so capture stays null until they log in
-	it('captures on a later response when the first had no lender', () => {
+	it('does not start the lookup for guests, who have no lifecycle stage', () => {
 		const context = makeContext();
 
-		CheckoutPage.apollo.result.call(context, { data: { my: null, general: {}, shop: { basket: {} } } });
-		expect(context.lifecycleData).toBeNull();
+		CheckoutPage.apollo.result.call(context, { data: response(null) });
 
-		CheckoutPage.apollo.result.call(context, {
-			data: response({ memberSince: daysAgo(1000), purchases: [{ effectiveTime: daysAgo(800) }] }),
-		});
-
-		expect(context.lifecycleData.stage).toBe('lapsedChurned');
+		expect(context.startLifecycleCapture).not.toHaveBeenCalled();
 	});
 });

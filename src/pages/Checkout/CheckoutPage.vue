@@ -309,7 +309,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 import { gql } from 'graphql-tag';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
@@ -320,7 +320,7 @@ import { setDonationAmount } from '#src/util/basketUtils';
 import { preFetchAll } from '#src/util/apolloPreFetch';
 import syncDate from '#src/util/syncDate';
 import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
-import { getLifecycleData } from '#src/util/lifecycleStage';
+import useLifecycleCapture from '#src/composables/useLifecycleCapture';
 import { trackFBAddToCart, FB_CONTENT_CATEGORY_LOAN } from '@kiva/kv-analytics';
 import { getPromoFromBasket } from '#src/util/campaignUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
@@ -428,6 +428,9 @@ const getLoanIds = loans => (loans ?? []).map(l => l.id).filter(id => !!id);
 
 export default {
 	name: 'CheckoutPage',
+	setup() {
+		return useLifecycleCapture(inject('apollo'));
+	},
 	components: {
 		WwwPage,
 		KivaCreditPayment,
@@ -489,7 +492,6 @@ export default {
 			checkingOutAsGuest: false,
 			hasEverLoggedIn: false,
 			promoData: {},
-			lifecycleData: null,
 			verificationSubmitted: false,
 			showVerification: false,
 			showVerifyRemovePromoCredit: false,
@@ -570,11 +572,12 @@ export default {
 			// user data
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
-			// Read the lifecycle stage on the first response only. This query re-runs on
-			// basket changes and after login, but the stage has to reflect the lender as
-			// they arrived: the purchase being tracked is what moves them out of an idle
-			// or lapsed stage.
-			this.lifecycleData = this.lifecycleData ?? getLifecycleData(data);
+			// Start the lifecycle lookup now, while it still reflects the lender as they
+			// arrived: the purchase being tracked is what moves them out of an idle or
+			// lapsed stage. Starts once, so re-running this handler is harmless.
+			if (this.myId) {
+				this.startLifecycleCapture();
+			}
 			this.teams = _get(data, 'my.lender.teams.values');
 			this.hasEverLoggedIn = _get(data, 'hasEverLoggedIn', false);
 			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
@@ -1054,7 +1057,7 @@ export default {
 				);
 			};
 
-			const trackingComplete = getTransactionAnalyticsData(this.apollo, this.lifecycleData)
+			const trackingComplete = getTransactionAnalyticsData(this.apollo, this.lifecycleDataPromise)
 				.then(analyticsData => {
 					Object.assign(transactionData, analyticsData);
 				})

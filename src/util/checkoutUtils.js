@@ -118,30 +118,33 @@ export function myFTDQuery(apollo) {
  * Never throws. Analytics failures must not prevent transaction tracking or redirect.
  *
  * @param {Object} apollo Apollo Client instance
- * @param {Object|null} lifecycleData Read from initializeCheckout before the transaction,
- *   since the purchase being tracked is what moves a lender out of an idle or lapsed stage
+ * @param {Promise<Object|null>|null} lifecycleDataPromise The lookup started on checkout
+ *   entry, since the purchase being tracked is what moves a lender out of idle or lapsed
  * @returns {Promise<Object>}
  */
-export async function getTransactionAnalyticsData(apollo, lifecycleData) {
-	// Derived from data already captured on checkout entry, so it cannot fail here and
-	// must survive an FTD lookup that does — the two are unrelated signals.
-	const lifecycleFields = {
+export async function getTransactionAnalyticsData(apollo, lifecycleDataPromise) {
+	// Only the FTD query starts here; the lifecycle request began at checkout entry and
+	// is usually settled already. They are awaited together so neither blocks the other.
+	const [ftdResult, lifecycleResult] = await Promise.allSettled([
+		myFTDQuery(apollo),
+		lifecycleDataPromise,
+	]);
+
+	if (ftdResult.status === 'rejected') {
+		logFormatter('Failed to resolve FTD status for transaction analytics', 'error', {
+			error: ftdResult.reason?.message,
+		});
+	}
+
+	// Unrelated signals, so losing one must not discard the other
+	const lifecycleData = lifecycleResult.status === 'fulfilled' ? lifecycleResult.value : null;
+
+	return {
+		isFTD: ftdResult.value?.data?.my?.userAccount?.isFirstTimeDepositor,
 		lifecycleStage: lifecycleData?.stage ?? null,
 		daysSinceLastLoan: lifecycleData?.daysSinceLastLoan ?? null,
 		reEngagementEvent: getReEngagementEvent(lifecycleData?.stage),
 	};
-
-	try {
-		const ftdResponse = await myFTDQuery(apollo);
-
-		return {
-			isFTD: ftdResponse?.data?.my?.userAccount?.isFirstTimeDepositor,
-			...lifecycleFields,
-		};
-	} catch (e) {
-		logFormatter('Failed to resolve FTD status for transaction analytics', 'error', { error: e?.message });
-		return { isFTD: undefined, ...lifecycleFields };
-	}
 }
 
 /**

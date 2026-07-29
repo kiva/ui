@@ -12,14 +12,16 @@ const MS_PER_DAY = 24 * 60 * 60 * 1000;
 // A date exactly n whole days before NOW
 const daysAgo = n => new Date(NOW.getTime() - (n * MS_PER_DAY)).toISOString();
 
-// Shaped like an initializeCheckout response. The query caps loanPurchases at two rows.
-const checkoutResponse = ({ memberSince, purchases = [] }) => ({
+// The query caps loanPurchases at two rows, which is all the stage distinguishes.
+const lenderResponse = ({ memberSince, purchases = [] }) => ({
 	my: {
 		id: 1,
 		lender: { id: 1, memberSince },
 		loanPurchases: { values: purchases },
 	},
 });
+
+const mockApollo = data => ({ query: vi.fn().mockResolvedValue({ data }) });
 
 describe('lifecycleStage.js', () => {
 	describe('deriveLifecycleStage', () => {
@@ -195,66 +197,81 @@ describe('lifecycleStage.js', () => {
 	});
 
 	describe('getLifecycleData', () => {
-		it('returns the stage and days since the last loan purchase', () => {
-			const result = getLifecycleData(checkoutResponse({
+		it('returns the stage and days since the last loan purchase', async () => {
+			const apollo = mockApollo(lenderResponse({
 				memberSince: daysAgo(1000),
 				purchases: [{ effectiveTime: daysAgo(800) }, { effectiveTime: daysAgo(900) }],
-			}), NOW);
+			}));
 
-			expect(result).toEqual({
+			expect(await getLifecycleData(apollo, NOW)).toEqual({
 				stage: LIFECYCLE_STAGES.LAPSED_CHURNED,
 				daysSinceLastLoan: 800,
 			});
 		});
 
-		it('reports null days for a lender who has never purchased', () => {
-			const result = getLifecycleData(checkoutResponse({
-				memberSince: daysAgo(30),
-				purchases: [],
-			}), NOW);
+		it('reports null days for a lender who has never purchased', async () => {
+			const apollo = mockApollo(lenderResponse({ memberSince: daysAgo(30), purchases: [] }));
 
-			expect(result).toEqual({
+			expect(await getLifecycleData(apollo, NOW)).toEqual({
 				stage: LIFECYCLE_STAGES.REGISTERED,
 				daysSinceLastLoan: null,
 			});
 		});
 
 		// the query caps at two rows, so one row means exactly one lifetime purchase
-		it('treats a single returned purchase as a new lender', () => {
-			const result = getLifecycleData(checkoutResponse({
+		it('treats a single returned purchase as a new lender', async () => {
+			const apollo = mockApollo(lenderResponse({
 				memberSince: daysAgo(100),
 				purchases: [{ effectiveTime: daysAgo(10) }],
-			}), NOW);
+			}));
 
-			expect(result.stage).toBe(LIFECYCLE_STAGES.NEW);
+			expect((await getLifecycleData(apollo, NOW)).stage).toBe(LIFECYCLE_STAGES.NEW);
 		});
 
 		// two rows means two or more, which is all the stage needs to distinguish
-		it('treats two returned purchases as an engaged lender', () => {
-			const result = getLifecycleData(checkoutResponse({
+		it('treats two returned purchases as an engaged lender', async () => {
+			const apollo = mockApollo(lenderResponse({
 				memberSince: daysAgo(100),
 				purchases: [{ effectiveTime: daysAgo(10) }, { effectiveTime: daysAgo(50) }],
-			}), NOW);
+			}));
 
-			expect(result.stage).toBe(LIFECYCLE_STAGES.ENGAGED);
+			expect((await getLifecycleData(apollo, NOW)).stage).toBe(LIFECYCLE_STAGES.ENGAGED);
 		});
 
-		it('falls back to createTime when effectiveTime is absent', () => {
-			const result = getLifecycleData(checkoutResponse({
+		it('falls back to createTime when effectiveTime is absent', async () => {
+			const apollo = mockApollo(lenderResponse({
 				memberSince: daysAgo(1000),
 				purchases: [{ effectiveTime: null, createTime: daysAgo(800) }],
-			}), NOW);
+			}));
+
+			const result = await getLifecycleData(apollo, NOW);
 
 			expect(result.stage).toBe(LIFECYCLE_STAGES.LAPSED_CHURNED);
 			expect(result.daysSinceLastLoan).toBe(800);
 		});
 
-		it('returns null for guests, who have no lender record', () => {
-			expect(getLifecycleData({ my: null }, NOW)).toBeNull();
+		it('returns null for guests, who have no lender record', async () => {
+			expect(await getLifecycleData(mockApollo({ my: null }), NOW)).toBeNull();
 		});
 
-		it('returns null when the response is missing entirely', () => {
-			expect(getLifecycleData(undefined, NOW)).toBeNull();
+		it('bypasses the apollo cache, since a stale stage would misclassify the lender', async () => {
+			const apollo = mockApollo(lenderResponse({
+				memberSince: daysAgo(100),
+				purchases: [{ effectiveTime: daysAgo(10) }],
+			}));
+
+			await getLifecycleData(apollo, NOW);
+
+			expect(apollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({ fetchPolicy: 'network-only' })
+			);
+		});
+
+		it('returns null rather than throwing when the query fails', async () => {
+			const apollo = { query: vi.fn().mockRejectedValue(new Error('network')) };
+			vi.spyOn(console, 'error').mockImplementation(() => {});
+
+			expect(await getLifecycleData(apollo, NOW)).toBeNull();
 		});
 	});
 });
