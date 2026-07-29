@@ -16,7 +16,7 @@
 		<template v-else>
 			<table class="tw-w-full tw-text-left tw-text-small">
 				<thead>
-					<tr class="tw-border-b tw-border-tertiary tw-text-tertiary tw-text-upper">
+					<tr class="tw-border-b tw-border-tertiary tw-text-upper">
 						<th scope="col" class="tw-max-w-16 tw-py-1 tw-font-medium">
 							Borrower
 						</th>
@@ -69,7 +69,7 @@
 						</td>
 						<td class="tw-w-full tw-py-1">
 							<span v-if="promoText(row)">{{ promoText(row) }}</span>
-							<span v-if="row.isDelinquent" class="tw-text-danger tw-ml-0.5">Delinquent</span>
+							<span v-if="row.isDelinquent" class="tw-ml-0.5">Delinquent</span>
 							<span v-if="isFinal(row)" class="tw-text-tertiary tw-ml-0.5">Final</span>
 						</td>
 					</tr>

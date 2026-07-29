@@ -1,15 +1,7 @@
 <template>
 	<div>
 		<div class="tw-flex tw-flex-col">
-			<kv-text-input
-				id="transaction-filter-text-input"
-				v-model="searchText"
-				:can-clear="true"
-				placeholder="Search by loan ID or payment transaction ID"
-				@keyup.enter.prevent="emitDraftKeywordSearchIfChanged"
-				@blur="emitDraftKeywordSearchIfChanged"
-			/>
-			<div class="tw-flex tw-flex-col tw-gap-2 tw-mt-2">
+			<div class="tw-flex tw-flex-col tw-gap-2">
 				<!-- Category + Sort share one row, each taking half the width from md up. -->
 				<div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-2">
 					<div class="tw-flex tw-items-center tw-gap-2 md:tw-flex-1 md:tw-min-w-0">
@@ -79,6 +71,15 @@
 					</div>
 				</div>
 			</div>
+			<kv-text-input
+				id="transaction-filter-text-input"
+				v-model="searchText"
+				class="tw-mt-2"
+				:can-clear="true"
+				placeholder="Search by loan ID or payment transaction ID"
+				@keyup.enter.prevent="emitDraftKeywordSearchIfChanged"
+				@blur="emitDraftKeywordSearchIfChanged"
+			/>
 		</div>
 		<div class="tw-flex tw-items-center tw-gap-2 tw-mt-2">
 			<!-- Reuses the legacy server-side Excel export at /portfolio/transactions -->
