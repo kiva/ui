@@ -303,7 +303,7 @@ export default function useGoalData({ apollo } = {}) {
 			const progress = response.data.userAchievementProgress.tieredLendingAchievements;
 			return progress;
 		} catch (error) {
-			logFormatter(error, 'Failed to fetch categories progress by year');
+			logFormatter('Failed to fetch categories progress by year', 'error', { error, year });
 			return null;
 		}
 	}
@@ -329,7 +329,7 @@ export default function useGoalData({ apollo } = {}) {
 				amount: stats?.amount || 0,
 			};
 		} catch (error) {
-			logFormatter(error, 'Failed to fetch loan stats by year');
+			logFormatter('Failed to fetch loan stats by year', 'error', { error, year });
 			return null;
 		}
 	}
@@ -343,7 +343,7 @@ export default function useGoalData({ apollo } = {}) {
 			const stats = await getLoanStatsByYear(year, fetchPolicy);
 			return stats.count || 0;
 		} catch (error) {
-			logFormatter(error, 'Failed to fetch previous support-all loan count');
+			logFormatter('Failed to fetch previous support-all loan count', 'error', { error, year });
 			return null;
 		}
 	};
@@ -366,7 +366,7 @@ export default function useGoalData({ apollo } = {}) {
 			const count = progress?.find(entry => entry.id === categoryId)?.progressForYear || 0;
 			return count;
 		} catch (error) {
-			logFormatter(error, 'Failed to fetch category loan count by year');
+			logFormatter('Failed to fetch category loan count by year', 'error', { error, categoryId, year });
 			return null;
 		}
 	}
@@ -379,7 +379,7 @@ export default function useGoalData({ apollo } = {}) {
 			userPreferences.value = prefsData;
 			return prefsData ? JSON.parse(prefsData.preferences || '{}') : {};
 		} catch (error) {
-			logFormatter(error, 'Failed to load preferences');
+			logFormatter('Failed to load preferences', 'error', { error });
 			return null;
 		}
 	}
@@ -581,7 +581,7 @@ export default function useGoalData({ apollo } = {}) {
 			rawCurrentYearProgress.value = progress?.map(p => ({ ...p })) || [];
 			currentYearProgress.value = applyFreshProgressToGoalData(progress, freshProgressAdjustments);
 		} catch (error) {
-			logFormatter(error, 'Failed to load progress');
+			logFormatter('Failed to load progress', 'error', { error, year });
 			return null;
 		}
 	}
@@ -662,7 +662,7 @@ export default function useGoalData({ apollo } = {}) {
 			}
 			return { totalProgress, hasContributingLoans };
 		} catch (error) {
-			logFormatter(error, 'Failed to get post-checkout progress');
+			logFormatter('Failed to get post-checkout progress', 'error', { error, year });
 			return { totalProgress: null, hasContributingLoans: false };
 		}
 	}

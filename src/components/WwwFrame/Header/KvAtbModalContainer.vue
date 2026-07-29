@@ -112,7 +112,7 @@ const fetchUserData = async () => {
 		userData.value = data ?? null;
 		hasEverLoggedIn.value = data?.hasEverLoggedIn ?? false;
 	}).catch(e => {
-		logFormatter(e, 'Modal ATB User Data');
+		logFormatter('Failed to load add-to-basket modal user data', 'error', { error: e });
 	});
 };
 
@@ -128,7 +128,10 @@ const fetchBasketData = async () => {
 			return total + (parseFloat(item.price) || 0);
 		}, 0);
 	}).catch(e => {
-		logFormatter(e, 'Modal ATB Basket Data');
+		logFormatter('Failed to load add-to-basket modal basket data', 'error', {
+			error: e,
+			basketId: cookieStore.get('kvbskt') || null,
+		});
 	});
 };
 
@@ -237,7 +240,10 @@ const fetchPostCheckoutAchievements = async loanIds => {
 			}
 			updateTierTable();
 		}).catch(e => {
-			logFormatter(e, 'Modal ATB Post Checkout Achievements Query');
+			logFormatter('Failed to load post-checkout achievements for add-to-basket modal', 'error', {
+				error: e,
+				loanIds,
+			});
 		});
 	}
 };
@@ -252,7 +258,10 @@ const fetchAchievementFromBasket = async () => {
 		contributingAchievements.value = [...contributingLoanAchievements];
 		updateTierTable();
 	}).catch(e => {
-		logFormatter(e, 'Modal ATB Basket Achievements Query ');
+		logFormatter('Failed to load basket achievements for add-to-basket modal', 'error', {
+			error: e,
+			loanIds: loansIdsInBasket.value,
+		});
 	});
 };
 
@@ -264,7 +273,7 @@ const hasUserLentToAddedLoan = async loanId => {
 		const hasLentToLoan = data?.lend?.loan?.userProperties?.lentTo ?? false;
 		return hasLentToLoan;
 	}).catch(e => {
-		logFormatter(e, 'Modal ATB User Lent To Loan Query');
+		logFormatter('Failed to check whether user has lent to loan', 'error', { error: e, loanId });
 		return false;
 	});
 };
