@@ -23,7 +23,7 @@
 					<th
 						scope="colgroup"
 						colspan="3"
-						class="tw-px-1 lg:tw-px-2 tw-py-0.5 tw-font-bold tw-text-tertiary tw-text-left"
+						class="tw-px-1 lg:tw-px-2 tw-py-0.5 tw-font-bold tw-text-left"
 					>
 						{{ month.year }}
 					</th>
