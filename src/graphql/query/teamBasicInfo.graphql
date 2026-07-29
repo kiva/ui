@@ -1,9 +1,0 @@
-query teamBasicInfo($teamPublicId: String!) {
-	community {
-		team(teamPublicId: $teamPublicId) {
-			id
-			name
-			teamPublicId
-		}
-	}
-}

@@ -3,22 +3,12 @@
 		id="borrower-profile"
 		:data-testid="loanType"
 	>
-		<challenge-team-invite
-			v-if="showChallengeCallout"
-			class="tw-absolute tw-mx-auto tw-w-full tw-z-5"
-			:share-lender="shareLender"
-			:team-name="teamName"
-			:team-public-id="teamPublicId"
-			@close="hideChallengeCallout = true"
-		/>
 		<full-borrower-profile
 			v-if="showFullView"
 			:loan="loan"
 			:lender="lender"
 			:loading="isLoading"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
-			:team-id="teamId"
-			:team-name="teamName"
 			:show-education-placement-exp="showEducationPlacementExp"
 			:loan-region="loanRegion"
 			:initial-show-details-in-rail="initialShowDetailsInRail"
@@ -48,10 +38,6 @@ import MinimalBorrowerProfile, { minimalProfileQuery } from '#src/components/Bor
 import FullBorrowerProfile, { fullProfileQuery } from '#src/components/BorrowerProfile/FullBorrowerProfile';
 import { shareButtonFragment } from '#src/components/BorrowerProfile/ShareButton';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
-import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
-import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
-import teamBasicInfoQuery from '#src/graphql/query/teamBasicInfo.graphql';
-import ChallengeTeamInvite from '#src/components/BorrowerProfile/ChallengeTeamInvite';
 import { readAccountRailPreference, resolveRailPreference } from '#src/util/loanDetailsRailPreference';
 import { isPublicLoanStatus } from '#src/util/loanUtils';
 import { getKivaImageUrl } from '@kiva/kv-components';
@@ -59,7 +45,6 @@ import { getKivaImageUrl } from '@kiva/kv-components';
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
 
 const EDUCATION_PLACEMENT_EXP = 'education_placement_bp';
-const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 
 // Fields for showFullView routing logic
 const routingFragment = gql`fragment bpRoutingFields on LoanBasic {
@@ -174,7 +159,6 @@ export default {
 		FullBorrowerProfile,
 		MinimalBorrowerProfile,
 		WwwPage,
-		ChallengeTeamInvite,
 	},
 	head() {
 		const title = this.routingLoan?.anonymizationLevel === 'full' ? undefined : this.pageTitle;
@@ -275,13 +259,6 @@ export default {
 				'Asia',
 				'Europe'
 			],
-			// Challenge header
-			enableChallengeHeader: false,
-			teamId: null,
-			teamName: '',
-			teamPublicId: '',
-			shareLender: undefined,
-			hideChallengeCallout: false,
 		};
 	},
 	mixins: [fiveDollarsTest, guestComment],
@@ -412,36 +389,6 @@ export default {
 			}
 		}
 
-		const challengeHeaderExpData = this.apollo.readFragment({
-			id: `Experiment:${CHALLENGE_HEADER_EXP}`,
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		this.enableChallengeHeader = challengeHeaderExpData?.version === 'b';
-
-		if (this.enableChallengeHeader) {
-			const routeTeamPublicId = this.$route?.query?.team ?? '';
-			if (routeTeamPublicId) {
-				const teamResult = await this.apollo.query({
-					query: teamBasicInfoQuery,
-					variables: { teamPublicId: routeTeamPublicId },
-				});
-				const team = teamResult?.data?.community?.team;
-				if (team?.id) {
-					this.teamId = team.id;
-					this.teamName = team.name ?? '';
-					this.teamPublicId = team.teamPublicId ?? '';
-
-					const publicId = getPublicId(this.$route);
-					const lenderData = await this.apollo.query({
-						query: lenderPublicProfileQuery,
-						variables: { publicId },
-					});
-					this.shareLender = lenderData?.data?.community?.lender ?? {};
-				}
-			}
-		}
-
 		this.isLoading = false;
 	},
 	computed: {
@@ -522,9 +469,6 @@ export default {
 		endDate() {
 			const d = this.routingLoan?.plannedExpirationDate;
 			return d ? format(parseISO(d), 'M/d') : '';
-		},
-		showChallengeCallout() {
-			return this.enableChallengeHeader && this.teamId && !this.hideChallengeCallout;
 		},
 	},
 	created() {
