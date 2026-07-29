@@ -234,12 +234,10 @@ describe('checkoutUtils.js', () => {
 		});
 
 		it('combines FTD and pre-transaction lifecycle data', async () => {
-			const lifecycleDataPromise = Promise.resolve({
+			const result = await getTransactionAnalyticsData(ftdApollo(false), {
 				stage: 'idle180',
 				daysSinceLastLoan: 200,
 			});
-
-			const result = await getTransactionAnalyticsData(ftdApollo(false), lifecycleDataPromise);
 
 			expect(result).toEqual({
 				isFTD: false,
@@ -250,25 +248,24 @@ describe('checkoutUtils.js', () => {
 		});
 
 		it('resolves the event name from the stage', async () => {
-			const lifecycleDataPromise = Promise.resolve({
+			const result = await getTransactionAnalyticsData(ftdApollo(false), {
 				stage: 'lapsedChurned',
 				daysSinceLastLoan: 900,
 			});
-
-			const result = await getTransactionAnalyticsData(ftdApollo(false), lifecycleDataPromise);
 
 			expect(result.reEngagementEvent).toBe('lapsedLenderReEngaged');
 		});
 
 		it('reports no event for a lender who was never idle', async () => {
-			const lifecycleDataPromise = Promise.resolve({ stage: 'engaged', daysSinceLastLoan: 10 });
-
-			const result = await getTransactionAnalyticsData(ftdApollo(false), lifecycleDataPromise);
+			const result = await getTransactionAnalyticsData(ftdApollo(false), {
+				stage: 'engaged',
+				daysSinceLastLoan: 10,
+			});
 
 			expect(result.reEngagementEvent).toBeNull();
 		});
 
-		it('uses null lifecycle values when no request was made', async () => {
+		it('uses null lifecycle values when there is no lifecycle data', async () => {
 			const result = await getTransactionAnalyticsData(ftdApollo(true), null);
 
 			expect(result).toEqual({
@@ -276,6 +273,24 @@ describe('checkoutUtils.js', () => {
 				lifecycleStage: null,
 				daysSinceLastLoan: null,
 				reEngagementEvent: null,
+			});
+		});
+
+		// FTD and lifecycle are unrelated signals; losing one should not lose the other
+		it('keeps lifecycle data when the FTD lookup fails', async () => {
+			const failingApollo = { query: vi.fn().mockRejectedValue(new Error('network')) };
+			vi.spyOn(console, 'error').mockImplementation(() => {});
+
+			const result = await getTransactionAnalyticsData(failingApollo, {
+				stage: 'lapsedChurned',
+				daysSinceLastLoan: 900,
+			});
+
+			expect(result).toEqual({
+				isFTD: undefined,
+				lifecycleStage: 'lapsedChurned',
+				daysSinceLastLoan: 900,
+				reEngagementEvent: 'lapsedLenderReEngaged',
 			});
 		});
 
@@ -290,7 +305,7 @@ describe('checkoutUtils.js', () => {
 			expect(consoleError).toHaveBeenCalledWith(JSON.stringify({
 				meta: { error: 'network' },
 				level: 'error',
-				message: 'Failed to resolve transaction analytics data',
+				message: 'Failed to resolve FTD status for transaction analytics',
 			}));
 		});
 	});

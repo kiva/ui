@@ -115,36 +115,32 @@ export function myFTDQuery(apollo) {
 /**
  * Resolves the user attributes needed for transaction analytics.
  *
- * The lifecycle promise must be started before checkout completes so a new loan
- * purchase does not change the stage before it is reported.
- *
  * Never throws. Analytics failures must not prevent transaction tracking or redirect.
  *
  * @param {Object} apollo Apollo Client instance
- * @param {Promise<Object|null>|null} lifecycleDataPromise Pre-transaction lifecycle request
+ * @param {Object|null} lifecycleData Read from initializeCheckout before the transaction,
+ *   since the purchase being tracked is what moves a lender out of an idle or lapsed stage
  * @returns {Promise<Object>}
  */
-export async function getTransactionAnalyticsData(apollo, lifecycleDataPromise) {
+export async function getTransactionAnalyticsData(apollo, lifecycleData) {
+	// Derived from data already captured on checkout entry, so it cannot fail here and
+	// must survive an FTD lookup that does — the two are unrelated signals.
+	const lifecycleFields = {
+		lifecycleStage: lifecycleData?.stage ?? null,
+		daysSinceLastLoan: lifecycleData?.daysSinceLastLoan ?? null,
+		reEngagementEvent: getReEngagementEvent(lifecycleData?.stage),
+	};
+
 	try {
-		const [ftdResponse, lifecycleData] = await Promise.all([
-			myFTDQuery(apollo),
-			lifecycleDataPromise,
-		]);
+		const ftdResponse = await myFTDQuery(apollo);
 
 		return {
 			isFTD: ftdResponse?.data?.my?.userAccount?.isFirstTimeDepositor,
-			lifecycleStage: lifecycleData?.stage ?? null,
-			daysSinceLastLoan: lifecycleData?.daysSinceLastLoan ?? null,
-			reEngagementEvent: getReEngagementEvent(lifecycleData?.stage),
+			...lifecycleFields,
 		};
 	} catch (e) {
-		logFormatter('Failed to resolve transaction analytics data', 'error', { error: e?.message });
-		return {
-			isFTD: undefined,
-			lifecycleStage: null,
-			daysSinceLastLoan: null,
-			reEngagementEvent: null,
-		};
+		logFormatter('Failed to resolve FTD status for transaction analytics', 'error', { error: e?.message });
+		return { isFTD: undefined, ...lifecycleFields };
 	}
 }
 

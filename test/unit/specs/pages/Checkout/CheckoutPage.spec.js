@@ -29,7 +29,9 @@ beforeAll(async () => {
 	vi.mock('#src/util/experiment/experimentUtils', () => ({
 		initializeExperiment: vi.fn(),
 	}));
-	vi.mock('#src/util/myKivaUtils', () => ({
+	// keeps getTransactionTimestamp real, which lifecycleStage depends on
+	vi.mock('#src/util/myKivaUtils', async importOriginal => ({
+		...(await importOriginal()),
 		fetchPostCheckoutAchievements: vi.fn(),
 	}));
 	vi.mock('@sentry/vue', () => ({ captureException: vi.fn(), captureMessage: vi.fn() }));
@@ -316,10 +318,12 @@ describe('CheckoutPage completeTransaction', () => {
 		vi.useRealTimers();
 	});
 
-	it('waits for lifecycle analytics already in flight', async () => {
+	// The stage is read from the first initializeCheckout response and held in component
+	// state, because the purchase being tracked is what moves a lender out of idle/lapsed.
+	it('passes the stage captured on checkout entry through to analytics', async () => {
 		let resolveAnalytics;
-		const lifecycleDataPromise = Promise.resolve();
-		const context = makeContext({ lifecycleDataPromise });
+		const lifecycleData = { stage: 'lapsedChurned', daysSinceLastLoan: 900 };
+		const context = makeContext({ lifecycleData });
 		getTransactionAnalyticsData.mockReturnValue(new Promise(resolve => { resolveAnalytics = resolve; }));
 
 		const trackingComplete = CheckoutPage.methods.completeTransaction.call(context, '999');
@@ -334,10 +338,78 @@ describe('CheckoutPage completeTransaction', () => {
 		});
 		await trackingComplete;
 
-		expect(getTransactionAnalyticsData).toHaveBeenCalledWith(context.apollo, lifecycleDataPromise);
+		expect(getTransactionAnalyticsData).toHaveBeenCalledWith(context.apollo, lifecycleData);
 		expect(context.$kvTrackTransaction).toHaveBeenCalledWith(expect.objectContaining({
 			lifecycleStage: 'lapsedChurned',
 			reEngagementEvent: 'lapsedLenderReEngaged',
 		}));
+	});
+});
+
+describe('CheckoutPage lifecycle capture', () => {
+	const NOW_ISH = new Date();
+	const daysAgo = n => new Date(NOW_ISH.getTime() - (n * 24 * 60 * 60 * 1000)).toISOString();
+
+	const response = ({ memberSince, purchases }) => ({
+		my: {
+			id: 1,
+			userAccount: { id: 1, balance: '0' },
+			lender: { id: 1, memberSince, teams: { values: [] } },
+			loanPurchases: { values: purchases },
+			loans: { totalCount: purchases.length },
+		},
+		general: {},
+		shop: { basket: {} },
+	});
+
+	const makeContext = () => ({
+		lifecycleData: null,
+		setUpdatingTotals: vi.fn(),
+		ensureTipDonationExists: vi.fn(),
+		initializeCustomTipDefaultExperiment: vi.fn(),
+		calculateProgressAchievement: vi.fn(),
+		getPromoInformationFromBasket: vi.fn(),
+		disableGuestCheckout: vi.fn(),
+		showCheckoutError: vi.fn(),
+		apollo: {},
+		cookieStore: { get: vi.fn(), set: vi.fn() },
+		$route: { query: {} },
+	});
+
+	// The stage must reflect the lender as they arrived. This query re-runs on basket
+	// changes and after login, so a later response must not overwrite the captured value.
+	it('keeps the stage captured from the first response', () => {
+		const context = makeContext();
+
+		// arrives lapsed: last purchase 800 days ago
+		CheckoutPage.apollo.result.call(context, {
+			data: response({ memberSince: daysAgo(1000), purchases: [{ effectiveTime: daysAgo(800) }] }),
+		});
+		const captured = context.lifecycleData;
+
+		// a later response showing a fresh purchase must not overwrite it
+		CheckoutPage.apollo.result.call(context, {
+			data: response({
+				memberSince: daysAgo(1000),
+				purchases: [{ effectiveTime: daysAgo(0) }, { effectiveTime: daysAgo(800) }],
+			}),
+		});
+
+		expect(context.lifecycleData).toBe(captured);
+		expect(context.lifecycleData.stage).toBe('lapsedChurned');
+	});
+
+	// guests have no lender record, so capture stays null until they log in
+	it('captures on a later response when the first had no lender', () => {
+		const context = makeContext();
+
+		CheckoutPage.apollo.result.call(context, { data: { my: null, general: {}, shop: { basket: {} } } });
+		expect(context.lifecycleData).toBeNull();
+
+		CheckoutPage.apollo.result.call(context, {
+			data: response({ memberSince: daysAgo(1000), purchases: [{ effectiveTime: daysAgo(800) }] }),
+		});
+
+		expect(context.lifecycleData.stage).toBe('lapsedChurned');
 	});
 });

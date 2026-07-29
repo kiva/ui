@@ -1,8 +1,5 @@
-import { differenceInDays } from 'date-fns';
-import lifecycleStageGqlQuery from '#src/graphql/query/lifecycleStage.graphql';
 import { getTransactionTimestamp } from '#src/util/myKivaUtils';
-import { toValidDate } from '#src/util/dateUtils';
-import logFormatter from '#src/util/logFormatter';
+import { daysSince } from '#src/util/dateUtils';
 
 export const LIFECYCLE_STAGES = {
 	REGISTERED: 'registered',
@@ -59,18 +56,6 @@ const RE_ENGAGEMENT_BY_STAGE = {
 };
 
 /**
- * Whole days elapsed between a date and now
- *
- * @param {String|Number|Date} date
- * @param {Date} now
- * @returns {Number|null} null when the date is missing or unparseable
- */
-function daysSince(date, now) {
-	const parsed = toValidDate(date);
-	return parsed ? differenceInDays(now, parsed) : null;
-}
-
-/**
  * @param {Array} ladder Descending [minDays, stage] pairs
  * @param {Number} days
  * @returns {String|null}
@@ -87,7 +72,8 @@ function stageForDays(ladder, days) {
  *
  * @param {Object} args
  * @param {String} args.memberSince Registration date
- * @param {Number} args.loanPurchaseCount Lifetime count of loan purchases
+ * @param {Number} args.loanPurchaseCount Loan purchases made. Only none / one / more
+ *   than one are distinguished, so callers may cap this rather than count them all.
  * @param {String} args.lastLoanPurchase Date of the most recent loan purchase
  * @param {Date} now
  * @returns {String|null} A LIFECYCLE_STAGES value, or null if it can't be determined
@@ -125,54 +111,35 @@ export function getReEngagementEvent(stage) {
 }
 
 /**
- * lifecycleStage query
+ * Reads lifecycle facts out of an initializeCheckout response.
  *
- * @param {Object} apollo Apollo Client instance
- * @returns {Promise}
- */
-function lifecycleStageQuery(apollo) {
-	return apollo.query({
-		query: lifecycleStageGqlQuery,
-		// the stage drives conversion tracking and changes the moment a lender buys a
-		// loan, so a cached result from earlier in the session would misclassify them
-		fetchPolicy: 'network-only',
-	});
-}
-
-/**
- * Fetches and derives the lender's current lifecycle stage.
- *
- * Must be called before the transaction completes. The purchase being tracked is
- * itself what moves a lender out of an idle or lapsed stage, so querying afterwards
+ * Must be read before the transaction completes. The purchase being tracked is itself
+ * what moves a lender out of an idle or lapsed stage, so deriving this afterwards
  * reports every lender as "engaged" and the re-engagement events never fire.
  *
- * Never throws. Tracking must not be able to break checkout.
- *
- * @param {Object} apollo Apollo Client instance
+ * @param {Object} data An initializeCheckout query result
  * @param {Date} now
- * @returns {Promise<Object|null>} Lifecycle facts, or null for guests
+ * @returns {Object|null} { stage, daysSinceLastLoan }, or null for guests
  */
-export async function getLifecycleData(apollo, now = new Date()) {
-	try {
-		const { data } = await lifecycleStageQuery(apollo);
-
-		// Guests have no lender record, so there is no lifecycle stage to report
-		const memberSince = data?.my?.lender?.memberSince;
-		if (!memberSince) {
-			return null;
-		}
-
-		const loanPurchaseCount = data?.my?.transactions?.totalCount ?? 0;
-		// effectiveTime with a createTime fallback, matching the rest of the codebase
-		const lastLoanPurchase = getTransactionTimestamp(data?.my?.transactions?.values?.[0]);
-		const daysSinceLastLoan = daysSince(lastLoanPurchase, now);
-
-		return {
-			stage: deriveLifecycleStage({ memberSince, loanPurchaseCount, lastLoanPurchase }, now),
-			daysSinceLastLoan,
-		};
-	} catch (e) {
-		logFormatter('Failed to fetch lifecycle data', 'error', { error: e?.message });
+export function getLifecycleData(data, now = new Date()) {
+	// Guests have no lender record, so there is no lifecycle stage to report
+	const memberSince = data?.my?.lender?.memberSince;
+	if (!memberSince) {
 		return null;
 	}
+
+	// Capped at two rows by the query, which is all the stage distinguishes
+	const purchases = data?.my?.loanPurchases?.values ?? [];
+	// effectiveTime with a createTime fallback, matching the rest of the codebase
+	const lastLoanPurchase = getTransactionTimestamp(purchases[0]);
+	const daysSinceLastLoan = daysSince(lastLoanPurchase, now);
+
+	return {
+		stage: deriveLifecycleStage({
+			memberSince,
+			loanPurchaseCount: purchases.length,
+			lastLoanPurchase,
+		}, now),
+		daysSinceLastLoan,
+	};
 }

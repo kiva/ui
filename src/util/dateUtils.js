@@ -1,4 +1,4 @@
-import { isValid, parseISO } from 'date-fns';
+import { differenceInDays, isValid, parseISO } from 'date-fns';
 
 /**
  * Parses a value into a valid Date, or returns null when it can't be parsed.
@@ -13,6 +13,21 @@ export function toValidDate(value) {
 	}
 	const parsed = typeof value === 'string' ? parseISO(value) : new Date(value);
 	return isValid(parsed) ? parsed : null;
+}
+
+/**
+ * Whole days elapsed between a date and a reference point, tolerating bad input.
+ *
+ * Wraps date-fns differenceInDays with the null handling from toValidDate, so callers
+ * with optional or unparseable dates get null rather than NaN.
+ *
+ * @param {string|number|Date} date
+ * @param {Date} now The reference point, defaults to the current time.
+ * @returns {Number|null} null when the date is missing or unparseable.
+ */
+export function daysSince(date, now = new Date()) {
+	const parsed = toValidDate(date);
+	return parsed ? differenceInDays(now, parsed) : null;
 }
 
 export default function getMonthsCount(startTimestamp, endTimestamp = null) {

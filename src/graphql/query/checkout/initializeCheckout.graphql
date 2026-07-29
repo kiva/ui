@@ -13,6 +13,7 @@ query initializeCheckout($basketId: String) {
 		lender {
 			id
 			loanCount
+			memberSince
 			teams(limit: 100){
 				values {
 					name
@@ -22,6 +23,23 @@ query initializeCheckout($basketId: String) {
 		}
 		loans {
 			totalCount
+		}
+		# Drives the lifecycle re-engagement events. Two rows rather than a totalCount:
+		# the stage only distinguishes none / one / more than one purchase, and a count
+		# over a long transaction history is the expensive part of this lookup.
+		loanPurchases: transactions(
+			limit: 2
+			filter: {
+				# matches the latestLoan filter in myKiva.graphql. Narrower than
+				# category: loan, which also covers non-purchase loan transactions.
+				type: ["loan_purchase", "direct_loan_purchase"]
+				sortBy: newest
+			}
+		) {
+			values {
+				effectiveTime
+				createTime
+			}
 		}
 		depositIncentiveAmountToLend
 	}
