@@ -78,33 +78,6 @@
 					</div>
 				</div>
 
-				<!-- Donation-on-top -->
-				<div class="tw-border-t tw-border-tertiary tw-pt-2 tw-mb-2">
-					<KvCheckbox
-						id="withdraw-add-donation"
-						v-model="addDonation"
-						data-testid="withdraw-add-donation"
-						@update:model-value="onToggleDonation"
-					>
-						Add a donation to Kiva to support our work
-					</KvCheckbox>
-					<div v-if="addDonation" class="tw-mt-1 tw-pl-3">
-						<label for="withdraw-donation-amount" class="tw-block tw-font-medium tw-mb-0.5">
-							Donation amount
-						</label>
-						<KvCurrencyInput
-							id="withdraw-donation-amount"
-							class="tw-w-full md:tw-w-1/3"
-							:model-value="donationAmount"
-							clear-zero-on-focus
-							@input="onDonationInput"
-						/>
-						<p v-if="donationTouched && donationError" class="tw-text-danger tw-text-small tw-mt-0.5">
-							{{ donationError }}
-						</p>
-					</div>
-				</div>
-
 				<!-- Submit error -->
 				<!-- eslint-disable-next-line vue/no-v-html -->
 				<p
@@ -153,10 +126,9 @@ import numeral from 'numeral';
 import DOMPurify from 'dompurify';
 import { mdiArrowRight, mdiArrowDown } from '@mdi/js';
 import {
-	KvButton, KvCheckbox, KvLoadingPlaceholder, KvMaterialIcon, KvUserAvatar
+	KvButton, KvLoadingPlaceholder, KvMaterialIcon, KvUserAvatar
 } from '@kiva/kv-components';
 import PortfolioShell from '#src/components/WwwFrame/PortfolioShell';
-import KvCurrencyInput from '#src/components/Kv/KvCurrencyInput';
 import PaypalIcon from '#src/assets/icons/inline/paypal.svg';
 import logFormatter from '#src/util/logFormatter';
 import withdrawReadModelQuery from '#src/graphql/query/withdraw/withdrawReadModel.graphql';
@@ -168,11 +140,9 @@ export default {
 	components: {
 		PortfolioShell,
 		KvButton,
-		KvCheckbox,
 		KvLoadingPlaceholder,
 		KvMaterialIcon,
 		KvUserAvatar,
-		KvCurrencyInput,
 		PaypalIcon,
 	},
 	inject: ['apollo'],
@@ -189,47 +159,15 @@ export default {
 			submitting: false,
 			outcome: null,
 			outcomeMessage: '',
-			addDonation: false,
-			donationAmount: 0,
-			// Track whether the user has edited the donation field so the validation
-			// message only shows after a change, not when the field first appears.
-			donationTouched: false,
-			withdrawableBalance: 0,
 			lenderName: '',
 			lenderImageUrl: '',
 		};
 	},
 	computed: {
-		effectiveDonation() {
-			return this.addDonation ? Number(this.donationAmount) || 0 : 0;
-		},
-		// Drives the submit button's look + disabled state the same way the withdraw
-		// form's Continue button does: 'loading' while the request is in flight,
-		// 'disabled' when the donation amount is invalid, otherwise interactive.
+		// Drives the submit button's look: 'loading' while the request is in flight,
+		// otherwise interactive.
 		submitState() {
-			if (this.submitting) {
-				return 'loading';
-			}
-			if (this.donationError) {
-				return 'disabled';
-			}
-			return '';
-		},
-		donationError() {
-			if (!this.addDonation) {
-				return '';
-			}
-			const donation = Number(this.donationAmount) || 0;
-			if (donation <= 0) {
-				return 'Please enter a valid donation amount in USD.';
-			}
-			if (donation >= Number(this.amount)) {
-				return 'Your donation amount cannot be greater or equal to your withdrawal amount.';
-			}
-			if (Number(this.amount) + donation > Number(this.withdrawableBalance)) {
-				return 'You do not have enough Kiva credit to complete this withdrawal.';
-			}
-			return '';
+			return this.submitting ? 'loading' : '';
 		},
 		// Backend outcome messages can contain links (e.g. the PayPal verification
 		// prompt), so render them as sanitized HTML rather than escaped text.
@@ -242,24 +180,11 @@ export default {
 			});
 		},
 		successMessage() {
-			if (this.effectiveDonation > 0) {
-				return 'Thank you for your donation! Your withdrawal request of '
-					+ `${numeral(this.amount).format('$0,0.00')} will be processed in 1 to 2 weeks.`;
-			}
 			return `Your withdrawal request of ${numeral(this.amount).format('$0,0.00')} has been received. `
 				+ "We'll email you when your funds are sent to PayPal.";
 		},
 	},
 	methods: {
-		onDonationInput(value) {
-			this.donationAmount = value;
-			this.donationTouched = true;
-		},
-		onToggleDonation(value) {
-			// Reset the touched flag so re-opening the field starts without an error.
-			this.donationTouched = false;
-			this.$kvTrackEvent('portfolio', 'click', 'Withdraw donation toggle', value ? 1 : 0);
-		},
 		async fetchSummaryData() {
 			try {
 				const response = await this.apollo.query({
@@ -268,7 +193,6 @@ export default {
 				});
 				this.lenderName = response?.data?.my?.lender?.name ?? '';
 				this.lenderImageUrl = response?.data?.my?.lender?.image?.url ?? '';
-				this.withdrawableBalance = response?.data?.my?.userAccount?.withdrawal?.withdrawableBalance ?? 0;
 			} catch (error) {
 				logFormatter(`Error fetching withdraw confirm data: ${error}`, 'error');
 			} finally {
@@ -276,9 +200,6 @@ export default {
 			}
 		},
 		async onSubmit() {
-			if (this.donationError) {
-				return;
-			}
 			this.submitting = true;
 			this.outcome = null;
 			this.outcomeMessage = '';
@@ -288,7 +209,6 @@ export default {
 					variables: {
 						amount: Number(this.amount),
 						paypalEmail: this.paypalEmail,
-						donationAmount: this.effectiveDonation > 0 ? this.effectiveDonation : null,
 					},
 				});
 				const result = response?.data?.my?.requestPayPalWithdrawal;

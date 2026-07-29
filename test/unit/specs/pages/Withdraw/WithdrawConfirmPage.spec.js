@@ -20,12 +20,6 @@ const summaryResponse = (withdrawableBalance = 100) => ({
 	},
 });
 
-const stubInput = {
-	props: ['modelValue'],
-	emits: ['input'],
-	template: '<input :value="modelValue" @input="$emit(\'input\', Number($event.target.value))" />',
-};
-
 const renderConfirm = ({
 	state = { withdrawAmount: 50, withdrawPaypalEmail: 'a@example.org' },
 	mutateResult = { status: 'SUCCESS', message: null },
@@ -60,13 +54,6 @@ const renderConfirm = ({
 					KvMaterialIcon: { template: '<i />' },
 					KvUserAvatar: { template: '<div />' },
 					PaypalIcon: { template: '<span />' },
-					KvCurrencyInput: stubInput,
-					KvCheckbox: {
-						props: ['modelValue'],
-						emits: ['update:modelValue'],
-						template: '<input type="checkbox" :checked="modelValue"'
-							+ ' @change="$emit(\'update:modelValue\', $event.target.checked)" />',
-					},
 				},
 			},
 		}),
@@ -153,30 +140,17 @@ describe('WithdrawConfirmPage', () => {
 		});
 	});
 
-	it('does not show the donation error until the field is edited', async () => {
-		const { getByTestId, findByLabelText, queryByText } = renderConfirm();
-		await waitFor(() => getByTestId('withdraw-add-donation'));
-
-		// Enabling the donation shows the field with a default of 0 — no premature error.
-		await fireEvent.click(getByTestId('withdraw-add-donation'));
-		await findByLabelText('Donation amount');
-		expect(queryByText(/Please enter a valid donation amount/)).toBeNull();
-
-		// Editing to an invalid value surfaces the error.
-		await fireEvent.update(await findByLabelText('Donation amount'), '50');
-		await waitFor(() => {
-			expect(queryByText(/cannot be greater or equal/)).toBeTruthy();
-		});
-	});
-
-	it('blocks submit when the donation is greater or equal to the amount', async () => {
-		const { getByTestId, findByLabelText, mutate } = renderConfirm();
-		await waitFor(() => getByTestId('withdraw-add-donation'));
-
-		await fireEvent.click(getByTestId('withdraw-add-donation'));
-		await fireEvent.update(await findByLabelText('Donation amount'), '50');
+	it('submits only the amount and paypal email, without a donation', async () => {
+		const {
+			getByTestId, mutate,
+		} = renderConfirm();
+		await waitFor(() => getByTestId('withdraw-submit'));
 		await fireEvent.click(getByTestId('withdraw-submit'));
 
-		expect(mutate).not.toHaveBeenCalled();
+		await waitFor(() => {
+			expect(mutate).toHaveBeenCalledWith(expect.objectContaining({
+				variables: { amount: 50, paypalEmail: 'a@example.org' },
+			}));
+		});
 	});
 });

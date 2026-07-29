@@ -1,6 +1,6 @@
-mutation RequestPayPalWithdrawal($amount: Money!, $paypalEmail: String!, $donationAmount: Money) {
+mutation RequestPayPalWithdrawal($amount: Money!, $paypalEmail: String!) {
     my {
-        requestPayPalWithdrawal(amount: $amount, paypalEmail: $paypalEmail, donationAmount: $donationAmount) {
+        requestPayPalWithdrawal(amount: $amount, paypalEmail: $paypalEmail) {
             status
             message
         }
