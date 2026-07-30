@@ -53,12 +53,37 @@
 			</ul>
 		</div>
 	</section>
+
+	<section
+		v-if="sectorValues.length"
+		class="tw-w-full tw-bg-marigold-1 tw-p-4"
+		data-testid="goal-in-review-slide-3-sectors"
+	>
+		<p class="tw-text-label tw-text-eco-green-3 tw-mb-1">
+			Sectors Funded
+		</p>
+
+		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-4">
+			You backed
+			<span class="tw-text-marigold">{{ sectorCount }} sectors</span> of opportunity.
+		</h1>
+
+		<div class="tw-mx-auto md:tw-max-w-xl">
+			<KvPieChartV2
+				:values="sectorValues"
+				:stroke-width="36"
+				:shown-segments="sectorValues.length"
+				unit="percent"
+			/>
+		</div>
+	</section>
 </template>
 
 <script setup>
 import { computed } from 'vue';
-import { KvMap, KvMaterialIcon } from '@kiva/kv-components';
+import { KvMap, KvMaterialIcon, KvPieChartV2 } from '@kiva/kv-components';
 import { mdiMapMarker } from '@mdi/js';
+import { getSectorChartValues, getNamedSectorCount } from '#src/util/goalInReviewSectors';
 
 // Show this many country pills before collapsing the rest into an "Other (n)" pill.
 const MAX_VISIBLE_COUNTRIES = 14;
@@ -67,6 +92,12 @@ const props = defineProps({
 	countries: {
 		type: Array,
 		default: () => [],
+	},
+	// Raw userAchievementProgress.tieredLendingAchievements. Grouped into
+	// chart-ready sector values via getSectorChartValues.
+	sectors: {
+		type: Array,
+		default: null,
 	},
 });
 
@@ -83,4 +114,7 @@ const countriesData = computed(() => props.countries.map(country => ({
 const borderCount = computed(() => props.countries.length);
 const visibleCountries = computed(() => props.countries.slice(0, MAX_VISIBLE_COUNTRIES));
 const otherCount = computed(() => Math.max(props.countries.length - MAX_VISIBLE_COUNTRIES, 0));
+
+const sectorValues = computed(() => getSectorChartValues(props.sectors));
+const sectorCount = computed(() => getNamedSectorCount(sectorValues.value));
 </script>
