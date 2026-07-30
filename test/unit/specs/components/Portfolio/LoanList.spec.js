@@ -165,12 +165,13 @@ describe('LoanList — Hotjar PII suppression (legacy parity)', () => {
 });
 
 describe('LoanList — column order', () => {
-	it('renders headers in the legacy parity order', () => {
+	it('renders headers as expected', () => {
 		const page = renderLoanList({ loans: [makeLoan()] });
 
 		const headers = Array.from(page.container.querySelectorAll('thead th')).map(th => th.textContent.trim());
 		expect(headers).toEqual([
 			'Loan details',
+			'Lending partner',
 			'Status',
 			'You loaned',
 			'Paid back or raised',
