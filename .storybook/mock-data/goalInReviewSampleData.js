@@ -29,6 +29,46 @@ const sampleGoalCountries = [
 	{ id: '24', name: 'Ecuador', isoCode: 'EC', region: 'South America', geocode: { city: 'Quito', latitude: -1.8, longitude: -78.2 }, fundsLentInCountry: 65, ppp: 4.6, numLoansFundraising: 0 },
 ];
 
+// Sample userAchievementProgress.tieredLendingAchievements for the Sectors Funded
+// donut (Slide 3). A [sectorName | null, loanCount] seed expands into loanPurchases;
+// null sector -> "Other". One loan is re-listed in a second achievement to prove
+// getSectorChartValues de-duplicates by loan id.
+const sampleSectorSeed = [
+	['Agriculture', 8],
+	['Eco-friendly', 7],
+	['Services', 5],
+	['Water / Sanitation', 4],
+	['Food', 3],
+	['Education', 3],
+	['Single Parents', 2],
+	['Refugees', 2],
+	['Manufacturing', 2],
+	[null, 3],
+];
+
+const sampleSectorLoanPurchases = sampleSectorSeed.flatMap(([name, count], sectorIndex) => (
+	Array.from({ length: count }, (_unused, i) => ({
+		purchaseTime: '2026-01-01T00:00:00Z',
+		loan: {
+			id: `loan-${sectorIndex}-${i}`,
+			sector: name ? { id: `sector-${sectorIndex}`, name } : null,
+		},
+	}))
+));
+
+export const sampleSectorAchievements = [
+	{
+		id: 'lending-achievement',
+		progressForYear: sampleSectorLoanPurchases.length,
+		loanPurchases: sampleSectorLoanPurchases,
+	},
+	{
+		id: 'womens-equality',
+		progressForYear: 1,
+		loanPurchases: [sampleSectorLoanPurchases[0]],
+	},
+];
+
 export function buildSampleGoalInReviewData(year) {
 	return {
 		year,
@@ -44,6 +84,7 @@ export function buildSampleGoalInReviewData(year) {
 			transactionSessionCount: 6,
 			countries: sampleGoalCountries,
 		},
+		sectorAchievements: sampleSectorAchievements,
 		// TODO: supplied by the parent page from its own percentile query once
 		// integrated (kept separate from goalSummary). A value >= 80 activates the
 		// GoalInReviewSlide4 "Top X%" habit variant; otherwise it falls back to

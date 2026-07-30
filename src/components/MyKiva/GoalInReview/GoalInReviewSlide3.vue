@@ -68,7 +68,7 @@
 			<span class="tw-text-marigold">{{ sectorCount }} sectors</span> of opportunity.
 		</h1>
 
-		<div class="tw-mx-auto md:tw-max-w-xl">
+		<div class="sectors-chart tw-mx-auto md:tw-max-w-3xl">
 			<KvPieChartV2
 				:values="sectorValues"
 				:stroke-width="36"
@@ -118,3 +118,38 @@ const otherCount = computed(() => Math.max(props.countries.length - MAX_VISIBLE_
 const sectorValues = computed(() => getSectorChartValues(props.sectors));
 const sectorCount = computed(() => getNamedSectorCount(sectorValues.value));
 </script>
+
+<style lang="postcss" scoped>
+/*
+ * KvPieChartV2 renders its ring + legend stacked, with gray pills centered below
+ * the donut. The design wants a 2-column grid of white pills, sitting beside the
+ * donut on desktop. There is no prop/slot to reshape the legend, so we reach into
+ * the component's structure with :deep(). Selectors are tied to KvPieChartV2's
+ * markup (ring wrapper = first child, legend = second child) — revisit if that
+ * component's template changes.
+ */
+.sectors-chart :deep(.kv-pie-chart-v2 > div:nth-of-type(2)) {
+	/* Legend: 2-column grid of pills at every breakpoint. */
+	@apply tw-grid tw-grid-cols-2 tw-gap-1;
+}
+
+.sectors-chart :deep(.kv-pie-chart-v2 > div:nth-of-type(2) > *) {
+	/* Pills: white background, label left / value right, filling the grid cell. */
+	@apply !tw-bg-white tw-w-full tw-justify-between;
+}
+
+@screen md {
+	.sectors-chart :deep(.kv-pie-chart-v2) {
+		/* Donut on the left, legend on the right. */
+		@apply tw-flex-row tw-items-center tw-gap-4;
+	}
+
+	.sectors-chart :deep(.kv-pie-chart-v2 > div:first-child) {
+		@apply tw-w-1/2 tw-shrink-0;
+	}
+
+	.sectors-chart :deep(.kv-pie-chart-v2 > div:nth-of-type(2)) {
+		@apply tw-w-auto tw-flex-1;
+	}
+}
+</style>
