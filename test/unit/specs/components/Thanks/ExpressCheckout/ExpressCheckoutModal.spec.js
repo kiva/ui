@@ -6,10 +6,12 @@ const {
 	mockCreateBasket,
 	mockExecuteOneTimeCheckout,
 	mockFormatPreCheckoutValidationErrors,
+	mockGetCheckoutTrackingData,
 	mockGetClientToken,
 	mockLogFormatter,
 	mockPush,
 	mockShowTipMsg,
+	mockTrackFBTransaction,
 	mockTrackTransactionEvent,
 	mockValidatePreCheckoutBasket,
 	mockWatchBasketTotals,
@@ -17,13 +19,19 @@ const {
 	mockCreateBasket: vi.fn(),
 	mockExecuteOneTimeCheckout: vi.fn(),
 	mockFormatPreCheckoutValidationErrors: vi.fn(),
+	mockGetCheckoutTrackingData: vi.fn(),
 	mockGetClientToken: vi.fn(),
 	mockLogFormatter: vi.fn(),
 	mockPush: vi.fn(),
 	mockShowTipMsg: vi.fn(),
+	mockTrackFBTransaction: vi.fn(),
 	mockTrackTransactionEvent: vi.fn(),
 	mockValidatePreCheckoutBasket: vi.fn(),
 	mockWatchBasketTotals: vi.fn(),
+}));
+
+vi.mock('@kiva/kv-analytics', () => ({
+	trackFBTransaction: mockTrackFBTransaction,
 }));
 
 vi.mock('vue-router', () => ({
@@ -46,6 +54,7 @@ vi.mock('@kiva/kv-shop', () => ({
 	createBasket: mockCreateBasket,
 	executeOneTimeCheckout: mockExecuteOneTimeCheckout,
 	getBasketID: vi.fn(() => 'basket-123'),
+	getCheckoutTrackingData: mockGetCheckoutTrackingData,
 	getClientToken: mockGetClientToken,
 	KvPaymentSelect: { template: '<div data-testid="payment-select" />' },
 	trackTransactionEvent: mockTrackTransactionEvent,
@@ -168,5 +177,27 @@ describe('ExpressCheckoutModal', () => {
 			transactionId: '456',
 			amount: '0.00',
 		});
+	});
+
+	// executeOneTimeCheckout runs trackSuccess internally (kv-shop), which fires Meta Purchase + GA +
+	// Optimizely for this checkoutId. Tracking again here would double-count the Purchase.
+	it('does not track the transaction itself — kv-shop already did', async () => {
+		await mountComponent();
+		mockValidatePreCheckoutBasket.mockResolvedValue(true);
+		mockExecuteOneTimeCheckout.mockResolvedValue({
+			data: {
+				checkoutStatus: {
+					status: 'COMPLETED',
+					receipt: { checkoutId: '456' },
+				},
+			},
+		});
+
+		await wrapper.find('form').trigger('submit');
+		await flushPromises();
+
+		expect(mockExecuteOneTimeCheckout).toHaveBeenCalled();
+		expect(mockTrackFBTransaction).not.toHaveBeenCalled();
+		expect(mockGetCheckoutTrackingData).not.toHaveBeenCalled();
 	});
 });

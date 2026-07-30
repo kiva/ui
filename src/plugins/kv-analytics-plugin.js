@@ -1,14 +1,19 @@
 /* eslint-disable no-underscore-dangle */
 import logFormatter from '#src/util/logFormatter';
 import SimpleQueue from '#src/util/simpleQueue';
+import {
+	getUserTypeFromCookies,
+	trackFBCustomEvent,
+	trackFBPageView,
+	trackFBTransaction,
+} from '@kiva/kv-analytics';
 
 // install method for plugin
 export default {
-	install: app => {
+	install: (app, { cookieStore } = {}) => {
 		const inBrowser = typeof window !== 'undefined';
 		let snowplowLoaded;
 		let gtagLoaded;
-		let fbLoaded;
 		let optimizelyLoaded;
 		const queue = new SimpleQueue();
 
@@ -16,8 +21,7 @@ export default {
 			checkLibs: () => {
 				gtagLoaded = inBrowser && typeof window.gtag === 'function';
 				snowplowLoaded = inBrowser && typeof window.snowplow === 'function';
-				fbLoaded = inBrowser && typeof window.fbq === 'function';
-				optimizelyLoaded = inBrowser && typeof window.optimizely === 'object';
+				optimizelyLoaded = inBrowser && typeof window.optimizely?.push === 'function';
 
 				if (typeof window.gtag === 'function' && typeof window.snowplow === 'function') {
 					return true;
@@ -61,12 +65,9 @@ export default {
 					});
 				}
 
-				// facebook pixel pageview
-				if (fbLoaded) {
-					// we used to pass a user_type but it's always empty across the site
-					// { user_type: '???'}
-					window.fbq('track', 'PageView');
-				}
+				// Facebook pixel pageview
+				const userType = getUserTypeFromCookies(name => cookieStore?.get(name));
+				trackFBPageView(userType);
 			},
 			setCustomUrl: url => {
 				if (snowplowLoaded) {
@@ -195,12 +196,6 @@ export default {
 					}
 				}
 			},
-			// https://developers.facebook.com/docs/facebook-pixel/implementation/conversion-tracking#tracking-custom-events
-			trackFBCustomEvent: (eventName, eventData = null) => {
-				if (fbLoaded) {
-					window.fbq('trackCustom', eventName, eventData);
-				}
-			},
 			parseEventProperties: eventValue => {
 				// Ensure we have a non-empty array to begin with
 				if (Array.isArray(eventValue) && eventValue.length) {
@@ -216,48 +211,16 @@ export default {
 			},
 			trackTransaction: transactionData => {
 				kvActions.checkLibs();
-				// Nothing to track
-				if (transactionData.transactionId === '') {
+				if (!transactionData.transactionId) {
 					return false;
 				}
 
-				if (fbLoaded) {
-					kvActions.trackFBTransaction(transactionData);
-				}
+				trackFBTransaction(transactionData);
 				if (gtagLoaded) {
 					kvActions.trackGATransaction(transactionData);
 				}
 				if (optimizelyLoaded) {
 					kvActions.trackOPTransaction(transactionData);
-				}
-			},
-			trackFBTransaction: transactionData => {
-				const itemTotal = transactionData.itemTotal || '';
-				if (typeof window.fbq !== 'undefined' && typeof itemTotal !== 'undefined') {
-					window.fbq('track', 'Purchase', {
-						currency: 'USD',
-						value: itemTotal,
-						content_type: transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender'
-					});
-				}
-
-				// signify transaction has kiva cards
-				if (transactionData.kivaCards && transactionData.kivaCards.length) {
-					kvActions.trackFBCustomEvent(
-						'transactionContainsKivaCards',
-						{
-							kivaCardTotal: transactionData.kivaCardTotal
-						}
-					);
-				}
-				// signifiy transaction ftd status
-				if (transactionData.isFTD && typeof itemTotal !== 'undefined') {
-					kvActions.trackFBCustomEvent(
-						'firstTimeDepositorTransaction',
-						{
-							itemTotal
-						}
-					);
 				}
 			},
 			trackGATransaction: transactionData => {
@@ -270,7 +233,9 @@ export default {
 				}
 
 				// Add each purchased item to the tracker
-				const allItems = transactionData.loans.concat(transactionData.donations);
+				const allItems = transactionData.loans
+					.concat(transactionData.donations)
+					.concat(transactionData.kivaCards);
 
 				// Setup purchased items
 				const purchasedItems = allItems.map(item => {
@@ -437,7 +402,7 @@ export default {
 
 		// eslint-disable-next-line no-param-reassign
 		app.config.globalProperties.$kvTrackFBCustomEvent = (eventName, eventData = null) => {
-			kvActions.trackFBCustomEvent(eventName, eventData);
+			trackFBCustomEvent(eventName, eventData);
 		};
 	}
 };

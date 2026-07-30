@@ -22,6 +22,7 @@
 import { gql } from 'graphql-tag';
 import delayUntilVisibleMixin from '#src/plugins/delay-until-visible-mixin';
 import getCacheKey from '#src/util/getCacheKey';
+import { capitalize } from '#src/util/stringParserUtils';
 import StatsTable from '#src/components/Stats/StatsTable';
 import AsyncPortfolioSection from './AsyncPortfolioSection';
 
@@ -142,7 +143,7 @@ export default {
 					this.genderLoading = false;
 					this.genderStats = this.statsWithPercent(
 						(data?.my?.statsPerGender?.values ?? []).map(stat => ({
-							label: `${stat.gender.charAt(0).toUpperCase()}${stat.gender.slice(1)}`,
+							label: capitalize(stat.gender),
 							value: stat.loanCount,
 						}))
 					);

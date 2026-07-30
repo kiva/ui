@@ -5,11 +5,21 @@ import {
 	userHasDepositBefore,
 	optimizelyUserDataQuery,
 	setUserDataCookies,
+	recordTransactorSignals,
 	buildUserDataGlobal,
-	hasLentBeforeCookie,
-	hasDepositBeforeCookie,
 } from '#src/util/optimizelyUserMetrics';
+import {
+	HAS_LENT_BEFORE_COOKIE as hasLentBeforeCookie,
+	HAS_DEPOSIT_BEFORE_COOKIE as hasDepositBeforeCookie,
+} from '@kiva/kv-analytics';
 import thanksPageQuery from '#src/graphql/query/thanksPage.graphql';
+
+const { mockRecordSignals } = vi.hoisted(() => ({ mockRecordSignals: vi.fn() }));
+
+vi.mock('@kiva/kv-analytics', async importOriginal => ({
+	...(await importOriginal()),
+	recordTransactorSignals: mockRecordSignals,
+}));
 
 describe('optimizelyUserMetrics', () => {
 	afterEach(() => {
@@ -64,13 +74,15 @@ describe('optimizelyUserMetrics', () => {
 	describe('setUserDataCookies', () => {
 		it('sets cookies if not present and calls apolloClient.query', async () => {
 			const cookieStore = {
-				get: vi.fn().mockReturnValue(undefined),
+				// only the kvu login breadcrumb is present; the transactor flags are unset
+				get: vi.fn(name => (name === 'kvu' ? 'user-token' : undefined)),
 				set: vi.fn()
 			};
 			const apolloClient = {
 				query: vi.fn().mockResolvedValue({
 					data: {
 						my: {
+							id: 123,
 							loans: { totalCount: 2 },
 							transactions: { totalCount: 1 }
 						}
@@ -79,8 +91,60 @@ describe('optimizelyUserMetrics', () => {
 			};
 			await setUserDataCookies(cookieStore, apolloClient);
 			expect(apolloClient.query).toHaveBeenCalledWith({ query: optimizelyUserDataQuery });
-			expect(cookieStore.set).toHaveBeenCalledWith(hasLentBeforeCookie, true, { path: '/' });
-			expect(cookieStore.set).toHaveBeenCalledWith(hasDepositBeforeCookie, true, { path: '/' });
+			// serialized to the exact string the read side matches on
+			expect(cookieStore.set).toHaveBeenCalledWith(hasLentBeforeCookie, 'true', { path: '/' });
+			expect(cookieStore.set).toHaveBeenCalledWith(hasDepositBeforeCookie, 'true', { path: '/' });
+		});
+
+		it('writes false flags for a signed-in user with no history', async () => {
+			const cookieStore = {
+				// only the kvu login breadcrumb is present; the transactor flags are unset
+				get: vi.fn(name => (name === 'kvu' ? 'user-token' : undefined)),
+				set: vi.fn()
+			};
+			const apolloClient = {
+				query: vi.fn().mockResolvedValue({
+					data: {
+						my: {
+							id: 123,
+							loans: { totalCount: 0 },
+							transactions: { totalCount: 0 }
+						}
+					}
+				})
+			};
+			await setUserDataCookies(cookieStore, apolloClient);
+			expect(cookieStore.set).toHaveBeenCalledWith(hasLentBeforeCookie, 'false', { path: '/' });
+			expect(cookieStore.set).toHaveBeenCalledWith(hasDepositBeforeCookie, 'false', { path: '/' });
+		});
+
+		it('writes nothing when the login cookie is set but the session does not resolve', async () => {
+			// `my` is null here despite the kvu breadcrumb — that is "unknown", not "no history".
+			// Caching 'false' would satisfy the has-both-cookies fast path forever and leave a
+			// real lender tagged non-transactor.
+			const cookieStore = {
+				// only the kvu login breadcrumb is present; the transactor flags are unset
+				get: vi.fn(name => (name === 'kvu' ? 'user-token' : undefined)),
+				set: vi.fn()
+			};
+			const apolloClient = {
+				query: vi.fn().mockResolvedValue({ data: { my: null } })
+			};
+			await setUserDataCookies(cookieStore, apolloClient);
+			expect(cookieStore.set).not.toHaveBeenCalled();
+		});
+
+		it('does not query for an anonymous visitor, and writes nothing', async () => {
+			// The ESI head runs this on every render. With no cookies written for anonymous
+			// visitors there is nothing to short-circuit on later requests, so the skip has to
+			// happen before the query or every anonymous page view pays for a null `my` lookup.
+			const cookieStore = { get: vi.fn().mockReturnValue(undefined), set: vi.fn() };
+			const apolloClient = { query: vi.fn() };
+
+			await setUserDataCookies(cookieStore, apolloClient);
+
+			expect(apolloClient.query).not.toHaveBeenCalled();
+			expect(cookieStore.set).not.toHaveBeenCalled();
 		});
 
 		it('does not call apolloClient.query if cookies are present', async () => {
@@ -91,6 +155,48 @@ describe('optimizelyUserMetrics', () => {
 			const apolloClient = { query: vi.fn() };
 			await setUserDataCookies(cookieStore, apolloClient);
 			expect(apolloClient.query).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('recordTransactorSignals', () => {
+		// the merge rule itself lives in @kiva/kv-analytics and is tested there; this covers the ui
+		// adapter — cookieStore wiring plus the MARS-194 Optimizely attributes
+		beforeEach(() => {
+			mockRecordSignals.mockReset();
+			mockRecordSignals.mockReturnValue({ hasLentBefore: true, hasDepositBefore: false });
+		});
+
+		it('passes the receipt signals through to the package', () => {
+			const cookieStore = { get: vi.fn(), set: vi.fn() };
+			recordTransactorSignals(cookieStore, { hasLoans: true, hasDeposit: false });
+
+			expect(mockRecordSignals).toHaveBeenCalledWith(
+				expect.objectContaining({ get: expect.any(Function), set: expect.any(Function) }),
+				{ hasLoans: true, hasDeposit: false },
+			);
+		});
+
+		it('wires cookieStore reads and writes, keeping the package\'s serialized value', () => {
+			const cookieStore = { get: vi.fn().mockReturnValue('true'), set: vi.fn() };
+			recordTransactorSignals(cookieStore, { hasLoans: false, hasDeposit: false });
+
+			const [cookies] = mockRecordSignals.mock.calls[0];
+			expect(cookies.get(hasLentBeforeCookie)).toBe('true');
+			expect(cookieStore.get).toHaveBeenCalledWith(hasLentBeforeCookie);
+
+			cookies.set(hasLentBeforeCookie, 'true');
+			expect(cookieStore.set).toHaveBeenCalledWith(hasLentBeforeCookie, 'true', { path: '/' });
+		});
+
+		it('mirrors the merged flags onto the Optimizely user attributes and returns them', () => {
+			const cookieStore = { get: vi.fn(), set: vi.fn() };
+			const result = recordTransactorSignals(cookieStore, { hasLoans: true, hasDeposit: false });
+
+			expect(result).toEqual({ hasLentBefore: true, hasDepositBefore: false });
+			expect(window.optimizely).toEqual(expect.arrayContaining([
+				{ type: 'user', attributes: { has_lent_before: 'yes' } },
+				{ type: 'user', attributes: { has_deposited_before: 'no' } },
+			]));
 		});
 	});
 

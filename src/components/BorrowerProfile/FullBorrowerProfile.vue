@@ -157,7 +157,7 @@
 				@hide-section="showTags = false"
 			/>
 			<loan-comments
-				v-if="showComments"
+				v-if="showAddCommentsSection"
 				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
 				:loan-id="loanId"
 			/>
@@ -232,7 +232,6 @@ export const fullProfileQuery = gql`
 		}
 		my {
 			id
-			isAdmin
 			userPreferences {
 				id
 				preferences
@@ -286,7 +285,6 @@ export default {
 		},
 		result({ data }) {
 			this.loanData = data?.lend?.loan ?? {};
-			this.isAdmin = data?.my?.isAdmin ?? false;
 			this.userPreferences = data?.my?.userPreferences ?? null;
 			// Reconcile with localStorage (client-only); account preference still wins.
 			this.showDetailsInRail = resolveRailPreference({
@@ -345,7 +343,6 @@ export default {
 			// Initialize from the SSR-resolved prop so logged-in opted-in renders without flash.
 			showDetailsInRail: this.initialShowDetailsInRail,
 			userPreferences: null,
-			isAdmin: false,
 		};
 	},
 	computed: {
@@ -376,11 +373,10 @@ export default {
 			const level = this.loanData?.anonymizationLevel;
 			return level === 'full' || level === 'pii';
 		},
-		showComments() {
-			// Comments remain privileged-only; additionally hide the section entirely on
-			// anonymized (full/pii) loans for anyone who is not an admin.
-			const nonAdminViewingAnonymousLoan = this.isAnonymized && !this.isAdmin;
-			return this.isPrivileged && !nonAdminViewingAnonymousLoan;
+		showAddCommentsSection() {
+			// Only privileged users (e.g. lenders on this loan) can see the comment
+			// section, and only while the loan is not anonymized (full/pii).
+			return this.isPrivileged && !this.isAnonymized;
 		},
 		shareCampaign() {
 			return this.inPfp ? 'social_share_bp_pfp' : 'social_share_bp';

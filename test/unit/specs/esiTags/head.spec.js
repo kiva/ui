@@ -5,7 +5,6 @@ import renderDocumentCookies from '#src/rendering/documentCookies';
 import { renderOptInExternals } from '#src/rendering/externals';
 import renderGlobals from '#src/rendering/globals';
 import { shouldShowAppInstallPrompt, renderAppInstallPrompt } from '#src/util/appInstallPrompt';
-import setBasketCookie from '#src/util/basketCookie';
 import { assignAllActiveExperiments } from '#src/util/experiment/experimentUtils';
 import { setUserDataCookies } from '#src/util/optimizelyUserMetrics';
 import setVisitorIdCookie from '#src/util/visitorCookie';
@@ -83,10 +82,6 @@ vi.mock('#src/rendering/globals', () => ({
 vi.mock('#src/util/appInstallPrompt', () => ({
 	shouldShowAppInstallPrompt: vi.fn(async () => true),
 	renderAppInstallPrompt: vi.fn(() => '<div>app-install</div>'),
-}));
-
-vi.mock('#src/util/basketCookie', () => ({
-	default: vi.fn(async () => {}),
 }));
 
 vi.mock('#src/util/experiment/experimentUtils', () => ({
@@ -246,17 +241,6 @@ describe('renderESIHead', () => {
 		expect(setVisitorIdCookie).toHaveBeenCalledWith(mockCookieStore);
 	});
 
-	it('should set basket cookie', async () => {
-		await renderESIHead({
-			cookieStore: mockCookieStore,
-			context: mockContext,
-			fetch: mockFetch,
-			kvAuth0: mockKvAuth0,
-		});
-
-		expect(setBasketCookie).toHaveBeenCalledWith(mockCookieStore, mockApollo);
-	});
-
 	it('should fetch user data globals with basket ID', async () => {
 		await renderESIHead({
 			cookieStore: mockCookieStore,
@@ -269,9 +253,26 @@ describe('renderESIHead', () => {
 			expect.objectContaining({
 				variables: {
 					basketId: 'test-basket-id',
+					hasBasket: true,
 				},
 			})
 		);
+	});
+
+	it('does not create a basket for a visitor without one', async () => {
+		const emptyCookieStore = {
+			get: vi.fn(() => null),
+			set: vi.fn(),
+		};
+
+		await renderESIHead({
+			cookieStore: emptyCookieStore,
+			context: mockContext,
+			fetch: mockFetch,
+			kvAuth0: mockKvAuth0,
+		});
+
+		expect(emptyCookieStore.set).not.toHaveBeenCalled();
 	});
 
 	it('should check if user has ever logged in', async () => {
@@ -460,6 +461,7 @@ describe('renderESIHead', () => {
 			expect.objectContaining({
 				variables: {
 					basketId: null,
+					hasBasket: false,
 				},
 			})
 		);

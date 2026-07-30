@@ -594,31 +594,6 @@ describe('borrower-profile-exp-mixin', () => {
 			// Skip: async timing issue
 		});
 
-		it('should handle facebook tracking errors gracefully', async () => {
-			createComponent();
-			const logFormatter = (await import('#src/util/logFormatter')).default;
-			mockApollo.mutate.mockResolvedValue({ errors: null });
-			mockApollo.query.mockResolvedValue({
-				data: {
-					shop: {
-						basket: { items: { values: [] } },
-						nonTrivialItemCount: 0,
-					},
-				},
-			});
-			mockCookieStore.get.mockReturnValue(null);
-			const fbqError = new Error('FB error');
-			global.fbq = () => {
-				throw fbqError;
-			};
-			global.window.fbq = global.fbq;
-
-			await component.addToBasket({ loanId: 123, lendAmount: 25 });
-
-			// Should log the error but not throw
-			expect(logFormatter).toHaveBeenCalledWith(fbqError, 'error');
-		});
-
 		it('should call onSuccess after a successful add to basket', async () => {
 			createComponent();
 			mockApollo.mutate.mockResolvedValue({ errors: null });
