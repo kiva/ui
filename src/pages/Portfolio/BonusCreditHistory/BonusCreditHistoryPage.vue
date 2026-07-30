@@ -80,8 +80,8 @@
 										{{ statusLabel(record.status) }}
 									</span>
 								</td>
-								<td class="tw-p-1 tw-max-w-8 md:tw-max-w-none">
-									<span class="tw-block tw-truncate">{{ record.promoFund?.displayName }}</span>
+								<td class="tw-p-1 tw-break-words tw-max-w-8 md:tw-max-w-16">
+									<span class="tw-block">{{ record.promoFund?.displayName }}</span>
 								</td>
 								<td class="tw-p-1 tw-break-words">
 									{{ composeNote(record) }}

@@ -188,7 +188,7 @@
 					</KvButton>
 				</form>
 
-				<div class="tw-text-small tw-text-secondary tw-mt-3">
+				<div class="tw-text-small tw-mt-3">
 					<p>
 						Currently, all withdrawals from Kiva must be sent to a PayPal account, and cannot be
 						transferred directly to a bank account. If you don't have a PayPal account, you can

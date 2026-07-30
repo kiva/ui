@@ -1,6 +1,6 @@
 {
 	"name": "kvue",
-	"version": "3.80.0",
+	"version": "3.81.0",
 	"description": "The Kiva ui",
 	"author": "braincrave",
 	"private": true,
@@ -44,8 +44,9 @@
 		"@godaddy/terminus": "^4.12.1",
 		"@graphql-tools/load": "^7.7.0",
 		"@graphql-tools/url-loader": "^7.17.18",
-		"@kiva/kv-components": "^8.22.5",
-		"@kiva/kv-shop": "^3.8.1",
+		"@kiva/kv-analytics": "^1.3.7",
+		"@kiva/kv-components": "^8.23.2",
+		"@kiva/kv-shop": "^3.8.6",
 		"@kiva/kv-tokens": "^4.4.1",
 		"@mdi/js": "^7.4.47",
 		"@opentelemetry/api": "^1.7.0",
@@ -211,10 +212,22 @@
 		"wait-on": "^9.1.0"
 	},
 	"engines": {
-		"node": ">= 20.11.0",
+		"node": ">= 24.0.0",
 		"npm": ">= 10.2.4"
 	},
 	"browserslist": [
 		"defaults and fully supports es6-module-dynamic-import"
-	]
+	],
+	"allowScripts": {
+		"core-js@3.37.0": true,
+		"@apollo/protobufjs@1.2.2": true,
+		"@parcel/watcher@2.5.1": true,
+		"vue-demi@0.13.11": true,
+		"canvas@3.2.3": true,
+		"core-js-pure@3.16.0": true,
+		"cypress@13.13.3": true,
+		"esbuild@0.25.4": true,
+		"fsevents@2.3.3": true,
+		"protobufjs@7.6.3": true
+	}
 }

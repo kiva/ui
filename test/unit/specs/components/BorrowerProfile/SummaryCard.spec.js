@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { mount } from '@vue/test-utils';
 import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
-import { globalOptions } from '../../../specUtils';
+import { globalOptions, routerLinkStub } from '../../../specUtils';
 
 function mountSummaryCard({ anonymizationLevel } = {}) {
 	const openDefinition = vi.fn();
@@ -16,6 +16,7 @@ function mountSummaryCard({ anonymizationLevel } = {}) {
 		},
 		global: {
 			...globalOptions,
+			stubs: { RouterLink: routerLinkStub },
 			mocks: {
 				...globalOptions.mocks,
 				$route: { params: { id: '12345' } },

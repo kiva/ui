@@ -1,6 +1,6 @@
 import { render, fireEvent } from '@testing-library/vue';
 import LoanTags from '#src/components/BorrowerProfile/LoanTags';
-import { globalOptions } from '../../../specUtils';
+import { globalOptions, routerLinkStub } from '../../../specUtils';
 
 const mockAvailableTags = [
 	{
@@ -15,6 +15,7 @@ const mockAvailableTags = [
 ];
 
 const stubs = {
+	RouterLink: routerLinkStub,
 	KvCheckbox: {
 		template: `<label data-testid="bp-loan-tag-checkbox">
 			<input type="checkbox" :checked="modelValue"
