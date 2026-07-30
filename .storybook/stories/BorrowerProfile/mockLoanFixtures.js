@@ -24,28 +24,61 @@ export const loggedInUser = {
 };
 
 // ---------------------------------------------------------------------------
+// Avatar image hashes
+// ---------------------------------------------------------------------------
+
+// Real hashes that resolve against the production photo path, so the photo
+// branch renders an actual image rather than a broken one. Invented hashes 404.
+const PHOTO_HASH = '9673d0722a7675b9b8d11f90849d9b44';
+const PHOTO_HASH_ALT = '093374973a7cfb1f18652d3aac5bbd05';
+
+// kv-components treats this hash as a legacy placeholder, so a comment carrying
+// it renders the letter avatar instead of a photo.
+const LEGACY_PLACEHOLDER_HASH = '4d844ac2c0b77a8a522741b908ea5c32';
+
+const avatarUrl = hash => `https://www.kiva.org/img/s100/${hash}.jpg`;
+
+// ---------------------------------------------------------------------------
 // Base factory
 // ---------------------------------------------------------------------------
 
+/**
+ * Comments in the shape the loanComments queries return: the author is a nested
+ * CommentAuthor, and `role` is the lowercase CommentAuthorRole enum. The flat
+ * `authorName` / `authorImageUrl` / `lendingAction.teams` fields are deprecated
+ * in the schema and are not what the components read.
+ */
 const mockComments = [
 	{
 		id: 101,
-		authorName: 'Sarah',
-		authorImageUrl: 'https://www.kiva.org/img/s100/4d844ac2c0b77a8a522741b908ea5c32.jpg',
-		authorRole: 'Lender',
-		authorLendingAction: {
-			teams: ['Kiva Lending Team'],
-			lender: { id: 201, teams: { values: [{ id: 1, name: 'Kiva Lending Team', teamPublicId: 'kiva' }] } },
+		author: {
+			name: 'Sarah',
+			imageUrl: avatarUrl(PHOTO_HASH_ALT),
+			role: 'lender',
+			lendingAction: {
+				supportingTeams: {
+					values: [{ id: 1, name: 'Kiva Lending Team', teamPublicId: 'kiva' }],
+					__typename: 'TeamCollection',
+				},
+				__typename: 'LendingAction',
+			},
+			__typename: 'CommentAuthor',
 		},
 		body: 'Best wishes for your business! I hope this loan helps you achieve your goals.',
+		date: '2025-03-15T18:30:00.000Z',
 	},
 	{
 		id: 102,
-		authorName: 'Aisha',
-		authorImageUrl: 'https://www.kiva.org/img/s100/9673d0722a7675b9b8d11f90849d9b44.jpg',
-		authorRole: 'Borrower',
-		authorLendingAction: null,
+		author: {
+			name: 'Aisha',
+			imageUrl: avatarUrl(PHOTO_HASH),
+			// Borrowers have no lending action on their own loan.
+			role: 'borrower',
+			lendingAction: null,
+			__typename: 'CommentAuthor',
+		},
 		body: 'Thank you so much for your support! I will use this loan wisely.',
+		date: '2025-03-14T09:15:00.000Z',
 	},
 ];
 
@@ -306,11 +339,62 @@ export function createQueryResult(loan, myUser = null) {
 }
 
 // ---------------------------------------------------------------------------
+// Comment fixtures in the loanComments query shape
+// ---------------------------------------------------------------------------
+
+/**
+ * CommentsAndWhySpecial reads `author.name`, `author.imageUrl` and
+ * `author.lendingAction.supportingTeams`, which is the shape the
+ * loanComments query returns. These fixtures exercise each of the three
+ * avatar branches against a team name long enough to wrap.
+ */
+const LONG_TEAM_NAME = 'LGBTQIA (Lesbian, Gay, Bisexual, Transgender, Queer/Questioning, Intersex, '
+	+ 'and Asexual) Kivans & Friends';
+
+const supportingTeams = (name, teamPublicId) => ({
+	supportingTeams: {
+		values: [{ id: 1, name, teamPublicId }],
+		__typename: 'TeamCollection',
+	},
+	__typename: 'LendingAction',
+});
+
+const longTeamNameComment = (id, name, hash, body, teamName = LONG_TEAM_NAME) => ({
+	id,
+	author: {
+		name,
+		imageUrl: hash ? avatarUrl(hash) : null,
+		role: 'lender',
+		lendingAction: supportingTeams(teamName, teamName === LONG_TEAM_NAME ? 'lgbtqia' : 'kiva'),
+		__typename: 'CommentAuthor',
+	},
+	body,
+	date: '2025-03-15T18:30:00.000Z',
+});
+
+export const longTeamNameComments = [
+	longTeamNameComment(301, 'Sarah', PHOTO_HASH, 'Photo avatar, wrapping team name.'),
+	longTeamNameComment(302, 'Hed', LEGACY_PLACEHOLDER_HASH, 'Letter avatar, wrapping team name.'),
+	longTeamNameComment(303, 'Anonymous', null, 'Anonymous Kiva K avatar, wrapping team name.'),
+	longTeamNameComment(304, 'Mike', PHOTO_HASH_ALT, 'Short team name — control case.', 'Kiva Lending Team'),
+];
+
+// ---------------------------------------------------------------------------
 // Named loan fixtures
 // ---------------------------------------------------------------------------
 
 /** Fundraising partner loan (default). */
 export const fundraisingPartnerLoan = createMockLoan();
+
+/** Loan whose comments carry a team name long enough to wrap. */
+export const longTeamNameCommentsLoan = createMockLoan({
+	id: 2000099,
+	comments: {
+		totalCount: longTeamNameComments.length,
+		values: longTeamNameComments,
+		__typename: 'CommentCollection',
+	},
+});
 
 /** Fundraising direct loan (US-based). */
 export const fundraisingDirectLoan = createMockLoan({

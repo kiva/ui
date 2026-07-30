@@ -2,13 +2,14 @@ import CommentsAndWhySpecial from '#src/components/BorrowerProfile/CommentsAndWh
 
 import apolloStoryMixin from '../../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../../mixins/cookie-store-story-mixin';
-import { fundraisingPartnerLoan, createQueryResult } from './mockLoanFixtures';
+import { fundraisingPartnerLoan, longTeamNameCommentsLoan, createQueryResult } from './mockLoanFixtures';
 
 export default {
 	title: 'Components/BorrowerProfile/CommentsAndWhySpecial',
 	component: CommentsAndWhySpecial,
 };
 
+/** Logged out: no comment menu, so the report flow is unreachable. */
 export const WithComments = () => ({
 	components: { CommentsAndWhySpecial },
 	mixins: [
@@ -22,7 +23,11 @@ export const WithComments = () => ({
 	`,
 });
 
-export const AdminWithDeleteButton = () => ({
+/**
+ * Logged in, which is the only thing isLoggedIn gates: the comment menu button
+ * appears, opening "Report this comment" and the report lightbox.
+ */
+export const LoggedIn = () => ({
 	components: { CommentsAndWhySpecial },
 	mixins: [
 		apolloStoryMixin({ queryResult: createQueryResult(fundraisingPartnerLoan) }),
@@ -31,23 +36,26 @@ export const AdminWithDeleteButton = () => ({
 	template: `
 		<comments-and-why-special
 			:loan-id="${fundraisingPartnerLoan.id}"
-			:is-admin="true"
 			:is-logged-in="true"
 		/>
 	`,
 });
 
-export const WithSubscribeToggle = () => ({
+/**
+ * Team name long enough to wrap. The avatar must stay circular rather than
+ * being squeezed into an oval. Step through the carousel to see each avatar
+ * branch: photo, letter, anonymous Kiva K, then a short-name control.
+ */
+export const LongTeamName = () => ({
 	components: { CommentsAndWhySpecial },
 	mixins: [
-		apolloStoryMixin({ queryResult: createQueryResult(fundraisingPartnerLoan) }),
+		apolloStoryMixin({ queryResult: createQueryResult(longTeamNameCommentsLoan) }),
 		cookieStoreStoryMixin(),
 	],
 	template: `
 		<comments-and-why-special
-			:loan-id="${fundraisingPartnerLoan.id}"
+			:loan-id="${longTeamNameCommentsLoan.id}"
 			:is-logged-in="true"
-			:is-subscribed="true"
 		/>
 	`,
 });

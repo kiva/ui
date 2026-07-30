@@ -66,9 +66,9 @@
 									Read More
 								</button>
 							</p>
-							<div class="tw-self-end tw-flex tw-align-center tw-mt-1.5">
+							<div class="tw-self-end tw-flex tw-items-start tw-mt-1.5">
 								<div
-									class="tw-mr-1"
+									class="tw-mr-1 tw-shrink-0"
 									:class="{'tw-w-4 tw-h-4': isMobile, 'tw-w-6 tw-h-6': !isMobile}"
 								>
 									<!-- image variations -->
@@ -87,11 +87,11 @@
 										tw-rounded-full
 										tw-text-headline
 										tw-w-full tw-h-full
-										tw-flex tw-align-center tw-justify-center"
+										tw-flex tw-items-center tw-justify-center"
 										:class="randomizedUserClass()"
 									>
 										<!-- First Letter of lender name -->
-										<span class="tw-self-center">
+										<span>
 											{{ comment.lenderNameFirstLetter }}
 										</span>
 									</div>
@@ -102,14 +102,14 @@
 										tw-rounded-full
 										tw-bg-brand
 										tw-w-full tw-h-full
-										tw-flex tw-align-center tw-justify-center"
+										tw-flex tw-items-center tw-justify-center"
 									>
 										<!-- Kiva K logo -->
 										<img :src="kivaKUrl">
 									</div>
 								</div>
 								<!-- name and team info -->
-								<div class="tw-m-auto">
+								<div>
 									<h3>
 										{{ comment.authorName }}
 									</h3>
