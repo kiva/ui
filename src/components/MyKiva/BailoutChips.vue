@@ -90,7 +90,7 @@ const fetchCategories = () => {
 		});
 		categories.value = categories.value.sort((a, b) => a.name.localeCompare(b.name));
 	}).catch(error => {
-		logFormatter(error, 'MyKiva LendMenuQuery');
+		logFormatter('Failed to load MyKiva lend menu categories', 'error', { error });
 	});
 };
 
@@ -127,7 +127,7 @@ const fetchCountries = () => {
 			};
 		});
 	}).catch(error => {
-		logFormatter(error, 'MyKiva CountryListQuery');
+		logFormatter('Failed to load MyKiva country list', 'error', { error });
 	});
 };
 

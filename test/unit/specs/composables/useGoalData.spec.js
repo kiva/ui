@@ -471,7 +471,7 @@ describe('useGoalData', () => {
 
 			await composable.loadGoalData();
 
-			expect(logFormatter).toHaveBeenCalledWith(error, 'Failed to load preferences');
+			expect(logFormatter).toHaveBeenCalledWith('Failed to load preferences', 'error', { error });
 		});
 
 		it('should handle progress query error', async () => {
@@ -491,7 +491,11 @@ describe('useGoalData', () => {
 
 			await composable.loadGoalData();
 
-			expect(logFormatter).toHaveBeenCalledWith(error, 'Failed to fetch categories progress by year');
+			expect(logFormatter).toHaveBeenCalledWith(
+				'Failed to fetch categories progress by year',
+				'error',
+				{ error, year: expect.any(Number) },
+			);
 		});
 
 		it('should use freshProgressLoans for fresh progress adjustments', async () => {

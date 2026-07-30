@@ -16,7 +16,7 @@ export default function useMyKivaHome(apollo) {
 		}).then(({ data }) => {
 			userData.value = data?.my ?? null;
 		}).catch(e => {
-			logFormatter(e, 'useMyKivaHome composable');
+			logFormatter('Failed to fetch user ID for MyKiva home', 'error', { error: e });
 		});
 	};
 
