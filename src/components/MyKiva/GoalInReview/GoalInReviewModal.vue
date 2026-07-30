@@ -22,7 +22,7 @@
 				:percent-complete="data?.loanStats?.percentComplete"
 			/>
 			<GoalInReviewSlide2 :loan-stats="data?.loanStats" />
-			<GoalInReviewSlide3 :borrower-list="data?.borrowerList" />
+			<GoalInReviewSlide3 :countries="data?.goalSummary?.countries" />
 			<GoalInReviewSlide4
 				:goal-summary="data?.goalSummary"
 				:lifetime-percentile="data?.lifetimePercentile"
