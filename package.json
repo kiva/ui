@@ -1,6 +1,6 @@
 {
 	"name": "kvue",
-	"version": "3.80.0",
+	"version": "3.81.0-rc.2",
 	"description": "The Kiva ui",
 	"author": "braincrave",
 	"private": true,
@@ -44,8 +44,9 @@
 		"@godaddy/terminus": "^4.12.1",
 		"@graphql-tools/load": "^7.7.0",
 		"@graphql-tools/url-loader": "^7.17.18",
-		"@kiva/kv-components": "^8.22.5",
-		"@kiva/kv-shop": "^3.8.1",
+		"@kiva/kv-analytics": "^1.3.7",
+		"@kiva/kv-components": "^8.23.2",
+		"@kiva/kv-shop": "^3.8.6",
 		"@kiva/kv-tokens": "^4.4.1",
 		"@mdi/js": "^7.4.47",
 		"@opentelemetry/api": "^1.7.0",
@@ -71,7 +72,7 @@
 		"@vuelidate/validators": "^2.0.4",
 		"apollo-server-express": "^2.18.2",
 		"apollo3-cache-persist": "^0.15.0",
-		"auth0-js": "^9.19.2",
+		"auth0-js": "^10.0.0",
 		"body-parser": "^1.20.6",
 		"bowser": "^2.14.1",
 		"braintree-web-drop-in": "^1.47.0",
@@ -136,7 +137,7 @@
 		"vue-smooth-reflow": "^0.1.12",
 		"vue3-touch-events": "^5.0.15",
 		"vuelidate": "^0.7.6",
-		"web-vitals": "^3.5.2",
+		"web-vitals": "^6.0.0",
 		"whatwg-fetch": "^3.6.20",
 		"winston": "^3.19.0"
 	},
@@ -211,10 +212,22 @@
 		"wait-on": "^9.1.0"
 	},
 	"engines": {
-		"node": ">= 20.11.0",
+		"node": ">= 24.0.0",
 		"npm": ">= 10.2.4"
 	},
 	"browserslist": [
 		"defaults and fully supports es6-module-dynamic-import"
-	]
+	],
+	"allowScripts": {
+		"core-js@3.37.0": true,
+		"@apollo/protobufjs@1.2.2": true,
+		"@parcel/watcher@2.5.1": true,
+		"vue-demi@0.13.11": true,
+		"canvas@3.2.3": true,
+		"core-js-pure@3.16.0": true,
+		"cypress@13.13.3": true,
+		"esbuild@0.25.4": true,
+		"fsevents@2.3.3": true,
+		"protobufjs@7.6.3": true
+	}
 }

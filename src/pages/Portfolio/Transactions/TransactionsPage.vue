@@ -2,7 +2,7 @@
 	<portfolio-shell>
 		<div class="tw-rounded-none md:tw-rounded-t tw-py-3 md:tw-pb-0 tw-px-2 md:tw-px-3 md:tw-bg-primary">
 			<h1>
-				Transactions
+				Transaction history
 			</h1>
 		</div>
 		<div

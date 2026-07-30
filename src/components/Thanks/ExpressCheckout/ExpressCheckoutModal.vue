@@ -189,6 +189,7 @@ const onSubmit = async () => {
 			options.braintree = useBraintreeDropIn(dropInName);
 		}
 
+		// executeOneTimeCheckout runs trackSuccess, which fires Meta Purchase + GA + Optimizely for this checkoutId
 		const transactionResult = await executeOneTimeCheckout(options);
 
 		// Validate the result BEFORE side effects. `executeOneTimeCheckout`

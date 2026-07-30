@@ -46,20 +46,33 @@ const story = (args = {}) => {
 	return template;
 };
 
-const completeData = buildSampleGoalInReviewData(2026);
+const currentYear = new Date().getFullYear();
+const completeData = buildSampleGoalInReviewData(currentYear);
 
-export const Default = story({
+export const CompletedGoal = story({
 	show: true,
 	data: completeData,
 });
 
-export const GoalInProgress = story({
+export const InProgressGoal = story({
 	show: true,
 	data: {
 		...completeData,
 		goalSummary: { ...completeData.goalSummary, status: 'in-progress' },
 		loanStats: { totalLent: 50, borrowers: 1, percentComplete: 35 },
 	},
+});
+
+const lastYearData = buildSampleGoalInReviewData(currentYear - 1);
+
+export const NextYearCompleted = story({
+	show: true,
+	data: lastYearData,
+});
+
+export const NextYearInProgress = story({
+	show: true,
+	data: { ...lastYearData, goalSummary: { ...lastYearData.goalSummary, status: 'in-progress' } },
 });
 
 export const CompleteWithoutName = story({

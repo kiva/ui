@@ -6,7 +6,6 @@ import renderDocumentCookies from '#src/rendering/documentCookies';
 import { renderOptInExternals } from '#src/rendering/externals';
 import renderGlobals from '#src/rendering/globals';
 import { renderAppInstallPrompt, shouldShowAppInstallPrompt } from '#src/util/appInstallPrompt';
-import setBasketCookie from '#src/util/basketCookie';
 import { assignAllActiveExperiments } from '#src/util/experiment/experimentUtils';
 import { setUserDataCookies } from '#src/util/optimizelyUserMetrics';
 import setVisitorIdCookie from '#src/util/visitorCookie';
@@ -20,8 +19,9 @@ import {
 import { userAvatarFragment, userAvatarData } from './globalData/userAvatar';
 
 async function fetchUserDataGlobals(apollo, cookieStore) {
+	const basketId = cookieStore.get('kvbskt');
 	const { data } = await apollo.query({
-		query: gql`query esiHead($basketId: String) {
+		query: gql`query esiHead($basketId: String, $hasBasket: Boolean!) {
 			contentful {
 				...GlobalPromoFragment
 			}
@@ -30,7 +30,7 @@ async function fetchUserDataGlobals(apollo, cookieStore) {
 				...UserAvatar
 				...UserPromoBalance
 			}
-			shop(basketId: $basketId) {
+			shop(basketId: $basketId) @include(if: $hasBasket) {
 				id
 				...BasketCount
 				...BasketPromoAvailable
@@ -43,7 +43,8 @@ async function fetchUserDataGlobals(apollo, cookieStore) {
 		${userPromoBalanceFragment}
 		`,
 		variables: {
-			basketId: cookieStore.get('kvbskt'),
+			basketId,
+			hasBasket: !!basketId,
 		}
 	});
 
@@ -88,9 +89,6 @@ export default async function renderESIHead({
 
 	// Set the visitor id cookie before other cookies or requests
 	setVisitorIdCookie(cookieStore);
-
-	// Set the basket cookie before starting other requests so that the basket ID is available
-	await setBasketCookie(cookieStore, apollo);
 
 	// Start remaining async methods in parallel
 	const [showPrompt, userDataGlobals] = await Promise.all([

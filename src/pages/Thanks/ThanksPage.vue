@@ -86,7 +86,7 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import ThanksPageDonationOnly from '#src/components/Thanks/ThanksPageDonationOnly';
 import thanksPageQuery from '#src/graphql/query/thanksPage.graphql';
 import thanksPageReceiptQuery from '#src/graphql/query/thanksPageReceipt.graphql';
-import { userHasLentBefore, userHasDepositBefore } from '#src/util/optimizelyUserMetrics';
+import { recordTransactorSignals } from '#src/util/optimizelyUserMetrics';
 import { setHotJarUserAttributes } from '#src/util/hotJarUtils';
 import logFormatter from '#src/util/logFormatter';
 import { joinArray } from '#src/util/joinArray';
@@ -107,8 +107,6 @@ import { clearPromoCreditBannerCookie, getPromoCreditBannerCookie } from '#src/u
 import { readBoolSetting } from '#src/util/settingsUtils';
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 
-const hasLentBeforeCookie = 'kvu_lb';
-const hasDepositBeforeCookie = 'kvu_db';
 const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 
 // Thanks views
@@ -447,14 +445,10 @@ export default {
 		// MARS-194-User metrics A/B Optimizely experiment
 		const depositTotal = this.receipt?.totals?.depositTotals?.depositTotal;
 
-		const hasLentBefore = this.loans.length > 0;
-		const hasDepositBefore = parseFloat(depositTotal) > 0;
-
-		this.cookieStore.set(hasLentBeforeCookie, hasLentBefore, { path: '/' });
-		this.cookieStore.set(hasDepositBeforeCookie, hasDepositBefore, { path: '/' });
-
-		userHasLentBefore(hasLentBefore);
-		userHasDepositBefore(hasDepositBefore);
+		const { hasLentBefore, hasDepositBefore } = recordTransactorSignals(this.cookieStore, {
+			hasLoans: this.loans.length > 0,
+			hasDeposit: parseFloat(depositTotal) > 0,
+		});
 
 		this.totalLoanCount = data?.my?.loans?.totalCount ?? 0;
 		// Exclude the user's most recent loans from the recommended-loan fetch.

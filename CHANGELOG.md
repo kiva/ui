@@ -1,3 +1,64 @@
+## [3.81.0-rc.2](https://github.com/kiva/ui/compare/v3.81.0-rc.1...v3.81.0-rc.2) (2026-07-30)
+
+### 🐛 Bugfixes
+
+* update kv-components and kv-shop with latest versions to support header experiment ([d7e631a](https://github.com/kiva/ui/commit/d7e631a9393dd9a8f947b529aca72c7b30e36640))
+
+## [3.81.0-rc.1](https://github.com/kiva/ui/compare/v3.80.0...v3.81.0-rc.1) (2026-07-29)
+
+### 🎉 New Features
+
+* [MP-3057] - goal in review slide 4 ([#7089](https://github.com/kiva/ui/issues/7089)) ([4db4ab2](https://github.com/kiva/ui/commit/4db4ab276eaa46410d9e61e2cff3b7bb7c03bbc9))
+* create slides 5 to 7 to goal in review modal ([636bf35](https://github.com/kiva/ui/commit/636bf355a879934de152efd8a4e77d5cb4de4ce2))
+* meta event cleanup ([#7108](https://github.com/kiva/ui/issues/7108)) ([8bf4c15](https://github.com/kiva/ui/commit/8bf4c152a3cc1a8a6a105d70eab251de34314587))
+* **sitemap:** resolve and link redirect targets in the route listing ([#7111](https://github.com/kiva/ui/issues/7111)) ([d28b2e6](https://github.com/kiva/ui/commit/d28b2e6a3e583e65b4876aa9d521d7e32f2b413e))
+
+### 🐛 Bugfixes
+
+* align comment section visibility with legacy showSocialInfo rules ([83d7da3](https://github.com/kiva/ui/commit/83d7da327f69693a48aec7f3061c6638b6b5c7d9))
+* beta page minor tweaks ([#7117](https://github.com/kiva/ui/issues/7117)) ([cc7bf6a](https://github.com/kiva/ui/commit/cc7bf6ad1f65cb2732a8deb059b04c4a8081ddb9))
+* **borrower-profile:** show comments only to privileged users ([94d21c0](https://github.com/kiva/ui/commit/94d21c0594cb7509f6117926f3fca90dae67741e))
+* conflicts ([8d5ef8a](https://github.com/kiva/ui/commit/8d5ef8a734d3fceb8a9ce296059318297b8a58cd))
+* **esiHead:** read the basket cookie instead of creating a basket ([2442ed2](https://github.com/kiva/ui/commit/2442ed237264dbcf2f333fab1b1bc8d925504c64))
+* font size in collective impact section ([939f93c](https://github.com/kiva/ui/commit/939f93c84ed3d314a5e0b8f0e53bee78b6af62f7))
+* hide borrower profile comments on anonymized loans for all users ([ad908b7](https://github.com/kiva/ui/commit/ad908b7a3d95458809f02e479101840220c22527))
+* in-progress goal copy in form slide ([672ad7d](https://github.com/kiva/ui/commit/672ad7d53cf00bda12dc7162698ffc4e758b44c3))
+* lint issue ([0478e38](https://github.com/kiva/ui/commit/0478e384513f02047301b85ab5134cfe769c59cc))
+* require lending to the loan for fundraising comment eligibility ([9ed01b2](https://github.com/kiva/ui/commit/9ed01b247bb8a6b32ebb4b7592394880ddb71be4))
+* resolve issues with date picker on transaction beta ([#7112](https://github.com/kiva/ui/issues/7112)) ([1effc61](https://github.com/kiva/ui/commit/1effc6176de6f8d97ce3e7ed98c1834e2d8e93f0))
+* solve design comments ([1585b60](https://github.com/kiva/ui/commit/1585b604c3abcf5942984c70cd10e5037c798399))
+* unrelevant comment ([39595d1](https://github.com/kiva/ui/commit/39595d1d9bf0bc4b040ff770d89abebadefa965f))
+
+### 🪚 Refactors
+
+* **borrower-profile:** drop canAddComment gating from LoanComments ([d4efb82](https://github.com/kiva/ui/commit/d4efb82292c6b74d3e9ec8c950bd08311cc61552))
+
+### 🔍 Tests
+
+* **esiHead:** cover the basket-gated shop query ([114bcc1](https://github.com/kiva/ui/commit/114bcc10569d564c8ebf983f168f4c60e44b39a6))
+
+### 🧹 Chores
+
+* **deps-dev:** bump @babel/core from 7.24.5 to 7.29.7 ([#7094](https://github.com/kiva/ui/issues/7094)) ([ab4e380](https://github.com/kiva/ui/commit/ab4e380c2cfc8aeae120d263cb28dd8727d41359))
+* **deps-dev:** bump postcss from 8.5.10 to 8.5.12 ([#7091](https://github.com/kiva/ui/issues/7091)) ([476cde0](https://github.com/kiva/ui/commit/476cde0f1f86cd8b5e917cc8708cac83582c6329))
+* **deps-dev:** bump postcss from 8.5.12 to 8.5.18 ([#7101](https://github.com/kiva/ui/issues/7101)) ([0375b47](https://github.com/kiva/ui/commit/0375b47f15bb6981824f28777c8e2bdce97aa1ef))
+* **deps:** bump @grpc/grpc-js from 1.9.13 to 1.14.4 ([#6979](https://github.com/kiva/ui/issues/6979)) ([c18472a](https://github.com/kiva/ui/commit/c18472a7547465f8e887c1e3c2a8dfff482fb338))
+* **deps:** bump auth0-js from 9.19.2 to 10.0.0 ([#6886](https://github.com/kiva/ui/issues/6886)) ([20fc0d0](https://github.com/kiva/ui/commit/20fc0d0f5eca72f107b323a0ba67ec303f1167d4))
+* **deps:** bump axios from 1.13.5 to 1.18.1 ([#7073](https://github.com/kiva/ui/issues/7073)) ([e2cc6d1](https://github.com/kiva/ui/commit/e2cc6d19cbcbd3efac09e1e0f1de8e79e9994ea6))
+* **deps:** bump body-parser from 1.20.4 to 1.20.6 ([#7077](https://github.com/kiva/ui/issues/7077)) ([5b1e248](https://github.com/kiva/ui/commit/5b1e24855d0acbeaa8a01c4bd6aea4d5d7c1051a))
+* **deps:** bump immutable from 5.1.5 to 5.1.9 ([#7083](https://github.com/kiva/ui/issues/7083)) ([9b9fab6](https://github.com/kiva/ui/commit/9b9fab66bb1a759fab9952b7b66796c1b776e70c))
+* **deps:** bump json-schema and jsprim ([#7099](https://github.com/kiva/ui/issues/7099)) ([8e77dd8](https://github.com/kiva/ui/commit/8e77dd82dc447e1bf6b1a581134748ec86ce4db5))
+* **deps:** bump piscina from 4.7.0 to 4.9.3 ([#7009](https://github.com/kiva/ui/issues/7009)) ([875d847](https://github.com/kiva/ui/commit/875d8475b04575d65d51cb9fff2de9d4aa3ef4a2))
+* **deps:** bump serialize-javascript from 7.0.4 to 7.0.7 ([#7096](https://github.com/kiva/ui/issues/7096)) ([7004bf6](https://github.com/kiva/ui/commit/7004bf65ec048e42533468572ae1babe80869e2d))
+* **deps:** bump svgo from 3.3.3 to 3.3.4 ([#7084](https://github.com/kiva/ui/issues/7084)) ([05f7bd9](https://github.com/kiva/ui/commit/05f7bd9b93e308bb470571522a2ae4edba4823ab))
+* **deps:** bump the minor-patch-other group across 1 directory with 30 updates ([#7100](https://github.com/kiva/ui/issues/7100)) ([a348e75](https://github.com/kiva/ui/commit/a348e756efa45ca33cd6e568990688a407ad46f2))
+* **deps:** bump uuid from 8.3.2 to 14.0.0 ([#6861](https://github.com/kiva/ui/issues/6861)) ([e8b3ea1](https://github.com/kiva/ui/commit/e8b3ea171a2117a4162a436a27d44ddbbaa58ec2))
+* **deps:** bump vue3-touch-events from 4.1.8 to 5.0.15 ([#6740](https://github.com/kiva/ui/issues/6740)) ([63a35b9](https://github.com/kiva/ui/commit/63a35b97d6e06aebcf6fb851f053d635593d37eb))
+* **deps:** bump web-vitals from 3.5.2 to 6.0.0 ([#6941](https://github.com/kiva/ui/issues/6941)) ([31f3af6](https://github.com/kiva/ui/commit/31f3af6e7c0cae5dbe3d108c4d57acd3f62a1078))
+* review and approve deps with install scripts in ui repo ([84fb538](https://github.com/kiva/ui/commit/84fb5381fbd46970b682799a933d5e75f2a7d378))
+* **test:** silence Vue warnings in the unit test suite ([#7110](https://github.com/kiva/ui/issues/7110)) ([aab489a](https://github.com/kiva/ui/commit/aab489a52f0a513d2fcbbc9186c4129a77341762))
+* upgrade Node from 20 to 24 ([#7107](https://github.com/kiva/ui/issues/7107)) ([5a26c89](https://github.com/kiva/ui/commit/5a26c89c138890a364264396acfa884894c88177))
+
 ## [3.80.0](https://github.com/kiva/ui/compare/v3.79.0...v3.80.0) (2026-07-23)
 
 ### 🎉 New Features

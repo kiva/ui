@@ -240,6 +240,7 @@ import WwwPageCorporate from '#src/components/WwwFrame/WwwPageCorporate';
 import VerifyRemovePromoCredit from '#src/components/Checkout/VerifyRemovePromoCredit';
 import { preFetchAll } from '#src/util/apolloPreFetch';
 import { createNewBasket, setLendAmount } from '#src/util/basketUtils';
+import { trackFBAddToCart, FB_CONTENT_CATEGORY_LOAN } from '@kiva/kv-analytics';
 
 // Content Group Types
 const CampaignHero = defineAsyncComponent(() => import('#src/components/CorporateCampaign/CampaignHero'));
@@ -1378,6 +1379,8 @@ export default {
 				loanId
 			}).then(() => {
 				this.handleAddToBasket({ loanId, success: true });
+				// Track facebook add to basket — leftover credit put a new loan in the basket
+				trackFBAddToCart(FB_CONTENT_CATEGORY_LOAN, newPayload.lendAmount);
 				this.leftoverCreditAllocationLoanId = loanId;
 				this.basketBalancing = false;
 			}).catch(e => {
