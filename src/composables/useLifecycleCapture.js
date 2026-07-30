@@ -9,16 +9,17 @@ import { getLifecycleData } from '#src/util/lifecycleStage';
  * the request returns, and reading a value that has not arrived yet silently drops
  * the re-engagement event.
  *
- * @param {Object} apollo Apollo Client instance
  * @returns {Object}
  */
-export default function useLifecycleCapture(apollo) {
+export default function useLifecycleCapture() {
 	const lifecycleDataPromise = shallowRef(null);
 
 	/**
 	 * Starts the lookup once. Callers decide when a logged-in lender is known.
+	 *
+	 * @param {Object} apollo Apollo Client instance
 	 */
-	function startLifecycleCapture() {
+	function startLifecycleCapture(apollo) {
 		// no pixel on the server, so there is nothing to report from an SSR pass
 		if (lifecycleDataPromise.value || typeof window === 'undefined') {
 			return;

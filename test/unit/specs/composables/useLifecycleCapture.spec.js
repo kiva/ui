@@ -15,9 +15,9 @@ describe('useLifecycleCapture', () => {
 	// request returns, and completion needs something to wait on
 	it('stores the in-flight request rather than its resolved value', () => {
 		const apollo = {};
-		const { lifecycleDataPromise, startLifecycleCapture } = useLifecycleCapture(apollo);
+		const { lifecycleDataPromise, startLifecycleCapture } = useLifecycleCapture();
 
-		startLifecycleCapture();
+		startLifecycleCapture(apollo);
 
 		expect(getLifecycleData).toHaveBeenCalledWith(apollo);
 		expect(lifecycleDataPromise.value).toBeInstanceOf(Promise);
@@ -25,11 +25,11 @@ describe('useLifecycleCapture', () => {
 
 	// the checkout query re-runs on basket changes and after login
 	it('starts the request only once', () => {
-		const { startLifecycleCapture } = useLifecycleCapture({});
+		const { startLifecycleCapture } = useLifecycleCapture();
 
-		startLifecycleCapture();
-		startLifecycleCapture();
-		startLifecycleCapture();
+		startLifecycleCapture({});
+		startLifecycleCapture({});
+		startLifecycleCapture({});
 
 		expect(getLifecycleData).toHaveBeenCalledTimes(1);
 	});

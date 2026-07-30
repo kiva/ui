@@ -309,7 +309,7 @@
 </template>
 
 <script>
-import { computed, inject } from 'vue';
+import { computed } from 'vue';
 import { gql } from 'graphql-tag';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
@@ -429,7 +429,7 @@ const getLoanIds = loans => (loans ?? []).map(l => l.id).filter(id => !!id);
 export default {
 	name: 'CheckoutPage',
 	setup() {
-		return useLifecycleCapture(inject('apollo'));
+		return useLifecycleCapture();
 	},
 	components: {
 		WwwPage,
@@ -576,7 +576,7 @@ export default {
 			// arrived: the purchase being tracked is what moves them out of an idle or
 			// lapsed stage. Starts once, so re-running this handler is harmless.
 			if (this.myId) {
-				this.startLifecycleCapture();
+				this.startLifecycleCapture(this.apollo);
 			}
 			this.teams = _get(data, 'my.lender.teams.values');
 			this.hasEverLoggedIn = _get(data, 'hasEverLoggedIn', false);
