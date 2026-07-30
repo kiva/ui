@@ -36,6 +36,26 @@ describe('logFormatter.js', () => {
 		expect(consoleSpy.log).not.toHaveBeenCalled();
 	});
 
+	it('should return false when there is neither a message nor metadata', () => {
+		const result = logFormatter(null, 'error', {});
+
+		expect(result).toBe(false);
+		expect(consoleSpy.error).not.toHaveBeenCalled();
+	});
+
+	// Dropping the log would discard the level and the context along with it.
+	it('should log a fallback message when there is no message but metadata exists', () => {
+		logFormatter(null, 'error', { operationName: 'LoanQuery' });
+
+		expect(consoleSpy.error).toHaveBeenCalledWith(
+			JSON.stringify({
+				meta: { operationName: 'LoanQuery' },
+				level: 'error',
+				message: '(no message)',
+			})
+		);
+	});
+
 	it('should call console.log with stringified message for default type', () => {
 		logFormatter('Test message');
 

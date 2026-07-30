@@ -15,14 +15,19 @@ const errorMessage = value => {
 };
 
 export default (message, type, meta = {}) => {
-	const text = errorMessage(message) ?? message;
-
-	if (!text || text === '') return false;
-
 	const detail = { ...meta };
 	Object.keys(detail).forEach(key => {
 		detail[key] = errorMessage(detail[key]) ?? detail[key];
 	});
+
+	let text = errorMessage(message) ?? message;
+
+	// A call with no message but real context still describes something that
+	// happened, so drop it only when there would be nothing at all to record.
+	if (!text || text === '') {
+		if (!Object.keys(detail).length) return false;
+		text = '(no message)';
+	}
 
 	const stringifiedMessage = JSON.stringify({
 		meta: detail,
