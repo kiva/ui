@@ -209,7 +209,7 @@ export default {
 				if (!transactionId) {
 					logFormatter(
 						'Thanks page preFetch skipped due to missing transaction_id.',
-						'warning',
+						'warn',
 					);
 					return Promise.resolve();
 				}
@@ -367,7 +367,7 @@ export default {
 		if (!transactionId) {
 			logFormatter(
 				'Thanks page readQuery skipped due to missing transaction_id.',
-				'warning',
+				'warn',
 			);
 			return false;
 		}
