@@ -1,3 +1,9 @@
+## [3.81.0-rc.2](https://github.com/kiva/ui/compare/v3.81.0-rc.1...v3.81.0-rc.2) (2026-07-30)
+
+### 🐛 Bugfixes
+
+* update kv-components and kv-shop with latest versions to support header experiment ([d7e631a](https://github.com/kiva/ui/commit/d7e631a9393dd9a8f947b529aca72c7b30e36640))
+
 ## [3.81.0-rc.1](https://github.com/kiva/ui/compare/v3.80.0...v3.81.0-rc.1) (2026-07-29)
 
 ### 🎉 New Features
