@@ -1,6 +1,7 @@
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import getDeepComponents from './getDeepComponents';
+import getOperationVariables from './operationVariables';
 import logFormatter from './logFormatter';
 
 // harmless or known responses from our graphql api
@@ -61,11 +62,10 @@ export function preFetchApolloQuery(config, client, args) {
 
 	// Fetch the query from the component's apollo options
 	return new Promise((resolve, reject) => {
-		const { cookieStore } = args;
 		const prefetchVariables = config.preFetchVariables ? config.preFetchVariables({ client, ...args }) : {};
 		client.query({
 			query: config.query,
-			variables: cookieStore ? { basketId: cookieStore.get('kvbskt'), ...prefetchVariables } : prefetchVariables,
+			variables: getOperationVariables(config.query, args, prefetchVariables),
 			fetchPolicy: 'network-only', // This is used to force re-fetch of queries after new auth
 		}).then(result => {
 			if (result.errors) {
