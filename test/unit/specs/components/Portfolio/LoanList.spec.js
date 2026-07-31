@@ -226,7 +226,7 @@ describe('LoanList — "Loan details" cell', () => {
 		expect(link.closest('a').getAttribute('href')).toBe('/about/where-kiva-works/partners/44');
 	});
 
-	it('prefers trustee over partner if both are present (direct-loan parity)', () => {
+	it('shows the trustee in the loan-details column and the partner in its own column when both are present', () => {
 		const page = renderLoanList({
 			loans: [makeLoan({
 				partnerName: 'Partner 44',
@@ -237,7 +237,7 @@ describe('LoanList — "Loan details" cell', () => {
 		});
 
 		expect(page.getByText('My Trustee Org')).toBeTruthy();
-		expect(page.queryByText('Partner 44')).toBeNull();
+		expect(page.getByText('Partner 44')).toBeTruthy();
 	});
 });
 
