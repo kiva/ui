@@ -535,6 +535,23 @@ export const multiMatchedLoan = createMockLoan({
 	simultaneousMatching: mockSimultaneousMatching,
 });
 
+/** Matched fundraising loan that nobody has lent to yet. */
+export const matchedNoLendersLoan = createMockLoan({
+	id: 2000019,
+	matchingText: 'Cisco',
+	matchRatio: 1,
+	simultaneousMatching: mockSimultaneousMatching,
+	unreservedAmount: '600.00',
+	loanFundraisingInfo: {
+		id: 2000019,
+		fundedAmount: '0.00',
+		reservedAmount: '0.00',
+		isExpiringSoon: false,
+		__typename: 'LoanFundraisingInfo',
+	},
+	lenders: { totalCount: 0, values: [], __typename: 'LenderCollection' },
+});
+
 /** Repeat borrower loan (has previous loan). */
 export const repeatBorrowerLoan = createMockLoan({
 	id: 2000016,
