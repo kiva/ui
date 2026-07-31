@@ -64,7 +64,7 @@ For multiple queries, use an array of operation objects. See `src/graphql/README
 
 ### Data Fetching in Composables
 
-Composables must not fetch render state through the apollo client directly. Declare a registered operation and read it with `useApolloQuery` — the primitives cover queries that feed render state; imperative on-demand fetches and mutations are outside the layer:
+Composables read state needed for the initial render through `useApolloQuery`, never through the apollo client directly. The apollo client is still used directly for mutations and for imperative fetches in event handlers.
 
 ```javascript
 import useApolloQuery from '#src/composables/useApolloQuery';
@@ -81,21 +81,15 @@ export default function useMyThing() {
 }
 ```
 
-- A composable registers its operations by exporting them in an authored `preFetchOperations` array; a composable that uses another composable needs nothing more, since the transform merges imported surfaces automatically. Registration is the prefetch opt-in (`preFetch: true` is applied automatically; `shouldPreFetch` still gates contextually). A vite transform attaches the operations of imported composables to component definitions, and `preFetchAll` prefetches attached operations alongside the component `apollo` blocks with the same options, the same variables, and the same failure behavior.
-- `useApolloQuery` never fetches during server render: a cache miss warns in dev and renders the "not loaded" state, and the client loads the value after hydration. Fix the prefetch, not the component.
-- Never initialize a ref to a guessed value to cover the load window — derive from `result`/`loading` so unknown state is representable.
+- Registered operations take the same options as component `apollo` block operations and are prefetched alongside them by the same implementation, with the same variables and failure behavior. Composables that use other composables need nothing more.
+- `useApolloQuery(operation, variables)` returns `result`/`loading`/`error` refs. It reads the prefetched value from the cache and never fetches during server render; a dev warning names the cause of any server cache miss, and the client subscription loads and follows the value. The optional `variables` argument is a plain object or a reactive getter over the composable's own state.
+- Never initialize a ref to a guessed value to cover the load window; derive from `result` and `loading` so unknown state is representable.
 
-See `src/graphql/README.md` ("Composable Data Fetching") for the full prefetch flow, operation options, and what this layer's warnings mean.
+See `src/graphql/README.md` ("Composable Data Fetching") for the operation options, the complete list of differences from component blocks, and what the warnings mean.
 
 ### Server Rendering Scope Rules
 
-The SSR module graph is shared by many requests (worker-scoped, not request-scoped). Place state accordingly:
-
-- **Module scope**: only request-invariant data — query documents, pure functions, config-derived memos.
-- **Per-request instances** (`apollo`, `cookieStore`, provide/inject from `createApp`): anything that varies by request or user.
-- **Apollo cache**: data that must transfer from server to client.
-
-Never store request or user data in module scope — it leaks across requests on a shared worker. See `src/graphql/README.md` ("Server Rendering Scope Rules").
+Module scope is worker-scoped, not request-scoped: never store request or user data in module scope. See [docs/server-side-rendering.md](docs/server-side-rendering.md) for the full scope rules.
 
 ## Styling Conventions
 
