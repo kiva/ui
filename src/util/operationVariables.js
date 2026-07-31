@@ -9,15 +9,16 @@ import { isContentfulQuery } from '#src/util/contentful/isContentfulQuery';
  *
  * @param {object} query - GraphQL query document
  * @param {object} [context] - { cookieStore, route }
- * @param {object} [operationVariables] - The operation's own variables
+ * @param {object} [ownVariables] - Variables the operation itself supplies, from its
+ *   variables or preFetchVariables method
  * @returns {object} Merged variables
  */
-export default function getOperationVariables(query, { cookieStore, route } = {}, operationVariables = {}) {
+export default function getOperationVariables(query, { cookieStore, route } = {}, ownVariables = {}) {
 	const basketId = cookieStore?.get('kvbskt') ?? null;
 	const isContentfulPreview = route?.query?.preview === 'true';
 	return {
 		...(basketId && { basketId }),
-		...operationVariables,
+		...ownVariables,
 		...(isContentfulQuery(query) && isContentfulPreview && { preview: true }),
 	};
 }
