@@ -7,6 +7,7 @@ import { GitRevisionPlugin } from 'git-revision-webpack-plugin';
 import graphQLLoader from 'vite-plugin-graphql-loader';
 import svgLoader from 'vite-svg-loader';
 import svgStore from 'vite-plugin-svg-store';
+import composableOperations from './build/composable-operations-plugin';
 import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
 import tailwindcss from 'tailwindcss';
@@ -87,6 +88,8 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 					},
 				},
 			}),
+			// stamp component definitions with the operations of imported composables
+			composableOperations(),
 			// load .graphql and .gql files
 			graphQLLoader(),
 			// load svg files as vue components
