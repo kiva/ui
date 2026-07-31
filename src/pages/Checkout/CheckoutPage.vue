@@ -319,7 +319,8 @@ import { isAdminRewardTipEligible } from '#src/util/promoCredit';
 import { setDonationAmount } from '#src/util/basketUtils';
 import { preFetchAll } from '#src/util/apolloPreFetch';
 import syncDate from '#src/util/syncDate';
-import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
+import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
+import useLifecycleCapture from '#src/composables/useLifecycleCapture';
 import { trackFBAddToCart, FB_CONTENT_CATEGORY_LOAN } from '@kiva/kv-analytics';
 import { getPromoFromBasket } from '#src/util/campaignUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
@@ -427,6 +428,9 @@ const getLoanIds = loans => (loans ?? []).map(l => l.id).filter(id => !!id);
 
 export default {
 	name: 'CheckoutPage',
+	setup() {
+		return useLifecycleCapture();
+	},
 	components: {
 		WwwPage,
 		KivaCreditPayment,
@@ -748,6 +752,13 @@ export default {
 			this.logBasketState();
 		}
 
+		// Capture the lifecycle stage while it still reflects the lender as they arrived.
+		// The purchase this eventually reports on is what moves them out of an idle or
+		// lapsed stage, so it cannot be read at checkout completion.
+		if (this.myId) {
+			this.startLifecycleCapture(this.apollo);
+		}
+
 		// show toast for specified scenario
 		this.handleToast();
 		this.getPromoInformationFromBasket();
@@ -1047,16 +1058,11 @@ export default {
 				);
 			};
 
-			// Fetch FTD Status, then track + redirect whether or not the lookup succeeds
-			const trackingComplete = myFTDQuery(this.apollo)
-				.then(({ data }) => {
-					// Determine ftd status
-					transactionData.isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
+			const trackingComplete = getTransactionAnalyticsData(this.apollo, this.lifecycleDataPromise)
+				.then(analyticsData => {
+					Object.assign(transactionData, analyticsData);
 				})
-				.catch(() => {
-					// FTD status unknown — leave it undefined so no content_type is asserted downstream
-					transactionData.isFTD = undefined;
-				})
+				.catch(() => {})
 				.then(finalizeTransaction);
 
 			removeLoansFromChallengeCookie(this.cookieStore, this.loanIdsInBasket);

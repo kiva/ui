@@ -216,6 +216,25 @@ export default {
 				}
 
 				trackFBTransaction(transactionData);
+				const {
+					reEngagementEvent,
+					lifecycleStage,
+					daysSinceLastLoan,
+					loanTotal,
+					itemTotal,
+					loans,
+				} = transactionData;
+				if (reEngagementEvent && loans?.length) {
+					trackFBCustomEvent(
+						reEngagementEvent,
+						{
+							loanTotal,
+							itemTotal,
+							lifecycleStage,
+							daysSinceLastLoan,
+						}
+					);
+				}
 				if (gtagLoaded) {
 					kvActions.trackGATransaction(transactionData);
 				}

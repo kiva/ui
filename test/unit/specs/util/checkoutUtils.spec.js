@@ -1,5 +1,6 @@
 import {
 	formatTransactionData,
+	getTransactionAnalyticsData,
 	myFTDQuery,
 	removeCredit
 } from '#src/util/checkoutUtils';
@@ -224,6 +225,87 @@ describe('checkoutUtils.js', () => {
 			// Verify the query was called with expected structure
 			const callArgs = mockApollo.query.mock.calls[0][0];
 			expect(callArgs).toHaveProperty('query');
+		});
+	});
+
+	describe('getTransactionAnalyticsData', () => {
+		const ftdApollo = isFirstTimeDepositor => ({
+			query: vi.fn().mockResolvedValue({ data: { my: { userAccount: { isFirstTimeDepositor } } } }),
+		});
+
+		it('combines FTD and pre-transaction lifecycle data', async () => {
+			const result = await getTransactionAnalyticsData(ftdApollo(false), {
+				stage: 'idle180',
+				daysSinceLastLoan: 200,
+			});
+
+			expect(result).toEqual({
+				isFTD: false,
+				lifecycleStage: 'idle180',
+				daysSinceLastLoan: 200,
+				reEngagementEvent: 'idleLenderReEngaged',
+			});
+		});
+
+		it('resolves the event name from the stage', async () => {
+			const result = await getTransactionAnalyticsData(ftdApollo(false), {
+				stage: 'lapsedChurned',
+				daysSinceLastLoan: 900,
+			});
+
+			expect(result.reEngagementEvent).toBe('lapsedLenderReEngaged');
+		});
+
+		it('reports no event for a lender who was never idle', async () => {
+			const result = await getTransactionAnalyticsData(ftdApollo(false), {
+				stage: 'engaged',
+				daysSinceLastLoan: 10,
+			});
+
+			expect(result.reEngagementEvent).toBeNull();
+		});
+
+		it('uses null lifecycle values when there is no lifecycle data', async () => {
+			const result = await getTransactionAnalyticsData(ftdApollo(true), null);
+
+			expect(result).toEqual({
+				isFTD: true,
+				lifecycleStage: null,
+				daysSinceLastLoan: null,
+				reEngagementEvent: null,
+			});
+		});
+
+		// FTD and lifecycle are unrelated signals; losing one should not lose the other
+		it('keeps lifecycle data when the FTD lookup fails', async () => {
+			const failingApollo = { query: vi.fn().mockRejectedValue(new Error('network')) };
+			vi.spyOn(console, 'error').mockImplementation(() => {});
+
+			const result = await getTransactionAnalyticsData(failingApollo, {
+				stage: 'lapsedChurned',
+				daysSinceLastLoan: 900,
+			});
+
+			expect(result).toEqual({
+				isFTD: undefined,
+				lifecycleStage: 'lapsedChurned',
+				daysSinceLastLoan: 900,
+				reEngagementEvent: 'lapsedLenderReEngaged',
+			});
+		});
+
+		// leaves isFTD undefined so no content_type is asserted downstream
+		it('resolves rather than throwing when a query fails', async () => {
+			const failingApollo = { query: vi.fn().mockRejectedValue(new Error('network')) };
+
+			const result = await getTransactionAnalyticsData(failingApollo, null);
+
+			expect(result).toEqual({
+				isFTD: undefined,
+				lifecycleStage: null,
+				daysSinceLastLoan: null,
+				reEngagementEvent: null,
+			});
 		});
 	});
 
