@@ -96,6 +96,11 @@ describe('settingsUtils.js', () => {
 				booleanKey: true
 			}, 'booleanKey')).toEqual(true);
 		});
+		it('returns null if the value is null', () => {
+			expect(readBoolSetting({
+				nullKey: null
+			}, 'nullKey')).toEqual(null);
+		});
 	});
 
 	describe('readDateSetting', () => {
