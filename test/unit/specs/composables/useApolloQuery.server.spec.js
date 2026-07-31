@@ -40,20 +40,24 @@ describe('useApolloQuery (server)', () => {
 			readQuery: vi.fn(() => cached),
 			query: vi.fn(),
 		};
-		const out = await renderWithComposable(apollo, () => useApolloQuery({ query: dummyQuery }));
+		const operation = { query: dummyQuery };
+		const out = await renderWithComposable(apollo, () => useApolloQuery(operation), {
+			hostExtras: { preFetchOperations: [operation] },
+		});
 		expect(apollo.query).not.toHaveBeenCalled();
 		expect(out.result.value).toEqual(cached);
 		expect(out.loading.value).toBe(false);
 		expect(warn).not.toHaveBeenCalled();
 	});
 
-	it('does not fetch on a cache miss and warns about the unattached operation', async () => {
+	it('does not read the cache or fetch for an unattached operation, and warns about it', async () => {
 		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 		const apollo = {
 			readQuery: vi.fn(() => null),
 			query: vi.fn(),
 		};
 		const out = await renderWithComposable(apollo, () => useApolloQuery({ query: dummyQuery }));
+		expect(apollo.readQuery).not.toHaveBeenCalled();
 		expect(apollo.query).not.toHaveBeenCalled();
 		expect(out.result.value).toBeNull();
 		expect(out.loading.value).toBe(true);
@@ -65,7 +69,7 @@ describe('useApolloQuery (server)', () => {
 		);
 	});
 
-	it('warns about a failed cache read when the operation is attached', async () => {
+	it('warns about a failed cache read when the operation was prefetched', async () => {
 		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 		const apollo = {
 			readQuery: vi.fn(() => null),
@@ -76,8 +80,23 @@ describe('useApolloQuery (server)', () => {
 			hostExtras: { preFetchOperations: [operation] },
 		});
 		expect(warn).toHaveBeenCalledWith(
-			expect.stringContaining('the prefetch ran but the cache read missed')
+			expect.stringContaining('the operation was prefetched, but the cache read missed')
 		);
+	});
+
+	it('does not read the cache or warn when a registered operation authors preFetch: false', async () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const apollo = {
+			readQuery: vi.fn(() => null),
+			query: vi.fn(),
+		};
+		const operation = { query: dummyQuery, preFetch: false };
+		const out = await renderWithComposable(apollo, () => useApolloQuery(operation), {
+			hostExtras: { preFetchOperations: [operation] },
+		});
+		expect(apollo.readQuery).not.toHaveBeenCalled();
+		expect(out.loading.value).toBe(true);
+		expect(warn).not.toHaveBeenCalled();
 	});
 
 	it('does not warn when the operation opted out of prefetching', async () => {
