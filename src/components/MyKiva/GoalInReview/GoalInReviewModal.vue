@@ -39,9 +39,11 @@
 				:year="data?.year"
 				:current-year="currentYear"
 				:wrap-up="data?.wrapUp"
+				:feedback-submitted="feedbackSubmitted"
 				@back-to-kiva="handleCta('back-to-kiva')"
 				@finish-goal="handleCta('finish-goal')"
 				@set-goal="handleCta('set-goal')"
+				@feedback-submitted="emit('feedback-submitted')"
 			/>
 		</div>
 	</KvLightbox>
@@ -72,9 +74,13 @@ defineProps({
 		type: Object,
 		default: null,
 	},
+	feedbackSubmitted: {
+		type: Boolean,
+		default: false,
+	},
 });
 
-const emit = defineEmits(['close', 'back-to-kiva', 'finish-goal', 'set-goal']);
+const emit = defineEmits(['close', 'back-to-kiva', 'finish-goal', 'set-goal', 'feedback-submitted']);
 const $kvTrackEvent = inject('$kvTrackEvent', () => {});
 
 // Single source of truth for "now". Add ?recapDate=YYYY-MM-DD to the url for QA specific dates
