@@ -108,6 +108,10 @@ export default function useBorrowerProfileData(apolloClient, cookieStore) {
 				variables: { loanIds: [loanDataId] },
 			}).then(result => {
 				achievementsData.value = result;
+			}).catch(e => {
+				// The enclosing try/catch cannot catch this rejection, so without a
+				// handler here a failure is an unhandled rejection.
+				logFormatter(e, 'error');
 			});
 		} catch (e) {
 			subscription.value?.unsubscribe();

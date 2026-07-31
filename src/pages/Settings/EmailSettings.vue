@@ -681,8 +681,8 @@ export default {
 					const unsubscribeResponse = await unsubscribeFromAllCommunications;
 					if (unsubscribeResponse.errors) {
 						throw new Error(
-							unsubscribeResponse.errors[0].extensions.code
-								|| unsubscribeResponse.errors[0].message
+							unsubscribeResponse.errors[0]?.extensions?.code
+								|| unsubscribeResponse.errors[0]?.message
 						);
 					}
 
@@ -697,8 +697,8 @@ export default {
 					const subscribeResponse = await updateCommunicationSettings;
 					if (subscribeResponse.errors) {
 						throw new Error(
-							subscribeResponse.errors[0].extensions.code
-								|| subscribeResponse.errors[0].message
+							subscribeResponse.errors[0]?.extensions?.code
+								|| subscribeResponse.errors[0]?.message
 						);
 					}
 				}
@@ -740,8 +740,8 @@ export default {
 					const subscribeResponse = await updateCommunicationSettings;
 					if (subscribeResponse.errors) {
 						throw new Error(
-							subscribeResponse.errors[0].extensions.code
-								|| subscribeResponse.errors[0].message
+							subscribeResponse.errors[0]?.extensions?.code
+								|| subscribeResponse.errors[0]?.message
 						);
 					}
 				}

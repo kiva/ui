@@ -300,7 +300,7 @@ export default function useGoalData({ apollo } = {}) {
 				variables: { year },
 				fetchPolicy: 'no-cache',
 			});
-			const progress = response.data.userAchievementProgress.tieredLendingAchievements;
+			const progress = response.data?.userAchievementProgress?.tieredLendingAchievements ?? null;
 			return progress;
 		} catch (error) {
 			logFormatter('Failed to fetch categories progress by year', 'error', { error, year });
