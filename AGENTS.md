@@ -81,7 +81,7 @@ export default function useMyThing() {
 }
 ```
 
-- A composable registers its operations by exporting them in an authored `preFetchOperations` array (and re-exports the surfaces of composables it uses). Registration is the prefetch opt-in (`preFetch: true` is applied automatically; `shouldPreFetch` still gates contextually). A vite transform attaches the operations of imported composables to component definitions, and `preFetchAll` prefetches attached operations alongside the component `apollo` blocks with the same options, the same variables, and the same failure behavior.
+- A composable registers its operations by exporting them in an authored `preFetchOperations` array; a composable that uses another composable needs nothing more, since the transform merges imported surfaces automatically. Registration is the prefetch opt-in (`preFetch: true` is applied automatically; `shouldPreFetch` still gates contextually). A vite transform attaches the operations of imported composables to component definitions, and `preFetchAll` prefetches attached operations alongside the component `apollo` blocks with the same options, the same variables, and the same failure behavior.
 - `useApolloQuery` never fetches during server render: a cache miss warns in dev and renders the "not loaded" state, and the client loads the value after hydration. Fix the prefetch, not the component.
 - Never initialize a ref to a guessed value to cover the load window — derive from `result`/`loading` so unknown state is representable.
 
