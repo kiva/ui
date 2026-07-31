@@ -572,12 +572,6 @@ export default {
 			// user data
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
-			// Start the lifecycle lookup now, while it still reflects the lender as they
-			// arrived: the purchase being tracked is what moves them out of an idle or
-			// lapsed stage. Starts once, so re-running this handler is harmless.
-			if (this.myId) {
-				this.startLifecycleCapture(this.apollo);
-			}
 			this.teams = _get(data, 'my.lender.teams.values');
 			this.hasEverLoggedIn = _get(data, 'hasEverLoggedIn', false);
 			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
@@ -727,6 +721,15 @@ export default {
 		this.initializeCustomTipDefaultExperiment();
 	},
 	watch: {
+		// Start the lifecycle lookup as soon as we know there is a lender, which is
+		// before mounted on a hydrated load and after it on a cold SPA navigation. It
+		// must happen while the stage still reflects the lender as they arrived: the
+		// purchase being tracked is what moves them out of an idle or lapsed stage.
+		myId(myId) {
+			if (myId) {
+				this.startLifecycleCapture(this.apollo);
+			}
+		},
 		async emptyBasket(newValue) {
 			if (!newValue && !this.upsellLoan?.id) {
 				await Promise.all([

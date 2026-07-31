@@ -347,39 +347,27 @@ describe('CheckoutPage completeTransaction', () => {
 });
 
 // The once-only behaviour belongs to useLifecycleCapture and is tested there. These
-// cover the part CheckoutPage owns: starting the lookup at entry, for lenders only.
+// cover the part CheckoutPage owns: starting the lookup as soon as a lender is known.
 describe('CheckoutPage lifecycle capture', () => {
-	const response = my => ({ my, general: {}, shop: { basket: {} } });
-
 	const makeContext = () => ({
 		startLifecycleCapture: vi.fn(),
-		setUpdatingTotals: vi.fn(),
-		ensureTipDonationExists: vi.fn(),
-		initializeCustomTipDefaultExperiment: vi.fn(),
-		calculateProgressAchievement: vi.fn(),
-		getPromoInformationFromBasket: vi.fn(),
-		disableGuestCheckout: vi.fn(),
-		showCheckoutError: vi.fn(),
 		apollo: {},
-		cookieStore: { get: vi.fn(), set: vi.fn() },
-		$route: { query: {} },
 	});
 
-	// starting at entry is what keeps the stage pre-transaction
-	it('starts the lookup when the checkout query identifies a lender', () => {
+	// myId lands before mounted on a hydrated load and after it on a cold SPA nav,
+	// so the watcher covers both where a lifecycle hook would only cover one
+	it('starts the lookup when a lender id arrives', () => {
 		const context = makeContext();
 
-		CheckoutPage.apollo.result.call(context, {
-			data: response({ id: 1, userAccount: { id: 1 }, lender: { id: 1, teams: { values: [] } } }),
-		});
+		CheckoutPage.watch.myId.call(context, 1234);
 
-		expect(context.startLifecycleCapture).toHaveBeenCalled();
+		expect(context.startLifecycleCapture).toHaveBeenCalledWith(context.apollo);
 	});
 
-	it('does not start the lookup for guests, who have no lifecycle stage', () => {
+	it('does not start the lookup for guests, who never get a lender id', () => {
 		const context = makeContext();
 
-		CheckoutPage.apollo.result.call(context, { data: response(null) });
+		CheckoutPage.watch.myId.call(context, null);
 
 		expect(context.startLifecycleCapture).not.toHaveBeenCalled();
 	});
