@@ -265,9 +265,7 @@ import myQuery from '#src/graphql/query/myQuery.graphql';
 const operation = { query: myQuery };
 
 // Exporting an operation here registers it: every component that imports this
-// composable prefetches it. A composable that uses another composable with
-// operations re-exports that surface too:
-// export const preFetchOperations = [...useOtherThingOperations, operation];
+// composable prefetches it
 export const preFetchOperations = [operation];
 
 export default function useMyThing() {
@@ -289,8 +287,8 @@ Derive state from `result`/`loading` so "not loaded yet" stays representable. Ne
 
 A query belongs to the component that needs it, regardless of where it is declared — composable operations ride the same prefetch as component `apollo` blocks:
 
-1. **Registration** happens by export: the composable module creates its operations once, at module evaluation, and registers them by listing them in an authored `preFetchOperations` export. Registration is the prefetch opt-in, so `preFetch: true` is applied automatically at collection (an explicit authored flag still wins) and `shouldPreFetch` remains the contextual gate. Each module states one hop of knowledge (its own operations plus the surfaces of composables it uses); the full surface emerges by composition.
-2. **Attachment**: a vite transform (`build/composable-operations-plugin.js`) rewrites every compiled component module whose static imports resolve into `src/composables/`, attaching the union of the imported modules' `preFetchOperations` to the component definition, static data on the definition, adjacent to `apollo`. The same transform runs in dev serve, build, vitest, and storybook, for both the server and client environments, so no mode has a different mechanism and nothing can go stale: the module is both the unit of analysis and the unit of invalidation.
+1. **Registration** happens by export: the composable module creates its operations once, at module evaluation, and registers them by listing them in an authored `preFetchOperations` export. Registration is the prefetch opt-in, so `preFetch: true` is applied automatically at collection (an explicit authored flag still wins) and `shouldPreFetch` remains the contextual gate. A module authors only its own operations; composables it uses contribute theirs automatically (see Attachment), so the full surface emerges by composition.
+2. **Attachment**: a vite transform (`build/composable-operations-plugin.js`) rewrites every compiled component module whose static imports resolve into `src/composables/`, attaching the union of the imported modules' `preFetchOperations` to the component definition, static data on the definition, adjacent to `apollo`. It also rewrites composable modules that import other composables, merging the imported surfaces into the module's own `preFetchOperations` export, so composition needs no re-export authoring. The same transform runs in dev serve, build, vitest, and storybook, for both the server and client environments, so no mode has a different mechanism and nothing can go stale: each rewritten module's output depends only on its own source, making the module both the unit of analysis and the unit of invalidation.
 3. **Prefetch**: `preFetchAll` collects the `apollo` blocks and the attached operations of the definitions it walks, dedupes attached operations by identity (they are module singletons shared by every importer), and executes everything in one parallel pass before render with identical options, identical variables, and identical failure behavior: a failed prefetch fails the render for both kinds. Client-side navigations prefetch the attached operations of activated components exactly like component blocks; a navigation that activates nothing fetches nothing.
 4. **Server cache miss**: `useApolloQuery` never fetches during render. A miss warns in dev (see below), renders the representable "not loaded" state, and the client `watchQuery` subscription loads the value after hydration. The fix for a miss is fixing the prefetch, not compensating during render. Usage invisible to static analysis (dynamically imported composables, runtime-selected operations) is therefore unsupported for SSR.
 

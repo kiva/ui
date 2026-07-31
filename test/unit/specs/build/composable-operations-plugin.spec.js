@@ -100,3 +100,76 @@ export { _sfc_main as default };
 		expect(warnings[0]).toContain('no plain default export');
 	});
 });
+
+describe('composable-operations-plugin composable modules', () => {
+	it('merges imported operations into the authored preFetchOperations export', async () => {
+		const { transform } = makeTransform();
+		const code = `import useBadgeData from '#src/composables/useBadgeData';
+
+const operation = { query: {} };
+
+export const preFetchOperations = [operation];
+
+export default function useGoalData() {
+	return preFetchOperations;
+}
+`;
+		const output = await transform(code, `${ROOT}/src/composables/useGoalData.js`);
+		// The authored declaration keeps its binding but loses the export
+		expect(output.code).not.toContain('export const preFetchOperations');
+		expect(output.code).toContain('const preFetchOperations = [operation];');
+		expect(output.code).toContain("import * as __composableModule0 from '#src/composables/useBadgeData';");
+		expect(output.code).toContain('const __mergedPreFetchOperations = [');
+		expect(output.code).toContain('\t...preFetchOperations,');
+		expect(output.code).toContain(
+			"...('preFetchOperations' in __composableModule0 ? __composableModule0.preFetchOperations : []),"
+		);
+		expect(output.code).toContain('export { __mergedPreFetchOperations as preFetchOperations };');
+		expect(output.code).not.toContain('__componentDefinition__');
+		expect(output.map).toBeTruthy();
+	});
+
+	it('creates the export for a composable that only composes others', async () => {
+		const { transform } = makeTransform();
+		const code = `import useBadgeData from '#src/composables/useBadgeData';
+
+export default function useGoalSummary() {
+	return useBadgeData();
+}
+`;
+		const output = await transform(code, `${ROOT}/src/composables/useGoalSummary.js`);
+		expect(output.code).toContain('const __mergedPreFetchOperations = [');
+		expect(output.code).not.toContain('...preFetchOperations,');
+		expect(output.code).toContain('export { __mergedPreFetchOperations as preFetchOperations };');
+	});
+
+	it('leaves composables without composable imports alone', async () => {
+		const { transform } = makeTransform();
+		const code = `import { computed } from 'vue';
+
+const operation = { query: {} };
+
+export const preFetchOperations = [operation];
+`;
+		expect(await transform(code, `${ROOT}/src/composables/useLeafThing.js`)).toBeNull();
+	});
+
+	it('leaves modules outside src/composables alone', async () => {
+		const { transform } = makeTransform();
+		const code = `import useMultiMatching from '#src/composables/useMultiMatching';
+export default function helper() {}
+`;
+		expect(await transform(code, `${ROOT}/src/util/helper.js`)).toBeNull();
+	});
+
+	it('warns and skips composition for an unsupported export shape', async () => {
+		const { transform, warnings } = makeTransform();
+		const code = `import useBadgeData from '#src/composables/useBadgeData';
+const ops = [];
+export { ops as preFetchOperations };
+`;
+		expect(await transform(code, `${ROOT}/src/composables/useOdd.js`)).toBeNull();
+		expect(warnings).toHaveLength(1);
+		expect(warnings[0]).toContain('unsupported preFetchOperations export shape');
+	});
+});
