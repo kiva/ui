@@ -244,7 +244,7 @@ describe('LoansPage', () => {
 		}));
 	});
 
-	it('queries selected pages without updating the route and scrolls to the table', async () => {
+	it('queries selected pages without updating the route or scrolling the page', async () => {
 		const page = renderLoansPage();
 
 		await waitFor(() => expect(page.query).toHaveBeenCalledTimes(1));
@@ -268,10 +268,8 @@ describe('LoansPage', () => {
 			includeFilterOptions: false,
 		});
 		expect(page.getByTestId('pagination').getAttribute('data-scroll-to-top')).toBe('false');
-		expect(scrollIntoView).toHaveBeenCalledWith({
-			behavior: 'smooth',
-			block: 'start',
-		});
+		// The table has its own fixed-height scroll region now, so paging must not scroll the page.
+		expect(scrollIntoView).not.toHaveBeenCalled();
 	});
 
 	it('passes portfolio filter options to the filter bar', async () => {

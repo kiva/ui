@@ -109,7 +109,7 @@
 					</KvButton>
 				</div>
 
-				<p class="tw-text-small tw-text-secondary tw-mt-3">
+				<p class="tw-text-small tw-mt-3">
 					*Completing withdrawals via PayPal is a manual process, and as such, takes longer than
 					accepting funds. Withdrawal requests are reviewed by Kiva's accounting team on a weekly
 					basis and, once approved, sent to lenders' PayPal accounts. Given this process, lenders
