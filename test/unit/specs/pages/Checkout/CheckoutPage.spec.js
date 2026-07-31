@@ -354,8 +354,8 @@ describe('CheckoutPage lifecycle capture', () => {
 		apollo: {},
 	});
 
-	// myId lands before mounted on a hydrated load and after it on a cold SPA nav,
-	// so the watcher covers both where a lifecycle hook would only cover one
+	// myId usually lands during created, but arrives after mounted for a guest who logs
+	// in partway through checkout, so a watcher covers both where mounted would not
 	it('starts the lookup when a lender id arrives', () => {
 		const context = makeContext();
 

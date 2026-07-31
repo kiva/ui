@@ -721,10 +721,11 @@ export default {
 		this.initializeCustomTipDefaultExperiment();
 	},
 	watch: {
-		// Start the lifecycle lookup as soon as we know there is a lender, which is
-		// before mounted on a hydrated load and after it on a cold SPA navigation. It
-		// must happen while the stage still reflects the lender as they arrived: the
-		// purchase being tracked is what moves them out of an idle or lapsed stage.
+		// Start the lifecycle lookup as soon as we know there is a lender. Usually that
+		// is during created, but a guest who logs in partway through checkout only gets
+		// an id once doPopupLogin re-runs the prefetch, which is well after mounted.
+		// Either way it must happen before the transaction: the purchase being tracked
+		// is what moves a lender out of an idle or lapsed stage.
 		myId(myId) {
 			if (myId) {
 				this.startLifecycleCapture(this.apollo);
