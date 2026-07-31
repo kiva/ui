@@ -13,9 +13,6 @@ export default function useMultiMatching() {
 	const enableMultiMatching = computed(
 		() => readBoolSetting(result.value, 'general.multiMatchingEnabled.value') ?? false
 	);
-	// False while the setting is being read, so callers can tell "multi
-	// matching is off" apart from "we have not found out yet". A failed read
-	// resolves to the disabled default, matching readBoolSetting's ?? false
 	const multiMatchingResolved = computed(() => result.value !== null || error.value !== null);
 	return { enableMultiMatching, multiMatchingResolved };
 }
