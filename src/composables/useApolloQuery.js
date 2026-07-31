@@ -1,29 +1,35 @@
 import {
 	ref,
 	inject,
+	watch,
 	onBeforeUnmount,
 	getCurrentInstance,
 } from 'vue';
 import { routeLocationKey } from 'vue-router';
 import getOperationVariables from '#src/util/operationVariables';
+import logReadQueryError from '#src/util/logReadQueryError';
+import watchApolloOperation from '#src/util/watchApolloOperation';
 
 const isServer = typeof window === 'undefined';
 
-// Dev-only detector for prefetch gaps: preFetchAll should have loaded every
-// operation that did not opt out via shouldPreFetch, so a server cache miss
-// means the prefetch needs fixing, not the render. shouldPreFetch gets the
-// same context here as in preFetchApolloQuery.
-function warnAboutCacheMiss(vm, operation, prefetchContext) {
-	const optedOut = typeof operation.shouldPreFetch === 'function'
-		? !operation.shouldPreFetch(operation, prefetchContext)
-		: operation.shouldPreFetch === false;
-	if (optedOut) {
-		return;
+// Dev-only warning for a server cache miss. Silent when the operation opted
+// out of prefetching (authored preFetch: false, or shouldPreFetch declining
+// with the same context the prefetcher passes).
+function warnAboutCacheMiss(vm, operation, preFetched, prefetchContext) {
+	if (!preFetched) {
+		const { shouldPreFetch = true } = operation;
+		const optedOut = operation.preFetch === false || (typeof shouldPreFetch === 'function'
+			? !shouldPreFetch(operation, prefetchContext)
+			: !shouldPreFetch);
+		if (optedOut) {
+			return;
+		}
 	}
 	const operationName = operation.query?.definitions?.[0]?.name?.value ?? 'unnamed operation';
 	const componentName = vm.type?.name ?? 'unknown component';
-	const cause = (vm.type?.preFetchOperations ?? []).includes(operation)
-		? 'the operation is attached, so the prefetch ran but the cache read missed (check variables)'
+	const cause = preFetched
+		// eslint-disable-next-line max-len
+		? 'the operation was prefetched, but the cache read missed (check variables, and check the prefetch for GraphQL errors)'
 		// eslint-disable-next-line max-len
 		: 'the operation is not attached to the component (not registered in a preFetchOperations export, or the import is invisible to the transform)';
 	// eslint-disable-next-line max-len
@@ -31,24 +37,24 @@ function warnAboutCacheMiss(vm, operation, prefetchContext) {
 }
 
 /**
- * Read a composable operation (see the preFetchOperations export convention
- * in src/util/composableOperations.js) from within setup().
+ * Read an apollo operation from within setup(). The operation takes the same
+ * options as a component apollo block operation (see src/graphql/README.md).
  *
- * Reads the value loaded by prefetching the component definitions the
- * operation is attached to, and subscribes for updates on the client. loading reflects real fetch
- * state, so callers can tell "not loaded yet" apart from real values. error
- * carries a transport error or the operation's GraphQL errors array for
- * callers that need them; nothing is logged or handled automatically here.
+ * When the operation was prefetched (attached to the component and not opted
+ * out), the prefetched value is read from the cache. The server never fetches
+ * beyond that read: a miss renders the "not loaded" state and warns in dev.
+ * On the client a watch query subscription loads and follows the value.
  *
  * @param {object} operation - Operation registered in a composable's preFetchOperations export
- * @param {object} [variables] - Additional query variables
+ * @param {object|Function} [variables] - The operation's client variables: a plain object or a
+ *   reactive getter, watched like a component operation's variables method
  * @returns {{
  *   result: import('vue').Ref<object|null>,
  *   loading: import('vue').Ref<boolean>,
  *   error: import('vue').Ref<Error|object[]|null>,
  * }}
  */
-export default function useApolloQuery(operation, variables = {}) {
+export default function useApolloQuery(operation, variables = () => ({})) {
 	const result = ref(null);
 	const error = ref(null);
 	const loading = ref(true);
@@ -60,71 +66,80 @@ export default function useApolloQuery(operation, variables = {}) {
 		return { result, loading, error };
 	}
 
+	const { shouldPreFetch = true, preFetchVariables = () => ({}) } = operation;
+
 	const cookieStore = inject('cookieStore', null);
 	// routeLocationKey is what useRoute injects; injecting it directly allows a
 	// null default so router-less mounts (unit specs, storybook) stay silent
 	const route = inject(routeLocationKey, null);
+	const commonVars = { cookieStore, route };
+	const prefetchContext = {
+		cookieStore,
+		device: inject('device', null),
+		kvAuth0: inject('kvAuth0', null),
+		renderConfig: inject('$renderConfig', null),
+		route,
+	};
 
-	// Same variables the operation is prefetched with, so the cache read hits
-	const context = { cookieStore, route, client: apollo };
-	const operationVariables = getOperationVariables(query, context, {
-		...operation.preFetchVariables?.(context),
-		...variables,
-	});
+	// The same prefetch decision the apollo plugin makes for component
+	// operations, with registration standing in for preFetch: true
+	const attached = (vm.type?.preFetchOperations ?? []).includes(operation);
+	const preFetch = attached && operation.preFetch !== false;
+	let preFetched = preFetch && shouldPreFetch;
+	if (typeof shouldPreFetch === 'function') {
+		preFetched = preFetch && shouldPreFetch(operation, prefetchContext);
+	}
 
-	// Read the value already loaded by the prefetch (or a previous fetch)
-	let inCache = false;
-	if (typeof apollo.readQuery === 'function') {
+	// If the operation was prefetched, read the data from the cache
+	if (preFetched) {
 		try {
-			const data = apollo.readQuery({ query, variables: operationVariables });
-			if (data) {
+			const data = apollo.readQuery({
+				query,
+				variables: getOperationVariables(query, commonVars, preFetchVariables({
+					...commonVars,
+					client: apollo,
+				})),
+			});
+			if (data !== null) {
 				result.value = data;
 				loading.value = false;
-				inCache = true;
 			}
 		} catch (e) {
-			// An unreadable cache entry counts as a miss
+			logReadQueryError(e, `useApolloQuery ${query?.definitions?.[0]?.name?.value}`);
 		}
 	}
 
 	if (isServer) {
 		// No fetch during server render: a miss renders the "not loaded" state
 		// and the client subscription loads the value after hydration
-		if (!inCache && process.env.NODE_ENV !== 'production') {
-			warnAboutCacheMiss(vm, operation, {
-				cookieStore,
-				device: inject('device', null),
-				kvAuth0: inject('kvAuth0', null),
-				renderConfig: inject('$renderConfig', null),
-				route,
-			});
+		if (result.value === null && process.env.NODE_ENV !== 'production') {
+			warnAboutCacheMiss(vm, operation, preFetched, prefetchContext);
 		}
-	} else if (typeof apollo.watchQuery === 'function') {
-		// Subscribe for updates (and the initial fetch when the cache was cold).
-		// GraphQL errors arrive alongside data under errorPolicy 'all'; both
-		// error kinds are exposed on the error ref without logging (transport
-		// errors are already logged and retried at the apollo link layer).
-		const subscription = apollo.watchQuery({
-			query,
-			...(operation.fetchPolicy && { fetchPolicy: operation.fetchPolicy }),
-			variables: operationVariables,
-		}).subscribe({
-			next: apolloResult => {
-				if (apolloResult?.data) {
-					result.value = apolloResult.data;
-				}
-				if (apolloResult?.errors?.length) {
-					error.value = apolloResult.errors;
-				}
-				loading.value = false;
-			},
-			error: e => {
-				error.value = e;
-				loading.value = false;
-			},
-		});
-		onBeforeUnmount(() => subscription?.unsubscribe?.());
+		return { result, loading, error };
 	}
+
+	const getVariables = typeof variables === 'function' ? variables : () => variables;
+	const { subscription } = watchApolloOperation({
+		client: apollo,
+		operation,
+		commonVars,
+		getVariables,
+		watchVariables: (getter, callback) => watch(getter, callback, { deep: true }),
+		next: apolloResult => {
+			if (apolloResult?.data) {
+				result.value = apolloResult.data;
+			}
+			if (apolloResult?.errors?.length) {
+				error.value = apolloResult.errors;
+			}
+			loading.value = false;
+		},
+		error: e => {
+			error.value = e;
+			loading.value = false;
+		},
+	});
+	onBeforeUnmount(() => subscription?.unsubscribe?.());
 
 	return { result, loading, error };
 }

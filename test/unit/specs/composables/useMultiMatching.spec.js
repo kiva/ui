@@ -21,6 +21,9 @@ describe('useMultiMatching', () => {
 		let result;
 		const TestComponent = {
 			name: 'TestComponent',
+			// The transform attaches the composable's operations to every real
+			// component that imports it
+			preFetchOperations,
 			setup() {
 				result = useMultiMatching();
 				return {};

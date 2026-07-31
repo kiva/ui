@@ -1,6 +1,7 @@
 import checkInjections from '#src/util/injectionCheck';
 import getOperationVariables from '#src/util/operationVariables';
 import logReadQueryError from '#src/util/logReadQueryError';
+import watchApolloOperation from '#src/util/watchApolloOperation';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 
 const injections = ['apollo', 'cookieStore'];
@@ -13,22 +14,14 @@ function parseLazy(lazy) {
 }
 
 function setupWatchQuery(vm, operation, commonVars) {
-	const {
-		query,
-		variables = () => {},
-		result = () => {},
-		fetchPolicy,
-	} = operation;
+	const { variables = () => {}, result = () => {} } = operation;
 
-	const observer = vm.apollo.watchQuery({
-		query,
-		...(fetchPolicy && { fetchPolicy }),
-		variables: getOperationVariables(query, commonVars, variables.call(vm)),
-	});
-
-	vm.$watch(variables, vars => observer.setVariables(getOperationVariables(query, commonVars, vars)), { deep: true });
-
-	observer.subscribe({
+	watchApolloOperation({
+		client: vm.apollo,
+		operation,
+		commonVars,
+		getVariables: () => variables.call(vm),
+		watchVariables: (getVariables, callback) => vm.$watch(getVariables, callback, { deep: true }),
 		next: apolloResult => result.call(vm, apolloResult),
 	});
 }
@@ -78,8 +71,7 @@ export default app => {
 								const data = this.apollo.readQuery({
 									query,
 									variables: getOperationVariables(query, commonVars, preFetchVariables({
-										cookieStore: this.cookieStore,
-										route: this.$route,
+										...commonVars,
 										client: this.apollo,
 									})),
 								});
