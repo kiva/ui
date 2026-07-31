@@ -62,6 +62,41 @@ export default {
 
 For multiple queries, use an array of operation objects. See `src/graphql/README.md` for advanced patterns.
 
+### Data Fetching in Composables
+
+Composables must not fetch render state through the apollo client directly. Declare a registered operation and read it with `useApolloQuery` — the primitives cover queries that feed render state; imperative on-demand fetches and mutations are outside the layer:
+
+```javascript
+import useApolloQuery from '#src/composables/useApolloQuery';
+
+const operation = { query: myQuery };
+
+// Exporting an operation here registers it: every component that imports this
+// composable prefetches it
+export const preFetchOperations = [operation];
+
+export default function useMyThing() {
+	const { result, loading } = useApolloQuery(operation);
+	// Derive state from result; loading distinguishes "not loaded yet" from real values
+}
+```
+
+- A composable registers its operations by exporting them in an authored `preFetchOperations` array (and re-exports the surfaces of composables it uses). Registration is the prefetch opt-in (`preFetch: true` is applied automatically; `shouldPreFetch` still gates contextually). A vite transform attaches the operations of imported composables to component definitions, and `preFetchAll` prefetches attached operations alongside the component `apollo` blocks with the same options, the same variables, and the same failure behavior.
+- `useApolloQuery` never fetches during server render: a cache miss warns in dev and renders the "not loaded" state, and the client loads the value after hydration. Fix the prefetch, not the component.
+- Never initialize a ref to a guessed value to cover the load window — derive from `result`/`loading` so unknown state is representable.
+
+See `src/graphql/README.md` ("Composable Data Fetching") for the full prefetch flow, operation options, and what this layer's warnings mean.
+
+### Server Rendering Scope Rules
+
+The SSR module graph is shared by many requests (worker-scoped, not request-scoped). Place state accordingly:
+
+- **Module scope**: only request-invariant data — query documents, pure functions, config-derived memos.
+- **Per-request instances** (`apollo`, `cookieStore`, provide/inject from `createApp`): anything that varies by request or user.
+- **Apollo cache**: data that must transfer from server to client.
+
+Never store request or user data in module scope — it leaks across requests on a shared worker. See `src/graphql/README.md` ("Server Rendering Scope Rules").
+
 ## Styling Conventions
 
 ### Tailwind CSS
