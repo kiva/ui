@@ -256,9 +256,10 @@ During prefetching, all queries will be executed in parallel, and the result met
 
 ## Composable Data Fetching
 
-Composables must not fetch render state through the apollo client directly. A composable that owns a query feeding render state declares it as a registered operation and reads it through `useApolloQuery`. The layer covers render-state queries; imperative on-demand fetches and mutations have no layer helpers.
+A composable that owns a query for state the initial render needs declares it as a registered operation and reads it with `useApolloQuery`. Mutations and fetches triggered by user actions keep using the injected apollo client directly.
 
 ```javascript
+import { computed } from 'vue';
 import useApolloQuery from '#src/composables/useApolloQuery';
 import myQuery from '#src/graphql/query/myQuery.graphql';
 
@@ -275,32 +276,28 @@ export default function useMyThing() {
 }
 ```
 
-`useApolloQuery` must be called during `setup()`. It returns three refs:
+Nothing else is required: a component prefetches the operations of every composable it imports, and a composable that uses another composable inherits its operations the same way.
 
-- `result` — the query data, `null` until it has been read.
-- `loading` — true until the first fetch settles. Reflects real fetch state, never a guessed default.
-- `error` — a transport error or the operation's GraphQL `errors` array, when one occurred. Nothing is logged or handled automatically on the read path: transport errors are already logged and retried at the apollo link layer, and GraphQL errors rendering as no-data is by design — read the ref if the caller needs to react.
+`useApolloQuery(operation, variables)` must be called during `setup()`. It returns three refs:
 
-Derive state from `result`/`loading` so "not loaded yet" stays representable. Never initialize a ref to a guessed value to cover the load window — that conflation of "unknown" with a real value is the bug class this layer exists to prevent.
+- `result`: the query data, `null` until it has been read.
+- `loading`: true until the first read or fetch settles.
+- `error`: a transport error or the operation's GraphQL `errors` array, when one occurred. Nothing is logged or handled automatically on the read path: transport errors are already logged and retried at the apollo link layer, and GraphQL errors rendering as no data is by design. Read the ref if the caller needs to react.
 
-### How composable operations are prefetched
+Derive state from `result` and `loading` so "not loaded yet" stays representable, and never initialize a ref to a guessed value to cover the load window.
 
-A query belongs to the component that needs it, regardless of where it is declared — composable operations ride the same prefetch as component `apollo` blocks:
+### Operation options
 
-1. **Registration** happens by export: the composable module creates its operations once, at module evaluation, and registers them by listing them in an authored `preFetchOperations` export. Registration is the prefetch opt-in, so `preFetch: true` is applied automatically at collection (an explicit authored flag still wins) and `shouldPreFetch` remains the contextual gate. A module authors only its own operations; composables it uses contribute theirs automatically (see Attachment), so the full surface emerges by composition.
-2. **Attachment**: a vite transform (`build/composable-operations-plugin.js`) rewrites every compiled component module whose static imports resolve into `src/composables/`, attaching the union of the imported modules' `preFetchOperations` to the component definition, static data on the definition, adjacent to `apollo`. It also rewrites composable modules that import other composables, merging the imported surfaces into the module's own `preFetchOperations` export, so composition needs no re-export authoring. The same transform runs in dev serve, build, vitest, and storybook, for both the server and client environments, so no mode has a different mechanism and nothing can go stale: each rewritten module's output depends only on its own source, making the module both the unit of analysis and the unit of invalidation.
-3. **Prefetch**: `preFetchAll` collects the `apollo` blocks and the attached operations of the definitions it walks, dedupes attached operations by identity (they are module singletons shared by every importer), and executes everything in one parallel pass before render with identical options, identical variables, and identical failure behavior: a failed prefetch fails the render for both kinds. Client-side navigations prefetch the attached operations of activated components exactly like component blocks; a navigation that activates nothing fetches nothing.
-4. **Server cache miss**: `useApolloQuery` never fetches during render. A miss warns in dev (see below), renders the representable "not loaded" state, and the client `watchQuery` subscription loads the value after hydration. The fix for a miss is fixing the prefetch, not compensating during render. Usage invisible to static analysis (dynamically imported composables, runtime-selected operations) is therefore unsupported for SSR.
+A registered operation takes the same options as a component `apollo` block operation (see the component sections above), with the same meanings, run by the same implementation: `preFetchVariables` and `shouldPreFetch` are evaluated with the same context both kinds get, `errorHandlers` run at prefetch time, and `fetchPolicy` applies to the client subscription. The complete list of differences:
 
-Importing a composable counts as using it: a component that imports one prefetches its operations even on renders that never exercise them. Vue's convention of calling composables unconditionally at the top of `setup()` makes the difference rare, and the semantics match the static child-component walk that component `apollo` blocks already get.
-
-### Composable operation options
-
-Registered operations take the same options as component `apollo` blocks (see the component sections above), treated the same way: `shouldPreFetch` is evaluated by the prefetcher with the same context both kinds get (`cookieStore`, `device`, `kvAuth0`, `renderConfig`, `route`), and opting out skips the server prefetch, suppresses the cache-miss warning, and leaves loading to the client subscription; `errorHandlers` run at prefetch time, exactly as for component operations; `fetchPolicy` applies to the client `watchQuery` subscription. Composable authors never write `preFetch: true`: registration itself is the opt-in, and the flag is applied automatically. The one capability difference is `lazy` (the IntersectionObserver-deferred fetch), which remains component-block-only.
-
-Declaratively-defined operations are written to and read from the cache with identical variables — the apollo plugin, the prefetcher, and `useApolloQuery` all build them with the same shared helper (`#src/util/operationVariables`). Manual `preFetch` functions in component blocks build their own variables and sit outside that guarantee. Divergent variables are usually harmless because apollo cache keys derive from a field's own arguments, so unused variables never enter a key — but a registered operation must not declare variables the read path cannot reproduce.
+- Registration replaces `preFetch: true`: listing an operation in a `preFetchOperations` export opts it in, and an operation that authors its own `preFetch` value keeps it.
+- Results come back as the three refs instead of a `result()` callback.
+- Client variables are `useApolloQuery`'s second argument instead of a `this`-bound `variables` method: a plain object, or a getter over the composable's own reactive state, re-evaluated into the subscription whenever those values change.
+- `lazy` stays component-block-only.
 
 ```javascript
+import { ref } from 'vue';
+
 const operation = {
 	query: myQuery,
 	preFetchVariables({ route }) {
@@ -310,20 +307,25 @@ const operation = {
 		return !!route.query.id;
 	},
 };
+
+export const preFetchOperations = [operation];
+
+export default function useMyThing() {
+	const id = ref(null);
+	const { result } = useApolloQuery(operation, () => ({ id: id.value }));
+	return { result, id };
+}
 ```
 
-`preFetchVariables` for a registered operation may only depend on the route and cookie store, since those are what the composable can reproduce when reading.
+`preFetchVariables` for a registered operation may only depend on the route and the cookie store: `useApolloQuery` rebuilds those variables to read the prefetched value from the cache, so anything the read path cannot reproduce makes the read miss.
 
 ### Warnings from this layer
 
-- `[useApolloQuery] SSR cache miss for <operation> in <component>` (dev only): the prefetch did not load a value the render needs, and the page renders the "not loaded" state (the client loads it after hydration). The message names the failure. *Not attached to the component* means the operation is not registered in the module's `preFetchOperations` export, or the transform could not see the import (an analysis-invisible usage). *The prefetch ran but the cache read missed* means the operation was attached and executed but was written with different variables than the read built. Fix the prefetch; do not compensate in the component.
+`[useApolloQuery] SSR cache miss for <operation> in <component>` (dev only) means the render needed a value the prefetch did not load. The page renders the "not loaded" state and the client loads the value after hydration. The message names one of two causes:
 
-## Server Rendering Scope Rules
+- *Not attached to the component*: the operation is missing from its composable's `preFetchOperations` export, or the transform cannot see the import because the composable is imported dynamically or resolves outside `src/composables/`. If the operation is intentionally not prefetched, author that on the operation (`shouldPreFetch`, or `preFetch: false`); the warning is suppressed for operations that opted out.
+- *Prefetched, but the cache read missed*: the prefetch wrote the value with variables the read could not rebuild (keep `preFetchVariables` to route and cookie store inputs), or the prefetch response carried GraphQL errors and left an incomplete cache entry (check the operation's `errorHandlers` and the server logs).
 
-The SSR module graph is shared by many requests: production renders run in pooled worker threads, and a worker's modules are evaluated once and reused for every request it serves. Module-level state is therefore worker-scoped, not request-scoped. Place state accordingly:
+### How it works
 
-- **Module scope** — only request-invariant data: query documents, pure functions, config-derived memos, registered composable operations and their authored surfaces.
-- **Per-request instances** — anything that varies by request or user. The apollo client and `cookieStore` are created per request in `createApp` and provided through the app; new per-request state belongs in the same pattern.
-- **Apollo cache** — data that must transfer from server to client. It is serialized into `__APOLLO_STATE__` per request and restored before hydration.
-
-Never store request or user data in module scope — it leaks across requests on a shared worker.
+A vite plugin (`build/composable-operations-plugin.js`) rewrites modules in every mode (dev serve, build, vitest, storybook): each compiled component gets the `preFetchOperations` of its statically imported composables attached to its definition, and each composable module merges the exports of the composables it imports into its own export. `preFetchAll` prefetches attached operations in the same pass as component `apollo` blocks, deduplicated by identity because operations are module singletons, and a failed prefetch fails the render for both kinds. `useApolloQuery` reads the prefetched value from the cache, never fetches during server render, and subscribes on the client through the same code that serves component blocks (`src/util/watchApolloOperation.js`). Importing a composable counts as using it: a component prefetches an imported composable's operations even on renders that never call it, and usage invisible to static analysis (dynamically imported composables, runtime-selected operations) is unsupported for SSR.
