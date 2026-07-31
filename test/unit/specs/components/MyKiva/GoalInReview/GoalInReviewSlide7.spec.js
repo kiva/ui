@@ -2,6 +2,18 @@ import { render, fireEvent } from '@testing-library/vue';
 import GoalInReviewSlide7 from '#src/components/MyKiva/GoalInReview/GoalInReviewSlide7';
 import { globalOptions } from '../../../../specUtils';
 
+vi.mock('#src/components/MyKiva/GoalInReview/GoalInReviewFeedbackForm', () => ({
+	default: {
+		name: 'GoalInReviewFeedbackForm',
+		emits: ['submitted'],
+		template: `
+			<div data-testid="goal-in-review-feedback-form">
+				<button type="button" data-testid="fa-submit" @click="$emit('submitted')">submit</button>
+			</div>
+		`,
+	},
+}));
+
 const GOAL_YEAR = 2026;
 const CURRENT_YEAR = 2026;
 const NEXT_YEAR = 2027;
@@ -86,14 +98,32 @@ describe('GoalInReviewSlide7', () => {
 		});
 	});
 
-	it('expands the feedback placeholder when "Share your feedback" is clicked', async () => {
-		const { getByText, queryByTestId, getByTestId } = renderSlide({
+	it('reveals the feedback survey when "Share your feedback" is clicked', async () => {
+		const { getByText, getByTestId } = renderSlide({
 			goalStatus: 'completed', year: GOAL_YEAR, currentYear: CURRENT_YEAR,
 		});
 
-		expect(queryByTestId('goal-in-review-slide-7-feedback-placeholder')).toBeNull();
+		// v-show keeps the survey mounted; the toggle flips its display.
+		const feedback = getByTestId('goal-in-review-slide-7-feedback-placeholder');
+		expect(feedback.style.display).toBe('none');
 		await fireEvent.click(getByText('Share your feedback'));
-		getByTestId('goal-in-review-slide-7-feedback-placeholder');
+		expect(feedback.style.display).toBe('');
+	});
+
+	it('hides the feedback toggle when feedback was already submitted for the year', () => {
+		const { queryByText } = renderSlide({
+			goalStatus: 'completed', year: GOAL_YEAR, currentYear: CURRENT_YEAR, feedbackSubmitted: true,
+		});
+		expect(queryByText('Share your feedback')).toBeNull();
+	});
+
+	it('re-emits feedback-submitted when the survey is submitted', async () => {
+		const { getByText, getByTestId, emitted } = renderSlide({
+			goalStatus: 'completed', year: GOAL_YEAR, currentYear: CURRENT_YEAR,
+		});
+		await fireEvent.click(getByText('Share your feedback'));
+		await fireEvent.click(getByTestId('fa-submit'));
+		expect(emitted()['feedback-submitted']).toHaveLength(1);
 	});
 
 	it('tracks opening the feedback survey', async () => {

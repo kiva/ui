@@ -101,8 +101,11 @@ describe('MyKivaPageContent', () => {
 
 	describe('handleGoToDeepLink', () => {
 		const makeContext = overrides => ({
-			loadGoalInReview: vi.fn().mockResolvedValue({ isEligible: true }),
+			loadGoalInReview: vi.fn().mockResolvedValue({ isEligible: true, year: 2026 }),
+			loadGoalPreferences: vi.fn().mockResolvedValue({}),
+			hasSubmittedGoalFeedbackForYear: vi.fn().mockReturnValue(false),
 			showGoalInReviewModal: false,
+			goalInReviewFeedbackSubmitted: false,
 			smoothScrollTo: vi.fn(),
 			...overrides,
 		});
@@ -113,6 +116,20 @@ describe('MyKivaPageContent', () => {
 			await MyKivaPageContent.methods.handleGoToDeepLink.call(context, 'goal-recap');
 
 			expect(context.loadGoalInReview).toHaveBeenCalledTimes(1);
+			expect(context.loadGoalPreferences).toHaveBeenCalledWith('network-only');
+			expect(context.hasSubmittedGoalFeedbackForYear).toHaveBeenCalledWith(2026);
+			expect(context.goalInReviewFeedbackSubmitted).toBe(false);
+			expect(context.showGoalInReviewModal).toBe(true);
+		});
+
+		it('snapshots the already-submitted flag when opening the recap', async () => {
+			const context = makeContext({
+				hasSubmittedGoalFeedbackForYear: vi.fn().mockReturnValue(true),
+			});
+
+			await MyKivaPageContent.methods.handleGoToDeepLink.call(context, 'goal-recap');
+
+			expect(context.goalInReviewFeedbackSubmitted).toBe(true);
 			expect(context.showGoalInReviewModal).toBe(true);
 		});
 
@@ -138,6 +155,20 @@ describe('MyKivaPageContent', () => {
 			expect(context.smoothScrollTo).toHaveBeenCalledWith({ yPosition: 200, millisecondsToAnimate: 750 });
 
 			querySelector.mockRestore();
+		});
+	});
+
+	describe('handleGoalInReviewFeedbackSubmitted', () => {
+		it('persists the feedback-submitted preference for the recap year', async () => {
+			const setGoalFeedbackSubmittedPreference = vi.fn().mockResolvedValue();
+			const context = {
+				goalInReviewData: { year: 2026 },
+				setGoalFeedbackSubmittedPreference,
+			};
+
+			await MyKivaPageContent.methods.handleGoalInReviewFeedbackSubmitted.call(context);
+
+			expect(setGoalFeedbackSubmittedPreference).toHaveBeenCalledWith(2026);
 		});
 	});
 });

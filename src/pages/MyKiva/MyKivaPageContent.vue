@@ -191,7 +191,9 @@
 		v-if="showGoalInReviewModal"
 		:show="showGoalInReviewModal"
 		:data="goalInReviewData"
+		:feedback-submitted="goalInReviewFeedbackSubmitted"
 		@close="closeGoalInReviewModal"
+		@feedback-submitted="handleGoalInReviewFeedbackSubmitted"
 	/>
 </template>
 
@@ -346,6 +348,8 @@ export default {
 			loadGoalInReview,
 		} = useGoalInReview();
 
+		const goalData = inject('goalData');
+
 		const {
 			getLoanFindingUrl,
 			isTieredAchievementComplete,
@@ -358,6 +362,9 @@ export default {
 			goalInReviewData,
 			isMobile,
 			loadGoalInReview,
+			hasSubmittedGoalFeedbackForYear: goalData.hasSubmittedGoalFeedbackForYear,
+			setGoalFeedbackSubmittedPreference: goalData.setGoalFeedbackSubmittedPreference,
+			loadGoalPreferences: goalData.loadPreferences,
 		};
 	},
 	data() {
@@ -387,6 +394,7 @@ export default {
 			clientRendered: false,
 			tooltipVisible: false,
 			showGoalInReviewModal: false,
+			goalInReviewFeedbackSubmitted: false,
 			mdiInformationOutline,
 		};
 	},
@@ -712,6 +720,11 @@ export default {
 			if (sectionId === GOAL_RECAP_DEEP_LINK) {
 				const goalInReview = await this.loadGoalInReview();
 				if (goalInReview?.isEligible) {
+					// Snapshot the "already submitted" flag at open time so the survey gate is
+					// evaluated per modal load, not reactively mid-session. network-only so the
+					// gate reflects a submission from another tab/device, not a stale cache.
+					await this.loadGoalPreferences('network-only');
+					this.goalInReviewFeedbackSubmitted = this.hasSubmittedGoalFeedbackForYear(goalInReview.year);
 					this.showGoalInReviewModal = true;
 				}
 				return;
@@ -723,6 +736,9 @@ export default {
 		},
 		closeGoalInReviewModal() {
 			this.showGoalInReviewModal = false;
+		},
+		async handleGoalInReviewFeedbackSubmitted() {
+			await this.setGoalFeedbackSubmittedPreference(this.goalInReviewData?.year);
 		},
 	},
 	created() {
