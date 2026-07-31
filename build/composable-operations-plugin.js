@@ -65,9 +65,8 @@ function attachToComponent(code, id, exports, composableSpecifiers, warn) {
 	return { code: magic.toString(), map: magic.generateMap({ hires: true }) };
 }
 
-// Merge the imported operations into a composable module's own
-// preFetchOperations export (creating the export when the module authors
-// none), so composition needs no re-export authoring
+// Merge the operations of imported composable modules into this module's own
+// preFetchOperations export, creating that export if the module has none
 function composeExport(code, id, exports, composableSpecifiers, warn) {
 	const ownExport = exports.find(ex => code.slice(ex.s, ex.e) === 'preFetchOperations');
 	const magic = new MagicString(code);

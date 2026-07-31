@@ -88,7 +88,7 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 					},
 				},
 			}),
-			// stamp component definitions with the operations of imported composables
+			// attach the apollo operations of imported composables to the modules that use them
 			composableOperations(),
 			// load .graphql and .gql files
 			graphQLLoader(),

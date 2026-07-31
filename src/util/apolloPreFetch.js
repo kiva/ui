@@ -82,9 +82,7 @@ export function preFetchApolloQuery(config, client, args) {
 export async function preFetchAll(components, apolloClient, { ...args }) {
 	// update basketId before preFetch cycle
 	const allComponents = await getDeepComponents(components);
-	// the apollo configs can be an array or an object, so we need to flatten them and only keep the ones with
-	// preFetch. Composable operations attached to the definitions join the same pass, with the same options and
-	// failure behavior.
+	// the apollo configs can be an array or an object, so we need to flatten them and only keep the ones with preFetch
 	const preFetchOperations = allComponents
 		.flatMap(c => c.apollo ?? [])
 		.concat(getAttachedOperations(allComponents))
