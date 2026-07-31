@@ -721,16 +721,6 @@ export default {
 		this.initializeCustomTipDefaultExperiment();
 	},
 	watch: {
-		// Start the lifecycle lookup as soon as we know there is a lender. Usually that
-		// is during created, but a guest who logs in partway through checkout only gets
-		// an id once doPopupLogin re-runs the prefetch, which is well after mounted.
-		// Either way it must happen before the transaction: the purchase being tracked
-		// is what moves a lender out of an idle or lapsed stage.
-		myId(myId) {
-			if (myId) {
-				this.startLifecycleCapture(this.apollo);
-			}
-		},
 		async emptyBasket(newValue) {
 			if (!newValue && !this.upsellLoan?.id) {
 				await Promise.all([
@@ -760,6 +750,13 @@ export default {
 		// cover ssr or spa page load
 		if (this.isLoggedIn) {
 			this.logBasketState();
+		}
+
+		// Capture the lifecycle stage while it still reflects the lender as they arrived.
+		// The purchase this eventually reports on is what moves them out of an idle or
+		// lapsed stage, so it cannot be read at checkout completion.
+		if (this.myId) {
+			this.startLifecycleCapture(this.apollo);
 		}
 
 		// show toast for specified scenario

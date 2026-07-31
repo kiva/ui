@@ -20,8 +20,7 @@ export default function useLifecycleCapture() {
 	 * @param {Object} apollo Apollo Client instance
 	 */
 	function startLifecycleCapture(apollo) {
-		// no pixel on the server, so there is nothing to report from an SSR pass
-		if (lifecycleDataPromise.value || typeof window === 'undefined') {
+		if (lifecycleDataPromise.value) {
 			return;
 		}
 		lifecycleDataPromise.value = getLifecycleData(apollo);

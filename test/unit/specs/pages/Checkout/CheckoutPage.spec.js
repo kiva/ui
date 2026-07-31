@@ -347,27 +347,34 @@ describe('CheckoutPage completeTransaction', () => {
 });
 
 // The once-only behaviour belongs to useLifecycleCapture and is tested there. These
-// cover the part CheckoutPage owns: starting the lookup as soon as a lender is known.
+// cover the part CheckoutPage owns: starting the lookup on mount, for lenders only.
 describe('CheckoutPage lifecycle capture', () => {
-	const makeContext = () => ({
-		startLifecycleCapture: vi.fn(),
+	const makeContext = (overrides = {}) => ({
+		myId: 1234,
 		apollo: {},
+		startLifecycleCapture: vi.fn(),
+		isLoggedIn: true,
+		logBasketState: vi.fn(),
+		handleToast: vi.fn(),
+		getPromoInformationFromBasket: vi.fn(),
+		$nextTick: vi.fn(),
+		$kvTrackEvent: vi.fn(),
+		...overrides,
 	});
 
-	// myId usually lands during created, but arrives after mounted for a guest who logs
-	// in partway through checkout, so a watcher covers both where mounted would not
-	it('starts the lookup when a lender id arrives', () => {
+	// the prefetch runs before mount, so a logged-in lender always has an id by now
+	it('starts the lookup on mount for a logged-in lender', async () => {
 		const context = makeContext();
 
-		CheckoutPage.watch.myId.call(context, 1234);
+		await CheckoutPage.mounted.call(context);
 
 		expect(context.startLifecycleCapture).toHaveBeenCalledWith(context.apollo);
 	});
 
-	it('does not start the lookup for guests, who never get a lender id', () => {
-		const context = makeContext();
+	it('does not start the lookup for guests, who have no lender id', async () => {
+		const context = makeContext({ myId: null, isLoggedIn: false });
 
-		CheckoutPage.watch.myId.call(context, null);
+		await CheckoutPage.mounted.call(context);
 
 		expect(context.startLifecycleCapture).not.toHaveBeenCalled();
 	});
