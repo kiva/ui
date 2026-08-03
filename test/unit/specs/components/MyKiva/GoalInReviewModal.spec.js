@@ -29,6 +29,16 @@ vi.mock('@kiva/kv-components', () => ({
 		props: ['icon'],
 		template: '<span></span>',
 	},
+	KvMap: {
+		name: 'KvMap',
+		props: ['countriesData'],
+		template: '<div data-testid="kv-map"></div>',
+	},
+	KvPieChartV2: {
+		name: 'KvPieChartV2',
+		props: ['values'],
+		template: '<div data-testid="kv-pie-chart"></div>',
+	},
 	KvButton: {
 		name: 'KvButton',
 		props: ['variant'],
@@ -63,12 +73,13 @@ describe('GoalInReviewModal', () => {
 	it('renders the real slides and the remaining placeholders', async () => {
 		const { findByText } = renderModal();
 
-		// Slides 1, 4, 5 and 7 are real components; slides 2–3 are still placeholders
+		// Slides 1, 3, 4, 5 and 7 are real components; slide 2 is still a placeholder
 		await findByText('Your 2026 impact goal recap');
+		await findByText('Global reach');
 		await findByText('Giving insights');
 		await findByText(/Goal Setters create something/);
 		await findByText('Thank you!');
-		await Promise.all([2, 3].map(slideNumber => findByText(`Slide ${slideNumber}`)));
+		await findByText('Slide 2');
 	});
 
 	it('tracks and forwards the slide 7 primary CTA', async () => {
