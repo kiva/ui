@@ -3,6 +3,7 @@ import { setDonationAmount } from '#src/util/basketUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
+import { trackMetaEvent } from '#src/util/metaEvents';
 
 vi.mock('#src/util/basketUtils', () => ({
 	setDonationAmount: vi.fn(),
@@ -13,6 +14,10 @@ vi.mock('#src/util/logReadQueryError', () => ({
 vi.mock('#src/util/checkoutUtils', () => ({
 	formatTransactionData: vi.fn(),
 	getTransactionAnalyticsData: vi.fn(),
+}));
+vi.mock('#src/util/metaEvents', () => ({
+	META_EVENTS: { EMAIL_SIGN_UP: 'emailSignUp' },
+	trackMetaEvent: vi.fn(),
 }));
 
 let CheckoutPage;
@@ -287,6 +292,7 @@ describe('CheckoutPage completeTransaction', () => {
 	});
 
 	beforeEach(() => {
+		trackMetaEvent.mockClear();
 		formatTransactionData.mockReturnValue({ itemTotal: '25.00', loans: [] });
 		getTransactionAnalyticsData.mockResolvedValue({
 			isFTD: true,
@@ -343,6 +349,32 @@ describe('CheckoutPage completeTransaction', () => {
 			lifecycleStage: 'lapsedChurned',
 			reEngagementEvent: 'lapsedLenderReEngaged',
 		}));
+	});
+
+	// The preference is collected before payment, so it is only a sign-up once the
+	// transaction carrying it succeeds.
+	it('reports emailSignUp for a guest who opted in', async () => {
+		const context = makeContext({ checkingOutAsGuest: true, userOptedIn: true });
+
+		await CheckoutPage.methods.completeTransaction.call(context, '12345');
+
+		expect(trackMetaEvent).toHaveBeenCalledWith('emailSignUp');
+	});
+
+	it('does not report emailSignUp for a guest who declined', async () => {
+		const context = makeContext({ checkingOutAsGuest: true, userOptedIn: false });
+
+		await CheckoutPage.methods.completeTransaction.call(context, '12345');
+
+		expect(trackMetaEvent).not.toHaveBeenCalled();
+	});
+
+	it('does not report emailSignUp for a signed-in lender, who opts in elsewhere', async () => {
+		const context = makeContext({ checkingOutAsGuest: false, userOptedIn: true });
+
+		await CheckoutPage.methods.completeTransaction.call(context, '12345');
+
+		expect(trackMetaEvent).not.toHaveBeenCalled();
 	});
 });
 

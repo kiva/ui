@@ -58,6 +58,7 @@
 import { gql } from 'graphql-tag';
 import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
+import { trackDonationMetaEvent } from '#src/util/metaEvents';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import {
 	KvButton, KvContentfulImg, KvGrid, KvPageContainer
@@ -94,6 +95,13 @@ export default {
 		return {
 			contentfulContent: null,
 		};
+	},
+	mounted() {
+		// The donation itself is processed by the monolith, which redirects here on success,
+		// so this page is the only place in the app that can report it.
+		if (this.resultData.transactionId) {
+			trackDonationMetaEvent(this.resultData.amount);
+		}
 	},
 	apollo: {
 		query: contentfulContentQuery,

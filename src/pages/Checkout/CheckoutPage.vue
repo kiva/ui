@@ -320,6 +320,7 @@ import { setDonationAmount } from '#src/util/basketUtils';
 import { preFetchAll } from '#src/util/apolloPreFetch';
 import syncDate from '#src/util/syncDate';
 import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
+import { META_EVENTS, trackMetaEvent } from '#src/util/metaEvents';
 import useLifecycleCapture from '#src/composables/useLifecycleCapture';
 import { trackFBAddToCart, FB_CONTENT_CATEGORY_LOAN } from '@kiva/kv-analytics';
 import { getPromoFromBasket } from '#src/util/campaignUtils';
@@ -1040,6 +1041,12 @@ export default {
 			// FTD lookup can't swallow the Purchase event or the redirect.
 			const finalizeTransaction = () => {
 				this.$kvTrackTransaction(transactionData);
+
+				// Guest checkout collects the email preference up front, but the sign-up only
+				// exists once the transaction that carries it has gone through.
+				if (this.checkingOutAsGuest && this.userOptedIn) {
+					trackMetaEvent(META_EVENTS.EMAIL_SIGN_UP);
+				}
 
 				let checkoutAdditionalQueryParams = this.challengeRedirectQueryParam;
 				if (this.checkingOutAsGuest) {

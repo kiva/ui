@@ -7,6 +7,7 @@ import {
 	trackFBPageView,
 	trackFBTransaction,
 } from '@kiva/kv-analytics';
+import { trackDonationMetaEvent } from '#src/util/metaEvents';
 
 // install method for plugin
 export default {
@@ -223,6 +224,8 @@ export default {
 					loanTotal,
 					itemTotal,
 					loans,
+					donationTotal,
+					kivaCards,
 				} = transactionData;
 				if (reEngagementEvent && loans?.length) {
 					trackFBCustomEvent(
@@ -234,6 +237,13 @@ export default {
 							daysSinceLastLoan,
 						}
 					);
+				}
+
+				// A stand-alone gift to Kiva. A donation alongside loans or Kiva Cards is a tip on
+				// that order, not a donation in its own right, so both must be absent.
+				// trackDonationMetaEvent ignores a zero or unparseable total.
+				if (!loans?.length && !kivaCards?.length) {
+					trackDonationMetaEvent(donationTotal);
 				}
 				if (gtagLoaded) {
 					kvActions.trackGATransaction(transactionData);
