@@ -1,12 +1,15 @@
 <template>
 	<div class="tw-mt-2">
 		<div class="tw-relative">
-			<div ref="scrollContainer" class="tw-overflow-x-auto tw-min-w-full" @scroll="updateScrollGradients">
+			<div ref="scrollContainer" class="loan-table-scroll tw-min-w-full" @scroll="updateScrollGradients">
 				<table class="tw-w-full tw-border-collapse tw-text-small">
 					<thead>
 						<tr class="tw-bg-gray-200">
 							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
 								Loan details
+							</th>
+							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
+								Lending partner
 							</th>
 							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
 								Status
@@ -29,14 +32,14 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-if="loading">
-							<td colspan="7" class="tw-px-2 tw-py-4">
-								<div
-									v-for="i in skeletonRowCount"
-									:key="i"
-									class="tw-grid tw-grid-cols-12 tw-gap-4 tw-mb-4 tw-items-start"
-								>
-									<div class="tw-col-span-4 tw-flex tw-items-start">
+						<template v-if="loading">
+							<tr
+								v-for="i in skeletonRowCount"
+								:key="i"
+								class="tw-border-b tw-border-tertiary tw-bg-primary"
+							>
+								<td class="loan-details-cell tw-px-2 tw-py-2 tw-align-top">
+									<div class="tw-flex tw-items-start">
 										<kv-loading-placeholder
 											class="tw-mr-2 tw-shrink-0 !tw-w-6.5 !tw-h-6.5"
 										/>
@@ -47,19 +50,24 @@
 											<kv-loading-placeholder style="height: 0.875rem;" />
 										</div>
 									</div>
-									<kv-loading-placeholder class="tw-col-span-1" style="height: 0.875rem;" />
-									<kv-loading-placeholder class="tw-col-span-1" style="height: 0.875rem;" />
-									<kv-loading-placeholder class="tw-col-span-2" style="height: 0.875rem;" />
-									<kv-loading-placeholder class="tw-col-span-1" style="height: 0.875rem;" />
-									<kv-loading-placeholder class="tw-col-span-1" style="height: 0.875rem;" />
-									<kv-loading-placeholder class="tw-col-span-2" style="height: 0.875rem;" />
-								</div>
-							</td>
-						</tr>
+								</td>
+								<td colspan="7" class="tw-px-2 tw-py-2 tw-align-top">
+									<div class="tw-grid tw-grid-cols-7 tw-gap-4 tw-items-start">
+										<kv-loading-placeholder style="height: 0.875rem;" />
+										<kv-loading-placeholder style="height: 0.875rem;" />
+										<kv-loading-placeholder style="height: 0.875rem;" />
+										<kv-loading-placeholder style="height: 0.875rem;" />
+										<kv-loading-placeholder style="height: 0.875rem;" />
+										<kv-loading-placeholder style="height: 0.875rem;" />
+										<kv-loading-placeholder style="height: 0.875rem;" />
+									</div>
+								</td>
+							</tr>
+						</template>
 						<tr v-else-if="hasError">
 							<td
 								class="tw-text-center tw-text-danger tw-px-2 tw-pt-4"
-								colspan="7"
+								colspan="8"
 								data-testid="loans-error-message"
 							>
 								We couldn't load your loans right now. Please refresh the page and try again.
@@ -68,7 +76,7 @@
 						<tr v-else-if="!loans.length">
 							<td
 								class="tw-text-center tw-text-secondary tw-px-2 tw-pt-4"
-								colspan="7"
+								colspan="8"
 								data-testid="no-loans-message"
 							>
 								You haven't made any loans that match this search.
@@ -96,7 +104,7 @@
 											{{ matchedLabel(loan) }}
 										</div>
 									</div>
-									<div>
+									<div class="tw-min-w-0 tw-break-words">
 										<div class="tw-font-semibold">
 											<a
 												:href="`/lend/${loan.id}`"
@@ -114,14 +122,14 @@
 											{{ loan.activity?.name || '-' }}
 										</div>
 										<div class="tw-flex tw-items-center">
-											<div class="tw-w-2 tw-h-2 tw-mr-1">
+											<div class="tw-w-2 tw-h-2 tw-mr-1 tw-shrink-0">
 												<kv-flag
 													v-if="loan.geocode?.country?.isoCode"
 													:country="loan.geocode?.country?.isoCode"
 													:name="loan.geocode?.country?.name || ''"
 												/>
 											</div>
-											{{ loan.geocode?.country?.name || '-' }}
+											<span class="tw-truncate">{{ loan.geocode?.country?.name || '-' }}</span>
 										</div>
 										<div v-if="loan.trusteeName">
 											<a
@@ -130,15 +138,6 @@
 												class="data-hj-suppress"
 											>
 												{{ loan.trusteeName }}
-											</a>
-										</div>
-										<div v-else-if="loan.partnerName">
-											<a
-												:href="getPartnerUrl(loan.partnerId)"
-												target="_blank"
-												class="data-hj-suppress"
-											>
-												{{ loan.partnerName }}
 											</a>
 										</div>
 										<!-- The logged-in lender's own dedication on this loan. A named recipient shows
@@ -180,6 +179,17 @@
 											</div>
 										</div>
 									</div>
+								</div>
+							</td>
+							<td class="lending-partner-cell tw-break-words tw-px-2 tw-py-2 tw-align-top">
+								<div v-if="loan.partnerName">
+									<a
+										:href="getPartnerUrl(loan.partnerId)"
+										target="_blank"
+										class="data-hj-suppress"
+									>
+										{{ loan.partnerName }}
+									</a>
 								</div>
 							</td>
 							<td class="tw-px-2">
@@ -311,8 +321,9 @@
 					</tbody>
 				</table>
 			</div>
-			<div v-show="canScrollLeft" class="scroll-gradient scroll-gradient--left"></div>
-			<div v-show="canScrollRight" class="scroll-gradient scroll-gradient--right"></div>
+			<div v-show="canScrollLeft" class="scroll-gradient scroll-gradient--left md:tw-hidden"></div>
+			<div v-show="canScrollRight" class="scroll-gradient scroll-gradient--right md:tw-hidden"></div>
+			<div v-show="canScrollDown" class="scroll-gradient scroll-gradient--bottom md:tw-hidden"></div>
 		</div>
 	</div>
 </template>
@@ -371,19 +382,29 @@ export default {
 		PaidAmountModal
 	},
 	methods: {
-		// Toggle the left/right scroll-gradient overlays from the table's scroll position:
-		// each shows only when the table can still scroll that direction. Recomputed on
-		// scroll, on resize, and after the row set changes (see mounted/watch).
+		// Toggle the scroll-gradient overlays from the table's scroll position: each shows only
+		// when the table can still scroll that direction (left/right for horizontal, down for
+		// vertical). Recomputed on scroll, on resize, and after the row set changes (see
+		// mounted/watch). The overlays themselves are mobile-only via md:tw-hidden in the template.
 		updateScrollGradients() {
 			const el = this.$refs.scrollContainer;
 			if (!el) {
 				this.canScrollLeft = false;
 				this.canScrollRight = false;
+				this.canScrollDown = false;
 				return;
 			}
 			// 1px tolerance so sub-pixel rounding at the extremes doesn't leave a gradient on.
 			this.canScrollLeft = el.scrollLeft > 1;
 			this.canScrollRight = el.scrollLeft < (el.scrollWidth - el.clientWidth - 1);
+			this.canScrollDown = el.scrollTop < (el.scrollHeight - el.clientHeight - 1);
+		},
+		// Reset the table's fixed-height scroll region to the top (called on pagination so a new
+		// page starts at its first row rather than wherever the previous page was scrolled to).
+		scrollToTop() {
+			if (this.$refs.scrollContainer) {
+				this.$refs.scrollContainer.scrollTop = 0;
+			}
 		},
 		formatDate(date) {
 			if (!date) return '';
@@ -514,7 +535,8 @@ export default {
 			// space and the swap to loaded content doesn't jump.
 			skeletonRowCount: 5,
 			canScrollLeft: false,
-			canScrollRight: false
+			canScrollRight: false,
+			canScrollDown: false
 		};
 	},
 	watch: {
@@ -547,9 +569,12 @@ export default {
 
 <style lang="postcss" scoped>
 .scroll-gradient {
-	@apply tw-pointer-events-none tw-absolute tw-top-0 tw-bottom-0;
+	@apply tw-pointer-events-none tw-absolute;
+}
 
-	width: 1.5rem;
+.scroll-gradient--left,
+.scroll-gradient--right {
+	@apply tw-top-0 tw-bottom-0 tw-w-6;
 }
 
 .scroll-gradient--left {
@@ -564,9 +589,72 @@ export default {
 	background: linear-gradient(to left, rgb(0 0 0 / 12%), rgb(0 0 0 / 0%));
 }
 
+/* z-index 4: paints over the sticky first column. */
+.scroll-gradient--bottom {
+	@apply tw-left-0 tw-right-0 tw-bottom-0 tw-h-6;
+
+	z-index: 4;
+	background: linear-gradient(to top, rgb(0 0 0 / 12%), rgb(0 0 0 / 0%));
+}
+
+/* Fixed-height scroll box: 600px on mobile, 800px on desktop, with the header pinned. */
+.loan-table-scroll {
+	max-height: 600px;
+	overflow: auto;
+}
+
+@screen md {
+	.loan-table-scroll {
+		max-height: 800px;
+	}
+}
+
+/* Header pinned during vertical scroll; own bg (inherits the header row's) covers the rows scrolling under it. */
+.loan-table-scroll thead th {
+	@apply tw-sticky tw-top-0;
+
+	z-index: 2;
+	background-color: inherit;
+}
+
+/* First column pinned during horizontal scroll. */
+.loan-table-scroll th:first-child,
+.loan-table-scroll td:first-child {
+	@apply tw-sticky tw-left-0;
+
+	z-index: 1;
+	background-color: inherit;
+}
+
+/* Soft drop shadow off the pinned column's right edge, drawn as a pseudo-element gradient —
+   border-collapse clips an outset box-shadow on table cells, so it won't render there. */
+.loan-table-scroll th:first-child::after,
+.loan-table-scroll td:first-child::after {
+	@apply tw-absolute tw-top-0 tw-bottom-0 tw-right-0 tw-w-2 tw-pointer-events-none;
+
+	content: '';
+	background: linear-gradient(to right, rgb(0 0 0 / 3.75%), rgb(0 0 0 / 0%));
+	transform: translateX(100%);
+}
+
+/* Corner above both the sticky header and the sticky first column. */
+.loan-table-scroll thead th:first-child {
+	z-index: 3;
+}
+
+/* No shadow on the full-width message/skeleton cell of the loading, error and empty states. */
+.loan-table-scroll td[colspan]::after {
+	content: none;
+}
+
 .loan-details-cell {
-	min-width: 10rem;
-	max-width: 13rem;
+	min-width: calc(10rem + 50px);
+	max-width: calc(13rem + 50px);
+}
+
+.lending-partner-cell {
+	min-width: 8rem;
+	max-width: 12rem;
 }
 
 .paid-back-cell {

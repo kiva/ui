@@ -1,6 +1,35 @@
-import getMonthsCount, { toValidDate } from '#src/util/dateUtils';
+import getMonthsCount, { toValidDate, daysSince } from '#src/util/dateUtils';
 
 describe('dateUtils.js', () => {
+	describe('daysSince', () => {
+		const NOW = new Date('2026-07-29T12:00:00Z');
+
+		it('counts whole days elapsed', () => {
+			expect(daysSince('2026-07-19T12:00:00Z', NOW)).toBe(10);
+		});
+
+		it('accepts a timestamp as well as an ISO string', () => {
+			expect(daysSince(new Date('2026-07-19T12:00:00Z').getTime(), NOW)).toBe(10);
+		});
+
+		it('counts partial days as zero', () => {
+			expect(daysSince('2026-07-29T01:00:00Z', NOW)).toBe(0);
+		});
+
+		it('returns null rather than NaN for a missing date', () => {
+			expect(daysSince(null, NOW)).toBeNull();
+			expect(daysSince(undefined, NOW)).toBeNull();
+		});
+
+		it('returns null rather than NaN for an unparseable date', () => {
+			expect(daysSince('not a date', NOW)).toBeNull();
+		});
+
+		it('defaults the reference point to now', () => {
+			expect(daysSince(new Date())).toBe(0);
+		});
+	});
+
 	describe('toValidDate', () => {
 		it('parses an ISO string into a valid Date', () => {
 			const date = toValidDate('2025-02-10');

@@ -1,0 +1,8 @@
+<!--
+	Vue Teleport target, mirroring the `#teleports` container the app renders in
+	index.html. Components that teleport (CommentReportLightbox,
+	DefinitionsLightbox, SideSheetLoanStory) warn "Failed to locate Teleport
+	target" on mount without it, then throw from TeleportImpl.remove when the
+	story unmounts as you navigate between stories.
+-->
+<div id="teleports"></div>

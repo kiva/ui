@@ -45,6 +45,12 @@ vi.mock('@kiva/kv-components', () => ({
 		emits: ['click'],
 		template: '<button type="button" @click="$emit(\'click\')"><slot></slot></button>',
 	},
+	KvFormAssemblyForm: {
+		name: 'KvFormAssemblyForm',
+		props: ['formAssemblyId', 'title'],
+		emits: ['fa-form-submitted'],
+		template: '<button type="button" data-testid="fa-submit" @click="$emit(\'fa-form-submitted\')">submit</button>',
+	},
 }));
 
 describe('GoalInReviewModal', () => {
@@ -95,6 +101,37 @@ describe('GoalInReviewModal', () => {
 
 		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', 'goal-in-review-finish-goal');
 		expect(emitted()['finish-goal']).toHaveLength(1);
+	});
+
+	it('passes feedbackSubmitted through to slide 7 to gate the feedback survey', async () => {
+		const currentYear = new Date().getFullYear();
+		const { queryByText, findByText } = render(GoalInReviewModal, {
+			global: globalOptions,
+			props: {
+				show: true,
+				data: { year: currentYear, goalSummary: { status: 'in-progress' } },
+				feedbackSubmitted: true,
+			},
+		});
+
+		await findByText('Thank you!'); // slide 7 rendered
+		expect(queryByText('Share your feedback')).toBeNull();
+	});
+
+	it('forwards feedback-submitted from slide 7', async () => {
+		const currentYear = new Date().getFullYear();
+		const { emitted, findByText, getByTestId } = render(GoalInReviewModal, {
+			global: globalOptions,
+			props: {
+				show: true,
+				data: { year: currentYear, goalSummary: { status: 'in-progress' } },
+			},
+		});
+
+		await fireEvent.click(await findByText('Share your feedback'));
+		await fireEvent.click(getByTestId('fa-submit'));
+
+		expect(emitted()['feedback-submitted']).toHaveLength(1);
 	});
 
 	it('renders the Vishal note (slide 6) only for completed goals', async () => {

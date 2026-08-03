@@ -11,8 +11,7 @@ import _get from 'lodash/get';
  * @returns {boolean|null}
  */
 export function readBoolSetting(data, key) {
-	let val = _get(data, key);
-	if (typeof val !== 'undefined') val = val.toString();
+	const val = _get(data, key)?.toString();
 	if (val === 'true') return true;
 	if (val === 'false') return false;
 	return null;

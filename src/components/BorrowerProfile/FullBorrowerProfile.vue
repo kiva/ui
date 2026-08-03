@@ -38,8 +38,6 @@
 						:loan-data="loanData"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:show-details-in-rail="showDetailsInRail"
-						:team-id="teamId"
-						:team-name="teamName"
 					>
 						<template #sharebutton>
 							<!-- Share button -->
@@ -310,14 +308,6 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false,
-		},
-		teamId: {
-			type: Number,
-			default: null,
-		},
-		teamName: {
-			type: String,
-			default: '',
 		},
 		showEducationPlacementExp: {
 			type: Boolean,

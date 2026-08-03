@@ -36,6 +36,26 @@ describe('logFormatter.js', () => {
 		expect(consoleSpy.log).not.toHaveBeenCalled();
 	});
 
+	it('should return false when there is neither a message nor metadata', () => {
+		const result = logFormatter(null, 'error', {});
+
+		expect(result).toBe(false);
+		expect(consoleSpy.error).not.toHaveBeenCalled();
+	});
+
+	// Dropping the log would discard the level and the context along with it.
+	it('should log a fallback message when there is no message but metadata exists', () => {
+		logFormatter(null, 'error', { operationName: 'LoanQuery' });
+
+		expect(consoleSpy.error).toHaveBeenCalledWith(
+			JSON.stringify({
+				meta: { operationName: 'LoanQuery' },
+				level: 'error',
+				message: '(no message)',
+			})
+		);
+	});
+
 	it('should call console.log with stringified message for default type', () => {
 		logFormatter('Test message');
 
@@ -166,6 +186,92 @@ describe('logFormatter.js', () => {
 				meta: {},
 				level: 'debug',
 				message: obj,
+			})
+		);
+	});
+
+	// An Error's message and stack are non-enumerable, so without unwrapping,
+	// JSON.stringify reduces one to `{}` and the failure is lost entirely.
+	it('should use an Error message as the log message', () => {
+		logFormatter(new Error('Network error: 503'), 'error');
+
+		expect(consoleSpy.error).toHaveBeenCalledWith(
+			JSON.stringify({
+				meta: {},
+				level: 'error',
+				message: 'Network error: 503',
+			})
+		);
+	});
+
+	it('should use the message from an Error subclass', () => {
+		class ApolloishError extends Error {}
+
+		logFormatter(new ApolloishError('Query failed'), 'error');
+
+		expect(consoleSpy.error).toHaveBeenCalledWith(
+			JSON.stringify({
+				meta: {},
+				level: 'error',
+				message: 'Query failed',
+			})
+		);
+	});
+
+	// This is what makes `logFormatter('...', 'error', { error })` safe to write
+	// at a call site whatever kind of error was caught.
+	it('should reduce an Error in metadata to its message', () => {
+		logFormatter('Failed to post loan comment', 'error', {
+			error: new Error('Comment not added'),
+			loanId: 12345,
+		});
+
+		expect(consoleSpy.error).toHaveBeenCalledWith(
+			JSON.stringify({
+				meta: { error: 'Comment not added', loanId: 12345 },
+				level: 'error',
+				message: 'Failed to post loan comment',
+			})
+		);
+	});
+
+	// Plain objects serialize fine on their own, so they must pass through whole
+	// rather than being flattened to an undefined message.
+	it('should preserve a plain object in metadata', () => {
+		const auth0Error = { error: 'unknown_error', error_description: 'Something went wrong' };
+
+		logFormatter('Auth0 reported an unknown error', 'error', { error: auth0Error });
+
+		expect(consoleSpy.error).toHaveBeenCalledWith(
+			JSON.stringify({
+				meta: { error: auth0Error },
+				level: 'error',
+				message: 'Auth0 reported an unknown error',
+			})
+		);
+	});
+
+	// An empty message must not silence the log — the failure is still real.
+	it('should fall back to the string form for an Error with an empty message', () => {
+		logFormatter(new Error(''), 'error');
+
+		expect(consoleSpy.error).toHaveBeenCalledWith(
+			JSON.stringify({
+				meta: {},
+				level: 'error',
+				message: 'Error',
+			})
+		);
+	});
+
+	it('should use the string form of a subclass with an empty message', () => {
+		logFormatter(new TypeError(''), 'error');
+
+		expect(consoleSpy.error).toHaveBeenCalledWith(
+			JSON.stringify({
+				meta: {},
+				level: 'error',
+				message: 'TypeError',
 			})
 		);
 	});

@@ -177,4 +177,70 @@ describe('apolloPreFetch', () => {
 			expect(result).toEqual([]);
 		});
 	});
+
+	describe('composable operations', () => {
+		afterEach(() => {
+			vi.clearAllMocks();
+		});
+
+		it('prefetches registered operations alongside component apollo operations', async () => {
+			const client = { query: vi.fn().mockResolvedValue({ data: {} }) };
+			// Registration is membership in a preFetchOperations export; preFetch: true is automatic
+			const registeredOp = { query: dummyQuery };
+			const componentQuery = { kind: 'Document', definitions: [{ name: { value: 'ComponentOperation' } }] };
+			const component = {
+				apollo: [{ preFetch: true, query: componentQuery }],
+				preFetchOperations: [registeredOp],
+			};
+
+			await preFetchAll([component], client, {});
+			expect(client.query).toHaveBeenCalledTimes(2);
+			expect(client.query).toHaveBeenCalledWith(
+				expect.objectContaining({ query: componentQuery, fetchPolicy: 'network-only' })
+			);
+			expect(client.query).toHaveBeenCalledWith(
+				expect.objectContaining({ query: dummyQuery, fetchPolicy: 'network-only' })
+			);
+		});
+
+		it('fires a registered operation once when several definitions share it', async () => {
+			const client = { query: vi.fn().mockResolvedValue({ data: {} }) };
+			const op = { query: dummyQuery };
+
+			await preFetchAll([{ preFetchOperations: [op] }, { preFetchOperations: [op] }], client, {});
+			expect(client.query).toHaveBeenCalledTimes(1);
+		});
+
+		it('collects attached operations from nested async components', async () => {
+			const client = { query: vi.fn().mockResolvedValue({ data: {} }) };
+			const nestedChunk = async () => ({ default: { preFetchOperations: [{ query: dummyQuery }] } });
+
+			await preFetchAll([nestedChunk], client, {});
+			expect(client.query).toHaveBeenCalledTimes(1);
+		});
+
+		it('skips registered operations that opt out via shouldPreFetch', async () => {
+			const client = { query: vi.fn().mockResolvedValue({ data: {} }) };
+			const op = { query: dummyQuery, shouldPreFetch: false };
+
+			await preFetchAll([{ preFetchOperations: [op] }], client, {});
+			expect(client.query).not.toHaveBeenCalled();
+		});
+
+		it('honors an explicit authored preFetch: false over the registration default', async () => {
+			const client = { query: vi.fn().mockResolvedValue({ data: {} }) };
+			const op = { query: dummyQuery, preFetch: false };
+
+			await preFetchAll([{ preFetchOperations: [op] }], client, {});
+			expect(client.query).not.toHaveBeenCalled();
+		});
+
+		it('rejects when a registered operation fails, exactly like component operations', async () => {
+			const failure = new Error('socket hang up');
+			const client = { query: vi.fn().mockRejectedValue(failure) };
+
+			await expect(preFetchAll([{ preFetchOperations: [{ query: dummyQuery }] }], client, {}))
+				.rejects.toBe(failure);
+		});
+	});
 });

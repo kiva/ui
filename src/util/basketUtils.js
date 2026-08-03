@@ -14,7 +14,7 @@ function logSetLendAmountError(loanId, err) {
 	logFormatter(err, 'error');
 	try {
 		Sentry.withScope(scope => {
-			scope.setTag('loan_id', this.loanId);
+			scope.setTag('loan_id', loanId);
 			scope.setTag('mutation', 'addToBasket');
 			Sentry.captureException(err);
 		});
