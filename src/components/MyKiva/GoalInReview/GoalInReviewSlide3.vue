@@ -44,7 +44,7 @@
 				<li
 					v-if="otherCount > 0"
 					class="tw-inline-flex tw-items-center tw-gap-0.5 tw-bg-white
-						tw-border tw-border-tertiary tw-rounded-full tw-py-0.5 tw-px-1.5"
+						tw-rounded-full tw-py-0.5 tw-px-1.5"
 					data-testid="goal-in-review-slide-3-other-pill"
 				>
 					<KvMaterialIcon :icon="mdiMapMarker" class="tw-w-2 tw-h-2 tw-text-eco-green-4" />
