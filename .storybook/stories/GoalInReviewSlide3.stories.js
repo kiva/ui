@@ -2,6 +2,7 @@ import GoalInReviewSlide3 from '#src/components/MyKiva/GoalInReview/GoalInReview
 import {
 	buildSampleGoalInReviewData,
 	sampleSectorAchievements,
+	sampleSectorAchievementsWithOther,
 } from '../mock-data/goalInReviewSampleData';
 
 const baseCountries = buildSampleGoalInReviewData(2025).goalSummary.countries;
@@ -46,3 +47,6 @@ export const FewCountries = story(baseCountries.slice(0, 6));
 
 // No sectors data -> the sectors section is hidden entirely.
 export const NoSectors = story(baseCountries, null);
+
+// Some loans have no sector -> an "Other (n)" pill joins the legend.
+export const WithOtherSector = story(baseCountries, sampleSectorAchievementsWithOther);

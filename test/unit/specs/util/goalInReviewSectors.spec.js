@@ -24,7 +24,7 @@ describe('goalInReviewSectors.js', () => {
 			expect(valueFor(values, 'Food')).toBe(1);
 		});
 
-		it('buckets loans with a null or missing sector into "Other"', () => {
+		it('buckets loans with a null or missing sector into "Other", labelled with the count', () => {
 			const achievements = [
 				{
 					id: 'a1',
@@ -36,8 +36,31 @@ describe('goalInReviewSectors.js', () => {
 				},
 			];
 			const values = getSectorChartValues(achievements);
-			expect(valueFor(values, OTHER_SECTOR_LABEL)).toBe(2);
+			const other = values.find(sector => sector.isOther);
+			expect(other).toMatchObject({ label: `${OTHER_SECTOR_LABEL} (2)`, value: 2 });
 			expect(valueFor(values, 'Agriculture')).toBe(1);
+		});
+
+		it('appends the Other bucket last', () => {
+			const achievements = [
+				{
+					id: 'a1',
+					loanPurchases: [
+						{ loan: { id: 'l1', sector: null } },
+						{ loan: { id: 'l2', sector: { id: 's1', name: 'Agriculture' } } },
+						{ loan: { id: 'l3', sector: { id: 's2', name: 'Food' } } },
+					],
+				},
+			];
+			const values = getSectorChartValues(achievements);
+			expect(values[values.length - 1]).toEqual({ label: `${OTHER_SECTOR_LABEL} (1)`, value: 1, isOther: true });
+		});
+
+		it('omits the Other bucket entirely when every loan has a sector', () => {
+			const achievements = [
+				{ id: 'a1', loanPurchases: [{ loan: { id: 'l1', sector: { id: 's1', name: 'Agriculture' } } }] },
+			];
+			expect(getSectorChartValues(achievements).some(sector => sector.isOther)).toBe(false);
 		});
 
 		it('de-duplicates a loan that appears under multiple achievements', () => {
@@ -77,7 +100,7 @@ describe('goalInReviewSectors.js', () => {
 			const values = [
 				{ label: 'Agriculture', value: 3 },
 				{ label: 'Food', value: 2 },
-				{ label: OTHER_SECTOR_LABEL, value: 4 },
+				{ label: `${OTHER_SECTOR_LABEL} (4)`, value: 4, isOther: true },
 			];
 			expect(getNamedSectorCount(values)).toBe(2);
 		});

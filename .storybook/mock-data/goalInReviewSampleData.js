@@ -30,9 +30,9 @@ const sampleGoalCountries = [
 ];
 
 // Sample userAchievementProgress.tieredLendingAchievements for the Sectors Funded
-// donut (Slide 3). A [sectorName | null, loanCount] seed expands into loanPurchases;
-// null sector -> "Other". One loan is re-listed in a second achievement to prove
-// getSectorChartValues de-duplicates by loan id.
+// donut (Slide 3). A [sectorName | null, loanCount] seed expands into loanPurchases.
+// One loan is re-listed in a second achievement to prove getSectorChartValues
+// de-duplicates by loan id.
 const sampleSectorSeed = [
 	['Agriculture', 8],
 	['Eco-friendly', 7],
@@ -43,31 +43,34 @@ const sampleSectorSeed = [
 	['Single Parents', 2],
 	['Refugees', 2],
 	['Manufacturing', 2],
+];
+
+// Expands a seed into achievement objects. A null sector name produces sector-less
+// loans, which the component groups into the "Other" bucket.
+function buildSectorAchievements(seed) {
+	const loanPurchases = seed.flatMap(([name, count], sectorIndex) => (
+		Array.from({ length: count }, (_unused, i) => ({
+			purchaseTime: '2026-01-01T00:00:00Z',
+			loan: {
+				id: `loan-${sectorIndex}-${i}`,
+				sector: name ? { id: `sector-${sectorIndex}`, name } : null,
+			},
+		}))
+	));
+	return [
+		{ id: 'lending-achievement', progressForYear: loanPurchases.length, loanPurchases },
+		{ id: 'womens-equality', progressForYear: 1, loanPurchases: [loanPurchases[0]] },
+	];
+}
+
+// Default: every loan has a sector, so there is no "Other" bucket.
+export const sampleSectorAchievements = buildSectorAchievements(sampleSectorSeed);
+
+// "Other" case: some loans have a null sector, grouped into "Other (n)".
+export const sampleSectorAchievementsWithOther = buildSectorAchievements([
+	...sampleSectorSeed,
 	[null, 3],
-];
-
-const sampleSectorLoanPurchases = sampleSectorSeed.flatMap(([name, count], sectorIndex) => (
-	Array.from({ length: count }, (_unused, i) => ({
-		purchaseTime: '2026-01-01T00:00:00Z',
-		loan: {
-			id: `loan-${sectorIndex}-${i}`,
-			sector: name ? { id: `sector-${sectorIndex}`, name } : null,
-		},
-	}))
-));
-
-export const sampleSectorAchievements = [
-	{
-		id: 'lending-achievement',
-		progressForYear: sampleSectorLoanPurchases.length,
-		loanPurchases: sampleSectorLoanPurchases,
-	},
-	{
-		id: 'womens-equality',
-		progressForYear: 1,
-		loanPurchases: [sampleSectorLoanPurchases[0]],
-	},
-];
+]);
 
 export function buildSampleGoalInReviewData(year) {
 	return {

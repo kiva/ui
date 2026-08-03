@@ -12,15 +12,19 @@ export const OTHER_SECTOR_LABEL = 'Other';
 /**
  * Groups tiered lending achievements into chart-ready sector values.
  *
- * Loans are de-duplicated by id, grouped by `loan.sector.name`, and loans with
- * no sector fall into "Other". The value is the loan count per sector.
+ * Loans are de-duplicated by id and grouped by `loan.sector.name`. Loans with no
+ * sector are collapsed into an "Other" bucket, appended last and labelled with
+ * its loan count (e.g. "Other (3)"); `isOther` flags it so the headline count can
+ * exclude it regardless of the display label. The value is the loan count per
+ * sector. Note: KvPieChartV2 re-sorts segments by value for display.
  *
  * @param {Array} tieredLendingAchievements Achievements with nested loanPurchases.
- * @returns {Array<{label: string, value: number}>} One entry per sector.
+ * @returns {Array<{label: string, value: number, isOther?: boolean}>} Sector entries.
  */
 export function getSectorChartValues(tieredLendingAchievements = []) {
 	const sectorCounts = new Map();
 	const seenLoanIds = new Set();
+	let otherCount = 0;
 
 	(tieredLendingAchievements ?? []).forEach(achievement => {
 		(achievement?.loanPurchases ?? []).forEach(purchase => {
@@ -33,21 +37,29 @@ export function getSectorChartValues(tieredLendingAchievements = []) {
 			}
 			seenLoanIds.add(loan.id);
 
-			const label = loan.sector?.name ?? OTHER_SECTOR_LABEL;
-			sectorCounts.set(label, (sectorCounts.get(label) ?? 0) + 1);
+			const name = loan.sector?.name;
+			if (name) {
+				sectorCounts.set(name, (sectorCounts.get(name) ?? 0) + 1);
+			} else {
+				otherCount += 1;
+			}
 		});
 	});
 
-	return Array.from(sectorCounts, ([label, value]) => ({ label, value }));
+	const values = Array.from(sectorCounts, ([label, value]) => ({ label, value }));
+	if (otherCount > 0) {
+		values.push({ label: `${OTHER_SECTOR_LABEL} (${otherCount})`, value: otherCount, isOther: true });
+	}
+	return values;
 }
 
 /**
  * Counts the distinct named sectors backed, excluding the "Other" bucket — used
  * for the "You backed N sectors" headline.
  *
- * @param {Array<{label: string}>} sectorValues Output of getSectorChartValues.
+ * @param {Array<{isOther?: boolean}>} sectorValues Output of getSectorChartValues.
  * @returns {number} Number of named sectors.
  */
 export function getNamedSectorCount(sectorValues = []) {
-	return (sectorValues ?? []).filter(sector => sector.label !== OTHER_SECTOR_LABEL).length;
+	return (sectorValues ?? []).filter(sector => !sector.isOther).length;
 }

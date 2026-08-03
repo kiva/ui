@@ -85,7 +85,6 @@ import { KvMap, KvMaterialIcon, KvPieChartV2 } from '@kiva/kv-components';
 import { mdiMapMarker } from '@mdi/js';
 import { getSectorChartValues, getNamedSectorCount } from '#src/util/goalInReviewSectors';
 
-// Show this many country pills before collapsing the rest into an "Other (n)" pill.
 const MAX_VISIBLE_COUNTRIES = 14;
 
 const props = defineProps({
@@ -93,16 +92,12 @@ const props = defineProps({
 		type: Array,
 		default: () => [],
 	},
-	// Raw userAchievementProgress.tieredLendingAchievements. Grouped into
-	// chart-ready sector values via getSectorChartValues.
 	sectors: {
 		type: Array,
 		default: null,
 	},
 });
 
-// Map the raw Country objects to the shape KvMap expects. `numLoansFundraising`
-// is intentionally omitted — this recap map is a static highlight, not interactive.
 const countriesData = computed(() => props.countries.map(country => ({
 	label: country.name,
 	value: country.fundsLentInCountry,
