@@ -35,7 +35,7 @@
 					v-for="country in visibleCountries"
 					:key="country.id ?? country.isoCode ?? country.name"
 					class="tw-inline-flex tw-items-center tw-gap-0.5 tw-bg-white
-						tw-border tw-border-tertiary tw-rounded-full tw-py-0.5 tw-px-1.5"
+						tw-rounded-full tw-py-0.5 tw-px-1.5"
 				>
 					<KvMaterialIcon :icon="mdiMapMarker" class="tw-w-2 tw-h-2 tw-text-eco-green-4" />
 					<span class="tw-text-label tw-text-eco-green-4">{{ country.name }}</span>
@@ -130,7 +130,7 @@ const sectorCount = computed(() => getNamedSectorCount(sectorValues.value));
  */
 .sectors-chart :deep(.kv-pie-chart-v2 > div:nth-of-type(2)) {
 	/* Legend: 2-column grid of pills at every breakpoint. */
-	@apply tw-grid tw-grid-cols-2 tw-gap-1;
+	@apply tw-grid tw-grid-cols-2 tw-gap-y-1 tw-gap-x-2 md:!tw-gap-x-3;
 }
 
 .sectors-chart :deep(.kv-pie-chart-v2 > div:nth-of-type(2) > *) {
