@@ -80,7 +80,13 @@ const futuresLabel = computed(() => (totalBorrowers.value === 1 ? 'future' : 'fu
 
 <style lang="postcss" scoped>
 .borrower-grid {
-	grid-template-columns: repeat(3, minmax(0, 116px));
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (width >= 30rem) {
+	.borrower-grid {
+		grid-template-columns: repeat(auto-fill, minmax(116px, 152px));
+	}
 }
 
 @screen md {
