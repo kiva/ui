@@ -80,7 +80,7 @@ const fetchCategories = () => {
 	apollo.query({
 		query: publicLendMenuQuery,
 	}).then(({ data }) => {
-		const categoriesData = data.lend?.loanChannels?.values ?? [];
+		const categoriesData = data?.browsingCategories?.values ?? [];
 		categories.value = categoriesData.map(category => {
 			const updatedCat = JSON.parse(JSON.stringify(category));
 			updatedCat.label = updatedCat.name;
