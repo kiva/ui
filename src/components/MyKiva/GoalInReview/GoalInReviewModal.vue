@@ -21,7 +21,10 @@
 				:category="data?.goalSummary?.category"
 				:percent-complete="data?.loanStats?.percentComplete"
 			/>
-			<GoalInReviewSlide2 :loan-stats="data?.loanStats" />
+			<GoalInReviewSlide2
+				:loans="data?.goalLoans"
+				:borrower-count="data?.loanStats?.borrowers"
+			/>
 			<GoalInReviewSlide3
 				:countries="data?.goalSummary?.countries"
 				:sectors="data?.sectorAchievements"
