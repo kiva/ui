@@ -241,11 +241,15 @@ export function createMockLoan(overrides = {}) {
 		terms: {
 			currency: 'KGS',
 			currencyFullName: 'Kyrgyzstani Som',
+			disbursalDate: '2024-06-15T07:00:00Z',
+			expectedPayments: [],
 			flexibleFundraisingEnabled: false,
 			lenderRepaymentTerm: 26,
+			loanAmount: '600.00',
 			lossLiabilityCurrencyExchange: 'shared',
 			__typename: 'LoanTerm',
 		},
+		repayments: [],
 		trustee: null,
 		endorsement: null,
 		// MoreAboutLoan fields
@@ -311,6 +315,58 @@ export function createQueryResult(loan, myUser = null) {
 
 /** Fundraising partner loan (default). */
 export const fundraisingPartnerLoan = createMockLoan();
+
+/**
+ * A partner loan's repayment periods, covering every way a period can present:
+ * received, delinquent with an attribution, delinquent with currency loss, and upcoming.
+ */
+export const partnerRepaymentPeriods = [
+	{
+		dueDate: '2024-07-01T07:00:00Z',
+		status: 'repaid',
+		delinquencyAttribution: '',
+		expectedAmountToLenders: '265.83',
+		actualAmountToLenders: '265.83',
+		currencyLossToLenders: null,
+		__typename: 'LoanRepaymentPeriod',
+	},
+	{
+		dueDate: '2024-08-01T07:00:00Z',
+		status: 'repaid',
+		delinquencyAttribution: '',
+		expectedAmountToLenders: '265.84',
+		actualAmountToLenders: '253.50',
+		currencyLossToLenders: '12.34',
+		__typename: 'LoanRepaymentPeriod',
+	},
+	{
+		dueDate: '2024-09-01T07:00:00Z',
+		status: 'delinquent',
+		delinquencyAttribution: 'Lending partner behind in repayment',
+		expectedAmountToLenders: '265.83',
+		actualAmountToLenders: null,
+		currencyLossToLenders: null,
+		__typename: 'LoanRepaymentPeriod',
+	},
+	{
+		dueDate: '2999-10-01T07:00:00Z',
+		status: 'future',
+		delinquencyAttribution: '',
+		expectedAmountToLenders: '265.83',
+		actualAmountToLenders: null,
+		currencyLossToLenders: null,
+		__typename: 'LoanRepaymentPeriod',
+	},
+];
+
+/** Paying back partner loan carrying a full repayment schedule. */
+export const payingBackPartnerLoanWithRepayments = createMockLoan({
+	id: 2000010,
+	status: 'payingBack',
+	fundraisingPercent: 1,
+	paidAmount: '785.17',
+	repayments: partnerRepaymentPeriods,
+});
 
 /** Fundraising direct loan (US-based). */
 export const fundraisingDirectLoan = createMockLoan({
