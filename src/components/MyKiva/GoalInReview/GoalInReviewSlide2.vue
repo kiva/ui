@@ -71,10 +71,7 @@ const cards = computed(() => grid.value.cards);
 const moreCount = computed(() => grid.value.moreCount);
 const moreCountDisplay = computed(() => numeral(moreCount.value).format('0,0'));
 
-const totalBorrowers = computed(() => {
-	const total = Number(props.borrowerCount);
-	return Number.isFinite(total) && total > 0 ? total : cards.value.length;
-});
+const totalBorrowers = computed(() => Number(props.borrowerCount) || cards.value.length);
 
 const borrowerCountDisplay = computed(() => numeral(totalBorrowers.value).format('0,0'));
 const borrowersLabel = computed(() => (totalBorrowers.value === 1 ? 'borrower' : 'borrowers'));

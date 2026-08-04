@@ -8,29 +8,22 @@ export const MAX_BORROWER_CARDS = 11;
  * @returns {{cards: Array<{id: string, name: string, imageHash: string}>, moreCount: number}}
  */
 export function getBorrowerCards(loans = [], totalBorrowerCount = null) {
-	const seenLoanIds = new Set();
-	const cards = [];
+	const uniqueLoans = new Map(
+		(loans ?? [])
+			.filter(loan => loan?.id != null)
+			.map(loan => [loan.id, loan]),
+	);
 
-	(loans ?? []).forEach(loan => {
-		if (cards.length >= MAX_BORROWER_CARDS) {
-			return;
-		}
-		if (!loan || loan.id == null || seenLoanIds.has(loan.id)) {
-			return;
-		}
-		seenLoanIds.add(loan.id);
-		cards.push({
+	const cards = [...uniqueLoans.values()]
+		.slice(0, MAX_BORROWER_CARDS)
+		.map(loan => ({
 			id: String(loan.id),
 			name: loan.name ?? '',
 			imageHash: loan.image?.hash ?? '',
-		});
-	});
-
-	const total = Number(totalBorrowerCount);
-	const knownTotal = Number.isFinite(total) && total > 0 ? total : cards.length;
+		}));
 
 	return {
 		cards,
-		moreCount: Math.max(knownTotal - cards.length, 0),
+		moreCount: Math.max((Number(totalBorrowerCount) || 0) - cards.length, 0),
 	};
 }
