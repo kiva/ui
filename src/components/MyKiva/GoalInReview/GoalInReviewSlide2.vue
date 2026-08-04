@@ -1,6 +1,6 @@
 <template>
 	<section
-		class="tw-w-full tw-bg-brand-100 tw-px-2.5 tw-py-4 md:tw-px-4 md:tw-py-7.5"
+		class="tw-w-full tw-bg-brand-100 tw-px-2 tw-py-4 md:tw-px-4 md:tw-py-7.5"
 		data-testid="goal-in-review-slide-2"
 	>
 		<p class="tw-text-action tw-mb-1">
@@ -80,7 +80,7 @@ const futuresLabel = computed(() => (totalBorrowers.value === 1 ? 'future' : 'fu
 
 <style lang="postcss" scoped>
 .borrower-grid {
-	grid-template-columns: repeat(auto-fill, minmax(min(116px, 30%), 152px));
+	grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 @screen md {
