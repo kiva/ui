@@ -27,38 +27,6 @@
 		<div v-if="challengeHeaderVisible" class="tw-bg-secondary">
 			<challenge-header :goal="goal" :team-public-id="teamPublicId" />
 		</div>
-		<template v-if="showMayChallengeHeader">
-			<div
-				v-if="loans.length > 0"
-				class="hide-for-print tw-text-center tw-bg-eco-green-1 tw-py-1 tw-text-small"
-			>
-				<template v-if="receipt">
-					Thanks for supporting
-					<span class="data-hj-suppress">{{ borrowerSupport }}</span>!
-					We've emailed your order confirmation to
-					<strong v-if="lender.email" class="data-hj-suppress ">{{ lender.email }}.</strong>
-					<span v-else>you.</span>
-				</template>
-				<template v-else>
-					Please log in to see your receipt.
-					<kv-button
-						:href="`/ui-login?force=true&doneUrl=${encodeURIComponent($route.fullPath)}`"
-						class="tw-ml-1"
-					>
-						Log in to continue
-					</kv-button>
-				</template>
-			</div>
-			<share-challenge
-				v-if="teamPublicId"
-				:goal="goal"
-				:loan="challengeLoan"
-				:team-public-id="teamPublicId"
-				:lender="lender"
-				:is-guest="isGuest"
-				:team-name="teamName"
-			/>
-		</template>
 		<template v-if="activeView === LOGIN_REQUIRED_VIEW">
 			<div class="page-content tw-flex tw-flex-col tw-items-center tw-text-center">
 				<h2 class="tw-text-headline tw-m-4">
@@ -89,10 +57,7 @@ import thanksPageReceiptQuery from '#src/graphql/query/thanksPageReceipt.graphql
 import { recordTransactorSignals } from '#src/util/optimizelyUserMetrics';
 import { setHotJarUserAttributes } from '#src/util/hotJarUtils';
 import logFormatter from '#src/util/logFormatter';
-import { joinArray } from '#src/util/joinArray';
 import ChallengeHeader from '#src/components/Thanks/ChallengeHeader';
-import ShareChallenge from '#src/components/Thanks/ShareChallenge';
-import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
 import postCheckoutAchievementsQuery from '#src/graphql/query/postCheckoutAchievements.graphql';
 import { KvButton } from '@kiva/kv-components';
 import { fetchGoals } from '#src/util/teamsUtil';
@@ -106,8 +71,6 @@ import userYearlyProgressQuery from '#src/graphql/query/userYearlyProgress.graph
 import { clearPromoCreditBannerCookie, getPromoCreditBannerCookie } from '#src/util/promoCreditCookie';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
-
-const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 
 // Thanks views
 const DONATION_ONLY_VIEW = 'donation_only';
@@ -143,7 +106,6 @@ export default {
 		WwwPage,
 		ThanksPageDonationOnly,
 		ChallengeHeader,
-		ShareChallenge,
 		ThanksPageSingleVersion,
 	},
 	mixins: [borrowerProfileExpMixin],
@@ -176,7 +138,6 @@ export default {
 			monthlyDonationAmount: '',
 			goal: null,
 			showChallengeHeader: false,
-			enableMayChallengeHeader: false,
 			optedIn: false,
 			DONATION_ONLY_VIEW,
 			LOGIN_REQUIRED_VIEW,
@@ -209,7 +170,7 @@ export default {
 				if (!transactionId) {
 					logFormatter(
 						'Thanks page preFetch skipped due to missing transaction_id.',
-						'warning',
+						'warn',
 					);
 					return Promise.resolve();
 				}
@@ -264,35 +225,16 @@ export default {
 		isExpressCheckoutModalEnabled() {
 			return this.expressCheckoutEnabled;
 		},
-		borrowerSupport() {
-			const loanNames = this.loans.map(loan => loan.name);
-			if (loanNames.length > 3) {
-				return `these ${loanNames.length} borrowers`;
-			}
-			return joinArray(loanNames, 'and');
-		},
 		teamId() {
 			return getTeamId(this.loans);
 		},
 		teamPublicId() {
 			return this.loans?.[0]?.team?.teamPublicId;
 		},
-		challengeLoan() {
-			return (this.loans?.filter(l => l?.team?.id === this.goal?.teamId) ?? [])?.[0];
-		},
-		showMayChallengeHeader() {
-			return this.challengeLoan
-				&& this.enableMayChallengeHeader
-				&& this.activeView !== DONATION_ONLY_VIEW;
-		},
 		challengeHeaderVisible() {
-			return !this.showMayChallengeHeader
-				&& this.showChallengeHeader
+			return this.showChallengeHeader
 				&& this.teamPublicId
 				&& this.activeView !== DONATION_ONLY_VIEW;
-		},
-		teamName() {
-			return this.loans?.[0]?.team?.name ?? '';
 		},
 		activeView() {
 			// Show the donation only view if the user has only subscribed to a donation
@@ -367,7 +309,7 @@ export default {
 		if (!transactionId) {
 			logFormatter(
 				'Thanks page readQuery skipped due to missing transaction_id.',
-				'warning',
+				'warn',
 			);
 			return false;
 		}
@@ -483,13 +425,6 @@ export default {
 			);
 		}
 
-		// Check for May challenge header experiment
-		const shareChallengeExpData = this.apollo.readFragment({
-			id: `Experiment:${CHALLENGE_HEADER_EXP}`,
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.enableMayChallengeHeader = shareChallengeExpData?.version === 'b';
-
 		try {
 			const response = this.apollo.readQuery({
 				query: postCheckoutAchievementsQuery,
@@ -503,11 +438,6 @@ export default {
 			});
 		} catch (e) {
 			logReadQueryError(e, 'ThanksPage postCheckoutAchievementsQuery');
-		}
-
-		// Track may challenge page view
-		if (this.showMayChallengeHeader) {
-			this.$kvTrackEvent('post-checkout', 'show', 'may-challenge-header', this.isGuest ? 'guest' : 'signed-in');
 		}
 
 		// Track login required view

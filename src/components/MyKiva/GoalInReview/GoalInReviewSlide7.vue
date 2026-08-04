@@ -48,14 +48,16 @@
 						/>
 					</button>
 
-					<!-- TODO(MP-3062): replace this placeholder with the real feedback survey -->
+					<!--
+						v-show (not v-if) keeps the survey mounted so re-toggling the CTA
+						doesn't remount and reload the Form Assembly iframe.
+					-->
 					<div
-						v-if="feedbackOpen"
-						class="tw-w-full tw-rounded tw-border tw-border-brand-400 tw-border-dashed
-							tw-text-eco-green-1 tw-text-small tw-py-3 tw-px-2"
+						v-show="feedbackOpen"
+						class="tw-w-full tw-text-eco-green-1"
 						data-testid="goal-in-review-slide-7-feedback-placeholder"
 					>
-						Feedback form coming soon (MP-3062)
+						<GoalInReviewFeedbackForm @submitted="emit('feedback-submitted')" />
 					</div>
 				</template>
 			</div>
@@ -67,6 +69,7 @@
 import { computed, inject, ref } from 'vue';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiChevronDown } from '@mdi/js';
+import GoalInReviewFeedbackForm from '#src/components/MyKiva/GoalInReview/GoalInReviewFeedbackForm';
 import leafHeart from '#src/assets/images/leaf_heart.svg?url';
 
 const props = defineProps({
@@ -86,9 +89,13 @@ const props = defineProps({
 		type: [Number, String],
 		default: null,
 	},
+	feedbackSubmitted: {
+		type: Boolean,
+		default: false,
+	},
 });
 
-const emit = defineEmits(['back-to-kiva', 'finish-goal', 'set-goal']);
+const emit = defineEmits(['back-to-kiva', 'finish-goal', 'set-goal', 'feedback-submitted']);
 
 const $kvTrackEvent = inject('$kvTrackEvent', () => {});
 
@@ -129,7 +136,7 @@ const primaryCta = computed(() => {
 	return { label: `Finish my ${props.year} goal`, event: 'finish-goal' };
 });
 
-const showFeedback = computed(() => !isPastGoalYear.value);
+const showFeedback = computed(() => !isPastGoalYear.value && !props.feedbackSubmitted);
 </script>
 
 <style lang="postcss" scoped>

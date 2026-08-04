@@ -164,17 +164,22 @@ describe('BasketItem loan', () => {
 
 		// Mock apollo returning the multiMatchingEnabled setting that useMultiMatching reads.
 		function matchingApollo(multiMatchingEnabled = true) {
+			const data = {
+				general: {
+					multiMatchingEnabled: {
+						key: 'multiMatchingEnabled',
+						value: String(multiMatchingEnabled),
+					},
+				},
+			};
 			return {
 				readFragment: () => {},
 				readQuery: () => {},
-				query: () => Promise.resolve({
-					data: {
-						general: {
-							multiMatchingEnabled: {
-								key: 'multiMatchingEnabled',
-								value: String(multiMatchingEnabled),
-							},
-						},
+				query: () => Promise.resolve({ data }),
+				watchQuery: () => ({
+					subscribe: observer => {
+						observer.next({ data });
+						return { unsubscribe: () => {} };
 					},
 				}),
 				mutate: () => Promise.resolve({}),

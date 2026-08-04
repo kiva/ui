@@ -2,12 +2,17 @@ import { reactive } from 'vue';
 import { setDonationAmount } from '#src/util/basketUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
+import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
 
 vi.mock('#src/util/basketUtils', () => ({
 	setDonationAmount: vi.fn(),
 }));
 vi.mock('#src/util/logReadQueryError', () => ({
 	default: vi.fn(),
+}));
+vi.mock('#src/util/checkoutUtils', () => ({
+	formatTransactionData: vi.fn(),
+	getTransactionAnalyticsData: vi.fn(),
 }));
 
 let CheckoutPage;
@@ -24,7 +29,9 @@ beforeAll(async () => {
 	vi.mock('#src/util/experiment/experimentUtils', () => ({
 		initializeExperiment: vi.fn(),
 	}));
-	vi.mock('#src/util/myKivaUtils', () => ({
+	// keeps getTransactionTimestamp real, which lifecycleStage depends on
+	vi.mock('#src/util/myKivaUtils', async importOriginal => ({
+		...(await importOriginal()),
 		fetchPostCheckoutAchievements: vi.fn(),
 	}));
 	vi.mock('@sentry/vue', () => ({ captureException: vi.fn(), captureMessage: vi.fn() }));
@@ -264,7 +271,7 @@ describe('CheckoutPage provide', () => {
 
 describe('CheckoutPage completeTransaction', () => {
 	const makeContext = (overrides = {}) => ({
-		apollo: { query: vi.fn().mockResolvedValue({ data: {} }) },
+		apollo: {},
 		loans: [],
 		kivaCards: [],
 		donations: [],
@@ -279,14 +286,18 @@ describe('CheckoutPage completeTransaction', () => {
 		...overrides,
 	});
 
-	it('fires the transaction with the resolved FTD status on success', async () => {
-		const context = makeContext({
-			apollo: {
-				query: vi.fn().mockResolvedValue({
-					data: { my: { userAccount: { isFirstTimeDepositor: true } } },
-				}),
-			},
+	beforeEach(() => {
+		formatTransactionData.mockReturnValue({ itemTotal: '25.00', loans: [] });
+		getTransactionAnalyticsData.mockResolvedValue({
+			isFTD: true,
+			lifecycleStage: null,
+			daysSinceLastLoan: null,
+			reEngagementEvent: null,
 		});
+	});
+
+	it('fires the transaction with the resolved analytics data', async () => {
+		const context = makeContext();
 
 		await CheckoutPage.methods.completeTransaction.call(context, '12345');
 
@@ -294,11 +305,10 @@ describe('CheckoutPage completeTransaction', () => {
 		expect(context.$kvTrackTransaction).toHaveBeenCalledWith(expect.objectContaining({ isFTD: true }));
 	});
 
-	it('still fires the transaction and redirects when the FTD lookup fails', async () => {
+	it('still fires the transaction and redirects when analytics lookup fails', async () => {
 		vi.useFakeTimers();
-		const context = makeContext({
-			apollo: { query: vi.fn().mockRejectedValue(new Error('network')) },
-		});
+		const context = makeContext();
+		getTransactionAnalyticsData.mockRejectedValue(new Error('network'));
 
 		await CheckoutPage.methods.completeTransaction.call(context, '12345');
 
@@ -306,5 +316,66 @@ describe('CheckoutPage completeTransaction', () => {
 		vi.runAllTimers();
 		expect(context.redirectToThanks).toHaveBeenCalled();
 		vi.useRealTimers();
+	});
+
+	// Regression: the stage was once read synchronously from component state, so a
+	// checkout completing before the lookup returned silently dropped the event.
+	it('waits for the lifecycle lookup started on checkout entry', async () => {
+		let resolveAnalytics;
+		const lifecycleDataPromise = Promise.resolve({ stage: 'lapsedChurned', daysSinceLastLoan: 900 });
+		const context = makeContext({ lifecycleDataPromise });
+		getTransactionAnalyticsData.mockReturnValue(new Promise(resolve => { resolveAnalytics = resolve; }));
+
+		const trackingComplete = CheckoutPage.methods.completeTransaction.call(context, '999');
+		await Promise.resolve();
+		expect(context.$kvTrackTransaction).not.toHaveBeenCalled();
+
+		resolveAnalytics({
+			isFTD: false,
+			lifecycleStage: 'lapsedChurned',
+			daysSinceLastLoan: 900,
+			reEngagementEvent: 'lapsedLenderReEngaged',
+		});
+		await trackingComplete;
+
+		expect(getTransactionAnalyticsData).toHaveBeenCalledWith(context.apollo, lifecycleDataPromise);
+		expect(context.$kvTrackTransaction).toHaveBeenCalledWith(expect.objectContaining({
+			lifecycleStage: 'lapsedChurned',
+			reEngagementEvent: 'lapsedLenderReEngaged',
+		}));
+	});
+});
+
+// The once-only behaviour belongs to useLifecycleCapture and is tested there. These
+// cover the part CheckoutPage owns: starting the lookup on mount, for lenders only.
+describe('CheckoutPage lifecycle capture', () => {
+	const makeContext = (overrides = {}) => ({
+		myId: 1234,
+		apollo: {},
+		startLifecycleCapture: vi.fn(),
+		isLoggedIn: true,
+		logBasketState: vi.fn(),
+		handleToast: vi.fn(),
+		getPromoInformationFromBasket: vi.fn(),
+		$nextTick: vi.fn(),
+		$kvTrackEvent: vi.fn(),
+		...overrides,
+	});
+
+	// the prefetch runs before mount, so a logged-in lender always has an id by now
+	it('starts the lookup on mount for a logged-in lender', async () => {
+		const context = makeContext();
+
+		await CheckoutPage.mounted.call(context);
+
+		expect(context.startLifecycleCapture).toHaveBeenCalledWith(context.apollo);
+	});
+
+	it('does not start the lookup for guests, who have no lender id', async () => {
+		const context = makeContext({ myId: null, isLoggedIn: false });
+
+		await CheckoutPage.mounted.call(context);
+
+		expect(context.startLifecycleCapture).not.toHaveBeenCalled();
 	});
 });

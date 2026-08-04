@@ -3,11 +3,19 @@ import LoanComments from '#src/components/BorrowerProfile/LoanComments';
 import cookieStoreStoryMixin from '../../mixins/cookie-store-story-mixin';
 import kvAuth0StoryMixin from '../../mixins/kv-auth0-story-mixin';
 
+// Authors are a nested CommentAuthor with a lowercase CommentAuthorRole, matching
+// what the loanCommentsFullList query returns. The flat authorName /
+// authorImageUrl fields are deprecated in the schema and are not read here.
+const AVATAR_URL = 'https://www.kiva.org/img/s100/9673d0722a7675b9b8d11f90849d9b44.jpg';
+
 const mockComments = Array.from({ length: 20 }, (_, i) => ({
 	id: i + 1,
-	authorName: i === 3 ? 'Aisha' : `Lender ${i + 1}`,
-	authorImageUrl: i < 5 ? 'https://www.kiva.org/img/s100/9673d0722a7675b9b8d11f90849d9b44.jpg' : null,
-	authorRole: i === 3 ? 'Borrower' : 'Lender',
+	author: {
+		name: i === 3 ? 'Aisha' : `Lender ${i + 1}`,
+		imageUrl: i < 5 ? AVATAR_URL : null,
+		role: i === 3 ? 'borrower' : 'lender',
+		__typename: 'CommentAuthor',
+	},
 	body: i === 3
 		? 'Thank you so much for your support! My dairy business is growing and I can now sell more milk.'
 		: `This is a wonderful loan. I'm happy to support this borrower. Comment #${i + 1}.`,

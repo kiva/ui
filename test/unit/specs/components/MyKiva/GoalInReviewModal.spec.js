@@ -29,18 +29,41 @@ vi.mock('@kiva/kv-components', () => ({
 		props: ['icon'],
 		template: '<span></span>',
 	},
+	KvMap: {
+		name: 'KvMap',
+		props: ['countriesData'],
+		template: '<div data-testid="kv-map"></div>',
+	},
+	KvPieChartV2: {
+		name: 'KvPieChartV2',
+		props: ['values'],
+		template: '<div data-testid="kv-pie-chart"></div>',
+	},
 	KvButton: {
 		name: 'KvButton',
 		props: ['variant'],
 		emits: ['click'],
 		template: '<button type="button" @click="$emit(\'click\')"><slot></slot></button>',
 	},
+	KvFormAssemblyForm: {
+		name: 'KvFormAssemblyForm',
+		props: ['formAssemblyId', 'title'],
+		emits: ['fa-form-submitted'],
+		template: '<button type="button" data-testid="fa-submit" @click="$emit(\'fa-form-submitted\')">submit</button>',
+	},
+	getKivaImageUrl: () => '',
 }));
+
+// BorrowerImage (slide 2) reads $appConfig.photoPath.
+const globalWithAppConfig = {
+	...globalOptions,
+	mocks: { ...globalOptions.mocks, $appConfig: { photoPath: '' } },
+};
 
 describe('GoalInReviewModal', () => {
 	const renderModal = ({ trackEvent = vi.fn() } = {}) => render(GoalInReviewModal, {
 		global: {
-			...globalOptions,
+			...globalWithAppConfig,
 			provide: {
 				...globalOptions.provide,
 				$kvTrackEvent: trackEvent,
@@ -54,15 +77,33 @@ describe('GoalInReviewModal', () => {
 		},
 	});
 
-	it('renders the real slides and the remaining placeholders', async () => {
+	it('renders every slide of the recap', async () => {
 		const { findByText } = renderModal();
 
-		// Slides 1, 4, 5 and 7 are real components; slides 2–3 are still placeholders
 		await findByText('Your 2026 impact goal recap');
+		await findByText('The people behind the loans');
+		await findByText('Global reach');
 		await findByText('Giving insights');
 		await findByText(/Goal Setters create something/);
 		await findByText('Thank you!');
-		await Promise.all([2, 3].map(slideNumber => findByText(`Slide ${slideNumber}`)));
+	});
+
+	it('passes the goal loans and the slide 1 borrower total through to slide 2', async () => {
+		const { findByText } = render(GoalInReviewModal, {
+			global: globalWithAppConfig,
+			props: {
+				show: true,
+				data: {
+					year: 2026,
+					loanStats: { borrowers: 48 },
+					goalLoans: [{ id: 1, name: 'Aminata', image: { hash: 'hash-1' } }],
+				},
+			},
+		});
+
+		await findByText('Aminata');
+		await findByText(/48 borrowers\./);
+		await findByText('+47 more');
 	});
 
 	it('tracks and forwards the slide 7 primary CTA', async () => {
@@ -71,7 +112,7 @@ describe('GoalInReviewModal', () => {
 		// in-progress current-year data → primary CTA is "Finish my {year} goal"
 		const { emitted, findByText } = render(GoalInReviewModal, {
 			global: {
-				...globalOptions,
+				...globalWithAppConfig,
 				provide: { ...globalOptions.provide, $kvTrackEvent: trackEvent },
 			},
 			props: {
@@ -84,6 +125,37 @@ describe('GoalInReviewModal', () => {
 
 		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', 'goal-in-review-finish-goal');
 		expect(emitted()['finish-goal']).toHaveLength(1);
+	});
+
+	it('passes feedbackSubmitted through to slide 7 to gate the feedback survey', async () => {
+		const currentYear = new Date().getFullYear();
+		const { queryByText, findByText } = render(GoalInReviewModal, {
+			global: globalWithAppConfig,
+			props: {
+				show: true,
+				data: { year: currentYear, goalSummary: { status: 'in-progress' } },
+				feedbackSubmitted: true,
+			},
+		});
+
+		await findByText('Thank you!'); // slide 7 rendered
+		expect(queryByText('Share your feedback')).toBeNull();
+	});
+
+	it('forwards feedback-submitted from slide 7', async () => {
+		const currentYear = new Date().getFullYear();
+		const { emitted, findByText, getByTestId } = render(GoalInReviewModal, {
+			global: globalWithAppConfig,
+			props: {
+				show: true,
+				data: { year: currentYear, goalSummary: { status: 'in-progress' } },
+			},
+		});
+
+		await fireEvent.click(await findByText('Share your feedback'));
+		await fireEvent.click(getByTestId('fa-submit'));
+
+		expect(emitted()['feedback-submitted']).toHaveLength(1);
 	});
 
 	it('renders the Vishal note (slide 6) only for completed goals', async () => {
@@ -99,7 +171,7 @@ describe('GoalInReviewModal', () => {
 	it('keeps the Vishal note hidden for an incomplete goal in the next-year state', async () => {
 		const lastYear = new Date().getFullYear() - 1;
 		const { queryByText, findByText } = render(GoalInReviewModal, {
-			global: globalOptions,
+			global: globalWithAppConfig,
 			props: { show: true, data: { year: lastYear, goalSummary: { status: 'in-progress' } } },
 		});
 

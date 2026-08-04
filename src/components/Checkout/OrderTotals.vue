@@ -421,7 +421,7 @@ export default {
 				this.$kvTrackEvent('basket', 'Kiva Credit', 'Apply Credit Success');
 				this.$emit('refreshtotals');
 			}).catch(error => {
-				console.error(error);
+				logFormatter(error, 'error');
 				this.setUpdating(false);
 			});
 		},

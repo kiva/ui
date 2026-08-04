@@ -108,7 +108,11 @@ function mountModal(props = {}) {
 			provide: {
 				$kvTrackEvent: vi.fn(),
 				$appConfig: {},
-				apollo: {},
+				apollo: {
+					query: () => Promise.resolve({}),
+					readQuery: () => null,
+					watchQuery: () => ({ subscribe: () => ({ unsubscribe: () => { } }) }),
+				},
 			},
 			stubs: {
 				GoalSelector: GoalSelectorStub,

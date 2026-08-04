@@ -25,7 +25,7 @@
 			</content-container>
 		</div>
 		<div
-			:class="inPfp ? 'lg:tw-pt-16 lg:tw-mt-4' : 'lg:tw-pt-8'"
+			:class="inPfp ? 'lg:tw-pt-16 lg:tw-mt-8' : 'lg:tw-pt-8'"
 			class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0 tw-z-docked"
 		>
 			<sidebar-container
@@ -38,8 +38,6 @@
 						:loan-data="loanData"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:show-details-in-rail="showDetailsInRail"
-						:team-id="teamId"
-						:team-name="teamName"
 					>
 						<template #sharebutton>
 							<!-- Share button -->
@@ -310,14 +308,6 @@ export default {
 		enableFiveDollarsNotes: {
 			type: Boolean,
 			default: false,
-		},
-		teamId: {
-			type: Number,
-			default: null,
-		},
-		teamName: {
-			type: String,
-			default: '',
 		},
 		showEducationPlacementExp: {
 			type: Boolean,
