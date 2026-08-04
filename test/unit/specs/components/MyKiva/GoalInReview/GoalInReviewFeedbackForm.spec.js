@@ -36,7 +36,7 @@ describe('GoalInReviewFeedbackForm', () => {
 		getByTestId('goal-in-review-feedback-form');
 	});
 
-	it('forwards the submitted event', async () => {
+	it('forwards the submitted event on fa-form-submitted', async () => {
 		const { getByTestId, emitted } = renderForm();
 		await fireEvent.click(getByTestId('emit-submitted'));
 		expect(emitted().submitted).toHaveLength(1);
