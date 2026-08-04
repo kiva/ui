@@ -13,47 +13,107 @@
 			title="Loan repayment schedule"
 			@lightbox-closed="closeLightbox"
 		>
-			<div v-if="isPartnerLoan || !isPartnerLoan && loanDisbursed">
-				<p class="tw-inline-block tw-pb-3">
+			<div v-if="isPartnerLoan || loanDisbursed">
+				<!-- Keep the whole sentence in one paragraph. Split across sibling elements,
+				the separating whitespace becomes whitespace-only text nodes that Vue drops,
+				which ran the words together. -->
+				<p class="tw-pb-3">
 					Repayments {{ statusLanguageCheck }} in
-					<span class="tw-font-medium"> {{ formattedFirstRepaymentDate }}</span>
+					<span class="tw-font-medium">{{ formattedFirstRepaymentDate }}</span>
+					<template v-if="status === 'payingBack'">
+						and are <span class="tw-font-medium">{{ repaymentStatusCheck }}</span>
+					</template>.
 				</p>
-				<span v-if="status === 'payingBack'">
-					<p class="tw-inline-block">
-						and are
-					</p>
-					<p class="tw-inline-block tw-font-medium">
-						{{ repaymentStatusCheck }}.
-					</p>
-				</span>
 
-				<!-- Table for small screens -->
-				<table class="md:tw-hidden tw-w-full">
-					<tbody>
-						<tr
-							v-for="(repayment, index) in parsedRepaymentSchedule"
-							:key="index"
-							class="tw-mb-1"
-						>
-							<td
-								class="
-								tw-inline-block tw-w-full tw-bg-secondary tw-rounded tw-text-center
-								tw-mb-2 tw-pb-1.5"
+				<partner-repayment-table v-if="isPartnerLoan" :rows="partnerRows" />
+
+				<template v-else>
+					<!-- Table for small screens -->
+					<table class="md:tw-hidden tw-w-full">
+						<tbody>
+							<tr
+								v-for="(repayment, index) in parsedRepaymentSchedule"
+								:key="index"
+								class="tw-mb-1"
 							>
-								<p class="tw-text-upper tw-py-1.5">
+								<td
+									class="
+									tw-inline-block tw-w-full tw-bg-secondary tw-rounded tw-text-center
+									tw-mb-2 tw-pb-1.5"
+								>
+									<p class="tw-text-upper tw-py-1.5">
+										{{ repayment.formattedRepaymentDate }}
+									</p>
+									<hr class="tw-mb-1.5 tw-mx-1.5">
+									<p class="tw-mb-1.5">
+										Expected: {{ repayment.formattedMonthlyPayment }}
+									</p>
+									<p v-if="!repayment.repaid && !repayment.delinquent">
+										Available {{ repayment.formattedRepaymentDate }}
+									</p>
+									<!-- if payment is received -->
+									<p
+										class="tw-bg-primary tw-mx-auto tw-py-1 tw-rounded"
+										style="width: 11.5rem;"
+										v-if="repayment.repaid && !repayment.delinquent"
+									>
+										<kv-material-icon
+											:icon="mdiCheckboxMarkedCircle"
+											class="tw-w-3 tw-h-3 tw-text-brand-700 tw-align-middle"
+										/>
+										Repayment received
+									</p>
+									<!-- if payment is not received on time -->
+									<p
+										class="tw-bg-primary tw-mx-auto tw-py-1 tw-rounded"
+										style="width: 7.5rem;"
+										v-if="!repayment.repaid && repayment.delinquent"
+									>
+										<kv-material-icon
+											class="tw-w-3 tw-h-3 tw-text-danger tw-align-middle"
+											:icon="mdiMinusCircle"
+										/>
+										Delinquent
+									</p>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<!-- Table for medium and up screens -->
+					<table class="tw-table-auto tw-hidden md:tw-table">
+						<thead class="tw-bg-secondary tw-text-left">
+							<tr>
+								<th><span class="tw-sr-only">Date</span></th>
+								<th class="table-heading-spacing">
+									Expected
+								</th>
+								<th class="table-heading-spacing">
+									Status
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr
+								v-for="(repayment, index) in parsedRepaymentSchedule"
+								:key="index"
+								class="tw-mb-1"
+							>
+								<td class="table-data-spacing">
 									{{ repayment.formattedRepaymentDate }}
-								</p>
-								<hr class="tw-mb-1.5 tw-mx-1.5">
-								<p class="tw-mb-1.5">
-									Expected: {{ repayment.formattedMonthlyPayment }}
-								</p>
-								<p v-if="!repayment.repaid && !repayment.delinquent">
+								</td>
+								<td class="table-data-spacing">
+									{{ repayment.formattedMonthlyPayment }}
+								</td>
+								<td
+									class="table-data-spacing"
+									v-if="!repayment.repaid && !repayment.delinquent"
+								>
 									Available {{ repayment.formattedRepaymentDate }}
-								</p>
+								</td>
 								<!-- if payment is received -->
-								<p
-									class="tw-bg-primary tw-mx-auto tw-py-1 tw-rounded"
-									style="width: 11.5rem;"
+								<td
+									class="table-data-spacing"
 									v-if="repayment.repaid && !repayment.delinquent"
 								>
 									<kv-material-icon
@@ -61,11 +121,10 @@
 										class="tw-w-3 tw-h-3 tw-text-brand-700 tw-align-middle"
 									/>
 									Repayment received
-								</p>
+								</td>
 								<!-- if payment is not received on time -->
-								<p
-									class="tw-bg-primary tw-mx-auto tw-py-1 tw-rounded"
-									style="width: 7.5rem;"
+								<td
+									class="table-data-spacing"
 									v-if="!repayment.repaid && repayment.delinquent"
 								>
 									<kv-material-icon
@@ -73,72 +132,15 @@
 										:icon="mdiMinusCircle"
 									/>
 									Delinquent
-								</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-
-				<!-- Table for medium and up screens -->
-				<table class="tw-table-auto tw-hidden md:tw-table">
-					<thead class="tw-bg-secondary tw-text-left">
-						<tr>
-							<th><span class="tw-sr-only">Date</span></th>
-							<th class="table-heading-spacing">
-								Expected
-							</th>
-							<th class="table-heading-spacing">
-								Status
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr
-							v-for="(repayment, index) in parsedRepaymentSchedule"
-							:key="index"
-							class="tw-mb-1"
-						>
-							<td class="table-data-spacing">
-								{{ repayment.formattedRepaymentDate }}
-							</td>
-							<td class="table-data-spacing">
-								{{ repayment.formattedMonthlyPayment }}
-							</td>
-							<td
-								class="table-data-spacing"
-								v-if="!repayment.repaid && !repayment.delinquent"
-							>
-								Available {{ repayment.formattedRepaymentDate }}
-							</td>
-							<!-- if payment is received -->
-							<td
-								class="table-data-spacing"
-								v-if="repayment.repaid && !repayment.delinquent"
-							>
-								<kv-material-icon
-									:icon="mdiCheckboxMarkedCircle"
-									class="tw-w-3 tw-h-3 tw-text-brand-700 tw-align-middle"
-								/>
-								Repayment received
-							</td>
-							<!-- if payment is not received on time -->
-							<td
-								class="table-data-spacing"
-								v-if="!repayment.repaid && repayment.delinquent"
-							>
-								<kv-material-icon
-									class="tw-w-3 tw-h-3 tw-text-danger tw-align-middle"
-									:icon="mdiMinusCircle"
-								/>
-								Delinquent
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<p v-if="!isPartnerLoan && loanDisbursed">
-					<!-- eslint-disable-next-line max-len -->
-					Disbursement and repayments will be made via PayPal, a web-based payment system. Repayments made on delinquent loans will be applied toward the oldest payment due until the loan becomes current.
-				</p>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<p>
+						<!-- eslint-disable-next-line max-len -->
+						Disbursement and repayments will be made via PayPal, a web-based payment system. Repayments made on delinquent loans will be applied toward the oldest payment due until the loan becomes current.
+					</p>
+				</template>
 			</div>
 
 			<!-- direct loan before disbursal" -->
@@ -168,6 +170,8 @@ import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
 import { format, parseISO, isBefore } from 'date-fns';
 import numeral from 'numeral';
 import { KvMaterialIcon, KvLightbox } from '@kiva/kv-components';
+import PartnerRepaymentTable from '#src/components/BorrowerProfile/PartnerRepaymentTable';
+import { buildPartnerPeriodRows, hasDelinquentPeriod } from '#src/util/repaymentSchedule';
 
 const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 	lend {
@@ -195,9 +199,18 @@ const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 				}
 			}
 			... on LoanPartner {
+				id
 				partner {
 					id
 					name
+				}
+				repayments {
+					dueDate
+					status
+					delinquencyAttribution
+					expectedAmountToLenders
+					actualAmountToLenders
+					currencyLossToLenders
 				}
 			}
 		}
@@ -209,6 +222,7 @@ export default {
 	components: {
 		KvLightbox,
 		KvMaterialIcon,
+		PartnerRepaymentTable,
 	},
 	inject: ['apollo'],
 	props: {
@@ -226,8 +240,8 @@ export default {
 			mdiCheckboxMarkedCircle,
 			mdiMinusCircle,
 			isLightboxVisible: false,
-			firstRepaymentDate: '',
 			repaymentSchedule: [],
+			repaymentPeriods: [],
 			repaidAmount: 0,
 			loanAmount: 0,
 			lenderRepaymentTerm: 0,
@@ -242,26 +256,36 @@ export default {
 		closeLightbox() {
 			this.isLightboxVisible = false;
 		},
-		calculateRepaymentSchedule() {
+		fetchRepaymentSchedule() {
 			this.apollo.query({
 				query: repaymentScheduleQuery,
 				variables: {
 					loanId: this.loanId
 				}
 			}).then(({ data }) => {
-				this.partnerName = data?.lend?.loan?.partner?.name || '';
-				this.repaymentSchedule = data?.lend?.loan?.terms?.expectedPayments || [];
-				this.repaidAmount = data?.lend?.loan?.paidAmount || 0;
-				this.loanAmount = data?.lend?.loan?.loanAmount || 0;
-				this.lenderRepaymentTerm = data?.lend?.loan?.terms?.lenderRepaymentTerm || 0;
-				this.firstRepaymentDate = this.repaymentSchedule[0]?.dueToKivaDate || '';
-				this.disbursalDate = data?.lend?.loan?.terms?.disbursalDate || '';
+				const loan = data?.lend?.loan;
+				this.partnerName = loan?.partner?.name || '';
+				this.repaymentSchedule = loan?.terms?.expectedPayments || [];
+				this.repaymentPeriods = loan?.repayments || [];
+				this.repaidAmount = loan?.paidAmount || 0;
+				this.loanAmount = loan?.loanAmount || 0;
+				this.lenderRepaymentTerm = loan?.terms?.lenderRepaymentTerm || 0;
+				this.disbursalDate = loan?.terms?.disbursalDate || '';
 			});
 		},
 	},
 	computed: {
 		isPartnerLoan() {
 			return !!this.partnerName;
+		},
+		partnerRows() {
+			return buildPartnerPeriodRows(this.repaymentPeriods);
+		},
+		firstRepaymentDate() {
+			if (this.isPartnerLoan) {
+				return this.repaymentPeriods[0]?.dueDate || '';
+			}
+			return this.repaymentSchedule[0]?.dueToKivaDate || '';
 		},
 		formattedFirstRepaymentDate() {
 			if (this.firstRepaymentDate !== '') {
@@ -276,9 +300,10 @@ export default {
 			return 'begin';
 		},
 		delinquentPayment() {
-			// looking through the parsedRepaymentSchedule for a delinquent payment boolean
-			const delinquentPaymentPresent = this.parsedRepaymentSchedule.find(({ delinquent }) => delinquent === true);
-			return delinquentPaymentPresent !== undefined;
+			if (this.isPartnerLoan) {
+				return hasDelinquentPeriod(this.repaymentPeriods);
+			}
+			return this.parsedRepaymentSchedule.some(({ delinquent }) => delinquent);
 		},
 		repaymentStatusCheck() {
 			if (this.status === 'payingBack' && this.delinquentPayment) {
@@ -359,7 +384,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.calculateRepaymentSchedule();
+		this.fetchRepaymentSchedule();
 	},
 };
 </script>
