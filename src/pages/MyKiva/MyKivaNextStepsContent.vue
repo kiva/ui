@@ -173,6 +173,7 @@
 							-->
 							<AlmostFundedNextStep />
 							<MyKivaRegionExperience
+								v-if="!userLentToAllRegions"
 								class="md:tw-col-span-2"
 								:regions-data="regionsData"
 								:loans="loans"
