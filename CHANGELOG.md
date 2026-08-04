@@ -1,3 +1,61 @@
+## [3.82.0](https://github.com/kiva/ui/compare/v3.81.0...v3.82.0) (2026-08-04)
+
+### 🎉 New Features
+
+* [MP-3056] - goal in review slide 3 ([#7122](https://github.com/kiva/ui/issues/7122)) ([053d3cb](https://github.com/kiva/ui/commit/053d3cbb54217237058425422713954857e0db09))
+* add borrower grid slide to goal in review ([babda2c](https://github.com/kiva/ui/commit/babda2c57f0586aedff0ab513936168987f41472))
+* add goals feedback survey to goal in review recap ([#7127](https://github.com/kiva/ui/issues/7127)) ([3f29274](https://github.com/kiva/ui/commit/3f29274359302aab23f7169045fdcc611952adff))
+* **apollo:** build operation variables with one shared helper ([5764b92](https://github.com/kiva/ui/commit/5764b92d8014a50778257de68e0152a155d958e7))
+* **apollo:** compose composable operation exports in the transform ([554b58d](https://github.com/kiva/ui/commit/554b58dfac0299e548e02f0565e2f63ff52fb171))
+* **apollo:** prefetch composable operations attached to component definitions ([db26fc8](https://github.com/kiva/ui/commit/db26fc85c0c3f5d6bc0925ed8608db02de56b46d))
+* mp-3012-meta-tracking-new-events-pt-1 ([3cf226f](https://github.com/kiva/ui/commit/3cf226f2c94922b7cb05f420276828d3f135116a))
+* mp-3012-meta-tracking-new-events-pt-1 ([8747c64](https://github.com/kiva/ui/commit/8747c649fc08ee75e2e72822fcea9648d3b82674))
+* mp-3012-meta-tracking-new-events-pt-1 ([8ea88c9](https://github.com/kiva/ui/commit/8ea88c9d00eee436d06fee98126b6394c1000a7e))
+* mp-3012-meta-tracking-new-events-pt-1 ([d71eb04](https://github.com/kiva/ui/commit/d71eb040173b93b9ba1f66d75c253517447006f2))
+* mp-3012-meta-tracking-new-events-pt-1 ([26bfacc](https://github.com/kiva/ui/commit/26bfacc946a40de4ca90aa87473f38beebf56213))
+* mp-3012-meta-tracking-new-events-pt-1 ([4887896](https://github.com/kiva/ui/commit/48878962adbfd5b1ae277109d88d27c535a54e9b))
+* mp-3012-meta-tracking-new-events-pt-1 ([484e857](https://github.com/kiva/ui/commit/484e857a8fb2d884595019dc6f7484fd3d464903))
+* mp-3012-meta-tracking-new-events-pt-1 ([a50872d](https://github.com/kiva/ui/commit/a50872d49838f0813e82850fc7c2e13fdaeb92bb))
+* mp-3012-meta-tracking-new-events-pt-1 ([bc94b52](https://github.com/kiva/ui/commit/bc94b52529996e00073400eb5bb4d7ada8deb653))
+
+### 🐛 Bugfixes
+
+* add spacing to banner copy ([b65adec](https://github.com/kiva/ui/commit/b65adece3339d5af2c5227d919965d89967f652a))
+* **apollo:** unify useApolloQuery with the plugin operation handling ([ac0d4ce](https://github.com/kiva/ui/commit/ac0d4ceabe366c24c97a6e2e953e3cbc4c263185))
+* avoid old conventions in pure js files ([629e6c8](https://github.com/kiva/ui/commit/629e6c88a6d106c141be3cddf3a424e5f3b6d650))
+* avoid specific width value on css ([b3540a0](https://github.com/kiva/ui/commit/b3540a0368c2645082d4e5ac5cddb18d7ea0f558))
+* bg size in first slide ([fd27530](https://github.com/kiva/ui/commit/fd275308762a07dd01c0d4626f233be2921b42cf))
+* borrower grid white space ([4ea18e7](https://github.com/kiva/ui/commit/4ea18e775b11ccf899cc01df46fd0c891b5127a9))
+* design feedback on loans beta page ([#7134](https://github.com/kiva/ui/issues/7134)) ([2339c2a](https://github.com/kiva/ui/commit/2339c2a358af4cb1f7a1fd418aa89412a6ca8128))
+* keep borrower profile comment avatar circular when team name wraps ([#7124](https://github.com/kiva/ui/issues/7124)) ([5340bfc](https://github.com/kiva/ui/commit/5340bfc2e6157c5f48c38fd5e75de12898d221e6))
+* **LendCta:** derive the stats slot from a prefetched multi matching setting ([43d705e](https://github.com/kiva/ui/commit/43d705e20cd1bcfb90587f95343971301023a584))
+* loans page migration design feedback ([#7126](https://github.com/kiva/ui/issues/7126)) ([205ebb0](https://github.com/kiva/ui/commit/205ebb0f8d7e10d9ba9871dc05f2cb66dfea6bbd))
+* **logFormatter:** stop losing caught errors, and fix 17 wrong-level calls ([#7118](https://github.com/kiva/ui/issues/7118)) ([ea1e758](https://github.com/kiva/ui/commit/ea1e758aaf812dbc7f31a661936685381e2dda55))
+* remove borrower image hardcoded with ([53dcc13](https://github.com/kiva/ui/commit/53dcc13da5a5cf3950fb420e6e292f431d2a2cdb))
+* repair error handling defects found while auditing logFormatter ([#7119](https://github.com/kiva/ui/issues/7119)) ([4b76c15](https://github.com/kiva/ui/commit/4b76c153b0cb3e2b9a453ed4ee6032c9dbd59ede))
+* sectionbg color ([07389dc](https://github.com/kiva/ui/commit/07389dca1ecdc36519f5a6f5d355378e72d08c70))
+* **settingsUtils:** treat null setting values as unset ([2aef515](https://github.com/kiva/ui/commit/2aef515cdbe7e9d983b0264958e70f939e13097a))
+* tests content ([0385667](https://github.com/kiva/ui/commit/0385667eb77011cee2b557e674a28a6ccfbe817c))
+
+### 🪚 Refactors
+
+* **filters-challenge-header:** remove inactive experiment ([14b04ce](https://github.com/kiva/ui/commit/14b04ced19c4c511177d022cea0b0ee115a0c91d))
+* **operationVariables:** rename the merged-in parameter to ownVariables ([b8388c3](https://github.com/kiva/ui/commit/b8388c39d681411b7897cd038dab2c35745fd07a))
+
+### 📚 Documentation Changes
+
+* **apollo:** clean up composable operation comments ([9074eb7](https://github.com/kiva/ui/commit/9074eb71b85cbf00de553179dc2f26207ec1d110))
+* document composable data fetching and SSR scope rules ([1c98f2e](https://github.com/kiva/ui/commit/1c98f2e6558d78c3b82229e49a00b7f205564260))
+* guide composable data fetching and relocate SSR scope rules ([6103828](https://github.com/kiva/ui/commit/610382897237d6c7e7bdb7e689eb81b9c3fc478f))
+
+### 🔍 Tests
+
+* **LendCta:** add stories for matched loans with no lenders ([0a75b47](https://github.com/kiva/ui/commit/0a75b4774349e76860c339f33421731ba7e1d572))
+
+### 🧹 Chores
+
+* **release:** 3.82.0-rc.1 [skip ci] ([cb93496](https://github.com/kiva/ui/commit/cb934965f9535bedbf480cf183e00476ffcff246)), closes [#7122](https://github.com/kiva/ui/issues/7122) [#7127](https://github.com/kiva/ui/issues/7127) [#7134](https://github.com/kiva/ui/issues/7134) [#7124](https://github.com/kiva/ui/issues/7124) [#7126](https://github.com/kiva/ui/issues/7126) [#7118](https://github.com/kiva/ui/issues/7118) [#7119](https://github.com/kiva/ui/issues/7119)
+
 ## [3.82.0-rc.1](https://github.com/kiva/ui/compare/v3.81.0...v3.82.0-rc.1) (2026-08-04)
 
 ### 🎉 New Features
