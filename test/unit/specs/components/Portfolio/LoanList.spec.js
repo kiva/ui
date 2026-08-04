@@ -165,13 +165,12 @@ describe('LoanList — Hotjar PII suppression (legacy parity)', () => {
 });
 
 describe('LoanList — column order', () => {
-	it('renders headers as expected', () => {
+	it('renders headers in the legacy parity order', () => {
 		const page = renderLoanList({ loans: [makeLoan()] });
 
 		const headers = Array.from(page.container.querySelectorAll('thead th')).map(th => th.textContent.trim());
 		expect(headers).toEqual([
 			'Loan details',
-			'Lending partner',
 			'Status',
 			'You loaned',
 			'Paid back or raised',
@@ -226,7 +225,7 @@ describe('LoanList — "Loan details" cell', () => {
 		expect(link.closest('a').getAttribute('href')).toBe('/about/where-kiva-works/partners/44');
 	});
 
-	it('shows the trustee in the loan-details column and the partner in its own column when both are present', () => {
+	it('prefers trustee over partner if both are present (direct-loan parity)', () => {
 		const page = renderLoanList({
 			loans: [makeLoan({
 				partnerName: 'Partner 44',
@@ -237,7 +236,7 @@ describe('LoanList — "Loan details" cell', () => {
 		});
 
 		expect(page.getByText('My Trustee Org')).toBeTruthy();
-		expect(page.getByText('Partner 44')).toBeTruthy();
+		expect(page.queryByText('Partner 44')).toBeNull();
 	});
 });
 
