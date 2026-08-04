@@ -174,18 +174,13 @@ const stats = computed(() => [
 
 .goal-in-review-slide-1 {
 	background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-mobile-hill.png');
-	background-size: auto 390px;
+	background-size: contain;
 	background-position: bottom left;
 }
 
 @screen md {
 	.goal-in-review-slide-1 {
 		background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-desktop-hill.png');
-		background-size: auto 245px;
-	}
-
-	.goal-in-review-slide-1--in-progress {
-		background-size: auto 290px;
 	}
 }
 
