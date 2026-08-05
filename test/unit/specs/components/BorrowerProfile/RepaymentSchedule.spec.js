@@ -47,7 +47,7 @@ const FUTURE_PERIOD = {
 
 function partnerLoan(repayments, { dualStatementNote = null, delinquent = false } = {}) {
 	return {
-		id: 423481,
+		id: 2000020,
 		dualStatementNote,
 		delinquent,
 		repaymentInterval: 'Monthly',
@@ -60,14 +60,14 @@ function partnerLoan(repayments, { dualStatementNote = null, delinquent = false 
 			lenderRepaymentTerm: 43,
 			expectedPayments: [],
 		},
-		partner: { id: 218, name: 'Test Partner' },
+		partner: { id: 2000100, name: 'Test Partner' },
 		repayments,
 	};
 }
 
 function directLoan(repayments) {
 	return {
-		id: 1085354,
+		id: 2000021,
 		repaymentInterval: 'Monthly',
 		lenderRepaymentTerm: 24,
 		loanAmount: '5000.00',
@@ -160,7 +160,7 @@ describe('RepaymentSchedule', () => {
 				provide: { ...globalOptions.provide, apollo: { ...globalOptions.provide.apollo, query } },
 				stubs,
 			},
-			props: { loanId: 423481, status: 'payingBack' },
+			props: { loanId: 2000020, status: 'payingBack' },
 		});
 
 		expect(query).not.toHaveBeenCalled();

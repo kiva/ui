@@ -17,7 +17,7 @@ function makeApollo({ dualStatementNote = null, status = 'payingBack', anonymiza
 	const data = {
 		lend: {
 			loan: {
-				id: 453274,
+				id: 2000022,
 				status,
 				lenderRepaymentTerm: 43,
 				repaymentInterval: 'Monthly',
@@ -38,7 +38,7 @@ function makeApollo({ dualStatementNote = null, status = 'payingBack', anonymiza
 					disbursalDate: '2012-07-26T07:00:00Z',
 					expectedPayments: [],
 				},
-				partner: { id: 241, name: 'Peoples Forum', chargesFeesInterest: true },
+				partner: { id: 2000100, name: 'Test Partner', chargesFeesInterest: true },
 				repayments: [],
 			},
 		},
@@ -72,7 +72,7 @@ function renderLoanDetails({ isPrivileged = true, ...loanOverrides } = {}) {
 			},
 			stubs,
 		},
-		props: { loanId: 453274, isPrivileged },
+		props: { loanId: 2000022, isPrivileged },
 	});
 }
 
