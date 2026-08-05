@@ -69,6 +69,29 @@ export function hasDelinquentPeriod(periods = []) {
 	return periods.some(({ status }) => status === DELINQUENT);
 }
 
+// How the schedule introduces itself, per loan status. A status missing from this map
+// gets no sentence: expired loans never disbursed, and the restricted statuses only
+// privileged viewers can reach have no repayment history to describe.
+const INTRO_BY_STATUS = {
+	fundraising: { tense: 'begin' },
+	raised: { tense: 'begin' },
+	payingBack: { tense: 'began', clause: 'on track', delinquentClause: 'delinquent' },
+	ended: { tense: 'began', clause: 'complete' },
+	defaulted: { tense: 'began', followUp: 'This loan ended in default.' },
+};
+
+export function repaymentIntro(status, { delinquent = false, hasFirstRepaymentDate = false } = {}) {
+	const intro = INTRO_BY_STATUS[status];
+	if (!intro || !hasFirstRepaymentDate) {
+		return null;
+	}
+	return {
+		tense: intro.tense,
+		clause: (delinquent && intro.delinquentClause) || intro.clause || '',
+		followUp: intro.followUp || '',
+	};
+}
+
 const DIRECT_STATUS_LABELS = {
 	[REPAID]: 'Paid',
 	[PARTIAL]: 'Partial Payment',
