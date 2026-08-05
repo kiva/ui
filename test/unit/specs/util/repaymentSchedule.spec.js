@@ -1,9 +1,11 @@
 import {
 	DELINQUENT,
 	FUTURE,
+	PARTIAL,
 	REPAID,
 	actualAmountLabel,
 	buildAdvancedPeriods,
+	buildDirectInstallmentRows,
 	buildPartnerPeriodRows,
 	currencyLossNote,
 	formatLocalAmount,
@@ -263,6 +265,50 @@ describe('repaymentSchedule', () => {
 			const [advanced] = buildAdvancedPeriods([makePeriod()], 'KES');
 
 			expect(advanced.borrowerRows).toEqual([]);
+		});
+	});
+
+	describe('buildDirectInstallmentRows', () => {
+		it('labels each installment with its legacy status wording', () => {
+			const rows = buildDirectInstallmentRows([
+				{
+					dueDate: '2015-03-01T08:00:00Z', amount: '208.33', amountPaid: '208.33', status: REPAID,
+				},
+				{
+					dueDate: '2015-04-01T07:00:00Z', amount: '208.33', amountPaid: '91.71', status: PARTIAL,
+				},
+				{
+					dueDate: '2015-05-01T07:00:00Z', amount: '208.33', amountPaid: null, status: FUTURE,
+				},
+			], 'USD');
+
+			expect(rows).toEqual([
+				{
+					dueDate: '2015-03-01T08:00:00Z',
+					amountDue: 'USD 208.33',
+					amountPaid: 'USD 208.33',
+					dueFromBorrower: 'Mar 1, 2015',
+					statusLabel: 'Paid',
+				},
+				{
+					dueDate: '2015-04-01T07:00:00Z',
+					amountDue: 'USD 208.33',
+					amountPaid: 'USD 91.71',
+					dueFromBorrower: 'Apr 1, 2015',
+					statusLabel: 'Partial Payment',
+				},
+				{
+					dueDate: '2015-05-01T07:00:00Z',
+					amountDue: 'USD 208.33',
+					amountPaid: '',
+					dueFromBorrower: 'May 1, 2015',
+					statusLabel: 'Not Paid',
+				},
+			]);
+		});
+
+		it('returns no rows before the loan is disbursed', () => {
+			expect(buildDirectInstallmentRows([], 'USD')).toEqual([]);
 		});
 	});
 
