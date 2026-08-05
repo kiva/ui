@@ -92,7 +92,7 @@ export default {
 
 <style lang="postcss" scoped>
 .table-heading-spacing {
-	@apply tw-py-2.5 tw-pl-1.5;
+	@apply tw-py-2.5 tw-px-1.5;
 }
 
 .table-data-spacing {
