@@ -1,4 +1,5 @@
 import { format, isBefore, parseISO } from 'date-fns';
+import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
 import numeral from 'numeral';
 
 export const REPAID = 'repaid';
@@ -65,8 +66,12 @@ export function buildPartnerPeriodRows(periods = [], now = new Date()) {
 	}));
 }
 
-export function hasDelinquentPeriod(periods = []) {
-	return periods.some(({ status }) => status === DELINQUENT);
+export function commentIcon(tone) {
+	return tone === REPAID ? mdiCheckboxMarkedCircle : mdiMinusCircle;
+}
+
+export function commentIconClass(tone) {
+	return tone === DELINQUENT ? 'tw-text-danger' : 'tw-text-brand-700';
 }
 
 // How the schedule introduces itself, per loan status. A status missing from this map
