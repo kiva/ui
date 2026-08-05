@@ -27,13 +27,7 @@
 							v-if="row.comment.text"
 							class="tw-bg-primary tw-inline-block tw-px-2 tw-mx-auto tw-py-1 tw-rounded"
 						>
-							<kv-material-icon
-								v-if="row.comment.tone"
-								:icon="commentIcon(row.comment.tone)"
-								class="tw-w-3 tw-h-3 tw-align-middle"
-								:class="commentIconClass(row.comment.tone)"
-							/>
-							{{ row.comment.text }}
+							<repayment-comment :tone="row.comment.tone" :text="row.comment.text" />
 						</p>
 					</td>
 				</tr>
@@ -72,15 +66,7 @@
 						{{ row.actual }}
 					</td>
 					<td class="table-data-spacing">
-						<span v-if="row.comment.text">
-							<kv-material-icon
-								v-if="row.comment.tone"
-								:icon="commentIcon(row.comment.tone)"
-								class="tw-w-3 tw-h-3 tw-align-middle"
-								:class="commentIconClass(row.comment.tone)"
-							/>
-							{{ row.comment.text }}
-						</span>
+						<repayment-comment :tone="row.comment.tone" :text="row.comment.text" />
 					</td>
 				</tr>
 			</tbody>
@@ -89,13 +75,12 @@
 </template>
 
 <script>
-import { KvMaterialIcon } from '@kiva/kv-components';
-import { commentIcon, commentIconClass } from '#src/util/repaymentSchedule';
+import RepaymentComment from '#src/components/BorrowerProfile/RepaymentComment';
 
 export default {
 	name: 'PartnerRepaymentTable',
 	components: {
-		KvMaterialIcon,
+		RepaymentComment,
 	},
 	props: {
 		rows: {
@@ -103,16 +88,12 @@ export default {
 			default: () => [],
 		},
 	},
-	methods: {
-		commentIcon,
-		commentIconClass,
-	},
 };
 </script>
 
 <style lang="postcss" scoped>
 .table-heading-spacing {
-	@apply tw-py-2.5 tw-pl-1.5;
+	@apply tw-py-2.5 tw-px-1.5;
 }
 
 .table-data-spacing {

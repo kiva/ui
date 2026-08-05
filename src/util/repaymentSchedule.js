@@ -1,5 +1,4 @@
 import { isBefore } from 'date-fns';
-import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
 import numeral from 'numeral';
 import { formatInKivaServerTimezone, parseKivaDate } from '#src/util/dateUtils';
 
@@ -76,14 +75,6 @@ export function buildPartnerPeriodRows(periods = [], now = new Date()) {
 		status: period.status,
 		comment: periodComment(period),
 	}));
-}
-
-export function commentIcon(tone) {
-	return tone === REPAID ? mdiCheckboxMarkedCircle : mdiMinusCircle;
-}
-
-export function commentIconClass(tone) {
-	return tone === DELINQUENT ? 'tw-text-danger' : 'tw-text-brand-700';
 }
 
 // How the schedule introduces itself, per loan status. A status missing from this map

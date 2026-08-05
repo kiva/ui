@@ -33,16 +33,8 @@
 						<th colspan="5" class="table-data-spacing tw-text-left tw-font-medium">
 							{{ period.periodLabel }}
 						</th>
-						<th class="table-data-spacing tw-text-left tw-font-medium">
-							<span v-if="period.comment.text">
-								<kv-material-icon
-									v-if="period.comment.tone"
-									:icon="commentIcon(period.comment.tone)"
-									class="tw-w-3 tw-h-3 tw-align-middle"
-									:class="commentIconClass(period.comment.tone)"
-								/>
-								{{ period.comment.text }}
-							</span>
+						<th class="table-data-spacing tw-text-left tw-font-medium tw-whitespace-nowrap">
+							<repayment-comment :tone="period.comment.tone" :text="period.comment.text" />
 						</th>
 					</tr>
 					<tr
@@ -68,7 +60,7 @@
 						</td>
 						<td class="table-data-spacing"></td>
 					</tr>
-					<tr>
+					<tr class="tw-bg-secondary">
 						<td class="table-data-spacing tw-whitespace-nowrap">
 							From Lending partner to lenders
 						</td>
@@ -102,13 +94,12 @@
 </template>
 
 <script>
-import { KvMaterialIcon } from '@kiva/kv-components';
-import { commentIcon, commentIconClass } from '#src/util/repaymentSchedule';
+import RepaymentComment from '#src/components/BorrowerProfile/RepaymentComment';
 
 export default {
 	name: 'AdvancedRepaymentTable',
 	components: {
-		KvMaterialIcon,
+		RepaymentComment,
 	},
 	props: {
 		periods: {
@@ -123,8 +114,6 @@ export default {
 		};
 	},
 	methods: {
-		commentIcon,
-		commentIconClass,
 		// Show each gradient only while the table can still scroll that way.
 		updateScrollGradients() {
 			const el = this.$refs.scrollContainer;
@@ -155,11 +144,11 @@ export default {
 
 <style lang="postcss" scoped>
 .table-heading-spacing {
-	@apply tw-py-2.5 tw-pl-1.5;
+	@apply tw-py-1.5 tw-px-1.5;
 }
 
 .table-data-spacing {
-	@apply tw-p-1.5;
+	@apply tw-py-0.5 tw-px-1.5;
 }
 
 .scroll-gradient {
