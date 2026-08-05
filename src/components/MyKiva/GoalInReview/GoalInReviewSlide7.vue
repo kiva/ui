@@ -57,7 +57,7 @@
 						class="tw-w-full tw-text-eco-green-1"
 						data-testid="goal-in-review-slide-7-feedback-placeholder"
 					>
-						<GoalInReviewFeedbackForm @submitted="emit('feedback-submitted')" />
+						<GoalInReviewFeedbackForm @submitted="handleFeedbackSubmitted" />
 					</div>
 				</template>
 			</div>
@@ -100,12 +100,21 @@ const emit = defineEmits(['back-to-kiva', 'finish-goal', 'set-goal', 'feedback-s
 const $kvTrackEvent = inject('$kvTrackEvent', () => {});
 
 const feedbackOpen = ref(false);
+// Set once the survey is submitted this session so the toggle disappears and can't
+// re-fire the share-feedback event.
+const feedbackSubmittedLocally = ref(false);
 
 const toggleFeedback = () => {
 	feedbackOpen.value = !feedbackOpen.value;
 	if (feedbackOpen.value) {
 		$kvTrackEvent('portfolio', 'click', 'goal-in-review-share-feedback');
 	}
+};
+
+const handleFeedbackSubmitted = () => {
+	feedbackSubmittedLocally.value = true;
+	feedbackOpen.value = false;
+	emit('feedback-submitted');
 };
 
 const isComplete = computed(() => props.goalStatus === 'completed');
@@ -136,7 +145,9 @@ const primaryCta = computed(() => {
 	return { label: `Finish my ${props.year} goal`, event: 'finish-goal' };
 });
 
-const showFeedback = computed(() => !isPastGoalYear.value && !props.feedbackSubmitted);
+const showFeedback = computed(() => !isPastGoalYear.value
+	&& !props.feedbackSubmitted
+	&& !feedbackSubmittedLocally.value);
 </script>
 
 <style lang="postcss" scoped>
