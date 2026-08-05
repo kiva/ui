@@ -7,8 +7,6 @@ import {
 	buildAdvancedPeriods,
 	buildDirectInstallmentRows,
 	buildPartnerPeriodRows,
-	commentIcon,
-	commentIconClass,
 	currencyLossNote,
 	formatLocalAmount,
 	formatUsd,
@@ -354,7 +352,8 @@ describe('repaymentSchedule', () => {
 	});
 
 	describe('repaymentIntro', () => {
-		const withSchedule = { hasFirstRepaymentDate: true };
+		const partnerLoan = { hasFirstRepaymentDate: true, isPartnerLoan: true };
+		const directLoan = { hasFirstRepaymentDate: true, isPartnerLoan: false };
 
 		it.each([
 			['fundraising', 'begin', ''],
@@ -362,20 +361,27 @@ describe('repaymentSchedule', () => {
 			['payingBack', 'began', 'on track'],
 			['ended', 'began', 'complete'],
 		])('describes a %s loan as "%s ... %s"', (status, tense, clause) => {
-			expect(repaymentIntro(status, withSchedule)).toEqual({ tense, clause, followUp: '' });
+			expect(repaymentIntro(status, partnerLoan)).toEqual({
+				tense,
+				preposition: 'in',
+				clause,
+				followUp: '',
+			});
 		});
 
 		it('calls out a delinquent loan that is paying back', () => {
-			expect(repaymentIntro('payingBack', { ...withSchedule, delinquent: true })).toEqual({
+			expect(repaymentIntro('payingBack', { ...partnerLoan, delinquent: true })).toEqual({
 				tense: 'began',
+				preposition: 'in',
 				clause: 'delinquent',
 				followUp: '',
 			});
 		});
 
 		it('follows a defaulted loan with its own sentence', () => {
-			expect(repaymentIntro('defaulted', withSchedule)).toEqual({
+			expect(repaymentIntro('defaulted', partnerLoan)).toEqual({
 				tense: 'began',
+				preposition: 'in',
 				clause: '',
 				followUp: 'This loan ended in default.',
 			});
@@ -384,9 +390,13 @@ describe('repaymentSchedule', () => {
 		it.each(['expired', 'refunded', 'reviewed', 'inactive', 'deleted'])(
 			'says nothing about a %s loan',
 			status => {
-				expect(repaymentIntro(status, withSchedule)).toBeNull();
+				expect(repaymentIntro(status, partnerLoan)).toBeNull();
 			},
 		);
+
+		it('says "on" for a direct loan, whose installments are dated', () => {
+			expect(repaymentIntro('payingBack', directLoan).preposition).toBe('on');
+		});
 
 		it('says nothing when the loan has no first repayment date', () => {
 			expect(repaymentIntro('payingBack', { hasFirstRepaymentDate: false })).toBeNull();
@@ -412,14 +422,6 @@ describe('repaymentSchedule', () => {
 
 			expect(advanced.periodLabel).toBe('');
 			expect(advanced.lenderRow.expectedDate).toBe('');
-		});
-	});
-
-	describe('commentIcon', () => {
-		it('marks a repaid period with a check and a delinquent one with a minus', () => {
-			expect(commentIcon(REPAID)).not.toBe(commentIcon(DELINQUENT));
-			expect(commentIconClass(DELINQUENT)).toBe('tw-text-danger');
-			expect(commentIconClass(REPAID)).toBe('tw-text-brand-700');
 		});
 	});
 });

@@ -204,7 +204,7 @@ describe('RepaymentSchedule', () => {
 
 		await waitFor(() => {
 			expect(visibleText(getByTestId('repayment-lightbox')))
-				.toContain('Repayments began in Sep 01, 2017 and are delinquent.');
+				.toContain('Repayments began in Sep 2017 and are delinquent.');
 		});
 	});
 
@@ -215,7 +215,7 @@ describe('RepaymentSchedule', () => {
 
 		await waitFor(() => {
 			expect(visibleText(getByTestId('repayment-lightbox')))
-				.toContain('Repayments began in Sep 01, 2017 and are on track.');
+				.toContain('Repayments began in Sep 2017 and are on track.');
 		});
 	});
 
@@ -227,7 +227,7 @@ describe('RepaymentSchedule', () => {
 
 		await waitFor(() => {
 			expect(visibleText(getByTestId('repayment-lightbox')))
-				.toContain('Repayments began in Sep 01, 2017 and are complete.');
+				.toContain('Repayments began in Sep 2017 and are complete.');
 		});
 	});
 
@@ -239,7 +239,7 @@ describe('RepaymentSchedule', () => {
 
 		await waitFor(() => {
 			expect(visibleText(getByTestId('repayment-lightbox')))
-				.toContain('Repayments began in Sep 01, 2017. This loan ended in default.');
+				.toContain('Repayments began in Sep 2017. This loan ended in default.');
 		});
 	});
 
@@ -317,6 +317,21 @@ describe('RepaymentSchedule', () => {
 		expect((await findAllByText('KES 5,000.00')).length).toBe(1);
 		expect((await findAllByText('KES 14,500.00')).length).toBe(1);
 		expect((await findAllByText('From Lending partner to lenders')).length).toBe(1);
+	});
+
+	it('dates a direct loan intro to the day, since its installments are dated', async () => {
+		const { getByTestId, findByText } = await renderRepaymentSchedule({
+			loan: directLoan([
+				{
+					dueDate: '2015-03-01T08:00:00Z', amount: '208.33', amountPaid: '208.33', status: 'repaid',
+				},
+			]),
+		});
+
+		await findByText('Total amount due');
+
+		expect(visibleText(getByTestId('repayment-lightbox')))
+			.toContain('Repayments began on Mar 01, 2015');
 	});
 
 	it('lists each installment with its amount due, amount paid, due date and status', async () => {
