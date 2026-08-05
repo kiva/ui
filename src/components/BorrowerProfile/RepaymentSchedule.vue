@@ -25,7 +25,21 @@
 					</template>.
 				</p>
 
-				<partner-repayment-table v-if="isPartnerLoan" :rows="partnerRows" />
+				<template v-if="isPartnerLoan">
+					<button
+						v-if="!isDualStatement"
+						class="tw-text-link tw-mb-2 tw-block"
+						data-testid="bp-repayment-advanced-toggle"
+						@click="toggleAdvanced"
+					>
+						{{ isAdvancedVisible ? 'Hide advanced' : 'Show advanced' }}
+					</button>
+					<advanced-repayment-table
+						v-if="isAdvancedVisible"
+						:periods="advancedPeriods"
+					/>
+					<partner-repayment-table v-else :rows="partnerRows" />
+				</template>
 
 				<template v-else>
 					<!-- Table for small screens -->
@@ -170,8 +184,14 @@ import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
 import { format, parseISO, isBefore } from 'date-fns';
 import numeral from 'numeral';
 import { KvMaterialIcon, KvLightbox } from '@kiva/kv-components';
+import AdvancedRepaymentTable from '#src/components/BorrowerProfile/AdvancedRepaymentTable';
 import PartnerRepaymentTable from '#src/components/BorrowerProfile/PartnerRepaymentTable';
-import { buildPartnerPeriodRows, hasDelinquentPeriod } from '#src/util/repaymentSchedule';
+import {
+	buildAdvancedPeriods,
+	buildPartnerPeriodRows,
+	hasDelinquentPeriod,
+	isDualStatementLoan,
+} from '#src/util/repaymentSchedule';
 
 const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 	lend {
@@ -200,6 +220,7 @@ const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 			}
 			... on LoanPartner {
 				id
+				dualStatementNote
 				partner {
 					id
 					name
@@ -211,6 +232,14 @@ const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 					expectedAmountToLenders
 					actualAmountToLenders
 					currencyLossToLenders
+					expectedRepayments {
+						effectiveDate
+						amount
+					}
+					actualRepayments {
+						effectiveDate
+						amount
+					}
 				}
 			}
 		}
@@ -220,6 +249,7 @@ const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 export default {
 	name: 'RepaymentSchedule',
 	components: {
+		AdvancedRepaymentTable,
 		KvLightbox,
 		KvMaterialIcon,
 		PartnerRepaymentTable,
@@ -240,6 +270,7 @@ export default {
 			mdiCheckboxMarkedCircle,
 			mdiMinusCircle,
 			isLightboxVisible: false,
+			isAdvancedVisible: false,
 			repaymentSchedule: [],
 			repaymentPeriods: [],
 			repaidAmount: 0,
@@ -247,6 +278,8 @@ export default {
 			lenderRepaymentTerm: 0,
 			partnerName: '',
 			disbursalDate: '',
+			dualStatementNote: '',
+			currency: '',
 		};
 	},
 	methods: {
@@ -255,6 +288,9 @@ export default {
 		},
 		closeLightbox() {
 			this.isLightboxVisible = false;
+		},
+		toggleAdvanced() {
+			this.isAdvancedVisible = !this.isAdvancedVisible;
 		},
 		fetchRepaymentSchedule() {
 			this.apollo.query({
@@ -271,6 +307,8 @@ export default {
 				this.loanAmount = loan?.loanAmount || 0;
 				this.lenderRepaymentTerm = loan?.terms?.lenderRepaymentTerm || 0;
 				this.disbursalDate = loan?.terms?.disbursalDate || '';
+				this.dualStatementNote = loan?.dualStatementNote || '';
+				this.currency = loan?.terms?.currency || '';
 			});
 		},
 	},
@@ -280,6 +318,12 @@ export default {
 		},
 		partnerRows() {
 			return buildPartnerPeriodRows(this.repaymentPeriods);
+		},
+		advancedPeriods() {
+			return buildAdvancedPeriods(this.repaymentPeriods, this.currency);
+		},
+		isDualStatement() {
+			return isDualStatementLoan(this.dualStatementNote);
 		},
 		firstRepaymentDate() {
 			if (this.isPartnerLoan) {
