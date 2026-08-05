@@ -13,7 +13,17 @@
 			title="Loan repayment schedule"
 			@lightbox-closed="closeLightbox"
 		>
-			<div v-if="isPartnerLoan || loanDisbursed">
+			<div
+				v-if="loading"
+				class="tw-flex tw-flex-col tw-gap-1.5 tw-w-full md:tw-w-screen md:tw-max-w-md"
+				data-testid="bp-repayment-schedule-loading"
+			>
+				<div v-for="row in 8" :key="row" class="tw-h-3">
+					<kv-loading-placeholder />
+				</div>
+			</div>
+
+			<div v-else-if="hasLoaded && (isPartnerLoan || loanDisbursed)">
 				<p v-if="intro" class="tw-pb-3">
 					Repayments {{ intro.tense }} {{ intro.preposition }}
 					<span class="tw-font-medium">{{ formattedFirstRepaymentDate }}</span>
@@ -50,9 +60,9 @@
 				</template>
 			</div>
 
-			<!-- direct loan before disbursal" -->
+			<!-- direct loan before disbursal -->
 			<div
-				v-if="!isPartnerLoan && !loanDisbursed"
+				v-else-if="hasLoaded"
 				class="tw-prose"
 			>
 				<p>
@@ -74,7 +84,7 @@
 <script>
 import { gql } from 'graphql-tag';
 import { isBefore, parseISO } from 'date-fns';
-import { KvLightbox } from '@kiva/kv-components';
+import { KvLightbox, KvLoadingPlaceholder } from '@kiva/kv-components';
 import AdvancedRepaymentTable from '#src/components/BorrowerProfile/AdvancedRepaymentTable';
 import DirectRepaymentTable from '#src/components/BorrowerProfile/DirectRepaymentTable';
 import PartnerRepaymentTable from '#src/components/BorrowerProfile/PartnerRepaymentTable';
@@ -150,6 +160,7 @@ export default {
 		AdvancedRepaymentTable,
 		DirectRepaymentTable,
 		KvLightbox,
+		KvLoadingPlaceholder,
 		PartnerRepaymentTable,
 	},
 	inject: ['apollo'],
@@ -167,6 +178,8 @@ export default {
 		return {
 			isLightboxVisible: false,
 			isAdvancedVisible: false,
+			loading: false,
+			hasLoaded: false,
 			repayments: [],
 			loanAmount: 0,
 			lenderRepaymentTerm: 0,
@@ -180,6 +193,9 @@ export default {
 	methods: {
 		openLightbox() {
 			this.isLightboxVisible = true;
+			if (!this.hasLoaded && !this.loading) {
+				this.fetchRepaymentSchedule();
+			}
 		},
 		closeLightbox() {
 			this.isLightboxVisible = false;
@@ -188,6 +204,7 @@ export default {
 			this.isAdvancedVisible = !this.isAdvancedVisible;
 		},
 		fetchRepaymentSchedule() {
+			this.loading = true;
 			this.apollo.query({
 				query: repaymentScheduleQuery,
 				variables: {
@@ -205,6 +222,9 @@ export default {
 				this.delinquent = loan?.delinquent ?? false;
 				this.dualStatementNote = loan?.dualStatementNote || '';
 				this.currency = loan?.terms?.currency || '';
+				this.hasLoaded = true;
+			}).finally(() => {
+				this.loading = false;
 			});
 		},
 	},
@@ -248,9 +268,6 @@ export default {
 		loanDisbursed() {
 			return this.disbursalDate !== '' && isBefore(parseISO(this.disbursalDate), new Date());
 		}
-	},
-	mounted() {
-		this.fetchRepaymentSchedule();
 	},
 };
 </script>
