@@ -48,6 +48,8 @@ export const Delinquent = storyForLoan(
 	{
 		...payingBackPartnerLoanWithRepayments,
 		id: 2000012,
+		// The sentence reads the loan-level flag, so a delinquent period alone is not enough.
+		delinquent: true,
 		repayments: partnerRepaymentPeriods.filter(({ status }) => status !== 'repaid'),
 	},
 	'payingBack',
