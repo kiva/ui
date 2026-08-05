@@ -122,6 +122,55 @@ describe('RepaymentSchedule', () => {
 		expect(getByTestId('repayment-lightbox')).toBeTruthy();
 	});
 
+	it('waits for the schedule rather than showing pre-disbursal copy in its place', async () => {
+		// The lightbox opens before the query lands. Both content branches turn on loan
+		// type, which reads as an undisbursed direct loan until the response arrives.
+		let resolveQuery;
+		const pending = new Promise(resolve => { resolveQuery = resolve; });
+		const loan = partnerLoan([REPAID_PERIOD]);
+
+		const { getByTestId, queryByText, findByText } = render(RepaymentSchedule, {
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					apollo: { ...globalOptions.provide.apollo, query: () => pending },
+				},
+				stubs,
+			},
+			props: { loanId: loan.id, status: 'payingBack' },
+		});
+
+		await fireEvent.click(getByTestId('bp-loan-detail-full-repayment-schedule-lightbox-btn'));
+
+		expect(getByTestId('bp-repayment-schedule-loading')).toBeTruthy();
+		expect(queryByText(/This loan is for/)).toBeNull();
+
+		resolveQuery({ data: { lend: { loan } } });
+
+		expect(await findByText('Comments')).toBeTruthy();
+	});
+
+	it('asks for the schedule only once the lightbox is opened', async () => {
+		const query = vi.fn(() => Promise.resolve({ data: { lend: { loan: partnerLoan([REPAID_PERIOD]) } } }));
+
+		const { getByTestId, findByText } = render(RepaymentSchedule, {
+			global: {
+				...globalOptions,
+				provide: { ...globalOptions.provide, apollo: { ...globalOptions.provide.apollo, query } },
+				stubs,
+			},
+			props: { loanId: 423481, status: 'payingBack' },
+		});
+
+		expect(query).not.toHaveBeenCalled();
+
+		await fireEvent.click(getByTestId('bp-loan-detail-full-repayment-schedule-lightbox-btn'));
+		await findByText('Comments');
+
+		expect(query).toHaveBeenCalledTimes(1);
+	});
+
 	it('reports each period with its expected amount, actual amount and comment', async () => {
 		const { findByText, findAllByText } = await renderRepaymentSchedule({
 			loan: partnerLoan([REPAID_PERIOD]),
@@ -286,12 +335,12 @@ describe('RepaymentSchedule', () => {
 		const toggle = await findByTestId('bp-repayment-advanced-toggle');
 		await fireEvent.click(toggle);
 
-		expect((await findAllByText('From borrower to Lending partner')).length).toBeGreaterThan(0);
+		expect((await findAllByText('From borrower to partner')).length).toBeGreaterThan(0);
 		expect(toggle.textContent.trim()).toBe('Hide advanced');
 
 		await fireEvent.click(toggle);
 
-		expect(queryByText('From borrower to Lending partner')).toBeNull();
+		expect(queryByText('From borrower to partner')).toBeNull();
 		expect(toggle.textContent.trim()).toBe('Show advanced');
 	});
 
@@ -316,7 +365,7 @@ describe('RepaymentSchedule', () => {
 		expect((await findAllByText('KES 10,000.00')).length).toBe(1);
 		expect((await findAllByText('KES 5,000.00')).length).toBe(1);
 		expect((await findAllByText('KES 14,500.00')).length).toBe(1);
-		expect((await findAllByText('From Lending partner to lenders')).length).toBe(1);
+		expect((await findAllByText('From partner to lenders')).length).toBe(1);
 	});
 
 	it('dates a direct loan intro to the day, since its installments are dated', async () => {
