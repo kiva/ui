@@ -15,7 +15,16 @@ vi.mock('@kiva/kv-components', () => ({
 				:data-form-id="formAssemblyId"
 				:data-title="title"
 			>
-				<button type="button" data-testid="emit-submitted" @click="$emit('fa-form-submitted')">submit</button>
+				<button
+					type="button"
+					data-testid="emit-submitted"
+					@click="$emit('fa-form-submitted', { valid: true })"
+				>submit</button>
+				<button
+					type="button"
+					data-testid="emit-invalid"
+					@click="$emit('fa-form-submitted', { valid: false })"
+				>bad</button>
 			</div>
 		`,
 	},
@@ -36,9 +45,15 @@ describe('GoalInReviewFeedbackForm', () => {
 		getByTestId('goal-in-review-feedback-form');
 	});
 
-	it('forwards the submitted event on fa-form-submitted', async () => {
+	it('forwards the submitted event on a valid fa-form-submitted', async () => {
 		const { getByTestId, emitted } = renderForm();
 		await fireEvent.click(getByTestId('emit-submitted'));
 		expect(emitted().submitted).toHaveLength(1);
+	});
+
+	it('does not forward the submitted event when the submission is invalid', async () => {
+		const { getByTestId, emitted } = renderForm();
+		await fireEvent.click(getByTestId('emit-invalid'));
+		expect(emitted().submitted).toBeUndefined();
 	});
 });

@@ -49,7 +49,11 @@ vi.mock('@kiva/kv-components', () => ({
 		name: 'KvFormAssemblyForm',
 		props: ['formAssemblyId', 'title'],
 		emits: ['fa-form-submitted'],
-		template: '<button type="button" data-testid="fa-submit" @click="$emit(\'fa-form-submitted\')">submit</button>',
+		template: `<button
+			type="button"
+			data-testid="fa-submit"
+			@click="$emit('fa-form-submitted', { valid: true })"
+		>submit</button>`,
 	},
 	getKivaImageUrl: () => '',
 }));

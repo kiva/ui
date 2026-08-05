@@ -17,7 +17,6 @@ const FEEDBACK_FORM_ID = 659;
 const emit = defineEmits(['submitted']);
 
 const handleSubmitted = (event = {}) => {
-	console.log('HP > GoalInReviewFeedbackForm submitted', event);
 	if (event.valid) {
 		emit('submitted');
 	}
