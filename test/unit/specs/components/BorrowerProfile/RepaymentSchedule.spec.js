@@ -10,8 +10,7 @@ const stubs = {
 	},
 };
 
-// Kiva serializes dates as UTC offset from Pacific midnight; these keep the calendar
-// day stable whichever timezone the suite runs in.
+// Pacific-midnight instants, as the API serializes them.
 const REPAID_PERIOD = {
 	dueDate: '2017-09-01T07:00:00Z',
 	status: 'repaid',
@@ -123,17 +122,20 @@ describe('RepaymentSchedule', () => {
 		expect(getByTestId('repayment-lightbox')).toBeTruthy();
 	});
 
-	it('shows Expected, Actual and Comments columns for a partner loan', async () => {
-		const { findByText } = await renderRepaymentSchedule({
+	it('reports each period with its expected amount, actual amount and comment', async () => {
+		const { findByText, findAllByText } = await renderRepaymentSchedule({
 			loan: partnerLoan([REPAID_PERIOD]),
 		});
 
 		expect(await findByText('Expected')).toBeTruthy();
 		expect(await findByText('Actual')).toBeTruthy();
 		expect(await findByText('Comments')).toBeTruthy();
+		expect((await findAllByText('Sep 2017')).length).toBeGreaterThan(0);
+		expect((await findAllByText('$265.83')).length).toBeGreaterThan(0);
+		expect((await findAllByText('Repayment received')).length).toBeGreaterThan(0);
 	});
 
-	it('shows the settled amount and a received marker for a repaid period', async () => {
+	it('marks a repaid period with the amount that settled', async () => {
 		const { findAllByText } = await renderRepaymentSchedule({
 			loan: partnerLoan([REPAID_PERIOD]),
 		});
@@ -142,7 +144,7 @@ describe('RepaymentSchedule', () => {
 		expect((await findAllByText('Repayment received')).length).toBeGreaterThan(0);
 	});
 
-	it('shows $0.00 and a delinquent marker for a past period that received nothing', async () => {
+	it('reports $0.00 and a delinquent marker for a past period that received nothing', async () => {
 		const { findAllByText } = await renderRepaymentSchedule({
 			loan: partnerLoan([DELINQUENT_PERIOD]),
 		});
@@ -159,7 +161,7 @@ describe('RepaymentSchedule', () => {
 		expect((await findAllByText('$12.34 lost to currency devaluation')).length).toBeGreaterThan(0);
 	});
 
-	it('shows when an upcoming period becomes available instead of an amount', async () => {
+	it('reports when an upcoming period becomes available instead of an amount', async () => {
 		const { findAllByText } = await renderRepaymentSchedule({
 			loan: partnerLoan([FUTURE_PERIOD]),
 		});
@@ -185,8 +187,7 @@ describe('RepaymentSchedule', () => {
 			loan: partnerLoan([REPAID_PERIOD, DELINQUENT_PERIOD, FUTURE_PERIOD]),
 		});
 
-		// The repaid period stays repaid even though the loan is only partly paid back,
-		// which the old client-side heuristic got wrong.
+		// The repaid period stays repaid even though the loan is only partly paid back.
 		expect((await findAllByText('Repayment received')).length).toBeGreaterThan(0);
 		expect((await findAllByText('Delinquent')).length).toBeGreaterThan(0);
 		expect((await findAllByText('Available Sep 1')).length).toBeGreaterThan(0);
@@ -204,8 +205,6 @@ describe('RepaymentSchedule', () => {
 	});
 
 	it('takes the intro status from the loan rather than its periods', async () => {
-		// A period can be historically delinquent on a loan that is current again, so the
-		// sentence follows the loan-level flag the summary card uses.
 		const { getByTestId } = await renderRepaymentSchedule({
 			loan: partnerLoan([REPAID_PERIOD, DELINQUENT_PERIOD], { delinquent: false }),
 		});
@@ -251,10 +250,11 @@ describe('RepaymentSchedule', () => {
 		expect(visibleText(getByTestId('repayment-lightbox'))).not.toContain('Repayments');
 	});
 
+	// payingBack has wording, so only the missing schedule can silence the sentence.
 	it('says nothing when the loan has no schedule, rather than printing a placeholder', async () => {
 		const { getByTestId, findByText } = await renderRepaymentSchedule({
 			loan: partnerLoan([]),
-			status: 'expired',
+			status: 'payingBack',
 		});
 
 		await findByText('Show advanced');
@@ -315,7 +315,7 @@ describe('RepaymentSchedule', () => {
 		expect((await findAllByText('From Lending partner to lenders')).length).toBe(1);
 	});
 
-	it('shows the four-column installment table for a disbursed direct loan', async () => {
+	it('lists each installment with its amount due, amount paid, due date and status', async () => {
 		const { findByText, findAllByText } = await renderRepaymentSchedule({
 			loan: directLoan([
 				{

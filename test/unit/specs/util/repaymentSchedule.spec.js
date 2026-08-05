@@ -7,17 +7,17 @@ import {
 	buildAdvancedPeriods,
 	buildDirectInstallmentRows,
 	buildPartnerPeriodRows,
+	commentIcon,
+	commentIconClass,
 	currencyLossNote,
 	formatLocalAmount,
 	formatUsd,
-	hasDelinquentPeriod,
 	isDualStatementLoan,
 	periodComment,
 	repaymentIntro,
 } from '#src/util/repaymentSchedule';
 
-// Kiva serializes dates as UTC, offset from Pacific midnight, so these times keep the
-// calendar day stable whichever timezone the suite runs in.
+// Pacific-midnight instants, as the API serializes them.
 const NOW = new Date('2020-06-15T12:00:00Z');
 const PAST_DUE_DATE = '2020-03-01T08:00:00Z';
 const FUTURE_DUE_DATE = '2020-09-01T07:00:00Z';
@@ -353,17 +353,33 @@ describe('repaymentSchedule', () => {
 		});
 	});
 
-	describe('hasDelinquentPeriod', () => {
-		it('is true when any period is delinquent', () => {
-			const periods = [makePeriod({ status: REPAID }), makePeriod({ status: DELINQUENT })];
+	describe('a period with no due date', () => {
+		it('labels the period with nothing instead of throwing', () => {
+			const rows = buildPartnerPeriodRows([makePeriod({ dueDate: null })], NOW);
 
-			expect(hasDelinquentPeriod(periods)).toBe(true);
+			expect(rows[0].periodLabel).toBe('');
+			expect(rows[0].expected).toBe('$265.83');
 		});
 
-		it('is false when every period is repaid or upcoming', () => {
-			const periods = [makePeriod({ status: REPAID }), makePeriod({ status: FUTURE })];
+		it('falls back to $0.00 rather than an availability date', () => {
+			const period = makePeriod({ dueDate: null, status: FUTURE, actualAmountToLenders: null });
 
-			expect(hasDelinquentPeriod(periods)).toBe(false);
+			expect(actualAmountLabel(period, NOW)).toBe('$0.00');
+		});
+
+		it('leaves the advanced view dates blank instead of throwing', () => {
+			const [advanced] = buildAdvancedPeriods([makePeriod({ dueDate: null })], 'KES');
+
+			expect(advanced.periodLabel).toBe('');
+			expect(advanced.lenderRow.expectedDate).toBe('');
+		});
+	});
+
+	describe('commentIcon', () => {
+		it('marks a repaid period with a check and a delinquent one with a minus', () => {
+			expect(commentIcon(REPAID)).not.toBe(commentIcon(DELINQUENT));
+			expect(commentIconClass(DELINQUENT)).toBe('tw-text-danger');
+			expect(commentIconClass(REPAID)).toBe('tw-text-brand-700');
 		});
 	});
 });
