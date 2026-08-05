@@ -65,6 +65,22 @@ function partnerLoan(repayments, dualStatementNote = null) {
 	};
 }
 
+function directLoan(repayments) {
+	return {
+		id: 1085354,
+		repaymentInterval: 'Monthly',
+		lenderRepaymentTerm: 24,
+		loanAmount: '5000.00',
+		terms: {
+			currency: 'USD',
+			disbursalDate: '2015-01-29T08:00:00Z',
+			lenderRepaymentTerm: 24,
+		},
+		partner: null,
+		repayments,
+	};
+}
+
 async function renderRepaymentSchedule({ loan, status = 'payingBack' }) {
 	const result = render(RepaymentSchedule, {
 		global: {
@@ -246,6 +262,58 @@ describe('RepaymentSchedule', () => {
 		expect((await findAllByText('KES 5,000.00')).length).toBe(1);
 		expect((await findAllByText('KES 14,500.00')).length).toBe(1);
 		expect((await findAllByText('From Lending partner to lenders')).length).toBe(1);
+	});
+
+	it('shows the four-column installment table for a disbursed direct loan', async () => {
+		const { findByText, findAllByText } = await renderRepaymentSchedule({
+			loan: directLoan([
+				{
+					dueDate: '2015-03-01T08:00:00Z', amount: '208.33', amountPaid: '208.33', status: 'repaid',
+				},
+				{
+					dueDate: '2015-04-01T07:00:00Z', amount: '208.33', amountPaid: '91.71', status: 'partial',
+				},
+				{
+					dueDate: '2015-05-01T07:00:00Z', amount: '208.33', amountPaid: null, status: 'future',
+				},
+			]),
+		});
+
+		expect(await findByText('Total amount due')).toBeTruthy();
+		expect(await findByText('Amount paid')).toBeTruthy();
+		expect(await findByText('Due from borrower')).toBeTruthy();
+		expect(await findByText('Status')).toBeTruthy();
+
+		expect((await findAllByText('Paid')).length).toBeGreaterThan(0);
+		expect((await findAllByText('Partial Payment')).length).toBeGreaterThan(0);
+		expect((await findAllByText('Not Paid')).length).toBeGreaterThan(0);
+		expect((await findAllByText('USD 91.71')).length).toBeGreaterThan(0);
+		expect((await findAllByText('Apr 1, 2015')).length).toBeGreaterThan(0);
+	});
+
+	it('leaves the repayment status sentence off a direct loan', async () => {
+		const { findByText, getByTestId } = await renderRepaymentSchedule({
+			loan: directLoan([
+				{
+					dueDate: '2015-03-01T08:00:00Z', amount: '208.33', amountPaid: '208.33', status: 'repaid',
+				},
+			]),
+		});
+
+		await findByText('Total amount due');
+
+		// A direct installment never reports delinquency, so the legacy page said nothing here.
+		expect(visibleText(getByTestId('repayment-lightbox'))).not.toContain('Repayments began');
+	});
+
+	it('keeps the pre-disbursal copy for a direct loan that has not disbursed', async () => {
+		const loan = directLoan([]);
+		loan.terms.disbursalDate = '2999-01-01T08:00:00Z';
+
+		const { findByText, queryByText } = await renderRepaymentSchedule({ loan, status: 'fundraising' });
+
+		expect(await findByText(/This loan is for/)).toBeTruthy();
+		expect(queryByText('Total amount due')).toBeNull();
 	});
 
 	it('notes currency loss in the advanced view', async () => {
