@@ -870,6 +870,9 @@ export default function useGoalData({ apollo } = {}) {
 
 	async function setGoalFeedbackSubmittedPreference(year = GOALS_CURRENT_YEAR) {
 		if (!year) return;
+		if (!userPreferences.value?.id) {
+			await createUserPreferences(apolloClient, {});
+		}
 		const parsedPrefs = await loadPreferences('network-only');
 		const prev = parsedPrefs?.goalFeedbackSubmitted || {};
 		// Year-keyed flag so a prior year's feedback does not gate the next recap's survey.
