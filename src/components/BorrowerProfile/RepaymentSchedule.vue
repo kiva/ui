@@ -14,18 +14,18 @@
 			@lightbox-closed="closeLightbox"
 		>
 			<div v-if="isPartnerLoan || loanDisbursed">
-				<!-- Partner loans only, as on the legacy page: a direct loan installment never
-				reports delinquency, so there is nothing to say about its status here.
-
-				Keep the whole sentence in one paragraph. Split across sibling elements, the
+				<!-- Keep the whole sentence in one paragraph. Split across sibling elements, the
 				separating whitespace becomes whitespace-only text nodes that Vue drops, which
 				ran the words together. -->
-				<p v-if="isPartnerLoan" class="tw-pb-3">
-					Repayments {{ statusLanguageCheck }} in
+				<p v-if="intro" class="tw-pb-3">
+					Repayments {{ intro.tense }} in
 					<span class="tw-font-medium">{{ formattedFirstRepaymentDate }}</span>
-					<template v-if="status === 'payingBack'">
-						and are <span class="tw-font-medium">{{ repaymentStatusCheck }}</span>
+					<template v-if="intro.clause">
+						and are <span class="tw-font-medium">{{ intro.clause }}</span>
 					</template>.
+				</p>
+				<p v-if="intro && intro.followUp" class="tw-pb-3">
+					{{ intro.followUp }}
 				</p>
 
 				<template v-if="isPartnerLoan">
@@ -86,8 +86,8 @@ import {
 	buildDirectInstallmentRows,
 	buildPartnerPeriodRows,
 	formatUsd,
-	hasDelinquentPeriod,
 	isDualStatementLoan,
+	repaymentIntro,
 } from '#src/util/repaymentSchedule';
 
 const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
@@ -97,6 +97,7 @@ const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 			repaymentInterval
 			lenderRepaymentTerm
 			loanAmount
+			delinquent
 			terms {
 				currency
 				currencyFullName
@@ -173,6 +174,7 @@ export default {
 			lenderRepaymentTerm: 0,
 			partnerName: '',
 			disbursalDate: '',
+			delinquent: false,
 			dualStatementNote: '',
 			currency: '',
 		};
@@ -202,6 +204,7 @@ export default {
 				this.loanAmount = loan?.loanAmount || 0;
 				this.lenderRepaymentTerm = loan?.terms?.lenderRepaymentTerm || 0;
 				this.disbursalDate = loan?.terms?.disbursalDate || '';
+				this.delinquent = loan?.delinquent ?? false;
 				this.dualStatementNote = loan?.dualStatementNote || '';
 				this.currency = loan?.terms?.currency || '';
 			});
@@ -227,25 +230,19 @@ export default {
 			return this.repayments[0]?.dueDate || '';
 		},
 		formattedFirstRepaymentDate() {
-			if (this.firstRepaymentDate !== '') {
-				return format(parseISO(this.firstRepaymentDate), 'MMM dd, yyyy');
+			if (this.firstRepaymentDate === '') {
+				return '';
 			}
-			return false;
+			return format(parseISO(this.firstRepaymentDate), 'MMM dd, yyyy');
 		},
-		statusLanguageCheck() {
-			if (this.status === 'payingBack') {
-				return 'began';
-			}
-			return 'begin';
-		},
-		repaymentStatusCheck() {
-			// Direct loan installments never report delinquency, so only partner loans
-			// can contradict "on track" here.
-			if (this.status === 'payingBack' && hasDelinquentPeriod(this.repayments)) {
-				return 'delinquent';
-			}
-			// TODO: fill out other options for other loan statuses
-			return 'on track';
+		intro() {
+			// Delinquency comes from the loan-level flag, the same source the summary card
+			// and the legacy page use; individual periods can be historically delinquent on
+			// a loan that is current again.
+			return repaymentIntro(this.status, {
+				delinquent: this.delinquent,
+				hasFirstRepaymentDate: this.firstRepaymentDate !== '',
+			});
 		},
 		loanAmountFormatted() {
 			return formatUsd(this.loanAmount);
