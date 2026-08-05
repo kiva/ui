@@ -14,14 +14,11 @@
 			@lightbox-closed="closeLightbox"
 		>
 			<div v-if="isPartnerLoan || loanDisbursed">
-				<!-- Keep the whole sentence in one paragraph. Split across sibling elements, the
-				separating whitespace becomes whitespace-only text nodes that Vue drops, which
-				ran the words together. -->
 				<p v-if="intro" class="tw-pb-3">
 					Repayments {{ intro.tense }} in
 					<span class="tw-font-medium">{{ formattedFirstRepaymentDate }}</span>
 					<template v-if="intro.clause">
-						and are <span class="tw-font-medium">{{ intro.clause }}</span>
+						{{ ' ' }}and are{{ ' ' }}<span class="tw-font-medium">{{ intro.clause }}</span>
 					</template>.
 				</p>
 				<p v-if="intro && intro.followUp" class="tw-pb-3">
@@ -76,8 +73,9 @@
 
 <script>
 import { gql } from 'graphql-tag';
-import { format, parseISO, isBefore } from 'date-fns';
+import { isBefore, parseISO } from 'date-fns';
 import { KvLightbox } from '@kiva/kv-components';
+import { formatInKivaServerTimezone } from '#src/util/dateUtils';
 import AdvancedRepaymentTable from '#src/components/BorrowerProfile/AdvancedRepaymentTable';
 import DirectRepaymentTable from '#src/components/BorrowerProfile/DirectRepaymentTable';
 import PartnerRepaymentTable from '#src/components/BorrowerProfile/PartnerRepaymentTable';
@@ -230,15 +228,14 @@ export default {
 			return this.repayments[0]?.dueDate || '';
 		},
 		formattedFirstRepaymentDate() {
-			if (this.firstRepaymentDate === '') {
-				return '';
-			}
-			return format(parseISO(this.firstRepaymentDate), 'MMM dd, yyyy');
+			return formatInKivaServerTimezone(this.firstRepaymentDate, {
+				year: 'numeric',
+				month: 'short',
+				day: '2-digit',
+			});
 		},
 		intro() {
-			// Delinquency comes from the loan-level flag, the same source the summary card
-			// and the legacy page use; individual periods can be historically delinquent on
-			// a loan that is current again.
+			// Delinquency is the loan-level flag, not a scan of the periods.
 			return repaymentIntro(this.status, {
 				delinquent: this.delinquent,
 				hasFirstRepaymentDate: this.firstRepaymentDate !== '',
@@ -260,13 +257,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="postcss" scoped>
-.table-heading-spacing {
-	@apply tw-py-2.5 tw-pl-1.5;
-}
-
-.table-data-spacing {
-	@apply tw-p-1.5;
-}
-</style>
