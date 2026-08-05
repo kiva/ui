@@ -3,6 +3,7 @@ import RepaymentSchedule from '#src/components/BorrowerProfile/RepaymentSchedule
 import apolloStoryMixin from '../../mixins/apollo-story-mixin';
 import {
 	createQueryResult,
+	dualStatementPartnerLoan,
 	fundraisingPartnerLoan,
 	partnerRepaymentPeriods,
 	payingBackPartnerLoanWithRepayments,
@@ -50,3 +51,6 @@ export const Delinquent = storyForLoan(
 	},
 	'payingBack',
 );
+
+/** Dual-statement loans hide the advanced view, matching the legacy profile. */
+export const DualStatement = storyForLoan(dualStatementPartnerLoan, 'payingBack');

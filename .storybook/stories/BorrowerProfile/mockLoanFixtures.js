@@ -328,6 +328,15 @@ export const partnerRepaymentPeriods = [
 		expectedAmountToLenders: '265.83',
 		actualAmountToLenders: '265.83',
 		currencyLossToLenders: null,
+		// Two expected repayments settled by a single recorded one, so the advanced view
+		// has an uneven period to lay out.
+		expectedRepayments: [
+			{ effectiveDate: '2024-07-01T07:00:00Z', amount: '15000', __typename: 'LoanRepaymentPartner' },
+			{ effectiveDate: '2024-07-15T07:00:00Z', amount: '8000', __typename: 'LoanRepaymentPartner' },
+		],
+		actualRepayments: [
+			{ effectiveDate: '2024-07-18T07:00:00Z', amount: '23000', __typename: 'LoanRepaymentPartner' },
+		],
 		__typename: 'LoanRepaymentPeriod',
 	},
 	{
@@ -337,6 +346,8 @@ export const partnerRepaymentPeriods = [
 		expectedAmountToLenders: '265.84',
 		actualAmountToLenders: '253.50',
 		currencyLossToLenders: '12.34',
+		expectedRepayments: [],
+		actualRepayments: [],
 		__typename: 'LoanRepaymentPeriod',
 	},
 	{
@@ -346,6 +357,8 @@ export const partnerRepaymentPeriods = [
 		expectedAmountToLenders: '265.83',
 		actualAmountToLenders: null,
 		currencyLossToLenders: null,
+		expectedRepayments: [],
+		actualRepayments: [],
 		__typename: 'LoanRepaymentPeriod',
 	},
 	{
@@ -355,6 +368,8 @@ export const partnerRepaymentPeriods = [
 		expectedAmountToLenders: '265.83',
 		actualAmountToLenders: null,
 		currencyLossToLenders: null,
+		expectedRepayments: [],
+		actualRepayments: [],
 		__typename: 'LoanRepaymentPeriod',
 	},
 ];
@@ -365,6 +380,16 @@ export const payingBackPartnerLoanWithRepayments = createMockLoan({
 	status: 'payingBack',
 	fundraisingPercent: 1,
 	paidAmount: '785.17',
+	repayments: partnerRepaymentPeriods,
+});
+
+/** Dual-statement partner loan, which hides the advanced view. */
+export const dualStatementPartnerLoan = createMockLoan({
+	id: 2000013,
+	status: 'payingBack',
+	fundraisingPercent: 1,
+	paidAmount: '785.17',
+	dualStatementNote: 'This loan is part of a dual statement arrangement with the lending partner.',
 	repayments: partnerRepaymentPeriods,
 });
 
