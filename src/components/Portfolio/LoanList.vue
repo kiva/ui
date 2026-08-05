@@ -9,9 +9,6 @@
 								Loan details
 							</th>
 							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
-								Lending partner
-							</th>
-							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
 								Status
 							</th>
 							<th class="tw-text-left tw-font-bold tw-px-2 tw-py-1">
@@ -51,9 +48,8 @@
 										</div>
 									</div>
 								</td>
-								<td colspan="7" class="tw-px-2 tw-py-2 tw-align-top">
-									<div class="tw-grid tw-grid-cols-7 tw-gap-4 tw-items-start">
-										<kv-loading-placeholder style="height: 0.875rem;" />
+								<td colspan="6" class="tw-px-2 tw-py-2 tw-align-top">
+									<div class="tw-grid tw-grid-cols-6 tw-gap-4 tw-items-start">
 										<kv-loading-placeholder style="height: 0.875rem;" />
 										<kv-loading-placeholder style="height: 0.875rem;" />
 										<kv-loading-placeholder style="height: 0.875rem;" />
@@ -67,7 +63,7 @@
 						<tr v-else-if="hasError">
 							<td
 								class="tw-text-center tw-text-danger tw-px-2 tw-pt-4"
-								colspan="8"
+								colspan="7"
 								data-testid="loans-error-message"
 							>
 								We couldn't load your loans right now. Please refresh the page and try again.
@@ -76,7 +72,7 @@
 						<tr v-else-if="!loans.length">
 							<td
 								class="tw-text-center tw-text-secondary tw-px-2 tw-pt-4"
-								colspan="8"
+								colspan="7"
 								data-testid="no-loans-message"
 							>
 								You haven't made any loans that match this search.
@@ -140,6 +136,15 @@
 												{{ loan.trusteeName }}
 											</a>
 										</div>
+										<div v-else-if="loan.partnerName">
+											<a
+												:href="getPartnerUrl(loan.partnerId)"
+												target="_blank"
+												class="data-hj-suppress"
+											>
+												{{ loan.partnerName }}
+											</a>
+										</div>
 										<!-- The logged-in lender's own dedication on this loan. A named recipient shows
 											a heart + link to the dedication page with the "repayments donated to
 											Kiva" footer; a to-Kiva dedication shows the thank-you line with no
@@ -181,23 +186,12 @@
 									</div>
 								</div>
 							</td>
-							<td class="lending-partner-cell tw-break-words tw-px-2 tw-py-2 tw-align-top">
-								<div v-if="loan.partnerName">
-									<a
-										:href="getPartnerUrl(loan.partnerId)"
-										target="_blank"
-										class="data-hj-suppress"
-									>
-										{{ loan.partnerName }}
-									</a>
-								</div>
-							</td>
 							<td class="tw-px-2">
 								<div>
 									{{ getStatusLabel(loan) }}
 								</div>
 							</td>
-							<td class="tw-text-right tw-px-2">
+							<td class="tw-text-left tw-px-2">
 								<div>
 									<div class="tw-mb-1">
 										{{ $filters.numeral(
@@ -224,7 +218,7 @@
 									</div>
 								</div>
 							</td>
-							<td class="paid-back-cell tw-text-right tw-px-2">
+							<td class="paid-back-cell tw-text-left tw-px-2">
 								<div v-if="isRaisedOrFundraising(loan.status)">
 									{{ $filters.numeral(loan.loanFundraisingInfo?.fundedAmount, '$0,0.00') }}
 									<span class="tw-block tw-text-secondary tw-text-small">raised</span>
@@ -259,7 +253,7 @@
 									{{ loan.lenderRepaymentTerm || '-' }} months
 								</div>
 							</td>
-							<td class="tw-text-right tw-px-2">
+							<td class="tw-text-left tw-px-2">
 								<div>
 									<div>
 										{{ $filters.numeral(loan.terms.loanAmount, '$0,0.00') }}
@@ -597,21 +591,22 @@ export default {
 	background: linear-gradient(to top, rgb(0 0 0 / 12%), rgb(0 0 0 / 0%));
 }
 
-/* Fixed-height scroll box: 600px on mobile, 800px on desktop, with the header pinned. */
+/* Fixed-height scroll box, with the header pinned. Kept short enough that the horizontal scrollbar stays visible. */
 .loan-table-scroll {
-	max-height: 600px;
+	max-height: 526px;
 	overflow: auto;
 }
 
 @screen md {
 	.loan-table-scroll {
-		max-height: 800px;
+		max-height: 664px;
 	}
 }
 
-/* Header pinned during vertical scroll; own bg (inherits the header row's) covers the rows scrolling under it. */
+/* Header pinned during vertical scroll; own bg (inherits the header row's) covers the rows scrolling under it.
+   Headers stay on a single line — column min-widths below give the content room to sit beside them. */
 .loan-table-scroll thead th {
-	@apply tw-sticky tw-top-0;
+	@apply tw-sticky tw-top-0 tw-whitespace-nowrap;
 
 	z-index: 2;
 	background-color: inherit;
@@ -652,13 +647,9 @@ export default {
 	max-width: calc(13rem + 50px);
 }
 
-.lending-partner-cell {
-	min-width: 8rem;
-	max-width: 12rem;
-}
-
 .paid-back-cell {
-	max-width: 6rem;
+	min-width: 9rem;
+	max-width: 11rem;
 }
 
 .loan-image {
@@ -667,7 +658,7 @@ export default {
 }
 
 .team-cell {
-	min-width: 10rem;
-	max-width: 13rem;
+	min-width: 13rem;
+	max-width: 15rem;
 }
 </style>

@@ -72,6 +72,33 @@ export const sampleSectorAchievementsWithOther = buildSectorAchievements([
 	[null, 3],
 ]);
 
+const sampleBorrowerImageHashes = [
+	'093374973a7cfb1f18652d3aac5bbd05',
+	'131e7cc9d0de32daad20d90b3a39c8a8',
+	'213d4f59069e192a2a4b9ee1fb56b649',
+	'26342071330beb8309d17a5d262da2dd',
+	'6638894152e5ea6f0e65423b7b6cd9bb',
+	'8e195b0d98bde6a1a1861b11ceb61188',
+	'9673d0722a7675b9b8d11f90849d9b44',
+	'd5ad26cd7acc24317edc1c04c6250074',
+	'e3976547cb6d30ff631e616c18a62dad',
+];
+
+const sampleBorrowerNames = [
+	'Aminata', 'Rosa María', 'Jean-Baptiste', 'Siti', 'Grace', 'Nadia',
+	'Yusuf', 'Ana Lucía', 'Thandiwe', 'Marisol', 'Chanthou', 'Ibrahim', 'Mei',
+	'Esperanza Del Carmen Villalobos Hernández',
+];
+
+export const sampleGoalLoans = sampleBorrowerNames.map((name, index) => ({
+	id: 1000 + index,
+	name,
+	image: {
+		id: `image-${index}`,
+		hash: sampleBorrowerImageHashes[index % sampleBorrowerImageHashes.length],
+	},
+}));
+
 export function buildSampleGoalInReviewData(year) {
 	return {
 		year,
@@ -98,13 +125,7 @@ export function buildSampleGoalInReviewData(year) {
 			borrowers: 14,
 			percentComplete: 100,
 		},
-		borrowerList: [
-			{
-				name: 'Sample borrower',
-				country: 'Sample country',
-				sector: 'Sample sector',
-			},
-		],
+		goalLoans: sampleGoalLoans,
 		geography: {
 			countries: ['Sample country'],
 			bordersCrossed: 1,

@@ -24,7 +24,10 @@
 				/>
 			</div>
 			<div data-slide-view="2">
-				<GoalInReviewSlide2 :loan-stats="data?.loanStats" />
+				<GoalInReviewSlide2
+					:loans="data?.goalLoans"
+					:borrower-count="data?.loanStats?.borrowers"
+				/>
 			</div>
 			<div data-slide-view="3">
 				<GoalInReviewSlide3
