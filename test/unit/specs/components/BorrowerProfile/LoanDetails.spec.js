@@ -11,16 +11,18 @@ const stubs = {
 	},
 };
 
-function makeApollo(dualStatementNote) {
+const DUAL_STATEMENT_NOTE = 'Important note about this loan';
+
+function makeApollo({ dualStatementNote = null, status = 'payingBack', anonymizationLevel = 'none' } = {}) {
 	const data = {
 		lend: {
 			loan: {
 				id: 453274,
-				status: 'payingBack',
+				status,
 				lenderRepaymentTerm: 43,
 				repaymentInterval: 'Monthly',
 				disbursalDate: '2012-07-26T07:00:00Z',
-				anonymizationLevel: 'none',
+				anonymizationLevel,
 				expiredDate: '',
 				refundedDate: '',
 				defaultedDate: '',
@@ -54,13 +56,13 @@ function makeApollo(dualStatementNote) {
 	};
 }
 
-function renderLoanDetails(dualStatementNote) {
+function renderLoanDetails({ isPrivileged = true, ...loanOverrides } = {}) {
 	return render(LoanDetails, {
 		global: {
 			plugins: [apolloPlugin],
 			directives: { kvTrackEvent: () => {} },
 			provide: {
-				apollo: makeApollo(dualStatementNote),
+				apollo: makeApollo(loanOverrides),
 				cookieStore: new CookieStore(),
 			},
 			mocks: {
@@ -70,13 +72,13 @@ function renderLoanDetails(dualStatementNote) {
 			},
 			stubs,
 		},
-		props: { loanId: 453274, isPrivileged: true },
+		props: { loanId: 453274, isPrivileged },
 	});
 }
 
 describe('LoanDetails', () => {
 	it('links to additional information for a dual-statement loan', async () => {
-		const { findByTestId } = renderLoanDetails('Important note about this loan');
+		const { findByTestId } = renderLoanDetails({ dualStatementNote: DUAL_STATEMENT_NOTE });
 
 		const link = await findByTestId('bp-loan-detail-dual-statement-info');
 
@@ -84,15 +86,56 @@ describe('LoanDetails', () => {
 	});
 
 	it('omits the link when the loan is not dual-statement', async () => {
-		const { findByTestId, queryByTestId } = renderLoanDetails(null);
+		const { findByTestId, queryByTestId } = renderLoanDetails();
 
 		await findByTestId('bp-loan-detail-loan-length');
 
 		expect(queryByTestId('bp-loan-detail-dual-statement-info')).toBeNull();
 	});
 
+	describe('who sees the repayment schedule', () => {
+		const TRIGGER = 'bp-loan-detail-full-repayment-schedule-lightbox-btn';
+
+		it('offers it to a privileged viewer on a paying-back loan', async () => {
+			const { findByTestId } = renderLoanDetails({ isPrivileged: true });
+
+			expect(await findByTestId(TRIGGER)).toBeTruthy();
+		});
+
+		it('offers it to anyone on an unanonymized fundraising loan', async () => {
+			const { findByTestId } = renderLoanDetails({ isPrivileged: false, status: 'fundraising' });
+
+			expect(await findByTestId(TRIGGER)).toBeTruthy();
+		});
+
+		// The server sends these viewers no repayments, so offering the schedule showed
+		// them an empty one.
+		it.each([
+			['a paying-back loan', { status: 'payingBack', anonymizationLevel: 'none' }],
+			['a pii anonymized fundraising loan', { status: 'fundraising', anonymizationLevel: 'pii' }],
+			['a public anonymized fundraising loan', { status: 'fundraising', anonymizationLevel: 'public' }],
+		])('withholds it from an unprivileged viewer on %s', async (_label, loan) => {
+			const { findByTestId, queryByTestId } = renderLoanDetails({ isPrivileged: false, ...loan });
+
+			await findByTestId('bp-loan-detail-loan-length');
+
+			expect(queryByTestId(TRIGGER)).toBeNull();
+		});
+
+		it('withholds it from everyone on a fully anonymized loan', async () => {
+			const { findByTestId, queryByTestId } = renderLoanDetails({
+				isPrivileged: true,
+				anonymizationLevel: 'full',
+			});
+
+			await findByTestId('bp-loan-detail-loan-length');
+
+			expect(queryByTestId(TRIGGER)).toBeNull();
+		});
+	});
+
 	it('opens the repayment schedule from the additional information link', async () => {
-		const { findByTestId, queryByTestId } = renderLoanDetails('Important note about this loan');
+		const { findByTestId, queryByTestId } = renderLoanDetails({ dualStatementNote: DUAL_STATEMENT_NOTE });
 
 		expect(queryByTestId('repayment-lightbox')).toBeNull();
 
