@@ -383,6 +383,52 @@ export const payingBackPartnerLoanWithRepayments = createMockLoan({
 	repayments: partnerRepaymentPeriods,
 });
 
+/** Disbursed direct loan whose collected total stops part-way through an installment. */
+export const disbursedDirectLoanWithInstallments = createMockLoan({
+	id: 2000014,
+	__typename: 'LoanDirect',
+	status: 'payingBack',
+	fundraisingPercent: 1,
+	distributionModel: 'direct',
+	partnerName: '',
+	partner: null,
+	loanAmount: '5000.00',
+	terms: {
+		currency: 'USD',
+		currencyFullName: 'US Dollar',
+		disbursalDate: '2015-01-29T08:00:00Z',
+		expectedPayments: [],
+		flexibleFundraisingEnabled: false,
+		lenderRepaymentTerm: 24,
+		loanAmount: '5000.00',
+		lossLiabilityCurrencyExchange: 'none',
+		__typename: 'LoanTerm',
+	},
+	repayments: [
+		{
+			dueDate: '2015-03-01T08:00:00Z',
+			amount: '208.33',
+			amountPaid: '208.33',
+			status: 'repaid',
+			__typename: 'LoanRepaymentDirect',
+		},
+		{
+			dueDate: '2015-04-01T07:00:00Z',
+			amount: '208.33',
+			amountPaid: '91.71',
+			status: 'partial',
+			__typename: 'LoanRepaymentDirect',
+		},
+		{
+			dueDate: '2015-05-01T07:00:00Z',
+			amount: '208.33',
+			amountPaid: null,
+			status: 'future',
+			__typename: 'LoanRepaymentDirect',
+		},
+	],
+});
+
 /** Dual-statement partner loan, which hides the advanced view. */
 export const dualStatementPartnerLoan = createMockLoan({
 	id: 2000013,
