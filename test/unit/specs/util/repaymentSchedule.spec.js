@@ -13,6 +13,7 @@ import {
 	hasDelinquentPeriod,
 	isDualStatementLoan,
 	periodComment,
+	repaymentIntro,
 } from '#src/util/repaymentSchedule';
 
 // Kiva serializes dates as UTC, offset from Pacific midnight, so these times keep the
@@ -309,6 +310,46 @@ describe('repaymentSchedule', () => {
 
 		it('returns no rows before the loan is disbursed', () => {
 			expect(buildDirectInstallmentRows([], 'USD')).toEqual([]);
+		});
+	});
+
+	describe('repaymentIntro', () => {
+		const withSchedule = { hasFirstRepaymentDate: true };
+
+		it.each([
+			['fundraising', 'begin', ''],
+			['raised', 'begin', ''],
+			['payingBack', 'began', 'on track'],
+			['ended', 'began', 'complete'],
+		])('describes a %s loan as "%s ... %s"', (status, tense, clause) => {
+			expect(repaymentIntro(status, withSchedule)).toEqual({ tense, clause, followUp: '' });
+		});
+
+		it('calls out a delinquent loan that is paying back', () => {
+			expect(repaymentIntro('payingBack', { ...withSchedule, delinquent: true })).toEqual({
+				tense: 'began',
+				clause: 'delinquent',
+				followUp: '',
+			});
+		});
+
+		it('follows a defaulted loan with its own sentence', () => {
+			expect(repaymentIntro('defaulted', withSchedule)).toEqual({
+				tense: 'began',
+				clause: '',
+				followUp: 'This loan ended in default.',
+			});
+		});
+
+		it.each(['expired', 'refunded', 'reviewed', 'inactive', 'deleted'])(
+			'says nothing about a %s loan',
+			status => {
+				expect(repaymentIntro(status, withSchedule)).toBeNull();
+			},
+		);
+
+		it('says nothing when the loan has no first repayment date', () => {
+			expect(repaymentIntro('payingBack', { hasFirstRepaymentDate: false })).toBeNull();
 		});
 	});
 
