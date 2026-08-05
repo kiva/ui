@@ -97,9 +97,8 @@
 </template>
 
 <script>
-import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
 import { KvMaterialIcon } from '@kiva/kv-components';
-import { DELINQUENT, REPAID } from '#src/util/repaymentSchedule';
+import { commentIcon, commentIconClass } from '#src/util/repaymentSchedule';
 
 export default {
 	name: 'AdvancedRepaymentTable',
@@ -119,12 +118,8 @@ export default {
 		};
 	},
 	methods: {
-		commentIcon(tone) {
-			return tone === REPAID ? mdiCheckboxMarkedCircle : mdiMinusCircle;
-		},
-		commentIconClass(tone) {
-			return tone === DELINQUENT ? 'tw-text-danger' : 'tw-text-brand-700';
-		},
+		commentIcon,
+		commentIconClass,
 		// Show each gradient only while the table can still scroll that way.
 		updateScrollGradients() {
 			const el = this.$refs.scrollContainer;
