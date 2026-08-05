@@ -21,7 +21,7 @@
 							Total amount due: {{ row.amountDue }}
 						</p>
 						<p class="tw-mb-1.5">
-							Amount paid: {{ row.amountPaid || '—' }}
+							Amount paid: {{ row.amountPaid || emptyAmount }}
 						</p>
 						<p class="tw-bg-primary tw-inline-block tw-px-2 tw-py-1 tw-rounded">
 							{{ row.statusLabel }}
@@ -59,7 +59,7 @@
 						{{ row.amountDue }}
 					</td>
 					<td class="table-data-spacing">
-						{{ row.amountPaid }}
+						{{ row.amountPaid || emptyAmount }}
 					</td>
 					<td class="table-data-spacing">
 						{{ row.dueFromBorrower }}
@@ -81,6 +81,11 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+	},
+	data() {
+		return {
+			emptyAmount: '—',
+		};
 	},
 };
 </script>
