@@ -46,10 +46,11 @@ const FUTURE_PERIOD = {
 	currencyLossToLenders: null,
 };
 
-function partnerLoan(repayments, dualStatementNote = null) {
+function partnerLoan(repayments, { dualStatementNote = null, delinquent = false } = {}) {
 	return {
 		id: 423481,
 		dualStatementNote,
+		delinquent,
 		repaymentInterval: 'Monthly',
 		lenderRepaymentTerm: 43,
 		paidAmount: '1000.00',
@@ -193,7 +194,7 @@ describe('RepaymentSchedule', () => {
 
 	it('spaces the intro sentence when the loan is paying back', async () => {
 		const { getByTestId } = await renderRepaymentSchedule({
-			loan: partnerLoan([REPAID_PERIOD, DELINQUENT_PERIOD]),
+			loan: partnerLoan([REPAID_PERIOD, DELINQUENT_PERIOD], { delinquent: true }),
 		});
 
 		await waitFor(() => {
@@ -202,15 +203,65 @@ describe('RepaymentSchedule', () => {
 		});
 	});
 
-	it('reports an on track loan when no period is delinquent', async () => {
+	it('takes the intro status from the loan rather than its periods', async () => {
+		// A period can be historically delinquent on a loan that is current again, so the
+		// sentence follows the loan-level flag the summary card uses.
 		const { getByTestId } = await renderRepaymentSchedule({
-			loan: partnerLoan([REPAID_PERIOD, FUTURE_PERIOD]),
+			loan: partnerLoan([REPAID_PERIOD, DELINQUENT_PERIOD], { delinquent: false }),
 		});
 
 		await waitFor(() => {
 			expect(visibleText(getByTestId('repayment-lightbox')))
 				.toContain('Repayments began in Sep 01, 2017 and are on track.');
 		});
+	});
+
+	it('describes a repaid loan in the past tense', async () => {
+		const { getByTestId } = await renderRepaymentSchedule({
+			loan: partnerLoan([REPAID_PERIOD]),
+			status: 'ended',
+		});
+
+		await waitFor(() => {
+			expect(visibleText(getByTestId('repayment-lightbox')))
+				.toContain('Repayments began in Sep 01, 2017 and are complete.');
+		});
+	});
+
+	it('follows a defaulted loan with its own sentence', async () => {
+		const { getByTestId } = await renderRepaymentSchedule({
+			loan: partnerLoan([REPAID_PERIOD]),
+			status: 'defaulted',
+		});
+
+		await waitFor(() => {
+			expect(visibleText(getByTestId('repayment-lightbox')))
+				.toContain('Repayments began in Sep 01, 2017. This loan ended in default.');
+		});
+	});
+
+	it('says nothing about repayments on an expired loan', async () => {
+		const { getByTestId, findAllByText } = await renderRepaymentSchedule({
+			loan: partnerLoan([REPAID_PERIOD]),
+			status: 'expired',
+		});
+
+		await findAllByText('Repayment received');
+
+		expect(visibleText(getByTestId('repayment-lightbox'))).not.toContain('Repayments');
+	});
+
+	it('says nothing when the loan has no schedule, rather than printing a placeholder', async () => {
+		const { getByTestId, findByText } = await renderRepaymentSchedule({
+			loan: partnerLoan([]),
+			status: 'expired',
+		});
+
+		await findByText('Show advanced');
+
+		const text = visibleText(getByTestId('repayment-lightbox'));
+		expect(text).not.toContain('Repayments');
+		expect(text).not.toContain('false');
 	});
 
 	it('offers an advanced view for a partner loan', async () => {
@@ -242,7 +293,7 @@ describe('RepaymentSchedule', () => {
 
 	it('hides the advanced view for a dual-statement loan', async () => {
 		const { queryByTestId, findAllByText } = await renderRepaymentSchedule({
-			loan: partnerLoan([REPAID_PERIOD], 'Important note about this loan'),
+			loan: partnerLoan([REPAID_PERIOD], { dualStatementNote: 'Important note about this loan' }),
 		});
 
 		await findAllByText('Repayment received');
@@ -289,21 +340,6 @@ describe('RepaymentSchedule', () => {
 		expect((await findAllByText('Not Paid')).length).toBeGreaterThan(0);
 		expect((await findAllByText('USD 91.71')).length).toBeGreaterThan(0);
 		expect((await findAllByText('Apr 1, 2015')).length).toBeGreaterThan(0);
-	});
-
-	it('leaves the repayment status sentence off a direct loan', async () => {
-		const { findByText, getByTestId } = await renderRepaymentSchedule({
-			loan: directLoan([
-				{
-					dueDate: '2015-03-01T08:00:00Z', amount: '208.33', amountPaid: '208.33', status: 'repaid',
-				},
-			]),
-		});
-
-		await findByText('Total amount due');
-
-		// A direct installment never reports delinquency, so the legacy page said nothing here.
-		expect(visibleText(getByTestId('repayment-lightbox'))).not.toContain('Repayments began');
 	});
 
 	it('keeps the pre-disbursal copy for a direct loan that has not disbursed', async () => {
