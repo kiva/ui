@@ -15,7 +15,7 @@
 		>
 			<div v-if="isPartnerLoan || loanDisbursed">
 				<p v-if="intro" class="tw-pb-3">
-					Repayments {{ intro.tense }} in
+					Repayments {{ intro.tense }} {{ intro.preposition }}
 					<span class="tw-font-medium">{{ formattedFirstRepaymentDate }}</span>
 					<template v-if="intro.clause">
 						{{ ' ' }}and are{{ ' ' }}<span class="tw-font-medium">{{ intro.clause }}</span>
@@ -75,7 +75,6 @@
 import { gql } from 'graphql-tag';
 import { isBefore, parseISO } from 'date-fns';
 import { KvLightbox } from '@kiva/kv-components';
-import { formatInKivaServerTimezone } from '#src/util/dateUtils';
 import AdvancedRepaymentTable from '#src/components/BorrowerProfile/AdvancedRepaymentTable';
 import DirectRepaymentTable from '#src/components/BorrowerProfile/DirectRepaymentTable';
 import PartnerRepaymentTable from '#src/components/BorrowerProfile/PartnerRepaymentTable';
@@ -83,6 +82,7 @@ import {
 	buildAdvancedPeriods,
 	buildDirectInstallmentRows,
 	buildPartnerPeriodRows,
+	formatIntroDate,
 	formatUsd,
 	isDualStatementLoan,
 	repaymentIntro,
@@ -228,17 +228,14 @@ export default {
 			return this.repayments[0]?.dueDate || '';
 		},
 		formattedFirstRepaymentDate() {
-			return formatInKivaServerTimezone(this.firstRepaymentDate, {
-				year: 'numeric',
-				month: 'short',
-				day: '2-digit',
-			});
+			return formatIntroDate(this.firstRepaymentDate, this.isPartnerLoan);
 		},
 		intro() {
 			// Delinquency is the loan-level flag, not a scan of the periods.
 			return repaymentIntro(this.status, {
 				delinquent: this.delinquent,
 				hasFirstRepaymentDate: this.firstRepaymentDate !== '',
+				isPartnerLoan: this.isPartnerLoan,
 			});
 		},
 		loanAmountFormatted() {

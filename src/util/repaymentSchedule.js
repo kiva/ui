@@ -96,16 +96,29 @@ const INTRO_BY_STATUS = {
 	defaulted: { tense: 'began', followUp: 'This loan ended in default.' },
 };
 
-export function repaymentIntro(status, { delinquent = false, hasFirstRepaymentDate = false } = {}) {
+export function repaymentIntro(
+	status,
+	{ delinquent = false, hasFirstRepaymentDate = false, isPartnerLoan = false } = {},
+) {
 	const intro = INTRO_BY_STATUS[status];
 	if (!intro || !hasFirstRepaymentDate) {
 		return null;
 	}
 	return {
 		tense: intro.tense,
+		// Partner periods are months and direct installments are days, so each reads
+		// against the granularity of the table beneath it.
+		preposition: isPartnerLoan ? 'in' : 'on',
 		clause: (delinquent && intro.delinquentClause) || intro.clause || '',
 		followUp: intro.followUp || '',
 	};
+}
+
+export function formatIntroDate(date, isPartnerLoan) {
+	if (isPartnerLoan) {
+		return formatPeriodLabel(date);
+	}
+	return formatInKivaServerTimezone(date, { year: 'numeric', month: 'short', day: '2-digit' });
 }
 
 const DIRECT_STATUS_LABELS = {
