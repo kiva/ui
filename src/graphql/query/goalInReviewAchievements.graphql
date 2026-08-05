@@ -1,0 +1,42 @@
+query goalInReviewAchievements($year: Int, $loanPurchasesLimit: Int = 1000) {
+  userAchievementProgress(year: $year) {
+    id
+    tieredLendingAchievements {
+      id
+      progressForYear
+      loanPurchases(limit: $loanPurchasesLimit) {
+        purchaseTime
+        loan {
+          id
+          name
+          image {
+            id
+            hash
+          }
+          sector {
+            id
+            name
+          }
+          geocode {
+            country {
+              id
+              name
+              isoCode
+              fundsLentInCountry
+              geocode {
+                latitude
+                longitude
+              }
+            }
+          }
+          userProperties {
+            loanBalance {
+              loanId
+              totalAmountPurchased
+            }
+          }
+        }
+      }
+    }
+  }
+}

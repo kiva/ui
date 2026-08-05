@@ -33,6 +33,7 @@
 			:goal-refresh-key="goalRefreshKey"
 			:show-my-giving-funds-card="showMyGivingFundsCard"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
+			:goal-in-review-enable="goalInReviewEnable"
 			:goals-row-enabled="goalsRowEnabled"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
 		/>

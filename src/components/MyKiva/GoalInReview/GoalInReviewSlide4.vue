@@ -95,8 +95,6 @@ const props = defineProps({
 		type: Object,
 		default: null,
 	},
-	// TODO: supplied by the parent page from its own percentile query once
-	// integrated; until then it's absent and getImpactHabit falls back to sessions.
 	lifetimePercentile: {
 		type: Number,
 		default: null,

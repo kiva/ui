@@ -188,7 +188,7 @@
 		@sidesheet-closed="handleComponentClosed"
 	/>
 	<GoalInReviewModal
-		v-if="showGoalInReviewModal"
+		v-if="goalInReviewEnable && showGoalInReviewModal"
 		:show="showGoalInReviewModal"
 		:data="goalInReviewData"
 		:feedback-submitted="goalInReviewFeedbackSubmitted"
@@ -326,6 +326,10 @@ export default {
 			default: false
 		},
 		goalRecommendedLoanEnable: {
+			type: Boolean,
+			default: false,
+		},
+		goalInReviewEnable: {
 			type: Boolean,
 			default: false,
 		},
@@ -718,6 +722,9 @@ export default {
 		},
 		async handleGoToDeepLink(sectionId) {
 			if (sectionId === GOAL_RECAP_DEEP_LINK) {
+				if (!this.goalInReviewEnable) {
+					return;
+				}
 				const goalInReview = await this.loadGoalInReview();
 				if (goalInReview?.isEligible) {
 					// Snapshot the "already submitted" flag at open time so the survey gate is

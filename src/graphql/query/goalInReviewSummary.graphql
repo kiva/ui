@@ -1,0 +1,42 @@
+query goalInReviewSummary($goalName: String, $loansLimit: Int = 11) {
+  my {
+    id
+    goalSummary(goalName: $goalName) {
+      goalName
+      category
+      dateStarted
+      target
+      status
+      count
+      borrowerCount
+      amount
+      percent
+      transactionSessionCount
+      sectors {
+        loanCount
+        sector {
+          id
+          name
+        }
+      }
+      countries {
+        id
+        name
+        isoCode
+        fundsLentInCountry
+        geocode {
+          latitude
+          longitude
+        }
+      }
+      loans(limit: $loansLimit) {
+        id
+        name
+        image {
+          id
+          hash
+        }
+      }
+    }
+  }
+}
