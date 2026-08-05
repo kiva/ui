@@ -75,8 +75,7 @@ export function commentIconClass(tone) {
 }
 
 // How the schedule introduces itself, per loan status. A status missing from this map
-// gets no sentence: expired loans never disbursed, and the restricted statuses only
-// privileged viewers can reach have no repayment history to describe.
+// gets no sentence.
 const INTRO_BY_STATUS = {
 	fundraising: { tense: 'begin' },
 	raised: { tense: 'begin' },
@@ -118,9 +117,6 @@ export function formatDetailDate(date) {
 	return format(parseISO(date), 'MMM d, yyyy');
 }
 
-// The borrower's repayments to the lending partner, expected first and then recorded.
-// The two lists are not paired — a period can hold a different number of each — so each
-// repayment gets its own row rather than being zipped against its opposite number.
 function borrowerRepaymentRows(period, currency) {
 	const expected = (period.expectedRepayments ?? []).map(repayment => ({
 		kind: 'expected',
@@ -135,8 +131,8 @@ function borrowerRepaymentRows(period, currency) {
 	return [...expected, ...actual];
 }
 
-// The lending partner's settlement with lenders. Legacy showed the period's own due date
-// in both the expected and actual columns once the period had been settled or missed.
+// The lending partner's settlement with lenders. A settled or missed period carries the
+// period's own due date in both the expected and actual columns.
 function lenderSettlementRow(period) {
 	const settled = period.status === REPAID || period.status === DELINQUENT;
 	return {
@@ -149,8 +145,6 @@ function lenderSettlementRow(period) {
 	};
 }
 
-// One row per direct-loan installment. "Due from borrower" is the installment's due
-// date, matching the legacy column despite the header reading like an amount.
 export function buildDirectInstallmentRows(installments = [], currency = '') {
 	return installments.map(installment => ({
 		dueDate: installment.dueDate,
