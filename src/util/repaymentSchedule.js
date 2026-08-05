@@ -75,7 +75,6 @@ export function buildPartnerPeriodRows(periods = [], now = new Date()) {
 		actual: actualAmountLabel(period, now),
 		status: period.status,
 		comment: periodComment(period),
-		currencyLoss: currencyLossNote(period.currencyLossToLenders),
 	}));
 }
 

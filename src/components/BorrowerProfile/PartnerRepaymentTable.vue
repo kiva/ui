@@ -35,9 +35,6 @@
 							/>
 							{{ row.comment.text }}
 						</p>
-						<p v-if="row.currencyLoss" class="tw-mt-1.5 tw-mx-1.5 tw-text-small">
-							{{ row.currencyLoss }}
-						</p>
 					</td>
 				</tr>
 			</tbody>
@@ -83,9 +80,6 @@
 								:class="commentIconClass(row.comment.tone)"
 							/>
 							{{ row.comment.text }}
-						</span>
-						<span v-if="row.currencyLoss" class="tw-block">
-							{{ row.currencyLoss }}
 						</span>
 					</td>
 				</tr>
