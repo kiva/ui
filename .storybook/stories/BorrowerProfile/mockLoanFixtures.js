@@ -241,7 +241,9 @@ export function createMockLoan(overrides = {}) {
 		terms: {
 			currency: 'KGS',
 			currencyFullName: 'Kyrgyzstani Som',
-			disbursalDate: '2024-06-15T07:00:00Z',
+			// The base loan is fundraising, so it has not disbursed. Fixtures for disbursed
+			// loans set this themselves.
+			disbursalDate: null,
 			expectedPayments: [],
 			flexibleFundraisingEnabled: false,
 			lenderRepaymentTerm: 26,
