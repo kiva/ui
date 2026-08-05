@@ -7,11 +7,11 @@
 			/>
 		</div>
 
-		<h2 class="tw-sr-only">
+		<h2 v-if="!loading && showSection" class="tw-sr-only">
 			Loan Comments
 		</h2>
 		<div
-			v-if="!loading" class="tw-py-2 md:tw-py-3 lg:tw-py-5"
+			v-if="!loading && showSection" class="tw-py-2 md:tw-py-3 lg:tw-py-5"
 			:key="`comments-${loanId}`"
 		>
 			<kv-carousel :multiple-slides-visible="false" :embla-options="{ loop: false, draggable: false }">
@@ -135,10 +135,10 @@
 						</div>
 					</div>
 				</template>
-				<template v-if="!loading" #why-special>
+				<template v-if="showWhySpecial" #why-special>
 					<why-special
 						data-testid="bp-why-special"
-						:loan-id="loanId"
+						:why-special="whySpecial"
 					/>
 				</template>
 			</kv-carousel>
@@ -166,6 +166,7 @@ import { mdiDotsHorizontalCircle } from '@mdi/js';
 import { gql } from 'graphql-tag';
 
 import useIsMobile from '#src/composables/useIsMobile';
+import { formatWhySpecial } from '#src/util/loanUtils';
 import WhySpecial from '#src/components/BorrowerProfile/WhySpecial';
 import CommentReportLightbox from '#src/components/BorrowerProfile/CommentReportLightbox';
 import clickOutside from '#src/plugins/click-outside';
@@ -208,6 +209,7 @@ export default {
 			mdiDotsHorizontalCircle,
 			loading: true,
 			comments: [],
+			whySpecial: '',
 			commentMenuShown: false,
 			isReportLightboxVisible: false,
 			isCommentLightboxVisible: false,
@@ -244,6 +246,16 @@ export default {
 				};
 			});
 		},
+		showWhySpecial() {
+			// formatWhySpecial returns '' for empty/null input, so this is false when there is
+			// no why-special content — preventing an empty carousel slide.
+			return !!formatWhySpecial(this.whySpecial);
+		},
+		showSection() {
+			// Hide the whole comments/why-special section when there is nothing to show,
+			// rather than rendering an empty carousel.
+			return this.enhancedComments.length > 0 || this.showWhySpecial;
+		},
 	},
 	apollo: {
 		lazy: true,
@@ -251,6 +263,7 @@ export default {
 			lend {
 				loan(id: $loanId) {
 					id
+					whySpecial
 					comments {
 						values {
 							id
@@ -278,6 +291,7 @@ export default {
 		},
 		result({ data }) {
 			this.comments = data?.lend?.loan?.comments?.values ?? [];
+			this.whySpecial = data?.lend?.loan?.whySpecial ?? '';
 			this.loading = false;
 		},
 		fetchPolicy: 'network-only',
