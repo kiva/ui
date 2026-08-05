@@ -55,16 +55,16 @@
 							</template>
 						</td>
 						<td class="table-data-spacing tw-whitespace-nowrap">
-							{{ row.kind === 'expected' ? row.date : '' }}
+							{{ row.expectedDate }}
 						</td>
 						<td class="table-data-spacing tw-whitespace-nowrap">
-							{{ row.kind === 'expected' ? row.amount : '' }}
+							{{ row.expectedAmount }}
 						</td>
 						<td class="table-data-spacing tw-whitespace-nowrap">
-							{{ row.kind === 'actual' ? row.date : '' }}
+							{{ row.actualDate }}
 						</td>
 						<td class="table-data-spacing tw-whitespace-nowrap">
-							{{ row.kind === 'actual' ? row.amount : '' }}
+							{{ row.actualAmount }}
 						</td>
 						<td class="table-data-spacing"></td>
 					</tr>
@@ -85,7 +85,12 @@
 							{{ period.lenderRow.actualAmount }}
 						</td>
 						<td class="table-data-spacing">
-							{{ period.currencyLoss }}
+							<span v-if="period.lenderRow.attribution" class="tw-block">
+								{{ period.lenderRow.attribution }}
+							</span>
+							<span v-if="period.currencyLoss" class="tw-block">
+								{{ period.currencyLoss }}
+							</span>
 						</td>
 					</tr>
 				</tbody>

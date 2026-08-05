@@ -122,31 +122,30 @@ export function isDualStatementLoan(dualStatementNote) {
 	return !!dualStatementNote;
 }
 
+// One row per borrower repayment, pairing each expected repayment with the recorded one
+// in the same position and running to whichever list is longer.
 function borrowerRepaymentRows(period, currency) {
-	const expected = (period.expectedRepayments ?? []).map(repayment => ({
-		kind: 'expected',
-		date: formatDetailDate(repayment.effectiveDate),
-		amount: formatLocalAmount(repayment.amount, currency),
+	const expected = period.expectedRepayments ?? [];
+	const actual = period.actualRepayments ?? [];
+
+	return Array.from({ length: Math.max(expected.length, actual.length) }, (unused, index) => ({
+		expectedDate: formatDetailDate(expected[index]?.effectiveDate),
+		expectedAmount: formatLocalAmount(expected[index]?.amount, currency),
+		actualDate: formatDetailDate(actual[index]?.effectiveDate),
+		actualAmount: formatLocalAmount(actual[index]?.amount, currency),
 	}));
-	const actual = (period.actualRepayments ?? []).map(repayment => ({
-		kind: 'actual',
-		date: formatDetailDate(repayment.effectiveDate),
-		amount: formatLocalAmount(repayment.amount, currency),
-	}));
-	return [...expected, ...actual];
 }
 
 // The lending partner's settlement with lenders. A settled or missed period carries the
 // period's own due date in both the expected and actual columns.
-function lenderSettlementRow(period) {
+function lenderSettlementRow(period, now) {
 	const settled = period.status === REPAID || period.status === DELINQUENT;
 	return {
 		expectedDate: formatDetailDate(period.dueDate),
 		expectedAmount: formatUsd(period.expectedAmountToLenders ?? 0),
 		actualDate: settled ? formatDetailDate(period.dueDate) : '',
-		actualAmount: period.actualAmountToLenders === null || period.actualAmountToLenders === undefined
-			? ''
-			: formatUsd(period.actualAmountToLenders),
+		actualAmount: actualAmountLabel(period, now),
+		attribution: period.delinquencyAttribution || '',
 	};
 }
 
@@ -160,13 +159,13 @@ export function buildDirectInstallmentRows(installments = [], currency = '') {
 	}));
 }
 
-export function buildAdvancedPeriods(periods = [], currency = '') {
+export function buildAdvancedPeriods(periods = [], currency = '', now = new Date()) {
 	return periods.map(period => ({
 		dueDate: period.dueDate,
 		periodLabel: formatPeriodLabel(period.dueDate),
 		comment: periodComment(period),
 		currencyLoss: currencyLossNote(period.currencyLossToLenders),
 		borrowerRows: borrowerRepaymentRows(period, currency),
-		lenderRow: lenderSettlementRow(period),
+		lenderRow: lenderSettlementRow(period, now),
 	}));
 }
