@@ -7,76 +7,77 @@
 		>
 			<table class="tw-w-full tw-border-collapse tw-text-small">
 				<thead class="tw-bg-secondary tw-text-left">
-					<tr>
-						<th class="table-heading-spacing">
+					<tr class="table-header">
+						<th>
 							<span class="tw-sr-only">Payment</span>
 						</th>
-						<th class="table-heading-spacing">
+						<th>
 							Expected
 						</th>
-						<th class="table-heading-spacing">
+						<th>
 							Amount
 						</th>
-						<th class="table-heading-spacing">
+						<th>
 							Actual
 						</th>
-						<th class="table-heading-spacing">
+						<th>
 							Received
 						</th>
-						<th class="table-heading-spacing">
+						<th>
 							Comments
 						</th>
 					</tr>
 				</thead>
 				<tbody v-for="period in periods" :key="period.dueDate">
-					<tr class="tw-bg-tertiary">
-						<th colspan="5" class="table-data-spacing tw-text-left tw-font-medium">
+					<tr class="repayments-header">
+						<th colspan="5">
 							{{ period.periodLabel }}
 						</th>
-						<th class="table-data-spacing tw-text-left tw-font-medium tw-whitespace-nowrap">
+						<th>
 							<repayment-comment :tone="period.comment.tone" :text="period.comment.text" />
 						</th>
 					</tr>
 					<tr
 						v-for="(row, index) in period.borrowerRows"
 						:key="`${period.dueDate}-borrower-${index}`"
+						class="repayments-row"
 					>
-						<td class="table-data-spacing tw-whitespace-nowrap">
+						<td>
 							<template v-if="index === 0">
-								From borrower to Lending partner
+								From borrower to partner
 							</template>
 						</td>
-						<td class="table-data-spacing tw-whitespace-nowrap">
+						<td>
 							{{ row.expectedDate }}
 						</td>
-						<td class="table-data-spacing tw-whitespace-nowrap">
+						<td>
 							{{ row.expectedAmount }}
 						</td>
-						<td class="table-data-spacing tw-whitespace-nowrap">
+						<td>
 							{{ row.actualDate }}
 						</td>
-						<td class="table-data-spacing tw-whitespace-nowrap">
+						<td>
 							{{ row.actualAmount }}
 						</td>
-						<td class="table-data-spacing"></td>
+						<td></td>
 					</tr>
-					<tr class="tw-bg-secondary">
-						<td class="table-data-spacing tw-whitespace-nowrap">
-							From Lending partner to lenders
+					<tr class="repayments-row">
+						<td>
+							From partner to lenders
 						</td>
-						<td class="table-data-spacing tw-whitespace-nowrap">
+						<td>
 							{{ period.lenderRow.expectedDate }}
 						</td>
-						<td class="table-data-spacing tw-whitespace-nowrap">
+						<td>
 							{{ period.lenderRow.expectedAmount }}
 						</td>
-						<td class="table-data-spacing tw-whitespace-nowrap">
+						<td>
 							{{ period.lenderRow.actualDate }}
 						</td>
-						<td class="table-data-spacing tw-whitespace-nowrap">
+						<td>
 							{{ period.lenderRow.actualAmount }}
 						</td>
-						<td class="table-data-spacing">
+						<td>
 							<span v-if="period.lenderRow.attribution" class="tw-block">
 								{{ period.lenderRow.attribution }}
 							</span>
@@ -143,12 +144,28 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.table-heading-spacing {
+.table-header th {
 	@apply tw-py-1.5 tw-px-1.5;
 }
 
-.table-data-spacing {
-	@apply tw-py-0.5 tw-px-1.5;
+.repayments-header {
+	@apply tw-bg-secondary;
+}
+
+.repayments-header th {
+	@apply tw-text-left tw-font-medium;
+}
+
+.repayments-row {
+	@apply odd:tw-bg-gray-50;
+}
+
+.repayments-row td {
+	@apply last:tw-whitespace-normal;
+}
+
+.repayments-header th, .repayments-row td {
+	@apply tw-py-0.5 tw-px-1.5 tw-whitespace-nowrap;
 }
 
 .scroll-gradient {
