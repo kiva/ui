@@ -1,6 +1,7 @@
-import { format, isBefore, parseISO } from 'date-fns';
+import { isBefore } from 'date-fns';
 import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
 import numeral from 'numeral';
+import { formatInKivaServerTimezone, parseKivaDate } from '#src/util/dateUtils';
 
 export const REPAID = 'repaid';
 export const DELINQUENT = 'delinquent';
@@ -21,6 +22,18 @@ export function formatLocalAmount(amount, currency) {
 	return `${currency} ${numeral(amount).format('0,0.00')}`;
 }
 
+export function formatPeriodLabel(date) {
+	return formatInKivaServerTimezone(date, { year: 'numeric', month: 'short' });
+}
+
+export function formatDetailDate(date) {
+	return formatInKivaServerTimezone(date, { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+export function formatAvailableDate(date) {
+	return formatInKivaServerTimezone(date, { month: 'short', day: 'numeric' });
+}
+
 // "$12.34 lost to currency devaluation", or empty when the period lost nothing
 export function currencyLossNote(currencyLossToLenders) {
 	if (currencyLossToLenders === null || currencyLossToLenders === undefined) {
@@ -31,13 +44,13 @@ export function currencyLossNote(currencyLossToLenders) {
 
 // The Actual cell: the settled amount, $0.00 for a past period that received nothing,
 // or the date the repayment becomes available for a period still to come.
-export function actualAmountLabel({ status, dueDate, actualAmountToLenders }, now) {
+export function actualAmountLabel({ dueDate, actualAmountToLenders }, now) {
 	if (actualAmountToLenders !== null && actualAmountToLenders !== undefined) {
 		return formatUsd(actualAmountToLenders);
 	}
-	const due = parseISO(dueDate);
-	if (status === FUTURE && !isBefore(due, now)) {
-		return `Available ${format(due, 'MMM d')}`;
+	const due = parseKivaDate(dueDate);
+	if (due && !isBefore(due, now)) {
+		return `Available ${formatAvailableDate(dueDate)}`;
 	}
 	return formatUsd(0);
 }
@@ -57,7 +70,7 @@ export function periodComment({ status, delinquencyAttribution }) {
 export function buildPartnerPeriodRows(periods = [], now = new Date()) {
 	return periods.map(period => ({
 		dueDate: period.dueDate,
-		periodLabel: format(parseISO(period.dueDate), 'MMM yyyy'),
+		periodLabel: formatPeriodLabel(period.dueDate),
 		expected: formatUsd(period.expectedAmountToLenders ?? 0),
 		actual: actualAmountLabel(period, now),
 		status: period.status,
@@ -110,13 +123,6 @@ export function isDualStatementLoan(dualStatementNote) {
 	return !!dualStatementNote;
 }
 
-export function formatDetailDate(date) {
-	if (!date) {
-		return '';
-	}
-	return format(parseISO(date), 'MMM d, yyyy');
-}
-
 function borrowerRepaymentRows(period, currency) {
 	const expected = (period.expectedRepayments ?? []).map(repayment => ({
 		kind: 'expected',
@@ -158,7 +164,7 @@ export function buildDirectInstallmentRows(installments = [], currency = '') {
 export function buildAdvancedPeriods(periods = [], currency = '') {
 	return periods.map(period => ({
 		dueDate: period.dueDate,
-		periodLabel: format(parseISO(period.dueDate), 'MMM yyyy'),
+		periodLabel: formatPeriodLabel(period.dueDate),
 		comment: periodComment(period),
 		currencyLoss: currencyLossNote(period.currencyLossToLenders),
 		borrowerRows: borrowerRepaymentRows(period, currency),
