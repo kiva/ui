@@ -68,3 +68,56 @@ export function buildPartnerPeriodRows(periods = [], now = new Date()) {
 export function hasDelinquentPeriod(periods = []) {
 	return periods.some(({ status }) => status === DELINQUENT);
 }
+
+export function isDualStatementLoan(dualStatementNote) {
+	return !!dualStatementNote;
+}
+
+export function formatDetailDate(date) {
+	if (!date) {
+		return '';
+	}
+	return format(parseISO(date), 'MMM d, yyyy');
+}
+
+// The borrower's repayments to the lending partner, expected first and then recorded.
+// The two lists are not paired — a period can hold a different number of each — so each
+// repayment gets its own row rather than being zipped against its opposite number.
+function borrowerRepaymentRows(period, currency) {
+	const expected = (period.expectedRepayments ?? []).map(repayment => ({
+		kind: 'expected',
+		date: formatDetailDate(repayment.effectiveDate),
+		amount: formatLocalAmount(repayment.amount, currency),
+	}));
+	const actual = (period.actualRepayments ?? []).map(repayment => ({
+		kind: 'actual',
+		date: formatDetailDate(repayment.effectiveDate),
+		amount: formatLocalAmount(repayment.amount, currency),
+	}));
+	return [...expected, ...actual];
+}
+
+// The lending partner's settlement with lenders. Legacy showed the period's own due date
+// in both the expected and actual columns once the period had been settled or missed.
+function lenderSettlementRow(period) {
+	const settled = period.status === REPAID || period.status === DELINQUENT;
+	return {
+		expectedDate: formatDetailDate(period.dueDate),
+		expectedAmount: formatUsd(period.expectedAmountToLenders ?? 0),
+		actualDate: settled ? formatDetailDate(period.dueDate) : '',
+		actualAmount: period.actualAmountToLenders === null || period.actualAmountToLenders === undefined
+			? ''
+			: formatUsd(period.actualAmountToLenders),
+	};
+}
+
+export function buildAdvancedPeriods(periods = [], currency = '') {
+	return periods.map(period => ({
+		dueDate: period.dueDate,
+		periodLabel: format(parseISO(period.dueDate), 'MMM yyyy'),
+		comment: periodComment(period),
+		currencyLoss: currencyLossNote(period.currencyLossToLenders),
+		borrowerRows: borrowerRepaymentRows(period, currency),
+		lenderRow: lenderSettlementRow(period),
+	}));
+}
