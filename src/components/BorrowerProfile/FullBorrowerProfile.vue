@@ -86,7 +86,7 @@
 		</content-container>
 		<content-container>
 			<journal-updates
-				v-if="showUpdates"
+				v-if="showUpdatesSection"
 				data-testid="bp-updates"
 				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
 				:loan-id="loanId"
@@ -367,6 +367,13 @@ export default {
 			// Only privileged users (e.g. lenders on this loan) can see the comment
 			// section, and only while the loan is not anonymized (full/pii).
 			return this.isPrivileged && !this.isAnonymized;
+		},
+		showUpdatesSection() {
+			// Hide the journal updates section entirely for anonymized (full/pii) loans:
+			// their single-loan journal bodies are stripped during PII anonymization, so any
+			// remaining entries render empty. Mass journals, the only kind that keeps content,
+			// are not shown here anyway.
+			return this.showUpdates && !this.isAnonymized;
 		},
 		shareCampaign() {
 			return this.inPfp ? 'social_share_bp_pfp' : 'social_share_bp';
