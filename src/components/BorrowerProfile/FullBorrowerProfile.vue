@@ -369,11 +369,12 @@ export default {
 			return this.isPrivileged && !this.isAnonymized;
 		},
 		showUpdatesSection() {
-			// Hide the journal updates section entirely for anonymized (full/pii) loans:
-			// their single-loan journal bodies are stripped during PII anonymization, so any
-			// remaining entries render empty. Mass journals, the only kind that keeps content,
-			// are not shown here anyway.
-			return this.showUpdates && !this.isAnonymized;
+			// Hide the journal updates section entirely for PII-anonymized loans: their
+			// single-loan journal bodies are stripped during PII anonymization, so any
+			// remaining entries render empty. Scoped to 'pii' specifically — 'full' (refunded)
+			// loans keep their journal content and are already excluded server-side by the
+			// borrower-privacy rules.
+			return this.showUpdates && this.loanData?.anonymizationLevel !== 'pii';
 		},
 		shareCampaign() {
 			return this.inPfp ? 'social_share_bp_pfp' : 'social_share_bp';

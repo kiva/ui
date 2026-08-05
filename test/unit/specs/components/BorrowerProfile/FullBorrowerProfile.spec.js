@@ -20,13 +20,12 @@ function evalShowComments({ privileged = false, anonymizationLevel = 'none' } = 
 	return showAddCommentsSection.call(context);
 }
 
-// Evaluates showUpdatesSection with a mock `this`, resolving the isAnonymized computed it depends on.
+// Evaluates showUpdatesSection with a mock `this`.
 function evalShowUpdates({ showUpdates = true, anonymizationLevel = 'none' } = {}) {
 	const context = {
 		showUpdates,
 		loanData: { anonymizationLevel },
 	};
-	context.isAnonymized = isAnonymized.call(context);
 	return showUpdatesSection.call(context);
 }
 
@@ -82,12 +81,15 @@ describe('FullBorrowerProfile updates section visibility', () => {
 		expect(evalShowUpdates({ showUpdates: true, anonymizationLevel: undefined })).toBe(true);
 	});
 
-	it('hides updates on a full/pii anonymized loan (MP-3083)', () => {
-		expect(evalShowUpdates({ showUpdates: true, anonymizationLevel: 'full' })).toBe(false);
+	it('hides updates on a pii-anonymized loan (MP-3083)', () => {
 		expect(evalShowUpdates({ showUpdates: true, anonymizationLevel: 'pii' })).toBe(false);
 	});
 
-	it('stays hidden once the child has emitted hide-section, even when not anonymized', () => {
+	it('still shows updates on a full-anonymized loan (bodies are not stripped for full)', () => {
+		expect(evalShowUpdates({ showUpdates: true, anonymizationLevel: 'full' })).toBe(true);
+	});
+
+	it('stays hidden once the child has emitted hide-section', () => {
 		expect(evalShowUpdates({ showUpdates: false, anonymizationLevel: 'none' })).toBe(false);
 	});
 });
