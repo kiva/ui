@@ -19,6 +19,13 @@ const REPAID_PERIOD = {
 	expectedAmountToLenders: '265.83',
 	actualAmountToLenders: '265.83',
 	currencyLossToLenders: null,
+	expectedRepayments: [
+		{ effectiveDate: '2017-09-01T07:00:00Z', amount: '10000' },
+		{ effectiveDate: '2017-09-15T07:00:00Z', amount: '5000' },
+	],
+	actualRepayments: [
+		{ effectiveDate: '2017-09-20T07:00:00Z', amount: '14500' },
+	],
 };
 
 const DELINQUENT_PERIOD = {
@@ -39,9 +46,10 @@ const FUTURE_PERIOD = {
 	currencyLossToLenders: null,
 };
 
-function partnerLoan(repayments) {
+function partnerLoan(repayments, dualStatementNote = null) {
 	return {
 		id: 423481,
+		dualStatementNote,
 		repaymentInterval: 'Monthly',
 		lenderRepaymentTerm: 43,
 		paidAmount: '1000.00',
@@ -187,5 +195,66 @@ describe('RepaymentSchedule', () => {
 			expect(visibleText(getByTestId('repayment-lightbox')))
 				.toContain('Repayments began in Sep 01, 2017 and are on track.');
 		});
+	});
+
+	it('offers an advanced view for a partner loan', async () => {
+		const { findByTestId } = await renderRepaymentSchedule({
+			loan: partnerLoan([REPAID_PERIOD]),
+		});
+
+		const toggle = await findByTestId('bp-repayment-advanced-toggle');
+
+		expect(toggle.textContent.trim()).toBe('Show advanced');
+	});
+
+	it('swaps the simple table for the advanced view and back', async () => {
+		const { findByTestId, findAllByText, queryByText } = await renderRepaymentSchedule({
+			loan: partnerLoan([REPAID_PERIOD]),
+		});
+
+		const toggle = await findByTestId('bp-repayment-advanced-toggle');
+		await fireEvent.click(toggle);
+
+		expect((await findAllByText('From borrower to Lending partner')).length).toBeGreaterThan(0);
+		expect(toggle.textContent.trim()).toBe('Hide advanced');
+
+		await fireEvent.click(toggle);
+
+		expect(queryByText('From borrower to Lending partner')).toBeNull();
+		expect(toggle.textContent.trim()).toBe('Show advanced');
+	});
+
+	it('hides the advanced view for a dual-statement loan', async () => {
+		const { queryByTestId, findAllByText } = await renderRepaymentSchedule({
+			loan: partnerLoan([REPAID_PERIOD], 'Important note about this loan'),
+		});
+
+		await findAllByText('Repayment received');
+
+		expect(queryByTestId('bp-repayment-advanced-toggle')).toBeNull();
+	});
+
+	it('lists expected and recorded borrower repayments separately in the advanced view', async () => {
+		const { findByTestId, findAllByText } = await renderRepaymentSchedule({
+			loan: partnerLoan([REPAID_PERIOD]),
+		});
+
+		await fireEvent.click(await findByTestId('bp-repayment-advanced-toggle'));
+
+		// Two expected repayments and one recorded one, each on its own row rather than zipped.
+		expect((await findAllByText('KES 10,000.00')).length).toBe(1);
+		expect((await findAllByText('KES 5,000.00')).length).toBe(1);
+		expect((await findAllByText('KES 14,500.00')).length).toBe(1);
+		expect((await findAllByText('From Lending partner to lenders')).length).toBe(1);
+	});
+
+	it('notes currency loss in the advanced view', async () => {
+		const { findByTestId, findAllByText } = await renderRepaymentSchedule({
+			loan: partnerLoan([DELINQUENT_PERIOD]),
+		});
+
+		await fireEvent.click(await findByTestId('bp-repayment-advanced-toggle'));
+
+		expect((await findAllByText('$12.34 lost to currency devaluation')).length).toBeGreaterThan(0);
 	});
 });
