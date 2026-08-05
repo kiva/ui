@@ -69,6 +69,16 @@ export function hasDelinquentPeriod(periods = []) {
 	return periods.some(({ status }) => status === DELINQUENT);
 }
 
+const DIRECT_STATUS_LABELS = {
+	[REPAID]: 'Paid',
+	[PARTIAL]: 'Partial Payment',
+	[FUTURE]: 'Not Paid',
+};
+
+export function directStatusLabel(status) {
+	return DIRECT_STATUS_LABELS[status] ?? '';
+}
+
 export function isDualStatementLoan(dualStatementNote) {
 	return !!dualStatementNote;
 }
@@ -109,6 +119,18 @@ function lenderSettlementRow(period) {
 			? ''
 			: formatUsd(period.actualAmountToLenders),
 	};
+}
+
+// One row per direct-loan installment. "Due from borrower" is the installment's due
+// date, matching the legacy column despite the header reading like an amount.
+export function buildDirectInstallmentRows(installments = [], currency = '') {
+	return installments.map(installment => ({
+		dueDate: installment.dueDate,
+		amountDue: formatLocalAmount(installment.amount, currency),
+		amountPaid: formatLocalAmount(installment.amountPaid, currency),
+		dueFromBorrower: formatDetailDate(installment.dueDate),
+		statusLabel: directStatusLabel(installment.status),
+	}));
 }
 
 export function buildAdvancedPeriods(periods = [], currency = '') {
