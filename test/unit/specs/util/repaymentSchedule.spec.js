@@ -3,11 +3,13 @@ import {
 	FUTURE,
 	REPAID,
 	actualAmountLabel,
+	buildAdvancedPeriods,
 	buildPartnerPeriodRows,
 	currencyLossNote,
 	formatLocalAmount,
 	formatUsd,
 	hasDelinquentPeriod,
+	isDualStatementLoan,
 	periodComment,
 } from '#src/util/repaymentSchedule';
 
@@ -185,6 +187,82 @@ describe('repaymentSchedule', () => {
 
 		it('returns no rows when the viewer may not see the schedule', () => {
 			expect(buildPartnerPeriodRows([], NOW)).toEqual([]);
+		});
+	});
+
+	describe('isDualStatementLoan', () => {
+		it.each([
+			['a note', 'Important note about this loan', true],
+			['null', null, false],
+			['an empty string', '', false],
+		])('is %s → %s', (_label, note, expected) => {
+			expect(isDualStatementLoan(note)).toBe(expected);
+		});
+	});
+
+	describe('buildAdvancedPeriods', () => {
+		it('lists expected repayments before recorded ones without pairing them', () => {
+			const period = makePeriod({
+				expectedRepayments: [
+					{ effectiveDate: '2020-03-01T08:00:00Z', amount: '10000' },
+					{ effectiveDate: '2020-03-15T07:00:00Z', amount: '5000' },
+				],
+				actualRepayments: [
+					{ effectiveDate: '2020-03-20T07:00:00Z', amount: '14500' },
+				],
+			});
+
+			const [advanced] = buildAdvancedPeriods([period], 'KES');
+
+			expect(advanced.borrowerRows).toEqual([
+				{ kind: 'expected', date: 'Mar 1, 2020', amount: 'KES 10,000.00' },
+				{ kind: 'expected', date: 'Mar 15, 2020', amount: 'KES 5,000.00' },
+				{ kind: 'actual', date: 'Mar 20, 2020', amount: 'KES 14,500.00' },
+			]);
+		});
+
+		it('repeats the period due date as the actual date once the period is settled', () => {
+			const [advanced] = buildAdvancedPeriods([makePeriod({ status: REPAID })], 'KES');
+
+			expect(advanced.lenderRow).toEqual({
+				expectedDate: 'Mar 1, 2020',
+				expectedAmount: '$265.83',
+				actualDate: 'Mar 1, 2020',
+				actualAmount: '$265.83',
+			});
+		});
+
+		it('leaves the actual date and amount blank for an upcoming period', () => {
+			const period = makePeriod({
+				status: FUTURE,
+				dueDate: FUTURE_DUE_DATE,
+				actualAmountToLenders: null,
+			});
+
+			const [advanced] = buildAdvancedPeriods([period], 'KES');
+
+			expect(advanced.lenderRow.actualDate).toBe('');
+			expect(advanced.lenderRow.actualAmount).toBe('');
+		});
+
+		it('carries the period label, comment and currency-loss note', () => {
+			const period = makePeriod({
+				status: DELINQUENT,
+				delinquencyAttribution: 'Lending partner behind in repayment',
+				currencyLossToLenders: '12.34',
+			});
+
+			const [advanced] = buildAdvancedPeriods([period], 'KES');
+
+			expect(advanced.periodLabel).toBe('Mar 2020');
+			expect(advanced.comment).toEqual({ tone: DELINQUENT, text: 'Delinquent' });
+			expect(advanced.currencyLoss).toBe('$12.34 lost to currency devaluation');
+		});
+
+		it('handles a period with no repayments on either side', () => {
+			const [advanced] = buildAdvancedPeriods([makePeriod()], 'KES');
+
+			expect(advanced.borrowerRows).toEqual([]);
 		});
 	});
 
