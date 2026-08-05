@@ -153,12 +153,16 @@ describe('RepaymentSchedule', () => {
 		expect((await findAllByText('Delinquent')).length).toBeGreaterThan(0);
 	});
 
-	it('notes the amount lost to currency devaluation', async () => {
-		const { findAllByText } = await renderRepaymentSchedule({
+	// The simple table carries only the received, delinquent or attribution marker; the
+	// currency-loss note belongs to the advanced view.
+	it('leaves the currency-loss note out of the simple table', async () => {
+		const { findAllByText, queryByText } = await renderRepaymentSchedule({
 			loan: partnerLoan([DELINQUENT_PERIOD]),
 		});
 
-		expect((await findAllByText('$12.34 lost to currency devaluation')).length).toBeGreaterThan(0);
+		await findAllByText('Delinquent');
+
+		expect(queryByText('$12.34 lost to currency devaluation')).toBeNull();
 	});
 
 	it('reports when an upcoming period becomes available instead of an amount', async () => {
@@ -352,7 +356,7 @@ describe('RepaymentSchedule', () => {
 		expect(queryByText('Total amount due')).toBeNull();
 	});
 
-	it('notes currency loss in the advanced view', async () => {
+	it('notes the currency loss and the delinquency attribution in the advanced view', async () => {
 		const { findByTestId, findAllByText } = await renderRepaymentSchedule({
 			loan: partnerLoan([DELINQUENT_PERIOD]),
 		});
@@ -360,5 +364,6 @@ describe('RepaymentSchedule', () => {
 		await fireEvent.click(await findByTestId('bp-repayment-advanced-toggle'));
 
 		expect((await findAllByText('$12.34 lost to currency devaluation')).length).toBeGreaterThan(0);
+		expect((await findAllByText('Lending partner behind in repayment')).length).toBeGreaterThan(0);
 	});
 });

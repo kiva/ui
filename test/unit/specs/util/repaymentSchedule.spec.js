@@ -159,7 +159,6 @@ describe('repaymentSchedule', () => {
 					actual: '$265.83',
 					status: REPAID,
 					comment: { tone: REPAID, text: 'Repayment received' },
-					currencyLoss: '',
 				},
 				{
 					dueDate: '2020-04-01T07:00:00Z',
@@ -168,7 +167,6 @@ describe('repaymentSchedule', () => {
 					actual: '$0.00',
 					status: DELINQUENT,
 					comment: { tone: DELINQUENT, text: 'Delinquent' },
-					currencyLoss: '$12.34 lost to currency devaluation',
 				},
 				{
 					dueDate: FUTURE_DUE_DATE,
@@ -177,7 +175,6 @@ describe('repaymentSchedule', () => {
 					actual: 'Available Sep 1',
 					status: FUTURE,
 					comment: { tone: '', text: '' },
-					currencyLoss: '',
 				},
 			]);
 		});
@@ -204,7 +201,7 @@ describe('repaymentSchedule', () => {
 	});
 
 	describe('buildAdvancedPeriods', () => {
-		it('lists expected repayments before recorded ones without pairing them', () => {
+		it('pairs each expected repayment with the recorded one beside it', () => {
 			const period = makePeriod({
 				expectedRepayments: [
 					{ effectiveDate: '2020-03-01T08:00:00Z', amount: '10000' },
@@ -215,37 +212,80 @@ describe('repaymentSchedule', () => {
 				],
 			});
 
-			const [advanced] = buildAdvancedPeriods([period], 'KES');
+			const [advanced] = buildAdvancedPeriods([period], 'KES', NOW);
 
 			expect(advanced.borrowerRows).toEqual([
-				{ kind: 'expected', date: 'Mar 1, 2020', amount: 'KES 10,000.00' },
-				{ kind: 'expected', date: 'Mar 15, 2020', amount: 'KES 5,000.00' },
-				{ kind: 'actual', date: 'Mar 20, 2020', amount: 'KES 14,500.00' },
+				{
+					expectedDate: 'Mar 1, 2020',
+					expectedAmount: 'KES 10,000.00',
+					actualDate: 'Mar 20, 2020',
+					actualAmount: 'KES 14,500.00',
+				},
+				{
+					expectedDate: 'Mar 15, 2020',
+					expectedAmount: 'KES 5,000.00',
+					actualDate: '',
+					actualAmount: '',
+				},
 			]);
 		});
 
+		it('runs the rows out to whichever side has more repayments', () => {
+			const period = makePeriod({
+				expectedRepayments: [{ effectiveDate: '2020-03-01T08:00:00Z', amount: '10000' }],
+				actualRepayments: [
+					{ effectiveDate: '2020-03-05T08:00:00Z', amount: '6000' },
+					{ effectiveDate: '2020-03-20T07:00:00Z', amount: '4000' },
+				],
+			});
+
+			const [advanced] = buildAdvancedPeriods([period], 'KES', NOW);
+
+			expect(advanced.borrowerRows).toHaveLength(2);
+			expect(advanced.borrowerRows[1]).toEqual({
+				expectedDate: '',
+				expectedAmount: '',
+				actualDate: 'Mar 20, 2020',
+				actualAmount: 'KES 4,000.00',
+			});
+		});
+
 		it('repeats the period due date as the actual date once the period is settled', () => {
-			const [advanced] = buildAdvancedPeriods([makePeriod({ status: REPAID })], 'KES');
+			const [advanced] = buildAdvancedPeriods([makePeriod({ status: REPAID })], 'KES', NOW);
 
 			expect(advanced.lenderRow).toEqual({
 				expectedDate: 'Mar 1, 2020',
 				expectedAmount: '$265.83',
 				actualDate: 'Mar 1, 2020',
 				actualAmount: '$265.83',
+				attribution: '',
 			});
 		});
 
-		it('leaves the actual date and amount blank for an upcoming period', () => {
+		it('reports when an upcoming period becomes available, as the simple table does', () => {
 			const period = makePeriod({
 				status: FUTURE,
 				dueDate: FUTURE_DUE_DATE,
 				actualAmountToLenders: null,
 			});
 
-			const [advanced] = buildAdvancedPeriods([period], 'KES');
+			const [advanced] = buildAdvancedPeriods([period], 'KES', NOW);
 
 			expect(advanced.lenderRow.actualDate).toBe('');
-			expect(advanced.lenderRow.actualAmount).toBe('');
+			expect(advanced.lenderRow.actualAmount).toBe('Available Sep 1');
+		});
+
+		it('carries the delinquency attribution onto the lender row', () => {
+			const period = makePeriod({
+				status: DELINQUENT,
+				delinquencyAttribution: 'Entrepreneur behind in repayment',
+				actualAmountToLenders: null,
+			});
+
+			const [advanced] = buildAdvancedPeriods([period], 'KES', NOW);
+
+			expect(advanced.lenderRow.attribution).toBe('Entrepreneur behind in repayment');
+			expect(advanced.lenderRow.actualAmount).toBe('$0.00');
 		});
 
 		it('carries the period label, comment and currency-loss note', () => {
