@@ -329,6 +329,7 @@ import {
 	REFUNDED,
 } from '#src/api/fixtures/LoanStatusEnum';
 import PaidAmountModal from '#src/components/Portfolio/PaidAmountModal';
+import useScrollGradients from '#src/composables/useScrollGradients';
 
 const REFUNDED_OR_EXPIRED_STATUSES = new Set([EXPIRED, REFUNDED]);
 const RAISED_OR_FUNDRAISING_STATUSES = new Set([FUNDRAISING, RAISED]);
@@ -371,20 +372,6 @@ export default {
 		PaidAmountModal
 	},
 	methods: {
-		// Toggle the left/right scroll-gradient overlays from the table's scroll position:
-		// each shows only when the table can still scroll that direction. Recomputed on
-		// scroll, on resize, and after the row set changes (see mounted/watch).
-		updateScrollGradients() {
-			const el = this.$refs.scrollContainer;
-			if (!el) {
-				this.canScrollLeft = false;
-				this.canScrollRight = false;
-				return;
-			}
-			// 1px tolerance so sub-pixel rounding at the extremes doesn't leave a gradient on.
-			this.canScrollLeft = el.scrollLeft > 1;
-			this.canScrollRight = el.scrollLeft < (el.scrollWidth - el.clientWidth - 1);
-		},
 		formatDate(date) {
 			if (!date) return '';
 			// Intentionally formats in the lender's browser timezone (no `timeZone` option). The
@@ -506,15 +493,28 @@ export default {
 			return trusteeId => `/trustees/${trusteeId}`;
 		}
 	},
+	setup() {
+		const {
+			scrollContainer,
+			canScrollLeft,
+			canScrollRight,
+			updateScrollGradients
+		} = useScrollGradients();
+
+		return {
+			scrollContainer,
+			canScrollLeft,
+			canScrollRight,
+			updateScrollGradients
+		};
+	},
 	data() {
 		return {
 			mdiHeart,
 			// Number of skeleton rows shown while loading. Each row mirrors a real row's
 			// height (image + stacked detail lines) so the table reserves representative
 			// space and the swap to loaded content doesn't jump.
-			skeletonRowCount: 5,
-			canScrollLeft: false,
-			canScrollRight: false
+			skeletonRowCount: 5
 		};
 	},
 	watch: {
@@ -525,23 +525,6 @@ export default {
 			this.$nextTick(this.updateScrollGradients);
 		}
 	},
-	mounted() {
-		this.$nextTick(this.updateScrollGradients);
-		// Available width changes on viewport resize and the row set changes on load/pagination;
-		// neither fires a scroll event, so recompute on both.
-		window.addEventListener('resize', this.updateScrollGradients);
-		if (typeof ResizeObserver !== 'undefined' && this.$refs.scrollContainer) {
-			this.scrollResizeObserver = new ResizeObserver(() => this.updateScrollGradients());
-			this.scrollResizeObserver.observe(this.$refs.scrollContainer);
-		}
-	},
-	beforeUnmount() {
-		window.removeEventListener('resize', this.updateScrollGradients);
-		if (this.scrollResizeObserver) {
-			this.scrollResizeObserver.disconnect();
-			this.scrollResizeObserver = null;
-		}
-	}
 };
 </script>
 

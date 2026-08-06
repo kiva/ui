@@ -96,6 +96,7 @@
 
 <script>
 import RepaymentComment from '#src/components/BorrowerProfile/RepaymentComment';
+import useScrollGradients from '#src/composables/useScrollGradients';
 
 export default {
 	name: 'AdvancedRepaymentTable',
@@ -108,37 +109,25 @@ export default {
 			default: () => [],
 		},
 	},
-	data() {
+	setup() {
+		const {
+			scrollContainer,
+			canScrollLeft,
+			canScrollRight,
+			updateScrollGradients,
+		} = useScrollGradients();
+
 		return {
-			canScrollLeft: false,
-			canScrollRight: false,
+			scrollContainer,
+			canScrollLeft,
+			canScrollRight,
+			updateScrollGradients,
 		};
-	},
-	methods: {
-		// Show each gradient only while the table can still scroll that way.
-		updateScrollGradients() {
-			const el = this.$refs.scrollContainer;
-			if (!el) {
-				this.canScrollLeft = false;
-				this.canScrollRight = false;
-				return;
-			}
-			// 1px tolerance so sub-pixel rounding at the extremes doesn't leave a gradient on.
-			this.canScrollLeft = el.scrollLeft > 1;
-			this.canScrollRight = el.scrollLeft < (el.scrollWidth - el.clientWidth - 1);
-		},
 	},
 	watch: {
 		periods() {
 			this.$nextTick(this.updateScrollGradients);
 		},
-	},
-	mounted() {
-		this.$nextTick(this.updateScrollGradients);
-		window.addEventListener('resize', this.updateScrollGradients);
-	},
-	beforeUnmount() {
-		window.removeEventListener('resize', this.updateScrollGradients);
 	},
 };
 </script>
