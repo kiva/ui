@@ -17,8 +17,8 @@
 				class="tw-rounded tw-overflow-hidden tw-w-full"
 				:map-id="3"
 				:aspect-ratio="1.8"
-				:lat="20"
-				:long="10"
+				:lat="mapCenter.lat"
+				:long="mapCenter.long"
 				:zoom-level="2"
 				:use-leaflet="true"
 				:show-labels="false"
@@ -84,6 +84,7 @@ import { computed } from 'vue';
 import { KvMap, KvMaterialIcon, KvPieChartV2 } from '@kiva/kv-components';
 import { mdiMapMarker } from '@mdi/js';
 import { getSectorChartValues, getNamedSectorCount } from '#src/util/goalInReviewSectors';
+import { getCountriesMapCenter } from '#src/util/goalInReviewMap';
 
 const MAX_VISIBLE_COUNTRIES = 14;
 
@@ -105,6 +106,8 @@ const countriesData = computed(() => props.countries.map(country => ({
 	long: country.geocode?.longitude,
 	isoCode: country.isoCode,
 })));
+
+const mapCenter = computed(() => getCountriesMapCenter(props.countries));
 
 const borderCount = computed(() => props.countries.length);
 const visibleCountries = computed(() => props.countries.slice(0, MAX_VISIBLE_COUNTRIES));
