@@ -202,8 +202,8 @@ describe('RepaymentSchedule', () => {
 		expect((await findAllByText('Delinquent')).length).toBeGreaterThan(0);
 	});
 
-	// The simple table carries only the received, delinquent or attribution marker; the
-	// currency-loss note belongs to the advanced view.
+	// The simple table carries only the received or delinquent marker; the currency-loss
+	// note belongs to the advanced view.
 	it('leaves the currency-loss note out of the simple table', async () => {
 		const { findAllByText, queryByText } = await renderRepaymentSchedule({
 			loan: partnerLoan([DELINQUENT_PERIOD]),
@@ -220,19 +220,6 @@ describe('RepaymentSchedule', () => {
 		});
 
 		expect((await findAllByText('Available Sep 1')).length).toBeGreaterThan(0);
-	});
-
-	it('attributes a delinquency when the period carries no received or delinquent marker', async () => {
-		const attributedPeriod = {
-			...FUTURE_PERIOD,
-			delinquencyAttribution: 'Entrepreneur behind in repayment',
-		};
-
-		const { findAllByText } = await renderRepaymentSchedule({
-			loan: partnerLoan([attributedPeriod]),
-		});
-
-		expect((await findAllByText('Entrepreneur behind in repayment')).length).toBeGreaterThan(0);
 	});
 
 	it('takes each period status from the server rather than deriving it', async () => {

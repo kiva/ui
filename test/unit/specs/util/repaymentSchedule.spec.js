@@ -11,7 +11,6 @@ import {
 	formatLocalAmount,
 	formatUsd,
 	isDualStatementLoan,
-	periodComment,
 	repaymentIntro,
 } from '#src/util/repaymentSchedule';
 
@@ -93,34 +92,6 @@ describe('repaymentSchedule', () => {
 		});
 	});
 
-	describe('periodComment', () => {
-		it('marks a repaid period as received', () => {
-			expect(periodComment(makePeriod({ status: REPAID }))).toEqual({
-				tone: REPAID,
-				text: 'Repayment received',
-			});
-		});
-
-		it('marks a delinquent period as delinquent', () => {
-			expect(periodComment(makePeriod({ status: DELINQUENT }))).toEqual({
-				tone: DELINQUENT,
-				text: 'Delinquent',
-			});
-		});
-
-		it('falls back to the delinquency attribution from the server', () => {
-			const period = makePeriod({
-				status: FUTURE,
-				delinquencyAttribution: 'Entrepreneur behind in repayment',
-			});
-
-			expect(periodComment(period)).toEqual({
-				tone: '',
-				text: 'Entrepreneur behind in repayment',
-			});
-		});
-	});
-
 	describe('currencyLossNote', () => {
 		it('describes the amount lost to devaluation', () => {
 			expect(currencyLossNote('12.34')).toBe('$12.34 lost to currency devaluation');
@@ -132,7 +103,7 @@ describe('repaymentSchedule', () => {
 	});
 
 	describe('buildPartnerPeriodRows', () => {
-		it('builds a row per period with its label, amounts and comment', () => {
+		it('builds a row per period with its label, amounts and status', () => {
 			const rows = buildPartnerPeriodRows([
 				makePeriod({ dueDate: PAST_DUE_DATE, status: REPAID }),
 				makePeriod({
@@ -156,7 +127,6 @@ describe('repaymentSchedule', () => {
 					expected: '$265.83',
 					actual: '$265.83',
 					status: REPAID,
-					comment: { tone: REPAID, text: 'Repayment received' },
 				},
 				{
 					dueDate: '2020-04-01T07:00:00Z',
@@ -164,7 +134,6 @@ describe('repaymentSchedule', () => {
 					expected: '$265.83',
 					actual: '$0.00',
 					status: DELINQUENT,
-					comment: { tone: DELINQUENT, text: 'Delinquent' },
 				},
 				{
 					dueDate: FUTURE_DUE_DATE,
@@ -172,7 +141,6 @@ describe('repaymentSchedule', () => {
 					expected: '$265.83',
 					actual: 'Available Sep 1',
 					status: FUTURE,
-					comment: { tone: '', text: '' },
 				},
 			]);
 		});
@@ -286,7 +254,7 @@ describe('repaymentSchedule', () => {
 			expect(advanced.lenderRow.actualAmount).toBe('$0.00');
 		});
 
-		it('carries the period label, comment and currency-loss note', () => {
+		it('carries the period label, status and currency-loss note', () => {
 			const period = makePeriod({
 				status: DELINQUENT,
 				delinquencyAttribution: 'Lending partner behind in repayment',
@@ -296,7 +264,7 @@ describe('repaymentSchedule', () => {
 			const [advanced] = buildAdvancedPeriods([period], 'KES');
 
 			expect(advanced.periodLabel).toBe('Mar 2020');
-			expect(advanced.comment).toEqual({ tone: DELINQUENT, text: 'Delinquent' });
+			expect(advanced.status).toBe(DELINQUENT);
 			expect(advanced.currencyLoss).toBe('$12.34 lost to currency devaluation');
 		});
 
