@@ -4,7 +4,6 @@ import {
 	ref,
 } from 'vue';
 
-import goalInReviewSummaryQuery from '#src/graphql/query/goalInReviewSummary.graphql';
 import goalInReviewAchievementsQuery from '#src/graphql/query/goalInReviewAchievements.graphql';
 import goalInReviewLenderQuery from '#src/graphql/query/goalInReviewLender.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
@@ -17,7 +16,7 @@ import {
 	getIsEligible,
 	getLoanStats,
 	mergeRecapExtras,
-	scopeToGoalWindow,
+	scopeToGoalYear,
 } from '#src/util/goalInReviewPayload';
 
 // Open the Goal In Review recap from MyKiva with /mykiva?goTo=goal-recap.
@@ -109,21 +108,22 @@ export default function useGoalInReview({ apollo } = {}) {
 	} = {}) {
 		loading.value = true;
 		try {
-			const [summary, achievementsData, lenderData, contentfulData] = await Promise.all([
+			const [summary, lenderData, contentfulData] = await Promise.all([
 				loadGoalSummary(),
-				query(goalInReviewAchievementsQuery, { year }),
 				query(goalInReviewLenderQuery),
 				query(contentfulEntriesQuery, { contentType: 'challenge', limit: 200 }, 'cache-first'),
 			]);
 
-			// The monolith only computes my.goalSummary for support-all.
-			const extras = summary?.category === ID_SUPPORT_ALL
-				? await query(goalInReviewSummaryQuery, { goalName: summary.goalName })
+			// getGoalSummary returns the monolith's own summary for support-all, which is
+			// the only category it carries the recap extras for. Every other category is
+			// built from achievements-service instead, so only one of the two is ever read.
+			const monolithSummary = summary?.category === ID_SUPPORT_ALL ? summary : null;
+			const achievementsData = summary && !monolithSummary
+				? await query(goalInReviewAchievementsQuery, { year })
 				: null;
-
 			const achievements = achievementsData?.userAchievementProgress?.tieredLendingAchievements ?? [];
-			const goalSummary = scopeToGoalWindow(
-				mergeRecapExtras(summary, extras?.my?.goalSummary),
+			const goalSummary = scopeToGoalYear(
+				mergeRecapExtras(summary, monolithSummary),
 				achievements,
 			);
 

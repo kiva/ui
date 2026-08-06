@@ -1,4 +1,6 @@
-query goalInReviewAchievements($year: Int, $loanPurchasesLimit: Int = 1000) {
+# Only the first `count` loans are used, but they are selected oldest-first, so the
+# year has to be pulled and sorted locally. 200 covers all but the heaviest lenders.
+query goalInReviewAchievements($year: Int, $loanPurchasesLimit: Int = 200) {
   userAchievementProgress(year: $year) {
     id
     tieredLendingAchievements {

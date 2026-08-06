@@ -18,7 +18,6 @@ const supportAllSummary = {
 	percent: 100,
 };
 
-// achievements-service reports the whole calendar year; the goal only started in October.
 const climateSummary = {
 	goalName: '2027 climate goal',
 	category: 'climate-action',
@@ -38,12 +37,9 @@ const monolithExtras = {
 	loans: [{ id: 1, name: 'Aminata', image: { hash: 'hash-1' } }],
 };
 
-const makeApollo = ({ goalSummary = monolithExtras, achievements = [] } = {}) => ({
+const makeApollo = ({ achievements = [] } = {}) => ({
 	query: vi.fn(({ query }) => {
 		const name = query?.definitions?.[0]?.name?.value;
-		if (name === 'goalInReviewSummary') {
-			return Promise.resolve({ data: { my: { goalSummary } } });
-		}
 		if (name === 'goalInReviewLender') {
 			return Promise.resolve({
 				data: { my: { userAccount: { firstName: 'Alexandra' }, lendingStats: { amountLentPercentile: 92 } } },
@@ -58,7 +54,7 @@ const makeApollo = ({ goalSummary = monolithExtras, achievements = [] } = {}) =>
 describe('useGoalInReview', () => {
 	beforeEach(() => {
 		getGoalSummary.mockReset();
-		getGoalSummary.mockResolvedValue(supportAllSummary);
+		getGoalSummary.mockResolvedValue({ ...supportAllSummary, ...monolithExtras });
 	});
 
 	it('defaults the target year from the provided date', () => {
@@ -108,7 +104,6 @@ describe('useGoalInReview', () => {
 		// The monolith only computes support-all, so my.goalSummary is null here and the
 		// summary has to come from achievements-service via useGoalData.
 		const apolloForCategoryGoal = () => makeApollo({
-			goalSummary: null,
 			achievements: [
 				{
 					id: 'womens-equality',
@@ -139,21 +134,22 @@ describe('useGoalInReview', () => {
 			expect(result.goalSummary.category).toBe('climate-action');
 		});
 
-		it('counts the goal window rather than the calendar year achievements-service reports', async () => {
+		it('caps the year count at the goal target', async () => {
 			const { loadGoalInReview } = useGoalInReview({ apollo: apolloForCategoryGoal() });
 
 			const result = await loadGoalInReview({ year: 2027 });
 
-			// 2 of the 3 climate loans fall inside the goal window, against a target of 4
-			expect(result.loanStats).toEqual({ totalLent: null, borrowers: 2, percentComplete: 50 });
+			// progressForYear is 100 against a target of 4
+			expect(result.loanStats).toEqual({ totalLent: null, borrowers: 4, percentComplete: 100 });
 		});
 
-		it('takes the borrower photos from the matching achievement, within the goal window', async () => {
+		it('takes the borrower photos from the matching achievement, oldest first', async () => {
 			const { loadGoalInReview } = useGoalInReview({ apollo: apolloForCategoryGoal() });
 
 			const result = await loadGoalInReview({ year: 2027 });
 
-			expect(result.goalLoans.map(loan => loan.name)).toEqual(['Siti', 'Aminata']);
+			// the March loan predates the goal but still counts toward it
+			expect(result.goalLoans.map(loan => loan.name)).toEqual(['Before the goal', 'Siti', 'Aminata']);
 		});
 
 		it('empties the support-all-only fields', async () => {
@@ -164,6 +160,17 @@ describe('useGoalInReview', () => {
 			expect(result.goalSummary.countries).toEqual([]);
 			expect(result.goalSummary.loans).toEqual([]);
 		});
+	});
+
+	it('skips the achievements query for support-all, which reads none of it', async () => {
+		const apollo = makeApollo();
+		const { loadGoalInReview } = useGoalInReview({ apollo });
+
+		await loadGoalInReview({ year: 2027 });
+
+		const queried = apollo.query.mock.calls
+			.map(([{ query }]) => query?.definitions?.[0]?.name?.value);
+		expect(queried).not.toContain('goalInReviewAchievements');
 	});
 
 	it('is not eligible without a goal', async () => {

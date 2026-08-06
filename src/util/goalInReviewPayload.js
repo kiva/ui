@@ -47,22 +47,22 @@ export function mergeRecapExtras(summary, monolithSummary) {
 }
 
 /**
- * Narrows a category goal's purchases to its own window, since achievements-service
- * reports the whole calendar year.
+ * The goal's qualifying purchases for the recap year. A goal counts everything lent
+ * to its category that year, including loans made before the goal was set.
  */
-function getGoalWindowPurchases(goalSummary, tieredLendingAchievements) {
-	const achievement = (tieredLendingAchievements ?? [])
-		.find(entry => entry?.id === goalSummary?.category);
-	const startedAt = Date.parse(goalSummary?.dateStarted) || 0;
+function getGoalAchievement(goalSummary, tieredLendingAchievements) {
+	return (tieredLendingAchievements ?? []).find(entry => entry?.id === goalSummary?.category);
+}
 
+function getYearPurchases(goalSummary, tieredLendingAchievements) {
 	// Oldest first, so later lending cannot displace the loans that met the target.
-	return (achievement?.loanPurchases ?? [])
-		.filter(purchase => purchase?.loan && (Date.parse(purchase.purchaseTime) || 0) >= startedAt)
+	return (getGoalAchievement(goalSummary, tieredLendingAchievements)?.loanPurchases ?? [])
+		.filter(purchase => purchase?.loan)
 		.sort((a, b) => (Date.parse(a.purchaseTime) || 0) - (Date.parse(b.purchaseTime) || 0));
 }
 
-function getGoalWindowLoans(goalSummary, tieredLendingAchievements) {
-	return getGoalWindowPurchases(goalSummary, tieredLendingAchievements).map(purchase => purchase.loan);
+function getYearLoans(goalSummary, tieredLendingAchievements) {
+	return getYearPurchases(goalSummary, tieredLendingAchievements).map(purchase => purchase.loan);
 }
 
 /**
@@ -119,25 +119,27 @@ function getGoalSectors(loans) {
 }
 
 /**
- * Re-counts a category goal over its own window. Support-all is already scoped by
- * the monolith, so it passes through untouched.
+ * Caps a category goal at its target and fills the fields the monolith only provides
+ * for support-all. Support-all is already computed server-side, so it passes through.
  *
  * @param {object} goalSummary The merged goal summary.
  * @param {Array} tieredLendingAchievements Achievements for the recap year.
- * @returns {object|null} The summary with goal-window counts.
+ * @returns {object|null} The summary the slides read.
  */
-export function scopeToGoalWindow(goalSummary, tieredLendingAchievements = []) {
+export function scopeToGoalYear(goalSummary, tieredLendingAchievements = []) {
 	if (!goalSummary || goalSummary.category === ID_SUPPORT_ALL) {
 		return goalSummary;
 	}
 
-	const windowPurchases = getGoalWindowPurchases(goalSummary, tieredLendingAchievements);
-	const lent = windowPurchases.length;
+	const yearPurchases = getYearPurchases(goalSummary, tieredLendingAchievements);
+	const achievement = getGoalAchievement(goalSummary, tieredLendingAchievements);
+	// progressForYear is authoritative: the rolling window can trim loanPurchases.
+	const lent = Number(achievement?.progressForYear) || yearPurchases.length;
 	const target = Number(goalSummary.target) || 0;
 	const count = target > 0 ? Math.min(lent, target) : lent;
 
 	// Every stat describes the same loans the grid shows, not a wider set.
-	const countedPurchases = windowPurchases.slice(0, count);
+	const countedPurchases = yearPurchases.slice(0, count);
 	const countedLoans = countedPurchases.map(purchase => purchase.loan);
 
 	return {
@@ -166,10 +168,11 @@ export function getGoalLoans(goalSummary, tieredLendingAchievements = []) {
 		return goalSummary?.loans ?? [];
 	}
 
-	const loans = getGoalWindowLoans(goalSummary, tieredLendingAchievements);
-	const target = Number(goalSummary?.target) || 0;
+	const loans = getYearLoans(goalSummary, tieredLendingAchievements);
+	// scopeToGoalYear already capped `count`; the grid must not show more than it claims.
+	const count = Number(goalSummary?.count);
 
-	return target > 0 ? loans.slice(0, target) : loans;
+	return Number.isFinite(count) ? loans.slice(0, count) : loans;
 }
 
 /**
