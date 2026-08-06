@@ -8,83 +8,55 @@ const valueFor = (values, label) => values.find(v => v.label === label)?.value;
 
 describe('goalInReviewSectors.js', () => {
 	describe('getSectorChartValues', () => {
-		it('groups loans by sector name and counts them', () => {
-			const achievements = [
-				{
-					id: 'a1',
-					loanPurchases: [
-						{ loan: { id: 'l1', sector: { id: 's1', name: 'Agriculture' } } },
-						{ loan: { id: 'l2', sector: { id: 's1', name: 'Agriculture' } } },
-						{ loan: { id: 'l3', sector: { id: 's2', name: 'Food' } } },
-					],
-				},
-			];
-			const values = getSectorChartValues(achievements);
+		it('maps each sector stat to a labelled loan count', () => {
+			const values = getSectorChartValues([
+				{ sector: { id: 's1', name: 'Agriculture' }, loanCount: 2 },
+				{ sector: { id: 's2', name: 'Food' }, loanCount: 1 },
+			]);
 			expect(valueFor(values, 'Agriculture')).toBe(2);
 			expect(valueFor(values, 'Food')).toBe(1);
 		});
 
-		it('buckets loans with a null or missing sector into "Other", labelled with the count', () => {
-			const achievements = [
-				{
-					id: 'a1',
-					loanPurchases: [
-						{ loan: { id: 'l1', sector: null } },
-						{ loan: { id: 'l2' } }, // no sector property at all
-						{ loan: { id: 'l3', sector: { id: 's1', name: 'Agriculture' } } },
-					],
-				},
-			];
-			const values = getSectorChartValues(achievements);
+		it('preserves the loan-count ordering the query returns', () => {
+			const values = getSectorChartValues([
+				{ sector: { name: 'Agriculture' }, loanCount: 8 },
+				{ sector: { name: 'Food' }, loanCount: 3 },
+				{ sector: { name: 'Retail' }, loanCount: 1 },
+			]);
+			expect(values.map(sector => sector.label)).toEqual(['Agriculture', 'Food', 'Retail']);
+		});
+
+		it('buckets entries with a null or missing sector into "Other", labelled with the count', () => {
+			const values = getSectorChartValues([
+				{ sector: null, loanCount: 1 },
+				{ loanCount: 1 },
+				{ sector: { name: 'Agriculture' }, loanCount: 1 },
+			]);
 			const other = values.find(sector => sector.isOther);
 			expect(other).toMatchObject({ label: `${OTHER_SECTOR_LABEL} (2)`, value: 2 });
 			expect(valueFor(values, 'Agriculture')).toBe(1);
 		});
 
 		it('appends the Other bucket last', () => {
-			const achievements = [
-				{
-					id: 'a1',
-					loanPurchases: [
-						{ loan: { id: 'l1', sector: null } },
-						{ loan: { id: 'l2', sector: { id: 's1', name: 'Agriculture' } } },
-						{ loan: { id: 'l3', sector: { id: 's2', name: 'Food' } } },
-					],
-				},
-			];
-			const values = getSectorChartValues(achievements);
+			const values = getSectorChartValues([
+				{ sector: null, loanCount: 1 },
+				{ sector: { name: 'Agriculture' }, loanCount: 3 },
+				{ sector: { name: 'Food' }, loanCount: 2 },
+			]);
 			expect(values[values.length - 1]).toEqual({ label: `${OTHER_SECTOR_LABEL} (1)`, value: 1, isOther: true });
 		});
 
-		it('omits the Other bucket entirely when every loan has a sector', () => {
-			const achievements = [
-				{ id: 'a1', loanPurchases: [{ loan: { id: 'l1', sector: { id: 's1', name: 'Agriculture' } } }] },
-			];
-			expect(getSectorChartValues(achievements).some(sector => sector.isOther)).toBe(false);
+		it('omits the Other bucket entirely when every entry has a sector', () => {
+			const values = getSectorChartValues([{ sector: { name: 'Agriculture' }, loanCount: 1 }]);
+			expect(values.some(sector => sector.isOther)).toBe(false);
 		});
 
-		it('de-duplicates a loan that appears under multiple achievements', () => {
-			const achievements = [
-				{ id: 'a1', loanPurchases: [{ loan: { id: 'l1', sector: { id: 's1', name: 'Agriculture' } } }] },
-				{ id: 'a2', loanPurchases: [{ loan: { id: 'l1', sector: { id: 's1', name: 'Agriculture' } } }] },
-			];
-			const values = getSectorChartValues(achievements);
-			expect(valueFor(values, 'Agriculture')).toBe(1);
-		});
-
-		it('skips purchases with no loan or no loan id', () => {
-			const achievements = [
-				{
-					id: 'a1',
-					loanPurchases: [
-						{ loan: null },
-						{},
-						{ loan: { sector: { id: 's1', name: 'Agriculture' } } }, // no id
-						{ loan: { id: 'l1', sector: { id: 's2', name: 'Food' } } },
-					],
-				},
-			];
-			const values = getSectorChartValues(achievements);
+		it('skips entries with no loan count', () => {
+			const values = getSectorChartValues([
+				{ sector: { name: 'Agriculture' }, loanCount: 0 },
+				{ sector: { name: 'Retail' } },
+				{ sector: { name: 'Food' }, loanCount: 1 },
+			]);
 			expect(values).toEqual([{ label: 'Food', value: 1 }]);
 		});
 

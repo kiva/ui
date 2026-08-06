@@ -1,0 +1,13 @@
+query goalInReviewLender {
+  my {
+    id
+    userAccount {
+      id
+      firstName
+    }
+    lendingStats {
+      id
+      amountLentPercentile
+    }
+  }
+}

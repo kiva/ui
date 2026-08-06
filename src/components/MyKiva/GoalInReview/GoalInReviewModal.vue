@@ -11,7 +11,7 @@
 				{{ data?.year }} goal in review
 			</h2>
 		</template>
-		<div ref="slidesContainer" class="tw-bg-secondary">
+		<div ref="slidesContainer" class="goal-in-review-slides tw-bg-secondary">
 			<div data-slide-view="1">
 				<GoalInReviewSlide1
 					:goal-status="data?.goalSummary?.status"
@@ -19,7 +19,7 @@
 					:year="data?.year"
 					:amount-lent="data?.loanStats?.totalLent"
 					:borrower-count="data?.loanStats?.borrowers"
-					:category="data?.goalSummary?.category"
+					:category="data?.categoryName"
 					:percent-complete="data?.loanStats?.percentComplete"
 				/>
 			</div>
@@ -32,7 +32,7 @@
 			<div data-slide-view="3">
 				<GoalInReviewSlide3
 					:countries="data?.goalSummary?.countries"
-					:sectors="data?.sectorAchievements"
+					:sectors="data?.goalSummary?.sectors"
 				/>
 			</div>
 			<div data-slide-view="4">
@@ -42,16 +42,13 @@
 				/>
 			</div>
 			<div data-slide-view="5">
-				<GoalInReviewSlide5 :sectors="data?.sectors" />
+				<GoalInReviewSlide5 />
 			</div>
 			<div
 				v-if="data?.goalSummary?.status === 'completed'"
 				data-slide-view="6"
 			>
-				<GoalInReviewSlide6
-					:year="data?.year"
-					:goal-insights="data?.goalInsights"
-				/>
+				<GoalInReviewSlide6 :year="data?.year" />
 			</div>
 			<div data-slide-view="7">
 				<GoalInReviewSlide7
@@ -59,7 +56,6 @@
 					:loan-count="data?.loanStats?.borrowers"
 					:year="data?.year"
 					:current-year="currentYear"
-					:wrap-up="data?.wrapUp"
 					:feedback-submitted="feedbackSubmitted"
 					@back-to-kiva="handleCta('back-to-kiva')"
 					@finish-goal="handleCta('finish-goal')"
@@ -220,6 +216,12 @@ onBeforeUnmount(teardownSlideObserver);
 
 <style lang="postcss">
 .goal-in-review-modal {
+	--recap-page-height: calc(90vh - 3.5rem);
+
+	.goal-in-review-slides > :first-child > * {
+		min-height: var(--recap-page-height);
+	}
+
 	[data-test=kv-lightbox] {
 		max-height: 90vh !important;
 
@@ -248,7 +250,7 @@ onBeforeUnmount(teardownSlideObserver);
 	}
 
 	#kvLightboxBody {
-		max-height: calc(90vh - 3.5rem);
+		max-height: var(--recap-page-height);
 		scrollbar-width: none;
 		-ms-overflow-style: none;
 
@@ -257,15 +259,16 @@ onBeforeUnmount(teardownSlideObserver);
 }
 
 @screen md {
-	.goal-in-review-modal [data-test=kv-lightbox] {
-		max-width: min(calc(100vw - 4rem), 1020px) !important;
-		max-height: calc(100vh - 14rem) !important;
-
-		@apply !tw-m-auto !tw-rounded;
+	.goal-in-review-modal {
+		--recap-page-height: min(710px, calc(100vh - 4rem));
 	}
 
-	.goal-in-review-modal #kvLightboxBody {
-		max-height: calc(100vh - 14rem);
+	.goal-in-review-modal [data-test=kv-lightbox] {
+		max-width: min(calc(100vw - 4rem), 1020px) !important;
+		height: var(--recap-page-height);
+		max-height: var(--recap-page-height) !important;
+
+		@apply !tw-m-auto !tw-rounded;
 	}
 }
 

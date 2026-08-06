@@ -110,6 +110,27 @@ describe('GoalInReviewModal', () => {
 		await findByText('+47 more');
 	});
 
+	it('reconciles the borrower count across slides 1, 2 and 7', async () => {
+		const currentYear = new Date().getFullYear();
+		const { findByText, getAllByText } = render(GoalInReviewModal, {
+			global: globalWithAppConfig,
+			props: {
+				show: true,
+				data: {
+					year: currentYear,
+					goalSummary: { status: 'completed' },
+					loanStats: { totalLent: 1025, borrowers: 14, percentComplete: 100 },
+					goalLoans: [{ id: 1, name: 'Aminata', image: { hash: 'hash-1' } }],
+				},
+			},
+		});
+
+		await findByText('Borrowers'); // slide 1 stat label
+		await findByText(/14 borrowers\./); // slide 2 headline
+		await findByText(/14 dreams/); // slide 7 copy
+		expect(getAllByText('14').length).toBeGreaterThan(0);
+	});
+
 	it('tracks and forwards the slide 7 primary CTA', async () => {
 		const trackEvent = vi.fn();
 		const currentYear = new Date().getFullYear();
