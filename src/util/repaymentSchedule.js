@@ -7,9 +7,6 @@ export const DELINQUENT = 'delinquent';
 export const FUTURE = 'future';
 export const PARTIAL = 'partial';
 
-const REPAID_COMMENT = 'Repayment received';
-const DELINQUENT_COMMENT = 'Delinquent';
-
 export function formatUsd(amount) {
 	return numeral(amount).format('$0,0.00');
 }
@@ -54,18 +51,6 @@ export function actualAmountLabel({ dueDate, actualAmountToLenders }, now) {
 	return formatUsd(0);
 }
 
-// The Comments cell: a received or delinquent marker, otherwise whichever party the
-// server attributes the delinquency to.
-export function periodComment({ status, delinquencyAttribution }) {
-	if (status === REPAID) {
-		return { tone: REPAID, text: REPAID_COMMENT };
-	}
-	if (status === DELINQUENT) {
-		return { tone: DELINQUENT, text: DELINQUENT_COMMENT };
-	}
-	return { tone: '', text: delinquencyAttribution || '' };
-}
-
 export function buildPartnerPeriodRows(periods = [], now = new Date()) {
 	return periods.map(period => ({
 		dueDate: period.dueDate,
@@ -73,7 +58,6 @@ export function buildPartnerPeriodRows(periods = [], now = new Date()) {
 		expected: formatUsd(period.expectedAmountToLenders ?? 0),
 		actual: actualAmountLabel(period, now),
 		status: period.status,
-		comment: periodComment(period),
 	}));
 }
 
@@ -167,7 +151,7 @@ export function buildAdvancedPeriods(periods = [], currency = '', now = new Date
 	return periods.map(period => ({
 		dueDate: period.dueDate,
 		periodLabel: formatPeriodLabel(period.dueDate),
-		comment: periodComment(period),
+		status: period.status,
 		currencyLoss: currencyLossNote(period.currencyLossToLenders),
 		borrowerRows: borrowerRepaymentRows(period, currency),
 		lenderRow: lenderSettlementRow(period, now),

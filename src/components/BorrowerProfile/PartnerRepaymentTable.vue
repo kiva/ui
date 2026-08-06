@@ -23,12 +23,10 @@
 						<p class="tw-mb-1.5">
 							Actual: {{ row.actual }}
 						</p>
-						<p
-							v-if="row.comment.text"
+						<repayment-comment
+							:status="row.status"
 							class="tw-bg-primary tw-inline-block tw-px-2 tw-mx-auto tw-py-1 tw-rounded"
-						>
-							<repayment-comment :tone="row.comment.tone" :text="row.comment.text" />
-						</p>
+						/>
 					</td>
 				</tr>
 			</tbody>
@@ -66,7 +64,7 @@
 						{{ row.actual }}
 					</td>
 					<td class="table-data-spacing">
-						<repayment-comment :tone="row.comment.tone" :text="row.comment.text" />
+						<repayment-comment :status="row.status" />
 					</td>
 				</tr>
 			</tbody>

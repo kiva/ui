@@ -34,7 +34,7 @@
 							{{ period.periodLabel }}
 						</th>
 						<th>
-							<repayment-comment :tone="period.comment.tone" :text="period.comment.text" />
+							<repayment-comment :status="period.status" />
 						</th>
 					</tr>
 					<tr
