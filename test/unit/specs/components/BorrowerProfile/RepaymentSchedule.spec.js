@@ -48,6 +48,7 @@ const FUTURE_PERIOD = {
 function partnerLoan(repayments, { dualStatementNote = null, delinquent = false } = {}) {
 	return {
 		id: 2000020,
+		__typename: 'LoanPartner',
 		dualStatementNote,
 		delinquent,
 		repaymentInterval: 'Monthly',
@@ -60,7 +61,6 @@ function partnerLoan(repayments, { dualStatementNote = null, delinquent = false 
 			lenderRepaymentTerm: 43,
 			expectedPayments: [],
 		},
-		partner: { id: 2000100, name: 'Test Partner' },
 		repayments,
 	};
 }
@@ -68,6 +68,7 @@ function partnerLoan(repayments, { dualStatementNote = null, delinquent = false 
 function directLoan(repayments) {
 	return {
 		id: 2000021,
+		__typename: 'LoanDirect',
 		repaymentInterval: 'Monthly',
 		lenderRepaymentTerm: 24,
 		loanAmount: '5000.00',
@@ -76,7 +77,6 @@ function directLoan(repayments) {
 			disbursalDate: '2015-01-29T08:00:00Z',
 			lenderRepaymentTerm: 24,
 		},
-		partner: null,
 		repayments,
 	};
 }

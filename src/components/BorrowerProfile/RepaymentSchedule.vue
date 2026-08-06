@@ -102,6 +102,7 @@ const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 	lend {
 		loan(id: $loanId) {
 			id
+			__typename
 			repaymentInterval
 			lenderRepaymentTerm
 			loanAmount
@@ -129,10 +130,6 @@ const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 			... on LoanPartner {
 				id
 				dualStatementNote
-				partner {
-					id
-					name
-				}
 				repayments {
 					dueDate
 					status
@@ -183,7 +180,7 @@ export default {
 			repayments: [],
 			loanAmount: 0,
 			lenderRepaymentTerm: 0,
-			partnerName: '',
+			loanType: '',
 			disbursalDate: '',
 			delinquent: false,
 			dualStatementNote: '',
@@ -212,7 +209,7 @@ export default {
 				}
 			}).then(({ data }) => {
 				const loan = data?.lend?.loan;
-				this.partnerName = loan?.partner?.name || '';
+				this.loanType = loan?.__typename ?? ''; // eslint-disable-line no-underscore-dangle
 				// Both loan types expose `repayments`, shaped per type; the loan's type decides
 				// which table reads it.
 				this.repayments = loan?.repayments || [];
@@ -230,7 +227,7 @@ export default {
 	},
 	computed: {
 		isPartnerLoan() {
-			return !!this.partnerName;
+			return this.loanType === 'LoanPartner';
 		},
 		partnerRows() {
 			return this.isPartnerLoan ? buildPartnerPeriodRows(this.repayments) : [];
