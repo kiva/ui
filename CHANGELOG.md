@@ -1,3 +1,15 @@
+## [3.83.0-rc.1](https://github.com/kiva/ui/compare/v3.82.0...v3.83.0-rc.1) (2026-08-06)
+
+### 🎉 New Features
+
+* [MP-3065] - goal in review analytics events ([#7139](https://github.com/kiva/ui/issues/7139)) ([0a3b41e](https://github.com/kiva/ui/commit/0a3b41e6d3e4ef6b908a0fb14366a447d1d0e8d0))
+
+### 🐛 Bugfixes
+
+* hide journal section for anonymized loans ([#7138](https://github.com/kiva/ui/issues/7138)) ([2afdb27](https://github.com/kiva/ui/commit/2afdb2707afd22b6128a06f046091f9b48835518))
+* hide region card if no regions remain on next steps page ([#7137](https://github.com/kiva/ui/issues/7137)) ([a56cf61](https://github.com/kiva/ui/commit/a56cf617a242dd9efca79481fe6bebee75d96713))
+* hide why special when null ([#7140](https://github.com/kiva/ui/issues/7140)) ([41d89ac](https://github.com/kiva/ui/commit/41d89ac88f3ca6cbd04bbc670edb8a80c5903b79))
+
 ## [3.82.0](https://github.com/kiva/ui/compare/v3.81.0...v3.82.0) (2026-08-04)
 
 ### 🎉 New Features
