@@ -34,6 +34,14 @@ describe('useExpressCheckoutModal', () => {
 		...overrides,
 	});
 
+	const makeModalMock = (overrides = {}) => ({
+		openLoading: vi.fn(),
+		loadPaymentDetails: vi.fn().mockResolvedValue(true),
+		abortLightbox: vi.fn(),
+		isOpen: vi.fn(() => true),
+		...overrides,
+	});
+
 	const mountComposable = (overrides = {}) => {
 		mockApollo = {
 			mutate: vi.fn().mockResolvedValue({ data: {} }),
@@ -102,7 +110,7 @@ describe('useExpressCheckoutModal', () => {
 		describe('empty basket → open modal', () => {
 			it('calls addToBasket and opens the modal on success', async () => {
 				basketItems.value = [];
-				const modalMock = { openLightbox: vi.fn() };
+				const modalMock = makeModalMock();
 				composable.expressCheckoutModalRef.value = modalMock;
 				mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
 				const loan = { id: 999, name: 'Jacqueline' };
@@ -116,7 +124,7 @@ describe('useExpressCheckoutModal', () => {
 				expect(mockAddToBasket).toHaveBeenCalledTimes(1);
 				await vi.waitFor(() => {
 					expect(composable.expressCheckoutLoan.value).toEqual(loan);
-					expect(modalMock.openLightbox).toHaveBeenCalledTimes(1);
+					expect(modalMock.loadPaymentDetails).toHaveBeenCalledTimes(1);
 				});
 				expect(mockPush).not.toHaveBeenCalled();
 			});
@@ -124,7 +132,12 @@ describe('useExpressCheckoutModal', () => {
 			it('initializes checkout before opening the modal', async () => {
 				basketItems.value = [];
 				const order = [];
-				const modalMock = { openLightbox: vi.fn(() => order.push('open')) };
+				const modalMock = makeModalMock({
+					loadPaymentDetails: vi.fn(async () => {
+						order.push('open');
+						return true;
+					}),
+				});
 				composable.expressCheckoutModalRef.value = modalMock;
 				mockApollo.query.mockImplementationOnce(async () => {
 					order.push('initialize');
@@ -143,10 +156,9 @@ describe('useExpressCheckoutModal', () => {
 				}));
 			});
 
-			it('resolves the addToBasket onSuccess callback with the openLightbox result', async () => {
+			it('resolves the addToBasket onSuccess callback once payment details load', async () => {
 				basketItems.value = [];
-				const openLightboxPromise = Promise.resolve(true);
-				const modalMock = { openLightbox: vi.fn(() => openLightboxPromise) };
+				const modalMock = makeModalMock();
 				composable.expressCheckoutModalRef.value = modalMock;
 				let addToBasketOnSuccess;
 				mockAddToBasket.mockImplementation(({ onSuccess }) => {
@@ -160,6 +172,7 @@ describe('useExpressCheckoutModal', () => {
 				});
 
 				await expect(addToBasketOnSuccess()).resolves.toBe(true);
+				expect(modalMock.loadPaymentDetails).toHaveBeenCalledTimes(1);
 				expect(mockPush).not.toHaveBeenCalled();
 			});
 
@@ -174,7 +187,7 @@ describe('useExpressCheckoutModal', () => {
 
 			it('sets expressCheckoutLoan to null when payload has no loan', async () => {
 				basketItems.value = [];
-				const modalMock = { openLightbox: vi.fn() };
+				const modalMock = makeModalMock();
 				composable.expressCheckoutModalRef.value = modalMock;
 				mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
 
@@ -182,13 +195,13 @@ describe('useExpressCheckoutModal', () => {
 
 				await vi.waitFor(() => {
 					expect(composable.expressCheckoutLoan.value).toBeNull();
-					expect(modalMock.openLightbox).toHaveBeenCalledTimes(1);
+					expect(modalMock.loadPaymentDetails).toHaveBeenCalledTimes(1);
 				});
 			});
 
 			it('does not open the modal when checkout initialization fails', async () => {
 				basketItems.value = [];
-				const modalMock = { openLightbox: vi.fn() };
+				const modalMock = makeModalMock();
 				composable.expressCheckoutModalRef.value = modalMock;
 				mockApollo.query.mockRejectedValueOnce(new Error('initialize failed'));
 				mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
@@ -196,7 +209,8 @@ describe('useExpressCheckoutModal', () => {
 				await composable.handleAddRecommendedLoanToBasket({ loanId: 1, lendAmount: '25' });
 
 				await new Promise(resolve => { setTimeout(resolve, 0); });
-				expect(modalMock.openLightbox).not.toHaveBeenCalled();
+				expect(modalMock.loadPaymentDetails).not.toHaveBeenCalled();
+				expect(modalMock.abortLightbox).toHaveBeenCalled();
 				expect(mockKvTrackEvent).not.toHaveBeenCalled();
 			});
 		});
@@ -217,10 +231,10 @@ describe('useExpressCheckoutModal', () => {
 				expect(observedIsRedirecting).toBe(true);
 			});
 
-			it('redirects to /basket on addToBasket success', async () => {
+			it('redirects to /basket on addToBasket success and keeps the modal open', async () => {
 				basketItems.value = [loanItem({ id: 'other' })];
 				mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
-				const modalMock = { openLightbox: vi.fn() };
+				const modalMock = makeModalMock();
 				composable.expressCheckoutModalRef.value = modalMock;
 
 				await composable.handleAddRecommendedLoanToBasket({
@@ -229,7 +243,8 @@ describe('useExpressCheckoutModal', () => {
 				});
 
 				expect(mockPush).toHaveBeenCalledWith('/basket');
-				expect(modalMock.openLightbox).not.toHaveBeenCalled();
+				expect(modalMock.abortLightbox).not.toHaveBeenCalled();
+				expect(modalMock.loadPaymentDetails).not.toHaveBeenCalled();
 			});
 		});
 
@@ -292,12 +307,12 @@ describe('useExpressCheckoutModal', () => {
 			});
 
 			it('aborts the flow: the modal is not opened', async () => {
-				const modalMock = { openLightbox: vi.fn() };
+				const modalMock = makeModalMock();
 				composable.expressCheckoutModalRef.value = modalMock;
 
 				await composable.handleAddRecommendedLoanToBasket({ loanId: 1, lendAmount: '25' });
 
-				expect(modalMock.openLightbox).not.toHaveBeenCalled();
+				expect(modalMock.loadPaymentDetails).not.toHaveBeenCalled();
 			});
 
 			it('does not refresh basket items a second time after the failed clear', async () => {
@@ -309,7 +324,7 @@ describe('useExpressCheckoutModal', () => {
 		describe('re-entry via Checkout now', () => {
 			it('reopens the modal without calling addToBasket when only the recommended loan remains', async () => {
 				basketItems.value = [loanItem({ id: 'recommended' })];
-				const modalMock = { openLightbox: vi.fn() };
+				const modalMock = makeModalMock();
 				composable.expressCheckoutModalRef.value = modalMock;
 				const loan = { id: 'recommended', name: 'Jacqueline' };
 
@@ -321,7 +336,7 @@ describe('useExpressCheckoutModal', () => {
 				});
 
 				await vi.waitFor(() => {
-					expect(modalMock.openLightbox).toHaveBeenCalledTimes(1);
+					expect(modalMock.loadPaymentDetails).toHaveBeenCalledTimes(1);
 					expect(composable.expressCheckoutLoan.value).toEqual(loan);
 				});
 				expect(mockAddToBasket).not.toHaveBeenCalled();
@@ -346,7 +361,7 @@ describe('useExpressCheckoutModal', () => {
 
 			it('ignores recommendLoanIsInBasket when the basket is empty (falls back to add-and-open)', async () => {
 				basketItems.value = [];
-				const modalMock = { openLightbox: vi.fn() };
+				const modalMock = makeModalMock();
 				composable.expressCheckoutModalRef.value = modalMock;
 				mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
 
@@ -358,7 +373,7 @@ describe('useExpressCheckoutModal', () => {
 
 				expect(mockAddToBasket).toHaveBeenCalledTimes(1);
 				await vi.waitFor(() => {
-					expect(modalMock.openLightbox).toHaveBeenCalledTimes(1);
+					expect(modalMock.loadPaymentDetails).toHaveBeenCalledTimes(1);
 				});
 			});
 		});
@@ -387,6 +402,166 @@ describe('useExpressCheckoutModal', () => {
 					composable.handleAddRecommendedLoanToBasket({ loanId: 999, lendAmount: '25' }),
 				).resolves.not.toThrow();
 				expect(composable.isRedirecting.value).toBe(false);
+			});
+		});
+
+		describe('instant loading modal', () => {
+			it('opens the loading modal synchronously before any basket work', async () => {
+				basketItems.value = [];
+				const order = [];
+				const modalMock = makeModalMock({
+					openLoading: vi.fn(() => order.push('openLoading')),
+				});
+				composable.expressCheckoutModalRef.value = modalMock;
+				mockLoadInitialBasketItems.mockImplementation(async () => {
+					order.push('loadBasket');
+				});
+				mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
+
+				await composable.handleAddRecommendedLoanToBasket({ loanId: 1, lendAmount: '25' });
+
+				expect(order[0]).toBe('openLoading');
+				expect(order).toContain('loadBasket');
+			});
+
+			it('does not open the loading modal when the payload is missing loanId', async () => {
+				const modalMock = makeModalMock();
+				composable.expressCheckoutModalRef.value = modalMock;
+
+				await composable.handleAddRecommendedLoanToBasket({ lendAmount: '25' });
+
+				expect(modalMock.openLoading).not.toHaveBeenCalled();
+				expect(mockLoadInitialBasketItems).not.toHaveBeenCalled();
+				expect(mockAddToBasket).not.toHaveBeenCalled();
+			});
+
+			it('does not open the loading modal when the payload is missing lendAmount', async () => {
+				const modalMock = makeModalMock();
+				composable.expressCheckoutModalRef.value = modalMock;
+
+				await composable.handleAddRecommendedLoanToBasket({ loanId: 1 });
+
+				expect(modalMock.openLoading).not.toHaveBeenCalled();
+				expect(mockAddToBasket).not.toHaveBeenCalled();
+			});
+
+			it('does not open the loading modal when the feature flag is off', async () => {
+				app?.unmount();
+				mountComposable({ isExpressCheckoutEnabled: ref(false) });
+				const modalMock = makeModalMock();
+				composable.expressCheckoutModalRef.value = modalMock;
+				mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
+
+				await composable.handleAddRecommendedLoanToBasket({ loanId: 1, lendAmount: '25' });
+
+				expect(modalMock.openLoading).not.toHaveBeenCalled();
+			});
+
+			it('closes the loading modal when clearing the donation fails', async () => {
+				mockLoadInitialBasketItems.mockImplementationOnce(async () => {
+					basketItems.value = [donationItem()];
+				});
+				mockApollo.mutate.mockResolvedValueOnce({
+					errors: [{ message: 'cannot clear' }],
+				});
+				const modalMock = makeModalMock();
+				composable.expressCheckoutModalRef.value = modalMock;
+
+				await composable.handleAddRecommendedLoanToBasket({ loanId: 1, lendAmount: '25' });
+
+				expect(modalMock.openLoading).toHaveBeenCalledTimes(1);
+				expect(modalMock.abortLightbox).toHaveBeenCalledTimes(1);
+				expect(mockAddToBasket).not.toHaveBeenCalled();
+			});
+
+			it('closes the loading modal when addToBasket fails', async () => {
+				basketItems.value = [];
+				const modalMock = makeModalMock();
+				composable.expressCheckoutModalRef.value = modalMock;
+				mockAddToBasket.mockImplementation(({ onError }) => onError?.());
+
+				await composable.handleAddRecommendedLoanToBasket({ loanId: 1, lendAmount: '25' });
+
+				expect(modalMock.abortLightbox).toHaveBeenCalled();
+				expect(modalMock.loadPaymentDetails).not.toHaveBeenCalled();
+			});
+
+			it('closes the loading modal when payment details fail to load', async () => {
+				basketItems.value = [];
+				const modalMock = makeModalMock({
+					loadPaymentDetails: vi.fn().mockResolvedValue(false),
+				});
+				composable.expressCheckoutModalRef.value = modalMock;
+				mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
+
+				await composable.handleAddRecommendedLoanToBasket({ loanId: 1, lendAmount: '25' });
+
+				await vi.waitFor(() => {
+					expect(modalMock.abortLightbox).toHaveBeenCalled();
+				});
+			});
+
+			// The user can dismiss the skeleton while the basket chain is still in flight.
+			// addToBasket's onSuccess still fires — it must not initialize checkout, log a
+			// modal-open after the close event, or fetch payment details for a hidden modal.
+			it('skips checkout initialization when the skeleton was dismissed mid-load', async () => {
+				basketItems.value = [];
+				const modalMock = makeModalMock({ isOpen: vi.fn(() => false) });
+				composable.expressCheckoutModalRef.value = modalMock;
+				let addToBasketOnSuccess;
+				mockAddToBasket.mockImplementation(({ onSuccess }) => {
+					addToBasketOnSuccess = onSuccess;
+				});
+
+				await composable.handleAddRecommendedLoanToBasket({
+					loanId: 1,
+					lendAmount: '25',
+					loan: { id: 1 },
+				});
+
+				mockApollo.query.mockClear();
+				await expect(addToBasketOnSuccess()).resolves.toBe(false);
+
+				expect(mockApollo.query).not.toHaveBeenCalled();
+				expect(mockKvTrackEvent).not.toHaveBeenCalledWith(
+					'post-checkout',
+					'open',
+					'open-express-checkout',
+				);
+				expect(modalMock.loadPaymentDetails).not.toHaveBeenCalled();
+			});
+
+			it('closes the loading modal and shows a tip when addToBasket throws synchronously', async () => {
+				basketItems.value = [];
+				const modalMock = makeModalMock();
+				composable.expressCheckoutModalRef.value = modalMock;
+				mockAddToBasket.mockImplementation(() => {
+					throw new Error('addToBasket boom');
+				});
+
+				await expect(
+					composable.handleAddRecommendedLoanToBasket({ loanId: 1, lendAmount: '25' }),
+				).resolves.toBeUndefined();
+
+				expect(modalMock.abortLightbox).toHaveBeenCalledTimes(1);
+				expect(mockApollo.mutate).toHaveBeenCalledWith(expect.objectContaining({
+					variables: expect.objectContaining({
+						message: 'Something went wrong. Please, refresh the page and try again.',
+						type: 'error',
+					}),
+				}));
+			});
+
+			it('keeps the loading modal open while redirecting when the basket has other items', async () => {
+				basketItems.value = [loanItem({ id: 'other' })];
+				const modalMock = makeModalMock();
+				composable.expressCheckoutModalRef.value = modalMock;
+				mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
+
+				await composable.handleAddRecommendedLoanToBasket({ loanId: 999, lendAmount: '25' });
+
+				expect(modalMock.abortLightbox).not.toHaveBeenCalled();
+				expect(mockPush).toHaveBeenCalledWith('/basket');
 			});
 		});
 	});
@@ -447,7 +622,7 @@ describe('useExpressCheckoutModal', () => {
 
 		it('redirects to /basket on addToBasket success without opening the modal', async () => {
 			mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
-			const modalMock = { openLightbox: vi.fn() };
+			const modalMock = makeModalMock();
 			composable.expressCheckoutModalRef.value = modalMock;
 
 			await composable.handleAddRecommendedLoanToBasket({
@@ -457,7 +632,7 @@ describe('useExpressCheckoutModal', () => {
 			});
 
 			expect(mockPush).toHaveBeenCalledWith('/basket');
-			expect(modalMock.openLightbox).not.toHaveBeenCalled();
+			expect(modalMock.loadPaymentDetails).not.toHaveBeenCalled();
 			expect(composable.expressCheckoutLoan.value).toBeNull();
 		});
 
@@ -494,7 +669,7 @@ describe('useExpressCheckoutModal', () => {
 	describe('tracking events', () => {
 		it("fires 'post-checkout / open / open-express-checkout' when the modal opens on empty basket", async () => {
 			basketItems.value = [];
-			const modalMock = { openLightbox: vi.fn() };
+			const modalMock = makeModalMock();
 			composable.expressCheckoutModalRef.value = modalMock;
 			mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
 
@@ -515,7 +690,7 @@ describe('useExpressCheckoutModal', () => {
 
 		it("fires 'post-checkout / open / open-express-checkout' on Checkout now re-entry", async () => {
 			basketItems.value = [loanItem({ id: 'recommended' })];
-			const modalMock = { openLightbox: vi.fn() };
+			const modalMock = makeModalMock();
 			composable.expressCheckoutModalRef.value = modalMock;
 
 			await composable.handleAddRecommendedLoanToBasket({
@@ -559,7 +734,7 @@ describe('useExpressCheckoutModal', () => {
 			app?.unmount();
 			mountComposable({ kvTrackEvent: undefined });
 			basketItems.value = [];
-			const modalMock = { openLightbox: vi.fn() };
+			const modalMock = makeModalMock();
 			composable.expressCheckoutModalRef.value = modalMock;
 			mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
 
@@ -567,7 +742,7 @@ describe('useExpressCheckoutModal', () => {
 				composable.handleAddRecommendedLoanToBasket({ loanId: 1, lendAmount: '25' }),
 			).resolves.not.toThrow();
 			await vi.waitFor(() => {
-				expect(modalMock.openLightbox).toHaveBeenCalledTimes(1);
+				expect(modalMock.loadPaymentDetails).toHaveBeenCalledTimes(1);
 			});
 		});
 	});
