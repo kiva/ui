@@ -35,6 +35,19 @@ export function parseKivaDate(value) {
 	return toValidDate(value);
 }
 
+const formatters = new Map();
+
+// Building an Intl.DateTimeFormat costs far more than formatting with one, and callers
+// reuse a handful of fixed option sets, so keep one formatter per set. They depend only on
+// the fixed locale and timezone, so the instances carry no per-request state.
+function kivaDateFormatter(options) {
+	const key = JSON.stringify(options ?? {});
+	if (!formatters.has(key)) {
+		formatters.set(key, new Intl.DateTimeFormat('en-US', { ...options, timeZone: KIVA_SERVER_TIMEZONE }));
+	}
+	return formatters.get(key);
+}
+
 /**
  * Formats a date in Kiva's server timezone.
  *
@@ -47,7 +60,7 @@ export function formatInKivaServerTimezone(value, options) {
 	if (!date) {
 		return '';
 	}
-	return new Intl.DateTimeFormat('en-US', { ...options, timeZone: KIVA_SERVER_TIMEZONE }).format(date);
+	return kivaDateFormatter(options).format(date);
 }
 
 export default function getMonthsCount(startTimestamp, endTimestamp = null) {
