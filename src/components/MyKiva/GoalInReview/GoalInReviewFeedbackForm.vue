@@ -4,7 +4,7 @@
 			class="-tw-mt-2"
 			:form-assembly-id="FEEDBACK_FORM_ID"
 			title="Goals feedback survey"
-			@fa-form-submitted="emit('submitted')"
+			@fa-form-submitted="handleSubmitted"
 		/>
 	</div>
 </template>
@@ -15,4 +15,10 @@ import { KvFormAssemblyForm } from '@kiva/kv-components';
 const FEEDBACK_FORM_ID = 659;
 
 const emit = defineEmits(['submitted']);
+
+const handleSubmitted = (event = {}) => {
+	if (event.valid) {
+		emit('submitted');
+	}
+};
 </script>

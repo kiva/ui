@@ -126,6 +126,25 @@ describe('GoalInReviewSlide7', () => {
 		expect(emitted()['feedback-submitted']).toHaveLength(1);
 	});
 
+	it('hides the feedback toggle after a successful submit so it cannot re-fire', async () => {
+		const trackEvent = vi.fn();
+		const { getByText, getByTestId, queryByText } = render(GoalInReviewSlide7, {
+			global: {
+				...globalOptions,
+				provide: { ...globalOptions.provide, $kvTrackEvent: trackEvent },
+			},
+			props: { goalStatus: 'completed', year: GOAL_YEAR, currentYear: CURRENT_YEAR },
+		});
+
+		await fireEvent.click(getByText('Share your feedback'));
+		await fireEvent.click(getByTestId('fa-submit'));
+
+		// The toggle is gone, so it can no longer be re-clicked to re-fire the event.
+		expect(queryByText('Share your feedback')).toBeNull();
+		const shareCalls = trackEvent.mock.calls.filter(call => call[2] === 'goal-in-review-share-feedback');
+		expect(shareCalls).toHaveLength(1);
+	});
+
 	it('tracks opening the feedback survey', async () => {
 		const trackEvent = vi.fn();
 		const { getByText } = render(GoalInReviewSlide7, {
