@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/vue';
+import { render } from '@testing-library/vue';
 import CookieStore from '#src/util/cookieStore';
 import apolloPlugin from '#src/plugins/apollo-plugin';
 import LoanDetails from '#src/components/BorrowerProfile/LoanDetails';
@@ -11,9 +11,7 @@ const stubs = {
 	},
 };
 
-const DUAL_STATEMENT_NOTE = 'Important note about this loan';
-
-function makeApollo({ dualStatementNote = null, status = 'payingBack', anonymizationLevel = 'none' } = {}) {
+function makeApollo({ status = 'payingBack', anonymizationLevel = 'none' } = {}) {
 	const data = {
 		lend: {
 			loan: {
@@ -29,7 +27,6 @@ function makeApollo({ dualStatementNote = null, status = 'payingBack', anonymiza
 				endedDate: '',
 				paidAmount: '100.00',
 				loanAmount: '600.00',
-				dualStatementNote,
 				terms: {
 					currency: 'INR',
 					flexibleFundraisingEnabled: false,
@@ -77,22 +74,6 @@ function renderLoanDetails({ isPrivileged = true, ...loanOverrides } = {}) {
 }
 
 describe('LoanDetails', () => {
-	it('links to additional information for a dual-statement loan', async () => {
-		const { findByTestId } = renderLoanDetails({ dualStatementNote: DUAL_STATEMENT_NOTE });
-
-		const link = await findByTestId('bp-loan-detail-dual-statement-info');
-
-		expect(link.textContent.trim()).toBe('(Additional information)');
-	});
-
-	it('omits the link when the loan is not dual-statement', async () => {
-		const { findByTestId, queryByTestId } = renderLoanDetails();
-
-		await findByTestId('bp-loan-detail-loan-length');
-
-		expect(queryByTestId('bp-loan-detail-dual-statement-info')).toBeNull();
-	});
-
 	describe('who sees the repayment schedule', () => {
 		const TRIGGER = 'bp-loan-detail-full-repayment-schedule-lightbox-btn';
 
@@ -132,15 +113,5 @@ describe('LoanDetails', () => {
 
 			expect(queryByTestId(TRIGGER)).toBeNull();
 		});
-	});
-
-	it('opens the repayment schedule from the additional information link', async () => {
-		const { findByTestId, queryByTestId } = renderLoanDetails({ dualStatementNote: DUAL_STATEMENT_NOTE });
-
-		expect(queryByTestId('repayment-lightbox')).toBeNull();
-
-		await fireEvent.click(await findByTestId('bp-loan-detail-dual-statement-info'));
-
-		expect(await findByTestId('repayment-lightbox')).toBeTruthy();
 	});
 });

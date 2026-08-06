@@ -5,7 +5,6 @@ import cookieStoreStoryMixin from '../../mixins/cookie-store-story-mixin';
 import kvAuth0StoryMixin from '../../mixins/kv-auth0-story-mixin';
 import {
 	createQueryResult,
-	dualStatementPartnerLoan,
 	fundraisingPartnerLoan,
 	fundraisingDirectLoan,
 	expiredLoan,
@@ -43,9 +42,6 @@ export const DefaultedDate = loanDetailsStory(defaultedLoan);
 export const EndedDate = loanDetailsStory(endedLoan);
 
 export const RefundedDate = loanDetailsStory(refundedLoan);
-
-/** Dual-statement loans link out to the repayment schedule for the extra detail. */
-export const DualStatement = loanDetailsStory(dualStatementPartnerLoan);
 
 export const Loading = loanDetailsStory(fundraisingPartnerLoan, { loading: true });
 Loading.storyName = 'Loading (skeleton)';

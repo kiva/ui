@@ -18,15 +18,6 @@
 					linkText: 'Loan length'
 				})"
 			/>
-			<div v-if="isDualStatement" class="tw-mb-2.5">
-				<button
-					class="tw-underline tw-text-link"
-					data-testid="bp-loan-detail-dual-statement-info"
-					@click="openRepaymentSchedule"
-				>
-					(Additional information)
-				</button>
-			</div>
 			<description-list-item
 				data-testid="bp-loan-detail-repayment-schedule"
 				:term="'Repayment schedule'"
@@ -92,7 +83,6 @@
 		<repayment-schedule
 			v-if="displayRepaymentSchedule"
 			:key="loanId"
-			ref="repaymentSchedule"
 			:loan-id="loanId"
 			:status="status"
 		/>
@@ -107,7 +97,6 @@ import DescriptionListItem from '#src/components/BorrowerProfile/DescriptionList
 import DescriptionListLoading from '#src/components/BorrowerProfile/DescriptionListLoading';
 import RepaymentSchedule from '#src/components/BorrowerProfile/RepaymentSchedule';
 import { capitalize } from '#src/util/stringParserUtils';
-import { isDualStatementLoan } from '#src/util/repaymentSchedule';
 
 const loanDetailsQuery = gql`query borrowerProfileLoanDetails($loanId: Int!) {
 	lend {
@@ -129,7 +118,6 @@ const loanDetailsQuery = gql`query borrowerProfileLoanDetails($loanId: Int!) {
 				lossLiabilityCurrencyExchange
 			}
 			... on LoanPartner {
-				dualStatementNote
 				partner {
 					id
 					name
@@ -181,14 +169,8 @@ export default {
 			refundedDate: '',
 			defaultedDate: '',
 			endedDate: '',
-			dualStatementNote: '',
 			loading: true,
 		};
-	},
-	methods: {
-		openRepaymentSchedule() {
-			this.$refs.repaymentSchedule?.openLightbox();
-		},
 	},
 	apollo: {
 		lazy: true,
@@ -213,16 +195,12 @@ export default {
 			this.refundedDate = loan?.refundedDate ?? '';
 			this.defaultedDate = loan?.defaultedDate ?? '';
 			this.endedDate = loan?.endedDate ?? '';
-			this.dualStatementNote = loan?.dualStatementNote ?? '';
 			this.loading = false;
 		},
 	},
 	computed: {
 		isPartnerLoan() {
 			return this.partnerName !== '';
-		},
-		isDualStatement() {
-			return isDualStatementLoan(this.dualStatementNote) && this.displayRepaymentSchedule;
 		},
 		loanLength() {
 			return this.isPartnerLoan ? this.loanLenderRepaymentTerm : this.loanTermLenderRepaymentTerm;
