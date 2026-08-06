@@ -341,14 +341,15 @@ describe('RepaymentSchedule', () => {
 		expect(queryByTestId('bp-repayment-advanced-toggle')).toBeNull();
 	});
 
-	it('lists expected and recorded borrower repayments separately in the advanced view', async () => {
+	it('pairs each borrower repayment with what was recorded in the advanced view', async () => {
 		const { findByTestId, findAllByText } = await renderRepaymentSchedule({
 			loan: partnerLoan([REPAID_PERIOD]),
 		});
 
 		await fireEvent.click(await findByTestId('bp-repayment-advanced-toggle'));
 
-		// Two expected repayments and one recorded one, each on its own row rather than zipped.
+		// Two expected repayments against one recorded one, so the period runs to two rows
+		// and the second has nothing in its recorded cells.
 		expect((await findAllByText('KES 10,000.00')).length).toBe(1);
 		expect((await findAllByText('KES 5,000.00')).length).toBe(1);
 		expect((await findAllByText('KES 14,500.00')).length).toBe(1);
