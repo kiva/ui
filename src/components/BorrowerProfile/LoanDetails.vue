@@ -91,6 +91,7 @@
 		</dl>
 		<repayment-schedule
 			v-if="displayRepaymentSchedule"
+			:key="loanId"
 			ref="repaymentSchedule"
 			:loan-id="loanId"
 			:status="status"
