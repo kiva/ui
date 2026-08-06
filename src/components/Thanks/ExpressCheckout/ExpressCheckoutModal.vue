@@ -124,6 +124,9 @@ const totalDue = ref('0.00');
 const transactionsEnabled = ref(false);
 const dropInAuthToken = ref('');
 let totalsSubscription = null;
+// Holds the in-flight client-token fetch started in openLoading() so
+// loadPaymentDetails() can await it instead of firing a fresh serial request.
+let clientTokenPromise = null;
 
 const depositRequired = computed(() => (numeral(totalDue.value).value() ?? 0) > 0);
 
@@ -157,6 +160,7 @@ const abortLightbox = () => {
 	ready.value = false;
 	totalsSubscription?.unsubscribe();
 	totalsSubscription = null;
+	clientTokenPromise = null;
 };
 
 const closeLightbox = () => {
@@ -170,6 +174,13 @@ const closeLightbox = () => {
 const openLoading = () => {
 	lightboxOpen.value = true;
 	ready.value = false;
+	// Prefetch the Braintree client token now so its (cache-first) round trip
+	// overlaps the basket work that runs before loadPaymentDetails(), instead
+	// of adding a serial fetch at reveal time. loadPaymentDetails() awaits this
+	// promise; the no-op catch keeps a pre-reveal abort (which never awaits it)
+	// from surfacing as an unhandled rejection.
+	clientTokenPromise = getClientToken(apollo);
+	clientTokenPromise.catch(() => {});
 };
 
 const loadPaymentDetails = async () => {
@@ -179,16 +190,22 @@ const loadPaymentDetails = async () => {
 		// updateLoanReservation mutation that runs before this modal opens
 		// does not include totals in its response, so Apollo has no way to
 		// invalidate the cached totals on its own.
-		await apollo.query({
-			query: basketTotalsQuery,
-			variables: { basketId: getBasketID() },
-			fetchPolicy: 'network-only',
-		});
-
-		// Only renders this modal for logged-in users
-		// (GoalEntrypoint is gated by `v-if="!isGuest"`), so we always fetch
-		// the customer-scoped client token here.
-		dropInAuthToken.value = await getClientToken(apollo) ?? '';
+		//
+		// Run it in parallel with the client-token fetch kicked off in
+		// openLoading() (customer-scoped; this modal only renders for
+		// logged-in users, gated by GoalEntrypoint's `v-if="!isGuest"`). The
+		// two are independent, so the reveal waits on max(totals, token), not
+		// their sum. Fall back to a direct fetch if loadPaymentDetails() is
+		// somehow reached without openLoading() having primed the promise.
+		const [, token] = await Promise.all([
+			apollo.query({
+				query: basketTotalsQuery,
+				variables: { basketId: getBasketID() },
+				fetchPolicy: 'network-only',
+			}),
+			clientTokenPromise ?? getClientToken(apollo),
+		]);
+		dropInAuthToken.value = token ?? '';
 	} catch (e) {
 		const message = e?.message || 'Something went wrong. Please, refresh the page and try again.';
 		$showTipMsg(message, 'error');

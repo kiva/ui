@@ -219,9 +219,11 @@ describe('ExpressCheckoutModal', () => {
 			expect(wrapper.find('[data-testid="lightbox"]').exists()).toBe(true);
 			expect(wrapper.find('[data-testid="express-checkout-loading"]').exists()).toBe(true);
 			expect(wrapper.find('form').exists()).toBe(false);
-			// No network calls were needed to show the skeleton
+			// Skeleton renders synchronously without a totals fetch. The client
+			// token is prefetched here (fire-and-forget) but not awaited for the
+			// render, so the skeleton still appears instantly.
 			expect(apollo.query).not.toHaveBeenCalled();
-			expect(mockGetClientToken).not.toHaveBeenCalled();
+			expect(mockGetClientToken).toHaveBeenCalledTimes(1);
 		});
 
 		it('loadPaymentDetails swaps the skeleton for the form and returns true', async () => {
@@ -234,6 +236,22 @@ describe('ExpressCheckoutModal', () => {
 			expect(result).toBe(true);
 			expect(wrapper.find('form').exists()).toBe(true);
 			expect(wrapper.find('[data-testid="express-checkout-loading"]').exists()).toBe(false);
+		});
+
+		it('prefetches the client token in openLoading and reuses it in loadPaymentDetails', async () => {
+			mountClosed();
+
+			wrapper.vm.openLoading();
+			// Token fetch starts the instant the skeleton opens...
+			expect(mockGetClientToken).toHaveBeenCalledTimes(1);
+
+			await wrapper.vm.loadPaymentDetails();
+			await flushPromises();
+
+			// ...and loadPaymentDetails awaits that same in-flight promise rather
+			// than firing a second serial request.
+			expect(mockGetClientToken).toHaveBeenCalledTimes(1);
+			expect(wrapper.find('form').exists()).toBe(true);
 		});
 
 		it('prevents dismissing the skeleton while loading', async () => {
@@ -255,8 +273,9 @@ describe('ExpressCheckoutModal', () => {
 
 		it('loadPaymentDetails shows a toast and returns false when the token fetch fails', async () => {
 			mountClosed();
-			wrapper.vm.openLoading();
+			// Reject the prefetch that openLoading() kicks off.
 			mockGetClientToken.mockRejectedValueOnce(new Error('token boom'));
+			wrapper.vm.openLoading();
 
 			const result = await wrapper.vm.loadPaymentDetails();
 			await flushPromises();
@@ -268,13 +287,13 @@ describe('ExpressCheckoutModal', () => {
 
 		it('does not reveal the form when the lightbox was closed while loading (reveal guard)', async () => {
 			mountClosed();
-			wrapper.vm.openLoading();
 
-			// Hold the token fetch open so we can close mid-load
+			// Hold the token fetch (started by openLoading) open so we can close mid-load
 			let resolveToken;
 			mockGetClientToken.mockImplementationOnce(
 				() => new Promise(resolve => { resolveToken = resolve; }),
 			);
+			wrapper.vm.openLoading();
 
 			const loadPromise = wrapper.vm.loadPaymentDetails();
 			await flushPromises();
