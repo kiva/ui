@@ -55,10 +55,11 @@ function getGoalAchievement(goalSummary, tieredLendingAchievements) {
 }
 
 function getYearPurchases(goalSummary, tieredLendingAchievements) {
-	// Oldest first, so later lending cannot displace the loans that met the target.
+	// Most recent first, as the service returns them. Selecting the oldest instead would
+	// mean pulling the whole year, and is not even reachable for lenders past the
+	// rolling window, which retains only the most recent loans.
 	return (getGoalAchievement(goalSummary, tieredLendingAchievements)?.loanPurchases ?? [])
-		.filter(purchase => purchase?.loan)
-		.sort((a, b) => (Date.parse(a.purchaseTime) || 0) - (Date.parse(b.purchaseTime) || 0));
+		.filter(purchase => purchase?.loan);
 }
 
 function getYearLoans(goalSummary, tieredLendingAchievements) {

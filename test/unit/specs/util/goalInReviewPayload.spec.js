@@ -197,21 +197,21 @@ describe('goalInReviewPayload.js', () => {
 			expect(scoped.amount).toBe(25);
 		});
 
-		it('keeps the loans that accomplished the goal when later lending arrives', () => {
-			// achievements-service returns newest first; a later loan must not displace
-			// the ones that completed the goal.
+		it('takes the most recent loans, in the order the service returns them', () => {
+			// The rolling window retains only the most recent loans, so the true oldest are
+			// unreachable for heavy lenders; we show the newest rather than pull the year.
 			const newestFirst = [{
 				id: 'climate-action',
 				loanPurchases: [
-					{ purchaseTime: '2026-12-01T00:00:00Z', loan: { id: 3, name: 'Lent after the goal was met' } },
-					{ purchaseTime: '2026-10-20T00:00:00Z', loan: { id: 2, name: 'Second' } },
-					{ purchaseTime: '2026-10-05T00:00:00Z', loan: { id: 1, name: 'First' } },
+					{ purchaseTime: '2026-12-01T00:00:00Z', loan: { id: 3, name: 'Newest' } },
+					{ purchaseTime: '2026-10-20T00:00:00Z', loan: { id: 2, name: 'Middle' } },
+					{ purchaseTime: '2026-10-05T00:00:00Z', loan: { id: 1, name: 'Oldest' } },
 				],
 			}];
 			const scoped = scopeToGoalYear({ ...climateGoal, target: 2 }, newestFirst);
 
 			expect(scoped.count).toBe(2);
-			expect(getGoalLoans(scoped, newestFirst).map(loan => loan.name)).toEqual(['First', 'Second']);
+			expect(getGoalLoans(scoped, newestFirst).map(loan => loan.name)).toEqual(['Newest', 'Middle']);
 		});
 
 		it('derives the session count from distinct purchase times', () => {

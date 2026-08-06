@@ -119,7 +119,7 @@ export default function useGoalInReview({ apollo } = {}) {
 			// built from achievements-service instead, so only one of the two is ever read.
 			const monolithSummary = summary?.category === ID_SUPPORT_ALL ? summary : null;
 			const achievementsData = summary && !monolithSummary
-				? await query(goalInReviewAchievementsQuery, { year })
+				? await query(goalInReviewAchievementsQuery, { year, loanPurchasesLimit: summary.target })
 				: null;
 			const achievements = achievementsData?.userAchievementProgress?.tieredLendingAchievements ?? [];
 			const goalSummary = scopeToGoalYear(
