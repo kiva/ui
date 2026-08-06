@@ -67,7 +67,8 @@ const globalOptions = {
 		apollo: {
 			readFragment: () => { },
 			query: () => Promise.resolve({}),
-			readQuery: () => { },
+			readQuery: () => null,
+			watchQuery: () => ({ subscribe: () => ({ unsubscribe: () => { } }) }),
 			mutate: () => Promise.resolve({}),
 		},
 		cookieStore: new CookieStore(),

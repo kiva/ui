@@ -4731,6 +4731,95 @@ describe('useGoalData', () => {
 		});
 	});
 
+	describe('goalFeedbackSubmitted flag', () => {
+		// `setGoalFeedbackSubmittedPreference` internally calls `loadPreferences('network-only')`
+		// before writing, so the apollo mock must return the same response on every call —
+		// not just once — or the function's own load will hit an empty mock and treat prefs
+		// as cleared.
+		const loadPrefsOnce = async prefsObject => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-gfs',
+							preferences: JSON.stringify(prefsObject),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+			await composable.loadPreferences('network-only');
+		};
+
+		it('hasSubmittedGoalFeedbackForYear returns false when key missing', async () => {
+			await loadPrefsOnce({ goals: [] });
+			expect(composable.hasSubmittedGoalFeedbackForYear(GOALS_CURRENT_YEAR)).toBe(false);
+		});
+
+		it('hasSubmittedGoalFeedbackForYear returns true when year flag is set', async () => {
+			await loadPrefsOnce({ goalFeedbackSubmitted: { [GOALS_CURRENT_YEAR]: true } });
+			expect(composable.hasSubmittedGoalFeedbackForYear(GOALS_CURRENT_YEAR)).toBe(true);
+		});
+
+		it('hasSubmittedGoalFeedbackForYear is year-keyed (no cross-year leakage)', async () => {
+			await loadPrefsOnce({ goalFeedbackSubmitted: { [GOALS_CURRENT_YEAR - 1]: true } });
+			expect(composable.hasSubmittedGoalFeedbackForYear(GOALS_CURRENT_YEAR - 1)).toBe(true);
+			expect(composable.hasSubmittedGoalFeedbackForYear(GOALS_CURRENT_YEAR)).toBe(false);
+		});
+
+		it('setGoalFeedbackSubmittedPreference persists a year-keyed flag', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			updateUserPreferences.mockClear();
+
+			await loadPrefsOnce({ goals: [], hideGoalCard: false });
+			await composable.setGoalFeedbackSubmittedPreference(GOALS_CURRENT_YEAR);
+
+			expect(updateUserPreferences).toHaveBeenCalledTimes(1);
+			const [, , , updatedPreference] = updateUserPreferences.mock.calls[0];
+			expect(updatedPreference).toEqual({
+				goalFeedbackSubmitted: { [GOALS_CURRENT_YEAR]: true },
+			});
+		});
+
+		it('setGoalFeedbackSubmittedPreference merges with existing year entries', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			updateUserPreferences.mockClear();
+
+			await loadPrefsOnce({
+				goalFeedbackSubmitted: { [GOALS_CURRENT_YEAR - 1]: true },
+			});
+			await composable.setGoalFeedbackSubmittedPreference(GOALS_CURRENT_YEAR);
+
+			expect(updateUserPreferences).toHaveBeenCalledTimes(1);
+			const [, , , updatedPreference] = updateUserPreferences.mock.calls[0];
+			expect(updatedPreference).toEqual({
+				goalFeedbackSubmitted: {
+					[GOALS_CURRENT_YEAR - 1]: true,
+					[GOALS_CURRENT_YEAR]: true,
+				},
+			});
+		});
+
+		it('setGoalFeedbackSubmittedPreference is idempotent — no write when year already set', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			updateUserPreferences.mockClear();
+
+			await loadPrefsOnce({ goalFeedbackSubmitted: { [GOALS_CURRENT_YEAR]: true } });
+			await composable.setGoalFeedbackSubmittedPreference(GOALS_CURRENT_YEAR);
+
+			expect(updateUserPreferences).not.toHaveBeenCalled();
+		});
+
+		it('setGoalFeedbackSubmittedPreference is a no-op when called with a falsy year', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			updateUserPreferences.mockClear();
+
+			await composable.setGoalFeedbackSubmittedPreference(0);
+
+			expect(updateUserPreferences).not.toHaveBeenCalled();
+		});
+	});
+
 	describe('completedGoalsHistory', () => {
 		// Lock the clock to make year math deterministic — the composable reads
 		// new Date().getFullYear() at compute time, so any drift between

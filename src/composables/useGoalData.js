@@ -300,7 +300,7 @@ export default function useGoalData({ apollo } = {}) {
 				variables: { year },
 				fetchPolicy: 'no-cache',
 			});
-			const progress = response.data.userAchievementProgress.tieredLendingAchievements;
+			const progress = response.data?.userAchievementProgress?.tieredLendingAchievements ?? null;
 			return progress;
 		} catch (error) {
 			logFormatter('Failed to fetch categories progress by year', 'error', { error, year });
@@ -859,6 +859,30 @@ export default function useGoalData({ apollo } = {}) {
 		);
 	}
 
+	const goalFeedbackSubmittedByYear = computed(() => {
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+		return parsedPrefs.goalFeedbackSubmitted || {};
+	});
+
+	function hasSubmittedGoalFeedbackForYear(year) {
+		return Boolean(goalFeedbackSubmittedByYear.value?.[year]);
+	}
+
+	async function setGoalFeedbackSubmittedPreference(year = GOALS_CURRENT_YEAR) {
+		if (!year) return;
+		const parsedPrefs = await loadPreferences('network-only');
+		const prev = parsedPrefs?.goalFeedbackSubmitted || {};
+		// Year-keyed flag so a prior year's feedback does not gate the next recap's survey.
+		if (prev[year]) return;
+		const updatedPreference = { goalFeedbackSubmitted: { ...prev, [year]: true } };
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			updatedPreference
+		);
+	}
+
 	async function checkCompletedGoal({
 		currentGoalProgress = 0,
 		category = 'post-checkout',
@@ -1272,6 +1296,9 @@ export default function useGoalData({ apollo } = {}) {
 		viewedGoalCompleteByYear,
 		hasViewedCompletedGoalForYear,
 		setViewedGoalCompletePreference,
+		goalFeedbackSubmittedByYear,
+		hasSubmittedGoalFeedbackForYear,
+		setGoalFeedbackSubmittedPreference,
 		getSupportAllLoanCountByYear,
 		setGoalState,
 		removeGoalFromPreferences,

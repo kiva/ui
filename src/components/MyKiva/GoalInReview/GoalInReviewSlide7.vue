@@ -48,14 +48,16 @@
 						/>
 					</button>
 
-					<!-- TODO(MP-3062): replace this placeholder with the real feedback survey -->
+					<!--
+						v-show (not v-if) keeps the survey mounted so re-toggling the CTA
+						doesn't remount and reload the Form Assembly iframe.
+					-->
 					<div
-						v-if="feedbackOpen"
-						class="tw-w-full tw-rounded tw-border tw-border-brand-400 tw-border-dashed
-							tw-text-eco-green-1 tw-text-small tw-py-3 tw-px-2"
+						v-show="feedbackOpen"
+						class="tw-w-full tw-text-eco-green-1"
 						data-testid="goal-in-review-slide-7-feedback-placeholder"
 					>
-						Feedback form coming soon (MP-3062)
+						<GoalInReviewFeedbackForm @submitted="handleFeedbackSubmitted" />
 					</div>
 				</template>
 			</div>
@@ -67,6 +69,7 @@
 import { computed, inject, ref } from 'vue';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiChevronDown } from '@mdi/js';
+import GoalInReviewFeedbackForm from '#src/components/MyKiva/GoalInReview/GoalInReviewFeedbackForm';
 import leafHeart from '#src/assets/images/leaf_heart.svg?url';
 
 const props = defineProps({
@@ -86,19 +89,32 @@ const props = defineProps({
 		type: [Number, String],
 		default: null,
 	},
+	feedbackSubmitted: {
+		type: Boolean,
+		default: false,
+	},
 });
 
-const emit = defineEmits(['back-to-kiva', 'finish-goal', 'set-goal']);
+const emit = defineEmits(['back-to-kiva', 'finish-goal', 'set-goal', 'feedback-submitted']);
 
 const $kvTrackEvent = inject('$kvTrackEvent', () => {});
 
 const feedbackOpen = ref(false);
+// Set once the survey is submitted this session so the toggle disappears and can't
+// re-fire the share-feedback event.
+const feedbackSubmittedLocally = ref(false);
 
 const toggleFeedback = () => {
 	feedbackOpen.value = !feedbackOpen.value;
 	if (feedbackOpen.value) {
 		$kvTrackEvent('portfolio', 'click', 'goal-in-review-share-feedback');
 	}
+};
+
+const handleFeedbackSubmitted = () => {
+	feedbackSubmittedLocally.value = true;
+	feedbackOpen.value = false;
+	emit('feedback-submitted');
 };
 
 const isComplete = computed(() => props.goalStatus === 'completed');
@@ -129,7 +145,9 @@ const primaryCta = computed(() => {
 	return { label: `Finish my ${props.year} goal`, event: 'finish-goal' };
 });
 
-const showFeedback = computed(() => !isPastGoalYear.value);
+const showFeedback = computed(() => !isPastGoalYear.value
+	&& !props.feedbackSubmitted
+	&& !feedbackSubmittedLocally.value);
 </script>
 
 <style lang="postcss" scoped>

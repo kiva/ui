@@ -287,9 +287,9 @@ export default {
 							this.$kvTrackEvent(
 								'Instant Lending',
 								'Add-to-Basket',
-								`Failed: ${error.message.substring(0, 40)}...`
+								`Failed: ${(error?.message ?? 'unknown error').substring(0, 40)}...`
 							);
-							Sentry.captureMessage(`Add to Basket: ${error.message}`);
+							Sentry.captureMessage(`Add to Basket: ${error?.message ?? 'unknown error'}`);
 						} catch (e) {
 							// no-op
 						}
@@ -306,7 +306,6 @@ export default {
 					this.handleRedirect();
 				}
 			}).catch(error => {
-				console.log(error);
 				logFormatter(error, 'error');
 				this.$kvTrackEvent('Instant Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
 

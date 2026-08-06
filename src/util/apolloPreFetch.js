@@ -1,7 +1,9 @@
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import getDeepComponents from './getDeepComponents';
+import getOperationVariables from './operationVariables';
 import logFormatter from './logFormatter';
+import { getAttachedOperations } from './composableOperations';
 
 // harmless or known responses from our graphql api
 const wellKnownErrorCodes = [
@@ -61,11 +63,10 @@ export function preFetchApolloQuery(config, client, args) {
 
 	// Fetch the query from the component's apollo options
 	return new Promise((resolve, reject) => {
-		const { cookieStore } = args;
 		const prefetchVariables = config.preFetchVariables ? config.preFetchVariables({ client, ...args }) : {};
 		client.query({
 			query: config.query,
-			variables: cookieStore ? { basketId: cookieStore.get('kvbskt'), ...prefetchVariables } : prefetchVariables,
+			variables: getOperationVariables(config.query, args, prefetchVariables),
 			fetchPolicy: 'network-only', // This is used to force re-fetch of queries after new auth
 		}).then(result => {
 			if (result.errors) {
@@ -84,6 +85,7 @@ export async function preFetchAll(components, apolloClient, { ...args }) {
 	// the apollo configs can be an array or an object, so we need to flatten them and only keep the ones with preFetch
 	const preFetchOperations = allComponents
 		.flatMap(c => c.apollo ?? [])
+		.concat(getAttachedOperations(allComponents))
 		.filter(op => op?.preFetch && op?.shouldPreFetch !== false);
 	return Promise.all(preFetchOperations.map(op => preFetchApolloQuery(op, apolloClient, args)));
 }

@@ -125,9 +125,9 @@ export default {
 							this.$kvTrackEvent(
 								'Lending',
 								'Add-to-Basket',
-								`Failed: ${error.message.substring(0, 40)}...`
+								`Failed: ${(error?.message ?? 'unknown error').substring(0, 40)}...`
 							);
-							Sentry.captureMessage(`Add to Basket: ${error.message}`);
+							Sentry.captureMessage(`Add to Basket: ${error?.message ?? 'unknown error'}`);
 							if (hasBasketExpired(error?.extensions?.code)) {
 								// eslint-disable-next-line max-len
 								this.$showTipMsg('There was a problem adding the loan to your basket, refresh the page to try again.', 'error');
@@ -139,7 +139,7 @@ export default {
 									}
 								});
 							}
-							this.$showTipMsg(error.message, 'error');
+							this.$showTipMsg(error?.message ?? 'There was a problem adding this loan', 'error');
 						} catch (e) {
 							// no-op
 						}

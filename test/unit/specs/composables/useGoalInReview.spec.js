@@ -7,33 +7,22 @@ describe('useGoalInReview', () => {
 		expect(getGoalInReviewTargetYear(new Date('2028-03-01T00:00:00Z'))).toBe(2028);
 	});
 
-	it('returns placeholder slide data for the modal shell', async () => {
+	it('loads the recap payload for the requested year', async () => {
 		const composable = useGoalInReview();
 
 		const result = await composable.loadGoalInReview({ year: 2027 });
 
+		expect(result.year).toBe(2027);
+		expect(composable.goalInReviewData.value).toBe(result);
 		expect(composable.isEligible.value).toBe(true);
 		expect(composable.loading.value).toBe(false);
-		expect(result.year).toBe(2027);
-		expect(result.goalSummary).toEqual(expect.objectContaining({
-			goalName: '2027 impact goal',
-			status: 'completed',
-		}));
-		expect(result.loanStats).toEqual(expect.objectContaining({
-			borrowers: 14,
-			percentComplete: 100,
-		}));
-		expect(result.borrowerList).toHaveLength(1);
-		expect(result.geography).toEqual(expect.objectContaining({
-			bordersCrossed: 1,
-		}));
-		expect(result.sectors).toHaveLength(1);
-		expect(result.goalInsights).toEqual(expect.objectContaining({
-			setMonth: 'January',
-			percentile: 95,
-		}));
-		expect(result.wrapUp).toEqual(expect.objectContaining({
-			headline: 'Your goal changed everything.',
-		}));
+	});
+
+	it('defaults to the current recap year', async () => {
+		const { loadGoalInReview } = useGoalInReview();
+
+		const result = await loadGoalInReview();
+
+		expect(result.year).toBe(getGoalInReviewTargetYear());
 	});
 });

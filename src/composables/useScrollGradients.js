@@ -3,11 +3,11 @@ import {
 } from 'vue';
 
 /**
- * Tracks which way a horizontally scrolling element can still scroll, so a caller can show
- * an edge gradient only while there is more content that way.
+ * Tracks which way a scrolling element can still scroll (left, right or down), so a caller
+ * can show an edge gradient only while there is more content that way.
  *
  * Bind `scrollContainer` as the scrolling element's ref and call `updateScrollGradients`
- * from its scroll handler, plus from any watcher whose data changes the content width.
+ * from its scroll handler, plus from any watcher whose data changes the content size.
  *
  * @returns {object} The container ref, a flag per direction, and the recompute function.
  */
@@ -15,6 +15,7 @@ export default () => {
 	const scrollContainer = ref(null);
 	const canScrollLeft = ref(false);
 	const canScrollRight = ref(false);
+	const canScrollDown = ref(false);
 	let resizeObserver = null;
 
 	const updateScrollGradients = () => {
@@ -22,11 +23,13 @@ export default () => {
 		if (!el) {
 			canScrollLeft.value = false;
 			canScrollRight.value = false;
+			canScrollDown.value = false;
 			return;
 		}
 		// 1px tolerance so sub-pixel rounding at the extremes doesn't leave a gradient on.
 		canScrollLeft.value = el.scrollLeft > 1;
 		canScrollRight.value = el.scrollLeft < (el.scrollWidth - el.clientWidth - 1);
+		canScrollDown.value = el.scrollTop < (el.scrollHeight - el.clientHeight - 1);
 	};
 
 	onMounted(() => {
@@ -52,6 +55,7 @@ export default () => {
 		scrollContainer,
 		canScrollLeft,
 		canScrollRight,
+		canScrollDown,
 		updateScrollGradients,
 	};
 };

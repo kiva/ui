@@ -1068,7 +1068,7 @@ export default {
 				this.getPromoInformationFromBasket();
 			}).catch(error => {
 				logFormatter(error, 'error');
-				this.promoErrorMessage = error;
+				this.promoErrorMessage = error?.message ?? null;
 				this.loadingPromotion = false;
 				this.promoApplied = false;
 			});

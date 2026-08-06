@@ -1,6 +1,11 @@
 import FullBorrowerProfile from '#src/components/BorrowerProfile/FullBorrowerProfile';
 
-const { isAnonymized, isPrivileged, showAddCommentsSection } = FullBorrowerProfile.computed;
+const {
+	isAnonymized,
+	isPrivileged,
+	showAddCommentsSection,
+	showUpdatesSection,
+} = FullBorrowerProfile.computed;
 
 // Evaluates a computed with a mock `this` context, resolving other computeds it depends on.
 function evalShowComments({ privileged = false, anonymizationLevel = 'none' } = {}) {
@@ -13,6 +18,15 @@ function evalShowComments({ privileged = false, anonymizationLevel = 'none' } = 
 	context.isAnonymized = isAnonymized.call(context);
 	context.isPrivileged = isPrivileged.call(context);
 	return showAddCommentsSection.call(context);
+}
+
+// Evaluates showUpdatesSection with a mock `this`.
+function evalShowUpdates({ showUpdates = true, anonymizationLevel = 'none' } = {}) {
+	const context = {
+		showUpdates,
+		loanData: { anonymizationLevel },
+	};
+	return showUpdatesSection.call(context);
 }
 
 describe('FullBorrowerProfile comment section visibility', () => {
@@ -58,5 +72,24 @@ describe('FullBorrowerProfile comment section visibility', () => {
 				expect(evalShowComments({ privileged: false, anonymizationLevel: 'pii' })).toBe(false);
 			});
 		});
+	});
+});
+
+describe('FullBorrowerProfile updates section visibility', () => {
+	it('shows updates on a non-anonymized loan', () => {
+		expect(evalShowUpdates({ showUpdates: true, anonymizationLevel: 'none' })).toBe(true);
+		expect(evalShowUpdates({ showUpdates: true, anonymizationLevel: undefined })).toBe(true);
+	});
+
+	it('hides updates on a pii-anonymized loan (MP-3083)', () => {
+		expect(evalShowUpdates({ showUpdates: true, anonymizationLevel: 'pii' })).toBe(false);
+	});
+
+	it('still shows updates on a full-anonymized loan (bodies are not stripped for full)', () => {
+		expect(evalShowUpdates({ showUpdates: true, anonymizationLevel: 'full' })).toBe(true);
+	});
+
+	it('stays hidden once the child has emitted hide-section', () => {
+		expect(evalShowUpdates({ showUpdates: false, anonymizationLevel: 'none' })).toBe(false);
 	});
 });

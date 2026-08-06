@@ -8,8 +8,8 @@ const getChallengeCookieData = cookieStore => {
 };
 
 /**
- * If team challenge cookie is present, the user has added a loan to basket from the challenge page.
- * In that case, append the team info to the list of teams and attribute this loan to that team.
+ * If the team challenge cookie holds an entry for this loan, appends the team info to the list of
+ * teams and attributes the loan to that team.
  *
  * @param cookieStore The object for affecting cookies
  * @param loanId The ID of the loan to check
@@ -53,24 +53,6 @@ export const removeLoansFromChallengeCookie = (cookieStore, loanIds) => {
 			data.splice(data.findIndex(loan => loan.loanId === loanId), 1);
 		});
 		// Overwrite the cookie with the new data
-		cookieStore.set(TEAM_CHALLENGE_COOKIE_NAME, JSON.stringify(data));
-	}
-};
-
-/**
- * Sets challenge cookie data.
- * Used when challenge is active on lend/filter.
- *
- * @param cookieStore The object for affecting cookies
- * @param {Object} challengeData Challenge information
- * @param {number} challengeData.loanId The ID of the loan
- * @param {number} challengeData.teamId The ID of the team
- * @param {string} challengeData.teamName The name of the team
- */
-export const setChallengeCookieData = (cookieStore, challengeData) => {
-	if (challengeData.loanId && challengeData.teamId) {
-		const data = getChallengeCookieData(cookieStore) || [];
-		data.push(challengeData);
 		cookieStore.set(TEAM_CHALLENGE_COOKIE_NAME, JSON.stringify(data));
 	}
 };

@@ -12,6 +12,10 @@ The Kiva UI project is bound by a [Code of Conduct](code_of_conduct.md).
 
 Kiva welcomes outside contributions to our UI repository. If you have any ideas for a feature or improvement, create an issue and we can discuss whether it makes sense to create a pull request. Thanks for the help!
 
+## Server-Side Rendering
+
+Pages render server-side on pooled workers, so module scope is shared across requests. See [docs/server-side-rendering.md](docs/server-side-rendering.md) for the rules on where state may live.
+
 # Local Development Setup with Caddy
 
 > IMPORTANT NOTE: Turn off Docker if it's running! We have a perpetually running network related to Tilt that will prevent Caddy from starting. I did consider using Tilt and docker-compose but it would require rewriting a lot of the Monolith TiltVM setup so this just bypasses it all.

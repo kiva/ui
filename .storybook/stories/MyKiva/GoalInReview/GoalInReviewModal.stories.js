@@ -1,7 +1,10 @@
 import { ref } from 'vue';
 
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
-import { buildSampleGoalInReviewData } from '../../../mock-data/goalInReviewSampleData';
+import {
+	buildSampleGoalInReviewData,
+	sampleSectorAchievementsWithOther,
+} from '../../../mock-data/goalInReviewSampleData';
 
 export default {
 	title: 'MyKiva/GoalInReview/GoalInReviewModal',
@@ -89,5 +92,15 @@ export const MissingStats = story({
 		...completeData,
 		goalSummary: { ...completeData.goalSummary, category: '' },
 		loanStats: { totalLent: null, borrowers: null, percentComplete: null },
+	},
+});
+
+// Some loans have no sector, so slide 3's donut shows an "Other (n)" segment.
+// This case is optional in real data, hence a dedicated story rather than the default.
+export const WithOtherSector = story({
+	show: true,
+	data: {
+		...completeData,
+		sectorAchievements: sampleSectorAchievementsWithOther,
 	},
 });
