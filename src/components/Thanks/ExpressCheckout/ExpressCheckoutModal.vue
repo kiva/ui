@@ -2,13 +2,12 @@
 	<KvLightbox
 		title="Confirm Payment"
 		:visible="lightboxOpen"
-		:prevent-close="paying"
+		:prevent-close="!ready || paying"
 		@lightbox-closed="closeLightbox"
 	>
 		<div
 			v-if="lightboxOpen && !ready"
-			style="width: 30rem;"
-			class="tw-mx-auto"
+			class="express-checkout-skeleton tw-w-full tw-mx-auto"
 			data-testid="express-checkout-loading"
 			role="status"
 			aria-busy="true"
@@ -293,3 +292,11 @@ defineExpose({
 	isOpen: () => lightboxOpen.value,
 });
 </script>
+
+<style scoped>
+@screen md {
+	.express-checkout-skeleton {
+		width: 30rem;
+	}
+}
+</style>

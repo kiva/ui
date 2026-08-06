@@ -45,7 +45,7 @@ vi.mock('@kiva/kv-components', () => ({
 	},
 	KvLightbox: {
 		props: ['preventClose', 'title', 'visible'],
-		template: '<div v-if="visible" data-testid="lightbox"><slot /></div>',
+		template: '<div v-if="visible" data-testid="lightbox" :data-prevent-close="preventClose"><slot /></div>',
 	},
 	KvLoadingPlaceholder: {
 		template: '<div data-testid="loading-placeholder"></div>',
@@ -234,6 +234,23 @@ describe('ExpressCheckoutModal', () => {
 			expect(result).toBe(true);
 			expect(wrapper.find('form').exists()).toBe(true);
 			expect(wrapper.find('[data-testid="express-checkout-loading"]').exists()).toBe(false);
+		});
+
+		it('prevents dismissing the skeleton while loading', async () => {
+			mountClosed();
+			wrapper.vm.openLoading();
+			await wrapper.vm.$nextTick();
+
+			expect(wrapper.find('[data-testid="lightbox"]').attributes('data-prevent-close')).toBe('true');
+		});
+
+		it('allows dismissing once the form is loaded', async () => {
+			mountClosed();
+			wrapper.vm.openLoading();
+			await wrapper.vm.loadPaymentDetails();
+			await flushPromises();
+
+			expect(wrapper.find('[data-testid="lightbox"]').attributes('data-prevent-close')).toBe('false');
 		});
 
 		it('loadPaymentDetails shows a toast and returns false when the token fetch fails', async () => {
