@@ -132,6 +132,7 @@ import KvIcon from '#src/components/Kv/KvIcon';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import addCreditByType from '#src/graphql/mutation/shopAddCreditByType.graphql';
 import removeCreditByType from '#src/graphql/mutation/shopRemoveCreditByType.graphql';
+import { META_EVENTS, trackMetaEvent } from '#src/util/metaEvents';
 import { KvButton, KvLightbox, KvTextInput } from '@kiva/kv-components';
 import printCardCodeLocation from '#src/assets/images/checkout/printcard_codelocation.jpg';
 import emailCardCodeLocation from '#src/assets/images/checkout/emailcard_codelocation.jpg';
@@ -210,6 +211,7 @@ export default {
 							'Apply Kiva Card',
 							'Kiva Card successfully applied'
 						);
+						trackMetaEvent(META_EVENTS.KIVA_CARD_REDEMPTION);
 					}
 				})
 				.catch(error => {
