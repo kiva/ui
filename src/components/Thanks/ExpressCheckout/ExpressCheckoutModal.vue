@@ -5,8 +5,23 @@
 		:prevent-close="paying"
 		@lightbox-closed="closeLightbox"
 	>
+		<div
+			v-if="lightboxOpen && !ready"
+			style="width: 30rem;"
+			class="tw-mx-auto"
+			data-testid="express-checkout-loading"
+			role="status"
+			aria-busy="true"
+		>
+			<KvLoadingPlaceholder class="!tw-h-4 !tw-w-3/4 tw-mb-2" />
+			<KvLoadingPlaceholder class="!tw-h-4 tw-mb-4" />
+			<KvLoadingPlaceholder class="!tw-h-16 tw-mb-4" />
+			<KvLoadingPlaceholder class="!tw-h-3 tw-mb-1" />
+			<KvLoadingPlaceholder class="!tw-h-3 !tw-w-5/6 tw-mb-7 md:!tw-mb-2" />
+			<KvLoadingPlaceholder class="!tw-h-6 tw-my-1" />
+		</div>
 		<form
-			v-if="lightboxOpen"
+			v-if="ready"
 			style="max-width: 25rem;"
 			class="tw-mx-auto"
 			@submit.prevent="onSubmit"
@@ -73,7 +88,7 @@ import {
 	useBraintreeDropIn,
 	watchBasketTotals,
 } from '@kiva/kv-shop';
-import { KvButton, KvLightbox } from '@kiva/kv-components';
+import { KvButton, KvLightbox, KvLoadingPlaceholder } from '@kiva/kv-components';
 import ExpressCheckoutTotals from '#src/components/Thanks/ExpressCheckout/ExpressCheckoutTotals';
 import useTipMessage from '#src/composables/useTipMessage';
 import {
@@ -104,6 +119,7 @@ const googlePayMerchantId = $appConfig?.googlePay?.merchantId ?? '';
 const dropInName = 'express-checkout';
 
 const lightboxOpen = ref(false);
+const ready = ref(false);
 const paying = ref(false);
 const totalDue = ref('0.00');
 const transactionsEnabled = ref(false);
@@ -134,14 +150,30 @@ const subscribeTotals = () => {
 	});
 };
 
-const closeLightbox = () => {
+// Programmatic close for error/redirect aborts: same state reset as
+// closeLightbox but without emitting 'close', so the user-initiated
+// close analytics ('close-express-checkout') don't fire for aborts.
+const abortLightbox = () => {
 	lightboxOpen.value = false;
+	ready.value = false;
 	totalsSubscription?.unsubscribe();
 	totalsSubscription = null;
+};
+
+const closeLightbox = () => {
+	abortLightbox();
 	emit('close');
 };
 
-const openLightbox = async () => {
+// Show the modal shell in its skeleton state. Synchronous on purpose:
+// this is what makes the modal appear the instant "Support now" is
+// clicked, before any network round-trip.
+const openLoading = () => {
+	lightboxOpen.value = true;
+	ready.value = false;
+};
+
+const loadPaymentDetails = async () => {
 	try {
 		// Prime the basket totals cache so the watch subscription (and the
 		// totals component) bind to the freshly-mutated basket. The
@@ -164,8 +196,14 @@ const openLightbox = async () => {
 		return false;
 	}
 
+	// Reveal guard: the user may have dismissed the skeleton while the
+	// queries above were in flight — don't reveal the form after close.
+	if (!lightboxOpen.value) {
+		return false;
+	}
+
 	subscribeTotals();
-	lightboxOpen.value = true;
+	ready.value = true;
 	return true;
 };
 
@@ -248,6 +286,10 @@ onBeforeUnmount(() => {
 });
 
 defineExpose({
-	openLightbox,
+	openLoading,
+	loadPaymentDetails,
+	abortLightbox,
+	closeLightbox,
+	isOpen: () => lightboxOpen.value,
 });
 </script>

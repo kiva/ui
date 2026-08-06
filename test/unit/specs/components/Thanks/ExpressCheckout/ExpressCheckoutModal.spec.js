@@ -47,6 +47,9 @@ vi.mock('@kiva/kv-components', () => ({
 		props: ['preventClose', 'title', 'visible'],
 		template: '<div v-if="visible" data-testid="lightbox"><slot /></div>',
 	},
+	KvLoadingPlaceholder: {
+		template: '<div data-testid="loading-placeholder"></div>',
+	},
 }));
 
 vi.mock('@kiva/kv-shop', () => ({
@@ -84,7 +87,7 @@ describe('ExpressCheckoutModal', () => {
 	let apollo;
 	let totalsSubscription;
 
-	const mountComponent = async () => {
+	const mountClosed = () => {
 		totalsSubscription = { unsubscribe: vi.fn() };
 		apollo = {
 			query: vi.fn().mockResolvedValue({ data: {} }),
@@ -118,7 +121,12 @@ describe('ExpressCheckoutModal', () => {
 				loan: { id: 123, name: 'Amina' },
 			},
 		});
-		await wrapper.vm.openLightbox();
+	};
+
+	const mountComponent = async () => {
+		mountClosed();
+		wrapper.vm.openLoading();
+		await wrapper.vm.loadPaymentDetails();
 		await flushPromises();
 	};
 
@@ -199,5 +207,105 @@ describe('ExpressCheckoutModal', () => {
 		expect(mockExecuteOneTimeCheckout).toHaveBeenCalled();
 		expect(mockTrackFBTransaction).not.toHaveBeenCalled();
 		expect(mockGetCheckoutTrackingData).not.toHaveBeenCalled();
+	});
+
+	describe('loading state', () => {
+		it('openLoading shows the lightbox with the skeleton and no form, synchronously', async () => {
+			mountClosed();
+
+			wrapper.vm.openLoading();
+			await wrapper.vm.$nextTick();
+
+			expect(wrapper.find('[data-testid="lightbox"]').exists()).toBe(true);
+			expect(wrapper.find('[data-testid="express-checkout-loading"]').exists()).toBe(true);
+			expect(wrapper.find('form').exists()).toBe(false);
+			// No network calls were needed to show the skeleton
+			expect(apollo.query).not.toHaveBeenCalled();
+			expect(mockGetClientToken).not.toHaveBeenCalled();
+		});
+
+		it('loadPaymentDetails swaps the skeleton for the form and returns true', async () => {
+			mountClosed();
+			wrapper.vm.openLoading();
+
+			const result = await wrapper.vm.loadPaymentDetails();
+			await flushPromises();
+
+			expect(result).toBe(true);
+			expect(wrapper.find('form').exists()).toBe(true);
+			expect(wrapper.find('[data-testid="express-checkout-loading"]').exists()).toBe(false);
+		});
+
+		it('loadPaymentDetails shows a toast and returns false when the token fetch fails', async () => {
+			mountClosed();
+			wrapper.vm.openLoading();
+			mockGetClientToken.mockRejectedValueOnce(new Error('token boom'));
+
+			const result = await wrapper.vm.loadPaymentDetails();
+			await flushPromises();
+
+			expect(result).toBe(false);
+			expect(mockShowTipMsg).toHaveBeenCalledWith('token boom', 'error');
+			expect(wrapper.find('form').exists()).toBe(false);
+		});
+
+		it('does not reveal the form when the lightbox was closed while loading (reveal guard)', async () => {
+			mountClosed();
+			wrapper.vm.openLoading();
+
+			// Hold the token fetch open so we can close mid-load
+			let resolveToken;
+			mockGetClientToken.mockImplementationOnce(
+				() => new Promise(resolve => { resolveToken = resolve; }),
+			);
+
+			const loadPromise = wrapper.vm.loadPaymentDetails();
+			await flushPromises();
+
+			// User dismisses the skeleton while the token is in flight
+			wrapper.vm.closeLightbox();
+			resolveToken('client-token');
+
+			const result = await loadPromise;
+			await flushPromises();
+
+			expect(result).toBe(false);
+			expect(wrapper.find('form').exists()).toBe(false);
+			expect(mockWatchBasketTotals).not.toHaveBeenCalled();
+		});
+
+		it('abortLightbox closes without emitting close; closeLightbox emits close', async () => {
+			mountClosed();
+			wrapper.vm.openLoading();
+			await wrapper.vm.$nextTick();
+			// isOpen lets the composable skip checkout work when the skeleton is gone
+			expect(wrapper.vm.isOpen()).toBe(true);
+
+			wrapper.vm.abortLightbox();
+			await wrapper.vm.$nextTick();
+			expect(wrapper.find('[data-testid="lightbox"]').exists()).toBe(false);
+			expect(wrapper.vm.isOpen()).toBe(false);
+			expect(wrapper.emitted('close')).toBeUndefined();
+
+			wrapper.vm.openLoading();
+			await wrapper.vm.$nextTick();
+			wrapper.vm.closeLightbox();
+			await wrapper.vm.$nextTick();
+			expect(wrapper.emitted('close')).toHaveLength(1);
+		});
+
+		it('reopening after close starts back in the skeleton state', async () => {
+			await mountComponent();
+			expect(wrapper.find('form').exists()).toBe(true);
+
+			wrapper.vm.closeLightbox();
+			await wrapper.vm.$nextTick();
+
+			wrapper.vm.openLoading();
+			await wrapper.vm.$nextTick();
+
+			expect(wrapper.find('[data-testid="express-checkout-loading"]').exists()).toBe(true);
+			expect(wrapper.find('form').exists()).toBe(false);
+		});
 	});
 });
