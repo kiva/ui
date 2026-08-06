@@ -51,6 +51,16 @@ async function fetchSchema(url) {
 	if (data?.errors?.length) {
 		error('GraphQL errors while introspecting possible types', { errors: data.errors });
 	}
+	// The gateway answers an outage with a plain `{ code, message }` body rather than a GraphQL
+	// envelope, e.g. `{ "code": "503", "message": "Service Unavailable" }`. That parses as JSON
+	// too, so name the failure instead of reporting it as an empty schema further down.
+	if (!data?.data && (data?.code || data?.message)) {
+		error('Non-GraphQL error response while introspecting possible types', {
+			status: result.status,
+			code: data.code,
+			message: data.message,
+		});
+	}
 	// eslint-disable-next-line no-underscore-dangle
 	return data?.data?.__schema ?? {};
 }

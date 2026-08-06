@@ -37,7 +37,10 @@ const healthySchema = {
 	],
 };
 
-const mockResponse = body => fetch.mockResolvedValue({ json: () => Promise.resolve(body) });
+const mockResponse = (body, status = 200) => fetch.mockResolvedValue({
+	status,
+	json: () => Promise.resolve(body),
+});
 
 describe('getGqlPossibleTypes', () => {
 	beforeEach(() => {
@@ -106,6 +109,7 @@ describe('getGqlPossibleTypes', () => {
 	describe.each([
 		['the schema is missing entirely', { data: {} }],
 		['the response is a GraphQL error', { errors: [{ message: 'Introspection is disabled' }] }],
+		['the gateway returns a non-GraphQL error body', { code: '503', message: 'Service Unavailable' }],
 		['the response body is empty', {}],
 		['the schema has no types', { data: { __schema: { types: [] } } }],
 		['every type has an id field', {
@@ -139,6 +143,27 @@ describe('getGqlPossibleTypes', () => {
 			await getGqlPossibleTypes(URL, CACHE);
 
 			expect(fetch).toHaveBeenCalledTimes(2);
+		});
+	});
+
+	describe('a non-GraphQL error response', () => {
+		it('names the gateway failure rather than reporting an empty schema', async () => {
+			mockResponse({ code: '503', message: 'Service Unavailable' }, 503);
+
+			await getGqlPossibleTypes(URL, CACHE);
+
+			expect(error).toHaveBeenCalledWith(
+				'Non-GraphQL error response while introspecting possible types',
+				{ status: 503, code: '503', message: 'Service Unavailable' },
+			);
+		});
+
+		it('is not reported for a healthy response', async () => {
+			mockResponse({ data: { __schema: healthySchema } });
+
+			await getGqlPossibleTypes(URL, CACHE);
+
+			expect(error).not.toHaveBeenCalled();
 		});
 	});
 
