@@ -334,6 +334,7 @@ import {
 	REFUNDED,
 } from '#src/api/fixtures/LoanStatusEnum';
 import PaidAmountModal from '#src/components/Portfolio/PaidAmountModal';
+import useScrollGradients from '#src/composables/useScrollGradients';
 
 const REFUNDED_OR_EXPIRED_STATUSES = new Set([EXPIRED, REFUNDED]);
 const RAISED_OR_FUNDRAISING_STATUSES = new Set([FUNDRAISING, RAISED]);
@@ -376,28 +377,11 @@ export default {
 		PaidAmountModal
 	},
 	methods: {
-		// Toggle the scroll-gradient overlays from the table's scroll position: each shows only
-		// when the table can still scroll that direction (left/right for horizontal, down for
-		// vertical). Recomputed on scroll, on resize, and after the row set changes (see
-		// mounted/watch). The overlays themselves are mobile-only via md:tw-hidden in the template.
-		updateScrollGradients() {
-			const el = this.$refs.scrollContainer;
-			if (!el) {
-				this.canScrollLeft = false;
-				this.canScrollRight = false;
-				this.canScrollDown = false;
-				return;
-			}
-			// 1px tolerance so sub-pixel rounding at the extremes doesn't leave a gradient on.
-			this.canScrollLeft = el.scrollLeft > 1;
-			this.canScrollRight = el.scrollLeft < (el.scrollWidth - el.clientWidth - 1);
-			this.canScrollDown = el.scrollTop < (el.scrollHeight - el.clientHeight - 1);
-		},
 		// Reset the table's fixed-height scroll region to the top (called on pagination so a new
 		// page starts at its first row rather than wherever the previous page was scrolled to).
 		scrollToTop() {
-			if (this.$refs.scrollContainer) {
-				this.$refs.scrollContainer.scrollTop = 0;
+			if (this.scrollContainer) {
+				this.scrollContainer.scrollTop = 0;
 			}
 		},
 		formatDate(date) {
@@ -521,16 +505,30 @@ export default {
 			return trusteeId => `/trustees/${trusteeId}`;
 		}
 	},
+	setup() {
+		const {
+			scrollContainer,
+			canScrollLeft,
+			canScrollRight,
+			canScrollDown,
+			updateScrollGradients
+		} = useScrollGradients();
+
+		return {
+			scrollContainer,
+			canScrollLeft,
+			canScrollRight,
+			canScrollDown,
+			updateScrollGradients
+		};
+	},
 	data() {
 		return {
 			mdiHeart,
 			// Number of skeleton rows shown while loading. Each row mirrors a real row's
 			// height (image + stacked detail lines) so the table reserves representative
 			// space and the swap to loaded content doesn't jump.
-			skeletonRowCount: 5,
-			canScrollLeft: false,
-			canScrollRight: false,
-			canScrollDown: false
+			skeletonRowCount: 5
 		};
 	},
 	watch: {
@@ -541,23 +539,6 @@ export default {
 			this.$nextTick(this.updateScrollGradients);
 		}
 	},
-	mounted() {
-		this.$nextTick(this.updateScrollGradients);
-		// Available width changes on viewport resize and the row set changes on load/pagination;
-		// neither fires a scroll event, so recompute on both.
-		window.addEventListener('resize', this.updateScrollGradients);
-		if (typeof ResizeObserver !== 'undefined' && this.$refs.scrollContainer) {
-			this.scrollResizeObserver = new ResizeObserver(() => this.updateScrollGradients());
-			this.scrollResizeObserver.observe(this.$refs.scrollContainer);
-		}
-	},
-	beforeUnmount() {
-		window.removeEventListener('resize', this.updateScrollGradients);
-		if (this.scrollResizeObserver) {
-			this.scrollResizeObserver.disconnect();
-			this.scrollResizeObserver = null;
-		}
-	}
 };
 </script>
 
