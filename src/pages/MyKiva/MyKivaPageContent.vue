@@ -722,8 +722,8 @@ export default {
 		toggleTooltip() {
 			this.tooltipVisible = !this.tooltipVisible;
 		},
-		// Client-side only: /portfolio is CDN cached and MyKiva server renders, so the
-		// pop-up must not be decided during SSR.
+		// Called from mounted: the decision reads user preferences and writes one back,
+		// so it must not run during server render.
 		async openGoalRecapIfDue() {
 			const goalInReview = await this.loadAutoOpenRecap({ enabled: this.goalInReviewEnable });
 			if (!goalInReview) {

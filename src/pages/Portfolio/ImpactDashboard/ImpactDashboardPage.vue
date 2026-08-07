@@ -157,8 +157,8 @@ export default {
 		},
 	},
 	methods: {
-		// Client-side only: /portfolio is CDN cached, so the pop-up must not be
-		// decided during server render.
+		// Called from mounted: the decision reads user preferences and writes one back,
+		// so it must not run during server render.
 		async openGoalRecapIfDue() {
 			const goalInReview = await this.loadAutoOpenRecap({ enabled: this.goalInReviewEnable });
 			if (!goalInReview) {
