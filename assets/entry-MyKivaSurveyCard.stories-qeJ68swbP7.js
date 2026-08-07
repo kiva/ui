@@ -1,0 +1,5 @@
+import{M as p}from"./entry-MyKivaSurveyCard-bGyyb433du.js";import"./entry-vue.esm-bundler-BYzU99W7uH.js";import"./entry-KvWwwHeaderBasic-D-dYqQTzhh.js";import"./entry-index-CWclSTHHJk.js";import"./entry-numeral-xVHG5DEP0A.js";import"./entry-_commonjsHelpers-Cpj98o6Yn6.js";import"./entry-tailwind.config-DbyGLZVW5i.js";import"./entry-index-CovN8vffBz.js";import"./entry-index-DaZG7dZWP2.js";import"./entry-index-jQMUY8qRYX.js";import"./iframe-9O9xxAVV.js";import"./entry-myKivaUtils-4-ur9tt9PN.js";import"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";const x={title:"MyKiva/MyKivaSurveyCard",component:p},m=(t={})=>{const o=(c,{argTypes:i})=>({props:Object.keys(i),components:{MyKivaSurveyCard:p},setup(){return{args:t}},template:`
+            <div style="width: 336px;">
+                <MyKivaSurveyCard v-bind="args" />
+            </div>
+        `});return o.args=t,o},r=m({});var e,a,s;r.parameters={...r.parameters,docs:{...(e=r.parameters)==null?void 0:e.docs,source:{originalSource:"story({})",...(s=(a=r.parameters)==null?void 0:a.docs)==null?void 0:s.source}}};const b=["Default"];export{r as Default,b as __namedExportsOrder,x as default};
