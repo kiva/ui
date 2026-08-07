@@ -1,3 +1,21 @@
+## [3.83.0-rc.2](https://github.com/kiva/ui/compare/v3.83.0-rc.1...v3.83.0-rc.2) (2026-08-07)
+
+### 🎉 New Features
+
+* **BorrowerProfile:** repayment schedule parity AD-415 AD-416 AD-417 ([#7144](https://github.com/kiva/ui/issues/7144)) ([fbbb5ab](https://github.com/kiva/ui/commit/fbbb5abd75837dab29a5473adb3a70067bb44634))
+* integrate goal in review modal with data ([79becce](https://github.com/kiva/ui/commit/79beccebb814f508ef2424dbee196960c7aee9c7))
+* use most recent loans for the goal in review modal ([40a53df](https://github.com/kiva/ui/commit/40a53dfb1dd1af0f56e562137239f235e00855f4))
+
+### 🐛 Bugfixes
+
+* conflicts ([6755bb9](https://github.com/kiva/ui/commit/6755bb9d90e9f4e09aee0a02d9409b33c5de4d6d))
+* extra padding at the top of first slide ([0cf6e82](https://github.com/kiva/ui/commit/0cf6e8235c7df43f87f680c7d8fc3b637183182c))
+* improve load time of goal express checkout on thanks page ([#7146](https://github.com/kiva/ui/issues/7146)) ([9e8fda7](https://github.com/kiva/ui/commit/9e8fda72241f4286dc6c465e0a177271af36ce12))
+* map should point to the loan location cluster instead of a fixed one ([b6e7bbe](https://github.com/kiva/ui/commit/b6e7bbee324794e7cb9ffe1ccbfbd6abd7f143d5))
+* **optimizeContentfulUrl:** apply image params to proxied asset URLs ([0a4e2c0](https://github.com/kiva/ui/commit/0a4e2c0e5392176f5f066630a7f72639ba8e5e12))
+* remove unnecesary param to show the modal ([2c8bcbb](https://github.com/kiva/ui/commit/2c8bcbb0dfb399f951a2183fa4c5dde3907daf57))
+* resolve comments ([5735979](https://github.com/kiva/ui/commit/5735979e88f036f4cfda5c0441abeebffd0557aa))
+
 ## [3.83.0-rc.1](https://github.com/kiva/ui/compare/v3.82.0...v3.83.0-rc.1) (2026-08-06)
 
 ### 🎉 New Features
