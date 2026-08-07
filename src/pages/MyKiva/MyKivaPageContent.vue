@@ -728,7 +728,6 @@ export default {
 			if (!goalInReview) {
 				return;
 			}
-			await this.loadGoalPreferences('network-only');
 			this.goalInReviewFeedbackSubmitted = this.hasSubmittedGoalFeedbackForYear(goalInReview.year);
 			this.showGoalInReviewModal = true;
 		},

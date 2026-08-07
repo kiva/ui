@@ -41,12 +41,12 @@ describe('ImpactDashboardPage', () => {
 			expect(context.showGoalInReviewModal).toBe(false);
 		});
 
-		it('snapshots the already-submitted feedback flag before opening', async () => {
+		it('snapshots the already-submitted feedback flag, without a second preferences fetch', async () => {
 			const context = makeContext({ hasSubmittedGoalFeedbackForYear: vi.fn().mockReturnValue(true) });
 
 			await ImpactDashboardPage.methods.openGoalRecapIfDue.call(context);
 
-			expect(context.loadGoalPreferences).toHaveBeenCalledWith('network-only');
+			expect(context.loadGoalPreferences).not.toHaveBeenCalled();
 			expect(context.goalInReviewFeedbackSubmitted).toBe(true);
 		});
 	});

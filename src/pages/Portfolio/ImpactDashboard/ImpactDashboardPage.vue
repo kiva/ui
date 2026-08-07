@@ -119,7 +119,6 @@ export default {
 			goalInReviewData,
 			loadAutoOpenRecap,
 			hasSubmittedGoalFeedbackForYear,
-			loadGoalPreferences,
 			setGoalFeedbackSubmittedPreference,
 		} = useGoalInReview();
 
@@ -127,7 +126,6 @@ export default {
 			goalInReviewData,
 			loadAutoOpenRecap,
 			hasSubmittedGoalFeedbackForYear,
-			loadGoalPreferences,
 			setGoalFeedbackSubmittedPreference,
 		};
 	},
@@ -167,7 +165,6 @@ export default {
 			if (!goalInReview) {
 				return;
 			}
-			await this.loadGoalPreferences('network-only');
 			this.goalInReviewFeedbackSubmitted = this.hasSubmittedGoalFeedbackForYear(goalInReview.year);
 			this.showGoalInReviewModal = true;
 		},

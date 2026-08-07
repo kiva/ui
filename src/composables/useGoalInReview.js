@@ -211,8 +211,6 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 		loadAutoOpenRecap,
 		loadGoalInReview,
 		loading,
-		// Re-exposed from the same useGoalData instance the recap writes through, so
-		// callers without their own do not end up reading a second store.
 		hasSubmittedGoalFeedbackForYear,
 		loadGoalPreferences: loadPreferences,
 		setGoalFeedbackSubmittedPreference,
