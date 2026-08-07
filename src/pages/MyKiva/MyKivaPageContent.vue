@@ -345,15 +345,14 @@ export default {
 	},
 	setup() {
 		const apollo = inject('apollo');
+		const goalData = inject('goalData');
 		const { getMostRecentBlogPost } = useContentful(apollo);
 		const { isMobile } = useBreakpoints();
 		const {
 			goalInReviewData,
 			loadAutoOpenRecap,
 			loadGoalInReview,
-		} = useGoalInReview();
-
-		const goalData = inject('goalData');
+		} = useGoalInReview({ goalData });
 
 		const {
 			getLoanFindingUrl,

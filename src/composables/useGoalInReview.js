@@ -68,9 +68,12 @@ export function getGoalInReviewCurrentYear() {
  *
  * @param {object} options Composable options.
  * @param {object} [options.apollo] Apollo client; injected when omitted.
+ * @param {object} [options.goalData] An existing useGoalData instance. Pass the page's
+ *   own so the recap reads and writes the same preferences it does — each call to
+ *   useGoalData owns a separate `userPreferences` ref.
  * @returns {object} Goal In Review state, eligibility, and loading function.
  */
-export default function useGoalInReview({ apollo } = {}) {
+export default function useGoalInReview({ apollo, goalData } = {}) {
 	const apolloClient = apollo || inject('apollo');
 	const {
 		getGoalSummary,
@@ -79,7 +82,9 @@ export default function useGoalInReview({ apollo } = {}) {
 		loadPreferences,
 		setGoalRecapPendingPreference,
 		setGoalRecapViewedPreference,
-	} = useGoalData({ apollo: apolloClient });
+		hasSubmittedGoalFeedbackForYear,
+		setGoalFeedbackSubmittedPreference,
+	} = goalData || useGoalData({ apollo: apolloClient });
 	const loading = ref(false);
 	const goalInReviewData = ref(null);
 
@@ -206,5 +211,10 @@ export default function useGoalInReview({ apollo } = {}) {
 		loadAutoOpenRecap,
 		loadGoalInReview,
 		loading,
+		// Re-exposed from the same useGoalData instance the recap writes through, so
+		// callers without their own do not end up reading a second store.
+		hasSubmittedGoalFeedbackForYear,
+		loadGoalPreferences: loadPreferences,
+		setGoalFeedbackSubmittedPreference,
 	};
 }

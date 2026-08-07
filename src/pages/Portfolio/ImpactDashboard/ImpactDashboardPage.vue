@@ -63,8 +63,7 @@ import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSeco
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { gql } from 'graphql-tag';
 import { readBoolSetting } from '#src/util/settingsUtils';
-import { inject } from 'vue';
-import useGoalData, { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import useGoalInReview from '#src/composables/useGoalInReview';
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
@@ -116,16 +115,20 @@ export default {
 		GoalEntrypoint
 	},
 	setup() {
-		const apollo = inject('apollo');
-		const { goalInReviewData, loadAutoOpenRecap } = useGoalInReview({ apollo });
-		const goalData = useGoalData({ apollo });
+		const {
+			goalInReviewData,
+			loadAutoOpenRecap,
+			hasSubmittedGoalFeedbackForYear,
+			loadGoalPreferences,
+			setGoalFeedbackSubmittedPreference,
+		} = useGoalInReview();
 
 		return {
 			goalInReviewData,
 			loadAutoOpenRecap,
-			hasSubmittedGoalFeedbackForYear: goalData.hasSubmittedGoalFeedbackForYear,
-			loadGoalPreferences: goalData.loadPreferences,
-			setGoalFeedbackSubmittedPreference: goalData.setGoalFeedbackSubmittedPreference,
+			hasSubmittedGoalFeedbackForYear,
+			loadGoalPreferences,
+			setGoalFeedbackSubmittedPreference,
 		};
 	},
 	data() {
