@@ -852,6 +852,55 @@ export default function useGoalData({ apollo } = {}) {
 		);
 	}
 
+	const goalRecapViewedByYear = computed(() => {
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+		return parsedPrefs.goalRecapViewed || {};
+	});
+
+	function hasViewedGoalRecapForYear(year) {
+		return Boolean(goalRecapViewedByYear.value?.[year]);
+	}
+
+	async function setGoalRecapViewedPreference(year = GOALS_CURRENT_YEAR) {
+		if (!year) return;
+		const parsedPrefs = await loadPreferences('network-only');
+		const prev = parsedPrefs?.goalRecapViewed || {};
+		// Year-keyed flag so seeing this year's recap does not suppress next year's.
+		if (prev[year]) return;
+		const updatedPreference = { goalRecapViewed: { ...prev, [year]: true } };
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			updatedPreference
+		);
+	}
+
+	const goalRecapPendingByYear = computed(() => {
+		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+		return parsedPrefs.goalRecapPending || {};
+	});
+
+	function hasGoalRecapPendingForYear(year) {
+		return Boolean(goalRecapPendingByYear.value?.[year]);
+	}
+
+	// Set the first time a completed goal is seen, so the recap can open on the session
+	// after completion without depending on the goal card's own celebration flag.
+	async function setGoalRecapPendingPreference(year = GOALS_CURRENT_YEAR) {
+		if (!year) return;
+		const parsedPrefs = await loadPreferences('network-only');
+		const prev = parsedPrefs?.goalRecapPending || {};
+		if (prev[year]) return;
+		const updatedPreference = { goalRecapPending: { ...prev, [year]: true } };
+		await updateUserPreferences(
+			apolloClient,
+			userPreferences.value,
+			parsedPrefs,
+			updatedPreference
+		);
+	}
+
 	const goalFeedbackSubmittedByYear = computed(() => {
 		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
 		return parsedPrefs.goalFeedbackSubmitted || {};
@@ -1291,6 +1340,12 @@ export default function useGoalData({ apollo } = {}) {
 		setViewedGoalCompletePreference,
 		goalFeedbackSubmittedByYear,
 		hasSubmittedGoalFeedbackForYear,
+		goalRecapViewedByYear,
+		hasViewedGoalRecapForYear,
+		setGoalRecapViewedPreference,
+		goalRecapPendingByYear,
+		hasGoalRecapPendingForYear,
+		setGoalRecapPendingPreference,
 		setGoalFeedbackSubmittedPreference,
 		getSupportAllLoanCountByYear,
 		setGoalState,

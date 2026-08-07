@@ -349,6 +349,7 @@ export default {
 		const { isMobile } = useBreakpoints();
 		const {
 			goalInReviewData,
+			loadAutoOpenRecap,
 			loadGoalInReview,
 		} = useGoalInReview();
 
@@ -365,6 +366,7 @@ export default {
 			getMostRecentBlogPost,
 			goalInReviewData,
 			isMobile,
+			loadAutoOpenRecap,
 			loadGoalInReview,
 			hasSubmittedGoalFeedbackForYear: goalData.hasSubmittedGoalFeedbackForYear,
 			setGoalFeedbackSubmittedPreference: goalData.setGoalFeedbackSubmittedPreference,
@@ -720,6 +722,17 @@ export default {
 		toggleTooltip() {
 			this.tooltipVisible = !this.tooltipVisible;
 		},
+		// Client-side only: /portfolio is CDN cached and MyKiva server renders, so the
+		// pop-up must not be decided during SSR.
+		async openGoalRecapIfDue() {
+			const goalInReview = await this.loadAutoOpenRecap({ enabled: this.goalInReviewEnable });
+			if (!goalInReview) {
+				return;
+			}
+			await this.loadGoalPreferences('network-only');
+			this.goalInReviewFeedbackSubmitted = this.hasSubmittedGoalFeedbackForYear(goalInReview.year);
+			this.showGoalInReviewModal = true;
+		},
 		async handleGoToDeepLink(sectionId) {
 			if (sectionId === GOAL_RECAP_DEEP_LINK) {
 				if (!this.goalInReviewEnable) {
@@ -761,7 +774,9 @@ export default {
 			const sectionId = this.$route?.query?.goTo || '';
 			if (sectionId) {
 				this.handleGoToDeepLink(sectionId);
+				return;
 			}
+			this.openGoalRecapIfDue();
 		});
 
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');

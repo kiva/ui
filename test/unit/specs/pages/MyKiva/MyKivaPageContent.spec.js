@@ -168,6 +168,56 @@ describe('MyKivaPageContent', () => {
 		});
 	});
 
+	describe('openGoalRecapIfDue', () => {
+		const makeContext = overrides => ({
+			goalInReviewEnable: true,
+			loadAutoOpenRecap: vi.fn().mockResolvedValue({ year: 2026 }),
+			loadGoalPreferences: vi.fn().mockResolvedValue({}),
+			hasSubmittedGoalFeedbackForYear: vi.fn().mockReturnValue(false),
+			showGoalInReviewModal: false,
+			goalInReviewFeedbackSubmitted: false,
+			...overrides,
+		});
+
+		it('opens the recap when the composable says it is due', async () => {
+			const context = makeContext();
+
+			await MyKivaPageContent.methods.openGoalRecapIfDue.call(context);
+
+			expect(context.loadAutoOpenRecap).toHaveBeenCalledWith({ enabled: true });
+			expect(context.showGoalInReviewModal).toBe(true);
+		});
+
+		it('stays shut when the composable declines', async () => {
+			const context = makeContext({ loadAutoOpenRecap: vi.fn().mockResolvedValue(null) });
+
+			await MyKivaPageContent.methods.openGoalRecapIfDue.call(context);
+
+			expect(context.showGoalInReviewModal).toBe(false);
+		});
+
+		it('passes the flag through, so the composable can decline before fetching', async () => {
+			const context = makeContext({
+				goalInReviewEnable: false,
+				loadAutoOpenRecap: vi.fn().mockResolvedValue(null),
+			});
+
+			await MyKivaPageContent.methods.openGoalRecapIfDue.call(context);
+
+			expect(context.loadAutoOpenRecap).toHaveBeenCalledWith({ enabled: false });
+			expect(context.showGoalInReviewModal).toBe(false);
+		});
+
+		it('snapshots the already-submitted feedback flag before opening', async () => {
+			const context = makeContext({ hasSubmittedGoalFeedbackForYear: vi.fn().mockReturnValue(true) });
+
+			await MyKivaPageContent.methods.openGoalRecapIfDue.call(context);
+
+			expect(context.loadGoalPreferences).toHaveBeenCalledWith('network-only');
+			expect(context.goalInReviewFeedbackSubmitted).toBe(true);
+		});
+	});
+
 	describe('handleGoalInReviewFeedbackSubmitted', () => {
 		it('persists the feedback-submitted preference for the recap year', async () => {
 			const setGoalFeedbackSubmittedPreference = vi.fn().mockResolvedValue();
