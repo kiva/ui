@@ -392,23 +392,36 @@ export default {
 				this.getGoalSummary();
 			}
 
-			this.apollo.watchQuery({
-				query: gql`
-					query UserPreferences {
-						my {
+			const userPreferencesQuery = gql`
+				query UserPreferences {
+					my {
+						id
+						userPreferences {
+							preferences
 							id
-							userPreferences {
-								preferences
-								id
-							}
 						}
 					}
-				`,
+				}
+			`;
+
+			// Watch the cache only; a watcher with a network fetch policy refetches on
+			// every cache broadcast, which loops indefinitely (hammering the gateway)
+			// if the resolver keeps returning partial data (200 + errors).
+			this.userPreferencesSubscription = this.apollo.watchQuery({
+				query: userPreferencesQuery,
+				fetchPolicy: 'cache-only',
 			}).subscribe({
 				next: ({ data }) => {
 					this.userInfo = { ...this.userInfo, userPreferences: data?.my?.userPreferences };
 				},
+				error: error => {
+					logReadQueryError(error, 'MyKivaPage userPreferences cache watcher');
+				},
 			});
+
+			// Single network fetch to populate the cache; the watcher above receives
+			// this result and any later userPreferences mutation writes.
+			await this.apollo.query({ query: userPreferencesQuery });
 
 			// Param to force goals renewal in a specific year
 			const { renewYear } = this.$route.query;
@@ -447,6 +460,9 @@ export default {
 			transactions: this.transactions,
 			checkMyKivaCompletedGoalAfterLoad: true,
 		});
+	},
+	beforeUnmount() {
+		this.userPreferencesSubscription?.unsubscribe();
 	},
 };
 </script>
