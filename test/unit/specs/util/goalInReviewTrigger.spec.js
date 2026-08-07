@@ -10,10 +10,14 @@ const completed = {
 	hasCompletionPending: true,
 };
 
+const IN_PROGRESS_RELEASE = new Date('2026-11-15T00:00:00Z');
+
 const inProgress = {
 	...completed,
 	goalStatus: 'in-progress',
 	hasCompletionPending: false,
+	inProgressStartDate: IN_PROGRESS_RELEASE,
+	now: IN_PROGRESS_RELEASE,
 };
 
 describe('goalInReviewTrigger.js', () => {
@@ -33,12 +37,46 @@ describe('goalInReviewTrigger.js', () => {
 	});
 
 	describe('in-progress goals', () => {
-		it('opens once the feature is live, with no separate date gate', () => {
+		it('opens on the configured release date', () => {
 			expect(shouldAutoOpenRecap(inProgress)).toBe(true);
+		});
+
+		it('opens after the release date', () => {
+			expect(shouldAutoOpenRecap({ ...inProgress, now: new Date('2026-12-01T00:00:00Z') })).toBe(true);
+		});
+
+		it('stays shut before the release date, even with the flag on', () => {
+			expect(shouldAutoOpenRecap({ ...inProgress, now: new Date('2026-11-14T23:59:59Z') })).toBe(false);
 		});
 
 		it('does not require a pending completion', () => {
 			expect(shouldAutoOpenRecap({ ...inProgress, hasCompletionPending: false })).toBe(true);
+		});
+
+		it('accepts the date as a string, since settings come back serialized', () => {
+			expect(shouldAutoOpenRecap({ ...inProgress, inProgressStartDate: '2026-11-15T00:00:00Z' })).toBe(true);
+		});
+
+		it('stays shut when the release date is unset', () => {
+			expect(shouldAutoOpenRecap({ ...inProgress, inProgressStartDate: null })).toBe(false);
+		});
+
+		it('stays shut when the release date cannot be parsed', () => {
+			expect(shouldAutoOpenRecap({ ...inProgress, inProgressStartDate: 'not-a-date' })).toBe(false);
+		});
+	});
+
+	describe('completed goals are not held back by the in-progress date', () => {
+		it('opens before the in-progress release date', () => {
+			expect(shouldAutoOpenRecap({
+				...completed,
+				inProgressStartDate: IN_PROGRESS_RELEASE,
+				now: new Date('2026-11-01T00:00:00Z'),
+			})).toBe(true);
+		});
+
+		it('opens with no in-progress release date configured at all', () => {
+			expect(shouldAutoOpenRecap({ ...completed, inProgressStartDate: null })).toBe(true);
 		});
 	});
 

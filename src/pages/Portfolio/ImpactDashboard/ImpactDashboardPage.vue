@@ -62,7 +62,7 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { gql } from 'graphql-tag';
-import { readBoolSetting } from '#src/util/settingsUtils';
+import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
 import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import useGoalInReview from '#src/composables/useGoalInReview';
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
@@ -142,6 +142,7 @@ export default {
 			showTeamChallenge: false,
 			teamsChallengeEnable: false,
 			goalInReviewEnable: false,
+			goalInReviewInProgressStart: null,
 			showGoalInReviewModal: false,
 			goalInReviewFeedbackSubmitted: false,
 			userPreferences: null,
@@ -161,7 +162,10 @@ export default {
 		// Called from mounted: the decision reads user preferences and writes one back,
 		// so it must not run during server render.
 		async openGoalRecapIfDue() {
-			const goalInReview = await this.loadAutoOpenRecap({ enabled: this.goalInReviewEnable });
+			const goalInReview = await this.loadAutoOpenRecap({
+				enabled: this.goalInReviewEnable,
+				inProgressStartDate: this.goalInReviewInProgressStart,
+			});
 			if (!goalInReview) {
 				return;
 			}
@@ -221,6 +225,7 @@ export default {
 		this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
 
 		this.goalInReviewEnable = readBoolSetting(portfolioQueryData, 'general.goal_in_review_enable.value') ?? false;
+		this.goalInReviewInProgressStart = readDateSetting(portfolioQueryData, 'general.goal_in_review_in_progress_start.value'); // eslint-disable-line max-len
 
 		this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
 

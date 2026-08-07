@@ -1,9 +1,12 @@
 import ImpactDashboardPage from '#src/pages/Portfolio/ImpactDashboard/ImpactDashboardPage';
 
+const IN_PROGRESS_RELEASE = new Date('2026-11-15T00:00:00Z');
+
 describe('ImpactDashboardPage', () => {
 	describe('openGoalRecapIfDue', () => {
 		const makeContext = overrides => ({
 			goalInReviewEnable: true,
+			goalInReviewInProgressStart: IN_PROGRESS_RELEASE,
 			loadAutoOpenRecap: vi.fn().mockResolvedValue({ year: 2026 }),
 			loadGoalPreferences: vi.fn().mockResolvedValue({}),
 			hasSubmittedGoalFeedbackForYear: vi.fn().mockReturnValue(false),
@@ -17,7 +20,10 @@ describe('ImpactDashboardPage', () => {
 
 			await ImpactDashboardPage.methods.openGoalRecapIfDue.call(context);
 
-			expect(context.loadAutoOpenRecap).toHaveBeenCalledWith({ enabled: true });
+			expect(context.loadAutoOpenRecap).toHaveBeenCalledWith({
+				enabled: true,
+				inProgressStartDate: IN_PROGRESS_RELEASE,
+			});
 			expect(context.showGoalInReviewModal).toBe(true);
 		});
 
@@ -37,7 +43,10 @@ describe('ImpactDashboardPage', () => {
 
 			await ImpactDashboardPage.methods.openGoalRecapIfDue.call(context);
 
-			expect(context.loadAutoOpenRecap).toHaveBeenCalledWith({ enabled: false });
+			expect(context.loadAutoOpenRecap).toHaveBeenCalledWith({
+				enabled: false,
+				inProgressStartDate: IN_PROGRESS_RELEASE,
+			});
 			expect(context.showGoalInReviewModal).toBe(false);
 		});
 

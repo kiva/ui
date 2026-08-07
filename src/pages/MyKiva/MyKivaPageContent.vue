@@ -333,6 +333,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		goalInReviewInProgressStart: {
+			type: Date,
+			default: null,
+		},
 		goalsRowEnabled: {
 			type: Boolean,
 			default: false,
@@ -724,7 +728,10 @@ export default {
 		// Called from mounted: the decision reads user preferences and writes one back,
 		// so it must not run during server render.
 		async openGoalRecapIfDue() {
-			const goalInReview = await this.loadAutoOpenRecap({ enabled: this.goalInReviewEnable });
+			const goalInReview = await this.loadAutoOpenRecap({
+				enabled: this.goalInReviewEnable,
+				inProgressStartDate: this.goalInReviewInProgressStart,
+			});
 			if (!goalInReview) {
 				return;
 			}

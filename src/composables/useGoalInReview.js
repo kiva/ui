@@ -162,15 +162,19 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 	 *
 	 * @param {object} options Trigger options.
 	 * @param {boolean} options.enabled The goal_in_review_enable setting.
+	 * @param {Date|string|null} [options.inProgressStartDate] The
+	 *   goal_in_review_in_progress_start setting, the date in-progress goal setters
+	 *   become eligible. Completed goal setters are not gated by it.
 	 * @returns {Promise<object|null>} The recap payload to show, or null to stay shut.
 	 */
-	async function loadAutoOpenRecap({ enabled = false } = {}) {
+	async function loadAutoOpenRecap({ enabled = false, inProgressStartDate = null } = {}) {
 		if (!enabled) {
 			return null;
 		}
 
 		await loadPreferences('network-only');
-		const year = getGoalInReviewTargetYear();
+		const now = getGoalInReviewNow();
+		const year = getGoalInReviewTargetYear(now);
 		const hasViewedRecap = hasViewedGoalRecapForYear(year);
 		const hasCompletionPending = hasGoalRecapPendingForYear(year);
 		if (hasViewedRecap) {
@@ -188,6 +192,8 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 			currentGoalYear: GOALS_CURRENT_YEAR,
 			hasViewedRecap,
 			hasCompletionPending,
+			inProgressStartDate,
+			now,
 		});
 
 		if (!shouldOpen) {

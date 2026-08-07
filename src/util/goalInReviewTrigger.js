@@ -1,6 +1,23 @@
 import { GOAL_STATUS } from '#src/composables/useGoalData';
 
 /**
+ * Whether the in-progress release date has arrived. Missing or unparseable dates
+ * read as "not yet", so an unset setting holds the pop-up back rather than
+ * releasing it to every in-progress goal setter at once.
+ *
+ * @param {Date|string|null} startDate The configured release date.
+ * @param {Date} now The effective current date.
+ * @returns {boolean} Whether in-progress goal setters are eligible yet.
+ */
+function hasInProgressReleaseStarted(startDate, now) {
+	const start = startDate instanceof Date ? startDate : new Date(startDate ?? NaN);
+	if (Number.isNaN(start.getTime())) {
+		return false;
+	}
+	return now.getTime() >= start.getTime();
+}
+
+/**
  * Decides whether the recap should open by itself, for MyKiva and Portfolio alike.
  * Both pages call this so the pop-up happens once per user across the two, rather
  * than once per page.
@@ -14,6 +31,9 @@ import { GOAL_STATUS } from '#src/composables/useGoalData';
  * @param {boolean} options.hasViewedRecap Whether the recap has already been seen.
  * @param {boolean} options.hasCompletionPending Whether a completed goal was already
  *   seen on an earlier visit, which makes this the session after completion.
+ * @param {Date|string|null} options.inProgressStartDate The goal_in_review_in_progress_start
+ *   setting, the date in-progress goal setters become eligible.
+ * @param {Date} options.now The effective current date.
  * @returns {boolean} Whether to open the recap automatically.
  */
 export function shouldAutoOpenRecap({
@@ -24,6 +44,8 @@ export function shouldAutoOpenRecap({
 	currentGoalYear = null,
 	hasViewedRecap = false,
 	hasCompletionPending = false,
+	inProgressStartDate = null,
+	now = new Date(),
 } = {}) {
 	if (!enabled || !isEligible || hasViewedRecap) {
 		return false;
@@ -40,10 +62,10 @@ export function shouldAutoOpenRecap({
 		return hasCompletionPending;
 	}
 
-	// In progress goal setters are reached when the feature itself goes live, so the
-	// flag is the only gate.
+	// Completed goal setters see the recap as soon as the feature is live; in-progress
+	// ones wait for the configured release date so their goal has run most of its course.
 	if (goalStatus === GOAL_STATUS.IN_PROGRESS) {
-		return true;
+		return hasInProgressReleaseStarted(inProgressStartDate, now);
 	}
 
 	return false;

@@ -49,5 +49,9 @@ query portfolioQuery {
 			key
 			value
 		}
+		goal_in_review_in_progress_start: uiConfigSetting(key: "goal_in_review_in_progress_start") {
+			key
+			value
+		}
 	}
 }
