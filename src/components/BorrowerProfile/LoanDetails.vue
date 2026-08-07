@@ -82,6 +82,7 @@
 		</dl>
 		<repayment-schedule
 			v-if="displayRepaymentSchedule"
+			:key="loanId"
 			:loan-id="loanId"
 			:status="status"
 		/>
@@ -272,12 +273,12 @@ export default {
 			if (this.anonymizationLevel === 'full') {
 				return false;
 			}
-			// Always show for fundraising loans
-			if (this.status === 'fundraising') {
+			if (this.isPrivileged) {
 				return true;
 			}
-			// For non-fundraising loans, only show to privileged users
-			return this.isPrivileged;
+			// Matches the server, which sends an unprivileged viewer no repayments unless
+			// the loan is fundraising and unanonymized.
+			return this.status === 'fundraising' && this.anonymizationLevel === 'none';
 		},
 	}
 };

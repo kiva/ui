@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
 import {
 	buildSampleGoalInReviewData,
-	sampleSectorAchievementsWithOther,
+	sampleGoalSectorsWithOther,
 } from '../../../mock-data/goalInReviewSampleData';
 
 export default {
@@ -101,6 +101,6 @@ export const WithOtherSector = story({
 	show: true,
 	data: {
 		...completeData,
-		sectorAchievements: sampleSectorAchievementsWithOther,
+		goalSummary: { ...completeData.goalSummary, sectors: sampleGoalSectorsWithOther },
 	},
 });

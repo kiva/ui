@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/vue';
+import { render, fireEvent, waitFor } from '@testing-library/vue';
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
 import { globalOptions } from '../../../specUtils';
 
@@ -49,7 +49,11 @@ vi.mock('@kiva/kv-components', () => ({
 		name: 'KvFormAssemblyForm',
 		props: ['formAssemblyId', 'title'],
 		emits: ['fa-form-submitted'],
-		template: '<button type="button" data-testid="fa-submit" @click="$emit(\'fa-form-submitted\')">submit</button>',
+		template: `<button
+			type="button"
+			data-testid="fa-submit"
+			@click="$emit('fa-form-submitted', { valid: true })"
+		>submit</button>`,
 	},
 	getKivaImageUrl: () => '',
 }));
@@ -106,6 +110,27 @@ describe('GoalInReviewModal', () => {
 		await findByText('+47 more');
 	});
 
+	it('reconciles the borrower count across slides 1, 2 and 7', async () => {
+		const currentYear = new Date().getFullYear();
+		const { findByText, getAllByText } = render(GoalInReviewModal, {
+			global: globalWithAppConfig,
+			props: {
+				show: true,
+				data: {
+					year: currentYear,
+					goalSummary: { status: 'completed' },
+					loanStats: { totalLent: 1025, borrowers: 14, percentComplete: 100 },
+					goalLoans: [{ id: 1, name: 'Aminata', image: { hash: 'hash-1' } }],
+				},
+			},
+		});
+
+		await findByText('Borrowers'); // slide 1 stat label
+		await findByText(/14 borrowers\./); // slide 2 headline
+		await findByText(/14 dreams/); // slide 7 copy
+		expect(getAllByText('14').length).toBeGreaterThan(0);
+	});
+
 	it('tracks and forwards the slide 7 primary CTA', async () => {
 		const trackEvent = vi.fn();
 		const currentYear = new Date().getFullYear();
@@ -123,8 +148,43 @@ describe('GoalInReviewModal', () => {
 
 		await fireEvent.click(await findByText(`Finish my ${currentYear} goal`));
 
-		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', 'goal-in-review-finish-goal');
+		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', `goal-recap-finish-my-${currentYear}-goal`);
 		expect(emitted()['finish-goal']).toHaveLength(1);
+	});
+
+	it('tracks and forwards the "Back to Kiva" CTA for a completed current-year goal', async () => {
+		const trackEvent = vi.fn();
+		const currentYear = new Date().getFullYear();
+		const { emitted, findByText } = render(GoalInReviewModal, {
+			global: {
+				...globalOptions,
+				provide: { ...globalOptions.provide, $kvTrackEvent: trackEvent },
+			},
+			props: { show: true, data: { year: currentYear, goalSummary: { status: 'completed' } } },
+		});
+
+		await fireEvent.click(await findByText('Back to Kiva'));
+
+		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', 'goal-recap-back-to-kiva');
+		expect(emitted()['back-to-kiva']).toHaveLength(1);
+	});
+
+	it('reuses set-a-goal with a from-goal-recap property for the next-year CTA', async () => {
+		const trackEvent = vi.fn();
+		const currentYear = new Date().getFullYear();
+		const { emitted, findByText } = render(GoalInReviewModal, {
+			global: {
+				...globalOptions,
+				provide: { ...globalOptions.provide, $kvTrackEvent: trackEvent },
+			},
+			// A prior goal year → the recap points forward with "Set my {year} goal".
+			props: { show: true, data: { year: currentYear - 1, goalSummary: { status: 'completed' } } },
+		});
+
+		await fireEvent.click(await findByText(`Set my ${currentYear} goal`));
+
+		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', 'set-a-goal', 'from-goal-recap');
+		expect(emitted()['set-goal']).toHaveLength(1);
 	});
 
 	it('passes feedbackSubmitted through to slide 7 to gate the feedback survey', async () => {
@@ -142,10 +202,14 @@ describe('GoalInReviewModal', () => {
 		expect(queryByText('Share your feedback')).toBeNull();
 	});
 
-	it('forwards feedback-submitted from slide 7', async () => {
+	it('tracks and forwards the feedback survey submission', async () => {
+		const trackEvent = vi.fn();
 		const currentYear = new Date().getFullYear();
 		const { emitted, findByText, getByTestId } = render(GoalInReviewModal, {
-			global: globalWithAppConfig,
+			global: {
+				...globalOptions,
+				provide: { ...globalOptions.provide, $kvTrackEvent: trackEvent },
+			},
 			props: {
 				show: true,
 				data: { year: currentYear, goalSummary: { status: 'in-progress' } },
@@ -155,6 +219,7 @@ describe('GoalInReviewModal', () => {
 		await fireEvent.click(await findByText('Share your feedback'));
 		await fireEvent.click(getByTestId('fa-submit'));
 
+		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'submit', 'goal-recap-submit-feedback');
 		expect(emitted()['feedback-submitted']).toHaveLength(1);
 	});
 
@@ -187,5 +252,26 @@ describe('GoalInReviewModal', () => {
 
 		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', 'goal-in-review-close');
 		expect(emitted().close).toHaveLength(1);
+	});
+
+	it('tracks the close event only once even when lightbox-closed fires twice', async () => {
+		const trackEvent = vi.fn();
+		const { getByRole } = renderModal({ trackEvent });
+
+		// KvLightbox re-emits lightbox-closed when it unmounts, so handleClose runs twice.
+		await fireEvent.click(getByRole('button', { name: 'Close' }));
+		await fireEvent.click(getByRole('button', { name: 'Close' }));
+
+		const closeCalls = trackEvent.mock.calls.filter(call => call[2] === 'goal-in-review-close');
+		expect(closeCalls).toHaveLength(1);
+	});
+
+	it('tracks the opening screen (screen-1) view when the modal opens', async () => {
+		const trackEvent = vi.fn();
+		renderModal({ trackEvent });
+
+		await waitFor(() => {
+			expect(trackEvent).toHaveBeenCalledWith('portfolio', 'view', 'goal-in-review', 'screen-1');
+		});
 	});
 });

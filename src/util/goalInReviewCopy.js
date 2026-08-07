@@ -13,10 +13,9 @@ import { capitalize } from '#src/util/stringParserUtils';
  * Variant copy for GoalInReviewSlide4 ("What your goal says about you").
  *
  * Each card resolves its own {title, content} from goal summary data:
- *  - Origin story  -> quarter of `dateStarted`
- *  - Impact identity -> goal `category` (badge id)
- *  - Impact habit  -> `transactionSessionCount` (percentile branch is scaffolded
- *    but not wired yet; see getImpactHabitTopPercentile).
+ *  - Origin story: quarter of `dateStarted`
+ *  - Impact identity: goal `category` (badge id)
+ *  - Impact habit: `lifetimePercentile`, else `transactionSessionCount`
  */
 
 /** Sessions with a transaction needed to reach the "Kiva champion" tier. */
@@ -104,10 +103,6 @@ const goalInReviewCopy = {
 	 * Impact-habit card copy. Top-percentile lenders take precedence; everyone
 	 * else is keyed to lending sessions during the year.
 	 *
-	 * TODO(next step): `lifetimePercentile` is supplied by the parent page once
-	 * the percentile query is integrated. Until then it is absent, so the guard
-	 * below falls through to the session tiers (today's behavior).
-	 *
 	 * @param {object} data Habit inputs.
 	 * @param {number} [data.transactionSessionCount] Sessions with a transaction.
 	 * @param {number} [data.lifetimePercentile] The lender's lifetime percentile.
@@ -141,9 +136,10 @@ const goalInReviewCopy = {
 	 * @returns {{title: string, content: string}} Card title and body.
 	 */
 	getImpactHabitTopPercentile(lifetimePercentile) {
+		const topPercent = Math.max(100 - lifetimePercentile, 1);
 		return {
-			title: `Top ${lifetimePercentile}%`,
-			content: `Your lending places you among the top ${lifetimePercentile}% of goal setters this year.`,
+			title: `Top ${topPercent}%`,
+			content: `Your lending places you among the top ${topPercent}% of goal setters this year.`,
 		};
 	},
 };
