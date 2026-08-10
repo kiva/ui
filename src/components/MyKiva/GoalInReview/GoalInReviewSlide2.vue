@@ -87,10 +87,9 @@ const borrowerCountDisplay = computed(() => numeral(totalBorrowers.value).format
 const borrowersLabel = computed(() => (totalBorrowers.value === 1 ? 'borrower' : 'borrowers'));
 const futuresLabel = computed(() => (totalBorrowers.value === 1 ? 'future' : 'futures'));
 
-// Staggered fade-up: the header lands first, then each card 150ms after the one
-// before it (per the Figma "48 borrowers" spec). The modal gates the whole
-// slide until it scrolls into view, so these delays count from that moment.
-const cardAnimationDelay = index => ({ animationDelay: `${0.2 + index * 0.15}s` });
+// Staggered fade-up: the header lands first, then each card 175ms after the one
+// before it.
+const cardAnimationDelay = index => ({ animationDelay: `${0.2 + index * 0.175}s` });
 </script>
 
 <style lang="postcss" scoped>
@@ -99,12 +98,16 @@ const cardAnimationDelay = index => ({ animationDelay: `${0.2 + index * 0.15}s` 
 }
 
 /* Entrance choreography — the shared .kv-fade-up effect lives in
-   global/animations.scss; this slide only sets each part's rise + timing.
-   Header rises 14px (eyebrow, then headline); cards rise 18px, staggered
-   via an inline animation-delay (see cardAnimationDelay). */
+   global/animations.scss. */
+.slide2-eyebrow,
+.slide2-headline,
+.slide2-card {
+	animation-duration: 0.75s;
+}
+
 .slide2-eyebrow,
 .slide2-headline {
-	--kv-fade-up-distance: 14px;
+	--kv-fade-up-distance: 24px;
 }
 
 .slide2-headline {

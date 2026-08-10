@@ -49,9 +49,29 @@
 	}
 }
 
+/* Scale-in: fades in while scaling up from `--kv-scale-in-from` (default 0.9)
+   to full size — a gentle "settle into place" with no overshoot (unlike
+   .kv-rebound-in). Suits pills, chips, and other small chrome. */
+.kv-scale-in {
+	animation: kv-scale-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes kv-scale-in {
+	from {
+		opacity: 0;
+		transform: scale(var(--kv-scale-in-from, 0.9));
+	}
+
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.kv-rebound-in,
-	.kv-fade-up {
+	.kv-fade-up,
+	.kv-scale-in {
 		animation: none;
 	}
 }
@@ -60,6 +80,7 @@
    effects nested inside it paused on their first (hidden) frame until it also
    gains .is-in-view. */
 [data-animate-on-view]:not(.is-in-view) .kv-rebound-in,
-[data-animate-on-view]:not(.is-in-view) .kv-fade-up {
+[data-animate-on-view]:not(.is-in-view) .kv-fade-up,
+[data-animate-on-view]:not(.is-in-view) .kv-scale-in {
 	animation-play-state: paused;
 }

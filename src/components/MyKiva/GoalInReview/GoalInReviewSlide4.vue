@@ -3,11 +3,11 @@
 		class="tw-w-full tw-bg-gray-50 tw-px-2.5 tw-py-4 md:tw-px-4 md:tw-py-7.5"
 		data-testid="goal-in-review-slide-4"
 	>
-		<p class="tw-text-eco-green-3 tw-mb-1">
+		<p class="tw-text-eco-green-3 tw-mb-1 kv-fade-up slide4-eyebrow">
 			Giving insights
 		</p>
 
-		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-4">
+		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-4 kv-fade-up slide4-headline">
 			What your goal says
 			<span class="tw-block tw-text-marigold">about you</span>
 		</h1>
@@ -18,7 +18,7 @@
 			data-testid="goal-in-review-slide-4-cards"
 		>
 			<li
-				class="tw-rounded tw-shadow-lg tw-p-2.5 tw-bg-marigold-1"
+				class="tw-rounded tw-shadow-lg tw-p-2.5 tw-bg-marigold-1 kv-fade-up slide4-card"
 				data-testid="goal-in-review-slide-4-card-origin-story"
 			>
 				<div class="tw-mb-2">
@@ -39,7 +39,7 @@
 			</li>
 
 			<li
-				class="tw-rounded tw-shadow-lg tw-p-2.5 tw-bg-desert-rose-1"
+				class="tw-rounded tw-shadow-lg tw-p-2.5 tw-bg-desert-rose-1 kv-fade-up slide4-card"
 				data-testid="goal-in-review-slide-4-card-impact-identity"
 			>
 				<div class="tw-mb-2">
@@ -60,7 +60,7 @@
 			</li>
 
 			<li
-				class="tw-rounded tw-shadow-lg tw-p-2.5 tw-bg-eco-green-1"
+				class="tw-rounded tw-shadow-lg tw-p-2.5 tw-bg-eco-green-1 kv-fade-up slide4-card"
 				data-testid="goal-in-review-slide-4-card-impact-habit"
 			>
 				<div class="tw-mb-2">
@@ -108,3 +108,32 @@ const impactHabit = computed(() => goalInReviewCopy.getImpactHabit({
 	lifetimePercentile: props.lifetimePercentile,
 }));
 </script>
+
+<style lang="postcss" scoped>
+/* Entrance choreography — the shared .kv-fade-up effect lives in
+   global/animations.scss; this slide sets the rise (24px) and the stagger so the
+   header lands first, then the three insight cards cascade 100ms apart. The modal
+   gates the whole slide until it scrolls into view, so these delays count from
+   that moment (see [data-animate-on-view] in the modal). */
+.slide4-eyebrow,
+.slide4-headline,
+.slide4-card {
+	--kv-fade-up-distance: 24px;
+}
+
+.slide4-headline {
+	animation-delay: 0.1s;
+}
+
+.slide4-card:nth-child(1) {
+	animation-delay: 0.25s;
+}
+
+.slide4-card:nth-child(2) {
+	animation-delay: 0.35s;
+}
+
+.slide4-card:nth-child(3) {
+	animation-delay: 0.45s;
+}
+</style>

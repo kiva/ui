@@ -10,11 +10,11 @@
 		>
 
 		<div class="tw-mx-auto tw-max-w-xl tw-px-2 tw-py-6">
-			<p class="tw-text-small tw-text-brand-400 tw-mb-2">
+			<p class="tw-text-small tw-text-brand-400 tw-mb-2 kv-fade-up slide6-eyebrow">
 				A personal note
 			</p>
 
-			<div class="tw-px-3 md:tw-px-0">
+			<div class="tw-px-3 md:tw-px-0 kv-fade-up slide6-note">
 				<span class="tw-block tw-text-jumbo tw-text-secondary" aria-hidden="true">"</span>
 
 				<div class="tw-flex tw-flex-col tw-gap-3 tw-text-eco-green-1">
@@ -81,6 +81,17 @@ defineProps({
 	background-image: url('/src/assets/images/my-kiva/goal-in-review/slide6-paper.png');
 
 	@apply tw-bg-no-repeat tw-bg-center tw-bg-cover;
+}
+
+/* Entrance — shared .kv-fade-up (see global/animations.scss); the eyebrow lands
+   first, then the note fades up just after. Gated on view by the modal wrapper. */
+.slide6-eyebrow,
+.slide6-note {
+	--kv-fade-up-distance: 24px;
+}
+
+.slide6-note {
+	animation-delay: 0.15s;
 }
 
 .year-pill {

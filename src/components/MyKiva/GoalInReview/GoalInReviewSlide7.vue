@@ -7,14 +7,17 @@
 			<img
 				:src="leafHeart"
 				alt="Leaf heart"
-				class="tw-w-8.5 tw-h-8.5  tw-mx-auto tw-mb-3"
+				class="tw-w-8.5 tw-h-8.5  tw-mx-auto tw-mb-3 kv-fade-up slide7-heart"
 			>
 
-			<h1 class="tw-text-display tw-text-white tw-mb-3">
+			<h1 class="tw-text-display tw-text-white tw-mb-3 kv-fade-up slide7-headline">
 				Thank you!
 			</h1>
 
-			<div class="tw-flex tw-flex-col tw-gap-2 tw-text-base tw-text-eco-green-1 tw-mb-3">
+			<div
+				class="tw-flex tw-flex-col tw-gap-2 tw-text-base tw-text-eco-green-1 tw-mb-3
+					kv-fade-up slide7-copy"
+			>
 				<p>
 					Behind every number is a name. Behind every loan is a dream.
 					{{ contributionLead }} <strong>{{ dreamsCopy }}</strong> more possible {{ timeframe }}.
@@ -24,7 +27,7 @@
 				</p>
 			</div>
 
-			<div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+			<div class="tw-flex tw-flex-col tw-items-center tw-gap-2 kv-fade-up slide7-cta">
 				<KvButton
 					class="tw-w-full cta-button"
 					data-testid="goal-in-review-slide-7-primary-cta"
@@ -153,5 +156,27 @@ const showFeedback = computed(() => !isPastGoalYear.value
 <style lang="postcss" scoped>
 :deep(.cta-button > span) {
 	@apply tw-bg-eco-green-2 !tw-text-gray-800;
+}
+
+/* Entrance — shared .kv-fade-up (see global/animations.scss); the closing beats
+   build top-down: heart, then "Thank you!", the message, and the CTA. Gated on
+   view by the modal wrapper. */
+.slide7-heart,
+.slide7-headline,
+.slide7-copy,
+.slide7-cta {
+	--kv-fade-up-distance: 34px;
+}
+
+.slide7-headline {
+	animation-delay: 0.1s;
+}
+
+.slide7-copy {
+	animation-delay: 0.2s;
+}
+
+.slide7-cta {
+	animation-delay: 0.3s;
 }
 </style>

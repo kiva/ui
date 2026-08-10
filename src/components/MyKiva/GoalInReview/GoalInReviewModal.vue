@@ -29,7 +29,8 @@
 					:borrower-count="data?.loanStats?.borrowers"
 				/>
 			</div>
-			<div data-slide-view="3" data-animate-on-view>
+			<!-- Slide 3 has two sections that each reveal independently. -->
+			<div data-slide-view="3">
 				<GoalInReviewSlide3
 					:countries="data?.goalSummary?.countries"
 					:sectors="data?.goalSummary?.sectors"
