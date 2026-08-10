@@ -2,6 +2,9 @@ import { render, fireEvent, waitFor } from '@testing-library/vue';
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
 import { globalOptions } from '../../../specUtils';
 
+// Slide 1 fires confetti on mount; canvas-confetti can't run in jsdom, so stub it.
+vi.mock('#src/util/animation/confettiUtils', () => ({ showConfetti: vi.fn() }));
+
 vi.mock('@kiva/kv-components', () => ({
 	KvLightbox: {
 		name: 'KvLightbox',

@@ -2,6 +2,10 @@ import { render } from '@testing-library/vue';
 import GoalInReviewSlide1 from '#src/components/MyKiva/GoalInReview/GoalInReviewSlide1';
 import { globalOptions } from '../../../../specUtils';
 
+// canvas-confetti has no real canvas in jsdom (its rAF loop throws on a null
+// context), so stub the util the slide fires on mount.
+vi.mock('#src/util/animation/confettiUtils', () => ({ showConfetti: vi.fn() }));
+
 const baseProps = {
 	goalStatus: 'completed',
 	firstName: 'Alexandra',
