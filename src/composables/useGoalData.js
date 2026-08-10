@@ -819,14 +819,44 @@ export default function useGoalData({ apollo } = {}) {
 		// MyKiva renders the completed card once, then hides it on the next page load.
 	}
 
-	const viewedGoalCompleteByYear = computed(() => {
-		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
-		return parsedPrefs.viewedGoalComplete || {};
-	});
+	/**
+	 * Builds the reader/writer pair for a preference stored as `{ [year]: true }`,
+	 * so a flag set for one year never applies to another.
+	 *
+	 * @param {string} preferenceKey Key this flag is stored under in user preferences
+	 * @returns {object} The by-year map, a per-year reader, and a per-year setter
+	 */
+	function yearKeyedPreference(preferenceKey) {
+		const byYear = computed(() => {
+			const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+			return parsedPrefs[preferenceKey] || {};
+		});
 
-	function hasViewedCompletedGoalForYear(year) {
-		return Boolean(viewedGoalCompleteByYear.value?.[year]);
+		function hasForYear(year) {
+			return Boolean(byYear.value?.[year]);
+		}
+
+		async function setForYear(year = GOALS_CURRENT_YEAR) {
+			if (!year) return;
+			const parsedPrefs = await loadPreferences('network-only');
+			const prev = parsedPrefs?.[preferenceKey] || {};
+			if (prev[year]) return;
+			const updatedPreference = { [preferenceKey]: { ...prev, [year]: true } };
+			await updateUserPreferences(
+				apolloClient,
+				userPreferences.value,
+				parsedPrefs,
+				updatedPreference
+			);
+		}
+
+		return { byYear, hasForYear, setForYear };
 	}
+
+	const viewedGoalComplete = yearKeyedPreference('viewedGoalComplete');
+	const goalRecapViewed = yearKeyedPreference('goalRecapViewed');
+	const goalRecapPending = yearKeyedPreference('goalRecapPending');
+	const goalFeedbackSubmitted = yearKeyedPreference('goalFeedbackSubmitted');
 
 	/**
 	 * Drives the basket / ATB-modal achievement nudges so they stay out of the
@@ -836,45 +866,6 @@ export default function useGoalData({ apollo } = {}) {
 	const suppressAchievementNudges = computed(() => (
 		userGoal.value?.status === GOAL_STATUS.IN_PROGRESS
 	));
-
-	async function setViewedGoalCompletePreference(year = GOALS_CURRENT_YEAR) {
-		if (!year) return;
-		const parsedPrefs = await loadPreferences('network-only');
-		const prev = parsedPrefs?.viewedGoalComplete || {};
-		// Year-keyed flag so next year's celebration is not suppressed by a prior year's view.
-		if (prev[year]) return;
-		const updatedPreference = { viewedGoalComplete: { ...prev, [year]: true } };
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			updatedPreference
-		);
-	}
-
-	const goalFeedbackSubmittedByYear = computed(() => {
-		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
-		return parsedPrefs.goalFeedbackSubmitted || {};
-	});
-
-	function hasSubmittedGoalFeedbackForYear(year) {
-		return Boolean(goalFeedbackSubmittedByYear.value?.[year]);
-	}
-
-	async function setGoalFeedbackSubmittedPreference(year = GOALS_CURRENT_YEAR) {
-		if (!year) return;
-		const parsedPrefs = await loadPreferences('network-only');
-		const prev = parsedPrefs?.goalFeedbackSubmitted || {};
-		// Year-keyed flag so a prior year's feedback does not gate the next recap's survey.
-		if (prev[year]) return;
-		const updatedPreference = { goalFeedbackSubmitted: { ...prev, [year]: true } };
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			updatedPreference
-		);
-	}
 
 	async function checkCompletedGoal({
 		currentGoalProgress = 0,
@@ -1286,12 +1277,19 @@ export default function useGoalData({ apollo } = {}) {
 		renewAnnualGoal,
 		hideGoalCard,
 		setHideGoalCardPreference,
-		viewedGoalCompleteByYear,
-		hasViewedCompletedGoalForYear,
-		setViewedGoalCompletePreference,
-		goalFeedbackSubmittedByYear,
-		hasSubmittedGoalFeedbackForYear,
-		setGoalFeedbackSubmittedPreference,
+		viewedGoalCompleteByYear: viewedGoalComplete.byYear,
+		hasViewedCompletedGoalForYear: viewedGoalComplete.hasForYear,
+		setViewedGoalCompletePreference: viewedGoalComplete.setForYear,
+		goalFeedbackSubmittedByYear: goalFeedbackSubmitted.byYear,
+		hasSubmittedGoalFeedbackForYear: goalFeedbackSubmitted.hasForYear,
+		goalRecapViewedByYear: goalRecapViewed.byYear,
+		hasViewedGoalRecapForYear: goalRecapViewed.hasForYear,
+		setGoalRecapViewedPreference: goalRecapViewed.setForYear,
+		// Armed the first time a completed goal is seen, so the recap opens on the visit after it.
+		goalRecapPendingByYear: goalRecapPending.byYear,
+		hasGoalRecapPendingForYear: goalRecapPending.hasForYear,
+		setGoalRecapPendingPreference: goalRecapPending.setForYear,
+		setGoalFeedbackSubmittedPreference: goalFeedbackSubmitted.setForYear,
 		getSupportAllLoanCountByYear,
 		setGoalState,
 		removeGoalFromPreferences,

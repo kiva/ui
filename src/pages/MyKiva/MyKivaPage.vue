@@ -34,6 +34,7 @@
 			:show-my-giving-funds-card="showMyGivingFundsCard"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goal-in-review-enable="goalInReviewEnable"
+			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 			:goals-row-enabled="goalsRowEnabled"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
 		/>
@@ -55,7 +56,7 @@ import { gql } from 'graphql-tag';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
-import { readBoolSetting } from '#src/util/settingsUtils';
+import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import useBadgeData, {
 	applyFreshProgressToAchievements,
@@ -116,6 +117,7 @@ export default {
 			recentTransactionLoans: [],
 			goalRecommendedLoanEnable: false,
 			goalInReviewEnable: false,
+			goalInReviewInProgressStart: null,
 			goalsRowEnabled: false,
 			shouldRenderFeaturedSlot: true,
 		};
@@ -342,6 +344,7 @@ export default {
 
 				const goalInReviewFlag = readBoolSetting(myKivaQueryResult, 'general.goal_in_review_enable.value') ?? false; // eslint-disable-line max-len
 				this.goalInReviewEnable = goalInReviewFlag;
+				this.goalInReviewInProgressStart = readDateSetting(myKivaQueryResult, 'general.goal_in_review_in_progress_start.value'); // eslint-disable-line max-len
 
 				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
 					...myKivaQueryResult.my.latestLoan.values[0].loan,

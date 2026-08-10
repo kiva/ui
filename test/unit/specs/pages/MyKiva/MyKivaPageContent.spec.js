@@ -24,6 +24,8 @@ const makeBadge = (id, totalProgress, tierTargets) => ({
 	level: tierTargets.reduce((lvl, t, i) => (totalProgress >= t ? i + 1 : lvl), 0),
 });
 
+const IN_PROGRESS_RELEASE = new Date('2026-11-15T00:00:00Z');
+
 describe('MyKivaPageContent', () => {
 	describe('allBadgesCompleted', () => {
 		const callComputed = heroBadgeData => {
@@ -165,6 +167,63 @@ describe('MyKivaPageContent', () => {
 			expect(context.smoothScrollTo).toHaveBeenCalledWith({ yPosition: 200, millisecondsToAnimate: 750 });
 
 			querySelector.mockRestore();
+		});
+	});
+
+	describe('openGoalRecapIfDue', () => {
+		const makeContext = overrides => ({
+			goalInReviewEnable: true,
+			goalInReviewInProgressStart: IN_PROGRESS_RELEASE,
+			loadAutoOpenRecap: vi.fn().mockResolvedValue({ year: 2026 }),
+			loadGoalPreferences: vi.fn().mockResolvedValue({}),
+			hasSubmittedGoalFeedbackForYear: vi.fn().mockReturnValue(false),
+			showGoalInReviewModal: false,
+			goalInReviewFeedbackSubmitted: false,
+			...overrides,
+		});
+
+		it('opens the recap when the composable says it is due', async () => {
+			const context = makeContext();
+
+			await MyKivaPageContent.methods.openGoalRecapIfDue.call(context);
+
+			expect(context.loadAutoOpenRecap).toHaveBeenCalledWith({
+				enabled: true,
+				inProgressStartDate: IN_PROGRESS_RELEASE,
+			});
+			expect(context.showGoalInReviewModal).toBe(true);
+		});
+
+		it('stays shut when the composable declines', async () => {
+			const context = makeContext({ loadAutoOpenRecap: vi.fn().mockResolvedValue(null) });
+
+			await MyKivaPageContent.methods.openGoalRecapIfDue.call(context);
+
+			expect(context.showGoalInReviewModal).toBe(false);
+		});
+
+		it('passes the flag through, so the composable can decline before fetching', async () => {
+			const context = makeContext({
+				goalInReviewEnable: false,
+				loadAutoOpenRecap: vi.fn().mockResolvedValue(null),
+			});
+
+			await MyKivaPageContent.methods.openGoalRecapIfDue.call(context);
+
+			expect(context.loadAutoOpenRecap).toHaveBeenCalledWith({
+				enabled: false,
+				inProgressStartDate: IN_PROGRESS_RELEASE,
+			});
+			expect(context.showGoalInReviewModal).toBe(false);
+		});
+
+		it('snapshots the already-submitted feedback flag, without a second preferences fetch', async () => {
+			const context = makeContext({ hasSubmittedGoalFeedbackForYear: vi.fn().mockReturnValue(true) });
+
+			await MyKivaPageContent.methods.openGoalRecapIfDue.call(context);
+
+			expect(context.loadGoalPreferences).not.toHaveBeenCalled();
+			expect(context.goalInReviewFeedbackSubmitted).toBe(true);
 		});
 	});
 

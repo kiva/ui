@@ -46,6 +46,14 @@
 				</section>
 			</kv-page-container>
 		</div>
+		<GoalInReviewModal
+			v-if="goalInReviewEnable && showGoalInReviewModal"
+			:show="showGoalInReviewModal"
+			:data="goalInReviewData"
+			:feedback-submitted="goalInReviewFeedbackSubmitted"
+			@close="showGoalInReviewModal = false"
+			@feedback-submitted="handleGoalInReviewFeedbackSubmitted"
+		/>
 	</www-page>
 </template>
 
@@ -54,8 +62,10 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { gql } from 'graphql-tag';
-import { readBoolSetting } from '#src/util/settingsUtils';
+import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
 import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import useGoalInReview from '#src/composables/useGoalInReview';
+import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
@@ -86,6 +96,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		AccountOverview,
+		GoalInReviewModal,
 		AccountUpdates,
 		DistributionGraphs,
 		EducationModule,
@@ -103,6 +114,21 @@ export default {
 		LoanCards,
 		GoalEntrypoint
 	},
+	setup() {
+		const {
+			goalInReviewData,
+			loadAutoOpenRecap,
+			hasSubmittedGoalFeedbackForYear,
+			setGoalFeedbackSubmittedPreference,
+		} = useGoalInReview();
+
+		return {
+			goalInReviewData,
+			loadAutoOpenRecap,
+			hasSubmittedGoalFeedbackForYear,
+			setGoalFeedbackSubmittedPreference,
+		};
+	},
 	data() {
 		return {
 			allowedTeams: [],
@@ -116,6 +142,9 @@ export default {
 			showTeamChallenge: false,
 			teamsChallengeEnable: false,
 			goalInReviewEnable: false,
+			goalInReviewInProgressStart: null,
+			showGoalInReviewModal: false,
+			goalInReviewFeedbackSubmitted: false,
 			userPreferences: null,
 			goalsEntrypointEnable: false,
 			isEmptyGoal: true,
@@ -130,6 +159,22 @@ export default {
 		},
 	},
 	methods: {
+		// Called from mounted: the decision reads user preferences and writes one back,
+		// so it must not run during server render.
+		async openGoalRecapIfDue() {
+			const goalInReview = await this.loadAutoOpenRecap({
+				enabled: this.goalInReviewEnable,
+				inProgressStartDate: this.goalInReviewInProgressStart,
+			});
+			if (!goalInReview) {
+				return;
+			}
+			this.goalInReviewFeedbackSubmitted = this.hasSubmittedGoalFeedbackForYear(goalInReview.year);
+			this.showGoalInReviewModal = true;
+		},
+		async handleGoalInReviewFeedbackSubmitted() {
+			await this.setGoalFeedbackSubmittedPreference(this.goalInReviewData?.year);
+		},
 		loadEducationPost() {
 			// Donation Education Module Experiment MARS-497
 			this.apollo.query({
@@ -180,6 +225,7 @@ export default {
 		this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
 
 		this.goalInReviewEnable = readBoolSetting(portfolioQueryData, 'general.goal_in_review_enable.value') ?? false;
+		this.goalInReviewInProgressStart = readDateSetting(portfolioQueryData, 'general.goal_in_review_in_progress_start.value'); // eslint-disable-line max-len
 
 		this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
 
@@ -194,6 +240,7 @@ export default {
 	},
 	async mounted() {
 		this.loadEducationPost();
+		this.openGoalRecapIfDue();
 
 		if (this.$route?.query?.goal_saved) {
 			const badgeName = this.$route?.query?.goal_saved ?? '';

@@ -333,6 +333,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		goalInReviewInProgressStart: {
+			type: Date,
+			default: null,
+		},
 		goalsRowEnabled: {
 			type: Boolean,
 			default: false,
@@ -345,14 +349,14 @@ export default {
 	},
 	setup() {
 		const apollo = inject('apollo');
+		const goalData = inject('goalData');
 		const { getMostRecentBlogPost } = useContentful(apollo);
 		const { isMobile } = useBreakpoints();
 		const {
 			goalInReviewData,
+			loadAutoOpenRecap,
 			loadGoalInReview,
-		} = useGoalInReview();
-
-		const goalData = inject('goalData');
+		} = useGoalInReview({ goalData });
 
 		const {
 			getLoanFindingUrl,
@@ -365,6 +369,7 @@ export default {
 			getMostRecentBlogPost,
 			goalInReviewData,
 			isMobile,
+			loadAutoOpenRecap,
 			loadGoalInReview,
 			hasSubmittedGoalFeedbackForYear: goalData.hasSubmittedGoalFeedbackForYear,
 			setGoalFeedbackSubmittedPreference: goalData.setGoalFeedbackSubmittedPreference,
@@ -720,6 +725,19 @@ export default {
 		toggleTooltip() {
 			this.tooltipVisible = !this.tooltipVisible;
 		},
+		// Called from mounted: the decision reads user preferences and writes one back,
+		// so it must not run during server render.
+		async openGoalRecapIfDue() {
+			const goalInReview = await this.loadAutoOpenRecap({
+				enabled: this.goalInReviewEnable,
+				inProgressStartDate: this.goalInReviewInProgressStart,
+			});
+			if (!goalInReview) {
+				return;
+			}
+			this.goalInReviewFeedbackSubmitted = this.hasSubmittedGoalFeedbackForYear(goalInReview.year);
+			this.showGoalInReviewModal = true;
+		},
 		async handleGoToDeepLink(sectionId) {
 			if (sectionId === GOAL_RECAP_DEEP_LINK) {
 				if (!this.goalInReviewEnable) {
@@ -761,7 +779,9 @@ export default {
 			const sectionId = this.$route?.query?.goTo || '';
 			if (sectionId) {
 				this.handleGoToDeepLink(sectionId);
+				return;
 			}
+			this.openGoalRecapIfDue();
 		});
 
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');

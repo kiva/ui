@@ -1,6 +1,6 @@
 <template>
 	<section
-		class="tw-w-full tw-bg-eco-green-4 tw-px-2 tw-py-4 tw-text-center"
+		class="tw-w-full tw-bg-eco-green-4 tw-px-2 tw-pt-4 tw-pb-6.5 tw-text-center"
 		data-testid="goal-in-review-slide-7"
 	>
 		<div class="tw-mx-auto tw-max-w-lg">
