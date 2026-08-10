@@ -1,10 +1,10 @@
 import KivaCardRedemption from '#src/components/Checkout/KivaCardRedemption';
-import { trackMetaEvent } from '#src/util/metaEvents';
+import { trackMetaEvent } from '@kiva/kv-analytics';
 /* eslint-disable-next-line import/no-extraneous-dependencies -- devDependency used only in tests */
 import { flushPromises } from '@vue/test-utils';
 
-vi.mock('#src/util/metaEvents', () => ({
-	META_EVENTS: { KIVA_CARD_REDEMPTION: 'kivaCardRedemption' },
+vi.mock('@kiva/kv-analytics', async importOriginal => ({
+	...(await importOriginal()),
 	trackMetaEvent: vi.fn(),
 }));
 

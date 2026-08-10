@@ -1,4 +1,4 @@
-import { META_EVENTS, trackMetaEvent } from '#src/util/metaEvents';
+import { META_EVENTS, trackMetaEvent } from '@kiva/kv-analytics';
 
 const SESSION_KEY = 'kvMetaAccountCreated';
 

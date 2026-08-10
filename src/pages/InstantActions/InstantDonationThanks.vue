@@ -58,7 +58,7 @@
 import { gql } from 'graphql-tag';
 import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
-import { trackDonationMetaEvent } from '#src/util/metaEvents';
+import { trackDonationMetaEvent } from '@kiva/kv-analytics';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import {
 	KvButton, KvContentfulImg, KvGrid, KvPageContainer

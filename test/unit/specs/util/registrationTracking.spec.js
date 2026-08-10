@@ -1,7 +1,10 @@
-import { trackFBCustomEvent } from '@kiva/kv-analytics';
+import { trackMetaEvent } from '@kiva/kv-analytics';
 import { getRegistrationMarker, trackAccountCreated } from '#src/util/registrationTracking';
 
-vi.mock('@kiva/kv-analytics', () => ({ trackFBCustomEvent: vi.fn() }));
+vi.mock('@kiva/kv-analytics', async importOriginal => ({
+	...(await importOriginal()),
+	trackMetaEvent: vi.fn(),
+}));
 
 describe('registrationTracking.js', () => {
 	describe('getRegistrationMarker', () => {
@@ -34,7 +37,7 @@ describe('registrationTracking.js', () => {
 		};
 
 		beforeEach(() => {
-			trackFBCustomEvent.mockClear();
+			trackMetaEvent.mockClear();
 			window.sessionStorage.clear();
 			visit('');
 			replaceState = vi.spyOn(window.history, 'replaceState');
@@ -49,7 +52,7 @@ describe('registrationTracking.js', () => {
 
 			trackAccountCreated('1234');
 
-			expect(trackFBCustomEvent).toHaveBeenCalledWith('accountCreated');
+			expect(trackMetaEvent).toHaveBeenCalledWith('accountCreated');
 		});
 
 		it('reports a claimed guest account', () => {
@@ -57,7 +60,7 @@ describe('registrationTracking.js', () => {
 
 			trackAccountCreated('1234');
 
-			expect(trackFBCustomEvent).toHaveBeenCalledWith('accountCreated');
+			expect(trackMetaEvent).toHaveBeenCalledWith('accountCreated');
 		});
 
 		it('does nothing without a marker', () => {
@@ -65,7 +68,7 @@ describe('registrationTracking.js', () => {
 
 			trackAccountCreated('1234');
 
-			expect(trackFBCustomEvent).not.toHaveBeenCalled();
+			expect(trackMetaEvent).not.toHaveBeenCalled();
 		});
 
 		it('removes the marker so a reload cannot replay it', () => {
@@ -103,7 +106,7 @@ describe('registrationTracking.js', () => {
 			visit('?registration=new');
 			trackAccountCreated('1234');
 
-			expect(trackFBCustomEvent).toHaveBeenCalledTimes(1);
+			expect(trackMetaEvent).toHaveBeenCalledTimes(1);
 		});
 
 		it('still reports when sessionStorage is unavailable', () => {
@@ -114,7 +117,7 @@ describe('registrationTracking.js', () => {
 
 			trackAccountCreated('1234');
 
-			expect(trackFBCustomEvent).toHaveBeenCalledWith('accountCreated');
+			expect(trackMetaEvent).toHaveBeenCalledWith('accountCreated');
 			getItem.mockRestore();
 		});
 	});

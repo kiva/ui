@@ -3,7 +3,7 @@ import { setDonationAmount } from '#src/util/basketUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
-import { trackMetaEvent } from '#src/util/metaEvents';
+import { trackMetaEvent } from '@kiva/kv-analytics';
 
 vi.mock('#src/util/basketUtils', () => ({
 	setDonationAmount: vi.fn(),
@@ -15,8 +15,8 @@ vi.mock('#src/util/checkoutUtils', () => ({
 	formatTransactionData: vi.fn(),
 	getTransactionAnalyticsData: vi.fn(),
 }));
-vi.mock('#src/util/metaEvents', () => ({
-	META_EVENTS: { EMAIL_SIGN_UP: 'emailSignUp' },
+vi.mock('@kiva/kv-analytics', async importOriginal => ({
+	...(await importOriginal()),
 	trackMetaEvent: vi.fn(),
 }));
 

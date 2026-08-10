@@ -1,7 +1,8 @@
 import InstantDonationThanks from '#src/pages/InstantActions/InstantDonationThanks';
-import { trackDonationMetaEvent } from '#src/util/metaEvents';
+import { trackDonationMetaEvent } from '@kiva/kv-analytics';
 
-vi.mock('#src/util/metaEvents', () => ({
+vi.mock('@kiva/kv-analytics', async importOriginal => ({
+	...(await importOriginal()),
 	trackDonationMetaEvent: vi.fn(),
 }));
 

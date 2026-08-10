@@ -1,10 +1,13 @@
 import useOptIn from '#src/composables/useOptIn';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { trackFBCustomEvent } from '@kiva/kv-analytics';
+import { trackMetaEvent } from '@kiva/kv-analytics';
 
 vi.mock('#src/util/logReadQueryError');
 vi.mock('#src/util/cookieStore');
-vi.mock('@kiva/kv-analytics', () => ({ trackFBCustomEvent: vi.fn() }));
+vi.mock('@kiva/kv-analytics', async importOriginal => ({
+	...(await importOriginal()),
+	trackMetaEvent: vi.fn(),
+}));
 
 describe('useOptIn.js', () => {
 	const successfulMutationResponse = {
@@ -18,7 +21,7 @@ describe('useOptIn.js', () => {
 	let composable;
 
 	beforeEach(() => {
-		trackFBCustomEvent.mockClear();
+		trackMetaEvent.mockClear();
 		mockApollo = {
 			mutate: vi.fn(),
 		};
@@ -177,25 +180,25 @@ describe('useOptIn.js', () => {
 		it('fires when a lender opts in to news', async () => {
 			await composable.updateCommunicationSettings(true, true, false);
 
-			expect(trackFBCustomEvent).toHaveBeenCalledWith('emailSignUp');
+			expect(trackMetaEvent).toHaveBeenCalledWith('emailSignUp');
 		});
 
 		it('fires for a guest visitor opting in', async () => {
 			await composable.updateVisitorEmailOptIn(true, true, false, 'visitor-123');
 
-			expect(trackFBCustomEvent).toHaveBeenCalledWith('emailSignUp');
+			expect(trackMetaEvent).toHaveBeenCalledWith('emailSignUp');
 		});
 
 		it('does not fire on an opt-out', async () => {
 			await composable.updateCommunicationSettings(false, false, false);
 
-			expect(trackFBCustomEvent).not.toHaveBeenCalled();
+			expect(trackMetaEvent).not.toHaveBeenCalled();
 		});
 
 		it('does not fire on a global unsubscribe', async () => {
 			await composable.updateCommunicationSettings(true, true, true);
 
-			expect(trackFBCustomEvent).not.toHaveBeenCalled();
+			expect(trackMetaEvent).not.toHaveBeenCalled();
 		});
 
 		it('does not fire when the mutation fails', async () => {
@@ -203,7 +206,7 @@ describe('useOptIn.js', () => {
 
 			await composable.updateCommunicationSettings(true, true, false);
 
-			expect(trackFBCustomEvent).not.toHaveBeenCalled();
+			expect(trackMetaEvent).not.toHaveBeenCalled();
 		});
 
 		it('does not fire when the lender mutation returns false', async () => {
@@ -213,7 +216,7 @@ describe('useOptIn.js', () => {
 
 			await composable.updateCommunicationSettings(true, true, false);
 
-			expect(trackFBCustomEvent).not.toHaveBeenCalled();
+			expect(trackMetaEvent).not.toHaveBeenCalled();
 		});
 
 		it('does not fire when the visitor mutation returns false', async () => {
@@ -223,7 +226,7 @@ describe('useOptIn.js', () => {
 
 			await composable.updateVisitorEmailOptIn(true, true, false, 'visitor-123');
 
-			expect(trackFBCustomEvent).not.toHaveBeenCalled();
+			expect(trackMetaEvent).not.toHaveBeenCalled();
 		});
 
 		it('does not fire when the mutation returns a null payload', async () => {
@@ -231,7 +234,7 @@ describe('useOptIn.js', () => {
 
 			const updated = await composable.updateCommunicationSettings(true, true, false);
 
-			expect(trackFBCustomEvent).not.toHaveBeenCalled();
+			expect(trackMetaEvent).not.toHaveBeenCalled();
 			expect(updated).toBe(false);
 		});
 
@@ -245,7 +248,7 @@ describe('useOptIn.js', () => {
 
 			const updated = await composable.updateCommunicationSettings(true, true, false);
 
-			expect(trackFBCustomEvent).not.toHaveBeenCalled();
+			expect(trackMetaEvent).not.toHaveBeenCalled();
 			expect(updated).toBe(false);
 		});
 	});

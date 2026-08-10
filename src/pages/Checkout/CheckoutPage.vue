@@ -320,9 +320,13 @@ import { setDonationAmount } from '#src/util/basketUtils';
 import { preFetchAll } from '#src/util/apolloPreFetch';
 import syncDate from '#src/util/syncDate';
 import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
-import { META_EVENTS, trackMetaEvent } from '#src/util/metaEvents';
 import useLifecycleCapture from '#src/composables/useLifecycleCapture';
-import { trackFBAddToCart, FB_CONTENT_CATEGORY_LOAN } from '@kiva/kv-analytics';
+import {
+	FB_CONTENT_CATEGORY_LOAN,
+	META_EVENTS,
+	trackFBAddToCart,
+	trackMetaEvent,
+} from '@kiva/kv-analytics';
 import { getPromoFromBasket } from '#src/util/campaignUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import checkoutSettings from '#src/graphql/query/checkout/checkoutSettings.graphql';

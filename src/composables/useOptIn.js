@@ -1,5 +1,5 @@
 import logReadQueryError from '#src/util/logReadQueryError';
-import { META_EVENTS, trackMetaEvent } from '#src/util/metaEvents';
+import { META_EVENTS, trackMetaEvent } from '@kiva/kv-analytics';
 import { gql } from 'graphql-tag';
 
 // eslint-disable-next-line no-unused-vars

@@ -132,7 +132,7 @@ import KvIcon from '#src/components/Kv/KvIcon';
 import KvExpandable from '#src/components/Kv/KvExpandable';
 import addCreditByType from '#src/graphql/mutation/shopAddCreditByType.graphql';
 import removeCreditByType from '#src/graphql/mutation/shopRemoveCreditByType.graphql';
-import { META_EVENTS, trackMetaEvent } from '#src/util/metaEvents';
+import { META_EVENTS, trackMetaEvent } from '@kiva/kv-analytics';
 import { KvButton, KvLightbox, KvTextInput } from '@kiva/kv-components';
 import printCardCodeLocation from '#src/assets/images/checkout/printcard_codelocation.jpg';
 import emailCardCodeLocation from '#src/assets/images/checkout/emailcard_codelocation.jpg';
