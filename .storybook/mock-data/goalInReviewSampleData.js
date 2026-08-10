@@ -29,10 +29,7 @@ const sampleGoalCountries = [
 	{ id: '24', name: 'Ecuador', isoCode: 'EC', region: 'South America', geocode: { city: 'Quito', latitude: -1.8, longitude: -78.2 }, fundsLentInCountry: 65, ppp: 4.6, numLoansFundraising: 0 },
 ];
 
-// Sample userAchievementProgress.tieredLendingAchievements for the Sectors Funded
-// donut (Slide 3). A [sectorName | null, loanCount] seed expands into loanPurchases.
-// One loan is re-listed in a second achievement to prove getSectorChartValues
-// de-duplicates by loan id.
+// GoalSummary.sectors for the Sectors Funded donut (Slide 3), loan count descending.
 const sampleSectorSeed = [
 	['Agriculture', 8],
 	['Eco-friendly', 7],
@@ -45,83 +42,71 @@ const sampleSectorSeed = [
 	['Manufacturing', 2],
 ];
 
-// Expands a seed into achievement objects. A null sector name produces sector-less
-// loans, which the component groups into the "Other" bucket.
-function buildSectorAchievements(seed) {
-	const loanPurchases = seed.flatMap(([name, count], sectorIndex) => (
-		Array.from({ length: count }, (_unused, i) => ({
-			purchaseTime: '2026-01-01T00:00:00Z',
-			loan: {
-				id: `loan-${sectorIndex}-${i}`,
-				sector: name ? { id: `sector-${sectorIndex}`, name } : null,
-			},
-		}))
-	));
-	return [
-		{ id: 'lending-achievement', progressForYear: loanPurchases.length, loanPurchases },
-		{ id: 'womens-equality', progressForYear: 1, loanPurchases: [loanPurchases[0]] },
-	];
+function buildGoalSectors(seed) {
+	return seed.map(([name, loanCount], index) => ({
+		sector: name ? { id: `sector-${index}`, name } : null,
+		loanCount,
+	}));
 }
 
-// Default: every loan has a sector, so there is no "Other" bucket.
-export const sampleSectorAchievements = buildSectorAchievements(sampleSectorSeed);
+export const sampleGoalSectors = buildGoalSectors(sampleSectorSeed);
 
-// "Other" case: some loans have a null sector, grouped into "Other (n)".
-export const sampleSectorAchievementsWithOther = buildSectorAchievements([
-	...sampleSectorSeed,
-	[null, 3],
-]);
+export const sampleGoalSectorsWithOther = buildGoalSectors([...sampleSectorSeed, [null, 3]]);
+
+const sampleBorrowerImageHashes = [
+	'093374973a7cfb1f18652d3aac5bbd05',
+	'131e7cc9d0de32daad20d90b3a39c8a8',
+	'213d4f59069e192a2a4b9ee1fb56b649',
+	'26342071330beb8309d17a5d262da2dd',
+	'6638894152e5ea6f0e65423b7b6cd9bb',
+	'8e195b0d98bde6a1a1861b11ceb61188',
+	'9673d0722a7675b9b8d11f90849d9b44',
+	'd5ad26cd7acc24317edc1c04c6250074',
+	'e3976547cb6d30ff631e616c18a62dad',
+];
+
+const sampleBorrowerNames = [
+	'Aminata', 'Rosa María', 'Jean-Baptiste', 'Siti', 'Grace', 'Nadia',
+	'Yusuf', 'Ana Lucía', 'Thandiwe', 'Marisol', 'Chanthou', 'Ibrahim', 'Mei',
+	'Esperanza Del Carmen Villalobos Hernández',
+];
+
+export const sampleGoalLoans = sampleBorrowerNames.map((name, index) => ({
+	id: 1000 + index,
+	name,
+	image: {
+		id: `image-${index}`,
+		hash: sampleBorrowerImageHashes[index % sampleBorrowerImageHashes.length],
+	},
+}));
 
 export function buildSampleGoalInReviewData(year) {
 	return {
 		year,
 		isEligible: true,
 		firstName: 'Alexandra',
+		categoryName: "Women's Equality",
 		goalSummary: {
 			goalName: `${year} impact goal`,
 			category: 'womens-equality',
 			target: 14,
 			status: 'completed',
-			setMonth: 'January',
 			dateStarted: `${year}-01-15`,
+			count: 14,
+			borrowerCount: 14,
+			amount: 1025,
+			percent: 100,
 			transactionSessionCount: 6,
+			sectors: sampleGoalSectors,
 			countries: sampleGoalCountries,
+			loans: sampleGoalLoans,
 		},
-		sectorAchievements: sampleSectorAchievements,
-		// TODO: supplied by the parent page from its own percentile query once
-		// integrated (kept separate from goalSummary). A value >= 80 activates the
-		// GoalInReviewSlide4 "Top X%" habit variant; otherwise it falls back to
-		// session-based copy.
-		lifetimePercentile: null,
 		loanStats: {
 			totalLent: 1025,
 			borrowers: 14,
 			percentComplete: 100,
 		},
-		borrowerList: [
-			{
-				name: 'Sample borrower',
-				country: 'Sample country',
-				sector: 'Sample sector',
-			},
-		],
-		geography: {
-			countries: ['Sample country'],
-			bordersCrossed: 1,
-		},
-		sectors: [
-			{
-				name: 'Sample sector',
-				percentage: 100,
-			},
-		],
-		goalInsights: {
-			setMonth: 'January',
-			percentile: 95,
-		},
-		wrapUp: {
-			headline: 'Your goal changed everything.',
-			shareUrl: null,
-		},
+		goalLoans: sampleGoalLoans,
+		lifetimePercentile: null,
 	};
 }

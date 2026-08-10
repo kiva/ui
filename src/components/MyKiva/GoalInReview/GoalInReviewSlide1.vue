@@ -26,7 +26,7 @@
 			>
 		</div>
 
-		<div class="tw-px-2 tw-pt-3 tw-mx-auto tw-max-w-3xl tw-text-center">
+		<div class="tw-px-2 tw-mx-auto tw-max-w-3xl tw-text-center">
 			<p
 				class="tw-inline-block tw-rounded-full tw-bg-brand-650 tw-text-white
 					tw-text-label tw-py-0.5 tw-px-1.5 tw-mb-2"
@@ -174,18 +174,13 @@ const stats = computed(() => [
 
 .goal-in-review-slide-1 {
 	background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-mobile-hill.png');
-	background-size: auto 390px;
+	background-size: contain;
 	background-position: bottom left;
 }
 
 @screen md {
 	.goal-in-review-slide-1 {
 		background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-desktop-hill.png');
-		background-size: auto 245px;
-	}
-
-	.goal-in-review-slide-1--in-progress {
-		background-size: auto 290px;
 	}
 }
 

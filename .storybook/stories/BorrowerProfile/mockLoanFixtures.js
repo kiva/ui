@@ -274,11 +274,17 @@ export function createMockLoan(overrides = {}) {
 		terms: {
 			currency: 'KGS',
 			currencyFullName: 'Kyrgyzstani Som',
+			// The base loan is fundraising, so it has not disbursed. Fixtures for disbursed
+			// loans set this themselves.
+			disbursalDate: null,
+			expectedPayments: [],
 			flexibleFundraisingEnabled: false,
 			lenderRepaymentTerm: 26,
+			loanAmount: '600.00',
 			lossLiabilityCurrencyExchange: 'shared',
 			__typename: 'LoanTerm',
 		},
+		repayments: [],
 		trustee: null,
 		endorsement: null,
 		// MoreAboutLoan fields
@@ -394,6 +400,129 @@ export const longTeamNameCommentsLoan = createMockLoan({
 		values: longTeamNameComments,
 		__typename: 'CommentCollection',
 	},
+});
+
+/**
+ * A partner loan's repayment periods, covering every way a period can present:
+ * received, delinquent with an attribution, delinquent with currency loss, and upcoming.
+ */
+export const partnerRepaymentPeriods = [
+	{
+		dueDate: '2024-07-01T07:00:00Z',
+		status: 'repaid',
+		delinquencyAttribution: '',
+		expectedAmountToLenders: '265.83',
+		actualAmountToLenders: '265.83',
+		currencyLossToLenders: null,
+		// Two expected repayments settled by a single recorded one, so the advanced view
+		// has an uneven period to lay out.
+		expectedRepayments: [
+			{ effectiveDate: '2024-07-01T07:00:00Z', amount: '15000', __typename: 'LoanRepaymentPartner' },
+			{ effectiveDate: '2024-07-15T07:00:00Z', amount: '8000', __typename: 'LoanRepaymentPartner' },
+		],
+		actualRepayments: [
+			{ effectiveDate: '2024-07-18T07:00:00Z', amount: '23000', __typename: 'LoanRepaymentPartner' },
+		],
+		__typename: 'LoanRepaymentPeriod',
+	},
+	{
+		dueDate: '2024-08-01T07:00:00Z',
+		status: 'repaid',
+		delinquencyAttribution: '',
+		expectedAmountToLenders: '265.84',
+		actualAmountToLenders: '253.50',
+		currencyLossToLenders: '12.34',
+		expectedRepayments: [],
+		actualRepayments: [],
+		__typename: 'LoanRepaymentPeriod',
+	},
+	{
+		dueDate: '2024-09-01T07:00:00Z',
+		status: 'delinquent',
+		delinquencyAttribution: 'Lending partner behind in repayment',
+		expectedAmountToLenders: '265.83',
+		actualAmountToLenders: null,
+		currencyLossToLenders: null,
+		expectedRepayments: [],
+		actualRepayments: [],
+		__typename: 'LoanRepaymentPeriod',
+	},
+	{
+		dueDate: '2999-10-01T07:00:00Z',
+		status: 'future',
+		delinquencyAttribution: '',
+		expectedAmountToLenders: '265.83',
+		actualAmountToLenders: null,
+		currencyLossToLenders: null,
+		expectedRepayments: [],
+		actualRepayments: [],
+		__typename: 'LoanRepaymentPeriod',
+	},
+];
+
+/** Paying back partner loan carrying a full repayment schedule. */
+export const payingBackPartnerLoanWithRepayments = createMockLoan({
+	id: 2000010,
+	status: 'payingBack',
+	fundraisingPercent: 1,
+	paidAmount: '785.17',
+	repayments: partnerRepaymentPeriods,
+});
+
+/** Disbursed direct loan whose collected total stops part-way through an installment. */
+export const disbursedDirectLoanWithInstallments = createMockLoan({
+	id: 2000014,
+	__typename: 'LoanDirect',
+	status: 'payingBack',
+	fundraisingPercent: 1,
+	distributionModel: 'direct',
+	partnerName: '',
+	partner: null,
+	loanAmount: '5000.00',
+	terms: {
+		currency: 'USD',
+		currencyFullName: 'US Dollar',
+		disbursalDate: '2015-01-29T08:00:00Z',
+		expectedPayments: [],
+		flexibleFundraisingEnabled: false,
+		lenderRepaymentTerm: 24,
+		loanAmount: '5000.00',
+		lossLiabilityCurrencyExchange: 'none',
+		__typename: 'LoanTerm',
+	},
+	repayments: [
+		{
+			dueDate: '2015-03-01T08:00:00Z',
+			amount: '208.33',
+			amountPaid: '208.33',
+			status: 'repaid',
+			__typename: 'LoanRepaymentDirect',
+		},
+		{
+			dueDate: '2015-04-01T07:00:00Z',
+			amount: '208.33',
+			amountPaid: '91.71',
+			status: 'partial',
+			__typename: 'LoanRepaymentDirect',
+		},
+		{
+			dueDate: '2015-05-01T07:00:00Z',
+			amount: '208.33',
+			amountPaid: null,
+			status: 'future',
+			__typename: 'LoanRepaymentDirect',
+		},
+	],
+});
+
+/** Dual-statement partner loan, which hides the advanced view. */
+export const dualStatementPartnerLoan = createMockLoan({
+	id: 2000013,
+	status: 'payingBack',
+	fundraisingPercent: 1,
+	paidAmount: '785.17',
+	dualStatementNote: 'This loan is part of a dual statement arrangement with the lending partner.',
+	repayments: partnerRepaymentPeriods,
 });
 
 /** Fundraising direct loan (US-based). */

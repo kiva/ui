@@ -101,6 +101,7 @@ describe('MyKivaPageContent', () => {
 
 	describe('handleGoToDeepLink', () => {
 		const makeContext = overrides => ({
+			goalInReviewEnable: true,
 			loadGoalInReview: vi.fn().mockResolvedValue({ isEligible: true, year: 2026 }),
 			loadGoalPreferences: vi.fn().mockResolvedValue({}),
 			hasSubmittedGoalFeedbackForYear: vi.fn().mockReturnValue(false),
@@ -131,6 +132,15 @@ describe('MyKivaPageContent', () => {
 
 			expect(context.goalInReviewFeedbackSubmitted).toBe(true);
 			expect(context.showGoalInReviewModal).toBe(true);
+		});
+
+		it('does not open or fetch the goal recap when the flag is off', async () => {
+			const context = makeContext({ goalInReviewEnable: false });
+
+			await MyKivaPageContent.methods.handleGoToDeepLink.call(context, 'goal-recap');
+
+			expect(context.loadGoalInReview).not.toHaveBeenCalled();
+			expect(context.showGoalInReviewModal).toBe(false);
 		});
 
 		it('does not open the goal recap for ineligible users', async () => {

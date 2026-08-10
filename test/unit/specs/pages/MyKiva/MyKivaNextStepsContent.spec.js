@@ -183,14 +183,14 @@ describe('MyKivaNextStepsContent', () => {
 		expect(wrapper.findComponent({ name: 'MyKivaRegionExperience' }).exists()).toBe(true);
 	});
 
-	it('shows "Keep your impact going" for superlenders who have lent to every region', () => {
-		// Superlenders are not in post-lending mode, but the region card moves out of row 1,
-		// so the Almost Funded + region pairing still renders below.
+	it('hides the region card entirely for superlenders who have lent to every region', () => {
+		// Superlenders have no pending regions to recommend, so the region card must not
+		// render in either row. Almost Funded still shows as a valid next step below.
 		const { wrapper } = createWrapper({ props: { userLentToAllRegions: true } });
 
 		expect(wrapper.text()).toContain('Keep your impact going');
 		expect(wrapper.findComponent({ name: 'AlmostFundedNextStep' }).exists()).toBe(true);
-		expect(wrapper.findComponent({ name: 'MyKivaRegionExperience' }).exists()).toBe(true);
+		expect(wrapper.findComponent({ name: 'MyKivaRegionExperience' }).exists()).toBe(false);
 	});
 
 	it('initializes post-lending mode before first render when post-lending cookie exists', async () => {

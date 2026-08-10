@@ -62,19 +62,27 @@ describe('goalInReviewCopy.js', () => {
 	});
 
 	describe('getImpactHabit', () => {
-		it('returns the Top X% variant when the percentile meets the threshold', () => {
-			const { title } = goalInReviewCopy.getImpactHabit({ lifetimePercentile: 92, transactionSessionCount: 6 });
-			expect(title).toBe('Top 92%');
+		it('reports the percentile as the top slice it represents, not the rank itself', () => {
+			const { title, content } = goalInReviewCopy.getImpactHabit({
+				lifetimePercentile: 92,
+				transactionSessionCount: 6,
+			});
+			expect(title).toBe('Top 8%');
+			expect(content).toContain('top 8%');
 		});
 
 		it('treats the percentile threshold as inclusive', () => {
-			expect(goalInReviewCopy.getImpactHabit({ lifetimePercentile: 80 }).title).toBe('Top 80%');
+			expect(goalInReviewCopy.getImpactHabit({ lifetimePercentile: 80 }).title).toBe('Top 20%');
+		});
+
+		it('floors the top slice at 1% so a 100th-percentile lender is not "Top 0%"', () => {
+			expect(goalInReviewCopy.getImpactHabit({ lifetimePercentile: 100 }).title).toBe('Top 1%');
 		});
 
 		it('prefers the percentile variant over sessions', () => {
 			// A high session count would otherwise be "Kiva champion".
 			expect(goalInReviewCopy.getImpactHabit({ lifetimePercentile: 95, transactionSessionCount: 20 }).title)
-				.toBe('Top 95%');
+				.toBe('Top 5%');
 		});
 
 		it('falls back to sessions when the percentile is below threshold, null, or absent', () => {

@@ -1,4 +1,4 @@
-query goalSummary($goalName: String) {
+query goalSummary($goalName: String, $loansLimit: Int = 11) {
   my {
     id
     goalSummary(goalName: $goalName) {
@@ -11,6 +11,32 @@ query goalSummary($goalName: String) {
       borrowerCount
       amount
       percent
+      transactionSessionCount
+      sectors {
+        loanCount
+        sector {
+          id
+          name
+        }
+      }
+      countries {
+        id
+        name
+        isoCode
+        fundsLentInCountry
+        geocode {
+          latitude
+          longitude
+        }
+      }
+      loans(limit: $loansLimit) {
+        id
+        name
+        image {
+          id
+          hash
+        }
+      }
     }
   }
 }
