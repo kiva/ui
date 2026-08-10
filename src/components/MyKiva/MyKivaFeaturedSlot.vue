@@ -120,8 +120,6 @@ const goalYear = computed(() => {
 	return dateStarted ? new Date(dateStarted).getFullYear() : null;
 });
 
-// While this card is up, a completer's CTA opens the recap instead of jumping to
-// achievements. Once the card stops rendering the Impact Progress row takes over.
 const showRecapCta = computed(() => shouldShowRecapEntryPoint({
 	enabled: props.goalInReviewEnable,
 	goalStatus: goalStatus.value,
