@@ -84,30 +84,28 @@ describe('registrationTracking.js', () => {
 			expect(cookies.jar).toEqual({});
 		});
 
-		it('removes the marker so a reload cannot replay it', () => {
-			visit('?registration=new');
-
-			trackAccountCreated('1234', cookies);
-
-			expect(window.location.search).not.toContain('registration');
-		});
-
-		it('keeps other params when removing the marker', () => {
+		// The URL is left untouched: the cookie is the whole dedup, so a reload still carrying
+		// the marker is caught by the cookie rather than by rewriting history.
+		it('leaves the URL alone', () => {
 			visit('?registration=new&utm_source=email');
+			// visit() navigates via replaceState, so only count what the call below does
+			replaceState.mockClear();
 
 			trackAccountCreated('1234', cookies);
 
+			expect(window.location.search).toContain('registration=new');
 			expect(window.location.search).toContain('utm_source=email');
-			expect(window.location.search).not.toContain('registration');
+			expect(replaceState).not.toHaveBeenCalled();
 		});
 
-		it('preserves existing history state when removing the marker', () => {
-			const state = { position: 2, scroll: { left: 0, top: 100 } };
-			window.history.replaceState(state, '', '/portfolio?registration=new');
-
+		it('does not report again on a reload that still carries the marker', () => {
+			visit('?registration=new');
 			trackAccountCreated('1234', cookies);
 
-			expect(window.history.state).toEqual(state);
+			// same URL, same cookie jar — what a refresh looks like
+			trackAccountCreated('1234', cookies);
+
+			expect(trackMetaEvent).toHaveBeenCalledTimes(1);
 		});
 
 		it('reports once per lender when the marker arrives twice', () => {

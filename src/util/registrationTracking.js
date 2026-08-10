@@ -34,6 +34,10 @@ export function getRegistrationMarker(search) {
  * cookie rather than sessionStorage: it is shared across tabs, and anyone who just authenticated
  * necessarily has cookies working, so there is no unavailable case to guard.
  *
+ * The marker is deliberately left in the URL — the cookie is the whole dedup. The trade is that
+ * a marked URL shared or bookmarked past the cookie's lifetime reports again in a browser that
+ * has no cookie, since the marker travels with the link and the cookie does not.
+ *
  * @param {String|Number|null} userId Keys the guard, so a second lender on the same browser
  *   still reports
  * @param {Object} cookies `{ get, set }`, where set should scope the value to roughly an hour —
@@ -55,10 +59,4 @@ export function trackAccountCreated(userId, cookies) {
 		cookies?.set(cookieName, '1');
 		trackMetaEvent(META_EVENTS.ACCOUNT_CREATED);
 	}
-
-	// Drop the marker as well as writing the cookie: a marker left in the URL gets copied,
-	// bookmarked and sent as a referrer long after it has been consumed.
-	const url = new URL(window.location.href);
-	url.searchParams.delete(marker);
-	window.history.replaceState(window.history.state, '', url.toString());
 }
