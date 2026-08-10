@@ -1,8 +1,6 @@
-// Session cookie — no expiry, so it lives until the browser session ends. The recap is
-// meant to arrive on the session *after* the one the goal was completed in, and a
-// server-side preference cannot express that: it has no idea where one visit ends and
-// the next begins.
-const COMPLETION_SESSION_COOKIE = 'kvgrcs';
+// No expiry, so it clears when the browser session ends. A stored preference cannot do
+// this: it has no idea where one visit ends and the next begins.
+const COMPLETION_SESSION_COOKIE = 'kv_goal_completed_this_session';
 
 /**
  * Records that the goal was completed during this browsing session, so the recap holds

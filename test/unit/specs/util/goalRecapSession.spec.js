@@ -23,7 +23,7 @@ describe('goalRecapSession.js', () => {
 
 		markGoalCompletedThisSession(cookieStore, 2026);
 
-		expect(cookieStore.set).toHaveBeenCalledWith('kvgrcs', '2026', { path: '/' });
+		expect(cookieStore.set).toHaveBeenCalledWith('kv_goal_completed_this_session', '2026', { path: '/' });
 	});
 
 	it('does not carry a mark from one goal year to another', () => {
