@@ -3,24 +3,27 @@ import { META_EVENTS, trackMetaEvent } from '@kiva/kv-analytics';
 const SESSION_KEY = 'kvMetaAccountCreated';
 
 /**
- * The query param marking the page a newly registered lender was sent to, if any.
+ * The markers a newly registered lender can arrive with, in precedence order, as
+ * [param name, the value that counts as a match].
  *
  * `registration=new` is added by the monolith on the post-authentication redirect, in the same
  * place that raises the "Welcome to Kiva!" toast, and covers email and social sign-ups.
  * `claimed=1` is added by GuestAccountRedirect and covers guest account claims.
+ */
+const REGISTRATION_MARKERS = [
+	['registration', 'new'],
+	['claimed', '1'],
+];
+
+/**
+ * The query param marking the page a newly registered lender was sent to, if any.
  *
  * @param {String} search location.search
  * @returns {String|null} The param name that matched, so the caller can remove it
  */
 export function getRegistrationMarker(search) {
 	const params = new URLSearchParams(search);
-	if (params.get('registration') === 'new') {
-		return 'registration';
-	}
-	if (params.get('claimed') === '1') {
-		return 'claimed';
-	}
-	return null;
+	return REGISTRATION_MARKERS.find(([name, value]) => params.get(name) === value)?.[0] ?? null;
 }
 
 /**
@@ -33,6 +36,11 @@ export function getRegistrationMarker(search) {
  * @param {String|Number|null} userId
  */
 export function trackAccountCreated(userId) {
+	// No pixel on the server, and no URL or storage to read from an SSR pass
+	if (typeof window === 'undefined') {
+		return;
+	}
+
 	const marker = getRegistrationMarker(window.location.search);
 	if (!marker) {
 		return;
