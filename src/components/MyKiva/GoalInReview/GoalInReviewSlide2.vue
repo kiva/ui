@@ -3,11 +3,11 @@
 		class="tw-w-full tw-bg-brand-100 tw-px-2 tw-py-4 md:tw-px-4 md:tw-py-7.5"
 		data-testid="goal-in-review-slide-2"
 	>
-		<p class="tw-text-action tw-mb-1">
+		<p class="tw-text-action tw-mb-1 kv-fade-up slide2-eyebrow">
 			The people behind the loans
 		</p>
 
-		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-3">
+		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-3 kv-fade-up slide2-headline">
 			{{ borrowerCountDisplay }} {{ borrowersLabel }}.
 			<span class="tw-text-marigold">{{ borrowerCountDisplay }} {{ futuresLabel }}.</span>
 		</h1>
@@ -16,7 +16,12 @@
 			class="borrower-grid tw-grid tw-gap-x-1 tw-gap-y-3 tw-list-none tw-p-0 tw-m-0"
 			data-testid="goal-in-review-slide-2-borrowers"
 		>
-			<li v-for="card in cards" :key="card.id" class="tw-flex tw-flex-col tw-gap-0.5">
+			<li
+				v-for="(card, index) in cards"
+				:key="card.id"
+				class="tw-flex tw-flex-col tw-gap-0.5 kv-fade-up slide2-card"
+				:style="cardAnimationDelay(index)"
+			>
 				<BorrowerImage
 					v-if="card.imageHash"
 					class="tw-w-full tw-rounded-sm"
@@ -36,7 +41,12 @@
 				</p>
 			</li>
 
-			<li v-if="moreCount > 0" data-testid="goal-in-review-slide-2-more">
+			<li
+				v-if="moreCount > 0"
+				class="kv-fade-up slide2-card"
+				:style="cardAnimationDelay(cards.length)"
+				data-testid="goal-in-review-slide-2-more"
+			>
 				<div
 					class="tw-w-full tw-aspect-square tw-rounded-sm tw-bg-eco-green-3 tw-bg-opacity-low
 						tw-flex tw-items-center tw-justify-center"
@@ -76,11 +86,33 @@ const totalBorrowers = computed(() => Number(props.borrowerCount) || cards.value
 const borrowerCountDisplay = computed(() => numeral(totalBorrowers.value).format('0,0'));
 const borrowersLabel = computed(() => (totalBorrowers.value === 1 ? 'borrower' : 'borrowers'));
 const futuresLabel = computed(() => (totalBorrowers.value === 1 ? 'future' : 'futures'));
+
+// Staggered fade-up: the header lands first, then each card 150ms after the one
+// before it (per the Figma "48 borrowers" spec). The modal gates the whole
+// slide until it scrolls into view, so these delays count from that moment.
+const cardAnimationDelay = index => ({ animationDelay: `${0.2 + index * 0.15}s` });
 </script>
 
 <style lang="postcss" scoped>
 .borrower-grid {
 	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Entrance choreography — the shared .kv-fade-up effect lives in
+   global/animations.scss; this slide only sets each part's rise + timing.
+   Header rises 14px (eyebrow, then headline); cards rise 18px, staggered
+   via an inline animation-delay (see cardAnimationDelay). */
+.slide2-eyebrow,
+.slide2-headline {
+	--kv-fade-up-distance: 14px;
+}
+
+.slide2-headline {
+	animation-delay: 0.08s;
+}
+
+.slide2-card {
+	--kv-fade-up-distance: 18px;
 }
 
 @screen md {

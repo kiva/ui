@@ -23,34 +23,35 @@
 					:percent-complete="data?.loanStats?.percentComplete"
 				/>
 			</div>
-			<div data-slide-view="2">
+			<div data-slide-view="2" data-animate-on-view>
 				<GoalInReviewSlide2
 					:loans="data?.goalLoans"
 					:borrower-count="data?.loanStats?.borrowers"
 				/>
 			</div>
-			<div data-slide-view="3">
+			<div data-slide-view="3" data-animate-on-view>
 				<GoalInReviewSlide3
 					:countries="data?.goalSummary?.countries"
 					:sectors="data?.goalSummary?.sectors"
 				/>
 			</div>
-			<div data-slide-view="4">
+			<div data-slide-view="4" data-animate-on-view>
 				<GoalInReviewSlide4
 					:goal-summary="data?.goalSummary"
 					:lifetime-percentile="data?.lifetimePercentile"
 				/>
 			</div>
-			<div data-slide-view="5">
+			<div data-slide-view="5" data-animate-on-view>
 				<GoalInReviewSlide5 />
 			</div>
 			<div
 				v-if="data?.goalSummary?.status === 'completed'"
 				data-slide-view="6"
+				data-animate-on-view
 			>
 				<GoalInReviewSlide6 :year="data?.year" />
 			</div>
-			<div data-slide-view="7">
+			<div data-slide-view="7" data-animate-on-view>
 				<GoalInReviewSlide7
 					:goal-status="data?.goalSummary?.status"
 					:loan-count="data?.loanStats?.borrowers"
@@ -164,6 +165,12 @@ const teardownSlideObserver = () => {
 	slideObserver = null;
 };
 
+// Unpause the section's entrance animations (see the reveal-on-scroll gate in
+// global/animations.scss). Slides gated with [data-animate-on-view] stay hidden
+// until this runs, so their motion plays when the user reaches them, not on
+// mount. Slide 1 has no gate and animates on mount, so this is a no-op for it.
+const revealSlide = target => target?.classList.add('is-in-view');
+
 const trackSlideViews = entries => {
 	entries.forEach(entry => {
 		const slide = entry.target.dataset.slideView;
@@ -178,6 +185,7 @@ const trackSlideViews = entries => {
 			return;
 		}
 		markScreenViewed(slide);
+		revealSlide(entry.target);
 		slideObserver?.unobserve(entry.target);
 	});
 };
@@ -194,12 +202,19 @@ const setupSlideObserver = async () => {
 	if (!targets.length) {
 		return;
 	}
+	// Re-hide the scroll-revealed sections so a reopen replays their entrance.
+	targets.forEach(target => target.classList.remove('is-in-view'));
 	slideObserver = createIntersectionObserver({
 		targets,
 		callback: trackSlideViews,
 		// Trigger when a section's top passes the scroll container's midpoint.
 		options: { root: container.closest('#kvLightboxBody'), rootMargin: '0px 0px -50% 0px', threshold: 0 },
 	});
+	// No observer means no scroll callback will fire, so reveal every gated
+	// section up front rather than leaving its content paused and hidden.
+	if (!slideObserver) {
+		targets.forEach(revealSlide);
+	}
 };
 
 watch(() => props.show, isShown => {

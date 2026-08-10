@@ -55,3 +55,11 @@
 		animation: none;
 	}
 }
+
+/* Reveal on scroll: an element marked [data-animate-on-view] holds the entrance
+   effects nested inside it paused on their first (hidden) frame until it also
+   gains .is-in-view. */
+[data-animate-on-view]:not(.is-in-view) .kv-rebound-in,
+[data-animate-on-view]:not(.is-in-view) .kv-fade-up {
+	animation-play-state: paused;
+}
