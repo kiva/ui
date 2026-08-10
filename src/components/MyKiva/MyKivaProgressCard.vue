@@ -40,7 +40,9 @@
 					{{ tag }}
 				</p>
 			</div>
-			<p class="tw-text-button-link">{{ title }}</p>
+			<p class="tw-text-button-link">
+				{{ title }}
+			</p>
 			<p v-if="description" class="tw-text-caption">
 				{{ description }}
 			</p>
@@ -67,6 +69,7 @@ import {
 	ID_WOMENS_EQUALITY, ID_BASIC_NEEDS, ID_CLIMATE_ACTION, ID_REFUGEE_EQUALITY, MAX_TIERED_BADGE_LOANS
 } from '#src/composables/useBadgeData';
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import { RECAP_CTA_LABEL } from '#src/util/goalRecapEntryPoint';
 import numeral from 'numeral';
 import { metaGlobReader } from '#src/util/importHelpers';
 
@@ -95,6 +98,10 @@ const props = defineProps({
 		default: () => GOALS_CURRENT_YEAR,
 	},
 	isHistoricalGoal: {
+		type: Boolean,
+		default: false,
+	},
+	showRecapCta: {
 		type: Boolean,
 		default: false,
 	},
@@ -217,6 +224,7 @@ const tag = computed(() => {
 });
 
 const btnCta = computed(() => {
+	if (props.showRecapCta) return RECAP_CTA_LABEL;
 	if (props.isAnnualGoal && goalCompleted.value) return '';
 	if (props.isHistoricalGoal) return '';
 	const completedProgress = props.isAnnualGoal

@@ -23,8 +23,10 @@
 			:key="`featured-slot-${goalRefreshKey}`"
 			:user-first-name="userInfo?.userAccount?.firstName"
 			:hero-tiered-achievements="heroTieredAchievements"
+			:goal-in-review-enable="goalInReviewEnable"
 			@set-goal-click="openGoalSettingModal"
 			@edit-click="openEditGoalSettingModal"
+			@view-goal-recap="openGoalRecapFromCard"
 		/>
 		<section v-if="clientRendered" class="!tw-mt-2">
 			<LendingStats
@@ -88,7 +90,9 @@
 				controls-top-right
 				:badge-data="heroBadgeData"
 				:selected-journey="selectedJourney"
+				:goal-in-review-enable="goalInReviewEnable"
 				@badge-clicked="handleBadgeSectionClicked"
+				@view-goal-recap="openGoalRecapFromCard"
 			/>
 		</section>
 		<MyKivaBorrowerCarousel
@@ -374,6 +378,7 @@ export default {
 			hasSubmittedGoalFeedbackForYear: goalData.hasSubmittedGoalFeedbackForYear,
 			setGoalFeedbackSubmittedPreference: goalData.setGoalFeedbackSubmittedPreference,
 			loadGoalPreferences: goalData.loadPreferences,
+			setGoalRecapViewedPreference: goalData.setGoalRecapViewedPreference,
 		};
 	},
 	data() {
@@ -738,12 +743,28 @@ export default {
 			this.goalInReviewFeedbackSubmitted = this.hasSubmittedGoalFeedbackForYear(goalInReview.year);
 			this.showGoalInReviewModal = true;
 		},
+		// The goal cards' persistent entry point. Viewing from here counts as seen, so the
+		// auto-open pop-up does not follow on a later visit.
+		async openGoalRecapFromCard(year) {
+			if (!this.goalInReviewEnable) {
+				return;
+			}
+			const goalInReview = await this.loadGoalInReview({ year });
+			if (!goalInReview?.isEligible) {
+				return;
+			}
+			await this.loadGoalPreferences('network-only');
+			this.goalInReviewFeedbackSubmitted = this.hasSubmittedGoalFeedbackForYear(goalInReview.year);
+			await this.setGoalRecapViewedPreference(goalInReview.year);
+			this.showGoalInReviewModal = true;
+		},
 		async handleGoToDeepLink(sectionId) {
 			if (sectionId === GOAL_RECAP_DEEP_LINK) {
 				if (!this.goalInReviewEnable) {
 					return;
 				}
-				const goalInReview = await this.loadGoalInReview();
+				const recapYear = Number(this.$route?.query?.recapYear) || null;
+				const goalInReview = await this.loadGoalInReview(recapYear ? { year: recapYear } : {});
 				if (goalInReview?.isEligible) {
 					// Snapshot the "already submitted" flag at open time so the survey gate is
 					// evaluated per modal load, not reactively mid-session. network-only so the
