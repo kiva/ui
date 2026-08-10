@@ -11,6 +11,8 @@ const MAX_EDGE = 1200;
 const JPEG_QUALITY = 85;
 // Image hashes are alphanumeric; reject anything else before making a request.
 const VALID_HASH = /^[a-zA-Z0-9]+$/;
+// A re-encoded ad image is immutable for a given hash, so cache it (and let downstream cache it) for a day.
+export const ADS_IMAGE_TTL = 24 * 60 * 60; // 1 day
 
 // Produce a Google-compliant ad image for a loan image hash: fetch the public source JPEG and
 // re-encode it as a bounded, progressive JPEG converted to sRGB with an embedded sRGB ICC profile

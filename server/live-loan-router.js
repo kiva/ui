@@ -5,21 +5,17 @@ import drawLoanCard from './util/live-loan/live-loan-draw.js';
 import fetchLoansByType, { QUERY_TYPE } from './util/live-loan/live-loan-fetch.js';
 import { trace } from './util/mockTrace.js';
 import { resolveBundleSize, DEFAULT_BUNDLE_COUNT, MAX_BUNDLE_COUNT } from './util/live-loan/bundle-size.js';
-import { generateGoogleFeed, emptyGoogleFeed } from './util/live-loan/ads/google-display/google-feed.js';
+import {
+	generateGoogleFeed,
+	emptyGoogleFeed,
+	ADS_FEED_FRESH_KEY,
+	ADS_FEED_LAST_GOOD_KEY,
+	ADS_FEED_FRESH_TTL,
+	ADS_FEED_LAST_GOOD_TTL,
+	ADS_FEED_FAILURE_BACKOFF_TTL,
+} from './util/live-loan/ads/google-display/google-feed.js';
 import { isFeedEnabled } from './util/live-loan/ads/kill-switch.js';
-import { processAdImage } from './util/live-loan/ads/ad-image.js';
-
-// Google Ads business-data feed: a fresh copy is served from cache between regenerations so scrapers
-// can't drive the FLSS/hydrate pipeline on every hit; the last-good copy is served if a regeneration
-// fails so a transient outage never empties the feed.
-const ADS_FEED_FRESH_KEY = 'google-ads-feed';
-const ADS_FEED_LAST_GOOD_KEY = 'google-ads-feed-last-good';
-const ADS_FEED_FRESH_TTL = 5 * 60; // 5 minutes — keep the feed close to FLSS's ~5-min refresh cadence
-const ADS_FEED_LAST_GOOD_TTL = 3 * 24 * 60 * 60; // 3 days
-// On a generation failure the last-good feed is re-primed into the fresh key for this short window,
-// so an FLSS/gateway outage re-runs the full pipeline at most once per window instead of every request.
-const ADS_FEED_FAILURE_BACKOFF_TTL = 60; // 1 minute
-const ADS_IMAGE_TTL = 24 * 60 * 60; // 1 day
+import { processAdImage, ADS_IMAGE_TTL } from './util/live-loan/ads/ad-image.js';
 
 async function fetchRecommendedLoans(type, id, cache, queryType = QUERY_TYPE.DEFAULT, count = DEFAULT_BUNDLE_COUNT) {
 	const queryTypeSuffix = queryType !== QUERY_TYPE.DEFAULT ? `-${queryType}` : '';
