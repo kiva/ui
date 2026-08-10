@@ -60,7 +60,9 @@ export function trackAccountCreated(userId) {
 		trackMetaEvent(META_EVENTS.ACCOUNT_CREATED);
 	}
 
-	// Drop the marker so a reload cannot replay it
+	// Drop the marker as well as keeping the session flag: the two cover different holes. The
+	// flag is per-tab and unavailable in some private browsing modes, so on its own the marker
+	// would re-fire on a reload or when the URL is opened in a second tab.
 	const url = new URL(window.location.href);
 	url.searchParams.delete(marker);
 	window.history.replaceState(window.history.state, '', url.toString());
