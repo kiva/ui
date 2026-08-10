@@ -7,7 +7,6 @@ const completed = {
 	goalYear: 2026,
 	currentGoalYear: 2026,
 	hasViewedRecap: false,
-	hasCompletionPending: true,
 };
 
 const IN_PROGRESS_RELEASE = new Date('2026-11-15T00:00:00Z');
@@ -15,24 +14,16 @@ const IN_PROGRESS_RELEASE = new Date('2026-11-15T00:00:00Z');
 const inProgress = {
 	...completed,
 	goalStatus: 'in-progress',
-	hasCompletionPending: false,
 	inProgressStartDate: IN_PROGRESS_RELEASE,
 	now: IN_PROGRESS_RELEASE,
 };
 
 describe('goalInReviewTrigger.js', () => {
 	describe('completed goals', () => {
-		it('opens in the session after completion', () => {
+		// Goals complete at checkout, so the first visit to MyKiva or Portfolio is already
+		// a later session and there is nothing to wait for.
+		it('opens on the first visit after completion', () => {
 			expect(shouldAutoOpenRecap(completed)).toBe(true);
-		});
-
-		it('waits on the visit where the completed goal is first seen', () => {
-			expect(shouldAutoOpenRecap({ ...completed, hasCompletionPending: false })).toBe(false);
-		});
-
-		it('opens for someone who completed before release, on their second visit', () => {
-			// back-fill: the first post-release visit arms it, the next one opens it
-			expect(shouldAutoOpenRecap({ ...completed, hasCompletionPending: true })).toBe(true);
 		});
 	});
 
@@ -47,10 +38,6 @@ describe('goalInReviewTrigger.js', () => {
 
 		it('stays shut before the release date, even with the flag on', () => {
 			expect(shouldAutoOpenRecap({ ...inProgress, now: new Date('2026-11-14T23:59:59Z') })).toBe(false);
-		});
-
-		it('does not require a pending completion', () => {
-			expect(shouldAutoOpenRecap({ ...inProgress, hasCompletionPending: false })).toBe(true);
 		});
 
 		it('accepts the date as a string, since settings come back serialized', () => {

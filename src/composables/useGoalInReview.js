@@ -7,9 +7,10 @@ import {
 import goalInReviewAchievementsQuery from '#src/graphql/query/goalInReviewAchievements.graphql';
 import goalInReviewLenderQuery from '#src/graphql/query/goalInReviewLender.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
-import useGoalData, { GOALS_CURRENT_YEAR, GOAL_STATUS } from '#src/composables/useGoalData';
+import useGoalData, { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import { shouldAutoOpenRecap } from '#src/util/goalInReviewTrigger';
+import { completedGoalThisSession } from '#src/util/goalRecapSession';
 import logFormatter from '#src/util/logFormatter';
 import {
 	getCategoryName,
@@ -68,19 +69,19 @@ export function getGoalInReviewCurrentYear() {
  *
  * @param {object} options Composable options.
  * @param {object} [options.apollo] Apollo client; injected when omitted.
+ * @param {object} [options.cookieStore] Cookie store; injected when omitted.
  * @param {object} [options.goalData] An existing useGoalData instance. Pass the page's
  *   own so the recap reads and writes the same preferences it does — each call to
  *   useGoalData owns a separate `userPreferences` ref.
  * @returns {object} Goal In Review state, eligibility, and loading function.
  */
-export default function useGoalInReview({ apollo, goalData } = {}) {
+export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) {
 	const apolloClient = apollo || inject('apollo');
+	const cookies = cookieStore || inject('cookieStore', null);
 	const {
 		getGoalSummary,
-		hasGoalRecapPendingForYear,
 		hasViewedGoalRecapForYear,
 		loadPreferences,
-		setGoalRecapPendingPreference,
 		setGoalRecapViewedPreference,
 		hasSubmittedGoalFeedbackForYear,
 		setGoalFeedbackSubmittedPreference,
@@ -176,7 +177,6 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 		const now = getGoalInReviewNow();
 		const year = getGoalInReviewTargetYear(now);
 		const hasViewedRecap = hasViewedGoalRecapForYear(year);
-		const hasCompletionPending = hasGoalRecapPendingForYear(year);
 		if (hasViewedRecap) {
 			return null;
 		}
@@ -191,16 +191,12 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 			goalYear,
 			currentGoalYear: GOALS_CURRENT_YEAR,
 			hasViewedRecap,
-			hasCompletionPending,
+			completedThisSession: completedGoalThisSession(cookies, year),
 			inProgressStartDate,
 			now,
 		});
 
 		if (!shouldOpen) {
-			// First sighting of a completed goal arms the recap for the next session.
-			if (data?.isEligible && data?.goalSummary?.status === GOAL_STATUS.COMPLETED && !hasCompletionPending) {
-				await setGoalRecapPendingPreference(year);
-			}
 			return null;
 		}
 

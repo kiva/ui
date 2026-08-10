@@ -29,8 +29,8 @@ function hasInProgressReleaseStarted(startDate, now) {
  * @param {number|string} options.goalYear The year the goal belongs to.
  * @param {number|string} options.currentGoalYear The goal year in progress now.
  * @param {boolean} options.hasViewedRecap Whether the recap has already been seen.
- * @param {boolean} options.hasCompletionPending Whether a completed goal was already
- *   seen on an earlier visit, which makes this the session after completion.
+ * @param {boolean} options.completedThisSession Whether the goal completed during this
+ *   browsing session, which means the recap waits for the next one.
  * @param {Date|string|null} options.inProgressStartDate The goal_in_review_in_progress_start
  *   setting, the date in-progress goal setters become eligible.
  * @param {Date} options.now The effective current date.
@@ -43,7 +43,7 @@ export function shouldAutoOpenRecap({
 	goalYear = null,
 	currentGoalYear = null,
 	hasViewedRecap = false,
-	hasCompletionPending = false,
+	completedThisSession = false,
 	inProgressStartDate = null,
 	now = new Date(),
 } = {}) {
@@ -57,9 +57,10 @@ export function shouldAutoOpenRecap({
 		return false;
 	}
 
+	// If the user arrives at MyKiva from the thanks page, the recap is not shown yet.
+	// It waits for their next session.
 	if (goalStatus === GOAL_STATUS.COMPLETED) {
-		// The session after completion: the completed goal was already seen on an earlier visit.
-		return hasCompletionPending;
+		return !completedThisSession;
 	}
 
 	// Completed goal setters see the recap as soon as the feature is live; in-progress
