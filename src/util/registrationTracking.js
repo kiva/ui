@@ -1,6 +1,6 @@
 import { META_EVENTS, trackMetaEvent } from '@kiva/kv-analytics';
 
-const SESSION_KEY = 'kvMetaAccountCreated';
+const REPORTED_COOKIE = 'kvMetaAccountCreated';
 
 /**
  * The markers a newly registered lender can arrive with, in precedence order, as
@@ -27,16 +27,20 @@ export function getRegistrationMarker(search) {
 }
 
 /**
- * Reports a newly created account to Meta, at most once per browser session.
+ * Reports a newly created account to Meta, at most once per lender.
  *
  * The monolith decides a login is a registration by checking whether the account was created
- * in the last 30 seconds, so the marker can arrive more than once for a single sign-up. Once
- * per session is the right ceiling: one session cannot legitimately register twice.
+ * in the last 30 seconds, so the marker can arrive more than once for a single sign-up. A
+ * cookie rather than sessionStorage: it is shared across tabs, and anyone who just authenticated
+ * necessarily has cookies working, so there is no unavailable case to guard.
  *
- * @param {String|Number|null} userId
+ * @param {String|Number|null} userId Keys the guard, so a second lender on the same browser
+ *   still reports
+ * @param {Object} cookies `{ get, set }`, where set should scope the value to roughly an hour —
+ *   the dedup window only needs to outlive the monolith's re-authentication redirect
  */
-export function trackAccountCreated(userId) {
-	// No pixel on the server, and no URL or storage to read from an SSR pass
+export function trackAccountCreated(userId, cookies) {
+	// No pixel on the server, and no URL to read from an SSR pass
 	if (typeof window === 'undefined') {
 		return;
 	}
@@ -46,23 +50,14 @@ export function trackAccountCreated(userId) {
 		return;
 	}
 
-	const sessionKey = `${SESSION_KEY}:${userId ?? ''}`;
-	let alreadyReported = false;
-	try {
-		alreadyReported = window.sessionStorage.getItem(sessionKey) === '1';
-		window.sessionStorage.setItem(sessionKey, '1');
-	} catch (e) {
-		// Storage is unavailable in some private browsing modes. Removing the marker below
-		// still prevents the common repeat, a refresh.
-	}
-
-	if (!alreadyReported) {
+	const cookieName = `${REPORTED_COOKIE}:${userId ?? ''}`;
+	if (cookies?.get(cookieName) !== '1') {
+		cookies?.set(cookieName, '1');
 		trackMetaEvent(META_EVENTS.ACCOUNT_CREATED);
 	}
 
-	// Drop the marker as well as keeping the session flag: the two cover different holes. The
-	// flag is per-tab and unavailable in some private browsing modes, so on its own the marker
-	// would re-fire on a reload or when the URL is opened in a second tab.
+	// Drop the marker as well as writing the cookie: a marker left in the URL gets copied,
+	// bookmarked and sent as a referrer long after it has been consumed.
 	const url = new URL(window.location.href);
 	url.searchParams.delete(marker);
 	window.history.replaceState(window.history.state, '', url.toString());

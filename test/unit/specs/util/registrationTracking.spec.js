@@ -30,7 +30,19 @@ describe('registrationTracking.js', () => {
 	});
 
 	describe('trackAccountCreated', () => {
+		let cookies;
 		let replaceState;
+
+		// Stands in for the cookieStore adapter client-entry passes; shared across "tabs"
+		// the way a real cookie is, which is the point of using one.
+		const makeCookies = () => {
+			const jar = {};
+			return {
+				jar,
+				get: name => jar[name],
+				set: (name, value) => { jar[name] = value; },
+			};
+		};
 
 		const visit = search => {
 			window.history.replaceState({}, '', `/portfolio${search}`);
@@ -38,7 +50,7 @@ describe('registrationTracking.js', () => {
 
 		beforeEach(() => {
 			trackMetaEvent.mockClear();
-			window.sessionStorage.clear();
+			cookies = makeCookies();
 			visit('');
 			replaceState = vi.spyOn(window.history, 'replaceState');
 		});
@@ -50,7 +62,7 @@ describe('registrationTracking.js', () => {
 		it('reports a new registration', () => {
 			visit('?registration=new');
 
-			trackAccountCreated('1234');
+			trackAccountCreated('1234', cookies);
 
 			expect(trackMetaEvent).toHaveBeenCalledWith('accountCreated');
 		});
@@ -58,7 +70,7 @@ describe('registrationTracking.js', () => {
 		it('reports a claimed guest account', () => {
 			visit('?claimed=1');
 
-			trackAccountCreated('1234');
+			trackAccountCreated('1234', cookies);
 
 			expect(trackMetaEvent).toHaveBeenCalledWith('accountCreated');
 		});
@@ -66,15 +78,16 @@ describe('registrationTracking.js', () => {
 		it('does nothing without a marker', () => {
 			visit('?foo=bar');
 
-			trackAccountCreated('1234');
+			trackAccountCreated('1234', cookies);
 
 			expect(trackMetaEvent).not.toHaveBeenCalled();
+			expect(cookies.jar).toEqual({});
 		});
 
 		it('removes the marker so a reload cannot replay it', () => {
 			visit('?registration=new');
 
-			trackAccountCreated('1234');
+			trackAccountCreated('1234', cookies);
 
 			expect(window.location.search).not.toContain('registration');
 		});
@@ -82,7 +95,7 @@ describe('registrationTracking.js', () => {
 		it('keeps other params when removing the marker', () => {
 			visit('?registration=new&utm_source=email');
 
-			trackAccountCreated('1234');
+			trackAccountCreated('1234', cookies);
 
 			expect(window.location.search).toContain('utm_source=email');
 			expect(window.location.search).not.toContain('registration');
@@ -92,33 +105,43 @@ describe('registrationTracking.js', () => {
 			const state = { position: 2, scroll: { left: 0, top: 100 } };
 			window.history.replaceState(state, '', '/portfolio?registration=new');
 
-			trackAccountCreated('1234');
+			trackAccountCreated('1234', cookies);
 
 			expect(window.history.state).toEqual(state);
 		});
 
-		it('reports once per session when the marker arrives twice', () => {
+		it('reports once per lender when the marker arrives twice', () => {
 			visit('?registration=new');
-			trackAccountCreated('1234');
+			trackAccountCreated('1234', cookies);
 
 			// The monolith re-adds the marker if the lender re-authenticates inside its
 			// 30 second registration window
 			visit('?registration=new');
-			trackAccountCreated('1234');
+			trackAccountCreated('1234', cookies);
 
 			expect(trackMetaEvent).toHaveBeenCalledTimes(1);
 		});
 
-		it('still reports when sessionStorage is unavailable', () => {
-			const getItem = vi.spyOn(window.sessionStorage, 'getItem').mockImplementation(() => {
-				throw new Error('denied');
-			});
+		// A cookie is shared across tabs, unlike sessionStorage — so a second tab landing on
+		// the same marked URL must not produce a second event.
+		it('reports once across separate cookie reads', () => {
 			visit('?registration=new');
+			trackAccountCreated('1234', cookies);
 
-			trackAccountCreated('1234');
+			visit('?registration=new');
+			trackAccountCreated('1234', { get: cookies.get, set: cookies.set });
 
-			expect(trackMetaEvent).toHaveBeenCalledWith('accountCreated');
-			getItem.mockRestore();
+			expect(trackMetaEvent).toHaveBeenCalledTimes(1);
+		});
+
+		it('reports again for a different lender on the same browser', () => {
+			visit('?registration=new');
+			trackAccountCreated('1234', cookies);
+
+			visit('?registration=new');
+			trackAccountCreated('5678', cookies);
+
+			expect(trackMetaEvent).toHaveBeenCalledTimes(2);
 		});
 	});
 });
