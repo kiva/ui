@@ -14,7 +14,7 @@ import { processAdImage } from './util/live-loan/ads/ad-image.js';
 // fails so a transient outage never empties the feed.
 const ADS_FEED_FRESH_KEY = 'google-ads-feed';
 const ADS_FEED_LAST_GOOD_KEY = 'google-ads-feed-last-good';
-const ADS_FEED_FRESH_TTL = 60 * 60; // 1 hour
+const ADS_FEED_FRESH_TTL = 5 * 60; // 5 minutes — keep the feed close to FLSS's ~5-min refresh cadence
 const ADS_FEED_LAST_GOOD_TTL = 3 * 24 * 60 * 60; // 3 days
 // On a generation failure the last-good feed is re-primed into the fresh key for this short window,
 // so an FLSS/gateway outage re-runs the full pipeline at most once per window instead of every request.

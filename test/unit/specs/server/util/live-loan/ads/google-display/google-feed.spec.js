@@ -1,7 +1,6 @@
 // @vitest-environment node
 import { FEED_COLUMNS } from '#server/util/live-loan/ads/google-display/feed-row';
 import { fetchAdEligibleLoans } from '#server/util/live-loan/ads/ads-eligibility';
-import { filterToStillFundraising } from '#server/util/live-loan/ads/ads-freshness';
 import { toTsv, generateGoogleFeed, emptyGoogleFeed } from '#server/util/live-loan/ads/google-display/google-feed';
 
 // mock out the argv module to prevent command line arguments for jest from being read by the code under test
@@ -11,11 +10,6 @@ vi.mock('#server/util/argv', () => ({ default: {} }));
 vi.mock('#server/util/live-loan/ads/ads-eligibility.js', async importOriginal => ({
 	...(await importOriginal()),
 	fetchAdEligibleLoans: vi.fn(),
-}));
-
-// stub the freshness re-check; default to an identity pass-through so feed tests keep all loans
-vi.mock('#server/util/live-loan/ads/ads-freshness.js', () => ({
-	filterToStillFundraising: vi.fn(async loans => loans),
 }));
 
 // mock logging so the ad-safety drop warning doesn't print during the test run
@@ -94,8 +88,6 @@ describe('google-feed', () => {
 	describe('generateGoogleFeed', () => {
 		beforeEach(() => {
 			fetchAdEligibleLoans.mockClear();
-			filterToStillFundraising.mockClear();
-			filterToStillFundraising.mockImplementation(async loans => loans);
 		});
 
 		it('produces a header line plus one data line per loan', async () => {
@@ -114,18 +106,6 @@ describe('google-feed', () => {
 			expect(lines[2]).toContain(
 				'https://www.kiva.org/lend/789?utm_medium=paid&utm_source=google&utm_campaign=liveloans',
 			);
-		});
-
-		it('drops loans removed by the authoritative freshness re-check', async () => {
-			fetchAdEligibleLoans.mockResolvedValue([loanOne, loanTwo]);
-			filterToStillFundraising.mockResolvedValue([loanTwo]);
-
-			const result = await generateGoogleFeed();
-			const lines = result.split('\n');
-
-			expect(filterToStillFundraising).toHaveBeenCalledWith([loanOne, loanTwo]);
-			expect(lines).toHaveLength(2);
-			expect(lines[1]).toContain('Support Amara');
 		});
 
 		it('drops a loan whose copy is not ad-safe (ALL-CAPS name)', async () => {

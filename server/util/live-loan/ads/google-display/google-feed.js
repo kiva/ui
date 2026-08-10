@@ -1,5 +1,4 @@
 import { fetchAdEligibleLoans } from '../ads-eligibility.js';
-import { filterToStillFundraising } from '../ads-freshness.js';
 import { loanToFeedRow, isRowAdSafe, FEED_COLUMNS } from './feed-row.js';
 import { warn } from '../../../log.js';
 
@@ -14,19 +13,19 @@ export function toTsv(rows, columns = FEED_COLUMNS) {
 }
 
 // The header-only feed served when the kill switch is off: it drains inventory from Google without
-// running the FLSS/freshness pipeline.
+// running the FLSS pipeline.
 export function emptyGoogleFeed() {
 	return toTsv([]);
 }
 
 export async function generateGoogleFeed(count) {
+	// FLSS (updated via kafka events) is the freshest source of fundraising loans and already excludes
+	// funded/refunded/expired; the eligibility gate drops anonymized/no-name/no-image on the FLSS
+	// record. No re-check against a slower source is needed.
 	const eligible = await fetchAdEligibleLoans(count);
-	// Re-check candidates against the source-of-truth loan resolver before advertising them,
-	// since the FLSS index can lag behind funded/refunded/anonymized changes.
-	const fresh = await filterToStillFundraising(eligible);
 
 	const rows = [];
-	fresh.forEach(loan => {
+	eligible.forEach(loan => {
 		const row = loanToFeedRow(loan);
 		// Drop rows whose copy isn't ad-safe (banned words / ALL-CAPS) rather than emit a policy risk.
 		if (!isRowAdSafe(row)) {

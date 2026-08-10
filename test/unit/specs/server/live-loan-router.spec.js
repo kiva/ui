@@ -572,7 +572,7 @@ describe('live-loan-router ads feed route', () => {
 		expect(result.statusCode).toBe(200);
 		expect(result.body.toString()).toContain('Support Maria');
 		expect(generateGoogleFeed).toHaveBeenCalledTimes(1);
-		expect(memJsUtils.setToCache).toHaveBeenCalledWith(FRESH_KEY, expect.any(String), 3600, cache);
+		expect(memJsUtils.setToCache).toHaveBeenCalledWith(FRESH_KEY, expect.any(String), 300, cache);
 		expect(memJsUtils.setToCache).toHaveBeenCalledWith(LAST_GOOD_KEY, expect.any(String), 259200, cache);
 	});
 
