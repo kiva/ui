@@ -1,6 +1,6 @@
 import numeral from 'numeral';
 import myFTD from '#src/graphql/query/myFTD.graphql';
-import { getReEngagementEvent } from '#src/util/lifecycleStage';
+import { getReEngagementEvent } from '@kiva/kv-analytics';
 import removeCreditByTypeMutation from '#src/graphql/mutation/shopRemoveCreditByType.graphql';
 
 /** Format Transaction Data for Analtyics events

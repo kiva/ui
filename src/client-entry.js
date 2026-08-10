@@ -121,11 +121,18 @@ async function setupTouchDetection(apolloClient) {
 	});
 }
 
-async function setupAnalytics(app, apolloClient) {
+async function setupAnalytics(app, apolloClient, cookieStore) {
 	const userId = await getUserId(apolloClient);
 	await app.config.globalProperties.$setKvAnalyticsData(userId);
 	app.config.globalProperties.$fireServerPageView();
 	app.config.globalProperties.$fireQueuedEvents();
+	const { trackAccountCreated } = await import('#src/util/registrationTracking');
+	trackAccountCreated(userId, {
+		get: name => cookieStore.get(name),
+		// An hour outlives the monolith's re-authentication redirect, which is all the
+		// dedup window needs to cover
+		set: (name, value) => cookieStore.set(name, value, { path: '/', expires: 1 / 24 }),
+	});
 	const { default: collectWebVitals } = await import('#src/util/webVitals');
 	collectWebVitals(app.config.globalProperties.$kvTrackEvent);
 }
@@ -291,7 +298,7 @@ async function initApp() {
 	}
 
 	if (config.enableAnalytics) {
-		setupAnalytics(app, apolloClient);
+		setupAnalytics(app, apolloClient, cookieStore);
 	}
 
 	setupClientRouting({

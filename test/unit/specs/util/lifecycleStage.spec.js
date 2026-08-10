@@ -1,10 +1,5 @@
-import {
-	LIFECYCLE_STAGES,
-	deriveLifecycleStage,
-	getLifecycleData,
-	getReEngagementEvent,
-	RE_ENGAGEMENT_EVENTS,
-} from '#src/util/lifecycleStage';
+import { LIFECYCLE_STAGES } from '@kiva/kv-analytics';
+import { deriveLifecycleStage, getLifecycleData } from '#src/util/lifecycleStage';
 
 const NOW = new Date('2026-07-28T12:00:00Z');
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -164,35 +159,6 @@ describe('lifecycleStage.js', () => {
 
 				expect(stage).toBeNull();
 			});
-		});
-	});
-
-	describe('getReEngagementEvent', () => {
-		it.each([
-			LIFECYCLE_STAGES.IDLE_90,
-			LIFECYCLE_STAGES.IDLE_180,
-			LIFECYCLE_STAGES.IDLE_365,
-		])('maps %s to the idle event', stage => {
-			expect(getReEngagementEvent(stage)).toBe(RE_ENGAGEMENT_EVENTS.IDLE);
-		});
-
-		it('maps lapsedChurned to the lapsed event', () => {
-			expect(getReEngagementEvent(LIFECYCLE_STAGES.LAPSED_CHURNED))
-				.toBe(RE_ENGAGEMENT_EVENTS.LAPSED);
-		});
-
-		it.each([
-			LIFECYCLE_STAGES.NEW,
-			LIFECYCLE_STAGES.ENGAGED,
-			LIFECYCLE_STAGES.REGISTERED,
-			LIFECYCLE_STAGES.UNCONVERTED_90,
-			LIFECYCLE_STAGES.UNCONVERTED_180,
-		])('returns null for %s, which is not a re-engagement', stage => {
-			expect(getReEngagementEvent(stage)).toBeNull();
-		});
-
-		it('returns null for guests, who have no stage', () => {
-			expect(getReEngagementEvent(null)).toBeNull();
 		});
 	});
 

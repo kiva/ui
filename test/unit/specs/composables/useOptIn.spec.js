@@ -1,15 +1,27 @@
 import useOptIn from '#src/composables/useOptIn';
 import logReadQueryError from '#src/util/logReadQueryError';
+import { trackMetaEvent } from '@kiva/kv-analytics';
 
 vi.mock('#src/util/logReadQueryError');
 vi.mock('#src/util/cookieStore');
+vi.mock('@kiva/kv-analytics', async importOriginal => ({
+	...(await importOriginal()),
+	trackMetaEvent: vi.fn(),
+}));
 
 describe('useOptIn.js', () => {
+	const successfulMutationResponse = {
+		data: {
+			my: { updateCommunicationSettings: true },
+			visitorEmailOptIn: { updateCommunicationSettings: true },
+		},
+	};
 	let mockApollo;
 	let mockCookieStore;
 	let composable;
 
 	beforeEach(() => {
+		trackMetaEvent.mockClear();
 		mockApollo = {
 			mutate: vi.fn(),
 		};
@@ -23,7 +35,7 @@ describe('useOptIn.js', () => {
 
 	describe('updateCommunicationSettings', () => {
 		it('should call apollo mutate with all settings', async () => {
-			mockApollo.mutate.mockResolvedValue({});
+			mockApollo.mutate.mockResolvedValue(successfulMutationResponse);
 
 			await composable.updateCommunicationSettings(true, false, false);
 
@@ -39,7 +51,7 @@ describe('useOptIn.js', () => {
 		});
 
 		it('should handle all true settings', async () => {
-			mockApollo.mutate.mockResolvedValue({});
+			mockApollo.mutate.mockResolvedValue(successfulMutationResponse);
 
 			await composable.updateCommunicationSettings(true, true, true);
 
@@ -54,7 +66,7 @@ describe('useOptIn.js', () => {
 		});
 
 		it('should handle all false settings', async () => {
-			mockApollo.mutate.mockResolvedValue({});
+			mockApollo.mutate.mockResolvedValue(successfulMutationResponse);
 
 			await composable.updateCommunicationSettings(false, false, false);
 
@@ -83,7 +95,7 @@ describe('useOptIn.js', () => {
 
 	describe('updateVisitorEmailOptIn', () => {
 		it('should call apollo mutate with all parameters', async () => {
-			mockApollo.mutate.mockResolvedValue({});
+			mockApollo.mutate.mockResolvedValue(successfulMutationResponse);
 
 			await composable.updateVisitorEmailOptIn(true, false, false, 'visitor-123');
 
@@ -100,7 +112,7 @@ describe('useOptIn.js', () => {
 		});
 
 		it('should handle different visitor IDs', async () => {
-			mockApollo.mutate.mockResolvedValue({});
+			mockApollo.mutate.mockResolvedValue(successfulMutationResponse);
 
 			await composable.updateVisitorEmailOptIn(false, false, false, 'test-visitor-456');
 
@@ -116,7 +128,7 @@ describe('useOptIn.js', () => {
 		});
 
 		it('should handle all opt-ins enabled', async () => {
-			mockApollo.mutate.mockResolvedValue({});
+			mockApollo.mutate.mockResolvedValue(successfulMutationResponse);
 
 			await composable.updateVisitorEmailOptIn(true, true, false, 'visitor-abc');
 
@@ -132,7 +144,7 @@ describe('useOptIn.js', () => {
 		});
 
 		it('should handle global unsubscribe', async () => {
-			mockApollo.mutate.mockResolvedValue({});
+			mockApollo.mutate.mockResolvedValue(successfulMutationResponse);
 
 			await composable.updateVisitorEmailOptIn(false, false, true, 'visitor-xyz');
 
@@ -157,6 +169,87 @@ describe('useOptIn.js', () => {
 				mockError,
 				'OptInModule updateVisitorCommunicationSettings'
 			);
+		});
+	});
+
+	describe('emailSignUp Meta event', () => {
+		beforeEach(() => {
+			mockApollo.mutate.mockResolvedValue(successfulMutationResponse);
+		});
+
+		it('fires when a lender opts in to news', async () => {
+			await composable.updateCommunicationSettings(true, true, false);
+
+			expect(trackMetaEvent).toHaveBeenCalledWith('emailSignUp');
+		});
+
+		it('fires for a guest visitor opting in', async () => {
+			await composable.updateVisitorEmailOptIn(true, true, false, 'visitor-123');
+
+			expect(trackMetaEvent).toHaveBeenCalledWith('emailSignUp');
+		});
+
+		it('does not fire on an opt-out', async () => {
+			await composable.updateCommunicationSettings(false, false, false);
+
+			expect(trackMetaEvent).not.toHaveBeenCalled();
+		});
+
+		it('does not fire on a global unsubscribe', async () => {
+			await composable.updateCommunicationSettings(true, true, true);
+
+			expect(trackMetaEvent).not.toHaveBeenCalled();
+		});
+
+		it('does not fire when the mutation fails', async () => {
+			mockApollo.mutate.mockRejectedValue(new Error('nope'));
+
+			await composable.updateCommunicationSettings(true, true, false);
+
+			expect(trackMetaEvent).not.toHaveBeenCalled();
+		});
+
+		it('does not fire when the lender mutation returns false', async () => {
+			mockApollo.mutate.mockResolvedValue({
+				data: { my: { updateCommunicationSettings: false } },
+			});
+
+			await composable.updateCommunicationSettings(true, true, false);
+
+			expect(trackMetaEvent).not.toHaveBeenCalled();
+		});
+
+		it('does not fire when the visitor mutation returns false', async () => {
+			mockApollo.mutate.mockResolvedValue({
+				data: { visitorEmailOptIn: { updateCommunicationSettings: false } },
+			});
+
+			await composable.updateVisitorEmailOptIn(true, true, false, 'visitor-123');
+
+			expect(trackMetaEvent).not.toHaveBeenCalled();
+		});
+
+		it('does not fire when the mutation returns a null payload', async () => {
+			mockApollo.mutate.mockResolvedValue({ data: { my: { updateCommunicationSettings: null } } });
+
+			const updated = await composable.updateCommunicationSettings(true, true, false);
+
+			expect(trackMetaEvent).not.toHaveBeenCalled();
+			expect(updated).toBe(false);
+		});
+
+		// A partial success: the payload says true but the response also carries errors, so the
+		// errors have to be checked rather than trusting the payload alone.
+		it('does not fire when the response carries GraphQL errors', async () => {
+			mockApollo.mutate.mockResolvedValue({
+				data: { my: { updateCommunicationSettings: true } },
+				errors: [{ message: 'Something went wrong' }],
+			});
+
+			const updated = await composable.updateCommunicationSettings(true, true, false);
+
+			expect(trackMetaEvent).not.toHaveBeenCalled();
+			expect(updated).toBe(false);
 		});
 	});
 });
