@@ -1,0 +1,39 @@
+import { fetchAdEligibleLoans } from '../ads-eligibility.js';
+import { filterToStillFundraising } from '../ads-freshness.js';
+import { loanToFeedRow, isRowAdSafe, FEED_COLUMNS } from './feed-row.js';
+import { warn } from '../../../log.js';
+
+// defense-in-depth: values are already sanitized upstream, but never let a stray
+// tab/newline in a cell break the row/column structure
+const cell = v => String(v ?? '').replace(/[\t\r\n]+/g, ' ');
+
+export function toTsv(rows, columns = FEED_COLUMNS) {
+	const header = columns.join('\t');
+	const body = rows.map(row => columns.map(col => cell(row[col])).join('\t'));
+	return [header, ...body].join('\n');
+}
+
+// The header-only feed served when the kill switch is off: it drains inventory from Google without
+// running the FLSS/freshness pipeline.
+export function emptyGoogleFeed() {
+	return toTsv([]);
+}
+
+export async function generateGoogleFeed(count) {
+	const eligible = await fetchAdEligibleLoans(count);
+	// Re-check candidates against the source-of-truth loan resolver before advertising them,
+	// since the FLSS index can lag behind funded/refunded/anonymized changes.
+	const fresh = await filterToStillFundraising(eligible);
+
+	const rows = [];
+	fresh.forEach(loan => {
+		const row = loanToFeedRow(loan);
+		// Drop rows whose copy isn't ad-safe (banned words / ALL-CAPS) rather than emit a policy risk.
+		if (!isRowAdSafe(row)) {
+			warn(`Ad feed: dropping loan ${row.ID} whose copy is not ad-safe`);
+			return;
+		}
+		rows.push(row);
+	});
+	return toTsv(rows);
+}

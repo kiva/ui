@@ -4,11 +4,17 @@ import liveLoanRouter from '#server/live-loan-router';
 import * as liveLoanFetch from '#server/util/live-loan/live-loan-fetch';
 import * as memJsUtils from '#server/util/memJsUtils';
 import drawLoanCard from '#server/util/live-loan/live-loan-draw';
+import { generateGoogleFeed, emptyGoogleFeed } from '#server/util/live-loan/ads/google-display/google-feed';
+import { isFeedEnabled } from '#server/util/live-loan/ads/kill-switch';
+import { processAdImage } from '#server/util/live-loan/ads/ad-image';
 
 // Mock out modules to prevent real network/cache calls
 vi.mock('#server/util/live-loan/live-loan-fetch');
 vi.mock('#server/util/memJsUtils');
 vi.mock('#server/util/live-loan/live-loan-draw');
+vi.mock('#server/util/live-loan/ads/google-display/google-feed');
+vi.mock('#server/util/live-loan/ads/kill-switch');
+vi.mock('#server/util/live-loan/ads/ad-image');
 vi.mock('#server/util/log', () => ({
 	log: vi.fn(),
 	error: vi.fn(),
@@ -505,5 +511,156 @@ describe('live-loan-router bundle-url routes', () => {
 				6,
 			);
 		});
+	});
+});
+
+// Helper: make a request and capture the full response body
+function makeRequestFull(app, path) {
+	return new Promise((resolve, reject) => {
+		const server = app.listen(0, () => {
+			const { port } = server.address();
+			const http = require('http'); // eslint-disable-line global-require
+			const httpReq = http.request({
+				hostname: 'localhost', port, path, method: 'GET'
+			}, res => {
+				const chunks = [];
+				res.on('data', chunk => chunks.push(chunk));
+				res.on('end', () => {
+					server.close();
+					resolve({ statusCode: res.statusCode, headers: res.headers, body: Buffer.concat(chunks) });
+				});
+			});
+			httpReq.on('error', err => {
+				server.close();
+				reject(err);
+			});
+			httpReq.end();
+		});
+	});
+}
+
+const FRESH_KEY = 'google-ads-feed';
+const LAST_GOOD_KEY = 'google-ads-feed-last-good';
+
+describe('live-loan-router ads feed route', () => {
+	let cache;
+
+	beforeEach(() => {
+		vi.resetAllMocks();
+		cache = createMockCache();
+		memJsUtils.getFromCache.mockResolvedValue(null);
+		memJsUtils.setToCache.mockResolvedValue(undefined);
+		isFeedEnabled.mockResolvedValue(true);
+		emptyGoogleFeed.mockReturnValue('HEADER_ONLY');
+		generateGoogleFeed.mockResolvedValue('ID\tItem title\n1\tSupport Maria');
+	});
+
+	it('serves the empty header-only feed without generating when the kill switch is off', async () => {
+		isFeedEnabled.mockResolvedValue(false);
+
+		const result = await makeRequestFull(createApp(cache), '/live-loan/ads/google-feed.tsv');
+
+		expect(result.statusCode).toBe(200);
+		expect(result.headers['content-type']).toContain('text/tab-separated-values');
+		expect(result.body.toString()).toEqual('HEADER_ONLY');
+		expect(generateGoogleFeed).not.toHaveBeenCalled();
+	});
+
+	it('generates, caches (fresh + last-good), and serves the feed on a cache miss', async () => {
+		const result = await makeRequestFull(createApp(cache), '/live-loan/ads/google-feed.tsv');
+
+		expect(result.statusCode).toBe(200);
+		expect(result.body.toString()).toContain('Support Maria');
+		expect(generateGoogleFeed).toHaveBeenCalledTimes(1);
+		expect(memJsUtils.setToCache).toHaveBeenCalledWith(FRESH_KEY, expect.any(String), 3600, cache);
+		expect(memJsUtils.setToCache).toHaveBeenCalledWith(LAST_GOOD_KEY, expect.any(String), 259200, cache);
+	});
+
+	it('never lets a downstream cache hold the feed, so the kill switch is not defeated', async () => {
+		// Rows path (cache miss -> generated): must be no-store so a browser/CDN/Google copy can't
+		// linger after the flag is flipped off. The server-side memjs cache (TTL 3600 above) is what
+		// protects the FLSS/hydrate pipeline, not the HTTP layer.
+		const rows = await makeRequestFull(createApp(cache), '/live-loan/ads/google-feed.tsv');
+		expect(rows.headers['cache-control']).toBe('no-store');
+
+		// Off path (kill switch) must also be no-store.
+		isFeedEnabled.mockResolvedValue(false);
+		const off = await makeRequestFull(createApp(cache), '/live-loan/ads/google-feed.tsv');
+		expect(off.headers['cache-control']).toBe('no-store');
+	});
+
+	it('serves the fresh cache without regenerating on a cache hit', async () => {
+		memJsUtils.getFromCache.mockImplementation(async key => (key === FRESH_KEY ? 'CACHED_FEED' : null));
+
+		const result = await makeRequestFull(createApp(cache), '/live-loan/ads/google-feed.tsv');
+
+		expect(result.statusCode).toBe(200);
+		expect(result.body.toString()).toEqual('CACHED_FEED');
+		expect(generateGoogleFeed).not.toHaveBeenCalled();
+	});
+
+	it('serves the last-good copy when generation fails and re-primes the fresh key with a backoff', async () => {
+		memJsUtils.getFromCache.mockImplementation(async key => (key === LAST_GOOD_KEY ? 'LAST_GOOD_FEED' : null));
+		generateGoogleFeed.mockRejectedValue(new Error('FLSS down'));
+
+		const result = await makeRequestFull(createApp(cache), '/live-loan/ads/google-feed.tsv');
+
+		expect(result.statusCode).toBe(200);
+		expect(result.body.toString()).toEqual('LAST_GOOD_FEED');
+		// outage backoff: fresh key re-primed with last-good for 60s so the pipeline isn't re-run every hit
+		expect(memJsUtils.setToCache).toHaveBeenCalledWith(FRESH_KEY, 'LAST_GOOD_FEED', 60, cache);
+	});
+
+	it('returns 503 with Retry-After when generation fails and there is no last-good', async () => {
+		generateGoogleFeed.mockRejectedValue(new Error('FLSS down'));
+
+		const result = await makeRequestFull(createApp(cache), '/live-loan/ads/google-feed.tsv');
+
+		expect(result.statusCode).toBe(503);
+		expect(result.headers['retry-after']).toBe('300');
+	});
+});
+
+describe('live-loan-router ads image route', () => {
+	let cache;
+
+	beforeEach(() => {
+		vi.resetAllMocks();
+		cache = createMockCache();
+		memJsUtils.getFromCache.mockResolvedValue(null); // default: cache miss
+		memJsUtils.setToCache.mockResolvedValue(undefined);
+	});
+
+	it('processes and serves a JPEG on a cache miss', async () => {
+		const jpeg = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00]);
+		processAdImage.mockResolvedValue(jpeg);
+
+		const result = await makeRequestFull(createApp(cache), '/live-loan/ads/image/abc123');
+
+		expect(result.statusCode).toBe(200);
+		expect(result.headers['content-type']).toBe('image/jpeg');
+		expect(processAdImage).toHaveBeenCalledWith('abc123');
+		expect(Buffer.compare(result.body, jpeg)).toBe(0);
+		expect(memJsUtils.setToCache).toHaveBeenCalledWith('ads-image-abc123', jpeg, 86400, cache);
+	});
+
+	it('serves the cached JPEG without re-processing on a cache hit', async () => {
+		const cached = Buffer.from([0xff, 0xd8, 0xff, 0x01]);
+		memJsUtils.getFromCache.mockResolvedValue(cached);
+
+		const result = await makeRequestFull(createApp(cache), '/live-loan/ads/image/abc123');
+
+		expect(result.statusCode).toBe(200);
+		expect(Buffer.compare(result.body, cached)).toBe(0);
+		expect(processAdImage).not.toHaveBeenCalled();
+	});
+
+	it('returns 404 without caching when the processor returns null', async () => {
+		processAdImage.mockResolvedValue(null);
+
+		const result = await makeRequestFull(createApp(cache), '/live-loan/ads/image/badhash');
+
+		expect(result.statusCode).toBe(404);
+		expect(memJsUtils.setToCache).not.toHaveBeenCalled();
 	});
 });

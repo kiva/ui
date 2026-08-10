@@ -5,6 +5,21 @@ import drawLoanCard from './util/live-loan/live-loan-draw.js';
 import fetchLoansByType, { QUERY_TYPE } from './util/live-loan/live-loan-fetch.js';
 import { trace } from './util/mockTrace.js';
 import { resolveBundleSize, DEFAULT_BUNDLE_COUNT, MAX_BUNDLE_COUNT } from './util/live-loan/bundle-size.js';
+import { generateGoogleFeed, emptyGoogleFeed } from './util/live-loan/ads/google-display/google-feed.js';
+import { isFeedEnabled } from './util/live-loan/ads/kill-switch.js';
+import { processAdImage } from './util/live-loan/ads/ad-image.js';
+
+// Google Ads business-data feed: a fresh copy is served from cache between regenerations so scrapers
+// can't drive the FLSS/hydrate pipeline on every hit; the last-good copy is served if a regeneration
+// fails so a transient outage never empties the feed.
+const ADS_FEED_FRESH_KEY = 'google-ads-feed';
+const ADS_FEED_LAST_GOOD_KEY = 'google-ads-feed-last-good';
+const ADS_FEED_FRESH_TTL = 60 * 60; // 1 hour
+const ADS_FEED_LAST_GOOD_TTL = 3 * 24 * 60 * 60; // 3 days
+// On a generation failure the last-good feed is re-primed into the fresh key for this short window,
+// so an FLSS/gateway outage re-runs the full pipeline at most once per window instead of every request.
+const ADS_FEED_FAILURE_BACKOFF_TTL = 60; // 1 minute
+const ADS_IMAGE_TTL = 24 * 60 * 60; // 1 day
 
 async function fetchRecommendedLoans(type, id, cache, queryType = QUERY_TYPE.DEFAULT, count = DEFAULT_BUNDLE_COUNT) {
 	const queryTypeSuffix = queryType !== QUERY_TYPE.DEFAULT ? `-${queryType}` : '';
@@ -411,6 +426,101 @@ export default function liveLoanRouter(cache) {
 	router.use('/recommendations/u/:id(\\d{0,})/bundle-url', async (req, res) => {
 		await trace('live-loan.recommendations.user.redirectToBundleUrl', { resource: req.path }, async () => {
 			await redirectToBundleUrl('user', cache, req, res, QUERY_TYPE.RECOMMENDATIONS);
+		});
+	});
+
+	// Google Ads live-loan feed (public TSV, fetched on Google's own schedule)
+	router.get('/ads/google-feed.tsv', async (req, res) => {
+		await trace('live-loan.ads.googleFeed', { resource: req.path }, async () => {
+			const sendFeed = feed => {
+				res.contentType('text/tab-separated-values');
+				// The feed is kill-switchable, so it must never be held by a downstream cache
+				// (browser/CDN/Google) — otherwise turning the flag off would still serve cached rows.
+				// Load/scraper protection is the server-side memjs cache below, not the HTTP layer.
+				res.set('Cache-Control', 'no-store');
+				res.send(feed);
+			};
+
+			// Kill switch is checked ahead of the rows cache, so turning it off drains inventory on the
+			// next request (an empty header-only feed) without running the FLSS/hydrate pipeline.
+			if (!(await isFeedEnabled(cache))) {
+				sendFeed(emptyGoogleFeed());
+				return;
+			}
+
+			let cached;
+			try {
+				cached = await getFromCache(ADS_FEED_FRESH_KEY, cache);
+			} catch (err) {
+				error(`Error reading ad feed from cache, ${err}`, { error: err });
+			}
+			if (cached) {
+				sendFeed(cached);
+				return;
+			}
+
+			try {
+				const feed = await generateGoogleFeed();
+				setToCache(ADS_FEED_FRESH_KEY, feed, ADS_FEED_FRESH_TTL, cache).catch(err => {
+					error(`Error caching ad feed, ${err}`, { error: err });
+				});
+				setToCache(ADS_FEED_LAST_GOOD_KEY, feed, ADS_FEED_LAST_GOOD_TTL, cache).catch(err => {
+					error(`Error caching last-good ad feed, ${err}`, { error: err });
+				});
+				sendFeed(feed);
+			} catch (err) {
+				error(`Error generating ad feed, ${err}`, { error: err });
+				let lastGood;
+				try {
+					lastGood = await getFromCache(ADS_FEED_LAST_GOOD_KEY, cache);
+				} catch (readErr) {
+					error(`Error reading last-good ad feed, ${readErr}`, { error: readErr });
+				}
+				if (lastGood) {
+					// Re-prime the fresh key with last-good for a short backoff so an ongoing outage
+					// re-runs the FLSS/freshness pipeline at most once per window, not on every request.
+					setToCache(ADS_FEED_FRESH_KEY, lastGood, ADS_FEED_FAILURE_BACKOFF_TTL, cache).catch(backoffErr => {
+						error(`Error backing off ad feed cache, ${backoffErr}`, { error: backoffErr });
+					});
+					sendFeed(lastGood);
+					return;
+				}
+				res.set('Retry-After', '300');
+				res.sendStatus(503);
+			}
+		});
+	});
+
+	// Google Ads image endpoint: serves the loan image re-encoded as a Google-compliant sRGB+ICC JPEG
+	router.get('/ads/image/:hash', async (req, res) => {
+		await trace('live-loan.ads.image', { resource: req.path }, async () => {
+			const { hash } = req.params;
+			const cacheKey = `ads-image-${hash}`;
+
+			// Read-through cache so a CDN cold miss doesn't re-fetch + re-encode the image every hit
+			// (mirrors serveImg's processed-image caching above).
+			let jpeg;
+			try {
+				jpeg = await getFromCache(cacheKey, cache);
+			} catch (err) {
+				error(`Error reading ad image from cache, ${err}`, { error: err });
+			}
+			if (!jpeg) {
+				jpeg = await processAdImage(hash);
+				if (jpeg) {
+					setToCache(cacheKey, jpeg, ADS_IMAGE_TTL, cache).catch(err => {
+						error(`Error caching ad image, ${err}`, { error: err });
+					});
+				}
+			}
+
+			if (!jpeg) {
+				res.sendStatus(404);
+				return;
+			}
+			res.contentType('image/jpeg');
+			res.set('Cache-Control', `public, max-age=${ADS_IMAGE_TTL}`);
+			res.send(jpeg);
 		});
 	});
 
