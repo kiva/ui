@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
-import GoalInReviewSlide2 from '#src/components/MyKiva/GoalInReview/GoalInReviewSlide2';
-import { MAX_BORROWER_CARDS } from '#src/util/goalInReviewBorrowers';
+import GoalInReviewBorrowers from '#src/components/MyKiva/GoalInReview/GoalInReviewBorrowers';
+import { MAX_BORROWER_CARDS } from '#src/util/goalInReview';
 import { globalOptions } from '../../../../specUtils';
 
 const global = {
@@ -14,12 +14,12 @@ const buildLoans = (count, startId = 1) => Array.from({ length: count }, (_unuse
 	image: { hash: `hash-${startId + i}` },
 }));
 
-const renderSlide = (props = {}) => render(GoalInReviewSlide2, {
+const renderSlide = (props = {}) => render(GoalInReviewBorrowers, {
 	global,
 	props: { loans: buildLoans(3), borrowerCount: 3, ...props },
 });
 
-describe('GoalInReviewSlide2', () => {
+describe('GoalInReviewBorrowers', () => {
 	it('renders the eyebrow copy', () => {
 		const { getByText } = renderSlide();
 		getByText('The people behind the loans');
@@ -73,7 +73,7 @@ describe('GoalInReviewSlide2', () => {
 
 		it('keeps the grid hook that caps the photo columns', () => {
 			const { getByTestId } = renderSlide();
-			expect(getByTestId('goal-in-review-slide-2-borrowers').className).toContain('borrower-grid');
+			expect(getByTestId('goal-in-review-borrowers-borrowers').className).toContain('borrower-grid');
 		});
 
 		it('falls back to a placeholder tile when a loan has no image', () => {
@@ -92,7 +92,7 @@ describe('GoalInReviewSlide2', () => {
 				loans: buildLoans(MAX_BORROWER_CARDS),
 				borrowerCount: MAX_BORROWER_CARDS,
 			});
-			expect(queryByTestId('goal-in-review-slide-2-more')).toBeNull();
+			expect(queryByTestId('goal-in-review-borrowers-more')).toBeNull();
 		});
 
 		it('shows the remainder one over the limit', () => {
@@ -104,7 +104,7 @@ describe('GoalInReviewSlide2', () => {
 		it('sums with the shown cards back to the slide 1 total', () => {
 			const { getByText, getByTestId } = renderSlide({ loans: buildLoans(48), borrowerCount: 48 });
 			getByText(`+${48 - MAX_BORROWER_CARDS} more`);
-			expect(getByTestId('goal-in-review-slide-2-more')).toBeTruthy();
+			expect(getByTestId('goal-in-review-borrowers-more')).toBeTruthy();
 		});
 
 		it('formats a large remainder with separators', () => {

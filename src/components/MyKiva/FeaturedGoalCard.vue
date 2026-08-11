@@ -157,7 +157,7 @@ import {
 import KvIcon from '#src/components/Kv/KvIcon';
 import goalCopy from '#src/util/goalCopy';
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
-import { RECAP_CTA_LABEL } from '#src/util/goalRecapEntryPoint';
+import { RECAP_CTA_LABEL } from '#src/util/goalInReview';
 import { showConfetti } from '#src/util/animation/confettiUtils';
 
 const HALF_GOAL_THRESHOLD = 50;

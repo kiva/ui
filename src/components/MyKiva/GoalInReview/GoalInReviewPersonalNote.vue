@@ -1,10 +1,10 @@
 <template>
 	<section
-		class="tw-w-full tw-bg-eco-green-4 goal-in-review-slide-6"
-		data-testid="goal-in-review-slide-6"
+		class="tw-w-full tw-bg-eco-green-4 goal-in-review-personal-note"
+		data-testid="goal-in-review-personal-note"
 	>
 		<img
-			:src="slide6TopBorder"
+			:src="personalnoteTopBorder"
 			alt="Image with design to separate two sections"
 			class="tw-block tw-w-full tw-bg-marigold-1"
 		>
@@ -65,7 +65,7 @@
 </template>
 
 <script setup>
-import slide6TopBorder from '#src/assets/images/my-kiva/goal-in-review/slide6-top-border.png';
+import personalnoteTopBorder from '#src/assets/images/my-kiva/goal-in-review/slide6-top-border.png';
 import vishalAvatar from '#src/assets/images/my-kiva/goal-in-review/vishal-quote.png';
 
 defineProps({
@@ -77,7 +77,7 @@ defineProps({
 </script>
 
 <style lang="postcss" scoped>
-.goal-in-review-slide-6 {
+.goal-in-review-personal-note {
 	background-image: url('/src/assets/images/my-kiva/goal-in-review/slide6-paper.png');
 
 	@apply tw-bg-no-repeat tw-bg-center tw-bg-cover;
