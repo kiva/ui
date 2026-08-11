@@ -24,6 +24,10 @@ const loan = {
 	image: { id: 1, hash: 'abc123def456' },
 };
 
+// The hash 'abc123def456' rendered through the Cloudinary ad-image transform.
+const EXPECTED_IMAGE_URL = 'https://res.cloudinary.com/kiva/'
+	+ 'c_limit,w_1200,h_1200,f_jpg,cs_srgb,fl_force_icc/remote/abc123def456.jpg';
+
 describe('feed-row', () => {
 	describe('sanitizeText', () => {
 		it('strips tabs/newlines/control chars and collapses whitespace', () => {
@@ -92,9 +96,8 @@ describe('feed-row', () => {
 	});
 
 	describe('buildImageUrl', () => {
-		it('builds the self-hosted ICC image URL from the hash', () => {
-			expect(buildImageUrl('abc123def456'))
-				.toEqual('https://www.kiva.org/live-loan/ads/image/abc123def456');
+		it('builds the Cloudinary sRGB+ICC image URL from the hash', () => {
+			expect(buildImageUrl('abc123def456')).toEqual(EXPECTED_IMAGE_URL);
 		});
 	});
 
@@ -122,7 +125,7 @@ describe('feed-row', () => {
 				'Item description': 'Support Mukumoy',
 				'Item subtitle': 'Tajikistan',
 				'Item category': 'Retail',
-				'Image URL': 'https://www.kiva.org/live-loan/ads/image/abc123def456',
+				'Image URL': EXPECTED_IMAGE_URL,
 				'Final URL': 'https://www.kiva.org/lend/456?utm_medium=paid&utm_source=google&utm_campaign=liveloans',
 			});
 		});

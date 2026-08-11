@@ -15,7 +15,6 @@ import {
 	ADS_FEED_FAILURE_BACKOFF_TTL,
 } from './util/live-loan/ads/google-display/google-feed.js';
 import { isFeedEnabled } from './util/live-loan/ads/kill-switch.js';
-import { processAdImage, ADS_IMAGE_TTL } from './util/live-loan/ads/ad-image.js';
 
 async function fetchRecommendedLoans(type, id, cache, queryType = QUERY_TYPE.DEFAULT, count = DEFAULT_BUNDLE_COUNT) {
 	const queryTypeSuffix = queryType !== QUERY_TYPE.DEFAULT ? `-${queryType}` : '';
@@ -484,39 +483,6 @@ export default function liveLoanRouter(cache) {
 				res.set('Retry-After', '300');
 				res.sendStatus(503);
 			}
-		});
-	});
-
-	// Google Ads image endpoint: serves the loan image re-encoded as a Google-compliant sRGB+ICC JPEG
-	router.get('/ads/image/:hash', async (req, res) => {
-		await trace('live-loan.ads.image', { resource: req.path }, async () => {
-			const { hash } = req.params;
-			const cacheKey = `ads-image-${hash}`;
-
-			// Read-through cache so a CDN cold miss doesn't re-fetch + re-encode the image every hit
-			// (mirrors serveImg's processed-image caching above).
-			let jpeg;
-			try {
-				jpeg = await getFromCache(cacheKey, cache);
-			} catch (err) {
-				error(`Error reading ad image from cache, ${err}`, { error: err });
-			}
-			if (!jpeg) {
-				jpeg = await processAdImage(hash);
-				if (jpeg) {
-					setToCache(cacheKey, jpeg, ADS_IMAGE_TTL, cache).catch(err => {
-						error(`Error caching ad image, ${err}`, { error: err });
-					});
-				}
-			}
-
-			if (!jpeg) {
-				res.sendStatus(404);
-				return;
-			}
-			res.contentType('image/jpeg');
-			res.set('Cache-Control', `public, max-age=${ADS_IMAGE_TTL}`);
-			res.send(jpeg);
 		});
 	});
 

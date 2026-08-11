@@ -1,11 +1,8 @@
 import { primaryFirstName } from '../ads-eligibility.js';
-import { KIVA_PROD_HOST } from '../constants.js';
+import { KIVA_PROD_HOST, CLOUDINARY_AD_IMAGE_BASE, CLOUDINARY_AD_IMAGE_TRANSFORM } from '../constants.js';
 
 const UTM_QUERY = 'utm_medium=paid&utm_source=google&utm_campaign=liveloans';
 const KIVA_LEND_BASE = `${KIVA_PROD_HOST}/lend`;
-// The feed serves its own ICC-compliant images from this endpoint (built from the loan image hash),
-// not the raw CDN image, because Google Ads dynamic display requires an embedded sRGB profile.
-const KIVA_AD_IMAGE_BASE = `${KIVA_PROD_HOST}/live-loan/ads/image`;
 // Google caps Item title / subtitle / description at 25 characters.
 const CAP = 25;
 
@@ -51,7 +48,7 @@ export function buildFinalUrl(id) {
 }
 
 export function buildImageUrl(hash) {
-	return `${KIVA_AD_IMAGE_BASE}/${hash}`;
+	return `${CLOUDINARY_AD_IMAGE_BASE}/${CLOUDINARY_AD_IMAGE_TRANSFORM}/remote/${hash}.jpg`;
 }
 
 // Whether a row's visible copy is safe to publish as an ad: rejects ALL-CAPS shouting and banned

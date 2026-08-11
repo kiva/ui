@@ -6,7 +6,6 @@ import * as memJsUtils from '#server/util/memJsUtils';
 import drawLoanCard from '#server/util/live-loan/live-loan-draw';
 import { generateGoogleFeed, emptyGoogleFeed } from '#server/util/live-loan/ads/google-display/google-feed';
 import { isFeedEnabled } from '#server/util/live-loan/ads/kill-switch';
-import { processAdImage } from '#server/util/live-loan/ads/ad-image';
 
 // Mock out modules to prevent real network/cache calls
 vi.mock('#server/util/live-loan/live-loan-fetch');
@@ -14,7 +13,6 @@ vi.mock('#server/util/memJsUtils');
 vi.mock('#server/util/live-loan/live-loan-draw');
 vi.mock('#server/util/live-loan/ads/google-display/google-feed');
 vi.mock('#server/util/live-loan/ads/kill-switch');
-vi.mock('#server/util/live-loan/ads/ad-image');
 vi.mock('#server/util/log', () => ({
 	log: vi.fn(),
 	error: vi.fn(),
@@ -618,49 +616,5 @@ describe('live-loan-router ads feed route', () => {
 
 		expect(result.statusCode).toBe(503);
 		expect(result.headers['retry-after']).toBe('300');
-	});
-});
-
-describe('live-loan-router ads image route', () => {
-	let cache;
-
-	beforeEach(() => {
-		vi.resetAllMocks();
-		cache = createMockCache();
-		memJsUtils.getFromCache.mockResolvedValue(null); // default: cache miss
-		memJsUtils.setToCache.mockResolvedValue(undefined);
-	});
-
-	it('processes and serves a JPEG on a cache miss', async () => {
-		const jpeg = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00]);
-		processAdImage.mockResolvedValue(jpeg);
-
-		const result = await makeRequestFull(createApp(cache), '/live-loan/ads/image/abc123');
-
-		expect(result.statusCode).toBe(200);
-		expect(result.headers['content-type']).toBe('image/jpeg');
-		expect(processAdImage).toHaveBeenCalledWith('abc123');
-		expect(Buffer.compare(result.body, jpeg)).toBe(0);
-		expect(memJsUtils.setToCache).toHaveBeenCalledWith('ads-image-abc123', jpeg, 86400, cache);
-	});
-
-	it('serves the cached JPEG without re-processing on a cache hit', async () => {
-		const cached = Buffer.from([0xff, 0xd8, 0xff, 0x01]);
-		memJsUtils.getFromCache.mockResolvedValue(cached);
-
-		const result = await makeRequestFull(createApp(cache), '/live-loan/ads/image/abc123');
-
-		expect(result.statusCode).toBe(200);
-		expect(Buffer.compare(result.body, cached)).toBe(0);
-		expect(processAdImage).not.toHaveBeenCalled();
-	});
-
-	it('returns 404 without caching when the processor returns null', async () => {
-		processAdImage.mockResolvedValue(null);
-
-		const result = await makeRequestFull(createApp(cache), '/live-loan/ads/image/badhash');
-
-		expect(result.statusCode).toBe(404);
-		expect(memJsUtils.setToCache).not.toHaveBeenCalled();
 	});
 });
