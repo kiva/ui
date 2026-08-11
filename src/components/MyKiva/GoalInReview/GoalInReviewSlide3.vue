@@ -1,7 +1,7 @@
 <template>
 	<section
 		ref="globalReachSection"
-		class="tw-w-full tw-bg-marigold-1 tw-px-2.5 tw-py-4 md:tw-px-4 md:tw-py-7.5"
+		class="tw-w-full tw-bg-marigold-1 tw-px-2.5 tw-py-4 md:tw-px-4"
 		:class="{ 'is-in-view': globalReachInView }"
 		data-animate-on-view
 		data-testid="goal-in-review-slide-3"
@@ -63,7 +63,10 @@
 		v-if="sectorValues.length"
 		ref="sectorsSection"
 		class="tw-w-full tw-bg-marigold-1 tw-p-4"
-		:class="{ 'is-in-view': sectorsInView }"
+		:class="{
+			'is-in-view': sectorsInView,
+			'tw-min-h-half-screen': !sectorsInView,
+		}"
 		data-animate-on-view
 		data-testid="goal-in-review-slide-3-sectors"
 	>
@@ -76,7 +79,10 @@
 			<span class="tw-text-marigold">{{ sectorCount }} sectors</span> of opportunity.
 		</h1>
 
-		<div class="sectors-chart tw-mx-auto md:tw-max-w-3xl">
+		<div
+			v-if="sectorsInView"
+			class="sectors-chart tw-mx-auto md:tw-max-w-3xl"
+		>
 			<!-- Kept mounted (not v-if'd) so its footprint is reserved up front: the
 				skeleton ring holds the donut's responsive layout, so there's no jump
 				when the section is reached. `loading` flips false on reveal, which
@@ -84,10 +90,9 @@
 				off-screen. -->
 			<KvPieChartV2
 				:values="sectorValues"
-				:loading="!sectorsInView"
 				:stroke-width="36"
 				:shown-segments="sectorValues.length"
-				:initial-delay="100"
+				:initial-delay="300"
 				unit="percent"
 			/>
 		</div>

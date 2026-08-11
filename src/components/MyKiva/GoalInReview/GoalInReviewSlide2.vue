@@ -1,6 +1,6 @@
 <template>
 	<section
-		class="tw-w-full tw-bg-brand-100 tw-px-2 tw-py-4 md:tw-px-4 md:tw-py-7.5"
+		class="tw-w-full tw-bg-brand-100 tw-px-2 tw-py-4 md:tw-px-4"
 		data-testid="goal-in-review-slide-2"
 	>
 		<p class="tw-text-action tw-mb-1 kv-fade-up slide2-eyebrow">
