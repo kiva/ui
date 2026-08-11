@@ -1,7 +1,7 @@
 <template>
 	<section
 		class="tw-w-full tw-bg-eco-green-4 tw-px-2 tw-pt-4 tw-pb-6.5 tw-text-center"
-		data-testid="goal-in-review-slide-7"
+		data-testid="goal-in-review-thanks-and-feedback"
 	>
 		<div class="tw-mx-auto tw-max-w-lg">
 			<img
@@ -27,7 +27,7 @@
 			<div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
 				<KvButton
 					class="tw-w-full cta-button"
-					data-testid="goal-in-review-slide-7-primary-cta"
+					data-testid="goal-in-review-thanks-and-feedback-primary-cta"
 					@click="emit(primaryCta.event)"
 				>
 					{{ primaryCta.label }}
@@ -37,7 +37,7 @@
 					<button
 						type="button"
 						class="tw-inline-flex tw-items-center tw-gap-0.5 tw-text-brand-300 tw-font-medium"
-						data-testid="goal-in-review-slide-7-feedback-toggle"
+						data-testid="goal-in-review-thanks-and-feedback-feedback-toggle"
 						@click="toggleFeedback"
 					>
 						Share your feedback
@@ -55,7 +55,7 @@
 					<div
 						v-show="feedbackOpen"
 						class="tw-w-full tw-text-eco-green-1"
-						data-testid="goal-in-review-slide-7-feedback-placeholder"
+						data-testid="goal-in-review-thanks-and-feedback-feedback-placeholder"
 					>
 						<GoalInReviewFeedbackForm @submitted="handleFeedbackSubmitted" />
 					</div>

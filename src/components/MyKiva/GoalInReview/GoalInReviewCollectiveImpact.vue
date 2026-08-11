@@ -1,7 +1,7 @@
 <template>
 	<section
 		class="tw-w-full tw-bg-marigold-1 tw-px-2 tw-pt-5 tw-pb-9"
-		data-testid="goal-in-review-slide-5"
+		data-testid="goal-in-review-collective-impact"
 	>
 		<div class="tw-mx-auto tw-max-w-3xl">
 			<p class="tw-text-small tw-text-action tw-mb-1">
@@ -14,7 +14,7 @@
 
 			<ul
 				class="tw-list-none tw-p-0 tw-m-0 md:tw-flex"
-				data-testid="goal-in-review-slide-5-stats"
+				data-testid="goal-in-review-collective-impact-stats"
 			>
 				<li
 					v-for="stat, idx in stats"

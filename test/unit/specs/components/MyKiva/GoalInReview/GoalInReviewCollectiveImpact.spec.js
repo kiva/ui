@@ -1,10 +1,10 @@
 import { render } from '@testing-library/vue';
-import GoalInReviewSlide5 from '#src/components/MyKiva/GoalInReview/GoalInReviewSlide5';
+import GoalInReviewCollectiveImpact from '#src/components/MyKiva/GoalInReview/GoalInReviewCollectiveImpact';
 import { globalOptions } from '../../../../specUtils';
 
-describe('GoalInReviewSlide5', () => {
+describe('GoalInReviewCollectiveImpact', () => {
 	it('renders the static community-impact stats', () => {
-		const { getByText } = render(GoalInReviewSlide5, { global: globalOptions });
+		const { getByText } = render(GoalInReviewCollectiveImpact, { global: globalOptions });
 
 		getByText('Collective impact');
 		getByText(/Goal Setters create something/);

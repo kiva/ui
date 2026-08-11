@@ -1,10 +1,10 @@
 <template>
 	<section
-		class="tw-w-full tw-bg-gray-50 tw-bg-no-repeat tw-bg-bottom goal-in-review-slide-1"
-		:class="{ 'goal-in-review-slide-1--in-progress': !isComplete }"
-		data-testid="goal-in-review-slide-1"
+		class="tw-w-full tw-bg-gray-50 tw-bg-no-repeat tw-bg-bottom goal-in-review-headline"
+		:class="{ 'goal-in-review-headline--in-progress': !isComplete }"
+		data-testid="goal-in-review-headline"
 	>
-		<div class="tw-relative" data-testid="goal-in-review-slide-1-header">
+		<div class="tw-relative" data-testid="goal-in-review-headline-header">
 			<ul class="tw-grid tw-grid-cols-3 md:tw-grid-cols-4 tw-list-none tw-p-0 tw-m-0">
 				<li
 					v-for="(image, index) in headerImages"
@@ -30,7 +30,7 @@
 			<p
 				class="tw-inline-block tw-rounded-full tw-bg-brand-650 tw-text-white
 					tw-text-label tw-py-0.5 tw-px-1.5 tw-mb-2"
-				data-testid="goal-in-review-slide-1-pill"
+				data-testid="goal-in-review-headline-pill"
 			>
 				{{ pillText }}
 			</p>
@@ -58,14 +58,14 @@
 
 				<ul
 					class="tw-grid tw-grid-cols-2 md:tw-grid-cols-4 tw-gap-2 tw-list-none tw-p-0 tw-m-0"
-					data-testid="goal-in-review-slide-1-stats"
+					data-testid="goal-in-review-headline-stats"
 				>
 					<li
 						v-for="stat in stats"
 						:key="stat.key"
 						class="tw-min-h-11.5 tw-flex tw-flex-col tw-items-center tw-justify-center tw-text-center
 							tw-bg-white tw-rounded tw-border tw-border-gray-100 tw-py-2 tw-px-1.5"
-						:data-testid="`goal-in-review-slide-1-stat-${stat.key}`"
+						:data-testid="`goal-in-review-headline-stat-${stat.key}`"
 					>
 						<span class="tw-font-medium tw-text-primary">{{ stat.value }}</span>
 						<span v-if="stat.label" class="tw-text-small tw-text-primary">{{ stat.label }}</span>
@@ -172,20 +172,20 @@ const stats = computed(() => [
 	@apply tw-object-cover md:tw-h-auto md:tw-object-fill;
 }
 
-.goal-in-review-slide-1 {
+.goal-in-review-headline {
 	background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-mobile-hill.png');
 	background-size: contain;
 	background-position: bottom left;
 }
 
 @screen md {
-	.goal-in-review-slide-1 {
+	.goal-in-review-headline {
 		background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-desktop-hill.png');
 	}
 }
 
 @screen lg {
-	.goal-in-review-slide-1 {
+	.goal-in-review-headline {
 		background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-desktop-hill.png');
 	}
 }

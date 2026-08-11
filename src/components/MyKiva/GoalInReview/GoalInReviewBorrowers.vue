@@ -1,7 +1,7 @@
 <template>
 	<section
 		class="tw-w-full tw-bg-brand-100 tw-px-2 tw-py-4 md:tw-px-4 md:tw-py-7.5"
-		data-testid="goal-in-review-slide-2"
+		data-testid="goal-in-review-borrowers"
 	>
 		<p class="tw-text-action tw-mb-1">
 			The people behind the loans
@@ -14,7 +14,7 @@
 
 		<ul
 			class="borrower-grid tw-grid tw-gap-x-1 tw-gap-y-3 tw-list-none tw-p-0 tw-m-0"
-			data-testid="goal-in-review-slide-2-borrowers"
+			data-testid="goal-in-review-borrowers-borrowers"
 		>
 			<li v-for="card in cards" :key="card.id" class="tw-flex tw-flex-col tw-gap-0.5">
 				<BorrowerImage
@@ -36,7 +36,7 @@
 				</p>
 			</li>
 
-			<li v-if="moreCount > 0" data-testid="goal-in-review-slide-2-more">
+			<li v-if="moreCount > 0" data-testid="goal-in-review-borrowers-more">
 				<div
 					class="tw-w-full tw-aspect-square tw-rounded-sm tw-bg-eco-green-3 tw-bg-opacity-low
 						tw-flex tw-items-center tw-justify-center"

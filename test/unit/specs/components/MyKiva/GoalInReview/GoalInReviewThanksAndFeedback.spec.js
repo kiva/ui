@@ -1,5 +1,5 @@
 import { render, fireEvent } from '@testing-library/vue';
-import GoalInReviewSlide7 from '#src/components/MyKiva/GoalInReview/GoalInReviewSlide7';
+import GoalInReviewThanksAndFeedback from '#src/components/MyKiva/GoalInReview/GoalInReviewThanksAndFeedback';
 import { globalOptions } from '../../../../specUtils';
 
 vi.mock('#src/components/MyKiva/GoalInReview/GoalInReviewFeedbackForm', () => ({
@@ -18,7 +18,7 @@ const GOAL_YEAR = 2026;
 const CURRENT_YEAR = 2026;
 const NEXT_YEAR = 2027;
 
-const renderSlide = (props = {}) => render(GoalInReviewSlide7, {
+const renderSlide = (props = {}) => render(GoalInReviewThanksAndFeedback, {
 	global: globalOptions,
 	props: {
 		goalStatus: 'completed',
@@ -29,7 +29,7 @@ const renderSlide = (props = {}) => render(GoalInReviewSlide7, {
 	},
 });
 
-describe('GoalInReviewSlide7', () => {
+describe('GoalInReviewThanksAndFeedback', () => {
 	it('renders the thank-you headline and loan-count copy', () => {
 		const { getByText } = renderSlide();
 		getByText('Thank you!');
@@ -104,7 +104,7 @@ describe('GoalInReviewSlide7', () => {
 		});
 
 		// v-show keeps the survey mounted; the toggle flips its display.
-		const feedback = getByTestId('goal-in-review-slide-7-feedback-placeholder');
+		const feedback = getByTestId('goal-in-review-thanks-and-feedback-feedback-placeholder');
 		expect(feedback.style.display).toBe('none');
 		await fireEvent.click(getByText('Share your feedback'));
 		expect(feedback.style.display).toBe('');
@@ -128,7 +128,7 @@ describe('GoalInReviewSlide7', () => {
 
 	it('hides the feedback toggle after a successful submit so it cannot re-fire', async () => {
 		const trackEvent = vi.fn();
-		const { getByText, getByTestId, queryByText } = render(GoalInReviewSlide7, {
+		const { getByText, getByTestId, queryByText } = render(GoalInReviewThanksAndFeedback, {
 			global: {
 				...globalOptions,
 				provide: { ...globalOptions.provide, $kvTrackEvent: trackEvent },
@@ -147,7 +147,7 @@ describe('GoalInReviewSlide7', () => {
 
 	it('tracks opening the feedback survey', async () => {
 		const trackEvent = vi.fn();
-		const { getByText } = render(GoalInReviewSlide7, {
+		const { getByText } = render(GoalInReviewThanksAndFeedback, {
 			global: {
 				...globalOptions,
 				provide: {

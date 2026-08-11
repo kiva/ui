@@ -1,10 +1,10 @@
 import { render } from '@testing-library/vue';
-import GoalInReviewSlide6 from '#src/components/MyKiva/GoalInReview/GoalInReviewSlide6';
+import GoalInReviewPersonalNote from '#src/components/MyKiva/GoalInReview/GoalInReviewPersonalNote';
 import { globalOptions } from '../../../../specUtils';
 
-describe('GoalInReviewSlide6', () => {
+describe('GoalInReviewPersonalNote', () => {
 	it('renders the personal note with the signature', () => {
-		const { getByText } = render(GoalInReviewSlide6, {
+		const { getByText } = render(GoalInReviewPersonalNote, {
 			global: globalOptions,
 			props: { year: 2026 },
 		});
@@ -16,7 +16,7 @@ describe('GoalInReviewSlide6', () => {
 	});
 
 	it('shows the goal year in the byline pill', () => {
-		const { getByText } = render(GoalInReviewSlide6, {
+		const { getByText } = render(GoalInReviewPersonalNote, {
 			global: globalOptions,
 			props: { year: 2026 },
 		});

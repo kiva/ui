@@ -237,7 +237,7 @@ function getSessionCount(purchases) {
 
 /**
  * Sums the lender's share of each loan. Null rather than 0 when no shares came back,
- * so slide 1 shows an em dash instead of "$0".
+ * so the headline slide shows an em dash instead of "$0".
  */
 function getAmountLent(loans) {
 	const shares = loans
@@ -248,7 +248,7 @@ function getAmountLent(loans) {
 }
 
 /**
- * `GoalSummary.countries` and `.sectors` are support-all only, so slide 3 derives
+ * `GoalSummary.countries` and `.sectors` are support-all only, so the global reach slide derives
  * them from the goal's own loans for every other category.
  */
 function getGoalCountries(loans) {
@@ -318,7 +318,7 @@ export function scopeToGoalYear(goalSummary, tieredLendingAchievements = []) {
 }
 
 /**
- * Loans shown as borrower photos on slide 2. Support-all goals carry their own
+ * Loans shown as borrower photos on the borrowers slide. Support-all goals carry their own
  * loans on the goal summary; category goals only exist in achievements-service,
  * where the qualifying loans hang off the achievement matching the category.
  *
@@ -339,8 +339,8 @@ export function getGoalLoans(goalSummary, tieredLendingAchievements = []) {
 }
 
 /**
- * Slide 1 and slide 7 both read these, and slide 2 reconciles its "+n more"
- * against `borrowers`, so they resolve once here rather than per slide.
+ * The headline and thanks slides both read these, and the borrowers slide reconciles
+ * its "+n more" against `borrowers`, so they resolve once here rather than per slide.
  *
  * @param {object} goalSummary The recap goal summary.
  * @returns {{totalLent: number, borrowers: number, percentComplete: number}} Headline stats.
@@ -364,7 +364,7 @@ export function getIsEligible(goalSummary) {
 	return Boolean(goalSummary?.goalName) && (Number(goalSummary?.count) || 0) > 0;
 }
 
-// --- Slide 2 borrower cards ---
+// --- Borrower cards ---
 
 export const MAX_BORROWER_CARDS = 11;
 
@@ -372,7 +372,7 @@ export const MAX_BORROWER_CARDS = 11;
  * Normalizes goal loans into photo cards, capped at MAX_BORROWER_CARDS.
  *
  * @param {Array} loans Goal loans, each `{ id, name, image { hash } }`.
- * @param {number|string} [totalBorrowerCount] Borrower total from slide 1.
+ * @param {number|string} [totalBorrowerCount] Borrower total from the headline slide.
  * @returns {{cards: Array<{id: string, name: string, imageHash: string}>, moreCount: number}}
  */
 export function getBorrowerCards(loans = [], totalBorrowerCount = null) {
@@ -396,7 +396,7 @@ export function getBorrowerCards(loans = [], totalBorrowerCount = null) {
 	};
 }
 
-// --- Slide 3 sector chart ---
+// --- Sector chart ---
 
 export const OTHER_SECTOR_LABEL = 'Other';
 
@@ -439,7 +439,7 @@ export function getNamedSectorCount(sectorValues = []) {
 	return (sectorValues ?? []).filter(sector => !sector.isOther).length;
 }
 
-// --- Slide 3 map centre ---
+// --- Map centre ---
 
 /** Centre used when no country has usable coordinates. */
 export const DEFAULT_MAP_CENTER = { lat: 20, long: 10 };
@@ -462,7 +462,7 @@ const getMeanLongitude = points => {
 };
 
 /**
- * Centres the slide 3 map on the countries the goal reached — the country itself
+ * Centres the global reach slide map on the countries the goal reached — the country itself
  * when there is only one, otherwise the average position of all of them.
  *
  * @param {Array} countries Countries with `geocode.latitude` / `geocode.longitude`.
@@ -480,10 +480,10 @@ export function getCountriesMapCenter(countries = []) {
 	};
 }
 
-// --- Slide 4 copy variants ---
+// --- Copy variants ---
 
 /**
- * Variant copy for GoalInReviewSlide4 ("What your goal says about you").
+ * Variant copy for GoalInReviewGivingInsights ("What your goal says about you").
  *
  * Each card resolves its own {title, content} from goal summary data:
  *  - Origin story: quarter of `dateStarted`
