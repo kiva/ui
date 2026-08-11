@@ -575,6 +575,9 @@ describe('live-loan-router ads feed route', () => {
 		expect(result.statusCode).toBe(200);
 		expect(result.body.toString()).toEqual('CACHED_FEED');
 		expect(generateGoogleFeed).not.toHaveBeenCalled();
+		// no-store is the sole freshness guard now the kill switch is gone: even a cached copy must not
+		// be held downstream, or a funded/expired loan would keep being advertised.
+		expect(result.headers['cache-control']).toBe('no-store');
 	});
 
 	it('serves the last-good copy when generation fails and re-primes the fresh key with a backoff', async () => {

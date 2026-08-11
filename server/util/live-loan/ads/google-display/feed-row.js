@@ -3,6 +3,8 @@ import { KIVA_PROD_HOST, CLOUDINARY_AD_IMAGE_BASE, CLOUDINARY_AD_IMAGE_TRANSFORM
 
 const UTM_QUERY = 'utm_medium=paid&utm_source=google&utm_campaign=liveloans';
 const KIVA_LEND_BASE = `${KIVA_PROD_HOST}/lend`;
+// Cloudinary's `remote/` mapping fetches the loan's stored original at <hash>.jpg to transform on the fly.
+const AD_IMAGE_BASE = `${CLOUDINARY_AD_IMAGE_BASE}/${CLOUDINARY_AD_IMAGE_TRANSFORM}/remote`;
 // Google caps Item title / subtitle / description at 25 characters.
 const CAP = 25;
 
@@ -48,7 +50,7 @@ export function buildFinalUrl(id) {
 }
 
 export function buildImageUrl(hash) {
-	return `${CLOUDINARY_AD_IMAGE_BASE}/${CLOUDINARY_AD_IMAGE_TRANSFORM}/remote/${hash}.jpg`;
+	return `${AD_IMAGE_BASE}/${hash}.jpg`;
 }
 
 // Whether a row's visible copy is safe to publish as an ad: rejects ALL-CAPS shouting and banned
