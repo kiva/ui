@@ -29,6 +29,7 @@
 					:is-annual-goal="badge.isAnnualGoal"
 					:is-historical-goal="badge.isHistoricalGoal"
 					:goal-progress="badge.goalProgress"
+					:show-recap-cta="Boolean(badge.showRecapCta)"
 					:year="badge.year ?? GOALS_CURRENT_YEAR"
 					class="tw-self-start tw-mx-auto"
 				/>
@@ -52,11 +53,13 @@ import { KvCarousel, KvLoadingPlaceholder } from '@kiva/kv-components';
 import MyKivaProgressCard from '#src/components/MyKiva/MyKivaProgressCard';
 import { useRouter } from 'vue-router';
 import { COMPLETED_GOAL_THRESHOLD, GOALS_CURRENT_YEAR, GOAL_STATUS } from '#src/composables/useGoalData';
+import { getGoalYear, shouldShowRecapEntryPoint } from '#src/util/goalRecapEntryPoint';
+import { getGoalInReviewCurrentYear, getGoalInReviewNow } from '#src/composables/useGoalInReview';
 
 const CARD_MIN_HEIGHT = '111px';
 const SINGLE_SLIDE_WIDTH = '336px';
 
-const emit = defineEmits(['badge-clicked']);
+const emit = defineEmits(['badge-clicked', 'view-goal-recap']);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 
@@ -70,6 +73,10 @@ const props = defineProps({
 		default: ''
 	},
 	controlsTopRight: {
+		type: Boolean,
+		default: false,
+	},
+	goalInReviewEnable: {
 		type: Boolean,
 		default: false,
 	},
@@ -98,8 +105,20 @@ const {
 
 const userHasGoal = computed(() => !!userGoal.value && Object.keys(userGoal.value).length > 0);
 
+const userGoalYear = computed(() => getGoalYear(userGoal.value));
+
+const recapEntryPointFor = ({ goalStatus, goalYear, loansTowardGoal }) => shouldShowRecapEntryPoint({
+	enabled: props.goalInReviewEnable,
+	goalStatus,
+	goalYear,
+	currentYear: getGoalInReviewCurrentYear(),
+	loansTowardGoal,
+	activeGoalYear: userGoalYear.value,
+	now: getGoalInReviewNow(),
+});
+
 const formatHistoricalGoal = goal => {
-	const year = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
+	const year = getGoalYear(goal);
 	const historicalProgress = goal.status === GOAL_STATUS.COMPLETED
 		? (goal.target || 0)
 		: (goal.loansTowardGoal || 0);
@@ -116,6 +135,11 @@ const formatHistoricalGoal = goal => {
 		isAnnualGoal: true,
 		isHistoricalGoal: true,
 		year,
+		showRecapCta: recapEntryPointFor({
+			goalStatus: goal.status,
+			goalYear: year,
+			loansTowardGoal: goal.loansTowardGoal,
+		}),
 	};
 };
 
@@ -170,9 +194,12 @@ const visibleBadges = computed(() => {
 			},
 			goalProgress: goalProgress.value || 0,
 			isAnnualGoal: true,
-			year: userGoal.value?.dateStarted
-				? new Date(userGoal.value.dateStarted).getFullYear()
-				: GOALS_CURRENT_YEAR,
+			year: userGoalYear.value ?? GOALS_CURRENT_YEAR,
+			showRecapCta: recapEntryPointFor({
+				goalStatus: userGoal.value?.status,
+				goalYear: userGoalYear.value,
+				loansTowardGoal: goalProgress.value,
+			}),
 		};
 
 		if (userGoalAchieved.value) {
@@ -192,6 +219,11 @@ const visibleBadges = computed(() => {
 });
 
 const badgeClicked = badge => {
+	if (badge?.showRecapCta) {
+		emit('view-goal-recap', badge.year ?? GOALS_CURRENT_YEAR);
+		return;
+	}
+
 	if (!badge?.isAnnualGoal) {
 		$kvTrackEvent(
 			'portfolio',

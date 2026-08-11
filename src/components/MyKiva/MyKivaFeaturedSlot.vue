@@ -21,9 +21,11 @@
 			:user-name="userFirstName"
 			:prev-year-loans="womenLoansLastYear"
 			:suppress-completion-confetti="suppressCompletionConfetti"
+			:show-recap-cta="showRecapCta"
 			@set-goal-click="handleSetGoalClick"
 			@cta-click="handleCtaClick"
 			@edit-click="handleEditClick"
+			@view-goal-recap="handleViewGoalRecap"
 		/>
 	</section>
 </template>
@@ -40,6 +42,8 @@ import useGoalData, {
 	COMPLETED_GOAL_THRESHOLD,
 } from '#src/composables/useGoalData';
 import logReadQueryError from '#src/util/logReadQueryError';
+import { getGoalYear, shouldShowRecapEntryPoint } from '#src/util/goalRecapEntryPoint';
+import { getGoalInReviewCurrentYear, getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
 const STATE_NO_GOAL = 'no-goal';
@@ -60,9 +64,13 @@ const props = defineProps({
 		type: Array,
 		default: () => [],
 	},
+	goalInReviewEnable: {
+		type: Boolean,
+		default: false,
+	},
 });
 
-const emit = defineEmits(['set-goal-click', 'cta-click', 'edit-click']);
+const emit = defineEmits(['set-goal-click', 'cta-click', 'edit-click', 'view-goal-recap']);
 
 const router = useRouter();
 const goalData = inject('goalData');
@@ -106,6 +114,18 @@ const slotTitle = computed(() => {
 });
 
 const suppressCompletionConfetti = computed(() => alreadyViewedSnapshot.value === true);
+
+const goalYear = computed(() => getGoalYear(goalData?.userGoal?.value));
+
+const showRecapCta = computed(() => shouldShowRecapEntryPoint({
+	enabled: props.goalInReviewEnable,
+	goalStatus: goalStatus.value,
+	goalYear: goalYear.value,
+	currentYear: getGoalInReviewCurrentYear(),
+	loansTowardGoal: goalProgressValue.value,
+	activeGoalYear: goalYear.value,
+	now: getGoalInReviewNow(),
+}));
 
 watch(
 	() => [cardLoading.value, goalStatus.value],
@@ -191,5 +211,9 @@ const handleCtaClick = () => {
 
 const handleEditClick = () => {
 	emit('edit-click');
+};
+
+const handleViewGoalRecap = () => {
+	emit('view-goal-recap', goalYear.value);
 };
 </script>
