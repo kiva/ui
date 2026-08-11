@@ -746,6 +746,8 @@ export default {
 		// The goal cards' persistent entry point. Viewing from here counts as seen, so the
 		// auto-open pop-up does not follow on a later visit.
 		async openGoalRecapFromCard(year) {
+			// Tracked on the click itself, so presses that fail to open still show up.
+			this.$kvTrackEvent('portfolio', 'click', 'view-goal-recap');
 			if (!this.goalInReviewEnable) {
 				return;
 			}

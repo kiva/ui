@@ -53,7 +53,7 @@ import { KvCarousel, KvLoadingPlaceholder } from '@kiva/kv-components';
 import MyKivaProgressCard from '#src/components/MyKiva/MyKivaProgressCard';
 import { useRouter } from 'vue-router';
 import { COMPLETED_GOAL_THRESHOLD, GOALS_CURRENT_YEAR, GOAL_STATUS } from '#src/composables/useGoalData';
-import { shouldShowRecapEntryPoint } from '#src/util/goalRecapEntryPoint';
+import { getGoalYear, shouldShowRecapEntryPoint } from '#src/util/goalRecapEntryPoint';
 import { getGoalInReviewCurrentYear, getGoalInReviewNow } from '#src/composables/useGoalInReview';
 
 const CARD_MIN_HEIGHT = '111px';
@@ -105,11 +105,7 @@ const {
 
 const userHasGoal = computed(() => !!userGoal.value && Object.keys(userGoal.value).length > 0);
 
-const userGoalYear = computed(() => (
-	userGoal.value?.dateStarted ? new Date(userGoal.value.dateStarted).getFullYear() : null
-));
-
-const hasCurrentYearGoal = computed(() => userGoalYear.value === getGoalInReviewCurrentYear());
+const userGoalYear = computed(() => getGoalYear(userGoal.value));
 
 const recapEntryPointFor = ({ goalStatus, goalYear, loansTowardGoal }) => shouldShowRecapEntryPoint({
 	enabled: props.goalInReviewEnable,
@@ -117,12 +113,12 @@ const recapEntryPointFor = ({ goalStatus, goalYear, loansTowardGoal }) => should
 	goalYear,
 	currentYear: getGoalInReviewCurrentYear(),
 	loansTowardGoal,
-	hasCurrentYearGoal: hasCurrentYearGoal.value,
+	activeGoalYear: userGoalYear.value,
 	now: getGoalInReviewNow(),
 });
 
 const formatHistoricalGoal = goal => {
-	const year = goal.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
+	const year = getGoalYear(goal);
 	const historicalProgress = goal.status === GOAL_STATUS.COMPLETED
 		? (goal.target || 0)
 		: (goal.loansTowardGoal || 0);
@@ -224,7 +220,6 @@ const visibleBadges = computed(() => {
 
 const badgeClicked = badge => {
 	if (badge?.showRecapCta) {
-		$kvTrackEvent('portfolio', 'click', 'view-goal-recap');
 		emit('view-goal-recap', badge.year ?? GOALS_CURRENT_YEAR);
 		return;
 	}

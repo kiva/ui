@@ -7,6 +7,16 @@ const MARCH = 2;
 const CUTOFF_DAY = 31;
 
 /**
+ * The calendar year a goal belongs to, taken from the date it started.
+ *
+ * @param {object} goal A goal carrying a dateStarted.
+ * @returns {number|null} The goal's year, or null when it has no start date.
+ */
+export function getGoalYear(goal) {
+	return goal?.dateStarted ? new Date(goal.dateStarted).getFullYear() : null;
+}
+
+/**
  * Last moment a past goal's recap entry point is offered.
  *
  * @param {number|string} goalYear The year the goal ran.
@@ -27,7 +37,8 @@ export function getRecapEntryCutoff(goalYear) {
  * @param {number|string} options.goalYear The year the goal ran.
  * @param {number|string} options.currentYear The current year.
  * @param {number} [options.loansTowardGoal] Loans made toward an unfinished goal.
- * @param {boolean} [options.hasCurrentYearGoal] Whether a goal is set for this year.
+ * @param {number|string|null} [options.activeGoalYear] The year of the goal the lender has
+ *   set now, which ends a past goal's recap once it reaches the current year.
  * @param {Date} [options.now] The effective current date.
  * @returns {boolean} Whether to offer the recap from this card.
  */
@@ -37,7 +48,7 @@ export function shouldShowRecapEntryPoint({
 	goalYear = null,
 	currentYear = null,
 	loansTowardGoal = 0,
-	hasCurrentYearGoal = false,
+	activeGoalYear = null,
 	now = new Date(),
 } = {}) {
 	if (!enabled || !goalYear || !currentYear) {
@@ -55,7 +66,8 @@ export function shouldShowRecapEntryPoint({
 
 	// A past goal's recap stays reachable into the new year, so lenders who never finished
 	// still get to look back at what they did.
-	if (hasCurrentYearGoal || now.getTime() > getRecapEntryCutoff(goalYear).getTime()) {
+	if (Number(activeGoalYear) === Number(currentYear)
+		|| now.getTime() > getRecapEntryCutoff(goalYear).getTime()) {
 		return false;
 	}
 	return goalStatus === GOAL_STATUS.COMPLETED || Number(loansTowardGoal) > 0;

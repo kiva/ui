@@ -16,7 +16,6 @@ const nextYearComplete = {
 	goalStatus: 'completed',
 	goalYear: GOAL_YEAR,
 	currentYear: NEXT_YEAR,
-	hasCurrentYearGoal: false,
 	now: new Date(NEXT_YEAR, 0, 15),
 };
 
@@ -58,9 +57,13 @@ describe('goalRecapEntryPoint.js', () => {
 			expect(shouldShowRecapEntryPoint({ ...nextYearUnfinished, loansTowardGoal: 0 })).toBe(false);
 		});
 
+		it('keeps going while last year\'s goal is still the one they have set', () => {
+			expect(shouldShowRecapEntryPoint({ ...nextYearComplete, activeGoalYear: GOAL_YEAR })).toBe(true);
+		});
+
 		it('stops once this year\'s goal is set', () => {
-			expect(shouldShowRecapEntryPoint({ ...nextYearComplete, hasCurrentYearGoal: true })).toBe(false);
-			expect(shouldShowRecapEntryPoint({ ...nextYearUnfinished, hasCurrentYearGoal: true })).toBe(false);
+			expect(shouldShowRecapEntryPoint({ ...nextYearComplete, activeGoalYear: NEXT_YEAR })).toBe(false);
+			expect(shouldShowRecapEntryPoint({ ...nextYearUnfinished, activeGoalYear: NEXT_YEAR })).toBe(false);
 		});
 	});
 

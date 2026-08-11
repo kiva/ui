@@ -274,7 +274,6 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 
 const handleActiveGoalCtaClick = () => {
 	if (props.showRecapCta) {
-		$kvTrackEvent?.('portfolio', 'click', 'view-goal-recap');
 		emit('view-goal-recap');
 		return;
 	}

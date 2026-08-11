@@ -42,7 +42,7 @@ import useGoalData, {
 	COMPLETED_GOAL_THRESHOLD,
 } from '#src/composables/useGoalData';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { shouldShowRecapEntryPoint } from '#src/util/goalRecapEntryPoint';
+import { getGoalYear, shouldShowRecapEntryPoint } from '#src/util/goalRecapEntryPoint';
 import { getGoalInReviewCurrentYear, getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
@@ -115,10 +115,7 @@ const slotTitle = computed(() => {
 
 const suppressCompletionConfetti = computed(() => alreadyViewedSnapshot.value === true);
 
-const goalYear = computed(() => {
-	const dateStarted = goalData?.userGoal?.value?.dateStarted;
-	return dateStarted ? new Date(dateStarted).getFullYear() : null;
-});
+const goalYear = computed(() => getGoalYear(goalData?.userGoal?.value));
 
 const showRecapCta = computed(() => shouldShowRecapEntryPoint({
 	enabled: props.goalInReviewEnable,
@@ -126,6 +123,7 @@ const showRecapCta = computed(() => shouldShowRecapEntryPoint({
 	goalYear: goalYear.value,
 	currentYear: getGoalInReviewCurrentYear(),
 	loansTowardGoal: goalProgressValue.value,
+	activeGoalYear: goalYear.value,
 	now: getGoalInReviewNow(),
 }));
 
