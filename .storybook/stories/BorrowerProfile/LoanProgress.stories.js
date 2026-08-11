@@ -124,6 +124,21 @@ export const Ended = () => ({
 	`,
 });
 
+export const EndedWithCurrencyLoss = () => ({
+	components: { LoanProgress },
+	template: `
+		<loan-progress
+			loan-status="ended"
+			:has-currency-exchange-loss="true"
+			:progress-percent="1"
+			money-left="0.00"
+			:loading="false"
+			:loan-id="123"
+		/>
+	`,
+});
+EndedWithCurrencyLoss.storyName = 'Ended / Currency Loss';
+
 export const Defaulted = () => ({
 	components: { LoanProgress },
 	template: `
