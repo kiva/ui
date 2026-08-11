@@ -52,7 +52,7 @@
 import { computed } from 'vue';
 import numeral from 'numeral';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
-import { getBorrowerCards } from '#src/util/goalInReviewBorrowers';
+import { getBorrowerCards } from '#src/util/goalInReview';
 
 const props = defineProps({
 	loans: {

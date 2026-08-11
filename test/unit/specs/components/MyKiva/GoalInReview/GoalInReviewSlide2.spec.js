@@ -1,6 +1,6 @@
 import { render } from '@testing-library/vue';
 import GoalInReviewSlide2 from '#src/components/MyKiva/GoalInReview/GoalInReviewSlide2';
-import { MAX_BORROWER_CARDS } from '#src/util/goalInReviewBorrowers';
+import { MAX_BORROWER_CARDS } from '#src/util/goalInReview';
 import { globalOptions } from '../../../../specUtils';
 
 const global = {

@@ -83,8 +83,7 @@
 import { computed } from 'vue';
 import { KvMap, KvMaterialIcon, KvPieChartV2 } from '@kiva/kv-components';
 import { mdiMapMarker } from '@mdi/js';
-import { getSectorChartValues, getNamedSectorCount } from '#src/util/goalInReviewSectors';
-import { getCountriesMapCenter } from '#src/util/goalInReviewMap';
+import { getCountriesMapCenter, getNamedSectorCount, getSectorChartValues } from '#src/util/goalInReview';
 
 const MAX_VISIBLE_COUNTRIES = 14;
 

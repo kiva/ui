@@ -42,7 +42,7 @@ import useGoalData, {
 	COMPLETED_GOAL_THRESHOLD,
 } from '#src/composables/useGoalData';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { getGoalYear, shouldShowRecapEntryPoint } from '#src/util/goalRecapEntryPoint';
+import { getGoalYear, shouldShowRecapEntryPoint } from '#src/util/goalInReview';
 import { getGoalInReviewCurrentYear, getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 

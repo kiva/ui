@@ -85,7 +85,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import goalInReviewCopy from '#src/util/goalInReviewCopy';
+import goalInReviewCopy from '#src/util/goalInReview';
 import CloudSun from '#src/assets/images/my-kiva/goal-in-review/cloud-sun.svg';
 import DoubleHandsAndHeart from '#src/assets/images/my-kiva/goal-in-review/double-hands-and-heart.svg';
 import GreenPuzzle from '#src/assets/images/my-kiva/goal-in-review/green-puzzle.svg';
