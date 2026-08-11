@@ -23,12 +23,6 @@ export function toTsv(rows, columns = FEED_COLUMNS) {
 	return [header, ...body].join('\n');
 }
 
-// The header-only feed served when the kill switch is off: it drains inventory from Google without
-// running the FLSS pipeline.
-export function emptyGoogleFeed() {
-	return toTsv([]);
-}
-
 export async function generateGoogleFeed(count) {
 	// FLSS (updated via kafka events) is the freshest source of fundraising loans and already excludes
 	// funded/refunded/expired; the eligibility gate drops anonymized/no-name/no-image on the FLSS

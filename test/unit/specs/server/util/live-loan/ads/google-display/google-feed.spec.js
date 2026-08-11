@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { FEED_COLUMNS } from '#server/util/live-loan/ads/google-display/feed-row';
 import { fetchAdEligibleLoans } from '#server/util/live-loan/ads/ads-eligibility';
-import { toTsv, generateGoogleFeed, emptyGoogleFeed } from '#server/util/live-loan/ads/google-display/google-feed';
+import { toTsv, generateGoogleFeed } from '#server/util/live-loan/ads/google-display/google-feed';
 
 // mock out the argv module to prevent command line arguments for jest from being read by the code under test
 vi.mock('#server/util/argv', () => ({ default: {} }));
@@ -74,14 +74,6 @@ describe('google-feed', () => {
 			const columns = ['A', 'B'];
 			const rows = [{ A: 'x' }];
 			expect(toTsv(rows, columns)).toEqual('A\tB\nx\t');
-		});
-	});
-
-	describe('emptyGoogleFeed', () => {
-		it('returns exactly the header line with no data rows', () => {
-			const result = emptyGoogleFeed();
-			expect(result).toEqual(FEED_COLUMNS.join('\t'));
-			expect(result).not.toContain('\n');
 		});
 	});
 

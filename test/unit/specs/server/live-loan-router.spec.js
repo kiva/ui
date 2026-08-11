@@ -4,15 +4,13 @@ import liveLoanRouter from '#server/live-loan-router';
 import * as liveLoanFetch from '#server/util/live-loan/live-loan-fetch';
 import * as memJsUtils from '#server/util/memJsUtils';
 import drawLoanCard from '#server/util/live-loan/live-loan-draw';
-import { generateGoogleFeed, emptyGoogleFeed } from '#server/util/live-loan/ads/google-display/google-feed';
-import { isFeedEnabled } from '#server/util/live-loan/ads/kill-switch';
+import { generateGoogleFeed } from '#server/util/live-loan/ads/google-display/google-feed';
 
 // Mock out modules to prevent real network/cache calls
 vi.mock('#server/util/live-loan/live-loan-fetch');
 vi.mock('#server/util/memJsUtils');
 vi.mock('#server/util/live-loan/live-loan-draw');
 vi.mock('#server/util/live-loan/ads/google-display/google-feed');
-vi.mock('#server/util/live-loan/ads/kill-switch');
 vi.mock('#server/util/log', () => ({
 	log: vi.fn(),
 	error: vi.fn(),
@@ -548,20 +546,7 @@ describe('live-loan-router ads feed route', () => {
 		cache = createMockCache();
 		memJsUtils.getFromCache.mockResolvedValue(null);
 		memJsUtils.setToCache.mockResolvedValue(undefined);
-		isFeedEnabled.mockResolvedValue(true);
-		emptyGoogleFeed.mockReturnValue('HEADER_ONLY');
 		generateGoogleFeed.mockResolvedValue('ID\tItem title\n1\tSupport Maria');
-	});
-
-	it('serves the empty header-only feed without generating when the kill switch is off', async () => {
-		isFeedEnabled.mockResolvedValue(false);
-
-		const result = await makeRequestFull(createApp(cache), '/live-loan/ads/google-feed.tsv');
-
-		expect(result.statusCode).toBe(200);
-		expect(result.headers['content-type']).toContain('text/tab-separated-values');
-		expect(result.body.toString()).toEqual('HEADER_ONLY');
-		expect(generateGoogleFeed).not.toHaveBeenCalled();
 	});
 
 	it('generates, caches (fresh + last-good), and serves the feed on a cache miss', async () => {
@@ -574,17 +559,12 @@ describe('live-loan-router ads feed route', () => {
 		expect(memJsUtils.setToCache).toHaveBeenCalledWith(LAST_GOOD_KEY, expect.any(String), 259200, cache);
 	});
 
-	it('never lets a downstream cache hold the feed, so the kill switch is not defeated', async () => {
-		// Rows path (cache miss -> generated): must be no-store so a browser/CDN/Google copy can't
-		// linger after the flag is flipped off. The server-side memjs cache (TTL 3600 above) is what
-		// protects the FLSS/hydrate pipeline, not the HTTP layer.
+	it('serves the feed as no-store so a downstream cache never holds stale rows', async () => {
+		// A browser/CDN/Google copy holding an old feed would keep advertising loans that have since
+		// funded or expired, so the rows must stay FLSS-fresh. The server-side memjs cache (TTL 300
+		// above) is the load/scraper protection, not the HTTP layer.
 		const rows = await makeRequestFull(createApp(cache), '/live-loan/ads/google-feed.tsv');
 		expect(rows.headers['cache-control']).toBe('no-store');
-
-		// Off path (kill switch) must also be no-store.
-		isFeedEnabled.mockResolvedValue(false);
-		const off = await makeRequestFull(createApp(cache), '/live-loan/ads/google-feed.tsv');
-		expect(off.headers['cache-control']).toBe('no-store');
 	});
 
 	it('serves the fresh cache without regenerating on a cache hit', async () => {

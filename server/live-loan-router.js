@@ -7,14 +7,12 @@ import { trace } from './util/mockTrace.js';
 import { resolveBundleSize, DEFAULT_BUNDLE_COUNT, MAX_BUNDLE_COUNT } from './util/live-loan/bundle-size.js';
 import {
 	generateGoogleFeed,
-	emptyGoogleFeed,
 	ADS_FEED_FRESH_KEY,
 	ADS_FEED_LAST_GOOD_KEY,
 	ADS_FEED_FRESH_TTL,
 	ADS_FEED_LAST_GOOD_TTL,
 	ADS_FEED_FAILURE_BACKOFF_TTL,
 } from './util/live-loan/ads/google-display/google-feed.js';
-import { isFeedEnabled } from './util/live-loan/ads/kill-switch.js';
 
 async function fetchRecommendedLoans(type, id, cache, queryType = QUERY_TYPE.DEFAULT, count = DEFAULT_BUNDLE_COUNT) {
 	const queryTypeSuffix = queryType !== QUERY_TYPE.DEFAULT ? `-${queryType}` : '';
@@ -429,19 +427,12 @@ export default function liveLoanRouter(cache) {
 		await trace('live-loan.ads.googleFeed', { resource: req.path }, async () => {
 			const sendFeed = feed => {
 				res.contentType('text/tab-separated-values');
-				// The feed is kill-switchable, so it must never be held by a downstream cache
-				// (browser/CDN/Google) — otherwise turning the flag off would still serve cached rows.
-				// Load/scraper protection is the server-side memjs cache below, not the HTTP layer.
+				// no-store so a downstream cache (browser/CDN/Google) never holds a stale feed: the rows
+				// must stay FLSS-fresh, or we'd keep advertising loans that have since funded or expired.
+				// The server-side memjs cache below is the load/scraper protection, not the HTTP layer.
 				res.set('Cache-Control', 'no-store');
 				res.send(feed);
 			};
-
-			// Kill switch is checked ahead of the rows cache, so turning it off drains inventory on the
-			// next request (an empty header-only feed) without running the FLSS/hydrate pipeline.
-			if (!(await isFeedEnabled(cache))) {
-				sendFeed(emptyGoogleFeed());
-				return;
-			}
 
 			let cached;
 			try {
