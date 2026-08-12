@@ -40,6 +40,26 @@ describe('excluded-ids', () => {
 			expect(parseIdList(null)).toEqual([]);
 			expect(parseIdList(123)).toEqual([]);
 		});
+
+		it('unwraps a JSON-encoded string value (Settings Manager string type)', () => {
+			expect(parseIdList('"3220492"')).toEqual([3220492]);
+		});
+
+		it('unwraps a JSON-encoded comma list', () => {
+			expect(parseIdList('"123,456"')).toEqual([123, 456]);
+		});
+
+		it('unwraps a JSON array of ids, filtering non-numeric entries', () => {
+			expect(parseIdList('["123","abc",456]')).toEqual([123, 456]);
+		});
+
+		it('recovers ids from a value with unbalanced JSON wrapper chars', () => {
+			expect(parseIdList('["3220492"')).toEqual([3220492]);
+		});
+
+		it('yields no exclusions for a value with no valid ids', () => {
+			expect(parseIdList('["abc","5.5"]')).toEqual([]);
+		});
 	});
 
 	describe('fetchExcludedIds', () => {

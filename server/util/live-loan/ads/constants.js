@@ -13,7 +13,9 @@ export const KIVA_PROD_HOST = 'https://www.kiva.org';
 export const CLOUDINARY_AD_IMAGE_BASE = 'https://res.cloudinary.com/kiva';
 export const CLOUDINARY_AD_IMAGE_TRANSFORM = 'c_limit,w_1200,h_1200,f_jpg,cs_srgb,fl_force_icc';
 
-// Settings Manager (uiConfigSetting) key holding the comma-separated loan ids to keep out of the ad
-// feed. Bare setting name -- `ui.` is the Settings Manager storage namespace, not part of the query
-// key. Empty or absent means no exclusions.
+// Settings Manager (uiConfigSetting) keys holding the comma-separated loan, partner, and sector ids
+// to keep out of the ad feed. Bare setting names -- `ui.` is the Settings Manager storage namespace,
+// not part of the query key. Empty or absent means no exclusions.
 export const EXCLUDED_LOAN_IDS_SETTING_KEY = 'live_loan_ads_excluded_loan_ids';
+export const EXCLUDED_PARTNER_IDS_SETTING_KEY = 'live_loan_ads_excluded_partner_ids';
+export const EXCLUDED_SECTOR_IDS_SETTING_KEY = 'live_loan_ads_excluded_sector_ids';

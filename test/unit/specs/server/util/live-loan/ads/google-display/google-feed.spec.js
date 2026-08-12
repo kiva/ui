@@ -2,7 +2,11 @@
 import { FEED_COLUMNS } from '#server/util/live-loan/ads/google-display/feed-row';
 import { fetchAdEligibleLoans } from '#server/util/live-loan/ads/ads-eligibility';
 import { fetchExcludedIds } from '#server/util/live-loan/ads/excluded-ids';
-import { EXCLUDED_LOAN_IDS_SETTING_KEY } from '#server/util/live-loan/ads/constants';
+import {
+	EXCLUDED_LOAN_IDS_SETTING_KEY,
+	EXCLUDED_PARTNER_IDS_SETTING_KEY,
+	EXCLUDED_SECTOR_IDS_SETTING_KEY,
+} from '#server/util/live-loan/ads/constants';
 import { info } from '#server/util/log';
 import { toTsv, generateGoogleFeed } from '#server/util/live-loan/ads/google-display/google-feed';
 
@@ -143,26 +147,49 @@ describe('google-feed', () => {
 
 			await generateGoogleFeed(50);
 
-			expect(fetchAdEligibleLoans).toHaveBeenCalledWith(50, { excludedLoanIds: [] });
+			expect(fetchAdEligibleLoans).toHaveBeenCalledWith(50, {
+				loanIds: [],
+				partnerId: [],
+				sectorId: [],
+			});
 		});
 
-		it('reads the excluded-loan-ids setting and passes them to fetchAdEligibleLoans', async () => {
-			fetchExcludedIds.mockResolvedValue([456]);
+		it('reads all three denylist settings and routes each to its own exclusion field', async () => {
+			fetchExcludedIds.mockImplementation(key => {
+				if (key === EXCLUDED_LOAN_IDS_SETTING_KEY) return Promise.resolve([456]);
+				if (key === EXCLUDED_PARTNER_IDS_SETTING_KEY) return Promise.resolve([11, 12]);
+				if (key === EXCLUDED_SECTOR_IDS_SETTING_KEY) return Promise.resolve([2]);
+				return Promise.resolve([]);
+			});
 			fetchAdEligibleLoans.mockResolvedValue([]);
 
 			await generateGoogleFeed();
 
 			expect(fetchExcludedIds).toHaveBeenCalledWith(EXCLUDED_LOAN_IDS_SETTING_KEY);
-			expect(fetchAdEligibleLoans).toHaveBeenCalledWith(undefined, { excludedLoanIds: [456] });
+			expect(fetchExcludedIds).toHaveBeenCalledWith(EXCLUDED_PARTNER_IDS_SETTING_KEY);
+			expect(fetchExcludedIds).toHaveBeenCalledWith(EXCLUDED_SECTOR_IDS_SETTING_KEY);
+			expect(fetchAdEligibleLoans).toHaveBeenCalledWith(undefined, {
+				loanIds: [456],
+				partnerId: [11, 12],
+				sectorId: [2],
+			});
 		});
 
-		it('logs the applied excluded-id count on each generation', async () => {
-			fetchExcludedIds.mockResolvedValue([1, 2, 3]);
+		it('logs the applied excluded-id counts for loans, partners, and sectors', async () => {
+			fetchExcludedIds.mockImplementation(key => {
+				if (key === EXCLUDED_LOAN_IDS_SETTING_KEY) return Promise.resolve([1, 2, 3]);
+				if (key === EXCLUDED_PARTNER_IDS_SETTING_KEY) return Promise.resolve([9]);
+				return Promise.resolve([]);
+			});
 			fetchAdEligibleLoans.mockResolvedValue([]);
 
 			await generateGoogleFeed();
 
-			expect(info).toHaveBeenCalledWith(expect.stringContaining('3'), { excludedLoanIds: [1, 2, 3] });
+			expect(info).toHaveBeenCalledWith(expect.any(String), {
+				loanIds: [1, 2, 3],
+				partnerId: [9],
+				sectorId: [],
+			});
 		});
 	});
 });
