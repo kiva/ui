@@ -6,11 +6,11 @@
 		data-animate-on-view
 		data-testid="goal-in-review-global-reach"
 	>
-		<p class="tw-text-label tw-text-eco-green-3 tw-mb-1 kv-fade-up slide3-eyebrow">
+		<p class="tw-text-label tw-text-eco-green-3 tw-mb-1 kv-fade-up global-reach-eyebrow">
 			Global reach
 		</p>
 
-		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-4 kv-fade-up slide3-headline">
+		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-4 kv-fade-up global-reach-headline">
 			Your goal crossed
 			<span class="tw-text-marigold">{{ borderCount }} borders.</span>
 		</h1>
@@ -70,11 +70,11 @@
 		data-animate-on-view
 		data-testid="goal-in-review-global-reach-sectors"
 	>
-		<p class="tw-text-label tw-text-eco-green-3 tw-mb-1 kv-fade-up slide3-eyebrow">
+		<p class="tw-text-label tw-text-eco-green-3 tw-mb-1 kv-fade-up global-reach-eyebrow">
 			Sectors Funded
 		</p>
 
-		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-4 kv-fade-up slide3-headline">
+		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-4 kv-fade-up global-reach-headline">
 			You backed
 			<span class="tw-text-marigold">{{ sectorCount }} sectors</span> of opportunity.
 		</h1>
@@ -189,12 +189,12 @@ onBeforeUnmount(() => sectionObserver?.disconnect());
 </script>
 
 <style lang="postcss" scoped>
-.slide3-eyebrow,
-.slide3-headline {
+.global-reach-eyebrow,
+.global-reach-headline {
 	--kv-fade-up-distance: 24px;
 }
 
-.slide3-headline {
+.global-reach-headline {
 	animation-delay: 0.1s;
 }
 

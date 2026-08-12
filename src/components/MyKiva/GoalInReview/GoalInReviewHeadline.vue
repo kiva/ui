@@ -29,13 +29,13 @@
 		<div class="tw-px-2 tw-mx-auto tw-max-w-3xl tw-text-center">
 			<p
 				class="tw-inline-block tw-rounded-full tw-bg-brand-650 tw-text-white
-					tw-text-label tw-py-0.5 tw-px-1.5 tw-mb-2 kv-fade-up slide1-eyebrow"
+					tw-text-label tw-py-0.5 tw-px-1.5 tw-mb-2 kv-fade-up headline-eyebrow"
 				data-testid="goal-in-review-headline-pill"
 			>
 				{{ pillText }}
 			</p>
 
-			<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-2 kv-fade-up slide1-headline">
+			<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-2 kv-fade-up headline-title">
 				<template v-if="isComplete">
 					<template v-if="firstName">
 						You did it, <span class="tw-text-marigold data-hj-suppress">{{ firstName }}</span>
@@ -52,7 +52,7 @@
 
 		<div>
 			<div class="tw-px-2 md:tw-px-4.5 tw-mx-auto tw-text-center">
-				<h3 class="tw-mx-auto tw-mb-8 lg:tw-mb-6 tw-max-w-lg kv-fade-up slide1-subtext">
+				<h3 class="tw-mx-auto tw-mb-8 lg:tw-mb-6 tw-max-w-lg kv-fade-up headline-subtext">
 					Because of your commitment, borrowers could count on Kiva to be there when it mattered.
 				</h3>
 
@@ -65,7 +65,7 @@
 						:key="stat.key"
 						class="tw-min-h-11.5 tw-flex tw-flex-col tw-items-center tw-justify-center tw-text-center
 							tw-bg-white tw-rounded tw-border tw-border-gray-100 tw-py-2 tw-px-1.5
-							kv-rebound-in slide1-stat"
+							kv-rebound-in headline-stat"
 						:data-testid="`goal-in-review-headline-stat-${stat.key}`"
 					>
 						<span class="tw-font-medium tw-text-primary">{{ stat.value }}</span>
@@ -74,7 +74,7 @@
 				</ul>
 
 				<div class="tw-mt-4 tw-text-action">
-					<p class="tw-text-base tw-mb-1.5 kv-rebound-in slide1-scroll-cue">
+					<p class="tw-text-base tw-mb-1.5 kv-rebound-in headline-scroll-cue">
 						Scroll to explore the stories behind your goal
 					</p>
 					<KvMaterialIcon :icon="mdiArrowDown" class="scroll-arrow tw-block tw-mx-auto" />
@@ -199,19 +199,19 @@ onMounted(() => {
 /* Title stack entrance — shares the global .kv-fade-up effect; this slide sets
    each line's travel distance (--kv-fade-up-distance, the value baked inside the
    keyframe) and its delay, so eyebrow -> headline -> subtitle rise in sequence. */
-.slide1-eyebrow {
+.headline-eyebrow {
 	--kv-fade-up-distance: 16px;
 
 	animation-delay: 0.3s;
 }
 
-.slide1-headline {
+.headline-title {
 	--kv-fade-up-distance: 30px;
 
 	animation-delay: 0.55s;
 }
 
-.slide1-subtext {
+.headline-subtext {
 	--kv-fade-up-distance: 20px;
 
 	animation-delay: 0.9s;
@@ -220,23 +220,23 @@ onMounted(() => {
 /* Stat cards use the shared rebound (.kv-rebound-in, see css/global/animations.css);
    this slide only owns the per-item stagger so the four cards cascade "1...N"
    once the title stack has settled. */
-.slide1-stat:nth-child(1) {
+.headline-stat:nth-child(1) {
 	animation-delay: 1.1s;
 }
 
-.slide1-stat:nth-child(2) {
+.headline-stat:nth-child(2) {
 	animation-delay: 1.2s;
 }
 
-.slide1-stat:nth-child(3) {
+.headline-stat:nth-child(3) {
 	animation-delay: 1.3s;
 }
 
-.slide1-stat:nth-child(4) {
+.headline-stat:nth-child(4) {
 	animation-delay: 1.4s;
 }
 
-.slide1-scroll-cue {
+.headline-scroll-cue {
 	animation-delay: 1.4s;
 }
 

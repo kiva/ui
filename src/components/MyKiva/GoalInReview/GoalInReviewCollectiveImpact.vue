@@ -1,7 +1,7 @@
 <template>
 	<section
 		ref="section"
-		class="goal-in-review-slide-5 tw-w-full tw-bg-marigold-1 tw-px-2 tw-pt-5 tw-pb-9"
+		class="goal-in-review-collective-impact tw-w-full tw-bg-marigold-1 tw-px-2 tw-pt-5 tw-pb-9"
 		data-testid="goal-in-review-collective-impact"
 	>
 		<div class="tw-mx-auto tw-max-w-3xl">
@@ -155,11 +155,11 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="postcss" scoped>
-.goal-in-review-slide-5 {
+.goal-in-review-collective-impact {
 	--kv-fade-up-distance: 40px;
 }
 
-.goal-in-review-slide-5 .kv-fade-up {
+.goal-in-review-collective-impact .kv-fade-up {
 	animation-duration: 1.2s;
 }
 </style>

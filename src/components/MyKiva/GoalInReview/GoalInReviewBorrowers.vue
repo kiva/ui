@@ -3,11 +3,11 @@
 		class="tw-w-full tw-bg-brand-100 tw-px-2 tw-py-4 md:tw-px-4"
 		data-testid="goal-in-review-borrowers"
 	>
-		<p class="tw-text-action tw-mb-1 kv-fade-up slide2-eyebrow">
+		<p class="tw-text-action tw-mb-1 kv-fade-up borrowers-eyebrow">
 			The people behind the loans
 		</p>
 
-		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-3 kv-fade-up slide2-headline">
+		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-3 kv-fade-up borrowers-headline">
 			{{ borrowerCountDisplay }} {{ borrowersLabel }}.
 			<span class="tw-text-marigold">{{ borrowerCountDisplay }} {{ futuresLabel }}.</span>
 		</h1>
@@ -19,7 +19,7 @@
 			<li
 				v-for="(card, index) in cards"
 				:key="card.id"
-				class="tw-flex tw-flex-col tw-gap-0.5 kv-fade-up slide2-card"
+				class="tw-flex tw-flex-col tw-gap-0.5 kv-fade-up borrowers-card"
 				:style="cardAnimationDelay(index)"
 			>
 				<BorrowerImage
@@ -43,7 +43,7 @@
 
 			<li
 				v-if="moreCount > 0"
-				class="kv-fade-up slide2-card"
+				class="kv-fade-up borrowers-card"
 				:style="cardAnimationDelay(cards.length)"
 				data-testid="goal-in-review-borrowers-more"
 			>
@@ -99,22 +99,22 @@ const cardAnimationDelay = index => ({ animationDelay: `${0.2 + index * 0.175}s`
 
 /* Entrance choreography — the shared .kv-fade-up effect lives in
    css/global/animations.css. */
-.slide2-eyebrow,
-.slide2-headline,
-.slide2-card {
+.borrowers-eyebrow,
+.borrowers-headline,
+.borrowers-card {
 	animation-duration: 0.75s;
 }
 
-.slide2-eyebrow,
-.slide2-headline {
+.borrowers-eyebrow,
+.borrowers-headline {
 	--kv-fade-up-distance: 24px;
 }
 
-.slide2-headline {
+.borrowers-headline {
 	animation-delay: 0.08s;
 }
 
-.slide2-card {
+.borrowers-card {
 	--kv-fade-up-distance: 18px;
 }
 

@@ -7,16 +7,16 @@
 			<img
 				:src="leafHeart"
 				alt="Leaf heart"
-				class="tw-w-8.5 tw-h-8.5  tw-mx-auto tw-mb-3 kv-fade-up slide7-heart"
+				class="tw-w-8.5 tw-h-8.5  tw-mx-auto tw-mb-3 kv-fade-up thanks-and-feedback-heart"
 			>
 
-			<h1 class="tw-text-display tw-text-white tw-mb-3 kv-fade-up slide7-headline">
+			<h1 class="tw-text-display tw-text-white tw-mb-3 kv-fade-up thanks-and-feedback-headline">
 				Thank you!
 			</h1>
 
 			<div
 				class="tw-flex tw-flex-col tw-gap-2 tw-text-base tw-text-eco-green-1 tw-mb-3
-					kv-fade-up slide7-copy"
+					kv-fade-up thanks-and-feedback-copy"
 			>
 				<p>
 					Behind every number is a name. Behind every loan is a dream.
@@ -27,7 +27,7 @@
 				</p>
 			</div>
 
-			<div class="tw-flex tw-flex-col tw-items-center tw-gap-2 kv-fade-up slide7-cta">
+			<div class="tw-flex tw-flex-col tw-items-center tw-gap-2 kv-fade-up thanks-and-feedback-cta">
 				<KvButton
 					class="tw-w-full cta-button"
 					data-testid="goal-in-review-thanks-and-feedback-primary-cta"
@@ -161,22 +161,22 @@ const showFeedback = computed(() => !isPastGoalYear.value
 /* Entrance — shared .kv-fade-up (see css/global/animations.css); the closing beats
    build top-down: heart, then "Thank you!", the message, and the CTA. Gated on
    view by the modal wrapper. */
-.slide7-heart,
-.slide7-headline,
-.slide7-copy,
-.slide7-cta {
+.thanks-and-feedback-heart,
+.thanks-and-feedback-headline,
+.thanks-and-feedback-copy,
+.thanks-and-feedback-cta {
 	--kv-fade-up-distance: 34px;
 }
 
-.slide7-headline {
+.thanks-and-feedback-headline {
 	animation-delay: 0.1s;
 }
 
-.slide7-copy {
+.thanks-and-feedback-copy {
 	animation-delay: 0.2s;
 }
 
-.slide7-cta {
+.thanks-and-feedback-cta {
 	animation-delay: 0.3s;
 }
 </style>

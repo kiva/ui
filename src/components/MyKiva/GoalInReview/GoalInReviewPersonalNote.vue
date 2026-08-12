@@ -10,11 +10,11 @@
 		>
 
 		<div class="tw-mx-auto tw-max-w-xl tw-px-2 tw-py-6">
-			<p class="tw-text-small tw-text-brand-400 tw-mb-2 kv-fade-up slide6-eyebrow">
+			<p class="tw-text-small tw-text-brand-400 tw-mb-2 kv-fade-up personal-note-eyebrow">
 				A personal note
 			</p>
 
-			<div class="tw-px-3 md:tw-px-0 kv-fade-up slide6-note">
+			<div class="tw-px-3 md:tw-px-0 kv-fade-up personal-note-body">
 				<span class="tw-block tw-text-jumbo tw-text-secondary" aria-hidden="true">"</span>
 
 				<div class="tw-flex tw-flex-col tw-gap-3 tw-text-eco-green-1">
@@ -85,12 +85,12 @@ defineProps({
 
 /* Entrance — shared .kv-fade-up (see css/global/animations.css); the eyebrow lands
    first, then the note fades up just after. Gated on view by the modal wrapper. */
-.slide6-eyebrow,
-.slide6-note {
+.personal-note-eyebrow,
+.personal-note-body {
 	--kv-fade-up-distance: 24px;
 }
 
-.slide6-note {
+.personal-note-body {
 	animation-delay: 0.15s;
 }
 
