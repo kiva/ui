@@ -7,7 +7,9 @@ Kiva UI is a Vue 3 SSR (Server-Side Rendering) application for Kiva.org's lendin
 
 ### Vue 3 API Usage
 
-Use **Options API with `setup()`** for components that need Apollo prefetching. This allows Apollo prefetching (`preFetch: true`) while still using composables from `src/composables/`.
+Either authoring style works with Apollo prefetching. SSR prefetch discovery walks the children the build step attaches to every compiled component, so a component is reached without registering its children in a `components` option and without using a particular API.
+
+Only the Options API can author an `apollo` block. A `<script setup>` component fetches the data it needs for the initial render through a composable instead — `useApolloQuery` with an exported `preFetchOperations`, as shown under "Data Fetching in Composables" below.
 
 ### ⚠️ Options API + Composition API Nesting Warning
 Deeply nested component chains can have issues when parent components use Options API and children use Composition API (or vice versa). When working with nested components:

@@ -16,6 +16,8 @@ async function deepAdd(components, set) {
 		if (definition.__asyncLoader) {
 			def = await definition.__asyncLoader();
 		}
+		// a thunk over a module that has no default export resolves to nothing
+		if (!def) return;
 		// normalize imported component
 		if (def.default) {
 			def = def.default;
@@ -23,7 +25,12 @@ async function deepAdd(components, set) {
 		// add the component definition and its children if the definition hasn't been added yet
 		if (!set.has(def)) {
 			set.add(def);
-			return deepAdd(def.components, set);
+			// __childComponents holds the imported children the build step attached, which
+			// is the only record of them for components that emit no components option
+			return Promise.all([
+				deepAdd(def.components, set),
+				deepAdd(def.__childComponents, set),
+			]);
 		}
 	}));
 }
