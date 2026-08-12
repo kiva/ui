@@ -196,6 +196,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		hasCurrencyExchangeLoss: {
+			type: Boolean,
+			default: false,
+		},
 		numberOfLenders: {
 			type: Number,
 			default: 0,
@@ -234,6 +238,9 @@ export default {
 			return this.loanId ? this.loanId : this.$route.params.id;
 		},
 		statusLabel() {
+			if (this.loanStatus === 'ended' && this.hasCurrencyExchangeLoss) {
+				return 'Repaid with currency loss';
+			}
 			const labels = {
 				ended: 'Repaid',
 				defaulted: 'Defaulted',

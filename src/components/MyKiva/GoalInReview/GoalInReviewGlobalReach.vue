@@ -4,7 +4,7 @@
 		class="tw-w-full tw-bg-marigold-1 tw-px-2.5 tw-py-4 md:tw-px-4"
 		:class="{ 'is-in-view': globalReachInView }"
 		data-animate-on-view
-		data-testid="goal-in-review-slide-3"
+		data-testid="goal-in-review-global-reach"
 	>
 		<p class="tw-text-label tw-text-eco-green-3 tw-mb-1 kv-fade-up slide3-eyebrow">
 			Global reach
@@ -32,7 +32,7 @@
 			<ul
 				class="tw-flex tw-flex-wrap tw-gap-1 tw-justify-center md:tw-justify-start
 					tw-list-none tw-p-0 tw-m-0"
-				data-testid="goal-in-review-slide-3-countries"
+				data-testid="goal-in-review-global-reach-countries"
 			>
 				<li
 					v-for="(country, index) in visibleCountries"
@@ -50,7 +50,7 @@
 					class="tw-inline-flex tw-items-center tw-gap-0.5 tw-bg-white
 						tw-rounded-full tw-py-0.5 tw-px-1.5 kv-scale-in"
 					:style="pillDelay(visibleCountries.length)"
-					data-testid="goal-in-review-slide-3-other-pill"
+					data-testid="goal-in-review-global-reach-other-pill"
 				>
 					<KvMaterialIcon :icon="mdiMapMarker" class="tw-w-2 tw-h-2 tw-text-eco-green-4" />
 					<span class="tw-text-label tw-text-eco-green-4">Other ({{ otherCount }})</span>
@@ -68,7 +68,7 @@
 			'tw-min-h-half-screen': !sectorsInView,
 		}"
 		data-animate-on-view
-		data-testid="goal-in-review-slide-3-sectors"
+		data-testid="goal-in-review-global-reach-sectors"
 	>
 		<p class="tw-text-label tw-text-eco-green-3 tw-mb-1 kv-fade-up slide3-eyebrow">
 			Sectors Funded
@@ -108,8 +108,7 @@ import {
 } from 'vue';
 import { KvMap, KvMaterialIcon, KvPieChartV2 } from '@kiva/kv-components';
 import { mdiMapMarker } from '@mdi/js';
-import { getSectorChartValues, getNamedSectorCount } from '#src/util/goalInReviewSectors';
-import { getCountriesMapCenter } from '#src/util/goalInReviewMap';
+import { getCountriesMapCenter, getNamedSectorCount, getSectorChartValues } from '#src/util/goalInReview';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 
 const MAX_VISIBLE_COUNTRIES = 14;

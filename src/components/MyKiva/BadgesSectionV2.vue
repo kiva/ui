@@ -53,7 +53,7 @@ import { KvCarousel, KvLoadingPlaceholder } from '@kiva/kv-components';
 import MyKivaProgressCard from '#src/components/MyKiva/MyKivaProgressCard';
 import { useRouter } from 'vue-router';
 import { COMPLETED_GOAL_THRESHOLD, GOALS_CURRENT_YEAR, GOAL_STATUS } from '#src/composables/useGoalData';
-import { getGoalYear, shouldShowRecapEntryPoint } from '#src/util/goalRecapEntryPoint';
+import { getGoalYear, shouldShowRecapEntryPoint } from '#src/util/goalInReview';
 import { getGoalInReviewCurrentYear, getGoalInReviewNow } from '#src/composables/useGoalInReview';
 
 const CARD_MIN_HEIGHT = '111px';

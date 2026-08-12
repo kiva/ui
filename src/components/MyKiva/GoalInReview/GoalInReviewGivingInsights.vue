@@ -1,7 +1,7 @@
 <template>
 	<section
 		class="tw-w-full tw-bg-gray-50 tw-px-2.5 tw-py-4 md:tw-px-4 md:tw-py-7.5"
-		data-testid="goal-in-review-slide-4"
+		data-testid="goal-in-review-giving-insights"
 	>
 		<p class="tw-text-eco-green-3 tw-mb-1 kv-fade-up slide4-eyebrow">
 			Giving insights
@@ -15,11 +15,11 @@
 		<ul
 			class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-2
 				tw-list-none tw-p-0 tw-m-0"
-			data-testid="goal-in-review-slide-4-cards"
+			data-testid="goal-in-review-giving-insights-cards"
 		>
 			<li
 				class="tw-rounded tw-shadow-lg tw-p-2.5 tw-bg-marigold-1 kv-fade-up slide4-card"
-				data-testid="goal-in-review-slide-4-card-origin-story"
+				data-testid="goal-in-review-giving-insights-card-origin-story"
 			>
 				<div class="tw-mb-2">
 					<CloudSun
@@ -40,7 +40,7 @@
 
 			<li
 				class="tw-rounded tw-shadow-lg tw-p-2.5 tw-bg-desert-rose-1 kv-fade-up slide4-card"
-				data-testid="goal-in-review-slide-4-card-impact-identity"
+				data-testid="goal-in-review-giving-insights-card-impact-identity"
 			>
 				<div class="tw-mb-2">
 					<DoubleHandsAndHeart
@@ -61,7 +61,7 @@
 
 			<li
 				class="tw-rounded tw-shadow-lg tw-p-2.5 tw-bg-eco-green-1 kv-fade-up slide4-card"
-				data-testid="goal-in-review-slide-4-card-impact-habit"
+				data-testid="goal-in-review-giving-insights-card-impact-habit"
 			>
 				<div class="tw-mb-2">
 					<GreenPuzzle
@@ -85,7 +85,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import goalInReviewCopy from '#src/util/goalInReviewCopy';
+import goalInReviewCopy from '#src/util/goalInReview';
 import CloudSun from '#src/assets/images/my-kiva/goal-in-review/cloud-sun.svg';
 import DoubleHandsAndHeart from '#src/assets/images/my-kiva/goal-in-review/double-hands-and-heart.svg';
 import GreenPuzzle from '#src/assets/images/my-kiva/goal-in-review/green-puzzle.svg';
@@ -111,7 +111,7 @@ const impactHabit = computed(() => goalInReviewCopy.getImpactHabit({
 
 <style lang="postcss" scoped>
 /* Entrance choreography — the shared .kv-fade-up effect lives in
-   global/animations.scss; this slide sets the rise (24px) and the stagger so the
+   css/global/animations.css; this slide sets the rise (24px) and the stagger so the
    header lands first, then the three insight cards cascade 100ms apart. The modal
    gates the whole slide until it scrolls into view, so these delays count from
    that moment (see [data-animate-on-view] in the modal). */

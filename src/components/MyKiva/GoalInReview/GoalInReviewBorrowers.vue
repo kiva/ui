@@ -1,7 +1,7 @@
 <template>
 	<section
 		class="tw-w-full tw-bg-brand-100 tw-px-2 tw-py-4 md:tw-px-4"
-		data-testid="goal-in-review-slide-2"
+		data-testid="goal-in-review-borrowers"
 	>
 		<p class="tw-text-action tw-mb-1 kv-fade-up slide2-eyebrow">
 			The people behind the loans
@@ -14,7 +14,7 @@
 
 		<ul
 			class="borrower-grid tw-grid tw-gap-x-1 tw-gap-y-3 tw-list-none tw-p-0 tw-m-0"
-			data-testid="goal-in-review-slide-2-borrowers"
+			data-testid="goal-in-review-borrowers-borrowers"
 		>
 			<li
 				v-for="(card, index) in cards"
@@ -45,7 +45,7 @@
 				v-if="moreCount > 0"
 				class="kv-fade-up slide2-card"
 				:style="cardAnimationDelay(cards.length)"
-				data-testid="goal-in-review-slide-2-more"
+				data-testid="goal-in-review-borrowers-more"
 			>
 				<div
 					class="tw-w-full tw-aspect-square tw-rounded-sm tw-bg-eco-green-3 tw-bg-opacity-low
@@ -62,7 +62,7 @@
 import { computed } from 'vue';
 import numeral from 'numeral';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
-import { getBorrowerCards } from '#src/util/goalInReviewBorrowers';
+import { getBorrowerCards } from '#src/util/goalInReview';
 
 const props = defineProps({
 	loans: {
@@ -98,7 +98,7 @@ const cardAnimationDelay = index => ({ animationDelay: `${0.2 + index * 0.175}s`
 }
 
 /* Entrance choreography — the shared .kv-fade-up effect lives in
-   global/animations.scss. */
+   css/global/animations.css. */
 .slide2-eyebrow,
 .slide2-headline,
 .slide2-card {

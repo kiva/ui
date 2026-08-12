@@ -13,7 +13,7 @@
 		</template>
 		<div ref="slidesContainer" class="goal-in-review-slides tw-bg-secondary">
 			<div data-slide-view="1">
-				<GoalInReviewSlide1
+				<GoalInReviewHeadline
 					:goal-status="data?.goalSummary?.status"
 					:first-name="data?.firstName"
 					:year="data?.year"
@@ -24,36 +24,36 @@
 				/>
 			</div>
 			<div data-slide-view="2" data-animate-on-view>
-				<GoalInReviewSlide2
+				<GoalInReviewBorrowers
 					:loans="data?.goalLoans"
 					:borrower-count="data?.loanStats?.borrowers"
 				/>
 			</div>
 			<!-- Slide 3 has two sections that each reveal independently. -->
 			<div data-slide-view="3">
-				<GoalInReviewSlide3
+				<GoalInReviewGlobalReach
 					:countries="data?.goalSummary?.countries"
 					:sectors="data?.goalSummary?.sectors"
 				/>
 			</div>
 			<div data-slide-view="4" data-animate-on-view>
-				<GoalInReviewSlide4
+				<GoalInReviewGivingInsights
 					:goal-summary="data?.goalSummary"
 					:lifetime-percentile="data?.lifetimePercentile"
 				/>
 			</div>
 			<div data-slide-view="5" data-animate-on-view>
-				<GoalInReviewSlide5 />
+				<GoalInReviewCollectiveImpact />
 			</div>
 			<div
 				v-if="data?.goalSummary?.status === 'completed'"
 				data-slide-view="6"
 				data-animate-on-view
 			>
-				<GoalInReviewSlide6 :year="data?.year" />
+				<GoalInReviewPersonalNote :year="data?.year" />
 			</div>
 			<div data-slide-view="7" data-animate-on-view>
-				<GoalInReviewSlide7
+				<GoalInReviewThanksAndFeedback
 					:goal-status="data?.goalSummary?.status"
 					:loan-count="data?.loanStats?.borrowers"
 					:year="data?.year"
@@ -82,13 +82,27 @@ import { KvLightbox } from '@kiva/kv-components';
 import { getGoalInReviewCurrentYear } from '#src/composables/useGoalInReview';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 
-const GoalInReviewSlide1 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide1'));
-const GoalInReviewSlide2 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide2'));
-const GoalInReviewSlide3 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide3'));
-const GoalInReviewSlide4 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide4'));
-const GoalInReviewSlide5 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide5'));
-const GoalInReviewSlide6 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide6'));
-const GoalInReviewSlide7 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide7'));
+const GoalInReviewHeadline = defineAsyncComponent(
+	() => import('#src/components/MyKiva/GoalInReview/GoalInReviewHeadline')
+);
+const GoalInReviewBorrowers = defineAsyncComponent(
+	() => import('#src/components/MyKiva/GoalInReview/GoalInReviewBorrowers')
+);
+const GoalInReviewGlobalReach = defineAsyncComponent(
+	() => import('#src/components/MyKiva/GoalInReview/GoalInReviewGlobalReach')
+);
+const GoalInReviewGivingInsights = defineAsyncComponent(
+	() => import('#src/components/MyKiva/GoalInReview/GoalInReviewGivingInsights')
+);
+const GoalInReviewCollectiveImpact = defineAsyncComponent(
+	() => import('#src/components/MyKiva/GoalInReview/GoalInReviewCollectiveImpact')
+);
+const GoalInReviewPersonalNote = defineAsyncComponent(
+	() => import('#src/components/MyKiva/GoalInReview/GoalInReviewPersonalNote')
+);
+const GoalInReviewThanksAndFeedback = defineAsyncComponent(
+	() => import('#src/components/MyKiva/GoalInReview/GoalInReviewThanksAndFeedback')
+);
 
 const props = defineProps({
 	show: {
@@ -167,7 +181,7 @@ const teardownSlideObserver = () => {
 };
 
 // Unpause the section's entrance animations (see the reveal-on-scroll gate in
-// global/animations.scss). Slides gated with [data-animate-on-view] stay hidden
+// css/global/animations.css). Slides gated with [data-animate-on-view] stay hidden
 // until this runs, so their motion plays when the user reaches them, not on
 // mount. Slide 1 has no gate and animates on mount, so this is a no-op for it.
 const revealSlide = target => target?.classList.add('is-in-view');

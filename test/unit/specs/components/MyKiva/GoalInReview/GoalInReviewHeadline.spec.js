@@ -1,5 +1,5 @@
 import { render } from '@testing-library/vue';
-import GoalInReviewSlide1 from '#src/components/MyKiva/GoalInReview/GoalInReviewSlide1';
+import GoalInReviewHeadline from '#src/components/MyKiva/GoalInReview/GoalInReviewHeadline';
 import { globalOptions } from '../../../../specUtils';
 
 // canvas-confetti has no real canvas in jsdom (its rAF loop throws on a null
@@ -16,12 +16,12 @@ const baseProps = {
 	percentComplete: 100,
 };
 
-const renderSlide = (props = {}) => render(GoalInReviewSlide1, {
+const renderSlide = (props = {}) => render(GoalInReviewHeadline, {
 	global: globalOptions,
 	props: { ...baseProps, ...props },
 });
 
-describe('GoalInReviewSlide1', () => {
+describe('GoalInReviewHeadline', () => {
 	it('renders the recap pill with the goal year', () => {
 		const { getByText } = renderSlide();
 		getByText('Your 2026 impact goal recap');

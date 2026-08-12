@@ -9,9 +9,6 @@ import goalInReviewLenderQuery from '#src/graphql/query/goalInReviewLender.graph
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import useGoalData, { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
-import { shouldAutoOpenRecap } from '#src/util/goalInReviewTrigger';
-import { completedGoalThisSession } from '#src/util/goalRecapSession';
-import logFormatter from '#src/util/logFormatter';
 import {
 	getCategoryName,
 	getGoalLoans,
@@ -19,7 +16,10 @@ import {
 	getLoanStats,
 	mergeRecapExtras,
 	scopeToGoalYear,
-} from '#src/util/goalInReviewPayload';
+	shouldAutoOpenRecap,
+} from '#src/util/goalInReview';
+import { completedGoalThisSession } from '#src/util/goalRecapSession';
+import logFormatter from '#src/util/logFormatter';
 
 // Open the Goal In Review recap from MyKiva with /mykiva?goTo=goal-recap.
 export const GOAL_RECAP_DEEP_LINK = 'goal-recap';
