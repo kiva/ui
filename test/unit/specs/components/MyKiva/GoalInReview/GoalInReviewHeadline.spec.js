@@ -56,16 +56,16 @@ describe('GoalInReviewHeadline', () => {
 			getByText('$1,025');
 			getByText('Total lent');
 			getByText('14');
-			getByText('Borrowers');
+			getByText('Borrowers helped');
 			getByText('Women');
 			getByText('100%');
-			getByText('Complete');
+			getByText('Progress');
 		});
 
-		it('uses the singular "Borrower" label when the count is 1', () => {
+		it('uses the singular "Borrower helped" label when the count is 1', () => {
 			const { getByText, queryByText } = renderSlide({ borrowerCount: 1 });
-			getByText('Borrower');
-			expect(queryByText('Borrowers')).toBeNull();
+			getByText('Borrower helped');
+			expect(queryByText('Borrowers helped')).toBeNull();
 		});
 
 		it('formats large amounts and borrower counts with separators', () => {

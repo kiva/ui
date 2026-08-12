@@ -88,8 +88,8 @@
 							kv-rebound-in headline-stat"
 						:data-testid="`goal-in-review-headline-stat-${stat.key}`"
 					>
-						<span class="tw-font-medium tw-text-primary">{{ stat.value }}</span>
-						<span v-if="stat.label" class="tw-text-small tw-text-primary">{{ stat.label }}</span>
+						<span v-if="stat.label" class="tw-text-caption tw-text-tertiary">{{ stat.label }}</span>
+						<span class="tw-text-button-link tw-text-primary">{{ stat.value }}</span>
 					</li>
 				</ul>
 
@@ -179,13 +179,13 @@ const percentCompleteDisplay = computed(() => (props.percentComplete
 	? `${Math.round(Number(props.percentComplete))}%`
 	: MISSING));
 
-const borrowersLabel = computed(() => (Number(props.borrowerCount) === 1 ? 'Borrower' : 'Borrowers'));
+const borrowersLabel = computed(() => (Number(props.borrowerCount) === 1 ? 'Borrower helped' : 'Borrowers helped'));
 
 const stats = computed(() => [
 	{ key: 'total-lent', value: amountLentDisplay.value, label: 'Total lent' },
 	{ key: 'borrowers', value: borrowerCountDisplay.value, label: borrowersLabel.value },
-	{ key: 'category', value: categoryDisplay.value, label: null },
-	{ key: 'complete', value: percentCompleteDisplay.value, label: 'Complete' },
+	{ key: 'category', value: categoryDisplay.value, label: 'Category' },
+	{ key: 'complete', value: percentCompleteDisplay.value, label: 'Progress' },
 ]);
 
 onMounted(() => {
