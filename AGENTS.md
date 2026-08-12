@@ -7,7 +7,7 @@ Kiva UI is a Vue 3 SSR (Server-Side Rendering) application for Kiva.org's lendin
 
 ### Vue 3 API Usage
 
-Either authoring style works with Apollo prefetching. SSR prefetch discovery walks the children the build step attaches to every compiled component, so a component is reached without registering its children in a `components` option and without using a particular API.
+Either authoring style works with Apollo prefetching. SSR prefetch discovery follows the `components` option a component registers, and for a `<script setup>` component, which cannot register one, the build step attaches its imported children instead.
 
 Only the Options API can author an `apollo` block. A `<script setup>` component fetches the data it needs for the initial render through a composable instead — `useApolloQuery` with an exported `preFetchOperations`, as shown under "Data Fetching in Composables" below.
 
