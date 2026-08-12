@@ -1,9 +1,29 @@
 <template>
 	<section
-		class="tw-w-full tw-bg-gray-50 tw-bg-no-repeat tw-bg-bottom goal-in-review-headline"
+		class="tw-w-full tw-relative tw-isolate tw-bg-gray-50 tw-bg-no-repeat tw-bg-bottom goal-in-review-headline"
 		:class="{ 'goal-in-review-headline--in-progress': !isComplete }"
 		data-testid="goal-in-review-headline"
 	>
+		<!-- Overlays sit behind content via tw-z-hide; section's tw-isolate contains that z-index. -->
+		<div class="headline-stars tw-absolute tw-inset-0 tw-pointer-events-none tw-z-hide" aria-hidden="true">
+			<StarIcon class="headline-star headline-star--1 tw-w-1.5 tw-h-1.5" />
+			<StarIcon class="headline-star headline-star--2 tw-w-0.5 tw-h-0.5" />
+			<StarIcon class="headline-star headline-star--3 tw-w-1 tw-h-1" />
+			<StarIcon class="headline-star headline-star--4 tw-w-2 tw-h-2" />
+			<StarIcon class="headline-star headline-star--5 tw-w-1 tw-h-1" />
+		</div>
+
+		<div class="headline-dots tw-absolute tw-inset-0 tw-pointer-events-none tw-z-hide" aria-hidden="true">
+			<DotIcon class="headline-dot headline-dot--1 tw-w-0.5 tw-h-0.5" />
+			<DotIcon class="headline-dot headline-dot--2 tw-w-0.5 tw-h-0.5" />
+			<DotIcon class="headline-dot headline-dot--3 tw-w-0.5 tw-h-0.5" />
+			<DotIcon class="headline-dot headline-dot--4 tw-w-0.5 tw-h-0.5" />
+			<DotIcon class="headline-dot headline-dot--5 tw-w-0.5 tw-h-0.5" />
+			<DotIcon class="headline-dot headline-dot--6 tw-w-0.5 tw-h-0.5" />
+			<DotIcon class="headline-dot headline-dot--7 tw-w-0.5 tw-h-0.5" />
+			<DotIcon class="headline-dot headline-dot--8 tw-w-0.5 tw-h-0.5" />
+		</div>
+
 		<div class="tw-relative" data-testid="goal-in-review-headline-header">
 			<ul class="tw-grid tw-grid-cols-3 md:tw-grid-cols-4 tw-list-none tw-p-0 tw-m-0">
 				<li
@@ -94,6 +114,8 @@ import headlineImage2 from '#src/assets/images/my-kiva/goal-in-review/headline-2
 import headlineImage3 from '#src/assets/images/my-kiva/goal-in-review/headline-3.png';
 import headlineImage4 from '#src/assets/images/my-kiva/goal-in-review/headline-4.png';
 import headlineBottom from '#src/assets/images/my-kiva/goal-in-review/headline-bottom.png';
+import StarIcon from '#src/assets/images/my-kiva/goal-in-review/star.svg';
+import DotIcon from '#src/assets/images/my-kiva/goal-in-review/dot.svg';
 import { capitalize } from '#src/util/stringParserUtils';
 import { showConfetti } from '#src/util/animation/confettiUtils';
 
@@ -265,6 +287,149 @@ onMounted(() => {
 	100% {
 		opacity: 1;
 		transform: translateY(0);
+	}
+}
+
+.headline-star {
+	position: absolute;
+	transform: translate(-50%, -50%);
+	animation: headline-dissolve 3s ease-in-out infinite;
+}
+
+.headline-star--1 {
+	top: 52.7%;
+	left: 74.5%;
+}
+
+.headline-star--2 {
+	top: 51.5%;
+	left: 72.8%;
+	animation-delay: 0.6s;
+}
+
+.headline-star--3 {
+	top: 43%;
+	left: 76.5%;
+	animation-delay: 1.2s;
+}
+
+.headline-star--4 {
+	top: 30.5%;
+    left: 16.1%;
+	animation-delay: 1.8s;
+
+	@screen md {
+		top: 43.5%;
+		left: 24.1%;
+	}
+}
+
+.headline-star--5 {
+	top: 36.5%;
+    left: 13.7%;
+	animation-delay: 2.4s;
+
+	@screen md {
+		top: 46.5%;
+		left: 22.7%;
+	}
+}
+
+@keyframes headline-dissolve {
+	0%,
+	100% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0;
+	}
+}
+
+/* Dots twinkle like the stars but slower (4s vs 3s), on their own stagger. Size
+   comes from tw-w-* tokens; color (#F8CD69) is baked into dot.svg. */
+.headline-dot {
+	position: absolute;
+	transform: translate(-50%, -50%);
+	animation: headline-dissolve 4s ease-in-out infinite;
+}
+
+.headline-dot--1 {
+	top: 71%;
+	left: 74.6%;
+
+	@screen md {
+		top: 72.6%;
+	}
+}
+
+.headline-dot--2 {
+	top: 36.3%;
+    left: 69.7%;
+	animation-delay: 0.5s;
+
+	@screen md {
+		top: 41.3%;
+	}
+}
+
+.headline-dot--3 {
+	top: 55.8%;
+    left: 32.5%;
+	animation-delay: 1s;
+
+	@screen md {
+		top: 68%;
+		left: 28.5%;
+	}
+}
+
+.headline-dot--4 {
+	top: 52.7%;
+	left: 18.3%;
+	animation-delay: 1.5s;
+}
+
+.headline-dot--5 {
+	top: 44.2%;
+	left: 26.7%;
+	animation-delay: 2s;
+
+	@screen md {
+		top: 46.2%;
+	}
+}
+
+.headline-dot--6 {
+	top: 53.8%;
+	left: 79.9%;
+	animation-delay: 2.5s;
+}
+
+.headline-dot--7 {
+	top: 31.7%;
+	left: 36.6%;
+	animation-delay: 3s;
+
+	@screen md {
+		top: 40.7%;
+	}
+}
+
+.headline-dot--8 {
+	top: 57.8%;
+	left: 47.2%;
+	animation-delay: 3.5s;
+
+	@screen md {
+		top: 65.8%;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.headline-star,
+	.headline-dot {
+		animation: none;
 	}
 }
 </style>
