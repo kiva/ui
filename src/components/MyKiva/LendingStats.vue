@@ -27,6 +27,7 @@
 	<div>
 		<template v-if="showAlmostFundedCard && !goalProgressLoading">
 			<JourneyCardCarousel
+				:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 				class="carousel carousel-lending-next-steps tw-w-full"
 				user-in-homepage
 				in-lending-stats
@@ -63,6 +64,7 @@
 			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden lg:tw-block" />
 		</div>
 		<JourneyCardCarousel
+			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 			v-else
 			class="carousel carousel-spacing tw--mt-6"
 			user-in-homepage
@@ -188,6 +190,10 @@ export default {
 		goalsRowEnabled: {
 			type: Boolean,
 			default: false,
+		},
+		goalInReviewInProgressStart: {
+			type: Date,
+			default: null,
 		},
 	},
 	data() {

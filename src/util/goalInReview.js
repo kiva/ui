@@ -85,6 +85,33 @@ export function shouldAutoOpenRecap({
 	return false;
 }
 
+// --- Goal sign up ask ---
+
+// Lead time before the recap: stop asking for a goal there is no year left to finish (MP-2993).
+const SIGNUP_HIDE_LEAD_DAYS = 14;
+
+/**
+ * Whether to hide the goal sign up ask. Runs from two weeks before the recap release
+ * through the end of that goal year, so the ask returns with the new year.
+ *
+ * @param {object} options Inputs.
+ * @param {Date|string|null} [options.recapStartDate] The goal_in_review_in_progress_start setting.
+ * @param {Date} [options.now] The effective current date.
+ * @returns {boolean} Whether to hide the sign up ask.
+ */
+export function shouldHideGoalSignup({ recapStartDate = null, now = new Date() } = {}) {
+	const recapStart = recapStartDate instanceof Date ? recapStartDate : new Date(recapStartDate ?? NaN);
+	if (Number.isNaN(recapStart.getTime())) {
+		return false;
+	}
+
+	const hideFrom = new Date(recapStart);
+	hideFrom.setDate(hideFrom.getDate() - SIGNUP_HIDE_LEAD_DAYS);
+	const resumeAt = new Date(recapStart.getFullYear() + 1, 0, 1);
+
+	return now.getTime() >= hideFrom.getTime() && now.getTime() < resumeAt.getTime();
+}
+
 // --- Goal card entry point decision ---
 
 export const RECAP_CTA_LABEL = 'View goal recap';

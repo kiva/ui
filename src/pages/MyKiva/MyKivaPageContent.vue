@@ -24,6 +24,7 @@
 			:user-first-name="userInfo?.userAccount?.firstName"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:goal-in-review-enable="goalInReviewEnable"
+			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 			@set-goal-click="openGoalSettingModal"
 			@edit-click="openEditGoalSettingModal"
 			@view-goal-recap="openGoalRecapFromCard"
@@ -42,6 +43,7 @@
 				:user-info="userInfo"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 				:goals-row-enabled="goalsRowEnabled"
+				:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 				:basket-items="basketItems"
 				:is-adding="isAdding"
 				@add-to-basket="addGoalRecommendedLoanToBasket"
@@ -141,6 +143,7 @@
 				More ways to help
 			</h2>
 			<JourneyCardCarousel
+				:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 				class="tw--mt-4"
 				controls-top-right
 				:slides="moreWaysToHelpSlides"
