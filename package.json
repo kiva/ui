@@ -30,7 +30,7 @@
 		"coverage:merge": "node test/mergeCoverage.cjs",
 		"lint": "npm run fetchSchema && npm run lint:js && npm run lint:css && npm run lint:graphql",
 		"lint:js": "eslint --ext .js,.vue --ignore-pattern 'src/graphql' build config server src test/unit/specs",
-		"lint:css": "stylelint \"src/**/*.{vue,scss}\"",
+		"lint:css": "stylelint \"src/**/*.{vue,scss,css}\"",
 		"lint:graphql": "eslint --ext .graphql src/graphql",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build",

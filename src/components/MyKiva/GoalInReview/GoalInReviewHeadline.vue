@@ -20,7 +20,7 @@
 				</li>
 			</ul>
 			<img
-				:src="slide1Bottom"
+				:src="headlineBottom"
 				alt=""
 				class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-pointer-events-none"
 			>
@@ -29,13 +29,13 @@
 		<div class="tw-px-2 tw-mx-auto tw-max-w-3xl tw-text-center">
 			<p
 				class="tw-inline-block tw-rounded-full tw-bg-brand-650 tw-text-white
-					tw-text-label tw-py-0.5 tw-px-1.5 tw-mb-2"
+					tw-text-label tw-py-0.5 tw-px-1.5 tw-mb-2 kv-fade-up headline-eyebrow"
 				data-testid="goal-in-review-headline-pill"
 			>
 				{{ pillText }}
 			</p>
 
-			<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-2">
+			<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-2 kv-fade-up headline-title">
 				<template v-if="isComplete">
 					<template v-if="firstName">
 						You did it, <span class="tw-text-marigold data-hj-suppress">{{ firstName }}</span>
@@ -52,7 +52,7 @@
 
 		<div>
 			<div class="tw-px-2 md:tw-px-4.5 tw-mx-auto tw-text-center">
-				<h3 class="tw-mx-auto tw-mb-8 lg:tw-mb-6 tw-max-w-lg">
+				<h3 class="tw-mx-auto tw-mb-8 lg:tw-mb-6 tw-max-w-lg kv-fade-up headline-subtext">
 					Because of your commitment, borrowers could count on Kiva to be there when it mattered.
 				</h3>
 
@@ -64,7 +64,8 @@
 						v-for="stat in stats"
 						:key="stat.key"
 						class="tw-min-h-11.5 tw-flex tw-flex-col tw-items-center tw-justify-center tw-text-center
-							tw-bg-white tw-rounded tw-border tw-border-gray-100 tw-py-2 tw-px-1.5"
+							tw-bg-white tw-rounded tw-border tw-border-gray-100 tw-py-2 tw-px-1.5
+							kv-rebound-in headline-stat"
 						:data-testid="`goal-in-review-headline-stat-${stat.key}`"
 					>
 						<span class="tw-font-medium tw-text-primary">{{ stat.value }}</span>
@@ -73,7 +74,7 @@
 				</ul>
 
 				<div class="tw-mt-4 tw-text-action">
-					<p class="tw-text-base tw-mb-1.5">
+					<p class="tw-text-base tw-mb-1.5 kv-rebound-in headline-scroll-cue">
 						Scroll to explore the stories behind your goal
 					</p>
 					<KvMaterialIcon :icon="mdiArrowDown" class="scroll-arrow tw-block tw-mx-auto" />
@@ -84,22 +85,23 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import numeral from 'numeral';
 import { KvMaterialIcon } from '@kiva/kv-components';
 import { mdiArrowDown } from '@mdi/js';
-import slide1Image1 from '#src/assets/images/my-kiva/goal-in-review/slide1-1.png';
-import slide1Image2 from '#src/assets/images/my-kiva/goal-in-review/slide1-2.png';
-import slide1Image3 from '#src/assets/images/my-kiva/goal-in-review/slide1-3.png';
-import slide1Image4 from '#src/assets/images/my-kiva/goal-in-review/slide1-4.png';
-import slide1Bottom from '#src/assets/images/my-kiva/goal-in-review/slide1-bottom.png';
+import headlineImage1 from '#src/assets/images/my-kiva/goal-in-review/headline-1.png';
+import headlineImage2 from '#src/assets/images/my-kiva/goal-in-review/headline-2.png';
+import headlineImage3 from '#src/assets/images/my-kiva/goal-in-review/headline-3.png';
+import headlineImage4 from '#src/assets/images/my-kiva/goal-in-review/headline-4.png';
+import headlineBottom from '#src/assets/images/my-kiva/goal-in-review/headline-bottom.png';
 import { capitalize } from '#src/util/stringParserUtils';
+import { showConfetti } from '#src/util/animation/confettiUtils';
 
 const headerImages = [
-	{ src: slide1Image1, focus: '85% 25%', alt: 'A woman smiling while doing an activity' },
-	{ src: slide1Image2, focus: '60% 20%', alt: 'A man smiling at the camera' },
-	{ src: slide1Image3, focus: '50% 25%', alt: 'A woman smiling and looking to the left' },
-	{ src: slide1Image4, focus: '10% 25%', alt: 'A woman smiling at the camera' },
+	{ src: headlineImage1, focus: '85% 25%', alt: 'A woman smiling while doing an activity' },
+	{ src: headlineImage2, focus: '60% 20%', alt: 'A man smiling at the camera' },
+	{ src: headlineImage3, focus: '50% 25%', alt: 'A woman smiling and looking to the left' },
+	{ src: headlineImage4, focus: '10% 25%', alt: 'A woman smiling at the camera' },
 ];
 
 const props = defineProps({
@@ -163,6 +165,10 @@ const stats = computed(() => [
 	{ key: 'category', value: categoryDisplay.value, label: null },
 	{ key: 'complete', value: percentCompleteDisplay.value, label: 'Complete' },
 ]);
+
+onMounted(() => {
+	showConfetti();
+});
 </script>
 
 <style lang="postcss" scoped>
@@ -173,42 +179,92 @@ const stats = computed(() => [
 }
 
 .goal-in-review-headline {
-	background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-mobile-hill.png');
+	background-image: url('/src/assets/images/my-kiva/goal-in-review/headline-mobile-hill.png');
 	background-size: contain;
 	background-position: bottom left;
 }
 
 @screen md {
 	.goal-in-review-headline {
-		background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-desktop-hill.png');
+		background-image: url('/src/assets/images/my-kiva/goal-in-review/headline-desktop-hill.png');
 	}
 }
 
 @screen lg {
 	.goal-in-review-headline {
-		background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-desktop-hill.png');
+		background-image: url('/src/assets/images/my-kiva/goal-in-review/headline-desktop-hill.png');
 	}
 }
 
+/* Title stack entrance — shares the global .kv-fade-up effect; this slide sets
+   each line's travel distance (--kv-fade-up-distance, the value baked inside the
+   keyframe) and its delay, so eyebrow -> headline -> subtitle rise in sequence. */
+.headline-eyebrow {
+	--kv-fade-up-distance: 16px;
+
+	animation-delay: 0.3s;
+}
+
+.headline-title {
+	--kv-fade-up-distance: 30px;
+
+	animation-delay: 0.55s;
+}
+
+.headline-subtext {
+	--kv-fade-up-distance: 20px;
+
+	animation-delay: 0.9s;
+}
+
+/* Stat cards use the shared rebound (.kv-rebound-in, see css/animations.css);
+   this slide only owns the per-item stagger so the four cards cascade "1...N"
+   once the title stack has settled. */
+.headline-stat:nth-child(1) {
+	animation-delay: 1.1s;
+}
+
+.headline-stat:nth-child(2) {
+	animation-delay: 1.2s;
+}
+
+.headline-stat:nth-child(3) {
+	animation-delay: 1.3s;
+}
+
+.headline-stat:nth-child(4) {
+	animation-delay: 1.4s;
+}
+
+.headline-scroll-cue {
+	animation-delay: 1.4s;
+}
+
+/* Down arrow: fades and rises in with the scroll cue. */
 .scroll-arrow {
-	animation: scroll-arrow-hint 1.5s ease-in-out infinite;
+	--kv-fade-up-distance: 8px;
+
+	animation:
+		kv-fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.5s both,
+		scroll-arrow-bounce 1.8s ease-in-out 2.1s infinite;
 
 	@apply motion-reduce:tw-animate-none;
 }
 
-@keyframes scroll-arrow-hint {
+@keyframes scroll-arrow-bounce {
 	0% {
-		opacity: 0;
-		transform: translateY(-4px);
+		opacity: 1;
+		transform: translateY(0);
 	}
 
 	50% {
-		opacity: 1;
+		opacity: 0.6;
+		transform: translateY(8px);
 	}
 
 	100% {
-		opacity: 0;
-		transform: translateY(6px);
+		opacity: 1;
+		transform: translateY(0);
 	}
 }
 </style>

@@ -23,34 +23,36 @@
 					:percent-complete="data?.loanStats?.percentComplete"
 				/>
 			</div>
-			<div data-slide-view="2">
+			<div data-slide-view="2" data-animate-on-view>
 				<GoalInReviewBorrowers
 					:loans="data?.goalLoans"
 					:borrower-count="data?.loanStats?.borrowers"
 				/>
 			</div>
+			<!-- Slide 3 has two sections that each reveal independently. -->
 			<div data-slide-view="3">
 				<GoalInReviewGlobalReach
 					:countries="data?.goalSummary?.countries"
 					:sectors="data?.goalSummary?.sectors"
 				/>
 			</div>
-			<div data-slide-view="4">
+			<div data-slide-view="4" data-animate-on-view>
 				<GoalInReviewGivingInsights
 					:goal-summary="data?.goalSummary"
 					:lifetime-percentile="data?.lifetimePercentile"
 				/>
 			</div>
-			<div data-slide-view="5">
+			<div data-slide-view="5" data-animate-on-view>
 				<GoalInReviewCollectiveImpact />
 			</div>
 			<div
 				v-if="data?.goalSummary?.status === 'completed'"
 				data-slide-view="6"
+				data-animate-on-view
 			>
 				<GoalInReviewPersonalNote :year="data?.year" />
 			</div>
-			<div data-slide-view="7">
+			<div data-slide-view="7" data-animate-on-view>
 				<GoalInReviewThanksAndFeedback
 					:goal-status="data?.goalSummary?.status"
 					:loan-count="data?.loanStats?.borrowers"
@@ -79,6 +81,7 @@ import {
 import { KvLightbox } from '@kiva/kv-components';
 import { getGoalInReviewCurrentYear } from '#src/composables/useGoalInReview';
 import { createIntersectionObserver } from '#src/util/observerUtils';
+import '#src/assets/css/animations.css';
 
 const GoalInReviewHeadline = defineAsyncComponent(
 	() => import('#src/components/MyKiva/GoalInReview/GoalInReviewHeadline')
@@ -178,6 +181,12 @@ const teardownSlideObserver = () => {
 	slideObserver = null;
 };
 
+// Unpause the section's entrance animations (see the reveal-on-scroll gate in
+// css/animations.css). Slides gated with [data-animate-on-view] stay hidden
+// until this runs, so their motion plays when the user reaches them, not on
+// mount. Slide 1 has no gate and animates on mount, so this is a no-op for it.
+const revealSlide = target => target?.classList.add('is-in-view');
+
 const trackSlideViews = entries => {
 	entries.forEach(entry => {
 		const slide = entry.target.dataset.slideView;
@@ -192,6 +201,7 @@ const trackSlideViews = entries => {
 			return;
 		}
 		markScreenViewed(slide);
+		revealSlide(entry.target);
 		slideObserver?.unobserve(entry.target);
 	});
 };
@@ -208,12 +218,19 @@ const setupSlideObserver = async () => {
 	if (!targets.length) {
 		return;
 	}
+	// Re-hide the scroll-revealed sections so a reopen replays their entrance.
+	targets.forEach(target => target.classList.remove('is-in-view'));
 	slideObserver = createIntersectionObserver({
 		targets,
 		callback: trackSlideViews,
 		// Trigger when a section's top passes the scroll container's midpoint.
 		options: { root: container.closest('#kvLightboxBody'), rootMargin: '0px 0px -50% 0px', threshold: 0 },
 	});
+	// No observer means no scroll callback will fire, so reveal every gated
+	// section up front rather than leaving its content paused and hidden.
+	if (!slideObserver) {
+		targets.forEach(revealSlide);
+	}
 };
 
 watch(() => props.show, isShown => {
