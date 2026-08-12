@@ -23,7 +23,10 @@ import { capitalize } from '#src/util/stringParserUtils';
  * @returns {boolean} Whether in-progress goal setters are eligible yet.
  */
 function hasInProgressReleaseStarted(startDate, now) {
-	const start = startDate instanceof Date ? startDate : new Date(startDate ?? NaN);
+	if (!startDate) {
+		return false;
+	}
+	const start = startDate instanceof Date ? startDate : new Date(startDate);
 	if (Number.isNaN(start.getTime())) {
 		return false;
 	}
@@ -83,6 +86,36 @@ export function shouldAutoOpenRecap({
 	}
 
 	return false;
+}
+
+// --- Goal sign up ask ---
+
+// Stop asking for a goal there is no year left to finish (MP-2993).
+const SIGNUP_HIDE_LEAD_DAYS = 14;
+
+/**
+ * Whether to hide the goal sign up ask, from the lead time before the recap release
+ * until the end of that goal year.
+ *
+ * @param {object} options Inputs.
+ * @param {Date|string|null} [options.recapStartDate] The goal_in_review_in_progress_start setting.
+ * @param {Date} [options.now] The effective current date.
+ * @returns {boolean} Whether to hide the sign up ask.
+ */
+export function shouldHideGoalSignup({ recapStartDate = null, now = new Date() } = {}) {
+	if (!recapStartDate) {
+		return false;
+	}
+	const recapStart = recapStartDate instanceof Date ? recapStartDate : new Date(recapStartDate);
+	if (Number.isNaN(recapStart.getTime())) {
+		return false;
+	}
+
+	const hideFrom = new Date(recapStart);
+	hideFrom.setDate(hideFrom.getDate() - SIGNUP_HIDE_LEAD_DAYS);
+	const resumeAt = new Date(recapStart.getFullYear() + 1, 0, 1);
+
+	return now.getTime() >= hideFrom.getTime() && now.getTime() < resumeAt.getTime();
 }
 
 // --- Goal card entry point decision ---

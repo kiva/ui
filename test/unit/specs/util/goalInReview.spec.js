@@ -14,6 +14,7 @@ import goalInReviewCopy, {
 	mergeRecapExtras,
 	scopeToGoalYear,
 	shouldAutoOpenRecap,
+	shouldHideGoalSignup,
 	shouldShowRecapEntryPoint,
 } from '#src/util/goalInReview';
 import { completedGoalThisSession, markGoalCompletedThisSession } from '#src/util/goalRecapSession';
@@ -962,5 +963,57 @@ describe('goalInReviewCopy.js', () => {
 			expect(title).toBe('Rising Kiva champion');
 			expect(content).toContain(`You showed up ${strong('0 times')} this year`);
 		});
+	});
+});
+
+describe('shouldHideGoalSignup', () => {
+	const RECAP_START = new Date(2026, 10, 15);
+
+	it('keeps asking well before the recap goes out', () => {
+		expect(shouldHideGoalSignup({
+			recapStartDate: RECAP_START,
+			now: new Date(2026, 9, 31, 23, 59),
+		})).toBe(false);
+	});
+
+	it('stops asking two weeks before, on November 1', () => {
+		expect(shouldHideGoalSignup({
+			recapStartDate: RECAP_START,
+			now: new Date(2026, 10, 1),
+		})).toBe(true);
+	});
+
+	it('stays hidden while the recap is out', () => {
+		expect(shouldHideGoalSignup({
+			recapStartDate: RECAP_START,
+			now: new Date(2026, 11, 25),
+		})).toBe(true);
+	});
+
+	it('asks again from January 1, for the year the lender can still finish', () => {
+		expect(shouldHideGoalSignup({
+			recapStartDate: RECAP_START,
+			now: new Date(2027, 0, 1),
+		})).toBe(false);
+	});
+
+	it('derives the window from the setting rather than a fixed month', () => {
+		const decemberRecap = new Date(2026, 11, 10);
+		expect(shouldHideGoalSignup({ recapStartDate: decemberRecap, now: new Date(2026, 10, 1) })).toBe(false);
+		expect(shouldHideGoalSignup({ recapStartDate: decemberRecap, now: new Date(2026, 10, 26) })).toBe(true);
+	});
+
+	it('accepts the date as a string, since settings come back serialized', () => {
+		expect(shouldHideGoalSignup({ recapStartDate: '2026-11-15', now: new Date(2026, 10, 5) })).toBe(true);
+	});
+
+	it('keeps asking when the setting is unset or unreadable', () => {
+		expect(shouldHideGoalSignup({ recapStartDate: null, now: new Date(2026, 10, 5) })).toBe(false);
+		expect(shouldHideGoalSignup({ recapStartDate: 'not-a-date', now: new Date(2026, 10, 5) })).toBe(false);
+		expect(shouldHideGoalSignup()).toBe(false);
+	});
+
+	it('keeps asking once the setting is a year stale', () => {
+		expect(shouldHideGoalSignup({ recapStartDate: RECAP_START, now: new Date(2027, 10, 5) })).toBe(false);
 	});
 });

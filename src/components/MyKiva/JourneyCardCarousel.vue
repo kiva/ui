@@ -102,6 +102,7 @@ import useGoalData from '#src/composables/useGoalData';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
+import { shouldHideGoalSignup } from '#src/util/goalInReview';
 import AlmostFundedNextStep from '#src/components/MyKiva/AlmostFundedNextStep';
 import {
 	getSlideTitle,
@@ -201,6 +202,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
+	goalInReviewInProgressStart: {
+		type: Date,
+		default: null,
+	},
 	latestLoan: {
 		type: Object,
 		default: null
@@ -261,8 +266,14 @@ const showSurveyCard = computed(() => props.showSurveySlide && checkShowSurveyCa
 
 const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.slides));
 
+const hideGoalSignup = computed(() => shouldHideGoalSignup({
+	recapStartDate: props.goalInReviewInProgressStart,
+}));
+
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
+	// With no goal, this card is only the sign up ask.
+	if (!props.userGoal && hideGoalSignup.value) return false;
 
 	return (!props.userGoal || !props.userGoalAchieved || props.userGoalAchieved) && !props.hideGoalCard;
 });

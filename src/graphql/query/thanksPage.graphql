@@ -45,6 +45,10 @@ query thanksPage {
 			key
 			value
 		}
+		goal_in_review_in_progress_start: uiConfigSetting(key: "goal_in_review_in_progress_start") {
+			key
+			value
+		}
 		ty_page_express_checkout_enabled: uiConfigSetting(key: "enable_ty_page_express_checkout") {
 			key
 			value

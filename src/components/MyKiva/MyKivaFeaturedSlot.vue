@@ -42,7 +42,7 @@ import useGoalData, {
 	COMPLETED_GOAL_THRESHOLD,
 } from '#src/composables/useGoalData';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { getGoalYear, shouldShowRecapEntryPoint } from '#src/util/goalInReview';
+import { getGoalYear, shouldHideGoalSignup, shouldShowRecapEntryPoint } from '#src/util/goalInReview';
 import { getGoalInReviewCurrentYear, getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
@@ -67,6 +67,10 @@ const props = defineProps({
 	goalInReviewEnable: {
 		type: Boolean,
 		default: false,
+	},
+	goalInReviewInProgressStart: {
+		type: Date,
+		default: null,
 	},
 });
 
@@ -95,6 +99,10 @@ const categoryName = computed(() => {
 // Sticky so the slot does not disappear mid-view after we persist the flag.
 const alreadyViewedSnapshot = ref(null);
 
+const hideGoalSignup = computed(() => shouldHideGoalSignup({
+	recapStartDate: props.goalInReviewInProgressStart,
+}));
+
 const slotState = computed(() => {
 	if (cardLoading.value) return STATE_NO_GOAL;
 	if (goalStatus.value === GOAL_STATUS.COMPLETED) {
@@ -102,6 +110,8 @@ const slotState = computed(() => {
 		return STATE_ACTIVE_GOAL;
 	}
 	if (goalStatus.value === GOAL_STATUS.IN_PROGRESS) return STATE_ACTIVE_GOAL;
+	// null unrenders the section, heading included.
+	if (hideGoalSignup.value) return null;
 	return STATE_NO_GOAL;
 });
 

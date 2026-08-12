@@ -15,6 +15,7 @@
 			:user-lent-to-all-regions="userLentToAllRegions"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goals-row-enabled="goalsRowEnabled"
+			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
 		/>
 		<my-kiva-page-content

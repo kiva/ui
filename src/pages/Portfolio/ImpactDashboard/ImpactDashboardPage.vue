@@ -16,7 +16,7 @@
 					/>
 					<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
 					<GoalEntrypoint
-						v-if="isEmptyGoal"
+						v-if="isEmptyGoal && !hideGoalSignup"
 					/>
 					<lending-insights />
 					<my-giving-funds-card
@@ -63,6 +63,7 @@ import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSeco
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { gql } from 'graphql-tag';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
+import { shouldHideGoalSignup } from '#src/util/goalInReview';
 import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import useGoalInReview from '#src/composables/useGoalInReview';
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
@@ -156,6 +157,11 @@ export default {
 	apollo: {
 		preFetch(config, client) {
 			return client.query({ query: portfolioQuery });
+		},
+	},
+	computed: {
+		hideGoalSignup() {
+			return shouldHideGoalSignup({ recapStartDate: this.goalInReviewInProgressStart });
 		},
 	},
 	methods: {
