@@ -3,23 +3,6 @@ import prefetchDiscoveryPlugin from '../../../../build/prefetch-discovery-plugin
 
 const ROOT = '/repo';
 
-const KV_COMPOSABLE = '@kiva/kv-components/composables/useSomething';
-
-const resolutions = {
-	'#src/composables/useMultiMatching': `${ROOT}/src/composables/useMultiMatching.js`,
-	'#src/composables/useBadgeData': `${ROOT}/src/composables/useBadgeData.js`,
-	'#src/util/loanUtils': `${ROOT}/src/util/loanUtils.js`,
-	'#src/components/MyKiva/JourneyCardCarousel': `${ROOT}/src/components/MyKiva/JourneyCardCarousel.vue`,
-	'#src/components/MyKiva/MyKivaContainer': `${ROOT}/src/components/MyKiva/MyKivaContainer.vue`,
-	'#src/components/MyKiva/GoalSetting/CategoryForm': `${ROOT}/src/components/MyKiva/GoalSetting/CategoryForm.vue`,
-	'#src/components/BorrowerProfile/CountryInfo': `${ROOT}/src/components/BorrowerProfile/CountryInfo.vue`,
-	// An extensionless specifier can still resolve to a sub-block request
-	'#src/components/Odd/SubBlockResolution':
-		`${ROOT}/src/components/Odd/SubBlockResolution.vue?vue&type=script&setup=true&lang.ts`,
-	'#kv-components/KvPackagedComponent': `${ROOT}/node_modules/@kiva/kv-components/dist/vue/KvPackaged.vue`,
-	[KV_COMPOSABLE]: `${ROOT}/node_modules/${KV_COMPOSABLE}.js`,
-};
-
 // The source of a component authored each way; the source decides whether
 // children are attached
 const SCRIPT_SETUP_SOURCE = `<template><div /></template>
@@ -34,16 +17,20 @@ export default { name: 'OptionsApi' };
 </script>
 `;
 
-// Run both of the plugin's transform hooks with a stand-in rollup plugin context
-function makeTransform() {
+// Run both of the plugin's transform hooks with a stand-in rollup plugin context.
+// The plugin classifies an import by where it resolves, so each case passes the
+// resolutions its own imports need; an unlisted specifier throws rather than
+// resolving to nothing, so a case cannot pass by failing to resolve at all.
+function makeTransform(resolutions = {}) {
 	const [sourcePlugin, plugin] = prefetchDiscoveryPlugin();
 	plugin.configResolved({ root: ROOT });
 	const warnings = [];
 	const context = {
 		warn: message => warnings.push(message),
-		// Sub-block requests resolve to the importing file's own path plus a query
 		resolve: async specifier => {
-			if (specifier.includes('?vue&type=')) return { id: specifier };
+			if (!(specifier in resolutions)) {
+				throw new Error(`the test declared no resolution for '${specifier}'`);
+			}
 			return resolutions[specifier] ? { id: resolutions[specifier] } : null;
 		},
 	};
@@ -73,7 +60,9 @@ export default /*#__PURE__*/_export_sfc(_sfc_main, [['render', _sfc_render]]);
 
 describe('prefetch-discovery-plugin composable operations', () => {
 	it('attaches the imported composable operations to the default export', async () => {
-		const { transformOptionsApi } = makeTransform();
+		const { transformOptionsApi } = makeTransform({
+			'#src/composables/useMultiMatching': `${ROOT}/src/composables/useMultiMatching.js`,
+		});
 		const output = await transformOptionsApi(compiledSfc, `${ROOT}/src/components/BorrowerProfile/LendCta.vue`);
 		expect(output.code).toContain("import * as __composableModule0 from '#src/composables/useMultiMatching';");
 		expect(output.code).toContain('const __componentDefinition__ = /*#__PURE__*/_export_sfc(_sfc_main,');
@@ -87,7 +76,10 @@ describe('prefetch-discovery-plugin composable operations', () => {
 	});
 
 	it('attaches one spread per distinct composable module', async () => {
-		const { transformOptionsApi } = makeTransform();
+		const { transformOptionsApi } = makeTransform({
+			'#src/composables/useMultiMatching': `${ROOT}/src/composables/useMultiMatching.js`,
+			'#src/composables/useBadgeData': `${ROOT}/src/composables/useBadgeData.js`,
+		});
 		const code = `import useMultiMatching from '#src/composables/useMultiMatching';
 import useBadgeData from '#src/composables/useBadgeData';
 import { computed } from '#src/composables/useMultiMatching';
@@ -111,7 +103,9 @@ export default { name: 'TwoComposables' };
 	});
 
 	it('ignores imports that resolve outside src/composables', async () => {
-		const { transform } = makeTransform();
+		const { transform } = makeTransform({
+			'#src/util/loanUtils': `${ROOT}/src/util/loanUtils.js`,
+		});
 		const code = `import { toParagraphs } from '#src/util/loanUtils';
 import useSomething from '@kiva/kv-components/composables/useSomething';
 export default { name: 'NoComposables' };
@@ -128,7 +122,9 @@ export default { name: 'Dynamic' };
 	});
 
 	it('warns and skips when the module has no plain default export', async () => {
-		const { transformScriptSetup, warnings } = makeTransform();
+		const { transformScriptSetup, warnings } = makeTransform({
+			'#src/composables/useMultiMatching': `${ROOT}/src/composables/useMultiMatching.js`,
+		});
 		const code = `import useMultiMatching from '#src/composables/useMultiMatching';
 const _sfc_main = { name: 'Odd' };
 export { _sfc_main as default };
@@ -141,7 +137,10 @@ export { _sfc_main as default };
 
 describe('prefetch-discovery-plugin child components', () => {
 	it('attaches statically imported children as namespace loaders', async () => {
-		const { transformScriptSetup } = makeTransform();
+		const { transformScriptSetup } = makeTransform({
+			'#src/components/MyKiva/JourneyCardCarousel': `${ROOT}/src/components/MyKiva/JourneyCardCarousel.vue`,
+			'#src/components/MyKiva/MyKivaContainer': `${ROOT}/src/components/MyKiva/MyKivaContainer.vue`,
+		});
 		const code = `import { ref } from 'vue';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
@@ -160,7 +159,10 @@ export default { name: 'ScriptSetupParent' };
 	});
 
 	it('attaches statically written dynamic children as import loaders', async () => {
-		const { transformScriptSetup } = makeTransform();
+		const { transformScriptSetup } = makeTransform({
+			'#src/components/MyKiva/GoalSetting/CategoryForm':
+				`${ROOT}/src/components/MyKiva/GoalSetting/CategoryForm.vue`,
+		});
 		const code = `import { defineAsyncComponent } from 'vue';
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
 export default { name: 'AsyncParent' };
@@ -171,7 +173,10 @@ export default { name: 'AsyncParent' };
 	});
 
 	it('attaches composable operations and children together', async () => {
-		const { transformScriptSetup } = makeTransform();
+		const { transformScriptSetup } = makeTransform({
+			'#src/composables/useBadgeData': `${ROOT}/src/composables/useBadgeData.js`,
+			'#src/components/MyKiva/MyKivaContainer': `${ROOT}/src/components/MyKiva/MyKivaContainer.vue`,
+		});
 		const code = `import useBadgeData from '#src/composables/useBadgeData';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 export default { name: 'Both' };
@@ -194,7 +199,11 @@ export default _sfc_main;
 	});
 
 	it('excludes an import that resolves to a sub-block request', async () => {
-		const { transformScriptSetup } = makeTransform();
+		const { transformScriptSetup } = makeTransform({
+			// An extensionless specifier can still resolve to a sub-block request
+			'#src/components/Odd/SubBlockResolution':
+				`${ROOT}/src/components/Odd/SubBlockResolution.vue?vue&type=script&setup=true&lang.ts`,
+		});
 		const code = `import SubBlockResolution from '#src/components/Odd/SubBlockResolution';
 export default { name: 'ResolvesToSubBlock' };
 `;
@@ -202,7 +211,9 @@ export default { name: 'ResolvesToSubBlock' };
 	});
 
 	it('excludes a component that resolves inside node_modules', async () => {
-		const { transformScriptSetup } = makeTransform();
+		const { transformScriptSetup } = makeTransform({
+			'#kv-components/KvPackagedComponent': `${ROOT}/node_modules/@kiva/kv-components/dist/vue/KvPackaged.vue`,
+		});
 		const code = `import KvPackagedComponent from '#kv-components/KvPackagedComponent';
 export default { name: 'PackagedChild' };
 `;
@@ -210,7 +221,9 @@ export default { name: 'PackagedChild' };
 	});
 
 	it('attaches children on the script sub-module a lang="ts" block compiles into', async () => {
-		const { transformScriptSetup } = makeTransform();
+		const { transformScriptSetup } = makeTransform({
+			'#src/components/BorrowerProfile/CountryInfo': `${ROOT}/src/components/BorrowerProfile/CountryInfo.vue`,
+		});
 		const id = `${ROOT}/src/components/BorrowerSideSheet/SideSheetCountry.vue`
 			+ '?vue&type=script&setup=true&lang.ts';
 		const code = `import { defineComponent } from 'vue';
@@ -224,7 +237,9 @@ export default /* @__PURE__ */ defineComponent({ name: 'SideSheetCountry' });
 	});
 
 	it('does not attach children to a component that is not <script setup>', async () => {
-		const { transformOptionsApi } = makeTransform();
+		const { transformOptionsApi } = makeTransform({
+			'#src/components/MyKiva/MyKivaContainer': `${ROOT}/src/components/MyKiva/MyKivaContainer.vue`,
+		});
 		const code = `import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 export default { name: 'OptionsApiParent', components: { MyKivaContainer } };
 `;
@@ -232,7 +247,10 @@ export default { name: 'OptionsApiParent', components: { MyKivaContainer } };
 	});
 
 	it('attaches composable operations to a component that is not <script setup>', async () => {
-		const { transformOptionsApi } = makeTransform();
+		const { transformOptionsApi } = makeTransform({
+			'#src/composables/useBadgeData': `${ROOT}/src/composables/useBadgeData.js`,
+			'#src/components/MyKiva/MyKivaContainer': `${ROOT}/src/components/MyKiva/MyKivaContainer.vue`,
+		});
 		const code = `import useBadgeData from '#src/composables/useBadgeData';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 export default { name: 'OptionsApiWithComposable' };
@@ -243,7 +261,9 @@ export default { name: 'OptionsApiWithComposable' };
 	});
 
 	it('warns and attaches no children when the component source was never seen', async () => {
-		const { transform, warnings } = makeTransform();
+		const { transform, warnings } = makeTransform({
+			'#src/components/MyKiva/MyKivaContainer': `${ROOT}/src/components/MyKiva/MyKivaContainer.vue`,
+		});
 		const code = `import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 export default { name: 'Unseen' };
 `;
@@ -268,7 +288,9 @@ export default { name: 'Unseen' };
 		['a setup option in a plain block', '<script>\nexport default { setup() { return {}; } };\n</script>', false],
 		['an attribute ending in setup', '<script data-setup>\nexport default {};\n</script>', false],
 	])('attaches children for a component with %s: %s', async (description, scriptBlock, attaches) => {
-		const { transform, readSource } = makeTransform();
+		const { transform, readSource } = makeTransform({
+			'#src/components/MyKiva/MyKivaContainer': `${ROOT}/src/components/MyKiva/MyKivaContainer.vue`,
+		});
 		const id = `${ROOT}/src/components/DetectionCase.vue`;
 		const code = `import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 export default { name: 'DetectionCase' };
@@ -289,7 +311,9 @@ export default { name: 'Plain' };
 
 describe('prefetch-discovery-plugin composable modules', () => {
 	it('merges imported operations into the authored preFetchOperations export', async () => {
-		const { transform } = makeTransform();
+		const { transform } = makeTransform({
+			'#src/composables/useBadgeData': `${ROOT}/src/composables/useBadgeData.js`,
+		});
 		const code = `import useBadgeData from '#src/composables/useBadgeData';
 
 const operation = { query: {} };
@@ -316,7 +340,9 @@ export default function useGoalData() {
 	});
 
 	it('creates the export for a composable that only composes others', async () => {
-		const { transform } = makeTransform();
+		const { transform } = makeTransform({
+			'#src/composables/useBadgeData': `${ROOT}/src/composables/useBadgeData.js`,
+		});
 		const code = `import useBadgeData from '#src/composables/useBadgeData';
 
 export default function useGoalSummary() {
@@ -330,7 +356,10 @@ export default function useGoalSummary() {
 	});
 
 	it('does not attach child components to composable modules', async () => {
-		const { transform } = makeTransform();
+		const { transform } = makeTransform({
+			'#src/composables/useBadgeData': `${ROOT}/src/composables/useBadgeData.js`,
+			'#src/components/MyKiva/MyKivaContainer': `${ROOT}/src/components/MyKiva/MyKivaContainer.vue`,
+		});
 		const code = `import useBadgeData from '#src/composables/useBadgeData';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
 
@@ -363,7 +392,9 @@ export default function helper() {}
 	});
 
 	it('warns and skips composition for an unsupported export shape', async () => {
-		const { transform, warnings } = makeTransform();
+		const { transform, warnings } = makeTransform({
+			'#src/composables/useBadgeData': `${ROOT}/src/composables/useBadgeData.js`,
+		});
 		const code = `import useBadgeData from '#src/composables/useBadgeData';
 const ops = [];
 export { ops as preFetchOperations };
