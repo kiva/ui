@@ -87,12 +87,12 @@ export function shouldAutoOpenRecap({
 
 // --- Goal sign up ask ---
 
-// Lead time before the recap: stop asking for a goal there is no year left to finish (MP-2993).
+// Stop asking for a goal there is no year left to finish (MP-2993).
 const SIGNUP_HIDE_LEAD_DAYS = 14;
 
 /**
- * Whether to hide the goal sign up ask. Runs from two weeks before the recap release
- * through the end of that goal year, so the ask returns with the new year.
+ * Whether to hide the goal sign up ask, from the lead time before the recap release
+ * until the end of that goal year.
  *
  * @param {object} options Inputs.
  * @param {Date|string|null} [options.recapStartDate] The goal_in_review_in_progress_start setting.

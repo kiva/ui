@@ -272,7 +272,7 @@ const hideGoalSignup = computed(() => shouldHideGoalSignup({
 
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
-	// A lender with no goal sees only the sign up ask here, so the whole card goes.
+	// With no goal, this card is only the sign up ask.
 	if (!props.userGoal && hideGoalSignup.value) return false;
 
 	return (!props.userGoal || !props.userGoalAchieved || props.userGoalAchieved) && !props.hideGoalCard;

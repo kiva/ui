@@ -110,7 +110,7 @@ const slotState = computed(() => {
 		return STATE_ACTIVE_GOAL;
 	}
 	if (goalStatus.value === GOAL_STATUS.IN_PROGRESS) return STATE_ACTIVE_GOAL;
-	// null drops the section and its heading, as the completed branch does above.
+	// null unrenders the section, heading included.
 	if (hideGoalSignup.value) return null;
 	return STATE_NO_GOAL;
 });
