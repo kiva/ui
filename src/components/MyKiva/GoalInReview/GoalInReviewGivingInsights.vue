@@ -111,7 +111,7 @@ const impactHabit = computed(() => goalInReviewCopy.getImpactHabit({
 
 <style lang="postcss" scoped>
 /* Entrance choreography — the shared .kv-fade-up effect lives in
-   css/global/animations.css; this slide sets the rise (24px) and the stagger so the
+   css/animations.css; this slide sets the rise (24px) and the stagger so the
    header lands first, then the three insight cards cascade 100ms apart. The modal
    gates the whole slide until it scrolls into view, so these delays count from
    that moment (see [data-animate-on-view] in the modal). */

@@ -98,7 +98,7 @@ const cardAnimationDelay = index => ({ animationDelay: `${0.2 + index * 0.175}s`
 }
 
 /* Entrance choreography — the shared .kv-fade-up effect lives in
-   css/global/animations.css. */
+   css/animations.css. */
 .borrowers-eyebrow,
 .borrowers-headline,
 .borrowers-card {

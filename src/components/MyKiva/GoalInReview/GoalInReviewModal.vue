@@ -81,6 +81,7 @@ import {
 import { KvLightbox } from '@kiva/kv-components';
 import { getGoalInReviewCurrentYear } from '#src/composables/useGoalInReview';
 import { createIntersectionObserver } from '#src/util/observerUtils';
+import '#src/assets/css/animations.css';
 
 const GoalInReviewHeadline = defineAsyncComponent(
 	() => import('#src/components/MyKiva/GoalInReview/GoalInReviewHeadline')
@@ -181,7 +182,7 @@ const teardownSlideObserver = () => {
 };
 
 // Unpause the section's entrance animations (see the reveal-on-scroll gate in
-// css/global/animations.css). Slides gated with [data-animate-on-view] stay hidden
+// css/animations.css). Slides gated with [data-animate-on-view] stay hidden
 // until this runs, so their motion plays when the user reaches them, not on
 // mount. Slide 1 has no gate and animates on mount, so this is a no-op for it.
 const revealSlide = target => target?.classList.add('is-in-view');

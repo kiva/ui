@@ -2,7 +2,6 @@
 /* eslint-disable no-underscore-dangle, vue/require-name-property */
 import '#src/assets/scss/tailwind/tailwind.css';
 import '#src/assets/scss/app.scss';
-import '#src/assets/css/global/animations.css';
 
 // Facilitate using sprite icon SVGs in KvIcon
 // eslint-disable-next-line import/no-unresolved

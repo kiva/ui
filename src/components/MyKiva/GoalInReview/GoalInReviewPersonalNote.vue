@@ -83,7 +83,7 @@ defineProps({
 	@apply tw-bg-no-repeat tw-bg-center tw-bg-cover;
 }
 
-/* Entrance — shared .kv-fade-up (see css/global/animations.css); the eyebrow lands
+/* Entrance — shared .kv-fade-up (see css/animations.css); the eyebrow lands
    first, then the note fades up just after. Gated on view by the modal wrapper. */
 .personal-note-eyebrow,
 .personal-note-body {

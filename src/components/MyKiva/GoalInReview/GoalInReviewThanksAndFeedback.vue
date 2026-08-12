@@ -158,7 +158,7 @@ const showFeedback = computed(() => !isPastGoalYear.value
 	@apply tw-bg-eco-green-2 !tw-text-gray-800;
 }
 
-/* Entrance — shared .kv-fade-up (see css/global/animations.css); the closing beats
+/* Entrance — shared .kv-fade-up (see css/animations.css); the closing beats
    build top-down: heart, then "Thank you!", the message, and the CTA. Gated on
    view by the modal wrapper. */
 .thanks-and-feedback-heart,

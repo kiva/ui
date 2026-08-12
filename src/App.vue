@@ -11,7 +11,6 @@
 
 <script>
 import '#src/assets/scss/tailwind/tailwind.css';
-import '#src/assets/css/global/animations.css';
 import TheTipMessage from '#src/components/WwwFrame/TheTipMessage';
 import unbounceEventMixin from '#src/plugins/unbounce-event-mixin';
 import { metaGlobReader } from '#src/util/importHelpers';

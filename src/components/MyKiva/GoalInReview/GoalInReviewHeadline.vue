@@ -217,7 +217,7 @@ onMounted(() => {
 	animation-delay: 0.9s;
 }
 
-/* Stat cards use the shared rebound (.kv-rebound-in, see css/global/animations.css);
+/* Stat cards use the shared rebound (.kv-rebound-in, see css/animations.css);
    this slide only owns the per-item stagger so the four cards cascade "1...N"
    once the title stack has settled. */
 .headline-stat:nth-child(1) {
