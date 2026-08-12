@@ -20,7 +20,7 @@
 				</li>
 			</ul>
 			<img
-				:src="slide1Bottom"
+				:src="headlineBottom"
 				alt=""
 				class="tw-absolute tw-bottom-0 tw-left-0 tw-w-full tw-pointer-events-none"
 			>
@@ -89,19 +89,19 @@ import { computed, onMounted } from 'vue';
 import numeral from 'numeral';
 import { KvMaterialIcon } from '@kiva/kv-components';
 import { mdiArrowDown } from '@mdi/js';
-import slide1Image1 from '#src/assets/images/my-kiva/goal-in-review/slide1-1.png';
-import slide1Image2 from '#src/assets/images/my-kiva/goal-in-review/slide1-2.png';
-import slide1Image3 from '#src/assets/images/my-kiva/goal-in-review/slide1-3.png';
-import slide1Image4 from '#src/assets/images/my-kiva/goal-in-review/slide1-4.png';
-import slide1Bottom from '#src/assets/images/my-kiva/goal-in-review/slide1-bottom.png';
+import headlineImage1 from '#src/assets/images/my-kiva/goal-in-review/headline-1.png';
+import headlineImage2 from '#src/assets/images/my-kiva/goal-in-review/headline-2.png';
+import headlineImage3 from '#src/assets/images/my-kiva/goal-in-review/headline-3.png';
+import headlineImage4 from '#src/assets/images/my-kiva/goal-in-review/headline-4.png';
+import headlineBottom from '#src/assets/images/my-kiva/goal-in-review/headline-bottom.png';
 import { capitalize } from '#src/util/stringParserUtils';
 import { showConfetti } from '#src/util/animation/confettiUtils';
 
 const headerImages = [
-	{ src: slide1Image1, focus: '85% 25%', alt: 'A woman smiling while doing an activity' },
-	{ src: slide1Image2, focus: '60% 20%', alt: 'A man smiling at the camera' },
-	{ src: slide1Image3, focus: '50% 25%', alt: 'A woman smiling and looking to the left' },
-	{ src: slide1Image4, focus: '10% 25%', alt: 'A woman smiling at the camera' },
+	{ src: headlineImage1, focus: '85% 25%', alt: 'A woman smiling while doing an activity' },
+	{ src: headlineImage2, focus: '60% 20%', alt: 'A man smiling at the camera' },
+	{ src: headlineImage3, focus: '50% 25%', alt: 'A woman smiling and looking to the left' },
+	{ src: headlineImage4, focus: '10% 25%', alt: 'A woman smiling at the camera' },
 ];
 
 const props = defineProps({
@@ -179,20 +179,20 @@ onMounted(() => {
 }
 
 .goal-in-review-headline {
-	background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-mobile-hill.png');
+	background-image: url('/src/assets/images/my-kiva/goal-in-review/headline-mobile-hill.png');
 	background-size: contain;
 	background-position: bottom left;
 }
 
 @screen md {
 	.goal-in-review-headline {
-		background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-desktop-hill.png');
+		background-image: url('/src/assets/images/my-kiva/goal-in-review/headline-desktop-hill.png');
 	}
 }
 
 @screen lg {
 	.goal-in-review-headline {
-		background-image: url('/src/assets/images/my-kiva/goal-in-review/slide1-desktop-hill.png');
+		background-image: url('/src/assets/images/my-kiva/goal-in-review/headline-desktop-hill.png');
 	}
 }
 

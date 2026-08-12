@@ -65,7 +65,7 @@
 </template>
 
 <script setup>
-import personalnoteTopBorder from '#src/assets/images/my-kiva/goal-in-review/slide6-top-border.png';
+import personalnoteTopBorder from '#src/assets/images/my-kiva/goal-in-review/personal-note-top-border.png';
 import vishalAvatar from '#src/assets/images/my-kiva/goal-in-review/vishal-quote.png';
 
 defineProps({
@@ -78,7 +78,7 @@ defineProps({
 
 <style lang="postcss" scoped>
 .goal-in-review-personal-note {
-	background-image: url('/src/assets/images/my-kiva/goal-in-review/slide6-paper.png');
+	background-image: url('/src/assets/images/my-kiva/goal-in-review/personal-note-paper.png');
 
 	@apply tw-bg-no-repeat tw-bg-center tw-bg-cover;
 }
