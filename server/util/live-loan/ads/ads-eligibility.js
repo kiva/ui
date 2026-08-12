@@ -26,8 +26,9 @@ const excludeIds = (field, ids) => (ids?.length ? { [field]: { none: ids } } : {
 // Attributes within a single FundraisingLoanSearchFilterInput object are AND-ed together,
 // while separate objects in the array are OR-ed -- so all five thresholds must live in one
 // merged object for a loan to be required to satisfy every criterion. Admin-managed exclusions
-// (excludedLoanIds) are merged into the same object so excluded loans never enter the candidate set.
-export function buildAdFeedFilters({ excludedLoanIds = [] } = {}) {
+// (loan, partner, and sector ids) are merged into the same object so excluded loans never enter
+// the candidate set.
+export function buildAdFeedFilters({ excludedLoanIds = [], excludedPartnerIds = [], excludedSectorIds = [] } = {}) {
 	return [{
 		partnerRiskRating: { range: { gte: THRESHOLDS.minRiskRating } },
 		lenderRepaymentTerm: { range: { lte: THRESHOLDS.maxRepaymentMonths } },
@@ -35,6 +36,8 @@ export function buildAdFeedFilters({ excludedLoanIds = [] } = {}) {
 		amountLeft: { range: { gte: THRESHOLDS.minAmountLeft } },
 		daysUntilExpiration: { range: { gte: THRESHOLDS.minDaysToExpiry } },
 		...excludeIds('loanIds', excludedLoanIds),
+		...excludeIds('partnerId', excludedPartnerIds),
+		...excludeIds('sectorId', excludedSectorIds),
 	}];
 }
 

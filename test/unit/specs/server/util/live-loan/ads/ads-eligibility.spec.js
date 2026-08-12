@@ -54,6 +54,39 @@ describe('ads-eligibility', () => {
 			expect(buildAdFeedFilters({ excludedLoanIds: [] })[0]).not.toHaveProperty('loanIds');
 			expect(buildAdFeedFilters()[0]).not.toHaveProperty('loanIds');
 		});
+
+		it('adds a partnerId none filter when excludedPartnerIds are provided', () => {
+			expect(buildAdFeedFilters({ excludedPartnerIds: [11, 12] })[0]).toMatchObject({
+				partnerId: { none: [11, 12] },
+			});
+		});
+
+		it('adds a sectorId none filter when excludedSectorIds are provided', () => {
+			expect(buildAdFeedFilters({ excludedSectorIds: [2, 3] })[0]).toMatchObject({
+				sectorId: { none: [2, 3] },
+			});
+		});
+
+		it('omits the partnerId and sectorId keys when those exclusion lists are empty or absent', () => {
+			const [filter] = buildAdFeedFilters({ excludedPartnerIds: [], excludedSectorIds: [] });
+			expect(filter).not.toHaveProperty('partnerId');
+			expect(filter).not.toHaveProperty('sectorId');
+			expect(buildAdFeedFilters()[0]).not.toHaveProperty('partnerId');
+			expect(buildAdFeedFilters()[0]).not.toHaveProperty('sectorId');
+		});
+
+		it('merges loan, partner, and sector exclusions into the single AND-ed filter object', () => {
+			const [filter] = buildAdFeedFilters({
+				excludedLoanIds: [1],
+				excludedPartnerIds: [2],
+				excludedSectorIds: [3],
+			});
+			expect(filter).toMatchObject({
+				loanIds: { none: [1] },
+				partnerId: { none: [2] },
+				sectorId: { none: [3] },
+			});
+		});
 	});
 
 	describe('primaryFirstName', () => {
@@ -131,6 +164,16 @@ describe('ads-eligibility', () => {
 
 			const { variables } = JSON.parse(fetch.mock.calls[0][1].body);
 			expect(variables.filters).toEqual(buildAdFeedFilters({ excludedLoanIds: [7, 8] }));
+		});
+
+		it('threads excludedPartnerIds and excludedSectorIds into the query filters', async () => {
+			fetch.mockResolvedValue({ json: () => ({ data: { fundraisingLoans: { values: [] } } }) });
+
+			const exclusions = { excludedPartnerIds: [7, 8], excludedSectorIds: [6, 16] };
+			await fetchAdEligibleLoans(100, exclusions);
+
+			const { variables } = JSON.parse(fetch.mock.calls[0][1].body);
+			expect(variables.filters).toEqual(buildAdFeedFilters(exclusions));
 		});
 
 		it('threads a custom count into the fundraisingLoans limit', async () => {

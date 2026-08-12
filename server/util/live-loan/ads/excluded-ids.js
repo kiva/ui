@@ -7,7 +7,11 @@ import { warn } from '../../log.js';
 // yields an empty list -- i.e. "no exclusions".
 export function parseIdList(value) {
 	if (typeof value !== 'string') return [];
+	// Settings Manager may JSON-encode the value (string type -> `"6,16"`, array -> `["6","16"]`).
+	// Strip the JSON wrapper chars up front: the strict per-id digit filter below is the real gate, so
+	// quotes/brackets can be dropped blindly while junk like "abc"/"5.5"/"-7" is still rejected.
 	const ids = value
+		.replace(/["[\]]/g, '')
 		.split(',')
 		.map(part => part.trim())
 		.filter(part => /^\d+$/.test(part))
