@@ -148,9 +148,9 @@ describe('google-feed', () => {
 			await generateGoogleFeed(50);
 
 			expect(fetchAdEligibleLoans).toHaveBeenCalledWith(50, {
-				excludedLoanIds: [],
-				excludedPartnerIds: [],
-				excludedSectorIds: [],
+				loanIds: [],
+				partnerId: [],
+				sectorId: [],
 			});
 		});
 
@@ -169,9 +169,9 @@ describe('google-feed', () => {
 			expect(fetchExcludedIds).toHaveBeenCalledWith(EXCLUDED_PARTNER_IDS_SETTING_KEY);
 			expect(fetchExcludedIds).toHaveBeenCalledWith(EXCLUDED_SECTOR_IDS_SETTING_KEY);
 			expect(fetchAdEligibleLoans).toHaveBeenCalledWith(undefined, {
-				excludedLoanIds: [456],
-				excludedPartnerIds: [11, 12],
-				excludedSectorIds: [2],
+				loanIds: [456],
+				partnerId: [11, 12],
+				sectorId: [2],
 			});
 		});
 
@@ -186,9 +186,9 @@ describe('google-feed', () => {
 			await generateGoogleFeed();
 
 			expect(info).toHaveBeenCalledWith(expect.any(String), {
-				excludedLoanIds: [1, 2, 3],
-				excludedPartnerIds: [9],
-				excludedSectorIds: [],
+				loanIds: [1, 2, 3],
+				partnerId: [9],
+				sectorId: [],
 			});
 		});
 	});

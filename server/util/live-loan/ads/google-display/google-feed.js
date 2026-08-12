@@ -38,16 +38,18 @@ export async function generateGoogleFeed(count) {
 		fetchExcludedIds(EXCLUDED_PARTNER_IDS_SETTING_KEY),
 		fetchExcludedIds(EXCLUDED_SECTOR_IDS_SETTING_KEY),
 	]);
+	// Keyed by FLSS filter field so buildAdFeedFilters can merge each dimension without knowing them.
+	const exclusions = { loanIds: excludedLoanIds, partnerId: excludedPartnerIds, sectorId: excludedSectorIds };
 	info(
 		`Ad feed: applying ${excludedLoanIds.length} excluded loan id(s), `
 		+ `${excludedPartnerIds.length} partner id(s), ${excludedSectorIds.length} sector id(s)`,
-		{ excludedLoanIds, excludedPartnerIds, excludedSectorIds },
+		exclusions,
 	);
 
 	// FLSS (updated via kafka events) is the freshest source of fundraising loans and already excludes
 	// funded/refunded/expired; the eligibility gate drops anonymized/no-name/no-image on the FLSS
 	// record. No re-check against a slower source is needed.
-	const eligible = await fetchAdEligibleLoans(count, { excludedLoanIds, excludedPartnerIds, excludedSectorIds });
+	const eligible = await fetchAdEligibleLoans(count, exclusions);
 
 	const rows = [];
 	eligible.forEach(loan => {

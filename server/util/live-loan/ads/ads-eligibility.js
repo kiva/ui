@@ -18,26 +18,27 @@ const THRESHOLDS = {
 };
 
 // Exclude-by-id filter fragment for the FLSS `none` operator. Returns an empty object (key omitted)
-// for an empty/absent list so we never send `{ none: [] }`. Generic by field so partner/sector
-// exclusion reuses it unchanged.
+// for an empty/absent list so we never send `{ none: [] }`.
 const excludeIds = (field, ids) => (ids?.length ? { [field]: { none: ids } } : {});
 
 // FLSS filters that narrow fundraising loans down to the set eligible for the ad feed.
 // Attributes within a single FundraisingLoanSearchFilterInput object are AND-ed together,
 // while separate objects in the array are OR-ed -- so all five thresholds must live in one
 // merged object for a loan to be required to satisfy every criterion. Admin-managed exclusions
-// (loan, partner, and sector ids) are merged into the same object so excluded loans never enter
-// the candidate set.
-export function buildAdFeedFilters({ excludedLoanIds = [], excludedPartnerIds = [], excludedSectorIds = [] } = {}) {
+// arrive as a map of FLSS filter field -> ids (e.g. { loanIds, partnerId, sectorId }) and are merged
+// into the same object as `none` fragments -- so a new exclusion dimension is one more map entry at
+// the call site, not a change to this signature.
+export function buildAdFeedFilters(exclusions = {}) {
 	return [{
 		partnerRiskRating: { range: { gte: THRESHOLDS.minRiskRating } },
 		lenderRepaymentTerm: { range: { lte: THRESHOLDS.maxRepaymentMonths } },
 		partnerDefaultRate: { range: { lte: THRESHOLDS.maxDefaultRate } },
 		amountLeft: { range: { gte: THRESHOLDS.minAmountLeft } },
 		daysUntilExpiration: { range: { gte: THRESHOLDS.minDaysToExpiry } },
-		...excludeIds('loanIds', excludedLoanIds),
-		...excludeIds('partnerId', excludedPartnerIds),
-		...excludeIds('sectorId', excludedSectorIds),
+		...Object.entries(exclusions).reduce(
+			(filters, [field, ids]) => ({ ...filters, ...excludeIds(field, ids) }),
+			{},
+		),
 	}];
 }
 

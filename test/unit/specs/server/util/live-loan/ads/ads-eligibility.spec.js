@@ -44,48 +44,48 @@ describe('ads-eligibility', () => {
 			expect(AD_FEED_LOAN_COUNT).toEqual(100);
 		});
 
-		it('adds a loanIds none filter when excludedLoanIds are provided', () => {
-			expect(buildAdFeedFilters({ excludedLoanIds: [10, 20] })[0]).toMatchObject({
+		it('adds a loanIds none filter when a loan-id exclusion list is provided', () => {
+			expect(buildAdFeedFilters({ loanIds: [10, 20] })[0]).toMatchObject({
 				loanIds: { none: [10, 20] },
 			});
 		});
 
 		it('omits the loanIds key when the exclusion list is empty or absent', () => {
-			expect(buildAdFeedFilters({ excludedLoanIds: [] })[0]).not.toHaveProperty('loanIds');
+			expect(buildAdFeedFilters({ loanIds: [] })[0]).not.toHaveProperty('loanIds');
 			expect(buildAdFeedFilters()[0]).not.toHaveProperty('loanIds');
 		});
 
-		it('adds a partnerId none filter when excludedPartnerIds are provided', () => {
-			expect(buildAdFeedFilters({ excludedPartnerIds: [11, 12] })[0]).toMatchObject({
+		it('adds a partnerId none filter when a partner-id exclusion list is provided', () => {
+			expect(buildAdFeedFilters({ partnerId: [11, 12] })[0]).toMatchObject({
 				partnerId: { none: [11, 12] },
 			});
 		});
 
-		it('adds a sectorId none filter when excludedSectorIds are provided', () => {
-			expect(buildAdFeedFilters({ excludedSectorIds: [2, 3] })[0]).toMatchObject({
+		it('adds a sectorId none filter when a sector-id exclusion list is provided', () => {
+			expect(buildAdFeedFilters({ sectorId: [2, 3] })[0]).toMatchObject({
 				sectorId: { none: [2, 3] },
 			});
 		});
 
 		it('omits the partnerId and sectorId keys when those exclusion lists are empty or absent', () => {
-			const [filter] = buildAdFeedFilters({ excludedPartnerIds: [], excludedSectorIds: [] });
+			const [filter] = buildAdFeedFilters({ partnerId: [], sectorId: [] });
 			expect(filter).not.toHaveProperty('partnerId');
 			expect(filter).not.toHaveProperty('sectorId');
 			expect(buildAdFeedFilters()[0]).not.toHaveProperty('partnerId');
 			expect(buildAdFeedFilters()[0]).not.toHaveProperty('sectorId');
 		});
 
-		it('merges loan, partner, and sector exclusions into the single AND-ed filter object', () => {
-			const [filter] = buildAdFeedFilters({
-				excludedLoanIds: [1],
-				excludedPartnerIds: [2],
-				excludedSectorIds: [3],
-			});
+		it('merges every exclusion field into the single AND-ed filter object', () => {
+			const [filter] = buildAdFeedFilters({ loanIds: [1], partnerId: [2], sectorId: [3] });
 			expect(filter).toMatchObject({
 				loanIds: { none: [1] },
 				partnerId: { none: [2] },
 				sectorId: { none: [3] },
 			});
+		});
+
+		it('ignores an unknown exclusion field with no ids rather than emitting an empty none', () => {
+			expect(buildAdFeedFilters({ loanIds: [], partnerId: [] })[0]).toEqual(buildAdFeedFilters()[0]);
 		});
 	});
 
@@ -157,19 +157,19 @@ describe('ads-eligibility', () => {
 			expect(query).not.toMatch(/sortBy/);
 		});
 
-		it('threads excludedLoanIds into the query filters', async () => {
+		it('threads a loan-id exclusion into the query filters', async () => {
 			fetch.mockResolvedValue({ json: () => ({ data: { fundraisingLoans: { values: [] } } }) });
 
-			await fetchAdEligibleLoans(100, { excludedLoanIds: [7, 8] });
+			await fetchAdEligibleLoans(100, { loanIds: [7, 8] });
 
 			const { variables } = JSON.parse(fetch.mock.calls[0][1].body);
-			expect(variables.filters).toEqual(buildAdFeedFilters({ excludedLoanIds: [7, 8] }));
+			expect(variables.filters).toEqual(buildAdFeedFilters({ loanIds: [7, 8] }));
 		});
 
-		it('threads excludedPartnerIds and excludedSectorIds into the query filters', async () => {
+		it('threads partner and sector exclusions into the query filters', async () => {
 			fetch.mockResolvedValue({ json: () => ({ data: { fundraisingLoans: { values: [] } } }) });
 
-			const exclusions = { excludedPartnerIds: [7, 8], excludedSectorIds: [6, 16] };
+			const exclusions = { partnerId: [7, 8], sectorId: [6, 16] };
 			await fetchAdEligibleLoans(100, exclusions);
 
 			const { variables } = JSON.parse(fetch.mock.calls[0][1].body);
