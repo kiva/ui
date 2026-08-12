@@ -17,9 +17,7 @@ const config = {
 	resolve: { extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.vue'] },
 };
 
-// A <script setup> component carries its name as __name rather than name
-// eslint-disable-next-line no-underscore-dangle
-const discoveredNames = definitions => definitions.map(d => d.name ?? d.__name).sort();
+const discoveredNames = definitions => definitions.map(d => d.name).sort();
 
 const preFetchOperations = definitions => definitions
 	.flatMap(d => d.apollo ?? [])

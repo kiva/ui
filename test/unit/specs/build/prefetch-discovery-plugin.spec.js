@@ -20,8 +20,8 @@ const resolutions = {
 	[KV_COMPOSABLE]: `${ROOT}/node_modules/${KV_COMPOSABLE}.js`,
 };
 
-// The source of a component authored each way, for the descriptor read that
-// decides whether children are attached
+// The source of a component authored each way; the source decides whether
+// children are attached
 const SCRIPT_SETUP_SOURCE = `<template><div /></template>
 <script setup>
 const value = 1;
@@ -36,7 +36,7 @@ export default { name: 'OptionsApi' };
 
 // Run both of the plugin's transform hooks with a stand-in rollup plugin context
 function makeTransform() {
-	const [descriptorPlugin, plugin] = prefetchDiscoveryPlugin();
+	const [sourcePlugin, plugin] = prefetchDiscoveryPlugin();
 	plugin.configResolved({ root: ROOT });
 	const warnings = [];
 	const context = {
@@ -47,20 +47,20 @@ function makeTransform() {
 			return resolutions[specifier] ? { id: resolutions[specifier] } : null;
 		},
 	};
-	const readDescriptor = (source, id) => descriptorPlugin.transform.call(context, source, id);
+	const readSource = (source, id) => sourcePlugin.transform.call(context, source, id);
 	const transform = (code, id) => plugin.transform.call(context, code, id);
 	// Most cases care about one authoring style for one component, so record it and
 	// transform in a single step
 	const transformScriptSetup = (code, id) => {
-		readDescriptor(SCRIPT_SETUP_SOURCE, id.split('?')[0]);
+		readSource(SCRIPT_SETUP_SOURCE, id.split('?')[0]);
 		return transform(code, id);
 	};
 	const transformOptionsApi = (code, id) => {
-		readDescriptor(OPTIONS_API_SOURCE, id.split('?')[0]);
+		readSource(OPTIONS_API_SOURCE, id.split('?')[0]);
 		return transform(code, id);
 	};
 	return {
-		transform, transformScriptSetup, transformOptionsApi, readDescriptor, warnings,
+		transform, transformScriptSetup, transformOptionsApi, readSource, warnings,
 	};
 }
 
@@ -140,7 +140,7 @@ export { _sfc_main as default };
 });
 
 describe('prefetch-discovery-plugin child components', () => {
-	it('attaches statically imported children as namespace thunks', async () => {
+	it('attaches statically imported children as namespace loaders', async () => {
 		const { transformScriptSetup } = makeTransform();
 		const code = `import { ref } from 'vue';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
@@ -159,7 +159,7 @@ export default { name: 'ScriptSetupParent' };
 		expect(output.map).toBeTruthy();
 	});
 
-	it('attaches statically written dynamic children as import thunks', async () => {
+	it('attaches statically written dynamic children as import loaders', async () => {
 		const { transformScriptSetup } = makeTransform();
 		const code = `import { defineAsyncComponent } from 'vue';
 const CategoryForm = defineAsyncComponent(() => import('#src/components/MyKiva/GoalSetting/CategoryForm'));
@@ -250,6 +250,32 @@ export default { name: 'Unseen' };
 		expect(await transform(code, `${ROOT}/src/components/Unseen.vue`)).toBeNull();
 		expect(warnings).toHaveLength(1);
 		expect(warnings[0]).toContain('no component source seen');
+	});
+
+	// The source decides whether children are attached, so cover the shapes a setup
+	// block can take alongside the near misses
+	it.each([
+		['a setup block', '<script setup>\nconst a = 1;\n</script>', true],
+		['a setup block with lang first', '<script lang="ts" setup>\nconst a = 1;\n</script>', true],
+		['a setup block with lang last', '<script setup lang="ts">\nconst a = 1;\n</script>', true],
+		['attributes on separate lines', '<script\n\tsetup\n\tlang="ts"\n>\nconst a = 1;\n</script>', true],
+		[
+			'a setup block beside a plain block',
+			"<script>\nexport default { name: 'Hybrid' };\n</script>\n<script setup>\nconst a = 1;\n</script>",
+			true,
+		],
+		['a plain block', "<script>\nexport default { name: 'Plain' };\n</script>", false],
+		['a setup option in a plain block', '<script>\nexport default { setup() { return {}; } };\n</script>', false],
+		['an attribute ending in setup', '<script data-setup>\nexport default {};\n</script>', false],
+	])('attaches children for a component with %s: %s', async (description, scriptBlock, attaches) => {
+		const { transform, readSource } = makeTransform();
+		const id = `${ROOT}/src/components/DetectionCase.vue`;
+		const code = `import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
+export default { name: 'DetectionCase' };
+`;
+		readSource(`<template><div /></template>\n${scriptBlock}\n`, id);
+		const output = await transform(code, id);
+		expect(output !== null).toBe(attaches);
 	});
 
 	it('leaves a component with neither composables nor children alone', async () => {

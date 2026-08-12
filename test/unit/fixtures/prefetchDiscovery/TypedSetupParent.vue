@@ -6,4 +6,6 @@
 
 <script lang="ts" setup>
 import StaticChild from './StaticChild';
+
+defineOptions({ name: 'TypedSetupParent' });
 </script>

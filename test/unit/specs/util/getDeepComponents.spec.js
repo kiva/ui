@@ -149,7 +149,7 @@ describe('getDeepComponents', () => {
 	});
 });
 
-// The build step attaches __childComponents as a list of thunks over the imported children
+// The build step attaches __childComponents as a list of loaders for the imported children
 describe('getDeepComponents attached child components', () => {
 	it('walks children attached without a components option', async () => {
 		const AttachedChild = { name: 'AttachedChild' };
@@ -161,7 +161,7 @@ describe('getDeepComponents attached child components', () => {
 		expectMatchingComponents(result, [ScriptSetupParent, AttachedChild]);
 	});
 
-	it('walks children attached as module namespace thunks', async () => {
+	it('walks children attached as module namespace loaders', async () => {
 		const NamespacedChild = { name: 'NamespacedChild' };
 		const Parent = {
 			name: 'Parent',
@@ -202,7 +202,7 @@ describe('getDeepComponents attached child components', () => {
 		expect(result.filter(c => c.name === 'SharedChild')).toHaveLength(1);
 	});
 
-	it('skips a child whose thunk resolves to nothing', async () => {
+	it('skips a child whose loader resolves to nothing', async () => {
 		const RealChild = { name: 'RealChild' };
 		const Parent = {
 			name: 'Parent',
@@ -213,7 +213,7 @@ describe('getDeepComponents attached child components', () => {
 	});
 
 	it('terminates on a cycle between attached children', async () => {
-		// The thunk reads through the holder, so the child can point back at a parent
+		// The loader reads through the holder, so the child can point back at a parent
 		// that does not exist yet
 		const cycle = {};
 		const CyclicChild = { name: 'CyclicChild', __childComponents: [() => cycle.parent] };
