@@ -148,3 +148,78 @@ describe('getDeepComponents', () => {
 		expect(result.map(c => c.name).sort()).toEqual(['AsyncComp', 'RegularComp']);
 	});
 });
+
+// The build step attaches __childComponents as a list of thunks over the imported children
+describe('getDeepComponents attached child components', () => {
+	it('walks children attached without a components option', async () => {
+		const AttachedChild = { name: 'AttachedChild' };
+		const ScriptSetupParent = {
+			name: 'ScriptSetupParent',
+			__childComponents: [() => AttachedChild],
+		};
+		const result = await getDeepComponents([ScriptSetupParent]);
+		expectMatchingComponents(result, [ScriptSetupParent, AttachedChild]);
+	});
+
+	it('walks children attached as module namespace thunks', async () => {
+		const NamespacedChild = { name: 'NamespacedChild' };
+		const Parent = {
+			name: 'Parent',
+			__childComponents: [() => Promise.resolve({ default: NamespacedChild })],
+		};
+		const result = await getDeepComponents([Parent]);
+		expectMatchingComponents(result, [Parent, NamespacedChild]);
+	});
+
+	it('walks the components option and the attached children together', async () => {
+		const RegisteredChild = { name: 'RegisteredChild' };
+		const AttachedChild = { name: 'AttachedChild' };
+		const Parent = {
+			name: 'Parent',
+			components: { RegisteredChild },
+			__childComponents: [() => AttachedChild],
+		};
+		const result = await getDeepComponents([Parent]);
+		expectMatchingComponents(result, [Parent, RegisteredChild, AttachedChild]);
+	});
+
+	it('walks a whole tree of attached children', async () => {
+		const Grandchild = { name: 'Grandchild' };
+		const Child = { name: 'Child', __childComponents: [() => Grandchild] };
+		const Parent = { name: 'Parent', __childComponents: [() => Child] };
+		const result = await getDeepComponents([Parent]);
+		expectMatchingComponents(result, [Parent, Child, Grandchild]);
+	});
+
+	it('adds a child reached through both routes only once', async () => {
+		const SharedChild = { name: 'SharedChild' };
+		const Parent = {
+			name: 'Parent',
+			components: { SharedChild },
+			__childComponents: [() => SharedChild],
+		};
+		const result = await getDeepComponents([Parent]);
+		expect(result.filter(c => c.name === 'SharedChild')).toHaveLength(1);
+	});
+
+	it('skips a child whose thunk resolves to nothing', async () => {
+		const RealChild = { name: 'RealChild' };
+		const Parent = {
+			name: 'Parent',
+			__childComponents: [() => undefined, () => RealChild],
+		};
+		const result = await getDeepComponents([Parent]);
+		expectMatchingComponents(result, [Parent, RealChild]);
+	});
+
+	it('terminates on a cycle between attached children', async () => {
+		// The thunk reads through the holder, so the child can point back at a parent
+		// that does not exist yet
+		const cycle = {};
+		const CyclicChild = { name: 'CyclicChild', __childComponents: [() => cycle.parent] };
+		const CyclicParent = { name: 'CyclicParent', __childComponents: [() => CyclicChild] };
+		cycle.parent = CyclicParent;
+		const result = await getDeepComponents([CyclicParent]);
+		expectMatchingComponents(result, [CyclicParent, CyclicChild]);
+	});
+});
