@@ -17,17 +17,24 @@ const THRESHOLDS = {
 	minDaysToExpiry: 3,
 };
 
+// Exclude-by-id filter fragment for the FLSS `none` operator. Returns an empty object (key omitted)
+// for an empty/absent list so we never send `{ none: [] }`. Generic by field so partner/sector
+// exclusion reuses it unchanged.
+const excludeIds = (field, ids) => (ids?.length ? { [field]: { none: ids } } : {});
+
 // FLSS filters that narrow fundraising loans down to the set eligible for the ad feed.
 // Attributes within a single FundraisingLoanSearchFilterInput object are AND-ed together,
 // while separate objects in the array are OR-ed -- so all five thresholds must live in one
-// merged object for a loan to be required to satisfy every criterion.
-export function buildAdFeedFilters() {
+// merged object for a loan to be required to satisfy every criterion. Admin-managed exclusions
+// (excludedLoanIds) are merged into the same object so excluded loans never enter the candidate set.
+export function buildAdFeedFilters({ excludedLoanIds = [] } = {}) {
 	return [{
 		partnerRiskRating: { range: { gte: THRESHOLDS.minRiskRating } },
 		lenderRepaymentTerm: { range: { lte: THRESHOLDS.maxRepaymentMonths } },
 		partnerDefaultRate: { range: { lte: THRESHOLDS.maxDefaultRate } },
 		amountLeft: { range: { gte: THRESHOLDS.minAmountLeft } },
 		daysUntilExpiration: { range: { gte: THRESHOLDS.minDaysToExpiry } },
+		...excludeIds('loanIds', excludedLoanIds),
 	}];
 }
 
@@ -58,7 +65,7 @@ const LOAN_FIELDS = `
 `;
 
 // Fetch fundraising loans that pass the FLSS ad-eligibility filters, then apply the code-side gate.
-export async function fetchAdEligibleLoans(count = AD_FEED_LOAN_COUNT) {
+export async function fetchAdEligibleLoans(count = AD_FEED_LOAN_COUNT, exclusions = {}) {
 	const data = await fetchGraphQL(
 		{
 			query: `query adEligibleLoans($filters: [FundraisingLoanSearchFilterInput!]) {
@@ -70,7 +77,7 @@ export async function fetchAdEligibleLoans(count = AD_FEED_LOAN_COUNT) {
 					values { ${LOAN_FIELDS} }
 				}
 			}`,
-			variables: { filters: buildAdFeedFilters() },
+			variables: { filters: buildAdFeedFilters(exclusions) },
 		},
 		'data.fundraisingLoans.values',
 	);

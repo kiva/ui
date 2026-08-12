@@ -12,3 +12,8 @@ export const KIVA_PROD_HOST = 'https://www.kiva.org';
 // max) — and never upscales a smaller source.
 export const CLOUDINARY_AD_IMAGE_BASE = 'https://res.cloudinary.com/kiva';
 export const CLOUDINARY_AD_IMAGE_TRANSFORM = 'c_limit,w_1200,h_1200,f_jpg,cs_srgb,fl_force_icc';
+
+// Settings Manager (uiConfigSetting) key holding the comma-separated loan ids to keep out of the ad
+// feed. Bare setting name -- `ui.` is the Settings Manager storage namespace, not part of the query
+// key. Empty or absent means no exclusions.
+export const EXCLUDED_LOAN_IDS_SETTING_KEY = 'live_loan_ads_excluded_loan_ids';
