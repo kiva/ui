@@ -604,10 +604,11 @@ onMounted(async () => {
 	goalDataInitialized.value = true;
 	isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
 	// Gated together so the view cap only counts asks the lender actually saw.
-	const askIsAvailable = !props.isGuest && isEmptyGoal.value && !hideGoalSignup.value;
-	goalSignupThanksViewCapped.value = askIsAvailable && isGoalSignupThanksViewCapped(cookieStore);
-	if (askIsAvailable && !goalSignupThanksViewCapped.value) {
-		incrementGoalSignupThanksViewCount(cookieStore);
+	if (!props.isGuest && isEmptyGoal.value && !hideGoalSignup.value) {
+		goalSignupThanksViewCapped.value = isGoalSignupThanksViewCapped(cookieStore);
+		if (!goalSignupThanksViewCapped.value) {
+			incrementGoalSignupThanksViewCount(cookieStore);
+		}
 	}
 
 	if (!props.isGuest

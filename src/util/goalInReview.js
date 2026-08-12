@@ -23,7 +23,10 @@ import { capitalize } from '#src/util/stringParserUtils';
  * @returns {boolean} Whether in-progress goal setters are eligible yet.
  */
 function hasInProgressReleaseStarted(startDate, now) {
-	const start = startDate instanceof Date ? startDate : new Date(startDate ?? NaN);
+	if (!startDate) {
+		return false;
+	}
+	const start = startDate instanceof Date ? startDate : new Date(startDate);
 	if (Number.isNaN(start.getTime())) {
 		return false;
 	}
@@ -100,7 +103,10 @@ const SIGNUP_HIDE_LEAD_DAYS = 14;
  * @returns {boolean} Whether to hide the sign up ask.
  */
 export function shouldHideGoalSignup({ recapStartDate = null, now = new Date() } = {}) {
-	const recapStart = recapStartDate instanceof Date ? recapStartDate : new Date(recapStartDate ?? NaN);
+	if (!recapStartDate) {
+		return false;
+	}
+	const recapStart = recapStartDate instanceof Date ? recapStartDate : new Date(recapStartDate);
 	if (Number.isNaN(recapStart.getTime())) {
 		return false;
 	}
