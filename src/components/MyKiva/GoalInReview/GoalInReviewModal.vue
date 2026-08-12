@@ -255,6 +255,7 @@ onBeforeUnmount(teardownSlideObserver);
 
 	[data-test=kv-lightbox] {
 		max-height: 90vh !important;
+		animation: goal-in-review-modal-enter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 
 		@apply !tw-w-screen !tw-mt-auto !tw-mb-0 !tw-rounded-t !tw-rounded-b-none
 			tw-bg-eco-green-4 tw-overflow-hidden tw-relative;
@@ -305,5 +306,23 @@ onBeforeUnmount(teardownSlideObserver);
 
 .goal-in-review-modal #kvLightboxBody::-webkit-scrollbar {
 	display: none;
+}
+
+@keyframes goal-in-review-modal-enter {
+	from {
+		opacity: 0;
+		transform: scale(0.96) translateY(18px);
+	}
+
+	to {
+		opacity: 1;
+		transform: scale(1) translateY(0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.goal-in-review-modal [data-test=kv-lightbox] {
+		animation: none;
+	}
 }
 </style>

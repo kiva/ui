@@ -1,5 +1,5 @@
 /*
-	Animations for the GoalInReviewModal component (in the beginning), but reusable for any other page or project. To use it, import the CSS in the parent component similar to '‎src/components/MyKiva/GoalInReview/GoalInReviewModal.vue' does
+	Animations for the GoalInReviewModal component (in the beginning), but reusable for any other page or project. To use it, import the CSS in the parent component similar to src/components/MyKiva/GoalInReview/GoalInReviewModal.vue does
 */
 
 /* Rebound "pop": the element rises and scales slightly past full size, then

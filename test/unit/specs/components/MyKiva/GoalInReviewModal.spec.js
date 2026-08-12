@@ -128,7 +128,7 @@ describe('GoalInReviewModal', () => {
 			},
 		});
 
-		await findByText('Borrowers'); // slide 1 stat label
+		await findByText('Borrowers helped'); // slide 1 stat label
 		await findByText(/14 borrowers\./); // slide 2 headline
 		await findByText(/14 dreams/); // slide 7 copy
 		expect(getAllByText('14').length).toBeGreaterThan(0);
