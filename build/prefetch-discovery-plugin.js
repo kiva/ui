@@ -6,7 +6,7 @@
  *   composable modules a component statically imports. Composable modules get
  *   the same treatment, merging in the exports of the composables they import,
  *   so the operation surface composes one hop at a time.
- * - `__childComponents`: thunks over the child components a `<script setup>`
+ * - `__childComponents`: loaders for the child components a `<script setup>`
  *   component imports. Components authored any other way register their children
  *   in a `components` option, which the walk already follows.
  *
@@ -16,9 +16,7 @@
  * them in.
  *
  * The authoring style is read from the component source before the vue plugin
- * compiles it, since the compiled module records the style only indirectly.
- *
- * Each rewritten module depends only on its own source.
+ * compiles it.
  */
 import path from 'path';
 import { init, parse } from 'es-module-lexer';
@@ -46,11 +44,11 @@ function namespaceImports(specifiers, prefix) {
 	return specifiers.map((specifier, i) => `import * as ${prefix}${i} from '${specifier}';`);
 }
 
-// Thunks rather than direct references, so a circular import does not read a
+// Loaders rather than direct references, so a circular import does not read a
 // child's binding before that module has finished evaluating; the `in` guard
 // keeps the probe safe for module namespaces that throw on missing exports,
 // like vitest factory mocks
-function childThunks(childSpecifiers, dynamicChildSpecifiers) {
+function childLoaders(childSpecifiers, dynamicChildSpecifiers) {
 	return [
 		...childSpecifiers.map(
 			(specifier, i) => `\t() => ('default' in ${CHILD_NS}${i} ? ${CHILD_NS}${i}.default : undefined),`
@@ -83,7 +81,7 @@ function attachToComponent(code, id, exports, { composables, children, dynamicCh
 		] : []),
 		...(children.length || dynamicChildren.length ? [
 			`${HOST}.${CHILDREN} = [`,
-			...childThunks(children, dynamicChildren),
+			...childLoaders(children, dynamicChildren),
 			'];',
 		] : []),
 		`export default ${HOST};`,
@@ -171,11 +169,18 @@ export default function prefetchDiscoveryPlugin() {
 			if (!isComponent && !isComposable) {
 				return null;
 			}
-			if (isComposable && !code.includes('composables/')) {
+			// Only a <script setup> component gets children attached; every other
+			// component registers the children it renders
+			const componentFile = id.split('?')[0];
+			const attachChildren = isComponent && scriptSetup.get(componentFile) === true;
+			const warn = message => this.warn(message);
+			if (isComponent && !scriptSetup.has(componentFile)) {
+				warn(`prefetch-discovery: no component source seen for ${id}; not attaching child components`);
+			}
+			if (!attachChildren && !code.includes('composables/')) {
 				return null;
 			}
 			await init;
-			const warn = message => this.warn(message);
 			let imports;
 			let exports;
 			try {
@@ -200,13 +205,6 @@ export default function prefetchDiscoveryPlugin() {
 			if (isComposable) {
 				return composables.length ? composeExport(code, id, exports, composables, warn) : null;
 			}
-			// Only a <script setup> component needs its children attached; every other
-			// component registers the children it renders in a components option
-			const componentFile = id.split('?')[0];
-			if (!scriptSetup.has(componentFile)) {
-				warn(`prefetch-discovery: no component source seen for ${id}; not attaching child components`);
-			}
-			const attachChildren = scriptSetup.get(componentFile) === true;
 			const children = attachChildren
 				? staticResolutions.filter(r => isChildComponent(r.resolvedId, rootDir)).map(r => r.specifier)
 				: [];
