@@ -24,6 +24,15 @@
 			<DotIcon class="headline-dot headline-dot--8 tw-w-0.5 tw-h-0.5" />
 		</div>
 
+		<div class="headline-rays tw-absolute tw-pointer-events-none tw-z-hide" aria-hidden="true">
+			<FlagRayIcon class="headline-ray headline-ray--1 tw-w-0.5 tw-h-auto" />
+			<FlagRayIcon class="headline-ray headline-ray--2 tw-w-0.5 tw-h-auto" />
+			<FlagRayIcon class="headline-ray headline-ray--3 tw-w-0.5 tw-h-auto" />
+			<FlagRayIcon class="headline-ray headline-ray--4 tw-w-0.5 tw-h-auto" />
+			<FlagRayIcon class="headline-ray headline-ray--5 tw-w-0.5 tw-h-auto" />
+			<FlagRayIcon class="headline-ray headline-ray--6 tw-w-0.5 tw-h-auto" />
+		</div>
+
 		<div class="tw-relative" data-testid="goal-in-review-headline-header">
 			<ul class="tw-grid tw-grid-cols-3 md:tw-grid-cols-4 tw-list-none tw-p-0 tw-m-0">
 				<li
@@ -88,7 +97,10 @@
 							kv-rebound-in headline-stat"
 						:data-testid="`goal-in-review-headline-stat-${stat.key}`"
 					>
-						<span v-if="stat.label" class="tw-text-caption tw-text-tertiary">{{ stat.label }}</span>
+						<span
+							v-if="stat.label"
+							class="tw-text-caption tw-text-tertiary tw-pb-0.5 md:tw-pb-1"
+						>{{ stat.label }}</span>
 						<span class="tw-text-button-link tw-text-primary">{{ stat.value }}</span>
 					</li>
 				</ul>
@@ -116,6 +128,7 @@ import headlineImage4 from '#src/assets/images/my-kiva/goal-in-review/headline-4
 import headlineBottom from '#src/assets/images/my-kiva/goal-in-review/headline-bottom.png';
 import StarIcon from '#src/assets/images/my-kiva/goal-in-review/star.svg';
 import DotIcon from '#src/assets/images/my-kiva/goal-in-review/dot.svg';
+import FlagRayIcon from '#src/assets/images/my-kiva/goal-in-review/flag-ray.svg';
 import { capitalize } from '#src/util/stringParserUtils';
 import { showConfetti } from '#src/util/animation/confettiUtils';
 
@@ -201,20 +214,14 @@ onMounted(() => {
 }
 
 .goal-in-review-headline {
-	background-image: url('/src/assets/images/my-kiva/goal-in-review/headline-mobile-hill.png');
-	background-size: contain;
+	background-image: url('/src/assets/images/my-kiva/goal-in-review/headline-mobile-mountain-bg-and-flag.svg');
+	background-size: 100%;
 	background-position: bottom left;
 }
 
 @screen md {
 	.goal-in-review-headline {
-		background-image: url('/src/assets/images/my-kiva/goal-in-review/headline-desktop-hill.png');
-	}
-}
-
-@screen lg {
-	.goal-in-review-headline {
-		background-image: url('/src/assets/images/my-kiva/goal-in-review/headline-desktop-hill.png');
+		background-image: url('/src/assets/images/my-kiva/goal-in-review/headline-desktop-mountain-bg-and-flag.svg');
 	}
 }
 
@@ -346,8 +353,6 @@ onMounted(() => {
 	}
 }
 
-/* Dots twinkle like the stars but slower (4s vs 3s), on their own stagger. Size
-   comes from tw-w-* tokens; color (#F8CD69) is baked into dot.svg. */
 .headline-dot {
 	position: absolute;
 	transform: translate(-50%, -50%);
@@ -426,9 +431,99 @@ onMounted(() => {
 	}
 }
 
+.headline-rays {
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	aspect-ratio: 394 / 352;
+}
+
+@screen md {
+	.headline-rays {
+		aspect-ratio: 1019 / 314;
+	}
+}
+
+.headline-ray {
+	position: absolute;
+	transform: translate(-50%, -50%);
+	animation: headline-dissolve 2.2s ease-in-out infinite;
+}
+
+.headline-ray--1 {
+	top: 5.8%;
+	left: 3.8%;
+
+	@screen md {
+		top: -1.6%;
+		left: 7.4%;
+	}
+}
+
+.headline-ray--2 {
+	top: 5.8%;
+	left: 5.4%;
+	transform: translate(-50%, -50%) rotate(32.03deg);
+	animation-delay: 0.22s;
+
+	@screen md {
+		top: -1.6%;
+		left: 8.2%;
+	}
+}
+
+.headline-ray--3 {
+	top: 7.1%;
+	left: 10.6%;
+	transform: translate(-50%, -50%) rotate(72.25deg);
+	animation-delay: 0.44s;
+
+	@screen md {
+		top: 0.3%;
+		left: 10.9%;
+	}
+}
+
+.headline-ray--4 {
+	top: 8.4%;
+	left: 10.9%;
+	transform: translate(-50%, -50%) rotate(130.06deg);
+	animation-delay: 0.66s;
+
+	@screen md {
+		top: 2.4%;
+		left: 11.1%;
+	}
+}
+
+.headline-ray--5 {
+	top: 6.8%;
+	left: 9.7%;
+	transform: translate(-50%, -50%) rotate(35.98deg);
+	animation-delay: 0.88s;
+
+	@screen md {
+		top: 0;
+		left: 10.4%;
+	}
+}
+
+.headline-ray--6 {
+	top: 7.6%;
+	left: 3.3%;
+	transform: translate(-50%, -50%) rotate(-49.34deg);
+	animation-delay: 1.1s;
+
+	@screen md {
+		top: 1.2%;
+		left: 7.2%;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.headline-star,
-	.headline-dot {
+	.headline-dot,
+	.headline-ray {
 		animation: none;
 	}
 }
