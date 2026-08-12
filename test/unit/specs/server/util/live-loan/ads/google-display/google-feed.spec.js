@@ -1,6 +1,9 @@
 // @vitest-environment node
 import { FEED_COLUMNS } from '#server/util/live-loan/ads/google-display/feed-row';
 import { fetchAdEligibleLoans } from '#server/util/live-loan/ads/ads-eligibility';
+import { fetchExcludedIds } from '#server/util/live-loan/ads/excluded-ids';
+import { EXCLUDED_LOAN_IDS_SETTING_KEY } from '#server/util/live-loan/ads/constants';
+import { info } from '#server/util/log';
 import { toTsv, generateGoogleFeed } from '#server/util/live-loan/ads/google-display/google-feed';
 
 // mock out the argv module to prevent command line arguments for jest from being read by the code under test
@@ -12,8 +15,12 @@ vi.mock('#server/util/live-loan/ads/ads-eligibility.js', async importOriginal =>
 	fetchAdEligibleLoans: vi.fn(),
 }));
 
+// stub the setting reader so no real request is made for the excluded-loan-ids denylist
+vi.mock('#server/util/live-loan/ads/excluded-ids.js', () => ({ fetchExcludedIds: vi.fn() }));
+
 // mock logging so the ad-safety drop warning doesn't print during the test run
 vi.mock('#server/util/log', () => ({
+	info: vi.fn(),
 	warn: vi.fn(),
 	error: vi.fn(),
 }));
@@ -80,6 +87,9 @@ describe('google-feed', () => {
 	describe('generateGoogleFeed', () => {
 		beforeEach(() => {
 			fetchAdEligibleLoans.mockClear();
+			fetchExcludedIds.mockClear();
+			info.mockClear();
+			fetchExcludedIds.mockResolvedValue([]);
 		});
 
 		it('produces a header line plus one data line per loan', async () => {
@@ -133,7 +143,26 @@ describe('google-feed', () => {
 
 			await generateGoogleFeed(50);
 
-			expect(fetchAdEligibleLoans).toHaveBeenCalledWith(50);
+			expect(fetchAdEligibleLoans).toHaveBeenCalledWith(50, { excludedLoanIds: [] });
+		});
+
+		it('reads the excluded-loan-ids setting and passes them to fetchAdEligibleLoans', async () => {
+			fetchExcludedIds.mockResolvedValue([456]);
+			fetchAdEligibleLoans.mockResolvedValue([]);
+
+			await generateGoogleFeed();
+
+			expect(fetchExcludedIds).toHaveBeenCalledWith(EXCLUDED_LOAN_IDS_SETTING_KEY);
+			expect(fetchAdEligibleLoans).toHaveBeenCalledWith(undefined, { excludedLoanIds: [456] });
+		});
+
+		it('logs the applied excluded-id count on each generation', async () => {
+			fetchExcludedIds.mockResolvedValue([1, 2, 3]);
+			fetchAdEligibleLoans.mockResolvedValue([]);
+
+			await generateGoogleFeed();
+
+			expect(info).toHaveBeenCalledWith(expect.stringContaining('3'), { excludedLoanIds: [1, 2, 3] });
 		});
 	});
 });

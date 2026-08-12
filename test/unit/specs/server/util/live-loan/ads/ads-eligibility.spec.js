@@ -43,6 +43,17 @@ describe('ads-eligibility', () => {
 		it('caps the candidate count at the locked feed limit of 100', () => {
 			expect(AD_FEED_LOAN_COUNT).toEqual(100);
 		});
+
+		it('adds a loanIds none filter when excludedLoanIds are provided', () => {
+			expect(buildAdFeedFilters({ excludedLoanIds: [10, 20] })[0]).toMatchObject({
+				loanIds: { none: [10, 20] },
+			});
+		});
+
+		it('omits the loanIds key when the exclusion list is empty or absent', () => {
+			expect(buildAdFeedFilters({ excludedLoanIds: [] })[0]).not.toHaveProperty('loanIds');
+			expect(buildAdFeedFilters()[0]).not.toHaveProperty('loanIds');
+		});
 	});
 
 	describe('primaryFirstName', () => {
@@ -111,6 +122,15 @@ describe('ads-eligibility', () => {
 			expect(variables.filters).toEqual(buildAdFeedFilters());
 			expect(variables.sortBy).toBeUndefined();
 			expect(query).not.toMatch(/sortBy/);
+		});
+
+		it('threads excludedLoanIds into the query filters', async () => {
+			fetch.mockResolvedValue({ json: () => ({ data: { fundraisingLoans: { values: [] } } }) });
+
+			await fetchAdEligibleLoans(100, { excludedLoanIds: [7, 8] });
+
+			const { variables } = JSON.parse(fetch.mock.calls[0][1].body);
+			expect(variables.filters).toEqual(buildAdFeedFilters({ excludedLoanIds: [7, 8] }));
 		});
 
 		it('threads a custom count into the fundraisingLoans limit', async () => {

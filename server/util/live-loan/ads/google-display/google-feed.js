@@ -1,6 +1,8 @@
 import { fetchAdEligibleLoans } from '../ads-eligibility.js';
+import { fetchExcludedIds } from '../excluded-ids.js';
+import { EXCLUDED_LOAN_IDS_SETTING_KEY } from '../constants.js';
 import { loanToFeedRow, isRowAdSafe, FEED_COLUMNS } from './feed-row.js';
-import { warn } from '../../../log.js';
+import { info, warn } from '../../../log.js';
 
 // Cache keys + TTLs for serving the feed. A fresh copy is served from cache between regenerations so
 // scrapers can't drive the FLSS/hydrate pipeline on every hit; the last-good copy is served if a
@@ -24,10 +26,15 @@ export function toTsv(rows, columns = FEED_COLUMNS) {
 }
 
 export async function generateGoogleFeed(count) {
+	// Admin-managed denylist (Settings Manager), read fresh each generation; excluded loans are pushed
+	// into the FLSS query so they never enter the candidate set. Absent/failed read => no exclusions.
+	const excludedLoanIds = await fetchExcludedIds(EXCLUDED_LOAN_IDS_SETTING_KEY);
+	info(`Ad feed: applying ${excludedLoanIds.length} excluded loan id(s)`, { excludedLoanIds });
+
 	// FLSS (updated via kafka events) is the freshest source of fundraising loans and already excludes
 	// funded/refunded/expired; the eligibility gate drops anonymized/no-name/no-image on the FLSS
 	// record. No re-check against a slower source is needed.
-	const eligible = await fetchAdEligibleLoans(count);
+	const eligible = await fetchAdEligibleLoans(count, { excludedLoanIds });
 
 	const rows = [];
 	eligible.forEach(loan => {
