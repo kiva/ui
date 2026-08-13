@@ -65,7 +65,7 @@ import { gql } from 'graphql-tag';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
 import { shouldHideGoalSignup } from '#src/util/goalInReview';
 import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
-import useGoalInReview from '#src/composables/useGoalInReview';
+import useGoalInReview, { getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
@@ -161,7 +161,10 @@ export default {
 	},
 	computed: {
 		hideGoalSignup() {
-			return shouldHideGoalSignup({ recapStartDate: this.goalInReviewInProgressStart });
+			return shouldHideGoalSignup({
+				recapStartDate: this.goalInReviewInProgressStart,
+				now: getGoalInReviewNow(),
+			});
 		},
 	},
 	methods: {
