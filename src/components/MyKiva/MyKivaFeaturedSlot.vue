@@ -101,6 +101,7 @@ const alreadyViewedSnapshot = ref(null);
 
 const hideGoalSignup = computed(() => shouldHideGoalSignup({
 	recapStartDate: props.goalInReviewInProgressStart,
+	now: getGoalInReviewNow(),
 }));
 
 const slotState = computed(() => {
