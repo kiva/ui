@@ -1,12 +1,16 @@
-import { createApp } from 'vue';
-import useMyKivaHome, { preFetchOperations } from '#src/composables/useMyKivaHome';
+import { nextTick } from 'vue';
+import { render } from '@testing-library/vue';
+import { globalOptions } from '#src/../test/unit/specUtils';
+import { preFetchOperations } from '#src/composables/useMyKivaHome';
+import UsesMyKivaHome from '#src/../test/unit/fixtures/composables/UsesMyKivaHome';
 
 vi.mock('#src/graphql/query/userId.graphql', () => ({
 	default: { kind: 'Document', definitions: [{ name: { value: 'userId' } }] },
 }));
 
-// Captures the watch query observer so a test can deliver the client result
-function makeApollo(cacheData = null) {
+// Reads the prefetched value from cacheData, and captures the watch query
+// observer so a test can deliver a later result from the client
+function makeUserIdApollo(cacheData = null) {
 	let observer = null;
 	const client = {
 		readQuery: () => cacheData,
@@ -25,33 +29,19 @@ function makeApollo(cacheData = null) {
 	};
 }
 
-function mountComposable(apollo) {
-	let paths;
-	const TestComponent = {
-		name: 'TestComponent',
-		// The transform attaches the composable's operations to every real
-		// component that imports it
-		preFetchOperations,
-		setup() {
-			paths = useMyKivaHome();
-			return {};
-		},
-		template: '<div></div>',
-	};
-	const app = createApp(TestComponent);
-	if (apollo) {
-		app.provide('apollo', apollo);
-	}
-	app.mount(document.createElement('div'));
-	return paths;
+// The build step attaches the composable's operations to the fixture, the same
+// way it does for every component importing the composable
+function renderFixture(apollo) {
+	return render(UsesMyKivaHome, {
+		global: { ...globalOptions, provide: { ...globalOptions.provide, apollo } },
+	});
 }
 
 describe('useMyKivaHome', () => {
 	it('returns the homePagePath and portfolioPath computed properties', () => {
-		const { client } = makeApollo();
-		const { homePagePath, portfolioPath } = mountComposable(client);
-		expect(homePagePath).toBeDefined();
-		expect(portfolioPath).toBeDefined();
+		const { getByTestId } = renderFixture(makeUserIdApollo().client);
+		expect(getByTestId('home')).toBeDefined();
+		expect(getByTestId('portfolio')).toBeDefined();
 	});
 
 	it('registers its operation for prefetching', () => {
@@ -60,61 +50,62 @@ describe('useMyKivaHome', () => {
 	});
 
 	it('resolves both paths to my kiva from a prefetched cache value', () => {
-		const { client } = makeApollo({ my: { id: 456 } });
-		const { homePagePath, portfolioPath } = mountComposable(client);
-		expect(homePagePath.value).toBe('/mykiva');
-		expect(portfolioPath.value).toBe('/mykiva');
+		const { getByTestId } = renderFixture(makeUserIdApollo({ my: { id: 456 } }).client);
+		expect(getByTestId('home').textContent).toBe('/mykiva');
+		expect(getByTestId('portfolio').textContent).toBe('/mykiva');
 	});
 
 	it('resolves to the logged-out destinations when the prefetched value has no user', () => {
-		const { client } = makeApollo({ my: null });
-		const { homePagePath, portfolioPath } = mountComposable(client);
-		expect(homePagePath.value).toBe('/');
-		expect(portfolioPath.value).toBe('/portfolio');
+		const { getByTestId } = renderFixture(makeUserIdApollo({ my: null }).client);
+		expect(getByTestId('home').textContent).toBe('/');
+		expect(getByTestId('portfolio').textContent).toBe('/portfolio');
 	});
 
 	it('resolves to the logged-out destinations before the user arrives', () => {
-		const { client } = makeApollo();
-		const { homePagePath, portfolioPath } = mountComposable(client);
-		expect(homePagePath.value).toBe('/');
-		expect(portfolioPath.value).toBe('/portfolio');
+		const { getByTestId } = renderFixture(makeUserIdApollo().client);
+		expect(getByTestId('home').textContent).toBe('/');
+		expect(getByTestId('portfolio').textContent).toBe('/portfolio');
 	});
 
-	it('switches both paths to my kiva when the user arrives on the client', () => {
-		const { client, emitUser } = makeApollo();
-		const { homePagePath, portfolioPath } = mountComposable(client);
+	it('switches both paths to my kiva when the user arrives on the client', async () => {
+		const { client, emitUser } = makeUserIdApollo();
+		const { getByTestId } = renderFixture(client);
 		emitUser({ my: { id: 789 } });
-		expect(homePagePath.value).toBe('/mykiva');
-		expect(portfolioPath.value).toBe('/mykiva');
+		await nextTick();
+		expect(getByTestId('home').textContent).toBe('/mykiva');
+		expect(getByTestId('portfolio').textContent).toBe('/mykiva');
 	});
 
-	it('keeps the logged-out destinations when the user arrives without an id', () => {
-		const { client, emitUser } = makeApollo();
-		const { homePagePath, portfolioPath } = mountComposable(client);
+	it('keeps the logged-out destinations when the user arrives without an id', async () => {
+		const { client, emitUser } = makeUserIdApollo();
+		const { getByTestId } = renderFixture(client);
 		emitUser({ my: { name: 'Test User' } });
-		expect(homePagePath.value).toBe('/');
-		expect(portfolioPath.value).toBe('/portfolio');
+		await nextTick();
+		expect(getByTestId('home').textContent).toBe('/');
+		expect(getByTestId('portfolio').textContent).toBe('/portfolio');
 	});
 
-	it('keeps the logged-out destinations when the fetch fails', () => {
-		const { client, emitFailure } = makeApollo();
-		const { homePagePath, portfolioPath } = mountComposable(client);
+	it('keeps the logged-out destinations when the fetch fails', async () => {
+		const { client, emitFailure } = makeUserIdApollo();
+		const { getByTestId } = renderFixture(client);
 		emitFailure(new Error('Network error'));
-		expect(homePagePath.value).toBe('/');
-		expect(portfolioPath.value).toBe('/portfolio');
+		await nextTick();
+		expect(getByTestId('home').textContent).toBe('/');
+		expect(getByTestId('portfolio').textContent).toBe('/portfolio');
 	});
 
-	it('keeps the logged-out destinations when graphql errors arrive instead of the user', () => {
-		const { client, emitErrors } = makeApollo();
-		const { homePagePath, portfolioPath } = mountComposable(client);
+	it('keeps the logged-out destinations when graphql errors arrive instead of the user', async () => {
+		const { client, emitErrors } = makeUserIdApollo();
+		const { getByTestId } = renderFixture(client);
 		emitErrors([{ message: 'failed', code: 'api.error' }]);
-		expect(homePagePath.value).toBe('/');
-		expect(portfolioPath.value).toBe('/portfolio');
+		await nextTick();
+		expect(getByTestId('home').textContent).toBe('/');
+		expect(getByTestId('portfolio').textContent).toBe('/portfolio');
 	});
 
 	it('keeps the logged-out destinations when apollo is not provided', () => {
-		const { homePagePath, portfolioPath } = mountComposable(null);
-		expect(homePagePath.value).toBe('/');
-		expect(portfolioPath.value).toBe('/portfolio');
+		const { getByTestId } = renderFixture(null);
+		expect(getByTestId('home').textContent).toBe('/');
+		expect(getByTestId('portfolio').textContent).toBe('/portfolio');
 	});
 });
