@@ -48,6 +48,7 @@
 											:progress-percent="progressPercent"
 											:loading="isSummaryLoading"
 											:loan-status="loanStatus"
+											:is-live-loan-ad="isLiveLoanAd"
 										/>
 									</div>
 								</div>
@@ -262,6 +263,9 @@ export default {
 			// eslint-disable-next-line max-len
 			return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
 		},
+		isLiveLoanAd() {
+			return this.$route?.query?.utm_campaign === 'liveloans';
+		},
 		loanStatus() {
 			// Loan may still be fundraising, but all shares are reserved
 			if (this.loanData?.status === 'fundraising') {
@@ -295,8 +299,15 @@ export default {
 	},
 	mounted() {
 		this.initRecommendations();
+		this.trackAdFundedLanding();
 	},
 	methods: {
+		trackAdFundedLanding() {
+			if (!this.isLiveLoanAd || !this.loanData?.status) {
+				return;
+			}
+			this.$kvTrackEvent('borrower-profile', 'funded-state landing', this.loanData.id, this.loanData.status);
+		},
 		initRecommendations() {
 			// Build the rows only once the loan's own query has populated loanData
 			// (loanData.sector); building from an empty loan yields "undefined" headings.
