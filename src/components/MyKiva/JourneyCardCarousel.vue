@@ -134,7 +134,7 @@ const {
 	isTieredAchievementComplete,
 } = useBadgeData(apollo);
 
-const { getCategoryLoansLastYear } = useGoalData();
+const { getCategoryLoansLastYear, hasGoal } = useGoalData();
 
 const emit = defineEmits(['update-journey', 'open-goal-modal', 'open-impact-insight-modal']);
 
@@ -275,7 +275,7 @@ const hideGoalSignup = computed(() => shouldHideGoalSignup({
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
 	// With no goal, this card is only the sign up ask.
-	if (!props.userGoal && hideGoalSignup.value) return false;
+	if (!hasGoal(props.userGoal) && hideGoalSignup.value) return false;
 
 	return (!props.userGoal || !props.userGoalAchieved || props.userGoalAchieved) && !props.hideGoalCard;
 });
