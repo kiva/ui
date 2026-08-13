@@ -30,19 +30,21 @@ export function truncate(s) {
 }
 
 export function buildTitle(loan) {
-	return truncate(`Help ${primaryFirstName(loan)}`);
-}
-
-export function buildDescription(loan) {
 	return truncate(`Support ${primaryFirstName(loan)}`);
-}
-
-export function buildSubtitle(loan) {
-	return truncate(loan?.geocode?.country?.name);
 }
 
 export function buildCategory(loan) {
 	return sanitizeText(loan?.sector?.name);
+}
+
+// Item description shows the same value as Item category -- the loan's sector name -- capped to the
+// 25-char limit Google applies to the description field.
+export function buildDescription(loan) {
+	return truncate(buildCategory(loan));
+}
+
+export function buildSubtitle(loan) {
+	return truncate(loan?.geocode?.country?.name);
 }
 
 export function buildFinalUrl(id) {
