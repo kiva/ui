@@ -870,8 +870,7 @@ export default {
 		useFormSubmit() {
 			if (this.hideShowLendDropdown
 				|| this.lendButtonVisibility
-				|| this.lendAgainButton
-				|| this.state === 'lent-to'
+				|| this.isLentTo
 				|| this.isAdding) {
 				return true;
 			}
