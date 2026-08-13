@@ -765,6 +765,12 @@ export const matchedNoLendersLoan = createMockLoan({
 	lenders: { totalCount: 0, values: [], __typename: 'LenderCollection' },
 });
 
+/** Fundraising loan with exactly one lender. */
+export const singleLenderLoan = createMockLoan({
+	id: 2000020,
+	lenders: { totalCount: 1, values: mockLenders.slice(0, 1), __typename: 'LenderCollection' },
+});
+
 /** Repeat borrower loan (has previous loan). */
 export const repeatBorrowerLoan = createMockLoan({
 	id: 2000016,
