@@ -98,7 +98,7 @@ import { KvCarousel } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
-import useGoalData from '#src/composables/useGoalData';
+import useGoalData, { hasGoal } from '#src/composables/useGoalData';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
@@ -267,8 +267,6 @@ const showSurveyCard = computed(() => props.showSurveySlide && checkShowSurveyCa
 
 const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.slides));
 
-const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);
-
 const hideGoalSignup = computed(() => shouldHideGoalSignup({
 	recapStartDate: props.goalInReviewInProgressStart,
 	now: getGoalInReviewNow(),
@@ -277,7 +275,7 @@ const hideGoalSignup = computed(() => shouldHideGoalSignup({
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
 	// With no goal, this card is only the sign up ask.
-	if (!userHasGoal.value && hideGoalSignup.value) return false;
+	if (!hasGoal(props.userGoal) && hideGoalSignup.value) return false;
 
 	return (!props.userGoal || !props.userGoalAchieved || props.userGoalAchieved) && !props.hideGoalCard;
 });

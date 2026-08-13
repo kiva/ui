@@ -76,6 +76,17 @@ export const HALF_GOAL_THRESHOLD = 50;
 const MIN_CATEGORY_LOANS_AMOUNT = 100;
 const RECOMMENDED_LOANS_LIMIT = 4;
 
+/**
+ * A lender with no goal gets `{}` rather than null, since setGoalState spreads an
+ * absent goal. Truthiness is therefore never enough to tell whether a goal exists.
+ *
+ * @param {object} goal The lender's goal.
+ * @returns {boolean} Whether the lender has a goal.
+ */
+export function hasGoal(goal) {
+	return !!goal && Object.keys(goal).length > 0;
+}
+
 function getGoalDisplayName(target, category) {
 	if (!target || target > 1) return GOAL_DISPLAY_MAP[category] || 'loans';
 	return GOAL_1_DISPLAY_MAP[category] || 'loan';
@@ -117,6 +128,8 @@ export default function useGoalData({ apollo } = {}) {
 		const categoryProgress = progress?.find(n => n.id === goal?.category);
 		return categoryProgress?.progressForYear || 0;
 	});
+
+	const userHasGoal = computed(() => hasGoal(userGoal.value));
 
 	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
 
@@ -1272,6 +1285,7 @@ export default function useGoalData({ apollo } = {}) {
 		storeGoalPreferences,
 		userGoal,
 		userGoalAchieved,
+		userHasGoal,
 		userGoalAchievedNow,
 		suppressAchievementNudges,
 		userPreferences,
