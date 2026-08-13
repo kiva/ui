@@ -1,10 +1,10 @@
-import GoalInReviewSlide2 from '#src/components/MyKiva/GoalInReview/GoalInReviewSlide2';
-import { MAX_BORROWER_CARDS } from '#src/util/goalInReviewBorrowers';
+import GoalInReviewBorrowers from '#src/components/MyKiva/GoalInReview/GoalInReviewBorrowers';
+import { MAX_BORROWER_CARDS } from '#src/util/goalInReview';
 import { sampleGoalLoans } from '../../../mock-data/goalInReviewSampleData';
 
 export default {
-	title: 'MyKiva/GoalInReview/GoalInReviewSlide2',
-	component: GoalInReviewSlide2,
+	title: 'MyKiva/GoalInReview/GoalInReviewBorrowers',
+	component: GoalInReviewBorrowers,
 	parameters: {
 		layout: 'fullscreen',
 	},
@@ -13,11 +13,11 @@ export default {
 const story = (args = {}) => {
 	const template = (_args, { argTypes }) => ({
 		props: Object.keys(argTypes),
-		components: { GoalInReviewSlide2 },
+		components: { GoalInReviewBorrowers },
 		setup() {
 			return { args };
 		},
-		template: '<GoalInReviewSlide2 v-bind="args" />',
+		template: '<GoalInReviewBorrowers v-bind="args" />',
 	});
 	template.args = args;
 	return template;

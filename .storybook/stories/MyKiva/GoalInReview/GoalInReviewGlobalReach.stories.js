@@ -1,15 +1,15 @@
-import GoalInReviewSlide3 from '#src/components/MyKiva/GoalInReview/GoalInReviewSlide3';
+import GoalInReviewGlobalReach from '#src/components/MyKiva/GoalInReview/GoalInReviewGlobalReach';
 import {
 	buildSampleGoalInReviewData,
 	sampleGoalSectors,
 	sampleGoalSectorsWithOther,
-} from '../mock-data/goalInReviewSampleData';
+} from '../../../mock-data/goalInReviewSampleData';
 
 const baseCountries = buildSampleGoalInReviewData(2025).goalSummary.countries;
 
 export default {
-	title: 'MyKiva/GoalInReview/GoalInReviewSlide3',
-	component: GoalInReviewSlide3,
+	title: 'MyKiva/GoalInReview/GoalInReviewGlobalReach',
+	component: GoalInReviewGlobalReach,
 	parameters: {
 		layout: 'fullscreen',
 	},
@@ -18,9 +18,9 @@ export default {
 const story = (countries = baseCountries, sectors = sampleGoalSectors) => {
 	const args = { countries, sectors };
 	const template = () => ({
-		components: { GoalInReviewSlide3 },
+		components: { GoalInReviewGlobalReach },
 		setup() { return { args }; },
-		template: '<GoalInReviewSlide3 v-bind="args" />',
+		template: '<GoalInReviewGlobalReach v-bind="args" />',
 	});
 	template.args = args;
 	return template;

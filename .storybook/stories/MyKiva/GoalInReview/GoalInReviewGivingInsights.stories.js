@@ -1,11 +1,11 @@
-import GoalInReviewSlide4 from '#src/components/MyKiva/GoalInReview/GoalInReviewSlide4';
-import { buildSampleGoalInReviewData } from '../mock-data/goalInReviewSampleData';
+import GoalInReviewGivingInsights from '#src/components/MyKiva/GoalInReview/GoalInReviewGivingInsights';
+import { buildSampleGoalInReviewData } from '../../../mock-data/goalInReviewSampleData';
 
 const baseGoalSummary = buildSampleGoalInReviewData(2025).goalSummary;
 
 export default {
-	title: 'MyKiva/GoalInReview/GoalInReviewSlide4',
-	component: GoalInReviewSlide4,
+	title: 'MyKiva/GoalInReview/GoalInReviewGivingInsights',
+	component: GoalInReviewGivingInsights,
 	parameters: {
 		layout: 'fullscreen',
 	},
@@ -17,9 +17,9 @@ const story = ({ lifetimePercentile = null, ...goalSummaryOverrides } = {}) => {
 		lifetimePercentile,
 	};
 	const template = () => ({
-		components: { GoalInReviewSlide4 },
+		components: { GoalInReviewGivingInsights },
 		setup() { return { args }; },
-		template: '<GoalInReviewSlide4 v-bind="args" />',
+		template: '<GoalInReviewGivingInsights v-bind="args" />',
 	});
 	template.args = args;
 	return template;
