@@ -338,7 +338,10 @@
 								key="numLendersStat"
 							>
 								<!-- eslint-disable-next-line max-len -->
-								<kv-material-icon class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle" :icon="mdiLightningBolt" /><span class="tw-align-middle">powered by {{ numLenders }} lenders</span>
+								<kv-material-icon class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle" :icon="mdiLightningBolt" />
+								<span class="tw-align-middle">
+									powered by {{ numLenders }} lender{{ numLenders > 1 ? 's' : '' }}
+								</span>
 							</span>
 
 							<span
