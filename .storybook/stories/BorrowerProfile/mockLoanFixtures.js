@@ -792,9 +792,33 @@ export const directLoanWithTrustee = createMockLoan({
 			id: 1,
 			numDefaultedLoans: 0,
 			numLoansEndorsedPublic: 120,
-			repaymentRate: 0.98,
+			numFundraisingLoans: 4,
+			numPayingOnTimeLoans: 35,
+			numPayingBackDelinquentLoans: 2,
+			numRepaidInFullLoans: 78,
+			repaymentRate: 98,
 			totalLoansValue: '2000000.00',
 		},
 	},
 	endorsement: 'Accion endorses this loan for responsible lending.',
 });
+
+/** Direct loan whose trustee has no stats data. */
+export const directLoanWithTrusteeNoStats = {
+	...directLoanWithTrustee,
+	id: 2000021,
+	trustee: {
+		...directLoanWithTrustee.trustee,
+		stats: {
+			id: 2,
+			numDefaultedLoans: null,
+			numLoansEndorsedPublic: null,
+			numFundraisingLoans: null,
+			numPayingOnTimeLoans: null,
+			numPayingBackDelinquentLoans: null,
+			numRepaidInFullLoans: null,
+			repaymentRate: null,
+			totalLoansValue: null,
+		},
+	},
+};
