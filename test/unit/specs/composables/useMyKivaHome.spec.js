@@ -1,261 +1,119 @@
-import useMyKivaHome from '#src/composables/useMyKivaHome';
-import { render, waitFor } from '@testing-library/vue';
-
-// Mock the dependencies
-vi.mock('#src/util/logFormatter', () => ({
-	default: vi.fn()
-}));
+import { createApp } from 'vue';
+import useMyKivaHome, { preFetchOperations } from '#src/composables/useMyKivaHome';
 
 vi.mock('#src/graphql/query/userId.graphql', () => ({
-	default: 'userIdQuery'
+	default: { kind: 'Document', definitions: [{ name: { value: 'userId' } }] },
 }));
 
-describe('useMyKivaHome.js', () => {
-	let mockApollo;
+// Captures the watch query observer so a test can deliver the client result
+function makeApollo(cacheData = null) {
+	let observer = null;
+	const client = {
+		readQuery: () => cacheData,
+		watchQuery: () => ({
+			subscribe: o => {
+				observer = o;
+				return { unsubscribe: () => {} };
+			},
+		}),
+	};
+	return {
+		client,
+		emitUser: data => observer.next({ data }),
+		emitErrors: errors => observer.next({ data: undefined, errors }),
+		emitFailure: e => observer.error(e),
+	};
+}
 
-	beforeEach(() => {
-		mockApollo = {
-			query: vi.fn()
-		};
+function mountComposable(apollo) {
+	let paths;
+	const TestComponent = {
+		name: 'TestComponent',
+		// The transform attaches the composable's operations to every real
+		// component that imports it
+		preFetchOperations,
+		setup() {
+			paths = useMyKivaHome();
+			return {};
+		},
+		template: '<div></div>',
+	};
+	const app = createApp(TestComponent);
+	if (apollo) {
+		app.provide('apollo', apollo);
+	}
+	app.mount(document.createElement('div'));
+	return paths;
+}
+
+describe('useMyKivaHome', () => {
+	it('returns the homePagePath and portfolioPath computed properties', () => {
+		const { client } = makeApollo();
+		const { homePagePath, portfolioPath } = mountComposable(client);
+		expect(homePagePath).toBeDefined();
+		expect(portfolioPath).toBeDefined();
 	});
 
-	afterEach(() => {
-		vi.clearAllMocks();
+	it('registers its operation for prefetching', () => {
+		expect(preFetchOperations).toHaveLength(1);
+		expect(preFetchOperations[0].query).toBeDefined();
 	});
 
-	it('should return homePagePath and portfolioPath computed properties', () => {
-		mockApollo.query.mockResolvedValue({
-			data: {
-				my: { id: 123 }
-			}
-		});
-
-		let composable;
-		const TestComponent = {
-			template: '<div></div>',
-			setup() {
-				composable = useMyKivaHome(mockApollo);
-				return composable;
-			}
-		};
-
-		render(TestComponent);
-
-		expect(composable.homePagePath).toBeDefined();
-		expect(composable.portfolioPath).toBeDefined();
+	it('resolves both paths to my kiva from a prefetched cache value', () => {
+		const { client } = makeApollo({ my: { id: 456 } });
+		const { homePagePath, portfolioPath } = mountComposable(client);
+		expect(homePagePath.value).toBe('/mykiva');
+		expect(portfolioPath.value).toBe('/mykiva');
 	});
 
-	it('should default homePagePath to "/" when redirectToMyKivaHomepage is false', async () => {
-		mockApollo.query.mockResolvedValue({
-			data: {
-				my: null
-			}
-		});
-
-		const TestComponent = {
-			template: '<div><span data-testid="home">{{ homePagePath }}</span></div>',
-			setup() {
-				return useMyKivaHome(mockApollo);
-			}
-		};
-
-		const { getByTestId } = render(TestComponent);
-
-		await waitFor(() => {
-			expect(getByTestId('home').textContent).toBe('/');
-		});
+	it('resolves to the logged-out destinations when the prefetched value has no user', () => {
+		const { client } = makeApollo({ my: null });
+		const { homePagePath, portfolioPath } = mountComposable(client);
+		expect(homePagePath.value).toBe('/');
+		expect(portfolioPath.value).toBe('/portfolio');
 	});
 
-	it('should default portfolioPath to "/portfolio" when redirectToMyKivaHomepage is false', async () => {
-		mockApollo.query.mockResolvedValue({
-			data: {
-				my: null
-			}
-		});
-
-		const TestComponent = {
-			template: '<div><span data-testid="portfolio">{{ portfolioPath }}</span></div>',
-			setup() {
-				return useMyKivaHome(mockApollo);
-			}
-		};
-
-		const { getByTestId } = render(TestComponent);
-
-		await waitFor(() => {
-			expect(getByTestId('portfolio').textContent).toBe('/portfolio');
-		});
+	it('resolves to the logged-out destinations before the user arrives', () => {
+		const { client } = makeApollo();
+		const { homePagePath, portfolioPath } = mountComposable(client);
+		expect(homePagePath.value).toBe('/');
+		expect(portfolioPath.value).toBe('/portfolio');
 	});
 
-	it('should set homePagePath to "/mykiva" when user has an id', async () => {
-		mockApollo.query.mockResolvedValue({
-			data: {
-				my: { id: 456 }
-			}
-		});
-
-		const TestComponent = {
-			template: '<div><span data-testid="home">{{ homePagePath }}</span></div>',
-			setup() {
-				return useMyKivaHome(mockApollo);
-			}
-		};
-
-		const { getByTestId } = render(TestComponent);
-
-		await waitFor(() => {
-			expect(getByTestId('home').textContent).toBe('/mykiva');
-		});
+	it('switches both paths to my kiva when the user arrives on the client', () => {
+		const { client, emitUser } = makeApollo();
+		const { homePagePath, portfolioPath } = mountComposable(client);
+		emitUser({ my: { id: 789 } });
+		expect(homePagePath.value).toBe('/mykiva');
+		expect(portfolioPath.value).toBe('/mykiva');
 	});
 
-	it('should set portfolioPath to "/mykiva" when user has an id', async () => {
-		mockApollo.query.mockResolvedValue({
-			data: {
-				my: { id: 456 }
-			}
-		});
-
-		const TestComponent = {
-			template: '<div><span data-testid="portfolio">{{ portfolioPath }}</span></div>',
-			setup() {
-				return useMyKivaHome(mockApollo);
-			}
-		};
-
-		const { getByTestId } = render(TestComponent);
-
-		await waitFor(() => {
-			expect(getByTestId('portfolio').textContent).toBe('/mykiva');
-		});
+	it('keeps the logged-out destinations when the user arrives without an id', () => {
+		const { client, emitUser } = makeApollo();
+		const { homePagePath, portfolioPath } = mountComposable(client);
+		emitUser({ my: { name: 'Test User' } });
+		expect(homePagePath.value).toBe('/');
+		expect(portfolioPath.value).toBe('/portfolio');
 	});
 
-	it('should call apollo.query with userIdQuery on mount', async () => {
-		mockApollo.query.mockResolvedValue({
-			data: {
-				my: { id: 789 }
-			}
-		});
-
-		const TestComponent = {
-			template: '<div></div>',
-			setup() {
-				return useMyKivaHome(mockApollo);
-			}
-		};
-
-		render(TestComponent);
-
-		await waitFor(() => {
-			expect(mockApollo.query).toHaveBeenCalledWith({
-				query: 'userIdQuery'
-			});
-		});
+	it('keeps the logged-out destinations when the fetch fails', () => {
+		const { client, emitFailure } = makeApollo();
+		const { homePagePath, portfolioPath } = mountComposable(client);
+		emitFailure(new Error('Network error'));
+		expect(homePagePath.value).toBe('/');
+		expect(portfolioPath.value).toBe('/portfolio');
 	});
 
-	it('should handle query errors gracefully', async () => {
-		mockApollo.query.mockRejectedValue(new Error('Network error'));
-
-		const TestComponent = {
-			template: '<div><span data-testid="home">{{ homePagePath }}</span></div>',
-			setup() {
-				return useMyKivaHome(mockApollo);
-			}
-		};
-
-		const { getByTestId } = render(TestComponent);
-
-		await waitFor(() => {
-			expect(mockApollo.query).toHaveBeenCalled();
-		});
-
-		// Should default to '/' on error
-		expect(getByTestId('home').textContent).toBe('/');
+	it('keeps the logged-out destinations when graphql errors arrive instead of the user', () => {
+		const { client, emitErrors } = makeApollo();
+		const { homePagePath, portfolioPath } = mountComposable(client);
+		emitErrors([{ message: 'failed', code: 'api.error' }]);
+		expect(homePagePath.value).toBe('/');
+		expect(portfolioPath.value).toBe('/portfolio');
 	});
 
-	it('should handle missing user data (my is null)', async () => {
-		mockApollo.query.mockResolvedValue({
-			data: {
-				my: null
-			}
-		});
-
-		const TestComponent = {
-			template: '<div><span data-testid="home">{{ homePagePath }}</span></div>',
-			setup() {
-				return useMyKivaHome(mockApollo);
-			}
-		};
-
-		const { getByTestId } = render(TestComponent);
-
-		await waitFor(() => {
-			expect(getByTestId('home').textContent).toBe('/');
-		});
-	});
-
-	it('should handle user data without id field', async () => {
-		mockApollo.query.mockResolvedValue({
-			data: {
-				my: { name: 'Test User' }
-			}
-		});
-
-		const TestComponent = {
-			template: '<div><span data-testid="home">{{ homePagePath }}</span></div>',
-			setup() {
-				return useMyKivaHome(mockApollo);
-			}
-		};
-
-		const { getByTestId } = render(TestComponent);
-
-		await waitFor(() => {
-			expect(getByTestId('home').textContent).toBe('/');
-		});
-	});
-
-	it('should handle query response with undefined data', async () => {
-		mockApollo.query.mockResolvedValue({
-			data: undefined
-		});
-
-		const TestComponent = {
-			template: '<div><span data-testid="home">{{ homePagePath }}</span></div>',
-			setup() {
-				return useMyKivaHome(mockApollo);
-			}
-		};
-
-		const { getByTestId } = render(TestComponent);
-
-		await waitFor(() => {
-			expect(getByTestId('home').textContent).toBe('/');
-		});
-	});
-
-	it('should have reactive computed properties', async () => {
-		mockApollo.query.mockResolvedValue({
-			data: {
-				my: { id: 999 }
-			}
-		});
-
-		let homePagePath;
-		let portfolioPath;
-		const TestComponent = {
-			template: '<div></div>',
-			setup() {
-				const composable = useMyKivaHome(mockApollo);
-				({ homePagePath, portfolioPath } = composable);
-				return composable;
-			}
-		};
-
-		render(TestComponent);
-
-		// Asserted synchronously: onMounted has fired, but its apollo query
-		// resolves on a later microtask, so the paths are still at their
-		// pre-fetch defaults here.
+	it('keeps the logged-out destinations when apollo is not provided', () => {
+		const { homePagePath, portfolioPath } = mountComposable(null);
 		expect(homePagePath.value).toBe('/');
 		expect(portfolioPath.value).toBe('/portfolio');
 	});

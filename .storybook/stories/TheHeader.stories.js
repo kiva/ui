@@ -6,6 +6,7 @@ import TheHeader from "#src/components/WwwFrame/TheHeader";
 
 const loggedIn = {
 	my: {
+		id: 1017469,
 		userAccount: {
 			id: 1017469,
 			balance: "0.00",
