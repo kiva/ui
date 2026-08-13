@@ -83,7 +83,7 @@ const RECOMMENDED_LOANS_LIMIT = 4;
  * @param {object} goal The lender's goal.
  * @returns {boolean} Whether the lender has a goal.
  */
-export function hasGoal(goal) {
+function hasGoal(goal) {
 	return !!goal && Object.keys(goal).length > 0;
 }
 
@@ -1273,6 +1273,7 @@ export default function useGoalData({ apollo } = {}) {
 		getCategoryLoansLastYear,
 		getCtaHref,
 		getGoalDisplayName,
+		hasGoal,
 		getGoalSummary,
 		getLoanStatsByYear,
 		getPostCheckoutProgressByLoans,

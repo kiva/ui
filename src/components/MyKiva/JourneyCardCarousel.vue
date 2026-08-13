@@ -98,7 +98,7 @@ import { KvCarousel } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
-import useGoalData, { hasGoal } from '#src/composables/useGoalData';
+import useGoalData from '#src/composables/useGoalData';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
@@ -134,7 +134,7 @@ const {
 	isTieredAchievementComplete,
 } = useBadgeData(apollo);
 
-const { getCategoryLoansLastYear } = useGoalData();
+const { getCategoryLoansLastYear, hasGoal } = useGoalData();
 
 const emit = defineEmits(['update-journey', 'open-goal-modal', 'open-impact-insight-modal']);
 

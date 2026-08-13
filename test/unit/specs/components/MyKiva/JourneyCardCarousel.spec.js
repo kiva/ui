@@ -21,9 +21,9 @@ vi.mock('#src/composables/useBreakpoints', () => ({
 vi.mock('#src/composables/useGoalData', () => ({
 	default: () => ({
 		getCategoryLoansLastYear: () => 0,
+		hasGoal: goal => !!goal && Object.keys(goal).length > 0,
 	}),
 	GOALS_CURRENT_YEAR: new Date().getFullYear(),
-	hasGoal: goal => !!goal && Object.keys(goal).length > 0,
 }));
 
 vi.mock('#src/util/imageUtils', () => ({
