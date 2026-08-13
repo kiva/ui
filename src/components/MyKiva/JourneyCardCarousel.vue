@@ -267,6 +267,8 @@ const showSurveyCard = computed(() => props.showSurveySlide && checkShowSurveyCa
 
 const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.slides));
 
+const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);
+
 const hideGoalSignup = computed(() => shouldHideGoalSignup({
 	recapStartDate: props.goalInReviewInProgressStart,
 	now: getGoalInReviewNow(),
@@ -275,7 +277,7 @@ const hideGoalSignup = computed(() => shouldHideGoalSignup({
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
 	// With no goal, this card is only the sign up ask.
-	if (!props.userGoal && hideGoalSignup.value) return false;
+	if (!userHasGoal.value && hideGoalSignup.value) return false;
 
 	return (!props.userGoal || !props.userGoalAchieved || props.userGoalAchieved) && !props.hideGoalCard;
 });
