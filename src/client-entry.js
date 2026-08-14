@@ -129,9 +129,13 @@ async function setupAnalytics(app, apolloClient, cookieStore) {
 	const { trackAccountCreated } = await import('#src/util/registrationTracking');
 	trackAccountCreated(userId, {
 		get: name => cookieStore.get(name),
-		// An hour outlives the monolith's re-authentication redirect, which is all the
-		// dedup window needs to cover
-		set: (name, value) => cookieStore.set(name, value, { path: '/', expires: 1 / 24 }),
+		// An hour outlives the monolith's re-authentication redirect, which is all the dedup
+		// window needs to cover. Must be a Date — cookieStore serializes through `cookie`,
+		// which rejects a number outright.
+		set: (name, value) => cookieStore.set(name, value, {
+			path: '/',
+			expires: new Date(Date.now() + (60 * 60 * 1000)),
+		}),
 	});
 	const { default: collectWebVitals } = await import('#src/util/webVitals');
 	collectWebVitals(app.config.globalProperties.$kvTrackEvent);
