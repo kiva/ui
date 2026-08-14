@@ -4,7 +4,7 @@
 			md:tw-flex-row md:tw-items-center md:tw-justify-between md:tw-gap-3 md:tw-p-2.5"
 	>
 		<h2 class="tw-text-center md:tw-text-left md:tw-flex-1 !tw-text-title">
-			Check in on your giving funds
+			{{ titleCopy }}
 		</h2>
 		<div class="tw-text-center md:tw-text-left md:tw-flex-1">
 			<transition name="kvfade">
@@ -16,12 +16,12 @@
 		<KvButton
 			class="tw-w-full md:tw-w-auto md:tw-ml-auto"
 			variant="primary"
-			to="/gfm"
-			aria-label="See your giving funds"
-			v-kv-track-event="['portfolio', 'click', 'see-your-giving-funds']"
+			:to="ctaTo"
+			:aria-label="ctaCopy"
+			v-kv-track-event="clickTrackEventProps"
 		>
 			<div class="tw-flex tw-items-center tw-w-full tw-gap-1 md:tw-w-auto">
-				<span>See your giving funds</span>
+				<span>{{ ctaCopy }}</span>
 				<KvMaterialIcon
 					class="tw-w-3 tw-h-3"
 					:icon="mdiArrowTopRight"
@@ -35,6 +35,7 @@
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiArrowTopRight } from '@mdi/js';
 import useGivingFund from '#src/composables/useGivingFund';
+import { givingFundIds } from '#src/util/givingFundUtils';
 
 import {
 	computed,
@@ -44,12 +45,21 @@ import {
 } from 'vue';
 
 const apollo = inject('apollo');
+const $kvTrackEvent = inject('$kvTrackEvent');
 
 const props = defineProps({
 	userId: {
 		type: [String, Number],
 		required: false,
 		default: null,
+	},
+	/**
+	 * Whether the lender's only giving fund activity is supporting the disaster
+	 * relief fund; renders the fund-specific variant of the card
+	 */
+	isDisasterReliefOnly: {
+		type: Boolean,
+		default: false,
 	},
 });
 
@@ -60,6 +70,20 @@ const {
 
 const myFundsCount = ref(0);
 const contributedFundsCount = ref(0);
+
+const titleCopy = computed(() => (props.isDisasterReliefOnly
+	? 'Check in on the Colombia earthquake recovery fund'
+	: 'Check in on your giving funds'));
+
+const ctaCopy = computed(() => (props.isDisasterReliefOnly ? 'View fund' : 'See your giving funds'));
+
+const ctaTo = computed(() => (
+	props.isDisasterReliefOnly ? `/gf/${givingFundIds.COLOMBIA_DISASTER_RELIEF}` : '/gfm'
+));
+
+const clickTrackEventProps = computed(() => (props.isDisasterReliefOnly
+	? ['portfolio', 'click', 'see-your-giving-funds', 'disaster-relief']
+	: ['portfolio', 'click', 'see-your-giving-funds']));
 
 const textCopy = computed(() => {
 	let copy = '';
@@ -82,15 +106,20 @@ const textCopy = computed(() => {
 });
 
 onMounted(() => {
+	if (props.isDisasterReliefOnly) {
+		$kvTrackEvent?.('portfolio', 'view', 'see-your-giving-funds', 'disaster-relief');
+		return;
+	}
+
 	// Fetch giving fund data
 	fetchMyGivingFundsCount()
 		.then(response => {
-			myFundsCount.value = response.givingFunds.totalCount;
+			myFundsCount.value = response?.givingFunds?.totalCount ?? 0;
 		});
 
 	getFundsContributedToIds(parseInt(props?.userId, 10) || null)
 		.then(fundIds => {
-			contributedFundsCount.value = fundIds.length;
+			contributedFundsCount.value = fundIds?.length ?? 0;
 		});
 });
 </script>

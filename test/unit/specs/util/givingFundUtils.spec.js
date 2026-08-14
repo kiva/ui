@@ -1,4 +1,54 @@
-import parseGivingFundCookie from '#src/util/givingFundUtils';
+import parseGivingFundCookie, { isDisasterReliefFundOnlySupporter } from '#src/util/givingFundUtils';
+
+describe('isDisasterReliefFundOnlySupporter', () => {
+	it('should return true when the lender owns no funds and every donation went to the relief fund', () => {
+		const my = {
+			givingFunds: { totalCount: 0 },
+			givingFundParticipation: { totalCount: 3 },
+			reliefFundParticipation: { totalCount: 3 },
+		};
+
+		expect(isDisasterReliefFundOnlySupporter(my)).toBe(true);
+	});
+
+	it('should return false when the lender owns giving funds', () => {
+		const my = {
+			givingFunds: { totalCount: 1 },
+			givingFundParticipation: { totalCount: 3 },
+			reliefFundParticipation: { totalCount: 3 },
+		};
+
+		expect(isDisasterReliefFundOnlySupporter(my)).toBe(false);
+	});
+
+	it('should return false when the relief fund donation count is 0', () => {
+		const my = {
+			givingFunds: { totalCount: 0 },
+			givingFundParticipation: { totalCount: 0 },
+			reliefFundParticipation: { totalCount: 0 },
+		};
+
+		expect(isDisasterReliefFundOnlySupporter(my)).toBe(false);
+	});
+
+	it('should return false when the relief fund count is less than the total donation count', () => {
+		const my = {
+			givingFunds: { totalCount: 0 },
+			givingFundParticipation: { totalCount: 3 },
+			reliefFundParticipation: { totalCount: 2 },
+		};
+
+		expect(isDisasterReliefFundOnlySupporter(my)).toBe(false);
+	});
+
+	it('should return false for an undefined my object', () => {
+		expect(isDisasterReliefFundOnlySupporter(undefined)).toBe(false);
+	});
+
+	it('should return false for an empty my object', () => {
+		expect(isDisasterReliefFundOnlySupporter({})).toBe(false);
+	});
+});
 
 describe('parseGivingFundCookie', () => {
 	it('should parse a full cookie string with fundId, uiv, and action', () => {
