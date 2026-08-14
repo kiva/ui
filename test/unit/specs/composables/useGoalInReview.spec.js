@@ -4,8 +4,13 @@ import useGoalInReview, {
 
 const getGoalSummary = vi.fn();
 
+const getCategories = vi.fn(() => [
+	{ badgeId: 'support-all', name: 'Choose as I go' },
+	{ badgeId: 'climate-action', name: 'Climate Action' },
+]);
+
 vi.mock('#src/composables/useGoalData', () => ({
-	default: () => ({ getGoalSummary }),
+	default: () => ({ getGoalSummary, getCategories }),
 }));
 
 const supportAllSummary = {

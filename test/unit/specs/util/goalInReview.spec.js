@@ -401,9 +401,14 @@ describe('goalInReviewPayload.js', () => {
 			expect(getCategoryName('basic-needs')).toBe('basic-needs');
 		});
 
-		it('uses the goal picker names, so the recap and the picker agree', () => {
-			expect(getCategoryName('support-all', [])).toBe('Choose as I go');
-			expect(getCategoryName('us-economic-equality', [])).toBe('U.S. Entrepreneurs');
+		it('prefers the goal picker name, so the recap matches what the lender chose', () => {
+			const categories = [
+				{ badgeId: 'support-all', name: 'Choose as I go' },
+				{ badgeId: 'us-economic-equality', name: 'U.S. Entrepreneurs' },
+			];
+
+			expect(getCategoryName('support-all', [], categories)).toBe('Choose as I go');
+			expect(getCategoryName('us-economic-equality', [], categories)).toBe('U.S. Entrepreneurs');
 		});
 
 		it('returns an empty string without a category', () => {
