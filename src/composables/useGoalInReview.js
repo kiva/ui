@@ -134,7 +134,7 @@ export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) 
 			const monolithSummary = summary?.category === ID_SUPPORT_ALL ? summary : null;
 			// 'no-cache' because this query only selects tieredLendingAchievements — writing it to
 			// the cache would overwrite the richer userAchievementProgress data stored by the full
-			// badges prefetch (MP-3117). Same convention as useGoalData.getCategoriesProgressByYear.
+			// badges prefetch. Same convention as useGoalData.getCategoriesProgressByYear.
 			const achievementsData = summary && !monolithSummary
 				? await query(goalInReviewAchievementsQuery, { year, loanPurchasesLimit: summary.target }, 'no-cache')
 				: null;
