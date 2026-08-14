@@ -7,7 +7,7 @@ import {
 	ID_SUPPORT_ALL,
 	ID_WOMENS_EQUALITY,
 } from '#src/composables/useBadgeData';
-import { GOAL_STATUS } from '#src/composables/useGoalData';
+import { CATEGORY_NAMES, GOAL_STATUS } from '#src/composables/useGoalData';
 import { toValidDate } from '#src/util/dateUtils';
 import { capitalize } from '#src/util/stringParserUtils';
 
@@ -197,7 +197,8 @@ export function shouldShowRecapEntryPoint({
 
 /**
  * Maps the category badge id ("womens-equality") to the name Contentful writes it
- * as ("Women's Equality"), falling back to the id.
+ * as ("Women's Equality"), preferring the names the goal picker uses so the recap and
+ * the picker agree.
  *
  * @param {string} category The goal category badge id.
  * @param {Array} contentfulEntries Raw `challenge` entries from Contentful.
@@ -206,6 +207,10 @@ export function shouldShowRecapEntryPoint({
 export function getCategoryName(category, contentfulEntries = []) {
 	if (!category) {
 		return '';
+	}
+
+	if (CATEGORY_NAMES[category]) {
+		return CATEGORY_NAMES[category];
 	}
 
 	const match = (contentfulEntries ?? [])

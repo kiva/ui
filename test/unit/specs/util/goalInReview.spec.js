@@ -401,6 +401,11 @@ describe('goalInReviewPayload.js', () => {
 			expect(getCategoryName('basic-needs')).toBe('basic-needs');
 		});
 
+		it('uses the goal picker names, so the recap and the picker agree', () => {
+			expect(getCategoryName('support-all', [])).toBe('Choose as I go');
+			expect(getCategoryName('us-economic-equality', [])).toBe('U.S. Entrepreneurs');
+		});
+
 		it('returns an empty string without a category', () => {
 			expect(getCategoryName(null, entries)).toBe('');
 		});

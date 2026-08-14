@@ -35,6 +35,15 @@ import usEntrepreneursImg from '#src/assets/images/my-kiva/goal-setting/us-entre
 import basicNeedsImg from '#src/assets/images/my-kiva/goal-setting/basic-needs.svg?url';
 import supportAllImg from '#src/assets/images/my-kiva/goal-setting/support-all.svg?url';
 
+export const CATEGORY_NAMES = {
+	[ID_WOMENS_EQUALITY]: 'Women',
+	[ID_SUPPORT_ALL]: 'Choose as I go',
+	[ID_CLIMATE_ACTION]: 'Climate Action',
+	[ID_BASIC_NEEDS]: 'Basic Needs',
+	[ID_REFUGEE_EQUALITY]: 'Refugees',
+	[ID_US_ECONOMIC_EQUALITY]: 'U.S. Entrepreneurs',
+};
+
 const GOAL_DISPLAY_MAP = {
 	[ID_BASIC_NEEDS]: 'basic needs loans',
 	[ID_CLIMATE_ACTION]: 'eco friendly loans',
@@ -200,7 +209,7 @@ export default function useGoalData({ apollo } = {}) {
 		return [
 			{
 				id: '1',
-				name: 'Women',
+				name: CATEGORY_NAMES[ID_WOMENS_EQUALITY],
 				description: 'Open doors for women around the world',
 				eventProp: 'women',
 				customImage: womenImg,
@@ -210,7 +219,7 @@ export default function useGoalData({ apollo } = {}) {
 			},
 			{
 				id: '2',
-				name: 'Choose as I go',
+				name: CATEGORY_NAMES[ID_SUPPORT_ALL],
 				description: 'Support a variety of borrowers',
 				eventProp: 'help-everyone',
 				customImage: supportAllImg,
@@ -220,7 +229,7 @@ export default function useGoalData({ apollo } = {}) {
 			},
 			{
 				id: '3',
-				name: 'Climate Action',
+				name: CATEGORY_NAMES[ID_CLIMATE_ACTION],
 				description: 'Support the front lines of the climate crisis',
 				eventProp: 'climate',
 				customImage: climateActionImg,
@@ -230,7 +239,7 @@ export default function useGoalData({ apollo } = {}) {
 			},
 			{
 				id: '4',
-				name: 'Basic Needs',
+				name: CATEGORY_NAMES[ID_BASIC_NEEDS],
 				description: 'Clean water, healthcare, and sanitation',
 				eventProp: 'basic-needs',
 				customImage: basicNeedsImg,
@@ -240,7 +249,7 @@ export default function useGoalData({ apollo } = {}) {
 			},
 			{
 				id: '5',
-				name: 'Refugees',
+				name: CATEGORY_NAMES[ID_REFUGEE_EQUALITY],
 				description: 'Transform the future for refugees',
 				eventProp: 'refugees',
 				customImage: refugeesImg,
@@ -250,7 +259,7 @@ export default function useGoalData({ apollo } = {}) {
 			},
 			{
 				id: '6',
-				name: 'U.S. Entrepreneurs',
+				name: CATEGORY_NAMES[ID_US_ECONOMIC_EQUALITY],
 				description: 'Support small businesses in the U.S.',
 				eventProp: 'us-entrepreneur',
 				customImage: usEntrepreneursImg,
