@@ -4,6 +4,7 @@ import useGoalInReview, {
 
 const getGoalSummary = vi.fn();
 
+// Only the two categories the summaries below use; the real list has six.
 const getCategories = vi.fn(() => [
 	{ badgeId: 'support-all', name: 'Choose as I go' },
 	{ badgeId: 'climate-action', name: 'Climate Action' },
