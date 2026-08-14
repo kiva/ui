@@ -132,8 +132,11 @@ export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) 
 			// the only category it carries the recap extras for. Every other category is
 			// built from achievements-service instead, so only one of the two is ever read.
 			const monolithSummary = summary?.category === ID_SUPPORT_ALL ? summary : null;
+			// 'no-cache' because this query only selects tieredLendingAchievements — writing it to
+			// the cache would overwrite the richer userAchievementProgress data stored by the full
+			// badges prefetch. Same convention as useGoalData.getCategoriesProgressByYear.
 			const achievementsData = summary && !monolithSummary
-				? await query(goalInReviewAchievementsQuery, { year, loanPurchasesLimit: summary.target })
+				? await query(goalInReviewAchievementsQuery, { year, loanPurchasesLimit: summary.target }, 'no-cache')
 				: null;
 			const achievements = achievementsData?.userAchievementProgress?.tieredLendingAchievements ?? [];
 			const goalSummary = scopeToGoalYear(
