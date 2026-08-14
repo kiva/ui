@@ -59,14 +59,20 @@ describe('feed-row', () => {
 	});
 
 	describe('buildTitle', () => {
-		it('builds "Help {firstName}" from the primary borrower', () => {
-			expect(buildTitle(loan)).toEqual('Help Mukumoy');
+		it('builds "Support {firstName}" from the primary borrower', () => {
+			expect(buildTitle(loan)).toEqual('Support Mukumoy');
 		});
 	});
 
 	describe('buildDescription', () => {
-		it('builds "Support {firstName}" from the primary borrower', () => {
-			expect(buildDescription(loan)).toEqual('Support Mukumoy');
+		it('is the sector name, mirroring Item category', () => {
+			expect(buildDescription(loan)).toEqual('Retail');
+			expect(buildDescription(loan)).toEqual(buildCategory(loan));
+		});
+
+		it('caps a long sector name at 25 characters', () => {
+			const longSector = { sector: { name: 'Wholesale and Retail Distribution' } };
+			expect(buildDescription(longSector)).toEqual('Wholesale and Retail Dist');
 		});
 	});
 
@@ -121,8 +127,8 @@ describe('feed-row', () => {
 			expect(Object.keys(row)).toEqual(FEED_COLUMNS);
 			expect(row).toEqual({
 				ID: '456',
-				'Item title': 'Help Mukumoy',
-				'Item description': 'Support Mukumoy',
+				'Item title': 'Support Mukumoy',
+				'Item description': 'Retail',
 				'Item subtitle': 'Tajikistan',
 				'Item category': 'Retail',
 				'Image URL': EXPECTED_IMAGE_URL,

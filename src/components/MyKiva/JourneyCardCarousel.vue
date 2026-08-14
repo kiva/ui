@@ -103,6 +103,7 @@ import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpda
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import { shouldHideGoalSignup } from '#src/util/goalInReview';
+import { getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import AlmostFundedNextStep from '#src/components/MyKiva/AlmostFundedNextStep';
 import {
 	getSlideTitle,
@@ -133,7 +134,7 @@ const {
 	isTieredAchievementComplete,
 } = useBadgeData(apollo);
 
-const { getCategoryLoansLastYear } = useGoalData();
+const { getCategoryLoansLastYear, hasGoal } = useGoalData();
 
 const emit = defineEmits(['update-journey', 'open-goal-modal', 'open-impact-insight-modal']);
 
@@ -268,12 +269,13 @@ const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.slides));
 
 const hideGoalSignup = computed(() => shouldHideGoalSignup({
 	recapStartDate: props.goalInReviewInProgressStart,
+	now: getGoalInReviewNow(),
 }));
 
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
 	// With no goal, this card is only the sign up ask.
-	if (!props.userGoal && hideGoalSignup.value) return false;
+	if (!hasGoal(props.userGoal) && hideGoalSignup.value) return false;
 
 	return (!props.userGoal || !props.userGoalAchieved || props.userGoalAchieved) && !props.hideGoalCard;
 });

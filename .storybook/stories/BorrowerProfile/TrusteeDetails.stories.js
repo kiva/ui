@@ -3,7 +3,7 @@ import TrusteeDetails from '#src/components/BorrowerProfile/TrusteeDetails';
 import apolloStoryMixin from '../../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../../mixins/cookie-store-story-mixin';
 import kvAuth0StoryMixin from '../../mixins/kv-auth0-story-mixin';
-import { createQueryResult, directLoanWithTrustee } from './mockLoanFixtures';
+import { createQueryResult, directLoanWithTrustee, directLoanWithTrusteeNoStats } from './mockLoanFixtures';
 
 function trusteeDetailsStory(loan, { loading = false, condensed = false } = {}) {
 	return () => ({
@@ -30,3 +30,6 @@ export const Loading = trusteeDetailsStory(directLoanWithTrustee, { loading: tru
 Loading.storyName = 'Loading (skeleton)';
 
 export const Condensed = trusteeDetailsStory(directLoanWithTrustee, { condensed: true });
+
+export const NotEnoughData = trusteeDetailsStory(directLoanWithTrusteeNoStats);
+NotEnoughData.storyName = 'Not enough data';

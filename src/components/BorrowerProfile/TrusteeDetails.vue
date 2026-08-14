@@ -215,6 +215,21 @@ const trusteeQuery = gql`query borrowerProfileTrustee($loanId: Int!) {
 	}
 }`;
 
+// Formats a whole number with thousands separators
+const formatCount = value => numeral(value).format('0,0');
+
+// Formats a dollar amount, showing cents only when non-zero
+const formatMoney = value => numeral(value).format('$0,0[.]00');
+
+// Formats a 0-100 rate as a whole percentage
+const formatPercent = value => numeral(value / 100).format('0%');
+
+// Formats a stat, or returns "Not enough data" when the stat is missing
+const formatNullableValue = (value, formatFn) => {
+	// loose equality to match null and undefined
+	return value == null ? 'Not enough data' : formatFn(value);
+};
+
 export default {
 	name: 'TrusteeDetails',
 	inject: {
@@ -270,14 +285,14 @@ export default {
 			this.trusteeId = trustee?.id ?? 0;
 			this.numLoansEndorsedPublic = trustee?.stats?.numLoansEndorsedPublic ?? 0;
 			this.totalLoansValue = trustee?.stats?.totalLoansValue ?? '0.00';
-			this.numDefaultedLoans = trustee?.stats?.numDefaultedLoans ?? 0;
-			this.repaymentRate = trustee?.stats?.repaymentRate ?? 0;
+			this.numDefaultedLoans = trustee?.stats?.numDefaultedLoans;
+			this.repaymentRate = trustee?.stats?.repaymentRate;
 			this.tier = trustee?.tier ?? '';
 			this.contactRecord = trustee?.contactRecord ?? null;
 			this.numFundraisingLoans = trustee?.stats?.numFundraisingLoans ?? 0;
-			this.numPayingOnTimeLoans = trustee?.stats?.numPayingOnTimeLoans ?? 0;
-			this.numPayingBackDelinquentLoans = trustee?.stats?.numPayingBackDelinquentLoans ?? 0;
-			this.numRepaidInFullLoans = trustee?.stats?.numRepaidInFullLoans ?? 0;
+			this.numPayingOnTimeLoans = trustee?.stats?.numPayingOnTimeLoans;
+			this.numPayingBackDelinquentLoans = trustee?.stats?.numPayingBackDelinquentLoans;
+			this.numRepaidInFullLoans = trustee?.stats?.numRepaidInFullLoans;
 			this.loading = false;
 		},
 	},
@@ -289,16 +304,16 @@ export default {
 			return this.trusteeName === 'No Trustee Endorsement';
 		},
 		totalLoansValueFormatted() {
-			return numeral(this.totalLoansValue).format('$0,0[.]00');
+			return formatMoney(this.totalLoansValue);
 		},
 		repaymentRateFormatted() {
-			return numeral(this.repaymentRate / 100).format('0%');
+			return formatNullableValue(this.repaymentRate, formatPercent);
 		},
 		numLoansEndorsedPublicFormatted() {
-			return numeral(this.numLoansEndorsedPublic).format('0,0');
+			return formatCount(this.numLoansEndorsedPublic);
 		},
 		numDefaultedLoansFormatted() {
-			return numeral(this.numDefaultedLoans).format('0,0');
+			return formatNullableValue(this.numDefaultedLoans, formatCount);
 		},
 		tierFormatted() {
 			if (!this.tier || this.tier === 'NO_STATUS') return 'N/A';
@@ -312,16 +327,16 @@ export default {
 			return [contact.city, region].filter(Boolean).join(', ');
 		},
 		numFundraisingLoansFormatted() {
-			return numeral(this.numFundraisingLoans).format('0,0');
+			return formatCount(this.numFundraisingLoans);
 		},
 		numPayingOnTimeLoansFormatted() {
-			return numeral(this.numPayingOnTimeLoans).format('0,0');
+			return formatNullableValue(this.numPayingOnTimeLoans, formatCount);
 		},
 		numPayingBackDelinquentLoansFormatted() {
-			return numeral(this.numPayingBackDelinquentLoans).format('0,0');
+			return formatNullableValue(this.numPayingBackDelinquentLoans, formatCount);
 		},
 		numRepaidInFullLoansFormatted() {
-			return numeral(this.numRepaidInFullLoans).format('0,0');
+			return formatNullableValue(this.numRepaidInFullLoans, formatCount);
 		}
 	},
 };

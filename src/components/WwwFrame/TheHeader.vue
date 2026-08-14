@@ -569,7 +569,7 @@
 </template>
 
 <script>
-import { defineAsyncComponent, inject } from 'vue';
+import { defineAsyncComponent } from 'vue';
 import { getTransactorFlagsFromCookies } from '@kiva/kv-analytics';
 import {
 	userHasLentBefore,
@@ -692,8 +692,7 @@ export default {
 		},
 	},
 	setup() {
-		const apollo = inject('apollo');
-		const { homePagePath } = useMyKivaHome(apollo);
+		const { homePagePath } = useMyKivaHome();
 
 		return {
 			homePagePath,
