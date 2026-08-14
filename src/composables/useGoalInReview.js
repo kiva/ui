@@ -79,6 +79,7 @@ export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) 
 	const apolloClient = apollo || inject('apollo');
 	const cookies = cookieStore || inject('cookieStore', null);
 	const {
+		getCategories,
 		getGoalSummary,
 		hasViewedGoalRecapForYear,
 		loadPreferences,
@@ -149,7 +150,11 @@ export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) 
 				isEligible: getIsEligible(goalSummary),
 				firstName: lenderData?.my?.userAccount?.firstName ?? '',
 				goalSummary,
-				categoryName: getCategoryName(goalSummary?.category, contentfulData?.contentful?.entries?.items),
+				categoryName: getCategoryName(
+					goalSummary?.category,
+					contentfulData?.contentful?.entries?.items,
+					getCategories(),
+				),
 				loanStats: getLoanStats(goalSummary),
 				goalLoans: getGoalLoans(goalSummary, achievements),
 				lifetimePercentile: lenderData?.my?.lendingStats?.amountLentPercentile ?? null,

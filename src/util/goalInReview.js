@@ -197,15 +197,22 @@ export function shouldShowRecapEntryPoint({
 
 /**
  * Maps the category badge id ("womens-equality") to the name Contentful writes it
- * as ("Women's Equality"), falling back to the id.
+ * as ("Women's Equality"). The goal picker's own name wins where it has one, so the recap
+ * calls a category what the lender was called it when they set the goal.
  *
  * @param {string} category The goal category badge id.
  * @param {Array} contentfulEntries Raw `challenge` entries from Contentful.
+ * @param {Array} categories Goal categories from useGoalData's getCategories.
  * @returns {string} The display name for the goal category.
  */
-export function getCategoryName(category, contentfulEntries = []) {
+export function getCategoryName(category, contentfulEntries = [], categories = []) {
 	if (!category) {
 		return '';
+	}
+
+	const picked = (categories ?? []).find(entry => entry.badgeId === category);
+	if (picked?.name) {
+		return picked.name;
 	}
 
 	const match = (contentfulEntries ?? [])
