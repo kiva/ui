@@ -134,7 +134,7 @@ const textCopy = computed(() => {
 let viewEventTracked = false;
 
 watch(isDisasterReliefOnly, value => {
-	// Track views of the disaster relief variant, which only renders when not hidden (MP-3121)
+	// Track views of the disaster relief variant, which only renders when not hidden
 	if (value && !props.hideDisasterReliefOnly && !viewEventTracked) {
 		viewEventTracked = true;
 		$kvTrackEvent?.('portfolio', 'view', 'see-your-giving-funds', 'disaster-relief');

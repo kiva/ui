@@ -2,7 +2,7 @@
  * Well-known giving fund IDs, keyed by fund identity.
  */
 export const givingFundIds = {
-	// Colombia earthquake recovery (disaster relief) fund, MP-3121
+	// Colombia earthquake recovery (disaster relief) fund
 	// https://www.kiva.org/gf/238fe077-033e-4a59-8d11-e571e6e4ed31
 	COLOMBIA_DISASTER_RELIEF: '238fe077-033e-4a59-8d11-e571e6e4ed31',
 };
