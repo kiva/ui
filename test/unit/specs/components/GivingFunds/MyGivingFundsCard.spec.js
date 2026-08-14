@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { render, screen, waitFor } from '@testing-library/vue';
+import { render, screen } from '@testing-library/vue';
 import { flushPromises } from '@vue/test-utils';
 import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';
 import useGivingFund from '#src/composables/useGivingFund';
@@ -23,10 +23,12 @@ vi.mock('@kiva/kv-components', () => ({
 
 describe('MyGivingFundsCard', () => {
 	const mockUseGivingFund = ({ myFundsCount = 0, contributedFundIds = [] } = {}) => {
-		useGivingFund.mockReturnValue({
+		const mocks = {
 			fetchMyGivingFundsCount: vi.fn().mockResolvedValue({ givingFunds: { totalCount: myFundsCount } }),
 			getFundsContributedToIds: vi.fn().mockResolvedValue(contributedFundIds),
-		});
+		};
+		useGivingFund.mockReturnValue(mocks);
+		return mocks;
 	};
 
 	const mountCard = ({ props = {}, $kvTrackEvent = vi.fn() } = {}) => {
@@ -65,68 +67,33 @@ describe('MyGivingFundsCard', () => {
 		)).toBeTruthy();
 	});
 
-	it('shows the disaster-relief-only variant and fires a single view event', async () => {
+	it('renders the disaster-relief variant from the prop, fetching nothing, firing the view event once', async () => {
 		const $kvTrackEvent = vi.fn();
-		mockUseGivingFund({ myFundsCount: 0, contributedFundIds: [givingFundIds.COLOMBIA_DISASTER_RELIEF] });
+		const mocks = mockUseGivingFund();
 
-		mountCard({ $kvTrackEvent });
+		mountCard({ props: { isDisasterReliefOnly: true }, $kvTrackEvent });
 
-		await flushPromises();
-
-		await waitFor(() => {
-			expect(screen.getByText('Check in on the Colombia earthquake recovery fund')).toBeTruthy();
-		});
-
+		expect(screen.getByText('Check in on the Colombia earthquake recovery fund')).toBeTruthy();
 		const link = screen.getByText('View fund').closest('a');
 		expect(link.getAttribute('href')).toBe(`/gf/${givingFundIds.COLOMBIA_DISASTER_RELIEF}`);
 		expect(screen.queryByText(/You have/)).toBeFalsy();
 
+		await flushPromises();
+
 		expect($kvTrackEvent).toHaveBeenCalledTimes(1);
 		expect($kvTrackEvent).toHaveBeenCalledWith('portfolio', 'view', 'see-your-giving-funds', 'disaster-relief');
+		expect(mocks.fetchMyGivingFundsCount).not.toHaveBeenCalled();
+		expect(mocks.getFundsContributedToIds).not.toHaveBeenCalled();
 	});
 
-	it('keeps the normal card for mixed participation and does not fire a view event', async () => {
+	it('never fires the view event when isDisasterReliefOnly is not set', async () => {
 		const $kvTrackEvent = vi.fn();
-		mockUseGivingFund({
-			myFundsCount: 0,
-			contributedFundIds: [givingFundIds.COLOMBIA_DISASTER_RELIEF, 'other-id'],
-		});
+		mockUseGivingFund({ myFundsCount: 1, contributedFundIds: ['fund-1'] });
 
 		mountCard({ $kvTrackEvent });
 
 		await flushPromises();
 
-		expect(screen.getByText('Check in on your giving funds')).toBeTruthy();
-		const link = screen.getByText('See your giving funds').closest('a');
-		expect(link.getAttribute('href')).toBe('/gfm');
-
 		expect($kvTrackEvent).not.toHaveBeenCalled();
-	});
-
-	it('renders nothing when hideDisasterReliefOnly is true and the lender is disaster-relief-only', async () => {
-		const $kvTrackEvent = vi.fn();
-		mockUseGivingFund({ myFundsCount: 0, contributedFundIds: [givingFundIds.COLOMBIA_DISASTER_RELIEF] });
-
-		const { container } = mountCard({ props: { hideDisasterReliefOnly: true }, $kvTrackEvent });
-
-		await flushPromises();
-
-		expect(container.querySelector('.giving-fund-card')).toBeFalsy();
-		expect($kvTrackEvent).not.toHaveBeenCalled();
-	});
-
-	it('renders the card when hideDisasterReliefOnly is true but the lender has normal fund activity', async () => {
-		mockUseGivingFund({ myFundsCount: 1, contributedFundIds: [] });
-
-		const { container } = mountCard({ props: { hideDisasterReliefOnly: true } });
-
-		expect(container.querySelector('.giving-fund-card')).toBeFalsy();
-
-		await flushPromises();
-
-		await waitFor(() => {
-			expect(container.querySelector('.giving-fund-card')).toBeTruthy();
-		});
-		expect(screen.getByText('Check in on your giving funds')).toBeTruthy();
 	});
 });

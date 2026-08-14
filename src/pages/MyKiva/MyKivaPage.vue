@@ -59,6 +59,7 @@ import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.g
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import { isDisasterReliefFundOnlySupporter } from '#src/util/givingFundUtils';
 import useBadgeData, {
 	applyFreshProgressToAchievements,
 	FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
@@ -289,10 +290,12 @@ export default {
 					inviterName: this.userInfo.userAccount?.inviterName ?? null,
 				};
 				// show giving funds card if user has any giving fund participation
-				this.showMyGivingFundsCard = (
-					(this.userInfo?.givingFundParticipation?.totalCount ?? 0) > 0
-					|| (this.userInfo?.givingFundParticipation?.totalAmount ?? 0) > 0
-				);
+				const participation = this.userInfo?.givingFundParticipation ?? {};
+				const hasGivingFundParticipation = (participation.totalCount ?? 0) > 0
+					|| (participation.totalAmount ?? 0) > 0;
+				// Hide the card when the lender's only activity is supporting the disaster relief fund
+				this.showMyGivingFundsCard = hasGivingFundParticipation
+					&& !isDisasterReliefFundOnlySupporter(this.userInfo);
 				this.loans = myKivaQueryResult.my?.loans?.values ?? [];
 				this.sidesheetLoan = bpSidesheetLoan?.lend?.loan ?? { id: 0 };
 				const isSideSheetLoanInLoans = this.loans.some(loan => loan?.id === this.sidesheetLoan.id);

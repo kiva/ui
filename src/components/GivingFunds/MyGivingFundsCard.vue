@@ -1,6 +1,5 @@
 <template>
 	<div
-		v-if="showCard"
 		class="giving-fund-card tw-rounded tw-bg-white tw-p-2 tw-w-full tw-flex tw-flex-col tw-gap-2 tw-items-stretch
 			md:tw-flex-row md:tw-items-center md:tw-justify-between md:tw-gap-3 md:tw-p-2.5"
 	>
@@ -15,7 +14,6 @@
 			</transition>
 		</div>
 		<KvButton
-			:key="`giving-funds-cta-${isDisasterReliefOnly}`"
 			class="tw-w-full md:tw-w-auto md:tw-ml-auto"
 			variant="primary"
 			:to="ctaTo"
@@ -43,7 +41,6 @@ import {
 	computed,
 	inject,
 	ref,
-	watch,
 	onMounted,
 } from 'vue';
 
@@ -57,10 +54,10 @@ const props = defineProps({
 		default: null,
 	},
 	/**
-	 * When true (MyKiva), the card is not rendered at all for lenders whose only
-	 * giving fund activity is supporting the disaster relief fund
+	 * Whether the lender's only giving fund activity is supporting the disaster
+	 * relief fund; renders the fund-specific variant of the card
 	 */
-	hideDisasterReliefOnly: {
+	isDisasterReliefOnly: {
 		type: Boolean,
 		default: false,
 	},
@@ -72,47 +69,24 @@ const {
 } = useGivingFund(apollo);
 
 const myFundsCount = ref(0);
-const contributedFundIds = ref([]);
-const fundsCountLoaded = ref(false);
-const contributedFundsLoaded = ref(false);
+const contributedFundsCount = ref(0);
 
-const contributedFundsCount = computed(() => contributedFundIds.value.length);
-
-const dataLoaded = computed(() => fundsCountLoaded.value && contributedFundsLoaded.value);
-
-// Lender supports the disaster relief fund and no other giving funds
-const isDisasterReliefOnly = computed(() => dataLoaded.value
-	&& myFundsCount.value === 0
-	&& contributedFundIds.value.length === 1
-	&& contributedFundIds.value[0] === givingFundIds.COLOMBIA_DISASTER_RELIEF);
-
-const showCard = computed(() => {
-	if (!props.hideDisasterReliefOnly) {
-		return true;
-	}
-	// Wait for fund data so the card never flashes in before being hidden
-	return dataLoaded.value && !isDisasterReliefOnly.value;
-});
-
-const titleCopy = computed(() => (isDisasterReliefOnly.value
+const titleCopy = computed(() => (props.isDisasterReliefOnly
 	? 'Check in on the Colombia earthquake recovery fund'
 	: 'Check in on your giving funds'));
 
-const ctaCopy = computed(() => (isDisasterReliefOnly.value ? 'View fund' : 'See your giving funds'));
+const ctaCopy = computed(() => (props.isDisasterReliefOnly ? 'View fund' : 'See your giving funds'));
 
 const ctaTo = computed(() => (
-	isDisasterReliefOnly.value ? `/gf/${givingFundIds.COLOMBIA_DISASTER_RELIEF}` : '/gfm'
+	props.isDisasterReliefOnly ? `/gf/${givingFundIds.COLOMBIA_DISASTER_RELIEF}` : '/gfm'
 ));
 
-const clickTrackEventProps = computed(() => (isDisasterReliefOnly.value
+const clickTrackEventProps = computed(() => (props.isDisasterReliefOnly
 	? ['portfolio', 'click', 'see-your-giving-funds', 'disaster-relief']
 	: ['portfolio', 'click', 'see-your-giving-funds']));
 
 const textCopy = computed(() => {
 	let copy = '';
-	if (isDisasterReliefOnly.value) {
-		return copy;
-	}
 	if (myFundsCount.value > 0 && contributedFundsCount.value > 0) {
 		copy = `You have ${myFundsCount.value} ${
 			myFundsCount.value === 1 ? 'fund' : 'funds'
@@ -131,32 +105,21 @@ const textCopy = computed(() => {
 	return copy;
 });
 
-let viewEventTracked = false;
-
-watch(isDisasterReliefOnly, value => {
-	// Track views of the disaster relief variant, which only renders when not hidden
-	if (value && !props.hideDisasterReliefOnly && !viewEventTracked) {
-		viewEventTracked = true;
-		$kvTrackEvent?.('portfolio', 'view', 'see-your-giving-funds', 'disaster-relief');
-	}
-});
-
 onMounted(() => {
+	if (props.isDisasterReliefOnly) {
+		$kvTrackEvent?.('portfolio', 'view', 'see-your-giving-funds', 'disaster-relief');
+		return;
+	}
+
 	// Fetch giving fund data
 	fetchMyGivingFundsCount()
 		.then(response => {
 			myFundsCount.value = response?.givingFunds?.totalCount ?? 0;
-		})
-		.finally(() => {
-			fundsCountLoaded.value = true;
 		});
 
 	getFundsContributedToIds(parseInt(props?.userId, 10) || null)
 		.then(fundIds => {
-			contributedFundIds.value = fundIds ?? [];
-		})
-		.finally(() => {
-			contributedFundsLoaded.value = true;
+			contributedFundsCount.value = fundIds?.length ?? 0;
 		});
 });
 </script>

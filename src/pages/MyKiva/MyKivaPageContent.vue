@@ -16,7 +16,6 @@
 		<section v-if="showMyGivingFundsCard" class="tw-mt-4">
 			<MyGivingFundsCard
 				:user-id="userInfo?.id"
-				hide-disaster-relief-only
 			/>
 		</section>
 		<MyKivaFeaturedSlot

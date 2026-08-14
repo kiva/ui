@@ -8,6 +8,21 @@ export const givingFundIds = {
 };
 
 /**
+ * Whether a lender's only giving fund activity is supporting the disaster relief fund:
+ * they own no giving funds and every donation they've made went to the relief fund
+ *
+ * @param {Object} my Query data with givingFunds and givingFundParticipation counts,
+ * including the relief-fund-filtered reliefFundParticipation alias
+ * @returns {boolean}
+ */
+export function isDisasterReliefFundOnlySupporter(my) {
+	const reliefFundDonationCount = my?.reliefFundParticipation?.totalCount ?? 0;
+	return (my?.givingFunds?.totalCount ?? 0) === 0
+		&& reliefFundDonationCount > 0
+		&& reliefFundDonationCount === (my?.givingFundParticipation?.totalCount ?? 0);
+}
+
+/**
  * Utility method for parsing newly created giving fund cookie data
  * This cookie is generated when guests create a giving fund
  * Cookie format: gfid|uiv|action
