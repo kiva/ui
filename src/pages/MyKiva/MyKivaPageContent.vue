@@ -816,28 +816,6 @@ export default {
 		this.fetchRecommendedLoans();
 		this.fetchMoreWaysToHelpData();
 		this.loadInitialBasketItems();
-
-		// TEMP (MP-3117) — repro/verification block. Logs the cache's
-		// userAchievementProgress buckets on every change, then auto-opens the goal recap.
-		// Needs a non-support-all goal. Before the fix: the ({"year":YYYY}) bucket flips
-		// lendingAchievements 20 → "— GONE —" plus a console warning when the recap's slim
-		// query lands. After the fix (no-cache): buckets stay intact and no warning fires.
-		let prev = '';
-		setInterval(() => {
-			const root = this.apollo.cache.extract().ROOT_QUERY || {};
-			const rows = Object.entries(root)
-				.filter(([k]) => k.startsWith('userAchievementProgress'))
-				.map(([k, v]) => ({
-					fieldKey: k,
-					lendingAchievements: v.lendingAchievements?.length ?? '— GONE —',
-					tieredLendingAchievements: v.tieredLendingAchievements?.length ?? '—',
-				}));
-			const s = JSON.stringify(rows);
-			if (s !== prev) { prev = s; console.log('⏱', new Date().toISOString()); console.table(rows); }
-		}, 250);
-		setTimeout(() => {
-			this.handleGoToDeepLink('goal-recap');
-		}, 3000);
 	},
 };
 </script>
