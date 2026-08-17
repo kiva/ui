@@ -16,12 +16,13 @@
 					/>
 					<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
 					<GoalEntrypoint
-						v-if="isEmptyGoal"
+						v-if="isEmptyGoal && !hideGoalSignup"
 					/>
 					<lending-insights />
 					<my-giving-funds-card
 						v-if="showMyGivingFundsCard"
 						:user-id="userId"
+						:is-disaster-relief-only="isDisasterReliefOnly"
 						class="tw-my-2 tw-mx-0 md:tw-mx-0 tw-rounded-none md:tw-rounded"
 					/>
 					<your-donations />
@@ -46,6 +47,14 @@
 				</section>
 			</kv-page-container>
 		</div>
+		<GoalInReviewModal
+			v-if="goalInReviewEnable && showGoalInReviewModal"
+			:show="showGoalInReviewModal"
+			:data="goalInReviewData"
+			:feedback-submitted="goalInReviewFeedbackSubmitted"
+			@close="showGoalInReviewModal = false"
+			@feedback-submitted="handleGoalInReviewFeedbackSubmitted"
+		/>
 	</www-page>
 </template>
 
@@ -54,11 +63,15 @@ import WwwPage from '#src/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { gql } from 'graphql-tag';
-import { readBoolSetting } from '#src/util/settingsUtils';
+import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
+import { shouldHideGoalSignup } from '#src/util/goalInReview';
 import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import useGoalInReview, { getGoalInReviewNow } from '#src/composables/useGoalInReview';
+import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
+import { isDisasterReliefFundOnlySupporter } from '#src/util/givingFundUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';
 
@@ -86,6 +99,7 @@ export default {
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		AccountOverview,
+		GoalInReviewModal,
 		AccountUpdates,
 		DistributionGraphs,
 		EducationModule,
@@ -103,6 +117,21 @@ export default {
 		LoanCards,
 		GoalEntrypoint
 	},
+	setup() {
+		const {
+			goalInReviewData,
+			loadAutoOpenRecap,
+			hasSubmittedGoalFeedbackForYear,
+			setGoalFeedbackSubmittedPreference,
+		} = useGoalInReview();
+
+		return {
+			goalInReviewData,
+			loadAutoOpenRecap,
+			hasSubmittedGoalFeedbackForYear,
+			setGoalFeedbackSubmittedPreference,
+		};
+	},
 	data() {
 		return {
 			allowedTeams: [],
@@ -116,10 +145,14 @@ export default {
 			showTeamChallenge: false,
 			teamsChallengeEnable: false,
 			goalInReviewEnable: false,
+			goalInReviewInProgressStart: null,
+			showGoalInReviewModal: false,
+			goalInReviewFeedbackSubmitted: false,
 			userPreferences: null,
 			goalsEntrypointEnable: false,
 			isEmptyGoal: true,
 			showMyGivingFundsCard: false,
+			isDisasterReliefOnly: false,
 			userId: null,
 		};
 	},
@@ -129,7 +162,31 @@ export default {
 			return client.query({ query: portfolioQuery });
 		},
 	},
+	computed: {
+		hideGoalSignup() {
+			return shouldHideGoalSignup({
+				recapStartDate: this.goalInReviewInProgressStart,
+				now: getGoalInReviewNow(),
+			});
+		},
+	},
 	methods: {
+		// Called from mounted: the decision reads user preferences and writes one back,
+		// so it must not run during server render.
+		async openGoalRecapIfDue() {
+			const goalInReview = await this.loadAutoOpenRecap({
+				enabled: this.goalInReviewEnable,
+				inProgressStartDate: this.goalInReviewInProgressStart,
+			});
+			if (!goalInReview) {
+				return;
+			}
+			this.goalInReviewFeedbackSubmitted = this.hasSubmittedGoalFeedbackForYear(goalInReview.year);
+			this.showGoalInReviewModal = true;
+		},
+		async handleGoalInReviewFeedbackSubmitted() {
+			await this.setGoalFeedbackSubmittedPreference(this.goalInReviewData?.year);
+		},
 		loadEducationPost() {
 			// Donation Education Module Experiment MARS-497
 			this.apollo.query({
@@ -168,6 +225,8 @@ export default {
 			(userData?.givingFundParticipation?.totalCount ?? 0) > 0
 			|| (userData?.givingFundParticipation?.totalAmount ?? 0) > 0
 		);
+		// Render the card's disaster relief variant when that fund is the lender's only activity
+		this.isDisasterReliefOnly = isDisasterReliefFundOnlySupporter(userData);
 
 		const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
 		const userTeams = portfolioQueryData?.my?.teams?.values ?? [];
@@ -180,6 +239,7 @@ export default {
 		this.showTeamChallenge = teamsChallengeEnable && this.allowedTeams.length > 0;
 
 		this.goalInReviewEnable = readBoolSetting(portfolioQueryData, 'general.goal_in_review_enable.value') ?? false;
+		this.goalInReviewInProgressStart = readDateSetting(portfolioQueryData, 'general.goal_in_review_in_progress_start.value'); // eslint-disable-line max-len
 
 		this.userPreferences = portfolioQueryData?.my?.userPreferences ?? null;
 
@@ -194,6 +254,7 @@ export default {
 	},
 	async mounted() {
 		this.loadEducationPost();
+		this.openGoalRecapIfDue();
 
 		if (this.$route?.query?.goal_saved) {
 			const badgeName = this.$route?.query?.goal_saved ?? '';

@@ -6,6 +6,15 @@ query myKivaQuery {
       totalAmount
       totalCount
     }
+    # Fund ID must match COLOMBIA_DISASTER_RELIEF
+    reliefFundParticipation: givingFundParticipation(
+      filter: { fundIds: ["238fe077-033e-4a59-8d11-e571e6e4ed31"] }
+    ) {
+      totalCount
+    }
+    givingFunds {
+      totalCount
+    }
     loans {
       totalCount
       values {
@@ -181,6 +190,10 @@ query myKivaQuery {
       value
     }
     goal_in_review_enable: uiConfigSetting(key: "goal_in_review_enable") {
+      key
+      value
+    }
+    goal_in_review_in_progress_start: uiConfigSetting(key: "goal_in_review_in_progress_start") {
       key
       value
     }

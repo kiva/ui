@@ -2,6 +2,9 @@ import { render, fireEvent, waitFor } from '@testing-library/vue';
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
 import { globalOptions } from '../../../specUtils';
 
+// Slide 1 fires confetti on mount; canvas-confetti can't run in jsdom, so stub it.
+vi.mock('#src/util/animation/confettiUtils', () => ({ showConfetti: vi.fn() }));
+
 vi.mock('@kiva/kv-components', () => ({
 	KvLightbox: {
 		name: 'KvLightbox',
@@ -125,7 +128,7 @@ describe('GoalInReviewModal', () => {
 			},
 		});
 
-		await findByText('Borrowers'); // slide 1 stat label
+		await findByText('Borrowers helped'); // slide 1 stat label
 		await findByText(/14 borrowers\./); // slide 2 headline
 		await findByText(/14 dreams/); // slide 7 copy
 		expect(getAllByText('14').length).toBeGreaterThan(0);

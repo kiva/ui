@@ -681,6 +681,68 @@ describe('kv-analytics-plugin', () => {
 		});
 	});
 
+	describe('stand-alone donation event', () => {
+		beforeEach(() => {
+			app.use(kvAnalyticsPlugin);
+		});
+
+		const transaction = overrides => ({
+			transactionId: 'TXN333',
+			itemTotal: 20,
+			loanTotal: 0,
+			donationTotal: '20.00',
+			depositTotal: 20,
+			loans: [],
+			donations: [{ id: 'd1', __typename: 'Donation', price: 20 }],
+			isFTD: false,
+			kivaCards: [],
+			kivaCardTotal: 0,
+			lifecycleStage: null,
+			daysSinceLastLoan: null,
+			reEngagementEvent: null,
+			...overrides,
+		});
+
+		it('fires donation for a donation-only basket', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction());
+
+			expect(mockWindow.fbq).toHaveBeenCalledWith('trackCustom', 'donation', {
+				donationTotal: '20.00',
+				value: 20,
+				currency: 'USD',
+			});
+		});
+
+		it('does not fire when the donation is a tip on a loan purchase', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({
+				loans: [{ id: '1', __typename: 'Loan', price: 25 }],
+				loanTotal: 25,
+				donationTotal: '3.00',
+			}));
+
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith('trackCustom', 'donation', expect.anything());
+		});
+
+		it('does not fire when the donation accompanies a Kiva Card order', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({
+				kivaCards: [{ id: 'kc1', __typename: 'KivaCard', price: 50 }],
+				kivaCardTotal: 50,
+				donationTotal: '3.00',
+			}));
+
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith('trackCustom', 'donation', expect.anything());
+		});
+
+		it('does not fire for a deposit with no donation', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({
+				donations: [],
+				donationTotal: '0.00',
+			}));
+
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith('trackCustom', 'donation', expect.anything());
+		});
+	});
+
 	describe('$kvTrackFBCustomEvent', () => {
 		beforeEach(() => {
 			app.use(kvAnalyticsPlugin);

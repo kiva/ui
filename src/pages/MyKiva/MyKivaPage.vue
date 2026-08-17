@@ -15,6 +15,7 @@
 			:user-lent-to-all-regions="userLentToAllRegions"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goals-row-enabled="goalsRowEnabled"
+			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
 		/>
 		<my-kiva-page-content
@@ -34,6 +35,7 @@
 			:show-my-giving-funds-card="showMyGivingFundsCard"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goal-in-review-enable="goalInReviewEnable"
+			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 			:goals-row-enabled="goalsRowEnabled"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
 		/>
@@ -55,8 +57,9 @@ import { gql } from 'graphql-tag';
 import borrowerProfileSideSheetQuery from '#src/graphql/query/borrowerProfileSideSheet.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
-import { readBoolSetting } from '#src/util/settingsUtils';
+import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
+import { isDisasterReliefFundOnlySupporter } from '#src/util/givingFundUtils';
 import useBadgeData, {
 	applyFreshProgressToAchievements,
 	FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
@@ -116,6 +119,7 @@ export default {
 			recentTransactionLoans: [],
 			goalRecommendedLoanEnable: false,
 			goalInReviewEnable: false,
+			goalInReviewInProgressStart: null,
 			goalsRowEnabled: false,
 			shouldRenderFeaturedSlot: true,
 		};
@@ -286,10 +290,12 @@ export default {
 					inviterName: this.userInfo.userAccount?.inviterName ?? null,
 				};
 				// show giving funds card if user has any giving fund participation
-				this.showMyGivingFundsCard = (
-					(this.userInfo?.givingFundParticipation?.totalCount ?? 0) > 0
-					|| (this.userInfo?.givingFundParticipation?.totalAmount ?? 0) > 0
-				);
+				const participation = this.userInfo?.givingFundParticipation ?? {};
+				const hasGivingFundParticipation = (participation.totalCount ?? 0) > 0
+					|| (participation.totalAmount ?? 0) > 0;
+				// Hide the card when the lender's only activity is supporting the disaster relief fund
+				this.showMyGivingFundsCard = hasGivingFundParticipation
+					&& !isDisasterReliefFundOnlySupporter(this.userInfo);
 				this.loans = myKivaQueryResult.my?.loans?.values ?? [];
 				this.sidesheetLoan = bpSidesheetLoan?.lend?.loan ?? { id: 0 };
 				const isSideSheetLoanInLoans = this.loans.some(loan => loan?.id === this.sidesheetLoan.id);
@@ -342,6 +348,7 @@ export default {
 
 				const goalInReviewFlag = readBoolSetting(myKivaQueryResult, 'general.goal_in_review_enable.value') ?? false; // eslint-disable-line max-len
 				this.goalInReviewEnable = goalInReviewFlag;
+				this.goalInReviewInProgressStart = readDateSetting(myKivaQueryResult, 'general.goal_in_review_in_progress_start.value'); // eslint-disable-line max-len
 
 				this.latestLoan = myKivaQueryResult.my?.latestLoan?.values?.[0]?.loan ? {
 					...myKivaQueryResult.my.latestLoan.values[0].loan,

@@ -3,9 +3,11 @@ import logFormatter from '#src/util/logFormatter';
 import SimpleQueue from '#src/util/simpleQueue';
 import {
 	getUserTypeFromCookies,
+	trackDonationMetaEvent,
 	trackFBCustomEvent,
 	trackFBPageView,
 	trackFBTransaction,
+	trackReEngagementEvent,
 } from '@kiva/kv-analytics';
 
 // install method for plugin
@@ -216,24 +218,16 @@ export default {
 				}
 
 				trackFBTransaction(transactionData);
-				const {
-					reEngagementEvent,
-					lifecycleStage,
-					daysSinceLastLoan,
-					loanTotal,
-					itemTotal,
-					loans,
-				} = transactionData;
-				if (reEngagementEvent && loans?.length) {
-					trackFBCustomEvent(
-						reEngagementEvent,
-						{
-							loanTotal,
-							itemTotal,
-							lifecycleStage,
-							daysSinceLastLoan,
-						}
-					);
+				// Fires only when the lender was idle or lapsed and the transaction contains loans
+				trackReEngagementEvent(transactionData);
+
+				const { loans, donationTotal, kivaCards } = transactionData;
+
+				// A stand-alone gift to Kiva. A donation alongside loans or Kiva Cards is a tip on
+				// that order, not a donation in its own right, so both must be absent.
+				// trackDonationMetaEvent ignores a zero or unparseable total.
+				if (!loans?.length && !kivaCards?.length) {
+					trackDonationMetaEvent(donationTotal);
 				}
 				if (gtagLoaded) {
 					kvActions.trackGATransaction(transactionData);

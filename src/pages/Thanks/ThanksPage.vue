@@ -14,6 +14,7 @@
 				:total-loans="totalLoanCount"
 				:tiered-achievements="achievements"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
+				:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 				:recent-loan-ids="recentLoanIds"
 				:is-express-checkout-modal-enabled="isExpressCheckoutModalEnabled"
 			/>
@@ -69,7 +70,7 @@ import useBadgeData, { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData'
 import { LAST_YEAR_KEY, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import userYearlyProgressQuery from '#src/graphql/query/userYearlyProgress.graphql';
 import { clearPromoCreditBannerCookie, getPromoCreditBannerCookie } from '#src/util/promoCreditCookie';
-import { readBoolSetting } from '#src/util/settingsUtils';
+import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
 
 // Thanks views
@@ -149,6 +150,7 @@ export default {
 			recentLoanIds: [],
 			achievements: [],
 			goalRecommendedLoanEnable: false,
+			goalInReviewInProgressStart: null,
 			expressCheckoutEnabled: false,
 		};
 	},
@@ -290,6 +292,7 @@ export default {
 
 		this.goalRecommendedLoanEnable = readBoolSetting(data, 'general.goal_recommended_loan_enable.value') ?? false;
 		this.expressCheckoutEnabled = readBoolSetting(data, 'general.ty_page_express_checkout_enabled.value') ?? false;
+		this.goalInReviewInProgressStart = readDateSetting(data, 'general.goal_in_review_in_progress_start.value');
 
 		if (this.goalRecommendedLoanEnable) {
 			this.loadInitialBasketItems();

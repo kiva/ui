@@ -34,6 +34,11 @@ describe('loanDetailsRailPreference', () => {
 		expect(getLocalRailPreference()).toBe(false);
 	});
 
+	it('localStorage read returns null for a non-boolean stored value', () => {
+		store2(RAIL_PREF_KEY, 'yes');
+		expect(getLocalRailPreference()).toBe(null);
+	});
+
 	it('reads the account preference from a userPreferences node', () => {
 		expect(readAccountRailPreference(null)).toBe(null);
 		expect(readAccountRailPreference({ preferences: '{}' })).toBe(null);

@@ -35,7 +35,7 @@
 				</div>
 				<div v-else>
 					<p class="tw-text-title tw-m-0" data-testid="bp-summary-amount-to-go">
-						This loan is fully funded!
+						{{ fundedHeadline }}
 					</p>
 					<div class="md:tw-flex tw-gap-2">
 						<p class="tw-text-upper tw-text-secondary tw-block">
@@ -196,6 +196,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		hasCurrencyExchangeLoss: {
+			type: Boolean,
+			default: false,
+		},
 		numberOfLenders: {
 			type: Number,
 			default: 0,
@@ -211,9 +215,18 @@ export default {
 		hideViewProfileLinks: {
 			type: Boolean,
 			default: false
+		},
+		isLiveLoanAd: {
+			type: Boolean,
+			default: false
 		}
 	},
 	computed: {
+		fundedHeadline() {
+			return this.isLiveLoanAd
+				? 'This loan was just funded! Find another loan'
+				: 'This loan is fully funded!';
+		},
 		pfpProgressPercent() {
 			if (this.pfpMinLenders === 0) {
 				return 0;
@@ -234,6 +247,9 @@ export default {
 			return this.loanId ? this.loanId : this.$route.params.id;
 		},
 		statusLabel() {
+			if (this.loanStatus === 'ended' && this.hasCurrencyExchangeLoss) {
+				return 'Repaid with currency loss';
+			}
 			const labels = {
 				ended: 'Repaid',
 				defaulted: 'Defaulted',

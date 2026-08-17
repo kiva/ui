@@ -1,4 +1,4 @@
-// Sample countries for GoalInReviewSlide3 (Global reach). Includes the isoCode +
+// Sample countries for GoalInReviewGlobalReach. Includes the isoCode +
 // geocode lat/long that KvMap needs to place/highlight each country, plus
 // fundsLentInCountry which drives the map shade. 24 entries so the "Other (n)"
 // overflow pill (shown after the first 14) is exercised.
@@ -29,7 +29,7 @@ const sampleGoalCountries = [
 	{ id: '24', name: 'Ecuador', isoCode: 'EC', region: 'South America', geocode: { city: 'Quito', latitude: -1.8, longitude: -78.2 }, fundsLentInCountry: 65, ppp: 4.6, numLoansFundraising: 0 },
 ];
 
-// GoalSummary.sectors for the Sectors Funded donut (Slide 3), loan count descending.
+// GoalSummary.sectors for the Sectors Funded donut (GoalInReviewGlobalReach), loan count descending.
 const sampleSectorSeed = [
 	['Agriculture', 8],
 	['Eco-friendly', 7],

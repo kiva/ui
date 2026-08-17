@@ -157,6 +157,7 @@ import {
 import KvIcon from '#src/components/Kv/KvIcon';
 import goalCopy from '#src/util/goalCopy';
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
+import { RECAP_CTA_LABEL } from '#src/util/goalInReview';
 import { showConfetti } from '#src/util/animation/confettiUtils';
 
 const HALF_GOAL_THRESHOLD = 50;
@@ -204,9 +205,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	showRecapCta: {
+		type: Boolean,
+		default: false,
+	},
 });
 
-const emit = defineEmits(['set-goal-click', 'cta-click', 'edit-click']);
+const emit = defineEmits(['set-goal-click', 'cta-click', 'edit-click', 'view-goal-recap']);
 
 const menuActions = [
 	{ label: 'Edit', value: 'edit-goal' },
@@ -260,6 +265,7 @@ const activeGoalDescription = computed(() => {
 });
 
 const activeGoalCta = computed(() => {
+	if (props.showRecapCta) return RECAP_CTA_LABEL;
 	if (goalCompleted.value) return 'View your achievements';
 	return 'Work toward your goal';
 });
@@ -267,6 +273,10 @@ const activeGoalCta = computed(() => {
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const handleActiveGoalCtaClick = () => {
+	if (props.showRecapCta) {
+		emit('view-goal-recap');
+		return;
+	}
 	// Fire a distinct label when the user reaches the completed celebration so
 	// analytics can separate "still working on it" from "viewing achievements."
 	$kvTrackEvent?.(

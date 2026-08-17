@@ -14,6 +14,7 @@ import { getTransactionTimestamp } from '#src/util/myKivaUtils';
 import { createUserPreferences, updateUserPreferences, setMyKivaGoal } from '#src/util/userPreferenceUtils';
 import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_GOAL_RECOMMENDED_LOAN } from '#src/util/flssUtils';
+import { markGoalCompletedThisSession } from '#src/util/goalRecapSession';
 
 import useBadgeData, {
 	calculateFreshProgressAdjustments,
@@ -75,6 +76,17 @@ export const HALF_GOAL_THRESHOLD = 50;
 const MIN_CATEGORY_LOANS_AMOUNT = 100;
 const RECOMMENDED_LOANS_LIMIT = 4;
 
+/**
+ * A lender with no goal gets `{}` rather than null, since setGoalState spreads an
+ * absent goal. Truthiness is therefore never enough to tell whether a goal exists.
+ *
+ * @param {object} goal The lender's goal.
+ * @returns {boolean} Whether the lender has a goal.
+ */
+function hasGoal(goal) {
+	return !!goal && Object.keys(goal).length > 0;
+}
+
 function getGoalDisplayName(target, category) {
 	if (!target || target > 1) return GOAL_DISPLAY_MAP[category] || 'loans';
 	return GOAL_1_DISPLAY_MAP[category] || 'loan';
@@ -116,6 +128,8 @@ export default function useGoalData({ apollo } = {}) {
 		const categoryProgress = progress?.find(n => n.id === goal?.category);
 		return categoryProgress?.progressForYear || 0;
 	});
+
+	const userHasGoal = computed(() => hasGoal(userGoal.value));
 
 	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
 
@@ -819,14 +833,43 @@ export default function useGoalData({ apollo } = {}) {
 		// MyKiva renders the completed card once, then hides it on the next page load.
 	}
 
-	const viewedGoalCompleteByYear = computed(() => {
-		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
-		return parsedPrefs.viewedGoalComplete || {};
-	});
+	/**
+	 * Builds the reader/writer pair for a preference stored as `{ [year]: true }`,
+	 * so a flag set for one year never applies to another.
+	 *
+	 * @param {string} preferenceKey Key this flag is stored under in user preferences
+	 * @returns {object} The by-year map, a per-year reader, and a per-year setter
+	 */
+	function yearKeyedPreference(preferenceKey) {
+		const byYear = computed(() => {
+			const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
+			return parsedPrefs[preferenceKey] || {};
+		});
 
-	function hasViewedCompletedGoalForYear(year) {
-		return Boolean(viewedGoalCompleteByYear.value?.[year]);
+		function hasForYear(year) {
+			return Boolean(byYear.value?.[year]);
+		}
+
+		async function setForYear(year = GOALS_CURRENT_YEAR) {
+			if (!year) return;
+			const parsedPrefs = await loadPreferences('network-only');
+			const prev = parsedPrefs?.[preferenceKey] || {};
+			if (prev[year]) return;
+			const updatedPreference = { [preferenceKey]: { ...prev, [year]: true } };
+			await updateUserPreferences(
+				apolloClient,
+				userPreferences.value,
+				parsedPrefs,
+				updatedPreference
+			);
+		}
+
+		return { byYear, hasForYear, setForYear };
 	}
+
+	const viewedGoalComplete = yearKeyedPreference('viewedGoalComplete');
+	const goalRecapViewed = yearKeyedPreference('goalRecapViewed');
+	const goalFeedbackSubmitted = yearKeyedPreference('goalFeedbackSubmitted');
 
 	/**
 	 * Drives the basket / ATB-modal achievement nudges so they stay out of the
@@ -837,50 +880,12 @@ export default function useGoalData({ apollo } = {}) {
 		userGoal.value?.status === GOAL_STATUS.IN_PROGRESS
 	));
 
-	async function setViewedGoalCompletePreference(year = GOALS_CURRENT_YEAR) {
-		if (!year) return;
-		const parsedPrefs = await loadPreferences('network-only');
-		const prev = parsedPrefs?.viewedGoalComplete || {};
-		// Year-keyed flag so next year's celebration is not suppressed by a prior year's view.
-		if (prev[year]) return;
-		const updatedPreference = { viewedGoalComplete: { ...prev, [year]: true } };
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			updatedPreference
-		);
-	}
-
-	const goalFeedbackSubmittedByYear = computed(() => {
-		const parsedPrefs = JSON.parse(userPreferences.value?.preferences || '{}');
-		return parsedPrefs.goalFeedbackSubmitted || {};
-	});
-
-	function hasSubmittedGoalFeedbackForYear(year) {
-		return Boolean(goalFeedbackSubmittedByYear.value?.[year]);
-	}
-
-	async function setGoalFeedbackSubmittedPreference(year = GOALS_CURRENT_YEAR) {
-		if (!year) return;
-		const parsedPrefs = await loadPreferences('network-only');
-		const prev = parsedPrefs?.goalFeedbackSubmitted || {};
-		// Year-keyed flag so a prior year's feedback does not gate the next recap's survey.
-		if (prev[year]) return;
-		const updatedPreference = { goalFeedbackSubmitted: { ...prev, [year]: true } };
-		await updateUserPreferences(
-			apolloClient,
-			userPreferences.value,
-			parsedPrefs,
-			updatedPreference
-		);
-	}
-
 	async function checkCompletedGoal({
 		currentGoalProgress = 0,
 		category = 'post-checkout',
 		eventLabel = 'annual-goal-complete',
 		persistHideGoalCard = false,
+		cookieStore = null,
 	} = {}) {
 		const goal = userGoal.value;
 		if (!goal || goal.status === GOAL_STATUS.EXPIRED) {
@@ -907,6 +912,9 @@ export default function useGoalData({ apollo } = {}) {
 		}
 
 		if (isGoalComplete) {
+			// Marked as soon as the goal looks complete, even if the achievement service has
+			// not confirmed it yet, so the recap cannot appear later in this same session.
+			markGoalCompletedThisSession(cookieStore, GOALS_CURRENT_YEAR);
 			// Capture goal data before storeGoalPreferences (which may filter out the goal via setGoalState)
 			const goalCategory = goal.category;
 			const goalTarget = goal.target;
@@ -1265,6 +1273,7 @@ export default function useGoalData({ apollo } = {}) {
 		getCategoryLoansLastYear,
 		getCtaHref,
 		getGoalDisplayName,
+		hasGoal,
 		getGoalSummary,
 		getLoanStatsByYear,
 		getPostCheckoutProgressByLoans,
@@ -1277,6 +1286,7 @@ export default function useGoalData({ apollo } = {}) {
 		storeGoalPreferences,
 		userGoal,
 		userGoalAchieved,
+		userHasGoal,
 		userGoalAchievedNow,
 		suppressAchievementNudges,
 		userPreferences,
@@ -1286,12 +1296,15 @@ export default function useGoalData({ apollo } = {}) {
 		renewAnnualGoal,
 		hideGoalCard,
 		setHideGoalCardPreference,
-		viewedGoalCompleteByYear,
-		hasViewedCompletedGoalForYear,
-		setViewedGoalCompletePreference,
-		goalFeedbackSubmittedByYear,
-		hasSubmittedGoalFeedbackForYear,
-		setGoalFeedbackSubmittedPreference,
+		viewedGoalCompleteByYear: viewedGoalComplete.byYear,
+		hasViewedCompletedGoalForYear: viewedGoalComplete.hasForYear,
+		setViewedGoalCompletePreference: viewedGoalComplete.setForYear,
+		goalFeedbackSubmittedByYear: goalFeedbackSubmitted.byYear,
+		hasSubmittedGoalFeedbackForYear: goalFeedbackSubmitted.hasForYear,
+		goalRecapViewedByYear: goalRecapViewed.byYear,
+		hasViewedGoalRecapForYear: goalRecapViewed.hasForYear,
+		setGoalRecapViewedPreference: goalRecapViewed.setForYear,
+		setGoalFeedbackSubmittedPreference: goalFeedbackSubmitted.setForYear,
 		getSupportAllLoanCountByYear,
 		setGoalState,
 		removeGoalFromPreferences,

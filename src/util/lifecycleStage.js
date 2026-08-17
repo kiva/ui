@@ -1,24 +1,8 @@
+import { LIFECYCLE_STAGES } from '@kiva/kv-analytics';
 import lifecycleStageGqlQuery from '#src/graphql/query/lifecycleStage.graphql';
 import { getTransactionTimestamp } from '#src/util/myKivaUtils';
 import { daysSince } from '#src/util/dateUtils';
 import logFormatter from '#src/util/logFormatter';
-
-export const LIFECYCLE_STAGES = {
-	REGISTERED: 'registered',
-	UNCONVERTED_90: 'unconverted90',
-	UNCONVERTED_180: 'unconverted180',
-	NEW: 'new',
-	ENGAGED: 'engaged',
-	IDLE_90: 'idle90',
-	IDLE_180: 'idle180',
-	IDLE_365: 'idle365',
-	LAPSED_CHURNED: 'lapsedChurned',
-};
-
-export const RE_ENGAGEMENT_EVENTS = {
-	IDLE: 'idleLenderReEngaged',
-	LAPSED: 'lapsedLenderReEngaged',
-};
 
 /**
  * Day thresholds, highest first, mapped to the stage they produce.
@@ -42,20 +26,6 @@ const UNCONVERTED_LADDER = [
 	[90, LIFECYCLE_STAGES.UNCONVERTED_90],
 	[0, LIFECYCLE_STAGES.REGISTERED],
 ];
-
-/**
- * The re-engagement event a stage qualifies for, if any.
- *
- * IDLE_90 sits in the "Active" lifecycle phase while IDLE_180 and IDLE_365 sit in
- * "Idle". The requirement says stages containing "idle", so all three are included.
- * Drop the IDLE_90 entry if marketing scopes it to the Idle phase.
- */
-const RE_ENGAGEMENT_BY_STAGE = {
-	[LIFECYCLE_STAGES.LAPSED_CHURNED]: RE_ENGAGEMENT_EVENTS.LAPSED,
-	[LIFECYCLE_STAGES.IDLE_365]: RE_ENGAGEMENT_EVENTS.IDLE,
-	[LIFECYCLE_STAGES.IDLE_180]: RE_ENGAGEMENT_EVENTS.IDLE,
-	[LIFECYCLE_STAGES.IDLE_90]: RE_ENGAGEMENT_EVENTS.IDLE,
-};
 
 /**
  * @param {Array} ladder Descending [minDays, stage] pairs
@@ -102,14 +72,6 @@ export function deriveLifecycleStage({
 	// subsequent purchase, including one that ends an idle period, is "engaged".
 	return stageForDays(IDLE_LADDER, daysSinceLastLoan)
 		?? (loanPurchaseCount === 1 ? LIFECYCLE_STAGES.NEW : LIFECYCLE_STAGES.ENGAGED);
-}
-
-/**
- * @param {String} stage
- * @returns {String|null} The re-engagement event name for this stage, if any
- */
-export function getReEngagementEvent(stage) {
-	return RE_ENGAGEMENT_BY_STAGE[stage] ?? null;
 }
 
 /**

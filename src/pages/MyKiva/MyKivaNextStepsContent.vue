@@ -15,6 +15,7 @@
 			class="tw-mb-2"
 			:key="`featured-slot-${goalRefreshKey}`"
 			:user-first-name="userInfo?.userAccount?.firstName"
+			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 			@set-goal-click="openGoalModal"
 			@edit-click="openGoalModal({ updating: true })"
 		/>
@@ -31,6 +32,7 @@
 				<template v-if="showRegionExperienceInFirstRow">
 					<div class="goal-card-container">
 						<JourneyCardCarousel
+							:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 							class="carousel carousel-single"
 							user-in-homepage
 							in-lending-stats
@@ -67,6 +69,7 @@
 					<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden lg:tw-block" />
 				</div>
 				<JourneyCardCarousel
+					:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 					v-else-if="topRowHasContent"
 					class="carousel tw--mt-6"
 					user-in-homepage
@@ -138,6 +141,7 @@
 							</template>
 							<!-- Mobile carousel: post-lending cards + survey -->
 							<JourneyCardCarousel
+								:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 								v-else
 								:key="'beyond-loan-row'"
 								class="carousel tw--mt-6"
@@ -217,6 +221,7 @@
 						/>
 					</template>
 					<JourneyCardCarousel
+						:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 						v-else
 						:key="'lifetime-achievements-row'"
 						class="carousel tw--mt-6"
@@ -407,6 +412,11 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	goalInReviewInProgressStart: {
+		type: Date,
+		default: null,
+	},
+
 	shouldRenderFeaturedSlot: {
 		type: Boolean,
 		default: true,
@@ -690,7 +700,7 @@ watch(() => props.goalRefreshKey, async (newVal, oldVal) => {
 });
 
 onMounted(async () => {
-	await checkCompletedGoal({ category: 'portfolio', persistHideGoalCard: true });
+	await checkCompletedGoal({ category: 'portfolio', persistHideGoalCard: true, cookieStore });
 	if (shouldShowPostLendingNextStepsCards) {
 		removePostLendingCardCookie(cookieStore);
 	}
