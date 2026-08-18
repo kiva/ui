@@ -99,7 +99,7 @@
 					>
 						<span
 							v-if="stat.label"
-							class="tw-text-caption tw-text-tertiary tw-pb-0.5 md:tw-pb-1"
+							class="tw-text-caption tw-text-secondary tw-pb-0.5 md:tw-pb-1"
 						>{{ stat.label }}</span>
 						<span class="tw-text-button-link tw-text-primary">{{ stat.value }}</span>
 					</li>

@@ -386,7 +386,7 @@ export default [
 		}
 	},
 	{
-		path: '/portfolio/transactions-beta',
+		path: '/portfolio/transactions',
 		component: () => import('#src/pages/Portfolio/Transactions/TransactionsPage'),
 		meta: {
 			activeLoginRequired: true,

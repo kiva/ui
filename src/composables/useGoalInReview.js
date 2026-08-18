@@ -79,6 +79,7 @@ export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) 
 	const apolloClient = apollo || inject('apollo');
 	const cookies = cookieStore || inject('cookieStore', null);
 	const {
+		getCategories,
 		getGoalSummary,
 		hasViewedGoalRecapForYear,
 		loadPreferences,
@@ -132,8 +133,11 @@ export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) 
 			// the only category it carries the recap extras for. Every other category is
 			// built from achievements-service instead, so only one of the two is ever read.
 			const monolithSummary = summary?.category === ID_SUPPORT_ALL ? summary : null;
+			// 'no-cache' because this query only selects tieredLendingAchievements — writing it to
+			// the cache would overwrite the richer userAchievementProgress data stored by the full
+			// badges prefetch. Same convention as useGoalData.getCategoriesProgressByYear.
 			const achievementsData = summary && !monolithSummary
-				? await query(goalInReviewAchievementsQuery, { year, loanPurchasesLimit: summary.target })
+				? await query(goalInReviewAchievementsQuery, { year, loanPurchasesLimit: summary.target }, 'no-cache')
 				: null;
 			const achievements = achievementsData?.userAchievementProgress?.tieredLendingAchievements ?? [];
 			const goalSummary = scopeToGoalYear(
@@ -146,7 +150,11 @@ export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) 
 				isEligible: getIsEligible(goalSummary),
 				firstName: lenderData?.my?.userAccount?.firstName ?? '',
 				goalSummary,
-				categoryName: getCategoryName(goalSummary?.category, contentfulData?.contentful?.entries?.items),
+				categoryName: getCategoryName(
+					goalSummary?.category,
+					contentfulData?.contentful?.entries?.items,
+					getCategories(),
+				),
 				loanStats: getLoanStats(goalSummary),
 				goalLoans: getGoalLoans(goalSummary, achievements),
 				lifetimePercentile: lenderData?.my?.lendingStats?.amountLentPercentile ?? null,

@@ -4,8 +4,14 @@ import useGoalInReview, {
 
 const getGoalSummary = vi.fn();
 
+// Only the two categories the summaries below use; the real list has six.
+const getCategories = vi.fn(() => [
+	{ badgeId: 'support-all', name: 'Choose as I go' },
+	{ badgeId: 'climate-action', name: 'Climate Action' },
+]);
+
 vi.mock('#src/composables/useGoalData', () => ({
-	default: () => ({ getGoalSummary }),
+	default: () => ({ getGoalSummary, getCategories }),
 }));
 
 const supportAllSummary = {
@@ -132,6 +138,19 @@ describe('useGoalInReview', () => {
 
 			expect(result.isEligible).toBe(true);
 			expect(result.goalSummary.category).toBe('climate-action');
+		});
+
+		it('fetches the achievements with no-cache so the badges cache is never clobbered (MP-3117)', async () => {
+			const apollo = apolloForCategoryGoal();
+			const { loadGoalInReview } = useGoalInReview({ apollo });
+
+			await loadGoalInReview({ year: 2027 });
+
+			const achievementsCall = apollo.query.mock.calls
+				.map(([options]) => options)
+				.find(({ query }) => query?.definitions?.[0]?.name?.value === 'goalInReviewAchievements');
+			expect(achievementsCall).toBeDefined();
+			expect(achievementsCall.fetchPolicy).toBe('no-cache');
 		});
 
 		it('caps the year count at the goal target', async () => {
