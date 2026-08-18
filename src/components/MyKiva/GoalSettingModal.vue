@@ -31,76 +31,78 @@
 				Choose an impact area
 			</h2>
 		</template>
-		<!-- header mobile version -->
-		<h2
-			v-if="!showRecommendLoanArea && isMobile && (showCategories || isThanksPage)"
-			class="tw-text-headline tw-mb-3 tw-text-left md:tw-text-center"
-		>
-			Choose an impact area
-		</h2>
-		<!-- loading state for recommend loan content -->
-		<section
-			v-if="isLoadingRecommendedLoan"
-			class="tw-py-2"
-		>
-			<KvLoadingPlaceholder
-				class="goal-recommended-loan-loading !tw-rounded tw-mx-auto"
-			/>
-		</section>
-		<!-- recommend loan content -->
-		<section
-			v-else-if="showRecommendLoan"
-		>
-			<RecommendLoanForGoalContent
-				ref="recommendLoanForGoalContentRef"
-				v-bind="recommendLoanCardProps"
-				:is-adding="isAdding"
-			/>
-		</section>
-		<!-- normal flow with goal selector + progress ring -->
-		<section
-			v-else
-		>
-			<div>
-				<GoalSelector
-					v-if="showGoalSelector"
-					v-show="!showCategories"
-					style="max-width: 612px;"
-					class="goal-selector-container"
-					:is-goal-set="loadedSetData"
-					:categories-loan-count="categoriesLoanCount"
-					tracking-category="portfolio"
-					:go-to-url="ctaHref"
-					:tiered-achievements="tieredAchievements"
-					:is-editing="isEditing"
-					:selected-category-id="selectedCategory.badgeId"
-					:selected-category-name="selectedCategory.name"
-					:goal-loans="selectedGoalNumber"
-					:goal-progress="goalProgress"
-					:goal-progress-percentage="goalProgressPercentage"
-					:is-updating-goal="isUpdatingGoal"
-					:is-loading-data="isLoadingData || isLoadingRecommendedLoan"
-					:compact-layout="isStandardSelectorLayout"
-					:progress-subtitle-before-options="isStandardSelectorLayout"
-					use-direct-question-title
-					@set-goal-target="setGoalTarget"
-					@set-goal="onGoalSelectorSetGoal"
-					@update-goal="onGoalSelectorUpdateGoal"
-					@edit-goal="editGoalCategory"
-					@close-modal="closeLightbox"
+		<template v-if="show">
+			<!-- header mobile version -->
+			<h2
+				v-if="!showRecommendLoanArea && isMobile && (showCategories || isThanksPage)"
+				class="tw-text-headline tw-mb-3 tw-text-left md:tw-text-center"
+			>
+				Choose an impact area
+			</h2>
+			<!-- loading state for recommend loan content -->
+			<section
+				v-if="isLoadingRecommendedLoan"
+				class="tw-py-2"
+			>
+				<KvLoadingPlaceholder
+					class="goal-recommended-loan-loading !tw-rounded tw-mx-auto"
 				/>
-				<component
-					v-show="showCategories || isThanksPage"
-					:is="contentComponent"
-					:categories="categories"
-					:pre-selected-category="selectedCategory.id"
-					:selected-category="selectedCategory"
-					:selected-goal-number="selectedGoalNumber"
-					@category-selected="handleCategorySelected"
-					@number-changed="handleNumberChanged"
+			</section>
+			<!-- recommend loan content -->
+			<section
+				v-else-if="showRecommendLoan"
+			>
+				<RecommendLoanForGoalContent
+					ref="recommendLoanForGoalContentRef"
+					v-bind="recommendLoanCardProps"
+					:is-adding="isAdding"
 				/>
-			</div>
-		</section>
+			</section>
+			<!-- normal flow with goal selector + progress ring -->
+			<section
+				v-else
+			>
+				<div>
+					<GoalSelector
+						v-if="showGoalSelector"
+						v-show="!showCategories"
+						style="max-width: 612px;"
+						class="goal-selector-container"
+						:is-goal-set="loadedSetData"
+						:categories-loan-count="categoriesLoanCount"
+						tracking-category="portfolio"
+						:go-to-url="ctaHref"
+						:tiered-achievements="tieredAchievements"
+						:is-editing="isEditing"
+						:selected-category-id="selectedCategory.badgeId"
+						:selected-category-name="selectedCategory.name"
+						:goal-loans="selectedGoalNumber"
+						:goal-progress="goalProgress"
+						:goal-progress-percentage="goalProgressPercentage"
+						:is-updating-goal="isUpdatingGoal"
+						:is-loading-data="isLoadingData || isLoadingRecommendedLoan"
+						:compact-layout="isStandardSelectorLayout"
+						:progress-subtitle-before-options="isStandardSelectorLayout"
+						use-direct-question-title
+						@set-goal-target="setGoalTarget"
+						@set-goal="onGoalSelectorSetGoal"
+						@update-goal="onGoalSelectorUpdateGoal"
+						@edit-goal="editGoalCategory"
+						@close-modal="closeLightbox"
+					/>
+					<component
+						v-show="showCategories || isThanksPage"
+						:is="contentComponent"
+						:categories="categories"
+						:pre-selected-category="selectedCategory.id"
+						:selected-category="selectedCategory"
+						:selected-goal-number="selectedGoalNumber"
+						@category-selected="handleCategorySelected"
+						@number-changed="handleNumberChanged"
+					/>
+				</div>
+			</section>
+		</template>
 		<!-- recommended loan footer -->
 		<template
 			v-if="showRecommendLoan"
