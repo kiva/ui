@@ -35,26 +35,34 @@ vi.mock('#src/composables/useGoalData', () => ({
 	}),
 }));
 
-vi.mock('#src/composables/useGoalSettingRecommendedLoan', () => ({
-	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO: 'portfolio',
-	default: () => ({
+const recommendedLoan = vi.hoisted(() => ({ state: null }));
+
+vi.mock('#src/composables/useGoalSettingRecommendedLoan', () => {
+	recommendedLoan.state = {
 		showRecommendLoanAfterGoalView: ref(false),
 		hasRecommendedLoans: ref(false),
 		isLoadingRecommendedLoan: ref(false),
-		recommendLoanHeaderDetails: ref(''),
+		recommendLoanHeaderDetails: ref([]),
 		recommendedLoan: ref(null),
 		recommendLoanCardProps: ref({}),
 		recommendLoanIsInBasket: ref(false),
-		resetRecommendedLoanState: vi.fn(),
-		enterRecommendedLoanStepAfterGoalSave: vi.fn(),
-		onGoalSelectorSetGoal: vi.fn(),
-		onGoalSelectorUpdateGoal: vi.fn(),
-		handleExploreMoreLoans: vi.fn(),
-		onAddToBasketError: vi.fn(),
-		trackAddToBasketClick: vi.fn(),
-		trackCheckoutClick: vi.fn(),
-	}),
-}));
+	};
+
+	return {
+		GOAL_RECOMMENDED_LOAN_ENTRYPOINT_PORTFOLIO: 'portfolio',
+		default: () => ({
+			...recommendedLoan.state,
+			resetRecommendedLoanState: vi.fn(),
+			enterRecommendedLoanStepAfterGoalSave: vi.fn(),
+			onGoalSelectorSetGoal: vi.fn(),
+			onGoalSelectorUpdateGoal: vi.fn(),
+			handleExploreMoreLoans: vi.fn(),
+			onAddToBasketError: vi.fn(),
+			trackAddToBasketClick: vi.fn(),
+			trackCheckoutClick: vi.fn(),
+		}),
+	};
+});
 
 vi.mock('@kiva/kv-components', () => ({
 	KvButton: {
@@ -81,6 +89,22 @@ vi.mock('@kiva/kv-components', () => ({
 	},
 }));
 
+const RecommendLoanForGoalContentStub = {
+	name: 'RecommendLoanForGoalContent',
+	methods: {
+		getSelectedAmount() {
+			return '25';
+		},
+	},
+	template: '<div data-testid="recommend-loan-content"></div>',
+};
+
+const RecommendLoanForGoalFooterStub = {
+	name: 'RecommendLoanForGoalFooter',
+	emits: ['primary-cta-click'],
+	template: '<button data-testid="footer-cta" @click="$emit(\'primary-cta-click\')"></button>',
+};
+
 const GoalSelectorStub = {
 	name: 'GoalSelector',
 	props: {
@@ -96,7 +120,7 @@ const GoalSelectorStub = {
 	template: '<div data-testid="goal-selector"></div>',
 };
 
-function mountModal(props = {}) {
+function mountModal(props = {}, extraStubs = {}) {
 	return mount(GoalSettingModal, {
 		props: {
 			show: true,
@@ -121,6 +145,7 @@ function mountModal(props = {}) {
 				RecommendLoanForGoalContent: true,
 				RecommendLoanForGoalFooter: true,
 				RecommendLoanForGoalHeader: true,
+				...extraStubs,
 			},
 		},
 	});
@@ -129,6 +154,10 @@ function mountModal(props = {}) {
 describe('GoalSettingModal', () => {
 	afterEach(() => {
 		vi.clearAllMocks();
+		recommendedLoan.state.showRecommendLoanAfterGoalView.value = false;
+		recommendedLoan.state.hasRecommendedLoans.value = false;
+		recommendedLoan.state.recommendLoanCardProps.value = {};
+		recommendedLoan.state.recommendedLoan.value = null;
 	});
 
 	it('does not render the removed green goal tile value-props panel', () => {
@@ -170,5 +199,41 @@ describe('GoalSettingModal', () => {
 		const wrapper = mountModal({ isThanksPage: true });
 
 		expect(wrapper.findComponent(GoalSelectorStub).props('progressSubtitleBeforeOptions')).toBe(false);
+	});
+
+	describe('add-to-basket from the recommended loan footer', () => {
+		function mountRecommendedLoanStep({ show, loanId }) {
+			recommendedLoan.state.showRecommendLoanAfterGoalView.value = true;
+			recommendedLoan.state.hasRecommendedLoans.value = true;
+			recommendedLoan.state.recommendLoanCardProps.value = { loanId };
+			recommendedLoan.state.recommendedLoan.value = { id: loanId };
+
+			return mountModal({ show }, {
+				RecommendLoanForGoalContent: RecommendLoanForGoalContentStub,
+				RecommendLoanForGoalFooter: RecommendLoanForGoalFooterStub,
+			});
+		}
+
+		it('carries the amount the content component has selected', async () => {
+			const wrapper = mountRecommendedLoanStep({ show: true, loanId: 12345 });
+
+			await wrapper.find('[data-testid="footer-cta"]').trigger('click');
+
+			const [payload] = wrapper.emitted('add-to-basket')[0];
+			expect(payload.loanId).toBe(12345);
+			expect(payload.lendAmount).toBe('25');
+		});
+
+		it('emits the loan without an amount when the modal is closed', async () => {
+			const wrapper = mountRecommendedLoanStep({ show: false, loanId: 12345 });
+
+			expect(wrapper.find('[data-testid="recommend-loan-content"]').exists()).toBe(false);
+
+			await wrapper.find('[data-testid="footer-cta"]').trigger('click');
+
+			const [payload] = wrapper.emitted('add-to-basket')[0];
+			expect(payload.loanId).toBe(12345);
+			expect(payload.lendAmount).toBeUndefined();
+		});
 	});
 });
