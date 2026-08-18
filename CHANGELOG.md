@@ -1,3 +1,9 @@
+## [3.85.0-rc.2](https://github.com/kiva/ui/compare/v3.85.0-rc.1...v3.85.0-rc.2) (2026-08-18)
+
+### 🐛 Bugfixes
+
+* release a couple beta migration pages ([#7173](https://github.com/kiva/ui/issues/7173)) ([0b7065e](https://github.com/kiva/ui/commit/0b7065ec4b51a15513c176a4c9c4f5dde64d4585))
+
 ## [3.85.0-rc.1](https://github.com/kiva/ui/compare/v3.84.0...v3.85.0-rc.1) (2026-08-18)
 
 ### 🎉 New Features
