@@ -9,8 +9,17 @@ export function renderExternals(config) {
 		// add OneTrust loader
 		if (config.oneTrust && config.oneTrust.enable) {
 			const key = `${config.oneTrust.key}${config.oneTrust.domainSuffix}`;
-			const src = `https://cdn.cookielaw.org/consent/${key}/otSDKStub.js`;
-			renderedExternals += `<script type="text/javascript" data-domain-script="${key}" src="${src}"></script>`;
+			const domain = 'https://cdn.cookielaw.org';
+			const src = `${domain}/consent/${key}/otSDKStub.js`;
+			const options = [
+				'type="text/javascript"',
+				`data-domain-script="${key}"`,
+				`src="${src}"`,
+				'async',
+			].join(' ');
+			renderedExternals += `<link rel="preconnect" href="${domain}">`;
+			renderedExternals += `<link rel="dns-prefetch" href="${domain}">`;
+			renderedExternals += `<script ${options}></script>`;
 		}
 		// add primary head script
 		const renderedHeadScript = serialize(headScript);
