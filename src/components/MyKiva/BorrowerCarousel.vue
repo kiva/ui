@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="borrower-carousel">
 		<h2
 			v-if="hasActiveLoans"
 			v-html="title"
@@ -157,7 +157,6 @@ import {
 import LoanCommentModal from '#src/pages/Portfolio/ImpactDashboard/LoanCommentModal';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
-import useBreakpoints from '#src/composables/useBreakpoints';
 import BorrowerStatusCard from './BorrowerStatusCard';
 
 const SHARE_CAMPAIGN = 'social_share_portfolio';
@@ -214,8 +213,6 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 
 const router = useRouter();
 
-const { isMedium, isLarge } = useBreakpoints();
-
 const { loans, totalLoans } = toRefs(props);
 
 const carousel = ref(null);
@@ -262,15 +259,7 @@ const pfpMinLenders = computed(() => loanForMenu.value?.pfpMinLenders ?? 0);
 
 const numLenders = computed(() => loanForMenu.value?.lenders?.numLenders ?? 0);
 
-const singleSlideWidth = computed(() => {
-	if (isLarge.value) {
-		return 'calc((100% - 64px) / 3)';
-	}
-	if (isMedium.value) {
-		return '336px';
-	}
-	return '90%';
-});
+const singleSlideWidth = 'var(--borrower-slide-max-width)';
 
 const handleResize = () => {
 	windowWidth.value = window.innerWidth;
@@ -366,6 +355,18 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="postcss" scoped>
+.borrower-carousel {
+	--borrower-slide-max-width: 90%;
+
+	@screen md {
+		--borrower-slide-max-width: 336px;
+	}
+
+	@screen lg {
+		--borrower-slide-max-width: calc((100% - 64px) / 3);
+	}
+}
+
 .carousel-container :deep(section > div:first-child) {
 	max-width: 100%;
 }
