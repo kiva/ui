@@ -48,6 +48,7 @@ import {
 	computed, inject, ref
 } from 'vue';
 import { KvButton } from '@kiva/kv-components';
+import { META_EVENTS, trackMetaEvent } from '@kiva/kv-analytics';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import useIsMobile from '#src/composables/useIsMobile';
 import useOptIn from '#src/composables/useOptIn';
@@ -139,10 +140,12 @@ const updateOptIn = async value => {
 
 	if (value) {
 		const visitorId = cookieStore.get('uiv') || null;
-		if (props.isGuest && visitorId) {
-			await updateVisitorEmailOptIn(value, value, false, visitorId);
-		} else {
-			await updateCommunicationSettings(value, value, false);
+		const optedIn = props.isGuest && visitorId
+			? await updateVisitorEmailOptIn(value, value, false, visitorId)
+			: await updateCommunicationSettings(value, value, false);
+		// Only an applied mutation is a sign-up, so a failure here reports nothing
+		if (optedIn) {
+			trackMetaEvent(META_EVENTS.EMAIL_SIGN_UP);
 		}
 	}
 	newConsentAnswered.value = true;
