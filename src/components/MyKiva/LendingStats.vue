@@ -52,16 +52,16 @@
 		</template>
 		<div
 			v-else-if="goalProgressLoading"
-			class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-hidden"
+			class="tw-flex tw-gap-2 lg:tw-gap-4 tw-w-full tw-overflow-visible"
 			:class="{
 				'tw--mt-6': !showPostLendingNextStepsCards
 					&& !showAlmostFundedCard,
-				'tw-mt-1.5': showAlmostFundedCard
+				'tw-mt-2': showAlmostFundedCard
 			}"
 		>
 			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0" />
-			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden md:tw-block" />
-			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden lg:tw-block" />
+			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0" />
+			<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0" />
 		</div>
 		<JourneyCardCarousel
 			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
@@ -330,11 +330,11 @@ export default {
 }
 
 .placeholder-card {
-	min-height: 340px;
-	flex: 0 0 100%;
+	min-height: 370px;
+	flex: 0 0 90%;
 
 	@screen md {
-		flex: 0 0 calc((100% - 16px) / 2);
+		flex: 0 0 336px;
 	}
 
 	@screen lg {
