@@ -269,8 +269,8 @@ function getYearPurchases(goalSummary, tieredLendingAchievements, year) {
 	// mean pulling the whole year, and is not even reachable for lenders past the
 	// rolling window, which retains only the most recent loans.
 	return (getGoalAchievement(goalSummary, tieredLendingAchievements)?.loanPurchases ?? [])
-		.filter(purchase => purchase?.loan)
-		.filter(purchase => !Number.isFinite(year) || getPurchaseYear(purchase) === year);
+		.filter(purchase => purchase?.loan
+			&& (!Number.isFinite(year) || getPurchaseYear(purchase) === year));
 }
 
 function getYearLoans(goalSummary, tieredLendingAchievements, year) {
@@ -346,9 +346,11 @@ export function scopeToGoalYear(goalSummary, tieredLendingAchievements = [], yea
 
 	const yearPurchases = getYearPurchases(goalSummary, tieredLendingAchievements, year);
 	const achievement = getGoalAchievement(goalSummary, tieredLendingAchievements);
-	// progressForYear is authoritative: the rolling window can trim loanPurchases.
-	// Finite rather than truthy, so a real zero is not read as missing.
+	// yearPurchases can undercount a past year: the request asks for `target` purchases newest
+	// first, so later years are served before the recap year and can exhaust it. progressForYear
+	// is the service's own total for the year, subject to neither that request nor the window.
 	const progress = achievement?.progressForYear;
+	// Finite rather than truthy: a lender with no loans this year really did lend zero.
 	const lent = Number.isFinite(progress) ? progress : yearPurchases.length;
 	const target = Number(goalSummary.target) || 0;
 	const count = target > 0 ? Math.min(lent, target) : lent;

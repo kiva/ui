@@ -496,6 +496,24 @@ describe('goalInReviewPayload.js', () => {
 			expect(getGoalLoans({ ...climateGoal, count: 1 }, newYearEve, 2027)).toEqual([]);
 		});
 
+		it('counts the year from progressForYear, not the purchases left after filtering', () => {
+			// A past year recap: 2027's purchase is served first and eats into the request, so
+			// only 2 of 2026's come back even though the lender made 100 that year.
+			const cappedByOtherYears = [{
+				...climateAchievements[0],
+				progressForYear: 100,
+				loanPurchases: [
+					{ purchaseTime: '2027-01-04T00:00:00Z', loan: { id: 9, name: 'Next year' } },
+					...climateAchievements[0].loanPurchases.slice(0, 2),
+				],
+			}];
+
+			const scoped = scopeToGoalYear({ ...climateGoal, target: 3 }, cappedByOtherYears, 2026);
+
+			expect(scoped.count).toBe(3);
+			expect(scoped.percent).toBe(100);
+		});
+
 		it('uses progressForYear over the retained purchases, which the window can trim', () => {
 			// progressForYear is 100 while only 3 loanPurchases came back
 			const scoped = scopeToGoalYear({ ...climateGoal, target: 200 }, climateAchievements);
