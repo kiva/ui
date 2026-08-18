@@ -1,3 +1,25 @@
+## [3.85.0](https://github.com/kiva/ui/compare/v3.84.0...v3.85.0) (2026-08-18)
+
+### 🎉 New Features
+
+* **checkout:** self-describing event for bandit upsell recommendation ([#7167](https://github.com/kiva/ui/issues/7167)) ([faf75c3](https://github.com/kiva/ui/commit/faf75c37d1fe3c884a01b08bf66632ca9f4bdd42))
+
+### 🐛 Bugfixes
+
+* [MP-3117] - goal in review graphql cache ([#7171](https://github.com/kiva/ui/issues/7171)) ([a66225c](https://github.com/kiva/ui/commit/a66225cbb2c24805549d54615d179d54874c52b5))
+* category name displayed and small design color in stats for goal in review ([23a176f](https://github.com/kiva/ui/commit/23a176fba9878fcd4ddf57aa81e9800857b31e46))
+* clarify why only two categories are listed in getCategories mock ([261956e](https://github.com/kiva/ui/commit/261956eba7820b1b773a2a6bacb94b26ebe78753))
+* mp-3058-meta-event-cookie ([5cd3026](https://github.com/kiva/ui/commit/5cd30268a25188811a883de4923f487372deb045))
+* mp-3058-removing-meta-mikiva-events ([c370cd4](https://github.com/kiva/ui/commit/c370cd49fed2dc2dc758b0a01b7a6ffab86749ec))
+* release a couple beta migration pages ([#7173](https://github.com/kiva/ui/issues/7173)) ([0b7065e](https://github.com/kiva/ui/commit/0b7065ec4b51a15513c176a4c9c4f5dde64d4585))
+* revert a single category name constand and fix tests ([dfedc59](https://github.com/kiva/ui/commit/dfedc59141aaa2fc2f395f4e16cc23a6e6914340))
+
+### 🧹 Chores
+
+* **deps:** bump dompurify from 3.4.12 to 3.4.13 ([eaaddde](https://github.com/kiva/ui/commit/eaaddde4376b213227e3189c025d6fd88846df23))
+* **release:** 3.85.0-rc.1 [skip ci] ([6ba2d7d](https://github.com/kiva/ui/commit/6ba2d7d1fd9dacbaa1cd5ed76489cf48296733cf)), closes [#7167](https://github.com/kiva/ui/issues/7167) [#7171](https://github.com/kiva/ui/issues/7171)
+* **release:** 3.85.0-rc.2 [skip ci] ([adbcada](https://github.com/kiva/ui/commit/adbcadaace1eaec1fb1b801f32434230f6233c90)), closes [#7173](https://github.com/kiva/ui/issues/7173)
+
 ## [3.85.0-rc.2](https://github.com/kiva/ui/compare/v3.85.0-rc.1...v3.85.0-rc.2) (2026-08-18)
 
 ### 🐛 Bugfixes
