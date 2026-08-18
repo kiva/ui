@@ -29,7 +29,7 @@
 			@edit-click="openEditGoalSettingModal"
 			@view-goal-recap="openGoalRecapFromCard"
 		/>
-		<section v-if="clientRendered" class="!tw-mt-2">
+		<section class="!tw-mt-2">
 			<LendingStats
 				ref="lendingStatsRef"
 				:hero-slides="heroSlides"
@@ -98,7 +98,6 @@
 			/>
 		</section>
 		<MyKivaBorrowerCarousel
-			v-if="clientRendered"
 			id="mykiva-borrower-carousel"
 			controls-top-right
 			:basket-items="basketItems"
@@ -125,7 +124,7 @@
 				class="!tw--mt-2"
 			/>
 		</AsyncMyKivaSection>
-		<section v-if="clientRendered" class="!tw-my-2">
+		<section class="!tw-my-2">
 			<LendingCategorySection
 				controls-top-right
 				id="recommended-loans"
@@ -408,7 +407,6 @@ export default {
 			updatesLimit: 15,
 			updatesLoading: true,
 			updatesOffset: 3,
-			clientRendered: false,
 			tooltipVisible: false,
 			showGoalInReviewModal: false,
 			goalInReviewFeedbackSubmitted: false,
@@ -798,9 +796,6 @@ export default {
 		}
 	},
 	mounted() {
-		this.clientRendered = true;
-
-		// Ensure clientRendered is true before attempting to scroll to section
 		nextTick(() => {
 			const sectionId = this.$route?.query?.goTo || '';
 			if (sectionId) {
