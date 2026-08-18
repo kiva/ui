@@ -143,6 +143,7 @@ export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) 
 			const goalSummary = scopeToGoalYear(
 				mergeRecapExtras(summary, monolithSummary),
 				achievements,
+				year,
 			);
 
 			goalInReviewData.value = {
@@ -156,7 +157,7 @@ export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) 
 					getCategories(),
 				),
 				loanStats: getLoanStats(goalSummary),
-				goalLoans: getGoalLoans(goalSummary, achievements),
+				goalLoans: getGoalLoans(goalSummary, achievements, year),
 				lifetimePercentile: lenderData?.my?.lendingStats?.amountLentPercentile ?? null,
 			};
 			return goalInReviewData.value;

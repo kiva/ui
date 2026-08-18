@@ -256,16 +256,25 @@ function getGoalAchievement(goalSummary, tieredLendingAchievements) {
 	return (tieredLendingAchievements ?? []).find(entry => entry?.id === goalSummary?.category);
 }
 
-function getYearPurchases(goalSummary, tieredLendingAchievements) {
+// Read in UTC: locally, purchases either side of new year land in the wrong one.
+function getPurchaseYear(purchase) {
+	const purchasedAt = new Date(purchase.purchaseTime);
+	return Number.isNaN(purchasedAt.getTime()) ? null : purchasedAt.getUTCFullYear();
+}
+
+function getYearPurchases(goalSummary, tieredLendingAchievements, year) {
+	// The year the recap asks the service for scopes progressForYear, not this list, so it
+	// arrives carrying other years.
 	// Most recent first, as the service returns them. Selecting the oldest instead would
 	// mean pulling the whole year, and is not even reachable for lenders past the
 	// rolling window, which retains only the most recent loans.
 	return (getGoalAchievement(goalSummary, tieredLendingAchievements)?.loanPurchases ?? [])
-		.filter(purchase => purchase?.loan);
+		.filter(purchase => purchase?.loan)
+		.filter(purchase => !Number.isFinite(year) || getPurchaseYear(purchase) === year);
 }
 
-function getYearLoans(goalSummary, tieredLendingAchievements) {
-	return getYearPurchases(goalSummary, tieredLendingAchievements).map(purchase => purchase.loan);
+function getYearLoans(goalSummary, tieredLendingAchievements, year) {
+	return getYearPurchases(goalSummary, tieredLendingAchievements, year).map(purchase => purchase.loan);
 }
 
 /**
@@ -327,17 +336,20 @@ function getGoalSectors(loans) {
  *
  * @param {object} goalSummary The merged goal summary.
  * @param {Array} tieredLendingAchievements Achievements for the recap year.
+ * @param {number} year The goal's year. Purchases outside it are excluded.
  * @returns {object|null} The summary the slides read.
  */
-export function scopeToGoalYear(goalSummary, tieredLendingAchievements = []) {
+export function scopeToGoalYear(goalSummary, tieredLendingAchievements = [], year = undefined) {
 	if (!goalSummary || goalSummary.category === ID_SUPPORT_ALL) {
 		return goalSummary;
 	}
 
-	const yearPurchases = getYearPurchases(goalSummary, tieredLendingAchievements);
+	const yearPurchases = getYearPurchases(goalSummary, tieredLendingAchievements, year);
 	const achievement = getGoalAchievement(goalSummary, tieredLendingAchievements);
 	// progressForYear is authoritative: the rolling window can trim loanPurchases.
-	const lent = Number(achievement?.progressForYear) || yearPurchases.length;
+	// Finite rather than truthy, so a real zero is not read as missing.
+	const progress = achievement?.progressForYear;
+	const lent = Number.isFinite(progress) ? progress : yearPurchases.length;
 	const target = Number(goalSummary.target) || 0;
 	const count = target > 0 ? Math.min(lent, target) : lent;
 
@@ -364,14 +376,15 @@ export function scopeToGoalYear(goalSummary, tieredLendingAchievements = []) {
  *
  * @param {object} goalSummary The recap goal summary.
  * @param {Array} tieredLendingAchievements Achievements for the recap year.
+ * @param {number} year The goal's year. Loans outside it are excluded.
  * @returns {Array} Loans, each `{ id, name, image { hash } }`.
  */
-export function getGoalLoans(goalSummary, tieredLendingAchievements = []) {
+export function getGoalLoans(goalSummary, tieredLendingAchievements = [], year = undefined) {
 	if (goalSummary?.category === ID_SUPPORT_ALL) {
 		return goalSummary?.loans ?? [];
 	}
 
-	const loans = getYearLoans(goalSummary, tieredLendingAchievements);
+	const loans = getYearLoans(goalSummary, tieredLendingAchievements, year);
 	// scopeToGoalYear already capped `count`; the grid must not show more than it claims.
 	const count = Number(goalSummary?.count);
 
