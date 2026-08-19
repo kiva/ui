@@ -453,6 +453,67 @@ describe('goalInReviewPayload.js', () => {
 			expect(scoped.borrowerCount).toBe(3);
 		});
 
+		it('leaves out purchases from other years, which the service returns unfiltered', () => {
+			const acrossYears = [{
+				...climateAchievements[0],
+				progressForYear: 2,
+				loanPurchases: [
+					{ purchaseTime: '2027-01-04T00:00:00Z', loan: { id: 9, name: 'Next year' } },
+					...climateAchievements[0].loanPurchases.slice(0, 2),
+				],
+			}];
+
+			const scoped = scopeToGoalYear({ ...climateGoal, target: 10 }, acrossYears, 2026);
+
+			expect(scoped.count).toBe(2);
+			expect(getGoalLoans(scoped, acrossYears, 2026).map(loan => loan.name))
+				.toEqual(['Before the goal', 'Siti']);
+		});
+
+		it('shows nothing for a goal year the lender made no loans in', () => {
+			const noneThisYear = [{ ...climateAchievements[0], progressForYear: 0 }];
+
+			const scoped = scopeToGoalYear({ ...climateGoal, target: 63 }, noneThisYear, 2027);
+
+			expect(scoped.count).toBe(0);
+			expect(scoped.borrowerCount).toBe(0);
+			expect(scoped.percent).toBe(0);
+			expect(scoped.countries).toEqual([]);
+			expect(scoped.sectors).toEqual([]);
+			expect(getGoalLoans(scoped, noneThisYear, 2027)).toEqual([]);
+		});
+
+		it('reads purchase times in UTC, so new year purchases land in the right year', () => {
+			// 23:00 UTC on Dec 31 is still the previous year west of Greenwich.
+			const newYearEve = [{
+				...climateAchievements[0],
+				progressForYear: 1,
+				loanPurchases: [{ purchaseTime: '2026-12-31T23:00:00Z', loan: { id: 7, name: 'Eve' } }],
+			}];
+
+			expect(getGoalLoans({ ...climateGoal, count: 1 }, newYearEve, 2026).map(loan => loan.name))
+				.toEqual(['Eve']);
+			expect(getGoalLoans({ ...climateGoal, count: 1 }, newYearEve, 2027)).toEqual([]);
+		});
+
+		it('counts the year from progressForYear, not the purchases left after filtering', () => {
+			// A past year recap: 2027's purchase is served first and eats into the request, so
+			// only 2 of 2026's come back even though the lender made 100 that year.
+			const cappedByOtherYears = [{
+				...climateAchievements[0],
+				progressForYear: 100,
+				loanPurchases: [
+					{ purchaseTime: '2027-01-04T00:00:00Z', loan: { id: 9, name: 'Next year' } },
+					...climateAchievements[0].loanPurchases.slice(0, 2),
+				],
+			}];
+
+			const scoped = scopeToGoalYear({ ...climateGoal, target: 3 }, cappedByOtherYears, 2026);
+
+			expect(scoped.count).toBe(3);
+			expect(scoped.percent).toBe(100);
+		});
+
 		it('uses progressForYear over the retained purchases, which the window can trim', () => {
 			// progressForYear is 100 while only 3 loanPurchases came back
 			const scoped = scopeToGoalYear({ ...climateGoal, target: 200 }, climateAchievements);
