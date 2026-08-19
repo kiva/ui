@@ -136,6 +136,11 @@ import {
 
 export default {
 	name: 'DepositPage',
+	head() {
+		return {
+			title: 'Add credit',
+		};
+	},
 	components: {
 		PortfolioShell,
 		KvButton,

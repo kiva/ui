@@ -137,6 +137,11 @@ import { WITHDRAWAL_STATUS, WITHDRAW_ROUTE, WITHDRAW_STATE_KEY } from '#src/util
 
 export default {
 	name: 'WithdrawConfirmPage',
+	head() {
+		return {
+			title: 'Withdraw credit',
+		};
+	},
 	components: {
 		PortfolioShell,
 		KvButton,

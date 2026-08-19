@@ -290,6 +290,11 @@ const LIMIT = 10;
 
 export default {
 	name: 'DonationsPage',
+	head() {
+		return {
+			title: 'My donations',
+		};
+	},
 	inject: ['apollo'],
 	components: {
 		WwwPage,
