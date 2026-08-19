@@ -357,7 +357,7 @@ export default [
 		path: '/portfolio/loans',
 		component: () => import('#src/pages/Portfolio/Loans/LoansPage'),
 		meta: {
-			authenticationRequired: true,
+			activeLoginRequired: true,
 			excludeFromStaticSitemap: true,
 		}
 	},
