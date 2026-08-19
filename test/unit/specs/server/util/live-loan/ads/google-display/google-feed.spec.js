@@ -7,7 +7,7 @@ import {
 	EXCLUDED_PARTNER_IDS_SETTING_KEY,
 	EXCLUDED_SECTOR_IDS_SETTING_KEY,
 } from '#server/util/live-loan/ads/constants';
-import { info } from '#server/util/log';
+import { info, warn } from '#server/util/log';
 import { toTsv, generateGoogleFeed } from '#server/util/live-loan/ads/google-display/google-feed';
 
 // mock out the argv module to prevent command line arguments for jest from being read by the code under test
@@ -36,6 +36,7 @@ const loanOne = {
 	geocode: { country: { id: 1, name: 'Tajikistan' } },
 	activity: { id: 1, name: 'Food Production/Sales' },
 	image: { id: 1, hash: 'hash456' },
+	use: 'To support her family shop',
 };
 
 const loanTwo = {
@@ -45,6 +46,7 @@ const loanTwo = {
 	geocode: { country: { id: 2, name: 'Kenya' } },
 	activity: { id: 2, name: 'Farming' },
 	image: { id: 2, hash: 'hash789' },
+	use: 'To grow her small farm',
 };
 
 describe('google-feed', () => {
@@ -93,6 +95,7 @@ describe('google-feed', () => {
 			fetchAdEligibleLoans.mockClear();
 			fetchExcludedIds.mockClear();
 			info.mockClear();
+			warn.mockClear();
 			fetchExcludedIds.mockResolvedValue([]);
 		});
 
@@ -105,6 +108,9 @@ describe('google-feed', () => {
 			expect(lines).toHaveLength(3);
 			expect(lines[0]).toEqual(FEED_COLUMNS.join('\t'));
 			expect(lines[1]).toContain('Support Mukumoy');
+			// The composed description carries the "This loan is special because ..." lead-in; the row
+			// survives ad-safety, proving the template word "loan" is not scanned (only raw borrower text is).
+			expect(lines[1]).toContain('This loan is special because to support her family shop');
 			expect(lines[1]).toContain(
 				'https://www.kiva.org/lend/456?utm_medium=paid&utm_source=google&utm_campaign=liveloans',
 			);
@@ -123,6 +129,19 @@ describe('google-feed', () => {
 
 			expect(lines).toHaveLength(2); // header + loanOne only
 			expect(result).not.toContain('MARIA');
+		});
+
+		it('drops a loan whose loan-use description contains a banned word', async () => {
+			const buyLoan = { ...loanOne, id: 111, use: 'To buy a cow' };
+			fetchAdEligibleLoans.mockResolvedValue([loanTwo, buyLoan]);
+
+			const result = await generateGoogleFeed();
+			const lines = result.split('\n');
+
+			expect(lines).toHaveLength(2); // header + loanTwo only
+			expect(result).not.toContain('cow');
+			// The drop warning names the real loan id, not undefined (guards the id-vs-ID key regression).
+			expect(warn).toHaveBeenCalledWith(expect.stringContaining('111'));
 		});
 
 		it('returns exactly the header line when there are no eligible loans', async () => {

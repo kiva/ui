@@ -5,7 +5,7 @@ import {
 	EXCLUDED_PARTNER_IDS_SETTING_KEY,
 	EXCLUDED_SECTOR_IDS_SETTING_KEY,
 } from '../constants.js';
-import { loanToFeedRow, isRowAdSafe, FEED_COLUMNS } from './feed-row.js';
+import { loanToFeedRow, isLoanAdSafe, FEED_COLUMNS } from './feed-row.js';
 import { info, warn } from '../../../log.js';
 
 // Cache keys + TTLs for serving the feed. A fresh copy is served from cache between regenerations so
@@ -53,13 +53,12 @@ export async function generateGoogleFeed(count) {
 
 	const rows = [];
 	eligible.forEach(loan => {
-		const row = loanToFeedRow(loan);
-		// Drop rows whose copy isn't ad-safe (banned words / ALL-CAPS) rather than emit a policy risk.
-		if (!isRowAdSafe(row)) {
-			warn(`Ad feed: dropping loan ${row.ID} whose copy is not ad-safe`);
+		// Drop loans whose borrower copy isn't ad-safe (banned words / ALL-CAPS) rather than emit a policy risk.
+		if (!isLoanAdSafe(loan)) {
+			warn(`Ad feed: dropping loan ${loan.id} whose copy is not ad-safe`);
 			return;
 		}
-		rows.push(row);
+		rows.push(loanToFeedRow(loan));
 	});
 	return toTsv(rows);
 }
