@@ -1,3 +1,9 @@
+## [3.86.0-rc.1](https://github.com/kiva/ui/compare/v3.85.1...v3.86.0-rc.1) (2026-08-19)
+
+### 🎉 New Features
+
+* **live-loan-ads:** align the google feed with the merchant center product spec ([#7177](https://github.com/kiva/ui/issues/7177)) ([2d680bf](https://github.com/kiva/ui/commit/2d680bfee1729150a9692980b5421cd3532bf648))
+
 ## [3.85.1](https://github.com/kiva/ui/compare/v3.85.0...v3.85.1) (2026-08-19)
 
 ### 🐛 Bugfixes

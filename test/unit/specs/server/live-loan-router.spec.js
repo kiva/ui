@@ -546,7 +546,7 @@ describe('live-loan-router ads feed route', () => {
 		cache = createMockCache();
 		memJsUtils.getFromCache.mockResolvedValue(null);
 		memJsUtils.setToCache.mockResolvedValue(undefined);
-		generateGoogleFeed.mockResolvedValue('ID\tItem title\n1\tSupport Maria');
+		generateGoogleFeed.mockResolvedValue('id\ttitle\n1\tSupport Maria');
 	});
 
 	it('generates, caches (fresh + last-good), and serves the feed on a cache miss', async () => {

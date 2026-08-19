@@ -5,11 +5,10 @@ import {
 	truncate,
 	buildTitle,
 	buildDescription,
-	buildSubtitle,
 	buildCategory,
 	buildFinalUrl,
 	buildImageUrl,
-	isRowAdSafe,
+	isLoanAdSafe,
 	loanToFeedRow,
 } from '#server/util/live-loan/ads/google-display/feed-row';
 
@@ -22,11 +21,11 @@ const loan = {
 	sector: { id: 1, name: 'Retail' },
 	geocode: { country: { id: 1, name: 'Tajikistan' } },
 	image: { id: 1, hash: 'abc123def456' },
+	use: 'To buy a cow',
 };
 
-// The hash 'abc123def456' rendered through the Cloudinary ad-image transform.
-const EXPECTED_IMAGE_URL = 'https://res.cloudinary.com/kiva/'
-	+ 'c_limit,w_1200,h_1200,f_jpg,cs_srgb,fl_force_icc/remote/abc123def456.jpg';
+// The hash 'abc123def456' as a Kiva image-CDN WebP URL at the ad size, on the hardcoded prod host.
+const EXPECTED_IMAGE_URL = 'https://www.kiva.org/img/w1200h1200/abc123def456.webp';
 
 describe('feed-row', () => {
 	describe('sanitizeText', () => {
@@ -41,18 +40,18 @@ describe('feed-row', () => {
 	});
 
 	describe('truncate', () => {
-		it('caps text at 25 characters', () => {
-			expect(truncate('a'.repeat(40))).toEqual('a'.repeat(25));
+		it('caps text at the given length', () => {
+			expect(truncate('a'.repeat(200), 150)).toEqual('a'.repeat(150));
 		});
 
 		it('leaves text within the cap unchanged', () => {
-			expect(truncate('Short country')).toEqual('Short country');
+			expect(truncate('Short use text', 5000)).toEqual('Short use text');
 		});
 
 		it('is code-point-safe: never splits a multi-byte character', () => {
 			// 24 ASCII + an astral emoji lands exactly at the 25th code point; a UTF-16 slice would
 			// cut the emoji mid-surrogate and emit invalid UTF-8.
-			const result = truncate(`${'a'.repeat(24)}\u{1F600}bcd`);
+			const result = truncate(`${'a'.repeat(24)}\u{1F600}bcd`, 25);
 			expect(result).toEqual(`${'a'.repeat(24)}\u{1F600}`);
 			expect([...result]).toHaveLength(25);
 		});
@@ -62,28 +61,31 @@ describe('feed-row', () => {
 		it('builds "Support {firstName}" from the primary borrower', () => {
 			expect(buildTitle(loan)).toEqual('Support Mukumoy');
 		});
+
+		it('caps a very long title at 150 characters', () => {
+			const longName = { borrowers: [{ id: 1, firstName: 'x'.repeat(200), isPrimary: true }] };
+			expect([...buildTitle(longName)]).toHaveLength(150);
+		});
 	});
 
 	describe('buildDescription', () => {
-		it('is the sector name, mirroring Item category', () => {
-			expect(buildDescription(loan)).toEqual('Retail');
-			expect(buildDescription(loan)).toEqual(buildCategory(loan));
+		it('wraps the borrower loan-use text in the "special because" sentence', () => {
+			expect(buildDescription(loan)).toEqual('This loan is special because to buy a cow');
 		});
 
-		it('caps a long sector name at 25 characters', () => {
-			const longSector = { sector: { name: 'Wholesale and Retail Distribution' } };
-			expect(buildDescription(longSector)).toEqual('Wholesale and Retail Dist');
-		});
-	});
-
-	describe('buildSubtitle', () => {
-		it('is the borrower country', () => {
-			expect(buildSubtitle(loan)).toEqual('Tajikistan');
+		it('falls back to the sector name, unformatted, when use is empty or missing', () => {
+			expect(buildDescription({ use: '', sector: { name: 'Retail' } })).toEqual('Retail');
+			expect(buildDescription({ sector: { name: 'Agriculture' } })).toEqual('Agriculture');
 		});
 
-		it('caps a long country name at 25 characters', () => {
-			const longCountry = { geocode: { country: { name: 'The Democratic Republic of the Congo' } } };
-			expect(buildSubtitle(longCountry)).toEqual('The Democratic Republic o');
+		it('keeps the formatted sentence when it is within the 5000-character limit', () => {
+			const result = buildDescription({ use: 'a'.repeat(4000), sector: { name: 'Retail' } });
+			expect(result.startsWith('This loan is special because ')).toBe(true);
+			expect([...result].length).toBeLessThanOrEqual(5000);
+		});
+
+		it('falls back to the sector name when the formatted sentence would exceed 5000 characters', () => {
+			expect(buildDescription({ use: 'x'.repeat(6000), sector: { name: 'Retail' } })).toEqual('Retail');
 		});
 	});
 
@@ -102,37 +104,50 @@ describe('feed-row', () => {
 	});
 
 	describe('buildImageUrl', () => {
-		it('builds the Cloudinary sRGB+ICC image URL from the hash', () => {
+		it('builds the Kiva image-CDN WebP URL from the hash', () => {
 			expect(buildImageUrl('abc123def456')).toEqual(EXPECTED_IMAGE_URL);
 		});
 	});
 
-	describe('isRowAdSafe', () => {
-		it('accepts clean nonprofit copy', () => {
-			expect(isRowAdSafe({ 'Item title': 'Help Maria', 'Item description': 'Support Maria' })).toBe(true);
+	describe('isLoanAdSafe', () => {
+		const cleanLoan = {
+			borrowers: [{ id: 1, firstName: 'Maria', isPrimary: true }],
+			use: 'Groceries for her family',
+			sector: { id: 1, name: 'Retail' },
+		};
+
+		it('accepts a loan with clean borrower copy', () => {
+			expect(isLoanAdSafe(cleanLoan)).toBe(true);
 		});
 
-		it('rejects a banned financial/ecommerce word', () => {
-			expect(isRowAdSafe({ 'Item title': 'Help Invest', 'Item description': 'Support Invest' })).toBe(false);
+		it('rejects a banned word in the borrower loan-use text', () => {
+			expect(isLoanAdSafe({ ...cleanLoan, use: 'To buy a cow' })).toBe(false);
 		});
 
-		it('rejects an ALL-CAPS run of 4+ letters', () => {
-			expect(isRowAdSafe({ 'Item title': 'Help MARIA', 'Item description': 'Support MARIA' })).toBe(false);
+		it('rejects a banned word in the sector name', () => {
+			expect(isLoanAdSafe({ ...cleanLoan, sector: { id: 1, name: 'Loan services' } })).toBe(false);
+		});
+
+		it('rejects an ALL-CAPS borrower first name', () => {
+			expect(isLoanAdSafe({ ...cleanLoan, borrowers: [{ id: 1, firstName: 'MARIA', isPrimary: true }] }))
+				.toBe(false);
 		});
 	});
 
 	describe('loanToFeedRow', () => {
-		it('maps a loan to the 7 monolith-aligned columns in order', () => {
+		it('maps a loan to the Google Merchant product columns in order', () => {
 			const row = loanToFeedRow(loan);
 			expect(Object.keys(row)).toEqual(FEED_COLUMNS);
 			expect(row).toEqual({
-				ID: '456',
-				'Item title': 'Support Mukumoy',
-				'Item description': 'Retail',
-				'Item subtitle': 'Tajikistan',
-				'Item category': 'Retail',
-				'Image URL': EXPECTED_IMAGE_URL,
-				'Final URL': 'https://www.kiva.org/lend/456?utm_medium=paid&utm_source=google&utm_campaign=liveloans',
+				id: '456',
+				title: 'Support Mukumoy',
+				description: 'This loan is special because to buy a cow',
+				google_product_category: 'Retail',
+				image_link: EXPECTED_IMAGE_URL,
+				link: 'https://www.kiva.org/lend/456?utm_medium=paid&utm_source=google&utm_campaign=liveloans',
+				price: '25.00 USD',
+				availability: 'in_stock',
+				identifier_exists: 'no',
 			});
 		});
 	});

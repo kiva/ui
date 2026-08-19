@@ -1,13 +1,18 @@
 import fetchGraphQL from '../../fetchGraphQL.js';
 import { warn } from '../../log.js';
 
-// Locked candidate cap for the curated feed: request at most this many fundraising loans per
-// generation and do not paginate. The feed is deliberately conservative, so a single page is enough.
-export const AD_FEED_LOAN_COUNT = 100;
+// Pull the FLSS single-page maximum (200) per generation without paginating -- the eligibility and
+// ad-safety gates drop a chunk of candidates (small images, banned copy), so requesting the max leaves
+// headroom to fill the feed.
+export const AD_FEED_LOAN_COUNT = 200;
 
 // Not-anonymized value of AnonymizationLevelEnum (none | public | full | pii). Any other value
 // hides borrower identity/photo, which makes the loan unsuitable for a public ad feed.
 const NOT_ANONYMIZED = 'none';
+
+// Google Merchant Center requires an image_link of at least 500x500 px. We don't upscale, so a loan
+// whose photo is smaller than this on either side is dropped rather than shipped small.
+const MIN_IMAGE_DIMENSION = 500;
 
 const THRESHOLDS = {
 	minRiskRating: 3.5,
@@ -56,14 +61,16 @@ export function isEligibleLoan(loan) {
 	if (loan.anonymizationLevel !== NOT_ANONYMIZED) return false;
 	if (!primaryFirstName(loan)) return false;
 	if (!loan?.image?.hash) return false;
+	if (!(loan.image.width >= MIN_IMAGE_DIMENSION && loan.image.height >= MIN_IMAGE_DIMENSION)) return false;
 	return true;
 }
 
 const LOAN_FIELDS = `
 	id
 	anonymizationLevel
+	use
 	borrowers { id firstName isPrimary }
-	image { id hash }
+	image { id hash width height }
 	geocode { country { id name } }
 	sector { id name }
 `;
