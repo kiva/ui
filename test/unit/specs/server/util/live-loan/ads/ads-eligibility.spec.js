@@ -25,7 +25,9 @@ const completeLoan = {
 	id: 1,
 	anonymizationLevel: 'none',
 	borrowers: [{ id: 1, firstName: 'Maria', isPrimary: true }],
-	image: { id: 'img-1', hash: 'abcimagehash01' },
+	image: {
+		id: 'img-1', hash: 'abcimagehash01', width: 800, height: 800
+	},
 };
 
 describe('ads-eligibility', () => {
@@ -40,8 +42,8 @@ describe('ads-eligibility', () => {
 			}]);
 		});
 
-		it('caps the candidate count at the locked feed limit of 100', () => {
-			expect(AD_FEED_LOAN_COUNT).toEqual(100);
+		it('requests the FLSS single-page maximum of 200 candidates', () => {
+			expect(AD_FEED_LOAN_COUNT).toEqual(200);
 		});
 
 		it('adds a loanIds none filter when a loan-id exclusion list is provided', () => {
@@ -135,6 +137,20 @@ describe('ads-eligibility', () => {
 			expect(isEligibleLoan({ ...completeLoan, image: null })).toEqual(false);
 		});
 
+		it('accepts an image exactly at the 500x500 minimum', () => {
+			expect(isEligibleLoan({ ...completeLoan, image: { ...completeLoan.image, width: 500, height: 500 } }))
+				.toEqual(true);
+		});
+
+		it('returns false when the image is under 500px on either side', () => {
+			expect(isEligibleLoan({ ...completeLoan, image: { ...completeLoan.image, width: 499 } })).toEqual(false);
+			expect(isEligibleLoan({ ...completeLoan, image: { ...completeLoan.image, height: 320 } })).toEqual(false);
+		});
+
+		it('returns false when the image has no width/height', () => {
+			expect(isEligibleLoan({ ...completeLoan, image: { id: 'img-1', hash: 'abcimagehash01' } })).toEqual(false);
+		});
+
 		it('returns false when the loan has no id', () => {
 			expect(isEligibleLoan({ ...completeLoan, id: undefined })).toEqual(false);
 			expect(isEligibleLoan(null)).toEqual(false);
@@ -174,6 +190,25 @@ describe('ads-eligibility', () => {
 
 			const { variables } = JSON.parse(fetch.mock.calls[0][1].body);
 			expect(variables.filters).toEqual(buildAdFeedFilters(exclusions));
+		});
+
+		it('requests the borrower loan-use text in the query fields', async () => {
+			fetch.mockResolvedValue({ json: () => ({ data: { fundraisingLoans: { values: [] } } }) });
+
+			await fetchAdEligibleLoans();
+
+			const { query } = JSON.parse(fetch.mock.calls[0][1].body);
+			expect(query).toMatch(/\buse\b/);
+		});
+
+		it('requests the image dimensions in the query fields', async () => {
+			fetch.mockResolvedValue({ json: () => ({ data: { fundraisingLoans: { values: [] } } }) });
+
+			await fetchAdEligibleLoans();
+
+			const { query } = JSON.parse(fetch.mock.calls[0][1].body);
+			expect(query).toMatch(/\bwidth\b/);
+			expect(query).toMatch(/\bheight\b/);
 		});
 
 		it('threads a custom count into the fundraisingLoans limit', async () => {
