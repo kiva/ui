@@ -1,3 +1,19 @@
+## [3.85.1](https://github.com/kiva/ui/compare/v3.85.0...v3.85.1) (2026-08-19)
+
+### 🐛 Bugfixes
+
+* enhancing comments and filter method ([fd03cde](https://github.com/kiva/ui/commit/fd03cdef7d54adf1e8f371005bfd637575719766))
+* release loans and bonus history migrations ([#7176](https://github.com/kiva/ui/issues/7176)) ([1ea2851](https://github.com/kiva/ui/commit/1ea28514018019c356dd83ecbe86fedb27eba0c2))
+* scope recap data to the goal's year ([ed50bff](https://github.com/kiva/ui/commit/ed50bff8546e210d1ac52e1e696c02b19ee78f6b))
+
+### 🏎️ Performance Improvements
+
+* **externals:** load the OneTrust consent stub without blocking render ([5ee2ceb](https://github.com/kiva/ui/commit/5ee2cebe67db82c74280e1df6c381b1d1932f38d))
+
+### 🧹 Chores
+
+* **release:** 3.85.1-rc.1 [skip ci] ([4b37818](https://github.com/kiva/ui/commit/4b37818db7efc3786fff1d8317aa48191bca58de)), closes [#7176](https://github.com/kiva/ui/issues/7176)
+
 ## [3.85.1-rc.1](https://github.com/kiva/ui/compare/v3.85.0...v3.85.1-rc.1) (2026-08-19)
 
 ### 🐛 Bugfixes
