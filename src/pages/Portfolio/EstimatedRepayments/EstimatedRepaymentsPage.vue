@@ -131,7 +131,7 @@ export default {
 	name: 'EstimatedRepaymentsPage',
 	head() {
 		return {
-			title: 'Estimated Repayments',
+			title: 'Estimated repayments',
 		};
 	},
 	components: {

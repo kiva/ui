@@ -131,7 +131,7 @@ export default {
 	inject: ['apollo'],
 	head() {
 		return {
-			title: 'Free Credit History',
+			title: 'Free credit history',
 		};
 	},
 	components: {
