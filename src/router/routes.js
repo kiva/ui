@@ -354,7 +354,7 @@ export default [
 		}
 	},
 	{
-		path: '/portfolio/loans-beta',
+		path: '/portfolio/loans',
 		component: () => import('#src/pages/Portfolio/Loans/LoansPage'),
 		meta: {
 			authenticationRequired: true,
@@ -370,7 +370,7 @@ export default [
 		}
 	},
 	{
-		path: '/portfolio/credit/bonus-history-beta',
+		path: '/portfolio/credit/bonus-history',
 		component: () => import('#src/pages/Portfolio/BonusCreditHistory/BonusCreditHistoryPage'),
 		meta: {
 			authenticationRequired: true,
