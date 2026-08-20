@@ -1,3 +1,9 @@
+## [3.86.1-rc.1](https://github.com/kiva/ui/compare/v3.86.0...v3.86.1-rc.1) (2026-08-20)
+
+### 🐛 Bugfixes
+
+* release beta URL again for estimated repayments ([#7178](https://github.com/kiva/ui/issues/7178)) ([efb1516](https://github.com/kiva/ui/commit/efb1516c9a417542ad5b4f2cb237023ac09f98f9))
+
 ## [3.86.0](https://github.com/kiva/ui/compare/v3.85.1...v3.86.0) (2026-08-19)
 
 ### 🎉 New Features
