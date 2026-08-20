@@ -54,6 +54,8 @@
 			:feedback-submitted="goalInReviewFeedbackSubmitted"
 			@close="showGoalInReviewModal = false"
 			@feedback-submitted="handleGoalInReviewFeedbackSubmitted"
+			@finish-goal="handleGoalInReviewFinishGoal"
+			@set-goal="handleGoalInReviewSetGoal"
 		/>
 	</www-page>
 </template>
@@ -119,6 +121,7 @@ export default {
 	},
 	setup() {
 		const {
+			getFinishGoalHref,
 			goalInReviewData,
 			loadAutoOpenRecap,
 			hasSubmittedGoalFeedbackForYear,
@@ -126,6 +129,7 @@ export default {
 		} = useGoalInReview();
 
 		return {
+			getFinishGoalHref,
 			goalInReviewData,
 			loadAutoOpenRecap,
 			hasSubmittedGoalFeedbackForYear,

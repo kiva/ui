@@ -252,8 +252,8 @@ onBeforeUnmount(teardownSlideObserver);
 
 	.goal-in-review-slides > :first-child > * {
 		@screen md {
-		min-height: var(--recap-page-height);
-	}
+			min-height: var(--recap-page-height);
+		}
 	}
 
 	[data-test=kv-lightbox] {
