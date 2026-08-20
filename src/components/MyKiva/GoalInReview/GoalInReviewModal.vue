@@ -147,6 +147,7 @@ const handleCta = event => {
 		$kvTrackEvent('portfolio', 'click', `goal-recap-finish-my-${props.data?.year}-goal`);
 	} else {
 		$kvTrackEvent('portfolio', 'click', 'goal-recap-back-to-kiva');
+		emit('close');
 	}
 	emit(event);
 };
@@ -250,7 +251,9 @@ onBeforeUnmount(teardownSlideObserver);
 	--recap-page-height: calc(90vh - 3.5rem);
 
 	.goal-in-review-slides > :first-child > * {
+		@screen md {
 		min-height: var(--recap-page-height);
+	}
 	}
 
 	[data-test=kv-lightbox] {

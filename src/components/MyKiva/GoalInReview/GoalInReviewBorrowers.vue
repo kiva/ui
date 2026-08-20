@@ -1,6 +1,6 @@
 <template>
 	<section
-		class="tw-w-full tw-bg-brand-100 tw-px-2 tw-py-4 md:tw-px-4"
+		class="tw-w-full tw-bg-brand-100 tw-px-2 tw-py-5 md:tw-px-4"
 		data-testid="goal-in-review-borrowers"
 	>
 		<p class="tw-text-action tw-mb-1 kv-fade-up borrowers-eyebrow">
