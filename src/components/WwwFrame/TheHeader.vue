@@ -4,7 +4,7 @@
 		:class="isInExperimentPages ? 'tw-sticky tw-top-0 tw-z-sticky' : ''"
 	>
 		<KvWwwHeaderBasic
-			v-if="isNavUpdateExp"
+			v-if="showBasicHeader"
 			class="tw-bg-primary tw-border-b tw-border-tertiary tw-relative"
 			ref="newExpHeader"
 			:logged-in="!isVisitor"
@@ -104,7 +104,12 @@
 					</div>
 				</template>
 
-				<!-- Default Header -->
+				<!--
+					Default Header — UNREACHABLE as of the stage 1 header default flip.
+					The enclosing <nav> only renders when `minimal` or `corporate` is set,
+					so this `v-else` can never match. Retained for stage 2 deletion; see
+					docs/ui-docs/specs/2026-08-20-global-header-experiment-cleanup-design.md
+				-->
 				<template v-else>
 					<div
 						class="header
@@ -711,6 +716,12 @@ export default {
 				'--user-avatar': 'var(--ui-data-user-avatar)',
 			};
 		},
+		// The basic header is the default. The legacy <nav> now renders only for the
+		// minimal and corporate pathways — note this inverts the previous precedence,
+		// where the home_page experiment won over both.
+		showBasicHeader() {
+			return !this.minimal && !this.corporate;
+		},
 		isVisitor() {
 			return !this.userId && !this.$renderConfig?.cdnNotedLoggedIn;
 		},
@@ -856,8 +867,8 @@ export default {
 		this.determineIfMobile();
 		window.addEventListener('resize', this.throttledDetermineIfMobile);
 
-		// Prefetch the new header's search suggestions on mount, only when the experiment is active.
-		if (this.isNavUpdateExp) {
+		// Prefetch the basic header's search suggestions on mount.
+		if (this.showBasicHeader) {
 			this.loadSearchData();
 		}
 	},
