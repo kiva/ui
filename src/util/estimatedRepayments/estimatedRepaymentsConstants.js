@@ -1,11 +1,11 @@
-// Route path, chart palette, and legacy copy for the estimated-repayments page.
+// Route path, chart palette, and legacy copy for the estimated-repayments beta page.
 // Colours mirror the legacy stacked chart's two series and were validated (dataviz
 // skill) for colour-blind separation and surface contrast in light and dark modes.
 import kvTokensPrimitives from '@kiva/kv-tokens';
 
 const { colors } = kvTokensPrimitives;
 
-export const ESTIMATED_REPAYMENTS_ROUTE = '/portfolio/estimated-repayments';
+export const ESTIMATED_REPAYMENTS_ROUTE = '/portfolio/estimated-repayments-beta';
 
 // The legacy detail query caps the per-month loan list; surface a truncation notice
 // when the returned list reaches this size. Mirrors the resolver's default limit.
