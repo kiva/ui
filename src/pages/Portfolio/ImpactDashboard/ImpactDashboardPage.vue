@@ -191,6 +191,17 @@ export default {
 		async handleGoalInReviewFeedbackSubmitted() {
 			await this.setGoalFeedbackSubmittedPreference(this.goalInReviewData?.year);
 		},
+		// "Finish my goal" routes to the goal category's loan-finding page, the same
+		// destination as the goal cards' continue CTA (tracking fires in the modal).
+		handleGoalInReviewFinishGoal() {
+			const href = this.getFinishGoalHref(this.$router);
+			if (href) {
+				window.location.href = href;
+			}
+		},
+		handleGoalInReviewSetGoal() {
+			window.location.href = '/goal-setting';
+		},
 		loadEducationPost() {
 			// Donation Education Module Experiment MARS-497
 			this.apollo.query({
