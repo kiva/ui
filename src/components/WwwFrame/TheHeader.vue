@@ -601,15 +601,22 @@ import addToBasketMixin from '#src/plugins/add-to-basket-mixin';
 import {
 	KvButton, KvLoadingPlaceholder, KvMaterialIcon, KvPageContainer, KvWwwHeaderBasic
 } from '@kiva/kv-components';
-import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+// import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+// import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import useMyKivaHome from '#src/composables/useMyKivaHome';
 import { COUNTRIES_NOT_LENT_TO_URL } from '#src/util/headerUtils';
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
-const NAV_UPDATE_EXP_KEY = 'home_page'; // Key aligns with key used in Fastly experimentation for cached CPS pages
+
+// The `home_page` global header experiment (EXP-CIT-4367-June2026) is retired — KvWwwHeaderBasic is
+// now the unconditional default. The config below is kept commented, not deleted, because this
+// wiring gets reused for future header experiments. It lives in five places that must be
+// uncommented together: these two imports and this constant, the `isNavUpdateExp` data field, the
+// experimentAssignmentQuery entry in the `apollo` array, and the trackExperimentVersion block in
+// `created()`. See docs/ui-docs/specs/2026-08-20-global-header-experiment-cleanup-design.md
+// const NAV_UPDATE_EXP_KEY = 'home_page'; // Key aligns with the Fastly experimentation key for cached CPS pages
 
 export default {
 	name: 'TheHeader',
@@ -662,7 +669,7 @@ export default {
 			teamsMenuEnabled: false,
 			trusteeId: null,
 			userId: null,
-			isNavUpdateExp: false,
+			// isNavUpdateExp: false,
 			throttledDetermineIfMobile: null,
 			COUNTRIES_NOT_LENT_TO_URL,
 		};
@@ -809,30 +816,30 @@ export default {
 				fireNewUserHotJarEvent(this.hasEverLoggedIn);
 			},
 		},
-		{
-			query: experimentAssignmentQuery,
-			preFetch(_, client) {
-				return client.query({
-					query: experimentAssignmentQuery,
-					variables: {
-						id: NAV_UPDATE_EXP_KEY,
-					},
-				});
-			},
-		},
+		// {
+		// 	query: experimentAssignmentQuery,
+		// 	preFetch(_, client) {
+		// 		return client.query({
+		// 			query: experimentAssignmentQuery,
+		// 			variables: {
+		// 				id: NAV_UPDATE_EXP_KEY,
+		// 			},
+		// 		});
+		// 	},
+		// },
 	],
 	created() {
 		this.isBasketLoading = this.$renderConfig?.useCDNCaching ?? false;
 		this.isUserDataLoading = this.$renderConfig?.useCDNCaching && this.$renderConfig?.cdnNotedLoggedIn;
 
-		const navExperiment = trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'event-tracking',
-			NAV_UPDATE_EXP_KEY,
-			'EXP-CIT-4367-June2026'
-		);
-		this.isNavUpdateExp = navExperiment?.version === 'b';
+		// const navExperiment = trackExperimentVersion(
+		// 	this.apollo,
+		// 	this.$kvTrackEvent,
+		// 	'event-tracking',
+		// 	NAV_UPDATE_EXP_KEY,
+		// 	'EXP-CIT-4367-June2026'
+		// );
+		// this.isNavUpdateExp = navExperiment?.version === 'b';
 	},
 	mounted() {
 		const { version } = this.apollo.readFragment({
