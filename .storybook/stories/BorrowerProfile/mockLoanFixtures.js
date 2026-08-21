@@ -402,6 +402,15 @@ export const longTeamNameCommentsLoan = createMockLoan({
 	},
 });
 
+/** Partner loan whose city is long enough to wrap inside the location pill. */
+export const longLocationPartnerLoan = createMockLoan({
+	geocode: {
+		city: 'Sralab, Sralab, Tboung Khmum, Tboung Khmum Cambodian District Tboung Khmum',
+		country: { name: 'Cambodia', isoCode: 'KH', __typename: 'Country' },
+		__typename: 'Geocode',
+	},
+});
+
 /**
  * A partner loan's repayment periods, covering every way a period can present:
  * received, delinquent with an attribution, delinquent with currency loss, and upcoming.
