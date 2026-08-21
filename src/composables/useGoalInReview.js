@@ -170,17 +170,16 @@ export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) 
 	/**
 	 * Href for the recap's "Finish my goal" CTA — the goal category's loan-finding
 	 * page with the "Support N more" header, built with the same getCtaHref the
-	 * goal cards use so both routes land on the same page.
+	 * goal cards use so both routes land on the same page. getCtaHref owns the
+	 * missing-field guard, so callers null-check the result.
 	 *
 	 * @param {object} router Vue router instance (getCtaHref reads the current route).
-	 * @returns {string|null} The loan-finding href, or null before the recap loads.
+	 * @returns {string|null} The loan-finding href; null when getCtaHref has no
+	 *   category/target to build from (e.g. the recap hasn't loaded yet).
 	 */
 	function getFinishGoalHref(router) {
 		const summary = goalInReviewData.value?.goalSummary;
-		if (!summary?.category) {
-			return null;
-		}
-		return getCtaHref(summary.target, summary.category, router, summary.count ?? 0);
+		return getCtaHref(summary?.target, summary?.category, router, summary?.count ?? 0);
 	}
 
 	/**

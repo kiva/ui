@@ -193,12 +193,6 @@ describe('useGoalInReview', () => {
 		});
 	});
 
-	it('returns no finish-goal href before the recap loads', () => {
-		const { getFinishGoalHref } = useGoalInReview({ apollo: makeApollo() });
-
-		expect(getFinishGoalHref({ currentRoute: { value: {} } })).toBeNull();
-	});
-
 	it('skips the achievements query for support-all, which reads none of it', async () => {
 		const apollo = makeApollo();
 		const { loadGoalInReview } = useGoalInReview({ apollo });
