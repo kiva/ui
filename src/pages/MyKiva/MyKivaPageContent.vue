@@ -200,6 +200,7 @@
 		:data="goalInReviewData"
 		:feedback-submitted="goalInReviewFeedbackSubmitted"
 		@close="closeGoalInReviewModal"
+		@goal-recap-back-to-kiva="closeGoalInReviewModal"
 		@feedback-submitted="handleGoalInReviewFeedbackSubmitted"
 		@finish-goal="handleGoalInReviewFinishGoal"
 		@set-goal="handleGoalInReviewSetGoal"

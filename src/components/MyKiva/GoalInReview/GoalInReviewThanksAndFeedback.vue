@@ -98,7 +98,7 @@ const props = defineProps({
 	},
 });
 
-const emit = defineEmits(['back-to-kiva', 'finish-goal', 'set-goal', 'feedback-submitted']);
+const emit = defineEmits(['goal-recap-back-to-kiva', 'finish-goal', 'set-goal', 'feedback-submitted']);
 
 const $kvTrackEvent = inject('$kvTrackEvent', () => {});
 
@@ -143,7 +143,7 @@ const primaryCta = computed(() => {
 		return { label: `Set my ${Number(props.year) + 1} goal`, event: 'set-goal' };
 	}
 	if (isComplete.value) {
-		return { label: 'Back to Kiva', event: 'back-to-kiva' };
+		return { label: 'Back to Kiva', event: 'goal-recap-back-to-kiva' };
 	}
 	return { label: `Finish my ${props.year} goal`, event: 'finish-goal' };
 });

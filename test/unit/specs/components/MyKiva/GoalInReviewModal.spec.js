@@ -169,7 +169,7 @@ describe('GoalInReviewModal', () => {
 		await fireEvent.click(await findByText('Back to Kiva'));
 
 		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', 'goal-recap-back-to-kiva');
-		expect(emitted()['back-to-kiva']).toHaveLength(1);
+		expect(emitted()['goal-recap-back-to-kiva']).toHaveLength(1);
 	});
 
 	it('reuses set-a-goal with a from-goal-recap property for the next-year CTA', async () => {

@@ -59,7 +59,7 @@
 					:year="data?.year"
 					:current-year="currentYear"
 					:feedback-submitted="feedbackSubmitted"
-					@back-to-kiva="handleCta('back-to-kiva')"
+					@goal-recap-back-to-kiva="handleCta('goal-recap-back-to-kiva')"
 					@finish-goal="handleCta('finish-goal')"
 					@set-goal="handleCta('set-goal')"
 					@feedback-submitted="handleFeedbackSubmitted"
@@ -120,7 +120,7 @@ const props = defineProps({
 	},
 });
 
-const emit = defineEmits(['close', 'back-to-kiva', 'finish-goal', 'set-goal', 'feedback-submitted']);
+const emit = defineEmits(['close', 'goal-recap-back-to-kiva', 'finish-goal', 'set-goal', 'feedback-submitted']);
 const $kvTrackEvent = inject('$kvTrackEvent', () => {});
 
 // Single source of truth for "now". Add ?recapDate=YYYY-MM-DD to the url for QA specific dates
@@ -147,7 +147,6 @@ const handleCta = event => {
 		$kvTrackEvent('portfolio', 'click', `goal-recap-finish-my-${props.data?.year}-goal`);
 	} else {
 		$kvTrackEvent('portfolio', 'click', 'goal-recap-back-to-kiva');
-		emit('close');
 	}
 	emit(event);
 };
