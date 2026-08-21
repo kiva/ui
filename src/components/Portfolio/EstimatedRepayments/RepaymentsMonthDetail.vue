@@ -91,6 +91,7 @@ import {
 	SETTLEMENT_NOTE,
 	DETAIL_LIMIT,
 } from '#src/util/estimatedRepayments/estimatedRepaymentsConstants';
+import { parseMoney } from '#src/util/numberUtils';
 
 export default {
 	name: 'RepaymentsMonthDetail',
@@ -146,7 +147,7 @@ export default {
 			return row.totalRepayments != null && row.pastRepayments === row.totalRepayments;
 		},
 		promoText(row) {
-			if (!row.promoAmount || Number(row.promoAmount) <= 0) {
+			if (parseMoney(row.promoAmount) <= 0) {
 				return '';
 			}
 			const type = PROMO_TYPE_LABELS[row.promoType] || PROMO_CREDIT_FALLBACK_LABEL;
