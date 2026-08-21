@@ -144,7 +144,7 @@ export default {
 
 			this.apollo.watchQuery({ query: publicLendMenuQuery }).subscribe({
 				next: ({ data }) => {
-					this.categories = _get(data, 'lend.loanChannels.values');
+					this.categories = _get(data, 'browsingCategories.values');
 					this.isChannelsLoading = false;
 				}
 			});
