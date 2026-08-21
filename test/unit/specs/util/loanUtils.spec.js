@@ -20,6 +20,7 @@ import {
 	isBetween25And500,
 	isActivelyInPfp,
 	isPublicLoanStatus,
+	showFullView,
 } from '#src/util/loanUtils';
 
 describe('loanUtils.js', () => {
@@ -996,6 +997,42 @@ describe('loanUtils.js', () => {
 			'reviewed', 'deleted', 'issue', 'inactive', 'inactiveExpired',
 		])('should return false for restricted status %s', status => {
 			expect(isPublicLoanStatus(status)).toBe(false);
+		});
+	});
+
+	describe('showFullView', () => {
+		it('should return true for a fundraising loan with unreserved amount remaining', () => {
+			expect(showFullView('fundraising', 400, false, false, {})).toBe(true);
+		});
+
+		it('should return false for a fully-reserved fundraising loan', () => {
+			expect(showFullView('fundraising', 0, false, false, {})).toBe(false);
+		});
+
+		it.each([
+			'funded', 'raised', 'expired', 'payingBack', 'refunded', 'ended', 'defaulted',
+		])('should return false for non-fundraising status %s', status => {
+			expect(showFullView(status, 400, false, false, {})).toBe(false);
+		});
+
+		it('should return true for privileged viewers regardless of status and amount', () => {
+			expect(showFullView('funded', 0, true, false, {})).toBe(true);
+		});
+
+		it('should return true for volunteer viewers regardless of status and amount', () => {
+			expect(showFullView('funded', 0, false, true, {})).toBe(true);
+		});
+
+		it('should return true when the minimal=false query override is set', () => {
+			expect(showFullView('funded', 0, false, false, { minimal: 'false' })).toBe(true);
+		});
+
+		it.each([
+			['minimal=true', { minimal: 'true' }],
+			['no minimal param', {}],
+			['an undefined query', undefined],
+		])('should return false with %s and no other full-view condition', (label, routeQuery) => {
+			expect(showFullView('funded', 0, false, false, routeQuery)).toBe(false);
 		});
 	});
 
