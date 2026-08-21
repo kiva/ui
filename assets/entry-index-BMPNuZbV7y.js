@@ -1,0 +1,1 @@
+import{r as e,_ as o,t as a}from"./entry-index-CovN8vffBz.js";function n(t){return e(1,arguments),t instanceof Date||o(t)==="object"&&Object.prototype.toString.call(t)==="[object Date]"}function i(t){if(e(1,arguments),!n(t)&&typeof t!="number")return!1;var r=a(t);return!isNaN(Number(r))}export{i};

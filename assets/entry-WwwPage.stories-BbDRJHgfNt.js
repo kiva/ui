@@ -1,0 +1,116 @@
+import{c as v}from"./entry-cookie-store-story-mixin-Bv_t57ys9l.js";import{a as x}from"./entry-apollo-story-mixin-Be98L1yqJn.js";import{k as H}from"./entry-kv-auth0-story-mixin-BcDGj1FIz0.js";import{b,f as M,w as A,i as F,l as w,a as B,c as I,d as W,e as P,g as y}from"./entry-siteThemes-1cbJUnnl6F.js";import{W as T}from"./entry-WwwPage-DrqnIk8ItD.js";import"./entry-syncDate-C1Yb7n1xF6.js";import"./entry-_commonjsHelpers-Cpj98o6Yn6.js";import"./entry-_commonjs-dynamic-modules-TDtrdbi37h.js";import"./entry-logFormatter-C3zJjaAqCL.js";import"./entry-TheHeader-y1Gt5XF4SA.js";import"./iframe-Bg3M7544.js";import"./entry-vue.esm-bundler-D8yP9bVmC4.js";import"./entry-index-C1c4cvJ8FT.js";import"./entry-index-CWclSTHHJk.js";import"./entry-numeral-xVHG5DEP0A.js";import"./entry-kiva-logo-Bqo5R24NZM.js";import"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";import"./entry-KvWwwHeaderBasic-BB16oz4SiS.js";import"./entry-tailwind.config-DbyGLZVW5i.js";import"./entry-index-CovN8vffBz.js";import"./entry-index-DaZG7dZWP2.js";import"./entry-index-jQMUY8qRYX.js";import"./entry-CampaignLogoGroup-iO3lwqwgpp.js";import"./entry-KvContentfulImg-Dz7EdpaAeS.js";import"./entry-throttle-DL1zg7kAk0.js";import"./entry-isSymbol-5pnFTpIKM9.js";import"./entry-toNumber-MeiYJWOH0A.js";import"./entry-settingsUtils-CVQrt31Ifm.js";import"./entry-get-7eV6H4dYCO.js";import"./entry-get-ClabG2OWPD.js";import"./entry-experimentVersion-B5y4RTPkgZ.js";import"./entry-useMyKivaHome-Dcc_c7pwbV.js";import"./entry-useApolloQuery-vwcAJ8FTrS.js";import"./entry-vue-router-CpkYp7v6za.js";import"./entry-watchApolloOperation-CRDPfiJcIR.js";import"./entry-logReadQueryError-BL2yt7MPC5.js";import"./entry-headerUtils-DCYXj7N7oP.js";import"./entry-_baseMap-Y3vx4Wl8dz.js";import"./entry-keys-WbbxK4vnp3.js";import"./entry-toInteger-sFBEvOuEHH.js";import"./entry-PromoCreditBanner-NGSUuYFXJY.js";import"./entry-promoCredit-BPne-2XqN5.js";import"./entry-confettiUtils-Cu2ZQx-gOy.js";import"./entry-confetti.module-B5JVzsfHJX.js";import"./entry-lock-scroll-Bww220JhDP.js";import"./entry-getCacheKey-BQZEmBDkIz.js";import"./entry-urlUtils-D59-4GikCB.js";import"./entry-TheBasketBar-CxeFPdFalT.js";import"./entry-KvButton-MrL-mFbsD6.js";import"./entry-basketCount-CZ-kE9ye_Z.js";import"./entry-TheFooter-CWFZsBIuxs.js";import"./entry-KvAccordionItem-CpfEJgtXxC.js";import"./entry-KvExpandable-DetrRB6M8b.js";import"./entry-rich-text-html-renderer.es5-kBaKhcHuza.js";import"./entry-KvGrid-BlihQ0NZ3g.js";import"./entry-updateDonation-CfhElOgRHH.js";import"./entry-AppealBannerCircular-C5-5MNGUTe.js";import"./entry-smooth-scroll-mixin-Coaqv0J44m.js";import"./entry-KvProgressCircle-CVEOmQxqb9.js";import"./entry-GenericPromoBanner-DH9S2YG-wc.js";import"./entry-KvIcon-l6VNE6OMlY.js";import"./entry-DonationBanner-D6g-U7WLO2.js";const S={grayBackground:!1,hideSearchInHeader:!1,headerTheme:null,footerTheme:null},qe={title:"WwwFrame/WwwPage",component:T,args:S,argTypes:{headerTheme:{control:{type:"select",options:{none:null,lightHeader:y,iwdHeaderTheme:P,wrdHeaderTheme:W,fifteenYearHeaderTheme:I,blueHeader:B}}},footerTheme:{control:{type:"select",options:{none:null,lightFooter:w,iwdFooterTheme:F,wrdFooterTheme:A,fifteenYearFooterTheme:M,blueFooter:b},selected:"none"}}}},e=(f,{argTypes:k})=>({props:Object.keys(k),components:{WwwPage:T},mixins:[x(),v(),H],setup(){return{...S,...f}},template:`
+        <www-page
+            :gray-background="grayBackground"
+            :hide-search-in-header="hideSearchInHeader"
+            :header-theme="headerTheme"
+            :footer-theme="footerTheme"
+        >
+            <div class="row" style="padding: 1.625rem 0;">
+                <div class="small-12 columns"><h1>Lorem ipsum</h1></div>
+            </div>
+        </www-page>
+    `}),r=e.bind({});r.args={grayBackground:!0};const o=e.bind({});o.args={hideSearchInHeader:!0};const t=e.bind({});t.args={headerTheme:y,footerTheme:w};var n,a,i;e.parameters={...e.parameters,docs:{...(n=e.parameters)==null?void 0:n.docs,source:{originalSource:`(otherArgs, {
+  argTypes
+}) => ({
+  props: Object.keys(argTypes),
+  components: {
+    WwwPage
+  },
+  mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin],
+  setup() {
+    return {
+      ...args,
+      ...otherArgs
+    };
+  },
+  template: \`
+        <www-page
+            :gray-background="grayBackground"
+            :hide-search-in-header="hideSearchInHeader"
+            :header-theme="headerTheme"
+            :footer-theme="footerTheme"
+        >
+            <div class="row" style="padding: 1.625rem 0;">
+                <div class="small-12 columns"><h1>Lorem ipsum</h1></div>
+            </div>
+        </www-page>
+    \`
+})`,...(i=(a=e.parameters)==null?void 0:a.docs)==null?void 0:i.source}}};var m,s,p;r.parameters={...r.parameters,docs:{...(m=r.parameters)==null?void 0:m.docs,source:{originalSource:`(otherArgs, {
+  argTypes
+}) => ({
+  props: Object.keys(argTypes),
+  components: {
+    WwwPage
+  },
+  mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin],
+  setup() {
+    return {
+      ...args,
+      ...otherArgs
+    };
+  },
+  template: \`
+        <www-page
+            :gray-background="grayBackground"
+            :hide-search-in-header="hideSearchInHeader"
+            :header-theme="headerTheme"
+            :footer-theme="footerTheme"
+        >
+            <div class="row" style="padding: 1.625rem 0;">
+                <div class="small-12 columns"><h1>Lorem ipsum</h1></div>
+            </div>
+        </www-page>
+    \`
+})`,...(p=(s=r.parameters)==null?void 0:s.docs)==null?void 0:p.source}}};var d,h,c;o.parameters={...o.parameters,docs:{...(d=o.parameters)==null?void 0:d.docs,source:{originalSource:`(otherArgs, {
+  argTypes
+}) => ({
+  props: Object.keys(argTypes),
+  components: {
+    WwwPage
+  },
+  mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin],
+  setup() {
+    return {
+      ...args,
+      ...otherArgs
+    };
+  },
+  template: \`
+        <www-page
+            :gray-background="grayBackground"
+            :hide-search-in-header="hideSearchInHeader"
+            :header-theme="headerTheme"
+            :footer-theme="footerTheme"
+        >
+            <div class="row" style="padding: 1.625rem 0;">
+                <div class="small-12 columns"><h1>Lorem ipsum</h1></div>
+            </div>
+        </www-page>
+    \`
+})`,...(c=(h=o.parameters)==null?void 0:h.docs)==null?void 0:c.source}}};var g,l,u;t.parameters={...t.parameters,docs:{...(g=t.parameters)==null?void 0:g.docs,source:{originalSource:`(otherArgs, {
+  argTypes
+}) => ({
+  props: Object.keys(argTypes),
+  components: {
+    WwwPage
+  },
+  mixins: [apolloStoryMixin(), cookieStoreStoryMixin(), kvAuth0StoryMixin],
+  setup() {
+    return {
+      ...args,
+      ...otherArgs
+    };
+  },
+  template: \`
+        <www-page
+            :gray-background="grayBackground"
+            :hide-search-in-header="hideSearchInHeader"
+            :header-theme="headerTheme"
+            :footer-theme="footerTheme"
+        >
+            <div class="row" style="padding: 1.625rem 0;">
+                <div class="small-12 columns"><h1>Lorem ipsum</h1></div>
+            </div>
+        </www-page>
+    \`
+})`,...(u=(l=t.parameters)==null?void 0:l.docs)==null?void 0:u.source}}};const ze=["Default","GrayBackground","HideSearchInHeader","Themed"];export{e as Default,r as GrayBackground,o as HideSearchInHeader,t as Themed,ze as __namedExportsOrder,qe as default};
