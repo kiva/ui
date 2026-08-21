@@ -16,8 +16,13 @@ describe('BorrowerProfile.apollo.preFetch', () => {
 		userProperties: { isPrivileged },
 	});
 
-	const makeClient = loan => ({
-		query: vi.fn().mockResolvedValue({ data: { lend: { loan } } }),
+	const makeClient = (loan, my = null) => ({
+		query: vi.fn().mockResolvedValue({ data: { lend: { loan }, my } }),
+	});
+
+	const makeMy = ({ volunteerId = null } = {}) => ({
+		id: 1,
+		userAccount: { id: 2, volunteerId },
 	});
 
 	const makeContext = ({ kivaId } = {}) => ({
@@ -97,4 +102,38 @@ describe('BorrowerProfile.apollo.preFetch', () => {
 			expect(getChildProfileOperationName(client)).toBe(expectedOperation);
 		}
 	);
+
+	it.each(RESTRICTED_STATUSES)(
+		'allows volunteer viewers to load restricted status %s (CIT-4820)',
+		async status => {
+			const client = makeClient(makeLoan(status), makeMy({ volunteerId: 987 }));
+			const context = makeContext({ kivaId: 'auth0|abc' });
+
+			await expect(BorrowerProfile.apollo.preFetch({}, client, context)).resolves.toBeDefined();
+		}
+	);
+
+	it.each([
+		'funded',
+		'fundraising',
+	])(
+		'routes volunteer viewers to the full profile for a fully-reserved %s loan (CIT-4820)',
+		async status => {
+			const client = makeClient(makeLoan(status, { unreservedAmount: '0' }), makeMy({ volunteerId: 987 }));
+			const context = makeContext({ kivaId: 'auth0|abc' });
+
+			await BorrowerProfile.apollo.preFetch({}, client, context);
+
+			expect(getChildProfileOperationName(client)).toBe('fullBorrowerProfileData');
+		}
+	);
+
+	it('routes logged-in non-volunteer viewers to the minimal profile for a fully-reserved funded loan', async () => {
+		const client = makeClient(makeLoan('funded', { unreservedAmount: '0' }), makeMy());
+		const context = makeContext({ kivaId: 'auth0|abc' });
+
+		await BorrowerProfile.apollo.preFetch({}, client, context);
+
+		expect(getChildProfileOperationName(client)).toBe('minimalBorrowerProfileData');
+	});
 });
