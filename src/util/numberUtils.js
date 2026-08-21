@@ -1,3 +1,5 @@
+import numeral from 'numeral';
+
 /**
  * Returns whether the provided value is a number
  *
@@ -13,17 +15,19 @@ export function isNumber(value) {
 /**
  * Parses a GraphQL `Money` value into a JS number.
  *
- * The gateway serializes `Money` as a display-formatted string with thousands
- * separators (e.g. `'11,621.53'`), so a bare `Number()` returns `NaN` for any
- * value of 1,000 or more. Strip the separators before coercing.
+ * `Money` arrives as a display-formatted string (`'11,621.53'`), so plain
+ * coercion mangles it: `Number()` gives `NaN` at 1,000 and up, `parseFloat()`
+ * truncates at the comma. Uses `numeral` to match how the rest of the app
+ * parses Money.
  *
  * @param {string|number|null|undefined} value The `Money` value to parse
- * @returns {number} The parsed amount, or 0 when it isn't numeric
+ * @returns {number} The parsed amount, or 0 when it isn't a finite number
  */
 export function parseMoney(value) {
-	if (value === null || value === undefined || typeof value === 'boolean') return 0;
+	// numeral reads booleans as 1 and passes Infinity through; Money is neither.
+	if (typeof value === 'boolean') return 0;
 
-	const parsed = Number(String(value).replace(/,/g, ''));
+	const parsed = numeral(value).value();
 
 	return Number.isFinite(parsed) ? parsed : 0;
 }

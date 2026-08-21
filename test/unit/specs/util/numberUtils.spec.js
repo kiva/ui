@@ -64,13 +64,23 @@ describe('numberUtils.js', () => {
 			expect(parseMoney(0)).toBe(0);
 		});
 
+		it('should parse the other formats numeral accepts', () => {
+			// parseMoney delegates to numeral, so these come for free — worth pinning
+			// so a future reimplementation can't silently drop them.
+			expect(parseMoney('$1,234.56')).toBe(1234.56);
+			expect(parseMoney('(1,234.56)')).toBe(-1234.56);
+		});
+
 		it('should fall back to 0 for non-numeric and absent values', () => {
 			expect(parseMoney(null)).toBe(0);
 			expect(parseMoney(undefined)).toBe(0);
 			expect(parseMoney('')).toBe(0);
 			expect(parseMoney('n/a')).toBe(0);
 			expect(parseMoney(NaN)).toBe(0);
+			// numeral passes these straight through; a Money value is never infinite,
+			// and letting one escape would poison every downstream total.
 			expect(parseMoney(Infinity)).toBe(0);
+			expect(parseMoney(-Infinity)).toBe(0);
 			expect(parseMoney(true)).toBe(0);
 			expect(parseMoney({})).toBe(0);
 		});
