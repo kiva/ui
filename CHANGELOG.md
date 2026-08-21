@@ -1,3 +1,9 @@
+## [3.87.0-rc.2](https://github.com/kiva/ui/compare/v3.87.0-rc.1...v3.87.0-rc.2) (2026-08-21)
+
+### 🐛 Bugfixes
+
+* host estimated repayments page ([#7182](https://github.com/kiva/ui/issues/7182)) ([cae7ea0](https://github.com/kiva/ui/commit/cae7ea0f6088fc98453280bdf9a6d21ee98b1c2e))
+
 ## [3.87.0-rc.1](https://github.com/kiva/ui/compare/v3.86.2...v3.87.0-rc.1) (2026-08-21)
 
 ### 🎉 New Features
