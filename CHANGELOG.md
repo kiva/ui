@@ -1,3 +1,10 @@
+## [3.86.2-rc.1](https://github.com/kiva/ui/compare/v3.86.1...v3.86.2-rc.1) (2026-08-20)
+
+### 🐛 Bugfixes
+
+* make KvWwwHeaderBasic the default global header ([e358570](https://github.com/kiva/ui/commit/e358570c5f50e9f9231e2a3fc6853d14e4ee411b))
+* retire the home_page global header experiment wiring ([fbc2ed9](https://github.com/kiva/ui/commit/fbc2ed921830096aa5f53520e05a315fa36eabc6))
+
 ## [3.86.1](https://github.com/kiva/ui/compare/v3.86.0...v3.86.1) (2026-08-20)
 
 ### 🐛 Bugfixes
