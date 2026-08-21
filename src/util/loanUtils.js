@@ -61,6 +61,25 @@ export function isPublicLoanStatus(status) {
 }
 
 /**
+ * Returns true if the borrower profile should render the full view instead of the minimal view.
+ * Fully-reserved fundraising loans (unreservedAmount === 0) show the minimal view
+ * for non-privileged, non-volunteer users since there's nothing left to lend.
+ *
+ * @param {string} status loan status
+ * @param {number} unreservedAmount amount of the loan not yet funded or reserved
+ * @param {boolean} isPrivileged viewer has privileged access to the loan
+ * @param {boolean} isVolunteer viewer is a Kiva volunteer
+ * @param {object} routeQuery current route query params
+ * @returns {boolean}
+ */
+export function showFullView(status, unreservedAmount, isPrivileged, isVolunteer, routeQuery) {
+	return (unreservedAmount > 0 && status === FUNDRAISING)
+		|| isPrivileged
+		|| isVolunteer
+		|| routeQuery?.minimal === 'false';
+}
+
+/**
  * Returns the why special string for the loan if it is defined
  *
  * @param {string} whySpecial from LoanBasic.whySpecial
