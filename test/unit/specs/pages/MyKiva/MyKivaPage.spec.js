@@ -344,7 +344,8 @@ describe('MyKivaPage', () => {
 				apollo: {
 					watchQuery: vi.fn(() => ({
 						subscribe: vi.fn(),
-					}))
+					})),
+					query: vi.fn().mockResolvedValue({ data: {} }),
 				},
 				$route: { query: {} },
 				loadGoalData: vi.fn().mockResolvedValue(),
@@ -364,6 +365,39 @@ describe('MyKivaPage', () => {
 			expect(context.loadGoalData).toHaveBeenCalledWith(
 				expect.objectContaining({ checkMyKivaCompletedGoalAfterLoad: true })
 			);
+		});
+
+		it('watches userPreferences from the cache only and fetches over the network once', async () => {
+			const unsubscribe = vi.fn();
+			const subscribe = vi.fn(() => ({ unsubscribe }));
+			const watchQuery = vi.fn(() => ({ subscribe }));
+			const query = vi.fn().mockResolvedValue({ data: {} });
+			const context = {
+				apollo: { watchQuery, query },
+				$route: { query: {} },
+				loadGoalData: vi.fn().mockResolvedValue(),
+				renewAnnualGoal: vi.fn().mockResolvedValue({
+					showRenewedAnnualGoalToast: false,
+					expiredGoals: [],
+				}),
+				fixIncorrectlyCompletedGoals: vi.fn().mockResolvedValue({ wasFixed: false }),
+				setHideGoalCardPreference: vi.fn().mockResolvedValue(),
+				goalRefreshKey: 0,
+				userInfo: {},
+			};
+
+			await MyKivaPage.mounted.call(context);
+
+			// The watcher must never be able to trigger network requests itself,
+			// otherwise partial responses cause an infinite refetch loop
+			expect(watchQuery).toHaveBeenCalledTimes(1);
+			expect(watchQuery).toHaveBeenCalledWith(
+				expect.objectContaining({ fetchPolicy: 'cache-only' })
+			);
+			expect(query).toHaveBeenCalledTimes(1);
+
+			MyKivaPage.beforeUnmount.call(context);
+			expect(unsubscribe).toHaveBeenCalledTimes(1);
 		});
 	});
 
