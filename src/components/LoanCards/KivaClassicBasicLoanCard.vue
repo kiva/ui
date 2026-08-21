@@ -44,9 +44,6 @@
 				<div v-if="countryName">
 					<summary-tag
 						class="tw-absolute tw-bottom-2 tw-left-1 tw-text-primary"
-						:city="city"
-						:state="state"
-						:country-name="countryName"
 					>
 						<kv-material-icon
 							class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
