@@ -1,16 +1,16 @@
 <template>
 	<section
 		ref="globalReachSection"
-		class="tw-w-full tw-bg-marigold-1 tw-px-2.5 tw-py-4 md:tw-px-4"
+		class="tw-w-full tw-bg-marigold-1 tw-px-2.5 tw-pb-6 tw-pt-4 md:!tw-py-4 md:tw-px-4"
 		:class="{ 'is-in-view': globalReachInView }"
 		data-animate-on-view
 		data-testid="goal-in-review-global-reach"
 	>
-		<p class="tw-text-label tw-text-eco-green-3 tw-mb-1 kv-fade-up global-reach-eyebrow">
+		<p class="tw-text-label tw-text-eco-green-3 tw-mb-0.5 md:tw-mb-1 kv-fade-up global-reach-eyebrow">
 			Global reach
 		</p>
 
-		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-4 kv-fade-up global-reach-headline">
+		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-3 kv-fade-up global-reach-headline">
 			Your goal crossed
 			<span class="tw-text-marigold">{{ borderCount }} borders.</span>
 		</h1>
@@ -70,11 +70,11 @@
 		data-animate-on-view
 		data-testid="goal-in-review-global-reach-sectors"
 	>
-		<p class="tw-text-label tw-text-eco-green-3 tw-mb-1 kv-fade-up global-reach-eyebrow">
+		<p class="tw-text-label tw-text-eco-green-3 tw-mb-0.5 md:tw-mb-1 kv-fade-up global-reach-eyebrow">
 			Sectors Funded
 		</p>
 
-		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-4 kv-fade-up global-reach-headline">
+		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-4 md:tw-mb-3 kv-fade-up global-reach-headline">
 			You backed
 			<span class="tw-text-marigold">{{ sectorCount }} sectors</span> of opportunity.
 		</h1>
@@ -206,6 +206,10 @@ onBeforeUnmount(() => sectionObserver?.disconnect());
  * markup (ring wrapper = first child, legend = second child) — revisit if that
  * component's template changes.
  */
+ .sectors-chart :deep(.kv-pie-chart-v2) {
+	@apply tw-gap-4;
+}
+
 .sectors-chart :deep(.kv-pie-chart-v2 > div:nth-of-type(2)) {
 	/* Legend: 2-column grid of pills at every breakpoint. */
 	@apply tw-grid tw-grid-cols-2 tw-gap-y-1 tw-gap-x-2 md:!tw-gap-x-3;
@@ -258,7 +262,7 @@ onBeforeUnmount(() => sectionObserver?.disconnect());
 @screen md {
 	.sectors-chart :deep(.kv-pie-chart-v2) {
 		/* Donut on the left, legend on the right. */
-		@apply tw-flex-row tw-items-center tw-gap-4;
+		@apply tw-flex-row tw-items-center tw-gap-x-6 tw-gap-y-3;
 	}
 
 	.sectors-chart :deep(.kv-pie-chart-v2 > div:first-child) {

@@ -67,7 +67,7 @@ describe('GoalInReviewThanksAndFeedback', () => {
 				goalStatus: 'completed', year: GOAL_YEAR, currentYear: CURRENT_YEAR,
 			});
 			await fireEvent.click(getByText('Back to Kiva'));
-			expect(emitted()['back-to-kiva']).toHaveLength(1);
+			expect(emitted()['goal-recap-back-to-kiva']).toHaveLength(1);
 		});
 
 		it('in progress: "Finish my {year} goal"', async () => {

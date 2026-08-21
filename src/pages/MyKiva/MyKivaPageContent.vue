@@ -200,7 +200,10 @@
 		:data="goalInReviewData"
 		:feedback-submitted="goalInReviewFeedbackSubmitted"
 		@close="closeGoalInReviewModal"
+		@goal-recap-back-to-kiva="closeGoalInReviewModal"
 		@feedback-submitted="handleGoalInReviewFeedbackSubmitted"
+		@finish-goal="handleGoalInReviewFinishGoal"
+		@set-goal="handleGoalInReviewSetGoal"
 	/>
 </template>
 
@@ -360,6 +363,7 @@ export default {
 		const { getMostRecentBlogPost } = useContentful(apollo);
 		const { isMobile } = useBreakpoints();
 		const {
+			getFinishGoalHref,
 			goalInReviewData,
 			loadAutoOpenRecap,
 			loadGoalInReview,
@@ -371,6 +375,7 @@ export default {
 		} = useBadgeData();
 
 		return {
+			getFinishGoalHref,
 			getLoanFindingUrl,
 			isTieredAchievementComplete,
 			getMostRecentBlogPost,
@@ -790,6 +795,18 @@ export default {
 		},
 		async handleGoalInReviewFeedbackSubmitted() {
 			await this.setGoalFeedbackSubmittedPreference(this.goalInReviewData?.year);
+		},
+		// "Finish my goal" routes to the goal category's loan-finding page, the same
+		// destination as the goal cards' continue CTA (tracking fires in the modal).
+		handleGoalInReviewFinishGoal() {
+			const href = this.getFinishGoalHref(this.$router);
+			if (href) {
+				window.location.href = href;
+			}
+		},
+		handleGoalInReviewSetGoal() {
+			this.closeGoalInReviewModal();
+			this.openGoalSettingModal();
 		},
 	},
 	created() {

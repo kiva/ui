@@ -80,6 +80,7 @@ export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) 
 	const cookies = cookieStore || inject('cookieStore', null);
 	const {
 		getCategories,
+		getCtaHref,
 		getGoalSummary,
 		hasViewedGoalRecapForYear,
 		loadPreferences,
@@ -167,6 +168,21 @@ export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) 
 	}
 
 	/**
+	 * Href for the recap's "Finish my goal" CTA — the goal category's loan-finding
+	 * page with the "Support N more" header, built with the same getCtaHref the
+	 * goal cards use so both routes land on the same page. getCtaHref owns the
+	 * missing-field guard, so callers null-check the result.
+	 *
+	 * @param {object} router Vue router instance (getCtaHref reads the current route).
+	 * @returns {string|null} The loan-finding href; null when getCtaHref has no
+	 *   category/target to build from (e.g. the recap hasn't loaded yet).
+	 */
+	function getFinishGoalHref(router) {
+		const summary = goalInReviewData.value?.goalSummary;
+		return getCtaHref(summary?.target, summary?.category, router, summary?.count ?? 0);
+	}
+
+	/**
 	 * Loads the recap only when it should open by itself. MyKiva and Portfolio both
 	 * call this, so the pop-up happens once per user rather than once per page.
 	 *
@@ -217,6 +233,7 @@ export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) 
 
 	return {
 		GOAL_RECAP_DEEP_LINK,
+		getFinishGoalHref,
 		goalInReviewData,
 		isEligible,
 		loadAutoOpenRecap,
