@@ -54,6 +54,8 @@
 			:feedback-submitted="goalInReviewFeedbackSubmitted"
 			@close="showGoalInReviewModal = false"
 			@feedback-submitted="handleGoalInReviewFeedbackSubmitted"
+			@finish-goal="handleGoalInReviewFinishGoal"
+			@set-goal="handleGoalInReviewSetGoal"
 		/>
 	</www-page>
 </template>
@@ -119,6 +121,7 @@ export default {
 	},
 	setup() {
 		const {
+			getFinishGoalHref,
 			goalInReviewData,
 			loadAutoOpenRecap,
 			hasSubmittedGoalFeedbackForYear,
@@ -126,6 +129,7 @@ export default {
 		} = useGoalInReview();
 
 		return {
+			getFinishGoalHref,
 			goalInReviewData,
 			loadAutoOpenRecap,
 			hasSubmittedGoalFeedbackForYear,
@@ -186,6 +190,17 @@ export default {
 		},
 		async handleGoalInReviewFeedbackSubmitted() {
 			await this.setGoalFeedbackSubmittedPreference(this.goalInReviewData?.year);
+		},
+		// "Finish my goal" routes to the goal category's loan-finding page, the same
+		// destination as the goal cards' continue CTA (tracking fires in the modal).
+		handleGoalInReviewFinishGoal() {
+			const href = this.getFinishGoalHref(this.$router);
+			if (href) {
+				window.location.href = href;
+			}
+		},
+		handleGoalInReviewSetGoal() {
+			window.location.href = '/goal-setting';
 		},
 		loadEducationPost() {
 			// Donation Education Module Experiment MARS-497

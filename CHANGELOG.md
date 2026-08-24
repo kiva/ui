@@ -1,3 +1,19 @@
+## [3.87.0-rc.2](https://github.com/kiva/ui/compare/v3.87.0-rc.1...v3.87.0-rc.2) (2026-08-21)
+
+### 🐛 Bugfixes
+
+* host estimated repayments page ([#7182](https://github.com/kiva/ui/issues/7182)) ([cae7ea0](https://github.com/kiva/ui/commit/cae7ea0f6088fc98453280bdf9a6d21ee98b1c2e))
+
+## [3.87.0-rc.1](https://github.com/kiva/ui/compare/v3.86.2...v3.87.0-rc.1) (2026-08-21)
+
+### 🎉 New Features
+
+* [mp-3091] - vqa goal in review ([#7180](https://github.com/kiva/ui/issues/7180)) ([6169443](https://github.com/kiva/ui/commit/61694435b47db85eb65443b822acf09281da2dd2))
+
+### 🐛 Bugfixes
+
+* resolve issue with super lender data on estimated repayments newstack page ([#7181](https://github.com/kiva/ui/issues/7181)) ([e5065b5](https://github.com/kiva/ui/commit/e5065b542357d1e683555ba65688cb8a0ae022fd))
+
 ## [3.86.2](https://github.com/kiva/ui/compare/v3.86.1...v3.86.2) (2026-08-21)
 
 ### 🐛 Bugfixes

@@ -10,8 +10,10 @@ const getCategories = vi.fn(() => [
 	{ badgeId: 'climate-action', name: 'Climate Action' },
 ]);
 
+const getCtaHref = vi.fn(() => '/lend/filter?header=finish');
+
 vi.mock('#src/composables/useGoalData', () => ({
-	default: () => ({ getGoalSummary, getCategories }),
+	default: () => ({ getGoalSummary, getCategories, getCtaHref }),
 }));
 
 const supportAllSummary = {
@@ -178,6 +180,16 @@ describe('useGoalInReview', () => {
 
 			expect(result.goalSummary.countries).toEqual([]);
 			expect(result.goalSummary.loans).toEqual([]);
+		});
+
+		it('builds the finish-goal href from the loaded recap via the goal cards\' getCtaHref', async () => {
+			const router = { currentRoute: { value: { path: '/mykiva' } } };
+			const { loadGoalInReview, getFinishGoalHref } = useGoalInReview({ apollo: apolloForCategoryGoal() });
+
+			await loadGoalInReview({ year: 2027 });
+
+			expect(getFinishGoalHref(router)).toBe('/lend/filter?header=finish');
+			expect(getCtaHref).toHaveBeenCalledWith(4, 'climate-action', router, expect.any(Number));
 		});
 	});
 

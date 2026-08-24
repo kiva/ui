@@ -1,6 +1,6 @@
 <template>
 	<section
-		class="tw-w-full tw-bg-gray-50 tw-px-2.5 tw-py-4 md:tw-px-4 md:tw-py-7.5"
+		class="tw-w-full tw-bg-gray-50 tw-px-2.5 tw-py-5 md:tw-px-4 md:tw-py-7.5"
 		data-testid="goal-in-review-giving-insights"
 	>
 		<p class="tw-text-eco-green-3 tw-mb-1 kv-fade-up giving-insights-eyebrow">

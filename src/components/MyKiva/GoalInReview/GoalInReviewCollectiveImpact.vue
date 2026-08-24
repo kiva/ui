@@ -1,14 +1,15 @@
 <template>
 	<section
 		ref="section"
-		class="goal-in-review-collective-impact tw-w-full tw-bg-marigold-1 tw-px-2.5 md:!tw-px-4 tw-pt-5 tw-pb-9"
+		class="goal-in-review-collective-impact tw-w-full tw-bg-marigold-1
+			tw-px-2.5 md:!tw-px-4 tw-pt-5 md:tw-pt-7.5 tw-pb-9"
 		data-testid="goal-in-review-collective-impact"
 	>
-		<p class="tw-text-small tw-text-action tw-mb-1 kv-fade-up">
+		<p class="tw-text-small tw-text-action tw-mb-0.5 md:tw-mb-1 kv-fade-up">
 			Collective impact
 		</p>
 
-		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-4 kv-fade-up">
+		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-0 md:tw-mb-4 kv-fade-up">
 			Goal Setters create something <span class="tw-text-marigold">bigger.</span>
 		</h1>
 		<div class="tw-mx-auto tw-max-w-3xl">
