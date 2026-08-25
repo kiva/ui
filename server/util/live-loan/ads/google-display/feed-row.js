@@ -27,7 +27,7 @@ const BANNED_WORDS_RE = new RegExp(`\\b(${BANNED_WORDS.join('|')})\\b`, 'iu');
 const ALL_CAPS_RE = /\p{Lu}{4,}/u;
 
 // Lead-in that turns a bare loan-use fragment into a sentence for the description.
-const LOAN_USE_PREFIX = 'This loan is special because';
+const LOAN_USE_PREFIX = 'This loan helps';
 
 export const FEED_COLUMNS = [
 	'id', 'title', 'description', 'google_product_category', 'image_link', 'link',
