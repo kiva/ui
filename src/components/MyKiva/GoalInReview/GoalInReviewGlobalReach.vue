@@ -92,6 +92,8 @@
 				:values="sectorValues"
 				:stroke-width="36"
 				:shown-segments="sectorValues.length"
+				:grow-duration="200"
+				:initial-delay="100"
 				unit="percent"
 			/>
 		</div>
