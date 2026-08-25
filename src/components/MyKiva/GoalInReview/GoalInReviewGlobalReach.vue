@@ -1,7 +1,7 @@
 <template>
 	<section
 		ref="globalReachSection"
-		class="tw-w-full tw-bg-marigold-1 tw-px-2.5 tw-pb-6 tw-pt-4 md:!tw-py-4 md:tw-px-4"
+		class="tw-w-full tw-bg-marigold-1 tw-px-2.5 tw-pt-4 md:!tw-pt-5 tw-pb-6 md:!tw-pb-4 md:tw-px-4"
 		:class="{ 'is-in-view': globalReachInView }"
 		data-animate-on-view
 		data-testid="goal-in-review-global-reach"

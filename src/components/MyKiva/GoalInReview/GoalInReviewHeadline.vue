@@ -82,7 +82,7 @@
 
 		<div>
 			<div class="tw-px-2 md:tw-px-4 lg:tw-px-8 tw-mx-auto tw-text-center">
-				<h3 class="tw-mx-auto tw-mb-8 lg:tw-mb-4 tw-max-w-lg kv-fade-up headline-subtext">
+				<h3 class="tw-mx-auto tw-mb-8 lg:tw-mb-6 tw-max-w-lg kv-fade-up headline-subtext">
 					Because of your commitment, borrowers could count on Kiva to be there when it mattered.
 				</h3>
 
@@ -106,7 +106,7 @@
 					</li>
 				</ul>
 
-				<div class="tw-mt-4 md:tw-mt-2 tw-text-action">
+				<div class="tw-mt-4 md:tw-mt-2 lg:tw-mt-8 tw-text-action">
 					<p class="tw-text-base tw-mb-1.5 kv-rebound-in headline-scroll-cue">
 						Scroll to explore the stories behind your goal
 					</p>
