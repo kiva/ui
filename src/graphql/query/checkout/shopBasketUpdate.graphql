@@ -17,6 +17,7 @@ query shopBasketUpdate($basketId: String) {
 		basket {
 			id
 			hasFreeCredits
+			applyKivaCreditToDonation
 			credits {
 				totalCount
 				values {

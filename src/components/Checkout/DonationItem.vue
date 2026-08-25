@@ -20,6 +20,7 @@
 							<div class="tw-w-full tw-flex">
 								<h2
 									class="tw-flex-1 md:tw-flex-grow"
+									:class="{ 'tw-text-h3 !tw-font-medium tw-text-primary': isTipToggleVariant }"
 									data-testid="basket-donation-title"
 								>
 									{{ basketDonationHeader }}
@@ -104,13 +105,20 @@
 						</div>
 					</div>
 
-					<div>
+					<div
+						:class="{
+							'md:tw-my-1 md:tw-max-w-2xl': isTipToggleVariant,
+							'md:tw-flex md:tw-items-center md:tw-gap-0.5': isTipToggleVariant,
+						}"
+					>
 						<div
-							class="donation-tagline tw-my-1 tw-max-w-2xl"
+							class="tw-my-1 tw-max-w-2xl"
+							:class="{ 'md:tw-my-0 md:tw-max-w-none md:tw-min-w-0': isTipToggleVariant }"
 							data-testid="basket-donation-tagline"
 						>
 							<p
 								class="tw-text-base"
+								:class="{ 'md:tw-truncate': isTipToggleVariant }"
 							>
 								{{ basketDonationTagline }}
 							</p>
@@ -126,6 +134,7 @@
 						<button
 							v-else
 							class="tw-flex tw-items-center tw-text-base tw-text-link"
+							:class="{ 'md:tw-flex-none': isTipToggleVariant }"
 							data-testid="basket-donation-info-lightbox"
 							@click="triggerDefaultLightbox"
 							v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
@@ -138,6 +147,12 @@
 						</button>
 					</div>
 				</div>
+
+				<kiva-credit-tip-toggle
+					v-if="isTipToggleVariant"
+					@updating-totals="$emit('updating-totals', $event)"
+					@refreshtotals="$emit('refreshtotals')"
+				/>
 			</div>
 
 			<!-- donation total -->
@@ -275,6 +290,7 @@ import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
 import HowKivaUsesDonation from '#src/components/Checkout/HowKivaUsesDonation';
 import DonationNudgeLightbox from '#src/components/Checkout/DonationNudge/DonationNudgeLightbox';
 import DonateRepayments from '#src/components/Checkout/DonateRepaymentsToggle';
+import KivaCreditTipToggle from '#src/components/Checkout/KivaCreditTipToggle';
 import {
 	KvMaterialIcon, KvTextInput, KvButton, KvLightbox
 } from '@kiva/kv-components';
@@ -288,10 +304,16 @@ export default {
 		KvLightbox,
 		KvTextInput,
 		DonateRepayments,
+		KivaCreditTipToggle,
 		DonationNudgeLightbox,
 		HowKivaUsesDonation,
 	},
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { from: 'apollo' },
+		cookieStore: { from: 'cookieStore' },
+		// Assigned version provided by the checkout page; null when rendered elsewhere
+		tipFromBalanceVersion: { default: null },
+	},
 	emits: ['refreshtotals', 'updating-totals'],
 	props: {
 		donation: {
@@ -344,6 +366,9 @@ export default {
 	computed: {
 		isCampaignDonation() {
 			return !!this.donation?.metadata?.campaignId;
+		},
+		isTipToggleVariant() {
+			return this.tipFromBalanceVersion === 'b' && !this.isCampaignDonation && !this.orderTotalVariant;
 		},
 		donationTitle() {
 			return 'Donation to Kiva';
