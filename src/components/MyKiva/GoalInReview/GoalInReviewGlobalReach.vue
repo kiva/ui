@@ -22,7 +22,7 @@
 				:aspect-ratio="1.8"
 				:lat="mapCenter.lat"
 				:long="mapCenter.long"
-				:zoom-level="2"
+				:zoom-level="mapZoom"
 				:use-leaflet="true"
 				:show-labels="false"
 				:show-tooltips="false"
@@ -92,7 +92,6 @@
 				:values="sectorValues"
 				:stroke-width="36"
 				:shown-segments="sectorValues.length"
-				:initial-delay="300"
 				unit="percent"
 			/>
 		</div>
@@ -108,7 +107,12 @@ import {
 } from 'vue';
 import { KvMap, KvMaterialIcon, KvPieChartV2 } from '@kiva/kv-components';
 import { mdiMapMarker } from '@mdi/js';
-import { getCountriesMapCenter, getNamedSectorCount, getSectorChartValues } from '#src/util/goalInReview';
+import {
+	getCountriesMapCenter,
+	getCountriesMapZoom,
+	getNamedSectorCount,
+	getSectorChartValues,
+} from '#src/util/goalInReview';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 
 const MAX_VISIBLE_COUNTRIES = 14;
@@ -133,6 +137,7 @@ const countriesData = computed(() => props.countries.map(country => ({
 })));
 
 const mapCenter = computed(() => getCountriesMapCenter(props.countries));
+const mapZoom = computed(() => getCountriesMapZoom(props.countries));
 
 const borderCount = computed(() => props.countries.length);
 const borderNoun = computed(() => (borderCount.value === 1 ? 'border' : 'borders'));
