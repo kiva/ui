@@ -1,3 +1,33 @@
+## [3.88.0](https://github.com/kiva/ui/compare/v3.87.0...v3.88.0) (2026-08-26)
+
+### 🎉 New Features
+
+* [MP-3131] auto-open badge claim modal from marketing email link ([#7183](https://github.com/kiva/ui/issues/7183)) ([405bf00](https://github.com/kiva/ui/commit/405bf007cb13ac46741f5e664b2dbbd0a130babe))
+
+### 🐛 Bugfixes
+
+* **borrower-profile:** show the full loan view to volunteers ([c0560a5](https://github.com/kiva/ui/commit/c0560a5aa25ba3d1215f0c750c4ae2b6cf39ec1c))
+* **GoalSettingModal:** build the modal body only while it is open ([887851d](https://github.com/kiva/ui/commit/887851d11d781f4eaa9cab8632d5288d5c606bce))
+* google ads desc update ([#7186](https://github.com/kiva/ui/issues/7186)) ([6047259](https://github.com/kiva/ui/commit/6047259b54ebfd1834975bcded5062c8f272ceaf))
+* **LendingStats:** size the next steps placeholders to the real slide box ([22d307e](https://github.com/kiva/ui/commit/22d307ee3f4e5601818be870c391b65119540b08))
+* **MyKivaPageContent:** server-render the next steps, borrower, and category sections ([4941c65](https://github.com/kiva/ui/commit/4941c656f1f1e48c26d7a884b34753140845591c))
+* **SummaryCard:** show the borrower's city for lending partner loans ([4017cb1](https://github.com/kiva/ui/commit/4017cb150c9473e320c1a26f3979aa5cc1e72cfb))
+
+### 🪚 Refactors
+
+* **carousels:** drive slide widths from CSS custom properties ([c4f8fc9](https://github.com/kiva/ui/commit/c4f8fc9da99331609158278dd9d0d704a2622048))
+
+### 🔍 Tests
+
+* **borrower-profile:** cover the showFullView predicate and volunteer routing ([0793021](https://github.com/kiva/ui/commit/0793021d73ef52c8c24937caf35d59090ba9a246))
+* **GoalSettingModal:** cover the add-to-basket payload around the open guard ([62d7a2b](https://github.com/kiva/ui/commit/62d7a2b82953fd60c171a2d2debd4280d28ece30))
+* **stories:** add breakpoint stories for the MyKiva carousels ([c9a3f97](https://github.com/kiva/ui/commit/c9a3f9747e125ce0a73642de2e5b52dd3f80ace9))
+* **SummaryCard:** cover the location line formats ([371a9b0](https://github.com/kiva/ui/commit/371a9b0240593104e298c3389eb1030475df3ff1))
+
+### 🧹 Chores
+
+* **release:** 3.88.0-rc.1 [skip ci] ([884ddce](https://github.com/kiva/ui/commit/884ddceb187b3a120f3e0705642297203b3dfe78)), closes [#7183](https://github.com/kiva/ui/issues/7183) [#7186](https://github.com/kiva/ui/issues/7186)
+
 ## [3.88.0-rc.1](https://github.com/kiva/ui/compare/v3.87.0...v3.88.0-rc.1) (2026-08-25)
 
 ### 🎉 New Features
