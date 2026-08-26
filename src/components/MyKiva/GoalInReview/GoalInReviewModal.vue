@@ -164,9 +164,16 @@ const handleFeedbackSubmitted = () => {
 const slidesContainer = ref(null);
 const viewedSlides = new Set();
 let slideObserver = null;
+let revealObserver = null;
 
 // Screen 1 is always the opening view; screens 2..7 are observed on scroll.
 const OPENING_SCREEN = '1';
+
+// Analytics counts a screen "viewed" once its top passes the modal's midpoint.
+const VIEW_ROOT_MARGIN = '0px 0px -50% 0px';
+// Entrance animations reveal earlier — as a section clears the modal's bottom edge —
+// so motion plays while it rises into view rather than once it is halfway up.
+const REVEAL_ROOT_MARGIN = '0px 0px -10% 0px';
 
 const markScreenViewed = slide => {
 	if (!slide || viewedSlides.has(slide)) {
@@ -176,9 +183,11 @@ const markScreenViewed = slide => {
 	$kvTrackEvent('portfolio', 'view', 'goal-in-review', `screen-${slide}`);
 };
 
-const teardownSlideObserver = () => {
+const teardownObservers = () => {
 	slideObserver?.disconnect();
 	slideObserver = null;
+	revealObserver?.disconnect();
+	revealObserver = null;
 };
 
 // Unpause the section's entrance animations (see the reveal-on-scroll gate in
@@ -201,13 +210,25 @@ const trackSlideViews = entries => {
 			return;
 		}
 		markScreenViewed(slide);
-		revealSlide(entry.target);
 		slideObserver?.unobserve(entry.target);
 	});
 };
 
-const setupSlideObserver = async () => {
-	teardownSlideObserver();
+// Reveal runs on its own, earlier-triggering observer so entrance animations start
+// as a section enters from the bottom — decoupled from the view-tracking threshold.
+// Same 0-height guard: async wrappers are briefly stacked at the top on open.
+const revealSlides = entries => {
+	entries.forEach(entry => {
+		if (!entry.isIntersecting || entry.boundingClientRect.height === 0) {
+			return;
+		}
+		revealSlide(entry.target);
+		revealObserver?.unobserve(entry.target);
+	});
+};
+
+const setupObservers = async () => {
+	teardownObservers();
 	viewedSlides.clear();
 	// Fire the opening screen now — the async slides aren't laid out yet, so the
 	// observer can't reliably detect screen 1 on open without a scroll.
@@ -220,15 +241,20 @@ const setupSlideObserver = async () => {
 	}
 	// Re-hide the scroll-revealed sections so a reopen replays their entrance.
 	targets.forEach(target => target.classList.remove('is-in-view'));
+	const root = container.closest('#kvLightboxBody');
 	slideObserver = createIntersectionObserver({
 		targets,
 		callback: trackSlideViews,
-		// Trigger when a section's top passes the scroll container's midpoint.
-		options: { root: container.closest('#kvLightboxBody'), rootMargin: '0px 0px -50% 0px', threshold: 0 },
+		options: { root, rootMargin: VIEW_ROOT_MARGIN, threshold: 0 },
+	});
+	revealObserver = createIntersectionObserver({
+		targets,
+		callback: revealSlides,
+		options: { root, rootMargin: REVEAL_ROOT_MARGIN, threshold: 0 },
 	});
 	// No observer means no scroll callback will fire, so reveal every gated
 	// section up front rather than leaving its content paused and hidden.
-	if (!slideObserver) {
+	if (!revealObserver) {
 		targets.forEach(revealSlide);
 	}
 };
@@ -236,13 +262,13 @@ const setupSlideObserver = async () => {
 watch(() => props.show, isShown => {
 	if (isShown) {
 		closeTracked = false;
-		setupSlideObserver();
+		setupObservers();
 	} else {
-		teardownSlideObserver();
+		teardownObservers();
 	}
 }, { immediate: true });
 
-onBeforeUnmount(teardownSlideObserver);
+onBeforeUnmount(teardownObservers);
 </script>
 
 <style lang="postcss">
@@ -294,7 +320,7 @@ onBeforeUnmount(teardownSlideObserver);
 
 @screen md {
 	.goal-in-review-modal {
-		--recap-page-height: min(710px, calc(100vh - 4rem));
+		--recap-page-height: min(630px, calc(100vh - 4rem));
 	}
 
 	.goal-in-review-modal [data-test=kv-lightbox] {
@@ -303,6 +329,12 @@ onBeforeUnmount(teardownSlideObserver);
 		max-height: var(--recap-page-height) !important;
 
 		@apply !tw-m-auto !tw-rounded;
+	}
+}
+
+@screen lg {
+	.goal-in-review-modal {
+		--recap-page-height: min(760px, calc(100vh - 2rem));
 	}
 }
 

@@ -1,10 +1,12 @@
 import goalInReviewCopy, {
 	DEFAULT_MAP_CENTER,
+	DEFAULT_MAP_ZOOM,
 	MAX_BORROWER_CARDS,
 	OTHER_SECTOR_LABEL,
 	getBorrowerCards,
 	getCategoryName,
 	getCountriesMapCenter,
+	getCountriesMapZoom,
 	getGoalLoans,
 	getIsEligible,
 	getLoanStats,
@@ -912,6 +914,48 @@ describe('goalInReviewMap.js', () => {
 			expect(getCountriesMapCenter([])).toEqual(DEFAULT_MAP_CENTER);
 			expect(getCountriesMapCenter()).toEqual(DEFAULT_MAP_CENTER);
 			expect(getCountriesMapCenter([{ geocode: {} }])).toEqual(DEFAULT_MAP_CENTER);
+		});
+
+		it('stays on the cluster when one country is a far outlier (median, not mean)', () => {
+			// Three East-African countries plus a lone loan in Peru; the median keeps the
+			// centre in East Africa where a mean would drag it toward the Atlantic.
+			const center = getCountriesMapCenter([
+				country(-1, 37), country(-6, 35), country(1, 32), country(-9, -75),
+			]);
+			expect(center.lat).toBeGreaterThan(-8);
+			expect(center.lat).toBeLessThan(3);
+			expect(center.long).toBeGreaterThan(25);
+			expect(center.long).toBeLessThan(40);
+		});
+	});
+
+	describe('getCountriesMapZoom', () => {
+		it('defaults to the world view with no usable coordinates', () => {
+			expect(getCountriesMapZoom([])).toBe(DEFAULT_MAP_ZOOM);
+			expect(getCountriesMapZoom()).toBe(DEFAULT_MAP_ZOOM);
+		});
+
+		it('zooms in tight on a single country', () => {
+			expect(getCountriesMapZoom([country(-9.2, -75)])).toBe(5);
+		});
+
+		it('zooms in on a regional cluster', () => {
+			// East Africa: max span < 10 degrees.
+			expect(getCountriesMapZoom([country(-1, 37), country(-6, 35), country(1, 32)])).toBe(5);
+		});
+
+		it('zooms into the cluster and ignores a far outlier', () => {
+			const cluster = [country(-1, 37), country(-6, 35), country(1, 32)];
+			const withOutlier = [...cluster, country(-9, -75)];
+			// The Peru outlier must not pull the map out to a whole-world view.
+			expect(getCountriesMapZoom(withOutlier)).toBe(getCountriesMapZoom(cluster));
+		});
+
+		it('zooms out when countries are genuinely spread with no cluster', () => {
+			const zoom = getCountriesMapZoom([
+				country(37, -95), country(-9, -75), country(12, 122), country(0, 38),
+			]);
+			expect(zoom).toBeLessThanOrEqual(2);
 		});
 	});
 });
