@@ -26,6 +26,8 @@
 				:use-leaflet="true"
 				:show-labels="false"
 				:show-tooltips="false"
+				:show-zoom-control="true"
+				:allow-dragging="true"
 				:countries-data="countriesData"
 			/>
 
