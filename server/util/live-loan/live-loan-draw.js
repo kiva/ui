@@ -14,7 +14,34 @@ import { loadBorrowerImage } from './canvas-image-utils.js';
 import getLoanCallouts from '../../../src/util/loanCallouts.js';
 import getLoanUse from '../../../src/util/loanUse.js';
 import { buildCompactLoanUseRuns, buildToGoText } from './compact-card-text.js';
+import {
+	compactResizeFactor,
+	compactCardWidth,
+	compactCardPadding,
+	compactCardRadius,
+	compactImageSize,
+	compactImageRadius,
+	compactImageGap,
+	compactUseLineHeight,
+	compactMaxUseLines,
+	compactSectionGap,
+	compactPillHeight,
+	compactPillPadding,
+	compactPillGap,
+	compactToGoLineHeight,
+	compactToGoBarGap,
+	compactBarHeight,
+	compactCardMargin,
+	compactCardHeight,
+	compactCardDimensions,
+	compactColors,
+	compactRegularFont,
+	compactMediumFont,
+} from './compact-card-constants.js';
 import { trace } from '../mockTrace.js';
+
+// Re-exported for the image-dimension assertions in the renderer's tests
+export { compactCardDimensions } from './compact-card-constants.js';
 
 // Polyfill Path2D for material design icon support
 global.CanvasRenderingContext2D = CanvasRenderingContext2D;
@@ -31,40 +58,6 @@ const bundleLegacyCardHeight = 450 * resizeFactor;
 const classicResizeFactor = 3;
 const classicCardWidth = 440 * classicResizeFactor;
 const classicCardHeight = 510 * classicResizeFactor;
-
-// Compact (bundle) styling constants. Mirrors the on-site compact loan card:
-// square borrower image on the left, use statement on the right, callout pills,
-// then a "$X to go" label above a fundraising bar. No CTA button.
-const compactResizeFactor = 3;
-const compactCardWidth = 271;
-const compactCardPadding = 12;
-const compactCardRadius = 16;
-const compactImageSize = 60;
-const compactImageRadius = 8;
-const compactImageGap = 8; // between image and copy
-const compactUseLineHeight = 21; // 14px text at 1.5 line-height
-const compactMaxUseLines = 4;
-const compactSectionGap = 12; // between the top row, pills, and bottom row
-const compactPillHeight = 30;
-const compactPillPadding = 8;
-const compactPillGap = 8;
-const compactToGoLineHeight = 14;
-const compactToGoBarGap = 8;
-const compactBarHeight = 8;
-// Height is fixed to the worst case (4 lines of use text) so the pooled canvas
-// and the email layout stay a consistent size; shorter cards flow from the top.
-const compactTopRowHeight = Math.max(compactImageSize, compactMaxUseLines * compactUseLineHeight);
-const compactCardHeight = compactCardPadding
-	+ compactTopRowHeight + compactSectionGap
-	+ compactPillHeight + compactSectionGap
-	+ (compactToGoLineHeight + compactToGoBarGap + compactBarHeight)
-	+ compactCardPadding;
-// Outer margin around the card, baked onto white, so the drop shadow has room
-const compactCardMargin = 16;
-export const compactCardDimensions = {
-	width: (compactCardWidth + (2 * compactCardMargin)) * compactResizeFactor,
-	height: (compactCardHeight + (2 * compactCardMargin)) * compactResizeFactor,
-};
 
 function fontFile(name) {
 	return join(dirname(fileURLToPath(import.meta.url)), './fonts', name);
@@ -414,19 +407,6 @@ async function drawCompact(loanData) {
 	const canvas = trace('compactCanvasPool.use', () => compactCanvasPool.use());
 	const ctx = trace('canvas.getContext', () => canvas.getContext('2d', { alpha: false }));
 
-	const compactColors = {
-		textPrimary: '#212121',
-		brand: '#2aa967',
-		pillBg: '#f5f5f5',
-		progressTrack: '#d9d9d9',
-		white: '#ffffff'
-	};
-
-	const regularFont = '400 14px "Kiva Post Grot"';
-	// Bold name+country in the use text and the pills / "$X to go" label are all
-	// the same Medium weight in the design.
-	const mediumFont = '500 14px "Kiva Post Grot"';
-
 	try {
 		// Work in logical (unscaled) units; the pooled canvas is reused so reset
 		// the transform explicitly on every render.
@@ -491,7 +471,7 @@ async function drawCompact(loanData) {
 				textWidth,
 				compactMaxUseLines,
 				compactUseLineHeight,
-				{ regularFont, boldFont: mediumFont }
+				{ regularFont: compactRegularFont, boldFont: compactMediumFont }
 			);
 		});
 
@@ -501,7 +481,7 @@ async function drawCompact(loanData) {
 		// Loan callouts (grey pills, never orange). Collapses when there are none;
 		// pills that would overflow the row are dropped so nothing spills past the card.
 		const pillsBottom = trace('loan-callouts', () => {
-			ctx.font = mediumFont;
+			ctx.font = compactMediumFont;
 			const availableWidth = compactCardWidth - (2 * pad);
 			const callouts = getLoanCallouts(loanData);
 			const labels = fitPillLabels(ctx, callouts, availableWidth, compactPillPadding, compactPillGap);
@@ -534,7 +514,7 @@ async function drawCompact(loanData) {
 			const loanAmountValue = numeral(loanData?.loanAmount).value() || 1;
 			const fundraisingPercent = Math.min(1, fundedAmount / loanAmountValue);
 
-			ctx.font = mediumFont;
+			ctx.font = compactMediumFont;
 			ctx.fillStyle = compactColors.textPrimary;
 			ctx.fillText(buildToGoText(loanData), pad, toGoY);
 
