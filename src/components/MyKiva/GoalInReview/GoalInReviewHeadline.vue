@@ -106,7 +106,7 @@
 					</li>
 				</ul>
 
-				<div class="tw-mt-4 md:tw-mt-2 lg:tw-mt-8 tw-text-action">
+				<div class="tw-mt-4 md:tw-mt-2 lg:!tw-mt-7 lg:!tw-mb-2 tw-text-action">
 					<p class="tw-text-base tw-mb-1.5 kv-rebound-in headline-scroll-cue">
 						Scroll to explore the stories behind your goal
 					</p>

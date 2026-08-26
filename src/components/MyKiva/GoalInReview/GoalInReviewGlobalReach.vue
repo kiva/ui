@@ -62,7 +62,7 @@
 	<section
 		v-if="sectorValues.length"
 		ref="sectorsSection"
-		class="tw-w-full tw-bg-marigold-1 tw-p-4"
+		class="tw-w-full tw-bg-marigold-1 tw-p-4 md:!tw-pb-6"
 		:class="{
 			'is-in-view': sectorsInView,
 			'tw-min-h-half-screen': !sectorsInView,
