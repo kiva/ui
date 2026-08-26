@@ -69,8 +69,8 @@ describe('feed-row', () => {
 	});
 
 	describe('buildDescription', () => {
-		it('wraps the borrower loan-use text in the "special because" sentence', () => {
-			expect(buildDescription(loan)).toEqual('This loan is special because to buy a cow');
+		it('wraps the borrower loan-use text in the "helps" sentence', () => {
+			expect(buildDescription(loan)).toEqual('This loan helps to buy a cow');
 		});
 
 		it('falls back to the sector name, unformatted, when use is empty or missing', () => {
@@ -80,7 +80,7 @@ describe('feed-row', () => {
 
 		it('keeps the formatted sentence when it is within the 5000-character limit', () => {
 			const result = buildDescription({ use: 'a'.repeat(4000), sector: { name: 'Retail' } });
-			expect(result.startsWith('This loan is special because ')).toBe(true);
+			expect(result.startsWith('This loan helps ')).toBe(true);
 			expect([...result].length).toBeLessThanOrEqual(5000);
 		});
 
@@ -141,7 +141,7 @@ describe('feed-row', () => {
 			expect(row).toEqual({
 				id: '456',
 				title: 'Support Mukumoy',
-				description: 'This loan is special because to buy a cow',
+				description: 'This loan helps to buy a cow',
 				google_product_category: 'Retail',
 				image_link: EXPECTED_IMAGE_URL,
 				link: 'https://www.kiva.org/lend/456?utm_medium=paid&utm_source=google&utm_campaign=liveloans',

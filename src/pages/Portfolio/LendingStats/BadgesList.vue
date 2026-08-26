@@ -103,6 +103,14 @@ export default {
 			getLoanFindingUrl,
 		};
 	},
+	watch: {
+		completedAchievements: {
+			immediate: true,
+			handler() {
+				this.autoOpenBadgeFromEmail();
+			},
+		},
+	},
 	computed: {
 		sortedTieredBadges() {
 			const tieredBadges = [];
@@ -137,6 +145,19 @@ export default {
 		},
 	},
 	methods: {
+		autoOpenBadgeFromEmail() {
+			const campaign = this.$route?.query?.utm_campaign ?? '';
+			if (!campaign.startsWith('badge_')) {
+				return;
+			}
+			const badgeId = campaign.slice('badge_'.length);
+			const badge = this.completedAchievements.find(b => b.id === badgeId);
+			if (!badge) {
+				return;
+			}
+			this.selectedBadgeData = badge;
+			this.showBadgeModal = true;
+		},
 		navigateToLoanFindingUrl(id) {
 			const loanFindingUrl = this.getLoanFindingUrl(id, this.$router.currentRoute.value);
 			if (loanFindingUrl) {
