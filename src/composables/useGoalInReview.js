@@ -36,7 +36,14 @@ export function getGoalInReviewNow() {
 	if (typeof window !== 'undefined') {
 		const param = new URLSearchParams(window.location.search).get('recapDate');
 		if (param) {
-			const override = new Date(param);
+			// Parse a bare YYYY-MM-DD as LOCAL midnight, not UTC. `new Date('2027-04-01')` is
+			// UTC per spec, which in a negative-offset zone (e.g. America/Los_Angeles) lands on
+			// the previous evening — pushing the effective "now" a day back and breaking the
+			// March-31 recap cutoff and the year-boundary checks in QA. Anything with
+			// an explicit time is left as-is.
+			const override = /^\d{4}-\d{2}-\d{2}$/.test(param)
+				? new Date(`${param}T00:00:00`)
+				: new Date(param);
 			if (!Number.isNaN(override.getTime())) {
 				return override;
 			}

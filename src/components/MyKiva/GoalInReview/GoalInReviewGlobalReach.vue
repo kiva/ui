@@ -1,7 +1,7 @@
 <template>
 	<section
 		ref="globalReachSection"
-		class="tw-w-full tw-bg-marigold-1 tw-px-2.5 tw-pb-6 tw-pt-4 md:!tw-py-4 md:tw-px-4"
+		class="tw-w-full tw-bg-marigold-1 tw-px-2.5 tw-pt-4 md:!tw-pt-5 tw-pb-6 md:!tw-pb-4 md:tw-px-4"
 		:class="{ 'is-in-view': globalReachInView }"
 		data-animate-on-view
 		data-testid="goal-in-review-global-reach"
@@ -12,7 +12,7 @@
 
 		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-3 kv-fade-up global-reach-headline">
 			Your goal crossed
-			<span class="tw-text-marigold">{{ borderCount }} borders.</span>
+			<span class="tw-text-marigold">{{ borderCount }} {{ borderNoun }}.</span>
 		</h1>
 
 		<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-3 md:tw-items-center">
@@ -22,7 +22,7 @@
 				:aspect-ratio="1.8"
 				:lat="mapCenter.lat"
 				:long="mapCenter.long"
-				:zoom-level="2"
+				:zoom-level="mapZoom"
 				:use-leaflet="true"
 				:show-labels="false"
 				:show-tooltips="false"
@@ -62,7 +62,7 @@
 	<section
 		v-if="sectorValues.length"
 		ref="sectorsSection"
-		class="tw-w-full tw-bg-marigold-1 tw-p-4"
+		class="tw-w-full tw-bg-marigold-1 tw-p-4 md:!tw-pb-6"
 		:class="{
 			'is-in-view': sectorsInView,
 			'tw-min-h-half-screen': !sectorsInView,
@@ -76,7 +76,7 @@
 
 		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-4 md:tw-mb-3 kv-fade-up global-reach-headline">
 			You backed
-			<span class="tw-text-marigold">{{ sectorCount }} sectors</span> of opportunity.
+			<span class="tw-text-marigold">{{ sectorCount }} {{ sectorNoun }}</span> of opportunity.
 		</h1>
 
 		<div
@@ -92,7 +92,8 @@
 				:values="sectorValues"
 				:stroke-width="36"
 				:shown-segments="sectorValues.length"
-				:initial-delay="300"
+				:grow-duration="200"
+				:initial-delay="100"
 				unit="percent"
 			/>
 		</div>
@@ -108,7 +109,12 @@ import {
 } from 'vue';
 import { KvMap, KvMaterialIcon, KvPieChartV2 } from '@kiva/kv-components';
 import { mdiMapMarker } from '@mdi/js';
-import { getCountriesMapCenter, getNamedSectorCount, getSectorChartValues } from '#src/util/goalInReview';
+import {
+	getCountriesMapCenter,
+	getCountriesMapZoom,
+	getNamedSectorCount,
+	getSectorChartValues,
+} from '#src/util/goalInReview';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 
 const MAX_VISIBLE_COUNTRIES = 14;
@@ -133,13 +139,16 @@ const countriesData = computed(() => props.countries.map(country => ({
 })));
 
 const mapCenter = computed(() => getCountriesMapCenter(props.countries));
+const mapZoom = computed(() => getCountriesMapZoom(props.countries));
 
 const borderCount = computed(() => props.countries.length);
+const borderNoun = computed(() => (borderCount.value === 1 ? 'border' : 'borders'));
 const visibleCountries = computed(() => props.countries.slice(0, MAX_VISIBLE_COUNTRIES));
 const otherCount = computed(() => Math.max(props.countries.length - MAX_VISIBLE_COUNTRIES, 0));
 
 const sectorValues = computed(() => getSectorChartValues(props.sectors));
 const sectorCount = computed(() => getNamedSectorCount(sectorValues.value));
+const sectorNoun = computed(() => (sectorCount.value === 1 ? 'sector' : 'sectors'));
 
 const pillDelay = index => ({ animationDelay: `${0.1 + index * 0.08}s` });
 
@@ -174,7 +183,7 @@ onMounted(() => {
 		},
 		options: {
 			root: globalReachSection.value?.closest('#kvLightboxBody'),
-			rootMargin: '0px 0px -50% 0px',
+			rootMargin: '0px 0px -10% 0px', // reveal early: as the section clears the modal's bottom edge
 			threshold: 0,
 		},
 	});
@@ -191,11 +200,8 @@ onBeforeUnmount(() => sectionObserver?.disconnect());
 <style lang="postcss" scoped>
 .global-reach-eyebrow,
 .global-reach-headline {
+	/* Eyebrow + headline share one start so the header lands as a unit. */
 	--kv-fade-up-distance: 24px;
-}
-
-.global-reach-headline {
-	animation-delay: 0.1s;
 }
 
 /*
@@ -208,6 +214,14 @@ onBeforeUnmount(() => sectionObserver?.disconnect());
  */
  .sectors-chart :deep(.kv-pie-chart-v2) {
 	@apply tw-gap-4;
+}
+
+.sectors-chart :deep(.kv-pie-chart-v2 > div:first-child) {
+	/* Cap the donut at the design's 240x240 (square viewBox, so max-width caps both).
+	Centered on mobile by the component's own items-center; @screen md keeps it left. */
+	max-width: 240px;
+
+	@apply tw-mx-auto;
 }
 
 .sectors-chart :deep(.kv-pie-chart-v2 > div:nth-of-type(2)) {

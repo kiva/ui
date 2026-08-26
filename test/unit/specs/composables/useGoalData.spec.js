@@ -1439,6 +1439,53 @@ describe('useGoalData', () => {
 			// Validate the new progress is user total loans
 			expect(composable.goalProgress.value).toBe(yearlyLoanCount);
 		});
+
+		it('preserves the original dateStarted and records updatedAt on edit (MP-3148)', async () => {
+			const mockPrefs = {
+				goals: [
+					{
+						goalName: 'goal-to-edit',
+						category: ID_WOMENS_EQUALITY,
+						target: 5,
+						status: GOAL_STATUS.IN_PROGRESS,
+						dateStarted: '2026-01-01T00:00:00.000Z',
+					},
+				],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: { id: '1', preferences: JSON.stringify(mockPrefs) },
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: { userAchievementProgress: { tieredLendingAchievements: [] } },
+				});
+
+			await composable.loadGoalData();
+
+			const previousGoal = { ...mockPrefs.goals[0] };
+			// The goal-setting modal always sends a fresh dateStarted (= "now") on save;
+			// on an edit that later date must be ignored in favor of the created one.
+			const updatedGoal = {
+				...mockPrefs.goals[0],
+				target: 20,
+				dateStarted: '2026-07-15T00:00:00.000Z',
+			};
+
+			await composable.updateCurrentGoal(previousGoal, updatedGoal);
+
+			expect(composable.userGoal.value.target).toBe(20);
+			// dateStarted stays the original created date, not the edit date
+			expect(composable.userGoal.value.dateStarted).toBe('2026-01-01T00:00:00.000Z');
+			// updatedAt captures the edit as a valid ISO timestamp
+			expect(composable.userGoal.value.updatedAt).toEqual(expect.any(String));
+			expect(Number.isNaN(Date.parse(composable.userGoal.value.updatedAt))).toBe(false);
+		});
 	});
 
 	describe('checkCompletedGoal', () => {
