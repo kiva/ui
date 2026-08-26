@@ -1,4 +1,5 @@
 import useGoalInReview, {
+	getGoalInReviewNow,
 	getGoalInReviewTargetYear,
 } from '#src/composables/useGoalInReview';
 
@@ -67,6 +68,30 @@ describe('useGoalInReview', () => {
 
 	it('defaults the target year from the provided date', () => {
 		expect(getGoalInReviewTargetYear(new Date('2028-03-01T00:00:00Z'))).toBe(2028);
+	});
+
+	describe('recapDate override (getGoalInReviewNow)', () => {
+		afterEach(() => {
+			// Clear the recapDate so it never leaks into the other tests' "now".
+			window.history.pushState({}, '', '/');
+		});
+
+		it('parses a bare recapDate as a local calendar day, not UTC (MP-3143)', () => {
+			window.history.pushState({}, '', '/?recapDate=2027-04-01');
+			// Local April 1 midnight. A UTC parse would land on Mar 31 evening in a
+			// negative-offset zone and slip past the March-31 recap cutoff a day late.
+			expect(getGoalInReviewNow().getTime()).toBe(new Date(2027, 3, 1).getTime());
+		});
+
+		it('keeps the year on a Jan 1 recapDate in any timezone (MP-3143)', () => {
+			window.history.pushState({}, '', '/?recapDate=2027-01-01');
+			expect(getGoalInReviewTargetYear()).toBe(2027);
+		});
+
+		it('leaves a recapDate with an explicit time unchanged', () => {
+			window.history.pushState({}, '', '/?recapDate=2027-04-01T12:00:00Z');
+			expect(getGoalInReviewNow().getTime()).toBe(new Date('2027-04-01T12:00:00Z').getTime());
+		});
 	});
 
 	it('loads the recap payload for the requested year', async () => {
