@@ -714,7 +714,14 @@ export default function useGoalData({ apollo } = {}) {
 		const goals = parsedPrefs.goals || [];
 		const goalIndex = goals.findIndex(g => g.goalName === previousGoal.goalName);
 		if (goalIndex !== -1) {
-			goals[goalIndex] = { ...updatedGoal };
+			// Editing a goal must not reset its start date. `dateStarted` is the goal's
+			// created date — the recap and the past-goals list key off it — so
+			// preserve the stored value and record the edit moment separately in `updatedAt`.
+			goals[goalIndex] = {
+				...updatedGoal,
+				dateStarted: goals[goalIndex].dateStarted ?? updatedGoal.dateStarted,
+				updatedAt: new Date().toISOString(),
+			};
 		}
 
 		// If the updated category is support-all, we need to load the latest yearly loan count to set accurate progress

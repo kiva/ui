@@ -146,6 +146,9 @@ export default {
 	},
 	methods: {
 		autoOpenBadgeFromEmail() {
+			if (this.showBadgeModal) {
+				return;
+			}
 			const campaign = this.$route?.query?.utm_campaign ?? '';
 			if (!campaign.startsWith('badge_')) {
 				return;
@@ -157,6 +160,7 @@ export default {
 			}
 			this.selectedBadgeData = badge;
 			this.showBadgeModal = true;
+			this.$kvTrackEvent('portfolio', 'view', 'badge-claim-modal', badge.challengeName);
 		},
 		navigateToLoanFindingUrl(id) {
 			const loanFindingUrl = this.getLoanFindingUrl(id, this.$router.currentRoute.value);

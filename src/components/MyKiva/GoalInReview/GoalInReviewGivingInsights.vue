@@ -9,7 +9,7 @@
 
 		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-4 kv-fade-up giving-insights-headline">
 			What your goal says
-			<span class="tw-block tw-text-marigold">about you</span>
+			<span class="tw-text-marigold">about you</span>
 		</h1>
 
 		<ul
