@@ -332,6 +332,12 @@ onBeforeUnmount(teardownObservers);
 	}
 }
 
+@screen lg {
+	.goal-in-review-modal {
+		--recap-page-height: min(760px, calc(100vh - 2rem));
+	}
+}
+
 .goal-in-review-modal #kvLightboxBody::-webkit-scrollbar {
 	display: none;
 }
