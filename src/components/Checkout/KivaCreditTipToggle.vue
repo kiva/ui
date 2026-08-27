@@ -11,8 +11,7 @@
 			:disabled="updating"
 			@update:model-value="setPreference"
 		>
-			<!-- tw--ml-1 nets KvSwitch's internal 16px label gap down to the design's 8px -->
-			<span class="tw--ml-1 tw-text-base !tw-font-medium tw-text-gray-600">
+			<span class="tw-font-medium tw-text-gray-600">
 				Use my balance to cover this tip instead of future loans.
 			</span>
 		</kv-switch>

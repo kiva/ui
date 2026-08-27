@@ -106,12 +106,11 @@
 					</div>
 
 					<div
-						:class="[showTipFromBalanceVariant
-							&& 'md:tw-my-1 md:tw-max-w-2xl md:tw-flex md:tw-items-center md:tw-gap-0.5']"
+						:class="{ 'md:tw-flex md:tw-items-center md:tw-gap-0.5': showTipFromBalanceVariant }"
 					>
 						<div
 							class="tw-my-1 tw-max-w-2xl"
-							:class="{ 'md:tw-my-0 md:tw-max-w-none md:tw-min-w-0': showTipFromBalanceVariant }"
+							:class="{ 'md:tw-min-w-0': showTipFromBalanceVariant }"
 							data-testid="basket-donation-tagline"
 						>
 							<p
