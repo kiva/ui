@@ -25,12 +25,11 @@ import {
 	compactUseLineHeight,
 	compactMaxUseLines,
 	compactSectionGap,
-	compactPillHeight,
 	compactPillPadding,
 	compactPillGap,
-	compactToGoLineHeight,
-	compactToGoBarGap,
 	compactBarHeight,
+	compactBarY,
+	compactToGoY,
 	compactCardMargin,
 	compactCardHeight,
 	compactCardDimensions,
@@ -475,19 +474,18 @@ async function drawCompact(loanData) {
 			);
 		});
 
-		// Top row hugs the taller of the image and the wrapped use text
-		const topRowBottom = pad + Math.max(compactImageSize, useLines * compactUseLineHeight);
-
 		// Loan callouts (grey pills, never orange). Collapses when there are none;
 		// pills that would overflow the row are dropped so nothing spills past the card.
-		const pillsBottom = trace('loan-callouts', () => {
+		trace('loan-callouts', () => {
 			ctx.font = compactMediumFont;
 			const availableWidth = compactCardWidth - (2 * pad);
 			const callouts = getLoanCallouts(loanData);
 			const labels = fitPillLabels(ctx, callouts, availableWidth, compactPillPadding, compactPillGap);
 			if (!labels.length) {
-				return topRowBottom;
+				return;
 			}
+			// Pills sit below the top row, which hugs the taller of the image and the wrapped use text
+			const topRowBottom = pad + Math.max(compactImageSize, useLines * compactUseLineHeight);
 			const pillY = topRowBottom + compactSectionGap;
 			let lastTagRight = pad;
 			for (let i = 0; i < labels.length; i += 1) {
@@ -502,13 +500,10 @@ async function drawCompact(loanData) {
 				);
 				lastTagRight += pillWidth + compactPillGap;
 			}
-			return pillY + compactPillHeight;
 		});
 
 		// Fundraising info: "$X to go" label above a full-width progress bar
 		trace('fundraising-info', () => {
-			const toGoY = pillsBottom + compactSectionGap;
-			const barY = toGoY + compactToGoLineHeight + compactToGoBarGap;
 			const barWidth = compactCardWidth - (2 * pad);
 			const fundedAmount = loanData?.loanFundraisingInfo?.fundedAmount ?? 0;
 			const loanAmountValue = numeral(loanData?.loanAmount).value() || 1;
@@ -516,15 +511,15 @@ async function drawCompact(loanData) {
 
 			ctx.font = compactMediumFont;
 			ctx.fillStyle = compactColors.textPrimary;
-			ctx.fillText(buildToGoText(loanData), pad, toGoY);
+			ctx.fillText(buildToGoText(loanData), pad, compactToGoY);
 
 			ctx.save();
-			roundRect(ctx, pad, barY, barWidth, compactBarHeight, compactBarHeight / 2);
+			roundRect(ctx, pad, compactBarY, barWidth, compactBarHeight, compactBarHeight / 2);
 			ctx.clip();
 			ctx.fillStyle = compactColors.progressTrack;
-			ctx.fillRect(pad, barY, barWidth, compactBarHeight);
+			ctx.fillRect(pad, compactBarY, barWidth, compactBarHeight);
 			ctx.fillStyle = compactColors.brand;
-			ctx.fillRect(pad, barY, barWidth * fundraisingPercent, compactBarHeight);
+			ctx.fillRect(pad, compactBarY, barWidth * fundraisingPercent, compactBarHeight);
 			ctx.restore();
 		});
 
