@@ -81,6 +81,12 @@ const goalData = inject('goalData');
 const $kvTrackEvent = inject('$kvTrackEvent');
 const { getCategoryLoansLastYear } = useGoalData();
 
+// Goal state is hydrated from the Apollo cache during server render, so `cardLoading`
+// is already false while SSR runs and the watchers below fire on the server too. Reads
+// that decide what renders must run in both passes or the two disagree; the writes they
+// guard — persisting a preference, sending analytics — are browser-only.
+const isBrowser = typeof window !== 'undefined';
+
 const cardLoading = computed(() => Boolean(goalData?.loading?.value));
 const goalStatus = computed(() => goalData?.userGoal?.value?.status || null);
 const goalTarget = computed(() => goalData?.userGoal?.value?.target || 0);
@@ -138,6 +144,10 @@ const showRecapCta = computed(() => shouldShowRecapEntryPoint({
 	now: getGoalInReviewNow(),
 }));
 
+// The snapshot decides whether a completed goal still renders, so it has to be taken on
+// the server as well — reading it only in the browser would server-render the slot for a
+// lender who had already seen it and then unrender it on hydration. Persisting the flag
+// is a mutation and stays client-side.
 watch(
 	() => [cardLoading.value, goalStatus.value],
 	() => {
@@ -146,7 +156,7 @@ watch(
 		if (goalStatus.value !== GOAL_STATUS.COMPLETED) return;
 		const viewed = Boolean(goalData?.hasViewedCompletedGoalForYear?.(GOALS_CURRENT_YEAR));
 		alreadyViewedSnapshot.value = viewed;
-		if (!viewed) {
+		if (!viewed && isBrowser) {
 			goalData.setViewedGoalCompletePreference(GOALS_CURRENT_YEAR).catch(error => {
 				logReadQueryError(error, 'MyKivaFeaturedSlot setViewedGoalComplete');
 			});
@@ -157,14 +167,17 @@ watch(
 
 // Mirror the carousel goal-tile's view / show tracking events (see
 // NextYearGoalCard) so analytics from the control surface carry
-// over to the featured slot. Fires once on the loading transition,
-//  only if the slot is actually rendering.
+// over to the featured slot. Fires once, as soon as the slot has
+// loaded data and is actually rendering. Immediate because a cache
+// hydration resolves `cardLoading` before this watcher is created,
+// leaving no loading->loaded transition to ride on.
 const hasFiredImpressionEvent = ref(false);
 watch(
 	() => [cardLoading.value, shouldRender.value],
-	([nowLoading], [wasLoading]) => {
+	([nowLoading]) => {
+		if (!isBrowser) return;
 		if (hasFiredImpressionEvent.value) return;
-		if (nowLoading || wasLoading === undefined) return;
+		if (nowLoading) return;
 		if (!shouldRender.value) return;
 		if (!goalStatus.value) {
 			$kvTrackEvent?.('portfolio', 'view', 'set-annual-goal');
@@ -186,6 +199,7 @@ watch(
 			hasFiredImpressionEvent.value = true;
 		}
 	},
+	{ immediate: true }
 );
 
 const handleSetGoalClick = () => {

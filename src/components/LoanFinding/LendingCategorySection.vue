@@ -56,7 +56,6 @@
 </template>
 
 <script>
-import _throttle from 'lodash/throttle';
 import { KvCarousel } from '@kiva/kv-components';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
 import addToBasketMixin from '#src/plugins/add-to-basket-mixin';
@@ -133,9 +132,10 @@ export default {
 	mixins: [addToBasketMixin],
 	data() {
 		return {
-			windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,
-			handleResize: _throttle(this.isWindowWidth, 200),
 			getCustomHref,
+			// A CSS var keeps the slide width correct during SSR and hydration. useBreakpoints
+			// resolves only in onMounted, so a JS-derived width renders the mobile value on the
+			// server and snaps on hydration.
 			singleSlideWidth: 'var(--category-slide-max-width)',
 		};
 	},
@@ -157,19 +157,10 @@ export default {
 		loanCardKey(index) {
 			return `loan-card-${index}`;
 		},
-		isWindowWidth() {
-			this.windowWidth = window.innerWidth;
-		},
 		showLoanDetails(payload) {
 			this.$emit('show-loan-details', payload);
 		}
 	},
-	mounted() {
-		window.addEventListener('resize', this.handleResize);
-	},
-	beforeUnmount() {
-		window.removeEventListener('resize', this.handleResize);
-	}
 };
 </script>
 

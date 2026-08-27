@@ -1,5 +1,5 @@
 <template>
-	<div class="borrower-carousel">
+	<div class="borrower-carousel-root">
 		<h2
 			v-if="hasActiveLoans"
 			v-html="title"
@@ -105,6 +105,7 @@
 		</div>
 		<!-- Loan Comment Component -->
 		<LoanCommentModal
+			v-if="loanForMenu"
 			:loan="loanForMenu"
 			:is-visible="isCommentModalVisible"
 			:show-tip="false"
@@ -129,7 +130,6 @@
 </template>
 
 <script setup>
-import _throttle from 'lodash/throttle';
 import { useRouter } from 'vue-router';
 import {
 	KvTabs, KvTab, KvTabPanel, KvCarousel, KvButton
@@ -139,8 +139,6 @@ import {
 	defineEmits,
 	defineProps,
 	inject,
-	onBeforeUnmount,
-	onMounted,
 	ref,
 	toRefs,
 	watch,
@@ -223,7 +221,6 @@ const previousLastIndex = ref(0);
 const loanForMenu = ref(undefined);
 const shareLoan = ref(false);
 const tabs = ref(null);
-const windowWidth = ref(0);
 
 const VALID_LOAN_STATUS = [
 	FUNDED,
@@ -259,13 +256,10 @@ const pfpMinLenders = computed(() => loanForMenu.value?.pfpMinLenders ?? 0);
 
 const numLenders = computed(() => loanForMenu.value?.lenders?.numLenders ?? 0);
 
+// A CSS var keeps the slide width correct during SSR and hydration. useBreakpoints
+// resolves only in onMounted, so a JS-derived width renders the mobile value on the
+// server and snaps on hydration — which is what the clientRendered gate used to hide.
 const singleSlideWidth = 'var(--borrower-slide-max-width)';
-
-const handleResize = () => {
-	windowWidth.value = window.innerWidth;
-};
-
-const throttledResize = _throttle(handleResize, 200);
 
 const onInteractCarousel = interaction => {
 	if (previousLastIndex.value === lastVisitedLoanIdx.value) {
@@ -343,19 +337,10 @@ watch(() => loans.value, () => {
 	}
 }, { immediate: true });
 
-onMounted(() => {
-	window.addEventListener('resize', throttledResize);
-	handleResize();
-});
-
-onBeforeUnmount(() => {
-	window.removeEventListener('resize', throttledResize);
-});
-
 </script>
 
 <style lang="postcss" scoped>
-.borrower-carousel {
+.borrower-carousel-root {
 	--borrower-slide-max-width: 90%;
 
 	@screen md {

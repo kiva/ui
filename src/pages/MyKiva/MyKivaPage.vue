@@ -46,7 +46,8 @@
 import logReadQueryError from '#src/util/logReadQueryError';
 import { CONTENTFUL_CAROUSEL_KEY, getRecentTransactionLoans } from '#src/util/myKivaUtils';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
-import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
+import myKivaLendingStatsQuery from '#src/graphql/query/myKivaLendingStats.graphql';
+import countryListQuery from '#src/graphql/query/countryList.graphql';
 import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
@@ -92,6 +93,7 @@ export default {
 		return {
 			combineBadgeData,
 			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
+			hydrateGoalDataFromCache: goalDataComposable.hydrateFromCache,
 			// TESTING ONLY (remove later).
 			getGoalSummary: goalDataComposable.getGoalSummary,
 			loadGoalData: goalDataComposable.loadGoalData,
@@ -168,7 +170,13 @@ export default {
 
 			return Promise.all([
 				client.query({ query: myKivaQuery }),
-				client.query({ query: lendingStatsQuery }),
+				// Carries loanStatsByYear for the current year: same LendingStats entity, so
+				// useGoalData reads it back out of the normalized cache without its own request.
+				client.query({
+					query: myKivaLendingStatsQuery,
+					variables: { year: CURRENT_YEAR },
+				}),
+				client.query({ query: countryListQuery }),
 				// Prefetch user preferences so MyKivaFeaturedSlot can decide
 				// synchronously whether to mount
 				// If Goal is completed-and-viewed, slot stays hidden
@@ -229,6 +237,15 @@ export default {
 				return [];
 			}
 		},
+		readCountryFacets() {
+			try {
+				const result = this.apollo.readQuery({ query: countryListQuery });
+				return result?.lend?.countryFacets ?? [];
+			} catch (e) {
+				logReadQueryError(e, 'MyKivaPage readCountryFacets');
+				return [];
+			}
+		},
 		readContentfulSlides() {
 			try {
 				const slidesResult = this.apollo.readQuery({
@@ -276,7 +293,10 @@ export default {
 			try {
 				this.shouldRenderFeaturedSlot = this.readShouldRenderFeaturedSlot();
 				const myKivaQueryResult = this.apollo.readQuery({ query: myKivaQuery });
-				const lendingStatsQueryResult = this.apollo.readQuery({ query: lendingStatsQuery });
+				const lendingStatsQueryResult = this.apollo.readQuery({
+					query: myKivaLendingStatsQuery,
+					variables: { year: CURRENT_YEAR },
+				});
 				const loanId = this.$router.currentRoute?.value?.query?.loanId ?? null;
 				const bpSidesheetLoan = loanId ? this.apollo.readQuery({
 					query: borrowerProfileSideSheetQuery,
@@ -313,7 +333,7 @@ export default {
 				}
 
 				this.totalLoans = myKivaQueryResult.my?.loans?.totalCount ?? 0;
-				const countryFacets = lendingStatsQueryResult.lend?.countryFacets ?? [];
+				const countryFacets = this.readCountryFacets();
 				const regionCounts = new Map();
 				const regionCountries = new Map();
 				countryFacets.forEach(facet => {
@@ -328,11 +348,10 @@ export default {
 					}
 				});
 				const allRegions = [...regionCounts.keys()];
+				const countriesLentTo = lendingStatsQueryResult.my?.lendingStats?.countriesLentTo ?? [];
 				const regionsData = allRegions.map(region => ({
 					name: region,
-					hasLoans: lendingStatsQueryResult
-						.my?.lendingStats?.countriesLentTo
-						.some(item => item?.region === region),
+					hasLoans: countriesLentTo.some(item => item?.region === region),
 					count: regionCounts.get(region) || 0,
 					countries: regionCountries.get(region) || []
 				}));
@@ -374,6 +393,16 @@ export default {
 			this.currentYearTieredAchievements = this.readTieredAchievementsFromCache(CURRENT_YEAR);
 			// Apply centralized fresh progress during creation to avoid initial stale render.
 			this.applyMyKivaFreshProgress();
+			// Populate goal state from the prefetched cache so the featured goal card, the
+			// next-steps carousel and the impact-progress row server-render real content
+			// instead of skeletons. Runs before mounted()'s reconcile pass, which no longer
+			// resets `loading` once this has succeeded.
+			this.hydrateGoalDataFromCache({
+				tieredAchievements: this.currentYearTieredAchievements,
+				freshProgressLoans: this.recentTransactionLoans,
+				transactions: this.transactions,
+				year: CURRENT_YEAR,
+			});
 			this.heroSlides = this.readContentfulSlides();
 			this.heroBadgeContentfulData = this.readContentfulBadgeData();
 		} catch (e) {
