@@ -270,6 +270,80 @@ describe('JourneyCardCarousel', () => {
 		expect(wrapper.findComponent({ name: 'AlmostFundedNextStep' }).exists()).toBe(false);
 	});
 
+	describe('Colombia recovery fund next step', () => {
+		const mountForCoRecoveryFund = props => mount(JourneyCardCarousel, {
+			props: {
+				inLendingStats: true,
+				slidesNumber: 3,
+				slides: [],
+				heroTieredAchievements: [],
+				heroBadgeData: [],
+				userInfo: { userPreferences: { preferences: '{}' } },
+				...props,
+			},
+			global: {
+				provide: { apollo: {}, cookieStore: {}, $kvTrackEvent: vi.fn() },
+				directives: { kvTrackEvent: () => ({}) },
+				stubs: {
+					MyKivaCard: true,
+					MyKivaSharingModal: true,
+					NextYearGoalCard: true,
+					MyKivaEmailUpdatesTransition: true,
+					MyKivaLatestLoanCard: true,
+					MyKivaSurveyCard: true,
+					AlmostFundedNextStep: true,
+					ColombiaReliefNextStep: true,
+				},
+			},
+		});
+
+		const slotOrder = wrapper => wrapper.findAll('.kv-carousel-stub > *')
+			.map(el => el.element.tagName.toLowerCase());
+
+		it('does not render when showCoRecoveryFundCard is false', () => {
+			const wrapper = mountForCoRecoveryFund({ showCoRecoveryFundCard: false });
+			expect(wrapper.findComponent({ name: 'ColombiaReliefNextStep' }).exists()).toBe(false);
+		});
+
+		it('renders when showCoRecoveryFundCard is true', () => {
+			const wrapper = mountForCoRecoveryFund({ showCoRecoveryFundCard: true });
+			expect(wrapper.findComponent({ name: 'ColombiaReliefNextStep' }).exists()).toBe(true);
+		});
+
+		it('takes the slot ahead of Almost Funded, which is only preceded by the goal tile', () => {
+			const wrapper = mountForCoRecoveryFund({
+				showCoRecoveryFundCard: true,
+				showLendingNextStepsCards: true,
+				userGoal: { category: ID_WOMENS_EQUALITY, target: 5 },
+				goalProgressLoading: false,
+			});
+
+			expect(slotOrder(wrapper)).toEqual([
+				'next-year-goal-card-stub',
+				'colombia-relief-next-step-stub',
+				'almost-funded-next-step-stub',
+			]);
+		});
+
+		it('trails the post-lending next steps rather than displacing them', () => {
+			const wrapper = mountForCoRecoveryFund({
+				showCoRecoveryFundCard: true,
+				showPostLendingNextStepsCards: true,
+				hideGoalCard: true,
+				latestLoan: { id: 1 },
+				userInfo: {
+					userPreferences: { preferences: '{}' },
+					communicationSettings: { lenderNews: true, loanUpdates: true },
+				},
+			});
+
+			const order = slotOrder(wrapper);
+			expect(order.indexOf('my-kiva-latest-loan-card-stub')).toBeLessThan(
+				order.indexOf('colombia-relief-next-step-stub')
+			);
+		});
+	});
+
 	describe('goal recap entry point', () => {
 		const GOAL_YEAR = new Date().getFullYear();
 
