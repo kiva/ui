@@ -48,6 +48,7 @@
 import {
 	computed,
 	inject,
+	onMounted,
 	watch,
 	ref,
 } from 'vue';
@@ -183,9 +184,13 @@ const showCompletedGoalConfetti = () => {
 
 watch(
 	() => [props.loading, props.hideGoalCard, goalProgressPercentage.value, userHasGoal.value],
-	showCompletedGoalConfetti,
-	{ immediate: true }
+	showCompletedGoalConfetti
 );
+
+// Confetti draws straight onto document.body, so the already-completed case is checked on
+// mount rather than immediately: an immediate watch also runs during server-side setup,
+// where there is no document.
+onMounted(showCompletedGoalConfetti);
 
 watch(() => [props.loading, props.hideGoalCard], ([newLoading, newHideGoalCard], [oldLoading]) => {
 	if (!newLoading && oldLoading && !newHideGoalCard) {
