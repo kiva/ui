@@ -25,6 +25,10 @@ export const compactCardHeight = compactCardPadding
 	+ compactPillHeight + compactSectionGap
 	+ (compactToGoLineHeight + compactToGoBarGap + compactBarHeight)
 	+ compactCardPadding;
+// The "$X to go" label + bar are pinned to the bottom of the fixed-height card
+// so their position stays put no matter how many lines the use text wraps to.
+export const compactBarY = compactCardHeight - compactCardPadding - compactBarHeight;
+export const compactToGoY = compactBarY - compactToGoBarGap - compactToGoLineHeight;
 // Outer margin around the card, baked onto white, so the drop shadow has room
 export const compactCardMargin = 16;
 export const compactCardDimensions = {
