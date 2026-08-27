@@ -32,9 +32,9 @@ vi.mock('@kiva/kv-components', () => ({
 		props: ['icon'],
 		template: '<span></span>',
 	},
-	KvMap: {
-		name: 'KvMap',
-		props: ['countriesData'],
+	KvSimpleMap: {
+		name: 'KvSimpleMap',
+		props: ['countries'],
 		template: '<div data-testid="kv-map"></div>',
 	},
 	KvPieChartV2: {
