@@ -149,7 +149,7 @@
 
 <script setup>
 import {
-	computed, inject, ref, watch,
+	computed, inject, onMounted, ref, watch,
 } from 'vue';
 import {
 	KvButton, KvLoadingPlaceholder, KvProgressCircle, KvUtilityMenu,
@@ -311,9 +311,13 @@ const fireCompletionConfettiIfReady = () => {
 
 watch(
 	() => [props.loading, props.suppressCompletionConfetti, clampedPercentage.value],
-	fireCompletionConfettiIfReady,
-	{ immediate: true }
+	fireCompletionConfettiIfReady
 );
+
+// Confetti draws straight onto document.body, so the already-completed case is checked on
+// mount rather than immediately: an immediate watch also runs during server-side setup,
+// where there is no document.
+onMounted(fireCompletionConfettiIfReady);
 </script>
 
 <style lang="postcss" scoped>
