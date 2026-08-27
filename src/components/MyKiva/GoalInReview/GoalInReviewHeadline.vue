@@ -1,6 +1,6 @@
 <template>
 	<section
-		class="tw-w-full tw-pb-2 md:tw-pb-0 tw-relative tw-isolate tw-flex tw-flex-col
+		class="tw-w-full tw-pb-2 md:tw-pb-0 tw-relative tw-isolate
 			tw-bg-gray-50 tw-bg-no-repeat tw-bg-bottom goal-in-review-headline"
 		:class="{ 'goal-in-review-headline--in-progress': !isComplete }"
 		data-testid="goal-in-review-headline"
@@ -80,8 +80,8 @@
 			</h1>
 		</div>
 
-		<div class="tw-grow tw-flex tw-flex-col">
-			<div class="tw-px-2 md:tw-px-4 lg:tw-px-8 tw-mx-auto tw-text-center tw-grow tw-flex tw-flex-col">
+		<div>
+			<div class="tw-px-2 md:tw-px-4 lg:tw-px-8 tw-mx-auto tw-text-center">
 				<h3 class="tw-mx-auto tw-mb-8 lg:tw-mb-6 tw-max-w-lg kv-fade-up headline-subtext">
 					Because of your commitment, borrowers could count on Kiva to be there when it mattered.
 				</h3>
@@ -106,7 +106,7 @@
 					</li>
 				</ul>
 
-				<div class="md:!tw-mt-auto tw-pt-7 md:tw-pt-2 tw-mb-2 tw-text-action">
+				<div class="tw-mt-4 md:tw-mt-2 lg:!tw-mt-7 lg:!tw-mb-2 tw-text-action">
 					<p class="tw-text-base tw-mb-1.5 kv-rebound-in headline-scroll-cue">
 						Scroll to explore the stories behind your goal
 					</p>

@@ -17,6 +17,7 @@
 			:goals-row-enabled="goalsRowEnabled"
 			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
+			:show-co-recovery-fund-card="showCoRecoveryFundCard"
 		/>
 		<my-kiva-page-content
 			v-else
@@ -38,6 +39,7 @@
 			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 			:goals-row-enabled="goalsRowEnabled"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
+			:show-co-recovery-fund-card="showCoRecoveryFundCard"
 		/>
 	</www-page>
 </template>
@@ -60,7 +62,11 @@ import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.g
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
-import { isDisasterReliefFundOnlySupporter } from '#src/util/givingFundUtils';
+import {
+	hasSupportedColombiaReliefFund,
+	isColombiaReliefNextStepActive,
+	isDisasterReliefFundOnlySupporter,
+} from '#src/util/givingFundUtils';
 import useBadgeData, {
 	applyFreshProgressToAchievements,
 	FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
@@ -70,6 +76,7 @@ import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const GOALS_ROW_EXP_KEY = 'mykiva_goals_row';
+const CO_RECOVERY_FUND_EXP_KEY = 'mykiva_co_recovery_fund';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -124,6 +131,7 @@ export default {
 			goalInReviewInProgressStart: null,
 			goalsRowEnabled: false,
 			shouldRenderFeaturedSlot: true,
+			coRecoveryFundExpEnabled: false,
 		};
 	},
 	computed: {
@@ -139,7 +147,19 @@ export default {
 		userOptedIn() {
 			return this.userInfo?.communicationSettings?.loanUpdates
 				&& this.userInfo?.communicationSettings?.lenderNews;
-		}
+		},
+		/**
+		 * Promotes the Colombia earthquake recovery fund as a next step to half of MyKiva
+		 * lenders until the promo window closes, skipping anyone who already gave.
+		 */
+		showCoRecoveryFundCard() {
+			// reliefFundParticipation is always requested by myKivaQuery, so waiting for it keeps
+			// the card from flashing in for a lender who turns out to have already donated.
+			return this.coRecoveryFundExpEnabled
+				&& isColombiaReliefNextStepActive()
+				&& !!this.userInfo?.reliefFundParticipation
+				&& !hasSupportedColombiaReliefFund(this.userInfo);
+		},
 	},
 	watch: {
 		'$route.path': {
@@ -211,6 +231,10 @@ export default {
 				client.query({
 					query: experimentAssignmentQuery,
 					variables: { id: GOALS_ROW_EXP_KEY },
+				}),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: CO_RECOVERY_FUND_EXP_KEY },
 				}),
 			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
@@ -419,6 +443,18 @@ export default {
 			},
 			this.$kvTrackEvent,
 			'EXP-MP-2856-May2026'
+		);
+
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			CO_RECOVERY_FUND_EXP_KEY,
+			version => {
+				this.coRecoveryFundExpEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-3155-Aug2026'
 		);
 	},
 	async mounted() {

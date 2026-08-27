@@ -313,6 +313,45 @@ describe('MyKivaPage', () => {
 			);
 			expect(result).toEqual(combined);
 		});
+
+		describe('showCoRecoveryFundCard', () => {
+			const callWith = context => MyKivaPage.computed.showCoRecoveryFundCard.call({
+				coRecoveryFundExpEnabled: true,
+				userInfo: { reliefFundParticipation: { totalCount: 0 } },
+				...context,
+			});
+
+			beforeEach(() => {
+				vi.useFakeTimers();
+				vi.setSystemTime(new Date('2026-09-01T12:00:00.000Z'));
+			});
+
+			afterEach(() => {
+				vi.useRealTimers();
+			});
+
+			it('shows the card for an experiment-b lender who has not donated to the fund', () => {
+				expect(callWith()).toBe(true);
+			});
+
+			it('hides the card for the experiment control group', () => {
+				expect(callWith({ coRecoveryFundExpEnabled: false })).toBe(false);
+			});
+
+			it('hides the card once the lender has donated to the fund', () => {
+				expect(callWith({ userInfo: { reliefFundParticipation: { totalCount: 1 } } })).toBe(false);
+			});
+
+			it('hides the card while myKivaQuery has not resolved yet', () => {
+				// userInfo starts as {}, which must not read as "has not donated"
+				expect(callWith({ userInfo: {} })).toBe(false);
+			});
+
+			it('hides the card after the promo window closes', () => {
+				vi.setSystemTime(new Date('2026-10-20T12:00:00.000Z'));
+				expect(callWith()).toBe(false);
+			});
+		});
 	});
 
 	describe('apollo.preFetch', () => {

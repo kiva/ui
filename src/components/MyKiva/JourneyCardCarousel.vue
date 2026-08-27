@@ -44,6 +44,10 @@
 					v-else-if="slide?.isAlmostFunded"
 					class="tw-h-full"
 				/>
+				<ColombiaReliefNextStep
+					v-else-if="slide?.isCoRecoveryFund"
+					class="tw-h-full"
+				/>
 				<MyKivaCard
 					v-else-if="isCustomCard(slide)"
 					class="kiva-card"
@@ -108,6 +112,7 @@ import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
 import { getGoalYear, shouldHideGoalSignup, shouldShowRecapEntryPoint } from '#src/util/goalInReview';
 import { getGoalInReviewCurrentYear, getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import AlmostFundedNextStep from '#src/components/MyKiva/AlmostFundedNextStep';
+import ColombiaReliefNextStep from '#src/components/MyKiva/ColombiaReliefNextStep';
 import {
 	getSlideTitle,
 	getSlideSubTitle,
@@ -238,6 +243,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
+	showCoRecoveryFundCard: {
+		type: Boolean,
+		default: false
+	},
 	preBuiltAchievementSlides: {
 		type: Array,
 		default: null,
@@ -347,6 +356,13 @@ const dynamicOrderedSlides = computed(() => {
 		priorityCards.push({}); // Empty object placeholder for goal card component
 	}
 
+	// Colombia earthquake recovery fund next step: takes the slot right after the goal card,
+	// but never jumps ahead of the post-lending next steps, which keep their existing order.
+	const coRecoveryFundCard = props.showCoRecoveryFundCard ? { isCoRecoveryFund: true } : null;
+	if (coRecoveryFundCard && !props.showPostLendingNextStepsCards) {
+		priorityCards.push(coRecoveryFundCard);
+	}
+
 	// Almost funded next step card
 	if (props.showLendingNextStepsCards) {
 		priorityCards.push({ isAlmostFunded: true });
@@ -367,6 +383,11 @@ const dynamicOrderedSlides = computed(() => {
 	// Survey card: shown if no goal card (goal completed) OR user is opted into email marketing
 	if (showSurveyCard.value && (!shouldShowGoalCard.value || !shouldShowEmailMarketingCard.value)) {
 		priorityCards.push({ isSurveyCard: true });
+	}
+
+	// Post-lending row: the recovery fund card trails the post-lending next steps.
+	if (coRecoveryFundCard && props.showPostLendingNextStepsCards) {
+		priorityCards.push(coRecoveryFundCard);
 	}
 
 	if (props.slidesNumber && props.showLendingNextStepsCards) {
