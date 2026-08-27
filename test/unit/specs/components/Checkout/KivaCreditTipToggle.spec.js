@@ -84,7 +84,7 @@ describe('KivaCreditTipToggle', () => {
 
 	it('seeds an unchosen treatment basket to off, then shows the toggle off', async () => {
 		const {
-			wrapper, apollo, cookieStore, emitData,
+			wrapper, apollo, cookieStore, $kvTrackEvent, emitData,
 		} = mountToggle();
 
 		// Hidden while the manifest still carries the untouched default of true
@@ -102,6 +102,9 @@ describe('KivaCreditTipToggle', () => {
 
 		expect(wrapper.find(toggleSelector).exists()).toBe(true);
 		expect(wrapper.find('input').element.checked).toBe(false);
+
+		// The default state is not a lender choice, so it must not be tracked
+		expect($kvTrackEvent).not.toHaveBeenCalled();
 	});
 
 	it('never re-seeds a basket whose choice is already marked, showing the toggle on', async () => {
