@@ -1,3 +1,18 @@
+## [3.90.0](https://github.com/kiva/ui/compare/v3.89.0...v3.90.0) (2026-08-27)
+
+### 🎉 New Features
+
+* [MP-000] - more adjustments in goal review ([#7198](https://github.com/kiva/ui/issues/7198)) ([8451bd9](https://github.com/kiva/ui/commit/8451bd930eedacc963f62a20cfbb08e4de2b7fab))
+* mykiva next steps card for colombia fund ([#7200](https://github.com/kiva/ui/issues/7200)) ([111dee9](https://github.com/kiva/ui/commit/111dee90f155c1f7d89ffe1f289ceb8ad74bb63c))
+
+### 🐛 Bugfixes
+
+* **live-loan:** pin compact bundle card progress bar to card bottom ([#7202](https://github.com/kiva/ui/issues/7202)) ([648539e](https://github.com/kiva/ui/commit/648539e5cfea8574c43f71f1df9367d918e3bc27))
+
+### 🧹 Chores
+
+* **release:** 3.90.0-rc.1 [skip ci] ([09e508a](https://github.com/kiva/ui/commit/09e508a34073521ff6084661884159bef7870f7c)), closes [#7198](https://github.com/kiva/ui/issues/7198) [#7200](https://github.com/kiva/ui/issues/7200) [#7202](https://github.com/kiva/ui/issues/7202)
+
 ## [3.90.0-rc.1](https://github.com/kiva/ui/compare/v3.89.0...v3.90.0-rc.1) (2026-08-27)
 
 ### 🎉 New Features
