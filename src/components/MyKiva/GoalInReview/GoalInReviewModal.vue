@@ -320,7 +320,7 @@ onBeforeUnmount(teardownObservers);
 
 @screen md {
 	.goal-in-review-modal {
-		--recap-page-height: min(630px, calc(100vh - 4rem));
+		--recap-page-height: min(710px, calc(100vh - 4rem));
 	}
 
 	.goal-in-review-modal [data-test=kv-lightbox] {
@@ -329,12 +329,6 @@ onBeforeUnmount(teardownObservers);
 		max-height: var(--recap-page-height) !important;
 
 		@apply !tw-m-auto !tw-rounded;
-	}
-}
-
-@screen lg {
-	.goal-in-review-modal {
-		--recap-page-height: min(760px, calc(100vh - 2rem));
 	}
 }
 
