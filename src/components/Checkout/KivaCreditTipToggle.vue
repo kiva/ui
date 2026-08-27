@@ -117,15 +117,26 @@ export default {
 				this.seedPreferenceOff();
 			}
 		},
-		seedPreferenceOff() {
-			this.seeding = true;
+		/**
+		 * Persists the preference and refreshes the basket. Resolves once the choice is
+		 * marked; callers handle their own in-flight flag and failure behavior.
+		 *
+		 * @param {boolean} applyKivaCreditToDonation
+		 * @returns {Promise}
+		 */
+		persistPreference(applyKivaCreditToDonation) {
 			this.$emit('updating-totals', true);
-			this.apollo.mutate({
+			return this.apollo.mutate({
 				mutation: updateKivaCreditDonationPreference,
-				variables: { applyKivaCreditToDonation: false },
+				variables: { applyKivaCreditToDonation },
 			}).then(({ errors }) => {
 				if (errors?.length) throw errors[0];
 				this.markChoiceProtected();
+			});
+		},
+		seedPreferenceOff() {
+			this.seeding = true;
+			this.persistPreference(false).then(() => {
 				this.$emit('refreshtotals');
 			}).catch(error => {
 				logFormatter(error, 'error');
@@ -138,26 +149,19 @@ export default {
 			if (this.updating || value === this.applyKivaCreditToDonation) return;
 			this.updating = true;
 			this.toggleValue = value;
-			this.$emit('updating-totals', true);
-			this.apollo.mutate({
-				mutation: updateKivaCreditDonationPreference,
-				variables: { applyKivaCreditToDonation: value },
-			}).then(({ errors }) => {
-				if (errors?.length) throw errors[0];
-				this.markChoiceProtected();
+			this.persistPreference(value).then(() => {
 				this.$kvTrackEvent(
 					'basket',
 					'click',
 					value ? 'tip-from-balance-toggle-on' : 'tip-from-balance-toggle-off',
 				);
-				this.$emit('refreshtotals');
 			}).catch(error => {
 				logFormatter(error, 'error');
 				this.toggleValue = this.applyKivaCreditToDonation === true;
 				this.$showTipMsg('There was a problem updating your basket. Please try again.', 'error');
-				// Refresh the manifest so a stale basket recovers before the user retries
-				this.$emit('refreshtotals');
 			}).finally(() => {
+				// Refreshing on failure too, so a stale basket recovers before the user retries
+				this.$emit('refreshtotals');
 				this.updating = false;
 			});
 		},

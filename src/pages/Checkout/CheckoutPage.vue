@@ -70,18 +70,12 @@
 							@removed-loan="calculateProgressAchievement($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
-						<div
-							v-if="showUpsell && showUpsellModule"
-							:class="tipFromBalanceVersion === 'b'
-								? 'upsellContainerCompact md:tw-mb-2'
-								: 'upsellContainer'"
-						>
+						<div v-if="showUpsell && showUpsellModule" class="upsellContainer">
 							<kv-loading-placeholder v-if="!upsellLoan.name" class="tw-rounded" />
 							<upsell-module
 								v-if="upsellLoan.name"
 								:loan="upsellLoan"
 								:is-expiring-soon-exp-enabled="isExpiringSoonExpEnabled"
-								:is-tip-toggle-variant="tipFromBalanceVersion === 'b'"
 								:close-upsell-module="closeUpsellModule"
 								:add-to-basket="addToBasket"
 							/>
@@ -735,7 +729,7 @@ export default {
 
 		this.initializeCustomTipDefaultExperiment();
 
-		// Assignment read only, for the variant's upsell spacing; the toggle itself handles
+		// Assignment read once here and provided to the donation item; the toggle handles
 		// its own eligibility and MP-3077 owns exposure
 		initializeExperiment(
 			this.cookieStore,
@@ -1537,20 +1531,9 @@ export default {
 .upsellContainer > .loading-placeholder {
 	min-height: 250px;
 }
-
-/* Tip-from-balance variant: banner is 120px on desktop; mobile keeps the control reservation */
-.upsellContainerCompact,
-.upsellContainerCompact > .loading-placeholder {
-	min-height: 120px;
-}
 @media screen and (width <= 733px) {
 	.upsellContainer,
 	.upsellContainer > .loading-placeholder {
-		min-height: 300px;
-	}
-
-	.upsellContainerCompact,
-	.upsellContainerCompact > .loading-placeholder {
 		min-height: 300px;
 	}
 }

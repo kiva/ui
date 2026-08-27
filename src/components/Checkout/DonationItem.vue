@@ -20,7 +20,7 @@
 							<div class="tw-w-full tw-flex">
 								<h2
 									class="tw-flex-1 md:tw-flex-grow"
-									:class="{ 'tw-text-h3 !tw-font-medium tw-text-primary': isTipToggleVariant }"
+									:class="{ 'tw-text-h3 !tw-font-medium tw-text-primary': showTipFromBalanceVariant }"
 									data-testid="basket-donation-title"
 								>
 									{{ basketDonationHeader }}
@@ -106,19 +106,17 @@
 					</div>
 
 					<div
-						:class="{
-							'md:tw-my-1 md:tw-max-w-2xl': isTipToggleVariant,
-							'md:tw-flex md:tw-items-center md:tw-gap-0.5': isTipToggleVariant,
-						}"
+						:class="[showTipFromBalanceVariant
+							&& 'md:tw-my-1 md:tw-max-w-2xl md:tw-flex md:tw-items-center md:tw-gap-0.5']"
 					>
 						<div
 							class="tw-my-1 tw-max-w-2xl"
-							:class="{ 'md:tw-my-0 md:tw-max-w-none md:tw-min-w-0': isTipToggleVariant }"
+							:class="{ 'md:tw-my-0 md:tw-max-w-none md:tw-min-w-0': showTipFromBalanceVariant }"
 							data-testid="basket-donation-tagline"
 						>
 							<p
 								class="tw-text-base"
-								:class="{ 'md:tw-truncate': isTipToggleVariant }"
+								:class="{ 'md:tw-truncate': showTipFromBalanceVariant }"
 							>
 								{{ basketDonationTagline }}
 							</p>
@@ -134,7 +132,7 @@
 						<button
 							v-else
 							class="tw-flex tw-items-center tw-text-base tw-text-link"
-							:class="{ 'md:tw-flex-none': isTipToggleVariant }"
+							:class="{ 'md:tw-flex-none': showTipFromBalanceVariant }"
 							data-testid="basket-donation-info-lightbox"
 							@click="triggerDefaultLightbox"
 							v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
@@ -149,7 +147,7 @@
 				</div>
 
 				<kiva-credit-tip-toggle
-					v-if="isTipToggleVariant"
+					v-if="showTipFromBalanceVariant"
 					@updating-totals="$emit('updating-totals', $event)"
 					@refreshtotals="$emit('refreshtotals')"
 				/>
@@ -367,7 +365,7 @@ export default {
 		isCampaignDonation() {
 			return !!this.donation?.metadata?.campaignId;
 		},
-		isTipToggleVariant() {
+		showTipFromBalanceVariant() {
 			return this.tipFromBalanceVersion === 'b' && !this.isCampaignDonation && !this.orderTotalVariant;
 		},
 		donationTitle() {

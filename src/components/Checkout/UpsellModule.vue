@@ -1,24 +1,6 @@
 <template>
-	<div
-		class="tw-bg-brand-100 tw-rounded"
-		:class="isTipToggleVariant
-			? 'tw-relative tw-p-4 md:tw-p-1 md:tw-min-h-15 md:tw-flex md:tw-flex-col md:tw-justify-center'
-			: 'tw-p-4'"
-	>
-		<button
-			v-if="isTipToggleVariant"
-			class="tw-hidden md:tw-block tw-absolute tw-top-1 tw-right-1"
-			@click="closeUpsellModule(amountLeft)"
-		>
-			<kv-material-icon
-				class="tw-w-3"
-				:icon="mdiClose"
-			/>
-		</button>
-		<div
-			class="tw-w-full tw-text-right tw-h-3"
-			:class="{ 'md:tw-hidden': isTipToggleVariant }"
-		>
+	<div class="tw-bg-brand-100 tw-rounded tw-p-4">
+		<div class="tw-w-full tw-text-right tw-h-3">
 			<button
 				@click="closeUpsellModule(amountLeft)"
 			>
@@ -28,40 +10,27 @@
 				/>
 			</button>
 		</div>
-		<div
-			class="tw-flex tw-flex-col md:tw-flex-row tw-flex-no-wrap tw-gap-1 md:tw-gap-4"
-			:class="{ 'md:tw-items-center': isTipToggleVariant }"
-		>
+		<div class="tw-flex tw-flex-col md:tw-flex-row tw-flex-no-wrap tw-gap-1 md:tw-gap-4">
 			<div>
-				<img
-					:src="imageUrl"
-					class="tw-rounded-full"
-					:class="isTipToggleVariant ? 'tw-w-6 md:tw-w-10' : 'tw-w-6 md:tw-w-16'"
-				>
+				<img :src="imageUrl" class="tw-rounded-full tw-w-6 md:tw-w-16">
 			</div>
 			<div class="tw-grow tw-flex tw-flex-col tw-justify-center upsellLoanDetails">
 				<p class="tw-text-upper tw-text-action tw-mb-0.5">
 					Support Another Borrower
 				</p>
-				<h4
-					v-if="isExpiringSoonExpEnabled"
-					:class="isTipToggleVariant ? 'tw-mb-2 md:tw-mb-1' : 'tw-mb-2'"
-				>
+				<h4 v-if="isExpiringSoonExpEnabled" class="tw-mb-2">
 					Time is running out for {{ possessiveName }} loan. Add $25 before it expires.
 				</h4>
-				<h4
-					v-else
-					:class="isTipToggleVariant ? 'tw-mb-2 md:tw-mb-1' : 'tw-mb-2'"
-				>
+				<h4 v-else class="tw-mb-2">
 					<!-- eslint-disable-next-line max-len -->
 					{{ loan.name }} is missing just {{ $filters.numeral(amountLeft, '$0,0[.]00') }}! Be the person to complete their loan.
 				</h4>
-				<div :class="{ 'md:tw-max-w-lg': isTipToggleVariant }">
+				<div>
 					<fundraising-status-meter
 						:amount-left="amountLeft"
 						:percent-raised="percentRaised"
 						:is-funded="loan.status==='funded'"
-						:short-meter="!isTipToggleVariant"
+						:short-meter="true"
 						class="tw-mb-1"
 					/>
 					<p class="tw-text-upper tw-m-0">
@@ -70,16 +39,10 @@
 				</div>
 			</div>
 			<div class="tw-grow tw-flex tw-flex-wrap">
-				<div
-					class="tw-w-full tw-text-right"
-					:class="{ 'tw-self-end': !isTipToggleVariant }"
-				>
+				<div class="tw-w-full tw-text-right tw-self-end">
 					<kv-button
-						:variant="isTipToggleVariant ? 'primary' : 'link'"
-						class="tw-w-full"
-						:class="isTipToggleVariant
-							? 'tw-mt-2 md:tw-mt-0 md:tw-w-auto md:tw-mr-3'
-							: 'tw-mt-2 md:tw-mt-7 md:tw-w-44'"
+						variant="link"
+						class="tw-w-full md:tw-w-44 tw-mt-2 md:tw-mt-7"
 						@click="addToBasket(loanId, reservationAmount)"
 					>
 						Add loan to basket
@@ -119,10 +82,6 @@ export default {
 			default: () => {}
 		},
 		isExpiringSoonExpEnabled: {
-			type: Boolean,
-			default: false,
-		},
-		isTipToggleVariant: {
 			type: Boolean,
 			default: false,
 		},
