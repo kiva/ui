@@ -207,6 +207,51 @@ describe('MyKivaFeaturedSlot', () => {
 		});
 	});
 
+	// MyKivaPage hydrates goal state from the prefetched Apollo cache during SSR, so on
+	// the client `loading` is already false when this component is created and there is
+	// no loading→loaded transition for the impression watcher to ride on.
+	describe('impression tracking when goal data was hydrated before mount', () => {
+		it('fires `view`/`set-annual-goal` for a no-goal lender', async () => {
+			const goalData = buildGoalData({ status: null, loading: false });
+			const trackEvent = vi.fn();
+			mountSlot({ goalData, trackEvent });
+			await nextTick();
+			expect(trackEvent).toHaveBeenCalledWith('portfolio', 'view', 'set-annual-goal');
+		});
+
+		it('fires `show`/`goal-set` for an in-progress goal', async () => {
+			const goalData = buildGoalData({
+				status: GOAL_STATUS.IN_PROGRESS,
+				loading: false,
+				target: 5,
+				percentage: 40,
+			});
+			const trackEvent = vi.fn();
+			mountSlot({ goalData, trackEvent });
+			await nextTick();
+			expect(trackEvent).toHaveBeenCalledWith(
+				'portfolio',
+				'show',
+				'goal-set',
+				ID_US_ECONOMIC_EQUALITY,
+				5,
+			);
+		});
+
+		it('fires the impression only once even as goal state settles', async () => {
+			const goalData = buildGoalData({ status: null, loading: false });
+			const trackEvent = vi.fn();
+			mountSlot({ goalData, trackEvent });
+			await nextTick();
+			goalData.goalProgress.value = 1;
+			await nextTick();
+
+			const impressions = trackEvent.mock.calls
+				.filter(([, action, label]) => action === 'view' && label === 'set-annual-goal');
+			expect(impressions).toHaveLength(1);
+		});
+	});
+
 	describe('impression tracking on loading→loaded transition', () => {
 		it('fires `view`/`set-annual-goal` when the slot resolves to the no-goal state', async () => {
 			const goalData = buildGoalData({ status: null, loading: true });

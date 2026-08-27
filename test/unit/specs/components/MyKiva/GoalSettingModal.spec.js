@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { ref } from 'vue';
 import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
@@ -13,6 +13,11 @@ vi.mock('#src/composables/useBreakpoints', () => ({
 		isMobile: ref(false),
 		isLarge: ref(true),
 	}),
+}));
+
+const goalDataMocks = vi.hoisted(() => ({
+	loadGoalData: vi.fn(),
+	userGoal: { value: null },
 }));
 
 vi.mock('#src/composables/useGoalData', () => ({
@@ -29,8 +34,8 @@ vi.mock('#src/composables/useGoalData', () => ({
 		]),
 		goalProgress: ref(0),
 		goalProgressPercentage: ref(0),
-		userGoal: ref(null),
-		loadGoalData: vi.fn(),
+		userGoal: goalDataMocks.userGoal,
+		loadGoalData: goalDataMocks.loadGoalData,
 		getRecommendedLoans: vi.fn(),
 	}),
 }));
@@ -158,6 +163,42 @@ describe('GoalSettingModal', () => {
 		recommendedLoan.state.hasRecommendedLoans.value = false;
 		recommendedLoan.state.recommendLoanCardProps.value = {};
 		recommendedLoan.state.recommendedLoan.value = null;
+		goalDataMocks.userGoal.value = null;
+	});
+
+	// The parents gate this component with `v-if` as well as `:show` so its subtree is
+	// neither server-rendered nor hydrated before the lender opens it. That means the
+	// component mounts with `show` already true and never sees a false->true transition.
+	describe('open-time setup when mounted already open', () => {
+		it('loads goal data on mount when show is true', () => {
+			mountModal();
+
+			expect(goalDataMocks.loadGoalData).toHaveBeenCalledTimes(1);
+		});
+
+		it('does not load goal data when mounted closed', () => {
+			mountModal({ show: false });
+
+			expect(goalDataMocks.loadGoalData).not.toHaveBeenCalled();
+		});
+
+		it('does not throw when the lender has no stored goal', async () => {
+			goalDataMocks.userGoal.value = null;
+
+			const wrapper = mountModal();
+			await flushPromises();
+
+			expect(wrapper.exists()).toBe(true);
+		});
+
+		it('does not throw when the lender does have a stored goal', async () => {
+			goalDataMocks.userGoal.value = { target: 7, category: ID_WOMENS_EQUALITY };
+
+			const wrapper = mountModal();
+			await flushPromises();
+
+			expect(wrapper.exists()).toBe(true);
+		});
 	});
 
 	it('does not render the removed green goal tile value-props panel', () => {
