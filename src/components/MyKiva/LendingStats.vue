@@ -46,6 +46,7 @@
 				:user-info="userInfo"
 				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 				:show-lending-next-steps-cards="true"
+				:show-co-recovery-fund-card="showCoRecoveryFundCard"
 				:goal-in-review-enable="goalInReviewEnable"
 				@open-goal-modal="openGoalModal($event)"
 				@open-impact-insight-modal="showImpactInsightsModal = true"
@@ -86,6 +87,7 @@
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+			:show-co-recovery-fund-card="showCoRecoveryFundCard"
 			:goal-in-review-enable="goalInReviewEnable"
 			@open-goal-modal="openGoalModal($event)"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
@@ -200,6 +202,15 @@ export default {
 			default: null,
 		},
 		goalInReviewEnable: {
+			type: Boolean,
+			default: false,
+		},
+		/**
+		 * Whether the Colombia earthquake recovery fund next step is eligible for this
+		 * lender: experiment version b, inside the promo window, and the lender has not
+		 * already donated to the fund.
+		 */
+		showCoRecoveryFundCard: {
 			type: Boolean,
 			default: false,
 		},
