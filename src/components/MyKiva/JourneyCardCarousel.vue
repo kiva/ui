@@ -21,7 +21,9 @@
 					:user-goal="userGoal"
 					:prev-year-loans="womenLoansLastYear"
 					:hide-goal-card="hideGoalCard"
+					:show-recap-cta="showRecapCta"
 					@open-goal-modal="$emit('open-goal-modal', $event)"
+					@view-goal-recap="$emit('view-goal-recap', $event)"
 				/>
 				<MyKivaSurveyCard
 					v-else-if="slide?.isSurveyCard"
@@ -103,8 +105,8 @@ import useGoalData from '#src/composables/useGoalData';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
-import { shouldHideGoalSignup } from '#src/util/goalInReview';
-import { getGoalInReviewNow } from '#src/composables/useGoalInReview';
+import { getGoalYear, shouldHideGoalSignup, shouldShowRecapEntryPoint } from '#src/util/goalInReview';
+import { getGoalInReviewCurrentYear, getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import AlmostFundedNextStep from '#src/components/MyKiva/AlmostFundedNextStep';
 import {
 	getSlideTitle,
@@ -137,7 +139,7 @@ const {
 
 const { getCategoryLoansLastYear, hasGoal } = useGoalData();
 
-const emit = defineEmits(['update-journey', 'open-goal-modal', 'open-impact-insight-modal']);
+const emit = defineEmits(['update-journey', 'open-goal-modal', 'open-impact-insight-modal', 'view-goal-recap']);
 
 const props = defineProps({
 	userInfo: {
@@ -208,6 +210,10 @@ const props = defineProps({
 		type: Date,
 		default: null,
 	},
+	goalInReviewEnable: {
+		type: Boolean,
+		default: false,
+	},
 	latestLoan: {
 		type: Object,
 		default: null
@@ -270,6 +276,20 @@ const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.slides));
 
 const hideGoalSignup = computed(() => shouldHideGoalSignup({
 	recapStartDate: props.goalInReviewInProgressStart,
+	now: getGoalInReviewNow(),
+}));
+
+const goalYear = computed(() => getGoalYear(props.userGoal));
+
+// Same question the featured slot and the Impact Progress row ask, so the completed
+// goal tile offers the recap wherever it is the surface that renders.
+const showRecapCta = computed(() => shouldShowRecapEntryPoint({
+	enabled: props.goalInReviewEnable,
+	goalStatus: props.userGoal?.status,
+	goalYear: goalYear.value,
+	currentYear: getGoalInReviewCurrentYear(),
+	loansTowardGoal: props.goalProgress,
+	activeGoalYear: goalYear.value,
 	now: getGoalInReviewNow(),
 }));
 

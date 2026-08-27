@@ -13,6 +13,13 @@ describe('LendingStats', () => {
 			expect(prop.type).toBe(Array);
 			expect(prop.default()).toEqual([]);
 		});
+
+		it('takes the goal in review flag and relays the goal tile\'s recap request', () => {
+			const prop = LendingStats.props.goalInReviewEnable;
+			expect(prop.type).toBe(Boolean);
+			expect(prop.default).toBe(false);
+			expect(LendingStats.emits).toContain('view-goal-recap');
+		});
 	});
 
 	describe('recentLoanIds', () => {

@@ -1,6 +1,7 @@
 import { render } from '@testing-library/vue';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import goalCopy from '#src/util/goalCopy';
+import { RECAP_CTA_LABEL } from '#src/util/goalInReview';
 import {
 	ID_SUPPORT_ALL,
 	ID_CLIMATE_ACTION,
@@ -133,6 +134,15 @@ describe('GoalProgressRing', () => {
 		it('shows "Work towards your goal" for card variant below 100%', () => {
 			const { getByRole } = renderRing({ variant: 'card', goalProgressPercentage: 50 });
 			expect(getByRole('button', { name: goalCopy.RING_BUTTON_CARD_IN_PROGRESS })).toBeTruthy();
+		});
+
+		it('shows the recap CTA for a card variant offering the goal recap', () => {
+			const { getByRole } = renderRing({
+				variant: 'card',
+				goalProgressPercentage: 100,
+				showRecapCta: true,
+			});
+			expect(getByRole('button', { name: RECAP_CTA_LABEL })).toBeTruthy();
 		});
 	});
 

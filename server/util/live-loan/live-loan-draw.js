@@ -8,12 +8,40 @@ import deePool from 'deepool';
 import numeral from 'numeral';
 import { polyfillPath2D } from 'path2d-polyfill';
 import {
-	ellipsisLine, drawPill, wrapText, roundRect
+	ellipsisLine, drawPill, wrapText, wrapStyledText, fitPillLabels, coverRect, roundRect
 } from './canvas-utils.js';
 import { loadBorrowerImage } from './canvas-image-utils.js';
 import getLoanCallouts from '../../../src/util/loanCallouts.js';
 import getLoanUse from '../../../src/util/loanUse.js';
+import { buildCompactLoanUseRuns, buildToGoText } from './compact-card-text.js';
+import {
+	compactResizeFactor,
+	compactCardWidth,
+	compactCardPadding,
+	compactCardRadius,
+	compactImageSize,
+	compactImageRadius,
+	compactImageGap,
+	compactUseLineHeight,
+	compactMaxUseLines,
+	compactSectionGap,
+	compactPillHeight,
+	compactPillPadding,
+	compactPillGap,
+	compactToGoLineHeight,
+	compactToGoBarGap,
+	compactBarHeight,
+	compactCardMargin,
+	compactCardHeight,
+	compactCardDimensions,
+	compactColors,
+	compactRegularFont,
+	compactMediumFont,
+} from './compact-card-constants.js';
 import { trace } from '../mockTrace.js';
+
+// Re-exported for the image-dimension assertions in the renderer's tests
+export { compactCardDimensions } from './compact-card-constants.js';
 
 // Polyfill Path2D for material design icon support
 global.CanvasRenderingContext2D = CanvasRenderingContext2D;
@@ -36,16 +64,21 @@ function fontFile(name) {
 }
 
 trace('registerFonts', () => {
-	/* eslint-disable max-len */
-	registerFont(fontFile('PostGrotesk-Light.ttf'), { family: 'Kiva Post Grot', weight: '300' });
-	// registerFont(fontFile('PostGrotesk-LightItalic.ttf'), { family: 'Kiva Post Grot', weight: '300', style: 'italic' });
-	registerFont(fontFile('PostGrotesk-Book.ttf'), { family: 'Kiva Post Grot', weight: '400' });
-	// registerFont(fontFile('PostGrotesk-BookItalic.ttf'), { family: 'Kiva Post Grot', weight: '400', style: 'italic' });
-	registerFont(fontFile('PostGrotesk-Medium.ttf'), { family: 'Kiva Post Grot', weight: '500' });
-	registerFont(fontFile('PostGrotesk-MediumItalic.ttf'), { family: 'Kiva Post Grot', weight: '500', style: 'italic' });
-	// registerFont(fontFile('PostGrotesk-Bold.ttf'), { family: 'Kiva Post Grot', weight: '700' });
-	// registerFont(fontFile('PostGrotesk-BoldItalic.ttf'), { family: 'Kiva Post Grot', weight: '700', style: 'italic' });
-	/* eslint-enable max-len */
+	// registerFont writes to the process-wide font host and throws if the module
+	// is loaded more than once in a single process (e.g. across test files); the
+	// first registration wins, so a repeat registration can be safely ignored.
+	const register = (file, opts) => {
+		try {
+			registerFont(fontFile(file), opts);
+		} catch (e) {
+			// Font already registered for this process
+		}
+	};
+
+	register('PostGrotesk-Light.ttf', { family: 'Kiva Post Grot', weight: '300' });
+	register('PostGrotesk-Book.ttf', { family: 'Kiva Post Grot', weight: '400' });
+	register('PostGrotesk-Medium.ttf', { family: 'Kiva Post Grot', weight: '500' });
+	register('PostGrotesk-MediumItalic.ttf', { family: 'Kiva Post Grot', weight: '500', style: 'italic' });
 });
 
 // Use pool of canvas objects instead to avoid creating a new canvas for each request
@@ -62,9 +95,14 @@ const bundleLegacyCanvasPool = deePool.create(function makeCanvas() {
 const classicCanvasPool = deePool.create(function makeCanvas() {
 	return trace('createClassicCanvas', () => createCanvas(classicCardWidth, classicCardHeight));
 });
+// eslint-disable-next-line prefer-arrow-callback
+const compactCanvasPool = deePool.create(function makeCanvas() {
+	return trace('createCompactCanvas', () => createCanvas(compactCardDimensions.width, compactCardDimensions.height));
+});
 legacyCanvasPool.grow(2);
 bundleLegacyCanvasPool.grow(2);
 classicCanvasPool.grow(2);
+compactCanvasPool.grow(2);
 
 async function drawLegacy(loanData, { skipButton = false } = {}) {
 	const pool = skipButton ? bundleLegacyCanvasPool : legacyCanvasPool;
@@ -365,10 +403,151 @@ async function drawClassic(loanData, { skipButton = false } = {}) {
 	}
 }
 
+async function drawCompact(loanData) {
+	const canvas = trace('compactCanvasPool.use', () => compactCanvasPool.use());
+	const ctx = trace('canvas.getContext', () => canvas.getContext('2d', { alpha: false }));
+
+	try {
+		// Work in logical (unscaled) units; the pooled canvas is reused so reset
+		// the transform explicitly on every render.
+		trace('canvas-prep', () => {
+			ctx.setTransform(compactResizeFactor, 0, 0, compactResizeFactor, 0, 0);
+			ctx.textAlign = 'left';
+			ctx.textBaseline = 'top';
+
+			// White background across the whole image (incl. the shadow margin)
+			ctx.fillStyle = compactColors.white;
+			ctx.fillRect(0, 0, compactCardWidth + (2 * compactCardMargin), compactCardHeight + (2 * compactCardMargin));
+
+			// Card with a subtle drop shadow, baked onto the white background
+			ctx.save();
+			ctx.shadowColor = 'rgba(0, 0, 0, 0.08)';
+			ctx.shadowBlur = 12;
+			ctx.shadowOffsetX = 0;
+			ctx.shadowOffsetY = 4;
+			// eslint-disable-next-line max-len
+			roundRect(ctx, compactCardMargin, compactCardMargin, compactCardWidth, compactCardHeight, compactCardRadius);
+			ctx.fillStyle = compactColors.white;
+			ctx.fill();
+			ctx.restore();
+
+			// Move the origin into the card and clip content to its rounded corners.
+			// Balanced by the restore before export so the pooled canvas resets.
+			ctx.save();
+			ctx.translate(compactCardMargin, compactCardMargin);
+			roundRect(ctx, 0, 0, compactCardWidth, compactCardHeight, compactCardRadius);
+			ctx.clip();
+		});
+
+		const pad = compactCardPadding;
+
+		// Borrower image (square, rounded, left). Cover-crop so the 4:3 source
+		// photo fills the square without distortion.
+		const hasBorrowerImage = await trace('borrower-image', async () => {
+			const result = await loadBorrowerImage(loanData);
+			const { image } = result;
+			const {
+				width, height, offsetX, offsetY,
+			} = coverRect(image.width, image.height, compactImageSize);
+			ctx.save();
+			roundRect(ctx, pad, pad, compactImageSize, compactImageSize, compactImageRadius);
+			ctx.clip();
+			ctx.drawImage(image, pad + offsetX, pad + offsetY, width, height);
+			ctx.restore();
+			return result.hasBorrowerImage;
+		});
+
+		// Loan use statement (right of image, bold name + country, clamped to 4 lines)
+		const useLines = trace('borrower-use', () => {
+			const textX = pad + compactImageSize + compactImageGap;
+			const textWidth = compactCardWidth - textX - pad;
+			const runs = buildCompactLoanUseRuns(loanData);
+			ctx.fillStyle = compactColors.textPrimary;
+			return wrapStyledText(
+				ctx,
+				runs,
+				textX,
+				pad,
+				textWidth,
+				compactMaxUseLines,
+				compactUseLineHeight,
+				{ regularFont: compactRegularFont, boldFont: compactMediumFont }
+			);
+		});
+
+		// Top row hugs the taller of the image and the wrapped use text
+		const topRowBottom = pad + Math.max(compactImageSize, useLines * compactUseLineHeight);
+
+		// Loan callouts (grey pills, never orange). Collapses when there are none;
+		// pills that would overflow the row are dropped so nothing spills past the card.
+		const pillsBottom = trace('loan-callouts', () => {
+			ctx.font = compactMediumFont;
+			const availableWidth = compactCardWidth - (2 * pad);
+			const callouts = getLoanCallouts(loanData);
+			const labels = fitPillLabels(ctx, callouts, availableWidth, compactPillPadding, compactPillGap);
+			if (!labels.length) {
+				return topRowBottom;
+			}
+			const pillY = topRowBottom + compactSectionGap;
+			let lastTagRight = pad;
+			for (let i = 0; i < labels.length; i += 1) {
+				const { pillWidth } = drawPill(
+					ctx,
+					labels[i],
+					lastTagRight,
+					pillY,
+					compactPillPadding,
+					compactColors.textPrimary,
+					compactColors.pillBg
+				);
+				lastTagRight += pillWidth + compactPillGap;
+			}
+			return pillY + compactPillHeight;
+		});
+
+		// Fundraising info: "$X to go" label above a full-width progress bar
+		trace('fundraising-info', () => {
+			const toGoY = pillsBottom + compactSectionGap;
+			const barY = toGoY + compactToGoLineHeight + compactToGoBarGap;
+			const barWidth = compactCardWidth - (2 * pad);
+			const fundedAmount = loanData?.loanFundraisingInfo?.fundedAmount ?? 0;
+			const loanAmountValue = numeral(loanData?.loanAmount).value() || 1;
+			const fundraisingPercent = Math.min(1, fundedAmount / loanAmountValue);
+
+			ctx.font = compactMediumFont;
+			ctx.fillStyle = compactColors.textPrimary;
+			ctx.fillText(buildToGoText(loanData), pad, toGoY);
+
+			ctx.save();
+			roundRect(ctx, pad, barY, barWidth, compactBarHeight, compactBarHeight / 2);
+			ctx.clip();
+			ctx.fillStyle = compactColors.progressTrack;
+			ctx.fillRect(pad, barY, barWidth, compactBarHeight);
+			ctx.fillStyle = compactColors.brand;
+			ctx.fillRect(pad, barY, barWidth * fundraisingPercent, compactBarHeight);
+			ctx.restore();
+		});
+
+		// Undo the card translate + clip so the pooled canvas is clean for reuse
+		ctx.restore();
+
+		const buffer = trace('export-jpeg', () => canvas.toBuffer('image/jpeg', { quality: 0.5 }));
+		trace('compactCanvasPool.recycle', () => compactCanvasPool.recycle(canvas));
+		return { buffer, hasBorrowerImage };
+	} catch (e) {
+		if (canvas) {
+			trace('compactCanvasPool.recycle', () => compactCanvasPool.recycle(canvas));
+		}
+		throw e;
+	}
+}
+
 export default async function draw(loanData, style) {
 	switch (style) {
 		case 'bundle':
 			return drawClassic(loanData, { skipButton: true });
+		case 'compact-bundle':
+			return drawCompact(loanData);
 		case 'classic':
 			return drawClassic(loanData);
 		case 'bundle-legacy':

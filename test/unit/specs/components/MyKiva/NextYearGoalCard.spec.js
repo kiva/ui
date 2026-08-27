@@ -33,6 +33,7 @@ describe('NextYearGoalCard', () => {
 	});
 
 	const mountCard = ({ goalData = createGoalData(), props = {} } = {}) => {
+		const trackEvent = vi.fn();
 		const wrapper = mount(NextYearGoalCard, {
 			props: {
 				userGoal: {
@@ -48,19 +49,21 @@ describe('NextYearGoalCard', () => {
 			global: {
 				provide: {
 					goalData,
-					$kvTrackEvent: vi.fn(),
+					$kvTrackEvent: trackEvent,
 				},
 				directives: {
 					kvTrackEvent: () => ({}),
 				},
 				stubs: {
 					GoalProgressRing: {
+						name: 'GoalProgressRing',
+						props: ['showRecapCta'],
 						template: '<div data-testid="goal-progress-ring" />',
 					},
 				},
 			},
 		});
-		return { wrapper, goalData };
+		return { wrapper, goalData, trackEvent };
 	};
 
 	beforeEach(() => {
@@ -76,6 +79,45 @@ describe('NextYearGoalCard', () => {
 
 		expect(confetti).toHaveBeenCalledTimes(1);
 		expect(goalData.setHideGoalCardPreference).not.toHaveBeenCalled();
+	});
+
+	describe('goal recap entry point', () => {
+		const GOAL_YEAR = 2026;
+		const recapProps = {
+			showRecapCta: true,
+			userGoal: {
+				category: ID_US_ECONOMIC_EQUALITY,
+				target: 5,
+				status: GOAL_STATUS.COMPLETED,
+				dateStarted: `${GOAL_YEAR}-02-01`,
+			},
+		};
+
+		it('offers the recap CTA to the progress ring', () => {
+			const { wrapper } = mountCard({ props: recapProps });
+
+			expect(wrapper.findComponent({ name: 'GoalProgressRing' }).props('showRecapCta')).toBe(true);
+		});
+
+		it('emits the goal year instead of navigating when the recap CTA is pressed', async () => {
+			const { wrapper, goalData, trackEvent } = mountCard({ props: recapProps });
+
+			await wrapper.findComponent({ name: 'GoalProgressRing' }).vm.$emit('button-click');
+
+			expect(wrapper.emitted('view-goal-recap')).toEqual([[GOAL_YEAR]]);
+			expect(goalData.getCtaHref).not.toHaveBeenCalled();
+			expect(trackEvent).not.toHaveBeenCalled();
+		});
+
+		it('keeps the continue behavior when the recap is not offered', async () => {
+			const { wrapper } = mountCard({
+				props: { ...recapProps, showRecapCta: false },
+			});
+
+			await wrapper.findComponent({ name: 'GoalProgressRing' }).vm.$emit('button-click');
+
+			expect(wrapper.emitted('view-goal-recap')).toBeUndefined();
+		});
 	});
 
 	it('uses date-based title copy', () => {

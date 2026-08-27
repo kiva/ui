@@ -2,10 +2,10 @@ import { render } from '@testing-library/vue';
 import GoalInReviewGlobalReach from '#src/components/MyKiva/GoalInReview/GoalInReviewGlobalReach';
 import { globalOptions } from '../../../../specUtils';
 
-// KvMap (leaflet) and KvPieChartV2 (SVG draw) are heavy and irrelevant to the copy
-// under test; KvMaterialIcon is a trivial glyph. Stub all three.
+// KvSimpleMap (SVG world map) and KvPieChartV2 (SVG draw) are heavy and irrelevant to
+// the copy under test; KvMaterialIcon is a trivial glyph. Stub all three.
 vi.mock('@kiva/kv-components', () => ({
-	KvMap: { name: 'KvMap', template: '<div data-testid="kv-map"></div>' },
+	KvSimpleMap: { name: 'KvSimpleMap', template: '<div data-testid="kv-map"></div>' },
 	KvPieChartV2: { name: 'KvPieChartV2', template: '<div data-testid="kv-pie-chart"></div>' },
 	KvMaterialIcon: { name: 'KvMaterialIcon', props: ['icon'], template: '<span></span>' },
 }));

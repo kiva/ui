@@ -16,18 +16,24 @@
 		</h1>
 
 		<div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-3 md:tw-items-center">
-			<KvMap
+			<KvSimpleMap
 				class="tw-rounded tw-overflow-hidden tw-w-full"
-				:map-id="3"
+				:countries="simpleMapCountries"
 				:aspect-ratio="1.8"
-				:lat="mapCenter.lat"
-				:long="mapCenter.long"
-				:zoom-level="mapZoom"
-				:use-leaflet="true"
-				:show-labels="false"
-				:show-tooltips="false"
-				:countries-data="countriesData"
-			/>
+				:fit-to-countries="true"
+				:fit-padding="0.05"
+				:allow-dragging="true"
+				:show-zoom-controls="true"
+				:zoom-factor="2"
+				:base-color="MAP_BASE_COLOR"
+				:autoplay="false"
+			>
+				<template #popup="{ country }">
+					<div class="tw-text-label tw-text-eco-green-4">
+						{{ country.name }}
+					</div>
+				</template>
+			</KvSimpleMap>
 
 			<ul
 				class="tw-flex tw-flex-wrap tw-gap-1 tw-justify-center md:tw-justify-start
@@ -107,11 +113,10 @@ import {
 	onMounted,
 	ref,
 } from 'vue';
-import { KvMap, KvMaterialIcon, KvPieChartV2 } from '@kiva/kv-components';
+import { KvMaterialIcon, KvPieChartV2, KvSimpleMap } from '@kiva/kv-components';
+import kvTokensPrimitives from '@kiva/kv-tokens';
 import { mdiMapMarker } from '@mdi/js';
 import {
-	getCountriesMapCenter,
-	getCountriesMapZoom,
 	getNamedSectorCount,
 	getSectorChartValues,
 } from '#src/util/goalInReview';
@@ -130,16 +135,20 @@ const props = defineProps({
 	},
 });
 
-const countriesData = computed(() => props.countries.map(country => ({
-	label: country.name,
-	value: country.fundsLentInCountry,
-	lat: country.geocode?.latitude,
-	long: country.geocode?.longitude,
-	isoCode: country.isoCode,
-})));
-
-const mapCenter = computed(() => getCountriesMapCenter(props.countries));
-const mapZoom = computed(() => getCountriesMapZoom(props.countries));
+const MAP_BASE_COLOR = kvTokensPrimitives.colors.gray[400];
+const simpleMapCountries = computed(() => {
+	const maxFunds = props.countries.reduce((max, c) => Math.max(max, c.fundsLentInCountry ?? 0), 0);
+	return props.countries.flatMap(country => {
+		if (!country.isoCode) return [];
+		const funds = country.fundsLentInCountry ?? 0;
+		const intensity = maxFunds > 0 ? 4 + Math.round((funds / maxFunds) * 11) : 4;
+		return [{
+			id: country.isoCode,
+			name: country.name,
+			loanCount: intensity,
+		}];
+	});
+});
 
 const borderCount = computed(() => props.countries.length);
 const borderNoun = computed(() => (borderCount.value === 1 ? 'border' : 'borders'));

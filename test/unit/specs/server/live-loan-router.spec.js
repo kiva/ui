@@ -450,6 +450,65 @@ describe('live-loan-router bundle-url routes', () => {
 		});
 	});
 
+	describe('serveImg - bundle-img-compact routes', () => {
+		beforeEach(() => {
+			drawLoanCard.mockResolvedValue({ buffer: Buffer.from('jpeg-bytes'), hasBorrowerImage: true });
+		});
+
+		it('serves jpeg for /u/:id/bundle-img-compact/:offset with compact-bundle style', async () => {
+			liveLoanFetch.default.mockResolvedValue([
+				{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 },
+			]);
+
+			const app = createApp(cache);
+			const result = await makeRequest(app, '/live-loan/u/42/bundle-img-compact/1');
+
+			expect(result.statusCode).toBe(200);
+			expect(result.headers['content-type']).toBe('image/jpeg');
+			expect(drawLoanCard).toHaveBeenCalledWith({ id: 1 }, 'compact-bundle');
+			expect(liveLoanFetch.default).toHaveBeenCalledWith(
+				'user',
+				'42',
+				liveLoanFetch.QUERY_TYPE.DEFAULT,
+				6,
+			);
+		});
+
+		it('FLSS bundle-img-compact route passes FLSS query type and compact-bundle style', async () => {
+			liveLoanFetch.default.mockResolvedValue([{ id: 11 }, { id: 22 }]);
+
+			const app = createApp(cache);
+			const result = await makeRequest(app, '/live-loan/flss/u/42/bundle-img-compact/2');
+
+			expect(result.statusCode).toBe(200);
+			expect(result.headers['content-type']).toBe('image/jpeg');
+			expect(drawLoanCard).toHaveBeenCalledWith({ id: 22 }, 'compact-bundle');
+			expect(liveLoanFetch.default).toHaveBeenCalledWith(
+				'user',
+				'42',
+				liveLoanFetch.QUERY_TYPE.FLSS,
+				6,
+			);
+		});
+
+		it('recommendations bundle-img-compact route uses recs query type and compact-bundle style', async () => {
+			liveLoanFetch.default.mockResolvedValue([{ id: 33 }]);
+
+			const app = createApp(cache);
+			const result = await makeRequest(app, '/live-loan/recommendations/u/42/bundle-img-compact/1');
+
+			expect(result.statusCode).toBe(200);
+			expect(result.headers['content-type']).toBe('image/jpeg');
+			expect(drawLoanCard).toHaveBeenCalledWith({ id: 33 }, 'compact-bundle');
+			expect(liveLoanFetch.default).toHaveBeenCalledWith(
+				'user',
+				'42',
+				liveLoanFetch.QUERY_TYPE.RECOMMENDATIONS,
+				6,
+			);
+		});
+	});
+
 	describe('serveImg - bundle-img-legacy routes', () => {
 		beforeEach(() => {
 			drawLoanCard.mockResolvedValue({ buffer: Buffer.from('jpeg-bytes'), hasBorrowerImage: true });
