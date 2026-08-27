@@ -1,3 +1,19 @@
+## [3.89.0-rc.1](https://github.com/kiva/ui/compare/v3.88.0...v3.89.0-rc.1) (2026-08-27)
+
+### 🎉 New Features
+
+* [MP-3132] fire badge-claim-modal view event on email auto-open ([#7195](https://github.com/kiva/ui/issues/7195)) ([f2e8fb2](https://github.com/kiva/ui/commit/f2e8fb2f3e28672e886603ea425bfc97e2543d2d))
+* [MP-3140-3144] - goal in review new adjustments ([#7189](https://github.com/kiva/ui/issues/7189)) ([aad1013](https://github.com/kiva/ui/commit/aad101376f7875031e8345ca86a0b6d9ef4af519))
+* [MP-3140] - enable map controls ([#7196](https://github.com/kiva/ui/issues/7196)) ([0dd60c0](https://github.com/kiva/ui/commit/0dd60c041a7cc561016bd8437e6508384aa76280))
+* [MP-3140] - more spacing changes requested ([#7192](https://github.com/kiva/ui/issues/7192)) ([6071c37](https://github.com/kiva/ui/commit/6071c37b916eb759726b85c4eaaf4b83874a606a))
+* [MP-3148] - set a new `updatedAt` field in MyKivaGoal setting ([#7190](https://github.com/kiva/ui/issues/7190)) ([92b1fff](https://github.com/kiva/ui/commit/92b1fffa40329e12d50b81b0aa98dd876109959e))
+* **live-loan:** add compact bundle loan card image variant ([#7194](https://github.com/kiva/ui/issues/7194)) ([d22e83b](https://github.com/kiva/ui/commit/d22e83b4835b44a92c132b9aab9658ccc8b46c50))
+
+### 🐛 Bugfixes
+
+* [MP-3143] - hide goal recap CTA in BadgesV2 after March 01 ([#7191](https://github.com/kiva/ui/issues/7191)) ([49f8fd6](https://github.com/kiva/ui/commit/49f8fd63c1d6db5e73fe945e9c4cf671f1d1e0c0))
+* show goal recap cta from the completed goal card ([a976190](https://github.com/kiva/ui/commit/a97619010954887625a33fd070d79dbcf5afef02))
+
 ## [3.88.0](https://github.com/kiva/ui/compare/v3.87.0...v3.88.0) (2026-08-26)
 
 ### 🎉 New Features

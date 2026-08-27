@@ -36,6 +36,11 @@ describe('GoalInReviewThanksAndFeedback', () => {
 		getByText(/14 dreams/);
 	});
 
+	it('singularizes the loan-count copy for a single loan', () => {
+		const { getByText } = renderSlide({ loanCount: 1 });
+		getByText('1 dream');
+	});
+
 	describe('contribution lead copy', () => {
 		it('thanks the lender for a completed goal', () => {
 			const { getByText } = renderSlide({

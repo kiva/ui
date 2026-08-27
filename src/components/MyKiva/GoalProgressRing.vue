@@ -69,7 +69,8 @@
 
 		<KvButton
 			class="tw-w-full goal-button"
-			v-kv-track-event="['portfolio', 'click', 'continue-towards-goal']"
+			:key="`goal-cta-${showRecapCta}`"
+			v-kv-track-event="showRecapCta ? null : ['portfolio', 'click', 'continue-towards-goal']"
 			@click="handleButtonClick"
 		>
 			{{ buttonText }}
@@ -97,6 +98,7 @@ import { useRouter } from 'vue-router';
 import { KvButton, KvProgressCircle, KvMaterialIcon } from '@kiva/kv-components';
 import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import goalCopy from '#src/util/goalCopy';
+import { RECAP_CTA_LABEL } from '#src/util/goalInReview';
 import {
 	ID_SUPPORT_ALL,
 	ID_US_ECONOMIC_EQUALITY,
@@ -176,6 +178,13 @@ const props = defineProps({
 	 * Flag to indicate if the goal has been completed
 	 */
 	isGoalCompleted: {
+		type: Boolean,
+		default: false,
+	},
+	/**
+	 * Card variant: offer the goal recap instead of the continue-toward-goal CTA
+	 */
+	showRecapCta: {
 		type: Boolean,
 		default: false,
 	},
@@ -285,6 +294,9 @@ const buttonText = computed(() => {
 	}
 
 	// Card variant
+	if (props.showRecapCta) {
+		return RECAP_CTA_LABEL;
+	}
 	if (props.goalProgressPercentage === COMPLETED_GOAL_THRESHOLD) {
 		return goalCopy.RING_BUTTON_CARD_GOAL_COMPLETED;
 	}

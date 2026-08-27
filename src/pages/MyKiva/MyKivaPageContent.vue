@@ -43,10 +43,12 @@
 				:user-info="userInfo"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 				:goals-row-enabled="goalsRowEnabled"
+				:goal-in-review-enable="goalInReviewEnable"
 				:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 				:basket-items="basketItems"
 				:is-adding="isAdding"
 				@add-to-basket="addGoalRecommendedLoanToBasket"
+				@view-goal-recap="openGoalRecapFromCard"
 			/>
 		</section>
 		<section class="tw-mt-4" id="mykiva-achievements">
