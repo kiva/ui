@@ -46,8 +46,10 @@
 				:user-info="userInfo"
 				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 				:show-lending-next-steps-cards="true"
+				:goal-in-review-enable="goalInReviewEnable"
 				@open-goal-modal="openGoalModal($event)"
 				@open-impact-insight-modal="showImpactInsightsModal = true"
+				@view-goal-recap="$emit('view-goal-recap', $event)"
 			/>
 		</template>
 		<div
@@ -84,8 +86,10 @@
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+			:goal-in-review-enable="goalInReviewEnable"
 			@open-goal-modal="openGoalModal($event)"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
+			@view-goal-recap="$emit('view-goal-recap', $event)"
 		/>
 		<GoalSettingModal
 			:show="showGoalModal"
@@ -136,7 +140,7 @@ export default {
 		KvMaterialIcon,
 	},
 	inject: ['apollo', 'cookieStore'],
-	emits: ['add-to-basket'],
+	emits: ['add-to-basket', 'view-goal-recap'],
 	props: {
 		loans: {
 			type: Array,
@@ -194,6 +198,10 @@ export default {
 		goalInReviewInProgressStart: {
 			type: Date,
 			default: null,
+		},
+		goalInReviewEnable: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {
