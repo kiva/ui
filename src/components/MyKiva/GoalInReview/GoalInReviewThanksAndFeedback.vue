@@ -129,7 +129,12 @@ const isPastGoalYear = computed(() => {
 	return Number(props.currentYear) > Number(props.year);
 });
 
-const dreamsCopy = computed(() => (props.loanCount ? `${props.loanCount} dreams` : 'more dreams'));
+const dreamsCopy = computed(() => {
+	if (!props.loanCount) {
+		return 'more dreams';
+	}
+	return props.loanCount === 1 ? '1 dream' : `${props.loanCount} dreams`;
+});
 
 const timeframe = computed(() => (isPastGoalYear.value ? 'last year' : 'this year'));
 

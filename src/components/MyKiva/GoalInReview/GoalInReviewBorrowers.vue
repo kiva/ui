@@ -1,6 +1,6 @@
 <template>
 	<section
-		class="tw-w-full tw-bg-brand-100 tw-px-2 tw-py-5 md:tw-px-4"
+		class="tw-w-full tw-bg-brand-100 tw-px-2 tw-py-3 md:tw-px-4"
 		data-testid="goal-in-review-borrowers"
 	>
 		<p class="tw-text-action tw-mb-1 kv-fade-up borrowers-eyebrow">
@@ -107,11 +107,8 @@ const cardAnimationDelay = index => ({ animationDelay: `${0.2 + index * 0.175}s`
 
 .borrowers-eyebrow,
 .borrowers-headline {
+	/* Eyebrow + headline share one start so the header lands as a unit. */
 	--kv-fade-up-distance: 24px;
-}
-
-.borrowers-headline {
-	animation-delay: 0.08s;
 }
 
 .borrowers-card {

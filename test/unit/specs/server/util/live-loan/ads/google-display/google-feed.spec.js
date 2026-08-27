@@ -108,9 +108,9 @@ describe('google-feed', () => {
 			expect(lines).toHaveLength(3);
 			expect(lines[0]).toEqual(FEED_COLUMNS.join('\t'));
 			expect(lines[1]).toContain('Support Mukumoy');
-			// The composed description carries the "This loan is special because ..." lead-in; the row
+			// The composed description carries the "This loan helps ..." lead-in; the row
 			// survives ad-safety, proving the template word "loan" is not scanned (only raw borrower text is).
-			expect(lines[1]).toContain('This loan is special because to support her family shop');
+			expect(lines[1]).toContain('This loan helps to support her family shop');
 			expect(lines[1]).toContain(
 				'https://www.kiva.org/lend/456?utm_medium=paid&utm_source=google&utm_campaign=liveloans',
 			);

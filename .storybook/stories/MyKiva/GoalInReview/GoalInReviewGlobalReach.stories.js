@@ -7,6 +7,9 @@ import {
 
 const baseCountries = buildSampleGoalInReviewData(2025).goalSummary.countries;
 
+// Pick specific sample countries by ISO code for the geography-specific stories.
+const pickCountries = (...isoCodes) => baseCountries.filter(country => isoCodes.includes(country.isoCode));
+
 export default {
 	title: 'MyKiva/GoalInReview/GoalInReviewGlobalReach',
 	component: GoalInReviewGlobalReach,
@@ -50,3 +53,13 @@ export const NoSectors = story(baseCountries, null);
 
 // Some loans have no sector -> an "Other (n)" pill joins the legend.
 export const WithOtherSector = story(baseCountries, sampleGoalSectorsWithOther);
+
+// A tight cluster (Kenya, Uganda) plus a far outlier (Peru): the map zooms into the
+// East-African group and lets Peru sit off-frame, instead of zooming out to the world.
+export const ClusteredWithOutlier = story(pickCountries('KE', 'UG', 'PE'));
+
+// One country -> singular "1 border." plus a tight single-country zoom.
+export const SingleCountry = story(pickCountries('KE'));
+
+// One sector -> singular "1 sector".
+export const SingleSector = story(baseCountries, sampleGoalSectors.slice(0, 1));

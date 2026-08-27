@@ -20,7 +20,7 @@ const rerenderWith = (rerender, completedAchievements) => rerender({
 	badgesData: [],
 });
 
-const renderBadgesList = ({ completedAchievements = [], query = {} } = {}) => {
+const renderBadgesList = ({ completedAchievements = [], query = {}, trackEvent = () => {} } = {}) => {
 	return render(BadgesList, {
 		props: {
 			completedAchievements,
@@ -34,7 +34,7 @@ const renderBadgesList = ({ completedAchievements = [], query = {} } = {}) => {
 			},
 			directives: { kvTrackEvent: () => {} },
 			mocks: {
-				$kvTrackEvent: () => {},
+				$kvTrackEvent: trackEvent,
 				$router: { push: () => {}, currentRoute: { value: { query } } },
 				$route: { query },
 			},
@@ -109,5 +109,73 @@ describe('BadgesList email-link auto-open', () => {
 		await rerenderWith(rerender, [eventBadge('stewardship-2026')]);
 
 		await waitFor(() => expect(queryByTestId('badge-modal')).toBeTruthy());
+	});
+});
+
+describe('BadgesList badge-claim-modal view tracking', () => {
+	it('fires a portfolio view event with the badge name when the modal auto-opens', async () => {
+		const trackEvent = vi.fn();
+		renderBadgesList({
+			completedAchievements: [eventBadge('stewardship-2026')],
+			query: { utm_campaign: 'badge_stewardship-2026' },
+			trackEvent,
+		});
+
+		await waitFor(() => expect(trackEvent).toHaveBeenCalledWith(
+			'portfolio',
+			'view',
+			'badge-claim-modal',
+			'Stewardship',
+		));
+	});
+
+	it('does not fire the view event without the email param', async () => {
+		const trackEvent = vi.fn();
+		renderBadgesList({
+			completedAchievements: [eventBadge('stewardship-2026')],
+			query: {},
+			trackEvent,
+		});
+
+		await flushPromises();
+		expect(trackEvent).not.toHaveBeenCalledWith(
+			'portfolio',
+			'view',
+			'badge-claim-modal',
+			expect.anything(),
+		);
+	});
+
+	it('does not fire the view event when the user does not own the linked badge', async () => {
+		const trackEvent = vi.fn();
+		renderBadgesList({
+			completedAchievements: [eventBadge('some-other-badge')],
+			query: { utm_campaign: 'badge_stewardship-2026' },
+			trackEvent,
+		});
+
+		await flushPromises();
+		expect(trackEvent).not.toHaveBeenCalledWith(
+			'portfolio',
+			'view',
+			'badge-claim-modal',
+			expect.anything(),
+		);
+	});
+
+	it('fires the view event only once even when badges reload after the modal opens', async () => {
+		const trackEvent = vi.fn();
+		const { rerender } = renderBadgesList({
+			completedAchievements: [eventBadge('stewardship-2026')],
+			query: { utm_campaign: 'badge_stewardship-2026' },
+			trackEvent,
+		});
+
+		await waitFor(() => expect(trackEvent).toHaveBeenCalledTimes(1));
+
+		await rerenderWith(rerender, [eventBadge('stewardship-2026')]);
+		await flushPromises();
+
+		expect(trackEvent).toHaveBeenCalledTimes(1);
 	});
 });
