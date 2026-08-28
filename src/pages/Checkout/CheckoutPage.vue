@@ -106,6 +106,7 @@
 							:promo-fund="derivedPromoFund"
 							:open-lightbox="openMatchedLoansLightbox"
 							:is-kiva-credit-replacement-exp-enabled="isKivaCreditReplacementExpEnabled"
+							:apply-kiva-credit-to-donation="applyKivaCreditToDonation"
 							@refreshtotals="refreshTotals"
 							@updating-totals="setUpdatingTotals"
 						/>
@@ -531,6 +532,7 @@ export default {
 			isStopHidingTipExpEnabled: false,
 			customTipDefaultVersion: null,
 			tipFromBalanceVersion: null,
+			applyKivaCreditToDonation: null,
 		};
 	},
 	apollo: {
@@ -594,6 +596,7 @@ export default {
 				{ __typename: 'Credit', creditType: 'redemption_code' }
 			);
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+			this.applyKivaCreditToDonation = _get(data, 'shop.basket.applyKivaCreditToDonation') ?? null;
 			this.lenderLoansIds = this.loans.filter(l => l?.loan?.userProperties?.lentTo).map(l => l.id);
 			if (this.redemption_credits.length || this.hasFreeCredits !== false) {
 				this.disableGuestCheckout();

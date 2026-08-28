@@ -260,6 +260,12 @@ export default {
 			type: Function,
 			default: () => {}
 		},
+		// Manifest.applyKivaCreditToDonation; null/undefined means the lender has never chosen,
+		// which the backend treats as true
+		applyKivaCreditToDonation: {
+			type: Boolean,
+			default: null,
+		},
 	},
 	data() {
 		return {
@@ -270,7 +276,7 @@ export default {
 	},
 	computed: {
 		showRemoveKivaCredit() {
-			return parseFloat(this.totals.kivaCreditAppliedTotal) > 0;
+			return this.appliedKivaCredit > 0;
 		},
 		showApplyKivaCredit() {
 			return parseFloat(this.totals.kivaCreditToReapply) > 0;
@@ -278,8 +284,21 @@ export default {
 		showKivaCredit() {
 			return this.showRemoveKivaCredit || this.showApplyKivaCredit;
 		},
+		appliedKivaCredit() {
+			const applied = numeral(this.totals.kivaCreditAppliedTotal).value() ?? 0;
+			// The lender has chosen to pay the tip with new money, so creditAmountNeeded is floored at the
+			// tip: that deposit lands in the balance and is spent again as credit, leaving the balance to
+			// fund only the non-tip items. Reporting the raw applied credit alongside the floored amount due
+			// reads as more than the basket total. See the tip floor in MP-3074's getAmountDue().
+			if (this.applyKivaCreditToDonation === false) {
+				const nonTipTotal = (numeral(this.totals.loanReservationTotal).value() ?? 0)
+					+ (numeral(this.totals.kivaCardTotal).value() ?? 0);
+				return Math.min(applied, nonTipTotal);
+			}
+			return applied;
+		},
 		kivaCredit() {
-			let creditAmount = numeral(this.totals.kivaCreditAppliedTotal).format('$0,0.00');
+			let creditAmount = numeral(this.appliedKivaCredit).format('$0,0.00');
 			if (this.showApplyKivaCredit) {
 				creditAmount = numeral(this.totals.kivaCreditToReapply).format('$0,0.00');
 			}
