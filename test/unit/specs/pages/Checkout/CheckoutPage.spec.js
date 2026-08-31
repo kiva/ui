@@ -210,14 +210,61 @@ describe('CheckoutPage ensureTipDonationExists', () => {
 	});
 });
 
+describe('CheckoutPage pendingTipPreferenceReset', () => {
+	const pendingTipPreferenceReset = context => CheckoutPage.computed.pendingTipPreferenceReset.call(context);
+
+	it('is pending while a basket outside the variant is still opted out', () => {
+		expect(pendingTipPreferenceReset({
+			resettingTipPreference: false,
+			tipFromBalanceVersion: 'a',
+			applyKivaCreditToDonation: false,
+		})).toBe(true);
+	});
+
+	it('stays pending while the reset is in flight', () => {
+		expect(pendingTipPreferenceReset({
+			resettingTipPreference: true,
+			tipFromBalanceVersion: 'a',
+			applyKivaCreditToDonation: true,
+		})).toBe(true);
+	});
+
+	it.each([
+		['in the variant', { tipFromBalanceVersion: 'b', applyKivaCreditToDonation: false }],
+		['paying the tip from balance', { tipFromBalanceVersion: 'a', applyKivaCreditToDonation: true }],
+		['never chosen', { tipFromBalanceVersion: 'a', applyKivaCreditToDonation: null }],
+	])('is not pending when %s', (label, state) => {
+		expect(pendingTipPreferenceReset({ resettingTipPreference: false, ...state })).toBe(false);
+	});
+
+	it.each([
+		['undefined', undefined],
+		['null', null],
+	])('waits while the assignment is still %s rather than undoing a treatment basket', (label, version) => {
+		expect(pendingTipPreferenceReset({
+			resettingTipPreference: false,
+			tipFromBalanceVersion: version,
+			applyKivaCreditToDonation: false,
+		})).toBe(false);
+	});
+
+	it('gives up after a failed attempt so the lender can still pay', () => {
+		expect(pendingTipPreferenceReset({
+			resettingTipPreference: false,
+			tipPreferenceResetFailed: true,
+			tipFromBalanceVersion: 'a',
+			applyKivaCreditToDonation: false,
+		})).toBe(false);
+	});
+});
+
 describe('CheckoutPage resetTipPreferenceOutsideVariant', () => {
 	const makeContext = (overrides = {}) => ({
 		apollo: { mutate: vi.fn().mockResolvedValue({}) },
 		cookieStore: { remove: vi.fn() },
 		refreshTotals: vi.fn(),
 		resettingTipPreference: false,
-		tipFromBalanceVersion: 'a',
-		applyKivaCreditToDonation: false,
+		pendingTipPreferenceReset: true,
 		...overrides,
 	});
 
@@ -234,8 +281,8 @@ describe('CheckoutPage resetTipPreferenceOutsideVariant', () => {
 		expect(context.refreshTotals).toHaveBeenCalled();
 	});
 
-	it('leaves the basket alone in the variant', async () => {
-		const context = makeContext({ tipFromBalanceVersion: 'b' });
+	it('leaves the basket alone when no reset is pending', async () => {
+		const context = makeContext({ pendingTipPreferenceReset: false });
 
 		CheckoutPage.methods.resetTipPreferenceOutsideVariant.call(context);
 		await flushPromises();
@@ -243,16 +290,15 @@ describe('CheckoutPage resetTipPreferenceOutsideVariant', () => {
 		expect(context.apollo.mutate).not.toHaveBeenCalled();
 	});
 
-	it.each([
-		['the lender pays the tip from their balance', true],
-		['the lender has never chosen', null],
-	])('leaves the basket alone when %s', async (label, applyKivaCreditToDonation) => {
-		const context = makeContext({ applyKivaCreditToDonation });
+	it('records a failed attempt so the payment form is no longer withheld', async () => {
+		const context = makeContext();
+		context.apollo.mutate.mockRejectedValue(new Error('network'));
 
 		CheckoutPage.methods.resetTipPreferenceOutsideVariant.call(context);
 		await flushPromises();
 
-		expect(context.apollo.mutate).not.toHaveBeenCalled();
+		expect(context.tipPreferenceResetFailed).toBe(true);
+		expect(logReadQueryError).toHaveBeenCalled();
 	});
 
 	it('does not stack resets while one is in flight', async () => {

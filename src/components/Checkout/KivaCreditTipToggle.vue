@@ -19,11 +19,7 @@
 </template>
 
 <script>
-import _filter from 'lodash/filter';
-import _get from 'lodash/get';
-import numeral from 'numeral';
 import logFormatter from '#src/util/logFormatter';
-import initializeCheckout from '#src/graphql/query/checkout/initializeCheckout.graphql';
 import updateKivaCreditDonationPreference from '#src/graphql/mutation/updateKivaCreditDonationPreference.graphql';
 import { KvSwitch } from '@kiva/kv-components';
 
@@ -42,59 +38,54 @@ export default {
 	inject: {
 		apollo: { from: 'apollo' },
 		cookieStore: { from: 'cookieStore' },
-		// Assigned version provided by the checkout page; null when rendered elsewhere
+		// Assignment and basket state provided by the checkout page; the defaults keep this
+		// component inert anywhere else
 		tipFromBalanceVersion: { default: null },
+		tipToggleBasketState: { default: null },
 	},
 	emits: ['refreshtotals', 'updating-totals'],
 	data() {
 		return {
-			myId: null,
-			balance: 0,
-			hasLoans: false,
-			tipAmount: 0,
-			basketId: null,
-			applyKivaCreditToDonation: null,
 			choiceProtected: false,
 			toggleValue: false,
 			updating: false,
 			seeding: false,
 		};
 	},
-	created() {
-		// Watch for and react to changes to the basket state
-		this.apollo.watchQuery({ query: initializeCheckout }).subscribe({
-			next: ({ data }) => {
-				this.myId = _get(data, 'my.userAccount.id') ?? null;
-				this.balance = numeral(_get(data, 'my.userAccount.balance')).value() ?? 0;
-				const items = _get(data, 'shop.basket.items.values') ?? [];
-				this.hasLoans = _filter(items, { __typename: 'LoanReservation' }).length > 0;
-				const tip = _filter(items, { __typename: 'Donation' }).find(item => !item.metadata?.campaignId);
-				this.tipAmount = numeral(tip?.price).value() ?? 0;
-				this.basketId = _get(data, 'shop.basket.id') ?? null;
-				const preference = _get(data, 'shop.basket.applyKivaCreditToDonation');
-				this.applyKivaCreditToDonation = typeof preference === 'boolean' ? preference : null;
-				this.choiceProtected = !!this.basketId
-					&& this.cookieStore.get(TIP_FROM_BALANCE_SEEDED_COOKIE) === String(this.basketId);
-				if (!this.updating) {
-					this.toggleValue = this.applyKivaCreditToDonation === true;
-				}
-			},
-		});
-	},
 	mounted() {
 		this.maybeSeedPreference();
 	},
 	watch: {
+		basketId: { handler: 'readBasketChoice', immediate: true },
 		isEligible: 'maybeSeedPreference',
-		applyKivaCreditToDonation: 'maybeSeedPreference',
+		applyKivaCreditToDonation: {
+			handler(preference) {
+				// Not while a change of the lender's own is in flight, or the switch would snap back
+				if (!this.updating) {
+					this.toggleValue = preference === true;
+				}
+				this.maybeSeedPreference();
+			},
+			immediate: true,
+		},
 	},
 	computed: {
+		basketState() {
+			return this.tipToggleBasketState ?? {};
+		},
+		basketId() {
+			return this.basketState.basketId ?? null;
+		},
+		applyKivaCreditToDonation() {
+			const preference = this.basketState.applyKivaCreditToDonation;
+			return typeof preference === 'boolean' ? preference : null;
+		},
 		isEligible() {
 			return this.tipFromBalanceVersion === 'b'
-				&& !!this.myId
-				&& this.balance > 0
-				&& this.hasLoans
-				&& this.tipAmount > 0;
+				&& !!this.basketState.myId
+				&& this.basketState.balance > 0
+				&& this.basketState.hasLoans
+				&& this.basketState.tipAmount > 0;
 		},
 		needsSeeding() {
 			return this.applyKivaCreditToDonation === true && !this.choiceProtected;
@@ -163,6 +154,11 @@ export default {
 				this.$emit('refreshtotals');
 				this.updating = false;
 			});
+		},
+		readBasketChoice() {
+			// Read rather than derive: the marker is a cookie, so writing it does not re-render
+			this.choiceProtected = !!this.basketId
+				&& this.cookieStore.get(TIP_FROM_BALANCE_SEEDED_COOKIE) === String(this.basketId);
 		},
 		markChoiceProtected() {
 			this.cookieStore.set(TIP_FROM_BALANCE_SEEDED_COOKIE, String(this.basketId), { path: '/' });

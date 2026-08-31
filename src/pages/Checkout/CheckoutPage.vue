@@ -133,7 +133,7 @@
 								</form>
 
 								<checkout-drop-in-payment-wrapper
-									v-if="!showKivaCreditButton"
+									v-if="!showKivaCreditButton && !pendingTipPreferenceReset"
 									:amount="creditNeeded"
 									:loans-in-basket="loanIdsInBasket.length"
 									:is-guest-checkout="checkingOutAsGuest"
@@ -472,6 +472,7 @@ export default {
 			// Computed so injecting descendants stay reactive to version reassignment
 			customTipDefaultVersion: computed(() => this.customTipDefaultVersion),
 			tipFromBalanceVersion: computed(() => this.tipFromBalanceVersion),
+			tipToggleBasketState: computed(() => this.tipToggleBasketState),
 		};
 	},
 	mixins: [checkoutUtils, fiveDollarsTest],
@@ -537,7 +538,9 @@ export default {
 			customTipDefaultVersion: null,
 			tipFromBalanceVersion: null,
 			applyKivaCreditToDonation: null,
+			basketId: null,
 			resettingTipPreference: false,
+			tipPreferenceResetFailed: false,
 		};
 	},
 	apollo: {
@@ -602,6 +605,7 @@ export default {
 			);
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 			this.applyKivaCreditToDonation = _get(data, 'shop.basket.applyKivaCreditToDonation') ?? null;
+			this.basketId = _get(data, 'shop.basket.id') ?? null;
 			this.lenderLoansIds = this.loans.filter(l => l?.loan?.userProperties?.lentTo).map(l => l.id);
 			if (this.redemption_credits.length || this.hasFreeCredits !== false) {
 				this.disableGuestCheckout();
@@ -933,6 +937,33 @@ export default {
 				: this.totals?.bonusAvailableTotal;
 			return numeral(amount).format('$0,0');
 		},
+		tipToggleBasketState() {
+			// Everything the tip toggle needs, so it reads the basket through the page rather than
+			// running its own copy of the checkout query
+			const tip = this.donations.find(donation => !donation.metadata?.campaignId);
+			return {
+				myId: this.myId,
+				balance: numeral(this.myBalance).value() ?? 0,
+				hasLoans: this.loans.length > 0,
+				tipAmount: numeral(tip?.price).value() ?? 0,
+				basketId: this.basketId,
+				applyKivaCreditToDonation: this.applyKivaCreditToDonation,
+			};
+		},
+		pendingTipPreferenceReset() {
+			// The basket is about to be put back to the default, which changes the amount due. The
+			// payment form must not mount against a total we are already replacing: it tears its own
+			// container out of the DOM mid-initialization and Braintree fails to build the drop-in.
+			// Once an attempt has failed, stop withholding: a lender who cannot pay is worse off than
+			// one looking at a basket that still charges for the tip
+			// An unknown version is not "outside the variant": the assignment arrives after the first
+			// render when it has to be queried, and resetting on that would undo a treatment basket
+			return this.resettingTipPreference
+				|| (!this.tipPreferenceResetFailed
+					&& !!this.tipFromBalanceVersion
+					&& this.tipFromBalanceVersion !== 'b'
+					&& this.applyKivaCreditToDonation === false);
+		},
 		isKivaCreditText() {
 			return this.isKivaCreditReplacementExpEnabled ? 'Account balance' : 'Kiva Credit';
 		},
@@ -1118,7 +1149,7 @@ export default {
 			// The tip toggle only renders in the variant, so a basket left opted out of paying the tip
 			// from Kiva Credit would keep charging for it with nothing able to undo it
 			if (typeof window === 'undefined' || this.resettingTipPreference) return;
-			if (this.tipFromBalanceVersion === 'b' || this.applyKivaCreditToDonation !== false) return;
+			if (!this.pendingTipPreferenceReset) return;
 
 			this.resettingTipPreference = true;
 			this.apollo.mutate({
@@ -1129,6 +1160,7 @@ export default {
 				this.cookieStore.remove(TIP_FROM_BALANCE_SEEDED_COOKIE, { path: '/' });
 				this.refreshTotals();
 			}).catch(error => {
+				this.tipPreferenceResetFailed = true;
 				logReadQueryError(error, 'CheckoutPage resetTipPreferenceOutsideVariant');
 			}).finally(() => {
 				this.resettingTipPreference = false;
