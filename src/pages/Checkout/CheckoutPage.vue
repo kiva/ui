@@ -357,7 +357,11 @@ import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
 import MatchedLoansLightbox from '#src/components/Checkout/MatchedLoansLightbox';
 import { CUSTOM_TIP_DEFAULT_EXP_KEY } from '#src/components/Checkout/DonationNudge/DonationNudgeBoxes';
-import { TIP_FROM_BALANCE_EXP_KEY } from '#src/components/Checkout/KivaCreditTipToggle';
+import {
+	TIP_FROM_BALANCE_EXP_KEY,
+	TIP_FROM_BALANCE_SEEDED_COOKIE,
+} from '#src/components/Checkout/KivaCreditTipToggle';
+import updateKivaCreditDonationPreference from '#src/graphql/mutation/updateKivaCreditDonationPreference.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
 import FtdsMessage from '#src/components/Checkout/FtdsMessage';
@@ -533,6 +537,7 @@ export default {
 			customTipDefaultVersion: null,
 			tipFromBalanceVersion: null,
 			applyKivaCreditToDonation: null,
+			resettingTipPreference: false,
 		};
 	},
 	apollo: {
@@ -743,6 +748,8 @@ export default {
 		);
 	},
 	watch: {
+		applyKivaCreditToDonation: 'resetTipPreferenceOutsideVariant',
+		tipFromBalanceVersion: 'resetTipPreferenceOutsideVariant',
 		async emptyBasket(newValue) {
 			if (!newValue && !this.upsellLoan?.id) {
 				await Promise.all([
@@ -1106,6 +1113,26 @@ export default {
 		},
 		setUpdatingTotals(state) {
 			this.updatingTotals = state;
+		},
+		resetTipPreferenceOutsideVariant() {
+			// The tip toggle only renders in the variant, so a basket left opted out of paying the tip
+			// from Kiva Credit would keep charging for it with nothing able to undo it
+			if (typeof window === 'undefined' || this.resettingTipPreference) return;
+			if (this.tipFromBalanceVersion === 'b' || this.applyKivaCreditToDonation !== false) return;
+
+			this.resettingTipPreference = true;
+			this.apollo.mutate({
+				mutation: updateKivaCreditDonationPreference,
+				variables: { applyKivaCreditToDonation: true },
+			}).then(() => {
+				// Let the variant default the basket off again if the lender ends up back in it
+				this.cookieStore.remove(TIP_FROM_BALANCE_SEEDED_COOKIE, { path: '/' });
+				this.refreshTotals();
+			}).catch(error => {
+				logReadQueryError(error, 'CheckoutPage resetTipPreferenceOutsideVariant');
+			}).finally(() => {
+				this.resettingTipPreference = false;
+			});
 		},
 		logBasketState() {
 			const creditNeededInt = numeral(this.creditNeeded).value();

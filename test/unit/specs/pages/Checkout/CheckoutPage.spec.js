@@ -4,6 +4,8 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
 import { trackMetaEvent } from '@kiva/kv-analytics';
+/* eslint-disable-next-line import/no-extraneous-dependencies -- devDependency used only in tests */
+import { flushPromises } from '@vue/test-utils';
 
 vi.mock('#src/util/basketUtils', () => ({
 	setDonationAmount: vi.fn(),
@@ -205,6 +207,61 @@ describe('CheckoutPage ensureTipDonationExists', () => {
 		expect(context.setUpdatingTotals).toHaveBeenCalledWith(false);
 		expect(context.donations).toHaveLength(0);
 		expect(context.refreshTotals).not.toHaveBeenCalled();
+	});
+});
+
+describe('CheckoutPage resetTipPreferenceOutsideVariant', () => {
+	const makeContext = (overrides = {}) => ({
+		apollo: { mutate: vi.fn().mockResolvedValue({}) },
+		cookieStore: { remove: vi.fn() },
+		refreshTotals: vi.fn(),
+		resettingTipPreference: false,
+		tipFromBalanceVersion: 'a',
+		applyKivaCreditToDonation: false,
+		...overrides,
+	});
+
+	it('puts a basket left opted out back to the default', async () => {
+		const context = makeContext();
+
+		CheckoutPage.methods.resetTipPreferenceOutsideVariant.call(context);
+		await flushPromises();
+
+		expect(context.apollo.mutate).toHaveBeenCalledTimes(1);
+		expect(context.apollo.mutate.mock.calls[0][0].variables).toEqual({ applyKivaCreditToDonation: true });
+		// Marker cleared so the variant can default the basket off again
+		expect(context.cookieStore.remove).toHaveBeenCalledWith('kvtipseeded', { path: '/' });
+		expect(context.refreshTotals).toHaveBeenCalled();
+	});
+
+	it('leaves the basket alone in the variant', async () => {
+		const context = makeContext({ tipFromBalanceVersion: 'b' });
+
+		CheckoutPage.methods.resetTipPreferenceOutsideVariant.call(context);
+		await flushPromises();
+
+		expect(context.apollo.mutate).not.toHaveBeenCalled();
+	});
+
+	it.each([
+		['the lender pays the tip from their balance', true],
+		['the lender has never chosen', null],
+	])('leaves the basket alone when %s', async (label, applyKivaCreditToDonation) => {
+		const context = makeContext({ applyKivaCreditToDonation });
+
+		CheckoutPage.methods.resetTipPreferenceOutsideVariant.call(context);
+		await flushPromises();
+
+		expect(context.apollo.mutate).not.toHaveBeenCalled();
+	});
+
+	it('does not stack resets while one is in flight', async () => {
+		const context = makeContext({ resettingTipPreference: true });
+
+		CheckoutPage.methods.resetTipPreferenceOutsideVariant.call(context);
+		await flushPromises();
+
+		expect(context.apollo.mutate).not.toHaveBeenCalled();
 	});
 });
 
