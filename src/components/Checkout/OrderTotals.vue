@@ -289,7 +289,7 @@ export default {
 			// The lender has chosen to pay the tip with new money, so creditAmountNeeded is floored at the
 			// tip: that deposit lands in the balance and is spent again as credit, leaving the balance to
 			// fund only the non-tip items. Reporting the raw applied credit alongside the floored amount due
-			// reads as more than the basket total. See the tip floor in MP-3074's getAmountDue().
+			// reads as more than the basket total. The floor lives in ManifestViewHelper::getAmountDue().
 			if (this.applyKivaCreditToDonation === false) {
 				const nonTipTotal = (numeral(this.totals.loanReservationTotal).value() ?? 0)
 					+ (numeral(this.totals.kivaCardTotal).value() ?? 0);

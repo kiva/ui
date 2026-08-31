@@ -732,8 +732,8 @@ export default {
 
 		this.initializeCustomTipDefaultExperiment();
 
-		// Assignment read once here and provided to the donation item; the toggle handles
-		// its own eligibility and MP-3077 owns exposure
+		// Assignment read once here and provided to the donation item; the toggle handles its own
+		// eligibility, and no exposure event is fired here
 		initializeExperiment(
 			this.cookieStore,
 			this.apollo,
