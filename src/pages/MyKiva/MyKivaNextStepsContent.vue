@@ -260,6 +260,7 @@
 			</div>
 		</div>
 		<GoalSettingModal
+			v-if="showGoalModal"
 			:show="showGoalModal"
 			:total-loans="totalLoans"
 			:categories-loan-count="categoriesLoanCount"
@@ -279,6 +280,7 @@
 		/>
 
 		<MyKivaSharingModal
+			v-if="isSharingModalVisible"
 			:lender="lender"
 			:is-visible="isSharingModalVisible"
 			@close-modal="isSharingModalVisible = false"

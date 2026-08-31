@@ -35,25 +35,39 @@ describe('LendingStats', () => {
 		});
 	});
 
-	describe('mounted', () => {
-		it('does not enable the post-lending experience when the cookie is absent', () => {
-			const context = {
-				cookieStore: { get: vi.fn(), remove: vi.fn() },
-				showPostLendingNextStepsCards: false,
-			};
+	// The cookie is read in created() so the server picks the same carousel variant the client
+	// will; only the clearing is deferred to mounted(). Reading it after hydration would swap
+	// the above-fold carousel out from under a lender arriving from checkout.
+	describe('post-lending cookie', () => {
+		const buildContext = cookieValue => ({
+			cookieStore: { get: vi.fn().mockReturnValue(cookieValue), remove: vi.fn() },
+			showPostLendingNextStepsCards: false,
+		});
 
+		it('does not enable the post-lending experience when the cookie is absent', () => {
+			const context = buildContext(undefined);
+
+			LendingStats.created.call(context);
 			LendingStats.mounted.call(context);
 
 			expect(context.showPostLendingNextStepsCards).toBe(false);
 			expect(context.cookieStore.remove).not.toHaveBeenCalled();
 		});
 
-		it('enables the post-lending experience and clears the cookie when it is present', () => {
-			const context = {
-				cookieStore: { get: vi.fn().mockReturnValue('true'), remove: vi.fn() },
-				showPostLendingNextStepsCards: false,
-			};
+		it('enables the post-lending experience during created, before any mount', () => {
+			const context = buildContext('true');
 
+			LendingStats.created.call(context);
+
+			expect(context.showPostLendingNextStepsCards).toBe(true);
+			// Clearing here would make the server and client renders disagree.
+			expect(context.cookieStore.remove).not.toHaveBeenCalled();
+		});
+
+		it('clears the cookie only once mounted', () => {
+			const context = buildContext('true');
+
+			LendingStats.created.call(context);
 			LendingStats.mounted.call(context);
 
 			expect(context.showPostLendingNextStepsCards).toBe(true);
