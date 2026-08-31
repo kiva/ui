@@ -74,15 +74,11 @@
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
 import DynamicRichText from '#src/components/Contentful/DynamicRichText';
 import {
-	darkTheme,
-	darkGreenTheme,
-	mintTheme,
 	defaultTheme,
 	greenLightTheme,
 	greenDarkTheme,
 	marigoldLightTheme,
 	stoneLightTheme,
-	stoneDarkTheme,
 } from '@kiva/kv-tokens';
 import { KvContentfulImg, KvThemeProvider } from '@kiva/kv-components';
 /**
@@ -117,16 +113,19 @@ export default {
 		},
 		theme() {
 			const themeMapper = {
-				kivaCLassicLight: defaultTheme,
-				kivaClassicMint: mintTheme,
-				kivaClassicGreen: darkGreenTheme,
-				kivaClassicDark: darkTheme,
-				imageCard: darkTheme,
+				kivaClassicLight: defaultTheme,
+				// The kivaClassic* and ecoStoneDark values are pending retirement in Contentful.
+				// Until then they render as their closest approved theme.
+				kivaClassicMint: greenLightTheme,
+				kivaClassicGreen: greenDarkTheme,
+				kivaClassicDark: greenDarkTheme,
+				kivaClassicDarkStone: greenDarkTheme,
+				imageCard: greenDarkTheme,
+				ecoStoneDark: greenDarkTheme,
 				ecoGreenLight: greenLightTheme,
 				ecoGreenDark: greenDarkTheme,
 				ecoMarigoldLight: marigoldLightTheme,
 				ecoStoneLight: stoneLightTheme,
-				ecoStoneDark: stoneDarkTheme,
 			};
 			return themeMapper[this.content?.theme] ?? defaultTheme;
 		},

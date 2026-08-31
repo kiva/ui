@@ -34,16 +34,11 @@
 
 <script>
 import {
-	darkTheme,
-	darkGreenTheme,
-	mintTheme,
 	defaultTheme,
-	darkMintTheme,
 	greenLightTheme,
 	greenDarkTheme,
 	marigoldLightTheme,
 	stoneLightTheme,
-	stoneDarkTheme,
 } from '@kiva/kv-tokens';
 import { defineAsyncComponent } from 'vue';
 
@@ -93,10 +88,15 @@ export default {
 		 *
 		 * Can be one of:
 		 * - 'kivaClassicLight'
-		 * - 'kivaClassicMint'
-		 * - 'kivaClassicGreen'
-		 * - 'kivaClassicDark'
-		 * - 'imageCard'
+		 * - 'ecoGreenLight'
+		 * - 'ecoGreenDark'
+		 * - 'ecoMarigoldLight'
+		 * - 'ecoStoneLight'
+		 *
+		 * The legacy 'kivaClassicMint', 'kivaClassicGreen', 'kivaClassicDark',
+		 * 'kivaClassicDarkStone', 'kivaDarkMint', 'imageCard', and 'ecoStoneDark' values
+		 * still render, mapped to their closest approved theme, until they are retired
+		 * in Contentful.
 		 *
 		 * The default theme 'kivaClassicLight' will be used for any other value.
 		 */
@@ -166,16 +166,19 @@ export default {
 		themeStyles() {
 			const themeMapper = {
 				kivaClassicLight: defaultTheme,
-				kivaClassicMint: mintTheme,
-				kivaClassicGreen: darkGreenTheme,
-				kivaClassicDark: darkTheme,
-				imageCard: darkTheme,
-				kivaDarkMint: darkMintTheme,
+				// The kivaClassic*, kivaDarkMint, and ecoStoneDark values are pending retirement
+				// in Contentful. Until then they render as their closest approved theme.
+				kivaClassicMint: greenLightTheme,
+				kivaClassicGreen: greenDarkTheme,
+				kivaClassicDark: greenDarkTheme,
+				kivaClassicDarkStone: greenDarkTheme,
+				kivaDarkMint: greenDarkTheme,
+				imageCard: greenDarkTheme,
+				ecoStoneDark: greenDarkTheme,
 				ecoGreenLight: greenLightTheme,
 				ecoGreenDark: greenDarkTheme,
 				ecoMarigoldLight: marigoldLightTheme,
 				ecoStoneLight: stoneLightTheme,
-				ecoStoneDark: stoneDarkTheme,
 			};
 			const theme = themeMapper[this.themeName] ?? defaultTheme;
 			// No styles needed if using the default theme
