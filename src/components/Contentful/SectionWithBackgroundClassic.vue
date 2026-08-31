@@ -92,11 +92,7 @@ export default {
 		 * - 'ecoGreenDark'
 		 * - 'ecoMarigoldLight'
 		 * - 'ecoStoneLight'
-		 *
-		 * The legacy 'kivaClassicMint', 'kivaClassicGreen', 'kivaClassicDark',
-		 * 'kivaClassicDarkStone', 'kivaDarkMint', 'imageCard', and 'ecoStoneDark' values
-		 * still render, mapped to their closest approved theme, until they are retired
-		 * in Contentful.
+		 * - 'imageCard' (a layout, retained as a valid value)
 		 *
 		 * The default theme 'kivaClassicLight' will be used for any other value.
 		 */
@@ -166,15 +162,8 @@ export default {
 		themeStyles() {
 			const themeMapper = {
 				kivaClassicLight: defaultTheme,
-				// The kivaClassic*, kivaDarkMint, and ecoStoneDark values are pending retirement
-				// in Contentful. Until then they render as their closest approved theme.
-				kivaClassicMint: greenLightTheme,
-				kivaClassicGreen: greenDarkTheme,
-				kivaClassicDark: greenDarkTheme,
-				kivaClassicDarkStone: greenDarkTheme,
-				kivaDarkMint: greenDarkTheme,
+				// imageCard is a layout, not a colour theme, so it stays a valid value.
 				imageCard: greenDarkTheme,
-				ecoStoneDark: greenDarkTheme,
 				ecoGreenLight: greenLightTheme,
 				ecoGreenDark: greenDarkTheme,
 				ecoMarigoldLight: marigoldLightTheme,
