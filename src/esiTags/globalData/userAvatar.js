@@ -21,15 +21,20 @@ export function userAvatarData(data) {
 	const userData = {};
 	const userAvatar = data?.my?.lender?.image?.url ?? '';
 	const isLegacyAvatar = isLegacyPlaceholderAvatar(data?.my?.lender?.image?.id);
-	userData['user-avatar'] = `url("${userAvatar}") / "My portfolio"`;
 
 	// Set the display visibility of the avatar and avatar placeholder.
 	// These are only set when they should not be displayed, allowing the display value to
 	// be set in CSS using the fallback argument of var().
-	if (isLegacyAvatar) {
-		userData['user-avatar-display'] = 'none';
-	} else {
+	if (userAvatar && !isLegacyAvatar) {
+		userData['user-avatar'] = `url("${userAvatar}") / "My portfolio"`;
 		userData['user-avatar-legacy-display'] = 'none';
+	} else {
+		userData['user-avatar-display'] = 'none';
+	}
+
+	// ESI runs per-request, so a null `my` is authoritative even when the cached shell says otherwise.
+	if (!data?.my?.id) {
+		userData['user-loading-display'] = 'none';
 	}
 
 	return userData;

@@ -29,7 +29,7 @@ export const compactCardHeight = compactCardPadding
 // so their position stays put no matter how many lines the use text wraps to.
 export const compactBarY = compactCardHeight - compactCardPadding - compactBarHeight;
 export const compactToGoY = compactBarY - compactToGoBarGap - compactToGoLineHeight;
-// Outer margin around the card, baked onto white, so the drop shadow has room
+// Transparent outer margin around the card, giving the drop shadow room to spread
 export const compactCardMargin = 16;
 export const compactCardDimensions = {
 	width: (compactCardWidth + (2 * compactCardMargin)) * compactResizeFactor,

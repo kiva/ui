@@ -190,6 +190,43 @@ describe('GoalInReviewModal', () => {
 		expect(emitted()['set-goal']).toHaveLength(1);
 	});
 
+	it('does not report a close when the next-year CTA tears the recap down (MP-3145)', async () => {
+		const trackEvent = vi.fn();
+		const currentYear = new Date().getFullYear();
+		const { findByText, getByRole } = render(GoalInReviewModal, {
+			global: {
+				...globalOptions,
+				provide: { ...globalOptions.provide, $kvTrackEvent: trackEvent },
+			},
+			props: { show: true, data: { year: currentYear - 1, goalSummary: { status: 'completed' } } },
+		});
+
+		await fireEvent.click(await findByText(`Set my ${currentYear} goal`));
+		// The page closes the modal in response, and the lightbox re-emits on teardown.
+		await fireEvent.click(getByRole('button', { name: 'Close' }));
+
+		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', 'set-a-goal', 'from-goal-recap');
+		expect(trackEvent.mock.calls.filter(call => call[2] === 'goal-in-review-close')).toHaveLength(0);
+	});
+
+	it('does not report a close when Back to Kiva tears the recap down', async () => {
+		const trackEvent = vi.fn();
+		const currentYear = new Date().getFullYear();
+		const { findByText, getByRole } = render(GoalInReviewModal, {
+			global: {
+				...globalOptions,
+				provide: { ...globalOptions.provide, $kvTrackEvent: trackEvent },
+			},
+			props: { show: true, data: { year: currentYear, goalSummary: { status: 'completed' } } },
+		});
+
+		await fireEvent.click(await findByText('Back to Kiva'));
+		await fireEvent.click(getByRole('button', { name: 'Close' }));
+
+		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', 'goal-recap-back-to-kiva');
+		expect(trackEvent.mock.calls.filter(call => call[2] === 'goal-in-review-close')).toHaveLength(0);
+	});
+
 	it('passes feedbackSubmitted through to slide 7 to gate the feedback survey', async () => {
 		const currentYear = new Date().getFullYear();
 		const { queryByText, findByText } = render(GoalInReviewModal, {

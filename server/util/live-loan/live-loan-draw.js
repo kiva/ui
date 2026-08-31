@@ -404,7 +404,9 @@ async function drawClassic(loanData, { skipButton = false } = {}) {
 
 async function drawCompact(loanData) {
 	const canvas = trace('compactCanvasPool.use', () => compactCanvasPool.use());
-	const ctx = trace('canvas.getContext', () => canvas.getContext('2d', { alpha: false }));
+	// Alpha channel kept so the margin stays transparent (PNG export) and the drop
+	// shadow composites over a dark email background instead of a baked-in white.
+	const ctx = trace('canvas.getContext', () => canvas.getContext('2d'));
 
 	try {
 		// Work in logical (unscaled) units; the pooled canvas is reused so reset
@@ -414,11 +416,13 @@ async function drawCompact(loanData) {
 			ctx.textAlign = 'left';
 			ctx.textBaseline = 'top';
 
-			// White background across the whole image (incl. the shadow margin)
-			ctx.fillStyle = compactColors.white;
-			ctx.fillRect(0, 0, compactCardWidth + (2 * compactCardMargin), compactCardHeight + (2 * compactCardMargin));
+			// Clear to transparent (the pooled canvas holds the previous render) so the
+			// margin stays empty and the card + shadow composite onto the email background
+			const fullWidth = compactCardWidth + (2 * compactCardMargin);
+			const fullHeight = compactCardHeight + (2 * compactCardMargin);
+			ctx.clearRect(0, 0, fullWidth, fullHeight);
 
-			// Card with a subtle drop shadow, baked onto the white background
+			// Card with a subtle drop shadow over the transparent margin
 			ctx.save();
 			ctx.shadowColor = 'rgba(0, 0, 0, 0.08)';
 			ctx.shadowBlur = 12;
@@ -526,7 +530,7 @@ async function drawCompact(loanData) {
 		// Undo the card translate + clip so the pooled canvas is clean for reuse
 		ctx.restore();
 
-		const buffer = trace('export-jpeg', () => canvas.toBuffer('image/jpeg', { quality: 0.5 }));
+		const buffer = trace('export-png', () => canvas.toBuffer('image/png'));
 		trace('compactCanvasPool.recycle', () => compactCanvasPool.recycle(canvas));
 		return { buffer, hasBorrowerImage };
 	} catch (e) {
@@ -535,6 +539,13 @@ async function drawCompact(loanData) {
 		}
 		throw e;
 	}
+}
+
+// The compact card exports PNG so its transparent margin + drop shadow survive
+// on dark email backgrounds; every other style stays JPEG. The router reads this
+// for the response header, including cache hits where the drawn buffer is gone.
+export function contentTypeForStyle(style) {
+	return style === 'compact-bundle' ? 'image/png' : 'image/jpeg';
 }
 
 export default async function draw(loanData, style) {
