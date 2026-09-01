@@ -114,14 +114,9 @@ export default {
 		theme() {
 			const themeMapper = {
 				kivaClassicLight: defaultTheme,
-				// The kivaClassic* and ecoStoneDark values are pending retirement in Contentful.
-				// Until then they render as their closest approved theme.
-				kivaClassicMint: greenLightTheme,
-				kivaClassicGreen: greenDarkTheme,
-				kivaClassicDark: greenDarkTheme,
-				kivaClassicDarkStone: greenDarkTheme,
+				// imageCard is a layout, not a colour theme: StoryCard keys CSS off
+				// .story-card__imageCard for the background image treatment.
 				imageCard: greenDarkTheme,
-				ecoStoneDark: greenDarkTheme,
 				ecoGreenLight: greenLightTheme,
 				ecoGreenDark: greenDarkTheme,
 				ecoMarigoldLight: marigoldLightTheme,
