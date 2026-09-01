@@ -741,8 +741,7 @@ export default {
 
 		this.initializeCustomTipDefaultExperiment();
 
-		// Assignment read once here and provided to the donation item; the toggle handles its own
-		// eligibility, and no exposure event is fired here
+		// Read once here and provided to the donation item. No exposure event yet
 		initializeExperiment(
 			this.cookieStore,
 			this.apollo,
@@ -938,8 +937,7 @@ export default {
 			return numeral(amount).format('$0,0');
 		},
 		tipToggleBasketState() {
-			// Everything the tip toggle needs, so it reads the basket through the page rather than
-			// running its own copy of the checkout query
+			// What the tip toggle needs, so it does not run its own copy of the checkout query
 			const tip = this.donations.find(donation => !donation.metadata?.campaignId);
 			return {
 				myId: this.myId,
@@ -951,13 +949,10 @@ export default {
 			};
 		},
 		pendingTipPreferenceReset() {
-			// The basket is about to be put back to the default, which changes the amount due. The
-			// payment form must not mount against a total we are already replacing: it tears its own
-			// container out of the DOM mid-initialization and Braintree fails to build the drop-in.
-			// Once an attempt has failed, stop withholding: a lender who cannot pay is worse off than
-			// one looking at a basket that still charges for the tip
-			// An unknown version is not "outside the variant": the assignment arrives after the first
-			// render when it has to be queried, and resetting on that would undo a treatment basket
+			// True while the basket is about to be reset, so the payment form waits for the new
+			// amount due instead of building against one we are replacing.
+			// Requires a known version, since the assignment can arrive after the first render.
+			// Stops after a failed attempt, so a lender is never left unable to pay.
 			return this.resettingTipPreference
 				|| (!this.tipPreferenceResetFailed
 					&& !!this.tipFromBalanceVersion
@@ -1146,8 +1141,8 @@ export default {
 			this.updatingTotals = state;
 		},
 		resetTipPreferenceOutsideVariant() {
-			// The tip toggle only renders in the variant, so a basket left opted out of paying the tip
-			// from Kiva Credit would keep charging for it with nothing able to undo it
+			// Outside the variant there is no toggle, so a basket left opted out would keep charging
+			// for the tip with no way to undo it
 			if (typeof window === 'undefined' || this.resettingTipPreference) return;
 			if (!this.pendingTipPreferenceReset) return;
 
@@ -1160,6 +1155,8 @@ export default {
 				this.cookieStore.remove(TIP_FROM_BALANCE_SEEDED_COOKIE, { path: '/' });
 				this.refreshTotals();
 			}).catch(error => {
+				// Let the lender pay rather than retry in place. The flag is gone on the next page
+				// load, so the reset runs again on their next visit to checkout
 				this.tipPreferenceResetFailed = true;
 				logReadQueryError(error, 'CheckoutPage resetTipPreferenceOutsideVariant');
 			}).finally(() => {

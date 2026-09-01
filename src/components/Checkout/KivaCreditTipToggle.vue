@@ -25,9 +25,8 @@ import { KvSwitch } from '@kiva/kv-components';
 
 export const TIP_FROM_BALANCE_EXP_KEY = 'checkout_tip_from_balance_toggle';
 
-// Marks the basket whose donation preference was already defaulted to off for treatment.
-// Manifest.applyKivaCreditToDonation can't distinguish "never chose" from "chose yes", so a
-// basket carrying this marker is never re-seeded, protecting an explicit lender choice.
+// Marks a basket whose preference is already decided, so we never default it off twice.
+// Needed because the stored preference cannot tell "never chose" apart from "chose yes".
 export const TIP_FROM_BALANCE_SEEDED_COOKIE = 'kvtipseeded';
 
 export default {
@@ -38,8 +37,7 @@ export default {
 	inject: {
 		apollo: { from: 'apollo' },
 		cookieStore: { from: 'cookieStore' },
-		// Assignment and basket state provided by the checkout page; the defaults keep this
-		// component inert anywhere else
+		// Provided by the checkout page; the defaults keep this component inert anywhere else
 		tipFromBalanceVersion: { default: null },
 		tipToggleBasketState: { default: null },
 	},
@@ -60,7 +58,7 @@ export default {
 		isEligible: 'maybeSeedPreference',
 		applyKivaCreditToDonation: {
 			handler(preference) {
-				// Not while a change of the lender's own is in flight, or the switch would snap back
+				// Not mid-change, or the switch would snap back under the lender
 				if (!this.updating) {
 					this.toggleValue = preference === true;
 				}
@@ -91,8 +89,7 @@ export default {
 			return this.applyKivaCreditToDonation === true && !this.choiceProtected;
 		},
 		showToggle() {
-			// Hidden until the manifest default-off seeding has settled, so the rendered
-			// toggle and the manifest always agree
+			// Hidden until the default is stored, so the switch always matches the basket
 			return this.isEligible
 				&& this.applyKivaCreditToDonation !== null
 				&& !this.needsSeeding;
@@ -100,7 +97,7 @@ export default {
 	},
 	methods: {
 		maybeSeedPreference() {
-			// Client-only: seeding mutates the basket
+			// Client only, since seeding mutates the basket
 			if (typeof window === 'undefined') return;
 			if (!this.isEligible || this.applyKivaCreditToDonation === null) return;
 			if (this.needsSeeding && !this.seeding) {
@@ -150,13 +147,13 @@ export default {
 				this.toggleValue = this.applyKivaCreditToDonation === true;
 				this.$showTipMsg('There was a problem updating your basket. Please try again.', 'error');
 			}).finally(() => {
-				// Refreshing on failure too, so a stale basket recovers before the user retries
+				// Refresh on failure too, so a stale basket recovers before the retry
 				this.$emit('refreshtotals');
 				this.updating = false;
 			});
 		},
 		readBasketChoice() {
-			// Read rather than derive: the marker is a cookie, so writing it does not re-render
+			// Copied into state because a cookie write does not trigger a re-render
 			this.choiceProtected = !!this.basketId
 				&& this.cookieStore.get(TIP_FROM_BALANCE_SEEDED_COOKIE) === String(this.basketId);
 		},

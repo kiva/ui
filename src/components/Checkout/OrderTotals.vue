@@ -260,8 +260,7 @@ export default {
 			type: Function,
 			default: () => {}
 		},
-		// Manifest.applyKivaCreditToDonation; null/undefined means the lender has never chosen,
-		// which the backend treats as true
+		// null means the lender has never chosen, which the backend treats as true
 		applyKivaCreditToDonation: {
 			type: Boolean,
 			default: null,
@@ -286,10 +285,11 @@ export default {
 		},
 		appliedKivaCredit() {
 			const applied = numeral(this.totals.kivaCreditAppliedTotal).value() ?? 0;
-			// The lender has chosen to pay the tip with new money, so creditAmountNeeded is floored at the
-			// tip: that deposit lands in the balance and is spent again as credit, leaving the balance to
-			// fund only the non-tip items. Reporting the raw applied credit alongside the floored amount due
-			// reads as more than the basket total. The floor lives in ManifestViewHelper::getAmountDue().
+			// Credit from the backend covers the whole basket, tip included, so a $25 loan and a $5
+			// tip come back as $30 of credit. With the toggle off that $5 is what the lender deposits,
+			// and showing $30 against it reads as more than the basket total. Only the loans and
+			// Kiva Cards are really paid from the balance, so show that. If the balance never
+			// reached the loans then nothing went to the tip and the amount is already correct
 			if (this.applyKivaCreditToDonation === false) {
 				const nonTipTotal = (numeral(this.totals.loanReservationTotal).value() ?? 0)
 					+ (numeral(this.totals.kivaCardTotal).value() ?? 0);

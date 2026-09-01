@@ -1,9 +1,7 @@
 import OrderTotals from '#src/components/Checkout/OrderTotals';
 
-// The displayed Kiva Credit total states the net hit to the lender's balance, so it plus the amount
-// due comes to the basket total. When the lender pays the tip with new money, the backend floors the
-// amount due at the tip, and that deposit is spent again as credit - so the balance only funds the
-// non-tip items. Every other case shows the applied credit as-is.
+// The Kiva Credit line shows what really comes off the balance, so it plus the amount due
+// adds up to the basket total. Every case other than the toggle being off is shown as-is.
 describe('OrderTotals appliedKivaCredit', () => {
 	const appliedKivaCredit = context => OrderTotals.computed.appliedKivaCredit.call(context);
 
