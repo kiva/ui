@@ -8,13 +8,13 @@ export const WITHDRAWAL_STATUS = {
 	ERROR: 'ERROR',
 };
 
-// Route paths for the withdraw-beta flow. Imported by the router and the pages so
+// Route paths for the withdraw flow. Imported by the router and the pages so
 // every navigation target resolves to a single source of truth.
 export const WITHDRAW_ROUTE = {
-	BASE: '/withdraw-beta',
-	CONFIRM: '/withdraw-beta/confirm',
-	CHECK_INBOX: '/withdraw-beta/check-inbox',
-	AUTHORIZE: '/withdraw-beta/authorize',
+	BASE: '/withdraw',
+	CONFIRM: '/withdraw/confirm',
+	CHECK_INBOX: '/withdraw/check-inbox',
+	AUTHORIZE: '/withdraw/authorize',
 };
 
 // Human-readable action shown on the email-verification step-up page
