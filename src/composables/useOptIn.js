@@ -3,9 +3,21 @@ import { gql } from 'graphql-tag';
 
 // eslint-disable-next-line no-unused-vars
 export default (apollo, _cookieStore) => {
+	/**
+	 * Whether a communication settings mutation applied.
+	 *
+	 * Both mutations return a nullable Boolean, so only an explicit true confirms that the
+	 * settings were applied. False, null, a missing payload, or GraphQL errors are failures.
+	 *
+	 * @param {Boolean|null|undefined} result The mutation's payload
+	 * @param {Array} errors
+	 * @returns {Boolean} Whether the settings applied
+	 */
+	const applied = (result, errors) => !errors?.length && result === true;
+
 	const updateCommunicationSettings = async (lenderNews, loanUpdates, globalUnsubscribed) => {
 		try {
-			await apollo.mutate({
+			const { data, errors } = await apollo.mutate({
 				mutation: gql`
 					mutation updateCommunicationSettings(
 						$lenderNews: Boolean
@@ -29,7 +41,7 @@ export default (apollo, _cookieStore) => {
 					globalUnsubscribed,
 				},
 			});
-			return true;
+			return applied(data?.my?.updateCommunicationSettings, errors);
 		} catch (error) {
 			logReadQueryError(error, 'OptInModule updateCommunicationSettings');
 			return false;
@@ -38,7 +50,7 @@ export default (apollo, _cookieStore) => {
 
 	const updateVisitorEmailOptIn = async (lenderNews, loanUpdates, globalUnsubscribed, visitorId) => {
 		try {
-			await apollo.mutate({
+			const { data, errors } = await apollo.mutate({
 				mutation: gql`
 				mutation updateVisitorCommunicationSettings(
 					$lenderNews: Boolean,
@@ -65,8 +77,10 @@ export default (apollo, _cookieStore) => {
 					visitorId,
 				},
 			});
+			return applied(data?.visitorEmailOptIn?.updateCommunicationSettings, errors);
 		} catch (error) {
 			logReadQueryError(error, 'OptInModule updateVisitorCommunicationSettings');
+			return false;
 		}
 	};
 

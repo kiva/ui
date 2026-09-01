@@ -1,6 +1,7 @@
 import checkInjections from '#src/util/injectionCheck';
+import getOperationVariables from '#src/util/operationVariables';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { isContentfulQuery } from '#src/util/contentful/isContentfulQuery';
+import watchApolloOperation from '#src/util/watchApolloOperation';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 
 const injections = ['apollo', 'cookieStore'];
@@ -13,31 +14,14 @@ function parseLazy(lazy) {
 }
 
 function setupWatchQuery(vm, operation, commonVars) {
-	const {
-		query,
-		variables = () => {},
-		result = () => {},
-		fetchPolicy,
-	} = operation;
-	const { basketId, isContentfulPreview } = commonVars;
+	const { variables = () => {}, result = () => {} } = operation;
 
-	const observer = vm.apollo.watchQuery({
-		query,
-		...(fetchPolicy && { fetchPolicy }),
-		variables: {
-			...(basketId && { basketId }),
-			...variables.call(vm),
-			...(isContentfulQuery(query) && isContentfulPreview && { preview: true }),
-		},
-	});
-
-	vm.$watch(variables, vars => observer.setVariables({
-		...(basketId && { basketId }),
-		...vars,
-		...(isContentfulQuery(query) && isContentfulPreview && { preview: true }),
-	}), { deep: true });
-
-	observer.subscribe({
+	watchApolloOperation({
+		client: vm.apollo,
+		operation,
+		commonVars,
+		getVariables: () => variables.call(vm),
+		watchVariables: (getVariables, callback) => vm.$watch(getVariables, callback, { deep: true }),
 		next: apolloResult => result.call(vm, apolloResult),
 	});
 }
@@ -49,9 +33,8 @@ export default app => {
 			if (this.$options.apollo) {
 				checkInjections(this, injections);
 
-				// Get common variables for all queries
-				const basketId = this.cookieStore?.get('kvbskt') ?? null;
-				const isContentfulPreview = this.$route?.query?.preview === 'true';
+				// Get common variable inputs for all queries
+				const commonVars = { cookieStore: this.cookieStore, route: this.$route };
 
 				// $options.apollo is either a single object or an array of objects
 				const operations = Array.isArray(this.$options.apollo) ? this.$options.apollo : [this.$options.apollo];
@@ -87,17 +70,10 @@ export default app => {
 							try {
 								const data = this.apollo.readQuery({
 									query,
-									variables: {
-										...(basketId && { basketId }),
-										...preFetchVariables({
-											cookieStore: this.cookieStore,
-											route: this.$route,
-											client: this.apollo,
-										}),
-										/* Adds `preview: true` variable if the query is a contentful query
-										and the preview cookie value exists */
-										...(isContentfulQuery(query) && isContentfulPreview && { preview: true })
-									}
+									variables: getOperationVariables(query, commonVars, preFetchVariables({
+										...commonVars,
+										client: this.apollo,
+									})),
 								});
 
 								if (data !== null) {
@@ -110,7 +86,6 @@ export default app => {
 						}
 
 						const lazyConfig = parseLazy(operation.lazy);
-						const commonVars = { basketId, isContentfulPreview };
 						if (lazyConfig && !preFetched) {
 							this.lazyOperations.push({ operation, lazyConfig, commonVars });
 						} else if (typeof window !== 'undefined') {

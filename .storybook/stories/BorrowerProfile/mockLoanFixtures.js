@@ -24,28 +24,61 @@ export const loggedInUser = {
 };
 
 // ---------------------------------------------------------------------------
+// Avatar image hashes
+// ---------------------------------------------------------------------------
+
+// Real hashes that resolve against the production photo path, so the photo
+// branch renders an actual image rather than a broken one. Invented hashes 404.
+const PHOTO_HASH = '9673d0722a7675b9b8d11f90849d9b44';
+const PHOTO_HASH_ALT = '093374973a7cfb1f18652d3aac5bbd05';
+
+// kv-components treats this hash as a legacy placeholder, so a comment carrying
+// it renders the letter avatar instead of a photo.
+const LEGACY_PLACEHOLDER_HASH = '4d844ac2c0b77a8a522741b908ea5c32';
+
+const avatarUrl = hash => `https://www.kiva.org/img/s100/${hash}.jpg`;
+
+// ---------------------------------------------------------------------------
 // Base factory
 // ---------------------------------------------------------------------------
 
+/**
+ * Comments in the shape the loanComments queries return: the author is a nested
+ * CommentAuthor, and `role` is the lowercase CommentAuthorRole enum. The flat
+ * `authorName` / `authorImageUrl` / `lendingAction.teams` fields are deprecated
+ * in the schema and are not what the components read.
+ */
 const mockComments = [
 	{
 		id: 101,
-		authorName: 'Sarah',
-		authorImageUrl: 'https://www.kiva.org/img/s100/4d844ac2c0b77a8a522741b908ea5c32.jpg',
-		authorRole: 'Lender',
-		authorLendingAction: {
-			teams: ['Kiva Lending Team'],
-			lender: { id: 201, teams: { values: [{ id: 1, name: 'Kiva Lending Team', teamPublicId: 'kiva' }] } },
+		author: {
+			name: 'Sarah',
+			imageUrl: avatarUrl(PHOTO_HASH_ALT),
+			role: 'lender',
+			lendingAction: {
+				supportingTeams: {
+					values: [{ id: 1, name: 'Kiva Lending Team', teamPublicId: 'kiva' }],
+					__typename: 'TeamCollection',
+				},
+				__typename: 'LendingAction',
+			},
+			__typename: 'CommentAuthor',
 		},
 		body: 'Best wishes for your business! I hope this loan helps you achieve your goals.',
+		date: '2025-03-15T18:30:00.000Z',
 	},
 	{
 		id: 102,
-		authorName: 'Aisha',
-		authorImageUrl: 'https://www.kiva.org/img/s100/9673d0722a7675b9b8d11f90849d9b44.jpg',
-		authorRole: 'Borrower',
-		authorLendingAction: null,
+		author: {
+			name: 'Aisha',
+			imageUrl: avatarUrl(PHOTO_HASH),
+			// Borrowers have no lending action on their own loan.
+			role: 'borrower',
+			lendingAction: null,
+			__typename: 'CommentAuthor',
+		},
 		body: 'Thank you so much for your support! I will use this loan wisely.',
+		date: '2025-03-14T09:15:00.000Z',
 	},
 ];
 
@@ -241,11 +274,17 @@ export function createMockLoan(overrides = {}) {
 		terms: {
 			currency: 'KGS',
 			currencyFullName: 'Kyrgyzstani Som',
+			// The base loan is fundraising, so it has not disbursed. Fixtures for disbursed
+			// loans set this themselves.
+			disbursalDate: null,
+			expectedPayments: [],
 			flexibleFundraisingEnabled: false,
 			lenderRepaymentTerm: 26,
+			loanAmount: '600.00',
 			lossLiabilityCurrencyExchange: 'shared',
 			__typename: 'LoanTerm',
 		},
+		repayments: [],
 		trustee: null,
 		endorsement: null,
 		// MoreAboutLoan fields
@@ -306,11 +345,194 @@ export function createQueryResult(loan, myUser = null) {
 }
 
 // ---------------------------------------------------------------------------
+// Comment fixtures in the loanComments query shape
+// ---------------------------------------------------------------------------
+
+/**
+ * CommentsAndWhySpecial reads `author.name`, `author.imageUrl` and
+ * `author.lendingAction.supportingTeams`, which is the shape the
+ * loanComments query returns. These fixtures exercise each of the three
+ * avatar branches against a team name long enough to wrap.
+ */
+const LONG_TEAM_NAME = 'LGBTQIA (Lesbian, Gay, Bisexual, Transgender, Queer/Questioning, Intersex, '
+	+ 'and Asexual) Kivans & Friends';
+
+const supportingTeams = (name, teamPublicId) => ({
+	supportingTeams: {
+		values: [{ id: 1, name, teamPublicId }],
+		__typename: 'TeamCollection',
+	},
+	__typename: 'LendingAction',
+});
+
+const longTeamNameComment = (id, name, hash, body, teamName = LONG_TEAM_NAME) => ({
+	id,
+	author: {
+		name,
+		imageUrl: hash ? avatarUrl(hash) : null,
+		role: 'lender',
+		lendingAction: supportingTeams(teamName, teamName === LONG_TEAM_NAME ? 'lgbtqia' : 'kiva'),
+		__typename: 'CommentAuthor',
+	},
+	body,
+	date: '2025-03-15T18:30:00.000Z',
+});
+
+export const longTeamNameComments = [
+	longTeamNameComment(301, 'Sarah', PHOTO_HASH, 'Photo avatar, wrapping team name.'),
+	longTeamNameComment(302, 'Hed', LEGACY_PLACEHOLDER_HASH, 'Letter avatar, wrapping team name.'),
+	longTeamNameComment(303, 'Anonymous', null, 'Anonymous Kiva K avatar, wrapping team name.'),
+	longTeamNameComment(304, 'Mike', PHOTO_HASH_ALT, 'Short team name — control case.', 'Kiva Lending Team'),
+];
+
+// ---------------------------------------------------------------------------
 // Named loan fixtures
 // ---------------------------------------------------------------------------
 
 /** Fundraising partner loan (default). */
 export const fundraisingPartnerLoan = createMockLoan();
+
+/** Loan whose comments carry a team name long enough to wrap. */
+export const longTeamNameCommentsLoan = createMockLoan({
+	id: 2000099,
+	comments: {
+		totalCount: longTeamNameComments.length,
+		values: longTeamNameComments,
+		__typename: 'CommentCollection',
+	},
+});
+
+/** Partner loan whose city is long enough to wrap inside the location pill. */
+export const longLocationPartnerLoan = createMockLoan({
+	geocode: {
+		city: 'Sralab, Sralab, Tboung Khmum, Tboung Khmum Cambodian District Tboung Khmum',
+		country: { name: 'Cambodia', isoCode: 'KH', __typename: 'Country' },
+		__typename: 'Geocode',
+	},
+});
+
+/**
+ * A partner loan's repayment periods, covering every way a period can present:
+ * received, delinquent with an attribution, delinquent with currency loss, and upcoming.
+ */
+export const partnerRepaymentPeriods = [
+	{
+		dueDate: '2024-07-01T07:00:00Z',
+		status: 'repaid',
+		delinquencyAttribution: '',
+		expectedAmountToLenders: '265.83',
+		actualAmountToLenders: '265.83',
+		currencyLossToLenders: null,
+		// Two expected repayments settled by a single recorded one, so the advanced view
+		// has an uneven period to lay out.
+		expectedRepayments: [
+			{ effectiveDate: '2024-07-01T07:00:00Z', amount: '15000', __typename: 'LoanRepaymentPartner' },
+			{ effectiveDate: '2024-07-15T07:00:00Z', amount: '8000', __typename: 'LoanRepaymentPartner' },
+		],
+		actualRepayments: [
+			{ effectiveDate: '2024-07-18T07:00:00Z', amount: '23000', __typename: 'LoanRepaymentPartner' },
+		],
+		__typename: 'LoanRepaymentPeriod',
+	},
+	{
+		dueDate: '2024-08-01T07:00:00Z',
+		status: 'repaid',
+		delinquencyAttribution: '',
+		expectedAmountToLenders: '265.84',
+		actualAmountToLenders: '253.50',
+		currencyLossToLenders: '12.34',
+		expectedRepayments: [],
+		actualRepayments: [],
+		__typename: 'LoanRepaymentPeriod',
+	},
+	{
+		dueDate: '2024-09-01T07:00:00Z',
+		status: 'delinquent',
+		delinquencyAttribution: 'Lending partner behind in repayment',
+		expectedAmountToLenders: '265.83',
+		actualAmountToLenders: null,
+		currencyLossToLenders: null,
+		expectedRepayments: [],
+		actualRepayments: [],
+		__typename: 'LoanRepaymentPeriod',
+	},
+	{
+		dueDate: '2999-10-01T07:00:00Z',
+		status: 'future',
+		delinquencyAttribution: '',
+		expectedAmountToLenders: '265.83',
+		actualAmountToLenders: null,
+		currencyLossToLenders: null,
+		expectedRepayments: [],
+		actualRepayments: [],
+		__typename: 'LoanRepaymentPeriod',
+	},
+];
+
+/** Paying back partner loan carrying a full repayment schedule. */
+export const payingBackPartnerLoanWithRepayments = createMockLoan({
+	id: 2000010,
+	status: 'payingBack',
+	fundraisingPercent: 1,
+	paidAmount: '785.17',
+	repayments: partnerRepaymentPeriods,
+});
+
+/** Disbursed direct loan whose collected total stops part-way through an installment. */
+export const disbursedDirectLoanWithInstallments = createMockLoan({
+	id: 2000014,
+	__typename: 'LoanDirect',
+	status: 'payingBack',
+	fundraisingPercent: 1,
+	distributionModel: 'direct',
+	partnerName: '',
+	partner: null,
+	loanAmount: '5000.00',
+	terms: {
+		currency: 'USD',
+		currencyFullName: 'US Dollar',
+		disbursalDate: '2015-01-29T08:00:00Z',
+		expectedPayments: [],
+		flexibleFundraisingEnabled: false,
+		lenderRepaymentTerm: 24,
+		loanAmount: '5000.00',
+		lossLiabilityCurrencyExchange: 'none',
+		__typename: 'LoanTerm',
+	},
+	repayments: [
+		{
+			dueDate: '2015-03-01T08:00:00Z',
+			amount: '208.33',
+			amountPaid: '208.33',
+			status: 'repaid',
+			__typename: 'LoanRepaymentDirect',
+		},
+		{
+			dueDate: '2015-04-01T07:00:00Z',
+			amount: '208.33',
+			amountPaid: '91.71',
+			status: 'partial',
+			__typename: 'LoanRepaymentDirect',
+		},
+		{
+			dueDate: '2015-05-01T07:00:00Z',
+			amount: '208.33',
+			amountPaid: null,
+			status: 'future',
+			__typename: 'LoanRepaymentDirect',
+		},
+	],
+});
+
+/** Dual-statement partner loan, which hides the advanced view. */
+export const dualStatementPartnerLoan = createMockLoan({
+	id: 2000013,
+	status: 'payingBack',
+	fundraisingPercent: 1,
+	paidAmount: '785.17',
+	dualStatementNote: 'This loan is part of a dual statement arrangement with the lending partner.',
+	repayments: partnerRepaymentPeriods,
+});
 
 /** Fundraising direct loan (US-based). */
 export const fundraisingDirectLoan = createMockLoan({
@@ -535,6 +757,29 @@ export const multiMatchedLoan = createMockLoan({
 	simultaneousMatching: mockSimultaneousMatching,
 });
 
+/** Matched fundraising loan that nobody has lent to yet. */
+export const matchedNoLendersLoan = createMockLoan({
+	id: 2000019,
+	matchingText: 'Cisco',
+	matchRatio: 1,
+	simultaneousMatching: mockSimultaneousMatching,
+	unreservedAmount: '600.00',
+	loanFundraisingInfo: {
+		id: 2000019,
+		fundedAmount: '0.00',
+		reservedAmount: '0.00',
+		isExpiringSoon: false,
+		__typename: 'LoanFundraisingInfo',
+	},
+	lenders: { totalCount: 0, values: [], __typename: 'LenderCollection' },
+});
+
+/** Fundraising loan with exactly one lender. */
+export const singleLenderLoan = createMockLoan({
+	id: 2000020,
+	lenders: { totalCount: 1, values: mockLenders.slice(0, 1), __typename: 'LenderCollection' },
+});
+
 /** Repeat borrower loan (has previous loan). */
 export const repeatBorrowerLoan = createMockLoan({
 	id: 2000016,
@@ -556,9 +801,33 @@ export const directLoanWithTrustee = createMockLoan({
 			id: 1,
 			numDefaultedLoans: 0,
 			numLoansEndorsedPublic: 120,
-			repaymentRate: 0.98,
+			numFundraisingLoans: 4,
+			numPayingOnTimeLoans: 35,
+			numPayingBackDelinquentLoans: 2,
+			numRepaidInFullLoans: 78,
+			repaymentRate: 98,
 			totalLoansValue: '2000000.00',
 		},
 	},
 	endorsement: 'Accion endorses this loan for responsible lending.',
 });
+
+/** Direct loan whose trustee has no stats data. */
+export const directLoanWithTrusteeNoStats = {
+	...directLoanWithTrustee,
+	id: 2000021,
+	trustee: {
+		...directLoanWithTrustee.trustee,
+		stats: {
+			id: 2,
+			numDefaultedLoans: null,
+			numLoansEndorsedPublic: null,
+			numFundraisingLoans: null,
+			numPayingOnTimeLoans: null,
+			numPayingBackDelinquentLoans: null,
+			numRepaidInFullLoans: null,
+			repaymentRate: null,
+			totalLoansValue: null,
+		},
+	},
+};

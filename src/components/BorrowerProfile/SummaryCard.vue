@@ -61,7 +61,13 @@
 					<a
 						v-if="totalComments > 0"
 						href="#bp-comments-jump-link"
-						class="tw-inline-block tw-text-black hover:tw-text-black"
+						class="
+							tw-inline-flex tw-items-center
+							tw-rounded tw-p-1
+							tw-text-upper tw-no-underline hover:tw-no-underline
+							tw-text-black hover:tw-text-black
+							tw-bg-brand-100 hover:tw-bg-brand-200
+						"
 						v-kv-track-event="[
 							'borrower-profile',
 							'click',
@@ -69,12 +75,10 @@
 							'comments-pill'
 						]"
 					>
-						<summary-tag class="hover:tw-bg-brand-200 tw-mr-0" background-color="tw-bg-brand-100">
-							<heart-comment class="tw-h-3 tw-w-3 tw-mr-0.5 heart-svg" />
-							<span class="tw-flex-1">
-								{{ totalComments }} Comment{{ totalComments > 1 ? 's' : '' }}
-							</span>
-						</summary-tag>
+						<heart-comment class="tw-h-3 tw-w-3 tw-mr-0.5 heart-svg" />
+						<span class="tw-flex-1">
+							{{ totalComments }} Comment{{ totalComments > 1 ? 's' : '' }}
+						</span>
 					</a>
 					<loan-progress
 						data-testid="bp-summary-progress"
@@ -84,6 +88,7 @@
 						:time-left="timeLeft"
 						:loan-status="inPfp ? 'pfp' : status"
 						:is-delinquent="delinquent"
+						:has-currency-exchange-loss="hasCurrencyExchangeLoss"
 						:number-of-lenders="numLenders"
 						:pfp-min-lenders="pfpMinLenders"
 						:loading="isLoading"
@@ -108,7 +113,7 @@
 				Learn more
 			</kv-text-link>
 		</p>
-		<div class="tw-flex-auto tw-inline-flex tw-w-full">
+		<div class="tw-flex-auto tw-inline-flex tw-flex-wrap tw-gap-2 tw-w-full">
 			<template v-if="isLoading">
 				<kv-loading-placeholder class="tw-h-4" :style="{width: '50%'}" />
 			</template>
@@ -163,6 +168,7 @@ export const summaryCardFragment = gql`fragment summaryCardFields on LoanBasic {
 	name
 	status
 	delinquent
+	hasCurrencyExchangeLossLenders
 	use
 	anonymizationLevel
 	borrowerCount
@@ -283,6 +289,9 @@ export default {
 		delinquent() {
 			return this.loan?.delinquent ?? false;
 		},
+		hasCurrencyExchangeLoss() {
+			return this.loan?.hasCurrencyExchangeLossLenders ?? false;
+		},
 		use() {
 			return this.loan?.fullLoanUse ?? '';
 		},
@@ -316,6 +325,9 @@ export default {
 			if (this.countryName === 'Puerto Rico') {
 				const formattedString = `${this.city}, PR`;
 				return formattedString;
+			}
+			if (this.city) {
+				return `${this.city}, ${this.countryName}`;
 			}
 			return this.countryName;
 		}

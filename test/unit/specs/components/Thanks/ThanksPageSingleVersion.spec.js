@@ -257,6 +257,7 @@ describe('ThanksPageSingleVersion', () => {
 			expect(mockCheckCompletedGoal).toHaveBeenCalledWith({
 				currentGoalProgress: 5,
 				persistHideGoalCard: false,
+				cookieStore: expect.anything(),
 			});
 		});
 	});

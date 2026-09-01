@@ -45,7 +45,8 @@
 				</div>
 				<div
 					v-if="!showFirstLoanCta"
-					class="tw-col-span-12 tw-rounded-none md:tw-rounded tw-py-3 tw-px-2 md:tw-px-3 md:tw-bg-primary"
+					class="tw-col-span-12 md:tw-col-span-9 md:tw-col-start-4 tw-min-w-0 tw-rounded-none
+						md:tw-rounded tw-py-3 tw-px-2 md:tw-px-3 md:tw-bg-primary"
 				>
 					<loan-filter-bar
 						:countries="filterOptions.countries"
@@ -55,8 +56,9 @@
 						:total-loans="totalLoans"
 						@filters-changed="handleFiltersChanged"
 					/>
-					<div ref="loanTableTop">
+					<div>
 						<loan-list
+							ref="loanList"
 							:loans="loans"
 							:loading="loading"
 							:has-error="loadError"
@@ -105,6 +107,11 @@ const sortByName = values => [...(values || [])].sort((a, b) => (a.name || '').l
 
 export default {
 	name: 'LoansPage',
+	head() {
+		return {
+			title: 'My loans',
+		};
+	},
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		WwwPage,
@@ -257,7 +264,8 @@ export default {
 				...this.loanState,
 				offset: pageOffset,
 			};
-			this.scrollToLoanTable();
+			// Reset the table's own scroll region so the new page starts at the top.
+			this.$refs.loanList?.scrollToTop?.();
 			return this.fetchLoans({ clearLoans: true });
 		},
 		handleUpdatedAsOf(iso) {
@@ -348,12 +356,6 @@ export default {
 				keywordSearch,
 			};
 			return this.fetchLoans({ clearLoans: true });
-		},
-		scrollToLoanTable() {
-			this.$refs.loanTableTop?.scrollIntoView({
-				behavior: 'smooth',
-				block: 'start',
-			});
 		},
 	}
 };

@@ -560,6 +560,189 @@ describe('kv-analytics-plugin', () => {
 		});
 	});
 
+	describe('lifecycle re-engagement events', () => {
+		beforeEach(() => {
+			app.use(kvAnalyticsPlugin);
+		});
+
+		const transaction = overrides => ({
+			transactionId: 'TXN222',
+			itemTotal: 50,
+			loanTotal: 25,
+			donationTotal: 0,
+			depositTotal: 25,
+			loans: [{ id: '1', __typename: 'Loan', price: 25 }],
+			donations: [],
+			isFTD: false,
+			kivaCards: [],
+			kivaCardTotal: 0,
+			lifecycleStage: null,
+			daysSinceLastLoan: null,
+			reEngagementEvent: null,
+			...overrides,
+		});
+
+		it('fires lapsedLenderReEngaged when a churned lender transacts', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({
+				lifecycleStage: 'lapsedChurned',
+				daysSinceLastLoan: 900,
+				reEngagementEvent: 'lapsedLenderReEngaged',
+			}));
+
+			expect(mockWindow.fbq).toHaveBeenCalledWith('trackCustom', 'lapsedLenderReEngaged', {
+				loanTotal: 25,
+				itemTotal: 50,
+				lifecycleStage: 'lapsedChurned',
+				daysSinceLastLoan: 900,
+			});
+		});
+
+		it.each(['idle90', 'idle180', 'idle365'])(
+			'fires idleLenderReEngaged for %s, recording the bucket',
+			stage => {
+				app.config.globalProperties.$kvTrackTransaction(transaction({
+					lifecycleStage: stage,
+					daysSinceLastLoan: 200,
+					reEngagementEvent: 'idleLenderReEngaged',
+				}));
+
+				expect(mockWindow.fbq).toHaveBeenCalledWith(
+					'trackCustom',
+					'idleLenderReEngaged',
+					expect.objectContaining({ lifecycleStage: stage, daysSinceLastLoan: 200 })
+				);
+			}
+		);
+
+		it('does not fire on a deposit or donation without a loan purchase', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({
+				lifecycleStage: 'lapsedChurned',
+				daysSinceLastLoan: 900,
+				reEngagementEvent: 'lapsedLenderReEngaged',
+				loans: [],
+				loanTotal: 0,
+				donations: [{ id: 'd1', __typename: 'Donation', price: 5 }],
+				donationTotal: 5,
+			}));
+
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith(
+				'trackCustom',
+				'lapsedLenderReEngaged',
+				expect.anything()
+			);
+		});
+
+		it.each(['new', 'engaged', 'registered'])('fires neither event for %s lenders', stage => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({ lifecycleStage: stage }));
+
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith(
+				'trackCustom',
+				'lapsedLenderReEngaged',
+				expect.anything()
+			);
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith(
+				'trackCustom',
+				'idleLenderReEngaged',
+				expect.anything()
+			);
+		});
+
+		it('fires neither event when the transaction contains no loan purchase', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({
+				lifecycleStage: 'lapsedChurned',
+				daysSinceLastLoan: 900,
+				reEngagementEvent: 'lapsedLenderReEngaged',
+				loans: [],
+				loanTotal: 0,
+				kivaCards: [{ id: 'kc1', __typename: 'KivaCard', price: 50 }],
+				kivaCardTotal: 50,
+			}));
+
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith(
+				'trackCustom',
+				'lapsedLenderReEngaged',
+				expect.anything()
+			);
+		});
+
+		it('fires neither event for guests, who have no lifecycle stage', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({ lifecycleStage: null }));
+
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith(
+				'trackCustom',
+				'lapsedLenderReEngaged',
+				expect.anything()
+			);
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith(
+				'trackCustom',
+				'idleLenderReEngaged',
+				expect.anything()
+			);
+		});
+	});
+
+	describe('stand-alone donation event', () => {
+		beforeEach(() => {
+			app.use(kvAnalyticsPlugin);
+		});
+
+		const transaction = overrides => ({
+			transactionId: 'TXN333',
+			itemTotal: 20,
+			loanTotal: 0,
+			donationTotal: '20.00',
+			depositTotal: 20,
+			loans: [],
+			donations: [{ id: 'd1', __typename: 'Donation', price: 20 }],
+			isFTD: false,
+			kivaCards: [],
+			kivaCardTotal: 0,
+			lifecycleStage: null,
+			daysSinceLastLoan: null,
+			reEngagementEvent: null,
+			...overrides,
+		});
+
+		it('fires donation for a donation-only basket', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction());
+
+			expect(mockWindow.fbq).toHaveBeenCalledWith('trackCustom', 'donation', {
+				donationTotal: '20.00',
+				value: 20,
+				currency: 'USD',
+			});
+		});
+
+		it('does not fire when the donation is a tip on a loan purchase', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({
+				loans: [{ id: '1', __typename: 'Loan', price: 25 }],
+				loanTotal: 25,
+				donationTotal: '3.00',
+			}));
+
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith('trackCustom', 'donation', expect.anything());
+		});
+
+		it('does not fire when the donation accompanies a Kiva Card order', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({
+				kivaCards: [{ id: 'kc1', __typename: 'KivaCard', price: 50 }],
+				kivaCardTotal: 50,
+				donationTotal: '3.00',
+			}));
+
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith('trackCustom', 'donation', expect.anything());
+		});
+
+		it('does not fire for a deposit with no donation', () => {
+			app.config.globalProperties.$kvTrackTransaction(transaction({
+				donations: [],
+				donationTotal: '0.00',
+			}));
+
+			expect(mockWindow.fbq).not.toHaveBeenCalledWith('trackCustom', 'donation', expect.anything());
+		});
+	});
+
 	describe('$kvTrackFBCustomEvent', () => {
 		beforeEach(() => {
 			app.use(kvAnalyticsPlugin);

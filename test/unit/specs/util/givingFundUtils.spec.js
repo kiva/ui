@@ -1,4 +1,89 @@
-import parseGivingFundCookie from '#src/util/givingFundUtils';
+import parseGivingFundCookie, {
+	COLOMBIA_RELIEF_NEXT_STEP_END,
+	hasSupportedColombiaReliefFund,
+	isColombiaReliefNextStepActive,
+	isDisasterReliefFundOnlySupporter,
+} from '#src/util/givingFundUtils';
+
+describe('isColombiaReliefNextStepActive', () => {
+	it('should return true inside the promo window', () => {
+		expect(isColombiaReliefNextStepActive(new Date('2026-08-27T12:00:00.000Z'))).toBe(true);
+	});
+
+	it('should return true on the last promoted day', () => {
+		expect(isColombiaReliefNextStepActive(new Date('2026-10-10T23:00:00.000Z'))).toBe(true);
+	});
+
+	it('should return false once the window has closed', () => {
+		expect(isColombiaReliefNextStepActive(new Date(COLOMBIA_RELIEF_NEXT_STEP_END))).toBe(false);
+		expect(isColombiaReliefNextStepActive(new Date('2026-10-12T00:00:00.000Z'))).toBe(false);
+	});
+});
+
+describe('hasSupportedColombiaReliefFund', () => {
+	it('should return true when the lender has donated to the relief fund', () => {
+		expect(hasSupportedColombiaReliefFund({ reliefFundParticipation: { totalCount: 1 } })).toBe(true);
+	});
+
+	it('should return false when the lender has not donated to the relief fund', () => {
+		expect(hasSupportedColombiaReliefFund({ reliefFundParticipation: { totalCount: 0 } })).toBe(false);
+	});
+
+	it('should return false when participation data is missing', () => {
+		expect(hasSupportedColombiaReliefFund({})).toBe(false);
+		expect(hasSupportedColombiaReliefFund(null)).toBe(false);
+	});
+});
+
+describe('isDisasterReliefFundOnlySupporter', () => {
+	it('should return true when the lender owns no funds and every donation went to the relief fund', () => {
+		const my = {
+			givingFunds: { totalCount: 0 },
+			givingFundParticipation: { totalCount: 3 },
+			reliefFundParticipation: { totalCount: 3 },
+		};
+
+		expect(isDisasterReliefFundOnlySupporter(my)).toBe(true);
+	});
+
+	it('should return false when the lender owns giving funds', () => {
+		const my = {
+			givingFunds: { totalCount: 1 },
+			givingFundParticipation: { totalCount: 3 },
+			reliefFundParticipation: { totalCount: 3 },
+		};
+
+		expect(isDisasterReliefFundOnlySupporter(my)).toBe(false);
+	});
+
+	it('should return false when the relief fund donation count is 0', () => {
+		const my = {
+			givingFunds: { totalCount: 0 },
+			givingFundParticipation: { totalCount: 0 },
+			reliefFundParticipation: { totalCount: 0 },
+		};
+
+		expect(isDisasterReliefFundOnlySupporter(my)).toBe(false);
+	});
+
+	it('should return false when the relief fund count is less than the total donation count', () => {
+		const my = {
+			givingFunds: { totalCount: 0 },
+			givingFundParticipation: { totalCount: 3 },
+			reliefFundParticipation: { totalCount: 2 },
+		};
+
+		expect(isDisasterReliefFundOnlySupporter(my)).toBe(false);
+	});
+
+	it('should return false for an undefined my object', () => {
+		expect(isDisasterReliefFundOnlySupporter(undefined)).toBe(false);
+	});
+
+	it('should return false for an empty my object', () => {
+		expect(isDisasterReliefFundOnlySupporter({})).toBe(false);
+	});
+});
 
 describe('parseGivingFundCookie', () => {
 	it('should parse a full cookie string with fundId, uiv, and action', () => {

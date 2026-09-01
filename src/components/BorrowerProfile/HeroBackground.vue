@@ -91,6 +91,11 @@ export default {
 			}
 		`,
 		preFetch: true,
+		// The prefetch can only get a loan id from the route, so on a route without
+		// one it would query id 0
+		shouldPreFetch(operation, { route }) {
+			return !!route?.params?.id;
+		},
 		preFetchVariables({ route }) {
 			return {
 				loanId: Number(route?.params?.id ?? 0),

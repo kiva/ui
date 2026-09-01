@@ -1,5 +1,6 @@
 import numeral from 'numeral';
 import myFTD from '#src/graphql/query/myFTD.graphql';
+import { getReEngagementEvent } from '@kiva/kv-analytics';
 import removeCreditByTypeMutation from '#src/graphql/mutation/shopRemoveCreditByType.graphql';
 
 /** Format Transaction Data for Analtyics events
@@ -44,6 +45,8 @@ export function formatTransactionData(
 		paymentType += '+promo_credit';
 	}
 
+	const depositTotal = totals.creditAmountNeeded || 0;
+
 	// compile transaction information
 	const transactionData = {
 		transactionId: numeral(transactionId).value(),
@@ -82,9 +85,13 @@ export function formatTransactionData(
 			return { __typename, id, price };
 		}),
 		kivaCreditAppliedTotal: totals.kivaCreditAppliedTotal || 0,
-		depositTotal: totals.creditAmountNeeded || 0,
+		depositTotal,
 		paymentType,
 		isFTD: false,
+		// Resolved on checkout entry and attached by the caller, see getTransactionAnalyticsData
+		lifecycleStage: null,
+		daysSinceLastLoan: null,
+		reEngagementEvent: null,
 	};
 
 	return transactionData;
@@ -102,6 +109,34 @@ export function myFTDQuery(apollo) {
 	return apollo.query({
 		query: myFTD,
 	});
+}
+
+/**
+ * Resolves the user attributes needed for transaction analytics.
+ *
+ * Never throws. Analytics failures must not prevent transaction tracking or redirect.
+ *
+ * @param {Object} apollo Apollo Client instance
+ * @param {Promise<Object|null>|null} lifecycleDataPromise The lookup started on checkout
+ *   entry, since the purchase being tracked is what moves a lender out of idle or lapsed
+ * @returns {Promise<Object>}
+ */
+export async function getTransactionAnalyticsData(apollo, lifecycleDataPromise) {
+	// Only the FTD query starts here; the lifecycle request began at checkout entry and
+	// is usually settled already. They are awaited together so neither blocks the other,
+	// and a failed FTD lookup does not discard the lifecycle stage.
+	const [ftdResponse, lifecycleData] = await Promise.all([
+		myFTDQuery(apollo).catch(() => null),
+		lifecycleDataPromise,
+	]);
+
+	return {
+		// undefined when the lookup failed, so no content_type is asserted downstream
+		isFTD: ftdResponse?.data?.my?.userAccount?.isFirstTimeDepositor,
+		lifecycleStage: lifecycleData?.stage ?? null,
+		daysSinceLastLoan: lifecycleData?.daysSinceLastLoan ?? null,
+		reEngagementEvent: getReEngagementEvent(lifecycleData?.stage),
+	};
 }
 
 /**

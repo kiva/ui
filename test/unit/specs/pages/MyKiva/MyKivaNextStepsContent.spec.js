@@ -99,6 +99,8 @@ const createWrapper = ({
 				MyKivaContainer: MyKivaContainerStub,
 				JourneyCardCarousel: JourneyCardCarouselStub,
 				MyKivaRegionExperience: true,
+				AlmostFundedNextStep: true,
+				ColombiaReliefNextStep: true,
 				GoalSettingModal: true,
 				MyKivaImpactInsightModal: true,
 				MyKivaSharingModal: true,
@@ -183,14 +185,14 @@ describe('MyKivaNextStepsContent', () => {
 		expect(wrapper.findComponent({ name: 'MyKivaRegionExperience' }).exists()).toBe(true);
 	});
 
-	it('shows "Keep your impact going" for superlenders who have lent to every region', () => {
-		// Superlenders are not in post-lending mode, but the region card moves out of row 1,
-		// so the Almost Funded + region pairing still renders below.
+	it('hides the region card entirely for superlenders who have lent to every region', () => {
+		// Superlenders have no pending regions to recommend, so the region card must not
+		// render in either row. Almost Funded still shows as a valid next step below.
 		const { wrapper } = createWrapper({ props: { userLentToAllRegions: true } });
 
 		expect(wrapper.text()).toContain('Keep your impact going');
 		expect(wrapper.findComponent({ name: 'AlmostFundedNextStep' }).exists()).toBe(true);
-		expect(wrapper.findComponent({ name: 'MyKivaRegionExperience' }).exists()).toBe(true);
+		expect(wrapper.findComponent({ name: 'MyKivaRegionExperience' }).exists()).toBe(false);
 	});
 
 	it('initializes post-lending mode before first render when post-lending cookie exists', async () => {
@@ -203,6 +205,39 @@ describe('MyKivaNextStepsContent', () => {
 		const carousels = wrapper.findAllComponents({ name: 'JourneyCardCarousel' });
 		expect(carousels).toHaveLength(1);
 		expect(cookieStore.remove).toHaveBeenCalledWith(POST_LENDING_NEXT_STEPS_COOKIE);
+	});
+
+	describe('Colombia recovery fund next step', () => {
+		it('is absent from "Keep your impact going" when the card is not eligible', () => {
+			const { wrapper } = createWrapper({ cookieValue: 'true' });
+
+			expect(wrapper.findComponent({ name: 'ColombiaReliefNextStep' }).exists()).toBe(false);
+		});
+
+		it('trails the region card so the 2-column tile still completes row 1', () => {
+			const { wrapper } = createWrapper({
+				cookieValue: 'true',
+				props: { showCoRecoveryFundCard: true },
+			});
+
+			const tiles = wrapper.findAll('section.tw-grid.md\\:tw-grid-cols-3 > *')
+				.map(el => el.element.tagName.toLowerCase());
+
+			expect(tiles).toEqual([
+				'almost-funded-next-step-stub',
+				'my-kiva-region-experience-stub',
+				'colombia-relief-next-step-stub',
+			]);
+		});
+
+		it('carries "Keep your impact going" on its own for lenders whose region card is in row 1', () => {
+			const { wrapper } = createWrapper({ props: { showCoRecoveryFundCard: true } });
+
+			expect(wrapper.text()).toContain('Keep your impact going');
+			expect(wrapper.findComponent({ name: 'ColombiaReliefNextStep' }).exists()).toBe(true);
+			// The Almost Funded / region pairing stays post-lending only
+			expect(wrapper.findComponent({ name: 'AlmostFundedNextStep' }).exists()).toBe(false);
+		});
 	});
 
 	it('hides the goal card in next steps when the goal is achieved for this page view', () => {

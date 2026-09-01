@@ -3,22 +3,12 @@
 		id="borrower-profile"
 		:data-testid="loanType"
 	>
-		<challenge-team-invite
-			v-if="showChallengeCallout"
-			class="tw-absolute tw-mx-auto tw-w-full tw-z-5"
-			:share-lender="shareLender"
-			:team-name="teamName"
-			:team-public-id="teamPublicId"
-			@close="hideChallengeCallout = true"
-		/>
 		<full-borrower-profile
 			v-if="showFullView"
 			:loan="loan"
 			:lender="lender"
 			:loading="isLoading"
 			:enable-five-dollars-notes="enableFiveDollarsNotes"
-			:team-id="teamId"
-			:team-name="teamName"
 			:show-education-placement-exp="showEducationPlacementExp"
 			:loan-region="loanRegion"
 			:initial-show-details-in-rail="initialShowDetailsInRail"
@@ -48,18 +38,13 @@ import MinimalBorrowerProfile, { minimalProfileQuery } from '#src/components/Bor
 import FullBorrowerProfile, { fullProfileQuery } from '#src/components/BorrowerProfile/FullBorrowerProfile';
 import { shareButtonFragment } from '#src/components/BorrowerProfile/ShareButton';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
-import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
-import lenderPublicProfileQuery from '#src/graphql/query/lenderPublicProfile.graphql';
-import teamBasicInfoQuery from '#src/graphql/query/teamBasicInfo.graphql';
-import ChallengeTeamInvite from '#src/components/BorrowerProfile/ChallengeTeamInvite';
 import { readAccountRailPreference, resolveRailPreference } from '#src/util/loanDetailsRailPreference';
-import { isPublicLoanStatus } from '#src/util/loanUtils';
+import { isPublicLoanStatus, showFullView } from '#src/util/loanUtils';
 import { getKivaImageUrl } from '@kiva/kv-components';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
 
 const EDUCATION_PLACEMENT_EXP = 'education_placement_bp';
-const CHALLENGE_HEADER_EXP = 'filters_challenge_header';
 
 // Fields for showFullView routing logic
 const routingFragment = gql`fragment bpRoutingFields on LoanBasic {
@@ -140,6 +125,13 @@ const routingQuery = gql`
 				name
 			}
 		}
+		my {
+			id
+			userAccount {
+				id
+				volunteerId
+			}
+		}
 		shop(basketId: $basketId) {
 			id
 			basket {
@@ -174,7 +166,6 @@ export default {
 		FullBorrowerProfile,
 		MinimalBorrowerProfile,
 		WwwPage,
-		ChallengeTeamInvite,
 	},
 	head() {
 		const title = this.routingLoan?.anonymizationLevel === 'full' ? undefined : this.pageTitle;
@@ -257,6 +248,7 @@ export default {
 			loan: {},
 			routingLoan: {},
 			lender: {},
+			isVolunteer: false,
 			// SSR-resolved rail preference (logged-in only); reconciled client-side in the component.
 			initialShowDetailsInRail: false,
 			inviterName: '',
@@ -275,13 +267,6 @@ export default {
 				'Asia',
 				'Europe'
 			],
-			// Challenge header
-			enableChallengeHeader: false,
-			teamId: null,
-			teamName: '',
-			teamPublicId: '',
-			shareLender: undefined,
-			hideChallengeCallout: false,
 		};
 	},
 	mixins: [fiveDollarsTest, guestComment],
@@ -307,11 +292,11 @@ export default {
 
 					// Routing decision
 					const unreservedAmount = Number(loan.unreservedAmount ?? 0);
-					const minimalOverride = route.query?.minimal === 'false';
 					const isPrivileged = loan.userProperties?.isPrivileged ?? false;
+					const isVolunteer = !!data?.my?.userAccount?.volunteerId;
 
 					// Anon goes to login (so a lender/trustee can authenticate in); logged-in non-priv goes to /lend.
-					if (!isPublicLoanStatus(loan.status) && !isPrivileged) {
+					if (!isPublicLoanStatus(loan.status) && !isPrivileged && !isVolunteer) {
 						if (!kvAuth0?.getKivaId()) {
 							return Promise.reject({
 								path: '/ui-login',
@@ -321,11 +306,13 @@ export default {
 						return Promise.reject({ path: '/lend', query: route.query });
 					}
 
-					const showFullView = (unreservedAmount > 0 && loan.status === 'fundraising')
-						|| isPrivileged
-						|| minimalOverride;
-
-					const childQuery = showFullView ? fullProfileQuery : minimalProfileQuery;
+					const childQuery = showFullView(
+						loan.status,
+						unreservedAmount,
+						isPrivileged,
+						isVolunteer,
+						route.query,
+					) ? fullProfileQuery : minimalProfileQuery;
 
 					return Promise.all([
 						client.query({
@@ -380,6 +367,7 @@ export default {
 			}
 			this.loan = fullLoan ?? routingLoan;
 			this.routingLoan = routingLoan;
+			this.isVolunteer = !!result?.data?.my?.userAccount?.volunteerId;
 			this.inviterName = this.inviterIsGuestOrAnonymous
 				? '' : result?.data?.community?.lender?.name ?? '';
 			this.itemsInBasket = result?.data?.shop?.basket?.items?.values ?? [];
@@ -412,36 +400,6 @@ export default {
 			}
 		}
 
-		const challengeHeaderExpData = this.apollo.readFragment({
-			id: `Experiment:${CHALLENGE_HEADER_EXP}`,
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		this.enableChallengeHeader = challengeHeaderExpData?.version === 'b';
-
-		if (this.enableChallengeHeader) {
-			const routeTeamPublicId = this.$route?.query?.team ?? '';
-			if (routeTeamPublicId) {
-				const teamResult = await this.apollo.query({
-					query: teamBasicInfoQuery,
-					variables: { teamPublicId: routeTeamPublicId },
-				});
-				const team = teamResult?.data?.community?.team;
-				if (team?.id) {
-					this.teamId = team.id;
-					this.teamName = team.name ?? '';
-					this.teamPublicId = team.teamPublicId ?? '';
-
-					const publicId = getPublicId(this.$route);
-					const lenderData = await this.apollo.query({
-						query: lenderPublicProfileQuery,
-						variables: { publicId },
-					});
-					this.shareLender = lenderData?.data?.community?.lender ?? {};
-				}
-			}
-		}
-
 		this.isLoading = false;
 	},
 	computed: {
@@ -464,11 +422,13 @@ export default {
 			return this.loan?.userProperties?.isPrivileged ?? false;
 		},
 		showFullView() {
-			// Fully-reserved fundraising loans (unreservedAmount === 0) show the minimal view
-			// for non-privileged users since there's nothing left to lend.
-			return (this.unreservedAmount > 0 && this.loan?.status === 'fundraising')
-				|| this.isPrivileged
-				|| this.$route.query.minimal === 'false';
+			return showFullView(
+				this.loan?.status,
+				this.unreservedAmount,
+				this.isPrivileged,
+				this.isVolunteer,
+				this.$route.query,
+			);
 		},
 		loanType() {
 			// eslint-disable-next-line no-underscore-dangle
@@ -522,9 +482,6 @@ export default {
 		endDate() {
 			const d = this.routingLoan?.plannedExpirationDate;
 			return d ? format(parseISO(d), 'M/d') : '';
-		},
-		showChallengeCallout() {
-			return this.enableChallengeHeader && this.teamId && !this.hideChallengeCallout;
 		},
 	},
 	created() {

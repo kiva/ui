@@ -1,6 +1,78 @@
-import getMonthsCount, { toValidDate } from '#src/util/dateUtils';
+import getMonthsCount, {
+	KIVA_SERVER_TIMEZONE,
+	daysSince,
+	formatInKivaServerTimezone,
+	parseKivaDate,
+	toValidDate,
+} from '#src/util/dateUtils';
 
 describe('dateUtils.js', () => {
+	describe('formatInKivaServerTimezone', () => {
+		const MONTH_AND_YEAR = { year: 'numeric', month: 'short' };
+
+		it('names the timezone the server renders dates in', () => {
+			expect(KIVA_SERVER_TIMEZONE).toBe('America/Los_Angeles');
+		});
+
+		it('keeps a Pacific-midnight instant on its own calendar day', () => {
+			expect(formatInKivaServerTimezone('2020-03-01T08:00:00Z', MONTH_AND_YEAR)).toBe('Mar 2020');
+		});
+
+		it('formats a date-only value without shifting the day', () => {
+			expect(formatInKivaServerTimezone('2020-03-01', MONTH_AND_YEAR)).toBe('Mar 2020');
+		});
+
+		it.each([null, undefined, '', 'not-a-date'])('returns an empty string for %s', value => {
+			expect(formatInKivaServerTimezone(value, MONTH_AND_YEAR)).toBe('');
+		});
+	});
+
+	describe('parseKivaDate', () => {
+		it('anchors a date-only value inside its own Pacific day', () => {
+			const date = parseKivaDate('2020-03-01');
+
+			expect(date.toISOString()).toBe('2020-03-01T12:00:00.000Z');
+		});
+
+		it('keeps an ISO datetime as the instant it names', () => {
+			expect(parseKivaDate('2020-03-01T08:00:00Z').toISOString()).toBe('2020-03-01T08:00:00.000Z');
+		});
+
+		it('returns null when the value cannot be parsed', () => {
+			expect(parseKivaDate('not-a-date')).toBe(null);
+			expect(parseKivaDate(null)).toBe(null);
+		});
+	});
+
+	describe('daysSince', () => {
+		const NOW = new Date('2026-07-29T12:00:00Z');
+
+		it('counts whole days elapsed', () => {
+			expect(daysSince('2026-07-19T12:00:00Z', NOW)).toBe(10);
+		});
+
+		it('accepts a timestamp as well as an ISO string', () => {
+			expect(daysSince(new Date('2026-07-19T12:00:00Z').getTime(), NOW)).toBe(10);
+		});
+
+		it('counts partial days as zero', () => {
+			expect(daysSince('2026-07-29T01:00:00Z', NOW)).toBe(0);
+		});
+
+		it('returns null rather than NaN for a missing date', () => {
+			expect(daysSince(null, NOW)).toBeNull();
+			expect(daysSince(undefined, NOW)).toBeNull();
+		});
+
+		it('returns null rather than NaN for an unparseable date', () => {
+			expect(daysSince('not a date', NOW)).toBeNull();
+		});
+
+		it('defaults the reference point to now', () => {
+			expect(daysSince(new Date())).toBe(0);
+		});
+	});
+
 	describe('toValidDate', () => {
 		it('parses an ISO string into a valid Date', () => {
 			const date = toValidDate('2025-02-10');

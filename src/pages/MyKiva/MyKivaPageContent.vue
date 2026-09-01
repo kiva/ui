@@ -23,10 +23,13 @@
 			:key="`featured-slot-${goalRefreshKey}`"
 			:user-first-name="userInfo?.userAccount?.firstName"
 			:hero-tiered-achievements="heroTieredAchievements"
+			:goal-in-review-enable="goalInReviewEnable"
+			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 			@set-goal-click="openGoalSettingModal"
 			@edit-click="openEditGoalSettingModal"
+			@view-goal-recap="openGoalRecapFromCard"
 		/>
-		<section v-if="clientRendered" class="!tw-mt-2">
+		<section class="!tw-mt-2">
 			<LendingStats
 				ref="lendingStatsRef"
 				:hero-slides="heroSlides"
@@ -40,9 +43,13 @@
 				:user-info="userInfo"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 				:goals-row-enabled="goalsRowEnabled"
+				:goal-in-review-enable="goalInReviewEnable"
+				:goal-in-review-in-progress-start="goalInReviewInProgressStart"
+				:show-co-recovery-fund-card="showCoRecoveryFundCard"
 				:basket-items="basketItems"
 				:is-adding="isAdding"
 				@add-to-basket="addGoalRecommendedLoanToBasket"
+				@view-goal-recap="openGoalRecapFromCard"
 			/>
 		</section>
 		<section class="tw-mt-4" id="mykiva-achievements">
@@ -88,11 +95,12 @@
 				controls-top-right
 				:badge-data="heroBadgeData"
 				:selected-journey="selectedJourney"
+				:goal-in-review-enable="goalInReviewEnable"
 				@badge-clicked="handleBadgeSectionClicked"
+				@view-goal-recap="openGoalRecapFromCard"
 			/>
 		</section>
 		<MyKivaBorrowerCarousel
-			v-if="clientRendered"
 			id="mykiva-borrower-carousel"
 			controls-top-right
 			:basket-items="basketItems"
@@ -119,7 +127,7 @@
 				class="!tw--mt-2"
 			/>
 		</AsyncMyKivaSection>
-		<section v-if="clientRendered" class="!tw-my-2">
+		<section class="!tw-my-2">
 			<LendingCategorySection
 				controls-top-right
 				id="recommended-loans"
@@ -137,6 +145,7 @@
 				More ways to help
 			</h2>
 			<JourneyCardCarousel
+				:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 				class="tw--mt-4"
 				controls-top-right
 				:slides="moreWaysToHelpSlides"
@@ -188,10 +197,15 @@
 		@sidesheet-closed="handleComponentClosed"
 	/>
 	<GoalInReviewModal
-		v-if="showGoalInReviewModal"
+		v-if="goalInReviewEnable && showGoalInReviewModal"
 		:show="showGoalInReviewModal"
 		:data="goalInReviewData"
+		:feedback-submitted="goalInReviewFeedbackSubmitted"
 		@close="closeGoalInReviewModal"
+		@goal-recap-back-to-kiva="closeGoalInReviewModal"
+		@feedback-submitted="handleGoalInReviewFeedbackSubmitted"
+		@finish-goal="handleGoalInReviewFinishGoal"
+		@set-goal="handleGoalInReviewSetGoal"
 	/>
 </template>
 
@@ -327,6 +341,14 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		goalInReviewEnable: {
+			type: Boolean,
+			default: false,
+		},
+		goalInReviewInProgressStart: {
+			type: Date,
+			default: null,
+		},
 		goalsRowEnabled: {
 			type: Boolean,
 			default: false,
@@ -336,15 +358,27 @@ export default {
 			type: Boolean,
 			default: true,
 		},
+		/**
+		 * Whether the Colombia earthquake recovery fund next step is eligible for this
+		 * lender: experiment version b, inside the promo window, and the lender has not
+		 * already donated to the fund.
+		 */
+		showCoRecoveryFundCard: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup() {
 		const apollo = inject('apollo');
+		const goalData = inject('goalData');
 		const { getMostRecentBlogPost } = useContentful(apollo);
 		const { isMobile } = useBreakpoints();
 		const {
+			getFinishGoalHref,
 			goalInReviewData,
+			loadAutoOpenRecap,
 			loadGoalInReview,
-		} = useGoalInReview();
+		} = useGoalInReview({ goalData });
 
 		const {
 			getLoanFindingUrl,
@@ -352,12 +386,18 @@ export default {
 		} = useBadgeData();
 
 		return {
+			getFinishGoalHref,
 			getLoanFindingUrl,
 			isTieredAchievementComplete,
 			getMostRecentBlogPost,
 			goalInReviewData,
 			isMobile,
+			loadAutoOpenRecap,
 			loadGoalInReview,
+			hasSubmittedGoalFeedbackForYear: goalData.hasSubmittedGoalFeedbackForYear,
+			setGoalFeedbackSubmittedPreference: goalData.setGoalFeedbackSubmittedPreference,
+			loadGoalPreferences: goalData.loadPreferences,
+			setGoalRecapViewedPreference: goalData.setGoalRecapViewedPreference,
 		};
 	},
 	data() {
@@ -384,9 +424,9 @@ export default {
 			updatesLimit: 15,
 			updatesLoading: true,
 			updatesOffset: 3,
-			clientRendered: false,
 			tooltipVisible: false,
 			showGoalInReviewModal: false,
+			goalInReviewFeedbackSubmitted: false,
 			mdiInformationOutline,
 		};
 	},
@@ -708,10 +748,49 @@ export default {
 		toggleTooltip() {
 			this.tooltipVisible = !this.tooltipVisible;
 		},
+		// Called from mounted: the decision reads user preferences and writes one back,
+		// so it must not run during server render.
+		async openGoalRecapIfDue() {
+			const goalInReview = await this.loadAutoOpenRecap({
+				enabled: this.goalInReviewEnable,
+				inProgressStartDate: this.goalInReviewInProgressStart,
+			});
+			if (!goalInReview) {
+				return;
+			}
+			this.goalInReviewFeedbackSubmitted = this.hasSubmittedGoalFeedbackForYear(goalInReview.year);
+			this.showGoalInReviewModal = true;
+		},
+		// The goal cards' persistent entry point. Viewing from here counts as seen, so the
+		// auto-open pop-up does not follow on a later visit.
+		async openGoalRecapFromCard(year) {
+			// Tracked on the click itself, so presses that fail to open still show up.
+			this.$kvTrackEvent('portfolio', 'click', 'view-goal-recap');
+			if (!this.goalInReviewEnable) {
+				return;
+			}
+			const goalInReview = await this.loadGoalInReview({ year });
+			if (!goalInReview?.isEligible) {
+				return;
+			}
+			await this.loadGoalPreferences('network-only');
+			this.goalInReviewFeedbackSubmitted = this.hasSubmittedGoalFeedbackForYear(goalInReview.year);
+			await this.setGoalRecapViewedPreference(goalInReview.year);
+			this.showGoalInReviewModal = true;
+		},
 		async handleGoToDeepLink(sectionId) {
 			if (sectionId === GOAL_RECAP_DEEP_LINK) {
-				const goalInReview = await this.loadGoalInReview();
+				if (!this.goalInReviewEnable) {
+					return;
+				}
+				const recapYear = Number(this.$route?.query?.recapYear) || null;
+				const goalInReview = await this.loadGoalInReview(recapYear ? { year: recapYear } : {});
 				if (goalInReview?.isEligible) {
+					// Snapshot the "already submitted" flag at open time so the survey gate is
+					// evaluated per modal load, not reactively mid-session. network-only so the
+					// gate reflects a submission from another tab/device, not a stale cache.
+					await this.loadGoalPreferences('network-only');
+					this.goalInReviewFeedbackSubmitted = this.hasSubmittedGoalFeedbackForYear(goalInReview.year);
 					this.showGoalInReviewModal = true;
 				}
 				return;
@@ -724,6 +803,21 @@ export default {
 		closeGoalInReviewModal() {
 			this.showGoalInReviewModal = false;
 		},
+		async handleGoalInReviewFeedbackSubmitted() {
+			await this.setGoalFeedbackSubmittedPreference(this.goalInReviewData?.year);
+		},
+		// "Finish my goal" routes to the goal category's loan-finding page, the same
+		// destination as the goal cards' continue CTA (tracking fires in the modal).
+		handleGoalInReviewFinishGoal() {
+			const href = this.getFinishGoalHref(this.$router);
+			if (href) {
+				window.location.href = href;
+			}
+		},
+		handleGoalInReviewSetGoal() {
+			this.closeGoalInReviewModal();
+			this.openGoalSettingModal();
+		},
 	},
 	created() {
 		if (this.sidesheetLoan?.id) {
@@ -731,14 +825,13 @@ export default {
 		}
 	},
 	mounted() {
-		this.clientRendered = true;
-
-		// Ensure clientRendered is true before attempting to scroll to section
 		nextTick(() => {
 			const sectionId = this.$route?.query?.goTo || '';
 			if (sectionId) {
 				this.handleGoToDeepLink(sectionId);
+				return;
 			}
+			this.openGoalRecapIfDue();
 		});
 
 		this.$kvTrackEvent('portfolio', 'view', 'New My Kiva');

@@ -15,6 +15,7 @@
 			class="tw-mb-2"
 			:key="`featured-slot-${goalRefreshKey}`"
 			:user-first-name="userInfo?.userAccount?.firstName"
+			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 			@set-goal-click="openGoalModal"
 			@edit-click="openGoalModal({ updating: true })"
 		/>
@@ -31,6 +32,7 @@
 				<template v-if="showRegionExperienceInFirstRow">
 					<div class="goal-card-container">
 						<JourneyCardCarousel
+							:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 							class="carousel carousel-single"
 							user-in-homepage
 							in-lending-stats
@@ -67,6 +69,7 @@
 					<KvLoadingPlaceholder class="placeholder-card !tw-rounded !tw-shrink-0 tw-hidden lg:tw-block" />
 				</div>
 				<JourneyCardCarousel
+					:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 					v-else-if="topRowHasContent"
 					class="carousel tw--mt-6"
 					user-in-homepage
@@ -138,6 +141,7 @@
 							</template>
 							<!-- Mobile carousel: post-lending cards + survey -->
 							<JourneyCardCarousel
+								:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 								v-else
 								:key="'beyond-loan-row'"
 								class="carousel tw--mt-6"
@@ -160,7 +164,7 @@
 						</section>
 					</template>
 
-					<template v-if="!showRegionExperienceInFirstRow">
+					<template v-if="showKeepImpactGoingSection">
 						<h2 class="tw-text-primary tw-mt-4 tw-mb-2 !tw-text-title">
 							Keep your impact going
 						</h2>
@@ -171,12 +175,19 @@
 								single-column width alongside the 2-tile lending stats card, which spans
 								the remaining two of the three columns.
 							-->
-							<AlmostFundedNextStep />
+							<AlmostFundedNextStep v-if="!showRegionExperienceInFirstRow" />
 							<MyKivaRegionExperience
+								v-if="!showRegionExperienceInFirstRow && !userLentToAllRegions"
 								class="md:tw-col-span-2"
 								:regions-data="regionsData"
 								:loans="loans"
 							/>
+							<!--
+								Last in the grid so the 2-column region card still completes row 1;
+								the recovery fund card then starts a new row instead of leaving a hole.
+								When the region card is in row 1 above, this is the only tile here.
+							-->
+							<ColombiaReliefNextStep v-if="showCoRecoveryFundCard" />
 						</section>
 					</template>
 				</div>
@@ -216,6 +227,7 @@
 						/>
 					</template>
 					<JourneyCardCarousel
+						:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 						v-else
 						:key="'lifetime-achievements-row'"
 						class="carousel tw--mt-6"
@@ -248,6 +260,7 @@
 			</div>
 		</div>
 		<GoalSettingModal
+			v-if="showGoalModal"
 			:show="showGoalModal"
 			:total-loans="totalLoans"
 			:categories-loan-count="categoriesLoanCount"
@@ -267,6 +280,7 @@
 		/>
 
 		<MyKivaSharingModal
+			v-if="isSharingModalVisible"
 			:lender="lender"
 			:is-visible="isSharingModalVisible"
 			@close-modal="isSharingModalVisible = false"
@@ -304,6 +318,7 @@ import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import MyKivaFeaturedSlot from '#src/components/MyKiva/MyKivaFeaturedSlot';
 import MyKivaRegionExperience from '#src/components/MyKiva/MyKivaRegionExperience';
 import AlmostFundedNextStep from '#src/components/MyKiva/AlmostFundedNextStep';
+import ColombiaReliefNextStep from '#src/components/MyKiva/ColombiaReliefNextStep';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
@@ -406,9 +421,23 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	goalInReviewInProgressStart: {
+		type: Date,
+		default: null,
+	},
+
 	shouldRenderFeaturedSlot: {
 		type: Boolean,
 		default: true,
+	},
+	/**
+	 * Whether the Colombia earthquake recovery fund next step is eligible for this
+	 * lender: experiment version b, inside the promo window, and the lender has not
+	 * already donated to the fund.
+	 */
+	showCoRecoveryFundCard: {
+		type: Boolean,
+		default: false,
 	},
 });
 
@@ -501,6 +530,12 @@ const achievementOnlySlides = computed(() => {
 const showRegionExperienceInFirstRow = computed(() => {
 	return !showPostLendingNextStepsCards.value && !props.userLentToAllRegions;
 });
+
+// The region card in row 1 used to be the only reason this section existed, so the header
+// stayed hidden for those lenders. The recovery fund next step can now carry it alone.
+const showKeepImpactGoingSection = computed(
+	() => !showRegionExperienceInFirstRow.value || props.showCoRecoveryFundCard
+);
 
 const hideRecommendedForYouSection = computed(() => {
 	return userGoalAchieved.value
@@ -689,7 +724,7 @@ watch(() => props.goalRefreshKey, async (newVal, oldVal) => {
 });
 
 onMounted(async () => {
-	await checkCompletedGoal({ category: 'portfolio', persistHideGoalCard: true });
+	await checkCompletedGoal({ category: 'portfolio', persistHideGoalCard: true, cookieStore });
 	if (shouldShowPostLendingNextStepsCards) {
 		removePostLendingCardCookie(cookieStore);
 	}

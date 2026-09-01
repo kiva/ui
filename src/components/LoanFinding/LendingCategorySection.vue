@@ -1,5 +1,5 @@
 <template>
-	<div class="tw-w-full">
+	<div class="tw-w-full lending-category-section">
 		<div class="tw-mx-auto tw-px-0 md:tw-px-4 lg:tw-px-8" style="max-width: 1200px;">
 			<!-- eslint-disable-next-line max-len -->
 			<div class="tw-flex tw-flex-col lg:tw-flex-row tw-justify-between tw-items-end lg:tw-items-center tw-px-2.5 md:tw-px-0">
@@ -56,12 +56,10 @@
 </template>
 
 <script>
-import _throttle from 'lodash/throttle';
 import { KvCarousel } from '@kiva/kv-components';
 import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
 import addToBasketMixin from '#src/plugins/add-to-basket-mixin';
 import { getCustomHref } from '#src/util/loanUtils';
-import useBreakpoints from '#src/composables/useBreakpoints';
 import ViewMoreCard from './ViewMoreCard';
 
 export default {
@@ -134,30 +132,16 @@ export default {
 	mixins: [addToBasketMixin],
 	data() {
 		return {
-			windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,
-			handleResize: _throttle(this.isWindowWidth, 200),
 			getCustomHref,
-		};
-	},
-	setup() {
-		const { isMedium, isLarge } = useBreakpoints();
-
-		return {
-			isMedium, isLarge
+			// A CSS var keeps the slide width correct during SSR and hydration. useBreakpoints
+			// resolves only in onMounted, so a JS-derived width renders the mobile value on the
+			// server and snaps on hydration.
+			singleSlideWidth: 'var(--category-slide-max-width)',
 		};
 	},
 	computed: {
 		isLargeCard() {
 			return this.perStep === 2;
-		},
-		singleSlideWidth() {
-			if (this.isLarge) {
-				return 'calc((100% - 64px) / 3)';
-			}
-			if (this.isMedium) {
-				return '336px';
-			}
-			return '90%';
 		},
 		totalLoans() {
 			return this.loans.length;
@@ -173,18 +157,23 @@ export default {
 		loanCardKey(index) {
 			return `loan-card-${index}`;
 		},
-		isWindowWidth() {
-			this.windowWidth = window.innerWidth;
-		},
 		showLoanDetails(payload) {
 			this.$emit('show-loan-details', payload);
 		}
 	},
-	mounted() {
-		window.addEventListener('resize', this.handleResize);
-	},
-	beforeUnmount() {
-		window.removeEventListener('resize', this.handleResize);
-	}
 };
 </script>
+
+<style lang="postcss" scoped>
+.lending-category-section {
+	--category-slide-max-width: 90%;
+
+	@screen md {
+		--category-slide-max-width: 336px;
+	}
+
+	@screen lg {
+		--category-slide-max-width: calc((100% - 64px) / 3);
+	}
+}
+</style>

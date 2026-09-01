@@ -35,6 +35,7 @@
 				:goal-progress-percentage="goalProgressPercentage"
 				:category-name="categoryName"
 				:category-id="userGoal?.category"
+				:show-recap-cta="showRecapCta"
 				@button-click="handleContinueClick"
 				@edit-button-click="handleEditClick"
 			/>
@@ -47,6 +48,7 @@
 import {
 	computed,
 	inject,
+	onMounted,
 	watch,
 	ref,
 } from 'vue';
@@ -58,6 +60,7 @@ import goalCopy, { GOAL_SIGNUP_COPY_NO_GOAL_YET } from '#src/util/goalCopy';
 import { useRouter } from 'vue-router';
 import confetti from 'canvas-confetti';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
+import { getGoalYear } from '#src/util/goalInReview';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant-v3.png';
 
 const props = defineProps({
@@ -81,9 +84,14 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	// Swaps the completed-goal CTA for the goal recap entry point.
+	showRecapCta: {
+		type: Boolean,
+		default: false,
+	},
 });
 
-const emit = defineEmits(['open-goal-modal']);
+const emit = defineEmits(['open-goal-modal', 'view-goal-recap']);
 
 const $kvTrackEvent = inject('$kvTrackEvent');
 const router = useRouter();
@@ -135,6 +143,11 @@ const showConfetti = () => {
 };
 
 const handleContinueClick = () => {
+	// The recap owns the click and its own tracking, so the goal CTA events stay out of it.
+	if (props.showRecapCta) {
+		emit('view-goal-recap', getGoalYear(props.userGoal));
+		return;
+	}
 	$kvTrackEvent('portfolio', 'click', 'continue-towards-goal');
 	if (goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD) {
 		$kvTrackEvent('portfolio', 'click', 'goal-completed-cta');
@@ -171,9 +184,13 @@ const showCompletedGoalConfetti = () => {
 
 watch(
 	() => [props.loading, props.hideGoalCard, goalProgressPercentage.value, userHasGoal.value],
-	showCompletedGoalConfetti,
-	{ immediate: true }
+	showCompletedGoalConfetti
 );
+
+// Confetti draws straight onto document.body, so the already-completed case is checked on
+// mount rather than immediately: an immediate watch also runs during server-side setup,
+// where there is no document.
+onMounted(showCompletedGoalConfetti);
 
 watch(() => [props.loading, props.hideGoalCard], ([newLoading, newHideGoalCard], [oldLoading]) => {
 	if (!newLoading && oldLoading && !newHideGoalCard) {

@@ -1,10 +1,18 @@
 import express from 'express';
 import { error, warn } from './util/log.js';
 import { getFromCache, setToCache } from './util/memJsUtils.js';
-import drawLoanCard from './util/live-loan/live-loan-draw.js';
+import drawLoanCard, { contentTypeForStyle } from './util/live-loan/live-loan-draw.js';
 import fetchLoansByType, { QUERY_TYPE } from './util/live-loan/live-loan-fetch.js';
 import { trace } from './util/mockTrace.js';
 import { resolveBundleSize, DEFAULT_BUNDLE_COUNT, MAX_BUNDLE_COUNT } from './util/live-loan/bundle-size.js';
+import {
+	generateGoogleFeed,
+	ADS_FEED_FRESH_KEY,
+	ADS_FEED_LAST_GOOD_KEY,
+	ADS_FEED_FRESH_TTL,
+	ADS_FEED_LAST_GOOD_TTL,
+	ADS_FEED_FAILURE_BACKOFF_TTL,
+} from './util/live-loan/ads/google-display/google-feed.js';
 
 async function fetchRecommendedLoans(type, id, cache, queryType = QUERY_TYPE.DEFAULT, count = DEFAULT_BUNDLE_COUNT) {
 	const queryTypeSuffix = queryType !== QUERY_TYPE.DEFAULT ? `-${queryType}` : '';
@@ -185,7 +193,7 @@ async function serveImg(type, style, cache, req, res, queryType = QUERY_TYPE.DEF
 
 	// Separate out sending response to isolate exception catching
 	try {
-		res.contentType('image/jpeg');
+		res.contentType(contentTypeForStyle(style));
 		res.set('Cache-Control', [
 			'no-store, no-cache, must-revalidate, max-age=0, private',
 			'post-check=0, pre-check=0'
@@ -241,6 +249,13 @@ export default function liveLoanRouter(cache) {
 		});
 	});
 
+	// User IMG Router (Compact Bundle - no CTA)
+	router.use('/u/:id(\\d{0,})/bundle-img-compact/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', 'compact-bundle', cache, req, res, QUERY_TYPE.DEFAULT, MAX_BUNDLE_COUNT);
+		});
+	});
+
 	// User URL Router FLSS
 	router.use('/flss/u/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.flss.user.redirectToUrl', { resource: req.path }, async () => {
@@ -276,6 +291,13 @@ export default function liveLoanRouter(cache) {
 		});
 	});
 
+	// User IMG Router FLSS (Compact Bundle - no CTA)
+	router.use('/flss/u/:id(\\d{0,})/bundle-img-compact/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.flss.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', 'compact-bundle', cache, req, res, QUERY_TYPE.FLSS, MAX_BUNDLE_COUNT);
+		});
+	});
+
 	// User URL Router Recommendations
 	router.use('/recommendations/u/:id(\\d{0,})/url/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.flss.user.redirectToUrl', { resource: req.path }, async () => {
@@ -308,6 +330,13 @@ export default function liveLoanRouter(cache) {
 	router.use('/recommendations/u/:id(\\d{0,})/bundle-img-legacy/:offset(\\d{0,})', async (req, res) => {
 		await trace('live-loan.recommendations.user.serveImg', { resource: req.path }, async () => {
 			await serveImg('user', 'bundle-legacy', cache, req, res, QUERY_TYPE.RECOMMENDATIONS, MAX_BUNDLE_COUNT);
+		});
+	});
+
+	// User IMG Router Recommendations (Compact Bundle - no CTA)
+	router.use('/recommendations/u/:id(\\d{0,})/bundle-img-compact/:offset(\\d{0,})', async (req, res) => {
+		await trace('live-loan.recommendations.user.serveImg', { resource: req.path }, async () => {
+			await serveImg('user', 'compact-bundle', cache, req, res, QUERY_TYPE.RECOMMENDATIONS, MAX_BUNDLE_COUNT);
 		});
 	});
 
@@ -411,6 +440,61 @@ export default function liveLoanRouter(cache) {
 	router.use('/recommendations/u/:id(\\d{0,})/bundle-url', async (req, res) => {
 		await trace('live-loan.recommendations.user.redirectToBundleUrl', { resource: req.path }, async () => {
 			await redirectToBundleUrl('user', cache, req, res, QUERY_TYPE.RECOMMENDATIONS);
+		});
+	});
+
+	// Google Ads live-loan feed (public TSV, fetched on Google's own schedule)
+	router.get('/ads/google-feed.tsv', async (req, res) => {
+		await trace('live-loan.ads.googleFeed', { resource: req.path }, async () => {
+			const sendFeed = feed => {
+				res.contentType('text/tab-separated-values');
+				// no-store so a downstream cache (browser/CDN/Google) never holds a stale feed: the rows
+				// must stay FLSS-fresh, or we'd keep advertising loans that have since funded or expired.
+				// The server-side memjs cache below is the load/scraper protection, not the HTTP layer.
+				res.set('Cache-Control', 'no-store');
+				res.send(feed);
+			};
+
+			let cached;
+			try {
+				cached = await getFromCache(ADS_FEED_FRESH_KEY, cache);
+			} catch (err) {
+				error(`Error reading ad feed from cache, ${err}`, { error: err });
+			}
+			if (cached) {
+				sendFeed(cached);
+				return;
+			}
+
+			try {
+				const feed = await generateGoogleFeed();
+				setToCache(ADS_FEED_FRESH_KEY, feed, ADS_FEED_FRESH_TTL, cache).catch(err => {
+					error(`Error caching ad feed, ${err}`, { error: err });
+				});
+				setToCache(ADS_FEED_LAST_GOOD_KEY, feed, ADS_FEED_LAST_GOOD_TTL, cache).catch(err => {
+					error(`Error caching last-good ad feed, ${err}`, { error: err });
+				});
+				sendFeed(feed);
+			} catch (err) {
+				error(`Error generating ad feed, ${err}`, { error: err });
+				let lastGood;
+				try {
+					lastGood = await getFromCache(ADS_FEED_LAST_GOOD_KEY, cache);
+				} catch (readErr) {
+					error(`Error reading last-good ad feed, ${readErr}`, { error: readErr });
+				}
+				if (lastGood) {
+					// Re-prime the fresh key with last-good for a short backoff so an ongoing outage
+					// re-runs the FLSS/freshness pipeline at most once per window, not on every request.
+					setToCache(ADS_FEED_FRESH_KEY, lastGood, ADS_FEED_FAILURE_BACKOFF_TTL, cache).catch(backoffErr => {
+						error(`Error backing off ad feed cache, ${backoffErr}`, { error: backoffErr });
+					});
+					sendFeed(lastGood);
+					return;
+				}
+				res.set('Retry-After', '300');
+				res.sendStatus(503);
+			}
 		});
 	});
 

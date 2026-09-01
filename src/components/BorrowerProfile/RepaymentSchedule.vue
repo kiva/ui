@@ -13,137 +13,56 @@
 			title="Loan repayment schedule"
 			@lightbox-closed="closeLightbox"
 		>
-			<div v-if="isPartnerLoan || !isPartnerLoan && loanDisbursed">
-				<p class="tw-inline-block tw-pb-3">
-					Repayments {{ statusLanguageCheck }} in
-					<span class="tw-font-medium"> {{ formattedFirstRepaymentDate }}</span>
-				</p>
-				<span v-if="status === 'payingBack'">
-					<p class="tw-inline-block">
-						and are
-					</p>
-					<p class="tw-inline-block tw-font-medium">
-						{{ repaymentStatusCheck }}.
-					</p>
-				</span>
-
-				<!-- Table for small screens -->
-				<table class="md:tw-hidden tw-w-full">
-					<tbody>
-						<tr
-							v-for="(repayment, index) in parsedRepaymentSchedule"
-							:key="index"
-							class="tw-mb-1"
-						>
-							<td
-								class="
-								tw-inline-block tw-w-full tw-bg-secondary tw-rounded tw-text-center
-								tw-mb-2 tw-pb-1.5"
-							>
-								<p class="tw-text-upper tw-py-1.5">
-									{{ repayment.formattedRepaymentDate }}
-								</p>
-								<hr class="tw-mb-1.5 tw-mx-1.5">
-								<p class="tw-mb-1.5">
-									Expected: {{ repayment.formattedMonthlyPayment }}
-								</p>
-								<p v-if="!repayment.repaid && !repayment.delinquent">
-									Available {{ repayment.formattedRepaymentDate }}
-								</p>
-								<!-- if payment is received -->
-								<p
-									class="tw-bg-primary tw-mx-auto tw-py-1 tw-rounded"
-									style="width: 11.5rem;"
-									v-if="repayment.repaid && !repayment.delinquent"
-								>
-									<kv-material-icon
-										:icon="mdiCheckboxMarkedCircle"
-										class="tw-w-3 tw-h-3 tw-text-brand-700 tw-align-middle"
-									/>
-									Repayment received
-								</p>
-								<!-- if payment is not received on time -->
-								<p
-									class="tw-bg-primary tw-mx-auto tw-py-1 tw-rounded"
-									style="width: 7.5rem;"
-									v-if="!repayment.repaid && repayment.delinquent"
-								>
-									<kv-material-icon
-										class="tw-w-3 tw-h-3 tw-text-danger tw-align-middle"
-										:icon="mdiMinusCircle"
-									/>
-									Delinquent
-								</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-
-				<!-- Table for medium and up screens -->
-				<table class="tw-table-auto tw-hidden md:tw-table">
-					<thead class="tw-bg-secondary tw-text-left">
-						<tr>
-							<th><span class="tw-sr-only">Date</span></th>
-							<th class="table-heading-spacing">
-								Expected
-							</th>
-							<th class="table-heading-spacing">
-								Status
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr
-							v-for="(repayment, index) in parsedRepaymentSchedule"
-							:key="index"
-							class="tw-mb-1"
-						>
-							<td class="table-data-spacing">
-								{{ repayment.formattedRepaymentDate }}
-							</td>
-							<td class="table-data-spacing">
-								{{ repayment.formattedMonthlyPayment }}
-							</td>
-							<td
-								class="table-data-spacing"
-								v-if="!repayment.repaid && !repayment.delinquent"
-							>
-								Available {{ repayment.formattedRepaymentDate }}
-							</td>
-							<!-- if payment is received -->
-							<td
-								class="table-data-spacing"
-								v-if="repayment.repaid && !repayment.delinquent"
-							>
-								<kv-material-icon
-									:icon="mdiCheckboxMarkedCircle"
-									class="tw-w-3 tw-h-3 tw-text-brand-700 tw-align-middle"
-								/>
-								Repayment received
-							</td>
-							<!-- if payment is not received on time -->
-							<td
-								class="table-data-spacing"
-								v-if="!repayment.repaid && repayment.delinquent"
-							>
-								<kv-material-icon
-									class="tw-w-3 tw-h-3 tw-text-danger tw-align-middle"
-									:icon="mdiMinusCircle"
-								/>
-								Delinquent
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<p v-if="!isPartnerLoan && loanDisbursed">
-					<!-- eslint-disable-next-line max-len -->
-					Disbursement and repayments will be made via PayPal, a web-based payment system. Repayments made on delinquent loans will be applied toward the oldest payment due until the loan becomes current.
-				</p>
+			<div
+				v-if="loading"
+				class="tw-flex tw-flex-col tw-gap-1.5 tw-w-full md:tw-w-screen md:tw-max-w-md"
+				data-testid="bp-repayment-schedule-loading"
+			>
+				<div v-for="row in 8" :key="row" class="tw-h-3">
+					<kv-loading-placeholder />
+				</div>
 			</div>
 
-			<!-- direct loan before disbursal" -->
+			<div v-else-if="hasLoaded && (isPartnerLoan || loanDisbursed)">
+				<p v-if="intro" class="tw-pb-3">
+					Repayments {{ intro.tense }} {{ intro.preposition }}
+					<span class="tw-font-medium">{{ formattedFirstRepaymentDate }}</span>
+					<template v-if="intro.clause">
+						{{ ' ' }}and are{{ ' ' }}<span class="tw-font-medium">{{ intro.clause }}</span>
+					</template>.
+				</p>
+				<p v-if="intro && intro.followUp" class="tw-pb-3">
+					{{ intro.followUp }}
+				</p>
+
+				<template v-if="isPartnerLoan">
+					<button
+						v-if="!isDualStatement"
+						class="tw-text-link tw-mb-2 tw-block"
+						data-testid="bp-repayment-advanced-toggle"
+						@click="toggleAdvanced"
+					>
+						{{ isAdvancedVisible ? 'Hide advanced' : 'Show advanced' }}
+					</button>
+					<advanced-repayment-table
+						v-if="isAdvancedVisible"
+						:periods="advancedPeriods"
+					/>
+					<partner-repayment-table v-else :rows="partnerRows" />
+				</template>
+
+				<template v-else>
+					<direct-repayment-table :rows="directRows" />
+					<p class="tw-mt-3">
+						<!-- eslint-disable-next-line max-len -->
+						Disbursement and repayments will be made via PayPal, a web-based payment system. Repayments made on delinquent loans will be applied toward the oldest payment due until the loan becomes current.
+					</p>
+				</template>
+			</div>
+
+			<!-- direct loan before disbursal -->
 			<div
-				v-if="!isPartnerLoan && !loanDisbursed"
+				v-else-if="hasLoaded"
 				class="tw-prose"
 			>
 				<p>
@@ -164,19 +83,30 @@
 
 <script>
 import { gql } from 'graphql-tag';
-import { mdiCheckboxMarkedCircle, mdiMinusCircle } from '@mdi/js';
-import { format, parseISO, isBefore } from 'date-fns';
-import numeral from 'numeral';
-import { KvMaterialIcon, KvLightbox } from '@kiva/kv-components';
+import { isBefore, parseISO } from 'date-fns';
+import { KvLightbox, KvLoadingPlaceholder } from '@kiva/kv-components';
+import AdvancedRepaymentTable from '#src/components/BorrowerProfile/AdvancedRepaymentTable';
+import DirectRepaymentTable from '#src/components/BorrowerProfile/DirectRepaymentTable';
+import PartnerRepaymentTable from '#src/components/BorrowerProfile/PartnerRepaymentTable';
+import {
+	buildAdvancedPeriods,
+	buildDirectInstallmentRows,
+	buildPartnerPeriodRows,
+	formatIntroDate,
+	formatUsd,
+	isDualStatementLoan,
+	repaymentIntro,
+} from '#src/util/repaymentSchedule';
 
 const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 	lend {
 		loan(id: $loanId) {
 			id
+			__typename
 			repaymentInterval
 			lenderRepaymentTerm
-			paidAmount
 			loanAmount
+			delinquent
 			terms {
 				currency
 				currencyFullName
@@ -187,17 +117,34 @@ const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 				disbursalAmount
 				flexibleFundraisingEnabled
 				lenderRepaymentTerm
-				expectedPayments {
+			}
+			... on LoanDirect {
+				id
+				repayments {
+					dueDate
 					amount
-					localAmount
-					dueToKivaDate
-					effectiveDate
+					amountPaid
+					status
 				}
 			}
 			... on LoanPartner {
-				partner {
-					id
-					name
+				id
+				dualStatementNote
+				repayments {
+					dueDate
+					status
+					delinquencyAttribution
+					expectedAmountToLenders
+					actualAmountToLenders
+					currencyLossToLenders
+					expectedRepayments {
+						effectiveDate
+						amount
+					}
+					actualRepayments {
+						effectiveDate
+						amount
+					}
 				}
 			}
 		}
@@ -207,8 +154,11 @@ const repaymentScheduleQuery = gql`query repaymentScheduleQuery($loanId: Int!) {
 export default {
 	name: 'RepaymentSchedule',
 	components: {
+		AdvancedRepaymentTable,
+		DirectRepaymentTable,
 		KvLightbox,
-		KvMaterialIcon,
+		KvLoadingPlaceholder,
+		PartnerRepaymentTable,
 	},
 	inject: ['apollo'],
 	props: {
@@ -223,153 +173,98 @@ export default {
 	},
 	data() {
 		return {
-			mdiCheckboxMarkedCircle,
-			mdiMinusCircle,
 			isLightboxVisible: false,
-			firstRepaymentDate: '',
-			repaymentSchedule: [],
-			repaidAmount: 0,
+			isAdvancedVisible: false,
+			loading: false,
+			hasLoaded: false,
+			repayments: [],
 			loanAmount: 0,
 			lenderRepaymentTerm: 0,
-			partnerName: '',
+			loanType: '',
 			disbursalDate: '',
+			delinquent: false,
+			dualStatementNote: '',
+			currency: '',
 		};
 	},
 	methods: {
 		openLightbox() {
 			this.isLightboxVisible = true;
+			if (!this.hasLoaded && !this.loading) {
+				this.fetchRepaymentSchedule();
+			}
 		},
 		closeLightbox() {
 			this.isLightboxVisible = false;
 		},
-		calculateRepaymentSchedule() {
+		toggleAdvanced() {
+			this.isAdvancedVisible = !this.isAdvancedVisible;
+		},
+		fetchRepaymentSchedule() {
+			this.loading = true;
 			this.apollo.query({
 				query: repaymentScheduleQuery,
 				variables: {
 					loanId: this.loanId
 				}
 			}).then(({ data }) => {
-				this.partnerName = data?.lend?.loan?.partner?.name || '';
-				this.repaymentSchedule = data?.lend?.loan?.terms?.expectedPayments || [];
-				this.repaidAmount = data?.lend?.loan?.paidAmount || 0;
-				this.loanAmount = data?.lend?.loan?.loanAmount || 0;
-				this.lenderRepaymentTerm = data?.lend?.loan?.terms?.lenderRepaymentTerm || 0;
-				this.firstRepaymentDate = this.repaymentSchedule[0]?.dueToKivaDate || '';
-				this.disbursalDate = data?.lend?.loan?.terms?.disbursalDate || '';
+				const loan = data?.lend?.loan;
+				this.loanType = loan?.__typename ?? ''; // eslint-disable-line no-underscore-dangle
+				// Both loan types expose `repayments`, shaped per type; the loan's type decides
+				// which table reads it.
+				this.repayments = loan?.repayments || [];
+				this.loanAmount = loan?.loanAmount || 0;
+				this.lenderRepaymentTerm = loan?.terms?.lenderRepaymentTerm || 0;
+				this.disbursalDate = loan?.terms?.disbursalDate || '';
+				this.delinquent = loan?.delinquent ?? false;
+				this.dualStatementNote = loan?.dualStatementNote || '';
+				this.currency = loan?.terms?.currency || '';
+				this.hasLoaded = true;
+			}).finally(() => {
+				this.loading = false;
 			});
 		},
 	},
 	computed: {
 		isPartnerLoan() {
-			return !!this.partnerName;
+			return this.loanType === 'LoanPartner';
+		},
+		partnerRows() {
+			return this.isPartnerLoan ? buildPartnerPeriodRows(this.repayments) : [];
+		},
+		advancedPeriods() {
+			return this.isPartnerLoan ? buildAdvancedPeriods(this.repayments, this.currency) : [];
+		},
+		directRows() {
+			return this.isPartnerLoan ? [] : buildDirectInstallmentRows(this.repayments, this.currency);
+		},
+		isDualStatement() {
+			return isDualStatementLoan(this.dualStatementNote);
+		},
+		firstRepaymentDate() {
+			return this.repayments[0]?.dueDate || '';
 		},
 		formattedFirstRepaymentDate() {
-			if (this.firstRepaymentDate !== '') {
-				return format(parseISO(this.firstRepaymentDate), 'MMM dd, yyyy');
-			}
-			return false;
+			return formatIntroDate(this.firstRepaymentDate, this.isPartnerLoan);
 		},
-		statusLanguageCheck() {
-			if (this.status === 'payingBack') {
-				return 'began';
-			}
-			return 'begin';
-		},
-		delinquentPayment() {
-			// looking through the parsedRepaymentSchedule for a delinquent payment boolean
-			const delinquentPaymentPresent = this.parsedRepaymentSchedule.find(({ delinquent }) => delinquent === true);
-			return delinquentPaymentPresent !== undefined;
-		},
-		repaymentStatusCheck() {
-			if (this.status === 'payingBack' && this.delinquentPayment) {
-				return 'delinquent';
-			}
-			// TODO: fill out other options for other loan statuses
-			return 'on track';
-		},
-		parsedRepaymentSchedule() {
-			const monthlyRepaymentData = [];
-			const monthlyTotalRepayments = [];
-			let repaid = false;
-			let delinquent = false;
-			if (this.repaymentSchedule.length !== 0) {
-				const repaymentScheduleByDueDate = this.repaymentSchedule.reduce((acc, repaymentItem) => {
-					if (!acc[repaymentItem.dueToKivaDate]) acc[repaymentItem.dueToKivaDate] = [];
-					acc[repaymentItem.dueToKivaDate].push(repaymentItem);
-					return acc;
-				}, {});
-
-				Object.entries(repaymentScheduleByDueDate).forEach(([repaymentDate, repaymentItemData]) => {
-					// iterating through each repaymentItemByDueDate, pulling off the amount from each repaymentItemData
-					// and reducing it down to an array of individual repayments made in a month.
-					const result = repaymentItemData.reduce((arr, val) => {
-						arr.push(val.amount);
-						return (arr);
-					}, []);
-					// result = ["548.43","548.43","548.43","548.43"]
-
-					// take the array of payments, change them from strings to integers
-					// and add them together, which results in the total payments for a month
-					const totalMonthlyPayment = result.reduce((runningTotal, amount) => {
-						return runningTotal + parseFloat(amount);
-					}, 0);
-
-					// push the monthly repayments to a new array to be used to check if repayments are on time
-					monthlyTotalRepayments.push(totalMonthlyPayment);
-
-					// iterate through the monthlyRepayments and add together each
-					// month's payments to get a total monthly payment amount
-					const totalMonthlyPaymentValue = monthlyTotalRepayments.reduce((runningTotal, monthlyAmount) => {
-						return runningTotal + parseFloat(monthlyAmount);
-					}, 0);
-
-					// set the repaid boolean
-					repaid = this.repaidAmount > totalMonthlyPaymentValue;
-
-					const now = new Date();
-					const parsedRepaymentDate = parseISO(repaymentDate);
-					// if a payment is not repaid and the repayment data is before now, then mark the loan delinquent
-					delinquent = !repaid && isBefore(parsedRepaymentDate, now);
-
-					// format date and monthly payment amount for display
-					const formattedRepaymentDate = format(parseISO(repaymentDate), 'MMM yyyy');
-					const formattedMonthlyPayment = numeral(totalMonthlyPayment).format('$0,0.00');
-
-					// add all the parsed repayment data into an array used to render
-					monthlyRepaymentData.push({
-						formattedRepaymentDate,
-						totalMonthlyPayment,
-						formattedMonthlyPayment,
-						repaid,
-						delinquent
-					});
-				});
-			}
-			return monthlyRepaymentData;
+		intro() {
+			// Delinquency is the loan-level flag, not a scan of the periods.
+			return repaymentIntro(this.status, {
+				delinquent: this.delinquent,
+				hasFirstRepaymentDate: this.firstRepaymentDate !== '',
+				isPartnerLoan: this.isPartnerLoan,
+			});
 		},
 		loanAmountFormatted() {
-			return numeral(this.loanAmount).format('$0,0.00');
+			return formatUsd(this.loanAmount);
 		},
 		calculateMonthlyPayment() {
 			// used for calculating the monthly payment of a direct loan
-			return numeral(this.loanAmount / this.lenderRepaymentTerm).format('$0,0.00');
+			return formatUsd(this.loanAmount / this.lenderRepaymentTerm);
 		},
 		loanDisbursed() {
 			return this.disbursalDate !== '' && isBefore(parseISO(this.disbursalDate), new Date());
 		}
 	},
-	mounted() {
-		this.calculateRepaymentSchedule();
-	},
 };
 </script>
-
-<style lang="postcss" scoped>
-.table-heading-spacing {
-	@apply tw-py-2.5 tw-pl-1.5;
-}
-
-.table-data-spacing {
-	@apply tw-p-1.5;
-}
-</style>

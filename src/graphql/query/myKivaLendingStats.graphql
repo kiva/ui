@@ -1,0 +1,32 @@
+query myKivaLendingStats($year: Int!) {
+	my {
+		id
+		lendingStats {
+			id
+			# region is the only field MyKiva reads — it answers "has this lender lent to
+			# this region?". Full Country records come from countryList in the same prefetch.
+			countriesLentTo {
+				id
+				region
+			}
+			lentTo {
+				borrowers {
+					totalCount
+				}
+				countries {
+					totalCount
+				}
+			}
+			# Same LendingStats entity, so useGoalData's loanStatsByYear query reads this
+			# straight out of the normalized cache. Both pass year explicitly, which is what
+			# makes the two field keys match.
+			loanStatsByYear(year: $year) {
+				amount
+				count
+			}
+		}
+		userStats {
+			amount_of_loans
+		}
+	}
+}

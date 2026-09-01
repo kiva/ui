@@ -1,7 +1,7 @@
 <template>
 	<div class="tw-mt-2">
 		<div class="tw-relative">
-			<div ref="scrollContainer" class="tw-overflow-x-auto tw-min-w-full" @scroll="updateScrollGradients">
+			<div ref="scrollContainer" class="loan-table-scroll tw-min-w-full" @scroll="updateScrollGradients">
 				<table class="tw-w-full tw-border-collapse tw-text-small">
 					<thead>
 						<tr class="tw-bg-gray-200">
@@ -29,14 +29,14 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-if="loading">
-							<td colspan="7" class="tw-px-2 tw-py-4">
-								<div
-									v-for="i in skeletonRowCount"
-									:key="i"
-									class="tw-grid tw-grid-cols-12 tw-gap-4 tw-mb-4 tw-items-start"
-								>
-									<div class="tw-col-span-4 tw-flex tw-items-start">
+						<template v-if="loading">
+							<tr
+								v-for="i in skeletonRowCount"
+								:key="i"
+								class="tw-border-b tw-border-tertiary tw-bg-primary"
+							>
+								<td class="loan-details-cell tw-px-2 tw-py-2 tw-align-top">
+									<div class="tw-flex tw-items-start">
 										<kv-loading-placeholder
 											class="tw-mr-2 tw-shrink-0 !tw-w-6.5 !tw-h-6.5"
 										/>
@@ -47,15 +47,19 @@
 											<kv-loading-placeholder style="height: 0.875rem;" />
 										</div>
 									</div>
-									<kv-loading-placeholder class="tw-col-span-1" style="height: 0.875rem;" />
-									<kv-loading-placeholder class="tw-col-span-1" style="height: 0.875rem;" />
-									<kv-loading-placeholder class="tw-col-span-2" style="height: 0.875rem;" />
-									<kv-loading-placeholder class="tw-col-span-1" style="height: 0.875rem;" />
-									<kv-loading-placeholder class="tw-col-span-1" style="height: 0.875rem;" />
-									<kv-loading-placeholder class="tw-col-span-2" style="height: 0.875rem;" />
-								</div>
-							</td>
-						</tr>
+								</td>
+								<td colspan="6" class="tw-px-2 tw-py-2 tw-align-top">
+									<div class="tw-grid tw-grid-cols-6 tw-gap-4 tw-items-start">
+										<kv-loading-placeholder style="height: 0.875rem;" />
+										<kv-loading-placeholder style="height: 0.875rem;" />
+										<kv-loading-placeholder style="height: 0.875rem;" />
+										<kv-loading-placeholder style="height: 0.875rem;" />
+										<kv-loading-placeholder style="height: 0.875rem;" />
+										<kv-loading-placeholder style="height: 0.875rem;" />
+									</div>
+								</td>
+							</tr>
+						</template>
 						<tr v-else-if="hasError">
 							<td
 								class="tw-text-center tw-text-danger tw-px-2 tw-pt-4"
@@ -96,7 +100,7 @@
 											{{ matchedLabel(loan) }}
 										</div>
 									</div>
-									<div>
+									<div class="tw-min-w-0 tw-break-words">
 										<div class="tw-font-semibold">
 											<a
 												:href="`/lend/${loan.id}`"
@@ -114,14 +118,14 @@
 											{{ loan.activity?.name || '-' }}
 										</div>
 										<div class="tw-flex tw-items-center">
-											<div class="tw-w-2 tw-h-2 tw-mr-1">
+											<div class="tw-w-2 tw-h-2 tw-mr-1 tw-shrink-0">
 												<kv-flag
 													v-if="loan.geocode?.country?.isoCode"
 													:country="loan.geocode?.country?.isoCode"
 													:name="loan.geocode?.country?.name || ''"
 												/>
 											</div>
-											{{ loan.geocode?.country?.name || '-' }}
+											<span class="tw-truncate">{{ loan.geocode?.country?.name || '-' }}</span>
 										</div>
 										<div v-if="loan.trusteeName">
 											<a
@@ -187,7 +191,7 @@
 									{{ getStatusLabel(loan) }}
 								</div>
 							</td>
-							<td class="tw-text-right tw-px-2">
+							<td class="tw-text-left tw-px-2">
 								<div>
 									<div class="tw-mb-1">
 										{{ $filters.numeral(
@@ -214,7 +218,7 @@
 									</div>
 								</div>
 							</td>
-							<td class="paid-back-cell tw-text-right tw-px-2">
+							<td class="paid-back-cell tw-text-left tw-px-2">
 								<div v-if="isRaisedOrFundraising(loan.status)">
 									{{ $filters.numeral(loan.loanFundraisingInfo?.fundedAmount, '$0,0.00') }}
 									<span class="tw-block tw-text-secondary tw-text-small">raised</span>
@@ -249,7 +253,7 @@
 									{{ loan.lenderRepaymentTerm || '-' }} months
 								</div>
 							</td>
-							<td class="tw-text-right tw-px-2">
+							<td class="tw-text-left tw-px-2">
 								<div>
 									<div>
 										{{ $filters.numeral(loan.terms.loanAmount, '$0,0.00') }}
@@ -311,8 +315,9 @@
 					</tbody>
 				</table>
 			</div>
-			<div v-show="canScrollLeft" class="scroll-gradient scroll-gradient--left"></div>
-			<div v-show="canScrollRight" class="scroll-gradient scroll-gradient--right"></div>
+			<div v-show="canScrollLeft" class="scroll-gradient scroll-gradient--left md:tw-hidden"></div>
+			<div v-show="canScrollRight" class="scroll-gradient scroll-gradient--right md:tw-hidden"></div>
+			<div v-show="canScrollDown" class="scroll-gradient scroll-gradient--bottom md:tw-hidden"></div>
 		</div>
 	</div>
 </template>
@@ -329,6 +334,7 @@ import {
 	REFUNDED,
 } from '#src/api/fixtures/LoanStatusEnum';
 import PaidAmountModal from '#src/components/Portfolio/PaidAmountModal';
+import useScrollGradients from '#src/composables/useScrollGradients';
 
 const REFUNDED_OR_EXPIRED_STATUSES = new Set([EXPIRED, REFUNDED]);
 const RAISED_OR_FUNDRAISING_STATUSES = new Set([FUNDRAISING, RAISED]);
@@ -371,19 +377,12 @@ export default {
 		PaidAmountModal
 	},
 	methods: {
-		// Toggle the left/right scroll-gradient overlays from the table's scroll position:
-		// each shows only when the table can still scroll that direction. Recomputed on
-		// scroll, on resize, and after the row set changes (see mounted/watch).
-		updateScrollGradients() {
-			const el = this.$refs.scrollContainer;
-			if (!el) {
-				this.canScrollLeft = false;
-				this.canScrollRight = false;
-				return;
+		// Reset the table's fixed-height scroll region to the top (called on pagination so a new
+		// page starts at its first row rather than wherever the previous page was scrolled to).
+		scrollToTop() {
+			if (this.scrollContainer) {
+				this.scrollContainer.scrollTop = 0;
 			}
-			// 1px tolerance so sub-pixel rounding at the extremes doesn't leave a gradient on.
-			this.canScrollLeft = el.scrollLeft > 1;
-			this.canScrollRight = el.scrollLeft < (el.scrollWidth - el.clientWidth - 1);
 		},
 		formatDate(date) {
 			if (!date) return '';
@@ -506,15 +505,30 @@ export default {
 			return trusteeId => `/trustees/${trusteeId}`;
 		}
 	},
+	setup() {
+		const {
+			scrollContainer,
+			canScrollLeft,
+			canScrollRight,
+			canScrollDown,
+			updateScrollGradients
+		} = useScrollGradients();
+
+		return {
+			scrollContainer,
+			canScrollLeft,
+			canScrollRight,
+			canScrollDown,
+			updateScrollGradients
+		};
+	},
 	data() {
 		return {
 			mdiHeart,
 			// Number of skeleton rows shown while loading. Each row mirrors a real row's
 			// height (image + stacked detail lines) so the table reserves representative
 			// space and the swap to loaded content doesn't jump.
-			skeletonRowCount: 5,
-			canScrollLeft: false,
-			canScrollRight: false
+			skeletonRowCount: 5
 		};
 	},
 	watch: {
@@ -525,31 +539,17 @@ export default {
 			this.$nextTick(this.updateScrollGradients);
 		}
 	},
-	mounted() {
-		this.$nextTick(this.updateScrollGradients);
-		// Available width changes on viewport resize and the row set changes on load/pagination;
-		// neither fires a scroll event, so recompute on both.
-		window.addEventListener('resize', this.updateScrollGradients);
-		if (typeof ResizeObserver !== 'undefined' && this.$refs.scrollContainer) {
-			this.scrollResizeObserver = new ResizeObserver(() => this.updateScrollGradients());
-			this.scrollResizeObserver.observe(this.$refs.scrollContainer);
-		}
-	},
-	beforeUnmount() {
-		window.removeEventListener('resize', this.updateScrollGradients);
-		if (this.scrollResizeObserver) {
-			this.scrollResizeObserver.disconnect();
-			this.scrollResizeObserver = null;
-		}
-	}
 };
 </script>
 
 <style lang="postcss" scoped>
 .scroll-gradient {
-	@apply tw-pointer-events-none tw-absolute tw-top-0 tw-bottom-0;
+	@apply tw-pointer-events-none tw-absolute;
+}
 
-	width: 1.5rem;
+.scroll-gradient--left,
+.scroll-gradient--right {
+	@apply tw-top-0 tw-bottom-0 tw-w-6;
 }
 
 .scroll-gradient--left {
@@ -564,13 +564,73 @@ export default {
 	background: linear-gradient(to left, rgb(0 0 0 / 12%), rgb(0 0 0 / 0%));
 }
 
+/* z-index 4: paints over the sticky first column. */
+.scroll-gradient--bottom {
+	@apply tw-left-0 tw-right-0 tw-bottom-0 tw-h-6;
+
+	z-index: 4;
+	background: linear-gradient(to top, rgb(0 0 0 / 12%), rgb(0 0 0 / 0%));
+}
+
+/* Fixed-height scroll box, with the header pinned. Kept short enough that the horizontal scrollbar stays visible. */
+.loan-table-scroll {
+	max-height: 526px;
+	overflow: auto;
+}
+
+@screen md {
+	.loan-table-scroll {
+		max-height: 664px;
+	}
+}
+
+/* Header pinned during vertical scroll; own bg (inherits the header row's) covers the rows scrolling under it.
+   Headers stay on a single line — column min-widths below give the content room to sit beside them. */
+.loan-table-scroll thead th {
+	@apply tw-sticky tw-top-0 tw-whitespace-nowrap;
+
+	z-index: 2;
+	background-color: inherit;
+}
+
+/* First column pinned during horizontal scroll. */
+.loan-table-scroll th:first-child,
+.loan-table-scroll td:first-child {
+	@apply tw-sticky tw-left-0;
+
+	z-index: 1;
+	background-color: inherit;
+}
+
+/* Soft drop shadow off the pinned column's right edge, drawn as a pseudo-element gradient —
+   border-collapse clips an outset box-shadow on table cells, so it won't render there. */
+.loan-table-scroll th:first-child::after,
+.loan-table-scroll td:first-child::after {
+	@apply tw-absolute tw-top-0 tw-bottom-0 tw-right-0 tw-w-2 tw-pointer-events-none;
+
+	content: '';
+	background: linear-gradient(to right, rgb(0 0 0 / 3.75%), rgb(0 0 0 / 0%));
+	transform: translateX(100%);
+}
+
+/* Corner above both the sticky header and the sticky first column. */
+.loan-table-scroll thead th:first-child {
+	z-index: 3;
+}
+
+/* No shadow on the full-width message/skeleton cell of the loading, error and empty states. */
+.loan-table-scroll td[colspan]::after {
+	content: none;
+}
+
 .loan-details-cell {
-	min-width: 10rem;
-	max-width: 13rem;
+	min-width: calc(10rem + 50px);
+	max-width: calc(13rem + 50px);
 }
 
 .paid-back-cell {
-	max-width: 6rem;
+	min-width: 9rem;
+	max-width: 11rem;
 }
 
 .loan-image {
@@ -579,7 +639,7 @@ export default {
 }
 
 .team-cell {
-	min-width: 10rem;
-	max-width: 13rem;
+	min-width: 13rem;
+	max-width: 15rem;
 }
 </style>

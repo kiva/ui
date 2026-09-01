@@ -1,24 +1,16 @@
-import {
-	ref,
-	computed,
-	onMounted,
-} from 'vue';
-import logFormatter from '#src/util/logFormatter';
+import { computed } from 'vue';
 import userIdQuery from '#src/graphql/query/userId.graphql';
+import useApolloQuery from '#src/composables/useApolloQuery';
 
-export default function useMyKivaHome(apollo) {
-	const redirectToMyKivaHomepage = ref(false);
-	const userData = ref(false);
+const operation = { query: userIdQuery };
 
-	const fetchUserData = async () => {
-		await apollo.query({
-			query: userIdQuery,
-		}).then(({ data }) => {
-			userData.value = data?.my ?? null;
-		}).catch(e => {
-			logFormatter(e, 'useMyKivaHome composable');
-		});
-	};
+// Registered for prefetching by every component that imports this composable
+export const preFetchOperations = [operation];
+
+export default function useMyKivaHome() {
+	const { result } = useApolloQuery(operation);
+
+	const redirectToMyKivaHomepage = computed(() => !!result.value?.my?.id);
 
 	const homePagePath = computed(() => {
 		return redirectToMyKivaHomepage.value ? '/mykiva' : '/';
@@ -26,12 +18,6 @@ export default function useMyKivaHome(apollo) {
 
 	const portfolioPath = computed(() => {
 		return redirectToMyKivaHomepage.value ? '/mykiva' : '/portfolio';
-	});
-
-	onMounted(async () => {
-		await fetchUserData();
-
-		redirectToMyKivaHomepage.value = userData.value?.id || false;
 	});
 
 	return {

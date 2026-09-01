@@ -1,3 +1,5 @@
+import logFormatter from '#src/util/logFormatter';
+
 /**
  * Determine if browser supports Webp with transparency
  *
@@ -56,11 +58,12 @@ export function preloadImage(src) {
 export function optimizeContentfulUrl(baseUrl, width = null, height = null) {
 	if (!baseUrl) return '';
 
-	// check if it's a Contentful URL
+	// warn if it's not a Contentful URL
 	const isContentfulUrl = baseUrl.includes('images.ctfassets.net')
-		|| baseUrl.includes('assets.contentful.com');
+		|| baseUrl.includes('assets.contentful.com')
+		|| baseUrl.includes('kiva.org/ctfassets/');
 	if (!isContentfulUrl) {
-		return baseUrl;
+		logFormatter(`Non-Contentful URL passed to optimizeContentfulUrl: ${baseUrl}`, 'warn');
 	}
 	const params = new URLSearchParams();
 	if (width) params.set('w', width);

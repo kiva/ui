@@ -1,38 +1,126 @@
 import { render } from '@testing-library/vue';
-import userEvent from '@testing-library/user-event';
 import TheHeader from '#src/components/WwwFrame/TheHeader';
 
 import { emptyComponent, globalOptions } from '../../../specUtils';
 
-describe('TheHeader', () => {
-	it('should display a search area', async () => {
-		const user = userEvent.setup();
-		const { queryByPlaceholderText } = render(
-			TheHeader,
-			{
-				global: {
-					...globalOptions,
-					// Stubbing out child components not used in this test
-					stubs: {
-						MonthlyGoodExpMenuWrapper: { ...emptyComponent },
-						PromoBannerLarge: { ...emptyComponent },
-						PromoBannerSmall: { ...emptyComponent },
-						TheLendMenu: { ...emptyComponent },
-						RouterLink: { ...emptyComponent },
-					},
-					mocks: {
-						...globalOptions.mocks,
-						$route: {
-							path: '/'
-						},
-					}
+// Stand-in for the external @kiva/kv-components header. It is stubbed rather than
+// rendered so the spec asserts *which* header the component chose, not the
+// internals of a released library component. The two methods exist because
+// TheHeader's `loadMenu()` / `loadSearchData()` call them through `$refs`, and
+// `loadSearchData()` fires on mount whenever the basic header is shown.
+const KvWwwHeaderBasicStub = {
+	name: 'KvWwwHeaderBasic',
+	props: {
+		useEsiAvatar: {
+			type: Boolean,
+			default: false,
+		},
+	},
+	template: '<div data-testid="basic-header" :data-use-esi-avatar="useEsiAvatar"></div>',
+	methods: {
+		loadMenuData() {},
+		loadSearchSuggestions() {},
+	},
+};
+
+const renderHeader = (props = {}, renderConfig = {}) => render(
+	TheHeader,
+	{
+		props,
+		global: {
+			...globalOptions,
+			stubs: {
+				KvWwwHeaderBasic: KvWwwHeaderBasicStub,
+				MonthlyGoodExpMenuWrapper: { ...emptyComponent },
+				PromoBannerLarge: { ...emptyComponent },
+				PromoBannerSmall: { ...emptyComponent },
+				TheLendMenu: { ...emptyComponent },
+				RouterLink: { ...emptyComponent },
+			},
+			mocks: {
+				...globalOptions.mocks,
+				$renderConfig: renderConfig,
+				$route: {
+					path: '/',
 				},
 			},
-		);
+		},
+	},
+);
 
-		// Expect the search bar to exist and be focused on click
-		const searchBar = queryByPlaceholderText('Search all loans');
-		await user.click(searchBar);
-		expect(searchBar).toBe(document.activeElement);
+// jsdom does not enumerate custom properties through CSSStyleDeclaration, so read the attribute.
+const bridgedVars = queryByTestId => {
+	const style = queryByTestId('basic-header').getAttribute('style') ?? '';
+	return Object.fromEntries(
+		style.split(';')
+			.filter(declaration => declaration.includes(':'))
+			.map(declaration => {
+				const [name, ...value] = declaration.split(':');
+				return [name.trim(), value.join(':').trim()];
+			}),
+	);
+};
+
+describe('TheHeader', () => {
+	it('should render the basic header by default', () => {
+		const { queryByTestId, container } = renderHeader();
+
+		expect(queryByTestId('basic-header')).not.toBeNull();
+		expect(container.querySelector('nav[aria-label="Primary navigation"]')).toBeNull();
+	});
+
+	// `ui` is the only host whose ESI emits the avatar URL, so the opt-in lives here rather than
+	// in the library default.
+	it('should opt the basic header into the ESI avatar', () => {
+		const { queryByTestId } = renderHeader();
+
+		expect(queryByTestId('basic-header').dataset.useEsiAvatar).toBe('true');
+	});
+
+	it('should render the minimal header instead of the basic header when minimal', () => {
+		const { queryByTestId, container } = renderHeader({ minimal: true });
+
+		expect(queryByTestId('basic-header')).toBeNull();
+		expect(container.querySelector('nav[aria-label="Primary navigation"]')).not.toBeNull();
+		expect(queryByTestId('header-home')).not.toBeNull();
+	});
+
+	it('should render the corporate header instead of the basic header when corporate', () => {
+		const { queryByTestId, container } = renderHeader({ corporate: true });
+
+		expect(queryByTestId('basic-header')).toBeNull();
+		expect(container.querySelector('nav[aria-label="Primary navigation"]')).not.toBeNull();
+		expect(queryByTestId('header-basket')).not.toBeNull();
+	});
+
+	// The ESI head emits --ui-data-* names; the header library reads unprefixed ones. The bridge
+	// exists only while a CDN-cached shell is showing placeholder state, because that is the only
+	// time the library binds display to those variables.
+	describe('esiCssVarBridge', () => {
+		it('should not bridge any variables when the page is not CDN cached', () => {
+			const { queryByTestId } = renderHeader({}, { useCDNCaching: false });
+
+			expect(bridgedVars(queryByTestId)).toEqual({});
+		});
+
+		it('should bridge the basket variable while only the basket is loading', () => {
+			const { queryByTestId } = renderHeader({}, { useCDNCaching: true, cdnNotedLoggedIn: false });
+
+			expect(bridgedVars(queryByTestId)).toMatchObject({
+				'--basket-display': 'var(--ui-data-basket-count-display)',
+			});
+		});
+
+		it('should bridge the user variables while the cached shell says logged in', () => {
+			const { queryByTestId } = renderHeader({}, { useCDNCaching: true, cdnNotedLoggedIn: true });
+
+			expect(bridgedVars(queryByTestId)).toEqual({
+				'--basket-display': 'var(--ui-data-basket-count-display)',
+				'--user-loading-display': 'var(--ui-data-user-loading-display)',
+				'--user-avatar-display': 'var(--ui-data-user-avatar-display)',
+				'--user-avatar-legacy-display': 'var(--ui-data-user-avatar-legacy-display)',
+				'--user-avatar': 'var(--ui-data-user-avatar)',
+			});
+		});
 	});
 });

@@ -92,11 +92,10 @@ import JourneyDesktopImg from '#src/assets/images/thanks-page/journey-desktop.sv
 import BorrowerAvatarsContainer from '#src/components/Thanks/BorrowerAvatarsContainer';
 import useMyKivaHome from '#src/composables/useMyKivaHome';
 
-const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
 
 const router = useRouter();
-const { portfolioPath } = useMyKivaHome(apollo);
+const { portfolioPath } = useMyKivaHome();
 
 const emit = defineEmits(['continue-as-guest']);
 

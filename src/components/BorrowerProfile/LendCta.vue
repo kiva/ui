@@ -271,7 +271,7 @@
 			>
 				<!-- Hide grid on mobile when matchingHighlightExpShown is on -->
 				<kv-grid
-					v-show="lenderCountVisibility || matchingTextVisibility || simultaneousMatchingVisibility"
+					v-show="statsSlotVisibility || simultaneousMatchingVisibility"
 					key="grid"
 					:class="[
 						'tw-grid-cols-12',
@@ -299,7 +299,7 @@
 					]"
 				>
 					<div
-						v-if="lenderCountVisibility || matchingTextVisibility"
+						v-if="statsSlotVisibility"
 						key="wrapper"
 						:class="[
 							'tw-h-5',
@@ -332,17 +332,20 @@
 							leave-to-class="tw-transform tw-translate-y-2 tw-opacity-0"
 						>
 							<span
-								v-if="currentSlotStat === 'lenderCount'"
+								v-if="displayedSlotStat === 'lenderCount'"
 								class="tw-inline-block"
 								data-testid="bp-lend-cta-powered-by-text"
 								key="numLendersStat"
 							>
 								<!-- eslint-disable-next-line max-len -->
-								<kv-material-icon class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle" :icon="mdiLightningBolt" /><span class="tw-align-middle">powered by {{ numLenders }} lenders</span>
+								<kv-material-icon class="tw-w-2.5 tw-h-2.5 tw-pointer-events-none tw-inline-block tw-align-middle" :icon="mdiLightningBolt" />
+								<span class="tw-align-middle">
+									powered by {{ numLenders }} lender{{ numLenders > 1 ? 's' : '' }}
+								</span>
 							</span>
 
 							<span
-								v-else-if="currentSlotStat === 'matchingText'"
+								v-else-if="displayedSlotStat === 'matchingText'"
 								class="tw-inline-block"
 								data-testid="bp-lend-cta-matched-text"
 								key="loanMatchingText"
@@ -379,6 +382,7 @@ import {
 	getLendCtaSelectedOption,
 	isActivelyInPfp,
 }	from '#src/util/loanUtils';
+import { getPossibleStats, getDisplayedStat, getNextSlotStat } from '#src/util/lendCtaStats';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import { createIntersectionObserver } from '#src/util/observerUtils';
 import {
@@ -399,7 +403,6 @@ import KvIcon from '#src/components/Kv/KvIcon';
 import {
 	KvSelect as KvUiSelect, KvMaterialIcon, KvButton as KvUiButton, KvGrid
 } from '@kiva/kv-components';
-import { setChallengeCookieData } from '#src/util/teamChallengeUtils';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 import KvAtbModalContainer from '#src/components/WwwFrame/Header/KvAtbModalContainer';
 
@@ -515,14 +518,6 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		teamId: {
-			type: Number,
-			default: null,
-		},
-		teamName: {
-			type: String,
-			default: '',
-		},
 	},
 	components: {
 		LendAmountButton,
@@ -538,8 +533,8 @@ export default {
 		SimultaneousMatchingInfo,
 	},
 	setup() {
-		const { enableMultiMatching } = useMultiMatching();
-		return { enableMultiMatching };
+		const { enableMultiMatching, multiMatchingResolved } = useMultiMatching();
+		return { enableMultiMatching, multiMatchingResolved };
 	},
 	data() {
 		// Seed initial values from the loanData prop when it's present.
@@ -560,9 +555,6 @@ export default {
 			minNoteSize: loan?.minNoteSize ?? '',
 			status: loan?.status ?? '',
 			numLenders: loan?.lenders?.totalCount ?? 0,
-			lenderCountVisibility: hasData && loan?.status === 'fundraising'
-				&& (loan?.lenders?.totalCount ?? 0) > 0,
-			matchingTextVisibility: false,
 			matchingText: loan?.matchingText ?? '',
 			matchRatio: loan?.matchRatio ?? 0,
 			basketItems: [],
@@ -610,14 +602,9 @@ export default {
 				this.matchingText = loan?.matchingText ?? '';
 				this.matchRatio = loan?.matchRatio ?? 0;
 				this.simultaneousMatching = loan?.simultaneousMatching ?? [];
-				this.matchingTextVisibility = this.status === 'fundraising'
-					&& this.matchingText && !this.isMatchAtRisk && !this.enableMultiMatching;
 
 				this.loanLoading = false;
 
-				if (this.status === 'fundraising' && this.numLenders > 0) {
-					this.lenderCountVisibility = true;
-				}
 				this.cycleStatsSlot();
 			},
 		},
@@ -651,14 +638,6 @@ export default {
 			// added the loan (and fired its own AddToCart), don't add or track it a second time — just
 			// run the post-add UI. A child whose add FAILED falls through to our own add as a retry.
 			const addedByChild = childResult?.success === true;
-			if (this.teamId) {
-				const challenge = {
-					teamId: this.teamId,
-					teamName: this.teamName,
-					loanId: this.loanId,
-				};
-				setChallengeCookieData(this.cookieStore, challenge);
-			}
 			const amount = isLessThan25(this.unreservedAmount) ? this.unreservedAmount : this.selectedOption;
 			this.isAdding = true;
 			// Skip the basket mutation when a child already added the loan; otherwise add it ourselves.
@@ -725,37 +704,19 @@ export default {
 				selectedDollarAmount
 			);
 		},
+		advanceStatsSlot() {
+			this.currentSlotStat = getNextSlotStat(this.possibleStats, this.currentSlotStat);
+		},
 		cycleStatsSlot() {
 			// Function can be skipped if slot machine interval is already set
 			if (this.slotMachineInterval) {
 				return;
 			}
 
-			// Change which stat is displayed in the stats slot
-			const cycleSlotMachine = () => {
-				const possibleStats = [];
-				// Add lender count
-				if (this.status === 'fundraising' && this.numLenders > 0) {
-					possibleStats.push('lenderCount');
-				}
-				// Add matching text (hidden when multi matching is enabled so the slot is skipped entirely)
-				if (this.status === 'fundraising'
-					&& this.matchingText.length
-					&& !this.isMatchAtRisk
-					&& !this.enableMultiMatching) {
-					possibleStats.push('matchingText');
-				}
-				// Cycle through the possible stats in the order they were added.
-				// If current slot stat is no longer in the possible stat list, this will cycle back to the first stat.
-				let nextStatIndex = possibleStats.indexOf(this.currentSlotStat) + 1;
-				nextStatIndex = nextStatIndex >= possibleStats.length ? 0 : nextStatIndex;
-				this.currentSlotStat = possibleStats[nextStatIndex] ?? '';
-			};
-
 			// Set initial stat
-			cycleSlotMachine();
+			this.advanceStatsSlot();
 			// Start cycling
-			this.slotMachineInterval = setInterval(cycleSlotMachine, 5000);
+			this.slotMachineInterval = setInterval(this.advanceStatsSlot, 5000);
 		},
 		async initializeMatchingHighlightExp() {
 			await this.apollo.query({ query: experimentAssignmentQuery, variables: { id: 'matching_highlight' } });
@@ -825,6 +786,25 @@ export default {
 				&& this.simultaneousMatching.length > 0
 				&& this.status === 'fundraising';
 		},
+		matchingTextVisibility() {
+			return this.possibleStats.includes('matchingText');
+		},
+		possibleStats() {
+			return getPossibleStats({
+				status: this.status,
+				numLenders: this.numLenders,
+				matchingText: this.matchingText,
+				matchAtRisk: this.isMatchAtRisk,
+				multiMatchingResolved: this.multiMatchingResolved,
+				enableMultiMatching: this.enableMultiMatching,
+			});
+		},
+		displayedSlotStat() {
+			return getDisplayedStat(this.possibleStats, this.currentSlotStat);
+		},
+		statsSlotVisibility() {
+			return !!this.displayedSlotStat;
+		},
 		isMatchAtRisk() {
 			const mockLoan = {
 				loanAmount: this.loanAmount,
@@ -893,8 +873,7 @@ export default {
 		useFormSubmit() {
 			if (this.hideShowLendDropdown
 				|| this.lendButtonVisibility
-				|| this.lendAgainButton
-				|| this.state === 'lent-to'
+				|| this.isLentTo
 				|| this.isAdding) {
 				return true;
 			}

@@ -25,7 +25,7 @@
 			</content-container>
 		</div>
 		<div
-			:class="inPfp ? 'lg:tw-pt-16 lg:tw-mt-4' : 'lg:tw-pt-8'"
+			:class="inPfp ? 'lg:tw-pt-16 lg:tw-mt-8' : 'lg:tw-pt-8'"
 			class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0 tw-z-docked"
 		>
 			<sidebar-container
@@ -38,8 +38,6 @@
 						:loan-data="loanData"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:show-details-in-rail="showDetailsInRail"
-						:team-id="teamId"
-						:team-name="teamName"
 					>
 						<template #sharebutton>
 							<!-- Share button -->
@@ -88,7 +86,7 @@
 		</content-container>
 		<content-container>
 			<journal-updates
-				v-if="showUpdates"
+				v-if="showUpdatesSection"
 				data-testid="bp-updates"
 				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
 				:loan-id="loanId"
@@ -311,14 +309,6 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		teamId: {
-			type: Number,
-			default: null,
-		},
-		teamName: {
-			type: String,
-			default: '',
-		},
 		showEducationPlacementExp: {
 			type: Boolean,
 			default: false,
@@ -377,6 +367,14 @@ export default {
 			// Only privileged users (e.g. lenders on this loan) can see the comment
 			// section, and only while the loan is not anonymized (full/pii).
 			return this.isPrivileged && !this.isAnonymized;
+		},
+		showUpdatesSection() {
+			// Hide the journal updates section entirely for PII-anonymized loans: their
+			// single-loan journal bodies are stripped during PII anonymization, so any
+			// remaining entries render empty. Scoped to 'pii' specifically — 'full' (refunded)
+			// loans keep their journal content and are already excluded server-side by the
+			// borrower-privacy rules.
+			return this.showUpdates && this.loanData?.anonymizationLevel !== 'pii';
 		},
 		shareCampaign() {
 			return this.inPfp ? 'social_share_bp_pfp' : 'social_share_bp';

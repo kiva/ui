@@ -4,7 +4,7 @@
 		:class="isInExperimentPages ? 'tw-sticky tw-top-0 tw-z-sticky' : ''"
 	>
 		<KvWwwHeaderBasic
-			v-if="isNavUpdateExp"
+			v-if="showBasicHeader"
 			class="tw-bg-primary tw-border-b tw-border-tertiary tw-relative"
 			ref="newExpHeader"
 			:logged-in="!isVisitor"
@@ -23,6 +23,7 @@
 			:style="esiCssVarBridge"
 			:countries-not-lent-to-url="COUNTRIES_NOT_LENT_TO_URL"
 			show-m-g-upsell-link
+			use-esi-avatar
 			@load-lend-menu-data="loadMenu"
 			@load-search-data="loadSearchData"
 			@search-submit="onSearchSubmit"
@@ -104,7 +105,12 @@
 					</div>
 				</template>
 
-				<!-- Default Header -->
+				<!--
+					Default Header — UNREACHABLE as of the stage 1 header default flip.
+					The enclosing <nav> only renders when `minimal` or `corporate` is set,
+					so this `v-else` can never match. Retained for stage 2 deletion; see
+					docs/ui-docs/specs/2026-08-20-global-header-experiment-cleanup-design.md
+				-->
 				<template v-else>
 					<div
 						class="header
@@ -569,7 +575,7 @@
 </template>
 
 <script>
-import { defineAsyncComponent, inject } from 'vue';
+import { defineAsyncComponent } from 'vue';
 import { getTransactorFlagsFromCookies } from '@kiva/kv-analytics';
 import {
 	userHasLentBefore,
@@ -596,15 +602,22 @@ import addToBasketMixin from '#src/plugins/add-to-basket-mixin';
 import {
 	KvButton, KvLoadingPlaceholder, KvMaterialIcon, KvPageContainer, KvWwwHeaderBasic
 } from '@kiva/kv-components';
-import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
-import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+// import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+// import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import useMyKivaHome from '#src/composables/useMyKivaHome';
 import { COUNTRIES_NOT_LENT_TO_URL } from '#src/util/headerUtils';
 import SearchBar from './SearchBar';
 import PromoCreditBanner from './PromotionalBanner/Banners/PromoCreditBanner';
 
 const COMMS_OPT_IN_EXP_KEY = 'opt_in_comms';
-const NAV_UPDATE_EXP_KEY = 'home_page'; // Key aligns with key used in Fastly experimentation for cached CPS pages
+
+// The `home_page` global header experiment (EXP-CIT-4367-June2026) is retired — KvWwwHeaderBasic is
+// now the unconditional default. The config below is kept commented, not deleted, because this
+// wiring gets reused for future header experiments. It lives in five places that must be
+// uncommented together: these two imports and this constant, the `isNavUpdateExp` data field, the
+// experimentAssignmentQuery entry in the `apollo` array, and the trackExperimentVersion block in
+// `created()`. See docs/ui-docs/specs/2026-08-20-global-header-experiment-cleanup-design.md
+// const NAV_UPDATE_EXP_KEY = 'home_page'; // Key aligns with the Fastly experimentation key for cached CPS pages
 
 export default {
 	name: 'TheHeader',
@@ -657,7 +670,7 @@ export default {
 			teamsMenuEnabled: false,
 			trusteeId: null,
 			userId: null,
-			isNavUpdateExp: false,
+			// isNavUpdateExp: false,
 			throttledDetermineIfMobile: null,
 			COUNTRIES_NOT_LENT_TO_URL,
 		};
@@ -692,8 +705,7 @@ export default {
 		},
 	},
 	setup() {
-		const apollo = inject('apollo');
-		const { homePagePath } = useMyKivaHome(apollo);
+		const { homePagePath } = useMyKivaHome();
 
 		return {
 			homePagePath,
@@ -701,16 +713,25 @@ export default {
 	},
 	computed: {
 		// Bridge --ui-data-* CSS variables (set by ESI head) to the unprefixed names
-		// KvHeaderLinkBar expects. Only needed during CDN-cached loading state.
-		// No fallback defaults here — let KvHeaderLinkBar's own fallbacks apply.
+		// KvWwwHeaderBasic/LinkBar expects. Only needed during CDN-cached loading state.
+		// No fallback defaults here — let LinkBar's own fallbacks apply.
+		// The basket loads on every cached page, so gating on user data alone would leave
+		// --basket-display unreachable for the logged-out case it exists to cover.
 		esiCssVarBridge() {
-			if (!this.isUserDataLoading) return undefined;
+			if (!this.isUserDataLoading && !this.isBasketLoading) return undefined;
 			return {
 				'--basket-display': 'var(--ui-data-basket-count-display)',
+				'--user-loading-display': 'var(--ui-data-user-loading-display)',
 				'--user-avatar-display': 'var(--ui-data-user-avatar-display)',
 				'--user-avatar-legacy-display': 'var(--ui-data-user-avatar-legacy-display)',
 				'--user-avatar': 'var(--ui-data-user-avatar)',
 			};
+		},
+		// The basic header is the default. The legacy <nav> now renders only for the
+		// minimal and corporate pathways — note this inverts the previous precedence,
+		// where the home_page experiment won over both.
+		showBasicHeader() {
+			return !this.minimal && !this.corporate;
 		},
 		isVisitor() {
 			return !this.userId && !this.$renderConfig?.cdnNotedLoggedIn;
@@ -799,30 +820,30 @@ export default {
 				fireNewUserHotJarEvent(this.hasEverLoggedIn);
 			},
 		},
-		{
-			query: experimentAssignmentQuery,
-			preFetch(_, client) {
-				return client.query({
-					query: experimentAssignmentQuery,
-					variables: {
-						id: NAV_UPDATE_EXP_KEY,
-					},
-				});
-			},
-		},
+		// {
+		// 	query: experimentAssignmentQuery,
+		// 	preFetch(_, client) {
+		// 		return client.query({
+		// 			query: experimentAssignmentQuery,
+		// 			variables: {
+		// 				id: NAV_UPDATE_EXP_KEY,
+		// 			},
+		// 		});
+		// 	},
+		// },
 	],
 	created() {
 		this.isBasketLoading = this.$renderConfig?.useCDNCaching ?? false;
 		this.isUserDataLoading = this.$renderConfig?.useCDNCaching && this.$renderConfig?.cdnNotedLoggedIn;
 
-		const navExperiment = trackExperimentVersion(
-			this.apollo,
-			this.$kvTrackEvent,
-			'event-tracking',
-			NAV_UPDATE_EXP_KEY,
-			'EXP-CIT-4367-June2026'
-		);
-		this.isNavUpdateExp = navExperiment?.version === 'b';
+		// const navExperiment = trackExperimentVersion(
+		// 	this.apollo,
+		// 	this.$kvTrackEvent,
+		// 	'event-tracking',
+		// 	NAV_UPDATE_EXP_KEY,
+		// 	'EXP-CIT-4367-June2026'
+		// );
+		// this.isNavUpdateExp = navExperiment?.version === 'b';
 	},
 	mounted() {
 		const { version } = this.apollo.readFragment({
@@ -857,8 +878,8 @@ export default {
 		this.determineIfMobile();
 		window.addEventListener('resize', this.throttledDetermineIfMobile);
 
-		// Prefetch the new header's search suggestions on mount, only when the experiment is active.
-		if (this.isNavUpdateExp) {
+		// Prefetch the basic header's search suggestions on mount.
+		if (this.showBasicHeader) {
 			this.loadSearchData();
 		}
 	},

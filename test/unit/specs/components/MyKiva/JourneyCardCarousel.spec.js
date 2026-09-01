@@ -18,12 +18,17 @@ vi.mock('#src/composables/useBreakpoints', () => ({
 	}),
 }));
 
-vi.mock('#src/composables/useGoalData', () => ({
-	default: () => ({
-		getCategoryLoansLastYear: () => 0,
-	}),
-	GOALS_CURRENT_YEAR: new Date().getFullYear(),
-}));
+vi.mock('#src/composables/useGoalData', async importOriginal => {
+	const actual = await importOriginal();
+	return {
+		...actual,
+		default: () => ({
+			getCategoryLoansLastYear: () => 0,
+			hasGoal: goal => !!goal && Object.keys(goal).length > 0,
+		}),
+		GOALS_CURRENT_YEAR: new Date().getFullYear(),
+	};
+});
 
 vi.mock('#src/util/imageUtils', () => ({
 	optimizeContentfulUrl: url => url,
@@ -263,5 +268,146 @@ describe('JourneyCardCarousel', () => {
 	it('does not render the Almost Funded next step when showLendingNextStepsCards is false', () => {
 		const wrapper = mountForAlmostFunded(false);
 		expect(wrapper.findComponent({ name: 'AlmostFundedNextStep' }).exists()).toBe(false);
+	});
+
+	describe('Colombia recovery fund next step', () => {
+		const mountForCoRecoveryFund = props => mount(JourneyCardCarousel, {
+			props: {
+				inLendingStats: true,
+				slidesNumber: 3,
+				slides: [],
+				heroTieredAchievements: [],
+				heroBadgeData: [],
+				userInfo: { userPreferences: { preferences: '{}' } },
+				...props,
+			},
+			global: {
+				provide: { apollo: {}, cookieStore: {}, $kvTrackEvent: vi.fn() },
+				directives: { kvTrackEvent: () => ({}) },
+				stubs: {
+					MyKivaCard: true,
+					MyKivaSharingModal: true,
+					NextYearGoalCard: true,
+					MyKivaEmailUpdatesTransition: true,
+					MyKivaLatestLoanCard: true,
+					MyKivaSurveyCard: true,
+					AlmostFundedNextStep: true,
+					ColombiaReliefNextStep: true,
+				},
+			},
+		});
+
+		const slotOrder = wrapper => wrapper.findAll('.kv-carousel-stub > *')
+			.map(el => el.element.tagName.toLowerCase());
+
+		it('does not render when showCoRecoveryFundCard is false', () => {
+			const wrapper = mountForCoRecoveryFund({ showCoRecoveryFundCard: false });
+			expect(wrapper.findComponent({ name: 'ColombiaReliefNextStep' }).exists()).toBe(false);
+		});
+
+		it('renders when showCoRecoveryFundCard is true', () => {
+			const wrapper = mountForCoRecoveryFund({ showCoRecoveryFundCard: true });
+			expect(wrapper.findComponent({ name: 'ColombiaReliefNextStep' }).exists()).toBe(true);
+		});
+
+		it('takes the slot ahead of Almost Funded, which is only preceded by the goal tile', () => {
+			const wrapper = mountForCoRecoveryFund({
+				showCoRecoveryFundCard: true,
+				showLendingNextStepsCards: true,
+				userGoal: { category: ID_WOMENS_EQUALITY, target: 5 },
+				goalProgressLoading: false,
+			});
+
+			expect(slotOrder(wrapper)).toEqual([
+				'next-year-goal-card-stub',
+				'colombia-relief-next-step-stub',
+				'almost-funded-next-step-stub',
+			]);
+		});
+
+		it('trails the post-lending next steps rather than displacing them', () => {
+			const wrapper = mountForCoRecoveryFund({
+				showCoRecoveryFundCard: true,
+				showPostLendingNextStepsCards: true,
+				hideGoalCard: true,
+				latestLoan: { id: 1 },
+				userInfo: {
+					userPreferences: { preferences: '{}' },
+					communicationSettings: { lenderNews: true, loanUpdates: true },
+				},
+			});
+
+			const order = slotOrder(wrapper);
+			expect(order.indexOf('my-kiva-latest-loan-card-stub')).toBeLessThan(
+				order.indexOf('colombia-relief-next-step-stub')
+			);
+		});
+	});
+
+	describe('goal recap entry point', () => {
+		const GOAL_YEAR = new Date().getFullYear();
+
+		const mountWithGoal = ({ goalInReviewEnable = true, status = 'completed' } = {}) => mount(
+			JourneyCardCarousel,
+			{
+				props: {
+					inLendingStats: true,
+					goalInReviewEnable,
+					goalProgress: 5,
+					goalProgressLoading: false,
+					userGoal: {
+						category: ID_WOMENS_EQUALITY,
+						target: 5,
+						status,
+						dateStarted: `${GOAL_YEAR}-02-01`,
+					},
+					slidesNumber: 3,
+					slides: [],
+					heroTieredAchievements: [],
+					heroBadgeData: [],
+					userInfo: { userPreferences: { preferences: '{}' } },
+				},
+				global: {
+					provide: { apollo: {}, cookieStore: {}, $kvTrackEvent: vi.fn() },
+					directives: { kvTrackEvent: () => ({}) },
+					stubs: {
+						MyKivaCard: true,
+						MyKivaSharingModal: true,
+						NextYearGoalCard: {
+							name: 'NextYearGoalCard',
+							props: ['showRecapCta'],
+							template: '<div />',
+						},
+						MyKivaEmailUpdatesTransition: true,
+						MyKivaLatestLoanCard: true,
+						MyKivaSurveyCard: true,
+						AlmostFundedNextStep: true,
+					},
+				},
+			},
+		);
+
+		it('offers the recap on the goal tile for a completed goal this year', () => {
+			const wrapper = mountWithGoal();
+			expect(wrapper.findComponent({ name: 'NextYearGoalCard' }).props('showRecapCta')).toBe(true);
+		});
+
+		it('leaves the goal tile alone while the goal is still in progress', () => {
+			const wrapper = mountWithGoal({ status: 'in-progress' });
+			expect(wrapper.findComponent({ name: 'NextYearGoalCard' }).props('showRecapCta')).toBe(false);
+		});
+
+		it('leaves the goal tile alone when the feature is off', () => {
+			const wrapper = mountWithGoal({ goalInReviewEnable: false });
+			expect(wrapper.findComponent({ name: 'NextYearGoalCard' }).props('showRecapCta')).toBe(false);
+		});
+
+		it('passes the requested recap year up to the page', async () => {
+			const wrapper = mountWithGoal();
+
+			await wrapper.findComponent({ name: 'NextYearGoalCard' }).vm.$emit('view-goal-recap', GOAL_YEAR);
+
+			expect(wrapper.emitted('view-goal-recap')).toEqual([[GOAL_YEAR]]);
+		});
 	});
 });

@@ -208,6 +208,8 @@ import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import GoalInProgress from '#src/components/Thanks/SingleVersion/GoalInProgress';
 import ExpressCheckoutModal from '#src/components/Thanks/ExpressCheckout/ExpressCheckoutModal';
 import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
+import { shouldHideGoalSignup } from '#src/util/goalInReview';
+import { getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import useGoalSettingRecommendedLoan, {
 	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT,
 } from '#src/composables/useGoalSettingRecommendedLoan';
@@ -279,6 +281,10 @@ const props = defineProps({
 	goalRecommendedLoanEnable: {
 		type: Boolean,
 		default: false,
+	},
+	goalInReviewInProgressStart: {
+		type: Date,
+		default: null,
 	},
 	isExpressCheckoutModalEnabled: {
 		type: Boolean,
@@ -454,10 +460,16 @@ const showJourneyModule = computed(() => {
 	return !userGoalAchievedNow.value;
 });
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
+const hideGoalSignup = computed(() => shouldHideGoalSignup({
+	recapStartDate: props.goalInReviewInProgressStart,
+	now: getGoalInReviewNow(),
+}));
+
 const showGoalEntrypoint = computed(() => {
 	return !props.isGuest
 		&& goalDataInitialized.value
 		&& isEmptyGoal.value
+		&& !hideGoalSignup.value
 		&& !goalSignupThanksViewCapped.value;
 });
 
@@ -590,16 +602,15 @@ onMounted(async () => {
 	});
 	hasContributingLoans.value = contributingLoans;
 	// Thanks can mark the goal complete, but MyKiva owns hiding the completed card after showing it once.
-	await checkCompletedGoal({ currentGoalProgress: totalProgress, persistHideGoalCard: false });
+	await checkCompletedGoal({ currentGoalProgress: totalProgress, persistHideGoalCard: false, cookieStore });
 	goalDataInitialized.value = true;
 	isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
-	goalSignupThanksViewCapped.value = !props.isGuest
-		&& isEmptyGoal.value
-		&& isGoalSignupThanksViewCapped(cookieStore);
-	if (!props.isGuest
-		&& isEmptyGoal.value
-		&& !goalSignupThanksViewCapped.value) {
-		incrementGoalSignupThanksViewCount(cookieStore);
+	// Gated together so the view cap only counts asks the lender actually saw.
+	if (!props.isGuest && isEmptyGoal.value && !hideGoalSignup.value) {
+		goalSignupThanksViewCapped.value = isGoalSignupThanksViewCapped(cookieStore);
+		if (!goalSignupThanksViewCapped.value) {
+			incrementGoalSignupThanksViewCount(cookieStore);
+		}
 	}
 
 	if (!props.isGuest

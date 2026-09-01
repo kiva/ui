@@ -75,9 +75,6 @@
 						<div v-if="countryName">
 							<summary-tag
 								class="tw-absolute tw-bottom-1 tw-left-1 tw-text-primary"
-								:city="city"
-								:state="state"
-								:country-name="countryName"
 							>
 								<kv-material-icon
 									class="tw-h-2.5 tw-w-2.5 tw-mr-0.5"
@@ -287,9 +284,9 @@ export default {
 							this.$kvTrackEvent(
 								'Instant Lending',
 								'Add-to-Basket',
-								`Failed: ${error.message.substring(0, 40)}...`
+								`Failed: ${(error?.message ?? 'unknown error').substring(0, 40)}...`
 							);
-							Sentry.captureMessage(`Add to Basket: ${error.message}`);
+							Sentry.captureMessage(`Add to Basket: ${error?.message ?? 'unknown error'}`);
 						} catch (e) {
 							// no-op
 						}
@@ -306,7 +303,6 @@ export default {
 					this.handleRedirect();
 				}
 			}).catch(error => {
-				console.log(error);
 				logFormatter(error, 'error');
 				this.$kvTrackEvent('Instant Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
 

@@ -228,6 +228,11 @@ const MIN_WITHDRAWAL_AMOUNT = 0.01;
 
 export default {
 	name: 'WithdrawPage',
+	head() {
+		return {
+			title: 'Withdraw credit',
+		};
+	},
 	components: {
 		PortfolioShell,
 		KvButton,

@@ -6,6 +6,15 @@ query myKivaQuery {
       totalAmount
       totalCount
     }
+    # Fund ID must match COLOMBIA_DISASTER_RELIEF
+    reliefFundParticipation: givingFundParticipation(
+      filter: { fundIds: ["238fe077-033e-4a59-8d11-e571e6e4ed31"] }
+    ) {
+      totalCount
+    }
+    givingFunds {
+      totalCount
+    }
     loans {
       totalCount
       values {
@@ -18,29 +27,6 @@ query myKivaQuery {
           id
           url
           hash
-        }
-        cardImage: image {
-          id
-          url(customSize: "w600")
-        }
-        loanAmount
-        plannedExpirationDate
-        terms {
-          currency
-          currencyFullName
-          lossLiabilityNonpayment
-          lossLiabilityCurrencyExchange
-          loanAmount
-          disbursalDate
-          disbursalAmount
-          flexibleFundraisingEnabled
-          lenderRepaymentTerm
-          expectedPayments {
-            amount
-            localAmount
-            dueToKivaDate
-            effectiveDate
-          }
         }
         tags
         ... on LoanPartner {
@@ -68,7 +54,6 @@ query myKivaQuery {
         id
         url
       }
-      memberSince
 	  publicId
     }
     userAccount {
@@ -181,6 +166,10 @@ query myKivaQuery {
       value
     }
     goal_in_review_enable: uiConfigSetting(key: "goal_in_review_enable") {
+      key
+      value
+    }
+    goal_in_review_in_progress_start: uiConfigSetting(key: "goal_in_review_in_progress_start") {
       key
       value
     }

@@ -102,6 +102,7 @@ import RepaymentsSummaryTable from '#src/components/Portfolio/EstimatedRepayment
 import RepaymentsMonthDetail from '#src/components/Portfolio/EstimatedRepayments/RepaymentsMonthDetail';
 import RepaymentsDisclaimer from '#src/components/Portfolio/EstimatedRepayments/RepaymentsDisclaimer';
 import logFormatter from '#src/util/logFormatter';
+import { parseMoney } from '#src/util/numberUtils';
 import expectedRepaymentsQuery from '#src/graphql/query/portfolio/estimatedRepayments.graphql';
 import expectedRepaymentsDetailQuery from '#src/graphql/query/portfolio/estimatedRepaymentsDetail.graphql';
 import {
@@ -131,7 +132,7 @@ export default {
 	name: 'EstimatedRepaymentsPage',
 	head() {
 		return {
-			title: 'Estimated Repayments',
+			title: 'Estimated repayments',
 		};
 	},
 	components: {
@@ -230,8 +231,8 @@ export default {
 					if (!parts) {
 						return null;
 					}
-					const userRepayments = Number(item.userRepayments) || 0;
-					const promoRepayments = Number(item.promoRepayments) || 0;
+					const userRepayments = parseMoney(item.userRepayments);
+					const promoRepayments = parseMoney(item.promoRepayments);
 					// Build the Date from the already-parsed integer parts (local constructor,
 					// day 1) so formatting can't reintroduce the UTC-parse timezone shift that
 					// parseRepaymentDate avoids.

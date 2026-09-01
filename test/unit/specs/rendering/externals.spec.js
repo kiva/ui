@@ -26,10 +26,33 @@ describe('rendering/externals.js', () => {
 		expect(result).toContain('SERIALIZED(headScript)');
 	});
 
+	it('renders the OneTrust script as async', () => {
+		const config = { oneTrust: { enable: true, key: 'abc', domainSuffix: 'def' } };
+		const result = renderExternals(config);
+		const [oneTrustTag] = result.match(/<script[^>]*otSDKStub\.js[^>]*>/) ?? [];
+		expect(oneTrustTag).toMatch(/\basync\b/);
+	});
+
+	it('renders the OneTrust script before the head script that defines OptanonWrapper', () => {
+		const config = { oneTrust: { enable: true, key: 'abc', domainSuffix: 'def' } };
+		const result = renderExternals(config);
+		expect(result.indexOf('otSDKStub.js')).toBeLessThan(result.indexOf('SERIALIZED(headScript)'));
+	});
+
+	it('opens a connection to the OneTrust domain ahead of the script that uses it', () => {
+		const config = { oneTrust: { enable: true, key: 'abc', domainSuffix: 'def' } };
+		const result = renderExternals(config);
+		expect(result).toContain('<link rel="preconnect" href="https://cdn.cookielaw.org">');
+		expect(result).toContain('<link rel="dns-prefetch" href="https://cdn.cookielaw.org">');
+		expect(result.indexOf('rel="preconnect"')).toBeLessThan(result.indexOf('otSDKStub.js'));
+		expect(result.indexOf('rel="dns-prefetch"')).toBeLessThan(result.indexOf('otSDKStub.js'));
+	});
+
 	it('renders only head script if OneTrust is not enabled', () => {
 		const config = { oneTrust: { enable: false } };
 		const result = renderExternals(config);
 		expect(result).not.toContain('otSDKStub.js');
+		expect(result).not.toContain('cdn.cookielaw.org');
 		expect(result).toContain('SERIALIZED(headScript)');
 	});
 

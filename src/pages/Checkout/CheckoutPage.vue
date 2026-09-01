@@ -319,8 +319,14 @@ import { isAdminRewardTipEligible } from '#src/util/promoCredit';
 import { setDonationAmount } from '#src/util/basketUtils';
 import { preFetchAll } from '#src/util/apolloPreFetch';
 import syncDate from '#src/util/syncDate';
-import { myFTDQuery, formatTransactionData } from '#src/util/checkoutUtils';
-import { trackFBAddToCart, FB_CONTENT_CATEGORY_LOAN } from '@kiva/kv-analytics';
+import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
+import useLifecycleCapture from '#src/composables/useLifecycleCapture';
+import {
+	FB_CONTENT_CATEGORY_LOAN,
+	META_EVENTS,
+	trackFBAddToCart,
+	trackMetaEvent,
+} from '@kiva/kv-analytics';
 import { getPromoFromBasket } from '#src/util/campaignUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import checkoutSettings from '#src/graphql/query/checkout/checkoutSettings.graphql';
@@ -427,6 +433,9 @@ const getLoanIds = loans => (loans ?? []).map(l => l.id).filter(id => !!id);
 
 export default {
 	name: 'CheckoutPage',
+	setup() {
+		return useLifecycleCapture();
+	},
 	components: {
 		WwwPage,
 		KivaCreditPayment,
@@ -748,6 +757,13 @@ export default {
 			this.logBasketState();
 		}
 
+		// Capture the lifecycle stage while it still reflects the lender as they arrived.
+		// The purchase this eventually reports on is what moves them out of an idle or
+		// lapsed stage, so it cannot be read at checkout completion.
+		if (this.myId) {
+			this.startLifecycleCapture(this.apollo);
+		}
+
 		// show toast for specified scenario
 		this.handleToast();
 		this.getPromoInformationFromBasket();
@@ -1030,6 +1046,12 @@ export default {
 			const finalizeTransaction = () => {
 				this.$kvTrackTransaction(transactionData);
 
+				// Guest checkout collects the email preference up front, but the sign-up only
+				// exists once the transaction that carries it has gone through.
+				if (this.checkingOutAsGuest && this.userOptedIn) {
+					trackMetaEvent(META_EVENTS.EMAIL_SIGN_UP);
+				}
+
 				let checkoutAdditionalQueryParams = this.challengeRedirectQueryParam;
 				if (this.checkingOutAsGuest) {
 					checkoutAdditionalQueryParams += `&optedIn=${this.userOptedIn}`;
@@ -1047,16 +1069,11 @@ export default {
 				);
 			};
 
-			// Fetch FTD Status, then track + redirect whether or not the lookup succeeds
-			const trackingComplete = myFTDQuery(this.apollo)
-				.then(({ data }) => {
-					// Determine ftd status
-					transactionData.isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
+			const trackingComplete = getTransactionAnalyticsData(this.apollo, this.lifecycleDataPromise)
+				.then(analyticsData => {
+					Object.assign(transactionData, analyticsData);
 				})
-				.catch(() => {
-					// FTD status unknown — leave it undefined so no content_type is asserted downstream
-					transactionData.isFTD = undefined;
-				})
+				.catch(() => {})
 				.then(finalizeTransaction);
 
 			removeLoansFromChallengeCookie(this.cookieStore, this.loanIdsInBasket);
@@ -1179,15 +1196,20 @@ export default {
 						logReadQueryError(e, 'getLoansByExpiringSoon');
 					});
 			} else if (this.isBanditUpsellExpEnabled) {
-				const balance = parseFloat(this.myBalance);
+				// Money fields are formatted strings (numeral parses them); balance is nullable when logged out
+				const balance = this.myBalance == null ? null : numeral(this.myBalance).value();
+				const basketAmount = numeral(this.totals?.itemTotal).value();
 				this.apollo.query({
 					query: getCheckoutAlmostFundedRecommendationQuery,
 					variables: {
 						loginId: this.myId,
 						balance,
+						basketAmount,
 					},
 				}).then(({ data }) => {
-					const ranges = data?.getCheckoutAlmostFundedRecommendation?.recommendedRanges ?? [];
+					const recommendation = data?.getCheckoutAlmostFundedRecommendation;
+					const ranges = recommendation?.recommendedRanges ?? [];
+					const modelVersion = recommendation?.modelVersion;
 					const promiseArray = ranges.map(range => this.getLoansByAmountLeftRange(range.start, range.end));
 					// Adding general query as fallback in case the ranges don't return any loans
 					promiseArray.push(this.getLoansByAmountLeft());
@@ -1201,12 +1223,13 @@ export default {
 
 						const arrayLength = loansArray.length;
 						if (loansIndex >= 0 && loansIndex !== arrayLength - 1) {
-							this.$kvTrackEvent(
-								'basket',
-								'view',
-								'recommended-checkout-upsell',
-								`${ranges[loansIndex].start} - ${ranges[loansIndex].end}`,
-							);
+							this.trackUpsellRecommendation({
+								balance,
+								basketTotal: basketAmount,
+								modelVersion,
+								// send only { start, end }; Apollo attaches __typename to each range
+								recommendedRanges: ranges.map(({ start, end }) => ({ start, end })),
+							});
 						}
 					});
 				}).catch(e => {
@@ -1221,6 +1244,21 @@ export default {
 						this.upsellLoan = loans.filter(loan => !this.addedUpsellLoans.includes(loan.id))[0] || {};
 					});
 			}
+		},
+		trackUpsellRecommendation({
+			balance, basketTotal, modelVersion, recommendedRanges
+		}) {
+			// eslint-disable-next-line max-len
+			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_checkout_upsell_recommendation_event_schema_1_0_0.json#';
+			this.$kvTrackSelfDescribingEvent({
+				schema,
+				data: {
+					balance,
+					basketTotal,
+					modelVersion,
+					recommendedRanges,
+				},
+			});
 		},
 		verificationComplete() {
 			this.verificationSubmitted = true;

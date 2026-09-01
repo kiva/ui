@@ -30,6 +30,10 @@ vi.mock('#src/util/loanSearch/dataUtils', () => {
 	};
 });
 
+// gql documents are opaque objects in these tests; their operation name is the only
+// stable way to tell one apollo.query call from another.
+const queryName = query => query?.definitions?.[0]?.name?.value ?? '';
+
 describe('GOALS_CURRENT_YEAR', () => {
 	it('should be the current year', () => {
 		const currentYear = new Date().getFullYear();
@@ -471,7 +475,7 @@ describe('useGoalData', () => {
 
 			await composable.loadGoalData();
 
-			expect(logFormatter).toHaveBeenCalledWith(error, 'Failed to load preferences');
+			expect(logFormatter).toHaveBeenCalledWith('Failed to load preferences', 'error', { error });
 		});
 
 		it('should handle progress query error', async () => {
@@ -491,7 +495,11 @@ describe('useGoalData', () => {
 
 			await composable.loadGoalData();
 
-			expect(logFormatter).toHaveBeenCalledWith(error, 'Failed to fetch categories progress by year');
+			expect(logFormatter).toHaveBeenCalledWith(
+				'Failed to fetch categories progress by year',
+				'error',
+				{ error, year: expect.any(Number) },
+			);
 		});
 
 		it('should use freshProgressLoans for fresh progress adjustments', async () => {
@@ -1434,6 +1442,53 @@ describe('useGoalData', () => {
 			expect(composable.userGoal.value.category).toBe(ID_SUPPORT_ALL);
 			// Validate the new progress is user total loans
 			expect(composable.goalProgress.value).toBe(yearlyLoanCount);
+		});
+
+		it('preserves the original dateStarted and records updatedAt on edit (MP-3148)', async () => {
+			const mockPrefs = {
+				goals: [
+					{
+						goalName: 'goal-to-edit',
+						category: ID_WOMENS_EQUALITY,
+						target: 5,
+						status: GOAL_STATUS.IN_PROGRESS,
+						dateStarted: '2026-01-01T00:00:00.000Z',
+					},
+				],
+			};
+
+			mockApollo.query = vi.fn()
+				.mockResolvedValueOnce({
+					data: {
+						my: {
+							userPreferences: { id: '1', preferences: JSON.stringify(mockPrefs) },
+							loans: { totalCount: 0 },
+						},
+					},
+				})
+				.mockResolvedValueOnce({
+					data: { userAchievementProgress: { tieredLendingAchievements: [] } },
+				});
+
+			await composable.loadGoalData();
+
+			const previousGoal = { ...mockPrefs.goals[0] };
+			// The goal-setting modal always sends a fresh dateStarted (= "now") on save;
+			// on an edit that later date must be ignored in favor of the created one.
+			const updatedGoal = {
+				...mockPrefs.goals[0],
+				target: 20,
+				dateStarted: '2026-07-15T00:00:00.000Z',
+			};
+
+			await composable.updateCurrentGoal(previousGoal, updatedGoal);
+
+			expect(composable.userGoal.value.target).toBe(20);
+			// dateStarted stays the original created date, not the edit date
+			expect(composable.userGoal.value.dateStarted).toBe('2026-01-01T00:00:00.000Z');
+			// updatedAt captures the edit as a valid ISO timestamp
+			expect(composable.userGoal.value.updatedAt).toEqual(expect.any(String));
+			expect(Number.isNaN(Date.parse(composable.userGoal.value.updatedAt))).toBe(false);
 		});
 	});
 
@@ -4727,6 +4782,95 @@ describe('useGoalData', () => {
 		});
 	});
 
+	describe('goalFeedbackSubmitted flag', () => {
+		// `setGoalFeedbackSubmittedPreference` internally calls `loadPreferences('network-only')`
+		// before writing, so the apollo mock must return the same response on every call —
+		// not just once — or the function's own load will hit an empty mock and treat prefs
+		// as cleared.
+		const loadPrefsOnce = async prefsObject => {
+			mockApollo.query = vi.fn().mockResolvedValue({
+				data: {
+					my: {
+						userPreferences: {
+							id: 'pref-gfs',
+							preferences: JSON.stringify(prefsObject),
+						},
+						loans: { totalCount: 0 },
+					},
+				},
+			});
+			await composable.loadPreferences('network-only');
+		};
+
+		it('hasSubmittedGoalFeedbackForYear returns false when key missing', async () => {
+			await loadPrefsOnce({ goals: [] });
+			expect(composable.hasSubmittedGoalFeedbackForYear(GOALS_CURRENT_YEAR)).toBe(false);
+		});
+
+		it('hasSubmittedGoalFeedbackForYear returns true when year flag is set', async () => {
+			await loadPrefsOnce({ goalFeedbackSubmitted: { [GOALS_CURRENT_YEAR]: true } });
+			expect(composable.hasSubmittedGoalFeedbackForYear(GOALS_CURRENT_YEAR)).toBe(true);
+		});
+
+		it('hasSubmittedGoalFeedbackForYear is year-keyed (no cross-year leakage)', async () => {
+			await loadPrefsOnce({ goalFeedbackSubmitted: { [GOALS_CURRENT_YEAR - 1]: true } });
+			expect(composable.hasSubmittedGoalFeedbackForYear(GOALS_CURRENT_YEAR - 1)).toBe(true);
+			expect(composable.hasSubmittedGoalFeedbackForYear(GOALS_CURRENT_YEAR)).toBe(false);
+		});
+
+		it('setGoalFeedbackSubmittedPreference persists a year-keyed flag', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			updateUserPreferences.mockClear();
+
+			await loadPrefsOnce({ goals: [], hideGoalCard: false });
+			await composable.setGoalFeedbackSubmittedPreference(GOALS_CURRENT_YEAR);
+
+			expect(updateUserPreferences).toHaveBeenCalledTimes(1);
+			const [, , , updatedPreference] = updateUserPreferences.mock.calls[0];
+			expect(updatedPreference).toEqual({
+				goalFeedbackSubmitted: { [GOALS_CURRENT_YEAR]: true },
+			});
+		});
+
+		it('setGoalFeedbackSubmittedPreference merges with existing year entries', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			updateUserPreferences.mockClear();
+
+			await loadPrefsOnce({
+				goalFeedbackSubmitted: { [GOALS_CURRENT_YEAR - 1]: true },
+			});
+			await composable.setGoalFeedbackSubmittedPreference(GOALS_CURRENT_YEAR);
+
+			expect(updateUserPreferences).toHaveBeenCalledTimes(1);
+			const [, , , updatedPreference] = updateUserPreferences.mock.calls[0];
+			expect(updatedPreference).toEqual({
+				goalFeedbackSubmitted: {
+					[GOALS_CURRENT_YEAR - 1]: true,
+					[GOALS_CURRENT_YEAR]: true,
+				},
+			});
+		});
+
+		it('setGoalFeedbackSubmittedPreference is idempotent — no write when year already set', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			updateUserPreferences.mockClear();
+
+			await loadPrefsOnce({ goalFeedbackSubmitted: { [GOALS_CURRENT_YEAR]: true } });
+			await composable.setGoalFeedbackSubmittedPreference(GOALS_CURRENT_YEAR);
+
+			expect(updateUserPreferences).not.toHaveBeenCalled();
+		});
+
+		it('setGoalFeedbackSubmittedPreference is a no-op when called with a falsy year', async () => {
+			const { updateUserPreferences } = await import('#src/util/userPreferenceUtils');
+			updateUserPreferences.mockClear();
+
+			await composable.setGoalFeedbackSubmittedPreference(0);
+
+			expect(updateUserPreferences).not.toHaveBeenCalled();
+		});
+	});
+
 	describe('completedGoalsHistory', () => {
 		// Lock the clock to make year math deterministic — the composable reads
 		// new Date().getFullYear() at compute time, so any drift between
@@ -5227,6 +5371,343 @@ describe('useGoalData', () => {
 				}],
 			});
 			expect(composable.suppressAchievementNudges.value).toBe(false);
+		});
+	});
+
+	describe('hydrateFromCache', () => {
+		const preferencesFor = goals => ({
+			my: {
+				userPreferences: { id: 'pref-1', preferences: JSON.stringify({ goals }) },
+				loans: { totalCount: 12 },
+			},
+		});
+
+		const inProgressGoal = {
+			goalName: 'goal-1',
+			category: ID_WOMENS_EQUALITY,
+			target: 5,
+			status: GOAL_STATUS.IN_PROGRESS,
+			dateStarted: `${GOALS_CURRENT_YEAR}-01-05T00:00:00.000Z`,
+		};
+
+		it('leaves loading true and reports failure when nothing is cached', () => {
+			mockApollo.readQuery = vi.fn().mockReturnValue(null);
+
+			expect(composable.hydrateFromCache({ year: GOALS_CURRENT_YEAR })).toBe(false);
+			expect(composable.loading.value).toBe(true);
+			expect(mockApollo.query).not.toHaveBeenCalled();
+		});
+
+		it('leaves loading true when the cache read throws', () => {
+			mockApollo.readQuery = vi.fn(() => { throw new Error('missing field'); });
+
+			expect(composable.hydrateFromCache({ year: GOALS_CURRENT_YEAR })).toBe(false);
+			expect(composable.loading.value).toBe(true);
+		});
+
+		it('populates goal state from the cache without issuing a network request', () => {
+			mockApollo.readQuery = vi.fn().mockReturnValue(preferencesFor([inProgressGoal]));
+
+			const result = composable.hydrateFromCache({
+				tieredAchievements: [{ id: ID_WOMENS_EQUALITY, progressForYear: 3, totalProgressToAchievement: 9 }],
+				year: GOALS_CURRENT_YEAR,
+			});
+
+			expect(result).toBe(true);
+			expect(composable.loading.value).toBe(false);
+			expect(composable.userGoal.value).toMatchObject({ category: ID_WOMENS_EQUALITY, target: 5 });
+			expect(composable.goalProgress.value).toBe(3);
+			expect(composable.userGoalAchieved.value).toBe(false);
+			expect(mockApollo.query).not.toHaveBeenCalled();
+		});
+
+		it('stays loading when a category goal has no cached achievement progress', () => {
+			mockApollo.readQuery = vi.fn().mockReturnValue(preferencesFor([inProgressGoal]));
+
+			// A partial prefetch failure looks exactly like this: prefs cached, achievements not.
+			expect(composable.hydrateFromCache({ tieredAchievements: [], year: GOALS_CURRENT_YEAR })).toBe(false);
+			expect(composable.loading.value).toBe(true);
+		});
+
+		it('reads the yearly loan count from the cache for support-all goals', () => {
+			const supportAllGoal = { ...inProgressGoal, category: ID_SUPPORT_ALL, target: 10 };
+			mockApollo.readQuery = vi.fn(({ variables }) => (variables?.year
+				? { my: { lendingStats: { loanStatsByYear: { count: 7, amount: 175 } } } }
+				: preferencesFor([supportAllGoal])));
+
+			expect(composable.hydrateFromCache({ year: GOALS_CURRENT_YEAR })).toBe(true);
+			expect(composable.goalProgress.value).toBe(7);
+		});
+
+		it('stays loading when a support-all goal has no cached yearly count', () => {
+			const supportAllGoal = { ...inProgressGoal, category: ID_SUPPORT_ALL, target: 10 };
+			mockApollo.readQuery = vi.fn(({ variables }) => (variables?.year
+				? null
+				: preferencesFor([supportAllGoal])));
+
+			// goalProgress would coerce the missing count to a confident zero.
+			expect(composable.hydrateFromCache({ year: GOALS_CURRENT_YEAR })).toBe(false);
+			expect(composable.loading.value).toBe(true);
+		});
+
+		it('renders a lender with no goal at all without needing achievement data', () => {
+			mockApollo.readQuery = vi.fn().mockReturnValue(preferencesFor([]));
+
+			expect(composable.hydrateFromCache({ tieredAchievements: [], year: GOALS_CURRENT_YEAR })).toBe(true);
+			expect(composable.loading.value).toBe(false);
+			expect(composable.userHasGoal.value).toBe(false);
+		});
+
+		it('hydrates a lender who has never stored a preferences record', () => {
+			// Distinct from a cache miss: the query IS cached, the lender simply has no
+			// preferences yet. loadGoalData treats that as empty prefs, so this must too, or
+			// brand-new lenders would be the only ones never served a rendered card.
+			mockApollo.readQuery = vi.fn().mockReturnValue({
+				my: { userPreferences: null, loans: { totalCount: 0 } },
+			});
+
+			expect(composable.hydrateFromCache({ tieredAchievements: [], year: GOALS_CURRENT_YEAR })).toBe(true);
+			expect(composable.loading.value).toBe(false);
+			expect(composable.userHasGoal.value).toBe(false);
+			expect(mockApollo.query).not.toHaveBeenCalled();
+		});
+
+		it('reads the support-all count from the cache on the pass that reconciles a hydration', async () => {
+			const supportAllGoal = { ...inProgressGoal, category: ID_SUPPORT_ALL, target: 10 };
+			mockApollo.readQuery = vi.fn(({ variables }) => (variables?.year
+				? { my: { lendingStats: { loanStatsByYear: { count: 7, amount: 175 } } } }
+				: preferencesFor([supportAllGoal])));
+			composable.hydrateFromCache({ year: GOALS_CURRENT_YEAR });
+
+			mockApollo.query = vi.fn(({ query }) => {
+				if (queryName(query) === 'useGoalDataQuery') {
+					return Promise.resolve({ data: preferencesFor([supportAllGoal]) });
+				}
+				if (queryName(query) === 'loanStatsByYear') {
+					return Promise.resolve({
+						data: { my: { lendingStats: { loanStatsByYear: { count: 7, amount: 175 } } } },
+					});
+				}
+				return Promise.resolve({ data: {} });
+			});
+
+			await composable.loadGoalData({ year: GOALS_CURRENT_YEAR });
+
+			const statsCall = mockApollo.query.mock.calls
+				.map(([args]) => args)
+				.find(args => queryName(args.query) === 'loanStatsByYear');
+			// The prefetch wrote this value milliseconds ago; re-fetching it only risks
+			// swapping the number under the reader.
+			expect(statsCall.fetchPolicy).toBe('cache-first');
+		});
+
+		it('goes back to the network for the support-all count on later passes', async () => {
+			const supportAllGoal = { ...inProgressGoal, category: ID_SUPPORT_ALL, target: 10 };
+			mockApollo.query = vi.fn(({ query }) => {
+				if (queryName(query) === 'useGoalDataQuery') {
+					return Promise.resolve({ data: preferencesFor([supportAllGoal]) });
+				}
+				if (queryName(query) === 'loanStatsByYear') {
+					return Promise.resolve({
+						data: { my: { lendingStats: { loanStatsByYear: { count: 9, amount: 225 } } } },
+					});
+				}
+				return Promise.resolve({ data: {} });
+			});
+
+			// No hydration ran, so nothing on screen came from the cache.
+			await composable.loadGoalData({ year: GOALS_CURRENT_YEAR });
+
+			const statsCall = mockApollo.query.mock.calls
+				.map(([args]) => args)
+				.find(args => queryName(args.query) === 'loanStatsByYear');
+			expect(statsCall.fetchPolicy).toBe('network-only');
+		});
+
+		it('does not flip loading back on when loadGoalData reconciles after a hydration', async () => {
+			mockApollo.readQuery = vi.fn().mockReturnValue(preferencesFor([inProgressGoal]));
+			composable.hydrateFromCache({
+				tieredAchievements: [{ id: ID_WOMENS_EQUALITY, progressForYear: 3, totalProgressToAchievement: 9 }],
+				year: GOALS_CURRENT_YEAR,
+			});
+			expect(composable.loading.value).toBe(false);
+
+			let resolveQuery;
+			mockApollo.query = vi.fn(() => new Promise(resolve => { resolveQuery = resolve; }));
+			const pending = composable.loadGoalData({ year: GOALS_CURRENT_YEAR });
+
+			// Mid-flight: the resolved cards must stay put rather than fall back to skeletons.
+			expect(composable.loading.value).toBe(false);
+
+			resolveQuery({ data: preferencesFor([inProgressGoal]) });
+			mockApollo.query = vi.fn().mockResolvedValue({ data: {} });
+			await pending;
+			expect(composable.loading.value).toBe(false);
+		});
+
+		it('still shows skeletons for loadGoalData when no hydration happened', async () => {
+			let resolveQuery;
+			mockApollo.query = vi.fn(() => new Promise(resolve => { resolveQuery = resolve; }));
+			const pending = composable.loadGoalData({ year: GOALS_CURRENT_YEAR });
+
+			expect(composable.loading.value).toBe(true);
+
+			resolveQuery({ data: preferencesFor([inProgressGoal]) });
+			mockApollo.query = vi.fn().mockResolvedValue({ data: {} });
+			await pending;
+			expect(composable.loading.value).toBe(false);
+		});
+	});
+
+	// hydrateFromCache() and loadGoalData() populate the same refs from the same underlying
+	// data by two different routes — a synchronous cache read on the server, a network load
+	// on the client. Nothing in the type system holds them together, and a divergence shows
+	// up as content that changes after hydration rather than as a failure, so pin the
+	// equivalence here.
+	describe('hydrateFromCache / loadGoalData parity', () => {
+		const goal = {
+			goalName: 'goal-1',
+			category: ID_WOMENS_EQUALITY,
+			target: 5,
+			status: GOAL_STATUS.IN_PROGRESS,
+			loanTotalAtStart: 6,
+			dateStarted: `${GOALS_CURRENT_YEAR}-01-05T00:00:00.000Z`,
+		};
+		// loanPurchases: [] is what makes getMissingLoans() treat a fresh loan as uncounted,
+		// so the optimistic adjustment below is non-empty and the parity check has teeth.
+		const achievements = [
+			{
+				id: ID_WOMENS_EQUALITY, progressForYear: 3, totalProgressToAchievement: 9, loanPurchases: []
+			},
+			{
+				id: ID_CLIMATE_ACTION, progressForYear: 1, totalProgressToAchievement: 4, loanPurchases: []
+			},
+		];
+		const freshFemaleLoan = {
+			id: 101,
+			gender: 'female',
+			geocode: { country: { isoCode: 'KE' } },
+			themes: [],
+			tags: [],
+			sector: { id: 1 },
+		};
+		const freshTransactions = [{
+			loan: { id: 101 },
+			effectiveTime: `${GOALS_CURRENT_YEAR}-02-01T12:00:00Z`,
+		}];
+		const prefsPayload = {
+			my: {
+				userPreferences: { id: 'pref-1', preferences: JSON.stringify({ goals: [goal] }) },
+				loans: { totalCount: 12 },
+			},
+		};
+
+		const mountComposable = apollo => {
+			let created;
+			const app = createApp({
+				name: 'GoalDataParityHost',
+				setup() {
+					created = useGoalData({ apollo });
+					return {};
+				},
+				template: '<div></div>',
+			});
+			app.provide('$kvTrackEvent', vi.fn());
+			app.mount(document.createElement('div'));
+			return created;
+		};
+
+		// Everything the cards actually read off the composable. The progress refs behind
+		// these are internal, so comparing the exported surface is both the honest test and
+		// the one that fails when a divergence would be visible to a lender.
+		const snapshot = c => ({
+			userGoal: c.userGoal.value,
+			userHasGoal: c.userHasGoal.value,
+			userGoalAchieved: c.userGoalAchieved.value,
+			goalProgress: c.goalProgress.value,
+			goalProgressPercentage: c.goalProgressPercentage.value,
+			completedGoalsHistory: c.completedGoalsHistory.value,
+			suppressAchievementNudges: c.suppressAchievementNudges.value,
+			userPreferences: c.userPreferences.value,
+			loading: c.loading.value,
+		});
+
+		const args = { tieredAchievements: achievements, year: GOALS_CURRENT_YEAR };
+
+		it('leaves identical state behind for the same data, with no fresh progress', async () => {
+			const hydrated = mountComposable({
+				query: vi.fn(),
+				readQuery: vi.fn().mockReturnValue(prefsPayload),
+			});
+			hydrated.hydrateFromCache(args);
+
+			const loaded = mountComposable({
+				readQuery: vi.fn().mockReturnValue(null),
+				query: vi.fn(({ query }) => {
+					if (queryName(query) === 'useGoalDataQuery') return Promise.resolve({ data: prefsPayload });
+					if (queryName(query) === 'useGoalDataYearlyProgressQuery') {
+						return Promise.resolve({
+							data: { userAchievementProgress: { tieredLendingAchievements: achievements } },
+						});
+					}
+					return Promise.resolve({ data: {} });
+				}),
+			});
+			await loaded.loadGoalData(args);
+
+			expect(snapshot(hydrated)).toEqual(snapshot(loaded));
+		});
+
+		it('leaves identical state behind once optimistic fresh progress is applied', async () => {
+			const withFresh = {
+				...args,
+				freshProgressLoans: [freshFemaleLoan],
+				transactions: freshTransactions,
+			};
+
+			const hydrated = mountComposable({
+				query: vi.fn(),
+				readQuery: vi.fn().mockReturnValue(prefsPayload),
+			});
+			hydrated.hydrateFromCache(withFresh);
+
+			const loaded = mountComposable({
+				readQuery: vi.fn().mockReturnValue(null),
+				query: vi.fn(({ query }) => {
+					if (queryName(query) === 'useGoalDataQuery') return Promise.resolve({ data: prefsPayload });
+					if (queryName(query) === 'useGoalDataYearlyProgressQuery') {
+						return Promise.resolve({
+							data: { userAchievementProgress: { tieredLendingAchievements: achievements } },
+						});
+					}
+					return Promise.resolve({ data: {} });
+				}),
+			});
+			await loaded.loadGoalData(withFresh);
+
+			// Guard against this test going vacuous: the adjustment has to have actually
+			// moved the number, or both sides would agree on the unadjusted value.
+			expect(hydrated.goalProgress.value).toBe(4);
+			expect(snapshot(hydrated)).toEqual(snapshot(loaded));
+		});
+
+		it('does not mutate the cached achievements it was handed', () => {
+			const cachedAchievements = achievements.map(a => ({ ...a }));
+			const hydrated = mountComposable({
+				query: vi.fn(),
+				readQuery: vi.fn().mockReturnValue(prefsPayload),
+			});
+
+			hydrated.hydrateFromCache({
+				...args,
+				tieredAchievements: cachedAchievements,
+				freshProgressLoans: [freshFemaleLoan],
+				transactions: freshTransactions,
+			});
+
+			// These objects belong to the Apollo cache, which is frozen in production —
+			// writing optimistic progress back into them would throw during SSR.
+			expect(cachedAchievements).toEqual(achievements);
 		});
 	});
 });
