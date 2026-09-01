@@ -1,3 +1,29 @@
+## [3.91.0](https://github.com/kiva/ui/compare/v3.90.0...v3.91.0) (2026-09-01)
+
+### 🎉 New Features
+
+* **live-loan:** render compact bundle card as transparent PNG ([#7204](https://github.com/kiva/ui/issues/7204)) ([131e350](https://github.com/kiva/ui/commit/131e3501f72f4d8222fb5b629e107f86bd91cf2d))
+
+### 🐛 Bugfixes
+
+* avoid firing close event on set 2027 goal cta ([2f6a85d](https://github.com/kiva/ui/commit/2f6a85d36b016a50b5d06289a91cfbf62fc7ad4b))
+* **header:** sync ESI CSS variables for the new header states ([c1da5ba](https://github.com/kiva/ui/commit/c1da5ba58633c3e54f591ea4b87ff114b55104d0))
+* mykiva initial loading performance improvements ([#7203](https://github.com/kiva/ui/issues/7203)) ([5e836e2](https://github.com/kiva/ui/commit/5e836e292b8d8d693e9000ffa7465f33dcbe56ce))
+* opt the header into the ESI avatar ([5f9b4c4](https://github.com/kiva/ui/commit/5f9b4c417832633000a8d233ae3ecd2504677637))
+* release withdraw page migration ([#7210](https://github.com/kiva/ui/issues/7210)) ([68a8429](https://github.com/kiva/ui/commit/68a8429e15ae1a334d6680c070f1e5b5a1e706ad))
+* update kv-components with latest esi support for user avatar ([a54da72](https://github.com/kiva/ui/commit/a54da7242643e7d1a5f00fd2e5299bc7ddaa219d))
+
+### 🪚 Refactors
+
+* remap deprecated Contentful theme values to approved themes ([#7199](https://github.com/kiva/ui/issues/7199)) ([a9e6de8](https://github.com/kiva/ui/commit/a9e6de8ff33dcbfed9b5ed6d7c77ac7c9565ada6))
+* remove legacy contentful theme mappings ([#7208](https://github.com/kiva/ui/issues/7208)) ([4fd6d12](https://github.com/kiva/ui/commit/4fd6d1207149f8eea37bdc0a58153e3ae9364ce8))
+
+### 🧹 Chores
+
+* **release:** 3.91.0-rc.1 [skip ci] ([8170347](https://github.com/kiva/ui/commit/8170347a18bd2902a1bff4572765944a7f01e645)), closes [#7204](https://github.com/kiva/ui/issues/7204) [#7203](https://github.com/kiva/ui/issues/7203) [#7210](https://github.com/kiva/ui/issues/7210) [#7199](https://github.com/kiva/ui/issues/7199) [#7208](https://github.com/kiva/ui/issues/7208) [#7205](https://github.com/kiva/ui/issues/7205)
+* update kv-components with latest KvWwwHeaderBasic fixes ([28d6e96](https://github.com/kiva/ui/commit/28d6e96cbc75697a407d3781c16648097d08ff0a))
+* upgrade kv-tokens to 5 and kv-components to 9 ([#7205](https://github.com/kiva/ui/issues/7205)) ([c708e64](https://github.com/kiva/ui/commit/c708e646ac54f20c90dc7ed0c8156b867ff54aa1))
+
 ## [3.91.0-rc.1](https://github.com/kiva/ui/compare/v3.90.0...v3.91.0-rc.1) (2026-09-01)
 
 ### 🎉 New Features
