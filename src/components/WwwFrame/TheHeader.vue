@@ -23,6 +23,7 @@
 			:style="esiCssVarBridge"
 			:countries-not-lent-to-url="COUNTRIES_NOT_LENT_TO_URL"
 			show-m-g-upsell-link
+			use-esi-avatar
 			@load-lend-menu-data="loadMenu"
 			@load-search-data="loadSearchData"
 			@search-submit="onSearchSubmit"

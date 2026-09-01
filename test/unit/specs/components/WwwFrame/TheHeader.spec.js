@@ -10,7 +10,13 @@ import { emptyComponent, globalOptions } from '../../../specUtils';
 // `loadSearchData()` fires on mount whenever the basic header is shown.
 const KvWwwHeaderBasicStub = {
 	name: 'KvWwwHeaderBasic',
-	template: '<div data-testid="basic-header"></div>',
+	props: {
+		useEsiAvatar: {
+			type: Boolean,
+			default: false,
+		},
+	},
+	template: '<div data-testid="basic-header" :data-use-esi-avatar="useEsiAvatar"></div>',
 	methods: {
 		loadMenuData() {},
 		loadSearchSuggestions() {},
@@ -61,6 +67,14 @@ describe('TheHeader', () => {
 
 		expect(queryByTestId('basic-header')).not.toBeNull();
 		expect(container.querySelector('nav[aria-label="Primary navigation"]')).toBeNull();
+	});
+
+	// `ui` is the only host whose ESI emits the avatar URL, so the opt-in lives here rather than
+	// in the library default.
+	it('should opt the basic header into the ESI avatar', () => {
+		const { queryByTestId } = renderHeader();
+
+		expect(queryByTestId('basic-header').dataset.useEsiAvatar).toBe('true');
 	});
 
 	it('should render the minimal header instead of the basic header when minimal', () => {
