@@ -140,6 +140,8 @@ const handleClose = () => {
 };
 
 const handleCta = event => {
+	// A CTA reports its own event, so claim the guard: the teardown adds no close event.
+	closeTracked = true;
 	if (event === 'set-goal') {
 		// Reuse the existing set-a-goal event, tagged with where it came from.
 		$kvTrackEvent('portfolio', 'click', 'set-a-goal', 'from-goal-recap');

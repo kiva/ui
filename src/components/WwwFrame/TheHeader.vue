@@ -23,6 +23,7 @@
 			:style="esiCssVarBridge"
 			:countries-not-lent-to-url="COUNTRIES_NOT_LENT_TO_URL"
 			show-m-g-upsell-link
+			use-esi-avatar
 			@load-lend-menu-data="loadMenu"
 			@load-search-data="loadSearchData"
 			@search-submit="onSearchSubmit"
@@ -712,12 +713,15 @@ export default {
 	},
 	computed: {
 		// Bridge --ui-data-* CSS variables (set by ESI head) to the unprefixed names
-		// KvHeaderLinkBar expects. Only needed during CDN-cached loading state.
-		// No fallback defaults here — let KvHeaderLinkBar's own fallbacks apply.
+		// KvWwwHeaderBasic/LinkBar expects. Only needed during CDN-cached loading state.
+		// No fallback defaults here — let LinkBar's own fallbacks apply.
+		// The basket loads on every cached page, so gating on user data alone would leave
+		// --basket-display unreachable for the logged-out case it exists to cover.
 		esiCssVarBridge() {
-			if (!this.isUserDataLoading) return undefined;
+			if (!this.isUserDataLoading && !this.isBasketLoading) return undefined;
 			return {
 				'--basket-display': 'var(--ui-data-basket-count-display)',
+				'--user-loading-display': 'var(--ui-data-user-loading-display)',
 				'--user-avatar-display': 'var(--ui-data-user-avatar-display)',
 				'--user-avatar-legacy-display': 'var(--ui-data-user-avatar-legacy-display)',
 				'--user-avatar': 'var(--ui-data-user-avatar)',

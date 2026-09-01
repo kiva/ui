@@ -89,9 +89,9 @@ const goalData = inject('goalData');
 
 const currentIndex = ref(0);
 
-// Show loading placeholders until goal data is ready.
-// goalData.loading starts as true (ref(true) in useGoalData), so during SSR
-// and until loadGoalData() resolves, placeholders are shown.
+// MyKivaPage hydrates goal state from the prefetched Apollo cache in created(), so
+// this is already false during SSR. It only stays true when that cache read misses,
+// in which case placeholders stand in until loadGoalData() resolves from mounted().
 const isLoading = computed(() => goalData.loading.value);
 
 const {

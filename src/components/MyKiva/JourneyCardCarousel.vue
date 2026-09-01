@@ -82,6 +82,7 @@
 			</template>
 		</KvCarousel>
 		<MyKivaSharingModal
+			v-if="isSharingModalVisible"
 			:lender="lender"
 			:is-visible="isSharingModalVisible"
 			@close-modal="isSharingModalVisible = false"

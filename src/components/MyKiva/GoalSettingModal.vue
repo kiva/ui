@@ -522,6 +522,9 @@ watch(isGoalSet, async newVal => {
 	}
 });
 
+// Immediate so the open-time setup still runs when the parent gates this component with
+// `v-if` as well as `:show` — it then mounts with `show` already true and there is no
+// false->true transition for a plain watcher to observe.
 watch(show, async newVal => {
 	if (!newVal) {
 		return;
@@ -529,14 +532,16 @@ watch(show, async newVal => {
 	resetForm();
 	isLoadingData.value = true;
 	await loadGoalData();
-	const { target, category: goalCategory } = userGoal.value;
+	// userGoal stays null for a lender with no stored goal, which is exactly the case
+	// that opens this modal, so destructure defensively rather than throwing.
+	const { target, category: goalCategory } = userGoal.value ?? {};
 	const storedCategory = categories.find(c => c.badgeId === goalCategory);
 	if (storedCategory && target) {
 		selectedCategory.value = storedCategory;
 		selectedGoalNumber.value = target;
 	}
 	isLoadingData.value = false;
-});
+}, { immediate: true });
 </script>
 
 <style lang="postcss" scoped>
