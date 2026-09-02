@@ -348,7 +348,6 @@ export default {
 			editDonation: false,
 			nudgeLightboxVisible: false,
 			loanHistoryCount: null,
-			donationDetailsLink: 'Learn how Kiva uses your donation',
 			mdiPencil,
 			mdiArrowRight,
 			mdiClose,
@@ -369,6 +368,10 @@ export default {
 	computed: {
 		isCampaignDonation() {
 			return !!this.donation?.metadata?.campaignId;
+		},
+		donationDetailsLink() {
+			// Shortened so the one-line row has room for the tagline. Full copy revisited separately
+			return this.showTipFromBalanceVariant ? 'Learn more' : 'Learn how Kiva uses your donation';
 		},
 		showTipFromBalanceVariant() {
 			// The compressed one-line layout exists to make room for the switch below it. With no tip
