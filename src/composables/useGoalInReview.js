@@ -80,14 +80,13 @@ export function getGoalInReviewCurrentYear() {
  * The Impact Progress row is deliberately not a caller: it offers its recap straight away.
  *
  * @param {object} options Entry point inputs, describing the lender's active goal.
- * @param {import('vue').MaybeRefOrGetter<boolean>} options.enabled The goal_in_review_enable setting.
- * @param {import('vue').MaybeRefOrGetter<string>} options.goalStatus The goal's status.
- * @param {import('vue').MaybeRefOrGetter<number|null>} options.goalYear The goal's year.
- * @param {import('vue').MaybeRefOrGetter<boolean>} options.announced The hideGoalCard preference,
- *   which MyKiva writes on the visit that announces the completion.
- * @param {import('vue').MaybeRefOrGetter<boolean>} options.hasViewedRecap Whether this year's
- *   recap has already been opened.
- * @param {import('vue').MaybeRefOrGetter<number>} [options.loansTowardGoal] Loans made toward the goal.
+ * @param {boolean} options.enabled The goal_in_review_enable setting.
+ * @param {string} options.goalStatus The goal's status.
+ * @param {number|null} options.goalYear The goal's year.
+ * @param {boolean} options.announced The hideGoalCard preference, which MyKiva writes on the
+ *   visit that announces the completion.
+ * @param {boolean} options.hasViewedRecap Whether this year's recap has already been opened.
+ * @param {number} [options.loansTowardGoal] Loans made toward the goal.
  * @returns {object} The CTA state and whether the card must stay put.
  */
 export function useGoalRecapEntryPoint({
