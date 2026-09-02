@@ -42,8 +42,8 @@ import useGoalData, {
 	COMPLETED_GOAL_THRESHOLD,
 } from '#src/composables/useGoalData';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { getGoalYear, shouldHideGoalSignup, shouldShowRecapEntryPoint } from '#src/util/goalInReview';
-import { getGoalInReviewCurrentYear, getGoalInReviewNow } from '#src/composables/useGoalInReview';
+import { getGoalYear, shouldHideGoalSignup } from '#src/util/goalInReview';
+import { getGoalInReviewNow, useGoalRecapEntryPoint } from '#src/composables/useGoalInReview';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
 const STATE_NO_GOAL = 'no-goal';
@@ -110,10 +110,22 @@ const hideGoalSignup = computed(() => shouldHideGoalSignup({
 	now: getGoalInReviewNow(),
 }));
 
+const goalYear = computed(() => getGoalYear(goalData?.userGoal?.value));
+
+const { keepGoalCardForRecap, showRecapCta } = useGoalRecapEntryPoint({
+	enabled: () => props.goalInReviewEnable,
+	goalStatus,
+	goalYear,
+	announced: () => Boolean(goalData?.hideGoalCard?.value),
+	hasViewedRecap: () => Boolean(goalData?.hasViewedGoalRecapForYear?.(GOALS_CURRENT_YEAR)),
+	loansTowardGoal: goalProgressValue,
+});
+
 const slotState = computed(() => {
 	if (cardLoading.value) return STATE_NO_GOAL;
 	if (goalStatus.value === GOAL_STATUS.COMPLETED) {
-		if (alreadyViewedSnapshot.value === true) return null;
+		// Retiring the slot would take the recap's entry point with it.
+		if (alreadyViewedSnapshot.value === true && !keepGoalCardForRecap.value) return null;
 		return STATE_ACTIVE_GOAL;
 	}
 	if (goalStatus.value === GOAL_STATUS.IN_PROGRESS) return STATE_ACTIVE_GOAL;
@@ -131,18 +143,6 @@ const slotTitle = computed(() => {
 });
 
 const suppressCompletionConfetti = computed(() => alreadyViewedSnapshot.value === true);
-
-const goalYear = computed(() => getGoalYear(goalData?.userGoal?.value));
-
-const showRecapCta = computed(() => shouldShowRecapEntryPoint({
-	enabled: props.goalInReviewEnable,
-	goalStatus: goalStatus.value,
-	goalYear: goalYear.value,
-	currentYear: getGoalInReviewCurrentYear(),
-	loansTowardGoal: goalProgressValue.value,
-	activeGoalYear: goalYear.value,
-	now: getGoalInReviewNow(),
-}));
 
 // The snapshot decides whether a completed goal still renders, so it has to be taken on
 // the server as well — reading it only in the browser would server-render the slot for a

@@ -45,8 +45,8 @@ function hasInProgressReleaseStarted(startDate, now) {
  * @param {number|string} options.goalYear The year the goal belongs to.
  * @param {number|string} options.currentGoalYear The goal year in progress now.
  * @param {boolean} options.hasViewedRecap Whether the recap has already been seen.
- * @param {boolean} options.completedThisSession Whether the goal completed during this
- *   browsing session, which means the recap waits for the next one.
+ * @param {boolean} options.holdUntilNextVisit Whether this is the visit that announces the
+ *   completion, which holds the recap back until the next one.
  * @param {Date|string|null} options.inProgressStartDate The goal_in_review_in_progress_start
  *   setting, the date in-progress goal setters become eligible.
  * @param {Date} options.now The effective current date.
@@ -59,7 +59,7 @@ export function shouldAutoOpenRecap({
 	goalYear = null,
 	currentGoalYear = null,
 	hasViewedRecap = false,
-	completedThisSession = false,
+	holdUntilNextVisit = false,
 	inProgressStartDate = null,
 	now = new Date(),
 } = {}) {
@@ -73,10 +73,9 @@ export function shouldAutoOpenRecap({
 		return false;
 	}
 
-	// If the user arrives at MyKiva from the thanks page, the recap is not shown yet.
-	// It waits for their next session.
+	// The announcing visit is the celebration; the recap waits for the one after.
 	if (goalStatus === GOAL_STATUS.COMPLETED) {
-		return !completedThisSession;
+		return !holdUntilNextVisit;
 	}
 
 	// Completed goal setters see the recap as soon as the feature is live; in-progress
@@ -159,6 +158,8 @@ export function getRecapEntryCutoff(goalYear) {
  * @param {number} [options.loansTowardGoal] Loans made toward an unfinished goal.
  * @param {number|string|null} [options.activeGoalYear] The year of the goal the lender has
  *   set now, which ends a past goal's recap once it reaches the current year.
+ * @param {boolean} [options.holdUntilNextVisit] Whether this is the visit that announces the
+ *   completion, which holds the CTA back until the next one. Only the goal card passes it.
  * @param {Date} [options.now] The effective current date.
  * @returns {boolean} Whether to offer the recap from this card.
  */
@@ -169,6 +170,7 @@ export function shouldShowRecapEntryPoint({
 	currentYear = null,
 	loansTowardGoal = 0,
 	activeGoalYear = null,
+	holdUntilNextVisit = false,
 	now = new Date(),
 } = {}) {
 	if (!enabled || !goalYear || !currentYear) {
@@ -179,9 +181,10 @@ export function shouldShowRecapEntryPoint({
 		return false;
 	}
 
-	// A goal still running keeps its card focused on finishing it.
+	// A goal still running keeps its card focused on finishing it, and one that just finished
+	// keeps celebrating. The look-back waits for the next visit.
 	if (Number(goalYear) === Number(currentYear)) {
-		return goalStatus === GOAL_STATUS.COMPLETED;
+		return goalStatus === GOAL_STATUS.COMPLETED && !holdUntilNextVisit;
 	}
 
 	// A past goal's recap stays reachable into the new year, so lenders who never finished
