@@ -430,7 +430,6 @@ describe('CheckoutPage getPromoInformationFromBasket', () => {
 		enableAdminRewardTipFlag: false,
 		stopHidingTip: false,
 		ensureTipDonationExists: vi.fn(),
-		// no-op so the post-resolve verification branch stays out of this test
 		$nextTick: vi.fn(),
 		...overrides,
 	});
