@@ -30,7 +30,7 @@ import {
 	compactBarHeight,
 	compactBarY,
 	compactToGoY,
-	compactCardMargin,
+	compactBorderWidth,
 	compactCardHeight,
 	compactCardDimensions,
 	compactColors,
@@ -404,9 +404,9 @@ async function drawClassic(loanData, { skipButton = false } = {}) {
 
 async function drawCompact(loanData) {
 	const canvas = trace('compactCanvasPool.use', () => compactCanvasPool.use());
-	// Alpha channel kept so the margin stays transparent (PNG export) and the drop
-	// shadow composites over a dark email background instead of a baked-in white.
-	const ctx = trace('canvas.getContext', () => canvas.getContext('2d'));
+	// Opaque context: the compact card exports JPEG on a white ground, so it only
+	// reads on a light email background.
+	const ctx = trace('canvas.getContext', () => canvas.getContext('2d', { alpha: false }));
 
 	try {
 		// Work in logical (unscaled) units; the pooled canvas is reused so reset
@@ -416,28 +416,14 @@ async function drawCompact(loanData) {
 			ctx.textAlign = 'left';
 			ctx.textBaseline = 'top';
 
-			// Clear to transparent (the pooled canvas holds the previous render) so the
-			// margin stays empty and the card + shadow composite onto the email background
-			const fullWidth = compactCardWidth + (2 * compactCardMargin);
-			const fullHeight = compactCardHeight + (2 * compactCardMargin);
-			ctx.clearRect(0, 0, fullWidth, fullHeight);
-
-			// Card with a subtle drop shadow over the transparent margin
-			ctx.save();
-			ctx.shadowColor = 'rgba(0, 0, 0, 0.08)';
-			ctx.shadowBlur = 12;
-			ctx.shadowOffsetX = 0;
-			ctx.shadowOffsetY = 4;
-			// eslint-disable-next-line max-len
-			roundRect(ctx, compactCardMargin, compactCardMargin, compactCardWidth, compactCardHeight, compactCardRadius);
+			// White fill over the whole canvas (the pooled canvas holds the previous
+			// render); the rounded corners read against the light email background.
 			ctx.fillStyle = compactColors.white;
-			ctx.fill();
-			ctx.restore();
+			ctx.fillRect(0, 0, compactCardWidth, compactCardHeight);
 
-			// Move the origin into the card and clip content to its rounded corners.
-			// Balanced by the restore before export so the pooled canvas resets.
+			// Clip content to the rounded corners; balanced by the restore before the
+			// border stroke so the pooled canvas resets.
 			ctx.save();
-			ctx.translate(compactCardMargin, compactCardMargin);
 			roundRect(ctx, 0, 0, compactCardWidth, compactCardHeight, compactCardRadius);
 			ctx.clip();
 		});
@@ -527,10 +513,21 @@ async function drawCompact(loanData) {
 			ctx.restore();
 		});
 
-		// Undo the card translate + clip so the pooled canvas is clean for reuse
+		// Undo the content clip so the pooled canvas is clean for reuse
 		ctx.restore();
 
-		const buffer = trace('export-png', () => canvas.toBuffer('image/png'));
+		// Hairline border on top of the content, inset by half its width so the
+		// stroke lands fully inside the canvas edge.
+		trace('border', () => {
+			const inset = compactBorderWidth / 2;
+			// eslint-disable-next-line max-len
+			roundRect(ctx, inset, inset, compactCardWidth - compactBorderWidth, compactCardHeight - compactBorderWidth, compactCardRadius);
+			ctx.lineWidth = compactBorderWidth;
+			ctx.strokeStyle = compactColors.border;
+			ctx.stroke();
+		});
+
+		const buffer = trace('export-jpeg', () => canvas.toBuffer('image/jpeg', { quality: 0.8 }));
 		trace('compactCanvasPool.recycle', () => compactCanvasPool.recycle(canvas));
 		return { buffer, hasBorrowerImage };
 	} catch (e) {
@@ -539,13 +536,6 @@ async function drawCompact(loanData) {
 		}
 		throw e;
 	}
-}
-
-// The compact card exports PNG so its transparent margin + drop shadow survive
-// on dark email backgrounds; every other style stays JPEG. The router reads this
-// for the response header, including cache hits where the drawn buffer is gone.
-export function contentTypeForStyle(style) {
-	return style === 'compact-bundle' ? 'image/png' : 'image/jpeg';
 }
 
 export default async function draw(loanData, style) {
