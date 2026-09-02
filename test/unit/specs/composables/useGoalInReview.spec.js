@@ -46,7 +46,7 @@ const monolithExtras = {
 	loans: [{ id: 1, name: 'Aminata', image: { hash: 'hash-1' } }],
 };
 
-const makeApollo = ({ achievements = [] } = {}) => ({
+const makeApollo = ({ goalInReview = null } = {}) => ({
 	query: vi.fn(({ query }) => {
 		const name = query?.definitions?.[0]?.name?.value;
 		if (name === 'goalInReviewLender') {
@@ -54,9 +54,7 @@ const makeApollo = ({ achievements = [] } = {}) => ({
 				data: { my: { userAccount: { firstName: 'Alexandra' }, lendingStats: { amountLentPercentile: 92 } } },
 			});
 		}
-		return Promise.resolve({
-			data: { userAchievementProgress: { tieredLendingAchievements: achievements } },
-		});
+		return Promise.resolve({ data: { goalInReview } });
 	}),
 });
 
@@ -137,21 +135,21 @@ describe('useGoalInReview', () => {
 		// The monolith only computes support-all, so my.goalSummary is null here and the
 		// summary has to come from achievements-service via useGoalData.
 		const apolloForCategoryGoal = () => makeApollo({
-			achievements: [
-				{
-					id: 'womens-equality',
-					loanPurchases: [{ purchaseTime: '2027-11-01T00:00:00Z', loan: { id: 99, name: 'Wrong goal' } }],
-				},
-				{
-					id: 'climate-action',
-					progressForYear: 100,
-					loanPurchases: [
-						{ purchaseTime: '2027-03-01T00:00:00Z', loan: { id: 1, name: 'Before the goal' } },
-						{ purchaseTime: '2027-10-05T00:00:00Z', loan: { id: 2, name: 'Siti' } },
-						{ purchaseTime: '2027-11-20T00:00:00Z', loan: { id: 3, name: 'Aminata' } },
-					],
-				},
-			],
+			goalInReview: {
+				id: '1#climate-action#2027',
+				count: 100,
+				transactionSessionCount: 7,
+				photos: [
+					{ id: 1, name: 'Before the goal' },
+					{ id: 2, name: 'Siti' },
+					{ id: 3, name: 'Aminata' },
+				],
+				stats: [
+					{ id: 1, sector: { id: 9, name: 'Agriculture' }, geocode: { country: { id: 1, name: 'Kenya' } } },
+					{ id: 2, sector: { id: 9, name: 'Agriculture' }, geocode: { country: { id: 1, name: 'Kenya' } } },
+					{ id: 3, sector: { id: 8, name: 'Retail' }, geocode: { country: { id: 2, name: 'Peru' } } },
+				],
+			},
 		});
 
 		beforeEach(() => {
@@ -167,43 +165,47 @@ describe('useGoalInReview', () => {
 			expect(result.goalSummary.category).toBe('climate-action');
 		});
 
-		it('fetches the achievements with no-cache so the badges cache is never clobbered (MP-3117)', async () => {
+		it('asks for the goal\'s own category and year', async () => {
 			const apollo = apolloForCategoryGoal();
 			const { loadGoalInReview } = useGoalInReview({ apollo });
 
 			await loadGoalInReview({ year: 2027 });
 
-			const achievementsCall = apollo.query.mock.calls
+			const call = apollo.query.mock.calls
 				.map(([options]) => options)
-				.find(({ query }) => query?.definitions?.[0]?.name?.value === 'goalInReviewAchievements');
-			expect(achievementsCall).toBeDefined();
-			expect(achievementsCall.fetchPolicy).toBe('no-cache');
+				.find(({ query }) => query?.definitions?.[0]?.name?.value === 'goalInReview');
+			expect(call).toBeDefined();
+			expect(call.variables).toEqual({ achievementId: 'climate-action', year: 2027 });
 		});
 
-		it('caps the year count at the goal target', async () => {
+		it('reports the whole year rather than capping at the goal target', async () => {
 			const { loadGoalInReview } = useGoalInReview({ apollo: apolloForCategoryGoal() });
 
 			const result = await loadGoalInReview({ year: 2027 });
 
-			// progressForYear is 100 against a target of 4
-			expect(result.loanStats).toEqual({ totalLent: null, borrowers: 4, percentComplete: 100 });
+			// 100 loans against a target of 4
+			expect(result.loanStats).toEqual({ totalLent: null, borrowers: 100, percentComplete: 100 });
 		});
 
-		it('takes the borrower photos from the matching achievement, oldest first', async () => {
+		it('takes the borrower photos from the recap, oldest first', async () => {
 			const { loadGoalInReview } = useGoalInReview({ apollo: apolloForCategoryGoal() });
 
 			const result = await loadGoalInReview({ year: 2027 });
 
-			// the March loan predates the goal but still counts toward it
 			expect(result.goalLoans.map(loan => loan.name)).toEqual(['Before the goal', 'Siti', 'Aminata']);
 		});
 
-		it('empties the support-all-only fields', async () => {
+		it('derives the map and chart from the recap, and leaves the monolith loan list empty', async () => {
 			const { loadGoalInReview } = useGoalInReview({ apollo: apolloForCategoryGoal() });
 
 			const result = await loadGoalInReview({ year: 2027 });
 
-			expect(result.goalSummary.countries).toEqual([]);
+			expect(result.goalSummary.countries).toEqual([{ id: 1, name: 'Kenya' }, { id: 2, name: 'Peru' }]);
+			expect(result.goalSummary.sectors).toEqual([
+				{ sector: { id: 9, name: 'Agriculture' }, loanCount: 2 },
+				{ sector: { id: 8, name: 'Retail' }, loanCount: 1 },
+			]);
+			// my.goalSummary.loans is support-all only, so nothing fills it here
 			expect(result.goalSummary.loans).toEqual([]);
 		});
 
@@ -226,7 +228,7 @@ describe('useGoalInReview', () => {
 
 		const queried = apollo.query.mock.calls
 			.map(([{ query }]) => query?.definitions?.[0]?.name?.value);
-		expect(queried).not.toContain('goalInReviewAchievements');
+		expect(queried).not.toContain('goalInReview');
 	});
 
 	it('is not eligible without a goal', async () => {
