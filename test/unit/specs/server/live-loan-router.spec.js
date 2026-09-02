@@ -9,12 +9,8 @@ import { generateGoogleFeed } from '#server/util/live-loan/ads/google-display/go
 // Mock out modules to prevent real network/cache calls
 vi.mock('#server/util/live-loan/live-loan-fetch');
 vi.mock('#server/util/memJsUtils');
-// Keep the real contentTypeForStyle (the router uses it for the response header);
-// only the heavy canvas render (default export) is mocked out.
-vi.mock('#server/util/live-loan/live-loan-draw', async importOriginal => ({
-	...(await importOriginal()),
-	default: vi.fn(),
-}));
+// Mock out the heavy canvas render
+vi.mock('#server/util/live-loan/live-loan-draw', () => ({ default: vi.fn() }));
 vi.mock('#server/util/live-loan/ads/google-display/google-feed');
 vi.mock('#server/util/log', () => ({
 	log: vi.fn(),
@@ -457,10 +453,10 @@ describe('live-loan-router bundle-url routes', () => {
 
 	describe('serveImg - bundle-img-compact routes', () => {
 		beforeEach(() => {
-			drawLoanCard.mockResolvedValue({ buffer: Buffer.from('png-bytes'), hasBorrowerImage: true });
+			drawLoanCard.mockResolvedValue({ buffer: Buffer.from('jpeg-bytes'), hasBorrowerImage: true });
 		});
 
-		it('serves png for /u/:id/bundle-img-compact/:offset with compact-bundle style', async () => {
+		it('serves jpeg for /u/:id/bundle-img-compact/:offset with compact-bundle style', async () => {
 			liveLoanFetch.default.mockResolvedValue([
 				{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 },
 			]);
@@ -469,7 +465,7 @@ describe('live-loan-router bundle-url routes', () => {
 			const result = await makeRequest(app, '/live-loan/u/42/bundle-img-compact/1');
 
 			expect(result.statusCode).toBe(200);
-			expect(result.headers['content-type']).toBe('image/png');
+			expect(result.headers['content-type']).toBe('image/jpeg');
 			expect(drawLoanCard).toHaveBeenCalledWith({ id: 1 }, 'compact-bundle');
 			expect(liveLoanFetch.default).toHaveBeenCalledWith(
 				'user',
@@ -486,7 +482,7 @@ describe('live-loan-router bundle-url routes', () => {
 			const result = await makeRequest(app, '/live-loan/flss/u/42/bundle-img-compact/2');
 
 			expect(result.statusCode).toBe(200);
-			expect(result.headers['content-type']).toBe('image/png');
+			expect(result.headers['content-type']).toBe('image/jpeg');
 			expect(drawLoanCard).toHaveBeenCalledWith({ id: 22 }, 'compact-bundle');
 			expect(liveLoanFetch.default).toHaveBeenCalledWith(
 				'user',
@@ -503,7 +499,7 @@ describe('live-loan-router bundle-url routes', () => {
 			const result = await makeRequest(app, '/live-loan/recommendations/u/42/bundle-img-compact/1');
 
 			expect(result.statusCode).toBe(200);
-			expect(result.headers['content-type']).toBe('image/png');
+			expect(result.headers['content-type']).toBe('image/jpeg');
 			expect(drawLoanCard).toHaveBeenCalledWith({ id: 33 }, 'compact-bundle');
 			expect(liveLoanFetch.default).toHaveBeenCalledWith(
 				'user',
