@@ -111,9 +111,12 @@
 					<div
 						:class="{ 'md:tw-flex md:tw-items-center md:tw-gap-0.5': showTipFromBalanceVariant }"
 					>
+						<!-- The switch below brings its own top margin, so the variant drops the bottom one -->
 						<div
-							class="tw-my-1 tw-max-w-2xl"
-							:class="{ 'md:tw-min-w-0': showTipFromBalanceVariant }"
+							class="tw-max-w-2xl"
+							:class="showTipFromBalanceVariant
+								? 'tw-mt-1 md:tw-min-w-0'
+								: 'tw-my-1'"
 							data-testid="basket-donation-tagline"
 						>
 							<p
@@ -368,7 +371,12 @@ export default {
 			return !!this.donation?.metadata?.campaignId;
 		},
 		showTipFromBalanceVariant() {
-			return this.tipFromBalanceVersion === 'b' && !this.isCampaignDonation && !this.orderTotalVariant;
+			// The compressed one-line layout exists to make room for the switch below it. With no tip
+			// there is no switch, so the row keeps the layout the repayments prompt was designed against
+			return this.tipFromBalanceVersion === 'b'
+				&& numeral(this.donation.price).value() > 0
+				&& !this.isCampaignDonation
+				&& !this.orderTotalVariant;
 		},
 		donationTitle() {
 			return 'Donation to Kiva';
