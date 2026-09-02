@@ -1,12 +1,12 @@
 <template>
 	<div
 		class="tw-bg-brand-100 tw-rounded"
-		:class="isUpsellLayoutExpEnabled
-			? 'tw-relative tw-p-4 md:tw-p-1 md:tw-min-h-15 md:tw-flex md:tw-flex-col md:tw-justify-center'
+		:class="showTipFromBalanceVariant
+			? 'tw-relative tw-p-4 md:tw-p-1 md:tw-flex md:tw-flex-col md:tw-justify-center'
 			: 'tw-p-4'"
 	>
 		<button
-			v-if="isUpsellLayoutExpEnabled"
+			v-if="showTipFromBalanceVariant"
 			class="tw-hidden md:tw-block tw-absolute tw-top-1 tw-right-1"
 			@click="closeUpsellModule(amountLeft)"
 		>
@@ -17,7 +17,7 @@
 		</button>
 		<div
 			class="tw-w-full tw-text-right tw-h-3"
-			:class="{ 'md:tw-hidden': isUpsellLayoutExpEnabled }"
+			:class="{ 'md:tw-hidden': showTipFromBalanceVariant }"
 		>
 			<button
 				@click="closeUpsellModule(amountLeft)"
@@ -30,13 +30,13 @@
 		</div>
 		<div
 			class="tw-flex tw-flex-col md:tw-flex-row tw-flex-no-wrap tw-gap-1 md:tw-gap-4"
-			:class="{ 'md:tw-items-center': isUpsellLayoutExpEnabled }"
+			:class="{ 'md:tw-items-center': showTipFromBalanceVariant }"
 		>
 			<div>
 				<img
 					:src="imageUrl"
 					class="tw-rounded-full"
-					:class="isUpsellLayoutExpEnabled ? 'tw-w-6 md:tw-w-10' : 'tw-w-6 md:tw-w-16'"
+					:class="showTipFromBalanceVariant ? 'tw-w-6 md:tw-w-10' : 'tw-w-6 md:tw-w-16'"
 				>
 			</div>
 			<div class="tw-grow tw-flex tw-flex-col tw-justify-center upsellLoanDetails">
@@ -45,23 +45,23 @@
 				</p>
 				<h4
 					v-if="isExpiringSoonExpEnabled"
-					:class="isUpsellLayoutExpEnabled ? 'tw-mb-2 md:tw-mb-1' : 'tw-mb-2'"
+					:class="showTipFromBalanceVariant ? 'tw-mb-2 md:tw-mb-1' : 'tw-mb-2'"
 				>
 					Time is running out for {{ possessiveName }} loan. Add $25 before it expires.
 				</h4>
 				<h4
 					v-else
-					:class="isUpsellLayoutExpEnabled ? 'tw-mb-2 md:tw-mb-1' : 'tw-mb-2'"
+					:class="showTipFromBalanceVariant ? 'tw-mb-2 md:tw-mb-1' : 'tw-mb-2'"
 				>
 					<!-- eslint-disable-next-line max-len -->
 					{{ loan.name }} is missing just {{ $filters.numeral(amountLeft, '$0,0[.]00') }}! Be the person to complete their loan.
 				</h4>
-				<div :class="{ 'md:tw-max-w-lg': isUpsellLayoutExpEnabled }">
+				<div :class="{ 'md:tw-max-w-lg': showTipFromBalanceVariant }">
 					<fundraising-status-meter
 						:amount-left="amountLeft"
 						:percent-raised="percentRaised"
 						:is-funded="loan.status==='funded'"
-						:short-meter="!isUpsellLayoutExpEnabled"
+						:short-meter="!showTipFromBalanceVariant"
 						class="tw-mb-1"
 					/>
 					<p class="tw-text-upper tw-m-0">
@@ -72,12 +72,12 @@
 			<div class="tw-grow tw-flex tw-flex-wrap">
 				<div
 					class="tw-w-full tw-text-right"
-					:class="{ 'tw-self-end': !isUpsellLayoutExpEnabled }"
+					:class="{ 'tw-self-end': !showTipFromBalanceVariant }"
 				>
 					<kv-button
-						:variant="isUpsellLayoutExpEnabled ? 'primary' : 'link'"
+						:variant="showTipFromBalanceVariant ? 'primary' : 'link'"
 						class="tw-w-full"
-						:class="isUpsellLayoutExpEnabled
+						:class="showTipFromBalanceVariant
 							? 'tw-mt-2 md:tw-mt-0 md:tw-w-auto md:tw-mr-3'
 							: 'tw-mt-2 md:tw-mt-7 md:tw-w-44'"
 						@click="addToBasket(loanId, reservationAmount)"
@@ -97,8 +97,6 @@ import {
 import FundraisingStatusMeter from '#src/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
-
-export const UPSELL_LAYOUT_EXP_KEY = 'checkout_upsell_layout';
 
 export default {
 	name: 'UpsellModule',
@@ -124,7 +122,7 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		isUpsellLayoutExpEnabled: {
+		showTipFromBalanceVariant: {
 			type: Boolean,
 			default: false,
 		},
