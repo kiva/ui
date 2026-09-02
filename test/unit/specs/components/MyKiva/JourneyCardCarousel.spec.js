@@ -2,6 +2,7 @@
 import { mount } from '@vue/test-utils';
 import { defineComponent, h, ref } from 'vue';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
+import CookieStore from '#src/util/cookieStore';
 import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 
 vi.mock('vue-router', () => ({
@@ -147,7 +148,7 @@ describe('JourneyCardCarousel', () => {
 			global: {
 				provide: {
 					apollo: {},
-					cookieStore: {},
+					cookieStore: new CookieStore({}),
 					$kvTrackEvent: vi.fn(),
 				},
 				directives: {
@@ -209,7 +210,7 @@ describe('JourneyCardCarousel', () => {
 			global: {
 				provide: {
 					apollo: {},
-					cookieStore: {},
+					cookieStore: new CookieStore({}),
 					$kvTrackEvent: vi.fn(),
 				},
 				directives: {
@@ -246,7 +247,7 @@ describe('JourneyCardCarousel', () => {
 			userInfo: { userPreferences: { preferences: '{}' } },
 		},
 		global: {
-			provide: { apollo: {}, cookieStore: {}, $kvTrackEvent: vi.fn() },
+			provide: { apollo: {}, cookieStore: new CookieStore({}), $kvTrackEvent: vi.fn() },
 			directives: { kvTrackEvent: () => ({}) },
 			stubs: {
 				MyKivaCard: true,
@@ -282,7 +283,7 @@ describe('JourneyCardCarousel', () => {
 				...props,
 			},
 			global: {
-				provide: { apollo: {}, cookieStore: {}, $kvTrackEvent: vi.fn() },
+				provide: { apollo: {}, cookieStore: new CookieStore({}), $kvTrackEvent: vi.fn() },
 				directives: { kvTrackEvent: () => ({}) },
 				stubs: {
 					MyKivaCard: true,
@@ -347,12 +348,17 @@ describe('JourneyCardCarousel', () => {
 	describe('goal recap entry point', () => {
 		const GOAL_YEAR = new Date().getFullYear();
 
-		const mountWithGoal = ({ goalInReviewEnable = true, status = 'completed' } = {}) => mount(
+		const mountWithGoal = ({
+			goalInReviewEnable = true,
+			status = 'completed',
+			showRecapCta = true,
+		} = {}) => mount(
 			JourneyCardCarousel,
 			{
 				props: {
 					inLendingStats: true,
 					goalInReviewEnable,
+					showRecapCta,
 					goalProgress: 5,
 					goalProgressLoading: false,
 					userGoal: {
@@ -368,7 +374,7 @@ describe('JourneyCardCarousel', () => {
 					userInfo: { userPreferences: { preferences: '{}' } },
 				},
 				global: {
-					provide: { apollo: {}, cookieStore: {}, $kvTrackEvent: vi.fn() },
+					provide: { apollo: {}, cookieStore: new CookieStore({}), $kvTrackEvent: vi.fn() },
 					directives: { kvTrackEvent: () => ({}) },
 					stubs: {
 						MyKivaCard: true,
@@ -392,13 +398,9 @@ describe('JourneyCardCarousel', () => {
 			expect(wrapper.findComponent({ name: 'NextYearGoalCard' }).props('showRecapCta')).toBe(true);
 		});
 
-		it('leaves the goal tile alone while the goal is still in progress', () => {
-			const wrapper = mountWithGoal({ status: 'in-progress' });
-			expect(wrapper.findComponent({ name: 'NextYearGoalCard' }).props('showRecapCta')).toBe(false);
-		});
-
-		it('leaves the goal tile alone when the feature is off', () => {
-			const wrapper = mountWithGoal({ goalInReviewEnable: false });
+		// LendingStats owns the decision (see useGoalRecapEntryPoint); the tile relays it.
+		it('leaves the goal tile alone when the page says there is no recap to offer', () => {
+			const wrapper = mountWithGoal({ showRecapCta: false });
 			expect(wrapper.findComponent({ name: 'NextYearGoalCard' }).props('showRecapCta')).toBe(false);
 		});
 

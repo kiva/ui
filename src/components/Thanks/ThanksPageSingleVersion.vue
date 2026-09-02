@@ -602,7 +602,7 @@ onMounted(async () => {
 	});
 	hasContributingLoans.value = contributingLoans;
 	// Thanks can mark the goal complete, but MyKiva owns hiding the completed card after showing it once.
-	await checkCompletedGoal({ currentGoalProgress: totalProgress, persistHideGoalCard: false, cookieStore });
+	await checkCompletedGoal({ currentGoalProgress: totalProgress, persistHideGoalCard: false });
 	goalDataInitialized.value = true;
 	isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
 	// Gated together so the view cap only counts asks the lender actually saw.
