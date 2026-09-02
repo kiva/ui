@@ -519,9 +519,8 @@ async function drawCompact(loanData) {
 		// Hairline border on top of the content, inset by half its width so the
 		// stroke lands fully inside the canvas edge.
 		trace('border', () => {
-			const inset = compactBorderWidth / 2;
-			// eslint-disable-next-line max-len
-			roundRect(ctx, inset, inset, compactCardWidth - compactBorderWidth, compactCardHeight - compactBorderWidth, compactCardRadius);
+			const inset = compactBorderWidth / 4;
+			roundRect(ctx, 0, 0, compactCardWidth - inset, compactCardHeight - inset, compactCardRadius);
 			ctx.lineWidth = compactBorderWidth;
 			ctx.strokeStyle = compactColors.border;
 			ctx.stroke();
