@@ -283,6 +283,7 @@
 <script>
 import numeral from 'numeral';
 import { mdiPencil, mdiArrowRight, mdiClose } from '@mdi/js';
+import { formatPossessiveName } from '#src/util/stringParserUtils';
 import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
 import HowKivaUsesDonation from '#src/components/Checkout/HowKivaUsesDonation';
 import DonationNudgeLightbox from '#src/components/Checkout/DonationNudge/DonationNudgeLightbox';
@@ -333,6 +334,11 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		// Borrower names in basket order, so the tip ask can name who the loans are for
+		borrowerNames: {
+			type: Array,
+			default: () => [],
+		},
 	},
 	data() {
 		return {
@@ -342,7 +348,6 @@ export default {
 			editDonation: false,
 			nudgeLightboxVisible: false,
 			loanHistoryCount: null,
-			donationDetailsLink: 'Learn how Kiva uses your donation',
 			mdiPencil,
 			mdiArrowRight,
 			mdiClose,
@@ -382,9 +387,46 @@ export default {
 		formattedAmount() {
 			return numeral(this.amount).format('$0,0.00');
 		},
+		donationDetailsLink() {
+			return this.showTipAskVariant ? 'Learn more' : 'Learn how Kiva uses your donation';
+		},
+		showTipAskVariant() {
+			// The named ask needs a borrower to name, so a row without loan data keeps the old copy
+			return this.showTipFromBalanceVariant && this.hasLoans && !!this.firstBorrowerName;
+		},
+		firstBorrowerName() {
+			return this.borrowerNames[0] ?? '';
+		},
+		loanTotalDisplay() {
+			return numeral(this.loanReservationTotal).format('$0,0[.]00');
+		},
+		tipAskHeader() {
+			const first = this.firstBorrowerName;
+			const second = this.borrowerNames[1];
+			if (this.loanCount === 1) {
+				return `Cover the cost of ${formatPossessiveName(first)} loan?`;
+			}
+			if (this.loanCount === 2 && second) {
+				return `Cover the cost of ${first} and ${formatPossessiveName(second)} loans?`;
+			}
+			// A basket loan can arrive without its borrower, so the count and the names can differ
+			const others = this.loanCount - 1;
+			const suffix = others === 1 ? '' : 's';
+			return `Cover the cost of ${formatPossessiveName(first)} loan and ${others} other${suffix}?`;
+		},
+		tipAskTagline() {
+			// A single loan is named and takes "goes to"; several are collective and take "goes toward"
+			const destination = this.loanCount === 1
+				? `to ${formatPossessiveName(this.firstBorrowerName)} loan`
+				: 'toward these loans';
+			return `100% of your ${this.loanTotalDisplay} goes ${destination} — your tip helps Kiva get it there.`;
+		},
 		basketDonationHeader() {
 			if (this.isCampaignDonation) {
 				return 'Donate to a giving fund';
+			}
+			if (this.showTipAskVariant) {
+				return this.tipAskHeader;
 			}
 			if (this.hasLoans) {
 				return `Help cover the cost of your loan${this.loanCount > 1 ? 's' : ''}`;
@@ -394,6 +436,9 @@ export default {
 		basketDonationTagline() {
 			if (this.isCampaignDonation) {
 				return 'Your donation will be lent out to a critical impact area.';
+			}
+			if (this.showTipAskVariant) {
+				return this.tipAskTagline;
 			}
 			if (this.hasKivaCards && !this.hasLoans) {
 				// eslint-disable-next-line max-len
