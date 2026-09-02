@@ -2,6 +2,8 @@ import { reactive } from 'vue';
 import { setDonationAmount } from '#src/util/basketUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
+import { getPromoFromBasket } from '#src/util/campaignUtils';
+import { isAdminRewardTipEligible } from '#src/util/promoCredit';
 import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
 import { trackMetaEvent } from '@kiva/kv-analytics';
 
@@ -33,6 +35,14 @@ beforeAll(async () => {
 	}));
 	vi.mock('#src/util/experiment/experimentUtils', () => ({
 		initializeExperiment: vi.fn(),
+	}));
+	vi.mock('#src/util/campaignUtils', async importOriginal => ({
+		...(await importOriginal()),
+		getPromoFromBasket: vi.fn(),
+	}));
+	vi.mock('#src/util/promoCredit', async importOriginal => ({
+		...(await importOriginal()),
+		isAdminRewardTipEligible: vi.fn(),
 	}));
 	// keeps getTransactionTimestamp real, which lifecycleStage depends on
 	vi.mock('#src/util/myKivaUtils', async importOriginal => ({
@@ -409,5 +419,51 @@ describe('CheckoutPage lifecycle capture', () => {
 		await CheckoutPage.mounted.call(context);
 
 		expect(context.startLifecycleCapture).not.toHaveBeenCalled();
+	});
+});
+
+describe('CheckoutPage getPromoInformationFromBasket', () => {
+	const makeContext = (overrides = {}) => ({
+		apollo: {},
+		derivedPromoFund: { id: 'fund-1' },
+		promoData: null,
+		enableAdminRewardTipFlag: false,
+		stopHidingTip: false,
+		ensureTipDonationExists: vi.fn(),
+		// no-op so the post-resolve verification branch stays out of this test
+		$nextTick: vi.fn(),
+		...overrides,
+	});
+
+	beforeEach(() => {
+		getPromoFromBasket.mockReset();
+		isAdminRewardTipEligible.mockReset();
+	});
+
+	it('stops hiding the tip and ensures a tip donation for admin-reward-eligible users', async () => {
+		getPromoFromBasket.mockResolvedValue({ data: { shop: { promoCampaign: { id: 'promo-1' } } } });
+		isAdminRewardTipEligible.mockReturnValue(true);
+		const context = makeContext();
+
+		CheckoutPage.methods.getPromoInformationFromBasket.call(context);
+
+		await vi.waitFor(() => {
+			expect(context.ensureTipDonationExists).toHaveBeenCalledTimes(1);
+		});
+		expect(context.stopHidingTip).toBe(true);
+	});
+
+	it('leaves the tip hidden when the user is not admin-reward eligible', async () => {
+		getPromoFromBasket.mockResolvedValue({ data: { shop: { promoCampaign: { id: 'promo-1' } } } });
+		isAdminRewardTipEligible.mockReturnValue(false);
+		const context = makeContext();
+
+		CheckoutPage.methods.getPromoInformationFromBasket.call(context);
+
+		await vi.waitFor(() => {
+			expect(isAdminRewardTipEligible).toHaveBeenCalled();
+		});
+		expect(context.stopHidingTip).toBe(false);
+		expect(context.ensureTipDonationExists).not.toHaveBeenCalled();
 	});
 });

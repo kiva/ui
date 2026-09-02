@@ -386,7 +386,6 @@ const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_enable';
 const EXPIRING_SOON_EXP_KEY = 'checkout_expiring_soon_upsell';
 const KIVA_CREDIT_REPLACEMENT_EXP_KEY = 'checkout_kiva_credit_copy_replacement';
-const STOP_HIDING_TIP_EXP_KEY = 'stop_hiding_tip_campaign';
 const TIP_PERCENTAGE = 0.2;
 
 // Assigned during SSR so versions are available before hydration
@@ -525,7 +524,7 @@ export default {
 			isExpiringSoonExpEnabled: false,
 			isKivaCreditReplacementExpEnabled: false,
 			enableAdminRewardTipFlag: false,
-			isStopHidingTipExpEnabled: false,
+			stopHidingTip: false,
 			customTipDefaultVersion: null,
 		};
 	},
@@ -734,7 +733,7 @@ export default {
 				]);
 				this.getUpsellModuleData();
 			}
-			if (!newValue && this.isStopHidingTipExpEnabled) {
+			if (!newValue && this.stopHidingTip) {
 				this.ensureTipDonationExists();
 			}
 		},
@@ -1016,7 +1015,7 @@ export default {
 				if (hasFreeCredits && refreshEvent === 'kiva-card-applied') {
 					this.disableGuestCheckout();
 				}
-				if (this.isStopHidingTipExpEnabled) {
+				if (this.stopHidingTip) {
 					const items = _get(data, 'shop.basket.items.values');
 					if (items) {
 						this.donations = _filter(items, { __typename: 'Donation' });
@@ -1118,9 +1117,10 @@ export default {
 				this.promoData = data?.shop?.promoCampaign;
 
 				const adminRewardTipEligible = isAdminRewardTipEligible(this.promoData, this.enableAdminRewardTipFlag);
-				// If user is eligible for admin reward tip, initialize experiment to stop hiding tip for them
+				// If user is eligible for admin reward tip, stop hiding the tip for them
 				if (adminRewardTipEligible) {
-					this.initializeStopHidingTipExperiment();
+					this.stopHidingTip = true;
+					this.ensureTipDonationExists();
 				}
 
 				this.$nextTick(() => {
@@ -1473,23 +1473,6 @@ export default {
 					this.setUpdatingTotals(false);
 					logReadQueryError(error, 'CheckoutPage ensureTipDonationExists');
 				});
-		},
-		initializeStopHidingTipExperiment() {
-			initializeExperiment(
-				this.cookieStore,
-				this.apollo,
-				this.$route,
-				STOP_HIDING_TIP_EXP_KEY,
-				version => {
-					this.isStopHidingTipExpEnabled = version === 'b';
-					if (this.isStopHidingTipExpEnabled) {
-						this.ensureTipDonationExists();
-					}
-				},
-				this.$kvTrackEvent,
-				'EXP-MP-2852-Jun2026',
-				'basket',
-			);
 		},
 		initializeCustomTipDefaultExperiment() {
 			// Assignment only; exposure is tracked separately when the tip modal is viewed
