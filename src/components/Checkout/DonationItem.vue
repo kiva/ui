@@ -13,13 +13,17 @@
 			</div>
 
 			<!-- donation text -->
-			<div class="tw-flex-auto">
+			<div
+				class="tw-flex-auto"
+				:class="{ 'md:tw-min-w-0': showTipFromBalanceVariant }"
+			>
 				<div class="tw-mb-0.5">
 					<div class="tw-flex tw-items-center tw-justify-between">
 						<div>
 							<div class="tw-w-full tw-flex">
 								<h2
 									class="tw-flex-1 md:tw-flex-grow"
+									:class="{ 'tw-text-h3 !tw-font-medium tw-text-primary': showTipFromBalanceVariant }"
 									data-testid="basket-donation-title"
 								>
 									{{ basketDonationHeader }}
@@ -104,13 +108,20 @@
 						</div>
 					</div>
 
-					<div>
+					<div
+						:class="{ 'md:tw-flex md:tw-items-center md:tw-gap-0.5': showTipFromBalanceVariant }"
+					>
+						<!-- The switch below brings its own top margin, so the variant drops the bottom one -->
 						<div
-							class="donation-tagline tw-my-1 tw-max-w-2xl"
+							class="tw-max-w-2xl"
+							:class="showTipFromBalanceVariant
+								? 'tw-mt-1 md:tw-min-w-0'
+								: 'tw-my-1'"
 							data-testid="basket-donation-tagline"
 						>
 							<p
 								class="tw-text-base"
+								:class="{ 'md:tw-truncate': showTipFromBalanceVariant }"
 							>
 								{{ basketDonationTagline }}
 							</p>
@@ -126,6 +137,7 @@
 						<button
 							v-else
 							class="tw-flex tw-items-center tw-text-base tw-text-link"
+							:class="{ 'md:tw-flex-none': showTipFromBalanceVariant }"
 							data-testid="basket-donation-info-lightbox"
 							@click="triggerDefaultLightbox"
 							v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
@@ -138,6 +150,12 @@
 						</button>
 					</div>
 				</div>
+
+				<kiva-credit-tip-toggle
+					v-if="showTipFromBalanceVariant"
+					@updating-totals="$emit('updating-totals', $event)"
+					@refreshtotals="$emit('refreshtotals')"
+				/>
 			</div>
 
 			<!-- donation total -->
@@ -275,6 +293,7 @@ import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
 import HowKivaUsesDonation from '#src/components/Checkout/HowKivaUsesDonation';
 import DonationNudgeLightbox from '#src/components/Checkout/DonationNudge/DonationNudgeLightbox';
 import DonateRepayments from '#src/components/Checkout/DonateRepaymentsToggle';
+import KivaCreditTipToggle from '#src/components/Checkout/KivaCreditTipToggle';
 import {
 	KvMaterialIcon, KvTextInput, KvButton, KvLightbox
 } from '@kiva/kv-components';
@@ -288,10 +307,16 @@ export default {
 		KvLightbox,
 		KvTextInput,
 		DonateRepayments,
+		KivaCreditTipToggle,
 		DonationNudgeLightbox,
 		HowKivaUsesDonation,
 	},
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { from: 'apollo' },
+		cookieStore: { from: 'cookieStore' },
+		// Assigned version provided by the checkout page; null when rendered elsewhere
+		tipFromBalanceVersion: { default: null },
+	},
 	emits: ['refreshtotals', 'updating-totals'],
 	props: {
 		donation: {
@@ -323,7 +348,6 @@ export default {
 			editDonation: false,
 			nudgeLightboxVisible: false,
 			loanHistoryCount: null,
-			donationDetailsLink: 'Learn how Kiva uses your donation',
 			mdiPencil,
 			mdiArrowRight,
 			mdiClose,
@@ -344,6 +368,18 @@ export default {
 	computed: {
 		isCampaignDonation() {
 			return !!this.donation?.metadata?.campaignId;
+		},
+		donationDetailsLink() {
+			// Shortened so the one-line row has room for the tagline. Full copy revisited separately
+			return this.showTipFromBalanceVariant ? 'Learn more' : 'Learn how Kiva uses your donation';
+		},
+		showTipFromBalanceVariant() {
+			// The compressed one-line layout exists to make room for the switch below it. With no tip
+			// there is no switch, so the row keeps the layout the repayments prompt was designed against
+			return this.tipFromBalanceVersion === 'b'
+				&& numeral(this.donation.price).value() > 0
+				&& !this.isCampaignDonation
+				&& !this.orderTotalVariant;
 		},
 		donationTitle() {
 			return 'Donation to Kiva';

@@ -43,6 +43,7 @@
 				:user-goal="userGoal"
 				:categories-loan-count="categoriesLoanCount"
 				:hide-goal-card="hideCompletedGoalCard"
+				:show-recap-cta="showRecapCta"
 				:user-info="userInfo"
 				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 				:show-lending-next-steps-cards="true"
@@ -84,6 +85,7 @@
 			:user-goal-achieved="userGoalAchieved"
 			:user-goal="userGoal"
 			:hide-goal-card="hideCompletedGoalCard"
+			:show-recap-cta="showRecapCta"
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
@@ -129,6 +131,8 @@ import useBadgeData from '#src/composables/useBadgeData';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 
 import logReadQueryError from '#src/util/logReadQueryError';
+import { getGoalInReviewCurrentYear, useGoalRecapEntryPoint } from '#src/composables/useGoalInReview';
+import { getGoalYear } from '#src/util/goalInReview';
 import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
 import GoalSettingModal from './GoalSettingModal';
@@ -243,13 +247,28 @@ export default {
 	setup(props) {
 		const goalData = inject('goalData');
 
+		const { keepGoalCardForRecap, showRecapCta } = useGoalRecapEntryPoint({
+			enabled: () => props.goalInReviewEnable,
+			goalStatus: () => goalData.userGoal?.value?.status,
+			goalYear: () => getGoalYear(goalData.userGoal?.value),
+			announced: () => Boolean(goalData.hideGoalCard?.value),
+			hasViewedRecap: () => Boolean(
+				goalData.hasViewedGoalRecapForYear?.(getGoalInReviewCurrentYear()),
+			),
+			loansTowardGoal: () => goalData.goalProgress?.value || 0,
+		});
+
 		// Hide the in-carousel goal tile when a goal card is already shown elsewhere on the page.
-		const hideCompletedGoalCard = computed(
-			() => props.goalsRowEnabled || Boolean(goalData.hideGoalCard?.value)
-		);
+		const hideCompletedGoalCard = computed(() => {
+			if (props.goalsRowEnabled) return true;
+			// hideGoalCard would retire the card on the next visit, the visit the recap arrives on.
+			if (keepGoalCardForRecap.value) return false;
+			return Boolean(goalData.hideGoalCard?.value);
+		});
 
 		return {
 			hideCompletedGoalCard,
+			showRecapCta,
 			goalProgress: goalData.goalProgress,
 			goalProgressLoading: goalData.loading,
 			loadGoalData: goalData.loadGoalData,

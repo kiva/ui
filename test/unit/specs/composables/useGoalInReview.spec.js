@@ -1,6 +1,10 @@
+/* eslint-disable import/no-extraneous-dependencies */
+import { mount } from '@vue/test-utils';
+import { nextTick, ref } from 'vue';
 import useGoalInReview, {
 	getGoalInReviewNow,
 	getGoalInReviewTargetYear,
+	useGoalRecapEntryPoint,
 } from '#src/composables/useGoalInReview';
 
 const getGoalSummary = vi.fn();
@@ -13,7 +17,9 @@ const getCategories = vi.fn(() => [
 
 const getCtaHref = vi.fn(() => '/lend/filter?header=finish');
 
-vi.mock('#src/composables/useGoalData', () => ({
+// Only the composable is stubbed; the recap decisions read the real GOAL_STATUS.
+vi.mock('#src/composables/useGoalData', async importOriginal => ({
+	...await importOriginal(),
 	default: () => ({ getGoalSummary, getCategories, getCtaHref }),
 }));
 
@@ -248,5 +254,132 @@ describe('useGoalInReview', () => {
 		expect(result.isEligible).toBe(false);
 		expect(result.goalSummary).toBeNull();
 		expect(composable.loading.value).toBe(false);
+	});
+});
+
+describe('useGoalRecapEntryPoint', () => {
+	const CURRENT_YEAR = new Date().getFullYear();
+
+	// `announced` is the hideGoalCard preference; false means this is the announcing visit.
+	const setupEntryPoint = ({
+		enabled = true,
+		goalStatus = 'completed',
+		goalYear = CURRENT_YEAR,
+		loansTowardGoal = 5,
+		announced = true,
+		hasViewedRecap = false,
+	} = {}) => {
+		const goalStatusRef = ref(goalStatus);
+		const announcedRef = ref(announced);
+		const viewedRef = ref(hasViewedRecap);
+		let entryPoint;
+		mount({
+			template: '<div />',
+			setup() {
+				entryPoint = useGoalRecapEntryPoint({
+					enabled: ref(enabled),
+					goalStatus: goalStatusRef,
+					goalYear: ref(goalYear),
+					loansTowardGoal: ref(loansTowardGoal),
+					announced: announcedRef,
+					hasViewedRecap: viewedRef,
+				});
+				return {};
+			},
+		});
+		return {
+			...entryPoint, goalStatusRef, announcedRef, viewedRef,
+		};
+	};
+
+	describe('the visit that announces the completion', () => {
+		it('offers no CTA, leaving the card to celebrate the win', () => {
+			const { showRecapCta } = setupEntryPoint({ announced: false });
+
+			expect(showRecapCta.value).toBe(false);
+		});
+
+		it('keeps the card on the page for the whole of that visit', () => {
+			expect(setupEntryPoint({ announced: false }).keepGoalCardForRecap.value).toBe(true);
+		});
+
+		// Read live, the CTA would appear seconds after the confetti (MP-3175).
+		it('does not offer the CTA when the preference is written mid-visit', async () => {
+			const { announcedRef, showRecapCta } = setupEntryPoint({ announced: false });
+
+			announcedRef.value = true;
+			await nextTick();
+
+			expect(showRecapCta.value).toBe(false);
+		});
+	});
+
+	describe('the next visit', () => {
+		it('offers the CTA and keeps the card that carries it', () => {
+			const { keepGoalCardForRecap, showRecapCta } = setupEntryPoint();
+
+			expect(showRecapCta.value).toBe(true);
+			expect(keepGoalCardForRecap.value).toBe(true);
+		});
+
+		// Opening the recap marks it seen, which must not pull the card away underneath it.
+		it('keeps the card when the recap is opened mid-visit', async () => {
+			const entryPoint = setupEntryPoint();
+
+			entryPoint.viewedRef.value = true;
+			await nextTick();
+
+			expect(entryPoint.keepGoalCardForRecap.value).toBe(true);
+		});
+	});
+
+	describe('once the recap has been seen', () => {
+		// The card has done its job. The Impact Progress row keeps a durable entry point.
+		it('lets the card retire on the visit after', () => {
+			const { keepGoalCardForRecap } = setupEntryPoint({ hasViewedRecap: true });
+
+			expect(keepGoalCardForRecap.value).toBe(false);
+		});
+
+		it('still leaves the celebration alone on the announcing visit', () => {
+			const entryPoint = setupEntryPoint({ announced: false, hasViewedRecap: true });
+
+			expect(entryPoint.keepGoalCardForRecap.value).toBe(true);
+		});
+	});
+
+	describe('with no recap to offer', () => {
+		it('lets the card retire once the feature is off', () => {
+			const { keepGoalCardForRecap, showRecapCta } = setupEntryPoint({ enabled: false });
+
+			expect(showRecapCta.value).toBe(false);
+			expect(keepGoalCardForRecap.value).toBe(false);
+		});
+
+		it('lets the card retire while the goal is still in progress', () => {
+			expect(setupEntryPoint({ goalStatus: 'in-progress' }).keepGoalCardForRecap.value).toBe(false);
+		});
+	});
+
+	describe('before the goal is known', () => {
+		// A preference that has not arrived would read as mid-announcement for everyone.
+		it('waits for the goal before deciding which visit this is', async () => {
+			const entryPoint = setupEntryPoint({ goalStatus: null, announced: true });
+
+			expect(entryPoint.announcedBeforeThisVisit.value).toBeNull();
+			// The card holds its place rather than flickering out and back.
+			expect(entryPoint.keepGoalCardForRecap.value).toBe(true);
+
+			entryPoint.goalStatusRef.value = 'completed';
+			await nextTick();
+
+			expect(entryPoint.announcedBeforeThisVisit.value).toBe(true);
+			expect(entryPoint.showRecapCta.value).toBe(true);
+		});
+
+		// The CTA is right as soon as the card can render it, not once the pop-up is ready.
+		it('does not wait for the rest of the goal data', () => {
+			expect(setupEntryPoint().showRecapCta.value).toBe(true);
+		});
 	});
 });
