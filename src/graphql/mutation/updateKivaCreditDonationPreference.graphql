@@ -1,0 +1,14 @@
+#import '../fragments/shopTotals.graphql'
+
+mutation updateKivaCreditDonationPreference($applyKivaCreditToDonation: Boolean!, $basketId: String) {
+	shop (basketId: $basketId) {
+		id
+		updateKivaCreditDonationPreference (applyKivaCreditToDonation: $applyKivaCreditToDonation) {
+			id
+			applyKivaCreditToDonation
+			totals {
+				...shopTotals
+			}
+		}
+	}
+}

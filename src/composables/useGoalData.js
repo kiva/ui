@@ -14,7 +14,6 @@ import { getTransactionTimestamp } from '#src/util/myKivaUtils';
 import { createUserPreferences, updateUserPreferences, setMyKivaGoal } from '#src/util/userPreferenceUtils';
 import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_GOAL_RECOMMENDED_LOAN } from '#src/util/flssUtils';
-import { markGoalCompletedThisSession } from '#src/util/goalRecapSession';
 
 import useBadgeData, {
 	calculateFreshProgressAdjustments,
@@ -938,7 +937,6 @@ export default function useGoalData({ apollo } = {}) {
 		category = 'post-checkout',
 		eventLabel = 'annual-goal-complete',
 		persistHideGoalCard = false,
-		cookieStore = null,
 	} = {}) {
 		const goal = userGoal.value;
 		if (!goal || goal.status === GOAL_STATUS.EXPIRED) {
@@ -965,9 +963,6 @@ export default function useGoalData({ apollo } = {}) {
 		}
 
 		if (isGoalComplete) {
-			// Marked as soon as the goal looks complete, even if the achievement service has
-			// not confirmed it yet, so the recap cannot appear later in this same session.
-			markGoalCompletedThisSession(cookieStore, GOALS_CURRENT_YEAR);
 			// Capture goal data before storeGoalPreferences (which may filter out the goal via setGoalState)
 			const goalCategory = goal.category;
 			const goalTarget = goal.target;

@@ -1,3 +1,68 @@
+## [3.92.0](https://github.com/kiva/ui/compare/v3.91.0...v3.92.0) (2026-09-02)
+
+### 🎉 New Features
+
+* mp-3076-kiva-credit-tip-toggle ([e7cec77](https://github.com/kiva/ui/commit/e7cec77ee6ab5ebb31f0ae9ddcff997d626b11ad))
+* mp-3076-kiva-credit-tip-toggle ([b101f01](https://github.com/kiva/ui/commit/b101f018a6b4264c955196c09d215fd5914c156b))
+* mp-3076-kiva-credit-tip-toggle ([d13f26b](https://github.com/kiva/ui/commit/d13f26ba0ca0c81d09770152f462f1d28370bf99))
+* mp-3076-kiva-credit-tip-toggle ([3d76c2a](https://github.com/kiva/ui/commit/3d76c2a3f26b6b3251cf4f679bf0fc62e8accbdb))
+* mp-3076-kiva-credit-tip-toggle ([ce78a5f](https://github.com/kiva/ui/commit/ce78a5fbe4aca71594a4bb4c6a179c4de1f6b2c0))
+* mp-3076-kiva-credit-tip-toggle ([35e132e](https://github.com/kiva/ui/commit/35e132ef9ef125e3c70fb073b988e5056d705635))
+* mp-3076-kiva-credit-tip-toggle ([5c33994](https://github.com/kiva/ui/commit/5c3399446547bfd30d9438f41294aab8556f6837))
+* mp-3076-kiva-credit-tip-toggle ([7c41628](https://github.com/kiva/ui/commit/7c416289b80c5a32da60f915b715e16ae5dbf686))
+* mp-3076-kiva-credit-tip-toggle ([9edceac](https://github.com/kiva/ui/commit/9edceac8a59a3712e27316ea11e77b10e980c471))
+* mp-3076-kiva-credit-tip-toggle ([172a959](https://github.com/kiva/ui/commit/172a959be2aed2837bddbe443982d86ada3957a6))
+* mp-3076-kiva-credit-tip-toggle ([81faa27](https://github.com/kiva/ui/commit/81faa277dd6f2119d50c023395435394b1427c51))
+* mp-3076-kiva-credit-tip-toggle ([182d20e](https://github.com/kiva/ui/commit/182d20e90e355b3ecabfe04a7a344c1cc6d6c8be))
+* **nav:** source top nav categories from browsingCategories ([8dda9fb](https://github.com/kiva/ui/commit/8dda9fbc468f6674160bac6b5827be8ca1a51e8f))
+
+### 🐛 Bugfixes
+
+* **BorrowerProfile:** read back the child query that preFetch actually ran ([d8c01b9](https://github.com/kiva/ui/commit/d8c01b95226f0e88799212b7136ba3080269bef9))
+* compact live loan card fix ([#7215](https://github.com/kiva/ui/issues/7215)) ([ab01b2e](https://github.com/kiva/ui/commit/ab01b2ecb895daf649ace84f5cf3588f2da3b749))
+* jsdocs formatting ([8834c93](https://github.com/kiva/ui/commit/8834c9323e2f90b9a814fa7b4fd0501c44cc2b7e))
+* **LoanProgress:** render the server-provided loan status label ([6911d57](https://github.com/kiva/ui/commit/6911d57a7faf4330038b5c1a3c2a1b26eb9e4d12))
+* logic to goal recap and goal card in my kiva ([1b6e3bc](https://github.com/kiva/ui/commit/1b6e3bc511c24b730321bcb54611f9bc688ef46d))
+* **mykiva:** null-guard data in bailout chips category fetch ([64bc529](https://github.com/kiva/ui/commit/64bc5292acb5c62a909d3fc89432d74ccb1e4296))
+
+### 🧹 Chores
+
+* bump kv-components with new browserCategories in the header ([8539797](https://github.com/kiva/ui/commit/85397977e091e74580542f55ff37aed9784b6abd))
+* **checkout:** roll out stop_hiding_tip_campaign experiment to 100% ([#7214](https://github.com/kiva/ui/issues/7214)) ([1feaef3](https://github.com/kiva/ui/commit/1feaef331af6b4e13430fac48fd0d7000ab876ed))
+* **release:** 3.92.0-rc.1 [skip ci] ([5eaf7d9](https://github.com/kiva/ui/commit/5eaf7d96a7e0b5ec13b2952515e120c5f3f5a35a)), closes [#7215](https://github.com/kiva/ui/issues/7215) [#7214](https://github.com/kiva/ui/issues/7214)
+
+## [3.92.0-rc.1](https://github.com/kiva/ui/compare/v3.91.0...v3.92.0-rc.1) (2026-09-02)
+
+### 🎉 New Features
+
+* mp-3076-kiva-credit-tip-toggle ([e7cec77](https://github.com/kiva/ui/commit/e7cec77ee6ab5ebb31f0ae9ddcff997d626b11ad))
+* mp-3076-kiva-credit-tip-toggle ([b101f01](https://github.com/kiva/ui/commit/b101f018a6b4264c955196c09d215fd5914c156b))
+* mp-3076-kiva-credit-tip-toggle ([d13f26b](https://github.com/kiva/ui/commit/d13f26ba0ca0c81d09770152f462f1d28370bf99))
+* mp-3076-kiva-credit-tip-toggle ([3d76c2a](https://github.com/kiva/ui/commit/3d76c2a3f26b6b3251cf4f679bf0fc62e8accbdb))
+* mp-3076-kiva-credit-tip-toggle ([ce78a5f](https://github.com/kiva/ui/commit/ce78a5fbe4aca71594a4bb4c6a179c4de1f6b2c0))
+* mp-3076-kiva-credit-tip-toggle ([35e132e](https://github.com/kiva/ui/commit/35e132ef9ef125e3c70fb073b988e5056d705635))
+* mp-3076-kiva-credit-tip-toggle ([5c33994](https://github.com/kiva/ui/commit/5c3399446547bfd30d9438f41294aab8556f6837))
+* mp-3076-kiva-credit-tip-toggle ([7c41628](https://github.com/kiva/ui/commit/7c416289b80c5a32da60f915b715e16ae5dbf686))
+* mp-3076-kiva-credit-tip-toggle ([9edceac](https://github.com/kiva/ui/commit/9edceac8a59a3712e27316ea11e77b10e980c471))
+* mp-3076-kiva-credit-tip-toggle ([172a959](https://github.com/kiva/ui/commit/172a959be2aed2837bddbe443982d86ada3957a6))
+* mp-3076-kiva-credit-tip-toggle ([81faa27](https://github.com/kiva/ui/commit/81faa277dd6f2119d50c023395435394b1427c51))
+* mp-3076-kiva-credit-tip-toggle ([182d20e](https://github.com/kiva/ui/commit/182d20e90e355b3ecabfe04a7a344c1cc6d6c8be))
+* **nav:** source top nav categories from browsingCategories ([8dda9fb](https://github.com/kiva/ui/commit/8dda9fbc468f6674160bac6b5827be8ca1a51e8f))
+
+### 🐛 Bugfixes
+
+* **BorrowerProfile:** read back the child query that preFetch actually ran ([d8c01b9](https://github.com/kiva/ui/commit/d8c01b95226f0e88799212b7136ba3080269bef9))
+* compact live loan card fix ([#7215](https://github.com/kiva/ui/issues/7215)) ([ab01b2e](https://github.com/kiva/ui/commit/ab01b2ecb895daf649ace84f5cf3588f2da3b749))
+* jsdocs formatting ([8834c93](https://github.com/kiva/ui/commit/8834c9323e2f90b9a814fa7b4fd0501c44cc2b7e))
+* **LoanProgress:** render the server-provided loan status label ([6911d57](https://github.com/kiva/ui/commit/6911d57a7faf4330038b5c1a3c2a1b26eb9e4d12))
+* logic to goal recap and goal card in my kiva ([1b6e3bc](https://github.com/kiva/ui/commit/1b6e3bc511c24b730321bcb54611f9bc688ef46d))
+* **mykiva:** null-guard data in bailout chips category fetch ([64bc529](https://github.com/kiva/ui/commit/64bc5292acb5c62a909d3fc89432d74ccb1e4296))
+
+### 🧹 Chores
+
+* bump kv-components with new browserCategories in the header ([8539797](https://github.com/kiva/ui/commit/85397977e091e74580542f55ff37aed9784b6abd))
+* **checkout:** roll out stop_hiding_tip_campaign experiment to 100% ([#7214](https://github.com/kiva/ui/issues/7214)) ([1feaef3](https://github.com/kiva/ui/commit/1feaef331af6b4e13430fac48fd0d7000ab876ed))
+
 ## [3.91.0](https://github.com/kiva/ui/compare/v3.90.0...v3.91.0) (2026-09-01)
 
 ### 🎉 New Features

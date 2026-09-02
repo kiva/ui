@@ -260,6 +260,11 @@ export default {
 			type: Function,
 			default: () => {}
 		},
+		// null means the lender has never chosen, which the backend treats as true
+		applyKivaCreditToDonation: {
+			type: Boolean,
+			default: null,
+		},
 	},
 	data() {
 		return {
@@ -270,7 +275,7 @@ export default {
 	},
 	computed: {
 		showRemoveKivaCredit() {
-			return parseFloat(this.totals.kivaCreditAppliedTotal) > 0;
+			return this.appliedKivaCredit > 0;
 		},
 		showApplyKivaCredit() {
 			return parseFloat(this.totals.kivaCreditToReapply) > 0;
@@ -278,8 +283,22 @@ export default {
 		showKivaCredit() {
 			return this.showRemoveKivaCredit || this.showApplyKivaCredit;
 		},
+		appliedKivaCredit() {
+			const applied = numeral(this.totals.kivaCreditAppliedTotal).value() ?? 0;
+			// Credit from the backend covers the whole basket, tip included, so a $25 loan and a $5
+			// tip come back as $30 of credit. With the toggle off that $5 is what the lender deposits,
+			// and showing $30 against it reads as more than the basket total. Only the loans and
+			// Kiva Cards are really paid from the balance, so show that. If the balance never
+			// reached the loans then nothing went to the tip and the amount is already correct
+			if (this.applyKivaCreditToDonation === false) {
+				const nonTipTotal = (numeral(this.totals.loanReservationTotal).value() ?? 0)
+					+ (numeral(this.totals.kivaCardTotal).value() ?? 0);
+				return Math.min(applied, nonTipTotal);
+			}
+			return applied;
+		},
 		kivaCredit() {
-			let creditAmount = numeral(this.totals.kivaCreditAppliedTotal).format('$0,0.00');
+			let creditAmount = numeral(this.appliedKivaCredit).format('$0,0.00');
 			if (this.showApplyKivaCredit) {
 				creditAmount = numeral(this.totals.kivaCreditToReapply).format('$0,0.00');
 			}

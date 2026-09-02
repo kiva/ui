@@ -87,8 +87,7 @@
 						:progress-percent="effectiveProgressPercent"
 						:time-left="timeLeft"
 						:loan-status="inPfp ? 'pfp' : status"
-						:is-delinquent="delinquent"
-						:has-currency-exchange-loss="hasCurrencyExchangeLoss"
+						:status-label="statusLabel"
 						:number-of-lenders="numLenders"
 						:pfp-min-lenders="pfpMinLenders"
 						:loading="isLoading"
@@ -167,8 +166,7 @@ export const summaryCardFragment = gql`fragment summaryCardFields on LoanBasic {
 	}
 	name
 	status
-	delinquent
-	hasCurrencyExchangeLossLenders
+	statusLabel
 	use
 	anonymizationLevel
 	borrowerCount
@@ -286,11 +284,8 @@ export default {
 		status() {
 			return this.loan?.status ?? '';
 		},
-		delinquent() {
-			return this.loan?.delinquent ?? false;
-		},
-		hasCurrencyExchangeLoss() {
-			return this.loan?.hasCurrencyExchangeLossLenders ?? false;
+		statusLabel() {
+			return this.loan?.statusLabel ?? '';
 		},
 		use() {
 			return this.loan?.fullLoanUse ?? '';

@@ -2,6 +2,8 @@ import {
 	computed,
 	inject,
 	ref,
+	toValue,
+	watch,
 } from 'vue';
 
 import goalInReviewQuery from '#src/graphql/query/goalInReview.graphql';
@@ -17,8 +19,8 @@ import {
 	mergeRecapExtras,
 	scopeToGoalYear,
 	shouldAutoOpenRecap,
+	shouldShowRecapEntryPoint,
 } from '#src/util/goalInReview';
-import { completedGoalThisSession } from '#src/util/goalRecapSession';
 import logFormatter from '#src/util/logFormatter';
 
 // Open the Goal In Review recap from MyKiva with /mykiva?goTo=goal-recap.
@@ -72,24 +74,95 @@ export function getGoalInReviewCurrentYear() {
 }
 
 /**
+ * The "View goal recap" entry point on the MyKiva goal card, shared by the featured slot
+ * and the next steps carousel tile so both answer the same way.
+ *
+ * The Impact Progress row is deliberately not a caller: it offers its recap straight away.
+ *
+ * @param {object} options Entry point inputs, describing the lender's active goal.
+ * @param {boolean} options.enabled The goal_in_review_enable setting.
+ * @param {string} options.goalStatus The goal's status.
+ * @param {number|null} options.goalYear The goal's year.
+ * @param {boolean} options.announced The hideGoalCard preference, which MyKiva writes on the
+ *   visit that announces the completion.
+ * @param {boolean} options.hasViewedRecap Whether this year's recap has already been opened.
+ * @param {number} [options.loansTowardGoal] Loans made toward the goal.
+ * @returns {object} The CTA state and whether the card must stay put.
+ */
+export function useGoalRecapEntryPoint({
+	enabled,
+	goalStatus,
+	goalYear,
+	announced,
+	hasViewedRecap,
+	loansTowardGoal = 0,
+}) {
+	// Snapshot: MyKiva writes `announced` mid-visit, so reading it live would show the CTA
+	// seconds after the confetti. Keyed to the goal, which resolves alongside the preference.
+	const announcedBeforeThisVisit = ref(null);
+	const viewedBeforeThisVisit = ref(null);
+	watch(
+		() => toValue(goalStatus),
+		status => {
+			if (announcedBeforeThisVisit.value !== null || !status) return;
+			announcedBeforeThisVisit.value = Boolean(toValue(announced));
+			viewedBeforeThisVisit.value = Boolean(toValue(hasViewedRecap));
+		},
+		{ immediate: true },
+	);
+
+	const showRecapCta = computed(() => shouldShowRecapEntryPoint({
+		enabled: toValue(enabled),
+		goalStatus: toValue(goalStatus),
+		goalYear: toValue(goalYear),
+		currentYear: getGoalInReviewCurrentYear(),
+		loansTowardGoal: toValue(loansTowardGoal),
+		activeGoalYear: toValue(goalYear),
+		holdUntilNextVisit: !announcedBeforeThisVisit.value,
+		now: getGoalInReviewNow(),
+	}));
+
+	// hideGoalCard would retire the card on the visit the recap arrives on, so the card is
+	// held back for the two visits it still has work to do in.
+	const keepGoalCardForRecap = computed(() => {
+		if (!toValue(enabled)) {
+			return false;
+		}
+		// Not yet known, or the visit that announces the win: either way the card stays.
+		if (announcedBeforeThisVisit.value !== true) {
+			return true;
+		}
+		// The recap's own visit, which outlasts the opening that marks it seen. After that the
+		// card retires as it always did, and the Impact Progress row keeps its entry point.
+		return showRecapCta.value && !viewedBeforeThisVisit.value;
+	});
+
+	return {
+		announcedBeforeThisVisit,
+		keepGoalCardForRecap,
+		showRecapCta,
+		viewedBeforeThisVisit,
+	};
+}
+
+/**
  * Provides Goal In Review modal state and loads the shared recap payload.
  *
  * @param {object} options Composable options.
  * @param {object} [options.apollo] Apollo client; injected when omitted.
- * @param {object} [options.cookieStore] Cookie store; injected when omitted.
  * @param {object} [options.goalData] An existing useGoalData instance. Pass the page's
  *   own so the recap reads and writes the same preferences it does — each call to
  *   useGoalData owns a separate `userPreferences` ref.
  * @returns {object} Goal In Review state, eligibility, and loading function.
  */
-export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) {
+export default function useGoalInReview({ apollo, goalData } = {}) {
 	const apolloClient = apollo || inject('apollo');
-	const cookies = cookieStore || inject('cookieStore', null);
 	const {
 		getCategories,
 		getCtaHref,
 		getGoalSummary,
 		hasViewedGoalRecapForYear,
+		hideGoalCard,
 		loadPreferences,
 		setGoalRecapViewedPreference,
 		hasSubmittedGoalFeedbackForYear,
@@ -199,6 +272,8 @@ export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) 
 		}
 
 		await loadPreferences('network-only');
+		// Captured now; any later and this visit's own write could open the recap over the celebration.
+		const announcedBeforeThisVisit = hideGoalCard.value;
 		const now = getGoalInReviewNow();
 		const year = getGoalInReviewTargetYear(now);
 		const hasViewedRecap = hasViewedGoalRecapForYear(year);
@@ -216,7 +291,7 @@ export default function useGoalInReview({ apollo, cookieStore, goalData } = {}) 
 			goalYear,
 			currentGoalYear: GOALS_CURRENT_YEAR,
 			hasViewedRecap,
-			completedThisSession: completedGoalThisSession(cookies, year),
+			holdUntilNextVisit: !announcedBeforeThisVisit,
 			inProgressStartDate,
 			now,
 		});
