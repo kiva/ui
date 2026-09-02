@@ -539,6 +539,7 @@ export default {
 			tipFromBalanceVersion: null,
 			applyKivaCreditToDonation: null,
 			basketId: null,
+			lifetimeDeposits: null,
 			resettingTipPreference: false,
 			tipPreferenceResetFailed: false,
 		};
@@ -592,6 +593,9 @@ export default {
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
 			this.teams = _get(data, 'my.lender.teams.values');
+			// Falls back to zero: the field is nullable, and null must read as "no deposits" rather
+			// than "not loaded", or a lender funded only by promo credit is never in the audience
+			this.lifetimeDeposits = numeral(_get(data, 'my.lendingStats.totalAmountDeposited')).value() ?? 0;
 			this.hasEverLoggedIn = _get(data, 'hasEverLoggedIn', false);
 			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
 			// basket data
@@ -946,6 +950,8 @@ export default {
 				tipAmount: numeral(tip?.price).value() ?? 0,
 				basketId: this.basketId,
 				applyKivaCreditToDonation: this.applyKivaCreditToDonation,
+				onTeam: this.teams?.length > 0,
+				lifetimeDeposits: this.lifetimeDeposits,
 			};
 		},
 		pendingTipPreferenceReset() {

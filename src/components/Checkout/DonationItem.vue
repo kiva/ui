@@ -146,7 +146,7 @@
 				</div>
 
 				<kiva-credit-tip-toggle
-					v-if="showTipFromBalanceVariant"
+					v-if="canHostTipFromBalanceToggle"
 					@updating-totals="$emit('updating-totals', $event)"
 					@refreshtotals="$emit('refreshtotals')"
 				/>
@@ -364,8 +364,13 @@ export default {
 		isCampaignDonation() {
 			return !!this.donation?.metadata?.campaignId;
 		},
+		canHostTipFromBalanceToggle() {
+			// Where the toggle may live at all. The component renders the switch in the variant
+			// only, but has to mount in both arms so control fires exposure from the same place
+			return !this.isCampaignDonation && !this.orderTotalVariant;
+		},
 		showTipFromBalanceVariant() {
-			return this.tipFromBalanceVersion === 'b' && !this.isCampaignDonation && !this.orderTotalVariant;
+			return this.tipFromBalanceVersion === 'b' && this.canHostTipFromBalanceToggle;
 		},
 		donationTitle() {
 			return 'Donation to Kiva';

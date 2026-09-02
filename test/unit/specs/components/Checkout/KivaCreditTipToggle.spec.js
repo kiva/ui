@@ -1,5 +1,6 @@
 import { reactive } from 'vue';
 import KivaCreditTipToggle, {
+	TIP_FROM_BALANCE_EXP_KEY,
 	TIP_FROM_BALANCE_SEEDED_COOKIE,
 } from '#src/components/Checkout/KivaCreditTipToggle';
 import CookieStore from '#src/util/cookieStore';
@@ -18,18 +19,26 @@ const basketState = ({
 	tipAmount = 3.75,
 	preference = true,
 	myId = 1234,
+	onTeam = false,
+	lifetimeDeposits = 0,
 } = {}) => ({
 	myId,
 	balance,
 	hasLoans,
 	tipAmount,
+	onTeam,
+	lifetimeDeposits,
 	basketId: BASKET_ID,
 	applyKivaCreditToDonation: preference,
 });
 
 const mountToggle = ({ version = 'b', state = basketState(), seededCookie = null } = {}) => {
 	const provided = reactive(state);
-	const apollo = { mutate: vi.fn().mockResolvedValue({}) };
+	const apollo = {
+		mutate: vi.fn().mockResolvedValue({}),
+		// Keyed on the fragment id, so a wrong experiment key fails the exposure tests
+		readFragment: vi.fn(({ id }) => (id === `Experiment:${TIP_FROM_BALANCE_EXP_KEY}` ? { version } : null)),
+	};
 	const cookieStore = new CookieStore();
 	if (seededCookie) {
 		cookieStore.set(TIP_FROM_BALANCE_SEEDED_COOKIE, seededCookie, { path: '/' });
@@ -90,8 +99,8 @@ describe('KivaCreditTipToggle', () => {
 		expect(wrapper.find(toggleSelector).exists()).toBe(true);
 		expect(wrapper.find('input').element.checked).toBe(false);
 
-		// The default state is not a lender choice, so it must not be tracked
-		expect($kvTrackEvent).not.toHaveBeenCalled();
+		// The default state is not a lender choice, so no click event fires for it
+		expect($kvTrackEvent).not.toHaveBeenCalledWith('basket', 'click', expect.anything());
 	});
 
 	it('never re-seeds a basket whose choice is already marked, showing the toggle on', async () => {
@@ -108,6 +117,9 @@ describe('KivaCreditTipToggle', () => {
 		['no loan in the basket', { preference: false, hasLoans: false }],
 		['no balance', { preference: false, balance: 0 }],
 		['logged out', { preference: false, myId: null }],
+		['a team membership', { preference: false, onTeam: true }],
+		['lifetime deposits at the ceiling', { preference: false, lifetimeDeposits: 1000 }],
+		['lifetime deposits not yet loaded', { preference: false, lifetimeDeposits: null }],
 	])('hides the toggle with %s', async (label, overrides) => {
 		const { wrapper, apollo } = mountToggle({ state: basketState(overrides) });
 		await flushPromises();
@@ -170,6 +182,57 @@ describe('KivaCreditTipToggle', () => {
 			.toHaveBeenCalledWith('There was a problem updating your basket. Please try again.', 'error');
 		expect(wrapper.find('input').element.checked).toBe(false);
 		expect(wrapper.emitted('refreshtotals')).toBeTruthy();
+	});
+
+	it('fires exposure once, when the toggle actually renders', async () => {
+		const { $kvTrackEvent, updateState } = mountToggle();
+
+		updateState({ applyKivaCreditToDonation: false });
+		await flushPromises();
+
+		expect($kvTrackEvent)
+			.toHaveBeenCalledWith('event-tracking', 'EXP-MP-3006-Aug2026', 'b', undefined);
+
+		// A tip edit re-renders the toggle, but the lender was already exposed
+		updateState({ tipAmount: 10 });
+		await flushPromises();
+		const exposures = $kvTrackEvent.mock.calls
+			.filter(([category]) => category === 'event-tracking');
+		expect(exposures).toHaveLength(1);
+	});
+
+	it('fires exposure for control without ever rendering the switch', async () => {
+		const { wrapper, $kvTrackEvent, apollo } = mountToggle({
+			version: 'a',
+			state: basketState({ preference: false }),
+		});
+		await flushPromises();
+
+		expect(wrapper.find(toggleSelector).exists()).toBe(false);
+		expect(apollo.mutate).not.toHaveBeenCalled();
+		expect($kvTrackEvent)
+			.toHaveBeenCalledWith('event-tracking', 'EXP-MP-3006-Aug2026', 'a', undefined);
+	});
+
+	it.each([
+		['a team membership', { onTeam: true }],
+		['lifetime deposits at the ceiling', { lifetimeDeposits: 1000 }],
+		['lifetime deposits not yet loaded', { lifetimeDeposits: null }],
+	])('excludes control lenders with %s from exposure too', async (label, overrides) => {
+		const { $kvTrackEvent } = mountToggle({
+			version: 'a',
+			state: basketState({ preference: false, ...overrides }),
+		});
+		await flushPromises();
+
+		expect($kvTrackEvent).not.toHaveBeenCalled();
+	});
+
+	it('does not fire exposure while the toggle is hidden', async () => {
+		const { $kvTrackEvent } = mountToggle({ state: basketState({ preference: false, tipAmount: 0 }) });
+		await flushPromises();
+
+		expect($kvTrackEvent).not.toHaveBeenCalled();
 	});
 
 	it('stays inert when no basket state is provided', async () => {
