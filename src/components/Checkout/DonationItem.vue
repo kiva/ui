@@ -13,7 +13,10 @@
 			</div>
 
 			<!-- donation text -->
-			<div class="tw-flex-auto">
+			<div
+				class="tw-flex-auto"
+				:class="{ 'md:tw-min-w-0': showTipFromBalanceVariant }"
+			>
 				<div class="tw-mb-0.5">
 					<div class="tw-flex tw-items-center tw-justify-between">
 						<div>
