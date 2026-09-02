@@ -8,6 +8,35 @@ export const givingFundIds = {
 };
 
 /**
+ * Last moment the Colombia earthquake recovery fund next step is promoted on MyKiva.
+ * The card shows through October 10, so the window closes at the end of that day in
+ * Pacific time, which is UTC-7 in October.
+ */
+export const COLOMBIA_RELIEF_NEXT_STEP_END = '2026-10-11T07:00:00.000Z';
+
+/**
+ * Whether the Colombia earthquake recovery fund next step is still inside its promo window
+ *
+ * @param {Date} now Injectable clock, for tests
+ * @returns {boolean}
+ */
+export function isColombiaReliefNextStepActive(now = new Date()) {
+	return now.getTime() < new Date(COLOMBIA_RELIEF_NEXT_STEP_END).getTime();
+}
+
+/**
+ * Whether the lender has already donated to the Colombia earthquake recovery fund.
+ * Relies on the reliefFundParticipation alias, which filters giving fund participation
+ * down to COLOMBIA_DISASTER_RELIEF.
+ *
+ * @param {Object} my Query data carrying the reliefFundParticipation alias
+ * @returns {boolean}
+ */
+export function hasSupportedColombiaReliefFund(my) {
+	return (my?.reliefFundParticipation?.totalCount ?? 0) > 0;
+}
+
+/**
  * Whether a lender's only giving fund activity is supporting the disaster relief fund:
  * they own no giving funds and every donation they've made went to the relief fund
  *

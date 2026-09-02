@@ -17,6 +17,7 @@
 			:goals-row-enabled="goalsRowEnabled"
 			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
+			:show-co-recovery-fund-card="showCoRecoveryFundCard"
 		/>
 		<my-kiva-page-content
 			v-else
@@ -38,6 +39,7 @@
 			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 			:goals-row-enabled="goalsRowEnabled"
 			:should-render-featured-slot="shouldRenderFeaturedSlot"
+			:show-co-recovery-fund-card="showCoRecoveryFundCard"
 		/>
 	</www-page>
 </template>
@@ -46,7 +48,8 @@
 import logReadQueryError from '#src/util/logReadQueryError';
 import { CONTENTFUL_CAROUSEL_KEY, getRecentTransactionLoans } from '#src/util/myKivaUtils';
 import myKivaQuery from '#src/graphql/query/myKiva.graphql';
-import lendingStatsQuery from '#src/graphql/query/myLendingStats.graphql';
+import myKivaLendingStatsQuery from '#src/graphql/query/myKivaLendingStats.graphql';
+import countryListQuery from '#src/graphql/query/countryList.graphql';
 import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
@@ -59,7 +62,11 @@ import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.g
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
 import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
-import { isDisasterReliefFundOnlySupporter } from '#src/util/givingFundUtils';
+import {
+	hasSupportedColombiaReliefFund,
+	isColombiaReliefNextStepActive,
+	isDisasterReliefFundOnlySupporter,
+} from '#src/util/givingFundUtils';
 import useBadgeData, {
 	applyFreshProgressToAchievements,
 	FRESH_PROGRESS_LOAN_PURCHASE_LIMIT,
@@ -69,6 +76,7 @@ import { inject, provide } from 'vue';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const GOALS_ROW_EXP_KEY = 'mykiva_goals_row';
+const CO_RECOVERY_FUND_EXP_KEY = 'mykiva_co_recovery_fund';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -92,6 +100,7 @@ export default {
 		return {
 			combineBadgeData,
 			fixIncorrectlyCompletedGoals: goalDataComposable.fixIncorrectlyCompletedGoals,
+			hydrateGoalDataFromCache: goalDataComposable.hydrateFromCache,
 			// TESTING ONLY (remove later).
 			getGoalSummary: goalDataComposable.getGoalSummary,
 			loadGoalData: goalDataComposable.loadGoalData,
@@ -122,6 +131,7 @@ export default {
 			goalInReviewInProgressStart: null,
 			goalsRowEnabled: false,
 			shouldRenderFeaturedSlot: true,
+			coRecoveryFundExpEnabled: false,
 		};
 	},
 	computed: {
@@ -137,7 +147,19 @@ export default {
 		userOptedIn() {
 			return this.userInfo?.communicationSettings?.loanUpdates
 				&& this.userInfo?.communicationSettings?.lenderNews;
-		}
+		},
+		/**
+		 * Promotes the Colombia earthquake recovery fund as a next step to half of MyKiva
+		 * lenders until the promo window closes, skipping anyone who already gave.
+		 */
+		showCoRecoveryFundCard() {
+			// reliefFundParticipation is always requested by myKivaQuery, so waiting for it keeps
+			// the card from flashing in for a lender who turns out to have already donated.
+			return this.coRecoveryFundExpEnabled
+				&& isColombiaReliefNextStepActive()
+				&& !!this.userInfo?.reliefFundParticipation
+				&& !hasSupportedColombiaReliefFund(this.userInfo);
+		},
 	},
 	watch: {
 		'$route.path': {
@@ -168,7 +190,13 @@ export default {
 
 			return Promise.all([
 				client.query({ query: myKivaQuery }),
-				client.query({ query: lendingStatsQuery }),
+				// Carries loanStatsByYear for the current year: same LendingStats entity, so
+				// useGoalData reads it back out of the normalized cache without its own request.
+				client.query({
+					query: myKivaLendingStatsQuery,
+					variables: { year: CURRENT_YEAR },
+				}),
+				client.query({ query: countryListQuery }),
 				// Prefetch user preferences so MyKivaFeaturedSlot can decide
 				// synchronously whether to mount
 				// If Goal is completed-and-viewed, slot stays hidden
@@ -204,6 +232,10 @@ export default {
 					query: experimentAssignmentQuery,
 					variables: { id: GOALS_ROW_EXP_KEY },
 				}),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: CO_RECOVERY_FUND_EXP_KEY },
+				}),
 			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
 			});
@@ -226,6 +258,15 @@ export default {
 				});
 				return queryResult?.userAchievementProgress?.tieredLendingAchievements ?? [];
 			} catch (error) {
+				return [];
+			}
+		},
+		readCountryFacets() {
+			try {
+				const result = this.apollo.readQuery({ query: countryListQuery });
+				return result?.lend?.countryFacets ?? [];
+			} catch (e) {
+				logReadQueryError(e, 'MyKivaPage readCountryFacets');
 				return [];
 			}
 		},
@@ -276,7 +317,10 @@ export default {
 			try {
 				this.shouldRenderFeaturedSlot = this.readShouldRenderFeaturedSlot();
 				const myKivaQueryResult = this.apollo.readQuery({ query: myKivaQuery });
-				const lendingStatsQueryResult = this.apollo.readQuery({ query: lendingStatsQuery });
+				const lendingStatsQueryResult = this.apollo.readQuery({
+					query: myKivaLendingStatsQuery,
+					variables: { year: CURRENT_YEAR },
+				});
 				const loanId = this.$router.currentRoute?.value?.query?.loanId ?? null;
 				const bpSidesheetLoan = loanId ? this.apollo.readQuery({
 					query: borrowerProfileSideSheetQuery,
@@ -313,7 +357,7 @@ export default {
 				}
 
 				this.totalLoans = myKivaQueryResult.my?.loans?.totalCount ?? 0;
-				const countryFacets = lendingStatsQueryResult.lend?.countryFacets ?? [];
+				const countryFacets = this.readCountryFacets();
 				const regionCounts = new Map();
 				const regionCountries = new Map();
 				countryFacets.forEach(facet => {
@@ -328,11 +372,10 @@ export default {
 					}
 				});
 				const allRegions = [...regionCounts.keys()];
+				const countriesLentTo = lendingStatsQueryResult.my?.lendingStats?.countriesLentTo ?? [];
 				const regionsData = allRegions.map(region => ({
 					name: region,
-					hasLoans: lendingStatsQueryResult
-						.my?.lendingStats?.countriesLentTo
-						.some(item => item?.region === region),
+					hasLoans: countriesLentTo.some(item => item?.region === region),
 					count: regionCounts.get(region) || 0,
 					countries: regionCountries.get(region) || []
 				}));
@@ -374,6 +417,16 @@ export default {
 			this.currentYearTieredAchievements = this.readTieredAchievementsFromCache(CURRENT_YEAR);
 			// Apply centralized fresh progress during creation to avoid initial stale render.
 			this.applyMyKivaFreshProgress();
+			// Populate goal state from the prefetched cache so the featured goal card, the
+			// next-steps carousel and the impact-progress row server-render real content
+			// instead of skeletons. Runs before mounted()'s reconcile pass, which no longer
+			// resets `loading` once this has succeeded.
+			this.hydrateGoalDataFromCache({
+				tieredAchievements: this.currentYearTieredAchievements,
+				freshProgressLoans: this.recentTransactionLoans,
+				transactions: this.transactions,
+				year: CURRENT_YEAR,
+			});
 			this.heroSlides = this.readContentfulSlides();
 			this.heroBadgeContentfulData = this.readContentfulBadgeData();
 		} catch (e) {
@@ -390,6 +443,18 @@ export default {
 			},
 			this.$kvTrackEvent,
 			'EXP-MP-2856-May2026'
+		);
+
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			CO_RECOVERY_FUND_EXP_KEY,
+			version => {
+				this.coRecoveryFundExpEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-MP-3155-Aug2026'
 		);
 	},
 	async mounted() {

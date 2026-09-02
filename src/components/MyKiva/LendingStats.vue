@@ -46,8 +46,11 @@
 				:user-info="userInfo"
 				:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
 				:show-lending-next-steps-cards="true"
+				:show-co-recovery-fund-card="showCoRecoveryFundCard"
+				:goal-in-review-enable="goalInReviewEnable"
 				@open-goal-modal="openGoalModal($event)"
 				@open-impact-insight-modal="showImpactInsightsModal = true"
+				@view-goal-recap="$emit('view-goal-recap', $event)"
 			/>
 		</template>
 		<div
@@ -84,10 +87,14 @@
 			:latest-loan="latestLoan"
 			:user-info="userInfo"
 			:show-post-lending-next-steps-cards="showPostLendingNextStepsCards"
+			:show-co-recovery-fund-card="showCoRecoveryFundCard"
+			:goal-in-review-enable="goalInReviewEnable"
 			@open-goal-modal="openGoalModal($event)"
 			@open-impact-insight-modal="showImpactInsightsModal = true"
+			@view-goal-recap="$emit('view-goal-recap', $event)"
 		/>
 		<GoalSettingModal
+			v-if="showGoalModal"
 			:show="showGoalModal"
 			:total-loans="totalLoans"
 			:categories-loan-count="categoriesLoanCount"
@@ -136,7 +143,7 @@ export default {
 		KvMaterialIcon,
 	},
 	inject: ['apollo', 'cookieStore'],
-	emits: ['add-to-basket'],
+	emits: ['add-to-basket', 'view-goal-recap'],
 	props: {
 		loans: {
 			type: Array,
@@ -195,6 +202,19 @@ export default {
 			type: Date,
 			default: null,
 		},
+		goalInReviewEnable: {
+			type: Boolean,
+			default: false,
+		},
+		/**
+		 * Whether the Colombia earthquake recovery fund next step is eligible for this
+		 * lender: experiment version b, inside the promo window, and the lender has not
+		 * already donated to the fund.
+		 */
+		showCoRecoveryFundCard: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
@@ -240,10 +260,17 @@ export default {
 			updateCurrentGoal: goalData.updateCurrentGoal,
 		};
 	},
+	created() {
+		// Read in created(), not mounted(), so the server renders the same carousel variant the
+		// client will. cookieStore is available during SSR; deciding this after hydration would
+		// swap the whole above-fold carousel out from under a lender arriving from checkout.
+		this.showPostLendingNextStepsCards = checkPostLendingCardCookie(this.cookieStore);
+	},
 	mounted() {
-		// Show post-lending next steps cards in My Kiva
-		if (checkPostLendingCardCookie(this.cookieStore)) {
-			this.showPostLendingNextStepsCards = true;
+		// Clearing is client-only on purpose: a server-side removal would send a Set-Cookie the
+		// browser applies before the client re-reads it in created(), so the two renders would
+		// disagree. This runs after hydration, so the next visit correctly sees no cookie.
+		if (this.showPostLendingNextStepsCards) {
 			removePostLendingCardCookie(this.cookieStore);
 		}
 	},

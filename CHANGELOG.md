@@ -1,3 +1,116 @@
+## [3.91.0](https://github.com/kiva/ui/compare/v3.90.0...v3.91.0) (2026-09-01)
+
+### 🎉 New Features
+
+* **live-loan:** render compact bundle card as transparent PNG ([#7204](https://github.com/kiva/ui/issues/7204)) ([131e350](https://github.com/kiva/ui/commit/131e3501f72f4d8222fb5b629e107f86bd91cf2d))
+
+### 🐛 Bugfixes
+
+* avoid firing close event on set 2027 goal cta ([2f6a85d](https://github.com/kiva/ui/commit/2f6a85d36b016a50b5d06289a91cfbf62fc7ad4b))
+* **header:** sync ESI CSS variables for the new header states ([c1da5ba](https://github.com/kiva/ui/commit/c1da5ba58633c3e54f591ea4b87ff114b55104d0))
+* mykiva initial loading performance improvements ([#7203](https://github.com/kiva/ui/issues/7203)) ([5e836e2](https://github.com/kiva/ui/commit/5e836e292b8d8d693e9000ffa7465f33dcbe56ce))
+* opt the header into the ESI avatar ([5f9b4c4](https://github.com/kiva/ui/commit/5f9b4c417832633000a8d233ae3ecd2504677637))
+* release withdraw page migration ([#7210](https://github.com/kiva/ui/issues/7210)) ([68a8429](https://github.com/kiva/ui/commit/68a8429e15ae1a334d6680c070f1e5b5a1e706ad))
+* update kv-components with latest esi support for user avatar ([a54da72](https://github.com/kiva/ui/commit/a54da7242643e7d1a5f00fd2e5299bc7ddaa219d))
+
+### 🪚 Refactors
+
+* remap deprecated Contentful theme values to approved themes ([#7199](https://github.com/kiva/ui/issues/7199)) ([a9e6de8](https://github.com/kiva/ui/commit/a9e6de8ff33dcbfed9b5ed6d7c77ac7c9565ada6))
+* remove legacy contentful theme mappings ([#7208](https://github.com/kiva/ui/issues/7208)) ([4fd6d12](https://github.com/kiva/ui/commit/4fd6d1207149f8eea37bdc0a58153e3ae9364ce8))
+
+### 🧹 Chores
+
+* **release:** 3.91.0-rc.1 [skip ci] ([8170347](https://github.com/kiva/ui/commit/8170347a18bd2902a1bff4572765944a7f01e645)), closes [#7204](https://github.com/kiva/ui/issues/7204) [#7203](https://github.com/kiva/ui/issues/7203) [#7210](https://github.com/kiva/ui/issues/7210) [#7199](https://github.com/kiva/ui/issues/7199) [#7208](https://github.com/kiva/ui/issues/7208) [#7205](https://github.com/kiva/ui/issues/7205)
+* update kv-components with latest KvWwwHeaderBasic fixes ([28d6e96](https://github.com/kiva/ui/commit/28d6e96cbc75697a407d3781c16648097d08ff0a))
+* upgrade kv-tokens to 5 and kv-components to 9 ([#7205](https://github.com/kiva/ui/issues/7205)) ([c708e64](https://github.com/kiva/ui/commit/c708e646ac54f20c90dc7ed0c8156b867ff54aa1))
+
+## [3.91.0-rc.1](https://github.com/kiva/ui/compare/v3.90.0...v3.91.0-rc.1) (2026-09-01)
+
+### 🎉 New Features
+
+* **live-loan:** render compact bundle card as transparent PNG ([#7204](https://github.com/kiva/ui/issues/7204)) ([131e350](https://github.com/kiva/ui/commit/131e3501f72f4d8222fb5b629e107f86bd91cf2d))
+
+### 🐛 Bugfixes
+
+* avoid firing close event on set 2027 goal cta ([2f6a85d](https://github.com/kiva/ui/commit/2f6a85d36b016a50b5d06289a91cfbf62fc7ad4b))
+* **header:** sync ESI CSS variables for the new header states ([c1da5ba](https://github.com/kiva/ui/commit/c1da5ba58633c3e54f591ea4b87ff114b55104d0))
+* mykiva initial loading performance improvements ([#7203](https://github.com/kiva/ui/issues/7203)) ([5e836e2](https://github.com/kiva/ui/commit/5e836e292b8d8d693e9000ffa7465f33dcbe56ce))
+* opt the header into the ESI avatar ([5f9b4c4](https://github.com/kiva/ui/commit/5f9b4c417832633000a8d233ae3ecd2504677637))
+* release withdraw page migration ([#7210](https://github.com/kiva/ui/issues/7210)) ([68a8429](https://github.com/kiva/ui/commit/68a8429e15ae1a334d6680c070f1e5b5a1e706ad))
+* update kv-components with latest esi support for user avatar ([a54da72](https://github.com/kiva/ui/commit/a54da7242643e7d1a5f00fd2e5299bc7ddaa219d))
+
+### 🪚 Refactors
+
+* remap deprecated Contentful theme values to approved themes ([#7199](https://github.com/kiva/ui/issues/7199)) ([a9e6de8](https://github.com/kiva/ui/commit/a9e6de8ff33dcbfed9b5ed6d7c77ac7c9565ada6))
+* remove legacy contentful theme mappings ([#7208](https://github.com/kiva/ui/issues/7208)) ([4fd6d12](https://github.com/kiva/ui/commit/4fd6d1207149f8eea37bdc0a58153e3ae9364ce8))
+
+### 🧹 Chores
+
+* update kv-components with latest KvWwwHeaderBasic fixes ([28d6e96](https://github.com/kiva/ui/commit/28d6e96cbc75697a407d3781c16648097d08ff0a))
+* upgrade kv-tokens to 5 and kv-components to 9 ([#7205](https://github.com/kiva/ui/issues/7205)) ([c708e64](https://github.com/kiva/ui/commit/c708e646ac54f20c90dc7ed0c8156b867ff54aa1))
+
+## [3.90.0](https://github.com/kiva/ui/compare/v3.89.0...v3.90.0) (2026-08-27)
+
+### 🎉 New Features
+
+* [MP-000] - more adjustments in goal review ([#7198](https://github.com/kiva/ui/issues/7198)) ([8451bd9](https://github.com/kiva/ui/commit/8451bd930eedacc963f62a20cfbb08e4de2b7fab))
+* mykiva next steps card for colombia fund ([#7200](https://github.com/kiva/ui/issues/7200)) ([111dee9](https://github.com/kiva/ui/commit/111dee90f155c1f7d89ffe1f289ceb8ad74bb63c))
+
+### 🐛 Bugfixes
+
+* **live-loan:** pin compact bundle card progress bar to card bottom ([#7202](https://github.com/kiva/ui/issues/7202)) ([648539e](https://github.com/kiva/ui/commit/648539e5cfea8574c43f71f1df9367d918e3bc27))
+
+### 🧹 Chores
+
+* **release:** 3.90.0-rc.1 [skip ci] ([09e508a](https://github.com/kiva/ui/commit/09e508a34073521ff6084661884159bef7870f7c)), closes [#7198](https://github.com/kiva/ui/issues/7198) [#7200](https://github.com/kiva/ui/issues/7200) [#7202](https://github.com/kiva/ui/issues/7202)
+
+## [3.90.0-rc.1](https://github.com/kiva/ui/compare/v3.89.0...v3.90.0-rc.1) (2026-08-27)
+
+### 🎉 New Features
+
+* [MP-000] - more adjustments in goal review ([#7198](https://github.com/kiva/ui/issues/7198)) ([8451bd9](https://github.com/kiva/ui/commit/8451bd930eedacc963f62a20cfbb08e4de2b7fab))
+* mykiva next steps card for colombia fund ([#7200](https://github.com/kiva/ui/issues/7200)) ([111dee9](https://github.com/kiva/ui/commit/111dee90f155c1f7d89ffe1f289ceb8ad74bb63c))
+
+### 🐛 Bugfixes
+
+* **live-loan:** pin compact bundle card progress bar to card bottom ([#7202](https://github.com/kiva/ui/issues/7202)) ([648539e](https://github.com/kiva/ui/commit/648539e5cfea8574c43f71f1df9367d918e3bc27))
+
+## [3.89.0](https://github.com/kiva/ui/compare/v3.88.0...v3.89.0) (2026-08-27)
+
+### 🎉 New Features
+
+* [MP-3132] fire badge-claim-modal view event on email auto-open ([#7195](https://github.com/kiva/ui/issues/7195)) ([f2e8fb2](https://github.com/kiva/ui/commit/f2e8fb2f3e28672e886603ea425bfc97e2543d2d))
+* [MP-3140-3144] - goal in review new adjustments ([#7189](https://github.com/kiva/ui/issues/7189)) ([aad1013](https://github.com/kiva/ui/commit/aad101376f7875031e8345ca86a0b6d9ef4af519))
+* [MP-3140] - enable map controls ([#7196](https://github.com/kiva/ui/issues/7196)) ([0dd60c0](https://github.com/kiva/ui/commit/0dd60c041a7cc561016bd8437e6508384aa76280))
+* [MP-3140] - more spacing changes requested ([#7192](https://github.com/kiva/ui/issues/7192)) ([6071c37](https://github.com/kiva/ui/commit/6071c37b916eb759726b85c4eaaf4b83874a606a))
+* [MP-3148] - set a new `updatedAt` field in MyKivaGoal setting ([#7190](https://github.com/kiva/ui/issues/7190)) ([92b1fff](https://github.com/kiva/ui/commit/92b1fffa40329e12d50b81b0aa98dd876109959e))
+* **live-loan:** add compact bundle loan card image variant ([#7194](https://github.com/kiva/ui/issues/7194)) ([d22e83b](https://github.com/kiva/ui/commit/d22e83b4835b44a92c132b9aab9658ccc8b46c50))
+
+### 🐛 Bugfixes
+
+* [MP-3143] - hide goal recap CTA in BadgesV2 after March 01 ([#7191](https://github.com/kiva/ui/issues/7191)) ([49f8fd6](https://github.com/kiva/ui/commit/49f8fd63c1d6db5e73fe945e9c4cf671f1d1e0c0))
+* show goal recap cta from the completed goal card ([a976190](https://github.com/kiva/ui/commit/a97619010954887625a33fd070d79dbcf5afef02))
+
+### 🧹 Chores
+
+* **release:** 3.89.0-rc.1 [skip ci] ([db43cd4](https://github.com/kiva/ui/commit/db43cd43d23cd7fb841cb6811058ea76ab45bbd9)), closes [#7195](https://github.com/kiva/ui/issues/7195) [#7189](https://github.com/kiva/ui/issues/7189) [#7196](https://github.com/kiva/ui/issues/7196) [#7192](https://github.com/kiva/ui/issues/7192) [#7190](https://github.com/kiva/ui/issues/7190) [#7194](https://github.com/kiva/ui/issues/7194) [#7191](https://github.com/kiva/ui/issues/7191)
+
+## [3.89.0-rc.1](https://github.com/kiva/ui/compare/v3.88.0...v3.89.0-rc.1) (2026-08-27)
+
+### 🎉 New Features
+
+* [MP-3132] fire badge-claim-modal view event on email auto-open ([#7195](https://github.com/kiva/ui/issues/7195)) ([f2e8fb2](https://github.com/kiva/ui/commit/f2e8fb2f3e28672e886603ea425bfc97e2543d2d))
+* [MP-3140-3144] - goal in review new adjustments ([#7189](https://github.com/kiva/ui/issues/7189)) ([aad1013](https://github.com/kiva/ui/commit/aad101376f7875031e8345ca86a0b6d9ef4af519))
+* [MP-3140] - enable map controls ([#7196](https://github.com/kiva/ui/issues/7196)) ([0dd60c0](https://github.com/kiva/ui/commit/0dd60c041a7cc561016bd8437e6508384aa76280))
+* [MP-3140] - more spacing changes requested ([#7192](https://github.com/kiva/ui/issues/7192)) ([6071c37](https://github.com/kiva/ui/commit/6071c37b916eb759726b85c4eaaf4b83874a606a))
+* [MP-3148] - set a new `updatedAt` field in MyKivaGoal setting ([#7190](https://github.com/kiva/ui/issues/7190)) ([92b1fff](https://github.com/kiva/ui/commit/92b1fffa40329e12d50b81b0aa98dd876109959e))
+* **live-loan:** add compact bundle loan card image variant ([#7194](https://github.com/kiva/ui/issues/7194)) ([d22e83b](https://github.com/kiva/ui/commit/d22e83b4835b44a92c132b9aab9658ccc8b46c50))
+
+### 🐛 Bugfixes
+
+* [MP-3143] - hide goal recap CTA in BadgesV2 after March 01 ([#7191](https://github.com/kiva/ui/issues/7191)) ([49f8fd6](https://github.com/kiva/ui/commit/49f8fd63c1d6db5e73fe945e9c4cf671f1d1e0c0))
+* show goal recap cta from the completed goal card ([a976190](https://github.com/kiva/ui/commit/a97619010954887625a33fd070d79dbcf5afef02))
+
 ## [3.88.0](https://github.com/kiva/ui/compare/v3.87.0...v3.88.0) (2026-08-26)
 
 ### 🎉 New Features

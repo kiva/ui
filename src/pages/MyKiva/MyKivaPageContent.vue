@@ -43,10 +43,13 @@
 				:user-info="userInfo"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 				:goals-row-enabled="goalsRowEnabled"
+				:goal-in-review-enable="goalInReviewEnable"
 				:goal-in-review-in-progress-start="goalInReviewInProgressStart"
+				:show-co-recovery-fund-card="showCoRecoveryFundCard"
 				:basket-items="basketItems"
 				:is-adding="isAdding"
 				@add-to-basket="addGoalRecommendedLoanToBasket"
+				@view-goal-recap="openGoalRecapFromCard"
 			/>
 		</section>
 		<section class="tw-mt-4" id="mykiva-achievements">
@@ -354,6 +357,15 @@ export default {
 		shouldRenderFeaturedSlot: {
 			type: Boolean,
 			default: true,
+		},
+		/**
+		 * Whether the Colombia earthquake recovery fund next step is eligible for this
+		 * lender: experiment version b, inside the promo window, and the lender has not
+		 * already donated to the fund.
+		 */
+		showCoRecoveryFundCard: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup() {

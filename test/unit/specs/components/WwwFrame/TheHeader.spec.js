@@ -10,14 +10,20 @@ import { emptyComponent, globalOptions } from '../../../specUtils';
 // `loadSearchData()` fires on mount whenever the basic header is shown.
 const KvWwwHeaderBasicStub = {
 	name: 'KvWwwHeaderBasic',
-	template: '<div data-testid="basic-header"></div>',
+	props: {
+		useEsiAvatar: {
+			type: Boolean,
+			default: false,
+		},
+	},
+	template: '<div data-testid="basic-header" :data-use-esi-avatar="useEsiAvatar"></div>',
 	methods: {
 		loadMenuData() {},
 		loadSearchSuggestions() {},
 	},
 };
 
-const renderHeader = (props = {}) => render(
+const renderHeader = (props = {}, renderConfig = {}) => render(
 	TheHeader,
 	{
 		props,
@@ -33,6 +39,7 @@ const renderHeader = (props = {}) => render(
 			},
 			mocks: {
 				...globalOptions.mocks,
+				$renderConfig: renderConfig,
 				$route: {
 					path: '/',
 				},
@@ -41,12 +48,33 @@ const renderHeader = (props = {}) => render(
 	},
 );
 
+// jsdom does not enumerate custom properties through CSSStyleDeclaration, so read the attribute.
+const bridgedVars = queryByTestId => {
+	const style = queryByTestId('basic-header').getAttribute('style') ?? '';
+	return Object.fromEntries(
+		style.split(';')
+			.filter(declaration => declaration.includes(':'))
+			.map(declaration => {
+				const [name, ...value] = declaration.split(':');
+				return [name.trim(), value.join(':').trim()];
+			}),
+	);
+};
+
 describe('TheHeader', () => {
 	it('should render the basic header by default', () => {
 		const { queryByTestId, container } = renderHeader();
 
 		expect(queryByTestId('basic-header')).not.toBeNull();
 		expect(container.querySelector('nav[aria-label="Primary navigation"]')).toBeNull();
+	});
+
+	// `ui` is the only host whose ESI emits the avatar URL, so the opt-in lives here rather than
+	// in the library default.
+	it('should opt the basic header into the ESI avatar', () => {
+		const { queryByTestId } = renderHeader();
+
+		expect(queryByTestId('basic-header').dataset.useEsiAvatar).toBe('true');
 	});
 
 	it('should render the minimal header instead of the basic header when minimal', () => {
@@ -63,5 +91,36 @@ describe('TheHeader', () => {
 		expect(queryByTestId('basic-header')).toBeNull();
 		expect(container.querySelector('nav[aria-label="Primary navigation"]')).not.toBeNull();
 		expect(queryByTestId('header-basket')).not.toBeNull();
+	});
+
+	// The ESI head emits --ui-data-* names; the header library reads unprefixed ones. The bridge
+	// exists only while a CDN-cached shell is showing placeholder state, because that is the only
+	// time the library binds display to those variables.
+	describe('esiCssVarBridge', () => {
+		it('should not bridge any variables when the page is not CDN cached', () => {
+			const { queryByTestId } = renderHeader({}, { useCDNCaching: false });
+
+			expect(bridgedVars(queryByTestId)).toEqual({});
+		});
+
+		it('should bridge the basket variable while only the basket is loading', () => {
+			const { queryByTestId } = renderHeader({}, { useCDNCaching: true, cdnNotedLoggedIn: false });
+
+			expect(bridgedVars(queryByTestId)).toMatchObject({
+				'--basket-display': 'var(--ui-data-basket-count-display)',
+			});
+		});
+
+		it('should bridge the user variables while the cached shell says logged in', () => {
+			const { queryByTestId } = renderHeader({}, { useCDNCaching: true, cdnNotedLoggedIn: true });
+
+			expect(bridgedVars(queryByTestId)).toEqual({
+				'--basket-display': 'var(--ui-data-basket-count-display)',
+				'--user-loading-display': 'var(--ui-data-user-loading-display)',
+				'--user-avatar-display': 'var(--ui-data-user-avatar-display)',
+				'--user-avatar-legacy-display': 'var(--ui-data-user-avatar-legacy-display)',
+				'--user-avatar': 'var(--ui-data-user-avatar)',
+			});
+		});
 	});
 });

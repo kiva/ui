@@ -1,7 +1,7 @@
 import express from 'express';
 import { error, warn } from './util/log.js';
 import { getFromCache, setToCache } from './util/memJsUtils.js';
-import drawLoanCard from './util/live-loan/live-loan-draw.js';
+import drawLoanCard, { contentTypeForStyle } from './util/live-loan/live-loan-draw.js';
 import fetchLoansByType, { QUERY_TYPE } from './util/live-loan/live-loan-fetch.js';
 import { trace } from './util/mockTrace.js';
 import { resolveBundleSize, DEFAULT_BUNDLE_COUNT, MAX_BUNDLE_COUNT } from './util/live-loan/bundle-size.js';
@@ -193,7 +193,7 @@ async function serveImg(type, style, cache, req, res, queryType = QUERY_TYPE.DEF
 
 	// Separate out sending response to isolate exception catching
 	try {
-		res.contentType('image/jpeg');
+		res.contentType(contentTypeForStyle(style));
 		res.set('Cache-Control', [
 			'no-store, no-cache, must-revalidate, max-age=0, private',
 			'post-check=0, pre-check=0'
