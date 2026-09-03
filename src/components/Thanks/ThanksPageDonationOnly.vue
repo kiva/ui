@@ -126,7 +126,7 @@ import socialSharingMixin from '#src/plugins/social-sharing-mixin';
 import KvIcon from '#src/components/Kv/KvIcon';
 import { getFullUrl } from '#src/util/urlUtils';
 import { gql } from 'graphql-tag';
-import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
+import { formatContentGroupsFlat, getContentfulEntries } from '#src/util/contentfulUtils';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import {
 	KvBlueskyIcon,
@@ -153,13 +153,21 @@ export default {
 	apollo: {
 		query: gql`query OnlyDonationThanksPageContentful {
 				contentful {
-					entries(contentType: "contentGroup", contentKey: "thanks-page-only-donation")
+					searchEntries(contentType: "contentGroup", contentKey: "thanks-page-only-donation") {
+						total
+						skip
+						limit
+						items {
+							entryId
+							entry
+						}
+					}
 				}
 			}
 		`,
 		preFetch: true,
 		result({ data }) {
-			const contentfulData = data?.contentful?.entries?.items ?? null;
+			const contentfulData = getContentfulEntries(data);
 			this.contentfulContent = contentfulData ? formatContentGroupsFlat(contentfulData) : {};
 		}
 	},

@@ -40,7 +40,7 @@ describe('useContentful.js', () => {
 				data: {
 					contentful: {
 						blogPosts: {
-							items: [mockPost]
+							items: [{ entryId: 'post-123', entry: mockPost }]
 						}
 					}
 				}
@@ -98,7 +98,7 @@ describe('useContentful.js', () => {
 				data: {
 					contentful: {
 						blogPosts: {
-							items: [mockPost]
+							items: [{ entryId: 'post-123', entry: mockPost }]
 						}
 					}
 				}
@@ -175,7 +175,7 @@ describe('useContentful.js', () => {
 				data: {
 					contentful: {
 						blogPosts: {
-							items: [mockPost]
+							items: [{ entryId: 'post-123', entry: mockPost }]
 						}
 					}
 				}

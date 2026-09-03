@@ -54,7 +54,7 @@
 
 <script>
 import { gql } from 'graphql-tag';
-import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
+import { formatContentGroupsFlat, getContentfulEntries } from '#src/util/contentfulUtils';
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import {
@@ -63,7 +63,15 @@ import {
 
 const instantLendingErrorContent = gql`query instantLendingContent {
 	contentful {
-		entries(contentKey:"instant-lending-loan-error-cg", contentType: "contentGroup")
+		searchEntries(contentKey:"instant-lending-loan-error-cg", contentType: "contentGroup") {
+			total
+			skip
+			limit
+			items {
+				entryId
+				entry
+			}
+		}
 	}
 }`;
 
@@ -86,7 +94,7 @@ export default {
 		query: instantLendingErrorContent,
 		preFetch: true,
 		result({ data }) {
-			const contentfulData = data?.contentful?.entries?.items ?? null;
+			const contentfulData = getContentfulEntries(data);
 			this.contentfulContent = contentfulData ? formatContentGroupsFlat(contentfulData) : {};
 			this.loan = data?.lend?.loan ?? {};
 		}

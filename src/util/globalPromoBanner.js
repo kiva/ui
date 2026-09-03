@@ -1,4 +1,5 @@
 import { gql } from 'graphql-tag';
+import { getContentfulEntries } from '#src/util/contentfulUtils';
 import { settingEnabled, settingWithinDateRange } from '#src/util/settingsUtils';
 import { isExcludedUrl } from '#src/util/urlUtils';
 
@@ -22,7 +23,15 @@ export const globalBannerDenyList = [
 
 // GraphQL fragment to fetch the global promo banner setting
 export const globalPromoFragment = gql`fragment GlobalPromoFragment on Contentful {
-	entries(contentType: "uiSetting", contentKey: "ui-global-promo")
+	searchEntries(contentType: "uiSetting", contentKey: "ui-global-promo") {
+		total
+		skip
+		limit
+		items {
+			entryId
+			entry
+		}
+	}
 }`;
 
 // GraphQL query to fetch the global promo banner setting
@@ -43,7 +52,7 @@ export const bannerQuery = gql`
  */
 export function globalPromoSetting(data) {
 	// gather contentful content and the uiSetting key ui-global-promo
-	const contentfulContent = data?.contentful?.entries?.items ?? [];
+	const contentfulContent = getContentfulEntries(data) ?? [];
 	const uiGlobalPromoSetting = contentfulContent.find(item => item.fields.key === 'ui-global-promo');
 
 	if (uiGlobalPromoSetting?.fields && settingEnabled(

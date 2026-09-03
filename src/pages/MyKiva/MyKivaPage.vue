@@ -73,6 +73,7 @@ import useBadgeData, {
 	getContentfulLevelData
 } from '#src/composables/useBadgeData';
 import { inject, provide } from 'vue';
+import { getContentfulEntries } from '#src/util/contentfulUtils';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const GOALS_ROW_EXP_KEY = 'mykiva_goals_row';
@@ -279,7 +280,7 @@ export default {
 						contentKey: CONTENTFUL_CAROUSEL_KEY,
 					}
 				});
-				return slidesResult.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
+				return getContentfulEntries(slidesResult)?.[0]?.fields?.slides ?? [];
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage readContentfulSlides');
 				return [];
@@ -291,7 +292,7 @@ export default {
 					query: contentfulEntriesQuery,
 					variables: { contentType: 'challenge', limit: 200 }
 				});
-				return (contentfulChallengeResult.contentful?.entries?.items ?? [])
+				return (getContentfulEntries(contentfulChallengeResult) ?? [])
 					.map(entry => getContentfulLevelData(entry));
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage readContentfulBadgeData');
