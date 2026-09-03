@@ -287,63 +287,36 @@ describe('goalRecapEntryPoint.js', () => {
 	});
 });
 
-const climateAchievements = [{
-	id: 'climate-action',
-	progressForYear: 100,
-	loanPurchases: [
-		{ purchaseTime: '2026-02-01T00:00:00Z', loan: { id: 1, name: 'Before the goal' } },
-		{ purchaseTime: '2026-10-05T00:00:00Z', loan: { id: 2, name: 'Siti' } },
-		{ purchaseTime: '2026-11-20T00:00:00Z', loan: { id: 3, name: 'Aminata' } },
-	],
-}];
-
 const climateGoal = { category: 'climate-action', dateStarted: '2026-10-01', target: 4 };
+
+// What goalInReview returns: already scoped to the recap year, oldest purchase first,
+// with `photos` the leading slice of `stats`.
+const recap = (overrides = {}) => ({
+	count: 3,
+	transactionSessionCount: 2,
+	photos: [],
+	stats: [],
+	...overrides,
+});
 
 describe('goalInReviewPayload.js', () => {
 	describe('getGoalLoans', () => {
-		const achievements = [
-			{ id: 'climate-action', loanPurchases: [{ loan: { id: 9, name: 'Wrong goal' } }] },
-			{
-				id: 'womens-equality',
-				loanPurchases: [{ loan: { id: 1, name: 'Aminata' } }, { loan: { id: 2, name: 'Siti' } }],
-			},
-		];
+		const photos = [{ id: 1, name: 'Aminata' }, { id: 2, name: 'Siti' }];
 
 		it('reads the goal summary loans for support-all goals', () => {
 			const loans = [{ id: 1, name: 'Aminata' }];
-			expect(getGoalLoans({ category: 'support-all', loans }, achievements)).toBe(loans);
+			expect(getGoalLoans({ category: 'support-all', loans }, recap({ photos }))).toBe(loans);
 		});
 
-		it('reads the matching achievement for category goals', () => {
-			const loans = getGoalLoans({ category: 'womens-equality' }, achievements);
-			expect(loans.map(loan => loan.name)).toEqual(['Aminata', 'Siti']);
+		it('reads the photo sample for category goals', () => {
+			expect(getGoalLoans(climateGoal, recap({ photos })).map(loan => loan.name))
+				.toEqual(['Aminata', 'Siti']);
 		});
 
-		it('shows exactly as many loans as the count claims, never more', () => {
-			// progressForYear (100) capped at the target of 2
-			const scoped = scopeToGoalYear({ ...climateGoal, target: 2 }, climateAchievements);
-			expect(scoped.count).toBe(2);
-			expect(getGoalLoans(scoped, climateAchievements)).toHaveLength(2);
-		});
-
-		it('does not pad the grid up to the target when fewer loans qualify', () => {
-			const oneLoan = [{ id: 'climate-action', progressForYear: 1, loanPurchases: [{ loan: { id: 1 } }] }];
-			const scoped = scopeToGoalYear({ ...climateGoal, target: 4 }, oneLoan);
-			expect(getGoalLoans(scoped, oneLoan)).toHaveLength(1);
-		});
-
-		it('returns an empty list when no achievement matches the category', () => {
-			expect(getGoalLoans({ category: 'basic-needs' }, achievements)).toEqual([]);
-		});
-
-		it('drops purchases with no loan', () => {
-			const sparse = [{ id: 'basic-needs', loanPurchases: [{ loan: null }, {}, { loan: { id: 3 } }] }];
-			expect(getGoalLoans({ category: 'basic-needs' }, sparse)).toEqual([{ id: 3 }]);
-		});
-
-		it('degrades to an empty list without a summary or achievements', () => {
+		it('degrades to an empty list without a summary or a recap', () => {
 			expect(getGoalLoans(null)).toEqual([]);
 			expect(getGoalLoans({ category: 'support-all' })).toEqual([]);
+			expect(getGoalLoans(climateGoal)).toEqual([]);
 		});
 	});
 
@@ -410,212 +383,82 @@ describe('goalInReviewPayload.js', () => {
 	});
 
 	describe('scopeToGoalYear', () => {
-		it('counts the whole year, including loans made before the goal was set', () => {
-			// dateStarted is October; the February loan still counts toward the goal
-			const noYearTotal = [{ ...climateAchievements[0], progressForYear: null }];
-			const scoped = scopeToGoalYear({ ...climateGoal, target: 10 }, noYearTotal);
+		const share = (id, amount) => ({ id, userProperties: { loanBalance: { totalAmountPurchased: amount } } });
+
+		it('takes the whole year count the service reports', () => {
+			const scoped = scopeToGoalYear({ ...climateGoal, target: 10 }, recap({ count: 3 }));
 			expect(scoped.count).toBe(3);
 			expect(scoped.borrowerCount).toBe(3);
 		});
 
-		it('leaves out purchases from other years, which the service returns unfiltered', () => {
-			const acrossYears = [{
-				...climateAchievements[0],
-				progressForYear: 2,
-				loanPurchases: [
-					{ purchaseTime: '2027-01-04T00:00:00Z', loan: { id: 9, name: 'Next year' } },
-					...climateAchievements[0].loanPurchases.slice(0, 2),
-				],
-			}];
-
-			const scoped = scopeToGoalYear({ ...climateGoal, target: 10 }, acrossYears, 2026);
-
-			expect(scoped.count).toBe(2);
-			expect(getGoalLoans(scoped, acrossYears, 2026).map(loan => loan.name))
-				.toEqual(['Before the goal', 'Siti']);
+		it('does not cap the count at the target, so the year is described in full', () => {
+			const scoped = scopeToGoalYear({ ...climateGoal, target: 4 }, recap({ count: 140 }));
+			expect(scoped.count).toBe(140);
+			expect(scoped.percent).toBe(100);
 		});
 
 		it('shows nothing for a goal year the lender made no loans in', () => {
-			const noneThisYear = [{ ...climateAchievements[0], progressForYear: 0 }];
-
-			const scoped = scopeToGoalYear({ ...climateGoal, target: 63 }, noneThisYear, 2027);
-
+			const scoped = scopeToGoalYear({ ...climateGoal, target: 63 }, recap({ count: 0 }));
 			expect(scoped.count).toBe(0);
-			expect(scoped.borrowerCount).toBe(0);
 			expect(scoped.percent).toBe(0);
 			expect(scoped.countries).toEqual([]);
 			expect(scoped.sectors).toEqual([]);
-			expect(getGoalLoans(scoped, noneThisYear, 2027)).toEqual([]);
-		});
-
-		it('reads purchase times in UTC, so new year purchases land in the right year', () => {
-			// 23:00 UTC on Dec 31 is still the previous year west of Greenwich.
-			const newYearEve = [{
-				...climateAchievements[0],
-				progressForYear: 1,
-				loanPurchases: [{ purchaseTime: '2026-12-31T23:00:00Z', loan: { id: 7, name: 'Eve' } }],
-			}];
-
-			expect(getGoalLoans({ ...climateGoal, count: 1 }, newYearEve, 2026).map(loan => loan.name))
-				.toEqual(['Eve']);
-			expect(getGoalLoans({ ...climateGoal, count: 1 }, newYearEve, 2027)).toEqual([]);
-		});
-
-		it('counts the year from progressForYear, not the purchases left after filtering', () => {
-			// A past year recap: 2027's purchase is served first and eats into the request, so
-			// only 2 of 2026's come back even though the lender made 100 that year.
-			const cappedByOtherYears = [{
-				...climateAchievements[0],
-				progressForYear: 100,
-				loanPurchases: [
-					{ purchaseTime: '2027-01-04T00:00:00Z', loan: { id: 9, name: 'Next year' } },
-					...climateAchievements[0].loanPurchases.slice(0, 2),
-				],
-			}];
-
-			const scoped = scopeToGoalYear({ ...climateGoal, target: 3 }, cappedByOtherYears, 2026);
-
-			expect(scoped.count).toBe(3);
-			expect(scoped.percent).toBe(100);
-		});
-
-		it('uses progressForYear over the retained purchases, which the window can trim', () => {
-			// progressForYear is 100 while only 3 loanPurchases came back
-			const scoped = scopeToGoalYear({ ...climateGoal, target: 200 }, climateAchievements);
-			expect(scoped.count).toBe(100);
+			expect(scoped.amount).toBeNull();
 		});
 
 		it('recomputes progress against the target from the year count', () => {
-			const scoped = scopeToGoalYear({ ...climateGoal, target: 200 }, climateAchievements);
-			expect(scoped.percent).toBe(50);
+			expect(scopeToGoalYear({ ...climateGoal, target: 200 }, recap({ count: 100 })).percent).toBe(50);
 		});
 
-		it('caps the count at the target when the goal is exceeded', () => {
-			const scoped = scopeToGoalYear({ ...climateGoal, target: 1 }, climateAchievements);
-			expect(scoped.count).toBe(1);
-			expect(scoped.borrowerCount).toBe(1);
-			expect(scoped.percent).toBe(100);
+		it('keeps the existing percent when the goal has no target', () => {
+			const scoped = scopeToGoalYear({ ...climateGoal, target: 0, percent: 42 }, recap());
+			expect(scoped.percent).toBe(42);
 		});
 
 		it('leaves support-all untouched, since the monolith already scopes it', () => {
 			const supportAll = { category: 'support-all', count: 14, percent: 100 };
-			expect(scopeToGoalYear(supportAll, climateAchievements)).toBe(supportAll);
+			expect(scopeToGoalYear(supportAll, recap())).toBe(supportAll);
 		});
 
-		it('keeps the existing percent when the goal has no target', () => {
-			const scoped = scopeToGoalYear({ ...climateGoal, target: 0, percent: 42 }, climateAchievements);
-			expect(scoped.percent).toBe(42);
+		it('sums Total Lent from the year\'s loan shares', () => {
+			const scoped = scopeToGoalYear(climateGoal, recap({ stats: [share(1, 500), share(2, 25), share(3, 50)] }));
+			expect(scoped.amount).toBe(575);
 		});
 
-		it('sums Total Lent from the loan shares it counted', () => {
-			const withShares = [{
-				id: 'climate-action',
-				loanPurchases: [
-					{
-						purchaseTime: '2026-02-01T00:00:00Z',
-						loan: { id: 1, userProperties: { loanBalance: { totalAmountPurchased: 500 } } },
-					},
-					{
-						purchaseTime: '2026-10-05T00:00:00Z',
-						loan: { id: 2, userProperties: { loanBalance: { totalAmountPurchased: 25 } } },
-					},
-					{
-						purchaseTime: '2026-11-20T00:00:00Z',
-						loan: { id: 3, userProperties: { loanBalance: { totalAmountPurchased: 50 } } },
-					},
-				],
-			}];
-			// oldest first, capped at the target of 4, so all three count
-			expect(scopeToGoalYear({ ...climateGoal, target: 4 }, withShares).amount).toBe(575);
+		it('leaves Total Lent null when no share amounts came back', () => {
+			expect(scopeToGoalYear(climateGoal, recap({ stats: [share(1, null)] })).amount).toBeNull();
 		});
 
-		it('sums only the loans it counted, so Total Lent matches the capped borrower count', () => {
-			const withShares = [{
-				id: 'climate-action',
-				loanPurchases: [
-					{
-						purchaseTime: '2026-10-05T00:00:00Z',
-						loan: { id: 1, userProperties: { loanBalance: { totalAmountPurchased: 25 } } },
-					},
-					{
-						purchaseTime: '2026-11-20T00:00:00Z',
-						loan: { id: 2, userProperties: { loanBalance: { totalAmountPurchased: 25 } } },
-					},
-				],
-			}];
-			const scoped = scopeToGoalYear({ ...climateGoal, target: 1 }, withShares);
-			expect(scoped.count).toBe(1);
-			expect(scoped.amount).toBe(25);
-		});
-
-		it('takes the most recent loans, in the order the service returns them', () => {
-			// The rolling window retains only the most recent loans, so the true oldest are
-			// unreachable for heavy lenders; we show the newest rather than pull the year.
-			const newestFirst = [{
-				id: 'climate-action',
-				loanPurchases: [
-					{ purchaseTime: '2026-12-01T00:00:00Z', loan: { id: 3, name: 'Newest' } },
-					{ purchaseTime: '2026-10-20T00:00:00Z', loan: { id: 2, name: 'Middle' } },
-					{ purchaseTime: '2026-10-05T00:00:00Z', loan: { id: 1, name: 'Oldest' } },
-				],
-			}];
-			const scoped = scopeToGoalYear({ ...climateGoal, target: 2 }, newestFirst);
-
-			expect(scoped.count).toBe(2);
-			expect(getGoalLoans(scoped, newestFirst).map(loan => loan.name)).toEqual(['Newest', 'Middle']);
-		});
-
-		it('derives the session count from distinct purchase times', () => {
-			const sameCheckout = [{
-				id: 'climate-action',
-				loanPurchases: [
-					{ purchaseTime: '2026-10-05T10:00:00Z', loan: { id: 1 } },
-					{ purchaseTime: '2026-10-05T10:00:00Z', loan: { id: 2 } },
-					{ purchaseTime: '2026-11-20T09:00:00Z', loan: { id: 3 } },
-				],
-			}];
-			expect(scopeToGoalYear(climateGoal, sameCheckout).transactionSessionCount).toBe(2);
+		it('takes the session count from the service', () => {
+			expect(scopeToGoalYear(climateGoal, recap({ transactionSessionCount: 2 })).transactionSessionCount).toBe(2);
 		});
 
 		it('keeps a session count the monolith supplied', () => {
 			const summary = { ...climateGoal, transactionSessionCount: 9 };
-			expect(scopeToGoalYear(summary, climateAchievements).transactionSessionCount).toBe(9);
+			expect(scopeToGoalYear(summary, recap({ transactionSessionCount: 2 })).transactionSessionCount).toBe(9);
 		});
 
-		it('leaves Total Lent null when no share amounts came back', () => {
-			expect(scopeToGoalYear(climateGoal, climateAchievements).amount).toBeNull();
-		});
-
-		describe('slide 3 data derived from the goal loans', () => {
+		describe('slide 3 data derived from the year\'s loans', () => {
 			const kenya = { id: 1, name: 'Kenya', isoCode: 'KE' };
 			const peru = { id: 2, name: 'Peru', isoCode: 'PE' };
-			const purchase = (id, sector, country) => ({
-				purchaseTime: '2026-10-05T00:00:00Z',
-				loan: { id, sector, geocode: { country } },
-			});
-			const achievements = [{
-				id: 'climate-action',
-				loanPurchases: [
-					purchase(1, { id: 9, name: 'Agriculture' }, kenya),
-					purchase(2, { id: 9, name: 'Agriculture' }, kenya),
-					purchase(3, { id: 8, name: 'Retail' }, peru),
-				],
-			}];
+			const loan = (id, sector, country) => ({ id, sector, geocode: { country } });
+			const stats = [
+				loan(1, { id: 9, name: 'Agriculture' }, kenya),
+				loan(2, { id: 9, name: 'Agriculture' }, kenya),
+				loan(3, { id: 8, name: 'Retail' }, peru),
+			];
 
 			it('keeps countries that come back without an id', () => {
-				const noId = [{
-					id: 'climate-action',
-					loanPurchases: [purchase(1, null, { name: 'Peru', isoCode: 'PE' })],
-				}];
+				const noId = recap({ stats: [loan(1, null, { name: 'Peru', isoCode: 'PE' })] });
 				expect(scopeToGoalYear(climateGoal, noId).countries).toEqual([{ name: 'Peru', isoCode: 'PE' }]);
 			});
 
 			it('derives the countries, de-duplicated', () => {
-				expect(scopeToGoalYear(climateGoal, achievements).countries).toEqual([kenya, peru]);
+				expect(scopeToGoalYear(climateGoal, recap({ stats })).countries).toEqual([kenya, peru]);
 			});
 
 			it('derives the sectors, counted and ordered by loan count', () => {
-				expect(scopeToGoalYear(climateGoal, achievements).sectors).toEqual([
+				expect(scopeToGoalYear(climateGoal, recap({ stats })).sectors).toEqual([
 					{ sector: { id: 9, name: 'Agriculture' }, loanCount: 2 },
 					{ sector: { id: 8, name: 'Retail' }, loanCount: 1 },
 				]);
@@ -623,20 +466,20 @@ describe('goalInReviewPayload.js', () => {
 
 			it('prefers the monolith values when it supplied them', () => {
 				const summary = { ...climateGoal, countries: [peru], sectors: [{ sector: peru, loanCount: 7 }] };
-				const scoped = scopeToGoalYear(summary, achievements);
+				const scoped = scopeToGoalYear(summary, recap({ stats }));
 				expect(scoped.countries).toEqual([peru]);
 				expect(scoped.sectors).toEqual([{ sector: peru, loanCount: 7 }]);
 			});
 
 			it('degrades to empty lists when the loans carry no sector or country', () => {
-				const scoped = scopeToGoalYear(climateGoal, climateAchievements);
+				const scoped = scopeToGoalYear(climateGoal, recap({ stats: [{ id: 1 }] }));
 				expect(scoped.countries).toEqual([]);
 				expect(scoped.sectors).toEqual([]);
 			});
 		});
 
 		it('returns null without a summary', () => {
-			expect(scopeToGoalYear(null, climateAchievements)).toBeNull();
+			expect(scopeToGoalYear(null, recap())).toBeNull();
 		});
 	});
 

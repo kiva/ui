@@ -6,7 +6,7 @@ import {
 	watch,
 } from 'vue';
 
-import goalInReviewAchievementsQuery from '#src/graphql/query/goalInReviewAchievements.graphql';
+import goalInReviewQuery from '#src/graphql/query/goalInReview.graphql';
 import goalInReviewLenderQuery from '#src/graphql/query/goalInReviewLender.graphql';
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import useGoalData, { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
@@ -214,18 +214,11 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 			// the only category it carries the recap extras for. Every other category is
 			// built from achievements-service instead, so only one of the two is ever read.
 			const monolithSummary = summary?.category === ID_SUPPORT_ALL ? summary : null;
-			// 'no-cache' because this query only selects tieredLendingAchievements — writing it to
-			// the cache would overwrite the richer userAchievementProgress data stored by the full
-			// badges prefetch. Same convention as useGoalData.getCategoriesProgressByYear.
-			const achievementsData = summary && !monolithSummary
-				? await query(goalInReviewAchievementsQuery, { year, loanPurchasesLimit: summary.target }, 'no-cache')
+			const recapData = summary && !monolithSummary
+				? await query(goalInReviewQuery, { achievementId: summary.category, year })
 				: null;
-			const achievements = achievementsData?.userAchievementProgress?.tieredLendingAchievements ?? [];
-			const goalSummary = scopeToGoalYear(
-				mergeRecapExtras(summary, monolithSummary),
-				achievements,
-				year,
-			);
+			const goalInReview = recapData?.goalInReview ?? null;
+			const goalSummary = scopeToGoalYear(mergeRecapExtras(summary, monolithSummary), goalInReview);
 
 			goalInReviewData.value = {
 				year,
@@ -238,7 +231,7 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 					getCategories(),
 				),
 				loanStats: getLoanStats(goalSummary),
-				goalLoans: getGoalLoans(goalSummary, achievements, year),
+				goalLoans: getGoalLoans(goalSummary, goalInReview),
 				lifetimePercentile: lenderData?.my?.lendingStats?.amountLentPercentile ?? null,
 			};
 			return goalInReviewData.value;
