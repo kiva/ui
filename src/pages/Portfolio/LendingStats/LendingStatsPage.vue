@@ -98,6 +98,7 @@ import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfoli
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 import lenderProfileBadgeDataQuery from '#src/graphql/query/lenderProfileBadgeData.graphql';
 import useBadgeData from '#src/composables/useBadgeData';
+import { getContentfulEntries } from '#src/util/contentfulUtils';
 import BadgesSection from './BadgesSection';
 import StatsSection from './StatsSection';
 
@@ -232,7 +233,7 @@ export default {
 				...(this.allAchievements?.userAchievementProgress?.lendingAchievements ?? []),
 				...(this.allAchievements?.userAchievementProgress?.tieredLendingAchievements ?? [])
 			];
-			const badgeContentfulData = (this.allAchievements?.contentful?.entries?.items ?? [])
+			const badgeContentfulData = (getContentfulEntries(this.allAchievements) ?? [])
 				.map(entry => getContentfulLevelData(entry));
 
 			this.badgesData = combineBadgeData(badgeAchievementData, badgeContentfulData);

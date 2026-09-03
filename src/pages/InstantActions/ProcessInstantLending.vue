@@ -98,7 +98,7 @@ import * as Sentry from '@sentry/vue';
 import logFormatter from '#src/util/logFormatter';
 import { trackFBAddToCart, FB_CONTENT_CATEGORY_LOAN } from '@kiva/kv-analytics';
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
-import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
+import { formatContentGroupsFlat, getContentfulEntries } from '#src/util/contentfulUtils';
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
@@ -109,7 +109,15 @@ import {
 
 const processInstantLendingContent = gql`query instantLendingContent($loanId: Int!) {
 	contentful {
-		entries(contentKey:"process-instant-lending-cg", contentType: "contentGroup")
+		searchEntries(contentKey:"process-instant-lending-cg", contentType: "contentGroup") {
+			total
+			skip
+			limit
+			items {
+				entryId
+				entry
+			}
+		}
 	}
 	lend {
 		loan(id: $loanId) {
@@ -192,7 +200,7 @@ export default {
 			return { loanId: parseInt(this.$route.params.loanId, 10) };
 		},
 		result({ data }) {
-			const contentfulData = data?.contentful?.entries?.items ?? null;
+			const contentfulData = getContentfulEntries(data);
 			this.contentfulContent = contentfulData ? formatContentGroupsFlat(contentfulData) : {};
 			this.loan = data?.lend?.loan ?? {};
 		}

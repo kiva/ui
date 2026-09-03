@@ -192,7 +192,9 @@ describe('MyKivaPage', () => {
 
 		it('readContentfulSlides returns slides when Contentful has carousel content', () => {
 			const slides = [{ fields: { richText: {} } }];
-			const cachedResult = { contentful: { entries: { items: [{ fields: { slides } }] } } };
+			const cachedResult = {
+				contentful: { searchEntries: { items: [{ entryId: 'carousel', entry: { fields: { slides } } }] } },
+			};
 			const context = {
 				apollo: {
 					readQuery: vi.fn().mockReturnValue(cachedResult),
@@ -207,7 +209,7 @@ describe('MyKivaPage', () => {
 		it('readContentfulSlides returns empty array when Contentful has no carousel entries', () => {
 			const context = {
 				apollo: {
-					readQuery: vi.fn().mockReturnValue({ contentful: { entries: { items: [] } } }),
+					readQuery: vi.fn().mockReturnValue({ contentful: { searchEntries: { items: [] } } }),
 				},
 			};
 
@@ -235,14 +237,17 @@ describe('MyKivaPage', () => {
 				apollo: {
 					readQuery: vi.fn().mockReturnValue({
 						contentful: {
-							entries: {
+							searchEntries: {
 								items: [
 									{
-										fields: {
-											key: 'womens-equality-level-2',
-											levelName: '2',
-											challengeName: 'Women',
-											badgeImage: { fields: { file: { url: '/badge-2.svg' } } },
+										entryId: 'womens-equality-level-2',
+										entry: {
+											fields: {
+												key: 'womens-equality-level-2',
+												levelName: '2',
+												challengeName: 'Women',
+												badgeImage: { fields: { file: { url: '/badge-2.svg' } } },
+											}
 										}
 									}
 								]
@@ -271,7 +276,7 @@ describe('MyKivaPage', () => {
 		it('readContentfulBadgeData returns empty array when Contentful has no challenge entries', () => {
 			const context = {
 				apollo: {
-					readQuery: vi.fn().mockReturnValue({ contentful: { entries: { items: [] } } }),
+					readQuery: vi.fn().mockReturnValue({ contentful: { searchEntries: { items: [] } } }),
 				},
 			};
 

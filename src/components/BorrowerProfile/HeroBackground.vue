@@ -124,10 +124,42 @@ export default {
 						$placeholderKey: String
 						) {
 						contentful {
-							city: entries(contentType: "background", contentKey: $cityKey)
-							state: entries(contentType: "background", contentKey: $stateKey)
-							country: entries(contentType: "background", contentKey: $countryKey)
-							placeholder: entries(contentType: "background", contentKey: $placeholderKey)
+							city: searchEntries(contentType: "background", contentKey: $cityKey) {
+								total
+								skip
+								limit
+								items {
+									entryId
+									entry
+								}
+							}
+							state: searchEntries(contentType: "background", contentKey: $stateKey) {
+								total
+								skip
+								limit
+								items {
+									entryId
+									entry
+								}
+							}
+							country: searchEntries(contentType: "background", contentKey: $countryKey) {
+								total
+								skip
+								limit
+								items {
+									entryId
+									entry
+								}
+							}
+							placeholder: searchEntries(contentType: "background", contentKey: $placeholderKey) {
+								total
+								skip
+								limit
+								items {
+									entryId
+									entry
+								}
+							}
 						}
 					}
 				`,
@@ -138,10 +170,12 @@ export default {
 					placeholderKey: this.placeholderKey,
 				},
 			}).then(result => {
-				const cityMedia = result?.data?.contentful?.city?.items?.[0]?.fields?.backgroundMedia ?? null;
-				const stateMedia = result?.data?.contentful?.state?.items?.[0]?.fields?.backgroundMedia ?? null;
-				const countryMedia = result?.data?.contentful?.country?.items?.[0]?.fields?.backgroundMedia ?? null;
-				const placeholder = result?.data?.contentful?.placeholder?.items?.[0]?.fields?.backgroundMedia ?? null;
+				const cityMedia = result?.data?.contentful?.city?.items?.[0]?.entry?.fields?.backgroundMedia ?? null;
+				const stateMedia = result?.data?.contentful?.state?.items?.[0]?.entry?.fields?.backgroundMedia ?? null;
+				const countryMedia = result?.data?.contentful?.country?.items?.[0]?.entry?.fields?.backgroundMedia
+					?? null;
+				const placeholder = result?.data?.contentful?.placeholder?.items?.[0]?.entry?.fields?.backgroundMedia
+					?? null;
 				if (cityMedia) {
 					this.contentfulSrc = cityMedia?.fields?.file?.url ?? null;
 					this.contentfulAlt = cityMedia?.fields?.description ?? null;

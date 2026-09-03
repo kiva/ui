@@ -3,6 +3,7 @@ import userAchievementProgressQuery from '#src/graphql/query/userAchievementProg
 import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { defaultBadges } from '#src/util/achievementUtils';
+import { getContentfulEntries } from '#src/util/contentfulUtils';
 
 export const ID_EQUITY = 'equity';
 export const ID_WORLD_REFUGEE_DAY_24 = 'wrd-2024-challenge';
@@ -348,7 +349,7 @@ export default function useBadgeData() {
 			}
 		})
 			.then(result => {
-				badgeContentfulData.value = (result.data?.contentful?.entries?.items ?? [])
+				badgeContentfulData.value = (getContentfulEntries(result.data) ?? [])
 					.map(entry => getContentfulLevelData(entry));
 			}).catch(e => {
 				logReadQueryError(e, 'useBadgeData contentfulEntriesQuery');

@@ -101,14 +101,22 @@
 <script>
 import { gql } from 'graphql-tag';
 import numeral from 'numeral';
-import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
+import { formatContentGroupsFlat, getContentfulEntries } from '#src/util/contentfulUtils';
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import { KvButton, KvContentfulImg, KvPageContainer } from '@kiva/kv-components';
 
 const contentfulContentQuery = gql`query confirmDonationContent {
 	contentful {
-		entries(contentKey:"confirm-instant-donation-cg", contentType: "contentGroup")
+		searchEntries(contentKey:"confirm-instant-donation-cg", contentType: "contentGroup") {
+			total
+			skip
+			limit
+			items {
+				entryId
+				entry
+			}
+		}
 	}
 }`;
 
@@ -145,7 +153,7 @@ export default {
 		query: contentfulContentQuery,
 		preFetch: true,
 		result({ data }) {
-			const contentfulData = data?.contentful?.entries?.items ?? null;
+			const contentfulData = getContentfulEntries(data);
 			this.contentfulContent = contentfulData ? formatContentGroupsFlat(contentfulData) : {};
 		}
 	},

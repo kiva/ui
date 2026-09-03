@@ -56,7 +56,7 @@
 
 <script>
 import { gql } from 'graphql-tag';
-import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
+import { formatContentGroupsFlat, getContentfulEntries } from '#src/util/contentfulUtils';
 import { richTextRenderer } from '#src/util/contentful/richTextRenderer';
 import { trackDonationMetaEvent } from '@kiva/kv-analytics';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
@@ -66,7 +66,15 @@ import {
 
 const contentfulContentQuery = gql`query instantDonationThanksContent {
 	contentful {
-		entries(contentKey:"instant-donation-thanks-cg", contentType: "contentGroup")
+		searchEntries(contentKey:"instant-donation-thanks-cg", contentType: "contentGroup") {
+			total
+			skip
+			limit
+			items {
+				entryId
+				entry
+			}
+		}
 	}
 }`;
 
@@ -107,7 +115,7 @@ export default {
 		query: contentfulContentQuery,
 		preFetch: true,
 		result({ data }) {
-			const contentfulData = data?.contentful?.entries?.items ?? null;
+			const contentfulData = getContentfulEntries(data);
 			this.contentfulContent = contentfulData ? formatContentGroupsFlat(contentfulData) : {};
 		}
 	},
