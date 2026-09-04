@@ -22,7 +22,7 @@
 						<div>
 							<div class="tw-w-full tw-flex">
 								<h2
-									class="tw-flex-1 md:tw-flex-grow"
+									class="tw-flex-1 md:tw-flex-grow data-hj-suppress"
 									:class="{ 'tw-text-h3 !tw-font-medium tw-text-primary': showTipFromBalanceVariant }"
 									data-testid="basket-donation-title"
 								>
@@ -121,7 +121,7 @@
 						>
 							<!-- Two lines before clipping: a long group name would otherwise cut the ask itself -->
 							<p
-								class="tw-text-base"
+								class="tw-text-base data-hj-suppress"
 								:class="{ 'md:tw-line-clamp-2': showTipFromBalanceVariant }"
 							>
 								{{ basketDonationTagline }}
