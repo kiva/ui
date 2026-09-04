@@ -19,30 +19,31 @@ describe('DonationItem canHostTipFromBalanceToggle', () => {
 	});
 });
 
+// Eligibility is computed once on the checkout page and injected, so this only decides where
+// the compressed layout may apply â not who is in the experiment.
 describe('DonationItem showTipFromBalanceVariant', () => {
 	const showVariant = ({ tip = '3.75', ...context }) => DonationItem.computed
 		.showTipFromBalanceVariant.call({ donation: { price: tip }, ...context });
 
-	it('shows the variant styling in the treatment arm', () => {
+	it('shows the variant styling for an eligible lender', () => {
 		expect(showVariant({
-			tipFromBalanceVersion: 'b',
+			tipFromBalanceEligible: true,
 			canHostTipFromBalanceToggle: true,
 		})).toBe(true);
 	});
 
-	it.each([
-		['control', 'a'],
-		['an unassigned lender', null],
-	])('keeps the existing styling for %s', (label, version) => {
+	// One boolean now covers control, an unresolved assignment, no balance, no loans, a team
+	// membership and the deposit ceiling â the page decides, this row just follows
+	it('keeps the existing styling for anyone ineligible', () => {
 		expect(showVariant({
-			tipFromBalanceVersion: version,
+			tipFromBalanceEligible: false,
 			canHostTipFromBalanceToggle: true,
 		})).toBe(false);
 	});
 
-	it('stays off wherever the toggle cannot be hosted, even in the variant', () => {
+	it('stays off wherever the toggle cannot be hosted, even when eligible', () => {
 		expect(showVariant({
-			tipFromBalanceVersion: 'b',
+			tipFromBalanceEligible: true,
 			canHostTipFromBalanceToggle: false,
 		})).toBe(false);
 	});
@@ -51,7 +52,7 @@ describe('DonationItem showTipFromBalanceVariant', () => {
 	// at a zero tip the row shares space with the donate-repayments prompt instead
 	it('stays off at a zero tip, where there is no switch to make room for', () => {
 		expect(showVariant({
-			tipFromBalanceVersion: 'b',
+			tipFromBalanceEligible: true,
 			canHostTipFromBalanceToggle: true,
 			tip: '0.00',
 		})).toBe(false);

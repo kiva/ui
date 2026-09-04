@@ -36,12 +36,13 @@ export const TIP_FROM_BALANCE_SEEDED_COOKIE = 'kvtipseeded';
 
 /**
  * Whether the lender is in the experiment audience, ignoring which arm they are in.
- * Unknown deposits read as ineligible until the basket query lands.
+ * Unknown deposits read as ineligible until the basket query lands. The checkout page reads
+ * this too, so the variant treatment only appears where the switch itself can.
  *
  * @param {Object} state The basket state provided by the checkout page
  * @returns {boolean} Whether the lender is in the experiment audience
  */
-function meetsTipFromBalanceCriteria(state = {}) {
+export function meetsTipFromBalanceCriteria(state = {}) {
 	return !!state.myId
 		&& state.balance > 0
 		&& state.hasLoans
@@ -204,3 +205,10 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+/* KvSwitch hardcodes a 16px gap on its label and takes no prop for it; the mocks call for 8px */
+:deep(label) {
+	@apply tw-gap-1;
+}
+</style>

@@ -70,12 +70,18 @@
 							@removed-loan="calculateProgressAchievement($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
-						<div v-if="showUpsell && showUpsellModule" class="upsellContainer">
+						<div
+							v-if="showUpsell && showUpsellModule"
+							:class="showTipFromBalanceVariant
+								? 'upsell-container-compact md:tw-mb-2'
+								: 'upsellContainer'"
+						>
 							<kv-loading-placeholder v-if="!upsellLoan.name" class="tw-rounded" />
 							<upsell-module
 								v-if="upsellLoan.name"
 								:loan="upsellLoan"
 								:is-expiring-soon-exp-enabled="isExpiringSoonExpEnabled"
+								:show-tip-from-balance-variant="showTipFromBalanceVariant"
 								:close-upsell-module="closeUpsellModule"
 								:add-to-basket="addToBasket"
 							/>
@@ -360,6 +366,7 @@ import { CUSTOM_TIP_DEFAULT_EXP_KEY } from '#src/components/Checkout/DonationNud
 import {
 	TIP_FROM_BALANCE_EXP_KEY,
 	TIP_FROM_BALANCE_SEEDED_COOKIE,
+	meetsTipFromBalanceCriteria,
 } from '#src/components/Checkout/KivaCreditTipToggle';
 import updateKivaCreditDonationPreference from '#src/graphql/mutation/updateKivaCreditDonationPreference.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
@@ -472,6 +479,7 @@ export default {
 			customTipDefaultVersion: computed(() => this.customTipDefaultVersion),
 			tipFromBalanceVersion: computed(() => this.tipFromBalanceVersion),
 			tipToggleBasketState: computed(() => this.tipToggleBasketState),
+			tipFromBalanceEligible: computed(() => this.showTipFromBalanceVariant),
 		};
 	},
 	mixins: [checkoutUtils, fiveDollarsTest],
@@ -964,6 +972,12 @@ export default {
 					&& !!this.tipFromBalanceVersion
 					&& this.tipFromBalanceVersion !== 'b'
 					&& this.applyKivaCreditToDonation === false);
+		},
+		showTipFromBalanceVariant() {
+			// The variant treatment only appears where the switch can, so a lender without a
+			// balance, a loan or a tip sees the original checkout untouched
+			return this.tipFromBalanceVersion === 'b'
+				&& meetsTipFromBalanceCriteria(this.tipToggleBasketState);
 		},
 		isKivaCreditText() {
 			return this.isKivaCreditReplacementExpEnabled ? 'Account balance' : 'Kiva Credit';
@@ -1580,9 +1594,18 @@ export default {
 .upsellContainer > .loading-placeholder {
 	min-height: 250px;
 }
+
+/* The compact banner is 120px on desktop; mobile keeps the taller reservation below */
+.upsell-container-compact,
+.upsell-container-compact > .loading-placeholder {
+	@apply tw-min-h-15;
+}
+
 @media screen and (width <= 733px) {
 	.upsellContainer,
-	.upsellContainer > .loading-placeholder {
+	.upsellContainer > .loading-placeholder,
+	.upsell-container-compact,
+	.upsell-container-compact > .loading-placeholder {
 		min-height: 300px;
 	}
 }

@@ -12,7 +12,11 @@
 		<div class="tw-flex-auto borrower-info-wrapper">
 			<div class="borrower-info" data-testid="basket-loan-info">
 				<div class="tw-flex tw-mb-1">
-					<h2 class="tw-flex-grow" data-testid="basket-loan-name">
+					<h2
+						class="tw-flex-grow"
+						:class="{ 'tw-text-h3 !tw-font-medium tw-text-primary': tipFromBalanceEligible }"
+						data-testid="basket-loan-name"
+					>
 						{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
 					</h2>
 					<remove-basket-item
@@ -160,7 +164,12 @@ export default {
 		IconChoice,
 		EquityBadge,
 	},
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { from: 'apollo' },
+		cookieStore: { from: 'cookieStore' },
+		// Provided by the checkout page; false when rendered elsewhere
+		tipFromBalanceEligible: { default: false },
+	},
 	setup() {
 		const { enableMultiMatching } = useMultiMatching();
 		return { enableMultiMatching };
@@ -219,7 +228,7 @@ export default {
 			activateTimer: true,
 			loanVisible: true,
 			appendedTeams: [],
-			forceTeamId: null
+			forceTeamId: null,
 		};
 	},
 	computed: {
