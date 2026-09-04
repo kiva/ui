@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { createCanvas, loadImage } from 'canvas';
-import draw, { compactCardDimensions, contentTypeForStyle } from '#server/util/live-loan/live-loan-draw';
+import draw, { compactCardDimensions } from '#server/util/live-loan/live-loan-draw';
 import { compactColors } from '#server/util/live-loan/compact-card-constants';
 import * as canvasImageUtils from '#server/util/live-loan/canvas-image-utils';
 
@@ -8,10 +8,11 @@ vi.mock('#server/util/live-loan/canvas-image-utils');
 
 // Sample the right half of the bar, clear of the lighter pill background
 const SAMPLE_X_FRACTION = 0.77;
-// JPEG at quality 0.5 is lossy, so match the track colour within a channel tolerance
+// JPEG is lossy, so match a flat colour within a channel tolerance
 const COLOUR_TOLERANCE = 12;
-// Progress-track grey is a flat grey, so any channel of its hex is the target value
+// Both greys are flat, so any channel of the hex is the target value
 const TRACK_GREY = parseInt(compactColors.progressTrack.slice(1, 3), 16);
+const BORDER_GREY = parseInt(compactColors.border.slice(1, 3), 16);
 
 // A real (drawable) node-canvas stands in for the borrower photo
 function fakeBorrowerImage() {
@@ -52,6 +53,30 @@ async function decodeToContext(buffer) {
 	return { ctx, width: img.width, height: img.height };
 }
 
+// True when row y of a decoded 1px column matches the given flat grey within tolerance.
+function isGreyRow(data, y, target) {
+	const r = data[(y * 4)];
+	const g = data[(y * 4) + 1];
+	const b = data[(y * 4) + 2];
+	return Math.abs(r - target) < COLOUR_TOLERANCE
+		&& Math.abs(g - target) < COLOUR_TOLERANCE
+		&& Math.abs(b - target) < COLOUR_TOLERANCE;
+}
+
+// Finds the top-most device row containing the border grey in a 1px-wide strip
+// down the horizontal centre, which locates the card's top border edge.
+async function topBorderY(buffer) {
+	const { ctx, width, height } = await decodeToContext(buffer);
+	const x = Math.round(width / 2);
+	const { data } = ctx.getImageData(x, 0, 1, height);
+	for (let y = 0; y < height; y += 1) {
+		if (isGreyRow(data, y, BORDER_GREY)) {
+			return y;
+		}
+	}
+	return -1;
+}
+
 // Finds the bottom-most device row containing the progress-track grey in a
 // 1px-wide strip on the right half of the bar, which locates the bar vertically.
 async function barBottomY(buffer) {
@@ -60,13 +85,7 @@ async function barBottomY(buffer) {
 	const { data } = ctx.getImageData(x, 0, 1, height);
 	let lastTrackRow = -1;
 	for (let y = 0; y < height; y += 1) {
-		const r = data[(y * 4)];
-		const g = data[(y * 4) + 1];
-		const b = data[(y * 4) + 2];
-		const isTrackGrey = Math.abs(r - TRACK_GREY) < COLOUR_TOLERANCE
-			&& Math.abs(g - TRACK_GREY) < COLOUR_TOLERANCE
-			&& Math.abs(b - TRACK_GREY) < COLOUR_TOLERANCE;
-		if (isTrackGrey) {
+		if (isGreyRow(data, y, TRACK_GREY)) {
 			lastTrackRow = y;
 		}
 	}
@@ -81,24 +100,25 @@ describe('draw – compact-bundle style', () => {
 		});
 	});
 
-	it('renders the compact-bundle style as a compact-sized PNG', async () => {
+	it('renders the compact-bundle style as a compact-sized JPEG', async () => {
 		const { buffer, hasBorrowerImage } = await draw(makeLoan(), 'compact-bundle');
 
 		expect(Buffer.isBuffer(buffer)).toBe(true);
 		expect(hasBorrowerImage).toBe(true);
-		// PNG signature bytes, so the card can carry an alpha channel
-		expect(buffer.subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a');
+		// JPEG start-of-image marker
+		expect(buffer.subarray(0, 3).toString('hex')).toBe('ffd8ff');
 		expect(await dimensionsOf(buffer)).toEqual(compactCardDimensions);
 	});
 
-	it('renders a transparent margin around the card so it composites on any background', async () => {
+	it('draws a hairline border along the top edge of the card', async () => {
 		const { buffer } = await draw(makeLoan(), 'compact-bundle');
 
-		const { ctx } = await decodeToContext(buffer);
-		// The outer corner sits in the margin outside the card, so it must be fully transparent
-		const cornerAlpha = ctx.getImageData(0, 0, 1, 1).data[3];
+		const borderY = await topBorderY(buffer);
 
-		expect(cornerAlpha).toBe(0);
+		// The border is found (not -1) and sits at the very top edge, well above the
+		// progress track lower down.
+		expect(borderY).toBeGreaterThanOrEqual(0);
+		expect(borderY).toBeLessThan(compactCardDimensions.height * 0.1);
 	});
 
 	it('passes hasBorrowerImage through when the borrower photo is missing', async () => {
@@ -144,12 +164,5 @@ describe('draw – compact-bundle style', () => {
 
 		const dims = await dimensionsOf(buffer);
 		expect(dims).not.toEqual(compactCardDimensions);
-	});
-
-	it('maps only the compact-bundle style to PNG, other styles to JPEG', () => {
-		expect(contentTypeForStyle('compact-bundle')).toBe('image/png');
-		expect(contentTypeForStyle('bundle')).toBe('image/jpeg');
-		expect(contentTypeForStyle('classic')).toBe('image/jpeg');
-		expect(contentTypeForStyle('legacy')).toBe('image/jpeg');
 	});
 });

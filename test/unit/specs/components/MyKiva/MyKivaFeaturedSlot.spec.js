@@ -28,9 +28,12 @@ const buildGoalData = ({
 	target = 5,
 	progress = 0,
 	percentage = 0,
+	dateStarted = null,
 } = {}) => ({
 	loading: ref(loading),
-	userGoal: ref(status ? { category: ID_US_ECONOMIC_EQUALITY, target, status } : null),
+	userGoal: ref(status ? {
+		category: ID_US_ECONOMIC_EQUALITY, target, status, dateStarted,
+	} : null),
 	goalProgress: ref(progress),
 	goalProgressPercentage: ref(percentage),
 	getGoalDisplayName: vi.fn(() => 'US entrepreneurs'),
@@ -116,6 +119,21 @@ describe('MyKivaFeaturedSlot', () => {
 				}),
 			});
 			expect(wrapper.find('[data-testid="featured-goal-card"]').exists()).toBe(false);
+		});
+
+		// The card is where "View goal recap" lives; retiring it strands the recap.
+		it('keeps the slot while the completed goal still has a recap to offer', () => {
+			const { wrapper } = mountSlot({
+				goalData: buildGoalData({
+					status: GOAL_STATUS.COMPLETED,
+					hasViewedCompletedGoal: true,
+					progress: 5,
+					percentage: 100,
+					dateStarted: `${GOALS_CURRENT_YEAR}-02-01`,
+				}),
+				props: { goalInReviewEnable: true },
+			});
+			expect(wrapper.find('[data-testid="featured-goal-card"]').exists()).toBe(true);
 		});
 	});
 

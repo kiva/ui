@@ -137,3 +137,110 @@ describe('BorrowerProfile.apollo.preFetch', () => {
 		expect(getChildProfileOperationName(client)).toBe('minimalBorrowerProfileData');
 	});
 });
+
+describe('BorrowerProfile.apollo.result', () => {
+	const makeRoutingLoan = (status, { isPrivileged = false, unreservedAmount = '400' } = {}) => ({
+		id: 12345,
+		status,
+		unreservedAmount,
+		userProperties: { isPrivileged },
+	});
+
+	const makeCtx = ({ cached = null, routeQuery = {} } = {}) => ({
+		apollo: {
+			readQuery: vi.fn(() => cached),
+		},
+		$route: { query: routeQuery },
+		inviterIsGuestOrAnonymous: false,
+		expRegionList: [],
+	});
+
+	const invokeResult = (ctx, loan, { volunteerId = null } = {}) => {
+		BorrowerProfile.apollo.result.call(ctx, {
+			data: { lend: { loan }, my: { userAccount: { volunteerId } } },
+		});
+	};
+
+	const readQueryOperation = ctx => getOperationName(ctx.apollo.readQuery.mock.calls[0][0].query);
+
+	it.each([
+		{
+			title: 'a fundraising loan with shares remaining',
+			loan: makeRoutingLoan('fundraising'),
+			options: {},
+			routeQuery: {},
+			expected: 'fullBorrowerProfileData',
+		},
+		{
+			title: 'a fully-reserved funded loan',
+			loan: makeRoutingLoan('funded', { unreservedAmount: '0' }),
+			options: {},
+			routeQuery: {},
+			expected: 'minimalBorrowerProfileData',
+		},
+		{
+			title: 'a privileged viewer on a reviewed loan',
+			loan: makeRoutingLoan('reviewed', { isPrivileged: true }),
+			options: {},
+			routeQuery: {},
+			expected: 'fullBorrowerProfileData',
+		},
+		{
+			title: 'a volunteer viewer on a fully-reserved loan',
+			loan: makeRoutingLoan('funded', { unreservedAmount: '0' }),
+			options: { volunteerId: 987 },
+			routeQuery: {},
+			expected: 'fullBorrowerProfileData',
+		},
+		{
+			title: 'a minimal=false override on a fully-reserved loan',
+			loan: makeRoutingLoan('funded', { unreservedAmount: '0' }),
+			options: {},
+			routeQuery: { minimal: 'false' },
+			expected: 'fullBorrowerProfileData',
+		},
+	])('reads back $expected for $title', ({
+		loan, options, routeQuery, expected,
+	}) => {
+		const ctx = makeCtx({ routeQuery });
+
+		invokeResult(ctx, loan, options);
+
+		expect(readQueryOperation(ctx)).toBe(expected);
+	});
+
+	it('surfaces the cached minimal-profile loan rather than the routing loan', () => {
+		const loan = makeRoutingLoan('ended', { unreservedAmount: '0' });
+		const ctx = makeCtx({
+			cached: { lend: { loan: { id: 12345, status: 'ended', statusLabel: 'Repaid' } } },
+		});
+
+		invokeResult(ctx, loan);
+
+		expect(ctx.loan.statusLabel).toBe('Repaid');
+		expect(ctx.routingLoan).toEqual(loan);
+	});
+
+	it('carries the cached account rail preference into the SSR initial state', () => {
+		const loan = makeRoutingLoan('fundraising');
+		const ctx = makeCtx({
+			cached: {
+				lend: { loan: { id: 12345, status: 'fundraising' } },
+				my: { id: 1, userPreferences: { id: 2, preferences: '{"showLoanDetailsInRail":true}' } },
+			},
+		});
+
+		invokeResult(ctx, loan);
+
+		expect(ctx.initialShowDetailsInRail).toBe(true);
+	});
+
+	it('falls back to the routing loan when the child query is not cached', () => {
+		const loan = makeRoutingLoan('ended', { unreservedAmount: '0' });
+		const ctx = makeCtx();
+
+		invokeResult(ctx, loan);
+
+		expect(ctx.loan).toEqual(loan);
+	});
+});

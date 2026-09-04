@@ -98,7 +98,6 @@
 									<kv-tooltip
 										data-testid="kcard-tool-tip-text"
 										:controller="`print-card-${card.id}`"
-										theme="ecoGreenLight"
 									>
 										You can print this card now. We'll also send it to
 										you in an email so you can print it later.
