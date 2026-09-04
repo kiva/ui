@@ -1,0 +1,1 @@
+import{o as a,f as e,e as s,E as r,O as n}from"./entry-vue.esm-bundler-CkX4CbCAj4.js";import{B as l}from"./entry-KvWwwHeaderBasic-DazABq2i2V.js";const p={props:{as:{type:String,default:"div"}}};function d(t,i,o,c,f,m){return a(),e(n(o.as),{class:"tw-grid tw-gap-2 md:tw-gap-3 lg:tw-gap-3.5"},{default:s(()=>[r(t.$slots,"default")]),_:3})}const u=l(p,[["render",d]]);export{u as w};

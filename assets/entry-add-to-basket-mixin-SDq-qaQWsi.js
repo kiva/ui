@@ -1,0 +1,1 @@
+const s={emits:["show-cart-modal"],methods:{showCartModal(t){this.$emit("show-cart-modal",t)}},computed:{isInExperimentPages(){const{path:t}=this.$route;return t.includes("lend")||t.includes("mykiva")}}};export{s as a};
