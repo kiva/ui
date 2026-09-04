@@ -164,3 +164,10 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+/* KvSwitch hardcodes a 16px gap on its label and takes no prop for it; the mocks call for 8px */
+:deep(label) {
+	@apply tw-gap-1;
+}
+</style>
