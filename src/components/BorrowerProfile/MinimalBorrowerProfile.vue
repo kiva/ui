@@ -48,6 +48,7 @@
 											:progress-percent="progressPercent"
 											:loading="isSummaryLoading"
 											:loan-status="loanStatus"
+											:status-label="statusLabel"
 											:is-live-loan-ad="isLiveLoanAd"
 										/>
 									</div>
@@ -123,6 +124,7 @@ export const minimalProfileFragment = gql`fragment minimalProfileFields on LoanB
 	id
 	name
 	status
+	statusLabel
 	use
 	anonymizationLevel
 	loanAmount
@@ -242,10 +244,8 @@ export default {
 			rows: null,
 			isVisitor: true,
 			loanRowsCount: 4,
-			// Initialize from the loan prop (populated by the parent page's routingQuery,
-			// which carries shareMetaFragment fields including name and country). Without
-			// this, SSR renders with loanData={} and head() produces the broken
-			// "undefined from undefined's loan has been funded!" title
+			// Seeded from the loan prop, which the parent page reads back from this
+			// component's own prefetched query.
 			loanData: this.loan?.id ? { ...this.loan } : {},
 		};
 	},
@@ -272,6 +272,9 @@ export default {
 				return 'funded';
 			}
 			return this.loanData?.status ?? 'funded';
+		},
+		statusLabel() {
+			return this.loanData?.statusLabel ?? '';
 		},
 		progressPercent() {
 			if (this.loanStatus === 'funded') {

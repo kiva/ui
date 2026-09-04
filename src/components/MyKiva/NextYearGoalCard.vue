@@ -106,6 +106,10 @@ const {
 const isUpdatingGoal = ref(false);
 const hasHandledGoalCompletion = ref(false);
 
+// The card now stays on to carry the recap CTA, so it can no longer rely on being
+// unrendered to keep the confetti to the visit that announces the win.
+const completionAlreadyAnnounced = computed(() => Boolean(goalData?.hideGoalCard?.value));
+
 const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);
 
 const goalLoans = computed(() => {
@@ -172,6 +176,7 @@ const showCompletedGoalConfetti = () => {
 		hasHandledGoalCompletion.value
 		|| props.loading
 		|| props.hideGoalCard
+		|| completionAlreadyAnnounced.value
 		|| !userHasGoal.value
 		|| goalProgressPercentage.value !== COMPLETED_GOAL_THRESHOLD
 	) {

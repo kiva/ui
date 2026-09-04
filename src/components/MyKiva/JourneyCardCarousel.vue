@@ -109,8 +109,8 @@ import useGoalData from '#src/composables/useGoalData';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
-import { getGoalYear, shouldHideGoalSignup, shouldShowRecapEntryPoint } from '#src/util/goalInReview';
-import { getGoalInReviewCurrentYear, getGoalInReviewNow } from '#src/composables/useGoalInReview';
+import { shouldHideGoalSignup } from '#src/util/goalInReview';
+import { getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import AlmostFundedNextStep from '#src/components/MyKiva/AlmostFundedNextStep';
 import ColombiaReliefNextStep from '#src/components/MyKiva/ColombiaReliefNextStep';
 import {
@@ -211,6 +211,11 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
+	// Decided by LendingStats, which owns the goal card's recap state.
+	showRecapCta: {
+		type: Boolean,
+		default: false,
+	},
 	goalInReviewInProgressStart: {
 		type: Date,
 		default: null,
@@ -285,20 +290,6 @@ const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.slides));
 
 const hideGoalSignup = computed(() => shouldHideGoalSignup({
 	recapStartDate: props.goalInReviewInProgressStart,
-	now: getGoalInReviewNow(),
-}));
-
-const goalYear = computed(() => getGoalYear(props.userGoal));
-
-// Same question the featured slot and the Impact Progress row ask, so the completed
-// goal tile offers the recap wherever it is the surface that renders.
-const showRecapCta = computed(() => shouldShowRecapEntryPoint({
-	enabled: props.goalInReviewEnable,
-	goalStatus: props.userGoal?.status,
-	goalYear: goalYear.value,
-	currentYear: getGoalInReviewCurrentYear(),
-	loansTowardGoal: props.goalProgress,
-	activeGoalYear: goalYear.value,
 	now: getGoalInReviewNow(),
 }));
 
