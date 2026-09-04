@@ -592,9 +592,10 @@ export default {
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
 			this.teams = _get(data, 'my.lender.teams.values');
-			// Falls back to zero: the field is nullable, and null must read as "no deposits" rather
-			// than "not loaded", or a lender funded only by promo credit is never in the audience
-			this.lifetimeDeposits = numeral(_get(data, 'my.lendingStats.totalAmountDeposited')).value() ?? 0;
+			// The field is nullable, and null must read as "no deposits" rather than "not loaded", or a
+			// lender funded only by promo credit is never in the audience. Anything unparseable stays
+			// null and reads as not loaded, which keeps an unknown depositor out
+			this.lifetimeDeposits = numeral(_get(data, 'my.lendingStats.totalAmountDeposited') ?? 0).value();
 			this.hasEverLoggedIn = _get(data, 'hasEverLoggedIn', false);
 			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
 			// basket data
