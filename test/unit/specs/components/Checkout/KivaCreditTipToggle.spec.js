@@ -193,7 +193,10 @@ describe('KivaCreditTipToggle', () => {
 		expect($kvTrackEvent)
 			.toHaveBeenCalledWith('event-tracking', 'EXP-MP-3006-Aug2026', 'b', undefined);
 
-		// A tip edit re-renders the toggle, but the lender was already exposed
+		// Zeroing the tip hides the switch, and restoring it brings the switch back. The lender
+		// has already been exposed, so the second appearance must not count again
+		updateState({ tipAmount: 0 });
+		await flushPromises();
 		updateState({ tipAmount: 10 });
 		await flushPromises();
 		const exposures = $kvTrackEvent.mock.calls
