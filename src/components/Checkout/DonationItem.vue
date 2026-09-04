@@ -119,9 +119,10 @@
 								: 'tw-my-1'"
 							data-testid="basket-donation-tagline"
 						>
+							<!-- Two lines before clipping: a long group name would otherwise cut the ask itself -->
 							<p
 								class="tw-text-base"
-								:class="{ 'md:tw-truncate': showTipFromBalanceVariant }"
+								:class="{ 'md:tw-line-clamp-2': showTipFromBalanceVariant }"
 							>
 								{{ basketDonationTagline }}
 							</p>
