@@ -375,10 +375,6 @@ export default {
 		isCampaignDonation() {
 			return !!this.donation?.metadata?.campaignId;
 		},
-		donationDetailsLink() {
-			// Shortened so the one-line row has room for the tagline. Full copy revisited separately
-			return this.showTipFromBalanceVariant ? 'Learn more' : 'Learn how Kiva uses your donation';
-		},
 		showTipFromBalanceVariant() {
 			// The compressed one-line layout exists to make room for the switch below it. With no tip
 			// there is no switch, so the row keeps the layout the repayments prompt was designed against
