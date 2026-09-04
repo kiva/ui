@@ -366,6 +366,7 @@ import { CUSTOM_TIP_DEFAULT_EXP_KEY } from '#src/components/Checkout/DonationNud
 import {
 	TIP_FROM_BALANCE_EXP_KEY,
 	TIP_FROM_BALANCE_SEEDED_COOKIE,
+	meetsTipFromBalanceCriteria,
 } from '#src/components/Checkout/KivaCreditTipToggle';
 import updateKivaCreditDonationPreference from '#src/graphql/mutation/updateKivaCreditDonationPreference.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
@@ -478,6 +479,7 @@ export default {
 			customTipDefaultVersion: computed(() => this.customTipDefaultVersion),
 			tipFromBalanceVersion: computed(() => this.tipFromBalanceVersion),
 			tipToggleBasketState: computed(() => this.tipToggleBasketState),
+			tipFromBalanceEligible: computed(() => this.showTipFromBalanceVariant),
 		};
 	},
 	mixins: [checkoutUtils, fiveDollarsTest],
@@ -965,7 +967,10 @@ export default {
 					&& this.applyKivaCreditToDonation === false);
 		},
 		showTipFromBalanceVariant() {
-			return this.tipFromBalanceVersion === 'b';
+			// The variant treatment only appears where the switch can, so a lender without a
+			// balance, a loan or a tip sees the original checkout untouched
+			return this.tipFromBalanceVersion === 'b'
+				&& meetsTipFromBalanceCriteria(this.tipToggleBasketState);
 		},
 		isKivaCreditText() {
 			return this.isKivaCreditReplacementExpEnabled ? 'Account balance' : 'Kiva Credit';

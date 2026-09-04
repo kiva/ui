@@ -14,7 +14,7 @@
 				<div class="tw-flex tw-mb-1">
 					<h2
 						class="tw-flex-grow"
-						:class="{ 'tw-text-h3 !tw-font-medium tw-text-primary': showTipFromBalanceVariant }"
+						:class="{ 'tw-text-h3 !tw-font-medium tw-text-primary': tipFromBalanceEligible }"
 						data-testid="basket-loan-name"
 					>
 						{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
@@ -167,8 +167,8 @@ export default {
 	inject: {
 		apollo: { from: 'apollo' },
 		cookieStore: { from: 'cookieStore' },
-		// Assigned version provided by the checkout page; null when rendered elsewhere
-		tipFromBalanceVersion: { default: null },
+		// Provided by the checkout page; false when rendered elsewhere
+		tipFromBalanceEligible: { default: false },
 	},
 	setup() {
 		const { enableMultiMatching } = useMultiMatching();
@@ -234,9 +234,6 @@ export default {
 	computed: {
 		isCorporateCampaign() {
 			return isCCPage(this.$route);
-		},
-		showTipFromBalanceVariant() {
-			return this.tipFromBalanceVersion === 'b';
 		},
 		creditsUsed() {
 			return this.loan?.creditsUsed ?? [];

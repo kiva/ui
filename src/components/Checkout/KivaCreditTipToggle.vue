@@ -29,6 +29,20 @@ export const TIP_FROM_BALANCE_EXP_KEY = 'checkout_tip_from_balance_toggle';
 // Needed because the stored preference cannot tell "never chose" apart from "chose yes".
 export const TIP_FROM_BALANCE_SEEDED_COOKIE = 'kvtipseeded';
 
+/**
+ * Whether the lender can use the switch at all. The checkout page reads this too, so the
+ * variant treatment only appears where the switch itself can.
+ *
+ * @param {Object} state The basket state provided by the checkout page
+ * @returns {boolean} Whether the lender is in the experiment audience
+ */
+export function meetsTipFromBalanceCriteria(state = {}) {
+	return !!state.myId
+		&& state.balance > 0
+		&& state.hasLoans
+		&& state.tipAmount > 0;
+}
+
 export default {
 	name: 'KivaCreditTipToggle',
 	components: {
@@ -79,11 +93,7 @@ export default {
 			return typeof preference === 'boolean' ? preference : null;
 		},
 		isEligible() {
-			return this.tipFromBalanceVersion === 'b'
-				&& !!this.basketState.myId
-				&& this.basketState.balance > 0
-				&& this.basketState.hasLoans
-				&& this.basketState.tipAmount > 0;
+			return this.tipFromBalanceVersion === 'b' && meetsTipFromBalanceCriteria(this.basketState);
 		},
 		needsSeeding() {
 			return this.applyKivaCreditToDonation === true && !this.choiceProtected;

@@ -315,7 +315,7 @@ export default {
 		apollo: { from: 'apollo' },
 		cookieStore: { from: 'cookieStore' },
 		// Assigned version provided by the checkout page; null when rendered elsewhere
-		tipFromBalanceVersion: { default: null },
+		tipFromBalanceEligible: { default: false },
 	},
 	emits: ['refreshtotals', 'updating-totals'],
 	props: {
@@ -376,7 +376,7 @@ export default {
 		showTipFromBalanceVariant() {
 			// The compressed one-line layout exists to make room for the switch below it. With no tip
 			// there is no switch, so the row keeps the layout the repayments prompt was designed against
-			return this.tipFromBalanceVersion === 'b'
+			return this.tipFromBalanceEligible
 				&& numeral(this.donation.price).value() > 0
 				&& !this.isCampaignDonation
 				&& !this.orderTotalVariant;
