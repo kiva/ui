@@ -2,7 +2,7 @@
 	<div
 		class="tw-bg-brand-100 tw-rounded"
 		:class="showTipFromBalanceVariant
-			? 'tw-relative tw-p-4 md:tw-p-1 md:tw-flex md:tw-flex-col md:tw-justify-center'
+			? 'tw-relative tw-p-4 md:tw-p-1 md:tw-min-h-15 md:tw-flex md:tw-flex-col md:tw-justify-center'
 			: 'tw-p-4'"
 	>
 		<button

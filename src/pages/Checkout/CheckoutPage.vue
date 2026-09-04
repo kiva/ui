@@ -1583,10 +1583,10 @@ export default {
 	min-height: 250px;
 }
 
-/* The compact banner is 120px on desktop; mobile keeps the taller reservation */
+/* The compact banner is 120px on desktop; mobile keeps the taller reservation below */
 .upsell-container-compact,
 .upsell-container-compact > .loading-placeholder {
-	min-height: 120px;
+	@apply tw-min-h-15;
 }
 
 @media screen and (width <= 733px) {
