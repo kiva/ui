@@ -10,6 +10,10 @@ query initializeCheckout($basketId: String) {
 			promoBalance
 			donateRepayments
 		}
+		lendingStats {
+			id
+			totalAmountDeposited
+		}
 		lender {
 			id
 			loanCount
