@@ -4,10 +4,15 @@ on:
   schedule:
     # run at midnight, 8am + 4pm UTC time
     - cron:  '0 0,8,16 * * *'
+  workflow_dispatch:
 
 permissions:
   id-token: write
   contents: read
+
+concurrency:
+  group: lighthouse-prod
+  cancel-in-progress: false
 
 jobs:
   lhci:
@@ -28,7 +33,9 @@ jobs:
       - name: Run Lighthouse CI
         run: |
           npm install -g @lhci/cli@0.15.x
-          lhci autorun --config=./lighthouserc-prod.cjs
+          lhci healthcheck --config=./lighthouserc-prod.cjs --fatal
+          ./scripts/lighthouse-collect.sh ./lighthouserc-prod.cjs
+          lhci assert --config=./lighthouserc-prod.cjs
           lhci upload --target=filesystem --outputDir=./lhci
           node format-lh-for-s3.cjs
       - name: Configure AWS Credentials
