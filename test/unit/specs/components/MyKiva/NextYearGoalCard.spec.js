@@ -25,10 +25,11 @@ vi.mock('@kiva/kv-components', () => ({
 }));
 
 describe('NextYearGoalCard', () => {
-	const createGoalData = () => ({
+	const createGoalData = ({ hideGoalCard = false } = {}) => ({
 		getCtaHref: vi.fn(() => '/lend'),
 		getGoalDisplayName: vi.fn(() => 'US entrepreneurs'),
 		goalProgressPercentage: ref(COMPLETED_GOAL_THRESHOLD),
+		hideGoalCard: ref(hideGoalCard),
 		setHideGoalCardPreference: vi.fn(),
 	});
 
@@ -79,6 +80,13 @@ describe('NextYearGoalCard', () => {
 
 		expect(confetti).toHaveBeenCalledTimes(1);
 		expect(goalData.setHideGoalCardPreference).not.toHaveBeenCalled();
+	});
+
+	// The card no longer unrenders after completion, so the preference is what stops this.
+	it('does not repeat the confetti once the completion has been announced', () => {
+		mountCard({ goalData: createGoalData({ hideGoalCard: true }) });
+
+		expect(confetti).not.toHaveBeenCalled();
 	});
 
 	describe('goal recap entry point', () => {

@@ -20,7 +20,8 @@ describe('DonationItem canHostTipFromBalanceToggle', () => {
 });
 
 describe('DonationItem showTipFromBalanceVariant', () => {
-	const showVariant = context => DonationItem.computed.showTipFromBalanceVariant.call(context);
+	const showVariant = ({ tip = '3.75', ...context }) => DonationItem.computed
+		.showTipFromBalanceVariant.call({ donation: { price: tip }, ...context });
 
 	it('shows the variant styling in the treatment arm', () => {
 		expect(showVariant({
@@ -43,6 +44,16 @@ describe('DonationItem showTipFromBalanceVariant', () => {
 		expect(showVariant({
 			tipFromBalanceVersion: 'b',
 			canHostTipFromBalanceToggle: false,
+		})).toBe(false);
+	});
+
+	// The compressed layout only earns its place when there is a switch to make room for, and
+	// at a zero tip the row shares space with the donate-repayments prompt instead
+	it('stays off at a zero tip, where there is no switch to make room for', () => {
+		expect(showVariant({
+			tipFromBalanceVersion: 'b',
+			canHostTipFromBalanceToggle: true,
+			tip: '0.00',
 		})).toBe(false);
 	});
 });

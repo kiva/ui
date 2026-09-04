@@ -350,24 +350,32 @@ export default {
 		},
 		result(result) {
 			const routingLoan = result?.data?.lend?.loan ?? {};
-			// Prefer the enriched full-profile entry; minimal-view paths fall back to routingLoan below.
-			let fullLoan = null;
-			let fullMy = null;
+			const isVolunteer = !!result?.data?.my?.userAccount?.volunteerId;
+			// Read back whichever child query preFetch ran.
+			const childQuery = showFullView(
+				routingLoan.status,
+				Number(routingLoan.unreservedAmount ?? 0),
+				routingLoan.userProperties?.isPrivileged ?? false,
+				isVolunteer,
+				this.$route?.query,
+			) ? fullProfileQuery : minimalProfileQuery;
+			let childLoan = null;
+			let childMy = null;
 			if (routingLoan.id) {
 				try {
 					const cached = this.apollo.readQuery({
-						query: fullProfileQuery,
+						query: childQuery,
 						variables: { loanId: routingLoan.id },
 					});
-					fullLoan = cached?.lend?.loan;
-					fullMy = cached?.my;
+					childLoan = cached?.lend?.loan;
+					childMy = cached?.my;
 				} catch {
 					// Not in cache; fall back below.
 				}
 			}
-			this.loan = fullLoan ?? routingLoan;
+			this.loan = childLoan ?? routingLoan;
 			this.routingLoan = routingLoan;
-			this.isVolunteer = !!result?.data?.my?.userAccount?.volunteerId;
+			this.isVolunteer = isVolunteer;
 			this.inviterName = this.inviterIsGuestOrAnonymous
 				? '' : result?.data?.community?.lender?.name ?? '';
 			this.itemsInBasket = result?.data?.shop?.basket?.items?.values ?? [];
@@ -377,7 +385,7 @@ export default {
 			// SSR initial rail state from the account preference (localStorage is reconciled
 			// client-side in FullBorrowerProfile); null for anon, so this stays false.
 			this.initialShowDetailsInRail = resolveRailPreference({
-				accountPref: readAccountRailPreference(fullMy?.userPreferences),
+				accountPref: readAccountRailPreference(childMy?.userPreferences),
 				local: null,
 			});
 		},

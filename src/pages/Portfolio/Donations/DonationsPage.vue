@@ -145,7 +145,7 @@
 								Showing 1 to {{ displayedDonationCount }} of {{ donationsTotalCount }} entries
 								<br>
 								<a
-									v-if="displayedDonationCount < donationsTotalCount && !loadingMore"
+									v-if="displayedDonationCount < donationsTotal && !loadingMore"
 									class="tw-no-underline tw-cursor-pointer tw-block tw-h-2.5"
 									@click="loadMoreDonations"
 									v-kv-track-event="[
@@ -287,6 +287,7 @@ import myDonationsQuery from '#src/graphql/query/portfolio/myDonations.graphql';
 import { mdiHelpCircle } from '@mdi/js';
 
 const LIMIT = 10;
+const SORT_BY = 'newest';
 
 export default {
 	name: 'DonationsPage',
@@ -323,8 +324,13 @@ export default {
 		};
 	},
 	computed: {
+		donationsTotal() {
+			// The API returns the total as a string.
+			return Number(this.donationsTotalCount ?? 0);
+		},
 		displayedDonationCount() {
-			return this.offset + LIMIT;
+			// Clamp so the last, partially-filled page doesn't claim more entries than exist.
+			return Math.min(this.offset + LIMIT, this.donationsTotal);
 		},
 		hasDonations() {
 			return this.donationEntries?.length > 0;
@@ -338,6 +344,7 @@ export default {
 					variables: {
 						offset: newOffset,
 						limit: LIMIT,
+						sortBy: SORT_BY,
 					},
 				});
 				this.donationInfo = response?.data?.my?.userAccount?.donationInfo;

@@ -88,6 +88,7 @@ export const PayingBack = () => ({
 	template: `
 		<loan-progress
 			loan-status="payingBack"
+			status-label="Paying back"
 			:progress-percent="0.60"
 			money-left="400.00"
 			:loading="false"
@@ -101,7 +102,7 @@ export const PayingBackDelinquent = () => ({
 	template: `
 		<loan-progress
 			loan-status="payingBack"
-			:is-delinquent="true"
+			status-label="Paying back delinquent"
 			:progress-percent="0.60"
 			money-left="400.00"
 			:loading="false"
@@ -116,6 +117,7 @@ export const Ended = () => ({
 	template: `
 		<loan-progress
 			loan-status="ended"
+			status-label="Repaid"
 			:progress-percent="1"
 			money-left="0.00"
 			:loading="false"
@@ -129,7 +131,7 @@ export const EndedWithCurrencyLoss = () => ({
 	template: `
 		<loan-progress
 			loan-status="ended"
-			:has-currency-exchange-loss="true"
+			status-label="Repaid with currency loss"
 			:progress-percent="1"
 			money-left="0.00"
 			:loading="false"
@@ -144,6 +146,7 @@ export const Defaulted = () => ({
 	template: `
 		<loan-progress
 			loan-status="defaulted"
+			status-label="Ended in default"
 			:progress-percent="0.45"
 			money-left="550.00"
 			:loading="false"
@@ -157,6 +160,7 @@ export const Refunded = () => ({
 	template: `
 		<loan-progress
 			loan-status="refunded"
+			status-label="Refunded"
 			:progress-percent="1"
 			money-left="0.00"
 			:loading="false"
@@ -170,6 +174,7 @@ export const InactiveExpired = () => ({
 	template: `
 		<loan-progress
 			loan-status="inactiveExpired"
+			status-label="Inactive expired"
 			:progress-percent="0"
 			money-left="500.00"
 			:loading="false"
@@ -183,6 +188,7 @@ export const Reviewed = () => ({
 	template: `
 		<loan-progress
 			loan-status="reviewed"
+			status-label="Reviewed"
 			:progress-percent="0"
 			money-left="1000.00"
 			:loading="false"
@@ -196,6 +202,7 @@ export const Deleted = () => ({
 	template: `
 		<loan-progress
 			loan-status="deleted"
+			status-label="Deleted"
 			:progress-percent="0"
 			money-left="1000.00"
 			:loading="false"
@@ -209,6 +216,7 @@ export const Issue = () => ({
 	template: `
 		<loan-progress
 			loan-status="issue"
+			status-label="Issue"
 			:progress-percent="0.20"
 			money-left="800.00"
 			:loading="false"
@@ -216,6 +224,20 @@ export const Issue = () => ({
 		/>
 	`,
 });
+
+export const MissingStatusLabel = () => ({
+	components: { LoanProgress },
+	template: `
+		<loan-progress
+			loan-status="reviewed"
+			:progress-percent="0"
+			money-left="1000.00"
+			:loading="false"
+			:loan-id="123"
+		/>
+	`,
+});
+MissingStatusLabel.storyName = 'Missing Status Label (falls back to the raw status)';
 
 export const Loading = () => ({
 	components: { LoanProgress },
