@@ -1,3 +1,38 @@
+## [3.93.0-rc.1](https://github.com/kiva/ui/compare/v3.92.0...v3.93.0-rc.1) (2026-09-08)
+
+### 🎉 New Features
+
+* [MP-3106] add monthly good auto-lending faq to credit settings page ([#7219](https://github.com/kiva/ui/issues/7219)) ([99c3999](https://github.com/kiva/ui/commit/99c3999f97564c61c1f7fa50aa0479759420b997))
+* mp-3087-tip-ask-copy ([d3454ea](https://github.com/kiva/ui/commit/d3454ea5f9273822b54428b78d50283e4e284d1f))
+* mp-3151-kiva-upsell component update ([14b04d1](https://github.com/kiva/ui/commit/14b04d10256050d9b3786f2cd78e6308186f2eed))
+* mp-3151-kiva-upsell component update ([b1a76f1](https://github.com/kiva/ui/commit/b1a76f124382185fb0b4495b6d00abcb2e55f4df))
+* mp-3154-use the min-h-15 token for the compact banner height ([961e426](https://github.com/kiva/ui/commit/961e426abdf5cd15606887e3e51440d432135585))
+* mp-3174-cover the exposure once-only guard ([9b912eb](https://github.com/kiva/ui/commit/9b912eb908d76b6d470ebd8f814960ff8949c21e))
+* mp-3174-tip-toggle-analytics ([e20b89c](https://github.com/kiva/ui/commit/e20b89c93797e172cc03644bfab4a3e99c7fdce7))
+* mp-3176-adding upsell banner update ([bcda43b](https://github.com/kiva/ui/commit/bcda43b23370b89bff613870f8ac0bd1724f887a))
+
+### 🐛 Bugfixes
+
+* add sort to donations page to show newest first ([#7221](https://github.com/kiva/ui/issues/7221)) ([aac6bbe](https://github.com/kiva/ui/commit/aac6bbeb93099f5de90731eb404c612258f91621))
+* count up animation in collective impact section and some tweaks on first section ([3564dd3](https://github.com/kiva/ui/commit/3564dd35d9b1f57c5eff8a46ec5d72d5ca2fe10b))
+* integrate new query to goal in review ([358fadc](https://github.com/kiva/ui/commit/358fadcf079865e143a9ee6d7c8c793589def7fa))
+* **lighthouse:** survive PSI failures instead of aborting the collect ([9efdf59](https://github.com/kiva/ui/commit/9efdf59a2ca72dc1543816c384b03d3968ff86c4))
+* move tooltips to the new neutral variants ([#7224](https://github.com/kiva/ui/issues/7224)) ([83af568](https://github.com/kiva/ui/commit/83af5684b403703f56b691180f1aa83f0a9cadbd))
+* mp-3087-clamp the tagline at two lines so long names keep the ask ([38243bf](https://github.com/kiva/ui/commit/38243bf9976e1fd67df0674e05e186b6983c9754))
+* mp-3087-drop the duplicate donationDetailsLink left by the merge ([860436b](https://github.com/kiva/ui/commit/860436b1fba474557f00220689dd26e6cdc38d3d))
+* mp-3087-suppress the tip ask copy from session recordings ([1d75636](https://github.com/kiva/ui/commit/1d75636a08a56ad5d37a733b6c35159050e6c2b9))
+* mp-3154-show the variant treatment only where the switch is eligible ([732d33f](https://github.com/kiva/ui/commit/732d33fb761d5e99c34a05f3bc3957b54a37ac54))
+* mp-3174-put the deposit fallback inside numeral so garbage reads as unknown ([e69a3dc](https://github.com/kiva/ui/commit/e69a3dc5c2c8484643e7bbca3a7dbfd4881672c1))
+* remove comment from new query ([93fcfbd](https://github.com/kiva/ui/commit/93fcfbd0f3007f40e860091a18e1da46064c762b))
+
+### 🔍 Tests
+
+* **lighthouse:** cover the collect script's retry and drop behaviour ([50e1d34](https://github.com/kiva/ui/commit/50e1d345919e48d83cfc66a3c6ee5955858c5488))
+
+### 🧹 Chores
+
+* **deps:** upgrade kiva packages ([528d8ec](https://github.com/kiva/ui/commit/528d8ec3ae947509c95d0a804e9202140ef03500))
+
 ## [3.92.0](https://github.com/kiva/ui/compare/v3.91.0...v3.92.0) (2026-09-02)
 
 ### 🎉 New Features
