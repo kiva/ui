@@ -144,6 +144,7 @@
 			/>
 		</dl>
 		<kv-text-link
+			class="tw-uppercase"
 			data-testid="bp-details-trustee-more-about-link"
 			:icon="mdiArrowRight"
 			:href="`/trustees/${trusteeId}`"

@@ -156,6 +156,7 @@
 		</dl>
 
 		<kv-text-link
+			class="tw-uppercase"
 			data-testid="bp-field-partner-details-more-about"
 			:icon="mdiArrowRight"
 			:href="`/partners/${partnerId}`"
