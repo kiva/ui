@@ -40,10 +40,10 @@ export default {
 	},
 	props: {
 		/**
-		 * Array of loan channel data in an object
-		 * ex. [{ id: 52, shortName: 'some short name' }]
+		 * Array of loan category data in an object
+		 * ex. [{ id: '43bb7beb-c666-4ff9-aa87-79b2043f8d94', shortName: 'some short name' }]
 		* */
-		contentfulLoanChannels: {
+		contentfulLoanCategories: {
 			type: Array,
 			default: () => [],
 		},
@@ -63,20 +63,20 @@ export default {
 	},
 	data() {
 		return {
-			loanChannelData: [],
-			selectedChannelId: 0,
+			loanCategoryData: [],
+			selectedCategoryId: '',
 		};
 	},
 	computed: {
 		combinedLoanChannelData() {
-			return this.contentfulLoanChannels.map(channel => {
-				const matchedLoanChannel = this.loanChannelData.find(lc => lc.id === channel.id);
-				return { ...matchedLoanChannel, ...channel, loans: { ...matchedLoanChannel?.loans } };
+			return this.contentfulLoanCategories.map(category => {
+				const matchedLoanCategory = this.loanCategoryData.find(lc => lc.id === category.id);
+				return { ...matchedLoanCategory, ...category, loans: { ...matchedLoanCategory?.loans } };
 			});
 		},
-		loanChannelIds() {
-			return this.contentfulLoanChannels.map(channelSetting => {
-				return channelSetting.id;
+		categoryIds() {
+			return this.contentfulLoanCategories.map(categorySetting => {
+				return categorySetting.id;
 			});
 		},
 		loanQueryLimit() {
@@ -84,7 +84,7 @@ export default {
 		},
 		selectedChannel() {
 			return this.combinedLoanChannelData.find(
-				loanChannel => loanChannel.id === this.selectedChannelId
+				loanCategory => loanCategory.id === this.selectedCategoryId
 			);
 		},
 		selectedChannelLoanIds() {
@@ -98,48 +98,54 @@ export default {
 		}
 	},
 	created() {
-		// Copy initial loan channel data from contentful and select first channel
-		this.loanChannelData = this.contentfulLoanChannels;
-		[this.selectedChannelId] = this.loanChannelIds;
+		// Copy initial loan category data from contentful and select first category
+		this.loanCategoryData = this.contentfulLoanCategories;
+		[this.selectedCategoryId] = this.categoryIds;
 	},
 	mounted() {
-		// Load data for first channel
-		this.fetchLoanChannel(this.selectedChannelId);
+		// Load data for first category
+		this.fetchLoanChannel(this.selectedCategoryId);
 	},
 	methods: {
 		handleCategoryClick(payload) {
-			this.selectedChannelId = payload.categoryId;
-			this.fetchLoanChannel(this.selectedChannelId);
+			this.selectedCategoryId = payload.categoryId;
+			this.fetchLoanChannel(this.selectedCategoryId);
 		},
 		fetchLoanChannel(id) {
 			this.apollo.query({
-				query: gql`query selectedLoanCategory($loanChannelIds: [Int]!, $loanLimit: Int) {
-					lend {
-						loanChannelsById(ids: $loanChannelIds){
-							id
-							name
-							url
-							loans(limit: $loanLimit) {
-								values {
-									id
+				query: gql`query selectedLoanCategory($categoryIds: [String!]!, $loanLimit: Int) {
+					categoriesByIds(ids: $categoryIds) {
+						id
+						name
+						url
+						... on LoanCategorySearchOutput {
+							savedSearch(limit: $loanLimit) {
+								id
+								loans {
+									values {
+										id
+									}
 								}
 							}
 						}
 					}
 				}`,
 				variables: {
-					loanChannelIds: [id],
+					categoryIds: [id],
 					loanLimit: this.loanQueryLimit
 				},
 			}).then(result => {
-				// Get clone of loanChannelData for modification
-				const loanChannelData = [...this.loanChannelData];
-				// Get array index of the fetched loan channel for updating the data
-				const channelIndex = this.loanChannelIds.indexOf(id);
-				// Set new channel data if available, otherwise use existing data
-				const loanChannel = result?.data?.lend?.loanChannelsById[0] ?? loanChannelData[channelIndex];
-				loanChannelData[channelIndex] = loanChannel;
-				this.loanChannelData = loanChannelData;
+				// Get clone of loanCategoryData for modification
+				const loanCategoryData = [...this.loanCategoryData];
+				// Get array index of the fetched loan category for updating the data
+				const categoryIndex = this.categoryIds.indexOf(id);
+				// Set new category data if available, otherwise use existing data, flattening savedSearch
+				const fetched = result?.data?.categoriesByIds?.[0];
+				const loanCategory = fetched
+					? { ...fetched, loans: fetched?.savedSearch?.loans ?? {} }
+					: loanCategoryData[categoryIndex];
+				loanCategoryData[categoryIndex] = loanCategory;
+				this.loanCategoryData = loanCategoryData;
 			});
 		}
 	}

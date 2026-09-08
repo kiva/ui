@@ -8,7 +8,7 @@
 			<kv-page-container>
 				<div>
 					<kiva-classic-multi-category-carousel
-						:contentful-loan-channels="contentfulLoanChannels"
+						:contentful-loan-categories="contentfulLoanCategories"
 						:loan-display-settings="loanDisplaySettings"
 					/>
 				</div>
@@ -55,13 +55,13 @@ export default {
 			});
 		},
 		/**
-		 * Extract Loan Channel settings from Contentful Ui Setting dataObject
+		 * Extract Loan Category settings from Contentful Ui Setting dataObject
 		* */
-		contentfulLoanChannels() {
+		contentfulLoanCategories() {
 			const uiSetting = this.content?.contents?.find(({ contentType }) => {
 				return contentType ? contentType === 'uiSetting' : false;
 			});
-			return uiSetting?.dataObject?.loanChannels ?? [];
+			return uiSetting?.dataObject?.loanCategories ?? [];
 		},
 		/**
 		 * Extract Loan Display settings from Contentful Ui Setting dataObject

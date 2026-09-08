@@ -44,7 +44,7 @@ export default {
 	},
 	data() {
 		return {
-			loanChannelData: [],
+			loanCategoryData: [],
 			selectedChannel: {},
 			showCarousel: false,
 		};
@@ -59,13 +59,13 @@ export default {
 			});
 		},
 		/**
-		 * Extract Loan Channel settings from Contentful Ui Setting dataObject
+		 * Extract Loan Category settings from Contentful Ui Setting dataObject
 		* */
-		contentfulLoanChannels() {
+		contentfulLoanCategories() {
 			const uiSetting = this.content?.contents?.find(({ contentType }) => {
 				return contentType ? contentType === 'uiSetting' : false;
 			});
-			return uiSetting?.dataObject?.loanChannels ?? [];
+			return uiSetting?.dataObject?.loanCategories ?? [];
 		},
 		/**
 		 * Extract Loan Display settings from Contentful Ui Setting dataObject
@@ -80,14 +80,14 @@ export default {
 			};
 		},
 		combinedLoanChannelData() {
-			return this.contentfulLoanChannels.map(channel => {
-				const matchedLoanChannel = this.loanChannelData.find(lc => lc.id === channel.id);
-				return { ...matchedLoanChannel, ...channel };
+			return this.contentfulLoanCategories.map(category => {
+				const matchedLoanCategory = this.loanCategoryData.find(lc => lc.id === category.id);
+				return { ...matchedLoanCategory, ...category };
 			});
 		},
-		loanChannelIds() {
-			return this.contentfulLoanChannels.map(channelSetting => {
-				return channelSetting.id;
+		categoryIds() {
+			return this.contentfulLoanCategories.map(categorySetting => {
+				return categorySetting.id;
 			});
 		},
 		loanQueryLimit() {
@@ -109,29 +109,34 @@ export default {
 	methods: {
 		fetchLoanChannel() {
 			this.apollo.query({
-				query: gql`query selectedLoanCategory($loanChannelIds: [Int]!, $loanLimit: Int) {
-					lend {
-						loanChannelsById(ids: $loanChannelIds){
-							id
-							name
-							url
-							loans(limit: $loanLimit) {
-								values {
-									id
+				query: gql`query selectedLoanCategory($categoryIds: [String!]!, $loanLimit: Int) {
+					categoriesByIds(ids: $categoryIds) {
+						id
+						name
+						url
+						... on LoanCategorySearchOutput {
+							savedSearch(limit: $loanLimit) {
+								id
+								loans {
+									values {
+										id
+									}
 								}
 							}
 						}
 					}
 				}`,
 				variables: {
-					loanChannelIds: this.loanChannelIds,
+					categoryIds: this.categoryIds,
 					loanLimit: this.loanQueryLimit
 				},
 			}).then(result => {
-				// Set All Active Loan Channels Data
-				const loanChannels = result?.data?.lend?.loanChannelsById ?? [];
-				this.loanChannelData = loanChannels;
-				// Activate the first channel available
+				// Set All Active Loan Categories Data, flattening savedSearch so `loans` stays top level
+				const categories = result?.data?.categoriesByIds ?? [];
+				this.loanCategoryData = categories.map(category => {
+					return { ...category, loans: category?.savedSearch?.loans ?? {} };
+				});
+				// Activate the first category available
 				const initialChannel = this.combinedLoanChannelData[0];
 				this.selectedChannel = initialChannel;
 				// Make the carousel visible

@@ -8,7 +8,7 @@
 			<kv-page-container>
 				<div>
 					<kiva-multi-category-grid
-						:contentful-loan-channels="loanChannels"
+						:contentful-loan-categories="loanCategories"
 						:loan-display-settings="loanDisplaySettings"
 						:new-home-exp="true"
 					/>
@@ -28,25 +28,28 @@ import SectionWithBackgroundClassic from '#src/components/Contentful/SectionWith
 import { KvPageContainer } from '@kiva/kv-components';
 
 /**
- * Extract Loan Channel settings from Contentful Ui Setting dataObject
+ * Extract Loan Category settings from Contentful Ui Setting dataObject
 * */
-const getContentfulLoanChannels = content => {
+const getContentfulLoanCategories = content => {
 	const uiSetting = content?.contents?.find(({ contentType }) => {
 		return contentType ? contentType === 'uiSetting' : false;
 	});
-	return uiSetting?.dataObject?.loanChannels ?? [];
+	return uiSetting?.dataObject?.loanCategories ?? [];
 };
 
 const loanCategoryPrefetchQuery = gql`
 	${loanFieldsFragment}
-	query loanCategoryPrefetch($loanChannelIds: [Int]!, $limit: Int) {
-		lend {
-			loanChannelsById(ids: $loanChannelIds) {
-				id
-				loans(limit: $limit) {
-					values {
-						id
-						...loanFields
+	query loanCategoryPrefetch($categoryIds: [String!]!, $limit: Int) {
+		categoriesByIds(ids: $categoryIds) {
+			id
+			... on LoanCategorySearchOutput {
+				savedSearch(limit: $limit) {
+					id
+					loans {
+						values {
+							id
+							...loanFields
+						}
 					}
 				}
 			}
@@ -73,7 +76,7 @@ export default {
 	},
 	data() {
 		return {
-			loanChannels: [],
+			loanCategories: [],
 		};
 	},
 	computed: {
@@ -85,8 +88,8 @@ export default {
 				return contentType ? contentType === 'background' : false;
 			});
 		},
-		contentfulLoanChannels() {
-			return getContentfulLoanChannels(this.content);
+		contentfulLoanCategories() {
+			return getContentfulLoanCategories(this.content);
 		},
 		/**
 		 * Extract Loan Display settings from Contentful Ui Setting dataObject
@@ -103,12 +106,12 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, { content, device }) {
-			const contentfulLoanChannels = getContentfulLoanChannels(content);
-			const id = contentfulLoanChannels[0]?.id;
+			const contentfulLoanCategories = getContentfulLoanCategories(content);
+			const id = contentfulLoanCategories[0]?.id;
 			return client.query({
 				query: loanCategoryPrefetchQuery,
 				variables: {
-					loanChannelIds: id ? [id] : [],
+					categoryIds: id ? [id] : [],
 					limit: device?.platform?.type === 'desktop' ? 6 : 1
 				},
 			});
@@ -119,11 +122,11 @@ export default {
 		let data = {};
 		const isDesktop = this.device?.platform?.type === 'desktop';
 		try {
-			const id = this.contentfulLoanChannels[0]?.id;
+			const id = this.contentfulLoanCategories[0]?.id;
 			data = this.apollo.readQuery({
 				query: loanCategoryPrefetchQuery,
 				variables: {
-					loanChannelIds: id ? [id] : [],
+					categoryIds: id ? [id] : [],
 					limit: isDesktop ? 6 : 1
 				},
 			});
@@ -135,26 +138,27 @@ export default {
 		const { loanLimit = 0 } = this.loanDisplaySettings;
 
 		// Get the fetched loan and merge it into the placeholder loan array
-		const loanChannel = data?.lend?.loanChannelsById[0] ?? { loans: { values: [] } };
+		const category = data?.categoriesByIds?.[0];
+		const loanCategory = { ...category, loans: category?.savedSearch?.loans ?? { values: [] } };
 
 		let loanValues;
 		if (isDesktop) {
-			loanValues = loanChannel?.loans?.values;
+			loanValues = loanCategory?.loans?.values;
 		} else {
 			loanValues = Array(loanLimit).fill({ id: 0 });
-			loanValues[0] = loanChannel?.loans?.values[0];
+			[loanValues[0]] = loanCategory?.loans?.values ?? [];
 		}
 
-		const loanChannelCopy = {
-			...loanChannel,
+		const loanCategoryCopy = {
+			...loanCategory,
 			loans: {
 				values: loanValues,
 			},
 		};
 
-		// Set the channel with the prefetched loan
-		const [firstChannel, ...otherChannels] = this.contentfulLoanChannels;
-		this.loanChannels = [{ ...firstChannel, ...loanChannelCopy }, ...otherChannels];
+		// Set the category with the prefetched loan
+		const [firstCategory, ...otherCategories] = this.contentfulLoanCategories;
+		this.loanCategories = [{ ...firstCategory, ...loanCategoryCopy }, ...otherCategories];
 	},
 };
 </script>
