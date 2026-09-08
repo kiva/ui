@@ -18,7 +18,7 @@ const GOAL_YEAR = 2026;
 const CURRENT_YEAR = 2026;
 const NEXT_YEAR = 2027;
 
-const renderSlide = (props = {}) => render(GoalInReviewThanksAndFeedback, {
+const renderSlide = (props = {}, renderOptions = {}) => render(GoalInReviewThanksAndFeedback, {
 	global: globalOptions,
 	props: {
 		goalStatus: 'completed',
@@ -27,6 +27,7 @@ const renderSlide = (props = {}) => render(GoalInReviewThanksAndFeedback, {
 		currentYear: CURRENT_YEAR,
 		...props,
 	},
+	...renderOptions,
 });
 
 describe('GoalInReviewThanksAndFeedback', () => {
@@ -148,6 +149,123 @@ describe('GoalInReviewThanksAndFeedback', () => {
 		expect(queryByText('Share your feedback')).toBeNull();
 		const shareCalls = trackEvent.mock.calls.filter(call => call[2] === 'goal-in-review-share-feedback');
 		expect(shareCalls).toHaveLength(1);
+	});
+
+	// Stands in for GoalInReviewModal's #kvLightboxBody, which the component scrolls.
+	const renderSlideInLightboxBody = (props = {}) => {
+		const container = document.createElement('div');
+		container.id = 'kvLightboxBody';
+		document.body.appendChild(container);
+		return renderSlide(props, { container });
+	};
+
+	it('scrolls the lightbox body to the bottom when the feedback survey is opened', async () => {
+		const scrollTo = vi.fn();
+		Element.prototype.scrollTo = scrollTo;
+		const { getByText } = renderSlideInLightboxBody();
+
+		await fireEvent.click(getByText('Share your feedback'));
+
+		expect(scrollTo).toHaveBeenCalledTimes(1);
+		const lightboxBody = document.getElementById('kvLightboxBody');
+		expect(scrollTo.mock.instances[0]).toBe(lightboxBody);
+		expect(scrollTo).toHaveBeenCalledWith({ top: lightboxBody.scrollHeight, behavior: 'smooth' });
+	});
+
+	it('does not scroll when the feedback survey is closed', async () => {
+		const scrollTo = vi.fn();
+		Element.prototype.scrollTo = scrollTo;
+		const { getByText } = renderSlideInLightboxBody();
+
+		await fireEvent.click(getByText('Share your feedback'));
+		scrollTo.mockClear();
+		await fireEvent.click(getByText('Share your feedback'));
+
+		expect(scrollTo).not.toHaveBeenCalled();
+	});
+
+	describe('feedback survey resize (Form Assembly iframe loads its real height late)', () => {
+		let resizeCallback;
+		let disconnect;
+		let scheduledFrame;
+
+		beforeEach(() => {
+			disconnect = vi.fn();
+			global.ResizeObserver = vi.fn(callback => {
+				resizeCallback = callback;
+				return { observe: vi.fn(), disconnect };
+			});
+			// Capture the frame instead of running it immediately, so tests can simulate
+			// several resize notifications before it fires.
+			global.requestAnimationFrame = callback => {
+				scheduledFrame = callback;
+				return 1;
+			};
+		});
+
+		afterEach(() => {
+			delete global.ResizeObserver;
+			delete global.requestAnimationFrame;
+		});
+
+		it('re-scrolls to the bottom when the survey resizes after opening', async () => {
+			const scrollTo = vi.fn();
+			Element.prototype.scrollTo = scrollTo;
+			const { getByText } = renderSlideInLightboxBody();
+
+			await fireEvent.click(getByText('Share your feedback'));
+			scrollTo.mockClear();
+
+			// Simulate the iframe reporting its real content height after the initial scroll.
+			resizeCallback();
+			scheduledFrame();
+
+			expect(scrollTo).toHaveBeenCalledTimes(1);
+		});
+
+		it('coalesces multiple resize notifications before the frame fires into one scroll', async () => {
+			const scrollTo = vi.fn();
+			Element.prototype.scrollTo = scrollTo;
+			const { getByText } = renderSlideInLightboxBody();
+
+			await fireEvent.click(getByText('Share your feedback'));
+			scrollTo.mockClear();
+
+			// The iframe can report several intermediate heights before settling.
+			resizeCallback();
+			resizeCallback();
+			resizeCallback();
+			scheduledFrame();
+
+			expect(scrollTo).toHaveBeenCalledTimes(1);
+		});
+
+		it('stops watching for resize once the feedback survey is closed', async () => {
+			const { getByText } = renderSlideInLightboxBody();
+
+			await fireEvent.click(getByText('Share your feedback'));
+			await fireEvent.click(getByText('Share your feedback'));
+
+			expect(disconnect).toHaveBeenCalledTimes(1);
+		});
+
+		it('stops watching for resize when the survey is submitted', async () => {
+			const { getByText, getByTestId } = renderSlideInLightboxBody();
+
+			await fireEvent.click(getByText('Share your feedback'));
+			await fireEvent.click(getByTestId('fa-submit'));
+
+			expect(disconnect).toHaveBeenCalledTimes(1);
+		});
+
+		it('stops watching for resize when the component unmounts', async () => {
+			const { getByText, unmount } = renderSlideInLightboxBody();
+
+			await fireEvent.click(getByText('Share your feedback'));
+			unmount();
+
+			expect(disconnect).toHaveBeenCalledTimes(1);
+		});
 	});
 
 	it('tracks opening the feedback survey', async () => {
