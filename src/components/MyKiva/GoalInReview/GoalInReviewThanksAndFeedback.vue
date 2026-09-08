@@ -56,6 +56,7 @@
 						doesn't remount and reload the Form Assembly iframe.
 					-->
 					<div
+						ref="feedbackPlaceholderRef"
 						v-show="feedbackOpen"
 						class="tw-w-full tw-text-eco-green-1"
 						data-testid="goal-in-review-thanks-and-feedback-feedback-placeholder"
@@ -69,7 +70,9 @@
 </template>
 
 <script setup>
-import { computed, inject, ref } from 'vue';
+import {
+	computed, inject, nextTick, onBeforeUnmount, ref
+} from 'vue';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiChevronDown } from '@mdi/js';
 import GoalInReviewFeedbackForm from '#src/components/MyKiva/GoalInReview/GoalInReviewFeedbackForm';
@@ -103,22 +106,67 @@ const emit = defineEmits(['goal-recap-back-to-kiva', 'finish-goal', 'set-goal', 
 const $kvTrackEvent = inject('$kvTrackEvent', () => {});
 
 const feedbackOpen = ref(false);
+const feedbackPlaceholderRef = ref(null);
 // Set once the survey is submitted this session so the toggle disappears and can't
 // re-fire the share-feedback event.
 const feedbackSubmittedLocally = ref(false);
 
-const toggleFeedback = () => {
+let feedbackResizeObserver = null;
+let pendingFeedbackScrollFrame = null;
+
+const scrollFeedbackIntoView = () => {
+	// The survey is the last thing in the slide, so scrolling the container to its
+	// bottom is how we reveal it.
+	const lightboxBody = feedbackPlaceholderRef.value?.closest('#kvLightboxBody');
+	lightboxBody?.scrollTo({ top: lightboxBody.scrollHeight, behavior: 'smooth' });
+};
+
+// Coalesce bursts of resize notifications into one scroll per frame so they don't
+// keep restarting the animation.
+const scheduleScrollFeedbackIntoView = () => {
+	if (pendingFeedbackScrollFrame !== null) return;
+	pendingFeedbackScrollFrame = requestAnimationFrame(() => {
+		pendingFeedbackScrollFrame = null;
+		scrollFeedbackIntoView();
+	});
+};
+
+const stopWatchingFeedbackResize = () => {
+	feedbackResizeObserver?.disconnect();
+	feedbackResizeObserver = null;
+	if (pendingFeedbackScrollFrame !== null) {
+		cancelAnimationFrame(pendingFeedbackScrollFrame);
+		pendingFeedbackScrollFrame = null;
+	}
+};
+
+const toggleFeedback = async () => {
 	feedbackOpen.value = !feedbackOpen.value;
-	if (feedbackOpen.value) {
-		$kvTrackEvent('portfolio', 'click', 'goal-in-review-share-feedback');
+	if (!feedbackOpen.value) {
+		stopWatchingFeedbackResize();
+		return;
+	}
+
+	$kvTrackEvent('portfolio', 'click', 'goal-in-review-share-feedback');
+	await nextTick();
+	scrollFeedbackIntoView();
+
+	// The Form Assembly iframe reports its real height late (async postMessage), so
+	// keep re-scrolling as the survey's size changes.
+	if (typeof ResizeObserver !== 'undefined' && feedbackPlaceholderRef.value) {
+		feedbackResizeObserver = new ResizeObserver(scheduleScrollFeedbackIntoView);
+		feedbackResizeObserver.observe(feedbackPlaceholderRef.value);
 	}
 };
 
 const handleFeedbackSubmitted = () => {
 	feedbackSubmittedLocally.value = true;
 	feedbackOpen.value = false;
+	stopWatchingFeedbackResize();
 	emit('feedback-submitted');
 };
+
+onBeforeUnmount(stopWatchingFeedbackResize);
 
 const isComplete = computed(() => props.goalStatus === 'completed');
 
