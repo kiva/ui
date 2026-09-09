@@ -64,12 +64,6 @@ const HeroWithCarousel = defineAsyncComponent(() => import('#src/components/Cont
 const LoansByCategoryCarousel = defineAsyncComponent(() => import(
 	'#src/components/Contentful/LoansByCategoryCarousel'
 ));
-const LoansByCategoryGrid = defineAsyncComponent(() => import(
-	'#src/components/Contentful/HomePage/NewHomeLoansByCategoryGrid'
-));
-const NewHomeLoansCardsCarousel = defineAsyncComponent(() => import(
-	'#src/components/Contentful/HomePage/NewHomeLoansCardCarousel'
-));
 const MonthlyGoodSelectorWrapper = defineAsyncComponent(() => import(
 	'#src/components/MonthlyGood/MonthlyGoodSelectorWrapper'
 ));
@@ -131,10 +125,6 @@ const getComponentFromType = type => {
 			return HeroWithCarousel;
 		case 'loansByCategoryCarousel':
 			return LoansByCategoryCarousel;
-		case 'loansByCategoryGrid':
-			return LoansByCategoryGrid;
-		case 'newHomeLoansCardCarousel':
-			return NewHomeLoansCardsCarousel;
 		case 'richTextItemsCentered':
 			return RichTextItemsCentered;
 		case 'mediaItemsCentered':
