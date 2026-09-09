@@ -468,6 +468,32 @@ export const LIFETIME_PERCENTILE_THRESHOLD = 80;
 // <strong> to normal weight, so the class restores emphasis. Rendered via v-html.
 const bold = text => `<strong class="tw-font-medium">${text}</strong>`;
 
+/**
+ * Whether the recap is being read after the goal year ended. Unknown years read as the
+ * current year, so a missing prop leaves the copy in the present tense.
+ *
+ * @param {number|string|null} year The recap's goal year.
+ * @param {number|string|null} currentYear The current year.
+ * @returns {boolean} Whether the goal year has already ended.
+ */
+export function getIsPastGoalYear(year, currentYear) {
+	if (!year || !currentYear) {
+		return false;
+	}
+	return Number(currentYear) > Number(year);
+}
+
+/**
+ * How the recap's copy refers to the goal year. The March cutoff in
+ * getRecapEntryCutoff keeps "last year" accurate — no recap outlives it.
+ *
+ * @param {boolean} [isPastGoalYear] Whether the goal year has already ended.
+ * @returns {string} The timeframe phrase to interpolate into copy.
+ */
+export function getRecapTimeframe(isPastGoalYear = false) {
+	return isPastGoalYear ? 'last year' : 'this year';
+}
+
 // Origin-story variants indexed by calendar quarter (Q1 = Jan–Mar … Q4 = Oct–Dec).
 // `content` is a function so the real start month can be interpolated in.
 const ORIGIN_STORY_VARIANTS = [
@@ -546,26 +572,29 @@ const goalInReviewCopy = {
 	 * @param {object} data Habit inputs.
 	 * @param {number} [data.transactionSessionCount] Sessions with a transaction.
 	 * @param {number} [data.lifetimePercentile] The lender's lifetime percentile.
+	 * @param {boolean} [data.isPastGoalYear] Whether to phrase the lending as "last year".
 	 * @returns {{title: string, content: string}} Card title and body.
 	 */
-	getImpactHabit({ transactionSessionCount, lifetimePercentile } = {}) {
+	getImpactHabit({ transactionSessionCount, lifetimePercentile, isPastGoalYear = false } = {}) {
 		const percentile = Number(lifetimePercentile);
 		if (Number.isFinite(percentile) && percentile >= LIFETIME_PERCENTILE_THRESHOLD) {
-			return this.getImpactHabitTopPercentile(percentile);
+			return this.getImpactHabitTopPercentile(percentile, isPastGoalYear);
 		}
 
 		const count = Number(transactionSessionCount) || 0;
 		const timeWord = count === 1 ? 'time' : 'times';
+		const timeframe = getRecapTimeframe(isPastGoalYear);
 		if (count >= KIVA_CHAMPION_MIN_SESSIONS) {
 			return {
 				title: 'Kiva champion',
 				// eslint-disable-next-line max-len
-				content: `You showed up ${bold(`${count} ${timeWord}`)} this year, turning your commitment to impact into a lasting habit.`,
+				content: `You showed up ${bold(`${count} ${timeWord}`)} ${timeframe}, turning your commitment to impact into a lasting habit.`,
 			};
 		}
 		return {
 			title: 'Rising Kiva champion',
-			content: `You showed up ${bold(`${count} ${timeWord}`)} this year and started building a habit of impact.`,
+			// eslint-disable-next-line max-len
+			content: `You showed up ${bold(`${count} ${timeWord}`)} ${timeframe} and started building a habit of impact.`,
 		};
 	},
 
@@ -573,13 +602,15 @@ const goalInReviewCopy = {
 	 * Impact-habit card copy for top-percentile lenders (>= threshold).
 	 *
 	 * @param {number} lifetimePercentile The lender's lifetime percentile.
+	 * @param {boolean} [isPastGoalYear] Whether to phrase the lending as "last year".
 	 * @returns {{title: string, content: string}} Card title and body.
 	 */
-	getImpactHabitTopPercentile(lifetimePercentile) {
+	getImpactHabitTopPercentile(lifetimePercentile, isPastGoalYear = false) {
 		const topPercent = Math.max(100 - lifetimePercentile, 1);
 		return {
 			title: `Top ${topPercent}%`,
-			content: `Your lending places you among the top ${topPercent}% of goal setters this year.`,
+			// eslint-disable-next-line max-len
+			content: `Your lending places you among the top ${topPercent}% of goal setters ${getRecapTimeframe(isPastGoalYear)}.`,
 		};
 	},
 };

@@ -85,7 +85,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import goalInReviewCopy from '#src/util/goalInReview';
+import goalInReviewCopy, { getIsPastGoalYear } from '#src/util/goalInReview';
 import CloudSun from '#src/assets/images/my-kiva/goal-in-review/cloud-sun.svg';
 import DoubleHandsAndHeart from '#src/assets/images/my-kiva/goal-in-review/double-hands-and-heart.svg';
 import GreenPuzzle from '#src/assets/images/my-kiva/goal-in-review/green-puzzle.svg';
@@ -99,13 +99,25 @@ const props = defineProps({
 		type: Number,
 		default: null,
 	},
+	year: {
+		type: [Number, String],
+		default: null,
+	},
+	currentYear: {
+		type: [Number, String],
+		default: null,
+	},
 });
+
+// A recap read in a later year than the goal ran in talks about it in the past tense.
+const isPastGoalYear = computed(() => getIsPastGoalYear(props.year, props.currentYear));
 
 const originStory = computed(() => goalInReviewCopy.getOriginStory(props.goalSummary?.dateStarted));
 const impactIdentity = computed(() => goalInReviewCopy.getImpactIdentity(props.goalSummary?.category));
 const impactHabit = computed(() => goalInReviewCopy.getImpactHabit({
 	transactionSessionCount: props.goalSummary?.transactionSessionCount,
 	lifetimePercentile: props.lifetimePercentile,
+	isPastGoalYear: isPastGoalYear.value,
 }));
 </script>
 
