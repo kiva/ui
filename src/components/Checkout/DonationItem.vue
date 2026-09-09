@@ -147,6 +147,7 @@
 						>
 							{{ donationDetailsLink }}
 							<kv-material-icon
+								v-if="!showTipFromBalanceVariant"
 								class="tw-ml-0.5 tw-w-2 tw-h-2"
 								:icon="mdiArrowRight"
 							/>
