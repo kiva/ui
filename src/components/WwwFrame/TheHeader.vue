@@ -603,11 +603,7 @@ import addToBasketMixin from '#src/plugins/add-to-basket-mixin';
 import {
 	KvButton, KvLoadingPlaceholder, KvMaterialIcon, KvPageContainer, KvWwwHeaderBasic
 } from '@kiva/kv-components';
-import {
-	getInitialExperimentVersion,
-	queryExperimentAssignment,
-	trackExperimentVersion,
-} from '#src/util/experiment/experimentUtils';
+import { queryExperimentAssignment, trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import useMyKivaHome from '#src/composables/useMyKivaHome';
 import { COUNTRIES_NOT_LENT_TO_URL } from '#src/util/headerUtils';
@@ -823,18 +819,6 @@ export default {
 	created() {
 		this.isBasketLoading = this.$renderConfig?.useCDNCaching ?? false;
 		this.isUserDataLoading = this.$renderConfig?.useCDNCaching && this.$renderConfig?.cdnNotedLoggedIn;
-
-		// Read any stored assignment before the first paint so an already-assigned visitor renders
-		// the final header rather than animating into it again on every page load. Skipped on
-		// CDN-cached pages, whose markup is shared between visitors, so the assignment there waits
-		// for the client-side query below like the rest of the user-specific header state.
-		if (!this.$renderConfig?.useCDNCaching) {
-			this.isMajorGiftsHeaderExp = getInitialExperimentVersion(
-				this.cookieStore,
-				this.apollo,
-				MAJOR_GIFTS_HEADER_EXP_KEY,
-			) === 'b';
-		}
 	},
 	mounted() {
 		// Assigned on the client rather than prefetched during SSR, so an unassigned visitor has no

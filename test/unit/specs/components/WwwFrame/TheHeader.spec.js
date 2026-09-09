@@ -147,20 +147,12 @@ describe('TheHeader', () => {
 			await waitFor(() => expect(majorGiftsEnabled(queryByTestId)).toBe('false'));
 		});
 
-		it('should turn the major gifts state on during the first render when the cookie assigns version b', () => {
+		// Nothing reads the assignment before mount. The stored assignment reaches the header
+		// through the query's own cache-first lookup and the resolver's cookie read, so a first
+		// render that consulted the cookie itself would only risk putting a per-visitor value into
+		// server-rendered markup that a CDN can share.
+		it('should ignore the stored assignment until the query resolves', async () => {
 			const { queryByTestId } = renderHeader({}, {}, {
-				apollo: apolloAssigning('b'),
-				cookieStore: cookieStoreAssigning('b'),
-			});
-
-			expect(majorGiftsEnabled(queryByTestId)).toBe('true');
-		});
-
-		// A CDN-cached response is shared between visitors, so the stored assignment must not reach
-		// the server-rendered markup. Those pages wait for the client-side query like any other
-		// user-specific header state.
-		it('should ignore the stored assignment during the first render of a CDN-cached page', async () => {
-			const { queryByTestId } = renderHeader({}, { useCDNCaching: true }, {
 				apollo: apolloAssigning('b'),
 				cookieStore: cookieStoreAssigning('b'),
 			});
