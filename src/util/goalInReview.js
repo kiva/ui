@@ -477,14 +477,14 @@ const bold = text => `<strong class="tw-font-medium">${text}</strong>`;
  * @returns {boolean} Whether the goal year has already ended.
  */
 export function getIsPastGoalYear(year, currentYear) {
-	if (!year || currentYear == null) {
+	if (!year || !currentYear) {
 		return false;
 	}
 	return Number(currentYear) > Number(year);
 }
 
 /**
- * How the recap's copy refers to the goal year (MP-3153). The March cutoff in
+ * How the recap's copy refers to the goal year. The March cutoff in
  * getRecapEntryCutoff keeps "last year" accurate — no recap outlives it.
  *
  * @param {boolean} [isPastGoalYear] Whether the goal year has already ended.
