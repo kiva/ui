@@ -77,6 +77,7 @@
 
 			<kv-text-link
 				v-if="totalItemCount > initialItemLimit"
+				class="tw-uppercase"
 				:data-testid="`bp-${displayType}-see-all-link`"
 				@click="openLightbox"
 			>

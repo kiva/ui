@@ -1,6 +1,7 @@
 <template>
 	<section data-testid="bp-story-previous-loan">
 		<kv-text-link
+			class="tw-uppercase"
 			v-kv-track-event="['Borrower profile', 'click-Loan details', 'Show previous loan details', loanId]"
 			@click.prevent="performClick"
 		>
