@@ -156,6 +156,19 @@ describe('TheHeader', () => {
 			expect(majorGiftsEnabled(queryByTestId)).toBe('true');
 		});
 
+		// A CDN-cached response is shared between visitors, so the stored assignment must not reach
+		// the server-rendered markup. Those pages wait for the client-side query like any other
+		// user-specific header state.
+		it('should ignore the stored assignment during the first render of a CDN-cached page', async () => {
+			const { queryByTestId } = renderHeader({}, { useCDNCaching: true }, {
+				apollo: apolloAssigning('b'),
+				cookieStore: cookieStoreAssigning('b'),
+			});
+
+			expect(majorGiftsEnabled(queryByTestId)).toBe('false');
+			await waitFor(() => expect(majorGiftsEnabled(queryByTestId)).toBe('true'));
+		});
+
 		it('should turn the major gifts state on once the client-side assignment resolves to version b', async () => {
 			const { queryByTestId } = renderHeader({}, {}, { apollo: apolloAssigning('b') });
 

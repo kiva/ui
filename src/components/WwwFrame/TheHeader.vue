@@ -825,12 +825,16 @@ export default {
 		this.isUserDataLoading = this.$renderConfig?.useCDNCaching && this.$renderConfig?.cdnNotedLoggedIn;
 
 		// Read any stored assignment before the first paint so an already-assigned visitor renders
-		// the final header rather than animating into it again on every page load.
-		this.isMajorGiftsHeaderExp = getInitialExperimentVersion(
-			this.cookieStore,
-			this.apollo,
-			MAJOR_GIFTS_HEADER_EXP_KEY,
-		) === 'b';
+		// the final header rather than animating into it again on every page load. Skipped on
+		// CDN-cached pages, whose markup is shared between visitors, so the assignment there waits
+		// for the client-side query below like the rest of the user-specific header state.
+		if (!this.$renderConfig?.useCDNCaching) {
+			this.isMajorGiftsHeaderExp = getInitialExperimentVersion(
+				this.cookieStore,
+				this.apollo,
+				MAJOR_GIFTS_HEADER_EXP_KEY,
+			) === 'b';
+		}
 	},
 	mounted() {
 		// Assigned on the client rather than prefetched during SSR, so an unassigned visitor has no
