@@ -1,3 +1,33 @@
+## [3.93.0-rc.2](https://github.com/kiva/ui/compare/v3.93.0-rc.1...v3.93.0-rc.2) (2026-09-09)
+
+### 🎉 New Features
+
+* cit-5177-toggle the major gifts header state on the client-side experiment ([1a7d4d1](https://github.com/kiva/ui/commit/1a7d4d1b0d395fe88532a5978c34ff25ec4f6b6f))
+* copy changes for goal in review giving insights ([f85bb03](https://github.com/kiva/ui/commit/f85bb038752af174fd276a6c9a1058b2f36d9a9f))
+* giving funds link redirect fix ([6e8fb1a](https://github.com/kiva/ui/commit/6e8fb1aef93b5ca83fd34e3523efd152881b04a5))
+* mp-3194 layout fixes ([#7237](https://github.com/kiva/ui/issues/7237)) ([58162c8](https://github.com/kiva/ui/commit/58162c8f3a24bf66ae4d16ee30e0ee6b712b3929))
+
+### 🐛 Bugfixes
+
+* [MP-3168] scroll goal-in-review modal to reveal feedback survey ([#7230](https://github.com/kiva/ui/issues/7230)) ([620c52e](https://github.com/kiva/ui/commit/620c52e20cba999d3f72265d34996e795f153590))
+* [MP-3195] design feedback adjustments for compact live loan card ([#7245](https://github.com/kiva/ui/issues/7245)) ([8089b4a](https://github.com/kiva/ui/commit/8089b4a00891455b02f8686c1e4ea1ce5f7b5014))
+* cit-5177-keep the header assignment out of CDN-cached markup ([2f56003](https://github.com/kiva/ui/commit/2f560038101e4194540b04b0d46f66d6c8e6f1fa))
+* keep text links uppercase and bump kv-components to 10 ([#7231](https://github.com/kiva/ui/issues/7231)) ([3cb00ca](https://github.com/kiva/ui/commit/3cb00ca1b7fcfc4b70e226baeba0f39f1de299cb))
+* mp-3193-show the switch only when credit can reach the tip ([#7238](https://github.com/kiva/ui/issues/7238)) ([32a89a1](https://github.com/kiva/ui/commit/32a89a1272f8166c7d4df49f8b0de7b5a031d2b5))
+* resolve comments ([5cef137](https://github.com/kiva/ui/commit/5cef1377e2bbaff02e86797375ef94183be734e3))
+
+### 🪚 Refactors
+
+* cit-5177-resolve the header assignment only in mounted ([5f456ff](https://github.com/kiva/ui/commit/5f456ff26eeb18ee3ec2f16de1c00b82c8c1a601))
+* use loan category ids instead of loan channel ids ([#7229](https://github.com/kiva/ui/issues/7229)) ([fdb539f](https://github.com/kiva/ui/commit/fdb539fa54cb71392ee96ce93f269bdc8a864437))
+
+### 🧹 Chores
+
+* gate the cc route on page type and remove unreachable grid components ([#7242](https://github.com/kiva/ui/issues/7242)) ([f30d73e](https://github.com/kiva/ui/commit/f30d73e29f3f9fdd8d8009ae6b7ca4ba04c76f41))
+* remove dead loanChannel queries ([#7239](https://github.com/kiva/ui/issues/7239)) ([a246a9d](https://github.com/kiva/ui/commit/a246a9d6f2802b3c0e78ed56b278b9b5ac754ffc))
+* remove orphaned storybook story ([#7243](https://github.com/kiva/ui/issues/7243)) ([808e548](https://github.com/kiva/ui/commit/808e548cc2c227029236e387e4f7e68f3a7f6466))
+* update kv-components with latest major gifts prop for header exp ([ff8511e](https://github.com/kiva/ui/commit/ff8511e468ba0c47e4860f67781f619d7244adeb))
+
 ## [3.93.0-rc.1](https://github.com/kiva/ui/compare/v3.92.0...v3.93.0-rc.1) (2026-09-08)
 
 ### 🎉 New Features
