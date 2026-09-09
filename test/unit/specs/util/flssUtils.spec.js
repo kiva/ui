@@ -1,7 +1,6 @@
 import {
 	fetchFacets,
 	fetchLoans,
-	fetchCategories,
 	getFlssFilters,
 	getLoanChannelVariables,
 	fetchLoanChannel,
@@ -12,7 +11,6 @@ import {
 import flssLoanQuery from '#src/graphql/query/flssLoansQuery.graphql';
 import flssLoanFacetsQuery from '#src/graphql/query/flssLoanFacetsQuery.graphql';
 import flssLoanChannelQuery from '#src/graphql/query/flssLoanChannel.graphql';
-import categoryListFlssQuery from '#src/graphql/query/loanFinding/categoryListFlss.graphql';
 import filterConfig from '#src/util/loanSearch/filterConfig';
 import loanRecommendationsQuery from '#src/graphql/query/loanRecommendationsQuery.graphql';
 
@@ -62,23 +60,6 @@ describe('flssUtils.js', () => {
 
 		it('should return the fundraising facets data', async () => {
 			const data = await fetchFacets(apollo, 'web:test-context', filters, filters, filters, filters);
-			expect(data).toBe(result);
-		});
-	});
-
-	describe('fetchCategories', () => {
-		const result = {};
-		const dataObj = { data: result };
-		const apollo = { query: vi.fn(() => Promise.resolve(dataObj)) };
-		const apolloVariables = { query: categoryListFlssQuery, fetchPolicy: 'network-only' };
-
-		it('should pass the correct query variables to apollo', async () => {
-			await fetchCategories(apollo);
-			expect(apollo.query).toHaveBeenCalledWith(apolloVariables);
-		});
-
-		it('should return the categories data', async () => {
-			const data = await fetchCategories(apollo);
 			expect(data).toBe(result);
 		});
 	});
@@ -310,12 +291,6 @@ describe('flssUtils.js', () => {
 		it('fetchFacets should handle apollo query errors', async () => {
 			const apolloWithError = { query: vi.fn().mockRejectedValue(new Error('Query failed')) };
 			const data = await fetchFacets(apolloWithError);
-			expect(data).toBeUndefined();
-		});
-
-		it('fetchCategories should handle apollo query errors', async () => {
-			const apolloWithError = { query: vi.fn().mockRejectedValue(new Error('Query failed')) };
-			const data = await fetchCategories(apolloWithError);
 			expect(data).toBeUndefined();
 		});
 

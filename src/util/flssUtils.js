@@ -2,7 +2,6 @@ import flssLoanQuery from '#src/graphql/query/flssLoansQuery.graphql';
 import loanRecommendationsQuery from '#src/graphql/query/loanRecommendationsQuery.graphql';
 import flssLoanFacetsQuery from '#src/graphql/query/flssLoanFacetsQuery.graphql';
 import flssLoanChannelQuery from '#src/graphql/query/flssLoanChannel.graphql';
-import categoryListFlssQuery from '#src/graphql/query/loanFinding/categoryListFlss.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 import filterConfig from '#src/util/loanSearch/filterConfig';
 
@@ -64,26 +63,6 @@ export async function fetchFacets(
 		return result.data;
 	} catch (e) {
 		logReadQueryError(e, 'flssUtils fetchFacets flssLoanFacetsQuery');
-	}
-}
-
-/**
- * Fetches list of categories from FLSS
- *
- * @param {Object} apollo The Apollo client instant
- * @returns {Promise<Array<Object>>} Promise for category name/id
- */
-export async function fetchCategories(
-	apollo
-) {
-	try {
-		const result = await apollo.query({
-			query: categoryListFlssQuery,
-			fetchPolicy: 'network-only',
-		});
-		return result.data;
-	} catch (e) {
-		logReadQueryError(e, 'flssUtils fetchCategories categoryListFlssQuery');
 	}
 }
 
