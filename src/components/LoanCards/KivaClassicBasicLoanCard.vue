@@ -99,6 +99,7 @@
 		<p v-if="!isLoading" class="tw-mb-2.5 tw-flex-grow">
 			{{ loanUse }}
 			<kv-text-link
+				class="tw-uppercase"
 				v-kv-track-event="['Lending', 'click-Read more', 'Learn more', loanId]"
 				@click="showLoanDetails"
 			>

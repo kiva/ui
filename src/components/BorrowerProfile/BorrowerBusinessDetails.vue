@@ -10,7 +10,7 @@
 		<kv-text-link
 			v-if="processedWebsite"
 			:icon="mdiArrowTopRight"
-			class="tw-mb-2"
+			class="tw-mb-2 tw-uppercase"
 			data-testid="bp-direct-business-website"
 			target="_blank"
 			:href="processedWebsite"
