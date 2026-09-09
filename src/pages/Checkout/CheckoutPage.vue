@@ -951,16 +951,17 @@ export default {
 		tipToggleBasketState() {
 			// What the tip toggle needs, so it does not run its own copy of the checkout query
 			const tip = this.donations.find(donation => !donation.metadata?.campaignId);
+			const tipAmount = numeral(tip?.price).value() ?? 0;
 			return {
 				myId: this.myId,
 				balance: numeral(this.myBalance).value() ?? 0,
 				hasLoans: this.loans.length > 0,
-				tipAmount: numeral(tip?.price).value() ?? 0,
+				tipAmount,
 				basketId: this.basketId,
 				applyKivaCreditToDonation: this.applyKivaCreditToDonation,
-				// What credit pays for before it can reach the tip
-				nonTipTotal: (numeral(this.totals.loanReservationTotal).value() ?? 0)
-					+ (numeral(this.totals.kivaCardTotal).value() ?? 0),
+				// Everything the balance has to pay for before the tip, campaign donations included
+				nonTipTotal: (numeral(this.totals.itemTotal).value() ?? 0) - tipAmount,
+
 				onTeam: this.teams?.length > 0,
 				lifetimeDeposits: this.lifetimeDeposits,
 			};
