@@ -75,6 +75,7 @@ import {
 } from 'vue';
 import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
 import { mdiChevronDown } from '@mdi/js';
+import { getIsPastGoalYear, getRecapTimeframe } from '#src/util/goalInReview';
 import GoalInReviewFeedbackForm from '#src/components/MyKiva/GoalInReview/GoalInReviewFeedbackForm';
 import leafHeart from '#src/assets/images/leaf_heart.svg?url';
 
@@ -171,11 +172,8 @@ onBeforeUnmount(stopWatchingFeedbackResize);
 const isComplete = computed(() => props.goalStatus === 'completed');
 
 // After Jan 1 of the year following the goal year, the recap points forward to next year's goal.
-// currentYear is passed down from the container; falls back to false (current-year state) when absent.
-const isPastGoalYear = computed(() => {
-	if (!props.year || props.currentYear == null) return false;
-	return Number(props.currentYear) > Number(props.year);
-});
+// currentYear is passed down from the container.
+const isPastGoalYear = computed(() => getIsPastGoalYear(props.year, props.currentYear));
 
 const dreamsCopy = computed(() => {
 	if (!props.loanCount) {
@@ -184,7 +182,7 @@ const dreamsCopy = computed(() => {
 	return props.loanCount === 1 ? '1 dream' : `${props.loanCount} dreams`;
 });
 
-const timeframe = computed(() => (isPastGoalYear.value ? 'last year' : 'this year'));
+const timeframe = computed(() => getRecapTimeframe(isPastGoalYear.value));
 
 // In-progress goals in the current year get an "already helped" lead; everything else is a thank-you.
 const contributionLead = computed(() => (!isComplete.value && !isPastGoalYear.value

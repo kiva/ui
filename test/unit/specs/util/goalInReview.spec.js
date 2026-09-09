@@ -803,6 +803,23 @@ describe('goalInReviewCopy.js', () => {
 			expect(title).toBe('Rising Kiva champion');
 			expect(content).toContain(`You showed up ${strong('0 times')} this year`);
 		});
+
+		describe('read in a later year than the goal ran in', () => {
+			it('looks back on the top percentile in the past tense', () => {
+				expect(goalInReviewCopy.getImpactHabit({ lifetimePercentile: 92, isPastGoalYear: true }).content)
+					.toBe('Your lending places you among the top 8% of goal setters last year.');
+			});
+
+			it('looks back on a Kiva champion\u2019s sessions in the past tense', () => {
+				expect(goalInReviewCopy.getImpactHabit({ transactionSessionCount: 6, isPastGoalYear: true }).content)
+					.toContain(`You showed up ${strong('6 times')} last year, turning your commitment`);
+			});
+
+			it('looks back on a rising champion\u2019s sessions in the past tense', () => {
+				expect(goalInReviewCopy.getImpactHabit({ transactionSessionCount: 2, isPastGoalYear: true }).content)
+					.toContain(`You showed up ${strong('2 times')} last year and started building`);
+			});
+		});
 	});
 });
 

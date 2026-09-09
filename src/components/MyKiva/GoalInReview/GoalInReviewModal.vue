@@ -40,6 +40,8 @@
 				<GoalInReviewGivingInsights
 					:goal-summary="data?.goalSummary"
 					:lifetime-percentile="data?.lifetimePercentile"
+					:year="data?.year"
+					:current-year="currentYear"
 				/>
 			</div>
 			<div data-slide-view="5" data-animate-on-view>
