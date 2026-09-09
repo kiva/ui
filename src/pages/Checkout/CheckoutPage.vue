@@ -961,7 +961,6 @@ export default {
 				applyKivaCreditToDonation: this.applyKivaCreditToDonation,
 				// Everything the balance has to pay for before the tip, campaign donations included
 				nonTipTotal: (numeral(this.totals.itemTotal).value() ?? 0) - tipAmount,
-
 				onTeam: this.teams?.length > 0,
 				lifetimeDeposits: this.lifetimeDeposits,
 			};
