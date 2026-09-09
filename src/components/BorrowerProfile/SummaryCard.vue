@@ -100,6 +100,7 @@
 			{{ use }}
 			<kv-text-link
 				v-if="anonymizationLevel === 'full'"
+				class="tw-uppercase"
 				data-testid="bp-summary-anonymous-learn-more"
 				@click="openDefinition({ cid: 'bp-def-anonymous-description', sfid: '50150000000SXVz' })"
 				v-kv-track-event="[

@@ -162,7 +162,6 @@
 				class="tooltip"
 				data-testid="promo-tool-tip"
 				controller="promo_name"
-				theme="ecoGreenLight"
 				v-if="promoFundDisplayDescription && !isCorporateCampaign"
 			>
 				{{ promoFundDisplayDescription }}

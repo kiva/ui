@@ -1,7 +1,8 @@
 <template>
 	<section
 		class="tw-w-full tw-pb-2 md:tw-pb-0 tw-relative tw-isolate
-			tw-bg-gray-50 tw-bg-no-repeat tw-bg-bottom goal-in-review-headline"
+			tw-bg-gray-50 tw-bg-no-repeat tw-bg-bottom goal-in-review-headline
+			tw-flex tw-flex-col md:tw-justify-between tw-gap-4 md:tw-gap-0"
 		:class="{ 'goal-in-review-headline--in-progress': !isComplete }"
 		data-testid="goal-in-review-headline"
 	>
@@ -78,14 +79,14 @@
 					Your goal moved <br> <span class="tw-text-marigold">lives forward</span>
 				</template>
 			</h1>
+
+			<h3 class="tw-mx-auto tw-max-w-lg kv-fade-up headline-subtext">
+				Because of your commitment, borrowers could count on Kiva to be there when it mattered.
+			</h3>
 		</div>
 
 		<div>
 			<div class="tw-px-2 md:tw-px-4 lg:tw-px-8 tw-mx-auto tw-text-center">
-				<h3 class="tw-mx-auto tw-mb-8 lg:tw-mb-6 tw-max-w-lg kv-fade-up headline-subtext">
-					Because of your commitment, borrowers could count on Kiva to be there when it mattered.
-				</h3>
-
 				<ul
 					class="tw-grid tw-grid-cols-2 md:tw-grid-cols-4 tw-gap-2 tw-list-none tw-p-0 tw-m-0"
 					data-testid="goal-in-review-headline-stats"

@@ -17,6 +17,7 @@
 			class="tw-w-full md:tw-w-auto md:tw-ml-auto"
 			variant="primary"
 			:to="ctaTo"
+			target="_blank"
 			:aria-label="ctaCopy"
 			v-kv-track-event="clickTrackEventProps"
 		>

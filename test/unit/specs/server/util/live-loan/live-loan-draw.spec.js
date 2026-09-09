@@ -1,7 +1,13 @@
 // @vitest-environment node
 import { createCanvas, loadImage } from 'canvas';
 import draw, { compactCardDimensions } from '#server/util/live-loan/live-loan-draw';
-import { compactColors } from '#server/util/live-loan/compact-card-constants';
+import {
+	compactColors,
+	compactCardPadding,
+	compactTopRowHeight,
+	compactSectionGap,
+	compactResizeFactor,
+} from '#server/util/live-loan/compact-card-constants';
 import * as canvasImageUtils from '#server/util/live-loan/canvas-image-utils';
 
 vi.mock('#server/util/live-loan/canvas-image-utils');
@@ -10,9 +16,17 @@ vi.mock('#server/util/live-loan/canvas-image-utils');
 const SAMPLE_X_FRACTION = 0.77;
 // JPEG is lossy, so match a flat colour within a channel tolerance
 const COLOUR_TOLERANCE = 12;
-// Both greys are flat, so any channel of the hex is the target value
-const TRACK_GREY = parseInt(compactColors.progressTrack.slice(1, 3), 16);
-const BORDER_GREY = parseInt(compactColors.border.slice(1, 3), 16);
+
+function hexToRgb(hex) {
+	return {
+		r: parseInt(hex.slice(1, 3), 16),
+		g: parseInt(hex.slice(3, 5), 16),
+		b: parseInt(hex.slice(5, 7), 16),
+	};
+}
+
+const TRACK_COLOUR = hexToRgb(compactColors.progressTrack);
+const BORDER_COLOUR = hexToRgb(compactColors.border);
 
 // A real (drawable) node-canvas stands in for the borrower photo
 function fakeBorrowerImage() {
@@ -45,32 +59,32 @@ async function dimensionsOf(buffer) {
 	return { width: img.width, height: img.height };
 }
 
-// Decodes an image buffer onto a canvas context so its pixels can be sampled
-async function decodeToContext(buffer) {
+// Decodes an image buffer and returns the single pixel column at the given
+// fraction of its width, which is all the row scans below need.
+async function decodeColumn(buffer, xFraction) {
 	const img = await loadImage(buffer);
-	const ctx = createCanvas(img.width, img.height).getContext('2d');
-	ctx.drawImage(img, 0, 0);
-	return { ctx, width: img.width, height: img.height };
+	const x = Math.round(img.width * xFraction);
+	const ctx = createCanvas(1, img.height).getContext('2d');
+	ctx.drawImage(img, -x, 0);
+	return { data: ctx.getImageData(0, 0, 1, img.height).data, height: img.height };
 }
 
-// True when row y of a decoded 1px column matches the given flat grey within tolerance.
-function isGreyRow(data, y, target) {
+// True when row y of a decoded 1px column matches the given flat colour within tolerance.
+function isColourRow(data, y, target) {
 	const r = data[(y * 4)];
 	const g = data[(y * 4) + 1];
 	const b = data[(y * 4) + 2];
-	return Math.abs(r - target) < COLOUR_TOLERANCE
-		&& Math.abs(g - target) < COLOUR_TOLERANCE
-		&& Math.abs(b - target) < COLOUR_TOLERANCE;
+	return Math.abs(r - target.r) < COLOUR_TOLERANCE
+		&& Math.abs(g - target.g) < COLOUR_TOLERANCE
+		&& Math.abs(b - target.b) < COLOUR_TOLERANCE;
 }
 
-// Finds the top-most device row containing the border grey in a 1px-wide strip
+// Finds the top-most device row containing the border colour in a 1px-wide strip
 // down the horizontal centre, which locates the card's top border edge.
 async function topBorderY(buffer) {
-	const { ctx, width, height } = await decodeToContext(buffer);
-	const x = Math.round(width / 2);
-	const { data } = ctx.getImageData(x, 0, 1, height);
+	const { data, height } = await decodeColumn(buffer, 0.5);
 	for (let y = 0; y < height; y += 1) {
-		if (isGreyRow(data, y, BORDER_GREY)) {
+		if (isColourRow(data, y, BORDER_COLOUR)) {
 			return y;
 		}
 	}
@@ -80,16 +94,35 @@ async function topBorderY(buffer) {
 // Finds the bottom-most device row containing the progress-track grey in a
 // 1px-wide strip on the right half of the bar, which locates the bar vertically.
 async function barBottomY(buffer) {
-	const { ctx, width, height } = await decodeToContext(buffer);
-	const x = Math.round(width * SAMPLE_X_FRACTION);
-	const { data } = ctx.getImageData(x, 0, 1, height);
+	const { data, height } = await decodeColumn(buffer, SAMPLE_X_FRACTION);
 	let lastTrackRow = -1;
 	for (let y = 0; y < height; y += 1) {
-		if (isGreyRow(data, y, TRACK_GREY)) {
+		if (isColourRow(data, y, TRACK_COLOUR)) {
 			lastTrackRow = y;
 		}
 	}
 	return lastTrackRow;
+}
+
+// Anything this dark in the card is glyph ink rather than background or bar
+const TEXT_LUMINANCE_CEILING = 128;
+
+// Counts text-dark pixels in a horizontal band of the card, inside the padding so
+// the card border never counts as text.
+async function darkPixelsInBand(buffer, topDeviceY, bottomDeviceY) {
+	const img = await loadImage(buffer);
+	const ctx = createCanvas(img.width, img.height).getContext('2d');
+	ctx.drawImage(img, 0, 0);
+	const left = compactCardPadding * compactResizeFactor;
+	const { data } = ctx.getImageData(left, topDeviceY, img.width - (left * 2), bottomDeviceY - topDeviceY);
+	let count = 0;
+	for (let i = 0; i < data.length; i += 4) {
+		const luminance = (data[i] * 0.299) + (data[i + 1] * 0.587) + (data[i + 2] * 0.114);
+		if (luminance < TEXT_LUMINANCE_CEILING) {
+			count += 1;
+		}
+	}
+	return count;
 }
 
 describe('draw – compact-bundle style', () => {
@@ -157,6 +190,23 @@ describe('draw – compact-bundle style', () => {
 		expect(longBottom).toBeGreaterThan(compactCardDimensions.height * 0.75);
 		// ...and land in the same place whether the use text is 1 or 4 lines.
 		expect(Math.abs(shortBottom - longBottom)).toBeLessThanOrEqual(3);
+	});
+
+	it('keeps a full-length use statement inside the space reserved above the pills', async () => {
+		const { buffer } = await draw(
+			makeLoan({
+				use: 'To purchase additional flour, sugar, yeast, and other raw baking materials '
+					+ 'in bulk so she can expand her neighbourhood bakery and hire an assistant.',
+			}),
+			'compact-bundle',
+		);
+
+		// The gap between the reserved top row and the pill row must stay empty: if the
+		// use text outgrows its reserved height it descends into the pills.
+		const gapTop = (compactCardPadding + compactTopRowHeight) * compactResizeFactor;
+		const gapBottom = gapTop + (compactSectionGap * compactResizeFactor);
+
+		expect(await darkPixelsInBand(buffer, gapTop, gapBottom)).toBe(0);
 	});
 
 	it('leaves the existing bundle style at its own (non-compact) dimensions', async () => {

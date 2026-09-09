@@ -70,12 +70,18 @@
 							@removed-loan="calculateProgressAchievement($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
-						<div v-if="showUpsell && showUpsellModule" class="upsellContainer">
+						<div
+							v-if="showUpsell && showUpsellModule"
+							:class="showTipFromBalanceVariant
+								? 'upsell-container-compact md:tw-mb-2'
+								: 'upsellContainer'"
+						>
 							<kv-loading-placeholder v-if="!upsellLoan.name" class="tw-rounded" />
 							<upsell-module
 								v-if="upsellLoan.name"
 								:loan="upsellLoan"
 								:is-expiring-soon-exp-enabled="isExpiringSoonExpEnabled"
+								:show-tip-from-balance-variant="showTipFromBalanceVariant"
 								:close-upsell-module="closeUpsellModule"
 								:add-to-basket="addToBasket"
 							/>
@@ -360,6 +366,7 @@ import { CUSTOM_TIP_DEFAULT_EXP_KEY } from '#src/components/Checkout/DonationNud
 import {
 	TIP_FROM_BALANCE_EXP_KEY,
 	TIP_FROM_BALANCE_SEEDED_COOKIE,
+	meetsTipFromBalanceCriteria,
 } from '#src/components/Checkout/KivaCreditTipToggle';
 import updateKivaCreditDonationPreference from '#src/graphql/mutation/updateKivaCreditDonationPreference.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
@@ -472,6 +479,7 @@ export default {
 			customTipDefaultVersion: computed(() => this.customTipDefaultVersion),
 			tipFromBalanceVersion: computed(() => this.tipFromBalanceVersion),
 			tipToggleBasketState: computed(() => this.tipToggleBasketState),
+			tipFromBalanceEligible: computed(() => this.showTipFromBalanceVariant),
 		};
 	},
 	mixins: [checkoutUtils, fiveDollarsTest],
@@ -538,6 +546,7 @@ export default {
 			tipFromBalanceVersion: null,
 			applyKivaCreditToDonation: null,
 			basketId: null,
+			lifetimeDeposits: null,
 			resettingTipPreference: false,
 			tipPreferenceResetFailed: false,
 		};
@@ -591,6 +600,10 @@ export default {
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
 			this.teams = _get(data, 'my.lender.teams.values');
+			// The field is nullable, and null must read as "no deposits" rather than "not loaded", or a
+			// lender funded only by promo credit is never in the audience. Anything unparseable stays
+			// null and reads as not loaded, which keeps an unknown depositor out
+			this.lifetimeDeposits = numeral(_get(data, 'my.lendingStats.totalAmountDeposited') ?? 0).value();
 			this.hasEverLoggedIn = _get(data, 'hasEverLoggedIn', false);
 			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
 			// basket data
@@ -938,13 +951,18 @@ export default {
 		tipToggleBasketState() {
 			// What the tip toggle needs, so it does not run its own copy of the checkout query
 			const tip = this.donations.find(donation => !donation.metadata?.campaignId);
+			const tipAmount = numeral(tip?.price).value() ?? 0;
 			return {
 				myId: this.myId,
 				balance: numeral(this.myBalance).value() ?? 0,
 				hasLoans: this.loans.length > 0,
-				tipAmount: numeral(tip?.price).value() ?? 0,
+				tipAmount,
 				basketId: this.basketId,
 				applyKivaCreditToDonation: this.applyKivaCreditToDonation,
+				// Everything the balance has to pay for before the tip, campaign donations included
+				nonTipTotal: (numeral(this.totals.itemTotal).value() ?? 0) - tipAmount,
+				onTeam: this.teams?.length > 0,
+				lifetimeDeposits: this.lifetimeDeposits,
 			};
 		},
 		pendingTipPreferenceReset() {
@@ -957,6 +975,12 @@ export default {
 					&& !!this.tipFromBalanceVersion
 					&& this.tipFromBalanceVersion !== 'b'
 					&& this.applyKivaCreditToDonation === false);
+		},
+		showTipFromBalanceVariant() {
+			// The variant treatment only appears where the switch can, so a lender without a
+			// balance, a loan or a tip sees the original checkout untouched
+			return this.tipFromBalanceVersion === 'b'
+				&& meetsTipFromBalanceCriteria(this.tipToggleBasketState);
 		},
 		isKivaCreditText() {
 			return this.isKivaCreditReplacementExpEnabled ? 'Account balance' : 'Kiva Credit';
@@ -1573,9 +1597,18 @@ export default {
 .upsellContainer > .loading-placeholder {
 	min-height: 250px;
 }
+
+/* The compact banner is ~128px on desktop; mobile keeps the taller reservation below */
+.upsell-container-compact,
+.upsell-container-compact > .loading-placeholder {
+	@apply tw-min-h-16;
+}
+
 @media screen and (width <= 733px) {
 	.upsellContainer,
-	.upsellContainer > .loading-placeholder {
+	.upsellContainer > .loading-placeholder,
+	.upsell-container-compact,
+	.upsell-container-compact > .loading-placeholder {
 		min-height: 300px;
 	}
 }

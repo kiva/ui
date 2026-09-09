@@ -90,7 +90,7 @@
 			class="tooltip"
 			:controller="toolTipId"
 			:data-testid="`tooltip-id-${toolTipId}`"
-			theme="ecoGreenDark"
+			variant="dark"
 			v-if="teamTooltipData && !isMobile"
 		>
 			{{ teamTooltipData.category }}<br>

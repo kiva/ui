@@ -72,7 +72,7 @@
 			<li v-for="faq in faqItems" :key="faq.key">
 				<button
 					type="button"
-					class="tw-text-link tw-font-medium tw-bg-transparent tw-border-0 tw-p-0"
+					class="tw-text-link tw-text-left tw-font-medium tw-bg-transparent tw-border-0 tw-p-0"
 					@click="
 						$kvTrackEvent('user-settings', 'click', faq.value);
 						openFaq(faq.key)
@@ -168,15 +168,15 @@
 					<li>You can automatically make a donation to Kiva’s operating expenses.</li>
 					<li>
 						You can enable auto lending.
-						<a
+						<router-link
 							class="tw-text-link tw-font-medium"
-							href="/settings/autolending"
+							to="/settings/autolending"
 							@click="
 								$kvTrackEvent('user-settings', 'click', 'auto-lending-settings')
 							"
 						>
 							Click here
-						</a>
+						</router-link>
 						to change your auto lending settings.
 					</li>
 				</ul>
@@ -234,6 +234,49 @@
 				</p>
 			</div>
 		</kv-lightbox>
+
+		<kv-lightbox
+			:visible="showMonthlyGoodAutoLendingFaq"
+			title="Why can't I access my auto-lending settings as a Monthly Good subscriber?"
+			@lightbox-closed="
+				$kvTrackEvent('user-settings', 'click', 'autolending-settings-faq');
+				closeFaq('showMonthlyGoodAutoLendingFaq')
+			"
+		>
+			<div class="tw-space-y-3">
+				<p>
+					If you’re subscribed to Monthly Good, your lending preferences are based on the Monthly Good
+					category you selected, so you won’t be able to customize your standard auto-lending settings
+					separately.
+				</p>
+				<p>
+					You can update your
+					<span class="tw-font-medium">Monthly Good category or subscription</span> in your
+					<router-link
+						class="tw-text-link tw-font-medium"
+						to="/settings/subscriptions"
+						@click="
+							$kvTrackEvent('user-settings', 'click', 'autolending-settings-faq-subscription-settings')
+						"
+					>
+						subscription settings
+					</router-link>.
+				</p>
+				<p>
+					If you’d prefer to choose your own auto-lending criteria, you’ll need to cancel Monthly Good.
+					Once canceled, you can customize your preferences in your
+					<router-link
+						class="tw-text-link tw-font-medium"
+						to="/settings/autolending"
+						@click="
+							$kvTrackEvent('user-settings', 'click', 'autolending-settings-faq-autolending-settings')
+						"
+					>
+						auto-lending settings
+					</router-link>.
+				</p>
+			</div>
+		</kv-lightbox>
 	</aside>
 </template>
 
@@ -245,6 +288,11 @@ const FAQ_ITEMS = [
 	{ key: 'showInactiveWithdrawalFaq', label: 'What is inactive withdrawal?', value: 'inactive-withdrawal' },
 	{ key: 'showAutoLendingFaq', label: 'What is auto lending?', value: 'auto-lending' },
 	{ key: 'showAutoDepositsFaq', label: 'What are auto deposits?', value: 'auto-deposits' },
+	{
+		key: 'showMonthlyGoodAutoLendingFaq',
+		label: "Why can't I access my auto-lending settings as a Monthly Good subscriber?",
+		value: 'autolending-settings-faq',
+	},
 ];
 
 export default {
@@ -271,6 +319,7 @@ export default {
 			showDonationsFaq: false,
 			showInactiveWithdrawalFaq: false,
 			showLearnMoreFaq: false,
+			showMonthlyGoodAutoLendingFaq: false,
 		};
 	},
 	computed: {

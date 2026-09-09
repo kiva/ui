@@ -1,5 +1,6 @@
-import { render } from '@testing-library/vue';
+import { render, waitFor } from '@testing-library/vue';
 import TheHeader from '#src/components/WwwFrame/TheHeader';
+import CookieStore from '#src/util/cookieStore';
 
 import { emptyComponent, globalOptions } from '../../../specUtils';
 
@@ -15,20 +16,37 @@ const KvWwwHeaderBasicStub = {
 			type: Boolean,
 			default: false,
 		},
+		showMajorGiftsExp: {
+			type: Boolean,
+			default: false,
+		},
 	},
-	template: '<div data-testid="basic-header" :data-use-esi-avatar="useEsiAvatar"></div>',
+	template: `<div
+		data-testid="basic-header"
+		:data-use-esi-avatar="useEsiAvatar"
+		:data-show-major-gifts-exp="showMajorGiftsExp"
+	></div>`,
 	methods: {
 		loadMenuData() {},
 		loadSearchSuggestions() {},
 	},
 };
 
-const renderHeader = (props = {}, renderConfig = {}) => render(
+const renderHeader = (props = {}, renderConfig = {}, {
+	apollo = globalOptions.provide.apollo,
+	cookieStore = globalOptions.provide.cookieStore,
+	$kvTrackEvent = globalOptions.mocks.$kvTrackEvent,
+} = {}) => render(
 	TheHeader,
 	{
 		props,
 		global: {
 			...globalOptions,
+			provide: {
+				...globalOptions.provide,
+				apollo,
+				cookieStore,
+			},
 			stubs: {
 				KvWwwHeaderBasic: KvWwwHeaderBasicStub,
 				MonthlyGoodExpMenuWrapper: { ...emptyComponent },
@@ -39,6 +57,7 @@ const renderHeader = (props = {}, renderConfig = {}) => render(
 			},
 			mocks: {
 				...globalOptions.mocks,
+				$kvTrackEvent,
 				$renderConfig: renderConfig,
 				$route: {
 					path: '/',
@@ -47,6 +66,32 @@ const renderHeader = (props = {}, renderConfig = {}) => render(
 		},
 	},
 );
+
+const MAJOR_GIFTS_EXP_KEY = 'major_gifts_header';
+
+// Passing request cookies keeps the assignment on the instance instead of jsdom's shared
+// document.cookie, so one spec's assignment can't leak into the next.
+const cookieStoreAssigning = version => new CookieStore({
+	uiab: `${MAJOR_GIFTS_EXP_KEY}:${version}:123456:1:false`,
+});
+
+// The resolver writes the assignment into the cache, so `readFragment` finds nothing until `query`
+// has resolved. That ordering is the point: it is what an unassigned visitor sees, and
+// `trackExperimentVersion` reads the fragment rather than the query result.
+const apolloAssigning = version => {
+	const cache = new Map();
+	return {
+		...globalOptions.provide.apollo,
+		query: vi.fn(({ variables }) => {
+			const experiment = { id: variables.id, version };
+			cache.set(`Experiment:${variables.id}`, experiment);
+			return Promise.resolve({ data: { experiment } });
+		}),
+		readFragment: ({ id }) => cache.get(id) ?? null,
+	};
+};
+
+const majorGiftsEnabled = queryByTestId => queryByTestId('basic-header').dataset.showMajorGiftsExp;
 
 // jsdom does not enumerate custom properties through CSSStyleDeclaration, so read the attribute.
 const bridgedVars = queryByTestId => {
@@ -91,6 +136,57 @@ describe('TheHeader', () => {
 		expect(queryByTestId('basic-header')).toBeNull();
 		expect(container.querySelector('nav[aria-label="Primary navigation"]')).not.toBeNull();
 		expect(queryByTestId('header-basket')).not.toBeNull();
+	});
+
+	// The assignment is made client-side, so an unassigned visitor is resolved after mount rather
+	// than during SSR. Version b adds the Major gifts nav link and relabels "Support Kiva" as "Give".
+	describe('major gifts header experiment', () => {
+		it('should leave the major gifts state off for an unassigned visitor', async () => {
+			const { queryByTestId } = renderHeader();
+
+			await waitFor(() => expect(majorGiftsEnabled(queryByTestId)).toBe('false'));
+		});
+
+		// Nothing reads the assignment before mount. The stored assignment reaches the header
+		// through the query's own cache-first lookup and the resolver's cookie read, so a first
+		// render that consulted the cookie itself would only risk putting a per-visitor value into
+		// server-rendered markup that a CDN can share.
+		it('should ignore the stored assignment until the query resolves', async () => {
+			const { queryByTestId } = renderHeader({}, {}, {
+				apollo: apolloAssigning('b'),
+				cookieStore: cookieStoreAssigning('b'),
+			});
+
+			expect(majorGiftsEnabled(queryByTestId)).toBe('false');
+			await waitFor(() => expect(majorGiftsEnabled(queryByTestId)).toBe('true'));
+		});
+
+		it('should turn the major gifts state on once the client-side assignment resolves to version b', async () => {
+			const { queryByTestId } = renderHeader({}, {}, { apollo: apolloAssigning('b') });
+
+			expect(majorGiftsEnabled(queryByTestId)).toBe('false');
+			await waitFor(() => expect(majorGiftsEnabled(queryByTestId)).toBe('true'));
+		});
+
+		it('should leave the major gifts state off when the assignment resolves to the control', async () => {
+			const apollo = apolloAssigning('a');
+			const { queryByTestId } = renderHeader({}, {}, { apollo });
+
+			await waitFor(() => expect(apollo.query).toHaveBeenCalled());
+			expect(majorGiftsEnabled(queryByTestId)).toBe('false');
+		});
+
+		it('should track the resolved assignment against the parent ticket', async () => {
+			const $kvTrackEvent = vi.fn();
+			renderHeader({}, {}, { apollo: apolloAssigning('b'), $kvTrackEvent });
+
+			await waitFor(() => expect($kvTrackEvent).toHaveBeenCalledWith(
+				'event-tracking',
+				'EXP-CIT-5148-Sept2026',
+				'b',
+				undefined,
+			));
+		});
 	});
 
 	// The ESI head emits --ui-data-* names; the header library reads unprefixed ones. The bridge

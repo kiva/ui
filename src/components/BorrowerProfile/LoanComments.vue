@@ -53,6 +53,7 @@
 		<!-- Conversation guidelines -->
 		<p class="tw-mb-3">
 			<kv-text-link
+				class="tw-uppercase"
 				data-testid="bp-comment-guidelines-link"
 				@click="showGuidelines"
 			>
@@ -98,7 +99,7 @@
 					<div class="tw-flex tw-gap-2 tw-mt-0.5 tw-text-small">
 						<kv-text-link
 							v-if="isAdmin"
-							class="!tw-text-danger hover:!tw-text-danger-highlight"
+							class="!tw-text-danger hover:!tw-text-danger-highlight tw-uppercase"
 							data-testid="bp-comment-delete"
 							@click="openDeleteConfirm(comment.id)"
 						>
@@ -106,7 +107,7 @@
 						</kv-text-link>
 						<kv-text-link
 							v-if="!comment.isFlagged"
-							class="!tw-text-secondary"
+							class="!tw-text-secondary tw-uppercase"
 							data-testid="bp-comment-flag"
 							@click="openReportLightbox(comment.id)"
 						>

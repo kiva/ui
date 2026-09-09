@@ -252,42 +252,6 @@ export function mergeRecapExtras(summary, monolithSummary) {
 }
 
 /**
- * The goal's qualifying purchases for the recap year. A goal counts everything lent
- * to its category that year, including loans made before the goal was set.
- */
-function getGoalAchievement(goalSummary, tieredLendingAchievements) {
-	return (tieredLendingAchievements ?? []).find(entry => entry?.id === goalSummary?.category);
-}
-
-// Read in UTC: locally, purchases either side of new year land in the wrong one.
-function getPurchaseYear(purchase) {
-	const purchasedAt = new Date(purchase.purchaseTime);
-	return Number.isNaN(purchasedAt.getTime()) ? null : purchasedAt.getUTCFullYear();
-}
-
-function getYearPurchases(goalSummary, tieredLendingAchievements, year) {
-	// The year the recap asks the service for scopes progressForYear, not this list, so it
-	// arrives carrying other years.
-	// Most recent first, as the service returns them. Selecting the oldest instead would
-	// mean pulling the whole year, and is not even reachable for lenders past the
-	// rolling window, which retains only the most recent loans.
-	return (getGoalAchievement(goalSummary, tieredLendingAchievements)?.loanPurchases ?? [])
-		.filter(purchase => purchase?.loan
-			&& (!Number.isFinite(year) || getPurchaseYear(purchase) === year));
-}
-
-function getYearLoans(goalSummary, tieredLendingAchievements, year) {
-	return getYearPurchases(goalSummary, tieredLendingAchievements, year).map(purchase => purchase.loan);
-}
-
-/**
- * Loans bought in one checkout share a purchase time, so distinct times are sessions.
- */
-function getSessionCount(purchases) {
-	return new Set(purchases.map(purchase => purchase.purchaseTime).filter(Boolean)).size;
-}
-
-/**
  * Sums the lender's share of each loan. Null rather than 0 when no shares came back,
  * so the headline slide shows an em dash instead of "$0".
  */
@@ -334,66 +298,52 @@ function getGoalSectors(loans) {
 }
 
 /**
- * Caps a category goal at its target and fills the fields the monolith only provides
- * for support-all. Support-all is already computed server-side, so it passes through.
+ * Fills the fields the monolith only provides for support-all, from the goal's own year.
+ * Support-all is already computed server-side, so it passes through.
+ *
+ * The loans arrive already scoped to the recap year and no longer capped at the goal
+ * target, so the totals describe the whole year rather than a sample of it.
  *
  * @param {object} goalSummary The merged goal summary.
- * @param {Array} tieredLendingAchievements Achievements for the recap year.
- * @param {number} year The goal's year. Purchases outside it are excluded.
+ * @param {object} goalInReview The goalInReview payload for this goal and year.
  * @returns {object|null} The summary the slides read.
  */
-export function scopeToGoalYear(goalSummary, tieredLendingAchievements = [], year = undefined) {
+export function scopeToGoalYear(goalSummary, goalInReview) {
 	if (!goalSummary || goalSummary.category === ID_SUPPORT_ALL) {
 		return goalSummary;
 	}
 
-	const yearPurchases = getYearPurchases(goalSummary, tieredLendingAchievements, year);
-	const achievement = getGoalAchievement(goalSummary, tieredLendingAchievements);
-	// yearPurchases can undercount a past year: the request asks for `target` purchases newest
-	// first, so later years are served before the recap year and can exhaust it. progressForYear
-	// is the service's own total for the year, subject to neither that request nor the window.
-	const progress = achievement?.progressForYear;
-	// Finite rather than truthy: a lender with no loans this year really did lend zero.
-	const lent = Number.isFinite(progress) ? progress : yearPurchases.length;
+	const loans = goalInReview?.stats ?? [];
+	const lent = Number(goalInReview?.count) || 0;
 	const target = Number(goalSummary.target) || 0;
-	const count = target > 0 ? Math.min(lent, target) : lent;
-
-	// Every stat describes the same loans the grid shows, not a wider set.
-	const countedPurchases = yearPurchases.slice(0, count);
-	const countedLoans = countedPurchases.map(purchase => purchase.loan);
 
 	return {
 		...goalSummary,
-		count,
-		borrowerCount: count,
-		amount: getAmountLent(countedLoans),
-		transactionSessionCount: goalSummary.transactionSessionCount ?? getSessionCount(countedPurchases),
-		countries: goalSummary.countries?.length ? goalSummary.countries : getGoalCountries(countedLoans),
-		sectors: goalSummary.sectors?.length ? goalSummary.sectors : getGoalSectors(countedLoans),
+		count: lent,
+		borrowerCount: lent,
+		amount: getAmountLent(loans),
+		transactionSessionCount: goalSummary.transactionSessionCount
+			?? goalInReview?.transactionSessionCount ?? null,
+		countries: goalSummary.countries?.length ? goalSummary.countries : getGoalCountries(loans),
+		sectors: goalSummary.sectors?.length ? goalSummary.sectors : getGoalSectors(loans),
 		percent: target > 0 ? Math.min(100, Math.round((lent / target) * 100)) : goalSummary.percent,
 	};
 }
 
 /**
  * Loans shown as borrower photos on the borrowers slide. Support-all goals carry their own
- * loans on the goal summary; category goals only exist in achievements-service,
- * where the qualifying loans hang off the achievement matching the category.
+ * loans on the goal summary; category goals read the capped sample the service returns.
  *
  * @param {object} goalSummary The recap goal summary.
- * @param {Array} tieredLendingAchievements Achievements for the recap year.
- * @param {number} year The goal's year. Loans outside it are excluded.
+ * @param {object} goalInReview The goalInReview payload for this goal and year.
  * @returns {Array} Loans, each `{ id, name, image { hash } }`.
  */
-export function getGoalLoans(goalSummary, tieredLendingAchievements = [], year = undefined) {
+export function getGoalLoans(goalSummary, goalInReview) {
 	if (goalSummary?.category === ID_SUPPORT_ALL) {
 		return goalSummary?.loans ?? [];
 	}
 
-	const loans = getYearLoans(goalSummary, tieredLendingAchievements, year);
-	// scopeToGoalYear already capped `count`; the grid must not show more than it claims.
-	const count = Number(goalSummary?.count);
-
-	return Number.isFinite(count) ? loans.slice(0, count) : loans;
+	return goalInReview?.photos ?? [];
 }
 
 /**
@@ -518,6 +468,32 @@ export const LIFETIME_PERCENTILE_THRESHOLD = 80;
 // <strong> to normal weight, so the class restores emphasis. Rendered via v-html.
 const bold = text => `<strong class="tw-font-medium">${text}</strong>`;
 
+/**
+ * Whether the recap is being read after the goal year ended. Unknown years read as the
+ * current year, so a missing prop leaves the copy in the present tense.
+ *
+ * @param {number|string|null} year The recap's goal year.
+ * @param {number|string|null} currentYear The current year.
+ * @returns {boolean} Whether the goal year has already ended.
+ */
+export function getIsPastGoalYear(year, currentYear) {
+	if (!year || !currentYear) {
+		return false;
+	}
+	return Number(currentYear) > Number(year);
+}
+
+/**
+ * How the recap's copy refers to the goal year. The March cutoff in
+ * getRecapEntryCutoff keeps "last year" accurate — no recap outlives it.
+ *
+ * @param {boolean} [isPastGoalYear] Whether the goal year has already ended.
+ * @returns {string} The timeframe phrase to interpolate into copy.
+ */
+export function getRecapTimeframe(isPastGoalYear = false) {
+	return isPastGoalYear ? 'last year' : 'this year';
+}
+
 // Origin-story variants indexed by calendar quarter (Q1 = Jan–Mar … Q4 = Oct–Dec).
 // `content` is a function so the real start month can be interpolated in.
 const ORIGIN_STORY_VARIANTS = [
@@ -596,26 +572,29 @@ const goalInReviewCopy = {
 	 * @param {object} data Habit inputs.
 	 * @param {number} [data.transactionSessionCount] Sessions with a transaction.
 	 * @param {number} [data.lifetimePercentile] The lender's lifetime percentile.
+	 * @param {boolean} [data.isPastGoalYear] Whether to phrase the lending as "last year".
 	 * @returns {{title: string, content: string}} Card title and body.
 	 */
-	getImpactHabit({ transactionSessionCount, lifetimePercentile } = {}) {
+	getImpactHabit({ transactionSessionCount, lifetimePercentile, isPastGoalYear = false } = {}) {
 		const percentile = Number(lifetimePercentile);
 		if (Number.isFinite(percentile) && percentile >= LIFETIME_PERCENTILE_THRESHOLD) {
-			return this.getImpactHabitTopPercentile(percentile);
+			return this.getImpactHabitTopPercentile(percentile, isPastGoalYear);
 		}
 
 		const count = Number(transactionSessionCount) || 0;
 		const timeWord = count === 1 ? 'time' : 'times';
+		const timeframe = getRecapTimeframe(isPastGoalYear);
 		if (count >= KIVA_CHAMPION_MIN_SESSIONS) {
 			return {
 				title: 'Kiva champion',
 				// eslint-disable-next-line max-len
-				content: `You showed up ${bold(`${count} ${timeWord}`)} this year, turning your commitment to impact into a lasting habit.`,
+				content: `You showed up ${bold(`${count} ${timeWord}`)} ${timeframe}, turning your commitment to impact into a lasting habit.`,
 			};
 		}
 		return {
 			title: 'Rising Kiva champion',
-			content: `You showed up ${bold(`${count} ${timeWord}`)} this year and started building a habit of impact.`,
+			// eslint-disable-next-line max-len
+			content: `You showed up ${bold(`${count} ${timeWord}`)} ${timeframe} and started building a habit of impact.`,
 		};
 	},
 
@@ -623,13 +602,15 @@ const goalInReviewCopy = {
 	 * Impact-habit card copy for top-percentile lenders (>= threshold).
 	 *
 	 * @param {number} lifetimePercentile The lender's lifetime percentile.
+	 * @param {boolean} [isPastGoalYear] Whether to phrase the lending as "last year".
 	 * @returns {{title: string, content: string}} Card title and body.
 	 */
-	getImpactHabitTopPercentile(lifetimePercentile) {
+	getImpactHabitTopPercentile(lifetimePercentile, isPastGoalYear = false) {
 		const topPercent = Math.max(100 - lifetimePercentile, 1);
 		return {
 			title: `Top ${topPercent}%`,
-			content: `Your lending places you among the top ${topPercent}% of goal setters this year.`,
+			// eslint-disable-next-line max-len
+			content: `Your lending places you among the top ${topPercent}% of goal setters ${getRecapTimeframe(isPastGoalYear)}.`,
 		};
 	},
 };

@@ -21,13 +21,39 @@
 <script>
 import logFormatter from '#src/util/logFormatter';
 import updateKivaCreditDonationPreference from '#src/graphql/mutation/updateKivaCreditDonationPreference.graphql';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 import { KvSwitch } from '@kiva/kv-components';
 
 export const TIP_FROM_BALANCE_EXP_KEY = 'checkout_tip_from_balance_toggle';
+const TIP_FROM_BALANCE_EXP_ACTION = 'EXP-MP-3006-Aug2026';
+
+// Lenders already depositing at this scale are out of the audience, as are team members
+const AUDIENCE_DEPOSIT_LIMIT = 1000;
 
 // Marks a basket whose preference is already decided, so we never default it off twice.
 // Needed because the stored preference cannot tell "never chose" apart from "chose yes".
 export const TIP_FROM_BALANCE_SEEDED_COOKIE = 'kvtipseeded';
+
+/**
+ * Whether the lender is in the experiment audience, ignoring which arm they are in. The checkout
+ * page reads this too, so the variant treatment only appears where the switch itself can.
+ *
+ * The balance has to exceed everything in the basket but the tip, not merely be positive: below
+ * that the amount due is the raw shortfall either way, so the switch cannot change what is
+ * charged. Unknown deposits read as ineligible until the basket query lands.
+ *
+ * @param {Object} state The basket state provided by the checkout page
+ * @returns {boolean} Whether the lender is in the experiment audience
+ */
+export function meetsTipFromBalanceCriteria(state = {}) {
+	return !!state.myId
+		&& state.balance > state.nonTipTotal
+		&& state.hasLoans
+		&& state.tipAmount > 0
+		&& !state.onTeam
+		&& typeof state.lifetimeDeposits === 'number'
+		&& state.lifetimeDeposits < AUDIENCE_DEPOSIT_LIMIT;
+}
 
 export default {
 	name: 'KivaCreditTipToggle',
@@ -48,6 +74,7 @@ export default {
 			toggleValue: false,
 			updating: false,
 			seeding: false,
+			exposureTracked: false,
 		};
 	},
 	mounted() {
@@ -66,6 +93,20 @@ export default {
 			},
 			immediate: true,
 		},
+		readyForExposure: {
+			handler(ready) {
+				if (typeof window === 'undefined' || !ready || this.exposureTracked) return;
+				this.exposureTracked = true;
+				trackExperimentVersion(
+					this.apollo,
+					this.$kvTrackEvent,
+					'event-tracking',
+					TIP_FROM_BALANCE_EXP_KEY,
+					TIP_FROM_BALANCE_EXP_ACTION,
+				);
+			},
+			immediate: true,
+		},
 	},
 	computed: {
 		basketState() {
@@ -79,11 +120,7 @@ export default {
 			return typeof preference === 'boolean' ? preference : null;
 		},
 		isEligible() {
-			return this.tipFromBalanceVersion === 'b'
-				&& !!this.basketState.myId
-				&& this.basketState.balance > 0
-				&& this.basketState.hasLoans
-				&& this.basketState.tipAmount > 0;
+			return this.tipFromBalanceVersion === 'b' && meetsTipFromBalanceCriteria(this.basketState);
 		},
 		needsSeeding() {
 			return this.applyKivaCreditToDonation === true && !this.choiceProtected;
@@ -93,6 +130,13 @@ export default {
 			return this.isEligible
 				&& this.applyKivaCreditToDonation !== null
 				&& !this.needsSeeding;
+		},
+		readyForExposure() {
+			// The variant waits for the switch to settle, so exposure matches what the lender saw.
+			// Control has nothing to render, so meeting the audience criteria is the whole test.
+			// Both arms answer from here, so a change to one cannot skew the other
+			if (this.tipFromBalanceVersion === 'b') return this.showToggle;
+			return this.tipFromBalanceVersion === 'a' && meetsTipFromBalanceCriteria(this.basketState);
 		},
 	},
 	methods: {
@@ -164,3 +208,10 @@ export default {
 	},
 };
 </script>
+
+<style lang="postcss" scoped>
+/* KvSwitch hardcodes a 16px gap on its label and takes no prop for it; the mocks call for 8px */
+:deep(label) {
+	@apply tw-gap-1;
+}
+</style>

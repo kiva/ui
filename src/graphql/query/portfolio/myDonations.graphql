@@ -1,4 +1,4 @@
-query MyDonations($offset: Int = 0, $limit: Int = 10) {
+query MyDonations($offset: Int = 0, $limit: Int = 10, $sortBy: DonationSortEnum = newest) {
     my {
 		id
         userAccount {
@@ -15,7 +15,7 @@ query MyDonations($offset: Int = 0, $limit: Int = 10) {
                     total
                 }
             }
-            donationEntries(offset: $offset, limit: $limit) {
+            donationEntries(offset: $offset, limit: $limit, sortBy: $sortBy) {
                 total
                 donations {
                     id
