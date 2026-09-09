@@ -958,6 +958,9 @@ export default {
 				tipAmount: numeral(tip?.price).value() ?? 0,
 				basketId: this.basketId,
 				applyKivaCreditToDonation: this.applyKivaCreditToDonation,
+				// What credit pays for before it can reach the tip
+				nonTipTotal: (numeral(this.totals.loanReservationTotal).value() ?? 0)
+					+ (numeral(this.totals.kivaCardTotal).value() ?? 0),
 				onTeam: this.teams?.length > 0,
 				lifetimeDeposits: this.lifetimeDeposits,
 			};
