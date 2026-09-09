@@ -108,15 +108,17 @@
 						</div>
 					</div>
 
+					<!-- The margin sits on the row, not the copy: items-center counts margins, so a top
+						margin on one child alone offsets it from the CTA beside it. The switch below
+						brings its own top margin, so the variant needs no bottom one -->
 					<div
-						:class="{ 'md:tw-flex md:tw-items-center md:tw-gap-0.5': showTipFromBalanceVariant }"
+						:class="showTipFromBalanceVariant
+							? 'tw-mt-1 md:tw-flex md:tw-items-center md:tw-gap-0.5'
+							: ''"
 					>
-						<!-- The switch below brings its own top margin, so the variant drops the bottom one -->
 						<div
 							class="tw-max-w-2xl"
-							:class="showTipFromBalanceVariant
-								? 'tw-mt-1 md:tw-min-w-0'
-								: 'tw-my-1'"
+							:class="showTipFromBalanceVariant ? 'md:tw-min-w-0' : 'tw-my-1'"
 							data-testid="basket-donation-tagline"
 						>
 							<!-- Two lines before clipping: a long group name would otherwise cut the ask itself -->
