@@ -138,6 +138,27 @@ describe('TheHeader', () => {
 		expect(queryByTestId('header-basket')).not.toBeNull();
 	});
 
+	// Stickiness is decided by the frame and applied here, so both frames pin the same element.
+	describe('stickyHeader', () => {
+		it('should not pin the header by default', () => {
+			const { container } = renderHeader();
+
+			expect(container.querySelector('header').className).not.toContain('tw-sticky');
+		});
+
+		it('should pin the header when stickyHeader is set', () => {
+			const { container } = renderHeader({ stickyHeader: true });
+
+			expect(container.querySelector('header').className).toContain('tw-sticky');
+		});
+
+		it('should pin the corporate header when stickyHeader is set', () => {
+			const { container } = renderHeader({ corporate: true, stickyHeader: true });
+
+			expect(container.querySelector('header').className).toContain('tw-sticky');
+		});
+	});
+
 	// The assignment is made client-side, so an unassigned visitor is resolved after mount rather
 	// than during SSR. Version b adds the Major gifts nav link and relabels "Support Kiva" as "Give".
 	describe('major gifts header experiment', () => {

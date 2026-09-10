@@ -1,7 +1,7 @@
 <template>
 	<header
 		class="tw-transition-all tw-duration-1000 tw-ease-in-out"
-		:class="isInExperimentPages ? 'tw-sticky tw-top-0 tw-z-sticky' : ''"
+		:class="stickyHeader ? 'tw-sticky tw-top-0 tw-z-sticky' : ''"
 	>
 		<KvWwwHeaderBasic
 			v-if="showBasicHeader"
@@ -599,7 +599,6 @@ import MyKivaButton from '#src/components/WwwFrame/Header/MyKivaButton';
 import TeamsMenu from '#src/components/WwwFrame/Header/TeamsMenu';
 import { readBoolSetting } from '#src/util/settingsUtils';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
-import addToBasketMixin from '#src/plugins/add-to-basket-mixin';
 import {
 	KvButton, KvLoadingPlaceholder, KvMaterialIcon, KvPageContainer, KvWwwHeaderBasic
 } from '@kiva/kv-components';
@@ -636,7 +635,6 @@ export default {
 		cookieStore: { default: null },
 		kvAuth0: { default: null },
 	},
-	mixins: [addToBasketMixin],
 	data() {
 		return {
 			aboutMenuId: 'about-header-dropdown',
@@ -677,6 +675,10 @@ export default {
 			default: false,
 		},
 		minimal: {
+			type: Boolean,
+			default: false
+		},
+		stickyHeader: {
 			type: Boolean,
 			default: false
 		},
