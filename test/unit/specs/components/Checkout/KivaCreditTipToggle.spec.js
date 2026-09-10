@@ -12,9 +12,11 @@ vi.mock('#src/util/logFormatter', () => ({ default: vi.fn() }));
 
 const BASKET_ID = 'basket-abc123';
 
-// What the checkout page provides: a $25 loan and a $3.75 tip, for a lender with balance
+// What the checkout page provides: a $25 loan and a $3.75 tip, for a lender whose balance
+// covers the loan and reaches the tip
 const basketState = ({
-	balance = 25,
+	balance = 30,
+	nonTipTotal = 25,
 	hasLoans = true,
 	tipAmount = 3.75,
 	preference = true,
@@ -24,6 +26,7 @@ const basketState = ({
 } = {}) => ({
 	myId,
 	balance,
+	nonTipTotal,
 	hasLoans,
 	tipAmount,
 	onTeam,
@@ -116,6 +119,8 @@ describe('KivaCreditTipToggle', () => {
 		['no tip', { preference: false, tipAmount: 0 }],
 		['no loan in the basket', { preference: false, hasLoans: false }],
 		['no balance', { preference: false, balance: 0 }],
+		['a balance that does not reach the loan total', { preference: false, balance: 20 }],
+		['a balance exactly equal to the loan total', { preference: false, balance: 25 }],
 		['logged out', { preference: false, myId: null }],
 		['a team membership', { preference: false, onTeam: true }],
 		['lifetime deposits at the ceiling', { preference: false, lifetimeDeposits: 1000 }],

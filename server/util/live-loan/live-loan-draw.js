@@ -34,8 +34,9 @@ import {
 	compactCardHeight,
 	compactCardDimensions,
 	compactColors,
-	compactRegularFont,
-	compactMediumFont,
+	compactUseFont,
+	compactUseMediumFont,
+	compactSecondaryFont,
 } from './compact-card-constants.js';
 import { trace } from '../mockTrace.js';
 
@@ -460,14 +461,14 @@ async function drawCompact(loanData) {
 				textWidth,
 				compactMaxUseLines,
 				compactUseLineHeight,
-				{ regularFont: compactRegularFont, boldFont: compactMediumFont }
+				{ regularFont: compactUseFont, boldFont: compactUseMediumFont }
 			);
 		});
 
 		// Loan callouts (grey pills, never orange). Collapses when there are none;
 		// pills that would overflow the row are dropped so nothing spills past the card.
 		trace('loan-callouts', () => {
-			ctx.font = compactMediumFont;
+			ctx.font = compactSecondaryFont;
 			const availableWidth = compactCardWidth - (2 * pad);
 			const callouts = getLoanCallouts(loanData);
 			const labels = fitPillLabels(ctx, callouts, availableWidth, compactPillPadding, compactPillGap);
@@ -499,7 +500,7 @@ async function drawCompact(loanData) {
 			const loanAmountValue = numeral(loanData?.loanAmount).value() || 1;
 			const fundraisingPercent = Math.min(1, fundedAmount / loanAmountValue);
 
-			ctx.font = compactMediumFont;
+			ctx.font = compactSecondaryFont;
 			ctx.fillStyle = compactColors.textPrimary;
 			ctx.fillText(buildToGoText(loanData), pad, compactToGoY);
 
@@ -516,11 +517,18 @@ async function drawCompact(loanData) {
 		// Undo the content clip so the pooled canvas is clean for reuse
 		ctx.restore();
 
-		// Hairline border on top of the content, inset by half its width so the
-		// stroke lands fully inside the canvas edge.
+		// Hairline border on top of the content, inset from the canvas edge so the
+		// stroke lands inside it.
 		trace('border', () => {
-			const inset = compactBorderWidth / 4;
-			roundRect(ctx, 0, 0, compactCardWidth - inset, compactCardHeight - inset, compactCardRadius);
+			const inset = compactBorderWidth / 2;
+			roundRect(
+				ctx,
+				inset,
+				inset,
+				compactCardWidth - compactBorderWidth,
+				compactCardHeight - compactBorderWidth,
+				compactCardRadius,
+			);
 			ctx.lineWidth = compactBorderWidth;
 			ctx.strokeStyle = compactColors.border;
 			ctx.stroke();

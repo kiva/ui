@@ -5,6 +5,7 @@ import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 import { getPromoFromBasket } from '#src/util/campaignUtils';
 import { isAdminRewardTipEligible } from '#src/util/promoCredit';
 import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
+import { meetsTipFromBalanceCriteria } from '#src/components/Checkout/KivaCreditTipToggle';
 import { trackMetaEvent } from '@kiva/kv-analytics';
 /* eslint-disable-next-line import/no-extraneous-dependencies -- devDependency used only in tests */
 import { flushPromises } from '@vue/test-utils';
@@ -567,5 +568,55 @@ describe('CheckoutPage getPromoInformationFromBasket', () => {
 		});
 		expect(context.stopHidingTip).toBe(false);
 		expect(context.ensureTipDonationExists).not.toHaveBeenCalled();
+	});
+});
+
+describe('CheckoutPage tipToggleBasketState', () => {
+	const tipToggleBasketState = context => CheckoutPage.computed.tipToggleBasketState.call(context);
+
+	// A $25 loan with a $5 tip, so the basket is $30 and the balance reaches the tip at $30.01
+	const makeContext = (overrides = {}) => ({
+		myId: 1234,
+		myBalance: '40.00',
+		loans: [{ id: 1 }],
+		donations: [{ id: 1, price: '5.00', metadata: null }],
+		basketId: 'basket-abc123',
+		applyKivaCreditToDonation: false,
+		totals: { itemTotal: '30.00' },
+		teams: [],
+		lifetimeDeposits: 0,
+		...overrides,
+	});
+
+	it('reports the basket without the tip, so the switch can change what is charged', () => {
+		expect(tipToggleBasketState(makeContext())).toMatchObject({ tipAmount: 5, nonTipTotal: 25 });
+	});
+
+	it('counts a campaign donation the balance still has to pay for', () => {
+		// $25 loan, $10 giving fund donation and a $5 tip: $35 stands between the balance and the tip
+		const state = tipToggleBasketState(makeContext({
+			totals: { itemTotal: '40.00' },
+			donations: [
+				{ id: 1, price: '5.00', metadata: null },
+				{ id: 2, price: '10.00', metadata: { campaignId: 'abc' } },
+			],
+		}));
+
+		expect(state).toMatchObject({ tipAmount: 5, nonTipTotal: 35 });
+	});
+
+	it('keeps a lender out when a campaign donation puts the tip beyond their balance', () => {
+		// The loan alone would qualify a $30 balance, but the donation has to be paid first
+		const context = makeContext({
+			myBalance: '30.00',
+			totals: { itemTotal: '40.00' },
+			donations: [
+				{ id: 1, price: '5.00', metadata: null },
+				{ id: 2, price: '10.00', metadata: { campaignId: 'abc' } },
+			],
+		});
+
+		expect(meetsTipFromBalanceCriteria(tipToggleBasketState(context))).toBe(false);
+		expect(meetsTipFromBalanceCriteria(tipToggleBasketState({ ...context, myBalance: '40.00' }))).toBe(true);
 	});
 });

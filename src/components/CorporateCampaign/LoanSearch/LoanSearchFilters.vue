@@ -79,16 +79,17 @@
 					ref="chipsContainer"
 				>
 					<div
+						class="tw-flex tw-flex-wrap tw-gap-1"
 						ref="chipsInnerContainer"
 					>
-						<kv-chip-classic
+						<kv-chip
 							v-for="(filter, index) in filterChips"
 							:key="`chip-${index}`"
 							:title="cleanChipName(filter.name)"
-							@click="handleRemoveFilter(filter)"
+							@click-chip="handleRemoveFilter(filter)"
 						>
 							{{ filter.name }}
-						</kv-chip-classic>
+						</kv-chip>
 					</div>
 				</div>
 				<div class="small-12 large-4 xxlarge-3 columns">
@@ -259,9 +260,8 @@ import LocationFilter from '#src/components/CorporateCampaign/LoanSearch/Locatio
 import SectorFilter from '#src/components/CorporateCampaign/LoanSearch/SectorFilter';
 import SortOrder from '#src/components/CorporateCampaign/LoanSearch/SortOrder';
 import TagFilter from '#src/components/CorporateCampaign/LoanSearch/TagFilter';
-import KvChipClassic from '#src/components/Kv/KvChipClassic';
 import {
-	KvMaterialIcon, KvAccordionItem, KvLightbox, KvButton
+	KvMaterialIcon, KvAccordionItem, KvChip, KvLightbox, KvButton
 } from '@kiva/kv-components';
 
 const filterOptionsQuery = gql`
@@ -297,7 +297,7 @@ export default {
 	inject: ['apollo'],
 	components: {
 		KvButton,
-		KvChipClassic,
+		KvChip,
 		KvLightbox,
 		AttributeFilter,
 		GenderFilter,
@@ -698,7 +698,7 @@ export default {
 		overflow: hidden;
 		max-height: 7rem;
 		@include breakpoint(large) {
-			max-height: rem-calc(38);
+			max-height: rem-calc(40);
 		}
 	}
 }

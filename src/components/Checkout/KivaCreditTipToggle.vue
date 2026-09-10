@@ -35,16 +35,19 @@ const AUDIENCE_DEPOSIT_LIMIT = 1000;
 export const TIP_FROM_BALANCE_SEEDED_COOKIE = 'kvtipseeded';
 
 /**
- * Whether the lender is in the experiment audience, ignoring which arm they are in.
- * Unknown deposits read as ineligible until the basket query lands. The checkout page reads
- * this too, so the variant treatment only appears where the switch itself can.
+ * Whether the lender is in the experiment audience, ignoring which arm they are in. The checkout
+ * page reads this too, so the variant treatment only appears where the switch itself can.
+ *
+ * The balance has to exceed everything in the basket but the tip, not merely be positive: below
+ * that the amount due is the raw shortfall either way, so the switch cannot change what is
+ * charged. Unknown deposits read as ineligible until the basket query lands.
  *
  * @param {Object} state The basket state provided by the checkout page
  * @returns {boolean} Whether the lender is in the experiment audience
  */
 export function meetsTipFromBalanceCriteria(state = {}) {
 	return !!state.myId
-		&& state.balance > 0
+		&& state.balance > state.nonTipTotal
 		&& state.hasLoans
 		&& state.tipAmount > 0
 		&& !state.onTeam
