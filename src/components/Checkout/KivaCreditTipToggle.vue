@@ -11,7 +11,7 @@
 			:disabled="updating"
 			@update:model-value="setPreference"
 		>
-			<span class="tw-font-medium tw-text-gray-600">
+			<span class="tw-text-button-link tw-text-gray-600">
 				Use my balance to cover this tip instead of future loans.
 			</span>
 		</kv-switch>
@@ -210,5 +210,20 @@ export default {
 /* KvSwitch hardcodes a 16px gap on its label and takes no prop for it; the mocks call for 8px */
 :deep(label) {
 	@apply tw-gap-1;
+}
+
+/* The design toggle is 48x28 with a 20px knob; KvSwitch hardcodes 56x32 with no size prop.
+	The knob travel shrinks with it (48 - 20 - 8 of margin), and needs the important flag
+	because the peer-checked rule carries higher specificity than a scoped selector */
+:deep(label > div:first-of-type) {
+	@apply tw-w-6 tw-h-3.5;
+}
+
+:deep(label > div:nth-of-type(2)) {
+	@apply tw-w-2.5 tw-h-2.5;
+}
+
+:deep(input:checked ~ div:nth-of-type(2)) {
+	@apply !tw-translate-x-2.5;
 }
 </style>

@@ -14,7 +14,7 @@
 				<div class="tw-flex tw-mb-1">
 					<h2
 						class="tw-flex-grow"
-						:class="{ 'tw-text-h3 !tw-font-medium tw-text-primary': tipFromBalanceEligible }"
+						:class="{ 'tw-text-h4 tw-text-primary': tipFromBalanceEligible }"
 						data-testid="basket-loan-name"
 					>
 						{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
