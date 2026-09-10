@@ -1,3 +1,19 @@
+## [3.93.1-rc.1](https://github.com/kiva/ui/compare/v3.93.0...v3.93.1-rc.1) (2026-09-10)
+
+### 🐛 Bugfixes
+
+* remove the story for the deleted local KvChip ([#7248](https://github.com/kiva/ui/issues/7248)) ([862a538](https://github.com/kiva/ui/commit/862a538c1b362a0138456cb1baaca22a8785fbff)), closes [#7247](https://github.com/kiva/ui/issues/7247)
+* update kv-components with latest major gifts link positioning and mobile menu fixes ([a2827d5](https://github.com/kiva/ui/commit/a2827d5e5c81cb9ed7d095d41625d189c1dd9240))
+* use the library KvChip for campaign loan search filters ([#7247](https://github.com/kiva/ui/issues/7247)) ([5f20a53](https://github.com/kiva/ui/commit/5f20a538ae5dd548199ba61e18ae513e741e92b4))
+
+### 🪚 Refactors
+
+* cit-5031-pin the header by route match instead of path substring ([53497ef](https://github.com/kiva/ui/commit/53497ef5c54ced6245819a0ad59f415be3f3f4ac))
+
+### 🧹 Chores
+
+* build storybook in pr ci ([#7249](https://github.com/kiva/ui/issues/7249)) ([41a7d24](https://github.com/kiva/ui/commit/41a7d24b6445a8383fe36289ae478938c08eb101)), closes [#7247](https://github.com/kiva/ui/issues/7247)
+
 ## [3.93.0](https://github.com/kiva/ui/compare/v3.92.0...v3.93.0) (2026-09-09)
 
 ### 🎉 New Features
