@@ -1,0 +1,6 @@
+const e=`mutation updateLoanFavorite($loan_id: Int, $is_favorite: Boolean) {
+  loan (id: $loan_id){
+    favorite(favorite: $is_favorite)
+  }
+}
+`,i={kind:"Document",definitions:[{kind:"OperationDefinition",operation:"mutation",name:{kind:"Name",value:"updateLoanFavorite"},variableDefinitions:[{kind:"VariableDefinition",variable:{kind:"Variable",name:{kind:"Name",value:"loan_id"}},type:{kind:"NamedType",name:{kind:"Name",value:"Int"}},directives:[]},{kind:"VariableDefinition",variable:{kind:"Variable",name:{kind:"Name",value:"is_favorite"}},type:{kind:"NamedType",name:{kind:"Name",value:"Boolean"}},directives:[]}],directives:[],selectionSet:{kind:"SelectionSet",selections:[{kind:"Field",name:{kind:"Name",value:"loan"},arguments:[{kind:"Argument",name:{kind:"Name",value:"id"},value:{kind:"Variable",name:{kind:"Name",value:"loan_id"}}}],directives:[],selectionSet:{kind:"SelectionSet",selections:[{kind:"Field",name:{kind:"Name",value:"favorite"},arguments:[{kind:"Argument",name:{kind:"Name",value:"favorite"},value:{kind:"Variable",name:{kind:"Name",value:"is_favorite"}}}],directives:[]}]}}]}}],loc:{start:0,end:172,source:{name:"GraphQL request",locationOffset:{line:1,column:1},body:e}}};export{i as _};
