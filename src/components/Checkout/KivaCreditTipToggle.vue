@@ -6,12 +6,13 @@
 	>
 		<kv-switch
 			class="tw-flex"
+			size="small"
 			data-testid="tip-from-balance-switch"
 			:model-value="toggleValue"
 			:disabled="updating"
 			@update:model-value="setPreference"
 		>
-			<span class="tw-font-medium tw-text-gray-600">
+			<span class="tw-text-button-link tw-text-gray-600">
 				Use my balance to cover this tip instead of future loans.
 			</span>
 		</kv-switch>

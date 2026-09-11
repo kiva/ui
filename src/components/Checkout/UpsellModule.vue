@@ -1,9 +1,9 @@
 <template>
 	<div
-		class="tw-bg-brand-100 tw-rounded"
+		class="tw-rounded"
 		:class="showTipFromBalanceVariant
-			? 'tw-relative tw-p-4 md:tw-px-1 md:tw-py-3 md:tw-flex md:tw-flex-col md:tw-justify-center'
-			: 'tw-p-4'"
+			? 'tw-bg-secondary tw-relative tw-p-4 md:tw-px-1 md:tw-py-3 md:tw-flex md:tw-flex-col md:tw-justify-center'
+			: 'tw-bg-brand-100 tw-p-4'"
 	>
 		<button
 			v-if="showTipFromBalanceVariant"
@@ -63,6 +63,7 @@
 						:is-funded="loan.status==='funded'"
 						:short-meter="!showTipFromBalanceVariant"
 						class="tw-mb-1"
+						:class="{ medium: showTipFromBalanceVariant }"
 					/>
 					<p class="tw-text-upper tw-m-0">
 						{{ $filters.numeral(amountLeft, '$0,0[.]00') }} to go

@@ -23,7 +23,7 @@
 							<div class="tw-w-full tw-flex">
 								<h2
 									class="tw-flex-1 md:tw-flex-grow data-hj-suppress"
-									:class="{ 'tw-text-h3 !tw-font-medium tw-text-primary': showTipFromBalanceVariant }"
+									:class="{ 'tw-text-h4 tw-text-primary': showTipFromBalanceVariant }"
 									data-testid="basket-donation-title"
 								>
 									{{ basketDonationHeader }}
