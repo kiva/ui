@@ -45,7 +45,7 @@
 		"@graphql-tools/load": "^7.7.0",
 		"@graphql-tools/url-loader": "^7.17.18",
 		"@kiva/kv-analytics": "^1.4.0",
-		"@kiva/kv-components": "^10.2.1",
+		"@kiva/kv-components": "^10.3.0",
 		"@kiva/kv-shop": "^3.8.28",
 		"@kiva/kv-tokens": "^5.0.0",
 		"@mdi/js": "^7.4.47",
