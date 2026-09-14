@@ -187,6 +187,7 @@ import {
 	onMounted,
 	ref,
 	toRef,
+	watch,
 } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -214,6 +215,8 @@ import useGoalSettingRecommendedLoan, {
 	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT,
 } from '#src/composables/useGoalSettingRecommendedLoan';
 import useExpressCheckoutModal from '#src/composables/useExpressCheckoutModal';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import { EXPRESS_CHECKOUT_EXP_KEY } from '#src/util/thanksPage/expressCheckoutUtils';
 import useBadgeData from '#src/composables/useBadgeData';
 import {
 	incrementGoalSignupThanksViewCount,
@@ -392,6 +395,22 @@ const {
 	appConfig: $appConfig,
 	apollo,
 });
+
+// Only lenders who reach the recommendation are exposed to the test
+const stopExpressCheckoutExposure = watch(
+	() => showRecommendLoanAfterGoalView.value && hasRecommendedLoans.value,
+	shown => {
+		if (!shown) return;
+		trackExperimentVersion(
+			apollo,
+			$kvTrackEvent,
+			EVENT_CATEGORY,
+			EXPRESS_CHECKOUT_EXP_KEY,
+			'EXP-MP-3159-Jan2027',
+		);
+		stopExpressCheckoutExposure();
+	},
+);
 
 const goalTargetLoansAmount = computed(() => userGoal.value?.target ?? 0);
 
