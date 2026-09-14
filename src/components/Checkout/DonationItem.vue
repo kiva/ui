@@ -438,7 +438,7 @@ export default {
 			const destination = this.loanCount === 1
 				? `to ${formatPossessiveName(this.firstBorrowerName)} loan`
 				: 'toward these loans';
-			return `100% of your ${this.loanTotalDisplay} goes ${destination} — your tip helps Kiva get it there.`;
+			return `100% of your ${this.loanTotalDisplay} goes ${destination} — your donation helps Kiva get it there.`;
 		},
 		basketDonationHeader() {
 			if (this.isCampaignDonation) {

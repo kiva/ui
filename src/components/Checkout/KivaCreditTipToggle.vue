@@ -13,7 +13,7 @@
 			@update:model-value="setPreference"
 		>
 			<span class="tw-text-button-link tw-text-gray-600">
-				Use my balance to cover this tip instead of future loans.
+				Use my balance to cover this donation instead of future loans.
 			</span>
 		</kv-switch>
 	</div>
