@@ -8,14 +8,17 @@ function makeContentfulResponse(entries) {
 	return {
 		data: {
 			contentful: {
-				entries: {
+				searchEntries: {
 					items: [{
-						sys: { contentType: { sys: { id: 'contentGroup' } } },
-						fields: {
-							key: 'borrower-profile-definitions',
-							name: 'Borrower Profile Definitions',
-							type: null,
-							contents: entries,
+						entryId: 'borrower-profile-definitions',
+						entry: {
+							sys: { contentType: { sys: { id: 'contentGroup' } } },
+							fields: {
+								key: 'borrower-profile-definitions',
+								name: 'Borrower Profile Definitions',
+								type: null,
+								contents: entries,
+							},
 						},
 					}],
 				},

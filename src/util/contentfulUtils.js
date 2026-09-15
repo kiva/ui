@@ -299,6 +299,19 @@ export function formatResponsiveImageSet(contentfulContent) {
 }
 
 /**
+ * Get the Contentful entries from a query result, preferring the preview collection when present.
+ *
+ * @param {Object} data - The data result from a Contentful query.
+ * @returns {Array|null} - The unwrapped non-empty entries, or null when the result has no entry collection.
+ */
+export function getContentfulEntries(data) {
+	const collection = data?.contentful?.searchPreviewEntries ?? data?.contentful?.searchEntries;
+	const items = collection?.items;
+	if (!items) return null;
+	return items.map(item => item.entry).filter(Boolean);
+}
+
+/**
  * Format ContentGroup (contentful type id: contentGroup)
  * Takes raw contentful content object and returns an object with targeted keys/values
  *

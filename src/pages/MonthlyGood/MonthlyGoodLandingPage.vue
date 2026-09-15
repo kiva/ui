@@ -123,7 +123,7 @@
 <script>
 import { gql } from 'graphql-tag';
 
-import { processPageContent } from '#src/util/contentfulUtils';
+import { getContentfulEntries, processPageContent } from '#src/util/contentfulUtils';
 
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 
@@ -155,7 +155,15 @@ const pageQuery = gql`
 			}
 		}
 		contentful {
-			entries(contentType: "page", contentKey: "monthlygood")
+			searchEntries(contentType: "page", contentKey: "monthlygood") {
+				total
+				skip
+				limit
+				items {
+					entryId
+					entry
+				}
+			}
 		}
 		mySubscriptions(includeDisabled: false) {
 			values {
@@ -265,7 +273,7 @@ export default {
 			this.hasModernSub = modernSubscriptions.length !== 0;
 
 			// Check for contentful content
-			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
+			const pageEntry = getContentfulEntries(data)?.[0] ?? null;
 			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
 		},
 	},

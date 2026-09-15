@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { processPageContent } from '#src/util/contentfulUtils';
+import { getContentfulEntries, processPageContent } from '#src/util/contentfulUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MainCategoryTile from '#src/components/Categories/MainCategoryTile';
 import LoanSpotlight from '#src/components/Categories/LoanSpotlight';
@@ -137,7 +137,15 @@ const allCategoriesPageQuery = gql`
 			}
 		}
 		contentful {
-			entries(contentType: "page", contentKey: "categories")
+			searchEntries(contentType: "page", contentKey: "categories") {
+				total
+				skip
+				limit
+				items {
+					entryId
+					entry
+				}
+			}
 		}
 	}
 `;
@@ -186,7 +194,7 @@ export default {
 		query: allCategoriesPageQuery,
 		result(result) {
 			this.categories = result.data?.browsingCategories?.values ?? [];
-			const pageEntry = result.data?.contentful?.entries?.items?.[0] ?? null;
+			const pageEntry = getContentfulEntries(result.data)?.[0] ?? null;
 			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
 		},
 	},
@@ -225,7 +233,15 @@ export default {
 			query: gql`
 				query bpHeroBackgroundImage($placeholderKey: String) {
 					contentful {
-						placeholder: entries(contentType: "background", contentKey: $placeholderKey)
+						placeholder: searchEntries(contentType: "background", contentKey: $placeholderKey) {
+							total
+							skip
+							limit
+							items {
+								entryId
+								entry
+							}
+						}
 					}
 				}
 			`,
@@ -233,7 +249,8 @@ export default {
 				placeholderKey: 'bp-hero-country-placeholder',
 			},
 		}).then(result => {
-			const placeholderMedia = result?.data?.contentful?.placeholder?.items?.[0]?.fields?.backgroundMedia ?? {};
+			const placeholderMedia = result?.data?.contentful?.placeholder?.items?.[0]?.entry
+				?.fields?.backgroundMedia ?? {};
 			this.categoryPlaceholderImageCTF = placeholderMedia?.fields?.file?.url ?? '';
 		});
 	},
