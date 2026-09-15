@@ -1,3 +1,13 @@
+## [3.94.0-rc.2](https://github.com/kiva/ui/compare/v3.94.0-rc.1...v3.94.0-rc.2) (2026-09-15)
+
+### 🎉 New Features
+
+* mp 3212 variant copy at zero tip ([#7256](https://github.com/kiva/ui/issues/7256)) ([e6c8561](https://github.com/kiva/ui/commit/e6c856146ffa353d9b5f98904aaf170265af06c0))
+
+### 🪚 Refactors
+
+* use browsingCategories on the categories page ([#7254](https://github.com/kiva/ui/issues/7254)) ([a7f2505](https://github.com/kiva/ui/commit/a7f2505387b0dbc6dbd8ebd09f8e603f10510181))
+
 ## [3.94.0-rc.1](https://github.com/kiva/ui/compare/v3.93.1...v3.94.0-rc.1) (2026-09-14)
 
 ### 🎉 New Features
