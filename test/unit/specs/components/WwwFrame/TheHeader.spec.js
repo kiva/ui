@@ -52,7 +52,6 @@ const renderHeader = (props = {}, renderConfig = {}, {
 				MonthlyGoodExpMenuWrapper: { ...emptyComponent },
 				PromoBannerLarge: { ...emptyComponent },
 				PromoBannerSmall: { ...emptyComponent },
-				TheLendMenu: { ...emptyComponent },
 				RouterLink: { ...emptyComponent },
 			},
 			mocks: {
