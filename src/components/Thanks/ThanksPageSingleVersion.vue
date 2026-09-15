@@ -65,6 +65,7 @@
 				:has-recommended-loans="hasRecommendedLoans"
 				:recommend-loan-card-props="recommendLoanCardProps"
 				:recommend-loan-header-details="recommendLoanHeaderDetails"
+				:express-checkout-enabled="isExpressCheckoutModalEnabled"
 				:recommend-loan-is-in-basket="recommendLoanIsInBasket"
 				:loaded-set-data="loadedSetData"
 				:is-adding="isAdding"
@@ -397,10 +398,12 @@ const {
 });
 
 // Only lenders who reach the recommendation are exposed to the test
-const stopExpressCheckoutExposure = watch(
+const expressCheckoutExposureTracked = ref(false);
+watch(
 	() => showRecommendLoanAfterGoalView.value && hasRecommendedLoans.value,
 	shown => {
-		if (!shown) return;
+		if (!shown || expressCheckoutExposureTracked.value) return;
+		expressCheckoutExposureTracked.value = true;
 		trackExperimentVersion(
 			apollo,
 			$kvTrackEvent,
@@ -408,7 +411,6 @@ const stopExpressCheckoutExposure = watch(
 			EXPRESS_CHECKOUT_EXP_KEY,
 			'EXP-MP-3159-Jan2027',
 		);
-		stopExpressCheckoutExposure();
 	},
 );
 

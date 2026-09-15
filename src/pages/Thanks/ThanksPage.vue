@@ -154,7 +154,6 @@ export default {
 			achievements: [],
 			goalRecommendedLoanEnable: false,
 			goalInReviewInProgressStart: null,
-			expressCheckoutEnabled: false,
 			expressCheckoutExpVersion: null,
 		};
 	},
@@ -233,7 +232,7 @@ export default {
 			return !!this.$route?.query?.show_daf_thanks;
 		},
 		isExpressCheckoutModalEnabled() {
-			return this.expressCheckoutEnabled && this.expressCheckoutExpVersion === 'b';
+			return this.expressCheckoutExpVersion === 'b';
 		},
 		teamId() {
 			return getTeamId(this.loans);
@@ -299,7 +298,6 @@ export default {
 		};
 
 		this.goalRecommendedLoanEnable = readBoolSetting(data, 'general.goal_recommended_loan_enable.value') ?? false;
-		this.expressCheckoutEnabled = readBoolSetting(data, 'general.ty_page_express_checkout_enabled.value') ?? false;
 		this.goalInReviewInProgressStart = readDateSetting(data, 'general.goal_in_review_in_progress_start.value');
 
 		initializeExperiment(
