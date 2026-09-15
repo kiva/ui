@@ -385,11 +385,9 @@ export default {
 			return !this.isCampaignDonation && !this.orderTotalVariant;
 		},
 		showTipFromBalanceVariant() {
-			// The compressed one-line layout exists to make room for the switch below it. With no tip
-			// there is no switch, so the row keeps the layout the repayments prompt was designed against
-			return this.tipFromBalanceEligible
-				&& numeral(this.donation.price).value() > 0
-				&& this.canHostTipFromBalanceToggle;
+			// Ignores the tip amount: at zero the switch and its label go, but the copy and layout
+			// stay so the row does not flip back to the control mid-checkout
+			return this.tipFromBalanceEligible && this.canHostTipFromBalanceToggle;
 		},
 		donationTitle() {
 			return 'Donation to Kiva';
