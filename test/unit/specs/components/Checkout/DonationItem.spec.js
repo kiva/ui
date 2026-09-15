@@ -28,19 +28,19 @@ describe('DonationItem tip ask copy', () => {
 			'one loan',
 			{ names: ['Maria'], loanCount: 1, loanReservationTotal: 25 },
 			"Cover the cost of Maria's loan?",
-			"100% of your $25 goes to Maria's loan — your tip helps Kiva get it there.",
+			"100% of your $25 goes to Maria's loan — your donation helps Kiva get it there.",
 		],
 		[
 			'two loans',
 			{ names: ['Maria', 'Joice'], loanCount: 2, loanReservationTotal: 50 },
 			"Cover the cost of Maria and Joice's loans?",
-			'100% of your $50 goes toward these loans — your tip helps Kiva get it there.',
+			'100% of your $50 goes toward these loans — your donation helps Kiva get it there.',
 		],
 		[
 			'three loans',
 			{ names: ['Maria', 'Joice', 'Ana'], loanCount: 3, loanReservationTotal: 75 },
 			"Cover the cost of Maria's loan and 2 others?",
-			'100% of your $75 goes toward these loans — your tip helps Kiva get it there.',
+			'100% of your $75 goes toward these loans — your donation helps Kiva get it there.',
 		],
 	])('names the borrowers with %s', (label, overrides, expectedHeader, expectedTagline) => {
 		const context = askContext(overrides);
@@ -70,7 +70,7 @@ describe('DonationItem tip ask copy', () => {
 		const context = askContext({ names: ['Maria'], loanCount: 1, loanReservationTotal: 27.5 });
 
 		expect(call('basketDonationTagline', context))
-			.toBe("100% of your $27.50 goes to Maria's loan — your tip helps Kiva get it there.");
+			.toBe("100% of your $27.50 goes to Maria's loan — your donation helps Kiva get it there.");
 	});
 
 	it.each([
@@ -150,13 +150,13 @@ describe('DonationItem showTipFromBalanceVariant', () => {
 		})).toBe(false);
 	});
 
-	// The compressed layout only earns its place when there is a switch to make room for, and
-	// at a zero tip the row shares space with the donate-repayments prompt instead
-	it('stays off at a zero tip, where there is no switch to make room for', () => {
+	// A zeroed tip keeps the treatment: the switch and its label go, but the copy and layout
+	// staying put means the page never flips back to the control mid-checkout
+	it('keeps the variant styling at a zero tip, where only the switch goes', () => {
 		expect(showVariant({
 			tipFromBalanceEligible: true,
 			canHostTipFromBalanceToggle: true,
 			tip: '0.00',
-		})).toBe(false);
+		})).toBe(true);
 	});
 });

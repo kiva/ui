@@ -366,7 +366,7 @@ import { CUSTOM_TIP_DEFAULT_EXP_KEY } from '#src/components/Checkout/DonationNud
 import {
 	TIP_FROM_BALANCE_EXP_KEY,
 	TIP_FROM_BALANCE_SEEDED_COOKIE,
-	meetsTipFromBalanceCriteria,
+	meetsTipFromBalanceTreatmentCriteria,
 } from '#src/components/Checkout/KivaCreditTipToggle';
 import updateKivaCreditDonationPreference from '#src/graphql/mutation/updateKivaCreditDonationPreference.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
@@ -977,10 +977,11 @@ export default {
 					&& this.applyKivaCreditToDonation === false);
 		},
 		showTipFromBalanceVariant() {
-			// The variant treatment only appears where the switch can, so a lender without a
-			// balance, a loan or a tip sees the original checkout untouched
+			// Ignores the tip amount on purpose: a lender who zeroes the tip loses the switch but
+			// keeps the copy and layout, instead of watching the page flip back to the control
+			// mid-checkout. Exposure still requires a tip, through the toggle's own criteria
 			return this.tipFromBalanceVersion === 'b'
-				&& meetsTipFromBalanceCriteria(this.tipToggleBasketState);
+				&& meetsTipFromBalanceTreatmentCriteria(this.tipToggleBasketState);
 		},
 		isKivaCreditText() {
 			return this.isKivaCreditReplacementExpEnabled ? 'Account balance' : 'Kiva Credit';

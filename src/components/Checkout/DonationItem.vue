@@ -23,7 +23,7 @@
 							<div class="tw-w-full tw-flex">
 								<h2
 									class="tw-flex-1 md:tw-flex-grow data-hj-suppress"
-									:class="{ 'tw-text-h3 !tw-font-medium tw-text-primary': showTipFromBalanceVariant }"
+									:class="{ 'tw-text-h4 tw-text-primary': showTipFromBalanceVariant }"
 									data-testid="basket-donation-title"
 								>
 									{{ basketDonationHeader }}
@@ -385,11 +385,9 @@ export default {
 			return !this.isCampaignDonation && !this.orderTotalVariant;
 		},
 		showTipFromBalanceVariant() {
-			// The compressed one-line layout exists to make room for the switch below it. With no tip
-			// there is no switch, so the row keeps the layout the repayments prompt was designed against
-			return this.tipFromBalanceEligible
-				&& numeral(this.donation.price).value() > 0
-				&& this.canHostTipFromBalanceToggle;
+			// Ignores the tip amount: at zero the switch and its label go, but the copy and layout
+			// stay so the row does not flip back to the control mid-checkout
+			return this.tipFromBalanceEligible && this.canHostTipFromBalanceToggle;
 		},
 		donationTitle() {
 			return 'Donation to Kiva';
@@ -438,7 +436,7 @@ export default {
 			const destination = this.loanCount === 1
 				? `to ${formatPossessiveName(this.firstBorrowerName)} loan`
 				: 'toward these loans';
-			return `100% of your ${this.loanTotalDisplay} goes ${destination} — your tip helps Kiva get it there.`;
+			return `100% of your ${this.loanTotalDisplay} goes ${destination} — your donation helps Kiva get it there.`;
 		},
 		basketDonationHeader() {
 			if (this.isCampaignDonation) {
