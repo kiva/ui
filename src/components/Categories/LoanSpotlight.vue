@@ -24,9 +24,10 @@
 				<h3 class="tw-text-title tw-pt-2 tw-mb-1">
 					{{ getSpotlightLoanLocation }}
 				</h3>
-				<kv-loading-paragraph
+				<kv-loading-text
 					v-if="isLoading"
-					class="tw-mb-1.5 tw-flex-grow" :style="{width: '100%', height: '5.5rem'}"
+					class="tw-mb-1.5"
+					:lines="5"
 				/>
 				<p v-if="!isLoading" class="tw-line-clamp-5">
 					{{ getSpotlightText }}
@@ -51,8 +52,7 @@
 import { toParagraphs } from '#src/util/loanUtils';
 import { gql } from 'graphql-tag';
 import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
-import KvLoadingParagraph from '#src/components/Kv/KvLoadingParagraph';
-import { KvLoadingPlaceholder, KvButton } from '@kiva/kv-components';
+import { KvLoadingPlaceholder, KvLoadingText, KvButton } from '@kiva/kv-components';
 
 const allCategoriesQuery = gql`
 	query allCategoriesQuery {
@@ -164,7 +164,7 @@ export default {
 		KvButton,
 		KvResponsiveImage,
 		KvLoadingPlaceholder,
-		KvLoadingParagraph
+		KvLoadingText
 	},
 	inject: ['apollo', 'cookieStore'],
 	data() {
