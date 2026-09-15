@@ -54,16 +54,19 @@ import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
 import KvLoadingParagraph from '#src/components/Kv/KvLoadingParagraph';
 import { KvLoadingPlaceholder, KvButton } from '@kiva/kv-components';
 
-const allChannelsQuery = gql`
-	query allChannelsQuery {
-		lend {
-			loanChannels(offset:0, limit:1000) {
-				values {
-					id
-					url
-					name
-					loans {
-						totalCount
+const allCategoriesQuery = gql`
+	query allCategoriesQuery {
+		browsingCategories(limit: 1000) {
+			values {
+				id
+				url
+				name
+				... on LoanCategorySearchOutput {
+					savedSearch {
+						id
+						loans {
+							totalCount
+						}
 					}
 				}
 			}
@@ -73,35 +76,38 @@ const allChannelsQuery = gql`
 
 const spotlightLoanQuery = gql`
 	query spotlightLoanQuery (
-		$ids: [Int],
+		$ids: [String!]!,
 		$limit: Int = 5,
-		$offset: Int = 0,
+		$pageNumber: Int = 0,
 		$imgDefaultSize: String = "w520h390",
 		$imgRetinaSize: String = "w1040h780",
 	) {
-		lend {
-			loanChannelsById (ids: $ids) {
-				id
-				loans (
+		categoriesByIds (ids: $ids) {
+			id
+			... on LoanCategorySearchOutput {
+				savedSearch (
 					limit: $limit
-					offset: $offset
+					pageNumber: $pageNumber
 				) {
-					values {
-						id
-						description
-						lenderRepaymentTerm
-						anonymizationLevel
-						geocode {
-							city
-							country {
-								id
-								name
-							}
-						}
-						image {
+					id
+					loans {
+						values {
 							id
-							default: url(customSize: $imgDefaultSize)
-							retina: url(customSize: $imgRetinaSize)
+							description
+							lenderRepaymentTerm
+							anonymizationLevel
+							geocode {
+								city
+								country {
+									id
+									name
+								}
+							}
+							image {
+								id
+								default: url(customSize: $imgDefaultSize)
+								retina: url(customSize: $imgRetinaSize)
+							}
 						}
 					}
 				}
@@ -110,32 +116,32 @@ const spotlightLoanQuery = gql`
 	}
 `;
 
-function filterChannelsForRoute(routePath, loanChannels) {
-	const filteredChannels = loanChannels.filter(
-		loanChannel => loanChannel.url.split('/').pop() === routePath
+function filterCategoriesForRoute(routePath, categories) {
+	const filteredCategories = categories.filter(
+		category => category.url.split('/').pop() === routePath
 	);
-	return filteredChannels;
+	return filteredCategories;
 }
 
-function getTargetedChannel(targetedRoutePath, fallbackRoutePath, allChannels) {
-	const targetedLoanChannel = filterChannelsForRoute(targetedRoutePath, allChannels);
-	const fallbackLoanChannel = filterChannelsForRoute(fallbackRoutePath, allChannels);
+function getTargetedCategory(targetedRoutePath, fallbackRoutePath, allCategories) {
+	const targetedCategory = filterCategoriesForRoute(targetedRoutePath, allCategories);
+	const fallbackCategory = filterCategoriesForRoute(fallbackRoutePath, allCategories);
 
-	// no channel that matches the targeted name
-	if (targetedLoanChannel.length === 0) {
-		// return id for fallback channel
-		return fallbackLoanChannel[0]?.id || null;
+	// no category that matches the targeted name
+	if (targetedCategory.length === 0) {
+		// return id for fallback category
+		return fallbackCategory[0]?.id || null;
 	}
-	// targeted channel exists but no loans exist within it
-	if (targetedLoanChannel.length !== 0 && targetedLoanChannel[0].loans.totalCount === 0) {
-		return fallbackLoanChannel[0]?.id || null;
+	// targeted category exists but no loans exist within it
+	if (targetedCategory.length !== 0 && targetedCategory[0].savedSearch?.loans?.totalCount === 0) {
+		return fallbackCategory[0]?.id || null;
 	}
-	// isolate targeted channel id
-	return targetedLoanChannel[0]?.id || null;
+	// isolate targeted category id
+	return targetedCategory[0]?.id || null;
 }
 
 function filterByAnonymizationLevelAndImages(spotlightData) {
-	const firstFiveRecommendedLoans = spotlightData.lend?.loanChannelsById[0]?.loans?.values ?? [];
+	const firstFiveRecommendedLoans = spotlightData.categoriesByIds?.[0]?.savedSearch?.loans?.values ?? [];
 	const nonAnonymousLoansWithImages = firstFiveRecommendedLoans.filter(
 		loan => loan.anonymizationLevel !== 'full' && loan.image?.default !== ''
 	);
@@ -165,9 +171,9 @@ export default {
 		return {
 			spotlightPlaceholderImageCTF: '',
 			spotlightLoan: {},
-			allChannelsData: [],
+			allCategoriesData: [],
 			isLoading: true,
-			targetedLoanChannelID: null
+			targetedCategoryId: null
 		};
 	},
 	computed: {
@@ -202,20 +208,26 @@ export default {
 		}
 	},
 	apollo: {
-		query: allChannelsQuery,
+		query: allCategoriesQuery,
 		preFetch: true,
 		result(result) {
-			this.allChannelsData = result.data?.lend?.loanChannels?.values ?? [];
+			this.allCategoriesData = result.data?.browsingCategories?.values ?? [];
 		},
 	},
 	created() {
 		// eslint-disable-next-line max-len
-		this.targetedLoanChannelID = getTargetedChannel(this.categorySlug, this.fallbackCategorySlug, this.allChannelsData);
+		this.targetedCategoryId = getTargetedCategory(this.categorySlug, this.fallbackCategorySlug, this.allCategoriesData);
+
+		// ids is a non-null list, so an unresolved category has to skip the query rather than send [null]
+		if (!this.targetedCategoryId) {
+			this.isLoading = false;
+			return;
+		}
 
 		this.apollo.query({
 			query: spotlightLoanQuery,
 			variables: {
-				ids: [this.targetedLoanChannelID],
+				ids: [this.targetedCategoryId],
 			},
 		}).then(result => {
 			// filter out loans with anonymizationLevel of full, then take first in list
