@@ -1,48 +1,48 @@
 <template>
 	<div
 		ref="cardElement"
-		class="tw-bg-white tw-rounded tw-shadow tw-flex tw-flex-col tw-h-full tw-overflow-hidden tw-relative"
+		class="tw-w-full tw-relative tw-rounded tw-shadow tw-p-2 tw-flex tw-flex-col
+			tw-bg-white tw-shrink-0 tw-overflow-hidden tw-h-full tw-select-none"
 	>
 		<span
-			class="tw-inline-flex tw-items-center tw-gap-1
-				tw-absolute tw-m-2.5 tw-z-1 tw-text-label tw-text-primary"
+			class="tw-inline-flex tw-items-center tw-gap-1 tw-mb-2
+						tw-rounded-md tw-bg-eco-green-1 tw-px-1.5 tw-py-0.5
+						tw-absolute tw-top-2.5 tw-left-2.5 tw-z-1"
 		>
-			<!-- Kiva K logo, same white-on-brand-green treatment SupporterDetails uses -->
-			<span
-				class="tw-w-3 tw-h-3 tw-rounded-full tw-bg-brand
-					tw-flex tw-items-center tw-justify-center tw-shrink-0"
-			>
-				<img :src="kivaKUrl" alt="Kiva logo" class="tw-h-1.5">
-			</span>
-			<span class="tw-align-middle">
-				Recovery fund
+			<KvMaterialIcon
+				class="tw-w-2 tw-h-2 tw-shrink-0"
+				:icon="mdiEarth"
+			/>
+			<span class="tw-text-primary tw-text-label tw-align-middle">
+				Support today
 			</span>
 		</span>
-
-		<div
-			class="tw-w-full tw-relative tw-flex-1
-				tw-flex tw-items-center tw-justify-center tw-p-4 tw-pt-8"
-			style="min-height: 180px;"
-		>
+		<div class="tw-rounded tw-overflow-hidden !tw-pb-0 tw-z-base">
+			<img
+				:src="colombiaEarthquake"
+				alt="Photo of disaster relief worker in Colombia"
+				class="tw-rounded tw-object-cover tw-aspect-square tw-w-full"
+				style="width: 312px; height: 211px;"
+			>
+		</div>
+		<div class="tw-relative tw-flex tw-justify-center tw-z-1">
 			<img
 				:src="colombiaFlag"
 				alt="Flag of Colombia"
-				class="tw-rounded-full tw-object-cover tw-aspect-square"
-				style="width: 116px;"
+				class="circle-icon tw-object-cover tw-rounded-full tw-border-4 tw-border-white
+					tw-absolute tw--top-5 tw-drop-shadow-md"
 			>
 		</div>
-
-		<div class="tw-p-2 tw-pt-0 tw-flex tw-flex-col tw-gap-2">
-			<h3 class="tw-text-h4 tw-text-primary tw-text-center tw-pb-0.5 tw-px-1">
-				Donate to communities impacted by the Colombia earthquake
-			</h3>
-
+		<div class="tw-flex tw-flex-col tw--mt-3.5 tw-justify-end tw-grow">
 			<KvButton
 				variant="secondary"
-				class="tw-w-full"
+				class="tw-w-full tw-mt-1"
 				@click="handleClick"
 			>
-				Donate
+				<span class="tw-inline-flex tw-items-center tw-justify-center tw-gap-1">
+					Go to fundraiser
+					<KvMaterialIcon class="tw-w-2.5 tw-h-2.5" :icon="mdiArrowRight" />
+				</span>
 			</KvButton>
 		</div>
 	</div>
@@ -50,16 +50,19 @@
 
 <script setup>
 import {
+	KvMaterialIcon, KvButton,
+} from '@kiva/kv-components';
+import { mdiEarth, mdiArrowRight } from '@mdi/js';
+import {
 	ref,
 	onMounted,
 	onBeforeUnmount,
 	inject,
 } from 'vue';
-import { KvButton } from '@kiva/kv-components';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import { givingFundIds } from '#src/util/givingFundUtils';
 import colombiaFlag from '#src/assets/images/my-kiva/colombia-recovery-fund.jpg';
-import kivaKUrl from '#src/assets/images/kiva_k.svg?url';
+import colombiaEarthquake from '#src/assets/images/my-kiva/colombia-earthquake-recovery-fund.jpg';
 
 defineOptions({ name: 'ColombiaReliefNextStep' });
 
@@ -84,3 +87,12 @@ onBeforeUnmount(() => {
 	if (disconnectObserver) disconnectObserver();
 });
 </script>
+
+<style lang="postcss" scoped>
+.circle-icon, :deep(.circle-icon img) {
+	@apply !tw-pb-0 !tw--mt-0.5;
+
+	width: 80px;
+	height: 80px;
+}
+</style>
