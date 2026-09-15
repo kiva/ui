@@ -133,7 +133,7 @@ function getTargetedCategory(targetedRoutePath, fallbackRoutePath, allCategories
 		return fallbackCategory[0]?.id || null;
 	}
 	// targeted category exists but no loans exist within it
-	if (targetedCategory.length !== 0 && targetedCategory[0].savedSearch?.loans?.totalCount === 0) {
+	if (!targetedCategory[0].savedSearch?.loans?.totalCount) {
 		return fallbackCategory[0]?.id || null;
 	}
 	// isolate targeted category id
