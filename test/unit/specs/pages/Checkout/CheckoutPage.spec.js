@@ -620,3 +620,46 @@ describe('CheckoutPage tipToggleBasketState', () => {
 		expect(meetsTipFromBalanceCriteria(tipToggleBasketState({ ...context, myBalance: '40.00' }))).toBe(true);
 	});
 });
+
+describe('CheckoutPage showTipFromBalanceVariant', () => {
+	const showVariant = context => CheckoutPage.computed.showTipFromBalanceVariant.call(context);
+
+	const basketState = (overrides = {}) => ({
+		myId: 1234,
+		balance: 40,
+		hasLoans: true,
+		tipAmount: 5,
+		nonTipTotal: 25,
+		onTeam: false,
+		lifetimeDeposits: 0,
+		...overrides,
+	});
+
+	it('shows the treatment for an eligible variant lender', () => {
+		expect(showVariant({
+			tipFromBalanceVersion: 'b',
+			tipToggleBasketState: basketState(),
+		})).toBe(true);
+	});
+
+	it('keeps the treatment at a zero tip, so only the switch disappears', () => {
+		expect(showVariant({
+			tipFromBalanceVersion: 'b',
+			tipToggleBasketState: basketState({ tipAmount: 0 }),
+		})).toBe(true);
+	});
+
+	it('never shows the treatment for control', () => {
+		expect(showVariant({
+			tipFromBalanceVersion: 'a',
+			tipToggleBasketState: basketState(),
+		})).toBe(false);
+	});
+
+	it('never shows the treatment outside the audience, zero tip or not', () => {
+		expect(showVariant({
+			tipFromBalanceVersion: 'b',
+			tipToggleBasketState: basketState({ tipAmount: 0, onTeam: true }),
+		})).toBe(false);
+	});
+});
