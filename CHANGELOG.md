@@ -1,3 +1,24 @@
+## [3.94.0](https://github.com/kiva/ui/compare/v3.93.1...v3.94.0) (2026-09-15)
+
+### 🎉 New Features
+
+* mp 3212 variant copy at zero tip ([#7256](https://github.com/kiva/ui/issues/7256)) ([e6c8561](https://github.com/kiva/ui/commit/e6c856146ffa353d9b5f98904aaf170265af06c0))
+* mp-3194 layout fixes ([#7251](https://github.com/kiva/ui/issues/7251)) ([9e87d15](https://github.com/kiva/ui/commit/9e87d15c88fe22c42bd4683fa1f2175317c73d95))
+
+### 🐛 Bugfixes
+
+* mp-3206-say donation instead of tip in the variant copy ([#7253](https://github.com/kiva/ui/issues/7253)) ([3f325fe](https://github.com/kiva/ui/commit/3f325fe6334dc8d59030a690df3efbc04f6423cb))
+
+### 🪚 Refactors
+
+* use browsingCategories for the lending sitemap ([#7252](https://github.com/kiva/ui/issues/7252)) ([4054670](https://github.com/kiva/ui/commit/4054670bc37ef392bea7e98651a910464ab6e24b))
+* use browsingCategories on the categories page ([#7254](https://github.com/kiva/ui/issues/7254)) ([a7f2505](https://github.com/kiva/ui/commit/a7f2505387b0dbc6dbd8ebd09f8e603f10510181))
+
+### 🧹 Chores
+
+* **release:** 3.94.0-rc.1 [skip ci] ([411bd4a](https://github.com/kiva/ui/commit/411bd4ab2f0642ab4f3b8918cf61edac1550dbd6)), closes [#7251](https://github.com/kiva/ui/issues/7251) [#7253](https://github.com/kiva/ui/issues/7253) [#7252](https://github.com/kiva/ui/issues/7252)
+* **release:** 3.94.0-rc.2 [skip ci] ([492155d](https://github.com/kiva/ui/commit/492155daf89f65492266dbf67a5bfa103d07cfd5)), closes [#7256](https://github.com/kiva/ui/issues/7256) [#7254](https://github.com/kiva/ui/issues/7254)
+
 ## [3.94.0-rc.2](https://github.com/kiva/ui/compare/v3.94.0-rc.1...v3.94.0-rc.2) (2026-09-15)
 
 ### 🎉 New Features
