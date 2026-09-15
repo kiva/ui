@@ -39,7 +39,7 @@
 						:category-description="category.description"
 						:image="getImage(category)"
 						:retina-image="getRetinaImage(category)"
-						:number-loans="category.loans.totalCount"
+						:number-loans="getNumberLoans(category)"
 					/>
 				</div>
 			</kv-grid>
@@ -55,7 +55,7 @@
 						:category-description="category.description"
 						:image="getImage(category)"
 						:retina-image="getRetinaImage(category)"
-						:number-loans="category.loans.totalCount"
+						:number-loans="getNumberLoans(category)"
 					/>
 				</div>
 			</kv-grid>
@@ -82,7 +82,7 @@
 						:category-description="category.description"
 						:image="getImage(category)"
 						:retina-image="getRetinaImage(category)"
-						:number-loans="category.loans.totalCount"
+						:number-loans="getNumberLoans(category)"
 					/>
 				</div>
 			</kv-grid>
@@ -112,13 +112,13 @@ const CYPRESS_TESTING_EXP_KEY = 'cypress_experiment_cookie_testing';
 
 const allCategoriesPageQuery = gql`
 	query allCategoriesPageQuery {
-		lend {
-			loanChannels (limit: 18, popular: true, applyMinLoanCount: true) {
-				values {
-					id
-					url
-					name
-					description
+		browsingCategories (limit: 18, filters: { popularOnly: true, applyMinimumLoanCount: true }) {
+			values {
+				id
+				url
+				name
+				description
+				... on LoanCategorySearchOutput {
 					image {
 						id
 						url (customSize: "w520h301")
@@ -127,9 +127,12 @@ const allCategoriesPageQuery = gql`
 						id
 						url (customSize: "w1040h602")
 					}
-					loans {
-        				totalCount
-        			}
+					savedSearch {
+						id
+						loans {
+							totalCount
+						}
+					}
 				}
 			}
 		}
@@ -182,7 +185,7 @@ export default {
 		},
 		query: allCategoriesPageQuery,
 		result(result) {
-			this.categories = result.data?.lend?.loanChannels?.values ?? [];
+			this.categories = result.data?.browsingCategories?.values ?? [];
 			const pageEntry = result.data?.contentful?.entries?.items?.[0] ?? null;
 			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
 		},
@@ -193,6 +196,9 @@ export default {
 		},
 		getRetinaImage(category) {
 			return category.retinaImage?.url ?? '';
+		},
+		getNumberLoans(category) {
+			return category.savedSearch?.loans?.totalCount;
 		}
 	},
 	computed: {

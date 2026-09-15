@@ -1,3 +1,17 @@
+## [3.94.0-rc.1](https://github.com/kiva/ui/compare/v3.93.1...v3.94.0-rc.1) (2026-09-14)
+
+### 🎉 New Features
+
+* mp-3194 layout fixes ([#7251](https://github.com/kiva/ui/issues/7251)) ([9e87d15](https://github.com/kiva/ui/commit/9e87d15c88fe22c42bd4683fa1f2175317c73d95))
+
+### 🐛 Bugfixes
+
+* mp-3206-say donation instead of tip in the variant copy ([#7253](https://github.com/kiva/ui/issues/7253)) ([3f325fe](https://github.com/kiva/ui/commit/3f325fe6334dc8d59030a690df3efbc04f6423cb))
+
+### 🪚 Refactors
+
+* use browsingCategories for the lending sitemap ([#7252](https://github.com/kiva/ui/issues/7252)) ([4054670](https://github.com/kiva/ui/commit/4054670bc37ef392bea7e98651a910464ab6e24b))
+
 ## [3.93.1](https://github.com/kiva/ui/compare/v3.93.0...v3.93.1) (2026-09-10)
 
 ### 🐛 Bugfixes
