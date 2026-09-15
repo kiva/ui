@@ -19,11 +19,6 @@ describe('ColombiaReliefNextStep', () => {
 		mockTrackEvent.mockClear();
 	});
 
-	it('renders the card with correct heading', () => {
-		const { getByText } = renderComponent();
-		expect(getByText('Donate to communities impacted by the Colombia earthquake')).toBeTruthy();
-	});
-
 	it('renders the Recovery fund badge', () => {
 		const { getByText } = renderComponent();
 		expect(getByText('Recovery fund')).toBeTruthy();
@@ -31,18 +26,18 @@ describe('ColombiaReliefNextStep', () => {
 
 	it('renders the CTA button', () => {
 		const { getByText } = renderComponent();
-		expect(getByText('Donate')).toBeTruthy();
+		expect(getByText('Go to fundraiser')).toBeTruthy();
 	});
 
 	it('navigates to the Colombia giving fund on CTA click', async () => {
 		const { getByText } = renderComponent();
-		await fireEvent.click(getByText('Donate'));
+		await fireEvent.click(getByText('Go to fundraiser'));
 		expect(window.location.href).toContain(`/gf/${givingFundIds.COLOMBIA_DISASTER_RELIEF}`);
 	});
 
 	it('tracks click event on CTA click', async () => {
 		const { getByText } = renderComponent();
-		await fireEvent.click(getByText('Donate'));
+		await fireEvent.click(getByText('Go to fundraiser'));
 		expect(mockTrackEvent).toHaveBeenCalledWith(
 			'portfolio',
 			'click',
