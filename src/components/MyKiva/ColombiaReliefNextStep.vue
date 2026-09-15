@@ -1,7 +1,7 @@
 <template>
 	<div
 		ref="cardElement"
-		class="tw-w-full tw-relative tw-rounded tw-shadow tw-p-2 tw-flex tw-flex-col
+		class="next-step-card tw-w-full tw-relative tw-rounded tw-shadow tw-p-2 tw-flex tw-flex-col
 			tw-bg-white tw-shrink-0 tw-overflow-hidden tw-h-full tw-select-none"
 	>
 		<span
@@ -22,7 +22,7 @@
 				:src="colombiaEarthquake"
 				alt="Photo of disaster relief worker in Colombia"
 				class="tw-rounded tw-object-cover tw-aspect-square tw-w-full"
-				style="width: 312px; height: 211px;"
+				style="height: 211px;"
 			>
 		</div>
 		<div class="tw-relative tw-flex tw-justify-center tw-z-1">
@@ -33,7 +33,7 @@
 					tw-absolute tw--top-5 tw-drop-shadow-md"
 			>
 		</div>
-		<div class="tw-flex tw-flex-col tw--mt-3.5 tw-justify-end tw-grow">
+		<div class="tw-flex tw-flex-col tw-justify-end tw-grow">
 			<KvButton
 				variant="secondary"
 				class="tw-w-full tw-mt-1"
@@ -61,6 +61,7 @@ import {
 } from 'vue';
 import useDelayUntilVisible from '#src/composables/useDelayUntilVisible';
 import { givingFundIds } from '#src/util/givingFundUtils';
+import { MY_KIVA_CARD_HEIGHT } from '#src/util/myKivaUtils';
 import colombiaFlag from '#src/assets/images/my-kiva/colombia-recovery-fund.jpg';
 import colombiaEarthquake from '#src/assets/images/my-kiva/colombia-earthquake-recovery-fund.jpg';
 
@@ -90,9 +91,12 @@ onBeforeUnmount(() => {
 
 <style lang="postcss" scoped>
 .circle-icon, :deep(.circle-icon img) {
-	@apply !tw-pb-0 !tw--mt-0.5;
+	@apply !tw-pb-0 !tw--mt-0.5 tw-w-10 tw-h-10;
+}
 
-	width: 80px;
-	height: 80px;
+.next-step-card {
+	@screen md {
+		min-height: v-bind('`${MY_KIVA_CARD_HEIGHT}px`');
+	}
 }
 </style>
