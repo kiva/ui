@@ -19,9 +19,9 @@ describe('ColombiaReliefNextStep', () => {
 		mockTrackEvent.mockClear();
 	});
 
-	it('renders the Recovery fund badge', () => {
+	it('renders the Support today badge', () => {
 		const { getByText } = renderComponent();
-		expect(getByText('Recovery fund')).toBeTruthy();
+		expect(getByText('Support today')).toBeTruthy();
 	});
 
 	it('renders the CTA button', () => {
