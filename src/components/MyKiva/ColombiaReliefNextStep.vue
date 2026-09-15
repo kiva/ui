@@ -34,6 +34,9 @@
 			>
 		</div>
 		<div class="tw-flex tw-flex-col tw-justify-end tw-grow">
+			<h3 class="tw-text-h4 tw-text-primary tw-text-center tw-pb-0.5 tw-px-1">
+				Support Colombia earthquake disaster relief
+			</h3>
 			<KvButton
 				variant="secondary"
 				class="tw-w-full tw-mt-1"

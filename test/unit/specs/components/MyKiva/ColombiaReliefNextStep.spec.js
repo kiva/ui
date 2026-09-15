@@ -19,6 +19,11 @@ describe('ColombiaReliefNextStep', () => {
 		mockTrackEvent.mockClear();
 	});
 
+	it('renders the card with correct heading', () => {
+		const { getByText } = renderComponent();
+		expect(getByText('Support Colombia earthquake disaster relief')).toBeTruthy();
+	});
+
 	it('renders the Support today badge', () => {
 		const { getByText } = renderComponent();
 		expect(getByText('Support today')).toBeTruthy();
