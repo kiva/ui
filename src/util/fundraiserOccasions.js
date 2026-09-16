@@ -6,6 +6,12 @@ const occasionImage = (assetId, hash, slug) => (
 	`${CONTENTFUL_BASE}/${assetId}/${hash}/fundraiser-occasion-${slug}.jpg`
 );
 
+/** Shared by the carousel's closing card and the owner state's "start another fund" card. */
+export const communityImage = {
+	image: occasionImage('2QdSrCyG09494w2kuXqUzF', 'd61ea311f05c622e277c723ddebe74f8', 'other'),
+	imageAlt: 'An outdoor community market table under trees',
+};
+
 /**
  * Cards for the MyKiva fundraisers carousel, in display order.
  *
@@ -62,8 +68,7 @@ export const fundraiserOccasionCards = [
 		title: 'Share and celebrate impact at Kiva with others.',
 		linkLabel: 'More about fundraisers',
 		to: FUNDRAISER_LANDING_PAGE,
-		image: occasionImage('2QdSrCyG09494w2kuXqUzF', 'd61ea311f05c622e277c723ddebe74f8', 'other'),
-		imageAlt: 'An outdoor community market table under trees',
+		...communityImage,
 	},
 ];
 

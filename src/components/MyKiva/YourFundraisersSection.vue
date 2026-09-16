@@ -64,8 +64,8 @@
 				title="Have another event you'd like to fundraise for?"
 				link-label="Start another fund here"
 				:to="FUNDRAISER_LANDING_PAGE"
-				:image="startAnotherCard.image"
-				:image-alt="startAnotherCard.imageAlt"
+				:image="communityImage.image"
+				:image-alt="communityImage.imageAlt"
 			/>
 		</div>
 	</div>
@@ -78,7 +78,7 @@ import { KvMaterialIcon, KvPill, KvTextLink } from '@kiva/kv-components';
 import { mdiBullhornOutline } from '@mdi/js';
 import KivaLogo from '#src/assets/inline-svgs/logos/kiva-logo.svg';
 import FundraiserOccasionCard from '#src/components/MyKiva/FundraiserOccasionCard';
-import { fundraiserOccasionCards, FUNDRAISER_LANDING_PAGE } from '#src/util/fundraiserOccasions';
+import { communityImage, FUNDRAISER_LANDING_PAGE } from '#src/util/fundraiserOccasions';
 import { parseMoney } from '#src/util/numberUtils';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 
@@ -88,8 +88,6 @@ const props = defineProps({
 		required: true,
 	},
 });
-
-const startAnotherCard = fundraiserOccasionCards.find(card => card.id === 'learn-more');
 
 const fundId = computed(() => props.fund?.id);
 

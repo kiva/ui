@@ -27,7 +27,7 @@ query MyGivingFunds {
           ctaDescription
           avatar {
             id
-            url
+            url(customSize: "w200h200")
           }
         }
         id

@@ -56,7 +56,8 @@
 			</div>
 		</div>
 		<KvCarousel
-			class="fundraisers-carousel tw-w-full tw--mt-6"
+			class="fundraisers-carousel tw-w-full"
+			:class="{ 'tw--mt-6': controlsTopRight }"
 			:controls-top-right="controlsTopRight"
 			:slide-max-width="singleSlideWidth"
 			:embla-options="{ loop: false, align: 'start' }"
