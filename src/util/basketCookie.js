@@ -1,5 +1,5 @@
 import basketCount from '#src/graphql/query/basketCount.graphql';
-import { createNewBasket, hasBasketExpired } from '#src/util/basketUtils';
+import { createNewBasket, getBasketErrorCode, hasBasketExpired } from '#src/util/basketUtils';
 
 export default async function setBasketCookie(cookieStore, apollo) {
 	// Create a new basket if the cookie doesn't exist
@@ -13,7 +13,7 @@ export default async function setBasketCookie(cookieStore, apollo) {
 		query: basketCount,
 		variables: { basketId },
 	});
-	if (errors?.some(e => hasBasketExpired(e.extensions?.code ?? e.code))) {
+	if (errors?.some(e => hasBasketExpired(getBasketErrorCode(e)))) {
 		return createNewBasket({ apollo, cookieStore });
 	}
 }

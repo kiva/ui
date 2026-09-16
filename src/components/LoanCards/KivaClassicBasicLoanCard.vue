@@ -245,7 +245,14 @@ import KvLoadingParagraph from '#src/components/Kv/KvLoadingParagraph';
 import LoanProgressGroup from '#src/components/LoanCards/LoanProgressGroup';
 import LoanMatchingText from '#src/components/LoanCards/LoanMatchingText';
 import SummaryTag from '#src/components/BorrowerProfile/SummaryTag';
-import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
+import {
+	CHECKOUT_IN_PROGRESS_MESSAGE,
+	getBasketErrorCode,
+	handleInvalidBasket,
+	hasBasketExpired,
+	isCheckoutInProgress,
+	setLendAmount,
+} from '#src/util/basketUtils';
 import { trackFBAddToCart, FB_CONTENT_CATEGORY_LOAN } from '@kiva/kv-analytics';
 import loanCardFieldsFragment from '#src/graphql/fragments/loanCardFields.graphql';
 import ActionButton from '#src/components/LoanCards/Buttons/ActionButton';
@@ -562,7 +569,14 @@ export default {
 			}).catch(e => {
 				this.isAdding = false;
 				this.$emit('add-to-basket', { loanId: this.loanId, success: false });
-				if (hasBasketExpired(e?.[0]?.extensions?.code)) {
+				const errorCode = getBasketErrorCode(e?.[0]);
+				// Locked by the lender's own checkout, not broken: must not fall through to
+				// handleInvalidBasket, which deletes the basket cookie and reloads.
+				if (isCheckoutInProgress(errorCode)) {
+					this.$showTipMsg(CHECKOUT_IN_PROGRESS_MESSAGE, 'error');
+					return;
+				}
+				if (hasBasketExpired(errorCode)) {
 					// eslint-disable-next-line max-len
 					this.$showTipMsg('There was a problem adding the loan to your basket, refresh the page to try again.', 'error');
 					return handleInvalidBasket({
@@ -573,7 +587,7 @@ export default {
 						}
 					});
 				}
-				const msg = e[0]?.extensions?.code === 'reached_anonymous_basket_limit'
+				const msg = errorCode === 'reached_anonymous_basket_limit'
 					? e[0].message
 					: 'There was a problem adding the loan to your basket';
 

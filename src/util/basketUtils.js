@@ -10,6 +10,11 @@ import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.g
 
 export const INVALID_BASKET_ERROR = 'invalidBasket';
 
+// Placeholder copy pending design/content review (CIT-5181). The lock self-heals after 300s,
+// so this must not imply the basket is permanently stuck.
+export const CHECKOUT_IN_PROGRESS_MESSAGE = 'Your checkout is being processed, so your basket '
+	+ 'can\u2019t be changed right now. Please wait a moment and refresh the page.';
+
 function logSetLendAmountError(loanId, err) {
 	logFormatter(err, 'error');
 	try {
@@ -114,4 +119,21 @@ export function handleInvalidBasketForDonation({ cookieStore, donationAmount, na
 
 export function hasBasketExpired(errorCode) {
 	return ['shop.invalidBasketId', 'shop.basketRequired'].includes(errorCode);
+}
+
+// The backend refuses basket edits while the lender's own checkout is still running (CIT-4190).
+// Two codes mean the same thing: the loan reservation path returns checkout_in_progress, the
+// donation/Kiva Card/credit paths throw shop.checkoutInProgress.
+export function isCheckoutInProgress(errorCode) {
+	return ['checkout_in_progress', 'shop.checkoutInProgress'].includes(errorCode);
+}
+
+// Basket errors arrive with the code nested under extensions or, from some mutations, at the top level.
+export function getBasketErrorCode(error) {
+	return error?.extensions?.code ?? error?.code;
+}
+
+// Lender-facing copy for a basket error, overriding the backend message where ours is better.
+export function getBasketErrorMessage(error) {
+	return isCheckoutInProgress(getBasketErrorCode(error)) ? CHECKOUT_IN_PROGRESS_MESSAGE : error?.message;
 }

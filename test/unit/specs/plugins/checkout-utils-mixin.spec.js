@@ -1,5 +1,9 @@
 import checkoutUtilsMixin from '#src/plugins/checkout-utils-mixin';
 
+vi.mock('@sentry/vue', () => ({
+	captureException: vi.fn()
+}));
+
 vi.mock('#src/util/logFormatter', () => ({
 	default: vi.fn()
 }));
@@ -312,6 +316,29 @@ describe('checkout-utils-mixin.js', () => {
 			checkoutUtilsMixin.methods.showCheckoutError.call(context, errors, true);
 
 			expect(context.$showTipMsg).not.toHaveBeenCalled();
+		});
+
+		it.each([
+			[{ error: 'checkout_in_progress', value: 'engineer placeholder copy' }],
+			[{ extension: { code: 'shop.checkoutInProgress' }, message: 'engineer placeholder copy' }],
+		])('should replace the backend copy when the checkout is already running', async errorItem => {
+			const { CHECKOUT_IN_PROGRESS_MESSAGE } = await import('#src/util/basketUtils');
+
+			checkoutUtilsMixin.methods.showCheckoutError.call(context, [errorItem]);
+
+			expect(context.$showTipMsg).toHaveBeenCalledWith(CHECKOUT_IN_PROGRESS_MESSAGE, 'error');
+		});
+
+		it('should not report a checkout in progress to Sentry', async () => {
+			const { captureException } = await import('@sentry/vue');
+			captureException.mockClear();
+
+			checkoutUtilsMixin.methods.showCheckoutError.call(
+				context,
+				[{ error: 'checkout_in_progress', value: 'engineer placeholder copy' }]
+			);
+
+			expect(captureException).not.toHaveBeenCalled();
 		});
 
 		it('should concatenate multiple error messages', () => {

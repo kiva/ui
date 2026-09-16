@@ -4,6 +4,10 @@ import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.g
 import {
 	createNewBasket,
 	hasBasketExpired,
+	isCheckoutInProgress,
+	getBasketErrorCode,
+	getBasketErrorMessage,
+	CHECKOUT_IN_PROGRESS_MESSAGE,
 	handleInvalidBasket,
 	handleInvalidBasketForDonation,
 	setLendAmount,
@@ -56,6 +60,61 @@ describe('basketUtils', () => {
 		});
 		it('returns false for other error codes', () => {
 			expect(hasBasketExpired('other')).toBe(false);
+		});
+	});
+
+	describe('isCheckoutInProgress', () => {
+		it('returns true for checkout_in_progress from the loan reservation path', () => {
+			expect(isCheckoutInProgress('checkout_in_progress')).toBe(true);
+		});
+		it('returns true for shop.checkoutInProgress from the donation and Kiva Card paths', () => {
+			expect(isCheckoutInProgress('shop.checkoutInProgress')).toBe(true);
+		});
+		it('returns false for other error codes', () => {
+			expect(isCheckoutInProgress('other')).toBe(false);
+		});
+		it('does not overlap with the basket expired codes', () => {
+			expect(isCheckoutInProgress('shop.invalidBasketId')).toBe(false);
+			expect(isCheckoutInProgress('shop.basketRequired')).toBe(false);
+		});
+	});
+
+	describe('getBasketErrorCode', () => {
+		it('reads the code from extensions', () => {
+			expect(getBasketErrorCode({ extensions: { code: 'checkout_in_progress' } }))
+				.toBe('checkout_in_progress');
+		});
+		it('falls back to a top level code', () => {
+			expect(getBasketErrorCode({ code: 'checkout_in_progress' })).toBe('checkout_in_progress');
+		});
+		it('prefers extensions over a top level code', () => {
+			const error = { code: 'top', extensions: { code: 'nested' } };
+			expect(getBasketErrorCode(error)).toBe('nested');
+		});
+		it('returns undefined when there is no error or no code', () => {
+			expect(getBasketErrorCode(undefined)).toBeUndefined();
+			expect(getBasketErrorCode({ message: 'no code here' })).toBeUndefined();
+		});
+	});
+
+	describe('getBasketErrorMessage', () => {
+		it.each([
+			['checkout_in_progress'],
+			['shop.checkoutInProgress'],
+		])('replaces the backend copy for %s', code => {
+			const error = { message: 'engineer placeholder copy', extensions: { code } };
+			expect(getBasketErrorMessage(error)).toBe(CHECKOUT_IN_PROGRESS_MESSAGE);
+		});
+		it('passes through the backend message for other codes', () => {
+			const error = { message: 'something else went wrong', extensions: { code: 'other' } };
+			expect(getBasketErrorMessage(error)).toBe('something else went wrong');
+		});
+		it('passes through the backend message when there is no code', () => {
+			expect(getBasketErrorMessage({ message: 'no code here' })).toBe('no code here');
+		});
+		it('reads a top level code as well as extensions', () => {
+			expect(getBasketErrorMessage({ message: 'raw', code: 'checkout_in_progress' }))
+				.toBe(CHECKOUT_IN_PROGRESS_MESSAGE);
 		});
 	});
 
