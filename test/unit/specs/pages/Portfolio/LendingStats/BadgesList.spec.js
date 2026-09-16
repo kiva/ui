@@ -60,7 +60,7 @@ describe('BadgesList email-link auto-open', () => {
 	it('auto-opens the earned badge modal when arriving via the badge email link', async () => {
 		const { queryByTestId } = renderBadgesList({
 			completedAchievements: [eventBadge('stewardship-2026')],
-			query: { utm_campaign: 'badge_stewardship-2026' },
+			query: { utm_content: 'badge_stewardship-2026' },
 		});
 
 		await waitFor(() => expect(queryByTestId('badge-modal')).toBeTruthy());
@@ -81,7 +81,7 @@ describe('BadgesList email-link auto-open', () => {
 	it('does not auto-open when the user does not own the linked badge', async () => {
 		const { queryByTestId } = renderBadgesList({
 			completedAchievements: [eventBadge('some-other-badge')],
-			query: { utm_campaign: 'badge_stewardship-2026' },
+			query: { utm_content: 'badge_stewardship-2026' },
 		});
 
 		await flushPromises();
@@ -91,7 +91,7 @@ describe('BadgesList email-link auto-open', () => {
 	it('does not auto-open for a share campaign that merely contains "badge_"', async () => {
 		const { queryByTestId } = renderBadgesList({
 			completedAchievements: [eventBadge('equity')],
-			query: { utm_campaign: 'social_share_portfolio_badge_equity' },
+			query: { utm_content: 'social_share_portfolio_badge_equity' },
 		});
 
 		await flushPromises();
@@ -101,7 +101,7 @@ describe('BadgesList email-link auto-open', () => {
 	it('auto-opens once the badges finish loading after mount', async () => {
 		const { queryByTestId, rerender } = renderBadgesList({
 			completedAchievements: [],
-			query: { utm_campaign: 'badge_stewardship-2026' },
+			query: { utm_content: 'badge_stewardship-2026' },
 		});
 
 		expect(queryByTestId('badge-modal')).toBeNull();
@@ -117,7 +117,7 @@ describe('BadgesList badge-claim-modal view tracking', () => {
 		const trackEvent = vi.fn();
 		renderBadgesList({
 			completedAchievements: [eventBadge('stewardship-2026')],
-			query: { utm_campaign: 'badge_stewardship-2026' },
+			query: { utm_content: 'badge_stewardship-2026' },
 			trackEvent,
 		});
 
@@ -150,7 +150,7 @@ describe('BadgesList badge-claim-modal view tracking', () => {
 		const trackEvent = vi.fn();
 		renderBadgesList({
 			completedAchievements: [eventBadge('some-other-badge')],
-			query: { utm_campaign: 'badge_stewardship-2026' },
+			query: { utm_content: 'badge_stewardship-2026' },
 			trackEvent,
 		});
 
@@ -167,7 +167,7 @@ describe('BadgesList badge-claim-modal view tracking', () => {
 		const trackEvent = vi.fn();
 		const { rerender } = renderBadgesList({
 			completedAchievements: [eventBadge('stewardship-2026')],
-			query: { utm_campaign: 'badge_stewardship-2026' },
+			query: { utm_content: 'badge_stewardship-2026' },
 			trackEvent,
 		});
 
