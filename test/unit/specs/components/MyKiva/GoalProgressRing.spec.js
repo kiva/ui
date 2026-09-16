@@ -172,3 +172,34 @@ describe('GoalProgressRing', () => {
 		});
 	});
 });
+
+describe('GoalProgressRing days left countdown', () => {
+	const renderCard = props => renderRing({ variant: 'card', ...props });
+
+	it('shows the countdown copy with its icon in the card variant', () => {
+		const { getByTestId } = renderCard({ daysLeft: 47 });
+		const countdown = getByTestId('goal-days-left');
+		expect(countdown.textContent).toContain(goalCopy.daysLeftInGoalYear(47));
+		expect(countdown.querySelector('svg')).not.toBeNull();
+	});
+
+	it('uses the singular copy on the last day', () => {
+		const { getByTestId } = renderCard({ daysLeft: 1 });
+		expect(getByTestId('goal-days-left').textContent).toContain('1 day left!');
+	});
+
+	it('renders no countdown when daysLeft is null', () => {
+		const { queryByTestId } = renderCard({ daysLeft: null });
+		expect(queryByTestId('goal-days-left')).toBeNull();
+	});
+
+	it('never renders the countdown in the modal variant', () => {
+		const { queryByTestId } = renderRing({ variant: 'modal', daysLeft: 47 });
+		expect(queryByTestId('goal-days-left')).toBeNull();
+	});
+
+	it('keeps the Edit button next to the title when the countdown is shown', () => {
+		const { getByRole } = renderCard({ daysLeft: 47 });
+		expect(getByRole('button', { name: 'Edit' })).toBeTruthy();
+	});
+});

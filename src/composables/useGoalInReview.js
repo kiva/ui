@@ -28,8 +28,9 @@ import { getContentfulEntries } from '#src/util/contentfulUtils';
 export const GOAL_RECAP_DEEP_LINK = 'goal-recap';
 
 /**
- * Returns the current date, applying the ?recapDate=YYYY-MM-DD URL override for dev/QA use only.
- * Once dev/QA testing is complete, this override will be removed.
+ * Returns the current date, applying the ?recapDate=YYYY-MM-DD URL override (dev/QA only; production
+ * users never pass it). A bare date is read as the user's LOCAL midnight. The override is permanent
+ * QA tooling shared by the goal recap and the goal-card countdown; without it, the browser clock wins.
  *
  * Example: /mykiva?goTo=goal-recap&recapDate=2027-01-01
  *

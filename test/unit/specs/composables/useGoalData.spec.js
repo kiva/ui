@@ -1,7 +1,9 @@
 import { createApp } from 'vue';
 import useGoalData, {
 	GOAL_STATUS,
+	GOAL_YEAR_COUNTDOWN_WINDOW_DAYS,
 	GOALS_CURRENT_YEAR,
+	getGoalYearDaysLeft,
 } from '#src/composables/useGoalData';
 import {
 	ID_BASIC_NEEDS,
@@ -5709,5 +5711,57 @@ describe('useGoalData', () => {
 			// writing optimistic progress back into them would throw during SSR.
 			expect(cachedAchievements).toEqual(achievements);
 		});
+	});
+});
+
+describe('getGoalYearDaysLeft', () => {
+	// A 2026 goal; February is far from any year boundary, so the goal year is 2026 in every timezone.
+	const goal = { dateStarted: '2026-02-01T12:00:00.000Z' };
+	// "Now" is always built from LOCAL components — an ISO string here would parse as UTC.
+	const localDate = (year, monthIndex, day, hour = 10, minute = 0) => new Date(year, monthIndex, day, hour, minute);
+
+	it('exposes a 90-day countdown window', () => {
+		expect(GOAL_YEAR_COUNTDOWN_WINDOW_DAYS).toBe(90);
+	});
+
+	it('is hidden at 91 days left (Oct 2)', () => {
+		expect(getGoalYearDaysLeft(goal, localDate(2026, 9, 2))).toBeNull();
+	});
+
+	it('shows 90 on the first day of the window (Oct 3)', () => {
+		expect(getGoalYearDaysLeft(goal, localDate(2026, 9, 3))).toBe(90);
+	});
+
+	it('counts the current day through December 31 inclusive (Nov 15 is 47)', () => {
+		expect(getGoalYearDaysLeft(goal, localDate(2026, 10, 15))).toBe(47);
+	});
+
+	it('shows 2 on Dec 30', () => {
+		expect(getGoalYearDaysLeft(goal, localDate(2026, 11, 30))).toBe(2);
+	});
+
+	it('shows 1 on Dec 31 because the last day counts', () => {
+		expect(getGoalYearDaysLeft(goal, localDate(2026, 11, 31))).toBe(1);
+	});
+
+	it('is hidden from local January 1 of the following year', () => {
+		expect(getGoalYearDaysLeft(goal, localDate(2027, 0, 1, 0))).toBeNull();
+	});
+
+	it('follows the local calendar day, not the UTC date, across midnight', () => {
+		// 23:30 local on Dec 31: west of UTC this is already Jan 1 in UTC — still the last day locally.
+		expect(getGoalYearDaysLeft(goal, localDate(2026, 11, 31, 23, 30))).toBe(1);
+		// 00:30 local on Jan 1: east of UTC this is still Dec 31 in UTC — already over locally.
+		expect(getGoalYearDaysLeft(goal, localDate(2027, 0, 1, 0, 30))).toBeNull();
+	});
+
+	it('is hidden for a goal whose year is still in the future', () => {
+		expect(getGoalYearDaysLeft({ dateStarted: '2027-02-01T12:00:00.000Z' }, localDate(2026, 11, 31))).toBeNull();
+	});
+
+	it('returns null without a goal, a start date, or a parseable start date', () => {
+		expect(getGoalYearDaysLeft(null, localDate(2026, 11, 31))).toBeNull();
+		expect(getGoalYearDaysLeft({}, localDate(2026, 11, 31))).toBeNull();
+		expect(getGoalYearDaysLeft({ dateStarted: 'not-a-date' }, localDate(2026, 11, 31))).toBeNull();
 	});
 });

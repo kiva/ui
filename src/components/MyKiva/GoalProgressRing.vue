@@ -4,9 +4,23 @@
 			<h2 v-if="isModalVariant" class="tw-text-headline tw-font-medium" :class="titleClass">
 				{{ titleText }}
 			</h2>
-			<p v-else class="tw-text-base" :class="titleClass">
-				{{ titleText }}
-			</p>
+			<div v-else class="tw-flex tw-flex-col tw-gap-0.5">
+				<p class="tw-text-base" :class="titleClass">
+					{{ titleText }}
+				</p>
+				<p
+					v-if="showDaysLeft"
+					class="tw-flex tw-items-center tw-gap-0.5 tw-text-label tw-text-caution-highlight"
+					data-testid="goal-days-left"
+				>
+					<KvMaterialIcon
+						:icon="mdiTimerSand"
+						class="tw-w-2.5 tw-h-2.5 tw-shrink-0"
+						aria-hidden="true"
+					/>
+					{{ daysLeftText }}
+				</p>
+			</div>
 
 			<button
 				class="tw-flex tw-gap-0.5 tw-items-center tw-text-label hover:tw-underline tw-text-action tw-pt-0.5"
@@ -92,7 +106,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { mdiPencilOutline } from '@mdi/js';
+import { mdiPencilOutline, mdiTimerSand } from '@mdi/js';
 import { useRouter } from 'vue-router';
 
 import { KvButton, KvProgressCircle, KvMaterialIcon } from '@kiva/kv-components';
@@ -188,6 +202,14 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/**
+	 * Card variant: days left in the goal year (1..90). null hides the countdown.
+	 * The parent computes it so this component stays presentational.
+	 */
+	daysLeft: {
+		type: Number,
+		default: null,
+	},
 });
 
 const emit = defineEmits(['button-click', 'edit-button-click', 'edit-goal-from-settings']);
@@ -224,6 +246,12 @@ const progressCircleDesc = computed(() => {
 // --- Variant-specific computed properties ---
 
 const isModalVariant = computed(() => props.variant === 'modal');
+
+const showDaysLeft = computed(() => (
+	!isModalVariant.value && Number.isInteger(props.daysLeft) && props.daysLeft > 0
+));
+
+const daysLeftText = computed(() => goalCopy.daysLeftInGoalYear(props.daysLeft));
 
 const containerClass = computed(() => {
 	return isModalVariant.value ? 'tw-text-center goal-modal-container' : 'tw-text-center';
