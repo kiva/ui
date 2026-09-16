@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { flushPromises, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { ref } from 'vue';
 import confetti from 'canvas-confetti';
 import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
@@ -58,7 +58,7 @@ describe('NextYearGoalCard', () => {
 				stubs: {
 					GoalProgressRing: {
 						name: 'GoalProgressRing',
-						props: ['showRecapCta', 'daysLeft'],
+						props: ['showRecapCta', 'goalDateStarted'],
 						template: '<div data-testid="goal-progress-ring" />',
 					},
 				},
@@ -177,51 +177,24 @@ describe('NextYearGoalCard', () => {
 	});
 
 	describe('days left countdown', () => {
-		const inProgressGoal = {
-			category: ID_US_ECONOMIC_EQUALITY,
-			target: 5,
-			status: GOAL_STATUS.IN_PROGRESS,
-			// February is far from any year boundary, so the goal year is 2026 in every timezone.
-			dateStarted: '2026-02-01T12:00:00.000Z',
-		};
-
-		afterEach(() => {
-			// Clear the recapDate so it never leaks into other tests' "now".
-			window.history.pushState({}, '', '/');
-		});
-
-		it('passes the days left to the ring after mount, honoring the recapDate override', async () => {
-			window.history.pushState({}, '', '/?recapDate=2026-11-15');
+		it('hands the goal start date to the ring, which resolves the countdown itself after mount', () => {
 			const goalData = createGoalData();
 			goalData.goalProgressPercentage.value = 40;
-			const { wrapper } = mountCard({ goalData, props: { userGoal: inProgressGoal, goalProgress: 2 } });
-
-			await flushPromises();
-
-			expect(wrapper.findComponent({ name: 'GoalProgressRing' }).props('daysLeft')).toBe(47);
-		});
-
-		it('passes null once the goal is complete, even inside the window', async () => {
-			window.history.pushState({}, '', '/?recapDate=2026-11-15');
-			// createGoalData() defaults goalProgressPercentage to COMPLETED_GOAL_THRESHOLD.
 			const { wrapper } = mountCard({
-				props: { userGoal: { ...inProgressGoal, status: GOAL_STATUS.COMPLETED }, goalProgress: 5 },
+				goalData,
+				props: {
+					userGoal: {
+						category: ID_US_ECONOMIC_EQUALITY,
+						target: 5,
+						status: GOAL_STATUS.IN_PROGRESS,
+						dateStarted: '2026-02-01T12:00:00.000Z',
+					},
+					goalProgress: 2,
+				},
 			});
 
-			await flushPromises();
-
-			expect(wrapper.findComponent({ name: 'GoalProgressRing' }).props('daysLeft')).toBeNull();
-		});
-
-		it('passes null outside the 90-day window', async () => {
-			window.history.pushState({}, '', '/?recapDate=2026-06-15');
-			const goalData = createGoalData();
-			goalData.goalProgressPercentage.value = 40;
-			const { wrapper } = mountCard({ goalData, props: { userGoal: inProgressGoal, goalProgress: 2 } });
-
-			await flushPromises();
-
-			expect(wrapper.findComponent({ name: 'GoalProgressRing' }).props('daysLeft')).toBeNull();
+			expect(wrapper.findComponent({ name: 'GoalProgressRing' }).props('goalDateStarted'))
+				.toBe('2026-02-01T12:00:00.000Z');
 		});
 	});
 });

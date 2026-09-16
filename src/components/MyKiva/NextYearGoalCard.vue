@@ -36,7 +36,7 @@
 				:category-name="categoryName"
 				:category-id="userGoal?.category"
 				:show-recap-cta="showRecapCta"
-				:days-left="daysLeft"
+				:goal-date-started="userGoal?.dateStarted"
 				@button-click="handleContinueClick"
 				@edit-button-click="handleEditClick"
 			/>
@@ -56,13 +56,12 @@ import {
 import {
 	KvButton, KvLoadingPlaceholder
 } from '@kiva/kv-components';
-import { COMPLETED_GOAL_THRESHOLD, getGoalYearDaysLeft } from '#src/composables/useGoalData';
+import { COMPLETED_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import goalCopy, { GOAL_SIGNUP_COPY_NO_GOAL_YET } from '#src/util/goalCopy';
 import { useRouter } from 'vue-router';
 import confetti from 'canvas-confetti';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import { getGoalYear } from '#src/util/goalInReview';
-import { getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import HandsPlant from '#src/assets/images/thanks-page/hands-plant-v3.png';
 
 const props = defineProps({
@@ -113,21 +112,6 @@ const hasHandledGoalCompletion = ref(false);
 const completionAlreadyAnnounced = computed(() => Boolean(goalData?.hideGoalCard?.value));
 
 const userHasGoal = computed(() => !!props.userGoal && Object.keys(props.userGoal).length > 0);
-
-// The countdown is browser-only: the server knows neither the user's timezone nor the
-// ?recapDate QA override, so computing it during SSR would hydrate to different copy.
-// Waiting for mount renders nothing on the server and fills the value in after hydration.
-const hasMounted = ref(false);
-onMounted(() => {
-	hasMounted.value = true;
-});
-
-const isGoalCompleted = computed(() => goalProgressPercentage.value === COMPLETED_GOAL_THRESHOLD);
-
-const daysLeft = computed(() => {
-	if (!hasMounted.value || !userHasGoal.value || isGoalCompleted.value) return null;
-	return getGoalYearDaysLeft(props.userGoal, getGoalInReviewNow());
-});
 
 const goalLoans = computed(() => {
 	return props.userGoal?.target || 0;

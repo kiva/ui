@@ -105,12 +105,13 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { mdiPencilOutline, mdiTimerSand } from '@mdi/js';
 import { useRouter } from 'vue-router';
 
 import { KvButton, KvProgressCircle, KvMaterialIcon } from '@kiva/kv-components';
-import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD } from '#src/composables/useGoalData';
+import { COMPLETED_GOAL_THRESHOLD, HALF_GOAL_THRESHOLD, getGoalYearDaysLeft } from '#src/composables/useGoalData';
+import { getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import goalCopy from '#src/util/goalCopy';
 import { RECAP_CTA_LABEL } from '#src/util/goalInReview';
 import {
@@ -203,11 +204,11 @@ const props = defineProps({
 		default: false,
 	},
 	/**
-	 * Card variant: days left in the goal year (1..90). null hides the countdown.
-	 * The parent computes it so this component stays presentational.
+	 * Card variant: the goal's ISO `dateStarted`; its calendar year is the goal year the
+	 * countdown counts down to. The ring resolves the days left itself after mount.
 	 */
-	daysLeft: {
-		type: Number,
+	goalDateStarted: {
+		type: String,
 		default: null,
 	},
 });
@@ -247,11 +248,24 @@ const progressCircleDesc = computed(() => {
 
 const isModalVariant = computed(() => props.variant === 'modal');
 
+// Days left in the goal year, resolved once in the browser. A single read after mount is
+// enough: the card renders this ring only while a goal exists (so mounting coincides with the
+// goal appearing), the goal year never changes while mounted, and completion is gated
+// reactively in showDaysLeft. It is never computed during SSR, which knows neither the
+// user's timezone nor the ?recapDate QA override.
+const daysLeft = ref(null);
+onMounted(() => {
+	daysLeft.value = getGoalYearDaysLeft({ dateStarted: props.goalDateStarted }, getGoalInReviewNow());
+});
+
 const showDaysLeft = computed(() => (
-	!isModalVariant.value && Number.isInteger(props.daysLeft) && props.daysLeft > 0
+	!isModalVariant.value
+	&& props.goalProgressPercentage !== COMPLETED_GOAL_THRESHOLD
+	&& Number.isInteger(daysLeft.value)
+	&& daysLeft.value > 0
 ));
 
-const daysLeftText = computed(() => goalCopy.daysLeftInGoalYear(props.daysLeft));
+const daysLeftText = computed(() => goalCopy.daysLeftInGoalYear(daysLeft.value));
 
 const containerClass = computed(() => {
 	return isModalVariant.value ? 'tw-text-center goal-modal-container' : 'tw-text-center';
