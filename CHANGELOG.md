@@ -1,3 +1,25 @@
+## [3.95.0-rc.1](https://github.com/kiva/ui/compare/v3.94.0...v3.95.0-rc.1) (2026-09-16)
+
+### 🎉 New Features
+
+* **MP-3159:** a/b test express vs non express checkout ([a7cefb5](https://github.com/kiva/ui/commit/a7cefb55cf02c6adb2609cfa50920e12e3688d65))
+
+### 🐛 Bugfixes
+
+* use flag to handle watch and remove express checkout enabled flag ([a9da6c7](https://github.com/kiva/ui/commit/a9da6c7d666bdbba4c0fd023cae27f036f0e989f))
+
+### 🪚 Refactors
+
+* **contentful:** move operations onto cacheable typed fields ([68cd06a](https://github.com/kiva/ui/commit/68cd06a7a837cc0d6a44d290fccca0f2fc98d8d1))
+
+### 🔍 Tests
+
+* **contentfulUtils:** cover getContentfulEntries ([873d509](https://github.com/kiva/ui/commit/873d509cfd1656d56cf6e30818199efe2838f23a))
+
+### 🧹 Chores
+
+* **contentful:** remove unused checkout donation query ([92a11fc](https://github.com/kiva/ui/commit/92a11fcbbcc87b835246b393fd9a33914df0bab8))
+
 ## [3.94.0](https://github.com/kiva/ui/compare/v3.93.1...v3.94.0) (2026-09-15)
 
 ### 🎉 New Features
