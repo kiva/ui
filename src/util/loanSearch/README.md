@@ -12,7 +12,7 @@ One exception is the theme/attribute filter options—these are statically defin
 
 ## queryParamUtils
 
-These functions provide ways to add to query parameters and parse filter values from the URL. Since different versions of the lend filter interface may exist, several query param formats need to be supported. The `hasExcludedQueryParams` function is used by SearchBar.vue to determine when to redirect to the legacy filter interface.
+These functions provide ways to add to query parameters and parse filter values from the URL. Since different versions of the lend filter interface may exist, several query param formats need to be supported. The `hasExcludedQueryParams` function reports whether a query carries params only the legacy filter interface understands, so a caller can redirect there. It currently has no callers.
 
 ## dataUtils
 
