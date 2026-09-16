@@ -1,3 +1,27 @@
+## [3.95.0-rc.2](https://github.com/kiva/ui/compare/v3.95.0-rc.1...v3.95.0-rc.2) (2026-09-16)
+
+### 🎉 New Features
+
+* additional fix on unit tests ([5f197ed](https://github.com/kiva/ui/commit/5f197ed0348cdee623312c89e4e5adf6c676c50b))
+* fixed unit test error ([589df65](https://github.com/kiva/ui/commit/589df658be243c2966e7d31892a889c5b6c3cd8f))
+* header inclusion and unit test revision ([a8c1b4c](https://github.com/kiva/ui/commit/a8c1b4c45a10cd2c46f43fc53cec18ca1f09135f))
+* including background image ([8337659](https://github.com/kiva/ui/commit/83376598fc0ae97fed55a152f32d92b897a27ca0))
+* overall card redesign ([3d717a2](https://github.com/kiva/ui/commit/3d717a2ebfccfe4754a2d888779623f305e0f5a2))
+* resized image, revised tailwinds css classes ([0e5e6e7](https://github.com/kiva/ui/commit/0e5e6e7332c17eee66f37694b6272ae036ff8cbc))
+
+### 🐛 Bugfixes
+
+* use utm_content for badge modal on lending stats ([#7263](https://github.com/kiva/ui/issues/7263)) ([391a3e4](https://github.com/kiva/ui/commit/391a3e4bd8d0f58b3bc7b66de89bed7e0cef723e))
+
+### 🪚 Refactors
+
+* use categories for the loan spotlight ([#7257](https://github.com/kiva/ui/issues/7257)) ([7f19595](https://github.com/kiva/ui/commit/7f19595390875230ba464a62373da8d0fb021218))
+
+### 🧹 Chores
+
+* **header:** delete the legacy default header branch ([0e4127c](https://github.com/kiva/ui/commit/0e4127c78e211974ae8da07b7388296eeabff543))
+* **header:** delete the orphaned legacy header component tree ([566ed79](https://github.com/kiva/ui/commit/566ed79c3de16f8c2d7bee2e691c7e7dd5cc37e5))
+
 ## [3.95.0-rc.1](https://github.com/kiva/ui/compare/v3.94.0...v3.95.0-rc.1) (2026-09-16)
 
 ### 🎉 New Features
