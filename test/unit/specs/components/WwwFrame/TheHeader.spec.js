@@ -49,10 +49,8 @@ const renderHeader = (props = {}, renderConfig = {}, {
 			},
 			stubs: {
 				KvWwwHeaderBasic: KvWwwHeaderBasicStub,
-				MonthlyGoodExpMenuWrapper: { ...emptyComponent },
 				PromoBannerLarge: { ...emptyComponent },
 				PromoBannerSmall: { ...emptyComponent },
-				TheLendMenu: { ...emptyComponent },
 				RouterLink: { ...emptyComponent },
 			},
 			mocks: {
