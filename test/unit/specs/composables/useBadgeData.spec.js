@@ -44,7 +44,7 @@ describe('useBadgeData.js', () => {
 			const { combineBadgeData } = useBadgeData(apolloMock);
 			const badgeData = combineBadgeData(
 				achievementData.userAchievementProgress.tieredLendingAchievements,
-				contentfulData.contentful.entries.items.map(entry => getContentfulLevelData(entry)),
+				contentfulData.contentful.searchEntries.items.map(({ entry }) => getContentfulLevelData(entry)),
 			);
 
 			expect(badgeData).toEqual(combinedData);
@@ -1239,23 +1239,26 @@ describe('useBadgeData.js', () => {
 		it('should fetch contentful data and set badgeContentfulData', async () => {
 			const mockContentfulData = {
 				contentful: {
-					entries: {
+					searchEntries: {
 						items: [
 							{
-								fields: {
-									key: 'basic-needs-level-1',
-									levelName: '1',
-									challengeName: 'Basic needs',
-									badgeImage: {
-										fields: {
-											file: {
-												url: '//images.ctfassets.net/test.svg'
+								entryId: 'basic-needs-level-1',
+								entry: {
+									fields: {
+										key: 'basic-needs-level-1',
+										levelName: '1',
+										challengeName: 'Basic needs',
+										badgeImage: {
+											fields: {
+												file: {
+													url: '//images.ctfassets.net/test.svg'
+												}
 											}
-										}
-									},
-									shareFact: 'Test fact',
-									shareFactFootnote: 'Test footnote',
-									shareFactUrl: 'https://test.com'
+										},
+										shareFact: 'Test fact',
+										shareFactFootnote: 'Test footnote',
+										shareFactUrl: 'https://test.com'
+									}
 								}
 							}
 						]

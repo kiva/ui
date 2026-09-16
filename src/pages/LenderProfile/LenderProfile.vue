@@ -19,6 +19,7 @@ import LenderProfileWrapper from '#src/components/LenderProfile/LenderProfileWra
 import NotFoundWrapper from '#src/components/NotFound/NotFoundWrapper';
 import useBadgeData from '#src/composables/useBadgeData';
 import lenderProfileBadgeDataQuery from '#src/graphql/query/lenderProfileBadgeData.graphql';
+import { getContentfulEntries } from '#src/util/contentfulUtils';
 
 export default {
 	name: 'LenderProfile',
@@ -179,7 +180,7 @@ export default {
 					...(result?.userAchievementProgress?.lendingAchievements ?? []),
 					...(result?.userAchievementProgress?.tieredLendingAchievements ?? [])
 				];
-				const badgeContentfulData = (result?.contentful?.entries?.items ?? [])
+				const badgeContentfulData = (getContentfulEntries(result) ?? [])
 					.map(entry => getContentfulLevelData(entry));
 
 				const badgeData = combineBadgeData(badgeAchievementData, badgeContentfulData);

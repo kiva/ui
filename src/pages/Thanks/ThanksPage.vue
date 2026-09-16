@@ -72,6 +72,9 @@ import userYearlyProgressQuery from '#src/graphql/query/userYearlyProgress.graph
 import { clearPromoCreditBannerCookie, getPromoCreditBannerCookie } from '#src/util/promoCreditCookie';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
 import borrowerProfileExpMixin from '#src/plugins/borrower-profile-exp-mixin';
+import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
+import { initializeExperiment } from '#src/util/experiment/experimentUtils';
+import { EXPRESS_CHECKOUT_EXP_KEY } from '#src/util/thanksPage/expressCheckoutUtils';
 
 // Thanks views
 const DONATION_ONLY_VIEW = 'donation_only';
@@ -151,7 +154,7 @@ export default {
 			achievements: [],
 			goalRecommendedLoanEnable: false,
 			goalInReviewInProgressStart: null,
-			expressCheckoutEnabled: false,
+			expressCheckoutExpVersion: null,
 		};
 	},
 	apollo: {
@@ -163,6 +166,10 @@ export default {
 					query: userAchievementProgressQuery,
 					variables: { year: LAST_YEAR_KEY },
 					fetchPolicy: 'network-only',
+				}),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: EXPRESS_CHECKOUT_EXP_KEY },
 				}),
 			]).then(() => {
 				const transactionId = route?.query?.kiva_transaction_id
@@ -225,7 +232,7 @@ export default {
 			return !!this.$route?.query?.show_daf_thanks;
 		},
 		isExpressCheckoutModalEnabled() {
-			return this.expressCheckoutEnabled;
+			return this.expressCheckoutExpVersion === 'b';
 		},
 		teamId() {
 			return getTeamId(this.loans);
@@ -291,8 +298,17 @@ export default {
 		};
 
 		this.goalRecommendedLoanEnable = readBoolSetting(data, 'general.goal_recommended_loan_enable.value') ?? false;
-		this.expressCheckoutEnabled = readBoolSetting(data, 'general.ty_page_express_checkout_enabled.value') ?? false;
 		this.goalInReviewInProgressStart = readDateSetting(data, 'general.goal_in_review_in_progress_start.value');
+
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			EXPRESS_CHECKOUT_EXP_KEY,
+			version => {
+				this.expressCheckoutExpVersion = version ?? null;
+			},
+		);
 
 		if (this.goalRecommendedLoanEnable) {
 			this.loadInitialBasketItems();

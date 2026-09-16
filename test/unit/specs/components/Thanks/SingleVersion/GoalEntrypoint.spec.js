@@ -191,10 +191,11 @@ describe('GoalEntrypoint', () => {
 	});
 
 	describe('prop propagation', () => {
-		it('enables express checkout on RecommendLoanForGoalContainer', () => {
+		it('forwards expressCheckoutEnabled to RecommendLoanForGoalContainer', () => {
 			const wrapper = mountComponent({
 				showRecommendLoanAfterGoalView: true,
 				hasRecommendedLoans: true,
+				expressCheckoutEnabled: true,
 			});
 
 			expect(wrapper.findComponent(RecommendLoanForGoalContainerStub).props('expressCheckoutEnabled')).toBe(true);

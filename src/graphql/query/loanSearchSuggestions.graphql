@@ -1,9 +1,0 @@
-query loanSearchSuggestions {
-	lend {
-		loanSearchSuggestions {
-			group
-			label
-			query
-		}
-	}
-}

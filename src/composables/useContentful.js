@@ -10,7 +10,7 @@ export default apollo => {
 				query: ContentfulBlogPosts,
 				variables: { customFields, limit: 1, skip: 0 },
 			});
-			const post = result?.data?.contentful?.blogPosts?.items?.[0];
+			const post = result?.data?.contentful?.blogPosts?.items?.[0]?.entry;
 			if (!post) return null;
 			return {
 				id: post.sys.id,

@@ -149,7 +149,7 @@ export default {
 			if (this.showBadgeModal) {
 				return;
 			}
-			const campaign = this.$route?.query?.utm_campaign ?? '';
+			const campaign = this.$route?.query?.utm_content ?? '';
 			if (!campaign.startsWith('badge_')) {
 				return;
 			}
