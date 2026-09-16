@@ -1,3 +1,56 @@
+## [3.95.0-rc.1](https://github.com/kiva/ui/compare/v3.94.0...v3.95.0-rc.1) (2026-09-16)
+
+### 🎉 New Features
+
+* **MP-3159:** a/b test express vs non express checkout ([a7cefb5](https://github.com/kiva/ui/commit/a7cefb55cf02c6adb2609cfa50920e12e3688d65))
+
+### 🐛 Bugfixes
+
+* use flag to handle watch and remove express checkout enabled flag ([a9da6c7](https://github.com/kiva/ui/commit/a9da6c7d666bdbba4c0fd023cae27f036f0e989f))
+
+### 🪚 Refactors
+
+* **contentful:** move operations onto cacheable typed fields ([68cd06a](https://github.com/kiva/ui/commit/68cd06a7a837cc0d6a44d290fccca0f2fc98d8d1))
+
+### 🔍 Tests
+
+* **contentfulUtils:** cover getContentfulEntries ([873d509](https://github.com/kiva/ui/commit/873d509cfd1656d56cf6e30818199efe2838f23a))
+
+### 🧹 Chores
+
+* **contentful:** remove unused checkout donation query ([92a11fc](https://github.com/kiva/ui/commit/92a11fcbbcc87b835246b393fd9a33914df0bab8))
+
+## [3.94.0](https://github.com/kiva/ui/compare/v3.93.1...v3.94.0) (2026-09-15)
+
+### 🎉 New Features
+
+* mp 3212 variant copy at zero tip ([#7256](https://github.com/kiva/ui/issues/7256)) ([e6c8561](https://github.com/kiva/ui/commit/e6c856146ffa353d9b5f98904aaf170265af06c0))
+* mp-3194 layout fixes ([#7251](https://github.com/kiva/ui/issues/7251)) ([9e87d15](https://github.com/kiva/ui/commit/9e87d15c88fe22c42bd4683fa1f2175317c73d95))
+
+### 🐛 Bugfixes
+
+* mp-3206-say donation instead of tip in the variant copy ([#7253](https://github.com/kiva/ui/issues/7253)) ([3f325fe](https://github.com/kiva/ui/commit/3f325fe6334dc8d59030a690df3efbc04f6423cb))
+
+### 🪚 Refactors
+
+* use browsingCategories for the lending sitemap ([#7252](https://github.com/kiva/ui/issues/7252)) ([4054670](https://github.com/kiva/ui/commit/4054670bc37ef392bea7e98651a910464ab6e24b))
+* use browsingCategories on the categories page ([#7254](https://github.com/kiva/ui/issues/7254)) ([a7f2505](https://github.com/kiva/ui/commit/a7f2505387b0dbc6dbd8ebd09f8e603f10510181))
+
+### 🧹 Chores
+
+* **release:** 3.94.0-rc.1 [skip ci] ([411bd4a](https://github.com/kiva/ui/commit/411bd4ab2f0642ab4f3b8918cf61edac1550dbd6)), closes [#7251](https://github.com/kiva/ui/issues/7251) [#7253](https://github.com/kiva/ui/issues/7253) [#7252](https://github.com/kiva/ui/issues/7252)
+* **release:** 3.94.0-rc.2 [skip ci] ([492155d](https://github.com/kiva/ui/commit/492155daf89f65492266dbf67a5bfa103d07cfd5)), closes [#7256](https://github.com/kiva/ui/issues/7256) [#7254](https://github.com/kiva/ui/issues/7254)
+
+## [3.94.0-rc.2](https://github.com/kiva/ui/compare/v3.94.0-rc.1...v3.94.0-rc.2) (2026-09-15)
+
+### 🎉 New Features
+
+* mp 3212 variant copy at zero tip ([#7256](https://github.com/kiva/ui/issues/7256)) ([e6c8561](https://github.com/kiva/ui/commit/e6c856146ffa353d9b5f98904aaf170265af06c0))
+
+### 🪚 Refactors
+
+* use browsingCategories on the categories page ([#7254](https://github.com/kiva/ui/issues/7254)) ([a7f2505](https://github.com/kiva/ui/commit/a7f2505387b0dbc6dbd8ebd09f8e603f10510181))
+
 ## [3.94.0-rc.1](https://github.com/kiva/ui/compare/v3.93.1...v3.94.0-rc.1) (2026-09-14)
 
 ### 🎉 New Features

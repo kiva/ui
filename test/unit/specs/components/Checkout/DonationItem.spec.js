@@ -150,13 +150,13 @@ describe('DonationItem showTipFromBalanceVariant', () => {
 		})).toBe(false);
 	});
 
-	// The compressed layout only earns its place when there is a switch to make room for, and
-	// at a zero tip the row shares space with the donate-repayments prompt instead
-	it('stays off at a zero tip, where there is no switch to make room for', () => {
+	// A zeroed tip keeps the treatment: the switch and its label go, but the copy and layout
+	// staying put means the page never flips back to the control mid-checkout
+	it('keeps the variant styling at a zero tip, where only the switch goes', () => {
 		expect(showVariant({
 			tipFromBalanceEligible: true,
 			canHostTipFromBalanceToggle: true,
 			tip: '0.00',
-		})).toBe(false);
+		})).toBe(true);
 	});
 });

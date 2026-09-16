@@ -4,6 +4,9 @@ import removeCreditByType from '#src/graphql/mutation/shopRemoveCreditByType.gra
 
 const DONATION_TYPENAME = 'Donation';
 
+// `a` sends the lender back through the basket, `b` keeps them on the Thanks page
+export const EXPRESS_CHECKOUT_EXP_KEY = 'ty_page_express_checkout';
+
 // eslint-disable-next-line no-underscore-dangle
 const isDonation = item => item?.__typename === DONATION_TYPENAME;
 

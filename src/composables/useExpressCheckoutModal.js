@@ -30,10 +30,10 @@ const EVENT_CATEGORY = 'post-checkout';
  * @param {Function} [deps.onResetAdding]         Optional hook called from the
  *   modal close handler to reset the mixin's `isAdding` flag so the "Support
  *   now" CTA recovers if the user dismisses the modal before completing.
- * @param {object}   [deps.isExpressCheckoutEnabled] Ref/computed boolean from the
- *   `enable_ty_page_express_checkout` UI config flag. When false, the handler
- *   skips the modal flow entirely and sends the user to /basket — preserving
- *   the original recommendation behaviour while the feature is rolled out.
+ * @param {object}   [deps.isExpressCheckoutEnabled] Ref/computed boolean for the
+ *   express checkout experiment variant. When false, the handler skips the modal
+ *   flow entirely and sends the user to /basket — the original recommendation
+ *   behaviour the treatment is measured against.
  * @param {Function} [deps.kvTrackEvent]          Analytics helper (`$kvTrackEvent`).
  *   Optional — when omitted, tracking calls are silently skipped.
  */

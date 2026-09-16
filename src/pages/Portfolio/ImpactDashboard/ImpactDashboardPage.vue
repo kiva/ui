@@ -210,14 +210,22 @@ export default {
 						$limit: Int
 					) {
 						contentful {
-							blogPosts: entries(contentType:"blogPost", customFields:$customFields, limit:$limit)
+							blogPosts: searchEntries(contentType:"blogPost", customFields:$customFields, limit:$limit) {
+								total
+								skip
+								limit
+								items {
+									entryId
+									entry
+								}
+							}
 						}
 					}`,
 				variables: {
 					customFields: 'metadata.tags.sys.id[in]=impact-page|order=-fields.originalPublishDate'
 				},
 			}).then(({ data }) => {
-				this.post = data?.contentful?.blogPosts?.items?.[0]?.fields ?? null;
+				this.post = data?.contentful?.blogPosts?.items?.[0]?.entry?.fields ?? null;
 			});
 		},
 	},

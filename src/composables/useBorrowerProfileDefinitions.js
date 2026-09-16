@@ -1,11 +1,19 @@
 import { gql } from 'graphql-tag';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
-import { formatContentGroupsFlat } from '#src/util/contentfulUtils';
+import { formatContentGroupsFlat, getContentfulEntries } from '#src/util/contentfulUtils';
 import { fetchSalesforceSolution } from '#src/util/salesforceSolution';
 
 const contentfulDefinitionsQuery = gql`query contentfulDefinitions {
 	contentful {
-		entries(contentKey: "borrower-profile-definitions", contentType: "contentGroup")
+		searchEntries(contentKey: "borrower-profile-definitions", contentType: "contentGroup") {
+			total
+			skip
+			limit
+			items {
+				entryId
+				entry
+			}
+		}
 	}
 }`;
 
@@ -26,7 +34,7 @@ export default function useBorrowerProfileDefinitions(apollo) {
 	function loadDefinitions() {
 		if (loadPromise) return loadPromise;
 		loadPromise = apollo.query({ query: contentfulDefinitionsQuery }).then(result => {
-			const contentfulData = result.data?.contentful?.entries?.items ?? null;
+			const contentfulData = getContentfulEntries(result.data);
 			if (contentfulData) {
 				const formatted = formatContentGroupsFlat(contentfulData);
 				contentfulDefinitions = formatted.borrowerProfileDefinitions?.contents ?? null;

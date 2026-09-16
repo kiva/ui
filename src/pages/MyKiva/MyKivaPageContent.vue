@@ -249,6 +249,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { withAiPills } from '#src/util/aiLoanPillsUtils';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import BadgesSectionV2 from '#src/components/MyKiva/BadgesSectionV2';
+import { getContentfulEntries } from '#src/util/contentfulUtils';
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -707,7 +708,7 @@ export default {
 						contentKey: this.CONTENTFUL_MORE_WAYS_KEY,
 					}
 				});
-				this.moreWaysToHelpSlides = moreWaysResult.data?.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
+				this.moreWaysToHelpSlides = getContentfulEntries(moreWaysResult.data)?.[0]?.fields?.slides ?? [];
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKiva MoreWaysToHelpQuery');
 			}

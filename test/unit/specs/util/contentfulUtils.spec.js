@@ -7,6 +7,7 @@ import {
 	formatStoryCard,
 	formatGlobalPromoBanner,
 	formatContentGroupsFlat,
+	getContentfulEntries,
 	formatContentType,
 	formatGenericContentBlock,
 	formatMediaAssetArray,
@@ -55,6 +56,70 @@ describe('contentfulUtils.js', () => {
 			expect(buildDynamicString(null, '{value}', [5])).toBe('');
 			expect(buildDynamicString(undefined, '{value}', [5])).toBe('');
 			expect(buildDynamicString(123, '{value}', [5])).toBe('');
+		});
+	});
+
+	describe('getContentfulEntries', () => {
+		it('unwraps the entry from each item of the search collection', () => {
+			const first = { fields: { key: 'a' } };
+			const second = { fields: { key: 'b' } };
+			const data = {
+				contentful: {
+					searchEntries: {
+						items: [
+							{ entryId: 'id-a', entry: first },
+							{ entryId: 'id-b', entry: second },
+						],
+					},
+				},
+			};
+
+			expect(getContentfulEntries(data)).toEqual([first, second]);
+		});
+
+		it('prefers the preview collection when the operation returned one', () => {
+			const published = { fields: { key: 'published' } };
+			const draft = { fields: { key: 'draft' } };
+			const data = {
+				contentful: {
+					searchEntries: { items: [{ entryId: 'id', entry: published }] },
+					searchPreviewEntries: { items: [{ entryId: 'id', entry: draft }] },
+				},
+			};
+
+			expect(getContentfulEntries(data)).toEqual([draft]);
+		});
+
+		it('drops items whose entry failed to resolve', () => {
+			const resolved = { fields: { key: 'resolved' } };
+			const data = {
+				contentful: {
+					searchEntries: {
+						items: [
+							{ entryId: 'id-a', entry: null },
+							{ entryId: 'id-b', entry: resolved },
+						],
+					},
+				},
+			};
+
+			expect(getContentfulEntries(data)).toEqual([resolved]);
+		});
+
+		it('returns an empty array when the collection has no items', () => {
+			const data = { contentful: { searchEntries: { items: [] } } };
+
+			expect(getContentfulEntries(data)).toEqual([]);
+		});
+
+		it.each([
+			['undefined data', undefined],
+			['null data', null],
+			['no contentful key', {}],
+			['no entry collection', { contentful: {} }],
+			['a collection without items', { contentful: { searchEntries: {} } }],
+		])('returns null for %s', (name, data) => {
+			expect(getContentfulEntries(data)).toBeNull();
 		});
 	});
 

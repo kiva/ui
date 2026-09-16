@@ -22,6 +22,7 @@ import {
 	shouldShowRecapEntryPoint,
 } from '#src/util/goalInReview';
 import logFormatter from '#src/util/logFormatter';
+import { getContentfulEntries } from '#src/util/contentfulUtils';
 
 // Open the Goal In Review recap from MyKiva with /mykiva?goTo=goal-recap.
 export const GOAL_RECAP_DEEP_LINK = 'goal-recap';
@@ -227,7 +228,7 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 				goalSummary,
 				categoryName: getCategoryName(
 					goalSummary?.category,
-					contentfulData?.contentful?.entries?.items,
+					getContentfulEntries(contentfulData) ?? [],
 					getCategories(),
 				),
 				loanStats: getLoanStats(goalSummary),

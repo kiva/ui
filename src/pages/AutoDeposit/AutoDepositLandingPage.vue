@@ -106,7 +106,7 @@
 
 <script>
 import { gql } from 'graphql-tag';
-import { processPageContent } from '#src/util/contentfulUtils';
+import { getContentfulEntries, processPageContent } from '#src/util/contentfulUtils';
 
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import KvFrequentlyAskedQuestions from '#src/components/Kv/KvFrequentlyAskedQuestions';
@@ -138,7 +138,15 @@ const pageQuery = gql`query autoDepositLandingPage {
 		}
 	}
 	contentful {
-		entries(contentType: "page", contentKey: "auto-deposit")
+		searchEntries(contentType: "page", contentKey: "auto-deposit") {
+			total
+			skip
+			limit
+			items {
+				entryId
+				entry
+			}
+		}
 	}
 }`;
 
@@ -180,7 +188,7 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			// Extract page content from contentful
-			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
+			const pageEntry = getContentfulEntries(data)?.[0] ?? null;
 			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
 
 			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;

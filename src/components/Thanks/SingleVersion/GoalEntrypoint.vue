@@ -8,7 +8,7 @@
 				v-if="showRecommendLoanAfterGoalView && hasRecommendedLoans"
 				ref="recommendLoanForGoalRef"
 				header-title="Goal set!"
-				express-checkout-enabled
+				:express-checkout-enabled="expressCheckoutEnabled"
 				class="recommended-goal-card-wrapper"
 				:header-details="recommendLoanHeaderDetails"
 				:content-card-props="recommendLoanCardProps"
@@ -170,6 +170,13 @@ const props = defineProps({
 	recommendLoanHeaderDetails: {
 		type: Array,
 		default: () => ([]),
+	},
+	/**
+	 * Whether express checkout is enabled for the recommended loan
+	 */
+	expressCheckoutEnabled: {
+		type: Boolean,
+		default: false,
 	},
 	/**
 	 * Whether the recommended loan is already in the user's basket

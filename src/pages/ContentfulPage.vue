@@ -37,7 +37,7 @@ To use, simply create a route that defines contentfulPage in the meta data, e.g.
 
 import { defineAsyncComponent } from 'vue';
 import { preFetchAll } from '#src/util/apolloPreFetch';
-import { processPageContent } from '#src/util/contentfulUtils';
+import { getContentfulEntries, processPageContent } from '#src/util/contentfulUtils';
 import logFormatter from '#src/util/logFormatter';
 import contentfulEntries from '#src/graphql/query/contentfulEntries.graphql';
 import experimentVersionFragment from '#src/graphql/fragments/experimentVersion.graphql';
@@ -77,7 +77,7 @@ const StoryCardCarousel = defineAsyncComponent(() => import('#src/components/Con
 
 // Get the Contentful Page data from the data of an Apollo query result
 const getPageData = data => {
-	const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
+	const pageEntry = getContentfulEntries(data)?.[0] ?? null;
 	return pageEntry ? processPageContent(pageEntry) : { error: 'Contentful entry not found' };
 };
 

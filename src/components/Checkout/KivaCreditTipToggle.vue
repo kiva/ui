@@ -36,24 +36,36 @@ const AUDIENCE_DEPOSIT_LIMIT = 1000;
 export const TIP_FROM_BALANCE_SEEDED_COOKIE = 'kvtipseeded';
 
 /**
- * Whether the lender is in the experiment audience, ignoring which arm they are in. The checkout
- * page reads this too, so the variant treatment only appears where the switch itself can.
+ * Whether the lender gets the variant treatment, ignoring the tip. The checkout page renders
+ * the variant copy and layout on this alone, so zeroing the tip removes the switch without
+ * flipping the page back to the control mid-checkout.
  *
  * The balance has to exceed everything in the basket but the tip, not merely be positive: below
  * that the amount due is the raw shortfall either way, so the switch cannot change what is
  * charged. Unknown deposits read as ineligible until the basket query lands.
  *
  * @param {Object} state The basket state provided by the checkout page
- * @returns {boolean} Whether the lender is in the experiment audience
+ * @returns {boolean} Whether the lender gets the variant treatment
  */
-export function meetsTipFromBalanceCriteria(state = {}) {
+export function meetsTipFromBalanceTreatmentCriteria(state = {}) {
 	return !!state.myId
 		&& state.balance > state.nonTipTotal
 		&& state.hasLoans
-		&& state.tipAmount > 0
 		&& !state.onTeam
 		&& typeof state.lifetimeDeposits === 'number'
 		&& state.lifetimeDeposits < AUDIENCE_DEPOSIT_LIMIT;
+}
+
+/**
+ * Whether the lender is in the experiment audience, ignoring which arm they are in. On top of
+ * the treatment criteria this needs a tip for the balance to cover: with none there is no
+ * decision to make, so neither arm renders the switch or fires exposure.
+ *
+ * @param {Object} state The basket state provided by the checkout page
+ * @returns {boolean} Whether the lender is in the experiment audience
+ */
+export function meetsTipFromBalanceCriteria(state = {}) {
+	return meetsTipFromBalanceTreatmentCriteria(state) && state.tipAmount > 0;
 }
 
 export default {
