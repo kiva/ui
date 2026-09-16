@@ -1,3 +1,4 @@
+import { addHours } from 'date-fns';
 import { basketTotalsQuery } from '@kiva/kv-shop';
 import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
 import removeCreditByType from '#src/graphql/mutation/shopRemoveCreditByType.graphql';
@@ -6,6 +7,13 @@ const DONATION_TYPENAME = 'Donation';
 
 // `a` sends the lender back through the basket, `b` keeps them on the Thanks page
 export const EXPRESS_CHECKOUT_EXP_KEY = 'ty_page_express_checkout';
+
+/**
+ * Cookie set when the goal-set recommended loan sends the lender to the basket
+ * instead of the express checkout modal. The checkout and thanks pages read it to
+ * attribute their views to that flow.
+ */
+export const LEND_AFTER_GOAL_SET_COOKIE = 'lend_after_goal_set';
 
 // eslint-disable-next-line no-underscore-dangle
 const isDonation = item => item?.__typename === DONATION_TYPENAME;
@@ -91,3 +99,34 @@ export async function removeBasketCredit({ apollo, basketId, creditType }) {
 		fetchPolicy: 'network-only',
 	});
 }
+
+// Falls back to a placeholder rather than an empty string, which would read as no
+// cookie at all and silence the checkout event.
+const transactionKey = transactionId => String(transactionId ?? '') || 'none';
+
+// Expires after an hour so a lender who abandons checkout, and so never reaches a
+// thanks page to clear the cookie, stops being credited. The hour has to outlast a
+// slow checkout as well as the trip to it, since expiring mid-checkout loses both
+// events.
+export const setLendAfterGoalSetAttribution = (cookieStore, originTransactionId) => {
+	cookieStore?.set(LEND_AFTER_GOAL_SET_COOKIE, transactionKey(originTransactionId), {
+		path: '/',
+		expires: addHours(new Date(), 1),
+	});
+};
+
+export const hasLendAfterGoalSetAttribution = cookieStore => {
+	return !!cookieStore?.get(LEND_AFTER_GOAL_SET_COOKIE);
+};
+
+// The stored value is the order the mark was made on. The thanks page the lender
+// leaves from is the same component that later ends the order and Back can return to
+// it, so only a different order counts as the one the flow produced.
+export const isLendAfterGoalSetOrder = (cookieStore, transactionId) => {
+	const origin = cookieStore?.get(LEND_AFTER_GOAL_SET_COOKIE);
+	return !!origin && origin !== transactionKey(transactionId);
+};
+
+export const clearLendAfterGoalSetAttribution = cookieStore => {
+	cookieStore?.remove(LEND_AFTER_GOAL_SET_COOKIE, { path: '/' });
+};
