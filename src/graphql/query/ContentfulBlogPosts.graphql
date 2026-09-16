@@ -1,10 +1,18 @@
 query ContentfulBlogPosts($customFields: String, $limit: Int, $skip: Int) {
     contentful {
-        blogPosts: entries(
+        blogPosts: searchEntries(
             contentType: "blogPost"
             customFields: $customFields
             limit: $limit
             skip: $skip
-        )
+        ) {
+            total
+            skip
+            limit
+            items {
+                entryId
+                entry
+            }
+        }
     }
 }

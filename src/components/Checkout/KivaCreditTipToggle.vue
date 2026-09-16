@@ -1,0 +1,230 @@
+<template>
+	<div
+		v-if="showToggle"
+		class="tw-flex tw-mt-1"
+		data-testid="tip-from-balance-toggle"
+	>
+		<kv-switch
+			class="tw-flex"
+			size="small"
+			data-testid="tip-from-balance-switch"
+			:model-value="toggleValue"
+			:disabled="updating"
+			@update:model-value="setPreference"
+		>
+			<span class="tw-text-button-link tw-text-gray-600">
+				Use my balance to cover this donation instead of future loans.
+			</span>
+		</kv-switch>
+	</div>
+</template>
+
+<script>
+import logFormatter from '#src/util/logFormatter';
+import updateKivaCreditDonationPreference from '#src/graphql/mutation/updateKivaCreditDonationPreference.graphql';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import { KvSwitch } from '@kiva/kv-components';
+
+export const TIP_FROM_BALANCE_EXP_KEY = 'checkout_tip_from_balance_toggle';
+const TIP_FROM_BALANCE_EXP_ACTION = 'EXP-MP-3006-Aug2026';
+
+// Lenders already depositing at this scale are out of the audience, as are team members
+const AUDIENCE_DEPOSIT_LIMIT = 1000;
+
+// Marks a basket whose preference is already decided, so we never default it off twice.
+// Needed because the stored preference cannot tell "never chose" apart from "chose yes".
+export const TIP_FROM_BALANCE_SEEDED_COOKIE = 'kvtipseeded';
+
+/**
+ * Whether the lender gets the variant treatment, ignoring the tip. The checkout page renders
+ * the variant copy and layout on this alone, so zeroing the tip removes the switch without
+ * flipping the page back to the control mid-checkout.
+ *
+ * The balance has to exceed everything in the basket but the tip, not merely be positive: below
+ * that the amount due is the raw shortfall either way, so the switch cannot change what is
+ * charged. Unknown deposits read as ineligible until the basket query lands.
+ *
+ * @param {Object} state The basket state provided by the checkout page
+ * @returns {boolean} Whether the lender gets the variant treatment
+ */
+export function meetsTipFromBalanceTreatmentCriteria(state = {}) {
+	return !!state.myId
+		&& state.balance > state.nonTipTotal
+		&& state.hasLoans
+		&& !state.onTeam
+		&& typeof state.lifetimeDeposits === 'number'
+		&& state.lifetimeDeposits < AUDIENCE_DEPOSIT_LIMIT;
+}
+
+/**
+ * Whether the lender is in the experiment audience, ignoring which arm they are in. On top of
+ * the treatment criteria this needs a tip for the balance to cover: with none there is no
+ * decision to make, so neither arm renders the switch or fires exposure.
+ *
+ * @param {Object} state The basket state provided by the checkout page
+ * @returns {boolean} Whether the lender is in the experiment audience
+ */
+export function meetsTipFromBalanceCriteria(state = {}) {
+	return meetsTipFromBalanceTreatmentCriteria(state) && state.tipAmount > 0;
+}
+
+export default {
+	name: 'KivaCreditTipToggle',
+	components: {
+		KvSwitch,
+	},
+	inject: {
+		apollo: { from: 'apollo' },
+		cookieStore: { from: 'cookieStore' },
+		// Provided by the checkout page; the defaults keep this component inert anywhere else
+		tipFromBalanceVersion: { default: null },
+		tipToggleBasketState: { default: null },
+	},
+	emits: ['refreshtotals', 'updating-totals'],
+	data() {
+		return {
+			choiceProtected: false,
+			toggleValue: false,
+			updating: false,
+			seeding: false,
+			exposureTracked: false,
+		};
+	},
+	mounted() {
+		this.maybeSeedPreference();
+	},
+	watch: {
+		basketId: { handler: 'readBasketChoice', immediate: true },
+		isEligible: 'maybeSeedPreference',
+		applyKivaCreditToDonation: {
+			handler(preference) {
+				// Not mid-change, or the switch would snap back under the lender
+				if (!this.updating) {
+					this.toggleValue = preference === true;
+				}
+				this.maybeSeedPreference();
+			},
+			immediate: true,
+		},
+		readyForExposure: {
+			handler(ready) {
+				if (typeof window === 'undefined' || !ready || this.exposureTracked) return;
+				this.exposureTracked = true;
+				trackExperimentVersion(
+					this.apollo,
+					this.$kvTrackEvent,
+					'event-tracking',
+					TIP_FROM_BALANCE_EXP_KEY,
+					TIP_FROM_BALANCE_EXP_ACTION,
+				);
+			},
+			immediate: true,
+		},
+	},
+	computed: {
+		basketState() {
+			return this.tipToggleBasketState ?? {};
+		},
+		basketId() {
+			return this.basketState.basketId ?? null;
+		},
+		applyKivaCreditToDonation() {
+			const preference = this.basketState.applyKivaCreditToDonation;
+			return typeof preference === 'boolean' ? preference : null;
+		},
+		isEligible() {
+			return this.tipFromBalanceVersion === 'b' && meetsTipFromBalanceCriteria(this.basketState);
+		},
+		needsSeeding() {
+			return this.applyKivaCreditToDonation === true && !this.choiceProtected;
+		},
+		showToggle() {
+			// Hidden until the default is stored, so the switch always matches the basket
+			return this.isEligible
+				&& this.applyKivaCreditToDonation !== null
+				&& !this.needsSeeding;
+		},
+		readyForExposure() {
+			// The variant waits for the switch to settle, so exposure matches what the lender saw.
+			// Control has nothing to render, so meeting the audience criteria is the whole test.
+			// Both arms answer from here, so a change to one cannot skew the other
+			if (this.tipFromBalanceVersion === 'b') return this.showToggle;
+			return this.tipFromBalanceVersion === 'a' && meetsTipFromBalanceCriteria(this.basketState);
+		},
+	},
+	methods: {
+		maybeSeedPreference() {
+			// Client only, since seeding mutates the basket
+			if (typeof window === 'undefined') return;
+			if (!this.isEligible || this.applyKivaCreditToDonation === null) return;
+			if (this.needsSeeding && !this.seeding) {
+				this.seedPreferenceOff();
+			}
+		},
+		/**
+		 * Persists the preference and refreshes the basket. Resolves once the choice is
+		 * marked; callers handle their own in-flight flag and failure behavior.
+		 *
+		 * @param {boolean} applyKivaCreditToDonation
+		 * @returns {Promise}
+		 */
+		persistPreference(applyKivaCreditToDonation) {
+			this.$emit('updating-totals', true);
+			return this.apollo.mutate({
+				mutation: updateKivaCreditDonationPreference,
+				variables: { applyKivaCreditToDonation },
+			}).then(({ errors }) => {
+				if (errors?.length) throw errors[0];
+				this.markChoiceProtected();
+			});
+		},
+		seedPreferenceOff() {
+			this.seeding = true;
+			this.persistPreference(false).then(() => {
+				this.$emit('refreshtotals');
+			}).catch(error => {
+				logFormatter(error, 'error');
+				this.$emit('updating-totals', false);
+			}).finally(() => {
+				this.seeding = false;
+			});
+		},
+		setPreference(value) {
+			if (this.updating || value === this.applyKivaCreditToDonation) return;
+			this.updating = true;
+			this.toggleValue = value;
+			this.persistPreference(value).then(() => {
+				this.$kvTrackEvent(
+					'basket',
+					'click',
+					value ? 'tip-from-balance-toggle-on' : 'tip-from-balance-toggle-off',
+				);
+			}).catch(error => {
+				logFormatter(error, 'error');
+				this.toggleValue = this.applyKivaCreditToDonation === true;
+				this.$showTipMsg('There was a problem updating your basket. Please try again.', 'error');
+			}).finally(() => {
+				// Refresh on failure too, so a stale basket recovers before the retry
+				this.$emit('refreshtotals');
+				this.updating = false;
+			});
+		},
+		readBasketChoice() {
+			// Copied into state because a cookie write does not trigger a re-render
+			this.choiceProtected = !!this.basketId
+				&& this.cookieStore.get(TIP_FROM_BALANCE_SEEDED_COOKIE) === String(this.basketId);
+		},
+		markChoiceProtected() {
+			this.cookieStore.set(TIP_FROM_BALANCE_SEEDED_COOKIE, String(this.basketId), { path: '/' });
+			this.choiceProtected = true;
+		},
+	},
+};
+</script>
+
+<style lang="postcss" scoped>
+/* KvSwitch hardcodes a 16px gap on its label and takes no prop for it; the mocks call for 8px */
+:deep(label) {
+	@apply tw-gap-1;
+}
+</style>

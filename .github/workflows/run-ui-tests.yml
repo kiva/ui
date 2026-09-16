@@ -48,3 +48,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: 'test/coverage/lcov.info'
         fail-on-error: false
+    # Storybook is otherwise only built when deploying from main, so a story that
+    # imports something deleted in a PR cannot fail until after merge.
+    - name: Build Storybook
+      run: npm run build-storybook

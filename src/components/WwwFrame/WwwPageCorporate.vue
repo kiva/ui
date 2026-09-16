@@ -6,7 +6,7 @@
 			:corporate-logo-url="corporateLogoUrl"
 			:logo-height="logoHeight"
 			:logo-classes="logoClasses"
-			class="tw-sticky tw-z-sticky tw-top-0"
+			:sticky-header="true"
 			@show-basket="$emit('show-basket')"
 		/>
 		<main>

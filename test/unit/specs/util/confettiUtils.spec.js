@@ -18,6 +18,7 @@ describe('confettiUtils', () => {
 			spread: 200,
 			colors: ['#6AC395', '#223829', '#95D4B3'],
 			disableForReducedMotion: true,
+			zIndex: 1600,
 		});
 	});
 });

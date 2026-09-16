@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="borrower-carousel-root">
 		<h2
 			v-if="hasActiveLoans"
 			v-html="title"
@@ -105,6 +105,7 @@
 		</div>
 		<!-- Loan Comment Component -->
 		<LoanCommentModal
+			v-if="loanForMenu"
 			:loan="loanForMenu"
 			:is-visible="isCommentModalVisible"
 			:show-tip="false"
@@ -129,7 +130,6 @@
 </template>
 
 <script setup>
-import _throttle from 'lodash/throttle';
 import { useRouter } from 'vue-router';
 import {
 	KvTabs, KvTab, KvTabPanel, KvCarousel, KvButton
@@ -139,8 +139,6 @@ import {
 	defineEmits,
 	defineProps,
 	inject,
-	onBeforeUnmount,
-	onMounted,
 	ref,
 	toRefs,
 	watch,
@@ -157,7 +155,6 @@ import {
 import LoanCommentModal from '#src/pages/Portfolio/ImpactDashboard/LoanCommentModal';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
-import useBreakpoints from '#src/composables/useBreakpoints';
 import BorrowerStatusCard from './BorrowerStatusCard';
 
 const SHARE_CAMPAIGN = 'social_share_portfolio';
@@ -214,8 +211,6 @@ const $kvTrackEvent = inject('$kvTrackEvent');
 
 const router = useRouter();
 
-const { isMedium, isLarge } = useBreakpoints();
-
 const { loans, totalLoans } = toRefs(props);
 
 const carousel = ref(null);
@@ -226,7 +221,6 @@ const previousLastIndex = ref(0);
 const loanForMenu = ref(undefined);
 const shareLoan = ref(false);
 const tabs = ref(null);
-const windowWidth = ref(0);
 
 const VALID_LOAN_STATUS = [
 	FUNDED,
@@ -262,21 +256,10 @@ const pfpMinLenders = computed(() => loanForMenu.value?.pfpMinLenders ?? 0);
 
 const numLenders = computed(() => loanForMenu.value?.lenders?.numLenders ?? 0);
 
-const singleSlideWidth = computed(() => {
-	if (isLarge.value) {
-		return 'calc((100% - 64px) / 3)';
-	}
-	if (isMedium.value) {
-		return '336px';
-	}
-	return '90%';
-});
-
-const handleResize = () => {
-	windowWidth.value = window.innerWidth;
-};
-
-const throttledResize = _throttle(handleResize, 200);
+// A CSS var keeps the slide width correct during SSR and hydration. useBreakpoints
+// resolves only in onMounted, so a JS-derived width renders the mobile value on the
+// server and snaps on hydration — which is what the clientRendered gate used to hide.
+const singleSlideWidth = 'var(--borrower-slide-max-width)';
 
 const onInteractCarousel = interaction => {
 	if (previousLastIndex.value === lastVisitedLoanIdx.value) {
@@ -354,18 +337,21 @@ watch(() => loans.value, () => {
 	}
 }, { immediate: true });
 
-onMounted(() => {
-	window.addEventListener('resize', throttledResize);
-	handleResize();
-});
-
-onBeforeUnmount(() => {
-	window.removeEventListener('resize', throttledResize);
-});
-
 </script>
 
 <style lang="postcss" scoped>
+.borrower-carousel-root {
+	--borrower-slide-max-width: 90%;
+
+	@screen md {
+		--borrower-slide-max-width: 336px;
+	}
+
+	@screen lg {
+		--borrower-slide-max-width: calc((100% - 64px) / 3);
+	}
+}
+
 .carousel-container :deep(section > div:first-child) {
 	max-width: 100%;
 }

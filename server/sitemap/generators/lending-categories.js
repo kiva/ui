@@ -5,15 +5,13 @@ async function fetchCategories() {
 	// Get the server-defined url for all the "popular" categories
 	const result = await fetchGraphQL({
 		query: `{
-			lend {
-				loanChannels(offset:0, limit:1000, popular: true) {
-					values {
-						url
-					}
+			browsingCategories(offset:0, limit:1000, filters: { popularOnly: true }) {
+				values {
+					url
 				}
 			}
 		}`
-	}, 'data.lend.loanChannels.values');
+	}, 'data.browsingCategories.values');
 	const values = result ?? [];
 	// Return only the last part of the url path, the category slug
 	return values.map(({ url }) => url.split('/').pop());

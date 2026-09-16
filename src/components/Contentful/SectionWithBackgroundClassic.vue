@@ -34,16 +34,11 @@
 
 <script>
 import {
-	darkTheme,
-	darkGreenTheme,
-	mintTheme,
 	defaultTheme,
-	darkMintTheme,
 	greenLightTheme,
 	greenDarkTheme,
 	marigoldLightTheme,
 	stoneLightTheme,
-	stoneDarkTheme,
 } from '@kiva/kv-tokens';
 import { defineAsyncComponent } from 'vue';
 
@@ -93,10 +88,11 @@ export default {
 		 *
 		 * Can be one of:
 		 * - 'kivaClassicLight'
-		 * - 'kivaClassicMint'
-		 * - 'kivaClassicGreen'
-		 * - 'kivaClassicDark'
-		 * - 'imageCard'
+		 * - 'ecoGreenLight'
+		 * - 'ecoGreenDark'
+		 * - 'ecoMarigoldLight'
+		 * - 'ecoStoneLight'
+		 * - 'imageCard' (a layout, retained as a valid value)
 		 *
 		 * The default theme 'kivaClassicLight' will be used for any other value.
 		 */
@@ -166,16 +162,12 @@ export default {
 		themeStyles() {
 			const themeMapper = {
 				kivaClassicLight: defaultTheme,
-				kivaClassicMint: mintTheme,
-				kivaClassicGreen: darkGreenTheme,
-				kivaClassicDark: darkTheme,
-				imageCard: darkTheme,
-				kivaDarkMint: darkMintTheme,
+				// imageCard is a layout, not a colour theme, so it stays a valid value.
+				imageCard: greenDarkTheme,
 				ecoGreenLight: greenLightTheme,
 				ecoGreenDark: greenDarkTheme,
 				ecoMarigoldLight: marigoldLightTheme,
 				ecoStoneLight: stoneLightTheme,
-				ecoStoneDark: stoneDarkTheme,
 			};
 			const theme = themeMapper[this.themeName] ?? defaultTheme;
 			// No styles needed if using the default theme

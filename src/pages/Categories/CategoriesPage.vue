@@ -39,7 +39,7 @@
 						:category-description="category.description"
 						:image="getImage(category)"
 						:retina-image="getRetinaImage(category)"
-						:number-loans="category.loans.totalCount"
+						:number-loans="getNumberLoans(category)"
 					/>
 				</div>
 			</kv-grid>
@@ -55,7 +55,7 @@
 						:category-description="category.description"
 						:image="getImage(category)"
 						:retina-image="getRetinaImage(category)"
-						:number-loans="category.loans.totalCount"
+						:number-loans="getNumberLoans(category)"
 					/>
 				</div>
 			</kv-grid>
@@ -82,7 +82,7 @@
 						:category-description="category.description"
 						:image="getImage(category)"
 						:retina-image="getRetinaImage(category)"
-						:number-loans="category.loans.totalCount"
+						:number-loans="getNumberLoans(category)"
 					/>
 				</div>
 			</kv-grid>
@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { processPageContent } from '#src/util/contentfulUtils';
+import { getContentfulEntries, processPageContent } from '#src/util/contentfulUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import MainCategoryTile from '#src/components/Categories/MainCategoryTile';
 import LoanSpotlight from '#src/components/Categories/LoanSpotlight';
@@ -112,13 +112,13 @@ const CYPRESS_TESTING_EXP_KEY = 'cypress_experiment_cookie_testing';
 
 const allCategoriesPageQuery = gql`
 	query allCategoriesPageQuery {
-		lend {
-			loanChannels (limit: 18, popular: true, applyMinLoanCount: true) {
-				values {
-					id
-					url
-					name
-					description
+		browsingCategories (limit: 18, filters: { popularOnly: true, applyMinimumLoanCount: true }) {
+			values {
+				id
+				url
+				name
+				description
+				... on LoanCategorySearchOutput {
 					image {
 						id
 						url (customSize: "w520h301")
@@ -127,14 +127,25 @@ const allCategoriesPageQuery = gql`
 						id
 						url (customSize: "w1040h602")
 					}
-					loans {
-        				totalCount
-        			}
+					savedSearch {
+						id
+						loans {
+							totalCount
+						}
+					}
 				}
 			}
 		}
 		contentful {
-			entries(contentType: "page", contentKey: "categories")
+			searchEntries(contentType: "page", contentKey: "categories") {
+				total
+				skip
+				limit
+				items {
+					entryId
+					entry
+				}
+			}
 		}
 	}
 `;
@@ -182,8 +193,8 @@ export default {
 		},
 		query: allCategoriesPageQuery,
 		result(result) {
-			this.categories = result.data?.lend?.loanChannels?.values ?? [];
-			const pageEntry = result.data?.contentful?.entries?.items?.[0] ?? null;
+			this.categories = result.data?.browsingCategories?.values ?? [];
+			const pageEntry = getContentfulEntries(result.data)?.[0] ?? null;
 			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
 		},
 	},
@@ -193,6 +204,9 @@ export default {
 		},
 		getRetinaImage(category) {
 			return category.retinaImage?.url ?? '';
+		},
+		getNumberLoans(category) {
+			return category.savedSearch?.loans?.totalCount;
 		}
 	},
 	computed: {
@@ -219,7 +233,15 @@ export default {
 			query: gql`
 				query bpHeroBackgroundImage($placeholderKey: String) {
 					contentful {
-						placeholder: entries(contentType: "background", contentKey: $placeholderKey)
+						placeholder: searchEntries(contentType: "background", contentKey: $placeholderKey) {
+							total
+							skip
+							limit
+							items {
+								entryId
+								entry
+							}
+						}
 					}
 				}
 			`,
@@ -227,7 +249,8 @@ export default {
 				placeholderKey: 'bp-hero-country-placeholder',
 			},
 		}).then(result => {
-			const placeholderMedia = result?.data?.contentful?.placeholder?.items?.[0]?.fields?.backgroundMedia ?? {};
+			const placeholderMedia = result?.data?.contentful?.placeholder?.items?.[0]?.entry
+				?.fields?.backgroundMedia ?? {};
 			this.categoryPlaceholderImageCTF = placeholderMedia?.fields?.file?.url ?? '';
 		});
 	},

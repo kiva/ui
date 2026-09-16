@@ -88,6 +88,7 @@
 			</kv-button>
 			<kv-text-link
 				v-else
+				class="tw-uppercase"
 				:icon="mdiArrowRight"
 				href="/basket"
 				v-kv-track-event="[

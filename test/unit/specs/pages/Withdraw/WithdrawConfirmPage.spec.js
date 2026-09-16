@@ -63,7 +63,7 @@ const renderConfirm = ({
 describe('WithdrawConfirmPage', () => {
 	it('redirects back to the form when arrived without an amount', () => {
 		const { replace } = renderConfirm({ state: {} });
-		expect(replace).toHaveBeenCalledWith({ path: '/withdraw-beta' });
+		expect(replace).toHaveBeenCalledWith({ path: '/withdraw' });
 	});
 
 	it('renders the request summary', async () => {
@@ -91,7 +91,7 @@ describe('WithdrawConfirmPage', () => {
 		await fireEvent.click(getByTestId('withdraw-submit'));
 		await waitFor(() => {
 			expect(push).toHaveBeenCalledWith({
-				path: '/withdraw-beta/check-inbox',
+				path: '/withdraw/check-inbox',
 				state: { withdrawEmail: 'a@example.org' },
 			});
 		});

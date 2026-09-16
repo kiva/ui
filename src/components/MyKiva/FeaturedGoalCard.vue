@@ -149,7 +149,7 @@
 
 <script setup>
 import {
-	computed, inject, ref, watch,
+	computed, inject, onMounted, ref, watch,
 } from 'vue';
 import {
 	KvButton, KvLoadingPlaceholder, KvProgressCircle, KvUtilityMenu,
@@ -157,7 +157,7 @@ import {
 import KvIcon from '#src/components/Kv/KvIcon';
 import goalCopy from '#src/util/goalCopy';
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
-import { RECAP_CTA_LABEL } from '#src/util/goalRecapEntryPoint';
+import { RECAP_CTA_LABEL } from '#src/util/goalInReview';
 import { showConfetti } from '#src/util/animation/confettiUtils';
 
 const HALF_GOAL_THRESHOLD = 50;
@@ -311,9 +311,13 @@ const fireCompletionConfettiIfReady = () => {
 
 watch(
 	() => [props.loading, props.suppressCompletionConfetti, clampedPercentage.value],
-	fireCompletionConfettiIfReady,
-	{ immediate: true }
+	fireCompletionConfettiIfReady
 );
+
+// Confetti draws straight onto document.body, so the already-completed case is checked on
+// mount rather than immediately: an immediate watch also runs during server-side setup,
+// where there is no document.
+onMounted(fireCompletionConfettiIfReady);
 </script>
 
 <style lang="postcss" scoped>

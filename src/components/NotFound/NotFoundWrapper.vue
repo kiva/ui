@@ -33,13 +33,8 @@
 </template>
 
 <script setup>
-import {
-	inject,
-} from 'vue';
 import useMyKivaHome from '#src/composables/useMyKivaHome';
 
-const apollo = inject('apollo');
-
-const { homePagePath } = useMyKivaHome(apollo);
+const { homePagePath } = useMyKivaHome();
 
 </script>

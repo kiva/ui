@@ -39,7 +39,7 @@ import FullBorrowerProfile, { fullProfileQuery } from '#src/components/BorrowerP
 import { shareButtonFragment } from '#src/components/BorrowerProfile/ShareButton';
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { readAccountRailPreference, resolveRailPreference } from '#src/util/loanDetailsRailPreference';
-import { isPublicLoanStatus } from '#src/util/loanUtils';
+import { isPublicLoanStatus, showFullView } from '#src/util/loanUtils';
 import { getKivaImageUrl } from '@kiva/kv-components';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
@@ -123,6 +123,13 @@ const routingQuery = gql`
 			lender(publicId: $publicId) {
 				id
 				name
+			}
+		}
+		my {
+			id
+			userAccount {
+				id
+				volunteerId
 			}
 		}
 		shop(basketId: $basketId) {
@@ -241,6 +248,7 @@ export default {
 			loan: {},
 			routingLoan: {},
 			lender: {},
+			isVolunteer: false,
 			// SSR-resolved rail preference (logged-in only); reconciled client-side in the component.
 			initialShowDetailsInRail: false,
 			inviterName: '',
@@ -284,11 +292,11 @@ export default {
 
 					// Routing decision
 					const unreservedAmount = Number(loan.unreservedAmount ?? 0);
-					const minimalOverride = route.query?.minimal === 'false';
 					const isPrivileged = loan.userProperties?.isPrivileged ?? false;
+					const isVolunteer = !!data?.my?.userAccount?.volunteerId;
 
 					// Anon goes to login (so a lender/trustee can authenticate in); logged-in non-priv goes to /lend.
-					if (!isPublicLoanStatus(loan.status) && !isPrivileged) {
+					if (!isPublicLoanStatus(loan.status) && !isPrivileged && !isVolunteer) {
 						if (!kvAuth0?.getKivaId()) {
 							return Promise.reject({
 								path: '/ui-login',
@@ -298,11 +306,13 @@ export default {
 						return Promise.reject({ path: '/lend', query: route.query });
 					}
 
-					const showFullView = (unreservedAmount > 0 && loan.status === 'fundraising')
-						|| isPrivileged
-						|| minimalOverride;
-
-					const childQuery = showFullView ? fullProfileQuery : minimalProfileQuery;
+					const childQuery = showFullView(
+						loan.status,
+						unreservedAmount,
+						isPrivileged,
+						isVolunteer,
+						route.query,
+					) ? fullProfileQuery : minimalProfileQuery;
 
 					return Promise.all([
 						client.query({
@@ -340,23 +350,32 @@ export default {
 		},
 		result(result) {
 			const routingLoan = result?.data?.lend?.loan ?? {};
-			// Prefer the enriched full-profile entry; minimal-view paths fall back to routingLoan below.
-			let fullLoan = null;
-			let fullMy = null;
+			const isVolunteer = !!result?.data?.my?.userAccount?.volunteerId;
+			// Read back whichever child query preFetch ran.
+			const childQuery = showFullView(
+				routingLoan.status,
+				Number(routingLoan.unreservedAmount ?? 0),
+				routingLoan.userProperties?.isPrivileged ?? false,
+				isVolunteer,
+				this.$route?.query,
+			) ? fullProfileQuery : minimalProfileQuery;
+			let childLoan = null;
+			let childMy = null;
 			if (routingLoan.id) {
 				try {
 					const cached = this.apollo.readQuery({
-						query: fullProfileQuery,
+						query: childQuery,
 						variables: { loanId: routingLoan.id },
 					});
-					fullLoan = cached?.lend?.loan;
-					fullMy = cached?.my;
+					childLoan = cached?.lend?.loan;
+					childMy = cached?.my;
 				} catch {
 					// Not in cache; fall back below.
 				}
 			}
-			this.loan = fullLoan ?? routingLoan;
+			this.loan = childLoan ?? routingLoan;
 			this.routingLoan = routingLoan;
+			this.isVolunteer = isVolunteer;
 			this.inviterName = this.inviterIsGuestOrAnonymous
 				? '' : result?.data?.community?.lender?.name ?? '';
 			this.itemsInBasket = result?.data?.shop?.basket?.items?.values ?? [];
@@ -366,7 +385,7 @@ export default {
 			// SSR initial rail state from the account preference (localStorage is reconciled
 			// client-side in FullBorrowerProfile); null for anon, so this stays false.
 			this.initialShowDetailsInRail = resolveRailPreference({
-				accountPref: readAccountRailPreference(fullMy?.userPreferences),
+				accountPref: readAccountRailPreference(childMy?.userPreferences),
 				local: null,
 			});
 		},
@@ -411,11 +430,13 @@ export default {
 			return this.loan?.userProperties?.isPrivileged ?? false;
 		},
 		showFullView() {
-			// Fully-reserved fundraising loans (unreservedAmount === 0) show the minimal view
-			// for non-privileged users since there's nothing left to lend.
-			return (this.unreservedAmount > 0 && this.loan?.status === 'fundraising')
-				|| this.isPrivileged
-				|| this.$route.query.minimal === 'false';
+			return showFullView(
+				this.loan?.status,
+				this.unreservedAmount,
+				this.isPrivileged,
+				this.isVolunteer,
+				this.$route.query,
+			);
 		},
 		loanType() {
 			// eslint-disable-next-line no-underscore-dangle

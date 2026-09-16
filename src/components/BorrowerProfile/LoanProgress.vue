@@ -35,7 +35,7 @@
 				</div>
 				<div v-else>
 					<p class="tw-text-title tw-m-0" data-testid="bp-summary-amount-to-go">
-						This loan is fully funded!
+						{{ fundedHeadline }}
 					</p>
 					<div class="md:tw-flex tw-gap-2">
 						<p class="tw-text-upper tw-text-secondary tw-block">
@@ -116,7 +116,7 @@
 				</div>
 				<div v-else class="tw-flex tw-flex-auto">
 					<span class="tw-text-h3 tw-block tw-m-0">
-						{{ isDelinquent ? 'Paying back delinquent' : 'Paying back' }}
+						{{ displayStatusLabel }}
 					</span>
 					<div class="tw-flex-auto tw-text-right">
 						<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-amount-to-go">
@@ -154,7 +154,7 @@
 			</template>
 			<div v-else class="tw-w-full">
 				<p class="tw-text-h3 tw-m-0" data-testid="bp-summary-status-label">
-					{{ statusLabel }}
+					{{ displayStatusLabel }}
 				</p>
 			</div>
 		</figcaption>
@@ -192,9 +192,9 @@ export default {
 			type: String,
 			default: 'fundraising',
 		},
-		isDelinquent: {
-			type: Boolean,
-			default: false,
+		statusLabel: {
+			type: String,
+			default: '',
 		},
 		numberOfLenders: {
 			type: Number,
@@ -211,9 +211,18 @@ export default {
 		hideViewProfileLinks: {
 			type: Boolean,
 			default: false
+		},
+		isLiveLoanAd: {
+			type: Boolean,
+			default: false
 		}
 	},
 	computed: {
+		fundedHeadline() {
+			return this.isLiveLoanAd
+				? 'This loan was just funded! Find another loan'
+				: 'This loan is fully funded!';
+		},
 		pfpProgressPercent() {
 			if (this.pfpMinLenders === 0) {
 				return 0;
@@ -233,17 +242,8 @@ export default {
 		routeId() {
 			return this.loanId ? this.loanId : this.$route.params.id;
 		},
-		statusLabel() {
-			const labels = {
-				ended: 'Repaid',
-				defaulted: 'Defaulted',
-				refunded: 'Refunded',
-				inactiveExpired: 'Inactive',
-				reviewed: 'Under review',
-				deleted: 'Deleted',
-				issue: 'Issue',
-			};
-			return labels[this.loanStatus] || this.loanStatus;
+		displayStatusLabel() {
+			return this.statusLabel || this.loanStatus;
 		},
 	},
 };

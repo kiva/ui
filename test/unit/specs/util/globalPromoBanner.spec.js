@@ -53,11 +53,11 @@ function makeUiGlobalPromoSetting(fields = {}) {
 	};
 }
 
-function makeData(items = []) {
+function makeData(entries = []) {
 	return {
 		contentful: {
-			entries: {
-				items,
+			searchEntries: {
+				items: entries.map((entry, index) => ({ entryId: `entry-${index}`, entry })),
 			},
 		},
 	};

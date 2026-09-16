@@ -21,7 +21,9 @@
 					:user-goal="userGoal"
 					:prev-year-loans="womenLoansLastYear"
 					:hide-goal-card="hideGoalCard"
+					:show-recap-cta="showRecapCta"
 					@open-goal-modal="$emit('open-goal-modal', $event)"
+					@view-goal-recap="$emit('view-goal-recap', $event)"
 				/>
 				<MyKivaSurveyCard
 					v-else-if="slide?.isSurveyCard"
@@ -40,6 +42,10 @@
 				/>
 				<AlmostFundedNextStep
 					v-else-if="slide?.isAlmostFunded"
+					class="tw-h-full"
+				/>
+				<ColombiaReliefNextStep
+					v-else-if="slide?.isCoRecoveryFund"
 					class="tw-h-full"
 				/>
 				<MyKivaCard
@@ -76,6 +82,7 @@
 			</template>
 		</KvCarousel>
 		<MyKivaSharingModal
+			v-if="isSharingModalVisible"
 			:lender="lender"
 			:is-visible="isSharingModalVisible"
 			@close-modal="isSharingModalVisible = false"
@@ -102,7 +109,10 @@ import useGoalData from '#src/composables/useGoalData';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
+import { shouldHideGoalSignup } from '#src/util/goalInReview';
+import { getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import AlmostFundedNextStep from '#src/components/MyKiva/AlmostFundedNextStep';
+import ColombiaReliefNextStep from '#src/components/MyKiva/ColombiaReliefNextStep';
 import {
 	getSlideTitle,
 	getSlideSubTitle,
@@ -132,9 +142,9 @@ const {
 	isTieredAchievementComplete,
 } = useBadgeData(apollo);
 
-const { getCategoryLoansLastYear } = useGoalData();
+const { getCategoryLoansLastYear, hasGoal } = useGoalData();
 
-const emit = defineEmits(['update-journey', 'open-goal-modal', 'open-impact-insight-modal']);
+const emit = defineEmits(['update-journey', 'open-goal-modal', 'open-impact-insight-modal', 'view-goal-recap']);
 
 const props = defineProps({
 	userInfo: {
@@ -201,6 +211,19 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
+	// Decided by LendingStats, which owns the goal card's recap state.
+	showRecapCta: {
+		type: Boolean,
+		default: false,
+	},
+	goalInReviewInProgressStart: {
+		type: Date,
+		default: null,
+	},
+	goalInReviewEnable: {
+		type: Boolean,
+		default: false,
+	},
 	latestLoan: {
 		type: Object,
 		default: null
@@ -222,6 +245,10 @@ const props = defineProps({
 		default: true
 	},
 	showLendingNextStepsCards: {
+		type: Boolean,
+		default: false
+	},
+	showCoRecoveryFundCard: {
 		type: Boolean,
 		default: false
 	},
@@ -261,8 +288,15 @@ const showSurveyCard = computed(() => props.showSurveySlide && checkShowSurveyCa
 
 const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.slides));
 
+const hideGoalSignup = computed(() => shouldHideGoalSignup({
+	recapStartDate: props.goalInReviewInProgressStart,
+	now: getGoalInReviewNow(),
+}));
+
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;
+	// With no goal, this card is only the sign up ask.
+	if (!hasGoal(props.userGoal) && hideGoalSignup.value) return false;
 
 	return (!props.userGoal || !props.userGoalAchieved || props.userGoalAchieved) && !props.hideGoalCard;
 });
@@ -313,6 +347,13 @@ const dynamicOrderedSlides = computed(() => {
 		priorityCards.push({}); // Empty object placeholder for goal card component
 	}
 
+	// Colombia earthquake recovery fund next step: takes the slot right after the goal card,
+	// but never jumps ahead of the post-lending next steps, which keep their existing order.
+	const coRecoveryFundCard = props.showCoRecoveryFundCard ? { isCoRecoveryFund: true } : null;
+	if (coRecoveryFundCard && !props.showPostLendingNextStepsCards) {
+		priorityCards.push(coRecoveryFundCard);
+	}
+
 	// Almost funded next step card
 	if (props.showLendingNextStepsCards) {
 		priorityCards.push({ isAlmostFunded: true });
@@ -333,6 +374,11 @@ const dynamicOrderedSlides = computed(() => {
 	// Survey card: shown if no goal card (goal completed) OR user is opted into email marketing
 	if (showSurveyCard.value && (!shouldShowGoalCard.value || !shouldShowEmailMarketingCard.value)) {
 		priorityCards.push({ isSurveyCard: true });
+	}
+
+	// Post-lending row: the recovery fund card trails the post-lending next steps.
+	if (coRecoveryFundCard && props.showPostLendingNextStepsCards) {
+		priorityCards.push(coRecoveryFundCard);
 	}
 
 	if (props.slidesNumber && props.showLendingNextStepsCards) {

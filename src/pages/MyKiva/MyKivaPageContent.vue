@@ -24,11 +24,12 @@
 			:user-first-name="userInfo?.userAccount?.firstName"
 			:hero-tiered-achievements="heroTieredAchievements"
 			:goal-in-review-enable="goalInReviewEnable"
+			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 			@set-goal-click="openGoalSettingModal"
 			@edit-click="openEditGoalSettingModal"
 			@view-goal-recap="openGoalRecapFromCard"
 		/>
-		<section v-if="clientRendered" class="!tw-mt-2">
+		<section class="!tw-mt-2">
 			<LendingStats
 				ref="lendingStatsRef"
 				:hero-slides="heroSlides"
@@ -42,9 +43,13 @@
 				:user-info="userInfo"
 				:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 				:goals-row-enabled="goalsRowEnabled"
+				:goal-in-review-enable="goalInReviewEnable"
+				:goal-in-review-in-progress-start="goalInReviewInProgressStart"
+				:show-co-recovery-fund-card="showCoRecoveryFundCard"
 				:basket-items="basketItems"
 				:is-adding="isAdding"
 				@add-to-basket="addGoalRecommendedLoanToBasket"
+				@view-goal-recap="openGoalRecapFromCard"
 			/>
 		</section>
 		<section class="tw-mt-4" id="mykiva-achievements">
@@ -96,7 +101,6 @@
 			/>
 		</section>
 		<MyKivaBorrowerCarousel
-			v-if="clientRendered"
 			id="mykiva-borrower-carousel"
 			controls-top-right
 			:basket-items="basketItems"
@@ -123,7 +127,7 @@
 				class="!tw--mt-2"
 			/>
 		</AsyncMyKivaSection>
-		<section v-if="clientRendered" class="!tw-my-2">
+		<section class="!tw-my-2">
 			<LendingCategorySection
 				controls-top-right
 				id="recommended-loans"
@@ -141,6 +145,7 @@
 				More ways to help
 			</h2>
 			<JourneyCardCarousel
+				:goal-in-review-in-progress-start="goalInReviewInProgressStart"
 				class="tw--mt-4"
 				controls-top-right
 				:slides="moreWaysToHelpSlides"
@@ -197,7 +202,10 @@
 		:data="goalInReviewData"
 		:feedback-submitted="goalInReviewFeedbackSubmitted"
 		@close="closeGoalInReviewModal"
+		@goal-recap-back-to-kiva="closeGoalInReviewModal"
 		@feedback-submitted="handleGoalInReviewFeedbackSubmitted"
+		@finish-goal="handleGoalInReviewFinishGoal"
+		@set-goal="handleGoalInReviewSetGoal"
 	/>
 </template>
 
@@ -241,6 +249,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { withAiPills } from '#src/util/aiLoanPillsUtils';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import BadgesSectionV2 from '#src/components/MyKiva/BadgesSectionV2';
+import { getContentfulEntries } from '#src/util/contentfulUtils';
 
 const IMPACT_THRESHOLD = 25;
 const CONTENTFUL_MORE_WAYS_KEY = 'my-kiva-more-ways-carousel';
@@ -350,6 +359,15 @@ export default {
 			type: Boolean,
 			default: true,
 		},
+		/**
+		 * Whether the Colombia earthquake recovery fund next step is eligible for this
+		 * lender: experiment version b, inside the promo window, and the lender has not
+		 * already donated to the fund.
+		 */
+		showCoRecoveryFundCard: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup() {
 		const apollo = inject('apollo');
@@ -357,6 +375,7 @@ export default {
 		const { getMostRecentBlogPost } = useContentful(apollo);
 		const { isMobile } = useBreakpoints();
 		const {
+			getFinishGoalHref,
 			goalInReviewData,
 			loadAutoOpenRecap,
 			loadGoalInReview,
@@ -368,6 +387,7 @@ export default {
 		} = useBadgeData();
 
 		return {
+			getFinishGoalHref,
 			getLoanFindingUrl,
 			isTieredAchievementComplete,
 			getMostRecentBlogPost,
@@ -405,7 +425,6 @@ export default {
 			updatesLimit: 15,
 			updatesLoading: true,
 			updatesOffset: 3,
-			clientRendered: false,
 			tooltipVisible: false,
 			showGoalInReviewModal: false,
 			goalInReviewFeedbackSubmitted: false,
@@ -689,7 +708,7 @@ export default {
 						contentKey: this.CONTENTFUL_MORE_WAYS_KEY,
 					}
 				});
-				this.moreWaysToHelpSlides = moreWaysResult.data?.contentful?.entries?.items?.[0]?.fields?.slides ?? [];
+				this.moreWaysToHelpSlides = getContentfulEntries(moreWaysResult.data)?.[0]?.fields?.slides ?? [];
 			} catch (e) {
 				logReadQueryError(e, 'MyKivaPage myKiva MoreWaysToHelpQuery');
 			}
@@ -788,6 +807,18 @@ export default {
 		async handleGoalInReviewFeedbackSubmitted() {
 			await this.setGoalFeedbackSubmittedPreference(this.goalInReviewData?.year);
 		},
+		// "Finish my goal" routes to the goal category's loan-finding page, the same
+		// destination as the goal cards' continue CTA (tracking fires in the modal).
+		handleGoalInReviewFinishGoal() {
+			const href = this.getFinishGoalHref(this.$router);
+			if (href) {
+				window.location.href = href;
+			}
+		},
+		handleGoalInReviewSetGoal() {
+			this.closeGoalInReviewModal();
+			this.openGoalSettingModal();
+		},
 	},
 	created() {
 		if (this.sidesheetLoan?.id) {
@@ -795,9 +826,6 @@ export default {
 		}
 	},
 	mounted() {
-		this.clientRendered = true;
-
-		// Ensure clientRendered is true before attempting to scroll to section
 		nextTick(() => {
 			const sectionId = this.$route?.query?.goTo || '';
 			if (sectionId) {

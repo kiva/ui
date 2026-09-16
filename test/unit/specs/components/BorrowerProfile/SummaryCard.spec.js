@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
 import { globalOptions, routerLinkStub } from '../../../specUtils';
 
-function mountSummaryCard({ anonymizationLevel } = {}) {
+function mountSummaryCard({ anonymizationLevel, distributionModel, geocode } = {}) {
 	const openDefinition = vi.fn();
 	const wrapper = mount(SummaryCard, {
 		props: {
@@ -12,6 +12,8 @@ function mountSummaryCard({ anonymizationLevel } = {}) {
 				name: 'Test Borrower',
 				fullLoanUse: 'A loan of $600 helps...',
 				anonymizationLevel,
+				distributionModel,
+				geocode,
 			},
 		},
 		global: {
@@ -65,5 +67,38 @@ describe('SummaryCard anonymization affordances', () => {
 
 		expect(wrapper.find('[data-testid="bp-summary-pii-info"]').exists()).toBe(false);
 		expect(wrapper.find('[data-testid="bp-summary-anonymous-learn-more"]').exists()).toBe(true);
+	});
+});
+
+describe('SummaryCard location line', () => {
+	it.each([
+		{
+			case: 'partner loan with a city',
+			distributionModel: 'partner',
+			geocode: { city: 'Nyamira', state: '', country: { name: 'Kenya' } },
+			expected: 'Nyamira, Kenya',
+		},
+		{
+			case: 'partner loan with no city',
+			distributionModel: 'partner',
+			geocode: { city: '', state: '', country: { name: 'Kenya' } },
+			expected: 'Kenya',
+		},
+		{
+			case: 'direct loan',
+			distributionModel: 'direct',
+			geocode: { city: 'Portland', state: 'Oregon', country: { name: 'United States' } },
+			expected: 'Portland, Oregon, United States',
+		},
+		{
+			case: 'Puerto Rico partner loan',
+			distributionModel: 'partner',
+			geocode: { city: 'San Juan', state: 'PR', country: { name: 'Puerto Rico' } },
+			expected: 'San Juan, PR',
+		},
+	])('formats the location of a $case as $expected', ({ distributionModel, geocode, expected }) => {
+		const { wrapper } = mountSummaryCard({ distributionModel, geocode });
+
+		expect(wrapper.find('[data-testid="bp-summary-country-tag"]').text()).toBe(expected);
 	});
 });

@@ -14,7 +14,6 @@ import { getTransactionTimestamp } from '#src/util/myKivaUtils';
 import { createUserPreferences, updateUserPreferences, setMyKivaGoal } from '#src/util/userPreferenceUtils';
 import { runLoansQuery } from '#src/util/loanSearch/dataUtils';
 import { FLSS_ORIGIN_GOAL_RECOMMENDED_LOAN } from '#src/util/flssUtils';
-import { markGoalCompletedThisSession } from '#src/util/goalRecapSession';
 
 import useBadgeData, {
 	calculateFreshProgressAdjustments,
@@ -76,6 +75,17 @@ export const HALF_GOAL_THRESHOLD = 50;
 const MIN_CATEGORY_LOANS_AMOUNT = 100;
 const RECOMMENDED_LOANS_LIMIT = 4;
 
+/**
+ * A lender with no goal gets `{}` rather than null, since setGoalState spreads an
+ * absent goal. Truthiness is therefore never enough to tell whether a goal exists.
+ *
+ * @param {object} goal The lender's goal.
+ * @returns {boolean} Whether the lender has a goal.
+ */
+function hasGoal(goal) {
+	return !!goal && Object.keys(goal).length > 0;
+}
+
 function getGoalDisplayName(target, category) {
 	if (!target || target > 1) return GOAL_DISPLAY_MAP[category] || 'loans';
 	return GOAL_1_DISPLAY_MAP[category] || 'loan';
@@ -99,6 +109,16 @@ export default function useGoalData({ apollo } = {}) {
 	const rawCurrentYearProgress = ref([]);
 	const goalCurrentLoanCount = ref(0); // In-page counter for tracking loans added to basket
 	const loading = ref(true);
+	// Neither of these is reactive: nothing renders from them, they only steer what the
+	// reconciling pass in mounted() does.
+	// Sticky once goal state has been populated straight from the Apollo cache, which
+	// happens during server render. Keeps that pass from flashing resolved cards back to
+	// skeletons.
+	let hydratedFromCache = false;
+	// One-shot: true only between a successful hydrateFromCache() and the single
+	// reconciling pass that follows it, so that pass can skip re-fetching values the
+	// prefetch wrote moments earlier.
+	let pendingHydrationReconcile = false;
 	const totalLoanCount = ref(null);
 	const yearlyLoanCount = ref(null); // Total loans for current year from loanStatsByYear
 	const userGoal = ref(null);
@@ -117,6 +137,8 @@ export default function useGoalData({ apollo } = {}) {
 		const categoryProgress = progress?.find(n => n.id === goal?.category);
 		return categoryProgress?.progressForYear || 0;
 	});
+
+	const userHasGoal = computed(() => hasGoal(userGoal.value));
 
 	const userGoalAchieved = computed(() => goalProgress.value >= userGoal.value?.target);
 
@@ -568,12 +590,48 @@ export default function useGoalData({ apollo } = {}) {
 		});
 	}
 
+	/**
+	 * Optimistic progress adjustments derived from loans the achievement service has not
+	 * counted yet. Both the cache-hydration pass and the network pass call this, so the
+	 * two cannot drift apart on which loans count.
+	 *
+	 * @returns {Object} { allTime, yearSpecific } adjustment maps, empty when there is
+	 *   nothing to adjust.
+	 */
+	function computeFreshProgressAdjustments({
+		freshProgressLoans = [],
+		tieredAchievements = [],
+		year,
+		transactions = [],
+	} = {}) {
+		if (!freshProgressLoans?.length || !tieredAchievements?.length) {
+			return { allTime: {}, yearSpecific: {} };
+		}
+		return calculateGoalFreshProgressAdjustments(
+			freshProgressLoans,
+			tieredAchievements,
+			year,
+			transactions,
+		);
+	}
+
+	/**
+	 * The single writer for the two progress refs. Both assignments live here so a cache
+	 * hydration and a network load leave the same shape behind, whichever ran last.
+	 *
+	 * @param {Object[]} progress Raw tiered achievements from the achievement service
+	 * @param {Object} freshProgressAdjustments Output of computeFreshProgressAdjustments
+	 */
+	function setProgressState(progress, freshProgressAdjustments = {}) {
+		// Preserve the raw achievement-service progress before applying optimistic adjustments.
+		rawCurrentYearProgress.value = progress?.map(p => ({ ...p })) || [];
+		currentYearProgress.value = applyFreshProgressToGoalData(progress, freshProgressAdjustments);
+	}
+
 	async function loadProgress(year, freshProgressAdjustments = {}) {
 		try {
 			const progress = await getCategoriesProgressByYear(year);
-			// Preserve the raw achievement-service progress before applying optimistic adjustments.
-			rawCurrentYearProgress.value = progress?.map(p => ({ ...p })) || [];
-			currentYearProgress.value = applyFreshProgressToGoalData(progress, freshProgressAdjustments);
+			setProgressState(progress, freshProgressAdjustments);
 		} catch (error) {
 			logFormatter('Failed to load progress', 'error', { error, year });
 			return null;
@@ -701,7 +759,14 @@ export default function useGoalData({ apollo } = {}) {
 		const goals = parsedPrefs.goals || [];
 		const goalIndex = goals.findIndex(g => g.goalName === previousGoal.goalName);
 		if (goalIndex !== -1) {
-			goals[goalIndex] = { ...updatedGoal };
+			// Editing a goal must not reset its start date. `dateStarted` is the goal's
+			// created date — the recap and the past-goals list key off it — so
+			// preserve the stored value and record the edit moment separately in `updatedAt`.
+			goals[goalIndex] = {
+				...updatedGoal,
+				dateStarted: goals[goalIndex].dateStarted ?? updatedGoal.dateStarted,
+				updatedAt: new Date().toISOString(),
+			};
 		}
 
 		// If the updated category is support-all, we need to load the latest yearly loan count to set accurate progress
@@ -872,7 +937,6 @@ export default function useGoalData({ apollo } = {}) {
 		category = 'post-checkout',
 		eventLabel = 'annual-goal-complete',
 		persistHideGoalCard = false,
-		cookieStore = null,
 	} = {}) {
 		const goal = userGoal.value;
 		if (!goal || goal.status === GOAL_STATUS.EXPIRED) {
@@ -899,9 +963,6 @@ export default function useGoalData({ apollo } = {}) {
 		}
 
 		if (isGoalComplete) {
-			// Marked as soon as the goal looks complete, even if the achievement service has
-			// not confirmed it yet, so the recap cannot appear later in this same session.
-			markGoalCompletedThisSession(cookieStore, GOALS_CURRENT_YEAR);
 			// Capture goal data before storeGoalPreferences (which may filter out the goal via setGoalState)
 			const goalCategory = goal.category;
 			const goalTarget = goal.target;
@@ -1005,6 +1066,101 @@ export default function useGoalData({ apollo } = {}) {
 		);
 	}
 
+	/**
+	 * Populate goal state synchronously from data that is already in the Apollo cache.
+	 *
+	 * Runs during server render (and again on the client while hydrating) so the featured
+	 * goal card, the next-steps carousel and the impact-progress row render real content
+	 * instead of skeletons. Every read here is satisfied by MyKivaPage's prefetch:
+	 * preferences from useGoalDataQuery, category progress from userAchievementProgressQuery,
+	 * and the support-all yearly count from loanStatsByYearQuery. No network request is
+	 * issued.
+	 *
+	 * Two things loadGoalData() does are deliberately left out, because each is a network
+	 * call that also persists a preference and so cannot run during a server render:
+	 * backfillExpiredGoalProgress() and correctNegativeProgress(). The reconciling pass in
+	 * mounted() still runs both, and neither absence is visible.
+	 *
+	 * correctNegativeProgress only repairs the stored `loanTotalAtStart`, which nothing
+	 * renders. backfillExpiredGoalProgress fills `loansTowardGoal` for goals that expired
+	 * before that field existed; until it lands, completedGoalsHistory omits them. Those
+	 * tiles append to the end of the badges row, which starts at five slides plus the annual
+	 * goal and shows one to three at 336px — so the tile is off-screen on first paint, adds
+	 * no vertical shift, and the carousel has no :key to re-initialise on.
+	 *
+	 * @param {Object[]} options.tieredAchievements Current-year achievements read from the cache
+	 * @param {Object[]} options.freshProgressLoans Recent transaction loans for optimistic progress
+	 * @param {Object[]} options.transactions User transactions, for purchase-date year filtering
+	 * @param {number} options.year Goal year to populate
+	 * @returns {boolean} True when the goal state is complete enough to render. Returns false
+	 *   when a value the cards display cannot be known from the cache — a partial prefetch
+	 *   failure, say — leaving `loading` true so the skeletons stand in until the mounted()
+	 *   pass resolves. Some refs may already be populated in that case; the mounted() pass
+	 *   overwrites them, and nothing renders from them while `loading` is true.
+	 */
+	function hydrateFromCache({
+		tieredAchievements = [],
+		freshProgressLoans = [],
+		transactions = [],
+		year = GOALS_CURRENT_YEAR,
+	} = {}) {
+		let parsedPrefs;
+		try {
+			const cached = apolloClient.readQuery({ query: useGoalDataQuery });
+			// A missing query means the prefetch was skipped or failed, so leave `loading`
+			// true and let the mounted() pass fetch. A query that IS cached but carries null
+			// userPreferences is a different case — a lender who has never stored one, which
+			// loadPreferences() treats as empty prefs. Hydrate that the same way, or the
+			// newest lenders would be the only ones who never get a server-rendered card.
+			if (!cached?.my) return false;
+			const prefsData = cached.my.userPreferences ?? null;
+			totalLoanCount.value = cached.my.loans?.totalCount || 0;
+			userPreferences.value = prefsData;
+			parsedPrefs = prefsData ? JSON.parse(prefsData.preferences || '{}') : {};
+		} catch (error) {
+			logFormatter('Failed to hydrate goal data from cache', 'warn', { error });
+			return false;
+		}
+
+		const progress = tieredAchievements ?? [];
+		setProgressState(progress, computeFreshProgressAdjustments({
+			freshProgressLoans,
+			tieredAchievements,
+			year,
+			transactions,
+		}));
+
+		setGoalState(parsedPrefs);
+
+		const goalCategory = userGoal.value?.category ?? null;
+
+		if (goalCategory === ID_SUPPORT_ALL) {
+			let cachedCount = null;
+			try {
+				const stats = apolloClient.readQuery({
+					query: loanStatsByYearQuery,
+					variables: { year },
+				});
+				cachedCount = stats?.my?.lendingStats?.loanStatsByYear?.count ?? null;
+			} catch (error) {
+				cachedCount = null;
+			}
+			// goalProgress coerces a null count to 0, which would render a confident "0 loans"
+			// for a lender who may have made plenty. Better to keep the skeleton up.
+			if (cachedCount === null) return false;
+			yearlyLoanCount.value = cachedCount;
+		} else if (goalCategory && !progress.length) {
+			// A category goal reads its progress out of the achievement data. With none cached
+			// the card would claim zero progress, so leave it loading instead.
+			return false;
+		}
+
+		hydratedFromCache = true;
+		pendingHydrationReconcile = true;
+		loading.value = false;
+		return true;
+	}
+
 	async function loadGoalData({
 		freshProgressLoans = [], // Loans used to reconcile missing achievement progress (e.g. recent transactions)
 		supportAllCounterLoans = [], // Loans used to initialize in-page support-all counter state
@@ -1014,26 +1170,32 @@ export default function useGoalData({ apollo } = {}) {
 		fetchPolicy = 'cache-first', // Apollo fetch policy for loading preferences
 		checkMyKivaCompletedGoalAfterLoad = false, // Flag to check if completed goal should be checked after load
 	} = {}) {
-		loading.value = true;
+		// Only show skeletons when there is nothing rendered yet. After a cache hydration
+		// this pass is a background reconcile, so the resolved cards must stay put.
+		if (!hydratedFromCache) {
+			loading.value = true;
+		}
+		const isHydrationReconcile = pendingHydrationReconcile;
+		pendingHydrationReconcile = false;
 		const parsedPrefs = await loadPreferences(fetchPolicy);
 		await backfillExpiredGoalProgress(parsedPrefs);
 
-		// Calculate fresh progress adjustments if loans and achievements provided
-		let freshProgressAdjustments = { allTime: {}, yearSpecific: {} };
-		if (freshProgressLoans?.length && tieredAchievements?.length) {
-			freshProgressAdjustments = calculateGoalFreshProgressAdjustments(
-				freshProgressLoans,
-				tieredAchievements,
-				year,
-				transactions
-			);
-		}
+		const freshProgressAdjustments = computeFreshProgressAdjustments({
+			freshProgressLoans,
+			tieredAchievements,
+			year,
+			transactions,
+		});
 
 		await loadProgress(year, freshProgressAdjustments);
 		setGoalState(parsedPrefs);
-		// Load yearly loan count for ID_SUPPORT_ALL goals to set initial progress state accurately
+		// Load yearly loan count for ID_SUPPORT_ALL goals to set initial progress state accurately.
+		// The pass right after a cache hydration runs milliseconds behind the prefetch that
+		// populated that cache, so going to the network there would re-fetch a value already
+		// on screen and swap the number under the reader if the two responses disagreed.
+		// Every later call — post-checkout, goal changes — still reads through to the network.
 		if (userGoal.value?.category === ID_SUPPORT_ALL) {
-			const stats = await getLoanStatsByYear(year, 'network-only');
+			const stats = await getLoanStatsByYear(year, isHydrationReconcile ? 'cache-first' : 'network-only');
 			yearlyLoanCount.value = stats?.count || 0;
 		}
 		// ATB-only: initialize support-all in-page counter from current basket loans.
@@ -1260,18 +1422,21 @@ export default function useGoalData({ apollo } = {}) {
 		getCategoryLoansLastYear,
 		getCtaHref,
 		getGoalDisplayName,
+		hasGoal,
 		getGoalSummary,
 		getLoanStatsByYear,
 		getPostCheckoutProgressByLoans,
 		goalProgress,
 		goalProgressPercentage,
 		isProgressCompletingGoal,
+		hydrateFromCache,
 		loadGoalData,
 		loadPreferences,
 		loading,
 		storeGoalPreferences,
 		userGoal,
 		userGoalAchieved,
+		userHasGoal,
 		userGoalAchievedNow,
 		suppressAchievementNudges,
 		userPreferences,

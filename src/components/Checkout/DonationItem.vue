@@ -13,13 +13,17 @@
 			</div>
 
 			<!-- donation text -->
-			<div class="tw-flex-auto">
+			<div
+				class="tw-flex-auto"
+				:class="{ 'md:tw-min-w-0': showTipFromBalanceVariant }"
+			>
 				<div class="tw-mb-0.5">
 					<div class="tw-flex tw-items-center tw-justify-between">
 						<div>
 							<div class="tw-w-full tw-flex">
 								<h2
-									class="tw-flex-1 md:tw-flex-grow"
+									class="tw-flex-1 md:tw-flex-grow data-hj-suppress"
+									:class="{ 'tw-text-h4 tw-text-primary': showTipFromBalanceVariant }"
 									data-testid="basket-donation-title"
 								>
 									{{ basketDonationHeader }}
@@ -104,13 +108,23 @@
 						</div>
 					</div>
 
-					<div>
+					<!-- The margin sits on the row, not the copy: items-center counts margins, so a top
+						margin on one child alone offsets it from the CTA beside it. The switch below
+						brings its own top margin, so the variant needs no bottom one -->
+					<div
+						:class="showTipFromBalanceVariant
+							? 'tw-mt-1 md:tw-flex md:tw-items-center md:tw-gap-0.5'
+							: ''"
+					>
 						<div
-							class="donation-tagline tw-my-1 tw-max-w-2xl"
+							class="tw-max-w-2xl"
+							:class="showTipFromBalanceVariant ? 'md:tw-min-w-0' : 'tw-my-1'"
 							data-testid="basket-donation-tagline"
 						>
+							<!-- Two lines before clipping: a long group name would otherwise cut the ask itself -->
 							<p
-								class="tw-text-base"
+								class="tw-text-base data-hj-suppress"
+								:class="{ 'md:tw-line-clamp-2': showTipFromBalanceVariant }"
 							>
 								{{ basketDonationTagline }}
 							</p>
@@ -126,18 +140,26 @@
 						<button
 							v-else
 							class="tw-flex tw-items-center tw-text-base tw-text-link"
+							:class="{ 'md:tw-flex-none': showTipFromBalanceVariant }"
 							data-testid="basket-donation-info-lightbox"
 							@click="triggerDefaultLightbox"
 							v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
 						>
 							{{ donationDetailsLink }}
 							<kv-material-icon
+								v-if="!showTipFromBalanceVariant"
 								class="tw-ml-0.5 tw-w-2 tw-h-2"
 								:icon="mdiArrowRight"
 							/>
 						</button>
 					</div>
 				</div>
+
+				<kiva-credit-tip-toggle
+					v-if="canHostTipFromBalanceToggle"
+					@updating-totals="$emit('updating-totals', $event)"
+					@refreshtotals="$emit('refreshtotals')"
+				/>
 			</div>
 
 			<!-- donation total -->
@@ -271,11 +293,13 @@
 <script>
 import numeral from 'numeral';
 import { mdiPencil, mdiArrowRight, mdiClose } from '@mdi/js';
+import { formatPossessiveName } from '#src/util/stringParserUtils';
 import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
 import { getBasketErrorMessage } from '#src/util/basketUtils';
 import HowKivaUsesDonation from '#src/components/Checkout/HowKivaUsesDonation';
 import DonationNudgeLightbox from '#src/components/Checkout/DonationNudge/DonationNudgeLightbox';
 import DonateRepayments from '#src/components/Checkout/DonateRepaymentsToggle';
+import KivaCreditTipToggle from '#src/components/Checkout/KivaCreditTipToggle';
 import {
 	KvMaterialIcon, KvTextInput, KvButton, KvLightbox
 } from '@kiva/kv-components';
@@ -289,10 +313,16 @@ export default {
 		KvLightbox,
 		KvTextInput,
 		DonateRepayments,
+		KivaCreditTipToggle,
 		DonationNudgeLightbox,
 		HowKivaUsesDonation,
 	},
-	inject: ['apollo', 'cookieStore'],
+	inject: {
+		apollo: { from: 'apollo' },
+		cookieStore: { from: 'cookieStore' },
+		// Assigned version provided by the checkout page; null when rendered elsewhere
+		tipFromBalanceEligible: { default: false },
+	},
 	emits: ['refreshtotals', 'updating-totals'],
 	props: {
 		donation: {
@@ -315,6 +345,11 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		// Borrower names in basket order, so the tip ask can name who the loans are for
+		borrowerNames: {
+			type: Array,
+			default: () => [],
+		},
 	},
 	data() {
 		return {
@@ -324,7 +359,6 @@ export default {
 			editDonation: false,
 			nudgeLightboxVisible: false,
 			loanHistoryCount: null,
-			donationDetailsLink: 'Learn how Kiva uses your donation',
 			mdiPencil,
 			mdiArrowRight,
 			mdiClose,
@@ -346,6 +380,16 @@ export default {
 		isCampaignDonation() {
 			return !!this.donation?.metadata?.campaignId;
 		},
+		canHostTipFromBalanceToggle() {
+			// Where the toggle may live at all. The component renders the switch in the variant
+			// only, but has to mount in both arms so control fires exposure from the same place
+			return !this.isCampaignDonation && !this.orderTotalVariant;
+		},
+		showTipFromBalanceVariant() {
+			// Ignores the tip amount: at zero the switch and its label go, but the copy and layout
+			// stay so the row does not flip back to the control mid-checkout
+			return this.tipFromBalanceEligible && this.canHostTipFromBalanceToggle;
+		},
 		donationTitle() {
 			return 'Donation to Kiva';
 		},
@@ -361,9 +405,46 @@ export default {
 		formattedAmount() {
 			return numeral(this.amount).format('$0,0.00');
 		},
+		donationDetailsLink() {
+			return this.showTipAskVariant ? 'Learn more' : 'Learn how Kiva uses your donation';
+		},
+		showTipAskVariant() {
+			// The named ask needs a borrower to name, so a row without loan data keeps the old copy
+			return this.showTipFromBalanceVariant && this.hasLoans && !!this.firstBorrowerName;
+		},
+		firstBorrowerName() {
+			return this.borrowerNames[0] ?? '';
+		},
+		loanTotalDisplay() {
+			return numeral(this.loanReservationTotal).format('$0,0[.]00');
+		},
+		tipAskHeader() {
+			const first = this.firstBorrowerName;
+			const second = this.borrowerNames[1];
+			if (this.loanCount === 1) {
+				return `Cover the cost of ${formatPossessiveName(first)} loan?`;
+			}
+			if (this.loanCount === 2 && second) {
+				return `Cover the cost of ${first} and ${formatPossessiveName(second)} loans?`;
+			}
+			// A basket loan can arrive without its borrower, so the count and the names can differ
+			const others = this.loanCount - 1;
+			const suffix = others === 1 ? '' : 's';
+			return `Cover the cost of ${formatPossessiveName(first)} loan and ${others} other${suffix}?`;
+		},
+		tipAskTagline() {
+			// A single loan is named and takes "goes to"; several are collective and take "goes toward"
+			const destination = this.loanCount === 1
+				? `to ${formatPossessiveName(this.firstBorrowerName)} loan`
+				: 'toward these loans';
+			return `100% of your ${this.loanTotalDisplay} goes ${destination} — your donation helps Kiva get it there.`;
+		},
 		basketDonationHeader() {
 			if (this.isCampaignDonation) {
 				return 'Donate to a giving fund';
+			}
+			if (this.showTipAskVariant) {
+				return this.tipAskHeader;
 			}
 			if (this.hasLoans) {
 				return `Help cover the cost of your loan${this.loanCount > 1 ? 's' : ''}`;
@@ -373,6 +454,9 @@ export default {
 		basketDonationTagline() {
 			if (this.isCampaignDonation) {
 				return 'Your donation will be lent out to a critical impact area.';
+			}
+			if (this.showTipAskVariant) {
+				return this.tipAskTagline;
 			}
 			if (this.hasKivaCards && !this.hasLoans) {
 				// eslint-disable-next-line max-len

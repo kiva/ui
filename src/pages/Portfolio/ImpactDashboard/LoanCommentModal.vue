@@ -95,14 +95,19 @@ export default {
 		}
 	},
 	watch: {
-		isVisible(newValue) {
-			if (newValue) {
-				this.$nextTick(() => {
-					// Focus the textarea when the modal opens
-					this.$refs.commentTextarea?.focus();
-				});
-			}
-		}
+		isVisible: {
+			// Immediate because the parent gates this component with `v-if` as well, so it
+			// mounts already visible and there is no false->true transition to observe.
+			immediate: true,
+			handler(newValue) {
+				if (newValue) {
+					this.$nextTick(() => {
+						// Focus the textarea when the modal opens
+						this.$refs.commentTextarea?.focus();
+					});
+				}
+			},
+		},
 	},
 	methods: {
 		submitComment() {

@@ -1,0 +1,40 @@
+query goalInReview($achievementId: String!, $year: Int!, $loansLimit: Int = 1000) {
+  goalInReview(achievementId: $achievementId, year: $year) {
+    id
+    count
+    transactionSessionCount
+    photos: loans(limit: 11) {
+      id
+      name
+      image {
+        id
+        hash
+      }
+    }
+    stats: loans(limit: $loansLimit) {
+      id
+      sector {
+        id
+        name
+      }
+      geocode {
+        country {
+          id
+          name
+          isoCode
+          fundsLentInCountry
+          geocode {
+            latitude
+            longitude
+          }
+        }
+      }
+      userProperties {
+        loanBalance {
+          loanId
+          totalAmountPurchased
+        }
+      }
+    }
+  }
+}

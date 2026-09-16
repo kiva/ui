@@ -48,6 +48,8 @@
 											:progress-percent="progressPercent"
 											:loading="isSummaryLoading"
 											:loan-status="loanStatus"
+											:status-label="statusLabel"
+											:is-live-loan-ad="isLiveLoanAd"
 										/>
 									</div>
 								</div>
@@ -122,6 +124,7 @@ export const minimalProfileFragment = gql`fragment minimalProfileFields on LoanB
 	id
 	name
 	status
+	statusLabel
 	use
 	anonymizationLevel
 	loanAmount
@@ -241,10 +244,8 @@ export default {
 			rows: null,
 			isVisitor: true,
 			loanRowsCount: 4,
-			// Initialize from the loan prop (populated by the parent page's routingQuery,
-			// which carries shareMetaFragment fields including name and country). Without
-			// this, SSR renders with loanData={} and head() produces the broken
-			// "undefined from undefined's loan has been funded!" title
+			// Seeded from the loan prop, which the parent page reads back from this
+			// component's own prefetched query.
 			loanData: this.loan?.id ? { ...this.loan } : {},
 		};
 	},
@@ -262,12 +263,18 @@ export default {
 			// eslint-disable-next-line max-len
 			return 'Kiva is a loan, not a donation. With Kiva you can lend as little as $25 and make a big change in someone\'s life.';
 		},
+		isLiveLoanAd() {
+			return this.$route?.query?.utm_campaign === 'liveloans';
+		},
 		loanStatus() {
 			// Loan may still be fundraising, but all shares are reserved
 			if (this.loanData?.status === 'fundraising') {
 				return 'funded';
 			}
 			return this.loanData?.status ?? 'funded';
+		},
+		statusLabel() {
+			return this.loanData?.statusLabel ?? '';
 		},
 		progressPercent() {
 			if (this.loanStatus === 'funded') {
@@ -295,8 +302,15 @@ export default {
 	},
 	mounted() {
 		this.initRecommendations();
+		this.trackAdFundedLanding();
 	},
 	methods: {
+		trackAdFundedLanding() {
+			if (!this.isLiveLoanAd || !this.loanData?.status) {
+				return;
+			}
+			this.$kvTrackEvent('borrower-profile', 'funded-state landing', this.loanData.id, this.loanData.status);
+		},
 		initRecommendations() {
 			// Build the rows only once the loan's own query has populated loanData
 			// (loanData.sector); building from an empty loan yields "undefined" headings.

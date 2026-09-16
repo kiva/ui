@@ -167,6 +167,11 @@ const SORT_OPTIONS = [
 
 export default {
 	name: 'KivaCardsPage',
+	head() {
+		return {
+			title: 'Kiva Cards',
+		};
+	},
 	inject: ['apollo'],
 	components: {
 		WwwPage,

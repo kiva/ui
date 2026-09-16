@@ -220,7 +220,7 @@ import numeral from 'numeral';
 import { defineAsyncComponent } from 'vue';
 import { indexIn } from '#src/util/comparators';
 import logFormatter from '#src/util/logFormatter';
-import { processPageContentFlat, processPageContent } from '#src/util/contentfulUtils';
+import { getContentfulEntries, processPageContent, processPageContentFlat } from '#src/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '#src/util/campaignUtils';
 import LoanSearchFilters, { getSearchableFilters } from '#src/api/fixtures/LoanSearchFilters';
 import syncDate from '#src/util/syncDate';
@@ -265,7 +265,15 @@ const StoryCardCarousel = defineAsyncComponent(() => import('#src/components/Con
 
 const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String) {
 	contentful {
-		entries(contentType: "page", contentKey: $contentKey)
+		searchEntries(contentType: "page", contentKey: $contentKey) {
+			total
+			skip
+			limit
+			items {
+				entryId
+				entry
+			}
+		}
 	}
 	shop(basketId: $basketId) {
 		id
@@ -504,10 +512,16 @@ const getContentGroups = pageData => {
 	})).filter(group => typeof group.component === 'object' && group.component !== null);
 };
 
+const CORPORATE_CAMPAIGN_PAGE_TYPE = 'corporate-campaign';
+
 // Get the Contentful Page data from the data of an Apollo query result
 const getPageData = data => {
-	const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
-	return pageEntry ? processPageContent(pageEntry) : { error: 'Contentful entry not found' };
+	const pageEntry = getContentfulEntries(data)?.[0] ?? null;
+	// The route resolves any page key, so without this a landing page would render as a campaign
+	if (pageEntry?.fields?.pageType !== CORPORATE_CAMPAIGN_PAGE_TYPE) {
+		return { error: 'Contentful entry not found' };
+	}
+	return processPageContent(pageEntry);
 };
 
 export default {
@@ -690,7 +704,7 @@ export default {
 			}
 		});
 		this.rawPageData = data;
-		const pageEntry = data?.contentful?.entries?.items?.[0] ?? null;
+		const pageEntry = getContentfulEntries(data)?.[0] ?? null;
 		this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
 
 		this.lendingRewardOffered = data?.shop?.lendingRewardOffered ?? false;

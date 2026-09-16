@@ -1,4 +1,50 @@
+/* eslint-disable import/no-extraneous-dependencies */
+import { mount } from '@vue/test-utils';
 import MinimalBorrowerProfile from '#src/components/BorrowerProfile/MinimalBorrowerProfile';
+import LoanProgress from '#src/components/BorrowerProfile/LoanProgress';
+import { globalOptions, routerLinkStub } from '../../../specUtils';
+
+function mountMinimal({ utmCampaign } = {}) {
+	return mount(MinimalBorrowerProfile, {
+		props: {
+			loan: {
+				id: 88,
+				name: 'Eunice',
+				status: 'funded',
+				geocode: { country: { name: 'Uganda' } },
+			},
+		},
+		global: {
+			...globalOptions,
+			stubs: {
+				RouterLink: routerLinkStub,
+				HeroBackground: true,
+				BorrowerImage: true,
+				KivaClassicLoanCarousel: true,
+				LoanCardController: true,
+			},
+			mocks: {
+				...globalOptions.mocks,
+				$route: {
+					params: { id: '88' },
+					query: utmCampaign ? { utm_campaign: utmCampaign } : {},
+				},
+			},
+		},
+	});
+}
+
+describe('MinimalBorrowerProfile live-loan ad funded messaging', () => {
+	it('flags LoanProgress to show the ad fallback headline for ad landings', () => {
+		const wrapper = mountMinimal({ utmCampaign: 'liveloans' });
+		expect(wrapper.findComponent(LoanProgress).props('isLiveLoanAd')).toBe(true);
+	});
+
+	it('does not flag LoanProgress for non-ad traffic', () => {
+		const wrapper = mountMinimal();
+		expect(wrapper.findComponent(LoanProgress).props('isLiveLoanAd')).toBe(false);
+	});
+});
 
 describe('MinimalBorrowerProfile.apollo.result', () => {
 	const invokeResult = (ctx, data) => {
@@ -44,6 +90,56 @@ describe('MinimalBorrowerProfile.apollo.result isSummaryLoading', () => {
 		const ctx = { loanData: { id: 123, name: 'Maria' }, isSummaryLoading: true };
 		invokeResult(ctx, { lend: { loan: null } });
 		expect(ctx.isSummaryLoading).toBe(false);
+	});
+});
+
+describe('MinimalBorrowerProfile.computed.isLiveLoanAd', () => {
+	const invoke = ctx => MinimalBorrowerProfile.computed.isLiveLoanAd.call(ctx);
+
+	it('is true when the landing query is the live-loan ads campaign', () => {
+		expect(invoke({ $route: { query: { utm_campaign: 'liveloans' } } })).toBe(true);
+	});
+
+	it('is false for a different campaign', () => {
+		expect(invoke({ $route: { query: { utm_campaign: 'scle' } } })).toBe(false);
+	});
+
+	it('is false when no campaign is present', () => {
+		expect(invoke({ $route: { query: {} } })).toBe(false);
+	});
+});
+
+describe('MinimalBorrowerProfile.methods.trackAdFundedLanding', () => {
+	const invoke = ctx => MinimalBorrowerProfile.methods.trackAdFundedLanding.call(ctx);
+
+	const adCtx = overrides => ({
+		isLiveLoanAd: true,
+		loanData: { id: 123, status: 'expired' },
+		$kvTrackEvent: vi.fn(),
+		...overrides,
+	});
+
+	it('fires the funded-state landing event with the raw status in the property arg', () => {
+		const ctx = adCtx();
+		invoke(ctx);
+		expect(ctx.$kvTrackEvent).toHaveBeenCalledWith(
+			'borrower-profile',
+			'funded-state landing',
+			123,
+			'expired',
+		);
+	});
+
+	it('does not fire for non-ad traffic', () => {
+		const ctx = adCtx({ isLiveLoanAd: false });
+		invoke(ctx);
+		expect(ctx.$kvTrackEvent).not.toHaveBeenCalled();
+	});
+
+	it('does not fire without a loaded status', () => {
+		const ctx = adCtx({ loanData: { id: 123 } });
+		invoke(ctx);
+		expect(ctx.$kvTrackEvent).not.toHaveBeenCalled();
 	});
 });
 

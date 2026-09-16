@@ -1,0 +1,95 @@
+import { render } from '@testing-library/vue';
+import GoalInReviewHeadline from '#src/components/MyKiva/GoalInReview/GoalInReviewHeadline';
+import { globalOptions } from '../../../../specUtils';
+
+// canvas-confetti has no real canvas in jsdom (its rAF loop throws on a null
+// context), so stub the util the slide fires on mount.
+vi.mock('#src/util/animation/confettiUtils', () => ({ showConfetti: vi.fn() }));
+
+const baseProps = {
+	goalStatus: 'completed',
+	firstName: 'Alexandra',
+	year: 2026,
+	amountLent: 1025,
+	borrowerCount: 14,
+	category: 'women',
+	percentComplete: 100,
+};
+
+const renderSlide = (props = {}) => render(GoalInReviewHeadline, {
+	global: globalOptions,
+	props: { ...baseProps, ...props },
+});
+
+describe('GoalInReviewHeadline', () => {
+	it('renders the recap pill with the goal year', () => {
+		const { getByText } = renderSlide();
+		getByText('Your 2026 impact goal recap');
+	});
+
+	describe('complete variant', () => {
+		it('greets the lender by name', () => {
+			const { getByText } = renderSlide({ goalStatus: 'completed' });
+			getByText(/You did it,/);
+			getByText('Alexandra');
+		});
+
+		it('falls back to a generic headline when the name is missing', () => {
+			const { getByText, queryByText } = renderSlide({ goalStatus: 'completed', firstName: '' });
+			getByText('You did it!');
+			expect(queryByText(/You did it,/)).toBeNull();
+		});
+	});
+
+	describe('in-progress variant', () => {
+		it('shows the in-progress headline instead of the complete one', () => {
+			const { getByText, queryByText } = renderSlide({ goalStatus: 'in-progress' });
+			getByText(/Your goal moved/);
+			getByText('lives forward');
+			expect(queryByText(/You did it/)).toBeNull();
+		});
+	});
+
+	describe('stats', () => {
+		it('renders all four stats from live data', () => {
+			const { getByText } = renderSlide();
+			getByText('$1,025');
+			getByText('Total lent');
+			getByText('14');
+			getByText('Borrowers helped');
+			getByText('Women');
+			getByText('100%');
+			getByText('Progress');
+		});
+
+		it('uses the singular "Borrower helped" label when the count is 1', () => {
+			const { getByText, queryByText } = renderSlide({ borrowerCount: 1 });
+			getByText('Borrower helped');
+			expect(queryByText('Borrowers helped')).toBeNull();
+		});
+
+		it('formats large amounts and borrower counts with separators', () => {
+			const { getByText } = renderSlide({ amountLent: 12500, borrowerCount: 1200 });
+			getByText('$12,500');
+			getByText('1,200');
+		});
+
+		it('degrades gracefully when stats are missing (no "undefined" in copy)', () => {
+			const { container, getAllByText } = renderSlide({
+				amountLent: null,
+				borrowerCount: null,
+				category: '',
+				percentComplete: null,
+			});
+			// all four stat values fall back to an em dash
+			expect(getAllByText('—')).toHaveLength(4);
+			expect(container.textContent).not.toContain('undefined');
+			expect(container.textContent).not.toContain('NaN');
+		});
+	});
+
+	it('shows the scroll prompt', () => {
+		const { getByText } = renderSlide();
+		getByText('Scroll to explore the stories behind your goal');
+	});
+});

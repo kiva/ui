@@ -7,6 +7,7 @@ import {
 	createQueryResult,
 	loggedInUser,
 	fundraisingPartnerLoan,
+	longLocationPartnerLoan,
 	fullyFundedLoan,
 	payingBackLoan,
 	overpaidPayingBackLoan,
@@ -40,6 +41,9 @@ export default {
 };
 
 export const Fundraising = summaryCardStory(fundraisingPartnerLoan, loggedInUser);
+
+export const LongLocation = summaryCardStory(longLocationPartnerLoan, loggedInUser);
+LongLocation.storyName = 'Long location';
 
 export const FullyFunded = summaryCardStory(fullyFundedLoan);
 

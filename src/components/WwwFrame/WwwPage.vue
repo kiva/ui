@@ -4,6 +4,7 @@
 		<the-header
 			v-show="!isKivaAppReferral"
 			:hide-search-in-header="hideSearchInHeader"
+			:sticky-header="stickyHeader"
 		/>
 		<slot name="secondary" v-if="!isKivaAppReferral"></slot>
 
@@ -22,6 +23,7 @@ import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.grap
 import { userHasEverLoggedInBefore } from '#src/util/optimizelyUserMetrics';
 import logReadQueryError from '#src/util/logReadQueryError';
 import CookieBanner from '#src/components/WwwFrame/CookieBanner';
+import { isStickyHeaderRoute } from '#src/util/headerUtils';
 import GlobalPromoContentful from './PromotionalBanner/GlobalPromotionalBannerContentful';
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
@@ -74,6 +76,9 @@ export default {
 		}
 	},
 	computed: {
+		stickyHeader() {
+			return isStickyHeaderRoute(this.$route);
+		},
 		mainClasses() {
 			return [
 				this.mainClass,

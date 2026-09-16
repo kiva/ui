@@ -10,7 +10,6 @@ export const RAIL_PREF_KEY = 'showLoanDetailsInRail';
  * @returns {boolean|null} the stored boolean, or null at SSR / when unset.
  */
 export function getLocalRailPreference() {
-	if (typeof window === 'undefined') return null;
 	const value = store2(RAIL_PREF_KEY);
 	return typeof value === 'boolean' ? value : null;
 }

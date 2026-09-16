@@ -65,6 +65,7 @@
 				:has-recommended-loans="hasRecommendedLoans"
 				:recommend-loan-card-props="recommendLoanCardProps"
 				:recommend-loan-header-details="recommendLoanHeaderDetails"
+				:express-checkout-enabled="isExpressCheckoutModalEnabled"
 				:recommend-loan-is-in-basket="recommendLoanIsInBasket"
 				:loaded-set-data="loadedSetData"
 				:is-adding="isAdding"
@@ -187,6 +188,7 @@ import {
 	onMounted,
 	ref,
 	toRef,
+	watch,
 } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -208,10 +210,18 @@ import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import GoalInProgress from '#src/components/Thanks/SingleVersion/GoalInProgress';
 import ExpressCheckoutModal from '#src/components/Thanks/ExpressCheckout/ExpressCheckoutModal';
 import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
+import { shouldHideGoalSignup } from '#src/util/goalInReview';
+import { getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import useGoalSettingRecommendedLoan, {
 	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT,
 } from '#src/composables/useGoalSettingRecommendedLoan';
 import useExpressCheckoutModal from '#src/composables/useExpressCheckoutModal';
+import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
+import {
+	clearLendAfterGoalSetAttribution,
+	EXPRESS_CHECKOUT_EXP_KEY,
+	isLendAfterGoalSetOrder,
+} from '#src/util/thanksPage/expressCheckoutUtils';
 import useBadgeData from '#src/composables/useBadgeData';
 import {
 	incrementGoalSignupThanksViewCount,
@@ -279,6 +289,10 @@ const props = defineProps({
 	goalRecommendedLoanEnable: {
 		type: Boolean,
 		default: false,
+	},
+	goalInReviewInProgressStart: {
+		type: Date,
+		default: null,
 	},
 	isExpressCheckoutModalEnabled: {
 		type: Boolean,
@@ -387,6 +401,23 @@ const {
 	apollo,
 });
 
+// Only lenders who reach the recommendation are exposed to the test
+const expressCheckoutExposureTracked = ref(false);
+watch(
+	() => showRecommendLoanAfterGoalView.value && hasRecommendedLoans.value,
+	shown => {
+		if (!shown || expressCheckoutExposureTracked.value) return;
+		expressCheckoutExposureTracked.value = true;
+		trackExperimentVersion(
+			apollo,
+			$kvTrackEvent,
+			EVENT_CATEGORY,
+			EXPRESS_CHECKOUT_EXP_KEY,
+			'EXP-MP-3159-Jan2027',
+		);
+	},
+);
+
 const goalTargetLoansAmount = computed(() => userGoal.value?.target ?? 0);
 
 // Initialize goalDataInitialized to track if we've loaded goal data
@@ -454,10 +485,16 @@ const showJourneyModule = computed(() => {
 	return !userGoalAchievedNow.value;
 });
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
+const hideGoalSignup = computed(() => shouldHideGoalSignup({
+	recapStartDate: props.goalInReviewInProgressStart,
+	now: getGoalInReviewNow(),
+}));
+
 const showGoalEntrypoint = computed(() => {
 	return !props.isGuest
 		&& goalDataInitialized.value
 		&& isEmptyGoal.value
+		&& !hideGoalSignup.value
 		&& !goalSignupThanksViewCapped.value;
 });
 
@@ -581,6 +618,13 @@ const handleUpdateGoalChoices = updatedCategory => {
 };
 
 onMounted(async () => {
+	// Read before the goal awaits below. If those hang or fail, the attribution would
+	// otherwise stay set and credit a later unrelated order.
+	if (isLendAfterGoalSetOrder(cookieStore, router.currentRoute.value?.query?.kiva_transaction_id)) {
+		$kvTrackEvent('post-checkout', 'view', 'lend-from-after-goal-set');
+		clearLendAfterGoalSetAttribution(cookieStore);
+	}
+
 	await loadGoalData();
 	const year = new Date().getFullYear();
 	// Loans already in totalLoanCount after checkout
@@ -590,16 +634,15 @@ onMounted(async () => {
 	});
 	hasContributingLoans.value = contributingLoans;
 	// Thanks can mark the goal complete, but MyKiva owns hiding the completed card after showing it once.
-	await checkCompletedGoal({ currentGoalProgress: totalProgress, persistHideGoalCard: false, cookieStore });
+	await checkCompletedGoal({ currentGoalProgress: totalProgress, persistHideGoalCard: false });
 	goalDataInitialized.value = true;
 	isEmptyGoal.value = Object.keys(userGoal.value || {}).length === 0;
-	goalSignupThanksViewCapped.value = !props.isGuest
-		&& isEmptyGoal.value
-		&& isGoalSignupThanksViewCapped(cookieStore);
-	if (!props.isGuest
-		&& isEmptyGoal.value
-		&& !goalSignupThanksViewCapped.value) {
-		incrementGoalSignupThanksViewCount(cookieStore);
+	// Gated together so the view cap only counts asks the lender actually saw.
+	if (!props.isGuest && isEmptyGoal.value && !hideGoalSignup.value) {
+		goalSignupThanksViewCapped.value = isGoalSignupThanksViewCapped(cookieStore);
+		if (!goalSignupThanksViewCapped.value) {
+			incrementGoalSignupThanksViewCount(cookieStore);
+		}
 	}
 
 	if (!props.isGuest

@@ -1,4 +1,5 @@
 import MyKivaPage from '#src/pages/MyKiva/MyKivaPage';
+import countryListQuery from '#src/graphql/query/countryList.graphql';
 import logReadQueryError from '#src/util/logReadQueryError';
 
 vi.mock('#src/util/logReadQueryError', () => ({
@@ -191,7 +192,9 @@ describe('MyKivaPage', () => {
 
 		it('readContentfulSlides returns slides when Contentful has carousel content', () => {
 			const slides = [{ fields: { richText: {} } }];
-			const cachedResult = { contentful: { entries: { items: [{ fields: { slides } }] } } };
+			const cachedResult = {
+				contentful: { searchEntries: { items: [{ entryId: 'carousel', entry: { fields: { slides } } }] } },
+			};
 			const context = {
 				apollo: {
 					readQuery: vi.fn().mockReturnValue(cachedResult),
@@ -206,7 +209,7 @@ describe('MyKivaPage', () => {
 		it('readContentfulSlides returns empty array when Contentful has no carousel entries', () => {
 			const context = {
 				apollo: {
-					readQuery: vi.fn().mockReturnValue({ contentful: { entries: { items: [] } } }),
+					readQuery: vi.fn().mockReturnValue({ contentful: { searchEntries: { items: [] } } }),
 				},
 			};
 
@@ -234,14 +237,17 @@ describe('MyKivaPage', () => {
 				apollo: {
 					readQuery: vi.fn().mockReturnValue({
 						contentful: {
-							entries: {
+							searchEntries: {
 								items: [
 									{
-										fields: {
-											key: 'womens-equality-level-2',
-											levelName: '2',
-											challengeName: 'Women',
-											badgeImage: { fields: { file: { url: '/badge-2.svg' } } },
+										entryId: 'womens-equality-level-2',
+										entry: {
+											fields: {
+												key: 'womens-equality-level-2',
+												levelName: '2',
+												challengeName: 'Women',
+												badgeImage: { fields: { file: { url: '/badge-2.svg' } } },
+											}
 										}
 									}
 								]
@@ -270,7 +276,7 @@ describe('MyKivaPage', () => {
 		it('readContentfulBadgeData returns empty array when Contentful has no challenge entries', () => {
 			const context = {
 				apollo: {
-					readQuery: vi.fn().mockReturnValue({ contentful: { entries: { items: [] } } }),
+					readQuery: vi.fn().mockReturnValue({ contentful: { searchEntries: { items: [] } } }),
 				},
 			};
 
@@ -312,6 +318,45 @@ describe('MyKivaPage', () => {
 			);
 			expect(result).toEqual(combined);
 		});
+
+		describe('showCoRecoveryFundCard', () => {
+			const callWith = context => MyKivaPage.computed.showCoRecoveryFundCard.call({
+				coRecoveryFundExpEnabled: true,
+				userInfo: { reliefFundParticipation: { totalCount: 0 } },
+				...context,
+			});
+
+			beforeEach(() => {
+				vi.useFakeTimers();
+				vi.setSystemTime(new Date('2026-09-01T12:00:00.000Z'));
+			});
+
+			afterEach(() => {
+				vi.useRealTimers();
+			});
+
+			it('shows the card for an experiment-b lender who has not donated to the fund', () => {
+				expect(callWith()).toBe(true);
+			});
+
+			it('hides the card for the experiment control group', () => {
+				expect(callWith({ coRecoveryFundExpEnabled: false })).toBe(false);
+			});
+
+			it('hides the card once the lender has donated to the fund', () => {
+				expect(callWith({ userInfo: { reliefFundParticipation: { totalCount: 1 } } })).toBe(false);
+			});
+
+			it('hides the card while myKivaQuery has not resolved yet', () => {
+				// userInfo starts as {}, which must not read as "has not donated"
+				expect(callWith({ userInfo: {} })).toBe(false);
+			});
+
+			it('hides the card after the promo window closes', () => {
+				vi.setSystemTime(new Date('2026-10-20T12:00:00.000Z'));
+				expect(callWith()).toBe(false);
+			});
+		});
 	});
 
 	describe('apollo.preFetch', () => {
@@ -324,11 +369,44 @@ describe('MyKivaPage', () => {
 
 			const achievementCalls = client.query.mock.calls
 				.map(call => call[0])
-				.filter(call => call?.variables?.year != null);
+				.filter(call => call?.variables?.loanPurchasesLimit != null);
 
 			expect(achievementCalls).toHaveLength(2);
 			expect(achievementCalls[0].variables).toMatchObject({ loanPurchasesLimit: 20 });
 			expect(achievementCalls[1].variables).toMatchObject({ loanPurchasesLimit: 20 });
+		});
+
+		it('prefetches the support-all yearly loan count so goal cards can server-render', async () => {
+			const client = {
+				query: vi.fn().mockResolvedValue({ data: {} })
+			};
+
+			await MyKivaPage.apollo.preFetch({}, client, { route: { query: {} } });
+
+			const yearOnlyCalls = client.query.mock.calls
+				.map(call => call[0])
+				.filter(call => call?.variables?.year != null && call?.variables?.loanPurchasesLimit == null);
+
+			expect(yearOnlyCalls).toHaveLength(1);
+			expect(yearOnlyCalls[0].variables).toEqual({ year: new Date().getFullYear() });
+		});
+
+		// Regression: this was route-gated to /mykiva/next-steps, but both routes resolve to
+		// this same component, so Vue patches it in place and created() -> fetchMyKivaData()
+		// never re-runs. regionsData then stayed empty from the /mykiva render and the
+		// next-steps regions card appeared for lenders who had already lent everywhere.
+		it('prefetches country facets on /mykiva too, not just on /mykiva/next-steps', async () => {
+			const operationsFor = async path => {
+				const client = { query: vi.fn().mockResolvedValue({ data: {} }) };
+				await MyKivaPage.apollo.preFetch({}, client, { route: { path, query: {} } });
+				return client.query.mock.calls.map(call => call[0].query);
+			};
+
+			const onMyKiva = await operationsFor('/mykiva');
+			const onNextSteps = await operationsFor('/mykiva/next-steps');
+
+			expect(onMyKiva).toContain(countryListQuery);
+			expect(onMyKiva).toHaveLength(onNextSteps.length);
 		});
 	});
 
@@ -377,6 +455,7 @@ describe('MyKivaPage', () => {
 					.mockReturnValueOnce(heroTieredAchievements)
 					.mockReturnValueOnce(currentYearTieredAchievements),
 				applyMyKivaFreshProgress: vi.fn(),
+				hydrateGoalDataFromCache: vi.fn(),
 				readContentfulSlides: vi.fn().mockReturnValue([]),
 				readContentfulBadgeData: vi.fn().mockReturnValue([]),
 				heroTieredAchievements: [],
@@ -402,6 +481,49 @@ describe('MyKivaPage', () => {
 				.toBeLessThan(context.applyMyKivaFreshProgress.mock.invocationCallOrder[0]);
 		});
 
+		it('hydrates goal state from the cache with the optimistic loan adjustments included', () => {
+			const currentYearTieredAchievements = [{ id: 'climate-action', totalProgressToAchievement: 1 }];
+			const transactions = [{ type: 'loan_purchase', loan: { id: 7 } }];
+			const recentTransactionLoans = [{ id: 7 }];
+			const context = {
+				fetchMyKivaData: vi.fn(),
+				readTieredAchievementsFromCache: vi.fn()
+					.mockReturnValueOnce([])
+					.mockReturnValueOnce(currentYearTieredAchievements),
+				applyMyKivaFreshProgress: vi.fn(),
+				hydrateGoalDataFromCache: vi.fn(),
+				readContentfulSlides: vi.fn().mockReturnValue([]),
+				readContentfulBadgeData: vi.fn().mockReturnValue([]),
+				heroTieredAchievements: [],
+				currentYearTieredAchievements: [],
+				recentTransactionLoans,
+				transactions,
+				apollo: {
+					readFragment: vi.fn().mockReturnValue(undefined),
+				},
+				cookieStore: {
+					get: vi.fn().mockReturnValue(undefined),
+				},
+				$route: { query: {} },
+				$kvTrackEvent: vi.fn(),
+			};
+
+			MyKivaPage.created.call(context);
+
+			expect(context.hydrateGoalDataFromCache).toHaveBeenCalledWith({
+				tieredAchievements: currentYearTieredAchievements,
+				freshProgressLoans: recentTransactionLoans,
+				transactions,
+				year: new Date().getFullYear(),
+			});
+			// applyMyKivaFreshProgress is what populates recentTransactionLoans, which is
+			// passed straight into the hydration above. Called the other way round, hydration
+			// gets an empty array and renders progress short by any just-purchased loan the
+			// achievement service has not attributed yet.
+			expect(context.applyMyKivaFreshProgress.mock.invocationCallOrder[0])
+				.toBeLessThan(context.hydrateGoalDataFromCache.mock.invocationCallOrder[0]);
+		});
+
 		it('wires heroSlides and heroBadgeContentfulData from the isolated Contentful readers', () => {
 			const slides = [{ fields: { slides: [] } }];
 			const badgeData = [{ id: 'womens-equality' }];
@@ -411,6 +533,7 @@ describe('MyKivaPage', () => {
 					.mockReturnValueOnce([])
 					.mockReturnValueOnce([]),
 				applyMyKivaFreshProgress: vi.fn(),
+				hydrateGoalDataFromCache: vi.fn(),
 				readContentfulSlides: vi.fn().mockReturnValue(slides),
 				readContentfulBadgeData: vi.fn().mockReturnValue(badgeData),
 				heroTieredAchievements: [],

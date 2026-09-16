@@ -67,10 +67,13 @@ describe('CheckoutPage upsell - expiring soon', () => {
 				isExpiringSoonExpEnabled: false,
 				myId: 123,
 				myBalance: '50.00',
+				totals: { itemTotal: '75.00' },
 				$kvTrackEvent: vi.fn(),
+				$kvTrackSelfDescribingEvent: vi.fn(),
 				getLoansByAmountLeft: CheckoutPage.methods.getLoansByAmountLeft,
 				getLoansByAmountLeftRange: CheckoutPage.methods.getLoansByAmountLeftRange,
 				getLoansByExpiringSoon: CheckoutPage.methods.getLoansByExpiringSoon,
+				trackUpsellRecommendation: CheckoutPage.methods.trackUpsellRecommendation,
 			};
 		});
 
@@ -182,6 +185,84 @@ describe('CheckoutPage upsell - expiring soon', () => {
 			await vi.waitFor(() => {
 				expect(context.upsellLoan).toEqual({ id: 2, name: 'New Loan' });
 			});
+		});
+
+		it.each([
+			{ myBalance: '50.00', itemTotal: '75.00', expected: { balance: 50, basketAmount: 75 } },
+			{ myBalance: undefined, itemTotal: '75.00', expected: { balance: null, basketAmount: 75 } },
+			{ myBalance: '1,234.56', itemTotal: '1,075.00', expected: { balance: 1234.56, basketAmount: 1075 } },
+		])('maps money fields to query variables (balance=$myBalance)', ({ myBalance, itemTotal, expected }) => {
+			context.isBanditUpsellExpEnabled = true;
+			context.myBalance = myBalance;
+			context.totals = { itemTotal };
+			runRecommendationsQuery.mockResolvedValue({ loans: [], totalCount: 0 });
+
+			CheckoutPage.methods.getUpsellModuleData.call(context, 0);
+
+			expect(context.apollo.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					variables: { loginId: 123, ...expected },
+				})
+			);
+		});
+
+		it('fires the self-describing event when a recommended range produces the upsell loan', async () => {
+			context.isBanditUpsellExpEnabled = true;
+			context.apollo.query = vi.fn().mockResolvedValue({
+				data: {
+					getCheckoutAlmostFundedRecommendation: {
+						modelVersion: 'v1',
+						// Apollo attaches __typename; the event must send only { start, end }
+						recommendedRanges: [{ start: 25, end: 50, __typename: 'CheckoutRecommendedRange' }],
+					},
+				},
+			});
+			runRecommendationsQuery.mockResolvedValue({ loans: [{ id: 99, name: 'Recommended' }], totalCount: 1 });
+
+			CheckoutPage.methods.getUpsellModuleData.call(context, 0);
+
+			await vi.waitFor(() => {
+				expect(context.$kvTrackSelfDescribingEvent).toHaveBeenCalledWith(
+					expect.objectContaining({
+						schema: expect.stringContaining('kiva/snowplow'),
+						data: {
+							balance: 50,
+							basketTotal: 75,
+							modelVersion: 'v1',
+							recommendedRanges: [{ start: 25, end: 50 }],
+						},
+					})
+				);
+			});
+			expect(context.$kvTrackEvent).not.toHaveBeenCalledWith(
+				'basket',
+				'view',
+				'recommended-checkout-upsell',
+				expect.anything(),
+			);
+		});
+
+		it('does not fire the self-describing event when only the fallback returns loans', async () => {
+			context.isBanditUpsellExpEnabled = true;
+			context.apollo.query = vi.fn().mockResolvedValue({
+				data: {
+					getCheckoutAlmostFundedRecommendation: {
+						modelVersion: 'v1',
+						recommendedRanges: [{ start: 25, end: 50 }],
+					},
+				},
+			});
+			// range promise (first call) returns nothing; fallback (last call) returns a loan
+			runRecommendationsQuery
+				.mockResolvedValueOnce({ loans: [], totalCount: 0 })
+				.mockResolvedValue({ loans: [{ id: 99, name: 'Fallback' }], totalCount: 1 });
+
+			CheckoutPage.methods.getUpsellModuleData.call(context, 0);
+
+			await vi.waitFor(() => {
+				expect(context.upsellLoan).toEqual({ id: 99, name: 'Fallback' });
+			});
+			expect(context.$kvTrackSelfDescribingEvent).not.toHaveBeenCalled();
 		});
 	});
 

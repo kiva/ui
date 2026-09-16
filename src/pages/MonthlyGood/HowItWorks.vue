@@ -1,5 +1,5 @@
 <template>
-	<kv-theme-provider :theme="darkGreenTheme">
+	<kv-theme-provider :theme="greenDarkTheme">
 		<div
 			class="
 			tw-bg-primary
@@ -16,7 +16,7 @@
 <script>
 import CenteredRichText from '#src/components/Contentful/CenteredRichText';
 import RichTextItemsCentered from '#src/components/Contentful/RichTextItemsCentered';
-import { darkGreenTheme } from '@kiva/kv-tokens';
+import { greenDarkTheme } from '@kiva/kv-tokens';
 import { KvThemeProvider } from '@kiva/kv-components';
 
 export default {
@@ -37,7 +37,7 @@ export default {
 		},
 	},
 	data() {
-		return { darkGreenTheme };
+		return { greenDarkTheme };
 	}
 };
 

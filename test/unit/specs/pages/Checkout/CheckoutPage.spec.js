@@ -2,8 +2,13 @@ import { reactive } from 'vue';
 import { setDonationAmount } from '#src/util/basketUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
+import { getPromoFromBasket } from '#src/util/campaignUtils';
+import { isAdminRewardTipEligible } from '#src/util/promoCredit';
 import { formatTransactionData, getTransactionAnalyticsData } from '#src/util/checkoutUtils';
+import { meetsTipFromBalanceCriteria } from '#src/components/Checkout/KivaCreditTipToggle';
 import { trackMetaEvent } from '@kiva/kv-analytics';
+/* eslint-disable-next-line import/no-extraneous-dependencies -- devDependency used only in tests */
+import { flushPromises } from '@vue/test-utils';
 
 vi.mock('#src/util/basketUtils', () => ({
 	setDonationAmount: vi.fn(),
@@ -33,6 +38,14 @@ beforeAll(async () => {
 	}));
 	vi.mock('#src/util/experiment/experimentUtils', () => ({
 		initializeExperiment: vi.fn(),
+	}));
+	vi.mock('#src/util/campaignUtils', async importOriginal => ({
+		...(await importOriginal()),
+		getPromoFromBasket: vi.fn(),
+	}));
+	vi.mock('#src/util/promoCredit', async importOriginal => ({
+		...(await importOriginal()),
+		isAdminRewardTipEligible: vi.fn(),
 	}));
 	// keeps getTransactionTimestamp real, which lifecycleStage depends on
 	vi.mock('#src/util/myKivaUtils', async importOriginal => ({
@@ -205,6 +218,107 @@ describe('CheckoutPage ensureTipDonationExists', () => {
 		expect(context.setUpdatingTotals).toHaveBeenCalledWith(false);
 		expect(context.donations).toHaveLength(0);
 		expect(context.refreshTotals).not.toHaveBeenCalled();
+	});
+});
+
+describe('CheckoutPage pendingTipPreferenceReset', () => {
+	const pendingTipPreferenceReset = context => CheckoutPage.computed.pendingTipPreferenceReset.call(context);
+
+	it('is pending while a basket outside the variant is still opted out', () => {
+		expect(pendingTipPreferenceReset({
+			resettingTipPreference: false,
+			tipFromBalanceVersion: 'a',
+			applyKivaCreditToDonation: false,
+		})).toBe(true);
+	});
+
+	it('stays pending while the reset is in flight', () => {
+		expect(pendingTipPreferenceReset({
+			resettingTipPreference: true,
+			tipFromBalanceVersion: 'a',
+			applyKivaCreditToDonation: true,
+		})).toBe(true);
+	});
+
+	it.each([
+		['in the variant', { tipFromBalanceVersion: 'b', applyKivaCreditToDonation: false }],
+		['paying the tip from balance', { tipFromBalanceVersion: 'a', applyKivaCreditToDonation: true }],
+		['never chosen', { tipFromBalanceVersion: 'a', applyKivaCreditToDonation: null }],
+	])('is not pending when %s', (label, state) => {
+		expect(pendingTipPreferenceReset({ resettingTipPreference: false, ...state })).toBe(false);
+	});
+
+	it.each([
+		['undefined', undefined],
+		['null', null],
+	])('waits while the assignment is still %s rather than undoing a treatment basket', (label, version) => {
+		expect(pendingTipPreferenceReset({
+			resettingTipPreference: false,
+			tipFromBalanceVersion: version,
+			applyKivaCreditToDonation: false,
+		})).toBe(false);
+	});
+
+	it('gives up after a failed attempt so the lender can still pay', () => {
+		expect(pendingTipPreferenceReset({
+			resettingTipPreference: false,
+			tipPreferenceResetFailed: true,
+			tipFromBalanceVersion: 'a',
+			applyKivaCreditToDonation: false,
+		})).toBe(false);
+	});
+});
+
+describe('CheckoutPage resetTipPreferenceOutsideVariant', () => {
+	const makeContext = (overrides = {}) => ({
+		apollo: { mutate: vi.fn().mockResolvedValue({}) },
+		cookieStore: { remove: vi.fn() },
+		refreshTotals: vi.fn(),
+		resettingTipPreference: false,
+		pendingTipPreferenceReset: true,
+		...overrides,
+	});
+
+	it('puts a basket left opted out back to the default', async () => {
+		const context = makeContext();
+
+		CheckoutPage.methods.resetTipPreferenceOutsideVariant.call(context);
+		await flushPromises();
+
+		expect(context.apollo.mutate).toHaveBeenCalledTimes(1);
+		expect(context.apollo.mutate.mock.calls[0][0].variables).toEqual({ applyKivaCreditToDonation: true });
+		// Marker cleared so the variant can default the basket off again
+		expect(context.cookieStore.remove).toHaveBeenCalledWith('kvtipseeded', { path: '/' });
+		expect(context.refreshTotals).toHaveBeenCalled();
+	});
+
+	it('leaves the basket alone when no reset is pending', async () => {
+		const context = makeContext({ pendingTipPreferenceReset: false });
+
+		CheckoutPage.methods.resetTipPreferenceOutsideVariant.call(context);
+		await flushPromises();
+
+		expect(context.apollo.mutate).not.toHaveBeenCalled();
+	});
+
+	it('records a failed attempt so the payment form is no longer withheld', async () => {
+		const context = makeContext();
+		context.apollo.mutate.mockRejectedValue(new Error('network'));
+
+		CheckoutPage.methods.resetTipPreferenceOutsideVariant.call(context);
+		await flushPromises();
+
+		expect(context.tipPreferenceResetFailed).toBe(true);
+		expect(logReadQueryError).toHaveBeenCalled();
+	});
+
+	it('does not stack resets while one is in flight', async () => {
+		const context = makeContext({ resettingTipPreference: true });
+
+		CheckoutPage.methods.resetTipPreferenceOutsideVariant.call(context);
+		await flushPromises();
+
+		expect(context.apollo.mutate).not.toHaveBeenCalled();
 	});
 });
 
@@ -409,5 +523,177 @@ describe('CheckoutPage lifecycle capture', () => {
 		await CheckoutPage.mounted.call(context);
 
 		expect(context.startLifecycleCapture).not.toHaveBeenCalled();
+	});
+});
+
+describe('CheckoutPage getPromoInformationFromBasket', () => {
+	const makeContext = (overrides = {}) => ({
+		apollo: {},
+		derivedPromoFund: { id: 'fund-1' },
+		promoData: null,
+		enableAdminRewardTipFlag: false,
+		stopHidingTip: false,
+		ensureTipDonationExists: vi.fn(),
+		$nextTick: vi.fn(),
+		...overrides,
+	});
+
+	beforeEach(() => {
+		getPromoFromBasket.mockReset();
+		isAdminRewardTipEligible.mockReset();
+	});
+
+	it('stops hiding the tip and ensures a tip donation for admin-reward-eligible users', async () => {
+		getPromoFromBasket.mockResolvedValue({ data: { shop: { promoCampaign: { id: 'promo-1' } } } });
+		isAdminRewardTipEligible.mockReturnValue(true);
+		const context = makeContext();
+
+		CheckoutPage.methods.getPromoInformationFromBasket.call(context);
+
+		await vi.waitFor(() => {
+			expect(context.ensureTipDonationExists).toHaveBeenCalledTimes(1);
+		});
+		expect(context.stopHidingTip).toBe(true);
+	});
+
+	it('leaves the tip hidden when the user is not admin-reward eligible', async () => {
+		getPromoFromBasket.mockResolvedValue({ data: { shop: { promoCampaign: { id: 'promo-1' } } } });
+		isAdminRewardTipEligible.mockReturnValue(false);
+		const context = makeContext();
+
+		CheckoutPage.methods.getPromoInformationFromBasket.call(context);
+
+		await vi.waitFor(() => {
+			expect(isAdminRewardTipEligible).toHaveBeenCalled();
+		});
+		expect(context.stopHidingTip).toBe(false);
+		expect(context.ensureTipDonationExists).not.toHaveBeenCalled();
+	});
+});
+
+describe('CheckoutPage tipToggleBasketState', () => {
+	const tipToggleBasketState = context => CheckoutPage.computed.tipToggleBasketState.call(context);
+
+	// A $25 loan with a $5 tip, so the basket is $30 and the balance reaches the tip at $30.01
+	const makeContext = (overrides = {}) => ({
+		myId: 1234,
+		myBalance: '40.00',
+		loans: [{ id: 1 }],
+		donations: [{ id: 1, price: '5.00', metadata: null }],
+		basketId: 'basket-abc123',
+		applyKivaCreditToDonation: false,
+		totals: { itemTotal: '30.00' },
+		teams: [],
+		lifetimeDeposits: 0,
+		...overrides,
+	});
+
+	it('reports the basket without the tip, so the switch can change what is charged', () => {
+		expect(tipToggleBasketState(makeContext())).toMatchObject({ tipAmount: 5, nonTipTotal: 25 });
+	});
+
+	it('counts a campaign donation the balance still has to pay for', () => {
+		// $25 loan, $10 giving fund donation and a $5 tip: $35 stands between the balance and the tip
+		const state = tipToggleBasketState(makeContext({
+			totals: { itemTotal: '40.00' },
+			donations: [
+				{ id: 1, price: '5.00', metadata: null },
+				{ id: 2, price: '10.00', metadata: { campaignId: 'abc' } },
+			],
+		}));
+
+		expect(state).toMatchObject({ tipAmount: 5, nonTipTotal: 35 });
+	});
+
+	it('keeps a lender out when a campaign donation puts the tip beyond their balance', () => {
+		// The loan alone would qualify a $30 balance, but the donation has to be paid first
+		const context = makeContext({
+			myBalance: '30.00',
+			totals: { itemTotal: '40.00' },
+			donations: [
+				{ id: 1, price: '5.00', metadata: null },
+				{ id: 2, price: '10.00', metadata: { campaignId: 'abc' } },
+			],
+		});
+
+		expect(meetsTipFromBalanceCriteria(tipToggleBasketState(context))).toBe(false);
+		expect(meetsTipFromBalanceCriteria(tipToggleBasketState({ ...context, myBalance: '40.00' }))).toBe(true);
+	});
+});
+
+describe('CheckoutPage showTipFromBalanceVariant', () => {
+	const showVariant = context => CheckoutPage.computed.showTipFromBalanceVariant.call(context);
+
+	const basketState = (overrides = {}) => ({
+		myId: 1234,
+		balance: 40,
+		hasLoans: true,
+		tipAmount: 5,
+		nonTipTotal: 25,
+		onTeam: false,
+		lifetimeDeposits: 0,
+		...overrides,
+	});
+
+	it('shows the treatment for an eligible variant lender', () => {
+		expect(showVariant({
+			tipFromBalanceVersion: 'b',
+			tipToggleBasketState: basketState(),
+		})).toBe(true);
+	});
+
+	it('keeps the treatment at a zero tip, so only the switch disappears', () => {
+		expect(showVariant({
+			tipFromBalanceVersion: 'b',
+			tipToggleBasketState: basketState({ tipAmount: 0 }),
+		})).toBe(true);
+	});
+
+	it('never shows the treatment for control', () => {
+		expect(showVariant({
+			tipFromBalanceVersion: 'a',
+			tipToggleBasketState: basketState(),
+		})).toBe(false);
+	});
+
+	it('never shows the treatment outside the audience, zero tip or not', () => {
+		expect(showVariant({
+			tipFromBalanceVersion: 'b',
+			tipToggleBasketState: basketState({ tipAmount: 0, onTeam: true }),
+		})).toBe(false);
+	});
+});
+
+describe('CheckoutPage lend-after-goal-set attribution', () => {
+	const makeContext = (overrides = {}) => ({
+		myId: null,
+		apollo: {},
+		isLoggedIn: false,
+		startLifecycleCapture: vi.fn(),
+		logBasketState: vi.fn(),
+		handleToast: vi.fn(),
+		getPromoInformationFromBasket: vi.fn(),
+		$nextTick: cb => cb(),
+		$kvTrackEvent: vi.fn(),
+		cookieStore: { get: vi.fn(), remove: vi.fn() },
+		...overrides,
+	});
+
+	it('tracks the basket view when the lender arrived from the goal-set recommended loan', async () => {
+		const context = makeContext({ cookieStore: { get: vi.fn(() => '12345'), remove: vi.fn() } });
+
+		await CheckoutPage.mounted.call(context);
+
+		expect(context.$kvTrackEvent).toHaveBeenCalledWith('basket', 'view', 'from-lend-after-goal-set');
+		// The thanks page still needs the attribution, so the basket view must not consume it.
+		expect(context.cookieStore.remove).not.toHaveBeenCalled();
+	});
+
+	it('does not track the basket view without the attribution', async () => {
+		const context = makeContext();
+
+		await CheckoutPage.mounted.call(context);
+
+		expect(context.$kvTrackEvent).not.toHaveBeenCalledWith('basket', 'view', 'from-lend-after-goal-set');
 	});
 });

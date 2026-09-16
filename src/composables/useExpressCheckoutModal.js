@@ -7,6 +7,7 @@ import {
 	clearBasketDonation,
 	hasOnlyOneDonation,
 	isBasketEmpty,
+	setLendAfterGoalSetAttribution,
 	shouldReopenExpressCheckout,
 } from '#src/util/thanksPage/expressCheckoutUtils';
 import initializeCheckout from '#src/graphql/query/checkout/initializeCheckout.graphql';
@@ -30,10 +31,10 @@ const EVENT_CATEGORY = 'post-checkout';
  * @param {Function} [deps.onResetAdding]         Optional hook called from the
  *   modal close handler to reset the mixin's `isAdding` flag so the "Support
  *   now" CTA recovers if the user dismisses the modal before completing.
- * @param {object}   [deps.isExpressCheckoutEnabled] Ref/computed boolean from the
- *   `enable_ty_page_express_checkout` UI config flag. When false, the handler
- *   skips the modal flow entirely and sends the user to /basket — preserving
- *   the original recommendation behaviour while the feature is rolled out.
+ * @param {object}   [deps.isExpressCheckoutEnabled] Ref/computed boolean for the
+ *   express checkout experiment variant. When false, the handler skips the modal
+ *   flow entirely and sends the user to /basket — the original recommendation
+ *   behaviour the treatment is measured against.
  * @param {Function} [deps.kvTrackEvent]          Analytics helper (`$kvTrackEvent`).
  *   Optional — when omitted, tracking calls are silently skipped.
  */
@@ -103,6 +104,13 @@ export default function useExpressCheckoutModal({
 		return true;
 	}
 
+	// Both basket redirects this composable owns. The mark happens on the navigation,
+	// so an add-to-basket failure leaves nothing behind.
+	function redirectToBasket() {
+		setLendAfterGoalSetAttribution(cookieStore, router.currentRoute.value?.query?.kiva_transaction_id);
+		return router.push('/basket');
+	}
+
 	async function handleAddRecommendedLoanToBasket(payload) {
 		// Feature flag off → skip the modal flow entirely. Add the recommended
 		// loan to the basket and redirect to /basket, matching the pre-express
@@ -112,7 +120,7 @@ export default function useExpressCheckoutModal({
 			const previousOnError = payload.onError;
 			addToBasket({
 				...payload,
-				onSuccess: () => router.push('/basket'),
+				onSuccess: redirectToBasket,
 				onError: () => {
 					isRedirecting.value = false;
 					previousOnError?.();
@@ -187,7 +195,7 @@ export default function useExpressCheckoutModal({
 					if (empty) {
 						return openExpressCheckout(payload);
 					}
-					return router.push('/basket');
+					return redirectToBasket();
 				},
 				onError: () => {
 					isRedirecting.value = false;

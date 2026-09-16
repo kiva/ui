@@ -1,7 +1,10 @@
 <template>
 	<p
-		:class="`${backgroundColor}`"
-		class="tw-rounded tw-p-1 tw-mb-0 tw-mr-2 tw-text-upper tw-inline-flex tw-items-center"
+		class="
+			tw-rounded tw-p-1 tw-mb-0
+			tw-bg-secondary tw-text-upper
+			tw-inline-flex tw-items-center
+		"
 	>
 		<slot></slot>
 	</p>
@@ -10,11 +13,5 @@
 <script>
 export default {
 	name: 'SummaryTag',
-	props: {
-		backgroundColor: {
-			type: String,
-			default: 'tw-bg-secondary',
-		},
-	}
 };
 </script>

@@ -46,6 +46,7 @@
 					:loan-count="loans.length"
 					:kiva-cards-count="kivaCards.length"
 					:loan-reservation-total="loanReservationTotal"
+					:borrower-names="borrowerNames"
 					@refreshtotals="$emit('refreshtotals')"
 					@updating-totals="$emit('updating-totals', $event)"
 				/>
@@ -189,6 +190,9 @@ export default {
 		}
 	},
 	computed: {
+		borrowerNames() {
+			return this.loans.map(reservation => reservation?.loan?.name).filter(Boolean);
+		},
 		/**
 		 * Returns an array of booleans indicating which loans contribute to completing the user's goal
 		 * Only the first X loans needed to reach the goal target will be true

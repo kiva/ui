@@ -1,11 +1,12 @@
 query lendMenuData {
-	lend {
-		loanChannels(popular: true, applyMinLoanCount: true, limit: 50) {
-			values {
-				id
-				name
-				url
-			}
+	browsingCategories(
+		filters: { popularOnly: true, applyMinimumLoanCount: true }
+		limit: 50
+	) {
+		values {
+			id
+			name
+			url
 		}
 	}
 }

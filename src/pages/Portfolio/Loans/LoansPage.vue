@@ -107,6 +107,11 @@ const sortByName = values => [...(values || [])].sort((a, b) => (a.name || '').l
 
 export default {
 	name: 'LoansPage',
+	head() {
+		return {
+			title: 'My loans',
+		};
+	},
 	inject: ['apollo', 'cookieStore'],
 	components: {
 		WwwPage,

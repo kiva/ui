@@ -237,18 +237,6 @@ export default [
 		path: '/lp/support-refugees',
 		redirect: '/refugees'
 	},
-	// Preserved for cms-page-server rollout, will remove after validation
-	/*
-	{
-		path: '/lp/:dynamicRoute',
-		component: () => import('#src/pages/ContentfulPage'),
-		meta: {
-			contentfulPage: route => `lp/${route.params.dynamicRoute}`,
-			excludeFromStaticSitemap: true,
-			unbouncePopUp: true,
-		},
-	},
-	*/
 	{
 		path: '/hp/:dynamicRoute',
 		component: () => import('#src/pages/ContentfulPage'),
@@ -354,10 +342,10 @@ export default [
 		}
 	},
 	{
-		path: '/portfolio/loans-beta',
+		path: '/portfolio/loans',
 		component: () => import('#src/pages/Portfolio/Loans/LoansPage'),
 		meta: {
-			authenticationRequired: true,
+			activeLoginRequired: true,
 			excludeFromStaticSitemap: true,
 		}
 	},
@@ -370,7 +358,7 @@ export default [
 		}
 	},
 	{
-		path: '/portfolio/credit/bonus-history-beta',
+		path: '/portfolio/credit/bonus-history',
 		component: () => import('#src/pages/Portfolio/BonusCreditHistory/BonusCreditHistoryPage'),
 		meta: {
 			authenticationRequired: true,
@@ -386,7 +374,7 @@ export default [
 		}
 	},
 	{
-		path: '/portfolio/transactions-beta',
+		path: '/portfolio/transactions',
 		component: () => import('#src/pages/Portfolio/Transactions/TransactionsPage'),
 		meta: {
 			activeLoginRequired: true,

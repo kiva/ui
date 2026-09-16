@@ -10,6 +10,10 @@ query initializeCheckout($basketId: String) {
 			promoBalance
 			donateRepayments
 		}
+		lendingStats {
+			id
+			totalAmountDeposited
+		}
 		lender {
 			id
 			loanCount
@@ -41,6 +45,7 @@ query initializeCheckout($basketId: String) {
 		basket {
 			id
 			hasFreeCredits
+			applyKivaCreditToDonation
 			credits {
 				totalCount
 				values {

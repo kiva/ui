@@ -41,6 +41,11 @@ import { WITHDRAW_STATE_KEY } from '#src/util/withdraw/withdrawConstants';
 
 export default {
 	name: 'WithdrawCheckInboxPage',
+	head() {
+		return {
+			title: 'Withdraw credit',
+		};
+	},
 	components: {
 		PortfolioShell,
 		KvButton,

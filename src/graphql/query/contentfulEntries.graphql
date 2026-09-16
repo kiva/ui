@@ -3,15 +3,35 @@
 query contentfulEntries(
 	$contentType: String!
 	$contentKey: String
-	$preview: Boolean
+	$preview: Boolean = false
 	$limit: Int
 ) {
 	contentful {
-		entries(
+		searchEntries(
 			contentType: $contentType
 			contentKey: $contentKey
-			preview: $preview
 			limit: $limit
-		)
+		) @skip(if: $preview) {
+			total
+			skip
+			limit
+			items {
+				entryId
+				entry
+			}
+		}
+		searchPreviewEntries(
+			contentType: $contentType
+			contentKey: $contentKey
+			limit: $limit
+		) @include(if: $preview) {
+			total
+			skip
+			limit
+			items {
+				entryId
+				entry
+			}
+		}
 	}
 }

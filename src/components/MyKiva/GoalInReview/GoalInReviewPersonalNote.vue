@@ -1,0 +1,100 @@
+<template>
+	<section
+		class="tw-w-full tw-bg-eco-green-4 goal-in-review-personal-note"
+		data-testid="goal-in-review-personal-note"
+	>
+		<img
+			:src="personalnoteTopBorder"
+			alt="Image with design to separate two sections"
+			class="tw-block tw-w-full tw-bg-marigold-1"
+		>
+
+		<div class="tw-mx-auto tw-max-w-xl tw-px-2 tw-py-6">
+			<p class="tw-text-small tw-text-brand-400 tw-mb-2 kv-fade-up personal-note-eyebrow">
+				A personal note
+			</p>
+
+			<div class="tw-px-3 md:tw-px-0 kv-fade-up personal-note-body">
+				<span class="tw-block tw-text-jumbo tw-text-secondary" aria-hidden="true">"</span>
+
+				<div class="tw-flex tw-flex-col tw-gap-3 tw-text-eco-green-1">
+					<p class="tw-text-base">
+						You did it! Thank you for turning this goal into reality.
+					</p>
+					<p class="tw-text-base">
+						<!-- eslint-disable max-len -->
+						Because you followed through, Kiva can keep providing reliable support to people around the world
+						— your commitment, along with the commitment of thousands of other goal-setters, is what makes our
+						collective impact possible.
+					</p>
+					<p class="tw-text-base">
+						On behalf of everyone at Kiva: thank you for showing up for others.
+					</p>
+				</div>
+
+				<span class="tw-block tw-text-jumbo tw-text-secondary tw-text-right" aria-hidden="true">"</span>
+
+				<div class="tw-flex tw-items-center tw-justify-between">
+					<div class="tw-flex tw-items-center tw-gap-2">
+						<img
+							:src="vishalAvatar"
+							alt="Kiva CEO Vishal G photo"
+							class="tw-w-6 tw-h-6 tw-rounded-full"
+						>
+						<div>
+							<p class="tw-font-medium tw-text-white">
+								Vishal G
+							</p>
+							<p class="tw-text-small tw-text-eco-green-2">
+								CEO, Kiva
+							</p>
+						</div>
+					</div>
+
+					<p
+						v-if="year"
+						class="year-pill tw-inline-block tw-rounded-full
+						tw-text-brand-400 tw-text-small tw-py-0.5 tw-px-1.5"
+					>
+						Kiva &middot; {{ year }}
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</template>
+
+<script setup>
+import personalnoteTopBorder from '#src/assets/images/my-kiva/goal-in-review/personal-note-top-border.png';
+import vishalAvatar from '#src/assets/images/my-kiva/goal-in-review/vishal-quote.png';
+
+defineProps({
+	year: {
+		type: [Number, String],
+		default: null,
+	},
+});
+</script>
+
+<style lang="postcss" scoped>
+.goal-in-review-personal-note {
+	background-image: url('/src/assets/images/my-kiva/goal-in-review/personal-note-paper.png');
+
+	@apply tw-bg-no-repeat tw-bg-center tw-bg-cover;
+}
+
+/* Entrance — shared .kv-fade-up (see css/animations.css); the eyebrow lands
+   first, then the note fades up just after. Gated on view by the modal wrapper. */
+.personal-note-eyebrow,
+.personal-note-body {
+	--kv-fade-up-distance: 24px;
+}
+
+.personal-note-body {
+	animation-delay: 0.15s;
+}
+
+.year-pill {
+	background-color: rgb(var(--bg-action), 0.3);
+}
+</style>

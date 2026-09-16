@@ -178,7 +178,7 @@ describe('WithdrawPage', () => {
 
 		await waitFor(() => {
 			expect(push).toHaveBeenCalledWith({
-				path: '/withdraw-beta/confirm',
+				path: '/withdraw/confirm',
 				state: { withdrawAmount: '50', withdrawPaypalEmail: 'a@example.org' },
 			});
 		});

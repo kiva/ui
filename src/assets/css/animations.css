@@ -1,0 +1,86 @@
+/*
+	Animations for the GoalInReviewModal component (in the beginning), but reusable for any other page or project. To use it, import the CSS in the parent component similar to src/components/MyKiva/GoalInReview/GoalInReviewModal.vue does
+*/
+
+/* Rebound "pop": the element rises and scales slightly past full size, then
+   settles back to 1 — a celebratory entrance for cards, stats, callouts, etc.
+   The overshoot lives in the keyframe (scale 1.09 at 60%) so the timing
+   function can stay a plain ease-out; a springy cubic-bezier on top would
+   double up on the bounce and read as jittery. */
+.kv-rebound-in {
+	animation: kv-rebound-in 0.35s ease-out both;
+}
+
+@keyframes kv-rebound-in {
+	0% {
+		opacity: 0;
+		transform: translateY(16px) scale(0.9);
+	}
+
+	60% {
+		opacity: 1;
+		transform: translateY(0) scale(1.09);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+/* Fade-and-rise entrance: fades in while sliding up to its resting position.
+   The travel distance is a custom property because it lives *inside* the
+   keyframe — the one value a caller can't override with a normal declaration —
+   so each element tunes its rise via `--kv-fade-up-distance` (default 16px)
+   while duration and easing stay shared. Layer `animation-delay` to stagger. */
+.kv-fade-up {
+	animation: kv-fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes kv-fade-up {
+	from {
+		opacity: 0;
+		transform: translateY(var(--kv-fade-up-distance, 16px));
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Scale-in: fades in while scaling up from `--kv-scale-in-from` (default 0.9)
+   to full size — a gentle "settle into place" with no overshoot (unlike
+   .kv-rebound-in). Suits pills, chips, and other small chrome. */
+.kv-scale-in {
+	animation: kv-scale-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes kv-scale-in {
+	from {
+		opacity: 0;
+		transform: scale(var(--kv-scale-in-from, 0.9));
+	}
+
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.kv-rebound-in,
+	.kv-fade-up,
+	.kv-scale-in {
+		animation: none;
+	}
+}
+
+/* Reveal on scroll: an element marked [data-animate-on-view] holds the entrance
+   effects nested inside it paused on their first (hidden) frame until it also
+   gains .is-in-view. */
+[data-animate-on-view]:not(.is-in-view) .kv-rebound-in,
+[data-animate-on-view]:not(.is-in-view) .kv-fade-up,
+[data-animate-on-view]:not(.is-in-view) .kv-scale-in {
+	animation-play-state: paused;
+}

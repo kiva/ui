@@ -1,5 +1,6 @@
-query getCheckoutAlmostFundedRecommendation($loginId: Int,$balance: Float) {
-    getCheckoutAlmostFundedRecommendation(loginId: $loginId, balance: $balance) {
+query getCheckoutAlmostFundedRecommendation($loginId: Int, $balance: Float, $basketAmount: Float) {
+    getCheckoutAlmostFundedRecommendation(loginId: $loginId, balance: $balance, basketAmount: $basketAmount) {
+        modelVersion
         recommendedRanges {
             end
             start

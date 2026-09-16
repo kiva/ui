@@ -70,12 +70,18 @@
 							@removed-loan="calculateProgressAchievement($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
-						<div v-if="showUpsell && showUpsellModule" class="upsellContainer">
+						<div
+							v-if="showUpsell && showUpsellModule"
+							:class="showTipFromBalanceVariant
+								? 'upsell-container-compact md:tw-mb-2'
+								: 'upsellContainer'"
+						>
 							<kv-loading-placeholder v-if="!upsellLoan.name" class="tw-rounded" />
 							<upsell-module
 								v-if="upsellLoan.name"
 								:loan="upsellLoan"
 								:is-expiring-soon-exp-enabled="isExpiringSoonExpEnabled"
+								:show-tip-from-balance-variant="showTipFromBalanceVariant"
 								:close-upsell-module="closeUpsellModule"
 								:add-to-basket="addToBasket"
 							/>
@@ -106,6 +112,7 @@
 							:promo-fund="derivedPromoFund"
 							:open-lightbox="openMatchedLoansLightbox"
 							:is-kiva-credit-replacement-exp-enabled="isKivaCreditReplacementExpEnabled"
+							:apply-kiva-credit-to-donation="applyKivaCreditToDonation"
 							@refreshtotals="refreshTotals"
 							@updating-totals="setUpdatingTotals"
 						/>
@@ -132,7 +139,7 @@
 								</form>
 
 								<checkout-drop-in-payment-wrapper
-									v-if="!showKivaCreditButton"
+									v-if="!showKivaCreditButton && !pendingTipPreferenceReset"
 									:amount="creditNeeded"
 									:loans-in-basket="loanIdsInBasket.length"
 									:is-guest-checkout="checkingOutAsGuest"
@@ -328,6 +335,7 @@ import {
 	trackMetaEvent,
 } from '@kiva/kv-analytics';
 import { getPromoFromBasket } from '#src/util/campaignUtils';
+import { hasLendAfterGoalSetAttribution } from '#src/util/thanksPage/expressCheckoutUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import checkoutSettings from '#src/graphql/query/checkout/checkoutSettings.graphql';
 import initializeCheckout from '#src/graphql/query/checkout/initializeCheckout.graphql';
@@ -356,6 +364,12 @@ import * as Sentry from '@sentry/vue';
 import _forEach from 'lodash/forEach';
 import MatchedLoansLightbox from '#src/components/Checkout/MatchedLoansLightbox';
 import { CUSTOM_TIP_DEFAULT_EXP_KEY } from '#src/components/Checkout/DonationNudge/DonationNudgeBoxes';
+import {
+	TIP_FROM_BALANCE_EXP_KEY,
+	TIP_FROM_BALANCE_SEEDED_COOKIE,
+	meetsTipFromBalanceTreatmentCriteria,
+} from '#src/components/Checkout/KivaCreditTipToggle';
+import updateKivaCreditDonationPreference from '#src/graphql/mutation/updateKivaCreditDonationPreference.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
 import FtdsMessage from '#src/components/Checkout/FtdsMessage';
@@ -386,7 +400,6 @@ const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_enable';
 const EXPIRING_SOON_EXP_KEY = 'checkout_expiring_soon_upsell';
 const KIVA_CREDIT_REPLACEMENT_EXP_KEY = 'checkout_kiva_credit_copy_replacement';
-const STOP_HIDING_TIP_EXP_KEY = 'stop_hiding_tip_campaign';
 const TIP_PERCENTAGE = 0.2;
 
 // Assigned during SSR so versions are available before hydration
@@ -398,6 +411,7 @@ const PREFETCH_EXPERIMENT_IDS = [
 	FIVE_DOLLARS_NOTES_EXP,
 	KIVA_CREDIT_REPLACEMENT_EXP_KEY,
 	CUSTOM_TIP_DEFAULT_EXP_KEY,
+	TIP_FROM_BALANCE_EXP_KEY,
 ];
 
 // Query to gather user Teams
@@ -464,6 +478,9 @@ export default {
 		return {
 			// Computed so injecting descendants stay reactive to version reassignment
 			customTipDefaultVersion: computed(() => this.customTipDefaultVersion),
+			tipFromBalanceVersion: computed(() => this.tipFromBalanceVersion),
+			tipToggleBasketState: computed(() => this.tipToggleBasketState),
+			tipFromBalanceEligible: computed(() => this.showTipFromBalanceVariant),
 		};
 	},
 	mixins: [checkoutUtils, fiveDollarsTest],
@@ -525,8 +542,14 @@ export default {
 			isExpiringSoonExpEnabled: false,
 			isKivaCreditReplacementExpEnabled: false,
 			enableAdminRewardTipFlag: false,
-			isStopHidingTipExpEnabled: false,
+			stopHidingTip: false,
 			customTipDefaultVersion: null,
+			tipFromBalanceVersion: null,
+			applyKivaCreditToDonation: null,
+			basketId: null,
+			lifetimeDeposits: null,
+			resettingTipPreference: false,
+			tipPreferenceResetFailed: false,
 		};
 	},
 	apollo: {
@@ -578,6 +601,10 @@ export default {
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
 			this.teams = _get(data, 'my.lender.teams.values');
+			// The field is nullable, and null must read as "no deposits" rather than "not loaded", or a
+			// lender funded only by promo credit is never in the audience. Anything unparseable stays
+			// null and reads as not loaded, which keeps an unknown depositor out
+			this.lifetimeDeposits = numeral(_get(data, 'my.lendingStats.totalAmountDeposited') ?? 0).value();
 			this.hasEverLoggedIn = _get(data, 'hasEverLoggedIn', false);
 			this.lenderTotalLoans = data?.my?.loans?.totalCount ?? 0;
 			// basket data
@@ -590,6 +617,8 @@ export default {
 				{ __typename: 'Credit', creditType: 'redemption_code' }
 			);
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+			this.applyKivaCreditToDonation = _get(data, 'shop.basket.applyKivaCreditToDonation') ?? null;
+			this.basketId = _get(data, 'shop.basket.id') ?? null;
 			this.lenderLoansIds = this.loans.filter(l => l?.loan?.userProperties?.lentTo).map(l => l.id);
 			if (this.redemption_credits.length || this.hasFreeCredits !== false) {
 				this.disableGuestCheckout();
@@ -724,8 +753,19 @@ export default {
 		);
 
 		this.initializeCustomTipDefaultExperiment();
+
+		// Read once here and provided to the donation item. No exposure event yet
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			TIP_FROM_BALANCE_EXP_KEY,
+			version => { this.tipFromBalanceVersion = version; },
+		);
 	},
 	watch: {
+		applyKivaCreditToDonation: 'resetTipPreferenceOutsideVariant',
+		tipFromBalanceVersion: 'resetTipPreferenceOutsideVariant',
 		async emptyBasket(newValue) {
 			if (!newValue && !this.upsellLoan?.id) {
 				await Promise.all([
@@ -734,7 +774,7 @@ export default {
 				]);
 				this.getUpsellModuleData();
 			}
-			if (!newValue && this.isStopHidingTipExpEnabled) {
+			if (!newValue && this.stopHidingTip) {
 				this.ensureTipDonationExists();
 			}
 		},
@@ -750,6 +790,10 @@ export default {
 			// - this event will be duplicated when the page reloads with a newly registered/logged in user
 			const userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
 			this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
+
+			if (hasLendAfterGoalSetAttribution(this.cookieStore)) {
+				this.$kvTrackEvent('basket', 'view', 'from-lend-after-goal-set');
+			}
 		});
 
 		// cover ssr or spa page load
@@ -909,6 +953,41 @@ export default {
 				: this.totals?.bonusAvailableTotal;
 			return numeral(amount).format('$0,0');
 		},
+		tipToggleBasketState() {
+			// What the tip toggle needs, so it does not run its own copy of the checkout query
+			const tip = this.donations.find(donation => !donation.metadata?.campaignId);
+			const tipAmount = numeral(tip?.price).value() ?? 0;
+			return {
+				myId: this.myId,
+				balance: numeral(this.myBalance).value() ?? 0,
+				hasLoans: this.loans.length > 0,
+				tipAmount,
+				basketId: this.basketId,
+				applyKivaCreditToDonation: this.applyKivaCreditToDonation,
+				// Everything the balance has to pay for before the tip, campaign donations included
+				nonTipTotal: (numeral(this.totals.itemTotal).value() ?? 0) - tipAmount,
+				onTeam: this.teams?.length > 0,
+				lifetimeDeposits: this.lifetimeDeposits,
+			};
+		},
+		pendingTipPreferenceReset() {
+			// True while the basket is about to be reset, so the payment form waits for the new
+			// amount due instead of building against one we are replacing.
+			// Requires a known version, since the assignment can arrive after the first render.
+			// Stops after a failed attempt, so a lender is never left unable to pay.
+			return this.resettingTipPreference
+				|| (!this.tipPreferenceResetFailed
+					&& !!this.tipFromBalanceVersion
+					&& this.tipFromBalanceVersion !== 'b'
+					&& this.applyKivaCreditToDonation === false);
+		},
+		showTipFromBalanceVariant() {
+			// Ignores the tip amount on purpose: a lender who zeroes the tip loses the switch but
+			// keeps the copy and layout, instead of watching the page flip back to the control
+			// mid-checkout. Exposure still requires a tip, through the toggle's own criteria
+			return this.tipFromBalanceVersion === 'b'
+				&& meetsTipFromBalanceTreatmentCriteria(this.tipToggleBasketState);
+		},
 		isKivaCreditText() {
 			return this.isKivaCreditReplacementExpEnabled ? 'Account balance' : 'Kiva Credit';
 		},
@@ -1016,7 +1095,7 @@ export default {
 				if (hasFreeCredits && refreshEvent === 'kiva-card-applied') {
 					this.disableGuestCheckout();
 				}
-				if (this.isStopHidingTipExpEnabled) {
+				if (this.stopHidingTip) {
 					const items = _get(data, 'shop.basket.items.values');
 					if (items) {
 						this.donations = _filter(items, { __typename: 'Donation' });
@@ -1090,6 +1169,29 @@ export default {
 		setUpdatingTotals(state) {
 			this.updatingTotals = state;
 		},
+		resetTipPreferenceOutsideVariant() {
+			// Outside the variant there is no toggle, so a basket left opted out would keep charging
+			// for the tip with no way to undo it
+			if (typeof window === 'undefined' || this.resettingTipPreference) return;
+			if (!this.pendingTipPreferenceReset) return;
+
+			this.resettingTipPreference = true;
+			this.apollo.mutate({
+				mutation: updateKivaCreditDonationPreference,
+				variables: { applyKivaCreditToDonation: true },
+			}).then(() => {
+				// Let the variant default the basket off again if the lender ends up back in it
+				this.cookieStore.remove(TIP_FROM_BALANCE_SEEDED_COOKIE, { path: '/' });
+				this.refreshTotals();
+			}).catch(error => {
+				// Let the lender pay rather than retry in place. The flag is gone on the next page
+				// load, so the reset runs again on their next visit to checkout
+				this.tipPreferenceResetFailed = true;
+				logReadQueryError(error, 'CheckoutPage resetTipPreferenceOutsideVariant');
+			}).finally(() => {
+				this.resettingTipPreference = false;
+			});
+		},
 		logBasketState() {
 			const creditNeededInt = numeral(this.creditNeeded).value();
 			this.$kvTrackEvent(
@@ -1118,9 +1220,10 @@ export default {
 				this.promoData = data?.shop?.promoCampaign;
 
 				const adminRewardTipEligible = isAdminRewardTipEligible(this.promoData, this.enableAdminRewardTipFlag);
-				// If user is eligible for admin reward tip, initialize experiment to stop hiding tip for them
+				// If user is eligible for admin reward tip, stop hiding the tip for them
 				if (adminRewardTipEligible) {
-					this.initializeStopHidingTipExperiment();
+					this.stopHidingTip = true;
+					this.ensureTipDonationExists();
 				}
 
 				this.$nextTick(() => {
@@ -1196,15 +1299,20 @@ export default {
 						logReadQueryError(e, 'getLoansByExpiringSoon');
 					});
 			} else if (this.isBanditUpsellExpEnabled) {
-				const balance = parseFloat(this.myBalance);
+				// Money fields are formatted strings (numeral parses them); balance is nullable when logged out
+				const balance = this.myBalance == null ? null : numeral(this.myBalance).value();
+				const basketAmount = numeral(this.totals?.itemTotal).value();
 				this.apollo.query({
 					query: getCheckoutAlmostFundedRecommendationQuery,
 					variables: {
 						loginId: this.myId,
 						balance,
+						basketAmount,
 					},
 				}).then(({ data }) => {
-					const ranges = data?.getCheckoutAlmostFundedRecommendation?.recommendedRanges ?? [];
+					const recommendation = data?.getCheckoutAlmostFundedRecommendation;
+					const ranges = recommendation?.recommendedRanges ?? [];
+					const modelVersion = recommendation?.modelVersion;
 					const promiseArray = ranges.map(range => this.getLoansByAmountLeftRange(range.start, range.end));
 					// Adding general query as fallback in case the ranges don't return any loans
 					promiseArray.push(this.getLoansByAmountLeft());
@@ -1218,12 +1326,13 @@ export default {
 
 						const arrayLength = loansArray.length;
 						if (loansIndex >= 0 && loansIndex !== arrayLength - 1) {
-							this.$kvTrackEvent(
-								'basket',
-								'view',
-								'recommended-checkout-upsell',
-								`${ranges[loansIndex].start} - ${ranges[loansIndex].end}`,
-							);
+							this.trackUpsellRecommendation({
+								balance,
+								basketTotal: basketAmount,
+								modelVersion,
+								// send only { start, end }; Apollo attaches __typename to each range
+								recommendedRanges: ranges.map(({ start, end }) => ({ start, end })),
+							});
 						}
 					});
 				}).catch(e => {
@@ -1238,6 +1347,21 @@ export default {
 						this.upsellLoan = loans.filter(loan => !this.addedUpsellLoans.includes(loan.id))[0] || {};
 					});
 			}
+		},
+		trackUpsellRecommendation({
+			balance, basketTotal, modelVersion, recommendedRanges
+		}) {
+			// eslint-disable-next-line max-len
+			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_checkout_upsell_recommendation_event_schema_1_0_0.json#';
+			this.$kvTrackSelfDescribingEvent({
+				schema,
+				data: {
+					balance,
+					basketTotal,
+					modelVersion,
+					recommendedRanges,
+				},
+			});
 		},
 		verificationComplete() {
 			this.verificationSubmitted = true;
@@ -1453,23 +1577,6 @@ export default {
 					logReadQueryError(error, 'CheckoutPage ensureTipDonationExists');
 				});
 		},
-		initializeStopHidingTipExperiment() {
-			initializeExperiment(
-				this.cookieStore,
-				this.apollo,
-				this.$route,
-				STOP_HIDING_TIP_EXP_KEY,
-				version => {
-					this.isStopHidingTipExpEnabled = version === 'b';
-					if (this.isStopHidingTipExpEnabled) {
-						this.ensureTipDonationExists();
-					}
-				},
-				this.$kvTrackEvent,
-				'EXP-MP-2852-Jun2026',
-				'basket',
-			);
-		},
 		initializeCustomTipDefaultExperiment() {
 			// Assignment only; exposure is tracked separately when the tip modal is viewed
 			initializeExperiment(
@@ -1496,9 +1603,18 @@ export default {
 .upsellContainer > .loading-placeholder {
 	min-height: 250px;
 }
+
+/* The compact banner is ~128px on desktop; mobile keeps the taller reservation below */
+.upsell-container-compact,
+.upsell-container-compact > .loading-placeholder {
+	@apply tw-min-h-16;
+}
+
 @media screen and (width <= 733px) {
 	.upsellContainer,
-	.upsellContainer > .loading-placeholder {
+	.upsellContainer > .loading-placeholder,
+	.upsell-container-compact,
+	.upsell-container-compact > .loading-placeholder {
 		min-height: 300px;
 	}
 }

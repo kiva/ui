@@ -402,6 +402,15 @@ export const longTeamNameCommentsLoan = createMockLoan({
 	},
 });
 
+/** Partner loan whose city is long enough to wrap inside the location pill. */
+export const longLocationPartnerLoan = createMockLoan({
+	geocode: {
+		city: 'Sralab, Sralab, Tboung Khmum, Tboung Khmum Cambodian District Tboung Khmum',
+		country: { name: 'Cambodia', isoCode: 'KH', __typename: 'Country' },
+		__typename: 'Geocode',
+	},
+});
+
 /**
  * A partner loan's repayment periods, covering every way a period can present:
  * received, delinquent with an attribution, delinquent with currency loss, and upcoming.
@@ -765,6 +774,12 @@ export const matchedNoLendersLoan = createMockLoan({
 	lenders: { totalCount: 0, values: [], __typename: 'LenderCollection' },
 });
 
+/** Fundraising loan with exactly one lender. */
+export const singleLenderLoan = createMockLoan({
+	id: 2000020,
+	lenders: { totalCount: 1, values: mockLenders.slice(0, 1), __typename: 'LenderCollection' },
+});
+
 /** Repeat borrower loan (has previous loan). */
 export const repeatBorrowerLoan = createMockLoan({
 	id: 2000016,
@@ -786,9 +801,33 @@ export const directLoanWithTrustee = createMockLoan({
 			id: 1,
 			numDefaultedLoans: 0,
 			numLoansEndorsedPublic: 120,
-			repaymentRate: 0.98,
+			numFundraisingLoans: 4,
+			numPayingOnTimeLoans: 35,
+			numPayingBackDelinquentLoans: 2,
+			numRepaidInFullLoans: 78,
+			repaymentRate: 98,
 			totalLoansValue: '2000000.00',
 		},
 	},
 	endorsement: 'Accion endorses this loan for responsible lending.',
 });
+
+/** Direct loan whose trustee has no stats data. */
+export const directLoanWithTrusteeNoStats = {
+	...directLoanWithTrustee,
+	id: 2000021,
+	trustee: {
+		...directLoanWithTrustee.trustee,
+		stats: {
+			id: 2,
+			numDefaultedLoans: null,
+			numLoansEndorsedPublic: null,
+			numFundraisingLoans: null,
+			numPayingOnTimeLoans: null,
+			numPayingBackDelinquentLoans: null,
+			numRepaidInFullLoans: null,
+			repaymentRate: null,
+			totalLoansValue: null,
+		},
+	},
+};

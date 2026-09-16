@@ -9,6 +9,7 @@ import {
 	matchedNoLendersLoan,
 	multiMatchedLoan,
 	payingBackLoan,
+	singleLenderLoan,
 	createQueryResult,
 } from './mockLoanFixtures';
 
@@ -48,6 +49,17 @@ export const MultiMatched = () => ({
 		kvAuth0StoryMixin,
 	],
 	template: `<lend-cta :loan-id="${multiMatchedLoan.id}" />`,
+});
+
+export const SingleLender = () => ({
+	components: { LendCta },
+	mixins: [
+		apolloStoryMixin({ queryResult: createQueryResult(singleLenderLoan) }),
+		cookieStoreStoryMixin(),
+		kvAuth0StoryMixin,
+	],
+	// The stats pill should read "powered by 1 lender" (singular)
+	template: `<lend-cta :loan-id="${singleLenderLoan.id}" />`,
 });
 
 export const MatchedNoLenders = () => ({

@@ -4,12 +4,22 @@ import { flushPromises } from '@vue/test-utils';
 import numeral from 'numeral';
 import EstimatedRepaymentsPage from '#src/pages/Portfolio/EstimatedRepayments/EstimatedRepaymentsPage';
 
+// Mocks mirror what the gateway actually returns: `Date` as a full ISO datetime
+// and `Money` as a display-formatted string (thousands separators included), not
+// as plain JS numbers. See MP-3138 — mocking Money as a number hid a bug where
+// every month over $999.99 rendered as $0.00.
 const listResponse = (expectedRepayments = [
 	{
-		repaymentDate: '2026-07-01', userRepayments: 300, promoRepayments: 100, loansMakingRepayments: 6
+		repaymentDate: '2026-07-01T07:00:00Z',
+		userRepayments: '300.00',
+		promoRepayments: '100.00',
+		loansMakingRepayments: 6,
 	},
 	{
-		repaymentDate: '2026-08-01', userRepayments: 200, promoRepayments: 0, loansMakingRepayments: 4
+		repaymentDate: '2026-08-01T07:00:00Z',
+		userRepayments: '200.00',
+		promoRepayments: '0.00',
+		loansMakingRepayments: 4,
 	},
 ]) => ({
 	my: { id: 'my-1', userAccount: { id: 'ua-1', expectedRepayments } },
@@ -17,10 +27,10 @@ const listResponse = (expectedRepayments = [
 
 const julyDetail = [
 	{
-		repaymentDate: '2026-07-01',
-		amount: 50,
-		userAmount: 40,
-		promoAmount: 10,
+		repaymentDate: '2026-07-01T07:00:00Z',
+		amount: '50.00',
+		userAmount: '40.00',
+		promoAmount: '10.00',
 		promoType: 'reward_credit',
 		isDelinquent: false,
 		pastRepayments: 3,
@@ -28,10 +38,10 @@ const julyDetail = [
 		loan: { id: '123', name: 'Maria' },
 	},
 	{
-		repaymentDate: '2026-07-01',
-		amount: 25,
-		userAmount: 25,
-		promoAmount: 0,
+		repaymentDate: '2026-07-01T07:00:00Z',
+		amount: '25.00',
+		userAmount: '25.00',
+		promoAmount: '0.00',
 		promoType: null,
 		isDelinquent: true,
 		pastRepayments: 8,
@@ -42,10 +52,10 @@ const julyDetail = [
 
 const augustDetail = [
 	{
-		repaymentDate: '2026-08-01',
-		amount: 200,
-		userAmount: 200,
-		promoAmount: 0,
+		repaymentDate: '2026-08-01T07:00:00Z',
+		amount: '200.00',
+		userAmount: '200.00',
+		promoAmount: '0.00',
 		promoType: null,
 		isDelinquent: false,
 		pastRepayments: 1,
@@ -104,6 +114,36 @@ describe('EstimatedRepaymentsPage', () => {
 		// first (July) month detail auto-loaded
 		expect(getByText('Maria')).toBeTruthy();
 		expect(getByText('Estimated repayments due by Jul 1, 2026')).toBeTruthy();
+	});
+
+	it('sums comma-formatted Money amounts for large months', async () => {
+		// The gateway returns Money as a display-formatted string, so a super
+		// lender's months come back as e.g. '11,621.53'. Number() is NaN on those,
+		// which used to zero out every month over $999.99 while leaving smaller
+		// months correct — the "only some months are accurate" symptom. Real
+		// payload for lender 70846.
+		const { getByTestId, getAllByTestId } = renderPage({
+			expectedRepayments: [
+				{
+					repaymentDate: '2026-09-01T07:00:00Z',
+					userRepayments: '11,621.53',
+					promoRepayments: '0.55',
+					loansMakingRepayments: 2460,
+				},
+				{
+					repaymentDate: '2027-03-01T08:00:00Z',
+					userRepayments: '843.57',
+					promoRepayments: '0.55',
+					loansMakingRepayments: 248,
+				},
+			],
+		});
+		await waitFor(() => expect(getByTestId('repayments-summary-table')).toBeTruthy());
+		const rows = getAllByTestId(/^repayments-month-row-/);
+		// Above the separator: must be the real total, not $0.55.
+		expect(rows[0].textContent).toContain('$11,622.08');
+		// Below it: unchanged, so the fix can't be a no-op that only moves the bug.
+		expect(rows[1].textContent).toContain('$844.12');
 	});
 
 	it('renders the promo, delinquent, and final note flags (legacy parity)', async () => {
@@ -181,9 +221,9 @@ describe('EstimatedRepaymentsPage', () => {
 				const year = 2026 + Math.floor((7 + i) / 12);
 				const month = ((7 + i) % 12) + 1;
 				return {
-					repaymentDate: `${year}-${String(month).padStart(2, '0')}-01`,
-					userRepayments: 100 + i,
-					promoRepayments: 10,
+					repaymentDate: `${year}-${String(month).padStart(2, '0')}-01T07:00:00Z`,
+					userRepayments: `${100 + i}.00`,
+					promoRepayments: '10.00',
 					loansMakingRepayments: 2,
 				};
 			});
@@ -202,10 +242,10 @@ describe('EstimatedRepaymentsPage', () => {
 	it('flags truncation with the true total only when the server cap is actually hit', async () => {
 		// July summary reports 1200 loans; the capped detail returns exactly 500 rows.
 		const capped = Array.from({ length: 500 }, (unused, i) => ({
-			repaymentDate: '2026-07-01',
-			amount: 10,
-			userAmount: 10,
-			promoAmount: 0,
+			repaymentDate: '2026-07-01T07:00:00Z',
+			amount: '10.00',
+			userAmount: '10.00',
+			promoAmount: '0.00',
 			promoType: null,
 			isDelinquent: false,
 			pastRepayments: 1,
@@ -218,7 +258,10 @@ describe('EstimatedRepaymentsPage', () => {
 			}
 			return Promise.resolve({
 				data: listResponse([{
-					repaymentDate: '2026-07-01', userRepayments: 1, promoRepayments: 0, loansMakingRepayments: 1200,
+					repaymentDate: '2026-07-01T07:00:00Z',
+					userRepayments: '1.00',
+					promoRepayments: '0.00',
+					loansMakingRepayments: 1200,
 				}]),
 			});
 		});

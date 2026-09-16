@@ -7,15 +7,23 @@ async function fetchContentfulPages() {
 	const result = await fetchGraphQL({
 		query: `{
 			contentful {
-				entries(contentType: "page", include: 0)
+				searchEntries(contentType: "page", include: 0) {
+					total
+					skip
+					limit
+					items {
+						entryId
+						entry
+					}
+				}
 			}
 		}`
-	}, 'data.contentful.entries');
+	}, 'data.contentful.searchEntries');
 	const items = result?.items ?? [];
 
 	// Return all the pages with only the fields.key, fields.pageType, and fields.path properties
-	return items.map(({ fields }) => {
-		const { key, pageType, path } = fields;
+	return items.map(({ entry }) => {
+		const { key, pageType, path } = entry.fields;
 		return { key, pageType, path };
 	});
 }

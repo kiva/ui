@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<kv-text-link
+			class="tw-uppercase"
 			:icon="mdiFileDocumentOutline"
 			@click="openLightbox"
 			v-kv-track-event="['portfolio', 'click', 'credit-stats-details']"

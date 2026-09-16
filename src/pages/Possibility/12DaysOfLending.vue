@@ -36,12 +36,12 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import contentfulEntries from '#src/graphql/query/contentfulEntries.graphql';
 import KvHero from '#src/components/Kv/KvHero';
 import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
 import KivaContentBlock from '#src/pages/Possibility/KivaContentBlock';
 import { metaGlobReader } from '#src/util/importHelpers';
+import { getContentfulEntries } from '#src/util/contentfulUtils';
 import TwelveDaysCalendar from './TwelveDaysCalendar';
 
 const possibilitiesImageGlob = import.meta.glob('/src/assets/images/possibilities-banners/*.*', { eager: true });
@@ -85,7 +85,8 @@ export default {
 			}
 		}).then(({ data }) => {
 			const pdtDateString = this.getPdtDate().toDateString();
-			const uiGlobalPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-global-promo'); // eslint-disable-line max-len
+			const uiGlobalPromoSetting = (getContentfulEntries(data) ?? [])
+				.find(item => item.fields.key === 'ui-global-promo');
 
 			const todaysLimitedPromo = uiGlobalPromoSetting.fields.content.find(promo => {
 				return new Date(promo.fields.startDate).toDateString() === pdtDateString;

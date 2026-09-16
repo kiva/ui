@@ -13,7 +13,7 @@
 		</template>
 		<div ref="slidesContainer" class="goal-in-review-slides tw-bg-secondary">
 			<div data-slide-view="1">
-				<GoalInReviewSlide1
+				<GoalInReviewHeadline
 					:goal-status="data?.goalSummary?.status"
 					:first-name="data?.firstName"
 					:year="data?.year"
@@ -23,41 +23,45 @@
 					:percent-complete="data?.loanStats?.percentComplete"
 				/>
 			</div>
-			<div data-slide-view="2">
-				<GoalInReviewSlide2
+			<div data-slide-view="2" data-animate-on-view>
+				<GoalInReviewBorrowers
 					:loans="data?.goalLoans"
 					:borrower-count="data?.loanStats?.borrowers"
 				/>
 			</div>
+			<!-- Slide 3 has two sections that each reveal independently. -->
 			<div data-slide-view="3">
-				<GoalInReviewSlide3
+				<GoalInReviewGlobalReach
 					:countries="data?.goalSummary?.countries"
 					:sectors="data?.goalSummary?.sectors"
 				/>
 			</div>
-			<div data-slide-view="4">
-				<GoalInReviewSlide4
+			<div data-slide-view="4" data-animate-on-view>
+				<GoalInReviewGivingInsights
 					:goal-summary="data?.goalSummary"
 					:lifetime-percentile="data?.lifetimePercentile"
+					:year="data?.year"
+					:current-year="currentYear"
 				/>
 			</div>
-			<div data-slide-view="5">
-				<GoalInReviewSlide5 />
+			<div data-slide-view="5" data-animate-on-view>
+				<GoalInReviewCollectiveImpact />
 			</div>
 			<div
 				v-if="data?.goalSummary?.status === 'completed'"
 				data-slide-view="6"
+				data-animate-on-view
 			>
-				<GoalInReviewSlide6 :year="data?.year" />
+				<GoalInReviewPersonalNote :year="data?.year" />
 			</div>
-			<div data-slide-view="7">
-				<GoalInReviewSlide7
+			<div data-slide-view="7" data-animate-on-view>
+				<GoalInReviewThanksAndFeedback
 					:goal-status="data?.goalSummary?.status"
 					:loan-count="data?.loanStats?.borrowers"
 					:year="data?.year"
 					:current-year="currentYear"
 					:feedback-submitted="feedbackSubmitted"
-					@back-to-kiva="handleCta('back-to-kiva')"
+					@goal-recap-back-to-kiva="handleCta('goal-recap-back-to-kiva')"
 					@finish-goal="handleCta('finish-goal')"
 					@set-goal="handleCta('set-goal')"
 					@feedback-submitted="handleFeedbackSubmitted"
@@ -79,14 +83,29 @@ import {
 import { KvLightbox } from '@kiva/kv-components';
 import { getGoalInReviewCurrentYear } from '#src/composables/useGoalInReview';
 import { createIntersectionObserver } from '#src/util/observerUtils';
+import '#src/assets/css/animations.css';
 
-const GoalInReviewSlide1 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide1'));
-const GoalInReviewSlide2 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide2'));
-const GoalInReviewSlide3 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide3'));
-const GoalInReviewSlide4 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide4'));
-const GoalInReviewSlide5 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide5'));
-const GoalInReviewSlide6 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide6'));
-const GoalInReviewSlide7 = defineAsyncComponent(() => import('#src/components/MyKiva/GoalInReview/GoalInReviewSlide7'));
+const GoalInReviewHeadline = defineAsyncComponent(
+	() => import('#src/components/MyKiva/GoalInReview/GoalInReviewHeadline')
+);
+const GoalInReviewBorrowers = defineAsyncComponent(
+	() => import('#src/components/MyKiva/GoalInReview/GoalInReviewBorrowers')
+);
+const GoalInReviewGlobalReach = defineAsyncComponent(
+	() => import('#src/components/MyKiva/GoalInReview/GoalInReviewGlobalReach')
+);
+const GoalInReviewGivingInsights = defineAsyncComponent(
+	() => import('#src/components/MyKiva/GoalInReview/GoalInReviewGivingInsights')
+);
+const GoalInReviewCollectiveImpact = defineAsyncComponent(
+	() => import('#src/components/MyKiva/GoalInReview/GoalInReviewCollectiveImpact')
+);
+const GoalInReviewPersonalNote = defineAsyncComponent(
+	() => import('#src/components/MyKiva/GoalInReview/GoalInReviewPersonalNote')
+);
+const GoalInReviewThanksAndFeedback = defineAsyncComponent(
+	() => import('#src/components/MyKiva/GoalInReview/GoalInReviewThanksAndFeedback')
+);
 
 const props = defineProps({
 	show: {
@@ -103,7 +122,7 @@ const props = defineProps({
 	},
 });
 
-const emit = defineEmits(['close', 'back-to-kiva', 'finish-goal', 'set-goal', 'feedback-submitted']);
+const emit = defineEmits(['close', 'goal-recap-back-to-kiva', 'finish-goal', 'set-goal', 'feedback-submitted']);
 const $kvTrackEvent = inject('$kvTrackEvent', () => {});
 
 // Single source of truth for "now". Add ?recapDate=YYYY-MM-DD to the url for QA specific dates
@@ -123,6 +142,8 @@ const handleClose = () => {
 };
 
 const handleCta = event => {
+	// A CTA reports its own event, so claim the guard: the teardown adds no close event.
+	closeTracked = true;
 	if (event === 'set-goal') {
 		// Reuse the existing set-a-goal event, tagged with where it came from.
 		$kvTrackEvent('portfolio', 'click', 'set-a-goal', 'from-goal-recap');
@@ -147,9 +168,16 @@ const handleFeedbackSubmitted = () => {
 const slidesContainer = ref(null);
 const viewedSlides = new Set();
 let slideObserver = null;
+let revealObserver = null;
 
 // Screen 1 is always the opening view; screens 2..7 are observed on scroll.
 const OPENING_SCREEN = '1';
+
+// Analytics counts a screen "viewed" once its top passes the modal's midpoint.
+const VIEW_ROOT_MARGIN = '0px 0px -50% 0px';
+// Entrance animations reveal earlier — as a section clears the modal's bottom edge —
+// so motion plays while it rises into view rather than once it is halfway up.
+const REVEAL_ROOT_MARGIN = '0px 0px -10% 0px';
 
 const markScreenViewed = slide => {
 	if (!slide || viewedSlides.has(slide)) {
@@ -159,10 +187,18 @@ const markScreenViewed = slide => {
 	$kvTrackEvent('portfolio', 'view', 'goal-in-review', `screen-${slide}`);
 };
 
-const teardownSlideObserver = () => {
+const teardownObservers = () => {
 	slideObserver?.disconnect();
 	slideObserver = null;
+	revealObserver?.disconnect();
+	revealObserver = null;
 };
+
+// Unpause the section's entrance animations (see the reveal-on-scroll gate in
+// css/animations.css). Slides gated with [data-animate-on-view] stay hidden
+// until this runs, so their motion plays when the user reaches them, not on
+// mount. Slide 1 has no gate and animates on mount, so this is a no-op for it.
+const revealSlide = target => target?.classList.add('is-in-view');
 
 const trackSlideViews = entries => {
 	entries.forEach(entry => {
@@ -182,8 +218,21 @@ const trackSlideViews = entries => {
 	});
 };
 
-const setupSlideObserver = async () => {
-	teardownSlideObserver();
+// Reveal runs on its own, earlier-triggering observer so entrance animations start
+// as a section enters from the bottom — decoupled from the view-tracking threshold.
+// Same 0-height guard: async wrappers are briefly stacked at the top on open.
+const revealSlides = entries => {
+	entries.forEach(entry => {
+		if (!entry.isIntersecting || entry.boundingClientRect.height === 0) {
+			return;
+		}
+		revealSlide(entry.target);
+		revealObserver?.unobserve(entry.target);
+	});
+};
+
+const setupObservers = async () => {
+	teardownObservers();
 	viewedSlides.clear();
 	// Fire the opening screen now — the async slides aren't laid out yet, so the
 	// observer can't reliably detect screen 1 on open without a scroll.
@@ -194,24 +243,36 @@ const setupSlideObserver = async () => {
 	if (!targets.length) {
 		return;
 	}
+	// Re-hide the scroll-revealed sections so a reopen replays their entrance.
+	targets.forEach(target => target.classList.remove('is-in-view'));
+	const root = container.closest('#kvLightboxBody');
 	slideObserver = createIntersectionObserver({
 		targets,
 		callback: trackSlideViews,
-		// Trigger when a section's top passes the scroll container's midpoint.
-		options: { root: container.closest('#kvLightboxBody'), rootMargin: '0px 0px -50% 0px', threshold: 0 },
+		options: { root, rootMargin: VIEW_ROOT_MARGIN, threshold: 0 },
 	});
+	revealObserver = createIntersectionObserver({
+		targets,
+		callback: revealSlides,
+		options: { root, rootMargin: REVEAL_ROOT_MARGIN, threshold: 0 },
+	});
+	// No observer means no scroll callback will fire, so reveal every gated
+	// section up front rather than leaving its content paused and hidden.
+	if (!revealObserver) {
+		targets.forEach(revealSlide);
+	}
 };
 
 watch(() => props.show, isShown => {
 	if (isShown) {
 		closeTracked = false;
-		setupSlideObserver();
+		setupObservers();
 	} else {
-		teardownSlideObserver();
+		teardownObservers();
 	}
 }, { immediate: true });
 
-onBeforeUnmount(teardownSlideObserver);
+onBeforeUnmount(teardownObservers);
 </script>
 
 <style lang="postcss">
@@ -219,11 +280,14 @@ onBeforeUnmount(teardownSlideObserver);
 	--recap-page-height: calc(90vh - 3.5rem);
 
 	.goal-in-review-slides > :first-child > * {
-		min-height: var(--recap-page-height);
+		@screen md {
+			min-height: var(--recap-page-height);
+		}
 	}
 
 	[data-test=kv-lightbox] {
 		max-height: 90vh !important;
+		animation: goal-in-review-modal-enter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 
 		@apply !tw-w-screen !tw-mt-auto !tw-mb-0 !tw-rounded-t !tw-rounded-b-none
 			tw-bg-eco-green-4 tw-overflow-hidden tw-relative;
@@ -260,7 +324,7 @@ onBeforeUnmount(teardownSlideObserver);
 
 @screen md {
 	.goal-in-review-modal {
-		--recap-page-height: min(710px, calc(100vh - 4rem));
+		--recap-page-height: min(630px, calc(100vh - 4rem));
 	}
 
 	.goal-in-review-modal [data-test=kv-lightbox] {
@@ -272,7 +336,31 @@ onBeforeUnmount(teardownSlideObserver);
 	}
 }
 
+@screen lg {
+	.goal-in-review-modal {
+		--recap-page-height: min(760px, calc(100vh - 2rem));
+	}
+}
+
 .goal-in-review-modal #kvLightboxBody::-webkit-scrollbar {
 	display: none;
+}
+
+@keyframes goal-in-review-modal-enter {
+	from {
+		opacity: 0;
+		transform: scale(0.96) translateY(18px);
+	}
+
+	to {
+		opacity: 1;
+		transform: scale(1) translateY(0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.goal-in-review-modal [data-test=kv-lightbox] {
+		animation: none;
+	}
 }
 </style>

@@ -58,6 +58,11 @@ const DEFAULT_ERROR = 'Your authorization link is invalid or has expired. '
 
 export default {
 	name: 'WithdrawAuthorizePage',
+	head() {
+		return {
+			title: 'Withdraw credit',
+		};
+	},
 	components: {
 		PortfolioShell,
 		KvButton,

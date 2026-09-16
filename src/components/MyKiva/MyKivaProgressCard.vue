@@ -69,7 +69,7 @@ import {
 	ID_WOMENS_EQUALITY, ID_BASIC_NEEDS, ID_CLIMATE_ACTION, ID_REFUGEE_EQUALITY, MAX_TIERED_BADGE_LOANS
 } from '#src/composables/useBadgeData';
 import { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
-import { RECAP_CTA_LABEL } from '#src/util/goalRecapEntryPoint';
+import { RECAP_CTA_LABEL } from '#src/util/goalInReview';
 import numeral from 'numeral';
 import { metaGlobReader } from '#src/util/importHelpers';
 

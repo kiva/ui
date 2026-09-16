@@ -16,12 +16,13 @@
 					/>
 					<account-overview :class="{ 'tw-pt-2' : showTeamChallenge }" />
 					<GoalEntrypoint
-						v-if="isEmptyGoal"
+						v-if="isEmptyGoal && !hideGoalSignup"
 					/>
 					<lending-insights />
 					<my-giving-funds-card
 						v-if="showMyGivingFundsCard"
 						:user-id="userId"
+						:is-disaster-relief-only="isDisasterReliefOnly"
 						class="tw-my-2 tw-mx-0 md:tw-mx-0 tw-rounded-none md:tw-rounded"
 					/>
 					<your-donations />
@@ -53,6 +54,8 @@
 			:feedback-submitted="goalInReviewFeedbackSubmitted"
 			@close="showGoalInReviewModal = false"
 			@feedback-submitted="handleGoalInReviewFeedbackSubmitted"
+			@finish-goal="handleGoalInReviewFinishGoal"
+			@set-goal="handleGoalInReviewSetGoal"
 		/>
 	</www-page>
 </template>
@@ -63,12 +66,14 @@ import TheMyKivaSecondaryMenu from '#src/components/WwwFrame/Menus/TheMyKivaSeco
 import ThePortfolioTertiaryMenu from '#src/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 import { gql } from 'graphql-tag';
 import { readBoolSetting, readDateSetting } from '#src/util/settingsUtils';
+import { shouldHideGoalSignup } from '#src/util/goalInReview';
 import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
-import useGoalInReview from '#src/composables/useGoalInReview';
+import useGoalInReview, { getGoalInReviewNow } from '#src/composables/useGoalInReview';
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
 import portfolioQuery from '#src/graphql/query/portfolioQuery.graphql';
 import badgeGoalMixin from '#src/plugins/badge-goal-mixin';
 import { hasLoanFunFactFootnote } from '#src/util/myKivaUtils';
+import { isDisasterReliefFundOnlySupporter } from '#src/util/givingFundUtils';
 import { KvGrid, KvPageContainer } from '@kiva/kv-components';
 import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';
 
@@ -116,6 +121,7 @@ export default {
 	},
 	setup() {
 		const {
+			getFinishGoalHref,
 			goalInReviewData,
 			loadAutoOpenRecap,
 			hasSubmittedGoalFeedbackForYear,
@@ -123,6 +129,7 @@ export default {
 		} = useGoalInReview();
 
 		return {
+			getFinishGoalHref,
 			goalInReviewData,
 			loadAutoOpenRecap,
 			hasSubmittedGoalFeedbackForYear,
@@ -149,6 +156,7 @@ export default {
 			goalsEntrypointEnable: false,
 			isEmptyGoal: true,
 			showMyGivingFundsCard: false,
+			isDisasterReliefOnly: false,
 			userId: null,
 		};
 	},
@@ -156,6 +164,14 @@ export default {
 	apollo: {
 		preFetch(config, client) {
 			return client.query({ query: portfolioQuery });
+		},
+	},
+	computed: {
+		hideGoalSignup() {
+			return shouldHideGoalSignup({
+				recapStartDate: this.goalInReviewInProgressStart,
+				now: getGoalInReviewNow(),
+			});
 		},
 	},
 	methods: {
@@ -175,6 +191,17 @@ export default {
 		async handleGoalInReviewFeedbackSubmitted() {
 			await this.setGoalFeedbackSubmittedPreference(this.goalInReviewData?.year);
 		},
+		// "Finish my goal" routes to the goal category's loan-finding page, the same
+		// destination as the goal cards' continue CTA (tracking fires in the modal).
+		handleGoalInReviewFinishGoal() {
+			const href = this.getFinishGoalHref(this.$router);
+			if (href) {
+				window.location.href = href;
+			}
+		},
+		handleGoalInReviewSetGoal() {
+			window.location.href = '/goal-setting';
+		},
 		loadEducationPost() {
 			// Donation Education Module Experiment MARS-497
 			this.apollo.query({
@@ -183,14 +210,22 @@ export default {
 						$limit: Int
 					) {
 						contentful {
-							blogPosts: entries(contentType:"blogPost", customFields:$customFields, limit:$limit)
+							blogPosts: searchEntries(contentType:"blogPost", customFields:$customFields, limit:$limit) {
+								total
+								skip
+								limit
+								items {
+									entryId
+									entry
+								}
+							}
 						}
 					}`,
 				variables: {
 					customFields: 'metadata.tags.sys.id[in]=impact-page|order=-fields.originalPublishDate'
 				},
 			}).then(({ data }) => {
-				this.post = data?.contentful?.blogPosts?.items?.[0]?.fields ?? null;
+				this.post = data?.contentful?.blogPosts?.items?.[0]?.entry?.fields ?? null;
 			});
 		},
 	},
@@ -213,6 +248,8 @@ export default {
 			(userData?.givingFundParticipation?.totalCount ?? 0) > 0
 			|| (userData?.givingFundParticipation?.totalAmount ?? 0) > 0
 		);
+		// Render the card's disaster relief variant when that fund is the lender's only activity
+		this.isDisasterReliefOnly = isDisasterReliefFundOnlySupporter(userData);
 
 		const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
 		const userTeams = portfolioQueryData?.my?.teams?.values ?? [];
