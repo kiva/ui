@@ -25,6 +25,10 @@ query MyGivingFunds {
         display {
           ctaTitle
           ctaDescription
+          avatar {
+            id
+            url
+          }
         }
         id
         goals {
