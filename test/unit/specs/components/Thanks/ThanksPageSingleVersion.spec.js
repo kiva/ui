@@ -7,6 +7,7 @@ import {
 	GOAL_SIGNUP_THANKS_VIEWS_COOKIE,
 	incrementGoalSignupThanksViewCount,
 } from '#src/util/myKivaUtils';
+import { LEND_AFTER_GOAL_SET_COOKIE } from '#src/util/thanksPage/expressCheckoutUtils';
 import { globalOptions } from '../../../specUtils';
 
 const router = createRouter({
@@ -631,6 +632,61 @@ describe('ThanksPageSingleVersion', () => {
 				);
 				expect(goalElements.length).toBe(0);
 			});
+		});
+	});
+
+	describe('lend-after-goal-set attribution', () => {
+		afterEach(async () => {
+			await router.push('/');
+		});
+
+		it('tracks the completed order it came from and clears the attribution', async () => {
+			const { kvTrackEvent, cookieStore } = renderComponent({
+				cookieValues: { [LEND_AFTER_GOAL_SET_COOKIE]: '12345' },
+			});
+
+			await vi.waitFor(() => {
+				expect(kvTrackEvent).toHaveBeenCalledWith('post-checkout', 'view', 'lend-from-after-goal-set');
+				expect(cookieStore.remove).toHaveBeenCalledWith(LEND_AFTER_GOAL_SET_COOKIE, { path: '/' });
+			});
+		});
+
+		it('tracks and clears without waiting on goal data', async () => {
+			mockCheckCompletedGoal = vi.fn(() => new Promise(() => {}));
+
+			const { kvTrackEvent, cookieStore } = renderComponent({
+				cookieValues: { [LEND_AFTER_GOAL_SET_COOKIE]: '12345' },
+			});
+
+			await vi.waitFor(() => {
+				expect(kvTrackEvent).toHaveBeenCalledWith('post-checkout', 'view', 'lend-from-after-goal-set');
+				expect(cookieStore.remove).toHaveBeenCalledWith(LEND_AFTER_GOAL_SET_COOKIE, { path: '/' });
+			});
+		});
+
+		// Back re-mounts the thanks page the lender left from, and the marker has to
+		// survive it for the order that ends the flow.
+		it('does not track the order it was marked from', async () => {
+			await router.push('/?kiva_transaction_id=12345');
+
+			const { kvTrackEvent, cookieStore } = renderComponent({
+				cookieValues: { [LEND_AFTER_GOAL_SET_COOKIE]: '12345' },
+			});
+
+			await vi.waitFor(() => {
+				expect(kvTrackEvent).toHaveBeenCalled();
+			});
+			expect(kvTrackEvent).not.toHaveBeenCalledWith('post-checkout', 'view', 'lend-from-after-goal-set');
+			expect(cookieStore.remove).not.toHaveBeenCalledWith(LEND_AFTER_GOAL_SET_COOKIE, { path: '/' });
+		});
+
+		it('does not track the order without the attribution', async () => {
+			const { kvTrackEvent } = renderComponent();
+
+			await vi.waitFor(() => {
+				expect(kvTrackEvent).toHaveBeenCalled();
+			});
+			expect(kvTrackEvent).not.toHaveBeenCalledWith('post-checkout', 'view', 'lend-from-after-goal-set');
 		});
 	});
 });

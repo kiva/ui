@@ -217,7 +217,11 @@ import useGoalSettingRecommendedLoan, {
 } from '#src/composables/useGoalSettingRecommendedLoan';
 import useExpressCheckoutModal from '#src/composables/useExpressCheckoutModal';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
-import { EXPRESS_CHECKOUT_EXP_KEY } from '#src/util/thanksPage/expressCheckoutUtils';
+import {
+	clearLendAfterGoalSetAttribution,
+	EXPRESS_CHECKOUT_EXP_KEY,
+	isLendAfterGoalSetOrder,
+} from '#src/util/thanksPage/expressCheckoutUtils';
 import useBadgeData from '#src/composables/useBadgeData';
 import {
 	incrementGoalSignupThanksViewCount,
@@ -614,6 +618,13 @@ const handleUpdateGoalChoices = updatedCategory => {
 };
 
 onMounted(async () => {
+	// Read before the goal awaits below. If those hang or fail, the attribution would
+	// otherwise stay set and credit a later unrelated order.
+	if (isLendAfterGoalSetOrder(cookieStore, router.currentRoute.value?.query?.kiva_transaction_id)) {
+		$kvTrackEvent('post-checkout', 'view', 'lend-from-after-goal-set');
+		clearLendAfterGoalSetAttribution(cookieStore);
+	}
+
 	await loadGoalData();
 	const year = new Date().getFullYear();
 	// Loans already in totalLoanCount after checkout

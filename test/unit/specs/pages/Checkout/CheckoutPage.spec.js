@@ -663,3 +663,37 @@ describe('CheckoutPage showTipFromBalanceVariant', () => {
 		})).toBe(false);
 	});
 });
+
+describe('CheckoutPage lend-after-goal-set attribution', () => {
+	const makeContext = (overrides = {}) => ({
+		myId: null,
+		apollo: {},
+		isLoggedIn: false,
+		startLifecycleCapture: vi.fn(),
+		logBasketState: vi.fn(),
+		handleToast: vi.fn(),
+		getPromoInformationFromBasket: vi.fn(),
+		$nextTick: cb => cb(),
+		$kvTrackEvent: vi.fn(),
+		cookieStore: { get: vi.fn(), remove: vi.fn() },
+		...overrides,
+	});
+
+	it('tracks the basket view when the lender arrived from the goal-set recommended loan', async () => {
+		const context = makeContext({ cookieStore: { get: vi.fn(() => '12345'), remove: vi.fn() } });
+
+		await CheckoutPage.mounted.call(context);
+
+		expect(context.$kvTrackEvent).toHaveBeenCalledWith('basket', 'view', 'from-lend-after-goal-set');
+		// The thanks page still needs the attribution, so the basket view must not consume it.
+		expect(context.cookieStore.remove).not.toHaveBeenCalled();
+	});
+
+	it('does not track the basket view without the attribution', async () => {
+		const context = makeContext();
+
+		await CheckoutPage.mounted.call(context);
+
+		expect(context.$kvTrackEvent).not.toHaveBeenCalledWith('basket', 'view', 'from-lend-after-goal-set');
+	});
+});
