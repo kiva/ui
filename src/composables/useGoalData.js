@@ -3,6 +3,7 @@ import {
 	inject,
 	ref,
 } from 'vue';
+import { differenceInCalendarDays, endOfYear } from 'date-fns';
 
 import useGoalDataQuery from '#src/graphql/query/useGoalData.graphql';
 import useGoalDataProgressQuery from '#src/graphql/query/useGoalDataProgress.graphql';
@@ -71,6 +72,30 @@ export const GOALS_CURRENT_YEAR = new Date().getFullYear();
 export const LAST_YEAR_KEY = GOALS_CURRENT_YEAR - 1;
 export const COMPLETED_GOAL_THRESHOLD = 100;
 export const HALF_GOAL_THRESHOLD = 50;
+
+/** The goal-card countdown appears once this many (or fewer) days remain in the goal year. */
+export const GOAL_YEAR_COUNTDOWN_WINDOW_DAYS = 90;
+
+/**
+ * Days left in a goal's year, counting the user's local calendar day through December 31
+ * inclusive (Dec 31 → 1). Counted in local calendar days (date-fns differenceInCalendarDays), so it
+ * is DST-safe and never drifts to the UTC date. Returns null when the goal has no usable start
+ * date, its year is already over (local Jan 1 onward), or more than the countdown window remains.
+ *
+ * @param {Object|null} goal Goal with an ISO `dateStarted`; its calendar year is the goal year.
+ * @param {Date} [now] The effective "now". Pass getGoalInReviewNow() to honor the QA date
+ *   override; defaults to the browser clock.
+ * @returns {number|null} Days left (1..GOAL_YEAR_COUNTDOWN_WINDOW_DAYS), or null when hidden.
+ */
+export function getGoalYearDaysLeft(goal, now = new Date()) {
+	if (!goal?.dateStarted) return null;
+	const goalYear = new Date(goal.dateStarted).getFullYear();
+	if (Number.isNaN(goalYear)) return null;
+	// Local calendar days from today through December 31 of the goal year, inclusive.
+	const daysLeft = differenceInCalendarDays(endOfYear(new Date(goalYear, 0, 1)), now) + 1;
+	if (daysLeft < 1 || daysLeft > GOAL_YEAR_COUNTDOWN_WINDOW_DAYS) return null;
+	return daysLeft;
+}
 
 const MIN_CATEGORY_LOANS_AMOUNT = 100;
 const RECOMMENDED_LOANS_LIMIT = 4;

@@ -36,6 +36,7 @@
 				:category-name="categoryName"
 				:category-id="userGoal?.category"
 				:show-recap-cta="showRecapCta"
+				:goal-date-started="userGoal?.dateStarted"
 				@button-click="handleContinueClick"
 				@edit-button-click="handleEditClick"
 			/>

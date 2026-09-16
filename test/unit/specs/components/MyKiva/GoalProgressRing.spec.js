@@ -1,6 +1,8 @@
 import { render } from '@testing-library/vue';
+import { nextTick } from 'vue';
 import GoalProgressRing from '#src/components/MyKiva/GoalProgressRing';
 import goalCopy from '#src/util/goalCopy';
+import { COMPLETED_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import { RECAP_CTA_LABEL } from '#src/util/goalInReview';
 import {
 	ID_SUPPORT_ALL,
@@ -170,5 +172,75 @@ describe('GoalProgressRing', () => {
 			await editLink.click();
 			expect(emitted()['edit-button-click']).toBeTruthy();
 		});
+	});
+});
+
+describe('GoalProgressRing days left countdown', () => {
+	// The ring resolves the countdown itself after mount from the goal's start date and the
+	// recapDate-aware "now", so these tests pin "today" through the URL exactly as MyKiva QA does.
+	const GOAL_DATE_STARTED = '2026-02-01T12:00:00.000Z'; // a 2026 goal in every timezone
+	const renderCard = props => renderRing({
+		variant: 'card',
+		goalDateStarted: GOAL_DATE_STARTED,
+		goalProgressPercentage: 40,
+		...props,
+	});
+	const pinToday = date => window.history.pushState({}, '', `/?recapDate=${date}`);
+
+	afterEach(() => {
+		// Clear the recapDate so it never leaks into other tests' "now".
+		window.history.pushState({}, '', '/');
+	});
+
+	it('shows the countdown copy with its icon in the card variant inside the window', async () => {
+		pinToday('2026-11-15');
+		const { getByTestId } = renderCard();
+		await nextTick();
+		const countdown = getByTestId('goal-days-left');
+		expect(countdown.textContent).toContain(goalCopy.daysLeftInGoalYear(47));
+		expect(countdown.querySelector('svg')).not.toBeNull();
+	});
+
+	it('uses the singular copy on the last day', async () => {
+		pinToday('2026-12-31');
+		const { getByTestId } = renderCard();
+		await nextTick();
+		expect(getByTestId('goal-days-left').textContent).toContain('1 day left!');
+	});
+
+	it('renders no countdown outside the 90-day window', async () => {
+		pinToday('2026-06-15');
+		const { queryByTestId } = renderCard();
+		await nextTick();
+		expect(queryByTestId('goal-days-left')).toBeNull();
+	});
+
+	it('renders no countdown once the goal is complete, even inside the window', async () => {
+		pinToday('2026-11-15');
+		const { queryByTestId } = renderCard({ goalProgressPercentage: COMPLETED_GOAL_THRESHOLD });
+		await nextTick();
+		expect(queryByTestId('goal-days-left')).toBeNull();
+	});
+
+	it('never renders the countdown in the modal variant', async () => {
+		pinToday('2026-11-15');
+		const { queryByTestId } = renderRing({ variant: 'modal', goalDateStarted: GOAL_DATE_STARTED });
+		await nextTick();
+		expect(queryByTestId('goal-days-left')).toBeNull();
+	});
+
+	it('renders no countdown without a goal start date', async () => {
+		pinToday('2026-11-15');
+		const { queryByTestId } = renderCard({ goalDateStarted: null });
+		await nextTick();
+		expect(queryByTestId('goal-days-left')).toBeNull();
+	});
+
+	it('keeps the Edit button next to the title when the countdown is shown', async () => {
+		pinToday('2026-11-15');
+		const { getByRole, getByTestId } = renderCard();
+		await nextTick();
+		expect(getByTestId('goal-days-left')).toBeTruthy();
+		expect(getByRole('button', { name: 'Edit' })).toBeTruthy();
 	});
 });
