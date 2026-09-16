@@ -12,11 +12,6 @@ export const EXPRESS_CHECKOUT_EXP_KEY = 'ty_page_express_checkout';
  * Cookie set when the goal-set recommended loan sends the lender to the basket
  * instead of the express checkout modal. The checkout and thanks pages read it to
  * attribute their views to that flow.
- *
- * Its value is the order the lender was on when it was set, because the thanks page
- * they leave from is the same component that later ends the order and Back can
- * return to it. It expires after an hour so a lender who abandons checkout, and so
- * never reaches a thanks page to clear it, stops being credited.
  */
 export const LEND_AFTER_GOAL_SET_COOKIE = 'lend_after_goal_set';
 
@@ -109,8 +104,10 @@ export async function removeBasketCredit({ apollo, basketId, creditType }) {
 // cookie at all and silence the checkout event.
 const transactionKey = transactionId => String(transactionId ?? '') || 'none';
 
-// The hour has to outlast a slow checkout as well as the trip to it, since expiring
-// mid-checkout loses both events.
+// Expires after an hour so a lender who abandons checkout, and so never reaches a
+// thanks page to clear the cookie, stops being credited. The hour has to outlast a
+// slow checkout as well as the trip to it, since expiring mid-checkout loses both
+// events.
 export const setLendAfterGoalSetAttribution = (cookieStore, originTransactionId) => {
 	cookieStore?.set(LEND_AFTER_GOAL_SET_COOKIE, transactionKey(originTransactionId), {
 		path: '/',
@@ -122,6 +119,9 @@ export const hasLendAfterGoalSetAttribution = cookieStore => {
 	return !!cookieStore?.get(LEND_AFTER_GOAL_SET_COOKIE);
 };
 
+// The stored value is the order the mark was made on. The thanks page the lender
+// leaves from is the same component that later ends the order and Back can return to
+// it, so only a different order counts as the one the flow produced.
 export const isLendAfterGoalSetOrder = (cookieStore, transactionId) => {
 	const origin = cookieStore?.get(LEND_AFTER_GOAL_SET_COOKIE);
 	return !!origin && origin !== transactionKey(transactionId);
