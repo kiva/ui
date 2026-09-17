@@ -13,11 +13,6 @@
 				:lending-stats="lendingStats"
 			/>
 		</section>
-		<section v-if="showMyGivingFundsCard" class="tw-mt-4">
-			<MyGivingFundsCard
-				:user-id="userInfo?.id"
-			/>
-		</section>
 		<MyKivaFeaturedSlot
 			v-if="goalsRowEnabled && shouldRenderFeaturedSlot"
 			:key="`featured-slot-${goalRefreshKey}`"
@@ -225,7 +220,6 @@ import useGoalInReview, { GOAL_RECAP_DEEP_LINK } from '#src/composables/useGoalI
 import BorrowerSideSheetWrapper from '#src/components/BorrowerSideSheet/BorrowerSideSheetWrapper';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
-import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';
 import AsyncMyKivaSection from '#src/pages/MyKiva/AsyncMyKivaSection';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
@@ -279,7 +273,6 @@ export default {
 		LendingCategorySection,
 		MyKivaBorrowerCarousel,
 		MyKivaContainer,
-		MyGivingFundsCard,
 		MyKivaStats,
 		LendingStats,
 		MyKivaFeaturedSlot,
@@ -338,10 +331,6 @@ export default {
 		goalRefreshKey: {
 			type: Number,
 			default: 0
-		},
-		showMyGivingFundsCard: {
-			type: Boolean,
-			default: false
 		},
 		ownedGivingFunds: {
 			type: Array,
