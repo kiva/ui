@@ -5,8 +5,8 @@
 				Your fundraisers
 			</h2>
 			<a
-				class="tw-flex tw-items-center tw-gap-0.5 tw-text-button-link tw-text-action
-					tw-no-underline hover:tw-underline"
+				class="tw-relative tw-z-1 tw-flex tw-items-center tw-gap-0.5 tw-text-button-link
+					tw-text-action tw-no-underline hover:tw-underline"
 				href="/gfm"
 				v-kv-track-event="['giving-funds', 'click', 'mykiva-manage-all-fundraisers']"
 			>
