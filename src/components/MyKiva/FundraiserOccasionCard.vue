@@ -4,6 +4,7 @@
 			hover:tw-shadow-md"
 	>
 		<img
+			v-if="optimizedImageUrl"
 			class="tw-w-10 tw-shrink-0 tw-rounded-sm tw-object-cover"
 			:class="compact ? 'tw-h-10' : 'tw-h-12.5'"
 			:src="optimizedImageUrl"
@@ -16,20 +17,20 @@
 			<p class="tw-text-base">
 				{{ title }}
 			</p>
-			<kv-text-link
-				class="card-link tw-self-start"
+			<a
+				class="card-link tw-self-start tw-text-button-link tw-text-action
+					tw-no-underline hover:tw-underline"
 				:href="to"
 				v-kv-track-event="trackEvent"
 			>
 				{{ linkLabel }}
-			</kv-text-link>
+			</a>
 		</div>
 	</div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
-import { KvTextLink } from '@kiva/kv-components';
 import { optimizeContentfulUrl } from '#src/util/imageUtils';
 
 const props = defineProps({

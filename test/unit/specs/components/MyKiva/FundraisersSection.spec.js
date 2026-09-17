@@ -14,7 +14,7 @@ const mountComponent = (funds = []) => mount(FundraisersSection, {
 	global: {
 		stubs: {
 			FundraisersCarousel: stub('FundraisersCarousel'),
-			YourFundraisersSection: stub('YourFundraisersSection', ['fund']),
+			YourFundraisersSection: stub('YourFundraisersSection', ['funds']),
 		},
 	},
 });
@@ -34,14 +34,18 @@ describe('FundraisersSection', () => {
 		expect(wrapper.find('.FundraisersCarousel-stub').exists()).toBe(false);
 	});
 
-	it('passes the most recently created fund when the lender owns several', () => {
+	it('passes every fund, most recently created first', () => {
 		const wrapper = mountComponent([
 			fundOwnedOn('2024-05-01'),
 			fundOwnedOn('2026-03-01'),
 			fundOwnedOn('2025-07-01'),
 		]);
-		expect(wrapper.findComponent({ name: 'YourFundraisersSection' }).props('fund').id)
-			.toBe('fund-2026-03-01');
+		const passed = wrapper.findComponent({ name: 'YourFundraisersSection' }).props('funds');
+		expect(passed.map(f => f.id)).toEqual([
+			'fund-2026-03-01',
+			'fund-2025-07-01',
+			'fund-2024-05-01',
+		]);
 	});
 
 	it('does not mutate the funds prop while sorting', () => {

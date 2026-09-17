@@ -1,118 +1,91 @@
 <template>
 	<div>
-		<div class="tw-flex tw-flex-col-reverse tw-items-start tw-gap-1 tw-mb-2 md:tw-flex-row md:tw-items-center">
+		<div class="tw-flex tw-items-center tw-gap-1 tw-mb-2">
 			<h2 class="!tw-text-title">
 				Your fundraisers
 			</h2>
-			<KvPill
-				bg-class="tw-bg-brand tw-text-primary-inverse"
-				rounded-class="tw-rounded"
+			<a
+				class="tw-flex tw-items-center tw-gap-0.5 tw-text-button-link tw-text-action
+					tw-no-underline hover:tw-underline"
+				href="/gfm"
+				v-kv-track-event="['giving-funds', 'click', 'mykiva-manage-all-fundraisers']"
 			>
-				<template #icon>
-					<KvMaterialIcon class="tw-h-2 tw-w-2" :icon="mdiBullhornOutline" />
-				</template>
-				New!
-			</KvPill>
+				Manage All
+				<KvMaterialIcon class="tw-h-2 tw-w-2" :icon="mdiArrowTopRight" />
+			</a>
 		</div>
-		<div class="tw-flex tw-flex-col tw-gap-2 lg:tw-flex-row lg:tw-gap-4">
-			<div
-				class="tw-flex tw-flex-col tw-gap-2 tw-py-1 tw-pl-1 tw-pr-2 tw-bg-white tw-rounded
-					md:tw-flex-row md:tw-items-center lg:tw-flex-[2]"
-			>
-				<div class="tw-flex tw-items-center tw-gap-1 md:tw-flex-1">
-					<img
-						v-if="avatarUrl"
-						class="tw-w-8 tw-h-8 tw-shrink-0 tw-rounded-full tw-object-cover"
-						:src="avatarUrl"
-						alt=""
-						width="64"
-						height="64"
-					>
-					<div
-						v-else
-						class="tw-w-8 tw-h-8 tw-shrink-0 tw-rounded-full tw-bg-white tw-border-2
-							tw-border-brand-100 tw-flex tw-items-center tw-justify-center tw-p-1"
-					>
-						<KivaLogo class="tw-w-full tw-text-brand tw-opacity-50" />
-					</div>
-					<p class="tw-text-title">
-						{{ fundName }}
-					</p>
-				</div>
-				<div class="tw-flex tw-flex-wrap tw-gap-1">
-					<div
-						v-for="stat in stats"
-						:key="stat.label"
-						class="tw-flex tw-flex-col tw-gap-0.5 tw-p-1 tw-bg-secondary tw-rounded-sm"
-					>
-						<span class="tw-text-button-link">{{ stat.value }}</span>
-						<span class="tw-text-caption">{{ stat.label }}</span>
-					</div>
-				</div>
-				<kv-text-link
-					class="tw-self-end md:tw-self-center"
-					:href="`/gf/${fundId}`"
-					v-kv-track-event="['giving-funds', 'click', 'mykiva-your-fundraiser-view']"
-				>
-					View
-				</kv-text-link>
-			</div>
-			<FundraiserOccasionCard
-				class="lg:tw-flex-1"
-				compact
-				id="start-another"
-				title="Have another event you'd like to fundraise for?"
-				link-label="Start another fund here"
-				:to="FUNDRAISER_LANDING_PAGE"
-				:image="communityImage.image"
-				:image-alt="communityImage.imageAlt"
-			/>
-		</div>
+		<KvCarousel
+			class="tw-w-full tw--mt-5"
+			controls-top-right
+			:slide-max-width="singleSlideWidth"
+			:embla-options="{ loop: false, align: 'start' }"
+			:multiple-slides-visible="true"
+		>
+			<template v-for="(slide, idx) in slides" #[`slide${idx}`] :key="slide.key">
+				<YourFundraiserCard v-if="slide.fund" :fund="slide.fund" />
+				<FundraiserOccasionCard
+					v-else
+					compact
+					:style="{ maxWidth: startAnotherMaxWidth }"
+					id="start-another"
+					title="Have another event you'd like to fundraise for?"
+					link-label="Start another fund here"
+					:to="FUNDRAISER_LANDING_PAGE"
+					:image="communityImage.image"
+					:image-alt="communityImage.imageAlt"
+				/>
+			</template>
+		</KvCarousel>
 	</div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
-import numeral from 'numeral';
-import { KvMaterialIcon, KvPill, KvTextLink } from '@kiva/kv-components';
-import { mdiBullhornOutline } from '@mdi/js';
-import KivaLogo from '#src/assets/inline-svgs/logos/kiva-logo.svg';
+import { KvCarousel, KvMaterialIcon } from '@kiva/kv-components';
+import { mdiArrowTopRight } from '@mdi/js';
 import FundraiserOccasionCard from '#src/components/MyKiva/FundraiserOccasionCard';
+import YourFundraiserCard from '#src/components/MyKiva/YourFundraiserCard';
+import useBreakpoints from '#src/composables/useBreakpoints';
 import { communityImage, FUNDRAISER_LANDING_PAGE } from '#src/util/fundraiserOccasions';
-import { parseMoney } from '#src/util/numberUtils';
-import { formatPossessiveName } from '#src/util/stringParserUtils';
 
 const props = defineProps({
-	fund: {
-		type: Object,
+	funds: {
+		type: Array,
 		required: true,
 	},
 });
 
-const fundId = computed(() => props.fund?.id);
+const { isMedium, isLarge } = useBreakpoints();
 
-const avatarUrl = computed(() => props.fund?.display?.avatar?.url ?? null);
+/**
+ * One list so the slot names stay in order: Vue puts a standalone dynamic slot ahead of the
+ * ones a v-for generates, which put the closing card first.
+ */
+const slides = computed(() => [
+	...props.funds.map(fund => ({ key: fund.id, fund })),
+	{ key: 'start-another', fund: null },
+]);
 
-const fundName = computed(() => {
-	const { ctaTitle } = props.fund?.display ?? {};
-	if (ctaTitle) return ctaTitle;
+/**
+ * Impact progress sits directly below this row and pins its cards to a fixed width, so a
+ * percentage here drifts out of alignment at every viewport but one. Spanning two of those
+ * cards plus the carousel gap keeps the two rows on the same grid.
+ */
+const IMPACT_CARD_WIDTH = 336;
+const IMPACT_CARD_GAP = 32;
 
-	const owner = formatPossessiveName(props.fund?.owner?.name);
-	return owner ? `${owner} fundraiser` : 'Your fundraiser';
+const singleSlideWidth = computed(() => {
+	if (isLarge.value) {
+		return `${(IMPACT_CARD_WIDTH * 2) + IMPACT_CARD_GAP}px`;
+	}
+	if (isMedium.value) {
+		return '80%';
+	}
+	return '90%';
 });
 
-const stats = computed(() => [
-	{
-		label: 'Participants',
-		value: numeral(props.fund?.totalParticipants ?? 0).format('0,0'),
-	},
-	{
-		label: 'Dollars raised',
-		value: numeral(parseMoney(props.fund?.currentAmountDonated)).format('$0,0.00'),
-	},
-	{
-		label: 'Lives touched',
-		value: numeral(props.fund?.lendingStats?.totalLivesTouched ?? 0).format('0,0'),
-	},
-]);
+// Its copy would otherwise wrap only at the slide cap, leaving it as wide as a fund card.
+const startAnotherMaxWidth = computed(() => (
+	isLarge.value ? `${IMPACT_CARD_WIDTH}px` : '100%'
+));
 </script>

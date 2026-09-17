@@ -1,3 +1,5 @@
+import { formatPossessiveName } from '#src/util/stringParserUtils';
+
 /**
  * Well-known giving fund IDs, keyed by fund identity.
  */
@@ -49,6 +51,52 @@ export function isDisasterReliefFundOnlySupporter(my) {
 	return (my?.givingFunds?.totalCount ?? 0) === 0
 		&& reliefFundDonationCount > 0
 		&& reliefFundDonationCount === (my?.givingFundParticipation?.totalCount ?? 0);
+}
+
+/**
+ * The event word each occasion puts in a fund's default headline, mirroring the registry the
+ * giving fund page derives its title from in cms-page-server.
+ *
+ * OTHER is present with no word of its own: it is a known occasion whose headline names no
+ * event, reading "Morgan's fund". Occasions absent here are ones that registry does not carry
+ * either — the enum has members it never added pills for — and those take the generic default,
+ * which is what the fund page shows for them.
+ */
+const OCCASION_HEADLINE_EVENT = {
+	BIRTHDAY: 'birthday',
+	COMPETITION: 'competition',
+	HOLIDAY: 'holiday',
+	MEMORIAL: 'memorial',
+	WEDDING: 'wedding',
+	OTHER: null,
+};
+
+/**
+ * A giving fund's title, resolved the same way the fund page resolves it: the owner's own
+ * title, else an occasion headline, else the generic default. Anything else shows a lender a
+ * different name here than on their own fund page.
+ *
+ * @param {Object} fund A giving fund carrying display, organization and owner
+ * @returns {string}
+ */
+export function getGivingFundTitle(fund) {
+	const { display } = fund ?? {};
+	if (display?.ctaTitle) {
+		return display.ctaTitle;
+	}
+
+	const organizerName = display?.displayName
+		|| fund?.organization?.name
+		|| fund?.owner?.name
+		|| 'the organizer';
+	const owner = formatPossessiveName(organizerName);
+
+	if (display?.occasion && display.occasion in OCCASION_HEADLINE_EVENT) {
+		const event = OCCASION_HEADLINE_EVENT[display.occasion];
+		return [owner, event, 'fund'].filter(Boolean).join(' ');
+	}
+
+	return `${owner} lasting impact fund`;
 }
 
 /**

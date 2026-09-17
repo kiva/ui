@@ -44,9 +44,12 @@
 							Learn more about fundraisers and how they work here.
 						</p>
 						<template #action>
-							<kv-text-link :href="FUNDRAISER_LANDING_PAGE">
+							<a
+								class="tw-text-button-link tw-text-action tw-no-underline hover:tw-underline"
+								:href="FUNDRAISER_LANDING_PAGE"
+							>
 								More about fundraisers
-							</kv-text-link>
+							</a>
 						</template>
 					</KvTooltip>
 				</div>
@@ -73,7 +76,6 @@ import {
 	KvCarousel,
 	KvMaterialIcon,
 	KvPill,
-	KvTextLink,
 	KvTooltip,
 } from '@kiva/kv-components';
 import { mdiBullhornOutline, mdiInformationOutline } from '@mdi/js';

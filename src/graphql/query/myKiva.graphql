@@ -21,6 +21,8 @@ query myKivaQuery {
         totalParticipants
         display {
           ctaTitle
+          displayName
+          occasion
           avatar {
             id
             url(customSize: "w200h200")
@@ -28,6 +30,10 @@ query myKivaQuery {
         }
         lendingStats {
           totalLivesTouched
+        }
+        organization {
+          id
+          name
         }
         owner {
           id
