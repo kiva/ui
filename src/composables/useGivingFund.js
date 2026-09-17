@@ -71,41 +71,39 @@ export default function useGivingFund(apollo) {
 
 	const getFundsContributedToIds = async (ownerId = null) => {
 		const fundIds = [];
-		const donationEntries = [];
-		await fetchGivingFundDonationData().then(data => {
-			const totalDonationEntryCount = data?.givingFundParticipation?.totalCount || 0;
-			// extract unique fund ids from donation data
-			if (totalDonationEntryCount && data?.givingFundParticipation?.values.length) {
-				// push initial donation entry to fund entries
-				donationEntries.push(...data.givingFundParticipation.values);
-				// if our totalCount is greater than our default limit, fetch the rest
-				if (totalDonationEntryCount > DEFAULT_LIMIT) {
-					const offsets = generateOffsets(totalDonationEntryCount, DEFAULT_LIMIT);
-					// fetch all offsets in parallel
-					// eslint-disable-next-line max-len
-					const fetchPromises = offsets.map(offset => fetchGivingFundDonationData(fundIds, DEFAULT_LIMIT, offset));
-					// wait for all fetches to complete
-					Promise.all(fetchPromises).then(results => {
-						// extract donation entries from each result
-						results.forEach(result => {
-							if (result?.givingFundParticipation?.values.length) {
-								donationEntries.push(...result.givingFundParticipation.values);
-							}
-						});
-					});
-				}
-				// filter out funds without owner or owned by current user
-				const filteredDonations = donationEntries?.filter(donation => {
-					return donation?.givingFund?.owner?.id && donation?.givingFund?.owner?.id !== parseInt(ownerId, 10);
-				});
-				// extract unique fund ids
-				filteredDonations.forEach(donation => {
-					if (!fundIds.includes(donation.givingFund?.id)) {
-						fundIds.push(donation.givingFund?.id);
-					}
-				});
+		const data = await fetchGivingFundDonationData();
+		const totalDonationEntryCount = data?.givingFundParticipation?.totalCount || 0;
+		const firstPage = data?.givingFundParticipation?.values ?? [];
+
+		if (!totalDonationEntryCount || !firstPage.length) {
+			return fundIds;
+		}
+
+		const donationEntries = [...firstPage];
+
+		// if our totalCount is greater than our default limit, fetch the rest
+		if (totalDonationEntryCount > DEFAULT_LIMIT) {
+			const offsets = generateOffsets(totalDonationEntryCount, DEFAULT_LIMIT);
+			// fetch all offsets in parallel
+			const results = await Promise.all(
+				offsets.map(offset => fetchGivingFundDonationData([], DEFAULT_LIMIT, offset))
+			);
+			results.forEach(result => {
+				donationEntries.push(...(result?.givingFundParticipation?.values ?? []));
+			});
+		}
+
+		// filter out funds without owner or owned by current user
+		const filteredDonations = donationEntries.filter(donation => {
+			return donation?.givingFund?.owner?.id && donation?.givingFund?.owner?.id !== parseInt(ownerId, 10);
+		});
+		// extract unique fund ids
+		filteredDonations.forEach(donation => {
+			if (!fundIds.includes(donation.givingFund?.id)) {
+				fundIds.push(donation.givingFund?.id);
 			}
 		});
+
 		return fundIds;
 	};
 

@@ -338,9 +338,40 @@ describe('useGivingFund', () => {
 
 			// Should make 2 calls - initial + 1 for pagination
 			expect(mockApollo.query).toHaveBeenCalledTimes(2);
-			// Note: The function has a bug where Promise.all is not awaited, so only initial entries are returned
-			// This test documents the current behavior - all 20 from first call are included
-			expect(result.length).toBe(20);
+			expect(result.length).toBe(25);
+		});
+
+		it('should not filter later pages by the ids gathered so far', async () => {
+			mockApollo.query.mockResolvedValueOnce({
+				data: {
+					my: {
+						givingFundParticipation: {
+							totalCount: 21,
+							values: Array(20).fill(null).map((_, i) => ({
+								givingFund: { id: i + 1, owner: { id: 100 + i } },
+							})),
+						},
+					},
+				},
+			});
+			mockApollo.query.mockResolvedValueOnce({
+				data: {
+					my: {
+						givingFundParticipation: {
+							totalCount: 21,
+							values: [{ givingFund: { id: 21, owner: { id: 121 } } }],
+						},
+					},
+				},
+			});
+
+			await composable.getFundsContributedToIds(999);
+
+			expect(mockApollo.query).toHaveBeenLastCalledWith(
+				expect.objectContaining({
+					variables: { limit: 20, offset: 20 },
+				})
+			);
 		});
 	});
 
