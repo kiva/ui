@@ -85,6 +85,15 @@ const createGoalData = (overrides = {}) => ({
 	completedGoalsHistory: ref(overrides.completedGoalsHistory ?? []),
 });
 
+const historyEntry = (year, target = 5, category = 'womens-equality') => ({
+	status: 'completed',
+	// Mid-year so timezone offsets can't shift the parsed year.
+	dateStarted: `${year}-06-15T12:00:00.000Z`,
+	target,
+	category,
+	name: `Goal ${year}`,
+});
+
 const renderComponent = (props = {}, goalData = createGoalData()) => {
 	return render(BadgesSectionV2, {
 		props: {
@@ -191,15 +200,6 @@ describe('BadgesSectionV2', () => {
 	});
 
 	describe('completed-goals history', () => {
-		const historyEntry = (year, target = 5, category = 'womens-equality') => ({
-			status: 'completed',
-			// Mid-year so timezone offsets can't shift the parsed year.
-			dateStarted: `${year}-06-15T12:00:00.000Z`,
-			target,
-			category,
-			name: `Goal ${year}`,
-		});
-
 		it('does not render any historical cards when history is empty', async () => {
 			const goalData = createGoalData({ loading: false, completedGoalsHistory: [] });
 			const { getAllByTestId } = await renderComponent(
@@ -303,6 +303,95 @@ describe('BadgesSectionV2', () => {
 			);
 			const years = getAllByTestId('progress-card').map(el => el.dataset.year);
 			expect(years).toContain('2026');
+		});
+	});
+
+	describe('completed goal placement across the goal year', () => {
+		const completedUserGoal = {
+			target: 10,
+			name: 'Completed',
+			category: 'womens-equality',
+			dateStarted: '2026-06-15T12:00:00',
+		};
+
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		it('keeps a completed goal at the front through December 31 of its goal year', async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-12-31T12:00:00'));
+			const goalData = createGoalData({
+				loading: false,
+				userGoal: completedUserGoal,
+				userGoalAchieved: true,
+				goalProgress: 10,
+				completedGoalsHistory: [historyEntry(2025)],
+			});
+			const { getAllByTestId } = await renderComponent(
+				{ badgeData: defaultBadgeData },
+				goalData,
+			);
+			const cards = getAllByTestId('progress-card');
+			expect(cards[0].textContent).toBe('Completed');
+		});
+
+		it('moves a completed goal to the end once its goal year has ended', async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2027-01-01T12:00:00'));
+			const goalData = createGoalData({
+				loading: false,
+				userGoal: completedUserGoal,
+				userGoalAchieved: true,
+				goalProgress: 10,
+				completedGoalsHistory: [historyEntry(2025)],
+			});
+			const { getAllByTestId } = await renderComponent(
+				{ badgeData: defaultBadgeData },
+				goalData,
+			);
+			const cards = getAllByTestId('progress-card');
+			expect(cards[cards.length - 1].textContent).toBe('Goal 2025');
+			expect(cards[cards.length - 2].textContent).toBe('Completed');
+		});
+
+		it('keeps an in-progress goal at the front even after its start year has ended', async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2027-01-01T12:00:00'));
+			const goalData = createGoalData({
+				loading: false,
+				userGoal: {
+					target: 10,
+					name: 'Still going',
+					category: 'womens-equality',
+					dateStarted: '2026-06-15T12:00:00',
+				},
+				userGoalAchieved: false,
+				goalProgress: 3,
+			});
+			const { getAllByTestId } = await renderComponent(
+				{ badgeData: defaultBadgeData },
+				goalData,
+			);
+			const cards = getAllByTestId('progress-card');
+			expect(cards[0].textContent).toBe('Still going');
+		});
+
+		it('keeps an achieved goal with no known start date at the front', async () => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2027-01-01T12:00:00'));
+			const goalData = createGoalData({
+				loading: false,
+				userGoal: { target: 10, name: 'No date', category: 'womens-equality' },
+				userGoalAchieved: true,
+				goalProgress: 10,
+			});
+			const { getAllByTestId } = await renderComponent(
+				{ badgeData: defaultBadgeData },
+				goalData,
+			);
+			const cards = getAllByTestId('progress-card');
+			expect(cards[0].textContent).toBe('No date');
 		});
 	});
 });
