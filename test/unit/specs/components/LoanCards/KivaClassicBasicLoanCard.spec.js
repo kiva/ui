@@ -1,4 +1,6 @@
-import KvClassicLoanCardContainer from '#src/components/LoanCards/KvClassicLoanCardContainer';
+/* eslint-disable import/no-extraneous-dependencies -- @vue/test-utils devDependency */
+import { flushPromises } from '@vue/test-utils';
+import KivaClassicBasicLoanCard from '#src/components/LoanCards/KivaClassicBasicLoanCard';
 
 vi.mock('@sentry/vue', () => ({ captureException: vi.fn(), captureMessage: vi.fn() }));
 
@@ -10,45 +12,18 @@ vi.mock('#src/util/basketUtils', async () => ({
 	handleInvalidBasket: vi.fn(),
 }));
 
-// Verify AI pills flow into the loan card's callouts. Exercised at the computed
-// level to keep the focus on the callout logic rather than the full card mount.
-describe('KvClassicLoanCardContainer.vue AI pills', () => {
-	const { showAiLoanPills, customCallouts } = KvClassicLoanCardContainer.computed;
-
-	it('surfaces AI pills as custom callouts when present', () => {
-		const context = { aiPills: ['Woman-led', 'Agriculture'] };
-		context.showAiLoanPills = showAiLoanPills.call(context);
-
-		expect(context.showAiLoanPills).toBe(true);
-		expect(customCallouts.call(context)).toEqual(['Woman-led', 'Agriculture']);
-	});
-
-	it('renders no custom callouts when there are no AI pills', () => {
-		const context = { aiPills: [] };
-		context.showAiLoanPills = showAiLoanPills.call(context);
-
-		expect(context.showAiLoanPills).toBe(false);
-		expect(customCallouts.call(context)).toEqual([]);
-	});
-});
-
-// Exercised at the method level, matching the computed-level approach above: the point is the
-// error branch, not the rendered card.
-describe('KvClassicLoanCardContainer.vue add to basket while a checkout is running', () => {
+// Exercised at the method level to keep the focus on the error branch rather than the full card.
+describe('KivaClassicBasicLoanCard.vue add to basket while a checkout is running', () => {
 	const createContext = () => ({
 		apollo: {},
 		cookieStore: { get: vi.fn(), set: vi.fn(), remove: vi.fn() },
 		loanId: 123,
-		loan: { name: 'Test' },
-		lessThan25: false,
-		amountLeft: 25,
+		lendAmount: 25,
 		isAdding: false,
-		errorMsg: '',
+		useEmittedAddToBasket: false,
 		$emit: vi.fn(),
 		$showTipMsg: vi.fn(),
 		$kvTrackEvent: vi.fn(),
-		animateBubble: vi.fn(),
-		formatAddedLoan: vi.fn(),
 	});
 
 	beforeEach(() => {
@@ -64,10 +39,10 @@ describe('KvClassicLoanCardContainer.vue add to basket while a checkout is runni
 		setLendAmount.mockRejectedValue([{ message: 'engineer placeholder copy', extensions: { code } }]);
 		const context = createContext();
 
-		await KvClassicLoanCardContainer.methods.addToBasket.call(context, 25);
+		KivaClassicBasicLoanCard.methods.addToBasket.call(context, {});
+		await flushPromises();
 
 		expect(context.$showTipMsg).toHaveBeenCalledWith(CHECKOUT_IN_PROGRESS_MESSAGE, 'error');
-		expect(context.errorMsg).toBe(CHECKOUT_IN_PROGRESS_MESSAGE);
 		// The basket is busy, not broken: deleting kvbskt and reloading would be wrong here.
 		expect(handleInvalidBasket).not.toHaveBeenCalled();
 		expect(context.isAdding).toBe(false);
@@ -77,7 +52,8 @@ describe('KvClassicLoanCardContainer.vue add to basket while a checkout is runni
 		const { setLendAmount, handleInvalidBasket } = await import('#src/util/basketUtils');
 		setLendAmount.mockRejectedValue([{ message: 'gone', extensions: { code: 'shop.invalidBasketId' } }]);
 
-		await KvClassicLoanCardContainer.methods.addToBasket.call(createContext(), 25);
+		KivaClassicBasicLoanCard.methods.addToBasket.call(createContext(), {});
+		await flushPromises();
 
 		expect(handleInvalidBasket).toHaveBeenCalled();
 	});
