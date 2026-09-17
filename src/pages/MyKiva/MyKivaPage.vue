@@ -33,7 +33,7 @@
 			:sidesheet-loan="sidesheetLoan"
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
-			:show-my-giving-funds-card="showMyGivingFundsCard"
+			:owned-giving-funds="ownedGivingFunds"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goal-in-review-enable="goalInReviewEnable"
 			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
@@ -65,7 +65,6 @@ import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import {
 	hasSupportedColombiaReliefFund,
 	isColombiaReliefNextStepActive,
-	isDisasterReliefFundOnlySupporter,
 } from '#src/util/givingFundUtils';
 import useBadgeData, {
 	applyFreshProgressToAchievements,
@@ -125,7 +124,7 @@ export default {
 			sidesheetLoan: {},
 			latestLoan: null,
 			goalRefreshKey: 0,
-			showMyGivingFundsCard: false,
+			ownedGivingFunds: [],
 			recentTransactionLoans: [],
 			goalRecommendedLoanEnable: false,
 			goalInReviewEnable: false,
@@ -334,13 +333,7 @@ export default {
 					public: this.userInfo.userAccount?.public ?? false,
 					inviterName: this.userInfo.userAccount?.inviterName ?? null,
 				};
-				// show giving funds card if user has any giving fund participation
-				const participation = this.userInfo?.givingFundParticipation ?? {};
-				const hasGivingFundParticipation = (participation.totalCount ?? 0) > 0
-					|| (participation.totalAmount ?? 0) > 0;
-				// Hide the card when the lender's only activity is supporting the disaster relief fund
-				this.showMyGivingFundsCard = hasGivingFundParticipation
-					&& !isDisasterReliefFundOnlySupporter(this.userInfo);
+				this.ownedGivingFunds = this.userInfo?.givingFunds?.values ?? [];
 				this.loans = myKivaQueryResult.my?.loans?.values ?? [];
 				this.sidesheetLoan = bpSidesheetLoan?.lend?.loan ?? { id: 0 };
 				const isSideSheetLoanInLoans = this.loans.some(loan => loan?.id === this.sidesheetLoan.id);
