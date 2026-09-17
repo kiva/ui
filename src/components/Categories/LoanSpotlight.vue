@@ -54,35 +54,15 @@ import { gql } from 'graphql-tag';
 import KvResponsiveImage from '#src/components/Kv/KvResponsiveImage';
 import { KvLoadingPlaceholder, KvLoadingText, KvButton } from '@kiva/kv-components';
 
-const allCategoriesQuery = gql`
-	query allCategoriesQuery {
-		browsingCategories(limit: 1000) {
-			values {
-				id
-				url
-				name
-				... on LoanCategorySearchOutput {
-					savedSearch {
-						id
-						loans {
-							totalCount
-						}
-					}
-				}
-			}
-		}
-	}
-`;
-
 const spotlightLoanQuery = gql`
 	query spotlightLoanQuery (
-		$ids: [String!]!,
+		$slug: String!,
 		$limit: Int = 5,
 		$pageNumber: Int = 0,
 		$imgDefaultSize: String = "w520h390",
 		$imgRetinaSize: String = "w1040h780",
 	) {
-		categoriesByIds (ids: $ids) {
+		categoryBySlug (slug: $slug) {
 			id
 			... on LoanCategorySearchOutput {
 				savedSearch (
@@ -91,6 +71,7 @@ const spotlightLoanQuery = gql`
 				) {
 					id
 					loans {
+						totalCount
 						values {
 							id
 							description
@@ -116,32 +97,8 @@ const spotlightLoanQuery = gql`
 	}
 `;
 
-function filterCategoriesForRoute(routePath, categories) {
-	const filteredCategories = categories.filter(
-		category => category.url.split('/').pop() === routePath
-	);
-	return filteredCategories;
-}
-
-function getTargetedCategory(targetedRoutePath, fallbackRoutePath, allCategories) {
-	const targetedCategory = filterCategoriesForRoute(targetedRoutePath, allCategories);
-	const fallbackCategory = filterCategoriesForRoute(fallbackRoutePath, allCategories);
-
-	// no category that matches the targeted name
-	if (targetedCategory.length === 0) {
-		// return id for fallback category
-		return fallbackCategory[0]?.id || null;
-	}
-	// targeted category exists but no loans exist within it
-	if (!targetedCategory[0].savedSearch?.loans?.totalCount) {
-		return fallbackCategory[0]?.id || null;
-	}
-	// isolate targeted category id
-	return targetedCategory[0]?.id || null;
-}
-
-function filterByAnonymizationLevelAndImages(spotlightData) {
-	const firstFiveRecommendedLoans = spotlightData.categoriesByIds?.[0]?.savedSearch?.loans?.values ?? [];
+function filterByAnonymizationLevelAndImages(loans) {
+	const firstFiveRecommendedLoans = loans?.values ?? [];
 	const nonAnonymousLoansWithImages = firstFiveRecommendedLoans.filter(
 		loan => loan.anonymizationLevel !== 'full' && loan.image?.default !== ''
 	);
@@ -171,9 +128,7 @@ export default {
 		return {
 			spotlightPlaceholderImageCTF: '',
 			spotlightLoan: {},
-			allCategoriesData: [],
-			isLoading: true,
-			targetedCategoryId: null
+			isLoading: true
 		};
 	},
 	computed: {
@@ -207,33 +162,27 @@ export default {
 			return [['small', this.spotlightLoan.image?.default ?? '']];
 		}
 	},
-	apollo: {
-		query: allCategoriesQuery,
-		preFetch: true,
-		result(result) {
-			this.allCategoriesData = result.data?.browsingCategories?.values ?? [];
+	methods: {
+		async fetchCategoryLoans(slug) {
+			if (!slug) {
+				return null;
+			}
+			const result = await this.apollo.query({
+				query: spotlightLoanQuery,
+				variables: { slug },
+			});
+			const loans = result.data?.categoryBySlug?.savedSearch?.loans;
+			return loans?.totalCount ? loans : null;
 		},
 	},
-	created() {
-		// eslint-disable-next-line max-len
-		this.targetedCategoryId = getTargetedCategory(this.categorySlug, this.fallbackCategorySlug, this.allCategoriesData);
+	async created() {
+		// ?? short circuits, so the fallback is only fetched when the targeted slug returns nothing
+		const loans = await this.fetchCategoryLoans(this.categorySlug)
+			?? await this.fetchCategoryLoans(this.fallbackCategorySlug);
 
-		// ids is a non-null list, so an unresolved category has to skip the query rather than send [null]
-		if (!this.targetedCategoryId) {
-			this.isLoading = false;
-			return;
-		}
-
-		this.apollo.query({
-			query: spotlightLoanQuery,
-			variables: {
-				ids: [this.targetedCategoryId],
-			},
-		}).then(result => {
-			// filter out loans with anonymizationLevel of full, then take first in list
-			this.isLoading = false;
-			this.spotlightLoan = filterByAnonymizationLevelAndImages(result.data);
-		});
+		// filter out loans with anonymizationLevel of full, then take first in list
+		this.spotlightLoan = filterByAnonymizationLevelAndImages(loans);
+		this.isLoading = false;
 	},
 };
 
