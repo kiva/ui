@@ -275,35 +275,6 @@ describe('useGivingFund', () => {
 		});
 	});
 
-	describe('fetchMyGivingFundsCount', () => {
-		it('should fetch giving funds count successfully', async () => {
-			const mockCountData = {
-				givingFundsCount: 5,
-			};
-			mockApollo.query.mockResolvedValue({
-				data: {
-					my: mockCountData,
-				},
-			});
-
-			const result = await composable.fetchMyGivingFundsCount();
-
-			expect(mockApollo.query).toHaveBeenCalledWith({
-				query: expect.any(Object),
-				fetchPolicy: 'network-only',
-			});
-			expect(result).toEqual(mockCountData);
-		});
-
-		it('should return empty object on error', async () => {
-			mockApollo.query.mockRejectedValue(new Error('Database error'));
-
-			const result = await composable.fetchMyGivingFundsCount();
-
-			expect(result).toBeUndefined();
-		});
-	});
-
 	describe('getFundsContributedToIds - pagination handling', () => {
 		it('should handle pagination when totalCount > DEFAULT_LIMIT', async () => {
 			// Mock first call with totalCount 25 (exceeding default limit of 20)

@@ -1,7 +1,6 @@
 import logFormatter from '#src/util/logFormatter';
 // eslint-disable-next-line max-len
 import myGivingFundParticipationDonations from '#src/graphql/query/portfolio/myGivingFundParticipationDonations.graphql';
-import myGivingFundsCountQuery from '#src/graphql/query/portfolio/myGivingFundsCount.graphql';
 
 export default function useGivingFund(apollo) {
 	const DEFAULT_LIMIT = 20;
@@ -21,21 +20,6 @@ export default function useGivingFund(apollo) {
 		// create an array of offsets to fetch
 		const offsets = Array.from({ length: fetchesNeeded }, (_, i) => (i + 1) * limit);
 		return offsets;
-	};
-
-	/**
-	 * Get the number of Giving Funds a user has
-	 */
-	const fetchMyGivingFundsCount = async () => {
-		try {
-			const response = await apollo.query({
-				query: myGivingFundsCountQuery,
-				fetchPolicy: 'network-only',
-			});
-			return response?.data?.my ?? {};
-		} catch (error) {
-			logFormatter(`Error fetching giving fund data: ${error}`, 'error');
-		}
 	};
 
 	/**
@@ -162,7 +146,6 @@ export default function useGivingFund(apollo) {
 	};
 
 	return {
-		fetchMyGivingFundsCount,
 		fetchGivingFundDonationData,
 		getDonationTotalsForFund,
 		getFundsContributedToIds,
