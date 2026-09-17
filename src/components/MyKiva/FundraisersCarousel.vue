@@ -24,7 +24,6 @@
 						type="button"
 						aria-label="About fundraisers at Kiva"
 						id="mykiva-fundraisers-tooltip"
-						@click="tooltipVisible = !tooltipVisible"
 					>
 						<KvMaterialIcon
 							class="tw-text-secondary tw-h-2 tw-w-2"
@@ -33,9 +32,7 @@
 					</button>
 					<KvTooltip
 						controller="mykiva-fundraisers-tooltip"
-						:show-tooltip="tooltipVisible"
 						placement="bottom"
-						@tool-tip-visible="handleTooltipVisible"
 					>
 						<template #title>
 							<p class="tw-text-label">
@@ -71,7 +68,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import {
 	KvCarousel,
 	KvMaterialIcon,
@@ -95,8 +92,6 @@ const { isMedium, isLarge } = useBreakpoints();
 
 const cards = fundraiserOccasionCards;
 
-const tooltipVisible = ref(false);
-
 const singleSlideWidth = computed(() => {
 	if (isLarge.value) {
 		return 'calc((100% - 64px) / 3)';
@@ -106,10 +101,4 @@ const singleSlideWidth = computed(() => {
 	}
 	return '90%';
 });
-
-function handleTooltipVisible(isVisible) {
-	if (tooltipVisible.value && !isVisible) {
-		tooltipVisible.value = isVisible;
-	}
-}
 </script>
