@@ -34,6 +34,7 @@
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:show-my-giving-funds-card="showMyGivingFundsCard"
+			:owned-giving-funds="ownedGivingFunds"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goal-in-review-enable="goalInReviewEnable"
 			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
@@ -126,6 +127,7 @@ export default {
 			latestLoan: null,
 			goalRefreshKey: 0,
 			showMyGivingFundsCard: false,
+			ownedGivingFunds: [],
 			recentTransactionLoans: [],
 			goalRecommendedLoanEnable: false,
 			goalInReviewEnable: false,
@@ -341,6 +343,7 @@ export default {
 				// Hide the card when the lender's only activity is supporting the disaster relief fund
 				this.showMyGivingFundsCard = hasGivingFundParticipation
 					&& !isDisasterReliefFundOnlySupporter(this.userInfo);
+				this.ownedGivingFunds = this.userInfo?.givingFunds?.values ?? [];
 				this.loans = myKivaQueryResult.my?.loans?.values ?? [];
 				this.sidesheetLoan = bpSidesheetLoan?.lend?.loan ?? { id: 0 };
 				const isSideSheetLoanInLoans = this.loans.some(loan => loan?.id === this.sidesheetLoan.id);

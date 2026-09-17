@@ -53,7 +53,7 @@
 			/>
 		</section>
 		<section class="tw-mt-4" id="mykiva-fundraisers">
-			<FundraisersSection />
+			<FundraisersSection :funds="ownedGivingFunds" />
 		</section>
 		<section class="tw-mt-4" id="mykiva-achievements">
 			<div class="tw-flex tw-items-center tw-gap-1 tw-z-tooltip tw-pb-6">
@@ -342,6 +342,10 @@ export default {
 		showMyGivingFundsCard: {
 			type: Boolean,
 			default: false
+		},
+		ownedGivingFunds: {
+			type: Array,
+			default: () => [],
 		},
 		goalRecommendedLoanEnable: {
 			type: Boolean,

@@ -275,46 +275,6 @@ describe('useGivingFund', () => {
 		});
 	});
 
-	describe('fetchMyGivingFundsData', () => {
-		it('should fetch giving funds data successfully', async () => {
-			const mockGivingFunds = {
-				givingFunds: [
-					{ id: 1, name: 'Fund 1' },
-					{ id: 2, name: 'Fund 2' },
-				],
-			};
-			mockApollo.query.mockResolvedValue({
-				data: {
-					my: mockGivingFunds,
-				},
-			});
-
-			const result = await composable.fetchMyGivingFundsData();
-
-			expect(mockApollo.query).toHaveBeenCalledWith({
-				query: expect.any(Object),
-				fetchPolicy: 'network-only',
-			});
-			expect(result).toEqual(mockGivingFunds);
-		});
-
-		it('should return empty object on error', async () => {
-			mockApollo.query.mockRejectedValue(new Error('Network error'));
-
-			const result = await composable.fetchMyGivingFundsData();
-
-			expect(result).toBeUndefined();
-		});
-
-		it('should return empty object when response has no data', async () => {
-			mockApollo.query.mockResolvedValue({});
-
-			const result = await composable.fetchMyGivingFundsData();
-
-			expect(result).toEqual({});
-		});
-	});
-
 	describe('fetchMyGivingFundsCount', () => {
 		it('should fetch giving funds count successfully', async () => {
 			const mockCountData = {
