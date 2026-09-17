@@ -53,7 +53,7 @@ import { KvCarousel, KvLoadingPlaceholder } from '@kiva/kv-components';
 import MyKivaProgressCard from '#src/components/MyKiva/MyKivaProgressCard';
 import { useRouter } from 'vue-router';
 import { COMPLETED_GOAL_THRESHOLD, GOALS_CURRENT_YEAR, GOAL_STATUS } from '#src/composables/useGoalData';
-import { getGoalYear, shouldShowRecapEntryPoint } from '#src/util/goalInReview';
+import { getGoalYear, getIsPastGoalYear, shouldShowRecapEntryPoint } from '#src/util/goalInReview';
 import { getGoalInReviewCurrentYear, getGoalInReviewNow } from '#src/composables/useGoalInReview';
 
 const CARD_MIN_HEIGHT = '111px';
@@ -106,6 +106,10 @@ const {
 const userHasGoal = computed(() => !!userGoal.value && Object.keys(userGoal.value).length > 0);
 
 const userGoalYear = computed(() => getGoalYear(userGoal.value));
+
+// Whether the goal's year is over. Shares the countdown's clock, including the QA date
+// override, so ordering and the countdown always agree.
+const isGoalYearOver = computed(() => getIsPastGoalYear(userGoalYear.value, getGoalInReviewCurrentYear()));
 
 const recapEntryPointFor = ({ goalStatus, goalYear, loansTowardGoal }) => shouldShowRecapEntryPoint({
 	enabled: props.goalInReviewEnable,
@@ -202,7 +206,9 @@ const visibleBadges = computed(() => {
 			}),
 		};
 
-		if (userGoalAchieved.value) {
+		// A completed goal stays at the front until its goal year ends, then moves back
+		// with the older goals.
+		if (userGoalAchieved.value && isGoalYearOver.value) {
 			showedSlides.push(formattedUserGoal);
 		} else {
 			showedSlides.unshift(formattedUserGoal);
