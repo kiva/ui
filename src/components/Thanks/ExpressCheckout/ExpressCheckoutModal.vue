@@ -1,6 +1,6 @@
 <template>
 	<KvLightbox
-		title="Confirm Payment"
+		title="Add to basket"
 		:visible="lightboxOpen"
 		:prevent-close="!ready || paying"
 		@lightbox-closed="closeLightbox"
