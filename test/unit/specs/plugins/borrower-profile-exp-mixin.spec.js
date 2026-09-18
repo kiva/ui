@@ -7,7 +7,10 @@ vi.mock('@sentry/vue', () => ({
 	captureException: vi.fn(),
 }));
 
-vi.mock('#src/util/basketUtils', () => ({
+// Only handleInvalidBasket and hasBasketExpired are faked; the error-code classifiers stay real
+// so these specs exercise the codes the backend actually sends.
+vi.mock('#src/util/basketUtils', async () => ({
+	...await vi.importActual('#src/util/basketUtils'),
 	handleInvalidBasket: vi.fn(() => Promise.resolve()),
 	hasBasketExpired: vi.fn(code => code === 'basket.stale'),
 }));
@@ -576,6 +579,50 @@ describe('borrower-profile-exp-mixin', () => {
 				'error'
 			);
 			expect(handleInvalidBasket).toHaveBeenCalled();
+		});
+
+		// This spec file does not clear mocks between tests, so these reset the spies they assert on.
+		describe('when the lender\u2019s checkout is already running', () => {
+			let handleInvalidBasket;
+			let captureMessage;
+
+			beforeEach(async () => {
+				const basketUtils = await import('#src/util/basketUtils');
+				const sentry = await import('@sentry/vue');
+				handleInvalidBasket = basketUtils.handleInvalidBasket;
+				captureMessage = sentry.captureMessage;
+				basketUtils.hasBasketExpired.mockImplementation(code => code === 'basket.stale');
+				handleInvalidBasket.mockClear();
+				captureMessage.mockClear();
+			});
+
+			it.each([
+				['checkout_in_progress'],
+				['shop.checkoutInProgress'],
+			])('shows the checkout in progress message for %s without clearing the basket', async code => {
+				createComponent();
+				const { CHECKOUT_IN_PROGRESS_MESSAGE } = await import('#src/util/basketUtils');
+				mockApollo.mutate.mockResolvedValue({
+					errors: [{ message: 'engineer placeholder copy', extensions: { code } }],
+				});
+
+				await component.addToBasket({ loanId: 123, lendAmount: 25 });
+
+				expect(mockShowTipMsg).toHaveBeenCalledWith(CHECKOUT_IN_PROGRESS_MESSAGE, 'error');
+				// The basket is busy, not broken: deleting kvbskt and reloading would be wrong here.
+				expect(handleInvalidBasket).not.toHaveBeenCalled();
+			});
+
+			it('does not report the contention to Sentry', async () => {
+				createComponent();
+				mockApollo.mutate.mockResolvedValue({
+					errors: [{ message: 'engineer placeholder copy', extensions: { code: 'checkout_in_progress' } }],
+				});
+
+				await component.addToBasket({ loanId: 123, lendAmount: 25 });
+
+				expect(captureMessage).not.toHaveBeenCalled();
+			});
 		});
 
 		it.skip('should track and show error for non-expired basket errors', async () => {

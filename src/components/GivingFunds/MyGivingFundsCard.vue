@@ -62,14 +62,15 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	/** How many funds the lender owns. Both host pages already have this from their own prefetch. */
+	myFundsCount: {
+		type: Number,
+		default: 0,
+	},
 });
 
-const {
-	getFundsContributedToIds,
-	fetchMyGivingFundsCount,
-} = useGivingFund(apollo);
+const { getFundsContributedToIds } = useGivingFund(apollo);
 
-const myFundsCount = ref(0);
 const contributedFundsCount = ref(0);
 
 const titleCopy = computed(() => (props.isDisasterReliefOnly
@@ -87,10 +88,14 @@ const clickTrackEventProps = computed(() => (props.isDisasterReliefOnly
 	: ['portfolio', 'click', 'see-your-giving-funds']));
 
 const textCopy = computed(() => {
+	// The disaster relief variant states the fund, not the lender's tally.
+	if (props.isDisasterReliefOnly) return '';
+
+	const { myFundsCount } = props;
 	let copy = '';
-	if (myFundsCount.value > 0 && contributedFundsCount.value > 0) {
-		copy = `You have ${myFundsCount.value} ${
-			myFundsCount.value === 1 ? 'fund' : 'funds'
+	if (myFundsCount > 0 && contributedFundsCount.value > 0) {
+		copy = `You have ${myFundsCount} ${
+			myFundsCount === 1 ? 'fund' : 'funds'
 		} making an impact and have contributed to ${contributedFundsCount.value} ${
 			contributedFundsCount.value === 1 ? 'fund' : 'funds'
 		}.`;
@@ -98,9 +103,9 @@ const textCopy = computed(() => {
 		copy = `You have contributed to ${contributedFundsCount.value} ${
 			contributedFundsCount.value === 1 ? 'fund' : 'funds'
 		}.`;
-	} else if (myFundsCount.value > 0) {
-		copy = `You have ${myFundsCount.value} ${
-			myFundsCount.value === 1 ? 'fund' : 'funds'
+	} else if (myFundsCount > 0) {
+		copy = `You have ${myFundsCount} ${
+			myFundsCount === 1 ? 'fund' : 'funds'
 		} making an impact.`;
 	}
 	return copy;
@@ -111,12 +116,6 @@ onMounted(() => {
 		$kvTrackEvent?.('portfolio', 'view', 'see-your-giving-funds', 'disaster-relief');
 		return;
 	}
-
-	// Fetch giving fund data
-	fetchMyGivingFundsCount()
-		.then(response => {
-			myFundsCount.value = response?.givingFunds?.totalCount ?? 0;
-		});
 
 	getFundsContributedToIds(parseInt(props?.userId, 10) || null)
 		.then(fundIds => {

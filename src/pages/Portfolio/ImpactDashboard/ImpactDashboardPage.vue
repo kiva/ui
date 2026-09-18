@@ -22,6 +22,7 @@
 					<my-giving-funds-card
 						v-if="showMyGivingFundsCard"
 						:user-id="userId"
+						:my-funds-count="myGivingFundsCount"
 						:is-disaster-relief-only="isDisasterReliefOnly"
 						class="tw-my-2 tw-mx-0 md:tw-mx-0 tw-rounded-none md:tw-rounded"
 					/>
@@ -250,6 +251,7 @@ export default {
 		);
 		// Render the card's disaster relief variant when that fund is the lender's only activity
 		this.isDisasterReliefOnly = isDisasterReliefFundOnlySupporter(userData);
+		this.myGivingFundsCount = userData?.givingFunds?.totalCount ?? 0;
 
 		const teamsChallengeEnable = readBoolSetting(portfolioQueryData, 'general.team_challenge_enable.value');
 		const userTeams = portfolioQueryData?.my?.teams?.values ?? [];

@@ -13,11 +13,6 @@
 				:lending-stats="lendingStats"
 			/>
 		</section>
-		<section v-if="showMyGivingFundsCard" class="tw-mt-4">
-			<MyGivingFundsCard
-				:user-id="userInfo?.id"
-			/>
-		</section>
 		<MyKivaFeaturedSlot
 			v-if="goalsRowEnabled && shouldRenderFeaturedSlot"
 			:key="`featured-slot-${goalRefreshKey}`"
@@ -51,6 +46,9 @@
 				@add-to-basket="addGoalRecommendedLoanToBasket"
 				@view-goal-recap="openGoalRecapFromCard"
 			/>
+		</section>
+		<section class="tw-mt-4" id="mykiva-fundraisers">
+			<FundraisersSection :funds="ownedGivingFunds" />
 		</section>
 		<section class="tw-mt-4" id="mykiva-achievements">
 			<div class="tw-flex tw-items-center tw-gap-1 tw-z-tooltip tw-pb-6">
@@ -222,7 +220,6 @@ import useGoalInReview, { GOAL_RECAP_DEEP_LINK } from '#src/composables/useGoalI
 import BorrowerSideSheetWrapper from '#src/components/BorrowerSideSheet/BorrowerSideSheetWrapper';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 import MyKivaContainer from '#src/components/MyKiva/MyKivaContainer';
-import MyGivingFundsCard from '#src/components/GivingFunds/MyGivingFundsCard';
 import AsyncMyKivaSection from '#src/pages/MyKiva/AsyncMyKivaSection';
 import MyKivaBorrowerCarousel from '#src/components/MyKiva/BorrowerCarousel';
 import JournalUpdatesCarousel from '#src/components/MyKiva/JournalUpdatesCarousel';
@@ -249,6 +246,7 @@ import logReadQueryError from '#src/util/logReadQueryError';
 import { withAiPills } from '#src/util/aiLoanPillsUtils';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import BadgesSectionV2 from '#src/components/MyKiva/BadgesSectionV2';
+import FundraisersSection from '#src/components/MyKiva/FundraisersSection';
 import { getContentfulEntries } from '#src/util/contentfulUtils';
 
 const IMPACT_THRESHOLD = 25;
@@ -275,12 +273,12 @@ export default {
 		LendingCategorySection,
 		MyKivaBorrowerCarousel,
 		MyKivaContainer,
-		MyGivingFundsCard,
 		MyKivaStats,
 		LendingStats,
 		MyKivaFeaturedSlot,
 		BailoutChips,
 		BadgesSectionV2,
+		FundraisersSection,
 		GoalInReviewModal,
 		KvMaterialIcon,
 		KvTooltip,
@@ -334,9 +332,9 @@ export default {
 			type: Number,
 			default: 0
 		},
-		showMyGivingFundsCard: {
-			type: Boolean,
-			default: false
+		ownedGivingFunds: {
+			type: Array,
+			default: () => [],
 		},
 		goalRecommendedLoanEnable: {
 			type: Boolean,
@@ -850,12 +848,17 @@ export default {
 	@apply tw-p-2 tw--m-2;
 }
 
-.page-container :deep(> div > div > *), #mykiva-journal-updates :deep(> section) {
+.page-container :deep(> div > div > *:not(#mykiva-fundraisers)), #mykiva-journal-updates :deep(> section) {
 	@apply tw-overflow-visible lg:tw-overflow-hidden;
 }
 
 :deep(.kv-carousel) {
 	@apply tw-overflow-visible;
+}
+
+/* This section opts out of the clipping above so its tooltip can escape, so it clips its own slides. */
+:deep(#mykiva-fundraisers .kv-carousel) {
+	@apply lg:tw-overflow-hidden;
 }
 
 :deep(.kv-carousel > div:first-child) {
