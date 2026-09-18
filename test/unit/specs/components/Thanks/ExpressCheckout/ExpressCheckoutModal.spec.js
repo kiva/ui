@@ -45,7 +45,8 @@ vi.mock('@kiva/kv-components', () => ({
 	},
 	KvLightbox: {
 		props: ['preventClose', 'title', 'visible'],
-		template: '<div v-if="visible" data-testid="lightbox" :data-prevent-close="preventClose"><slot /></div>',
+		// eslint-disable-next-line max-len
+		template: '<div v-if="visible" data-testid="lightbox" :data-prevent-close="preventClose">{{ title }}<slot /></div>',
 	},
 	KvLoadingPlaceholder: {
 		template: '<div data-testid="loading-placeholder"></div>',
@@ -185,6 +186,11 @@ describe('ExpressCheckoutModal', () => {
 			transactionId: '456',
 			amount: '0.00',
 		});
+	});
+
+	it('renders the card with correct heading', async () => {
+		await mountComponent();
+		expect(wrapper.text()).toContain('Adding to basket');
 	});
 
 	// executeOneTimeCheckout runs trackSuccess internally (kv-shop), which fires Meta Purchase + GA +
@@ -342,6 +348,14 @@ describe('ExpressCheckoutModal', () => {
 
 			expect(wrapper.find('[data-testid="express-checkout-loading"]').exists()).toBe(true);
 			expect(wrapper.find('form').exists()).toBe(false);
+		});
+
+		it('renders the card with correct heading while loading', async () => {
+			mountClosed();
+			wrapper.vm.openLoading();
+			await wrapper.vm.$nextTick();
+
+			expect(wrapper.text()).toContain('Confirm payment');
 		});
 	});
 });

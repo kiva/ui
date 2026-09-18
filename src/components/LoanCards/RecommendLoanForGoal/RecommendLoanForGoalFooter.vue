@@ -99,7 +99,7 @@ const primaryLabel = computed(() => {
 
 const secondaryLabel = computed(() => {
 	return props.expressCheckoutEnabled
-		? 'Express checkout'
+		? 'Add to basket'
 		: 'Explore more options';
 });
 
