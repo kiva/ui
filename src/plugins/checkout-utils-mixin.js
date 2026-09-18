@@ -8,6 +8,7 @@ import showVerificationLightbox from '#src/graphql/mutation/checkout/showVerific
 import logFormatter from '#src/util/logFormatter';
 import checkInjections from '#src/util/injectionCheck';
 import { validatePreCheckoutBasket } from '#src/util/checkout/checkoutValidationUtils';
+import { CHECKOUT_IN_PROGRESS_MESSAGE, isCheckoutInProgress } from '#src/util/basketUtils';
 
 const injections = ['apollo', 'cookieStore'];
 
@@ -158,14 +159,20 @@ export default {
 					// Original Message: You can not purchase more than $2,000 of Kiva Codes per day. Please click the back button amd remove Kiva Card(s)
 					errorMessage = 'You can not purchase more than $2,000 of Kiva Codes per day. Please remove the Kiva Card(s) from your basket.';
 				}
+				if (isCheckoutInProgress(errorType)) {
+					// Original message is an engineer-written placeholder
+					errorMessage = CHECKOUT_IN_PROGRESS_MESSAGE;
+				}
 				/* eslint-enable max-len */
 
 				if (errorType === 'api.authenticationRequired' && ignoreAuth) {
 					return;
 				}
 
-				// Log validation errors
-				Sentry.captureException(`${errorType}:${errorMessage}`);
+				// Log validation errors. Checkout contention is expected, not a defect.
+				if (!isCheckoutInProgress(errorType)) {
+					Sentry.captureException(`${errorType}:${errorMessage}`);
+				}
 
 				// Show the verification lightbox if basket is not verified, and don't show a tip message
 				if (errorType === 'basket_requires_verification') {

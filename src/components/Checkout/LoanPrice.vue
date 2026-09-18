@@ -37,6 +37,7 @@ import numeral from 'numeral';
 import _forEach from 'lodash/forEach';
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import updateKivaCardAmount from '#src/graphql/mutation/updateKivaCardAmount.graphql';
+import { getBasketErrorCode, getBasketErrorMessage } from '#src/util/basketUtils';
 import RemoveBasketItem from '#src/components/Checkout/RemoveBasketItem';
 import { getDropdownPriceArrayCheckout } from '#src/util/loanUtils';
 import { KvSelect } from '@kiva/kv-components';
@@ -151,10 +152,10 @@ export default {
 					}).then(data => {
 						if (data.errors) {
 							let notAllSharesAdded = false;
-							_forEach(data.errors, ({ message, code }) => {
-								this.$showTipMsg(message, 'error');
+							_forEach(data.errors, error => {
+								this.$showTipMsg(getBasketErrorMessage(error), 'error');
 								// update flag if this error is present
-								if (code === 'not_all_shared_added') {
+								if (getBasketErrorCode(error) === 'not_all_shared_added') {
 									notAllSharesAdded = true;
 								}
 							});
@@ -199,8 +200,8 @@ export default {
 						}
 					}).then(data => {
 						if (data.errors) {
-							_forEach(data.errors, ({ message }) => {
-								this.$showTipMsg(message, 'error');
+							_forEach(data.errors, error => {
+								this.$showTipMsg(getBasketErrorMessage(error), 'error');
 							});
 							this.selectedOption = this.cachedSelection;
 							this.$emit('updating-totals', false);
