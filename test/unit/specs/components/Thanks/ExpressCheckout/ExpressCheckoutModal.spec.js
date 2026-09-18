@@ -190,7 +190,7 @@ describe('ExpressCheckoutModal', () => {
 
 	it('renders the card with correct heading', async () => {
 		await mountComponent();
-		expect(wrapper.text()).toContain('Adding to basket');
+		expect(wrapper.text()).toContain('Confirm payment');
 	});
 
 	// executeOneTimeCheckout runs trackSuccess internally (kv-shop), which fires Meta Purchase + GA +
@@ -355,7 +355,7 @@ describe('ExpressCheckoutModal', () => {
 			wrapper.vm.openLoading();
 			await wrapper.vm.$nextTick();
 
-			expect(wrapper.text()).toContain('Confirm payment');
+			expect(wrapper.text()).toContain('Adding to basket');
 		});
 	});
 });
