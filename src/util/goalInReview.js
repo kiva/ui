@@ -34,13 +34,11 @@ function hasInProgressReleaseStarted(startDate, now) {
 }
 
 /**
- * Decides whether the recap should open by itself, for MyKiva and Portfolio alike.
- * Both pages call this so the pop-up happens once per user across the two, rather
- * than once per page.
+ * The half of the auto-open decision that needs no recap payload, so a caller can rule the
+ * pop-up out before paying for one. shouldAutoOpenRecap adds eligibility on top.
  *
- * @param {object} options Trigger inputs.
+ * @param {object} options Trigger inputs, eligibility aside.
  * @param {boolean} options.enabled The goal_in_review_enable setting.
- * @param {boolean} options.isEligible Whether the recap has a goal with progress.
  * @param {string} options.goalStatus The goal's status.
  * @param {number|string} options.goalYear The year the goal belongs to.
  * @param {number|string} options.currentGoalYear The goal year in progress now.
@@ -50,11 +48,10 @@ function hasInProgressReleaseStarted(startDate, now) {
  * @param {Date|string|null} options.inProgressStartDate The goal_in_review_in_progress_start
  *   setting, the date in-progress goal setters become eligible.
  * @param {Date} options.now The effective current date.
- * @returns {boolean} Whether to open the recap automatically.
+ * @returns {boolean} Whether everything but the goal's own progress allows the pop-up.
  */
-export function shouldAutoOpenRecap({
+export function canAutoOpenRecapBeforeLoad({
 	enabled = false,
-	isEligible = false,
 	goalStatus = '',
 	goalYear = null,
 	currentGoalYear = null,
@@ -63,7 +60,7 @@ export function shouldAutoOpenRecap({
 	inProgressStartDate = null,
 	now = new Date(),
 } = {}) {
-	if (!enabled || !isEligible || hasViewedRecap) {
+	if (!enabled || hasViewedRecap) {
 		return false;
 	}
 
@@ -85,6 +82,19 @@ export function shouldAutoOpenRecap({
 	}
 
 	return false;
+}
+
+/**
+ * Decides whether the recap should open by itself, for MyKiva and Portfolio alike.
+ * Both pages call this so the pop-up happens once per user across the two, rather
+ * than once per page.
+ *
+ * @param {object} options Trigger inputs; canAutoOpenRecapBeforeLoad documents the rest.
+ * @param {boolean} options.isEligible Whether the recap has a goal with progress.
+ * @returns {boolean} Whether to open the recap automatically.
+ */
+export function shouldAutoOpenRecap({ isEligible = false, ...rest } = {}) {
+	return Boolean(isEligible) && canAutoOpenRecapBeforeLoad(rest);
 }
 
 // --- Goal sign up ask ---

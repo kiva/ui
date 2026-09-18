@@ -12,8 +12,10 @@ import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql
 import useGoalData, { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import {
+	canAutoOpenRecapBeforeLoad,
 	getCategoryName,
 	getGoalLoans,
+	getGoalYear,
 	getIsEligible,
 	getLoanStats,
 	mergeRecapExtras,
@@ -160,6 +162,7 @@ export function useGoalRecapEntryPoint({
 export default function useGoalInReview({ apollo, goalData } = {}) {
 	const apolloClient = apollo || inject('apollo');
 	const {
+		findMostRecentActiveGoal,
 		getCategories,
 		getCtaHref,
 		getGoalSummary,
@@ -273,7 +276,7 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 			return null;
 		}
 
-		await loadPreferences('network-only');
+		const parsedPrefs = await loadPreferences('network-only');
 		// Captured now; any later and this visit's own write could open the recap over the celebration.
 		const announcedBeforeThisVisit = hideGoalCard.value;
 		const now = getGoalInReviewNow();
@@ -283,20 +286,26 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 			return null;
 		}
 
-		const data = await loadGoalInReview({ year });
-		const goalYear = new Date(data?.goalSummary?.dateStarted).getFullYear();
-
-		const shouldOpen = shouldAutoOpenRecap({
+		// The status and year the decision needs are already in the preferences just loaded,
+		// so visits that cannot pop up are turned away before the payload is paid for.
+		const goal = findMostRecentActiveGoal(parsedPrefs?.goals ?? []);
+		const decision = {
 			enabled,
-			isEligible: Boolean(data?.isEligible),
-			goalStatus: data?.goalSummary?.status,
-			goalYear,
+			goalStatus: goal?.status,
+			goalYear: getGoalYear(goal),
 			currentGoalYear: GOALS_CURRENT_YEAR,
 			hasViewedRecap,
 			holdUntilNextVisit: !announcedBeforeThisVisit,
 			inProgressStartDate,
 			now,
-		});
+		};
+		if (!canAutoOpenRecapBeforeLoad(decision)) {
+			return null;
+		}
+
+		// Eligibility needs the goal's progress, so the full decision waits for the payload.
+		const data = await loadGoalInReview({ year });
+		const shouldOpen = shouldAutoOpenRecap({ ...decision, isEligible: Boolean(data?.isEligible) });
 
 		if (!shouldOpen) {
 			return null;
