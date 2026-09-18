@@ -27,6 +27,12 @@ const makeBadge = (id, totalProgress, tierTargets) => ({
 const IN_PROGRESS_RELEASE = new Date('2026-11-15T00:00:00Z');
 
 describe('MyKivaPageContent', () => {
+	describe('fundraisersRowEnabled', () => {
+		it('defaults to off so the row stays hidden until the experiment assigns b', () => {
+			expect(MyKivaPageContent.props.fundraisersRowEnabled.default).toBe(false);
+		});
+	});
+
 	describe('allBadgesCompleted', () => {
 		const callComputed = heroBadgeData => {
 			const context = {
