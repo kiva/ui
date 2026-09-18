@@ -1,0 +1,1 @@
+function i(n,r){if(n==null)throw new TypeError("assign requires that input parameter not be null or undefined");for(var e in r)Object.prototype.hasOwnProperty.call(r,e)&&(n[e]=r[e]);return n}function a(n){return i({},n)}export{i as a,a as c};
