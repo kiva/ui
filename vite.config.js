@@ -8,6 +8,7 @@ import graphQLLoader from 'vite-plugin-graphql-loader';
 import svgLoader from 'vite-svg-loader';
 import svgStore from 'vite-plugin-svg-store';
 import prefetchDiscovery from './build/prefetch-discovery-plugin';
+import ssrManifestCss from './build/ssr-manifest-css-plugin';
 import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
 import tailwindcss from 'tailwindcss';
@@ -90,6 +91,8 @@ export default defineConfig(({ isSsrBuild, mode }) => {
 			}),
 			// attach imported composable operations and child components to the modules that use them
 			prefetchDiscovery(),
+			// record against each module the stylesheets its chunk reaches by static import
+			ssrManifestCss(),
 			// load .graphql and .gql files
 			graphQLLoader(),
 			// load svg files as vue components
