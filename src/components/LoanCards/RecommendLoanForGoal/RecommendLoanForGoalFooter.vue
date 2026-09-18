@@ -15,7 +15,6 @@
 			/>
 		</kv-button>
 		<kv-button
-			v-if="!expressCheckoutEnabled"
 			class="goal-footer-button md:tw-pb-1"
 			variant="ghost"
 			:state="isAdding ? 'disabled' : ''"
@@ -23,20 +22,12 @@
 		>
 			{{ secondaryLabel }}
 		</kv-button>
-		<div
-			v-else
-			class="tw-mb-3 tw-inline-flex tw-items-center tw-justify-center tw-gap-1 tw-self-center tw-text-small"
-		>
-			<ExpressCheckoutLines class="tw-shrink-0" aria-hidden="true" />
-			<span class="tw-text-label tw-text-secondary">{{ secondaryLabel }}</span>
-		</div>
 	</div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
 import { KvButton, KvLoadingSpinner } from '@kiva/kv-components';
-import ExpressCheckoutLines from '#src/assets/icons/inline/express-checkout-lines.svg';
 
 defineOptions({ name: 'RecommendLoanForGoalFooter' });
 
@@ -93,14 +84,8 @@ const primaryLabel = computed(() => {
 		return CHECKOUT_LABEL;
 	}
 	return props.expressCheckoutEnabled
-		? 'Support now'
+		? 'Add to basket'
 		: 'Add to basket to get started';
-});
-
-const secondaryLabel = computed(() => {
-	return props.expressCheckoutEnabled
-		? 'Express checkout'
-		: 'Explore more options';
 });
 
 const primaryTo = computed(() => (

@@ -187,6 +187,11 @@ describe('ExpressCheckoutModal', () => {
 		});
 	});
 
+	it('renders the card with correct heading', async () => {
+		await mountComponent();
+		expect(wrapper.text()).toContain('Confirm payment');
+	});
+
 	// executeOneTimeCheckout runs trackSuccess internally (kv-shop), which fires Meta Purchase + GA +
 	// Optimizely for this checkoutId. Tracking again here would double-count the Purchase.
 	it('does not track the transaction itself — kv-shop already did', async () => {
@@ -342,6 +347,14 @@ describe('ExpressCheckoutModal', () => {
 
 			expect(wrapper.find('[data-testid="express-checkout-loading"]').exists()).toBe(true);
 			expect(wrapper.find('form').exists()).toBe(false);
+		});
+
+		it('renders the card with correct heading while loading', async () => {
+			mountClosed();
+			wrapper.vm.openLoading();
+			await wrapper.vm.$nextTick();
+
+			expect(wrapper.text()).toContain('Adding to basket');
 		});
 	});
 });
