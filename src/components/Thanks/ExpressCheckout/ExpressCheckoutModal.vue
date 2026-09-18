@@ -1,6 +1,6 @@
 <template>
 	<KvLightbox
-		:title="lightboxTitle"
+		title="Confirm Payment"
 		:visible="lightboxOpen"
 		:prevent-close="!ready || paying"
 		@lightbox-closed="closeLightbox"
@@ -45,7 +45,7 @@
 				class="tw-text-caption tw-mt-1 tw-mb-7 md:!tw-mb-2"
 				style="font-weight: 611;"
 			>
-				By clicking &ldquo;Complete order&rdquo; you will be funding this loan
+				By clicking &ldquo;Confirm payment&rdquo; you will be funding this loan
 				and we&rsquo;ll charge your payment method for the selected amount.
 			</p>
 
@@ -129,8 +129,6 @@ let totalsSubscription = null;
 let clientTokenPromise = null;
 
 const depositRequired = computed(() => (numeral(totalDue.value).value() ?? 0) > 0);
-
-const lightboxTitle = computed(() => (ready.value ? 'Adding to basket' : 'Confirm payment'));
 
 const paymentButtonState = computed(() => {
 	if (depositRequired.value && !transactionsEnabled.value) {
