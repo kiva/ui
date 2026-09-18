@@ -47,7 +47,7 @@
 				@view-goal-recap="openGoalRecapFromCard"
 			/>
 		</section>
-		<section class="tw-mt-4" id="mykiva-fundraisers">
+		<section v-if="fundraisersRowEnabled" class="tw-mt-4" id="mykiva-fundraisers">
 			<FundraisersSection :funds="ownedGivingFunds" />
 		</section>
 		<section class="tw-mt-4" id="mykiva-achievements">
@@ -335,6 +335,10 @@ export default {
 		ownedGivingFunds: {
 			type: Array,
 			default: () => [],
+		},
+		fundraisersRowEnabled: {
+			type: Boolean,
+			default: false,
 		},
 		goalRecommendedLoanEnable: {
 			type: Boolean,
