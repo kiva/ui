@@ -147,7 +147,7 @@ export function useGoalRecapEntryPoint({
 	loansTowardGoal = 0,
 }) {
 	const { recapDate } = useRecapDateOverride();
-	const now = () => getGoalInReviewNow(recapDate.value);
+	const resolveGoalInReviewNow = () => getGoalInReviewNow(recapDate.value);
 
 	// Snapshot: MyKiva writes `announced` mid-visit, so reading it live would show the CTA
 	// seconds after the confetti. Keyed to the goal, which resolves alongside the preference.
@@ -158,13 +158,13 @@ export function useGoalRecapEntryPoint({
 		status => {
 			if (announcedBeforeThisVisit.value !== null || !status) return;
 			announcedBeforeThisVisit.value = Boolean(toValue(announced));
-			viewedBeforeThisVisit.value = Boolean(hasViewedRecap?.(now().getFullYear()));
+			viewedBeforeThisVisit.value = Boolean(hasViewedRecap?.(resolveGoalInReviewNow().getFullYear()));
 		},
 		{ immediate: true },
 	);
 
 	const showRecapCta = computed(() => {
-		const currentDate = now();
+		const currentDate = resolveGoalInReviewNow();
 		return shouldShowRecapEntryPoint({
 			enabled: toValue(enabled),
 			goalStatus: toValue(goalStatus),

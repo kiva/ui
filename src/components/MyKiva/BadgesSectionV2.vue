@@ -111,17 +111,17 @@ const userGoalYear = computed(() => getGoalYear(userGoal.value));
 // hydrate asynchronously, and reordering the row mid-hydration strands one of them on a
 // detached node, which throws and leaves that tile with no icon.
 const { recapDate } = useRecapDateOverride();
-const resolveNow = () => getGoalInReviewNow(recapDate.value);
+const resolveGoalInReviewNow = () => getGoalInReviewNow(recapDate.value);
 
 const isGoalYearOver = computed(() => getIsPastGoalYear(
 	userGoalYear.value,
-	resolveNow().getFullYear(),
+	resolveGoalInReviewNow().getFullYear(),
 ));
 
 const recapEntryPointFor = ({ goalStatus, goalYear, loansTowardGoal }) => {
 	// Read the clock once so both answers share an instant, even if the year turns over
 	// mid-render.
-	const now = resolveNow();
+	const now = resolveGoalInReviewNow();
 	return shouldShowRecapEntryPoint({
 		enabled: props.goalInReviewEnable,
 		goalStatus,
