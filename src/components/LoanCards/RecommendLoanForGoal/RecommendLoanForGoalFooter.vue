@@ -15,6 +15,7 @@
 			/>
 		</kv-button>
 		<kv-button
+			v-if="!expressCheckoutEnabled"
 			class="goal-footer-button md:tw-pb-1"
 			variant="ghost"
 			:state="isAdding ? 'disabled' : ''"
@@ -34,6 +35,7 @@ defineOptions({ name: 'RecommendLoanForGoalFooter' });
 const ADDING_LABEL = 'Adding to basket';
 const CHECKOUT_LABEL = 'Checkout now';
 const CHECKOUT_TO = '/basket';
+const secondaryLabel = 'Explore more options';
 
 const props = defineProps({
 	/**

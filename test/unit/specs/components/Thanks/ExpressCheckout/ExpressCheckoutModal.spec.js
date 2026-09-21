@@ -45,7 +45,8 @@ vi.mock('@kiva/kv-components', () => ({
 	},
 	KvLightbox: {
 		props: ['preventClose', 'title', 'visible'],
-		template: '<div v-if="visible" data-testid="lightbox" :data-prevent-close="preventClose"><slot /></div>',
+		// eslint-disable-next-line max-len
+		template: '<div v-if="visible" data-testid="lightbox" :data-prevent-close="preventClose">{{ title }}<slot /></div>',
 	},
 	KvLoadingPlaceholder: {
 		template: '<div data-testid="loading-placeholder"></div>',
