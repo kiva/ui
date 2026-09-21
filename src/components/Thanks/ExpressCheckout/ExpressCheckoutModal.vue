@@ -1,6 +1,6 @@
 <template>
 	<KvLightbox
-		title="Confirm Payment"
+		:title="lightboxTitle"
 		:visible="lightboxOpen"
 		:prevent-close="!ready || paying"
 		@lightbox-closed="closeLightbox"
@@ -129,6 +129,8 @@ let totalsSubscription = null;
 let clientTokenPromise = null;
 
 const depositRequired = computed(() => (numeral(totalDue.value).value() ?? 0) > 0);
+
+const lightboxTitle = computed(() => (ready.value ? 'Confirm payment' : 'Adding to basket'));
 
 const paymentButtonState = computed(() => {
 	if (depositRequired.value && !transactionsEnabled.value) {
