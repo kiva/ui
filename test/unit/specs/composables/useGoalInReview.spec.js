@@ -295,6 +295,19 @@ describe('useGoalInReview', () => {
 			expect(getGoalSummary).toHaveBeenCalled();
 		});
 
+		it('stays shut when the goal turns out to have nothing to show', async () => {
+			getGoalSummary.mockResolvedValue({ ...supportAllSummary, count: 0 });
+			const { loadAutoOpenRecap } = useGoalInReview({
+				apollo: makeApollo(),
+				goalData: goalDataWith({ goal: goalOf('completed') }),
+			});
+
+			const result = await loadAutoOpenRecap({ enabled: true });
+
+			expect(result).toBeNull();
+			expect(getGoalSummary).toHaveBeenCalled();
+		});
+
 		it.each([
 			['the goal ran in a previous year', { goal: goalOf('completed', THIS_YEAR - 1) }],
 			['the goal expired', { goal: goalOf('expired') }],
