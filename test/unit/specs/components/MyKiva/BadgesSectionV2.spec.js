@@ -4,10 +4,12 @@ import { ref, defineComponent } from 'vue';
 import BadgesSectionV2 from '#src/components/MyKiva/BadgesSectionV2';
 import { globalOptions } from '../../../specUtils';
 
+const currentRoute = { value: { path: '/portfolio', query: {} } };
+
 vi.mock('vue-router', () => ({
 	useRouter: () => ({
 		push: vi.fn(),
-		currentRoute: { value: { path: '/portfolio' } },
+		currentRoute,
 	}),
 }));
 
@@ -392,6 +394,48 @@ describe('BadgesSectionV2', () => {
 			);
 			const cards = getAllByTestId('progress-card');
 			expect(cards[0].textContent).toBe('No date');
+		});
+	});
+
+	describe('completed goal placement via the recapDate override', () => {
+		// The row takes the override off the route, so QA's ?recapDate reaches the server too.
+		// These pin that route path. The address-bar fallback is what the system-clock tests
+		// exercise.
+		const completedUserGoal = {
+			target: 10,
+			name: 'Completed',
+			category: 'womens-equality',
+			dateStarted: '2026-06-15T12:00:00',
+		};
+
+		const renderWithOverride = recapDate => {
+			currentRoute.value.query = { recapDate };
+			return renderComponent({ badgeData: defaultBadgeData }, createGoalData({
+				loading: false,
+				userGoal: completedUserGoal,
+				userGoalAchieved: true,
+				goalProgress: 10,
+				completedGoalsHistory: [historyEntry(2025)],
+			}));
+		};
+
+		afterEach(() => {
+			// Clear the override so it never leaks into other tests' "now".
+			currentRoute.value.query = {};
+		});
+
+		it('keeps a completed goal at the front through December 31 of its goal year', async () => {
+			const { getAllByTestId } = await renderWithOverride('2026-12-31');
+
+			expect(getAllByTestId('progress-card')[0].textContent).toBe('Completed');
+		});
+
+		it('moves a completed goal to the end once its goal year has ended', async () => {
+			const { getAllByTestId } = await renderWithOverride('2027-01-01');
+
+			const cards = getAllByTestId('progress-card');
+			expect(cards[cards.length - 1].textContent).toBe('Goal 2025');
+			expect(cards[cards.length - 2].textContent).toBe('Completed');
 		});
 	});
 });

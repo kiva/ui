@@ -169,9 +169,12 @@ export default {
 	},
 	computed: {
 		hideGoalSignup() {
+			// The override comes off the route because this decides whether the entry point
+			// renders and the server has no address bar. Threaded by hand instead of through
+			// useHideGoalSignup: the start date lives in data, which setup cannot reach.
 			return shouldHideGoalSignup({
 				recapStartDate: this.goalInReviewInProgressStart,
-				now: getGoalInReviewNow(),
+				now: getGoalInReviewNow(this.$route?.query?.recapDate),
 			});
 		},
 	},
