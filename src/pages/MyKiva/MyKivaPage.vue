@@ -34,6 +34,7 @@
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
 			:owned-giving-funds="ownedGivingFunds"
+			:fundraisers-row-enabled="fundraisersRowEnabled"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goal-in-review-enable="goalInReviewEnable"
 			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
@@ -77,6 +78,7 @@ import { getContentfulEntries } from '#src/util/contentfulUtils';
 const CURRENT_YEAR = new Date().getFullYear();
 const GOALS_ROW_EXP_KEY = 'mykiva_goals_row';
 const CO_RECOVERY_FUND_EXP_KEY = 'mykiva_co_recovery_fund';
+const FUNDRAISERS_ROW_EXP_KEY = 'mykiva_fundraisers_row';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -130,6 +132,7 @@ export default {
 			goalInReviewEnable: false,
 			goalInReviewInProgressStart: null,
 			goalsRowEnabled: false,
+			fundraisersRowEnabled: false,
 			shouldRenderFeaturedSlot: true,
 			coRecoveryFundExpEnabled: false,
 		};
@@ -235,6 +238,10 @@ export default {
 				client.query({
 					query: experimentAssignmentQuery,
 					variables: { id: CO_RECOVERY_FUND_EXP_KEY },
+				}),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: FUNDRAISERS_ROW_EXP_KEY },
 				}),
 			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
@@ -449,6 +456,18 @@ export default {
 			},
 			this.$kvTrackEvent,
 			'EXP-MP-3155-Aug2026'
+		);
+
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			FUNDRAISERS_ROW_EXP_KEY,
+			version => {
+				this.fundraisersRowEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-CIT-5265-Sep2026'
 		);
 	},
 	async mounted() {
