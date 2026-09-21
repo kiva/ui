@@ -1,7 +1,7 @@
 <template>
 	<div class="tw-flex tw-flex-col tw-items-center tw-gap-1">
 		<kv-button
-			class="goal-footer-button"
+			class="goal-footer-button tw-pb-1.5"
 			:to="primaryTo"
 			:variant="primaryButtonVariant"
 			:state="primaryButtonState"
