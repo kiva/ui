@@ -2,7 +2,7 @@
 	<div class="tw-flex tw-flex-col tw-items-center tw-gap-1">
 		<kv-button
 			class="goal-footer-button"
-			:class="expressCheckoutEnabled ? 'tw-pb-3' : 'tw-pb-0'"
+			:class="{'tw-pb-3': expressCheckoutEnabled}"
 			:to="primaryTo"
 			:variant="primaryButtonVariant"
 			:state="primaryButtonState"
