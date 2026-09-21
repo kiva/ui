@@ -1,7 +1,6 @@
 import goalInReviewCopy, {
 	MAX_BORROWER_CARDS,
 	OTHER_SECTOR_LABEL,
-	canAutoOpenRecapBeforeLoad,
 	getBorrowerCards,
 	getCategoryName,
 	getGoalLoans,
@@ -118,39 +117,6 @@ describe('goalInReviewTrigger.js', () => {
 
 	it('compares goal years loosely, since preferences store them as strings', () => {
 		expect(shouldAutoOpenRecap({ ...completed, goalYear: '2026', currentGoalYear: 2026 })).toBe(true);
-	});
-
-	// Only safe if it agrees with the full decision everywhere but eligibility.
-	describe('the decision made before the payload is loaded', () => {
-		it('allows a goal whose progress it cannot yet see', () => {
-			expect(canAutoOpenRecapBeforeLoad(completed)).toBe(true);
-			expect(canAutoOpenRecapBeforeLoad(inProgress)).toBe(true);
-		});
-
-		it('ignores eligibility, which is not knowable this early', () => {
-			expect(canAutoOpenRecapBeforeLoad({ ...completed, isEligible: false })).toBe(true);
-		});
-
-		it.each([
-			['the feature flag is off', { enabled: false }],
-			['the recap has already been seen', { hasViewedRecap: true }],
-			['the goal ran in a previous year', { goalYear: 2025 }],
-			['the goal expired', { goalStatus: 'expired' }],
-			['this is the visit that announces the win', { holdUntilNextVisit: true }],
-		])('agrees with the full decision to stay shut when %s', (_, override) => {
-			expect(canAutoOpenRecapBeforeLoad({ ...completed, ...override })).toBe(false);
-			expect(shouldAutoOpenRecap({ ...completed, ...override })).toBe(false);
-		});
-
-		it('holds an in-progress goal back until the release date, as the full decision does', () => {
-			const early = { ...inProgress, now: new Date('2026-11-14T23:59:59Z') };
-			expect(canAutoOpenRecapBeforeLoad(early)).toBe(false);
-			expect(shouldAutoOpenRecap(early)).toBe(false);
-		});
-
-		it('stays shut on a call with nothing passed at all', () => {
-			expect(canAutoOpenRecapBeforeLoad()).toBe(false);
-		});
 	});
 });
 

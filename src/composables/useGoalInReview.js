@@ -12,7 +12,6 @@ import contentfulEntriesQuery from '#src/graphql/query/contentfulEntries.graphql
 import useGoalData, { GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import {
-	canAutoOpenRecapBeforeLoad,
 	getCategoryName,
 	getGoalLoans,
 	getGoalYear,
@@ -286,10 +285,10 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 			return null;
 		}
 
-		// The status and year the decision needs are already in the preferences just loaded,
-		// so visits that cannot pop up are turned away before the payload is paid for.
+		// Progress is the only rule the payload can answer, and the rest are in the preferences
+		// just loaded — so assume progress here and turn away visits that cannot pop up anyway.
 		const goal = findMostRecentActiveGoal(parsedPrefs?.goals ?? []);
-		const decision = {
+		const autoOpenRules = {
 			enabled,
 			goalStatus: goal?.status,
 			goalYear: getGoalYear(goal),
@@ -299,15 +298,12 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 			inProgressStartDate,
 			now,
 		};
-		if (!canAutoOpenRecapBeforeLoad(decision)) {
+		if (!shouldAutoOpenRecap({ ...autoOpenRules, isEligible: true })) {
 			return null;
 		}
 
-		// Eligibility needs the goal's progress, so the full decision waits for the payload.
 		const data = await loadGoalInReview({ year });
-		const shouldOpen = shouldAutoOpenRecap({ ...decision, isEligible: Boolean(data?.isEligible) });
-
-		if (!shouldOpen) {
+		if (!data?.isEligible) {
 			return null;
 		}
 
