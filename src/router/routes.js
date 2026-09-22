@@ -161,6 +161,10 @@ export default [
 		component: () => import('#src/pages/Legal/Legal'),
 		children: [
 			{
+				path: 'privacy',
+				component: () => import('#src/pages/Legal/PrivacyPolicy')
+			},
+			{
 				path: 'promo-terms',
 				component: () => import('#src/pages/Legal/PromoTermsOfUse')
 			},
