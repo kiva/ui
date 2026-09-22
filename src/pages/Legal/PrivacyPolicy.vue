@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multiline-html-element-content-newline -->
 <template>
 	<!-- eslint-disable max-len -->
 	<div class="small-12 large-10 columns tw-prose">
@@ -14,12 +15,16 @@
 
 		<p>
 			This Privacy Policy, together with our
-			<router-link to="/legal/terms">Terms of Use</router-link>,
+			<router-link to="/legal/terms" v-kv-track-event="['legal', 'click', 'Privacy policy terms of use']">
+				Terms of Use
+			</router-link>,
 			describes the types of personal information we collect and how we use that information.
 			It also describes the choices available to you regarding our use of your personal information and how you can access, update, and restrict our use of your information.
 			By accessing our website at www.kiva.org or our mobile application (collectively, the “Website”), you signify that you have read this Privacy Policy, and you expressly consent to our collection, use, disclosure, storage and protection of your personal information as described in this Privacy Policy.
 			Capitalized terms used but not defined in this Privacy Policy have the meanings defined in our
-			<router-link to="/legal/terms">Terms of Use</router-link>.
+			<router-link to="/legal/terms" v-kv-track-event="['legal', 'click', 'Privacy policy terms of use']">
+				Terms of Use
+			</router-link>.
 		</p>
 
 		<section>
@@ -74,7 +79,9 @@
 			<p>
 				<strong>Authentication Information from Third-Party Applications.</strong>
 				If you choose to access the Website through a third-party integration, you grant Kiva permission to access and use certain information about you from that third-party application in accordance with the third-party application’s terms of use, Kiva’s
-				<router-link to="/legal/terms">Terms of Use</router-link>,
+				<router-link to="/legal/terms" v-kv-track-event="['legal', 'click', 'Privacy policy terms of use']">
+					Terms of Use
+				</router-link>,
 				and this Privacy Policy:
 			</p>
 			<ul>
@@ -88,7 +95,7 @@
 			<p>
 				<strong>Technical Data.</strong>
 				Regardless of whether you have a Kiva account, we use tools like cookies, web beacons, and other automated systems to collect data on your behavior when you use the Website.
-				Please see our <a href="/legal/cookies">Cookie Policy</a> for more detailed information.
+				Please see our <a href="/legal/cookies" v-kv-track-event="['legal', 'click', 'Privacy policy cookie policy']">Cookie Policy</a> for more detailed information.
 				If you have enabled cookies in your browser or if you use Kiva’s mobile application, Kiva, independently and through third-party tools and programs (such as Google Analytics), collects certain technical information (for example, your path to the Website, pages visited, originating IP address, device type, browser type, browser language, network connection type, and the date and time of your visit).
 				We use these tools to analyze data to improve User experiences and prevent fraud. Please note that many internet browsers offer a Do Not Track (DNT) setting; because there is no industry or legal standard for DNT signals, Kiva does not respond to them.
 			</p>
@@ -106,7 +113,7 @@
 				You have the right to access the specific personal data Kiva has on you. You can view this information through your Kiva account.
 				You also have the right to request that we provide some of your personal data to you (or to another third party), in a machine-readable format.
 				To make such a request, or if you have additional questions about information Kiva has collected on you, please reach out to us at
-				<a href="mailto:contactus@kiva.org">contactus@kiva.org</a>.
+				<a href="mailto:contactus@kiva.org" v-kv-track-event="['legal', 'click', 'Privacy policy contact us']">contactus@kiva.org</a>.
 			</p>
 			<p>
 				If your personal information changes, you may update, amend, or remove certain information by signing into your Kiva account and making the change in your account settings, or by contacting Kiva. We will respond to your requests within 30 days.
@@ -119,7 +126,9 @@
 			</h2>
 			<p>
 				We will only collect and use your personal data (i) to carry out the terms of a contract we have entered into with you (including providing our services pursuant to our
-				<router-link to="/legal/terms">Terms of Use</router-link>),
+				<router-link to="/legal/terms" v-kv-track-event="['legal', 'click', 'Privacy policy terms of use']">
+					Terms of Use
+				</router-link>),
 				(ii) where you have given consent, or (iii) where we have a legitimate interest in conducting our operations, such as:
 			</p>
 			<ul>
@@ -136,7 +145,9 @@
 			</ul>
 			<p>
 				Where we need your personal information in order to provide our services or otherwise process your instructions and you fail to provide that information, we may not be able to carry out your instructions or deliver our services pursuant to our
-				<router-link to="/legal/terms">Terms of Use</router-link>.
+				<router-link to="/legal/terms" v-kv-track-event="['legal', 'click', 'Privacy policy terms of use']">
+					Terms of Use
+				</router-link>.
 				In some cases you may not be able to open a Kiva account, or we may be required to close your account.
 			</p>
 		</section>
@@ -157,7 +168,7 @@
 				<li>Where legally permissible, we may share limited personal information, such as your email address or phone number, with third party platforms like Facebook or Google to advertise to you and others with similar interests and characteristics through these platforms. You may opt out of the use of your data for direct marketing purposes through your account settings at any time.</li>
 				<li>
 					Via the Signals feature of Google Analytics. Google Signals recognizes individual users who are logged into a Google account while accessing Kiva’s site, across devices. Google collects usage data from users across all sites they visit that have enabled Signals and then generates anonymous reports showing patterns in user behavior. Kiva only receives anonymous data in these reports. Google Signals helps us to better understand things like the general locations, demographics, and interests of people visiting our site, and how visitors interact with the site, which can then help us more effectively target advertising. You may opt out of Google Signals by turning off “Ads personalization” in your Google account, or by using the Google Analytics Opt-out Browser Add-on, available here:
-					<a href="https://tools.google.com/dlpage/gaoptout/">https://tools.google.com/dlpage/gaoptout/</a>.
+					<a href="https://tools.google.com/dlpage/gaoptout/" v-kv-track-event="['legal', 'click', 'Privacy policy google analytics opt-out']">https://tools.google.com/dlpage/gaoptout/</a>.
 					Additionally, Kiva will not allow Google Signals to access your usage data if you are either (1) a user for whom non-essential cookies are blocked by default and you have not opted to allow them; or (2) a logged-in Kiva user who has turned off non-essential analytics and marketing cookies and/or sharing data with third parties for advertising purposes within your account’s Data Settings.
 				</li>
 				<li>As part of Kiva’s API, which is a service Kiva provides to allow third parties to develop applications and features using information from the Website and Program (“Third Party Applications”). The Kiva API may share any information that you display publicly on the Website, and if you authorize a Third Party Application to use your non-public information from the Website (for example, the amount of your available Kiva Credit and outstanding Loans) the API may share the non-public information with such Third Party Application. Third Party Application developers have agreed to the Kiva API Terms of Service or a separately negotiated agreement, which contain restrictions on the use of your information. Despite these agreements, Kiva does not screen or audit Third Party Applications, and we cannot guarantee that third parties will abide by their agreements. You can revoke permissions that you have granted to a Third Party Application through your Kiva account settings.</li>
@@ -226,14 +237,14 @@
 				For instance, you may ask us to erase your personal data when it is no longer necessary for the purposes for which it was collected, and you may opt out of data sharing for advertising purposes. If our collection and use of certain personal information is based on your consent, you have the right to withdraw your consent.
 				In such case, we will no longer process your information unless there is another legal ground to do so.
 				You may ask us to limit our use of your personal data or to erase your personal data by contacting us at
-				<a href="mailto:contactus@kiva.org">contactus@kiva.org</a>.
+				<a href="mailto:contactus@kiva.org" v-kv-track-event="['legal', 'click', 'Privacy policy contact us']">contactus@kiva.org</a>.
 			</p>
 			<ul>
 				<li>You can limit Kiva's use of certain personal data through your account settings.</li>
 				<li>As personal data is necessary for your participation in the Program, we will be unable to erase all of your personally identifying information without deleting your Kiva account. If you would like Kiva to delete all of your personally identifying information, you should first donate or withdraw all funds in your account, and then delete your account through Account Settings (any funds remaining in the account at the time of deletion, as well as any funds repaid to the account, will be automatically donated to Kiva.) This action will permanently close your account and automatically delete the personally identifying information associated with your account.</li>
 				<li>
 					If you do not have a Kiva account, or if you have other questions or requests regarding your personal data, please reach out to us at
-					<a href="mailto:contactus@kiva.org">contactus@kiva.org</a>.
+					<a href="mailto:contactus@kiva.org" v-kv-track-event="['legal', 'click', 'Privacy policy contact us']">contactus@kiva.org</a>.
 				</li>
 			</ul>
 		</section>
@@ -255,7 +266,7 @@
 			<p>
 				You will receive certain notices and information based on your account status or activity (collectively, "Communications") from Kiva (for example, confirmations of Loans or donations you have made, statements with respect to the amount of Kiva Credit available in your account, confirmation of email address or password changes, and inquiries regarding activity in your account). By creating a Kiva account, you agree that all Communications from Kiva relating to your use of the Website and participation in the Program may be made electronically by email or at the Website (although we reserve the right to provide you with certain Communications through physical mail). To access the Communications, you will need to use a modern auto-updating browser that has been updated within the past three years. You may withdraw your consent to receive Communications electronically by contacting Kiva as described below. However, if you withdraw your consent to receive electronic Communications (other than for the optional emails described below), you will not be able to fund any additional Loans through the Website. The withdrawal of your consent will not affect the legal validity of electronic Communications provided before you withdraw your consent, or in connection with any of your Loans that have not been fully repaid by the time you withdraw consent.
 				It is your responsibility to inform Kiva of any changes to your email address so that you continue to receive all Communications without interruption. You may request a paper copy of any electronic notice from Kiva by sending an email to
-				<a href="mailto:contactus@kiva.org">contactus@kiva.org</a>,
+				<a href="mailto:contactus@kiva.org" v-kv-track-event="['legal', 'click', 'Privacy policy contact us']">contactus@kiva.org</a>,
 				including your name and the address to which you would like the paper copy sent.
 			</p>
 			<p>
@@ -277,7 +288,7 @@
 				Third Party Applications are not created or maintained by Kiva, and their use of your information is governed by their own terms of service and privacy policies (whether you provide your information to these third parties directly or through the Kiva API).
 				Kiva gives no guarantees or warranties with respect to any Third Party Application and is not responsible for your use or inability to use any Third Party Application, including without limitation the content, accuracy, reliability or security of Third Party Applications or the privacy practices or other policies of third parties.
 				Please let us know at
-				<a href="mailto:contactus@kiva.org">contactus@kiva.org</a>
+				<a href="mailto:contactus@kiva.org" v-kv-track-event="['legal', 'click', 'Privacy policy contact us']">contactus@kiva.org</a>
 				if you suspect a Third Party Application is misusing your information.
 			</p>
 		</section>
@@ -298,7 +309,7 @@
 			</h2>
 			<p>
 				The Website is intended to be used by adults. It is not intended for children, and Kiva does not want to collect any personal information about individuals under the age of 13. Kiva recommends that parents do not post, or permit others to post, any personally identifiable information with respect to children under the age of 13. If you believe that we have any information from a child under age 13, please let us know at
-				<a href="mailto:contactus@kiva.org">contactus@kiva.org</a>.
+				<a href="mailto:contactus@kiva.org" v-kv-track-event="['legal', 'click', 'Privacy policy contact us']">contactus@kiva.org</a>.
 			</p>
 		</section>
 
@@ -308,7 +319,7 @@
 			</h2>
 			<p>
 				We take privacy seriously and we value yours. For additional information, or if you have any questions regarding this Privacy Policy or the privacy practices at Kiva, please submit your questions or comments directly to
-				<a href="mailto:contactus@kiva.org">contactus@kiva.org</a>
+				<a href="mailto:contactus@kiva.org" v-kv-track-event="['legal', 'click', 'Privacy policy contact us']">contactus@kiva.org</a>
 				via email. You can also send questions or comments to:
 			</p>
 			<p>
