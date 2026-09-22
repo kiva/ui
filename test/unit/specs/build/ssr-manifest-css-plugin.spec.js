@@ -5,10 +5,13 @@ import { expandManifest, importedCss } from '../../../../build/ssr-manifest-css-
 const root = '/repo';
 const options = { base: '/', root };
 
-const chunk = (fileName, { modules = [], css = [], imports = [] } = {}) => ({
+const chunk = (fileName, {
+	modules = [], css = [], imports = [], isEntry = false
+} = {}) => ({
 	type: 'chunk',
 	fileName,
 	imports,
+	isEntry,
 	viteMetadata: { importedCss: new Set(css) },
 	modules: Object.fromEntries(modules.map(id => [path.join(root, id), {}])),
 });
@@ -25,18 +28,35 @@ const headerBundle = () => ({
 });
 
 describe('importedCss', () => {
-	it('collects stylesheets across a chain of static imports', () => {
+	it('collects stylesheets across a chain of static imports, dependencies first', () => {
 		const chunks = {
 			'a.js': { css: ['a.css'], imports: ['b.js'] },
 			'b.js': { css: ['b.css'], imports: ['c.js'] },
 			'c.js': { css: ['c.css'], imports: [] },
 		};
-		expect(importedCss('a.js', chunks)).toEqual(['b.css', 'c.css']);
+		expect(importedCss('a.js', chunks)).toEqual(['c.css', 'b.css']);
 	});
 
 	it('excludes the stylesheets of the chunk itself', () => {
 		const chunks = { 'a.js': { css: ['a.css'], imports: [] } };
 		expect(importedCss('a.js', chunks)).toEqual([]);
+	});
+
+	it('excludes the stylesheets of an entry chunk it reaches', () => {
+		const chunks = {
+			'a.js': { css: ['a.css'], imports: ['entry.js'] },
+			'entry.js': { css: ['index.css'], imports: [], isEntry: true },
+		};
+		expect(importedCss('a.js', chunks)).toEqual([]);
+	});
+
+	it('still walks past an entry chunk to reach further stylesheets', () => {
+		const chunks = {
+			'a.js': { css: ['a.css'], imports: ['entry.js'] },
+			'entry.js': { css: ['index.css'], imports: ['b.js'], isEntry: true },
+			'b.js': { css: ['b.css'], imports: [] },
+		};
+		expect(importedCss('a.js', chunks)).toEqual(['b.css']);
 	});
 
 	it('terminates on a cycle', () => {
@@ -54,16 +74,46 @@ describe('importedCss', () => {
 });
 
 describe('expandManifest', () => {
-	it('adds the stylesheets a module reaches by static import', () => {
+	it('adds the stylesheets a module reaches by static import, before its own', () => {
 		const manifest = {
 			'src/components/WwwFrame/TheHeader.vue': ['/static/frame.js', '/static/frame.css'],
 		};
 		const expanded = expandManifest(manifest, headerBundle(), options);
 		expect(expanded['src/components/WwwFrame/TheHeader.vue']).toEqual([
+			'/static/shared.css',
 			'/static/frame.js',
 			'/static/frame.css',
-			'/static/shared.css',
 		]);
+	});
+
+	it('excludes the stylesheet of an entry chunk reached by static import', () => {
+		const manifest = {
+			'src/components/WwwFrame/TheHeader.vue': ['/static/frame.js', '/static/frame.css'],
+		};
+		const bundle = {
+			'static/frame.js': chunk('static/frame.js', {
+				modules: ['src/components/WwwFrame/TheHeader.vue'],
+				css: ['static/frame.css'],
+				imports: ['index.js'],
+			}),
+			'index.js': chunk('index.js', { css: ['index.css'], isEntry: true }),
+		};
+		const expanded = expandManifest(manifest, bundle, options);
+		expect(expanded['src/components/WwwFrame/TheHeader.vue']).toEqual(['/static/frame.js', '/static/frame.css']);
+	});
+
+	it('collapses a Vue SFC style variant key onto its base id', () => {
+		const manifest = {
+			'src/components/WwwFrame/TheHeader.vue': ['/static/frame.js', '/static/frame.css'],
+			'src/components/WwwFrame/TheHeader.vue?vue&type=style&index=0&lang.css': [
+				'/static/frame.js',
+				'/static/frame.css',
+			],
+		};
+		const expanded = expandManifest(manifest, headerBundle(), options);
+		expect(expanded).toEqual({
+			'src/components/WwwFrame/TheHeader.vue': ['/static/shared.css', '/static/frame.js', '/static/frame.css'],
+		});
 	});
 
 	it('leaves entries whose chunk reaches no further stylesheets alone', () => {
