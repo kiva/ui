@@ -34,10 +34,10 @@ function hasInProgressReleaseStarted(startDate, now) {
 }
 
 /**
- * Decides whether the rules allow the recap to open by itself, for MyKiva and Portfolio
- * alike. Both pages call this so the pop-up happens once per user across the two, rather
- * than once per page. Whether the goal has any progress worth showing needs the recap
- * itself, so the caller checks that once it has loaded.
+ * Decides whether the recap should open by itself, for MyKiva and Portfolio alike.
+ * Both pages call this so the pop-up happens once per user across the two, rather
+ * than once per page. It cannot tell whether the goal has anything to show, which
+ * needs the recap itself, so the caller checks that after loading.
  *
  * @param {object} options Trigger inputs.
  * @param {boolean} options.enabled The goal_in_review_enable setting.
@@ -50,7 +50,7 @@ function hasInProgressReleaseStarted(startDate, now) {
  * @param {Date|string|null} options.inProgressStartDate The goal_in_review_in_progress_start
  *   setting, the date in-progress goal setters become eligible.
  * @param {Date} options.now The effective current date.
- * @returns {boolean} Whether the rules allow the recap to open automatically.
+ * @returns {boolean} Whether to open the recap, apart from whether it has anything to show.
  */
 export function shouldAutoOpenRecap({
 	enabled = false,

@@ -268,7 +268,7 @@ describe('useGoalInReview', () => {
 			dateStarted: `${year}-02-01T00:00:00.000Z`,
 		});
 
-		// A useGoalData stand-in; the real finder has its own spec.
+		// Stands in for useGoalData; findMostRecentActiveGoal has its own spec.
 		const goalDataWith = ({ goal = null, hasViewed = false, announced = true } = {}) => ({
 			findMostRecentActiveGoal: goals => goals[0] ?? null,
 			getCategories,

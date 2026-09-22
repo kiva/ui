@@ -285,8 +285,8 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 			return null;
 		}
 
-		// These rules need nothing but the preferences just loaded, so visits that cannot pop
-		// up are turned away before the payload is paid for.
+		// None of these need the recap itself, so check them first and skip loading it when
+		// the pop-up can't open anyway.
 		const goal = findMostRecentActiveGoal(parsedPrefs?.goals ?? []);
 		const autoOpenRules = {
 			enabled,
