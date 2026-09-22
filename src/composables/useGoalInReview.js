@@ -15,6 +15,7 @@ import { ID_SUPPORT_ALL } from '#src/composables/useBadgeData';
 import {
 	getCategoryName,
 	getGoalLoans,
+	getGoalYear,
 	getIsEligible,
 	getLoanStats,
 	mergeRecapExtras,
@@ -213,6 +214,7 @@ export function useGoalRecapEntryPoint({
 export default function useGoalInReview({ apollo, goalData } = {}) {
 	const apolloClient = apollo || inject('apollo');
 	const {
+		findMostRecentActiveGoal,
 		getCategories,
 		getCtaHref,
 		getGoalSummary,
@@ -326,7 +328,7 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 			return null;
 		}
 
-		await loadPreferences('network-only');
+		const parsedPrefs = await loadPreferences('network-only');
 		// Captured now; any later and this visit's own write could open the recap over the celebration.
 		const announcedBeforeThisVisit = hideGoalCard.value;
 		const now = getGoalInReviewNow();
@@ -336,22 +338,25 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 			return null;
 		}
 
-		const data = await loadGoalInReview({ year });
-		const goalYear = new Date(data?.goalSummary?.dateStarted).getFullYear();
-
-		const shouldOpen = shouldAutoOpenRecap({
+		// None of these need the recap itself, so check them first and skip loading it when
+		// the pop-up can't open anyway.
+		const goal = findMostRecentActiveGoal(parsedPrefs?.goals ?? []);
+		const autoOpenRules = {
 			enabled,
-			isEligible: Boolean(data?.isEligible),
-			goalStatus: data?.goalSummary?.status,
-			goalYear,
+			goalStatus: goal?.status,
+			goalYear: getGoalYear(goal),
 			currentGoalYear: GOALS_CURRENT_YEAR,
 			hasViewedRecap,
 			holdUntilNextVisit: !announcedBeforeThisVisit,
 			inProgressStartDate,
 			now,
-		});
+		};
+		if (!shouldAutoOpenRecap(autoOpenRules)) {
+			return null;
+		}
 
-		if (!shouldOpen) {
+		const data = await loadGoalInReview({ year });
+		if (!data?.isEligible) {
 			return null;
 		}
 

@@ -1441,6 +1441,7 @@ export default function useGoalData({ apollo } = {}) {
 		applyFreshProgressToGoalData,
 		calculateGoalFreshProgressAdjustments,
 		checkCompletedGoal,
+		findMostRecentActiveGoal,
 		getCategories,
 		getCategoriesProgressByYear,
 		getCategoryLoanCountByYear,

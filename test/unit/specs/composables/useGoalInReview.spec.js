@@ -302,6 +302,99 @@ describe('useGoalInReview', () => {
 		expect(result.goalSummary).toBeNull();
 		expect(composable.loading.value).toBe(false);
 	});
+
+	describe('opening the recap by itself', () => {
+		const THIS_YEAR = new Date().getFullYear();
+		const dayOffset = days => new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+
+		const goalOf = (status, year = THIS_YEAR) => ({
+			goalName: `${year} impact goal`,
+			status,
+			dateStarted: `${year}-02-01T00:00:00.000Z`,
+		});
+
+		// Stands in for useGoalData; findMostRecentActiveGoal has its own spec.
+		const goalDataWith = ({ goal = null, hasViewed = false, announced = true } = {}) => ({
+			findMostRecentActiveGoal: goals => goals[0] ?? null,
+			getCategories,
+			getCtaHref,
+			getGoalSummary,
+			hasViewedGoalRecapForYear: () => hasViewed,
+			hideGoalCard: ref(announced),
+			loadPreferences: vi.fn(() => Promise.resolve({ goals: goal ? [goal] : [] })),
+			setGoalRecapViewedPreference: vi.fn(),
+			hasSubmittedGoalFeedbackForYear: () => false,
+			setGoalFeedbackSubmittedPreference: vi.fn(),
+		});
+
+		it('loads the recap and opens it for a completed goal', async () => {
+			const apollo = makeApollo();
+			const { loadAutoOpenRecap } = useGoalInReview({
+				apollo,
+				goalData: goalDataWith({ goal: goalOf('completed') }),
+			});
+
+			const result = await loadAutoOpenRecap({ enabled: true });
+
+			expect(result).not.toBeNull();
+			expect(getGoalSummary).toHaveBeenCalled();
+		});
+
+		it('stays shut when the goal turns out to have nothing to show', async () => {
+			getGoalSummary.mockResolvedValue({ ...supportAllSummary, count: 0 });
+			const { loadAutoOpenRecap } = useGoalInReview({
+				apollo: makeApollo(),
+				goalData: goalDataWith({ goal: goalOf('completed') }),
+			});
+
+			const result = await loadAutoOpenRecap({ enabled: true });
+
+			expect(result).toBeNull();
+			expect(getGoalSummary).toHaveBeenCalled();
+		});
+
+		it.each([
+			['the goal ran in a previous year', { goal: goalOf('completed', THIS_YEAR - 1) }],
+			['the goal expired', { goal: goalOf('expired') }],
+			['this is the visit that announces the win', { goal: goalOf('completed'), announced: false }],
+			['the recap has already been seen', { goal: goalOf('completed'), hasViewed: true }],
+			['there is no goal at all', {}],
+		])('does not pay for the payload when %s', async (_, options) => {
+			const apollo = makeApollo();
+			const { loadAutoOpenRecap } = useGoalInReview({ apollo, goalData: goalDataWith(options) });
+
+			const result = await loadAutoOpenRecap({ enabled: true });
+
+			expect(result).toBeNull();
+			expect(getGoalSummary).not.toHaveBeenCalled();
+			expect(apollo.query).not.toHaveBeenCalled();
+		});
+
+		it('does not pay for the payload while an in-progress goal waits for its release date', async () => {
+			const apollo = makeApollo();
+			const { loadAutoOpenRecap } = useGoalInReview({
+				apollo,
+				goalData: goalDataWith({ goal: goalOf('in-progress') }),
+			});
+
+			const result = await loadAutoOpenRecap({ enabled: true, inProgressStartDate: dayOffset(30) });
+
+			expect(result).toBeNull();
+			expect(getGoalSummary).not.toHaveBeenCalled();
+		});
+
+		it('loads it once that release date has passed', async () => {
+			const { loadAutoOpenRecap } = useGoalInReview({
+				apollo: makeApollo(),
+				goalData: goalDataWith({ goal: goalOf('in-progress') }),
+			});
+
+			const result = await loadAutoOpenRecap({ enabled: true, inProgressStartDate: dayOffset(-1) });
+
+			expect(result).not.toBeNull();
+			expect(getGoalSummary).toHaveBeenCalled();
+		});
+	});
 });
 
 describe('useGoalRecapEntryPoint', () => {
