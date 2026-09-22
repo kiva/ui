@@ -13,10 +13,21 @@
  */
 import fs from 'fs';
 import path from 'path';
+import { parseVueRequest } from '@vitejs/plugin-vue';
 
 const DEFAULT_MANIFEST = '.vite/ssr-manifest.json';
 
 const toUrl = (base, file) => `${base.endsWith('/') ? base : `${base}/`}${file}`;
+const dedupe = (...arrays) => [...new Set(arrays.flat())];
+
+// A Vue SFC's script/template/style blocks each get their own virtual module id
+// (`Foo.vue?vue&type=style&index=0&lang.css`), and Vite's default ssr-manifest maps
+// every one of them to its own key. `context.modules` only ever registers a
+// component's plain id, so the variant keys are never looked up.
+const toBaseId = id => {
+	const { filename, query } = parseVueRequest(id);
+	return query.vue ? filename : id;
+};
 
 // Stylesheets and static imports of every chunk, keyed by output file name
 function readChunks(bundle, base) {
@@ -26,28 +37,46 @@ function readChunks(bundle, base) {
 			.map(chunk => [chunk.fileName, {
 				css: [...(chunk.viteMetadata?.importedCss ?? [])].map(file => toUrl(base, file)),
 				imports: chunk.imports,
+				isEntry: chunk.isEntry,
 			}])
 	);
 }
 
-// The stylesheets a chunk reaches through static imports, its own excluded — Vite
-// already records those for the chunks it maps a module to
+// Collapse an SFC's `?vue&type=` variant keys onto their base id
+function collapseVueTypeVariants(manifest) {
+	const collapsed = {};
+	Object.entries(manifest).forEach(([key, files]) => {
+		const baseKey = toBaseId(key);
+		collapsed[baseKey] = dedupe(collapsed[baseKey] ?? [], files);
+	});
+	return collapsed;
+}
+
+// The stylesheets a chunk reaches through static imports, minus its own — Vite
+// already records those for the chunks it maps a module to. An entry chunk's
+// stylesheet is excluded too, since Vite writes that link into index.html directly.
+// The list is built depth-first: a dependency's stylesheets land before the
+// stylesheets of the chunk that imports it, the same order Vite's client preload
+// helper loads them in.
 export function importedCss(fileName, chunks) {
 	const css = new Set();
 	const seen = new Set([fileName]);
-	const queue = [...(chunks[fileName]?.imports ?? [])];
-	while (queue.length) {
-		const next = queue.pop();
-		if (!seen.has(next) && chunks[next]) {
-			seen.add(next);
+	function visit(next) {
+		if (seen.has(next) || !chunks[next]) {
+			return;
+		}
+		seen.add(next);
+		chunks[next].imports.forEach(visit);
+		if (!chunks[next].isEntry) {
 			chunks[next].css.forEach(file => css.add(file));
-			queue.push(...chunks[next].imports);
 		}
 	}
+	(chunks[fileName]?.imports ?? []).forEach(visit);
 	return [...css];
 }
 
 export function expandManifest(manifest, bundle, { base, root }) {
+	const collapsedManifest = collapseVueTypeVariants(manifest);
 	const chunks = readChunks(bundle, base);
 	const reached = new Map();
 	Object.values(bundle)
@@ -58,13 +87,13 @@ export function expandManifest(manifest, bundle, { base, root }) {
 				return;
 			}
 			Object.keys(chunk.modules).forEach(id => {
-				const key = path.relative(root, id).split(path.sep).join('/');
+				const key = toBaseId(path.relative(root, id).split(path.sep).join('/'));
 				reached.set(key, [...(reached.get(key) ?? []), ...css]);
 			});
 		});
-	return Object.fromEntries(Object.entries(manifest).map(([key, files]) => {
-		const added = [...new Set(reached.get(key) ?? [])].filter(file => !files.includes(file));
-		return [key, added.length ? [...files, ...added] : files];
+	return Object.fromEntries(Object.entries(collapsedManifest).map(([key, files]) => {
+		const added = dedupe(reached.get(key) ?? []).filter(file => !files.includes(file));
+		return [key, added.length ? [...added, ...files] : files];
 	}));
 }
 
