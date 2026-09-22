@@ -285,8 +285,8 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 			return null;
 		}
 
-		// Progress is the only rule the payload can answer, and the rest are in the preferences
-		// just loaded — so assume progress here and turn away visits that cannot pop up anyway.
+		// These rules need nothing but the preferences just loaded, so visits that cannot pop
+		// up are turned away before the payload is paid for.
 		const goal = findMostRecentActiveGoal(parsedPrefs?.goals ?? []);
 		const autoOpenRules = {
 			enabled,
@@ -298,7 +298,7 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 			inProgressStartDate,
 			now,
 		};
-		if (!shouldAutoOpenRecap({ ...autoOpenRules, isEligible: true })) {
+		if (!shouldAutoOpenRecap(autoOpenRules)) {
 			return null;
 		}
 

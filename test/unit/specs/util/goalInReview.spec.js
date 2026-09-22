@@ -18,7 +18,6 @@ import goalInReviewCopy, {
 
 const completed = {
 	enabled: true,
-	isEligible: true,
 	goalStatus: 'completed',
 	goalYear: 2026,
 	currentGoalYear: 2026,
@@ -98,11 +97,6 @@ describe('goalInReviewTrigger.js', () => {
 
 		it('an expired goal', () => {
 			expect(shouldAutoOpenRecap({ ...completed, goalStatus: 'expired' })).toBe(false);
-		});
-
-		it('a lender with no goal or no loans toward it', () => {
-			expect(shouldAutoOpenRecap({ ...completed, isEligible: false })).toBe(false);
-			expect(shouldAutoOpenRecap({ ...inProgress, isEligible: false })).toBe(false);
 		});
 
 		it('anyone, when the feature flag is off', () => {
