@@ -73,4 +73,35 @@ describe('ImpactDashboardPage', () => {
 			expect(setGoalFeedbackSubmittedPreference).toHaveBeenCalledWith(2026);
 		});
 	});
+
+	describe('hideGoalSignup', () => {
+		// This decides whether the goal entry point renders, on a server rendered page, so the
+		// override has to come off the route. The server has no address bar, and would
+		// otherwise answer with the real date and disagree with the hydrating client.
+		const hideGoalSignupWith = recapDate => ImpactDashboardPage.computed.hideGoalSignup.call({
+			goalInReviewInProgressStart: new Date('2026-12-01T00:00:00Z'),
+			$route: { query: recapDate ? { recapDate } : {} },
+		});
+
+		it('hides the ask when the route override lands inside the window', () => {
+			expect(hideGoalSignupWith('2026-12-05')).toBe(true);
+		});
+
+		it('leaves the ask up once the override passes the goal year', () => {
+			expect(hideGoalSignupWith('2027-06-01')).toBe(false);
+		});
+
+		it('falls back to the clock with no override, the state every real lender is in', () => {
+			// Pinned, because the real date answers differently once the calendar reaches the
+			// window, which would make this pass or fail by the month it runs in.
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-06-15T12:00:00'));
+
+			try {
+				expect(hideGoalSignupWith(null)).toBe(false);
+			} finally {
+				vi.useRealTimers();
+			}
+		});
+	});
 });

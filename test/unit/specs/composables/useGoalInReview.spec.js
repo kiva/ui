@@ -1,10 +1,13 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { mount } from '@vue/test-utils';
 import { nextTick, ref } from 'vue';
+import { routerKey } from 'vue-router';
 import useGoalInReview, {
+	getGoalInReviewCurrentYear,
 	getGoalInReviewNow,
 	getGoalInReviewTargetYear,
 	useGoalRecapEntryPoint,
+	useRecapDateOverride,
 } from '#src/composables/useGoalInReview';
 
 const getGoalSummary = vi.fn();
@@ -95,6 +98,48 @@ describe('useGoalInReview', () => {
 		it('leaves a recapDate with an explicit time unchanged', () => {
 			window.history.pushState({}, '', '/?recapDate=2027-04-01T12:00:00Z');
 			expect(getGoalInReviewNow().getTime()).toBe(new Date('2027-04-01T12:00:00Z').getTime());
+		});
+
+		it('takes the override as an argument, for callers that also run on the server', () => {
+			// The server has no address bar, so anything deciding what it renders has to hand
+			// the override in rather than rely on the address-bar fallback.
+			expect(getGoalInReviewNow('2027-04-01').getTime()).toBe(new Date(2027, 3, 1).getTime());
+			expect(getGoalInReviewCurrentYear('2027-01-01')).toBe(2027);
+		});
+
+		it('prefers the argument over the address bar', () => {
+			window.history.pushState({}, '', '/?recapDate=2030-01-01');
+			expect(getGoalInReviewCurrentYear('2027-01-01')).toBe(2027);
+		});
+	});
+
+	describe('useRecapDateOverride', () => {
+		const mountOverride = router => {
+			let override;
+			mount({
+				template: '<div />',
+				setup() {
+					({ recapDate: override } = useRecapDateOverride());
+					return {};
+				},
+			}, { global: { provide: router ? { [routerKey]: router } : {} } });
+			return override;
+		};
+
+		it('reads the override off the route, which the server can see too', () => {
+			const router = { currentRoute: ref({ query: { recapDate: '2027-01-01' } }) };
+			expect(mountOverride(router).value).toBe('2027-01-01');
+		});
+
+		it('reads no override when the route carries none', () => {
+			const router = { currentRoute: ref({ query: {} }) };
+			expect(mountOverride(router).value).toBeNull();
+		});
+
+		it('reads no override rather than failing when there is no router', () => {
+			// Only a QA param rides on this, so a component mounted without a router must
+			// still render.
+			expect(mountOverride(null).value).toBeNull();
 		});
 	});
 
@@ -257,6 +302,99 @@ describe('useGoalInReview', () => {
 		expect(result.goalSummary).toBeNull();
 		expect(composable.loading.value).toBe(false);
 	});
+
+	describe('opening the recap by itself', () => {
+		const THIS_YEAR = new Date().getFullYear();
+		const dayOffset = days => new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+
+		const goalOf = (status, year = THIS_YEAR) => ({
+			goalName: `${year} impact goal`,
+			status,
+			dateStarted: `${year}-02-01T00:00:00.000Z`,
+		});
+
+		// Stands in for useGoalData; findMostRecentActiveGoal has its own spec.
+		const goalDataWith = ({ goal = null, hasViewed = false, announced = true } = {}) => ({
+			findMostRecentActiveGoal: goals => goals[0] ?? null,
+			getCategories,
+			getCtaHref,
+			getGoalSummary,
+			hasViewedGoalRecapForYear: () => hasViewed,
+			hideGoalCard: ref(announced),
+			loadPreferences: vi.fn(() => Promise.resolve({ goals: goal ? [goal] : [] })),
+			setGoalRecapViewedPreference: vi.fn(),
+			hasSubmittedGoalFeedbackForYear: () => false,
+			setGoalFeedbackSubmittedPreference: vi.fn(),
+		});
+
+		it('loads the recap and opens it for a completed goal', async () => {
+			const apollo = makeApollo();
+			const { loadAutoOpenRecap } = useGoalInReview({
+				apollo,
+				goalData: goalDataWith({ goal: goalOf('completed') }),
+			});
+
+			const result = await loadAutoOpenRecap({ enabled: true });
+
+			expect(result).not.toBeNull();
+			expect(getGoalSummary).toHaveBeenCalled();
+		});
+
+		it('stays shut when the goal turns out to have nothing to show', async () => {
+			getGoalSummary.mockResolvedValue({ ...supportAllSummary, count: 0 });
+			const { loadAutoOpenRecap } = useGoalInReview({
+				apollo: makeApollo(),
+				goalData: goalDataWith({ goal: goalOf('completed') }),
+			});
+
+			const result = await loadAutoOpenRecap({ enabled: true });
+
+			expect(result).toBeNull();
+			expect(getGoalSummary).toHaveBeenCalled();
+		});
+
+		it.each([
+			['the goal ran in a previous year', { goal: goalOf('completed', THIS_YEAR - 1) }],
+			['the goal expired', { goal: goalOf('expired') }],
+			['this is the visit that announces the win', { goal: goalOf('completed'), announced: false }],
+			['the recap has already been seen', { goal: goalOf('completed'), hasViewed: true }],
+			['there is no goal at all', {}],
+		])('does not pay for the payload when %s', async (_, options) => {
+			const apollo = makeApollo();
+			const { loadAutoOpenRecap } = useGoalInReview({ apollo, goalData: goalDataWith(options) });
+
+			const result = await loadAutoOpenRecap({ enabled: true });
+
+			expect(result).toBeNull();
+			expect(getGoalSummary).not.toHaveBeenCalled();
+			expect(apollo.query).not.toHaveBeenCalled();
+		});
+
+		it('does not pay for the payload while an in-progress goal waits for its release date', async () => {
+			const apollo = makeApollo();
+			const { loadAutoOpenRecap } = useGoalInReview({
+				apollo,
+				goalData: goalDataWith({ goal: goalOf('in-progress') }),
+			});
+
+			const result = await loadAutoOpenRecap({ enabled: true, inProgressStartDate: dayOffset(30) });
+
+			expect(result).toBeNull();
+			expect(getGoalSummary).not.toHaveBeenCalled();
+		});
+
+		it('loads it once that release date has passed', async () => {
+			const { loadAutoOpenRecap } = useGoalInReview({
+				apollo: makeApollo(),
+				goalData: goalDataWith({ goal: goalOf('in-progress') }),
+			});
+
+			const result = await loadAutoOpenRecap({ enabled: true, inProgressStartDate: dayOffset(-1) });
+
+			expect(result).not.toBeNull();
+			expect(getGoalSummary).toHaveBeenCalled();
+		});
+	});
 });
 
 describe('useGoalRecapEntryPoint', () => {
@@ -270,11 +408,14 @@ describe('useGoalRecapEntryPoint', () => {
 		loansTowardGoal = 5,
 		announced = true,
 		hasViewedRecap = false,
+		routeRecapDate = null,
 	} = {}) => {
 		const goalStatusRef = ref(goalStatus);
 		const announcedRef = ref(announced);
 		const viewedRef = ref(hasViewedRecap);
+		const router = { currentRoute: ref({ query: routeRecapDate ? { recapDate: routeRecapDate } : {} }) };
 		let entryPoint;
+		let askedForYear;
 		mount({
 			template: '<div />',
 			setup() {
@@ -284,13 +425,18 @@ describe('useGoalRecapEntryPoint', () => {
 					goalYear: ref(goalYear),
 					loansTowardGoal: ref(loansTowardGoal),
 					announced: announcedRef,
-					hasViewedRecap: viewedRef,
+					// The composable picks the year and asks about it, so record which year
+					// it asked for along with the answer.
+					hasViewedRecap: year => {
+						askedForYear = year;
+						return viewedRef.value;
+					},
 				});
 				return {};
 			},
-		});
+		}, { global: { provide: { [routerKey]: router } } });
 		return {
-			...entryPoint, goalStatusRef, announcedRef, viewedRef,
+			...entryPoint, goalStatusRef, announcedRef, viewedRef, askedForYear: () => askedForYear,
 		};
 	};
 
@@ -382,6 +528,28 @@ describe('useGoalRecapEntryPoint', () => {
 		// The CTA is right as soon as the card can render it, not once the pop-up is ready.
 		it('does not wait for the rest of the goal data', () => {
 			expect(setupEntryPoint().showRecapCta.value).toBe(true);
+		});
+	});
+
+	describe('the year it asks about', () => {
+		afterEach(() => {
+			window.history.pushState({}, '', '/');
+		});
+
+		it('asks about the year it resolved itself', () => {
+			expect(setupEntryPoint().askedForYear()).toBe(CURRENT_YEAR);
+		});
+
+		it('asks about the year the route overrides to, which the server can read as well', () => {
+			// One owner for the year, so no caller answers with a different one, and it comes
+			// off the route so the server answers as the client does.
+			expect(setupEntryPoint({ routeRecapDate: '2031-01-01' }).askedForYear()).toBe(2031);
+		});
+
+		it('falls back to the address bar with no route override', () => {
+			window.history.pushState({}, '', '/?recapDate=2032-01-01');
+
+			expect(setupEntryPoint().askedForYear()).toBe(2032);
 		});
 	});
 });

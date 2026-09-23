@@ -33,7 +33,8 @@
 			:sidesheet-loan="sidesheetLoan"
 			:latest-loan="latestLoan"
 			:goal-refresh-key="goalRefreshKey"
-			:show-my-giving-funds-card="showMyGivingFundsCard"
+			:owned-giving-funds="ownedGivingFunds"
+			:fundraisers-row-enabled="fundraisersRowEnabled"
 			:goal-recommended-loan-enable="goalRecommendedLoanEnable"
 			:goal-in-review-enable="goalInReviewEnable"
 			:goal-in-review-in-progress-start="goalInReviewInProgressStart"
@@ -65,7 +66,6 @@ import useGoalData, { LAST_YEAR_KEY } from '#src/composables/useGoalData';
 import {
 	hasSupportedColombiaReliefFund,
 	isColombiaReliefNextStepActive,
-	isDisasterReliefFundOnlySupporter,
 } from '#src/util/givingFundUtils';
 import useBadgeData, {
 	applyFreshProgressToAchievements,
@@ -78,6 +78,7 @@ import { getContentfulEntries } from '#src/util/contentfulUtils';
 const CURRENT_YEAR = new Date().getFullYear();
 const GOALS_ROW_EXP_KEY = 'mykiva_goals_row';
 const CO_RECOVERY_FUND_EXP_KEY = 'mykiva_co_recovery_fund';
+const FUNDRAISERS_ROW_EXP_KEY = 'mykiva_fundraisers_row';
 
 /**
  * Options API parent needed to ensure WWwPage children options API preFetch works,
@@ -125,12 +126,13 @@ export default {
 			sidesheetLoan: {},
 			latestLoan: null,
 			goalRefreshKey: 0,
-			showMyGivingFundsCard: false,
+			ownedGivingFunds: [],
 			recentTransactionLoans: [],
 			goalRecommendedLoanEnable: false,
 			goalInReviewEnable: false,
 			goalInReviewInProgressStart: null,
 			goalsRowEnabled: false,
+			fundraisersRowEnabled: false,
 			shouldRenderFeaturedSlot: true,
 			coRecoveryFundExpEnabled: false,
 		};
@@ -237,6 +239,10 @@ export default {
 					query: experimentAssignmentQuery,
 					variables: { id: CO_RECOVERY_FUND_EXP_KEY },
 				}),
+				client.query({
+					query: experimentAssignmentQuery,
+					variables: { id: FUNDRAISERS_ROW_EXP_KEY },
+				}),
 			]).catch(error => {
 				logReadQueryError(error, 'myKivaPage Prefetch');
 			});
@@ -334,13 +340,7 @@ export default {
 					public: this.userInfo.userAccount?.public ?? false,
 					inviterName: this.userInfo.userAccount?.inviterName ?? null,
 				};
-				// show giving funds card if user has any giving fund participation
-				const participation = this.userInfo?.givingFundParticipation ?? {};
-				const hasGivingFundParticipation = (participation.totalCount ?? 0) > 0
-					|| (participation.totalAmount ?? 0) > 0;
-				// Hide the card when the lender's only activity is supporting the disaster relief fund
-				this.showMyGivingFundsCard = hasGivingFundParticipation
-					&& !isDisasterReliefFundOnlySupporter(this.userInfo);
+				this.ownedGivingFunds = this.userInfo?.givingFunds?.values ?? [];
 				this.loans = myKivaQueryResult.my?.loans?.values ?? [];
 				this.sidesheetLoan = bpSidesheetLoan?.lend?.loan ?? { id: 0 };
 				const isSideSheetLoanInLoans = this.loans.some(loan => loan?.id === this.sidesheetLoan.id);
@@ -456,6 +456,18 @@ export default {
 			},
 			this.$kvTrackEvent,
 			'EXP-MP-3155-Aug2026'
+		);
+
+		initializeExperiment(
+			this.cookieStore,
+			this.apollo,
+			this.$route,
+			FUNDRAISERS_ROW_EXP_KEY,
+			version => {
+				this.fundraisersRowEnabled = version === 'b';
+			},
+			this.$kvTrackEvent,
+			'EXP-CIT-5265-Sep2026'
 		);
 	},
 	async mounted() {

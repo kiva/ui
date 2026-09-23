@@ -131,7 +131,7 @@ import useBadgeData from '#src/composables/useBadgeData';
 import JourneyCardCarousel from '#src/components/MyKiva/JourneyCardCarousel';
 
 import logReadQueryError from '#src/util/logReadQueryError';
-import { getGoalInReviewCurrentYear, useGoalRecapEntryPoint } from '#src/composables/useGoalInReview';
+import { useGoalRecapEntryPoint } from '#src/composables/useGoalInReview';
 import { getGoalYear } from '#src/util/goalInReview';
 import { checkPostLendingCardCookie, removePostLendingCardCookie } from '#src/util/myKivaUtils';
 import MyKivaImpactInsightModal from '#src/components/MyKiva/ImpactInsight/MyKivaImpactInsightModal';
@@ -252,9 +252,7 @@ export default {
 			goalStatus: () => goalData.userGoal?.value?.status,
 			goalYear: () => getGoalYear(goalData.userGoal?.value),
 			announced: () => Boolean(goalData.hideGoalCard?.value),
-			hasViewedRecap: () => Boolean(
-				goalData.hasViewedGoalRecapForYear?.(getGoalInReviewCurrentYear()),
-			),
+			hasViewedRecap: year => Boolean(goalData.hasViewedGoalRecapForYear?.(year)),
 			loansTowardGoal: () => goalData.goalProgress?.value || 0,
 		});
 

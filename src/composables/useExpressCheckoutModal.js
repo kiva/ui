@@ -7,6 +7,7 @@ import {
 	clearBasketDonation,
 	hasOnlyOneDonation,
 	isBasketEmpty,
+	setLendAfterGoalSetAttribution,
 	shouldReopenExpressCheckout,
 } from '#src/util/thanksPage/expressCheckoutUtils';
 import initializeCheckout from '#src/graphql/query/checkout/initializeCheckout.graphql';
@@ -103,6 +104,13 @@ export default function useExpressCheckoutModal({
 		return true;
 	}
 
+	// Both basket redirects this composable owns. The mark happens on the navigation,
+	// so an add-to-basket failure leaves nothing behind.
+	function redirectToBasket() {
+		setLendAfterGoalSetAttribution(cookieStore, router.currentRoute.value?.query?.kiva_transaction_id);
+		return router.push('/basket');
+	}
+
 	async function handleAddRecommendedLoanToBasket(payload) {
 		// Feature flag off → skip the modal flow entirely. Add the recommended
 		// loan to the basket and redirect to /basket, matching the pre-express
@@ -112,7 +120,7 @@ export default function useExpressCheckoutModal({
 			const previousOnError = payload.onError;
 			addToBasket({
 				...payload,
-				onSuccess: () => router.push('/basket'),
+				onSuccess: redirectToBasket,
 				onError: () => {
 					isRedirecting.value = false;
 					previousOnError?.();
@@ -187,7 +195,7 @@ export default function useExpressCheckoutModal({
 					if (empty) {
 						return openExpressCheckout(payload);
 					}
-					return router.push('/basket');
+					return redirectToBasket();
 				},
 				onError: () => {
 					isRedirecting.value = false;

@@ -14,6 +14,32 @@ query myKivaQuery {
     }
     givingFunds {
       totalCount
+      values {
+        id
+        createdDate
+        currentAmountDonated
+        totalParticipants
+        display {
+          ctaTitle
+          displayName
+          occasion
+          avatar {
+            id
+            url(customSize: "w200h200")
+          }
+        }
+        lendingStats {
+          totalLivesTouched
+        }
+        organization {
+          id
+          name
+        }
+        owner {
+          id
+          name
+        }
+      }
     }
     loans {
       totalCount

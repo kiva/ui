@@ -335,6 +335,7 @@ import {
 	trackMetaEvent,
 } from '@kiva/kv-analytics';
 import { getPromoFromBasket } from '#src/util/campaignUtils';
+import { hasLendAfterGoalSetAttribution } from '#src/util/thanksPage/expressCheckoutUtils';
 import WwwPage from '#src/components/WwwFrame/WwwPage';
 import checkoutSettings from '#src/graphql/query/checkout/checkoutSettings.graphql';
 import initializeCheckout from '#src/graphql/query/checkout/initializeCheckout.graphql';
@@ -789,6 +790,10 @@ export default {
 			// - this event will be duplicated when the page reloads with a newly registered/logged in user
 			const userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
 			this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
+
+			if (hasLendAfterGoalSetAttribution(this.cookieStore)) {
+				this.$kvTrackEvent('basket', 'view', 'from-lend-after-goal-set');
+			}
 		});
 
 		// cover ssr or spa page load

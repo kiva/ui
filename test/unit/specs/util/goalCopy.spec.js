@@ -394,3 +394,14 @@ describe('goalCopy', () => {
 		});
 	});
 });
+
+describe('daysLeftInGoalYear', () => {
+	it('uses the plural copy for more than one day', () => {
+		expect(goalCopy.daysLeftInGoalYear(47)).toBe('47 days left!');
+		expect(goalCopy.daysLeftInGoalYear(2)).toBe('2 days left!');
+	});
+
+	it('uses the singular copy on the last day', () => {
+		expect(goalCopy.daysLeftInGoalYear(1)).toBe('1 day left!');
+	});
+});

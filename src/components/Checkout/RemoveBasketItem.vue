@@ -17,6 +17,7 @@
 import { mdiClose } from '@mdi/js';
 import updateLoanReservation from '#src/graphql/mutation/updateLoanReservation.graphql';
 import updateKivaCardAmount from '#src/graphql/mutation/updateKivaCardAmount.graphql';
+import { getBasketErrorCode, getBasketErrorMessage } from '#src/util/basketUtils';
 import { KvMaterialIcon } from '@kiva/kv-components';
 
 export default {
@@ -66,10 +67,10 @@ export default {
 				}).then(data => {
 					if (data.errors?.length) {
 						let notAllSharesAdded = false;
-						data.errors.forEach(({ message, code }) => {
-							this.$showTipMsg(message, 'error');
+						data.errors.forEach(error => {
+							this.$showTipMsg(getBasketErrorMessage(error), 'error');
 							// update flag if this error is present
-							if (code === 'not_all_shared_added') {
+							if (getBasketErrorCode(error) === 'not_all_shared_added') {
 								notAllSharesAdded = true;
 							}
 						});
@@ -97,8 +98,8 @@ export default {
 					}
 				}).then(data => {
 					if (data.errors?.length) {
-						data.errors.forEach(({ message }) => {
-							this.$showTipMsg(message, 'error');
+						data.errors.forEach(error => {
+							this.$showTipMsg(getBasketErrorMessage(error), 'error');
 						});
 						this.$emit('updating-totals', false);
 					} else {

@@ -109,8 +109,7 @@ import useGoalData from '#src/composables/useGoalData';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
-import { shouldHideGoalSignup } from '#src/util/goalInReview';
-import { getGoalInReviewNow } from '#src/composables/useGoalInReview';
+import { useHideGoalSignup } from '#src/composables/useGoalInReview';
 import AlmostFundedNextStep from '#src/components/MyKiva/AlmostFundedNextStep';
 import ColombiaReliefNextStep from '#src/components/MyKiva/ColombiaReliefNextStep';
 import {
@@ -288,10 +287,7 @@ const showSurveyCard = computed(() => props.showSurveySlide && checkShowSurveyCa
 
 const nonBadgesSlides = computed(() => filterNonBadgesSlides(props.slides));
 
-const hideGoalSignup = computed(() => shouldHideGoalSignup({
-	recapStartDate: props.goalInReviewInProgressStart,
-	now: getGoalInReviewNow(),
-}));
+const { hideGoalSignup } = useHideGoalSignup(() => props.goalInReviewInProgressStart);
 
 const shouldShowGoalCard = computed(() => {
 	if (!props.inLendingStats) return false;

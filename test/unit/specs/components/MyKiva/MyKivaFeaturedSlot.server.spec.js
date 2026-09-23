@@ -5,8 +5,10 @@ import MyKivaFeaturedSlot from '#src/components/MyKiva/MyKivaFeaturedSlot';
 import { GOAL_STATUS, GOALS_CURRENT_YEAR } from '#src/composables/useGoalData';
 import { ID_US_ECONOMIC_EQUALITY } from '#src/composables/useBadgeData';
 
+const currentRoute = { value: { path: '/mykiva', query: {} } };
+
 vi.mock('vue-router', () => ({
-	useRouter: () => ({}),
+	useRouter: () => ({ currentRoute }),
 }));
 
 vi.mock('#src/util/logReadQueryError', () => ({
@@ -42,10 +44,10 @@ const buildGoalData = ({ status = null, hasViewedCompletedGoal = false } = {}) =
 	setViewedGoalCompletePreference: vi.fn(() => Promise.resolve()),
 });
 
-const renderSlot = async (goalData, trackEvent = vi.fn()) => {
+const renderSlot = async (goalData, trackEvent = vi.fn(), props = {}) => {
 	const app = createSSRApp({
 		name: 'FeaturedSlotServerHost',
-		render: () => h(MyKivaFeaturedSlot, { userFirstName: 'Ada' }),
+		render: () => h(MyKivaFeaturedSlot, { userFirstName: 'Ada', ...props }),
 	});
 	app.provide('apollo', { query: vi.fn(), readQuery: vi.fn() });
 	app.provide('goalData', goalData);
@@ -57,6 +59,31 @@ const renderSlot = async (goalData, trackEvent = vi.fn()) => {
 describe('MyKivaFeaturedSlot (server)', () => {
 	afterEach(() => {
 		vi.clearAllMocks();
+		currentRoute.value.query = {};
+	});
+
+	describe('the recapDate override', () => {
+		// The signup ask hides for the stretch around the recap's release, so the override
+		// decides whether this slot renders. The server has to answer as the client does, or
+		// it sends a slot the client drops.
+		const RECAP_START = '2026-12-01';
+
+		const renderWithOverride = recapDate => {
+			currentRoute.value.query = { recapDate };
+			return renderSlot(buildGoalData(), vi.fn(), { goalInReviewInProgressStart: RECAP_START });
+		};
+
+		it('hides the signup ask when the override lands inside the window', async () => {
+			const { html } = await renderWithOverride('2026-12-05');
+
+			expect(html).not.toContain('featured-goal-card');
+		});
+
+		it('leaves the signup ask up when the override lands outside the window', async () => {
+			const { html } = await renderWithOverride('2027-06-01');
+
+			expect(html).toContain('featured-goal-card');
+		});
 	});
 
 	it('has no window to branch on', () => {

@@ -22,9 +22,8 @@ vi.mock('@kiva/kv-components', () => ({
 }));
 
 describe('MyGivingFundsCard', () => {
-	const mockUseGivingFund = ({ myFundsCount = 0, contributedFundIds = [] } = {}) => {
+	const mockUseGivingFund = ({ contributedFundIds = [] } = {}) => {
 		const mocks = {
-			fetchMyGivingFundsCount: vi.fn().mockResolvedValue({ givingFunds: { totalCount: myFundsCount } }),
 			getFundsContributedToIds: vi.fn().mockResolvedValue(contributedFundIds),
 		};
 		useGivingFund.mockReturnValue(mocks);
@@ -52,9 +51,9 @@ describe('MyGivingFundsCard', () => {
 	});
 
 	it('renders the default card immediately and shows the funds copy once data resolves', async () => {
-		mockUseGivingFund({ myFundsCount: 2, contributedFundIds: ['fund-1', 'fund-2'] });
+		mockUseGivingFund({ contributedFundIds: ['fund-1', 'fund-2'] });
 
-		mountCard();
+		mountCard({ props: { myFundsCount: 2 } });
 
 		expect(screen.getByText('Check in on your giving funds')).toBeTruthy();
 		const link = screen.getByText('See your giving funds').closest('a');
@@ -71,7 +70,7 @@ describe('MyGivingFundsCard', () => {
 		const $kvTrackEvent = vi.fn();
 		const mocks = mockUseGivingFund();
 
-		mountCard({ props: { isDisasterReliefOnly: true }, $kvTrackEvent });
+		mountCard({ props: { isDisasterReliefOnly: true, myFundsCount: 2 }, $kvTrackEvent });
 
 		expect(screen.getByText('Check in on the Colombia earthquake recovery fund')).toBeTruthy();
 		const link = screen.getByText('View fund').closest('a');
@@ -82,15 +81,14 @@ describe('MyGivingFundsCard', () => {
 
 		expect($kvTrackEvent).toHaveBeenCalledTimes(1);
 		expect($kvTrackEvent).toHaveBeenCalledWith('portfolio', 'view', 'see-your-giving-funds', 'disaster-relief');
-		expect(mocks.fetchMyGivingFundsCount).not.toHaveBeenCalled();
 		expect(mocks.getFundsContributedToIds).not.toHaveBeenCalled();
 	});
 
 	it('never fires the view event when isDisasterReliefOnly is not set', async () => {
 		const $kvTrackEvent = vi.fn();
-		mockUseGivingFund({ myFundsCount: 1, contributedFundIds: ['fund-1'] });
+		mockUseGivingFund({ contributedFundIds: ['fund-1'] });
 
-		mountCard({ $kvTrackEvent });
+		mountCard({ props: { myFundsCount: 1 }, $kvTrackEvent });
 
 		await flushPromises();
 

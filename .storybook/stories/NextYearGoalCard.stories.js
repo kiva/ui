@@ -6,7 +6,7 @@ export default {
 	component: MyKivaNextYearGoalCard,
 };
 
-const story = (args = {}) => {
+const story = (args = {}, { recapDate = null } = {}) => {
 	const mergedArgs = {
 		loading: false,
 		...args,
@@ -14,6 +14,16 @@ const story = (args = {}) => {
 	const template = () => ({
 		components: { MyKivaNextYearGoalCard },
 		setup() {
+			// The card reads the QA date override from the URL after mount (as on MyKiva), so a story
+			// pins "today" by setting ?recapDate before mount. Storybook's own params are preserved.
+			const url = new URL(window.location.href);
+			if (recapDate) {
+				url.searchParams.set('recapDate', recapDate);
+			} else {
+				url.searchParams.delete('recapDate');
+			}
+			window.history.replaceState({}, '', url);
+
 			const goalProgressPercentage = computed(() => {
 				const target = mergedArgs?.userGoal?.target || 0;
 				const progress = mergedArgs?.goalProgress || 0;
@@ -127,3 +137,31 @@ export const FiveDigitsGoalLoans = story({
 	},
 	goalProgress: 90870,
 });
+
+// A 2026 goal started in February; the countdown states below pin "today" via recapDate.
+const inWindowGoal = {
+	target: 10,
+	category: 'ID_WOMENS_EQUALITY',
+	dateStarted: '2026-02-01T12:00:00.000Z',
+};
+
+/** Nov 15 → "47 days left!" under the title. */
+export const UserGoalDaysLeft = story({
+	prevYearLoans: 8,
+	userGoal: inWindowGoal,
+	goalProgress: 2,
+}, { recapDate: '2026-11-15' });
+
+/** Dec 31 → singular "1 day left!". */
+export const UserGoalLastDayLeft = story({
+	prevYearLoans: 8,
+	userGoal: inWindowGoal,
+	goalProgress: 8,
+}, { recapDate: '2026-12-31' });
+
+/** Completed goal inside the window → no countdown. */
+export const UserGoalCompletedInWindow = story({
+	prevYearLoans: 8,
+	userGoal: inWindowGoal,
+	goalProgress: 10,
+}, { recapDate: '2026-11-15' });

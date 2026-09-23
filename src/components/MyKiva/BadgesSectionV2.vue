@@ -53,8 +53,8 @@ import { KvCarousel, KvLoadingPlaceholder } from '@kiva/kv-components';
 import MyKivaProgressCard from '#src/components/MyKiva/MyKivaProgressCard';
 import { useRouter } from 'vue-router';
 import { COMPLETED_GOAL_THRESHOLD, GOALS_CURRENT_YEAR, GOAL_STATUS } from '#src/composables/useGoalData';
-import { getGoalYear, shouldShowRecapEntryPoint } from '#src/util/goalInReview';
-import { getGoalInReviewCurrentYear, getGoalInReviewNow } from '#src/composables/useGoalInReview';
+import { getGoalYear, getIsPastGoalYear, shouldShowRecapEntryPoint } from '#src/util/goalInReview';
+import { getGoalInReviewNow, useRecapDateOverride } from '#src/composables/useGoalInReview';
 
 const CARD_MIN_HEIGHT = '111px';
 const SINGLE_SLIDE_WIDTH = '336px';
@@ -107,15 +107,31 @@ const userHasGoal = computed(() => !!userGoal.value && Object.keys(userGoal.valu
 
 const userGoalYear = computed(() => getGoalYear(userGoal.value));
 
-const recapEntryPointFor = ({ goalStatus, goalYear, loansTowardGoal }) => shouldShowRecapEntryPoint({
-	enabled: props.goalInReviewEnable,
-	goalStatus,
-	goalYear,
-	currentYear: getGoalInReviewCurrentYear(),
-	loansTowardGoal,
-	activeGoalYear: userGoalYear.value,
-	now: getGoalInReviewNow(),
-});
+// The server needs this override too, since it sets the row's tile order. The carousel's icons
+// hydrate asynchronously, and reordering the row mid-hydration strands one of them on a
+// detached node, which throws and leaves that tile with no icon.
+const { recapDate } = useRecapDateOverride();
+const resolveGoalInReviewNow = () => getGoalInReviewNow(recapDate.value);
+
+const isGoalYearOver = computed(() => getIsPastGoalYear(
+	userGoalYear.value,
+	resolveGoalInReviewNow().getFullYear(),
+));
+
+const recapEntryPointFor = ({ goalStatus, goalYear, loansTowardGoal }) => {
+	// Read the clock once so both answers share an instant, even if the year turns over
+	// mid-render.
+	const now = resolveGoalInReviewNow();
+	return shouldShowRecapEntryPoint({
+		enabled: props.goalInReviewEnable,
+		goalStatus,
+		goalYear,
+		currentYear: now.getFullYear(),
+		loansTowardGoal,
+		activeGoalYear: userGoalYear.value,
+		now,
+	});
+};
 
 const formatHistoricalGoal = goal => {
 	const year = getGoalYear(goal);
@@ -202,7 +218,9 @@ const visibleBadges = computed(() => {
 			}),
 		};
 
-		if (userGoalAchieved.value) {
+		// A completed goal stays at the front until its goal year ends, then moves back
+		// with the older goals.
+		if (userGoalAchieved.value && isGoalYearOver.value) {
 			showedSlides.push(formattedUserGoal);
 		} else {
 			showedSlides.unshift(formattedUserGoal);

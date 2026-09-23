@@ -7,7 +7,13 @@ import loanCardBasketed from '#src/graphql/query/loanCardBasketed.graphql';
 import basketModalMixin from '#src/plugins/basket-modal-mixin';
 import { trackFBAddToCart, FB_CONTENT_CATEGORY_LOAN } from '@kiva/kv-analytics';
 
-import { handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
+import {
+	CHECKOUT_IN_PROGRESS_MESSAGE,
+	getBasketErrorCode,
+	handleInvalidBasket,
+	hasBasketExpired,
+	isCheckoutInProgress,
+} from '#src/util/basketUtils';
 import logReadQueryError from '#src/util/logReadQueryError';
 import logFormatter from '#src/util/logFormatter';
 
@@ -122,13 +128,21 @@ export default {
 					// Handle errors from adding to basket
 					errors.forEach(error => {
 						try {
+							const errorCode = getBasketErrorCode(error);
+							// Locked by the lender's own checkout, not broken: must not fall through
+							// to handleInvalidBasket, which deletes the basket cookie and reloads.
+							if (isCheckoutInProgress(errorCode)) {
+								this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed: checkout in progress');
+								this.$showTipMsg(CHECKOUT_IN_PROGRESS_MESSAGE, 'error');
+								return;
+							}
 							this.$kvTrackEvent(
 								'Lending',
 								'Add-to-Basket',
 								`Failed: ${(error?.message ?? 'unknown error').substring(0, 40)}...`
 							);
 							Sentry.captureMessage(`Add to Basket: ${error?.message ?? 'unknown error'}`);
-							if (hasBasketExpired(error?.extensions?.code)) {
+							if (hasBasketExpired(errorCode)) {
 								// eslint-disable-next-line max-len
 								this.$showTipMsg('There was a problem adding the loan to your basket, refresh the page to try again.', 'error');
 								return handleInvalidBasket({

@@ -295,6 +295,7 @@ import numeral from 'numeral';
 import { mdiPencil, mdiArrowRight, mdiClose } from '@mdi/js';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
+import { getBasketErrorMessage } from '#src/util/basketUtils';
 import HowKivaUsesDonation from '#src/components/Checkout/HowKivaUsesDonation';
 import DonationNudgeLightbox from '#src/components/Checkout/DonationNudge/DonationNudgeLightbox';
 import DonateRepayments from '#src/components/Checkout/DonateRepaymentsToggle';
@@ -506,8 +507,8 @@ export default {
 				}
 			}).then(data => {
 				if (data.errors) {
-					data.errors.forEach(({ message }) => {
-						this.$showTipMsg(message, 'error');
+					data.errors.forEach(error => {
+						this.$showTipMsg(getBasketErrorMessage(error), 'error');
 					});
 					this.amount = this.cachedAmount;
 					this.$emit('updating-totals', false);

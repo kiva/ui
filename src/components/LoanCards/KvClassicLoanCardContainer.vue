@@ -51,7 +51,14 @@
 <script>
 import * as Sentry from '@sentry/vue';
 import { gql } from 'graphql-tag';
-import { setLendAmount, handleInvalidBasket, hasBasketExpired } from '#src/util/basketUtils';
+import {
+	CHECKOUT_IN_PROGRESS_MESSAGE,
+	getBasketErrorCode,
+	handleInvalidBasket,
+	hasBasketExpired,
+	isCheckoutInProgress,
+	setLendAmount,
+} from '#src/util/basketUtils';
 import { trackFBAddToCart, FB_CONTENT_CATEGORY_LOAN } from '@kiva/kv-analytics';
 import { readLoanFragment, watchLoanData } from '#src/util/loanUtils';
 import bookmarkLoan from '#src/util/bookmarkUtil';
@@ -333,14 +340,25 @@ export default {
 				trackFBAddToCart(FB_CONTENT_CATEGORY_LOAN, lendAmount);
 			}).catch(e => {
 				this.$emit('add-to-basket', { loanId: this.loanId, success: false });
-				const msg = e?.[0]?.extensions?.code === 'reached_anonymous_basket_limit'
+				const errorCode = getBasketErrorCode(e?.[0]);
+				// Locked by the lender's own checkout, not broken: must not fall through to
+				// handleInvalidBasket, which deletes the basket cookie and reloads.
+				if (isCheckoutInProgress(errorCode)) {
+					const msg = CHECKOUT_IN_PROGRESS_MESSAGE;
+					this.errorMsg = msg;
+					this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed: checkout in progress');
+					this.$showTipMsg(msg, 'error');
+					this.isAdding = false;
+					return;
+				}
+				const msg = errorCode === 'reached_anonymous_basket_limit'
 					? e?.[0]?.message
 					: 'There was a problem adding the loan to your basket';
 				this.errorMsg = msg;
 				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
 				Sentry.captureException(e);
 				// Handle errors from adding to basket
-				if (hasBasketExpired(e?.[0]?.extensions?.code)) {
+				if (hasBasketExpired(errorCode)) {
 					// eslint-disable-next-line max-len
 					this.$showTipMsg('There was a problem adding the loan to your basket, refresh the page to try again.', 'error');
 					return handleInvalidBasket({

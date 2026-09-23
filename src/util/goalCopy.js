@@ -226,6 +226,11 @@ const goalCopy = {
 	/** Card: specific named category */
 	ringTitleCategoryCard: categoryName => `Your ${GOALS_CURRENT_YEAR} goal to ${categoryName}`,
 
+	// ─── GoalProgressRing — goal-year countdown ────────────────────────────────
+
+	/** Card: days left in the goal year, shown for its last 90 days (Dec 31 reads "1 day left!") */
+	daysLeftInGoalYear: days => (days === 1 ? '1 day left!' : `${days} days left!`),
+
 	// ─── GoalProgressRing — card progress descriptions ─────────────────────────
 
 	/** Progress at 0%: no loans made yet */

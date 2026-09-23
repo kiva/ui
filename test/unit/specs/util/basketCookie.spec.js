@@ -1,7 +1,9 @@
 import setBasketCookie from '#src/util/basketCookie';
 import { createNewBasket, hasBasketExpired } from '#src/util/basketUtils';
 
-vi.mock('#src/util/basketUtils', () => ({
+// getBasketErrorCode stays real so these specs exercise the actual code extraction.
+vi.mock('#src/util/basketUtils', async () => ({
+	...await vi.importActual('#src/util/basketUtils'),
 	createNewBasket: vi.fn(),
 	hasBasketExpired: vi.fn().mockReturnValue(true),
 }));

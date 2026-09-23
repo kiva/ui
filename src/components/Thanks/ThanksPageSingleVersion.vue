@@ -210,14 +210,17 @@ import GoalSettingModal from '#src/components/MyKiva/GoalSettingModal';
 import GoalInProgress from '#src/components/Thanks/SingleVersion/GoalInProgress';
 import ExpressCheckoutModal from '#src/components/Thanks/ExpressCheckout/ExpressCheckoutModal';
 import useGoalData, { GOAL_STATUS } from '#src/composables/useGoalData';
-import { shouldHideGoalSignup } from '#src/util/goalInReview';
-import { getGoalInReviewNow } from '#src/composables/useGoalInReview';
+import { useHideGoalSignup } from '#src/composables/useGoalInReview';
 import useGoalSettingRecommendedLoan, {
 	GOAL_RECOMMENDED_LOAN_ENTRYPOINT_POST_CHECKOUT,
 } from '#src/composables/useGoalSettingRecommendedLoan';
 import useExpressCheckoutModal from '#src/composables/useExpressCheckoutModal';
 import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
-import { EXPRESS_CHECKOUT_EXP_KEY } from '#src/util/thanksPage/expressCheckoutUtils';
+import {
+	clearLendAfterGoalSetAttribution,
+	EXPRESS_CHECKOUT_EXP_KEY,
+	isLendAfterGoalSetOrder,
+} from '#src/util/thanksPage/expressCheckoutUtils';
 import useBadgeData from '#src/composables/useBadgeData';
 import {
 	incrementGoalSignupThanksViewCount,
@@ -481,10 +484,7 @@ const showJourneyModule = computed(() => {
 	return !userGoalAchievedNow.value;
 });
 const showLoanComment = computed(() => hasPfpLoan.value || hasTeamAttributedPartnerLoan.value);
-const hideGoalSignup = computed(() => shouldHideGoalSignup({
-	recapStartDate: props.goalInReviewInProgressStart,
-	now: getGoalInReviewNow(),
-}));
+const { hideGoalSignup } = useHideGoalSignup(() => props.goalInReviewInProgressStart);
 
 const showGoalEntrypoint = computed(() => {
 	return !props.isGuest
@@ -614,6 +614,13 @@ const handleUpdateGoalChoices = updatedCategory => {
 };
 
 onMounted(async () => {
+	// Read before the goal awaits below. If those hang or fail, the attribution would
+	// otherwise stay set and credit a later unrelated order.
+	if (isLendAfterGoalSetOrder(cookieStore, router.currentRoute.value?.query?.kiva_transaction_id)) {
+		$kvTrackEvent('post-checkout', 'view', 'lend-from-after-goal-set');
+		clearLendAfterGoalSetAttribution(cookieStore);
+	}
+
 	await loadGoalData();
 	const year = new Date().getFullYear();
 	// Loans already in totalLoanCount after checkout

@@ -1,12 +1,14 @@
 import { createApp, ref } from 'vue';
 import useExpressCheckoutModal from '#src/composables/useExpressCheckoutModal';
+import { LEND_AFTER_GOAL_SET_COOKIE } from '#src/util/thanksPage/expressCheckoutUtils';
 
-const { mockPush } = vi.hoisted(() => ({
+const { mockPush, mockCurrentRoute } = vi.hoisted(() => ({
 	mockPush: vi.fn(),
+	mockCurrentRoute: { value: { query: { kiva_transaction_id: '12345' } } },
 }));
 
 vi.mock('vue-router', () => ({
-	useRouter: () => ({ push: mockPush }),
+	useRouter: () => ({ push: mockPush, currentRoute: mockCurrentRoute }),
 }));
 
 describe('useExpressCheckoutModal', () => {
@@ -47,7 +49,10 @@ describe('useExpressCheckoutModal', () => {
 			mutate: vi.fn().mockResolvedValue({ data: {} }),
 			query: vi.fn().mockResolvedValue({ data: {} }),
 		};
-		mockCookieStore = { get: vi.fn(() => 'basket-123') };
+		mockCookieStore = {
+			get: vi.fn(() => 'basket-123'),
+			set: vi.fn(),
+		};
 		mockAddToBasket = vi.fn();
 		mockLoadInitialBasketItems = vi.fn(() => Promise.resolve());
 		mockOnResetAdding = vi.fn();
@@ -108,6 +113,22 @@ describe('useExpressCheckoutModal', () => {
 		});
 
 		describe('empty basket → open modal', () => {
+			// The express modal keeps the lender on the thanks page, so there is no basket
+			// visit to attribute.
+			it('does not mark the lend-after-goal-set attribution', async () => {
+				basketItems.value = [];
+				composable.expressCheckoutModalRef.value = makeModalMock();
+				mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
+
+				await composable.handleAddRecommendedLoanToBasket({
+					loanId: 999,
+					lendAmount: '25',
+					loan: { id: 999 },
+				});
+
+				expect(mockCookieStore.set).not.toHaveBeenCalled();
+			});
+
 			it('calls addToBasket and opens the modal on success', async () => {
 				basketItems.value = [];
 				const modalMock = makeModalMock();
@@ -245,6 +266,32 @@ describe('useExpressCheckoutModal', () => {
 				expect(mockPush).toHaveBeenCalledWith('/basket');
 				expect(modalMock.abortLightbox).not.toHaveBeenCalled();
 				expect(modalMock.loadPaymentDetails).not.toHaveBeenCalled();
+			});
+
+			it('marks the lend-after-goal-set attribution', async () => {
+				basketItems.value = [loanItem({ id: 'other' })];
+				mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
+
+				await composable.handleAddRecommendedLoanToBasket({
+					loanId: 999,
+					lendAmount: '25',
+				});
+
+				expect(mockCookieStore.set)
+					.toHaveBeenCalledWith(LEND_AFTER_GOAL_SET_COOKIE, '12345', expect.any(Object));
+			});
+
+			it('does not mark the attribution when the add fails and no redirect happens', async () => {
+				basketItems.value = [loanItem({ id: 'other' })];
+				mockAddToBasket.mockImplementation(({ onError }) => onError?.());
+
+				await composable.handleAddRecommendedLoanToBasket({
+					loanId: 999,
+					lendAmount: '25',
+				});
+
+				expect(mockPush).not.toHaveBeenCalled();
+				expect(mockCookieStore.set).not.toHaveBeenCalled();
 			});
 		});
 
@@ -634,6 +681,14 @@ describe('useExpressCheckoutModal', () => {
 			expect(mockPush).toHaveBeenCalledWith('/basket');
 			expect(modalMock.loadPaymentDetails).not.toHaveBeenCalled();
 			expect(composable.expressCheckoutLoan.value).toBeNull();
+		});
+
+		it('marks the lend-after-goal-set attribution', async () => {
+			mockAddToBasket.mockImplementation(({ onSuccess }) => onSuccess?.());
+
+			await composable.handleAddRecommendedLoanToBasket({ loanId: 999, lendAmount: '25' });
+
+			expect(mockCookieStore.set).toHaveBeenCalledWith(LEND_AFTER_GOAL_SET_COOKIE, '12345', expect.any(Object));
 		});
 
 		it('ignores recommendLoanIsInBasket re-entry and still redirects', async () => {

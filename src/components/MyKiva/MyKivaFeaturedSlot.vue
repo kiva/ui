@@ -42,8 +42,8 @@ import useGoalData, {
 	COMPLETED_GOAL_THRESHOLD,
 } from '#src/composables/useGoalData';
 import logReadQueryError from '#src/util/logReadQueryError';
-import { getGoalYear, shouldHideGoalSignup } from '#src/util/goalInReview';
-import { getGoalInReviewNow, useGoalRecapEntryPoint } from '#src/composables/useGoalInReview';
+import { getGoalYear } from '#src/util/goalInReview';
+import { useGoalRecapEntryPoint, useHideGoalSignup } from '#src/composables/useGoalInReview';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
 const STATE_NO_GOAL = 'no-goal';
@@ -105,10 +105,7 @@ const categoryName = computed(() => {
 // Sticky so the slot does not disappear mid-view after we persist the flag.
 const alreadyViewedSnapshot = ref(null);
 
-const hideGoalSignup = computed(() => shouldHideGoalSignup({
-	recapStartDate: props.goalInReviewInProgressStart,
-	now: getGoalInReviewNow(),
-}));
+const { hideGoalSignup } = useHideGoalSignup(() => props.goalInReviewInProgressStart);
 
 const goalYear = computed(() => getGoalYear(goalData?.userGoal?.value));
 
@@ -117,7 +114,7 @@ const { keepGoalCardForRecap, showRecapCta } = useGoalRecapEntryPoint({
 	goalStatus,
 	goalYear,
 	announced: () => Boolean(goalData?.hideGoalCard?.value),
-	hasViewedRecap: () => Boolean(goalData?.hasViewedGoalRecapForYear?.(GOALS_CURRENT_YEAR)),
+	hasViewedRecap: year => Boolean(goalData?.hasViewedGoalRecapForYear?.(year)),
 	loansTowardGoal: goalProgressValue,
 });
 

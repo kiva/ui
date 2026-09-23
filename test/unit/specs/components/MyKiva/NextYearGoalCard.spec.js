@@ -58,7 +58,7 @@ describe('NextYearGoalCard', () => {
 				stubs: {
 					GoalProgressRing: {
 						name: 'GoalProgressRing',
-						props: ['showRecapCta'],
+						props: ['showRecapCta', 'goalDateStarted'],
 						template: '<div data-testid="goal-progress-ring" />',
 					},
 				},
@@ -174,5 +174,27 @@ describe('NextYearGoalCard', () => {
 		expect(wrapper.text()).toContain('Make helping others a habit.');
 		expect(wrapper.text()).toContain("We'll help you make it happen.");
 		expect(wrapper.text()).not.toContain(goalCopy.TITLE_HOW_MANY_LOANS_GENERIC);
+	});
+
+	describe('days left countdown', () => {
+		it('hands the goal start date to the ring, which resolves the countdown itself after mount', () => {
+			const goalData = createGoalData();
+			goalData.goalProgressPercentage.value = 40;
+			const { wrapper } = mountCard({
+				goalData,
+				props: {
+					userGoal: {
+						category: ID_US_ECONOMIC_EQUALITY,
+						target: 5,
+						status: GOAL_STATUS.IN_PROGRESS,
+						dateStarted: '2026-02-01T12:00:00.000Z',
+					},
+					goalProgress: 2,
+				},
+			});
+
+			expect(wrapper.findComponent({ name: 'GoalProgressRing' }).props('goalDateStarted'))
+				.toBe('2026-02-01T12:00:00.000Z');
+		});
 	});
 });
