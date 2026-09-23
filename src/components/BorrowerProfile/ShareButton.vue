@@ -216,6 +216,9 @@ export default {
 			if (this.loan.id && this.lender?.inviterName) {
 				return `/invitedby/${this.lender.inviterName}/for/${this.loan.id}`;
 			}
+			if (this.loan.id) {
+				return `/lend/${this.loan.id}`;
+			}
 			return `${this.$route.path}`;
 		},
 		forceLightbox() {
