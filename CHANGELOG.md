@@ -1,3 +1,50 @@
+## [3.96.0](https://github.com/kiva/ui/compare/v3.95.0...v3.96.0) (2026-09-23)
+
+### 🎉 New Features
+
+* [MP-3208] - done show goal days left if there 90 days or less t… ([#7265](https://github.com/kiva/ui/issues/7265)) ([f22f4b9](https://github.com/kiva/ui/commit/f22f4b933a65bcd9edeedc4509542a933c16b48e))
+* add fundraisers entry point to MyKiva ([#7271](https://github.com/kiva/ui/issues/7271)) ([7b25967](https://github.com/kiva/ui/commit/7b259672f58062cb8f6aa90e7bafae5e01f922e4))
+* additional copy edits ([9eeac5f](https://github.com/kiva/ui/commit/9eeac5f8f173982467c45517172b0d1f6da2f59e))
+* additional merge fix ([191afb1](https://github.com/kiva/ui/commit/191afb101f6ab5a36f67a633263b192570fab861))
+* changed copy ([244ce6d](https://github.com/kiva/ui/commit/244ce6d008d0668921d7927b7eb56193350ee5f2))
+* corrected revisions ([294d6b8](https://github.com/kiva/ui/commit/294d6b8c73f8f7e980dee0ce9b004b54669cf80f))
+* edited unit tests ([2f6e28b](https://github.com/kiva/ui/commit/2f6e28bdcec75364eac1239aae1e84792e891f4b))
+* gate the MyKiva fundraisers row behind an experiment ([#7274](https://github.com/kiva/ui/issues/7274)) ([a374c8d](https://github.com/kiva/ui/commit/a374c8da3134a9258ae75fee01319ac030795b28))
+* increased padding ([4a57d64](https://github.com/kiva/ui/commit/4a57d644021719713dc5c6d1a6b196537f3d57fa))
+* mp-3158 track the non-express checkout path from lend after goal set ([#7260](https://github.com/kiva/ui/issues/7260)) ([81db98e](https://github.com/kiva/ui/commit/81db98e22ee908ea31c39ef48118e0728b8a201a))
+* mp-3209 keep completed goal at front until its goal year ends ([#7269](https://github.com/kiva/ui/issues/7269)) ([57d81e3](https://github.com/kiva/ui/commit/57d81e3e6911d8709784c32647e8755707148437))
+* padding only on express checkout context ([7d0f56a](https://github.com/kiva/ui/commit/7d0f56a746e7a15f258867474e478cd89c5e0fa4))
+* removed img file + label context; prop binding fix ([f6d60f5](https://github.com/kiva/ui/commit/f6d60f5bde0a7e5a8418f1213d50ed9514a8e18c))
+* revised title format and spec tests context ([d641017](https://github.com/kiva/ui/commit/d64101708fc694b4fac16fe2849385fc23c09de6))
+* simplified expression ([75119c4](https://github.com/kiva/ui/commit/75119c46c803d17ce9d93a7a415700b21961bf4d))
+
+### 🐛 Bugfixes
+
+* **build:** finish the ssr-manifest-css plugin to match quasar's fix ([75638bd](https://github.com/kiva/ui/commit/75638bdeb9759d7a08a91d7827add006ce445017))
+* **build:** link the stylesheets a chunk reaches by static import ([af935d9](https://github.com/kiva/ui/commit/af935d92b4232f124f7ab1436a77900cae8356bf))
+* ensure goal summary query is not fired if the user does not meet the conditions to see goal in recap ([575656d](https://github.com/kiva/ui/commit/575656d727cbb8c03e69af7cc34aeca4f9a3bece))
+* mp-3209 make the recapDate override reach the server so hydration matches ([#7278](https://github.com/kiva/ui/issues/7278)) ([a0e000e](https://github.com/kiva/ui/commit/a0e000e4a367a513cc99f2f97d7a4c5549c6ed2e))
+* reduce duplicate giving fund queries on portfolio ([#7272](https://github.com/kiva/ui/issues/7272)) ([34e2e93](https://github.com/kiva/ui/commit/34e2e9364143e7136a6aacbfaf1c8b76b9c63fa9))
+* rephrase badly worded comments ([ad1b7df](https://github.com/kiva/ui/commit/ad1b7df504aaa8a16b6b127a5de58e6a3505baf7))
+* show real copy when the basket is locked by an in-flight checkout ([#7266](https://github.com/kiva/ui/issues/7266)) ([b4944cd](https://github.com/kiva/ui/commit/b4944cdaefbfe24c34f9cdff9f106071d4e234a8))
+
+### 🪚 Refactors
+
+* drop the isEligible argument from shouldAutoOpenRecap ([3c1d786](https://github.com/kiva/ui/commit/3c1d7862e3dfefe9c1d0e47b520efbfa89317bce))
+* look up the spotlight category by slug ([#7268](https://github.com/kiva/ui/issues/7268)) ([7045ee1](https://github.com/kiva/ui/commit/7045ee1e7f0a54dfaf4194f813db007c97841611))
+* reuse shouldAutoOpenRecap instead of splitting it ([8c7cc15](https://github.com/kiva/ui/commit/8c7cc1501133a9aa91c7674ab65f258c03a7b816))
+
+### 🔍 Tests
+
+* missing coverage test ([b44f681](https://github.com/kiva/ui/commit/b44f68170f65d2d19088926147aab53e2bce609a))
+
+### 🧹 Chores
+
+* **deps:** bump @kiva/kv-shop to ^3.8.32 ([#7267](https://github.com/kiva/ui/issues/7267)) ([1194398](https://github.com/kiva/ui/commit/119439839b419f9b7edfc2d8a8112bf9e4871269))
+* **deps:** upgrade kiva packages to latest versions AD-501 AD-506 ([1cda5df](https://github.com/kiva/ui/commit/1cda5dfd4c666b286dfce73e315eaaf0f2a7d273))
+* drop stale dependabot ignores and auto-assign workflow ([#7273](https://github.com/kiva/ui/issues/7273)) ([a6fde5e](https://github.com/kiva/ui/commit/a6fde5eac606a56c207a37394ca39397f034178f))
+* **release:** 3.96.0-rc.1 [skip ci] ([1c45283](https://github.com/kiva/ui/commit/1c452838b5474b02b276f95f7d76edfef76445c4)), closes [#7265](https://github.com/kiva/ui/issues/7265) [#7271](https://github.com/kiva/ui/issues/7271) [#7274](https://github.com/kiva/ui/issues/7274) [#7260](https://github.com/kiva/ui/issues/7260) [#7269](https://github.com/kiva/ui/issues/7269) [#7278](https://github.com/kiva/ui/issues/7278) [#7272](https://github.com/kiva/ui/issues/7272) [#7266](https://github.com/kiva/ui/issues/7266) [#7268](https://github.com/kiva/ui/issues/7268) [#7267](https://github.com/kiva/ui/issues/7267) [#7273](https://github.com/kiva/ui/issues/7273)
+
 ## [3.96.0-rc.1](https://github.com/kiva/ui/compare/v3.95.0...v3.96.0-rc.1) (2026-09-22)
 
 ### 🎉 New Features
