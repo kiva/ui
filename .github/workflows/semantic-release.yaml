@@ -37,6 +37,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: kiva/github-actions
+          ref: feature/AD-42-e2e-release-gate
           token: ${{ secrets.KIVA_ROBOT_GITHUB_PAT }}
           path: .github/
       - name: Run semantic-release
