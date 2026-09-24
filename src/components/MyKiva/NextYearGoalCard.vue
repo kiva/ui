@@ -104,8 +104,6 @@ const {
 	goalProgressPercentage,
 } = goalData;
 
-const isBrowser = typeof window !== 'undefined';
-
 const isUpdatingGoal = ref(false);
 const hasHandledGoalCompletion = ref(false);
 
@@ -199,32 +197,6 @@ watch(
 // mount rather than immediately: an immediate watch also runs during server-side setup,
 // where there is no document.
 onMounted(showCompletedGoalConfetti);
-
-// Fires once, as soon as the card has loaded data and is actually rendering. Immediate,
-// and without a loading->loaded transition to ride on: goal state hydrates from the Apollo
-// cache during server render, so `loading` is already false by the time this watcher is
-// created. Sending analytics is browser-only, so the server pass takes none of it.
-const hasFiredImpressionEvent = ref(false);
-watch(() => [props.loading, props.hideGoalCard], () => {
-	if (!isBrowser) return;
-	if (hasFiredImpressionEvent.value) return;
-	if (props.loading || props.hideGoalCard) return;
-	if (!userHasGoal.value) {
-		$kvTrackEvent(
-			'portfolio',
-			'view',
-			'set-annual-goal'
-		);
-		hasFiredImpressionEvent.value = true;
-		return;
-	}
-	if (
-		!isUpdatingGoal.value
-		&& goalProgressPercentage.value !== COMPLETED_GOAL_THRESHOLD) {
-		$kvTrackEvent('portfolio', 'show', 'goal-set', props.userGoal.category, props.userGoal.target);
-		hasFiredImpressionEvent.value = true;
-	}
-}, { immediate: true });
 </script>
 
 <style lang="postcss" scoped>
