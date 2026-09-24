@@ -1,0 +1,5 @@
+import{L as n}from"./entry-LoanDetailsRailToggle-DdIqWEYRGc.js";import"./entry-KvSwitch-B6ydjFcx7y.js";import"./entry-vue.esm-bundler-ED6DvobC3-.js";import"./entry-index.browser-vcSNLBTfP4.js";import"./entry-attrs-C2OODjD6EW.js";import"./entry-_plugin-vue_export-helper-9uN0dvLoeT.js";import"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";const D={title:"Components/BorrowerProfile/LoanDetailsRailToggle",component:n},p=i=>(d,{argTypes:c})=>({props:Object.keys(c),components:{LoanDetailsRailToggle:n},setup(){return i},template:'<loan-details-rail-toggle :model-value="modelValue" />'}),e=p({modelValue:!1}),o=p({modelValue:!0});var r,t,a;e.parameters={...e.parameters,docs:{...(r=e.parameters)==null?void 0:r.docs,source:{originalSource:`story({
+  modelValue: false
+})`,...(a=(t=e.parameters)==null?void 0:t.docs)==null?void 0:a.source}}};var s,l,m;o.parameters={...o.parameters,docs:{...(s=o.parameters)==null?void 0:s.docs,source:{originalSource:`story({
+  modelValue: true
+})`,...(m=(l=o.parameters)==null?void 0:l.docs)==null?void 0:m.source}}};const R=["Off","On"];export{e as Off,o as On,R as __namedExportsOrder,D as default};

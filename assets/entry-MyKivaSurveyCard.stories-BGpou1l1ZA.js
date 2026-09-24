@@ -1,0 +1,5 @@
+import{M as p}from"./entry-MyKivaSurveyCard-pp7QjTqRG0.js";import"./entry-vue.esm-bundler-ED6DvobC3-.js";import"./entry-KvButton-C8S99vq6YZ.js";import"./entry-KvLoadingSpinner-BNTDmGd79q.js";import"./entry-_plugin-vue_export-helper-9uN0dvLoeT.js";import"./entry-KvMaterialIcon-BM2HtuQNzV.js";import"./entry-mdi-BeeDX8vtDa.js";import"./entry-myKivaUtils-BGrca31vfE.js";import"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";const f={title:"MyKiva/MyKivaSurveyCard",component:p},m=(t={})=>{const e=(c,{argTypes:i})=>({props:Object.keys(i),components:{MyKivaSurveyCard:p},setup(){return{args:t}},template:`
+            <div style="width: 336px;">
+                <MyKivaSurveyCard v-bind="args" />
+            </div>
+        `});return e.args=t,e},r=m({});var o,a,s;r.parameters={...r.parameters,docs:{...(o=r.parameters)==null?void 0:o.docs,source:{originalSource:"story({})",...(s=(a=r.parameters)==null?void 0:a.docs)==null?void 0:s.source}}};const C=["Default"];export{r as Default,C as __namedExportsOrder,f as default};
