@@ -6,7 +6,6 @@ import locale from 'locale';
 import merge from 'deepmerge';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import promBundle from 'express-prom-bundle';
 import { createServer as createViteServer } from 'vite';
 import { info, error } from './util/log.js';
 import { setupTracing } from './util/tracer.js';
@@ -20,6 +19,7 @@ import vueMiddleware from './vue-middleware.js';
 import argv from './util/argv.js';
 import config from './util/config.js';
 import initCache from './util/initCache.js';
+import createMetricsMiddleware from './util/metricsMiddleware.js';
 import { errorLogger, fallbackErrorHandler, requestLogger } from './util/errorLogger.js';
 
 // tracing
@@ -31,15 +31,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // dependencies
 dotEnvConfig({ path: '/etc/kiva-ui-server/config.env' });
 dotEnvConfig({ path: './.config.env' });
-const metricsMiddleware = promBundle({
-	includeMethod: true,
-	includePath: true,
-	includeStatusCode: true,
-	includeUp: true,
-	promClient: {
-		collectDefaultMetrics: {}
-	}
-});
 
 // Initialize a Cache instance
 const cache = initCache(config.server);
@@ -105,7 +96,7 @@ const app = express();
 	app.use(vite.middlewares);
 
 	// load metrics middleware
-	app.use(metricsMiddleware);
+	app.use(createMetricsMiddleware());
 
 	// Configure session
 	app.use('/', sessionRouter(config.server));
