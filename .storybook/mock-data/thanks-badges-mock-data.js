@@ -124,7 +124,7 @@ export const mockUserAchievementProgress = {
 	"__typename": "UserAchievements"
 };
 
-export const mockContentful = {
+const mockContentfulRaw = {
 	"entries": {
 		"items": [
 			{
@@ -1206,4 +1206,11 @@ export const mockContentful = {
 		]
 	},
 	"__typename": "Contentful"
+};
+
+export const mockContentful = {
+	searchEntries: {
+		items: mockContentfulRaw.entries.items.map(entry => ({ entry })),
+	},
+	__typename: 'Contentful',
 };
