@@ -96,6 +96,7 @@ import {
 	computed,
 	ref,
 	inject,
+	watch,
 } from 'vue';
 import useBreakpoints from '#src/composables/useBreakpoints';
 import { isNonBadgeSlide } from '#src/util/achievementUtils';
@@ -105,7 +106,7 @@ import { KvCarousel } from '@kiva/kv-components';
 import MyKivaSharingModal from '#src/components/MyKiva/MyKivaSharingModal';
 import MyKivaCard from '#src/components/MyKiva/MyKivaCard';
 import NextYearGoalCard from '#src/components/MyKiva/NextYearGoalCard';
-import useGoalData from '#src/composables/useGoalData';
+import useGoalData, { COMPLETED_GOAL_THRESHOLD } from '#src/composables/useGoalData';
 import MyKivaEmailUpdatesTransition from '#src/components/MyKiva/MyKivaEmailUpdatesTransition';
 import MyKivaLatestLoanCard from '#src/components/MyKiva/MyKivaLatestLoanCard';
 import MyKivaSurveyCard from '#src/components/MyKiva/MyKivaSurveyCard';
@@ -135,6 +136,7 @@ const TRANSACTION_DAYS_LIMIT = 30;
 
 const apollo = inject('apollo');
 const $kvTrackEvent = inject('$kvTrackEvent');
+const goalData = inject('goalData', null);
 
 const {
 	getActiveTierData,
@@ -296,6 +298,25 @@ const shouldShowGoalCard = computed(() => {
 
 	return (!props.userGoal || !props.userGoalAchieved || props.userGoalAchieved) && !props.hideGoalCard;
 });
+
+// Tracked here, not in NextYearGoalCard, because KvCarousel's key can change and remount
+// the card, which would fire the impression again. Immediate since goal data may already
+// be loaded from the cache.
+const hasTrackedGoalCardImpression = ref(false);
+watch(() => [shouldShowGoalCard.value, props.goalProgressLoading], () => {
+	if (typeof window === 'undefined') return;
+	if (hasTrackedGoalCardImpression.value) return;
+	if (!shouldShowGoalCard.value || props.goalProgressLoading) return;
+	if (!hasGoal(props.userGoal)) {
+		$kvTrackEvent('portfolio', 'view', 'set-annual-goal');
+		hasTrackedGoalCardImpression.value = true;
+		return;
+	}
+	if (goalData?.goalProgressPercentage?.value !== COMPLETED_GOAL_THRESHOLD) {
+		$kvTrackEvent('portfolio', 'show', 'goal-set', props.userGoal.category, props.userGoal.target);
+		hasTrackedGoalCardImpression.value = true;
+	}
+}, { immediate: true });
 
 const dynamicOrderedSlides = computed(() => {
 	let sortedSlides;
