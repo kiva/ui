@@ -1,25 +1,30 @@
 <template>
 	<section
-		class="tw-w-full tw-bg-brand-100 tw-px-2 tw-py-3 md:tw-px-4"
+		class="tw-w-full goal-in-review-borrowers tw-relative
+			tw-bg-gradient-to-b tw-from-transparent tw-to-brand-100
+			tw-px-2 md:tw-px-4 tw-pt-5 md:tw-pt-2 tw-pb-4 md:tw-pb-6"
 		data-testid="goal-in-review-borrowers"
 	>
-		<p class="tw-text-action tw-mb-1 kv-fade-up borrowers-eyebrow">
-			The people behind the loans
+		<p class="tw-text-action tw-text-caption tw-mb-1 kv-fade-up borrowers-eyebrow">
+			The people behind your loans
 		</p>
 
 		<h1 class="tw-text-display tw-text-eco-green-4 tw-mb-3 kv-fade-up borrowers-headline">
 			{{ borrowerCountDisplay }} {{ borrowersLabel }}.
-			<span class="tw-text-marigold">{{ borrowerCountDisplay }} {{ futuresLabel }}.</span>
+			<span
+				class="tw-block md:tw-inline tw-text-marigold md:tw-text-marigold-2"
+			>{{ borrowerCountDisplay }} {{ futuresLabel }}.</span>
 		</h1>
 
 		<ul
-			class="borrower-grid tw-grid tw-gap-x-1 tw-gap-y-3 tw-list-none tw-p-0 tw-m-0"
+			class="tw-grid tw-grid-cols-3 md:tw-grid-cols-6 tw-gap-0.5 md:tw-gap-x-1 md:tw-gap-y-3
+				tw-list-none tw-p-0 tw-m-0"
 			data-testid="goal-in-review-borrowers-borrowers"
 		>
 			<li
 				v-for="(card, index) in cards"
 				:key="card.id"
-				class="tw-flex tw-flex-col tw-gap-0.5 kv-fade-up borrowers-card"
+				class="tw-flex tw-flex-col tw-gap-1 kv-fade-up borrowers-card"
 				:style="cardAnimationDelay(index)"
 			>
 				<BorrowerImage
@@ -36,7 +41,7 @@
 				/>
 				<div v-else class="tw-w-full tw-aspect-square tw-rounded-sm tw-bg-eco-green-3 tw-bg-opacity-low"></div>
 
-				<p class="tw-truncate tw-text-primary tw-mb-0 data-hj-suppress">
+				<p class="tw-truncate tw-text-primary tw-mb-0 tw-text-caption md:tw-text-base data-hj-suppress">
 					{{ card.name }}
 				</p>
 			</li>
@@ -48,10 +53,12 @@
 				data-testid="goal-in-review-borrowers-more"
 			>
 				<div
-					class="tw-w-full tw-aspect-square tw-rounded-sm tw-bg-eco-green-3 tw-bg-opacity-low
-						tw-flex tw-items-center tw-justify-center"
+					class="tw-w-full tw-aspect-square tw-rounded-sm tw-bg-gray-300 tw-bg-opacity-low
+						md:tw-bg-eco-green-3 md:tw-bg-opacity-low tw-flex tw-items-center tw-justify-center"
 				>
-					<span class="tw-text-primary tw-font-medium">+{{ moreCountDisplay }} more</span>
+					<span
+						class="tw-text-label tw-text-action md:tw-text-primary md:tw-text-button-link"
+					>+{{ moreCountDisplay }} more</span>
 				</div>
 			</li>
 		</ul>
@@ -93,12 +100,15 @@ const cardAnimationDelay = index => ({ animationDelay: `${0.2 + index * 0.175}s`
 </script>
 
 <style lang="postcss" scoped>
-.borrower-grid {
-	grid-template-columns: repeat(3, minmax(0, 1fr));
+/* brand-100 comes from the tw-to-brand-100 token class on the section. These
+   gradient position variables keep the top 200px fully transparent so the
+   previous screen's hill art shows through, then hard-stop into brand-100. */
+.goal-in-review-borrowers {
+	--tw-gradient-from-position: 200px;
+	--tw-gradient-to-position: 200px;
 }
 
-/* Entrance choreography — the shared .kv-fade-up effect lives in
-   css/animations.css. */
+/* Entrance timing. The shared .kv-fade-up effect lives in css/animations.css. */
 .borrowers-eyebrow,
 .borrowers-headline,
 .borrowers-card {
@@ -113,11 +123,5 @@ const cardAnimationDelay = index => ({ animationDelay: `${0.2 + index * 0.175}s`
 
 .borrowers-card {
 	--kv-fade-up-distance: 18px;
-}
-
-@screen md {
-	.borrower-grid {
-		grid-template-columns: repeat(6, minmax(0, 152px));
-	}
 }
 </style>

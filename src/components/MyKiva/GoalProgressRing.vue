@@ -82,7 +82,9 @@
 		</p>
 
 		<KvButton
-			class="tw-w-full goal-button"
+			class="tw-w-full goal-button
+				focus-visible:tw-outline focus-visible:tw-outline-2 focus-visible:tw-outline-offset-2
+				focus-visible:tw-outline-eco-green-3"
 			:key="`goal-cta-${showRecapCta}`"
 			v-kv-track-event="showRecapCta ? null : ['portfolio', 'click', 'continue-towards-goal']"
 			@click="handleButtonClick"

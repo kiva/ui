@@ -144,7 +144,10 @@ describe('GoalProgressRing', () => {
 				goalProgressPercentage: 100,
 				showRecapCta: true,
 			});
-			expect(getByRole('button', { name: RECAP_CTA_LABEL })).toBeTruthy();
+			const recapButton = getByRole('button', { name: RECAP_CTA_LABEL });
+			expect(recapButton).toBeTruthy();
+			expect(recapButton.classList.contains('focus-visible:tw-outline')).toBe(true);
+			expect(recapButton.classList.contains('focus-visible:tw-outline-eco-green-3')).toBe(true);
 		});
 	});
 

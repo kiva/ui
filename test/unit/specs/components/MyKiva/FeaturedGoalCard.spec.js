@@ -12,8 +12,8 @@ vi.mock('#src/util/animation/confettiUtils', () => ({
 
 // Stub the @kiva/kv-components primitives this spec touches so copy assertions
 // don't drag in SVG rendering (KvProgressCircle) or menu interaction logic
-// (KvUtilityMenu) that are irrelevant here — matches sibling MyKiva specs like
-// NextYearGoalCard.
+// (KvUtilityMenu) that are irrelevant here. Sibling MyKiva specs such as NextYearGoalCard
+// stub them the same way.
 vi.mock('@kiva/kv-components', () => ({
 	KvButton: {
 		name: 'KvButton',
@@ -271,6 +271,19 @@ describe('FeaturedGoalCard copy', () => {
 			});
 			expect(wrapper.text()).toContain('View your achievements');
 			expect(wrapper.text()).not.toContain('Work toward your goal');
+		});
+
+		it('carries the accessible focus-visible outline classes, including for the goal recap CTA', () => {
+			const wrapper = mountCard({
+				state: 'active-goal',
+				goalTarget: 5,
+				goalProgress: 5,
+				goalProgressPercentage: 100,
+				showRecapCta: true,
+			});
+			const ctaClasses = wrapper.find('.featured-goal-card__cta--active-goal').classes();
+			expect(ctaClasses).toContain('focus-visible:tw-outline');
+			expect(ctaClasses).toContain('focus-visible:tw-outline-eco-green-3');
 		});
 	});
 
