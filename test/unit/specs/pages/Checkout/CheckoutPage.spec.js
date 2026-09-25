@@ -373,6 +373,19 @@ describe('CheckoutPage apollo preFetch', () => {
 			expect.objectContaining({ variables: { id: 'custom_tip_default' } })
 		);
 	});
+
+	it('prefetches the checkout tip copy experiment assignment during SSR', async () => {
+		const client = {
+			mutate: vi.fn().mockResolvedValue({}),
+			query: vi.fn().mockResolvedValue({ data: {} }),
+		};
+
+		await CheckoutPage.apollo.preFetch(CheckoutPage.apollo, client);
+
+		expect(client.query).toHaveBeenCalledWith(
+			expect.objectContaining({ variables: { id: 'checkout_tip_copy' } })
+		);
+	});
 });
 
 describe('CheckoutPage provide', () => {
