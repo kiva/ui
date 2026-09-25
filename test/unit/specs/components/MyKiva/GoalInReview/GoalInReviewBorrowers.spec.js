@@ -22,7 +22,7 @@ const renderSlide = (props = {}) => render(GoalInReviewBorrowers, {
 describe('GoalInReviewBorrowers', () => {
 	it('renders the eyebrow copy', () => {
 		const { getByText } = renderSlide();
-		getByText('The people behind the loans');
+		getByText('The people behind your loans');
 	});
 
 	describe('headline', () => {
@@ -73,7 +73,7 @@ describe('GoalInReviewBorrowers', () => {
 
 		it('keeps the grid hook that caps the photo columns', () => {
 			const { getByTestId } = renderSlide();
-			expect(getByTestId('goal-in-review-borrowers-borrowers').className).toContain('borrower-grid');
+			expect(getByTestId('goal-in-review-borrowers-borrowers').className).toContain('tw-grid-cols-3');
 		});
 
 		it('falls back to a placeholder tile when a loan has no image', () => {
@@ -117,5 +117,11 @@ describe('GoalInReviewBorrowers', () => {
 		const { container } = renderSlide({ loans: [], borrowerCount: null });
 		expect(container.textContent).not.toContain('undefined');
 		expect(container.textContent).not.toContain('NaN');
+	});
+
+	it('lifts the section above the previous slide so its own background shows', () => {
+		const { getByTestId } = renderSlide();
+		const section = getByTestId('goal-in-review-borrowers');
+		expect(section.className).toContain('tw-relative');
 	});
 });

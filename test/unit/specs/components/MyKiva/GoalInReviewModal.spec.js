@@ -1,9 +1,15 @@
 import { render, fireEvent, waitFor } from '@testing-library/vue';
 import GoalInReviewModal from '#src/components/MyKiva/GoalInReview/GoalInReviewModal';
+import { prefersReducedMotion } from '#src/util/animation/motionUtils';
 import { globalOptions } from '../../../specUtils';
 
 // Slide 1 fires confetti on mount; canvas-confetti can't run in jsdom, so stub it.
 vi.mock('#src/util/animation/confettiUtils', () => ({ showConfetti: vi.fn() }));
+
+// Defaults to false (matching the real SSR-safe default in this test environment) so every
+// other test's scroll-to-screen-2 keeps its 'smooth' behavior; only the reduced-motion test
+// below overrides it.
+vi.mock('#src/util/animation/motionUtils', () => ({ prefersReducedMotion: vi.fn(() => false) }));
 
 vi.mock('@kiva/kv-components', () => ({
 	KvLightbox: {
@@ -17,13 +23,30 @@ vi.mock('@kiva/kv-components', () => ({
 				type: String,
 				default: '',
 			},
+			preventBackgroundClose: {
+				type: Boolean,
+				default: false,
+			},
+			closeButtonShowDelay: {
+				type: Number,
+				default: 0,
+			},
 		},
 		emits: ['lightbox-closed'],
+		// #kvLightboxBody wraps the default slot for real, so the modal's scroll
+		// listeners have the same root to attach to in tests as they do at runtime.
 		template: `
-			<div v-if="visible" data-testid="goal-in-review-lightbox">
+			<div
+				v-if="visible"
+				data-testid="goal-in-review-lightbox"
+				:data-prevent-background-close="preventBackgroundClose"
+				:data-close-button-show-delay="closeButtonShowDelay"
+			>
 				<slot name="header"></slot>
 				<button type="button" @click="$emit('lightbox-closed')">Close</button>
-				<slot></slot>
+				<div id="kvLightboxBody">
+					<slot></slot>
+				</div>
 			</div>
 		`,
 	},
@@ -67,7 +90,33 @@ const globalWithAppConfig = {
 	mocks: { ...globalOptions.mocks, $appConfig: { photoPath: '' } },
 };
 
+// The modal creates one IntersectionObserver on open for entrance animations, and a
+// second, lazily, for view tracking, once the recap first scrolls. Tests trigger each
+// observer's callback directly rather than relying on jsdom to compute intersections.
+let observers = [];
+
+class MockIntersectionObserver {
+	constructor(callback, options) {
+		this.callback = callback;
+		this.options = options;
+		this.observe = vi.fn();
+		this.unobserve = vi.fn();
+		this.disconnect = vi.fn();
+		observers.push(this);
+	}
+}
+
 describe('GoalInReviewModal', () => {
+	beforeEach(() => {
+		observers = [];
+		vi.stubGlobal('IntersectionObserver', MockIntersectionObserver);
+		vi.stubGlobal('IntersectionObserverEntry', { prototype: { intersectionRatio: 0 } });
+	});
+
+	afterEach(() => {
+		vi.unstubAllGlobals();
+	});
+
 	const renderModal = ({ trackEvent = vi.fn() } = {}) => render(GoalInReviewModal, {
 		global: {
 			...globalWithAppConfig,
@@ -88,7 +137,7 @@ describe('GoalInReviewModal', () => {
 		const { findByText } = renderModal();
 
 		await findByText('Your 2026 impact goal recap');
-		await findByText('The people behind the loans');
+		await findByText('The people behind your loans');
 		await findByText('Global reach');
 		await findByText('Giving insights');
 		await findByText(/Goal Setters create something/);
@@ -313,5 +362,252 @@ describe('GoalInReviewModal', () => {
 		await waitFor(() => {
 			expect(trackEvent).toHaveBeenCalledWith('portfolio', 'view', 'goal-in-review', 'screen-1');
 		});
+	});
+
+	it('ignores background clicks and delays the close button', async () => {
+		const { findByTestId } = renderModal();
+
+		const lightbox = await findByTestId('goal-in-review-lightbox');
+
+		expect(lightbox.dataset.preventBackgroundClose).toBe('true');
+		expect(lightbox.dataset.closeButtonShowDelay).toBe('3000');
+	});
+
+	// The modal's own view-tracking observer is identified by its rootMargin: some
+	// slide components (e.g. GoalInReviewCollectiveImpact) create their own
+	// IntersectionObservers too, sharing the modal's reveal margin but not this one.
+	const VIEW_ROOT_MARGIN = '0px 0px -50% 0px';
+	const findViewObserver = () => observers.find(observer => observer.options.rootMargin === VIEW_ROOT_MARGIN);
+
+	// The modal's reveal observer shares its rootMargin with observers that some slide
+	// components create for their own internal reveals, so it's identified by rootMargin
+	// AND by observing the slide wrappers themselves.
+	const REVEAL_ROOT_MARGIN = '0px 0px -10% 0px';
+	const findRevealObserver = () => observers.find(observer => observer.options.rootMargin === REVEAL_ROOT_MARGIN
+		&& observer.observe.mock.calls.some(([target]) => target.hasAttribute('data-slide-view')));
+
+	// Slides load separately, so a later slide can lay out while one above it is still
+	// empty. Models that: each slide wrapper is 0 height until it's taken out of
+	// `unloaded`, and a laid-out wrapper sits right below the laid-out ones above it.
+	const mockSlideLayout = (unloaded, rootHeight = 760) => {
+		const zeroRect = {
+			top: 0, bottom: 0, left: 0, right: 0, width: 0, height: 0, x: 0, y: 0,
+		};
+		const SLIDE_HEIGHT = 500;
+		const spy = vi.spyOn(Element.prototype, 'getBoundingClientRect')
+			.mockImplementation(function mockGetBoundingClientRect() {
+				if (this.id === 'kvLightboxBody') {
+					return {
+						...zeroRect, bottom: rootHeight, height: rootHeight,
+					};
+				}
+				const slideView = this.dataset?.slideView;
+				if (!slideView || unloaded.has(slideView)) {
+					return zeroRect;
+				}
+				let top = 0;
+				for (let slide = this.previousElementSibling; slide; slide = slide.previousElementSibling) {
+					if (!unloaded.has(slide.dataset.slideView)) {
+						top += SLIDE_HEIGHT;
+					}
+				}
+				return {
+					...zeroRect, top, bottom: top + SLIDE_HEIGHT, height: SLIDE_HEIGHT,
+				};
+			});
+		onTestFinished(() => spy.mockRestore());
+	};
+
+	it('re-observes a screen still 0-height on its first notification, revealing it once laid out', async () => {
+		vi.stubGlobal('requestAnimationFrame', cb => cb());
+		const unloaded = new Set(['2']);
+		mockSlideLayout(unloaded);
+		const { container, findByText } = renderModal();
+
+		await findByText('The people behind your loans');
+
+		const screen2 = container.querySelector('[data-slide-view="2"]');
+		const revealObserver = findRevealObserver();
+		expect(revealObserver).toBeDefined();
+
+		// The async slide hasn't laid out yet, so the wrapper is reported at 0 height.
+		revealObserver.callback([{ target: screen2, isIntersecting: true, boundingClientRect: { height: 0 } }]);
+
+		expect(revealObserver.unobserve).toHaveBeenCalledWith(screen2);
+		expect(revealObserver.observe).toHaveBeenCalledWith(screen2);
+		expect(screen2.classList.contains('is-in-view')).toBe(false);
+
+		// Re-observing triggers a fresh notification once the slide has laid out.
+		unloaded.clear();
+		revealObserver.callback([{ target: screen2, isIntersecting: true, boundingClientRect: { height: 100 } }]);
+
+		expect(screen2.classList.contains('is-in-view')).toBe(true);
+	});
+
+	it('only tracks screen-2 as viewed after the recap has scrolled', async () => {
+		const trackEvent = vi.fn();
+		const { container, findByText } = renderModal({ trackEvent });
+
+		await findByText('The people behind your loans');
+
+		const screen2 = container.querySelector('[data-slide-view="2"]');
+		const lightboxBody = container.querySelector('#kvLightboxBody');
+
+		// No view-tracking observer exists yet before any scroll, so a peek at
+		// screen 2 can't be counted.
+		expect(findViewObserver()).toBeUndefined();
+		expect(trackEvent).not.toHaveBeenCalledWith('portfolio', 'view', 'goal-in-review', 'screen-2');
+
+		await fireEvent.scroll(lightboxBody);
+
+		const slideObserver = findViewObserver();
+		expect(slideObserver).toBeDefined();
+
+		// A screen already past the midpoint by the time tracking arms still counts.
+		slideObserver.callback([{ target: screen2, isIntersecting: true, boundingClientRect: { height: 100 } }]);
+
+		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'view', 'goal-in-review', 'screen-2');
+	});
+
+	it('re-observes a 0-height screen for view tracking, counting the view once laid out', async () => {
+		vi.stubGlobal('requestAnimationFrame', cb => cb());
+		const trackEvent = vi.fn();
+		const { container, findByText } = renderModal({ trackEvent });
+
+		await findByText('The people behind your loans');
+
+		const screen2 = container.querySelector('[data-slide-view="2"]');
+		const lightboxBody = container.querySelector('#kvLightboxBody');
+		await fireEvent.scroll(lightboxBody);
+
+		const slideObserver = findViewObserver();
+		expect(slideObserver).toBeDefined();
+
+		// The async slide hasn't laid out yet, so the wrapper is reported at 0 height.
+		slideObserver.callback([{ target: screen2, isIntersecting: true, boundingClientRect: { height: 0 } }]);
+
+		expect(slideObserver.unobserve).toHaveBeenCalledWith(screen2);
+		expect(slideObserver.observe).toHaveBeenCalledWith(screen2);
+		expect(trackEvent).not.toHaveBeenCalledWith('portfolio', 'view', 'goal-in-review', 'screen-2');
+
+		// Re-observing triggers a fresh notification once the slide has laid out.
+		slideObserver.callback([{ target: screen2, isIntersecting: true, boundingClientRect: { height: 100 } }]);
+
+		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'view', 'goal-in-review', 'screen-2');
+	});
+
+	it('scrolls screen 2 into view when slide 1\'s arrow is clicked', async () => {
+		// jsdom has no scrollIntoView, so install a spy and put the original back after.
+		const originalScrollIntoView = Element.prototype.scrollIntoView;
+		const scrollIntoView = vi.fn();
+		Element.prototype.scrollIntoView = scrollIntoView;
+		onTestFinished(() => {
+			Element.prototype.scrollIntoView = originalScrollIntoView;
+		});
+		const { container, findByText, getByRole } = renderModal();
+
+		await findByText('The people behind your loans');
+
+		await fireEvent.click(getByRole('button', { name: 'Scroll to the next section' }));
+
+		const screen2 = container.querySelector('[data-slide-view="2"]');
+		expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
+		expect(scrollIntoView.mock.instances[0]).toBe(screen2);
+	});
+
+	it('scrolls screen 2 into view without smooth-scrolling when the visitor prefers reduced motion', async () => {
+		const originalScrollIntoView = Element.prototype.scrollIntoView;
+		const scrollIntoView = vi.fn();
+		Element.prototype.scrollIntoView = scrollIntoView;
+		onTestFinished(() => {
+			Element.prototype.scrollIntoView = originalScrollIntoView;
+		});
+		prefersReducedMotion.mockReturnValueOnce(true);
+		const { findByText, getByRole } = renderModal();
+
+		await findByText('The people behind your loans');
+
+		await fireEvent.click(getByRole('button', { name: 'Scroll to the next section' }));
+
+		expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'auto', block: 'start' });
+	});
+
+	it('reveals a gated screen that renders inside the visible area even if the observer misses it', async () => {
+		// Every slide laid out: screen 1 at the top, screen 2 peeking in below it, and screen 3
+		// onward past the bottom of the visible area.
+		mockSlideLayout(new Set());
+
+		const { container, findByText } = renderModal();
+
+		await findByText('The people behind your loans');
+
+		const screen2 = container.querySelector('[data-slide-view="2"]');
+		const screen3 = container.querySelector('[data-slide-view="3"]');
+
+		// No test code drives the (mocked) IntersectionObserver here, so the reveal has to
+		// come from the mount-time fallback alone.
+		await waitFor(() => {
+			expect(screen2.classList.contains('is-in-view')).toBe(true);
+		});
+		expect(screen3.classList.contains('is-in-view')).toBe(false);
+	});
+
+	it('holds back revealing a screen while a screen above it has not laid out yet', async () => {
+		vi.stubGlobal('requestAnimationFrame', cb => cb());
+		const unloaded = new Set(['1', '2', '3', '4']);
+		mockSlideLayout(unloaded);
+		const { container, findByText } = renderModal();
+
+		await findByText('Thank you!');
+
+		const screen5 = container.querySelector('[data-slide-view="5"]');
+		const revealObserver = findRevealObserver();
+
+		// Screens 1-4 are still empty, so screen 5 sits at the top and looks in view.
+		revealObserver.callback([{ target: screen5, isIntersecting: true, boundingClientRect: { height: 500 } }]);
+
+		expect(screen5.classList.contains('is-in-view')).toBe(false);
+		expect(revealObserver.unobserve).toHaveBeenCalledWith(screen5);
+		expect(revealObserver.observe).toHaveBeenCalledWith(screen5);
+
+		// Once everything above has laid out, a fresh in-view report reveals it.
+		unloaded.clear();
+		revealObserver.callback([{ target: screen5, isIntersecting: true, boundingClientRect: { height: 500 } }]);
+
+		expect(screen5.classList.contains('is-in-view')).toBe(true);
+	});
+
+	it('does not reveal a screen from the mount-time fallback while a screen above it has not laid out', async () => {
+		// Screens 1-2 are laid out, 3-4 are still empty, so 5 stacks right below screen 2,
+		// inside a tall visible area, even though it'll end up far below it.
+		mockSlideLayout(new Set(['3', '4']), 1600);
+		const { container, findByText } = renderModal();
+
+		await findByText('Thank you!');
+
+		const screen2 = container.querySelector('[data-slide-view="2"]');
+		await waitFor(() => {
+			expect(screen2.classList.contains('is-in-view')).toBe(true);
+		});
+		expect(container.querySelector('[data-slide-view="5"]').classList.contains('is-in-view')).toBe(false);
+	});
+
+	it('shows the bottom scroll fade at the top and hides it while scrolled, reappearing back at the top', async () => {
+		const { container, findByText } = renderModal();
+
+		await findByText('The people behind your loans');
+
+		const fade = container.querySelector('[data-testid="goal-in-review-scroll-fade"]');
+		const lightboxBody = container.querySelector('#kvLightboxBody');
+
+		expect(fade.classList.contains('tw-opacity-0')).toBe(false);
+
+		lightboxBody.scrollTop = 20;
+		await fireEvent.scroll(lightboxBody);
+		expect(fade.classList.contains('tw-opacity-0')).toBe(true);
+
+		lightboxBody.scrollTop = 0;
+		await fireEvent.scroll(lightboxBody);
+		expect(fade.classList.contains('tw-opacity-0')).toBe(false);
 	});
 });
