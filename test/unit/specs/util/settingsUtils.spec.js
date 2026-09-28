@@ -1,5 +1,5 @@
 import {
-	readJSONSetting, hashCode, readBoolSetting, readDateSetting
+	readJSONSetting, hashCode, readBoolSetting, readDateSetting, settingWithinDateRange
 } from '#src/util/settingsUtils';
 
 describe('settingsUtils.js', () => {
@@ -129,6 +129,47 @@ describe('settingsUtils.js', () => {
 			const result = readDateSetting({ dateKey: dateStringWithQuotes }, 'dateKey');
 			expect(result).toBeInstanceOf(Date);
 			expect(result.getFullYear()).toBe(2023);
+		});
+	});
+
+	describe('settingWithinDateRange', () => {
+		beforeEach(() => {
+			vi.useFakeTimers();
+			vi.setSystemTime(new Date('2026-10-15T12:00:00Z'));
+		});
+
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		it('returns true when now is inside the range', () => {
+			const data = { startDate: '2026-10-01T00:00:00Z', endDate: '2026-11-01T00:00:00Z' };
+			expect(settingWithinDateRange(data, 'startDate', 'endDate')).toBe(true);
+		});
+
+		it('returns false when now is before or after the range', () => {
+			const future = { startDate: '2026-11-01T00:00:00Z', endDate: '2026-12-01T00:00:00Z' };
+			const past = { startDate: '2026-08-01T00:00:00Z', endDate: '2026-09-01T00:00:00Z' };
+			expect(settingWithinDateRange(future, 'startDate', 'endDate')).toBe(false);
+			expect(settingWithinDateRange(past, 'startDate', 'endDate')).toBe(false);
+		});
+
+		it('returns false instead of throwing when a date is missing', () => {
+			expect(settingWithinDateRange({ startDate: '2026-10-01T00:00:00Z' }, 'startDate', 'endDate')).toBe(false);
+			expect(settingWithinDateRange({ endDate: '2026-11-01T00:00:00Z' }, 'startDate', 'endDate')).toBe(false);
+			expect(settingWithinDateRange({}, 'startDate', 'endDate')).toBe(false);
+		});
+
+		it('returns false instead of throwing when the end is not after the start', () => {
+			const reversed = { startDate: '2026-11-01T00:00:00Z', endDate: '2026-10-01T00:00:00Z' };
+			const equal = { startDate: '2026-10-15T12:00:00Z', endDate: '2026-10-15T12:00:00Z' };
+			expect(settingWithinDateRange(reversed, 'startDate', 'endDate')).toBe(false);
+			expect(settingWithinDateRange(equal, 'startDate', 'endDate')).toBe(false);
+		});
+
+		it('returns false for an unparseable date', () => {
+			const data = { startDate: 'not a date', endDate: '2026-11-01T00:00:00Z' };
+			expect(settingWithinDateRange(data, 'startDate', 'endDate')).toBe(false);
 		});
 	});
 });
