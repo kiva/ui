@@ -166,6 +166,7 @@ describe('renderESIHead', () => {
 			types: mockContext.config.graphqlPossibleTypes,
 			route: { query: {} },
 			forceHeader: mockContext.forceHeader,
+			links: [expect.anything()],
 		});
 	});
 

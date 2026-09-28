@@ -1,5 +1,7 @@
 import ESI from 'nodesi';
+import { context as otelContext } from '@opentelemetry/api';
 import { getCookieHeader } from './util/cookies.js';
+import { fromCarrier, toCarrier } from './util/traceContext.js';
 import initCache from './util/initCache.js';
 import { info } from './util/log.js';
 import getGqlPossibleTypes from './util/getGqlPossibleTypes.js';
@@ -37,6 +39,9 @@ export default async function render({
 			}
 		});
 
+	// Restore the trace context the middleware serialized, which a worker thread cannot inherit
+	const activeContext = fromCarrier(context.traceContext);
+
 	try {
 		// add fetched types to rendering context
 		const types = await typesPromise;
@@ -45,16 +50,17 @@ export default async function render({
 		// render the app
 		context.template = template;
 		context.ssrManifest = ssrManifest;
-		const { cdnHeaders, html, setCookies } = await serverEntry(context);
+		const { cdnHeaders, html, setCookies } = await otelContext.with(activeContext, () => serverEntry(context));
 
 		// if using ESI, process the html to resolve ESI tags
-		const finalHtml = processESITags ? await esi.process(html, {
+		const finalHtml = processESITags ? await otelContext.with(activeContext, () => esi.process(html, {
 			baseUrl: `http://localhost:${serverConfig.port}`,
 			headers: {
 				Cookie: getCookieHeader(context.cookies),
 				'Fastly-Top-Url': context.url,
+				...toCarrier(activeContext),
 			},
-		}) : html;
+		})) : html;
 
 		// send the final rendered html
 		return {

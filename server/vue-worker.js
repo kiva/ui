@@ -1,3 +1,4 @@
+import './util/tracing-init.js';
 import { workerData } from 'worker_threads';
 import vueRender from './vue-render.js';
 // eslint-disable-next-line import/no-unresolved

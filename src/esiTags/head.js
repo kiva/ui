@@ -1,5 +1,6 @@
 import { gql } from 'graphql-tag';
 import createApolloClient from '#src/api/apollo';
+import TraceContextLink from '#src/api/TraceContextLink';
 import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
 import renderCssVariables from '#src/rendering/cssVariables';
 import renderDocumentCookies from '#src/rendering/documentCookies';
@@ -85,6 +86,7 @@ export default async function renderESIHead({
 		types: config.graphqlPossibleTypes,
 		route,
 		forceHeader,
+		links: [TraceContextLink()],
 	});
 
 	// Set the visitor id cookie before other cookies or requests

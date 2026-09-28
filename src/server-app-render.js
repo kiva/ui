@@ -2,6 +2,7 @@
 import { renderSSRHead } from '@unhead/ssr';
 import { renderToString } from 'vue/server-renderer';
 import createApp from '#src/main';
+import TraceContextLink from '#src/api/TraceContextLink';
 import createRouter from '#src/router';
 import getCDNHeaders from '#src/rendering/cdnHeaders';
 import fillTemplate from '#src/rendering/fillTemplate';
@@ -51,7 +52,8 @@ export default async function renderPage({
 		appConfig: config,
 		apollo: {
 			uri: config.graphqlUri,
-			types: config.graphqlPossibleTypes
+			types: config.graphqlPossibleTypes,
+			links: [TraceContextLink()],
 		},
 		cdnNotedLoggedIn,
 		cookieStore,

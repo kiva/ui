@@ -20,6 +20,7 @@ export default function createApolloClient({
 	fetch,
 	route,
 	forceHeader,
+	links = [],
 }) {
 	const cache = new InMemoryCache({
 		possibleTypes: types,
@@ -53,6 +54,7 @@ export default function createApolloClient({
 
 	const client = new ApolloClient({
 		link: ApolloLink.from([
+			...links,
 			SnowplowSessionLink({ cookieStore }),
 			ExperimentIdLink({ cookieStore }),
 			Auth0LinkCreator({ cookieStore, kvAuth0 }),

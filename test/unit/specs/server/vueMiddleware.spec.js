@@ -1,3 +1,9 @@
+import {
+	context as otelContext,
+	propagation,
+	trace,
+} from '@opentelemetry/api';
+import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import * as mockTrace from '#server/util/mockTrace';
 import createMiddleware from '#server/vue-middleware';
 import * as vueRender from '#server/vue-render';
@@ -104,6 +110,48 @@ describe('vue-middleware.js', () => {
 			}));
 		}
 	);
+
+	describe('trace context', () => {
+		const TRACE_ID = '0af7651916cd43dd8448eb211c80319c';
+		const SPAN_ID = 'b7ad6b7169203331';
+
+		afterEach(() => {
+			trace.disable();
+			propagation.disable();
+			otelContext.disable();
+		});
+
+		it('should hand the render a trace context carrier', async () => {
+			new NodeTracerProvider().register();
+			vueRenderSpy.mockReturnValueOnce({ html: '<html>Test</html>' });
+
+			await middleware(req, res, next);
+
+			const { context } = vueRenderSpy.mock.calls[0][0];
+			expect(context.traceContext.traceparent).toMatch(/^00-[0-9a-f]{32}-[0-9a-f]{16}-0[01]$/);
+		});
+
+		it('should continue a trace the edge forwarded', async () => {
+			new NodeTracerProvider().register();
+			req.headers.traceparent = `00-${TRACE_ID}-${SPAN_ID}-01`;
+			vueRenderSpy.mockReturnValueOnce({ html: '<html>Test</html>' });
+
+			await middleware(req, res, next);
+
+			const { context } = vueRenderSpy.mock.calls[0][0];
+			expect(context.traceContext.traceparent).toContain(TRACE_ID);
+		});
+
+		it('should render without trace headers when no tracer provider is registered', async () => {
+			vueRenderSpy.mockReturnValueOnce({ html: '<html>Test</html>' });
+
+			await middleware(req, res, next);
+
+			const { context } = vueRenderSpy.mock.calls[0][0];
+			expect(context.traceContext).toEqual({});
+			expect(res.send).toHaveBeenCalledWith('<html>Test</html>');
+		});
+	});
 
 	// TODO: Add more tests (as our code coverage is low at the moment)
 });

@@ -1,6 +1,6 @@
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { trace, SpanKind } from '@opentelemetry/api';
-import { AlwaysOnSampler, SamplingDecision, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
+import { AlwaysOnSampler, BatchSpanProcessor, SamplingDecision } from '@opentelemetry/sdk-trace-base';
 import { GraphQLInstrumentation } from '@opentelemetry/instrumentation-graphql';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
 import { ConsoleSpanExporter, NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
@@ -43,7 +43,10 @@ function ignoreTheseSpans(spanName, spanKind, attributes) {
 	return spanKind !== SpanKind.SERVER;
 }
 
-function setupTracing() {
+// Holds the provider registered by setupTracing so it can be flushed on shutdown
+let activeProvider = null;
+
+function setupTracing({ threadName } = {}) {
 	const serviceName = process.env?.OTEL_SERVICE_NAME || 'ui';
 	if (!otlpDisabled) {
 		console.log(JSON.stringify({
@@ -55,6 +58,7 @@ function setupTracing() {
 			resource: new Resource({
 				[SemanticResourceAttributes.SERVICE_NAME]: serviceName,
 				[SemanticResourceAttributes.SERVICE_NAMESPACE]: process.env?.OTEL_SERVICE_NAMESPACE || 'kiva',
+				...(threadName ? { 'thread.name': threadName } : {}),
 			}),
 			sampler: filterSampler(ignoreTheseSpans, new AlwaysOnSampler()),
 		});
@@ -75,17 +79,26 @@ function setupTracing() {
 			headers: {},
 		});
 
-		provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
+		provider.addSpanProcessor(new BatchSpanProcessor(exporter));
 
 		// Initialize the OpenTelemetry APIs to use the NodeTracerProvider bindings
 		provider.register();
+		activeProvider = provider;
 
 		return trace.getTracer(serviceName);
 	}
 	return false;
 }
 
-export { setupTracing };
+// Flushes buffered spans and shuts the exporter down
+function shutdownTracing() {
+	const provider = activeProvider;
+	activeProvider = null;
+	return provider ? provider.shutdown() : Promise.resolve();
+}
+
+export { setupTracing, shutdownTracing };
 export default {
-	setupTracing
+	setupTracing,
+	shutdownTracing
 };

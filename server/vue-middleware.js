@@ -3,10 +3,12 @@ import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import Bowser from 'bowser';
 import { parseCookie } from 'cookie';
+import { context as otelContext, propagation, trace } from '@opentelemetry/api';
 import { HOME_PAGE_EXPERIMENT_HEADER } from '../src/util/experiment/fastlyExperimentUtils.js';
 import vueWorkerPool from './vue-worker-pool.js';
 import vueRender from './vue-render.js';
 import protectedRoutes from './util/protectedRoutes.js';
+import { toCarrier } from './util/traceContext.js';
 import { wrap } from './util/mockTrace.js';
 
 // eslint-disable-next-line no-underscore-dangle
@@ -121,6 +123,12 @@ export default function createMiddleware({ config, vite }) {
 		// set html response headers
 		res.setHeader('Content-Type', 'text/html');
 
+		// Parent the render on any trace context the edge forwarded, otherwise start a new trace
+		const parentContext = propagation.extract(otelContext.active(), req.headers);
+		const span = trace.getTracer('kiva-ui').startSpan('ssr.render', {}, parentContext);
+		// Hand the render its trace context; the render may run in a worker thread
+		context.traceContext = toCarrier(trace.setSpan(parentContext, span));
+
 		try {
 			// render the app
 			const {
@@ -160,6 +168,8 @@ export default function createMiddleware({ config, vite }) {
 			}
 		} catch (err) {
 			handleError(err, req, res, next);
+		} finally {
+			span.end();
 		}
 	}
 
