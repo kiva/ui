@@ -1,34 +1,12 @@
 /**
- * Scatters points across a set of candidate zones, spacing them apart where the zones
- * allow it. Used to place the twinkling stars and dots on the goal-in-review headline slide.
+ * Scatters points across percent-based zones, keeping them minGap apart where there's room.
+ * Exclusions are a hard constraint checked before minGap: if no candidate clears both within
+ * maxAttempts, the last one outside every exclusion wins, and failing that the last one tried,
+ * so placement always finishes. `existing` points are kept clear of but not returned. Leaving
+ * out `existing` or `exclusions` keeps the output and random-call sequence unchanged.
  *
- * @param {object} options Placement inputs.
- * @param {number} options.count How many points to place.
- * @param {Array<{left: [number, number], top: [number, number]}>} options.zones Candidate
- *   rectangles in percent; a zone is picked at random per point, then a point uniformly
- *   inside it.
- * @param {number} [options.minGap] Minimum Euclidean distance, in the same percent units,
- *   to keep between placed points. A candidate too close retries up to maxAttempts, then
- *   is accepted anyway so placement always finishes.
- * @param {Function} [options.random] Source of randomness in [0, 1), injectable for tests.
- * @param {number} [options.maxAttempts] Retries per point before giving up on the gap.
- * @param {[number, number]} [options.sizeRange] Whole-pixel size bounds, [min, max] inclusive.
- *   When given, each point also gets a `size`, uniformly random within the range; omitted
- *   entirely when this is left out, so callers that don't vary size see no `size` key.
- * @param {Array<{top: string|number, left: string|number}>} [options.existing] Points already
- *   on screen, in the same percent units (as '<n>%' strings or plain numbers). Seeds the
- *   collision set so freshly placed points also keep minGap from these, without being
- *   included in the returned array themselves. Omitting it reproduces the exact output and
- *   random-call sequence of a call with no existing points at all.
- * @param {Array<{left: [number, number], top: [number, number]}>} [options.exclusions] Rectangles,
- *   in the same percent units, a point may never land inside. This is a hard constraint, checked
- *   before minGap. Each point retries up to maxAttempts for a candidate that clears every exclusion
- *   and keeps minGap. If none does, it takes the last candidate that cleared the exclusions,
- *   ignoring minGap. If no candidate ever cleared them, it takes the last candidate tried, so
- *   placement always finishes; callers should leave usable space outside their exclusions.
- *   Omitting it (the default) reproduces the exact output and random-call sequence of
- *   a call with no exclusions at all.
- * @returns {Array<{top: string, left: string, delay: string, size?: string}>} The placed points.
+ * @returns {Array<{top: string, left: string, delay: string, size?: string}>} Placed points,
+ *   with `size` only when sizeRange is given.
  */
 export function randomDecorationPositions({
 	count,
@@ -104,10 +82,8 @@ export function randomDecorationPositions({
 	});
 }
 
-// Sums an element's offsetTop/offsetLeft up its offsetParent chain until reaching
-// ancestor, returning its box in pixels relative to ancestor. Returns null if the chain
-// never reaches ancestor, so the caller can skip an element it can't measure this way
-// rather than exclude the wrong box.
+// An element's box in pixels relative to ancestor, summed up its offsetParent chain. Null
+// when the chain never reaches ancestor, so the caller skips it.
 export function offsetWithin(el, ancestor) {
 	if (!el) {
 		return null;
@@ -129,17 +105,8 @@ export function offsetWithin(el, ancestor) {
 }
 
 /**
- * Converts an element's offset box (as returned by offsetWithin) to a percent-of-container
- * exclusion rectangle, padded on every side.
- *
- * @param {{top: number, left: number, width: number, height: number}} box Element box in
- *   pixels, relative to the container.
- * @param {number} containerWidth Container width in pixels.
- * @param {number} containerHeight Container height in pixels.
- * @param {number} [padding] Pixels of padding kept clear around the box on every side.
- * @returns {{left: [number, number], top: [number, number]}} The padded box as percent of
- *   the container, in the same shape as a zone/exclusion rectangle passed to
- *   randomDecorationPositions.
+ * Converts a pixel box from offsetWithin into a padded exclusion rectangle, in percent of
+ * the container.
  */
 export function toExclusionRect(box, containerWidth, containerHeight, padding = 0) {
 	const paddedLeft = ((box.left - padding) / containerWidth) * 100;
@@ -150,34 +117,10 @@ export function toExclusionRect(box, containerWidth, containerHeight, padding = 
 }
 
 /**
- * Rectangles, in percent of a container, that decorations should be kept clear of: each
- * measurable element in elements (padded), plus optionally a square in the container's
- * top-right corner (e.g. for a close button). Meant to be called fresh whenever placement
- * runs, since it's cheap and keeps it correct across a resize.
- *
- * Measured with offsetTop/offsetLeft/offsetWidth/offsetHeight rather than
- * getBoundingClientRect: this is meant to run while an element is still mid entrance
- * animation (a CSS transform translates and fades it in) and the container itself may be
- * mid enter-animation too. getBoundingClientRect reports wherever a transform currently has
- * an element, so it would place these boxes off by as much as the animation's own travel
- * distance from where the element actually settles; offsets reflect the final layout
- * regardless of any transform.
- *
- * An unmeasurable container (zero size, as in a test environment without layout) yields no
- * exclusions at all, leaving placement to the caller's zones alone.
- *
- * @param {object} options Exclusion inputs.
- * @param {Element} options.container Element the returned rectangles are relative to.
- * @param {Array<Element|null>} [options.elements] Elements to exclude; an entry that's
- *   missing or whose offsetParent chain never reaches container is skipped rather than
- *   excluding the wrong box.
- * @param {number} [options.padding] Pixels of padding kept clear around each element on
- *   every side.
- * @param {number} [options.cornerSize] Whole pixels for a square excluded in the
- *   container's top-right corner; 0 (the default) adds no corner exclusion.
- * @returns {Array<{left: [number, number], top: [number, number]}>} The exclusion
- *   rectangles, in percent of container, in the zone shape used by
- *   randomDecorationPositions.
+ * Percent rectangles to keep decorations clear of: each measurable element, padded, plus an
+ * optional square in the top-right corner. Uses offsets rather than getBoundingClientRect
+ * because it runs while entrance animations still transform the elements, and offsets give
+ * the settled layout. Returns [] for a container with no size.
  */
 export function getExclusionRects({
 	container, elements = [], padding = 0, cornerSize = 0,
@@ -206,19 +149,10 @@ export function getExclusionRects({
 }
 
 /**
- * Picks a new position (and size, when sizeRange is given) for one decoration that's
- * finishing an animation loop, keeping its existing delay: changing animation-delay
- * mid-run restarts or shifts the animation. The new point keeps minGap from every other
- * decoration currently on screen, across all groups.
- *
- * @param {object} options Respawn inputs; any option not listed here is passed through to
- *   randomDecorationPositions (zones, minGap, sizeRange, exclusions, random, maxAttempts).
- * @param {Array<Array<{top: string, left: string, delay: string}>>} options.groups Every
- *   group of decorations on screen (e.g. stars and dots). Not mutated.
- * @param {number} options.groupIndex Which group holds the decoration being respawned.
- * @param {number} options.index The decoration's index within its group.
- * @returns {{top: string, left: string, delay: string, size?: string}} The replacement point,
- *   for the caller to store at the same index.
+ * Gives one decoration a new position (and size) at the end of an animation loop. Its delay is
+ * kept, since changing animation-delay mid-run restarts the animation, and the new point
+ * stays clear of every other decoration in `groups`. Other options pass through to
+ * randomDecorationPositions.
  */
 export function respawnDecoration({
 	groups, groupIndex, index, ...placement

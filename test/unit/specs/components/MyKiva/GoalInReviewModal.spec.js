@@ -515,6 +515,22 @@ describe('GoalInReviewModal', () => {
 		expect(scrollIntoView.mock.instances[0]).toBe(screen2);
 	});
 
+	it('tracks a click on slide 1\'s arrow', async () => {
+		const originalScrollIntoView = Element.prototype.scrollIntoView;
+		Element.prototype.scrollIntoView = vi.fn();
+		onTestFinished(() => {
+			Element.prototype.scrollIntoView = originalScrollIntoView;
+		});
+		const trackEvent = vi.fn();
+		const { findByText, getByRole } = renderModal({ trackEvent });
+
+		await findByText('The people behind your loans');
+
+		await fireEvent.click(getByRole('button', { name: 'Scroll to the next section' }));
+
+		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', 'goal-recap-scroll-arrow');
+	});
+
 	it('scrolls screen 2 into view without smooth-scrolling when the visitor prefers reduced motion', async () => {
 		const originalScrollIntoView = Element.prototype.scrollIntoView;
 		const scrollIntoView = vi.fn();

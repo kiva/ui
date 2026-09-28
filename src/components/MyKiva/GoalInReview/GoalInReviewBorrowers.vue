@@ -100,9 +100,7 @@ const cardAnimationDelay = index => ({ animationDelay: `${0.2 + index * 0.175}s`
 </script>
 
 <style lang="postcss" scoped>
-/* brand-100 comes from the tw-to-brand-100 token class on the section. These
-   gradient position variables keep the top 200px fully transparent so the
-   previous screen's hill art shows through, then hard-stop into brand-100. */
+/* Keeps the top 200px of the gradient transparent so the previous screen's hill art shows through. */
 .goal-in-review-borrowers {
 	--tw-gradient-from-position: 200px;
 	--tw-gradient-to-position: 200px;

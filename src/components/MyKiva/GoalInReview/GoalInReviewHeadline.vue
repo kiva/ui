@@ -8,8 +8,7 @@
 		data-testid="goal-in-review-headline"
 	>
 		<!-- Overlays sit behind content via tw-z-hide; section's tw-isolate contains that z-index. -->
-		<!-- Positions are computed client-side in onMounted, so this is empty (and renders
-			nothing) during SSR; filling it there would desync from the client and hydrate wrong. -->
+		<!-- Empty during SSR: positions are random, so they're filled on mount to keep hydration in sync. -->
 		<div class="headline-stars tw-absolute tw-inset-0 tw-pointer-events-none tw-z-hide" aria-hidden="true">
 			<StarIcon
 				v-for="(position, index) in starPositions"
@@ -81,10 +80,8 @@
 		</div>
 
 		<div class="tw-relative">
-			<!-- Mountain art layer, painted here (rather than as the section background) so
-				it can extend past the section's own bottom edge behind the next slide's
-				header, with no seam between the two. It is anchored to this block's bottom on mobile and
-				its top on desktop, so the flag stays beside the scroll prompt as the content above changes. -->
+			<!-- Mountain art as its own layer so it can run past the section's bottom, behind screen 2.
+				Anchored so the flag stays beside the scroll prompt. -->
 			<div
 				class="headline-hill tw-absolute tw-pointer-events-none tw-z-hide tw-left-0 tw-w-full
 					tw-top-full -tw-mt-7.5 md:tw-top-13.5 md:tw-mt-0"
@@ -93,13 +90,11 @@
 				<div
 					class="headline-hill-mountain tw-w-full tw-bg-gray-50 tw-bg-no-repeat tw-bg-top tw-bg-contain"
 				></div>
-				<!-- Mint that continues the hill behind the next slide's see-through top; the small
-					negative margin covers the art's anti-aliased bottom edge so no hairline shows. -->
+				<!-- Mint behind screen 2's transparent top; the negative margin hides a hairline seam. -->
 				<div class="tw-w-full tw-h-40 -tw-mt-0.5 tw-bg-brand-100"></div>
 
 				<div
 					class="headline-rays tw-absolute tw-pointer-events-none tw-top-0 tw-left-0 tw-w-full"
-					aria-hidden="true"
 				>
 					<FlagRayIcon
 						class="headline-ray headline-ray--1 tw-w-0.5 tw-h-auto
@@ -197,9 +192,7 @@ import {
 } from '#src/util/animation/decorationUtils';
 import useBreakpoints from '#src/composables/useBreakpoints';
 
-// Stars and dots appear anywhere in the upper half of the slide, avoiding the text
-// (via exclusions computed from the live layout) and the close button corner.
-// The 2%/98% inset keeps the translated items from being clipped at the edges.
+// Upper half of the slide, inset so centered decorations aren't clipped at the edges.
 const DECORATION_ZONES = [
 	{ left: [2, 98], top: [4, 50] },
 ];
@@ -211,14 +204,11 @@ const DECORATION_COUNTS = {
 
 const DECORATION_MIN_GAP = 6;
 
-// Padding kept clear around each exclusion (the pill/title/subtext block and the stat
-// card grid), and the size of the close button's corner, both in whole pixels before
-// being converted to percent of the slide.
+// Pixels kept clear around the text and stat cards, and the close button's corner size.
 const EXCLUSION_PADDING_PX = 12;
 const CLOSE_BUTTON_SIZE_PX = 72;
 
-// Whole-pixel size bounds. Each star and dot gets its own random size within them, so
-// the twinkles vary.
+// Whole-pixel [min, max] sizes.
 const STAR_SIZE_RANGE = [4, 16];
 const DOT_SIZE_RANGE = [3, 6];
 
@@ -261,8 +251,7 @@ const { isMedium } = useBreakpoints();
 
 const MISSING = '—';
 
-// Left empty until onMounted measures and fills them; safe to appear later since these
-// render as absolute, pointer-events-none overlays that don't shift surrounding layout.
+// Filled on mount; the overlays are absolute, so filling them later doesn't shift layout.
 const starPositions = ref([]);
 const dotPositions = ref([]);
 
@@ -314,9 +303,7 @@ const stats = computed(() => [
 	},
 ]);
 
-// Placement options shared by every star and dot. Exclusions (the pill/title/subtext
-// block, the stat card grid, and the close button corner) are measured on every call so
-// they stay correct after a resize.
+// Shared placement options. Exclusions are measured on every call so they survive a resize.
 const getPlacement = () => ({
 	zones: DECORATION_ZONES,
 	minGap: DECORATION_MIN_GAP,
@@ -328,8 +315,7 @@ const getPlacement = () => ({
 	}),
 });
 
-// Moves one star or dot each time its animation loops. It keeps its delay and stays
-// clear of every other star and dot on screen.
+// Moves a star or dot to a new spot each time its animation loops.
 const respawn = (kind, index) => {
 	const isStar = kind === 'star';
 	const positions = isStar ? starPositions.value : dotPositions.value;

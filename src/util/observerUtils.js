@@ -25,15 +25,10 @@ export function createIntersectionObserver({ callback, options, targets } = {}) 
 }
 
 /**
- * Makes an IntersectionObserver report a target's state again on the next frame. With
- * threshold 0, an observer only reports a target when its intersection state changes, so a
- * target skipped while it had no layout yet (e.g. a wrapper around an async component) would
- * otherwise never be reported again once it lays out. Unobserving and re-observing makes the
- * observer treat it as newly watched.
- *
- * @param {Function} getObserver Returns the current observer; re-read inside the frame so an
- *   observer torn down or replaced before the frame fires is not re-armed.
- * @param {Element} target Element to re-observe.
+ * Makes an IntersectionObserver report a target again on the next frame. With threshold 0 it
+ * only reports state changes, so a target skipped before it had layout would never be
+ * reported once it lays out. The observer is re-read inside the frame so a torn-down or
+ * replaced one isn't re-armed.
  */
 export function reobserveNextFrame(getObserver, target) {
 	const observer = getObserver();
@@ -46,16 +41,8 @@ export function reobserveNextFrame(getObserver, target) {
 }
 
 /**
- * Whether an element's box overlaps a scroll root's reveal area: the root minus a strip at its
- * bottom, matching an IntersectionObserver rootMargin of `0px 0px -<bottomInset * 100>% 0px`.
- * A 0-height element never counts, since it has no layout to reveal yet.
- *
- * @param {{top: number, bottom: number, height: number}} rect Element box, e.g. from
- *   getBoundingClientRect.
- * @param {{top: number, bottom: number, height: number}} rootRect Scroll root box, in the
- *   same coordinates.
- * @param {number} [bottomInset] Fraction of the root's height excluded at its bottom.
- * @returns {boolean} Whether the element overlaps the reveal area.
+ * Whether an element overlaps a scroll root minus a strip at its bottom, matching a rootMargin
+ * of `0px 0px -<bottomInset * 100>% 0px`. A 0-height element never counts.
  */
 export function isInRevealArea(rect, rootRect, bottomInset = 0) {
 	const revealBottom = rootRect.bottom - (bottomInset * rootRect.height);
@@ -63,12 +50,8 @@ export function isInRevealArea(rect, rootRect, bottomInset = 0) {
 }
 
 /**
- * Whether every sibling before an element has laid out (non-zero height). Content that loads
- * piece by piece, like a list of async components, can lay out one item while items above it
- * are still empty; until those have laid out, the item sits higher than it will end up.
- *
- * @param {Element|null} el Element to check; null counts as laid out, having nothing above it.
- * @returns {boolean} Whether every earlier sibling has a non-zero height.
+ * Whether every sibling before an element has a non-zero height. Until they do, an element in
+ * content that loads piece by piece sits higher than it will end up.
  */
 export function previousSiblingsLaidOut(el) {
 	for (let above = el?.previousElementSibling; above; above = above.previousElementSibling) {

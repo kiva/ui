@@ -5,7 +5,7 @@
 		:visible="show"
 		title=""
 		prevent-background-close
-		:close-button-show-delay="3000"
+		:close-button-show-delay="CLOSE_BUTTON_SHOW_DELAY_MS"
 		@lightbox-closed="handleClose"
 	>
 		<template #header>
@@ -145,6 +145,9 @@ const props = defineProps({
 const emit = defineEmits(['close', 'goal-recap-back-to-kiva', 'finish-goal', 'set-goal', 'feedback-submitted']);
 const $kvTrackEvent = inject('$kvTrackEvent', () => {});
 
+// How long after the recap opens its close button (the X) appears.
+const CLOSE_BUTTON_SHOW_DELAY_MS = 3000;
+
 // Single source of truth for "now". Add ?recapDate=YYYY-MM-DD to the url for QA specific dates
 const currentYear = getGoalInReviewCurrentYear();
 
@@ -180,13 +183,9 @@ const handleFeedbackSubmitted = () => {
 	emit('feedback-submitted');
 };
 
-// Per-section view tracking. The recap is one continuous scroll, so we observe a
-// wrapper div around each slide (they exist immediately, unlike the async slide
-// components) and fire a view event the first time each scrolls past the midpoint.
-// The measurement plan calls each recap section a "screen", so the property is
-// emitted as `screen-${n}` even though the components are named Slide 1..7. Screen 1
-// counts on open; screens 2..7 only start counting once the recap has been scrolled,
-// so peeking at the next screen's photos below screen 1 is never mistaken for a view.
+// Per-screen view tracking on the slide wrappers, which exist before the async slides load.
+// Each screen fires `screen-${n}` once, when its top passes the midpoint. Screen 1 counts on
+// open; screens 2..7 only after the first scroll, so the screen 2 peek isn't a view.
 const slidesContainer = ref(null);
 const viewedSlides = new Set();
 let slideObserver = null;
@@ -199,9 +198,8 @@ const OPENING_SCREEN = '1';
 
 // Analytics counts a screen "viewed" once its top passes the modal's midpoint.
 const VIEW_ROOT_MARGIN = '0px 0px -50% 0px';
-// Entrance animations reveal earlier, as a section clears the modal's bottom edge,
-// so motion plays while it rises into view instead of once it is halfway up.
-// revealSlidesInView reads the same inset, so the two stay in sync.
+// Entrances reveal as a section clears the bottom edge, not at the midpoint.
+// revealSlidesInView uses the same inset.
 const REVEAL_BOTTOM_INSET = 0.1;
 const REVEAL_ROOT_MARGIN = `0px 0px -${REVEAL_BOTTOM_INSET * 100}% 0px`;
 
@@ -226,9 +224,8 @@ const handleScrollPosition = () => {
 // mount. Slide 1 has no gate and animates on mount, so this is a no-op for it.
 const revealSlide = target => target?.classList.add('is-in-view');
 
-// A slide that loads before the slides above it looks in view while they're still empty,
-// and would play its entrance off-screen. Checked at the slide level, so the sections
-// inside slide 3 wait on the slides above slide 3.
+// A slide that loads before the ones above it looks in view while they're empty. Checked at
+// the slide level so slide 3's inner sections wait on the slides above slide 3.
 const slidesAboveLaidOut = target => previousSiblingsLaidOut(target.closest('[data-slide-view]'));
 
 const trackSlideViews = entries => {
@@ -249,9 +246,8 @@ const trackSlideViews = entries => {
 	});
 };
 
-// Reveal runs on its own, earlier-triggering observer so entrance animations start
-// as a section enters from the bottom, independent of the view-tracking threshold.
-// A wrapper whose position isn't final yet is checked again once it may be.
+// Separate from view tracking so entrances start as a section enters from the bottom.
+// A wrapper whose position isn't final yet is checked again next frame.
 const revealSlides = entries => {
 	entries.forEach(entry => {
 		if (!entry.isIntersecting) {
@@ -266,9 +262,8 @@ const revealSlides = entries => {
 	});
 };
 
-// Fallback for a slide that renders already inside the reveal area and that the observer
-// misses, for example when a paused animation frame skips the re-observe. Reveals
-// every gated wrapper whose current position overlaps the reveal area.
+// Runs as each slide mounts, for a slide that renders already in view but that the observer
+// misses (e.g. when animation frames are paused).
 const revealSlidesInView = () => {
 	if (!scrollRoot || !slidesContainer.value) {
 		return;
@@ -283,10 +278,8 @@ const revealSlidesInView = () => {
 	});
 };
 
-// Arms view tracking the first time the recap scrolls, then removes itself.
-// IntersectionObserver reports each target's current state as soon as it starts
-// observing, so a screen already past the midpoint by the time this runs still
-// counts. Only a peek with no scroll at all is excluded.
+// Starts view tracking on the first scroll. The observer reports current state on start,
+// so a screen already past the midpoint still counts.
 const armSlideTracking = () => {
 	slideObserver = createIntersectionObserver({
 		targets: slideTargets,
@@ -345,6 +338,7 @@ const setupObservers = async () => {
 
 // The arrow on screen 1 scrolls straight to screen 2.
 const scrollToScreenTwo = () => {
+	$kvTrackEvent('portfolio', 'click', 'goal-recap-scroll-arrow');
 	const target = slidesContainer.value?.querySelector('[data-slide-view="2"]');
 	if (!target) {
 		return;
