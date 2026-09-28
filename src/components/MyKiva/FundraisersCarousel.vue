@@ -19,7 +19,7 @@
 				<p class="tw-text-base">
 					Easily create and share fundraisers that support the communities and places you choose.
 				</p>
-				<div class="tw-z-tooltip tw-shrink-0 tw-mt-0.5">
+				<div class="tw-z-1 tw-shrink-0 tw-mt-0.5">
 					<button
 						type="button"
 						aria-label="About fundraisers at Kiva"
