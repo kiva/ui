@@ -1,6 +1,10 @@
-import { WITHDRAW_ROUTE, WITHDRAW_PROCESS } from '#src/util/withdraw/withdrawConstants';
-import { DEPOSIT_ROUTE } from '#src/util/deposit/depositConstants';
-import { ESTIMATED_REPAYMENTS_ROUTE } from '#src/util/estimatedRepayments/estimatedRepaymentsConstants';
+// This file is also imported directly by Node (server/sitemap/generators/static.js) to build /sitemaps/ui.xml,
+// so its static imports must be Node-resolvable: relative paths with extensions, no #src alias.
+/* eslint-disable import/extensions */
+import { WITHDRAW_ROUTE, WITHDRAW_PROCESS } from '../util/withdraw/withdrawConstants.js';
+import { DEPOSIT_ROUTE } from '../util/deposit/depositConstants.js';
+import { ESTIMATED_REPAYMENTS_ROUTE } from '../util/estimatedRepayments/estimatedRepaymentsConstants.js';
+/* eslint-enable import/extensions */
 
 export default [
 	{
@@ -160,6 +164,10 @@ export default [
 		path: '/legal',
 		component: () => import('#src/pages/Legal/Legal'),
 		children: [
+			{
+				path: 'privacy',
+				component: () => import('#src/pages/Legal/PrivacyPolicy')
+			},
 			{
 				path: 'promo-terms',
 				component: () => import('#src/pages/Legal/PromoTermsOfUse')

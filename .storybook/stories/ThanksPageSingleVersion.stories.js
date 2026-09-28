@@ -10,6 +10,7 @@ import {
 	mockLoans,
 	mockUserAchievementProgress,
 	mockContentful,
+	MOCK_OLD_BADGE_ID,
 	MOCK_TIERED_BADGE_ID,
 	mockTieredLendingAchievementsAllCategories,
 } from '../mock-data/thanks-badges-mock-data';
@@ -246,6 +247,18 @@ export const NoBadgeMultipleLoansNotOptedIn = story({
 	loans: mockLoans,
 	receipt: receiptWithMultipleLoans,
 }, queryResultNoBadge);
+
+const mockEquityBadge = { achievementId: MOCK_OLD_BADGE_ID, preCheckoutTier: null };
+
+export const FirstLoanWithBadge = story({
+	isGuest: false,
+	isOptedIn: false,
+	lender: mockLender,
+	loans: [mockLoans[0]],
+	totalLoans: 1,
+	receipt: receiptWithSingleLoan,
+	badgesAchieved: [mockEquityBadge],
+});
 
 export const Badge = story({
 	isOptedIn: true,

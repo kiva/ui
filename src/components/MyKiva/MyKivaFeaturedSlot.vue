@@ -163,7 +163,7 @@ watch(
 );
 
 // Mirror the carousel goal-tile's view / show tracking events (see
-// NextYearGoalCard) so analytics from the control surface carry
+// JourneyCardCarousel) so analytics from the control surface carry
 // over to the featured slot. Fires once, as soon as the slot has
 // loaded data and is actually rendering. Immediate because a cache
 // hydration resolves `cardLoading` before this watcher is created,

@@ -331,7 +331,7 @@ const supportedFilterFLSS = name => {
 };
 
 // Takes a string like: "gender_female,sector_education"
-// and returns an array of objects like: [ { gender: { eq: 'female' } }, { sector: { eq: 'education' } } ]
+// and returns a single-entry array like: [ { gender: { any: ['female'] }, sector: { any: ['education'] } } ]
 const parseFilterStringFLSS = async filterString => {
 	// If the filter string is not valid, return an empty array
 	if (!filterString || typeof filterString !== 'string') {
@@ -385,8 +385,14 @@ const parseFilterStringFLSS = async filterString => {
 			}
 		});
 
-	const filterValues = Object.values(filters);
-	return filterValues.length ? filterValues : null;
+	// FLSS joins the entries of the `filters` array with OR, so different filters have to share a
+	// single entry to be AND-ed together:
+	//   'gender_female,sector_education' -> [{ gender: {...}, sector: {...} }]     female AND education
+	// Repeating one filter is unaffected: those values were already collected into that filter's own
+	// `any` array above, which FLSS ORs, and merging only ever joins separate keys:
+	//   'country_us,country_pr'          -> [{ countryIsoCode: { any: ['us', 'pr'] } }]   US OR PR
+	const combinedFilter = Object.assign({}, ...Object.values(filters));
+	return Object.keys(combinedFilter).length ? [combinedFilter] : null;
 };
 
 // Get loans from the Fundraising Loan Search Service matching a set of filters

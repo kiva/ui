@@ -197,23 +197,6 @@ watch(
 // mount rather than immediately: an immediate watch also runs during server-side setup,
 // where there is no document.
 onMounted(showCompletedGoalConfetti);
-
-watch(() => [props.loading, props.hideGoalCard], ([newLoading, newHideGoalCard], [oldLoading]) => {
-	if (!newLoading && oldLoading && !newHideGoalCard) {
-		if (!userHasGoal.value) {
-			$kvTrackEvent(
-				'portfolio',
-				'view',
-				'set-annual-goal'
-			);
-		} else if (
-			!isUpdatingGoal.value
-			&& userHasGoal.value
-			&& goalProgressPercentage.value !== COMPLETED_GOAL_THRESHOLD) {
-			$kvTrackEvent('portfolio', 'show', 'goal-set', props.userGoal.category, props.userGoal.target);
-		}
-	}
-});
 </script>
 
 <style lang="postcss" scoped>

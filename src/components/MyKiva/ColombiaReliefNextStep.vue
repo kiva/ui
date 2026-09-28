@@ -33,7 +33,7 @@
 					tw-absolute tw--top-5 tw-drop-shadow-md"
 			>
 		</div>
-		<div class="tw-flex tw-flex-col tw-justify-end tw-grow">
+		<div class="tw-flex tw-flex-col tw-justify-end tw-grow tw-pt-5">
 			<h3 class="tw-text-h4 tw-text-primary tw-text-center tw-pb-0.5 tw-px-1">
 				Support Colombia earthquake disaster relief
 			</h3>
