@@ -6,7 +6,7 @@ const block = (key, fields = {}, contentType = 'genericContentBlock') => ({
 });
 
 const entry = (fields = {}, content = [
-	block('tip-copy-control', { headline: 'Control headline', subHeadline: 'Control tagline' }),
+	block('tip-copy-a', { headline: 'A headline', subHeadline: 'A tagline' }),
 	block('tip-copy-b', { headline: 'B headline' }),
 ]) => ({
 	sys: { contentType: { sys: { id: 'uiSetting' } } },
@@ -32,11 +32,11 @@ describe('experimentCopy.js', () => {
 		it('returns the blocks keyed by variant for an active entry without dates', () => {
 			const variants = formatExperimentCopy(entry());
 
-			expect(Object.keys(variants)).toEqual(['control', 'b']);
-			expect(variants.control).toMatchObject({
-				key: 'tip-copy-control',
-				headline: 'Control headline',
-				subHeadline: 'Control tagline',
+			expect(Object.keys(variants)).toEqual(['a', 'b']);
+			expect(variants.a).toMatchObject({
+				key: 'tip-copy-a',
+				headline: 'A headline',
+				subHeadline: 'A tagline',
 				contentType: 'genericContentBlock',
 			});
 			expect(variants.b.headline).toBe('B headline');
@@ -48,7 +48,7 @@ describe('experimentCopy.js', () => {
 				endDate: '2026-11-01T00:00:00Z',
 			}));
 
-			expect(Object.keys(variants)).toEqual(['control', 'b']);
+			expect(Object.keys(variants)).toEqual(['a', 'b']);
 		});
 
 		it('returns null when the entry is not active', () => {
@@ -80,8 +80,8 @@ describe('experimentCopy.js', () => {
 
 		it('returns null when the entry has no key', () => {
 			// Without the check, a missing key would become the text "undefined" and match these blocks
-			expect(formatExperimentCopy(entry({ key: undefined }, [block('undefined-control')]))).toBeNull();
-			expect(formatExperimentCopy(entry({ key: '' }, [block('-control')]))).toBeNull();
+			expect(formatExperimentCopy(entry({ key: undefined }, [block('undefined-a')]))).toBeNull();
+			expect(formatExperimentCopy(entry({ key: '' }, [block('-a')]))).toBeNull();
 		});
 
 		it('ignores blocks without the setting key prefix, a variant, or the block content type', () => {
