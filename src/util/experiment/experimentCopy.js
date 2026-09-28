@@ -3,7 +3,7 @@ import { settingWithinDateRange } from '#src/util/settingsUtils';
 
 /**
  * Turns a Contentful copy set into its copy, grouped by experiment version.
- * See docs/experiment-copy.md for how to set one up in Contentful.
+ * The set is a uiSetting linking one genericContentBlock per version, keyed `<setting key>-<version>`.
  *
  * Returns null when the set is turned off, outside its dates, or has no copy, so the page can
  * show its hardcoded copy instead.
