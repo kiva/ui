@@ -399,9 +399,9 @@ onBeforeUnmount(teardownObservers);
 		max-height: var(--recap-page-height);
 		scrollbar-width: thin;
 
-		/* #e0e0e0 matches the gray-200 token used for the webkit scrollbar thumb below;
-		this plain CSS property can't take a token or utility class. */
-		scrollbar-color: #e0e0e0 transparent;
+		/* #e0e0e0 and #fff match the gray-200 and white tokens used for the webkit scrollbar
+		thumb and track below; this plain CSS property can't take a token or utility class. */
+		scrollbar-color: #e0e0e0 #fff;
 
 		@apply !tw-p-0 tw-overflow-y-auto;
 	}
@@ -444,7 +444,7 @@ onBeforeUnmount(teardownObservers);
 }
 
 .goal-in-review-modal #kvLightboxBody::-webkit-scrollbar-track {
-	@apply tw-bg-transparent;
+	@apply tw-bg-white;
 }
 
 .goal-in-review-modal #kvLightboxBody::-webkit-scrollbar-thumb {
