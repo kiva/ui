@@ -36,9 +36,8 @@ export function formatExperimentCopy(uiSettingEntry) {
 	return Object.keys(variants).length ? variants : null;
 }
 
-// The control block is required in the copy set and holds the default copy; its key must match the
-// control key in the experiment's Kiva Admin distribution
-const CONTROL_VERSION = 'control';
+// Version `a` is the experiment's control in Kiva Admin; its block holds the default copy
+const CONTROL_VERSION = 'a';
 
 /**
  * Picks the copy for an assigned experiment version from a variants map and fills placeholders.
@@ -46,7 +45,7 @@ const CONTROL_VERSION = 'control';
  * there is no usable text, so callers can apply their own hardcoded fallback with `??`.
  *
  * @param {Object|null} variants Copy blocks by version, as returned by formatExperimentCopy
- * @param {string|null} [version] The assigned experiment version, e.g. 'control', 'b', 'unassigned'
+ * @param {string|null} [version] The assigned experiment version, e.g. 'a', 'b', 'unassigned'
  * @param {string} field The block field holding the text, e.g. 'headline'
  * @param {Object} [replacements] Values for the `{key}` tokens in the text; a null or undefined value
  * leaves its token untouched

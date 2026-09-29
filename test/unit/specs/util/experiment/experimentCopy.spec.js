@@ -114,7 +114,7 @@ describe('experimentCopy.js', () => {
 
 	describe('getExperimentCopy', () => {
 		const variants = {
-			control: { headline: 'Control headline', subHeadline: 'Tip {percentage}% on {amount}' },
+			a: { headline: 'Control headline', subHeadline: 'Tip {percentage}% on {amount}' },
 			b: { headline: 'Variant headline', subHeadline: '' },
 		};
 
@@ -129,36 +129,36 @@ describe('experimentCopy.js', () => {
 		});
 
 		it('returns null when there is no usable copy', () => {
-			expect(getExperimentCopy(null, 'control', 'headline')).toBeNull();
-			expect(getExperimentCopy(undefined, 'control', 'headline')).toBeNull();
+			expect(getExperimentCopy(null, 'a', 'headline')).toBeNull();
+			expect(getExperimentCopy(undefined, 'a', 'headline')).toBeNull();
 			expect(getExperimentCopy({}, 'z', 'headline')).toBeNull();
-			expect(getExperimentCopy(variants, 'control', 'missingField')).toBeNull();
+			expect(getExperimentCopy(variants, 'a', 'missingField')).toBeNull();
 			expect(getExperimentCopy(variants, 'b', 'subHeadline')).toBeNull();
 		});
 
 		it('returns null when the field is not plain text', () => {
-			const richText = { control: { bodyCopy: { nodeType: 'document', content: [] } } };
-			expect(getExperimentCopy(richText, 'control', 'bodyCopy')).toBeNull();
+			const richText = { a: { bodyCopy: { nodeType: 'document', content: [] } } };
+			expect(getExperimentCopy(richText, 'a', 'bodyCopy')).toBeNull();
 		});
 
 		it('fills every placeholder, coercing values and keeping dollar signs intact', () => {
-			const copy = getExperimentCopy(variants, 'control', 'subHeadline', { percentage: 15, amount: '$25' });
+			const copy = getExperimentCopy(variants, 'a', 'subHeadline', { percentage: 15, amount: '$25' });
 			expect(copy).toBe('Tip 15% on $25');
 		});
 
 		it('leaves tokens untouched when their replacement value is null or undefined', () => {
-			const copy = getExperimentCopy(variants, 'control', 'subHeadline', { percentage: null, amount: undefined });
+			const copy = getExperimentCopy(variants, 'a', 'subHeadline', { percentage: null, amount: undefined });
 			expect(copy).toBe('Tip {percentage}% on {amount}');
 		});
 
 		it('inserts replacement values verbatim, including dollar-sequence characters', () => {
-			expect(getExperimentCopy(variants, 'control', 'subHeadline', { percentage: 15, amount: '$&' }))
+			expect(getExperimentCopy(variants, 'a', 'subHeadline', { percentage: 15, amount: '$&' }))
 				.toBe('Tip 15% on $&');
 		});
 
 		it('replaces repeated tokens and leaves unknown tokens untouched', () => {
-			const repeated = { control: { headline: '{name} and {name} met {other}' } };
-			expect(getExperimentCopy(repeated, 'control', 'headline', { name: 'Ana' })).toBe('Ana and Ana met {other}');
+			const repeated = { a: { headline: '{name} and {name} met {other}' } };
+			expect(getExperimentCopy(repeated, 'a', 'headline', { name: 'Ana' })).toBe('Ana and Ana met {other}');
 		});
 	});
 });
