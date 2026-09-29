@@ -4,13 +4,14 @@ import { settingWithinDateRange } from '#src/util/settingsUtils';
 /**
  * Turns a Contentful copy set into its copy, grouped by experiment version.
  * The set is a uiSetting linking one genericContentBlock per version, keyed `<setting key>-<version>`.
- * Versions must match the experiment's versions in Kiva Admin, where `a` is the control.
+ * Versions must match the experiment's versions in Kiva Admin; the required `control` block holds the
+ * default copy.
  *
  * Returns null when the set is turned off, outside its dates, or has no copy, so the page can
  * show its hardcoded copy instead.
  *
  * @param {Object} uiSettingEntry The uiSetting entry, as returned by getContentfulEntries
- * @returns {Object|null} The copy for each version, e.g. { a: {...}, b: {...} }, or null
+ * @returns {Object|null} The copy for each version, e.g. { control: {...}, b: {...} }, or null
  */
 export function formatExperimentCopy(uiSettingEntry) {
 	if (!uiSettingEntry?.fields) return null;
