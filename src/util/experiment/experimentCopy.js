@@ -35,3 +35,33 @@ export function formatExperimentCopy(uiSettingEntry) {
 
 	return Object.keys(variants).length ? variants : null;
 }
+
+// The control block is required in the copy set and holds the default copy; its key must match the
+// control key in the experiment's Kiva Admin distribution
+const CONTROL_VERSION = 'control';
+
+/**
+ * Picks the copy for an assigned experiment version from a variants map and fills placeholders.
+ * Falls back to the control block when the version is missing or has no block. Returns null when
+ * there is no usable text, so callers can apply their own hardcoded fallback with `??`.
+ *
+ * @param {Object|null} variants Copy blocks by version, as returned by formatExperimentCopy
+ * @param {string|null} [version] The assigned experiment version, e.g. 'control', 'b', 'unassigned'
+ * @param {string} field The block field holding the text, e.g. 'headline'
+ * @param {Object} [replacements] Values for the `{key}` tokens in the text; a null or undefined value
+ * leaves its token untouched
+ * @returns {string|null} The text with placeholders filled, or null
+ */
+export function getExperimentCopy(variants, version, field, replacements = {}) {
+	if (!variants) return null;
+	const pick = v => (v != null && Object.hasOwn(variants, v) ? variants[v] : undefined);
+	const block = pick(version) ?? pick(CONTROL_VERSION);
+	const text = block?.[field];
+	if (typeof text !== 'string' || !text) return null;
+	// split/join instead of replaceAll: replacement values (e.g. dollar amounts) must be inserted
+	// verbatim, without replaceAll's `$`-sequence handling
+	return Object.entries(replacements ?? {}).reduce(
+		(copy, [key, value]) => (value == null ? copy : copy.split(`{${key}}`).join(String(value))),
+		text,
+	);
+}
