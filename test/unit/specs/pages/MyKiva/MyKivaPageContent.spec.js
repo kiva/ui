@@ -258,17 +258,22 @@ describe('MyKivaPageContent', () => {
 	});
 
 	describe('openGoalRecapFromCard', () => {
-		const makeContext = overrides => ({
-			goalInReviewEnable: true,
-			loadGoalInReview: vi.fn().mockResolvedValue({ isEligible: true, year: 2026 }),
-			loadGoalPreferences: vi.fn().mockResolvedValue({}),
-			hasSubmittedGoalFeedbackForYear: vi.fn().mockReturnValue(false),
-			setGoalRecapViewedPreference: vi.fn().mockResolvedValue(),
-			$kvTrackEvent: vi.fn(),
-			showGoalInReviewModal: false,
-			goalInReviewFeedbackSubmitted: false,
-			...overrides,
-		});
+		const makeContext = overrides => {
+			// Fakes useGoalInReview, where marking a year seen counts it as opened.
+			const openedYears = new Set();
+			return {
+				goalInReviewEnable: true,
+				loadGoalInReview: vi.fn().mockResolvedValue({ isEligible: true, year: 2026 }),
+				loadGoalPreferences: vi.fn().mockResolvedValue({}),
+				hasSubmittedGoalFeedbackForYear: vi.fn().mockReturnValue(false),
+				hasOpenedRecap: vi.fn(year => openedYears.has(year)),
+				markRecapViewed: vi.fn(async year => { openedYears.add(year); }),
+				$kvTrackEvent: vi.fn(),
+				showGoalInReviewModal: false,
+				goalInReviewFeedbackSubmitted: false,
+				...overrides,
+			};
+		};
 
 		it('opens the recap for the year the card asked for', async () => {
 			const context = makeContext({
@@ -286,7 +291,7 @@ describe('MyKivaPageContent', () => {
 
 			await MyKivaPageContent.methods.openGoalRecapFromCard.call(context, 2026);
 
-			expect(context.setGoalRecapViewedPreference).toHaveBeenCalledWith(2026);
+			expect(context.markRecapViewed).toHaveBeenCalledWith(2026);
 		});
 
 		it('snapshots the already-submitted feedback flag', async () => {
@@ -303,7 +308,7 @@ describe('MyKivaPageContent', () => {
 			await MyKivaPageContent.methods.openGoalRecapFromCard.call(context, 2026);
 
 			expect(context.loadGoalInReview).not.toHaveBeenCalled();
-			expect(context.setGoalRecapViewedPreference).not.toHaveBeenCalled();
+			expect(context.markRecapViewed).not.toHaveBeenCalled();
 			expect(context.showGoalInReviewModal).toBe(false);
 		});
 
@@ -333,8 +338,61 @@ describe('MyKivaPageContent', () => {
 
 			await MyKivaPageContent.methods.openGoalRecapFromCard.call(context, 2026);
 
-			expect(context.setGoalRecapViewedPreference).not.toHaveBeenCalled();
+			expect(context.markRecapViewed).not.toHaveBeenCalled();
 			expect(context.showGoalInReviewModal).toBe(false);
+		});
+
+		it('reads fresh preferences on the first opening', async () => {
+			const context = makeContext();
+
+			await MyKivaPageContent.methods.openGoalRecapFromCard.call(context, 2026);
+
+			expect(context.loadGoalPreferences).toHaveBeenCalledWith('network-only');
+		});
+
+		describe('reopened in the same page load', () => {
+			it('reads the cached preferences', async () => {
+				const context = makeContext();
+				await MyKivaPageContent.methods.openGoalRecapFromCard.call(context, 2026);
+				context.showGoalInReviewModal = false;
+				context.loadGoalPreferences.mockClear();
+
+				await MyKivaPageContent.methods.openGoalRecapFromCard.call(context, 2026);
+
+				expect(context.loadGoalPreferences).toHaveBeenCalledWith('cache-first');
+				expect(context.showGoalInReviewModal).toBe(true);
+			});
+
+			it('reads the cached preferences after the recap opened by itself', async () => {
+				const context = makeContext({ hasOpenedRecap: vi.fn(year => year === 2026) });
+
+				await MyKivaPageContent.methods.openGoalRecapFromCard.call(context, 2026);
+
+				expect(context.loadGoalPreferences).toHaveBeenCalledWith('cache-first');
+			});
+
+			it('picks up feedback submitted during the first opening', async () => {
+				const context = makeContext();
+				await MyKivaPageContent.methods.openGoalRecapFromCard.call(context, 2026);
+				context.hasSubmittedGoalFeedbackForYear.mockReturnValue(true);
+
+				await MyKivaPageContent.methods.openGoalRecapFromCard.call(context, 2026);
+
+				expect(context.goalInReviewFeedbackSubmitted).toBe(true);
+			});
+
+			it('treats a different year as a first opening', async () => {
+				const context = makeContext({
+					loadGoalInReview: vi.fn(({ year }) => Promise.resolve({ isEligible: true, year })),
+				});
+				await MyKivaPageContent.methods.openGoalRecapFromCard.call(context, 2026);
+				context.loadGoalPreferences.mockClear();
+
+				await MyKivaPageContent.methods.openGoalRecapFromCard.call(context, 2025);
+
+				expect(context.loadGoalPreferences).toHaveBeenCalledWith('network-only');
+				expect(context.markRecapViewed).toHaveBeenCalledWith(2025);
+			});
 		});
 	});
 
