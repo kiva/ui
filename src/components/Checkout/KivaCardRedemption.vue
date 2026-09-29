@@ -41,7 +41,7 @@
 							<div class="md:tw-w-2/4 md:tw-mr-4">
 								<kv-button
 									variant="secondary"
-									@click="updateKivaCard('redemption_code')"
+									@click="applyKivaCard"
 									data-testid="apply-card"
 									class="tw-w-full"
 								>
@@ -187,6 +187,10 @@ export default {
 		},
 		toggleAccordion() {
 			this.open = !this.open;
+		},
+		applyKivaCard() {
+			this.$kvTrackEvent('basket', 'click', 'apply-kiva-card');
+			this.updateKivaCard('redemption_code');
 		},
 		updateKivaCard(type) {
 			this.$emit('updating-totals', true);

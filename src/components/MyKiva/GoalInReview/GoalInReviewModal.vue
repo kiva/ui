@@ -4,6 +4,8 @@
 			max-md:tw-overflow-y-hidden max-md:tw-p-0"
 		:visible="show"
 		title=""
+		prevent-background-close
+		:close-button-show-delay="CLOSE_BUTTON_SHOW_DELAY_MS"
 		@lightbox-closed="handleClose"
 	>
 		<template #header>
@@ -21,12 +23,15 @@
 					:borrower-count="data?.loanStats?.borrowers"
 					:category="data?.categoryName"
 					:percent-complete="data?.loanStats?.percentComplete"
+					@scroll-next="scrollToScreenTwo"
+					@vue:mounted="revealSlidesInView"
 				/>
 			</div>
 			<div data-slide-view="2" data-animate-on-view>
 				<GoalInReviewBorrowers
 					:loans="data?.goalLoans"
 					:borrower-count="data?.loanStats?.borrowers"
+					@vue:mounted="revealSlidesInView"
 				/>
 			</div>
 			<!-- Slide 3 has two sections that each reveal independently. -->
@@ -34,6 +39,7 @@
 				<GoalInReviewGlobalReach
 					:countries="data?.goalSummary?.countries"
 					:sectors="data?.goalSummary?.sectors"
+					@vue:mounted="revealSlidesInView"
 				/>
 			</div>
 			<div data-slide-view="4" data-animate-on-view>
@@ -42,17 +48,18 @@
 					:lifetime-percentile="data?.lifetimePercentile"
 					:year="data?.year"
 					:current-year="currentYear"
+					@vue:mounted="revealSlidesInView"
 				/>
 			</div>
 			<div data-slide-view="5" data-animate-on-view>
-				<GoalInReviewCollectiveImpact />
+				<GoalInReviewCollectiveImpact @vue:mounted="revealSlidesInView" />
 			</div>
 			<div
 				v-if="data?.goalSummary?.status === 'completed'"
 				data-slide-view="6"
 				data-animate-on-view
 			>
-				<GoalInReviewPersonalNote :year="data?.year" />
+				<GoalInReviewPersonalNote :year="data?.year" @vue:mounted="revealSlidesInView" />
 			</div>
 			<div data-slide-view="7" data-animate-on-view>
 				<GoalInReviewThanksAndFeedback
@@ -65,9 +72,19 @@
 					@finish-goal="handleCta('finish-goal')"
 					@set-goal="handleCta('set-goal')"
 					@feedback-submitted="handleFeedbackSubmitted"
+					@vue:mounted="revealSlidesInView"
 				/>
 			</div>
 		</div>
+		<!-- Fades the tops of the screen-2 photos peeking below screen 1, to invite a
+			scroll. Visible only while the scroll area is at the top. -->
+		<div
+			class="goal-in-review-scroll-fade tw-sticky tw-bottom-0 tw-h-5.5 -tw-mt-5.5 tw-z-1 tw-bg-brand-100
+				tw-pointer-events-none tw-transition-opacity tw-duration-300 motion-reduce:tw-transition-none"
+			:class="{ 'tw-opacity-0': !isAtTop }"
+			aria-hidden="true"
+			data-testid="goal-in-review-scroll-fade"
+		></div>
 	</KvLightbox>
 </template>
 
@@ -82,7 +99,10 @@ import {
 } from 'vue';
 import { KvLightbox } from '@kiva/kv-components';
 import { getGoalInReviewCurrentYear } from '#src/composables/useGoalInReview';
-import { createIntersectionObserver } from '#src/util/observerUtils';
+import {
+	createIntersectionObserver, isInRevealArea, previousSiblingsLaidOut, reobserveNextFrame,
+} from '#src/util/observerUtils';
+import { prefersReducedMotion } from '#src/util/animation/motionUtils';
 import '#src/assets/css/animations.css';
 
 const GoalInReviewHeadline = defineAsyncComponent(
@@ -125,6 +145,9 @@ const props = defineProps({
 const emit = defineEmits(['close', 'goal-recap-back-to-kiva', 'finish-goal', 'set-goal', 'feedback-submitted']);
 const $kvTrackEvent = inject('$kvTrackEvent', () => {});
 
+// How long after the recap opens its close button (the X) appears.
+const CLOSE_BUTTON_SHOW_DELAY_MS = 3000;
+
 // Single source of truth for "now". Add ?recapDate=YYYY-MM-DD to the url for QA specific dates
 const currentYear = getGoalInReviewCurrentYear();
 
@@ -160,24 +183,25 @@ const handleFeedbackSubmitted = () => {
 	emit('feedback-submitted');
 };
 
-// Per-section view tracking. The recap is one continuous scroll, so we observe a
-// wrapper div around each slide (they exist immediately, unlike the async slide
-// components) and fire a view event the first time each scrolls past the midpoint.
-// The measurement plan calls each recap section a "screen", so the property is
-// emitted as `screen-${n}` even though the components are named Slide 1..7.
+// Per-screen view tracking on the slide wrappers, which exist before the async slides load.
+// Each screen fires `screen-${n}` once, when its top passes the midpoint. Screen 1 counts on
+// open; screens 2..7 only after the first scroll, so the screen 2 peek isn't a view.
 const slidesContainer = ref(null);
 const viewedSlides = new Set();
 let slideObserver = null;
 let revealObserver = null;
+let scrollRoot = null;
+let slideTargets = [];
 
 // Screen 1 is always the opening view; screens 2..7 are observed on scroll.
 const OPENING_SCREEN = '1';
 
 // Analytics counts a screen "viewed" once its top passes the modal's midpoint.
 const VIEW_ROOT_MARGIN = '0px 0px -50% 0px';
-// Entrance animations reveal earlier — as a section clears the modal's bottom edge —
-// so motion plays while it rises into view rather than once it is halfway up.
-const REVEAL_ROOT_MARGIN = '0px 0px -10% 0px';
+// Entrances reveal as a section clears the bottom edge, not at the midpoint.
+// revealSlidesInView uses the same inset.
+const REVEAL_BOTTOM_INSET = 0.1;
+const REVEAL_ROOT_MARGIN = `0px 0px -${REVEAL_BOTTOM_INSET * 100}% 0px`;
 
 const markScreenViewed = slide => {
 	if (!slide || viewedSlides.has(slide)) {
@@ -187,11 +211,11 @@ const markScreenViewed = slide => {
 	$kvTrackEvent('portfolio', 'view', 'goal-in-review', `screen-${slide}`);
 };
 
-const teardownObservers = () => {
-	slideObserver?.disconnect();
-	slideObserver = null;
-	revealObserver?.disconnect();
-	revealObserver = null;
+// The fade teaser at the bottom of the scroll area shows until the recap is scrolled.
+const isAtTop = ref(true);
+
+const handleScrollPosition = () => {
+	isAtTop.value = (scrollRoot?.scrollTop ?? 0) < 8;
 };
 
 // Unpause the section's entrance animations (see the reveal-on-scroll gate in
@@ -200,17 +224,21 @@ const teardownObservers = () => {
 // mount. Slide 1 has no gate and animates on mount, so this is a no-op for it.
 const revealSlide = target => target?.classList.add('is-in-view');
 
+// A slide that loads before the ones above it looks in view while they're empty. Checked at
+// the slide level so slide 3's inner sections wait on the slides above slide 3.
+const slidesAboveLaidOut = target => previousSiblingsLaidOut(target.closest('[data-slide-view]'));
+
 const trackSlideViews = entries => {
 	entries.forEach(entry => {
 		const slide = entry.target.dataset.slideView;
 		if (!entry.isIntersecting || !slide || viewedSlides.has(slide)) {
 			return;
 		}
-		// The slides are async components, so on open every wrapper is briefly
-		// 0-height and stacked at the top — which would fire (and unobserve) all of
-		// them at once. Wait for a laid-out height so each screen counts only when
-		// it actually scrolls into view.
+		// The slides are async components, so right after opening a wrapper can still
+		// be briefly 0-height. Wait for a laid-out height so a screen only counts once
+		// it has actually scrolled into view.
 		if (entry.boundingClientRect.height === 0) {
+			reobserveNextFrame(() => slideObserver, entry.target);
 			return;
 		}
 		markScreenViewed(slide);
@@ -218,12 +246,15 @@ const trackSlideViews = entries => {
 	});
 };
 
-// Reveal runs on its own, earlier-triggering observer so entrance animations start
-// as a section enters from the bottom — decoupled from the view-tracking threshold.
-// Same 0-height guard: async wrappers are briefly stacked at the top on open.
+// Separate from view tracking so entrances start as a section enters from the bottom.
+// A wrapper whose position isn't final yet is checked again next frame.
 const revealSlides = entries => {
 	entries.forEach(entry => {
-		if (!entry.isIntersecting || entry.boundingClientRect.height === 0) {
+		if (!entry.isIntersecting) {
+			return;
+		}
+		if (entry.boundingClientRect.height === 0 || !slidesAboveLaidOut(entry.target)) {
+			reobserveNextFrame(() => revealObserver, entry.target);
 			return;
 		}
 		revealSlide(entry.target);
@@ -231,10 +262,48 @@ const revealSlides = entries => {
 	});
 };
 
+// Runs as each slide mounts, for a slide that renders already in view but that the observer
+// misses (e.g. when animation frames are paused).
+const revealSlidesInView = () => {
+	if (!scrollRoot || !slidesContainer.value) {
+		return;
+	}
+	const rootRect = scrollRoot.getBoundingClientRect();
+	slidesContainer.value.querySelectorAll('[data-animate-on-view]:not(.is-in-view)').forEach(wrapper => {
+		if (isInRevealArea(wrapper.getBoundingClientRect(), rootRect, REVEAL_BOTTOM_INSET)
+			&& slidesAboveLaidOut(wrapper)) {
+			revealSlide(wrapper);
+			revealObserver?.unobserve(wrapper);
+		}
+	});
+};
+
+// Starts view tracking on the first scroll. The observer reports current state on start,
+// so a screen already past the midpoint still counts.
+const armSlideTracking = () => {
+	slideObserver = createIntersectionObserver({
+		targets: slideTargets,
+		callback: trackSlideViews,
+		options: { root: scrollRoot, rootMargin: VIEW_ROOT_MARGIN, threshold: 0 },
+	});
+};
+
+const teardownObservers = () => {
+	slideObserver?.disconnect();
+	slideObserver = null;
+	revealObserver?.disconnect();
+	revealObserver = null;
+	scrollRoot?.removeEventListener('scroll', handleScrollPosition);
+	scrollRoot?.removeEventListener('scroll', armSlideTracking);
+	scrollRoot = null;
+	slideTargets = [];
+};
+
 const setupObservers = async () => {
 	teardownObservers();
 	viewedSlides.clear();
-	// Fire the opening screen now — the async slides aren't laid out yet, so the
+	isAtTop.value = true;
+	// Fire the opening screen now: the async slides aren't laid out yet, so the
 	// observer can't reliably detect screen 1 on open without a scroll.
 	markScreenViewed(OPENING_SCREEN);
 	await nextTick();
@@ -246,11 +315,6 @@ const setupObservers = async () => {
 	// Re-hide the scroll-revealed sections so a reopen replays their entrance.
 	targets.forEach(target => target.classList.remove('is-in-view'));
 	const root = container.closest('#kvLightboxBody');
-	slideObserver = createIntersectionObserver({
-		targets,
-		callback: trackSlideViews,
-		options: { root, rootMargin: VIEW_ROOT_MARGIN, threshold: 0 },
-	});
 	revealObserver = createIntersectionObserver({
 		targets,
 		callback: revealSlides,
@@ -261,6 +325,25 @@ const setupObservers = async () => {
 	if (!revealObserver) {
 		targets.forEach(revealSlide);
 	}
+	if (!root) {
+		return;
+	}
+	scrollRoot = root;
+	slideTargets = targets;
+	scrollRoot.addEventListener('scroll', handleScrollPosition, { passive: true });
+	scrollRoot.addEventListener('scroll', armSlideTracking, { passive: true, once: true });
+	// Covers slides that mounted (and called revealSlidesInView) before scrollRoot existed.
+	revealSlidesInView();
+};
+
+// The arrow on screen 1 scrolls straight to screen 2.
+const scrollToScreenTwo = () => {
+	$kvTrackEvent('portfolio', 'click', 'goal-recap-scroll-arrow');
+	const target = slidesContainer.value?.querySelector('[data-slide-view="2"]');
+	if (!target) {
+		return;
+	}
+	target.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
 };
 
 watch(() => props.show, isShown => {
@@ -278,10 +361,12 @@ onBeforeUnmount(teardownObservers);
 <style lang="postcss">
 .goal-in-review-modal {
 	--recap-page-height: calc(90vh - 3.5rem);
+	--recap-next-screen-peek: 197px;
 
+	/* Screen 1 fills the modal except for a strip that previews the top of screen 2, to invite a scroll. */
 	.goal-in-review-slides > :first-child > * {
 		@screen md {
-			min-height: var(--recap-page-height);
+			min-height: calc(var(--recap-page-height) - var(--recap-next-screen-peek));
 		}
 	}
 
@@ -290,20 +375,17 @@ onBeforeUnmount(teardownObservers);
 		animation: goal-in-review-modal-enter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 
 		@apply !tw-w-screen !tw-mt-auto !tw-mb-0 !tw-rounded-t !tw-rounded-b-none
-			tw-bg-eco-green-4 tw-overflow-hidden tw-relative;
+			tw-bg-eco-green-4 tw-overflow-hidden tw-relative motion-reduce:tw-animate-none;
 	}
 
 	[data-test=kv-lightbox] > div:first-child {
-		@apply tw-absolute tw-top-1.5 tw-right-1.5 tw-z-1 !tw-p-0 tw-text-white;
+		@apply tw-absolute tw-top-3 tw-right-3 tw-z-1 !tw-p-0 tw-text-secondary;
 	}
 
 	[data-test=kv-lightbox] > div:first-child button,
 	[data-test=kv-lightbox] > div:first-child button:hover,
 	[data-test=kv-lightbox] > div:first-child button:focus-visible {
-		opacity: 1 !important;
-		filter: drop-shadow(0 1px 2px rgb(0 0 0 / 80%));
-
-		@apply !tw-bg-transparent !tw-text-white;
+		@apply !tw-bg-transparent !tw-text-secondary;
 	}
 
 	[data-test=kv-lightbox] > div:first-child button svg,
@@ -315,10 +397,25 @@ onBeforeUnmount(teardownObservers);
 
 	#kvLightboxBody {
 		max-height: var(--recap-page-height);
-		scrollbar-width: none;
-		-ms-overflow-style: none;
+		scrollbar-width: thin;
+
+		/* #e0e0e0 and #fff match the gray-200 and white tokens used for the webkit scrollbar
+		thumb and track below; this plain CSS property can't take a token or utility class. */
+		scrollbar-color: #e0e0e0 #fff;
 
 		@apply !tw-p-0 tw-overflow-y-auto;
+	}
+
+	/* Mint wash over the peeking top of screen 2, strengthening toward the bottom.
+	brand-100 comes from the tw-bg-brand-100 token class on the element; a mask
+	reproduces the angled alpha ramp, fading the flat color from transparent to
+	80% opacity without opacity-modifier utilities. */
+	.goal-in-review-scroll-fade {
+		mask-image: linear-gradient(
+			178.45deg,
+			transparent 18.5%,
+			rgb(0 0 0 / 80%) 79%
+		);
 	}
 }
 
@@ -343,7 +440,15 @@ onBeforeUnmount(teardownObservers);
 }
 
 .goal-in-review-modal #kvLightboxBody::-webkit-scrollbar {
-	display: none;
+	@apply tw-w-1;
+}
+
+.goal-in-review-modal #kvLightboxBody::-webkit-scrollbar-track {
+	@apply tw-bg-white;
+}
+
+.goal-in-review-modal #kvLightboxBody::-webkit-scrollbar-thumb {
+	@apply tw-bg-gray-200 tw-rounded-sm;
 }
 
 @keyframes goal-in-review-modal-enter {
@@ -355,12 +460,6 @@ onBeforeUnmount(teardownObservers);
 	to {
 		opacity: 1;
 		transform: scale(1) translateY(0);
-	}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.goal-in-review-modal [data-test=kv-lightbox] {
-		animation: none;
 	}
 }
 </style>

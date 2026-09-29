@@ -27,6 +27,11 @@ const renderSlide = (props = {}) => render(GoalInReviewGlobalReach, {
 });
 
 describe('GoalInReviewGlobalReach', () => {
+	it('is positioned so it stacks above the previous screens\' overhanging art', () => {
+		const { getByTestId } = renderSlide();
+		expect(getByTestId('goal-in-review-global-reach').classList).toContain('tw-relative');
+	});
+
 	describe('map header pluralization', () => {
 		it('uses the singular "border" for a single country', () => {
 			const { getByText } = renderSlide({ countries: [country('Kenya', 0, 38)] });
