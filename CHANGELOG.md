@@ -1,3 +1,30 @@
+## [3.97.0-rc.1](https://github.com/kiva/ui/compare/v3.96.0...v3.97.0-rc.1) (2026-09-30)
+
+### 🎉 New Features
+
+* [MP-3207] reduce goal recap drop-off between screens 1 and 2 ([#7290](https://github.com/kiva/ui/issues/7290)) ([e780dfe](https://github.com/kiva/ui/commit/e780dfecf1722d910e7a68117fd541140b69b889))
+* [MP-3235] - done ([#7292](https://github.com/kiva/ui/issues/7292)) ([09e463a](https://github.com/kiva/ui/commit/09e463ac4af1f5a4682aa8219278056ff395a398))
+* additional padding ([9a82e12](https://github.com/kiva/ui/commit/9a82e128f9bb5ce1ff2a4daea998fafd2f4d3aa9))
+* migrate privacy policy legal page out of monolith into ui ([996d0e4](https://github.com/kiva/ui/commit/996d0e462f8ebef6290a24c8294f95f23e061f7e))
+* **MP-3234:** reorder thanks page modules for first loan users ([f4b9409](https://github.com/kiva/ui/commit/f4b940907d96361290a153dbfbcff59855a1e45d))
+
+### 🐛 Bugfixes
+
+* [MP-3207] keep the fundraisers info icon below modals ([#7296](https://github.com/kiva/ui/issues/7296)) ([654b34c](https://github.com/kiva/ui/commit/654b34c0de60d8f032c761703582a6584fbb7115))
+* [MP-3270] reuse goal recap data when the recap is reopened ([#7297](https://github.com/kiva/ui/issues/7297)) ([c80d5d7](https://github.com/kiva/ui/commit/c80d5d70c11dcb0bc01598abdc864f499ec0a37b))
+* [MP-3274] restore goal recap screen 3 top padding and whiten scrollbar track ([#7298](https://github.com/kiva/ui/issues/7298)) ([0594a51](https://github.com/kiva/ui/commit/0594a51fab702c73876cd2d210a1e213da9291dd))
+* add click tracking ([44bcb73](https://github.com/kiva/ui/commit/44bcb736a032688e968140aaf6c49db0a82ffed0))
+* add target _blank to open links in new tabs ([9c1cf97](https://github.com/kiva/ui/commit/9c1cf97972c7b65880debb3f9b09f14af7bd7dae))
+* improvements to custom tip experiment ([#7284](https://github.com/kiva/ui/issues/7284)) ([14c1051](https://github.com/kiva/ui/commit/14c105116027bfe3884f592957f0695dfb1711cf))
+* prevent double count on mykiva goal card ([#7289](https://github.com/kiva/ui/issues/7289)) ([91aa59f](https://github.com/kiva/ui/commit/91aa59fca1b1e2feb3db9704fdb15d9d601582c6))
+* resolve several minor issues ([#7283](https://github.com/kiva/ui/issues/7283)) ([8c49329](https://github.com/kiva/ui/commit/8c49329be2e2437fd16dbc694d405fbce3a8ee8f))
+* tweak to ensure sitemap builds ([#7285](https://github.com/kiva/ui/issues/7285)) ([ea0ed92](https://github.com/kiva/ui/commit/ea0ed9254239e5208f8f561fda963a0a7a5d0b42))
+* update click tracker category ([93808c4](https://github.com/kiva/ui/commit/93808c444b868f5da8ea2ea17d9f88148edc2f4e))
+
+### 🏗️ Build System
+
+* adopt the bypass_gate release input ([9fe8edb](https://github.com/kiva/ui/commit/9fe8edbad34f4637b604d4c0e9861abcd24ddae0))
+
 ## [3.96.0](https://github.com/kiva/ui/compare/v3.95.0...v3.96.0) (2026-09-23)
 
 ### 🎉 New Features
