@@ -221,6 +221,7 @@ describe('DonationItem checkout tip copy experiment', () => {
 			tipAskHeader: 'Cover the cost of these loans?',
 		};
 		context.experimentTipTitle = call('experimentTipTitle', context);
+		context.showsExperimentTipTitle = call('showsExperimentTipTitle', context);
 		return context;
 	};
 
@@ -270,17 +271,22 @@ describe('DonationItem checkout tip copy experiment', () => {
 	});
 
 	describe('exposure tracking in created', () => {
-		const createdContext = (overrides = {}) => ({
-			donation: { price: '25.00' },
-			loanCount: 2,
-			hasLoans: true,
-			isCampaignDonation: false,
-			showTipAskVariant: false,
-			experimentTipTitle: 'A better tip title',
-			trackCopyExposure: vi.fn(),
-			$kvTrackEvent: vi.fn(),
-			...overrides,
-		});
+		const createdContext = (overrides = {}) => {
+			const context = {
+				donation: { price: '25.00' },
+				loanCount: 2,
+				hasLoans: true,
+				isCampaignDonation: false,
+				showTipAskVariant: false,
+				experimentTipTitle: 'A better tip title',
+				trackCopyExposure: vi.fn(),
+				$kvTrackEvent: vi.fn(),
+				...overrides,
+			};
+			// created() reads the computed, so derive it from the context like the component would
+			context.showsExperimentTipTitle = call('showsExperimentTipTitle', context);
+			return context;
+		};
 
 		it('sends one exposure event when the experiment title is shown and the tip is above zero', () => {
 			const context = createdContext();

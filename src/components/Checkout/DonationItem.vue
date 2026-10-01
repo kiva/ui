@@ -378,9 +378,7 @@ export default {
 		this.$kvTrackEvent('basket', 'show', 'loans', null, this.loanCount);
 
 		// Exposure only counts visitors who actually saw the experiment title
-		const showsExperimentTipTitle = this.experimentTipTitle != null && this.hasLoans
-			&& !this.isCampaignDonation && !this.showTipAskVariant;
-		if (showsExperimentTipTitle && Number(this.donation.price) > 0) {
+		if (this.showsExperimentTipTitle && Number(this.donation.price) > 0) {
 			this.trackCopyExposure('basket', CHECKOUT_TIP_COPY_EXP_ACTION);
 		}
 	},
@@ -456,6 +454,12 @@ export default {
 		experimentTipTitle() {
 			return this.experimentCopy('headline', { loans: `loan${this.loanCount > 1 ? 's' : ''}` });
 		},
+		// Single source of truth for basketDonationHeader and the exposure event: true only when the
+		// experiment title is the text the visitor sees, i.e. the has-loans branch wins and has copy
+		showsExperimentTipTitle() {
+			return this.experimentTipTitle != null && this.hasLoans
+				&& !this.isCampaignDonation && !this.showTipAskVariant;
+		},
 		basketDonationHeader() {
 			if (this.isCampaignDonation) {
 				return 'Donate to a giving fund';
@@ -464,7 +468,9 @@ export default {
 				return this.tipAskHeader;
 			}
 			if (this.hasLoans) {
-				return this.experimentTipTitle ?? `Help cover the cost of your loan${this.loanCount > 1 ? 's' : ''}`;
+				return this.showsExperimentTipTitle
+					? this.experimentTipTitle
+					: `Help cover the cost of your loan${this.loanCount > 1 ? 's' : ''}`;
 			}
 			return 'Donate to Kiva';
 		},
