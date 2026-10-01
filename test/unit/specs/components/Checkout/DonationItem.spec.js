@@ -1,6 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies -- @vue/test-utils devDependency */
 import { flushPromises } from '@vue/test-utils';
 import DonationItem from '#src/components/Checkout/DonationItem';
+import useCheckoutTipExperimentCopy from '#src/composables/useCheckoutTipExperimentCopy';
+
+vi.mock('#src/composables/useCheckoutTipExperimentCopy', () => ({ default: vi.fn() }));
 
 // The named tip ask. Reads the borrowers out of the basket so the copy says who the money is
 // for, and falls back to the existing wording wherever there is no borrower to name.
@@ -197,5 +200,113 @@ describe('DonationItem.vue updating a donation while a checkout is running', () 
 		await flushPromises();
 
 		expect(context.$showTipMsg).toHaveBeenCalledWith('something else went wrong', 'error');
+	});
+});
+
+describe('DonationItem checkout tip copy experiment', () => {
+	const call = (name, context) => DonationItem.computed[name].call(context);
+
+	const copyContext = ({
+		experimentCopy = vi.fn(() => null),
+		loanCount = 2,
+		isCampaignDonation = false,
+		showTipAskVariant = false,
+	} = {}) => {
+		const context = {
+			experimentCopy,
+			loanCount,
+			isCampaignDonation,
+			showTipAskVariant,
+			hasLoans: loanCount > 0,
+			tipAskHeader: 'Cover the cost of these loans?',
+		};
+		context.experimentTipTitle = call('experimentTipTitle', context);
+		context.showsExperimentTipTitle = call('showsExperimentTipTitle', context);
+		return context;
+	};
+
+	it('exposes the experiment copy helpers from setup', () => {
+		const copy = vi.fn();
+		const trackExposure = vi.fn();
+		useCheckoutTipExperimentCopy.mockReturnValue({ copy, trackExposure });
+
+		expect(DonationItem.setup()).toEqual({ experimentCopy: copy, trackCopyExposure: trackExposure });
+	});
+
+	it('asks for the headline with the plural placeholder for several loans', () => {
+		const experimentCopy = vi.fn(() => 'A better tip title');
+
+		expect(call('experimentTipTitle', { experimentCopy, loanCount: 2 })).toBe('A better tip title');
+		expect(experimentCopy).toHaveBeenCalledWith('headline', { loans: 'loans' });
+	});
+
+	it('asks for the headline with the singular placeholder for one loan', () => {
+		const experimentCopy = vi.fn(() => null);
+
+		call('experimentTipTitle', { experimentCopy, loanCount: 1 });
+		expect(experimentCopy).toHaveBeenCalledWith('headline', { loans: 'loan' });
+	});
+
+	it('renders the experiment title for a basket with loans', () => {
+		const context = copyContext({ experimentCopy: vi.fn(() => 'A better tip title') });
+		expect(call('basketDonationHeader', context)).toBe('A better tip title');
+	});
+
+	it('falls back to the hardcoded title when there is no experiment copy', () => {
+		expect(call('basketDonationHeader', copyContext())).toBe('Help cover the cost of your loans');
+		expect(call('basketDonationHeader', copyContext({ loanCount: 1 }))).toBe('Help cover the cost of your loan');
+	});
+
+	it('keeps the giving fund and no-loans titles', () => {
+		const campaign = copyContext({ experimentCopy: vi.fn(() => 'A better tip title'), isCampaignDonation: true });
+		expect(call('basketDonationHeader', campaign)).toBe('Donate to a giving fund');
+
+		const noLoans = copyContext({ experimentCopy: vi.fn(() => 'A better tip title'), loanCount: 0 });
+		expect(call('basketDonationHeader', noLoans)).toBe('Donate to Kiva');
+	});
+
+	it('lets the tip ask variant win over the experiment title', () => {
+		const context = copyContext({ experimentCopy: vi.fn(() => 'A better tip title'), showTipAskVariant: true });
+		expect(call('basketDonationHeader', context)).toBe(context.tipAskHeader);
+	});
+
+	describe('exposure tracking in created', () => {
+		const createdContext = (overrides = {}) => {
+			const context = {
+				donation: { price: '25.00' },
+				loanCount: 2,
+				hasLoans: true,
+				isCampaignDonation: false,
+				showTipAskVariant: false,
+				experimentTipTitle: 'A better tip title',
+				trackCopyExposure: vi.fn(),
+				$kvTrackEvent: vi.fn(),
+				...overrides,
+			};
+			// created() reads the computed, so derive it from the context like the component would
+			context.showsExperimentTipTitle = call('showsExperimentTipTitle', context);
+			return context;
+		};
+
+		it('sends one exposure event when the experiment title is shown and the tip is above zero', () => {
+			const context = createdContext();
+			DonationItem.created.call(context);
+
+			expect(context.trackCopyExposure).toHaveBeenCalledTimes(1);
+			expect(context.trackCopyExposure).toHaveBeenCalledWith('basket', 'EXP-MP-3264-Oct2026');
+		});
+
+		it.each([
+			['a zero tip', { donation: { price: '0.00' } }],
+			['a giving fund donation', { isCampaignDonation: true }],
+			['the tip ask variant', { showTipAskVariant: true }],
+			['a basket without loans', { hasLoans: false, loanCount: 0 }],
+			['the hardcoded title', { experimentTipTitle: null }],
+		])('sends no exposure for %s', (name, overrides) => {
+			const context = createdContext(overrides);
+			DonationItem.created.call(context);
+
+			expect(context.trackCopyExposure).not.toHaveBeenCalled();
+		});
 	});
 });
