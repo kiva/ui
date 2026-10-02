@@ -1,0 +1,1 @@
+.www-page{display:flex;flex-flow:column nowrap;min-height:100vh}@media print{.www-page{display:block}}.www-page>*{flex-shrink:0}.www-page main{flex-grow:1}

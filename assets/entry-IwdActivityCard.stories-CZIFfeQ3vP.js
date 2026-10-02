@@ -1,0 +1,17 @@
+import{A as s}from"./entry-ActivityCard-nUx2zAAyX2.js";import"./entry-ActivityAvatar-kp6dOZGsyh.js";import"./iframe-CsP-U1ix.js";import"./entry-imageUtils-Bap1kCOa3o.js";import"./entry-KvLoadingPlaceholder-gPTWuMit7I.js";import"./entry-vue.esm-bundler-DN41AgNdM7.js";import"./entry-_plugin-vue_export-helper-9uN0dvLoeT.js";import"./entry-_plugin-vue_export-helper-DlAUqK2UKH.js";const w={title:"IWD/ActivityCard",component:s},c=e=>{const r=(m,{argTypes:n})=>({props:Object.keys(n),components:{ActivityCard:s},setup(){return e},template:`
+            <div>
+                <activity-card
+                    :activity="activity"
+                />
+            </div>
+        `});return r.args=e,r},t=c({activity:{lender:{name:"Roger",image:{url:"https://www.development.kiva.org/img/s100/26e15431f51b540f31cd9f011cc54f31.jpg"}},shareAmount:"25.00"}});var o,i,a;t.parameters={...t.parameters,docs:{...(o=t.parameters)==null?void 0:o.docs,source:{originalSource:`story({
+  activity: {
+    lender: {
+      name: 'Roger',
+      image: {
+        url: 'https://www.development.kiva.org/img/s100/26e15431f51b540f31cd9f011cc54f31.jpg'
+      }
+    },
+    shareAmount: '25.00'
+  }
+})`,...(a=(i=t.parameters)==null?void 0:i.docs)==null?void 0:a.source}}};const A=["Default"];export{t as Default,A as __namedExportsOrder,w as default};

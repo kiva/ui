@@ -1,0 +1,51 @@
+{
+	"name": "Kiva.org",
+	"short_name": "Kiva.org",
+	"icons": [
+		{
+			"src": "/static/favicons/favicon-36x36.png",
+			"sizes": "36x36",
+			"type": "image/png"
+		},
+		{
+			"src": "/static/favicons/favicon-48x48.png",
+			"sizes": "48x48",
+			"type": "image/png"
+		},
+		{
+			"src": "/static/favicons/favicon-72x72.png",
+			"sizes": "72x72",
+			"type": "image/png"
+		},
+		{
+			"src": "/static/favicons/favicon-96x96.png",
+			"sizes": "96x96",
+			"type": "image/png"
+		},
+		{
+			"src": "/static/favicons/favicon-144x144.png",
+			"sizes": "144x144",
+			"type": "image/png"
+		},
+		{
+			"src": "/static/favicons/favicon-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "/static/favicons/favicon-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	],
+	"prefer_related_applications": true,
+	"related_applications": [
+		{
+			"platform": "play",
+			"id": "org.kiva.lending"
+		}
+	],
+	"start_url": "/",
+	"display": "standalone",
+	"gcm_sender_id": "291228074698"
+}
