@@ -296,6 +296,7 @@ import { mdiPencil, mdiArrowRight, mdiClose } from '@mdi/js';
 import { formatPossessiveName } from '#src/util/stringParserUtils';
 import updateDonation from '#src/graphql/mutation/updateDonation.graphql';
 import { getBasketErrorMessage } from '#src/util/basketUtils';
+import useCheckoutTipExperimentCopy from '#src/composables/useCheckoutTipExperimentCopy';
 import HowKivaUsesDonation from '#src/components/Checkout/HowKivaUsesDonation';
 import DonationNudgeLightbox from '#src/components/Checkout/DonationNudge/DonationNudgeLightbox';
 import DonateRepayments from '#src/components/Checkout/DonateRepaymentsToggle';
@@ -304,6 +305,8 @@ import {
 	KvMaterialIcon, KvTextInput, KvButton, KvLightbox
 } from '@kiva/kv-components';
 import leafHeartUrl from '#src/assets/images/leaf_heart.svg?url';
+
+const CHECKOUT_TIP_COPY_EXP_ACTION = 'EXP-MP-3264-Oct2026';
 
 export default {
 	name: 'DonationItem',
@@ -322,6 +325,10 @@ export default {
 		cookieStore: { from: 'cookieStore' },
 		// Assigned version provided by the checkout page; null when rendered elsewhere
 		tipFromBalanceEligible: { default: false },
+	},
+	setup() {
+		const { copy: experimentCopy, trackExposure: trackCopyExposure } = useCheckoutTipExperimentCopy();
+		return { experimentCopy, trackCopyExposure };
 	},
 	emits: ['refreshtotals', 'updating-totals'],
 	props: {
@@ -369,6 +376,11 @@ export default {
 		const donationProperty = this.donation.isUserEdited ? 'user-set' : 'kiva-set';
 		this.$kvTrackEvent('basket', 'show', 'tip-donation-amount', donationProperty, this.donation.price * 100);
 		this.$kvTrackEvent('basket', 'show', 'loans', null, this.loanCount);
+
+		// Exposure only counts visitors who actually saw experiment copy (title or tagline)
+		if ((this.showsExperimentTipTitle || this.showsExperimentTipTagline) && Number(this.donation.price) > 0) {
+			this.trackCopyExposure('basket', CHECKOUT_TIP_COPY_EXP_ACTION);
+		}
 	},
 	watch: {
 		// watching the computed serverAmount property allows us to get set updates based on nested data props
@@ -439,6 +451,25 @@ export default {
 				: 'toward these loans';
 			return `100% of your ${this.loanTotalDisplay} goes ${destination} — your donation helps Kiva get it there.`;
 		},
+		loanNoun() {
+			return `loan${this.loanCount !== 1 ? 's' : ''}`;
+		},
+		experimentTipTitle() {
+			return this.experimentCopy('headline', { loans: this.loanNoun });
+		},
+		experimentTipTagline() {
+			return this.experimentCopy('subHeadline', { loans: this.loanNoun });
+		},
+		// Single source of truth shared by the render branches and the exposure event, so they cannot
+		// drift: true only when the has-loans branch wins and that field actually has experiment copy
+		showsExperimentTipTitle() {
+			return this.experimentTipTitle != null && this.hasLoans
+				&& !this.isCampaignDonation && !this.showTipAskVariant;
+		},
+		showsExperimentTipTagline() {
+			return this.experimentTipTagline != null && this.hasLoans
+				&& !this.isCampaignDonation && !this.showTipAskVariant;
+		},
 		basketDonationHeader() {
 			if (this.isCampaignDonation) {
 				return 'Donate to a giving fund';
@@ -447,7 +478,9 @@ export default {
 				return this.tipAskHeader;
 			}
 			if (this.hasLoans) {
-				return `Help cover the cost of your loan${this.loanCount > 1 ? 's' : ''}`;
+				return this.showsExperimentTipTitle
+					? this.experimentTipTitle
+					: `Help cover the cost of your ${this.loanNoun}`;
 			}
 			return 'Donate to Kiva';
 		},
@@ -464,7 +497,8 @@ export default {
 			}
 			const loanSupport = this.hasLoans ? 'your loan supports' : 'loans support';
 			// eslint-disable-next-line max-len
-			return `100% of ${loanSupport} borrowers — we never take a fee. As a nonprofit, we rely on donations to advance our mission of expanding financial access.`;
+			const fallback = `100% of ${loanSupport} borrowers — we never take a fee. As a nonprofit, we rely on donations to advance our mission of expanding financial access.`;
+			return this.showsExperimentTipTagline ? this.experimentTipTagline : fallback;
 		}
 	},
 	methods: {

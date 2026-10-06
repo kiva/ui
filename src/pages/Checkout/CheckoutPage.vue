@@ -400,6 +400,7 @@ const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_enable';
 const EXPIRING_SOON_EXP_KEY = 'checkout_expiring_soon_upsell';
 const KIVA_CREDIT_REPLACEMENT_EXP_KEY = 'checkout_kiva_credit_copy_replacement';
+const CHECKOUT_TIP_COPY_EXP_KEY = 'checkout_tip_copy';
 const TIP_PERCENTAGE = 0.2;
 
 // Assigned during SSR so versions are available before hydration
@@ -412,6 +413,7 @@ const PREFETCH_EXPERIMENT_IDS = [
 	KIVA_CREDIT_REPLACEMENT_EXP_KEY,
 	CUSTOM_TIP_DEFAULT_EXP_KEY,
 	TIP_FROM_BALANCE_EXP_KEY,
+	CHECKOUT_TIP_COPY_EXP_KEY,
 ];
 
 // Query to gather user Teams
