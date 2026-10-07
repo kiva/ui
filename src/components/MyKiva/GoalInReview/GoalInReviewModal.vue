@@ -1,95 +1,109 @@
 <template>
-	<KvLightbox
-		class="goal-in-review-modal tw-p-14 max-md:tw-flex max-md:tw-items-end
-			max-md:tw-overflow-y-hidden max-md:tw-p-0"
-		:visible="show"
-		title=""
-		prevent-background-close
-		:close-button-show-delay="CLOSE_BUTTON_SHOW_DELAY_MS"
-		@lightbox-closed="handleClose"
-	>
-		<template #header>
-			<h2 class="tw-sr-only">
-				{{ data?.year }} goal in review
-			</h2>
-		</template>
-		<div ref="slidesContainer" class="goal-in-review-slides tw-bg-secondary">
-			<div data-slide-view="1">
-				<GoalInReviewHeadline
-					:goal-status="data?.goalSummary?.status"
-					:first-name="data?.firstName"
-					:year="data?.year"
-					:amount-lent="data?.loanStats?.totalLent"
-					:borrower-count="data?.loanStats?.borrowers"
-					:category="data?.categoryName"
-					:percent-complete="data?.loanStats?.percentComplete"
-					@scroll-next="scrollToScreenTwo"
-					@vue:mounted="revealSlidesInView"
-				/>
+	<div>
+		<KvLightbox
+			class="goal-in-review-modal tw-p-14 max-md:tw-flex max-md:tw-items-end
+				max-md:tw-overflow-y-hidden max-md:tw-p-0"
+			:visible="show"
+			title=""
+			prevent-background-close
+			:close-button-show-delay="CLOSE_BUTTON_SHOW_DELAY_MS"
+			@lightbox-closed="handleClose"
+		>
+			<template #header>
+				<h2 class="tw-sr-only">
+					{{ data?.year }} goal in review
+				</h2>
+			</template>
+			<div ref="slidesContainer" class="goal-in-review-slides tw-bg-secondary">
+				<div data-slide-view="1">
+					<GoalInReviewHeadline
+						:goal-status="data?.goalSummary?.status"
+						:first-name="data?.firstName"
+						:year="data?.year"
+						:amount-lent="data?.loanStats?.totalLent"
+						:borrower-count="data?.loanStats?.borrowers"
+						:category="data?.categoryName"
+						:percent-complete="data?.loanStats?.percentComplete"
+						@scroll-next="scrollToScreenTwo"
+						@vue:mounted="revealSlidesInView"
+					/>
+				</div>
+				<div data-slide-view="2" data-animate-on-view>
+					<GoalInReviewBorrowers
+						:loans="data?.goalLoans"
+						:borrower-count="data?.loanStats?.borrowers"
+						@vue:mounted="revealSlidesInView"
+					/>
+				</div>
+				<!-- Slide 3 has two sections that each reveal independently. -->
+				<div data-slide-view="3">
+					<GoalInReviewGlobalReach
+						:countries="data?.goalSummary?.countries"
+						:sectors="data?.goalSummary?.sectors"
+						@vue:mounted="revealSlidesInView"
+					/>
+				</div>
+				<div data-slide-view="4" data-animate-on-view>
+					<GoalInReviewGivingInsights
+						:goal-summary="data?.goalSummary"
+						:lifetime-percentile="data?.lifetimePercentile"
+						:year="data?.year"
+						:current-year="currentYear"
+						@vue:mounted="revealSlidesInView"
+					/>
+				</div>
+				<div data-slide-view="5" data-animate-on-view>
+					<GoalInReviewCollectiveImpact @vue:mounted="revealSlidesInView" />
+				</div>
+				<div
+					v-if="data?.goalSummary?.status === 'completed'"
+					data-slide-view="6"
+					data-animate-on-view
+				>
+					<GoalInReviewPersonalNote :year="data?.year" @vue:mounted="revealSlidesInView" />
+				</div>
+				<div data-slide-view="7" data-animate-on-view>
+					<GoalInReviewThanksAndFeedback
+						:goal-status="data?.goalSummary?.status"
+						:loan-count="data?.loanStats?.borrowers"
+						:year="data?.year"
+						:current-year="currentYear"
+						:feedback-submitted="feedbackSubmitted"
+						@goal-recap-back-to-kiva="handleCta('goal-recap-back-to-kiva')"
+						@finish-goal="handleCta('finish-goal')"
+						@set-goal="handleCta('set-goal')"
+						@share-goal="openShare"
+						@feedback-submitted="handleFeedbackSubmitted"
+						@vue:mounted="revealSlidesInView"
+					/>
+				</div>
 			</div>
-			<div data-slide-view="2" data-animate-on-view>
-				<GoalInReviewBorrowers
-					:loans="data?.goalLoans"
-					:borrower-count="data?.loanStats?.borrowers"
-					@vue:mounted="revealSlidesInView"
-				/>
-			</div>
-			<!-- Slide 3 has two sections that each reveal independently. -->
-			<div data-slide-view="3">
-				<GoalInReviewGlobalReach
-					:countries="data?.goalSummary?.countries"
-					:sectors="data?.goalSummary?.sectors"
-					@vue:mounted="revealSlidesInView"
-				/>
-			</div>
-			<div data-slide-view="4" data-animate-on-view>
-				<GoalInReviewGivingInsights
-					:goal-summary="data?.goalSummary"
-					:lifetime-percentile="data?.lifetimePercentile"
-					:year="data?.year"
-					:current-year="currentYear"
-					@vue:mounted="revealSlidesInView"
-				/>
-			</div>
-			<div data-slide-view="5" data-animate-on-view>
-				<GoalInReviewCollectiveImpact @vue:mounted="revealSlidesInView" />
-			</div>
+			<!-- Fades the tops of the screen-2 photos peeking below screen 1, to invite a
+				scroll. Visible only while the scroll area is at the top. -->
 			<div
-				v-if="data?.goalSummary?.status === 'completed'"
-				data-slide-view="6"
-				data-animate-on-view
-			>
-				<GoalInReviewPersonalNote :year="data?.year" @vue:mounted="revealSlidesInView" />
-			</div>
-			<div data-slide-view="7" data-animate-on-view>
-				<GoalInReviewThanksAndFeedback
-					:goal-status="data?.goalSummary?.status"
-					:loan-count="data?.loanStats?.borrowers"
-					:year="data?.year"
-					:current-year="currentYear"
-					:feedback-submitted="feedbackSubmitted"
-					@goal-recap-back-to-kiva="handleCta('goal-recap-back-to-kiva')"
-					@finish-goal="handleCta('finish-goal')"
-					@set-goal="handleCta('set-goal')"
-					@feedback-submitted="handleFeedbackSubmitted"
-					@vue:mounted="revealSlidesInView"
-				/>
-			</div>
-		</div>
-		<!-- Fades the tops of the screen-2 photos peeking below screen 1, to invite a
-			scroll. Visible only while the scroll area is at the top. -->
-		<div
-			class="goal-in-review-scroll-fade tw-sticky tw-bottom-0 tw-h-5.5 -tw-mt-5.5 tw-z-1 tw-bg-brand-100
-				tw-pointer-events-none tw-transition-opacity tw-duration-300 motion-reduce:tw-transition-none"
-			:class="{ 'tw-opacity-0': !isAtTop }"
-			aria-hidden="true"
-			data-testid="goal-in-review-scroll-fade"
-		></div>
-	</KvLightbox>
+				class="goal-in-review-scroll-fade tw-sticky tw-bottom-0 tw-h-5.5 -tw-mt-5.5 tw-z-1 tw-bg-brand-100
+					tw-pointer-events-none tw-transition-opacity tw-duration-300 motion-reduce:tw-transition-none"
+				:class="{ 'tw-opacity-0': !isAtTop }"
+				aria-hidden="true"
+				data-testid="goal-in-review-scroll-fade"
+			></div>
+		</KvLightbox>
+		<KvSocialShareButton
+			v-if="shareMounted"
+			variant="hidden"
+			tracking-category="portfolio"
+			:open-lightbox="isShareOpen"
+			:share-message="shareMessage"
+			share-url="/"
+			:utm-campaign="SHARE_CAMPAIGN"
+			@lightbox-closed="isShareOpen = false"
+		/>
+	</div>
 </template>
 
 <script setup>
 import {
+	computed,
 	defineAsyncComponent,
 	inject,
 	nextTick,
@@ -99,6 +113,9 @@ import {
 } from 'vue';
 import { KvLightbox } from '@kiva/kv-components';
 import { getGoalInReviewCurrentYear } from '#src/composables/useGoalInReview';
+import { getNamedSectorCount, getSectorChartValues } from '#src/util/goalInReview';
+import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
+import goalCopy from '#src/util/goalCopy';
 import {
 	createIntersectionObserver, isInRevealArea, previousSiblingsLaidOut, reobserveNextFrame,
 } from '#src/util/observerUtils';
@@ -176,6 +193,28 @@ const handleCta = event => {
 		$kvTrackEvent('portfolio', 'click', 'goal-recap-back-to-kiva');
 	}
 	emit(event);
+};
+
+const SHARE_CAMPAIGN = 'social_share_goal_in_review';
+
+const shareMounted = ref(false);
+const isShareOpen = ref(false);
+
+const shareMessage = computed(() => {
+	const summary = props.data?.goalSummary;
+	return goalCopy.goalInReviewShareMessage({
+		target: Number(summary?.target) || 0,
+		categoryId: summary?.category,
+		countryCount: summary?.countries?.length ?? 0,
+		// Counted the way the global reach slide counts them, so the share text matches the recap.
+		sectorCount: getNamedSectorCount(getSectorChartValues(summary?.sectors)),
+	});
+});
+
+const openShare = () => {
+	$kvTrackEvent('portfolio', 'click', 'share-goal-in-review');
+	shareMounted.value = true;
+	isShareOpen.value = true;
 };
 
 const handleFeedbackSubmitted = () => {

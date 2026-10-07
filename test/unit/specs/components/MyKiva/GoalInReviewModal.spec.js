@@ -55,6 +55,11 @@ vi.mock('@kiva/kv-components', () => ({
 		props: ['icon'],
 		template: '<span></span>',
 	},
+	KvThemeProvider: {
+		name: 'KvThemeProvider',
+		props: ['theme'],
+		template: '<div><slot></slot></div>',
+	},
 	KvSimpleMap: {
 		name: 'KvSimpleMap',
 		props: ['countries'],
@@ -82,6 +87,19 @@ vi.mock('@kiva/kv-components', () => ({
 		>submit</button>`,
 	},
 	getKivaImageUrl: () => '',
+}));
+
+vi.mock('#src/components/Kv/KvSocialShareButton', () => ({
+	default: {
+		name: 'KvSocialShareButton',
+		props: ['openLightbox', 'shareMessage', 'shareUrl', 'utmCampaign', 'trackingCategory', 'variant'],
+		emits: ['lightbox-closed'],
+		template: `<div
+			data-testid="goal-share"
+			:data-open="String(openLightbox)"
+			:data-category="trackingCategory"
+		>{{ shareMessage }}</div>`,
+	},
 }));
 
 // BorrowerImage (slide 2) reads $appConfig.photoPath.
@@ -181,6 +199,77 @@ describe('GoalInReviewModal', () => {
 		await findByText(/14 borrowers\./); // slide 2 headline
 		await findByText(/14 dreams/); // slide 7 copy
 		expect(getAllByText('14').length).toBeGreaterThan(0);
+	});
+
+	describe('share CTA', () => {
+		const renderCompleted = (goalSummary, trackEvent = vi.fn()) => render(GoalInReviewModal, {
+			global: {
+				...globalWithAppConfig,
+				provide: { ...globalOptions.provide, $kvTrackEvent: trackEvent },
+			},
+			props: {
+				show: true,
+				data: {
+					year: new Date().getFullYear(),
+					goalSummary: { status: 'completed', ...goalSummary },
+				},
+			},
+		});
+
+		it('does not mount the share lightbox until the CTA is clicked', async () => {
+			const { findByTestId, queryByTestId } = renderCompleted({});
+
+			await findByTestId('goal-in-review-thanks-and-feedback-share-cta');
+			expect(queryByTestId('goal-share')).toBeNull();
+		});
+
+		it('tracks the click and opens the share lightbox with the prefilled women copy', async () => {
+			const trackEvent = vi.fn();
+			const { findByTestId } = renderCompleted({
+				target: 12,
+				category: 'womens-equality',
+				countries: [{ id: 1 }, { id: 2 }, { id: 3 }],
+				sectors: [
+					{ sector: { name: 'Food' }, loanCount: 3 },
+					{ sector: { name: 'Retail' }, loanCount: 2 },
+					{ sector: null, loanCount: 1 },
+				],
+			}, trackEvent);
+
+			await fireEvent.click(await findByTestId('goal-in-review-thanks-and-feedback-share-cta'));
+
+			expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', 'share-goal-in-review');
+			const share = await findByTestId('goal-share');
+			expect(share.dataset.open).toBe('true');
+			expect(share.dataset.category).toBe('portfolio');
+			expect(share.textContent).toContain('This year, I set a goal to help 12 women on Kiva.org.');
+			// The unnamed "Other" bucket isn't a sector, matching the global reach slide.
+			expect(share.textContent).toContain('reached people in 3 countries across 2 sectors.');
+		});
+
+		it('says "people" for every other category and singularizes counts', async () => {
+			const { findByTestId } = renderCompleted({
+				target: 1,
+				category: 'basic-needs',
+				countries: [{ id: 1 }],
+				sectors: [{ sector: { name: 'Food' }, loanCount: 1 }],
+			});
+
+			await fireEvent.click(await findByTestId('goal-in-review-thanks-and-feedback-share-cta'));
+
+			const share = await findByTestId('goal-share');
+			expect(share.textContent).toContain('help 1 person on Kiva.org');
+			expect(share.textContent).toContain('in 1 country across 1 sector.');
+		});
+
+		it('does not close the recap', async () => {
+			const { emitted, findByTestId } = renderCompleted({ target: 5 });
+
+			await fireEvent.click(await findByTestId('goal-in-review-thanks-and-feedback-share-cta'));
+
+			expect(emitted().close).toBeUndefined();
+			expect(emitted()['goal-recap-back-to-kiva']).toBeUndefined();
+		});
 	});
 
 	it('tracks and forwards the slide 7 primary CTA', async () => {
