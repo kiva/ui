@@ -1,10 +1,29 @@
 <template>
 	<div class="borrower-carousel-root">
-		<h2
+		<div
 			v-if="hasActiveLoans"
-			v-html="title"
-			class="tw-mt-4 tw-mb-2 !tw-text-title"
-		></h2>
+			class="tw-flex tw-items-center tw-gap-2 tw-mt-4 tw-mb-2"
+		>
+			<h2
+				v-html="title"
+				class="!tw-text-title"
+			></h2>
+			<button
+				v-if="showShare"
+				class="tw-flex tw-items-center tw-gap-0.5 tw-shrink-0 tw-relative tw-z-1
+					tw-text-label tw-text-action tw-group"
+				data-testid="borrower-carousel-share-button"
+				@click="openCarouselShare"
+			>
+				<!-- The glyph's box sits in the lower part of its viewBox, so it reads low next to the text -->
+				<KvMaterialIcon
+					class="tw-w-2 tw-h-2"
+					style="transform: translateY(-1px);"
+					:icon="mdiExportVariant"
+				/>
+				<span class="group-hover:tw-underline">Share</span>
+			</button>
+		</div>
 		<div v-if="hasActiveLoans" class="tw-relative">
 			<KvTabs
 				v-show="filteredLoans.length > 1 && showCarouselTabs"
@@ -126,14 +145,25 @@
 			:is-portfolio="true"
 			@lightbox-closed="closeShareModal"
 		/>
+		<KvSocialShareButton
+			v-if="carouselShareMounted"
+			variant="hidden"
+			tracking-category="portfolio"
+			:open-lightbox="isCarouselShareOpen"
+			:share-message="carouselShareMessage"
+			share-url="/"
+			:utm-campaign="CAROUSEL_SHARE_CAMPAIGN"
+			@lightbox-closed="isCarouselShareOpen = false"
+		/>
 	</div>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router';
 import {
-	KvTabs, KvTab, KvTabPanel, KvCarousel, KvButton
+	KvTabs, KvTab, KvTabPanel, KvCarousel, KvButton, KvMaterialIcon
 } from '@kiva/kv-components';
+import { mdiExportVariant } from '@mdi/js';
 import {
 	computed,
 	defineEmits,
@@ -154,10 +184,12 @@ import {
 } from '#src/api/fixtures/LoanStatusEnum';
 import LoanCommentModal from '#src/pages/Portfolio/ImpactDashboard/LoanCommentModal';
 import ShareButton from '#src/components/BorrowerProfile/ShareButton';
+import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
 import BorrowerImage from '#src/components/BorrowerProfile/BorrowerImage';
 import BorrowerStatusCard from './BorrowerStatusCard';
 
 const SHARE_CAMPAIGN = 'social_share_portfolio';
+const CAROUSEL_SHARE_CAMPAIGN = 'social_share_mykiva_borrower_carousel';
 
 const emit = defineEmits([
 	'handle-selected-loan',
@@ -205,6 +237,13 @@ const props = defineProps({
 		type: Boolean,
 		default: false
 	},
+	/**
+	 * Show the share icon next to the carousel title
+	 */
+	showShare: {
+		type: Boolean,
+		default: false
+	},
 });
 
 const $kvTrackEvent = inject('$kvTrackEvent');
@@ -221,6 +260,8 @@ const previousLastIndex = ref(0);
 const loanForMenu = ref(undefined);
 const shareLoan = ref(false);
 const tabs = ref(null);
+const carouselShareMounted = ref(false);
+const isCarouselShareOpen = ref(false);
 
 const VALID_LOAN_STATUS = [
 	FUNDED,
@@ -243,6 +284,12 @@ const title = computed(() => {
 		return 'You’re <u>changing a life</u>!';
 	}
 	return `You’re <u>changing ${totalLoans.value} lives</u>!`;
+});
+
+const carouselShareMessage = computed(() => {
+	const people = totalLoans.value === 1 ? '1 person' : `${totalLoans.value} people`;
+	return `Right now, I’m helping ${people} through Kiva.org. When they repay, I can lend again to someone else. `
+		+ 'It’s amazing to see how many people small, consistent contributions can reach! Try it out:';
 });
 
 const filteredLoans = computed(() => {
@@ -291,6 +338,12 @@ const clearLoanAfterDelay = () => {
 const closeShareModal = () => {
 	shareLoan.value = false;
 	clearLoanAfterDelay();
+};
+
+const openCarouselShare = () => {
+	$kvTrackEvent('portfolio', 'click', 'share-mykiva-borrower-carousel');
+	carouselShareMounted.value = true;
+	isCarouselShareOpen.value = true;
 };
 
 const openSideSheet = payload => {

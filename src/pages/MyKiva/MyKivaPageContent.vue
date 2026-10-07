@@ -110,6 +110,7 @@
 			@handle-selected-loan="showLoanDetails($event, true)"
 			@mouse-enter-status-card="loadBPData"
 			show-menu
+			show-share
 			class="tw-mb-2"
 		/>
 		<AsyncMyKivaSection @visible="fetchInitialUpdates">
