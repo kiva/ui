@@ -28,7 +28,32 @@
 			</div>
 
 			<div class="tw-flex tw-flex-col tw-items-center tw-gap-2 kv-fade-up thanks-and-feedback-cta">
+				<KvThemeProvider
+					v-if="showShareCta"
+					:theme="greenDarkTheme"
+					class="tw-flex tw-flex-col md:tw-flex-row tw-gap-2 tw-w-full"
+				>
+					<KvButton
+						class="tw-w-full md:tw-flex-1 cta-button"
+						data-testid="goal-in-review-thanks-and-feedback-share-cta"
+						@click="emit('share-goal')"
+					>
+						<span class="tw-inline-flex tw-items-center tw-gap-1">
+							<KvMaterialIcon :icon="mdiExportVariant" class="tw-w-2 tw-h-2" />
+							Share
+						</span>
+					</KvButton>
+					<KvButton
+						class="tw-w-full md:tw-flex-1"
+						variant="secondary"
+						data-testid="goal-in-review-thanks-and-feedback-primary-cta"
+						@click="emit(primaryCta.event)"
+					>
+						{{ primaryCta.label }}
+					</KvButton>
+				</KvThemeProvider>
 				<KvButton
+					v-else
 					class="tw-w-full cta-button"
 					data-testid="goal-in-review-thanks-and-feedback-primary-cta"
 					@click="emit(primaryCta.event)"
@@ -43,7 +68,7 @@
 						data-testid="goal-in-review-thanks-and-feedback-feedback-toggle"
 						@click="toggleFeedback"
 					>
-						Share your feedback
+						{{ feedbackLabel }}
 						<KvMaterialIcon
 							:icon="mdiChevronDown"
 							class="tw-transition-transform"
@@ -73,8 +98,9 @@
 import {
 	computed, inject, nextTick, onBeforeUnmount, ref
 } from 'vue';
-import { KvButton, KvMaterialIcon } from '@kiva/kv-components';
-import { mdiChevronDown } from '@mdi/js';
+import { KvButton, KvMaterialIcon, KvThemeProvider } from '@kiva/kv-components';
+import { greenDarkTheme } from '@kiva/kv-tokens';
+import { mdiChevronDown, mdiExportVariant } from '@mdi/js';
 import { getIsPastGoalYear, getRecapTimeframe } from '#src/util/goalInReview';
 import GoalInReviewFeedbackForm from '#src/components/MyKiva/GoalInReview/GoalInReviewFeedbackForm';
 import leafHeart from '#src/assets/images/leaf_heart.svg?url';
@@ -102,7 +128,9 @@ const props = defineProps({
 	},
 });
 
-const emit = defineEmits(['goal-recap-back-to-kiva', 'finish-goal', 'set-goal', 'feedback-submitted']);
+const emit = defineEmits([
+	'goal-recap-back-to-kiva', 'finish-goal', 'set-goal', 'feedback-submitted', 'share-goal',
+]);
 
 const $kvTrackEvent = inject('$kvTrackEvent', () => {});
 
@@ -198,6 +226,13 @@ const primaryCta = computed(() => {
 	}
 	return { label: `Finish my ${props.year} goal`, event: 'finish-goal' };
 });
+
+// Only a goal completed within its own year gets the share CTA; the in-progress and
+// next-year versions keep their single CTA.
+const showShareCta = computed(() => isComplete.value && !isPastGoalYear.value);
+
+// Avoids saying "Share" twice when the share CTA is showing.
+const feedbackLabel = computed(() => (showShareCta.value ? 'Tell us what you think' : 'Share your feedback'));
 
 const showFeedback = computed(() => !isPastGoalYear.value
 	&& !props.feedbackSubmitted

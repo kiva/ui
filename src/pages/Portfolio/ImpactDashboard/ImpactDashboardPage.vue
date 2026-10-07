@@ -54,6 +54,7 @@
 			:data="goalInReviewData"
 			:feedback-submitted="goalInReviewFeedbackSubmitted"
 			@close="showGoalInReviewModal = false"
+			@goal-recap-back-to-kiva="showGoalInReviewModal = false"
 			@feedback-submitted="handleGoalInReviewFeedbackSubmitted"
 			@finish-goal="handleGoalInReviewFinishGoal"
 			@set-goal="handleGoalInReviewSetGoal"
