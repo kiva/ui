@@ -113,9 +113,9 @@ import {
 } from 'vue';
 import { KvLightbox } from '@kiva/kv-components';
 import { getGoalInReviewCurrentYear } from '#src/composables/useGoalInReview';
-import { ID_WOMENS_EQUALITY } from '#src/composables/useBadgeData';
 import { getNamedSectorCount, getSectorChartValues } from '#src/util/goalInReview';
 import KvSocialShareButton from '#src/components/Kv/KvSocialShareButton';
+import goalCopy from '#src/util/goalCopy';
 import {
 	createIntersectionObserver, isInRevealArea, previousSiblingsLaidOut, reobserveNextFrame,
 } from '#src/util/observerUtils';
@@ -200,19 +200,15 @@ const SHARE_CAMPAIGN = 'social_share_goal_in_review';
 const shareMounted = ref(false);
 const isShareOpen = ref(false);
 
-const pluralize = (count, singular, plural) => `${count} ${count === 1 ? singular : plural}`;
-
 const shareMessage = computed(() => {
 	const summary = props.data?.goalSummary;
-	const target = Number(summary?.target) || 0;
-	const isWomen = summary?.category === ID_WOMENS_EQUALITY;
-	const goalPeople = isWomen ? pluralize(target, 'woman', 'women') : pluralize(target, 'person', 'people');
-	const countries = pluralize(summary?.countries?.length ?? 0, 'country', 'countries');
-	// Counted the way the global reach slide counts them, so the share text matches the recap.
-	const sectors = pluralize(getNamedSectorCount(getSectorChartValues(summary?.sectors)), 'sector', 'sectors');
-	return `This year, I set a goal to help ${goalPeople} on Kiva.org. I met my goal, and in the process, `
-		+ `reached people in ${countries} across ${sectors}. Kiva supports people around the world who have `
-		+ 'a dream without financial opportunity to achieve it. Try it out!';
+	return goalCopy.goalInReviewShareMessage({
+		target: Number(summary?.target) || 0,
+		categoryId: summary?.category,
+		countryCount: summary?.countries?.length ?? 0,
+		// Counted the way the global reach slide counts them, so the share text matches the recap.
+		sectorCount: getNamedSectorCount(getSectorChartValues(summary?.sectors)),
+	});
 });
 
 const openShare = () => {

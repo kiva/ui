@@ -8,11 +8,13 @@ import {
 	ID_REFUGEE_EQUALITY,
 	ID_BASIC_NEEDS,
 	ID_US_ECONOMIC_EQUALITY,
+	ID_WOMENS_EQUALITY,
 } from '#src/composables/useBadgeData';
 
 const highlight = (text, cssClass) => `<span class="${cssClass}">${text}</span>`;
 const bold = (text, cssClass) => `<strong class="${cssClass}">${text}</strong>`;
 const ecoGreen = text => highlight(text, 'tw-text-eco-green-3');
+const pluralize = (count, singular, plural) => `${count} ${count === 1 ? singular : plural}`;
 
 export const GOAL_SIGNUP_COPY_LAST_YEAR = GOAL_SIGNUP_COPY_VARIANT.LAST_YEAR;
 export const GOAL_SIGNUP_COPY_NO_GOAL_YET = GOAL_SIGNUP_COPY_VARIANT.NO_GOAL_YET;
@@ -265,6 +267,25 @@ const goalCopy = {
 
 	/** Card: goal is in progress */
 	RING_BUTTON_CARD_IN_PROGRESS: 'Work towards your goal',
+
+	// ─── Goal in review — share ─────────────────────────────────────────────────
+
+	/**
+	 * Suggested share text for a goal completed in its goal year. Women goals say "women";
+	 * every other category says "people". The share modal appends the kiva.org link.
+	 */
+	goalInReviewShareMessage({
+		target = 0, categoryId, countryCount = 0, sectorCount = 0,
+	} = {}) {
+		const goalPeople = categoryId === ID_WOMENS_EQUALITY
+			? pluralize(target, 'woman', 'women')
+			: pluralize(target, 'person', 'people');
+		const countries = pluralize(countryCount, 'country', 'countries');
+		const sectors = pluralize(sectorCount, 'sector', 'sectors');
+		return `This year, I set a goal to help ${goalPeople} on Kiva.org. I met my goal, and in the process, `
+			+ `reached people in ${countries} across ${sectors}. Kiva supports people around the world who have `
+			+ 'a dream without financial opportunity to achieve it. Try it out!';
+	},
 };
 
 export default goalCopy;
