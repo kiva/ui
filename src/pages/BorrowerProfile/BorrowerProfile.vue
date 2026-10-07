@@ -25,8 +25,10 @@
 </template>
 
 <script>
+import { computed } from 'vue';
 import { format, parseISO } from 'date-fns';
 import { gql } from 'graphql-tag';
+import hasEverLoggedInQuery from '#src/graphql/query/shared/hasEverLoggedIn.graphql';
 import experimentAssignmentQuery from '#src/graphql/query/experimentAssignment.graphql';
 import fiveDollarsTest, { FIVE_DOLLARS_NOTES_EXP } from '#src/plugins/five-dollars-test-mixin';
 import guestComment from '#src/plugins/guest-comment-mixin';
@@ -40,6 +42,13 @@ import { shareButtonFragment } from '#src/components/BorrowerProfile/ShareButton
 import { fireHotJarEvent } from '#src/util/hotJarUtils';
 import { readAccountRailPreference, resolveRailPreference } from '#src/util/loanDetailsRailPreference';
 import { isPublicLoanStatus, showFullView } from '#src/util/loanUtils';
+import {
+	NEW_USER_BP_EXP_KEY,
+	NEW_USER_BP_EXP_EVENT_ACTION,
+	NEW_USER_BP_EXP_INJECT_KEY,
+	isNewUserBpExpEligible,
+	readNewUserBpExpVersion,
+} from '#src/util/newUserBorrowerProfileExp';
 import { getKivaImageUrl } from '@kiva/kv-components';
 
 const getPublicId = route => route?.query?.utm_content ?? route?.query?.name ?? route?.query?.lender ?? '';
@@ -167,6 +176,12 @@ export default {
 		MinimalBorrowerProfile,
 		WwwPage,
 	},
+	provide() {
+		return {
+			// 'a', 'b', or null when the visitor isn't in the experiment
+			[NEW_USER_BP_EXP_INJECT_KEY]: computed(() => this.newUserBpExpVersion),
+		};
+	},
 	head() {
 		const title = this.routingLoan?.anonymizationLevel === 'full' ? undefined : this.pageTitle;
 		const description = this.routingLoan?.anonymizationLevel === 'full' ? undefined : this.pageDescription;
@@ -256,6 +271,9 @@ export default {
 			itemsInBasket: [],
 			isLoading: true,
 			// Experiment state
+			newUserBpExpVersion: null,
+			newUserBpExpTrackedLoanId: null,
+			isMounted: false,
 			regionBelongsToExp: false,
 			showEducationPlacementExp: false,
 			loanRegion: '',
@@ -283,8 +301,11 @@ export default {
 				basketId: cookieStore?.get('kvbskt'),
 			};
 
-			return client.query({ query: routingQuery, variables })
-				.then(({ data }) => {
+			return Promise.all([
+				client.query({ query: routingQuery, variables }),
+				client.query({ query: hasEverLoggedInQuery }),
+			])
+				.then(([{ data }, { data: hasEverLoggedInData }]) => {
 					const loan = data?.lend?.loan;
 					if (!loan) {
 						return Promise.reject({ path: '/lend', query: route.query });
@@ -306,15 +327,29 @@ export default {
 						return Promise.reject({ path: '/lend', query: route.query });
 					}
 
-					const childQuery = showFullView(
+					const isFullView = showFullView(
 						loan.status,
 						unreservedAmount,
 						isPrivileged,
 						isVolunteer,
 						route.query,
-					) ? fullProfileQuery : minimalProfileQuery;
+					);
+					const childQuery = isFullView ? fullProfileQuery : minimalProfileQuery;
+
+					// Only assign the new user experiment to visitors in it, so everyone else has no version
+					const isNewUserBpExp = isNewUserBpExpEligible({
+						loanStatus: loan.status,
+						isFullView,
+						isLoggedIn: !!kvAuth0?.getKivaId() || !!data?.my?.id,
+						hasEverLoggedIn: hasEverLoggedInData?.hasEverLoggedIn,
+						cookieStore,
+					});
 
 					return Promise.all([
+						...(isNewUserBpExp ? [client.query({
+							query: experimentAssignmentQuery,
+							variables: { id: NEW_USER_BP_EXP_KEY },
+						})] : []),
 						client.query({
 							query: experimentAssignmentQuery,
 							variables: { id: FIVE_DOLLARS_NOTES_EXP },
@@ -352,13 +387,14 @@ export default {
 			const routingLoan = result?.data?.lend?.loan ?? {};
 			const isVolunteer = !!result?.data?.my?.userAccount?.volunteerId;
 			// Read back whichever child query preFetch ran.
-			const childQuery = showFullView(
+			const isFullView = showFullView(
 				routingLoan.status,
 				Number(routingLoan.unreservedAmount ?? 0),
 				routingLoan.userProperties?.isPrivileged ?? false,
 				isVolunteer,
 				this.$route?.query,
-			) ? fullProfileQuery : minimalProfileQuery;
+			);
+			const childQuery = isFullView ? fullProfileQuery : minimalProfileQuery;
 			let childLoan = null;
 			let childMy = null;
 			if (routingLoan.id) {
@@ -388,6 +424,26 @@ export default {
 				accountPref: readAccountRailPreference(childMy?.userPreferences),
 				local: null,
 			});
+
+			// Resolved here (not mounted) so SSR renders the assigned version with no flash of a
+			let hasEverLoggedIn;
+			try {
+				hasEverLoggedIn = this.apollo.readQuery({ query: hasEverLoggedInQuery })?.hasEverLoggedIn;
+			} catch {
+				// Not in cache; leaves the visitor outside the experiment.
+			}
+			const isNewUserBpExp = isNewUserBpExpEligible({
+				loanStatus: routingLoan.status,
+				isFullView,
+				isLoggedIn: !!result?.data?.my?.id,
+				hasEverLoggedIn,
+				cookieStore: this.cookieStore,
+			});
+			this.newUserBpExpVersion = isNewUserBpExp ? readNewUserBpExpVersion(this.apollo) : null;
+			// Client-side navigation to another loan reuses this component, so track that page view here
+			if (this.isMounted) {
+				this.trackNewUserBpExp();
+			}
 		},
 	},
 	async mounted() {
@@ -408,7 +464,21 @@ export default {
 			}
 		}
 
+		this.isMounted = true;
+		this.trackNewUserBpExp();
+
 		this.isLoading = false;
+	},
+	methods: {
+		trackNewUserBpExp() {
+			const loanId = this.routingLoan?.id;
+			// Once per page view: result() also runs on cache updates for the same loan
+			if (!this.newUserBpExpVersion || !loanId || loanId === this.newUserBpExpTrackedLoanId) {
+				return;
+			}
+			this.newUserBpExpTrackedLoanId = loanId;
+			this.$kvTrackEvent('event-tracking', NEW_USER_BP_EXP_EVENT_ACTION, this.newUserBpExpVersion);
+		},
 	},
 	computed: {
 		loanId() {
