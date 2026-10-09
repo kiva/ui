@@ -10,18 +10,22 @@
 				Your lending insights
 			</h2>
 			<KvButton
-				v-if="loading || lifetimeNumberOfLoans > 0"
-				class="tw-inline-flex tw-items-center tw-gap-1 tw-shrink-0"
+				v-if="!lifetimeStatsError && (loading || lifetimeNumberOfLoans > 0)"
+				variant="link"
+				class="tw-shrink-0"
+				size="small"
 				data-testid="lending-stats-share-button"
-				:disabled="loading"
+				:state="loading ? 'disabled' : ''"
 				@click="openShare"
 			>
-				<kv-material-icon
-					:icon="mdiExportVariant"
-					class="tw-w-3 tw-h-3 tw-text-eco-green"
-				/>
-				<span class="tw-text-eco-green">
-					Share
+				<span class="tw-flex tw-items-center tw-gap-1 tw-text-base">
+					<kv-material-icon
+						:icon="mdiExportVariant"
+						class="tw-w-2 tw-h-2 tw-text-eco-green"
+					/>
+					<span class="tw-text-eco-green">
+						Share
+					</span>
 				</span>
 			</KvButton>
 		</div>
@@ -29,9 +33,11 @@
 			v-if="shareMounted"
 			variant="hidden"
 			tracking-category="portfolio"
-			modal-title="Share your lending stats"
+			modal-title="Share your lending impact"
+			compact-buttons
+			fixed-width-modal
 			:open-lightbox="isShareOpen"
-			:share-message="modifiedShareMessage"
+			:share-message="modifiedShareMessage.trim() || shareMessage"
 			share-url="/"
 			:utm-campaign="SHARE_CAMPAIGN"
 			@lightbox-closed="isShareOpen = false"
@@ -39,15 +45,16 @@
 			<template #modal-content>
 				<div class="tw-relative">
 					<textarea
-						class="tw-w-full tw-border tw-border-tertiary tw-rounded-xs tw-h-12 tw-p-2"
+						class="tw-w-full tw-border tw-border-tertiary tw-rounded-xs tw-h-12 tw-p-2 tw-bg-gray-100"
 						style="height: 10rem;"
 						data-testid="lending-stats-share-message"
+						aria-label="Share message"
 						v-model="modifiedShareMessage"
 					>
 					</textarea>
 					<kv-material-icon
-						class="tw-w-2.5 tw-h-2.5 tw-absolute tw-bottom-2 tw-right-2"
-						:icon="mdiPencilOutline"
+						class="tw-w-2.5 tw-h-2.5 tw-absolute tw-bottom-2 tw-right-1.5"
+						:icon="mdiTextBoxEditOutline"
 					/>
 				</div>
 			</template>
@@ -361,8 +368,9 @@
 import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import getCacheKey from '#src/util/getCacheKey';
+import logReadQueryError from '#src/util/logReadQueryError';
 import {
-	mdiArrowRight, mdiClockOutline, mdiExportVariant, mdiPencilOutline,
+	mdiArrowRight, mdiClockOutline, mdiExportVariant, mdiTextBoxEditOutline,
 } from '@mdi/js';
 import {
 	KvButton,
@@ -426,12 +434,13 @@ export default {
 			mdiArrowRight,
 			mdiClockOutline,
 			mdiExportVariant,
-			mdiPencilOutline,
+			mdiTextBoxEditOutline,
 			loading: true,
 			currentYearLoadingPromise: null,
 			lifetimeLoadingPromise: null,
 			hasCurrentYearStats: false,
 			hasLifetimeStats: false,
+			lifetimeStatsError: false,
 			currentYearAmountLent: 0,
 			currentYearCountryCount: 0,
 			currentYearNumberOfLoans: 0,
@@ -464,7 +473,7 @@ export default {
 		shareMessage() {
 			const loans = pluralize(this.lifetimeNumberOfLoans, 'loan', 'loans');
 			const countries = pluralize(this.lifetimeCountryCount, 'country', 'countries');
-			// Only claim re-lending stretched the deposits when the lender has actually lent more than they put in
+			// Lenders who haven't re-lent yet (e.g. deposited $25 and lent it once) didn't deposit "a fraction"
 			const depositedFraction = this.lifetimeAmountLentValue > (this.totalDepositsValue ?? 0)
 				? ' — and I only deposited a fraction of that'
 				: '';
@@ -539,6 +548,9 @@ export default {
 					query: LENDING_INSIGHTS_LIFETIME_QUERY,
 				}).then(({ data }) => {
 					this.applyLifetimeStats(data);
+				}).catch(e => {
+					this.lifetimeStatsError = true;
+					logReadQueryError(e, 'LendingInsights lendingInsights');
 				}).finally(() => {
 					this.lifetimeLoadingPromise = null;
 					this.syncLoadingState();

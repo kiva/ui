@@ -16,6 +16,7 @@
 			<slot>Share</slot>
 		</kv-button>
 		<kv-lightbox
+			:class="{ 'social-share-lightbox--fixed-width': fixedWidthModal }"
 			:visible="isLightboxVisible"
 			:title="modalTitle"
 			@lightbox-closed="closeLightbox"
@@ -23,9 +24,14 @@
 			<slot name="modal-content"></slot>
 			<div
 				class="tw-flex tw-mt-2.5 tw-flex-wrap"
+				:class="{
+					'social-buttons--compact': compactButtons,
+					'tw-justify-center lg:tw-justify-start': fixedWidthModal,
+				}"
 			>
 				<kv-button
 					variant="ghost"
+					:size="compactButtons ? 'small' : 'default'"
 					class="social-button"
 					data-testid="share-facebook-button"
 					v-kv-track-event="[trackingCategory, 'share', 'facebook', utmCampaign, loanId]"
@@ -41,6 +47,7 @@
 				</kv-button>
 				<kv-button
 					variant="ghost"
+					:size="compactButtons ? 'small' : 'default'"
 					class="social-button"
 					data-testid="share-bluesky-button"
 					v-kv-track-event="[trackingCategory, 'share', 'bluesky', utmCampaign, loanId]"
@@ -56,6 +63,7 @@
 				</kv-button>
 				<kv-button
 					variant="ghost"
+					:size="compactButtons ? 'small' : 'default'"
 					class="social-button"
 					data-testid="share-linkedin-button"
 					v-kv-track-event="[trackingCategory, 'share', 'linkedin', utmCampaign, loanId]"
@@ -71,6 +79,7 @@
 				</kv-button>
 				<kv-button
 					variant="ghost"
+					:size="compactButtons ? 'small' : 'default'"
 					class="social-button"
 					data-testid="share-copy-link-button"
 					:disabled="copyStatus.disabled"
@@ -78,7 +87,8 @@
 					@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
 				>
 					<kv-material-icon
-						class="tw-w-4.5 tw-h-4.5 tw-pointer-events-none tw-inline-block tw-align-middle"
+						class="social-button__copy-icon tw-w-4.5 tw-h-4.5 tw-pointer-events-none
+							tw-inline-block tw-align-middle"
 						:icon="mdiLink"
 					/>
 					<span class="tw-font-medium">{{ copyStatus.text }}</span>
@@ -173,6 +183,16 @@ export default {
 			required: false,
 			default: 'borrower-profile'
 		},
+		/** Fixed-width modal: up to 512px, with 16px outer margins and a centered card on smaller screens */
+		fixedWidthModal: {
+			type: Boolean,
+			default: false
+		},
+		/** Small share options with smaller icons stacked on top of the label and no hover background */
+		compactButtons: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -217,6 +237,33 @@ export default {
 <style lang="postcss" scoped>
 .social-button__icon {
 	@apply tw-w-5 tw-h-5 tw-pointer-events-none tw-inline-block tw-align-middle;
+}
+
+/* Targeting the lightbox to be centered on screen (both desktop and mobile)
+ * when lightbox has a fixed width and height dimensions
+ */
+.social-share-lightbox--fixed-width :deep([data-test=kv-lightbox]) {
+	@apply tw-rounded;
+
+	width: 100%;
+	max-width: min(32rem, calc(100vw - 2rem)) !important;
+	margin-top: auto;
+	margin-bottom: auto;
+	min-height: 0;
+}
+
+/* Targeting background color and inner-spans within social media share context in LendingInsights modal */
+.social-buttons--compact .social-button:hover > :deep(span) {
+	@apply tw-bg-primary;
+}
+
+.social-buttons--compact .social-button__icon,
+.social-buttons--compact .social-button__copy-icon {
+	@apply tw-w-3 tw-h-3;
+}
+
+.social-buttons--compact .social-button > :deep(span > span) {
+	@apply tw-flex tw-flex-col tw-items-center tw-gap-0.5 tw-px-1;
 }
 </style>
 
