@@ -1,5 +1,4 @@
 import { runRecommendationsQuery } from '#src/util/loanSearch/dataUtils';
-import { FLSS_ORIGIN_CHECKOUT_UPSELL } from '#src/util/flssUtils';
 import { initializeExperiment } from '#src/util/experiment/experimentUtils';
 
 vi.mock('#src/util/loanSearch/dataUtils', () => ({
@@ -29,28 +28,7 @@ beforeAll(async () => {
 	CheckoutPage = mod.default;
 });
 
-describe('CheckoutPage upsell - expiring soon', () => {
-	describe('getLoansByExpiringSoon', () => {
-		it('calls runRecommendationsQuery with expiringSoon sort and daysUntilExpiration filter', () => {
-			const mockApollo = { query: vi.fn() };
-			const context = { apollo: mockApollo };
-
-			CheckoutPage.methods.getLoansByExpiringSoon.call(context);
-
-			expect(runRecommendationsQuery).toHaveBeenCalledWith(
-				mockApollo,
-				{
-					filterObject: {
-						daysUntilExpiration: { range: { gte: 1 } },
-					},
-					sortBy: 'expiringSoon',
-					limit: 20,
-					origin: FLSS_ORIGIN_CHECKOUT_UPSELL,
-				}
-			);
-		});
-	});
-
+describe('CheckoutPage upsell', () => {
 	describe('getUpsellModuleData branching', () => {
 		let context;
 
@@ -64,7 +42,6 @@ describe('CheckoutPage upsell - expiring soon', () => {
 				upsellLoan: {},
 				continueButtonState: '',
 				isBanditUpsellExpEnabled: false,
-				isExpiringSoonExpEnabled: false,
 				myId: 123,
 				myBalance: '50.00',
 				totals: { itemTotal: '75.00' },
@@ -72,80 +49,11 @@ describe('CheckoutPage upsell - expiring soon', () => {
 				$kvTrackSelfDescribingEvent: vi.fn(),
 				getLoansByAmountLeft: CheckoutPage.methods.getLoansByAmountLeft,
 				getLoansByAmountLeftRange: CheckoutPage.methods.getLoansByAmountLeftRange,
-				getLoansByExpiringSoon: CheckoutPage.methods.getLoansByExpiringSoon,
 				trackUpsellRecommendation: CheckoutPage.methods.trackUpsellRecommendation,
 			};
 		});
 
-		it('uses expiringSoon path when isExpiringSoonExpEnabled is true', () => {
-			context.isExpiringSoonExpEnabled = true;
-			runRecommendationsQuery.mockResolvedValue({
-				loans: [{ id: 1, name: 'Test' }],
-				totalCount: 1,
-			});
-
-			CheckoutPage.methods.getUpsellModuleData.call(context, 0);
-
-			expect(runRecommendationsQuery).toHaveBeenCalledWith(
-				context.apollo,
-				expect.objectContaining({
-					sortBy: 'expiringSoon',
-					filterObject: { daysUntilExpiration: { range: { gte: 1 } } },
-				})
-			);
-		});
-
-		it('expiringSoon takes priority over bandit when both enabled', () => {
-			context.isExpiringSoonExpEnabled = true;
-			context.isBanditUpsellExpEnabled = true;
-			runRecommendationsQuery.mockResolvedValue({
-				loans: [{ id: 1, name: 'Test' }],
-				totalCount: 1,
-			});
-
-			CheckoutPage.methods.getUpsellModuleData.call(context, 0);
-
-			expect(runRecommendationsQuery).toHaveBeenCalledWith(
-				context.apollo,
-				expect.objectContaining({
-					sortBy: 'expiringSoon',
-				})
-			);
-			// Should NOT call the bandit query
-			expect(context.apollo.query).not.toHaveBeenCalled();
-		});
-
-		it('sets upsellLoan from expiringSoon results', async () => {
-			context.isExpiringSoonExpEnabled = true;
-			const mockLoan = { id: 99, name: 'ExpiringSoon Borrower' };
-			runRecommendationsQuery.mockResolvedValue({
-				loans: [mockLoan],
-				totalCount: 1,
-			});
-
-			CheckoutPage.methods.getUpsellModuleData.call(context, 0);
-
-			await vi.waitFor(() => {
-				expect(context.upsellLoan).toEqual(mockLoan);
-			});
-		});
-
-		it('sets upsellLoan to empty object when no expiring-soon loans found', async () => {
-			context.isExpiringSoonExpEnabled = true;
-			runRecommendationsQuery.mockResolvedValue({
-				loans: [],
-				totalCount: 0,
-			});
-
-			CheckoutPage.methods.getUpsellModuleData.call(context, 0);
-
-			await vi.waitFor(() => {
-				expect(context.upsellLoan).toEqual({});
-				expect(context.continueButtonState).toBe('active');
-			});
-		});
-
-		it('falls back to bandit when only bandit is enabled', () => {
+		it('uses bandit path when bandit is enabled', () => {
 			context.isBanditUpsellExpEnabled = true;
 			// Mock to prevent unhandled rejection from bandit's Promise.all fallback
 			runRecommendationsQuery.mockResolvedValue({ loans: [], totalCount: 0 });
@@ -156,7 +64,7 @@ describe('CheckoutPage upsell - expiring soon', () => {
 			expect(context.apollo.query).toHaveBeenCalled();
 		});
 
-		it('falls back to amountLeft when neither experiment enabled', () => {
+		it('uses amountLeft path when bandit is not enabled', () => {
 			runRecommendationsQuery.mockResolvedValue({
 				loans: [{ id: 1, name: 'Test' }],
 				totalCount: 1,
@@ -170,21 +78,6 @@ describe('CheckoutPage upsell - expiring soon', () => {
 					sortBy: 'amountLeft',
 				})
 			);
-		});
-
-		it('filters out already-added loans in expiringSoon path', async () => {
-			context.isExpiringSoonExpEnabled = true;
-			context.addedUpsellLoans = [1];
-			runRecommendationsQuery.mockResolvedValue({
-				loans: [{ id: 1, name: 'Already Added' }, { id: 2, name: 'New Loan' }],
-				totalCount: 2,
-			});
-
-			CheckoutPage.methods.getUpsellModuleData.call(context, 0);
-
-			await vi.waitFor(() => {
-				expect(context.upsellLoan).toEqual({ id: 2, name: 'New Loan' });
-			});
 		});
 
 		it.each([
@@ -266,71 +159,105 @@ describe('CheckoutPage upsell - expiring soon', () => {
 		});
 	});
 
-	describe('initializeExpiringSoonExperiment', () => {
+	describe('trackBanditUpsellExposure', () => {
+		let context;
+
+		beforeEach(() => {
+			context = {
+				$kvTrackEvent: vi.fn(),
+				banditUpsellVersion: 'b',
+				isUpsellShown: true,
+				banditUpsellExposureTracked: false,
+			};
+		});
+
+		it('tracks the version that drives the upsell', () => {
+			CheckoutPage.methods.trackBanditUpsellExposure.call(context);
+
+			expect(context.$kvTrackEvent).toHaveBeenCalledWith('event-tracking', 'EXP-MP-3341-Oct2026', 'b');
+		});
+
+		it('tracks exposure only once per page load', () => {
+			CheckoutPage.methods.trackBanditUpsellExposure.call(context);
+			CheckoutPage.methods.trackBanditUpsellExposure.call(context);
+
+			expect(context.$kvTrackEvent).toHaveBeenCalledTimes(1);
+		});
+
+		it.each([
+			['upsell not shown', { isUpsellShown: false }],
+			['no version', { banditUpsellVersion: undefined }],
+			['unassigned', { banditUpsellVersion: 'unassigned' }],
+			['out of population', { banditUpsellVersion: 'undefined' }],
+		])('does not track (and can retry later) when %s', (_, overrides) => {
+			Object.assign(context, overrides);
+
+			CheckoutPage.methods.trackBanditUpsellExposure.call(context);
+
+			expect(context.$kvTrackEvent).not.toHaveBeenCalled();
+			expect(context.banditUpsellExposureTracked).toBe(false);
+		});
+
+		it('tracks when the upsell becomes shown', () => {
+			context.isUpsellShown = false;
+			CheckoutPage.methods.trackBanditUpsellExposure.call(context);
+			context.isUpsellShown = true;
+			context.trackBanditUpsellExposure = CheckoutPage.methods.trackBanditUpsellExposure;
+			CheckoutPage.watch.isUpsellShown.call(context, true);
+
+			expect(context.$kvTrackEvent).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	describe('isUpsellShown', () => {
+		const base = { showUpsell: true, showUpsellModule: true, upsellLoan: { name: 'Maria' } };
+
+		it('is true when the upsell loan is rendered', () => {
+			expect(CheckoutPage.computed.isUpsellShown.call(base)).toBe(true);
+		});
+
+		it.each([
+			['upsell hidden', { showUpsell: false }],
+			['module closed', { showUpsellModule: false }],
+			['no loan loaded', { upsellLoan: {} }],
+		])('is false when %s', (_, overrides) => {
+			expect(CheckoutPage.computed.isUpsellShown.call({ ...base, ...overrides })).toBe(false);
+		});
+	});
+
+	describe('initializeBanditUpsellExperiment', () => {
 		beforeEach(() => {
 			initializeExperiment.mockReset();
 		});
 
-		it('calls initializeExperiment with correct parameters', () => {
-			const mockCookieStore = {};
-			const mockApollo = {};
-			const mockRoute = { query: {} };
-			const mockTrackEvent = vi.fn();
-
-			const context = {
-				cookieStore: mockCookieStore,
-				apollo: mockApollo,
-				$route: mockRoute,
-				$kvTrackEvent: mockTrackEvent,
-				isExpiringSoonExpEnabled: false,
-			};
-
-			CheckoutPage.methods.initializeExpiringSoonExperiment.call(context);
-
-			expect(initializeExperiment).toHaveBeenCalledWith(
-				mockCookieStore,
-				mockApollo,
-				mockRoute,
-				'checkout_expiring_soon_upsell',
-				expect.any(Function),
-				mockTrackEvent,
-				'EXP-MP-2615-Apr2026',
-				'basket',
-			);
-		});
-
-		it('callback sets isExpiringSoonExpEnabled to true when version is "b"', () => {
+		it('sets the version without firing exposure tracking', () => {
 			const context = {
 				cookieStore: {},
 				apollo: {},
 				$route: { query: {} },
-				$kvTrackEvent: vi.fn(),
-				isExpiringSoonExpEnabled: false,
+				banditUpsellVersion: undefined,
 			};
 
-			CheckoutPage.methods.initializeExpiringSoonExperiment.call(context);
+			CheckoutPage.methods.initializeBanditUpsellExperiment.call(context);
+
+			expect(initializeExperiment).toHaveBeenCalledWith(
+				context.cookieStore,
+				context.apollo,
+				context.$route,
+				'checkout_bandit_upsell_v2_enable',
+				expect.any(Function),
+			);
 
 			const callback = initializeExperiment.mock.calls[0][4];
 			callback('b');
-
-			expect(context.isExpiringSoonExpEnabled).toBe(true);
+			expect(context.banditUpsellVersion).toBe('b');
 		});
+	});
 
-		it('callback sets isExpiringSoonExpEnabled to false when version is "a"', () => {
-			const context = {
-				cookieStore: {},
-				apollo: {},
-				$route: { query: {} },
-				$kvTrackEvent: vi.fn(),
-				isExpiringSoonExpEnabled: false,
-			};
-
-			CheckoutPage.methods.initializeExpiringSoonExperiment.call(context);
-
-			const callback = initializeExperiment.mock.calls[0][4];
-			callback('a');
-
-			expect(context.isExpiringSoonExpEnabled).toBe(false);
+	describe('isBanditUpsellExpEnabled', () => {
+		it.each([['b', true], ['a', false], [undefined, false]])('version %s -> %s', (version, expected) => {
+			const context = { banditUpsellVersion: version };
+			expect(CheckoutPage.computed.isBanditUpsellExpEnabled.call(context)).toBe(expected);
 		});
 	});
 });
