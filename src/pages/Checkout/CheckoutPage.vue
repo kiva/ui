@@ -842,7 +842,7 @@ export default {
 			return !upsellLoanAdded && !onlyDonations;
 		},
 		isUpsellShown() {
-			return this.showUpsell && this.showUpsellModule && !!this.upsellLoan?.name;
+			return !this.emptyBasket && this.showUpsell && this.showUpsellModule && !!this.upsellLoan?.name;
 		},
 		isLoggedIn() {
 			if (this.checkingOutAsGuest) {
