@@ -397,7 +397,7 @@ const ASYNC_CHECKOUT_EXP = 'async_checkout_rollout';
 const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
-const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_enable';
+const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_v2_enable';
 const EXPIRING_SOON_EXP_KEY = 'checkout_expiring_soon_upsell';
 const KIVA_CREDIT_REPLACEMENT_EXP_KEY = 'checkout_kiva_credit_copy_replacement';
 const CHECKOUT_TIP_COPY_EXP_KEY = 'checkout_tip_copy';
@@ -1538,7 +1538,7 @@ export default {
 					this.isBanditUpsellExpEnabled = version === 'b';
 				},
 				this.$kvTrackEvent,
-				'EXP-MP-2513-Mar2026',
+				'EXP-MP-3341-Oct2026',
 			);
 		},
 		async initializeExpiringSoonExperiment() {
