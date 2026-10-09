@@ -80,7 +80,6 @@
 							<upsell-module
 								v-if="upsellLoan.name"
 								:loan="upsellLoan"
-								:is-expiring-soon-exp-enabled="isExpiringSoonExpEnabled"
 								:show-tip-from-balance-variant="showTipFromBalanceVariant"
 								:close-upsell-module="closeUpsellModule"
 								:add-to-basket="addToBasket"
@@ -398,7 +397,6 @@ const CHECKOUT_LOGIN_CTA_EXP = 'checkout_login_cta';
 const GUEST_CHECKOUT_CTA_EXP = 'guest_checkout_cta';
 const DEPOSIT_REWARD_EXP_KEY = 'deposit_incentive_banner';
 const BANDIT_UPSELL_EXP_KEY = 'checkout_bandit_upsell_v2_enable';
-const EXPIRING_SOON_EXP_KEY = 'checkout_expiring_soon_upsell';
 const KIVA_CREDIT_REPLACEMENT_EXP_KEY = 'checkout_kiva_credit_copy_replacement';
 const CHECKOUT_TIP_COPY_EXP_KEY = 'checkout_tip_copy';
 const TIP_PERCENTAGE = 0.2;
@@ -414,6 +412,7 @@ const PREFETCH_EXPERIMENT_IDS = [
 	CUSTOM_TIP_DEFAULT_EXP_KEY,
 	TIP_FROM_BALANCE_EXP_KEY,
 	CHECKOUT_TIP_COPY_EXP_KEY,
+	BANDIT_UPSELL_EXP_KEY,
 ];
 
 // Query to gather user Teams
@@ -540,8 +539,8 @@ export default {
 			possibleAchievementProgress: [],
 			lenderLoansIds: [],
 			mdiGiftOutline,
-			isBanditUpsellExpEnabled: false,
-			isExpiringSoonExpEnabled: false,
+			banditUpsellVersion: undefined,
+			banditUpsellExposureTracked: false,
 			isKivaCreditReplacementExpEnabled: false,
 			enableAdminRewardTipFlag: false,
 			stopHidingTip: false,
@@ -770,15 +769,15 @@ export default {
 		tipFromBalanceVersion: 'resetTipPreferenceOutsideVariant',
 		async emptyBasket(newValue) {
 			if (!newValue && !this.upsellLoan?.id) {
-				await Promise.all([
-					this.initializeBanditUpsellExperiment(),
-					this.initializeExpiringSoonExperiment(),
-				]);
+				this.initializeBanditUpsellExperiment();
 				this.getUpsellModuleData();
 			}
 			if (!newValue && this.stopHidingTip) {
 				this.ensureTipDonationExists();
 			}
+		},
+		isUpsellShown(shown) {
+			if (shown) this.trackBanditUpsellExposure();
 		},
 	},
 	async mounted() {
@@ -827,6 +826,9 @@ export default {
 			return this.depositIncentiveExperimentEnabled
 				&& this.depositIncentiveAmountToLend > parseFloat(this.totals.loanReservationTotal);
 		},
+		isBanditUpsellExpEnabled() {
+			return this.banditUpsellVersion === 'b';
+		},
 		showUpsell() {
 			// hide regular upsell if the incentive upsell is shown MP-72
 			if (this.showIncentiveUpsell) {
@@ -838,6 +840,9 @@ export default {
 			const onlyDonations = this.loans.length === 0 && this.kivaCards.length === 0 && !this.emptyBasket;
 
 			return !upsellLoanAdded && !onlyDonations;
+		},
+		isUpsellShown() {
+			return this.showUpsell && this.showUpsellModule && !!this.upsellLoan?.name;
 		},
 		isLoggedIn() {
 			if (this.checkingOutAsGuest) {
@@ -1271,36 +1276,10 @@ export default {
 				},
 			);
 		},
-		getLoansByExpiringSoon() {
-			return runRecommendationsQuery(
-				this.apollo,
-				{
-					filterObject: {
-						daysUntilExpiration: {
-							range: { gte: 1 },
-						},
-					},
-					sortBy: 'expiringSoon',
-					limit: 20,
-					origin: FLSS_ORIGIN_CHECKOUT_UPSELL,
-				}
-			);
-		},
 		getUpsellModuleData(loanId = 0) {
 			this.addedUpsellLoans.push(loanId);
 
-			if (this.isExpiringSoonExpEnabled) {
-				this.getLoansByExpiringSoon()
-					.then(result => {
-						this.continueButtonState = 'active';
-						const loans = result?.loans || [];
-						this.upsellLoan = loans.filter(loan => !this.addedUpsellLoans.includes(loan.id))[0] || {};
-					})
-					.catch(e => {
-						this.continueButtonState = 'active';
-						logReadQueryError(e, 'getLoansByExpiringSoon');
-					});
-			} else if (this.isBanditUpsellExpEnabled) {
+			if (this.isBanditUpsellExpEnabled) {
 				// Money fields are formatted strings (numeral parses them); balance is nullable when logged out
 				const balance = this.myBalance == null ? null : numeral(this.myBalance).value();
 				const basketAmount = numeral(this.totals?.itemTotal).value();
@@ -1528,32 +1507,25 @@ export default {
 				});
 			}
 		},
-		async initializeBanditUpsellExperiment() {
+		initializeBanditUpsellExperiment() {
 			initializeExperiment(
 				this.cookieStore,
 				this.apollo,
 				this.$route,
 				BANDIT_UPSELL_EXP_KEY,
 				version => {
-					this.isBanditUpsellExpEnabled = version === 'b';
+					this.banditUpsellVersion = version;
 				},
-				this.$kvTrackEvent,
-				'EXP-MP-3341-Oct2026',
 			);
 		},
-		async initializeExpiringSoonExperiment() {
-			initializeExperiment(
-				this.cookieStore,
-				this.apollo,
-				this.$route,
-				EXPIRING_SOON_EXP_KEY,
-				version => {
-					this.isExpiringSoonExpEnabled = version === 'b';
-				},
-				this.$kvTrackEvent,
-				'EXP-MP-2615-Apr2026',
-				'basket',
-			);
+		// Fire once per page load, when the upsell loan is shown
+		trackBanditUpsellExposure() {
+			if (this.banditUpsellExposureTracked || !this.isUpsellShown) return;
+			const version = this.banditUpsellVersion;
+			// Skip users outside the experiment
+			if (version !== 'a' && version !== 'b') return;
+			this.banditUpsellExposureTracked = true;
+			this.$kvTrackEvent('event-tracking', 'EXP-MP-3341-Oct2026', version);
 		},
 		ensureTipDonationExists() {
 			if (this.emptyBasket) return;
