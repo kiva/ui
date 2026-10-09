@@ -210,13 +210,19 @@ describe('CheckoutPage upsell', () => {
 	});
 
 	describe('isUpsellShown', () => {
-		const base = { showUpsell: true, showUpsellModule: true, upsellLoan: { name: 'Maria' } };
+		const base = {
+			emptyBasket: false,
+			showUpsell: true,
+			showUpsellModule: true,
+			upsellLoan: { name: 'Maria' },
+		};
 
 		it('is true when the upsell loan is rendered', () => {
 			expect(CheckoutPage.computed.isUpsellShown.call(base)).toBe(true);
 		});
 
 		it.each([
+			['basket empty', { emptyBasket: true }],
 			['upsell hidden', { showUpsell: false }],
 			['module closed', { showUpsellModule: false }],
 			['no loan loaded', { upsellLoan: {} }],
