@@ -1,3 +1,26 @@
+## [3.97.0-rc.2](https://github.com/kiva/ui/compare/v3.97.0-rc.1...v3.97.0-rc.2) (2026-10-09)
+
+### 🎉 New Features
+
+* add experiment assignment tracking for new bp variation ([#7314](https://github.com/kiva/ui/issues/7314)) ([d9e6e5c](https://github.com/kiva/ui/commit/d9e6e5ced5326ffaa3d95816a32cb850fe5f2cd3))
+* add share button to mykiva borrower carousel ([#7312](https://github.com/kiva/ui/issues/7312)) ([3f389e5](https://github.com/kiva/ui/commit/3f389e5fa2207f9134c321aa5d781a7c21fb9d98))
+* goal in review complete in goal year share cta ([#7313](https://github.com/kiva/ui/issues/7313)) ([77b0942](https://github.com/kiva/ui/commit/77b0942f6cd90c8212866b7cc18462f60a987c57))
+* move tip copy testing from optimizely ([#7310](https://github.com/kiva/ui/issues/7310)) ([0272baf](https://github.com/kiva/ui/commit/0272baf2a67f0d265669ce1ab23231bc9a6e8a7c)), closes [#7300](https://github.com/kiva/ui/issues/7300) [#7306](https://github.com/kiva/ui/issues/7306) [#7309](https://github.com/kiva/ui/issues/7309)
+* update KvPill usage for kv-components 11 ([#7316](https://github.com/kiva/ui/issues/7316)) ([788b643](https://github.com/kiva/ui/commit/788b643e11ce850d70f3be0841ff7fa0c6fe96c2))
+
+### 🐛 Bugfixes
+
+* cleanup upsell experimentation and assignment ([#7324](https://github.com/kiva/ui/issues/7324)) ([02a56c4](https://github.com/kiva/ui/commit/02a56c408d6dccbac9ffbdc2be31a2b6e2b0331e))
+* mp-3258 request estimated repayments grouped by the 1st they are due by ([#7294](https://github.com/kiva/ui/issues/7294)) ([e46d238](https://github.com/kiva/ui/commit/e46d2388b447e576ed81ec848a9ab6a3422e901f))
+* new key and action for second bandit experiment run ([#7317](https://github.com/kiva/ui/issues/7317)) ([7c69890](https://github.com/kiva/ui/commit/7c69890ca30a8a55beb3c9743919d104c71fdeda))
+* **OneTrust:** only set test suffix if env var is not set AD-552 ([66d80bf](https://github.com/kiva/ui/commit/66d80bfcb0034f0f4528e111005150811c29719f))
+* **server:** drop the path label from request duration metrics ([da0cc47](https://github.com/kiva/ui/commit/da0cc4721ce748c653ebf28eb8025fbe1b3e196f))
+* upsell also hidden when basket empty ([#7325](https://github.com/kiva/ui/issues/7325)) ([d4112da](https://github.com/kiva/ui/commit/d4112dad1db923e733cf20516c93b82b18ad8f5d))
+
+### 🧹 Chores
+
+* bump kv-analytics version to fix ftd meta tracking ([37c8af2](https://github.com/kiva/ui/commit/37c8af24aec9de3d7ede31534faf6fed384134e0))
+
 ## [3.97.0-rc.1](https://github.com/kiva/ui/compare/v3.96.0...v3.97.0-rc.1) (2026-09-30)
 
 ### 🎉 New Features
