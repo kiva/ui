@@ -104,12 +104,10 @@ describe('LendingInsights share', () => {
 		const message = wrapper.findComponent(KvSocialShareButtonStub).props('shareMessage');
 		expect(wrapper.find('[data-testid="lending-stats-share-message"]').element.value).toBe(message);
 		expect(message).toBe(
-			'I\'ve lent $1,525 across 74 loans in 31 countries through Kiva — and I only deposited a fraction '
-			+ 'of that. When a loan repays, I re-lend it to someone new. The same dollars keep going.\n\n'
-			+ 'Kiva is a nonprofit that lets you lend as little as $25 to a farmer, student, or small business '
-			+ 'owner who needs a hand up. You\'re not just donating — you\'re telling someone you believe in them '
-			+ 'and their future, when most of the world shuts them out.\n\n'
-			+ 'Give it a try: kiva.org\n\n#Kiva',
+			'I\'ve made 74 loans in 31 countries through #Kiva. When a loan repays, I re-lend it to someone new. '
+			+ 'Kiva is a nonprofit that lets you lend as little as $25 to people who need a hand up. '
+			+ 'You\'re not just donating, you\'re telling someone you believe in them when others won\'t.\n'
+			+ 'Give it a try! Kiva.org',
 		);
 	});
 
@@ -123,7 +121,7 @@ describe('LendingInsights share', () => {
 		expect(wrapper.findComponent(KvSocialShareButtonStub).props('shareMessage')).toBe('My shorter post');
 	});
 
-	it('uses singular wording and drops the deposit line when $25 was deposited and lent once', async () => {
+	it('uses singular wording for one loan in one country', async () => {
 		const wrapper = mountInsights(lifetimeData({
 			amount: 25, loans: 1, countries: 1, deposited: 25,
 		}));
@@ -131,22 +129,7 @@ describe('LendingInsights share', () => {
 		await wrapper.find('[data-testid="lending-stats-share-button"]').trigger('click');
 
 		const message = wrapper.findComponent(KvSocialShareButtonStub).props('shareMessage');
-		expect(message).toMatch(/^I've lent \$25 across 1 loan in 1 country through Kiva\. When a loan repays/);
-		expect(message).not.toContain('fraction');
-	});
-
-	it.each([
-		['deposited 200, lent 1,525', { amount: 1525, loans: 74, deposited: 200 }, true],
-		['deposited 25, lent it once', { amount: 25, loans: 1, deposited: 25 }, false],
-		['deposited 100, lent 100 across 4 loans', { amount: 100, loans: 4, deposited: 100 }, false],
-		['deposited 25, re-lent it once', { amount: 50, loans: 2, deposited: 25 }, true],
-	])('only claims a fraction was deposited when it is true: %s', async (_, stats, showsFraction) => {
-		const wrapper = mountInsights(lifetimeData(stats));
-		await flushPromises();
-		await wrapper.find('[data-testid="lending-stats-share-button"]').trigger('click');
-
-		const message = wrapper.findComponent(KvSocialShareButtonStub).props('shareMessage');
-		expect(message.includes('and I only deposited a fraction of that')).toBe(showsFraction);
+		expect(message).toMatch(/^I've made 1 loan in 1 country through #Kiva\./);
 	});
 
 	it('labels the share message box for screen readers', async () => {
@@ -166,7 +149,7 @@ describe('LendingInsights share', () => {
 		await wrapper.find('[data-testid="lending-stats-share-message"]').setValue('   ');
 
 		expect(wrapper.findComponent(KvSocialShareButtonStub).props('shareMessage'))
-			.toMatch(/^I've lent \$1,525 across 74 loans/);
+			.toMatch(/^I've made 74 loans in 31 countries/);
 	});
 
 	it('hides the share button when the stats fail to load', async () => {

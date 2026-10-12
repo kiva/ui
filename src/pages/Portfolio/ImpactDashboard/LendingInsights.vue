@@ -18,7 +18,7 @@
 				:state="loading ? 'disabled' : ''"
 				@click="openShare"
 			>
-				<span class="tw-flex tw-items-center tw-gap-1 tw-text-base">
+				<span class="tw-inline-flex tw-items-center tw-gap-1 tw-text-base">
 					<kv-material-icon
 						:icon="mdiExportVariant"
 						class="tw-w-2 tw-h-2 tw-text-eco-green"
@@ -448,7 +448,6 @@ export default {
 			currentYearPercentile: null,
 			nextPercentileMsg: '',
 			lifetimeAmountLent: 0,
-			lifetimeAmountLentValue: 0,
 			totalDepositsValue: null,
 			lifetimeCountryCount: 0,
 			lifetimeNumberOfLoans: 0,
@@ -473,17 +472,10 @@ export default {
 		shareMessage() {
 			const loans = pluralize(this.lifetimeNumberOfLoans, 'loan', 'loans');
 			const countries = pluralize(this.lifetimeCountryCount, 'country', 'countries');
-			// Lenders who haven't re-lent yet (e.g. deposited $25 and lent it once) didn't deposit "a fraction"
-			const depositedFraction = this.lifetimeAmountLentValue > (this.totalDepositsValue ?? 0)
-				? ' — and I only deposited a fraction of that'
-				: '';
-			return `I've lent ${this.lifetimeAmountLent} across ${loans} in ${countries} through Kiva`
-				+ `${depositedFraction}. When a loan repays, I re-lend it to someone new. The same dollars keep going.`
-				+ '\n\nKiva is a nonprofit that lets you lend as little as $25 to a farmer, student, or small business '
-				+ 'owner who needs a hand up. You\'re not just donating — you\'re telling someone you believe in them '
-				+ 'and their future, when most of the world shuts them out.'
-				+ '\n\nGive it a try: kiva.org'
-				+ '\n\n#Kiva';
+			return `I've made ${loans} in ${countries} through #Kiva. When a loan repays, I re-lend it to someone new. `
+				+ 'Kiva is a nonprofit that lets you lend as little as $25 to people who need a hand up. '
+				+ 'You\'re not just donating, you\'re telling someone you believe in them when others won\'t.'
+				+ '\nGive it a try! Kiva.org';
 		},
 	},
 	apollo: {
@@ -506,7 +498,6 @@ export default {
 
 			this.totalDepositsValue = toNumber(data?.my?.lendingStats?.totalAmountDeposited);
 			this.lifetimeAmountLent = amountOfLoans.format('$0,0[.]00');
-			this.lifetimeAmountLentValue = amount;
 			this.lifetimeCountryCount = toNumber(data?.my?.lendingStats?.lentTo?.countries?.totalCount);
 			this.lifetimeNumberOfLoans = toNumber(data?.my?.userStats?.number_of_loans);
 			this.lifetimePercentile = numeral(toNumber(data?.my?.lendingStats?.amountLentPercentile)).format('0o');

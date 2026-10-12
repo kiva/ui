@@ -183,7 +183,7 @@ export default {
 			required: false,
 			default: 'borrower-profile'
 		},
-		/** Fixed-width modal: up to 512px, with 16px outer margins and a centered card on smaller screens */
+		/** Fixed-width modal: up to 512px on desktop, keeping the bottom sheet on mobile */
 		fixedWidthModal: {
 			type: Boolean,
 			default: false
@@ -239,17 +239,12 @@ export default {
 	@apply tw-w-5 tw-h-5 tw-pointer-events-none tw-inline-block tw-align-middle;
 }
 
-/* Targeting the lightbox to be centered on screen (both desktop and mobile)
- * when lightbox has a fixed width and height dimensions
+/* Targeting the lightbox to have a fixed width on desktop, keeping the bottom sheet on mobile.
+ * KvLightbox sets max-width inline
  */
 .social-share-lightbox--fixed-width :deep([data-test=kv-lightbox]) {
-	@apply tw-rounded;
-
 	width: 100%;
-	max-width: min(32rem, calc(100vw - 2rem)) !important;
-	margin-top: auto;
-	margin-bottom: auto;
-	min-height: 0;
+	max-width: 32rem !important;
 }
 
 /* Targeting background color and inner-spans within social media share context in LendingInsights modal */
