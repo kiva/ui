@@ -5,10 +5,7 @@
 				<h2 class="!tw-text-title">
 					Fundraisers with Kiva
 				</h2>
-				<KvPill
-					bg-class="tw-bg-brand tw-text-primary-inverse"
-					rounded-class="tw-rounded"
-				>
+				<KvPill variant="caution" size="small">
 					<template #icon>
 						<KvMaterialIcon class="tw-h-2 tw-w-2" :icon="mdiBullhornOutline" />
 					</template>
