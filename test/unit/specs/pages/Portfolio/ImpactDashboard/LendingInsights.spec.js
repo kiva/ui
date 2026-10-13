@@ -46,12 +46,12 @@ const lifetimeData = ({
 
 const mockTrackEvent = vi.fn();
 
-const mountInsights = (data, query = vi.fn(() => Promise.resolve({ data }))) => mount(LendingInsights, {
+const mountInsights = data => mount(LendingInsights, {
 	global: {
 		provide: {
 			apollo: {
 				readQuery: () => data,
-				query,
+				query: vi.fn(() => Promise.resolve({ data })),
 			},
 			cookieStore: {},
 		},
@@ -150,16 +150,6 @@ describe('LendingInsights share', () => {
 
 		expect(wrapper.findComponent(KvSocialShareButtonStub).props('shareMessage'))
 			.toMatch(/^I've made 74 loans in 31 countries/);
-	});
-
-	it('hides the share button when the stats fail to load', async () => {
-		const query = vi.fn(() => Promise.reject(new Error('network')));
-		const wrapper = mountInsights(null, query);
-		wrapper.findComponent(AsyncPortfolioSectionStub).vm.$emit('visible');
-		await flushPromises();
-
-		expect(query).toHaveBeenCalled();
-		expect(wrapper.find('[data-testid="lending-stats-share-button"]').exists()).toBe(false);
 	});
 
 	it('hides the share button while stats are loading', async () => {

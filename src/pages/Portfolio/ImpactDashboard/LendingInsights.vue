@@ -10,7 +10,7 @@
 				Your lending insights
 			</h2>
 			<KvButton
-				v-if="!loading && !lifetimeStatsError && lifetimeNumberOfLoans > 0"
+				v-if="!loading && lifetimeNumberOfLoans > 0"
 				variant="link"
 				class="tw-shrink-0"
 				size="small"
@@ -18,7 +18,7 @@
 				@click="openShare"
 			>
 				<span class="tw-inline-flex tw-items-center tw-gap-1 tw-text-base tw-text-eco-green">
-					<kv-material-icon :icon="mdiExportVariant" class="tw-w-1.5 tw-h-1.5" />
+					<kv-material-icon :icon="mdiExportVariant" class="tw-w-2 tw-h-2 tw--mt-0.5" />
 					Share
 				</span>
 			</KvButton>
@@ -362,7 +362,6 @@
 import { gql } from 'graphql-tag';
 import numeral from 'numeral';
 import getCacheKey from '#src/util/getCacheKey';
-import logReadQueryError from '#src/util/logReadQueryError';
 import {
 	mdiArrowRight, mdiClockOutline, mdiExportVariant, mdiTextBoxEditOutline,
 } from '@mdi/js';
@@ -434,7 +433,6 @@ export default {
 			lifetimeLoadingPromise: null,
 			hasCurrentYearStats: false,
 			hasLifetimeStats: false,
-			lifetimeStatsError: false,
 			currentYearAmountLent: 0,
 			currentYearCountryCount: 0,
 			currentYearNumberOfLoans: 0,
@@ -533,9 +531,6 @@ export default {
 					query: LENDING_INSIGHTS_LIFETIME_QUERY,
 				}).then(({ data }) => {
 					this.applyLifetimeStats(data);
-				}).catch(e => {
-					this.lifetimeStatsError = true;
-					logReadQueryError(e, 'LendingInsights lendingInsights');
 				}).finally(() => {
 					this.lifetimeLoadingPromise = null;
 					this.syncLoadingState();
