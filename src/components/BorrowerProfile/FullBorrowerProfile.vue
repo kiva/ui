@@ -20,7 +20,8 @@
 					data-testid="bp-summary"
 					class="tw-relative lg:tw--mb-1.5"
 					:class="{
-						'new-user-top-card tw-bg-primary tw--mx-2.5 tw-px-2.5 md:tw-mx-0': newUserBpEnabled,
+						'tw-bg-primary tw--mx-2.5 tw-px-2.5 tw-shadow-lg md:tw-mx-0 md:tw-shadow-transparent':
+							newUserBpEnabled,
 					}"
 					:loan="loanData"
 					:is-logged-in="isLoggedIn"
@@ -434,13 +435,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="postcss" scoped>
-.new-user-top-card {
-	@apply tw-shadow-lg;
-
-	@screen md {
-		box-shadow: none;
-	}
-}
-</style>
