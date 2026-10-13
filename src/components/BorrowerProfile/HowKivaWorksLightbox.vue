@@ -31,9 +31,6 @@
 import { KvLightbox } from '@kiva/kv-components';
 import RevolvingFundAnimation from '#src/components/BorrowerProfile/RevolvingFundAnimation';
 
-// Desktop modal / mobile bottom sheet explaining the lending cycle. KvLightbox supplies the
-// close X, outside click, Escape, focus trap and focus return; the mobile sheet is its own
-// below-md layout.
 export default {
 	name: 'HowKivaWorksLightbox',
 	components: {
