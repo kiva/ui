@@ -1,4 +1,5 @@
 import FullBorrowerProfile from '#src/components/BorrowerProfile/FullBorrowerProfile';
+import { NEW_USER_BP_EXP_INJECT_KEY } from '#src/util/newUserBorrowerProfileExp';
 
 import apolloStoryMixin from '../../mixins/apollo-story-mixin';
 import cookieStoreStoryMixin from '../../mixins/cookie-store-story-mixin';
@@ -34,7 +35,7 @@ import {
  * - Privileged: inactive, reviewed, deleted, inactiveExpired, issue
  */
 
-function fullProfileStory(loan, myUser = null) {
+function fullProfileStory(loan, myUser = null, { newUserVersion = null } = {}) {
 	const queryResult = createQueryResult(loan, myUser);
 	return () => ({
 		components: { FullBorrowerProfile },
@@ -43,6 +44,10 @@ function fullProfileStory(loan, myUser = null) {
 			cookieStoreStoryMixin(),
 			kvAuth0StoryMixin,
 		],
+		// The page normally provides the experiment version ('a', 'b' or null)
+		provide() {
+			return { [NEW_USER_BP_EXP_INJECT_KEY]: newUserVersion };
+		},
 		setup() {
 			return { loan, lender: myUser?.userAccount ?? {} };
 		},
@@ -71,6 +76,10 @@ export const Fundraising = fullProfileStory(fundraisingPartnerLoan, loggedInUser
 export const MultiMatched = fullProfileStory(multiMatchedLoan, loggedInUser);
 
 export const PrivateFundraisingPeriod = fullProfileStory(pfpLoan, loggedInUser);
+
+// New user version (experiment b): logged out visitor, actions in the top card
+export const NewUserVersion = fullProfileStory(fundraisingPartnerLoan, null, { newUserVersion: 'b' });
+NewUserVersion.storyName = 'New user version (b)';
 
 export const Expired = fullProfileStory(expiredLoan);
 

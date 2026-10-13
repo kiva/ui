@@ -230,6 +230,8 @@
 						All shares reserved
 					</p>
 					<hr
+						v-if="!hideJumpLinks"
+						data-testid="bp-lend-cta-jump-links-divider"
 						class="lg:tw-block tw-border-tertiary tw-w-full tw-my-2"
 						:class="[
 							{
@@ -240,6 +242,7 @@
 						]"
 					>
 					<div
+						v-if="!hideJumpLinks"
 						class="lg:tw-block tw-flex lg:tw-justify-center tw-w-full"
 						:class="[
 							{
@@ -515,6 +518,11 @@ export default {
 			default: false,
 		},
 		showDetailsInRail: {
+			type: Boolean,
+			default: false,
+		},
+		// New user version: the top card holds "Loan details" and "Share", so the lend box drops its jump links
+		hideJumpLinks: {
 			type: Boolean,
 			default: false,
 		},

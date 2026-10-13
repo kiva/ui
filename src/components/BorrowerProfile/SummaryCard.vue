@@ -49,6 +49,17 @@
 							loanId
 						]"
 					/>
+					<!-- New user version, small screens: the card's actions live in a kebab menu -->
+					<div
+						v-if="showActions"
+						class="tw-ml-auto tw-shrink-0 md:tw-hidden"
+						data-testid="bp-summary-actions-menu"
+					>
+						<loan-actions-menu
+							@share="$emit('share')"
+							@loan-details="$emit('loan-details')"
+						/>
+					</div>
 				</div>
 				<template v-if="isLoading">
 					<div class="tw-flex tw-flex-wrap tw-mb-3">
@@ -141,6 +152,17 @@
 				data-testid="bp-summary-bookmark"
 			/>
 		</div>
+		<!-- New user version, tablet and desktop: "Loan details" and "Share" under the loan use -->
+		<div
+			v-if="showActions"
+			class="tw-hidden md:tw-block tw-mt-1"
+			data-testid="bp-summary-actions"
+		>
+			<loan-action-links
+				@share="$emit('share')"
+				@loan-details="$emit('loan-details')"
+			/>
+		</div>
 		<slot name="sharebutton"></slot>
 	</section>
 </template>
@@ -158,6 +180,8 @@ import BorrowerName from './BorrowerName';
 import LoanProgress from './LoanProgress';
 import SummaryTag from './SummaryTag';
 import LoanBookmark from './LoanBookmark';
+import LoanActionLinks from './LoanActionLinks';
+import LoanActionsMenu from './LoanActionsMenu';
 
 export const summaryCardFragment = gql`fragment summaryCardFields on LoanBasic {
 	id
@@ -235,15 +259,23 @@ export default {
 		LoanProgress,
 		SummaryTag,
 		LoanBookmark,
+		LoanActionLinks,
+		LoanActionsMenu,
 		KvLoadingPlaceholder,
 		HeartComment,
 	},
+	emits: ['share', 'loan-details'],
 	props: {
 		loan: {
 			type: Object,
 			default: () => ({}),
 		},
 		isLoggedIn: {
+			type: Boolean,
+			default: false,
+		},
+		// New user version: show "Loan details" and "Share" inside the card
+		showActions: {
 			type: Boolean,
 			default: false,
 		},

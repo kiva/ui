@@ -60,7 +60,9 @@ export default {
 		return {
 			modifiedShareMessage: '',
 			mdiPencilOutline,
-			borrowedLoanId: null
+			borrowedLoanId: null,
+			// A share=true deep link forces the lightbox open once; cleared when it closes
+			openedFromQuery: this.$route?.query?.share === 'true',
 		};
 	},
 	inject: ['apollo', 'cookieStore'],
@@ -222,12 +224,15 @@ export default {
 			return `${this.$route.path}`;
 		},
 		forceLightbox() {
-			// If query param share=true return true to force lightbox open or opened from prop
-			return this.$route.query.share === 'true' || this.openLightbox;
+			// Forced open by the share=true deep link (until closed) or by the openLightbox prop. After the
+			// deep-linked lightbox closes only the prop can open it again, so a parent without its own
+			// trigger button (hidden variant) still gets a false -> true change to react to.
+			return this.openedFromQuery || this.openLightbox;
 		},
 	},
 	methods: {
 		closeLightbox() {
+			this.openedFromQuery = false;
 			this.$emit('lightbox-closed');
 		},
 	},

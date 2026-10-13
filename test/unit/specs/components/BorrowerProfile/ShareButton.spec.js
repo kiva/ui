@@ -6,6 +6,8 @@ const stubs = {
 	KvSocialShareButton: {
 		template: `<div>
 			<span data-testid="share-url">{{ shareUrl }}</span>
+			<span data-testid="open-lightbox">{{ String(openLightbox) }}</span>
+			<button data-testid="close-lightbox" @click="$emit('lightbox-closed')">close</button>
 			<button data-testid="bp-share-cta-button" @click="handleClick">
 				<slot>Share</slot>
 			</button>
@@ -111,5 +113,25 @@ describe('ShareButton', () => {
 		);
 
 		expect(getByTestId('share-url').textContent).toBe('/invitedby/jane/for/123');
+	});
+
+	describe('share=true deep link', () => {
+		const deepLinkRoute = { path: '/lend/123', query: { share: 'true' } };
+
+		it('forces the lightbox open on load, as today', () => {
+			const { getByTestId } = renderShareButton({}, { route: deepLinkRoute });
+
+			expect(getByTestId('open-lightbox').textContent).toBe('true');
+		});
+
+		it('stops forcing once the lightbox is closed, so the prop can open it again', async () => {
+			const { getByTestId, rerender } = renderShareButton({}, { route: deepLinkRoute });
+
+			await fireEvent.click(getByTestId('close-lightbox'));
+			expect(getByTestId('open-lightbox').textContent).toBe('false');
+
+			await rerender({ openLightbox: true });
+			expect(getByTestId('open-lightbox').textContent).toBe('true');
+		});
 	});
 });
