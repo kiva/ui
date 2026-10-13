@@ -21,6 +21,20 @@
 					class="tw-relative lg:tw--mb-1.5"
 					:loan="loanData"
 					:is-logged-in="isLoggedIn"
+					:show-actions="isNewUserBpVariant"
+					@share="openShareLightbox"
+					@loan-details="scrollToLoanDetails"
+				/>
+				<!-- New user version: the share lightbox opens from the top card, so its own trigger is hidden.
+					Lives outside the lend box because that slot is dropped while the lend box is sticky;
+					rendered only once the loan has loaded, as today. -->
+				<share-button
+					v-if="isNewUserBpVariant && !loading"
+					v-bind="shareButtonProps"
+					variant="hidden"
+					data-testid="bp-summary-share-lightbox"
+					:open-lightbox="isShareLightboxOpen"
+					@lightbox-closed="isShareLightboxOpen = false"
 				/>
 			</content-container>
 		</div>
@@ -38,22 +52,18 @@
 						:loan-data="loanData"
 						:enable-five-dollars-notes="enableFiveDollarsNotes"
 						:show-details-in-rail="showDetailsInRail"
+						:hide-jump-links="isNewUserBpVariant"
 					>
-						<template #sharebutton>
-							<!-- Share button -->
+						<!-- Share button; the new user version shows it in the top card instead -->
+						<template v-if="!isNewUserBpVariant" #sharebutton>
 							<template v-if="loading">
 								<kv-loading-placeholder style="height: 2rem; width: 100%;" />
 							</template>
 							<share-button
 								v-else
+								v-bind="shareButtonProps"
 								class="tw-block lg:tw-mb-1.5"
-								:loan="loanData"
 								:variant="shareBtnVariant"
-								:lender="lender"
-								:campaign="shareCampaign"
-								:in-pfp="inPfp"
-								:pfp-min-lenders="pfpMinLenders"
-								:num-lenders="numLenders"
 							/>
 						</template>
 					</lend-cta>
@@ -191,6 +201,7 @@ import LoanTags from '#src/components/BorrowerProfile/LoanTags';
 import LoanComments from '#src/components/BorrowerProfile/LoanComments';
 import LoanDetailsRailToggle from '#src/components/BorrowerProfile/LoanDetailsRailToggle';
 import DefinitionsLightbox from '#src/components/BorrowerProfile/DefinitionsLightbox';
+import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import HowKivaWorksLightbox from '#src/components/BorrowerProfile/HowKivaWorksLightbox';
 import {
 	getLocalRailPreference,
@@ -199,6 +210,7 @@ import {
 	persistRailPreference,
 } from '#src/util/loanDetailsRailPreference';
 import { isActivelyInPfp } from '#src/util/loanUtils';
+import { NEW_USER_BP_EXP_INJECT_KEY } from '#src/util/newUserBorrowerProfileExp';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { KvLoadingPlaceholder } from '@kiva/kv-components';
 
@@ -269,7 +281,13 @@ export default {
 		DefinitionsLightbox,
 		HowKivaWorksLightbox,
 	},
-	inject: ['apollo', 'cookieStore'],
+	mixins: [smoothScrollMixin],
+	inject: {
+		apollo: { from: 'apollo' },
+		cookieStore: { from: 'cookieStore' },
+		// Provided by the page; false wherever the page does not provide it (Storybook, specs)
+		isNewUserBpVariant: { from: NEW_USER_BP_EXP_INJECT_KEY, default: false },
+	},
 	provide() {
 		return {
 			// One definitions lightbox for the BP page; children call this with their cid/sfid.
@@ -339,8 +357,22 @@ export default {
 			// Initialize from the SSR-resolved prop so logged-in opted-in renders without flash.
 			showDetailsInRail: this.initialShowDetailsInRail,
 			userPreferences: null,
+			isShareLightboxOpen: false,
 			showHowKivaWorks: false,
 		};
+	},
+	methods: {
+		openShareLightbox() {
+			this.isShareLightboxOpen = true;
+			// The hidden share button has no trigger to fire this itself
+			this.$kvTrackEvent('borrower-profile', 'show', 'share-lightbox', this.shareCampaign);
+		},
+		scrollToLoanDetails() {
+			// Same target and timing as the lend box jump link; the rail toggle is left untouched
+			const section = document.querySelector('#loanDetails');
+			this.smoothScrollTo({ yPosition: section?.offsetTop ?? 0, millisecondsToAnimate: 750 });
+			this.$kvTrackEvent('Borrower profile', 'click-jump-link', 'Loan details');
+		},
 	},
 	computed: {
 		loanId() {
@@ -388,6 +420,17 @@ export default {
 		},
 		shareBtnVariant() {
 			return this.isMobile ? 'secondary' : 'caution';
+		},
+		// Bound to the share button wherever it renders (lend box in the control, hidden in the new user version)
+		shareButtonProps() {
+			return {
+				loan: this.loanData,
+				lender: this.lender,
+				campaign: this.shareCampaign,
+				inPfp: this.inPfp,
+				pfpMinLenders: this.pfpMinLenders,
+				numLenders: this.numLenders,
+			};
 		},
 		showDetailsInRailModel: {
 			get() {

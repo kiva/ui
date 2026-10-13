@@ -15,7 +15,7 @@ import {
 	pfpLoan,
 } from './mockLoanFixtures';
 
-function summaryCardStory(loan, myUser = null) {
+function summaryCardStory(loan, myUser = null, props = {}) {
 	const queryResult = createQueryResult(loan, myUser);
 	return () => ({
 		components: { SummaryCard },
@@ -25,11 +25,12 @@ function summaryCardStory(loan, myUser = null) {
 			kvAuth0StoryMixin,
 		],
 		setup() {
-			return { loan };
+			return { loan, props };
 		},
 		template: `
 			<summary-card
 				:loan="loan"
+				v-bind="props"
 			/>
 		`,
 	});
@@ -56,6 +57,10 @@ export const Ended = summaryCardStory(endedLoan, loggedInUser);
 
 export const PFP = summaryCardStory(pfpLoan, loggedInUser);
 PFP.storyName = 'Private Fundraising Period';
+
+// New user version: "Loan details" and "Share" live in the card (kebab below the md breakpoint)
+export const NewUserActions = summaryCardStory(fundraisingPartnerLoan, null, { showActions: true });
+NewUserActions.storyName = 'New user version (actions in card)';
 
 export const Loading = () => ({
 	components: { SummaryCard },
