@@ -279,8 +279,8 @@ export default {
 	inject: {
 		apollo: { from: 'apollo' },
 		cookieStore: { from: 'cookieStore' },
-		// 'a', 'b' or null; null for visitors outside the experiment and wherever the page does not provide it
-		newUserBpExpVersion: { from: NEW_USER_BP_EXP_INJECT_KEY, default: null },
+		// Provided by the page; false wherever the page does not provide it (Storybook, specs)
+		isNewUserBpVariant: { from: NEW_USER_BP_EXP_INJECT_KEY, default: false },
 	},
 	provide() {
 		return {
@@ -368,9 +368,6 @@ export default {
 		},
 	},
 	computed: {
-		isNewUserBpVariant() {
-			return this.newUserBpExpVersion === 'b';
-		},
 		loanId() {
 			return Number(this.$route?.params?.id ?? 0);
 		},

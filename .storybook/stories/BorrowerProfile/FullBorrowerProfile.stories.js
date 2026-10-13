@@ -35,7 +35,7 @@ import {
  * - Privileged: inactive, reviewed, deleted, inactiveExpired, issue
  */
 
-function fullProfileStory(loan, myUser = null, { newUserVersion = null } = {}) {
+function fullProfileStory(loan, myUser = null, { isNewUserVariant = false } = {}) {
 	const queryResult = createQueryResult(loan, myUser);
 	return () => ({
 		components: { FullBorrowerProfile },
@@ -44,9 +44,9 @@ function fullProfileStory(loan, myUser = null, { newUserVersion = null } = {}) {
 			cookieStoreStoryMixin(),
 			kvAuth0StoryMixin,
 		],
-		// The page normally provides the experiment version ('a', 'b' or null)
+		// The page normally provides whether the visitor sees the new user version
 		provide() {
-			return { [NEW_USER_BP_EXP_INJECT_KEY]: newUserVersion };
+			return { [NEW_USER_BP_EXP_INJECT_KEY]: isNewUserVariant };
 		},
 		setup() {
 			return { loan, lender: myUser?.userAccount ?? {} };
@@ -78,7 +78,7 @@ export const MultiMatched = fullProfileStory(multiMatchedLoan, loggedInUser);
 export const PrivateFundraisingPeriod = fullProfileStory(pfpLoan, loggedInUser);
 
 // New user version (experiment b): logged out visitor, actions in the top card
-export const NewUserVersion = fullProfileStory(fundraisingPartnerLoan, null, { newUserVersion: 'b' });
+export const NewUserVersion = fullProfileStory(fundraisingPartnerLoan, null, { isNewUserVariant: true });
 NewUserVersion.storyName = 'New user version (b)';
 
 export const Expired = fullProfileStory(expiredLoan);

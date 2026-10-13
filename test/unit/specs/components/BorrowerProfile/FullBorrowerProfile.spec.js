@@ -103,19 +103,7 @@ describe('FullBorrowerProfile updates section visibility', () => {
 });
 
 describe('FullBorrowerProfile new user version', () => {
-	const { isNewUserBpVariant } = FullBorrowerProfile.computed;
 	const { openShareLightbox, scrollToLoanDetails } = FullBorrowerProfile.methods;
-
-	describe('isNewUserBpVariant', () => {
-		it.each([
-			['b', true],
-			['a', false],
-			[null, false],
-			[undefined, false],
-		])('version %s -> %s', (version, expected) => {
-			expect(isNewUserBpVariant.call({ newUserBpExpVersion: version })).toBe(expected);
-		});
-	});
 
 	describe('openShareLightbox', () => {
 		it('opens the lightbox and keeps the share-lightbox tracking event', () => {
@@ -170,7 +158,8 @@ describe('FullBorrowerProfile new user version', () => {
 			template: '<div data-testid="lend-cta-stub"><slot name="sharebutton" /></div>',
 		};
 
-		function mountProfile({ version = null, loading = false } = {}) {
+		// `isNewUserVariant` undefined = the page provides nothing (e.g. Storybook); the inject must default to false
+		function mountProfile({ isNewUserVariant, loading = false } = {}) {
 			return shallowMount(FullBorrowerProfile, {
 				props: {
 					loan: { id: 123, name: 'Maria', status: 'fundraising' },
@@ -183,13 +172,19 @@ describe('FullBorrowerProfile new user version', () => {
 					renderStubDefaultSlot: true,
 					stubs: { LendCta: LendCtaStub },
 					mocks: { ...globalOptions.mocks, $route: { params: { id: '123' }, query: {} } },
-					provide: { ...globalOptions.provide, [NEW_USER_BP_EXP_INJECT_KEY]: version },
+					provide: {
+						...globalOptions.provide,
+						...(isNewUserVariant === undefined ? {} : { [NEW_USER_BP_EXP_INJECT_KEY]: isNewUserVariant }),
+					},
 				},
 			});
 		}
 
-		it.each([null, 'a'])('version %s keeps the control: no card actions, share button in the lend box', version => {
-			const wrapper = mountProfile({ version });
+		it.each([
+			['nothing provided', undefined],
+			['false provided', false],
+		])('%s keeps the control: no card actions, share button in the lend box', (_, isNewUserVariant) => {
+			const wrapper = mountProfile({ isNewUserVariant });
 
 			expect(wrapper.findComponent(SummaryCard).props('showActions')).toBe(false);
 			expect(wrapper.findComponent(LendCtaStub).props('hideJumpLinks')).toBe(false);
@@ -200,7 +195,7 @@ describe('FullBorrowerProfile new user version', () => {
 		});
 
 		it('version b shows the card actions and moves the single share button out of the lend box, hidden', () => {
-			const wrapper = mountProfile({ version: 'b' });
+			const wrapper = mountProfile({ isNewUserVariant: true });
 
 			expect(wrapper.findComponent(SummaryCard).props('showActions')).toBe(true);
 			expect(wrapper.findComponent(LendCtaStub).props('hideJumpLinks')).toBe(true);
@@ -212,7 +207,7 @@ describe('FullBorrowerProfile new user version', () => {
 		});
 
 		it('version b opens the share lightbox from the card and can open it again after closing', async () => {
-			const wrapper = mountProfile({ version: 'b' });
+			const wrapper = mountProfile({ isNewUserVariant: true });
 			const card = wrapper.findComponent(SummaryCard);
 			const share = () => wrapper.findComponent(ShareButton);
 
@@ -230,7 +225,7 @@ describe('FullBorrowerProfile new user version', () => {
 		});
 
 		it('version b: a share click while loading opens the lightbox as soon as the loan has loaded', async () => {
-			const wrapper = mountProfile({ version: 'b', loading: true });
+			const wrapper = mountProfile({ isNewUserVariant: true, loading: true });
 			expect(wrapper.findComponent(ShareButton).exists()).toBe(false);
 
 			wrapper.findComponent(SummaryCard).vm.$emit('share');
@@ -240,7 +235,7 @@ describe('FullBorrowerProfile new user version', () => {
 		});
 
 		it('version b scrolls to the details on loan-details and leaves the rail closed', () => {
-			const wrapper = mountProfile({ version: 'b' });
+			const wrapper = mountProfile({ isNewUserVariant: true });
 			const scrollSpy = vi.spyOn(wrapper.vm, 'smoothScrollTo').mockImplementation(() => {});
 
 			wrapper.findComponent(SummaryCard).vm.$emit('loan-details');

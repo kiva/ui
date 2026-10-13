@@ -1,8 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { enableAutoUnmount, mount } from '@vue/test-utils';
 import SummaryCard from '#src/components/BorrowerProfile/SummaryCard';
+import { KvUtilityMenu } from '@kiva/kv-components';
 import LoanActionLinks from '#src/components/BorrowerProfile/LoanActionLinks';
-import LoanActionsMenu from '#src/components/BorrowerProfile/LoanActionsMenu';
 import { globalOptions, routerLinkStub } from '../../../specUtils';
 
 enableAutoUnmount(afterEach);
@@ -116,7 +116,7 @@ describe('SummaryCard loan actions (new user version)', () => {
 
 		expect(wrapper.find('[data-testid="bp-summary-actions-menu"]').exists()).toBe(false);
 		expect(wrapper.find('[data-testid="bp-summary-actions"]').exists()).toBe(false);
-		expect(wrapper.findComponent(LoanActionsMenu).exists()).toBe(false);
+		expect(wrapper.findComponent(KvUtilityMenu).exists()).toBe(false);
 		expect(wrapper.findComponent(LoanActionLinks).exists()).toBe(false);
 	});
 
@@ -127,21 +127,41 @@ describe('SummaryCard loan actions (new user version)', () => {
 		const linksWrapper = wrapper.find('[data-testid="bp-summary-actions"]');
 
 		expect(menuWrapper.classes()).toContain('md:tw-hidden');
-		expect(menuWrapper.findComponent(LoanActionsMenu).exists()).toBe(true);
+		expect(menuWrapper.findComponent(KvUtilityMenu).exists()).toBe(true);
 		expect(linksWrapper.classes()).toEqual(expect.arrayContaining(['tw-hidden', 'md:tw-block']));
 		expect(linksWrapper.findComponent(LoanActionLinks).exists()).toBe(true);
 	});
 
-	describe.each([
-		['action links', LoanActionLinks],
-		['kebab menu', LoanActionsMenu],
-	])('re-emits from the %s', (_, component) => {
-		it.each(['share', 'loan-details'])('%s', event => {
-			const { wrapper } = mountSummaryCard({ showActions: true });
+	it('gives the kebab trigger a screen reader label', async () => {
+		const { wrapper } = mountSummaryCard({ showActions: true });
+		await wrapper.vm.$nextTick();
 
-			wrapper.findComponent(component).vm.$emit(event);
+		const trigger = wrapper.findComponent(KvUtilityMenu).find('button');
 
-			expect(wrapper.emitted(event)).toHaveLength(1);
-		});
+		expect(trigger.attributes('aria-label')).toBe('More loan options');
+	});
+
+	it('lists "Loan details" and "Share" in the kebab menu', () => {
+		const { wrapper } = mountSummaryCard({ showActions: true });
+
+		const items = wrapper.findComponent(KvUtilityMenu).findAll('[data-testid^="bp-loan-actions-menu-"]');
+
+		expect(items.map(item => item.text())).toEqual(['Loan details', 'Share']);
+	});
+
+	it.each(['share', 'loan-details'])('emits %s when its kebab item is clicked', async event => {
+		const { wrapper } = mountSummaryCard({ showActions: true });
+
+		await wrapper.find(`[data-testid="bp-loan-actions-menu-${event}"]`).trigger('click');
+
+		expect(wrapper.emitted(event)).toHaveLength(1);
+	});
+
+	it.each(['share', 'loan-details'])('re-emits %s from the action links', event => {
+		const { wrapper } = mountSummaryCard({ showActions: true });
+
+		wrapper.findComponent(LoanActionLinks).vm.$emit(event);
+
+		expect(wrapper.emitted(event)).toHaveLength(1);
 	});
 });
