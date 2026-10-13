@@ -61,6 +61,9 @@ const mockRouterObject = {
 // query/mutation a mocked apollo client call received.
 const getOperationName = query => query?.definitions?.find(d => d.kind === 'OperationDefinition')?.name?.value;
 
+// v-show hides an element with an inline display: none on it or an ancestor
+const isHiddenByVShow = el => !!el.closest('[style*="display: none"]');
+
 const globalOptions = {
 	directives: { kvTrackEvent: () => {} },
 	provide: {
@@ -94,5 +97,6 @@ export {
 	routerLinkStub,
 	emptyComponent,
 	globalOptions,
-	getOperationName
+	getOperationName,
+	isHiddenByVShow,
 };

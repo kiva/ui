@@ -122,22 +122,25 @@
 		<content-container>
 			<more-about-loan
 				data-testid="bp-more-about"
-				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8"
+				:collapsible="isNewUserBpVariant"
+				:class="isNewUserBpVariant ? 'tw-mb-4' : 'tw-mb-5 md:tw-mb-6 lg:tw-mb-8'"
 				:loan-id="loanId"
 			/>
 			<borrower-country data-testid="bp-country" class="tw-mb-4" :loan-id="loanId" />
 			<contributing-partners
 				data-testid="bp-contributing-partners"
-				class="tw-mb-4"
+				:collapsible="isNewUserBpVariant"
+				:class="isNewUserBpVariant ? 'tw-mb-2' : 'tw-mb-4'"
 				:loan-id="loanId"
 			/>
 			<lenders-and-teams
 				v-if="showLenders"
 				data-testid="bp-lenders"
 				key="lenders"
-				class="tw-mb-4"
+				:class="isNewUserBpVariant ? 'tw-mb-2' : 'tw-mb-4'"
 				:loan-id="loanId"
 				display-type="lenders"
+				:collapsible="isNewUserBpVariant"
 				@hide-section="showLenders = false"
 			/>
 			<lenders-and-teams
@@ -147,6 +150,7 @@
 				class="tw-mb-4"
 				:loan-id="loanId"
 				display-type="teams"
+				:collapsible="isNewUserBpVariant"
 				@hide-section="showTeams = false"
 			/>
 		</content-container>

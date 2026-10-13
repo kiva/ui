@@ -1,10 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies -- devDependency used only in tests */
 import { render } from '@testing-library/vue';
+import userEvent from '@testing-library/user-event';
 import { flushPromises } from '@vue/test-utils';
 /* eslint-enable import/no-extraneous-dependencies */
 import CookieStore from '#src/util/cookieStore';
 import apolloPlugin from '#src/plugins/apollo-plugin';
 import ContributingPartners from '#src/components/BorrowerProfile/ContributingPartners';
+import { isHiddenByVShow } from '../../../specUtils';
 
 const capitalOne = {
 	managedAccountId: 203995508, displayName: 'Capital One', ratio: 3, logo: null
@@ -34,7 +36,7 @@ function makeApollo({ simultaneousMatching = [], status = 'fundraising', multiMa
 	};
 }
 
-function renderComponent(apolloOptions = {}) {
+function renderComponent(apolloOptions = {}, props = {}) {
 	return render(ContributingPartners, {
 		global: {
 			plugins: [apolloPlugin],
@@ -49,11 +51,52 @@ function renderComponent(apolloOptions = {}) {
 				$route: { query: {} },
 			},
 		},
-		props: { loanId: 1 },
+		props: { loanId: 1, ...props },
 	});
 }
 
 describe('ContributingPartners', () => {
+	describe('collapsible', () => {
+		it('shows a collapsed row with the matched partners subtitle', async () => {
+			const { findByRole, getByText } = renderComponent(
+				{ simultaneousMatching: [capitalOne] },
+				{ collapsible: true },
+			);
+
+			const button = await findByRole('button', { name: /Contributing partners/ });
+			expect(button.getAttribute('aria-expanded')).toBe('false');
+			expect(getByText('Partners that matched this loan')).toBeTruthy();
+			expect(isHiddenByVShow(getByText('Capital One'))).toBe(true);
+		});
+
+		it('shows the partners once opened', async () => {
+			const user = userEvent.setup();
+			const { findByRole, getByText } = renderComponent(
+				{ simultaneousMatching: [capitalOne] },
+				{ collapsible: true },
+			);
+
+			await user.click(await findByRole('button', { name: /Contributing partners/ }));
+
+			expect(isHiddenByVShow(getByText('Capital One'))).toBe(false);
+		});
+
+		it('hides the row when there are no matched partners', async () => {
+			const { queryByRole } = renderComponent({ simultaneousMatching: [] }, { collapsible: true });
+			await flushPromises();
+
+			expect(queryByRole('button')).toBeNull();
+		});
+
+		it('shows the heading without a toggle or subtitle when not collapsible', async () => {
+			const { findByRole, queryByRole, queryByText } = renderComponent({ simultaneousMatching: [capitalOne] });
+
+			expect(await findByRole('heading', { level: 2, name: 'Contributing partners' })).toBeTruthy();
+			expect(queryByRole('button')).toBeNull();
+			expect(queryByText('Partners that matched this loan')).toBeNull();
+		});
+	});
+
 	describe('section visibility', () => {
 		it('shows the section when the flag is on and matchers are present', async () => {
 			const { findByText } = renderComponent({ simultaneousMatching: [capitalOne] });
