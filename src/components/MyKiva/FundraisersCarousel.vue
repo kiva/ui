@@ -5,10 +5,7 @@
 				<h2 class="!tw-text-title">
 					Fundraisers with Kiva
 				</h2>
-				<KvPill
-					bg-class="tw-bg-brand tw-text-primary-inverse"
-					rounded-class="tw-rounded"
-				>
+				<KvPill variant="caution" size="small">
 					<template #icon>
 						<KvMaterialIcon class="tw-h-2 tw-w-2" :icon="mdiBullhornOutline" />
 					</template>
@@ -19,7 +16,7 @@
 				<p class="tw-text-base">
 					Easily create and share fundraisers that support the communities and places you choose.
 				</p>
-				<div class="tw-z-tooltip tw-shrink-0 tw-mt-0.5">
+				<div class="tw-z-1 tw-shrink-0 tw-mt-0.5">
 					<button
 						type="button"
 						aria-label="About fundraisers at Kiva"

@@ -69,6 +69,7 @@
 								name="customDonationInputText"
 								maxlength="10"
 								v-model="customDonationAmount"
+								@focus="prefillOnFocus"
 								@blur="validateInput"
 								@keyup.enter.prevent="formatAndSubmitOnEnter"
 							/>
@@ -76,6 +77,7 @@
 						<div class="tw-self-center md:tw-w-full">
 							<kv-button
 								class="tw-w-14 md:tw-w-full"
+								:state="selectDisabled ? 'disabled' : ''"
 								@click="setCustomDonationAndClose"
 								id="customDonationSubmitBtn"
 								data-testid="custom-donation-submit-btn"
@@ -97,7 +99,7 @@ import { trackExperimentVersion } from '#src/util/experiment/experimentUtils';
 
 export const CUSTOM_TIP_DEFAULT_EXP_KEY = 'custom_tip_default';
 
-const TREATMENT_PREFILL_AMOUNT = '$1.00';
+const TREATMENT_PREFILL_AMOUNT = '$2.00';
 
 export default {
 	name: 'DonationNudgeBoxes',
@@ -135,6 +137,15 @@ export default {
 		};
 	},
 	computed: {
+		customInputIsEmpty() {
+			return String(this.customDonationAmount ?? '').trim() === '';
+		},
+		isTreatment() {
+			return this.customTipDefaultVersion === 'b';
+		},
+		selectDisabled() {
+			return this.isTreatment && this.customInputIsEmpty;
+		},
 		customDonationSelected() {
 			const donationOptions = this.percentageRows
 				.map(({ percentage }) => numeral(this.getDonationByPercent(percentage)).format('$0.00'));
@@ -165,17 +176,25 @@ export default {
 				this.setInputs(this.currentDonationAmount);
 			}
 
-			if (this.customTipDefaultVersion === 'b' && (numeral(this.customDonationAmount).value() ?? 0) === 0) {
-				// Suggest a starting amount when the input would show zero or empty; the user's entry always wins
-				this.setInputs(TREATMENT_PREFILL_AMOUNT);
-			}
-
 			this.$nextTick(() => {
 				try {
 					document.getElementById('first-button').focus();
 				} catch (error) {
 					// no-op
 				}
+			});
+		},
+		prefillOnFocus(event) {
+			// Treatment suggests an amount only when the user focuses an empty input, so it can't be submitted
+			// without engaging; any existing value, including a previously chosen $0.00, is left alone
+			if (!this.isTreatment || !this.customInputIsEmpty) return;
+
+			this.setInputs(TREATMENT_PREFILL_AMOUNT);
+			// Place the cursor after the suggestion so the user can edit from the end
+			this.$nextTick(() => {
+				const input = event?.target;
+				const end = input?.value?.length ?? 0;
+				input?.setSelectionRange?.(end, end);
 			});
 		},
 		getDonationByPercent(percent) {
@@ -188,6 +207,11 @@ export default {
 			this.customDonationAmount = value;
 		},
 		validateInput() {
+			// Treatment leaves a cleared input empty so the select button stays disabled instead of offering $0.00
+			if (this.isTreatment && this.customInputIsEmpty) {
+				this.setInputs('');
+				return;
+			}
 			this.setInputs(numeral(this.customDonationAmount).format('$0,0.00'));
 		},
 		formatSource(index) {

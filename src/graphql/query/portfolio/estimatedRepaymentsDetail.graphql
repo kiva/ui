@@ -3,7 +3,7 @@ query EstimatedRepaymentsDetail($year: Int, $month: Int, $limit: Int) {
 		id
 		userAccount {
 			id
-			expectedRepaymentsDetail(year: $year, month: $month, limit: $limit) {
+			expectedRepaymentsDetail(year: $year, month: $month, limit: $limit, dueByFirstOfMonth: true) {
 				repaymentDate
 				amount
 				userAmount

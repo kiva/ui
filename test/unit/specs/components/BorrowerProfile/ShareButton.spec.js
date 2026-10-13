@@ -5,6 +5,7 @@ import { globalOptions } from '../../../specUtils';
 const stubs = {
 	KvSocialShareButton: {
 		template: `<div>
+			<span data-testid="share-url">{{ shareUrl }}</span>
 			<button data-testid="bp-share-cta-button" @click="handleClick">
 				<slot>Share</slot>
 			</button>
@@ -40,7 +41,7 @@ const defaultLoan = {
 	loanFundraisingInfo: { fundedAmount: 500 },
 };
 
-function renderShareButton(loanOverride = {}) {
+function renderShareButton(loanOverride = {}, { route, lender } = {}) {
 	const loan = { ...defaultLoan, ...loanOverride };
 	const Component = {
 		...ShareButton,
@@ -60,7 +61,7 @@ function renderShareButton(loanOverride = {}) {
 			...globalOptions,
 			mocks: {
 				...globalOptions.mocks,
-				$route: { path: `/lend/${loan.id}`, query: {} },
+				$route: route ?? { path: `/lend/${loan.id}`, query: {} },
 				$filters: {
 					...globalOptions.mocks.$filters,
 					changeCase: str => str,
@@ -71,6 +72,7 @@ function renderShareButton(loanOverride = {}) {
 		props: {
 			loan,
 			campaign: 'social_share_bp',
+			...(lender ? { lender } : {}),
 		},
 	});
 }
@@ -94,5 +96,20 @@ describe('ShareButton', () => {
 		expect(shareTextarea).not.toBeNull();
 		expect(shareTextarea.value).not.toMatch(/Maria/);
 		expect(shareTextarea.value).toMatch(/this lender/);
+	});
+
+	it('shares the borrower profile URL when rendered outside the borrower profile', () => {
+		const { getByTestId } = renderShareButton({}, { route: { path: '/mykiva', query: {} } });
+
+		expect(getByTestId('share-url').textContent).toBe('/lend/123');
+	});
+
+	it('shares the invited-by URL when the lender has an inviter name', () => {
+		const { getByTestId } = renderShareButton(
+			{},
+			{ route: { path: '/mykiva', query: {} }, lender: { public: true, inviterName: 'jane' } },
+		);
+
+		expect(getByTestId('share-url').textContent).toBe('/invitedby/jane/for/123');
 	});
 });

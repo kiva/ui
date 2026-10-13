@@ -39,6 +39,18 @@ const passthrough = name => defineComponent({
 	},
 });
 
+const KvSocialShareButtonStub = defineComponent({
+	name: 'KvSocialShareButton',
+	props: {
+		openLightbox: { type: Boolean, default: false },
+		shareMessage: { type: String, default: '' },
+		utmCampaign: { type: String, default: '' },
+		trackingCategory: { type: String, default: '' },
+	},
+	emits: ['lightbox-closed'],
+	template: '<div class="social-share-stub" />',
+});
+
 const KvCarouselStub = defineComponent({
 	name: 'KvCarousel',
 	props: { slideMaxWidth: { type: String, default: '' } },
@@ -53,6 +65,8 @@ const KvCarouselStub = defineComponent({
 
 const loan = (id, status = FUNDRAISING) => ({ id, name: `Borrower ${id}`, status });
 
+const mockTrackEvent = vi.fn();
+
 const mountCarousel = (props = {}, mountOptions = {}) => mount(BorrowerCarousel, {
 	props: {
 		loans: [loan(1), loan(2, PAYING_BACK), loan(3, FUNDED)],
@@ -63,13 +77,14 @@ const mountCarousel = (props = {}, mountOptions = {}) => mount(BorrowerCarousel,
 	...mountOptions,
 	global: {
 		provide: {
-			$kvTrackEvent: vi.fn(),
+			$kvTrackEvent: mockTrackEvent,
 			apollo: { query: vi.fn(), mutate: vi.fn(), readQuery: vi.fn() },
 			cookieStore: { get: vi.fn(), set: vi.fn(), remove: vi.fn() },
 		},
 		stubs: {
 			BorrowerStatusCard: BorrowerStatusCardStub,
 			ShareButton: ShareButtonStub,
+			KvSocialShareButton: KvSocialShareButtonStub,
 			BorrowerImage: true,
 			KvCarousel: KvCarouselStub,
 			KvTabs: passthrough('KvTabs'),
@@ -242,6 +257,55 @@ describe('BorrowerCarousel', () => {
 			await nextTick();
 			expect(wrapper.findComponent(ShareButtonStub).exists()).toBe(false);
 			vi.useRealTimers();
+		});
+	});
+
+	describe('carousel share', () => {
+		const shareButton = wrapper => wrapper.find('[data-testid="borrower-carousel-share-button"]');
+
+		it('hides the share icon unless showShare is set', () => {
+			// The Impact Dashboard renders this carousel too and is out of scope.
+			expect(shareButton(mountCarousel()).exists()).toBe(false);
+			expect(shareButton(mountCarousel({ showShare: true })).exists()).toBe(true);
+		});
+
+		it('does not mount the share lightbox before the icon is clicked', () => {
+			const wrapper = mountCarousel({ showShare: true });
+
+			expect(wrapper.findComponent(KvSocialShareButtonStub).exists()).toBe(false);
+		});
+
+		it('tracks the click and opens the lightbox with the prefilled message', async () => {
+			const wrapper = mountCarousel({ showShare: true, totalLoans: 12 });
+
+			await shareButton(wrapper).trigger('click');
+
+			expect(mockTrackEvent).toHaveBeenCalledWith('portfolio', 'click', 'share-mykiva-borrower-carousel');
+			const share = wrapper.findComponent(KvSocialShareButtonStub);
+			expect(share.props('openLightbox')).toBe(true);
+			expect(share.props('trackingCategory')).toBe('portfolio');
+			expect(share.props('utmCampaign')).toBe('social_share_mykiva_borrower_carousel');
+			expect(share.props('shareMessage')).toContain('I’m helping 12 people through Kiva.org');
+		});
+
+		it('uses the singular for a single loan', async () => {
+			const wrapper = mountCarousel({ showShare: true, loans: [loan(1)], totalLoans: 1 });
+
+			await shareButton(wrapper).trigger('click');
+
+			expect(wrapper.findComponent(KvSocialShareButtonStub).props('shareMessage'))
+				.toContain('I’m helping 1 person through');
+		});
+
+		it('can be reopened after closing', async () => {
+			const wrapper = mountCarousel({ showShare: true });
+
+			await shareButton(wrapper).trigger('click');
+			await wrapper.findComponent(KvSocialShareButtonStub).vm.$emit('lightbox-closed');
+			expect(wrapper.findComponent(KvSocialShareButtonStub).props('openLightbox')).toBe(false);
+
+			await shareButton(wrapper).trigger('click');
+			expect(wrapper.findComponent(KvSocialShareButtonStub).props('openLightbox')).toBe(true);
 		});
 	});
 

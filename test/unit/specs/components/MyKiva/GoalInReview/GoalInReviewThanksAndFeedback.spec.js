@@ -85,6 +85,33 @@ describe('GoalInReviewThanksAndFeedback', () => {
 		});
 	});
 
+	describe('share CTA', () => {
+		it('complete in the goal year: shows Share alongside Back to Kiva and emits share-goal', async () => {
+			const { getByTestId, getByText, emitted } = renderSlide({
+				goalStatus: 'completed', year: GOAL_YEAR, currentYear: CURRENT_YEAR,
+			});
+			getByText('Back to Kiva');
+			await fireEvent.click(getByTestId('goal-in-review-thanks-and-feedback-share-cta'));
+			expect(emitted()['share-goal']).toHaveLength(1);
+			expect(emitted()['goal-recap-back-to-kiva']).toBeUndefined();
+		});
+
+		it('in progress: no share CTA and the feedback toggle keeps its copy', () => {
+			const { queryByTestId, getByText } = renderSlide({
+				goalStatus: 'in-progress', year: GOAL_YEAR, currentYear: CURRENT_YEAR,
+			});
+			expect(queryByTestId('goal-in-review-thanks-and-feedback-share-cta')).toBeNull();
+			getByText('Share your feedback');
+		});
+
+		it('next year: no share CTA', () => {
+			const { queryByTestId } = renderSlide({
+				goalStatus: 'completed', year: GOAL_YEAR, currentYear: NEXT_YEAR,
+			});
+			expect(queryByTestId('goal-in-review-thanks-and-feedback-share-cta')).toBeNull();
+		});
+	});
+
 	describe('next year (past the goal year)', () => {
 		it('switches the body copy to look back and forward', () => {
 			const { getByText } = renderSlide({ goalStatus: 'completed', year: GOAL_YEAR, currentYear: NEXT_YEAR });
@@ -100,11 +127,11 @@ describe('GoalInReviewThanksAndFeedback', () => {
 			});
 			await fireEvent.click(getByText(`Set my ${GOAL_YEAR + 1} goal`));
 			expect(emitted()['set-goal']).toHaveLength(1);
-			expect(queryByText('Share your feedback')).toBeNull();
+			expect(queryByText('Tell us what you think')).toBeNull();
 		});
 	});
 
-	it('reveals the feedback survey when "Share your feedback" is clicked', async () => {
+	it('reveals the feedback survey when "Tell us what you think" is clicked', async () => {
 		const { getByText, getByTestId } = renderSlide({
 			goalStatus: 'completed', year: GOAL_YEAR, currentYear: CURRENT_YEAR,
 		});
@@ -112,7 +139,7 @@ describe('GoalInReviewThanksAndFeedback', () => {
 		// v-show keeps the survey mounted; the toggle flips its display.
 		const feedback = getByTestId('goal-in-review-thanks-and-feedback-feedback-placeholder');
 		expect(feedback.style.display).toBe('none');
-		await fireEvent.click(getByText('Share your feedback'));
+		await fireEvent.click(getByText('Tell us what you think'));
 		expect(feedback.style.display).toBe('');
 	});
 
@@ -120,14 +147,14 @@ describe('GoalInReviewThanksAndFeedback', () => {
 		const { queryByText } = renderSlide({
 			goalStatus: 'completed', year: GOAL_YEAR, currentYear: CURRENT_YEAR, feedbackSubmitted: true,
 		});
-		expect(queryByText('Share your feedback')).toBeNull();
+		expect(queryByText('Tell us what you think')).toBeNull();
 	});
 
 	it('re-emits feedback-submitted when the survey is submitted', async () => {
 		const { getByText, getByTestId, emitted } = renderSlide({
 			goalStatus: 'completed', year: GOAL_YEAR, currentYear: CURRENT_YEAR,
 		});
-		await fireEvent.click(getByText('Share your feedback'));
+		await fireEvent.click(getByText('Tell us what you think'));
 		await fireEvent.click(getByTestId('fa-submit'));
 		expect(emitted()['feedback-submitted']).toHaveLength(1);
 	});
@@ -142,11 +169,11 @@ describe('GoalInReviewThanksAndFeedback', () => {
 			props: { goalStatus: 'completed', year: GOAL_YEAR, currentYear: CURRENT_YEAR },
 		});
 
-		await fireEvent.click(getByText('Share your feedback'));
+		await fireEvent.click(getByText('Tell us what you think'));
 		await fireEvent.click(getByTestId('fa-submit'));
 
 		// The toggle is gone, so it can no longer be re-clicked to re-fire the event.
-		expect(queryByText('Share your feedback')).toBeNull();
+		expect(queryByText('Tell us what you think')).toBeNull();
 		const shareCalls = trackEvent.mock.calls.filter(call => call[2] === 'goal-in-review-share-feedback');
 		expect(shareCalls).toHaveLength(1);
 	});
@@ -164,7 +191,7 @@ describe('GoalInReviewThanksAndFeedback', () => {
 		Element.prototype.scrollTo = scrollTo;
 		const { getByText } = renderSlideInLightboxBody();
 
-		await fireEvent.click(getByText('Share your feedback'));
+		await fireEvent.click(getByText('Tell us what you think'));
 
 		expect(scrollTo).toHaveBeenCalledTimes(1);
 		const lightboxBody = document.getElementById('kvLightboxBody');
@@ -177,9 +204,9 @@ describe('GoalInReviewThanksAndFeedback', () => {
 		Element.prototype.scrollTo = scrollTo;
 		const { getByText } = renderSlideInLightboxBody();
 
-		await fireEvent.click(getByText('Share your feedback'));
+		await fireEvent.click(getByText('Tell us what you think'));
 		scrollTo.mockClear();
-		await fireEvent.click(getByText('Share your feedback'));
+		await fireEvent.click(getByText('Tell us what you think'));
 
 		expect(scrollTo).not.toHaveBeenCalled();
 	});
@@ -213,7 +240,7 @@ describe('GoalInReviewThanksAndFeedback', () => {
 			Element.prototype.scrollTo = scrollTo;
 			const { getByText } = renderSlideInLightboxBody();
 
-			await fireEvent.click(getByText('Share your feedback'));
+			await fireEvent.click(getByText('Tell us what you think'));
 			scrollTo.mockClear();
 
 			// Simulate the iframe reporting its real content height after the initial scroll.
@@ -228,7 +255,7 @@ describe('GoalInReviewThanksAndFeedback', () => {
 			Element.prototype.scrollTo = scrollTo;
 			const { getByText } = renderSlideInLightboxBody();
 
-			await fireEvent.click(getByText('Share your feedback'));
+			await fireEvent.click(getByText('Tell us what you think'));
 			scrollTo.mockClear();
 
 			// The iframe can report several intermediate heights before settling.
@@ -243,8 +270,8 @@ describe('GoalInReviewThanksAndFeedback', () => {
 		it('stops watching for resize once the feedback survey is closed', async () => {
 			const { getByText } = renderSlideInLightboxBody();
 
-			await fireEvent.click(getByText('Share your feedback'));
-			await fireEvent.click(getByText('Share your feedback'));
+			await fireEvent.click(getByText('Tell us what you think'));
+			await fireEvent.click(getByText('Tell us what you think'));
 
 			expect(disconnect).toHaveBeenCalledTimes(1);
 		});
@@ -252,7 +279,7 @@ describe('GoalInReviewThanksAndFeedback', () => {
 		it('stops watching for resize when the survey is submitted', async () => {
 			const { getByText, getByTestId } = renderSlideInLightboxBody();
 
-			await fireEvent.click(getByText('Share your feedback'));
+			await fireEvent.click(getByText('Tell us what you think'));
 			await fireEvent.click(getByTestId('fa-submit'));
 
 			expect(disconnect).toHaveBeenCalledTimes(1);
@@ -261,7 +288,7 @@ describe('GoalInReviewThanksAndFeedback', () => {
 		it('stops watching for resize when the component unmounts', async () => {
 			const { getByText, unmount } = renderSlideInLightboxBody();
 
-			await fireEvent.click(getByText('Share your feedback'));
+			await fireEvent.click(getByText('Tell us what you think'));
 			unmount();
 
 			expect(disconnect).toHaveBeenCalledTimes(1);
@@ -286,7 +313,7 @@ describe('GoalInReviewThanksAndFeedback', () => {
 			},
 		});
 
-		await fireEvent.click(getByText('Share your feedback'));
+		await fireEvent.click(getByText('Tell us what you think'));
 
 		expect(trackEvent).toHaveBeenCalledWith('portfolio', 'click', 'goal-in-review-share-feedback');
 	});

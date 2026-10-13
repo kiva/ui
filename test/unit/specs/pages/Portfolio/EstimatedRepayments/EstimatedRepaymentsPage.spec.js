@@ -116,6 +116,16 @@ describe('EstimatedRepaymentsPage', () => {
 		expect(getByText('Estimated repayments due by Jul 1, 2026')).toBeTruthy();
 	});
 
+	it('asks for repayments grouped by the 1st they are due by in both queries', async () => {
+		// The page labels every month "due by the 1st", so both queries must opt in to that
+		// grouping; without it mid-month repayments land a month early and read 0/X.
+		const { getByText, query } = renderPage();
+		await waitFor(() => expect(getByText('Maria')).toBeTruthy());
+		const [summaryCall, detailCall] = query.mock.calls.map(([call]) => call);
+		expect(summaryCall.query.loc.source.body).toContain('expectedRepayments(dueByFirstOfMonth: true)');
+		expect(detailCall.query.loc.source.body).toMatch(/expectedRepaymentsDetail\([^)]*dueByFirstOfMonth: true/);
+	});
+
 	it('sums comma-formatted Money amounts for large months', async () => {
 		// The gateway returns Money as a display-formatted string, so a super
 		// lender's months come back as e.g. '11,621.53'. Number() is NaN on those,

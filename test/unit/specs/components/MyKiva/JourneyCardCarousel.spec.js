@@ -412,4 +412,112 @@ describe('JourneyCardCarousel', () => {
 			expect(wrapper.emitted('view-goal-recap')).toEqual([[GOAL_YEAR]]);
 		});
 	});
+
+	describe('goal card impression tracking', () => {
+		const inProgressGoal = {
+			category: ID_WOMENS_EQUALITY,
+			target: 5,
+			status: 'in-progress',
+		};
+
+		const mountForImpression = ({ props = {}, goalProgressPercentage = 40 } = {}) => {
+			const trackEvent = vi.fn();
+			const wrapper = mount(JourneyCardCarousel, {
+				props: {
+					inLendingStats: true,
+					goalProgress: 2,
+					goalProgressLoading: false,
+					userGoal: {},
+					slides: [],
+					heroTieredAchievements: [],
+					heroBadgeData: [],
+					userInfo: { userPreferences: { preferences: '{}' } },
+					...props,
+				},
+				global: {
+					provide: {
+						apollo: {},
+						cookieStore: new CookieStore({}),
+						$kvTrackEvent: trackEvent,
+						goalData: { goalProgressPercentage: ref(goalProgressPercentage) },
+					},
+					directives: { kvTrackEvent: () => ({}) },
+					stubs: {
+						MyKivaCard: true,
+						MyKivaSharingModal: true,
+						NextYearGoalCard: true,
+						MyKivaEmailUpdatesTransition: true,
+						MyKivaLatestLoanCard: true,
+						MyKivaSurveyCard: true,
+						AlmostFundedNextStep: true,
+					},
+				},
+			});
+			return { wrapper, trackEvent };
+		};
+
+		const goalImpressions = trackEvent => trackEvent.mock.calls
+			.filter(([category]) => category === 'portfolio');
+
+		it('fires view/set-annual-goal for a no-goal lender with no loading transition', () => {
+			const { trackEvent } = mountForImpression();
+
+			expect(trackEvent).toHaveBeenCalledWith('portfolio', 'view', 'set-annual-goal');
+		});
+
+		it('fires show/goal-set with category and target for an in-progress goal', () => {
+			const { trackEvent } = mountForImpression({ props: { userGoal: inProgressGoal } });
+
+			expect(trackEvent).toHaveBeenCalledWith('portfolio', 'show', 'goal-set', ID_WOMENS_EQUALITY, 5);
+		});
+
+		it('fires the impression only once', async () => {
+			const { wrapper, trackEvent } = mountForImpression();
+
+			await wrapper.setProps({ hideGoalCard: true });
+			await wrapper.setProps({ hideGoalCard: false });
+
+			expect(goalImpressions(trackEvent)).toHaveLength(1);
+		});
+
+		it('does not fire again when the slides remount', async () => {
+			const { wrapper, trackEvent } = mountForImpression();
+
+			// Changing the slide count changes the KvCarousel key, remounting the goal card.
+			await wrapper.setProps({ showLendingNextStepsCards: true });
+
+			expect(goalImpressions(trackEvent)).toHaveLength(1);
+		});
+
+		it('waits for the data when the goal starts out loading', async () => {
+			const { wrapper, trackEvent } = mountForImpression({ props: { goalProgressLoading: true } });
+
+			expect(goalImpressions(trackEvent)).toHaveLength(0);
+
+			await wrapper.setProps({ goalProgressLoading: false });
+
+			expect(trackEvent).toHaveBeenCalledWith('portfolio', 'view', 'set-annual-goal');
+		});
+
+		it('stays quiet while the goal card is hidden', () => {
+			const { trackEvent } = mountForImpression({ props: { hideGoalCard: true } });
+
+			expect(goalImpressions(trackEvent)).toHaveLength(0);
+		});
+
+		it('stays quiet for a completed goal', () => {
+			const { trackEvent } = mountForImpression({
+				props: { userGoal: { ...inProgressGoal, status: 'completed' } },
+				goalProgressPercentage: 100,
+			});
+
+			expect(goalImpressions(trackEvent)).toHaveLength(0);
+		});
+
+		it('stays quiet outside the lending stats carousel', () => {
+			const { trackEvent } = mountForImpression({ props: { inLendingStats: false } });
+
+			expect(goalImpressions(trackEvent)).toHaveLength(0);
+		});
+	});
 });

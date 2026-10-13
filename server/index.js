@@ -5,7 +5,6 @@ import express from 'express';
 import compression from 'compression';
 import helmet from 'helmet';
 import locale from 'locale';
-import promBundle from 'express-prom-bundle';
 import { info } from './util/log.js';
 import { setupTracing } from './util/tracer.js';
 import serverRoutes from './available-routes-middleware.js';
@@ -18,21 +17,12 @@ import vueMiddleware from './vue-middleware.js';
 import argv from './util/argv.js';
 import config from './util/config.js';
 import initCache from './util/initCache.js';
+import createMetricsMiddleware from './util/metricsMiddleware.js';
 import { errorLogger, fallbackErrorHandler, requestLogger } from './util/errorLogger.js';
 import initializeTerminus from './util/terminusConfig.js';
 
 ({ config: config$0 }.config({ path: '/etc/kiva-ui-server/config.env' }));
 setupTracing();
-
-const metricsMiddleware = promBundle({
-	includeMethod: true,
-	includePath: true,
-	includeStatusCode: true,
-	includeUp: true,
-	promClient: {
-		collectDefaultMetrics: {}
-	}
-});
 
 // Initialize a Cache instance
 const cache = initCache(config.server);
@@ -41,7 +31,7 @@ const app = express();
 const port = argv.port || config.server.port;
 
 // load metrics middleware
-app.use(metricsMiddleware);
+app.use(createMetricsMiddleware());
 
 // Use gzip on local server.
 // In higher environments it's handled elsewhere

@@ -228,6 +228,13 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 	const loading = ref(false);
 	const goalInReviewData = ref(null);
 
+	// Recap loads by year for this page load, as promises so overlapping clicks share one fetch.
+	// Not left to Apollo: the goal summary is never cached, and the cache outlives the page.
+	const loadsByYear = new Map();
+	// Seen-flag writes by year, shared the same way. A write that throws is dropped so the next
+	// open retries; failures the preference helpers only log don't retry.
+	const viewedWrites = new Map();
+
 	const isEligible = computed(() => Boolean(goalInReviewData.value?.isEligible));
 
 	async function query(recapQuery, variables, fetchPolicy = 'network-only') {
@@ -250,7 +257,50 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 	}
 
 	/**
-	 * Loads the recap data used by the modal and its slides.
+	 * Fetches the recap payload for one year.
+	 *
+	 * @param {number} year Recap year to load.
+	 * @returns {Promise<{data: object, complete: boolean}>} The payload and whether all of it loaded.
+	 */
+	async function fetchGoalInReview(year) {
+		const [summary, lenderData, contentfulData] = await Promise.all([
+			loadGoalSummary(),
+			query(goalInReviewLenderQuery),
+			query(contentfulEntriesQuery, { contentType: 'challenge', limit: 200 }, 'cache-first'),
+		]);
+
+		// getGoalSummary returns the monolith's own summary for support-all, which is
+		// the only category it carries the recap extras for. Every other category is
+		// built from achievements-service instead, so only one of the two is ever read.
+		const monolithSummary = summary?.category === ID_SUPPORT_ALL ? summary : null;
+		const recapData = summary && !monolithSummary
+			? await query(goalInReviewQuery, { achievementId: summary.category, year })
+			: null;
+		const goalInReview = recapData?.goalInReview ?? null;
+		const goalSummary = scopeToGoalYear(mergeRecapExtras(summary, monolithSummary), goalInReview);
+
+		const data = {
+			year,
+			isEligible: getIsEligible(goalSummary),
+			firstName: lenderData?.my?.userAccount?.firstName ?? '',
+			goalSummary,
+			categoryName: getCategoryName(
+				goalSummary?.category,
+				getContentfulEntries(contentfulData) ?? [],
+				getCategories(),
+			),
+			loanStats: getLoanStats(goalSummary),
+			goalLoans: getGoalLoans(goalSummary, goalInReview),
+			lifetimePercentile: lenderData?.my?.lendingStats?.amountLentPercentile ?? null,
+		};
+		// A failed goal summary or recap query comes back ineligible, so eligibility covers both.
+		const complete = data.isEligible && lenderData !== null && contentfulData !== null;
+		return { data, complete };
+	}
+
+	/**
+	 * Loads the recap data used by the modal and its slides. Reuses a year already loaded;
+	 * failed or ineligible loads retry.
 	 *
 	 * @param {object} options Load options.
 	 * @param {number} options.year Recap year to load.
@@ -261,36 +311,14 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 	} = {}) {
 		loading.value = true;
 		try {
-			const [summary, lenderData, contentfulData] = await Promise.all([
-				loadGoalSummary(),
-				query(goalInReviewLenderQuery),
-				query(contentfulEntriesQuery, { contentType: 'challenge', limit: 200 }, 'cache-first'),
-			]);
-
-			// getGoalSummary returns the monolith's own summary for support-all, which is
-			// the only category it carries the recap extras for. Every other category is
-			// built from achievements-service instead, so only one of the two is ever read.
-			const monolithSummary = summary?.category === ID_SUPPORT_ALL ? summary : null;
-			const recapData = summary && !monolithSummary
-				? await query(goalInReviewQuery, { achievementId: summary.category, year })
-				: null;
-			const goalInReview = recapData?.goalInReview ?? null;
-			const goalSummary = scopeToGoalYear(mergeRecapExtras(summary, monolithSummary), goalInReview);
-
-			goalInReviewData.value = {
-				year,
-				isEligible: getIsEligible(goalSummary),
-				firstName: lenderData?.my?.userAccount?.firstName ?? '',
-				goalSummary,
-				categoryName: getCategoryName(
-					goalSummary?.category,
-					getContentfulEntries(contentfulData) ?? [],
-					getCategories(),
-				),
-				loanStats: getLoanStats(goalSummary),
-				goalLoans: getGoalLoans(goalSummary, goalInReview),
-				lifetimePercentile: lenderData?.my?.lendingStats?.amountLentPercentile ?? null,
-			};
+			if (!loadsByYear.has(year)) {
+				const load = fetchGoalInReview(year);
+				const drop = () => loadsByYear.delete(year);
+				load.then(({ complete }) => complete || drop(), drop);
+				loadsByYear.set(year, load);
+			}
+			const { data } = await loadsByYear.get(year);
+			goalInReviewData.value = data;
 			return goalInReviewData.value;
 		} finally {
 			loading.value = false;
@@ -310,6 +338,31 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 	function getFinishGoalHref(router) {
 		const summary = goalInReviewData.value?.goalSummary;
 		return getCtaHref(summary?.target, summary?.category, router, summary?.count ?? 0);
+	}
+
+	/**
+	 * Whether this instance has opened the recap for a year and marked it seen.
+	 *
+	 * @param {number} year Recap year.
+	 * @returns {boolean} True once marking it seen has started, unless that write threw.
+	 */
+	function hasOpenedRecap(year) {
+		return viewedWrites.has(year);
+	}
+
+	/**
+	 * Marks the recap seen for a year, once per instance.
+	 *
+	 * @param {number} year Recap year.
+	 * @returns {Promise<void>}
+	 */
+	function markRecapViewed(year) {
+		if (!viewedWrites.has(year)) {
+			const write = Promise.resolve().then(() => setGoalRecapViewedPreference(year));
+			write.catch(() => viewedWrites.delete(year));
+			viewedWrites.set(year, write);
+		}
+		return viewedWrites.get(year);
 	}
 
 	/**
@@ -362,7 +415,7 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 
 		// Opening is what counts as seen, so dismissing without reading still stops it
 		// coming back on the other page or in a later session.
-		await setGoalRecapViewedPreference(year);
+		await markRecapViewed(year);
 		return data;
 	}
 
@@ -370,10 +423,12 @@ export default function useGoalInReview({ apollo, goalData } = {}) {
 		GOAL_RECAP_DEEP_LINK,
 		getFinishGoalHref,
 		goalInReviewData,
+		hasOpenedRecap,
 		isEligible,
 		loadAutoOpenRecap,
 		loadGoalInReview,
 		loading,
+		markRecapViewed,
 		hasSubmittedGoalFeedbackForYear,
 		loadGoalPreferences: loadPreferences,
 		setGoalFeedbackSubmittedPreference,

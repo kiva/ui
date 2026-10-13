@@ -92,4 +92,12 @@ describe('FundraisersCarousel', () => {
 		expect(tooltip.text()).toContain('Fundraisers at Kiva');
 		expect(tooltip.find('a').attributes('href')).toBe('/lp/event-fundraiser');
 	});
+
+	it('lifts the info icon just above the carousel controls', () => {
+		const wrapper = mountComponent();
+		const iconWrapper = wrapper.find('#mykiva-fundraisers-tooltip').element.parentElement;
+		const zClasses = [...iconWrapper.classList].filter(name => name.startsWith('tw-z-'));
+		expect(zClasses).toEqual(['tw-z-1']);
+		expect(iconWrapper.classList).not.toContain('tw-relative');
+	});
 });

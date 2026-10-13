@@ -47,7 +47,11 @@
 				{{ description }}
 			</p>
 			<div v-if="btnCta" class="tw-w-full tw-flex tw-justify-end tw-mt-1">
-				<KvButton class="text-link !tw-text-eco-green-3">
+				<KvButton
+					class="text-link !tw-text-eco-green-3
+						focus-visible:tw-outline focus-visible:tw-outline-2 focus-visible:tw-outline-offset-2
+						focus-visible:tw-outline-eco-green-3"
+				>
 					{{ btnCta }}
 				</KvButton>
 			</div>

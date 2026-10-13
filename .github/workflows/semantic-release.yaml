@@ -10,6 +10,11 @@ on:
           - staging
           - production
         required: true
+      bypass_gate:
+        type: boolean
+        description: 'Release to production without checking that the E2E tests passed on the staging RC. Use this only if the E2E suite is not passing and you have confirmed the release is safe by other means.'
+        required: false
+        default: false
 
   push:
     branches:
@@ -47,6 +52,7 @@ jobs:
         with:
           config: "node"
           environment: ${{ github.event.inputs.environment }}
+          bypass_gate: ${{ github.event.inputs.bypass_gate }}
 
   # Build and push the image to ECR if the release was published
   build-image:

@@ -110,6 +110,7 @@
 			@handle-selected-loan="showLoanDetails($event, true)"
 			@mouse-enter-status-card="loadBPData"
 			show-menu
+			show-share
 			class="tw-mb-2"
 		/>
 		<AsyncMyKivaSection @visible="fetchInitialUpdates">
@@ -379,8 +380,10 @@ export default {
 		const {
 			getFinishGoalHref,
 			goalInReviewData,
+			hasOpenedRecap,
 			loadAutoOpenRecap,
 			loadGoalInReview,
+			markRecapViewed,
 		} = useGoalInReview({ goalData });
 
 		const {
@@ -394,13 +397,14 @@ export default {
 			isTieredAchievementComplete,
 			getMostRecentBlogPost,
 			goalInReviewData,
+			hasOpenedRecap,
 			isMobile,
 			loadAutoOpenRecap,
 			loadGoalInReview,
+			markRecapViewed,
 			hasSubmittedGoalFeedbackForYear: goalData.hasSubmittedGoalFeedbackForYear,
 			setGoalFeedbackSubmittedPreference: goalData.setGoalFeedbackSubmittedPreference,
 			loadGoalPreferences: goalData.loadPreferences,
-			setGoalRecapViewedPreference: goalData.setGoalRecapViewedPreference,
 		};
 	},
 	data() {
@@ -776,9 +780,11 @@ export default {
 			if (!goalInReview?.isEligible) {
 				return;
 			}
-			await this.loadGoalPreferences('network-only');
+			// First open reads fresh to catch feedback sent from another tab; a reopen reads the cache.
+			const reopening = this.hasOpenedRecap(goalInReview.year);
+			await this.loadGoalPreferences(reopening ? 'cache-first' : 'network-only');
 			this.goalInReviewFeedbackSubmitted = this.hasSubmittedGoalFeedbackForYear(goalInReview.year);
-			await this.setGoalRecapViewedPreference(goalInReview.year);
+			await this.markRecapViewed(goalInReview.year);
 			this.showGoalInReviewModal = true;
 		},
 		async handleGoToDeepLink(sectionId) {

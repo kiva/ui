@@ -3,7 +3,7 @@ query EstimatedRepayments {
 		id
 		userAccount {
 			id
-			expectedRepayments {
+			expectedRepayments(dueByFirstOfMonth: true) {
 				repaymentDate
 				userRepayments
 				promoRepayments

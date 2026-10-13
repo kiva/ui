@@ -1,6 +1,6 @@
 /* eslint-disable no-bitwise */
 
-import { isWithinInterval } from 'date-fns';
+import { isAfter, isWithinInterval } from 'date-fns';
 import _get from 'lodash/get';
 
 /**
@@ -59,6 +59,9 @@ export function readJSONSetting(data, key) {
 export function settingWithinDateRange(data, startTimeKey, endTimeKey) {
 	const startTime = readDateSetting(data, startTimeKey);
 	const endTime = readDateSetting(data, endTimeKey);
+	// Missing or backwards dates count as outside the range. isWithinInterval would throw on them
+	if (!startTime || !endTime) return false;
+	if (!isAfter(endTime, startTime)) return false;
 	return isWithinInterval(new Date(), {
 		start: startTime,
 		end: endTime

@@ -77,7 +77,6 @@ import { getContentfulEntries } from '#src/util/contentfulUtils';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const GOALS_ROW_EXP_KEY = 'mykiva_goals_row';
-const CO_RECOVERY_FUND_EXP_KEY = 'mykiva_co_recovery_fund';
 const FUNDRAISERS_ROW_EXP_KEY = 'mykiva_fundraisers_row';
 
 /**
@@ -134,7 +133,6 @@ export default {
 			goalsRowEnabled: false,
 			fundraisersRowEnabled: false,
 			shouldRenderFeaturedSlot: true,
-			coRecoveryFundExpEnabled: false,
 		};
 	},
 	computed: {
@@ -152,14 +150,13 @@ export default {
 				&& this.userInfo?.communicationSettings?.lenderNews;
 		},
 		/**
-		 * Promotes the Colombia earthquake recovery fund as a next step to half of MyKiva
-		 * lenders until the promo window closes, skipping anyone who already gave.
+		 * Promotes the Colombia earthquake recovery fund as a next step to every MyKiva
+		 * lender until the promo window closes, skipping anyone who already gave.
 		 */
 		showCoRecoveryFundCard() {
 			// reliefFundParticipation is always requested by myKivaQuery, so waiting for it keeps
 			// the card from flashing in for a lender who turns out to have already donated.
-			return this.coRecoveryFundExpEnabled
-				&& isColombiaReliefNextStepActive()
+			return isColombiaReliefNextStepActive()
 				&& !!this.userInfo?.reliefFundParticipation
 				&& !hasSupportedColombiaReliefFund(this.userInfo);
 		},
@@ -234,10 +231,6 @@ export default {
 				client.query({
 					query: experimentAssignmentQuery,
 					variables: { id: GOALS_ROW_EXP_KEY },
-				}),
-				client.query({
-					query: experimentAssignmentQuery,
-					variables: { id: CO_RECOVERY_FUND_EXP_KEY },
 				}),
 				client.query({
 					query: experimentAssignmentQuery,
@@ -444,18 +437,6 @@ export default {
 			},
 			this.$kvTrackEvent,
 			'EXP-MP-2856-May2026'
-		);
-
-		initializeExperiment(
-			this.cookieStore,
-			this.apollo,
-			this.$route,
-			CO_RECOVERY_FUND_EXP_KEY,
-			version => {
-				this.coRecoveryFundExpEnabled = version === 'b';
-			},
-			this.$kvTrackEvent,
-			'EXP-MP-3155-Aug2026'
 		);
 
 		initializeExperiment(

@@ -33,8 +33,10 @@
 				:achievements-completed="achievementsCompleted"
 				class="print:tw-hidden tw-mb-2.5"
 			/>
+			<!--  End of donation context -->
+
 			<AccountReceiptShare
-				v-if="onlyDonations"
+				v-if="showReceiptShareBeforeGoals"
 				ref="receiptSection"
 				:is-guest="isGuest"
 				:number-of-badges="numberOfBadges"
@@ -46,7 +48,6 @@
 				:guest-username="guestUsername"
 				class="tw-mb-2.5"
 			/>
-			<!--  End of donation context -->
 
 			<!-- Start goal module variations -->
 			<GoalEntrypoint
@@ -133,7 +134,7 @@
 				@guest-continue="handleContinue"
 			/>
 			<AccountReceiptShare
-				v-if="!onlyDonations"
+				v-if="!showReceiptShareBeforeGoals"
 				ref="receiptSection"
 				:is-guest="isGuest"
 				:number-of-badges="numberOfBadges"
@@ -451,6 +452,10 @@ const hasPfpLoan = computed(() => loanForComment.value?.inPfp ?? false);
 const hasTeamAttributedPartnerLoan = computed(
 	() => loanForComment.value?.distributionModel === 'fieldPartner' && !!loanForComment.value?.team?.name
 );
+
+const isFirstLoan = computed(() => props.loans.length > 0 && props.totalLoans === props.loans.length);
+
+const showReceiptShareBeforeGoals = computed(() => onlyDonations.value || isFirstLoan.value);
 
 const showOptInModule = computed(() => !props.isOptedIn);
 const showDonationOptInModule = computed(() => showOptInModule.value && onlyDonations.value);

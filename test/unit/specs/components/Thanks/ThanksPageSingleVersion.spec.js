@@ -224,8 +224,8 @@ function renderComponent(propsOverrides = {}, options = {}) {
 	};
 }
 
-function getOrderedModules(container) {
-	const selector = MODULE_IDS.map(id => `[data-testid="${id}"]`).join(', ');
+function getOrderedModules(container, ids = MODULE_IDS) {
+	const selector = ids.map(id => `[data-testid="${id}"]`).join(', ');
 	const elements = container.querySelectorAll(selector);
 	return Array.from(elements).map(el => el.getAttribute('data-testid'));
 }
@@ -392,6 +392,65 @@ describe('ThanksPageSingleVersion', () => {
 			await vi.waitFor(() => {
 				const ids = getOrderedModules(container);
 				expect(ids).toEqual(['badge-milestone', 'goal-entrypoint']);
+			});
+		});
+	});
+
+	describe('first loan ordering', () => {
+		const RECEIPT_ORDER_IDS = [...MODULE_IDS, 'account-receipt-share'];
+
+		it('shows AccountReceiptShare after BadgeMilestone and before the goal and opt-in modules', async () => {
+			mockUserGoal.value = null;
+
+			const { container } = renderComponent({
+				badgesAchieved: [nonTieredBadge],
+				isOptedIn: false,
+				loans: [{ id: 1, unreservedAmount: '25.00' }],
+				totalLoans: 1,
+			});
+
+			await vi.waitFor(() => {
+				const ids = getOrderedModules(container, RECEIPT_ORDER_IDS);
+				expect(ids).toEqual([
+					'badge-milestone',
+					'account-receipt-share',
+					'goal-entrypoint',
+					'opt-in-module',
+				]);
+			});
+		});
+
+		it('keeps AccountReceiptShare last for a repeat lender', async () => {
+			mockUserGoal.value = null;
+
+			const { container } = renderComponent({
+				badgesAchieved: [nonTieredBadge],
+				isOptedIn: false,
+				loans: [{ id: 1, unreservedAmount: '25.00' }],
+				totalLoans: 4,
+			});
+
+			await vi.waitFor(() => {
+				const ids = getOrderedModules(container, RECEIPT_ORDER_IDS);
+				expect(ids).toEqual([
+					'badge-milestone',
+					'goal-entrypoint',
+					'opt-in-module',
+					'account-receipt-share',
+				]);
+			});
+		});
+
+		it('renders a single AccountReceiptShare on a first loan', async () => {
+			mockUserGoal.value = null;
+
+			const { container } = renderComponent({
+				loans: [{ id: 1, unreservedAmount: '25.00' }],
+				totalLoans: 1,
+			});
+
+			await vi.waitFor(() => {
+				expect(container.querySelectorAll('[data-testid="account-receipt-share"]')).toHaveLength(1);
 			});
 		});
 	});

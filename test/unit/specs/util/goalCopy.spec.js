@@ -395,6 +395,34 @@ describe('goalCopy', () => {
 	});
 });
 
+describe('goalInReviewShareMessage', () => {
+	it('says "women" for the women category', () => {
+		const result = goalCopy.goalInReviewShareMessage({
+			target: 12, categoryId: ID_WOMENS_EQUALITY, countryCount: 3, sectorCount: 2,
+		});
+		expect(result).toBe('This year, I set a goal to help 12 women on Kiva.org. I met my goal, and in the '
+			+ 'process, reached people in 3 countries across 2 sectors. Kiva supports people around the world '
+			+ 'who have a dream without financial opportunity to achieve it. Try it out!');
+	});
+
+	it.each([ID_SUPPORT_ALL, ID_BASIC_NEEDS, ID_CLIMATE_ACTION, undefined])('says "people" for %s', categoryId => {
+		expect(goalCopy.goalInReviewShareMessage({ target: 5, categoryId })).toContain('help 5 people on Kiva.org');
+	});
+
+	it('singularizes counts of one', () => {
+		const result = goalCopy.goalInReviewShareMessage({
+			target: 1, categoryId: ID_BASIC_NEEDS, countryCount: 1, sectorCount: 1,
+		});
+		expect(result).toContain('help 1 person on Kiva.org');
+		expect(result).toContain('in 1 country across 1 sector.');
+	});
+
+	it('singularizes one woman', () => {
+		expect(goalCopy.goalInReviewShareMessage({ target: 1, categoryId: ID_WOMENS_EQUALITY }))
+			.toContain('help 1 woman on Kiva.org');
+	});
+});
+
 describe('daysLeftInGoalYear', () => {
 	it('uses the plural copy for more than one day', () => {
 		expect(goalCopy.daysLeftInGoalYear(47)).toBe('47 days left!');

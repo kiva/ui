@@ -303,6 +303,121 @@ describe('useGoalInReview', () => {
 		expect(composable.loading.value).toBe(false);
 	});
 
+	describe('opening the recap again in the same page load', () => {
+		it('reuses the loaded recap instead of querying again', async () => {
+			const apollo = makeApollo();
+			const composable = useGoalInReview({ apollo });
+			const first = await composable.loadGoalInReview({ year: 2027 });
+			apollo.query.mockClear();
+			getGoalSummary.mockClear();
+
+			const second = await composable.loadGoalInReview({ year: 2027 });
+
+			expect(second).toEqual(first);
+			expect(composable.goalInReviewData.value).toEqual(first);
+			expect(apollo.query).not.toHaveBeenCalled();
+			expect(getGoalSummary).not.toHaveBeenCalled();
+		});
+
+		it('shares one load between clicks that land before it settles', async () => {
+			const composable = useGoalInReview({ apollo: makeApollo() });
+
+			await Promise.all([
+				composable.loadGoalInReview({ year: 2027 }),
+				composable.loadGoalInReview({ year: 2027 }),
+			]);
+
+			expect(getGoalSummary).toHaveBeenCalledTimes(1);
+		});
+
+		it('loads a different year afresh', async () => {
+			const composable = useGoalInReview({ apollo: makeApollo() });
+			await composable.loadGoalInReview({ year: 2027 });
+
+			const result = await composable.loadGoalInReview({ year: 2026 });
+
+			expect(getGoalSummary).toHaveBeenCalledTimes(2);
+			expect(result.year).toBe(2026);
+		});
+
+		it('tries again after the lender query failed', async () => {
+			const apollo = makeApollo();
+			apollo.query.mockRejectedValueOnce(new Error('network'));
+			const composable = useGoalInReview({ apollo });
+			await composable.loadGoalInReview({ year: 2027 });
+
+			const retry = await composable.loadGoalInReview({ year: 2027 });
+
+			expect(getGoalSummary).toHaveBeenCalledTimes(2);
+			expect(retry.firstName).toBe('Alexandra');
+		});
+
+		it('tries again after a load that came back ineligible', async () => {
+			getGoalSummary.mockResolvedValueOnce(null);
+			const composable = useGoalInReview({ apollo: makeApollo() });
+			await composable.loadGoalInReview({ year: 2027 });
+
+			const retry = await composable.loadGoalInReview({ year: 2027 });
+
+			expect(getGoalSummary).toHaveBeenCalledTimes(2);
+			expect(retry.isEligible).toBe(true);
+		});
+
+		it('tries again after the category names failed to load', async () => {
+			const apollo = makeApollo();
+			const answer = apollo.query.getMockImplementation();
+			apollo.query.mockImplementation(options => (
+				options.query?.definitions?.[0]?.name?.value === 'contentfulEntries'
+					? Promise.reject(new Error('network'))
+					: answer(options)
+			));
+			const composable = useGoalInReview({ apollo });
+			await composable.loadGoalInReview({ year: 2027 });
+			apollo.query.mockImplementation(answer);
+
+			await composable.loadGoalInReview({ year: 2027 });
+
+			expect(getGoalSummary).toHaveBeenCalledTimes(2);
+		});
+
+		it('tries again after the recap query itself failed', async () => {
+			getGoalSummary.mockResolvedValue(climateSummary);
+			const apollo = makeApollo();
+			const answer = apollo.query.getMockImplementation();
+			apollo.query.mockImplementation(options => (
+				options.query?.definitions?.[0]?.name?.value === 'goalInReview'
+					? Promise.reject(new Error('network'))
+					: answer(options)
+			));
+			const composable = useGoalInReview({ apollo });
+			await composable.loadGoalInReview({ year: 2027 });
+			apollo.query.mockImplementation(answer);
+
+			await composable.loadGoalInReview({ year: 2027 });
+
+			expect(getGoalSummary).toHaveBeenCalledTimes(2);
+		});
+
+		it('tries again after a load that threw', async () => {
+			getCategories.mockImplementationOnce(() => { throw new Error('boom'); });
+			const composable = useGoalInReview({ apollo: makeApollo() });
+			await expect(composable.loadGoalInReview({ year: 2027 })).rejects.toThrow('boom');
+
+			const retry = await composable.loadGoalInReview({ year: 2027 });
+
+			expect(retry.isEligible).toBe(true);
+			expect(getGoalSummary).toHaveBeenCalledTimes(2);
+		});
+
+		it('does not share loads between composable instances', async () => {
+			await useGoalInReview({ apollo: makeApollo() }).loadGoalInReview({ year: 2027 });
+
+			await useGoalInReview({ apollo: makeApollo() }).loadGoalInReview({ year: 2027 });
+
+			expect(getGoalSummary).toHaveBeenCalledTimes(2);
+		});
+	});
+
 	describe('opening the recap by itself', () => {
 		const THIS_YEAR = new Date().getFullYear();
 		const dayOffset = days => new Date(Date.now() + days * 24 * 60 * 60 * 1000);
@@ -393,6 +508,79 @@ describe('useGoalInReview', () => {
 
 			expect(result).not.toBeNull();
 			expect(getGoalSummary).toHaveBeenCalled();
+		});
+
+		it('counts as this visit\'s opening of that year', async () => {
+			const { hasOpenedRecap, loadAutoOpenRecap } = useGoalInReview({
+				apollo: makeApollo(),
+				goalData: goalDataWith({ goal: goalOf('completed') }),
+			});
+
+			const result = await loadAutoOpenRecap({ enabled: true });
+
+			expect(hasOpenedRecap(result.year)).toBe(true);
+		});
+
+		it('does not count a recap that stayed shut', async () => {
+			getGoalSummary.mockResolvedValue({ ...supportAllSummary, count: 0 });
+			const { hasOpenedRecap, loadAutoOpenRecap } = useGoalInReview({
+				apollo: makeApollo(),
+				goalData: goalDataWith({ goal: goalOf('completed') }),
+			});
+
+			await loadAutoOpenRecap({ enabled: true });
+
+			expect(hasOpenedRecap(THIS_YEAR)).toBe(false);
+		});
+	});
+
+	describe('marking the recap seen', () => {
+		const goalDataMarking = () => ({
+			getCategories,
+			getCtaHref,
+			getGoalSummary,
+			setGoalRecapViewedPreference: vi.fn(() => Promise.resolve()),
+		});
+
+		it('writes the seen flag and counts the year as opened', async () => {
+			const goalData = goalDataMarking();
+			const { hasOpenedRecap, markRecapViewed } = useGoalInReview({ apollo: makeApollo(), goalData });
+
+			await markRecapViewed(2026);
+
+			expect(goalData.setGoalRecapViewedPreference).toHaveBeenCalledWith(2026);
+			expect(hasOpenedRecap(2026)).toBe(true);
+			expect(hasOpenedRecap(2025)).toBe(false);
+		});
+
+		it('writes it once per year for the visit', async () => {
+			const goalData = goalDataMarking();
+			const { markRecapViewed } = useGoalInReview({ apollo: makeApollo(), goalData });
+
+			await markRecapViewed(2026);
+			await markRecapViewed(2026);
+			await markRecapViewed(2025);
+
+			expect(goalData.setGoalRecapViewedPreference).toHaveBeenCalledTimes(2);
+		});
+
+		it('shares one write between calls that overlap', async () => {
+			const goalData = goalDataMarking();
+			const { markRecapViewed } = useGoalInReview({ apollo: makeApollo(), goalData });
+
+			await Promise.all([markRecapViewed(2026), markRecapViewed(2026)]);
+
+			expect(goalData.setGoalRecapViewedPreference).toHaveBeenCalledTimes(1);
+		});
+
+		it('leaves the year unopened when the write throws, so the next opening tries again', async () => {
+			const goalData = goalDataMarking();
+			goalData.setGoalRecapViewedPreference.mockRejectedValueOnce(new Error('network'));
+			const { hasOpenedRecap, markRecapViewed } = useGoalInReview({ apollo: makeApollo(), goalData });
+
+			await expect(markRecapViewed(2026)).rejects.toThrow('network');
+
+			expect(hasOpenedRecap(2026)).toBe(false);
 		});
 	});
 });

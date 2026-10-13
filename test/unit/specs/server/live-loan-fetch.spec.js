@@ -87,22 +87,10 @@ describe('live-loan-fetch', () => {
 		});
 
 		it('converts input strings to valid [FundraisingLoanSearchFilterInput!] arrays', async () => {
-			await testFilterParsing(
-				'gender_male,sector_education',
-				[{ gender: { any: ['male'] } }, { sector: { any: ['education'] } }]
-			);
 			await testFilterParsing('sector_retail', [{ sector: { any: ['retail'] } }]);
 			await testFilterParsing('gender_female', [{ gender: { any: ['female'] } }]);
 			await testFilterParsing('country_us,country_pr', [{ countryIsoCode: { any: ['us', 'pr'] } }]);
 			await testFilterParsing('country_co,country_ke', [{ countryIsoCode: { any: ['co', 'ke'] } }]);
-			await testFilterParsing(
-				'gender_female,country_us',
-				[{ gender: { any: ['female'] } }, { countryIsoCode: { any: ['us'] } }]
-			);
-			await testFilterParsing(
-				'gender_male,sector_arts,sector_agriculture',
-				[{ gender: { any: ['male'] } }, { sector: { any: ['arts', 'agriculture'] } }]
-			);
 			await testFilterParsing('sector_personal use', [{ sector: { any: ['personal use'] } }]);
 			await testFilterParsing('sort_expiringSoon,gender_female', [{ gender: { any: ['female'] } }]);
 			await testFilterParsing('theme_green', [{ theme: { any: ['green'] } }]);
@@ -112,31 +100,8 @@ describe('live-loan-fetch', () => {
 			await testFilterParsing('theme_youth,theme_green', [{ theme: { any: ['youth', 'green'] } }]);
 			await testFilterParsing('tag_u.s. black-owned businesses', [{ tagId: { any: [43] } }]);
 			await testFilterParsing(
-				'tag_u.s. black-owned businesses,theme_green',
-				[{ tagId: { any: [43] } }, { theme: { any: ['green'] } }]
-			);
-			await testFilterParsing(
 				'tag_latinx/hispanic owned business,tag_u.s. black-owned businesses',
 				[{ tagId: { any: [45, 43] } }]
-			);
-			await testFilterParsing(
-				'gender_male,sector_education',
-				[
-					{ gender: { any: ['male'] } },
-					{ sector: { any: ['education'] } }
-				]
-			);
-			await testFilterParsing(
-				'sector_retail',
-				[
-					{ sector: { any: ['retail'] } }
-				]
-			);
-			await testFilterParsing(
-				'country_us,country_pr',
-				[
-					{ countryIsoCode: { any: ['us', 'pr'] } },
-				]
 			);
 			await testFilterParsing('notafilter_value', null);
 			await testFilterParsing('tag_notatag', null);
@@ -145,15 +110,46 @@ describe('live-loan-fetch', () => {
 			await testFilterParsing('amountleft_gte100', [{ amountLeft: { range: { gte: 100 } } }]);
 			await testFilterParsing('amountleft_gte200', [{ amountLeft: { range: { gte: 200 } } }]);
 			await testFilterParsing('amountleft_gte300', [{ amountLeft: { range: { gte: 300 } } }]);
-			await testFilterParsing('gender_female,amountleft_gte100', [
-				{ gender: { any: ['female'] } }, { amountLeft: { range: { gte: 100 } } }
-			]);
-			await testFilterParsing('gender_female,amountleft_gte200', [
-				{ gender: { any: ['female'] } }, { amountLeft: { range: { gte: 200 } } }
-			]);
-			await testFilterParsing('gender_female,amountleft_gte300', [
-				{ gender: { any: ['female'] } }, { amountLeft: { range: { gte: 300 } } }
-			]);
+		});
+
+		// FLSS ORs the entries of the filters array together, so combining filters means emitting a
+		// single entry that holds all of them.
+		it('combines different filters into one AND-ed FundraisingLoanSearchFilterInput', async () => {
+			await testFilterParsing(
+				'gender_male,sector_education',
+				[{ gender: { any: ['male'] }, sector: { any: ['education'] } }]
+			);
+			await testFilterParsing(
+				'gender_female,country_us',
+				[{ gender: { any: ['female'] }, countryIsoCode: { any: ['us'] } }]
+			);
+			await testFilterParsing(
+				'gender_male,sector_arts,sector_agriculture',
+				[{ gender: { any: ['male'] }, sector: { any: ['arts', 'agriculture'] } }]
+			);
+			await testFilterParsing(
+				'tag_u.s. black-owned businesses,theme_green',
+				[{ tagId: { any: [43] }, theme: { any: ['green'] } }]
+			);
+			await testFilterParsing(
+				'gender_female,amountleft_gte100',
+				[{ gender: { any: ['female'] }, amountLeft: { range: { gte: 100 } } }]
+			);
+			await testFilterParsing(
+				'sort_expiringSoon,gender_female,theme_green',
+				[{ gender: { any: ['female'] }, theme: { any: ['green'] } }]
+			);
+			// An unsupported filter name is dropped instead of widening the search. FLSS validates the
+			// values themselves, so an unknown sector/theme value is still forwarded and simply matches
+			// nothing, which falls back to /lend-by-category/ rather than serving an unrelated loan.
+			await testFilterParsing(
+				'gender_female,notafilter_value',
+				[{ gender: { any: ['female'] } }]
+			);
+			await testFilterParsing(
+				'gender_female,sector_notasector',
+				[{ gender: { any: ['female'] }, sector: { any: ['notasector'] } }]
+			);
 		});
 
 		it('converts input strings to valid SortEnum values', async () => {

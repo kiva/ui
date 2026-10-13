@@ -134,7 +134,9 @@
 						</div>
 
 						<KvButton
-							class="featured-goal-card__cta featured-goal-card__cta--active-goal tw-w-full"
+							class="featured-goal-card__cta featured-goal-card__cta--active-goal tw-w-full
+								focus-visible:tw-outline focus-visible:tw-outline-2 focus-visible:tw-outline-offset-2
+								focus-visible:tw-outline-eco-green-3"
 							variant="primary"
 							@click="handleActiveGoalCtaClick"
 						>

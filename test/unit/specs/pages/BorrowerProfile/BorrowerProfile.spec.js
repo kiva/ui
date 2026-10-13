@@ -244,3 +244,155 @@ describe('BorrowerProfile.apollo.result', () => {
 		expect(ctx.loan).toEqual(loan);
 	});
 });
+
+describe('BorrowerProfile new_user_borrower_profile experiment', () => {
+	const makeLoan = (status, { unreservedAmount = '400' } = {}) => ({
+		id: 12345,
+		status,
+		loanAmount: '500',
+		loanFundraisingInfo: { id: 1, fundedAmount: '100' },
+		unreservedAmount,
+		userProperties: { isPrivileged: false },
+	});
+
+	describe('preFetch', () => {
+		const makeClient = (loan, { hasEverLoggedIn = false, my = null } = {}) => ({
+			query: vi.fn(({ query }) => Promise.resolve({
+				data: getOperationName(query) === 'hasEverLoggedIn'
+					? { hasEverLoggedIn }
+					: { lend: { loan }, my },
+			})),
+		});
+
+		const makeContext = ({ kivaId, cookies = {} } = {}) => ({
+			route: { params: { id: '12345' }, query: {}, fullPath: '/lend/12345' },
+			cookieStore: { get: name => cookies[name] },
+			kvAuth0: { getKivaId: () => kivaId },
+		});
+
+		const assignedExperimentIds = client => client.query.mock.calls
+			.filter(([{ query }]) => getOperationName(query) === 'experimentAssignment')
+			.map(([{ variables }]) => variables.id);
+
+		it('assigns the experiment for a new logged out visitor on a fundraising loan', async () => {
+			const client = makeClient(makeLoan('fundraising'));
+
+			await BorrowerProfile.apollo.preFetch({}, client, makeContext());
+
+			expect(assignedExperimentIds(client)).toContain('new_user_borrower_profile');
+		});
+
+		it.each([
+			['a logged in visitor', makeLoan('fundraising'), {}, { kivaId: 'auth0|abc' }],
+			['a returning visitor', makeLoan('fundraising'), { hasEverLoggedIn: true }, {}],
+			['a visitor who has lent before', makeLoan('fundraising'), {}, { cookies: { kvu_lb: 'true' } }],
+			['a loan that is not fundraising', makeLoan('funded'), {}, {}],
+			['a fully reserved fundraising loan', makeLoan('fundraising', { unreservedAmount: '0' }), {}, {}],
+		])('does not assign the experiment for %s', async (_, loan, clientOptions, contextOptions) => {
+			const client = makeClient(loan, clientOptions);
+
+			await BorrowerProfile.apollo.preFetch({}, client, makeContext(contextOptions));
+
+			expect(assignedExperimentIds(client)).not.toContain('new_user_borrower_profile');
+		});
+	});
+
+	describe('result', () => {
+		const makeCtx = ({ version = 'b', hasEverLoggedIn = false, cookies = {} } = {}) => ({
+			apollo: {
+				readQuery: vi.fn(({ query }) => (
+					getOperationName(query) === 'hasEverLoggedIn' ? { hasEverLoggedIn } : null
+				)),
+				readFragment: vi.fn(() => ({ id: 'new_user_borrower_profile', version })),
+			},
+			cookieStore: { get: name => cookies[name] },
+			$route: { query: {} },
+			inviterIsGuestOrAnonymous: false,
+			expRegionList: [],
+			isMounted: false,
+			trackNewUserBpExp: vi.fn(),
+		});
+
+		const invokeResult = (ctx, loan, my = null) => {
+			BorrowerProfile.apollo.result.call(ctx, { data: { lend: { loan }, my } });
+		};
+
+		it.each(['a', 'b'])('exposes version %s for a new logged out visitor', version => {
+			const ctx = makeCtx({ version });
+
+			invokeResult(ctx, makeLoan('fundraising'));
+
+			expect(ctx.newUserBpExpVersion).toBe(version);
+		});
+
+		it('exposes no version for a logged in visitor', () => {
+			const ctx = makeCtx();
+
+			invokeResult(ctx, makeLoan('fundraising'), { id: 1, userAccount: { id: 2 } });
+
+			expect(ctx.newUserBpExpVersion).toBe(null);
+		});
+
+		it('exposes no version for a returning visitor', () => {
+			const ctx = makeCtx({ hasEverLoggedIn: true });
+
+			invokeResult(ctx, makeLoan('fundraising'));
+
+			expect(ctx.newUserBpExpVersion).toBe(null);
+		});
+
+		it('exposes no version for a loan that is not fundraising', () => {
+			const ctx = makeCtx();
+
+			invokeResult(ctx, makeLoan('funded', { unreservedAmount: '0' }));
+
+			expect(ctx.newUserBpExpVersion).toBe(null);
+		});
+
+		it('tracks client-side navigations once mounted', () => {
+			const ctx = makeCtx();
+			ctx.isMounted = true;
+
+			invokeResult(ctx, makeLoan('fundraising'));
+
+			expect(ctx.trackNewUserBpExp).toHaveBeenCalled();
+		});
+	});
+
+	describe('trackNewUserBpExp', () => {
+		const makeCtx = version => ({
+			newUserBpExpVersion: version,
+			newUserBpExpTrackedLoanId: null,
+			routingLoan: { id: 12345 },
+			$kvTrackEvent: vi.fn(),
+		});
+
+		it('fires the experiment event once per page view', () => {
+			const ctx = makeCtx('b');
+
+			BorrowerProfile.methods.trackNewUserBpExp.call(ctx);
+			BorrowerProfile.methods.trackNewUserBpExp.call(ctx);
+
+			expect(ctx.$kvTrackEvent).toHaveBeenCalledTimes(1);
+			expect(ctx.$kvTrackEvent).toHaveBeenCalledWith('event-tracking', 'EXP-MP-3035-Oct2026', 'b');
+		});
+
+		it('fires again for a different loan', () => {
+			const ctx = makeCtx('a');
+
+			BorrowerProfile.methods.trackNewUserBpExp.call(ctx);
+			ctx.routingLoan = { id: 67890 };
+			BorrowerProfile.methods.trackNewUserBpExp.call(ctx);
+
+			expect(ctx.$kvTrackEvent).toHaveBeenCalledTimes(2);
+		});
+
+		it('does not fire for visitors outside the experiment', () => {
+			const ctx = makeCtx(null);
+
+			BorrowerProfile.methods.trackNewUserBpExp.call(ctx);
+
+			expect(ctx.$kvTrackEvent).not.toHaveBeenCalled();
+		});
+	});
+});

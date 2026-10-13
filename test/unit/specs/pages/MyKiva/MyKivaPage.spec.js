@@ -321,7 +321,6 @@ describe('MyKivaPage', () => {
 
 		describe('showCoRecoveryFundCard', () => {
 			const callWith = context => MyKivaPage.computed.showCoRecoveryFundCard.call({
-				coRecoveryFundExpEnabled: true,
 				userInfo: { reliefFundParticipation: { totalCount: 0 } },
 				...context,
 			});
@@ -335,12 +334,8 @@ describe('MyKivaPage', () => {
 				vi.useRealTimers();
 			});
 
-			it('shows the card for an experiment-b lender who has not donated to the fund', () => {
+			it('shows the card for a lender who has not donated to the fund', () => {
 				expect(callWith()).toBe(true);
-			});
-
-			it('hides the card for the experiment control group', () => {
-				expect(callWith({ coRecoveryFundExpEnabled: false })).toBe(false);
 			});
 
 			it('hides the card once the lender has donated to the fund', () => {

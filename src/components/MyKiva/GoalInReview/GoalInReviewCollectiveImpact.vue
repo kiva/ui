@@ -71,6 +71,7 @@ import {
 	ref,
 } from 'vue';
 import { createIntersectionObserver } from '#src/util/observerUtils';
+import { prefersReducedMotion } from '#src/util/animation/motionUtils';
 
 const stats = [
 	{
@@ -112,10 +113,6 @@ const counting = ref(false);
 
 let observer = null;
 let rafId = null;
-
-const prefersReducedMotion = () => typeof window !== 'undefined'
-	&& typeof window.matchMedia === 'function'
-	&& window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const showFinalValues = () => {
 	displayValues.value = stats.map(stat => stat.target);

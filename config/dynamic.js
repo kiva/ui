@@ -77,7 +77,7 @@ export const app = {
 	oneTrust: {
 		enable: true,
 		key: 'db9dcf94-1c32-40fb-9a57-cefafea1088d',
-		domainSuffix: process.env.ONE_TRUST_DOMAIN_SUFFIX || '-test',
+		domainSuffix: process.env.ONE_TRUST_DOMAIN_SUFFIX ?? '-test',
 	},
 	optimizelyProjectId: '21625780072',
 	paypal: {

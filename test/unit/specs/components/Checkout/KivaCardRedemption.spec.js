@@ -1,7 +1,9 @@
+import { render, fireEvent } from '@testing-library/vue';
 import KivaCardRedemption from '#src/components/Checkout/KivaCardRedemption';
 import { trackMetaEvent } from '@kiva/kv-analytics';
 /* eslint-disable-next-line import/no-extraneous-dependencies -- devDependency used only in tests */
 import { flushPromises } from '@vue/test-utils';
+import { globalOptions } from '../../../specUtils';
 
 vi.mock('@kiva/kv-analytics', async importOriginal => ({
 	...(await importOriginal()),
@@ -56,5 +58,45 @@ describe('KivaCardRedemption updateKivaCard', () => {
 		expect(trackMetaEvent).not.toHaveBeenCalled();
 		expect(consoleError).toHaveBeenCalled();
 		consoleError.mockRestore();
+	});
+});
+
+describe('KivaCardRedemption Apply button', () => {
+	const renderRedemption = (mutationResult = {}) => {
+		const kvTrackEvent = vi.fn();
+		const utils = render(KivaCardRedemption, {
+			props: { totals: { redemptionCodeAppliedTotal: '0.00' } },
+			global: {
+				...globalOptions,
+				provide: {
+					...globalOptions.provide,
+					apollo: { mutate: vi.fn().mockResolvedValue(mutationResult) },
+				},
+				mocks: {
+					...globalOptions.mocks,
+					$kvTrackEvent: kvTrackEvent,
+					$showTipMsg: vi.fn(),
+				},
+			},
+		});
+		return { ...utils, kvTrackEvent };
+	};
+
+	it('tracks the click when the user applies a code', async () => {
+		const { getByTestId, kvTrackEvent } = renderRedemption();
+
+		await fireEvent.click(getByTestId('apply-card'));
+		await flushPromises();
+
+		expect(kvTrackEvent).toHaveBeenCalledWith('basket', 'click', 'apply-kiva-card');
+	});
+
+	it('tracks the click even when the code is rejected', async () => {
+		const { getByTestId, kvTrackEvent } = renderRedemption({ errors: [{ message: 'Invalid code' }] });
+
+		await fireEvent.click(getByTestId('apply-card'));
+		await flushPromises();
+
+		expect(kvTrackEvent).toHaveBeenCalledWith('basket', 'click', 'apply-kiva-card');
 	});
 });
