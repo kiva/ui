@@ -87,8 +87,8 @@
 					@click="copyLink({utmCampaign, utmContent}, copyStatus.text)"
 				>
 					<kv-material-icon
-						class="social-button__copy-icon tw-w-4.5 tw-h-4.5 tw-pointer-events-none
-							tw-inline-block tw-align-middle"
+						class="tw-w-4.5 tw-h-4.5 tw-pointer-events-none tw-inline-block tw-align-middle"
+						:class="{ 'social-button__copy-icon': compactButtons }"
 						:icon="mdiLink"
 					/>
 					<span class="tw-font-medium">{{ copyStatus.text }}</span>

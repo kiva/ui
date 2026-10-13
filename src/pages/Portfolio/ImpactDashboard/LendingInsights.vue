@@ -10,22 +10,16 @@
 				Your lending insights
 			</h2>
 			<KvButton
-				v-if="!lifetimeStatsError && (loading || lifetimeNumberOfLoans > 0)"
+				v-if="!loading && !lifetimeStatsError && lifetimeNumberOfLoans > 0"
 				variant="link"
 				class="tw-shrink-0"
 				size="small"
 				data-testid="lending-stats-share-button"
-				:state="loading ? 'disabled' : ''"
 				@click="openShare"
 			>
-				<span class="tw-inline-flex tw-items-center tw-gap-1 tw-text-base">
-					<kv-material-icon
-						:icon="mdiExportVariant"
-						class="tw-w-2 tw-h-2 tw-text-eco-green"
-					/>
-					<span class="tw-text-eco-green">
-						Share
-					</span>
+				<span class="tw-inline-flex tw-items-center tw-gap-1 tw-text-base tw-text-eco-green">
+					<kv-material-icon :icon="mdiExportVariant" class="tw-w-1.5 tw-h-1.5" />
+					Share
 				</span>
 			</KvButton>
 		</div>

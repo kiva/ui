@@ -59,6 +59,7 @@ describe('KvSocialShareButton', () => {
 			const wrapper = mountShare();
 
 			expect(wrapper.find('.social-buttons--compact').exists()).toBe(false);
+			expect(wrapper.find('.social-button__copy-icon').exists()).toBe(false);
 			expect(wrapper.find('.social-share-lightbox--fixed-width').exists()).toBe(false);
 			expect(shareRow(wrapper).classList).not.toContain('tw-justify-center');
 			expect(shareRow(wrapper).classList).not.toContain('lg:tw-justify-start');
@@ -71,6 +72,8 @@ describe('KvSocialShareButton', () => {
 
 			expect(sizeClassesOf(wrapper)).toEqual(['small', 'small', 'small', 'small']);
 			expect(shareRow(wrapper).classList).toContain('social-buttons--compact');
+			const copyButton = wrapper.find('[data-testid="share-copy-link-button"]');
+			expect(copyButton.find('.social-button__copy-icon').exists()).toBe(true);
 		});
 
 		it('does not apply the fixed-width modal', () => {

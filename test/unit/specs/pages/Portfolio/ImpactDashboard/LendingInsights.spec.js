@@ -162,12 +162,19 @@ describe('LendingInsights share', () => {
 		expect(wrapper.find('[data-testid="lending-stats-share-button"]').exists()).toBe(false);
 	});
 
-	it('disables the share button while stats are loading', async () => {
+	it('hides the share button while stats are loading', async () => {
 		// No cached stats, and the stubbed section never becomes visible to fetch them
 		const wrapper = mountInsights(null);
 		await flushPromises();
 
-		expect(wrapper.find('[data-testid="lending-stats-share-button"]').attributes('disabled')).toBeDefined();
+		expect(wrapper.find('[data-testid="lending-stats-share-button"]').exists()).toBe(false);
+	});
+
+	it('shows the share button once stats have loaded', async () => {
+		const wrapper = mountInsights(lifetimeData());
+		await flushPromises();
+
+		expect(wrapper.find('[data-testid="lending-stats-share-button"]').exists()).toBe(true);
 	});
 
 	it('hides the share button for lenders with no loans', async () => {
