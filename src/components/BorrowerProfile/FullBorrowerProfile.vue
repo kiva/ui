@@ -38,6 +38,14 @@
 				/>
 			</content-container>
 		</div>
+		<!-- Bare page container: the band spans the full content width, not the story column -->
+		<kv-page-container
+			v-if="isNewUserBpVariant"
+			class="tw-hidden lg:tw-block lg:tw-mt-6"
+			data-testid="bp-why-loans-desktop"
+		>
+			<why-loans-banner :loan="loanData" @how-it-works="showHowKivaWorks = true" />
+		</kv-page-container>
 		<div
 			:class="inPfp ? 'lg:tw-pt-16 lg:tw-mt-8' : 'lg:tw-pt-8'"
 			class="lg:tw-absolute tw-pointer-events-none lg:tw-w-full lg:tw-h-full lg:tw-top-0 tw-z-docked"
@@ -93,6 +101,13 @@
 				class="tw-mb-5 md:tw-mb-6 lg:tw-mb-8 tw-z-1"
 				:loan="loanData"
 			/>
+			<div
+				v-if="isNewUserBpVariant"
+				class="lg:tw-hidden tw-mb-5 md:tw-mb-6"
+				data-testid="bp-why-loans-mobile"
+			>
+				<why-loans-banner :loan="loanData" @how-it-works="showHowKivaWorks = true" />
+			</div>
 		</content-container>
 		<content-container>
 			<journal-updates
@@ -203,6 +218,7 @@ import LoanDetailsRailToggle from '#src/components/BorrowerProfile/LoanDetailsRa
 import DefinitionsLightbox from '#src/components/BorrowerProfile/DefinitionsLightbox';
 import smoothScrollMixin from '#src/plugins/smooth-scroll-mixin';
 import HowKivaWorksLightbox from '#src/components/BorrowerProfile/HowKivaWorksLightbox';
+import WhyLoansBanner from '#src/components/BorrowerProfile/WhyLoansBanner';
 import {
 	getLocalRailPreference,
 	readAccountRailPreference,
@@ -212,7 +228,7 @@ import {
 import { isActivelyInPfp } from '#src/util/loanUtils';
 import { NEW_USER_BP_EXP_INJECT_KEY } from '#src/util/newUserBorrowerProfileExp';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
-import { KvLoadingPlaceholder } from '@kiva/kv-components';
+import { KvLoadingPlaceholder, KvPageContainer } from '@kiva/kv-components';
 
 export const fullProfileFragment = gql`
 	${summaryCardFragment}
@@ -280,6 +296,8 @@ export default {
 		KvLoadingPlaceholder,
 		DefinitionsLightbox,
 		HowKivaWorksLightbox,
+		WhyLoansBanner,
+		KvPageContainer,
 	},
 	mixins: [smoothScrollMixin],
 	inject: {
