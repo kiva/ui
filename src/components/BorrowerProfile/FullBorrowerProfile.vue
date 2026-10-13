@@ -161,6 +161,10 @@
 			/>
 		</content-container>
 		<definitions-lightbox ref="definitionsLightbox" />
+		<how-kiva-works-lightbox
+			:visible="showHowKivaWorks"
+			@lightbox-closed="showHowKivaWorks = false"
+		/>
 	</article>
 </template>
 
@@ -187,6 +191,7 @@ import LoanTags from '#src/components/BorrowerProfile/LoanTags';
 import LoanComments from '#src/components/BorrowerProfile/LoanComments';
 import LoanDetailsRailToggle from '#src/components/BorrowerProfile/LoanDetailsRailToggle';
 import DefinitionsLightbox from '#src/components/BorrowerProfile/DefinitionsLightbox';
+import HowKivaWorksLightbox from '#src/components/BorrowerProfile/HowKivaWorksLightbox';
 import {
 	getLocalRailPreference,
 	readAccountRailPreference,
@@ -262,6 +267,7 @@ export default {
 		LoanDetailsRailToggle,
 		KvLoadingPlaceholder,
 		DefinitionsLightbox,
+		HowKivaWorksLightbox,
 	},
 	inject: ['apollo', 'cookieStore'],
 	provide() {
@@ -333,6 +339,7 @@ export default {
 			// Initialize from the SSR-resolved prop so logged-in opted-in renders without flash.
 			showDetailsInRail: this.initialShowDetailsInRail,
 			userPreferences: null,
+			showHowKivaWorks: false,
 		};
 	},
 	computed: {
